@@ -1,0 +1,18 @@
+package: github.com/irisnet/iris-explorer
+import:
+- package: github.com/cosmos/cosmos-sdk
+  version: bucky/reference-tm-develop
+- package: google.golang.org/grpc
+  repo: https://github.com/grpc/grpc-go
+  vcs: git
+- package: google.golang.org/genproto
+  repo: https://github.com/google/go-genproto
+  vcs: git
+- package: gopkg.in/mgo.v2
+  version: master
+
+testImport:
+- package: github.com/stretchr/testify
+  subpackages:
+  - assert
+  - require
