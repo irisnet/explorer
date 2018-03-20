@@ -6,32 +6,39 @@ import (
 	"github.com/tendermint/tmlibs/cli"
 	"github.com/cosmos/cosmos-sdk/client/commands"
 	"github.com/irisnet/iris-explorer/version"
+	sync "github.com/irisnet/iris-explorer/modules/sync"
 )
 
 // entry point for this binary
 var (
-	explorer = &cobra.Command{
-		Use:   "iris-explorer",
+	ExplorerCmd = &cobra.Command{
+		Use:   "explorer",
+		Short: "explorer for IRIS Hub (a regional Cosmos Hub with a powerful iService infrastructure)",
 		Run: func(cmd *cobra.Command, args []string) {
 			cmd.Help()
 		},
 	}
 )
 
+func prepareMainCmd() {
+	commands.AddBasicFlags(ExplorerCmd)
+}
+
 func main() {
 	// disable sorting
 	cobra.EnableCommandSorting = false
-
+	prepareMainCmd()
 	prepareRestServerCommands()
 
-	explorer.AddCommand(
+	ExplorerCmd.AddCommand(
 		commands.InitCmd,
 		restServerCmd,
 		//syncCmd,
+		sync.SyncCmd,
 		version.VersionCmd,
 	)
 
 	// prepare and add flags
-	executor := cli.PrepareMainCmd(explorer, "EX", os.ExpandEnv("$HOME/.iris-explorer"))
+	executor := cli.PrepareMainCmd(ExplorerCmd, "EX", os.ExpandEnv("$HOME/.iris-explorer"))
 	executor.Execute()
 }

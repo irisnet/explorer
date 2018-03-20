@@ -1,18 +1,62 @@
-hash: c4ebc0367da116223368dad0ee1b2d961407f14b3e0575adf6e47f8db85d3e41
-updated: 2018-03-19T17:24:57.288293+08:00
+hash: 195b6bc507f3be7f05cbfeab8a493ee8188892f8fc266853ea43d2090b718298
+updated: 2018-03-20T09:31:27.390489+08:00
 imports:
+- name: github.com/bgentry/speakeasy
+  version: 4aabc24848ce5fd31929f7d1e4ea74d3709c14cd
 - name: github.com/btcsuite/btcd
-  version: 2be2f12b358dc57d70b8f501b00be450192efbc3
+  version: 2e60448ffcc6bf78332d1fe590260095f554dd78
   subpackages:
   - btcec
+- name: github.com/BurntSushi/toml
+  version: b26d9c308763d68093482582cea63d69be07a0f0
 - name: github.com/cosmos/cosmos-sdk
   version: f1b1d36324812dc221da87f56734a5c25d8754aa
   subpackages:
+  - app
   - client
+  - client/commands
+  - client/commands/commits
+  - client/commands/keys
+  - client/commands/proxy
+  - client/commands/query
+  - client/commands/rpc
+  - client/commands/search
+  - client/commands/txs
+  - client/rest
+  - errors
+  - genesis
+  - modules/auth
+  - modules/auth/commands
+  - modules/base
+  - modules/base/commands
+  - modules/coin
+  - modules/coin/commands
+  - modules/coin/rest
+  - modules/fee
+  - modules/fee/commands
+  - modules/ibc
+  - modules/ibc/commands
+  - modules/nonce
+  - modules/nonce/commands
+  - modules/nonce/rest
+  - modules/roles
+  - modules/roles/commands
+  - modules/roles/rest
+  - server/commands
+  - stack
+  - state
+  - version
+- name: github.com/cosmos/gaia
+  version: 2ac7ed920446ef8edf582c2b3e890cb7676a7d77
+  subpackages:
+  - modules/stake
+  - modules/stake/commands
+  - modules/stake/rest
+  - version
 - name: github.com/ebuchman/fail-test
   version: 95f809107225be108efcf10a3509e4ea6ceef3c4
 - name: github.com/fsnotify/fsnotify
-  version: c2828203cd70a50dcccfb2761f8b1f8ceef9a8e9
+  version: 4da3e2cfbabc9f751898f250b49f2439785783a1
 - name: github.com/go-kit/kit
   version: 4dc7be5d2d12881735283bcab7352178e190fc71
   subpackages:
@@ -39,7 +83,7 @@ imports:
   - sortkeys
   - types
 - name: github.com/golang/protobuf
-  version: bbd03ef6da3a115852eaf24c8a1c46aeb39aa175
+  version: 925541529c1fa6821df4e44ce2723319eb2be768
   subpackages:
   - proto
   - ptypes
@@ -50,10 +94,8 @@ imports:
   version: 553a641470496b2327abcac10b36396bd98e45c9
 - name: github.com/gorilla/context
   version: 08b5f424b9271eedf6f9f0ce86cb9396ed337a42
-- name: github.com/gorilla/handlers
-  version: 90663712d74cb411cbef281bc1e08c19d1a76145
 - name: github.com/gorilla/mux
-  version: 4dbd923b0c9e99ff63ad54b0e9705ff92d3cdb06
+  version: 53c1911da2b537f792e7cafcb446b05ffe33b996
 - name: github.com/gorilla/websocket
   version: ea4d1f681babbce9545c9c5f3d5194a789c89f5b
 - name: github.com/hashicorp/hcl
@@ -61,7 +103,6 @@ imports:
   subpackages:
   - hcl/ast
   - hcl/parser
-  - hcl/printer
   - hcl/scanner
   - hcl/strconv
   - hcl/token
@@ -77,31 +118,33 @@ imports:
 - name: github.com/kr/logfmt
   version: b84e30acd515aadc4b783ad4ff83aff3299bdfe0
 - name: github.com/magiconair/properties
-  version: 2c9e9502788518c97fe44e8955cd069417ee89df
+  version: 49d762b9817ba1c2e9d0c69183c2b4a8b8f1d934
+- name: github.com/mattn/go-isatty
+  version: 0360b2af4f38e8d38c7fce2a9f4e702702d73a39
 - name: github.com/mitchellh/mapstructure
-  version: 00c29f56e2386353d58c599509e8dc3801b0d716
+  version: 06020f85339e21b2478f756a78e295255ffa4d6a
 - name: github.com/pelletier/go-toml
-  version: 05bcc0fb0d3e60da4b8dd5bd7e0ea563eb4ca943
+  version: 4e9e0ee19b60b13eb79915933f44d8ed5f268bdd
 - name: github.com/pkg/errors
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/rcrowley/go-metrics
-  version: 8732c616f52954686704c8645fe1a9d59e9df7c1
+  version: e181e095bae94582363434144c61a9653aff6e50
 - name: github.com/spf13/afero
-  version: bbf41cb36dffe15dff5bf7e18c447801e7ffe163
+  version: 8d919cbe7e2627e417f3e45c3c0e489a5b7e2536
   subpackages:
   - mem
 - name: github.com/spf13/cast
-  version: 8965335b8c7107321228e3e3702cab9832751bac
+  version: acbeb36b902d72a7a4c18e8f3241075e7ab763e4
 - name: github.com/spf13/cobra
-  version: c439c4fa093711d42e1b01acb1235b52004753c1
+  version: 7b2c5ac9fc04fc5efafb60700713d4fa609b777b
 - name: github.com/spf13/jwalterweatherman
-  version: 7c0cea34c8ece3fbeb2b27ab9b59511d360fb394
+  version: 12bd96e66386c1960ab0f74ced1362f66f552f7b
 - name: github.com/spf13/pflag
-  version: ee5fd03fd6acfd43e44aea0b4135958546ed8e73
+  version: e57e3eeb33f795204c1ca35f56c44f83227c6e66
 - name: github.com/spf13/viper
-  version: aafc9e6bc7b7bb53ddaa75a5ef49a17d6e654be5
+  version: 25b30aa063fc18e48662b86996252eabdcf2f0c7
 - name: github.com/syndtr/goleveldb
-  version: 169b1b37be738edb2813dab48c97a549bcf99bb5
+  version: adf24ef3f94bd13ec4163060b21a5678f22b429b
   subpackages:
   - leveldb
   - leveldb/cache
@@ -116,7 +159,7 @@ imports:
   - leveldb/table
   - leveldb/util
 - name: github.com/tendermint/abci
-  version: 4e0218467649fecf17ebc5e8161f1c888fc8ff22
+  version: 3d5f0a8b94bbbfa70ecd4072fc55854f8210425b
   subpackages:
   - client
   - example/code
@@ -136,13 +179,13 @@ imports:
   - keys/storage/filestorage
   - keys/wordlist
 - name: github.com/tendermint/go-wire
-  version: b8470691aa56b059e06dbfced95a4a21a407df81
+  version: b6fc872b42d41158a60307db4da051dd6f179415
   subpackages:
   - data
 - name: github.com/tendermint/iavl
   version: 39de8f0b4ee758fdd5bb3a9afc6dd9bf42c04785
 - name: github.com/tendermint/tendermint
-  version: d350da313558480201456d580aca3a8d1fb5e6a9
+  version: 9c5937df969de23e9087f183c52b5088d4b6f268
   subpackages:
   - blockchain
   - cmd/tendermint/commands
@@ -154,6 +197,7 @@ imports:
   - lite/client
   - lite/errors
   - lite/files
+  - lite/proxy
   - mempool
   - node
   - p2p
@@ -175,11 +219,9 @@ imports:
   - state/txindex/kv
   - state/txindex/null
   - types
-  - types/priv_validator
   - version
-  - wire
 - name: github.com/tendermint/tmlibs
-  version: 4b0058dd6422eef7b8939fead2423aa692fecd2c
+  version: 26f2ab65f82cfc6873c312e8030104c47c05f10e
   subpackages:
   - autofile
   - cli
@@ -193,7 +235,7 @@ imports:
   - pubsub
   - pubsub/query
 - name: golang.org/x/crypto
-  version: c3a3ad6d03f7a915c0f7e194b7152974bb73d287
+  version: 94eea52f7b742c7cbe0b03b22f0c4c8631ece122
   subpackages:
   - curve25519
   - nacl/box
@@ -204,7 +246,7 @@ imports:
   - ripemd160
   - salsa20/salsa
 - name: golang.org/x/net
-  version: 24dd3780ca4f75fed9f321890729414a4b5d3f13
+  version: 5ccada7d0a7ba9aeb5d3aca8d3501b4c2a509fec
   subpackages:
   - context
   - http2
@@ -214,35 +256,31 @@ imports:
   - lex/httplex
   - trace
 - name: golang.org/x/sys
-  version: 01acb38716e021ed1fc03a602bdb5838e1358c5e
+  version: 8b4580aae2a0dd0c231a45d3ccb8434ff533b840
   subpackages:
   - unix
 - name: golang.org/x/text
-  version: 8c34f848e18c4bd34d02db7f19a0ed1a0a8f5852
+  version: 57961680700a5336d15015c8c50686ca5ba362a4
   subpackages:
   - secure/bidirule
   - transform
   - unicode/bidi
   - unicode/norm
 - name: google.golang.org/genproto
-  version: f8c8703595236ae70fdf8789ecb656ea0bcdcf46
+  version: a8101f21cf983e773d0c1133ebc5424792003214
   repo: https://github.com/google/go-genproto
   vcs: git
   subpackages:
   - googleapis/rpc/status
 - name: google.golang.org/grpc
-  version: fa28bef9392c6c3e28e75389d8be8a6797561f57
+  version: 401e0e00e4bb830a10496d64cd95e068c5bf50de
   repo: https://github.com/grpc/grpc-go
   vcs: git
   subpackages:
   - balancer
-  - balancer/base
-  - balancer/roundrobin
   - codes
   - connectivity
   - credentials
-  - encoding
-  - encoding/proto
   - grpclb/grpc_lb_v1/messages
   - grpclog
   - internal
@@ -251,8 +289,6 @@ imports:
   - naming
   - peer
   - resolver
-  - resolver/dns
-  - resolver/passthrough
   - stats
   - status
   - tap
@@ -260,12 +296,12 @@ imports:
 - name: gopkg.in/go-playground/validator.v9
   version: 1b8c8e19cd250435025214492d9a08411d760fdd
 - name: gopkg.in/yaml.v2
-  version: 7f97868eec74b32b0982dd158a51a446d1da7eb5
+  version: 287cf08546ab5e7e37d55a84f7ed3fd1db036de5
 - name: gopkg.in/mgo.v2
   version: master
 testImports:
 - name: github.com/stretchr/testify
-  version: 380174f817a09abe5982a82f94ad50938a8df65d
+  version: 2aa2c176b9dab406a6970f6a55f513e8a8c8b18f
   subpackages:
   - assert
   - require

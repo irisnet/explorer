@@ -11,12 +11,14 @@ import (
 	"os"
 	"github.com/irisnet/iris-explorer/modules/rpc"
 	"github.com/irisnet/iris-explorer/modules/tools"
+	"github.com/irisnet/iris-explorer/modules/sync"
 )
 
 const (
 	FlagPort = "port"
 	MgoUrl   = "mgo-url"
 	ClientMaxCon   = "client-max-conn"
+	WithSyncServer   = "with-sync-server"
 )
 
 var (
@@ -33,10 +35,7 @@ func prepareRestServerCommands() {
 	restServerCmd.PersistentFlags().Int(ClientMaxCon, 10, "amount of rpc client")
 	restServerCmd.PersistentFlags().String(MgoUrl, "localhost:27017", "url of MongoDB")
 	restServerCmd.PersistentFlags().IntP(FlagPort, "p", 8998, "port to run the server on")
-}
-
-func AddV1Routes(r *mux.Router) {
-	AddRoutes(r)
+	restServerCmd.PersistentFlags().Bool(WithSyncServer,true,"start sync server")
 }
 
 func AddRoutes(r *mux.Router) {
@@ -51,16 +50,22 @@ func AddRoutes(r *mux.Router) {
 	}
 }
 
+func prepareSyncServer(){
+	if viper.GetBool(WithSyncServer) {
+		sync.StartWatch()
+	}
+}
+
 func cmdRestServer(cmd *cobra.Command, args []string) error {
 	//初始化连接池
-	tools.Pool.Init()
-	//startWatch()
+	tools.Init()
+
+	prepareSyncServer()
+
 	router := mux.NewRouter()
 	// latest
 	AddRoutes(router)
 
-	// v1
-	AddV1Routes(router.PathPrefix("/v1").Subrouter())
 
 	addr := fmt.Sprintf(":%d", viper.GetInt(FlagPort))
 
@@ -68,6 +73,7 @@ func cmdRestServer(cmd *cobra.Command, args []string) error {
 
 	// loggedRouter := handlers.LoggingHandler(os.Stdout, router)
 	//return http.ListenAndServe(addr, router)
+	//TODO 生产环境需要借助nginx配置
 	return http.ListenAndServe(addr,
 		handlers.LoggingHandler(os.Stdout, handlers.CORS(
 			handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),

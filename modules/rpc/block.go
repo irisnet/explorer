@@ -6,22 +6,53 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/spf13/cast"
 	sdk "github.com/cosmos/cosmos-sdk"
-	"github.com/cosmos/cosmos-sdk/client/commands"
 	"github.com/irisnet/iris-explorer/modules/tools"
 )
 
 func queryBlock(w http.ResponseWriter, r *http.Request) {
 	args := mux.Vars(r)
 	height := args["height"]
-
-	node := commands.GetNode()
+	node := tools.GetNode()
+	defer node.Release()
 	h := cast.ToInt64(height)
-	block, err := node.Block(&h)
+	block, err := node.Client.Block(&h)
 	if err != nil {
 		sdk.WriteError(w, err)
 		return
 	}
 	if err := tools.FmtOutPutResult(w, block); err != nil {
+		sdk.WriteError(w, err)
+	}
+}
+
+func queryValidators(w http.ResponseWriter, r *http.Request) {
+	args := mux.Vars(r)
+	height := args["height"]
+
+	node := tools.GetNode()
+	defer node.Release()
+
+	h := cast.ToInt64(height)
+	block, err := node.Client.Validators(&h)
+	if err != nil {
+		sdk.WriteError(w, err)
+		return
+	}
+	if err := tools.FmtOutPutResult(w, block); err != nil {
+		sdk.WriteError(w, err)
+	}
+}
+
+func queryRecentBlocks(w http.ResponseWriter, r *http.Request) {
+	node := tools.GetNode()
+	defer node.Release()
+
+	blocks, err := node.Client.BlockchainInfo(0,0)
+	if err != nil {
+		sdk.WriteError(w, err)
+		return
+	}
+	if err := tools.FmtOutPutResult(w, blocks); err != nil {
 		sdk.WriteError(w, err)
 	}
 }
@@ -33,12 +64,24 @@ func registerQueryBlock(r *mux.Router) error {
 	return nil
 }
 
+func RegisterQueryValidators(r *mux.Router) error {
+	r.HandleFunc("/validators/{height}", queryValidators).Methods("GET")
+	return nil
+}
+
+func RegisterQueryRecentBlocks(r *mux.Router) error {
+	r.HandleFunc("/blocks/recent", queryRecentBlocks).Methods("GET")
+	return nil
+}
+
 func RegisterBlock(r *mux.Router) error {
-	funcs := []func(*mux.Router) error{
+	funs := []func(*mux.Router) error{
 		registerQueryBlock,
+		RegisterQueryValidators,
+		RegisterQueryRecentBlocks,
 	}
 
-	for _, fn := range funcs {
+	for _, fn := range funs {
 		if err := fn(r); err != nil {
 			return err
 		}
