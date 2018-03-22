@@ -6,7 +6,6 @@ import (
 	"github.com/tendermint/tmlibs/cli"
 	"github.com/cosmos/cosmos-sdk/client/commands"
 	"github.com/irisnet/iris-explorer/version"
-	sync "github.com/irisnet/iris-explorer/modules/sync"
 )
 
 // entry point for this binary
@@ -33,8 +32,6 @@ func main() {
 	ExplorerCmd.AddCommand(
 		commands.InitCmd,
 		restServerCmd,
-		//syncCmd,
-		sync.SyncCmd,
 		version.VersionCmd,
 	)
 

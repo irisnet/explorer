@@ -18,7 +18,8 @@ const (
 	FlagPort = "port"
 	MgoUrl   = "mgo-url"
 	ClientMaxCon   = "client-max-conn"
-	WithSyncServer   = "with-sync-server"
+	WithSync   = "with-sync"
+	WithOnlyRestServer   = "with-only_rest_Server"
 )
 
 var (
@@ -35,12 +36,14 @@ func prepareRestServerCommands() {
 	restServerCmd.PersistentFlags().Int(ClientMaxCon, 10, "amount of rpc client")
 	restServerCmd.PersistentFlags().String(MgoUrl, "localhost:27017", "url of MongoDB")
 	restServerCmd.PersistentFlags().IntP(FlagPort, "p", 8998, "port to run the server on")
-	restServerCmd.PersistentFlags().Bool(WithSyncServer,true,"start sync server")
+	restServerCmd.PersistentFlags().Bool(WithSync,true,"sync server")
+	restServerCmd.PersistentFlags().Bool(WithOnlyRestServer,false,"sync server")
 }
 
 func AddRoutes(r *mux.Router) {
 	routeRegistrars := []func(*mux.Router) error{
 		rpc.RegisterBlock,
+		rpc.RegisterTx,
 	}
 
 	for _, routeRegistrar := range routeRegistrars {
@@ -51,7 +54,7 @@ func AddRoutes(r *mux.Router) {
 }
 
 func prepareSyncServer(){
-	if viper.GetBool(WithSyncServer) {
+	if !viper.GetBool(WithOnlyRestServer) {
 		sync.StartWatch()
 	}
 }

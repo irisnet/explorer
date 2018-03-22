@@ -32,14 +32,15 @@ type StakeTx struct {
 	Time time.Time `json:"time"`
 	Height int64 `json:"height"`
 	From string `json:"from"`
+	PubKey string `json:"pub_key"`
 	Type string `json:"type"`
 	Amount coin.Coin `json:"amount"`
 }
 
 type SyncBlock struct {
-	CurrentPos int64 `json:"current_pos"`
-	TotalCoinTxs int64 `json:"total_coin_txs"`
-	TotalStakeTxs int64 `json:"total_stake_txs"`
+	ChainID string    `json:"chain_id"`
+	Height  int64     `json:"height"`
+	Time    time.Time `json:"time"`
 }
 
 func(c CoinTx) TbNm() string{
@@ -63,5 +64,5 @@ func(c SyncBlock) TbNm() string{
 }
 
 func(c SyncBlock) KvPair() (string,string){
-	return "current_pos",string(c.CurrentPos)
+	return "height",string(c.Height)
 }

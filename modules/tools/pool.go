@@ -12,10 +12,23 @@ const (
 	ClientMaxCon = "client-max-conn"
 )
 
+
+type NodePool struct {
+	nodes []Node
+	available int8
+	maxConnection int8
+}
+
+type Node struct {
+	Client client.Client
+	used   bool
+	id     int
+}
+
 var pool = NodePool{}
 
 func GetNode() Node{
-	c,err := pool.getNode()
+	c,err := getNode()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -37,14 +50,8 @@ func Init() {
 	}
 }
 
-type NodePool struct {
-	nodes []Node
-	available int8
-	maxConnection int8
-}
+func getNode() (Node, error) {
 
-func (pool NodePool) getNode() (Node, error) {
-	log.Printf("current available coonection ：%d",pool.available)
 
 	if pool.available == 0 {
 		log.Fatal("client pool has no available connection")
@@ -54,23 +61,19 @@ func (pool NodePool) getNode() (Node, error) {
 		if !node.used {
 			node.used = true
 			pool.nodes[node.id] = node
-			pool.available --
+			pool.available--
+
+			log.Printf("current available coonection ：%d",pool.available)
 			return node, nil
 		}
 	}
 	return Node{}, errors.New("pool is empty")
 }
 
-type Node struct {
-	Client client.Client
-	used   bool
-	id     int
-}
-
 func (n Node) Release() {
 	n.used = false
 	pool.nodes[n.id] = n
-	pool.available ++
+	pool.available++
 }
 
 

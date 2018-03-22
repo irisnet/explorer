@@ -1,16 +1,51 @@
 package: github.com/irisnet/iris-explorer
 import:
+- package: github.com/gorilla/websocket
+- package: github.com/pkg/errors
+  version: ^0.8.0
+- package: github.com/spf13/cobra
+- package: github.com/spf13/pflag
+- package: github.com/spf13/viper
+- package: github.com/tendermint/abci
+  version: develop
+  subpackages:
+  - server
+  - types
 - package: github.com/cosmos/cosmos-sdk
-  version: bucky/reference-tm-develop
-- package: google.golang.org/grpc
-  repo: https://github.com/grpc/grpc-go
-  vcs: git
-- package: google.golang.org/genproto
-  repo: https://github.com/google/go-genproto
-  vcs: git
-- package: gopkg.in/mgo.v2
-  version: master
-
+  version: develop
+- package: github.com/tendermint/iavl
+  version: develop
+- package: github.com/tendermint/go-crypto
+  version: remove_ledger
+  subpackages:
+  - cmd
+  - keys
+- package: github.com/tendermint/go-wire
+  version: develop
+  subpackages:
+  - data
+- package: github.com/tendermint/tendermint
+  version: v0.15.0
+  subpackages:
+  - config
+  - node
+  - proxy
+  - rpc/client
+  - rpc/core/types
+  - rpc/lib/client
+  - rpc/lib/types
+  - types
+- package: github.com/tendermint/tmlibs
+  version: develop
+  subpackages:
+  - cli
+  - cli/flags
+  - common
+  - events
+  - log
+  - logger
+- package: github.com/gorilla/mux
+  version: ^1.5.0
 testImport:
 - package: github.com/stretchr/testify
   subpackages:
