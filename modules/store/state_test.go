@@ -23,12 +23,12 @@ func TestSaveCoinTxs(t *testing.T) {
 	//		},
 	//	},
 	//}
-	tx := SyncBlock{
-		CurrentPos:1,
-		TotalCoinTxs:0,
-		TotalStakeTxs:0,
-	}
-	Mgo.Save(tx)
+	//tx := SyncBlock{
+	//	CurrentPos:1,
+	//	TotalCoinTxs:0,
+	//	TotalStakeTxs:0,
+	//}
+	//Mgo.Save(tx)
 
 }
 

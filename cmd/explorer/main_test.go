@@ -11,7 +11,6 @@ import (
 func TestMain2(t *testing.T){
 	viper.Set("client-max-conn",5)
 	viper.Set("node","tcp://47.104.155.125:46757")
-	viper.Set("with-sync",false)
 	tools.Init()
 	sync.StartWatch()
 

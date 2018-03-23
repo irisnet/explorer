@@ -8,6 +8,8 @@ import (
   crypto "github.com/tendermint/go-crypto"
 )
 
+//TODO 当cosmos-sdk加入stake模块时需要删除该文件，防止在启动时，重复加载ByteTxDeclareCandidacy，ByteTxEditCandidacy等类型，导致启动失败
+
 const stakingModuleName = "stake"
 // Description - description fields for a candidate
 type Description struct {

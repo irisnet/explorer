@@ -26,16 +26,10 @@ import (
 	"github.com/irisnet/iris-explorer/modules/tools"
 )
 
-const (
-	MgoUrl     = "mgo-url"
-	Subscriber = "iris-explorer"
-	WithSync   = "with-sync"
-)
-
 var syncOver = false
 
 func initServer(){
-	url := viper.GetString(MgoUrl)
+	url := viper.GetString(tools.MgoUrl)
 	store.Mgo.Init(url)
 	block, err := store.Mgo.QueryLastedBlock()
 
@@ -56,9 +50,7 @@ func processSync(c rpcclient.Client) {
 func StartWatch() error {
 	initServer()
 	c := tools.GetNode().Client
-	if viper.GetBool(WithSync) {
-		processSync(c)
-	}
+	processSync(c)
 	processWatch(c)
 	return nil
 }
@@ -70,7 +62,7 @@ func processWatch(c rpcclient.Client) {
 	txs := make(chan interface{})
 
 	c.Start()
-	err := c.Subscribe(ctx, Subscriber, types.EventQueryTx, txs)
+	err := c.Subscribe(ctx, tools.Subscriber, types.EventQueryTx, txs)
 
 	if err != nil {
 		log.Println("got ", err)

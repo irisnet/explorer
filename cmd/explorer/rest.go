@@ -19,14 +19,6 @@ import (
 	_ "github.com/cosmos/cosmos-sdk/modules/nonce"
 )
 
-const (
-	FlagPort = "port"
-	MgoUrl   = "mgo-url"
-	ClientMaxCon   = "client-max-conn"
-	WithSync   = "with-sync"
-	WithOnlyRestServer   = "with-only_rest_Server"
-)
-
 var (
 	restServerCmd = &cobra.Command{
 		Use:  "rest-server",
@@ -38,11 +30,11 @@ var (
 )
 
 func prepareRestServerCommands() {
-	restServerCmd.PersistentFlags().Int(ClientMaxCon, 10, "amount of rpc client")
-	restServerCmd.PersistentFlags().String(MgoUrl, "localhost:27017", "url of MongoDB")
-	restServerCmd.PersistentFlags().IntP(FlagPort, "p", 8998, "port to run the server on")
-	restServerCmd.PersistentFlags().Bool(WithSync,true,"sync server")
-	restServerCmd.PersistentFlags().Bool(WithOnlyRestServer,false,"sync server")
+	restServerCmd.PersistentFlags().Int64(tools.MaxConnectionNum, 100, "max amount of rpc client")
+	restServerCmd.PersistentFlags().Int64(tools.InitConnectionNum, 50, "init amount of rpc client")
+	restServerCmd.PersistentFlags().String(tools.MgoUrl, "localhost:27017", "url of MongoDB")
+	restServerCmd.PersistentFlags().IntP(tools.FlagPort, "p", 8998, "port to run the server on")
+	restServerCmd.PersistentFlags().Bool(tools.WithOnlyRestServer,false,"sync server")
 }
 
 func AddRoutes(r *mux.Router) {
@@ -59,14 +51,15 @@ func AddRoutes(r *mux.Router) {
 }
 
 func prepareSyncServer(){
-	if !viper.GetBool(WithOnlyRestServer) {
+	//初始化连接池
+	tools.Init()
+
+	if !viper.GetBool(tools.WithOnlyRestServer) {
 		sync.StartWatch()
 	}
 }
 
 func cmdRestServer(cmd *cobra.Command, args []string) error {
-	//初始化连接池
-	tools.Init()
 
 	prepareSyncServer()
 
@@ -75,7 +68,7 @@ func cmdRestServer(cmd *cobra.Command, args []string) error {
 	AddRoutes(router)
 
 
-	addr := fmt.Sprintf(":%d", viper.GetInt(FlagPort))
+	addr := fmt.Sprintf(":%d", viper.GetInt(tools.FlagPort))
 
 	log.Printf("Serving on %q", addr)
 

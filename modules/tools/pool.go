@@ -8,27 +8,23 @@ import (
 	"log"
 )
 
-const (
-	ClientMaxCon = "client-max-conn"
-)
-
-
 type NodePool struct {
-	nodes []Node
-	available int8
-	maxConnection int8
+	nodes         []Node
+	available     int64
+	used          int64
+	maxConnection int64
 }
 
 type Node struct {
 	Client client.Client
 	used   bool
-	id     int
+	id     int64
 }
 
 var pool = NodePool{}
 
-func GetNode() Node{
-	c,err := getNode()
+func GetNode() Node {
+	c, err := getNode()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -36,25 +32,37 @@ func GetNode() Node{
 }
 
 func Init() {
-	len := viper.GetInt(ClientMaxCon)
+	len := viper.GetInt64(InitConnectionNum)
 	pool.nodes = make([]Node, len)
-	for i := 0; i < len; i++ {
-		node := Node{
-			Client: commands.GetNode(),
-			used:   false,
-			id:     i,
-		}
-		pool.nodes[i] = node
-		pool.available = int8(len)
-		pool.maxConnection = int8(len)
+	for i := int64(0); i < len; i++ {
+		createConnection(i)
 	}
 }
 
+func createConnection(id int64) Node {
+	node := Node{
+		Client: commands.GetNode(),
+		used:   false,
+		id:     id,
+	}
+	pool.nodes[id] = node
+	pool.available ++
+	pool.maxConnection = viper.GetInt64(MaxConnectionNum)
+	return node
+}
+
 func getNode() (Node, error) {
-
-
 	if pool.available == 0 {
-		log.Fatal("client pool has no available connection")
+		maxConnNum := viper.GetInt64(MaxConnectionNum)
+		if pool.used < maxConnNum {
+			var node = Node{}
+			for i := int64(len(pool.nodes)); i < maxConnNum; i++ {
+				node = createConnection(i)
+			}
+			return node, nil
+		} else {
+			log.Fatal("client pool has no available connection")
+		}
 	}
 
 	for _, node := range pool.nodes {
@@ -62,8 +70,8 @@ func getNode() (Node, error) {
 			node.used = true
 			pool.nodes[node.id] = node
 			pool.available--
-
-			log.Printf("current available coonection ：%d",pool.available)
+			pool.used++
+			log.Printf("current available coonection ：%d", pool.available)
 			return node, nil
 		}
 	}
@@ -74,10 +82,5 @@ func (n Node) Release() {
 	n.used = false
 	pool.nodes[n.id] = n
 	pool.available++
+	pool.used--
 }
-
-
-
-
-
-
