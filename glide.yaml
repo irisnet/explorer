@@ -1,4 +1,4 @@
-package: github.com/irisnet/iris-explorer
+package: github.com/cosmos/gaia
 import:
 - package: github.com/gorilla/websocket
 - package: github.com/pkg/errors

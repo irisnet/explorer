@@ -32,16 +32,6 @@ const (
 	WithSync   = "with-sync"
 )
 
-//var (
-//	SyncCmd = &cobra.Command{
-//		Use:  "sync",
-//		Long: `sync iris-hub tx data to mongodb`,
-//		RunE: func(cmd *cobra.Command, args []string) error {
-//			return StartWatch()
-//		},
-//	}
-//)
-
 var syncOver = false
 
 func initServer(){
@@ -118,14 +108,14 @@ func processWatch(c rpcclient.Client) {
 			}
 
 			// if sync process is over , update the block by watch process
-			//if syncOver {
-			//	b := store.SyncBlock{
-			//		Height:block.Block.Height,
-			//		Time : block.Block.Time,
-			//		ChainID : block.Block.ChainID,
-			//	}
-			//	store.Mgo.UpdateBlock(b)
-			//}
+			if syncOver {
+				b := store.SyncBlock{
+					Height:block.Block.Height,
+					Time : block.Block.Time,
+					ChainID : block.Block.ChainID,
+				}
+				store.Mgo.UpdateBlock(b)
+			}
 		}
 	}()
 }

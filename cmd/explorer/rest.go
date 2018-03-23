@@ -12,6 +12,11 @@ import (
 	"github.com/irisnet/iris-explorer/modules/rpc"
 	"github.com/irisnet/iris-explorer/modules/tools"
 	"github.com/irisnet/iris-explorer/modules/sync"
+
+	_ "github.com/cosmos/cosmos-sdk/modules/auth"
+	_ "github.com/cosmos/cosmos-sdk/modules/base"
+	_ "github.com/cosmos/cosmos-sdk/modules/coin"
+	_ "github.com/cosmos/cosmos-sdk/modules/nonce"
 )
 
 const (
