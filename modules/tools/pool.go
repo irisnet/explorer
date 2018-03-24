@@ -55,7 +55,7 @@ func getNode() (Node, error) {
 	if pool.available == 0 {
 		maxConnNum := viper.GetInt64(MaxConnectionNum)
 		if pool.used < maxConnNum {
-			var node = Node{}
+			var node Node
 			for i := int64(len(pool.nodes)); i < maxConnNum; i++ {
 				node = createConnection(i)
 			}

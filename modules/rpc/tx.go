@@ -83,7 +83,7 @@ func queryCoinTxByAccount(w http.ResponseWriter, r *http.Request) {
 func queryStakeTxByAccount(w http.ResponseWriter, r *http.Request) {
 	args := mux.Vars(r)
 	account := args["address"]
-	result := store.Mgo.QueryStakeTxsByAccount(account)
+	result := store.QueryStakeTxsByAccount(account)
 	tools.FmtOutPutResult(w, result)
 }
 

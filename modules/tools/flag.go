@@ -3,7 +3,7 @@ package tools
 const (
 
 	MgoUrl     = "mgo-url"
-	Subscriber = "iris-explorer"
+	SubscriberTx = "iris-explorer-tx"
 
 
 	FlagPort = "port"

@@ -5,126 +5,185 @@ import (
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"errors"
+	"time"
 )
-type MgoBackend struct {
-	Session *mgo.Session
-}
 
+var (
+	session *mgo.Session
+)
 
-var Mgo = MgoBackend{}
-
-func (m *MgoBackend) Init(url string){
+func Init(url string){
 	log.Printf("state :Mgo on %s",url)
-	var session, err = mgo.Dial(url)
+	var err error
+	session, err = mgo.Dial(url)
 	if err != nil {
 		panic(err)
 	}
 	session.SetMode(mgo.Monotonic, true)
-	m.Session = session
-	m.index()
+	cNames := []DocsHander{
+		new(CoinTx),new(StakeTx),new(SyncBlock),
+	}
+	index(cNames)
 }
 
-func (m *MgoBackend) index(){
-	c := m.Session.DB(DbCosmosTxn).C(TbNmCoinTx)
-
-	index := mgo.Index{
-		Key:        []string{"from"}, // 索引字段， 默认升序,若需降序在字段前加-
-		Unique:     false,             // 唯一索引 同mysql唯一索引
-		DropDups:   false,             // 索引重复替换旧文档,Unique为true时失效
-		Background: true,             // 后台创建索引
+func InitWithAuth(addrs []string,username,password string){
+	dialInfo := &mgo.DialInfo{
+		Addrs:     addrs,//[]string{"192.168.6.122"}
+		Direct:    false,
+		Timeout:   time.Second * 1,
+		Database:  DbCosmosTxn,
+		Username:  username,
+		Password:  password,
+		PoolLimit: 4096, // Session.SetPoolLimit
 	}
 
-	c.EnsureIndex(index)
-
-	c = m.Session.DB(DbCosmosTxn).C(TbNmStakeTx)
-	c.EnsureIndex(index)
+	session, err := mgo.DialWithInfo(dialInfo)
+	session.SetMode(mgo.Monotonic, true)
+	if nil != err {
+		panic(err)
+	}
+	cNames := []DocsHander{
+		new(CoinTx),new(StakeTx),new(SyncBlock),
+	}
+	index(cNames)
 }
 
-func (m *MgoBackend) Save(tx TxHander) error{
-	c := m.Session.DB(DbCosmosTxn).C(tx.TbNm())
-	//先按照关键字查询，如果存在，直接返回
-	k,v := tx.KvPair()
-	n,err := c.Find(bson.M{k: v}).Count()
-	if(n >= 1){
-		return errors.New("record existed")
-	}
-
-	err = c.Insert(tx)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return err
+func getSession() *mgo.Session {
+	//最大连接池默认为4096
+	return session.Clone()
 }
 
-func (m *MgoBackend) QueryCoinTxs() ([]CoinTx)  {
+//公共方法，获取collection对象
+func execCollection(collection string, s func(*mgo.Collection) error) error {
+	session := getSession()
+	defer session.Close()
+	c := session.DB(DbCosmosTxn).C(collection)
+	return s(c)
+}
+
+func index(docsHander []DocsHander){
+	if len(docsHander) == 0 {
+		return
+	}
+	for _,h := range docsHander {
+		indexKey := func(c *mgo.Collection) error{
+			return c.EnsureIndex(h.Index())
+		}
+		execCollection(h.Name(),indexKey)
+	}
+}
+
+func Save(h DocsHander) error{
+	save := func(c *mgo.Collection) error{
+		//先按照关键字查询，如果存在，直接返回
+		k,v := h.KvPair()
+		n,_ := c.Find(bson.M{k: v}).Count()
+		if n >= 1 {
+			return errors.New("record existed")
+		}
+		return c.Insert(h)
+	}
+
+	return execCollection(h.Name(),save)
+}
+
+func QueryAllCoinTx() []CoinTx{
 	result := []CoinTx{}
-	c := m.Session.DB(DbCosmosTxn).C(TbNmCoinTx)
-	err := c.Find(nil).Sort("-time").All(&result)
-	if err != nil {
-		log.Fatal(err)
+	query := func(c *mgo.Collection) error{
+		err := c.Find(nil).Sort("-time").All(&result)
+		return err
+	}
+
+	if execCollection(DocsNmCoinTx,query) != nil {
+		log.Printf("CoinTx is Empry")
 	}
 	return result
+
 }
 
-func (m *MgoBackend) QueryStakeTxs() ([]StakeTx)  {
+func QueryAllStakeTx() ([]StakeTx)  {
 	result := []StakeTx{}
-	c := m.Session.DB(DbCosmosTxn).C(TbNmStakeTx)
-	err := c.Find(nil).Sort("-time").All(&result)
-	if err != nil {
-		log.Fatal(err)
+	query := func(c *mgo.Collection) error{
+		err := c.Find(nil).Sort("-time").All(&result)
+		return err
+	}
+
+	if execCollection(DocsNmStakeTx,query) != nil {
+		log.Printf("CoinTx is Empry")
 	}
 	return result
 }
-
-func (m *MgoBackend) QueryCoinTxsByFrom(from string) ([]CoinTx)  {
+//
+func QueryCoinTxsByFrom(from string) ([]CoinTx)  {
 	result := []CoinTx{}
-	c := m.Session.DB(DbCosmosTxn).C(TbNmCoinTx)
-	err := c.Find(bson.M{"from": from}).Sort("-time").All(&result)
-	if err != nil {
-		log.Fatal(err)
+	query := func(c *mgo.Collection) error{
+		err := c.Find(bson.M{"from": from}).Sort("-time").All(&result)
+		return err
+	}
+
+	if execCollection(DocsNmCoinTx,query) != nil {
+		log.Printf("CoinTx is Empry")
 	}
 	return result
 }
-
-func (m *MgoBackend) QueryCoinTxsByAccount(account string) ([]CoinTx)  {
+//
+func QueryCoinTxsByAccount(account string) ([]CoinTx)  {
 	result := []CoinTx{}
-	c := m.Session.DB(DbCosmosTxn).C(TbNmCoinTx)
-	err := c.Find(bson.M{"$or": []bson.M{bson.M{"from": account}, bson.M{"to": account}}}).Sort("-time").All(&result)
-	if err != nil {
-		log.Fatal(err)
+	query := func(c *mgo.Collection) error{
+		err := c.Find(bson.M{"$or": []bson.M{bson.M{"from": account}, bson.M{"to": account}}}).Sort("-time").All(&result)
+		return err
+	}
+
+	if execCollection(DocsNmCoinTx,query) != nil {
+		log.Printf("CoinTx is Empry")
 	}
 	return result
 }
-
-func (m *MgoBackend) QueryStakeTxsByAccount(account string) ([]StakeTx)  {
+//
+func QueryStakeTxsByAccount(account string) ([]StakeTx)  {
 	result := []StakeTx{}
-	c := m.Session.DB(DbCosmosTxn).C(TbNmStakeTx)
-	err := c.Find(bson.M{"from": account}).Sort("-time").All(&result)
-	if err != nil {
-		log.Fatal(err)
+	query := func(c *mgo.Collection) error{
+		err := c.Find(bson.M{"from": account}).Sort("-time").All(&result)
+		return err
 	}
+
+	if execCollection(DocsNmStakeTx,query) != nil {
+		log.Printf("StakeTx is Empry")
+	}
+
 	return result
 }
-
-func (m *MgoBackend) QueryPageCoinTxsByFrom(from string,page int)([]CoinTx)  {
+//
+func QueryPageCoinTxsByFrom(from string,page int)([]CoinTx)  {
 	result := []CoinTx{}
-	c := m.Session.DB(DbCosmosTxn).C(TbNmCoinTx)
-	skip := (page-1) * PageSize
-	err := c.Find(bson.M{"from": from}).Sort("-time").Skip(skip).Limit(PageSize).All(&result)
-	if err != nil {
-		log.Fatal(err)
+	query := func(c *mgo.Collection) error{
+		skip := (page-1) * PageSize
+		err := c.Find(bson.M{"from": from}).Sort("-time").Skip(skip).Limit(PageSize).All(&result)
+		return err
 	}
+
+	if execCollection(DocsNmCoinTx,query) != nil {
+		log.Printf("StakeTx is Empry")
+	}
+
 	return result
 }
-
-func (m *MgoBackend) QueryLastedBlock()(SyncBlock,error){
+//
+func QueryLastedBlock()(SyncBlock,error){
 	result := SyncBlock{}
-	c := m.Session.DB(DbCosmosTxn).C(TbNmSyncBlock)
-	err := c.Find(bson.M{}).One(&result)
+
+	query := func(c *mgo.Collection) error{
+		err := c.Find(bson.M{}).One(&result)
+		return err
+	}
+
+	err := execCollection(DocsNmSyncBlock,query)
 	return result,err
 }
-
-func (m *MgoBackend) UpdateBlock(b SyncBlock) error{
-	c := m.Session.DB(DbCosmosTxn).C(TbNmSyncBlock)
-	return c.Update(nil,b)
+//
+func UpdateBlock(b SyncBlock) error{
+	update := func(c *mgo.Collection) error{
+		return c.Update(nil,b)
+	}
+	return execCollection(DocsNmSyncBlock,update)
 }

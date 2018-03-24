@@ -30,15 +30,15 @@ var syncOver = false
 
 func initServer(){
 	url := viper.GetString(tools.MgoUrl)
-	store.Mgo.Init(url)
-	block, err := store.Mgo.QueryLastedBlock()
+	store.Init(url)
+	block, err := store.QueryLastedBlock()
 
 	if err != nil {
 		//初始化配置表
 		block = store.SyncBlock{
 			Height: 1,
 		}
-		store.Mgo.Save(block)
+		store.Save(block)
 	}
 }
 
@@ -62,7 +62,7 @@ func processWatch(c rpcclient.Client) {
 	txs := make(chan interface{})
 
 	c.Start()
-	err := c.Subscribe(ctx, tools.Subscriber, types.EventQueryTx, txs)
+	err := c.Subscribe(ctx, tools.SubscriberTx, types.EventQueryTx, txs)
 
 	if err != nil {
 		log.Println("got ", err)
@@ -84,7 +84,7 @@ func processWatch(c rpcclient.Client) {
 				coinTx.TxHash = strings.ToUpper(hex.EncodeToString(deliverTxRes.Tx.Hash()))
 				coinTx.Time = block.BlockMeta.Header.Time
 				coinTx.Height = height
-				if store.Mgo.Save(coinTx) != nil {
+				if store.Save(coinTx) != nil {
 					break
 				}
 				log.Printf("watched coinTx,tx_hash=%s", coinTx.TxHash)
@@ -93,7 +93,7 @@ func processWatch(c rpcclient.Client) {
 				stakeTx.TxHash = strings.ToUpper(hex.EncodeToString(deliverTxRes.Tx.Hash()))
 				stakeTx.Time = block.BlockMeta.Header.Time
 				stakeTx.Height = height
-				if store.Mgo.Save(stakeTx) != nil {
+				if store.Save(stakeTx) != nil {
 					break
 				}
 				log.Printf("watched stakeTx,tx_hash=%s", stakeTx.TxHash)
@@ -106,7 +106,7 @@ func processWatch(c rpcclient.Client) {
 					Time : block.Block.Time,
 					ChainID : block.Block.ChainID,
 				}
-				store.Mgo.UpdateBlock(b)
+				store.UpdateBlock(b)
 			}
 		}
 	}()
@@ -136,19 +136,19 @@ func parseTx(tx sdk.Tx) (string, interface{}) {
 			stakeTx.From = fmt.Sprintf("%s", nonceAddr)
 			stakeTx.Type = strings.Replace(kind, "stake/", "", -1)
 			switch kind {
-			case "stake/unbond":
+			case stake.TypeTxUnbond:
 				ctx, _ := txi.Unwrap().(stake.TxUnbond)
 				stakeTx.Amount.Denom = "fermion"
 				stakeTx.Amount.Amount = int64(ctx.Shares)
 				stakeTx.PubKey = fmt.Sprintf("%s", ctx.PubKey.Address())
 				break
-			case "stake/delegate":
+			case stake.TypeTxDelegate:
 				ctx, _ := txi.Unwrap().(stake.TxDelegate)
 				stakeTx.Amount.Denom = ctx.Bond.Denom
 				stakeTx.Amount.Amount = ctx.Bond.Amount
 				stakeTx.PubKey = fmt.Sprintf("%s", ctx.PubKey.Address())
 				break
-			case "stake/declareCandidacy":
+			case stake.TypeTxDeclareCandidacy:
 				ctx, _ := txi.Unwrap().(stake.TxDeclareCandidacy)
 				stakeTx.Amount.Denom = ctx.BondUpdate.Bond.Denom
 				stakeTx.Amount.Amount = ctx.BondUpdate.Bond.Amount
@@ -156,6 +156,8 @@ func parseTx(tx sdk.Tx) (string, interface{}) {
 				break
 			}
 			return "stake", stakeTx
+		default:
+			log.Printf("upsupproted tx type")
 		}
 		txl, ok = txi.Unwrap().(sdk.TxLayer)
 	}
@@ -174,7 +176,7 @@ func queryBlock(c rpcclient.Client, height int64) *ctypes.ResultBlock {
 func sync(c rpcclient.Client) {
 	log.Printf("sync Transactions start")
 
-	b, _ := store.Mgo.QueryLastedBlock()
+	b, _ := store.QueryLastedBlock()
 	current := b.Height
 	latest := int64(0)
 
@@ -192,23 +194,27 @@ func sync(c rpcclient.Client) {
 				res, _ := c.Tx(txhash, prove)
 				txs, _ := sdk.LoadTx(res.Proof.Data)
 				txType, tx := parseTx(txs)
-				if txType == "coin" {
+
+				switch txType {
+				case "coin":
 					coinTx, _ := tx.(store.CoinTx)
 					coinTx.TxHash = strings.ToUpper(fmt.Sprintf("%s", txhash))
 					coinTx.Time = block.Header.Time
 					coinTx.Height = block.Header.Height
-					if store.Mgo.Save(coinTx) == nil {
+					if store.Save(coinTx) == nil {
 						log.Printf("sync coinTx,tx_hash=%s", coinTx.TxHash)
 					}
-
-				} else if txType == "stake" {
+					break
+				case "stake":
 					stakeTx, _ := tx.(store.StakeTx)
 					stakeTx.TxHash = strings.ToUpper(fmt.Sprintf("%s", txhash))
 					stakeTx.Time = block.Header.Time
 					stakeTx.Height = block.Header.Height
-					if store.Mgo.Save(stakeTx) == nil {
+					if store.Save(stakeTx) == nil {
 						log.Printf("sync stakeTx,tx_hash=%s", stakeTx.TxHash)
 					}
+				default:
+					log.Printf("upsupproted tx type")
 				}
 			}
 
@@ -222,7 +228,7 @@ func sync(c rpcclient.Client) {
 		b.ChainID = blocks.BlockMetas[0].Header.ChainID
 	}
 
-	store.Mgo.UpdateBlock(b)
+	store.UpdateBlock(b)
 	syncOver = true
 	log.Printf("sync Transactions end,current block height:%d", current)
 }

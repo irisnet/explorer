@@ -3,19 +3,21 @@ package store
 import (
 	"time"
 	"github.com/cosmos/cosmos-sdk/modules/coin"
+	"gopkg.in/mgo.v2"
 )
 
 const (
-	DbCosmosTxn = "cosmos_txn"
-	TbNmCoinTx = "coin_tx"
-	TbNmStakeTx = "stake_tx"
-	TbNmSyncBlock = "sync_block"
-	PageSize = 10
+	DbCosmosTxn     = "cosmos_txn"
+	DocsNmCoinTx    = "coin_tx"
+	DocsNmStakeTx   = "stake_tx"
+	DocsNmSyncBlock = "sync_block"
+	PageSize        = 10
 )
 
-type TxHander interface {
-	TbNm() string
+type DocsHander interface {
+	Name() string
 	KvPair() (string,string)
+	Index() mgo.Index
 }
 
 type CoinTx struct {
@@ -43,26 +45,53 @@ type SyncBlock struct {
 	Time    time.Time `json:"time"`
 }
 
-func(c CoinTx) TbNm() string{
-	return TbNmCoinTx
+func(c CoinTx) Name() string{
+	return DocsNmCoinTx
 }
 
 func(c CoinTx) KvPair() (string,string){
 	return "tx_hash",c.TxHash
 }
 
-func(c StakeTx) TbNm() string{
-	return TbNmStakeTx
+func(c CoinTx) Index () mgo.Index{
+	return mgo.Index{
+		Key:        []string{"from"}, // 索引字段， 默认升序,若需降序在字段前加-
+		Unique:     false,             // 唯一索引 同mysql唯一索引
+		DropDups:   false,             // 索引重复替换旧文档,Unique为true时失效
+		Background: true,             // 后台创建索引
+	}
+}
+
+func(c StakeTx) Name() string{
+	return DocsNmStakeTx
 }
 
 func(c StakeTx) KvPair() (string,string){
 	return "tx_hash",c.TxHash
 }
 
-func(c SyncBlock) TbNm() string{
-	return TbNmSyncBlock
+func(c StakeTx) Index () mgo.Index{
+	return mgo.Index{
+		Key:        []string{"from"}, // 索引字段， 默认升序,若需降序在字段前加-
+		Unique:     false,             // 唯一索引 同mysql唯一索引
+		DropDups:   false,             // 索引重复替换旧文档,Unique为true时失效
+		Background: true,             // 后台创建索引
+	}
+}
+
+func(c SyncBlock) Name() string{
+	return DocsNmSyncBlock
 }
 
 func(c SyncBlock) KvPair() (string,string){
 	return "height",string(c.Height)
+}
+
+func(c SyncBlock) Index () mgo.Index{
+	return mgo.Index{
+		Key:        []string{"Height"}, // 索引字段， 默认升序,若需降序在字段前加-
+		Unique:     false,             // 唯一索引 同mysql唯一索引
+		DropDups:   false,             // 索引重复替换旧文档,Unique为true时失效
+		Background: true,             // 后台创建索引
+	}
 }
