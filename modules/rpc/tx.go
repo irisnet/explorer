@@ -11,7 +11,6 @@ import (
 	"github.com/tendermint/tmlibs/common"
 	"github.com/irisnet/iris-explorer/modules/tools"
 	"github.com/irisnet/iris-explorer/modules/store"
-	"fmt"
 )
 
 
@@ -63,21 +62,8 @@ func queryTx(w http.ResponseWriter, r *http.Request) {
 func queryCoinTxByAccount(w http.ResponseWriter, r *http.Request) {
 	args := mux.Vars(r)
 	account := args["address"]
-	actor, err := commands.ParseActor(account)
-	if err != nil {
-		sdk.WriteError(w, err)
-		return
-	}
-
-	findSender := fmt.Sprintf("coin.sender='%s'", actor)
-	findReceiver := fmt.Sprintf("coin.receiver='%s'", actor)
-
-	wrap, err := tools.SearchTx(w, findSender, findReceiver)
-	if err != nil {
-		sdk.WriteError(w, err)
-	}
-
-	tools.FmtOutPutResult(w, wrap)
+	result := store.QueryCoinTxsByAccount(account)
+	tools.FmtOutPutResult(w, result)
 }
 
 func queryStakeTxByAccount(w http.ResponseWriter, r *http.Request) {
