@@ -8,12 +8,16 @@ import (
 	"github.com/cosmos/cosmos-sdk/modules/fee"
 	"github.com/cosmos/cosmos-sdk/modules/coin"
 	"github.com/cosmos/cosmos-sdk/client/commands"
+	"github.com/cosmos/cosmos-sdk/client"
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 	"strings"
 	"github.com/irisnet/iris-explorer/modules/stake"
 	"github.com/spf13/viper"
 	"sort"
 	"encoding/hex"
+	wire "github.com/tendermint/go-wire"
+	rpcclient "github.com/tendermint/tendermint/rpc/client"
+	"github.com/tendermint/iavl"
 )
 
 type TxResponse struct {
@@ -85,4 +89,57 @@ func SearchTx(w http.ResponseWriter, queries ...string) ([]interface{}, error) {
 	}
 
 	return out,nil
+}
+
+// argument (so pass in a pointer to the appropriate struct)
+func GetParsed(key []byte, data interface{}, height int64, prove bool) (int64, error) {
+	bs, h, err := Get(key, height, prove)
+	if err != nil {
+		return 0, err
+	}
+	err = wire.ReadBinaryBytes(bs, data)
+	if err != nil {
+		return 0, err
+	}
+	return h, nil
+}
+
+// Get queries the given key and returns the value stored there and the
+// height we checked at.
+//
+// If prove is true (and why shouldn't it be?),
+// the data is fully verified before returning.  If prove is false,
+// we just repeat whatever any (potentially malicious) node gives us.
+// Only use that if you are running the full node yourself,
+// and it is localhost or you have a secure connection (not HTTP)
+func Get(key []byte, height int64, prove bool) (data.Bytes, int64, error) {
+	if height < 0 {
+		return nil, 0, fmt.Errorf("Height cannot be negative")
+	}
+
+	if !prove {
+		node := GetNode()
+		defer node.Release()
+		resp, err := node.Client.ABCIQueryWithOptions("/key", key,
+			rpcclient.ABCIQueryOptions{Trusted: true, Height: int64(height)})
+		if resp == nil {
+			return nil, height, err
+		}
+		return data.Bytes(resp.Response.Value), resp.Response.Height, err
+	}
+	val, h, _, err := GetWithProof(key, height)
+	return val, h, err
+}
+
+// GetWithProof returns the values stored under a given key at the named
+// height as in Get.  Additionally, it will return a validated merkle
+// proof for the key-value pair if it exists, and all checks pass.
+func GetWithProof(key []byte, height int64) (data.Bytes, int64, iavl.KeyProof, error) {
+	node := GetNode()
+	defer node.Release()
+	cert, err := commands.GetCertifier()
+	if err != nil {
+		return nil, 0, nil, err
+	}
+	return client.GetWithProof(key, height, node.Client, cert)
 }

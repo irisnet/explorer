@@ -2,8 +2,10 @@ package tools
 
 const (
 
+	FlagHeight = "height"
+
 	MgoUrl     = "mgo-url"
-	SubscriberTx = "iris-explorer-tx"
+	SubscriberTx = "iris-explorer-subscriberTx"
 
 
 	FlagPort = "port"

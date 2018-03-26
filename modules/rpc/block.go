@@ -64,12 +64,12 @@ func registerQueryBlock(r *mux.Router) error {
 	return nil
 }
 
-func RegisterQueryValidators(r *mux.Router) error {
+func registerQueryValidators(r *mux.Router) error {
 	r.HandleFunc("/validators/{height}", queryValidators).Methods("GET")
 	return nil
 }
 
-func RegisterQueryRecentBlocks(r *mux.Router) error {
+func registerQueryRecentBlocks(r *mux.Router) error {
 	r.HandleFunc("/blocks/recent", queryRecentBlocks).Methods("GET")
 	return nil
 }
@@ -77,8 +77,8 @@ func RegisterQueryRecentBlocks(r *mux.Router) error {
 func RegisterBlock(r *mux.Router) error {
 	funs := []func(*mux.Router) error{
 		registerQueryBlock,
-		RegisterQueryValidators,
-		RegisterQueryRecentBlocks,
+		registerQueryValidators,
+		registerQueryRecentBlocks,
 	}
 
 	for _, fn := range funs {

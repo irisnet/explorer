@@ -19,6 +19,12 @@ type Description struct {
   Details  string `json:"details"`
 }
 
+// Name is the name of the modules.
+func Name() string {
+  return stakingModuleName
+}
+
+
 // Tx
 //--------------------------------------------------------------------------------
 

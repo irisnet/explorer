@@ -1,26 +1,43 @@
 package main
 
 import (
+	"os"
 	"testing"
 	"github.com/irisnet/iris-explorer/modules/sync"
 	"github.com/irisnet/iris-explorer/modules/tools"
 	"time"
 	"github.com/spf13/viper"
+	"github.com/gorilla/mux"
+	"net/http"
+	"github.com/gorilla/handlers"
 )
 
 func TestMain2(t *testing.T){
-	viper.Set("client-max-conn",5)
 	viper.Set("node","tcp://47.104.155.125:46757")
+	viper.Set(tools.InitConnectionNum,5)
+	viper.Set(tools.MaxConnectionNum,10)
 	tools.Init()
 	sync.StartWatch()
 
 	time.Sleep(1 * time.Hour)
 }
 
-//func TestLoadTx(t *testing.T){
-//
-//	bin := []byte{22,3,1,5,112,97,110,103,117,0,0,0,0,0,0,0,0,105,0,0,0,31,1,1,0,1,4,115,105,103,115,1,20,246,7,46,65,200,94,227,39,181,172,33,215,214,241,93,28,78,86,242,64,32,1,1,0,1,4,115,105,103,115,1,20,246,7,46,65,200,94,227,39,181,172,33,215,214,241,93,28,78,86,242,64,1,1,1,4,105,114,105,115,0,0,0,0,0,0,0}
-//	txb, _ := sdk.LoadTx(bin)
-//	log.Printf(" finish %s",txb)
-//	//sdk.TxMapper.RegisterImplementation(base.ChainTx{}, base.TypeChainTx, base.ByteChainTx)
-//}
+func TestRunRestServer(t *testing.T){
+	viper.Set("node","tcp://47.104.155.125:46757")
+	viper.Set(tools.InitConnectionNum,5)
+	viper.Set(tools.MaxConnectionNum,10)
+	viper.Set(tools.WithOnlyRestServer,true)
+
+	tools.Init()
+
+	router := mux.NewRouter()
+	// latest
+	AddRoutes(router)
+	http.ListenAndServe(":8998",
+		handlers.LoggingHandler(os.Stdout, handlers.CORS(
+			handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
+			handlers.AllowedOrigins([]string{"*"}),
+			handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}))(router)))
+
+	time.Sleep(1 * time.Hour)
+}

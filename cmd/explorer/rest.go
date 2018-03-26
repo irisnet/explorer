@@ -41,6 +41,8 @@ func AddRoutes(r *mux.Router) {
 	routeRegistrars := []func(*mux.Router) error{
 		rpc.RegisterBlock,
 		rpc.RegisterTx,
+		rpc.RegisterAccount,
+		rpc.RegisterStake,
 	}
 
 	for _, routeRegistrar := range routeRegistrars {

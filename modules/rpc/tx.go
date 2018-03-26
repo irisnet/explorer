@@ -3,28 +3,26 @@ package rpc
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/spf13/viper"
 	"encoding/hex"
 	"github.com/cosmos/cosmos-sdk"
 	"net/http"
-	"github.com/cosmos/cosmos-sdk/client/commands"
 	"github.com/tendermint/tmlibs/common"
 	"github.com/irisnet/iris-explorer/modules/tools"
 	"github.com/irisnet/iris-explorer/modules/store"
 )
 
 
-func RegisterQueryTx(r *mux.Router) error {
+func registerQueryTx(r *mux.Router) error {
 	r.HandleFunc("/tx/{hash}", queryTx).Methods("GET")
 	return nil
 }
 
-func RegisterQueryCoinTxByAccount(r *mux.Router) error {
+func registerQueryCoinTxByAccount(r *mux.Router) error {
 	r.HandleFunc("/tx/coin/{address}", queryCoinTxByAccount).Methods("GET")
 	return nil
 }
 
-func RegisterQueryStakeTxByAccount(r *mux.Router) error {
+func registerQueryStakeTxByAccount(r *mux.Router) error {
 	r.HandleFunc("/tx/stake/{address}", queryStakeTxByAccount).Methods("GET")
 	return nil
 }
@@ -34,7 +32,6 @@ func queryTx(w http.ResponseWriter, r *http.Request) {
 	args := mux.Vars(r)
 	hash := args["hash"]
 
-	prove := !viper.GetBool(commands.FlagTrustNode)
 	key, err := hex.DecodeString(common.StripHex(hash))
 	if err != nil {
 		sdk.WriteError(w, err)
@@ -44,7 +41,7 @@ func queryTx(w http.ResponseWriter, r *http.Request) {
 	node := tools.GetNode()
 	defer node.Release()
 
-	res, err := node.Client.Tx(key, prove)
+	res, err := node.Client.Tx(key, false)
 	if err != nil {
 		sdk.WriteError(w, err)
 		return
@@ -75,9 +72,9 @@ func queryStakeTxByAccount(w http.ResponseWriter, r *http.Request) {
 
 func RegisterTx(r *mux.Router) error {
 	funs := []func(*mux.Router) error{
-		RegisterQueryTx,
-		RegisterQueryCoinTxByAccount,
-		RegisterQueryStakeTxByAccount,
+		registerQueryTx,
+		registerQueryCoinTxByAccount,
+		registerQueryStakeTxByAccount,
 	}
 
 	for _, fn := range funs {
