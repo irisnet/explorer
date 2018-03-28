@@ -4,14 +4,13 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/cosmos/cosmos-sdk"
 	"github.com/cosmos/cosmos-sdk/modules/coin"
-	"github.com/spf13/viper"
-	"fmt"
 	"net/http"
 	"github.com/cosmos/cosmos-sdk/client/commands"
 	"github.com/cosmos/cosmos-sdk/stack"
 	"github.com/cosmos/cosmos-sdk/client/commands/query"
-	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/irisnet/iris-explorer/modules/tools"
+	"log"
+	"time"
 )
 
 func RegisterAccount(r *mux.Router) error {
@@ -30,29 +29,29 @@ func RegisterAccount(r *mux.Router) error {
 func queryAccount(w http.ResponseWriter, r *http.Request) {
 	args := mux.Vars(r)
 	address := args["address"]
+	account := QueryBalance(address,false)
+	if err := query.FoutputProof(w, account, 0); err != nil {
+		sdk.WriteError(w, err)
+	}
+}
+
+func QueryBalance(address string,delay bool) *coin.Account{
+	account := new(coin.Account)
 	actor, err := commands.ParseActor(address)
 	if err != nil {
-		sdk.WriteError(w, err)
-		return
+		return account
 	}
 
 	actor = coin.ChainAddr(actor)
 	key := stack.PrefixedKey(coin.NameCoin, actor.Bytes())
-	account := new(coin.Account)
-	prove := !viper.GetBool(commands.FlagTrustNode)
-	height, err := tools.GetParsed(key, account, query.GetHeight(), prove)
-	if client.IsNoDataErr(err) {
-		err := fmt.Errorf("account bytes are empty for address: %q", address)
-		sdk.WriteError(w, err)
-		return
-	} else if err != nil {
-		sdk.WriteError(w, err)
-		return
+	if delay {
+		time.Sleep(1 * time.Second)
 	}
-
-	if err := query.FoutputProof(w, account, height); err != nil {
-		sdk.WriteError(w, err)
+	_, err2 := tools.GetParsed(key, account, query.GetHeight(), false)
+	if err2 != nil {
+		log.Printf("account bytes are empty for address: %q",address)
 	}
+	return account
 }
 
 // mux.Router registrars

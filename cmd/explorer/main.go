@@ -28,10 +28,12 @@ func main() {
 	cobra.EnableCommandSorting = false
 	prepareMainCmd()
 	prepareRestServerCommands()
+	prepareSyncCommands()
 
 	ExplorerCmd.AddCommand(
 		commands.InitCmd,
 		restServerCmd,
+		syncCmd,
 		version.VersionCmd,
 	)
 

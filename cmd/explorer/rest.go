@@ -11,12 +11,12 @@ import (
 	"os"
 	"github.com/irisnet/iris-explorer/modules/rpc"
 	"github.com/irisnet/iris-explorer/modules/tools"
-	"github.com/irisnet/iris-explorer/modules/sync"
 
 	_ "github.com/cosmos/cosmos-sdk/modules/auth"
 	_ "github.com/cosmos/cosmos-sdk/modules/base"
 	_ "github.com/cosmos/cosmos-sdk/modules/coin"
 	_ "github.com/cosmos/cosmos-sdk/modules/nonce"
+	"github.com/irisnet/iris-explorer/modules/sync"
 )
 
 var (
@@ -30,11 +30,14 @@ var (
 )
 
 func prepareRestServerCommands() {
-	restServerCmd.PersistentFlags().Int64(tools.MaxConnectionNum, 100, "max amount of rpc client")
-	restServerCmd.PersistentFlags().Int64(tools.InitConnectionNum, 50, "init amount of rpc client")
+
+	restServerCmd.PersistentFlags().Int64(tools.MaxConnectionNum, 100, "max connection amount of rpc client")
+	restServerCmd.PersistentFlags().Int64(tools.InitConnectionNum, 50, "init connection amount of rpc client")
 	restServerCmd.PersistentFlags().String(tools.MgoUrl, "localhost:27017", "url of MongoDB")
+	restServerCmd.PersistentFlags().String(tools.SyncCron, "@every 5s", "Cron Task")
+
 	restServerCmd.PersistentFlags().IntP(tools.FlagPort, "p", 8998, "port to run the server on")
-	restServerCmd.PersistentFlags().Bool(tools.WithOnlyRestServer,false,"sync server")
+	restServerCmd.PersistentFlags().Bool(tools.WithOnlyRestServer,false,"start rest server without sync process (default false)")
 }
 
 func AddRoutes(r *mux.Router) {
@@ -52,18 +55,15 @@ func AddRoutes(r *mux.Router) {
 	}
 }
 
-func prepareSyncServer(){
-	//初始化连接池
-	tools.Init()
-
+func prepareSyncServer(cmd *cobra.Command, args []string){
 	if !viper.GetBool(tools.WithOnlyRestServer) {
-		sync.StartWatch()
+		sync.Start()
 	}
 }
 
 func cmdRestServer(cmd *cobra.Command, args []string) error {
 
-	prepareSyncServer()
+	prepareSyncServer(cmd,args)
 
 	router := mux.NewRouter()
 	// latest

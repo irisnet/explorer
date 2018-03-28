@@ -21,7 +21,8 @@ func Init(url string){
 	}
 	session.SetMode(mgo.Monotonic, true)
 	cNames := []DocsHander{
-		new(CoinTx),new(StakeTx),new(SyncBlock),
+		new(CoinTx), new(StakeTx), new(SyncTask), new(Account),
+		new(Delegator),
 	}
 	index(cNames)
 }
@@ -31,7 +32,7 @@ func InitWithAuth(addrs []string,username,password string){
 		Addrs:     addrs,//[]string{"192.168.6.122"}
 		Direct:    false,
 		Timeout:   time.Second * 1,
-		Database:  DbCosmosTxn,
+		Database:  DbIrisExp,
 		Username:  username,
 		Password:  password,
 		PoolLimit: 4096, // Session.SetPoolLimit
@@ -43,7 +44,7 @@ func InitWithAuth(addrs []string,username,password string){
 		panic(err)
 	}
 	cNames := []DocsHander{
-		new(CoinTx),new(StakeTx),new(SyncBlock),
+		new(CoinTx),new(StakeTx),new(SyncTask),
 	}
 	index(cNames)
 }
@@ -57,7 +58,7 @@ func getSession() *mgo.Session {
 func execCollection(collection string, s func(*mgo.Collection) error) error {
 	session := getSession()
 	defer session.Close()
-	c := session.DB(DbCosmosTxn).C(collection)
+	c := session.DB(DbIrisExp).C(collection)
 	return s(c)
 }
 
@@ -85,6 +86,30 @@ func Save(h DocsHander) error{
 	}
 
 	return execCollection(h.Name(),save)
+}
+
+func SaveOrUpdate(h DocsHander) error{
+	save := func(c *mgo.Collection) error{
+		//先按照关键字查询，如果存在，直接返回
+		k,v := h.KvPair()
+		n,_ := c.Find(bson.M{k: v}).Count()
+		if n >= 1 {
+			return Update(h)
+		}
+		return c.Insert(h)
+	}
+
+	return execCollection(h.Name(),save)
+}
+
+//
+func Update(h DocsHander) error{
+	update := func(c *mgo.Collection) error{
+		k,v := h.KvPair()
+		log.Printf("update table[%s] where [%s=%s]",h.Name(),k,v)
+		return c.Update(bson.M{k: v},h)
+	}
+	return execCollection(h.Name(),update)
 }
 
 func QueryAllCoinTx() []CoinTx{
@@ -169,21 +194,30 @@ func QueryPageCoinTxsByFrom(from string,page int)([]CoinTx)  {
 	return result
 }
 //
-func QueryLastedBlock()(SyncBlock,error){
-	result := SyncBlock{}
+func QueryLastedBlock()(SyncTask,error){
+	result := SyncTask{}
 
 	query := func(c *mgo.Collection) error{
 		err := c.Find(bson.M{}).One(&result)
 		return err
 	}
 
-	err := execCollection(DocsNmSyncBlock,query)
+	err := execCollection(DocsNmSyncTask,query)
 	return result,err
 }
-//
-func UpdateBlock(b SyncBlock) error{
-	update := func(c *mgo.Collection) error{
-		return c.Update(nil,b)
+
+//Account
+func QueryAccount(address string) (Account,error){
+	var result Account
+	query := func(c *mgo.Collection) error{
+		err := c.Find(bson.M{"address": address}).Sort("-amount").One(&result)
+		return err
 	}
-	return execCollection(DocsNmSyncBlock,update)
+
+	if execCollection(DocsNmAccount,query) != nil {
+		log.Printf("Account is Empry")
+		return result,errors.New("Account is Empry")
+	}
+
+	return result,nil
 }

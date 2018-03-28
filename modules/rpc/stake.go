@@ -36,23 +36,26 @@ func registerQueryCandidatesByAccount(r *mux.Router) error {
 
 
 func queryCandidatesByAccount(w http.ResponseWriter, r *http.Request) {
+	args := mux.Vars(r)
+	delegatorAddr := args["address"]
+	bonds := QueryCandidates(delegatorAddr)
+	tools.FmtOutPutResult(w, bonds)
+}
+
+func QueryCandidates(address string) []stake.DelegatorBond{
 	var pks []crypto.PubKey
 	var bonds []stake.DelegatorBond
 	key := stack.PrefixedKey(stake.Name(), stake.CandidatesPubKeysKey)
 	height := int64(viper.GetInt(tools.FlagHeight))
 	_, err := tools.GetParsed(key, &pks, height, false)
 	if err != nil || len(pks) ==0 {
-		sdk.WriteError(w, err)
-		return
+		return bonds
 	}
 
-	args := mux.Vars(r)
-	delegatorAddr := args["address"]
-	delegator, err := commands.ParseActor(delegatorAddr)
+	delegator, err := commands.ParseActor(address)
 	delegator = coin.ChainAddr(delegator)
 	if err != nil {
-		sdk.WriteError(w, err)
-		return
+		return bonds
 	}
 
 	for _,pk := range  pks{
@@ -63,7 +66,7 @@ func queryCandidatesByAccount(w http.ResponseWriter, r *http.Request) {
 			bonds = append(bonds,bond)
 		}
 	}
-	tools.FmtOutPutResult(w, bonds)
+	return bonds
 }
 
 // GetDelegatorBondKey - get the key for delegator bond with candidate

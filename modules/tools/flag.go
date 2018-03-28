@@ -5,7 +5,9 @@ const (
 	FlagHeight = "height"
 
 	MgoUrl     = "mgo-url"
-	SubscriberTx = "iris-explorer-subscriberTx"
+	ChainId     = "chain-id"
+	SyncCron     = "sync-cron"
+	//SubscriberTx = "iris-explorer-subscriberTx"
 
 
 	FlagPort = "port"
