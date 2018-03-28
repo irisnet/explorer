@@ -13,6 +13,7 @@ type NodePool struct {
 	available     int64
 	used          int64
 	maxConnection int64
+	initConnection int64
 }
 
 type Node struct {
@@ -33,6 +34,7 @@ func GetNode() Node {
 
 func Init() {
 	len := viper.GetInt64(InitConnectionNum)
+	pool.initConnection = len
 	pool.nodes = make([]Node, len)
 	for i := int64(0); i < len; i++ {
 		createConnection(i)
