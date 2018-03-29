@@ -17,6 +17,7 @@ type SyncTask struct {
 	ChainID string    `json:"chain_id" bson:"chain_id"`
 	Height  int64     `json:"height" bson:"height"`
 	Time    time.Time `json:"time" bson:"time"`
+	Syncing bool 	  `json:"syncing" bson:"syncing"`
 }
 
 func (c SyncTask) Name() string {
