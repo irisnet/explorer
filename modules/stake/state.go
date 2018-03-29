@@ -2,7 +2,6 @@ package stake
 
 import "github.com/tendermint/go-crypto"
 
-
 var (
 	// Keys for store prefixes
 	CandidatesPubKeysKey = []byte{0x01} // key for all candidates' pubkeys

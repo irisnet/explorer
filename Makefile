@@ -5,4 +5,4 @@ get_vendor_deps:
 	glide install
 	
 install:
-	go install ./cmd/explorer
+	go install ./cmd/irisplorer

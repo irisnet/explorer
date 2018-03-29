@@ -8,14 +8,17 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/commands"
 	"github.com/cosmos/cosmos-sdk/stack"
 	"github.com/cosmos/cosmos-sdk/client/commands/query"
-	"github.com/irisnet/iris-explorer/modules/tools"
+	"github.com/irisnet/irisplorer.io/modules/tools"
 	"log"
 	"time"
+	"github.com/irisnet/irisplorer.io/modules/store/m"
+	"github.com/spf13/cast"
 )
 
 func RegisterAccount(r *mux.Router) error {
 	funs := []func(*mux.Router) error{
 		RegisterQueryAccount,
+		RegisterQueryAllAccount,
 	}
 
 	for _, fn := range funs {
@@ -29,13 +32,23 @@ func RegisterAccount(r *mux.Router) error {
 func queryAccount(w http.ResponseWriter, r *http.Request) {
 	args := mux.Vars(r)
 	address := args["address"]
-	account := QueryBalance(address,false)
+	account := QueryBalance(address, false)
 	if err := query.FoutputProof(w, account, 0); err != nil {
 		sdk.WriteError(w, err)
 	}
 }
 
-func QueryBalance(address string,delay bool) *coin.Account{
+func queryAccounts(w http.ResponseWriter, r *http.Request) {
+	args := mux.Vars(r)
+	page := args["page"]
+	p := cast.ToInt(page)
+	accounts := m.QueryAccountByPage(p)
+	if err := query.FoutputProof(w, accounts, 0); err != nil {
+		sdk.WriteError(w, err)
+	}
+}
+
+func QueryBalance(address string, delay bool) *coin.Account {
 	account := new(coin.Account)
 	actor, err := commands.ParseActor(address)
 	if err != nil {
@@ -49,7 +62,7 @@ func QueryBalance(address string,delay bool) *coin.Account{
 	}
 	_, err2 := tools.GetParsed(key, account, query.GetHeight(), false)
 	if err2 != nil {
-		log.Printf("account bytes are empty for address: %q",address)
+		log.Printf("account bytes are empty for address: %q", address)
 	}
 	return account
 }
@@ -58,5 +71,10 @@ func QueryBalance(address string,delay bool) *coin.Account{
 
 func RegisterQueryAccount(r *mux.Router) error {
 	r.HandleFunc("/account/{address}", queryAccount).Methods("GET")
+	return nil
+}
+
+func RegisterQueryAllAccount(r *mux.Router) error {
+	r.HandleFunc("/accounts/{page}", queryAccounts).Methods("GET")
 	return nil
 }

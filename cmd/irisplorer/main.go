@@ -5,7 +5,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/tendermint/tmlibs/cli"
 	"github.com/cosmos/cosmos-sdk/client/commands"
-	"github.com/irisnet/iris-explorer/version"
+	"github.com/irisnet/irisplorer.io/version"
 )
 
 // entry point for this binary
@@ -38,6 +38,6 @@ func main() {
 	)
 
 	// prepare and add flags
-	executor := cli.PrepareMainCmd(ExplorerCmd, "EX", os.ExpandEnv("$HOME/.iris-explorer"))
+	executor := cli.PrepareMainCmd(ExplorerCmd, "EX", os.ExpandEnv("$HOME/.irisplorer.io"))
 	executor.Execute()
 }

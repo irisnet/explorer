@@ -9,20 +9,20 @@ import (
 	"github.com/gorilla/handlers"
 	"github.com/spf13/viper"
 	"os"
-	"github.com/irisnet/iris-explorer/modules/rpc"
-	"github.com/irisnet/iris-explorer/modules/tools"
+	"github.com/irisnet/irisplorer.io/modules/rpc"
+	"github.com/irisnet/irisplorer.io/modules/tools"
 
 	_ "github.com/cosmos/cosmos-sdk/modules/auth"
 	_ "github.com/cosmos/cosmos-sdk/modules/base"
 	_ "github.com/cosmos/cosmos-sdk/modules/coin"
 	_ "github.com/cosmos/cosmos-sdk/modules/nonce"
-	"github.com/irisnet/iris-explorer/modules/sync"
+	"github.com/irisnet/irisplorer.io/modules/sync"
 )
 
 var (
 	restServerCmd = &cobra.Command{
 		Use:  "rest-server",
-		Long: `presents  a nice (not raw hex) interface to the gaia blockchain structure.`,
+		Long: `presents  a nice (not raw hex) interface to the irisnet blockchain structure.`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return cmdRestServer(cmd, args)
 		},
@@ -37,7 +37,7 @@ func prepareRestServerCommands() {
 	restServerCmd.PersistentFlags().String(tools.SyncCron, "@every 5s", "Cron Task")
 
 	restServerCmd.PersistentFlags().IntP(tools.FlagPort, "p", 8998, "port to run the server on")
-	restServerCmd.PersistentFlags().Bool(tools.WithOnlyRestServer,false,"start rest server without sync process (default false)")
+	restServerCmd.PersistentFlags().Bool(tools.WithOnlyRestServer, false, "start rest server without sync process (default false)")
 }
 
 func AddRoutes(r *mux.Router) {
@@ -55,7 +55,7 @@ func AddRoutes(r *mux.Router) {
 	}
 }
 
-func prepareSyncServer(cmd *cobra.Command, args []string){
+func prepareSyncServer(cmd *cobra.Command, args []string) {
 	if !viper.GetBool(tools.WithOnlyRestServer) {
 		sync.Start()
 	}
@@ -63,12 +63,11 @@ func prepareSyncServer(cmd *cobra.Command, args []string){
 
 func cmdRestServer(cmd *cobra.Command, args []string) error {
 
-	prepareSyncServer(cmd,args)
+	prepareSyncServer(cmd, args)
 
 	router := mux.NewRouter()
 	// latest
 	AddRoutes(router)
-
 
 	addr := fmt.Sprintf(":%d", viper.GetInt(tools.FlagPort))
 

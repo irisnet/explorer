@@ -9,10 +9,10 @@ import (
 )
 
 type NodePool struct {
-	nodes         []Node
-	available     int64
-	used          int64
-	maxConnection int64
+	nodes          []Node
+	available      int64
+	used           int64
+	maxConnection  int64
 	initConnection int64
 }
 

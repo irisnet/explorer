@@ -11,7 +11,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 	"strings"
-	"github.com/irisnet/iris-explorer/modules/stake"
+	"github.com/irisnet/irisplorer.io/modules/stake"
 	"github.com/spf13/viper"
 	"sort"
 	"encoding/hex"
@@ -22,10 +22,9 @@ import (
 
 type TxResponse struct {
 	Height int64       `json:"height"`
-	Tx   interface{} `json:"tx"`
-	TxHash string   `json:"txhash"`
+	Tx     interface{} `json:"tx"`
+	TxHash string      `json:"txhash"`
 }
-
 
 func FmtOutPutResult(w http.ResponseWriter, res interface{}) error {
 	json, err := data.ToJSON(res)
@@ -44,15 +43,16 @@ func BuildTxResp(height int64, data []byte, raw bool, hash string) (interface{},
 	if (!raw) {
 		txl, ok := tx.Unwrap().(sdk.TxLayer)
 		var txi sdk.Tx
-	loop: for ok {
-		txi = txl.Next()
-		switch txi.Unwrap().(type) {
-		case fee.Fee, coin.SendTx, stake.TxDelegate, stake.TxDeclareCandidacy, stake.TxUnbond:
-			tx = txi
-			break loop
+	loop:
+		for ok {
+			txi = txl.Next()
+			switch txi.Unwrap().(type) {
+			case fee.Fee, coin.SendTx, stake.TxDelegate, stake.TxDeclareCandidacy, stake.TxUnbond:
+				tx = txi
+				break loop
+			}
+			txl, ok = txi.Unwrap().(sdk.TxLayer)
 		}
-		txl, ok = txi.Unwrap().(sdk.TxLayer)
-	}
 	}
 	wrap := &TxResponse{height, tx, strings.ToUpper(hash)}
 	return wrap, nil
@@ -78,7 +78,6 @@ func SearchTx(w http.ResponseWriter, queries ...string) ([]interface{}, error) {
 		return all[i].Height > all[j].Height
 	})
 
-
 	out := make([]interface{}, 0, len(all))
 	for _, r := range all {
 		wrap, err := BuildTxResp(r.Height, r.Tx, false, hex.EncodeToString(r.Tx.Hash()))
@@ -88,7 +87,7 @@ func SearchTx(w http.ResponseWriter, queries ...string) ([]interface{}, error) {
 		out = append(out, wrap)
 	}
 
-	return out,nil
+	return out, nil
 }
 
 // argument (so pass in a pointer to the appropriate struct)

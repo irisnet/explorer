@@ -8,8 +8,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/modules/coin"
 	"github.com/cosmos/cosmos-sdk/modules/nonce"
 	"github.com/tendermint/go-wire/data"
-	"github.com/irisnet/iris-explorer/modules/store"
-	"github.com/irisnet/iris-explorer/modules/stake"
+	"github.com/irisnet/irisplorer.io/modules/store/m"
+	"github.com/irisnet/irisplorer.io/modules/stake"
 	"github.com/tendermint/tendermint/types"
 	"encoding/hex"
 )
@@ -18,8 +18,8 @@ func ParseTx(txByte types.Tx) (string, interface{}) {
 	txb, _ := sdk.LoadTx(txByte)
 	txl, ok := txb.Unwrap().(sdk.TxLayer)
 	var txi sdk.Tx
-	var coinTx store.CoinTx
-	var stakeTx store.StakeTx
+	var coinTx m.CoinTx
+	var stakeTx m.StakeTx
 	var nonceAddr data.Bytes
 	for ok {
 		txi = txl.Next()

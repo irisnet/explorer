@@ -6,7 +6,8 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/spf13/cast"
 	sdk "github.com/cosmos/cosmos-sdk"
-	"github.com/irisnet/iris-explorer/modules/tools"
+	"github.com/irisnet/irisplorer.io/modules/tools"
+	"github.com/irisnet/irisplorer.io/modules/store/m"
 )
 
 func queryBlock(w http.ResponseWriter, r *http.Request) {
@@ -43,15 +44,25 @@ func queryValidators(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func queryRecentBlocks(w http.ResponseWriter, r *http.Request) {
+func queryRecentBlock(w http.ResponseWriter, r *http.Request) {
 	node := tools.GetNode()
 	defer node.Release()
 
-	blocks, err := node.Client.BlockchainInfo(0,0)
+	blocks, err := node.Client.BlockchainInfo(0, 0)
 	if err != nil {
 		sdk.WriteError(w, err)
 		return
 	}
+	if err := tools.FmtOutPutResult(w, blocks); err != nil {
+		sdk.WriteError(w, err)
+	}
+}
+
+func queryBlocks(w http.ResponseWriter, r *http.Request) {
+	args := mux.Vars(r)
+	page := args["page"]
+	p := cast.ToInt(page)
+	blocks := m.QueryBlockByPage(p)
 	if err := tools.FmtOutPutResult(w, blocks); err != nil {
 		sdk.WriteError(w, err)
 	}
@@ -69,8 +80,13 @@ func registerQueryValidators(r *mux.Router) error {
 	return nil
 }
 
-func registerQueryRecentBlocks(r *mux.Router) error {
-	r.HandleFunc("/blocks/recent", queryRecentBlocks).Methods("GET")
+func registerQueryRecentBlock(r *mux.Router) error {
+	r.HandleFunc("/blocks/recent", queryRecentBlock).Methods("GET")
+	return nil
+}
+
+func registerQueryBlocks(r *mux.Router) error {
+	r.HandleFunc("/blocks/{page}", queryBlocks).Methods("GET")
 	return nil
 }
 
@@ -78,7 +94,8 @@ func RegisterBlock(r *mux.Router) error {
 	funs := []func(*mux.Router) error{
 		registerQueryBlock,
 		registerQueryValidators,
-		registerQueryRecentBlocks,
+		registerQueryRecentBlock,
+		registerQueryBlocks,
 	}
 
 	for _, fn := range funs {

@@ -20,9 +20,9 @@ package sync
 //	//"github.com/tendermint/tendermint/types"
 //	//"github.com/spf13/cast"
 //
-//	"github.com/irisnet/iris-explorer/modules/store"
-//	//"github.com/irisnet/iris-explorer/modules/stake"
-//	"github.com/irisnet/iris-explorer/modules/tools"
+//	"github.com/irisnet/irisplorer.io/modules/store"
+//	//"github.com/irisnet/irisplorer.io/modules/stake"
+//	"github.com/irisnet/irisplorer.io/modules/tools"
 //	"github.com/robfig/cron"
 //	"log"
 //)
@@ -32,7 +32,7 @@ package sync
 //func initServer(){
 //	url := viper.GetString(tools.MgoUrl)
 //	store.Init(url)
-//	block, err := store.QueryLastedBlock()
+//	block, err := store.QuerySyncTask()
 //
 //	if err != nil {
 //		//初始化配置表
@@ -190,7 +190,7 @@ package sync
 ////func sync(c rpcclient.Client) {
 ////	log.Printf("sync Transactions start")
 ////
-////	b, _ := store.QueryLastedBlock()
+////	b, _ := store.QuerySyncTask()
 ////	current := b.Height
 ////	latest := int64(0)
 ////

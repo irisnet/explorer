@@ -3,7 +3,8 @@ package main
 import (
 	"os"
 	"testing"
-	"github.com/irisnet/iris-explorer/modules/tools"
+	"github.com/irisnet/irisplorer.io/modules/tools"
+	"github.com/irisnet/irisplorer.io/modules/store"
 	"time"
 	"github.com/spf13/viper"
 	"github.com/gorilla/mux"
@@ -11,24 +12,27 @@ import (
 	"github.com/gorilla/handlers"
 )
 
-func TestMain2(t *testing.T){
-	viper.Set("node","tcp://47.104.155.125:46757")
+func TestMain2(t *testing.T) {
+	viper.Set("node", "tcp://localhost:46657")
+	//viper.Set("node", "tcp://47.104.155.125:46757")
 	//viper.Set("node","tcp://116.62.62.39:11657")
-	viper.Set(tools.InitConnectionNum,50)
-	viper.Set(tools.MaxConnectionNum,100)
-	viper.Set("cron","@every 3s")
+	viper.Set(tools.InitConnectionNum, 50)
+	viper.Set(tools.MaxConnectionNum, 100)
+	viper.Set(tools.ChainId, "local")
+	viper.Set(tools.SyncCron, "@every 3s")
 	tools.Init()
-	StartWatch(nil,nil)
+	StartWatch(nil, nil)
 
 	time.Sleep(1 * time.Hour)
 }
 
-func TestRunRestServer(t *testing.T){
-	viper.Set("node","tcp://47.104.155.125:46757")
-	viper.Set(tools.InitConnectionNum,5)
-	viper.Set(tools.MaxConnectionNum,10)
+func TestRunRestServer(t *testing.T) {
+	viper.Set("node", "tcp://47.104.155.125:46757")
+	viper.Set(tools.InitConnectionNum, 5)
+	viper.Set(tools.MaxConnectionNum, 10)
 
 	tools.Init()
+	store.Init("localhost:27017")
 
 	router := mux.NewRouter()
 	// latest

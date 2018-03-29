@@ -11,9 +11,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/commands"
 	crypto "github.com/tendermint/go-crypto"
 
-	"github.com/irisnet/iris-explorer/modules/stake"
+	"github.com/irisnet/irisplorer.io/modules/stake"
 	"github.com/tendermint/go-wire"
-	"github.com/irisnet/iris-explorer/modules/tools"
+	"github.com/irisnet/irisplorer.io/modules/tools"
 )
 
 func RegisterStake(r *mux.Router) error {
@@ -34,7 +34,6 @@ func registerQueryCandidatesByAccount(r *mux.Router) error {
 	return nil
 }
 
-
 func queryCandidatesByAccount(w http.ResponseWriter, r *http.Request) {
 	args := mux.Vars(r)
 	delegatorAddr := args["address"]
@@ -42,13 +41,13 @@ func queryCandidatesByAccount(w http.ResponseWriter, r *http.Request) {
 	tools.FmtOutPutResult(w, bonds)
 }
 
-func QueryCandidates(address string) []stake.DelegatorBond{
+func QueryCandidates(address string) []stake.DelegatorBond {
 	var pks []crypto.PubKey
 	var bonds []stake.DelegatorBond
 	key := stack.PrefixedKey(stake.Name(), stake.CandidatesPubKeysKey)
 	height := int64(viper.GetInt(tools.FlagHeight))
 	_, err := tools.GetParsed(key, &pks, height, false)
-	if err != nil || len(pks) ==0 {
+	if err != nil || len(pks) == 0 {
 		return bonds
 	}
 
@@ -58,12 +57,12 @@ func QueryCandidates(address string) []stake.DelegatorBond{
 		return bonds
 	}
 
-	for _,pk := range  pks{
+	for _, pk := range pks {
 		var bond stake.DelegatorBond
-		key := stack.PrefixedKey(stake.Name(), getDelegatorBondKey(delegator,pk))
+		key := stack.PrefixedKey(stake.Name(), getDelegatorBondKey(delegator, pk))
 		_, err := tools.GetParsed(key, &bond, height, false)
-		if !client.IsNoDataErr(err) && err ==nil {
-			bonds = append(bonds,bond)
+		if !client.IsNoDataErr(err) && err == nil {
+			bonds = append(bonds, bond)
 		}
 	}
 	return bonds
