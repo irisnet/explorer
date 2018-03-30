@@ -68,6 +68,22 @@ func QueryStakeTxsByAccount(account string) ([]StakeTx) {
 
 	return result
 }
+
+func QueryPageStakeTxsByAccount(account string,page int) ([]StakeTx) {
+	result := []StakeTx{}
+	query := func(c *mgo.Collection) error {
+		skip := (page - 1) * PageSize
+		err := c.Find(bson.M{"from": account}).Sort("-time").Skip(skip).Limit(PageSize).All(&result)
+		return err
+	}
+
+	if store.ExecCollection(DocsNmStakeTx, query) != nil {
+		log.Printf("StakeTx is Empry")
+	}
+
+	return result
+}
+
 func QueryPageStakeTxs(page int) ([]StakeTx) {
 	result := []StakeTx{}
 	query := func(c *mgo.Collection) error {

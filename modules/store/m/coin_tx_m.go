@@ -69,7 +69,7 @@ func QueryCoinTxsByAccount(account string) ([]CoinTx) {
 }
 
 //
-func QueryPageCoinTxsByFrom(from string, page int) ([]CoinTx) {
+func QueryPageCoinTxsByAccount(from string, page int) ([]CoinTx) {
 	result := []CoinTx{}
 	query := func(c *mgo.Collection) error {
 		skip := (page - 1) * PageSize
@@ -83,7 +83,7 @@ func QueryPageCoinTxsByFrom(from string, page int) ([]CoinTx) {
 
 	return result
 }
-func QueryPageCoinTxs(page int) ([]CoinTx) {
+func QueryAllPageCoinTxs(page int) ([]CoinTx) {
 	result := []CoinTx{}
 	query := func(c *mgo.Collection) error {
 		skip := (page - 1) * PageSize

@@ -8,10 +8,16 @@ import (
 	"github.com/tendermint/tmlibs/common"
 	"github.com/irisnet/irisplorer.io/modules/tools"
 	"github.com/irisnet/irisplorer.io/modules/store/m"
+	"github.com/spf13/cast"
 )
 
 func registerQueryTx(r *mux.Router) error {
 	r.HandleFunc("/tx/{hash}", queryTx).Methods("GET")
+	return nil
+}
+
+func registerQueryAllCoinTxByPage(r *mux.Router) error {
+	r.HandleFunc("/tx/coin/{page}", queryAllCoinTxByPage).Methods("GET")
 	return nil
 }
 
@@ -20,8 +26,23 @@ func registerQueryCoinTxByAccount(r *mux.Router) error {
 	return nil
 }
 
+func registerQueryPageCoinTxByAccount(r *mux.Router) error {
+	r.HandleFunc("/tx/coin/{address}/{page}", queryCoinPageTxByAccount).Methods("GET")
+	return nil
+}
+
+func registerQueryAllStakeTxByPage(r *mux.Router) error {
+	r.HandleFunc("/tx/stake/{page}", queryAllStakeTxByPage).Methods("GET")
+	return nil
+}
+
 func registerQueryStakeTxByAccount(r *mux.Router) error {
 	r.HandleFunc("/tx/stake/{address}", queryStakeTxByAccount).Methods("GET")
+	return nil
+}
+
+func registerQueryPageStakeTxByAccount(r *mux.Router) error {
+	r.HandleFunc("/tx/stake/{address}/{page}", queryPageStakeTxByAccount).Methods("GET")
 	return nil
 }
 
@@ -54,6 +75,14 @@ func queryTx(w http.ResponseWriter, r *http.Request) {
 	tools.FmtOutPutResult(w, wrap)
 }
 
+func queryAllCoinTxByPage(w http.ResponseWriter, r *http.Request) {
+	args := mux.Vars(r)
+	page := args["page"]
+	p := cast.ToInt(page)
+	result := m.QueryAllPageCoinTxs(p)
+	tools.FmtOutPutResult(w, result)
+}
+
 func queryCoinTxByAccount(w http.ResponseWriter, r *http.Request) {
 	args := mux.Vars(r)
 	account := args["address"]
@@ -61,10 +90,38 @@ func queryCoinTxByAccount(w http.ResponseWriter, r *http.Request) {
 	tools.FmtOutPutResult(w, result)
 }
 
+func queryCoinPageTxByAccount(w http.ResponseWriter, r *http.Request) {
+	args := mux.Vars(r)
+	account := args["address"]
+	page := args["page"]
+	p := cast.ToInt(page)
+	result := m.QueryPageCoinTxsByAccount(account,p)
+	tools.FmtOutPutResult(w, result)
+}
+
+func queryAllStakeTxByPage(w http.ResponseWriter, r *http.Request) {
+	args := mux.Vars(r)
+	page := args["page"]
+	p := cast.ToInt(page)
+	result := m.QueryPageStakeTxs(p)
+	tools.FmtOutPutResult(w, result)
+}
+
+
 func queryStakeTxByAccount(w http.ResponseWriter, r *http.Request) {
 	args := mux.Vars(r)
 	account := args["address"]
+
 	result := m.QueryStakeTxsByAccount(account)
+	tools.FmtOutPutResult(w, result)
+}
+
+func queryPageStakeTxByAccount(w http.ResponseWriter, r *http.Request) {
+	args := mux.Vars(r)
+	account := args["address"]
+	page := args["page"]
+	p := cast.ToInt(page)
+	result := m.QueryPageStakeTxsByAccount(account,p)
 	tools.FmtOutPutResult(w, result)
 }
 
@@ -72,7 +129,10 @@ func RegisterTx(r *mux.Router) error {
 	funs := []func(*mux.Router) error{
 		registerQueryTx,
 		registerQueryCoinTxByAccount,
+		registerQueryPageCoinTxByAccount,
+		registerQueryAllCoinTxByPage,
 		registerQueryStakeTxByAccount,
+		registerQueryPageStakeTxByAccount,
 	}
 
 	for _, fn := range funs {
