@@ -1,0 +1,11 @@
+.ui.pagination.menu .active.item {
+  border-top: none;
+  padding-top: 0.92857143em;
+  background-color: rgba(0, 0, 0, 0.15);
+  color: rgba(0, 0, 0, 0.95);
+  box-shadow: none;
+}
+
+.ui.pagination.menu .item:hover {
+  color: green;
+}
