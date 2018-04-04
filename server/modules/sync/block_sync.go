@@ -9,9 +9,10 @@ import (
 	"encoding/hex"
 	"log"
 	"github.com/spf13/viper"
+	"github.com/robfig/cron"
 )
 
-func initServer() {
+func InitServer() {
 	url := viper.GetString(tools.MgoUrl)
 	chainId := viper.GetString(tools.ChainId)
 	store.Init(url)
@@ -32,23 +33,23 @@ func initServer() {
 	tools.Init()
 }
 
-//func startCron(c rpcclient.Client) {
-//	spec := viper.GetString(tools.SyncCron)
-//	cron := cron.New()
-//	cron.AddFunc(spec, func() {
-//		fastSync(c)
-//	})
-//	go cron.Start()
-//}
+func startCron(c rpcclient.Client) {
+	spec := viper.GetString(tools.SyncCron)
+	cron := cron.New()
+	cron.AddFunc(spec, func() {
+		fastSync(c)
+	})
+	go cron.Start()
+}
 
 func Start() {
-	initServer()
+	InitServer()
 	c := tools.GetNode().Client
 	if err := fastSync(c); err != nil {
 		log.Fatalf("sync block failed,%v", err)
 	}
-	//startCron(c)
-	go watch(c)
+	startCron(c)
+	//go watch(c) 监控的方式在启动同步过程中容易丢失区块
 }
 
 func fastSync(c rpcclient.Client) error {

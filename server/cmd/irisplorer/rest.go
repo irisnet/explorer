@@ -31,12 +31,12 @@ var (
 
 func prepareRestServerCommands() {
 
-	restServerCmd.PersistentFlags().Int64(tools.MaxConnectionNum, 100, "max connection amount of rpc client")
-	restServerCmd.PersistentFlags().Int64(tools.InitConnectionNum, 50, "init connection amount of rpc client")
+	restServerCmd.PersistentFlags().Int64(tools.MaxConnectionNum, 500, "max connection amount of rpc client")
+	restServerCmd.PersistentFlags().Int64(tools.InitConnectionNum, 100, "init connection amount of rpc client")
 	restServerCmd.PersistentFlags().String(tools.MgoUrl, "localhost:27017", "url of MongoDB")
 	restServerCmd.PersistentFlags().String(tools.SyncCron, "@every 5s", "Cron Task")
 
-	restServerCmd.PersistentFlags().IntP(tools.FlagPort, "p", 8998, "port to run the server on")
+	restServerCmd.PersistentFlags().IntP(tools.FlagPort, "p", 7998, "port to run the server on")
 	restServerCmd.PersistentFlags().Bool(tools.WithOnlyRestServer, false, "start rest server without sync process (default false)")
 }
 
@@ -58,6 +58,8 @@ func AddRoutes(r *mux.Router) {
 func prepareSyncServer(cmd *cobra.Command, args []string) {
 	if !viper.GetBool(tools.WithOnlyRestServer) {
 		sync.Start()
+	}else {
+		sync.InitServer()
 	}
 }
 
