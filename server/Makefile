@@ -6,3 +6,6 @@ get_vendor_deps:
 	
 install:
 	go install ./cmd/irisplorer
+
+irisplorer:
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o build/irisplorer ./cmd/irisplorer
