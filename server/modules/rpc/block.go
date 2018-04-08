@@ -11,6 +11,10 @@ import (
 )
 
 func queryBlock(w http.ResponseWriter, r *http.Request) {
+	if tools.ValidateReq(w,r) != nil {
+		return
+	}
+
 	args := mux.Vars(r)
 	height := args["height"]
 	node := tools.GetNode()
@@ -27,6 +31,10 @@ func queryBlock(w http.ResponseWriter, r *http.Request) {
 }
 
 func queryValidators(w http.ResponseWriter, r *http.Request) {
+	if tools.ValidateReq(w,r) != nil {
+		return
+	}
+
 	args := mux.Vars(r)
 	height := args["height"]
 
@@ -59,6 +67,10 @@ func queryRecentBlock(w http.ResponseWriter, r *http.Request) {
 }
 
 func queryBlocks(w http.ResponseWriter, r *http.Request) {
+	if tools.ValidateReq(w,r) != nil {
+		return
+	}
+
 	args := mux.Vars(r)
 	page := args["page"]
 	p := cast.ToInt(page)
@@ -86,7 +98,7 @@ func registerQueryRecentBlock(r *mux.Router) error {
 }
 
 func registerQueryBlocks(r *mux.Router) error {
-	r.HandleFunc("/blocks/{page}", queryBlocks).Methods("GET")
+	r.HandleFunc("/blocks/{page}/{size}", queryBlocks).Methods("GET")
 	return nil
 }
 

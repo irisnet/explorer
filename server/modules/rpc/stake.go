@@ -35,6 +35,11 @@ func registerQueryCandidatesByAccount(r *mux.Router) error {
 }
 
 func queryCandidatesByAccount(w http.ResponseWriter, r *http.Request) {
+	if tools.ValidateReq(w,r) != nil {
+		return
+	}
+
+
 	args := mux.Vars(r)
 	delegatorAddr := args["address"]
 	bonds := QueryCandidates(delegatorAddr)

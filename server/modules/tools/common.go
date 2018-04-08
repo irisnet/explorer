@@ -18,6 +18,9 @@ import (
 	wire "github.com/tendermint/go-wire"
 	rpcclient "github.com/tendermint/tendermint/rpc/client"
 	"github.com/tendermint/iavl"
+	"github.com/gorilla/mux"
+	"errors"
+	"github.com/spf13/cast"
 )
 
 type TxResponse struct {
@@ -141,4 +144,24 @@ func GetWithProof(key []byte, height int64) (data.Bytes, int64, iavl.KeyProof, e
 		return nil, 0, nil, err
 	}
 	return client.GetWithProof(key, height, node.Client, cert)
+}
+
+func ValidateReq(w http.ResponseWriter,r *http.Request) error{
+	args := mux.Vars(r)
+	for ag := range args{
+		if len(args[ag]) < 0 {
+			err := errors.New(fmt.Sprintf("%c is not empty",ag))
+			sdk.WriteError(w, err)
+			return err
+		}
+
+		if ag == "page" || ag == "size" || ag == "height" {
+			if _,err := cast.ToIntE(args[ag]);err != nil {
+				sdk.WriteError(w, err)
+				return err
+			}
+
+		}
+	}
+	return nil
 }

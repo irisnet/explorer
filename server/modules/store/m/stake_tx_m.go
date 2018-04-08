@@ -69,11 +69,11 @@ func QueryStakeTxsByAccount(account string) ([]StakeTx) {
 	return result
 }
 
-func QueryPageStakeTxsByAccount(account string,page int) ([]StakeTx) {
+func QueryPageStakeTxsByAccount(account string,page,pagesize int) ([]StakeTx) {
 	result := []StakeTx{}
 	query := func(c *mgo.Collection) error {
-		skip := (page - 1) * PageSize
-		err := c.Find(bson.M{"from": account}).Sort("-time").Skip(skip).Limit(PageSize).All(&result)
+		skip := (page - 1) * pagesize
+		err := c.Find(bson.M{"from": account}).Sort("-time").Skip(skip).Limit(pagesize).All(&result)
 		return err
 	}
 
@@ -84,11 +84,11 @@ func QueryPageStakeTxsByAccount(account string,page int) ([]StakeTx) {
 	return result
 }
 
-func QueryPageStakeTxs(page int) ([]StakeTx) {
+func QueryPageStakeTxs(page,pagesize int) ([]StakeTx) {
 	result := []StakeTx{}
 	query := func(c *mgo.Collection) error {
-		skip := (page - 1) * PageSize
-		err := c.Find(nil).Sort("-time").Skip(skip).Limit(PageSize).All(&result)
+		skip := (page - 1) * pagesize
+		err := c.Find(nil).Sort("-time").Skip(skip).Limit(pagesize).All(&result)
 		return err
 	}
 
