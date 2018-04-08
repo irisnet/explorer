@@ -69,11 +69,11 @@ func QueryCoinTxsByAccount(account string) ([]CoinTx) {
 }
 
 //
-func QueryPageCoinTxsByAccount(from string, page int) ([]CoinTx) {
+func QueryPageCoinTxsByAccount(from string, page,pageSize int ) ([]CoinTx) {
 	result := []CoinTx{}
 	query := func(c *mgo.Collection) error {
-		skip := (page - 1) * PageSize
-		err := c.Find(bson.M{"from": from}).Sort("-time").Skip(skip).Limit(PageSize).All(&result)
+		skip := (page - 1) * pageSize
+		err := c.Find(bson.M{"from": from}).Sort("-time").Skip(skip).Limit(pageSize).All(&result)
 		return err
 	}
 
@@ -83,11 +83,11 @@ func QueryPageCoinTxsByAccount(from string, page int) ([]CoinTx) {
 
 	return result
 }
-func QueryAllPageCoinTxs(page int) ([]CoinTx) {
+func QueryAllPageCoinTxs(page,pageSize int ) ([]CoinTx) {
 	result := []CoinTx{}
 	query := func(c *mgo.Collection) error {
-		skip := (page - 1) * PageSize
-		err := c.Find(nil).Sort("-time").Skip(skip).Limit(PageSize).All(&result)
+		skip := (page - 1) * pageSize
+		err := c.Find(nil).Sort("-time").Skip(skip).Limit(pageSize).All(&result)
 		return err
 	}
 

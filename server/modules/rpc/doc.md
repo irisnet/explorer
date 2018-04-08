@@ -9,13 +9,13 @@ The following describes a set of API interfaces for browser display data.
 ```
 * Paged query bulk account balance.
 ```
-    /accounts/{page}
+    /accounts/{page}/{size}
 ```
 #####Block
 
 * Paging query bulk block information.
 ```
-    /blocks/{page}
+    /blocks/{page}/{size}
 ```
 * Query the latest block information.
 ```
@@ -37,7 +37,7 @@ The following describes a set of API interfaces for browser display data.
 ```
 * Paged query proxy class transaction records.
 ```
-    /txs/stake/{page}
+    /txs/stake/{page}/{size}
 ```
 * Query all proxy transaction records for an account.
 ```
@@ -45,7 +45,7 @@ The following describes a set of API interfaces for browser display data.
 ```
 * Paging to query a proxy transaction record for an account.
 ```
-    /tx/stake/{address}/{page}
+    /tx/stake/{address}/{page}/{size}
 ```
 
 ##### Coin Send Transaction
@@ -57,7 +57,7 @@ The following describes a set of API interfaces for browser display data.
 ```
 * Paging query transfer transaction records.
 ```
-    /txs/coin/{page}
+    /txs/coin/{page}/{size}
 ```
 * Check all transaction records of an account.
 ```
@@ -65,6 +65,6 @@ The following describes a set of API interfaces for browser display data.
 ```
 * Paging to query transaction records of an account.
 ```
-    /tx/coin/{address}/{page}
+    /tx/coin/{address}/{page}/{size}
 ```
 

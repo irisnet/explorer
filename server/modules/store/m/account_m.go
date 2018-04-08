@@ -56,11 +56,11 @@ func QueryAccount(address string) (Account, error) {
 	return result, nil
 }
 
-func QueryAccountByPage(page int) []Account {
+func QueryAccountByPage(page ,pagesize int) []Account {
 	result := []Account{}
 	query := func(c *mgo.Collection) error {
-		skip := (page - 1) * PageSize
-		err := c.Find(nil).Sort("-amount").Skip(skip).Limit(PageSize).All(&result)
+		skip := (page - 1) * pagesize
+		err := c.Find(nil).Sort("-amount").Skip(skip).Limit(pagesize).All(&result)
 		return err
 	}
 

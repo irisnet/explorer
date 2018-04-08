@@ -17,13 +17,13 @@ function get(txhash) {
 }
 
 function getRecentCoinTx() {
-  return fetch(`${API_ROOT}/txs/coin/1`)
+  return fetch(`${API_ROOT}/txs/coin/1/20`)
     .then(checkStatus)
     .then(parseJSON)
 }
 
 function getRecentStakeTx() {
-  return fetch(`${API_ROOT}/txs/stake/1`)
+  return fetch(`${API_ROOT}/txs/stake/1/20`)
     .then(checkStatus)
     .then(parseJSON)
 }

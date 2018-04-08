@@ -30,6 +30,10 @@ func RegisterAccount(r *mux.Router) error {
 }
 
 func queryAccount(w http.ResponseWriter, r *http.Request) {
+	if tools.ValidateReq(w,r) != nil {
+		return
+	}
+
 	args := mux.Vars(r)
 	address := args["address"]
 	account := QueryBalance(address, false)
@@ -39,10 +43,16 @@ func queryAccount(w http.ResponseWriter, r *http.Request) {
 }
 
 func queryAccounts(w http.ResponseWriter, r *http.Request) {
+	if tools.ValidateReq(w,r) != nil {
+		return
+	}
+
 	args := mux.Vars(r)
 	page := args["page"]
+	size := args["size"]
 	p := cast.ToInt(page)
-	accounts := m.QueryAccountByPage(p)
+	s := cast.ToInt(size)
+	accounts := m.QueryAccountByPage(p,s)
 	if err := query.FoutputProof(w, accounts, 0); err != nil {
 		sdk.WriteError(w, err)
 	}
@@ -75,6 +85,6 @@ func RegisterQueryAccount(r *mux.Router) error {
 }
 
 func RegisterQueryAllAccount(r *mux.Router) error {
-	r.HandleFunc("/accounts/{page}", queryAccounts).Methods("GET")
+	r.HandleFunc("/accounts/{page}/{size}", queryAccounts).Methods("GET")
 	return nil
 }
