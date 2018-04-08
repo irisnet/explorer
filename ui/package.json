@@ -2,7 +2,7 @@
   "name": "irisplorer",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:8998/",
+  "proxy": "http://irisplorer:7998/",
   "license": "MIT",
   "devDependencies": {
     "custom-react-scripts": "0.2.0",
