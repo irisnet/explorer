@@ -9,78 +9,79 @@ import (
 
 
 var delay = false
-func handle(txType string, tx store.Docs) {
-	for _, fun := range handler[txType] {
-		fun(tx)
-	}
-}
 func setDelay(d bool){
 	delay = d
-}
-var handler = map[string][]func(tx store.Docs){
-	"coin":  {saveTx, handleCoinTx},
-	"stake": {saveTx, handleStakeTx},
 }
 
 func saveTx(tx store.Docs) {
 	store.Save(tx)
 }
 
-// 处理转账类交易
-func handleCoinTx(tx store.Docs) {
-	coinTx, _ := tx.(m.CoinTx)
-	fun := func(address string) {
-		account, err := m.QueryAccount(address)
-		ac := rpc.QueryBalance(address, delay)
-		if err == nil {
-			account.Amount = ac.Coins
-			account.Height = coinTx.Height
-			account.Time = coinTx.Time
-			if err := store.Update(account); err != nil {
-				log.Printf("account:[%q] balance update failed,%s", account.Address, err)
-			}
-		} else {
-			account = m.Account{
+func handle(tx store.Docs,funChains []func(tx store.Docs)){
+	for _,fun := range funChains {
+		fun(tx)
+	}
+}
+
+func saveOrUpdateAccount(tx store.Docs){
+	switch tx.Name() {
+	case m.DocsNmCoinTx:
+		coinTx, _ := tx.(m.CoinTx)
+		fun := func(address string) {
+			account := m.Account{
 				Address: address,
-				Amount:  ac.Coins,
 				Time:    coinTx.Time,
 				Height:  coinTx.Height,
 			}
-			if err := store.Save(account); err != nil {
-				log.Printf("account:[%q] balance save failed,%s", account.Address, err)
-			}
 
-		}
-	}
-	fun(coinTx.From)
-	fun(coinTx.To)
-
-}
-
-// 处理代理类交易
-func handleStakeTx(tx store.Docs) {
-	stakeTx, _ := tx.(m.StakeTx)
-	fun := func(address string) {
-		account, err := m.QueryAccount(address)
-		//查询账户余额
-		ac := rpc.QueryBalance(address, delay)
-
-		if err == nil {
-			account.Amount = ac.Coins
-			if err := store.Update(account); err != nil {
+			if err := store.SaveOrUpdate(account); err != nil {
 				log.Printf("account:[%q] balance update failed,%s", account.Address, err)
 			}
-		} else {
-			account = m.Account{
+		}
+		fun(coinTx.From)
+		fun(coinTx.To)
+	case m.DocsNmStakeTx:
+		stakeTx, _ := tx.(m.StakeTx)
+		fun := func(address string) {
+			account := m.Account{
 				Address: address,
-				Amount:  ac.Coins,
 				Time:    stakeTx.Time,
 				Height:  stakeTx.Height,
 			}
-			if err := store.Save(account); err != nil {
-				log.Printf("account:[%q] balance save failed,%s", account.Address, err)
+
+			if err := store.SaveOrUpdate(account); err != nil {
+				log.Printf("account:[%q] balance update failed,%s", account.Address, err)
 			}
 		}
+		fun(stakeTx.From)
 	}
-	fun(stakeTx.From)
+}
+
+func updateAccountBalance(tx store.Docs){
+	fun := func(address string) {
+		account, _ := m.QueryAccount(address)
+		//查询账户余额
+		ac := rpc.QueryBalance(address, delay)
+		account.Amount = ac.Coins
+		if err := store.Update(account); err != nil {
+			log.Printf("account:[%q] balance update failed,%s", account.Address, err)
+		}
+	}
+	switch tx.Name() {
+	case m.DocsNmCoinTx:
+		coinTx, _ := tx.(m.CoinTx)
+		fun(coinTx.From)
+		fun(coinTx.To)
+	case m.DocsNmStakeTx:
+		stakeTx, _ := tx.(m.StakeTx)
+		fun(stakeTx.From)
+	case m.DocsNmAccount:
+		account, _ := tx.(m.Account)
+		ac := rpc.QueryBalance(account.Address, delay)
+		account.Amount = ac.Coins
+		if err := store.Update(account); err != nil {
+			log.Printf("account:[%q] balance update failed,%s", account.Address, err)
+		}
+	}
+
 }

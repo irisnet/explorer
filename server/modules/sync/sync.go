@@ -11,11 +11,15 @@ import (
 	"github.com/irisnet/irisplorer.io/server/modules/store"
 	"github.com/irisnet/irisplorer.io/server/modules/tools"
 	"log"
-	)
+)
 
 
 func watch(c rpcclient.Client) {
 	log.Printf("watched Transactions start")
+
+	funcChain := []func(tx store.Docs){
+		saveTx,saveOrUpdateAccount,updateAccountBalance,
+	}
 
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	bk := make(chan interface{})
@@ -46,13 +50,13 @@ func watch(c rpcclient.Client) {
 						coinTx.TxHash = txHash
 						coinTx.Height = blockData.Block.Height
 						coinTx.Time = blockData.Block.Time
-						handle(txType, coinTx)
+						handle(coinTx, funcChain)
 					} else if txType == "stake" {
 						stakeTx, _ := tx.(m.StakeTx)
 						stakeTx.TxHash = txHash
 						stakeTx.Height = blockData.Block.Height
 						stakeTx.Time = blockData.Block.Time
-						handle(txType, stakeTx)
+						handle(stakeTx, funcChain)
 					}
 				}
 			}

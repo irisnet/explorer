@@ -9,4 +9,6 @@ func init(){
 	store.RegisterDocs(new(Delegator))
 	store.RegisterDocs(new(StakeTx))
 	store.RegisterDocs(new(SyncTask))
+
+	store.Init()
 }

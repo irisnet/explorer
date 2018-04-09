@@ -6,6 +6,11 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"errors"
 	"time"
+	"github.com/spf13/viper"
+)
+
+const (
+	MgoUrl   = "mgo-url"
 )
 
 var (
@@ -18,7 +23,8 @@ func RegisterDocs(d Docs){
 	docs = append(docs,d)
 }
 
-func Init(url string) {
+func Init() {
+	url := viper.GetString(MgoUrl)
 	log.Printf("state :Mgo on %s", url)
 	var err error
 	session, err = mgo.Dial(url)

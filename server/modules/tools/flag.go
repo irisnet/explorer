@@ -3,7 +3,6 @@ package tools
 const (
 	FlagHeight = "height"
 
-	MgoUrl   = "mgo-url"
 	ChainId  = "chain-id"
 	SyncCron = "sync-cron"
 	SubscriberTx = "irisplorer-subscriberTx"

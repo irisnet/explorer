@@ -69,3 +69,16 @@ func QueryAccountByPage(page ,pagesize int) []Account {
 	}
 	return result
 }
+
+func QueryAll() []Account{
+	result := []Account{}
+	query := func(c *mgo.Collection) error {
+		err := c.Find(nil).All(&result)
+		return err
+	}
+
+	if store.ExecCollection(DocsNmAccount, query) != nil {
+		log.Printf("Account is Empry")
+	}
+	return result
+}
