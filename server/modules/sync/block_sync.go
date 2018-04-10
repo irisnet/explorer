@@ -13,6 +13,7 @@ import (
 )
 
 func InitServer() {
+	store.Init()
 
 	chainId := viper.GetString(tools.ChainId)
 	block, err := m.QuerySyncTask()

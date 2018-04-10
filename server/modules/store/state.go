@@ -25,7 +25,7 @@ func RegisterDocs(d Docs){
 
 func Init() {
 	url := viper.GetString(MgoUrl)
-	log.Printf("state :Mgo on %s", url)
+	log.Printf("Mgo start on %s", url)
 	var err error
 	session, err = mgo.Dial(url)
 	if err != nil {
