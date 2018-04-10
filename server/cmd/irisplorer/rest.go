@@ -9,7 +9,6 @@ import (
 	"github.com/gorilla/handlers"
 	"github.com/spf13/viper"
 	"os"
-	"github.com/irisnet/irisplorer.io/server/modules/rpc"
 	"github.com/irisnet/irisplorer.io/server/modules/tools"
 	"github.com/irisnet/irisplorer.io/server/modules/store"
 
@@ -18,6 +17,7 @@ import (
 	_ "github.com/cosmos/cosmos-sdk/modules/coin"
 	_ "github.com/cosmos/cosmos-sdk/modules/nonce"
 	"github.com/irisnet/irisplorer.io/server/modules/sync"
+	"github.com/irisnet/irisplorer.io/server/modules/rest"
 )
 
 var (
@@ -32,8 +32,8 @@ var (
 
 func prepareRestServerCommands() {
 
-	restServerCmd.PersistentFlags().Int64(tools.MaxConnectionNum, 500, "max connection amount of rpc client")
-	restServerCmd.PersistentFlags().Int64(tools.InitConnectionNum, 100, "init connection amount of rpc client")
+	restServerCmd.PersistentFlags().Int64(tools.MaxConnectionNum, 500, "max connection amount of rest client")
+	restServerCmd.PersistentFlags().Int64(tools.InitConnectionNum, 100, "init connection amount of rest client")
 	restServerCmd.PersistentFlags().String(store.MgoUrl, "localhost:27017", "url of MongoDB")
 	restServerCmd.PersistentFlags().String(tools.SyncCron, "@every 5s", "Cron Task")
 
@@ -43,10 +43,10 @@ func prepareRestServerCommands() {
 
 func AddRoutes(r *mux.Router) {
 	routeRegistrars := []func(*mux.Router) error{
-		rpc.RegisterBlock,
-		rpc.RegisterTx,
-		rpc.RegisterAccount,
-		rpc.RegisterStake,
+		rest.RegisterBlock,
+		rest.RegisterTx,
+		rest.RegisterAccount,
+		rest.RegisterStake,
 	}
 
 	for _, routeRegistrar := range routeRegistrars {

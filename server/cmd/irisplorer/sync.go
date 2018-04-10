@@ -23,8 +23,8 @@ var (
 func prepareSyncCommands() {
 
 	SyncPk := flag.NewFlagSet("", flag.ContinueOnError)
-	SyncPk.Int64(tools.MaxConnectionNum, 100, "max amount of rpc client")
-	SyncPk.Int64(tools.InitConnectionNum, 50, "init amount of rpc client")
+	SyncPk.Int64(tools.MaxConnectionNum, 100, "max amount of rest client")
+	SyncPk.Int64(tools.InitConnectionNum, 50, "init amount of rest client")
 	SyncPk.String(store.MgoUrl, "localhost:27017", "url of MongoDB")
 	SyncPk.String(tools.SyncCron, "@every 5s", "Cron Task")
 	syncCmd.Flags().AddFlagSet(SyncPk)

@@ -3,8 +3,9 @@ package sync
 import (
 	"github.com/irisnet/irisplorer.io/server/modules/store/m"
 	"github.com/irisnet/irisplorer.io/server/modules/store"
-	"github.com/irisnet/irisplorer.io/server/modules/rpc"
+	"github.com/irisnet/irisplorer.io/server/modules/stake"
 	"log"
+	"github.com/irisnet/irisplorer.io/server/modules/rest"
 )
 
 
@@ -13,15 +14,58 @@ func setDelay(d bool){
 	delay = d
 }
 
-func saveTx(tx store.Docs) {
-	store.Save(tx)
-}
-
 func handle(tx store.Docs,funChains []func(tx store.Docs)){
 	for _,fun := range funChains {
 		fun(tx)
 	}
 }
+
+func saveTx(tx store.Docs) {
+	store.Save(tx)
+
+	if tx.Name() == m.DocsNmStakeTx{
+		stakeTx, _ := tx.(m.StakeTx)
+
+		switch  stakeTx.Type{
+		case stake.TypeTxUnbond:
+			de,err := m.QueryDelegatorByAddressAndPubkey(stakeTx.From,stakeTx.PubKey)
+			if err != nil {
+				de2,err2 := m.QueryCandidateByAddressAndPubkey(stakeTx.From,stakeTx.PubKey)
+				if err2 != nil{
+					log.Printf("error:delegator is lost,add = %s,pub_key=%s",stakeTx.From,stakeTx.PubKey)
+					return
+				}
+				de2.Shares -= stakeTx.Amount.Amount
+				store.Update(de)
+				return
+			}
+			de.Shares -= stakeTx.Amount.Amount
+			store.Update(de)
+		case stake.TypeTxDelegate:
+			de,err := m.QueryDelegatorByAddressAndPubkey(stakeTx.From,stakeTx.PubKey)
+			if err != nil {
+				de = m.Delegator{
+					Address:stakeTx.From,
+					PubKey:stakeTx.PubKey,
+				}
+			}
+			de.Shares += stakeTx.Amount.Amount
+			store.SaveOrUpdate(de)
+		case stake.TypeTxDeclareCandidacy:
+			de,err := m.QueryCandidateByAddressAndPubkey(stakeTx.From,stakeTx.PubKey)
+			if err != nil {
+				de = m.Candidate{
+					Address:stakeTx.From,
+					PubKey:stakeTx.PubKey,
+				}
+			}
+			de.Shares += stakeTx.Amount.Amount
+			store.SaveOrUpdate(de)
+		}
+
+	}
+}
+
 
 func saveOrUpdateAccount(tx store.Docs){
 	switch tx.Name() {
@@ -61,7 +105,7 @@ func updateAccountBalance(tx store.Docs){
 	fun := func(address string) {
 		account, _ := m.QueryAccount(address)
 		//查询账户余额
-		ac := rpc.QueryBalance(address, delay)
+		ac := rest.QueryBalance(address, delay)
 		account.Amount = ac.Coins
 		if err := store.Update(account); err != nil {
 			log.Printf("account:[%q] balance update failed,%s", account.Address, err)
@@ -77,7 +121,7 @@ func updateAccountBalance(tx store.Docs){
 		fun(stakeTx.From)
 	case m.DocsNmAccount:
 		account, _ := tx.(m.Account)
-		ac := rpc.QueryBalance(account.Address, delay)
+		ac := rest.QueryBalance(account.Address, delay)
 		account.Amount = ac.Coins
 		if err := store.Update(account); err != nil {
 			log.Printf("account:[%q] balance update failed,%s", account.Address, err)

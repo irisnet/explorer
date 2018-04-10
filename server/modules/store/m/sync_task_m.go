@@ -24,8 +24,8 @@ func (c SyncTask) Name() string {
 	return DocsNmSyncTask
 }
 
-func (c SyncTask) PkKvPair() (string, interface{}) {
-	return "chain_id", c.ChainID
+func (c SyncTask) PkKvPair() (map[string]interface{}) {
+	return bson.M{"chain_id":c.ChainID}
 }
 
 func (c SyncTask) Index() mgo.Index {

@@ -27,8 +27,8 @@ func (a Account) Name() string {
 	return DocsNmAccount
 }
 
-func (a Account) PkKvPair() (string, interface{}) {
-	return "address", a.Address
+func (a Account) PkKvPair() (map[string]interface{}) {
+	return bson.M{"address":a.Address}
 }
 
 func (a Account) Index() mgo.Index {

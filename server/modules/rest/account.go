@@ -1,4 +1,4 @@
-package rpc
+package rest
 
 import (
 	"github.com/gorilla/mux"

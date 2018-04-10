@@ -74,6 +74,7 @@ func watchBlock(c rpcclient.Client) error {
 }
 
 var maxBatchNum = int64(10000)
+var minBatchSize = int64(20)
 
 func fastSync(c rpcclient.Client) error{
 	b, _ := m.QuerySyncTask()
@@ -140,9 +141,11 @@ func syncBlock(start int64, end int64, funcChain []func(tx store.Docs),  ch chan
 	node := tools.GetNode()
 	defer node.Release()
 
+
 	for j := start; j <= end; j++ {
 		log.Printf("===========threadNo[%d] sync block,height:%d===========", threadNum, j)
 
+		//TODO 使用node.Client.BlockchainInfo
 		block, err := node.Client.Block(&j)
 		if err != nil {
 			//重新尝试一次
