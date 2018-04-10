@@ -27,8 +27,8 @@ func (c CoinTx) Name() string {
 	return DocsNmCoinTx
 }
 
-func (c CoinTx) PkKvPair() (string, interface{}) {
-	return "tx_hash", c.TxHash
+func (c CoinTx) PkKvPair() (map[string]interface{}) {
+	return bson.M{"tx_hash":c.TxHash}
 }
 
 func (c CoinTx) Index() mgo.Index {

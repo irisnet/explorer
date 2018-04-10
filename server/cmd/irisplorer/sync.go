@@ -4,6 +4,7 @@ import (
 	"github.com/irisnet/irisplorer.io/server/modules/sync"
 	"github.com/spf13/cobra"
 	"github.com/irisnet/irisplorer.io/server/modules/tools"
+	"github.com/irisnet/irisplorer.io/server/modules/store"
 	flag "github.com/spf13/pflag"
 	"log"
 	cmn "github.com/tendermint/tmlibs/common"
@@ -22,9 +23,9 @@ var (
 func prepareSyncCommands() {
 
 	SyncPk := flag.NewFlagSet("", flag.ContinueOnError)
-	SyncPk.Int64(tools.MaxConnectionNum, 100, "max amount of rpc client")
-	SyncPk.Int64(tools.InitConnectionNum, 50, "init amount of rpc client")
-	SyncPk.String(tools.MgoUrl, "localhost:27017", "url of MongoDB")
+	SyncPk.Int64(tools.MaxConnectionNum, 100, "max amount of rest client")
+	SyncPk.Int64(tools.InitConnectionNum, 50, "init amount of rest client")
+	SyncPk.String(store.MgoUrl, "localhost:27017", "url of MongoDB")
 	SyncPk.String(tools.SyncCron, "@every 5s", "Cron Task")
 	syncCmd.Flags().AddFlagSet(SyncPk)
 }

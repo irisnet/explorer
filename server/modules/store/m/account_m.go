@@ -27,8 +27,8 @@ func (a Account) Name() string {
 	return DocsNmAccount
 }
 
-func (a Account) PkKvPair() (string, interface{}) {
-	return "address", a.Address
+func (a Account) PkKvPair() (map[string]interface{}) {
+	return bson.M{"address":a.Address}
 }
 
 func (a Account) Index() mgo.Index {
@@ -61,6 +61,19 @@ func QueryAccountByPage(page ,pagesize int) []Account {
 	query := func(c *mgo.Collection) error {
 		skip := (page - 1) * pagesize
 		err := c.Find(nil).Sort("-amount").Skip(skip).Limit(pagesize).All(&result)
+		return err
+	}
+
+	if store.ExecCollection(DocsNmAccount, query) != nil {
+		log.Printf("Account is Empry")
+	}
+	return result
+}
+
+func QueryAll() []Account{
+	result := []Account{}
+	query := func(c *mgo.Collection) error {
+		err := c.Find(nil).All(&result)
 		return err
 	}
 

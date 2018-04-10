@@ -6,7 +6,12 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"errors"
 	"time"
+	"github.com/spf13/viper"
 )
+const (
+	MgoUrl   = "mgo-url"
+)
+
 
 var (
 	session *mgo.Session
@@ -18,7 +23,8 @@ func RegisterDocs(d Docs){
 	docs = append(docs,d)
 }
 
-func Init(url string) {
+func Init() {
+	url := viper.GetString(MgoUrl)
 	log.Printf("state :Mgo on %s", url)
 	var err error
 	session, err = mgo.Dial(url)
@@ -83,8 +89,7 @@ func index() {
 func Save(h Docs) error {
 	save := func(c *mgo.Collection) error {
 		//先按照关键字查询，如果存在，直接返回
-		k, v := h.PkKvPair()
-		n, _ := c.Find(bson.M{k: v}).Count()
+		n, _ := c.Find(h.PkKvPair()).Count()
 		if n >= 1 {
 			return errors.New("record existed")
 		}
@@ -98,8 +103,7 @@ func Save(h Docs) error {
 func SaveOrUpdate(h Docs) error {
 	save := func(c *mgo.Collection) error {
 		//先按照关键字查询，如果存在，直接返回
-		k, v := h.PkKvPair()
-		n, err := c.Find(bson.M{k: v}).Count()
+		n, err := c.Find(h.PkKvPair()).Count()
 		log.Printf("Count:%d err:%+v ", n, err)
 		if n >= 1 {
 			return Update(h)
@@ -114,9 +118,9 @@ func SaveOrUpdate(h Docs) error {
 //
 func Update(h Docs) error {
 	update := func(c *mgo.Collection) error {
-		k, v := h.PkKvPair()
-		log.Printf("update %s set %+v where %s=%v", h.Name(), h, k, v)
-		return c.Update(bson.M{k: v}, h)
+		key := h.PkKvPair()
+		log.Printf("update %s set %+v where %+v", h.Name(), h, key)
+		return c.Update(h.PkKvPair(), h)
 	}
 	return ExecCollection(h.Name(), update)
 }

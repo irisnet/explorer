@@ -1,32 +1,32 @@
 package m
 
 import (
-	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
+	"gopkg.in/mgo.v2"
 	"github.com/irisnet/irisplorer.io/server/modules/store"
 	"log"
 	"errors"
 )
 
 const (
-	DocsNmDelegator = "delegator"
+	DocsNmCandidate = "candidate"
 )
 
-type Delegator struct {
+type Candidate struct {
 	Address string `json:"address" bson:"address"`
 	PubKey  string `json:"pub_key" bson:"pub_key"`
 	Shares  int64  `json:"shares" bson:"shares"`
 }
 
-func (d Delegator) Name() string {
-	return DocsNmDelegator
+func (d Candidate) Name() string {
+	return DocsNmCandidate
 }
 
-func (d Delegator) PkKvPair() (map[string]interface{}) {
+func (d Candidate) PkKvPair() (map[string]interface{}) {
 	return bson.M{"address":d.Address,"pub_key":d.PubKey}
 }
 
-func (d Delegator) Index() mgo.Index {
+func (d Candidate) Index() mgo.Index {
 	return mgo.Index{
 		Key:        []string{"address"}, // 索引字段， 默认升序,若需降序在字段前加-
 		Unique:     false,               // 唯一索引 同mysql唯一索引
@@ -35,23 +35,8 @@ func (d Delegator) Index() mgo.Index {
 	}
 }
 
-func QueryDelegatorByAddress(address string) ([]Delegator, error) {
-	var result []Delegator
-	query := func(c *mgo.Collection) error {
-		err := c.Find(bson.M{"address": address}).Sort("-shares").All(&result)
-		return err
-	}
-
-	if store.ExecCollection(DocsNmDelegator, query) != nil {
-		log.Printf("delegator is Empty")
-		return result, errors.New("delegator is Empty")
-	}
-
-	return result, nil
-}
-
-func QueryDelegatorByAddressAndPubkey(address string,pubKey string) (Delegator, error) {
-	var result Delegator
+func QueryCandidateByAddressAndPubkey(address string,pubKey string) (Candidate, error) {
+	var result Candidate
 	query := func(c *mgo.Collection) error {
 		err := c.Find(bson.M{"address": address,"pub_key":pubKey}).Sort("-shares").One(&result)
 		return err

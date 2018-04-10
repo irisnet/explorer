@@ -11,6 +11,6 @@ const (
 
 type Docs interface {
 	Name() string
-	PkKvPair() (string, interface{})
+	PkKvPair() (map[string]interface{})
 	Index() mgo.Index
 }

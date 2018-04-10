@@ -28,8 +28,8 @@ func (c StakeTx) Name() string {
 	return DocsNmStakeTx
 }
 
-func (c StakeTx) PkKvPair() (string, interface{}) {
-	return "tx_hash", c.TxHash
+func (c StakeTx) PkKvPair() (map[string]interface{}) {
+	return bson.M{"tx_hash":c.TxHash}
 }
 
 func (c StakeTx) Index() mgo.Index {

@@ -5,6 +5,7 @@ import (
 	"gopkg.in/mgo.v2"
 	"log"
 	"github.com/irisnet/irisplorer.io/server/modules/store"
+	"gopkg.in/mgo.v2/bson"
 )
 
 const (
@@ -21,8 +22,8 @@ func (d Block) Name() string {
 	return DocsNmBlock
 }
 
-func (d Block) PkKvPair() (string, interface{}) {
-	return "height", d.Height
+func (d Block) PkKvPair() (map[string]interface{}) {
+	return bson.M{"height":d.Height}
 }
 
 func (d Block) Index() mgo.Index {
