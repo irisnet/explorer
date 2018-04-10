@@ -3,8 +3,8 @@ package tools
 const (
 	FlagHeight = "height"
 
-	ChainId  = "chain-id"
-	SyncCron = "sync-cron"
+	ChainId      = "chain-id"
+	SyncCron     = "sync-cron"
 	SubscriberTx = "irisplorer-subscriberTx"
 
 	FlagPort           = "port"

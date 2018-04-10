@@ -1,24 +1,23 @@
 package sync
 
 import (
-	"strings"
-	"time"
-	rpcclient "github.com/tendermint/tendermint/rpc/client"
 	"context"
 	"encoding/hex"
-	"github.com/tendermint/tendermint/types"
-	"github.com/irisnet/irisplorer.io/server/modules/store/m"
 	"github.com/irisnet/irisplorer.io/server/modules/store"
+	"github.com/irisnet/irisplorer.io/server/modules/store/m"
 	"github.com/irisnet/irisplorer.io/server/modules/tools"
+	rpcclient "github.com/tendermint/tendermint/rpc/client"
+	"github.com/tendermint/tendermint/types"
 	"log"
+	"strings"
+	"time"
 )
-
 
 func watch(c rpcclient.Client) {
 	log.Printf("watched Transactions start")
 
 	funcChain := []func(tx store.Docs){
-		saveTx,saveOrUpdateAccount,updateAccountBalance,
+		saveTx, saveOrUpdateAccount, updateAccountBalance,
 	}
 
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)

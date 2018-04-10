@@ -1,26 +1,26 @@
 package tools
 
 import (
-	"net/http"
-	"fmt"
-	"github.com/tendermint/go-wire/data"
-	"github.com/cosmos/cosmos-sdk"
-	"github.com/cosmos/cosmos-sdk/modules/fee"
-	"github.com/cosmos/cosmos-sdk/modules/coin"
-	"github.com/cosmos/cosmos-sdk/client/commands"
-	"github.com/cosmos/cosmos-sdk/client"
-	ctypes "github.com/tendermint/tendermint/rpc/core/types"
-	"strings"
-	"github.com/irisnet/irisplorer.io/server/modules/stake"
-	"github.com/spf13/viper"
-	"sort"
 	"encoding/hex"
-	wire "github.com/tendermint/go-wire"
-	rpcclient "github.com/tendermint/tendermint/rpc/client"
-	"github.com/tendermint/iavl"
-	"github.com/gorilla/mux"
 	"errors"
+	"fmt"
+	"github.com/cosmos/cosmos-sdk"
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/commands"
+	"github.com/cosmos/cosmos-sdk/modules/coin"
+	"github.com/cosmos/cosmos-sdk/modules/fee"
+	"github.com/gorilla/mux"
+	"github.com/irisnet/irisplorer.io/server/modules/stake"
 	"github.com/spf13/cast"
+	"github.com/spf13/viper"
+	wire "github.com/tendermint/go-wire"
+	"github.com/tendermint/go-wire/data"
+	"github.com/tendermint/iavl"
+	rpcclient "github.com/tendermint/tendermint/rpc/client"
+	ctypes "github.com/tendermint/tendermint/rpc/core/types"
+	"net/http"
+	"sort"
+	"strings"
 )
 
 type TxResponse struct {
@@ -43,7 +43,7 @@ func BuildTxResp(height int64, data []byte, raw bool, hash string) (interface{},
 	if err != nil {
 		return tx, err
 	}
-	if (!raw) {
+	if !raw {
 		txl, ok := tx.Unwrap().(sdk.TxLayer)
 		var txi sdk.Tx
 	loop:
@@ -146,17 +146,17 @@ func GetWithProof(key []byte, height int64) (data.Bytes, int64, iavl.KeyProof, e
 	return client.GetWithProof(key, height, node.Client, cert)
 }
 
-func ValidateReq(w http.ResponseWriter,r *http.Request) error{
+func ValidateReq(w http.ResponseWriter, r *http.Request) error {
 	args := mux.Vars(r)
-	for ag := range args{
+	for ag := range args {
 		if len(args[ag]) < 0 {
-			err := errors.New(fmt.Sprintf("%c is not empty",ag))
+			err := errors.New(fmt.Sprintf("%c is not empty", ag))
 			sdk.WriteError(w, err)
 			return err
 		}
 
 		if ag == "page" || ag == "size" || ag == "height" {
-			if _,err := cast.ToIntE(args[ag]);err != nil {
+			if _, err := cast.ToIntE(args[ag]); err != nil {
 				sdk.WriteError(w, err)
 				return err
 			}

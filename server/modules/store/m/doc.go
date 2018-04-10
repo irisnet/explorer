@@ -1,8 +1,10 @@
 package m
+
 import (
 	"github.com/irisnet/irisplorer.io/server/modules/store"
 )
-func init(){
+
+func init() {
 	store.RegisterDocs(new(Account))
 	store.RegisterDocs(new(Block))
 	store.RegisterDocs(new(CoinTx))

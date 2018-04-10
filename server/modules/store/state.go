@@ -1,17 +1,17 @@
 package store
 
 import (
-	"log"
+	"errors"
+	"github.com/spf13/viper"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
-	"errors"
+	"log"
 	"time"
-	"github.com/spf13/viper"
-)
-const (
-	MgoUrl   = "mgo-url"
 )
 
+const (
+	MgoUrl = "mgo-url"
+)
 
 var (
 	session *mgo.Session
@@ -19,8 +19,8 @@ var (
 
 var docs []Docs
 
-func RegisterDocs(d Docs){
-	docs = append(docs,d)
+func RegisterDocs(d Docs) {
+	docs = append(docs, d)
 }
 
 func Init() {
@@ -67,7 +67,7 @@ func ExecCollection(collection string, s func(*mgo.Collection) error) error {
 	return s(c)
 }
 
-func Find(collection string,query interface{}) *mgo.Query {
+func Find(collection string, query interface{}) *mgo.Query {
 	session := getSession()
 	defer session.Close()
 	c := session.DB(DbIrisExp).C(collection)
@@ -139,5 +139,5 @@ func Query(collectionName string, query bson.M, sort string, fields bson.M, skip
 	exop := func(c *mgo.Collection) error {
 		return c.Find(query).Sort(sort).Select(fields).Skip(skip).Limit(limit).All(&results)
 	}
-	return results,ExecCollection(collectionName, exop)
+	return results, ExecCollection(collectionName, exop)
 }

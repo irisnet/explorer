@@ -3,15 +3,15 @@ package rest
 import (
 	"net/http"
 
-	"github.com/gorilla/mux"
-	"github.com/spf13/cast"
 	sdk "github.com/cosmos/cosmos-sdk"
-	"github.com/irisnet/irisplorer.io/server/modules/tools"
+	"github.com/gorilla/mux"
 	"github.com/irisnet/irisplorer.io/server/modules/store/m"
+	"github.com/irisnet/irisplorer.io/server/modules/tools"
+	"github.com/spf13/cast"
 )
 
 func queryBlock(w http.ResponseWriter, r *http.Request) {
-	if tools.ValidateReq(w,r) != nil {
+	if tools.ValidateReq(w, r) != nil {
 		return
 	}
 
@@ -31,7 +31,7 @@ func queryBlock(w http.ResponseWriter, r *http.Request) {
 }
 
 func queryValidators(w http.ResponseWriter, r *http.Request) {
-	if tools.ValidateReq(w,r) != nil {
+	if tools.ValidateReq(w, r) != nil {
 		return
 	}
 
@@ -67,7 +67,7 @@ func queryRecentBlock(w http.ResponseWriter, r *http.Request) {
 }
 
 func queryBlocks(w http.ResponseWriter, r *http.Request) {
-	if tools.ValidateReq(w,r) != nil {
+	if tools.ValidateReq(w, r) != nil {
 		return
 	}
 

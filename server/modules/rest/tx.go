@@ -1,14 +1,14 @@
 package rest
 
 import (
-	"github.com/gorilla/mux"
 	"encoding/hex"
 	"github.com/cosmos/cosmos-sdk"
-	"net/http"
-	"github.com/tendermint/tmlibs/common"
-	"github.com/irisnet/irisplorer.io/server/modules/tools"
+	"github.com/gorilla/mux"
 	"github.com/irisnet/irisplorer.io/server/modules/store/m"
+	"github.com/irisnet/irisplorer.io/server/modules/tools"
 	"github.com/spf13/cast"
+	"github.com/tendermint/tmlibs/common"
+	"net/http"
 )
 
 func registerQueryTx(r *mux.Router) error {
@@ -48,7 +48,7 @@ func registerQueryPageStakeTxByAccount(r *mux.Router) error {
 
 // queryTx is to query transaction by hash
 func queryTx(w http.ResponseWriter, r *http.Request) {
-	if tools.ValidateReq(w,r) != nil {
+	if tools.ValidateReq(w, r) != nil {
 		return
 	}
 
@@ -80,7 +80,7 @@ func queryTx(w http.ResponseWriter, r *http.Request) {
 }
 
 func queryAllCoinTxByPage(w http.ResponseWriter, r *http.Request) {
-	if tools.ValidateReq(w,r) != nil {
+	if tools.ValidateReq(w, r) != nil {
 		return
 	}
 	args := mux.Vars(r)
@@ -88,12 +88,12 @@ func queryAllCoinTxByPage(w http.ResponseWriter, r *http.Request) {
 	size := args["size"]
 	p := cast.ToInt(page)
 	s := cast.ToInt(size)
-	result := m.QueryAllPageCoinTxs(p,s)
+	result := m.QueryAllPageCoinTxs(p, s)
 	tools.FmtOutPutResult(w, result)
 }
 
 func queryCoinTxByAccount(w http.ResponseWriter, r *http.Request) {
-	if tools.ValidateReq(w,r) != nil {
+	if tools.ValidateReq(w, r) != nil {
 		return
 	}
 	args := mux.Vars(r)
@@ -103,7 +103,7 @@ func queryCoinTxByAccount(w http.ResponseWriter, r *http.Request) {
 }
 
 func queryCoinPageTxByAccount(w http.ResponseWriter, r *http.Request) {
-	if tools.ValidateReq(w,r) != nil {
+	if tools.ValidateReq(w, r) != nil {
 		return
 	}
 	args := mux.Vars(r)
@@ -112,12 +112,12 @@ func queryCoinPageTxByAccount(w http.ResponseWriter, r *http.Request) {
 	size := args["size"]
 	p := cast.ToInt(page)
 	s := cast.ToInt(size)
-	result := m.QueryPageCoinTxsByAccount(account,p,s)
+	result := m.QueryPageCoinTxsByAccount(account, p, s)
 	tools.FmtOutPutResult(w, result)
 }
 
 func queryAllStakeTxByPage(w http.ResponseWriter, r *http.Request) {
-	if tools.ValidateReq(w,r) != nil {
+	if tools.ValidateReq(w, r) != nil {
 		return
 	}
 	args := mux.Vars(r)
@@ -125,13 +125,12 @@ func queryAllStakeTxByPage(w http.ResponseWriter, r *http.Request) {
 	size := args["size"]
 	p := cast.ToInt(page)
 	s := cast.ToInt(size)
-	result := m.QueryPageStakeTxs(p,s)
+	result := m.QueryPageStakeTxs(p, s)
 	tools.FmtOutPutResult(w, result)
 }
 
-
 func queryStakeTxByAccount(w http.ResponseWriter, r *http.Request) {
-	if tools.ValidateReq(w,r) != nil {
+	if tools.ValidateReq(w, r) != nil {
 		return
 	}
 	args := mux.Vars(r)
@@ -142,7 +141,7 @@ func queryStakeTxByAccount(w http.ResponseWriter, r *http.Request) {
 }
 
 func queryPageStakeTxByAccount(w http.ResponseWriter, r *http.Request) {
-	if tools.ValidateReq(w,r) != nil {
+	if tools.ValidateReq(w, r) != nil {
 		return
 	}
 	args := mux.Vars(r)
@@ -151,7 +150,7 @@ func queryPageStakeTxByAccount(w http.ResponseWriter, r *http.Request) {
 	size := args["size"]
 	p := cast.ToInt(page)
 	s := cast.ToInt(size)
-	result := m.QueryPageStakeTxsByAccount(account,p,s)
+	result := m.QueryPageStakeTxsByAccount(account, p, s)
 	tools.FmtOutPutResult(w, result)
 }
 

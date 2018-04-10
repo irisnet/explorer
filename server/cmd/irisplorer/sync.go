@@ -1,13 +1,13 @@
 package main
 
 import (
-	"github.com/irisnet/irisplorer.io/server/modules/sync"
-	"github.com/spf13/cobra"
-	"github.com/irisnet/irisplorer.io/server/modules/tools"
 	"github.com/irisnet/irisplorer.io/server/modules/store"
+	"github.com/irisnet/irisplorer.io/server/modules/sync"
+	"github.com/irisnet/irisplorer.io/server/modules/tools"
+	"github.com/spf13/cobra"
 	flag "github.com/spf13/pflag"
-	"log"
 	cmn "github.com/tendermint/tmlibs/common"
+	"log"
 )
 
 var (

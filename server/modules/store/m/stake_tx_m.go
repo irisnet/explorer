@@ -1,12 +1,12 @@
 package m
 
 import (
-	"time"
 	"github.com/cosmos/cosmos-sdk/modules/coin"
+	"github.com/irisnet/irisplorer.io/server/modules/store"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"log"
-	"github.com/irisnet/irisplorer.io/server/modules/store"
+	"time"
 )
 
 const (
@@ -28,8 +28,8 @@ func (c StakeTx) Name() string {
 	return DocsNmStakeTx
 }
 
-func (c StakeTx) PkKvPair() (map[string]interface{}) {
-	return bson.M{"tx_hash":c.TxHash}
+func (c StakeTx) PkKvPair() map[string]interface{} {
+	return bson.M{"tx_hash": c.TxHash}
 }
 
 func (c StakeTx) Index() mgo.Index {
@@ -41,7 +41,7 @@ func (c StakeTx) Index() mgo.Index {
 	}
 }
 
-func QueryAllStakeTx() ([]StakeTx) {
+func QueryAllStakeTx() []StakeTx {
 	result := []StakeTx{}
 	query := func(c *mgo.Collection) error {
 		err := c.Find(nil).Sort("-time").All(&result)
@@ -55,10 +55,10 @@ func QueryAllStakeTx() ([]StakeTx) {
 }
 
 //
-func QueryStakeTxsByAccount(account string) ([]StakeTx) {
+func QueryStakeTxsByAccount(account string) []StakeTx {
 	result := []StakeTx{}
 	query := func(c *mgo.Collection) error {
-		err := c.Find(bson.M{"from": account}).Sort("-time").All(&result)
+		err := c.Find(bson.M{"$or": []bson.M{{"from": account}, {"to": account}}}).Sort("-time").All(&result)
 		return err
 	}
 
@@ -69,11 +69,11 @@ func QueryStakeTxsByAccount(account string) ([]StakeTx) {
 	return result
 }
 
-func QueryPageStakeTxsByAccount(account string,page,pagesize int) ([]StakeTx) {
+func QueryPageStakeTxsByAccount(account string, page, pagesize int) []StakeTx {
 	result := []StakeTx{}
 	query := func(c *mgo.Collection) error {
 		skip := (page - 1) * pagesize
-		err := c.Find(bson.M{"from": account}).Sort("-time").Skip(skip).Limit(pagesize).All(&result)
+		err := c.Find(bson.M{"$or": []bson.M{{"from": account}, {"to": account}}}).Sort("-time").Skip(skip).Limit(pagesize).All(&result)
 		return err
 	}
 
@@ -84,7 +84,7 @@ func QueryPageStakeTxsByAccount(account string,page,pagesize int) ([]StakeTx) {
 	return result
 }
 
-func QueryPageStakeTxs(page,pagesize int) ([]StakeTx) {
+func QueryPageStakeTxs(page, pagesize int) []StakeTx {
 	result := []StakeTx{}
 	query := func(c *mgo.Collection) error {
 		skip := (page - 1) * pagesize

@@ -1,12 +1,12 @@
 package m
 
 import (
-	"time"
 	"github.com/cosmos/cosmos-sdk/modules/coin"
 	"github.com/irisnet/irisplorer.io/server/modules/store"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"log"
+	"time"
 )
 
 const (
@@ -27,8 +27,8 @@ func (c CoinTx) Name() string {
 	return DocsNmCoinTx
 }
 
-func (c CoinTx) PkKvPair() (map[string]interface{}) {
-	return bson.M{"tx_hash":c.TxHash}
+func (c CoinTx) PkKvPair() map[string]interface{} {
+	return bson.M{"tx_hash": c.TxHash}
 }
 
 func (c CoinTx) Index() mgo.Index {
@@ -55,10 +55,10 @@ func QueryAllCoinTx() []CoinTx {
 }
 
 //
-func QueryCoinTxsByAccount(account string) ([]CoinTx) {
+func QueryCoinTxsByAccount(account string) []CoinTx {
 	result := []CoinTx{}
 	query := func(c *mgo.Collection) error {
-		err := c.Find(bson.M{"$or": []bson.M{bson.M{"from": account}, bson.M{"to": account}}}).Sort("-time").All(&result)
+		err := c.Find(bson.M{"$or": []bson.M{{"from": account}, {"to": account}}}).Sort("-time").All(&result)
 		return err
 	}
 
@@ -69,11 +69,11 @@ func QueryCoinTxsByAccount(account string) ([]CoinTx) {
 }
 
 //
-func QueryPageCoinTxsByAccount(from string, page,pageSize int ) ([]CoinTx) {
+func QueryPageCoinTxsByAccount(from string, page, pageSize int) []CoinTx {
 	result := []CoinTx{}
 	query := func(c *mgo.Collection) error {
 		skip := (page - 1) * pageSize
-		err := c.Find(bson.M{"from": from}).Sort("-time").Skip(skip).Limit(pageSize).All(&result)
+		err := c.Find(bson.M{"$or": []bson.M{{"from": from}, {"to": from}}}).Sort("-time").Skip(skip).Limit(pageSize).All(&result)
 		return err
 	}
 
@@ -83,7 +83,7 @@ func QueryPageCoinTxsByAccount(from string, page,pageSize int ) ([]CoinTx) {
 
 	return result
 }
-func QueryAllPageCoinTxs(page,pageSize int ) ([]CoinTx) {
+func QueryAllPageCoinTxs(page, pageSize int) []CoinTx {
 	result := []CoinTx{}
 	query := func(c *mgo.Collection) error {
 		skip := (page - 1) * pageSize

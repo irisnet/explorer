@@ -1,11 +1,11 @@
 package main
 
 import (
-	"os"
-	"github.com/spf13/cobra"
-	"github.com/tendermint/tmlibs/cli"
 	"github.com/cosmos/cosmos-sdk/client/commands"
 	"github.com/irisnet/irisplorer.io/server/version"
+	"github.com/spf13/cobra"
+	"github.com/tendermint/tmlibs/cli"
+	"os"
 )
 
 // entry point for this binary
