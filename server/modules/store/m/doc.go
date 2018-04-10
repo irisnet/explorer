@@ -10,6 +10,4 @@ func init(){
 	store.RegisterDocs(new(StakeTx))
 	store.RegisterDocs(new(SyncTask))
 	store.RegisterDocs(new(Candidate))
-
-	store.Init()
 }
