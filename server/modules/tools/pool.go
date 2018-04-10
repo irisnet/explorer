@@ -1,10 +1,10 @@
 package tools
 
 import (
-	"github.com/tendermint/tendermint/rpc/client"
-	"github.com/cosmos/cosmos-sdk/client/commands"
 	"errors"
+	"github.com/cosmos/cosmos-sdk/client/commands"
 	"github.com/spf13/viper"
+	"github.com/tendermint/tendermint/rpc/client"
 	"log"
 )
 
@@ -48,7 +48,7 @@ func createConnection(id int64) Node {
 		id:     id,
 	}
 	pool.nodes[id] = node
-	pool.available ++
+	pool.available++
 	pool.maxConnection = viper.GetInt64(MaxConnectionNum)
 	return node
 }

@@ -1,11 +1,11 @@
 package m
 
 import (
+	"errors"
+	"github.com/irisnet/irisplorer.io/server/modules/store"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
-	"github.com/irisnet/irisplorer.io/server/modules/store"
 	"log"
-	"errors"
 )
 
 const (
@@ -22,8 +22,8 @@ func (d Delegator) Name() string {
 	return DocsNmDelegator
 }
 
-func (d Delegator) PkKvPair() (map[string]interface{}) {
-	return bson.M{"address":d.Address,"pub_key":d.PubKey}
+func (d Delegator) PkKvPair() map[string]interface{} {
+	return bson.M{"address": d.Address, "pub_key": d.PubKey}
 }
 
 func (d Delegator) Index() mgo.Index {
@@ -50,10 +50,10 @@ func QueryDelegatorByAddress(address string) ([]Delegator, error) {
 	return result, nil
 }
 
-func QueryDelegatorByAddressAndPubkey(address string,pubKey string) (Delegator, error) {
+func QueryDelegatorByAddressAndPubkey(address string, pubKey string) (Delegator, error) {
 	var result Delegator
 	query := func(c *mgo.Collection) error {
-		err := c.Find(bson.M{"address": address,"pub_key":pubKey}).Sort("-shares").One(&result)
+		err := c.Find(bson.M{"address": address, "pub_key": pubKey}).Sort("-shares").One(&result)
 		return err
 	}
 

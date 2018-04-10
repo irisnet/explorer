@@ -1,19 +1,19 @@
 package rest
 
 import (
-	"net/http"
-	"github.com/gorilla/mux"
-	"github.com/spf13/viper"
 	"github.com/cosmos/cosmos-sdk"
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/stack"
-	"github.com/cosmos/cosmos-sdk/modules/coin"
 	"github.com/cosmos/cosmos-sdk/client/commands"
+	"github.com/cosmos/cosmos-sdk/modules/coin"
+	"github.com/cosmos/cosmos-sdk/stack"
+	"github.com/gorilla/mux"
+	"github.com/spf13/viper"
 	crypto "github.com/tendermint/go-crypto"
+	"net/http"
 
 	"github.com/irisnet/irisplorer.io/server/modules/stake"
-	"github.com/tendermint/go-wire"
 	"github.com/irisnet/irisplorer.io/server/modules/tools"
+	"github.com/tendermint/go-wire"
 )
 
 func RegisterStake(r *mux.Router) error {
@@ -35,10 +35,9 @@ func registerQueryCandidatesByAccount(r *mux.Router) error {
 }
 
 func queryCandidatesByAccount(w http.ResponseWriter, r *http.Request) {
-	if tools.ValidateReq(w,r) != nil {
+	if tools.ValidateReq(w, r) != nil {
 		return
 	}
-
 
 	args := mux.Vars(r)
 	delegatorAddr := args["address"]

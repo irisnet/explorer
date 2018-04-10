@@ -1,18 +1,18 @@
 package rest
 
 import (
-	"github.com/gorilla/mux"
 	"github.com/cosmos/cosmos-sdk"
-	"github.com/cosmos/cosmos-sdk/modules/coin"
-	"net/http"
 	"github.com/cosmos/cosmos-sdk/client/commands"
-	"github.com/cosmos/cosmos-sdk/stack"
 	"github.com/cosmos/cosmos-sdk/client/commands/query"
-	"github.com/irisnet/irisplorer.io/server/modules/tools"
-	"log"
-	"time"
+	"github.com/cosmos/cosmos-sdk/modules/coin"
+	"github.com/cosmos/cosmos-sdk/stack"
+	"github.com/gorilla/mux"
 	"github.com/irisnet/irisplorer.io/server/modules/store/m"
+	"github.com/irisnet/irisplorer.io/server/modules/tools"
 	"github.com/spf13/cast"
+	"log"
+	"net/http"
+	"time"
 )
 
 func RegisterAccount(r *mux.Router) error {
@@ -30,7 +30,7 @@ func RegisterAccount(r *mux.Router) error {
 }
 
 func queryAccount(w http.ResponseWriter, r *http.Request) {
-	if tools.ValidateReq(w,r) != nil {
+	if tools.ValidateReq(w, r) != nil {
 		return
 	}
 
@@ -43,7 +43,7 @@ func queryAccount(w http.ResponseWriter, r *http.Request) {
 }
 
 func queryAccounts(w http.ResponseWriter, r *http.Request) {
-	if tools.ValidateReq(w,r) != nil {
+	if tools.ValidateReq(w, r) != nil {
 		return
 	}
 
@@ -52,7 +52,7 @@ func queryAccounts(w http.ResponseWriter, r *http.Request) {
 	size := args["size"]
 	p := cast.ToInt(page)
 	s := cast.ToInt(size)
-	accounts := m.QueryAccountByPage(p,s)
+	accounts := m.QueryAccountByPage(p, s)
 	if err := query.FoutputProof(w, accounts, 0); err != nil {
 		sdk.WriteError(w, err)
 	}

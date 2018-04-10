@@ -2,22 +2,22 @@ package main
 
 import (
 	"fmt"
+	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
+	"github.com/irisnet/irisplorer.io/server/modules/store"
+	"github.com/irisnet/irisplorer.io/server/modules/tools"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"log"
 	"net/http"
-	"github.com/gorilla/mux"
-	"github.com/spf13/cobra"
-	"github.com/gorilla/handlers"
-	"github.com/spf13/viper"
 	"os"
-	"github.com/irisnet/irisplorer.io/server/modules/tools"
-	"github.com/irisnet/irisplorer.io/server/modules/store"
 
 	_ "github.com/cosmos/cosmos-sdk/modules/auth"
 	_ "github.com/cosmos/cosmos-sdk/modules/base"
 	_ "github.com/cosmos/cosmos-sdk/modules/coin"
 	_ "github.com/cosmos/cosmos-sdk/modules/nonce"
-	"github.com/irisnet/irisplorer.io/server/modules/sync"
 	"github.com/irisnet/irisplorer.io/server/modules/rest"
+	"github.com/irisnet/irisplorer.io/server/modules/sync"
 )
 
 var (
@@ -59,7 +59,7 @@ func AddRoutes(r *mux.Router) {
 func prepareSyncServer(cmd *cobra.Command, args []string) {
 	if !viper.GetBool(tools.WithOnlyRestServer) {
 		sync.Start()
-	}else {
+	} else {
 		sync.InitServer()
 	}
 }

@@ -1,15 +1,15 @@
 package sync
 
 import (
-	rpcclient "github.com/tendermint/tendermint/rpc/client"
+	"encoding/hex"
 	"github.com/irisnet/irisplorer.io/server/modules/store"
 	"github.com/irisnet/irisplorer.io/server/modules/store/m"
 	"github.com/irisnet/irisplorer.io/server/modules/tools"
-	"strings"
-	"encoding/hex"
-	"log"
-	"github.com/spf13/viper"
 	"github.com/robfig/cron"
+	"github.com/spf13/viper"
+	rpcclient "github.com/tendermint/tendermint/rpc/client"
+	"log"
+	"strings"
 )
 
 func InitServer() {
@@ -58,14 +58,14 @@ func watchBlock(c rpcclient.Client) error {
 	latestBlockHeight := status.LatestBlockHeight
 
 	funcChain := []func(tx store.Docs){
-		saveTx,saveOrUpdateAccount,updateAccountBalance,
+		saveTx, saveOrUpdateAccount, updateAccountBalance,
 	}
 
 	ch := make(chan int64)
 
-	go syncBlock(b.Height + 1, latestBlockHeight, funcChain, ch, 0)
+	go syncBlock(b.Height+1, latestBlockHeight, funcChain, ch, 0)
 	select {
-	case  <-ch:
+	case <-ch:
 		//更新同步记录
 		block, _ := c.Block(&latestBlockHeight)
 		b.Height = block.Block.Height
@@ -77,12 +77,12 @@ func watchBlock(c rpcclient.Client) error {
 var maxBatchNum = int64(10000)
 var minBatchSize = int64(20)
 
-func fastSync(c rpcclient.Client) error{
+func fastSync(c rpcclient.Client) error {
 	b, _ := m.QuerySyncTask()
 	status, _ := c.Status()
 	latestBlockHeight := status.LatestBlockHeight
 	funcChain := []func(tx store.Docs){
-		saveTx,saveOrUpdateAccount,
+		saveTx, saveOrUpdateAccount,
 	}
 	ch := make(chan int64)
 	threadNumAdd := int64(0)
@@ -91,19 +91,18 @@ func fastSync(c rpcclient.Client) error{
 	//单线程处理
 	if threadNum == 0 {
 		go syncBlock(b.Height, latestBlockHeight, funcChain, ch, 0)
-	}else {
+	} else {
 		//开启多线程处理
 		for i := int64(1); i <= threadNum; i++ {
 			threadNumAdd += i
-			var start = b.Height + (i - 1) * maxBatchNum + 1
-			var end = b.Height + i  * maxBatchNum
+			var start = b.Height + (i-1)*maxBatchNum + 1
+			var end = b.Height + i*maxBatchNum
 			if i == threadNum {
 				end = latestBlockHeight
 			}
 
 			go syncBlock(start, end, funcChain, ch, i)
 		}
-
 
 	}
 
@@ -117,7 +116,6 @@ func fastSync(c rpcclient.Client) error{
 			}
 		}
 	}
-
 
 end:
 	{
@@ -137,11 +135,10 @@ end:
 		return nil
 	}
 }
-func syncBlock(start int64, end int64, funcChain []func(tx store.Docs),  ch chan int64, threadNum int64){
-	log.Printf("threadNo[%d] begin sync block from %d to %d", threadNum,start,end)
+func syncBlock(start int64, end int64, funcChain []func(tx store.Docs), ch chan int64, threadNum int64) {
+	log.Printf("threadNo[%d] begin sync block from %d to %d", threadNum, start, end)
 	node := tools.GetNode()
 	defer node.Release()
-
 
 	for j := start; j <= end; j++ {
 		log.Printf("===========threadNo[%d] sync block,height:%d===========", threadNum, j)
