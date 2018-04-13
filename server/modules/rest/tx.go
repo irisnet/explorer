@@ -4,6 +4,7 @@ import (
 	"encoding/hex"
 	"github.com/cosmos/cosmos-sdk"
 	"github.com/gorilla/mux"
+	"github.com/irisnet/irisplorer.io/server/modules/store"
 	"github.com/irisnet/irisplorer.io/server/modules/store/m"
 	"github.com/irisnet/irisplorer.io/server/modules/tools"
 	"github.com/spf13/cast"
@@ -44,6 +45,68 @@ func registerQueryStakeTxByAccount(r *mux.Router) error {
 func registerQueryPageStakeTxByAccount(r *mux.Router) error {
 	r.HandleFunc("/tx/stake/{address}/{page}/{size}", queryPageStakeTxByAccount).Methods("GET")
 	return nil
+}
+
+func registerQueryTxs(r *mux.Router) error {
+	r.HandleFunc("/txs/{txType}", queryTxs).Methods("GET")
+	return nil
+}
+
+func queryTxs(w http.ResponseWriter, r *http.Request) {
+
+	r.ParseForm()
+
+	if tools.ValidateReq(w, r) != nil {
+		return
+	}
+
+	//过滤条件
+	query, collectionNm := buildQuery(r)
+
+	//分页条件
+	page := r.Form["page"][0]
+	size := r.Form["size"][0]
+
+	p := cast.ToInt(page)
+	s := cast.ToInt(size)
+
+	//排序条件
+	var sort string
+	if orderBy := r.Form["orderBy"]; len(orderBy) > 0 {
+		sort = orderBy[0]
+	}
+
+	result, _ := store.SelectByPage(collectionNm, query, sort, p, s)
+	tools.FmtOutPutResult(w, result)
+}
+
+func buildQuery(r *http.Request) (query *store.Query, collectionNm string) {
+	//过滤条件
+	address := r.Form["address"]
+	if len(address) > 0 {
+		value := address[0]
+		vector := r.Form["type"]
+
+		args := mux.Vars(r)
+		txType := args["txType"]
+
+		if txType == "coin" {
+			if len(vector) == 0 {
+				query = store.NewQuery().Or(store.M{{"from": value}, {"to": value}})
+			} else {
+				query = store.CreateQuery(vector[0], value)
+			}
+			collectionNm = m.DocsNmCoinTx
+		} else {
+			if len(vector) == 0 {
+				query = store.CreateQuery("from", value)
+			} else {
+				query = store.NewQuery().And(store.M{{"from": value}, {"type": vector[0]}})
+			}
+			collectionNm = m.DocsNmStakeTx
+		}
+	}
+	return query, collectionNm
 }
 
 // queryTx is to query transaction by hash
@@ -157,6 +220,7 @@ func queryPageStakeTxByAccount(w http.ResponseWriter, r *http.Request) {
 func RegisterTx(r *mux.Router) error {
 	funs := []func(*mux.Router) error{
 		registerQueryTx,
+		registerQueryTxs,
 		registerQueryCoinTxByAccount,
 		registerQueryPageCoinTxByAccount,
 		registerQueryAllCoinTxByPage,

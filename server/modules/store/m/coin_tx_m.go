@@ -40,8 +40,7 @@ func (c CoinTx) Index() mgo.Index {
 	}
 }
 
-func QueryAllCoinTx() []CoinTx {
-	result := []CoinTx{}
+func QueryAllCoinTx() (result []CoinTx) {
 	query := func(c *mgo.Collection) error {
 		err := c.Find(nil).Sort("-time").All(&result)
 		return err
@@ -55,10 +54,11 @@ func QueryAllCoinTx() []CoinTx {
 }
 
 //
-func QueryCoinTxsByAccount(account string) []CoinTx {
-	result := []CoinTx{}
+func QueryCoinTxsByAccount(account string) (result []CoinTx) {
 	query := func(c *mgo.Collection) error {
-		err := c.Find(bson.M{"$or": []bson.M{{"from": account}, {"to": account}}}).Sort("-time").All(&result)
+		query := store.NewQuery()
+		query.Or(store.M{{"from": account}, {"to": account}})
+		err := c.Find(query.Get()).Sort("-time").All(&result)
 		return err
 	}
 
@@ -69,11 +69,12 @@ func QueryCoinTxsByAccount(account string) []CoinTx {
 }
 
 //
-func QueryPageCoinTxsByAccount(from string, page, pageSize int) []CoinTx {
-	result := []CoinTx{}
+func QueryPageCoinTxsByAccount(from string, page, pageSize int) (result []CoinTx) {
 	query := func(c *mgo.Collection) error {
 		skip := (page - 1) * pageSize
-		err := c.Find(bson.M{"$or": []bson.M{{"from": from}, {"to": from}}}).Sort("-time").Skip(skip).Limit(pageSize).All(&result)
+		query := store.NewQuery()
+		query.Or(store.M{{"from": from}, {"to": from}})
+		err := c.Find(query.Get()).Sort("-time").Skip(skip).Limit(pageSize).All(&result)
 		return err
 	}
 
@@ -83,8 +84,8 @@ func QueryPageCoinTxsByAccount(from string, page, pageSize int) []CoinTx {
 
 	return result
 }
-func QueryAllPageCoinTxs(page, pageSize int) []CoinTx {
-	result := []CoinTx{}
+
+func QueryAllPageCoinTxs(page, pageSize int) (result []CoinTx) {
 	query := func(c *mgo.Collection) error {
 		skip := (page - 1) * pageSize
 		err := c.Find(nil).Sort("-time").Skip(skip).Limit(pageSize).All(&result)

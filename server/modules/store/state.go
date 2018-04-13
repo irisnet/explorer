@@ -4,7 +4,6 @@ import (
 	"errors"
 	"github.com/spf13/viper"
 	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
 	"log"
 	"time"
 )
@@ -67,13 +66,6 @@ func ExecCollection(collection string, s func(*mgo.Collection) error) error {
 	return s(c)
 }
 
-func Find(collection string, query interface{}) *mgo.Query {
-	session := getSession()
-	defer session.Close()
-	c := session.DB(DbIrisExp).C(collection)
-	return c.Find(query)
-}
-
 func index() {
 	if len(docs) == 0 {
 		return
@@ -126,18 +118,33 @@ func Update(h Docs) error {
 }
 
 /**
- * 执行查询，此方法可拆分做为公共方法
+ * 执行查询
  * [SearchPerson description]
- * @param {[type]} collectionName string [description]
- * @param {[type]} query          bson.M [description]
- * @param {[type]} sort           bson.M [description]
- * @param {[type]} fields         bson.M [description]
+ * @param {[type]} cName 		  string [description]
+ * @param {[type]} query          *Query [description]
+ * @param {[type]} sort           string [description]
  * @param {[type]} skip           int    [description]
  * @param {[type]} limit          int)   (results      []interface{}, err error [description]
  */
-func Query(collectionName string, query bson.M, sort string, fields bson.M, skip int, limit int) (results []interface{}, err error) {
+func SelectByPage(cName string, query *Query, sort string, page int, size int) (results []interface{}, err error) {
 	exop := func(c *mgo.Collection) error {
-		return c.Find(query).Sort(sort).Select(fields).Skip(skip).Limit(limit).All(&results)
+		skip := (page - 1) * size
+		if len(sort) > 0 {
+			return c.Find(query.Get()).Sort(sort).Skip(skip).Limit(size).All(&results)
+		}
+		log.Printf("select * from %s where %+v and skip=%d and limit=%d order by %s", cName, query, skip, size, sort)
+		return c.Find(query.Get()).Skip(skip).Limit(size).All(&results)
 	}
-	return results, ExecCollection(collectionName, exop)
+	return results, ExecCollection(cName, exop)
+}
+
+func Select(cName string, query *Query, sort string) (results []interface{}, err error) {
+	exop := func(c *mgo.Collection) error {
+		if len(sort) > 0 {
+			return c.Find(query.Get()).Sort(sort).All(&results)
+		}
+		log.Printf("select * from %s where %+v order by %s", cName, query, sort)
+		return c.Find(query.Get()).All(&results)
+	}
+	return results, ExecCollection(cName, exop)
 }
