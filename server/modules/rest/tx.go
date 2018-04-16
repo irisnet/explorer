@@ -91,14 +91,14 @@ func buildQuery(r *http.Request) (query *store.Query, collectionNm string) {
 		txType := args["txType"]
 
 		if txType == "coin" {
-			if len(vector) == 0 {
+			if len(vector) == 0 || len(vector[0]) == 0{
 				query = store.NewQuery().Or(store.M{{"from": value}, {"to": value}})
 			} else {
 				query = store.CreateQuery(vector[0], value)
 			}
 			collectionNm = m.DocsNmCoinTx
 		} else {
-			if len(vector) == 0 {
+			if len(vector) == 0 || len(vector[0]) == 0{
 				query = store.CreateQuery("from", value)
 			} else {
 				query = store.NewQuery().And(store.M{{"from": value}, {"type": vector[0]}})
