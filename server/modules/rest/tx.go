@@ -74,6 +74,9 @@ func queryTxs(w http.ResponseWriter, r *http.Request) {
 	var sort string
 	if orderBy := r.Form["orderBy"]; len(orderBy) > 0 {
 		sort = orderBy[0]
+	}else {
+		//默认按照时间由近及远排序
+		sort = "-time"
 	}
 
 	result, _ := store.SelectByPage(collectionNm, query, sort, p, s)
