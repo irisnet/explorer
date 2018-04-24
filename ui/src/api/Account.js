@@ -7,7 +7,7 @@ function get(address) {
 }
 
 function getCoinTxs(address) {
-  return fetch(`${API_ROOT}/account/${address}/tx/coin`)
+  return fetch(`${API_ROOT}/txs/coin?address=${address}&page=1&size=1000`)
     .then(checkStatus)
     .then(parseJSON)
 }
