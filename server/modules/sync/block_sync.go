@@ -90,7 +90,7 @@ func fastSync(c rpcclient.Client) error {
 	threadNum := (latestBlockHeight - b.Height) / maxBatchNum
 	//单线程处理
 	if threadNum == 0 {
-		go syncBlock(b.Height, latestBlockHeight, funcChain, ch, 0)
+		go syncBlock(b.Height + 1, latestBlockHeight, funcChain, ch, 0)
 	} else {
 		//开启多线程处理
 		for i := int64(1); i <= threadNum; i++ {
