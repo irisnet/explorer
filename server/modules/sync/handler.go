@@ -6,6 +6,7 @@ import (
 	"github.com/irisnet/irisplorer.io/server/modules/store"
 	"github.com/irisnet/irisplorer.io/server/modules/store/m"
 	"log"
+	"strings"
 )
 
 var delay = false
@@ -27,7 +28,7 @@ func saveTx(tx store.Docs) {
 		stakeTx, _ := tx.(m.StakeTx)
 
 		switch stakeTx.Type {
-		case stake.TypeTxUnbond:
+		case strings.TrimLeft(stake.TypeTxUnbond,"stake/"):
 			de, err := m.QueryDelegatorByAddressAndPubkey(stakeTx.From, stakeTx.PubKey)
 			if err != nil {
 				de2, err2 := m.QueryCandidateByAddressAndPubkey(stakeTx.From, stakeTx.PubKey)
@@ -41,7 +42,7 @@ func saveTx(tx store.Docs) {
 			}
 			de.Shares -= stakeTx.Amount.Amount
 			store.Update(de)
-		case stake.TypeTxDelegate:
+		case strings.TrimLeft(stake.TypeTxDelegate,"stake/"):
 			de, err := m.QueryDelegatorByAddressAndPubkey(stakeTx.From, stakeTx.PubKey)
 			if err != nil {
 				de = m.Delegator{
@@ -51,7 +52,7 @@ func saveTx(tx store.Docs) {
 			}
 			de.Shares += stakeTx.Amount.Amount
 			store.SaveOrUpdate(de)
-		case stake.TypeTxDeclareCandidacy:
+		case strings.TrimLeft(stake.TypeTxDeclareCandidacy,"stake/"):
 			de, err := m.QueryCandidateByAddressAndPubkey(stakeTx.From, stakeTx.PubKey)
 			if err != nil {
 				de = m.Candidate{
