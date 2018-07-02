@@ -2,82 +2,21 @@ package rest
 
 import (
 	"net/http"
-
-	sdk "github.com/cosmos/cosmos-sdk"
 	"github.com/gorilla/mux"
-	"github.com/irisnet/irisplorer.io/server/modules/store/m"
-	"github.com/irisnet/irisplorer.io/server/modules/tools"
-	"github.com/spf13/cast"
 )
 
 func queryBlock(w http.ResponseWriter, r *http.Request) {
-	if tools.ValidateReq(w, r) != nil {
-		return
-	}
 
-	args := mux.Vars(r)
-	height := args["height"]
-	node := tools.GetNode()
-	defer node.Release()
-	h := cast.ToInt64(height)
-	block, err := node.Client.Block(&h)
-	if err != nil {
-		sdk.WriteError(w, err)
-		return
-	}
-	if err := tools.FmtOutPutResult(w, block); err != nil {
-		sdk.WriteError(w, err)
-	}
 }
 
 func queryValidators(w http.ResponseWriter, r *http.Request) {
-	if tools.ValidateReq(w, r) != nil {
-		return
-	}
 
-	args := mux.Vars(r)
-	height := args["height"]
-
-	node := tools.GetNode()
-	defer node.Release()
-
-	h := cast.ToInt64(height)
-	block, err := node.Client.Validators(&h)
-	if err != nil {
-		sdk.WriteError(w, err)
-		return
-	}
-	if err := tools.FmtOutPutResult(w, block); err != nil {
-		sdk.WriteError(w, err)
-	}
 }
 
 func queryRecentBlock(w http.ResponseWriter, r *http.Request) {
-	node := tools.GetNode()
-	defer node.Release()
-
-	blocks, err := node.Client.BlockchainInfo(0, 0)
-	if err != nil {
-		sdk.WriteError(w, err)
-		return
-	}
-	if err := tools.FmtOutPutResult(w, blocks); err != nil {
-		sdk.WriteError(w, err)
-	}
 }
 
 func queryBlocks(w http.ResponseWriter, r *http.Request) {
-	if tools.ValidateReq(w, r) != nil {
-		return
-	}
-
-	args := mux.Vars(r)
-	page := args["page"]
-	p := cast.ToInt(page)
-	blocks := m.QueryBlockByPage(p)
-	if err := tools.FmtOutPutResult(w, blocks); err != nil {
-		sdk.WriteError(w, err)
-	}
 }
 
 // mux.Router registrars
