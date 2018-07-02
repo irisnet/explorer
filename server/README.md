@@ -1,4 +1,4 @@
-# irisplorer.io
+# explorer
 Blockchain explorer for the IRIS Hub
 ##### 1 Prerequisites
 
@@ -7,7 +7,7 @@ Blockchain explorer for the IRIS Hub
 ##### 2 install
 
 ```golang
-    go get github.com/irisnet/irisplorer.io
+    go get github.com/irisnet/explorer
     make all
 ```
 

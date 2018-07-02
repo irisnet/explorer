@@ -4,20 +4,12 @@ import (
 	"fmt"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	"github.com/irisnet/irisplorer.io/server/modules/store"
-	"github.com/irisnet/irisplorer.io/server/modules/tools"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"log"
 	"net/http"
 	"os"
-
-	_ "github.com/cosmos/cosmos-sdk/modules/auth"
-	_ "github.com/cosmos/cosmos-sdk/modules/base"
-	_ "github.com/cosmos/cosmos-sdk/modules/coin"
-	_ "github.com/cosmos/cosmos-sdk/modules/nonce"
-	"github.com/irisnet/irisplorer.io/server/modules/rest"
-	"github.com/irisnet/irisplorer.io/server/modules/sync"
+	"github.com/irisnet/explorer/server/modules/rest"
 )
 
 var (
@@ -31,14 +23,7 @@ var (
 )
 
 func prepareRestServerCommands() {
-
-	restServerCmd.PersistentFlags().Int64(tools.MaxConnectionNum, 500, "max connection amount of rest client")
-	restServerCmd.PersistentFlags().Int64(tools.InitConnectionNum, 100, "init connection amount of rest client")
-	restServerCmd.PersistentFlags().String(store.MgoUrl, "localhost:27017", "url of MongoDB")
-	restServerCmd.PersistentFlags().String(tools.SyncCron, "@every 5s", "Cron Task")
-
-	restServerCmd.PersistentFlags().IntP(tools.FlagPort, "p", 7998, "port to run the server on")
-	restServerCmd.PersistentFlags().Bool(tools.WithOnlyRestServer, false, "start rest server without sync process (default false)")
+	restServerCmd.PersistentFlags().IntP("port", "p", 8888, "port to run the server on")
 }
 
 func AddRoutes(r *mux.Router) {
@@ -56,23 +41,14 @@ func AddRoutes(r *mux.Router) {
 	}
 }
 
-func prepareSyncServer(cmd *cobra.Command, args []string) {
-	if !viper.GetBool(tools.WithOnlyRestServer) {
-		sync.Start()
-	} else {
-		sync.InitServer()
-	}
-}
 
 func cmdRestServer(cmd *cobra.Command, args []string) error {
-
-	prepareSyncServer(cmd, args)
 
 	router := mux.NewRouter()
 	// latest
 	AddRoutes(router)
 
-	addr := fmt.Sprintf(":%d", viper.GetInt(tools.FlagPort))
+	addr := fmt.Sprintf(":%d", viper.GetInt("port"))
 
 	log.Printf("Serving on %q", addr)
 
