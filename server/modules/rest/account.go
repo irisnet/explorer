@@ -3,7 +3,6 @@ package rest
 import (
 	"github.com/gorilla/mux"
 	"net/http"
-	"github.com/irisnet/irishub-sync/model/store/document"
 	"encoding/json"
 )
 
@@ -25,8 +24,7 @@ func queryAccount(w http.ResponseWriter, r *http.Request) {
 	args := mux.Vars(r)
 	address := args["address"]
 
-	acc,_ :=document.QueryAccount(address)
-	accByte,_ := json.Marshal(acc)
+	accByte,_ := json.Marshal(address)
 	w.Write(accByte)
 }
 
