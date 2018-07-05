@@ -34,10 +34,6 @@
   version = "1.6.2"
 
 [[constraint]]
-  name = "github.com/spf13/cobra"
-  version = "0.0.3"
-
-[[constraint]]
   branch = "v2"
   name = "gopkg.in/mgo.v2"
 

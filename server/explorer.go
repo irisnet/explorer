@@ -9,6 +9,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/gorilla/handlers"
 	"github.com/irisnet/explorer/server/utils"
+	"github.com/irisnet/explorer/server/version"
 )
 
 func AddRoutes(r *mux.Router) {
@@ -17,6 +18,7 @@ func AddRoutes(r *mux.Router) {
 		rest.RegisterTx,
 		rest.RegisterAccount,
 		rest.RegisterStake,
+		version.RegisterQueryVersion,
 	}
 
 	for _, routeRegistrar := range routeRegistrars {
