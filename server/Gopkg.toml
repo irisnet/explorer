@@ -34,6 +34,10 @@
   version = "1.6.2"
 
 [[constraint]]
+  branch = "develop"
+  name = "github.com/irisnet/irishub-sync"
+
+[[constraint]]
   branch = "v2"
   name = "gopkg.in/mgo.v2"
 

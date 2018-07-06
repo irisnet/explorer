@@ -20,6 +20,18 @@
   version = "v1.6.2"
 
 [[projects]]
+  branch = "develop"
+  name = "github.com/irisnet/irishub-sync"
+  packages = [
+    "conf/db",
+    "model/store",
+    "model/store/document",
+    "module/logger",
+    "util/constant"
+  ]
+  revision = "8af55dc3c0385328ac24555b6b3084d201afbb80"
+
+[[projects]]
   branch = "v2"
   name = "gopkg.in/mgo.v2"
   packages = [
@@ -29,11 +41,11 @@
     "internal/sasl",
     "internal/scram"
   ]
-  revision = "a7e2c1d573e19a65a0caa1c2f70758cd889c416e"
+  revision = "9856a29383ce1c59f308dd1cf0363a79b5bef6b5"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "92d52ecf1ea778f2144219052a6919cdb05b43b64dca546f1b20cd3bfe69e1b4"
+  inputs-digest = "7d3ae651f492f5e6c61a46e6f9d20bdcc92775d3411d7e10b6eb5353d9965155"
   solver-name = "gps-cdcl"
   solver-version = 1

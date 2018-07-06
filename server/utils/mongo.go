@@ -26,19 +26,19 @@ var session *mgo.Session
 
 func GetDatabase() *mgo.Database {
 	// max session num is 4096
-	return session.Copy().DB("sync_iris")
+	return session.Copy().DB("sync-iris-dev")
 }
 
-func QueryList(collation string, data interface{}, r *http.Request) []byte {
+func QueryList(collation string, data interface{}, m map[string]interface{}, sort string, r *http.Request) []byte {
 	page, size := TransferPage(r)
 	c := GetDatabase().C(collation)
 	defer c.Database.Session.Close()
-	count, err := c.Find(nil).Count()
+	count, err := c.Find(m).Count()
 	if err != nil {
 		resultByte, _ := json.Marshal(types.Page{Count: 0, Data: nil})
 		return resultByte
 	}
-	err = c.Find(nil).Skip((page - 1) * size).Limit(size).All(data)
+	err = c.Find(m).Skip((page - 1) * size).Limit(size).Sort(sort).All(data)
 	if err != nil {
 		resultByte, _ := json.Marshal(types.Page{Count: count, Data: nil})
 		return resultByte

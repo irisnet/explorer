@@ -5,21 +5,9 @@ import (
 	"net/http"
 	"encoding/json"
 	"github.com/irisnet/explorer/server/utils"
+	"github.com/irisnet/irishub-sync/model/store/document"
 	"gopkg.in/mgo.v2/bson"
-	"time"
 )
-
-type Account struct {
-	Address string    `bson:"address"`
-	Amount  []Coins   `bson:"amount"`
-	Time    time.Time `bson:"time"`
-	Height  int64     `bson:"height"`
-}
-
-type Coins struct {
-	Denom  string `bson:"denom"`
-	Amount int64  `bson:"amount"`
-}
 
 // mux.Router registrars
 func RegisterAccount(r *mux.Router) error {
@@ -42,7 +30,7 @@ func queryAccount(w http.ResponseWriter, r *http.Request) {
 
 	c := utils.GetDatabase().C("account")
 	defer c.Database.Session.Close()
-	var result Account
+	var result document.Account
 	err := c.Find(bson.M{"address": address}).Sort("-amount.amount").One(&result)
 	if err == nil {
 		resultByte, _ := json.Marshal(result)
@@ -51,8 +39,8 @@ func queryAccount(w http.ResponseWriter, r *http.Request) {
 }
 
 func queryAccounts(w http.ResponseWriter, r *http.Request) {
-	var data []Account
-	w.Write(utils.QueryList("account", &data, r))
+	var data []document.Account
+	w.Write(utils.QueryList("account", &data, nil, "-time", r))
 }
 
 func RegisterQueryAccount(r *mux.Router) error {
