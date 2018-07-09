@@ -60,27 +60,13 @@
   }
 
   window.onload = function () {
-    var ic = new smartCaptcha({
-      width: 300,
-      renderTo: '#sc',
-      default_txt: 'I\'m not a bot',
-      success_txt: 'Authentication success!',
-      fail_txt: 'Authentication failure! Clock again',
-      scaning_txt: 'Intelligent authenticating...',
-      success: function (data) {
-        document.getElementById("token").value = NVC_Opt.token;
-        document.getElementById("session_id").value = data.sessionId;
-        document.getElementById("sig").value = data.sig;
-        document.getElementById("submit").removeAttribute("disabled");
-      },
-    });
-    ic.init();
+
   }
   export default {
     name: "FaucetPage",
     data() {
       return {
-        faucet_url:"http://192.168.150.199:4000",
+        faucet_url: "http://192.168.150.199:4000",
         address: "",
         errMsg: "",
       }
@@ -88,10 +74,30 @@
     created: function () {
       let nvc = document.createElement('script');
       nvc.setAttribute('src', "//g.alicdn.com/sd/nvc/1.1.112/guide.js");
-      let captcha = document.createElement('script');
-      captcha.setAttribute('src', "//g.alicdn.com/sd/smartCaptcha/0.0.1/index.js");
       document.head.appendChild(nvc);
-      document.body.appendChild(captcha);
+
+      nvc.onload = () => {
+        let captcha = document.createElement('script');
+        captcha.setAttribute('src', "//g.alicdn.com/sd/smartCaptcha/0.0.1/index.js");
+        document.body.appendChild(captcha);
+        captcha.onload = () => {
+          var ic = new smartCaptcha({
+            width: 300,
+            renderTo: '#sc',
+            default_txt: 'I\'m not a bot',
+            success_txt: 'Authentication success!',
+            fail_txt: 'Authentication failure! Clock again',
+            scaning_txt: 'Intelligent authenticating...',
+            success: function (data) {
+              document.getElementById("token").value = NVC_Opt.token;
+              document.getElementById("session_id").value = data.sessionId;
+              document.getElementById("sig").value = data.sig;
+              document.getElementById("submit").removeAttribute("disabled");
+            },
+          });
+          ic.init();
+        }
+      }
       let addr = this.$route.query.address;
       if (addr && addr !== "") {
         this.address = addr
@@ -103,7 +109,7 @@
           alert("address is empty");
           return false;
         }
-        axios.post(this.faucet_url+'/apply', JSON.stringify({
+        axios.post(this.faucet_url + '/apply', JSON.stringify({
           address: document.getElementById("address").value,
           token: document.getElementById("token").value,
           session_id: document.getElementById("session_id").value,
