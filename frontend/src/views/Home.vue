@@ -1,17 +1,12 @@
 <template>
   <div class="home">
-    <Header />
+    这里是Home页面
   </div>
 </template>
 
-<script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import Header from '@/components/AppHeader.vue'; // @ is an alias to /src
+<script>
 
-@Component({
-  components: {
-    Header,
-  },
-})
-export default class Home extends Vue {}
+export default{
+
+}
 </script>

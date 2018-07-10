@@ -1,37 +1,148 @@
-
+<!--头部页面-->
 <template>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Navbar</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Dropdown
-          </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Something else here</a>
-          </div>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" href="#">Disabled</a>
-        </li>
-      </ul>
-      <form class="form-inline my-2 my-lg-0">
-        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-      </form>
+    <div class="app_header">
+        <header class="app_header_person_computer" v-if="devicesShow === 1">
+            <div class="imageWrap">
+                <img src="../assets/logo.png" alt="失去网络了..."/>
+            </div>
+            <div class="useFeature">
+                <div class="navSearch">
+                    <input type="text" class="search_input"
+                           placeholder="Search by Address / Txhash / Block"
+                    >
+                </div>
+                <div class="navButton">
+                    <span class="nav_item">Home</span>
+                    <span class="flag">|</span>
+                    <span class="nav_item">Block</span>
+                    <b-dropdown id="ddown-left" text="Transaction" variant="primary" class="m-2">
+                        <b-dropdown-item >Action</b-dropdown-item>
+                        <b-dropdown-item >Another action</b-dropdown-item>
+                        <b-dropdown-item >Something else here</b-dropdown-item>
+                    </b-dropdown>
+                    <span class="flag">|</span>
+                    <b-dropdown text="Left align" variant="Validators" class="m-2">
+                        <b-dropdown-item >Action</b-dropdown-item>
+                        <b-dropdown-item >Another action</b-dropdown-item>
+                        <b-dropdown-item >Something else here</b-dropdown-item>
+                    </b-dropdown>
+                    <span class="flag">|</span>
+                    <span class="nav_item">Nodes</span>
+                    <span class="flag">|</span>
+                    <span class="nav_item">Resources</span>
+                </div>
+            </div>
+
+        </header>
+        <div class="app_header_mobile" v-if="devicesShow === 0">
+            这是移动端显示端头部
+        </div>
     </div>
-  </nav>
 </template>
+<script>
+
+    export default {
+        name: 'app-header',
+        data() {
+            return {
+                devicesWidth: window.innerWidth,
+                devicesShow: 1,//1是显示pc端，0是移动端
+                searchValue: '',
+            }
+        },
+        beforeMount() {
+            if (this.devicesWidth > 500) {
+                this.devicesShow = 1;
+            } else {
+                this.devicesShow = 0;
+            }
+        },
+        methods: {
+            searchClick() {
+                console.log(this.searchValue)
+            }
+        }
+    }
+</script>
+<style lang="scss">
+    @import '../style/mixin.scss';
+    .app_header{
+        height: 100px;
+        width: 100%;
+        display:flex;
+        flex-direction:column;
+        align-items: center;
+        background: yellow;
+        .app_header_person_computer {
+            width:80%;
+            min-width:600px;
+            max-width:1000px;
+            height:100%;
+            border:1px solid red;
+            @include flex();
+            justify-content: space-between;
+            padding-top:10px;
+            .imageWrap {
+                width: 100px;
+                height: 50px;
+                img {
+                    width: 100px;
+                    height: 50px;
+                }
+            }
+            .useFeature{
+                @include flex();
+                flex-direction:column;
+                align-items: flex-end;
+                .navSearch {
+                    margin-bottom:10px;
+                    input::-webkit-input-placeholder{
+                        text-align:center;
+                        font-size:13px;
+                        color:#cccccc;
+                    }
+
+                    .search_input{
+                        @include borderRadius(4px);
+                        width:300px;
+                        height:28px;
+                        line-height:28px;
+                        text-indent:10px;
+                        outline:none;
+                        border:1px solid #dddddd;
+                    }
+                }
+                .navButton {
+                    @include flex();
+                    .nav_item{
+                        display:inline-block;
+                        height:30px;
+                        line-height:30px;
+                        padding:0 15px;
+                        text-align: center;
+                        font-size:14px;
+                        cursor:pointer;
+                    }
+                    .m-2{
+                        margin:0 !important;
+                        button{
+                            padding:0 15px;
+                        }
+                    }
+                    .flag{
+                        display:inline-block;
+                        height:30px;
+                        line-height:30px;
+                        font-size:12px;
+                        color:#dddddd;
+                    }
+                }
+
+            }
+
+        }
+    }
+
+
+
+</style>
