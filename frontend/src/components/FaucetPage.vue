@@ -55,6 +55,16 @@
         _ggk_action_timeout: ['我等得太久啦<br/>请', "javascript:noCaptcha.reset()", '再来一次', '或', "http://survey.taobao.com/survey/QgzQDdDd?token=%TOKEN", '反馈问题'],
         _ggk_net_err: ['网络实在不给力<br/>请', "javascript:noCaptcha.reset()", '再来一次', '或', "http://survey.taobao.com/survey/QgzQDdDd?token=%TOKEN", '反馈问题'],
         _ggk_too_fast: ['您刮得太快啦<br/>请', "javascript:noCaptcha.reset()", '再来一次', '或', "http://survey.taobao.com/survey/QgzQDdDd?token=%TOKEN", '反馈问题']
+      },
+      "en": {
+        _ggk_guide: "Please swipe on the screen and scrape off both shields",
+        _ggk_success: "Congratulations on successfully scraping the shield<br/>Move on",
+        _ggk_loading: "Loading...",
+        _ggk_fail: ['Ah, the shield is gone<br/>Please', "javascript:noCaptcha.reset()", 'one more time', 'or', "http://survey.taobao.com/survey/QgzQDdDd?token=%TOKEN", 'feedback problems'],
+        _ggk_action_timeout: ['I\'ve been waiting too long<br/>Please', "javascript:noCaptcha.reset()", 'one more time', 'or', "http://survey.taobao.com/survey/QgzQDdDd?token=%TOKEN", 'feedback problems'],
+        _ggk_net_err: ['The Internet isn\'t working<br/>Please', "javascript:noCaptcha.reset()", 'one more time', 'or', "http://survey.taobao.com/survey/QgzQDdDd?token=%TOKEN", 'feedback problems'],
+        _ggk_too_fast: ['You\'re shaving too fast<br/>Please', "javascript:noCaptcha.reset()", 'one more time', 'or', "http://survey.taobao.com/survey/QgzQDdDd?token=%TOKEN", 'feedback problems']
+
       }
     }
   }
