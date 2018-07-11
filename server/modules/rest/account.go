@@ -3,10 +3,13 @@ package rest
 import (
 	"github.com/gorilla/mux"
 	"net/http"
-	"github.com/irisnet/irishub-sync/model/store/document"
 	"encoding/json"
+	"github.com/irisnet/explorer/server/utils"
+	"github.com/irisnet/irishub-sync/model/store/document"
+	"gopkg.in/mgo.v2/bson"
 )
 
+// mux.Router registrars
 func RegisterAccount(r *mux.Router) error {
 	funs := []func(*mux.Router) error{
 		RegisterQueryAccount,
@@ -25,16 +28,20 @@ func queryAccount(w http.ResponseWriter, r *http.Request) {
 	args := mux.Vars(r)
 	address := args["address"]
 
-	acc,_ :=document.QueryAccount(address)
-	accByte,_ := json.Marshal(acc)
-	w.Write(accByte)
+	c := utils.GetDatabase().C("account")
+	defer c.Database.Session.Close()
+	var result document.Account
+	err := c.Find(bson.M{"address": address}).Sort("-amount.amount").One(&result)
+	if err == nil {
+		resultByte, _ := json.Marshal(result)
+		w.Write(resultByte)
+	}
 }
 
 func queryAccounts(w http.ResponseWriter, r *http.Request) {
+	var data []document.Account
+	w.Write(utils.QueryList("account", &data, nil, "-time", r))
 }
-
-
-// mux.Router registrars
 
 func RegisterQueryAccount(r *mux.Router) error {
 	r.HandleFunc("/account/{address}", queryAccount).Methods("GET")

@@ -1,11 +1,10 @@
-all: get_vendor_deps install
+all: get_vendor_deps build
 
 get_vendor_deps:
-	go get github.com/Masterminds/glide
-	glide install
+	dep ensure
 	
-install:
-	go install ./cmd/irisplorer
+build:
+	go build -o build/irisplorer explorer.go
 
 irisplorer:
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o build/irisplorer ./cmd/irisplorer
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o build/irisplorer explorer.go
