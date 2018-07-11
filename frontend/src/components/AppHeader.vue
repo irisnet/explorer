@@ -29,13 +29,35 @@
                     <span class="flag">|</span>
                     <span class="nav_item">Nodes</span>
                     <span class="flag">|</span>
-                    <span class="nav_item">Resources</span>
+                    <span class="nav_item" style='padding-right: 0'>Resources</span>
                 </div>
             </div>
 
         </header>
         <div class="app_header_mobile" v-if="devicesShow === 0">
-            这是移动端显示端头部
+            <div class="feature_btn" @click="showFeature"></div>
+            <div class="image_wrap_mobile">
+                <!--<img src="../assets/logo.png" alt="失去网络了..."/>-->
+                logo
+            </div>
+
+            <div class="use_feature_mobile" v-show="featureShow">
+                <span class="feature_btn_mobile feature_nav">Home</span>
+                <span class="feature_btn_mobile feature_nav">Blocks</span>
+                <span class="feature_btn_mobile feature_nav" @click="transactionShow =! transactionShow">Transactions</span>
+                <span class="feature_btn_mobile feature_subNav" v-show="transactionShow">Recent Transactions</span>
+                <span class="feature_btn_mobile feature_subNav" v-show="transactionShow">Transfer Transactions</span>
+                <span class="feature_btn_mobile feature_subNav" v-show="transactionShow">Delegate Transactions</span>
+                <span class="feature_btn_mobile feature_nav"  @click="validatorsShow =! validatorsShow">Validators</span>
+                <span class="feature_btn_mobile feature_subNav"  v-show="validatorsShow">Validators</span>
+                <span class="feature_btn_mobile feature_subNav"  v-show="validatorsShow">Candidates</span>
+                <span class="feature_btn_mobile feature_nav">Faucet</span>
+            </div>
+            <div class="search_input_mobile">
+                <input type="text" class="search_input"
+                       placeholder="Search by Address / Txhash / Block"
+                >
+            </div>
         </div>
     </div>
 </template>
@@ -48,6 +70,9 @@
                 devicesWidth: window.innerWidth,
                 devicesShow: 1,//1是显示pc端，0是移动端
                 searchValue: '',
+                featureShow:false,//是否显示功能菜单栏
+                transactionShow:false,//点击显示Transactions菜单
+                validatorsShow:false,//点击显示validators菜单
             }
         },
         beforeMount() {
@@ -60,6 +85,10 @@
         methods: {
             searchClick() {
                 console.log(this.searchValue)
+            },
+            showFeature(){
+                console.log('显示功能菜单')
+                this.featureShow = !this.featureShow;
             }
         }
     }
@@ -128,6 +157,12 @@
                         button{
                             padding:0 15px;
                         }
+                        .btn{
+                            background-color: transparent;
+                            color:#dddddd;
+                            border:none;
+                            font-weight:normal;
+                        }
                     }
                     .flag{
                         display:inline-block;
@@ -140,6 +175,57 @@
 
             }
 
+        }
+        .app_header_mobile{
+            width:100%;
+            padding:10px 0;
+            @include flex();
+            flex-direction:column;
+            position:relative;
+            height:100px;
+            .feature_btn{
+                position:absolute;
+                width:40px;
+                height:40px;
+                top:0;
+                right:0;
+                background: lawngreen;
+            }
+            .image_wrap_mobile{
+                width: 70vw;
+                height:40px;
+                img{
+                    width:100%;
+                    height:100%;
+                }
+            }
+            .search_input_mobile{
+                width:100%;
+                @include flex();
+                flex-direction:column;
+                align-items:center;
+                input{
+                    width:80%;
+                }
+            }
+            .use_feature_mobile{
+                position:absolute;
+                width:100%;
+                top:100px;
+                left:0;
+                background:#3190e8;
+                @include flex();
+                flex-direction:column;
+                .feature_btn_mobile{
+                    border-bottom:1px solid #dddddd;
+                    height:28px;
+                    line-height:28px;
+                    padding-left:15px;
+                }
+                .feature_subNav{
+                    padding-left:30px;
+                }
+            }
         }
     }
 
