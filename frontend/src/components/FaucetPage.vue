@@ -55,32 +55,28 @@
         _ggk_action_timeout: ['我等得太久啦<br/>请', "javascript:noCaptcha.reset()", '再来一次', '或', "http://survey.taobao.com/survey/QgzQDdDd?token=%TOKEN", '反馈问题'],
         _ggk_net_err: ['网络实在不给力<br/>请', "javascript:noCaptcha.reset()", '再来一次', '或', "http://survey.taobao.com/survey/QgzQDdDd?token=%TOKEN", '反馈问题'],
         _ggk_too_fast: ['您刮得太快啦<br/>请', "javascript:noCaptcha.reset()", '再来一次', '或', "http://survey.taobao.com/survey/QgzQDdDd?token=%TOKEN", '反馈问题']
+      },
+      "en": {
+        _ggk_guide: "Please swipe on the screen and scrape off both shields",
+        _ggk_success: "Congratulations on successfully scraping the shield<br/>Move on",
+        _ggk_loading: "Loading...",
+        _ggk_fail: ['Ah, the shield is gone<br/>Please', "javascript:noCaptcha.reset()", 'one more time', 'or', "http://survey.taobao.com/survey/QgzQDdDd?token=%TOKEN", 'feedback problems'],
+        _ggk_action_timeout: ['I\'ve been waiting too long<br/>Please', "javascript:noCaptcha.reset()", 'one more time', 'or', "http://survey.taobao.com/survey/QgzQDdDd?token=%TOKEN", 'feedback problems'],
+        _ggk_net_err: ['The Internet isn\'t working<br/>Please', "javascript:noCaptcha.reset()", 'one more time', 'or', "http://survey.taobao.com/survey/QgzQDdDd?token=%TOKEN", 'feedback problems'],
+        _ggk_too_fast: ['You\'re shaving too fast<br/>Please', "javascript:noCaptcha.reset()", 'one more time', 'or', "http://survey.taobao.com/survey/QgzQDdDd?token=%TOKEN", 'feedback problems']
+
       }
     }
   }
 
   window.onload = function () {
-    var ic = new smartCaptcha({
-      width: 300,
-      renderTo: '#sc',
-      default_txt: 'I\'m not a bot',
-      success_txt: 'Authentication success!',
-      fail_txt: 'Authentication failure! Clock again',
-      scaning_txt: 'Intelligent authenticating...',
-      success: function (data) {
-        document.getElementById("token").value = NVC_Opt.token;
-        document.getElementById("session_id").value = data.sessionId;
-        document.getElementById("sig").value = data.sig;
-        document.getElementById("submit").removeAttribute("disabled");
-      },
-    });
-    ic.init();
+
   }
   export default {
     name: "FaucetPage",
     data() {
       return {
-        faucet_url:"http://192.168.150.199:4000",
+        faucet_url: "http://192.168.150.199:4000",
         address: "",
         errMsg: "",
       }
@@ -88,10 +84,30 @@
     created: function () {
       let nvc = document.createElement('script');
       nvc.setAttribute('src', "//g.alicdn.com/sd/nvc/1.1.112/guide.js");
-      let captcha = document.createElement('script');
-      captcha.setAttribute('src', "//g.alicdn.com/sd/smartCaptcha/0.0.1/index.js");
       document.head.appendChild(nvc);
-      document.body.appendChild(captcha);
+
+      nvc.onload = () => {
+        let captcha = document.createElement('script');
+        captcha.setAttribute('src', "//g.alicdn.com/sd/smartCaptcha/0.0.1/index.js");
+        document.body.appendChild(captcha);
+        captcha.onload = () => {
+          var ic = new smartCaptcha({
+            width: 300,
+            renderTo: '#sc',
+            default_txt: 'I\'m not a bot',
+            success_txt: 'Authentication success!',
+            fail_txt: 'Authentication failure! Clock again',
+            scaning_txt: 'Intelligent authenticating...',
+            success: function (data) {
+              document.getElementById("token").value = NVC_Opt.token;
+              document.getElementById("session_id").value = data.sessionId;
+              document.getElementById("sig").value = data.sig;
+              document.getElementById("submit").removeAttribute("disabled");
+            },
+          });
+          ic.init();
+        }
+      }
       let addr = this.$route.query.address;
       if (addr && addr !== "") {
         this.address = addr
@@ -103,7 +119,7 @@
           alert("address is empty");
           return false;
         }
-        axios.post(this.faucet_url+'/apply', JSON.stringify({
+        axios.post(this.faucet_url + '/apply', JSON.stringify({
           address: document.getElementById("address").value,
           token: document.getElementById("token").value,
           session_id: document.getElementById("session_id").value,
