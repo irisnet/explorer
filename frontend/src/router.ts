@@ -17,10 +17,10 @@ export default new Router({
       component: Home,
     },
     {
-      path: 'faucet', component: FaucetPage
+      path: '/faucet', component: FaucetPage
     },
     {
-      path: 'block', component: BlockPage
+      path: '/block', component: BlockPage
     }
   ]
 
