@@ -9,7 +9,10 @@
                 <div class="navSearch">
                     <input type="text" class="search_input"
                            placeholder="Search by Address / Txhash / Block"
+                           v-model="searchInputValue"
+                           @keyup.enter="onInputChange"
                     >
+                    <i class="search_icon" @click="getData(searchInputValue)"></i>
                 </div>
                 <div class="navButton">
                     <span class="nav_item">Home</span>
@@ -42,16 +45,16 @@
             </div>
 
             <div class="use_feature_mobile" v-show="featureShow">
-                <span class="feature_btn_mobile feature_nav">Home</span>
-                <span class="feature_btn_mobile feature_nav">Blocks</span>
+                <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/home')">Home</span>
+                <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/blocks')">Blocks</span>
                 <span class="feature_btn_mobile feature_nav" @click="transactionShow =! transactionShow">Transactions</span>
-                <span class="feature_btn_mobile feature_subNav" v-show="transactionShow">Recent Transactions</span>
-                <span class="feature_btn_mobile feature_subNav" v-show="transactionShow">Transfer Transactions</span>
-                <span class="feature_btn_mobile feature_subNav" v-show="transactionShow">Delegate Transactions</span>
+                <span class="feature_btn_mobile feature_subNav" v-show="transactionShow" @click="featureButtonClick('/recent_transactions')">Recent Transactions</span>
+                <span class="feature_btn_mobile feature_subNav" v-show="transactionShow" @click="featureButtonClick('/transfer_transactions')">Transfer Transactions</span>
+                <span class="feature_btn_mobile feature_subNav" v-show="transactionShow" @click="featureButtonClick('/delegate_transactions')">Delegate Transactions</span>
                 <span class="feature_btn_mobile feature_nav"  @click="validatorsShow =! validatorsShow">Validators</span>
-                <span class="feature_btn_mobile feature_subNav"  v-show="validatorsShow">Validators</span>
-                <span class="feature_btn_mobile feature_subNav"  v-show="validatorsShow">Candidates</span>
-                <span class="feature_btn_mobile feature_nav">Faucet</span>
+                <span class="feature_btn_mobile feature_subNav"  v-show="validatorsShow" @click="featureButtonClick('/validators')">Validators</span>
+                <span class="feature_btn_mobile feature_subNav"  v-show="validatorsShow" @click="featureButtonClick('/candidates')">Candidates</span>
+                <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/faucet')">Faucet</span>
             </div>
             <div class="search_input_mobile">
                 <input type="text" class="search_input"
@@ -73,6 +76,7 @@
                 featureShow:false,//是否显示功能菜单栏
                 transactionShow:false,//点击显示Transactions菜单
                 validatorsShow:false,//点击显示validators菜单
+                searchInputValue:'',
             }
         },
         beforeMount() {
@@ -82,14 +86,34 @@
                 this.devicesShow = 0;
             }
         },
+        mounted(){
+            document.getElementById('router_wrap').addEventListener('click',this.hideFeature)
+        },
+        beforeDestroy(){
+            document.getElementById('router_wrap').removeEventListener('click',this.hideFeature)
+        },
         methods: {
-            searchClick() {
-                console.log(this.searchValue)
+            hideFeature(){
+                if(this.featureShow){
+                    this.featureShow = false;
+                }
             },
             showFeature(){
-                console.log('显示功能菜单')
                 this.featureShow = !this.featureShow;
+            },
+            featureButtonClick(path){
+                this.featureShow = !this.featureShow;
+                console.log(path)
+
+            },
+            getData(data){
+                console.log(data)
+            },
+            onInputChange(){
+                console.log(this.searchInputValue)
             }
+
+
         }
     }
 </script>
@@ -125,6 +149,7 @@
                 align-items: flex-end;
                 .navSearch {
                     margin-bottom:10px;
+                    position:relative;
                     input::-webkit-input-placeholder{
                         text-align:center;
                         font-size:13px;
@@ -139,6 +164,14 @@
                         text-indent:10px;
                         outline:none;
                         border:1px solid #dddddd;
+                    }
+                    .search_icon{
+                        position:absolute;
+                        top:5px;
+                        right:10px;
+                        width:15px;
+                        height:15px;
+                        background: lawngreen;
                     }
                 }
                 .navButton {
@@ -201,11 +234,25 @@
             }
             .search_input_mobile{
                 width:100%;
+                margin-top:10px;
                 @include flex();
                 flex-direction:column;
                 align-items:center;
+                input::-webkit-input-placeholder{
+                    text-align:center;
+                    font-size:14px;
+                    color:#cccccc;
+                    line-height:28px;
+                }
                 input{
-                    width:80%;
+                    width:95%;
+                    @include borderRadius(5px);
+                    border:1px solid #eee;
+                    font-size:14px;
+                    &:focus{
+                        border:1px solid #3190e8;
+                        outline:none;
+                    }
                 }
             }
             .use_feature_mobile{
@@ -217,10 +264,11 @@
                 @include flex();
                 flex-direction:column;
                 .feature_btn_mobile{
-                    border-bottom:1px solid #dddddd;
-                    height:28px;
-                    line-height:28px;
+                    border-bottom:1px solid #eee;
+                    height:39px;
+                    line-height:39px;
                     padding-left:15px;
+                    color:#555;
                 }
                 .feature_subNav{
                     padding-left:30px;
