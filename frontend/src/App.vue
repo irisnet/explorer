@@ -70,7 +70,9 @@
 </script>
 <style lang="scss">
   @import './style/mixin.scss';
-
+  html{
+    font-size:62.5%;
+  }
   body, html {
     width: 100%;
     height: 100%;
@@ -85,13 +87,13 @@
       flex: 1;
       overflow: auto;
       .router_view{
-        min-height:532px;
+        min-height:53.2rem;
       }
       .person_computer_wrap_footer{
-        height: 100px;
+        height: 10rem;
       }
       .mobile_wrap_footer{
-        height:180px;
+        height:18rem;
       }
       footer {
 
@@ -99,18 +101,18 @@
         @include flex();
         flex-direction: column;
         align-items: center;
-        padding:10px 0;
+        padding:1rem 0;
         .person_computer_footer {
           width: 80%;
-          min-width: 600px;
-          max-width: 1000px;
+          min-width: 70rem;
+          max-width: 100rem;
           @include flex();
           flex-direction:row;
           justify-content: space-between;
           .person_computer_footer_left{
             width:50%;
             @include flex();
-            margin-right:15px;
+            margin-right:1.5rem;
           }
           .person_computer_footer_right{
             width:45%;
@@ -137,10 +139,10 @@
         .person_computer_footer, .mobile_footer{
           .footer_left{
             .footer_logo_wrap{
-              width:180px;
-              height:60px;
-              border:1px solid red;
-              margin-right:15px;
+              width:18rem;
+              height:6rem;
+              border:0.1rem solid red;
+              margin-right:1.5rem;
               a{
                 display:inline-block;
                 text-decoration: none;
@@ -151,19 +153,19 @@
             .footer_description_wrap{
               flex:1;
               color:#cccccc;
-              font-size:13px;
-              padding:5px;
+              font-size:1.3rem;
+              padding:0.5rem;
             }
           }
           .footer_right{
             .footer_link_wrap{
-              height:40px;
+              height:4rem;
               .footer_link_wrap_item{
                 display:inline-block;
-                padding:5px 10px;
+                padding:0.5rem 1rem;
                 color:#fff;
                 font-weight: 300;
-                font-size:12px;
+                font-size:1.2rem;
                 &:hover{
                   text-decoration: none;
                 }
@@ -174,9 +176,9 @@
 
             }
             .footer_copyright_wrap{
-              height:40px;
+              height:4rem;
               color:#cccccc;
-              font-size:13px;
+              font-size:1.3rem;
             }
           }
         }

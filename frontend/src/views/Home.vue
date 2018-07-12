@@ -123,18 +123,18 @@
         align-items: center;
         .personal_computer_home_wrap {
             width: 80%;
-            min-width: 600px;
-            max-width: 1000px;
-            border: 1px solid #3190e8;
-            margin-top: 20px;
+            min-width: 70rem;
+            max-width: 100rem;
+            border: 0.1rem solid #3190e8;
+            margin-top: 2rem;
             .module_item_wrap_computer {
                 width: 100%;
                 @include flex();
                 justify-content: space-between;
                 .home_module_item {
                     width: 45%;
-                    margin-bottom: 10px;
-                    border: 1px solid #eee;
+                    margin-bottom: 1rem;
+                    border: 0.1rem solid #eee;
                 }
             }
 
@@ -143,31 +143,31 @@
             flex-direction: column;
             justify-content: space-between;
             width: 100%;
-            padding: 10px;
+            padding: 1rem;
             .module_item_wrap_mobile {
                 @include flex();
                 flex-direction: column;
                 align-items: center;
                 .home_module_item {
                     width: 98%;
-                    margin-bottom: 10px;
-                    border: 1px solid #eee;
+                    margin-bottom: 1rem;
+                    border: 0.1rem solid #eee;
                 }
             }
         }
         .home_module_item_status {
-            padding: 10px;
+            padding: 1rem;
             background: #3190e8;
             .home_module_item_status_title {
                 @include flex();
-                border-bottom: 1px solid #ffffff;
+                border-bottom: 0.1rem solid #ffffff;
                 justify-content: space-between;
                 span {
                     font-weight: 500;
                     color: #fff;
                     display: inline-block;
-                    height: 28px;
-                    line-height: 28px;
+                    height: 2.8rem;
+                    line-height: 2.8rem;
                 }
             }
             section {
@@ -178,13 +178,13 @@
                     flex-direction: column;
                     span {
                         &:nth-child(2n+1) {
-                            margin-top: 10px;
-                            font-size: 12px;
+                            margin-top: 1rem;
+                            font-size: 1.2rem;
                             color: #ffffff;
                             font-weight: normal;
                         }
                         &:nth-child(2n) {
-                            font-size: 12px;
+                            font-size: 1.2rem;
                             color: #cccccc;
                         }
                     }
@@ -195,13 +195,13 @@
                     flex-direction: column;
                     span {
                         &:nth-child(2n+1) {
-                            margin-top: 10px;
-                            font-size: 12px;
+                            margin-top: 1rem;
+                            font-size: 1.2rem;
                             color: #ffffff;
                             font-weight: normal;
                         }
                         &:nth-child(2n) {
-                            font-size: 12px;
+                            font-size: 1.2rem;
                             color: #cccccc;
                         }
                     }
@@ -211,9 +211,9 @@
                 font-weight: 500;
                 color: #fff;
                 display: inline-block;
-                height: 28px;
-                line-height: 28px;
-                border-bottom: 1px solid #ffffff;
+                height: 2.8rem;
+                line-height: 2.8rem;
+                border-bottom: 0.1rem solid #ffffff;
                 width: 100%;
 
             }
@@ -225,7 +225,7 @@
                     @include flex();
                     flex-direction:column;
                     span {
-                        font-size: 12px;
+                        font-size: 1.2rem;
                         color: #ffffff;
                         font-weight: normal;
                     }
