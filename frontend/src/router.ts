@@ -31,7 +31,7 @@ export default new Router({
       path: '/recent_transactions/:type/:param', component: BlocksListPage
     },
     {
-      path: '/transactions_detail', component: TransactionsDetail
+      path: '/tx', component: TransactionsDetail
     },
 
   ]
