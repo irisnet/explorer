@@ -83,7 +83,7 @@
     },
     mounted() {
       console.log(this.$route.query);
-      let url = ``;
+      let url = `/api/tx/4CC31317C59D81B32937A19FE81E006F59F249F3`;
 
       axios.get(url).then((data)=>{
         if(data.status === 200){
