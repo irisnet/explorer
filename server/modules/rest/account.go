@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"encoding/json"
 	"github.com/irisnet/explorer/server/utils"
-	"github.com/irisnet/irishub-sync/model/store/document"
+	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -44,11 +44,11 @@ func queryAccounts(w http.ResponseWriter, r *http.Request) {
 }
 
 func RegisterQueryAccount(r *mux.Router) error {
-	r.HandleFunc("/account/{address}", queryAccount).Methods("GET")
+	r.HandleFunc("/api/account/{address}", queryAccount).Methods("GET")
 	return nil
 }
 
 func RegisterQueryAllAccount(r *mux.Router) error {
-	r.HandleFunc("/accounts/{page}/{size}", queryAccounts).Methods("GET")
+	r.HandleFunc("/api/accounts/{page}/{size}", queryAccounts).Methods("GET")
 	return nil
 }

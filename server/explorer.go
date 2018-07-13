@@ -33,6 +33,8 @@ func main()  {
 	// latest
 	AddRoutes(router)
 
+	router.PathPrefix("/").Handler(http.StripPrefix("/",http.FileServer(http.Dir("../frontend/dist/"))))
+
 	port := utils.GetEnv("PORT","8080")
 	addr := fmt.Sprintf(":%s", port)
 

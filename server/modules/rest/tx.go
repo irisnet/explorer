@@ -6,46 +6,46 @@ import (
 	"github.com/irisnet/explorer/server/utils"
 	"gopkg.in/mgo.v2/bson"
 	"encoding/json"
-	"github.com/irisnet/irishub-sync/model/store/document"
+	"github.com/irisnet/irishub-sync/store/document"
 )
 
 func registerQueryTx(r *mux.Router) error {
-	r.HandleFunc("/tx/{hash}", queryTx).Methods("GET")
+	r.HandleFunc("/api/tx/{hash}", queryTx).Methods("GET")
 	return nil
 }
 
 func registerQueryAllCoinTxByPage(r *mux.Router) error {
-	r.HandleFunc("/txs/coin/{page}/{size}", queryAllCoinTxByPage).Methods("GET")
+	r.HandleFunc("/api/txs/coin/{page}/{size}", queryAllCoinTxByPage).Methods("GET")
 	return nil
 }
 
 func registerQueryCoinTxByAccount(r *mux.Router) error {
-	r.HandleFunc("/tx/coin/{address}", queryCoinTxByAccount).Methods("GET")
+	r.HandleFunc("/api/tx/coin/{address}", queryCoinTxByAccount).Methods("GET")
 	return nil
 }
 
 func registerQueryPageCoinTxByAccount(r *mux.Router) error {
-	r.HandleFunc("/tx/coin/{address}/{page}/{size}", queryCoinPageTxByAccount).Methods("GET")
+	r.HandleFunc("/api/tx/coin/{address}/{page}/{size}", queryCoinPageTxByAccount).Methods("GET")
 	return nil
 }
 
 func registerQueryAllStakeTxByPage(r *mux.Router) error {
-	r.HandleFunc("/txs/stake/{page}/{size}", queryAllStakeTxByPage).Methods("GET")
+	r.HandleFunc("/api/txs/stake/{page}/{size}", queryAllStakeTxByPage).Methods("GET")
 	return nil
 }
 
 func registerQueryStakeTxByAccount(r *mux.Router) error {
-	r.HandleFunc("/tx/stake/{address}", queryStakeTxByAccount).Methods("GET")
+	r.HandleFunc("/api/tx/stake/{address}", queryStakeTxByAccount).Methods("GET")
 	return nil
 }
 
 func registerQueryPageStakeTxByAccount(r *mux.Router) error {
-	r.HandleFunc("/tx/stake/{address}/{page}/{size}", queryPageStakeTxByAccount).Methods("GET")
+	r.HandleFunc("/api/tx/stake/{address}/{page}/{size}", queryPageStakeTxByAccount).Methods("GET")
 	return nil
 }
 
 func registerQueryTxs(r *mux.Router) error {
-	r.HandleFunc("/txs/{page}/{size}", queryTxs).Methods("GET")
+	r.HandleFunc("/api/txs/{page}/{size}", queryTxs).Methods("GET")
 	return nil
 }
 
