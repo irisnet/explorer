@@ -6,7 +6,7 @@ import (
 	"github.com/irisnet/explorer/server/utils"
 	"gopkg.in/mgo.v2/bson"
 	"encoding/json"
-	"github.com/irisnet/irishub-sync/model/store/document"
+	"github.com/irisnet/irishub-sync/store/document"
 	"strconv"
 )
 
@@ -43,22 +43,22 @@ func queryBlocks(w http.ResponseWriter, r *http.Request) {
 // mux.Router registrars
 
 func registerQueryBlock(r *mux.Router) error {
-	r.HandleFunc("/block/{height}", queryBlock).Methods("GET")
+	r.HandleFunc("/api/block/{height}", queryBlock).Methods("GET")
 	return nil
 }
 
 func registerQueryValidators(r *mux.Router) error {
-	r.HandleFunc("/validators/{height}", queryValidators).Methods("GET")
+	r.HandleFunc("/api/validators/{height}", queryValidators).Methods("GET")
 	return nil
 }
 
 func registerQueryRecentBlock(r *mux.Router) error {
-	r.HandleFunc("/blocks/recent", queryRecentBlock).Methods("GET")
+	r.HandleFunc("/api/blocks/recent", queryRecentBlock).Methods("GET")
 	return nil
 }
 
 func registerQueryBlocks(r *mux.Router) error {
-	r.HandleFunc("/blocks/{page}/{size}", queryBlocks).Methods("GET")
+	r.HandleFunc("/api/blocks/{page}/{size}", queryBlocks).Methods("GET")
 	return nil
 }
 

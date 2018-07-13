@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/irisnet/explorer/server/utils"
-	"github.com/irisnet/irishub-sync/model/store/document"
+	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
 	"encoding/json"
 )
@@ -26,17 +26,17 @@ func RegisterStake(r *mux.Router) error {
 }
 
 func registerQueryCandidatesByAccount(r *mux.Router) error {
-	r.HandleFunc("/stake/candidates/{address}", queryCandidatesByAccount).Methods("GET")
+	r.HandleFunc("/api/stake/candidates/{address}", queryCandidatesByAccount).Methods("GET")
 	return nil
 }
 
 func registerQueryCandidates(r *mux.Router) error {
-	r.HandleFunc("/stake/candidates/{page}/{size}", queryCandidates).Methods("GET")
+	r.HandleFunc("/api/stake/candidates/{page}/{size}", queryCandidates).Methods("GET")
 	return nil
 }
 
 func registerQueryCandidate(r *mux.Router) error {
-	r.HandleFunc("/stake/candidate/{address}", queryCandidate).Methods("GET")
+	r.HandleFunc("/api/stake/candidate/{address}", queryCandidate).Methods("GET")
 	return nil
 }
 
