@@ -80,6 +80,7 @@
 
 <script>
 
+  import Tools from '../common/Tools';
     export default {
         name: 'app-header',
         data() {
@@ -98,7 +99,7 @@
             }
         },
         beforeMount() {
-            if (this.devicesWidth > 500) {
+            if (Tools.currentDeviceIsPersonComputer()) {
                 this.pageClassName = 'personal_computer_home_wrap';
                 this.module_item_wrap = 'module_item_wrap_computer';
             } else {
@@ -117,14 +118,10 @@
     @import '../style/mixin.scss';
 
     .home_wrap {
-        width: 100%;
         @include flex();
-        flex-direction: column;
-        align-items: center;
+        @include pcContainer;
         .personal_computer_home_wrap {
-            width: 80%;
-            min-width: 70rem;
-            max-width: 100rem;
+          @include pcCenter;
             border: 0.1rem solid #3190e8;
             margin-top: 2rem;
             .module_item_wrap_computer {
@@ -179,12 +176,12 @@
                     span {
                         &:nth-child(2n+1) {
                             margin-top: 1rem;
-                            font-size: 1.2rem;
+                            font-size: 1.4rem;
                             color: #ffffff;
                             font-weight: normal;
                         }
                         &:nth-child(2n) {
-                            font-size: 1.2rem;
+                            font-size: 1.4rem;
                             color: #cccccc;
                         }
                     }
@@ -196,12 +193,12 @@
                     span {
                         &:nth-child(2n+1) {
                             margin-top: 1rem;
-                            font-size: 1.2rem;
+                            font-size: 1.4rem;
                             color: #ffffff;
                             font-weight: normal;
                         }
                         &:nth-child(2n) {
-                            font-size: 1.2rem;
+                            font-size: 1.4rem;
                             color: #cccccc;
                         }
                     }
@@ -225,7 +222,7 @@
                     @include flex();
                     flex-direction:column;
                     span {
-                        font-size: 1.2rem;
+                        font-size: 1.4rem;
                         color: #ffffff;
                         font-weight: normal;
                     }

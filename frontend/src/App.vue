@@ -35,11 +35,18 @@
 </template>
 <script>
   import AppHeader from './components/AppHeader';
+  import Tools from './common/Tools';
 
   export default {
     components: {
       AppHeader,
     },
+    /*watch:{
+      $route(to,from){
+        console.log(to);
+        console.log(from)
+      }
+    },*/
     data() {
       return {
         show: 1,
@@ -52,7 +59,7 @@
       }
     },
     beforeMount() {
-      if (this.devicesWidth > 500) {
+      if (Tools.currentDeviceIsPersonComputer()) {
         this.devicesShow = 1;
         this.footerClass = 'person_computer_wrap';
         this.footerClassName = 'person_computer_footer';
@@ -85,7 +92,8 @@
     flex-direction: column;
     #router_wrap {
       flex: 1;
-      overflow: auto;
+      overflow-y: auto;
+      overflow-x:hidden;
       .router_view{
         min-height:53.2rem;
       }
@@ -93,19 +101,15 @@
         height: 10rem;
       }
       .mobile_wrap_footer{
-        height:18rem;
+        height:21rem;
       }
       footer {
-
         background: #222222;
         @include flex();
-        flex-direction: column;
-        align-items: center;
+        @include pcContainer;
         padding:1rem 0;
         .person_computer_footer {
-          width: 80%;
-          min-width: 70rem;
-          max-width: 100rem;
+          @include pcCenter;
           @include flex();
           flex-direction:row;
           justify-content: space-between;
@@ -153,7 +157,7 @@
             .footer_description_wrap{
               flex:1;
               color:#cccccc;
-              font-size:1.3rem;
+              font-size:1.4rem;
               padding:0.5rem;
             }
           }
@@ -165,7 +169,7 @@
                 padding:0.5rem 1rem;
                 color:#fff;
                 font-weight: 300;
-                font-size:1.2rem;
+                font-size:1.4rem;
                 &:hover{
                   text-decoration: none;
                 }
@@ -178,7 +182,7 @@
             .footer_copyright_wrap{
               height:4rem;
               color:#cccccc;
-              font-size:1.3rem;
+              font-size:1.4rem;
             }
           }
         }

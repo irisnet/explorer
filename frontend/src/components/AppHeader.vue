@@ -74,6 +74,7 @@
   </div>
 </template>
 <script>
+  import Tools from '../common/Tools';
 
   export default {
     name: 'app-header',
@@ -91,7 +92,7 @@
       }
     },
     beforeMount() {
-      if (this.devicesWidth > 500) {
+      if (Tools.currentDeviceIsPersonComputer()) {
         this.devicesShow = 1;
         this.appHeaderVar = 'person_computer_header_var';
       } else {
@@ -149,14 +150,10 @@
     height:10rem;
   }
   .person_computer_header_var, .mobile_header_var {
-    width: 100%;
     @include flex();
-    flex-direction: column;
-    align-items: center;
+    @include pcContainer;
     .app_header_person_computer {
-      width: 80%;
-      min-width: 70rem;
-      max-width: 100rem;
+      @include pcCenter;
       justify-content: space-between;
       padding-top: 1rem;
       .header_top{
@@ -175,7 +172,7 @@
           position: relative;
           input::-webkit-input-placeholder {
             text-align: left;
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             color: #cccccc;
           }
 
@@ -188,6 +185,7 @@
             outline: none;
             border: 0.1rem solid #dddddd;
             margin-top:2rem;
+            font-size:1.4rem;
           }
           .search_icon {
             position: absolute;
@@ -206,33 +204,30 @@
     }
     .useFeature {
       width:100%;
-      border-top:0.1rem solid #dddddd;
-      border-bottom:0.1rem solid #ccc;
       @include flex();
       flex-direction: column;
       align-items: center;
-      background: #EBEBEB;
+      background: #3190e8;
       .navButton {
-        width:80%;
-        min-width: 70rem;
-        max-width: 100rem;
+        @include pcCenter;
         .nav_item {
           display: inline-block;
-          height: 5.7rem;
+          height: 5.8rem;
           line-height: 5.4rem;
           padding: 0 4rem;
           text-align: center;
-          font-size: 1.4rem;
+          font-size: 1.8rem;
           cursor: pointer;
           color:#cccccc;
         }
         .nav_item_active{
           border-bottom:0.2rem solid #3190e8;
-          color:#3190e8;
+          color:#ffffff;
+          background: blue;
         }
         .m-2 {
           margin: 0 !important;
-          height:5.9rem;
+          height:6.1rem;
           button {
             padding: 0 4rem;
             color:#555 !important;
@@ -241,6 +236,7 @@
             background-color: transparent;
             color: #cccccc !important;
             border: none;
+            font-size:1.8rem;
             font-weight: normal;
           }
         }
