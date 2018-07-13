@@ -10,7 +10,7 @@ import (
 )
 
 func init() {
-	mongoUrl := GetEnv("MONGO_URL", "192.168.150.7:27017")
+	mongoUrl := GetEnv("DB_URL", "192.168.150.7:27017")
 	user := GetEnv("DB_USER", "iris")
 	passwd := GetEnv("DB_PASSWORD", "irispassword")
 
