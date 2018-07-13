@@ -3,7 +3,7 @@
   <div :class="appHeaderVar">
     <header class="app_header_person_computer" v-show="devicesShow === 1">
       <div class="header_top">
-        <div class="imageWrap">
+        <div class="imageWrap" style="cursor:pointer;" @click="featureButtonClick('/home')">
           <img src="../assets/logo.png" alt="失去网络了..."/>
         </div>
         <div class="navSearch">
@@ -22,10 +22,10 @@
               @click="featureButtonClick('/home')"
         >Home</span>
         <span class="nav_item" :class="activeClassName === '/block'?'nav_item_active':''"
-              @click="featureButtonClick('/transactions_detail')"
+              @click="featureButtonClick('/block/1/0')"
         >Block</span>
         <b-dropdown id="ddown-left" text="Transaction" variant="primary" class="m-2" :class="activeClassName === '/transaction'?'nav_item_active':''">
-          <b-dropdown-item @click="featureButtonClick('/recent_transactions')">Recent Transactions</b-dropdown-item>
+          <b-dropdown-item @click="featureButtonClick('/recent_transactions/2/0')">Recent Transactions</b-dropdown-item>
           <b-dropdown-item @click="featureButtonClick('/transfer_transactions')">Transfer Transactions</b-dropdown-item>
           <b-dropdown-item @click="featureButtonClick('/delegate_transactions')">Delegate Transactions</b-dropdown-item>
         </b-dropdown>
@@ -117,16 +117,16 @@
       },
       featureButtonClick(path) {
         this.featureShow = !this.featureShow;
-        if(path === '/recent_transactions' || path === '/transfer_transactions' || path === '/delegate_transactions'){
+        if(path.includes('/recent_transactions') || path.includes('/transfer_transactions') || path.includes(path === '/delegate_transactions')){
           this.activeClassName = '/transaction';
-        }else if(path === '/candidates'){
+        }else if(path.includes('/candidates')){
           this.activeClassName = '/validators';
+        }else if(path.includes('/block')){
+          this.activeClassName = '/block';
         }else{
           this.activeClassName = path;
         }
         this.$router.push(path);
-
-        console.log(path)
 
       },
       getData(data) {
@@ -159,14 +159,6 @@
       .header_top{
         @include flex();
         justify-content: space-between;
-        .imageWrap {
-          width: 10rem;
-          height: 7.8rem;
-          img {
-            width: 10rem;
-            height: 5rem;
-          }
-        }
         .navSearch {
           margin-bottom: 1rem;
           position: relative;
