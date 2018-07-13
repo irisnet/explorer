@@ -76,7 +76,7 @@
     name: "FaucetPage",
     data() {
       return {
-        faucet_url: "http://192.168.150.199:4000",
+        faucet_url: "http://dev.faucet.irisplorer.io",
         address: "",
         errMsg: "",
       }
@@ -129,8 +129,8 @@
           if (data.err_code) {
             this.errMsg = data.err_msg
           } else {
-            this.errMsg = "apply successfully";
-            setTimeout(location.reload(), 1000);
+            alert("apply successfully");
+            location.reload();
           }
         })
       }

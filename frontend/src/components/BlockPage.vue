@@ -22,7 +22,7 @@
     },
     methods: {
       load() {
-        axios.get("http://localhost:8080" + "/blocks/" + this.page + "/" + this.size).then(result => {
+        axios.get("/blocks/" + this.page + "/" + this.size).then(result => {
           let data = result.data;
           this.blocks = data.Data;
           this.blocks.forEach(block)

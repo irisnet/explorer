@@ -2,19 +2,30 @@ package utils
 
 import (
 	"gopkg.in/mgo.v2"
-	"fmt"
 	"log"
 	"net/http"
 	"encoding/json"
 	"github.com/irisnet/explorer/server/types"
+	"time"
 )
 
 func init() {
-	mongoUrl := GetEnv("MONGO_URL", "116.62.62.39:27117")
-	url := fmt.Sprintf("mongodb://%s", mongoUrl)
+	mongoUrl := GetEnv("MONGO_URL", "192.168.150.7:27017")
+	user := GetEnv("DB_USER", "iris")
+	passwd := GetEnv("DB_PASSWORD", "irispassword")
+
+	dialInfo := &mgo.DialInfo{
+		Addrs:     []string{mongoUrl},
+		Database:  "sync-iris-dev",
+		Username:  user,
+		Password:  passwd,
+		Direct:    false,
+		Timeout:   time.Second * 10,
+		PoolLimit: 100, // Session.SetPoolLimit
+	}
 
 	var err error
-	session, err = mgo.Dial(url)
+	session, err = mgo.DialWithInfo(dialInfo)
 	if err != nil {
 		log.Fatalln(err)
 	}
