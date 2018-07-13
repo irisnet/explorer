@@ -3,7 +3,7 @@
   <div :class="appHeaderVar">
     <header class="app_header_person_computer" v-show="devicesShow === 1">
       <div class="header_top">
-        <div class="imageWrap">
+        <div class="imageWrap" style="cursor:pointer;" @click="featureButtonClick('/home')">
           <img src="../assets/logo.png" alt="失去网络了..."/>
         </div>
         <div class="navSearch">
@@ -22,7 +22,7 @@
               @click="featureButtonClick('/home')"
         >Home</span>
         <span class="nav_item" :class="activeClassName === '/block'?'nav_item_active':''"
-              @click="featureButtonClick('/transactions_detail')"
+              @click="featureButtonClick('/block/1/0')"
         >Block</span>
         <b-dropdown id="ddown-left" text="Transaction" variant="primary" class="m-2" :class="activeClassName === '/transaction'?'nav_item_active':''">
           <b-dropdown-item @click="featureButtonClick('/recent_transactions')">Recent Transactions</b-dropdown-item>
@@ -126,8 +126,6 @@
         }
         this.$router.push(path);
 
-        console.log(path)
-
       },
       getData(data) {
         console.log(data)
@@ -159,14 +157,6 @@
       .header_top{
         @include flex();
         justify-content: space-between;
-        .imageWrap {
-          width: 10rem;
-          height: 7.8rem;
-          img {
-            width: 10rem;
-            height: 5rem;
-          }
-        }
         .navSearch {
           margin-bottom: 1rem;
           position: relative;

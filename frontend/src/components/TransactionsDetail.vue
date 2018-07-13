@@ -42,10 +42,6 @@
           <span class="information_props">Fee:</span>
           <span class="information_value">{{feeValue}}</span>
         </div>
-        <div class="information_props_wrap">
-          <span class="information_props">Message:</span>
-          <span class="information_value">{{messageValue}}</span>
-        </div>
       </div>
     </div>
 
@@ -61,15 +57,14 @@
       return {
         devicesWidth: window.innerWidth,
         transactionsDetailWrap: 'personal_computer_transactions_detail',//1是显示pc端，0是移动端
-        hashValue: '0x636693f1a303aafb4d1d8a19b5a6427c101f7797fa9f0d4e7a35fc837617e86e',
-        blockValue: '4832791',
-        typeValue: 'delegate',
-        fromValue: '0x11a5aa0d30a834cae76d5e0b404222222werwrwerwe33424242423423e0c880e698eb',
-        toValue: '0x11a5aa0d30a834cae76d5e0b4042342423423423423423423424234e0c880e698eb',
-        timestampValue: '12313213321',
-        amountValue: '1231312',
-        feeValue: '12313123',
-        messageValue: '3242353454'
+        hashValue: '',
+        blockValue: '',
+        typeValue: '',
+        fromValue: '',
+        toValue: '',
+        timestampValue: '',
+        amountValue: '',
+        feeValue: '',
 
 
       }
@@ -82,14 +77,27 @@
       }
     },
     mounted() {
-      console.log(this.$route.query);
-      let url = `/api/tx/4CC31317C59D81B32937A19FE81E006F59F249F3`;
-
+      let url = `/api/tx/${this.$route.query.hash}`;
+      if(!this.$route.query.hash){
+        return;
+      }
       axios.get(url).then((data)=>{
         if(data.status === 200){
-          /*return data.json();*/
+          return data.data;
         }
-        console.log(data)
+      }).then((data)=>{
+        this.hashValue = data.TxHash;
+        this.blockValue = data.Height;
+        this.typeValue = data.Type;
+        this.fromValue = data.From;
+        this.toValue = data.To;
+        this.timestampValue = data.Time;
+        this.amountValue = data.Amount.map(item=>{
+          return `${item.amount} ${item.denom}`;
+        }).join(',');
+        this.feeValue = data.Fee.Amount.map(item=>{
+          return `${item.amount} ${item.denom}`;
+        }).join(',');
       })
     },
     methods: {}

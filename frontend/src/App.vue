@@ -7,7 +7,9 @@
         <div :class="footerClassName" style="height:100%;">
           <div class="footer_left" :class="footerLeftVar">
             <div class="footer_logo_wrap">
-              <a href="https://www.baidu.com">logo</a>
+              <a href="https://www.irisnet.org/">
+                <img src="./assets/logo.png" alt="">
+              </a>
             </div>
             <div class="footer_description_wrap">
               Inter-chain Service Infrastructure and Protocol Technology Foundation for a Distributed Business Ecosystem
@@ -145,7 +147,6 @@
             .footer_logo_wrap{
               width:18rem;
               height:6rem;
-              border:0.1rem solid red;
               margin-right:1.5rem;
               a{
                 display:inline-block;

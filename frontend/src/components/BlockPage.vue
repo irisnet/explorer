@@ -25,7 +25,7 @@
         axios.get("/blocks/" + this.page + "/" + this.size).then(result => {
           let data = result.data;
           this.blocks = data.Data;
-          this.blocks.forEach(block)
+          this.blocks.forEach(block);
           this.count = data.Count;
         })
       }
