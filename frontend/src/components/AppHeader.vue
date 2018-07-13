@@ -25,7 +25,7 @@
               @click="featureButtonClick('/block/1/0')"
         >Block</span>
         <b-dropdown id="ddown-left" text="Transaction" variant="primary" class="m-2" :class="activeClassName === '/transaction'?'nav_item_active':''">
-          <b-dropdown-item @click="featureButtonClick('/recent_transactions')">Recent Transactions</b-dropdown-item>
+          <b-dropdown-item @click="featureButtonClick('/recent_transactions/2/0')">Recent Transactions</b-dropdown-item>
           <b-dropdown-item @click="featureButtonClick('/transfer_transactions')">Transfer Transactions</b-dropdown-item>
           <b-dropdown-item @click="featureButtonClick('/delegate_transactions')">Delegate Transactions</b-dropdown-item>
         </b-dropdown>
@@ -117,10 +117,12 @@
       },
       featureButtonClick(path) {
         this.featureShow = !this.featureShow;
-        if(path === '/recent_transactions' || path === '/transfer_transactions' || path === '/delegate_transactions'){
+        if(path.includes('/recent_transactions') || path.includes('/transfer_transactions') || path.includes(path === '/delegate_transactions')){
           this.activeClassName = '/transaction';
-        }else if(path === '/candidates'){
+        }else if(path.includes('/candidates')){
           this.activeClassName = '/validators';
+        }else if(path.includes('/block')){
+          this.activeClassName = '/block';
         }else{
           this.activeClassName = path;
         }

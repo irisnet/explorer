@@ -3,7 +3,7 @@
     <div class="blocks_list_title_wrap">
 
       <p :class="blocksListPageWrap" style="margin-bottom:0;">
-        <span class="blocks_list_title">Blocks</span>
+        <span class="blocks_list_title">{{this.$route.params.type === 'block'?'Blocks':'Transactions'}}</span>
         <span class="blocks_list_page_wrap_hash_var">{{blocksValue}}</span>
       </p>
     </div>
@@ -17,16 +17,33 @@
       </div>
       <template>
         <b-table :fields='fields' :items='items' striped>
-          <template slot='height' slot-scope='data'>
+          <template slot='height' slot-scope='data' v-if="type === '1'">
             <a href="http://www.baidu.com">
               {{data.item.height}}
             </a>
           </template>
-          <template slot='txn' slot-scope='data'>
+          <template slot='txn' slot-scope='data' v-if="type === '1'">
             <a href="http://www.baidu.com">
               {{data.item.txn}}
             </a>
           </template>
+          <template slot='TxHash' slot-scope='data' v-if="type === '2'">
+            <a href="http://www.baidu.com">
+              {{data.item.TxHash}}
+            </a>
+          </template>
+          <template slot='Block' slot-scope='data' v-if="type === '2'">
+            <a href="http://www.baidu.com">
+              {{data.item.Block}}
+            </a>
+          </template>
+          <template slot='To' slot-scope='data' v-if="type === '2'">
+            <a href="http://www.baidu.com">
+              {{data.item.To}}
+            </a>
+          </template>
+
+
         </b-table>
       </template>
       <div class="pagination">
@@ -47,6 +64,10 @@
       currentPage(currentPage){
         this.currentPage = currentPage;
         this.getDataList(currentPage,10,this.$route.params.type);
+      },
+      $route(){
+        this.items = [];
+        this.getDataList(1,10,this.$route.params.type);
       }
     },
     data() {
@@ -60,12 +81,14 @@
         fields:[
 
         ],
-        items:[]
+        items:[],
+        type:'1',
 
 
       }
     },
     beforeMount() {
+      this.type = this.$route.params.type;
       if (Tools.currentDeviceIsPersonComputer()) {
         this.blocksListPageWrap = 'personal_computer_blocks_list_page_wrap';
       } else {
@@ -114,18 +137,18 @@
           }).then((data)=>{
             console.log(data)
             this.count = data.Count;
-            /*this.items = data.Data.map(item=>{
+            this.items = data.Data.map(item=>{
               let txn = item.NumTxs;
               let precommit = item.Block.LastCommit.Precommits.length;
               return {
-                height:item.Height,
+                TxHash:item.TxHash,
                 txn,
                 fee:'',
                 timestamp:item.Time,
                 precommit,
                 voting:'',
               };
-            })*/
+            })
           })
         }
 

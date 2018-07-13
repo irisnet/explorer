@@ -77,8 +77,8 @@
       }
     },
     mounted() {
-      let url = `/api/tx/${this.$route.query.hash}`;
-      if(!this.$route.query.hash){
+      let url = `/api/tx/${this.$route.query.txHash}`;
+      if(!this.$route.query.txHash){
         return;
       }
       axios.get(url).then((data)=>{
@@ -86,18 +86,21 @@
           return data.data;
         }
       }).then((data)=>{
-        this.hashValue = data.TxHash;
-        this.blockValue = data.Height;
-        this.typeValue = data.Type;
-        this.fromValue = data.From;
-        this.toValue = data.To;
-        this.timestampValue = data.Time;
-        this.amountValue = data.Amount.map(item=>{
-          return `${item.amount} ${item.denom}`;
-        }).join(',');
-        this.feeValue = data.Fee.Amount.map(item=>{
-          return `${item.amount} ${item.denom}`;
-        }).join(',');
+        if(data){
+          this.hashValue = data.TxHash;
+          this.blockValue = data.Height;
+          this.typeValue = data.Type;
+          this.fromValue = data.From;
+          this.toValue = data.To;
+          this.timestampValue = data.Time;
+          this.amountValue = data.Amount.map(item=>{
+            return `${item.amount} ${item.denom}`;
+          }).join(',');
+          this.feeValue = data.Fee.Amount.map(item=>{
+            return `${item.amount} ${item.denom}`;
+          }).join(',');
+        }
+
       })
     },
     methods: {}
