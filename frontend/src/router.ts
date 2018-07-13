@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Home from './views/Home.vue'
 import FaucetPage from './components/FaucetPage.vue'
 import BlockPage from './components/BlockPage.vue'
+import TransactionsDetail from './components/TransactionsDetail.vue'
 
 Vue.use(Router);
 
@@ -21,7 +22,11 @@ export default new Router({
     },
     {
       path: '/block', component: BlockPage
-    }
+    },
+    {
+      path: '/transactions_detail', component: TransactionsDetail
+    },
+
   ]
 
 })

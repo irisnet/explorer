@@ -9,6 +9,18 @@ $fc:#fff;
   -o-border-radius: $radius;
   border-radius: $radius;
 }
+//pc端布局是中部对齐
+@mixin pcCenter {
+  width: 80%;
+  min-width: 70rem;
+  max-width: 100rem;
+}
+//pc端中对齐端容器样式
+@mixin pcContainer {
+  width:100%;
+  flex-direction: column;
+  align-items: center;
+}
 
 //flex的兼容写法
 @mixin flex{
