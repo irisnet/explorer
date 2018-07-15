@@ -41,9 +41,8 @@
 
     <div class="app_header_mobile" v-show="devicesShow === 0">
       <div class="feature_btn" @click="showFeature"></div>
-      <div class="image_wrap_mobile">
-        <!--<img src="../assets/logo.png" alt="失去网络了..."/>-->
-        logo
+      <div class="image_wrap_mobile" @click="featureButtonClick('/home')">
+        <img src="../assets/logo.png" alt="失去网络了..."/>
       </div>
 
       <div class="use_feature_mobile" v-show="featureShow">
@@ -252,11 +251,9 @@
         background: url('../assets/menu.svg') no-repeat;
       }
       .image_wrap_mobile {
-        width: 70vw;
-        height: 4rem;
         img {
-          width: 100%;
-          height: 100%;
+          /*width: 100%;
+          height: 100%;*/
         }
       }
       .search_input_mobile {

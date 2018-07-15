@@ -3,7 +3,7 @@
     <div class="blocks_list_title_wrap">
 
       <p :class="blocksListPageWrap" style="margin-bottom:0;">
-        <span class="blocks_list_title">{{this.$route.params.type === 'block'?'Blocks':'Transactions'}}</span>
+        <span class="blocks_list_title">{{titleVar}}</span>
         <span class="blocks_list_page_wrap_hash_var">{{blocksValue}}</span>
       </p>
     </div>
@@ -11,7 +11,7 @@
     <div :class="blocksListPageWrap">
       <div class="pagination">
         <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize"
-          @click="(data)=>console.log(data)"
+                      @click="(data)=>console.log(data)"
         >
         </b-pagination>
       </div>
@@ -60,14 +60,25 @@
   import axios from 'axios';
 
   export default {
-    watch:{
-      currentPage(currentPage){
+    watch: {
+      currentPage(currentPage) {
         this.currentPage = currentPage;
-        this.getDataList(currentPage,10,this.$route.params.type);
+        this.getDataList(currentPage, 10, this.$route.params.type);
       },
-      $route(){
+      $route() {
         this.items = [];
-        this.getDataList(1,10,this.$route.params.type);
+        //this.getDataList(1, 10, this.$route.params.type);
+        switch (this.$route.params.type) {
+          case '1': this.titleVar = 'Blocks';
+                  break;
+          case '2': this.titleVar = 'Transactions';
+                  break;
+          case '3': this.titleVar = 'Validators';
+                  break;
+          case '4': this.titleVar = 'Candidates';
+                  break;
+
+        }
       }
     },
     data() {
@@ -75,14 +86,13 @@
         devicesWidth: window.innerWidth,
         blocksListPageWrap: 'personal_computer_blocks_list_page',//1是显示pc端，0是移动端
         blocksValue: '',
-        currentPage:1,
-        pageSize:10,
-        count:0,
-        fields:[
-
-        ],
-        items:[],
-        type:'1',
+        currentPage: 1,
+        pageSize: 10,
+        count: 0,
+        fields: [],
+        items: [],
+        type: '1',
+        titleVar: '',
 
 
       }
@@ -100,53 +110,63 @@
       console.log(this.$route.params)
 
 
+      this.getDataList(1, 10, this.$route.params.type);
+      switch (this.$route.params.type) {
+        case '1': this.titleVar = 'Blocks';
+          break;
+        case '2': this.titleVar = 'Transactions';
+          break;
+        case '3': this.titleVar = 'Validators';
+          break;
+        case '4': this.titleVar = 'Candidates';
+          break;
 
-      this.getDataList(1,10,this.$route.params.type);
+      }
     },
     methods: {
-      getDataList(currentPage,pageSize,type){
-        if(type === '1'){
+      getDataList(currentPage, pageSize, type) {
+        if (type === '1') {
           let url = `/api/blocks/${currentPage}/${pageSize}`;
           console.log(url)
-          axios.get(url).then((data)=>{
-            if(data.status === 200){
+          axios.get(url).then((data) => {
+            if (data.status === 200) {
               return data.data;
             }
-          }).then((data)=>{
+          }).then((data) => {
             this.count = data.Count;
-            this.items = data.Data.map(item=>{
+            this.items = data.Data.map(item => {
               let txn = item.NumTxs;
               let precommit = item.Block.LastCommit.Precommits.length;
               return {
-                height:item.Height,
+                height: item.Height,
                 txn,
-                fee:'',
-                timestamp:item.Time,
+                fee: '',
+                timestamp: item.Time,
                 precommit,
-                voting:'',
+                voting: '',
               };
             })
           })
-        }else if(type === '2'){
+        } else if (type === '2') {
           let url = `/api/txs/coin/${currentPage}/${pageSize}`;
           console.log(url)
-          axios.get(url).then((data)=>{
-            if(data.status === 200){
+          axios.get(url).then((data) => {
+            if (data.status === 200) {
               return data.data;
             }
-          }).then((data)=>{
+          }).then((data) => {
             console.log(data)
             this.count = data.Count;
-            this.items = data.Data.map(item=>{
+            this.items = data.Data.map(item => {
               let txn = item.NumTxs;
               let precommit = item.Block.LastCommit.Precommits.length;
               return {
-                TxHash:item.TxHash,
+                TxHash: item.TxHash,
                 txn,
-                fee:'',
-                timestamp:item.Time,
+                fee: '',
+                timestamp: item.Time,
                 precommit,
-                voting:'',
+                voting: '',
               };
             })
           })
@@ -163,17 +183,16 @@
     @include flex;
     @include pcContainer;
     font-size: 1.4rem;
-    .pagination{
-      margin-top:0.5rem;
+    .pagination {
+      margin-top: 0.5rem;
       @include flex;
       justify-content: flex-end;
     }
-    .b-table{
-      border-bottom:1px solid #eeeeee;
-      min-width:50rem;
+    .b-table {
+      border-bottom: 1px solid #eeeeee;
+      min-width: 50rem;
 
-
-      a{
+      a {
         text-decoration: none;
       }
     }

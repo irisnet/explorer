@@ -1,10 +1,10 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import Home from './views/Home.vue'
-import FaucetPage from './components/FaucetPage.vue'
-import BlockPage from './components/BlockPage.vue'
-import TransactionsDetail from './components/TransactionsDetail.vue'
-import BlocksListPage from './components/BlocksListPage.vue'
+import Vue from 'vue';
+import Router from 'vue-router';
+import Home from './views/Home.vue';
+import FaucetPage from './components/FaucetPage.vue';
+import TransactionsDetail from './components/TransactionsDetail.vue';
+import BlocksListPage from './components/BlocksListPage.vue';
+import AddressPage from './components/AddressPage.vue';
 
 Vue.use(Router);
 
@@ -24,6 +24,9 @@ export default new Router({
     {
       //BlocksListPage为一个组件，根据type类型不同相应不同页面
       //1 BlocksList页面
+      //2 Transactions页面
+      //3 Validators页面
+      //4 Candidates页面
       path: '/block/:type/:param', component: BlocksListPage
 
     },
@@ -33,6 +36,10 @@ export default new Router({
     {
       path: '/tx', component: TransactionsDetail
     },
+    {
+      path:'/address/:type/:param',
+      component:AddressPage,
+    }
 
   ]
 

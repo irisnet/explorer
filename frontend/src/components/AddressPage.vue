@@ -1,0 +1,340 @@
+<template>
+  <div class="transactions_detail_wrap">
+    <div class="transactions_title_wrap">
+      <p :class="transactionsDetailWrap" style="margin-bottom:0;">
+        <span class="transactions_detail_title">Address</span>
+        <span class="transactions_detail_wrap_hash_var">{{hashValue}}</span>
+      </p>
+    </div>
+
+    <div :class="transactionsDetailWrap">
+      <p class="transaction_information_content_title">Address Information</p>
+      <div class="transactions_detail_information_wrap">
+        <div class="information_props_wrap">
+          <span class="information_props">Balance:</span>
+          <span class="information_value">{{hashValue}}</span>
+        </div>
+        <div class="information_props_wrap">
+          <span class="information_props">Deposits:</span>
+          <span class="information_value">{{blockValue}}</span>
+        </div>
+        <div class="information_props_wrap">
+          <span class="information_props">Transactions:</span>
+          <span class="information_value">{{typeValue}}</span>
+        </div>
+      </div>
+    </div>
+    <div :class="transactionsDetailWrap" class="address_profile">
+      <p class="transaction_information_content_title">Profile</p>
+      <div class="transactions_detail_information_wrap">
+        <div class="information_props_wrap">
+          <span class="information_props">Name:</span>
+          <span class="information_value">{{hashValue}}</span>
+        </div>
+        <div class="information_props_wrap">
+          <span class="information_props">Pub Key:</span>
+          <span class="information_value">{{blockValue}}</span>
+        </div>
+        <div class="information_props_wrap">
+          <span class="information_props">Website:</span>
+          <span class="information_value">{{typeValue}}</span>
+        </div>
+        <div class="information_props_wrap" style="border-bottom:0.1rem solid #eee">
+          <span class="information_props">Description:</span>
+          <span class="information_value">{{typeValue}}</span>
+        </div>
+        <div class="information_props_wrap">
+          <span class="information_props">Commission Rate:</span>
+          <span class="information_value">{{typeValue}}</span>
+        </div>
+        <div class="information_props_wrap">
+          <span class="information_props">Announcement:</span>
+          <span class="information_value">{{typeValue}}</span>
+        </div>
+
+
+      </div>
+    </div>
+    <div :class="transactionsDetailWrap" class="current_tenure">
+      <p class="transaction_information_content_title" style="border-bottom:1px solid #eee">Current Tenure</p>
+      <div class="current_tenure_wrap">
+        <div class="transactions_detail_information_wrap">
+          <div class="information_props_wrap">
+            <span class="information_props">Bond Height:</span>
+            <span class="information_value">{{hashValue}}</span>
+          </div>
+          <div class="information_props_wrap">
+            <span class="information_props">Voting Power:</span>
+            <span class="information_value">{{blockValue}}</span>
+          </div>
+          <div class="information_props_wrap">
+            <span class="information_props">Uptime(in last 100 blocks):</span>
+            <span class="information_value">{{typeValue}}</span>
+          </div>
+          <div class="information_props_wrap">
+            <span class="information_props">Precommited Blocks:</span>
+            <span class="information_value">{{typeValue}}</span>
+          </div>
+          <div class="information_props_wrap">
+            <span class="information_props">Returns:</span>
+            <span class="information_value">{{typeValue}}</span>
+          </div>
+
+        </div>
+        <div class="canvas_voting_power">图标1</div>
+        <div class="canvas_uptime_history">图表2</div>
+
+
+      </div>
+
+    </div>
+    <div :class="transactionsDetailWrap" class="transaction_precommit_table">
+      <div class="tab_wrap">
+        <span @click="activeBtn = 0" :class="activeBtn === 0?'transactions_btn_active':''">Transactions</span>
+        <span @click="activeBtn = 1" :class="activeBtn === 1?'transactions_btn_active':''">Precommit Blocks</span>
+      </div>
+      <div class="table_wrap">
+        <p class="table_instruction">
+          <span>Total blocks:</span>
+          <span>{{}}</span>
+          <span>Total Fee:</span>
+          <span>{{}}</span>
+        </p>
+        <div class="transaction_table">
+hello
+        </div>
+      </div>
+    </div>
+
+
+
+  </div>
+</template>
+
+<script>
+  import Tools from '../common/Tools';
+  import axios from 'axios';
+  export default {
+
+    data() {
+      return {
+        devicesWidth: window.innerWidth,
+        transactionsDetailWrap: 'personal_computer_transactions_detail',//1是显示pc端，0是移动端
+        hashValue: '',
+        blockValue: '',
+        typeValue: '',
+        fromValue: '',
+        toValue: '',
+        timestampValue: '',
+        amountValue: '',
+        feeValue: '',
+        activeBtn:0,
+
+
+      }
+    },
+    beforeMount() {
+      if (Tools.currentDeviceIsPersonComputer()) {
+        this.transactionsDetailWrap = 'personal_computer_transactions_detail_wrap';
+      } else {
+        this.transactionsDetailWrap = 'mobile_transactions_detail_wrap';
+      }
+    },
+    mounted() {
+      let url = `/api/tx/${this.$route.query.txHash}`;
+      if(!this.$route.query.txHash){
+        return;
+      }
+      axios.get(url).then((data)=>{
+        if(data.status === 200){
+          return data.data;
+        }
+      }).then((data)=>{
+        if(data){
+          this.hashValue = data.TxHash;
+          this.blockValue = data.Height;
+          this.typeValue = data.Type;
+          this.fromValue = data.From;
+          this.toValue = data.To;
+          this.timestampValue = data.Time;
+          this.amountValue = data.Amount.map(item=>{
+            return `${item.amount} ${item.denom}`;
+          }).join(',');
+          this.feeValue = data.Fee.Amount.map(item=>{
+            return `${item.amount} ${item.denom}`;
+          }).join(',');
+        }
+
+      })
+    },
+    methods: {}
+  }
+</script>
+<style lang="scss">
+  @import '../style/mixin.scss';
+
+  .transactions_detail_wrap {
+    @include flex;
+    @include pcContainer;
+    font-size:1.4rem;
+    .transactions_title_wrap {
+      width: 100%;
+      border-bottom: 0.1rem solid #eee;
+      @include flex;
+      @include pcContainer;
+      .personal_computer_transactions_detail_wrap {
+        @include flex;
+      }
+      .mobile_transactions_detail_wrap {
+        @include flex;
+        flex-direction: column;
+      }
+
+    }
+    .personal_computer_transactions_detail_wrap {
+      .transaction_information_content_title{
+        height:4rem;
+        line-height:4rem;
+        font-size:1.8rem;
+        color:#555;
+        margin-bottom:0;
+      }
+      @include pcCenter;
+      .transactions_detail_information_wrap{
+        .information_props_wrap{
+          @include flex;
+          .information_props{
+            width:15rem;
+          }
+        }
+      }
+
+
+
+
+
+
+      .transactions_detail_title {
+        height: 4rem;
+        line-height: 4rem;
+        font-size: 1.8rem;
+        color: #555;
+        margin-right: 2rem;
+        font-weight:500;
+      }
+      .transactions_detail_wrap_hash_var {
+        height: 4rem;
+        line-height: 4rem;
+        font-size: 1.4rem;
+        color: #ccc;
+      }
+    }
+
+    .mobile_transactions_detail_wrap {
+      width: 100%;
+      @include flex;
+      flex-direction: column;
+      padding: 0 0.5rem;
+      .transaction_information_content_title{
+        height:4rem;
+        line-height:4rem;
+        font-size:1.8rem;
+        color:#555;
+        margin-bottom:0;
+      }
+      .transactions_detail_information_wrap{
+
+        .information_props_wrap{
+          @include flex;
+          flex-direction:column;
+          border-bottom:0.1rem solid #eee;
+          margin-bottom:0.5rem;
+          .information_value{
+            overflow-x:scroll;
+          }
+
+        }
+      }
+      .transactions_detail_title {
+        height: 3rem;
+        line-height: 3rem;
+        font-size: 1.8rem;
+        color: #555;
+        margin-right: 2rem;
+        font-weight:500;
+      }
+      .transactions_detail_wrap_hash_var {
+        overflow-x: scroll;
+        height: 3rem;
+        line-height: 3rem;
+        font-size: 1.4rem;
+        color: #ccc;
+      }
+
+    }
+    .address_profile{
+      @include borderRadius(5px);
+      border:1px solid #eee;
+    }
+
+    //current tenure部分
+    .current_tenure{
+      border:0.1rem solid #eee;
+      margin-top:1rem;
+      .current_tenure_wrap{
+        width:100%;
+      }
+    }
+    .personal_computer_transactions_detail_wrap{
+      width:80%;
+      .current_tenure_wrap{
+        @include flex;
+        flex-direction:row;
+        .transactions_detail_information_wrap{
+          flex:3;
+        }
+        .canvas_voting_power{
+          flex:2;
+          height:10rem;
+        }
+        .canvas_uptime_history{
+          flex:2;
+          height:10rem;
+        }
+      }
+    }
+    .mobile_transactions_detail_wrap{
+      width:100%;
+      .current_tenure_wrap{
+        @include flex;
+        flex-direction:column;
+      }
+    }
+    //底部表格部分
+    .transaction_precommit_table{
+      margin-top:1rem;
+      border-bottom:0.1rem solid #eee;
+      .tab_wrap{
+
+        span{
+          height:3rem;
+          line-height:3rem;
+          display:inline-block;
+          border:0.1rem solid #eee;
+          text-align: center;
+          padding:0 1rem;
+          border-bottom:none;
+          cursor:pointer;
+        }
+        .transactions_btn_active{
+          background: #3190e8;
+          color:#fff;
+        }
+      }
+      .table_wrap{
+        border:0.1rem solid #eee;
+      }
+    }
+  }
+
+</style>
