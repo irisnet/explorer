@@ -9,14 +9,17 @@ import (
 	"time"
 )
 
+var database string
+
 func init() {
 	mongoUrl := GetEnv("DB_URL", "192.168.150.7:27017")
+	database := GetEnv("DB_DATABASE", "sync-iris-dev")
 	user := GetEnv("DB_USER", "iris")
 	passwd := GetEnv("DB_PASSWORD", "irispassword")
-
+	log.Println("Connecting "+mongoUrl+"/"+database)
 	dialInfo := &mgo.DialInfo{
 		Addrs:     []string{mongoUrl},
-		Database:  "sync-iris-dev",
+		Database:  database,
 		Username:  user,
 		Password:  passwd,
 		Direct:    false,
@@ -37,7 +40,7 @@ var session *mgo.Session
 
 func GetDatabase() *mgo.Database {
 	// max session num is 4096
-	return session.Copy().DB("sync-iris-dev")
+	return session.Copy().DB(database)
 }
 
 func QueryList(collation string, data interface{}, m map[string]interface{}, sort string, r *http.Request) []byte {
