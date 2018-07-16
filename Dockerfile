@@ -20,3 +20,4 @@ FROM alpine:3.7
 WORKDIR /app/server
 COPY --from=builder /app/dist/ /app/frontend/dist
 COPY --from=go-builder /root/go/src/github.com/irisnet/explorer/server/build/ /app/server/
+CMD ['./irisplorer']
