@@ -3,7 +3,7 @@
     <div class="blocks_list_title_wrap">
 
       <p :class="blocksListPageWrap" style="margin-bottom:0;">
-        <span class="blocks_list_title">{{this.$route.params.type === 'block'?'Blocks':'Transactions'}}</span>
+        <span class="blocks_list_title">{{titleVar}}</span>
         <span class="blocks_list_page_wrap_hash_var">{{blocksValue}}</span>
       </p>
     </div>
@@ -11,41 +11,11 @@
     <div :class="blocksListPageWrap">
       <div class="pagination">
         <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize"
-          @click="(data)=>console.log(data)"
+                      @click="(data)=>console.log(data)"
         >
         </b-pagination>
       </div>
-      <template>
-        <b-table :fields='fields' :items='items' striped>
-          <template slot='height' slot-scope='data' v-if="type === '1'">
-            <a href="http://www.baidu.com">
-              {{data.item.height}}
-            </a>
-          </template>
-          <template slot='txn' slot-scope='data' v-if="type === '1'">
-            <a href="http://www.baidu.com">
-              {{data.item.txn}}
-            </a>
-          </template>
-          <template slot='TxHash' slot-scope='data' v-if="type === '2'">
-            <a href="http://www.baidu.com">
-              {{data.item.TxHash}}
-            </a>
-          </template>
-          <template slot='Block' slot-scope='data' v-if="type === '2'">
-            <a href="http://www.baidu.com">
-              {{data.item.Block}}
-            </a>
-          </template>
-          <template slot='To' slot-scope='data' v-if="type === '2'">
-            <a href="http://www.baidu.com">
-              {{data.item.To}}
-            </a>
-          </template>
-
-
-        </b-table>
-      </template>
+      <blocks-list-table :items="items" :type="this.$route.params.type"></blocks-list-table>
       <div class="pagination">
         <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
         </b-pagination>
@@ -58,16 +28,31 @@
 <script>
   import Tools from '../common/Tools';
   import axios from 'axios';
+  import BlocksListTable from './table/BlocksListTable.vue';
 
   export default {
-    watch:{
-      currentPage(currentPage){
+    components:{
+      BlocksListTable,
+    },
+    watch: {
+      currentPage(currentPage) {
         this.currentPage = currentPage;
-        this.getDataList(currentPage,10,this.$route.params.type);
+        this.getDataList(currentPage, 30, this.$route.params.type);
       },
-      $route(){
+      $route() {
         this.items = [];
-        this.getDataList(1,10,this.$route.params.type);
+        this.getDataList(1, 30, this.$route.params.type);
+        switch (this.$route.params.type) {
+          case '1': this.titleVar = 'Blocks';
+                  break;
+          case '2': this.titleVar = 'Transactions';
+                  break;
+          case '3': this.titleVar = 'Validators';
+                  break;
+          case '4': this.titleVar = 'Candidates';
+                  break;
+
+        }
       }
     },
     data() {
@@ -75,14 +60,13 @@
         devicesWidth: window.innerWidth,
         blocksListPageWrap: 'personal_computer_blocks_list_page',//1是显示pc端，0是移动端
         blocksValue: '',
-        currentPage:1,
-        pageSize:10,
-        count:0,
-        fields:[
-
-        ],
-        items:[],
-        type:'1',
+        currentPage: 1,
+        pageSize: 30,
+        count: 0,
+        fields: [],
+        items: [],
+        type: '1',
+        titleVar: '',
 
 
       }
@@ -100,53 +84,102 @@
       console.log(this.$route.params)
 
 
+      this.getDataList(1, 30, this.$route.params.type);
+      switch (this.$route.params.type) {
+        case '1': this.titleVar = 'Blocks';
+          break;
+        case '2': this.titleVar = 'Transactions';
+          break;
+        case '3': this.titleVar = 'Validators';
+          break;
+        case '4': this.titleVar = 'Candidates';
+          break;
 
-      this.getDataList(1,10,this.$route.params.type);
+      }
     },
     methods: {
-      getDataList(currentPage,pageSize,type){
-        if(type === '1'){
+      getDataList(currentPage, pageSize, type) {
+        console.log(type)
+        if (type === '1') {
           let url = `/api/blocks/${currentPage}/${pageSize}`;
-          console.log(url)
-          axios.get(url).then((data)=>{
-            if(data.status === 200){
+          axios.get(url).then((data) => {
+            if (data.status === 200) {
               return data.data;
             }
-          }).then((data)=>{
+          }).then((data) => {
             this.count = data.Count;
-            this.items = data.Data.map(item=>{
+            this.items = data.Data.map(item => {
               let txn = item.NumTxs;
               let precommit = item.Block.LastCommit.Precommits.length;
               return {
-                height:item.Height,
-                txn,
-                fee:'',
-                timestamp:item.Time,
-                precommit,
-                voting:'',
+                Height: item.Height,
+                Txn:txn,
+                Fee: '',
+                Timestamp: item.Time,
+                'Precommit Validators':precommit,
+                'Voting Power': '',
               };
             })
           })
-        }else if(type === '2'){
-          let url = `/api/txs/coin/${currentPage}/${pageSize}`;
+        } else if (type === '2') {
+          let url = `/api/txs/${currentPage}/${pageSize}`;
+          if(this.$route.params.param === 'transfer'){
+            url = `/api/txs/coin/${currentPage}/${pageSize}`
+          }else if(this.$route.params.param === 'stake'){
+            url = `/api/txs/stake/${currentPage}/${pageSize}`
+          }
           console.log(url)
-          axios.get(url).then((data)=>{
-            if(data.status === 200){
+          axios.get(url).then((data) => {
+            if (data.status === 200) {
               return data.data;
             }
-          }).then((data)=>{
+          }).then((data) => {
+            this.count = data.Count;
+            this.items = data.Data.map(item => {
+              let [Amount,Fees] = ['',''];
+              if(item.Amount instanceof Array){
+                Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom}`).join(',');
+              }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
+                Amount = `${item.Amount.amount} ${item.Amount.denom}`;
+              }else if(item.Amount === null){
+                Amount = '';
+              }
+              if(item.Fee.Amount instanceof Array){
+                Fees = item.Fee.Amount.map(listItem=>`${listItem.amount} ${listItem.denom}`).join(',');
+              }else if(item.Fee.Amount && Object.keys(item.Fee.Amount).includes('amount') && Object.keys(item.Fee.Amount).includes('denom')){
+                Fees = `${item.Fee.Amount} ${item.Fee.Amount}`;
+              }else if(item.Fee.Amount === null){
+                Fees = '';
+              }
+              return {
+                TxHash: item.TxHash,
+                Block:item.Height,
+                From:item.From,
+                To:item.To,
+                Type:item.Type,
+                Amount,
+                Fees,
+                Timestamp: item.Time,
+              };
+            })
+          })
+        }else if (type === '3' || type === '4') {
+          let url = `/api/stake/candidates/${currentPage}/${pageSize}`;
+          axios.get(url).then((data) => {
+            if (data.status === 200) {
+              return data.data;
+            }
+          }).then((data) => {
             console.log(data)
             this.count = data.Count;
-            this.items = data.Data.map(item=>{
-              let txn = item.NumTxs;
-              let precommit = item.Block.LastCommit.Precommits.length;
+            this.items = data.Data.map(item => {
               return {
-                TxHash:item.TxHash,
-                txn,
-                fee:'',
-                timestamp:item.Time,
-                precommit,
-                voting:'',
+                Address: item.Address,
+                Name:item.Description.Moniker,
+                'Voting Power':item.VotingPower,
+                'Uptime':item.UpdateTime,
+                'Commission Rate':'',
+                Returns:'',
               };
             })
           })
@@ -163,17 +196,16 @@
     @include flex;
     @include pcContainer;
     font-size: 1.4rem;
-    .pagination{
-      margin-top:0.5rem;
+    .pagination {
+      margin-top: 0.5rem;
       @include flex;
       justify-content: flex-end;
     }
-    .b-table{
-      border-bottom:1px solid #eeeeee;
-      min-width:50rem;
+    .b-table {
+      border-bottom: 1px solid #eeeeee;
+      min-width: 50rem;
 
-
-      a{
+      a {
         text-decoration: none;
       }
     }
@@ -184,6 +216,7 @@
       @include pcContainer;
       .personal_computer_blocks_list_page_wrap {
         @include flex;
+
       }
       .mobile_blocks_list_page_wrap {
         @include flex;
@@ -268,6 +301,15 @@
         color: #ccc;
       }
 
+    }
+  }
+
+  //重置bootstrap-vue的表格样式
+  table{
+
+    td{
+      max-width:20rem !important;
+      overflow-wrap: break-word !important;
     }
   }
 

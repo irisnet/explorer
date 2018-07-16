@@ -26,12 +26,12 @@
         >Block</span>
         <b-dropdown id="ddown-left" text="Transaction" variant="primary" class="m-2" :class="activeClassName === '/transaction'?'nav_item_active':''">
           <b-dropdown-item @click="featureButtonClick('/recent_transactions/2/0')">Recent Transactions</b-dropdown-item>
-          <b-dropdown-item @click="featureButtonClick('/transfer_transactions')">Transfer Transactions</b-dropdown-item>
-          <b-dropdown-item @click="featureButtonClick('/delegate_transactions')">Delegate Transactions</b-dropdown-item>
+          <b-dropdown-item @click="featureButtonClick('/recent_transactions/2/transfer')">Transfer Transactions</b-dropdown-item>
+          <b-dropdown-item @click="featureButtonClick('/recent_transactions/2/stake')">Stake Transactions</b-dropdown-item>
         </b-dropdown>
-        <b-dropdown text="Left align" variant="Validators" class="m-2" :class="activeClassName === '/validators'?'nav_item_active':''">
-          <b-dropdown-item @click="featureButtonClick('/validators')">Validators</b-dropdown-item>
-          <b-dropdown-item @click="featureButtonClick('/candidates')">Candidates</b-dropdown-item>
+        <b-dropdown text="Validators" variant="Validators" class="m-2" :class="activeClassName === '/validators'?'nav_item_active':''">
+          <b-dropdown-item @click="featureButtonClick('/recent_transactions/3/0')">Validators</b-dropdown-item>
+          <b-dropdown-item @click="featureButtonClick('/recent_transactions/4/0')">Candidates</b-dropdown-item>
         </b-dropdown>
         <span class="nav_item" :class="activeClassName === '/faucet'?'nav_item_active':''"
               @click="featureButtonClick('/faucet')"
@@ -41,26 +41,25 @@
 
     <div class="app_header_mobile" v-show="devicesShow === 0">
       <div class="feature_btn" @click="showFeature"></div>
-      <div class="image_wrap_mobile">
-        <!--<img src="../assets/logo.png" alt="失去网络了..."/>-->
-        logo
+      <div class="image_wrap_mobile" @click="featureButtonClick('/home',true)">
+        <img src="../assets/logo.png" alt="失去网络了..."/>
       </div>
 
       <div class="use_feature_mobile" v-show="featureShow">
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/home')">Home</span>
-        <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/blocks')">Blocks</span>
+        <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/block/1/0')">Blocks</span>
         <span class="feature_btn_mobile feature_nav feature_arrow" @click="transactionShow =! transactionShow">Transactions</span>
         <span class="feature_btn_mobile feature_subNav" v-show="transactionShow"
-              @click="featureButtonClick('/recent_transactions')">Recent Transactions</span>
+              @click="featureButtonClick('/recent_transactions/2/0')">Recent Transactions</span>
         <span class="feature_btn_mobile feature_subNav" v-show="transactionShow"
-              @click="featureButtonClick('/transfer_transactions')">Transfer Transactions</span>
+              @click="featureButtonClick('/recent_transactions/2/transfer')">Transfer Transactions</span>
         <span class="feature_btn_mobile feature_subNav" v-show="transactionShow"
-              @click="featureButtonClick('/delegate_transactions')">Delegate Transactions</span>
+              @click="featureButtonClick('/recent_transactions/2/stake')">Stake Transactions</span>
         <span class="feature_btn_mobile feature_nav feature_arrow" @click="validatorsShow =! validatorsShow">Validators</span>
         <span class="feature_btn_mobile feature_subNav" v-show="validatorsShow"
-              @click="featureButtonClick('/validators')">Validators</span>
+              @click="featureButtonClick('/recent_transactions/3/0')">Validators</span>
         <span class="feature_btn_mobile feature_subNav" v-show="validatorsShow"
-              @click="featureButtonClick('/candidates')">Candidates</span>
+              @click="featureButtonClick('/recent_transactions/4/0')">Candidates</span>
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/faucet')">Faucet</span>
       </div>
       <div class="search_input_mobile">
@@ -115,11 +114,13 @@
       showFeature() {
         this.featureShow = !this.featureShow;
       },
-      featureButtonClick(path) {
-        this.featureShow = !this.featureShow;
-        if(path.includes('/recent_transactions') || path.includes('/transfer_transactions') || path.includes(path === '/delegate_transactions')){
+      featureButtonClick(path,isLogoClick) {
+        if(!isLogoClick){
+          this.featureShow = !this.featureShow;
+        }
+        if(path.includes('/recent_transactions/2')){
           this.activeClassName = '/transaction';
-        }else if(path.includes('/candidates')){
+        }else if(path.includes('/recent_transactions/3') || path.includes('/recent_transactions/4')){
           this.activeClassName = '/validators';
         }else if(path.includes('/block')){
           this.activeClassName = '/block';
@@ -252,11 +253,9 @@
         background: url('../assets/menu.svg') no-repeat;
       }
       .image_wrap_mobile {
-        width: 70vw;
-        height: 4rem;
         img {
-          width: 100%;
-          height: 100%;
+          /*width: 100%;
+          height: 100%;*/
         }
       }
       .search_input_mobile {
@@ -299,6 +298,7 @@
         left: 0;
         background: #f2f2f2;
         @include flex();
+        z-index:100;
         flex-direction: column;
         .feature_btn_mobile {
           border-bottom: 0.1rem solid #cccccc;
