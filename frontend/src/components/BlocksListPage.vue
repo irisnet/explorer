@@ -15,43 +15,7 @@
         >
         </b-pagination>
       </div>
-      <template>
-        <b-table :fields='fields' :items='items' striped>
-          <template slot='height' slot-scope='data' v-if="type === '1'">
-            <a href="http://www.baidu.com">
-              {{data.item.height}}
-            </a>
-          </template>
-          <template slot='txn' slot-scope='data' v-if="type === '1'">
-            <a href="http://www.baidu.com">
-              {{data.item.txn}}
-            </a>
-          </template>
-          <template slot='TxHash' slot-scope='data' v-if="type === '2'">
-            <a href="http://www.baidu.com">
-              {{data.item.TxHash}}
-            </a>
-          </template>
-          <template slot='Block' slot-scope='data' v-if="type === '2'">
-            <a href="http://www.baidu.com">
-              {{data.item.Block}}
-            </a>
-          </template>
-          <template slot='From' slot-scope='data' v-if="type === '2'">
-            <a href="http://www.baidu.com">
-              {{data.item.From}}
-            </a>
-          </template>
-
-          <template slot='To' slot-scope='data' v-if="type === '2'">
-            <a href="http://www.baidu.com">
-              {{data.item.To}}
-            </a>
-          </template>
-
-
-        </b-table>
-      </template>
+      <blocks-list-table :items="items" :type="this.$route.params.type"></blocks-list-table>
       <div class="pagination">
         <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
         </b-pagination>
@@ -64,8 +28,12 @@
 <script>
   import Tools from '../common/Tools';
   import axios from 'axios';
+  import BlocksListTable from './table/BlocksListTable.vue';
 
   export default {
+    components:{
+      BlocksListTable,
+    },
     watch: {
       currentPage(currentPage) {
         this.currentPage = currentPage;
@@ -131,9 +99,9 @@
     },
     methods: {
       getDataList(currentPage, pageSize, type) {
+        console.log(type)
         if (type === '1') {
           let url = `/api/blocks/${currentPage}/${pageSize}`;
-          console.log(url)
           axios.get(url).then((data) => {
             if (data.status === 200) {
               return data.data;
@@ -166,7 +134,6 @@
               return data.data;
             }
           }).then((data) => {
-            console.log(data)
             this.count = data.Count;
             this.items = data.Data.map(item => {
               let [Amount,Fees] = ['',''];
@@ -184,7 +151,6 @@
               }else if(item.Fee.Amount === null){
                 Fees = '';
               }
-
               return {
                 TxHash: item.TxHash,
                 Block:item.Height,
@@ -194,8 +160,26 @@
                 Amount,
                 Fees,
                 Timestamp: item.Time,
-
-
+              };
+            })
+          })
+        }else if (type === '3' || type === '4') {
+          let url = `/api/stake/candidates/${currentPage}/${pageSize}`;
+          axios.get(url).then((data) => {
+            if (data.status === 200) {
+              return data.data;
+            }
+          }).then((data) => {
+            console.log(data)
+            this.count = data.Count;
+            this.items = data.Data.map(item => {
+              return {
+                Address: item.Address,
+                Name:item.Description.Moniker,
+                'Voting Power':item.VotingPower,
+                'Uptime':item.UpdateTime,
+                'Commission Rate':'',
+                Returns:'',
               };
             })
           })

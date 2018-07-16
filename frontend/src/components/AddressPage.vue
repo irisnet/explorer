@@ -12,15 +12,15 @@
       <div class="transactions_detail_information_wrap">
         <div class="information_props_wrap">
           <span class="information_props">Balance:</span>
-          <span class="information_value">{{hashValue}}</span>
+          <span class="information_value">{{balanceValue}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Deposits:</span>
-          <span class="information_value">{{blockValue}}</span>
+          <span class="information_value">{{depositsValue}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Transactions:</span>
-          <span class="information_value">{{typeValue}}</span>
+          <span class="information_value">{{transactionsValue}}</span>
         </div>
       </div>
     </div>
@@ -29,27 +29,27 @@
       <div class="transactions_detail_information_wrap">
         <div class="information_props_wrap">
           <span class="information_props">Name:</span>
-          <span class="information_value">{{hashValue}}</span>
+          <span class="information_value">{{nameValue}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Pub Key:</span>
-          <span class="information_value">{{blockValue}}</span>
+          <span class="information_value">{{pubKeyValue}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Website:</span>
-          <span class="information_value">{{typeValue}}</span>
+          <span class="information_value">{{websiteValue}}</span>
         </div>
         <div class="information_props_wrap" style="border-bottom:0.1rem solid #eee">
           <span class="information_props">Description:</span>
-          <span class="information_value">{{typeValue}}</span>
+          <span class="information_value">{{descriptionValue}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Commission Rate:</span>
-          <span class="information_value">{{typeValue}}</span>
+          <span class="information_value">{{commissionRateValue}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Announcement:</span>
-          <span class="information_value">{{typeValue}}</span>
+          <span class="information_value">{{AnnouncementValue}}</span>
         </div>
 
 
@@ -61,23 +61,23 @@
         <div class="transactions_detail_information_wrap">
           <div class="information_props_wrap">
             <span class="information_props">Bond Height:</span>
-            <span class="information_value">{{hashValue}}</span>
+            <span class="information_value">{{bondHeightValue}}</span>
           </div>
           <div class="information_props_wrap">
             <span class="information_props">Voting Power:</span>
-            <span class="information_value">{{blockValue}}</span>
+            <span class="information_value">{{votingPowerValue}}</span>
           </div>
           <div class="information_props_wrap">
             <span class="information_props">Uptime(in last 100 blocks):</span>
-            <span class="information_value">{{typeValue}}</span>
+            <span class="information_value">{{uptimeValue}}</span>
           </div>
           <div class="information_props_wrap">
             <span class="information_props">Precommited Blocks:</span>
-            <span class="information_value">{{typeValue}}</span>
+            <span class="information_value">{{precommitedBlocksValue}}</span>
           </div>
           <div class="information_props_wrap">
             <span class="information_props">Returns:</span>
-            <span class="information_value">{{typeValue}}</span>
+            <span class="information_value">{{returnsValue}}</span>
           </div>
 
         </div>
@@ -111,7 +111,7 @@
           <span>{{}}</span>
         </p>
         <div class="transaction_table">
-hello
+          <blocks-list-table :items="items" :type="type"></blocks-list-table>
         </div>
       </div>
     </div>
@@ -124,26 +124,46 @@ hello
 <script>
   import Tools from '../common/Tools';
   import axios from 'axios';
+  import BlocksListTable from './table/BlocksListTable';
+
   export default {
+    watch:{
+      $route(){
+        this.type = this.$route.params.type;
+      }
+    },
 
     data() {
+
       return {
         devicesWidth: window.innerWidth,
         transactionsDetailWrap: 'personal_computer_transactions_detail',//1是显示pc端，0是移动端
-        hashValue: '',
-        blockValue: '',
-        typeValue: '',
-        fromValue: '',
-        toValue: '',
-        timestampValue: '',
-        amountValue: '',
-        feeValue: '',
         activeBtn:0,
         firstPercent:'33%',
         secondPercent:'50%',
+        hashValue:'',
+        balanceValue:'',
+        depositsValue:'',
+        transactionsValue:'',
+        nameValue:'',
+        pubKeyValue:'',
+        websiteValue:'',
+        descriptionValue:'',
+        commissionRateValue:'',
+        AnnouncementValue:'',
+        bondHeightValue:'',
+        votingPowerValue:'',
+        uptimeValue:'',
+        precommitedBlocksValue:'',
+        returnsValue:'',
+        items:[],
+        type:this.$route.params.type,
 
 
       }
+    },
+    components:{
+      BlocksListTable,
     },
     beforeMount() {
       if (Tools.currentDeviceIsPersonComputer()) {
@@ -153,33 +173,58 @@ hello
       }
     },
     mounted() {
-      let url = `/api/tx/${this.$route.query.txHash}`;
-      if(!this.$route.query.txHash){
-        return;
-      }
-      axios.get(url).then((data)=>{
-        if(data.status === 200){
-          return data.data;
-        }
-      }).then((data)=>{
-        if(data){
-          this.hashValue = data.TxHash;
-          this.blockValue = data.Height;
-          this.typeValue = data.Type;
-          this.fromValue = data.From;
-          this.toValue = data.To;
-          this.timestampValue = data.Time;
-          this.amountValue = data.Amount.map(item=>{
-            return `${item.amount} ${item.denom}`;
-          }).join(',');
-          this.feeValue = data.Fee.Amount.map(item=>{
-            return `${item.amount} ${item.denom}`;
-          }).join(',');
-        }
+      /*this.getAddressInformation();
+      this.getProfileInformation();
+      this.getCurrentTenureInformation();
+      this.getTableListInforamtion(1,10,this.$route.params.type);*/
 
-      })
     },
-    methods: {}
+    methods: {
+      getAddressInformation(){
+        let url = ``;
+        axios.get(url).then((data)=>{
+          if(data.status === 200){
+            return data.data;
+          }
+        }).then((data)=>{
+          console.log(data)
+
+        })
+      },
+      getProfileInformation(){
+        let url = ``;
+        axios.get(url).then((data)=>{
+          if(data.status === 200){
+            return data.data;
+          }
+        }).then((data)=>{
+          console.log(data)
+
+        })
+      },
+      getCurrentTenureInformation(){
+        let url = ``;
+        axios.get(url).then((data)=>{
+          if(data.status === 200){
+            return data.data;
+          }
+        }).then((data)=>{
+          console.log(data)
+
+        })
+      },
+      getTableListInforamtion(currentPage,pageSize,type){
+        let url = ``;
+        axios.get(url).then((data)=>{
+          if(data.status === 200){
+            return data.data;
+          }
+        }).then((data)=>{
+          console.log(data)
+
+        })
+      }
+    }
   }
 </script>
 <style lang="scss">
@@ -260,7 +305,7 @@ hello
         .information_props_wrap{
           @include flex;
           flex-direction:column;
-          border-bottom:0.1rem solid #eee;
+          border-bottom:none !important;
           margin-bottom:0.5rem;
           .information_value{
             overflow-x:scroll;
@@ -306,7 +351,6 @@ hello
         }
         .canvas_voting_power{
           flex:2;
-          height:10rem;
           .progress_wrap{
             margin-bottom:1.5rem;
             .progress_wrap_background{
@@ -330,6 +374,25 @@ hello
       .current_tenure_wrap{
         @include flex;
         flex-direction:column;
+      }
+
+      .canvas_voting_power{
+        flex:2;
+        .progress_wrap{
+          margin-bottom:1.5rem;
+          .progress_wrap_background{
+            height:2.4rem;
+            background: #efeff1;
+            margin-top:1rem;
+            .progress_value{
+              background:#a4d7f4;
+              height:100%;
+              line-height:2.4rem;
+              padding-left:2rem;
+            }
+          }
+        }
+
       }
     }
     //底部表格部分
