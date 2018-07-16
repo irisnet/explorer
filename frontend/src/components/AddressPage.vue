@@ -81,10 +81,20 @@
           </div>
 
         </div>
-        <div class="canvas_voting_power">图标1</div>
-        <div class="canvas_uptime_history">图表2</div>
-
-
+        <div class="canvas_voting_power">
+          <div class="progress_wrap">
+            <span>Uptime(in last 100)</span>
+            <div class="progress_wrap_background">
+              <div class="progress_value" :style="`width:${firstPercent}`">{{firstPercent}}</div>
+            </div>
+          </div>
+          <div class="progress_wrap">
+            <span>Commission Rate</span>
+            <div class="progress_wrap_background">
+              <div class="progress_value" :style="`width:${secondPercent}`">{{secondPercent}}</div>
+            </div>
+          </div>
+        </div>
       </div>
 
     </div>
@@ -129,6 +139,8 @@ hello
         amountValue: '',
         feeValue: '',
         activeBtn:0,
+        firstPercent:'33%',
+        secondPercent:'50%',
 
 
       }
@@ -198,6 +210,7 @@ hello
         font-size:1.8rem;
         color:#555;
         margin-bottom:0;
+        border-bottom:0.1rem solid #efefef;
       }
       @include pcCenter;
       .transactions_detail_information_wrap{
@@ -274,12 +287,10 @@ hello
     }
     .address_profile{
       @include borderRadius(5px);
-      border:1px solid #eee;
     }
 
     //current tenure部分
     .current_tenure{
-      border:0.1rem solid #eee;
       margin-top:1rem;
       .current_tenure_wrap{
         width:100%;
@@ -296,10 +307,21 @@ hello
         .canvas_voting_power{
           flex:2;
           height:10rem;
-        }
-        .canvas_uptime_history{
-          flex:2;
-          height:10rem;
+          .progress_wrap{
+            margin-bottom:1.5rem;
+            .progress_wrap_background{
+              height:2.4rem;
+              background: #efeff1;
+              margin-top:1rem;
+              .progress_value{
+                background:#a4d7f4;
+                height:100%;
+                line-height:2.4rem;
+                padding-left:2rem;
+              }
+            }
+          }
+
         }
       }
     }

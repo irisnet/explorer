@@ -26,12 +26,12 @@
         >Block</span>
         <b-dropdown id="ddown-left" text="Transaction" variant="primary" class="m-2" :class="activeClassName === '/transaction'?'nav_item_active':''">
           <b-dropdown-item @click="featureButtonClick('/recent_transactions/2/0')">Recent Transactions</b-dropdown-item>
-          <b-dropdown-item @click="featureButtonClick('/transfer_transactions')">Transfer Transactions</b-dropdown-item>
-          <b-dropdown-item @click="featureButtonClick('/delegate_transactions')">Delegate Transactions</b-dropdown-item>
+          <b-dropdown-item @click="featureButtonClick('/recent_transactions/2/transfer')">Transfer Transactions</b-dropdown-item>
+          <b-dropdown-item @click="featureButtonClick('/recent_transactions/2/stake')">Stake Transactions</b-dropdown-item>
         </b-dropdown>
-        <b-dropdown text="Left align" variant="Validators" class="m-2" :class="activeClassName === '/validators'?'nav_item_active':''">
-          <b-dropdown-item @click="featureButtonClick('/validators')">Validators</b-dropdown-item>
-          <b-dropdown-item @click="featureButtonClick('/candidates')">Candidates</b-dropdown-item>
+        <b-dropdown text="Validators" variant="Validators" class="m-2" :class="activeClassName === '/validators'?'nav_item_active':''">
+          <b-dropdown-item @click="featureButtonClick('/recent_transactions/3/0')">Validators</b-dropdown-item>
+          <b-dropdown-item @click="featureButtonClick('/recent_transactions/4/0')">Candidates</b-dropdown-item>
         </b-dropdown>
         <span class="nav_item" :class="activeClassName === '/faucet'?'nav_item_active':''"
               @click="featureButtonClick('/faucet')"
@@ -54,7 +54,7 @@
         <span class="feature_btn_mobile feature_subNav" v-show="transactionShow"
               @click="featureButtonClick('/transfer_transactions')">Transfer Transactions</span>
         <span class="feature_btn_mobile feature_subNav" v-show="transactionShow"
-              @click="featureButtonClick('/delegate_transactions')">Delegate Transactions</span>
+              @click="featureButtonClick('/delegate_transactions')">Stake Transactions</span>
         <span class="feature_btn_mobile feature_nav feature_arrow" @click="validatorsShow =! validatorsShow">Validators</span>
         <span class="feature_btn_mobile feature_subNav" v-show="validatorsShow"
               @click="featureButtonClick('/validators')">Validators</span>
@@ -116,9 +116,9 @@
       },
       featureButtonClick(path) {
         this.featureShow = !this.featureShow;
-        if(path.includes('/recent_transactions') || path.includes('/transfer_transactions') || path.includes(path === '/delegate_transactions')){
+        if(path.includes('/recent_transactions/2')){
           this.activeClassName = '/transaction';
-        }else if(path.includes('/candidates')){
+        }else if(path.includes('/recent_transactions/3') || path.includes('/recent_transactions/4')){
           this.activeClassName = '/validators';
         }else if(path.includes('/block')){
           this.activeClassName = '/block';
