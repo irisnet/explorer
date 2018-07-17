@@ -7,19 +7,19 @@
         </span>
       </template>
       <template slot='Txn' slot-scope='data'>
-        <span class="skip_route" @click="skipRoute()">
+        <span class="skip_route" @click="skipRoute(`/recent_transactions/2/0`)">
           {{data.item.Txn}}
         </span>
       </template>
     </b-table>
     <b-table :fields='fields' :items='items' striped v-if="type === '2'">
       <template slot='TxHash' slot-scope='data'>
-        <span class="skip_route" @click="skipRoute()">
+        <span class="skip_route" @click="skipRoute(`/tx?txHash=${data.item.TxHash}`)">
           {{data.item.TxHash}}
         </span>
       </template>
       <template slot='Block' slot-scope='data'>
-        <span class="skip_route" @click="skipRoute()">
+        <span class="skip_route" @click="skipRoute(`/blocks_detail/${data.item.Block}`)">
           {{data.item.Block}}
         </span>
       </template>

@@ -8,7 +8,7 @@
           <div class="footer_left" :class="footerLeftVar">
             <div class="footer_logo_wrap">
               <a href="https://www.irisnet.org/">
-                <img src="./assets/logo.png" alt="">
+                <img src="./assets/IRIS-logo.png" alt="">
               </a>
               <div class="footer_description_wrap">
                 Inter-chain Service Infrastructure and Protocol Technology Foundation for a Distributed Business Ecosystem
