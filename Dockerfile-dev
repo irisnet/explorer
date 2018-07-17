@@ -2,7 +2,7 @@ FROM node:10 as builder
 WORKDIR /app
 COPY ./frontend/ /app
 
-ENV VUE_APP_FAUCET_URL http://116.62.62.39:30200
+ENV VUE_APP_FAUCET_URL http://dev.faucet.irisplorer.io
 
 RUN npm i yarn -g && VUE_APP_FAUCET_URL=$VUE_APP_FAUCET_URL yarn install && yarn build
 

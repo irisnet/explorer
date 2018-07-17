@@ -76,7 +76,7 @@
     name: "FaucetPage",
     data() {
       return {
-        faucet_url: "http://dev.faucet.irisplorer.io",
+        faucet_url: this.faucet_url,
         address: "",
         errMsg: "",
       }
