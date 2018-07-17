@@ -2,43 +2,50 @@
   <div>
     <b-table :fields='fields' :items='items' striped v-if="type === '1'">
       <template slot='Height' slot-scope='data'>
-        <a href="http://www.baidu.com">
+        <span class="skip_route" @click="skipRoute(`/blocks_detail/${data.item.Height}`)">
           {{data.item.Height}}
-        </a>
+        </span>
       </template>
       <template slot='Txn' slot-scope='data'>
-        <a href="http://www.baidu.com">
+        <span class="skip_route" @click="skipRoute()">
           {{data.item.Txn}}
-        </a>
+        </span>
       </template>
     </b-table>
     <b-table :fields='fields' :items='items' striped v-if="type === '2'">
       <template slot='TxHash' slot-scope='data'>
-        <a href="http://www.baidu.com">
+        <span class="skip_route" @click="skipRoute()">
           {{data.item.TxHash}}
-        </a>
+        </span>
       </template>
       <template slot='Block' slot-scope='data'>
-        <a href="http://www.baidu.com">
+        <span class="skip_route" @click="skipRoute()">
           {{data.item.Block}}
-        </a>
+        </span>
       </template>
       <template slot='From' slot-scope='data'>
-        <a href="http://www.baidu.com">
+        <span class="skip_route" @click="skipRoute()">
           {{data.item.From}}
-        </a>
+        </span>
       </template>
       <template slot='To' slot-scope='data'>
-        <a href="http://www.baidu.com">
+        <span class="skip_route" @click="skipRoute()">
           {{data.item.To}}
-        </a>
+        </span>
       </template>
     </b-table>
     <b-table :fields='fields' :items='items' striped v-if="type === '3' || type === '4'">
       <template slot='Address' slot-scope='data'>
-        <a href="http://www.baidu.com">
+        <span class="skip_route" @click="skipRoute()">
           {{data.item.Address}}
-        </a>
+        </span>
+      </template>
+    </b-table>
+    <b-table :fields='fields' :items='items' striped v-if="type === '5'">
+      <template slot='Address' slot-scope='data'>
+        <span class="skip_route" @click="skipRoute()">
+          {{data.item.Address}}
+        </span>
       </template>
     </b-table>
   </div>
@@ -57,6 +64,12 @@
     props:['items','type'],
     mounted(){
       console.log(this.type)
+    },
+    methods:{
+      skipRoute(path){
+        console.log(path);
+        this.$router.push(path);
+      }
     }
   }
 </script>
@@ -70,6 +83,10 @@
     td{
       max-width:20rem !important;
       overflow-wrap: break-word !important;
+      .skip_route{
+        color:#3190e8;
+        cursor:pointer;
+      }
     }
   }
 

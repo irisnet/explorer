@@ -3,7 +3,7 @@
   <div :class="appHeaderVar">
     <header class="app_header_person_computer" v-show="devicesShow === 1">
       <div class="header_top">
-        <div class="imageWrap" style="cursor:pointer;" @click="featureButtonClick('/home')">
+        <div class="imageWrap" style="cursor:pointer;margin-top:10px;" @click="featureButtonClick('/home')">
           <img src="../assets/logo.png" alt="失去网络了..."/>
         </div>
         <div class="navSearch">
@@ -24,12 +24,16 @@
         <span class="nav_item" :class="activeClassName === '/block'?'nav_item_active':''"
               @click="featureButtonClick('/block/1/0')"
         >Block</span>
-        <b-dropdown id="ddown-left" text="Transaction" variant="primary" class="m-2" :class="activeClassName === '/transaction'?'nav_item_active':''">
+        <b-dropdown id="ddown-left" text="Transaction" variant="primary" class="m-2"
+                    :class="activeClassName === '/transaction'?'nav_item_active':''">
           <b-dropdown-item @click="featureButtonClick('/recent_transactions/2/0')">Recent Transactions</b-dropdown-item>
-          <b-dropdown-item @click="featureButtonClick('/recent_transactions/2/transfer')">Transfer Transactions</b-dropdown-item>
-          <b-dropdown-item @click="featureButtonClick('/recent_transactions/2/stake')">Stake Transactions</b-dropdown-item>
+          <b-dropdown-item @click="featureButtonClick('/recent_transactions/2/transfer')">Transfer Transactions
+          </b-dropdown-item>
+          <b-dropdown-item @click="featureButtonClick('/recent_transactions/2/stake')">Stake Transactions
+          </b-dropdown-item>
         </b-dropdown>
-        <b-dropdown text="Validators" variant="Validators" class="m-2" :class="activeClassName === '/validators'?'nav_item_active':''">
+        <b-dropdown text="Validators" variant="Validators" class="m-2"
+                    :class="activeClassName === '/validators'?'nav_item_active':''">
           <b-dropdown-item @click="featureButtonClick('/recent_transactions/3/0')">Validators</b-dropdown-item>
           <b-dropdown-item @click="featureButtonClick('/recent_transactions/4/0')">Candidates</b-dropdown-item>
         </b-dropdown>
@@ -55,7 +59,8 @@
               @click="featureButtonClick('/recent_transactions/2/transfer')">Transfer Transactions</span>
         <span class="feature_btn_mobile feature_subNav" v-show="transactionShow"
               @click="featureButtonClick('/recent_transactions/2/stake')">Stake Transactions</span>
-        <span class="feature_btn_mobile feature_nav feature_arrow" @click="validatorsShow =! validatorsShow">Validators</span>
+        <span class="feature_btn_mobile feature_nav feature_arrow"
+              @click="validatorsShow =! validatorsShow">Validators</span>
         <span class="feature_btn_mobile feature_subNav" v-show="validatorsShow"
               @click="featureButtonClick('/recent_transactions/3/0')">Validators</span>
         <span class="feature_btn_mobile feature_subNav" v-show="validatorsShow"
@@ -82,12 +87,12 @@
         devicesWidth: window.innerWidth,
         devicesShow: 1,//1是显示pc端，0是移动端
         searchValue: '',
-        appHeaderVar:'person_computer_header_var',
+        appHeaderVar: 'person_computer_header_var',
         featureShow: false,//是否显示功能菜单栏
         transactionShow: false,//点击显示Transactions菜单
         validatorsShow: false,//点击显示validators菜单
         searchInputValue: '',
-        activeClassName:'/home',
+        activeClassName: '/home',
       }
     },
     beforeMount() {
@@ -114,17 +119,17 @@
       showFeature() {
         this.featureShow = !this.featureShow;
       },
-      featureButtonClick(path,isLogoClick) {
-        if(!isLogoClick){
+      featureButtonClick(path, isLogoClick) {
+        if (!isLogoClick) {
           this.featureShow = !this.featureShow;
         }
-        if(path.includes('/recent_transactions/2')){
+        if (path.includes('/recent_transactions/2')) {
           this.activeClassName = '/transaction';
-        }else if(path.includes('/recent_transactions/3') || path.includes('/recent_transactions/4')){
+        } else if (path.includes('/recent_transactions/3') || path.includes('/recent_transactions/4')) {
           this.activeClassName = '/validators';
-        }else if(path.includes('/block')){
+        } else if (path.includes('/block')) {
           this.activeClassName = '/block';
-        }else{
+        } else {
           this.activeClassName = path;
         }
         this.$router.push(path);
@@ -144,20 +149,23 @@
 <style lang="scss">
   @import '../style/mixin.scss';
 
-  .person_computer_header_var{
+  .person_computer_header_var {
     height: 15rem;
   }
-  .mobile_header_var{
-    height:10rem;
+
+  .mobile_header_var {
+    height: 10rem;
   }
+
   .person_computer_header_var, .mobile_header_var {
     @include flex();
     @include pcContainer;
     .app_header_person_computer {
+      height: 96px;
       @include pcCenter;
       justify-content: space-between;
       padding-top: 1rem;
-      .header_top{
+      .header_top {
         @include flex();
         justify-content: space-between;
         .navSearch {
@@ -177,8 +185,8 @@
             text-indent: 1rem;
             outline: none;
             border: 0.1rem solid #dddddd;
-            margin-top:2rem;
-            font-size:1.4rem;
+            margin-top: 2rem;
+            font-size: 1.4rem;
           }
           .search_icon {
             position: absolute;
@@ -187,20 +195,18 @@
             width: 1.5rem;
             height: 1.5rem;
             background: url('../assets/search.svg') no-repeat;
-            cursor:pointer;
+            cursor: pointer;
           }
         }
       }
 
-
-
     }
     .useFeature {
-      width:100%;
+      width: 100%;
       @include flex();
       flex-direction: column;
       align-items: center;
-      background: #3190e8;
+      background: #3598db;
       .navButton {
         @include pcCenter;
         .nav_item {
@@ -211,25 +217,24 @@
           text-align: center;
           font-size: 1.8rem;
           cursor: pointer;
-          color:#cccccc;
+          color: #c9eafd;
         }
-        .nav_item_active{
-          border-bottom:0.2rem solid #3190e8;
-          color:#ffffff;
-          background: blue;
+        .nav_item_active {
+          color: #ffffff;
+          background: #005a98;
         }
         .m-2 {
           margin: 0 !important;
-          height:6.1rem;
+          height: 5.8rem;
           button {
             padding: 0 4rem;
-            color:#555 !important;
+            color: #555 !important;
           }
           .btn {
             background-color: transparent;
-            color: #cccccc !important;
+            color: #c9eafd !important;
             border: none;
-            font-size:1.8rem;
+            font-size: 1.8rem;
             font-weight: normal;
           }
         }
@@ -243,7 +248,7 @@
       flex-direction: column;
       position: relative;
       height: 10rem;
-      border-bottom:0.1rem solid #cccccc;
+      border-bottom: 0.1rem solid #cccccc;
       .feature_btn {
         position: absolute;
         width: 4rem;
@@ -264,7 +269,7 @@
         @include flex();
         flex-direction: column;
         align-items: center;
-        position:relative;
+        position: relative;
         input::-webkit-input-placeholder {
           text-align: center;
           font-size: 1.4rem;
@@ -281,14 +286,14 @@
             outline: none;
           }
         }
-        .search_icon{
+        .search_icon {
           position: absolute;
           top: 0.5rem;
           right: 1.2rem;
           width: 1.5rem;
           height: 1.5rem;
           background: url('../assets/search.svg') no-repeat;
-          cursor:pointer;
+          cursor: pointer;
         }
       }
       .use_feature_mobile {
@@ -298,7 +303,7 @@
         left: 0;
         background: #f2f2f2;
         @include flex();
-        z-index:100;
+        z-index: 100;
         flex-direction: column;
         .feature_btn_mobile {
           border-bottom: 0.1rem solid #cccccc;
@@ -307,8 +312,8 @@
           padding-left: 1.5rem;
           color: #555;
         }
-        .feature_arrow{
-          position:relative;
+        .feature_arrow {
+          position: relative;
           background: url('../assets/arrow-bottom.svg') no-repeat 97% 1.2rem;
         }
         .feature_subNav {
