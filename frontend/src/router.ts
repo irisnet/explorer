@@ -3,7 +3,7 @@ import Router from 'vue-router';
 import Home from './views/Home.vue';
 import FaucetPage from './components/FaucetPage.vue';
 import TransactionsDetail from './components/TransactionsDetail.vue';
-import BlocksDetail from './components/BlocksDetail';
+import BlocksDetail from './components/BlocksDetail.vue';
 import BlocksListPage from './components/BlocksListPage.vue';
 import AddressPage from './components/AddressPage.vue';
 
