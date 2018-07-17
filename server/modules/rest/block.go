@@ -40,6 +40,14 @@ func queryBlocks(w http.ResponseWriter, r *http.Request) {
 	w.Write(utils.QueryList("block", &data, nil, "-height", r))
 }
 
+func QueryBlocksPrecommits(w http.ResponseWriter, r *http.Request) {
+	args := mux.Vars(r)
+	address := args["address"]
+	var data []document.Block
+	w.Write(utils.QueryList("block", &data, bson.M{"block.last_commit.precommits":
+	bson.M{"$elemMatch": bson.M{"validator_address": address}}}, "-height", r))
+}
+
 // mux.Router registrars
 
 func registerQueryBlock(r *mux.Router) error {
@@ -62,12 +70,18 @@ func registerQueryBlocks(r *mux.Router) error {
 	return nil
 }
 
+func registerQueryBlocksPrecommits(r *mux.Router) error {
+	r.HandleFunc("/api/blocks/precommits/{address}/{page}/{size}", QueryBlocksPrecommits).Methods("GET")
+	return nil
+}
+
 func RegisterBlock(r *mux.Router) error {
 	funs := []func(*mux.Router) error{
 		registerQueryBlock,
 		registerQueryValidators,
 		registerQueryRecentBlock,
 		registerQueryBlocks,
+		registerQueryBlocksPrecommits,
 	}
 
 	for _, fn := range funs {

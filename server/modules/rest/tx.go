@@ -25,7 +25,7 @@ func registerQueryCoinTxByAccount(r *mux.Router) error {
 }
 
 func registerQueryPageCoinTxByAccount(r *mux.Router) error {
-	r.HandleFunc("/api/tx/coin/{address}/{page}/{size}", queryCoinPageTxByAccount).Methods("GET")
+	r.HandleFunc("/api/tx/coin/{address}/{page}/{size}", queryCoinTxPageByAccount).Methods("GET")
 	return nil
 }
 
@@ -46,6 +46,11 @@ func registerQueryPageStakeTxByAccount(r *mux.Router) error {
 
 func registerQueryTxs(r *mux.Router) error {
 	r.HandleFunc("/api/txs/{page}/{size}", queryTxs).Methods("GET")
+	return nil
+}
+
+func registerQueryTxsByAccount(r *mux.Router) error {
+	r.HandleFunc("/api/txsByAddress/{address}/{page}/{size}", queryTxsByAccount).Methods("GET")
 	return nil
 }
 
@@ -77,14 +82,23 @@ func queryAllCoinTxByPage(w http.ResponseWriter, r *http.Request) {
 func queryCoinTxByAccount(w http.ResponseWriter, r *http.Request) {
 }
 
-func queryCoinPageTxByAccount(w http.ResponseWriter, r *http.Request) {
+func queryCoinTxPageByAccount(w http.ResponseWriter, r *http.Request) {
 	var data []document.CommonTx
 	args := mux.Vars(r)
 	address := args["size"]
 	w.Write(utils.QueryList("tx_common", &data, bson.M{"type": "coin", "address": address}, "-time", r))
 }
 
+func queryTxsByAccount(w http.ResponseWriter, r *http.Request) {
+	var data []document.CommonTx
+	args := mux.Vars(r)
+	address := args["size"]
+	w.Write(utils.QueryList("tx_common", &data, bson.M{"address": address}, "-time", r))
+}
+
 func queryAllStakeTxByPage(w http.ResponseWriter, r *http.Request) {
+	var data []document.StakeTx
+	w.Write(utils.QueryList("tx_stake", &data, nil, "-time", r))
 }
 
 func queryStakeTxByAccount(w http.ResponseWriter, r *http.Request) {
@@ -97,6 +111,7 @@ func RegisterTx(r *mux.Router) error {
 	funs := []func(*mux.Router) error{
 		registerQueryTx,
 		registerQueryTxs,
+		registerQueryTxsByAccount,
 		registerQueryCoinTxByAccount,
 		registerQueryPageCoinTxByAccount,
 		registerQueryAllCoinTxByPage,
