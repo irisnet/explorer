@@ -243,7 +243,7 @@
     }
     .app_header_mobile {
       width: 100%;
-      padding: 1rem 0;
+      padding: 1rem;
       @include flex();
       flex-direction: column;
       position: relative;

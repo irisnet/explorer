@@ -10,24 +10,32 @@
               <a href="https://www.irisnet.org/">
                 <img src="./assets/logo.png" alt="">
               </a>
+              <div class="footer_description_wrap">
+                Inter-chain Service Infrastructure and Protocol Technology Foundation for a Distributed Business Ecosystem
+              </div>
+              <p class="footer_copyright_wrap">
+                ©️ IRIS Explorer 2018 all nights reserved
+              </p>
             </div>
-            <div class="footer_description_wrap">
-              Inter-chain Service Infrastructure and Protocol Technology Foundation for a Distributed Business Ecosystem
+
+          </div>
+          <div class="footer_center">
+            <div>
+              <span>Latest Discussions</span>
+              <span>More</span>
             </div>
+            <div></div>
           </div>
           <div class="footer_right" :class="footerRightVar">
             <div class="footer_link_wrap">
-              <a href="http://www.baidu.com" class="footer_link_wrap_item" style="padding-left:0;">Join IRISnet</a>
-              <span class="footer_link_separate">|</span>
-              <a href="#" class="footer_link_wrap_item">Forum</a>
-              <span class="footer_link_separate">|</span>
-              <a href="#" class="footer_link_wrap_item">Validators Chat</a>
-              <span class="footer_link_separate">|</span>
-              <a href="#" class="footer_link_wrap_item" style="padding-right:0;">Contact Us</a>
+              <span class="footer_link_contact">Contact Us</span>
+              <span class="footer_link_forum">Forum</span>
+              <span class="footer_link_chat">Validators Chat</span>
+              <span class="footer_link_join">Join IRISnet</span>
+              <span class="footer_link_privacy" @click="footerLinkClick('/privacy_policy')">Privacy Policy</span>
+              <span class="footer_link_telegramy">Telegramy</span>
             </div>
-            <div class="footer_copyright_wrap">
-              ©️ IRIS Explorer 2018 all nights reserved
-            </div>
+
           </div>
         </div>
       </footer>
@@ -75,6 +83,11 @@
         this.footerRightVar = 'mobile_footer_right';
       }
     },
+    methods:{
+      footerLinkClick(path){
+        this.$router.push(path);
+      }
+    }
   }
 </script>
 <style lang="scss">
@@ -103,13 +116,13 @@
         height: 10rem;
       }
       .mobile_wrap_footer{
-        height:21rem;
+        /*height:21rem;*/
       }
       footer {
-        background: #222222;
+        background: #363a3d;
         @include flex();
         @include pcContainer;
-        padding:1rem 0;
+        padding-top:2rem;
         .person_computer_footer {
           @include pcCenter;
           @include flex();
@@ -118,7 +131,6 @@
           .person_computer_footer_left{
             width:50%;
             @include flex();
-            margin-right:1.5rem;
           }
           .person_computer_footer_right{
             width:45%;
@@ -142,50 +154,86 @@
             align-items:center;
           }
         }
-        .person_computer_footer, .mobile_footer{
+        .person_computer_footer{//分别对pc和移动端兼容
+          @include flex;
+          .footer_left{
+            flex:3;
+          }
+          .footer_center{
+            flex:6;
+            border:1px solid red;
+          }
+          .footer_right{
+            flex:2;
+          }
+        }
+        .mobile_footer{
+          @include flex;
+          flex-direction:column;
+          align-items:center;
+          .mobile_footer_left{
+            .footer_logo_wrap{
+              text-align: center;
+            }
+          }
+        }
+        .person_computer_footer, .mobile_footer{//底部公用的样式
           .footer_left{
             .footer_logo_wrap{
-              width:18rem;
-              height:6rem;
-              margin-right:1.5rem;
+              .footer_description_wrap{
+                flex:1;
+                color:#a2a2ae;
+                font-size:1.4rem;
+                margin-top:2rem;
+              }
+              .footer_copyright_wrap{
+                color:#fff;
+                font-size:1.4rem;
+                margin-top:2rem;
+              }
               a{
                 display:inline-block;
                 text-decoration: none;
-                width:100%;
-                height:100%;
               }
             }
-            .footer_description_wrap{
-              flex:1;
-              color:#cccccc;
-              font-size:1.4rem;
-              padding:0.5rem;
-            }
+
           }
           .footer_right{
             .footer_link_wrap{
-              height:4rem;
-              .footer_link_wrap_item{
-                display:inline-block;
-                padding:0.5rem 1rem;
-                color:#fff;
-                font-weight: 300;
+
+              @include flex;
+              flex-direction:column;
+              span{
+                color:#3598db;
+                cursor:pointer;
                 font-size:1.4rem;
-                &:hover{
-                  text-decoration: none;
-                }
+                margin-bottom:1.4rem;
+                text-indent:3rem;
               }
-              .footer_link_separate{
-                color:#eee;
+              .footer_link_contact{
+                background: url(./assets/message.svg) no-repeat 0 0;
+              }
+              .footer_link_forum{
+                background: url(./assets/forum.svg) no-repeat 0 0;
+              }
+              .footer_link_chat{
+                background: url(./assets/chat.svg) no-repeat 0 0;
+              }
+              .footer_link_join{
+                background: url(./assets/join.svg) no-repeat 0 0;
+              }
+              .footer_link_privacy{
+                background: url(./assets/policy.svg) no-repeat 0 0;
+              }
+              .footer_link_telegramy{
+                background: url(./assets/telegramy.svg) no-repeat 0 0;
               }
 
+
             }
-            .footer_copyright_wrap{
-              height:4rem;
-              color:#cccccc;
-              font-size:1.4rem;
-            }
+
           }
+
         }
       }
     }
