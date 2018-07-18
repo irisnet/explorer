@@ -264,7 +264,7 @@
             padding-bottom:0;
             padding-top:0;
             a{
-              with:100%;
+              width:100%;
               text-align: center;
               line-height:2.5rem;
               height:3rem;
