@@ -10,9 +10,7 @@
 
     <div :class="blocksListPageWrap">
       <div class="pagination">
-        <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize"
-                      @click="(data)=>console.log(data)"
-        >
+        <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
         </b-pagination>
       </div>
       <blocks-list-table :items="items" :type="this.$route.params.type"></blocks-list-table>
