@@ -2,30 +2,30 @@
   <div class="home_wrap">
     <div :class="pageClassName">
       <div class="information_preview">
-        <div>
+        <div class="information_preview_module">
           <span>¥ {{marketCapValue}}</span>
           <span>Market Cap :</span>
         </div>
-        <div>
+        <div class="information_preview_module">
           <span>¥ {{priceValue}}</span>
           <span>Price :</span>
         </div>
-        <div>
+        <div class="information_preview_module">
           <span>{{validatorsValue}}</span>
           <span>Validators :</span>
         </div>
-        <div>
+        <div class="information_preview_module">
           <span>{{votingPowerValue}}</span>
           <span>Voting Power :</span>
         </div>
-        <div>
+        <div class="information_preview_module">
           <span>{{transactionValue}}</span>
           <span>Transactions :</span>
         </div>
       </div>
       <div :class="module_item_wrap">
-        <div class="home_module_item home_module_item_status">
-          validators top 10
+        <div class="home_module_item home_module_item_pie">
+          <echarts-pie :information="information"></echarts-pie>
         </div>
         <div class="home_module_item">transaction History</div>
       </div>
@@ -45,9 +45,11 @@
 <script>
 
   import Tools from '../common/Tools';
+  import EchartsPie from "../components/EchartsPie";
 
   export default {
     name: 'app-header',
+    components: {EchartsPie},
     data() {
       return {
         devicesWidth: window.innerWidth,
@@ -60,6 +62,7 @@
         votingPowerValue: 'hello world',
         blockHeightValue: 'aaa',
         timestampValue: 'bbb',
+        information:{},//饼图的所有信息
 
       }
     },
@@ -73,7 +76,8 @@
       }
     },
     mounted() {
-      document.getElementById('router_wrap').addEventListener('click', this.hideFeature)
+      document.getElementById('router_wrap').addEventListener('click', this.hideFeature);
+      setTimeout(()=>this.information = {name:'lsc'},3000)
     },
 
     methods: {}
@@ -85,10 +89,47 @@
   .home_wrap {
     @include flex();
     @include pcContainer;
+    //pc端和移动端公共样式
+    .personal_computer_home_wrap, .mobile_home_wrap{
+      margin-top:1.5rem;
+      .information_preview{
+        @include flex;
+        margin-bottom:1.5rem;
+
+        .information_preview_module{
+          border-right:0.1rem solid #eee;
+          @include flex;
+          flex-direction:column;
+          align-items:center;
+          &:last-child{
+            border-right:none;
+          }
+          span{
+            &:first-child{
+              font-size:1.8rem;
+              font-weight:500;
+            }
+          }
+        }
+      }
+      //饼状图
+      .home_module_item_pie{
+        height:25rem;
+      }
+    }
+
+
+
     .personal_computer_home_wrap {
       @include pcCenter;
-      border: 0.1rem solid #3190e8;
-      margin-top: 2rem;
+      .information_preview{
+        .information_preview_module{
+          flex:1;
+        }
+      }
+
+
+
       .module_item_wrap_computer {
         width: 100%;
         @include flex();
@@ -106,6 +147,12 @@
       justify-content: space-between;
       width: 100%;
       padding: 1rem;
+      .information_preview{
+        overflow-x: scroll;
+        .information_preview_module{
+          min-width:16rem;
+        }
+      }
       .module_item_wrap_mobile {
         @include flex();
         flex-direction: column;

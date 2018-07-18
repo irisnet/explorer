@@ -45,3 +45,13 @@ $fc:#fff;
   justify-content: $type;
 
 }
+@mixin viewBtn{
+  width:6rem;
+  height:2.8rem;
+  line-height:2.8rem;
+  cursor:pointer;
+  color:#c9eafd;
+  text-align: center;
+  background: #3598db;
+  @include borderRadius(5px);
+}
