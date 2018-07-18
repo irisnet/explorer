@@ -82,6 +82,11 @@
 
   export default {
     name: 'app-header',
+    watch:{
+      $route(){
+        this.listenRouteForChangeActiveButton();
+      }
+    },
     data() {
       return {
         devicesWidth: window.innerWidth,
@@ -105,7 +110,8 @@
       }
     },
     mounted() {
-      document.getElementById('router_wrap').addEventListener('click', this.hideFeature)
+      document.getElementById('router_wrap').addEventListener('click', this.hideFeature);
+      this.listenRouteForChangeActiveButton();
     },
     beforeDestroy() {
       document.getElementById('router_wrap').removeEventListener('click', this.hideFeature)
@@ -123,7 +129,7 @@
         if (!isLogoClick) {
           this.featureShow = !this.featureShow;
         }
-        if (path.includes('/recent_transactions/2')) {
+        /*if (path.includes('/recent_transactions/2')) {
           this.activeClassName = '/transaction';
         } else if (path.includes('/recent_transactions/3') || path.includes('/recent_transactions/4')) {
           this.activeClassName = '/validators';
@@ -131,15 +137,30 @@
           this.activeClassName = '/block';
         } else {
           this.activeClassName = path;
-        }
+        }*/
+        this.listenRouteForChangeActiveButton();
         this.$router.push(path);
-
       },
       getData(data) {
         console.log(data)
       },
       onInputChange() {
         console.log(this.searchInputValue)
+      },
+      listenRouteForChangeActiveButton(){
+        //刷新的时候路由不变，active按钮不变
+        let path = window.location.href;
+        if (path.includes('/recent_transactions/2')) {
+          this.activeClassName = '/transaction';
+        } else if (path.includes('/recent_transactions/3') || path.includes('/recent_transactions/4')) {
+          this.activeClassName = '/validators';
+        } else if (path.includes('/block')) {
+          this.activeClassName = '/block';
+        } else if (path.includes('/home')) {
+          this.activeClassName = '/home';
+        } else if (path.includes('/faucet')) {
+          this.activeClassName = '/faucet';
+        }
       }
 
 
@@ -237,13 +258,37 @@
             font-size: 1.8rem;
             font-weight: normal;
           }
+          .dropdown-menu{
+            width:100%;
+            top:-2px !important;
+            padding-bottom:0;
+            padding-top:0;
+            a{
+              width:100%;
+              text-align: center;
+              line-height:2.5rem;
+              height:3rem;
+              border-bottom:1px solid #eee;
+              outline:none;
+              font-size:1.4rem;
+              &:last-child{
+                border-bottom:none;
+              }
+
+            }
+          }
+          .btn-primary{
+            &:focus{
+              box-shadow:0 0 0 0 transparent;
+            }
+          }
         }
       }
 
     }
     .app_header_mobile {
       width: 100%;
-      padding: 1rem 0;
+      padding: 1rem;
       @include flex();
       flex-direction: column;
       position: relative;
@@ -310,11 +355,15 @@
           height: 3.9rem;
           line-height: 3.9rem;
           padding-left: 1.5rem;
-          color: #555;
+          background: #3598db;
+          color: #c9eafd;
+          font-size:1.4rem;
         }
         .feature_arrow {
           position: relative;
-          background: url('../assets/arrow-bottom.svg') no-repeat 97% 1.2rem;
+          color: #c9eafd;
+          font-size:1.4rem;
+          background: url('../assets/arrow-bottom.svg') no-repeat 97% 1.2rem,#3598db;
         }
         .feature_subNav {
           padding-left: 3rem;
