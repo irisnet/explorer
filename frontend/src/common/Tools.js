@@ -20,4 +20,13 @@ export default class Tools{
     }
     return flag;
   }
+
+  /**
+   * 后端返回的数据转换成标准格式
+   * param string;
+   * return string
+   */
+  static conversionTimeToUTC(originTime){
+    return `${originTime.substr(5,2)}/${originTime.substr(8,2)}/${originTime.substr(0,4)} ${originTime.substr(11,8)} UTC`;
+  }
 }

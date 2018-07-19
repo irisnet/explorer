@@ -24,12 +24,12 @@
         </span>
       </template>
       <template slot='From' slot-scope='data'>
-        <span class="skip_route" @click="skipRoute()">
+        <span class="skip_route" @click="skipRoute(`/address/1/${data.item.From}`)">
           {{data.item.From}}
         </span>
       </template>
       <template slot='To' slot-scope='data'>
-        <span class="skip_route" @click="skipRoute()">
+        <span class="skip_route" @click="skipRoute(`/address/1/${data.item.To}`)">
           {{data.item.To}}
         </span>
       </template>

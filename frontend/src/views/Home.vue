@@ -33,10 +33,11 @@
       </div>
       <div :class="module_item_wrap">
         <div class="home_module_item">
-          <div>validators bottom 6</div>
-          <div>candidate top 6</div>
+          <home-block-module :title="'Blocks'" :blocksInformation="blocksInformation"></home-block-module>
         </div>
-        <div class="home_module_item">Blocks</div>
+        <div class="home_module_item">
+          <home-block-module :title="'Transaction'" :transactionInformation="transactionInformation"></home-block-module>
+        </div>
       </div>
 
     </div>
@@ -49,10 +50,11 @@
   import Tools from '../common/Tools';
   import EchartsPie from "../components/EchartsPie";
   import EchartsLine from "../components/EchartsLine";
+  import HomeBlockModule from "../components/HomeBlockModule";
 
   export default {
     name: 'app-header',
-    components: {EchartsPie, EchartsLine},
+    components: {EchartsPie, EchartsLine,HomeBlockModule},
     data() {
       return {
         devicesWidth: window.innerWidth,
@@ -67,6 +69,8 @@
         timestampValue: 'bbb',
         information: {},//饼图的所有信息
         informationLine: {},//折线图端所有信息
+        blocksInformation:[],
+        transactionInformation:[],
 
       }
     },
@@ -139,6 +143,7 @@
           width: 45%;
           border: 0.1rem solid #eee;
           margin-bottom: 1rem;
+          height:40rem;
         }
       }
 
