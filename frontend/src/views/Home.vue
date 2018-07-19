@@ -27,7 +27,9 @@
         <div class="home_module_item home_module_item_pie">
           <echarts-pie :information="information"></echarts-pie>
         </div>
-        <div class="home_module_item">transaction History</div>
+        <div class="home_module_item home_module_item_pie">
+          <echarts-line :informationLine="informationLine"></echarts-line>
+        </div>
       </div>
       <div :class="module_item_wrap">
         <div class="home_module_item">
@@ -46,10 +48,11 @@
 
   import Tools from '../common/Tools';
   import EchartsPie from "../components/EchartsPie";
+  import EchartsLine from "../components/EchartsLine";
 
   export default {
     name: 'app-header',
-    components: {EchartsPie},
+    components: {EchartsPie, EchartsLine},
     data() {
       return {
         devicesWidth: window.innerWidth,
@@ -62,7 +65,8 @@
         votingPowerValue: 'hello world',
         blockHeightValue: 'aaa',
         timestampValue: 'bbb',
-        information:{},//饼图的所有信息
+        information: {},//饼图的所有信息
+        informationLine: {},//折线图端所有信息
 
       }
     },
@@ -77,7 +81,8 @@
     },
     mounted() {
       document.getElementById('router_wrap').addEventListener('click', this.hideFeature);
-      setTimeout(()=>this.information = {name:'lsc'},3000)
+      setTimeout(() => this.information = {name: 'lsc'}, 1000)
+      setTimeout(() => this.informationLine = {name: 'lsc'}, 1000)
     },
 
     methods: {}
@@ -90,45 +95,41 @@
     @include flex();
     @include pcContainer;
     //pc端和移动端公共样式
-    .personal_computer_home_wrap, .mobile_home_wrap{
-      margin-top:1.5rem;
-      .information_preview{
+    .personal_computer_home_wrap, .mobile_home_wrap {
+      margin-top: 1.5rem;
+      .information_preview {
         @include flex;
-        margin-bottom:1.5rem;
+        margin-bottom: 1.5rem;
 
-        .information_preview_module{
-          border-right:0.1rem solid #eee;
+        .information_preview_module {
+          border-right: 0.1rem solid #eee;
           @include flex;
-          flex-direction:column;
-          align-items:center;
-          &:last-child{
-            border-right:none;
+          flex-direction: column;
+          align-items: center;
+          &:last-child {
+            border-right: none;
           }
-          span{
-            &:first-child{
-              font-size:1.8rem;
-              font-weight:500;
+          span {
+            &:first-child {
+              font-size: 1.8rem;
+              font-weight: 500;
             }
           }
         }
       }
       //饼状图
-      .home_module_item_pie{
-        height:25rem;
+      .home_module_item_pie {
+        height: 28rem;
       }
     }
 
-
-
     .personal_computer_home_wrap {
       @include pcCenter;
-      .information_preview{
-        .information_preview_module{
-          flex:1;
+      .information_preview {
+        .information_preview_module {
+          flex: 1;
         }
       }
-
-
 
       .module_item_wrap_computer {
         width: 100%;
@@ -136,8 +137,8 @@
         justify-content: space-between;
         .home_module_item {
           width: 45%;
-          margin-bottom: 1rem;
           border: 0.1rem solid #eee;
+          margin-bottom: 1rem;
         }
       }
 
@@ -147,10 +148,10 @@
       justify-content: space-between;
       width: 100%;
       padding: 1rem;
-      .information_preview{
+      .information_preview {
         overflow-x: scroll;
-        .information_preview_module{
-          min-width:16rem;
+        .information_preview_module {
+          min-width: 16rem;
         }
       }
       .module_item_wrap_mobile {
@@ -161,6 +162,9 @@
           width: 98%;
           margin-bottom: 1rem;
           border: 0.1rem solid #eee;
+        }
+        .home_module_item_pie{
+          overflow-x:auto;
         }
       }
     }

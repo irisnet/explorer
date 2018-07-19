@@ -49,7 +49,7 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Announcement:</span>
-          <span class="information_value">{{AnnouncementValue}}</span>
+          <span class="information_value">{{announcementValue}}</span>
         </div>
 
 
@@ -89,10 +89,7 @@
             </div>
           </div>
           <div class="progress_wrap">
-            <span>Commission Rate</span>
-            <div class="progress_wrap_background">
-              <div class="progress_value" :style="`width:${secondPercent}`">{{secondPercent}}</div>
-            </div>
+
           </div>
         </div>
       </div>
@@ -170,7 +167,7 @@
         websiteValue:'',
         descriptionValue:'',
         commissionRateValue:'',
-        AnnouncementValue:'',
+        announcementValue:'',
         bondHeightValue:'',
         votingPowerValue:'',
         uptimeValue:'',
@@ -211,12 +208,11 @@
             return data.data;
           }
         }).then((data)=>{
-          console.log(data)
           let Amount = '';
           if(data.Amount instanceof Array){
-            Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom}`).join(',');
-          }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
-            Amount = `${item.Amount.amount} ${item.Amount.denom}`;
+            Amount = data.Amount.map(listItem=>`${listItem.amount} ${listItem.denom}`).join(',');
+          }else if(item.Amount && Object.keys(data.Amount).includes('amount') && Object.keys(data.Amount).includes('denom')){
+            Amount = `${data.Amount.amount} ${data.Amount.denom}`;
           }else if(item.Amount === null){
             Amount = '';
           }
@@ -234,17 +230,25 @@
 
       },
       getProfileInformation(){
-        let url = ``;
+        let url = `/api/stake/candidate/${this.$route.params.param}`;
         axios.get(url).then((data)=>{
           if(data.status === 200){
             return data.data;
           }
         }).then((data)=>{
           console.log(data)
+          if(data){
+            this.nameValue = data.Description.Moniker;
+            this.pubKeyValue = data.PubKey;
+            this.websiteValue = data.Description.Website;
+            this.descriptionValue= data.Description.Details;
+            this.commissionRateValue = '';
+            this.announcementValue = ''
+          }
 
         })
       },
-      getCurrentTenureInformation(currentPage,pageSize,type){
+      getCurrentTenureInformation(){
         let url = `/api/stake/candidate/${this.$route.params.param}`;
         axios.get(url).then((data)=>{
           if(data.status === 200){

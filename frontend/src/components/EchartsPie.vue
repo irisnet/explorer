@@ -1,7 +1,8 @@
 <template>
   <div class="echarts_component_wrap">
     <div class="echarts_title_wrap">
-      hello
+      <span class="validators_title">Validators Top10</span>
+      <span class="validators_top">View All</span>
     </div>
     <div id="echarts_pie">
 
@@ -102,11 +103,24 @@
     width:100%;
     height:100%;
     .echarts_title_wrap{
-      height:10%;
+      height:15%;
+      @include flex;
+      padding:1.2rem 1rem 0 1rem;
+      justify-content: space-between;
+
+      .validators_title{
+        font-size:1.8rem;
+        text-indent:2.5rem;
+        font-weight:600;
+        background: url('../assets/people.svg') no-repeat 0 -0.2rem;
+      }
+      .validators_top{
+        @include viewBtn;
+      }
     }
     #echarts_pie{
       width:100%;
-      height:90%;
+      height:85%;
     }
   }
 
