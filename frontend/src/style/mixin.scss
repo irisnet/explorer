@@ -55,3 +55,10 @@ $fc:#fff;
   background: #3598db;
   @include borderRadius(5px);
 }
+//外部链接背景图
+@mixin linkBtn($url,$urlH){
+  background:url($url) no-repeat 0 0;
+  &:hover{
+    background:url($urlH) no-repeat 0 0;
+  }
+}
