@@ -3,7 +3,7 @@
     <app-header></app-header>
     <div id="router_wrap">
       <router-view class="router_view"/>
-      <footer :class="footerClass">
+      <footer :class="footerClass" v-show="showFooter">
         <div :class="footerClassName" style="height:100%;">
           <div class="footer_left" :class="footerLeftVar">
             <span class="github"></span>
@@ -47,12 +47,11 @@
     components: {
       AppHeader,
     },
-    /*watch:{
-      $route(to,from){
-        console.log(to);
-        console.log(from)
+    watch:{
+      $route(){
+        this.showFooter = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
       }
-    },*/
+    },
     data() {
       return {
         show: 1,
@@ -62,6 +61,7 @@
         footerClassName: 'person_computer_footer',
         footerLeftVar: 'person_computer_footer_left',
         footerRightVar: 'person_computer_footer_right',
+        showFooter:!(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer()),
       }
     },
     beforeMount() {

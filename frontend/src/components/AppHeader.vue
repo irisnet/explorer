@@ -1,6 +1,6 @@
 <!--头部页面-->
 <template>
-  <div :class="appHeaderVar">
+  <div :class="appHeaderVar" v-show="showHeader">
     <header class="app_header_person_computer" v-show="devicesShow === 1">
       <div class="header_top">
         <div class="imageWrap" style="cursor:pointer;margin-top:10px;" @click="featureButtonClick('/home')">
@@ -85,6 +85,7 @@
     watch:{
       $route(){
         this.listenRouteForChangeActiveButton();
+        this.showHeader = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
       }
     },
     data() {
@@ -98,6 +99,7 @@
         validatorsShow: false,//点击显示validators菜单
         searchInputValue: '',
         activeClassName: '/home',
+        showHeader:!(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer()),
       }
     },
     beforeMount() {
