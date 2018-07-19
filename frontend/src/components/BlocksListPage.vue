@@ -113,7 +113,7 @@
                 Height: item.Height,
                 Txn:txn,
                 Fee: '',
-                Timestamp: item.Time,
+                Timestamp: Tools.conversionTimeToUTC(item.Time),
                 'Precommit Validators':precommit,
                 'Voting Power': '',
               };
@@ -157,7 +157,7 @@
                 Type:item.Type,
                 Amount,
                 Fees,
-                Timestamp: item.Time,
+                Timestamp: Tools.conversionTimeToUTC(item.Time),
               };
             })
           })
@@ -175,7 +175,7 @@
                 Address: item.Address,
                 Name:item.Description.Moniker,
                 'Voting Power':item.VotingPower,
-                'Uptime':item.UpdateTime,
+                'Uptime':Tools.conversionTimeToUTC(item.UpdateTime),
                 'Commission Rate':'',
                 Returns:'',
               };

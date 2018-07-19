@@ -68,10 +68,6 @@
             <span class="information_value">{{votingPowerValue}}</span>
           </div>
           <div class="information_props_wrap">
-            <span class="information_props">Uptime(in last 100 blocks):</span>
-            <span class="information_value">{{uptimeValue}}</span>
-          </div>
-          <div class="information_props_wrap">
             <span class="information_props">Precommited Blocks:</span>
             <span class="information_value">{{precommitedBlocksValue}}</span>
           </div>
@@ -115,7 +111,8 @@
         </div>
 
         <div class="transaction_table">
-          <blocks-list-table :items="items" :type="subType"></blocks-list-table>
+          <blocks-list-table :items="items" :type="'6'" v-show="activeBtn === 0"></blocks-list-table>
+          <blocks-list-table :items="itemsPre" :type="'7'" v-show="activeBtn === 1"></blocks-list-table>
         </div>
       </div>
     </div>
@@ -137,15 +134,6 @@
       },
       activeBtn(activeBtn){
         //0是Transactions List 1是Precommit Blocks List
-        if(activeBtn === 0){
-          this.getTransactionsList();
-          this.subType = '6';
-          console.log(this.type)
-        }else if(activeBtn === 1){
-          this.getPrecommitBlocksList();
-          this.subType = '7'
-        }
-
       },
 
     },
@@ -174,7 +162,7 @@
         precommitedBlocksValue:'',
         returnsValue:'',
         items:[],
-        subType:'6',
+        itemsPre:[],
         type:this.$route.params.type,
         totalBlocks:0,
         totalFee:0,
@@ -196,13 +184,12 @@
       this.getAddressInformation(this.$route.params.param);
       this.getTransactionsList(1,10,this.$route.params.type);
       this.getProfileInformation();
-      /*this.getCurrentTenureInformation();
-      ;*/
-
+      this.getPrecommitBlocksList();
+      this.getCurrentTenureInformation();
     },
     methods: {
       getAddressInformation(address){
-        let url = `/api/account/507405661F2DB1940941FA0A6B3642015A015387`;
+        let url = `/api/account/${this.$route.params.param}`;
         axios.get(url).then((data)=>{
           if(data.status === 200){
             return data.data;
@@ -236,31 +223,36 @@
             return data.data;
           }
         }).then((data)=>{
-          console.log(data)
           if(data){
             this.nameValue = data.Description.Moniker;
             this.pubKeyValue = data.PubKey;
             this.websiteValue = data.Description.Website;
             this.descriptionValue= data.Description.Details;
             this.commissionRateValue = '';
-            this.announcementValue = ''
+            this.announcementValue = '';
+            this.votingPowerValue = data.VotingPower;
           }
 
         })
       },
       getCurrentTenureInformation(){
-        let url = `/api/stake/candidate/${this.$route.params.param}`;
+        let url = `/api/stake/candidate/${this.$route.params.param}/status`;
         axios.get(url).then((data)=>{
           if(data.status === 200){
             return data.data;
           }
         }).then((data)=>{
-          console.log(data)
+          if(data){
+            this.bondHeightValue = data.TotalBlock;
+            this.precommitedBlocksValue = data.PrecommitCount;
+            this.returnsValue = '';
+            this.firstPercent = (data.TotalBlock !== 0 && data.PrecommitCount !== 0) ?data.PrecommitCount/data.TotalBlock:'0%';
+          }
 
         })
       },
       getTransactionsList(){
-        let url = `/api/txsByAddress/B9C5E96B5EB069F3C951D6330E0C602BEE769ED5/1/10`;
+        let url = `/api/txsByAddress/${this.$route.params.param}/1/10`;
         axios.get(url).then((data)=>{
           if(data.status === 200){
             return data.data;
@@ -291,7 +283,7 @@
                 Type:item.Type,
                 Amount,
                 Fee:Fees,
-                Timestamp:item.Time,
+                Timestamp:Tools.conversionTimeToUTC(item.Time),
               }
             })
           }
@@ -300,7 +292,7 @@
         })
       },
       getPrecommitBlocksList(){
-        let url = `/api/blocks/precommits/823E3266359570A41A6B31C7A1F738F19923A0F0/1/10`;
+        let url = `/api/blocks/precommits/${this.$route.params.param}/1/10`;
         axios.get(url).then((data)=>{
           if(data.status === 200){
             return data.data;
@@ -308,12 +300,12 @@
         }).then((data)=>{
           this.totalBlocks = data.Count;
           if(data.Data){
-            this.items = data.Data.map(item=>{
+            this.itemsPre = data.Data.map(item=>{
               return{
                 'Block Height':item.Height,
                 Txn:item.NumTxs,
                 Fee:'',
-                Timestamp:item.Time,
+                Timestamp:Tools.conversionTimeToUTC(item.Time),
                 'Precommit Validators':item.Validators.length !== 0?`${item.Block.LastCommit.Precommits.length}/${item.Validators.length}`:'',
               }
             })
@@ -457,7 +449,7 @@
                 background:#a4d7f4;
                 height:100%;
                 line-height:2.4rem;
-                padding-left:2rem;
+                text-indent:2rem;
               }
             }
           }
