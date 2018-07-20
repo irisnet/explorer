@@ -16,7 +16,7 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Block Height:</span>
-          <span class="information_value">{{blockValue}}</span>
+          <span class="information_value" style="color:#3598db;cursor:pointer;" @click="skipRoute(`/blocks_detail/${blockValue}`)">{{blockValue}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Type:</span>
@@ -24,11 +24,11 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">From:</span>
-          <span class="information_value">{{fromValue}}</span>
+          <span class="information_value" style="color:#3598db;cursor:pointer;" @click="skipRoute(`/address/1/${fromValue}`)">{{fromValue}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">To:</span>
-          <span class="information_value">{{toValue}}</span>
+          <span class="information_value" style="color:#3598db;cursor:pointer;" @click="skipRoute(`/address/1/${toValue}`)">{{toValue}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Timestamp:</span>
@@ -103,7 +103,11 @@
 
       })
     },
-    methods: {}
+    methods: {
+      skipRoute(path) {
+        this.$router.push(path);
+      }
+    }
   }
 </script>
 <style lang="scss">

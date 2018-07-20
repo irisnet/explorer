@@ -198,9 +198,9 @@
           let Amount = '';
           if(data.Amount instanceof Array){
             Amount = data.Amount.map(listItem=>`${listItem.amount} ${listItem.denom}`).join(',');
-          }else if(item.Amount && Object.keys(data.Amount).includes('amount') && Object.keys(data.Amount).includes('denom')){
+          }else if(data.Amount && Object.keys(data.Amount).includes('amount') && Object.keys(data.Amount).includes('denom')){
             Amount = `${data.Amount.amount} ${data.Amount.denom}`;
-          }else if(item.Amount === null){
+          }else if(data.Amount === null){
             Amount = '';
           }
           this.balanceValue = Amount;
