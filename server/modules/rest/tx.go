@@ -7,7 +7,13 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"encoding/json"
 	"github.com/irisnet/irishub-sync/store/document"
+	"time"
 )
+
+type TxDay struct {
+	Time  string `bson:"_id,omitempty"`
+	Count int
+}
 
 func registerQueryTx(r *mux.Router) error {
 	r.HandleFunc("/api/tx/{hash}", queryTx).Methods("GET")
@@ -54,6 +60,11 @@ func registerQueryTxsByAccount(r *mux.Router) error {
 	return nil
 }
 
+func registerQueryTxsByDay(r *mux.Router) error {
+	r.HandleFunc("/api/txsByDay", queryTxsByDay).Methods("GET")
+	return nil
+}
+
 func queryTxs(w http.ResponseWriter, r *http.Request) {
 	var data []document.CommonTx
 	w.Write(utils.QueryList("tx_common", &data, nil, "-time", r))
@@ -85,15 +96,45 @@ func queryCoinTxByAccount(w http.ResponseWriter, r *http.Request) {
 func queryCoinTxPageByAccount(w http.ResponseWriter, r *http.Request) {
 	var data []document.CommonTx
 	args := mux.Vars(r)
-	address := args["size"]
+	address := args["address"]
 	w.Write(utils.QueryList("tx_common", &data, bson.M{"type": "coin", "address": address}, "-time", r))
 }
 
 func queryTxsByAccount(w http.ResponseWriter, r *http.Request) {
 	var data []document.CommonTx
 	args := mux.Vars(r)
-	address := args["size"]
-	w.Write(utils.QueryList("tx_common", &data, bson.M{"address": address}, "-time", r))
+	address := args["address"]
+	w.Write(utils.QueryList("tx_common", &data, bson.M{"$or": []bson.M{{"from": address}, {"to": address}}}, "-time", r))
+}
+
+func queryTxsByDay(w http.ResponseWriter, r *http.Request) {
+	c := utils.GetDatabase().C("tx_common")
+	defer c.Database.Session.Close()
+
+	now := time.Now()
+	d, _ := time.ParseDuration("-336h") //14 days ago
+	start := now.Add(d)
+	pipe := c.Pipe(
+		[]bson.M{
+			{"$match": bson.M{
+				"time": bson.M{
+					"$gte": time.Date(start.Year(), start.Month(), start.Day(), 0, 0, 0, 0, start.Location()),
+					"$lt": time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, start.Location()),
+				},
+			}},
+			{"$project": bson.M{
+				"day": bson.M{"$substr": []interface{}{"$time", 0, 10}},
+			}},
+			{"$group": bson.M{
+				"_id":   "$day",
+				"count": bson.M{"$sum": 1},
+			}},
+		},
+	)
+	var txDay []TxDay
+	pipe.All(&txDay)
+	resultByte, _ := json.Marshal(txDay)
+	w.Write(resultByte)
 }
 
 func queryAllStakeTxByPage(w http.ResponseWriter, r *http.Request) {
@@ -118,6 +159,7 @@ func RegisterTx(r *mux.Router) error {
 		registerQueryStakeTxByAccount,
 		registerQueryPageStakeTxByAccount,
 		registerQueryAllStakeTxByPage,
+		registerQueryTxsByDay,
 	}
 
 	for _, fn := range funs {
