@@ -351,6 +351,11 @@
           @include flex;
           .information_props{
             width:15rem;
+            font-size:1.4rem;
+          }
+          .information_value{
+            color: #a2a2ae;
+            font-size:1.4rem;
           }
         }
       }
@@ -397,7 +402,12 @@
           margin-bottom:0.5rem;
           .information_value{
             overflow-x:scroll;
+            color: #a2a2ae;
           }
+          .information_props{
+            font-size:1.4rem;
+          }
+
 
         }
       }

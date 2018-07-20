@@ -1,7 +1,9 @@
 <template>
   <div class="home_module_block">
     <div class="home_module_block_title_wrap">
-      <span class="home_module_block_title">{{title}}</span>
+      <span class="home_module_block_title"
+            :class="homeModuleBlockTitleVar"
+      >{{title}}</span>
       <span class="view_all_btn" @click="viewAllClick()">View All</span>
     </div>
     <div class="home_module_block_content">
@@ -9,6 +11,7 @@
         <div class="blocks_module_left">
           <div class="key_value_wrap">
             <span class="blocks_module_value"
+                  :class="blockModuleTypeVar"
                   @click="skipRouter(item.Height?`/blocks_detail/${item.Height}`:`/tx?txHash=${item.TxHash}`)">
               {{item.Height?item.Height:`TX# ${item.TxHash}`}}</span>
           </div>
@@ -45,7 +48,6 @@
     name: 'home-block-module',
     watch:{
       information(information){
-        console.log(information)
 
       },
 
@@ -54,7 +56,8 @@
       let isPersonalComputer = Tools.currentDeviceIsPersonComputer();
       return {
         deviceType:window.innerWidth > 500 ? 1 : 0,
-
+        homeModuleBlockTitleVar:this.title === 'Blocks'?'blocks_background':'transactions_background',
+        blockModuleTypeVar:this.title === 'Blocks'?'blocks_background_type':'transactions_background_type',
       }
     },
     props:['title','information',],
@@ -98,7 +101,12 @@
         font-size:1.8rem;
         text-indent:2.5rem;
         font-weight:600;
-        background: url('../assets/people.svg') no-repeat 0 -0.2rem;
+      }
+      .blocks_background{
+        background: url('../assets/blocks.png') no-repeat 0 0.2rem;
+      }
+      .transactions_background{
+        background: url('../assets/transactions.png') no-repeat 0 0.2rem;
       }
       .view_all_btn{
         @include viewBtn;
@@ -121,7 +129,7 @@
           flex-direction:column;
 
           .key_value_wrap{
-            width:15rem;
+            width:14rem;
             @include flex;
             flex-direction:row;
             .blocks_module_value{
@@ -134,6 +142,14 @@
             .blocks_module_props{
               font-size:1.4rem;
               color:#555;
+            }
+            .blocks_background_type{
+              background: url('../assets/block.png') no-repeat 0 0.2rem;
+              text-indent:1.5rem;
+            }
+            .transactions_background_type{
+              background: url('../assets/transaction.png') no-repeat 0 0.2rem;
+              text-indent:1.5rem;
             }
           }
 

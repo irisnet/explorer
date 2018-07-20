@@ -61,13 +61,13 @@
         devicesWidth: window.innerWidth,
         pageClassName: 'personal_computer_home_wrap',//1是显示pc端，0是移动端
         module_item_wrap: 'module_item_wrap_computer',//module_item_wrap_computer是pc端，module_item_wrap_mobile是移动端
-        marketCapValue: '3,222,333.02',
-        validatorsValue: 'hello',
-        transactionValue: 'world',
-        priceValue: '23,222,444.21',
-        votingPowerValue: 'hello world',
-        blockHeightValue: 'aaa',
-        timestampValue: 'bbb',
+        marketCapValue: '0',
+        validatorsValue: '',
+        transactionValue: '',
+        priceValue: '0',
+        votingPowerValue: '',
+        blockHeightValue: '',
+        timestampValue: '',
         information: {},//饼图的所有信息
         informationLine: {},//折线图端所有信息
         blocksInformation: [],
@@ -86,17 +86,29 @@
     },
     mounted() {
       document.getElementById('router_wrap').addEventListener('click', this.hideFeature);
-      setTimeout(() => this.informationLine = {name: 'lsc'}, 1000)
-
       //请求各个列表数据
+      this.getBlocksStatusData();
       this.getBlocksList();
+      this.getTransactionHistory();
       this.getTransactionList();
       this.getValidatorsList();
     },
 
     methods: {
       getBlocksStatusData() {
+        let url = `/api/chain/status`;
+        axios.get(url).then((data) => {
+          if (data.status === 200) {
+            return data.data;
+          }
+        }).then((data) => {
+          this.marketCapValue = '0';
+          this.priceValue = '0';
+          this.validatorsValue = data.ValidatorsCount;
+          this.votingPowerValue = data.VotingPower;
+          this.transactionValue = data.TxCount;
 
+        })
       },
       getValidatorsList() {
         let url = `/api/stake/candidatesTop`;
@@ -108,9 +120,6 @@
           let colors = ['#3498db', '#47a2df', '#59ade3', '#6cb7e7', '#7fc2eb', '#91ccef', '#a4d7f3', '#b7e1f7', '#c9ecfb', '#dcf6ff', '#efeff1',];
           //跟series的name匹配
           let [seriesData, legendData] = [[], []];
-
-          console.log(data);
-
           if (data.Candidates instanceof Array) {
             //计算前十的voting power总数；
             let totalCount = 0;
@@ -125,7 +134,6 @@
                 upTime:`${data.Candidates[i].Uptime/100}%`,
                 address:data.Candidates[i].Address,
               });
-
               legendData.push(data.Candidates[i].Description.Moniker ? data.Candidates[i].Description.Moniker : (data.Candidates[i].Address ? data.Candidates[i].Address : ''))
             }
             seriesData.push({
@@ -140,6 +148,24 @@
         })
       },
       getTransactionHistory() {
+        let url = `/api/txsByDay`;
+        axios.get(url).then((data) => {
+          if (data.status === 200) {
+            return data.data;
+          }
+        }).then((data) => {
+          //找出最大的数据
+          let maxValue = 0;
+          data.forEach(item=>{
+            if(item.Count > maxValue){
+              maxValue = item.Count;
+            }
+          });
+          let xData = data.map(item=>item.Time);
+          let seriesData = data.map(item=>item.Count);
+          this.informationLine = {maxValue,xData,seriesData};
+          console.log(data)
+        })
 
       },
       getBlocksList() {
@@ -149,9 +175,7 @@
             return data.data;
           }
         }).then((data) => {
-
           this.blocksInformation = data.Data.map(item => {
-
             return {
               Height: item.Height,
               Proposer: item.Hash,

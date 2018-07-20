@@ -19,6 +19,7 @@
     name: 'echarts-line',
     watch: {
       informationLine(informationLine) {
+        console.log(informationLine)
         //根据设备大小显示饼图的大小
         let radius = this.deviceType === 1 ? '85%' : '65%';
         let option = {
@@ -33,7 +34,7 @@
           xAxis: {
             type: 'category',
             boundaryGap: false,
-            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun','1', '2', '3', '4', '5', '6', '7',],
+            data: [],
             axisLine: {
               lineStyle: {
                 color: '#a2a2ae'
@@ -48,38 +49,19 @@
               }
             },
             min:0,
-            max:1000000,
-            splitNumber:2,
-            axisLabel:{
-              formatter(value) {
-                let texts = [];
-                if(value===0){
-                  texts.push('0');
-                }
-                else if (value <=100000) {
-                  texts.push('100k');
-                }
-                else if (value<= 500000) {
-                  texts.push('500k');
-                }
-                else if(value<= 1000000){
-                  texts.push('1000k');
-                }
-                return texts.join('/');
-
-              }
-            }
+            max:0,
+            splitNumber:5,
           },
           grid: {
             left: '3%',   //图表距边框的距离
             right: '4%',
-            bottom: '3%',
+            bottom: '8%',
             top:'5%',
             containLabel: true
           },
           series: [
             {
-              data: [300000, 400000, 1000000, 100000, 600000, 1000000, 100000,700000, 1000000, 100000, 800000, 1000000, 100000, 300000,],
+              data: [],
               type: 'line',
               areaStyle: {
                 normal: {
@@ -103,8 +85,10 @@
             }
           ]
         };
-        console.log(line)
         if (line) {
+          option.xAxis.data = informationLine.xData;
+          option.yAxis.max = informationLine.maxValue;
+          option.series[0].data = informationLine.seriesData;
           line.setOption(option)
         }
       }

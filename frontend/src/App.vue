@@ -29,7 +29,7 @@
               <span class="footer_link_privacy" @click="footerLinkClick('/privacy_policy')">Privacy Policy</span>
             </div>
             <p class="footer_copyright_wrap">
-              ©️ IRIS Explorer 2018 all nights reserved
+              ©️ IRIS Explorer 2018 all nights reserved(v 0.2.2)
             </p>
 
           </div>
@@ -90,7 +90,7 @@
   @import './style/mixin.scss';
 
   html {
-    font-size: 62.5%;
+    font-size: 50%;
   }
 
   body, html {

@@ -6802,6 +6802,12 @@ vue-loader@^15.2.0:
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
 
+vue-msgbox@^0.2.14:
+  version "0.2.14"
+  resolved "https://registry.yarnpkg.com/vue-msgbox/-/vue-msgbox-0.2.14.tgz#daf027faf2eeca798de3248e85ae802c87c38540"
+  dependencies:
+    vue-popup "^0.1.13"
+
 vue-nocaptcha@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/vue-nocaptcha/-/vue-nocaptcha-0.1.1.tgz#1422ecb71ef8184ac262d5531e9bafaccc49abc0"
@@ -6814,6 +6820,10 @@ vue-parser@^1.1.5:
   resolved "http://registry.npm.taobao.org/vue-parser/download/vue-parser-1.1.6.tgz#3063c8431795664ebe429c23b5506899706e6355"
   dependencies:
     parse5 "^3.0.3"
+
+vue-popup@^0.1.13:
+  version "0.1.13"
+  resolved "https://registry.yarnpkg.com/vue-popup/-/vue-popup-0.1.13.tgz#fc03251ec17751b520c79c41ad4c69f8889833db"
 
 vue-property-decorator@^6.0.0:
   version "6.1.0"

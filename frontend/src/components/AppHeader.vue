@@ -144,7 +144,8 @@
         this.$router.push(path);
       },
       getData(data) {
-        console.log(data)
+        console.log(typeof data)
+
       },
       onInputChange() {
         console.log(this.searchInputValue)
