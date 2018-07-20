@@ -119,7 +119,7 @@ func queryTxsByDay(w http.ResponseWriter, r *http.Request) {
 			{"$match": bson.M{
 				"time": bson.M{
 					"$gte": time.Date(start.Year(), start.Month(), start.Day(), 0, 0, 0, 0, start.Location()),
-					"$lt": time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, start.Location()),
+					"$lt":  time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, start.Location()),
 				},
 			}},
 			{"$project": bson.M{
@@ -128,6 +128,9 @@ func queryTxsByDay(w http.ResponseWriter, r *http.Request) {
 			{"$group": bson.M{
 				"_id":   "$day",
 				"count": bson.M{"$sum": 1},
+			}},
+			{"$sort": bson.M{
+				"_id": 1,
 			}},
 		},
 	)
