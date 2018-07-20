@@ -2,7 +2,7 @@
   <div class="echarts_component_wrap">
     <div class="echarts_title_wrap">
       <span class="validators_title">Validators Top10</span>
-      <span class="validators_top">View All</span>
+      <span class="validators_top" @click="viewAllClick()">View All</span>
     </div>
     <div id="echarts_pie">
 
@@ -20,24 +20,26 @@
     name: 'echarts-pie',
     watch:{
       information(information){
-        console.log(information)
-
         //根据设备大小显示饼图的大小
         let radius = this.deviceType === 1 ? '85%' : '65%';
-
-
         let option = {
 
           tooltip : {
             trigger: 'item',
-            formatter: "{a} <br/>{b} : {c} ({d}%)"
+            formatter(params){
+              let res =  `<span style="display:block;color:#00f0ff;padding:0 0.5rem;">${params.name}</span>`;
+              if(params.name !== 'others'){
+                res += `<span style="display:block;padding:0 0.5rem;">Uptime: ${params.data.upTime}</span>`;
+              }
+              res += `<span style="display:block;padding:0 0.5rem;">Voting Power: ${params.value}</span>`;
+              return res;
+            }
           },
           legend: {
             orient: 'vertical',
             right: '5%',
-            data: ['直接访问','邮件营销','联盟广告','视频广告','搜索引擎','1','2','3','4','5','6']
+            data: [],
           },
-
           series : [
             {
               name: '访问来源',
@@ -47,20 +49,7 @@
               label:{
                 show:false
               },
-              data:[
-                {value:1, name:'直接访问',itemStyle:{color:'#3498db'}},
-                {value:2, name:'邮件营销',itemStyle:{color:'#47a2df'}},
-                {value:3, name:'联盟广告',itemStyle:{color:'#59ade3'}},
-                {value:4, name:'视频广告',itemStyle:{color:'#6cb7e7'}},
-                {value:5, name:'搜索引擎',itemStyle:{color:'#7fc2eb'}},
-                {value:6, name:'1',itemStyle:{color:'#91ccef'}},
-                {value:7, name:'2',itemStyle:{color:'#a4d7f3'}},
-                {value:8, name:'3',itemStyle:{color:'#b7e1f7'}},
-                {value:9, name:'4',itemStyle:{color:'#c9ecfb'}},
-                {value:10, name:'5',itemStyle:{color:'#dcf6ff'}},
-                {value:45, name:'6',itemStyle:{color:'#efeff1'}},
-
-              ],
+              data:[],
               itemStyle: {
                 emphasis: {
                   shadowBlur: 10,
@@ -72,7 +61,15 @@
           ]
         };
         if(pie){
-          pie.setOption(option)
+          option.legend.data = information.legendData;
+          option.series[0].data = information.seriesData;
+          pie.setOption(option);
+          pie.on('click',(param)=>{
+            if(param.data.name !== 'others'){
+              this.$router.push(`/address/1/${param.data.address}`)
+            }
+
+          })
         }
       }
     },
@@ -93,7 +90,11 @@
 
     },
 
-    methods: {}
+    methods: {
+      viewAllClick(){
+          this.$router.push('/recent_transactions/3/0')
+      }
+    }
   }
 </script>
 <style lang="scss">

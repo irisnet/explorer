@@ -4,23 +4,23 @@
       <div class="information_preview">
         <div class="information_preview_module">
           <span>¥ {{marketCapValue}}</span>
-          <span>Market Cap :</span>
+          <span class="information_module_key">Market Cap</span>
         </div>
         <div class="information_preview_module">
           <span>¥ {{priceValue}}</span>
-          <span>Price :</span>
+          <span class="information_module_key">Price</span>
         </div>
         <div class="information_preview_module">
           <span>{{validatorsValue}}</span>
-          <span>Validators :</span>
+          <span class="information_module_key">Validators</span>
         </div>
         <div class="information_preview_module">
           <span>{{votingPowerValue}}</span>
-          <span>Voting Power :</span>
+          <span class="information_module_key">Voting Power</span>
         </div>
         <div class="information_preview_module">
           <span>{{transactionValue}}</span>
-          <span>Transactions :</span>
+          <span class="information_module_key">Transactions</span>
         </div>
       </div>
       <div :class="module_item_wrap">
@@ -33,10 +33,10 @@
       </div>
       <div :class="module_item_wrap">
         <div class="home_module_item">
-          <home-block-module :title="'Blocks'" :blocksInformation="blocksInformation"></home-block-module>
+          <home-block-module :title="'Blocks'" :information="blocksInformation"></home-block-module>
         </div>
         <div class="home_module_item">
-          <home-block-module :title="'Transaction'" :transactionInformation="transactionInformation"></home-block-module>
+          <home-block-module :title="'Transaction'" :information="transactionInformation"></home-block-module>
         </div>
       </div>
 
@@ -51,10 +51,11 @@
   import EchartsPie from "../components/EchartsPie";
   import EchartsLine from "../components/EchartsLine";
   import HomeBlockModule from "../components/HomeBlockModule";
+  import axios from 'axios';
 
   export default {
     name: 'app-header',
-    components: {EchartsPie, EchartsLine,HomeBlockModule},
+    components: {EchartsPie, EchartsLine, HomeBlockModule},
     data() {
       return {
         devicesWidth: window.innerWidth,
@@ -69,8 +70,8 @@
         timestampValue: 'bbb',
         information: {},//饼图的所有信息
         informationLine: {},//折线图端所有信息
-        blocksInformation:[],
-        transactionInformation:[],
+        blocksInformation: [],
+        transactionInformation: [],
 
       }
     },
@@ -85,11 +86,118 @@
     },
     mounted() {
       document.getElementById('router_wrap').addEventListener('click', this.hideFeature);
-      setTimeout(() => this.information = {name: 'lsc'}, 1000)
       setTimeout(() => this.informationLine = {name: 'lsc'}, 1000)
+
+      //请求各个列表数据
+      this.getBlocksList();
+      this.getTransactionList();
+      this.getValidatorsList();
     },
 
-    methods: {}
+    methods: {
+      getBlocksStatusData() {
+
+      },
+      getValidatorsList() {
+        let url = `/api/stake/candidatesTop`;
+        axios.get(url).then((data) => {
+          if (data.status === 200) {
+            return data.data;
+          }
+        }).then((data) => {
+          let colors = ['#3498db', '#47a2df', '#59ade3', '#6cb7e7', '#7fc2eb', '#91ccef', '#a4d7f3', '#b7e1f7', '#c9ecfb', '#dcf6ff', '#efeff1',];
+          //跟series的name匹配
+          let [seriesData, legendData] = [[], []];
+
+          console.log(data);
+
+          if (data.Candidates instanceof Array) {
+            //计算前十的voting power总数；
+            let totalCount = 0;
+            data.Candidates.forEach(item=>totalCount += item.VotingPower);
+            //其他部分的
+            let others = data.PowerAll - totalCount;
+            for (let i = 0; i < data.Candidates.length; i++) {
+              seriesData.push({
+                value: data.Candidates[i].VotingPower,
+                name: data.Candidates[i].Description.Moniker ? data.Candidates[i].Description.Moniker : (data.Candidates[i].Address ? data.Candidates[i].Address : ''),
+                itemStyle: {color: colors[i]},
+                upTime:`${data.Candidates[i].Uptime/100}%`,
+                address:data.Candidates[i].Address,
+              });
+
+              legendData.push(data.Candidates[i].Description.Moniker ? data.Candidates[i].Description.Moniker : (data.Candidates[i].Address ? data.Candidates[i].Address : ''))
+            }
+            seriesData.push({
+              value:others,
+              name:'others',
+              itemStyle:{color:colors[10]},
+            });
+            legendData.push('others');
+          }
+          this.information = {legendData, seriesData}
+
+        })
+      },
+      getTransactionHistory() {
+
+      },
+      getBlocksList() {
+        let url = `/api/blocks/1/10`;
+        axios.get(url).then((data) => {
+          if (data.status === 200) {
+            return data.data;
+          }
+        }).then((data) => {
+
+          this.blocksInformation = data.Data.map(item => {
+
+            return {
+              Height: item.Height,
+              Proposer: item.Hash,
+              Txn: item.NumTxs,
+              Time: Tools.conversionTimeToUTC(item.Time),
+              Fee: '',
+            }
+          })
+        })
+      },
+      getTransactionList() {
+        let url = `/api/txs/1/10`;
+        axios.get(url).then((data) => {
+          if (data.status === 200) {
+            return data.data;
+          }
+        }).then((data) => {
+          this.transactionInformation = data.Data.map(item => {
+            let [Amount, Fee] = ['', ''];
+            if (item.Amount instanceof Array) {
+              Amount = item.Amount.map(listItem => `${listItem.amount} ${listItem.denom}`).join(',');
+            } else if (item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')) {
+              Amount = `${item.Amount.amount} ${item.Amount.denom}`;
+            } else if (item.Amount === null) {
+              Amount = '';
+            }
+            if (item.Fee.Amount instanceof Array) {
+              Fee = item.Fee.Amount.map(listItem => `${listItem.amount} ${listItem.denom}`).join(',');
+            } else if (item.Fee.Amount && Object.keys(item.Fee.Amount).includes('amount') && Object.keys(item.Fee.Amount).includes('denom')) {
+              Fee = `${item.Fee.Amount} ${item.Fee.Amount}`;
+            } else if (item.Fee.Amount === null) {
+              Fee = '';
+            }
+            return {
+              TxHash: item.TxHash,
+              From: item.From,
+              To: item.To,
+              Type: item.Type,
+              Amount,
+              Fee,
+              Time: Tools.conversionTimeToUTC(item.Time),
+            };
+          })
+        })
+      }
+    }
   }
 </script>
 <style lang="scss">
@@ -119,6 +227,10 @@
               font-weight: 500;
             }
           }
+          .information_module_key {
+            font-size: 1.4rem;
+            color: #a2a2ae;
+          }
         }
       }
       //饼状图
@@ -143,7 +255,7 @@
           width: 45%;
           border: 0.1rem solid #eee;
           margin-bottom: 1rem;
-          height:40rem;
+          height: 40rem;
         }
       }
 
@@ -168,8 +280,8 @@
           margin-bottom: 1rem;
           border: 0.1rem solid #eee;
         }
-        .home_module_item_pie{
-          overflow-x:auto;
+        .home_module_item_pie {
+          overflow-x: auto;
         }
       }
     }

@@ -62,3 +62,9 @@ $fc:#fff;
     background:url($urlH) no-repeat 0 0;
   }
 }
+//溢出显示省略号
+@mixin overflowEllipsis{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
