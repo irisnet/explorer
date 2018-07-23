@@ -89,7 +89,7 @@
 
       nvc.onload = () => {
         let captcha = document.createElement('script');
-        captcha.setAttribute('src', "//g.alicdn.com/sd/smartCaptcha/0.0.1/index.js");
+        captcha.setAttribute('src', "//g.alicdn.com/sd/smartCaptcha/0.0.3/index.js");
         document.body.appendChild(captcha);
         captcha.onload = () => {
           var ic = new smartCaptcha({
