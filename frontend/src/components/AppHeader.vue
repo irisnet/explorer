@@ -144,7 +144,8 @@
         this.$router.push(path);
       },
       getData(data) {
-        console.log(data)
+        console.log(typeof data)
+
       },
       onInputChange() {
         console.log(this.searchInputValue)
@@ -226,16 +227,18 @@
     }
     .useFeature {
       width: 100%;
-      @include flex();
+      height:66px;
+      @include flex;
       flex-direction: column;
       align-items: center;
       background: #3598db;
       .navButton {
+        height:66px;
         @include pcCenter;
         .nav_item {
           display: inline-block;
-          height: 5.8rem;
-          line-height: 5.4rem;
+          height: 66px;
+          line-height: 66px;
           padding: 0 4rem;
           text-align: center;
           font-size: 1.8rem;
@@ -259,6 +262,8 @@
             border: none;
             font-size: 1.8rem;
             font-weight: normal;
+            height: 66px;
+            line-height: 66px;
           }
           .dropdown-menu{
             width:100%;

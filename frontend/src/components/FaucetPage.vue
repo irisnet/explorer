@@ -11,16 +11,16 @@
           <input type="text" class="form-control" id="session_id" name="session_id" hidden>
           <input type="text" class="form-control" id="sig" name="sig" hidden>
           <fieldset class="form-group">
-            <input type="text" class="form-control" id="address" v-model="address" placeholder="Testnet address"
-                   required>
+            <input type="text" class="form-control" id="address" v-model="address" placeholder="Testnet address">
+            <span class="alert_information" :style="`visibility:${alertShow}`">address is empty !</span>
           </fieldset>
           <fieldset class="form-group">
             <div id="sc" style="margin:0 auto;" class="text-left">
             </div>
           </fieldset>
-          <div class="text-left" v-if="errMsg">
+          <!--<div class="text-left" v-if="errMsg">
             <small class="err-msg">* {{errMsg}}</small>
-          </div>
+          </div>-->
           <button id="submit" type="submit" class="btn btn-primary" disabled>Send me IRIS</button>
         </div>
       </form>
@@ -79,6 +79,7 @@
         faucet_url: this.faucet_url,
         address: "",
         errMsg: "",
+        alertShow:'hidden',
       }
     },
     created: function () {
@@ -115,9 +116,17 @@
     },
     methods: {
       apply() {
-        if (document.getElementById("address").value === "") {
+        /*if (document.getElementById("address").value === "") {
           alert("address is empty");
           return false;
+        }*/
+        if(!this.address && this.alertShow === 'hidden'){
+          this.alertShow = 'visible';
+          setTimeout(()=>{
+            if(this.alertShow === 'visible'){
+              this.alertShow= 'hidden';
+            }
+           },2000);
         }
         axios.post(this.faucet_url + '/apply', JSON.stringify({
           address: document.getElementById("address").value,
@@ -139,7 +148,7 @@
 
 </script>
 
-<style>
+<style lang="scss">
   .faucet {
     background: white;
     padding: 15% 0
@@ -148,6 +157,19 @@
   .faucet-form {
     margin: 0 auto;
     width: 300px;
+
+    .form-group{
+      text-align: left;
+      .alert_information{
+        display:inline-block;
+        height:1.4rem;
+        line-height:1.4rem;
+        color:red;
+        font-size:1.8rem;
+        margin-top:0.5rem;
+      }
+    }
+
   }
 
   .err-msg {
