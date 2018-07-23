@@ -149,6 +149,13 @@
       },
       onInputChange() {
         console.log(this.searchInputValue)
+        if(/^[1-9]+[0-9]*]*$/.test(this.searchInputValue)){
+          console.log('block')
+        }else if(this.searchInputValue.length === 40){
+          console.log('hash')
+        }else if(this.searchInputValue.length === 18){
+
+        }
       },
       listenRouteForChangeActiveButton(){
         //刷新的时候路由不变，active按钮不变
@@ -174,7 +181,7 @@
   @import '../style/mixin.scss';
 
   .person_computer_header_var {
-    height: 15rem;
+    height: 180px;
   }
 
   .mobile_header_var {
@@ -239,7 +246,7 @@
           display: inline-block;
           height: 66px;
           line-height: 66px;
-          padding: 0 4rem;
+          padding: 0 60px;
           text-align: center;
           font-size: 1.8rem;
           cursor: pointer;
@@ -249,9 +256,13 @@
           color: #ffffff;
           background: #005a98;
         }
+        .btn-group, .btn-group-vertical{
+          vertical-align: baseline;
+        }
         .m-2 {
           margin: 0 !important;
-          height: 5.8rem;
+          height: 66px;
+
           button {
             padding: 0 4rem;
             color: #555 !important;

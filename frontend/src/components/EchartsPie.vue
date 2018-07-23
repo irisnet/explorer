@@ -106,7 +106,7 @@
     .echarts_title_wrap{
       height:15%;
       @include flex;
-      padding:1.2rem 1rem 0 1rem;
+      padding:12px 10px 0 10px;
       justify-content: space-between;
 
       .validators_title{

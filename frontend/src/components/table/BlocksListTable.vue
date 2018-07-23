@@ -8,14 +8,14 @@
       </template>
       <template slot='Txn' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/recent_transactions/2/0`)">
-          {{data.item.Txn}}
+          {{data.item.Txn?`${String(data.item.Txn).substr(0,10)}...`:''}}
         </span>
       </template>
     </b-table>
     <b-table :fields='fields' :items='items' striped v-if="type === '2'">
       <template slot='TxHash' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/tx?txHash=${data.item.TxHash}`)">
-          {{data.item.TxHash}}
+          {{data.item.TxHash?`${String(data.item.TxHash).substr(0,10)}...`:''}}
         </span>
       </template>
       <template slot='Block' slot-scope='data'>
@@ -25,33 +25,33 @@
       </template>
       <template slot='From' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/address/1/${data.item.From}`)">
-          {{data.item.From}}
+          {{data.item.From?`${String(data.item.From).substr(0,10)}...`:''}}
         </span>
       </template>
       <template slot='To' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/address/1/${data.item.To}`)">
-          {{data.item.To}}
+          {{data.item.To?`${String(data.item.To).substr(0,10)}...`:''}}
         </span>
       </template>
     </b-table>
     <b-table :fields='fields' :items='items' striped v-if="type === '3' || type === '4'">
       <template slot='Address' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/address/1/${data.item.Address}`)">
-          {{data.item.Address}}
+          {{data.item.Address?`${String(data.item.Address).substr(0,10)}...`:''}}
         </span>
       </template>
     </b-table>
     <b-table :fields='fields' :items='items' striped v-if="type === '5'">
       <template slot='Address' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/address/1/${data.item.Address}`)">
-          {{data.item.Address}}
+          {{data.item.Address?`${String(data.item.Address).substr(0,10)}...`:''}}
         </span>
       </template>
     </b-table>
     <b-table :fields='fields' :items='items' striped v-if="type === '6'" style="margin-bottom:0;">
       <template slot='TxHash' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/tx?txHash=${data.item.TxHash}`)">
-          {{data.item.TxHash}}
+          {{data.item.TxHash?`${String(data.item.TxHash).substr(0,10)}...`:''}}
         </span>
       </template>
       <template slot='Block' slot-scope='data'>
@@ -104,12 +104,34 @@
   //重置bootstrap-vue的表格样式
   table {
 
+
     td {
       max-width: 20rem !important;
       overflow-wrap: break-word !important;
       .skip_route {
-        color: #3190e8;
+        color: #3598db;
         cursor: pointer;
+      }
+    }
+  }
+  .page-item.active{
+
+    .page-link{
+      background-color: #3598db !important;
+      border-color:#3598db !important;
+    }
+  }
+  .table{
+    thead{
+      th{
+        border-bottom:none !important;
+      }
+    }
+    tbody{
+      tr{
+        &:nth-of-type(odd){
+          background-color: #f6f6f6 !important;
+        }
       }
     }
   }

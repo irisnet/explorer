@@ -91,6 +91,7 @@
 
   html {
     font-size: 50%;
+    -webkit-text-size-adjust:none;
   }
 
   body, html {
@@ -108,7 +109,7 @@
       overflow-y: auto;
       overflow-x: hidden;
       .router_view {
-        min-height: 53.2rem;
+        min-height: 750px;
       }
       .person_computer_wrap_footer {
         height: 10rem;
