@@ -47,7 +47,10 @@
     <div :class="transactionsDetailWrap">
       <p class="transaction_information_content_title">Precommit Details</p>
       <div class="block_detail_table_wrap">
-        <blocks-list-table :items="items" :type="'5'"></blocks-list-table>
+        <blocks-list-table :items="items" :type="'5'" :showNoData="showNoData"></blocks-list-table>
+        <div v-show="showNoData" class="no_data_show">
+          暂无数据
+        </div>
       </div>
     </div>
 
@@ -82,6 +85,7 @@
         precommitValidatorsValue:'',
         votingPowerValue:'',
         items:[],
+        showNoData:false,//列表无数据的时候显示
 
       }
     },
@@ -116,14 +120,25 @@
               }
             }
           }
-          this.items = data.Block.LastCommit.Precommits.map(item=>{
+          if(data.Block.LastCommit.Precommits && data.Block.LastCommit.Precommits.length > 0){
+            this.items = data.Block.LastCommit.Precommits.map(item=>{
               return {
                 Address:item.ValidatorAddress,
                 Index:item.ValidatorIndex,
                 Round:item.Round,
                 Signature:item.Signature.Type,
               }
-          });
+            });
+          }else{
+            this.items = [{
+              Address:'',
+              Index:'',
+              Round:'',
+              Signature:'',
+            }];
+            this.showNoData = true;
+          }
+
           if(data){
             this.hashValue = data.Height;
             this.heightValue = data.Height;
@@ -181,6 +196,12 @@
       }
       .block_detail_table_wrap{
         width:100%;
+        .no_data_show{
+          @include flex;
+          justify-content: center;
+          border-top:1px solid #eee;
+          font-size:1.8rem;
+        }
       }
 
 
@@ -219,6 +240,12 @@
       .block_detail_table_wrap{
         width:100%;
         overflow-x: scroll;
+        .no_data_show{
+          @include flex;
+          justify-content: center;
+          border-top:1px solid #eee;
+          font-size:1.8rem;
+        }
       }
       .transactions_detail_information_wrap{
 

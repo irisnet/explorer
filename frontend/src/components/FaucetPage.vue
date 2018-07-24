@@ -2,7 +2,10 @@
   <b-container type="light">
     <h3 style="font-size:1.8rem;">Irisnet Testnet Faucet</h3>
     <div class="faucet text-center" style="">
-      <p style="font-size:1.4rem;">Use this faucet to get tokens for the latest Irisnet testnet.</p>
+      <div class="coin" style="display:flex;justify-content: center;margin-bottom:10px;">
+        <img src="../assets/coin.png" alt="">
+      </div>
+      <p style="font-size:1.4rem;">Use this faucet to get tokens for the latest IRISnet testnet.</p>
       <p style="font-size:1.4rem;">Please don't abuse this service — the number of available tokens is limited.</p>
       <br/>
       <form @submit.prevent="apply">
@@ -11,7 +14,7 @@
           <input type="text" class="form-control" id="session_id" name="session_id" hidden>
           <input type="text" class="form-control" id="sig" name="sig" hidden>
           <fieldset class="form-group">
-            <input type="text" class="form-control" id="address" v-model="address" placeholder="Testnet address">
+            <input type="text" class="form-control" id="address" v-model="address" placeholder="Please enter the collection address">
             <span class="alert_information" :style="`visibility:${alertShow}`">Please enter a valid address</span>
           </fieldset>
           <fieldset class="form-group">

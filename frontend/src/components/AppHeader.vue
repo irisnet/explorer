@@ -5,6 +5,13 @@
       <div class="header_top">
         <div class="imageWrap" style="cursor:pointer;margin-top:10px;" @click="featureButtonClick('/home')">
           <img src="../assets/logo.png" alt="失去网络了..."/>
+          <div class="logo_title_wrap">
+            <div class="logo_title_content">
+              <span>IRIS</span>
+              <span>Explorer</span>
+            </div>
+            <p>{{fuxi}}</p>
+          </div>
         </div>
         <div class="navSearch">
           <input type="text" class="search_input"
@@ -23,8 +30,8 @@
         >Home</span>
         <span class="nav_item" :class="activeClassName === '/block'?'nav_item_active':''"
               @click="featureButtonClick('/block/1/0')"
-        >Block</span>
-        <b-dropdown id="ddown-left" text="Transaction" variant="primary" class="m-2"
+        >Blocks</span>
+        <b-dropdown id="ddown-left" text="Transactions" variant="primary" class="m-2"
                     :class="activeClassName === '/transaction'?'nav_item_active':''">
           <b-dropdown-item @click="featureButtonClick('/recent_transactions/2/0')">Recent Transactions</b-dropdown-item>
           <b-dropdown-item @click="featureButtonClick('/recent_transactions/2/transfer')">Transfer Transactions
@@ -100,6 +107,7 @@
         searchInputValue: '',
         activeClassName: '/home',
         showHeader:!(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer()),
+        fuxi:'Fuxi-2000',
       }
     },
     beforeMount() {
