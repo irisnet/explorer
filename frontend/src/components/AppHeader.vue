@@ -93,6 +93,7 @@
 </template>
 <script>
   import Tools from '../common/Tools';
+  import axios from 'axios';
 
   export default {
     name: 'app-header',
@@ -159,18 +160,39 @@
         this.$router.push(path);
       },
       getData(data) {
-        console.log(typeof data)
-
+        let urlBlock = `/api/block/${this.searchInputValue}`;
+        let urlTransaction = `/api/tx/${this.searchInputValue}`;
+        let urlAddress = `/api/account/${this.searchInputValue}`;
+        axios.get(urlBlock).then((data)=>{
+          if (data.status === 200) {
+            return data.data;
+          }
+        }).then((data)=>{
+          if(data){
+            this.$router.push(`/blocks_detail/${this.searchInputValue}`)
+          }
+        });
+        axios.get(urlTransaction).then((data)=>{
+          if (data.status === 200) {
+            return data.data;
+          }
+        }).then((data)=>{
+          if(data){
+            this.$router.push(`/tx?txHash=${this.searchInputValue}`)
+          }
+        });
+        axios.get(urlAddress).then((data)=>{
+          if (data.status === 200) {
+            return data.data;
+          }
+        }).then((data)=>{
+          if(data){
+            this.$router.push(`/address/1/${this.searchInputValue}`)
+          }
+        });
       },
       onInputChange() {
-        console.log(this.searchInputValue)
-        if(/^[1-9]+[0-9]*]*$/.test(this.searchInputValue)){
-          console.log('block')
-        }else if(this.searchInputValue.length === 40){
-          console.log('hash')
-        }else if(this.searchInputValue.length === 18){
-
-        }
+        this.getData();
       },
       listenRouteForChangeActiveButton(){
         //刷新的时候路由不变，active按钮不变

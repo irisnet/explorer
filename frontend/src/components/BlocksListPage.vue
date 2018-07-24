@@ -44,6 +44,7 @@
       $route() {
         this.items = [];
         this.type = this.$route.params.type;
+        this.currentPage = 1;
         this.getDataList(1, 30, this.$route.params.type);
         switch (this.$route.params.type) {
           case '1': this.titleVar = 'Blocks';
@@ -112,13 +113,15 @@
               this.items = data.Data.map(item => {
                 let txn = item.NumTxs;
                 let precommit = item.Block.LastCommit.Precommits.length;
+                let votingPower = 0;
+                item.Validators.forEach(listItem=>votingPower += listItem.VotingPower);
                 return {
                   Height: item.Height,
                   Txn:txn,
-                  Fee: '',
+                  Fees: '0 IRIS',
                   Timestamp: Tools.conversionTimeToUTC(item.Time),
                   'Precommit Validators':precommit,
-                  'Voting Power': '',
+                  'Voting Power': votingPower,
                 };
               })
             }else{

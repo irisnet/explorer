@@ -193,32 +193,35 @@
             return data.data;
           }
         }).then((data) => {
-          this.transactionInformation = data.Data.map(item => {
-            let [Amount, Fee] = ['', ''];
-            if (item.Amount instanceof Array) {
-              Amount = item.Amount.map(listItem => `${listItem.amount} ${listItem.denom}`).join(',');
-            } else if (item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')) {
-              Amount = `${item.Amount.amount} ${item.Amount.denom}`;
-            } else if (item.Amount === null) {
-              Amount = '';
-            }
-            if (item.Fee.Amount instanceof Array) {
-              Fee = item.Fee.Amount.map(listItem => `${listItem.amount} ${listItem.denom}`).join(',');
-            } else if (item.Fee.Amount && Object.keys(item.Fee.Amount).includes('amount') && Object.keys(item.Fee.Amount).includes('denom')) {
-              Fee = `${item.Fee.Amount} ${item.Fee.Amount}`;
-            } else if (item.Fee.Amount === null) {
-              Fee = '';
-            }
-            return {
-              TxHash: item.TxHash,
-              From: item.From,
-              To: item.To,
-              Type: item.Type,
-              Amount,
-              Fee,
-              Time: Tools.conversionTimeToUTC(item.Time),
-            };
-          })
+          if(data.Data){
+            this.transactionInformation = data.Data.map(item => {
+              let [Amount, Fee] = ['', ''];
+              if (item.Amount instanceof Array) {
+                Amount = item.Amount.map(listItem => `${listItem.amount} ${listItem.denom}`).join(',');
+              } else if (item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')) {
+                Amount = `${item.Amount.amount} ${item.Amount.denom}`;
+              } else if (item.Amount === null) {
+                Amount = '';
+              }
+              if (item.Fee.Amount instanceof Array) {
+                Fee = item.Fee.Amount.map(listItem => `${listItem.amount} ${listItem.denom}`).join(',');
+              } else if (item.Fee.Amount && Object.keys(item.Fee.Amount).includes('amount') && Object.keys(item.Fee.Amount).includes('denom')) {
+                Fee = `${item.Fee.Amount} ${item.Fee.Amount}`;
+              } else if (item.Fee.Amount === null) {
+                Fee = '';
+              }
+              return {
+                TxHash: item.TxHash,
+                From: item.From,
+                To: item.To,
+                Type: item.Type,
+                Amount,
+                Fee,
+                Time: Tools.conversionTimeToUTC(item.Time),
+              };
+            })
+          }
+
         })
       }
     }

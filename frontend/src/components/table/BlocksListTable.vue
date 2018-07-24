@@ -8,7 +8,7 @@
       </template>
       <template slot='Txn' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/recent_transactions/2/0`)">
-          {{data.item.Txn?`${String(data.item.Txn).substr(0,10)}...`:''}}
+          {{data.item.Txn}}
         </span>
       </template>
     </b-table>
