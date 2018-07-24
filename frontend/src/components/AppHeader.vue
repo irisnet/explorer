@@ -31,7 +31,27 @@
         <span class="nav_item" :class="activeClassName === '/block'?'nav_item_active':''"
               @click="featureButtonClick('/block/1/0')"
         >Blocks</span>
-        <b-dropdown id="ddown-left" text="Transactions" variant="primary" class="m-2"
+        <div class="nav_item sub_btn_wrap" :class="activeClassName === '/transaction'?'nav_item_active':''"
+             @mouseover="transactionMouseOver" @mouseleave="transactionMouseLeave">
+          <span >Transactions</span>
+          <span class="sub_btn_item" @click="featureButtonClick('/recent_transactions/2/0')"
+                v-show="showSubTransaction">Recent Transactions</span>
+          <span class="sub_btn_item" @click="featureButtonClick('/recent_transactions/2/transfer')"
+                v-show="showSubTransaction">Transfer Transactions</span>
+          <span class="sub_btn_item" @click="featureButtonClick('/recent_transactions/2/stake')"
+                v-show="showSubTransaction">Stake Transactions</span>
+        </div>
+        <div class="nav_item sub_btn_wrap" :class="activeClassName === '/validators'?'nav_item_active':''"
+             @mouseover="validatorsMouseOver" @mouseleave="validatorsMouseLeave">
+          <span >Validators</span>
+          <span class="sub_btn_item" @click="featureButtonClick('/recent_transactions/3/0')"
+                v-show="showSubValidators">Validators</span>
+          <span class="sub_btn_item" @click="featureButtonClick('/recent_transactions/4/0')"
+                v-show="showSubValidators">Candidates</span>
+
+        </div>
+
+        <!--<b-dropdown id="ddown-left" text="Transactions" variant="primary" class="m-2"
                     :class="activeClassName === '/transaction'?'nav_item_active':''">
           <b-dropdown-item @click="featureButtonClick('/recent_transactions/2/0')">Recent Transactions</b-dropdown-item>
           <b-dropdown-item @click="featureButtonClick('/recent_transactions/2/transfer')">Transfer Transactions
@@ -43,7 +63,7 @@
                     :class="activeClassName === '/validators'?'nav_item_active':''">
           <b-dropdown-item @click="featureButtonClick('/recent_transactions/3/0')">Validators</b-dropdown-item>
           <b-dropdown-item @click="featureButtonClick('/recent_transactions/4/0')">Candidates</b-dropdown-item>
-        </b-dropdown>
+        </b-dropdown>-->
         <span class="nav_item" :class="activeClassName === '/faucet'?'nav_item_active':''"
               @click="featureButtonClick('/faucet')"
         >Faucet</span>
@@ -116,6 +136,8 @@
         activeClassName: '/home',
         showHeader:!(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer()),
         fuxi:this.fuxi,
+        showSubTransaction:false,
+        showSubValidators:false,
       }
     },
     beforeMount() {
@@ -156,9 +178,24 @@
         } else {
           this.activeClassName = path;
         }*/
+        this.showSubTransaction = false;
+        this.showSubValidators = false;
         this.listenRouteForChangeActiveButton();
         this.$router.push(path);
       },
+      transactionMouseOver(){
+        this.showSubTransaction = true;
+      },
+      transactionMouseLeave(){
+        this.showSubTransaction = false;
+      },
+      validatorsMouseOver(){
+        this.showSubValidators = true;
+      },
+      validatorsMouseLeave(){
+        this.showSubValidators = false;
+      },
+
       getData(data) {
         let urlBlock = `/api/block/${this.searchInputValue}`;
         let urlTransaction = `/api/tx/${this.searchInputValue}`;
@@ -305,6 +342,7 @@
       .navButton {
         height:66px;
         @include pcCenter;
+        @include flex;
         .nav_item {
           display: inline-block;
           height: 66px;
@@ -315,54 +353,30 @@
           cursor: pointer;
           color: #c9eafd;
         }
+        .sub_btn_wrap{
+          @include flex;
+          flex-direction:column;
+          position:relative;
+          padding:0;
+          width:180px;
+          .sub_btn_item{
+            border:1px solid #eee;
+            background: #dee2e6;
+            color:#555;
+            height:40px;
+            line-height:40px;
+            &:hover{
+              background: #3598db;
+              color: #c9eafd;
+            }
+          }
+        }
         .nav_item_active {
           color: #ffffff;
           background: #005a98;
         }
         .btn-group, .btn-group-vertical{
           vertical-align: baseline;
-        }
-        .m-2 {
-          margin: 0 !important;
-          height: 66px;
-
-          button {
-            padding: 0 4rem;
-            color: #555 !important;
-          }
-          .btn {
-            background-color: transparent;
-            color: #c9eafd !important;
-            border: none;
-            font-size: 1.8rem;
-            font-weight: normal;
-            height: 66px;
-            line-height: 66px;
-          }
-          .dropdown-menu{
-            width:100%;
-            top:-2px !important;
-            padding-bottom:0;
-            padding-top:0;
-            a{
-              width:100%;
-              text-align: center;
-              line-height:2.5rem;
-              height:3rem;
-              border-bottom:1px solid #eee;
-              outline:none;
-              font-size:1.4rem;
-              &:last-child{
-                border-bottom:none;
-              }
-
-            }
-          }
-          .btn-primary{
-            &:focus{
-              box-shadow:0 0 0 0 transparent;
-            }
-          }
         }
       }
 
