@@ -54,6 +54,13 @@
       <div class="feature_btn" @click="showFeature"></div>
       <div class="image_wrap_mobile" @click="featureButtonClick('/home',true)">
         <img src="../assets/logo.png" alt="失去网络了..."/>
+        <div class="logo_title_wrap">
+          <div class="logo_title_content">
+            <span>IRIS</span>
+            <span>Explorer</span>
+          </div>
+          <p>{{fuxi}}</p>
+        </div>
       </div>
 
       <div class="use_feature_mobile" v-show="featureShow">
@@ -107,7 +114,7 @@
         searchInputValue: '',
         activeClassName: '/home',
         showHeader:!(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer()),
-        fuxi:'Fuxi-2000',
+        fuxi:this.fuxi,
       }
     },
     beforeMount() {
@@ -207,6 +214,32 @@
       .header_top {
         @include flex();
         justify-content: space-between;
+        .imageWrap{
+          @include flex;
+          .logo_title_wrap{
+            margin-left:16px;
+            .logo_title_content{
+              span{
+                &:first-child{
+                  font-size:24px;
+                  color:#3498db;
+                }
+                &:last-child{
+                  font-size:24px;
+                  color:#000000;
+                  display:inline-block;
+                  margin-left:12px;
+                }
+
+              }
+            }
+            p{
+              font-size:14px;
+              color:#aeaeb9;
+            }
+
+          }
+        }
         .navSearch {
           margin-bottom: 1rem;
           position: relative;
@@ -329,9 +362,29 @@
         background: url('../assets/menu.svg') no-repeat;
       }
       .image_wrap_mobile {
-        img {
-          /*width: 100%;
-          height: 100%;*/
+        @include flex;
+        .logo_title_wrap{
+          margin-left:16px;
+          .logo_title_content{
+            span{
+              &:first-child{
+                font-size:24px;
+                color:#3498db;
+              }
+              &:last-child{
+                font-size:24px;
+                color:#000000;
+                display:inline-block;
+                margin-left:12px;
+              }
+
+            }
+          }
+          p{
+            font-size:14px;
+            color:#aeaeb9;
+          }
+
         }
       }
       .search_input_mobile {
