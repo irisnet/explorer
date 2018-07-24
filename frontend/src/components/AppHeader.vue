@@ -31,7 +31,27 @@
         <span class="nav_item" :class="activeClassName === '/block'?'nav_item_active':''"
               @click="featureButtonClick('/block/1/0')"
         >Blocks</span>
-        <b-dropdown id="ddown-left" text="Transactions" variant="primary" class="m-2"
+        <div class="nav_item sub_btn_wrap" :class="activeClassName === '/transaction'?'nav_item_active':''"
+             @mouseover="transactionMouseOver" @mouseleave="transactionMouseLeave">
+          <span >Transactions</span>
+          <span class="sub_btn_item" @click="featureButtonClick('/recent_transactions/2/0')"
+                v-show="showSubTransaction">Recent Transactions</span>
+          <span class="sub_btn_item" @click="featureButtonClick('/recent_transactions/2/transfer')"
+                v-show="showSubTransaction">Transfer Transactions</span>
+          <span class="sub_btn_item" @click="featureButtonClick('/recent_transactions/2/stake')"
+                v-show="showSubTransaction">Stake Transactions</span>
+        </div>
+        <div class="nav_item sub_btn_wrap" :class="activeClassName === '/validators'?'nav_item_active':''"
+             @mouseover="validatorsMouseOver" @mouseleave="validatorsMouseLeave">
+          <span >Validators</span>
+          <span class="sub_btn_item" @click="featureButtonClick('/recent_transactions/3/0')"
+                v-show="showSubValidators">Validators</span>
+          <span class="sub_btn_item" @click="featureButtonClick('/recent_transactions/4/0')"
+                v-show="showSubValidators">Candidates</span>
+
+        </div>
+
+        <!--<b-dropdown id="ddown-left" text="Transactions" variant="primary" class="m-2"
                     :class="activeClassName === '/transaction'?'nav_item_active':''">
           <b-dropdown-item @click="featureButtonClick('/recent_transactions/2/0')">Recent Transactions</b-dropdown-item>
           <b-dropdown-item @click="featureButtonClick('/recent_transactions/2/transfer')">Transfer Transactions
@@ -43,7 +63,7 @@
                     :class="activeClassName === '/validators'?'nav_item_active':''">
           <b-dropdown-item @click="featureButtonClick('/recent_transactions/3/0')">Validators</b-dropdown-item>
           <b-dropdown-item @click="featureButtonClick('/recent_transactions/4/0')">Candidates</b-dropdown-item>
-        </b-dropdown>
+        </b-dropdown>-->
         <span class="nav_item" :class="activeClassName === '/faucet'?'nav_item_active':''"
               @click="featureButtonClick('/faucet')"
         >Faucet</span>
@@ -54,6 +74,13 @@
       <div class="feature_btn" @click="showFeature"></div>
       <div class="image_wrap_mobile" @click="featureButtonClick('/home',true)">
         <img src="../assets/logo.png" alt="失去网络了..."/>
+        <div class="logo_title_wrap">
+          <div class="logo_title_content">
+            <span>IRIS</span>
+            <span>Explorer</span>
+          </div>
+          <p>{{fuxi}}</p>
+        </div>
       </div>
 
       <div class="use_feature_mobile" v-show="featureShow">
@@ -86,6 +113,7 @@
 </template>
 <script>
   import Tools from '../common/Tools';
+  import axios from 'axios';
 
   export default {
     name: 'app-header',
@@ -107,7 +135,9 @@
         searchInputValue: '',
         activeClassName: '/home',
         showHeader:!(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer()),
-        fuxi:'Fuxi-2000',
+        fuxi:this.fuxi,
+        showSubTransaction:false,
+        showSubValidators:false,
       }
     },
     beforeMount() {
@@ -148,22 +178,58 @@
         } else {
           this.activeClassName = path;
         }*/
+        this.showSubTransaction = false;
+        this.showSubValidators = false;
         this.listenRouteForChangeActiveButton();
         this.$router.push(path);
       },
-      getData(data) {
-        console.log(typeof data)
+      transactionMouseOver(){
+        this.showSubTransaction = true;
+      },
+      transactionMouseLeave(){
+        this.showSubTransaction = false;
+      },
+      validatorsMouseOver(){
+        this.showSubValidators = true;
+      },
+      validatorsMouseLeave(){
+        this.showSubValidators = false;
+      },
 
+      getData(data) {
+        let urlBlock = `/api/block/${this.searchInputValue}`;
+        let urlTransaction = `/api/tx/${this.searchInputValue}`;
+        let urlAddress = `/api/account/${this.searchInputValue}`;
+        axios.get(urlBlock).then((data)=>{
+          if (data.status === 200) {
+            return data.data;
+          }
+        }).then((data)=>{
+          if(data){
+            this.$router.push(`/blocks_detail/${this.searchInputValue}`)
+          }
+        });
+        axios.get(urlTransaction).then((data)=>{
+          if (data.status === 200) {
+            return data.data;
+          }
+        }).then((data)=>{
+          if(data){
+            this.$router.push(`/tx?txHash=${this.searchInputValue}`)
+          }
+        });
+        axios.get(urlAddress).then((data)=>{
+          if (data.status === 200) {
+            return data.data;
+          }
+        }).then((data)=>{
+          if(data){
+            this.$router.push(`/address/1/${this.searchInputValue}`)
+          }
+        });
       },
       onInputChange() {
-        console.log(this.searchInputValue)
-        if(/^[1-9]+[0-9]*]*$/.test(this.searchInputValue)){
-          console.log('block')
-        }else if(this.searchInputValue.length === 40){
-          console.log('hash')
-        }else if(this.searchInputValue.length === 18){
-
-        }
+        this.getData();
       },
       listenRouteForChangeActiveButton(){
         //刷新的时候路由不变，active按钮不变
@@ -207,6 +273,32 @@
       .header_top {
         @include flex();
         justify-content: space-between;
+        .imageWrap{
+          @include flex;
+          .logo_title_wrap{
+            margin-left:16px;
+            .logo_title_content{
+              span{
+                &:first-child{
+                  font-size:24px;
+                  color:#3498db;
+                }
+                &:last-child{
+                  font-size:24px;
+                  color:#000000;
+                  display:inline-block;
+                  margin-left:12px;
+                }
+
+              }
+            }
+            p{
+              font-size:14px;
+              color:#aeaeb9;
+            }
+
+          }
+        }
         .navSearch {
           margin-bottom: 1rem;
           position: relative;
@@ -250,6 +342,7 @@
       .navButton {
         height:66px;
         @include pcCenter;
+        @include flex;
         .nav_item {
           display: inline-block;
           height: 66px;
@@ -260,54 +353,30 @@
           cursor: pointer;
           color: #c9eafd;
         }
+        .sub_btn_wrap{
+          @include flex;
+          flex-direction:column;
+          position:relative;
+          padding:0;
+          width:180px;
+          .sub_btn_item{
+            border:1px solid #eee;
+            background: #dee2e6;
+            color:#555;
+            height:40px;
+            line-height:40px;
+            &:hover{
+              background: #3598db;
+              color: #c9eafd;
+            }
+          }
+        }
         .nav_item_active {
           color: #ffffff;
           background: #005a98;
         }
         .btn-group, .btn-group-vertical{
           vertical-align: baseline;
-        }
-        .m-2 {
-          margin: 0 !important;
-          height: 66px;
-
-          button {
-            padding: 0 4rem;
-            color: #555 !important;
-          }
-          .btn {
-            background-color: transparent;
-            color: #c9eafd !important;
-            border: none;
-            font-size: 1.8rem;
-            font-weight: normal;
-            height: 66px;
-            line-height: 66px;
-          }
-          .dropdown-menu{
-            width:100%;
-            top:-2px !important;
-            padding-bottom:0;
-            padding-top:0;
-            a{
-              width:100%;
-              text-align: center;
-              line-height:2.5rem;
-              height:3rem;
-              border-bottom:1px solid #eee;
-              outline:none;
-              font-size:1.4rem;
-              &:last-child{
-                border-bottom:none;
-              }
-
-            }
-          }
-          .btn-primary{
-            &:focus{
-              box-shadow:0 0 0 0 transparent;
-            }
-          }
         }
       }
 
@@ -329,9 +398,29 @@
         background: url('../assets/menu.svg') no-repeat;
       }
       .image_wrap_mobile {
-        img {
-          /*width: 100%;
-          height: 100%;*/
+        @include flex;
+        .logo_title_wrap{
+          margin-left:16px;
+          .logo_title_content{
+            span{
+              &:first-child{
+                font-size:24px;
+                color:#3498db;
+              }
+              &:last-child{
+                font-size:24px;
+                color:#000000;
+                display:inline-block;
+                margin-left:12px;
+              }
+
+            }
+          }
+          p{
+            font-size:14px;
+            color:#aeaeb9;
+          }
+
         }
       }
       .search_input_mobile {

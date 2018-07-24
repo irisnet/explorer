@@ -202,9 +202,9 @@
         }).then((data)=>{
           let Amount = '';
           if(data.Amount instanceof Array){
-            Amount = data.Amount.map(listItem=>`${listItem.amount} ${listItem.denom}`).join(',');
+            Amount = data.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
           }else if(data.Amount && Object.keys(data.Amount).includes('amount') && Object.keys(data.Amount).includes('denom')){
-            Amount = `${data.Amount.amount} ${data.Amount.denom}`;
+            Amount = `${data.Amount.amount} ${data.Amount.denom.toUpperCase()}`;
           }else if(data.Amount === null){
             Amount = '';
           }
@@ -268,14 +268,14 @@
             this.items = data.Data.map(item=>{
               let [Amount,Fees] = ['',''];
               if(item.Amount instanceof Array){
-                Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom}`).join(',');
+                Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
               }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
-                Amount = `${item.Amount.amount} ${item.Amount.denom}`;
+                Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
               }else if(item.Amount === null){
                 Amount = '';
               }
               if(item.Fee.Amount instanceof Array){
-                Fees = item.Fee.Amount.map(listItem=>`${listItem.amount} ${listItem.denom}`).join(',');
+                Fees = item.Fee.Amount.map(listItem=>`${listItem.amount} ${listItem.denom?listItem.denom.toUpperCase():'IRIS'}`).join(',');
               }else if(item.Fee.Amount && Object.keys(item.Fee.Amount).includes('amount') && Object.keys(item.Fee.Amount).includes('denom')){
                 Fees = `${item.Fee.Amount} ${item.Fee.Amount}`;
               }else if(item.Fee.Amount === null){
@@ -288,7 +288,7 @@
                 To:item.To,
                 Type:item.Type,
                 Amount,
-                Fee:Fees,
+                Fees,
                 Timestamp:Tools.conversionTimeToUTC(item.Time),
               }
             })
@@ -300,7 +300,7 @@
               To:'',
               Type:'',
               Amount:'',
-              Fee:'',
+              Fees:'',
               Timestamp:'',
             }];
             this.showNoData1 = true;
@@ -322,7 +322,7 @@
               return{
                 'Block Height':item.Height,
                 Txn:item.NumTxs,
-                Fee:'',
+                Fees:'0 IRIS',
                 Timestamp:Tools.conversionTimeToUTC(item.Time),
                 'Precommit Validators':item.Validators.length !== 0?`${item.Block.LastCommit.Precommits.length}/${item.Validators.length}`:'',
               }
@@ -331,7 +331,7 @@
             this.itemsPre = [{
               'Block Height':'',
               Txn:'',
-              Fee:'',
+              Fees:'',
               Timestamp:'',
               'Precommit Validators':'',
             }];

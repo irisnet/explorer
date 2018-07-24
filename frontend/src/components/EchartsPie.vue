@@ -31,7 +31,7 @@
               if(params.name !== 'others'){
                 res += `<span style="display:block;padding:0 0.5rem;">Uptime: ${params.data.upTime}</span>`;
               }
-              res += `<span style="display:block;padding:0 0.5rem;">Voting Power: ${params.value}</span>`;
+              res += `<span style="display:block;padding:0 0.5rem;">Voting Power: ${(params.value/params.data.totalCount*100).toFixed(2)}%</span>`;
               return res;
             }
           },

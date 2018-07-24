@@ -35,7 +35,7 @@
         </div>
         <div class="blocks_module_right">
           <span>{{item.Time}}</span>
-          <span>Fee: {{item.Fee}}</span>
+          <span>Fees: {{item.Fee}}</span>
           <span v-show="item.TxHash">{{item.Type}}</span>
         </div>
       </div>
@@ -146,6 +146,7 @@
             .blocks_module_props{
               font-size:1.4rem;
               color:#555;
+              font-weight:600;
             }
             .blocks_background_type{
               background: url('../assets/block.png') no-repeat 0 0.2rem;

@@ -90,7 +90,7 @@
   @import './style/mixin.scss';
 
   html {
-    font-size: 50%;
+    font-size: 62.5%;
     -webkit-text-size-adjust:none;
   }
 

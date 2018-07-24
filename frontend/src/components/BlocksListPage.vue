@@ -44,6 +44,7 @@
       $route() {
         this.items = [];
         this.type = this.$route.params.type;
+        this.currentPage = 1;
         this.getDataList(1, 30, this.$route.params.type);
         switch (this.$route.params.type) {
           case '1': this.titleVar = 'Blocks';
@@ -112,13 +113,15 @@
               this.items = data.Data.map(item => {
                 let txn = item.NumTxs;
                 let precommit = item.Block.LastCommit.Precommits.length;
+                let votingPower = 0;
+                item.Validators.forEach(listItem=>votingPower += listItem.VotingPower);
                 return {
                   Height: item.Height,
                   Txn:txn,
-                  Fee: '',
+                  Fees: '0 IRIS',
                   Timestamp: Tools.conversionTimeToUTC(item.Time),
                   'Precommit Validators':precommit,
-                  'Voting Power': '',
+                  'Voting Power': votingPower,
                 };
               })
             }else{
@@ -144,16 +147,16 @@
               this.items = data.Data.map(item => {
                 let [Amount,Fees] = ['',''];
                 if(item.Amount instanceof Array){
-                  Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom}`).join(',');
+                  Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
                 }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
-                  Amount = `${item.Amount.amount} ${item.Amount.denom}`;
+                  Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
                 }else if(item.Amount === null){
                   Amount = '';
                 }
                 if(item.Fee.Amount instanceof Array){
-                  Fees = item.Fee.Amount.map(listItem=>`${listItem.amount} ${listItem.denom}`).join(',');
+                  Fees = item.Fee.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
                 }else if(item.Fee.Amount && Object.keys(item.Fee.Amount).includes('amount') && Object.keys(item.Fee.Amount).includes('denom')){
-                  Fees = `${item.Fee.Amount} ${item.Fee.Amount}`;
+                  Fees = `${item.Fee.Amount} ${item.Fee.Amount.toUpperCase()}`;
                 }else if(item.Fee.Amount === null){
                   Fees = '';
                 }

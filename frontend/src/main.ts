@@ -13,10 +13,13 @@ let faucet_url = process.env.VUE_APP_FAUCET_URL
 if (!faucet_url || faucet_url === '') {
   faucet_url = 'http://dev.faucet.irisplorer.io'
 }
-
-console.log(faucet_url)
-
 Vue.prototype.faucet_url = faucet_url
+
+let fuxi = process.env.VUE_APP_FUXI;
+if(!fuxi || fuxi === ''){
+  fuxi = 'fuxi-test'
+}
+Vue.prototype.fuxi = fuxi;
 
 new Vue({
   router,

@@ -36,7 +36,7 @@
           <home-block-module :title="'Blocks'" :information="blocksInformation"></home-block-module>
         </div>
         <div class="home_module_item">
-          <home-block-module :title="'Transaction'" :information="transactionInformation"></home-block-module>
+          <home-block-module :title="'Transactions'" :information="transactionInformation"></home-block-module>
         </div>
       </div>
 
@@ -104,8 +104,6 @@
         }).then((data) => {
           this.marketCapValue = '0';
           this.priceValue = '0';
-          this.validatorsValue = data.ValidatorsCount;
-          this.votingPowerValue = data.VotingPower;
           this.transactionValue = data.TxCount;
 
         })
@@ -133,6 +131,7 @@
                 itemStyle: {color: colors[i]},
                 upTime:`${data.Candidates[i].Uptime/100}%`,
                 address:data.Candidates[i].Address,
+                totalCount,
               });
               legendData.push(data.Candidates[i].Description.Moniker ? data.Candidates[i].Description.Moniker : (data.Candidates[i].Address ? data.Candidates[i].Address : ''))
             }
@@ -141,7 +140,10 @@
               name:'others',
               itemStyle:{color:colors[10]},
             });
-            legendData.push('others');
+            if(data.Candidates.length > 10){
+              legendData.push('others');
+            }
+
           }
           this.information = {legendData, seriesData}
 
@@ -156,15 +158,17 @@
         }).then((data) => {
           //找出最大的数据
           let maxValue = 0;
-          data.forEach(item=>{
-            if(item.Count > maxValue){
-              maxValue = item.Count;
-            }
-          });
-          let xData = data.map(item=>item.Time);
-          let seriesData = data.map(item=>item.Count);
-          this.informationLine = {maxValue,xData,seriesData};
           console.log(data)
+          if(data){
+            data.forEach(item=>{
+              if(item.Count > maxValue){
+                maxValue = item.Count;
+              }
+            });
+            let xData = data.map(item=>`${String(item.Time).substr(5,2)}/${String(item.Time).substr(8,2)}/${String(item.Time).substr(0,4)}`);
+            let seriesData = data.map(item=>item.Count);
+            this.informationLine = {maxValue,xData,seriesData};
+          }
         })
 
       },
@@ -175,15 +179,31 @@
             return data.data;
           }
         }).then((data) => {
-          this.blocksInformation = data.Data.map(item => {
-            return {
-              Height: item.Height,
-              Proposer: item.Hash,
-              Txn: item.NumTxs,
-              Time: Tools.conversionTimeToUTC(item.Time),
-              Fee: '',
+          if(data.Data){
+            console.log(data.Data)
+            let denominator = 0;
+            data.Data[0].Validators.forEach(item=>denominator += item.VotingPower);
+            let numerator = 0;
+            for(let i = 0; i < data.Data[0].Block.LastCommit.Precommits.length; i++){
+              for (let j = 0; j < data.Data[0].Validators.length; j++){
+                if(data.Data[0].Block.LastCommit.Precommits[i].ValidatorAddress === data.Data[0].Validators[j].Address){
+                  numerator += data.Data[0].Validators[j].VotingPower;
+                  break;
+                }
+              }
             }
-          })
+            this.votingPowerValue = denominator !== 0? `${(numerator/denominator).toFixed(2)*100}%`:'';
+            this.validatorsValue = `${data.Data[0].Block.LastCommit.Precommits.length} voting / ${data.Data[0].Validators.length} total`;
+            this.blocksInformation = data.Data.map(item => {
+              return {
+                Height: item.Height,
+                Proposer: item.Hash,
+                Txn: item.NumTxs,
+                Time: Tools.conversionTimeToUTC(item.Time),
+                Fee: '0 IRIS',
+              }
+            })
+          }
         })
       },
       getTransactionList() {
@@ -193,32 +213,35 @@
             return data.data;
           }
         }).then((data) => {
-          this.transactionInformation = data.Data.map(item => {
-            let [Amount, Fee] = ['', ''];
-            if (item.Amount instanceof Array) {
-              Amount = item.Amount.map(listItem => `${listItem.amount} ${listItem.denom}`).join(',');
-            } else if (item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')) {
-              Amount = `${item.Amount.amount} ${item.Amount.denom}`;
-            } else if (item.Amount === null) {
-              Amount = '';
-            }
-            if (item.Fee.Amount instanceof Array) {
-              Fee = item.Fee.Amount.map(listItem => `${listItem.amount} ${listItem.denom}`).join(',');
-            } else if (item.Fee.Amount && Object.keys(item.Fee.Amount).includes('amount') && Object.keys(item.Fee.Amount).includes('denom')) {
-              Fee = `${item.Fee.Amount} ${item.Fee.Amount}`;
-            } else if (item.Fee.Amount === null) {
-              Fee = '';
-            }
-            return {
-              TxHash: item.TxHash,
-              From: item.From,
-              To: item.To,
-              Type: item.Type,
-              Amount,
-              Fee,
-              Time: Tools.conversionTimeToUTC(item.Time),
-            };
-          })
+          if(data.Data){
+            this.transactionInformation = data.Data.map(item => {
+              let [Amount, Fee] = ['', ''];
+              if (item.Amount instanceof Array) {
+                Amount = item.Amount.map(listItem => `${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
+              } else if (item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')) {
+                Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
+              } else if (item.Amount === null) {
+                Amount = '';
+              }
+              if (item.Fee.Amount instanceof Array) {
+                Fee = item.Fee.Amount.map(listItem => `${listItem.amount} ${listItem.denom?listItem.denom:'IRIS'}`).join(',');
+              } else if (item.Fee.Amount && Object.keys(item.Fee.Amount).includes('amount') && Object.keys(item.Fee.Amount).includes('denom')) {
+                Fee = `${item.Fee.Amount} ${item.Fee.Amount}`;
+              } else if (item.Fee.Amount === null) {
+                Fee = '0 IRIS';
+              }
+              return {
+                TxHash: item.TxHash,
+                From: item.From,
+                To: item.To,
+                Type: item.Type,
+                Amount,
+                Fee,
+                Time: Tools.conversionTimeToUTC(item.Time),
+              };
+            })
+          }
+
         })
       }
     }

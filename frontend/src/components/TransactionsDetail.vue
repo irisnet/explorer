@@ -94,10 +94,10 @@
           this.toValue = data.To;
           this.timestampValue = Tools.conversionTimeToUTC(data.Time);
           this.amountValue = data.Amount.map(item=>{
-            return `${item.amount} ${item.denom}`;
+            return `${item.amount} ${item.denom.toUpperCase()}`;
           }).join(',');
           this.feeValue = data.Fee.Amount.map(item=>{
-            return `${item.amount} ${item.denom}`;
+            return `${item.amount} ${item.denom.toUpperCase()}`;
           }).join(',');
         }
 

@@ -8,7 +8,7 @@
       </template>
       <template slot='Txn' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/recent_transactions/2/0`)">
-          {{data.item.Txn?`${String(data.item.Txn).substr(0,10)}...`:''}}
+          {{data.item.Txn}}
         </span>
       </template>
     </b-table>
@@ -59,6 +59,17 @@
           {{data.item.Block}}
         </span>
       </template>
+      <template slot='From' slot-scope='data'>
+        <span class="skip_route" @click="skipRoute(`/address/1/${data.item.From}`)">
+          {{data.item.From?`${String(data.item.From).substr(0,10)}...`:''}}
+        </span>
+      </template>
+      <template slot='To' slot-scope='data'>
+        <span class="skip_route" @click="skipRoute(`/address/1/${data.item.To}`)">
+          {{data.item.To?`${String(data.item.To).substr(0,10)}...`:''}}
+        </span>
+      </template>
+
 
     </b-table>
     <b-table :fields='fields' :items='items' striped v-if="type === '7'" style="margin-bottom:0;">
