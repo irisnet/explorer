@@ -1,9 +1,9 @@
 <template>
   <b-container type="light">
-    <h3>Irisnet Testnet Faucet</h3>
+    <h3 style="font-size:1.8rem;">Irisnet Testnet Faucet</h3>
     <div class="faucet text-center" style="">
-      <p>Use this faucet to get tokens for the latest Irisnet testnet.</p>
-      <p>Please don't abuse this service — the number of available tokens is limited.</p>
+      <p style="font-size:1.4rem;">Use this faucet to get tokens for the latest Irisnet testnet.</p>
+      <p style="font-size:1.4rem;">Please don't abuse this service — the number of available tokens is limited.</p>
       <br/>
       <form @submit.prevent="apply">
         <div class="faucet-form">
@@ -12,7 +12,7 @@
           <input type="text" class="form-control" id="sig" name="sig" hidden>
           <fieldset class="form-group">
             <input type="text" class="form-control" id="address" v-model="address" placeholder="Testnet address">
-            <span class="alert_information" :style="`visibility:${alertShow}`">address is empty !</span>
+            <span class="alert_information" :style="`visibility:${alertShow}`">Please enter a valid address</span>
           </fieldset>
           <fieldset class="form-group">
             <div id="sc" style="margin:0 auto;" class="text-left">
@@ -167,6 +167,11 @@
         color:red;
         font-size:1.8rem;
         margin-top:0.5rem;
+      }
+      .form-control{
+        height:2.8rem;
+        line-height:2.8rem;
+        font-size:1.4rem;
       }
     }
 

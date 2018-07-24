@@ -13,15 +13,19 @@
             <span class="blocks_module_value"
                   :class="blockModuleTypeVar"
                   @click="skipRouter(item.Height?`/blocks_detail/${item.Height}`:`/tx?txHash=${item.TxHash}`)">
-              {{item.Height?item.Height:`TX# ${item.TxHash}`}}</span>
+              {{item.Height?item.Height:`TX# ${item.TxHash.substr(0,10)}...`}}</span>
           </div>
           <div class="key_value_wrap" v-show="item.TxHash">
             <span class="blocks_module_props">From:</span>
-            <span class="blocks_module_value" @click="skipRouter(`/address/1/${item.From}`)">{{item.From}}</span>
+            <span class="blocks_module_value" @click="skipRouter(`/address/1/${item.From}`)">
+              {{item.From?`${String(item.From).substr(0,10)}...`:''}}
+            </span>
           </div>
           <div class="key_value_wrap" v-show="item.TxHash">
             <span class="blocks_module_props">To:</span>
-            <span class="blocks_module_value" @click="skipRouter(`/address/1/${item.To}`)">{{item.To}}</span>
+            <span class="blocks_module_value" @click="skipRouter(`/address/1/${item.To}`)">
+              {{item.To?`${String(item.To).substr(0,10)}...`:''}}
+            </span>
           </div>
 
           <div class="key_value_wrap">
@@ -146,6 +150,7 @@
             .blocks_background_type{
               background: url('../assets/block.png') no-repeat 0 0.2rem;
               text-indent:1.5rem;
+              color:#3598db;
             }
             .transactions_background_type{
               background: url('../assets/transaction.png') no-repeat 0 0.2rem;

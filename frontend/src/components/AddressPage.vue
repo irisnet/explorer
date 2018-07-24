@@ -242,11 +242,12 @@
             return data.data;
           }
         }).then((data)=>{
+          console.log(data)
           if(data){
             this.bondHeightValue = data.TotalBlock;
             this.precommitedBlocksValue = data.PrecommitCount;
             this.returnsValue = '';
-            this.firstPercent = (data.TotalBlock !== 0 && data.PrecommitCount !== 0) ?data.PrecommitCount/data.TotalBlock:'0%';
+            this.firstPercent = (data.TotalBlock !== 0 && data.PrecommitCount !== 0) ?`${data.Uptime/data.TotalBlock*100}%`:'0%';
           }
 
         })
