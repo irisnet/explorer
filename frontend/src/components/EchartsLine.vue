@@ -40,6 +40,11 @@
                 color: '#a2a2ae'
               }
             },
+            axisLabel:{
+              interval:0,
+              rotate:-60,
+              margin:12,
+            }
           },
           yAxis: {
             type: 'value',
@@ -54,7 +59,7 @@
           },
           grid: {
             left: '3%',   //图表距边框的距离
-            right: '4%',
+            right: '11%',
             bottom: '8%',
             top:'5%',
             containLabel: true

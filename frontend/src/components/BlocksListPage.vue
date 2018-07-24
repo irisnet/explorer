@@ -147,16 +147,16 @@
               this.items = data.Data.map(item => {
                 let [Amount,Fees] = ['',''];
                 if(item.Amount instanceof Array){
-                  Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom}`).join(',');
+                  Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
                 }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
-                  Amount = `${item.Amount.amount} ${item.Amount.denom}`;
+                  Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
                 }else if(item.Amount === null){
                   Amount = '';
                 }
                 if(item.Fee.Amount instanceof Array){
-                  Fees = item.Fee.Amount.map(listItem=>`${listItem.amount} ${listItem.denom}`).join(',');
+                  Fees = item.Fee.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
                 }else if(item.Fee.Amount && Object.keys(item.Fee.Amount).includes('amount') && Object.keys(item.Fee.Amount).includes('denom')){
-                  Fees = `${item.Fee.Amount} ${item.Fee.Amount}`;
+                  Fees = `${item.Fee.Amount} ${item.Fee.Amount.toUpperCase()}`;
                 }else if(item.Fee.Amount === null){
                   Fees = '';
                 }

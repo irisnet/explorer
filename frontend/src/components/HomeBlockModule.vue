@@ -35,7 +35,7 @@
         </div>
         <div class="blocks_module_right">
           <span>{{item.Time}}</span>
-          <span>Fee: {{item.Fee}}</span>
+          <span>Fees: {{item.Fee}}</span>
           <span v-show="item.TxHash">{{item.Type}}</span>
         </div>
       </div>
