@@ -126,9 +126,9 @@
     height: 100%;
 
     .echarts_title_wrap_line {
-      padding:1.2rem 1rem 0 1rem;
+      padding:0.12rem 0.1rem 0 0.1rem;
       height: 15%;
-      font-size:1.8rem;
+      font-size:0.18rem;
       font-weight:600;
     }
     #echarts_line {
@@ -137,7 +137,7 @@
     }
   }
   .echarts_component_wrap_line_mobile{
-    min-width:40rem;
+    min-width:4rem;
   }
 
 

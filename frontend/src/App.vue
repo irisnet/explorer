@@ -2,7 +2,15 @@
   <div id="app">
     <app-header></app-header>
     <div id="router_wrap">
-
+      <div class="weChat_qr_code"
+           @click="hideQRCode"
+           :style="`width:${vw}px;height:${vh}px`" v-show="qrShow">
+        <div class="weChat_all">
+          <img src="./assets/wechat_qr.png" alt="失去网络了..." style="width:1.8rem;height:1.8rem;">
+          <h2>Scan QR Code</h2>
+          <p>to follow our SubScriptions</p>
+        </div>
+      </div>
       <router-view class="router_view"/>
       <footer :class="footerClass" v-show="showFooter">
         <div :class="footerClassName" style="height:100%;">
@@ -11,7 +19,7 @@
             <a href='https://t.me/irisnetwork' class="airplane"></a>
             <a href='https://twitter.com/irisnetwork' class="twitter"></a>
             <a href='https://medium.com/irisnet-blog' class="facebook"></a>
-            <span class="we_chat"></span>
+            <span class="we_chat" @click="showQRCode"></span>
             <span class="qq"></span>
           </div>
           <div class="footer_center">
@@ -62,6 +70,9 @@
         footerLeftVar: 'person_computer_footer_left',
         footerRightVar: 'person_computer_footer_right',
         showFooter:!(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer()),
+        vh:window.innerHeight,
+        vw:window.innerWidth,
+        qrShow:false,
       }
     },
     beforeMount() {
@@ -82,6 +93,13 @@
     methods: {
       footerLinkClick(path) {
         this.$router.push(path);
+      },
+      showQRCode(){
+        this.qrShow = true;
+        console.log(this.qrShow)
+      },
+      hideQRCode(){
+        this.qrShow = false;
       }
     }
   }
@@ -90,13 +108,22 @@
   @import './style/mixin.scss';
 
   html {
-    font-size: 62.5%;
+    font-size: 625%;
     -webkit-text-size-adjust:none;
   }
 
   body, html {
     width: 100%;
     height: 100%;
+  }
+  body{
+    font-size: 16px !important;
+  }
+  p{
+    margin-bottom:0 !important;
+  }
+  ul{
+    margin-bottom:0 !important;
   }
 
   #app {
@@ -109,19 +136,50 @@
       overflow-y: auto;
       overflow-x: hidden;
       .router_view {
-        min-height: 750px;
+        min-height: 7.5rem;
       }
       .person_computer_wrap_footer {
-        height: 10rem;
+        height: 1rem;
       }
       .mobile_wrap_footer {
         /*height:21rem;*/
+      }
+      .weChat_qr_code{//微信二维码弹框
+        position:fixed;
+        top:0;
+        left:0;
+        background: rgba(0,0,0,.6);
+        z-index:1000;
+        @include flex;
+        justify-content: center;
+        align-items:center;
+        .weChat_all{
+          width:3.7rem;
+          height:3.7rem;
+          background: #141426;
+          @include borderRadius(0.05rem);
+          @include flex;
+          flex-direction:column;
+          justify-content: center;
+          align-items: center;
+          h2{
+            color:#5c5c7c;
+            font-size:0.24rem;
+            margin-top:0.1rem;
+            margin-bottom:0;
+          }
+          p{
+            color:#5c5c7c;
+            margin-top:0.1rem;
+            font-size:0.18rem;
+          }
+        }
       }
       footer {
         background: #363a3d;
         @include flex();
         @include pcContainer;
-        padding: 3rem 0 2rem 0;
+        padding: 0.3rem 0 0.2rem 0;
         .person_computer_footer { //分别对pc和移动端兼容
           @include pcCenter;
           flex-direction: row;
@@ -159,12 +217,12 @@
           @include flex;
           .footer_left {
             @include flex;
-            margin-bottom:1rem;
+            margin-bottom:0.1rem;
             span, a {
-              width: 3.5rem;
-              height: 3.5rem;
-              @include borderRadius(3.5rem);
-              margin-right: 1rem;
+              width: 0.4rem;
+              height:0.4rem;
+              @include borderRadius(0.3rem);
+              margin-right: 0.1rem;
               cursor:pointer;
               &:last-child {
                 margin-right: 0;
@@ -199,21 +257,21 @@
             .footer_link_wrap {
               @include flex;
               span{
-                font-size:1.4rem;
+                font-size:0.14rem;
                 &:nth-child(2n-1){
                   color:#3698db;
                   cursor:pointer;
                 }
                 &:nth-child(2n){
                   color:#a2a2ae;
-                  margin:0 1rem;
+                  margin:0 0.1rem;
                 }
               }
             }
             .footer_copyright_wrap{
               color:#a2a2ae;
-              margin-top:1rem;
-              font-size:1.4rem;
+              margin-top:0.1rem;
+              font-size:0.14rem;
             }
 
           }

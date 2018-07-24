@@ -117,7 +117,7 @@
 
 
     td {
-      max-width: 20rem !important;
+      max-width: 2.2rem !important;
       overflow-wrap: break-word !important;
       .skip_route {
         color: #3598db;
@@ -125,14 +125,21 @@
       }
     }
   }
-  .page-item.active{
+  .active{
 
     .page-link{
       background-color: #3598db !important;
       border-color:#3598db !important;
+
     }
   }
+  .page-link{
+    padding:0.05rem 0.075rem !important;
+  }
   .table{
+    th, td{
+      padding:0.075rem !important;
+    }
     margin-bottom:0 !important;
     thead{
       th{

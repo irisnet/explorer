@@ -95,22 +95,22 @@
     @include flex;
     flex-direction:column;
     .home_module_block_title_wrap{
-      height:5rem;
+      height:0.5rem;
       @include flex;
-      padding:1.2rem 1rem 0 1rem;
+      padding:0.12rem 0.1rem 0 0.1rem;
       justify-content: space-between;
       background: #efeff1;
       border-bottom:1px solid #e4e4e4;
       .home_module_block_title{
-        font-size:1.8rem;
-        text-indent:2.5rem;
+        font-size:0.18rem;
+        text-indent:0.3rem;
         font-weight:600;
       }
       .blocks_background{
-        background: url('../assets/blocks.png') no-repeat 0 0.2rem;
+        background: url('../assets/blocks.png') no-repeat 0 0.02rem;
       }
       .transactions_background{
-        background: url('../assets/transactions.png') no-repeat 0 0.2rem;
+        background: url('../assets/transactions.png') no-repeat 0 0.02rem;
       }
       .view_all_btn{
         @include viewBtn;
@@ -126,36 +126,36 @@
       .home_module_block_content_item{
         @include flex;
         justify-content:space-between;
-        border-bottom:0.1rem solid #eee;
-        padding:1.2rem;
+        border-bottom:1px solid #eee;
+        padding:0.12rem;
         .blocks_module_left{
           @include flex;
           flex-direction:column;
 
           .key_value_wrap{
-            width:14rem;
+            width:1.4rem;
             @include flex;
             flex-direction:row;
             .blocks_module_value{
               color:#3598db;
               cursor:pointer;
-              font-size:1.4rem;
+              font-size:0.14rem;
               display:inline-block;
               @include overflowEllipsis;
             }
             .blocks_module_props{
-              font-size:1.4rem;
+              font-size:0.14rem;
               color:#555;
               font-weight:600;
             }
             .blocks_background_type{
-              background: url('../assets/block.png') no-repeat 0 0.2rem;
-              text-indent:1.5rem;
+              background: url('../assets/block.png') no-repeat 0 0.02rem;
+              text-indent:0.2rem;
               color:#3598db;
             }
             .transactions_background_type{
-              background: url('../assets/transaction.png') no-repeat 0 0.2rem;
-              text-indent:1.5rem;
+              background: url('../assets/transaction.png') no-repeat 0 0.02rem;
+              text-indent:0.2rem;
             }
           }
 
@@ -165,7 +165,7 @@
           flex-direction:column;
           align-items: flex-end;
           span{
-            font-size:1.4rem;
+            font-size:0.14rem;
             color:#a2a2ae;
           }
         }

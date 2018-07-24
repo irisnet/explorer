@@ -255,13 +255,13 @@
     @include pcContainer;
     //pc端和移动端公共样式
     .personal_computer_home_wrap, .mobile_home_wrap {
-      margin-top: 1.5rem;
+      margin-top: 0.15rem;
       .information_preview {
         @include flex;
-        margin-bottom: 1.5rem;
+        margin-bottom: 0.1rem;
 
         .information_preview_module {
-          border-right: 0.1rem solid #eee;
+          border-right: 0.01rem solid #eee;
           @include flex;
           flex-direction: column;
           align-items: center;
@@ -270,19 +270,19 @@
           }
           span {
             &:first-child {
-              font-size: 1.8rem;
+              font-size: 0.18rem;
               font-weight: 500;
             }
           }
           .information_module_key {
-            font-size: 1.4rem;
+            font-size: 0.14rem;
             color: #a2a2ae;
           }
         }
       }
       //饼状图
       .home_module_item_pie {
-        height: 28rem;
+        height: 2.8rem;
       }
     }
 
@@ -300,9 +300,9 @@
         justify-content: space-between;
         .home_module_item {
           width: 45%;
-          border: 0.1rem solid #eee;
-          margin-bottom: 1rem;
-          height: 40rem;
+          border: 0.01rem solid #eee;
+          margin-bottom: 0.1rem;
+          height: 4rem;
         }
       }
 
@@ -311,11 +311,11 @@
       flex-direction: column;
       justify-content: space-between;
       width: 100%;
-      padding: 1rem;
+      padding: 0.1rem;
       .information_preview {
         overflow-x: scroll;
         .information_preview_module {
-          min-width: 16rem;
+          min-width: 1.6rem;
         }
       }
       .module_item_wrap_mobile {
@@ -325,7 +325,7 @@
         .home_module_item {
           width: 98%;
           margin-bottom: 1rem;
-          border: 0.1rem solid #eee;
+          border: 0.01rem solid #eee;
         }
         .home_module_item_pie {
           overflow-x: auto;
@@ -333,16 +333,16 @@
       }
     }
     .home_module_item_status {
-      padding: 1rem;
+      padding: 0.1rem;
       background: #3190e8;
 
       .current_block {
         font-weight: 500;
         color: #fff;
         display: inline-block;
-        height: 2.8rem;
-        line-height: 2.8rem;
-        border-bottom: 0.1rem solid #ffffff;
+        height: 0.28rem;
+        line-height: 0.28rem;
+        border-bottom: 0.01rem solid #ffffff;
         width: 100%;
 
       }
@@ -354,7 +354,7 @@
           @include flex();
           flex-direction: column;
           span {
-            font-size: 1.4rem;
+            font-size: 0.14rem;
             color: #ffffff;
             font-weight: normal;
           }
