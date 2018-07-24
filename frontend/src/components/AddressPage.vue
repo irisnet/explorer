@@ -111,8 +111,11 @@
         </div>
 
         <div class="transaction_table">
-          <blocks-list-table :items="items" :type="'6'" v-show="activeBtn === 0"></blocks-list-table>
-          <blocks-list-table :items="itemsPre" :type="'7'" v-show="activeBtn === 1"></blocks-list-table>
+          <blocks-list-table :items="items" :type="'6'" v-show="activeBtn === 0" :showNoData="showNoData1"></blocks-list-table>
+          <blocks-list-table :items="itemsPre" :type="'7'" v-show="activeBtn === 1" :showNoData="showNoData2"></blocks-list-table>
+          <div v-show="(activeBtn === 0 && showNoData1) || (activeBtn === 1 && showNoData2)" class="no_data_show">
+            暂无数据
+          </div>
         </div>
       </div>
     </div>
@@ -144,8 +147,8 @@
         devicesWidth: window.innerWidth,
         transactionsDetailWrap: 'personal_computer_transactions_detail',//1是显示pc端，0是移动端
         activeBtn:0,
-        firstPercent:'33%',
-        secondPercent:'50%',
+        firstPercent:'',
+        secondPercent:'%',
         hashValue:this.$route.params.param,
         balanceValue:'',
         depositsValue:'',
@@ -166,6 +169,8 @@
         type:this.$route.params.type,
         totalBlocks:0,
         totalFee:0,
+        showNoData1:false,//无数据的时候显示无数据状态
+        showNoData2:false,
 
 
       }
@@ -287,6 +292,18 @@
                 Timestamp:Tools.conversionTimeToUTC(item.Time),
               }
             })
+          }else{
+            this.items = [{
+              TxHash:'',
+              Block:'',
+              From:'',
+              To:'',
+              Type:'',
+              Amount:'',
+              Fee:'',
+              Timestamp:'',
+            }];
+            this.showNoData1 = true;
           }
 
 
@@ -310,6 +327,15 @@
                 'Precommit Validators':item.Validators.length !== 0?`${item.Block.LastCommit.Precommits.length}/${item.Validators.length}`:'',
               }
             })
+          }else{
+            this.itemsPre = [{
+              'Block Height':'',
+              Txn:'',
+              Fee:'',
+              Timestamp:'',
+              'Precommit Validators':'',
+            }];
+            this.showNoData2 = true;
           }
         })
       }
@@ -517,8 +543,7 @@
         }
       }
       .table_wrap{
-        border:0.1rem solid #eee;
-        overflow-x:scroll;
+        overflow-x:auto;
         .pagination{
           @include flex;
           justify-content: flex-end;
@@ -544,6 +569,14 @@
           }
           .view_all_btn{
             @include viewBtn;
+          }
+        }
+        .transaction_table{
+          .no_data_show{
+            @include flex;
+            justify-content: center;
+            border-top:1px solid #eee;
+            font-size:1.8rem;
           }
         }
       }

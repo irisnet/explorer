@@ -39,7 +39,7 @@
           <span class="information_value">{{amountValue}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Fee:</span>
+          <span class="information_props">Fees:</span>
           <span class="information_value">{{feeValue}}</span>
         </div>
       </div>
@@ -92,7 +92,7 @@
           this.typeValue = data.Type;
           this.fromValue = data.From;
           this.toValue = data.To;
-          this.timestampValue = data.Time;
+          this.timestampValue = Tools.conversionTimeToUTC(data.Time);
           this.amountValue = data.Amount.map(item=>{
             return `${item.amount} ${item.denom}`;
           }).join(',');

@@ -2,18 +2,17 @@
   <div id="app">
     <app-header></app-header>
     <div id="router_wrap">
+
       <router-view class="router_view"/>
       <footer :class="footerClass" v-show="showFooter">
         <div :class="footerClassName" style="height:100%;">
           <div class="footer_left" :class="footerLeftVar">
-            <span class="github"></span>
-            <span class="airplane"></span>
-            <span class="twitter"></span>
-            <span class="facebook"></span>
+            <a href='https://github.com/irisnet' class="github"></a>
+            <a href='https://t.me/irisnetwork' class="airplane"></a>
+            <a href='https://twitter.com/irisnetwork' class="twitter"></a>
+            <a href='https://medium.com/irisnet-blog' class="facebook"></a>
             <span class="we_chat"></span>
             <span class="qq"></span>
-
-
           </div>
           <div class="footer_center">
             <a href="https://www.irisnet.org/">
@@ -29,7 +28,7 @@
               <span class="footer_link_privacy" @click="footerLinkClick('/privacy_policy')">Privacy Policy</span>
             </div>
             <p class="footer_copyright_wrap">
-              ©️ IRIS Explorer 2018 all nights reserved(v 0.2.2)
+              ©️ IRIS Explorer 2018 all rights reserved(v 0.2.2)
             </p>
 
           </div>
@@ -50,6 +49,7 @@
     watch:{
       $route(){
         this.showFooter = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
+        document.getElementById('router_wrap').scrollTop = 0;
       }
     },
     data() {
@@ -160,7 +160,7 @@
           .footer_left {
             @include flex;
             margin-bottom:1rem;
-            span {
+            span, a {
               width: 3.5rem;
               height: 3.5rem;
               @include borderRadius(3.5rem);

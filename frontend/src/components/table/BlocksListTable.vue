@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="showNoData?'show_no_data':''">
     <b-table :fields='fields' :items='items' striped v-if="type === '1'">
       <template slot='Height' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/blocks_detail/${data.item.Height}`)">
@@ -86,9 +86,9 @@
         fields: [],
       }
     },
-    props: ['items', 'type'],
+    props: ['items', 'type','showNoData'],
     mounted() {
-
+      console.log(this.showNoData)
     },
     methods: {
       skipRoute(path) {
@@ -122,6 +122,7 @@
     }
   }
   .table{
+    margin-bottom:0 !important;
     thead{
       th{
         border-bottom:none !important;
@@ -131,6 +132,17 @@
       tr{
         &:nth-of-type(odd){
           background-color: #f6f6f6 !important;
+        }
+      }
+    }
+  }
+  .show_no_data{
+    .table{
+      tbody{
+        tr{
+          &:first-child{
+            display:none;
+          }
         }
       }
     }
