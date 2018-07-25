@@ -201,7 +201,7 @@
           }
           .footer_center{
             text-align: center;
-            margin-bottom:1rem;
+            margin-bottom:0.1rem;
           }
           .footer_right{
             .footer_link_wrap{

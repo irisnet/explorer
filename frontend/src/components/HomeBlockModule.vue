@@ -167,6 +167,7 @@
           span{
             font-size:0.14rem;
             color:#a2a2ae;
+            text-align: right;
           }
         }
       }
