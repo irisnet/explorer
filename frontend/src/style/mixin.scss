@@ -46,14 +46,15 @@ $fc:#fff;
 
 }
 @mixin viewBtn{
-  width:78px;
-  height:30px;
-  line-height:30px;
+  width:0.7rem;
+  height:0.3rem;
+  line-height:0.3rem;
   cursor:pointer;
   color:#c9eafd;
   text-align: center;
   background: #3598db;
-  @include borderRadius(5px);
+  @include borderRadius(0.05rem);
+  font-size:0.14rem;
 }
 //外部链接背景图
 @mixin linkBtn($url,$urlH){

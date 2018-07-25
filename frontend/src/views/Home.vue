@@ -104,7 +104,7 @@
         }).then((data) => {
           this.marketCapValue = '0';
           this.priceValue = '0';
-          this.transactionValue = data.TxCount;
+          this.transactionValue = `${data.TxCount}M(${data.Tps.toFixed(2)} TPS)`;
 
         })
       },
@@ -158,7 +158,6 @@
         }).then((data) => {
           //找出最大的数据
           let maxValue = 0;
-          console.log(data)
           if(data){
             data.forEach(item=>{
               if(item.Count > maxValue){
@@ -180,7 +179,6 @@
           }
         }).then((data) => {
           if(data.Data){
-            console.log(data.Data)
             let denominator = 0;
             data.Data[0].Validators.forEach(item=>denominator += item.VotingPower);
             let numerator = 0;
@@ -224,7 +222,7 @@
                 Amount = '';
               }
               if (item.Fee.Amount instanceof Array) {
-                Fee = item.Fee.Amount.map(listItem => `${listItem.amount} ${listItem.denom?listItem.denom:'IRIS'}`).join(',');
+                Fee = item.Fee.Amount.map(listItem => `${listItem.amount} ${listItem.denom?listItem.denom.toUpperCase():'IRIS'}`).join(',');
               } else if (item.Fee.Amount && Object.keys(item.Fee.Amount).includes('amount') && Object.keys(item.Fee.Amount).includes('denom')) {
                 Fee = `${item.Fee.Amount} ${item.Fee.Amount}`;
               } else if (item.Fee.Amount === null) {
@@ -313,7 +311,7 @@
       width: 100%;
       padding: 0.1rem;
       .information_preview {
-        overflow-x: scroll;
+        overflow-x: auto;
         .information_preview_module {
           min-width: 1.6rem;
         }

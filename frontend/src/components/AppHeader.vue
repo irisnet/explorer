@@ -33,6 +33,7 @@
         >Blocks</span>
         <div class="nav_item sub_btn_wrap" :class="activeClassName === '/transaction'?'nav_item_active':''"
              @mouseover="transactionMouseOver" @mouseleave="transactionMouseLeave">
+          <span class="bottom_arrow"></span>
           <span >Transactions</span>
           <span class="sub_btn_item" @click="featureButtonClick('/recent_transactions/2/0')"
                 v-show="showSubTransaction">Recent Transactions</span>
@@ -43,6 +44,7 @@
         </div>
         <div class="nav_item sub_btn_wrap" :class="activeClassName === '/validators'?'nav_item_active':''"
              @mouseover="validatorsMouseOver" @mouseleave="validatorsMouseLeave">
+          <span class="bottom_arrow" style="right:0.22rem;"></span>
           <span >Validators</span>
           <span class="sub_btn_item" @click="featureButtonClick('/recent_transactions/3/0')"
                 v-show="showSubValidators">Validators</span>
@@ -50,20 +52,6 @@
                 v-show="showSubValidators">Candidates</span>
 
         </div>
-
-        <!--<b-dropdown id="ddown-left" text="Transactions" variant="primary" class="m-2"
-                    :class="activeClassName === '/transaction'?'nav_item_active':''">
-          <b-dropdown-item @click="featureButtonClick('/recent_transactions/2/0')">Recent Transactions</b-dropdown-item>
-          <b-dropdown-item @click="featureButtonClick('/recent_transactions/2/transfer')">Transfer Transactions
-          </b-dropdown-item>
-          <b-dropdown-item @click="featureButtonClick('/recent_transactions/2/stake')">Stake Transactions
-          </b-dropdown-item>
-        </b-dropdown>
-        <b-dropdown text="Validators" variant="Validators" class="m-2"
-                    :class="activeClassName === '/validators'?'nav_item_active':''">
-          <b-dropdown-item @click="featureButtonClick('/recent_transactions/3/0')">Validators</b-dropdown-item>
-          <b-dropdown-item @click="featureButtonClick('/recent_transactions/4/0')">Candidates</b-dropdown-item>
-        </b-dropdown>-->
         <span class="nav_item" :class="activeClassName === '/faucet'?'nav_item_active':''"
               @click="featureButtonClick('/faucet')"
         >Faucet</span>
@@ -309,19 +297,20 @@
           }
 
           .search_input {
-            @include borderRadius(0.4rem);
-            width: 3rem;
-            height: 0.28rem;
-            line-height: 0.28rem;
+            @include borderRadius(0.04rem);
+            width: 5.04rem;
+            height: 0.36rem;
+            line-height: 0.36rem;
             text-indent: 0.1rem;
             outline: none;
             border: 0.01rem solid #dddddd;
-            margin-top: 0.2rem;
+            margin-top: 0.3rem;
             font-size: 0.14rem;
+            padding-right:0.3rem;
           }
           .search_icon {
             position: absolute;
-            top: 0.27rem;
+            top: 0.4rem;
             right: 0.1rem;
             width: 0.15rem;
             height: 0.15rem;
@@ -357,8 +346,17 @@
           @include flex;
           flex-direction:column;
           position:relative;
+          z-index:100;
           padding:0;
           width:1.8rem;
+          .bottom_arrow{
+            position:absolute;
+            height:0.2rem;
+            width:0.2rem;
+            background: url('../assets/caret-bottom.png') no-repeat 0 0;
+            top:0.27rem;
+            right:0.1rem;
+          }
           .sub_btn_item{
             border:0.01rem solid #eee;
             background: #dee2e6;
