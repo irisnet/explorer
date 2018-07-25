@@ -3,8 +3,9 @@ WORKDIR /app
 COPY ./frontend/ /app
 
 ENV VUE_APP_FAUCET_URL http://116.62.62.39:30200
+ENV VUE_APP_FUXI fuxi-1000
 
-RUN npm i yarn -g && VUE_APP_FAUCET_URL=$VUE_APP_FAUCET_URL yarn install && yarn build
+RUN npm i yarn -g && yarn install && VUE_APP_FAUCET_URL=$VUE_APP_FAUCET_URL VUE_APP_FUXI=$VUE_APP_FUXI yarn build
 
 FROM golang:1.10.3-alpine3.7 as go-builder
 ENV GOPATH       /root/go
