@@ -39,7 +39,7 @@
           <span class="information_props">Website:</span>
           <span class="information_value">{{websiteValue}}</span>
         </div>
-        <div class="information_props_wrap" style="border-bottom:0.1rem solid #eee">
+        <div class="information_props_wrap" style="border-bottom:0.01rem solid #eee">
           <span class="information_props">Description:</span>
           <span class="information_value">{{descriptionValue}}</span>
         </div>
@@ -98,6 +98,7 @@
       </div>
       <div class="table_wrap">
         <div class="transactions_view_all" v-show="activeBtn === 0">
+          <p>Lastest 6 txns from a total Of {{transactionsCount}} transactions</p>
           <span @click="viewAllClick(2)">View All</span>
         </div>
         <div class="precommit_view_all" v-show="activeBtn === 1">
@@ -114,7 +115,7 @@
           <blocks-list-table :items="items" :type="'6'" v-show="activeBtn === 0" :showNoData="showNoData1"></blocks-list-table>
           <blocks-list-table :items="itemsPre" :type="'7'" v-show="activeBtn === 1" :showNoData="showNoData2"></blocks-list-table>
           <div v-show="(activeBtn === 0 && showNoData1) || (activeBtn === 1 && showNoData2)" class="no_data_show">
-            暂无数据
+            No Data
           </div>
         </div>
       </div>
@@ -171,6 +172,7 @@
         totalFee:0,
         showNoData1:false,//无数据的时候显示无数据状态
         showNoData2:false,
+        transactionsCount:0,
 
 
       }
@@ -258,12 +260,13 @@
         })
       },
       getTransactionsList(){
-        let url = `/api/txsByAddress/${this.$route.params.param}/1/10`;
+        let url = `/api/txsByAddress/${this.$route.params.param}/1/6`;
         axios.get(url).then((data)=>{
           if(data.status === 200){
             return data.data;
           }
         }).then((data)=>{
+          this.transactionsCount = data.Count;
           if(data.Data){
             this.items = data.Data.map(item=>{
               let [Amount,Fees] = ['',''];
@@ -310,7 +313,7 @@
         })
       },
       getPrecommitBlocksList(){
-        let url = `/api/blocks/precommits/${this.$route.params.param}/1/10`;
+        let url = `/api/blocks/precommits/${this.$route.params.param}/1/6`;
         axios.get(url).then((data)=>{
           if(data.status === 200){
             return data.data;
@@ -393,17 +396,17 @@
 
 
       .transactions_detail_title {
-        height: 4rem;
-        line-height: 4rem;
-        font-size: 1.8rem;
+        height: 0.4rem;
+        line-height: 0.4rem;
+        font-size: 0.18rem;
         color: #555;
-        margin-right: 2rem;
+        margin-right: 0.2rem;
         font-weight:500;
       }
       .transactions_detail_wrap_hash_var {
-        height: 4rem;
-        line-height: 4rem;
-        font-size: 1.4rem;
+        height: 0.4rem;
+        line-height: 0.4rem;
+        font-size: 0.14rem;
         color: #ccc;
       }
     }
@@ -412,11 +415,11 @@
       width: 100%;
       @include flex;
       flex-direction: column;
-      padding: 0 0.5rem;
+      padding: 0 0.05rem;
       .transaction_information_content_title{
-        height:4rem;
-        line-height:4rem;
-        font-size:1.8rem;
+        height:0.4rem;
+        line-height:0.4rem;
+        font-size:0.18rem;
         color:#555;
         margin-bottom:0;
       }
@@ -426,31 +429,31 @@
           @include flex;
           flex-direction:column;
           border-bottom:none !important;
-          margin-bottom:0.5rem;
+          margin-bottom:0.05rem;
           .information_value{
-            overflow-x:scroll;
+            overflow-x:auto;
             color: #a2a2ae;
           }
           .information_props{
-            font-size:1.4rem;
+            font-size:0.14rem;
           }
 
 
         }
       }
       .transactions_detail_title {
-        height: 3rem;
-        line-height: 3rem;
-        font-size: 1.8rem;
+        height: 0.3rem;
+        line-height: 0.3rem;
+        font-size: 0.18rem;
         color: #555;
-        margin-right: 2rem;
+        margin-right: 0.2rem;
         font-weight:500;
       }
       .transactions_detail_wrap_hash_var {
-        overflow-x: scroll;
-        height: 3rem;
-        line-height: 3rem;
-        font-size: 1.4rem;
+        overflow-x: auto;
+        height: 0.3rem;
+        line-height: 0.3rem;
+        font-size: 0.14rem;
         color: #ccc;
       }
 
@@ -461,7 +464,7 @@
 
     //current tenure部分
     .current_tenure{
-      margin-top:1rem;
+      margin-top:0.1rem;
       .current_tenure_wrap{
         width:100%;
       }
@@ -477,16 +480,16 @@
         .canvas_voting_power{
           flex:2;
           .progress_wrap{
-            margin-bottom:1.5rem;
+            margin-bottom:0.15rem;
             .progress_wrap_background{
-              height:2.4rem;
+              height:0.24rem;
               background: #efeff1;
-              margin-top:1rem;
+              margin-top:0.1rem;
               .progress_value{
                 background:#a4d7f4;
                 height:100%;
-                line-height:2.4rem;
-                text-indent:2rem;
+                line-height:0.24rem;
+                text-indent:0.2rem;
               }
             }
           }
@@ -504,16 +507,16 @@
       .canvas_voting_power{
         flex:2;
         .progress_wrap{
-          margin-bottom:1.5rem;
+          margin-bottom:0.15rem;
           .progress_wrap_background{
-            height:2.4rem;
+            height:0.24rem;
             background: #efeff1;
-            margin-top:1rem;
+            margin-top:0.1rem;
             .progress_value{
               background:#a4d7f4;
               height:100%;
-              line-height:2.4rem;
-              padding-left:2rem;
+              line-height:0.24rem;
+              padding-left:0.2rem;
             }
           }
         }
@@ -522,18 +525,18 @@
     }
     //底部表格部分
     .transaction_precommit_table{
-      margin-top:1rem;
-      border-bottom:0.1rem solid #eee;
-      margin-bottom:2rem;
+      margin-top:0.1rem;
+      border-bottom:0.01rem solid #eee;
+      margin-bottom:0.2rem;
       .tab_wrap{
 
         span{
-          height:3rem;
-          line-height:3rem;
+          height:0.3rem;
+          line-height:0.3rem;
           display:inline-block;
-          border:0.1rem solid #eee;
+          border:0.01rem solid #eee;
           text-align: center;
-          padding:0 1rem;
+          padding:0 0.1rem;
           border-bottom:none;
           cursor:pointer;
         }
@@ -549,22 +552,22 @@
           justify-content: flex-end;
         }
         .transactions_view_all{
-          padding:1rem;
+          padding:0.1rem;
           @include flex;
-          justify-content:flex-end;
+          justify-content:space-between;
           span{
             @include viewBtn;
           }
         }
         .precommit_view_all{
-          padding:1rem;
+          padding:0.1rem;
           @include flex;
           justify-content:space-between;
           span{
-            font-size:1.4rem;
+            font-size:0.14rem;
             &:nth-child(3){
               display:inline-block;
-              margin-left:1rem;
+              margin-left:0.1rem;
             }
           }
           .view_all_btn{
@@ -575,8 +578,11 @@
           .no_data_show{
             @include flex;
             justify-content: center;
-            border-top:1px solid #eee;
-            font-size:1.8rem;
+            border-top:0.01rem solid #eee;
+            border-bottom:0.01rem solid #eee;
+            font-size:0.14rem;
+            height:3rem;
+            align-items: center;
           }
         }
       }

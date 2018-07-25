@@ -49,7 +49,7 @@
       <div class="block_detail_table_wrap">
         <blocks-list-table :items="items" :type="'5'" :showNoData="showNoData"></blocks-list-table>
         <div v-show="showNoData" class="no_data_show">
-          暂无数据
+          No Data
         </div>
       </div>
     </div>
@@ -200,7 +200,10 @@
           @include flex;
           justify-content: center;
           border-top:0.01rem solid #eee;
-          font-size:0.18rem;
+          border-bottom:0.01rem solid #eee;
+          font-size:0.14rem;
+          height:3rem;
+          align-items: center;
         }
       }
 
@@ -239,12 +242,15 @@
       }
       .block_detail_table_wrap{
         width:100%;
-        overflow-x: scroll;
+        overflow-x: auto;
         .no_data_show{
           @include flex;
           justify-content: center;
           border-top:0.01rem solid #eee;
-          font-size:0.18rem;
+          border-bottom:0.01rem solid #eee;
+          font-size:0.14rem;
+          height:3rem;
+          align-items: center;
         }
       }
       .transactions_detail_information_wrap{
@@ -255,7 +261,7 @@
           border-bottom:0.01rem solid #eee;
           margin-bottom:0.05rem;
           .information_value{
-            overflow-x:scroll;
+            overflow-x:auto;
           }
 
         }
@@ -269,7 +275,7 @@
         font-weight:500;
       }
       .transactions_detail_wrap_hash_var {
-        overflow-x: scroll;
+        overflow-x: auto;
         height: 0.3rem;
         line-height: 0.3rem;
         font-size: 0.14rem;

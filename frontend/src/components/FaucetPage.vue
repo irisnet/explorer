@@ -1,6 +1,6 @@
 <template>
   <b-container type="light">
-    <h3 style="font-size:0.18rem;">Irisnet Testnet Faucet</h3>
+    <h3 style="font-size:0.18rem;">IRISnet Testnet Faucet</h3>
     <div class="faucet text-center" style="">
       <div class="coin" style="display:flex;justify-content: center;margin-bottom:10px;">
         <img src="../assets/coin.png" alt="">
@@ -201,9 +201,9 @@
     @include borderRadius(0.025rem);
     font-size:0.14rem !important;
   }
-  a{
-    -webkit-box-shadow: 0 0 0 transparent;
-    -moz-box-shadow: 0 0 0 transparent;
-    box-shadow: 0 0 0 transparent;
+  a, input{
+    -webkit-box-shadow: 0 0 0 transparent !important;
+    -moz-box-shadow: 0 0 0 transparent !important;
+    box-shadow: 0 0 0 transparent !important;
   }
 </style>

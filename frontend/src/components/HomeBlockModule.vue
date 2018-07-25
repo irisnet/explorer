@@ -122,7 +122,7 @@
     }
     .home_module_block_content{
       flex:1;
-      overflow-y:scroll;
+      overflow-y:auto;
       .home_module_block_content_item{
         @include flex;
         justify-content:space-between;

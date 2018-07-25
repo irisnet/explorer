@@ -16,7 +16,7 @@
       </div>
       <blocks-list-table :items="items" :type="this.$route.params.type" :showNoData="showNoData"></blocks-list-table>
       <div v-show="showNoData" class="no_data_show">
-        暂无数据
+        No Data
       </div>
       <div class="pagination">
         <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
@@ -46,6 +46,7 @@
         this.type = this.$route.params.type;
         this.currentPage = 1;
         this.getDataList(1, 30, this.$route.params.type);
+        this.showNoData = false;
         switch (this.$route.params.type) {
           case '1': this.titleVar = 'Blocks';
                   break;
@@ -115,13 +116,25 @@
                 let precommit = item.Block.LastCommit.Precommits.length;
                 let votingPower = 0;
                 item.Validators.forEach(listItem=>votingPower += listItem.VotingPower);
+
+                let denominator = 0;
+                item.Validators.forEach(item=>denominator += item.VotingPower);
+                let numerator = 0;
+                for(let i = 0; i < item.Block.LastCommit.Precommits.length; i++){
+                  for (let j = 0; j < item.Validators.length; j++){
+                    if(item.Block.LastCommit.Precommits[i].ValidatorAddress === item.Validators[j].Address){
+                      numerator += item.Validators[j].VotingPower;
+                      break;
+                    }
+                  }
+                }
                 return {
                   Height: item.Height,
                   Txn:txn,
                   Fees: '0 IRIS',
                   Timestamp: Tools.conversionTimeToUTC(item.Time),
                   'Precommit Validators':precommit,
-                  'Voting Power': votingPower,
+                  'Voting Power': denominator !== 0? `${(numerator/denominator).toFixed(2)*100}%`:'',
                 };
               })
             }else{
@@ -163,8 +176,8 @@
                 return {
                   TxHash: item.TxHash,
                   Block:item.Height,
-                  From:item.From,
-                  To:item.To,
+                  From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
+                  To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
                   Type:item.Type,
                   Amount,
                   Fees,
@@ -196,6 +209,17 @@
             this.count = data.Count;
             if(data.Data){
               this.items = data.Data.map(item => {
+                /*let denominator = 0;
+                item.Validators.forEach(item=>denominator += item.VotingPower);
+                let numerator = 0;
+                for(let i = 0; i < item.Block.LastCommit.Precommits.length; i++){
+                  for (let j = 0; j < item.Validators.length; j++){
+                    if(item.Block.LastCommit.Precommits[i].ValidatorAddress === item.Validators[j].Address){
+                      numerator += item.Validators[j].VotingPower;
+                      break;
+                    }
+                  }
+                }*/
                 return {
                   Address: item.Address,
                   Name:item.Description.Moniker,
@@ -242,7 +266,10 @@
       @include flex;
       justify-content: center;
       border-top:0.01rem solid #eee;
-      font-size:0.18rem;
+      border-bottom:0.01rem solid #eee;
+      font-size:0.14rem;
+      height:3rem;
+      align-items: center;
     }
     .b-table {
       min-width: 5rem;
@@ -305,7 +332,7 @@
       @include flex;
       flex-direction: column;
       padding: 0 0.05rem;
-      overflow-x: scroll;
+      overflow-x: auto;
       .transaction_information_content_title {
         height: 0.4rem;
         line-height: 0.4rem;
@@ -321,7 +348,7 @@
           border-bottom: 0.01rem solid #eee;
           margin-bottom: 0.05rem;
           .information_value {
-            overflow-x: scroll;
+            overflow-x: auto;
           }
 
         }
@@ -336,7 +363,7 @@
         font-weight: 500;
       }
       .blocks_list_page_wrap_hash_var {
-        overflow-x: scroll;
+        overflow-x: auto;
         height: 0.3rem;
         line-height: 0.3rem;
         font-size: 0.14rem;

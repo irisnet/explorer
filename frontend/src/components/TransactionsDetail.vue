@@ -190,7 +190,7 @@
           border-bottom:0.01rem solid #eee;
           margin-bottom:0.05rem;
           .information_value{
-            overflow-x:scroll;
+            overflow-x:auto;
           }
 
         }
@@ -204,7 +204,7 @@
         font-weight:500;
       }
       .transactions_detail_wrap_hash_var {
-        overflow-x: scroll;
+        overflow-x: auto;
         height: 0.3rem;
         line-height: 0.3rem;
         font-size: 0.14rem;
