@@ -348,10 +348,10 @@
   .transactions_detail_wrap {
     @include flex;
     @include pcContainer;
-    font-size:1.4rem;
+    font-size:0.14rem;
     .transactions_title_wrap {
       width: 100%;
-      border-bottom: 0.1rem solid #eee;
+      border-bottom: 0.01rem solid #eee;
       @include flex;
       @include pcContainer;
       .personal_computer_transactions_detail_wrap {
@@ -365,24 +365,24 @@
     }
     .personal_computer_transactions_detail_wrap {
       .transaction_information_content_title{
-        height:4rem;
-        line-height:4rem;
-        font-size:1.8rem;
+        height:0.4rem;
+        line-height:0.4rem;
+        font-size:0.18rem;
         color:#555;
         margin-bottom:0;
-        border-bottom:0.1rem solid #efefef;
+        border-bottom:0.01rem solid #efefef;
       }
       @include pcCenter;
       .transactions_detail_information_wrap{
         .information_props_wrap{
           @include flex;
           .information_props{
-            width:15rem;
-            font-size:1.4rem;
+            width:1.5rem;
+            font-size:0.14rem;
           }
           .information_value{
             color: #a2a2ae;
-            font-size:1.4rem;
+            font-size:0.14rem;
           }
         }
       }

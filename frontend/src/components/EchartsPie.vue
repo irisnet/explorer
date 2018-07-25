@@ -27,11 +27,11 @@
           tooltip : {
             trigger: 'item',
             formatter(params){
-              let res =  `<span style="display:block;color:#00f0ff;padding:0 0.5rem;">${params.name}</span>`;
+              let res =  `<span style="display:block;color:#00f0ff;padding:0 0.05rem;">${params.name}</span>`;
               if(params.name !== 'others'){
-                res += `<span style="display:block;padding:0 0.5rem;">Uptime: ${params.data.upTime}</span>`;
+                res += `<span style="display:block;padding:0 0.05rem;">Uptime: ${params.data.upTime}</span>`;
               }
-              res += `<span style="display:block;padding:0 0.5rem;">Voting Power: ${(params.value/params.data.totalCount*100).toFixed(2)}%</span>`;
+              res += `<span style="display:block;padding:0 0.05rem;">Voting Power: ${(params.value/params.data.totalCount*100).toFixed(2)}%</span>`;
               return res;
             }
           },
@@ -106,14 +106,14 @@
     .echarts_title_wrap{
       height:15%;
       @include flex;
-      padding:12px 10px 0 10px;
+      padding:0.12rem 0.1rem 0 0.1rem;
       justify-content: space-between;
 
       .validators_title{
-        font-size:1.8rem;
-        text-indent:2.5rem;
+        font-size:0.18rem;
+        text-indent:0.3rem;
         font-weight:600;
-        background: url('../assets/people.svg') no-repeat 0 -0.2rem;
+        background: url('../assets/people.svg') no-repeat 0 -0.02rem;
       }
       .validators_top{
         @include viewBtn;

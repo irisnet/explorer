@@ -230,20 +230,22 @@
   .blocks_list_page_wrap {
     @include flex;
     @include pcContainer;
-    font-size: 1.4rem;
+    font-size: 0.14rem;
     .pagination {
-      margin-top: 0.5rem;
+      margin-top: 0.05rem;
+      margin-bottom: 0.05rem;
       @include flex;
       justify-content: flex-end;
+      @include borderRadius(0.025rem);
     }
     .no_data_show{
       @include flex;
       justify-content: center;
-      border-top:1px solid #eee;
-      font-size:1.8rem;
+      border-top:0.01rem solid #eee;
+      font-size:0.18rem;
     }
     .b-table {
-      min-width: 50rem;
+      min-width: 5rem;
 
       a {
         text-decoration: none;
@@ -251,7 +253,7 @@
     }
     .blocks_list_title_wrap {
       width: 100%;
-      border-bottom: 0.1rem solid #eee;
+      border-bottom: 0.01rem solid #eee;
       @include flex;
       @include pcContainer;
       .personal_computer_blocks_list_page_wrap {
@@ -266,9 +268,9 @@
     }
     .personal_computer_blocks_list_page_wrap {
       .transaction_information_content_title {
-        height: 4rem;
-        line-height: 4rem;
-        font-size: 1.8rem;
+        height: 0.4rem;
+        line-height: 0.4rem;
+        font-size: 0.18rem;
         color: #555;
         margin-bottom: 0;
       }
@@ -283,17 +285,17 @@
       }
 
       .blocks_list_title {
-        height: 4rem;
-        line-height: 4rem;
-        font-size: 1.8rem;
+        height: 0.4rem;
+        line-height: 0.4rem;
+        font-size: 0.18rem;
         color: #555;
-        margin-right: 2rem;
+        margin-right: 0.2rem;
         font-weight: 500;
       }
       .blocks_list_page_wrap_hash_var {
-        height: 4rem;
-        line-height: 4rem;
-        font-size: 1.4rem;
+        height: 0.4rem;
+        line-height: 0.4rem;
+        font-size: 0.14rem;
         color: #ccc;
       }
     }
@@ -302,12 +304,12 @@
       width: 100%;
       @include flex;
       flex-direction: column;
-      padding: 0 0.5rem;
+      padding: 0 0.05rem;
       overflow-x: scroll;
       .transaction_information_content_title {
-        height: 4rem;
-        line-height: 4rem;
-        font-size: 1.8rem;
+        height: 0.4rem;
+        line-height: 0.4rem;
+        font-size: 0.18rem;
         color: #555;
         margin-bottom: 0;
       }
@@ -316,8 +318,8 @@
         .information_props_wrap {
           @include flex;
           flex-direction: column;
-          border-bottom: 0.1rem solid #eee;
-          margin-bottom: 0.5rem;
+          border-bottom: 0.01rem solid #eee;
+          margin-bottom: 0.05rem;
           .information_value {
             overflow-x: scroll;
           }
@@ -326,18 +328,18 @@
       }
 
       .blocks_list_title {
-        height: 3rem;
-        line-height: 3rem;
-        font-size: 1.8rem;
+        height: 0.3rem;
+        line-height: 0.3rem;
+        font-size: 0.18rem;
         color: #555;
-        margin-right: 2rem;
+        margin-right: 0.2rem;
         font-weight: 500;
       }
       .blocks_list_page_wrap_hash_var {
         overflow-x: scroll;
-        height: 3rem;
-        line-height: 3rem;
-        font-size: 1.4rem;
+        height: 0.3rem;
+        line-height: 0.3rem;
+        font-size: 0.14rem;
         color: #ccc;
       }
 
@@ -348,8 +350,15 @@
   table{
 
     td{
-      max-width:20rem !important;
+      max-width:2.2rem !important;
       overflow-wrap: break-word !important;
+    }
+  }
+  .page-item{
+    &:first-child, &:last-child{
+      .page-link{
+        @include borderRadius(0.025rem);
+      }
     }
   }
 

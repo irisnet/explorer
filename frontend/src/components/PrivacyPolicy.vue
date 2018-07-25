@@ -107,33 +107,33 @@
       align-items:center;
       border-bottom:1px solid #eee;
       width:100%;
-      padding-left:2rem;
+      padding-left:0.2rem;
       h2{
-        font-size:2.2rem;
+        font-size:0.22rem;
 
         width:80%;
       }
     }
     .person_computer_privacy_policy_wrap{
-      padding-left:20px;
+      padding-left:0.2rem;
       width:80%;
     }
     .mobile_privacy_policy_wrap{
       width:100%;
-      padding:1.5rem;
+      padding:0.15rem;
     }
 
     h4{
-      font-size:1.8rem;
-      margin-top:2rem;
-      line-height:2.2rem;
+      font-size:0.18rem;
+      margin-top:0.2rem;
+      line-height:0.22rem;
 
     }
     ul{
-      margin-left:-2rem;
+      margin-left:-0.2rem;
     }
     p, li{
-      font-size:1.4rem;
+      font-size:0.14rem;
     }
   }
 

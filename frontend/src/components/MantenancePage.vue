@@ -56,27 +56,27 @@
     justify-content: center;
 
     p{
-      font-size:18px;
-      margin-top:1rem;
+      font-size:0.18rem;
+      margin-top:0.1rem;
     }
     h3{
-      font-size:14px;
+      font-size:0.14rem;
       color: #a2a2ae;
     }
 
     .footer_link_wrap {
       justify-content: center;
-      font-size:14px;
+      font-size:0.14rem;
       @include flex;
       span{
-        font-size:1.4rem;
+        font-size:0.14rem;
         &:nth-child(2n-1){
           color:#3698db;
           cursor:pointer;
         }
         &:nth-child(2n){
           color:#a2a2ae;
-          margin:0 1rem;
+          margin:0 0.1rem;
         }
       }
     }

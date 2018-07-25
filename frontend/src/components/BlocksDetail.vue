@@ -162,10 +162,10 @@
   .transactions_detail_wrap {
     @include flex;
     @include pcContainer;
-    font-size:1.4rem;
+    font-size:0.14rem;
     .transactions_title_wrap {
       width: 100%;
-      border-bottom: 0.1rem solid #eee;
+      border-bottom: 0.01rem solid #eee;
       @include flex;
       @include pcContainer;
       .personal_computer_transactions_detail_wrap {
@@ -179,9 +179,9 @@
     }
     .personal_computer_transactions_detail_wrap {
       .transaction_information_content_title{
-        height:4rem;
-        line-height:4rem;
-        font-size:1.8rem;
+        height:0.4rem;
+        line-height:0.4rem;
+        font-size:0.18rem;
         color:#555;
         margin-bottom:0;
       }
@@ -190,7 +190,7 @@
         .information_props_wrap{
           @include flex;
           .information_props{
-            width:15rem;
+            width:1.5rem;
           }
         }
       }
@@ -199,8 +199,8 @@
         .no_data_show{
           @include flex;
           justify-content: center;
-          border-top:1px solid #eee;
-          font-size:1.8rem;
+          border-top:0.01rem solid #eee;
+          font-size:0.18rem;
         }
       }
 
@@ -210,17 +210,17 @@
 
 
       .transactions_detail_title {
-        height: 4rem;
-        line-height: 4rem;
-        font-size: 1.8rem;
+        height: 0.4rem;
+        line-height: 0.4rem;
+        font-size: 0.18rem;
         color: #555;
-        margin-right: 2rem;
+        margin-right: 0.2rem;
         font-weight:500;
       }
       .transactions_detail_wrap_hash_var {
-        height: 4rem;
-        line-height: 4rem;
-        font-size: 1.4rem;
+        height: 0.4rem;
+        line-height: 0.4rem;
+        font-size: 0.14rem;
         color: #ccc;
       }
     }
@@ -229,11 +229,11 @@
       width: 100%;
       @include flex;
       flex-direction: column;
-      padding: 0 0.5rem;
+      padding: 0 0.05rem;
       .transaction_information_content_title{
-        height:4rem;
-        line-height:4rem;
-        font-size:1.8rem;
+        height:0.4rem;
+        line-height:0.4rem;
+        font-size:0.18rem;
         color:#555;
         margin-bottom:0;
       }
@@ -243,8 +243,8 @@
         .no_data_show{
           @include flex;
           justify-content: center;
-          border-top:1px solid #eee;
-          font-size:1.8rem;
+          border-top:0.01rem solid #eee;
+          font-size:0.18rem;
         }
       }
       .transactions_detail_information_wrap{
@@ -252,49 +252,29 @@
         .information_props_wrap{
           @include flex;
           flex-direction:column;
-          border-bottom:0.1rem solid #eee;
-          margin-bottom:0.5rem;
+          border-bottom:0.01rem solid #eee;
+          margin-bottom:0.05rem;
           .information_value{
             overflow-x:scroll;
           }
 
         }
       }
-
-
-
-
-
-
       .transactions_detail_title {
-        height: 3rem;
-        line-height: 3rem;
-        font-size: 1.8rem;
+        height: 0.3rem;
+        line-height: 0.3rem;
+        font-size: 0.18rem;
         color: #555;
-        margin-right: 2rem;
+        margin-right: 0.02rem;
         font-weight:500;
       }
       .transactions_detail_wrap_hash_var {
         overflow-x: scroll;
-        height: 3rem;
-        line-height: 3rem;
-        font-size: 1.4rem;
+        height: 0.3rem;
+        line-height: 0.3rem;
+        font-size: 0.14rem;
         color: #ccc;
       }
-
-      /*.transactions_detail_title{
-        height:4rem;
-        line-height:4rem;
-        font-size:1.8rem;
-        color:#555;
-        margin-right:2rem;
-      }
-      .transactions_detail_wrap_hash_var{
-        height:4rem;
-        line-height:4rem;
-        font-size:1.4rem;
-        color:#ccc;
-      }*/
     }
 
   }

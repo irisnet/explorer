@@ -3,8 +3,8 @@
   <div :class="appHeaderVar" v-show="showHeader">
     <header class="app_header_person_computer" v-show="devicesShow === 1">
       <div class="header_top">
-        <div class="imageWrap" style="cursor:pointer;margin-top:10px;" @click="featureButtonClick('/home')">
-          <img src="../assets/logo.png" alt="失去网络了..."/>
+        <div class="imageWrap" style="cursor:pointer;margin-top:0.1rem;" @click="featureButtonClick('/home')">
+          <img src="../assets/logo.png" alt="失去网络了..." style="height:0.7rem;"/>
           <div class="logo_title_wrap">
             <div class="logo_title_content">
               <span>IRIS</span>
@@ -73,7 +73,7 @@
     <div class="app_header_mobile" v-show="devicesShow === 0">
       <div class="feature_btn" @click="showFeature"></div>
       <div class="image_wrap_mobile" @click="featureButtonClick('/home',true)">
-        <img src="../assets/logo.png" alt="失去网络了..."/>
+        <img src="../assets/logo.png" alt="失去网络了..." style="height:0.7rem;"/>
         <div class="logo_title_wrap">
           <div class="logo_title_content">
             <span>IRIS</span>
@@ -255,76 +255,76 @@
   @import '../style/mixin.scss';
 
   .person_computer_header_var {
-    height: 180px;
+    height: 1.8rem;
   }
 
   .mobile_header_var {
-    height: 10rem;
+    height: 1.2rem;
   }
 
   .person_computer_header_var, .mobile_header_var {
     @include flex();
     @include pcContainer;
     .app_header_person_computer {
-      height: 96px;
+      height: 0.96rem;
       @include pcCenter;
       justify-content: space-between;
-      padding-top: 1rem;
+      padding-top: 0.01rem;
       .header_top {
         @include flex();
         justify-content: space-between;
         .imageWrap{
           @include flex;
           .logo_title_wrap{
-            margin-left:16px;
+            margin-left:0.16rem;
             .logo_title_content{
               span{
                 &:first-child{
-                  font-size:24px;
+                  font-size:0.24rem;
                   color:#3498db;
                 }
                 &:last-child{
-                  font-size:24px;
+                  font-size:0.24rem;
                   color:#000000;
                   display:inline-block;
-                  margin-left:12px;
+                  margin-left:0.12rem;
                 }
 
               }
             }
             p{
-              font-size:14px;
+              font-size:0.14rem;
               color:#aeaeb9;
             }
 
           }
         }
         .navSearch {
-          margin-bottom: 1rem;
+          margin-bottom: 0.01rem;
           position: relative;
           input::-webkit-input-placeholder {
             text-align: left;
-            font-size: 1.4rem;
+            font-size: 0.14rem;
             color: #cccccc;
           }
 
           .search_input {
             @include borderRadius(0.4rem);
-            width: 30rem;
-            height: 2.8rem;
-            line-height: 2.8rem;
-            text-indent: 1rem;
+            width: 3rem;
+            height: 0.28rem;
+            line-height: 0.28rem;
+            text-indent: 0.1rem;
             outline: none;
-            border: 0.1rem solid #dddddd;
-            margin-top: 2rem;
-            font-size: 1.4rem;
+            border: 0.01rem solid #dddddd;
+            margin-top: 0.2rem;
+            font-size: 0.14rem;
           }
           .search_icon {
             position: absolute;
-            top: 2.7rem;
-            right: 1rem;
-            width: 1.5rem;
-            height: 1.5rem;
+            top: 0.27rem;
+            right: 0.1rem;
+            width: 0.15rem;
+            height: 0.15rem;
             background: url('../assets/search.svg') no-repeat;
             cursor: pointer;
           }
@@ -334,22 +334,22 @@
     }
     .useFeature {
       width: 100%;
-      height:66px;
+      height:0.66rem;
       @include flex;
       flex-direction: column;
       align-items: center;
       background: #3598db;
       .navButton {
-        height:66px;
+        height:0.66rem;
         @include pcCenter;
         @include flex;
         .nav_item {
           display: inline-block;
-          height: 66px;
-          line-height: 66px;
-          padding: 0 60px;
+          height: 0.66rem;
+          line-height: 0.66rem;
+          padding: 0 0.6rem;;
           text-align: center;
-          font-size: 1.8rem;
+          font-size: 0.18rem;
           cursor: pointer;
           color: #c9eafd;
         }
@@ -358,13 +358,13 @@
           flex-direction:column;
           position:relative;
           padding:0;
-          width:180px;
+          width:1.8rem;
           .sub_btn_item{
-            border:1px solid #eee;
+            border:0.01rem solid #eee;
             background: #dee2e6;
             color:#555;
-            height:40px;
-            line-height:40px;
+            height:0.4rem;
+            line-height:0.4rem;
             &:hover{
               background: #3598db;
               color: #c9eafd;
@@ -383,16 +383,16 @@
     }
     .app_header_mobile {
       width: 100%;
-      padding: 1rem;
+      padding: 0.1rem;
       @include flex();
       flex-direction: column;
       position: relative;
-      height: 10rem;
-      border-bottom: 0.1rem solid #cccccc;
+      height: 1rem;
+      border-bottom: 0.01rem solid #cccccc;
       .feature_btn {
         position: absolute;
-        width: 4rem;
-        height: 4rem;
+        width: 0.4rem;
+        height: 0.4rem;
         top: 0;
         right: 0;
         background: url('../assets/menu.svg') no-repeat;
@@ -400,24 +400,24 @@
       .image_wrap_mobile {
         @include flex;
         .logo_title_wrap{
-          margin-left:16px;
+          margin-left:0.16rem;
           .logo_title_content{
             span{
               &:first-child{
-                font-size:24px;
+                font-size:0.24rem;
                 color:#3498db;
               }
               &:last-child{
-                font-size:24px;
+                font-size:0.24rem;
                 color:#000000;
                 display:inline-block;
-                margin-left:12px;
+                margin-left:0.12rem;
               }
 
             }
           }
           p{
-            font-size:14px;
+            font-size:0.14rem;
             color:#aeaeb9;
           }
 
@@ -425,33 +425,33 @@
       }
       .search_input_mobile {
         width: 100%;
-        margin-top: 1rem;
+        margin-top: 0.1rem;
         @include flex();
         flex-direction: column;
         align-items: center;
         position: relative;
         input::-webkit-input-placeholder {
           text-align: center;
-          font-size: 1.4rem;
+          font-size: 0.14rem;
           color: #cccccc;
-          line-height: 2.8rem;
+          line-height: 0.28rem;
         }
         input {
           width: 95%;
           @include borderRadius(0.5rem);
-          border: 0.1rem solid #eee;
-          font-size: 1.4rem;
+          border: 0.01rem solid #eee;
+          font-size: 0.14rem;
           &:focus {
-            border: 0.1rem solid #3190e8;
+            border: 0.01rem solid #3190e8;
             outline: none;
           }
         }
         .search_icon {
           position: absolute;
-          top: 0.5rem;
-          right: 1.2rem;
-          width: 1.5rem;
-          height: 1.5rem;
+          top: 0.05rem;
+          right: 0.12rem;
+          width: 0.15rem;
+          height: 0.15rem;
           background: url('../assets/search.svg') no-repeat;
           cursor: pointer;
         }
@@ -459,29 +459,29 @@
       .use_feature_mobile {
         position: absolute;
         width: 100%;
-        top: 10rem;
+        top: 1rem;
         left: 0;
         background: #f2f2f2;
         @include flex();
         z-index: 100;
         flex-direction: column;
         .feature_btn_mobile {
-          border-bottom: 0.1rem solid #cccccc;
-          height: 3.9rem;
-          line-height: 3.9rem;
-          padding-left: 1.5rem;
+          border-bottom: 0.01rem solid #cccccc;
+          height: 0.39rem;
+          line-height: 0.39rem;
+          padding-left: 0.15rem;
           background: #3598db;
           color: #c9eafd;
-          font-size:1.4rem;
+          font-size:0.14rem;
         }
         .feature_arrow {
           position: relative;
           color: #c9eafd;
-          font-size:1.4rem;
+          font-size:0.14rem;
           background: url('../assets/arrow-bottom.svg') no-repeat 97% 1.2rem,#3598db;
         }
         .feature_subNav {
-          padding-left: 3rem;
+          padding-left: 0.3rem;
         }
       }
     }

@@ -1,12 +1,12 @@
 <template>
   <b-container type="light">
-    <h3 style="font-size:1.8rem;">Irisnet Testnet Faucet</h3>
+    <h3 style="font-size:0.18rem;">Irisnet Testnet Faucet</h3>
     <div class="faucet text-center" style="">
       <div class="coin" style="display:flex;justify-content: center;margin-bottom:10px;">
         <img src="../assets/coin.png" alt="">
       </div>
-      <p style="font-size:1.4rem;">Use this faucet to get tokens for the latest IRISnet testnet.</p>
-      <p style="font-size:1.4rem;">Please don't abuse this service — the number of available tokens is limited.</p>
+      <p style="font-size:0.14rem;">Use this faucet to get tokens for the latest IRISnet testnet.</p>
+      <p style="font-size:0.14rem;">Please don't abuse this service — the number of available tokens is limited.</p>
       <br/>
       <form @submit.prevent="apply">
         <div class="faucet-form">
@@ -152,6 +152,8 @@
 </script>
 
 <style lang="scss">
+  @import '../style/mixin.scss';
+
   .faucet {
     background: white;
     padding: 15% 0
@@ -159,28 +161,49 @@
 
   .faucet-form {
     margin: 0 auto;
-    width: 300px;
+    width: 3rem;
 
     .form-group{
       text-align: left;
+      margin-bottom:0 !important;
       .alert_information{
         display:inline-block;
-        height:1.4rem;
-        line-height:1.4rem;
+        height:0.14rem;
+        line-height:0.14rem;
         color:red;
-        font-size:1.8rem;
-        margin-top:0.5rem;
+        font-size:0.14rem;
+        margin-top:0.05rem;
       }
       .form-control{
-        height:2.8rem;
-        line-height:2.8rem;
-        font-size:1.4rem;
+        height:0.28rem;
+        line-height:0.28rem;
+        font-size:0.14rem;
       }
+    }
+    .btn-primary{
+      margin-top:0.1rem;
+      box-shadow: 0 0 0 transparent;
+      @include borderRadius(0.025rem);
     }
 
   }
 
   .err-msg {
     color: red
+  }
+  .btn{
+    padding:0.0375rem 0.075rem !important;
+    font-size:0.14rem !important;
+  }
+  .form-control{
+    padding:0.0375rem 0.075rem !important;
+    width:3rem !important;
+    @include borderRadius(0.025rem);
+    font-size:0.14rem !important;
+  }
+  a{
+    -webkit-box-shadow: 0 0 0 transparent;
+    -moz-box-shadow: 0 0 0 transparent;
+    box-shadow: 0 0 0 transparent;
   }
 </style>
