@@ -34,7 +34,7 @@ type CandidateStatus struct {
 }
 
 type CandidatesTop struct {
-	PowerAll   int64
+	PowerAll   float64
 	Candidates []CandidateAll
 }
 
@@ -125,7 +125,7 @@ func queryCandidatesTop(w http.ResponseWriter, r *http.Request) {
 	cb := utils.GetDatabase().C("block")
 	defer cb.Database.Session.Close()
 	cs.Find(nil).Sort("-voting_power").All(&data)
-	var powerAll int64
+	var powerAll float64
 	for _, candidate := range data {
 		powerAll += candidate.VotingPower
 	}
