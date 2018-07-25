@@ -38,6 +38,12 @@ type CandidatesTop struct {
 	Candidates []CandidateAll
 }
 
+type Candidates struct {
+	Count      int
+	PowerAll   float64
+	Candidates []CandidateAll
+}
+
 type CandidateAll struct {
 	document.Candidate
 	CandidateStatus
@@ -115,7 +121,53 @@ func queryCandidateStatus(w http.ResponseWriter, r *http.Request) {
 
 func queryCandidates(w http.ResponseWriter, r *http.Request) {
 	var data []document.Candidate
-	w.Write(utils.QueryList("stake_role_candidate", &data, nil, "-update_time", r))
+	page, size := utils.TransferPage(r)
+	cs := utils.GetDatabase().C("stake_role_candidate")
+	defer cs.Database.Session.Close()
+	cb := utils.GetDatabase().C("block")
+	defer cb.Database.Session.Close()
+	cs.Find(nil).Sort("-voting_power").All(&data)
+	var powerAll float64
+	for _, candidate := range data {
+		powerAll += candidate.VotingPower
+	}
+	length := len(data)
+	start := (page - 1) * size
+	end := page * size
+	if end > length {
+		end = length
+	}
+	candidates := data[start:end]
+	var candidatesAll []CandidateAll
+	for _, candidate := range candidates {
+		var result []document.Block
+		var uptime int
+		cb.Find(nil).Limit(100).Sort("-height").All(&result)
+		for _, block := range result {
+			for _, pre := range block.Block.LastCommit.Precommits {
+				if pre.ValidatorAddress == candidate.Address {
+					uptime++
+					break
+				}
+			}
+		}
+		status := CandidateStatus{
+			Uptime:         uptime,
+			TotalBlock:     len(result),
+		}
+		candidateAll := CandidateAll{
+			Candidate:       candidate,
+			CandidateStatus: status,
+		}
+		candidatesAll = append(candidatesAll, candidateAll)
+	}
+	resp := Candidates{
+		Count:      length,
+		PowerAll:   powerAll,
+		Candidates: candidatesAll,
+	}
+	resultByte, _ := json.Marshal(resp)
+	w.Write(resultByte)
 }
 
 func queryCandidatesTop(w http.ResponseWriter, r *http.Request) {
@@ -138,7 +190,7 @@ func queryCandidatesTop(w http.ResponseWriter, r *http.Request) {
 	for _, candidate := range candidates {
 		var result []document.Block
 		var uptime int
-		cb.Find(nil).Limit(100).Sort("height").All(&result)
+		cb.Find(nil).Limit(100).Sort("-height").All(&result)
 		for _, block := range result {
 			for _, pre := range block.Block.LastCommit.Precommits {
 				if pre.ValidatorAddress == candidate.Address {
@@ -155,7 +207,7 @@ func queryCandidatesTop(w http.ResponseWriter, r *http.Request) {
 			PrecommitCount: precommitCount,
 		}
 		candidateAll := CandidateAll{
-			Candidate:candidate,
+			Candidate:       candidate,
 			CandidateStatus: status,
 		}
 		candidatesAll = append(candidatesAll, candidateAll)
