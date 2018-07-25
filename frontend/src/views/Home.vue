@@ -3,14 +3,16 @@
     <div :class="pageClassName">
       <div class="information_preview">
         <div class="information_preview_module">
-          <span>¥ {{marketCapValue}}</span>
+          <span>{{marketCapValue}}</span>
           <span class="information_module_key">Market Cap</span>
         </div>
         <div class="information_preview_module">
-          <span>¥ {{priceValue}}</span>
+          <span>{{priceValue}}</span>
           <span class="information_module_key">Price</span>
         </div>
-        <div class="information_preview_module">
+        <div class="information_preview_module"
+             style="cursor:pointer;" @click="skipValidators"
+        >
           <span>{{validatorsValue}}</span>
           <span class="information_module_key">Validators</span>
         </div>
@@ -61,10 +63,10 @@
         devicesWidth: window.innerWidth,
         pageClassName: 'personal_computer_home_wrap',//1是显示pc端，0是移动端
         module_item_wrap: 'module_item_wrap_computer',//module_item_wrap_computer是pc端，module_item_wrap_mobile是移动端
-        marketCapValue: '0',
+        marketCapValue: '--',
         validatorsValue: '',
         transactionValue: '',
-        priceValue: '0',
+        priceValue: '--',
         votingPowerValue: '',
         blockHeightValue: '',
         timestampValue: '',
@@ -102,9 +104,17 @@
             return data.data;
           }
         }).then((data) => {
-          this.marketCapValue = '0';
-          this.priceValue = '0';
-          this.transactionValue = `${data.TxCount}M(${data.Tps.toFixed(2)} TPS)`;
+          let num = data.TxCount;
+          if(data.TxCount > 1000000000){
+            num = `${(data.TxCount/1000000000).toFixed(2)} B`;
+          }else if(data.TxCount > 1000000){
+            num = `${(data.TxCount/1000000).toFixed(2)} M`;
+          }else if(data.TxCount > 1000){
+            num = `${(data.TxCount/1000).toFixed(2)} K`;
+          }
+          this.marketCapValue = '--';
+          this.priceValue = '--';
+          this.transactionValue = `${num}(${data.Tps.toFixed(2)} TPS)`;
 
         })
       },
@@ -204,6 +214,9 @@
           }
         })
       },
+      skipValidators(){
+        this.$router.push('/recent_transactions/3/0');
+      },
       getTransactionList() {
         let url = `/api/txs/1/10`;
         axios.get(url).then((data) => {
@@ -280,7 +293,7 @@
       }
       //饼状图
       .home_module_item_pie {
-        height: 2.8rem;
+        height: 3.5rem;
       }
     }
 
@@ -322,7 +335,7 @@
         align-items: center;
         .home_module_item {
           width: 98%;
-          margin-bottom: 1rem;
+          margin-bottom: 0.4rem;
           border: 0.01rem solid #eee;
         }
         .home_module_item_pie {

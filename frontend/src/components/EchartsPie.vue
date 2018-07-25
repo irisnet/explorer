@@ -21,7 +21,7 @@
     watch:{
       information(information){
         //根据设备大小显示饼图的大小
-        let radius = this.deviceType === 1 ? '80%' : '65%';
+        let radius = this.deviceType === 1 ? '80%' : '55%';
         let option = {
 
           tooltip : {

@@ -19,19 +19,20 @@
                  v-model="searchInputValue"
                  @keyup.enter="onInputChange">
           <i class="search_icon" @click="getData(searchInputValue)"></i>
+          <i class="clear_icon" @click="clearData" v-show="showClear"></i>
         </div>
       </div>
 
     </header>
     <div class="useFeature" v-show="devicesShow === 1">
       <div class="navButton">
-        <span class="nav_item" :class="activeClassName === '/home'?'nav_item_active':''"
+        <span class="nav_item common_item_style" :class="activeClassName === '/home'?'nav_item_active':''"
               @click="featureButtonClick('/home')"
         >Home</span>
-        <span class="nav_item" :class="activeClassName === '/block'?'nav_item_active':''"
+        <span class="nav_item common_item_style" :class="activeClassName === '/block'?'nav_item_active':''"
               @click="featureButtonClick('/block/1/0')"
         >Blocks</span>
-        <div class="nav_item sub_btn_wrap" :class="activeClassName === '/transaction'?'nav_item_active':''"
+        <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === '/transaction'?'nav_item_active':''"
              @mouseover="transactionMouseOver" @mouseleave="transactionMouseLeave">
           <span class="bottom_arrow"></span>
           <span >Transactions</span>
@@ -42,7 +43,7 @@
           <span class="sub_btn_item" @click="featureButtonClick('/recent_transactions/2/stake')"
                 v-show="showSubTransaction">Stake Transactions</span>
         </div>
-        <div class="nav_item sub_btn_wrap" :class="activeClassName === '/validators'?'nav_item_active':''"
+        <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === '/validators'?'nav_item_active':''"
              @mouseover="validatorsMouseOver" @mouseleave="validatorsMouseLeave">
           <span class="bottom_arrow" style="right:0.22rem;"></span>
           <span >Validators</span>
@@ -52,7 +53,7 @@
                 v-show="showSubValidators">Candidates</span>
 
         </div>
-        <span class="nav_item" :class="activeClassName === '/faucet'?'nav_item_active':''"
+        <span class="nav_item common_item_style" :class="activeClassName === '/faucet'?'nav_item_active':''"
               @click="featureButtonClick('/faucet')"
         >Faucet</span>
       </div>
@@ -95,6 +96,7 @@
                @keyup.enter="onInputChange"
                placeholder="Search by Address / Txhash / Block">
         <i class="search_icon" @click="getData(searchInputValue)"></i>
+        <i class="clear_icon" @click="clearData" v-show="showClear"></i>
       </div>
     </div>
   </div>
@@ -109,6 +111,14 @@
       $route(){
         this.listenRouteForChangeActiveButton();
         this.showHeader = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
+      },
+      searchInputValue(searchInputValue){
+        console.log(searchInputValue)
+        if(searchInputValue){
+          this.showClear = true;
+        }else{
+          this.showClear = false;
+        }
       }
     },
     data() {
@@ -126,6 +136,7 @@
         fuxi:this.fuxi,
         showSubTransaction:false,
         showSubValidators:false,
+        showClear:false,
       }
     },
     beforeMount() {
@@ -233,6 +244,9 @@
         } else if (path.includes('/faucet')) {
           this.activeClassName = '/faucet';
         }
+      },
+      clearData(){
+        this.searchInputValue = '';
       }
 
 
@@ -317,6 +331,15 @@
             background: url('../assets/search.svg') no-repeat;
             cursor: pointer;
           }
+          .clear_icon{
+            position: absolute;
+            top: 0.42rem;
+            right: 0.3rem;
+            width: 0.15rem;
+            height: 0.15rem;
+            background: url('../assets/clear.png') no-repeat;
+            cursor: pointer;
+          }
         }
       }
 
@@ -332,6 +355,12 @@
         height:0.66rem;
         @include pcCenter;
         @include flex;
+        .common_item_style{
+          &:hover{
+            color: #ffffff;
+            background: #005a98;
+          }
+        }
         .nav_item {
           display: inline-block;
           height: 0.66rem;
@@ -358,14 +387,13 @@
             right:0.1rem;
           }
           .sub_btn_item{
-            border:0.01rem solid #eee;
-            background: #dee2e6;
-            color:#555;
             height:0.4rem;
             line-height:0.4rem;
+            font-size:0.14rem;
+            background: #005a98;
+            color: #c9eafd;
             &:hover{
-              background: #3598db;
-              color: #c9eafd;
+              color: #00f0ff;
             }
           }
         }
@@ -452,6 +480,9 @@
           height: 0.15rem;
           background: url('../assets/search.svg') no-repeat;
           cursor: pointer;
+        }
+        .clear_icon{
+
         }
       }
       .use_feature_mobile {

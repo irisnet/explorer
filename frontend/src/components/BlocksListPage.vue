@@ -114,12 +114,9 @@
               this.items = data.Data.map(item => {
                 let txn = item.NumTxs;
                 let precommit = item.Block.LastCommit.Precommits.length;
-                let votingPower = 0;
+                let [votingPower,denominator,numerator] = [0,0,0];
                 item.Validators.forEach(listItem=>votingPower += listItem.VotingPower);
-
-                let denominator = 0;
                 item.Validators.forEach(item=>denominator += item.VotingPower);
-                let numerator = 0;
                 for(let i = 0; i < item.Block.LastCommit.Precommits.length; i++){
                   for (let j = 0; j < item.Validators.length; j++){
                     if(item.Block.LastCommit.Precommits[i].ValidatorAddress === item.Validators[j].Address){
@@ -207,8 +204,8 @@
             }
           }).then((data) => {
             this.count = data.Count;
-            if(data.Data){
-              this.items = data.Data.map(item => {
+            if(data.Candidates){
+              this.items = data.Candidates.map(item => {
                 /*let denominator = 0;
                 item.Validators.forEach(item=>denominator += item.VotingPower);
                 let numerator = 0;
@@ -223,8 +220,8 @@
                 return {
                   Address: item.Address,
                   Name:item.Description.Moniker,
-                  'Voting Power':item.VotingPower,
-                  'Uptime':Tools.conversionTimeToUTC(item.UpdateTime),
+                  'Voting Power':`${(item.VotingPower/data.PowerAll*100).toFixed(2)}%`,
+                  'Uptime':`${item.Uptime/100}%`,
                   'Commission Rate':'',
                   Returns:'',
                 };

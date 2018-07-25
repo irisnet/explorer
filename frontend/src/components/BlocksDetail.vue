@@ -12,7 +12,9 @@
       <div class="transactions_detail_information_wrap">
         <div class="information_props_wrap">
           <span class="information_props">Height:</span>
+          <i :class="acitve?'flag_item_left':'flag_item_left_disabled'" @click="skipNext(-1)"></i>
           <span class="information_value">{{heightValue}}</span>
+          <i class="flag_item_right" @click="skipNext(1)"></i>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Timestamp:</span>
@@ -69,7 +71,14 @@
       BlocksListTable,
     },
     watch: {
-
+      $route(){
+        this.getBlockInformation();
+        if(this.$route.params.height === '1'){
+          this.acitve = false;
+        }else{
+          this.acitve = true;
+        }
+      }
     },
     data() {
       return {
@@ -86,6 +95,7 @@
         votingPowerValue:'',
         items:[],
         showNoData:false,//列表无数据的时候显示
+        acitve:true,
 
       }
     },
@@ -98,6 +108,11 @@
     },
     mounted() {
       this.getBlockInformation();
+      if(this.$route.params.height === '1'){
+        this.acitve = false;
+      }else{
+        this.acitve = true;
+      }
     },
     methods: {
       getBlockInformation(){
@@ -107,28 +122,48 @@
             return data.data;
           }
         }).then((data)=>{
-          console.log(data)
-
-          let denominator = 0;
-          data.Validators.forEach(item=>denominator += item.VotingPower);
-          let numerator = 0;
-          for(let i = 0; i < data.Block.LastCommit.Precommits.length; i++){
-            for (let j = 0; j < data.Validators.length; j++){
-              if(data.Block.LastCommit.Precommits[i].ValidatorAddress === data.Validators[j].Address){
-                numerator += data.Validators[j].VotingPower;
-                break;
+          if(data){
+            let denominator = 0;
+            data.Validators.forEach(item=>denominator += item.VotingPower);
+            let numerator = 0;
+            for(let i = 0; i < data.Block.LastCommit.Precommits.length; i++){
+              for (let j = 0; j < data.Validators.length; j++){
+                if(data.Block.LastCommit.Precommits[i].ValidatorAddress === data.Validators[j].Address){
+                  numerator += data.Validators[j].VotingPower;
+                  break;
+                }
               }
             }
-          }
-          if(data.Block.LastCommit.Precommits && data.Block.LastCommit.Precommits.length > 0){
-            this.items = data.Block.LastCommit.Precommits.map(item=>{
-              return {
-                Address:item.ValidatorAddress,
-                Index:item.ValidatorIndex,
-                Round:item.Round,
-                Signature:item.Signature.Type,
-              }
-            });
+            if(data.Block.LastCommit.Precommits && data.Block.LastCommit.Precommits.length > 0){
+              this.items = data.Block.LastCommit.Precommits.map(item=>{
+                return {
+                  Address:item.ValidatorAddress,
+                  Index:item.ValidatorIndex,
+                  Round:item.Round,
+                  Signature:item.Signature.Type,
+                }
+              });
+            }else{
+              this.items = [{
+                Address:'',
+                Index:'',
+                Round:'',
+                Signature:'',
+              }];
+              this.showNoData = true;
+            }
+
+            if(data){
+              this.hashValue = data.Height;
+              this.heightValue = data.Height;
+              this.timestampValue = data.Time;
+              this.blockHashValue = data.Hash;
+              this.transactionsValue = data.NumTxs;
+              this.feeValue = '';
+              this.lastBlockHashValue = data.Block.LastCommit.BlockID.Hash;
+              this.precommitValidatorsValue = data.Validators.length !== 0?`${data.Block.LastCommit.Precommits.length}/${data.Validators.length}`:'';
+              this.votingPowerValue = denominator !== 0? `${numerator/denominator*100}%`:'';
+            }
           }else{
             this.items = [{
               Address:'',
@@ -137,21 +172,31 @@
               Signature:'',
             }];
             this.showNoData = true;
+            this.hashValue = this.$route.params.height;
+            this.heightValue = this.$route.params.height;
+            this.timestampValue = '';
+            this.blockHashValue = '';
+            this.transactionsValue = '';
+            this.feeValue = '';
+            this.lastBlockHashValue = '';
+            this.precommitValidatorsValue = '';
+            this.votingPowerValue = '';
           }
 
-          if(data){
-            this.hashValue = data.Height;
-            this.heightValue = data.Height;
-            this.timestampValue = data.Time;
-            this.blockHashValue = data.Hash;
-            this.transactionsValue = data.NumTxs;
-            this.feeValue = '';
-            this.lastBlockHashValue = data.Block.LastCommit.BlockID.Hash;
-            this.precommitValidatorsValue = data.Validators.length !== 0?`${data.Block.LastCommit.Precommits.length}/${data.Validators.length}`:'';
-            this.votingPowerValue = denominator !== 0? `${numerator/denominator*100}%`:'';
-          }
 
         })
+      },
+      skipNext(num){
+        if(this.$route.params.height === '1'){
+          this.acitve = false;
+          if(num !== -1){
+            this.$router.push(`/blocks_detail/${Number(this.$route.params.height)+num}`)
+          }
+        }else{
+          this.acitve = true;
+          this.$router.push(`/blocks_detail/${Number(this.$route.params.height)+num}`)
+        }
+
       }
     }
   }
@@ -191,6 +236,30 @@
           @include flex;
           .information_props{
             width:1.5rem;
+          }
+          .flag_item_left{
+            display:inline-block;
+            width:0.2rem;
+            height:0.2rem;
+            background: url('../assets/left.png') no-repeat 0 1px;
+            margin-right:0.02rem;
+            cursor:pointer;
+          }
+          .flag_item_left_disabled{
+            display:inline-block;
+            width:0.2rem;
+            height:0.2rem;
+            margin-right:0.02rem;
+            cursor:pointer;
+            background: url('../assets/left_disabled.png') no-repeat 0 1px;
+          }
+          .flag_item_right{
+            display:inline-block;
+            width:0.2rem;
+            height:0.2rem;
+            background: url('../assets/right.png') no-repeat 0 0;
+            margin-left:0.02rem;
+            cursor:pointer;
           }
         }
       }
