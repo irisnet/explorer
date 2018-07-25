@@ -6,6 +6,7 @@ import (
 	"github.com/irisnet/explorer/server/utils"
 	"gopkg.in/mgo.v2/bson"
 	"encoding/json"
+	"time"
 )
 
 type count struct {
@@ -17,6 +18,7 @@ type chainStatus struct {
 	ValidatorsCount int
 	TxCount         int
 	VotingPower     int
+	Tps             float64
 }
 
 func RegisterChain(r *mux.Router) error {
@@ -56,10 +58,14 @@ func queryChainStatus(w http.ResponseWriter, r *http.Request) {
 	cc := db.C("tx_common")
 	txCount, _ := cc.Count()
 
+	t := time.Now().Add(-1 * time.Minute)
+	txs, _ := cc.Find(bson.M{"time": bson.M{"$gte": t}}).Count()
+
 	resp := chainStatus{
 		ValidatorsCount: validatorsCount,
 		TxCount:         txCount,
 		VotingPower:     count.Count,
+		Tps:             float64(txs) / 60,
 	}
 	resultByte, _ := json.Marshal(resp)
 	w.Write(resultByte)
