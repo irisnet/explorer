@@ -3,7 +3,7 @@ WORKDIR /app
 COPY ./frontend/ /app
 
 ENV VUE_APP_FAUCET_URL http://116.62.62.39:30200
-ENV VUE_APP_FUXI fuxi-1000
+ENV VUE_APP_FUXI fuxi-1002
 
 RUN npm i yarn -g && yarn install && VUE_APP_FAUCET_URL=$VUE_APP_FAUCET_URL VUE_APP_FUXI=$VUE_APP_FUXI yarn build
 
