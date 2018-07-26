@@ -11,13 +11,13 @@ import (
 
 type count struct {
 	Id    bson.ObjectId `bson:"_id,omitempty"`
-	Count int
+	Count float64
 }
 
 type chainStatus struct {
 	ValidatorsCount int
 	TxCount         int
-	VotingPower     int
+	VotingPower     float64
 	Tps             float64
 }
 
