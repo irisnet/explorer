@@ -38,18 +38,18 @@
           <span >Transactions</span>
           <span class="sub_btn_item" @click="featureButtonClick('/recent_transactions/2/0')"
                 v-show="showSubTransaction">Recent Transactions</span>
-          <span class="sub_btn_item" @click="featureButtonClick('/recent_transactions/2/transfer')"
+          <span class="sub_btn_item" @click="featureButtonClick('/transfer_transactions/2/transfer')"
                 v-show="showSubTransaction">Transfer Transactions</span>
-          <span class="sub_btn_item" @click="featureButtonClick('/recent_transactions/2/stake')"
+          <span class="sub_btn_item" @click="featureButtonClick('/stake_transactions/2/stake')"
                 v-show="showSubTransaction">Stake Transactions</span>
         </div>
         <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === '/validators'?'nav_item_active':''"
              @mouseover="validatorsMouseOver" @mouseleave="validatorsMouseLeave">
           <span class="bottom_arrow" style="right:0.22rem;"></span>
           <span >Validators</span>
-          <span class="sub_btn_item" @click="featureButtonClick('/recent_transactions/3/0')"
+          <span class="sub_btn_item" @click="featureButtonClick('/validators/3/0')"
                 v-show="showSubValidators">Validators</span>
-          <span class="sub_btn_item" @click="featureButtonClick('/recent_transactions/4/0')"
+          <span class="sub_btn_item" @click="featureButtonClick('/candidates/4/0')"
                 v-show="showSubValidators">Candidates</span>
 
         </div>
@@ -79,15 +79,15 @@
         <span class="feature_btn_mobile feature_subNav" v-show="transactionShow"
               @click="featureButtonClick('/recent_transactions/2/0')">Recent Transactions</span>
         <span class="feature_btn_mobile feature_subNav" v-show="transactionShow"
-              @click="featureButtonClick('/recent_transactions/2/transfer')">Transfer Transactions</span>
+              @click="featureButtonClick('/transfer_transactions/2/transfer')">Transfer Transactions</span>
         <span class="feature_btn_mobile feature_subNav" v-show="transactionShow"
-              @click="featureButtonClick('/recent_transactions/2/stake')">Stake Transactions</span>
+              @click="featureButtonClick('/stake_transactions/2/stake')">Stake Transactions</span>
         <span class="feature_btn_mobile feature_nav feature_arrow"
               @click="validatorsShow =! validatorsShow">Validators</span>
         <span class="feature_btn_mobile feature_subNav" v-show="validatorsShow"
-              @click="featureButtonClick('/recent_transactions/3/0')">Validators</span>
+              @click="featureButtonClick('/validators/3/0')">Validators</span>
         <span class="feature_btn_mobile feature_subNav" v-show="validatorsShow"
-              @click="featureButtonClick('/recent_transactions/4/0')">Candidates</span>
+              @click="featureButtonClick('/candidates/4/0')">Candidates</span>
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/faucet')">Faucet</span>
       </div>
       <div class="search_input_mobile">
@@ -235,7 +235,7 @@
         let path = window.location.href;
         if (path.includes('/recent_transactions/2')) {
           this.activeClassName = '/transaction';
-        } else if (path.includes('/recent_transactions/3') || path.includes('/recent_transactions/4')) {
+        } else if (path.includes('/validators/3') || path.includes('/candidates/4')) {
           this.activeClassName = '/validators';
         } else if (path.includes('/block')) {
           this.activeClassName = '/block';
