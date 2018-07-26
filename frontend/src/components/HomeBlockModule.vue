@@ -13,18 +13,18 @@
             <span class="blocks_module_value"
                   :class="blockModuleTypeVar"
                   @click="skipRouter(item.Height?`/blocks_detail/${item.Height}`:`/tx?txHash=${item.TxHash}`)">
-              {{item.Height?item.Height:`TX# ${item.TxHash.substr(0,10)}...`}}</span>
+              {{item.Height?item.Height:`TX# ${item.TxHash.substr(0,16)}...`}}</span>
           </div>
           <div class="key_value_wrap" v-show="item.TxHash">
             <span class="blocks_module_props">From:</span>
             <span class="blocks_module_value" @click="skipRouter(`/address/1/${item.From}`)">
-              {{item.From?`${String(item.From).substr(0,10)}...`:''}}
+              {{item.From?`${String(item.From).substr(0,16)}...`:''}}
             </span>
           </div>
           <div class="key_value_wrap" v-show="item.TxHash">
             <span class="blocks_module_props">To:</span>
             <span class="blocks_module_value" @click="skipRouter(`/address/1/${item.To}`)">
-              {{item.To?`${String(item.To).substr(0,10)}...`:''}}
+              {{item.To?`${String(item.To).substr(0,16)}...`:''}}
             </span>
           </div>
 
@@ -79,7 +79,7 @@
       viewAllClick(){
         if(this.title === 'Blocks'){
           this.$router.push('/block/1/0')
-        }else if(this.title === 'Transaction'){
+        }else if(this.title === 'Transactions'){
           this.$router.push('/recent_transactions/2/0')
         }
       }
@@ -133,7 +133,6 @@
           flex-direction:column;
 
           .key_value_wrap{
-            width:1.4rem;
             @include flex;
             flex-direction:row;
             .blocks_module_value{
@@ -141,7 +140,6 @@
               cursor:pointer;
               font-size:0.14rem;
               display:inline-block;
-              @include overflowEllipsis;
             }
             .blocks_module_props{
               font-size:0.14rem;

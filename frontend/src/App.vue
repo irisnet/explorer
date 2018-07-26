@@ -15,10 +15,10 @@
       <footer :class="footerClass" v-show="showFooter">
         <div :class="footerClassName" style="height:100%;">
           <div class="footer_left" :class="footerLeftVar">
-            <a href='https://github.com/irisnet' class="github"></a>
-            <a href='https://t.me/irisnetwork' class="airplane"></a>
-            <a href='https://twitter.com/irisnetwork' class="twitter"></a>
-            <a href='https://medium.com/irisnet-blog' class="facebook"></a>
+            <a target="_blank" href='https://github.com/irisnet' class="github"></a>
+            <a target="_blank" href='https://t.me/irisnetwork' class="airplane"></a>
+            <a target="_blank" href='https://twitter.com/irisnetwork' class="twitter"></a>
+            <a target="_blank" href='https://medium.com/irisnet-blog' class="facebook"></a>
             <span class="we_chat" @click="showQRCode"></span>
             <span class="qq"></span>
           </div>

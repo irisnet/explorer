@@ -92,7 +92,7 @@
 
     methods: {
       viewAllClick(){
-          this.$router.push('/recent_transactions/3/0')
+          this.$router.push('/validators/3/0')
       }
     }
   }

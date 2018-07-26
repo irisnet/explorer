@@ -164,7 +164,7 @@
                   Amount = '';
                 }
                 if(item.Fee.Amount instanceof Array){
-                  Fees = item.Fee.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
+                  Fees = item.Fee.Amount.map(listItem=>`${listItem.amount} ${listItem.amount === 0?'IRIS':listItem.denom.toUpperCase()}`).join(',');
                 }else if(item.Fee.Amount && Object.keys(item.Fee.Amount).includes('amount') && Object.keys(item.Fee.Amount).includes('denom')){
                   Fees = `${item.Fee.Amount} ${item.Fee.Amount.toUpperCase()}`;
                 }else if(item.Fee.Amount === null){
@@ -175,7 +175,7 @@
                   Block:item.Height,
                   From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
                   To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
-                  Type:item.Type,
+                  Type:item.Type === 'coin'?'transfer':item.Type,
                   Amount,
                   Fees,
                   Timestamp: Tools.conversionTimeToUTC(item.Time),
@@ -221,7 +221,7 @@
                   Address: item.Address,
                   Name:item.Description.Moniker,
                   'Voting Power':`${(item.VotingPower/data.PowerAll*100).toFixed(2)}%`,
-                  'Uptime':`${item.Uptime/100}%`,
+                  'Uptime':`${item.Uptime}%`,
                   'Commission Rate':'',
                   Returns:'',
                 };

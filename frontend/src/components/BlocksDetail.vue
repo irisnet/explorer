@@ -13,8 +13,8 @@
         <div class="information_props_wrap">
           <span class="information_props">Height:</span>
           <i :class="acitve?'flag_item_left':'flag_item_left_disabled'" @click="skipNext(-1)"></i>
-          <span class="information_value">{{heightValue}}</span>
-          <i class="flag_item_right" @click="skipNext(1)"></i>
+          <span class="information_value" style="flex:none;">{{heightValue}}</span>
+          <i :class="activeNext?'flag_item_right':'flag_item_right_disabled'" @click="skipNext(1)"></i>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Timestamp:</span>
@@ -73,11 +73,20 @@
     watch: {
       $route(){
         this.getBlockInformation();
-        if(this.$route.params.height === '1'){
+        if(Number(this.$route.params.height) <= 0){
           this.acitve = false;
         }else{
           this.acitve = true;
         }
+        if(this.maxBlock !== 0){
+          if(Number(this.$route.params.height) >= this.maxBlock){
+            this.activeNext = false;
+          }else{
+            this.activeNext = true;
+          }
+        }
+
+
       }
     },
     data() {
@@ -96,6 +105,8 @@
         items:[],
         showNoData:false,//列表无数据的时候显示
         acitve:true,
+        activeNext:true,
+        maxBlock:0,
 
       }
     },
@@ -108,11 +119,15 @@
     },
     mounted() {
       this.getBlockInformation();
-      if(this.$route.params.height === '1'){
+      if(Number(this.$route.params.height) <= 0){
         this.acitve = false;
       }else{
         this.acitve = true;
       }
+      this.getMaxBlock();
+    },
+    updated(){
+      console.log(this.activeNext)
     },
     methods: {
       getBlockInformation(){
@@ -187,16 +202,36 @@
         })
       },
       skipNext(num){
-        if(this.$route.params.height === '1'){
+        if(Number(this.$route.params.height) <= 0){
           this.acitve = false;
           if(num !== -1){
             this.$router.push(`/blocks_detail/${Number(this.$route.params.height)+num}`)
           }
-        }else{
+        }else if(Number(this.$route.params.height) >= this.maxBlock){
+          if(num !== 1){
+            this.$router.push(`/blocks_detail/${Number(this.$route.params.height)+num}`)
+          }
+        } else{
           this.acitve = true;
           this.$router.push(`/blocks_detail/${Number(this.$route.params.height)+num}`)
         }
-
+      },
+      getMaxBlock(){
+        let url = `/api/blocks/1/1`;
+        axios.get(url).then((data) => {
+          if (data.status === 200) {
+            return data.data;
+          }
+        }).then((data) => {
+          if(data){
+            this.maxBlock = data.Data[0].Height;
+            if(Number(this.$route.params.height) >= this.maxBlock){
+              this.activeNext = false;
+            }else{
+              this.activeNext = true;
+            }
+          }
+        })
       }
     }
   }
@@ -261,6 +296,15 @@
             margin-left:0.02rem;
             cursor:pointer;
           }
+          .flag_item_right_disabled{
+            display:inline-block;
+            width:0.2rem;
+            height:0.2rem;
+            background: url('../assets/right_disabled.png') no-repeat 0 0;
+            margin-left:0.02rem;
+            cursor:pointer;
+          }
+
         }
       }
       .block_detail_table_wrap{
