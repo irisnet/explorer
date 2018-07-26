@@ -24,7 +24,7 @@
         </div>
       </div>
     </div>
-    <div :class="transactionsDetailWrap" class="address_profile">
+    <div :class="transactionsDetailWrap" class="address_profile" v-if="showProfile">
       <p class="transaction_information_content_title">Profile</p>
       <div class="transactions_detail_information_wrap">
         <div class="information_props_wrap">
@@ -55,7 +55,7 @@
 
       </div>
     </div>
-    <div :class="transactionsDetailWrap" class="current_tenure">
+    <div :class="transactionsDetailWrap" class="current_tenure" v-show="showProfile">
       <p class="transaction_information_content_title" style="border-bottom:1px solid #eee">Current Tenure</p>
       <div class="current_tenure_wrap">
         <div class="transactions_detail_information_wrap">
@@ -94,7 +94,7 @@
     <div :class="transactionsDetailWrap" class="transaction_precommit_table">
       <div class="tab_wrap">
         <span @click="activeBtn = 0" :class="activeBtn === 0?'transactions_btn_active':''">Transactions</span>
-        <span @click="activeBtn = 1" :class="activeBtn === 1?'transactions_btn_active':''">Precommit Blocks</span>
+        <span v-show="showProfile" @click="activeBtn = 1" :class="activeBtn === 1?'transactions_btn_active':''">Precommit Blocks</span>
       </div>
       <div class="table_wrap">
         <div class="transactions_view_all" v-show="activeBtn === 0">
@@ -135,6 +135,11 @@
     watch:{
       $route(){
         this.type = this.$route.params.type;
+        this.getAddressInformation(this.$route.params.param);
+        this.getTransactionsList(1,10,this.$route.params.type);
+        this.getProfileInformation();
+        this.getPrecommitBlocksList();
+        this.getCurrentTenureInformation();
       },
       activeBtn(activeBtn){
         //0是Transactions List 1是Precommit Blocks List
@@ -173,6 +178,7 @@
         showNoData1:false,//无数据的时候显示无数据状态
         showNoData2:false,
         transactionsCount:0,
+        showProfile:true,
 
 
       }
@@ -238,6 +244,9 @@
             this.commissionRateValue = '';
             this.announcementValue = '';
             this.votingPowerValue = `${(data.VotingPower/data.PowerAll*100).toFixed(2)}%`;
+            this.showProfile = true;
+          }else{
+            this.showProfile = false;
           }
 
         })
@@ -249,12 +258,11 @@
             return data.data;
           }
         }).then((data)=>{
-          console.log(data)
           if(data){
             this.bondHeightValue = data.TotalBlock;
             this.precommitedBlocksValue = data.PrecommitCount;
             this.returnsValue = '';
-            this.firstPercent = (data.TotalBlock !== 0 && data.PrecommitCount !== 0) ?`${data.Uptime/data.TotalBlock*100}%`:'0%';
+            this.firstPercent = `${data.Uptime}%`;
           }
 
         })
@@ -278,7 +286,7 @@
                 Amount = '';
               }
               if(item.Fee.Amount instanceof Array){
-                Fees = item.Fee.Amount.map(listItem=>`${listItem.amount} ${listItem.denom?listItem.denom.toUpperCase():'IRIS'}`).join(',');
+                Fees = item.Fee.Amount.map(listItem=>`${listItem.amount} ${listItem.amount === 0?'IRIS':listItem.denom.toUpperCase()}`).join(',');
               }else if(item.Fee.Amount && Object.keys(item.Fee.Amount).includes('amount') && Object.keys(item.Fee.Amount).includes('denom')){
                 Fees = `${item.Fee.Amount} ${item.Fee.Amount}`;
               }else if(item.Fee.Amount === null){
@@ -329,7 +337,7 @@
                 Timestamp:Tools.conversionTimeToUTC(item.Time),
                 'Precommit Validators':item.Validators.length !== 0?`${item.Block.LastCommit.Precommits.length}/${item.Validators.length}`:'',
               }
-            })
+            });
           }else{
             this.itemsPre = [{
               'Block Height':'',

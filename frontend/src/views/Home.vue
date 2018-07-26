@@ -139,7 +139,7 @@
                 value: data.Candidates[i].VotingPower,
                 name: data.Candidates[i].Description.Moniker ? data.Candidates[i].Description.Moniker : (data.Candidates[i].Address ? data.Candidates[i].Address : ''),
                 itemStyle: {color: colors[i]},
-                upTime:`${data.Candidates[i].Uptime/100}%`,
+                upTime:`${data.Candidates[i].Uptime}%`,
                 address:data.Candidates[i].Address,
                 totalCount,
               });
@@ -236,7 +236,7 @@
                 Amount = '';
               }
               if (item.Fee.Amount instanceof Array) {
-                Fee = item.Fee.Amount.map(listItem => `${listItem.amount} ${listItem.denom?listItem.denom.toUpperCase():'IRIS'}`).join(',');
+                Fee = item.Fee.Amount.map(listItem => `${listItem.amount} ${listItem.amount === 0?'IRIS':listItem.denom.toUpperCase()}`).join(',');
               } else if (item.Fee.Amount && Object.keys(item.Fee.Amount).includes('amount') && Object.keys(item.Fee.Amount).includes('denom')) {
                 Fee = `${item.Fee.Amount} ${item.Fee.Amount}`;
               } else if (item.Fee.Amount === null) {
@@ -246,9 +246,9 @@
                 TxHash: item.TxHash,
                 From: item.From,
                 To: item.To,
-                Type: item.Type,
-                Amount,
+                Type: item.Type === 'coin'?'transfer':item.Type,
                 Fee,
+                Amount,
                 Time: Tools.conversionTimeToUTC(item.Time),
               };
             })

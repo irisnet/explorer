@@ -13,7 +13,7 @@
         <div class="information_props_wrap">
           <span class="information_props">Height:</span>
           <i :class="acitve?'flag_item_left':'flag_item_left_disabled'" @click="skipNext(-1)"></i>
-          <span class="information_value">{{heightValue}}</span>
+          <span class="information_value" style="flex:none;">{{heightValue}}</span>
           <i :class="activeNext?'flag_item_right':'flag_item_right_disabled'" @click="skipNext(1)"></i>
         </div>
         <div class="information_props_wrap">
