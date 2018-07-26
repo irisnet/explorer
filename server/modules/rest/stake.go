@@ -49,6 +49,11 @@ type CandidateAll struct {
 	CandidateStatus
 }
 
+type CandidateWithPower struct {
+	PowerAll float64
+	document.Candidate
+}
+
 func registerQueryCandidatesByAccount(r *mux.Router) error {
 	r.HandleFunc("/api/stake/candidates/{address}", queryCandidatesByAccount).Methods("GET")
 	return nil
@@ -84,8 +89,22 @@ func queryCandidate(w http.ResponseWriter, r *http.Request) {
 
 	c := utils.GetDatabase().C("stake_role_candidate")
 	defer c.Database.Session.Close()
-	var result document.Candidate
-	err := c.Find(bson.M{"address": address}).Sort("-update_time").One(&result)
+	var candidate document.Candidate
+	err := c.Find(bson.M{"address": address}).Sort("-update_time").One(&candidate)
+	pipe := c.Pipe(
+		[]bson.M{
+			{"$group": bson.M{
+				"_id":   "voting_power",
+				"count": bson.M{"$sum": "$voting_power"},
+			}},
+		},
+	)
+	var count count
+	pipe.One(&count)
+	result := CandidateWithPower{
+		PowerAll:  count.Count,
+		Candidate: candidate,
+	}
 	if err == nil {
 		resultByte, _ := json.Marshal(result)
 		w.Write(resultByte)
@@ -95,28 +114,50 @@ func queryCandidate(w http.ResponseWriter, r *http.Request) {
 func queryCandidateStatus(w http.ResponseWriter, r *http.Request) {
 	args := mux.Vars(r)
 	address := args["address"]
-	c := utils.GetDatabase().C("block")
-	defer c.Database.Session.Close()
+	db:=utils.GetDatabase()
+	cs := db.C("stake_role_candidate")
+	cb := db.C("block")
+	defer db.Session.Close()
+	//var result []document.Block
+	//var uptime int
+	//c.Find(nil).Limit(100).Sort("height").All(&result)
+	//for _, block := range result {
+	//	for _, pre := range block.Block.LastCommit.Precommits {
+	//		if pre.ValidatorAddress == address {
+	//			uptime++
+	//			break
+	//		}
+	//	}
+	//}
+	var candidate document.Candidate
+	err := cs.Find(bson.M{"address": address}).Sort("-update_time").One(&candidate)
+	upTimeMap := make(map[string]int)
 	var result []document.Block
-	var uptime int
-	c.Find(nil).Limit(100).Sort("height").All(&result)
+	cb.Find(nil).Limit(100).Sort("-height").All(&result)
+	validatorAddress :=""
 	for _, block := range result {
-		for _, pre := range block.Block.LastCommit.Precommits {
-			if pre.ValidatorAddress == address {
-				uptime++
-				break
+		var index1 int
+		for _, validator := range block.Validators {
+			if validatorAddress == "" && validator.PubKey == candidate.PubKey{
+				validatorAddress = validator.Address
+			}
+			if block.Block.LastCommit.Precommits[index1].ValidatorAddress == validator.Address {
+				upTimeMap[validator.PubKey] ++
+				index1++
 			}
 		}
 	}
-	precommitCount, _ := c.Find(bson.M{"block.last_commit.precommits":
-	bson.M{"$elemMatch": bson.M{"validator_address": address}}}).Count()
+	precommitCount, _ := cb.Find(bson.M{"block.last_commit.precommits":
+	bson.M{"$elemMatch": bson.M{"validator_address": validatorAddress}}}).Count()
 	resp := CandidateStatus{
-		Uptime:         uptime,
+		Uptime:         upTimeMap[candidate.PubKey],
 		TotalBlock:     len(result),
 		PrecommitCount: precommitCount,
 	}
-	resultByte, _ := json.Marshal(resp)
-	w.Write(resultByte)
+	if err == nil {
+		resultByte, _ := json.Marshal(resp)
+		w.Write(resultByte)
+	}
 }
 
 func queryCandidates(w http.ResponseWriter, r *http.Request) {
@@ -139,21 +180,33 @@ func queryCandidates(w http.ResponseWriter, r *http.Request) {
 	}
 	candidates := data[start:end]
 	var candidatesAll []CandidateAll
-	for _, candidate := range candidates {
-		var result []document.Block
-		var uptime int
-		cb.Find(nil).Limit(100).Sort("-height").All(&result)
-		for _, block := range result {
-			for _, pre := range block.Block.LastCommit.Precommits {
-				if pre.ValidatorAddress == candidate.Address {
-					uptime++
-					break
-				}
+	upTimeMap := make(map[string]int)
+	var result []document.Block
+	cb.Find(nil).Limit(100).Sort("-height").All(&result)
+	for _, block := range result {
+		var index1 int
+		for _, validator := range block.Validators {
+			if block.Block.LastCommit.Precommits[index1].ValidatorAddress == validator.Address {
+				upTimeMap[validator.PubKey] ++
+				index1++
 			}
 		}
+	}
+	for _, candidate := range candidates {
+		//var result []document.Block
+		//var uptime int
+		//cb.Find(nil).Limit(100).Sort("-height").All(&result)
+		//for _, block := range result {
+		//	for _, pre := range block.Block.LastCommit.Precommits {
+		//		if pre.ValidatorAddress == candidate.Address {
+		//			uptime++
+		//			break
+		//		}
+		//	}
+		//}
 		status := CandidateStatus{
-			Uptime:         uptime,
-			TotalBlock:     len(result),
+			Uptime:     upTimeMap[candidate.PubKey],
+			TotalBlock: len(result),
 		}
 		candidateAll := CandidateAll{
 			Candidate:       candidate,
@@ -187,22 +240,38 @@ func queryCandidatesTop(w http.ResponseWriter, r *http.Request) {
 	}
 	candidates := data[:length]
 	var candidatesAll []CandidateAll
-	for _, candidate := range candidates {
-		var result []document.Block
-		var uptime int
-		cb.Find(nil).Limit(100).Sort("-height").All(&result)
-		for _, block := range result {
-			for _, pre := range block.Block.LastCommit.Precommits {
-				if pre.ValidatorAddress == candidate.Address {
-					uptime++
-					break
-				}
+	upTimeMap := make(map[string]int)
+	var result []document.Block
+	cb.Find(nil).Limit(100).Sort("-height").All(&result)
+	for _, block := range result {
+		var index1 int
+		for _, validator := range block.Validators {
+			if block.Block.LastCommit.Precommits[index1].ValidatorAddress == validator.Address {
+				upTimeMap[validator.PubKey] ++
+				index1++
 			}
 		}
+	}
+	for _, candidate := range candidates {
+		//var result []document.Block
+		//var uptime int
+		//cb.Find(nil).Limit(100).Sort("-height").All(&result)
+		//for _, block := range result {
+		//	var index1 int
+		//	for _, validator := range block.Validators {
+		//		if block.Block.LastCommit.Precommits[index1].ValidatorAddress == validator.Address {
+		//			index1++
+		//		}
+		//		if validator.PubKey == candidate.PubKey {
+		//			upTimeMap[validator.PubKey] ++
+		//			break
+		//		}
+		//	}
+		//}
 		precommitCount, _ := cb.Find(bson.M{"block.last_commit.precommits":
 		bson.M{"$elemMatch": bson.M{"validator_address": candidate.Address}}}).Count()
 		status := CandidateStatus{
-			Uptime:         uptime,
+			Uptime:         upTimeMap[candidate.PubKey],
 			TotalBlock:     len(result),
 			PrecommitCount: precommitCount,
 		}
