@@ -98,7 +98,6 @@
       </div>
       <div class="table_wrap">
         <div class="transactions_view_all" v-show="activeBtn === 0">
-          <p style="flex:1;">Lastest 6 txns from a total Of {{transactionsCount}} transactions</p>
           <span @click="viewAllClick(2)">View All</span>
         </div>
         <div class="precommit_view_all" v-show="activeBtn === 1">
@@ -563,7 +562,7 @@
         .transactions_view_all{
           padding:0.1rem;
           @include flex;
-          justify-content:space-between;
+          justify-content:flex-end;
           span{
             @include viewBtn;
           }
