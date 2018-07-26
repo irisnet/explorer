@@ -175,7 +175,7 @@
                   Block:item.Height,
                   From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
                   To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
-                  Type:item.Type,
+                  Type:item.Type === 'coin'?'transfer':item.Type,
                   Amount,
                   Fees,
                   Timestamp: Tools.conversionTimeToUTC(item.Time),

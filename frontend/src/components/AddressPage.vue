@@ -237,7 +237,7 @@
             this.descriptionValue= data.Description.Details;
             this.commissionRateValue = '';
             this.announcementValue = '';
-            this.votingPowerValue = data.VotingPower;
+            this.votingPowerValue = `${(data.VotingPower/data.PowerAll*100).toFixed(2)}%`;
           }
 
         })
@@ -289,7 +289,7 @@
                 Block:item.Height,
                 From:item.From,
                 To:item.To,
-                Type:item.Type,
+                Type:item.Type === 'coin'?'transfer':item.Type,
                 Amount,
                 Fees,
                 Timestamp:Tools.conversionTimeToUTC(item.Time),
@@ -386,6 +386,7 @@
           .information_value{
             color: #a2a2ae;
             font-size:0.14rem;
+            flex:1;
           }
         }
       }

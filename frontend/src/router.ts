@@ -37,6 +37,18 @@ export default new Router({
       path: '/recent_transactions/:type/:param', component: BlocksListPage
     },
     {
+      path: '/transfer_transactions/:type/:param', component: BlocksListPage
+    },
+    {
+      path: '/stake_transactions/:type/:param', component: BlocksListPage
+    },
+    {
+      path: '/validators/:type/:param', component: BlocksListPage
+    },
+    {
+      path: '/candidates/:type/:param', component: BlocksListPage
+    },
+    {
       path: '/tx', component: TransactionsDetail
     },
     {

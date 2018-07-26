@@ -133,7 +133,6 @@
           flex-direction:column;
 
           .key_value_wrap{
-            width:1.4rem;
             @include flex;
             flex-direction:row;
             .blocks_module_value{
@@ -141,7 +140,6 @@
               cursor:pointer;
               font-size:0.14rem;
               display:inline-block;
-              @include overflowEllipsis;
             }
             .blocks_module_props{
               font-size:0.14rem;

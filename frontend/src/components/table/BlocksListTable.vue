@@ -99,7 +99,7 @@
     },
     props: ['items', 'type','showNoData'],
     mounted() {
-      console.log(this.showNoData)
+
     },
     methods: {
       skipRoute(path) {

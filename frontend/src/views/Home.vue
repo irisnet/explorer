@@ -145,13 +145,14 @@
               });
               legendData.push(data.Candidates[i].Description.Moniker ? data.Candidates[i].Description.Moniker : (data.Candidates[i].Address ? data.Candidates[i].Address : ''))
             }
-            seriesData.push({
-              value:others,
-              name:'others',
-              itemStyle:{color:colors[10]},
-            });
+
             if(data.Candidates.length > 10){
               legendData.push('others');
+              seriesData.push({
+                value:others,
+                name:'others',
+                itemStyle:{color:colors[10]},
+              });
             }
 
           }
