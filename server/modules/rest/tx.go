@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"github.com/irisnet/irishub-sync/store/document"
 	"time"
+	"strconv"
 )
 
 type TxDay struct {
@@ -60,6 +61,11 @@ func registerQueryTxsByAccount(r *mux.Router) error {
 	return nil
 }
 
+func registerQueryTxsByBlock(r *mux.Router) error {
+	r.HandleFunc("/api/txsByBlock/{height}/{page}/{size}", queryTxsByBlock).Methods("GET")
+	return nil
+}
+
 func registerQueryTxsByDay(r *mux.Router) error {
 	r.HandleFunc("/api/txsByDay", queryTxsByDay).Methods("GET")
 	return nil
@@ -105,6 +111,14 @@ func queryTxsByAccount(w http.ResponseWriter, r *http.Request) {
 	args := mux.Vars(r)
 	address := args["address"]
 	w.Write(utils.QueryList("tx_common", &data, bson.M{"$or": []bson.M{{"from": address}, {"to": address}}}, "-time", r))
+}
+
+func queryTxsByBlock(w http.ResponseWriter, r *http.Request) {
+	var data []document.CommonTx
+	args := mux.Vars(r)
+	height := args["height"]
+	iHeight , _ := strconv.Atoi(height)
+	w.Write(utils.QueryList("tx_common", &data, bson.M{"height": iHeight}, "-time", r))
 }
 
 func queryTxsByDay(w http.ResponseWriter, r *http.Request) {
@@ -156,6 +170,7 @@ func RegisterTx(r *mux.Router) error {
 		registerQueryTx,
 		registerQueryTxs,
 		registerQueryTxsByAccount,
+		registerQueryTxsByBlock,
 		registerQueryCoinTxByAccount,
 		registerQueryPageCoinTxByAccount,
 		registerQueryAllCoinTxByPage,

@@ -41,8 +41,8 @@ func RegisterQueryChain(r *mux.Router) error {
 
 func queryChainStatus(w http.ResponseWriter, r *http.Request) {
 	db := utils.GetDatabase()
-	cs := db.C("stake_role_candidate")
 	defer db.Session.Close()
+	cs := db.C("stake_role_candidate")
 	pipe := cs.Pipe(
 		[]bson.M{
 			{"$group": bson.M{
@@ -54,7 +54,7 @@ func queryChainStatus(w http.ResponseWriter, r *http.Request) {
 	var count count
 	pipe.One(&count)
 
-	validatorsCount, _ := cs.Count()
+	validatorsCount, _ := cs.Find(bson.M{"revoked": false}).Count()
 	cc := db.C("tx_common")
 	txCount, _ := cc.Count()
 
