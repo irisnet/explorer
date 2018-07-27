@@ -224,7 +224,7 @@
         if(type === 1){
           this.$router.push(`/block/${type}/0`);
         }else if(type === 2){
-          this.$router.push(`/recent_transactions/2/0`)
+          this.$router.push(`/recent_transactions/2/address:${this.$route.params.param}`)
         }
 
       },
@@ -244,6 +244,7 @@
             this.announcementValue = '';
             this.votingPowerValue = `${(data.VotingPower/data.PowerAll*100).toFixed(2)}%`;
             this.showProfile = true;
+            this.bondHeightValue = data.BondHeight;
           }else{
             this.showProfile = false;
           }
@@ -258,7 +259,7 @@
           }
         }).then((data)=>{
           if(data){
-            this.bondHeightValue = data.TotalBlock;
+
             this.precommitedBlocksValue = data.PrecommitCount;
             this.returnsValue = '';
             this.firstPercent = `${data.Uptime}%`;
@@ -274,6 +275,7 @@
           }
         }).then((data)=>{
           this.transactionsCount = data.Count;
+          this.transactionsValue = data.Count;
           if(data.Data){
             this.items = data.Data.map(item=>{
               let [Amount,Fees] = ['',''];

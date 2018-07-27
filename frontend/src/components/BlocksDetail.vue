@@ -26,7 +26,9 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Transactions:</span>
-          <a class="information_value">{{transactionsValue}}</a>
+          <span class="information_value"
+                @click="skipTransactions"
+                style="color:#3598db;cursor:pointer;">{{transactionsValue}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Fee:</span>
@@ -232,6 +234,9 @@
             }
           }
         })
+      },
+      skipTransactions(){
+
       }
     }
   }

@@ -23,7 +23,7 @@
             <span class="qq"></span>
           </div>
           <div class="footer_center">
-            <a href="https://www.irisnet.org/">
+            <a href="https://www.irisnet.org/" target="_blank">
               <img src="./assets/IRIS-logo.png" alt="">
             </a>
           </div>
