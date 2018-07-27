@@ -2,7 +2,7 @@ FROM node:10 as builder
 WORKDIR /app
 COPY ./frontend/ /app
 
-ENV VUE_APP_FAUCET_URL http://testnet.irisplorer.io/api/faucet
+ENV VUE_APP_FAUCET_URL https://testnet.irisplorer.io/api/faucet
 ENV VUE_APP_FUXI fuxi-1002
 
 RUN npm i yarn -g && yarn install && VUE_APP_FAUCET_URL=$VUE_APP_FAUCET_URL VUE_APP_FUXI=$VUE_APP_FUXI yarn build
