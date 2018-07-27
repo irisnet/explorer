@@ -43,9 +43,16 @@ func queryBlocks(w http.ResponseWriter, r *http.Request) {
 func QueryBlocksPrecommits(w http.ResponseWriter, r *http.Request) {
 	args := mux.Vars(r)
 	address := args["address"]
+	c:=utils.GetDatabase().C("stake_role_candidate")
+	defer c.Database.Session.Close()
+	var candidate document.Candidate
+	c.Find(bson.M{"address":address}).Sort("-bond_height").One(&candidate)
+	if candidate.PubKeyAddr==""{
+		return
+	}
 	var data []document.Block
 	w.Write(utils.QueryList("block", &data, bson.M{"block.last_commit.precommits":
-	bson.M{"$elemMatch": bson.M{"validator_address": address}}}, "-height", r))
+	bson.M{"$elemMatch": bson.M{"validator_address": candidate.PubKeyAddr}}}, "-height", r))
 }
 
 // mux.Router registrars
