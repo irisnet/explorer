@@ -159,8 +159,8 @@
           }else if(this.$route.params.param === 'recent'){
             url = `/api/txs/${currentPage}/${pageSize}`;
           }else if(this.$route.params.param.includes('block')){
-            //url = `/api/txs/${currentPage}/${pageSize}`;
-            //this.blockVar = this.$route.params.param.split(':')[1];
+            url = `/api/txsByBlock/${this.$route.params.param.split(':')[1]}/${currentPage}/${pageSize}`;
+            this.blockVar = this.$route.params.param.split(':')[1];
           }else if(this.$route.params.param.includes('address')){
             url = `/api/txsByAddress/${this.$route.params.param.split(':')[1]}/${currentPage}/${pageSize}`;
             this.blockVar = this.$route.params.param.split(':')[1];

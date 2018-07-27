@@ -44,6 +44,9 @@
               interval:0,
               rotate:-60,
               margin:12,
+              formatter(value){
+                console.log(value)
+              }
             }
           },
           yAxis: {
@@ -107,7 +110,7 @@
     },
     props: ['informationLine'],
     beforeMount() {
-
+      this.month = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
     },
     mounted() {
       line = echarts.init(document.getElementById('echarts_line'));

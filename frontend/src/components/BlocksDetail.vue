@@ -12,9 +12,12 @@
       <div class="transactions_detail_information_wrap">
         <div class="information_props_wrap">
           <span class="information_props">Height:</span>
-          <i :class="acitve?'flag_item_left':'flag_item_left_disabled'" @click="skipNext(-1)"></i>
-          <span class="information_value" style="flex:none;">{{heightValue}}</span>
-          <i :class="activeNext?'flag_item_right':'flag_item_right_disabled'" @click="skipNext(1)"></i>
+          <span>
+            <i :class="acitve?'flag_item_left':'flag_item_left_disabled'" @click="skipNext(-1)"></i>
+            <span class="information_value" style="flex:none;">{{heightValue}}</span>
+            <i :class="activeNext?'flag_item_right':'flag_item_right_disabled'" @click="skipNext(1)"></i>
+          </span>
+
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Timestamp:</span>
@@ -59,7 +62,6 @@
     </div>
 
 
-
   </div>
 </template>
 
@@ -69,21 +71,21 @@
   import BlocksListTable from './table/BlocksListTable.vue';
 
   export default {
-    components:{
+    components: {
       BlocksListTable,
     },
     watch: {
-      $route(){
+      $route() {
         this.getBlockInformation();
-        if(Number(this.$route.params.height) <= 0){
+        if (Number(this.$route.params.height) <= 0) {
           this.acitve = false;
-        }else{
+        } else {
           this.acitve = true;
         }
-        if(this.maxBlock !== 0){
-          if(Number(this.$route.params.height) >= this.maxBlock){
+        if (this.maxBlock !== 0) {
+          if (Number(this.$route.params.height) >= this.maxBlock) {
             this.activeNext = false;
-          }else{
+          } else {
             this.activeNext = true;
           }
         }
@@ -98,17 +100,17 @@
         hashValue: '',
         heightValue: '',
         timestampValue: '',
-        blockHashValue:'',
-        transactionsValue:'',
+        blockHashValue: '',
+        transactionsValue: '',
         feeValue: '',
-        lastBlockHashValue:'',
-        precommitValidatorsValue:'',
-        votingPowerValue:'',
-        items:[],
-        showNoData:false,//列表无数据的时候显示
-        acitve:true,
-        activeNext:true,
-        maxBlock:0,
+        lastBlockHashValue: '',
+        precommitValidatorsValue: '',
+        votingPowerValue: '',
+        items: [],
+        showNoData: false,//列表无数据的时候显示
+        acitve: true,
+        activeNext: true,
+        maxBlock: 0,
 
       }
     },
@@ -121,56 +123,53 @@
     },
     mounted() {
       this.getBlockInformation();
-      if(Number(this.$route.params.height) <= 0){
+      if (Number(this.$route.params.height) <= 0) {
         this.acitve = false;
-      }else{
+      } else {
         this.acitve = true;
       }
       this.getMaxBlock();
     },
-    updated(){
-      console.log(this.activeNext)
-    },
     methods: {
-      getBlockInformation(){
+      getBlockInformation() {
         let url = `/api/block/${this.$route.params.height}`;
-        axios.get(url).then((data)=>{
-          if(data.status === 200){
+        axios.get(url).then((data) => {
+          if (data.status === 200) {
             return data.data;
           }
-        }).then((data)=>{
-          if(data){
+        }).then((data) => {
+          if (data) {
             let denominator = 0;
-            data.Validators.forEach(item=>denominator += item.VotingPower);
+            data.Validators.forEach(item => denominator += item.VotingPower);
             let numerator = 0;
-            for(let i = 0; i < data.Block.LastCommit.Precommits.length; i++){
-              for (let j = 0; j < data.Validators.length; j++){
-                if(data.Block.LastCommit.Precommits[i].ValidatorAddress === data.Validators[j].Address){
+            for (let i = 0; i < data.Block.LastCommit.Precommits.length; i++) {
+              for (let j = 0; j < data.Validators.length; j++) {
+                if (data.Block.LastCommit.Precommits[i].ValidatorAddress === data.Validators[j].Address) {
                   numerator += data.Validators[j].VotingPower;
                   break;
                 }
               }
             }
-            if(data.Block.LastCommit.Precommits && data.Block.LastCommit.Precommits.length > 0){
-              this.items = data.Block.LastCommit.Precommits.map(item=>{
+            if (data.Block.LastCommit.Precommits && data.Block.LastCommit.Precommits.length > 0) {
+              this.items = data.Block.LastCommit.Precommits.map(item => {
                 return {
-                  Address:item.ValidatorAddress,
-                  Index:item.ValidatorIndex,
-                  Round:item.Round,
-                  Signature:item.Signature.Type,
+                  Address: item.ValidatorAddress,
+                  Index: item.ValidatorIndex,
+                  Round: item.Round,
+                  Signature: item.Signature.Type,
                 }
               });
-            }else{
+            } else {
               this.items = [{
-                Address:'',
-                Index:'',
-                Round:'',
-                Signature:'',
+                Address: '',
+                Index: '',
+                Round: '',
+                Signature: '',
               }];
               this.showNoData = true;
             }
 
-            if(data){
+            if (data) {
               this.hashValue = data.Height;
               this.heightValue = data.Height;
               this.timestampValue = data.Time;
@@ -178,15 +177,15 @@
               this.transactionsValue = data.NumTxs;
               this.feeValue = '';
               this.lastBlockHashValue = data.Block.LastCommit.BlockID.Hash;
-              this.precommitValidatorsValue = data.Validators.length !== 0?`${data.Block.LastCommit.Precommits.length}/${data.Validators.length}`:'';
-              this.votingPowerValue = denominator !== 0? `${numerator/denominator*100}%`:'';
+              this.precommitValidatorsValue = data.Validators.length !== 0 ? `${data.Block.LastCommit.Precommits.length}/${data.Validators.length}` : '';
+              this.votingPowerValue = denominator !== 0 ? `${numerator / denominator * 100}%` : '';
             }
-          }else{
+          } else {
             this.items = [{
-              Address:'',
-              Index:'',
-              Round:'',
-              Signature:'',
+              Address: '',
+              Index: '',
+              Round: '',
+              Signature: '',
             }];
             this.showNoData = true;
             this.hashValue = this.$route.params.height;
@@ -203,40 +202,40 @@
 
         })
       },
-      skipNext(num){
-        if(Number(this.$route.params.height) <= 0){
+      skipNext(num) {
+        if (Number(this.$route.params.height) <= 0) {
           this.acitve = false;
-          if(num !== -1){
-            this.$router.push(`/blocks_detail/${Number(this.$route.params.height)+num}`)
+          if (num !== -1) {
+            this.$router.push(`/blocks_detail/${Number(this.$route.params.height) + num}`)
           }
-        }else if(Number(this.$route.params.height) >= this.maxBlock){
-          if(num !== 1){
-            this.$router.push(`/blocks_detail/${Number(this.$route.params.height)+num}`)
+        } else if (Number(this.$route.params.height) >= this.maxBlock) {
+          if (num !== 1) {
+            this.$router.push(`/blocks_detail/${Number(this.$route.params.height) + num}`)
           }
-        } else{
+        } else {
           this.acitve = true;
-          this.$router.push(`/blocks_detail/${Number(this.$route.params.height)+num}`)
+          this.$router.push(`/blocks_detail/${Number(this.$route.params.height) + num}`)
         }
       },
-      getMaxBlock(){
+      getMaxBlock() {
         let url = `/api/blocks/1/1`;
         axios.get(url).then((data) => {
           if (data.status === 200) {
             return data.data;
           }
         }).then((data) => {
-          if(data){
+          if (data) {
             this.maxBlock = data.Data[0].Height;
-            if(Number(this.$route.params.height) >= this.maxBlock){
+            if (Number(this.$route.params.height) >= this.maxBlock) {
               this.activeNext = false;
-            }else{
+            } else {
               this.activeNext = true;
             }
           }
         })
       },
-      skipTransactions(){
-
+      skipTransactions() {
+        this.$router.push(`/transfer_transactions/2/block:${this.$route.params.height}`)
       }
     }
   }
@@ -247,7 +246,7 @@
   .transactions_detail_wrap {
     @include flex;
     @include pcContainer;
-    font-size:0.14rem;
+    font-size: 0.14rem;
     .transactions_title_wrap {
       width: 100%;
       border-bottom: 0.01rem solid #eee;
@@ -263,72 +262,67 @@
 
     }
     .personal_computer_transactions_detail_wrap {
-      .transaction_information_content_title{
-        height:0.4rem;
-        line-height:0.4rem;
-        font-size:0.18rem;
-        color:#555;
-        margin-bottom:0;
+      .transaction_information_content_title {
+        height: 0.4rem;
+        line-height: 0.4rem;
+        font-size: 0.18rem;
+        color: #555;
+        margin-bottom: 0;
       }
       @include pcCenter;
-      .transactions_detail_information_wrap{
-        .information_props_wrap{
+      .transactions_detail_information_wrap {
+        .information_props_wrap {
           @include flex;
-          .information_props{
-            width:1.5rem;
+          .information_props {
+            width: 1.5rem;
           }
-          .flag_item_left{
-            display:inline-block;
-            width:0.2rem;
-            height:0.2rem;
+          .flag_item_left {
+            display: inline-block;
+            width: 0.2rem;
+            height: 0.17rem;
             background: url('../assets/left.png') no-repeat 0 1px;
-            margin-right:0.02rem;
-            cursor:pointer;
+            margin-right: 0.02rem;
+            cursor: pointer;
           }
-          .flag_item_left_disabled{
-            display:inline-block;
-            width:0.2rem;
-            height:0.2rem;
-            margin-right:0.02rem;
-            cursor:pointer;
+          .flag_item_left_disabled {
+            display: inline-block;
+            width: 0.2rem;
+            height: 0.17rem;
+            margin-right: 0.02rem;
+            cursor: pointer;
             background: url('../assets/left_disabled.png') no-repeat 0 1px;
           }
-          .flag_item_right{
-            display:inline-block;
-            width:0.2rem;
-            height:0.2rem;
+          .flag_item_right {
+            display: inline-block;
+            width: 0.2rem;
+            height: 0.17rem;
             background: url('../assets/right.png') no-repeat 0 0;
-            margin-left:0.02rem;
-            cursor:pointer;
+            margin-left: 0.02rem;
+            cursor: pointer;
           }
-          .flag_item_right_disabled{
-            display:inline-block;
-            width:0.2rem;
-            height:0.2rem;
+          .flag_item_right_disabled {
+            display: inline-block;
+            width: 0.2rem;
+            height: 0.17rem;
             background: url('../assets/right_disabled.png') no-repeat 0 0;
-            margin-left:0.02rem;
-            cursor:pointer;
+            margin-left: 0.02rem;
+            cursor: pointer;
           }
 
         }
       }
-      .block_detail_table_wrap{
-        width:100%;
-        .no_data_show{
+      .block_detail_table_wrap {
+        width: 100%;
+        .no_data_show {
           @include flex;
           justify-content: center;
-          border-top:0.01rem solid #eee;
-          border-bottom:0.01rem solid #eee;
-          font-size:0.14rem;
-          height:3rem;
+          border-top: 0.01rem solid #eee;
+          border-bottom: 0.01rem solid #eee;
+          font-size: 0.14rem;
+          height: 3rem;
           align-items: center;
         }
       }
-
-
-
-
-
 
       .transactions_detail_title {
         height: 0.4rem;
@@ -336,7 +330,7 @@
         font-size: 0.18rem;
         color: #555;
         margin-right: 0.2rem;
-        font-weight:500;
+        font-weight: 500;
       }
       .transactions_detail_wrap_hash_var {
         height: 0.4rem;
@@ -351,37 +345,68 @@
       @include flex;
       flex-direction: column;
       padding: 0 0.05rem;
-      .transaction_information_content_title{
-        height:0.4rem;
-        line-height:0.4rem;
-        font-size:0.18rem;
-        color:#555;
-        margin-bottom:0;
+      .transaction_information_content_title {
+        height: 0.4rem;
+        line-height: 0.4rem;
+        font-size: 0.18rem;
+        color: #555;
+        margin-bottom: 0;
       }
-      .block_detail_table_wrap{
-        width:100%;
+      .block_detail_table_wrap {
+        width: 100%;
         overflow-x: auto;
-        .no_data_show{
+        .no_data_show {
           @include flex;
           justify-content: center;
-          border-top:0.01rem solid #eee;
-          border-bottom:0.01rem solid #eee;
-          font-size:0.14rem;
-          height:3rem;
+          border-top: 0.01rem solid #eee;
+          border-bottom: 0.01rem solid #eee;
+          font-size: 0.14rem;
+          height: 3rem;
           align-items: center;
         }
       }
-      .transactions_detail_information_wrap{
+      .transactions_detail_information_wrap {
 
-        .information_props_wrap{
+        .information_props_wrap {
           @include flex;
-          flex-direction:column;
-          border-bottom:0.01rem solid #eee;
-          margin-bottom:0.05rem;
-          .information_value{
-            overflow-x:auto;
+          flex-direction: column;
+          border-bottom: 0.01rem solid #eee;
+          margin-bottom: 0.05rem;
+          .information_value {
+            overflow-x: auto;
           }
-
+          .flag_item_left {
+            display: inline-block;
+            width: 0.2rem;
+            height: 0.17rem;
+            background: url('../assets/left.png') no-repeat 0 1px;
+            margin-right: 0.02rem;
+            cursor: pointer;
+          }
+          .flag_item_left_disabled {
+            display: inline-block;
+            width: 0.2rem;
+            height: 0.17rem;
+            margin-right: 0.02rem;
+            cursor: pointer;
+            background: url('../assets/left_disabled.png') no-repeat 0 1px;
+          }
+          .flag_item_right {
+            display: inline-block;
+            width: 0.2rem;
+            height: 0.17rem;
+            background: url('../assets/right.png') no-repeat 0 0;
+            margin-left: 0.02rem;
+            cursor: pointer;
+          }
+          .flag_item_right_disabled {
+            display: inline-block;
+            width: 0.2rem;
+            height: 0.17rem;
+            background: url('../assets/right_disabled.png') no-repeat 0 0;
+            margin-left: 0.02rem;
+            cursor: pointer;
+          }
         }
       }
       .transactions_detail_title {
@@ -390,7 +415,7 @@
         font-size: 0.18rem;
         color: #555;
         margin-right: 0.02rem;
-        font-weight:500;
+        font-weight: 500;
       }
       .transactions_detail_wrap_hash_var {
         overflow-x: auto;

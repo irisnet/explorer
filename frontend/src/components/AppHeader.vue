@@ -10,7 +10,9 @@
               <span>IRIS</span>
               <span>Explorer</span>
             </div>
-            <p>{{fuxi}}</p>
+            <p>
+              Block Explorer - <span>{{fuxi}}</span>
+            </p>
           </div>
         </div>
         <div class="navSearch">
@@ -68,13 +70,15 @@
     <div class="app_header_mobile" v-show="devicesShow === 0">
       <div class="feature_btn" @click="showFeature"></div>
       <div class="image_wrap_mobile" @click="featureButtonClick('/home',true)">
-        <img src="../assets/logo.png" alt="失去网络了..." style="height:0.7rem;"/>
+        <img src="../assets/logo.png" alt="失去网络了..."/>
         <div class="logo_title_wrap">
           <div class="logo_title_content">
             <span>IRIS</span>
             <span>Explorer</span>
           </div>
-          <p>{{fuxi}}</p>
+          <p>
+            Block Explorer - <span>{{fuxi}}</span>
+          </p>
         </div>
       </div>
 
@@ -230,7 +234,7 @@
       listenRouteForChangeActiveButton(){
         //刷新的时候路由不变，active按钮不变
         let path = window.location.href;
-        if (path.includes('/recent_transactions/2')) {
+        if (path.includes('transactions/2')) {
           this.activeClassName = '/transaction';
         } else if (path.includes('/validators/3') || path.includes('/candidates/4')) {
           this.activeClassName = '/validators';
@@ -280,20 +284,21 @@
               span{
                 &:first-child{
                   font-size:0.24rem;
-                  color:#3498db;
+                  color:#005a98;
                 }
                 &:last-child{
                   font-size:0.24rem;
-                  color:#000000;
+                  color:#3598db;
                   display:inline-block;
-                  margin-left:0.12rem;
                 }
 
               }
             }
             p{
               font-size:0.14rem;
-              color:#aeaeb9;
+              span{
+                color:#aeaeb9;
+              }
             }
 
           }
@@ -308,7 +313,7 @@
           }
 
           .search_input {
-            @include borderRadius(0.04rem);
+            @include borderRadius(0.06rem);
             width: 5.04rem;
             height: 0.36rem;
             line-height: 0.36rem;
@@ -425,7 +430,7 @@
       @include flex();
       flex-direction: column;
       position: relative;
-      height: 1rem;
+      height: 1.8rem;
       border-bottom: 0.01rem solid #cccccc;
       .feature_btn {
         position: absolute;
@@ -456,7 +461,9 @@
           }
           p{
             font-size:0.14rem;
-            color:#aeaeb9;
+            span{
+              color:#aeaeb9;
+            }
           }
 
         }
@@ -476,9 +483,11 @@
         }
         input {
           width: 95%;
-          @include borderRadius(0.5rem);
+          @include borderRadius(0.06rem);
           border: 0.01rem solid #eee;
           font-size: 0.14rem;
+          padding:0 0.4rem 0 0.1rem;
+          height:0.3rem;
           &:focus {
             border: 0.01rem solid #3190e8;
             outline: none;
@@ -486,15 +495,21 @@
         }
         .search_icon {
           position: absolute;
-          top: 0.05rem;
-          right: 0.12rem;
+          top: 0.07rem;
+          right: 0.15rem;
           width: 0.15rem;
           height: 0.15rem;
           background: url('../assets/search.svg') no-repeat;
           cursor: pointer;
         }
         .clear_icon{
-
+          position: absolute;
+          top: 0.08rem;
+          right: 0.32rem;
+          width: 0.15rem;
+          height: 0.15rem;
+          background: url('../assets/clear.png') no-repeat;
+          cursor: pointer;
         }
       }
       .use_feature_mobile {
