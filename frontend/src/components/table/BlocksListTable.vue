@@ -7,7 +7,7 @@
         </span>
       </template>
       <template slot='Txn' slot-scope='data'>
-        <span class="skip_route" @click="skipRoute(`/recent_transactions/2/0`)">
+        <span class="skip_route" @click="skipRoute(`/recent_transactions/2/recent`)">
           {{data.item.Txn}}
         </span>
       </template>
@@ -103,7 +103,6 @@
     },
     methods: {
       skipRoute(path) {
-        console.log(path);
         this.$router.push(path);
       }
     }

@@ -1,11 +1,14 @@
 <template>
   <div class="blocks_list_page_wrap">
     <div class="blocks_list_title_wrap">
-
       <p :class="blocksListPageWrap" style="margin-bottom:0;">
         <span class="blocks_list_title">{{titleVar}}</span>
         <span class="blocks_list_page_wrap_hash_var">{{blocksValue}}</span>
         <span class="blocks_list_page_wrap_hash_var" v-show="['1','2','3','4'].includes(type)">{{count}} total</span>
+        <span class="blocks_list_page_wrap_hash_var for_block"
+              v-show="this.$route.params.param.includes('address') || this.$route.params.param.includes('block')">
+          for {{blockVar}}
+        </span>
       </p>
     </div>
 
@@ -14,9 +17,12 @@
         <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
         </b-pagination>
       </div>
-      <blocks-list-table :items="items" :type="this.$route.params.type" :showNoData="showNoData"></blocks-list-table>
-      <div v-show="showNoData" class="no_data_show">
-        No Data
+      <div style="position:relative;min-height:3.36rem;">
+        <spin-component :showLoading="showLoading"/>
+        <blocks-list-table :items="items" :type="this.$route.params.type" :showNoData="showNoData"></blocks-list-table>
+        <div v-show="showNoData" class="no_data_show">
+          No Data
+        </div>
       </div>
       <div class="pagination">
         <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
@@ -31,10 +37,12 @@
   import Tools from '../common/Tools';
   import axios from 'axios';
   import BlocksListTable from './table/BlocksListTable.vue';
+  import SpinComponent from './commonComponents/SpinComponent';
 
   export default {
     components:{
       BlocksListTable,
+      SpinComponent,
     },
     watch: {
       currentPage(currentPage) {
@@ -73,7 +81,8 @@
         type: '1',
         titleVar: '',
         showNoData:false,//是否显示列表的无数据
-
+        showLoading:false,
+        blockVar:'',
 
       }
     },
@@ -102,6 +111,7 @@
     },
     methods: {
       getDataList(currentPage, pageSize, type) {
+        this.showLoading = true;
         if (type === '1') {
           let url = `/api/blocks/${currentPage}/${pageSize}`;
           axios.get(url).then((data) => {
@@ -138,14 +148,22 @@
               this.items = [{Height:'',Txn:'',Fee:'',Timestamp:'','Precommit Validators':'','Voting Power':''}]
               this.showNoData = true;
             }
-
+            this.showLoading = false;
           })
         } else if (type === '2') {
-          let url = `/api/txs/${currentPage}/${pageSize}`;
+          let url;
           if(this.$route.params.param === 'transfer'){
             url = `/api/txs/coin/${currentPage}/${pageSize}`
           }else if(this.$route.params.param === 'stake'){
             url = `/api/txs/stake/${currentPage}/${pageSize}`
+          }else if(this.$route.params.param === 'recent'){
+            url = `/api/txs/${currentPage}/${pageSize}`;
+          }else if(this.$route.params.param.includes('block')){
+            url = `/api/txsByBlock/${this.$route.params.param.split(':')[1]}/${currentPage}/${pageSize}`;
+            this.blockVar = this.$route.params.param.split(':')[1];
+          }else if(this.$route.params.param.includes('address')){
+            url = `/api/txsByAddress/${this.$route.params.param.split(':')[1]}/${currentPage}/${pageSize}`;
+            this.blockVar = this.$route.params.param.split(':')[1];
           }
           axios.get(url).then((data) => {
             if (data.status === 200) {
@@ -194,7 +212,7 @@
               }];
               this.showNoData = true;
             }
-
+            this.showLoading = false;
           })
         }else if (type === '3' || type === '4') {
           let url = `/api/stake/candidates/${currentPage}/${pageSize}`;
@@ -206,17 +224,6 @@
             this.count = data.Count;
             if(data.Candidates){
               this.items = data.Candidates.map(item => {
-                /*let denominator = 0;
-                item.Validators.forEach(item=>denominator += item.VotingPower);
-                let numerator = 0;
-                for(let i = 0; i < item.Block.LastCommit.Precommits.length; i++){
-                  for (let j = 0; j < item.Validators.length; j++){
-                    if(item.Block.LastCommit.Precommits[i].ValidatorAddress === item.Validators[j].Address){
-                      numerator += item.Validators[j].VotingPower;
-                      break;
-                    }
-                  }
-                }*/
                 return {
                   Address: item.Address,
                   Name:item.Description.Moniker,
@@ -237,7 +244,7 @@
                 Returns:'',
               }]
             }
-
+            this.showLoading = false;
           })
         }
 
@@ -269,7 +276,7 @@
       align-items: center;
     }
     .b-table {
-      min-width: 5rem;
+      min-width: 7rem;
 
       a {
         text-decoration: none;
@@ -322,6 +329,10 @@
         font-size: 0.14rem;
         color: #ccc;
       }
+      .for_block{
+        display:inline-block;
+        margin-left:0.1rem;
+      }
     }
 
     .mobile_blocks_list_page_wrap {
@@ -365,6 +376,10 @@
         line-height: 0.3rem;
         font-size: 0.14rem;
         color: #ccc;
+      }
+      .for_block{
+        display:inline-block;
+        margin-left:0.1rem;
       }
 
     }

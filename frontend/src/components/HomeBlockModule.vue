@@ -80,7 +80,7 @@
         if(this.title === 'Blocks'){
           this.$router.push('/block/1/0')
         }else if(this.title === 'Transactions'){
-          this.$router.push('/recent_transactions/2/0')
+          this.$router.push('/recent_transactions/2/recent')
         }
       }
     }

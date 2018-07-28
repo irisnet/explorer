@@ -4,13 +4,15 @@
     <header class="app_header_person_computer" v-show="devicesShow === 1">
       <div class="header_top">
         <div class="imageWrap" style="cursor:pointer;margin-top:0.1rem;" @click="featureButtonClick('/home')">
-          <img src="../assets/logo.png" alt="失去网络了..." style="height:0.7rem;"/>
+          <img src="../assets/logo.png" alt="失去网络了..."/>
           <div class="logo_title_wrap">
             <div class="logo_title_content">
               <span>IRIS</span>
               <span>Explorer</span>
             </div>
-            <p>{{fuxi}}</p>
+            <p>
+              Block Explorer - <span>{{fuxi}}</span>
+            </p>
           </div>
         </div>
         <div class="navSearch">
@@ -34,9 +36,12 @@
         >Blocks</span>
         <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === '/transaction'?'nav_item_active':''"
              @mouseover="transactionMouseOver" @mouseleave="transactionMouseLeave">
-          <span class="bottom_arrow"></span>
-          <span >Transactions</span>
-          <span class="sub_btn_item" @click="featureButtonClick('/recent_transactions/2/0')"
+
+          <span class="nav_item common_item_style">
+            Transactions
+            <span class="bottom_arrow"></span>
+          </span>
+          <span class="sub_btn_item" @click="featureButtonClick('/recent_transactions/2/recent')"
                 v-show="showSubTransaction">Recent Transactions</span>
           <span class="sub_btn_item" @click="featureButtonClick('/transfer_transactions/2/transfer')"
                 v-show="showSubTransaction">Transfer Transactions</span>
@@ -45,8 +50,11 @@
         </div>
         <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === '/validators'?'nav_item_active':''"
              @mouseover="validatorsMouseOver" @mouseleave="validatorsMouseLeave">
-          <span class="bottom_arrow" style="right:0.22rem;"></span>
-          <span >Validators</span>
+
+          <span class="nav_item common_item_style">
+            Validators
+            <span class="bottom_arrow" style="right:0.22rem;"></span>
+          </span>
           <span class="sub_btn_item" @click="featureButtonClick('/validators/3/0')"
                 v-show="showSubValidators">Validators</span>
           <span class="sub_btn_item" @click="featureButtonClick('/candidates/4/0')"
@@ -62,13 +70,15 @@
     <div class="app_header_mobile" v-show="devicesShow === 0">
       <div class="feature_btn" @click="showFeature"></div>
       <div class="image_wrap_mobile" @click="featureButtonClick('/home',true)">
-        <img src="../assets/logo.png" alt="失去网络了..." style="height:0.7rem;"/>
+        <img src="../assets/logo.png" alt="失去网络了..."/>
         <div class="logo_title_wrap">
           <div class="logo_title_content">
             <span>IRIS</span>
             <span>Explorer</span>
           </div>
-          <p>{{fuxi}}</p>
+          <p>
+            Block Explorer - <span>{{fuxi}}</span>
+          </p>
         </div>
       </div>
 
@@ -77,7 +87,7 @@
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/block/1/0')">Blocks</span>
         <span class="feature_btn_mobile feature_nav feature_arrow" @click="transactionShow =! transactionShow">Transactions</span>
         <span class="feature_btn_mobile feature_subNav" v-show="transactionShow"
-              @click="featureButtonClick('/recent_transactions/2/0')">Recent Transactions</span>
+              @click="featureButtonClick('/recent_transactions/2/recent')">Recent Transactions</span>
         <span class="feature_btn_mobile feature_subNav" v-show="transactionShow"
               @click="featureButtonClick('/transfer_transactions/2/transfer')">Transfer Transactions</span>
         <span class="feature_btn_mobile feature_subNav" v-show="transactionShow"
@@ -168,15 +178,6 @@
         if (!isLogoClick) {
           this.featureShow = !this.featureShow;
         }
-        /*if (path.includes('/recent_transactions/2')) {
-          this.activeClassName = '/transaction';
-        } else if (path.includes('/recent_transactions/3') || path.includes('/recent_transactions/4')) {
-          this.activeClassName = '/validators';
-        } else if (path.includes('/block')) {
-          this.activeClassName = '/block';
-        } else {
-          this.activeClassName = path;
-        }*/
         this.showSubTransaction = false;
         this.showSubValidators = false;
         this.listenRouteForChangeActiveButton();
@@ -233,7 +234,7 @@
       listenRouteForChangeActiveButton(){
         //刷新的时候路由不变，active按钮不变
         let path = window.location.href;
-        if (path.includes('/recent_transactions/2')) {
+        if (path.includes('transactions/2')) {
           this.activeClassName = '/transaction';
         } else if (path.includes('/validators/3') || path.includes('/candidates/4')) {
           this.activeClassName = '/validators';
@@ -283,20 +284,21 @@
               span{
                 &:first-child{
                   font-size:0.24rem;
-                  color:#3498db;
+                  color:#005a98;
                 }
                 &:last-child{
                   font-size:0.24rem;
-                  color:#000000;
+                  color:#3598db;
                   display:inline-block;
-                  margin-left:0.12rem;
                 }
 
               }
             }
             p{
               font-size:0.14rem;
-              color:#aeaeb9;
+              span{
+                color:#aeaeb9;
+              }
             }
 
           }
@@ -311,7 +313,7 @@
           }
 
           .search_input {
-            @include borderRadius(0.04rem);
+            @include borderRadius(0.06rem);
             width: 5.04rem;
             height: 0.36rem;
             line-height: 0.36rem;
@@ -321,6 +323,22 @@
             margin-top: 0.3rem;
             font-size: 0.14rem;
             padding-right:0.3rem;
+            &::-webkit-input-placeholder{
+              font-size:0.14rem;
+              color:#AEAEB9;
+            }
+            &:-moz-placeholder {
+              font-size:0.14rem;
+              color:#AEAEB9;
+            }
+            &::-moz-placeholder {
+              font-size:0.14rem;
+              color:#AEAEB9;
+            }
+            &:-ms-input-placeholder {
+              font-size:0.14rem;
+              color:#AEAEB9;
+            }
           }
           .search_icon {
             position: absolute;
@@ -365,27 +383,26 @@
           display: inline-block;
           height: 0.66rem;
           line-height: 0.66rem;
-          padding: 0 0.6rem;;
+          padding: 0 0.57rem;;
           text-align: center;
           font-size: 0.18rem;
           cursor: pointer;
           color: #c9eafd;
-        }
-        .sub_btn_wrap{
-          @include flex;
-          flex-direction:column;
-          position:relative;
-          z-index:100;
-          padding:0;
-          width:1.8rem;
+          font-weight:300;
           .bottom_arrow{
-            position:absolute;
-            height:0.2rem;
+            display:inline-block;
+            height:0.12rem;
             width:0.2rem;
             background: url('../assets/caret-bottom.png') no-repeat 0 0;
             top:0.27rem;
             right:0.1rem;
           }
+        }
+        .sub_btn_wrap{
+          @include flex;
+          flex-direction:column;
+          z-index:100;
+          padding:0;
           .sub_btn_item{
             height:0.4rem;
             line-height:0.4rem;
@@ -413,7 +430,7 @@
       @include flex();
       flex-direction: column;
       position: relative;
-      height: 1rem;
+      height: 1.8rem;
       border-bottom: 0.01rem solid #cccccc;
       .feature_btn {
         position: absolute;
@@ -444,7 +461,9 @@
           }
           p{
             font-size:0.14rem;
-            color:#aeaeb9;
+            span{
+              color:#aeaeb9;
+            }
           }
 
         }
@@ -464,9 +483,11 @@
         }
         input {
           width: 95%;
-          @include borderRadius(0.5rem);
+          @include borderRadius(0.06rem);
           border: 0.01rem solid #eee;
           font-size: 0.14rem;
+          padding:0 0.4rem 0 0.1rem;
+          height:0.3rem;
           &:focus {
             border: 0.01rem solid #3190e8;
             outline: none;
@@ -474,15 +495,21 @@
         }
         .search_icon {
           position: absolute;
-          top: 0.05rem;
-          right: 0.12rem;
+          top: 0.07rem;
+          right: 0.15rem;
           width: 0.15rem;
           height: 0.15rem;
           background: url('../assets/search.svg') no-repeat;
           cursor: pointer;
         }
         .clear_icon{
-
+          position: absolute;
+          top: 0.08rem;
+          right: 0.32rem;
+          width: 0.15rem;
+          height: 0.15rem;
+          background: url('../assets/clear.png') no-repeat;
+          cursor: pointer;
         }
       }
       .use_feature_mobile {

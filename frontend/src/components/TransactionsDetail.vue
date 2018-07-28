@@ -89,7 +89,7 @@
         if(data){
           this.hashValue = data.TxHash;
           this.blockValue = data.Height;
-          this.typeValue = data.Type;
+          this.typeValue = data.Type === 'coin'?'transfer':data.Type;
           this.fromValue = data.From;
           this.toValue = data.To;
           this.timestampValue = Tools.conversionTimeToUTC(data.Time);
@@ -97,7 +97,7 @@
             return `${item.amount} ${item.denom.toUpperCase()}`;
           }).join(',');
           this.feeValue = data.Fee.Amount.map(item=>{
-            return `${item.amount} ${item.denom.toUpperCase()}`;
+            return `${item.amount} ${item.amount === 0?'IRIS':item.denom.toUpperCase()}`;
           }).join(',');
         }
 
