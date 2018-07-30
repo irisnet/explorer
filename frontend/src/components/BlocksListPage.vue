@@ -84,12 +84,12 @@
         showNoData:false,//是否显示列表的无数据
         showLoading:false,
         blockVar:'',
-
+        innerWidth : window.innerWidth,
       }
     },
     beforeMount() {
       this.type = this.$route.params.type;
-      if (Tools.currentDeviceIsPersonComputer()) {
+      if (window.innerWidth > 910) {
         this.blocksListPageWrap = 'personal_computer_blocks_list_page_wrap';
       } else {
         this.blocksListPageWrap = 'mobile_blocks_list_page_wrap';
@@ -109,8 +109,20 @@
           break;
 
       }
+      window.addEventListener('resize',this.onresize);
+    },
+    beforeDestroy() {
+      window.removeEventListener('resize',this.onWindowResize);
     },
     methods: {
+      onresize(){
+        this.innerWidth = window.innerWidth;
+        if(window.innerWidth > 910){
+          this.blocksListPageWrap = 'personal_computer_blocks_list_page_wrap';
+        } else {
+          this.blocksListPageWrap = 'mobile_blocks_list_page_wrap';
+        }
+      },
       getDataList(currentPage, pageSize, type) {
         this.showLoading = true;
         if (type === '1') {
@@ -284,7 +296,7 @@
       align-items: center;
     }
     .b-table {
-      min-width: 8rem;
+      //min-width: 8rem;
 
       a {
         text-decoration: none;

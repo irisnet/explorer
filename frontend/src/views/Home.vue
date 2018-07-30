@@ -13,7 +13,7 @@
         <div class="information_preview_module"
              style="cursor:pointer;" @click="skipValidators"
         >
-          <span>{{validatorsValue}}</span>
+          <span style="text-align:center;">{{validatorsValue}}</span>
           <span class="information_module_key">Validators</span>
         </div>
         <div class="information_preview_module">
@@ -26,7 +26,7 @@
         </div>
       </div>
       <div :class="module_item_wrap">
-        <div class="home_module_item home_module_item_pie">
+        <div class="home_module_item home_module_item_pie" style="overflow-x: hidden;">
           <echarts-pie :information="information"></echarts-pie>
         </div>
         <div class="home_module_item home_module_item_pie">
@@ -34,10 +34,10 @@
         </div>
       </div>
       <div :class="module_item_wrap">
-        <div class="home_module_item" style="height:7.05rem;">
+        <div class="home_module_item fixed_item_height">
           <home-block-module :title="'Blocks'" :information="blocksInformation"></home-block-module>
         </div>
-        <div class="home_module_item" style="height:7.05rem;">
+        <div class="home_module_item fixed_item_height">
           <home-block-module :title="'Transactions'" :information="transactionInformation"></home-block-module>
         </div>
       </div>
@@ -74,17 +74,12 @@
         informationLine: {},//折线图端所有信息
         blocksInformation: [],
         transactionInformation: [],
+        innerWidth : window.innerWidth,
 
       }
     },
     beforeMount() {
-      if (Tools.currentDeviceIsPersonComputer()) {
-        this.pageClassName = 'personal_computer_home_wrap';
-        this.module_item_wrap = 'module_item_wrap_computer';
-      } else {
-        this.pageClassName = 'mobile_home_wrap';
-        this.module_item_wrap = 'module_item_wrap_mobile';
-      }
+
     },
     mounted() {
       document.getElementById('router_wrap').addEventListener('click', this.hideFeature);
@@ -94,9 +89,36 @@
       this.getTransactionHistory();
       this.getTransactionList();
       this.getValidatorsList();
+      window.addEventListener('resize',this.onresize);
+      if (window.innerWidth > 910) {
+        this.pageClassName = 'personal_computer_home_wrap';
+        this.module_item_wrap = 'module_item_wrap_computer';
+        document.getElementsByClassName('fixed_item_height')[0].style.height = '7.05rem';
+        document.getElementsByClassName('fixed_item_height')[1].style.height = '7.05rem';
+      } else {
+        this.pageClassName = 'mobile_home_wrap';
+        this.module_item_wrap = 'module_item_wrap_mobile';
+      }
     },
-
+    beforeDestroy(){
+      window.removeEventListener('resize',this.onWindowResize);
+    },
     methods: {
+      onresize(){
+        this.innerWidth = window.innerWidth;
+        if(window.innerWidth > 910){
+          this.pageClassName = 'personal_computer_home_wrap';
+          this.module_item_wrap = 'module_item_wrap_computer';
+          document.getElementsByClassName('fixed_item_height')[0].style.height = '7.05rem';
+          document.getElementsByClassName('fixed_item_height')[1].style.height = '7.05rem';
+        }else {
+          this.pageClassName = 'mobile_home_wrap';
+          this.module_item_wrap = 'module_item_wrap_mobile';
+          document.getElementsByClassName('fixed_item_height')[0].style.height = 'auto';
+          document.getElementsByClassName('fixed_item_height')[1].style.height = 'auto';
+        }
+      },
+
       getBlocksStatusData() {
         let url = `/api/chain/status`;
         axios.get(url).then((data) => {

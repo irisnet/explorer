@@ -60,11 +60,11 @@
 
     },
     data() {
-      let isPersonalComputer = Tools.currentDeviceIsPersonComputer();
       return {
-        deviceType:window.innerWidth > 500 ? 1 : 0,
+        deviceType:window.innerWidth,
         homeModuleBlockTitleVar:this.title === 'Blocks'?'blocks_background':'transactions_background',
         blockModuleTypeVar:this.title === 'Blocks'?'blocks_background_type':'transactions_background_type',
+        innerWidth : window.innerWidth
       }
     },
     props:['title','information',],
@@ -72,18 +72,11 @@
 
     },
     mounted() {
-      document.getElementsByClassName('home_module_block_content')[0].onmouseover = function(){
-        document.getElementsByClassName('home_module_block_content')[0].style.overflowY = 'auto';
-      };
-      document.getElementsByClassName('home_module_block_content')[1].onmouseover = function(){
-        document.getElementsByClassName('home_module_block_content')[1].style.overflowY = 'auto';
-      };
-      document.getElementsByClassName('home_module_block_content')[0].onmouseout = function(){
-        document.getElementsByClassName('home_module_block_content')[0].style.overflowY = 'hidden';
-      };
-      document.getElementsByClassName('home_module_block_content')[1].onmouseout = function(){
-        document.getElementsByClassName('home_module_block_content')[1].style.overflowY = 'hidden';
-      };
+      if(window.innerWidth > 910){
+        this.listenEvent();
+
+      }
+      window.addEventListener('resize',this.onresize);
 
 
     },
@@ -98,6 +91,31 @@
         }else if(this.title === 'Transactions'){
           this.$router.push('/recent_transactions/2/recent')
         }
+      },
+      onresize(){
+        this.innerWidth = window.innerWidth;
+        if(window.innerWidth > 910){
+          this.listenEvent();
+        }else {
+
+        }
+      },
+      beforeDestroy(){
+        window.removeEventListener('resize',this.onWindowResize);
+      },
+      listenEvent(){
+        document.getElementsByClassName('home_module_block_content')[0].onmouseover = function(){
+          document.getElementsByClassName('home_module_block_content')[0].style.overflowY = 'auto';
+        };
+        document.getElementsByClassName('home_module_block_content')[1].onmouseover = function(){
+          document.getElementsByClassName('home_module_block_content')[1].style.overflowY = 'auto';
+        };
+        document.getElementsByClassName('home_module_block_content')[0].onmouseout = function(){
+          document.getElementsByClassName('home_module_block_content')[0].style.overflowY = 'hidden';
+        };
+        document.getElementsByClassName('home_module_block_content')[1].onmouseout = function(){
+          document.getElementsByClassName('home_module_block_content')[1].style.overflowY = 'hidden';
+        };
       }
     }
   }

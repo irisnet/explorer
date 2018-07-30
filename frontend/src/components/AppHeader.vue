@@ -103,12 +103,15 @@
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/faucet')">Faucet</span>
       </div>
       <div class="search_input_mobile">
-        <input type="text" class="search_input"
-               v-model="searchInputValue"
-               @keyup.enter="onInputChange"
-               placeholder="Search by Address / Txhash / Block">
-        <i class="search_icon" @click="getData(searchInputValue)"></i>
-        <i class="clear_icon" @click="clearData" v-show="showClear"></i>
+        <div style="width:95%;position:relative">
+          <input type="text" class="search_input"
+                 v-model="searchInputValue"
+                 @keyup.enter="onInputChange"
+                 placeholder="Search by Address / Txhash / Block">
+          <i class="search_icon" @click="getData(searchInputValue)"></i>
+          <i class="clear_icon" @click="clearData" v-show="showClear"></i>
+        </div>
+
       </div>
     </div>
   </div>
@@ -149,10 +152,11 @@
         showSubTransaction:false,
         showSubValidators:false,
         showClear:false,
+        innerWidth : window.innerWidth
       }
     },
     beforeMount() {
-      if (Tools.currentDeviceIsPersonComputer()) {
+      if (window.innerWidth > 910) {
         this.devicesShow = 1;
         this.appHeaderVar = 'person_computer_header_var';
       } else {
@@ -163,14 +167,26 @@
     mounted() {
       document.getElementById('router_wrap').addEventListener('click', this.hideFeature);
       this.listenRouteForChangeActiveButton();
+      window.addEventListener('resize',this.onresize);
     },
     beforeDestroy() {
-      document.getElementById('router_wrap').removeEventListener('click', this.hideFeature)
+      document.getElementById('router_wrap').removeEventListener('click', this.hideFeature);
+      window.removeEventListener('resize',this.onWindowResize);
     },
     methods: {
       hideFeature() {
         if (this.featureShow) {
           this.featureShow = false;
+        }
+      },
+      onresize(){
+        this.innerWidth = window.innerWidth;
+        if(window.innerWidth > 910){
+          this.devicesShow = 1;
+          this.appHeaderVar = 'person_computer_header_var';
+        }else {
+          this.devicesShow = 0;
+          this.appHeaderVar = 'mobile_header_var';
         }
       },
       showFeature() {
@@ -326,7 +342,7 @@
             border: 0.01rem solid #dddddd;
             margin-top: 0.3rem;
             font-size: 0.14rem;
-            padding-right:0.3rem;
+            padding-right:0.48rem;
             &::-webkit-input-placeholder{
               font-size:0.14rem;
               color:#AEAEB9;
@@ -449,6 +465,7 @@
       }
       .image_wrap_mobile {
         @include flex;
+        width:2.5rem;
         .logo_title_wrap{
           margin-left:0.16rem;
           .logo_title_content{
@@ -489,11 +506,11 @@
           line-height: 0.28rem;
         }
         input {
-          width: 95%;
+          width: 100%;
           @include borderRadius(0.06rem);
           border: 0.01rem solid #eee;
           font-size: 0.14rem;
-          padding:0 0.4rem 0 0.1rem;
+          padding:0 0.48rem 0 0.1rem;
           height:0.3rem;
           &:focus {
             border: 0.01rem solid #3190e8;

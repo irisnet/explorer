@@ -58,8 +58,8 @@
     components: {
       AppHeader,
     },
-    watch:{
-      $route(){
+    watch: {
+      $route() {
         this.showFooter = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
         document.getElementById('router_wrap').scrollTop = 0;
       }
@@ -73,39 +73,63 @@
         footerClassName: 'person_computer_footer',
         footerLeftVar: 'person_computer_footer_left',
         footerRightVar: 'person_computer_footer_right',
-        showFooter:!(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer()),
-        vh:window.innerHeight,
-        vw:window.innerWidth,
-        qrShow:false,
-        build:testVersion.app.buildNumber,
-        env:testVersion.app.env,
-        version:testVersion.app.version,
+        showFooter: !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer()),
+        vh: window.innerHeight,
+        vw: window.innerWidth,
+        qrShow: false,
+        build: testVersion.app.buildNumber,
+        env: testVersion.app.env,
+        version: testVersion.app.version,
+        innerWidth: window.innerWidth,
       }
     },
     beforeMount() {
       if (Tools.currentDeviceIsPersonComputer()) {
-        this.devicesShow = 1;
+        document.body.style.minWidth = '4rem';
+      }
+
+    },
+    mounted() {
+      window.addEventListener('resize', this.onresize);
+      if (window.innerWidth > 960) {
         this.footerClass = 'person_computer_wrap';
         this.footerClassName = 'person_computer_footer';
         this.footerLeftVar = 'person_computer_footer_left';
         this.footerRightVar = 'person_computer_footer_right';
       } else {
-        this.devicesShow = 0;
         this.footerClass = 'mobile_wrap_footer';
         this.footerClassName = 'mobile_footer';
         this.footerLeftVar = 'mobile_footer_left';
         this.footerRightVar = 'mobile_footer_right';
       }
     },
+    beforeDestroy() {
+      window.removeEventListener('resize', this.onWindowResize);
+    },
     methods: {
       footerLinkClick(path) {
         this.$router.push(path);
       },
-      showQRCode(){
-        this.qrShow = true;
-        console.log(this.qrShow)
+      onresize() {
+        this.innerWidth = window.innerWidth;
+        this.vh = window.innerHeight;
+        this.vw = window.innerWidth;
+        if (window.innerWidth > 960) {
+          this.footerClass = 'person_computer_wrap';
+          this.footerClassName = 'person_computer_footer';
+          this.footerLeftVar = 'person_computer_footer_left';
+          this.footerRightVar = 'person_computer_footer_right';
+        } else {
+          this.footerClass = 'mobile_wrap_footer';
+          this.footerClassName = 'mobile_footer';
+          this.footerLeftVar = 'mobile_footer_left';
+          this.footerRightVar = 'mobile_footer_right';
+        }
       },
-      hideQRCode(){
+      showQRCode() {
+        this.qrShow = true;
+      },
+      hideQRCode() {
         this.qrShow = false;
       }
     }
@@ -116,21 +140,24 @@
 
   html {
     font-size: 625%;
-    -webkit-text-size-adjust:none;
+    -webkit-text-size-adjust: none;
   }
 
   body, html {
     width: 100%;
     height: 100%;
   }
-  body{
+
+  body {
     font-size: 16px !important;
   }
-  p{
-    margin-bottom:0 !important;
+
+  p {
+    margin-bottom: 0 !important;
   }
-  ul{
-    margin-bottom:0 !important;
+
+  ul {
+    margin-bottom: 0 !important;
   }
 
   #app {
@@ -141,7 +168,7 @@
     #router_wrap {
       flex: 1;
       overflow-y: auto;
-      overflow-x: hidden;
+      overflow-x: auto;
       .router_view {
         min-height: 7.5rem;
       }
@@ -151,34 +178,34 @@
       .mobile_wrap_footer {
         /*height:21rem;*/
       }
-      .weChat_qr_code{//微信二维码弹框
-        position:fixed;
-        top:0;
-        left:0;
-        background: rgba(0,0,0,.6);
-        z-index:1000;
+      .weChat_qr_code { //微信二维码弹框
+        position: fixed;
+        top: 0;
+        left: 0;
+        background: rgba(0, 0, 0, .6);
+        z-index: 1000;
         @include flex;
         justify-content: center;
-        align-items:center;
-        .weChat_all{
-          width:3.7rem;
-          height:3.7rem;
+        align-items: center;
+        .weChat_all {
+          width: 3.7rem;
+          height: 3.7rem;
           background: #141426;
           @include borderRadius(0.05rem);
           @include flex;
-          flex-direction:column;
+          flex-direction: column;
           justify-content: center;
           align-items: center;
-          h2{
-            color:#5c5c7c;
-            font-size:0.24rem;
-            margin-top:0.1rem;
-            margin-bottom:0;
+          h2 {
+            color: #5c5c7c;
+            font-size: 0.24rem;
+            margin-top: 0.1rem;
+            margin-bottom: 0;
           }
-          p{
-            color:#5c5c7c;
-            margin-top:0.1rem;
-            font-size:0.18rem;
+          p {
+            color: #5c5c7c;
+            margin-top: 0.1rem;
+            font-size: 0.18rem;
           }
         }
       }
@@ -194,8 +221,8 @@
           .footer_left {
             flex-direction: row;
           }
-          .footer_right{
-            .footer_copyright_wrap{
+          .footer_right {
+            .footer_copyright_wrap {
               text-align: end;
             }
           }
@@ -206,15 +233,15 @@
           .footer_left {
             flex-direction: row;
           }
-          .footer_center{
+          .footer_center {
             text-align: center;
-            margin-bottom:0.1rem;
+            margin-bottom: 0.1rem;
           }
-          .footer_right{
-            .footer_link_wrap{
+          .footer_right {
+            .footer_link_wrap {
               justify-content: center;
             }
-            .footer_copyright_wrap{
+            .footer_copyright_wrap {
               text-align: center;
             }
           }
@@ -224,61 +251,61 @@
           @include flex;
           .footer_left {
             @include flex;
-            margin-bottom:0.1rem;
+            margin-bottom: 0.1rem;
             span, a {
               width: 0.4rem;
-              height:0.4rem;
+              height: 0.4rem;
               @include borderRadius(0.3rem);
               margin-right: 0.1rem;
-              cursor:pointer;
+              cursor: pointer;
               &:last-child {
                 margin-right: 0;
               }
             }
-            a{
+            a {
               text-decoration: none;
             }
-            .github{
-              @include linkBtn('./assets/github.png','./assets/github_h.png');
+            .github {
+              @include linkBtn('./assets/github.png', './assets/github_h.png');
             }
-            .airplane{
-              @include linkBtn('./assets/airplane.png','./assets/airplane_h.png');
+            .airplane {
+              @include linkBtn('./assets/airplane.png', './assets/airplane_h.png');
             }
-            .twitter{
-              @include linkBtn('./assets/twitter.png','./assets/twitter_h.png');
+            .twitter {
+              @include linkBtn('./assets/twitter.png', './assets/twitter_h.png');
             }
-            .facebook{
-              @include linkBtn('./assets/facebook.png','./assets/facebook_h.png');
+            .facebook {
+              @include linkBtn('./assets/facebook.png', './assets/facebook_h.png');
             }
-            .we_chat{
-              @include linkBtn('./assets/we_chat.png','./assets/we_chat_h.png');
+            .we_chat {
+              @include linkBtn('./assets/we_chat.png', './assets/we_chat_h.png');
             }
-            .qq{
-              @include linkBtn('./assets/qq.png','./assets/qq_h.png');
+            .qq {
+              @include linkBtn('./assets/qq.png', './assets/qq_h.png');
             }
 
           }
           .footer_right {
             @include flex;
-            flex-direction:column;
+            flex-direction: column;
             .footer_link_wrap {
               @include flex;
-              span{
-                font-size:0.14rem;
-                &:nth-child(2n-1){
-                  color:#3698db;
-                  cursor:pointer;
+              span {
+                font-size: 0.14rem;
+                &:nth-child(2n-1) {
+                  color: #3698db;
+                  cursor: pointer;
                 }
-                &:nth-child(2n){
-                  color:#a2a2ae;
-                  margin:0 0.1rem;
+                &:nth-child(2n) {
+                  color: #a2a2ae;
+                  margin: 0 0.1rem;
                 }
               }
             }
-            .footer_copyright_wrap{
-              color:#a2a2ae;
-              margin-top:0.1rem;
-              font-size:0.14rem;
+            .footer_copyright_wrap {
+              color: #a2a2ae;
+              margin-top: 0.1rem;
+              font-size: 0.14rem;
             }
 
           }

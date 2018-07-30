@@ -19,10 +19,71 @@
   export default {
     name: 'echarts-pie',
     watch:{
+      innerWidth(innerWidth){
+        //根据设备大小显示饼图的大小
+        let radius = innerWidth > 1258 === 1 ? '90%' : '80%';
+        let legend = innerWidth > 1258 ?
+          {
+            orient: 'vertical',
+            right: '10%',
+            data: [],
+          } : {
+            orient: 'horizontal',
+            y : 'bottom',
+            data: [],
+            type: 'scroll',
+          };
+        let center = innerWidth > 1258 ? ['40%', '50%'] : ['50%', '45%'];
+        let option = {
+
+          tooltip : {
+            trigger: 'item',
+            formatter(params){
+              let res =  `<span style="display:block;color:#00f0ff;padding:0 0.05rem;">${params.name}</span>`;
+              if(params.name !== 'others'){
+                res += `<span style="display:block;padding:0 0.05rem;">Uptime: ${params.data.upTime}</span>`;
+              }
+              res += `<span style="display:block;padding:0 0.05rem;">Voting Power: ${(params.value/params.data.totalCount*100).toFixed(2)}%</span>`;
+              return res;
+            }
+          },
+          legend,
+          series : [
+            {
+              name: '访问来源',
+              type: 'pie',
+              radius,
+              center,
+              label:{
+                show:false
+              },
+              data:[],
+              itemStyle: {
+                emphasis: {
+                  shadowBlur: 10,
+                  shadowOffsetX: 0,
+                  shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+              }
+            }
+          ]
+        };
+        if(pie){
+          option.legend.data = this.information.legendData;
+          option.series[0].data = this.information.seriesData;
+          pie.setOption(option);
+          pie.on('click',(param)=>{
+            if(param.data.name !== 'others'){
+              this.$router.push(`/address/1/${param.data.address}`)
+            }
+
+          })
+        }
+      },
       information(information){
         //根据设备大小显示饼图的大小
-        let radius = this.deviceType === 1 ? '90%' : '80%';
-        let legend = this.deviceType === 1 ?
+        let radius = this.innerWidth > 1258 ? '90%' : '80%';
+        let legend = this.innerWidth > 1258 === 1 ?
           {
             orient: 'vertical',
             right: '10%',
@@ -33,7 +94,7 @@
             data: [],
             type: 'scroll',
         };
-        let center = this.deviceType === 1 ? ['40%', '50%'] : ['50%', '45%'];
+        let center = this.innerWidth > 1258 ? ['40%', '50%'] : ['50%', '45%'];
         let option = {
 
           tooltip : {
@@ -83,7 +144,7 @@
     },
     data() {
       return {
-        deviceType:window.innerWidth > 500 ? 1 : 0,
+        innerWidth:window.innerWidth,
 
       }
     },
@@ -102,7 +163,8 @@
       },
       onWindowResize(){
         pie.resize();
-      }
+        this.innerWidth = window.innerWidth;
+      },
     },
     beforeDestroy(){
       window.removeEventListener('resize',this.onWindowResize);
