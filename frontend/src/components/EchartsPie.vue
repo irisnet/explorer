@@ -21,7 +21,19 @@
     watch:{
       information(information){
         //根据设备大小显示饼图的大小
-        let radius = this.deviceType === 1 ? '80%' : '55%';
+        let radius = this.deviceType === 1 ? '90%' : '80%';
+        let legend = this.deviceType === 1 ?
+          {
+            orient: 'vertical',
+            right: '10%',
+            data: [],
+        } : {
+          orient: 'horizontal',
+            y : 'bottom',
+            data: [],
+            type: 'scroll',
+        };
+        let center = this.deviceType === 1 ? ['40%', '50%'] : ['50%', '45%'];
         let option = {
 
           tooltip : {
@@ -35,17 +47,13 @@
               return res;
             }
           },
-          legend: {
-            orient: 'vertical',
-            right: '5%',
-            data: [],
-          },
+          legend,
           series : [
             {
               name: '访问来源',
               type: 'pie',
               radius,
-              center: ['35%', '50%'],
+              center,
               label:{
                 show:false
               },
@@ -85,15 +93,19 @@
     },
     mounted() {
       pie = echarts.init(document.getElementById('echarts_pie'));
-
-
-
+      window.addEventListener('resize',this.onWindowResize)
     },
 
     methods: {
       viewAllClick(){
           this.$router.push('/validators/3/0')
+      },
+      onWindowResize(){
+        pie.resize();
       }
+    },
+    beforeDestroy(){
+      window.removeEventListener('resize',this.onWindowResize);
     }
   }
 </script>
@@ -111,7 +123,7 @@
 
       .validators_title{
         font-size:0.18rem;
-        text-indent:0.3rem;
+        text-indent:0.35rem;
         font-weight:600;
         background: url('../assets/people.svg') no-repeat 0 -0.02rem;
       }

@@ -34,10 +34,10 @@
         </div>
       </div>
       <div :class="module_item_wrap">
-        <div class="home_module_item">
+        <div class="home_module_item" style="height:7.05rem;">
           <home-block-module :title="'Blocks'" :information="blocksInformation"></home-block-module>
         </div>
-        <div class="home_module_item">
+        <div class="home_module_item" style="height:7.05rem;">
           <home-block-module :title="'Transactions'" :information="transactionInformation"></home-block-module>
         </div>
       </div>
@@ -270,7 +270,7 @@
       margin-top: 0.15rem;
       .information_preview {
         @include flex;
-        margin-bottom: 0.1rem;
+        margin-bottom: 0.4rem;
 
         .information_preview_module {
           border-right: 0.01rem solid #eee;
@@ -311,10 +311,13 @@
         @include flex();
         justify-content: space-between;
         .home_module_item {
-          width: 45%;
+          flex:1;
           border: 0.01rem solid #eee;
-          margin-bottom: 0.1rem;
-          height: 4rem;
+          margin-bottom: 0.4rem;
+          height: 3.54rem;
+          &:nth-child(2n+1){
+            margin-right:0.4rem;
+          }
         }
       }
 

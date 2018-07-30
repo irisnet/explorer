@@ -19,7 +19,6 @@
     name: 'echarts-line',
     watch: {
       informationLine(informationLine) {
-        console.log(informationLine)
         //根据设备大小显示饼图的大小
         let radius = this.deviceType === 1 ? '85%' : '65%';
         let option = {
@@ -42,10 +41,10 @@
             },
             axisLabel:{
               interval:0,
-              rotate:-60,
+              rotate:45,
               margin:12,
-              formatter(value){
-                console.log(value)
+              formatter:(value)=>{
+                return `${this.month[this.monthNum.findIndex(item=>value.substr(0,2) === item)]}${value.substr(3,2)}`;
               }
             }
           },
@@ -62,8 +61,8 @@
           },
           grid: {
             left: '3%',   //图表距边框的距离
-            right: '11%',
-            bottom: '8%',
+            right: '5%',
+            bottom: '3%',
             top:'5%',
             containLabel: true
           },
@@ -104,21 +103,29 @@
     data() {
       return {
         deviceType: window.innerWidth > 500 ? 1 : 0,
-        echartsComponentWrapLine:window.innerWidth > 500 ?'echarts_component_wrap_line_personal_computer':'echarts_component_wrap_line_mobile'
+        echartsComponentWrapLine:window.innerWidth > 500 ?'echarts_component_wrap_line_personal_computer':'echarts_component_wrap_line_mobile',
+        month:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+        monthNum:['01','02','03','04','05','06','07','07','09','10','11','12'],
 
       }
     },
     props: ['informationLine'],
     beforeMount() {
-      this.month = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+
     },
     mounted() {
       line = echarts.init(document.getElementById('echarts_line'));
-
-
+      window.addEventListener('resize',this.onWindowResize)
     },
 
-    methods: {}
+    methods: {
+      onWindowResize(){
+        line.resize();
+      }
+    },
+    beforeDestroy(){
+      window.removeEventListener('resize',this.onWindowResize);
+    }
   }
 </script>
 <style lang="scss">

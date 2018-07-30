@@ -36,7 +36,10 @@
               <span class="footer_link_privacy" @click="footerLinkClick('/privacy_policy')">Privacy Policy</span>
             </div>
             <p class="footer_copyright_wrap">
-              ©️ IRIS Explorer 2018 all rights reserved(v 0.2.2)
+              ©️ IRIS Explorer 2018 all rights reserved
+            </p>
+            <p class="footer_copyright_wrap">
+              {{`${version}(${env}_${build})`}}
             </p>
 
           </div>
@@ -49,6 +52,7 @@
 <script>
   import AppHeader from './components/AppHeader';
   import Tools from './common/Tools';
+  import testVersion from '../testVersion';
 
   export default {
     components: {
@@ -73,6 +77,9 @@
         vh:window.innerHeight,
         vw:window.innerWidth,
         qrShow:false,
+        build:testVersion.app.buildNumber,
+        env:testVersion.app.env,
+        version:testVersion.app.version,
       }
     },
     beforeMount() {

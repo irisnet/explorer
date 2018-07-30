@@ -15,18 +15,21 @@
                   @click="skipRouter(item.Height?`/blocks_detail/${item.Height}`:`/tx?txHash=${item.TxHash}`)">
               {{item.Height?item.Height:`TX# ${item.TxHash.substr(0,16)}...`}}</span>
           </div>
-          <div class="key_value_wrap" v-show="item.TxHash">
-            <span class="blocks_module_props">From:</span>
-            <span class="blocks_module_value" @click="skipRouter(`/address/1/${item.From}`)">
+          <div class="from_to_wrap">
+            <div class="key_value_wrap" v-show="item.TxHash">
+              <span class="blocks_module_props">From:</span>
+              <span class="blocks_module_value" @click="skipRouter(`/address/1/${item.From}`)">
               {{item.From?`${String(item.From).substr(0,16)}...`:''}}
             </span>
-          </div>
-          <div class="key_value_wrap" v-show="item.TxHash">
-            <span class="blocks_module_props">To:</span>
-            <span class="blocks_module_value" @click="skipRouter(`/address/1/${item.To}`)">
+            </div>
+            <div class="key_value_wrap" v-show="item.TxHash">
+              <span class="blocks_module_props">To:</span>
+              <span class="blocks_module_value" @click="skipRouter(`/address/1/${item.To}`)">
               {{item.To?`${String(item.To).substr(0,16)}...`:''}}
             </span>
+            </div>
           </div>
+
 
           <div class="key_value_wrap">
             <span class="blocks_module_props">{{item.Height?'Txn:':'Amount:'}}</span>
@@ -69,6 +72,19 @@
 
     },
     mounted() {
+      document.getElementsByClassName('home_module_block_content')[0].onmouseover = function(){
+        document.getElementsByClassName('home_module_block_content')[0].style.overflowY = 'auto';
+      };
+      document.getElementsByClassName('home_module_block_content')[1].onmouseover = function(){
+        document.getElementsByClassName('home_module_block_content')[1].style.overflowY = 'auto';
+      };
+      document.getElementsByClassName('home_module_block_content')[0].onmouseout = function(){
+        document.getElementsByClassName('home_module_block_content')[0].style.overflowY = 'hidden';
+      };
+      document.getElementsByClassName('home_module_block_content')[1].onmouseout = function(){
+        document.getElementsByClassName('home_module_block_content')[1].style.overflowY = 'hidden';
+      };
+
 
     },
 
@@ -103,14 +119,16 @@
       border-bottom:1px solid #e4e4e4;
       .home_module_block_title{
         font-size:0.18rem;
-        text-indent:0.3rem;
+
         font-weight:600;
       }
       .blocks_background{
         background: url('../assets/blocks.png') no-repeat 0 0.02rem;
+        text-indent:0.35rem;
       }
       .transactions_background{
         background: url('../assets/transactions.png') no-repeat 0 0.02rem;
+        text-indent:0.3rem;
       }
       .view_all_btn{
         @include viewBtn;
@@ -122,16 +140,24 @@
     }
     .home_module_block_content{
       flex:1;
-      overflow-y:auto;
+      overflow-y:hidden;
       .home_module_block_content_item{
         @include flex;
         justify-content:space-between;
         border-bottom:1px solid #eee;
         padding:0.12rem;
+        height:1.09rem;
+        &:last-child{
+          border-bottom:none;
+        }
         .blocks_module_left{
           @include flex;
           flex-direction:column;
-
+          flex:2;
+          .from_to_wrap{
+            @include flex;
+            flex-wrap: wrap;
+          }
           .key_value_wrap{
             @include flex;
             flex-direction:row;
@@ -141,6 +167,7 @@
               font-size:0.14rem;
               display:inline-block;
             }
+
             .blocks_module_props{
               font-size:0.14rem;
               color:#555;
@@ -162,6 +189,7 @@
           @include flex;
           flex-direction:column;
           align-items: flex-end;
+          flex:1;
           span{
             font-size:0.14rem;
             color:#a2a2ae;
