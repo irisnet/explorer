@@ -3,7 +3,7 @@
   <div :class="appHeaderVar" v-show="showHeader">
     <header class="app_header_person_computer" v-show="devicesShow === 1">
       <div class="header_top">
-        <div class="imageWrap" style="cursor:pointer;margin-top:0.1rem;" @click="featureButtonClick('/home')">
+        <div class="imageWrap" @click="featureButtonClick('/home')">
           <img src="../assets/logo.png" alt="失去网络了..."/>
           <div class="logo_title_wrap">
             <div class="logo_title_content">
@@ -56,8 +56,10 @@
             <span class="bottom_arrow" style="right:0.22rem;"></span>
           </span>
           <span class="sub_btn_item" @click="featureButtonClick('/validators/3/0')"
+                style="width:1.6rem;padding-left:0.27rem;"
                 v-show="showSubValidators">Validators</span>
           <span class="sub_btn_item" @click="featureButtonClick('/candidates/4/0')"
+                style="width:1.6rem;padding-left:0.27rem;"
                 v-show="showSubValidators">Candidates</span>
 
         </div>
@@ -101,12 +103,15 @@
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/faucet')">Faucet</span>
       </div>
       <div class="search_input_mobile">
-        <input type="text" class="search_input"
-               v-model="searchInputValue"
-               @keyup.enter="onInputChange"
-               placeholder="Search by Address / Txhash / Block">
-        <i class="search_icon" @click="getData(searchInputValue)"></i>
-        <i class="clear_icon" @click="clearData" v-show="showClear"></i>
+        <div style="width:95%;position:relative">
+          <input type="text" class="search_input"
+                 v-model="searchInputValue"
+                 @keyup.enter="onInputChange"
+                 placeholder="Search by Address / Txhash / Block">
+          <i class="search_icon" @click="getData(searchInputValue)"></i>
+          <i class="clear_icon" @click="clearData" v-show="showClear"></i>
+        </div>
+
       </div>
     </div>
   </div>
@@ -147,10 +152,11 @@
         showSubTransaction:false,
         showSubValidators:false,
         showClear:false,
+        innerWidth : window.innerWidth
       }
     },
     beforeMount() {
-      if (Tools.currentDeviceIsPersonComputer()) {
+      if (window.innerWidth > 910) {
         this.devicesShow = 1;
         this.appHeaderVar = 'person_computer_header_var';
       } else {
@@ -161,14 +167,26 @@
     mounted() {
       document.getElementById('router_wrap').addEventListener('click', this.hideFeature);
       this.listenRouteForChangeActiveButton();
+      window.addEventListener('resize',this.onresize);
     },
     beforeDestroy() {
-      document.getElementById('router_wrap').removeEventListener('click', this.hideFeature)
+      document.getElementById('router_wrap').removeEventListener('click', this.hideFeature);
+      window.removeEventListener('resize',this.onWindowResize);
     },
     methods: {
       hideFeature() {
         if (this.featureShow) {
           this.featureShow = false;
+        }
+      },
+      onresize(){
+        this.innerWidth = window.innerWidth;
+        if(window.innerWidth > 910){
+          this.devicesShow = 1;
+          this.appHeaderVar = 'person_computer_header_var';
+        }else {
+          this.devicesShow = 0;
+          this.appHeaderVar = 'mobile_header_var';
         }
       },
       showFeature() {
@@ -278,6 +296,8 @@
         justify-content: space-between;
         .imageWrap{
           @include flex;
+          cursor:pointer;
+          margin-top:0.2rem;
           .logo_title_wrap{
             margin-left:0.16rem;
             .logo_title_content{
@@ -322,7 +342,7 @@
             border: 0.01rem solid #dddddd;
             margin-top: 0.3rem;
             font-size: 0.14rem;
-            padding-right:0.3rem;
+            padding-right:0.48rem;
             &::-webkit-input-placeholder{
               font-size:0.14rem;
               color:#AEAEB9;
@@ -383,7 +403,7 @@
           display: inline-block;
           height: 0.66rem;
           line-height: 0.66rem;
-          padding: 0 0.57rem;;
+          width:1.6rem;
           text-align: center;
           font-size: 0.18rem;
           cursor: pointer;
@@ -391,7 +411,7 @@
           font-weight:300;
           .bottom_arrow{
             display:inline-block;
-            height:0.12rem;
+            height:0.11rem;
             width:0.2rem;
             background: url('../assets/caret-bottom.png') no-repeat 0 0;
             top:0.27rem;
@@ -404,11 +424,14 @@
           z-index:100;
           padding:0;
           .sub_btn_item{
-            height:0.4rem;
-            line-height:0.4rem;
+            height:0.36rem;
+            line-height:0.36rem;
             font-size:0.14rem;
             background: #005a98;
             color: #c9eafd;
+            width:1.92rem;
+            text-align: left;
+            padding-left:0.18rem;
             &:hover{
               color: #00f0ff;
             }
@@ -442,6 +465,7 @@
       }
       .image_wrap_mobile {
         @include flex;
+        width:2.5rem;
         .logo_title_wrap{
           margin-left:0.16rem;
           .logo_title_content{
@@ -482,11 +506,11 @@
           line-height: 0.28rem;
         }
         input {
-          width: 95%;
+          width: 100%;
           @include borderRadius(0.06rem);
           border: 0.01rem solid #eee;
           font-size: 0.14rem;
-          padding:0 0.4rem 0 0.1rem;
+          padding:0 0.48rem 0 0.1rem;
           height:0.3rem;
           &:focus {
             border: 0.01rem solid #3190e8;
@@ -515,7 +539,7 @@
       .use_feature_mobile {
         position: absolute;
         width: 100%;
-        top: 1rem;
+        top: 1.2rem;
         left: 0;
         background: #f2f2f2;
         @include flex();
@@ -534,7 +558,7 @@
           position: relative;
           color: #c9eafd;
           font-size:0.14rem;
-          background: url('../assets/arrow-bottom.svg') no-repeat 97% 1.2rem,#3598db;
+          background: url('../assets/caret-bottom.png') no-repeat 97% 0.12rem,#3598db;
         }
         .feature_subNav {
           padding-left: 0.3rem;

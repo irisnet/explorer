@@ -4,7 +4,7 @@
       <p :class="blocksListPageWrap" style="margin-bottom:0;">
         <span class="blocks_list_title">{{titleVar}}</span>
         <span class="blocks_list_page_wrap_hash_var">{{blocksValue}}</span>
-        <span class="blocks_list_page_wrap_hash_var" v-show="['1','2','3','4'].includes(type)">{{count}} total</span>
+
         <span class="blocks_list_page_wrap_hash_var for_block"
               v-show="this.$route.params.param.includes('address') || this.$route.params.param.includes('block')">
           for {{blockVar}}
@@ -13,7 +13,8 @@
     </div>
 
     <div :class="blocksListPageWrap">
-      <div class="pagination">
+      <div class="pagination total_num">
+        <span class="blocks_list_page_wrap_hash_var" v-show="['1','2','3','4'].includes(type)">{{count}} total</span>
         <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
         </b-pagination>
       </div>
@@ -83,12 +84,12 @@
         showNoData:false,//是否显示列表的无数据
         showLoading:false,
         blockVar:'',
-
+        innerWidth : window.innerWidth,
       }
     },
     beforeMount() {
       this.type = this.$route.params.type;
-      if (Tools.currentDeviceIsPersonComputer()) {
+      if (window.innerWidth > 910) {
         this.blocksListPageWrap = 'personal_computer_blocks_list_page_wrap';
       } else {
         this.blocksListPageWrap = 'mobile_blocks_list_page_wrap';
@@ -108,8 +109,20 @@
           break;
 
       }
+      window.addEventListener('resize',this.onresize);
+    },
+    beforeDestroy() {
+      window.removeEventListener('resize',this.onWindowResize);
     },
     methods: {
+      onresize(){
+        this.innerWidth = window.innerWidth;
+        if(window.innerWidth > 910){
+          this.blocksListPageWrap = 'personal_computer_blocks_list_page_wrap';
+        } else {
+          this.blocksListPageWrap = 'mobile_blocks_list_page_wrap';
+        }
+      },
       getDataList(currentPage, pageSize, type) {
         this.showLoading = true;
         if (type === '1') {
@@ -265,6 +278,13 @@
       @include flex;
       justify-content: flex-end;
       @include borderRadius(0.025rem);
+      li{
+        height:0.3rem !important;
+      }
+    }
+    .total_num{
+      @include flex;
+      justify-content: space-between;
     }
     .no_data_show{
       @include flex;
@@ -276,7 +296,7 @@
       align-items: center;
     }
     .b-table {
-      min-width: 7rem;
+      //min-width: 8rem;
 
       a {
         text-decoration: none;
