@@ -81,9 +81,10 @@
         }
       },
       information(information){
+        console.log(this.innerWidth)
         //根据设备大小显示饼图的大小
         let radius = this.innerWidth > 1258 ? '90%' : '80%';
-        let legend = this.innerWidth > 1258 === 1 ?
+        let legend = this.innerWidth > 1258 ?
           {
             orient: 'vertical',
             right: '10%',
