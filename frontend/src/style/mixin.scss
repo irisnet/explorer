@@ -1,0 +1,71 @@
+$blue: #3190e8;
+$bc: #e4e4e4;
+$fc:#fff;
+
+@mixin borderRadius($radius) {
+  -webkit-border-radius: $radius !important;
+  -moz-border-radius: $radius !important;
+  -ms-border-radius: $radius !important;
+  -o-border-radius: $radius !important;
+  border-radius: $radius !important;
+}
+//pc端布局是中部对齐
+@mixin pcCenter {
+  width: 80%;
+  min-width: 4rem;
+  max-width: 12.8rem;
+}
+//pc端中对齐端容器样式
+@mixin pcContainer {
+  width:100%;
+  flex-direction: column;
+  align-items: center;
+}
+
+//flex的兼容写法
+@mixin flex{
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+//定位上下左右居中
+@mixin center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
+//flex 布局和 子元素 对其方式
+@mixin fj($type: space-between){
+  display: flex;
+  justify-content: $type;
+
+}
+@mixin viewBtn{
+  width:0.7rem;
+  height:0.3rem;
+  line-height:0.3rem;
+  cursor:pointer;
+  color:#c9eafd;
+  text-align: center;
+  background: #3598db;
+  @include borderRadius(0.05rem);
+  font-size:0.14rem;
+}
+//外部链接背景图
+@mixin linkBtn($url,$urlH){
+  background:url($url) no-repeat 0 0;
+  &:hover{
+    background:url($urlH) no-repeat 0 0;
+  }
+}
+//溢出显示省略号
+@mixin overflowEllipsis{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}

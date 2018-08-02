@@ -15,7 +15,7 @@ The following describes a set of API interfaces for browser display data.
 
 * Paging query bulk block information.
 ```
-    /blocks/{page}/{size}
+    /-/{page}/{size}
 ```
 * Query the latest block information.
 ```
