@@ -1,11 +1,5 @@
 export default {
   app:{
-
-    "version": "${app.version}",
-
-    "env":"${env}",
-
-    "buildNumber":"${bamboo.buildNumber}",
-
+    "version": "_version", "env":"_env", "buildNumber":"_buildNumber",
   }
 }
