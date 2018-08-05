@@ -249,7 +249,7 @@
     font-size: 0.14rem;
     .transactions_title_wrap {
       width: 100%;
-      border-bottom: 0.01rem solid #eee;
+      border-bottom: 1px solid #d6d9e0;
       @include flex;
       @include pcContainer;
       .personal_computer_transactions_detail_wrap {
@@ -263,10 +263,10 @@
     }
     .personal_computer_transactions_detail_wrap {
       .transaction_information_content_title {
-        height: 0.4rem;
-        line-height: 0.4rem;
-        font-size: 0.18rem;
-        color: #555;
+        height: 0.55rem !important;
+        line-height: 0.55rem !important;
+        font-size: 0.18rem !important;
+        color: #000000;
         margin-bottom: 0;
       }
       @include pcCenter;
@@ -313,6 +313,7 @@
       }
       .block_detail_table_wrap {
         width: 100%;
+        margin-bottom:0.5rem;
         .no_data_show {
           @include flex;
           justify-content: center;
@@ -346,10 +347,10 @@
       flex-direction: column;
       padding: 0 0.05rem;
       .transaction_information_content_title {
-        height: 0.4rem;
-        line-height: 0.4rem;
-        font-size: 0.18rem;
-        color: #555;
+        height: 0.55rem !important;
+        line-height: 0.55rem !important;
+        font-size: 0.18rem !important;
+        color: #000000;
         margin-bottom: 0;
       }
       .block_detail_table_wrap {

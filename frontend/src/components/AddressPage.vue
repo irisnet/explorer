@@ -3,7 +3,8 @@
     <div class="transactions_title_wrap">
       <p :class="transactionsDetailWrap" style="margin-bottom:0;">
         <span class="transactions_detail_title">Address</span>
-        <span class="transactions_detail_wrap_hash_var">{{hashValue}}</span>
+        <span class="transactions_detail_wrap_hash_var">
+          {{hashValue}} <i>v</i></span>
       </p>
     </div>
 
@@ -37,7 +38,8 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Website:</span>
-          <span class="information_value">{{websiteValue}}</span>
+          <a class="information_value" :href="websiteValue" target="_blank"
+             style="color:#3598db;max-width:0.5rem;">{{websiteValue}}</a>
         </div>
         <div class="information_props_wrap" style="border-bottom:0.01rem solid #eee">
           <span class="information_props">Description:</span>
@@ -418,6 +420,13 @@
         line-height: 0.4rem;
         font-size: 0.14rem;
         color: #ccc;
+        i{
+          font-style:normal;
+          padding:0.02rem 0.07rem;
+          background:#3598db;
+          border-radius:0.05rem;
+          color:#ffffff;
+        }
       }
     }
 
@@ -539,16 +548,25 @@
       border-bottom:0.01rem solid #eee;
       margin-bottom:0.2rem;
       .tab_wrap{
-
+border-bottom:1px solid #d6d9e0;
         span{
-          height:0.3rem;
-          line-height:0.3rem;
+          height:0.38rem;
+          line-height:0.38rem;
+          width:1.54rem;
           display:inline-block;
-          border:0.01rem solid #eee;
+          
           text-align: center;
-          padding:0 0.1rem;
-          border-bottom:none;
+          background:rgba(214,217,224,1);
           cursor:pointer;
+          margin-bottom:0.15rem;
+
+          &:first-child{
+            border-radius:0.05rem 0 0 0.05rem;
+          }
+          &:last-child{
+            border-radius:0 0.05rem 0.05rem 0;
+          }
+          
         }
         .transactions_btn_active{
           background: #3190e8;

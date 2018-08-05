@@ -150,6 +150,7 @@
 
   body {
     font-size: 16px !important;
+    font-family:Arial;
   }
 
   p {
@@ -170,7 +171,7 @@
       overflow-y: auto;
       overflow-x: auto;
       .router_view {
-        min-height: 7.5rem;
+        min-height: 4.5rem;
       }
       .person_computer_wrap_footer {
         height: 1rem;

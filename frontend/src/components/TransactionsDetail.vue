@@ -119,11 +119,19 @@
     font-size:0.14rem;
     .transactions_title_wrap {
       width: 100%;
-      border-bottom: 0.01rem solid #eee;
+      border-bottom: 1px solid #d6d9e0 !important;
+      height:0.62rem;
+      background:#efeff1;
+      line-height:0.62rem;
       @include flex;
       @include pcContainer;
       .personal_computer_transactions_detail_wrap {
+        height:0.62rem;
         @include flex;
+        span{
+      line-height:0.62rem;
+      height:0.62rem;
+        }
       }
       .mobile_transactions_detail_wrap {
         @include flex;
@@ -133,14 +141,16 @@
     }
     .personal_computer_transactions_detail_wrap {
       .transaction_information_content_title{
-        height:0.4rem;
-        line-height:0.4rem;
+        height:0.55rem;
+        line-height:0.55rem;
         font-size:0.18rem;
-        color:#555;
+        color:#000000;
         margin-bottom:0;
+        font-family:ArialMT;
       }
       @include pcCenter;
       .transactions_detail_information_wrap{
+        padding:0.2rem 0rem;
           .information_props_wrap{
             @include flex;
             .information_props{
@@ -176,14 +186,14 @@
       flex-direction: column;
       padding: 0 0.05rem;
       .transaction_information_content_title{
-        height:0.4rem;
-        line-height:0.4rem;
-        font-size:0.18rem;
-        color:#555;
+        height: 0.55rem;
+        line-height: 0.55rem;
+        font-size: 0.18rem;
+        color: #000000;
         margin-bottom:0;
       }
       .transactions_detail_information_wrap{
-
+padding:0.2rem 0rem;
         .information_props_wrap{
           @include flex;
           flex-direction:column;

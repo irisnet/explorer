@@ -25,8 +25,9 @@
         let legend = innerWidth > 1258 ?
           {
             orient: 'vertical',
-            right: '10%',
+            right: '5%',
             data: [],
+            top:30,
           } : {
             orient: 'horizontal',
             y : 'bottom',
@@ -81,14 +82,14 @@
         }
       },
       information(information){
-        console.log(this.innerWidth)
         //根据设备大小显示饼图的大小
         let radius = this.innerWidth > 1258 ? '90%' : '80%';
         let legend = this.innerWidth > 1258 ?
           {
             orient: 'vertical',
-            right: '10%',
+            right: '5%',
             data: [],
+            top:30,
         } : {
           orient: 'horizontal',
             y : 'bottom',
@@ -178,10 +179,10 @@
   .echarts_component_wrap{
     width:100%;
     height:100%;
+    padding:0.12rem 0.2rem 0 0.2rem;
     .echarts_title_wrap{
       height:15%;
       @include flex;
-      padding:0.12rem 0.1rem 0 0.1rem;
       justify-content: space-between;
 
       .validators_title{

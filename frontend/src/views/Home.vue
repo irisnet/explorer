@@ -93,8 +93,10 @@
       if (window.innerWidth > 910) {
         this.pageClassName = 'personal_computer_home_wrap';
         this.module_item_wrap = 'module_item_wrap_computer';
-        document.getElementsByClassName('fixed_item_height')[0].style.height = '7.05rem';
-        document.getElementsByClassName('fixed_item_height')[1].style.height = '7.05rem';
+        if(document.getElementsByClassName('fixed_item_height').length > 0){
+          document.getElementsByClassName('fixed_item_height')[0].style.height = '7.19rem';
+          document.getElementsByClassName('fixed_item_height')[1].style.height = '7.19rem';
+        }
       } else {
         this.pageClassName = 'mobile_home_wrap';
         this.module_item_wrap = 'module_item_wrap_mobile';
@@ -109,13 +111,17 @@
         if(window.innerWidth > 910){
           this.pageClassName = 'personal_computer_home_wrap';
           this.module_item_wrap = 'module_item_wrap_computer';
-          document.getElementsByClassName('fixed_item_height')[0].style.height = '7.05rem';
-          document.getElementsByClassName('fixed_item_height')[1].style.height = '7.05rem';
+          if(document.getElementsByClassName('fixed_item_height').length > 0) {
+            document.getElementsByClassName('fixed_item_height')[0].style.height = '7.19rem';
+            document.getElementsByClassName('fixed_item_height')[1].style.height = '7.19rem';
+          }
         }else {
           this.pageClassName = 'mobile_home_wrap';
           this.module_item_wrap = 'module_item_wrap_mobile';
-          document.getElementsByClassName('fixed_item_height')[0].style.height = 'auto';
-          document.getElementsByClassName('fixed_item_height')[1].style.height = 'auto';
+          if(document.getElementsByClassName('fixed_item_height').length > 0) {
+            document.getElementsByClassName('fixed_item_height')[0].style.height = 'auto';
+            document.getElementsByClassName('fixed_item_height')[1].style.height = 'auto';
+          }
         }
       },
 
@@ -334,7 +340,7 @@
         justify-content: space-between;
         .home_module_item {
           flex:1;
-          border: 0.01rem solid #eee;
+          border: 0.01rem solid #d6d9e0;
           margin-bottom: 0.4rem;
           height: 3.54rem;
           &:nth-child(2n+1){

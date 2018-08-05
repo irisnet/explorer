@@ -134,13 +134,16 @@
   }
   .page-link{
     padding:0.05rem 0.075rem !important;
+    height:0.29rem !important;
   }
   .table{
     th, td{
       padding:0.075rem !important;
+      color:#A2A2AE;
     }
     margin-bottom:0 !important;
     thead{
+      border-bottom:0.01rem solid #3598db;
       th{
         border-bottom:none !important;
       }
@@ -148,7 +151,10 @@
     tbody{
       tr{
         &:nth-of-type(odd){
-          background-color: #f6f6f6 !important;
+          background-color: #efeff1 !important;
+        }
+        &:last-child{
+          border-bottom:1px solid #dee2e6;
         }
       }
     }
