@@ -120,18 +120,20 @@ func queryCandidateStatus(w http.ResponseWriter, r *http.Request) {
 	cb := db.C("block")
 	var candidate document.Candidate
 	err := cs.Find(bson.M{"address": address}).Sort("-update_time").One(&candidate)
-	upTimeMap := make(map[string]int)
+	var upTime int
 	var result []document.Block
 	cb.Find(nil).Limit(100).Sort("-height").All(&result)
 	validatorAddress := ""
 	for _, block := range result {
 		var index1 int
 		for _, validator := range block.Validators {
-			if validatorAddress == "" && validator.PubKey == candidate.PubKey {
+			if validatorAddress == "" && validator.Address == candidate.PubKeyAddr {
 				validatorAddress = validator.Address
 			}
 			if block.Block.LastCommit.Precommits[index1].ValidatorAddress == validator.Address {
-				upTimeMap[validator.PubKey] ++
+				if validator.Address == candidate.PubKeyAddr {
+					upTime++
+				}
 				index1++
 			}
 		}
@@ -139,7 +141,7 @@ func queryCandidateStatus(w http.ResponseWriter, r *http.Request) {
 	precommitCount, _ := cb.Find(bson.M{"block.last_commit.precommits":
 	bson.M{"$elemMatch": bson.M{"validator_address": validatorAddress}}}).Count()
 	resp := CandidateStatus{
-		Uptime:         upTimeMap[candidate.PubKey],
+		Uptime:         upTime,
 		TotalBlock:     len(result),
 		PrecommitCount: float64(precommitCount),
 	}
@@ -245,8 +247,8 @@ func queryCandidatesTop(w http.ResponseWriter, r *http.Request) {
 	//}
 	for _, candidate := range candidates {
 		status := CandidateStatus{
-			Uptime:         upTimeMap[candidate.PubKeyAddr],
-			TotalBlock:     len(result),
+			Uptime:     upTimeMap[candidate.PubKeyAddr],
+			TotalBlock: len(result),
 		}
 		candidateAll := CandidateAll{
 			Candidate:       candidate,
