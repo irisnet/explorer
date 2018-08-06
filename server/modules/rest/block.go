@@ -22,7 +22,24 @@ func queryBlock(w http.ResponseWriter, r *http.Request) {
 	}
 	var result document.Block
 	err := c.Find(bson.M{"height": iHeight}).Sort("-time").One(&result)
+	var pres []string
 	if err == nil {
+		for _, pre := range result.Block.LastCommit.Precommits {
+			pres = append(pres, pre.ValidatorAddress)
+		}
+		if len(pres) > 0 {
+			var candidates []document.Candidate
+			ca := utils.GetDatabase().C("stake_role_candidate")
+			defer ca.Database.Session.Close()
+			err = ca.Find(bson.M{"pub_key_addr": bson.M{"$in": pres}}).All(&candidates)
+			candidateMap := make(map[string]string)
+			for _, candidate := range candidates {
+				candidateMap[candidate.PubKeyAddr] = candidate.Address
+			}
+			for index, pre := range result.Block.LastCommit.Precommits {
+				result.Block.LastCommit.Precommits[index].ValidatorAddress = candidateMap[pre.ValidatorAddress]
+			}
+		}
 		resultByte, _ := json.Marshal(result)
 		w.Write(resultByte)
 	}
@@ -43,11 +60,11 @@ func queryBlocks(w http.ResponseWriter, r *http.Request) {
 func QueryBlocksPrecommits(w http.ResponseWriter, r *http.Request) {
 	args := mux.Vars(r)
 	address := args["address"]
-	c:=utils.GetDatabase().C("stake_role_candidate")
+	c := utils.GetDatabase().C("stake_role_candidate")
 	defer c.Database.Session.Close()
 	var candidate document.Candidate
-	c.Find(bson.M{"address":address}).Sort("-bond_height").One(&candidate)
-	if candidate.PubKeyAddr==""{
+	c.Find(bson.M{"address": address}).Sort("-bond_height").One(&candidate)
+	if candidate.PubKeyAddr == "" {
 		return
 	}
 	var data []document.Block
