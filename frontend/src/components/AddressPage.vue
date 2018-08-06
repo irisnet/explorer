@@ -283,12 +283,12 @@
               let [Amount,Fees] = ['',''];
               if(item.Amount instanceof Array){
                 Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
-                if(item.Type === 'unbond'){
+                if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
                   Amount = item.Amount.map(listItem => `${listItem.amount.toFixed(2)}...shares`).join(',');
                 }
               }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
                 Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
-                if(item.Type === 'unbond'){
+                if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
                   Amount = `${item.Amount.amount.toFixed(2)}...shares`;
                 }
               }else if(item.Amount === null){
@@ -301,6 +301,7 @@
               }else if(item.Fee.Amount === null){
                 Fees = '';
               }
+              console.log(Amount)
               return {
                 TxHash:item.TxHash,
                 Block:item.Height,

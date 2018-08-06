@@ -139,6 +139,7 @@
           }
         }).then((data) => {
           if (data) {
+            console.log(data)
             let denominator = 0;
             data.Validators.forEach(item => denominator += item.VotingPower);
             let numerator = 0;
@@ -153,7 +154,7 @@
             if (data.Block.LastCommit.Precommits && data.Block.LastCommit.Precommits.length > 0) {
               this.items = data.Block.LastCommit.Precommits.map(item => {
                 return {
-                  Address: item.ValidatorAddress,
+                  Address: data.CandidateMap[item.ValidatorAddress],
                   Index: item.ValidatorIndex,
                   Round: item.Round,
                   Signature: item.Signature.Type,
@@ -238,7 +239,7 @@
         if(this.transactionsValue != 0){
           this.$router.push(`/transfer_transactions/2/block:${this.$route.params.height}`)
         }
-        
+
       }
     }
   }
