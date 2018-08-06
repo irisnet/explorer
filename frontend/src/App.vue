@@ -12,7 +12,7 @@
         </div>
       </div>
       <router-view class="router_view" :style="`min-height:${vh/100-2.8}rem;`"/>
-      <footer :class="footerClass" v-show="showFooter">
+      <footer :class="footerClass" v-show="showFooter" id="footer">
         <div :class="footerClassName" style="height:100%;">
           <div class="footer_left" :class="footerLeftVar">
             <a target="_blank" href='https://github.com/irisnet' class="github"></a>
