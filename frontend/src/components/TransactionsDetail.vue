@@ -94,7 +94,11 @@
           this.toValue = data.To;
           this.timestampValue = Tools.conversionTimeToUTC(data.Time);
           this.amountValue = data.Amount.map(item=>{
-            return `${item.amount} ${item.denom.toUpperCase()}`;
+            if(data.Type === 'unbond'){
+              return `${item.amount}shares`;
+            }else{
+              return `${item.amount} ${item.denom.toUpperCase()}`;
+            }
           }).join(',');
           this.feeValue = data.Fee.Amount.map(item=>{
             return `${item.amount} ${item.amount === 0?'IRIS':item.denom.toUpperCase()}`;

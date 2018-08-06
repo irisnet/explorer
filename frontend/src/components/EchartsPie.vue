@@ -28,6 +28,13 @@
             right: '5%',
             data: [],
             top:30,
+            formatter(name){
+              let val = name;
+              if(val.length > 10){
+                val = `${val.substr(0,10)}...`;
+              }
+              return val;
+            }
           } : {
             orient: 'horizontal',
             y : 'bottom',
@@ -90,6 +97,13 @@
             right: '5%',
             data: [],
             top:30,
+            formatter(name){
+              let val = name;
+              if(val.length > 10){
+                val = `${val.substr(0,10)}...`;
+              }
+              return val;
+            }
         } : {
           orient: 'horizontal',
             y : 'bottom',

@@ -11,7 +11,7 @@
           <p>to follow our SubScriptions</p>
         </div>
       </div>
-      <router-view class="router_view"/>
+      <router-view class="router_view" :style="`min-height:${vh/100-2.8}rem;`"/>
       <footer :class="footerClass" v-show="showFooter">
         <div :class="footerClassName" style="height:100%;">
           <div class="footer_left" :class="footerLeftVar">
@@ -150,7 +150,7 @@
 
   body {
     font-size: 16px !important;
-    font-family:Arial;
+    font-family:Arial !important;
   }
 
   p {

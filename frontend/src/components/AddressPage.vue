@@ -41,7 +41,7 @@
           <a class="information_value" :href="websiteValue" target="_blank"
              style="color:#3598db;max-width:0.5rem;">{{websiteValue}}</a>
         </div>
-        <div class="information_props_wrap" style="border-bottom:0.01rem solid #eee">
+        <!--<div class="information_props_wrap" style="border-bottom:0.01rem solid #eee">
           <span class="information_props">Description:</span>
           <span class="information_value">{{descriptionValue}}</span>
         </div>
@@ -52,7 +52,7 @@
         <div class="information_props_wrap">
           <span class="information_props">Announcement:</span>
           <span class="information_value">{{announcementValue}}</span>
-        </div>
+        </div>-->
 
 
       </div>
@@ -224,7 +224,7 @@
       //点击view all跳转页面
       viewAllClick(type){
         if(type === 1){
-          this.$router.push(`/block/${type}/0`);
+          this.$router.push(`/block/${type}/address:${this.$route.params.param}`);
         }else if(type === 2){
           this.$router.push(`/recent_transactions/2/address:${this.$route.params.param}`)
         }
@@ -283,8 +283,14 @@
               let [Amount,Fees] = ['',''];
               if(item.Amount instanceof Array){
                 Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
+                if(item.Type === 'unbond'){
+                  Amount = item.Amount.map(listItem => `${listItem.amount.toFixed(2)}...shares`).join(',');
+                }
               }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
                 Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
+                if(item.Type === 'unbond'){
+                  Amount = `${item.Amount.amount.toFixed(2)}...shares`;
+                }
               }else if(item.Amount === null){
                 Amount = '';
               }
@@ -498,6 +504,7 @@
         }
         .canvas_voting_power{
           flex:2;
+          padding:0.2rem 0;
           .progress_wrap{
             margin-bottom:0.15rem;
             .progress_wrap_background{
@@ -554,7 +561,7 @@ border-bottom:1px solid #d6d9e0;
           line-height:0.38rem;
           width:1.54rem;
           display:inline-block;
-          
+
           text-align: center;
           background:rgba(214,217,224,1);
           cursor:pointer;
@@ -566,10 +573,10 @@ border-bottom:1px solid #d6d9e0;
           &:last-child{
             border-radius:0 0.05rem 0.05rem 0;
           }
-          
+
         }
         .transactions_btn_active{
-          background: #3190e8;
+          background: #3598db;
           color:#fff;
         }
       }

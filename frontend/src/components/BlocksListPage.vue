@@ -7,7 +7,7 @@
 
         <span class="blocks_list_page_wrap_hash_var for_block"
               v-show="this.$route.params.param.includes('address') || this.$route.params.param.includes('block')">
-          for {{blockVar}}
+          {{blockVar}}
         </span>
       </p>
     </div>
@@ -133,6 +133,11 @@
         this.showLoading = true;
         if (type === '1') {
           let url = `/api/blocks/${currentPage}/${pageSize}`;
+          if(this.$route.params.param.includes('address')){
+            url = `/api/txsByBlock/${this.$route.params.param.split(':')[1]}/${currentPage}/${pageSize}`;
+            console.log(this.$route.params.param.split(':')[1])
+            this.blockVar = `Proposed by ${this.$route.params.param.split(':')[1]}`;
+          }
           axios.get(url).then((data) => {
             if (data.status === 200) {
               return data.data;
@@ -177,12 +182,12 @@
             url = `/api/txs/stake/${currentPage}/${pageSize}`
           }else if(this.$route.params.param === 'recent'){
             url = `/api/txs/${currentPage}/${pageSize}`;
-          }else if(this.$route.params.param.includes('block')){
-            url = `/api/txsByBlock/${this.$route.params.param.split(':')[1]}/${currentPage}/${pageSize}`;
-            this.blockVar = this.$route.params.param.split(':')[1];
           }else if(this.$route.params.param.includes('address')){
             url = `/api/txsByAddress/${this.$route.params.param.split(':')[1]}/${currentPage}/${pageSize}`;
-            this.blockVar = this.$route.params.param.split(':')[1];
+            this.blockVar = `for ${this.$route.params.param.split(':')[1]}`;
+          }else if(this.$route.params.param.includes('block')){
+            url = `/api/txsByBlock/${this.$route.params.param.split(':')[1]}/${currentPage}/${pageSize}`;
+            this.blockVar = `for ${this.$route.params.param.split(':')[1]}`;
           }
           axios.get(url).then((data) => {
             if (data.status === 200) {
@@ -195,8 +200,14 @@
                 let [Amount,Fees] = ['',''];
                 if(item.Amount instanceof Array){
                   Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
+                  if(item.Type === 'unbond'){
+                    Amount = item.Amount.map(listItem => `${listItem.amount.toFixed(2)}...shares`).join(',');
+                  }
                 }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
                   Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
+                  if(item.Type === 'unbond'){
+                    Amount = `${item.Amount.amount.toFixed(2)}...shares`;
+                  }
                 }else if(item.Amount === null){
                   Amount = '';
                 }

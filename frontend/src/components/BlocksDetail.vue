@@ -52,7 +52,7 @@
       </div>
     </div>
     <div :class="transactionsDetailWrap">
-      <p class="transaction_information_content_title">Precommit Details</p>
+      <p class="transaction_information_content_title" style='border-bottom:none;'>Precommit Details</p>
       <div class="block_detail_table_wrap">
         <blocks-list-table :items="items" :type="'5'" :showNoData="showNoData"></blocks-list-table>
         <div v-show="showNoData" class="no_data_show">
@@ -235,7 +235,10 @@
         })
       },
       skipTransactions() {
-        this.$router.push(`/transfer_transactions/2/block:${this.$route.params.height}`)
+        if(this.transactionsValue != 0){
+          this.$router.push(`/transfer_transactions/2/block:${this.$route.params.height}`)
+        }
+        
       }
     }
   }
@@ -268,6 +271,7 @@
         font-size: 0.18rem !important;
         color: #000000;
         margin-bottom: 0;
+        border-bottom:1px solid #d6d9e0 !important;
       }
       @include pcCenter;
       .transactions_detail_information_wrap {
