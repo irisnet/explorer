@@ -1,5 +1,5 @@
 <template>
-  <div class="echarts_component_wrap">
+  <div class="echarts_component_wrap" :style="`min-width:${minWidth}rem;`">
     <div class="echarts_title_wrap">
       <span class="validators_title">Validators Top10</span>
       <span class="validators_top" @click="viewAllClick()">View All</span>
@@ -112,7 +112,6 @@
         };
         let center = this.innerWidth > 1258 ? ['40%', '50%'] : ['50%', '45%'];
         let option = {
-
           tooltip : {
             trigger: 'item',
             formatter(params){
@@ -161,12 +160,19 @@
     data() {
       return {
         innerWidth:window.innerWidth,
+        minWidth:2.9,
 
       }
     },
     props:['information'],
     beforeMount() {
-
+      if(this.innerWidth <= 320){
+        this.minWidth = 2.9;
+      }else if(this.innerWidth <= 375){
+        this.minWidth = 3.4;
+      }else if(this.innerWidth <= 414){
+        this.minWidth = 3.9;
+      }
     },
     mounted() {
       pie = echarts.init(document.getElementById('echarts_pie'));
