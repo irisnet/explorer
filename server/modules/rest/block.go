@@ -10,6 +10,11 @@ import (
 	"strconv"
 )
 
+type BlockRsp struct {
+	CandidateMap map[string]string
+	document.Block
+}
+
 func queryBlock(w http.ResponseWriter, r *http.Request) {
 	args := mux.Vars(r)
 	height := args["height"]
@@ -20,11 +25,12 @@ func queryBlock(w http.ResponseWriter, r *http.Request) {
 	if iHeight, _ = strconv.Atoi(height); iHeight < 0 {
 		iHeight = 0
 	}
-	var result document.Block
-	err := c.Find(bson.M{"height": iHeight}).Sort("-time").One(&result)
+	var block document.Block
+	var result BlockRsp
+	err := c.Find(bson.M{"height": iHeight}).Sort("-time").One(&block)
 	var pres []string
 	if err == nil {
-		for _, pre := range result.Block.LastCommit.Precommits {
+		for _, pre := range block.Block.LastCommit.Precommits {
 			pres = append(pres, pre.ValidatorAddress)
 		}
 		if len(pres) > 0 {
@@ -36,10 +42,9 @@ func queryBlock(w http.ResponseWriter, r *http.Request) {
 			for _, candidate := range candidates {
 				candidateMap[candidate.PubKeyAddr] = candidate.Address
 			}
-			for index, pre := range result.Block.LastCommit.Precommits {
-				result.Block.LastCommit.Precommits[index].ValidatorAddress = candidateMap[pre.ValidatorAddress]
-			}
+			result.CandidateMap = candidateMap
 		}
+		result.Block = block
 		resultByte, _ := json.Marshal(result)
 		w.Write(resultByte)
 	}
