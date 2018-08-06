@@ -5,7 +5,7 @@ COPY ./frontend/ /app
 ENV VUE_APP_FAUCET_URL https://testnet.irisplorer.io/api/faucet
 ENV VUE_APP_FUXI fuxi-1002
 
-RUN npm i yarn -g && yarn install && VUE_APP_FAUCET_URL=$VUE_APP_FAUCET_URL VUE_APP_FUXI=$VUE_APP_FUXI yarn build
+RUN npm i yarn -g && yarn install && yarn dev && VUE_APP_FAUCET_URL=$VUE_APP_FAUCET_URL VUE_APP_FUXI=$VUE_APP_FUXI yarn build
 
 FROM golang:1.10.3-alpine3.7 as go-builder
 ENV GOPATH       /root/go

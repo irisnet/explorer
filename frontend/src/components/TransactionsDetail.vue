@@ -94,7 +94,7 @@
           this.toValue = data.To;
           this.timestampValue = Tools.conversionTimeToUTC(data.Time);
           this.amountValue = data.Amount.map(item=>{
-            if(data.Type === 'unbond'){
+            if(data.Type === 'CompleteUnbonding' || data.Type === 'BeginUnbonding'){
               return `${item.amount}shares`;
             }else{
               return `${item.amount} ${item.denom.toUpperCase()}`;

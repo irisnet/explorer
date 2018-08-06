@@ -3,7 +3,7 @@
     <div class="blocks_list_title_wrap">
       <p :class="blocksListPageWrap" style="margin-bottom:0;">
         <span class="blocks_list_title">{{titleVar}}</span>
-        <span class="blocks_list_page_wrap_hash_var">{{blocksValue}}</span>
+        <!--<span class="blocks_list_page_wrap_hash_var">{{blocksValue}}</span>-->
 
         <span class="blocks_list_page_wrap_hash_var for_block"
               v-show="this.$route.params.param.includes('address') || this.$route.params.param.includes('block')">
@@ -200,12 +200,12 @@
                 let [Amount,Fees] = ['',''];
                 if(item.Amount instanceof Array){
                   Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
-                  if(item.Type === 'unbond'){
+                  if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
                     Amount = item.Amount.map(listItem => `${listItem.amount.toFixed(2)}...shares`).join(',');
                   }
                 }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
                   Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
-                  if(item.Type === 'unbond'){
+                  if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
                     Amount = `${item.Amount.amount.toFixed(2)}...shares`;
                   }
                 }else if(item.Amount === null){
@@ -339,6 +339,9 @@
       .mobile_blocks_list_page_wrap {
         @include flex;
         flex-direction: column;
+        .blocks_list_page_wrap_hash_var{
+          min-width:5rem;
+        }
       }
 
     }
