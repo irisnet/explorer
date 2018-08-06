@@ -1,0 +1,40 @@
+html{
+  font-size:625%;
+  width:100%;
+  height:100%;
+}
+body{
+  width:100%;
+  height:100%;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  font-size:16px;
+}
+.mantence_wrap{
+  display:flex;
+  flex-direction:column;
+  justify-content: center;
+  align-items: center;
+}
+.mantence_wrap p{
+  font-size: 0.18rem;
+  margin-top: 0.1rem;
+}
+.mantence_wrap h3{
+  font-size: 0.14rem;
+  color: #a2a2ae;
+}
+.mantence_wrap .footer_link_wrap{
+  justify-content: center;
+  font-size: 0.14rem;
+  display:flex;
+}
+.mantence_wrap .footer_link_wrap a{
+  color:#3598db;
+  text-decoration: none;
+}
+.mantence_wrap .footer_link_wrap span{
+  color: #a2a2ae;
+  margin: 0 0.1rem;
+}

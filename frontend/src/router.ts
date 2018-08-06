@@ -7,7 +7,6 @@ import BlocksDetail from './components/BlocksDetail.vue';
 import BlocksListPage from './components/BlocksListPage.vue';
 import AddressPage from './components/AddressPage.vue';
 import PrivacyPolicy from './components/PrivacyPolicy.vue';
-import MantenancePage from './components/MantenancePage.vue';
 
 Vue.use(Router);
 
@@ -63,12 +62,6 @@ export default new Router({
       path:'/privacy_policy',
       component:PrivacyPolicy,
     },
-    {
-      path:'/mantenance',
-      component:MantenancePage,
-    },
-
-
   ]
 
 })
