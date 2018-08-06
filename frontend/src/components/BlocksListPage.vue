@@ -7,7 +7,7 @@
 
         <span class="blocks_list_page_wrap_hash_var for_block"
               v-show="this.$route.params.param.includes('address') || this.$route.params.param.includes('block')">
-          for {{blockVar}}
+          {{blockVar}}
         </span>
       </p>
     </div>
@@ -25,7 +25,7 @@
           No Data
         </div>
       </div>
-      <div class="pagination">
+      <div class="pagination" style='margin-bottom:0.2rem;'>
         <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
         </b-pagination>
       </div>
@@ -48,7 +48,13 @@
     watch: {
       currentPage(currentPage) {
         this.currentPage = currentPage;
-        this.getDataList(currentPage, 30, this.$route.params.type);
+        new Promise((resolve)=>{
+          this.getDataList(currentPage, 30, this.$route.params.type);
+          resolve();
+        }).then(()=>{
+          document.getElementById('router_wrap').scrollTop = 0;
+        })
+
       },
       $route() {
         this.items = [];
@@ -127,6 +133,11 @@
         this.showLoading = true;
         if (type === '1') {
           let url = `/api/blocks/${currentPage}/${pageSize}`;
+          if(this.$route.params.param.includes('address')){
+            url = `/api/txsByBlock/${this.$route.params.param.split(':')[1]}/${currentPage}/${pageSize}`;
+            console.log(this.$route.params.param.split(':')[1])
+            this.blockVar = `Proposed by ${this.$route.params.param.split(':')[1]}`;
+          }
           axios.get(url).then((data) => {
             if (data.status === 200) {
               return data.data;
@@ -171,12 +182,12 @@
             url = `/api/txs/stake/${currentPage}/${pageSize}`
           }else if(this.$route.params.param === 'recent'){
             url = `/api/txs/${currentPage}/${pageSize}`;
-          }else if(this.$route.params.param.includes('block')){
-            url = `/api/txsByBlock/${this.$route.params.param.split(':')[1]}/${currentPage}/${pageSize}`;
-            this.blockVar = this.$route.params.param.split(':')[1];
           }else if(this.$route.params.param.includes('address')){
             url = `/api/txsByAddress/${this.$route.params.param.split(':')[1]}/${currentPage}/${pageSize}`;
-            this.blockVar = this.$route.params.param.split(':')[1];
+            this.blockVar = `for ${this.$route.params.param.split(':')[1]}`;
+          }else if(this.$route.params.param.includes('block')){
+            url = `/api/txsByBlock/${this.$route.params.param.split(':')[1]}/${currentPage}/${pageSize}`;
+            this.blockVar = `for ${this.$route.params.param.split(':')[1]}`;
           }
           axios.get(url).then((data) => {
             if (data.status === 200) {
@@ -189,8 +200,14 @@
                 let [Amount,Fees] = ['',''];
                 if(item.Amount instanceof Array){
                   Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
+                  if(item.Type === 'unbond'){
+                    Amount = item.Amount.map(listItem => `${listItem.amount.toFixed(2)}...shares`).join(',');
+                  }
                 }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
                   Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
+                  if(item.Type === 'unbond'){
+                    Amount = `${item.Amount.amount.toFixed(2)}...shares`;
+                  }
                 }else if(item.Amount === null){
                   Amount = '';
                 }
@@ -273,8 +290,7 @@
     @include pcContainer;
     font-size: 0.14rem;
     .pagination {
-      margin-top: 0.05rem;
-      margin-bottom: 0.05rem;
+      margin-top: 0.12rem;
       @include flex;
       justify-content: flex-end;
       @include borderRadius(0.025rem);
@@ -304,9 +320,18 @@
     }
     .blocks_list_title_wrap {
       width: 100%;
-      border-bottom: 0.01rem solid #eee;
+      border-bottom: 1px solid #d6d9e0 !important;
       @include flex;
       @include pcContainer;
+      height:0.62rem;
+      background:#efeff1;
+      p{
+        height:0.62rem;
+        span{
+          height:0.62rem;
+      line-height:0.62rem;
+        }
+      }
       .personal_computer_blocks_list_page_wrap {
         @include flex;
 
@@ -336,16 +361,16 @@
       }
 
       .blocks_list_title {
-        height: 0.4rem;
-        line-height: 0.4rem;
+        height: 0.62rem;
+        line-height: 0.62rem;
         font-size: 0.18rem;
-        color: #555;
+        color: #000000;
         margin-right: 0.2rem;
         font-weight: 500;
       }
       .blocks_list_page_wrap_hash_var {
-        height: 0.4rem;
-        line-height: 0.4rem;
+        height:  0.62rem;
+        line-height: 0.62rem;
         font-size: 0.14rem;
         color: #ccc;
       }

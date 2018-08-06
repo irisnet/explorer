@@ -52,7 +52,7 @@
       </div>
     </div>
     <div :class="transactionsDetailWrap">
-      <p class="transaction_information_content_title">Precommit Details</p>
+      <p class="transaction_information_content_title" style='border-bottom:none;'>Precommit Details</p>
       <div class="block_detail_table_wrap">
         <blocks-list-table :items="items" :type="'5'" :showNoData="showNoData"></blocks-list-table>
         <div v-show="showNoData" class="no_data_show">
@@ -235,7 +235,10 @@
         })
       },
       skipTransactions() {
-        this.$router.push(`/transfer_transactions/2/block:${this.$route.params.height}`)
+        if(this.transactionsValue != 0){
+          this.$router.push(`/transfer_transactions/2/block:${this.$route.params.height}`)
+        }
+        
       }
     }
   }
@@ -249,7 +252,7 @@
     font-size: 0.14rem;
     .transactions_title_wrap {
       width: 100%;
-      border-bottom: 0.01rem solid #eee;
+      border-bottom: 1px solid #d6d9e0;
       @include flex;
       @include pcContainer;
       .personal_computer_transactions_detail_wrap {
@@ -263,11 +266,12 @@
     }
     .personal_computer_transactions_detail_wrap {
       .transaction_information_content_title {
-        height: 0.4rem;
-        line-height: 0.4rem;
-        font-size: 0.18rem;
-        color: #555;
+        height: 0.55rem !important;
+        line-height: 0.55rem !important;
+        font-size: 0.18rem !important;
+        color: #000000;
         margin-bottom: 0;
+        border-bottom:1px solid #d6d9e0 !important;
       }
       @include pcCenter;
       .transactions_detail_information_wrap {
@@ -313,6 +317,7 @@
       }
       .block_detail_table_wrap {
         width: 100%;
+        margin-bottom:0.5rem;
         .no_data_show {
           @include flex;
           justify-content: center;
@@ -346,10 +351,10 @@
       flex-direction: column;
       padding: 0 0.05rem;
       .transaction_information_content_title {
-        height: 0.4rem;
-        line-height: 0.4rem;
-        font-size: 0.18rem;
-        color: #555;
+        height: 0.55rem !important;
+        line-height: 0.55rem !important;
+        font-size: 0.18rem !important;
+        color: #000000;
         margin-bottom: 0;
       }
       .block_detail_table_wrap {
