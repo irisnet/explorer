@@ -1,6 +1,6 @@
 <!--头部页面-->
 <template>
-  <div :class="appHeaderVar" v-show="showHeader">
+  <div :class="appHeaderVar" v-show="showHeader" id="header">
     <header class="app_header_person_computer" v-show="devicesShow === 1">
       <div class="header_top">
         <div class="imageWrap" @click="featureButtonClick('/home')">
