@@ -7,7 +7,7 @@
       <span class="view_all_btn" @click="viewAllClick()">View All</span>
     </div>
     <div class="home_module_block_content">
-      <div class="home_module_block_content_item" v-for="item in information">
+      <div class="home_module_block_content_item" v-for="item in information" :style="innerWidth<500?'padding:0.1rem;':''">
         <div class="blocks_module_left">
           <div class="key_value_wrap">
             <span class="blocks_module_value"
@@ -80,6 +80,9 @@
 
 
     },
+    beforeDestroy(){
+      window.removeEventListener('resize',this.onresize);
+    },
 
     methods: {
       skipRouter(path){
@@ -99,9 +102,6 @@
         }else {
 
         }
-      },
-      beforeDestroy(){
-        window.removeEventListener('resize',this.onWindowResize);
       },
       listenEvent(){
         document.getElementsByClassName('home_module_block_content')[0].onmouseover = function(){
@@ -131,7 +131,8 @@
     .home_module_block_title_wrap{
       height:0.5rem;
       @include flex;
-      padding:0.12rem 0.1rem 0 0.1rem;
+      padding:0.2rem;
+      height:0.64rem;
       justify-content: space-between;
       background: #efeff1;
       border-bottom:1px solid #e4e4e4;
@@ -163,7 +164,7 @@
         @include flex;
         justify-content:space-between;
         border-bottom:1px solid #eee;
-        padding:0.12rem;
+        padding:0.1rem 0.2rem;
         height:1.09rem;
         &:last-child{
           border-bottom:none;
@@ -172,6 +173,7 @@
           @include flex;
           flex-direction:column;
           flex:2;
+          justify-content:center;
           .from_to_wrap{
             @include flex;
             flex-wrap: wrap;
@@ -208,6 +210,7 @@
           flex-direction:column;
           align-items: flex-end;
           flex:1;
+          justify-content:center;
           span{
             font-size:0.14rem;
             color:#a2a2ae;

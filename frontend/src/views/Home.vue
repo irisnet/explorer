@@ -93,8 +93,10 @@
       if (window.innerWidth > 910) {
         this.pageClassName = 'personal_computer_home_wrap';
         this.module_item_wrap = 'module_item_wrap_computer';
-        document.getElementsByClassName('fixed_item_height')[0].style.height = '7.05rem';
-        document.getElementsByClassName('fixed_item_height')[1].style.height = '7.05rem';
+        if(document.getElementsByClassName('fixed_item_height').length > 0){
+          document.getElementsByClassName('fixed_item_height')[0].style.height = '7.19rem';
+          document.getElementsByClassName('fixed_item_height')[1].style.height = '7.19rem';
+        }
       } else {
         this.pageClassName = 'mobile_home_wrap';
         this.module_item_wrap = 'module_item_wrap_mobile';
@@ -109,13 +111,17 @@
         if(window.innerWidth > 910){
           this.pageClassName = 'personal_computer_home_wrap';
           this.module_item_wrap = 'module_item_wrap_computer';
-          document.getElementsByClassName('fixed_item_height')[0].style.height = '7.05rem';
-          document.getElementsByClassName('fixed_item_height')[1].style.height = '7.05rem';
+          if(document.getElementsByClassName('fixed_item_height').length > 0) {
+            document.getElementsByClassName('fixed_item_height')[0].style.height = '7.19rem';
+            document.getElementsByClassName('fixed_item_height')[1].style.height = '7.19rem';
+          }
         }else {
           this.pageClassName = 'mobile_home_wrap';
           this.module_item_wrap = 'module_item_wrap_mobile';
-          document.getElementsByClassName('fixed_item_height')[0].style.height = 'auto';
-          document.getElementsByClassName('fixed_item_height')[1].style.height = 'auto';
+          if(document.getElementsByClassName('fixed_item_height').length > 0) {
+            document.getElementsByClassName('fixed_item_height')[0].style.height = 'auto';
+            document.getElementsByClassName('fixed_item_height')[1].style.height = 'auto';
+          }
         }
       },
 
@@ -252,8 +258,14 @@
               let [Amount, Fee] = ['', ''];
               if (item.Amount instanceof Array) {
                 Amount = item.Amount.map(listItem => `${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
+                if(item.Type === 'unbond'){
+                  Amount = item.Amount.map(listItem => `${listItem.amount.toFixed(2)}...shares`).join(',');
+                }
               } else if (item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')) {
                 Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
+                if(item.Type === 'unbond'){
+                  Amount = `${item.Amount.amount.toFixed(2)}...shares`;
+                }
               } else if (item.Amount === null) {
                 Amount = '';
               }
@@ -289,13 +301,13 @@
     @include pcContainer;
     //pc端和移动端公共样式
     .personal_computer_home_wrap, .mobile_home_wrap {
-      margin-top: 0.15rem;
+      margin-top: 0.23rem;
       .information_preview {
         @include flex;
-        margin-bottom: 0.4rem;
+        margin-bottom: 0.3rem;
 
         .information_preview_module {
-          border-right: 0.01rem solid #eee;
+          border-right: 1px solid #d6d9e0;
           @include flex;
           flex-direction: column;
           align-items: center;
@@ -334,8 +346,8 @@
         justify-content: space-between;
         .home_module_item {
           flex:1;
-          border: 0.01rem solid #eee;
-          margin-bottom: 0.4rem;
+          border: 0.01rem solid #d6d9e0;
+          margin-bottom: 0.23rem;
           height: 3.54rem;
           &:nth-child(2n+1){
             margin-right:0.4rem;
@@ -362,7 +374,7 @@
         .home_module_item {
           width: 98%;
           margin-bottom: 0.4rem;
-          border: 0.01rem solid #eee;
+          border: 0.01rem solid #f6f6f6;
         }
         .home_module_item_pie {
           overflow-x: auto;

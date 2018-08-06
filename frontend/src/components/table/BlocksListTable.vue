@@ -60,12 +60,16 @@
         </span>
       </template>
       <template slot='From' slot-scope='data'>
-        <span class="skip_route" @click="skipRoute(`/address/1/${data.item.From}`)">
+        <span class="skip_route"
+              :class="data.item.From === $route.params.param?'no_skip':''"
+              @click="skipRoute(`/address/1/${data.item.From}`)">
           {{data.item.From?`${String(data.item.From).substr(0,16)}...`:''}}
         </span>
       </template>
       <template slot='To' slot-scope='data'>
-        <span class="skip_route" @click="skipRoute(`/address/1/${data.item.To}`)">
+        <span class="skip_route"
+              :class="data.item.To === $route.params.param?'no_skip':''"
+              @click="skipRoute(`/address/1/${data.item.To}`)">
           {{data.item.To?`${String(data.item.To).substr(0,16)}...`:''}}
         </span>
       </template>
@@ -122,6 +126,10 @@
         color: #3598db;
         cursor: pointer;
       }
+      .no_skip{
+        color:#A2A2AE;
+        cursor:default;
+      }
     }
   }
   .active{
@@ -134,21 +142,34 @@
   }
   .page-link{
     padding:0.05rem 0.075rem !important;
+    height:0.29rem !important;
   }
   .table{
     th, td{
       padding:0.075rem !important;
+      color:#A2A2AE;
     }
     margin-bottom:0 !important;
     thead{
       th{
         border-bottom:none !important;
       }
+      tr{
+        th{
+          color:#000000;
+          height:0.5rem;
+          vertical-align:middle;
+        }
+        border-bottom:0.02rem solid #3598db;
+      }
     }
     tbody{
       tr{
         &:nth-of-type(odd){
           background-color: #f6f6f6 !important;
+        }
+        &:last-child{
+          border-bottom:1px solid #dee2e6;
         }
       }
     }
