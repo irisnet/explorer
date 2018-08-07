@@ -1,11 +1,11 @@
 {
   "name": "explorer",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "dev":"node config.js -p"
+    "dev":"node config.js"
   },
   "dependencies": {
     "axios": "^0.18.0",
