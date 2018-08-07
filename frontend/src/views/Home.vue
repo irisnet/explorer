@@ -347,7 +347,7 @@
         .home_module_item {
           flex:1;
           border: 0.01rem solid #d6d9e0;
-          margin-bottom: 0.23rem;
+          margin-bottom: 0.4rem;
           height: 3.54rem;
           &:nth-child(2n+1){
             margin-right:0.4rem;

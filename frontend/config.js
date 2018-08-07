@@ -12,7 +12,7 @@ program
   .option("-b, --buildNumber <string>", "Bamboo build number")
   .option("-p, --params <items>", "An list of app environment and bamboo build number, e.g.: dev,25", list)
   .parse(process.argv);
-
+console.log(program)
 console.log('Replacing environments ...');
 var env = program.environment ? program.environment : "dev";
 var buildNum = program.buildNumber ? program.buildNumber : "0";
