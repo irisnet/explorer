@@ -154,7 +154,7 @@
             if (data.Block.LastCommit.Precommits && data.Block.LastCommit.Precommits.length > 0) {
               this.items = data.Block.LastCommit.Precommits.map(item => {
                 return {
-                  Address: data.CandidateMap[item.ValidatorAddress],
+                  Address: data.CandidateMap?data.CandidateMap[item.ValidatorAddress]:'',
                   Index: item.ValidatorIndex,
                   Round: item.Round,
                   Signature: item.Signature.Type,
