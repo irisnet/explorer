@@ -158,8 +158,8 @@ func queryTxsByDay(w http.ResponseWriter, r *http.Request) {
 	for day.Unix() < time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, start.Location()).Unix() {
 		key := day.Format("2006-01-02")
 		if len(txDays) > j && txDays[j].Time == key {
+			result = append(result, txDays[j])
 			j++
-			result = append(result, txDays[i])
 		} else {
 			var txDay TxDay
 			txDay.Time = key
