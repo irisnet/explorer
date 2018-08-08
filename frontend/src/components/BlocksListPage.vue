@@ -6,7 +6,7 @@
         <!--<span class="blocks_list_page_wrap_hash_var">{{blocksValue}}</span>-->
 
         <span class="blocks_list_page_wrap_hash_var for_block"
-              v-show="this.$route.params.param.includes('address') || this.$route.params.param.includes('block')">
+              v-show="$route.query.block || $route.query.address">
           {{blockVar}}
         </span>
       </p>
@@ -20,7 +20,9 @@
       </div>
       <div style="position:relative;min-height:3.36rem;">
         <spin-component :showLoading="showLoading"/>
-        <blocks-list-table :items="items" :type="this.$route.params.type" :showNoData="showNoData"></blocks-list-table>
+        <blocks-list-table :items="items" :type="this.$route.params.type"
+                           :minWidth="tableMinWidth"
+                           :showNoData="showNoData"></blocks-list-table>
         <div v-show="showNoData" class="no_data_show">
           No Data
         </div>
@@ -72,7 +74,8 @@
           case '4': this.titleVar = 'Candidates';
                   break;
 
-        }
+        };
+        this.computeMinWidth();
       }
     },
     data() {
@@ -91,6 +94,7 @@
         showLoading:false,
         blockVar:'',
         innerWidth : window.innerWidth,
+        tableMinWidth:'',
       }
     },
     beforeMount() {
@@ -116,6 +120,7 @@
 
       }
       window.addEventListener('resize',this.onresize);
+      this.computeMinWidth();
     },
     beforeDestroy() {
       window.removeEventListener('resize',this.onWindowResize);
@@ -129,14 +134,23 @@
           this.blocksListPageWrap = 'mobile_blocks_list_page_wrap';
         }
       },
+      //根绝页面的不同展示最小宽度,不换行显示列表
+      computeMinWidth(){
+        if(this.$route.params.type === '1'){
+          this.tableMinWidth = 6.5;
+        }else if(this.$route.params.type === '2' && this.$route.params.param === 'transfer'){
+          this.tableMinWidth = 4.7;
+        }else if(this.$route.params.type === '3' || this.$route.params.type === '4'){
+          this.tableMinWidth = 6.1;
+        }
+      },
       getDataList(currentPage, pageSize, type) {
         this.showLoading = true;
         if (type === '1') {
           let url = `/api/blocks/${currentPage}/${pageSize}`;
-          if(this.$route.params.param.includes('address')){
-            url = `/api/txsByBlock/${this.$route.params.param.split(':')[1]}/${currentPage}/${pageSize}`;
-            console.log(this.$route.params.param.split(':')[1])
-            this.blockVar = `Proposed by ${this.$route.params.param.split(':')[1]}`;
+          if(this.$route.query.address){
+            url = `/api/blocks/precommits/${this.$route.query.address}/${currentPage}/${pageSize}`;
+            this.blockVar = `Proposed by ${this.$route.query.address}`;
           }
           axios.get(url).then((data) => {
             if (data.status === 200) {
@@ -181,13 +195,15 @@
           }else if(this.$route.params.param === 'stake'){
             url = `/api/txs/stake/${currentPage}/${pageSize}`
           }else if(this.$route.params.param === 'recent'){
-            url = `/api/txs/${currentPage}/${pageSize}`;
-          }else if(this.$route.params.param.includes('address')){
-            url = `/api/txsByAddress/${this.$route.params.param.split(':')[1]}/${currentPage}/${pageSize}`;
-            this.blockVar = `for ${this.$route.params.param.split(':')[1]}`;
-          }else if(this.$route.params.param.includes('block')){
-            url = `/api/txsByBlock/${this.$route.params.param.split(':')[1]}/${currentPage}/${pageSize}`;
-            this.blockVar = `for ${this.$route.params.param.split(':')[1]}`;
+            if(this.$route.query.block){
+              url = `/api/txsByBlock/${this.$route.query.block}/${currentPage}/${pageSize}`;
+              this.blockVar = `for ${this.$route.query.block}`;
+            }else if(this.$route.query.address){
+              url = `/api/txsByAddress/${this.$route.query.address}/${currentPage}/${pageSize}`;
+              this.blockVar = `for ${this.$route.query.address}`;
+            } else{
+              url = `/api/txs/${currentPage}/${pageSize}`;
+            }
           }
           axios.get(url).then((data) => {
             if (data.status === 200) {

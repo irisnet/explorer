@@ -4,7 +4,7 @@
       <p :class="transactionsDetailWrap" style="margin-bottom:0;">
         <span class="transactions_detail_title">Address</span>
         <span class="transactions_detail_wrap_hash_var">
-          {{hashValue}} <i>v</i></span>
+          {{hashValue}} <i v-if="showProfile">v</i></span>
       </p>
     </div>
 
@@ -106,7 +106,7 @@
           <p class="table_instruction">
             <span>Total blocks:</span>
             <span>{{totalBlocks}}</span>
-            <span>Total Fee:</span>
+            <span>Total Fees:</span>
             <span>{{totalFee}}</span>
           </p>
           <span class="view_all_btn" @click="viewAllClick(1)">View All</span>
@@ -114,7 +114,7 @@
 
         <div class="transaction_table">
           <blocks-list-table :items="items" :type="'6'" v-show="activeBtn === 0" :showNoData="showNoData1"></blocks-list-table>
-          <blocks-list-table :items="itemsPre" :type="'7'" v-show="activeBtn === 1" :showNoData="showNoData2"></blocks-list-table>
+          <blocks-list-table :items="itemsPre" :type="'7'" v-show="activeBtn === 1" :showNoData="showNoData2" :minWidth="5.4"></blocks-list-table>
           <div v-show="(activeBtn === 0 && showNoData1) || (activeBtn === 1 && showNoData2)" class="no_data_show">
             No Data
           </div>
@@ -224,9 +224,9 @@
       //点击view all跳转页面
       viewAllClick(type){
         if(type === 1){
-          this.$router.push(`/block/${type}/address:${this.$route.params.param}`);
+          this.$router.push(`/block/${type}/0?address=${this.$route.params.param}`);
         }else if(type === 2){
-          this.$router.push(`/recent_transactions/2/address:${this.$route.params.param}`)
+          this.$router.push(`/recent_transactions/2/recent?address=${this.$route.params.param}`)
         }
 
       },
@@ -301,7 +301,6 @@
               }else if(item.Fee.Amount === null){
                 Fees = '';
               }
-              console.log(Amount)
               return {
                 TxHash:item.TxHash,
                 Block:item.Height,
@@ -481,6 +480,13 @@
         line-height: 0.3rem;
         font-size: 0.14rem;
         color: #ccc;
+        i{
+          font-style:normal;
+          padding:0.02rem 0.07rem;
+          background:#3598db;
+          border-radius:0.05rem;
+          color:#ffffff;
+        }
       }
 
     }

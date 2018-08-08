@@ -34,7 +34,7 @@
                 style="color:#3598db;cursor:pointer;">{{transactionsValue}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Fee:</span>
+          <span class="information_props">Fees:</span>
           <span class="information_value">{{feeValue}}</span>
         </div>
         <div class="information_props_wrap">
@@ -139,7 +139,6 @@
           }
         }).then((data) => {
           if (data) {
-            console.log(data)
             let denominator = 0;
             data.Validators.forEach(item => denominator += item.VotingPower);
             let numerator = 0;
@@ -176,7 +175,7 @@
               this.timestampValue = data.Time;
               this.blockHashValue = data.Hash;
               this.transactionsValue = data.NumTxs;
-              this.feeValue = '';
+              this.feeValue = '0 IRIS';
               this.lastBlockHashValue = data.Block.LastCommit.BlockID.Hash;
               this.precommitValidatorsValue = data.Validators.length !== 0 ? `${data.Block.LastCommit.Precommits.length}/${data.Validators.length}` : '';
               this.votingPowerValue = denominator !== 0 ? `${numerator / denominator * 100}%` : '';
@@ -194,7 +193,7 @@
             this.timestampValue = '';
             this.blockHashValue = '';
             this.transactionsValue = '';
-            this.feeValue = '';
+            this.feeValue = '0 IRIS';
             this.lastBlockHashValue = '';
             this.precommitValidatorsValue = '';
             this.votingPowerValue = '';
@@ -237,7 +236,7 @@
       },
       skipTransactions() {
         if(this.transactionsValue != 0){
-          this.$router.push(`/transfer_transactions/2/block:${this.$route.params.height}`)
+          this.$router.push(`/transfer_transactions/2/recent?block=${this.$route.params.height}`)
         }
 
       }

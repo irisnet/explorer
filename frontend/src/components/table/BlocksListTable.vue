@@ -1,5 +1,7 @@
 <template>
-  <div :class="showNoData?'show_no_data':''">
+  <div :class="showNoData?'show_no_data':''"
+       class="table_wrap"
+       :style="`${minWidth?(`min-width:${minWidth}rem`):''}`">
     <b-table :fields='fields' :items='items' striped v-if="type === '1'">
       <template slot='Height' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/blocks_detail/${data.item.Height}`)">
@@ -7,9 +9,12 @@
         </span>
       </template>
       <template slot='Txn' slot-scope='data'>
-        <span class="skip_route" @click="skipRoute(`/recent_transactions/2/recent`)">
+        <span class="skip_route"
+              v-show="data.item.Txn != 0"
+              @click="skipRoute(`/recent_transactions/2/recent?block=${data.item.Height}`)">
           {{data.item.Txn}}
         </span>
+        <span v-show="data.item.Txn == 0">{{data.item.Txn}}</span>
       </template>
     </b-table>
     <b-table :fields='fields' :items='items' striped v-if="type === '2'">
@@ -101,7 +106,7 @@
         fields: [],
       }
     },
-    props: ['items', 'type','showNoData'],
+    props: ['items', 'type','showNoData','minWidth'],
     mounted() {
 
     },

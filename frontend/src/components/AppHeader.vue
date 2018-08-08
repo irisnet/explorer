@@ -263,6 +263,8 @@
           this.activeClassName = '/home';
         } else if (path.includes('/faucet')) {
           this.activeClassName = '/faucet';
+        } else{
+          this.activeClassName = '';
         }
       },
       clearData(){
