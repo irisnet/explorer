@@ -2,3 +2,5 @@
 .idea
 vendor
 build
+./frontend/yarn.lock
+./frontend/.gitignore
