@@ -8,7 +8,7 @@
     </div>
     <div class="home_module_block_content">
       <div class="home_module_block_content_item" v-for="item in information" :style="innerWidth<500?'padding:0.1rem;':''">
-        <div class="blocks_module_left">
+        <div class="blocks_module_left" :style="`${title === 'Blocks'?'flex:1;':''}`">
           <div class="key_value_wrap">
             <span class="blocks_module_value"
                   :class="blockModuleTypeVar"
@@ -36,7 +36,7 @@
             <span class="blocks_module_value" style="color:#555;">{{item.Height?item.Txn:item.Amount}}</span>
           </div>
         </div>
-        <div class="blocks_module_right">
+        <div class="blocks_module_right" :style="`${title === 'Blocks'?'flex:2;':''}`">
           <span>{{item.Time}}</span>
           <span>Fees: {{item.Fee}}</span>
           <span v-show="item.TxHash">{{item.Type}}</span>
