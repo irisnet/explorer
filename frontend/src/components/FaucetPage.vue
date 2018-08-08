@@ -103,7 +103,7 @@
           var ic = new smartCaptcha({
             width: 300,
             renderTo: '#sc',
-            default_txt: 'I\'m not a bot',
+            default_txt: 'Click the button to start intelligent validation',
             success_txt: 'Authentication success!',
             fail_txt: 'Authentication failure! Clock again',
             scaning_txt: 'Intelligent authenticating...',
@@ -180,8 +180,8 @@
         margin-top:0.05rem;
       }
       .form-control{
-        height:0.28rem;
-        line-height:0.28rem;
+        height:0.36rem;
+        line-height:0.36rem;
         font-size:0.14rem;
         @include borderRadius(0.04rem)
       }
@@ -193,7 +193,12 @@
       width:1.28rem;
       height:0.36rem;
       background:#3498DB;
+      &:disabled{
+        background: rgba(214,217,224,1);
+        border-color:rgba(214,217,224,1);
+      }
     }
+
 
   }
 
@@ -224,15 +229,44 @@
       background:#efeff1;
       @include flex;
       justify-content:center;
-      
+
       .title{
         width:80%;
-        min-width:4rem;
-        font-size:0.18rem;
+        font-size:0.22rem;
+        color:#000000;
         height:0.62rem;
       line-height:0.62rem;
       }
     }
 
   }
+  #sc{
+    height:0.52rem;
+    background: -webkit-linear-gradient(bottom,#eee,#ccc); /* Safari 5.1-6.0 */
+    background: -o-linear-gradient(bottom,#eee,#ccc); /* Opera 11.1-12.0 */
+    background: -moz-linear-gradient(bottom,#eee,#ccc); /* Firefox 3.6-15 */
+    background: linear-gradient(to bottom,#eee,#ccc); /* 标准语法 */
+    #SM_BTN_WRAPPER_1{
+      height:100%;
+      #SM_BTN_1{
+        height:0.52rem !important;
+        line-height:0.52rem !important;
+        #SM_TXT_1{
+          display:inline-block;
+          width:100%;
+          height:0.52rem;
+          line-height:0.52rem;
+          text-align: center;
+          margin-left:0;
+          color:#25AE00;
+
+        }
+      }
+
+      .sm-ico{
+        display:none;//去掉图标
+      }
+    }
+  }
+
 </style>

@@ -101,6 +101,7 @@
     @include flex;
     flex-direction:column;
     align-items: center;
+
     .privacy_policy_wrap_title{
       @include flex;
       flex-direction:column;
@@ -108,8 +109,12 @@
       border-bottom:1px solid #eee;
       width:100%;
       padding-left:0.2rem;
+      background: #efeff1;
       h2{
         font-size:0.22rem;
+        margin-bottom:0;
+        height:0.62rem;
+        line-height:0.62rem;
 
         width:80%;
       }
@@ -117,6 +122,7 @@
     .person_computer_privacy_policy_wrap{
       padding-left:0.2rem;
       width:80%;
+      margin-bottom:0.4rem;
     }
     .mobile_privacy_policy_wrap{
       width:100%;
@@ -127,6 +133,7 @@
       font-size:0.18rem;
       margin-top:0.2rem;
       line-height:0.22rem;
+      margin-bottom:0;
 
     }
     ul{

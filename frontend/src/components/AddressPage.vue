@@ -388,7 +388,7 @@
         height:0.4rem;
         line-height:0.4rem;
         font-size:0.18rem;
-        color:#555;
+        color:#000000;
         margin-bottom:0;
         border-bottom:0.01rem solid #efefef;
       }
@@ -399,6 +399,7 @@
           .information_props{
             width:1.5rem;
             font-size:0.14rem;
+            color:#000000;
           }
           .information_value{
             color: #a2a2ae;
@@ -416,22 +417,23 @@
       .transactions_detail_title {
         height: 0.4rem;
         line-height: 0.4rem;
-        font-size: 0.18rem;
-        color: #555;
+        font-size: 0.22rem;
+        color: #000000;
         margin-right: 0.2rem;
         font-weight:500;
       }
       .transactions_detail_wrap_hash_var {
         height: 0.4rem;
         line-height: 0.4rem;
-        font-size: 0.14rem;
-        color: #ccc;
+        font-size: 0.22rem;
+        color: #a2a2ae;
         i{
           font-style:normal;
           padding:0.02rem 0.07rem;
           background:#3598db;
-          border-radius:0.05rem;
+          border-radius:0.04rem;
           color:#ffffff;
+          font-size:0.18rem;
         }
       }
     }
@@ -445,7 +447,7 @@
         height:0.4rem;
         line-height:0.4rem;
         font-size:0.18rem;
-        color:#555;
+        color:#000000;
         margin-bottom:0;
       }
       .transactions_detail_information_wrap{
@@ -461,6 +463,7 @@
           }
           .information_props{
             font-size:0.14rem;
+            color:#000000;
           }
 
 
@@ -470,7 +473,7 @@
         height: 0.3rem;
         line-height: 0.3rem;
         font-size: 0.18rem;
-        color: #555;
+        color: #000000;
         margin-right: 0.2rem;
         font-weight:500;
       }
@@ -478,14 +481,15 @@
         overflow-x: auto;
         height: 0.3rem;
         line-height: 0.3rem;
-        font-size: 0.14rem;
-        color: #ccc;
+        font-size: 0.22rem;
+        color: #a2a2ae;
         i{
           font-style:normal;
           padding:0.02rem 0.07rem;
           background:#3598db;
-          border-radius:0.05rem;
+          border-radius:0.04rem;
           color:#ffffff;
+          font-size:0.18rem;
         }
       }
 
@@ -515,13 +519,13 @@
           .progress_wrap{
             margin-bottom:0.15rem;
             .progress_wrap_background{
-              height:0.24rem;
+              height:0.3rem;
               background: #efeff1;
-              margin-top:0.1rem;
+              margin-top:0.12rem;
               .progress_value{
                 background:#a4d7f4;
                 height:100%;
-                line-height:0.24rem;
+                line-height:0.3rem;
                 text-indent:0.2rem;
               }
             }
@@ -542,13 +546,13 @@
         .progress_wrap{
           margin-bottom:0.15rem;
           .progress_wrap_background{
-            height:0.24rem;
+            height:0.3rem;
             background: #efeff1;
-            margin-top:0.1rem;
+            margin-top:0.12rem;
             .progress_value{
               background:#a4d7f4;
               height:100%;
-              line-height:0.24rem;
+              line-height:0.3rem;
               padding-left:0.2rem;
             }
           }
@@ -558,9 +562,8 @@
     }
     //底部表格部分
     .transaction_precommit_table{
-      margin-top:0.1rem;
-      border-bottom:0.01rem solid #eee;
-      margin-bottom:0.2rem;
+      margin-top:0.28rem;
+      margin-bottom:0.4rem;
       .tab_wrap{
 border-bottom:1px solid #d6d9e0;
         span{
@@ -568,23 +571,16 @@ border-bottom:1px solid #d6d9e0;
           line-height:0.38rem;
           width:1.54rem;
           display:inline-block;
-
+          color:#fff;
           text-align: center;
           background:rgba(214,217,224,1);
           cursor:pointer;
-          margin-bottom:0.15rem;
-
-          &:first-child{
-            border-radius:0.05rem 0 0 0.05rem;
-          }
-          &:last-child{
-            border-radius:0 0.05rem 0.05rem 0;
-          }
+          margin-bottom:0.2rem;
 
         }
         .transactions_btn_active{
           background: #3598db;
-          color:#fff;
+
         }
       }
       .table_wrap{
@@ -597,16 +593,21 @@ border-bottom:1px solid #d6d9e0;
           padding:0.1rem;
           @include flex;
           justify-content:flex-end;
+          height:0.62rem;
+          align-items: center;
           span{
             @include viewBtn;
           }
         }
         .precommit_view_all{
           padding:0.1rem;
+          height:0.62rem;
           @include flex;
           justify-content:space-between;
+          align-items: center;
           span{
             font-size:0.14rem;
+            color:#a2a2ae;
             &:nth-child(3){
               display:inline-block;
               margin-left:0.1rem;

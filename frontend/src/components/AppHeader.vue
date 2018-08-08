@@ -7,7 +7,7 @@
           <img src="../assets/logo.png" alt="失去网络了..."/>
           <div class="logo_title_wrap">
             <div class="logo_title_content">
-              <span>IRIS</span>
+              <span style="font-weight:600;">IRIS</span>
               <span>Explorer</span>
             </div>
             <p>
@@ -303,7 +303,12 @@
           margin-top:0.2rem;
           .logo_title_wrap{
             margin-left:0.16rem;
+            @include flex;
+            flex-direction:column;
+            justify-content: center;
             .logo_title_content{
+              height:0.27rem;
+              line-height:0.27rem;
               span{
                 &:first-child{
                   font-size:0.24rem;
@@ -312,13 +317,15 @@
                 &:last-child{
                   font-size:0.24rem;
                   color:#3598db;
-                  display:inline-block;
                 }
 
               }
             }
             p{
               font-size:0.14rem;
+              height:0.16rem;
+              line-height:0.16rem;
+              margin-top:0.04rem;
               span{
                 color:#a2a2ae;
               }
