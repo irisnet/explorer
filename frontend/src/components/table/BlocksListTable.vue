@@ -137,17 +137,19 @@
       }
     }
   }
+
+  .page-link{
+    padding:0.05rem 0.075rem !important;
+    height:0.29rem !important;
+    color:#3598db !important;
+  }
   .active{
 
     .page-link{
       background-color: #3598db !important;
       border-color:#3598db !important;
-
+      color:#fff !important;
     }
-  }
-  .page-link{
-    padding:0.05rem 0.075rem !important;
-    height:0.29rem !important;
   }
   .table{
     th, td{
@@ -164,6 +166,9 @@
           color:#000000;
           height:0.5rem;
           vertical-align:middle;
+          &:first-child{
+            padding-left:0.2rem !important;
+          }
         }
         border-bottom:0.02rem solid #3598db;
       }
@@ -175,6 +180,11 @@
         }
         &:last-child{
           border-bottom:1px solid #dee2e6;
+        }
+        td{
+          &:first-child{
+            padding-left:0.2rem !important;
+          }
         }
       }
     }

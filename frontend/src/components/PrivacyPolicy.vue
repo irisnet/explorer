@@ -5,7 +5,7 @@
         <h2>Privacy Policy</h2>
       </div>
       <div :class="privacyPolicyVar">
-        <h4>PLEASE READ THE PRIVACY POLICY CAREFULLY. (July 2018)</h4>
+        <h4 style="margin-top:0.4rem;">PLEASE READ THE PRIVACY POLICY CAREFULLY. (July 2018)</h4>
         <p>This Privacy Policy is designed to assist you with understanding how bianjie.ai (referred to as the "Company","bianjie.ai", "we", "us" or "our") collect, use and disclose the information you provide us when accessing or using the website, irisplorer.io.</p>
         <h4>WHAT INFORMATION DO WE COLLECT?</h4>
         <p>You may provide us your personal information that you voluntarily disclose that is collected on an individual basis; and information collected automatically when you use our Website or the services available on our Website. Each time you use any Site, or any Services, the current version of this Privacy Policy will apply. Personal Information may include (but is not limited to):</p>
@@ -101,6 +101,7 @@
     @include flex;
     flex-direction:column;
     align-items: center;
+
     .privacy_policy_wrap_title{
       @include flex;
       flex-direction:column;
@@ -108,8 +109,13 @@
       border-bottom:1px solid #eee;
       width:100%;
       padding-left:0.2rem;
+      background: #efeff1;
+      border-bottom:1px solid #d6d9e0;
       h2{
         font-size:0.22rem;
+        margin-bottom:0;
+        height:0.62rem;
+        line-height:0.62rem;
 
         width:80%;
       }
@@ -117,6 +123,7 @@
     .person_computer_privacy_policy_wrap{
       padding-left:0.2rem;
       width:80%;
+      margin-bottom:0.4rem;
     }
     .mobile_privacy_policy_wrap{
       width:100%;
@@ -127,6 +134,7 @@
       font-size:0.18rem;
       margin-top:0.2rem;
       line-height:0.22rem;
+      margin-bottom:0;
 
     }
     ul{
@@ -134,6 +142,7 @@
     }
     p, li{
       font-size:0.14rem;
+      color:#a2a2ae;
     }
   }
 

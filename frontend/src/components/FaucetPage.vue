@@ -180,8 +180,8 @@
         margin-top:0.05rem;
       }
       .form-control{
-        height:0.28rem;
-        line-height:0.28rem;
+        height:0.36rem;
+        line-height:0.36rem;
         font-size:0.14rem;
         @include borderRadius(0.04rem)
       }
@@ -193,7 +193,12 @@
       width:1.28rem;
       height:0.36rem;
       background:#3498DB;
+      &:disabled{
+        background: rgba(214,217,224,1);
+        border-color:rgba(214,217,224,1);
+      }
     }
+
 
   }
 
@@ -224,15 +229,32 @@
       background:#efeff1;
       @include flex;
       justify-content:center;
-      
+      border-bottom:1px solid #d6d9e0;
+
       .title{
         width:80%;
         min-width:4rem;
-        font-size:0.18rem;
+        font-size:0.22rem;
+        color:#000000;
         height:0.62rem;
       line-height:0.62rem;
       }
     }
 
+  }
+  #sc{
+    height:0.52rem;
+
+    #SM_BTN_WRAPPER_1{
+      height:0.52rem;
+      #SM_BTN_1{
+        @include flex;
+        align-items: center;
+        height:0.52rem !important;
+      }
+      #sm-btn-bg{
+        height:0.52rem !important;
+      }
+    }
   }
 </style>

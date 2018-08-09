@@ -8,7 +8,7 @@
     </div>
     <div class="home_module_block_content">
       <div class="home_module_block_content_item" v-for="item in information" :style="innerWidth<500?'padding:0.1rem;':''">
-        <div class="blocks_module_left">
+        <div class="blocks_module_left" :style="`${title === 'Blocks'?'flex:1;':''}`">
           <div class="key_value_wrap">
             <span class="blocks_module_value"
                   :class="blockModuleTypeVar"
@@ -33,10 +33,10 @@
 
           <div class="key_value_wrap">
             <span class="blocks_module_props">{{item.Height?'Txn:':'Amount:'}}</span>
-            <span class="blocks_module_value" style="color:#555;">{{item.Height?item.Txn:item.Amount}}</span>
+            <span class="blocks_module_value" style="color:#000000;">{{item.Height?item.Txn:item.Amount}}</span>
           </div>
         </div>
-        <div class="blocks_module_right">
+        <div class="blocks_module_right" :style="`${title === 'Blocks'?'flex:2;':''}`">
           <span>{{item.Time}}</span>
           <span>Fees: {{item.Fee}}</span>
           <span v-show="item.TxHash">{{item.Type}}</span>
@@ -129,13 +129,13 @@
     @include flex;
     flex-direction:column;
     .home_module_block_title_wrap{
-      height:0.5rem;
       @include flex;
       padding:0.2rem;
       height:0.64rem;
       justify-content: space-between;
       background: #efeff1;
       border-bottom:1px solid #e4e4e4;
+      align-items: center;
       .home_module_block_title{
         font-size:0.18rem;
 
@@ -190,7 +190,7 @@
 
             .blocks_module_props{
               font-size:0.14rem;
-              color:#555;
+              color:#000000;
               font-weight:600;
             }
             .blocks_background_type{

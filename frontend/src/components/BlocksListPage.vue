@@ -18,7 +18,7 @@
         <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
         </b-pagination>
       </div>
-      <div style="position:relative;min-height:3.36rem;">
+      <div style="position:relative;">
         <spin-component :showLoading="showLoading"/>
         <blocks-list-table :items="items" :type="this.$route.params.type"
                            :minWidth="tableMinWidth"
@@ -27,7 +27,7 @@
           No Data
         </div>
       </div>
-      <div class="pagination" style='margin-bottom:0.2rem;'>
+      <div class="pagination" style='margin:0.2rem 0;'>
         <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
         </b-pagination>
       </div>
@@ -306,10 +306,10 @@
     @include pcContainer;
     font-size: 0.14rem;
     .pagination {
-      margin-top: 0.12rem;
       @include flex;
       justify-content: flex-end;
       @include borderRadius(0.025rem);
+      height:0.3rem;
       li{
         height:0.3rem !important;
       }
@@ -317,6 +317,8 @@
     .total_num{
       @include flex;
       justify-content: space-between;
+      height:0.7rem;
+      align-items: center;
     }
     .no_data_show{
       @include flex;
@@ -366,10 +368,11 @@
         height: 0.4rem;
         line-height: 0.4rem;
         font-size: 0.18rem;
-        color: #555;
+        color: #000000;
         margin-bottom: 0;
       }
       @include pcCenter;
+      min-height:4.6rem;
       .transactions_detail_information_wrap {
         .information_props_wrap {
           @include flex;
@@ -382,7 +385,7 @@
       .blocks_list_title {
         height: 0.62rem;
         line-height: 0.62rem;
-        font-size: 0.18rem;
+        font-size: 0.22rem;
         color: #000000;
         margin-right: 0.2rem;
         font-weight: 500;
@@ -390,8 +393,8 @@
       .blocks_list_page_wrap_hash_var {
         height:  0.62rem;
         line-height: 0.62rem;
-        font-size: 0.14rem;
-        color: #ccc;
+        font-size: 0.22rem;
+        color: #a2a2ae;
       }
       .for_block{
         display:inline-block;
@@ -409,7 +412,7 @@
         height: 0.4rem;
         line-height: 0.4rem;
         font-size: 0.18rem;
-        color: #555;
+        color: #000000;
         margin-bottom: 0;
       }
       .transactions_detail_information_wrap {
@@ -429,8 +432,8 @@
       .blocks_list_title {
         height: 0.3rem;
         line-height: 0.3rem;
-        font-size: 0.18rem;
-        color: #555;
+        font-size: 0.22rem;
+        color: #000000;
         margin-right: 0.2rem;
         font-weight: 500;
       }
@@ -438,8 +441,8 @@
         overflow-x: auto;
         height: 0.3rem;
         line-height: 0.3rem;
-        font-size: 0.14rem;
-        color: #ccc;
+        font-size: 0.22rem;
+        color: #a2a2ae;
       }
       .for_block{
         display:inline-block;
