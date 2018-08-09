@@ -233,7 +233,6 @@
 
       .title{
         width:80%;
-        min-width:4rem;
         font-size:0.22rem;
         color:#000000;
         height:0.62rem;

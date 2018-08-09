@@ -31,7 +31,9 @@
           <span class="information_props">Transactions:</span>
           <span class="information_value"
                 @click="skipTransactions"
+                v-show="transactionsValue != 0"
                 style="color:#3598db;cursor:pointer;">{{transactionsValue}}</span>
+          <span v-show="transactionsValue == 0" style="color:#a2a2ae;">0</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Fees:</span>
@@ -333,7 +335,7 @@
       .transactions_detail_title {
         height: 0.4rem;
         line-height: 0.4rem;
-        font-size: 0.18rem;
+        font-size: 0.22rem;
         color: #000000;
         margin-right: 0.2rem;
         font-weight: 500;
@@ -350,7 +352,7 @@
       width: 100%;
       @include flex;
       flex-direction: column;
-      padding: 0 0.05rem;
+      padding: 0 0.1rem;
       .transaction_information_content_title {
         height: 0.5rem !important;
         line-height: 0.5rem !important;
@@ -361,6 +363,7 @@
       .block_detail_table_wrap {
         width: 100%;
         overflow-x: auto;
+        margin-bottom:0.4rem;
         .no_data_show {
           @include flex;
           justify-content: center;
@@ -418,7 +421,7 @@
       .transactions_detail_title {
         height: 0.3rem;
         line-height: 0.3rem;
-        font-size: 0.18rem;
+        font-size: 0.22rem;
         color: #000000;
         margin-right: 0.02rem;
         font-weight: 500;

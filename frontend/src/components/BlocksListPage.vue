@@ -18,7 +18,7 @@
         <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
         </b-pagination>
       </div>
-      <div style="position:relative;">
+      <div style="position:relative;overflow-x: auto;">
         <spin-component :showLoading="showLoading"/>
         <blocks-list-table :items="items" :type="this.$route.params.type"
                            :minWidth="tableMinWidth"
@@ -197,7 +197,7 @@
           }else if(this.$route.params.param === 'recent'){
             if(this.$route.query.block){
               url = `/api/txsByBlock/${this.$route.query.block}/${currentPage}/${pageSize}`;
-              this.blockVar = `for ${this.$route.query.block}`;
+              this.blockVar = `for block ${this.$route.query.block}`;
             }else if(this.$route.query.address){
               url = `/api/txsByAddress/${this.$route.query.address}/${currentPage}/${pageSize}`;
               this.blockVar = `for ${this.$route.query.address}`;
@@ -357,8 +357,10 @@
       .mobile_blocks_list_page_wrap {
         @include flex;
         flex-direction: column;
+        overflow-x: auto;
+        width:100%;
         .blocks_list_page_wrap_hash_var{
-          min-width:5rem;
+          min-width:7rem;
         }
       }
 
@@ -406,8 +408,7 @@
       width: 100%;
       @include flex;
       flex-direction: column;
-      padding: 0 0.05rem;
-      overflow-x: auto;
+      padding: 0 0.1rem;
       .transaction_information_content_title {
         height: 0.4rem;
         line-height: 0.4rem;
@@ -446,7 +447,7 @@
       }
       .for_block{
         display:inline-block;
-        margin-left:0.1rem;
+        //margin-left:0.1rem;
       }
 
     }

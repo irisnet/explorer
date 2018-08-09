@@ -88,18 +88,18 @@
       <div class="use_feature_mobile" v-show="featureShow">
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/home')">Home</span>
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/block/1/0')">Blocks</span>
-        <span class="feature_btn_mobile feature_nav feature_arrow" @click="transactionShow =! transactionShow">Transactions</span>
-        <span class="feature_btn_mobile feature_subNav" v-show="transactionShow"
+        <!--<span class="feature_btn_mobile feature_nav feature_arrow" @click="transactionShow =! transactionShow">Transactions</span>-->
+        <span class="feature_btn_mobile feature_nav"
               @click="featureButtonClick('/recent_transactions/2/recent')">Recent Transactions</span>
-        <span class="feature_btn_mobile feature_subNav" v-show="transactionShow"
+        <span class="feature_btn_mobile feature_nav"
               @click="featureButtonClick('/transfer_transactions/2/transfer')">Transfer Transactions</span>
-        <span class="feature_btn_mobile feature_subNav" v-show="transactionShow"
+        <span class="feature_btn_mobile feature_nav"
               @click="featureButtonClick('/stake_transactions/2/stake')">Stake Transactions</span>
-        <span class="feature_btn_mobile feature_nav feature_arrow"
-              @click="validatorsShow =! validatorsShow">Validators</span>
-        <span class="feature_btn_mobile feature_subNav" v-show="validatorsShow"
+        <!--<span class="feature_btn_mobile feature_nav feature_arrow"
+              @click="validatorsShow =! validatorsShow">Validators</span>-->
+        <span class="feature_btn_mobile feature_nav"
               @click="featureButtonClick('/validators/3/0')">Validators</span>
-        <span class="feature_btn_mobile feature_subNav" v-show="validatorsShow"
+        <span class="feature_btn_mobile feature_nav"
               @click="featureButtonClick('/candidates/4/0')">Candidates</span>
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/faucet')">Faucet</span>
       </div>
