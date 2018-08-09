@@ -301,12 +301,23 @@
               }else if(item.Fee.Amount === null){
                 Fees = '';
               }
+
+              let type = '';
+              if(item.Type === 'Transfer'){
+                if(this.$route.params.param === item.From){
+                  type = 'Send';
+                }else{
+                  type = 'Receive';
+                }
+              }else{
+                type = item.Type;
+              }
               return {
                 TxHash:item.TxHash,
                 Block:item.Height,
                 From:item.From,
                 To:item.To,
-                Type:item.Type === 'coin'?'transfer':item.Type,
+                Type:type,
                 Amount,
                 Fees,
                 Timestamp:Tools.conversionTimeToUTC(item.Time),

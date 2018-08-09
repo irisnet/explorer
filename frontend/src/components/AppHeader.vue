@@ -76,7 +76,7 @@
         <img src="../assets/logo.png" alt="失去网络了..."/>
         <div class="logo_title_wrap">
           <div class="logo_title_content">
-            <span>IRIS</span>
+            <span style="font-weight:600;">IRIS</span>
             <span>Explorer</span>
           </div>
           <p>
@@ -469,8 +469,8 @@
         position: absolute;
         width: 0.4rem;
         height: 0.4rem;
-        top: 0;
-        right: 0;
+        top: 0.05rem;
+        right: 0.1rem;
         background: url('../assets/menu.svg') no-repeat;
       }
       .image_wrap_mobile {
@@ -478,17 +478,20 @@
         width:2.5rem;
         .logo_title_wrap{
           margin-left:0.16rem;
+          @include flex;
+          flex-direction:column;
+          justify-content: center;
           .logo_title_content{
+            height:0.27rem;
+            line-height:0.27rem;
             span{
               &:first-child{
                 font-size:0.24rem;
-                color:#3498db;
+                color:#005a98;
               }
               &:last-child{
                 font-size:0.24rem;
-                color:#000000;
-                display:inline-block;
-                margin-left:0.12rem;
+                color:#3598db;
               }
 
             }

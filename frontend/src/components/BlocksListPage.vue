@@ -317,7 +317,7 @@
     .total_num{
       @include flex;
       justify-content: space-between;
-      height:0.62rem;
+      height:0.7rem;
       align-items: center;
     }
     .no_data_show{

@@ -103,7 +103,7 @@
           var ic = new smartCaptcha({
             width: 300,
             renderTo: '#sc',
-            default_txt: 'Click the button to start intelligent validation',
+            default_txt: 'I\'m not a bot',
             success_txt: 'Authentication success!',
             fail_txt: 'Authentication failure! Clock again',
             scaning_txt: 'Intelligent authenticating...',
@@ -229,9 +229,11 @@
       background:#efeff1;
       @include flex;
       justify-content:center;
+      border-bottom:1px solid #d6d9e0;
 
       .title{
         width:80%;
+        min-width:4rem;
         font-size:0.22rem;
         color:#000000;
         height:0.62rem;
@@ -242,31 +244,17 @@
   }
   #sc{
     height:0.52rem;
-    background: -webkit-linear-gradient(bottom,#eee,#ccc); /* Safari 5.1-6.0 */
-    background: -o-linear-gradient(bottom,#eee,#ccc); /* Opera 11.1-12.0 */
-    background: -moz-linear-gradient(bottom,#eee,#ccc); /* Firefox 3.6-15 */
-    background: linear-gradient(to bottom,#eee,#ccc); /* 标准语法 */
+
     #SM_BTN_WRAPPER_1{
-      height:100%;
+      height:0.52rem;
       #SM_BTN_1{
+        @include flex;
+        align-items: center;
         height:0.52rem !important;
-        line-height:0.52rem !important;
-        #SM_TXT_1{
-          display:inline-block;
-          width:100%;
-          height:0.52rem;
-          line-height:0.52rem;
-          text-align: center;
-          margin-left:0;
-          color:#25AE00;
-
-        }
       }
-
-      .sm-ico{
-        display:none;//去掉图标
+      #sm-btn-bg{
+        height:0.52rem !important;
       }
     }
   }
-
 </style>

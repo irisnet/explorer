@@ -106,8 +106,8 @@
             }
         } : {
           orient: 'horizontal',
-            y : 'bottom',
             data: [],
+            bottom:'5%',
             type: 'scroll',
         };
         let center = this.innerWidth > 1258 ? ['34.2%', '48%'] : ['50%', '42%'];
