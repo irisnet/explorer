@@ -1,16 +1,16 @@
 <template>
   <div type="light" class='facet_wrap'>
     <h3 class='faucet_title' :style="`width:${innerWidth/100}rem;`">
-      <p class="title">
+      <p class="title" :style="innerWidth<=500?'width:100%;padding-left:0.1rem;':''">
         IRISnet Testnet Faucet
       </p>
   </h3>
-    <div class="faucet text-center" style="">
+    <div class="faucet text-center" :style="innerWidth<=500?'padding-top:0;':''">
       <div class="coin" style="display:flex;justify-content: center;margin-bottom:10px;">
         <img src="../assets/coin.png" alt="">
       </div>
-      <p style="font-size:0.14rem;color:#A2A2AE;">Use this faucet to get tokens for the latest IRISnet testnet.</p>
-      <p style="font-size:0.14rem;color:#A2A2AE;">Please don't abuse this service — the number of available tokens is limited.</p>
+      <p style="font-size:0.14rem;color:#A2A2AE;padding:0 0.1rem;">Use this faucet to get tokens for the latest IRISnet testnet.</p>
+      <p style="font-size:0.14rem;color:#A2A2AE;padding:0 0.1rem;">Please don't abuse this service — the number of available tokens is limited.</p>
       <br/>
       <form @submit.prevent="apply">
         <div class="faucet-form">
@@ -150,7 +150,16 @@
             location.reload();
           }
         })
+      },
+      resize(){
+        this.innerWidth = window.innerWidth;
       }
+    },
+    mounted(){
+      window.addEventListener('resize',this.resize)
+    },
+    beforeDestroy(){
+      window.removeEventListener('resize',this.resize);
     }
   }
 
