@@ -453,7 +453,7 @@
       width: 100%;
       @include flex;
       flex-direction: column;
-      padding: 0 0.05rem;
+      padding: 0 0.1rem;
       .transaction_information_content_title{
         height:0.4rem;
         line-height:0.4rem;
@@ -483,7 +483,7 @@
       .transactions_detail_title {
         height: 0.3rem;
         line-height: 0.3rem;
-        font-size: 0.18rem;
+        font-size: 0.22rem;
         color: #000000;
         margin-right: 0.2rem;
         font-weight:500;
@@ -576,11 +576,11 @@
       margin-top:0.28rem;
       margin-bottom:0.4rem;
       .tab_wrap{
-border-bottom:1px solid #d6d9e0;
+        border-bottom:1px solid #d6d9e0;
         span{
           height:0.38rem;
           line-height:0.38rem;
-          width:1.54rem;
+          width:1.5rem;
           display:inline-block;
           color:#fff;
           text-align: center;
@@ -595,7 +595,7 @@ border-bottom:1px solid #d6d9e0;
         }
       }
       .table_wrap{
-        overflow-x:auto;
+        width:100%;
         .pagination{
           @include flex;
           justify-content: flex-end;
@@ -629,6 +629,7 @@ border-bottom:1px solid #d6d9e0;
           }
         }
         .transaction_table{
+          overflow-x:auto;
           .no_data_show{
             @include flex;
             justify-content: center;
