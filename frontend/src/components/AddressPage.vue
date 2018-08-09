@@ -483,7 +483,7 @@
       .transactions_detail_title {
         height: 0.3rem;
         line-height: 0.3rem;
-        font-size: 0.22rem;
+        font-size: 0.18rem;
         color: #000000;
         margin-right: 0.2rem;
         font-weight:500;
@@ -492,7 +492,7 @@
         overflow-x: auto;
         height: 0.3rem;
         line-height: 0.3rem;
-        font-size: 0.22rem;
+        font-size: 0.18rem;
         color: #a2a2ae;
         i{
           font-style:normal;

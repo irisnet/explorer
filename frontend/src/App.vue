@@ -236,7 +236,7 @@
           }
           .footer_center {
             text-align: center;
-            margin-bottom: 0.1rem;
+            margin-bottom: 0.2rem;
           }
           .footer_right {
             .footer_link_wrap {
@@ -252,7 +252,7 @@
           @include flex;
           .footer_left {
             @include flex;
-            margin-bottom: 0.1rem;
+            margin-bottom: 0.2rem;
             span, a {
               width: 0.4rem;
               height: 0.4rem;

@@ -2,7 +2,7 @@
   <div style="width:100%;">
     <div class="privacy_policy_wrap">
       <div class="privacy_policy_wrap_title">
-        <h2>Privacy Policy</h2>
+        <h2 :style="devicesWidth<=500?'width:100%;':''">Privacy Policy</h2>
       </div>
       <div :class="privacyPolicyVar">
         <h4 style="margin-top:0.4rem;">PLEASE READ THE PRIVACY POLICY CAREFULLY. (July 2018)</h4>
@@ -75,7 +75,6 @@
 </template>
 
 <script>
-  import Tools from '../common/Tools';
   export default {
     data() {
       return {
@@ -84,9 +83,17 @@
 
       }
     },
+    watch:{
+      devicesWidth(devicesWidth){
+        if (devicesWidth > 500) {
+          this.privacyPolicyVar = 'person_computer_privacy_policy_wrap';
+        } else {
+          this.privacyPolicyVar = 'mobile_privacy_policy_wrap';
+        }
+      }
+    },
     beforeMount() {
-      if (Tools.currentDeviceIsPersonComputer()) {
-
+      if (this.devicesWidth > 500) {
         this.privacyPolicyVar = 'person_computer_privacy_policy_wrap';
       } else {
         this.privacyPolicyVar = 'mobile_privacy_policy_wrap';

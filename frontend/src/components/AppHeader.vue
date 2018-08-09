@@ -467,11 +467,11 @@
       border-bottom: 0.01rem solid #cccccc;
       .feature_btn {
         position: absolute;
-        width: 0.4rem;
-        height: 0.4rem;
-        top: 0.05rem;
+        width: 0.34rem;
+        height: 0.34rem;
+        top: 0.1rem;
         right: 0.1rem;
-        background: url('../assets/menu.svg') no-repeat;
+        background: url('../assets/menu.png') no-repeat;
       }
       .image_wrap_mobile {
         @include flex;
@@ -559,12 +559,12 @@
         z-index: 100;
         flex-direction: column;
         .feature_btn_mobile {
-          border-bottom: 0.01rem solid #cccccc;
+          border-bottom: 0.01rem solid #d6d9e0;
           height: 0.39rem;
           line-height: 0.39rem;
           padding-left: 0.15rem;
-          background: #3598db;
-          color: #c9eafd;
+          background: #ffffff;
+          color: #3598db;
           font-size:0.14rem;
         }
         .feature_arrow {
