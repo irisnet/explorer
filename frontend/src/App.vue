@@ -38,8 +38,11 @@
             <p class="footer_copyright_wrap">
               ©️ IRIS Explorer 2018 all rights reserved
             </p>
+            <!--<p class="footer_copyright_wrap">
+              {{`v${version}(${env}_${build})`}}
+            </p>-->
             <p class="footer_copyright_wrap">
-              {{`${version}(${env}_${build})`}}
+              {{`v${version}`}}
             </p>
 
           </div>
