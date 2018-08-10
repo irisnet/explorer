@@ -11,7 +11,7 @@
           <p>to follow our SubScriptions</p>
         </div>
       </div>
-      <router-view class="router_view" :style="`min-height:${vh/100-2.8}rem;`"/>
+      <router-view class="router_view" :style="`min-height:${vh/100-2.72}rem;`"/>
       <footer :class="footerClass" v-show="showFooter" id="footer">
         <div :class="footerClassName" style="height:100%;">
           <div class="footer_left" :class="footerLeftVar">
@@ -41,10 +41,6 @@
             <!--<p class="footer_copyright_wrap">
               {{`v${version}(${env}_${build})`}}
             </p>-->
-            <p class="footer_copyright_wrap">
-              {{`v${version}`}}
-            </p>
-
           </div>
         </div>
       </footer>

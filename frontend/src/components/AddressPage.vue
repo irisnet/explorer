@@ -39,7 +39,9 @@
         <div class="information_props_wrap">
           <span class="information_props">Website:</span>
           <a class="information_value" :href="websiteValue" target="_blank"
+             v-show="websiteValue !== '--'"
              style="color:#3598db;max-width:0.5rem;">{{websiteValue}}</a>
+          <i v-show="websiteValue === '--'" style="font-style:normal;color:#a2a2ae">--</i>
         </div>
         <!--<div class="information_props_wrap" style="border-bottom:0.01rem solid #eee">
           <span class="information_props">Description:</span>
@@ -240,7 +242,7 @@
           if(data){
             this.nameValue = data.Description.Moniker;
             this.pubKeyValue = data.PubKey;
-            this.websiteValue = data.Description.Website;
+            this.websiteValue = data.Description.Website?data.Description.Website:'--';
             this.descriptionValue= data.Description.Details;
             this.commissionRateValue = '';
             this.announcementValue = '';
