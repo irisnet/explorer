@@ -1,14 +1,15 @@
 package rest
 
 import (
-	"github.com/gorilla/mux"
-	"net/http"
-	"github.com/irisnet/explorer/server/utils"
-	"gopkg.in/mgo.v2/bson"
 	"encoding/json"
-	"github.com/irisnet/irishub-sync/store/document"
-	"time"
+	"net/http"
 	"strconv"
+	"time"
+
+	"github.com/gorilla/mux"
+	"github.com/irisnet/explorer/server/utils"
+	"github.com/irisnet/irishub-sync/store/document"
+	"gopkg.in/mgo.v2/bson"
 )
 
 type TxDay struct {
@@ -117,7 +118,7 @@ func queryTxsByBlock(w http.ResponseWriter, r *http.Request) {
 	var data []document.CommonTx
 	args := mux.Vars(r)
 	height := args["height"]
-	iHeight , _ := strconv.Atoi(height)
+	iHeight, _ := strconv.Atoi(height)
 	w.Write(utils.QueryList("tx_common", &data, bson.M{"height": iHeight}, "-time", r))
 }
 
@@ -148,9 +149,27 @@ func queryTxsByDay(w http.ResponseWriter, r *http.Request) {
 			}},
 		},
 	)
-	var txDay []TxDay
-	pipe.All(&txDay)
-	resultByte, _ := json.Marshal(txDay)
+	var txDays []TxDay
+	var result []TxDay
+	pipe.All(&txDays)
+	var i time.Duration
+	var j int
+	day := start
+	for day.Unix() < time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, start.Location()).Unix() {
+		key := day.Format("2006-01-02")
+		if len(txDays) > j && txDays[j].Time == key {
+			result = append(result, txDays[j])
+			j++
+		} else {
+			var txDay TxDay
+			txDay.Time = key
+			txDay.Count = 0
+			result = append(result, txDay)
+		}
+		i++
+		day = start.Add(i * 24 * time.Hour)
+	}
+	resultByte, _ := json.Marshal(result)
 	w.Write(resultByte)
 }
 

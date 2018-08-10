@@ -1,3 +1,6 @@
+.DS_Store
 .idea
 vendor
 build
+./frontend/yarn.lock
+./frontend/.gitignore

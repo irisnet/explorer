@@ -105,7 +105,7 @@
         deviceType: window.innerWidth > 500 ? 1 : 0,
         echartsComponentWrapLine:window.innerWidth > 500 ?'echarts_component_wrap_line_personal_computer':'echarts_component_wrap_line_mobile',
         month:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-        monthNum:['01','02','03','04','05','06','07','07','09','10','11','12'],
+        monthNum:['01','02','03','04','05','06','07','08','09','10','11','12'],
 
       }
     },
@@ -134,9 +134,9 @@
   .echarts_component_wrap_line_personal_computer, .echarts_component_wrap_line_mobile {
     width: 100%;
     height: 100%;
+    padding:0.12rem 0.2rem 0 0.2rem;
 
     .echarts_title_wrap_line {
-      padding:0.12rem 0.1rem 0 0.1rem;
       height: 15%;
       font-size:0.18rem;
       font-weight:600;

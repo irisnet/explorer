@@ -3,11 +3,11 @@
     <div class="blocks_list_title_wrap">
       <p :class="blocksListPageWrap" style="margin-bottom:0;">
         <span class="blocks_list_title">{{titleVar}}</span>
-        <span class="blocks_list_page_wrap_hash_var">{{blocksValue}}</span>
+        <!--<span class="blocks_list_page_wrap_hash_var">{{blocksValue}}</span>-->
 
         <span class="blocks_list_page_wrap_hash_var for_block"
-              v-show="this.$route.params.param.includes('address') || this.$route.params.param.includes('block')">
-          for {{blockVar}}
+              v-show="$route.query.block || $route.query.address">
+          {{blockVar}}
         </span>
       </p>
     </div>
@@ -20,12 +20,14 @@
       </div>
       <div style="position:relative;min-height:3.36rem;">
         <spin-component :showLoading="showLoading"/>
-        <blocks-list-table :items="items" :type="this.$route.params.type" :showNoData="showNoData"></blocks-list-table>
+        <blocks-list-table :items="items" :type="this.$route.params.type"
+                           :minWidth="tableMinWidth"
+                           :showNoData="showNoData"></blocks-list-table>
         <div v-show="showNoData" class="no_data_show">
           No Data
         </div>
       </div>
-      <div class="pagination">
+      <div class="pagination" style='margin-bottom:0.2rem;'>
         <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
         </b-pagination>
       </div>
@@ -48,7 +50,13 @@
     watch: {
       currentPage(currentPage) {
         this.currentPage = currentPage;
-        this.getDataList(currentPage, 30, this.$route.params.type);
+        new Promise((resolve)=>{
+          this.getDataList(currentPage, 30, this.$route.params.type);
+          resolve();
+        }).then(()=>{
+          document.getElementById('router_wrap').scrollTop = 0;
+        })
+
       },
       $route() {
         this.items = [];
@@ -66,7 +74,8 @@
           case '4': this.titleVar = 'Candidates';
                   break;
 
-        }
+        };
+        this.computeMinWidth();
       }
     },
     data() {
@@ -85,6 +94,7 @@
         showLoading:false,
         blockVar:'',
         innerWidth : window.innerWidth,
+        tableMinWidth:'',
       }
     },
     beforeMount() {
@@ -110,6 +120,7 @@
 
       }
       window.addEventListener('resize',this.onresize);
+      this.computeMinWidth();
     },
     beforeDestroy() {
       window.removeEventListener('resize',this.onWindowResize);
@@ -123,10 +134,24 @@
           this.blocksListPageWrap = 'mobile_blocks_list_page_wrap';
         }
       },
+      //根绝页面的不同展示最小宽度,不换行显示列表
+      computeMinWidth(){
+        if(this.$route.params.type === '1'){
+          this.tableMinWidth = 6.5;
+        }else if(this.$route.params.type === '2' && this.$route.params.param === 'transfer'){
+          this.tableMinWidth = 4.7;
+        }else if(this.$route.params.type === '3' || this.$route.params.type === '4'){
+          this.tableMinWidth = 6.1;
+        }
+      },
       getDataList(currentPage, pageSize, type) {
         this.showLoading = true;
         if (type === '1') {
           let url = `/api/blocks/${currentPage}/${pageSize}`;
+          if(this.$route.query.address){
+            url = `/api/blocks/precommits/${this.$route.query.address}/${currentPage}/${pageSize}`;
+            this.blockVar = `Proposed by ${this.$route.query.address}`;
+          }
           axios.get(url).then((data) => {
             if (data.status === 200) {
               return data.data;
@@ -170,13 +195,15 @@
           }else if(this.$route.params.param === 'stake'){
             url = `/api/txs/stake/${currentPage}/${pageSize}`
           }else if(this.$route.params.param === 'recent'){
-            url = `/api/txs/${currentPage}/${pageSize}`;
-          }else if(this.$route.params.param.includes('block')){
-            url = `/api/txsByBlock/${this.$route.params.param.split(':')[1]}/${currentPage}/${pageSize}`;
-            this.blockVar = this.$route.params.param.split(':')[1];
-          }else if(this.$route.params.param.includes('address')){
-            url = `/api/txsByAddress/${this.$route.params.param.split(':')[1]}/${currentPage}/${pageSize}`;
-            this.blockVar = this.$route.params.param.split(':')[1];
+            if(this.$route.query.block){
+              url = `/api/txsByBlock/${this.$route.query.block}/${currentPage}/${pageSize}`;
+              this.blockVar = `for ${this.$route.query.block}`;
+            }else if(this.$route.query.address){
+              url = `/api/txsByAddress/${this.$route.query.address}/${currentPage}/${pageSize}`;
+              this.blockVar = `for ${this.$route.query.address}`;
+            } else{
+              url = `/api/txs/${currentPage}/${pageSize}`;
+            }
           }
           axios.get(url).then((data) => {
             if (data.status === 200) {
@@ -189,8 +216,14 @@
                 let [Amount,Fees] = ['',''];
                 if(item.Amount instanceof Array){
                   Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
+                  if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
+                    Amount = item.Amount.map(listItem => `${listItem.amount.toFixed(2)}...shares`).join(',');
+                  }
                 }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
                   Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
+                  if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
+                    Amount = `${item.Amount.amount.toFixed(2)}...shares`;
+                  }
                 }else if(item.Amount === null){
                   Amount = '';
                 }
@@ -273,8 +306,7 @@
     @include pcContainer;
     font-size: 0.14rem;
     .pagination {
-      margin-top: 0.05rem;
-      margin-bottom: 0.05rem;
+      margin-top: 0.12rem;
       @include flex;
       justify-content: flex-end;
       @include borderRadius(0.025rem);
@@ -304,9 +336,18 @@
     }
     .blocks_list_title_wrap {
       width: 100%;
-      border-bottom: 0.01rem solid #eee;
+      border-bottom: 1px solid #d6d9e0 !important;
       @include flex;
       @include pcContainer;
+      height:0.62rem;
+      background:#efeff1;
+      p{
+        height:0.62rem;
+        span{
+          height:0.62rem;
+      line-height:0.62rem;
+        }
+      }
       .personal_computer_blocks_list_page_wrap {
         @include flex;
 
@@ -314,6 +355,9 @@
       .mobile_blocks_list_page_wrap {
         @include flex;
         flex-direction: column;
+        .blocks_list_page_wrap_hash_var{
+          min-width:5rem;
+        }
       }
 
     }
@@ -336,16 +380,16 @@
       }
 
       .blocks_list_title {
-        height: 0.4rem;
-        line-height: 0.4rem;
+        height: 0.62rem;
+        line-height: 0.62rem;
         font-size: 0.18rem;
-        color: #555;
+        color: #000000;
         margin-right: 0.2rem;
         font-weight: 500;
       }
       .blocks_list_page_wrap_hash_var {
-        height: 0.4rem;
-        line-height: 0.4rem;
+        height:  0.62rem;
+        line-height: 0.62rem;
         font-size: 0.14rem;
         color: #ccc;
       }

@@ -3,7 +3,8 @@
     <div class="transactions_title_wrap">
       <p :class="transactionsDetailWrap" style="margin-bottom:0;">
         <span class="transactions_detail_title">Address</span>
-        <span class="transactions_detail_wrap_hash_var">{{hashValue}}</span>
+        <span class="transactions_detail_wrap_hash_var">
+          {{hashValue}} <i v-if="showProfile">v</i></span>
       </p>
     </div>
 
@@ -37,9 +38,10 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Website:</span>
-          <span class="information_value">{{websiteValue}}</span>
+          <a class="information_value" :href="websiteValue" target="_blank"
+             style="color:#3598db;max-width:0.5rem;">{{websiteValue}}</a>
         </div>
-        <div class="information_props_wrap" style="border-bottom:0.01rem solid #eee">
+        <!--<div class="information_props_wrap" style="border-bottom:0.01rem solid #eee">
           <span class="information_props">Description:</span>
           <span class="information_value">{{descriptionValue}}</span>
         </div>
@@ -50,7 +52,7 @@
         <div class="information_props_wrap">
           <span class="information_props">Announcement:</span>
           <span class="information_value">{{announcementValue}}</span>
-        </div>
+        </div>-->
 
 
       </div>
@@ -104,7 +106,7 @@
           <p class="table_instruction">
             <span>Total blocks:</span>
             <span>{{totalBlocks}}</span>
-            <span>Total Fee:</span>
+            <span>Total Fees:</span>
             <span>{{totalFee}}</span>
           </p>
           <span class="view_all_btn" @click="viewAllClick(1)">View All</span>
@@ -112,7 +114,7 @@
 
         <div class="transaction_table">
           <blocks-list-table :items="items" :type="'6'" v-show="activeBtn === 0" :showNoData="showNoData1"></blocks-list-table>
-          <blocks-list-table :items="itemsPre" :type="'7'" v-show="activeBtn === 1" :showNoData="showNoData2"></blocks-list-table>
+          <blocks-list-table :items="itemsPre" :type="'7'" v-show="activeBtn === 1" :showNoData="showNoData2" :minWidth="5.4"></blocks-list-table>
           <div v-show="(activeBtn === 0 && showNoData1) || (activeBtn === 1 && showNoData2)" class="no_data_show">
             No Data
           </div>
@@ -222,9 +224,9 @@
       //点击view all跳转页面
       viewAllClick(type){
         if(type === 1){
-          this.$router.push(`/block/${type}/0`);
+          this.$router.push(`/block/${type}/0?address=${this.$route.params.param}`);
         }else if(type === 2){
-          this.$router.push(`/recent_transactions/2/address:${this.$route.params.param}`)
+          this.$router.push(`/recent_transactions/2/recent?address=${this.$route.params.param}`)
         }
 
       },
@@ -281,8 +283,14 @@
               let [Amount,Fees] = ['',''];
               if(item.Amount instanceof Array){
                 Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
+                if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
+                  Amount = item.Amount.map(listItem => `${listItem.amount.toFixed(2)}...shares`).join(',');
+                }
               }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
                 Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
+                if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
+                  Amount = `${item.Amount.amount.toFixed(2)}...shares`;
+                }
               }else if(item.Amount === null){
                 Amount = '';
               }
@@ -418,6 +426,13 @@
         line-height: 0.4rem;
         font-size: 0.14rem;
         color: #ccc;
+        i{
+          font-style:normal;
+          padding:0.02rem 0.07rem;
+          background:#3598db;
+          border-radius:0.05rem;
+          color:#ffffff;
+        }
       }
     }
 
@@ -465,6 +480,13 @@
         line-height: 0.3rem;
         font-size: 0.14rem;
         color: #ccc;
+        i{
+          font-style:normal;
+          padding:0.02rem 0.07rem;
+          background:#3598db;
+          border-radius:0.05rem;
+          color:#ffffff;
+        }
       }
 
     }
@@ -489,6 +511,7 @@
         }
         .canvas_voting_power{
           flex:2;
+          padding:0.2rem 0;
           .progress_wrap{
             margin-bottom:0.15rem;
             .progress_wrap_background{
@@ -539,19 +562,28 @@
       border-bottom:0.01rem solid #eee;
       margin-bottom:0.2rem;
       .tab_wrap{
-
+border-bottom:1px solid #d6d9e0;
         span{
-          height:0.3rem;
-          line-height:0.3rem;
+          height:0.38rem;
+          line-height:0.38rem;
+          width:1.54rem;
           display:inline-block;
-          border:0.01rem solid #eee;
+
           text-align: center;
-          padding:0 0.1rem;
-          border-bottom:none;
+          background:rgba(214,217,224,1);
           cursor:pointer;
+          margin-bottom:0.15rem;
+
+          &:first-child{
+            border-radius:0.05rem 0 0 0.05rem;
+          }
+          &:last-child{
+            border-radius:0 0.05rem 0.05rem 0;
+          }
+
         }
         .transactions_btn_active{
-          background: #3190e8;
+          background: #3598db;
           color:#fff;
         }
       }

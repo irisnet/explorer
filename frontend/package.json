@@ -1,15 +1,18 @@
 {
   "name": "explorer",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "dev":"node config.js"
   },
   "dependencies": {
     "axios": "^0.18.0",
     "bootstrap-vue": "^2.0.0-rc.11",
+    "commander": "^2.16.0",
     "echarts": "^4.1.0",
+    "fs": "^0.0.1-security",
     "register-service-worker": "^1.0.0",
     "typescript": "^3.0.1",
     "vue": "^2.5.16",

@@ -12,8 +12,8 @@ import (
 var database string
 
 func init() {
-	mongoUrl := GetEnv("DB_URL", "192.168.150.7:27217")
-	database := GetEnv("DB_DATABASE", "sync-iris-dev")
+	mongoUrl := GetEnv("DB_URL", "192.168.150.7:30000")
+	database := GetEnv("DB_DATABASE", "sync-iris")
 	user := GetEnv("DB_USER", "iris")
 	passwd := GetEnv("DB_PASSWORD", "irispassword")
 	log.Println("Connecting " + mongoUrl + "/" + database)

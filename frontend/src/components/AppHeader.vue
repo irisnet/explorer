@@ -1,6 +1,6 @@
 <!--头部页面-->
 <template>
-  <div :class="appHeaderVar" v-show="showHeader">
+  <div :class="appHeaderVar" v-show="showHeader" id="header">
     <header class="app_header_person_computer" v-show="devicesShow === 1">
       <div class="header_top">
         <div class="imageWrap" @click="featureButtonClick('/home')">
@@ -67,6 +67,7 @@
               @click="featureButtonClick('/faucet')"
         >Faucet</span>
       </div>
+
     </div>
 
     <div class="app_header_mobile" v-show="devicesShow === 0">
@@ -252,7 +253,7 @@
       listenRouteForChangeActiveButton(){
         //刷新的时候路由不变，active按钮不变
         let path = window.location.href;
-        if (path.includes('transactions/2')) {
+        if (path.includes('transactions/2') || path.includes('tx?')) {
           this.activeClassName = '/transaction';
         } else if (path.includes('/validators/3') || path.includes('/candidates/4')) {
           this.activeClassName = '/validators';
@@ -262,6 +263,8 @@
           this.activeClassName = '/home';
         } else if (path.includes('/faucet')) {
           this.activeClassName = '/faucet';
+        } else{
+          this.activeClassName = '';
         }
       },
       clearData(){
@@ -276,7 +279,7 @@
   @import '../style/mixin.scss';
 
   .person_computer_header_var {
-    height: 1.8rem;
+    height: 1.62rem;
   }
 
   .mobile_header_var {
@@ -317,7 +320,7 @@
             p{
               font-size:0.14rem;
               span{
-                color:#aeaeb9;
+                color:#a2a2ae;
               }
             }
 

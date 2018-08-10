@@ -1,12 +1,16 @@
 <template>
-  <b-container type="light">
-    <h3 style="font-size:0.18rem;">IRISnet Testnet Faucet</h3>
+  <div type="light" class='facet_wrap'>
+    <h3 class='faucet_title' :style="`width:${innerWidth/100}rem;`">
+      <p class="title">
+        IRISnet Testnet Faucet
+      </p>
+  </h3>
     <div class="faucet text-center" style="">
       <div class="coin" style="display:flex;justify-content: center;margin-bottom:10px;">
         <img src="../assets/coin.png" alt="">
       </div>
-      <p style="font-size:0.14rem;">Use this faucet to get tokens for the latest IRISnet testnet.</p>
-      <p style="font-size:0.14rem;">Please don't abuse this service — the number of available tokens is limited.</p>
+      <p style="font-size:0.14rem;color:#A2A2AE;">Use this faucet to get tokens for the latest IRISnet testnet.</p>
+      <p style="font-size:0.14rem;color:#A2A2AE;">Please don't abuse this service — the number of available tokens is limited.</p>
       <br/>
       <form @submit.prevent="apply">
         <div class="faucet-form">
@@ -28,7 +32,7 @@
         </div>
       </form>
     </div>
-  </b-container>
+  </div>
 </template>
 
 <script>
@@ -83,6 +87,7 @@
         address: "",
         errMsg: "",
         alertShow:'hidden',
+        innerWidth : window.innerWidth,
       }
     },
     created: function () {
@@ -156,7 +161,7 @@
 
   .faucet {
     background: white;
-    padding: 15% 0
+    padding:1rem 0;
   }
 
   .faucet-form {
@@ -178,12 +183,16 @@
         height:0.28rem;
         line-height:0.28rem;
         font-size:0.14rem;
+        @include borderRadius(0.04rem)
       }
     }
     .btn-primary{
-      margin-top:0.1rem;
+      margin-top:0.2rem;
       box-shadow: 0 0 0 transparent;
-      @include borderRadius(0.025rem);
+      @include borderRadius(0.04rem);
+      width:1.28rem;
+      height:0.36rem;
+      background:#3498DB;
     }
 
   }
@@ -205,5 +214,25 @@
     -webkit-box-shadow: 0 0 0 transparent !important;
     -moz-box-shadow: 0 0 0 transparent !important;
     box-shadow: 0 0 0 transparent !important;
+  }
+
+  .facet_wrap{
+
+    .faucet_title{
+      height:0.62rem;
+      line-height:0.62rem;
+      background:#efeff1;
+      @include flex;
+      justify-content:center;
+      
+      .title{
+        width:80%;
+        min-width:4rem;
+        font-size:0.18rem;
+        height:0.62rem;
+      line-height:0.62rem;
+      }
+    }
+
   }
 </style>

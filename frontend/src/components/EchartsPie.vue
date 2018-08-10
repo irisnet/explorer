@@ -1,5 +1,5 @@
 <template>
-  <div class="echarts_component_wrap">
+  <div class="echarts_component_wrap" :style="`min-width:${minWidth}rem;`">
     <div class="echarts_title_wrap">
       <span class="validators_title">Validators Top10</span>
       <span class="validators_top" @click="viewAllClick()">View All</span>
@@ -25,8 +25,16 @@
         let legend = innerWidth > 1258 ?
           {
             orient: 'vertical',
-            right: '10%',
+            right: '5%',
             data: [],
+            top:30,
+            formatter(name){
+              let val = name;
+              if(val.length > 10){
+                val = `${val.substr(0,10)}...`;
+              }
+              return val;
+            }
           } : {
             orient: 'horizontal',
             y : 'bottom',
@@ -81,14 +89,21 @@
         }
       },
       information(information){
-        console.log(this.innerWidth)
         //根据设备大小显示饼图的大小
         let radius = this.innerWidth > 1258 ? '90%' : '80%';
         let legend = this.innerWidth > 1258 ?
           {
             orient: 'vertical',
-            right: '10%',
+            right: '5%',
             data: [],
+            top:30,
+            formatter(name){
+              let val = name;
+              if(val.length > 10){
+                val = `${val.substr(0,10)}...`;
+              }
+              return val;
+            }
         } : {
           orient: 'horizontal',
             y : 'bottom',
@@ -97,7 +112,6 @@
         };
         let center = this.innerWidth > 1258 ? ['40%', '50%'] : ['50%', '45%'];
         let option = {
-
           tooltip : {
             trigger: 'item',
             formatter(params){
@@ -146,12 +160,19 @@
     data() {
       return {
         innerWidth:window.innerWidth,
+        minWidth:2.9,
 
       }
     },
     props:['information'],
     beforeMount() {
-
+      if(this.innerWidth <= 320){
+        this.minWidth = 2.9;
+      }else if(this.innerWidth <= 375){
+        this.minWidth = 3.4;
+      }else if(this.innerWidth <= 414){
+        this.minWidth = 3.9;
+      }
     },
     mounted() {
       pie = echarts.init(document.getElementById('echarts_pie'));
@@ -178,10 +199,10 @@
   .echarts_component_wrap{
     width:100%;
     height:100%;
+    padding:0.12rem 0.2rem 0 0.2rem;
     .echarts_title_wrap{
       height:15%;
       @include flex;
-      padding:0.12rem 0.1rem 0 0.1rem;
       justify-content: space-between;
 
       .validators_title{
