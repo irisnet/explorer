@@ -150,7 +150,7 @@
           let url = `/api/blocks/${currentPage}/${pageSize}`;
           if(this.$route.query.address){
             url = `/api/blocks/precommits/${this.$route.query.address}/${currentPage}/${pageSize}`;
-            this.blockVar = `Proposed by ${this.$route.query.address}`;
+            this.blockVar = `Precommit by ${this.$route.query.address}`;
           }
           axios.get(url).then((data) => {
             if (data.status === 200) {
