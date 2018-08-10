@@ -13,15 +13,15 @@
       <div class="transactions_detail_information_wrap">
         <div class="information_props_wrap">
           <span class="information_props">Balance:</span>
-          <span class="information_value">{{balanceValue}}</span>
+          <span class="information_value">{{balanceValue?balanceValue:'--'}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Deposits:</span>
-          <span class="information_value">{{depositsValue}}</span>
+          <span class="information_value">{{depositsValue?depositsValue:'--'}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Transactions:</span>
-          <span class="information_value">{{transactionsValue}}</span>
+          <span class="information_value">{{transactionsValue?transactionsValue:'--'}}</span>
         </div>
       </div>
     </div>
@@ -30,11 +30,11 @@
       <div class="transactions_detail_information_wrap">
         <div class="information_props_wrap">
           <span class="information_props">Name:</span>
-          <span class="information_value">{{nameValue}}</span>
+          <span class="information_value">{{nameValue?nameValue:'--'}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Pub Key:</span>
-          <span class="information_value">{{pubKeyValue}}</span>
+          <span class="information_value">{{pubKeyValue?pubKeyValue:'--'}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Website:</span>
@@ -77,7 +77,7 @@
           </div>
           <div class="information_props_wrap">
             <span class="information_props">Returns:</span>
-            <span class="information_value">{{returnsValue}}</span>
+            <span class="information_value">{{returnsValue?returnsValue:'--'}}</span>
           </div>
 
         </div>
