@@ -1,6 +1,6 @@
 <template>
-  <div type="light" class='facet_wrap'>
-    <h3 class='faucet_title' :style="`width:${innerWidth/100}rem;`">
+  <div type="light" class='facet_wrap' :style="showTitle?'':'padding-top:1.5rem;'">
+    <h3 class='faucet_title' :style="`width:${innerWidth/100}rem;`" v-show="showTitle">
       <p class="title" :style="innerWidth<=500?'width:100%;padding-left:0.1rem;':''">
         IRISnet Testnet Faucet
       </p>
@@ -36,7 +36,8 @@
 </template>
 
 <script>
-  import axios from 'axios'
+  import axios from 'axios';
+  import Tools from '../common/Tools';
 
   window.NVC_Opt = {
     appkey: 'FFFF0N000000000063E3',
@@ -81,6 +82,9 @@
   }
   export default {
     name: "FaucetPage",
+    $route() {
+      this.showTitle = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
+    },
     data() {
       return {
         faucet_url: this.faucet_url,
@@ -88,6 +92,7 @@
         errMsg: "",
         alertShow:'hidden',
         innerWidth : window.innerWidth,
+        showTitle: !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer()),
       }
     },
     created: function () {
