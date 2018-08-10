@@ -1,5 +1,5 @@
 <template>
-  <div type="light" class='facet_wrap' :style="showTitle?'':'padding-top:1.5rem;'">
+  <div type="light" class='facet_wrap' :style="showTitle?'':'padding-top:0.38rem;'">
     <h3 class='faucet_title' :style="`width:${innerWidth/100}rem;`" v-show="showTitle">
       <p class="title" :style="innerWidth<=500?'width:100%;padding-left:0.1rem;':''">
         IRISnet Testnet Faucet
