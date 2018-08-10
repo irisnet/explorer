@@ -18,7 +18,7 @@
         <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
         </b-pagination>
       </div>
-      <div style="position:relative;min-height:3.36rem;">
+      <div style="position:relative;overflow-x: auto;">
         <spin-component :showLoading="showLoading"/>
         <blocks-list-table :items="items" :type="this.$route.params.type"
                            :minWidth="tableMinWidth"
@@ -27,7 +27,7 @@
           No Data
         </div>
       </div>
-      <div class="pagination" style='margin-bottom:0.2rem;'>
+      <div class="pagination" style='margin:0.2rem 0;'>
         <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
         </b-pagination>
       </div>
@@ -150,7 +150,7 @@
           let url = `/api/blocks/${currentPage}/${pageSize}`;
           if(this.$route.query.address){
             url = `/api/blocks/precommits/${this.$route.query.address}/${currentPage}/${pageSize}`;
-            this.blockVar = `Proposed by ${this.$route.query.address}`;
+            this.blockVar = `Precommit by ${this.$route.query.address}`;
           }
           axios.get(url).then((data) => {
             if (data.status === 200) {
@@ -197,7 +197,7 @@
           }else if(this.$route.params.param === 'recent'){
             if(this.$route.query.block){
               url = `/api/txsByBlock/${this.$route.query.block}/${currentPage}/${pageSize}`;
-              this.blockVar = `for ${this.$route.query.block}`;
+              this.blockVar = `for block ${this.$route.query.block}`;
             }else if(this.$route.query.address){
               url = `/api/txsByAddress/${this.$route.query.address}/${currentPage}/${pageSize}`;
               this.blockVar = `for ${this.$route.query.address}`;
@@ -306,10 +306,10 @@
     @include pcContainer;
     font-size: 0.14rem;
     .pagination {
-      margin-top: 0.12rem;
       @include flex;
       justify-content: flex-end;
       @include borderRadius(0.025rem);
+      height:0.3rem;
       li{
         height:0.3rem !important;
       }
@@ -317,6 +317,8 @@
     .total_num{
       @include flex;
       justify-content: space-between;
+      height:0.7rem;
+      align-items: center;
     }
     .no_data_show{
       @include flex;
@@ -355,8 +357,10 @@
       .mobile_blocks_list_page_wrap {
         @include flex;
         flex-direction: column;
+        overflow-x: auto;
+        width:100%;
         .blocks_list_page_wrap_hash_var{
-          min-width:5rem;
+          min-width:7rem;
         }
       }
 
@@ -366,10 +370,11 @@
         height: 0.4rem;
         line-height: 0.4rem;
         font-size: 0.18rem;
-        color: #555;
+        color: #000000;
         margin-bottom: 0;
       }
       @include pcCenter;
+      min-height:4.6rem;
       .transactions_detail_information_wrap {
         .information_props_wrap {
           @include flex;
@@ -382,7 +387,7 @@
       .blocks_list_title {
         height: 0.62rem;
         line-height: 0.62rem;
-        font-size: 0.18rem;
+        font-size: 0.22rem;
         color: #000000;
         margin-right: 0.2rem;
         font-weight: 500;
@@ -390,8 +395,8 @@
       .blocks_list_page_wrap_hash_var {
         height:  0.62rem;
         line-height: 0.62rem;
-        font-size: 0.14rem;
-        color: #ccc;
+        font-size: 0.22rem;
+        color: #a2a2ae;
       }
       .for_block{
         display:inline-block;
@@ -403,13 +408,12 @@
       width: 100%;
       @include flex;
       flex-direction: column;
-      padding: 0 0.05rem;
-      overflow-x: auto;
+      padding: 0 0.1rem;
       .transaction_information_content_title {
         height: 0.4rem;
         line-height: 0.4rem;
         font-size: 0.18rem;
-        color: #555;
+        color: #000000;
         margin-bottom: 0;
       }
       .transactions_detail_information_wrap {
@@ -430,7 +434,7 @@
         height: 0.3rem;
         line-height: 0.3rem;
         font-size: 0.18rem;
-        color: #555;
+        color: #000000;
         margin-right: 0.2rem;
         font-weight: 500;
       }
@@ -438,12 +442,12 @@
         overflow-x: auto;
         height: 0.3rem;
         line-height: 0.3rem;
-        font-size: 0.14rem;
-        color: #ccc;
+        font-size: 0.18rem;
+        color: #a2a2ae;
       }
       .for_block{
         display:inline-block;
-        margin-left:0.1rem;
+        //margin-left:0.1rem;
       }
 
     }

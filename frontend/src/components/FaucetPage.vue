@@ -1,16 +1,16 @@
 <template>
-  <div type="light" class='facet_wrap'>
-    <h3 class='faucet_title' :style="`width:${innerWidth/100}rem;`">
-      <p class="title">
+  <div type="light" class='facet_wrap' :style="showTitle?'':'padding-top:1.5rem;'">
+    <h3 class='faucet_title' :style="`width:${innerWidth/100}rem;`" v-show="showTitle">
+      <p class="title" :style="innerWidth<=500?'width:100%;padding-left:0.1rem;':''">
         IRISnet Testnet Faucet
       </p>
   </h3>
-    <div class="faucet text-center" style="">
+    <div class="faucet text-center" :style="innerWidth<=500?'padding-top:0;':''">
       <div class="coin" style="display:flex;justify-content: center;margin-bottom:10px;">
         <img src="../assets/coin.png" alt="">
       </div>
-      <p style="font-size:0.14rem;color:#A2A2AE;">Use this faucet to get tokens for the latest IRISnet testnet.</p>
-      <p style="font-size:0.14rem;color:#A2A2AE;">Please don't abuse this service — the number of available tokens is limited.</p>
+      <p style="font-size:0.14rem;color:#A2A2AE;padding:0 0.1rem;">Use this faucet to get tokens for the latest IRISnet testnet.</p>
+      <p style="font-size:0.14rem;color:#A2A2AE;padding:0 0.1rem;">Please don't abuse this service — the number of available tokens is limited.</p>
       <br/>
       <form @submit.prevent="apply">
         <div class="faucet-form">
@@ -36,7 +36,8 @@
 </template>
 
 <script>
-  import axios from 'axios'
+  import axios from 'axios';
+  import Tools from '../common/Tools';
 
   window.NVC_Opt = {
     appkey: 'FFFF0N000000000063E3',
@@ -81,6 +82,9 @@
   }
   export default {
     name: "FaucetPage",
+    $route() {
+      this.showTitle = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
+    },
     data() {
       return {
         faucet_url: this.faucet_url,
@@ -88,6 +92,7 @@
         errMsg: "",
         alertShow:'hidden',
         innerWidth : window.innerWidth,
+        showTitle: !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer()),
       }
     },
     created: function () {
@@ -150,7 +155,16 @@
             location.reload();
           }
         })
+      },
+      resize(){
+        this.innerWidth = window.innerWidth;
       }
+    },
+    mounted(){
+      window.addEventListener('resize',this.resize)
+    },
+    beforeDestroy(){
+      window.removeEventListener('resize',this.resize);
     }
   }
 
@@ -180,8 +194,8 @@
         margin-top:0.05rem;
       }
       .form-control{
-        height:0.28rem;
-        line-height:0.28rem;
+        height:0.36rem;
+        line-height:0.36rem;
         font-size:0.14rem;
         @include borderRadius(0.04rem)
       }
@@ -193,7 +207,12 @@
       width:1.28rem;
       height:0.36rem;
       background:#3498DB;
+      &:disabled{
+        background: rgba(214,217,224,1);
+        border-color:rgba(214,217,224,1);
+      }
     }
+
 
   }
 
@@ -224,15 +243,31 @@
       background:#efeff1;
       @include flex;
       justify-content:center;
-      
+      border-bottom:1px solid #d6d9e0;
+
       .title{
         width:80%;
-        min-width:4rem;
-        font-size:0.18rem;
+        font-size:0.22rem;
+        color:#000000;
         height:0.62rem;
       line-height:0.62rem;
       }
     }
 
+  }
+  #sc{
+    height:0.52rem;
+
+    #SM_BTN_WRAPPER_1{
+      height:0.52rem;
+      #SM_BTN_1{
+        @include flex;
+        align-items: center;
+        height:0.52rem !important;
+      }
+      #sm-btn-bg{
+        height:0.52rem !important;
+      }
+    }
   }
 </style>

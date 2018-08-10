@@ -145,8 +145,8 @@
     }
     .personal_computer_transactions_detail_wrap {
       .transaction_information_content_title{
-        height:0.55rem;
-        line-height:0.55rem;
+        height:0.5rem;
+        line-height:0.5rem;
         font-size:0.18rem;
         color:#000000;
         margin-bottom:0;
@@ -154,7 +154,7 @@
       }
       @include pcCenter;
       .transactions_detail_information_wrap{
-        padding:0.2rem 0rem;
+        padding:0.16rem 0rem;
           .information_props_wrap{
             @include flex;
             .information_props{
@@ -171,16 +171,16 @@
       .transactions_detail_title {
         height: 0.4rem;
         line-height: 0.4rem;
-        font-size: 0.18rem;
-        color: #555;
+        font-size: 0.22rem;
+        color: #000000;
         margin-right: 0.2rem;
         font-weight:500;
       }
       .transactions_detail_wrap_hash_var {
         height: 0.4rem;
         line-height: 0.4rem;
-        font-size: 0.14rem;
-        color: #ccc;
+        font-size: 0.22rem;
+        color: #a2a2ae;
       }
     }
 
@@ -188,16 +188,16 @@
       width: 100%;
       @include flex;
       flex-direction: column;
-      padding: 0 0.05rem;
+      padding: 0 0.1rem;
       .transaction_information_content_title{
-        height: 0.55rem;
-        line-height: 0.55rem;
+        height: 0.5rem;
+        line-height: 0.5rem;
         font-size: 0.18rem;
         color: #000000;
         margin-bottom:0;
       }
       .transactions_detail_information_wrap{
-padding:0.2rem 0rem;
+padding:0.16rem 0rem;
         .information_props_wrap{
           @include flex;
           flex-direction:column;
@@ -212,8 +212,8 @@ padding:0.2rem 0rem;
       .transactions_detail_title {
         height: 0.3rem;
         line-height: 0.3rem;
-        font-size: 0.18rem;
-        color: #555;
+        font-size: 0.22rem;
+        color: #000000;
         margin-right: 0.2rem;
         font-weight:500;
       }
@@ -221,8 +221,8 @@ padding:0.2rem 0rem;
         overflow-x: auto;
         height: 0.3rem;
         line-height: 0.3rem;
-        font-size: 0.14rem;
-        color: #ccc;
+        font-size: 0.22rem;
+        color: #a2a2ae;
       }
     }
   }

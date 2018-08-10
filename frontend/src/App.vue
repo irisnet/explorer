@@ -11,7 +11,7 @@
           <p>to follow our SubScriptions</p>
         </div>
       </div>
-      <router-view class="router_view" :style="`min-height:${vh/100-2.8}rem;`"/>
+      <router-view class="router_view" :style="`min-height:${vh/100-2.72}rem;`"/>
       <footer :class="footerClass" v-show="showFooter" id="footer">
         <div :class="footerClassName" style="height:100%;">
           <div class="footer_left" :class="footerLeftVar">
@@ -38,10 +38,9 @@
             <p class="footer_copyright_wrap">
               ©️ IRIS Explorer 2018 all rights reserved
             </p>
-            <p class="footer_copyright_wrap">
-              {{`${version}(${env}_${build})`}}
-            </p>
-
+            <!--<p class="footer_copyright_wrap">
+              {{`v${version}(${env}_${build})`}}
+            </p>-->
           </div>
         </div>
       </footer>
@@ -236,7 +235,7 @@
           }
           .footer_center {
             text-align: center;
-            margin-bottom: 0.1rem;
+            margin-bottom: 0.2rem;
           }
           .footer_right {
             .footer_link_wrap {
@@ -252,7 +251,7 @@
           @include flex;
           .footer_left {
             @include flex;
-            margin-bottom: 0.1rem;
+            margin-bottom: 0.2rem;
             span, a {
               width: 0.4rem;
               height: 0.4rem;

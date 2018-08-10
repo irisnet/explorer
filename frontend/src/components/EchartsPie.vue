@@ -21,11 +21,11 @@
     watch:{
       innerWidth(innerWidth){
         //根据设备大小显示饼图的大小
-        let radius = innerWidth > 1258 === 1 ? '90%' : '80%';
+        let radius = innerWidth > 1258 === 1 ? '91%' : '80%';
         let legend = innerWidth > 1258 ?
           {
             orient: 'vertical',
-            right: '5%',
+            right: '10%',
             data: [],
             top:30,
             formatter(name){
@@ -37,11 +37,11 @@
             }
           } : {
             orient: 'horizontal',
-            y : 'bottom',
+            bottom:'5%',
             data: [],
             type: 'scroll',
           };
-        let center = innerWidth > 1258 ? ['40%', '50%'] : ['50%', '45%'];
+        let center = innerWidth > 1258 ? ['34.2%', '50%'] : ['50%', '45%'];
         let option = {
 
           tooltip : {
@@ -90,11 +90,11 @@
       },
       information(information){
         //根据设备大小显示饼图的大小
-        let radius = this.innerWidth > 1258 ? '90%' : '80%';
+        let radius = this.innerWidth > 1258 ? '91%' : '80%';
         let legend = this.innerWidth > 1258 ?
           {
             orient: 'vertical',
-            right: '5%',
+            right: '10%',
             data: [],
             top:30,
             formatter(name){
@@ -106,11 +106,11 @@
             }
         } : {
           orient: 'horizontal',
-            y : 'bottom',
             data: [],
+            bottom:'5%',
             type: 'scroll',
         };
-        let center = this.innerWidth > 1258 ? ['40%', '50%'] : ['50%', '45%'];
+        let center = this.innerWidth > 1258 ? ['34.2%', '50%'] : ['50%', '45%'];
         let option = {
           tooltip : {
             trigger: 'item',

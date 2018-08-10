@@ -58,6 +58,12 @@
             min:0,
             max:0,
             splitNumber:5,
+            splitLine: {
+              lineStyle: {
+                // 使用深浅的间隔色
+                color: ['#eee']
+              }
+            }
           },
           grid: {
             left: '3%',   //图表距边框的距离
@@ -86,7 +92,7 @@
               itemStyle:{
                 normal:{
                   color:'#3598db',
-                  borderColor:'#3598db'  //拐点边框颜色
+                  borderColor:'#3598db',  //拐点边框颜色
                 }
               },
             }

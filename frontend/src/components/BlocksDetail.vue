@@ -31,7 +31,9 @@
           <span class="information_props">Transactions:</span>
           <span class="information_value"
                 @click="skipTransactions"
+                v-show="transactionsValue != 0"
                 style="color:#3598db;cursor:pointer;">{{transactionsValue}}</span>
+          <span v-show="transactionsValue == 0" style="color:#a2a2ae;">0</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Fees:</span>
@@ -52,7 +54,7 @@
       </div>
     </div>
     <div :class="transactionsDetailWrap">
-      <p class="transaction_information_content_title" style='border-bottom:none;'>Precommit Details</p>
+      <p class="transaction_information_content_title" style='border-bottom:none !important;'>Precommit Details</p>
       <div class="block_detail_table_wrap">
         <blocks-list-table :items="items" :type="'5'" :showNoData="showNoData"></blocks-list-table>
         <div v-show="showNoData" class="no_data_show">
@@ -172,7 +174,7 @@
             if (data) {
               this.hashValue = data.Height;
               this.heightValue = data.Height;
-              this.timestampValue = data.Time;
+              this.timestampValue = Tools.conversionTimeToUTC(data.Time);
               this.blockHashValue = data.Hash;
               this.transactionsValue = data.NumTxs;
               this.feeValue = '0 IRIS';
@@ -266,8 +268,8 @@
     }
     .personal_computer_transactions_detail_wrap {
       .transaction_information_content_title {
-        height: 0.55rem !important;
-        line-height: 0.55rem !important;
+        height: 0.5rem !important;
+        line-height: 0.5rem !important;
         font-size: 0.18rem !important;
         color: #000000;
         margin-bottom: 0;
@@ -277,6 +279,7 @@
       .transactions_detail_information_wrap {
         .information_props_wrap {
           @include flex;
+          margin-bottom:0.08rem;
           .information_props {
             width: 1.5rem;
           }
@@ -285,14 +288,14 @@
             width: 0.2rem;
             height: 0.17rem;
             background: url('../assets/left.png') no-repeat 0 1px;
-            margin-right: 0.02rem;
+            margin-right: 0.05rem;
             cursor: pointer;
           }
           .flag_item_left_disabled {
             display: inline-block;
             width: 0.2rem;
             height: 0.17rem;
-            margin-right: 0.02rem;
+            margin-right: 0.05rem;
             cursor: pointer;
             background: url('../assets/left_disabled.png') no-repeat 0 1px;
           }
@@ -301,7 +304,7 @@
             width: 0.2rem;
             height: 0.17rem;
             background: url('../assets/right.png') no-repeat 0 0;
-            margin-left: 0.02rem;
+            margin-left: 0.05rem;
             cursor: pointer;
           }
           .flag_item_right_disabled {
@@ -309,7 +312,7 @@
             width: 0.2rem;
             height: 0.17rem;
             background: url('../assets/right_disabled.png') no-repeat 0 0;
-            margin-left: 0.02rem;
+            margin-left: 0.05rem;
             cursor: pointer;
           }
 
@@ -332,16 +335,16 @@
       .transactions_detail_title {
         height: 0.4rem;
         line-height: 0.4rem;
-        font-size: 0.18rem;
-        color: #555;
+        font-size: 0.22rem;
+        color: #000000;
         margin-right: 0.2rem;
         font-weight: 500;
       }
       .transactions_detail_wrap_hash_var {
         height: 0.4rem;
         line-height: 0.4rem;
-        font-size: 0.14rem;
-        color: #ccc;
+        font-size: 0.22rem;
+        color: #a2a2ae;
       }
     }
 
@@ -349,10 +352,10 @@
       width: 100%;
       @include flex;
       flex-direction: column;
-      padding: 0 0.05rem;
+      padding: 0 0.1rem;
       .transaction_information_content_title {
-        height: 0.55rem !important;
-        line-height: 0.55rem !important;
+        height: 0.5rem !important;
+        line-height: 0.5rem !important;
         font-size: 0.18rem !important;
         color: #000000;
         margin-bottom: 0;
@@ -360,6 +363,7 @@
       .block_detail_table_wrap {
         width: 100%;
         overflow-x: auto;
+        margin-bottom:0.4rem;
         .no_data_show {
           @include flex;
           justify-content: center;
@@ -385,14 +389,14 @@
             width: 0.2rem;
             height: 0.17rem;
             background: url('../assets/left.png') no-repeat 0 1px;
-            margin-right: 0.02rem;
+            margin-right: 0.05rem;
             cursor: pointer;
           }
           .flag_item_left_disabled {
             display: inline-block;
             width: 0.2rem;
             height: 0.17rem;
-            margin-right: 0.02rem;
+            margin-right: 0.05rem;
             cursor: pointer;
             background: url('../assets/left_disabled.png') no-repeat 0 1px;
           }
@@ -401,7 +405,7 @@
             width: 0.2rem;
             height: 0.17rem;
             background: url('../assets/right.png') no-repeat 0 0;
-            margin-left: 0.02rem;
+            margin-left: 0.05rem;
             cursor: pointer;
           }
           .flag_item_right_disabled {
@@ -409,7 +413,7 @@
             width: 0.2rem;
             height: 0.17rem;
             background: url('../assets/right_disabled.png') no-repeat 0 0;
-            margin-left: 0.02rem;
+            margin-left: 0.05rem;
             cursor: pointer;
           }
         }
@@ -417,8 +421,8 @@
       .transactions_detail_title {
         height: 0.3rem;
         line-height: 0.3rem;
-        font-size: 0.18rem;
-        color: #555;
+        font-size: 0.22rem;
+        color: #000000;
         margin-right: 0.02rem;
         font-weight: 500;
       }
@@ -426,8 +430,8 @@
         overflow-x: auto;
         height: 0.3rem;
         line-height: 0.3rem;
-        font-size: 0.14rem;
-        color: #ccc;
+        font-size: 0.22rem;
+        color: #a2a2ae;
       }
     }
 

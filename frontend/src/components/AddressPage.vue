@@ -13,15 +13,15 @@
       <div class="transactions_detail_information_wrap">
         <div class="information_props_wrap">
           <span class="information_props">Balance:</span>
-          <span class="information_value">{{balanceValue}}</span>
+          <span class="information_value">{{balanceValue?balanceValue:'--'}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Deposits:</span>
-          <span class="information_value">{{depositsValue}}</span>
+          <span class="information_value">{{depositsValue?depositsValue:'--'}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Transactions:</span>
-          <span class="information_value">{{transactionsValue}}</span>
+          <span class="information_value">{{transactionsValue?transactionsValue:'--'}}</span>
         </div>
       </div>
     </div>
@@ -30,16 +30,18 @@
       <div class="transactions_detail_information_wrap">
         <div class="information_props_wrap">
           <span class="information_props">Name:</span>
-          <span class="information_value">{{nameValue}}</span>
+          <span class="information_value">{{nameValue?nameValue:'--'}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Pub Key:</span>
-          <span class="information_value">{{pubKeyValue}}</span>
+          <span class="information_value">{{pubKeyValue?pubKeyValue:'--'}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Website:</span>
           <a class="information_value" :href="websiteValue" target="_blank"
+             v-show="websiteValue !== '--'"
              style="color:#3598db;max-width:0.5rem;">{{websiteValue}}</a>
+          <i v-show="websiteValue === '--'" style="font-style:normal;color:#a2a2ae">--</i>
         </div>
         <!--<div class="information_props_wrap" style="border-bottom:0.01rem solid #eee">
           <span class="information_props">Description:</span>
@@ -75,7 +77,7 @@
           </div>
           <div class="information_props_wrap">
             <span class="information_props">Returns:</span>
-            <span class="information_value">{{returnsValue}}</span>
+            <span class="information_value">{{returnsValue?returnsValue:'--'}}</span>
           </div>
 
         </div>
@@ -240,7 +242,7 @@
           if(data){
             this.nameValue = data.Description.Moniker;
             this.pubKeyValue = data.PubKey;
-            this.websiteValue = data.Description.Website;
+            this.websiteValue = data.Description.Website?data.Description.Website:'--';
             this.descriptionValue= data.Description.Details;
             this.commissionRateValue = '';
             this.announcementValue = '';
@@ -301,12 +303,23 @@
               }else if(item.Fee.Amount === null){
                 Fees = '';
               }
+
+              let type = '';
+              if(item.Type === 'Transfer'){
+                if(this.$route.params.param === item.From){
+                  type = 'Send';
+                }else{
+                  type = 'Receive';
+                }
+              }else{
+                type = item.Type;
+              }
               return {
                 TxHash:item.TxHash,
                 Block:item.Height,
                 From:item.From,
                 To:item.To,
-                Type:item.Type === 'coin'?'transfer':item.Type,
+                Type:type,
                 Amount,
                 Fees,
                 Timestamp:Tools.conversionTimeToUTC(item.Time),
@@ -388,7 +401,7 @@
         height:0.4rem;
         line-height:0.4rem;
         font-size:0.18rem;
-        color:#555;
+        color:#000000;
         margin-bottom:0;
         border-bottom:0.01rem solid #efefef;
       }
@@ -399,6 +412,7 @@
           .information_props{
             width:1.5rem;
             font-size:0.14rem;
+            color:#000000;
           }
           .information_value{
             color: #a2a2ae;
@@ -416,22 +430,23 @@
       .transactions_detail_title {
         height: 0.4rem;
         line-height: 0.4rem;
-        font-size: 0.18rem;
-        color: #555;
+        font-size: 0.22rem;
+        color: #000000;
         margin-right: 0.2rem;
         font-weight:500;
       }
       .transactions_detail_wrap_hash_var {
         height: 0.4rem;
         line-height: 0.4rem;
-        font-size: 0.14rem;
-        color: #ccc;
+        font-size: 0.22rem;
+        color: #a2a2ae;
         i{
           font-style:normal;
           padding:0.02rem 0.07rem;
           background:#3598db;
-          border-radius:0.05rem;
+          border-radius:0.04rem;
           color:#ffffff;
+          font-size:0.18rem;
         }
       }
     }
@@ -440,12 +455,12 @@
       width: 100%;
       @include flex;
       flex-direction: column;
-      padding: 0 0.05rem;
+      padding: 0 0.1rem;
       .transaction_information_content_title{
         height:0.4rem;
         line-height:0.4rem;
         font-size:0.18rem;
-        color:#555;
+        color:#000000;
         margin-bottom:0;
       }
       .transactions_detail_information_wrap{
@@ -461,6 +476,7 @@
           }
           .information_props{
             font-size:0.14rem;
+            color:#000000;
           }
 
 
@@ -470,7 +486,7 @@
         height: 0.3rem;
         line-height: 0.3rem;
         font-size: 0.18rem;
-        color: #555;
+        color: #000000;
         margin-right: 0.2rem;
         font-weight:500;
       }
@@ -478,14 +494,15 @@
         overflow-x: auto;
         height: 0.3rem;
         line-height: 0.3rem;
-        font-size: 0.14rem;
-        color: #ccc;
+        font-size: 0.18rem;
+        color: #a2a2ae;
         i{
           font-style:normal;
           padding:0.02rem 0.07rem;
           background:#3598db;
-          border-radius:0.05rem;
+          border-radius:0.04rem;
           color:#ffffff;
+          font-size:0.18rem;
         }
       }
 
@@ -515,13 +532,13 @@
           .progress_wrap{
             margin-bottom:0.15rem;
             .progress_wrap_background{
-              height:0.24rem;
+              height:0.3rem;
               background: #efeff1;
-              margin-top:0.1rem;
+              margin-top:0.12rem;
               .progress_value{
                 background:#a4d7f4;
                 height:100%;
-                line-height:0.24rem;
+                line-height:0.3rem;
                 text-indent:0.2rem;
               }
             }
@@ -542,13 +559,13 @@
         .progress_wrap{
           margin-bottom:0.15rem;
           .progress_wrap_background{
-            height:0.24rem;
+            height:0.3rem;
             background: #efeff1;
-            margin-top:0.1rem;
+            margin-top:0.12rem;
             .progress_value{
               background:#a4d7f4;
               height:100%;
-              line-height:0.24rem;
+              line-height:0.3rem;
               padding-left:0.2rem;
             }
           }
@@ -558,37 +575,29 @@
     }
     //底部表格部分
     .transaction_precommit_table{
-      margin-top:0.1rem;
-      border-bottom:0.01rem solid #eee;
-      margin-bottom:0.2rem;
+      margin-top:0.28rem;
+      margin-bottom:0.4rem;
       .tab_wrap{
-border-bottom:1px solid #d6d9e0;
+        border-bottom:1px solid #d6d9e0;
         span{
           height:0.38rem;
           line-height:0.38rem;
-          width:1.54rem;
+          width:1.5rem;
           display:inline-block;
-
+          color:#fff;
           text-align: center;
           background:rgba(214,217,224,1);
           cursor:pointer;
-          margin-bottom:0.15rem;
-
-          &:first-child{
-            border-radius:0.05rem 0 0 0.05rem;
-          }
-          &:last-child{
-            border-radius:0 0.05rem 0.05rem 0;
-          }
+          margin-bottom:0.2rem;
 
         }
         .transactions_btn_active{
           background: #3598db;
-          color:#fff;
+
         }
       }
       .table_wrap{
-        overflow-x:auto;
+        width:100%;
         .pagination{
           @include flex;
           justify-content: flex-end;
@@ -597,16 +606,21 @@ border-bottom:1px solid #d6d9e0;
           padding:0.1rem;
           @include flex;
           justify-content:flex-end;
+          height:0.62rem;
+          align-items: center;
           span{
             @include viewBtn;
           }
         }
         .precommit_view_all{
           padding:0.1rem;
+          height:0.62rem;
           @include flex;
           justify-content:space-between;
+          align-items: center;
           span{
             font-size:0.14rem;
+            color:#a2a2ae;
             &:nth-child(3){
               display:inline-block;
               margin-left:0.1rem;
@@ -617,6 +631,7 @@ border-bottom:1px solid #d6d9e0;
           }
         }
         .transaction_table{
+          overflow-x:auto;
           .no_data_show{
             @include flex;
             justify-content: center;

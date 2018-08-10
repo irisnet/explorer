@@ -301,10 +301,10 @@
     @include pcContainer;
     //pc端和移动端公共样式
     .personal_computer_home_wrap, .mobile_home_wrap {
-      margin-top: 0.23rem;
+      margin-top: 0.35rem;
       .information_preview {
         @include flex;
-        margin-bottom: 0.3rem;
+        margin-bottom: 0.35rem;
 
         .information_preview_module {
           border-right: 1px solid #d6d9e0;
@@ -374,7 +374,7 @@
         .home_module_item {
           width: 98%;
           margin-bottom: 0.4rem;
-          border: 0.01rem solid #f6f6f6;
+          border: 0.01rem solid #d6d9e0;
         }
         .home_module_item_pie {
           overflow-x: auto;

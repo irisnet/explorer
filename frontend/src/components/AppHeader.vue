@@ -7,7 +7,7 @@
           <img src="../assets/logo.png" alt="失去网络了..."/>
           <div class="logo_title_wrap">
             <div class="logo_title_content">
-              <span>IRIS</span>
+              <span style="font-weight:600;">IRIS</span>
               <span>Explorer</span>
             </div>
             <p>
@@ -76,7 +76,7 @@
         <img src="../assets/logo.png" alt="失去网络了..."/>
         <div class="logo_title_wrap">
           <div class="logo_title_content">
-            <span>IRIS</span>
+            <span style="font-weight:600;">IRIS</span>
             <span>Explorer</span>
           </div>
           <p>
@@ -88,18 +88,18 @@
       <div class="use_feature_mobile" v-show="featureShow">
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/home')">Home</span>
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/block/1/0')">Blocks</span>
-        <span class="feature_btn_mobile feature_nav feature_arrow" @click="transactionShow =! transactionShow">Transactions</span>
-        <span class="feature_btn_mobile feature_subNav" v-show="transactionShow"
+        <!--<span class="feature_btn_mobile feature_nav feature_arrow" @click="transactionShow =! transactionShow">Transactions</span>-->
+        <span class="feature_btn_mobile feature_nav"
               @click="featureButtonClick('/recent_transactions/2/recent')">Recent Transactions</span>
-        <span class="feature_btn_mobile feature_subNav" v-show="transactionShow"
+        <span class="feature_btn_mobile feature_nav"
               @click="featureButtonClick('/transfer_transactions/2/transfer')">Transfer Transactions</span>
-        <span class="feature_btn_mobile feature_subNav" v-show="transactionShow"
+        <span class="feature_btn_mobile feature_nav"
               @click="featureButtonClick('/stake_transactions/2/stake')">Stake Transactions</span>
-        <span class="feature_btn_mobile feature_nav feature_arrow"
-              @click="validatorsShow =! validatorsShow">Validators</span>
-        <span class="feature_btn_mobile feature_subNav" v-show="validatorsShow"
+        <!--<span class="feature_btn_mobile feature_nav feature_arrow"
+              @click="validatorsShow =! validatorsShow">Validators</span>-->
+        <span class="feature_btn_mobile feature_nav"
               @click="featureButtonClick('/validators/3/0')">Validators</span>
-        <span class="feature_btn_mobile feature_subNav" v-show="validatorsShow"
+        <span class="feature_btn_mobile feature_nav"
               @click="featureButtonClick('/candidates/4/0')">Candidates</span>
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/faucet')">Faucet</span>
       </div>
@@ -303,7 +303,12 @@
           margin-top:0.2rem;
           .logo_title_wrap{
             margin-left:0.16rem;
+            @include flex;
+            flex-direction:column;
+            justify-content: center;
             .logo_title_content{
+              height:0.27rem;
+              line-height:0.27rem;
               span{
                 &:first-child{
                   font-size:0.24rem;
@@ -312,13 +317,15 @@
                 &:last-child{
                   font-size:0.24rem;
                   color:#3598db;
-                  display:inline-block;
                 }
 
               }
             }
             p{
               font-size:0.14rem;
+              height:0.16rem;
+              line-height:0.16rem;
+              margin-top:0.04rem;
               span{
                 color:#a2a2ae;
               }
@@ -460,28 +467,31 @@
       border-bottom: 0.01rem solid #cccccc;
       .feature_btn {
         position: absolute;
-        width: 0.4rem;
-        height: 0.4rem;
-        top: 0;
-        right: 0;
-        background: url('../assets/menu.svg') no-repeat;
+        width: 0.34rem;
+        height: 0.34rem;
+        top: 0.1rem;
+        right: 0.1rem;
+        background: url('../assets/menu.png') no-repeat;
       }
       .image_wrap_mobile {
         @include flex;
         width:2.5rem;
         .logo_title_wrap{
           margin-left:0.16rem;
+          @include flex;
+          flex-direction:column;
+          justify-content: center;
           .logo_title_content{
+            height:0.27rem;
+            line-height:0.27rem;
             span{
               &:first-child{
                 font-size:0.24rem;
-                color:#3498db;
+                color:#005a98;
               }
               &:last-child{
                 font-size:0.24rem;
-                color:#000000;
-                display:inline-block;
-                margin-left:0.12rem;
+                color:#3598db;
               }
 
             }
@@ -549,12 +559,12 @@
         z-index: 100;
         flex-direction: column;
         .feature_btn_mobile {
-          border-bottom: 0.01rem solid #cccccc;
+          border-bottom: 0.01rem solid #d6d9e0;
           height: 0.39rem;
           line-height: 0.39rem;
           padding-left: 0.15rem;
-          background: #3598db;
-          color: #c9eafd;
+          background: #ffffff;
+          color: #3598db;
           font-size:0.14rem;
         }
         .feature_arrow {
