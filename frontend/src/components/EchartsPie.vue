@@ -41,7 +41,7 @@
             data: [],
             type: 'scroll',
           };
-        let center = innerWidth > 1258 ? ['34.2%', '48%'] : ['50%', '42%'];
+        let center = innerWidth > 1258 ? ['34.2%', '50%'] : ['50%', '45%'];
         let option = {
 
           tooltip : {
@@ -110,7 +110,7 @@
             bottom:'5%',
             type: 'scroll',
         };
-        let center = this.innerWidth > 1258 ? ['34.2%', '48%'] : ['50%', '42%'];
+        let center = this.innerWidth > 1258 ? ['34.2%', '50%'] : ['50%', '45%'];
         let option = {
           tooltip : {
             trigger: 'item',
