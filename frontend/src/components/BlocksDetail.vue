@@ -174,7 +174,7 @@
             if (data) {
               this.hashValue = data.Height;
               this.heightValue = data.Height;
-              this.timestampValue = data.Time;
+              this.timestampValue = Tools.conversionTimeToUTC(data.Time);
               this.blockHashValue = data.Hash;
               this.transactionsValue = data.NumTxs;
               this.feeValue = '0 IRIS';
