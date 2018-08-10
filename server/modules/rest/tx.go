@@ -94,7 +94,7 @@ func queryTx(w http.ResponseWriter, r *http.Request) {
 
 func queryAllCoinTxByPage(w http.ResponseWriter, r *http.Request) {
 	var data []document.CommonTx
-	w.Write(utils.QueryList("tx_common", &data, bson.M{"type": "coin"}, "-time", r))
+	w.Write(utils.QueryList("tx_common", &data, bson.M{"type": "Transfer"}, "-time", r))
 }
 
 func queryCoinTxByAccount(w http.ResponseWriter, r *http.Request) {
@@ -104,7 +104,7 @@ func queryCoinTxPageByAccount(w http.ResponseWriter, r *http.Request) {
 	var data []document.CommonTx
 	args := mux.Vars(r)
 	address := args["address"]
-	w.Write(utils.QueryList("tx_common", &data, bson.M{"type": "coin", "address": address}, "-time", r))
+	w.Write(utils.QueryList("tx_common", &data, bson.M{"type": "Transfer", "address": address}, "-time", r))
 }
 
 func queryTxsByAccount(w http.ResponseWriter, r *http.Request) {
