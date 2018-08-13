@@ -29,25 +29,24 @@ func AddRoutes(r *mux.Router) {
 	}
 }
 
-func main()  {
+func main() {
 	router := mux.NewRouter()
 	// latest
 	AddRoutes(router)
 
-	router.PathPrefix("/").Handler(http.StripPrefix("/",http.FileServer(http.Dir("../frontend/dist/"))))
+	router.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("../frontend/dist/")))).
+		Handler(handlers.LoggingHandler(os.Stdout, handlers.CORS(
+		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
+		handlers.AllowedOrigins([]string{"*"}),
+		handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}))(router)))
 
-	port := utils.GetEnv("PORT","8080")
+	port := utils.GetEnv("PORT", "8080")
 	addr := fmt.Sprintf(":%s", port)
-
 
 	log.Printf("Serving on %q", addr)
 
 	// loggedRouter := handlers.LoggingHandler(os.Stdout, router)
 	//return http.ListenAndServe(addr, router)
 	//TODO 生产环境需要借助nginx配置
-	http.ListenAndServe(addr,
-		handlers.LoggingHandler(os.Stdout, handlers.CORS(
-			handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
-			handlers.AllowedOrigins([]string{"*"}),
-			handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}))(router)))
+	http.ListenAndServe(addr, handlers.CompressHandler(router))
 }
