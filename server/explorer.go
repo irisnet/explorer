@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -35,11 +34,11 @@ func main() {
 	// latest
 	AddRoutes(router)
 
-	router.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("../frontend/dist/")))).
-		Handler(handlers.LoggingHandler(os.Stdout, handlers.CORS(
-			handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
-			handlers.AllowedOrigins([]string{"*"}),
-			handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}))(router)))
+	router.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("../frontend/dist/"))))
+	// Handler(handlers.LoggingHandler(os.Stdout, handlers.CORS(
+	// 	handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
+	// 	handlers.AllowedOrigins([]string{"*"}),
+	// 	handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}))(router)))
 
 	port := utils.GetEnv("PORT", "8080")
 	addr := fmt.Sprintf(":%s", port)
