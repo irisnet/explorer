@@ -5,9 +5,10 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"github.com/irisnet/explorer/server/modules/rest"
-	"github.com/gorilla/mux"
+
 	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
+	"github.com/irisnet/explorer/server/modules/rest"
 	"github.com/irisnet/explorer/server/utils"
 	"github.com/irisnet/explorer/server/version"
 )
@@ -36,9 +37,9 @@ func main() {
 
 	router.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("../frontend/dist/")))).
 		Handler(handlers.LoggingHandler(os.Stdout, handlers.CORS(
-		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
-		handlers.AllowedOrigins([]string{"*"}),
-		handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}))(router)))
+			handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
+			handlers.AllowedOrigins([]string{"*"}),
+			handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}))(router)))
 
 	port := utils.GetEnv("PORT", "8080")
 	addr := fmt.Sprintf(":%s", port)
