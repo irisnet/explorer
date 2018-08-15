@@ -10,8 +10,8 @@
 [[projects]]
   name = "github.com/gorilla/handlers"
   packages = ["."]
-  revision = "90663712d74cb411cbef281bc1e08c19d1a76145"
-  version = "v1.3.0"
+  revision = "7e0847f9db758cdebd26c149d0ae9d5d0b9c98ce"
+  version = "v1.4.0"
 
 [[projects]]
   name = "github.com/gorilla/mux"
@@ -29,7 +29,7 @@
     "store/document",
     "util/constant"
   ]
-  revision = "e947b6e66ffce48a3732b0404517fff92cce2421"
+  revision = "00b38eca4144ee0469975506638d32fd46f483aa"
 
 [[projects]]
   branch = "v2"

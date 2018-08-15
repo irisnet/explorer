@@ -174,7 +174,7 @@ func queryTxsByDay(w http.ResponseWriter, r *http.Request) {
 }
 
 func queryAllStakeTxByPage(w http.ResponseWriter, r *http.Request) {
-	var data []document.StakeTx
+	var data []document.CommonTx
 	w.Write(utils.QueryList("tx_common", &data, bson.M{"type": bson.M{"$in": []string{"Delegate", "CompleteUnbonding", "BeginUnbonding"}}}, "-time", r))
 }
 
