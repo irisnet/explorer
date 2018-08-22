@@ -13,7 +13,7 @@ DB_PASSWORD: mongo password ( eg. irispassword )
 
 FAUCET_URL: faucet url ( eg. http://dev.faucet.irisplorer.io )
 
-APP_FUXI: chain-id ( eg. rainbow-dev )
+CHAIN_ID: chain-id ( eg. rainbow-dev )
 
 # Docker Run
 docker run -p 8080:8080 -e ${ENV Variables} explorer

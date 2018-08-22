@@ -31,7 +31,7 @@ func AddRoutes(r *mux.Router) {
 }
 
 var FAUCET_URL string = utils.GetEnv("FAUCET_URL", "http://dev.faucet.irisplorer.io")
-var APP_FUXI string = utils.GetEnv("APP_FUXI", "rainbow-dev")
+var CHAIN_ID string = utils.GetEnv("CHAIN_ID", "rainbow-dev")
 
 func main() {
 	router := mux.NewRouter()
@@ -62,7 +62,7 @@ func main() {
 func AddHeader(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("FAUCET_URL", FAUCET_URL)
-		w.Header().Add("APP_FUXI", APP_FUXI)
+		w.Header().Add("CHAIN_ID", CHAIN_ID)
 		h.ServeHTTP(w, r)
 	})
 }
