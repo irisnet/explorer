@@ -17,9 +17,9 @@
   var req = new XMLHttpRequest();
   req.open('GET', document.location, false);
   req.send(null);
-  var App_fuxi = req.getResponseHeader('App_fuxi');
+  var Chain_id = req.getResponseHeader('Chain_id');
   var Faucet_url = req.getResponseHeader('Faucet_url');
-  localStorage.App_fuxi = App_fuxi
+  localStorage.Chain_id = Chain_id
   localStorage.Faucet_url = Faucet_url
   </script>
 </html>

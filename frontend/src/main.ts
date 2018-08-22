@@ -18,8 +18,8 @@ if(localStorage.getItem('Faucet_url')){
   faucet_url = 'http://dev.faucet.irisplorer.io'
 }
 
-if(localStorage.getItem('App_fuxi')){
-  fuxi = localStorage.getItem('App_fuxi')
+if(localStorage.getItem('Chain_id')){
+  fuxi = localStorage.getItem('Chain_id')
 }else{
   fuxi = 'rainbow-dev'
 }
