@@ -13,4 +13,13 @@
     <div id="app"></div>
     <!-- built files will be auto injected -->
   </body>
+  <script>
+  var req = new XMLHttpRequest();
+  req.open('GET', document.location, false);
+  req.send(null);
+  var App_fuxi = req.getResponseHeader('App_fuxi');
+  var Faucet_url = req.getResponseHeader('Faucet_url');
+  localStorage.App_fuxi = App_fuxi
+  localStorage.Faucet_url = Faucet_url
+  </script>
 </html>
