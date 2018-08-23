@@ -134,8 +134,6 @@
     },
     methods: {
       apply() {
-        alert(scene)
-        return
         /*if (document.getElementById("address").value === "") {
           alert("address is empty");
           return false;
