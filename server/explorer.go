@@ -5,9 +5,10 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"github.com/irisnet/explorer/server/modules/rest"
-	"github.com/gorilla/mux"
+
 	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
+	"github.com/irisnet/explorer/server/modules/rest"
 	"github.com/irisnet/explorer/server/utils"
 	"github.com/irisnet/explorer/server/version"
 )
@@ -29,25 +30,39 @@ func AddRoutes(r *mux.Router) {
 	}
 }
 
-func main()  {
+var FAUCET_URL string = utils.GetEnv("FAUCET_URL", "http://dev.faucet.irisplorer.io")
+var CHAIN_ID string = utils.GetEnv("CHAIN_ID", "rainbow-dev")
+
+func main() {
 	router := mux.NewRouter()
 	// latest
 	AddRoutes(router)
 
-	router.PathPrefix("/").Handler(http.StripPrefix("/",http.FileServer(http.Dir("../frontend/dist/"))))
+	router.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("../frontend/dist/"))))
 
-	port := utils.GetEnv("PORT","8080")
+	loggedRouter := handlers.LoggingHandler(os.Stdout, handlers.CORS(
+		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
+		handlers.AllowedOrigins([]string{"*"}),
+		handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}))(router))
+
+	loggedRouter = handlers.LoggingHandler(os.Stdout, AddHeader(loggedRouter))
+	loggedRouter = handlers.CompressHandler(loggedRouter)
+
+	port := utils.GetEnv("PORT", "8080")
 	addr := fmt.Sprintf(":%s", port)
-
 
 	log.Printf("Serving on %q", addr)
 
 	// loggedRouter := handlers.LoggingHandler(os.Stdout, router)
 	//return http.ListenAndServe(addr, router)
 	//TODO 生产环境需要借助nginx配置
-	http.ListenAndServe(addr,
-		handlers.LoggingHandler(os.Stdout, handlers.CORS(
-			handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
-			handlers.AllowedOrigins([]string{"*"}),
-			handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}))(router)))
+	http.ListenAndServe(addr, loggedRouter)
+}
+
+func AddHeader(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("FAUCET_URL", FAUCET_URL)
+		w.Header().Add("CHAIN_ID", CHAIN_ID)
+		h.ServeHTTP(w, r)
+	})
 }

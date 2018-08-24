@@ -39,9 +39,14 @@
   import axios from 'axios';
   import Tools from '../common/Tools';
 
+  let UserAgent = navigator.userAgent.toLowerCase();
+  let scene = 'ic_other';
+  if (/android/.test(UserAgent) || /iphone os/.test(UserAgent)) {
+      scene = 'ic_activity_h5';
+  }
   window.NVC_Opt = {
     appkey: 'FFFF0N000000000063E3',
-    scene: 'ic_activity_h5',
+    scene: scene,
     renderTo: '#captcha',
     trans: {"key1": "code0", "nvcCode": 200},
     elements: [
@@ -145,7 +150,8 @@
           address: document.getElementById("address").value,
           token: document.getElementById("token").value,
           session_id: document.getElementById("session_id").value,
-          sig: document.getElementById("sig").value
+          sig: document.getElementById("sig").value,
+          "scene": scene
         })).then(result => {
           let data = result.data;
           if (data.err_code) {

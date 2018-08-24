@@ -13,4 +13,13 @@
     <div id="app"></div>
     <!-- built files will be auto injected -->
   </body>
+  <script>
+  var req = new XMLHttpRequest();
+  req.open('GET', document.location, false);
+  req.send(null);
+  var Chain_id = req.getResponseHeader('Chain_id');
+  var Faucet_url = req.getResponseHeader('Faucet_url');
+  localStorage.Chain_id = Chain_id
+  localStorage.Faucet_url = Faucet_url
+  </script>
 </html>
