@@ -1,7 +1,10 @@
 $blue: #3190e8;
 $bc: #e4e4e4;
 $fc:#fff;
-
+*{
+  margin: 0;
+  padding: 0;
+}
 @mixin borderRadius($radius) {
   -webkit-border-radius: $radius !important;
   -moz-border-radius: $radius !important;

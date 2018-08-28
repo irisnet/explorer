@@ -7,6 +7,7 @@ import BlocksDetail from './components/BlocksDetail.vue';
 import BlocksListPage from './components/BlocksListPage.vue';
 import AddressPage from './components/AddressPage.vue';
 import PrivacyPolicy from './components/PrivacyPolicy.vue';
+import NodePage from "./components/NodePage.vue"
 
 Vue.use(Router);
 
@@ -21,7 +22,7 @@ export default new Router({
       component: Home,
     },
     {
-      path: '/faucet', component: FaucetPage
+      path: '/nodePage', component: NodePage
     },
     {
       //BlocksListPage为一个组件，根据type类型不同相应不同页面
