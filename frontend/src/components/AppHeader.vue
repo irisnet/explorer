@@ -65,7 +65,7 @@
         </div>
         <span class="nav_item common_item_style" :class="activeClassName === '/nodePage'?'nav_item_active':''"
               @click="featureButtonClick('/nodePage')"
-        >node</span>
+        >Nodes</span>
         <span class="nav_item common_item_style" @click="featureButtonClick('')" :class="activeClassName === '/'?'nav_item_active':''">tab
         </span>
       </div>
@@ -103,7 +103,7 @@
               @click="featureButtonClick('/validators/3/0')">Validators</span>
         <!--<span class="feature_btn_mobile feature_nav"-->
               <!--@click="featureButtonClick('/candidates/4/0')">Candidates</span>-->
-        <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/nodePage/1/0')">node</span>
+        <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/nodePage/1/0')">Nodes</span>
       </div>
       <div class="search_input_mobile">
         <div style="width:95%;position:relative">

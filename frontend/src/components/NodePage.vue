@@ -2,7 +2,7 @@
   <div class="blocks_list_page_wrap">
     <div class="blocks_list_title_wrap">
       <p :class="blocksListPageWrap" style="margin-bottom:0;">
-        <span class="blocks_list_title">{{titleVar}}</span><span class="blocks_list_page_wrap_hash_var" v-show="['1','2','3','4'].includes(type)">{{count}} total</span>
+        <span class="blocks_list_title">{{titleVar}}</span><span class="blocks_list_page_wrap_hash_var" >{{count}} total</span>
         <!--<span class="blocks_list_page_wrap_hash_var">{{blocksValue}}</span>-->
 
         <span class="blocks_list_page_wrap_hash_var for_block"
@@ -24,7 +24,7 @@
               <span>Start Date</span>
               <span>Neteork / Channel</span>
             </li>
-            <li class="list-items-info" v-for="item in nodeList">
+            <li class="list-items-info" v-for="(item,index) in nodeList" :class="index % 2 == 0 ? 'background_white ' : ' background_gray'">
               <div>
                 <p>{{item.node_info.moniker}}</p>
                 <p>{{item.node_info.id}}</p>
@@ -65,7 +65,16 @@
     watch: {
       $route() {
         this.items = [];
-        this.titleVar = 'Full Nodes';
+        this.type = this.$route.params.type;
+        this.currentPage = 1;
+        this.getDataList(1, 30, this.$route.params.type);
+        this.showNoData = false;
+        switch (this.$route.params.type) {
+          case '1': this.titleVar = 'Full Nodes';
+            break;
+        }
+      
+
         this.computeMinWidth();
       }
     },
@@ -80,7 +89,7 @@
         fields: [],
         items: [],
         type: '1',
-        titleVar: '',
+        titleVar: 'Full Nodes',
         showNoData:false,//是否显示列表的无数据
         showLoading:false,
         blockVar:'',
@@ -131,6 +140,7 @@
             return data.data;
           }
         }).then((data) => {
+          this.count = data.result.peers.length;
           this.nodeList = data.result.peers;
           this.nodeList.forEach(item =>{
             console.log(item,"listdata")
@@ -180,6 +190,12 @@
       a {
         text-decoration: none;
       }
+    }
+    .background_white{
+      background: #fff;
+    }
+    .background_gray{
+      background: #f6f6f6 !important;
     }
     .blocks_list_title_wrap {
       width: 100%;
@@ -321,6 +337,8 @@
     min-height: 4.6rem;
   }
   .list-items{
+    box-sizing: border-box;
+    padding: 0 0.2rem;
     @include flex;
     font-weight: 600;
     font-size: 0.14rem;
@@ -346,6 +364,8 @@
     }
   }
   .list-items-info{
+    box-sizing: border-box;
+    padding: 0 0.2rem;
     padding-top: 0.05rem;
     @include flex;
     height: 0.51rem;
