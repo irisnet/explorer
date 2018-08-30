@@ -481,9 +481,8 @@
                }
              }
            }
-           console.log(data,55555);
-          let xData = formatterData.map(item=>`${String(item.Time).substr(5,2)}/${String(item.Time).substr(8,2)}/${String(item.Time).substr(0,4)}`);
-          let seriesData = formatterData.map(item=>item.Power);
+          let xData = data.map(item=>`${String(item.Time).substr(5,2)}/${String(item.Time).substr(8,2)}/${String(item.Time).substr(0,4)}`);
+          let seriesData = data.map(item=>item.Power);
           this.informationValidatorsLine = {maxValue,xData,seriesData};
         })
       },
@@ -508,21 +507,56 @@
             return data.data;
           }
         }).then((data)=>{
-          console.log(data,"uptimeData");
+          //获取y轴最大值
           let  maxValue = 0;
           data.forEach(item=>{
             if(item.Uptime > maxValue){
               maxValue = item.Uptime;
             }
+            //取整
+            item.Uptime = item.Uptime.toString().split(".")[0] ;
           });
+          //格式化x轴的数据
           let xData;
           if(tabTime == "24hours"){
-            xData = data.map(item=>`${String(item.Time).substr(10,12)}`);
+            data.forEach((item) =>{
+              item.Time = item.Time.substr(10,12) + ":00";
+            });
+            xData = data.map(item => item.Time);
           }else {
-            xData = data.map(item=>`${String(item.Time).substr(5,2)}/${String(item.Time).substr(8,2)}/${String(item.Time).substr(0,4)}`);
+            if(tabTime == "2week"){
+              let dataDateLength = data.length,
+                  //获取需要补全的天数
+                  complementdateLenth = 14 - dataDateLength,
+                  //从那天需要补全的日期
+                  weekDate = new Date(data[0].Time),
+                  millisecondstime  = weekDate.getTime(),
+                  //24小时的时间戳（毫秒数）
+                  dayNumberOfMilliseconds = 60*60*1000*24;
+                  //补全日期的逻辑
+                  for(var lackOfDateNum = 0; lackOfDateNum < complementdateLenth; lackOfDateNum++){
+                    millisecondstime = millisecondstime - dayNumberOfMilliseconds;
+                    let complementdate = Tools.formatDateYearToDate(millisecondstime);
+
+                    data.unshift({Time:complementdate, Uptime: ""});
+                  }
+            }else if(tabTime == "1month"){
+              let dataDateLength = data.length,
+                  complementdateLenth = 30- dataDateLength,
+                  monthDate = new Date(data[0].Time),
+                  millisecondstime  = monthDate.getTime(),
+                  dayNumberOfMilliseconds = 60*60*1000*24;
+
+                  for(var lackOfDateNum = 0; lackOfDateNum < complementdateLenth; lackOfDateNum++){
+                    millisecondstime = millisecondstime - dayNumberOfMilliseconds;
+                    let complementdate = Tools.formatDateYearToDate(millisecondstime);
+
+                    data.unshift({Time:complementdate, Uptime: ""});
+                  }
+            }
+            xData = data.map(item=>`${String(item.Time).substr(5,2)}/${String(item.Time).substr(8,2)}`);
           }
           let seriesData = data.map(item=>item.Uptime);
-          console.log(seriesData,"uptime数据");
           this.informationUptimeLine = {maxValue,xData,seriesData};
         })
       },

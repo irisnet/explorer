@@ -39,4 +39,34 @@ export default class Tools{
     var m = num.toExponential().match(/\d(?:\.(\d*))?e([+-]\d+)/);
     return num.toFixed(Math.max(0, (m[1] || '').length - m[2]));
   }
+  /**
+   * 格式化年月日
+   * param string;
+   * return string
+   */
+  static formatDateYearToDate(timestamp) {
+    var date = new Date(timestamp);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+    var Y = date.getFullYear() + '-';
+    var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+    var D = date.getDate() + ' ';
+    var h = date.getHours() + ':';
+    var m = date.getMinutes() + ':';
+    var s = date.getSeconds();
+    return Y+M+D+h;
+  }
+  /**
+   * 格式化年月日时分秒
+   * param string;
+   * return string
+   */
+  static formatDateYearAndMinutesAndSeconds(timestamp) {
+    var date = new Date(timestamp);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+    var Y = date.getFullYear() + '-';
+    var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+    var D = date.getDate() + ' ';
+    var h = date.getHours() + ':';
+    var m = date.getMinutes() + ':';
+    var s = date.getSeconds();
+    return Y+M+D+h+m+s;
+  }
 }
