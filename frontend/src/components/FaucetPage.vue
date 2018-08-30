@@ -12,7 +12,6 @@
       <p style="font-size:0.14rem;color:#A2A2AE;padding:0 0.1rem;">Get IRIS from this faucet for the latest IRISnet Testnet.</p>
       <p style="font-size:0.14rem;color:#A2A2AE;padding:0 0.1rem;">This faucet will send 10 IRIS to any valid testnet address.</p>
       <p class="Balance_number">Balance:{{faucetBalance}}{{tokenName}}</p>
-      <!--<p class="faucet_address">address: {{faucetAddress}}</p>-->
       <br/>
       <form @submit.prevent="apply">
         <div class="faucet-form">
@@ -102,7 +101,6 @@
         showTitle: !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer()),
         faucetBalance: 0,
         tokenName:"",
-        faucetAddress:""
       }
     },
     beforeCreate(){
@@ -114,7 +112,6 @@
       }).then((data)=>{
         this.faucetBalance = (Tools.formatNumber(data.value.coins[0].amount)).toString().split(".")[0];
         this.tokenName = data.value.coins[0].denom.toUpperCase();
-        this.faucetAddress = data.value.address;
       })
       },
     created: function () {

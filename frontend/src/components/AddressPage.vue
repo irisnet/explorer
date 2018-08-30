@@ -826,6 +826,8 @@
     width: 100%;
     .line_container{
       width: 80%;
+      min-width: 4rem;
+      max-width: 12.8rem;
       margin: 0 auto;
       .line_history_title{
         height:0.5rem;
