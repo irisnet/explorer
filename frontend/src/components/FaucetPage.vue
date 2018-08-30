@@ -9,8 +9,10 @@
       <div class="coin" style="display:flex;justify-content: center;margin-bottom:10px;">
         <img src="../assets/coin.png" alt="">
       </div>
-      <p style="font-size:0.14rem;color:#A2A2AE;padding:0 0.1rem;">Use this faucet to get tokens for the latest IRISnet testnet.</p>
-      <p style="font-size:0.14rem;color:#A2A2AE;padding:0 0.1rem;">Please don't abuse this service — the number of available tokens is limited.</p>
+      <p style="font-size:0.14rem;color:#A2A2AE;padding:0 0.1rem;">Get IRIS from this faucet for the latest IRISnet Testnet.</p>
+      <p style="font-size:0.14rem;color:#A2A2AE;padding:0 0.1rem;">This faucet will send 10 IRIS to any valid testnet address.</p>
+      <p class="Balance_number">Balance:{{faucetBalance}}{{tokenName}}</p>
+      <!--<p class="faucet_address">address: {{faucetAddress}}</p>-->
       <br/>
       <form @submit.prevent="apply">
         <div class="faucet-form">
@@ -98,8 +100,23 @@
         alertShow:'hidden',
         innerWidth : window.innerWidth,
         showTitle: !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer()),
+        faucetBalance: 0,
+        tokenName:"",
+        faucetAddress:""
       }
     },
+    beforeCreate(){
+      let faucet_url = "http://192.168.150.7:30200/account";
+      axios.get(faucet_url).then((data)=>{
+        if(data.status === 200){
+          return data.data;
+        }
+      }).then((data)=>{
+        this.faucetBalance = (Tools.formatNumber(data.value.coins[0].amount)).toString().split(".")[0];
+        this.tokenName = data.value.coins[0].denom.toUpperCase();
+        this.faucetAddress = data.value.address;
+      })
+      },
     created: function () {
       let nvc = document.createElement('script');
       nvc.setAttribute('src', "//g.alicdn.com/sd/nvc/1.1.112/guide.js");
@@ -275,5 +292,14 @@
         height:0.52rem !important;
       }
     }
+  }
+  .Balance_number{
+    font-size: 0.14rem;
+    color: #000;
+    padding-top: 0.14rem;
+  }
+  .faucet_address{
+    font-size: 0.14rem;
+    color: #000;
   }
 </style>
