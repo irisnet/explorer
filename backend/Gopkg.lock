@@ -20,18 +20,6 @@
   version = "v1.6.2"
 
 [[projects]]
-  branch = "develop"
-  name = "github.com/irisnet/irishub-sync"
-  packages = [
-    "conf/db",
-    "module/logger",
-    "store",
-    "store/document",
-    "util/constant"
-  ]
-  revision = "00b38eca4144ee0469975506638d32fd46f483aa"
-
-[[projects]]
   branch = "v2"
   name = "gopkg.in/mgo.v2"
   packages = [
