@@ -460,30 +460,22 @@
           }
         }).then((data)=>{
           let maxValue = 0;
-          let formatterData = [];
+          let array = []
           data.forEach(item=>{
+
             if(item.Power == 0){
               item.Power = ""
             }
+            let obj =[];
+            obj[0] = item.Time;
+            obj[1] = item.Power;
+            array.push(obj);
             if(item.Power > maxValue){
               maxValue = item.Power;
             }
           });
-
-          if(data[0].Power == 0){
-            formatterData.push(data[0]);
-          }
-          for(var i = 0; i < data.length; i++){
-             if(i > 1){
-               if(data[i].Time.split("T")[0] !== data[i-1].Time.split("T")[0]){
-                 data[i-1].show = "true";
-                 formatterData.push(data[i])
-               }
-             }
-           }
-          let xData = data.map(item=>`${String(item.Time).substr(5,2)}/${String(item.Time).substr(8,2)}/${String(item.Time).substr(0,4)}`);
-          let seriesData = data.map(item=>item.Power);
-          this.informationValidatorsLine = {maxValue,xData,seriesData};
+          let seriesData = array;
+          this.informationValidatorsLine = {maxValue,seriesData};
         })
       },
       getValidatorUptimeHistory(tabTime,index){
@@ -883,9 +875,9 @@
     margin-left: 0.2rem;
   }
   .border-none{
-    border-top: none !important;
+    border-top: 0.01rem solid #fff !important;
   }
   .border-block{
-    border-top: 1px solid #e4e4e4 !important;
+    border-top: 0.01rem solid #e4e4e4 !important;
   }
 </style>
