@@ -40,7 +40,7 @@
           <span class="information_props">Website:</span>
           <a class="information_value" :href="websiteValue" target="_blank"
              v-show="websiteValue !== '--'"
-             style="color:#3598db;max-width:0.5rem;">{{websiteValue}}</a>
+             style="color:#3598db;">{{websiteValue}}</a>
           <i v-show="websiteValue === '--'" style="font-style:normal;color:#a2a2ae">--</i>
         </div>
         <!--<div class="information_props_wrap" style="border-bottom:0.01rem solid #eee">
@@ -95,6 +95,31 @@
       </div>
 
     </div>
+    <div class="line_container_wrap">
+      <div class="line_container">
+        <p class="line_history_title">History</p>
+        <div class="line_content">
+          <div class="line_echarts_content">
+            <div  class="line_left_container" >
+              <echarts-validators-line :informationValidatorsLine="informationValidatorsLine" ></echarts-validators-line>
+            </div>
+            <div class="line_tab_content">
+              <div v-for="(item,index) in tabVotingPower" @click="getValidatorHistory(item.title,index)"
+                   :class="item.active ? 'border-none' : 'border-block' " >{{item.title}}</div>
+            </div>
+          </div>
+          <div class="line_echarts_content content_right">
+            <div class="line_right_container">
+              <echarts-validators-uptime-line :informationUptimeLine="informationUptimeLine" ></echarts-validators-uptime-line>
+            </div>
+            <div class="line_tab_content">
+              <div v-for="(item,index) in tabUptime" @click="getValidatorUptimeHistory(item.title,index)"
+                   :class="item.active ? 'border-none' : 'border-block' ">{{item.title}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div :class="transactionsDetailWrap" class="transaction_precommit_table">
       <div class="tab_wrap">
         <span @click="activeBtn = 0" :class="activeBtn === 0?'transactions_btn_active':''">Transactions</span>
@@ -102,6 +127,7 @@
       </div>
       <div class="table_wrap">
         <div class="transactions_view_all" v-show="activeBtn === 0">
+          <span>{{transactionsTitle}}</span>
           <span @click="viewAllClick(2)">View All</span>
         </div>
         <div class="precommit_view_all" v-show="activeBtn === 1">
@@ -133,6 +159,9 @@
   import Tools from '../common/Tools';
   import axios from 'axios';
   import BlocksListTable from './table/BlocksListTable';
+  import EchartsLine from "./EchartsLine";
+  import EchartsValidatorsLine from "./EchartsValidatorsLine";
+  import EchartsValidatorsUptimeLine from "./EchartsValidatorsUpTimeLine";
 
   export default {
     watch:{
@@ -182,11 +211,43 @@
         showNoData2:false,
         transactionsCount:0,
         showProfile:true,
-
-
+        informationValidatorsLine: {},//折线图端所有信息
+        informationUptimeLine:{},
+        transactionsTitle: "",
+        tabVotingPower:[
+          {
+            "title":"2week",
+            "active":true
+          },
+          {
+            "title":"1month",
+            "active":false
+          },
+          {
+            "title":"2months",
+            "active":false
+          }
+        ],
+        tabUptime:[
+          {
+            "title":"24hours",
+            "active":true
+          },
+          {
+            "title":"2week",
+            "active":false
+          },
+          {
+            "title":"1month",
+            "active":false
+          }
+        ],
       }
     },
     components:{
+      EchartsValidatorsUptimeLine,
+      EchartsValidatorsLine,
+      EchartsLine,
       BlocksListTable,
     },
     beforeMount() {
@@ -202,6 +263,8 @@
       this.getProfileInformation();
       this.getPrecommitBlocksList();
       this.getCurrentTenureInformation();
+      this.getValidatorHistory('2week');
+      this.getValidatorUptimeHistory('24hours')
     },
     methods: {
       getAddressInformation(address){
@@ -263,7 +326,6 @@
           }
         }).then((data)=>{
           if(data){
-
             this.precommitedBlocksValue = data.PrecommitCount;
             this.returnsValue = '';
             this.firstPercent = `${data.Uptime}%`;
@@ -278,6 +340,11 @@
             return data.data;
           }
         }).then((data)=>{
+          if(data.length > 30){
+            this.transactionsTitle = "Last 30 txn from a total of " + data.length + "transactions"
+          }else {
+            this.transactionsTitle = "Last 30 txn"
+          }
           this.transactionsCount = data.Count;
           this.transactionsValue = data.Count;
           if(data.Data){
@@ -371,7 +438,94 @@
             this.showNoData2 = true;
           }
         })
-      }
+      },
+      getValidatorHistory(tabTime,index){
+        if(index !== undefined){
+          for(var i = 0; i < this.tabVotingPower.length; i++){
+            this.tabVotingPower[i].active = false;
+            this.tabVotingPower[index].active = true
+          }
+        }
+        let url;
+        if(tabTime == "2week"){
+          url = `/api/stake/candidate/${this.$route.params.param}/power/week`;
+        }else if(tabTime == "1month"){
+          url = `/api/stake/candidate/${this.$route.params.param}/power/month`;
+        }else if(tabTime == "2months"){
+          url = `/api/stake/candidate/${this.$route.params.param}/power/months`;
+        }
+        axios.get(url).then((data)=>{
+          if(data.status === 200){
+            return data.data;
+          }
+        }).then((data)=>{
+          let maxValue = 0;
+          let formatterData = [];
+          data.forEach(item=>{
+            if(item.Power == 0){
+              item.Power = ""
+            }
+            if(item.Power > maxValue){
+              maxValue = item.Power;
+            }
+          });
+
+          if(data[0].Power == 0){
+            formatterData.push(data[0]);
+          }
+          for(var i = 0; i < data.length; i++){
+             if(i > 1){
+               if(data[i].Time.split("T")[0] !== data[i-1].Time.split("T")[0]){
+                 data[i-1].show = "true";
+                 formatterData.push(data[i])
+               }
+             }
+           }
+           console.log(data,55555);
+          let xData = formatterData.map(item=>`${String(item.Time).substr(5,2)}/${String(item.Time).substr(8,2)}/${String(item.Time).substr(0,4)}`);
+          let seriesData = formatterData.map(item=>item.Power);
+          this.informationValidatorsLine = {maxValue,xData,seriesData};
+        })
+      },
+      getValidatorUptimeHistory(tabTime,index){
+        if(index != undefined){
+          for(var i = 0; i < this.tabUptime.length; i++){
+            this.tabUptime[i].active = false;
+            this.tabUptime[index].active = true
+          }
+        }
+
+        let url;
+        if(tabTime == "24hours"){
+          url = `/api/stake/candidate/${this.$route.params.param}/uptime/hour `;
+        }else if(tabTime == "2week"){
+          url = `/api/stake/candidate/${this.$route.params.param}/uptime/week `;
+        }else if(tabTime == "1month"){
+          url = `/api/stake/candidate/${this.$route.params.param}/uptime/month `;
+        }
+        axios.get(url).then((data)=>{
+          if(data.status === 200){
+            return data.data;
+          }
+        }).then((data)=>{
+          console.log(data,"uptimeData");
+          let  maxValue = 0;
+          data.forEach(item=>{
+            if(item.Uptime > maxValue){
+              maxValue = item.Uptime;
+            }
+          });
+          let xData;
+          if(tabTime == "24hours"){
+            xData = data.map(item=>`${String(item.Time).substr(10,12)}`);
+          }else {
+            xData = data.map(item=>`${String(item.Time).substr(5,2)}/${String(item.Time).substr(8,2)}/${String(item.Time).substr(0,4)}`);
+          }
+          let seriesData = data.map(item=>item.Uptime);
+          console.log(seriesData,"uptime数据");
+          this.informationUptimeLine = {maxValue,xData,seriesData};
+        })
+      },
     }
   }
 </script>
@@ -421,12 +575,6 @@
           }
         }
       }
-
-
-
-
-
-
       .transactions_detail_title {
         height: 0.4rem;
         line-height: 0.4rem;
@@ -605,10 +753,13 @@
         .transactions_view_all{
           padding:0.1rem;
           @include flex;
-          justify-content:flex-end;
+          justify-content:space-between;
           height:0.62rem;
           align-items: center;
-          span{
+          span:nth-child(1){
+
+          }
+          span:nth-child(2){
             @include viewBtn;
           }
         }
@@ -645,5 +796,62 @@
       }
     }
   }
+  .line_container_wrap{
+    width: 100%;
+    .line_container{
+      width: 80%;
+      margin: 0 auto;
+      .line_history_title{
+        height:0.5rem;
+        line-height: 0.5rem;
+        border-bottom: 1px solid #d6d9e0 !important;
+        font-size: 0.18rem;
+        color: #000;
+      }
+      .line_content{
+        @include flex;
+        .line_echarts_content{
+          margin-top: 0.2rem;
+          flex: 1;
+          border: 0.01rem solid #e4e4e4;
+          .line_left_container{
+            height: 5rem;
+            }
+          .line_right_container{
+            height: 5rem;
+          }
+        }
 
+      }
+
+    }
+  }
+  .line_tab_content{
+    @include flex;
+    width: 100%;
+    margin: 0 auto;
+    height: 0.4rem;
+    div{
+      display: inline-block;
+      flex: 1;
+      text-align: center;
+      line-height: 0.4rem;
+      font-size: 0.16rem;
+      color: #000;
+      border-top: 0.01rem solid #e4e4e4;
+      border-right: 0.01rem solid #e4e4e4;
+    }
+    div:nth-child(3){
+      border-right: none;
+    }
+  }
+  .content_right{
+    margin-left: 0.2rem;
+  }
+  .border-none{
+    border-top: none !important;
+  }
+  .border-block{
+    border-top: 1px solid #e4e4e4 !important;
+  }
 </style>
