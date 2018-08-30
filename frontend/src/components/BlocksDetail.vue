@@ -158,7 +158,7 @@
                   Address: data.CandidateMap?data.CandidateMap[item.ValidatorAddress]:'',
                   Index: item.ValidatorIndex,
                   Round: item.Round,
-                  Signature: item.Signature.Type,
+                  Signature: item.Signature.Value,
                 }
               });
             } else {

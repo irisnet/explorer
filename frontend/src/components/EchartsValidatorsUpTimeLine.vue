@@ -26,7 +26,7 @@
             trigger: 'item',
             formatter(params){
               let res =  `<span style="display:block;">${params.name}</span>`;
-              res += `<span style="display:block;">Transactions: ${params.value}</span>`;
+              res += `<span style="display:block;">Average Uptime: ${params.value}%</span>`;
               return res;
             }
           },
@@ -40,7 +40,7 @@
               }
             },
             axisLabel:{
-              interval:0,
+              interval:5,
               rotate:45,
               margin:12,
               formatter:(value)=>{
