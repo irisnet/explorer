@@ -160,7 +160,7 @@ func QueryCandidateUptime(w http.ResponseWriter, r *http.Request) {
 		var result []types.CandidateUptime
 		agoStr := "-336h"
 		if category == "month" {
-			agoStr = "-672h"
+			agoStr = "-720h"
 		}
 		now := time.Now()
 		endTime := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
@@ -208,21 +208,35 @@ func QueryCandidatePower(w http.ResponseWriter, r *http.Request) {
 	if err != nil || address == "" {
 		return
 	}
-	var result []types.PowerChange
+	var powers []types.PowerChange
 	var agoStr string
 	switch category {
 	case "week":
-		agoStr = "-672h"
+		agoStr = "-336h"
+		break
 	case "month":
-		agoStr = "-1344h"
+		agoStr = "-720h"
+		break
 	case "months":
-		agoStr = "-2688h"
+		agoStr = "-1440h"
+		break
 	}
 	now := time.Now()
 	endTime := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
 	d, _ := time.ParseDuration(agoStr)
 	startTime := endTime.Add(d)
-	p.Find(bson.M{"address": address, "time": bson.M{"$gte": startTime, "$lt": endTime}}).All(&result)
+	p.Find(bson.M{"address": address, "time": bson.M{"$gte": startTime, "$lt": endTime}}).All(&powers)
+
+	var result []types.PowerChange
+	var power types.PowerChange
+	p.Find(bson.M{"address": address, "time": bson.M{"$lt": startTime}}).Sort("-time").One(&power)
+	if power.Address != "" {
+		result = []types.PowerChange{power}
+	} else {
+		result = []types.PowerChange{{Address: address, Time: startTime}}
+	}
+	result = append(result, powers...)
+	result = append(result, types.PowerChange{Address: address, Time: endTime, Power: result[len(result)-1].Power})
 	resultByte, _ := json.Marshal(result)
 	w.Write(resultByte)
 }
@@ -246,7 +260,7 @@ func queryCandidateStatus(w http.ResponseWriter, r *http.Request) {
 			if validatorAddress == "" && validator.Address == candidate.PubKeyAddr {
 				validatorAddress = validator.Address
 			}
-			if block.Block.LastCommit.Precommits[index1].ValidatorAddress == validator.Address {
+			if index1+1 <= len(block.Block.LastCommit.Precommits) && block.Block.LastCommit.Precommits[index1].ValidatorAddress == validator.Address {
 				if validator.Address == candidate.PubKeyAddr {
 					upTime++
 				}

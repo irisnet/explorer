@@ -20,24 +20,6 @@
   version = "v1.6.2"
 
 [[projects]]
-  branch = "develop"
-  name = "github.com/irisnet/irishub-sync"
-  packages = [
-    "conf/db",
-    "module/logger",
-    "store",
-    "store/document",
-    "util/constant"
-  ]
-  revision = "86bb7d327b3aa7e04ab0af15ea9cc4b765815ffa"
-
-[[projects]]
-  name = "github.com/robfig/cron"
-  packages = ["."]
-  revision = "b41be1df696709bb6395fe435af20370037c0b4c"
-  version = "v1.1"
-
-[[projects]]
   branch = "v2"
   name = "gopkg.in/mgo.v2"
   packages = [
@@ -52,6 +34,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "be88166bce01a1531220aeec686c7bd6a87fcf9757b59840cc5039420421070e"
+  inputs-digest = "46ff3423b7b28c43b6c3a89f288ff908713dd4273ec8dc6865a38d18d18d0c2d"
   solver-name = "gps-cdcl"
   solver-version = 1
