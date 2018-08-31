@@ -42,10 +42,13 @@ export default class Tools{
     }
 
   }
-  static scientificToNumber(num) {
-    //将科学计数法转换成字符串
-    var m = num.toExponential().match(/\d(?:\.(\d*))?e([+-]\d+)/);
-    return num.toFixed(Math.max(0, (m[1] || '').length - m[2]));
+  static scientificToNumber(num){
+    //处理非数字
+    if(isNaN(num)){return num}
+    //处理不需要转换的数字
+    let str = ''+num;
+    if(!/e/i.test(str)){return num;}
+    return (num).toFixed(18).replace(/\.?0+$/, "");
   }
   /**
    * 格式化年月日
