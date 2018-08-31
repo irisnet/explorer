@@ -145,30 +145,13 @@
           this.nodeList = data.result.peers;
           this.nodeList.forEach(item =>{
             item.node_info.listen_addr = item.node_info.listen_addr.split(":")[0];
-            // item.node_info.country = "shen，额"
             item.node_info.country = that.getIPCountry(searchIpUrl,item.node_info.listen_add)
-
           });
           this.showLoading = false;
           return this.nodeList
         })
 
       },
-      getIPCountry(searchIpUrl,IPaddress){
-        axios.get(searchIpUrl + IPaddress).then((data)=>{
-          if (data.status === 200) {
-            return data.data;
-          }
-        }).then((data)=>{
-          if(data.data){
-            if(data.data.country == "XX"){
-              return data.data.country = "local"
-            }else {
-              return data.data.country = data.data.country_id
-            }
-          }
-        })
-      }
     }
   }
 </script>
