@@ -135,7 +135,6 @@
         this.showLoading = true;
         let url = `http://116.62.62.39:26657/net_info`;
         let searchIpUrl = `http://192.168.150.117:8080/api/ip/`;
-        let that = this;
         axios.get(url).then((data) => {
           if (data.status === 200) {
             return data.data;
@@ -145,6 +144,25 @@
           this.nodeList = data.result.peers;
           this.nodeList.forEach(item =>{
             item.node_info.listen_addr = item.node_info.listen_addr.split(":")[0];
+            axios.get(searchIpUrl + item.node_info.listen_addr).then((data) => {
+              if (data.status === 200) {
+                return data.data;
+              }
+            }).then((data) => {
+              if(data && data.data){
+                if(data.data.country_id === "xx"){
+                  data.data.country_id = "local"
+                }
+                let tempNodeList = JSON.parse(JSON.stringify(this.nodeList));
+                for(let i=0; i < tempNodeList.length;i++){
+                  if(tempNodeList[i].node_info.listen_addr.split(":")[0] === data.data.ip){
+                    tempNodeList[i].node_info.country = data.data.country_id;
+                    break;
+                  }
+                }
+                this.nodeList = tempNodeList;
+              }
+            })
           });
           this.showLoading = false;
           return this.nodeList
