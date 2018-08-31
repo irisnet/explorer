@@ -112,6 +112,7 @@
           this.gasLimit = data.Fee.Gas;
           this.gasUsedByTxn = data.GasUsed;
           this.amountValue = data.Amount.map(item=>{
+            item.amount = Tools.formatNumber(item.amount);
             if(data.Type === 'CompleteUnbonding' || data.Type === 'BeginUnbonding'){
               return `${item.amount}shares`;
             }else{

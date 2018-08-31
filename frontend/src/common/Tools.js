@@ -39,6 +39,9 @@ export default class Tools{
     var m = num.toExponential().match(/\d(?:\.(\d*))?e([+-]\d+)/);
     return num.toFixed(Math.max(0, (m[1] || '').length - m[2]));
   }
+  static formatNumberToFixedNumber(num){
+      return (parseInt(String(num*10000))/10000).toFixed(4);
+    }
   /**
    * 格式化年月日
    * param string;
