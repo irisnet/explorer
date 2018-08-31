@@ -41,7 +41,7 @@ export default class Tools{
       return (parseInt(String(num*10000))/10000).toFixed(4);
     }
 
-  },
+  }
   static scientificToNumber(num) {
     //将科学计数法转换成字符串
     var m = num.toExponential().match(/\d(?:\.(\d*))?e([+-]\d+)/);
