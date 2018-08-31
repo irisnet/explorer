@@ -31,7 +31,7 @@
               </div>
               <div>
                 <p>{{item.node_info.listen_addr}}</p>
-                <p>United States</p>
+                <p>{{item.node_info.country}}</p>
               </div>
               <div>
                 <p>{{item.connection_status.SendMonitor.Start}}</p>
@@ -56,7 +56,6 @@
   import axios from 'axios';
   import BlocksListTable from './table/BlocksListTable.vue';
   import SpinComponent from './commonComponents/SpinComponent';
-  import $ from "jquery"
   export default {
     components:{
       BlocksListTable,
@@ -73,7 +72,7 @@
           case '1': this.titleVar = 'Full Nodes';
             break;
         }
-      
+
 
         this.computeMinWidth();
       }
@@ -135,6 +134,8 @@
       getDataList() {
         this.showLoading = true;
         let url = `http://116.62.62.39:26657/net_info`;
+        let searchIpUrl = `http://192.168.150.117:8080/api/ip/`;
+        let that = this;
         axios.get(url).then((data) => {
           if (data.status === 200) {
             return data.data;
@@ -143,14 +144,14 @@
           this.count = data.result.peers.length;
           this.nodeList = data.result.peers;
           this.nodeList.forEach(item =>{
-            console.log(item,"listdata")
-            item.node_info.listen_addr = item.node_info.listen_addr.split(":")[0]
+            item.node_info.listen_addr = item.node_info.listen_addr.split(":")[0];
+            item.node_info.country = that.getIPCountry(searchIpUrl,item.node_info.listen_add)
           });
           this.showLoading = false;
           return this.nodeList
         })
 
-      }
+      },
     }
   }
 </script>
