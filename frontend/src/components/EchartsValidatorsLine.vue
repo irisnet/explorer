@@ -19,13 +19,11 @@
     name: 'echarts-validators-line',
     watch: {
       informationValidatorsLine(informationValidatorsLine) {
-        //根据设备大小显示饼图的大小
         let radius = this.deviceType === 1 ? '85%' : '65%';
         let option = {
           tooltip : {
             trigger: 'item',
             formatter(params){
-              console.log(params,'线图数据');
               let res =  `<span style="display:block;">${params.name}</span>`;
               res += `<span style="display:block;">Transactions: ${params.value}</span>`;
               return res;
@@ -33,14 +31,12 @@
           },
           xAxis: {
             type: 'time',
-            boundaryGap: ["0%","0%"],
-            realtime: false,
             axisLine: {
               lineStyle: {
                 color: '#a2a2ae'
               }
             },
-            splitNumber:1,
+            // splitNumber:0,
           },
           yAxis: {
             type: 'value',
@@ -94,28 +90,6 @@
           ]
         };
         if (line) {
-          let test = ["08/15/2018", "08/21/2018", "08/22/2018", "08/22/2018", "08/24/2018", "08/24/2018", "08/24/2018",
-            "08/24/2018", "08/24/2018", "08/25/2018", "08/25/2018", "08/25/2018", "08/25/2018", "08/25/2018", "08/25/2018",
-            "08/25/2018", "08/25/2018", "08/25/2018", "08/27/2018", "08/27/2018", "08/27/2018", "08/27/2018",
-            "08/27/2018", "08/28/2018", "08/28/2018", "08/28/2018", "08/28/2018", "08/28/2018", "08/28/2018",
-            "08/28/2018", "08/28/2018", "08/28/2018", "08/28/2018", "08/28/2018", "08/28/2018", "08/28/2018",
-            "08/28/2018", "08/28/2018", "08/28/2018", "08/28/2018", "08/28/2018", "08/28/2018", "08/28/2018",
-            "08/28/2018", "08/28/2018", "08/28/2018", "08/28/2018", "08/28/2018", "08/28/2018", "08/28/2018",
-            "08/29/2018",];
-          let testa = [0, 100, 150, 110, 112, 114, 116, 150, 152, 155, 187, 219, 220, 227, 229, 233, 229, 233, 236, 239, 240, 242, 248, 250, 251, 252, 250, 251, 252, 254,
-            259, 260, 261, 262, 263, 264, 265, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 277, 278, 279, 279];
-          var data = [
-            ["2018-08-21 02:54:20",
-              2,
-              "翻身"
-            ],
-            [
-              '2018-08-22 02:54:20',
-              0.5,
-              "没翻身"
-            ],
-            ];
-          console.log(informationValidatorsLine.seriesData);
           option.yAxis.max = informationValidatorsLine.maxValue;
           option.series[0].data = informationValidatorsLine.seriesData;
           line.setOption(option)
