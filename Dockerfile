@@ -6,19 +6,19 @@ RUN npm i yarn -g && yarn install && yarn dev && yarn build
 
 FROM golang:1.10.3-alpine3.7 as go-builder
 ENV GOPATH       /root/go
-ENV REPO_PATH    $GOPATH/src/github.com/irisnet/explorer/server
+ENV REPO_PATH    $GOPATH/src/github.com/irisnet/explorer/backend
 ENV PATH         $GOPATH/bin:$PATH
 
 RUN mkdir -p GOPATH REPO_PATH
 
-COPY ./server/ $REPO_PATH
+COPY ./backend/ $REPO_PATH
 WORKDIR $REPO_PATH
 
 RUN apk add --no-cache make git && go get github.com/golang/dep/cmd/dep && dep ensure && make build
 
 
 FROM alpine:3.7
-WORKDIR /app/server
+WORKDIR /app/backend
 COPY --from=builder /app/dist/ /app/frontend/dist
-COPY --from=go-builder /root/go/src/github.com/irisnet/explorer/server/build/ /app/server/
+COPY --from=go-builder /root/go/src/github.com/irisnet/explorer/backend/build/ /app/backend/
 CMD ./irisplorer

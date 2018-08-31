@@ -51,7 +51,7 @@
         <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === '/validators'?'nav_item_active':''"
              @mouseover="validatorsMouseOver" @mouseleave="validatorsMouseLeave">
 
-          <span class="nav_item common_item_style" @click="featureButtonClick('/validators/3/0')">
+          <span class="nav_item common_item_style"  @click="featureButtonClick('/validators/3/0')">
             Validators
             <!--<span class="bottom_arrow" style="right:0.22rem;"></span>-->
           </span>

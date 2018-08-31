@@ -29,7 +29,7 @@
     "store/document",
     "util/constant"
   ]
-  revision = "00b38eca4144ee0469975506638d32fd46f483aa"
+  revision = "01d834fd035f66acac41a80cbf3d13c7c4ec47d7"
 
 [[projects]]
   branch = "v2"

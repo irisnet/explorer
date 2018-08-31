@@ -8,9 +8,10 @@ import (
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	"github.com/irisnet/explorer/server/modules/rest"
-	"github.com/irisnet/explorer/server/utils"
-	"github.com/irisnet/explorer/server/version"
+	"github.com/irisnet/explorer/backend/modules/rest"
+	"github.com/irisnet/explorer/backend/task"
+	"github.com/irisnet/explorer/backend/utils"
+	"github.com/irisnet/explorer/backend/version"
 )
 
 func AddRoutes(r *mux.Router) {
@@ -34,6 +35,7 @@ var FAUCET_URL string = utils.GetEnv("FAUCET_URL", "http://dev.faucet.irisplorer
 var CHAIN_ID string = utils.GetEnv("CHAIN_ID", "rainbow-dev")
 
 func main() {
+	go task.Start()
 	router := mux.NewRouter()
 	// latest
 	AddRoutes(router)
