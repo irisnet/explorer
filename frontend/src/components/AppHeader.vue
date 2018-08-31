@@ -63,9 +63,11 @@
                 <!--v-show="showSubValidators">Candidates</span>-->
 
         </div>
-        <span class="nav_item common_item_style" :class="activeClassName === '/faucet'?'nav_item_active':''"
-              @click="featureButtonClick('/faucet')"
-        >Faucet</span>
+        <span class="nav_item common_item_style" :class="activeClassName === '/nodePage'?'nav_item_active':''"
+              @click="featureButtonClick('/nodePage')"
+        >Nodes</span>
+        <span class="nav_item common_item_style" @click="featureButtonClick('')" :class="activeClassName === '/'?'nav_item_active':''">tab
+        </span>
       </div>
 
     </div>
@@ -101,7 +103,7 @@
               @click="featureButtonClick('/validators/3/0')">Validators</span>
         <!--<span class="feature_btn_mobile feature_nav"-->
               <!--@click="featureButtonClick('/candidates/4/0')">Candidates</span>-->
-        <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/faucet')">Faucet</span>
+        <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/nodePage/1/0')">Nodes</span>
       </div>
       <div class="search_input_mobile">
         <div style="width:95%;position:relative">
@@ -261,9 +263,11 @@
           this.activeClassName = '/block';
         } else if (path.includes('/home')) {
           this.activeClassName = '/home';
-        } else if (path.includes('/faucet')) {
-          this.activeClassName = '/faucet';
-        } else{
+        } else if(path.includes('/nodePage')){
+          this.activeClassName = '/nodePage';
+        }else if(path.includes('')){
+          this.activeClassName = '';
+        }else {
           this.activeClassName = '';
         }
       },
