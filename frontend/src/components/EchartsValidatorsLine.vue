@@ -33,7 +33,12 @@
           },
           xAxis: {
             axisLabel:{
-              show:true
+              show:true,
+              formatter:(value)=>{
+                value = Tools.formatDateYearToDate(value).substr(5,6);
+                console.log(value);
+                return `${this.month[this.monthNum.findIndex(item=>value.substr(0,2) === item)]}${value.substr(3,2)}`;
+              }
             },
             type: 'time',
             axisLine: {

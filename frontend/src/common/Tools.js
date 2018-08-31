@@ -42,10 +42,13 @@ export default class Tools{
     }
 
   }
-  static scientificToNumber(num) {
-    //将科学计数法转换成字符串
-    var m = num.toExponential().match(/\d(?:\.(\d*))?e([+-]\d+)/);
-    return num.toFixed(Math.max(0, (m[1] || '').length - m[2]));
+  static scientificToNumber(num){
+    //处理非数字
+    if(isNaN(num)){return num}
+    //处理不需要转换的数字
+    let str = ''+num;
+    if(!/e/i.test(str)){return num;}
+    return (num).toFixed(18).replace(/\.?0+$/, "");
   }
   static formatNumberToFixedNumber(num){
       return (parseInt(String(num*10000))/10000).toFixed(4);
@@ -57,13 +60,13 @@ export default class Tools{
    */
   static formatDateYearToDate(timestamp) {
     var date = new Date(timestamp);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
-    var Y = date.getFullYear() + '-';
-    var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+    var Y = date.getFullYear() + '/';
+    var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '/';
     var D = date.getDate() + ' ';
     var h = date.getHours() + ':';
     var m = date.getMinutes() + ':';
     var s = date.getSeconds();
-    return Y+M+D+h;
+    return Y+M+D;
   }
   /**
    * 格式化年月日时分秒
