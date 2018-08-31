@@ -35,10 +35,10 @@
                 style="color:#3598db;cursor:pointer;">{{transactionsValue}}</span>
           <span v-show="transactionsValue == 0" style="color:#a2a2ae;">0</span>
         </div>
-        <div class="information_props_wrap">
-          <span class="information_props">Fees:</span>
-          <span class="information_value">{{feeValue}}</span>
-        </div>
+        <!--<div class="information_props_wrap">-->
+          <!--<span class="information_props">Fees:</span>-->
+          <!--<span class="information_value">{{feeValue}}</span>-->
+        <!--</div>-->
         <div class="information_props_wrap">
           <span class="information_props">Last Block Hash:</span>
           <span class="information_value">{{lastBlockHashValue}}</span>

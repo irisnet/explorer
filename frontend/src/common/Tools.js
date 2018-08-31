@@ -82,5 +82,13 @@ export default class Tools{
     var m = date.getMinutes() < 10 ? '0' + (date.getMinutes()) : + (date.getMinutes());
     var s = date.getSeconds() < 10 ? '0' + (date.getSeconds()) : + (date.getSeconds()) ;
     return Y + M + D + h + ':'+ m + ':'+s;
+  }/**
+   * 格式化amount
+   * param string;
+   * return string
+   */
+  static dealWithFees(num){
+    console.log(num)
+    return Tools.scientificToNumber(Tools.decimalPlace(Tools.formatNumber(num)))
   }
 }

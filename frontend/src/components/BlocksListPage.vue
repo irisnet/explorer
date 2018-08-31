@@ -176,7 +176,7 @@
                 return {
                   Height: item.Height,
                   Txn:txn,
-                  Fees: '0 IRIS',
+                  // Fees: '0 IRIS',
                   Timestamp: Tools.conversionTimeToUTC(item.Time),
                   'Precommit Validators':precommit,
                   'Voting Power': denominator !== 0? `${(numerator/denominator).toFixed(2)*100}%`:'',
@@ -213,17 +213,22 @@
             this.count = data.Count;
             if(data.Data){
               this.items = data.Data.map(item => {
-                item.Amount[0].amount = Tools.formatNumberToFixedNumber(Tools.scientificToNumber(Tools.formatNumber(item.Amount[0].amount)));
+                if(item.Amount.length > 0){
+                  item.Amount[0].amount = Tools.dealWithFees(item.Amount[0].amount);
+                }
+                if(item.Fee.Amount.length > 0){
+                  item.Fee.Amount[0].amount = Tools.dealWithFees(item.Fee.Amount[0].amount);
+                }
                 let [Amount,Fees] = ['',''];
                 if(item.Amount instanceof Array){
                   Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
                   if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
-                    Amount = item.Amount.map(listItem => `${listItem.amount.toFixed(2)}...shares`).join(',');
+                    Amount = item.Amount.map(listItem => `${listItem.amount}...shares`).join(',');
                   }
                 }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
                   Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
                   if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
-                    Amount = `${item.Amount.amount.toFixed(2)}...shares`;
+                    Amount = `${item.Amount.amount}...shares`;
                   }
                 }else if(item.Amount === null){
                   Amount = '';
@@ -243,7 +248,7 @@
                   To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
                   Type:item.Type === 'coin'?'transfer':item.Type,
                   Amount,
-                  Fees,
+                  // Fees,
                   Timestamp: Tools.conversionTimeToUTC(item.Time),
                 };
               })

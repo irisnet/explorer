@@ -38,7 +38,7 @@
         </div>
         <div class="blocks_module_right" :style="`${title === 'Blocks'?'flex:2;':''}`">
           <span>{{item.Time}}</span>
-          <span>Fees: {{item.Fee}}</span>
+          <!--<span>Fees: {{item.Fee}}</span>-->
           <span v-show="item.TxHash">{{item.Type}}</span>
         </div>
       </div>

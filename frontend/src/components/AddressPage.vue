@@ -134,7 +134,7 @@
           <p class="table_instruction">
             <span>Total blocks:</span>
             <span>{{totalBlocks}}</span>
-            <span>Total Fees:</span>
+            <!--<span>Total Fees:</span>-->
             <span>{{totalFee}}</span>
           </p>
           <span class="view_all_btn" @click="viewAllClick(1)">View All</span>
@@ -275,6 +275,12 @@
           }
         }).then((data)=>{
           let Amount = '';
+          if(data !== null && data !=="" && data){
+            if(data.Amount.length > 0 ){
+              data.Amount[0].amount = Tools.dealWithFees(data.Amount[0].amount);
+            }
+          }
+
           if(data.Amount instanceof Array){
             Amount = data.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
           }else if(data.Amount && Object.keys(data.Amount).includes('amount') && Object.keys(data.Amount).includes('denom')){
@@ -340,25 +346,31 @@
             return data.data;
           }
         }).then((data)=>{
+          console.log(data,"后端返回的数据是什么");
           if(data.length > 30){
             this.transactionsTitle = "Last 30 txn from a total of " + data.length + "transactions"
           }else {
             this.transactionsTitle = "Last 30 txn"
           }
           this.transactionsCount = data.Count;
-          this.transactionsValue = data.Count;
           if(data.Data){
             this.items = data.Data.map(item=>{
+              if(item.Amount.length > 0){
+                item.Amount[0].amount = Tools.dealWithFees(item.Amount[0].amount);
+              }
+              if(item.Fee.Amount.length > 0){
+                item.Fee.Amount[0].amount = Tools.dealWithFees(item.Fee.Amount[0].amount);
+              }
               let [Amount,Fees] = ['',''];
               if(item.Amount instanceof Array){
                 Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
                 if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
-                  Amount = item.Amount.map(listItem => `${listItem.amount.toFixed(2)}...shares`).join(',');
+                  Amount = item.Amount.map(listItem => `${listItem.amount}...shares`).join(',');
                 }
               }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
                 Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
                 if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
-                  Amount = `${item.Amount.amount.toFixed(2)}...shares`;
+                  Amount = `${item.Amount.amount}...shares`;
                 }
               }else if(item.Amount === null){
                 Amount = '';
@@ -399,7 +411,7 @@
               From:'',
               To:'',
               Type:'',
-              Amount:'',
+              millisecondstime:'',
               Fees:'',
               Timestamp:'',
             }];
@@ -422,7 +434,7 @@
               return{
                 'Block Height':item.Height,
                 Txn:item.NumTxs,
-                Fees:'0 IRIS',
+                // Fees:'0 IRIS',
                 Timestamp:Tools.conversionTimeToUTC(item.Time),
                 'Precommit Validators':item.Validators.length !== 0?`${item.Block.LastCommit.Precommits.length}/${item.Validators.length}`:'',
               }
@@ -431,7 +443,7 @@
             this.itemsPre = [{
               'Block Height':'',
               Txn:'',
-              Fees:'',
+              // Fees:'',
               Timestamp:'',
               'Precommit Validators':'',
             }];
@@ -460,20 +472,21 @@
           }
         }).then((data)=>{
           let maxValue = 0;
-          let array = []
-          data.forEach(item=>{
-
-            if(item.Power == 0){
-              item.Power = ""
-            }
-            let obj =[];
-            obj[0] = item.Time;
-            obj[1] = item.Power;
-            array.push(obj);
-            if(item.Power > maxValue){
-              maxValue = item.Power;
-            }
-          });
+          let array = [];
+          if(data){
+            data.forEach(item=>{
+              if(item.Power == 0){
+                item.Power = ""
+              }
+              let obj =[];
+              obj[0] = item.Time;
+              obj[1] = item.Power;
+              array.push(obj);
+              if(item.Power > maxValue){
+                maxValue = item.Power;
+              }
+            });
+          }
           let seriesData = array;
           this.informationValidatorsLine = {maxValue,seriesData};
         })
