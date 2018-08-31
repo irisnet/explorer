@@ -118,7 +118,7 @@
               return `${item.amount} ${item.denom.toUpperCase()}`;
             }
           }).join(',');
-          this.feeValue = `${Tools.scientificToNumber(Tools.formatNumber(data.ActualFee.amount),8)} ${data.ActualFee.denom.toUpperCase()}`;
+          this.feeValue = `${Tools.scientificToNumber(Tools.formatNumber(data.ActualFee.amount))} ${data.ActualFee.denom.toUpperCase()}`;
         }
 
       })
