@@ -213,7 +213,7 @@
             this.count = data.Count;
             if(data.Data){
               this.items = data.Data.map(item => {
-                item.Amount[0].amount = Tools.scientificToNumber(Tools.formatNumber(item.Amount[0].amount));
+                item.Amount[0].amount = Tools.formatNumberToFixedNumber(Tools.scientificToNumber(Tools.formatNumber(item.Amount[0].amount)));
                 let [Amount,Fees] = ['',''];
                 if(item.Amount instanceof Array){
                   Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
@@ -229,6 +229,7 @@
                   Amount = '';
                 }
                 if(item.Fee.Amount instanceof Array){
+                  item.Fee.Amount[0].amount = Tools.formatNumberToFixedNumber(Tools.scientificToNumber(Tools.formatNumber(item.Fee.Amount[0].amount)));
                   Fees = item.Fee.Amount.map(listItem=>`${listItem.amount} ${listItem.amount === 0?'IRIS':listItem.denom.toUpperCase()}`).join(',');
                 }else if(item.Fee.Amount && Object.keys(item.Fee.Amount).includes('amount') && Object.keys(item.Fee.Amount).includes('denom')){
                   Fees = `${item.Fee.Amount} ${item.Fee.Amount.toUpperCase()}`;

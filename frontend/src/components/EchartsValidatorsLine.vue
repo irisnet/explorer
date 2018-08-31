@@ -13,6 +13,7 @@
 
 <script>
   import echarts from 'echarts';
+  import Tools from "../common/Tools";
 
   let line = null;
   export default {
@@ -24,22 +25,28 @@
           tooltip : {
             trigger: 'item',
             formatter(params){
+              params.value[0] = Tools.formatDateYearAndMinutesAndSeconds(params.value[0]);
               let res =  `<span style="display:block;">${params.name}</span>`;
-              res += `<span style="display:block;">Transactions: ${params.value}</span>`;
+              res += `<span style="display:block;">Voting Power: ${params.value}</span>`;
               return res;
             }
           },
           xAxis: {
             axisLabel:{
-              show:true
+              show:true,
+              formatter:(value)=>{
+                value = Tools.formatDateYearToDate(value).substr(5,6);
+                console.log(value);
+                return `${this.month[this.monthNum.findIndex(item=>value.substr(0,2) === item)]}${value.substr(3,2)}`;
+              }
             },
             type: 'time',
             axisLine: {
               lineStyle: {
-                color: '#a2a2ae',
-
+                color: '#a2a2ae'
               }
             },
+
             splitLine:{
               show:false
             },

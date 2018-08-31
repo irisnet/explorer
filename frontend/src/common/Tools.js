@@ -50,6 +50,9 @@ export default class Tools{
     if(!/e/i.test(str)){return num;}
     return (num).toFixed(18).replace(/\.?0+$/, "");
   }
+  static formatNumberToFixedNumber(num){
+      return (parseInt(String(num*10000))/10000).toFixed(4);
+    }
   /**
    * 格式化年月日
    * param string;
@@ -57,13 +60,13 @@ export default class Tools{
    */
   static formatDateYearToDate(timestamp) {
     var date = new Date(timestamp);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
-    var Y = date.getFullYear() + '-';
-    var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+    var Y = date.getFullYear() + '/';
+    var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '/';
     var D = date.getDate() + ' ';
     var h = date.getHours() + ':';
     var m = date.getMinutes() + ':';
     var s = date.getSeconds();
-    return Y+M+D+h;
+    return Y+M+D;
   }
   /**
    * 格式化年月日时分秒
@@ -75,9 +78,9 @@ export default class Tools{
     var Y = date.getFullYear() + '-';
     var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
     var D = date.getDate() + ' ';
-    var h = date.getHours() + ':';
-    var m = date.getMinutes() + ':';
-    var s = date.getSeconds();
-    return Y+M+D+h+m+s;
+    var h = date.getHours() < 10 ? '0' + (date.getHours()) : + (date.getHours()) ;
+    var m = date.getMinutes() < 10 ? '0' + (date.getMinutes()) : + (date.getMinutes());
+    var s = date.getSeconds() < 10 ? '0' + (date.getSeconds()) : + (date.getSeconds()) ;
+    return Y + M + D + h + ':'+ m + ':'+s;
   }
 }

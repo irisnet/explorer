@@ -41,11 +41,14 @@
             },
             axisLabel:{
               interval:5,
-              rotate:45,
+              rotate:0,
               margin:12,
               formatter:(value)=>{
-                // return `${this.month[this.monthNum.findIndex(item=>value.substr(0,2) === item)]}${value.substr(3,2)}`;
-                return value;
+                if(value.split(":")[1] == "00"){
+                  return value
+                }else {
+                  return `${this.month[this.monthNum.findIndex(item=>value.substr(0,2) === item)]}${value.substr(3,2)}`;
+                }
               }
             }
           },
