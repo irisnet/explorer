@@ -143,6 +143,7 @@
           this.count = data.result.peers.length;
           this.nodeList = data.result.peers;
           this.nodeList.forEach(item =>{
+            item.connection_status.SendMonitor.Start = Tools.conversionTimeToUTC(item.connection_status.SendMonitor.Start);
             item.node_info.listen_addr = item.node_info.listen_addr.split(":")[0];
             axios.get(searchIpUrl + item.node_info.listen_addr).then((data) => {
               if (data.status === 200) {
