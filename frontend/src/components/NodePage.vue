@@ -56,7 +56,6 @@
   import axios from 'axios';
   import BlocksListTable from './table/BlocksListTable.vue';
   import SpinComponent from './commonComponents/SpinComponent';
-  import $ from "jquery"
   export default {
     components:{
       BlocksListTable,
