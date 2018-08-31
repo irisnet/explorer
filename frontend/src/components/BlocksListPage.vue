@@ -213,6 +213,7 @@
             this.count = data.Count;
             if(data.Data){
               this.items = data.Data.map(item => {
+                item.Amount[0].amount = Tools.scientificToNumber(Tools.formatNumber(item.Amount[0].amount));
                 let [Amount,Fees] = ['',''];
                 if(item.Amount instanceof Array){
                   Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
