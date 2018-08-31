@@ -145,7 +145,6 @@
           this.nodeList = data.result.peers;
           this.nodeList.forEach(item =>{
             item.node_info.listen_addr = item.node_info.listen_addr.split(":")[0];
-            item.node_info.country = that.getIPCountry(searchIpUrl,item.node_info.listen_add)
           });
           this.showLoading = false;
           return this.nodeList
