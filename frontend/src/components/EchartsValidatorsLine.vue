@@ -30,11 +30,18 @@
             }
           },
           xAxis: {
+            axisLabel:{
+              show:true
+            },
             type: 'time',
             axisLine: {
               lineStyle: {
-                color: '#a2a2ae'
+                color: '#a2a2ae',
+
               }
+            },
+            splitLine:{
+              show:false
             },
             // splitNumber:0,
           },
