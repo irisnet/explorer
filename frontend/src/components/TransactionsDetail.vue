@@ -108,7 +108,7 @@
           this.fromValue = data.From;
           this.toValue = data.To;
           this.timestampValue = Tools.conversionTimeToUTC(data.Time);
-          this.gasPrice = Tools.scientificToNumber(Tools.decimalPlace(Tools.formatNumber(data.GasPrice)));
+          this.gasPrice = Tools.scientificToNumber(Tools.formatNumber(data.GasPrice));
           this.gasLimit = data.Fee.Gas;
           this.gasUsedByTxn = data.GasUsed;
           this.amountValue = data.Amount.map(item=>{
@@ -118,7 +118,7 @@
               return `${item.amount} ${item.denom.toUpperCase()}`;
             }
           }).join(',');
-          this.feeValue = `${Tools.scientificToNumber(Tools.formatNumber(data.ActualFee.amount))} ${data.ActualFee.denom.toUpperCase()}`;
+          this.feeValue = `${Tools.scientificToNumber(Tools.formatNumber(data.ActualFee.amount),8)} ${data.ActualFee.denom.toUpperCase()}`;
         }
 
       })
