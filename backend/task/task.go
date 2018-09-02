@@ -28,7 +28,7 @@ func Start() {
 }
 
 func init() {
-	var powerChanges []types.PowerChange
+	var powerChanges []types.PowerChangeOrder
 	db := utils.GetDatabase()
 	p := db.C("power_change")
 	pipe := p.Pipe(
@@ -44,7 +44,7 @@ func init() {
 	pipe.All(&powerChanges)
 
 	for _, powerChange := range powerChanges {
-		validatorMap[powerChange.Address] = powerChange
+		validatorMap[powerChange.Address] = types.PowerChange{Address:powerChange.Address,Time:powerChange.Time,Power:powerChange.Power,Change:powerChange.Change}
 	}
 }
 
