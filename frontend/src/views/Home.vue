@@ -255,26 +255,25 @@
         }).then((data) => {
           if(data.Data){
             this.transactionInformation = data.Data.map(item => {
+              if(item.Amount.length > 0){
+                item.Amount[0].amount = Tools.dealWithFees(item.Amount[0].amount);
+              }
               let [Amount, Fee] = ['', ''];
               if (item.Amount instanceof Array) {
                 Amount = item.Amount.map(listItem => `${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
                 if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
-                  Amount = item.Amount.map(listItem => `${listItem.amount.toFixed(2)}...shares`).join(',');
+                  Amount = item.Amount.map(listItem => `${listItem.amount}...shares`).join(',');
                 }
               } else if (item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')) {
                 Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
                 if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
-                  Amount = `${item.Amount.amount.toFixed(2)}...shares`;
+                  Amount = `${item.Amount.amount}...shares`;
                 }
               } else if (item.Amount === null) {
                 Amount = '';
               }
-              if (item.Fee.Amount instanceof Array) {
-                Fee = item.Fee.Amount.map(listItem => `${listItem.amount} ${listItem.amount === 0?'IRIS':listItem.denom.toUpperCase()}`).join(',');
-              } else if (item.Fee.Amount && Object.keys(item.Fee.Amount).includes('amount') && Object.keys(item.Fee.Amount).includes('denom')) {
-                Fee = `${item.Fee.Amount} ${item.Fee.Amount}`;
-              } else if (item.Fee.Amount === null) {
-                Fee = '0 IRIS';
+              if(item.ActualFee.amount && item.ActualFee.denom){
+                Fee = item.ActualFee.amount = Tools.dealWithFees(item.ActualFee.amount) + item.ActualFee.denom.toUpperCase();
               }
               return {
                 TxHash: item.TxHash,
