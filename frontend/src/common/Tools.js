@@ -88,7 +88,6 @@ export default class Tools{
    * return string
    */
   static dealWithFees(num){
-    console.log(num)
     return Tools.scientificToNumber(Tools.decimalPlace(Tools.formatNumber(num)))
   }
 }
