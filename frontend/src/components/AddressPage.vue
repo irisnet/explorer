@@ -354,6 +354,7 @@
             this.transactionsTitle = "Last 30 txn"
           }
           this.transactionsCount = data.Count;
+          this.transactionsValue = data.Count;
           if(data.Data){
             this.items = data.Data.map(item=>{
 
@@ -378,7 +379,6 @@
                 Fees = item.ActualFee.amount = Tools.dealWithFees(item.ActualFee.amount) + ' ' + item.ActualFee.denom.toUpperCase();
 
               }
-
               let type = '';
               if(item.Type === 'Transfer'){
                 if(this.$route.params.param === item.From){
