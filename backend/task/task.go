@@ -44,7 +44,7 @@ func init() {
 	pipe.All(&powerChanges)
 
 	for _, powerChange := range powerChanges {
-		validatorMap[powerChange.Address] = types.PowerChange{Address:powerChange.Address,Time:powerChange.Time,Power:powerChange.Power,Change:powerChange.Change}
+		validatorMap[powerChange.Address] = types.PowerChange{Address: powerChange.Address, Time: powerChange.Time, Power: powerChange.Power, Change: powerChange.Change}
 	}
 }
 
@@ -158,6 +158,9 @@ func UptimeChange() {
 
 		// validator slash
 		for k, v := range validatorMap {
+			if v.Address == "" {
+				continue
+			}
 			if _, ok := validatorMapNow[k]; !ok {
 				powerChange := types.PowerChange{
 					Address: v.Address,
@@ -178,7 +181,7 @@ func UptimeChange() {
 
 	doneTime := startTime.Format("2006-01-02 15")
 	for k, v := range uptimeMap {
-		uptimeChange := types.UptimeChange{Address: k, Uptime: float64(100 * v) / float64(len(blocks)), Time: doneTime}
+		uptimeChange := types.UptimeChange{Address: k, Uptime: float64(100*v) / float64(len(blocks)), Time: doneTime}
 		u.Insert(&uptimeChange)
 	}
 	log.Println("task end")
