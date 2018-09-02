@@ -373,7 +373,7 @@
                 Amount = '';
               }
               if(item.ActualFee.amount && item.ActualFee.denom){
-                Fees = item.ActualFee.amount = Tools.dealWithFees(item.ActualFee.amount) + item.ActualFee.denom.toUpperCase();
+                Fees = item.ActualFee.amount = Tools.dealWithFees(item.ActualFee.amount) + ' ' +item.ActualFee.denom.toUpperCase();
               }
 
               let type = '';
@@ -853,10 +853,12 @@
           flex: 1;
           border: 0.01rem solid #e4e4e4;
           .line_left_container{
-            height: 5rem;
+            max-width: 6.2rem;
+            height: 2.76rem;
             }
           .line_right_container{
-            height: 5rem;
+            max-width: 6.2rem;
+            height: 2.76rem;
           }
         }
 
@@ -868,7 +870,7 @@
     @include flex;
     width: 100%;
     margin: 0 auto;
-    height: 0.4rem;
+    height: 0.42rem;
     div{
       display: inline-block;
       flex: 1;
@@ -884,7 +886,7 @@
     }
   }
   .content_right{
-    margin-left: 0.2rem;
+    margin-left: 0.4rem;
   }
   .border-none{
     border-top: 0.01rem solid #fff !important;
