@@ -311,6 +311,9 @@
       height:0.3rem;
       li{
         height:0.3rem !important;
+        a{
+          box-shadow: none;
+        }
       }
     }
     .total_num{
