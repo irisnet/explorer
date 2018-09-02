@@ -38,7 +38,7 @@
         </div>
         <div class="blocks_module_right" :style="`${title === 'Blocks'?'flex:2;':''}`">
           <span>{{item.Time}}</span>
-          <span>Fees: {{item.Fee}}</span>
+          <span :class="`${title === 'Blocks' ? 'hide_fee' : 'show_fee'}`">Fees: {{item.Fee}}</span>
           <span v-show="item.TxHash">{{item.Type}}</span>
         </div>
       </div>
@@ -220,7 +220,12 @@
       }
     }
   }
-
+  .hide_fee{
+    display: none;
+  }
+  .show_fee{
+    display: block;
+  }
 
 
 </style>

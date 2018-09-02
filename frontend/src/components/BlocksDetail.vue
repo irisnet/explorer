@@ -35,10 +35,10 @@
                 style="color:#3598db;cursor:pointer;">{{transactionsValue}}</span>
           <span v-show="transactionsValue == 0" style="color:#a2a2ae;">0</span>
         </div>
-        <div class="information_props_wrap">
-          <span class="information_props">Fees:</span>
-          <span class="information_value">{{feeValue}}</span>
-        </div>
+        <!--<div class="information_props_wrap">-->
+          <!--<span class="information_props">Fees:</span>-->
+          <!--<span class="information_value">{{feeValue}}</span>-->
+        <!--</div>-->
         <div class="information_props_wrap">
           <span class="information_props">Last Block Hash:</span>
           <span class="information_value">{{lastBlockHashValue}}</span>
@@ -104,7 +104,7 @@
         timestampValue: '',
         blockHashValue: '',
         transactionsValue: '',
-        feeValue: '',
+        // feeValue: '',
         lastBlockHashValue: '',
         precommitValidatorsValue: '',
         votingPowerValue: '',
@@ -177,7 +177,7 @@
               this.timestampValue = Tools.conversionTimeToUTC(data.Time);
               this.blockHashValue = data.Hash;
               this.transactionsValue = data.NumTxs;
-              this.feeValue = '0 IRIS';
+              // this.feeValue = '0 IRIS';
               this.lastBlockHashValue = data.Block.LastCommit.BlockID.Hash;
               this.precommitValidatorsValue = data.Validators.length !== 0 ? `${data.Block.LastCommit.Precommits.length}/${data.Validators.length}` : '';
               this.votingPowerValue = denominator !== 0 ? `${numerator / denominator * 100}%` : '';

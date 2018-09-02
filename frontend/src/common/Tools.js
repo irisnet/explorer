@@ -34,14 +34,25 @@ export default class Tools{
     return num/1000000000000000000;
   }
 
-  static scientificToNumber(num) {
-    //将科学计数法转换成字符串
-    var m = num.toExponential().match(/\d(?:\.(\d*))?e([+-]\d+)/);
-    return num.toFixed(Math.max(0, (m[1] || '').length - m[2]));
-  }
-  static formatNumberToFixedNumber(num){
+  static decimalPlace(num,val){
+    if(val){
+      return (parseInt(String(num*100000000))/100000000).toFixed(8);
+    }else{
       return (parseInt(String(num*10000))/10000).toFixed(4);
     }
+
+  }
+  static scientificToNumber(num){
+    //处理非数字
+    if(isNaN(num)){return num}
+    //处理不需要转换的数字
+    let str = ''+num;
+    if(!/e/i.test(str)){return num;}
+    return (num).toFixed(18).replace(/\.?0+$/, "");
+  }
+  static formatNumberToFixedNumber(num){
+    return (parseInt(String(num*10000))/10000).toFixed(4);
+  }
   /**
    * 格式化年月日
    * param string;
@@ -71,5 +82,13 @@ export default class Tools{
     var m = date.getMinutes() < 10 ? '0' + (date.getMinutes()) : + (date.getMinutes());
     var s = date.getSeconds() < 10 ? '0' + (date.getSeconds()) : + (date.getSeconds()) ;
     return Y + M + D + h + ':'+ m + ':'+s;
+  }/**
+   * 格式化amount
+   * param string;
+   * return string
+   */
+  static dealWithFees(num){
+    console.log(num)
+    return Tools.scientificToNumber(Tools.decimalPlace(Tools.formatNumber(num)))
   }
 }
