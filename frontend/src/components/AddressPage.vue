@@ -95,7 +95,7 @@
       </div>
 
     </div>
-    <div class="line_container_wrap">
+    <div class="line_container_wrap" v-if="showProfile">
       <div class="line_container">
         <p class="line_history_title">History</p>
         <div class="line_content">
@@ -277,6 +277,9 @@
         }).then((data)=>{
           let Amount = '';
           if(data.Amount instanceof Array){
+            if(data.Amount.length > 0){
+              data.Amount[0].amount = Tools.dealWithFees(data.Amount[0].amount);
+            }
             Amount = data.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
           }else if(data.Amount && Object.keys(data.Amount).includes('amount') && Object.keys(data.Amount).includes('denom')){
             Amount = `${data.Amount.amount} ${data.Amount.denom.toUpperCase()}`;
@@ -335,14 +338,14 @@
         })
       },
       getTransactionsList(){
-        let url = `/api/txsByAddress/${this.$route.params.param}/1/6`;
+        let url = `/api/txsByAddress/${this.$route.params.param}/1/30`;
         axios.get(url).then((data)=>{
           if(data.status === 200){
             return data.data;
           }
         }).then((data)=>{
-          if(data.length > 30){
-            this.transactionsTitle = "Last 30 txn from a total of " + data.length + "transactions"
+          if(data.Count > 30){
+            this.transactionsTitle = "Last 30 txn from a total of " + data.Count + " transactions"
           }else {
             this.transactionsTitle = "Last 30 txn"
           }
@@ -350,26 +353,27 @@
           this.transactionsValue = data.Count;
           if(data.Data){
             this.items = data.Data.map(item=>{
+
+              if(item.Amount.length > 0){
+                item.Amount[0].amount = Tools.dealWithFees(item.Amount[0].amount);
+              }
+
               let [Amount,Fees] = ['',''];
               if(item.Amount instanceof Array){
                 Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
                 if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
-                  Amount = item.Amount.map(listItem => `${listItem.amount.toFixed(2)}...shares`).join(',');
+                  Amount = item.Amount.map(listItem => `${listItem.amount}...shares`).join(',');
                 }
               }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
                 Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
                 if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
-                  Amount = `${item.Amount.amount.toFixed(2)}...shares`;
+                  Amount = `${item.Amount.amount}...shares`;
                 }
               }else if(item.Amount === null){
                 Amount = '';
               }
-              if(item.Fee.Amount instanceof Array){
-                Fees = item.Fee.Amount.map(listItem=>`${listItem.amount} ${listItem.amount === 0?'IRIS':listItem.denom.toUpperCase()}`).join(',');
-              }else if(item.Fee.Amount && Object.keys(item.Fee.Amount).includes('amount') && Object.keys(item.Fee.Amount).includes('denom')){
-                Fees = `${item.Fee.Amount} ${item.Fee.Amount}`;
-              }else if(item.Fee.Amount === null){
-                Fees = '';
+              if(item.ActualFee.amount && item.ActualFee.denom){
+                Fees = item.ActualFee.amount = Tools.dealWithFees(item.ActualFee.amount) + item.ActualFee.denom.toUpperCase();
               }
 
               let type = '';
@@ -423,7 +427,7 @@
               return{
                 'Block Height':item.Height,
                 Txn:item.NumTxs,
-                Fees:'0 IRIS',
+                // Fees:'0 IRIS',
                 Timestamp:Tools.conversionTimeToUTC(item.Time),
                 'Precommit Validators':item.Validators.length !== 0?`${item.Block.LastCommit.Precommits.length}/${item.Validators.length}`:'',
               }
@@ -432,7 +436,7 @@
             this.itemsPre = [{
               'Block Height':'',
               Txn:'',
-              Fees:'',
+              // Fees:'',
               Timestamp:'',
               'Precommit Validators':'',
             }];
@@ -461,22 +465,24 @@
           }
         }).then((data)=>{
           let maxValue = 0;
-          let array = []
-          data.forEach(item=>{
+          let array = [];
+          if(data){
+            data.forEach(item=>{
 
-            if(item.Power == 0){
-              item.Power = ""
-            }
-            let obj =[];
-            obj[0] = item.Time;
-            obj[1] = item.Power;
-            array.push(obj);
-            if(item.Power > maxValue){
-              maxValue = item.Power;
-            }
-          });
-          let seriesData = array;
-          this.informationValidatorsLine = {maxValue,seriesData};
+              if(item.Power == 0){
+                item.Power = ""
+              }
+              let obj =[];
+              obj[0] = item.Time;
+              obj[1] = item.Power;
+              array.push(obj);
+              if(item.Power > maxValue){
+                maxValue = item.Power;
+              }
+            });
+            let seriesData = array;
+            this.informationValidatorsLine = {maxValue,seriesData};
+          }
         })
       },
       getValidatorUptimeHistory(tabTime,index){
@@ -500,57 +506,59 @@
             return data.data;
           }
         }).then((data)=>{
-          //获取y轴最大值
-          let  maxValue = 0;
-          data.forEach(item=>{
-            if(item.Uptime > maxValue){
-              maxValue = item.Uptime;
-            }
-            //取整
-            item.Uptime = item.Uptime.toString().split(".")[0] ;
-          });
-          //格式化x轴的数据
-          let xData;
-          if(tabTime == "24hours"){
-            data.forEach((item) =>{
-              item.Time = item.Time.substr(10,12) + ":00";
+          if(data) {
+            //获取y轴最大值
+            let maxValue = 0;
+            data.forEach(item => {
+              if (item.Uptime > maxValue) {
+                maxValue = item.Uptime;
+              }
+              //取整
+              item.Uptime = item.Uptime.toString().split(".")[0];
             });
-            xData = data.map(item => item.Time);
-          }else {
-            if(tabTime == "2week"){
-              let dataDateLength = data.length,
+            //格式化x轴的数据
+            let xData;
+            if (tabTime == "24hours") {
+              data.forEach((item) => {
+                item.Time = item.Time.substr(10, 12) + ":00";
+              });
+              xData = data.map(item => item.Time);
+            } else {
+              if (tabTime == "2week") {
+                let dataDateLength = data.length,
                   //获取需要补全的天数
                   complementdateLenth = 14 - dataDateLength,
                   //从那天需要补全的日期
                   weekDate = new Date(data[0].Time),
-                  millisecondstime  = weekDate.getTime(),
+                  millisecondstime = weekDate.getTime(),
                   //24小时的时间戳（毫秒数）
-                  dayNumberOfMilliseconds = 60*60*1000*24;
-                  //补全日期的逻辑
-                  for(var lackOfDateNum = 0; lackOfDateNum < complementdateLenth; lackOfDateNum++){
-                    millisecondstime = millisecondstime - dayNumberOfMilliseconds;
-                    let complementdate = Tools.formatDateYearToDate(millisecondstime);
+                  dayNumberOfMilliseconds = 60 * 60 * 1000 * 24;
+                //补全日期的逻辑
+                for (var lackOfDateNum = 0; lackOfDateNum < complementdateLenth; lackOfDateNum++) {
+                  millisecondstime = millisecondstime - dayNumberOfMilliseconds;
+                  let complementdate = Tools.formatDateYearToDate(millisecondstime);
 
-                    data.unshift({Time:complementdate, Uptime: ""});
-                  }
-            }else if(tabTime == "1month"){
-              let dataDateLength = data.length,
-                  complementdateLenth = 30- dataDateLength,
+                  data.unshift({Time: complementdate, Uptime: ""});
+                }
+              } else if (tabTime == "1month") {
+                let dataDateLength = data.length,
+                  complementdateLenth = 30 - dataDateLength,
                   monthDate = new Date(data[0].Time),
-                  millisecondstime  = monthDate.getTime(),
-                  dayNumberOfMilliseconds = 60*60*1000*24;
+                  millisecondstime = monthDate.getTime(),
+                  dayNumberOfMilliseconds = 60 * 60 * 1000 * 24;
 
-                  for(var lackOfDateNum = 0; lackOfDateNum < complementdateLenth; lackOfDateNum++){
-                    millisecondstime = millisecondstime - dayNumberOfMilliseconds;
-                    let complementdate = Tools.formatDateYearToDate(millisecondstime);
+                for (var lackOfDateNum = 0; lackOfDateNum < complementdateLenth; lackOfDateNum++) {
+                  millisecondstime = millisecondstime - dayNumberOfMilliseconds;
+                  let complementdate = Tools.formatDateYearToDate(millisecondstime);
 
-                    data.unshift({Time:complementdate, Uptime: ""});
-                  }
+                  data.unshift({Time: complementdate, Uptime: ""});
+                }
+              }
+              xData = data.map(item => `${String(item.Time).substr(5, 2)}/${String(item.Time).substr(8, 2)}`);
             }
-            xData = data.map(item=>`${String(item.Time).substr(5,2)}/${String(item.Time).substr(8,2)}`);
+            let seriesData = data.map(item => item.Uptime);
+            this.informationUptimeLine = {maxValue, xData, seriesData};
           }
-          let seriesData = data.map(item=>item.Uptime);
-          this.informationUptimeLine = {maxValue,xData,seriesData};
         })
       },
     }
@@ -784,7 +792,8 @@
           height:0.62rem;
           align-items: center;
           span:nth-child(1){
-
+            color: #a2a2ae;
+            font-size: 0.14rem;
           }
           span:nth-child(2){
             @include viewBtn;

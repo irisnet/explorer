@@ -1,7 +1,7 @@
 <template>
   <div :class="echartsComponentWrapLine">
     <div class="echarts_title_wrap_line">
-      upTime
+      Uptime
     </div>
     <div id="echarts_uptime_line">
 

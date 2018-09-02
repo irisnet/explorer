@@ -50,9 +50,10 @@ export default class Tools{
     if(!/e/i.test(str)){return num;}
     return (num).toFixed(18).replace(/\.?0+$/, "");
   }
+  
   static formatNumberToFixedNumber(num){
-      return (parseInt(String(num*10000))/10000).toFixed(4);
-    }
+    return (parseInt(String(num*10000))/10000).toFixed(4);
+  }
   /**
    * 格式化年月日
    * param string;
@@ -82,5 +83,12 @@ export default class Tools{
     var m = date.getMinutes() < 10 ? '0' + (date.getMinutes()) : + (date.getMinutes());
     var s = date.getSeconds() < 10 ? '0' + (date.getSeconds()) : + (date.getSeconds()) ;
     return Y + M + D + h + ':'+ m + ':'+s;
+  }/**
+   * 格式化amount
+   * param string;
+   * return string
+   */
+  static dealWithFees(num){
+    return Tools.scientificToNumber(Tools.decimalPlace(Tools.formatNumber(num)))
   }
 }
