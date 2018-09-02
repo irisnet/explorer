@@ -4,7 +4,7 @@
       <p :class="transactionsDetailWrap" style="margin-bottom:0;">
         <span class="transactions_detail_title">Address</span>
         <span class="transactions_detail_wrap_hash_var">
-          {{hashValue}} <i v-if="showProfile">v</i></span>
+          {{address}} <i v-if="showProfile">v</i></span>
       </p>
     </div>
 
@@ -187,7 +187,7 @@
         activeBtn:0,
         firstPercent:'',
         secondPercent:'%',
-        hashValue:this.$route.params.param,
+        address:this.$route.params.param,
         balanceValue:'',
         depositsValue:'',
         transactionsValue:'',
@@ -268,6 +268,7 @@
     },
     methods: {
       getAddressInformation(address){
+        this.address = address;
         let url = `/api/account/${this.$route.params.param}`;
         axios.get(url).then((data)=>{
           if(data.status === 200){
