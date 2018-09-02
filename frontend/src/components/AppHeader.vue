@@ -66,8 +66,11 @@
         <span class="nav_item common_item_style" :class="activeClassName === '/nodePage'?'nav_item_active':''"
               @click="featureButtonClick('/nodePage')"
         >Nodes</span>
-        <span class="nav_item common_item_style" @click="featureButtonClick('')" :class="activeClassName === '/'?'nav_item_active':''">tab
-        </span>
+        <!--<a href="" target="_blank">-->
+          <span class="nav_item common_item_style" @click="featureButtonClick('')" :class="activeClassName === '/'?'nav_item_active':''">
+             Performance
+          </span>
+        <!--</a>-->
       </div>
 
     </div>
@@ -411,6 +414,10 @@
           &:hover{
             color: #ffffff;
             background: #005a98;
+          }
+          a{
+            text-decoration:none;
+            color: #c9eafd;
           }
         }
         .nav_item {

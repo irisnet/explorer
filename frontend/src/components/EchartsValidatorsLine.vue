@@ -26,7 +26,7 @@
             trigger: 'item',
             formatter(params){
               params.value[0] = Tools.formatDateYearAndMinutesAndSeconds(params.value[0]);
-              let res =  `<span style="display:block;">${params.value[0]}</span>`;
+              let res =  `<span style="display:block;">${params.value[0]} GMT+08</span>`;
               res += `<span style="display:block;">Voting Power:${params.value[1]}</span>`;
               return res;
             }
@@ -36,7 +36,6 @@
               show:true,
               formatter:(value)=>{
                 value = Tools.formatDateYearToDate(value).substr(5,6);
-                console.log(value);
                 return `${this.month[this.monthNum.findIndex(item=>value.substr(0,2) === item)]}${value.substr(3,2)}`;
               }
             },
