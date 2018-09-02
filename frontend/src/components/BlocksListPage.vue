@@ -240,7 +240,7 @@
                   To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
                   Type:item.Type === 'coin'?'transfer':item.Type,
                   Amount,
-                  Fees,
+                  // Fees,
                   Timestamp: Tools.conversionTimeToUTC(item.Time),
                 };
               })

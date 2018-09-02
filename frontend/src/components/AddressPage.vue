@@ -134,7 +134,7 @@
           <p class="table_instruction">
             <span>Total blocks:</span>
             <span>{{totalBlocks}}</span>
-            <span>Total Fees:</span>
+            <!--<span>Total Fees:</span>-->
             <span>{{totalFee}}</span>
           </p>
           <span class="view_all_btn" @click="viewAllClick(1)">View All</span>
@@ -275,11 +275,15 @@
             return data.data;
           }
         }).then((data)=>{
+          console.log(data,"balance")
           let Amount = '';
-          if(data.Amount instanceof Array){
-            if(data.Amount.length > 0){
+          if(data !== null && data !=="" && data){
+            if(data.Amount.length > 0 ){
               data.Amount[0].amount = Tools.dealWithFees(data.Amount[0].amount);
             }
+          }
+
+          if(data.Amount instanceof Array){
             Amount = data.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
           }else if(data.Amount && Object.keys(data.Amount).includes('amount') && Object.keys(data.Amount).includes('denom')){
             Amount = `${data.Amount.amount} ${data.Amount.denom.toUpperCase()}`;
@@ -350,14 +354,12 @@
             this.transactionsTitle = "Last 30 txn"
           }
           this.transactionsCount = data.Count;
-          this.transactionsValue = data.Count;
           if(data.Data){
             this.items = data.Data.map(item=>{
 
               if(item.Amount.length > 0){
                 item.Amount[0].amount = Tools.dealWithFees(item.Amount[0].amount);
               }
-
               let [Amount,Fees] = ['',''];
               if(item.Amount instanceof Array){
                 Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
@@ -373,7 +375,8 @@
                 Amount = '';
               }
               if(item.ActualFee.amount && item.ActualFee.denom){
-                Fees = item.ActualFee.amount = Tools.dealWithFees(item.ActualFee.amount) + item.ActualFee.denom.toUpperCase();
+                Fees = item.ActualFee.amount = Tools.dealWithFees(item.ActualFee.amount) + ' ' + item.ActualFee.denom.toUpperCase();
+
               }
 
               let type = '';
@@ -404,13 +407,12 @@
               From:'',
               To:'',
               Type:'',
-              Amount:'',
+              millisecondstime:'',
               Fees:'',
               Timestamp:'',
             }];
             this.showNoData1 = true;
           }
-
 
         })
       },
@@ -468,7 +470,6 @@
           let array = [];
           if(data){
             data.forEach(item=>{
-
               if(item.Power == 0){
                 item.Power = ""
               }
@@ -480,9 +481,9 @@
                 maxValue = item.Power;
               }
             });
-            let seriesData = array;
-            this.informationValidatorsLine = {maxValue,seriesData};
           }
+          let seriesData = array;
+          this.informationValidatorsLine = {maxValue,seriesData};
         })
       },
       getValidatorUptimeHistory(tabTime,index){
@@ -853,10 +854,12 @@
           flex: 1;
           border: 0.01rem solid #e4e4e4;
           .line_left_container{
-            height: 5rem;
+            max-width: 6.2rem;
+            height: 2.76rem;
             }
           .line_right_container{
-            height: 5rem;
+            max-width: 6.2rem;
+            height: 2.76rem;
           }
         }
 
@@ -868,7 +871,7 @@
     @include flex;
     width: 100%;
     margin: 0 auto;
-    height: 0.4rem;
+    height: 0.42rem;
     div{
       display: inline-block;
       flex: 1;
@@ -884,7 +887,7 @@
     }
   }
   .content_right{
-    margin-left: 0.2rem;
+    margin-left: 0.4rem;
   }
   .border-none{
     border-top: 0.01rem solid #fff !important;
