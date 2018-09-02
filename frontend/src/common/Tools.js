@@ -50,9 +50,10 @@ export default class Tools{
     if(!/e/i.test(str)){return num;}
     return (num).toFixed(18).replace(/\.?0+$/, "");
   }
+
   static formatNumberToFixedNumber(num){
-      return (parseInt(String(num*10000))/10000).toFixed(4);
-    }
+    return (parseInt(String(num*10000))/10000).toFixed(4);
+  }
   /**
    * 格式化年月日
    * param string;
@@ -88,7 +89,6 @@ export default class Tools{
    * return string
    */
   static dealWithFees(num){
-    console.log(num)
     return Tools.scientificToNumber(Tools.decimalPlace(Tools.formatNumber(num)))
   }
 }
