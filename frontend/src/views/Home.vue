@@ -262,12 +262,12 @@
               if (item.Amount instanceof Array) {
                 Amount = item.Amount.map(listItem => `${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
                 if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
-                  Amount = item.Amount.map(listItem => `${listItem.amount}...shares`).join(',');
+                  Amount = item.Amount.map(listItem => `${listItem.amount} shares`).join(',');
                 }
               } else if (item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')) {
                 Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
                 if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
-                  Amount = `${item.Amount.amount}...shares`;
+                  Amount = `${item.Amount.amount} shares`;
                 }
               } else if (item.Amount === null) {
                 Amount = '';
