@@ -50,7 +50,7 @@ export default class Tools{
     if(!/e/i.test(str)){return num;}
     return (num).toFixed(18).replace(/\.?0+$/, "");
   }
-  
+
   static formatNumberToFixedNumber(num){
     return (parseInt(String(num*10000))/10000).toFixed(4);
   }

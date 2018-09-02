@@ -52,7 +52,7 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Gas Price:</span>
-          <span class="information_value">{{gasPrice}}</span>
+          <span class="information_value">{{`${gasPrice} IRIS`}}</span>
         </div>
       </div>
     </div>

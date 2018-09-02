@@ -134,7 +134,7 @@
           <p class="table_instruction">
             <span>Total blocks:</span>
             <span>{{totalBlocks}}</span>
-            <span>Total Fees:</span>
+            <!--<span>Total Fees:</span>-->
             <span>{{totalFee}}</span>
           </p>
           <span class="view_all_btn" @click="viewAllClick(1)">View All</span>
@@ -275,11 +275,15 @@
             return data.data;
           }
         }).then((data)=>{
+          console.log(data,"balance")
           let Amount = '';
-          if(data.Amount instanceof Array){
-            if(data.Amount.length > 0){
+          if(data !== null && data !=="" && data){
+            if(data.Amount.length > 0 ){
               data.Amount[0].amount = Tools.dealWithFees(data.Amount[0].amount);
             }
+          }
+
+          if(data.Amount instanceof Array){
             Amount = data.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
           }else if(data.Amount && Object.keys(data.Amount).includes('amount') && Object.keys(data.Amount).includes('denom')){
             Amount = `${data.Amount.amount} ${data.Amount.denom.toUpperCase()}`;
@@ -306,7 +310,7 @@
             return data.data;
           }
         }).then((data)=>{
-          if(data){
+          if(data && typeof data === "object"){
             this.nameValue = data.Description.Moniker;
             this.pubKeyValue = data.PubKey;
             this.websiteValue = data.Description.Website?data.Description.Website:'--';
@@ -357,25 +361,24 @@
               if(item.Amount.length > 0){
                 item.Amount[0].amount = Tools.dealWithFees(item.Amount[0].amount);
               }
-
               let [Amount,Fees] = ['',''];
               if(item.Amount instanceof Array){
                 Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
                 if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
-                  Amount = item.Amount.map(listItem => `${listItem.amount}...shares`).join(',');
+                  Amount = item.Amount.map(listItem => `${listItem.amount} shares`).join(',');
                 }
               }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
                 Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
                 if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
-                  Amount = `${item.Amount.amount}...shares`;
+                  Amount = `${item.Amount.amount} shares`;
                 }
               }else if(item.Amount === null){
                 Amount = '';
               }
               if(item.ActualFee.amount && item.ActualFee.denom){
-                Fees = item.ActualFee.amount = Tools.dealWithFees(item.ActualFee.amount) + ' ' +item.ActualFee.denom.toUpperCase();
-              }
+                Fees = item.ActualFee.amount = Tools.dealWithFees(item.ActualFee.amount) + ' ' + item.ActualFee.denom.toUpperCase();
 
+              }
               let type = '';
               if(item.Type === 'Transfer'){
                 if(this.$route.params.param === item.From){
@@ -404,13 +407,12 @@
               From:'',
               To:'',
               Type:'',
-              Amount:'',
+              millisecondstime:'',
               Fees:'',
               Timestamp:'',
             }];
             this.showNoData1 = true;
           }
-
 
         })
       },
@@ -468,7 +470,6 @@
           let array = [];
           if(data){
             data.forEach(item=>{
-
               if(item.Power == 0){
                 item.Power = ""
               }
@@ -480,9 +481,9 @@
                 maxValue = item.Power;
               }
             });
-            let seriesData = array;
-            this.informationValidatorsLine = {maxValue,seriesData};
           }
+          let seriesData = array;
+          this.informationValidatorsLine = {maxValue,seriesData};
         })
       },
       getValidatorUptimeHistory(tabTime,index){
