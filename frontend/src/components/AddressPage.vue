@@ -373,7 +373,7 @@
                 Amount = '';
               }
               if(item.ActualFee.amount && item.ActualFee.denom){
-                Fees = item.ActualFee.amount = Tools.dealWithFees(item.ActualFee.amount) + item.ActualFee.denom.toUpperCase();
+                Fees = item.ActualFee.amount = Tools.dealWithFees(item.ActualFee.amount) + ' ' +item.ActualFee.denom.toUpperCase();
               }
 
               let type = '';
