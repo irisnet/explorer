@@ -66,11 +66,11 @@
         <span class="nav_item common_item_style" :class="activeClassName === '/nodePage'?'nav_item_active':''"
               @click="featureButtonClick('/nodePage')"
         >Nodes</span>
-        <!--<a href="" target="_blank">-->
+        <a href="https://github.com/irisnet/testnets/issues/72" target="_blank">
           <span class="nav_item common_item_style" @click="featureButtonClick('')" :class="activeClassName === '/'?'nav_item_active':''">
              Performance
           </span>
-        <!--</a>-->
+        </a>
       </div>
 
     </div>
@@ -134,7 +134,6 @@
         this.showHeader = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
       },
       searchInputValue(searchInputValue){
-        console.log(searchInputValue)
         if(searchInputValue){
           this.showClear = true;
         }else{
@@ -229,7 +228,7 @@
             return data.data;
           }
         }).then((data)=>{
-          if(data){
+          if(data &&  typeof data === "object"){
             this.$router.push(`/blocks_detail/${this.searchInputValue}`)
           }
         });
@@ -238,7 +237,7 @@
             return data.data;
           }
         }).then((data)=>{
-          if(data){
+          if(data &&  typeof data === "object"){
             this.$router.push(`/tx?txHash=${this.searchInputValue}`)
           }
         });
@@ -247,7 +246,7 @@
             return data.data;
           }
         }).then((data)=>{
-          if(data){
+          if(data && typeof data === "object"){
             this.$router.push(`/address/1/${this.searchInputValue}`)
           }
         });
