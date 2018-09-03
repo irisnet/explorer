@@ -93,4 +93,12 @@ export default class Tools{
   static dealWithFees(num){
     return Tools.scientificToNumber(Tools.decimalPlace(Tools.formatNumber(num)))
   }
+  /**
+   * 格式化空格
+   *
+   */
+  static removeAllSpace(str) {
+    return str.replace(/\s+/g, "");
+  }
+
 }

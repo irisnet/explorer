@@ -220,6 +220,7 @@
       },
 
       getData(data) {
+        this.searchInputValue = Tools.removeAllSpace(this.searchInputValue);
         let urlBlock = `/api/block/${this.searchInputValue}`;
         let urlTransaction = `/api/tx/${this.searchInputValue}`;
         let urlAddress = `/api/account/${this.searchInputValue}`;
