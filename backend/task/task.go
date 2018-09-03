@@ -101,18 +101,18 @@ func UptimeChange() {
 	}
 
 	//init validatorMap if validatorMap length is 0
-	if len(validatorMap) == 0 && len(blocks) > 0 {
-		for _, validator := range blocks[0].Validators {
-			powerChange := types.PowerChange{
-				Address: validator.Address,
-				Power:   validator.VotingPower,
-				Time:    blocks[0].Time,
-				Change:  types.Change,
-			}
-			validatorMap[validator.Address] = powerChange
-			p.Insert(powerChange)
-		}
-	}
+	//if len(validatorMap) == 0 && len(blocks) > 0 {
+	//	for _, validator := range blocks[0].Validators {
+	//		powerChange := types.PowerChange{
+	//			Address: validator.Address,
+	//			Power:   validator.VotingPower,
+	//			Time:    blocks[0].Time,
+	//			Change:  types.Change,
+	//		}
+	//		validatorMap[validator.Address] = powerChange
+	//		p.Insert(powerChange)
+	//	}
+	//}
 
 	uptimeMap := make(map[string]int)
 	for _, block := range blocks {
@@ -128,6 +128,7 @@ func UptimeChange() {
 					Address: validator.Address,
 					Power:   validator.VotingPower,
 					Time:    block.Time,
+					Height:  block.Height,
 					Change:  types.Change,
 				}
 				validatorMap[validator.Address] = powerChange
@@ -138,6 +139,7 @@ func UptimeChange() {
 						Address: validator.Address,
 						Power:   validator.VotingPower,
 						Time:    block.Time,
+						Height:  block.Height,
 						Change:  types.Change,
 					}
 					validatorMap[validator.Address] = powerChange
@@ -148,6 +150,7 @@ func UptimeChange() {
 						Address: validator.Address,
 						Power:   validator.VotingPower,
 						Time:    block.Time,
+						Height:  block.Height,
 						Change:  types.Recover,
 					}
 					validatorMap[validator.Address] = powerChange
@@ -166,6 +169,7 @@ func UptimeChange() {
 					Address: v.Address,
 					Power:   v.Power,
 					Time:    block.Time,
+					Height:  block.Height,
 					Change:  types.Slash,
 				}
 				validatorMap[k] = powerChange

@@ -16,6 +16,7 @@ type PowerChangeOrder struct {
 }
 
 type PowerChange struct {
+	Height  int64
 	Address string
 	Power   int64
 	Time    time.Time
