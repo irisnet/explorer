@@ -22,7 +22,7 @@
               <span>Moniker / NodeID</span>
               <span>IP / Region</span>
               <span>Start Date</span>
-              <span>Neteork / Channel</span>
+              <span>Network / Channel</span>
             </li>
             <li class="list-items-info" v-for="(item,index) in nodeList" :class="index % 2 == 0 ? 'background_white ' : ' background_gray'">
               <div>
@@ -133,42 +133,43 @@
       },
       getDataList() {
         this.showLoading = true;
-        let url = `http://116.62.62.39:26657/net_info`;
+        let url = `http://116.62.62.39:36657/net_info`;
         let searchIpUrl = `/api/ip/`;
         axios.get(url).then((data) => {
           if (data.status === 200) {
             return data.data;
           }
         }).then((data) => {
-          this.count = data.result.peers.length;
-          this.nodeList = data.result.peers;
-          this.nodeList.forEach(item =>{
-            item.connection_status.SendMonitor.Start = Tools.conversionTimeToUTC(item.connection_status.SendMonitor.Start);
-            item.node_info.listen_addr = item.node_info.listen_addr.split(":")[0];
-            axios.get(searchIpUrl + item.node_info.listen_addr).then((data) => {
-              if (data.status === 200) {
-                return data.data;
-              }
-            }).then((data) => {
-              if(data && data.data){
-                if(data.data.country_id === "xx"){
-                  data.data.country_id = "local"
+          if(data && typeof data === "object") {
+            this.count = data.result.peers.length;
+            this.nodeList = data.result.peers;
+            this.nodeList.forEach(item => {
+              item.connection_status.SendMonitor.Start = Tools.conversionTimeToUTC(item.connection_status.SendMonitor.Start);
+              item.node_info.listen_addr = item.node_info.listen_addr.split(":")[0];
+              axios.get(searchIpUrl + item.node_info.listen_addr).then((data) => {
+                if (data.status === 200) {
+                  return data.data;
                 }
-                let tempNodeList = JSON.parse(JSON.stringify(this.nodeList));
-                for(let i=0; i < tempNodeList.length;i++){
-                  if(tempNodeList[i].node_info.listen_addr.split(":")[0] === data.data.ip){
-                    tempNodeList[i].node_info.country = data.data.country_id;
-                    break;
+              }).then((data) => {
+                if (data && data.data) {
+                  if (data.data.country_id === "xx") {
+                    data.data.country_id = "local"
                   }
+                  let tempNodeList = JSON.parse(JSON.stringify(this.nodeList));
+                  for (let i = 0; i < tempNodeList.length; i++) {
+                    if (tempNodeList[i].node_info.listen_addr.split(":")[0] === data.data.ip) {
+                      tempNodeList[i].node_info.country = data.data.country_id;
+                      break;
+                    }
+                  }
+                  this.nodeList = tempNodeList;
                 }
-                this.nodeList = tempNodeList;
-              }
-            })
-          });
-          this.showLoading = false;
-          return this.nodeList
+              })
+            });
+            this.showLoading = false;
+            return this.nodeList
+          }
         })
-
       },
     }
   }
