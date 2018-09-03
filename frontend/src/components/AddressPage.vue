@@ -96,11 +96,11 @@
 
     </div>
     <div class="line_container_wrap" v-if="showProfile">
-      <div class="line_container">
+      <div class="line_container" :class="transactionsDetailWrap">
         <p class="line_history_title">History</p>
         <div class="line_content">
           <div class="line_echarts_content">
-            <div  class="line_left_container" >
+            <div  class="line_left_container" style="overflow-x: auto;">
               <echarts-validators-line :informationValidatorsLine="informationValidatorsLine" ></echarts-validators-line>
             </div>
             <div class="line_tab_content">
@@ -108,8 +108,9 @@
                    :class="item.active ? 'border-none' : 'border-block' " >{{item.title}}</div>
             </div>
           </div>
-          <div class="line_echarts_content content_right">
-            <div class="line_right_container">
+          <div class="line_echarts_content " :class="transactionsDetailWrap === 'personal_computer_transactions_detail_wrap' ?
+           'content_right' : 'model_content_right' ">
+            <div class="line_right_container" style="overflow-x: auto;">
               <echarts-validators-uptime-line :informationUptimeLine="informationUptimeLine" ></echarts-validators-uptime-line>
             </div>
             <div class="line_tab_content">
@@ -835,7 +836,7 @@
     width: 100%;
     .line_container{
       width: 80%;
-      min-width: 4rem;
+      min-width: 3.2rem;
       max-width: 12.8rem;
       margin: 0 auto;
       .line_history_title{
@@ -892,5 +893,34 @@
   }
   .border-block{
     border-top: 0.01rem solid #e4e4e4 !important;
+  }
+  .mobile_transactions_detail_wrap{
+    width: 100%!important;
+    .line_content {
+      @include flex;
+      flex-direction: column;
+      .line_echarts_content {
+        margin-top: 0.2rem;
+        padding: 0 0.1rem;
+        flex: 1;
+        border: 0.01rem solid #e4e4e4;
+
+        .line_left_container {
+          width: 98%;
+          max-width: 98%!important;
+          height: 2.76rem;
+        }
+
+        .line_right_container {
+          width: 98%;
+          max-width: 98%;
+          height: 2.76rem;
+        }
+
+      }
+    }
+  }
+  .model_content_right{
+    margin-left: 0 ;
   }
 </style>

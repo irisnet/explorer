@@ -66,11 +66,11 @@
         <span class="nav_item common_item_style" :class="activeClassName === '/nodePage'?'nav_item_active':''"
               @click="featureButtonClick('/nodePage')"
         >Nodes</span>
-        <!--<a href="" target="_blank">-->
+        <a href="https://github.com/irisnet/testnets/issues/72" target="_blank">
           <span class="nav_item common_item_style" @click="featureButtonClick('')" :class="activeClassName === '/'?'nav_item_active':''">
              Performance
           </span>
-        <!--</a>-->
+        </a>
       </div>
 
     </div>
@@ -106,7 +106,7 @@
               @click="featureButtonClick('/validators/3/0')">Validators</span>
         <!--<span class="feature_btn_mobile feature_nav"-->
               <!--@click="featureButtonClick('/candidates/4/0')">Candidates</span>-->
-        <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/nodePage/1/0')">Nodes</span>
+        <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/nodePage')">Nodes</span>
       </div>
       <div class="search_input_mobile">
         <div style="width:95%;position:relative">
@@ -134,7 +134,6 @@
         this.showHeader = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
       },
       searchInputValue(searchInputValue){
-        console.log(searchInputValue)
         if(searchInputValue){
           this.showClear = true;
         }else{
@@ -221,6 +220,7 @@
       },
 
       getData(data) {
+        this.searchInputValue = Tools.removeAllSpace(this.searchInputValue);
         let urlBlock = `/api/block/${this.searchInputValue}`;
         let urlTransaction = `/api/tx/${this.searchInputValue}`;
         let urlAddress = `/api/account/${this.searchInputValue}`;
@@ -229,7 +229,7 @@
             return data.data;
           }
         }).then((data)=>{
-          if(data){
+          if(data &&  typeof data === "object"){
             this.$router.push(`/blocks_detail/${this.searchInputValue}`)
           }
         });
@@ -238,7 +238,7 @@
             return data.data;
           }
         }).then((data)=>{
-          if(data){
+          if(data &&  typeof data === "object"){
             this.$router.push(`/tx?txHash=${this.searchInputValue}`)
           }
         });
@@ -247,7 +247,7 @@
             return data.data;
           }
         }).then((data)=>{
-          if(data){
+          if(data && typeof data === "object"){
             this.$router.push(`/address/1/${this.searchInputValue}`)
           }
         });
