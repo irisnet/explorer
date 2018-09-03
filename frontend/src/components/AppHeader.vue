@@ -66,11 +66,11 @@
         <span class="nav_item common_item_style" :class="activeClassName === '/nodePage'?'nav_item_active':''"
               @click="featureButtonClick('/nodePage')"
         >Nodes</span>
-        <!--<a href="" target="_blank">-->
+        <a href="https://github.com/irisnet/testnets/issues/72" target="_blank">
           <span class="nav_item common_item_style" @click="featureButtonClick('')" :class="activeClassName === '/'?'nav_item_active':''">
              Performance
           </span>
-        <!--</a>-->
+        </a>
       </div>
 
     </div>
