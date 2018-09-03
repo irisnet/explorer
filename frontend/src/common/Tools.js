@@ -29,7 +29,9 @@ export default class Tools{
   static conversionTimeToUTC(originTime){
     return `${originTime.substr(5,2)}/${originTime.substr(8,2)}/${originTime.substr(0,4)} ${originTime.substr(11,8)}+UTC`;
   }
-
+  static conversionTimeToUTCByValidatorsLine(originTime){
+    return `${originTime.substr(0,4)}/${originTime.substr(5,2)}/${originTime.substr(8,2)} ${originTime.substr(11,8)}`;
+  }
   static formatNumber(num){
     return num/1000000000000000000;
   }
@@ -76,8 +78,8 @@ export default class Tools{
    */
   static formatDateYearAndMinutesAndSeconds(timestamp) {
     var date = new Date(timestamp);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
-    var Y = date.getFullYear() + '-';
-    var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+    var Y = date.getFullYear() + '/';
+    var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '/';
     var D = date.getDate() + ' ';
     var h = date.getHours() < 10 ? '0' + (date.getHours()) : + (date.getHours()) ;
     var m = date.getMinutes() < 10 ? '0' + (date.getMinutes()) : + (date.getMinutes());
