@@ -158,7 +158,7 @@
             }
           }).then((data) => {
             this.count = data.Count;
-            if(data.Data){
+            if(data.Data && typeof data === "object"){
               this.items = data.Data.map(item => {
                 let txn = item.NumTxs;
                 let precommit = item.Block.LastCommit.Precommits.length;
@@ -211,7 +211,7 @@
             }
           }).then((data) => {
             this.count = data.Count;
-            if(data.Data){
+            if(data.Data && typeof data === "object"){
               this.items = data.Data.map(item => {
                 if(item.Amount.length > 0){
                   item.Amount[0].amount = Tools.dealWithFees(item.Amount[0].amount);
@@ -267,7 +267,7 @@
             }
           }).then((data) => {
             this.count = data.Count;
-            if(data.Candidates){
+            if(data.Candidates && typeof data === "object"){
               this.items = data.Candidates.map(item => {
                 return {
                   Address: item.Address,

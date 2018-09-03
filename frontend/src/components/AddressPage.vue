@@ -275,9 +275,8 @@
             return data.data;
           }
         }).then((data)=>{
-          console.log(data,"balance")
           let Amount = '';
-          if(data !== null && data !=="" && data){
+          if(data !== null && data !=="" && data && typeof data === "object"){
             if(data.Amount.length > 0 ){
               data.Amount[0].amount = Tools.dealWithFees(data.Amount[0].amount);
             }
@@ -333,7 +332,7 @@
             return data.data;
           }
         }).then((data)=>{
-          if(data){
+          if(data && typeof data === "object"){
             this.precommitedBlocksValue = data.PrecommitCount;
             this.returnsValue = '';
             this.firstPercent = `${data.Uptime}%`;
@@ -348,14 +347,14 @@
             return data.data;
           }
         }).then((data)=>{
-          if(data.Count > 30){
+          if(data.Count > 30 && typeof data === "object"){
             this.transactionsTitle = "Last 30 txn from a total of " + data.Count + " transactions"
           }else {
             this.transactionsTitle = "Last 30 txn"
           }
           this.transactionsCount = data.Count;
           this.transactionsValue = data.Count;
-          if(data.Data){
+          if(data.Data && typeof data === "object"){
             this.items = data.Data.map(item=>{
 
               if(item.Amount.length > 0){
@@ -424,7 +423,7 @@
           }
         }).then((data)=>{
           this.totalBlocks = data.Count;
-          if(data.Data){
+          if(data.Data && typeof data === "object"){
             this.itemsPre = data.Data.map(item=>{
               return{
                 'Block Height':item.Height,
@@ -468,13 +467,13 @@
         }).then((data)=>{
           let maxValue = 0;
           let array = [];
-          if(data){
+          if(data && typeof data === "object"){
             data.forEach(item=>{
               if(item.Power == 0){
                 item.Power = ""
               }
               let obj =[];
-              obj[0] = item.Time;
+              obj[0] = Tools.conversionTimeToUTCByValidatorsLine(item.Time);
               obj[1] = item.Power;
               array.push(obj);
               if(item.Power > maxValue){
@@ -507,7 +506,7 @@
             return data.data;
           }
         }).then((data)=>{
-          if(data) {
+          if(data && typeof data === "object") {
             //获取y轴最大值
             let maxValue = 0;
             data.forEach(item => {
@@ -521,7 +520,7 @@
             let xData;
             if (tabTime == "24hours") {
               data.forEach((item) => {
-                item.Time = item.Time.substr(10, 12) + ":00";
+                item.Time = item.Time.substr(10, 12)+ ":00";
               });
               xData = data.map(item => item.Time);
             } else {
@@ -533,7 +532,7 @@
                   weekDate = new Date(data[0].Time),
                   millisecondstime = weekDate.getTime(),
                   //24小时的时间戳（毫秒数）
-                  dayNumberOfMilliseconds = 60 * 60 * 1000 * 24;
+                  dayNumberOfMilliseconds = 60 * 60 * 1000 * 24 ;
                 //补全日期的逻辑
                 for (var lackOfDateNum = 0; lackOfDateNum < complementdateLenth; lackOfDateNum++) {
                   millisecondstime = millisecondstime - dayNumberOfMilliseconds;
@@ -547,7 +546,6 @@
                   monthDate = new Date(data[0].Time),
                   millisecondstime = monthDate.getTime(),
                   dayNumberOfMilliseconds = 60 * 60 * 1000 * 24;
-
                 for (var lackOfDateNum = 0; lackOfDateNum < complementdateLenth; lackOfDateNum++) {
                   millisecondstime = millisecondstime - dayNumberOfMilliseconds;
                   let complementdate = Tools.formatDateYearToDate(millisecondstime);
