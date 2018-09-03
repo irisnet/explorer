@@ -93,7 +93,7 @@ func UptimeChange() {
 		return
 	}
 
-	b.Find(bson.M{"time": bson.M{"$gte": startTime, "$lt": endTime,}}).All(&blocks)
+	b.Find(bson.M{"time": bson.M{"$gte": startTime, "$lt": endTime,}}).Sort("height").All(&blocks)
 
 	if err != nil {
 		log.Println(err.Error())
@@ -101,18 +101,18 @@ func UptimeChange() {
 	}
 
 	//init validatorMap if validatorMap length is 0
-	//if len(validatorMap) == 0 && len(blocks) > 0 {
-	//	for _, validator := range blocks[0].Validators {
-	//		powerChange := types.PowerChange{
-	//			Address: validator.Address,
-	//			Power:   validator.VotingPower,
-	//			Time:    blocks[0].Time,
-	//			Change:  types.Change,
-	//		}
-	//		validatorMap[validator.Address] = powerChange
-	//		p.Insert(powerChange)
-	//	}
-	//}
+	if len(validatorMap) == 0 && len(blocks) > 0 {
+		for _, validator := range blocks[0].Validators {
+			powerChange := types.PowerChange{
+				Address: validator.Address,
+				Power:   validator.VotingPower,
+				Time:    blocks[0].Time,
+				Change:  types.Change,
+			}
+			validatorMap[validator.Address] = powerChange
+			p.Insert(powerChange)
+		}
+	}
 
 	uptimeMap := make(map[string]int)
 	for _, block := range blocks {
