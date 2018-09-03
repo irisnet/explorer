@@ -25,6 +25,9 @@ if(localStorage.getItem('Chain_id')){
 }
 Vue.prototype.faucet_url = faucet_url
 Vue.prototype.fuxi = fuxi;
+String.prototype.trim = function() {
+  return  this.replace(/^\s+|\s+$/g, '');
+}
 
 new Vue({
   router,

@@ -63,14 +63,9 @@
                 <!--v-show="showSubValidators">Candidates</span>-->
 
         </div>
-        <span class="nav_item common_item_style" :class="activeClassName === '/nodePage'?'nav_item_active':''"
-              @click="featureButtonClick('/nodePage')"
-        >Nodes</span>
-        <a href="https://github.com/irisnet/testnets/issues/72" target="_blank">
-          <span class="nav_item common_item_style" @click="featureButtonClick('')" :class="activeClassName === '/'?'nav_item_active':''">
-             Performance
-          </span>
-        </a>
+        <span class="nav_item common_item_style" :class="activeClassName === '/faucet'?'nav_item_active':''"
+              @click="featureButtonClick('/faucet')"
+        >Faucet</span>
       </div>
 
     </div>
@@ -106,7 +101,7 @@
               @click="featureButtonClick('/validators/3/0')">Validators</span>
         <!--<span class="feature_btn_mobile feature_nav"-->
               <!--@click="featureButtonClick('/candidates/4/0')">Candidates</span>-->
-        <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/nodePage')">Nodes</span>
+        <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/faucet')">Faucet</span>
       </div>
       <div class="search_input_mobile">
         <div style="width:95%;position:relative">
@@ -220,6 +215,7 @@
       },
 
       getData(data) {
+        this.searchInputValue = Tools.removeAllSpace(this.searchInputValue);
         let urlBlock = `/api/block/${this.searchInputValue}`;
         let urlTransaction = `/api/tx/${this.searchInputValue}`;
         let urlAddress = `/api/account/${this.searchInputValue}`;
