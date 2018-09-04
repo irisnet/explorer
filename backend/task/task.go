@@ -28,7 +28,7 @@ func Start() {
 }
 
 func init() {
-	var powerChanges []types.PowerChange
+	var powerChanges []types.PowerChangeOrder
 	db := utils.GetDatabase()
 	p := db.C("power_change")
 	pipe := p.Pipe(
@@ -44,7 +44,7 @@ func init() {
 	pipe.All(&powerChanges)
 
 	for _, powerChange := range powerChanges {
-		validatorMap[powerChange.Address] = powerChange
+		validatorMap[powerChange.Address] = types.PowerChange{Address: powerChange.Address, Time: powerChange.Time, Power: powerChange.Power, Change: powerChange.Change}
 	}
 }
 
@@ -93,7 +93,7 @@ func UptimeChange() {
 		return
 	}
 
-	b.Find(bson.M{"time": bson.M{"$gte": startTime, "$lt": endTime,}}).All(&blocks)
+	b.Find(bson.M{"time": bson.M{"$gte": startTime, "$lt": endTime,}}).Sort("height").All(&blocks)
 
 	if err != nil {
 		log.Println(err.Error())
@@ -128,6 +128,7 @@ func UptimeChange() {
 					Address: validator.Address,
 					Power:   validator.VotingPower,
 					Time:    block.Time,
+					Height:  block.Height,
 					Change:  types.Change,
 				}
 				validatorMap[validator.Address] = powerChange
@@ -138,6 +139,7 @@ func UptimeChange() {
 						Address: validator.Address,
 						Power:   validator.VotingPower,
 						Time:    block.Time,
+						Height:  block.Height,
 						Change:  types.Change,
 					}
 					validatorMap[validator.Address] = powerChange
@@ -148,6 +150,7 @@ func UptimeChange() {
 						Address: validator.Address,
 						Power:   validator.VotingPower,
 						Time:    block.Time,
+						Height:  block.Height,
 						Change:  types.Recover,
 					}
 					validatorMap[validator.Address] = powerChange
@@ -158,11 +161,15 @@ func UptimeChange() {
 
 		// validator slash
 		for k, v := range validatorMap {
+			if v.Address == "" {
+				continue
+			}
 			if _, ok := validatorMapNow[k]; !ok {
 				powerChange := types.PowerChange{
 					Address: v.Address,
 					Power:   v.Power,
 					Time:    block.Time,
+					Height:  block.Height,
 					Change:  types.Slash,
 				}
 				validatorMap[k] = powerChange
@@ -178,7 +185,7 @@ func UptimeChange() {
 
 	doneTime := startTime.Format("2006-01-02 15")
 	for k, v := range uptimeMap {
-		uptimeChange := types.UptimeChange{Address: k, Uptime: float64(100 * v) / float64(len(blocks)), Time: doneTime}
+		uptimeChange := types.UptimeChange{Address: k, Uptime: float64(100*v) / float64(len(blocks)), Time: doneTime}
 		u.Insert(&uptimeChange)
 	}
 	log.Println("task end")
