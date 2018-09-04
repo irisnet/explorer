@@ -59,7 +59,6 @@
               }
             },
             min:0,
-            max:0,
             splitNumber:5,
             splitLine: {
               lineStyle: {
@@ -103,7 +102,6 @@
           ]
         };
         if (line) {
-          option.yAxis.max = informationValidatorsLine.maxValue;
           option.series[0].data = informationValidatorsLine.seriesData;
           line.setOption(option)
         }
