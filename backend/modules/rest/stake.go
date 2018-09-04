@@ -109,6 +109,7 @@ func queryCandidate(w http.ResponseWriter, r *http.Request) {
 	err := c.Find(bson.M{"address": address}).Sort("-update_time").One(&candidate)
 	pipe := c.Pipe(
 		[]bson.M{
+			{"$match": bson.M{"revoked": false}},
 			{"$group": bson.M{
 				"_id":   "voting_power",
 				"count": bson.M{"$sum": "$voting_power"},
