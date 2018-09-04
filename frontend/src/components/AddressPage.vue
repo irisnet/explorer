@@ -96,11 +96,11 @@
 
     </div>
     <div class="line_container_wrap" v-if="showProfile">
-      <div class="line_container">
+      <div class="line_container" :class="transactionsDetailWrap">
         <p class="line_history_title">History</p>
         <div class="line_content">
           <div class="line_echarts_content">
-            <div  class="line_left_container" >
+            <div  class="line_left_container" style="overflow-x: auto;">
               <echarts-validators-line :informationValidatorsLine="informationValidatorsLine" ></echarts-validators-line>
             </div>
             <div class="line_tab_content">
@@ -108,8 +108,9 @@
                    :class="item.active ? 'border-none' : 'border-block' " >{{item.title}}</div>
             </div>
           </div>
-          <div class="line_echarts_content content_right">
-            <div class="line_right_container">
+          <div class="line_echarts_content " :class="transactionsDetailWrap === 'personal_computer_transactions_detail_wrap' ?
+           'content_right' : 'model_content_right' ">
+            <div class="line_right_container" style="overflow-x: auto;">
               <echarts-validators-uptime-line :informationUptimeLine="informationUptimeLine" ></echarts-validators-uptime-line>
             </div>
             <div class="line_tab_content">
@@ -134,7 +135,7 @@
           <p class="table_instruction">
             <span>Total blocks:</span>
             <span>{{totalBlocks}}</span>
-            <span>Total Fees:</span>
+            <!--<span>Total Fees:</span>-->
             <span>{{totalFee}}</span>
           </p>
           <span class="view_all_btn" @click="viewAllClick(1)">View All</span>
@@ -276,10 +277,13 @@
           }
         }).then((data)=>{
           let Amount = '';
-          if(data.Amount instanceof Array){
-            if(data.Amount.length > 0){
+          if(data !== null && data !=="" && data && typeof data === "object"){
+            if(data.Amount.length > 0 ){
               data.Amount[0].amount = Tools.dealWithFees(data.Amount[0].amount);
             }
+          }
+
+          if(data.Amount instanceof Array){
             Amount = data.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
           }else if(data.Amount && Object.keys(data.Amount).includes('amount') && Object.keys(data.Amount).includes('denom')){
             Amount = `${data.Amount.amount} ${data.Amount.denom.toUpperCase()}`;
@@ -306,7 +310,7 @@
             return data.data;
           }
         }).then((data)=>{
-          if(data){
+          if(data && typeof data === "object"){
             this.nameValue = data.Description.Moniker;
             this.pubKeyValue = data.PubKey;
             this.websiteValue = data.Description.Website?data.Description.Website:'--';
@@ -329,7 +333,7 @@
             return data.data;
           }
         }).then((data)=>{
-          if(data){
+          if(data && typeof data === "object"){
             this.precommitedBlocksValue = data.PrecommitCount;
             this.returnsValue = '';
             this.firstPercent = `${data.Uptime}%`;
@@ -344,38 +348,37 @@
             return data.data;
           }
         }).then((data)=>{
-          if(data.Count > 30){
+          if(data.Count > 30 && typeof data === "object"){
             this.transactionsTitle = "Last 30 txn from a total of " + data.Count + " transactions"
           }else {
             this.transactionsTitle = "Last 30 txn"
           }
           this.transactionsCount = data.Count;
           this.transactionsValue = data.Count;
-          if(data.Data){
+          if(data.Data && typeof data === "object"){
             this.items = data.Data.map(item=>{
 
               if(item.Amount.length > 0){
                 item.Amount[0].amount = Tools.dealWithFees(item.Amount[0].amount);
               }
-
               let [Amount,Fees] = ['',''];
               if(item.Amount instanceof Array){
                 Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
                 if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
-                  Amount = item.Amount.map(listItem => `${listItem.amount}...shares`).join(',');
+                  Amount = item.Amount.map(listItem => `${listItem.amount} shares`).join(',');
                 }
               }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
                 Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
                 if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
-                  Amount = `${item.Amount.amount}...shares`;
+                  Amount = `${item.Amount.amount} shares`;
                 }
               }else if(item.Amount === null){
                 Amount = '';
               }
               if(item.ActualFee.amount && item.ActualFee.denom){
-                Fees = item.ActualFee.amount = Tools.dealWithFees(item.ActualFee.amount) + ' ' +item.ActualFee.denom.toUpperCase();
-              }
+                Fees = item.ActualFee.amount = Tools.dealWithFees(item.ActualFee.amount) + ' ' + item.ActualFee.denom.toUpperCase();
 
+              }
               let type = '';
               if(item.Type === 'Transfer'){
                 if(this.$route.params.param === item.From){
@@ -404,13 +407,12 @@
               From:'',
               To:'',
               Type:'',
-              Amount:'',
+              millisecondstime:'',
               Fees:'',
               Timestamp:'',
             }];
             this.showNoData1 = true;
           }
-
 
         })
       },
@@ -422,7 +424,7 @@
           }
         }).then((data)=>{
           this.totalBlocks = data.Count;
-          if(data.Data){
+          if(data.Data && typeof data === "object"){
             this.itemsPre = data.Data.map(item=>{
               return{
                 'Block Height':item.Height,
@@ -466,23 +468,22 @@
         }).then((data)=>{
           let maxValue = 0;
           let array = [];
-          if(data){
+          if(data && typeof data === "object"){
             data.forEach(item=>{
-
               if(item.Power == 0){
                 item.Power = ""
               }
               let obj =[];
-              obj[0] = item.Time;
+              obj[0] = Tools.conversionTimeToUTCByValidatorsLine(item.Time);
               obj[1] = item.Power;
               array.push(obj);
               if(item.Power > maxValue){
                 maxValue = item.Power;
               }
             });
-            let seriesData = array;
-            this.informationValidatorsLine = {maxValue,seriesData};
           }
+          let seriesData = array;
+          this.informationValidatorsLine = {maxValue,seriesData};
         })
       },
       getValidatorUptimeHistory(tabTime,index){
@@ -506,7 +507,7 @@
             return data.data;
           }
         }).then((data)=>{
-          if(data) {
+          if(data && typeof data === "object") {
             //获取y轴最大值
             let maxValue = 0;
             data.forEach(item => {
@@ -520,7 +521,7 @@
             let xData;
             if (tabTime == "24hours") {
               data.forEach((item) => {
-                item.Time = item.Time.substr(10, 12) + ":00";
+                item.Time = item.Time.substr(10, 12)+ ":00";
               });
               xData = data.map(item => item.Time);
             } else {
@@ -532,7 +533,7 @@
                   weekDate = new Date(data[0].Time),
                   millisecondstime = weekDate.getTime(),
                   //24小时的时间戳（毫秒数）
-                  dayNumberOfMilliseconds = 60 * 60 * 1000 * 24;
+                  dayNumberOfMilliseconds = 60 * 60 * 1000 * 24 ;
                 //补全日期的逻辑
                 for (var lackOfDateNum = 0; lackOfDateNum < complementdateLenth; lackOfDateNum++) {
                   millisecondstime = millisecondstime - dayNumberOfMilliseconds;
@@ -546,7 +547,6 @@
                   monthDate = new Date(data[0].Time),
                   millisecondstime = monthDate.getTime(),
                   dayNumberOfMilliseconds = 60 * 60 * 1000 * 24;
-
                 for (var lackOfDateNum = 0; lackOfDateNum < complementdateLenth; lackOfDateNum++) {
                   millisecondstime = millisecondstime - dayNumberOfMilliseconds;
                   let complementdate = Tools.formatDateYearToDate(millisecondstime);
@@ -836,7 +836,7 @@
     width: 100%;
     .line_container{
       width: 80%;
-      min-width: 4rem;
+      min-width: 3.2rem;
       max-width: 12.8rem;
       margin: 0 auto;
       .line_history_title{
@@ -893,5 +893,34 @@
   }
   .border-block{
     border-top: 0.01rem solid #e4e4e4 !important;
+  }
+  .mobile_transactions_detail_wrap{
+    width: 100%!important;
+    .line_content {
+      @include flex;
+      flex-direction: column;
+      .line_echarts_content {
+        margin-top: 0.2rem;
+        padding: 0 0.1rem;
+        flex: 1;
+        border: 0.01rem solid #e4e4e4;
+
+        .line_left_container {
+          width: 98%;
+          max-width: 98%!important;
+          height: 2.76rem;
+        }
+
+        .line_right_container {
+          width: 98%;
+          max-width: 98%;
+          height: 2.76rem;
+        }
+
+      }
+    }
+  }
+  .model_content_right{
+    margin-left: 0 ;
   }
 </style>

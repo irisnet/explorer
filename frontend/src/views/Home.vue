@@ -132,18 +132,19 @@
             return data.data;
           }
         }).then((data) => {
-          let num = data.TxCount;
-          if(data.TxCount > 1000000000){
-            num = `${(data.TxCount/1000000000).toFixed(2)} B`;
-          }else if(data.TxCount > 1000000){
-            num = `${(data.TxCount/1000000).toFixed(2)} M`;
-          }else if(data.TxCount > 1000){
-            num = `${(data.TxCount/1000).toFixed(2)} K`;
+          if(data && typeof data === "object") {
+            let num = data.TxCount;
+            if (data.TxCount > 1000000000) {
+              num = `${(data.TxCount / 1000000000).toFixed(2)} B`;
+            } else if (data.TxCount > 1000000) {
+              num = `${(data.TxCount / 1000000).toFixed(2)} M`;
+            } else if (data.TxCount > 1000) {
+              num = `${(data.TxCount / 1000).toFixed(2)} K`;
+            }
+            this.marketCapValue = '--';
+            this.priceValue = '--';
+            this.transactionValue = `${num}(${data.Tps.toFixed(2)} TPS)`;
           }
-          this.marketCapValue = '--';
-          this.priceValue = '--';
-          this.transactionValue = `${num}(${data.Tps.toFixed(2)} TPS)`;
-
         })
       },
       getValidatorsList() {
@@ -153,39 +154,40 @@
             return data.data;
           }
         }).then((data) => {
-          let colors = ['#3498db', '#47a2df', '#59ade3', '#6cb7e7', '#7fc2eb', '#91ccef', '#a4d7f3', '#b7e1f7', '#c9ecfb', '#dcf6ff', '#efeff1',];
-          //跟series的name匹配
-          let [seriesData, legendData] = [[], []];
-          if (data.Candidates instanceof Array) {
-            //计算前十的voting power总数；
-            let totalCount = 0;
-            data.Candidates.forEach(item=>totalCount += item.VotingPower);
-            //其他部分的
-            let others = data.PowerAll - totalCount;
-            for (let i = 0; i < data.Candidates.length; i++) {
-              seriesData.push({
-                value: data.Candidates[i].VotingPower,
-                name: data.Candidates[i].Description.Moniker ? data.Candidates[i].Description.Moniker : (data.Candidates[i].Address ? data.Candidates[i].Address : ''),
-                itemStyle: {color: colors[i]},
-                upTime:`${data.Candidates[i].Uptime}%`,
-                address:data.Candidates[i].Address,
-                totalCount,
-              });
-              legendData.push(data.Candidates[i].Description.Moniker ? data.Candidates[i].Description.Moniker : (data.Candidates[i].Address ? data.Candidates[i].Address : ''))
-            }
+          if(data && typeof data === "object") {
+            let colors = ['#3498db', '#47a2df', '#59ade3', '#6cb7e7', '#7fc2eb', '#91ccef', '#a4d7f3', '#b7e1f7', '#c9ecfb', '#dcf6ff', '#efeff1',];
+            //跟series的name匹配
+            let [seriesData, legendData] = [[], []];
+            if (data.Candidates instanceof Array) {
+              //计算前十的voting power总数；
+              let totalCount = 0;
+              data.Candidates.forEach(item => totalCount += item.VotingPower);
+              //其他部分的
+              let others = data.PowerAll - totalCount;
+              for (let i = 0; i < data.Candidates.length; i++) {
+                seriesData.push({
+                  value: data.Candidates[i].VotingPower,
+                  name: data.Candidates[i].Description.Moniker ? data.Candidates[i].Description.Moniker : (data.Candidates[i].Address ? data.Candidates[i].Address : ''),
+                  itemStyle: {color: colors[i]},
+                  upTime: `${data.Candidates[i].Uptime}%`,
+                  address: data.Candidates[i].Address,
+                  totalCount,
+                });
+                legendData.push(data.Candidates[i].Description.Moniker ? data.Candidates[i].Description.Moniker : (data.Candidates[i].Address ? data.Candidates[i].Address : ''))
+              }
 
-            if(data.Candidates.length > 10){
-              legendData.push('others');
-              seriesData.push({
-                value:others,
-                name:'others',
-                itemStyle:{color:colors[10]},
-              });
-            }
+              if (data.Candidates.length > 10) {
+                legendData.push('others');
+                seriesData.push({
+                  value: others,
+                  name: 'others',
+                  itemStyle: {color: colors[10]},
+                });
+              }
 
+            }
+            this.information = {legendData, seriesData}
           }
-          this.information = {legendData, seriesData}
-
         })
       },
       getTransactionHistory() {
@@ -196,16 +198,18 @@
           }
         }).then((data) => {
           //找出最大的数据
-          let maxValue = 0;
-          if(data){
-            data.forEach(item=>{
-              if(item.Count > maxValue){
-                maxValue = item.Count;
-              }
-            });
-            let xData = data.map(item=>`${String(item.Time).substr(5,2)}/${String(item.Time).substr(8,2)}/${String(item.Time).substr(0,4)}`);
-            let seriesData = data.map(item=>item.Count);
-            this.informationLine = {maxValue,xData,seriesData};
+          if(data && typeof data === "object") {
+            let maxValue = 0;
+            if (data) {
+              data.forEach(item => {
+                if (item.Count > maxValue) {
+                  maxValue = item.Count;
+                }
+              });
+              let xData = data.map(item => `${String(item.Time).substr(5, 2)}/${String(item.Time).substr(8, 2)}/${String(item.Time).substr(0, 4)}`);
+              let seriesData = data.map(item => item.Count);
+              this.informationLine = {maxValue, xData, seriesData};
+            }
           }
         })
 
@@ -217,7 +221,7 @@
             return data.data;
           }
         }).then((data) => {
-          if(data.Data){
+          if(data.Data && typeof data === "object"){
             let denominator = 0;
             data.Data[0].Validators.forEach(item=>denominator += item.VotingPower);
             let numerator = 0;
@@ -253,7 +257,7 @@
             return data.data;
           }
         }).then((data) => {
-          if(data.Data){
+          if(data.Data && typeof data === "object"){
             this.transactionInformation = data.Data.map(item => {
               if(item.Amount.length > 0){
                 item.Amount[0].amount = Tools.dealWithFees(item.Amount[0].amount);
@@ -262,12 +266,12 @@
               if (item.Amount instanceof Array) {
                 Amount = item.Amount.map(listItem => `${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
                 if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
-                  Amount = item.Amount.map(listItem => `${listItem.amount}...shares`).join(',');
+                  Amount = item.Amount.map(listItem => `${listItem.amount} shares`).join(',');
                 }
               } else if (item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')) {
                 Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
                 if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
-                  Amount = `${item.Amount.amount}...shares`;
+                  Amount = `${item.Amount.amount} shares`;
                 }
               } else if (item.Amount === null) {
                 Amount = '';

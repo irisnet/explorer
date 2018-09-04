@@ -158,7 +158,7 @@
             }
           }).then((data) => {
             this.count = data.Count;
-            if(data.Data){
+            if(data.Data && typeof data === "object"){
               this.items = data.Data.map(item => {
                 let txn = item.NumTxs;
                 let precommit = item.Block.LastCommit.Precommits.length;
@@ -211,7 +211,7 @@
             }
           }).then((data) => {
             this.count = data.Count;
-            if(data.Data){
+            if(data.Data && typeof data === "object"){
               this.items = data.Data.map(item => {
                 if(item.Amount.length > 0){
                   item.Amount[0].amount = Tools.dealWithFees(item.Amount[0].amount);
@@ -220,12 +220,12 @@
                 if(item.Amount instanceof Array){
                   Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
                   if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
-                    Amount = item.Amount.map(listItem => `${listItem.amount}...shares`).join(',');
+                    Amount = item.Amount.map(listItem => `${listItem.amount} shares`).join(',');
                   }
                 }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
                   Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
                   if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
-                    Amount = `${item.Amount.amount}...shares`;
+                    Amount = `${item.Amount.amount} shares`;
                   }
                 }else if(item.Amount === null){
                   Amount = '';
@@ -240,7 +240,7 @@
                   To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
                   Type:item.Type === 'coin'?'transfer':item.Type,
                   Amount,
-                  Fees,
+                  // Fees,
                   Timestamp: Tools.conversionTimeToUTC(item.Time),
                 };
               })
@@ -267,7 +267,7 @@
             }
           }).then((data) => {
             this.count = data.Count;
-            if(data.Candidates){
+            if(data.Candidates && typeof data === "object"){
               this.items = data.Candidates.map(item => {
                 return {
                   Address: item.Address,
@@ -311,6 +311,9 @@
       height:0.3rem;
       li{
         height:0.3rem !important;
+        a{
+          box-shadow: none;
+        }
       }
     }
     .total_num{

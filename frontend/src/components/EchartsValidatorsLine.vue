@@ -26,7 +26,7 @@
             trigger: 'item',
             formatter(params){
               params.value[0] = Tools.formatDateYearAndMinutesAndSeconds(params.value[0]);
-              let res =  `<span style="display:block;">${params.value[0]}</span>`;
+              let res =  `<span style="display:block;">${params.value[0].substr(6,10)} +UTC</span>`;
               res += `<span style="display:block;">Voting Power:${params.value[1]}</span>`;
               return res;
             }
@@ -36,7 +36,6 @@
               show:true,
               formatter:(value)=>{
                 value = Tools.formatDateYearToDate(value).substr(5,6);
-                console.log(value);
                 return `${this.month[this.monthNum.findIndex(item=>value.substr(0,2) === item)]}${value.substr(3,2)}`;
               }
             },
@@ -60,7 +59,6 @@
               }
             },
             min:0,
-            max:0,
             splitNumber:5,
             splitLine: {
               lineStyle: {
@@ -104,7 +102,6 @@
           ]
         };
         if (line) {
-          option.yAxis.max = informationValidatorsLine.maxValue;
           option.series[0].data = informationValidatorsLine.seriesData;
           line.setOption(option)
         }

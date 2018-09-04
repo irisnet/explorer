@@ -129,7 +129,6 @@
         this.showHeader = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
       },
       searchInputValue(searchInputValue){
-        console.log(searchInputValue)
         if(searchInputValue){
           this.showClear = true;
         }else{
@@ -216,6 +215,7 @@
       },
 
       getData(data) {
+        this.searchInputValue = Tools.removeAllSpace(this.searchInputValue);
         let urlBlock = `/api/block/${this.searchInputValue}`;
         let urlTransaction = `/api/tx/${this.searchInputValue}`;
         let urlAddress = `/api/account/${this.searchInputValue}`;
@@ -224,7 +224,7 @@
             return data.data;
           }
         }).then((data)=>{
-          if(data){
+          if(data &&  typeof data === "object"){
             this.$router.push(`/blocks_detail/${this.searchInputValue}`)
           }
         });
@@ -233,7 +233,7 @@
             return data.data;
           }
         }).then((data)=>{
-          if(data){
+          if(data &&  typeof data === "object"){
             this.$router.push(`/tx?txHash=${this.searchInputValue}`)
           }
         });
@@ -242,7 +242,7 @@
             return data.data;
           }
         }).then((data)=>{
-          if(data){
+          if(data && typeof data === "object"){
             this.$router.push(`/address/1/${this.searchInputValue}`)
           }
         });
@@ -261,9 +261,11 @@
           this.activeClassName = '/block';
         } else if (path.includes('/home')) {
           this.activeClassName = '/home';
-        } else if (path.includes('/faucet')) {
-          this.activeClassName = '/faucet';
-        } else{
+        } else if(path.includes('/nodePage')){
+          this.activeClassName = '/nodePage';
+        }else if(path.includes('')){
+          this.activeClassName = '';
+        }else {
           this.activeClassName = '';
         }
       },
@@ -407,6 +409,10 @@
           &:hover{
             color: #ffffff;
             background: #005a98;
+          }
+          a{
+            text-decoration:none;
+            color: #c9eafd;
           }
         }
         .nav_item {
