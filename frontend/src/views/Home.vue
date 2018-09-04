@@ -133,6 +133,7 @@
           }
         }).then((data) => {
           let num = data.TxCount;
+          if(data && typeof data === "object") {
           if(data.TxCount > 1000000000){
             num = `${(data.TxCount/1000000000).toFixed(2)} B`;
           }else if(data.TxCount > 1000000){
@@ -144,6 +145,7 @@
           this.priceValue = '--';
           this.transactionValue = `${num}(${data.Tps.toFixed(2)} TPS)`;
 
+        }
         })
       },
       getValidatorsList() {
@@ -262,12 +264,12 @@
               if (item.Amount instanceof Array) {
                 Amount = item.Amount.map(listItem => `${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
                 if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
-                  Amount = item.Amount.map(listItem => `${listItem.amount}...shares`).join(',');
+                  Amount = item.Amount.map(listItem => `${listItem.amount}shares`).join(',');
                 }
               } else if (item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')) {
                 Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
                 if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
-                  Amount = `${item.Amount.amount}...shares`;
+                  Amount = `${item.Amount.amount}shares`;
                 }
               } else if (item.Amount === null) {
                 Amount = '';
