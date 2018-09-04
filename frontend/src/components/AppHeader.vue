@@ -224,7 +224,7 @@
             return data.data;
           }
         }).then((data)=>{
-          if(data){
+          if(data && typeof data === "object"){
             this.$router.push(`/blocks_detail/${this.searchInputValue}`)
           }
         });
@@ -233,7 +233,7 @@
             return data.data;
           }
         }).then((data)=>{
-          if(data){
+          if(data && typeof data === "object"){
             this.$router.push(`/tx?txHash=${this.searchInputValue}`)
           }
         });
@@ -242,7 +242,7 @@
             return data.data;
           }
         }).then((data)=>{
-          if(data){
+          if(data && typeof data === "object"){
             this.$router.push(`/address/1/${this.searchInputValue}`)
           }
         });

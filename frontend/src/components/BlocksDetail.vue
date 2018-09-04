@@ -226,7 +226,7 @@
             return data.data;
           }
         }).then((data) => {
-          if (data) {
+          if (data && typeof data === "object") {
             this.maxBlock = data.Data[0].Height;
             if (Number(this.$route.params.height) >= this.maxBlock) {
               this.activeNext = false;

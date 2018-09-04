@@ -60,7 +60,6 @@
               }
             },
             min:0,
-            max:0,
             splitNumber:5,
             splitLine: {
               lineStyle: {
@@ -104,7 +103,6 @@
         };
         if (line) {
           option.xAxis.data = informationUptimeLine.xData;
-          option.yAxis.max = informationUptimeLine.maxValue;
           option.series[0].data = informationUptimeLine.seriesData;
           line.setOption(option)
         }

@@ -52,7 +52,7 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Gas Price:</span>
-          <span class="information_value">{{gasPrice}}</span>
+          <span class="information_value">{{gasPrice}} <span v-if="gasPrice">IRIS</span></span>
         </div>
       </div>
     </div>
@@ -101,7 +101,7 @@
           return data.data;
         }
       }).then((data)=>{
-        if(data){
+        if(data && typeof data === "object"){
           this.hashValue = data.TxHash;
           this.blockValue = data.Height;
           this.typeValue = data.Type === 'coin'?'transfer':data.Type;
