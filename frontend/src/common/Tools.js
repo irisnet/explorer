@@ -40,8 +40,8 @@ export default class Tools{
     if(val){
       return (parseInt(String(num*100000000))/100000000).toFixed(8);
     }else{
-      if(num % 1 ===0){
-        return parseInt (num * 1)
+      if(/^\+?[1-9][0-9]*$/.test(num)){
+        return num + " "
       }else {
         return (parseInt(String(num*10000))/10000).toFixed(2) + "...";
       }
