@@ -69,6 +69,9 @@ export default class Tools{
   static formatNumberToFixedNumber(num){
     return (parseInt(String(num*10000))/10000).toFixed(4);
   }
+  static formatFeeToFixedNumber(num){
+    return (Tools.scientificToNumber(parseInt(String(Tools.formatNumber(num)*10000))/10000)).toFixed(4) + "...";
+  }
   /**
    * 格式化年月日
    * param string;
