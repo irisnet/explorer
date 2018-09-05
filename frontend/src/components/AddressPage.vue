@@ -173,6 +173,8 @@
         this.getProfileInformation();
         this.getPrecommitBlocksList();
         this.getCurrentTenureInformation();
+        this.getValidatorHistory('2week');
+        this.getValidatorUptimeHistory('24hours');
       },
       activeBtn(activeBtn){
         //0是Transactions List 1是Precommit Blocks List

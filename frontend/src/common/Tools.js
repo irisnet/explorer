@@ -40,7 +40,11 @@ export default class Tools{
     if(val){
       return (parseInt(String(num*100000000))/100000000).toFixed(8);
     }else{
-      return (parseInt(String(num*10000))/10000).toFixed(4);
+      if(/^\+?[1-9][0-9]*$/.test(num)){
+        return num + " "
+      }else {
+        return (parseInt(String(num*10000))/10000).toFixed(2) + "...";
+      }
     }
 
   }

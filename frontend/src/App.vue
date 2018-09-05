@@ -36,7 +36,7 @@
               <span class="footer_link_privacy" @click="footerLinkClick('/privacy_policy')">Privacy Policy</span>
             </div>
             <p class="footer_copyright_wrap">
-              ©️ IRIS Explorer 2018 all rights reserved
+              ©️ IRISplorer 2018 all rights reserved
             </p>
             <!--<p class="footer_copyright_wrap">
               {{`v${version}(${env}_${build})`}}
