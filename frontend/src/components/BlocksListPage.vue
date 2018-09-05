@@ -231,7 +231,7 @@
                   Amount = '';
                 }
                 if(item.ActualFee.amount && item.ActualFee.denom){
-                  Fees = item.ActualFee.amount = Tools.dealWithFees(item.ActualFee.amount) + item.ActualFee.denom.toUpperCase();
+                  Fees = item.ActualFee.amount = Tools.formatFeeToFixedNumber(item.ActualFee.amount) + item.ActualFee.denom.toUpperCase();
                 }
                 return {
                   TxHash: item.TxHash,
@@ -240,7 +240,7 @@
                   To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
                   Type:item.Type === 'coin'?'transfer':item.Type,
                   Amount,
-                  // Fees,
+                  Fees,
                   Timestamp: Tools.conversionTimeToUTC(item.Time),
                 };
               })
