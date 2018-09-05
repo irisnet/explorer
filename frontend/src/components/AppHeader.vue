@@ -7,7 +7,7 @@
           <img src="../assets/logo.png" alt="失去网络了..."/>
         </div>
         <div class="navSearch">
-          <span class="chain_id">{{fuxi}}</span>
+          <span class="chain_id">{{fuxi.toUpperCase()}}</span>
           <input type="text" class="search_input"
                  placeholder="Search by Address / Txhash / Block"
                  v-model="searchInputValue"
