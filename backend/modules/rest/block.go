@@ -1,13 +1,14 @@
 package rest
 
 import (
-	"net/http"
-	"github.com/gorilla/mux"
-	"github.com/irisnet/explorer/server/utils"
-	"gopkg.in/mgo.v2/bson"
 	"encoding/json"
-	"github.com/irisnet/irishub-sync/store/document"
+	"net/http"
 	"strconv"
+
+	"github.com/gorilla/mux"
+	"github.com/irisnet/explorer/backend/utils"
+	"github.com/irisnet/irishub-sync/store/document"
+	"gopkg.in/mgo.v2/bson"
 )
 
 type BlockRsp struct {
@@ -73,8 +74,7 @@ func QueryBlocksPrecommits(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var data []document.Block
-	w.Write(utils.QueryList("block", &data, bson.M{"block.last_commit.precommits":
-	bson.M{"$elemMatch": bson.M{"validator_address": candidate.PubKeyAddr}}}, "-height", r))
+	w.Write(utils.QueryList("block", &data, bson.M{"block.last_commit.precommits": bson.M{"$elemMatch": bson.M{"validator_address": candidate.PubKeyAddr}}}, "-height", r))
 }
 
 // mux.Router registrars

@@ -6,7 +6,7 @@
       </div>
       <div :class="privacyPolicyVar">
         <h4 style="margin-top:0.4rem;">PLEASE READ THE PRIVACY POLICY CAREFULLY. (July 2018)</h4>
-        <p>This Privacy Policy is designed to assist you with understanding how bianjie.ai (referred to as the "Company","bianjie.ai", "we", "us" or "our") collect, use and disclose the information you provide us when accessing or using the website, irisplorer.io.</p>
+        <p>This Privacy Policy is designed to assist you with understanding how bianjie.ai (referred to as the "Company","bianjie.ai", "we", "us" or "our") collect, use and disclose the information you provide us when accessing or using the website,<a href="">irisplorer.io</a>.</p>
         <h4>WHAT INFORMATION DO WE COLLECT?</h4>
         <p>You may provide us your personal information that you voluntarily disclose that is collected on an individual basis; and information collected automatically when you use our Website or the services available on our Website. Each time you use any Site, or any Services, the current version of this Privacy Policy will apply. Personal Information may include (but is not limited to):</p>
         <ul>

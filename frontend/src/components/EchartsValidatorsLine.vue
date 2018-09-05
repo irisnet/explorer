@@ -1,7 +1,7 @@
 <template>
   <div :class="echartsComponentWrapLine">
     <div class="echarts_title_wrap_line">
-      14 day Transaction History
+      Voting Power
     </div>
     <div id="echarts_line">
 
@@ -13,40 +13,44 @@
 
 <script>
   import echarts from 'echarts';
+  import Tools from "../common/Tools";
 
   let line = null;
   export default {
-    name: 'echarts-line',
+    name: 'echarts-validators-line',
     watch: {
-      informationLine(informationLine) {
-        //根据设备大小显示饼图的大小
+      informationValidatorsLine(informationValidatorsLine) {
         let radius = this.deviceType === 1 ? '85%' : '65%';
         let option = {
           tooltip : {
             trigger: 'item',
             formatter(params){
-              let res =  `<span style="display:block;">${params.name}</span>`;
-              res += `<span style="display:block;">Transactions: ${params.value}</span>`;
+              params.value[0] = Tools.formatDateYearAndMinutesAndSeconds(params.value[0]);
+              let res =  `<span style="display:block;">${params.value[0].substr(5,11)} +UTC</span>`;
+              res += `<span style="display:block;">Voting Power:${params.value[1]}</span>`;
               return res;
             }
           },
           xAxis: {
-            type: 'category',
-            boundaryGap: false,
-            data: [],
+            axisLabel:{
+              show:true,
+              formatter:(value)=>{
+                value = Tools.formatDateYearToDate(value).substr(5,6);
+                console.log(value);
+                return `${this.month[this.monthNum.findIndex(item=>value.substr(0,2) === item)]}${value.substr(3,2)}`;
+              }
+            },
+            type: 'time',
             axisLine: {
               lineStyle: {
                 color: '#a2a2ae'
               }
             },
-            axisLabel:{
-              interval:0,
-              rotate:45,
-              margin:12,
-              formatter:(value)=>{
-                return `${this.month[this.monthNum.findIndex(item=>value.substr(0,2) === item)]}${value.substr(3,2)}`;
-              }
-            }
+
+            splitLine:{
+              show:false
+            },
+            // splitNumber:0,
           },
           yAxis: {
             type: 'value',
@@ -75,6 +79,7 @@
             {
               data: [],
               type: 'line',
+              step:"end",
               areaStyle: {
                 normal: {
                   color: new echarts.graphic.LinearGradient(//设置渐变颜色
@@ -87,7 +92,7 @@
                   )
                 }
               },
-              smooth:true,//曲线平滑
+              smooth:false,//曲线平滑
               itemStyle:{
                 normal:{
                   color:'#3598db',
@@ -98,8 +103,7 @@
           ]
         };
         if (line) {
-          option.xAxis.data = informationLine.xData;
-          option.series[0].data = informationLine.seriesData;
+          option.series[0].data = informationValidatorsLine.seriesData;
           line.setOption(option)
         }
       }
@@ -113,7 +117,7 @@
 
       }
     },
-    props: ['informationLine'],
+    props: ['informationValidatorsLine'],
     beforeMount() {
 
     },
@@ -132,18 +136,20 @@
     }
   }
 </script>
-<style lang="scss">
+<style scoped lang="scss">
   @import '../style/mixin.scss';
 
   .echarts_component_wrap_line_personal_computer, .echarts_component_wrap_line_mobile {
     width: 100%;
     height: 100%;
-    padding:0.12rem 0.2rem 0 0.2rem;
-
+    padding: 0!important;
+    margin: 0!important;
     .echarts_title_wrap_line {
       height: 15%;
       font-size:0.18rem;
       font-weight:600;
+      line-height: 0.53rem;
+      padding-left: 0.2rem;
     }
     #echarts_line {
       width: 100%;

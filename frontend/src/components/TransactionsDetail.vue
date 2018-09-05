@@ -42,6 +42,18 @@
           <span class="information_props">Fees:</span>
           <span class="information_value">{{feeValue}}</span>
         </div>
+        <div class="information_props_wrap">
+          <span class="information_props">Gas Limit:</span>
+          <span class="information_value">{{gasLimit}}</span>
+        </div>
+        <div class="information_props_wrap">
+          <span class="information_props">Gas Used by Txn:</span>
+          <span class="information_value">{{gasUsedByTxn}}</span>
+        </div>
+        <div class="information_props_wrap">
+          <span class="information_props">Gas Price:</span>
+          <span class="information_value">{{gasPrice}} <span v-if="gasPrice">IRIS</span></span>
+        </div>
       </div>
     </div>
 
@@ -65,6 +77,9 @@
         timestampValue: '',
         amountValue: '',
         feeValue: '',
+        gasLimit:'',
+        gasUsedByTxn:'',
+        gasPrice:'',
 
 
       }
@@ -86,23 +101,25 @@
           return data.data;
         }
       }).then((data)=>{
-        if(data){
+        if(data && typeof data === "object"){
           this.hashValue = data.TxHash;
           this.blockValue = data.Height;
           this.typeValue = data.Type === 'coin'?'transfer':data.Type;
           this.fromValue = data.From;
           this.toValue = data.To;
           this.timestampValue = Tools.conversionTimeToUTC(data.Time);
+          this.gasPrice = Tools.scientificToNumber(Tools.formatNumber(data.GasPrice));
+          this.gasLimit = data.Fee.Gas;
+          this.gasUsedByTxn = data.GasUsed;
           this.amountValue = data.Amount.map(item=>{
+            item.amount = Tools.scientificToNumber(Tools.formatNumber(item.amount));
             if(data.Type === 'CompleteUnbonding' || data.Type === 'BeginUnbonding'){
               return `${item.amount}shares`;
             }else{
               return `${item.amount} ${item.denom.toUpperCase()}`;
             }
           }).join(',');
-          this.feeValue = data.Fee.Amount.map(item=>{
-            return `${item.amount} ${item.amount === 0?'IRIS':item.denom.toUpperCase()}`;
-          }).join(',');
+          this.feeValue = `${Tools.scientificToNumber(Tools.formatNumber(data.ActualFee.amount))} ${data.ActualFee.denom.toUpperCase()}`;
         }
 
       })

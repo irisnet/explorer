@@ -4,7 +4,7 @@
       <p :class="transactionsDetailWrap" style="margin-bottom:0;">
         <span class="transactions_detail_title">Address</span>
         <span class="transactions_detail_wrap_hash_var">
-          {{hashValue}} <i v-if="showProfile">v</i></span>
+          {{address}} <i v-if="showProfile">v</i></span>
       </p>
     </div>
 
@@ -40,7 +40,7 @@
           <span class="information_props">Website:</span>
           <a class="information_value" :href="websiteValue" target="_blank"
              v-show="websiteValue !== '--'"
-             style="color:#3598db;max-width:0.5rem;">{{websiteValue}}</a>
+             style="color:#3598db;">{{websiteValue}}</a>
           <i v-show="websiteValue === '--'" style="font-style:normal;color:#a2a2ae">--</i>
         </div>
         <!--<div class="information_props_wrap" style="border-bottom:0.01rem solid #eee">
@@ -95,6 +95,32 @@
       </div>
 
     </div>
+    <div class="line_container_wrap" v-if="showProfile">
+      <div class="line_container" :class="transactionsDetailWrap">
+        <p class="line_history_title">History</p>
+        <div class="line_content">
+          <div class="line_echarts_content">
+            <div  class="line_left_container" style="overflow-x: auto;">
+              <echarts-validators-line :informationValidatorsLine="informationValidatorsLine" ></echarts-validators-line>
+            </div>
+            <div class="line_tab_content">
+              <div v-for="(item,index) in tabVotingPower" @click="getValidatorHistory(item.title,index)"
+                   :class="item.active ? 'border-none' : 'border-block' " >{{item.title}}</div>
+            </div>
+          </div>
+          <div class="line_echarts_content " :class="transactionsDetailWrap === 'personal_computer_transactions_detail_wrap' ?
+           'content_right' : 'model_content_right' ">
+            <div class="line_right_container" style="overflow-x: auto;">
+              <echarts-validators-uptime-line :informationUptimeLine="informationUptimeLine" ></echarts-validators-uptime-line>
+            </div>
+            <div class="line_tab_content">
+              <div v-for="(item,index) in tabUptime" @click="getValidatorUptimeHistory(item.title,index)"
+                   :class="item.active ? 'border-none' : 'border-block' ">{{item.title}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div :class="transactionsDetailWrap" class="transaction_precommit_table">
       <div class="tab_wrap">
         <span @click="activeBtn = 0" :class="activeBtn === 0?'transactions_btn_active':''">Transactions</span>
@@ -102,14 +128,15 @@
       </div>
       <div class="table_wrap">
         <div class="transactions_view_all" v-show="activeBtn === 0">
+          <span>{{transactionsTitle}}</span>
           <span @click="viewAllClick(2)">View All</span>
         </div>
         <div class="precommit_view_all" v-show="activeBtn === 1">
           <p class="table_instruction">
             <span>Total blocks:</span>
             <span>{{totalBlocks}}</span>
-            <span>Total Fees:</span>
-            <span>{{totalFee}}</span>
+            <!--<span>Total Fees:</span>-->
+            <!--<span>{{totalFee}}</span>-->
           </p>
           <span class="view_all_btn" @click="viewAllClick(1)">View All</span>
         </div>
@@ -133,6 +160,9 @@
   import Tools from '../common/Tools';
   import axios from 'axios';
   import BlocksListTable from './table/BlocksListTable';
+  import EchartsLine from "./EchartsLine";
+  import EchartsValidatorsLine from "./EchartsValidatorsLine";
+  import EchartsValidatorsUptimeLine from "./EchartsValidatorsUpTimeLine";
 
   export default {
     watch:{
@@ -143,6 +173,8 @@
         this.getProfileInformation();
         this.getPrecommitBlocksList();
         this.getCurrentTenureInformation();
+        this.getValidatorHistory('2week');
+        this.getValidatorUptimeHistory('24hours');
       },
       activeBtn(activeBtn){
         //0是Transactions List 1是Precommit Blocks List
@@ -158,7 +190,7 @@
         activeBtn:0,
         firstPercent:'',
         secondPercent:'%',
-        hashValue:this.$route.params.param,
+        address:this.$route.params.param,
         balanceValue:'',
         depositsValue:'',
         transactionsValue:'',
@@ -182,11 +214,43 @@
         showNoData2:false,
         transactionsCount:0,
         showProfile:true,
-
-
+        informationValidatorsLine: {},//折线图端所有信息
+        informationUptimeLine:{},
+        transactionsTitle: "",
+        tabVotingPower:[
+          {
+            "title":"2week",
+            "active":true
+          },
+          {
+            "title":"1month",
+            "active":false
+          },
+          {
+            "title":"2months",
+            "active":false
+          }
+        ],
+        tabUptime:[
+          {
+            "title":"24hours",
+            "active":true
+          },
+          {
+            "title":"2week",
+            "active":false
+          },
+          {
+            "title":"1month",
+            "active":false
+          }
+        ],
       }
     },
     components:{
+      EchartsValidatorsUptimeLine,
+      EchartsValidatorsLine,
+      EchartsLine,
       BlocksListTable,
     },
     beforeMount() {
@@ -202,9 +266,12 @@
       this.getProfileInformation();
       this.getPrecommitBlocksList();
       this.getCurrentTenureInformation();
+      this.getValidatorHistory('2week');
+      this.getValidatorUptimeHistory('24hours')
     },
     methods: {
       getAddressInformation(address){
+        this.address = address;
         let url = `/api/account/${this.$route.params.param}`;
         axios.get(url).then((data)=>{
           if(data.status === 200){
@@ -212,6 +279,12 @@
           }
         }).then((data)=>{
           let Amount = '';
+          if(data !== null && data !=="" && data && typeof data === "object"){
+            if(data.Amount.length > 0 ){
+              data.Amount[0].amount = Tools.formatNumber(data.Amount[0].amount);
+            }
+          }
+
           if(data.Amount instanceof Array){
             Amount = data.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
           }else if(data.Amount && Object.keys(data.Amount).includes('amount') && Object.keys(data.Amount).includes('denom')){
@@ -239,7 +312,7 @@
             return data.data;
           }
         }).then((data)=>{
-          if(data){
+          if(data && typeof data === "object"){
             this.nameValue = data.Description.Moniker;
             this.pubKeyValue = data.PubKey;
             this.websiteValue = data.Description.Website?data.Description.Website:'--';
@@ -262,8 +335,7 @@
             return data.data;
           }
         }).then((data)=>{
-          if(data){
-
+          if(data && typeof data === "object"){
             this.precommitedBlocksValue = data.PrecommitCount;
             this.returnsValue = '';
             this.firstPercent = `${data.Uptime}%`;
@@ -272,38 +344,43 @@
         })
       },
       getTransactionsList(){
-        let url = `/api/txsByAddress/${this.$route.params.param}/1/6`;
+        let url = `/api/txsByAddress/${this.$route.params.param}/1/30`;
         axios.get(url).then((data)=>{
           if(data.status === 200){
             return data.data;
           }
         }).then((data)=>{
+          if(data.Count > 30 && typeof data === "object"){
+            this.transactionsTitle = "Last 30 txn from a total of " + data.Count + " transactions"
+          }else {
+            this.transactionsTitle = "Last 30 txn"
+          }
           this.transactionsCount = data.Count;
           this.transactionsValue = data.Count;
-          if(data.Data){
+          if(data.Data && typeof data === "object"){
             this.items = data.Data.map(item=>{
+
+              if(item.Amount.length > 0){
+                item.Amount[0].amount = Tools.dealWithFees(item.Amount[0].amount);
+              }
               let [Amount,Fees] = ['',''];
               if(item.Amount instanceof Array){
                 Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
                 if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
-                  Amount = item.Amount.map(listItem => `${listItem.amount.toFixed(2)}...shares`).join(',');
+                  Amount = item.Amount.map(listItem => `${listItem.amount} shares`).join(',');
                 }
               }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
                 Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
                 if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
-                  Amount = `${item.Amount.amount.toFixed(2)}...shares`;
+                  Amount = `${item.Amount.amount} shares`;
                 }
               }else if(item.Amount === null){
                 Amount = '';
               }
-              if(item.Fee.Amount instanceof Array){
-                Fees = item.Fee.Amount.map(listItem=>`${listItem.amount} ${listItem.amount === 0?'IRIS':listItem.denom.toUpperCase()}`).join(',');
-              }else if(item.Fee.Amount && Object.keys(item.Fee.Amount).includes('amount') && Object.keys(item.Fee.Amount).includes('denom')){
-                Fees = `${item.Fee.Amount} ${item.Fee.Amount}`;
-              }else if(item.Fee.Amount === null){
-                Fees = '';
-              }
+              if(item.ActualFee.amount && item.ActualFee.denom){
+                Fees = item.ActualFee.amount = Tools.dealWithFees(item.ActualFee.amount) + ' ' + item.ActualFee.denom.toUpperCase();
 
+              }
               let type = '';
               if(item.Type === 'Transfer'){
                 if(this.$route.params.param === item.From){
@@ -332,13 +409,12 @@
               From:'',
               To:'',
               Type:'',
-              Amount:'',
+              millisecondstime:'',
               Fees:'',
               Timestamp:'',
             }];
             this.showNoData1 = true;
           }
-
 
         })
       },
@@ -350,12 +426,12 @@
           }
         }).then((data)=>{
           this.totalBlocks = data.Count;
-          if(data.Data){
+          if(data.Data && typeof data === "object"){
             this.itemsPre = data.Data.map(item=>{
               return{
                 'Block Height':item.Height,
                 Txn:item.NumTxs,
-                Fees:'0 IRIS',
+                // Fees:'0 IRIS',
                 Timestamp:Tools.conversionTimeToUTC(item.Time),
                 'Precommit Validators':item.Validators.length !== 0?`${item.Block.LastCommit.Precommits.length}/${item.Validators.length}`:'',
               }
@@ -364,14 +440,129 @@
             this.itemsPre = [{
               'Block Height':'',
               Txn:'',
-              Fees:'',
+              // Fees:'',
               Timestamp:'',
               'Precommit Validators':'',
             }];
             this.showNoData2 = true;
           }
         })
-      }
+      },
+      getValidatorHistory(tabTime,index){
+        if(index !== undefined){
+          for(var i = 0; i < this.tabVotingPower.length; i++){
+            this.tabVotingPower[i].active = false;
+            this.tabVotingPower[index].active = true
+          }
+        }
+        let url;
+        if(tabTime == "2week"){
+          url = `/api/stake/candidate/${this.$route.params.param}/power/week`;
+        }else if(tabTime == "1month"){
+          url = `/api/stake/candidate/${this.$route.params.param}/power/month`;
+        }else if(tabTime == "2months"){
+          url = `/api/stake/candidate/${this.$route.params.param}/power/months`;
+        }
+        axios.get(url).then((data)=>{
+          if(data.status === 200){
+            return data.data;
+          }
+        }).then((data)=>{
+          let maxValue = 0;
+          let array = [];
+          if(data && typeof data === "object"){
+            data.forEach(item=>{
+              if(item.Power == 0){
+                item.Power = ""
+              }
+              let obj =[];
+              obj[0] = Tools.conversionTimeToUTCByValidatorsLine(item.Time);
+              obj[1] = item.Power;
+              array.push(obj);
+              if(item.Power > maxValue){
+                maxValue = item.Power;
+              }
+            });
+          }
+          let seriesData = array;
+          this.informationValidatorsLine = {maxValue,seriesData};
+        })
+      },
+      getValidatorUptimeHistory(tabTime,index){
+        if(index != undefined){
+          for(var i = 0; i < this.tabUptime.length; i++){
+            this.tabUptime[i].active = false;
+            this.tabUptime[index].active = true
+          }
+        }
+
+        let url;
+        if(tabTime == "24hours"){
+          url = `/api/stake/candidate/${this.$route.params.param}/uptime/hour `;
+        }else if(tabTime == "2week"){
+          url = `/api/stake/candidate/${this.$route.params.param}/uptime/week `;
+        }else if(tabTime == "1month"){
+          url = `/api/stake/candidate/${this.$route.params.param}/uptime/month `;
+        }
+        axios.get(url).then((data)=>{
+          if(data.status === 200){
+            return data.data;
+          }
+        }).then((data)=>{
+          if(data && typeof data === "object") {
+            //获取y轴最大值
+            let maxValue = 0;
+            data.forEach(item => {
+              if (item.Uptime > maxValue) {
+                maxValue = item.Uptime;
+              }
+              //取整
+              item.Uptime = item.Uptime.toString().split(".")[0];
+            });
+            //格式化x轴的数据
+            let xData;
+            if (tabTime == "24hours") {
+              data.forEach((item) => {
+                item.Time = item.Time.substr(10, 12)+ ":00";
+              });
+              xData = data.map(item => item.Time);
+            } else {
+              if (tabTime == "2week") {
+                let dataDateLength = data.length,
+                  //获取需要补全的天数
+                  complementdateLenth = 14 - dataDateLength,
+                  //从那天需要补全的日期
+                  weekDate = new Date(data[0].Time),
+                  millisecondstime = weekDate.getTime(),
+                  //24小时的时间戳（毫秒数）
+                  dayNumberOfMilliseconds = 60 * 60 * 1000 * 24 ;
+                //补全日期的逻辑
+                for (var lackOfDateNum = 0; lackOfDateNum < complementdateLenth; lackOfDateNum++) {
+                  millisecondstime = millisecondstime - dayNumberOfMilliseconds;
+                  let complementdate = Tools.formatDateYearToDate(millisecondstime);
+
+                  data.unshift({Time: complementdate, Uptime: ""});
+                }
+              } else if (tabTime == "1month") {
+                let dataDateLength = data.length,
+                  complementdateLenth = 30 - dataDateLength,
+                  monthDate = new Date(data[0].Time),
+                  millisecondstime = monthDate.getTime(),
+                  dayNumberOfMilliseconds = 60 * 60 * 1000 * 24;
+                for (var lackOfDateNum = 0; lackOfDateNum < complementdateLenth; lackOfDateNum++) {
+                  millisecondstime = millisecondstime - dayNumberOfMilliseconds;
+                  let complementdate = Tools.formatDateYearToDate(millisecondstime);
+
+                  data.unshift({Time: complementdate, Uptime: ""});
+                }
+              }
+              xData = data.map(item => `${String(item.Time).substr(5, 2)}/${String(item.Time).substr(8, 2)}`);
+            }
+            let seriesData = data.map(item => item.Uptime);
+            this.informationUptimeLine = {maxValue, xData, seriesData};
+          }
+        })
+      },
     }
   }
 </script>
@@ -421,12 +612,6 @@
           }
         }
       }
-
-
-
-
-
-
       .transactions_detail_title {
         height: 0.4rem;
         line-height: 0.4rem;
@@ -605,10 +790,14 @@
         .transactions_view_all{
           padding:0.1rem;
           @include flex;
-          justify-content:flex-end;
+          justify-content:space-between;
           height:0.62rem;
           align-items: center;
-          span{
+          span:nth-child(1){
+            color: #a2a2ae;
+            font-size: 0.14rem;
+          }
+          span:nth-child(2){
             @include viewBtn;
           }
         }
@@ -645,5 +834,95 @@
       }
     }
   }
+  .line_container_wrap{
+    width: 100%;
+    .line_container{
+      width: 80%;
+      min-width: 3.2rem;
+      max-width: 12.8rem;
+      margin: 0 auto;
+      .line_history_title{
+        height:0.5rem;
+        line-height: 0.5rem;
+        border-bottom: 1px solid #d6d9e0 !important;
+        font-size: 0.18rem;
+        color: #000;
+      }
+      .line_content{
+        @include flex;
+        .line_echarts_content{
+          margin-top: 0.2rem;
+          flex: 1;
+          border: 0.01rem solid #e4e4e4;
+          .line_left_container{
+            max-width: 6.2rem;
+            height: 2.76rem;
+          }
+          .line_right_container{
+            max-width: 6.2rem;
+            height: 2.76rem;
+          }
+        }
 
+      }
+
+    }
+  }
+  .line_tab_content{
+    @include flex;
+    width: 100%;
+    margin: 0 auto;
+    height: 0.42rem;
+    div{
+      display: inline-block;
+      flex: 1;
+      text-align: center;
+      line-height: 0.4rem;
+      font-size: 0.16rem;
+      color: #000;
+      border-top: 0.01rem solid #e4e4e4;
+      border-right: 0.01rem solid #e4e4e4;
+    }
+    div:nth-child(3){
+      border-right: none;
+    }
+  }
+  .content_right{
+    margin-left: 0.4rem;
+  }
+  .border-none{
+    border-top: 0.01rem solid #fff !important;
+  }
+  .border-block{
+    border-top: 0.01rem solid #e4e4e4 !important;
+  }
+  .mobile_transactions_detail_wrap{
+    width: 100%!important;
+    .line_content {
+      @include flex;
+      flex-direction: column;
+      .line_echarts_content {
+        margin-top: 0.2rem;
+        padding: 0 0.1rem;
+        flex: 1;
+        border: 0.01rem solid #e4e4e4;
+
+        .line_left_container {
+          width: 98%;
+          max-width: 98%!important;
+          height: 2.76rem;
+        }
+
+        .line_right_container {
+          width: 98%;
+          max-width: 98%;
+          height: 2.76rem;
+        }
+
+      }
+    }
+  }
+  .model_content_right{
+    margin-left: 0 ;
+  }
 </style>

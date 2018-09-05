@@ -1,9 +1,9 @@
 <template>
   <div :class="echartsComponentWrapLine">
     <div class="echarts_title_wrap_line">
-      14 day Transaction History
+      Uptime
     </div>
-    <div id="echarts_line">
+    <div id="echarts_uptime_line">
 
     </div>
   </div>
@@ -16,17 +16,24 @@
 
   let line = null;
   export default {
-    name: 'echarts-line',
+    name: 'echarts-uptime-line',
     watch: {
-      informationLine(informationLine) {
+      informationUptimeLine(informationUptimeLine) {
         //根据设备大小显示饼图的大小
         let radius = this.deviceType === 1 ? '85%' : '65%';
         let option = {
           tooltip : {
             trigger: 'item',
             formatter(params){
-              let res =  `<span style="display:block;">${params.name}</span>`;
-              res += `<span style="display:block;">Transactions: ${params.value}</span>`;
+              let res;
+              if(params.name.indexOf(":") != -1){
+                res =  `<span style="display:block;">${params.name} +UTC</span>`;
+                res += `<span style="display:block;">Average Uptime: ${params.value}%</span>`;
+                return res;
+              }else {
+                res =  `<span style="display:block;">${params.name} </span>`;
+                res += `<span style="display:block;">Average Uptime: ${params.value}%</span>`;
+              }
               return res;
             }
           },
@@ -40,11 +47,15 @@
               }
             },
             axisLabel:{
-              interval:0,
-              rotate:45,
+              interval:5,
+              rotate:0,
               margin:12,
               formatter:(value)=>{
-                return `${this.month[this.monthNum.findIndex(item=>value.substr(0,2) === item)]}${value.substr(3,2)}`;
+                if(value.split(":")[1] == "00"){
+                  return value
+                }else {
+                  return `${this.month[this.monthNum.findIndex(item=>value.substr(0,2) === item)]}${value.substr(3,2)}`;
+                }
               }
             }
           },
@@ -98,8 +109,8 @@
           ]
         };
         if (line) {
-          option.xAxis.data = informationLine.xData;
-          option.series[0].data = informationLine.seriesData;
+          option.xAxis.data = informationUptimeLine.xData;
+          option.series[0].data = informationUptimeLine.seriesData;
           line.setOption(option)
         }
       }
@@ -113,12 +124,12 @@
 
       }
     },
-    props: ['informationLine'],
+    props: ['informationUptimeLine'],
     beforeMount() {
 
     },
     mounted() {
-      line = echarts.init(document.getElementById('echarts_line'));
+      line = echarts.init(document.getElementById('echarts_uptime_line'));
       window.addEventListener('resize',this.onWindowResize)
     },
 
@@ -145,7 +156,7 @@
       font-size:0.18rem;
       font-weight:600;
     }
-    #echarts_line {
+    #echarts_uptime_line {
       width: 100%;
       height: 85%;
     }

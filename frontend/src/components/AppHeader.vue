@@ -5,17 +5,9 @@
       <div class="header_top">
         <div class="imageWrap" @click="featureButtonClick('/home')">
           <img src="../assets/logo.png" alt="失去网络了..."/>
-          <div class="logo_title_wrap">
-            <div class="logo_title_content">
-              <span style="font-weight:600;">IRIS</span>
-              <span>Explorer</span>
-            </div>
-            <p>
-              Block Explorer - <span>{{fuxi}}</span>
-            </p>
-          </div>
         </div>
         <div class="navSearch">
+          <span class="chain_id">{{fuxi.toUpperCase()}}</span>
           <input type="text" class="search_input"
                  placeholder="Search by Address / Txhash / Block"
                  v-model="searchInputValue"
@@ -51,16 +43,16 @@
         <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === '/validators'?'nav_item_active':''"
              @mouseover="validatorsMouseOver" @mouseleave="validatorsMouseLeave">
 
-          <span class="nav_item common_item_style">
+          <span class="nav_item common_item_style"  @click="featureButtonClick('/validators/3/0')">
             Validators
-            <span class="bottom_arrow" style="right:0.22rem;"></span>
+            <!--<span class="bottom_arrow" style="right:0.22rem;"></span>-->
           </span>
-          <span class="sub_btn_item" @click="featureButtonClick('/validators/3/0')"
-                style="width:1.6rem;padding-left:0.27rem;"
-                v-show="showSubValidators">Validators</span>
-          <span class="sub_btn_item" @click="featureButtonClick('/candidates/4/0')"
-                style="width:1.6rem;padding-left:0.27rem;"
-                v-show="showSubValidators">Candidates</span>
+          <!--<span class="sub_btn_item" @click="featureButtonClick('/validators/3/0')"-->
+                <!--style="width:1.6rem;padding-left:0.27rem;"-->
+                <!--v-show="showSubValidators">Validators</span>-->
+          <!--<span class="sub_btn_item" @click="featureButtonClick('/candidates/4/0')"-->
+                <!--style="width:1.6rem;padding-left:0.27rem;"-->
+                <!--v-show="showSubValidators">Candidates</span>-->
 
         </div>
         <span class="nav_item common_item_style" :class="activeClassName === '/faucet'?'nav_item_active':''"
@@ -74,15 +66,6 @@
       <div class="feature_btn" @click="showFeature"></div>
       <div class="image_wrap_mobile" @click="featureButtonClick('/home',true)">
         <img src="../assets/logo.png" alt="失去网络了..."/>
-        <div class="logo_title_wrap">
-          <div class="logo_title_content">
-            <span style="font-weight:600;">IRIS</span>
-            <span>Explorer</span>
-          </div>
-          <p>
-            Block Explorer - <span>{{fuxi}}</span>
-          </p>
-        </div>
       </div>
 
       <div class="use_feature_mobile" v-show="featureShow">
@@ -99,8 +82,8 @@
               @click="validatorsShow =! validatorsShow">Validators</span>-->
         <span class="feature_btn_mobile feature_nav"
               @click="featureButtonClick('/validators/3/0')">Validators</span>
-        <span class="feature_btn_mobile feature_nav"
-              @click="featureButtonClick('/candidates/4/0')">Candidates</span>
+        <!--<span class="feature_btn_mobile feature_nav"-->
+              <!--@click="featureButtonClick('/candidates/4/0')">Candidates</span>-->
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/faucet')">Faucet</span>
       </div>
       <div class="search_input_mobile">
@@ -224,7 +207,7 @@
             return data.data;
           }
         }).then((data)=>{
-          if(data){
+          if(data && typeof data === "object"){
             this.$router.push(`/blocks_detail/${this.searchInputValue}`)
           }
         });
@@ -233,7 +216,7 @@
             return data.data;
           }
         }).then((data)=>{
-          if(data){
+          if(data && typeof data === "object"){
             this.$router.push(`/tx?txHash=${this.searchInputValue}`)
           }
         });
@@ -242,7 +225,7 @@
             return data.data;
           }
         }).then((data)=>{
-          if(data){
+          if(data && typeof data === "object"){
             this.$router.push(`/address/1/${this.searchInputValue}`)
           }
         });
@@ -300,7 +283,7 @@
         .imageWrap{
           @include flex;
           cursor:pointer;
-          margin-top:0.2rem;
+          margin-top:0.16rem;
           .logo_title_wrap{
             margin-left:0.16rem;
             @include flex;
@@ -579,6 +562,11 @@
       }
     }
   }
-
+  .chain_id{
+    padding-right: 0.26rem;
+    font-size: 0.16rem;
+    color: #F2711C;
+    font-weight: 600;
+  }
 
 </style>

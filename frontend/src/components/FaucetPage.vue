@@ -1,16 +1,17 @@
 <template>
-  <div type="light" class='facet_wrap' :style="showTitle?'':'padding-top:1.5rem;'">
+  <div type="light" class='facet_wrap' :style="showTitle?'':'padding-top:0.38rem;'">
     <h3 class='faucet_title' :style="`width:${innerWidth/100}rem;`" v-show="showTitle">
       <p class="title" :style="innerWidth<=500?'width:100%;padding-left:0.1rem;':''">
-        IRISnet Testnet Faucet
+        Faucet
       </p>
   </h3>
     <div class="faucet text-center" :style="innerWidth<=500?'padding-top:0;':''">
       <div class="coin" style="display:flex;justify-content: center;margin-bottom:10px;">
         <img src="../assets/coin.png" alt="">
       </div>
-      <p style="font-size:0.14rem;color:#A2A2AE;padding:0 0.1rem;">Use this faucet to get tokens for the latest IRISnet testnet.</p>
-      <p style="font-size:0.14rem;color:#A2A2AE;padding:0 0.1rem;">Please don't abuse this service — the number of available tokens is limited.</p>
+      <p style="font-size:0.14rem;color:#A2A2AE;padding:0 0.1rem;">Get IRIS from this faucet for the latest IRISnet Testnet.</p>
+      <p style="font-size:0.14rem;color:#A2A2AE;padding:0 0.1rem;">This faucet will send 10 IRIS to any valid testnet address.</p>
+      <p class="Balance_number">Balance:{{faucetBalance}} {{tokenName}}</p>
       <br/>
       <form @submit.prevent="apply">
         <div class="faucet-form">
@@ -39,9 +40,14 @@
   import axios from 'axios';
   import Tools from '../common/Tools';
 
+  let UserAgent = navigator.userAgent.toLowerCase();
+  let scene = 'ic_other';
+  if (/android/.test(UserAgent) || /iphone os/.test(UserAgent)) {
+      scene = 'ic_activity_h5';
+  }
   window.NVC_Opt = {
     appkey: 'FFFF0N000000000063E3',
-    scene: 'ic_activity_h5',
+    scene: scene,
     renderTo: '#captcha',
     trans: {"key1": "code0", "nvcCode": 200},
     elements: [
@@ -93,8 +99,21 @@
         alertShow:'hidden',
         innerWidth : window.innerWidth,
         showTitle: !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer()),
+        faucetBalance: 0,
+        tokenName:"",
       }
     },
+    beforeCreate(){
+      let faucet_url = this.faucet_url + "/account";
+      axios.get(faucet_url).then((data)=>{
+        if(data.status === 200){
+          return data.data;
+        }
+      }).then((data)=>{
+        this.faucetBalance = Tools.formatBalance(Number(Tools.formatNumber(data.value.coins[0].amount)).toString().split(".")[0]);
+        this.tokenName = data.value.coins[0].denom.toUpperCase();
+      })
+      },
     created: function () {
       let nvc = document.createElement('script');
       nvc.setAttribute('src', "//g.alicdn.com/sd/nvc/1.1.112/guide.js");
@@ -145,7 +164,8 @@
           address: document.getElementById("address").value,
           token: document.getElementById("token").value,
           session_id: document.getElementById("session_id").value,
-          sig: document.getElementById("sig").value
+          sig: document.getElementById("sig").value,
+          "scene": scene
         })).then(result => {
           let data = result.data;
           if (data.err_code) {
@@ -238,15 +258,16 @@
   .facet_wrap{
 
     .faucet_title{
+      width: 100%;
       height:0.62rem;
       line-height:0.62rem;
       background:#efeff1;
       @include flex;
       justify-content:center;
       border-bottom:1px solid #d6d9e0;
-
       .title{
         width:80%;
+        max-width: 12.8rem;
         font-size:0.22rem;
         color:#000000;
         height:0.62rem;
@@ -269,5 +290,14 @@
         height:0.52rem !important;
       }
     }
+  }
+  .Balance_number{
+    font-size: 0.14rem;
+    color: #000;
+    padding-top: 0.04rem;
+  }
+  .faucet_address{
+    font-size: 0.14rem;
+    color: #000;
   }
 </style>
