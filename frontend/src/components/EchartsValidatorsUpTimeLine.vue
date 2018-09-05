@@ -25,8 +25,15 @@
           tooltip : {
             trigger: 'item',
             formatter(params){
-              let res =  `<span style="display:block;">${params.name}</span>`;
-              res += `<span style="display:block;">Average Uptime: ${params.value}%</span>`;
+              let res;
+              if(params.name.indexOf(":") != -1){
+                res =  `<span style="display:block;">${params.name} +UTC</span>`;
+                res += `<span style="display:block;">Average Uptime: ${params.value}%</span>`;
+                return res;
+              }else {
+                res =  `<span style="display:block;">${params.name} </span>`;
+                res += `<span style="display:block;">Average Uptime: ${params.value}%</span>`;
+              }
               return res;
             }
           },
