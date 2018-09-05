@@ -136,7 +136,7 @@
             <span>Total blocks:</span>
             <span>{{totalBlocks}}</span>
             <!--<span>Total Fees:</span>-->
-            <span>{{totalFee}}</span>
+            <!--<span>{{totalFee}}</span>-->
           </p>
           <span class="view_all_btn" @click="viewAllClick(1)">View All</span>
         </div>
@@ -425,6 +425,7 @@
             return data.data;
           }
         }).then((data)=>{
+          console.log(data,"返回的数据是什么")
           this.totalBlocks = data.Count;
           if(data.Data && typeof data === "object"){
             this.itemsPre = data.Data.map(item=>{
