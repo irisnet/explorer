@@ -281,7 +281,7 @@
           let Amount = '';
           if(data !== null && data !=="" && data && typeof data === "object"){
             if(data.Amount.length > 0 ){
-              data.Amount[0].amount = Tools.dealWithFees(data.Amount[0].amount);
+              data.Amount[0].amount = Tools.formatNumber(data.Amount[0].amount);
             }
           }
 

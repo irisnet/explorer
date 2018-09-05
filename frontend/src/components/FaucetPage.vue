@@ -104,7 +104,7 @@
       }
     },
     beforeCreate(){
-      let faucet_url = "http://192.168.150.7:30200/account";
+      let faucet_url = this.faucet_url + "/account";
       axios.get(faucet_url).then((data)=>{
         if(data.status === 200){
           return data.data;
@@ -267,7 +267,6 @@
       border-bottom:1px solid #d6d9e0;
       .title{
         width:80%;
-        min-width: 4rem;
         max-width: 12.8rem;
         font-size:0.22rem;
         color:#000000;
