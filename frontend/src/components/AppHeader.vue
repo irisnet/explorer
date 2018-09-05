@@ -564,8 +564,9 @@
   }
   .chain_id{
     padding-right: 0.26rem;
-    font-size: 0.2rem;
+    font-size: 0.16rem;
     color: #F2711C;
+    font-weight: 600;
   }
 
 </style>

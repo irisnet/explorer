@@ -36,6 +36,7 @@ export default class Tools{
     return num/1000000000000000000;
   }
 
+
   static decimalPlace(num,val){
     if(val){
       return (parseInt(String(num*100000000))/100000000).toFixed(8);
@@ -43,7 +44,15 @@ export default class Tools{
       if(/^\+?[1-9][0-9]*$/.test(num)){
         return num + " "
       }else {
-        return (parseInt(String(num*10000))/10000).toFixed(2) + "...";
+        if(num){
+          num = Tools.scientificToNumber(num);
+          let str = String(num).split(".")[1];
+          if(str.length > 2){
+            return (parseInt(String(num*100))/100).toFixed(2) + "...";
+          }else {
+            return (parseInt(String(num*100))/100)
+          }
+        }
       }
     }
 
