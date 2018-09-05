@@ -295,7 +295,7 @@
   .Balance_number{
     font-size: 0.14rem;
     color: #000;
-    padding-top: 0.14rem;
+    padding-top: 0.04rem;
   }
   .faucet_address{
     font-size: 0.14rem;

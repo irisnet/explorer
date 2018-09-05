@@ -136,7 +136,7 @@
             <span>Total blocks:</span>
             <span>{{totalBlocks}}</span>
             <!--<span>Total Fees:</span>-->
-            <span>{{totalFee}}</span>
+            <!--<span>{{totalFee}}</span>-->
           </p>
           <span class="view_all_btn" @click="viewAllClick(1)">View All</span>
         </div>
