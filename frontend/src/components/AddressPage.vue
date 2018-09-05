@@ -425,7 +425,6 @@
             return data.data;
           }
         }).then((data)=>{
-          console.log(data,"返回的数据是什么")
           this.totalBlocks = data.Count;
           if(data.Data && typeof data === "object"){
             this.itemsPre = data.Data.map(item=>{
