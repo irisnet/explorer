@@ -26,7 +26,7 @@
             trigger: 'item',
             formatter(params){
               params.value[0] = Tools.formatDateYearAndMinutesAndSeconds(params.value[0]);
-              let res =  `<span style="display:block;">${params.value[0].substr(6,10)} +UTC</span>`;
+              let res =  `<span style="display:block;">${params.value[0].substr(5,11)} +UTC</span>`;
               res += `<span style="display:block;">Voting Power:${params.value[1]}</span>`;
               return res;
             }
