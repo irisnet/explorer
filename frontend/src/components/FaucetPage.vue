@@ -2,7 +2,7 @@
   <div type="light" class='facet_wrap' :style="showTitle?'':'padding-top:0.38rem;'">
     <h3 class='faucet_title' :style="`width:${innerWidth/100}rem;`" v-show="showTitle">
       <p class="title" :style="innerWidth<=500?'width:100%;padding-left:0.1rem;':''">
-        IRISnet Testnet Faucet
+        Faucet
       </p>
   </h3>
     <div class="faucet text-center" :style="innerWidth<=500?'padding-top:0;':''">
@@ -258,13 +258,13 @@
   .facet_wrap{
 
     .faucet_title{
+      width: 100%;
       height:0.62rem;
       line-height:0.62rem;
       background:#efeff1;
       @include flex;
       justify-content:center;
       border-bottom:1px solid #d6d9e0;
-
       .title{
         width:80%;
         font-size:0.22rem;
