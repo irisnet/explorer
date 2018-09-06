@@ -510,29 +510,25 @@
           }
         }).then((data)=>{
           if(data && typeof data === "object") {
-            //获取y轴最大值
-            let maxValue = 0;
-            data.forEach(item => {
-              if (item.Uptime > maxValue) {
-                maxValue = item.Uptime;
-              }
-              //取整
-              item.Uptime = item.Uptime.toString().split(".")[0];
-            });
-            //格式化x轴的数据
-console.log(data,"请求回来的参数")
-            let xData;
+            let xData , currayDate;
             if (tabTime == "24hours") {
+              if(data.length > 1){
+                currayDate = data[0].Time;
+              }else {
+                currayDate = new Date().toISOString().substr(0,13).replace("T", " ");
+              }
               if(data.length < 24){
                 let complementHourLength = 24 - data.length;
-                let hourTime = data[0].Time.split(" ")[1];
-                let yearAndDayTime = data[0].Time.split(" ")[0];
+                let hourTime = currayDate.split(" ")[1];
+                let yearAndDayTime = currayDate.split(" ")[0];
                 for (let k = 0; k < complementHourLength; k++){
                   hourTime--;
+                  //当hourTime的数值为负数的时候，+24格式化成24小时显示
                   if(hourTime < 0){
                     hourTime = 24 + hourTime;
                   }
-                  if (String(hourTime).length < 2){
+                  //当小时数为一位的时候补零
+                  if(String(hourTime).length < 2){
                     hourTime = "0" + hourTime;
                   }
                   let hoursDate = yearAndDayTime + " " + hourTime;
@@ -545,7 +541,7 @@ console.log(data,"请求回来的参数")
               xData = data.map(item => item.Time);
             } else {
               let currayDate;
-              if(data){
+              if(data.length > 2){
                 currayDate = data[0].Time;
               }else {
                 currayDate = new Date().toISOString();
@@ -582,7 +578,7 @@ console.log(data,"请求回来的参数")
               xData = data.map(item => `${String(item.Time).substr(5, 2)}/${String(item.Time).substr(8, 2)}`);
             }
             let seriesData = data.map(item => item.Uptime);
-            this.informationUptimeLine = {maxValue, xData, seriesData};
+            this.informationUptimeLine = {xData, seriesData};
           }
         })
       },
