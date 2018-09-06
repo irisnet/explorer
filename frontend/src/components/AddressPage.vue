@@ -38,23 +38,23 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Website:</span>
-          <a class="information_value" :href="websiteValue" target="_blank"
+          <span class="information_value"
              v-show="websiteValue !== '--'"
-             style="color:#3598db;">{{websiteValue}}</a>
+             style="color:#a2a2ae;">{{websiteValue}}</span>
           <i v-show="websiteValue === '--'" style="font-style:normal;color:#a2a2ae">--</i>
         </div>
-        <!--<div class="information_props_wrap" style="border-bottom:0.01rem solid #eee">
+        <div class="information_props_wrap" style="border-bottom:0.01rem solid #eee">
           <span class="information_props">Description:</span>
           <span class="information_value">{{descriptionValue}}</span>
         </div>
-        <div class="information_props_wrap">
-          <span class="information_props">Commission Rate:</span>
-          <span class="information_value">{{commissionRateValue}}</span>
-        </div>
-        <div class="information_props_wrap">
-          <span class="information_props">Announcement:</span>
-          <span class="information_value">{{announcementValue}}</span>
-        </div>-->
+        <!--<div class="information_props_wrap">-->
+          <!--<span class="information_props">Commission Rate:</span>-->
+          <!--<span class="information_value">{{commissionRateValue}}</span>-->
+        <!--</div>-->
+        <!--<div class="information_props_wrap">-->
+          <!--<span class="information_props">Announcement:</span>-->
+          <!--<span class="information_value">{{announcementValue}}</span>-->
+        <!--</div>-->
 
 
       </div>
@@ -505,6 +505,7 @@
           url = `/api/stake/candidate/${this.$route.params.param}/uptime/month `;
         }
         axios.get(url).then((data)=>{
+
           if(data.status === 200){
             return data.data;
           }
@@ -512,7 +513,7 @@
           if(data && typeof data === "object") {
             let xData , currayDate;
             if (tabTime == "24hours") {
-              if(data.length > 1){
+              if(data.length !== 0){
                 currayDate = data[0].Time;
               }else {
                 currayDate = new Date().toISOString().substr(0,13).replace("T", " ");
