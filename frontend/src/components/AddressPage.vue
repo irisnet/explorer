@@ -378,7 +378,7 @@
                 Amount = '';
               }
               if(item.ActualFee.amount && item.ActualFee.denom){
-                Fees = item.ActualFee.amount = Tools.dealWithFees(item.ActualFee.amount) + ' ' + item.ActualFee.denom.toUpperCase();
+                Fees = item.ActualFee.amount = Tools.formatFeeToFixedNumber(item.ActualFee.amount) + ' ' + item.ActualFee.denom.toUpperCase();
 
               }
               let type = '';
@@ -520,24 +520,47 @@
               item.Uptime = item.Uptime.toString().split(".")[0];
             });
             //格式化x轴的数据
+console.log(data,"请求回来的参数")
             let xData;
             if (tabTime == "24hours") {
+              if(data.length < 24){
+                let complementHourLength = 24 - data.length;
+                let hourTime = data[0].Time.split(" ")[1];
+                let yearAndDayTime = data[0].Time.split(" ")[0];
+                for (let k = 0; k < complementHourLength; k++){
+                  hourTime--;
+                  if(hourTime < 0){
+                    hourTime = 24 + hourTime;
+                  }
+                  if (String(hourTime).length < 2){
+                    hourTime = "0" + hourTime;
+                  }
+                  let hoursDate = yearAndDayTime + " " + hourTime;
+                  data.unshift({AddressL:data.Address,Time: hoursDate ,Uptime: ""})
+                }
+              }
               data.forEach((item) => {
                 item.Time = item.Time.substr(10, 12)+ ":00";
               });
               xData = data.map(item => item.Time);
             } else {
+              let currayDate;
+              if(data){
+                currayDate = data[0].Time;
+              }else {
+                currayDate = new Date().toISOString();
+              }
               if (tabTime == "2week") {
                 let dataDateLength = data.length,
                   //获取需要补全的天数
-                  complementdateLenth = 14 - dataDateLength,
+                  complementdateLength = 14 - dataDateLength,
                   //从那天需要补全的日期
-                  weekDate = new Date(data[0].Time),
+                  weekDate = new Date(currayDate),
                   millisecondstime = weekDate.getTime(),
                   //24小时的时间戳（毫秒数）
                   dayNumberOfMilliseconds = 60 * 60 * 1000 * 24 ;
                 //补全日期的逻辑
-                for (var lackOfDateNum = 0; lackOfDateNum < complementdateLenth; lackOfDateNum++) {
+                for (let lackOfDateNum = 0; lackOfDateNum < complementdateLength; lackOfDateNum++) {
                   millisecondstime = millisecondstime - dayNumberOfMilliseconds;
                   let complementdate = Tools.formatDateYearToDate(millisecondstime);
 
@@ -545,11 +568,11 @@
                 }
               } else if (tabTime == "1month") {
                 let dataDateLength = data.length,
-                  complementdateLenth = 30 - dataDateLength,
-                  monthDate = new Date(data[0].Time),
+                  complementdateLength = 30 - dataDateLength,
+                  monthDate = new Date(currayDate),
                   millisecondstime = monthDate.getTime(),
                   dayNumberOfMilliseconds = 60 * 60 * 1000 * 24;
-                for (var lackOfDateNum = 0; lackOfDateNum < complementdateLenth; lackOfDateNum++) {
+                for (let lackOfDateNum = 0; lackOfDateNum < complementdateLength; lackOfDateNum++) {
                   millisecondstime = millisecondstime - dayNumberOfMilliseconds;
                   let complementdate = Tools.formatDateYearToDate(millisecondstime);
 
