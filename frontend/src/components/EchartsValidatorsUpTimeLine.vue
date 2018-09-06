@@ -149,12 +149,14 @@
   .echarts_component_wrap_line_personal_computer, .echarts_component_wrap_line_mobile {
     width: 100%;
     height: 100%;
-    padding:0.12rem 0.2rem 0 0.2rem;
-
+    padding: 0!important;
+    margin: 0!important;
     .echarts_title_wrap_line {
       height: 15%;
       font-size:0.18rem;
       font-weight:600;
+      padding-left: 0.2rem;
+      line-height: 0.53rem;
     }
     #echarts_uptime_line {
       width: 100%;
@@ -164,6 +166,7 @@
   .echarts_component_wrap_line_mobile{
     min-width:4rem;
   }
-
+.echarts_title_wrap_line{
+}
 
 </style>
