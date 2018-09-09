@@ -7,8 +7,8 @@
     <title>Rainbow</title>
     <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
     <!-- Bootstrap -->
-    <link href="../website/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../website/css/download/download.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/download/download.css" rel="stylesheet">
 </head>
 <body>
 
@@ -17,7 +17,7 @@
         <div class="header-title-content">
             <div class="header-title">
                 <div class="header-logo">
-                    <img src="../website/img/logo.png" alt="">
+                    <img src="img/logo.png" alt="">
                 </div>
             </div>
             <div class="header-title-info" style="color:#000">
@@ -49,7 +49,7 @@
 </div>
 </div>
 
-<script src="../website/js/jquery.min.js"></script>
+<script src="js/jquery.min.js"></script>
 <script type="application/javascript">
     $(document).ready(function () {
         var ua = navigator.userAgent;
@@ -69,47 +69,7 @@
             $("#all").show();
         }
     })
-    $(".ch-lang-btn").click(function () {
-        $(".ch-lang-btn").css("color","#3498DB");
-        $(".gray-font").css("color","#000");
-        $("#title-first").text("第一个支持");
-        $('#font-big').text("跨链");
-        $('.title-info').text("多资产转移及服务消费的IRISnet 移动客户端");
-        $('.public-beta-font').text("公测即将开启，敬请期待...");
-        $("#font-big").css("visibility","visible");
-        $(".privacy-link").text("服务协议");
-        $(".terms-link").text("隐私政策");
 
-    });
-    $(".gray-font").click(function () {
-        $(".ch-lang-btn").css("color","#000");
-        $(".gray-font").css("color","#3498DB");
-        $('.public-beta-font').text("We will open public test soon");
-        $("#font-big").css("visibility","hidden");
-        $("#title-first").text("First IRISnet mobile client that supports cross-chain ");
-        $(".title-info").text("multi-asset transfers and iServices consumption");
-        $(".privacy-link").text("Privacy");
-        $(".terms-link").text("Terms");
-    })
-    $(".lang-cn-btn").on("touchstart",function () {
-        $(".lang-cn-btn").css("color","#3498DB");
-        $(".lang-en-btn").css("color","#000");
-        $(".privacy-link").text("服务协议");
-        $(".terms-link").text("隐私政策");
-        $(".public-beta-title").text("公测即将开启，敬请期待...");
-        $(".info-title-client").css("display","block");
-        $(".info-title").text("第一个支持跨链");
-        $(".info-title-client").text("多资产转移及服务消费的 IRISnet 移动客户端");
-    });
-    $(".lang-en-btn").on("touchstart",function () {
-        $(".lang-cn-btn").css("color","#000");
-        $(".lang-en-btn").css("color","#3498DB");
-        $(".info-title").text("First IRISnet mobile client that supports cross-chain multi-asset transfers and iServices consumption");
-        $(".info-title-client").css("display","none");
-        $(".public-beta-title").text("We will open public test soon");
-        $(".privacy-link").text("Privacy");
-        $(".terms-link").text("Terms");
-    })
 </script>
 </body>
 </html>
