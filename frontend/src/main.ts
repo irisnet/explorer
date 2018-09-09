@@ -15,14 +15,13 @@ let fuxi;
 if(localStorage.getItem('Faucet_url') && localStorage.getItem('Faucet_url') !== "null"){
   faucet_url = localStorage.getItem('Faucet_url')
 }else{
-  faucet_url = ''
+  faucet_url = 'http://dev.faucet.irisplorer.io'
 }
 
 if(localStorage.getItem('Chain_id') && localStorage.getItem('Chain_id') !== "null"){
   fuxi = localStorage.getItem('Chain_id')
 }else{
-  fuxi = ''
-
+  fuxi = 'rainbow-dev'
 }
 Vue.prototype.faucet_url = faucet_url
 Vue.prototype.fuxi = fuxi;

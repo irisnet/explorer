@@ -6,15 +6,6 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0">
     <title>IRISnet BlockChain Explorer</title>
   </head>
-  <script>
-    var req = new XMLHttpRequest();
-    req.open('GET', document.location, false,);
-    req.send(null);
-    var Chain_id = req.getResponseHeader('Chain_id');
-    var Faucet_url = req.getResponseHeader('Faucet_url');
-    localStorage.Chain_id = Chain_id;
-    localStorage.Faucet_url = Faucet_url
-  </script>
   <body>
     <noscript>
       <strong>We're sorry but explorer doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
@@ -22,4 +13,13 @@
     <div id="app"></div>
     <!-- built files will be auto injected -->
   </body>
+  <script>
+  var req = new XMLHttpRequest();
+  req.open('GET', document.location, false);
+  req.send(null);
+  var Chain_id = req.getResponseHeader('Chain_id');
+  var Faucet_url = req.getResponseHeader('Faucet_url');
+  localStorage.Chain_id = Chain_id
+  localStorage.Faucet_url = Faucet_url
+  </script>
 </html>
