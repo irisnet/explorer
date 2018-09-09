@@ -1,0 +1,32 @@
+body {
+    font-family: "Microsoft YaHei UI", "serif";
+    font-size: 14px;
+    margin-left: 3.5%;
+    margin-right: 3.5%;
+}
+
+div.header {
+    font-weight: bolder;
+    text-align: center;
+}
+
+div.top {
+    font-weight: bolder;
+}
+
+p {
+    font-weight: bolder;
+    font-size: 16px;
+}
+
+div.content span {
+    margin-left: 2%;
+}
+
+ul {
+    list-style-type: square;
+}
+
+div.footer {
+    font-weight: bolder;
+}
