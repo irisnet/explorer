@@ -275,7 +275,7 @@
                 Amount = '';
               }
               if(item.ActualFee.amount && item.ActualFee.denom){
-                Fee = item.ActualFee.amount = Tools.dealWithFees(item.ActualFee.amount) + item.ActualFee.denom.toUpperCase();
+                Fee =  Tools.formatFeeToFixedNumber(item.ActualFee.amount) + item.ActualFee.denom.toUpperCase();
               }
               return {
                 TxHash: item.TxHash,
