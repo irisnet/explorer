@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
+	"github.com/irisnet/irishub-sync/store"
 	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
 	"net/http"
@@ -73,6 +74,7 @@ func registerQueryProposal(r *mux.Router) error {
 			Status:           data.Status,
 			SubmitBlock:      data.SubmitBlock,
 			SubmitTime:       data.SubmitTime,
+			TotalDeposit:     data.TotalDeposit,
 			VotingStartBlock: data.VotingStartBlock,
 		}
 		info.Proposal = proposal
@@ -108,14 +110,15 @@ func registerQueryProposal(r *mux.Router) error {
 }
 
 type Proposal struct {
-	Title            string    `json:"title"`
-	ProposalId       int64     `json:"proposal_id"`
-	Type             string    `json:"type"`
-	Description      string    `json:"description"`
-	Status           string    `json:"status"`
-	SubmitBlock      int64     `json:"submit_block"`
-	SubmitTime       time.Time `json:"submit_time"`
-	VotingStartBlock int64     `json:"voting_start_block"`
+	Title            string      `json:"title"`
+	ProposalId       int64       `json:"proposal_id"`
+	Type             string      `json:"type"`
+	Description      string      `json:"description"`
+	Status           string      `json:"status"`
+	SubmitBlock      int64       `json:"submit_block"`
+	SubmitTime       time.Time   `json:"submit_time"`
+	TotalDeposit     store.Coins `json:"totalDeposit"`
+	VotingStartBlock int64       `json:"voting_start_block"`
 }
 
 type Vote struct {
