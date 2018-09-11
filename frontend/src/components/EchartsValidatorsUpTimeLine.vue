@@ -48,8 +48,8 @@
             },
             axisLabel:{
               interval:5,
-              rotate:0,
               margin:12,
+              rotate:45,
               formatter:(value)=>{
                 if(value.split(":")[1] == "00"){
                   return value
@@ -109,6 +109,11 @@
           ]
         };
         if (line) {
+          if(informationUptimeLine.noDatayAxisDefaultMax){
+              option.yAxis.max = "100"
+          }else {
+              option.yAxis.max = null
+          }
           option.xAxis.data = informationUptimeLine.xData;
           option.series[0].data = informationUptimeLine.seriesData;
           line.setOption(option)
