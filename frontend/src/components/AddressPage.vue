@@ -484,8 +484,12 @@
               }
             });
           }
-          let seriesData = array;
-          this.informationValidatorsLine = {maxValue,seriesData};
+          let seriesData = array, noDatayAxisDefaultMax;
+          //如果没有votingPower，返回的数据中会默认带两条数据
+          if(seriesData.length < 3){
+            noDatayAxisDefaultMax = "100"
+          }
+          this.informationValidatorsLine = {maxValue,seriesData,noDatayAxisDefaultMax};
         })
       },
       getValidatorUptimeHistory(tabTime,index){
@@ -522,6 +526,7 @@
                 let complementHourLength = 24 - data.length;
                 let hourTime = currayDate.split(" ")[1];
                 let yearAndDayTime = currayDate.split(" ")[0];
+
                 for (let k = 0; k < complementHourLength; k++){
                   hourTime--;
                   //当hourTime的数值为负数的时候，+24格式化成24小时显示
@@ -536,20 +541,25 @@
                   data.unshift({AddressL:data.Address,Time: hoursDate ,Uptime: ""})
                 }
               }
+
               data.forEach((item) => {
                 item.Time = item.Time.substr(10, 12)+ ":00";
               });
+
               xData = data.map(item => item.Time);
             } else {
+
               let currayDate;
               if(data.length > 2){
                 currayDate = data[0].Time;
               }else {
                 currayDate = new Date().toISOString();
               }
+
               if (tabTime == "2week") {
                 let dataDateLength = data.length,
-                  //获取需要补全的天数
+
+                //获取需要补全的天数
                   complementdateLength = 14 - dataDateLength,
                   //从那天需要补全的日期
                   weekDate = new Date(currayDate),
@@ -563,7 +573,9 @@
 
                   data.unshift({Time: complementdate, Uptime: ""});
                 }
+
               } else if (tabTime == "1month") {
+
                 let dataDateLength = data.length,
                   complementdateLength = 30 - dataDateLength,
                   monthDate = new Date(currayDate),
@@ -576,11 +588,73 @@
                   data.unshift({Time: complementdate, Uptime: ""});
                 }
               }
+
               xData = data.map(item => `${String(item.Time).substr(5, 2)}/${String(item.Time).substr(8, 2)}`);
             }
-            let seriesData = data.map(item => item.Uptime);
+            let seriesData = data.map(item => item.Uptime.toString().split(".")[0]);
             this.informationUptimeLine = {xData, seriesData};
+          }else {
+            let xData , currayDate  , data = [];
+            if (tabTime == "24hours") {
+                 currayDate = new Date().toISOString().substr(0, 13).replace("T", " ");
+                let complementHourLength = 24;
+                let hourTime = currayDate.split(" ")[1];
+                let yearAndDayTime = currayDate.split(" ")[0];
+
+                for (let k = 0; k < complementHourLength; k++) {
+                  hourTime--;
+                  //当hourTime的数值为负数的时候，+24格式化成24小时显示
+                  if (hourTime < 0) {
+                    hourTime = 24 + hourTime;
+                  }
+                  //当小时数为一位的时候补零
+                  if (String(hourTime).length < 2) {
+                    hourTime = "0" + hourTime;
+                  }
+                  let hoursDate = yearAndDayTime + " " + hourTime;
+                  data.unshift({AddressL: data.Address, Time: hoursDate, Uptime: ""})
+                }
+
+              data.forEach((item) => {
+                item.Time = item.Time.substr(10, 12) + ":00";
+              });
+              xData = data.map(item => item.Time);
+
+            } else if (tabTime == "2week") {
+              currayDate = new Date().toISOString();
+                //获取需要补全的天数
+              let complementdateLength = 14 ,
+                //从那天需要补全的日期
+                weekDate = new Date(currayDate),
+                millisecondstime = weekDate.getTime(),
+                //24小时的时间戳（毫秒数）
+                dayNumberOfMilliseconds = 60 * 60 * 1000 * 24 ;
+              //补全日期的逻辑
+              for (let lackOfDateNum = 0; lackOfDateNum < complementdateLength; lackOfDateNum++) {
+                millisecondstime = millisecondstime - dayNumberOfMilliseconds;
+                let complementdate = Tools.formatDateYearToDate(millisecondstime);
+
+                data.unshift({Time: complementdate, Uptime: ""});
+              }
+              xData = data.map(item => `${String(item.Time).substr(5, 2)}/${String(item.Time).substr(8, 2)}`);
+            } else if (tabTime == "1month") {
+              currayDate = new Date().toISOString();
+              let complementdateLength = 30 ,
+                  monthDate = new Date(currayDate),
+                  millisecondstime = monthDate.getTime(),
+                  dayNumberOfMilliseconds = 60 * 60 * 1000 * 24;
+                  for (let lackOfDateNum = 0; lackOfDateNum < complementdateLength; lackOfDateNum++) {
+                    millisecondstime = millisecondstime - dayNumberOfMilliseconds;
+                    let complementdate = Tools.formatDateYearToDate(millisecondstime);
+                data.unshift({Time: complementdate, Uptime: ""});
+              }
+              xData = data.map(item => `${String(item.Time).substr(5, 2)}/${String(item.Time).substr(8, 2)}`);
+            }
+            let noDatayAxisDefaultMax = "100";
+            let seriesData = data.map(item => item.Uptime.toString().split(".")[0]);
+            this.informationUptimeLine = {xData, seriesData,noDatayAxisDefaultMax};
           }
+
         })
       },
     }

@@ -34,6 +34,8 @@
           xAxis: {
             axisLabel:{
               show:true,
+              rotate:45,
+              interval: '0',
               formatter:(value)=>{
                 value = Tools.formatDateYearToDate(value).substr(5,6);
                 return `${this.month[this.monthNum.findIndex(item=>value.substr(0,2) === item)]}${value.substr(3,2)}`;
@@ -102,6 +104,11 @@
           ]
         };
         if (line) {
+          if(informationValidatorsLine.noDatayAxisDefaultMax){
+            option.yAxis.max = "100"
+          }else {
+            option.yAxis.max = null
+          }
           option.series[0].data = informationValidatorsLine.seriesData;
           line.setOption(option)
         }
