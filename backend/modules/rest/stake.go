@@ -146,19 +146,34 @@ func QueryCandidateUptime(w http.ResponseWriter, r *http.Request) {
 
 	switch category {
 	case "hour":
-		var result []types.UptimeChange
+		var upChanges []types.UptimeChange
 		now := time.Now()
 		endTime := time.Date(now.Year(), now.Month(), now.Day(), now.Hour(), 0, 0, 0, now.Location())
 		d, _ := time.ParseDuration("-24h")
 		startTime := endTime.Add(d)
 		startStr := startTime.Format("2006-01-02 15")
 		endStr := endTime.Format("2006-01-02 15")
-		u.Find(bson.M{"address": address, "time": bson.M{"$gte": startStr, "$lt": endStr}}).All(&result)
+		u.Find(bson.M{"address": address, "time": bson.M{"$gte": startStr, "$lt": endStr}}).All(&upChanges)
+		upChangeMap := make(map[string]float64)
+		for _, upChange := range upChanges {
+			upChangeMap[upChange.Time] = upChange.Uptime
+		}
+		var result []types.UptimeChange
+		d1, _ := time.ParseDuration("1h")
+		for startTime.Before(endTime) {
+			startStr := startTime.Format("2006-01-02 15")
+			var uptime float64
+			if _, ok := upChangeMap[startStr]; ok {
+				uptime = upChangeMap[startStr]
+			}
+			result = append(result, types.UptimeChange{Address: address, Uptime: uptime, Time: startStr})
+			startTime = startTime.Add(d1)
+		}
 		resultByte, _ := json.Marshal(result)
 		w.Write(resultByte)
 		break
 	case "week", "month":
-		var result []types.CandidateUptime
+		var upChanges []types.CandidateUptime
 		agoStr := "-336h"
 		if category == "month" {
 			agoStr = "-720h"
@@ -188,7 +203,23 @@ func QueryCandidateUptime(w http.ResponseWriter, r *http.Request) {
 				}},
 			},
 		)
-		err = pipe.All(&result)
+		err = pipe.All(&upChanges)
+
+		upChangeMap := make(map[string]float64)
+		for _, upChange := range upChanges {
+			upChangeMap[upChange.Time] = upChange.Uptime
+		}
+		var result []types.UptimeChange
+		d1, _ := time.ParseDuration("24h")
+		for startTime.Before(endTime) {
+			startStr := startTime.Format("2006-01-02")
+			var uptime float64
+			if _, ok := upChangeMap[startStr]; ok {
+				uptime = upChangeMap[startStr]
+			}
+			result = append(result, types.UptimeChange{Address: address, Uptime: uptime, Time: startStr})
+			startTime = startTime.Add(d1)
+		}
 		resultByte, _ := json.Marshal(result)
 		w.Write(resultByte)
 	}
