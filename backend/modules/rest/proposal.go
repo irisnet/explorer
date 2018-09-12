@@ -117,7 +117,7 @@ type Proposal struct {
 	Status           string      `json:"status"`
 	SubmitBlock      int64       `json:"submit_block"`
 	SubmitTime       time.Time   `json:"submit_time"`
-	TotalDeposit     store.Coins `json:"totalDeposit"`
+	TotalDeposit     store.Coins `json:"total_deposit"`
 	VotingStartBlock int64       `json:"voting_start_block"`
 }
 
