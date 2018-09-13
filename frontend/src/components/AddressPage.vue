@@ -173,7 +173,7 @@
         this.getProfileInformation();
         this.getPrecommitBlocksList();
         this.getCurrentTenureInformation();
-        this.getValidatorHistory('2week');
+        this.getValidatorHistory('14days');
         this.getValidatorUptimeHistory('24hours');
       },
       activeBtn(activeBtn){
