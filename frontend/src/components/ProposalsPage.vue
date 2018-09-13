@@ -136,140 +136,135 @@
   @import '../style/mixin.scss';
 
   .proposals_list_page_wrap {
-  @include flex;
-  @include pcContainer;
+    @include flex;
+    @include pcContainer;
     font-size: 0.14rem;
-  .pagination {
-  @include flex;
-    justify-content: flex-end;
-  @include borderRadius(0.025rem);
-    height:0.3rem;
-  li{
-    height:0.3rem !important;
-    a{
-      box-shadow: none;
+    .pagination {
+      @include flex;
+      justify-content: flex-end;
+      @include borderRadius(0.025rem);
+      height:0.3rem;
+    li{
+      height:0.3rem !important;
+      a{
+        box-shadow: none;
+      }
+      a:focus{
+        -webkit-box-shadow:0 0 0 .2rem rgba(255,255,255,.5);
+        box-shadow:0 0 0 .2rem rgba(255,255,255,.5)
+      }
     }
-    a:focus{
-      -webkit-box-shadow:0 0 0 .2rem rgba(255,255,255,.5);
-      box-shadow:0 0 0 .2rem rgba(255,255,255,.5)
-    }
-
-  }
   }
   .total_num{
-  @include flex;
-    justify-content: space-between;
-    height:0.7rem;
-    align-items: center;
-  }
+    @include flex;
+      justify-content: space-between;
+      height:0.7rem;
+      align-items: center;
+    }
   .no_data_show{
-  @include flex;
-    justify-content: center;
-    border-top:0.01rem solid #eee;
-    border-bottom:0.01rem solid #eee;
-    font-size:0.14rem;
-    height:3rem;
-    align-items: center;
-  }
+    @include flex;
+      justify-content: center;
+      border-top:0.01rem solid #eee;
+      border-bottom:0.01rem solid #eee;
+      font-size:0.14rem;
+      height:3rem;
+      align-items: center;
+    }
   .b-table {
   //min-width: 8rem;
-
-  a {
-    text-decoration: none;
-  }
+    a {
+      text-decoration: none;
+    }
   }
   .proposals_list_title_wrap {
     width: 100%;
     border-bottom: 1px solid #d6d9e0 !important;
-  @include flex;
-  @include pcContainer;
+    @include flex;
+    @include pcContainer;
     height:0.62rem;
     background:#efeff1;
-  p{
-    height:0.62rem;
-  span{
-    height:0.62rem;
-    line-height:0.62rem;
+    p{
+      height:0.62rem;
+    span{
+      height:0.62rem;
+      line-height:0.62rem;
+    }
   }
-  }
-  .personal_computer_proposals_list_page_wrap {
-  @include flex;
-
-  }
-  .mobile_proposals_list_page_wrap {
-  @include flex;
-    flex-direction: column;
-    overflow-x: auto;
-    width:100%;
-  .proposals_list_page_wrap_hash_var{
-    min-width:7rem;
-  }
-  }
-
+    .personal_computer_proposals_list_page_wrap {
+      @include flex;
+    }
+    .mobile_proposals_list_page_wrap {
+      @include flex;
+      flex-direction: column;
+      overflow-x: auto;
+      width:100%;
+      .proposals_list_page_wrap_hash_var{
+        min-width:7rem;
+      }
+    }
   }
   .personal_computer_proposals_list_page_wrap {
-  .transaction_information_content_title {
-    height: 0.4rem;
-    line-height: 0.4rem;
-    font-size: 0.18rem;
-    color: #000000;
-    margin-bottom: 0;
-  }
-  @include pcCenter;
-  min-height:4.6rem;
-  .transactions_detail_information_wrap {
-  .information_props_wrap {
-  @include flex;
-  .information_props {
-    width: 15rem;
-  }
-  }
-  }
+    .transaction_information_content_title {
+      height: 0.4rem;
+      line-height: 0.4rem;
+      font-size: 0.18rem;
+      color: #000000;
+      margin-bottom: 0;
+    }
+    @include pcCenter;
+    min-height:4.6rem;
+    .transactions_detail_information_wrap {
+      .information_props_wrap {
+        @include flex;
+      .information_props {
+        width: 15rem;
+        }
+      }
+    }
 
-  .proposals_list_title {
-    height: 0.62rem;
-    line-height: 0.62rem;
-    font-size: 0.22rem;
-    color: #000000;
-    margin-right: 0.2rem;
-    font-weight: 500;
-  }
-  .proposals_list_page_wrap_hash_var {
-    height:  0.62rem;
-    line-height: 0.62rem;
-    font-size: 0.22rem;
-    color: #a2a2ae;
-  }
-  .for_proposals{
-    display:inline-block;
-    margin-left:0.1rem;
-  }
+    .proposals_list_title {
+      height: 0.62rem;
+      line-height: 0.62rem;
+      font-size: 0.22rem;
+      color: #000000;
+      margin-right: 0.2rem;
+      font-weight: 500;
+    }
+    .proposals_list_page_wrap_hash_var {
+      height:  0.62rem;
+      line-height: 0.62rem;
+      font-size: 0.22rem;
+      color: #a2a2ae;
+    }
+    .for_proposals{
+      display:inline-block;
+      margin-left:0.1rem;
+    }
   }
 
   .mobile_proposals_list_page_wrap {
     width: 100%;
-  @include flex;
+    @include flex;
     flex-direction: column;
     padding: 0 0.1rem;
-  .transaction_information_content_title {
-    height: 0.4rem;
-    line-height: 0.4rem;
-    font-size: 0.18rem;
-    color: #000000;
-    margin-bottom: 0;
-  }
+    .transaction_information_content_title {
+      height: 0.4rem;
+      line-height: 0.4rem;
+      font-size: 0.18rem;
+      color: #000000;
+      margin-bottom: 0;
+    }
   .transactions_detail_information_wrap {
 
-  .information_props_wrap {
-  @include flex;
-    flex-direction: column;
-    border-bottom: 0.01rem solid #eee;
-    margin-bottom: 0.05rem;
-  .information_value {
-    overflow-x: auto;
-  }
-
-  }
+    .information_props_wrap {
+      @include flex;
+      flex-direction: column;
+      border-bottom: 0.01rem solid #eee;
+      margin-bottom: 0.05rem;
+      .information_value {
+        overflow-x: auto;
+      }
+    }
   }
 
   .proposals_list_title {
@@ -286,33 +281,31 @@
     line-height: 0.3rem;
     font-size: 0.18rem;
     color: #a2a2ae;
-  }
-  .for_proposals{
-    display:inline-block;
-  //margin-left:0.1rem;
-  }
-
-  }
+    }
+    .for_proposals{
+      display:inline-block;
+    //margin-left:0.1rem;
+      }
+    }
   }
 
   //重置bootstrap-vue的表格样式
     table{
-
-  td{
-    max-width:2.2rem !important;
-    overflow-wrap: break-word !important;
+      td{
+        max-width:2.2rem !important;
+        overflow-wrap: break-word !important;
+      }
+    }
+    .page-item{
+      &:first-child, &:last-child{
+      .page-link{
+      @include borderRadius(0.025rem);
+      }
+    }
   }
+  .count_show{
+    visibility: visible;
   }
-  .page-item{
-  &:first-child, &:last-child{
-  .page-link{
-  @include borderRadius(0.025rem);
-  }
-  }
-  }
-.count_show{
-  visibility: visible;
-}
   .count_hidden{
     visibility: hidden;
   }
