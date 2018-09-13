@@ -219,15 +219,15 @@
         transactionsTitle: "",
         tabVotingPower:[
           {
-            "title":"2week",
+            "title":"14days",
             "active":true
           },
           {
-            "title":"1month",
+            "title":"30days",
             "active":false
           },
           {
-            "title":"2months",
+            "title":"60days",
             "active":false
           }
         ],
@@ -237,11 +237,11 @@
             "active":true
           },
           {
-            "title":"2week",
+            "title":"14days",
             "active":false
           },
           {
-            "title":"1month",
+            "title":"30days",
             "active":false
           }
         ],
@@ -985,9 +985,11 @@
     margin-left: 0.4rem;
   }
   .border-none{
+    color: #000!important;
     border-top: 0.01rem solid #fff !important;
   }
   .border-block{
+    color: #a2a2ae!important;
     border-top: 0.01rem solid #e4e4e4 !important;
   }
   .mobile_transactions_detail_wrap{
