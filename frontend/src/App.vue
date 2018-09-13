@@ -163,12 +163,7 @@
   #app {
     width: 100%;
     height: 100%;
-    @include flex();
-    flex-direction: column;
     #router_wrap {
-      flex: 1;
-      overflow-y: auto;
-      overflow-x: auto;
       .router_view {
         min-height: 4.5rem;
       }

@@ -20,15 +20,13 @@
           <input type="text" class="form-control" id="sig" name="sig" hidden>
           <fieldset class="form-group">
             <input type="text" class="form-control" id="address" v-model="address" placeholder="Please enter the collection address">
-            <span class="alert_information" :style="`visibility:${alertShow}`">Please enter a valid address</span>
+            <div class="alert_information" :style="{visibility:alertShow}">{{errMsg}}</div>
+            
           </fieldset>
           <fieldset class="form-group">
             <div id="sc" style="margin:0 auto;" class="text-left">
             </div>
           </fieldset>
-          <!--<div class="text-left" v-if="errMsg">
-            <small class="err-msg">* {{errMsg}}</small>
-          </div>-->
           <button id="submit" type="submit" class="btn btn-primary" disabled>Send me IRIS</button>
         </div>
       </form>
@@ -152,13 +150,14 @@
           alert("address is empty");
           return false;
         }*/
-        if(!this.address && this.alertShow === 'hidden'){
+        if(!this.errMsg && this.alertShow === 'hidden'){
           this.alertShow = 'visible';
           setTimeout(()=>{
             if(this.alertShow === 'visible'){
               this.alertShow= 'hidden';
+              this.errMsg = "";
             }
-           },2000);
+          },2000);
         }
         axios.post(this.faucet_url + '/apply', JSON.stringify({
           address: document.getElementById("address").value,
@@ -168,13 +167,19 @@
           "scene": scene
         })).then(result => {
           let data = result.data;
+          let that = this;
           if (data.err_code) {
-            this.errMsg = data.err_msg
+            this.alertShow = 'visible';
+            if(data.err_msg === "address is empty"){
+              that.errMsg = "Please enter a valid address"
+            }else {
+              that.errMsg = data.err_msg;
+            }
           } else {
             alert("apply successfully");
             location.reload();
           }
-        })
+        });
       },
       resize(){
         this.innerWidth = window.innerWidth;
@@ -190,7 +195,7 @@
 
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   @import '../style/mixin.scss';
 
   .faucet {
@@ -205,6 +210,7 @@
     .form-group{
       text-align: left;
       margin-bottom:0 !important;
+      height: 63px;
       .alert_information{
         display:inline-block;
         height:0.14rem;
@@ -222,11 +228,12 @@
     }
     .btn-primary{
       margin-top:0.2rem;
-      box-shadow: 0 0 0 transparent;
+      /*box-shadow: 0 0 0 transparent;*/
       @include borderRadius(0.04rem);
       width:1.28rem;
       height:0.36rem;
       background:#3498DB;
+
       &:disabled{
         background: rgba(214,217,224,1);
         border-color:rgba(214,217,224,1);
@@ -299,5 +306,9 @@
   .faucet_address{
     font-size: 0.14rem;
     color: #000;
+  }
+  .btn-primary:focus{
+    -webkit-box-shadow:0 0 0 .2rem rgba(255,255,255,.5);
+    box-shadow:0 0 0 .2rem rgba(255,255,255,.5)
   }
 </style>
