@@ -7,7 +7,8 @@ import BlocksDetail from './components/BlocksDetail.vue';
 import BlocksListPage from './components/BlocksListPage.vue';
 import AddressPage from './components/AddressPage.vue';
 import PrivacyPolicy from './components/PrivacyPolicy.vue';
-
+import ProposalsPage from "./components/ProposalsPage.vue";
+import ProposalsDetail from "./components/ProposalsDetail.vue"
 Vue.use(Router);
 
 export default new Router({
@@ -22,6 +23,9 @@ export default new Router({
     },
     {
       path: '/faucet', component: FaucetPage
+    },
+    {
+      path: '/Proposals', component: ProposalsPage
     },
     {
       //BlocksListPage为一个组件，根据type类型不同相应不同页面
@@ -53,7 +57,9 @@ export default new Router({
     {
       path: '/blocks_detail/:height', component: BlocksDetail,
     },
-
+    {
+      path: '/ProposalsDetail/:proposal_id', component: ProposalsDetail,
+    },
     {
       path:'/address/:type/:param',
       component:AddressPage,

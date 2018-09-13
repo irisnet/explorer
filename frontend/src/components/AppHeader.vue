@@ -58,6 +58,9 @@
         <span class="nav_item common_item_style" :class="activeClassName === '/faucet'?'nav_item_active':''"
               @click="featureButtonClick('/faucet')"
         >Faucet</span>
+        <span class="nav_item common_item_style" :class="activeClassName === '/Proposals'?'nav_item_active':''"
+              @click="featureButtonClick('/Proposals')"
+        >Proposals</span>
       </div>
 
     </div>
@@ -85,6 +88,7 @@
         <!--<span class="feature_btn_mobile feature_nav"-->
               <!--@click="featureButtonClick('/candidates/4/0')">Candidates</span>-->
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/faucet')">Faucet</span>
+        <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/Proposals')">Proposals</span>
       </div>
       <div class="search_input_mobile">
         <div style="width:95%;position:relative">
@@ -202,6 +206,7 @@
         let urlBlock = `/api/block/${this.searchInputValue}`;
         let urlTransaction = `/api/tx/${this.searchInputValue}`;
         let urlAddress = `/api/account/${this.searchInputValue}`;
+        let urlproposals = `/api/proposal/${this.searchInputValue}`;
         axios.get(urlBlock).then((data)=>{
           if (data.status === 200) {
             return data.data;
@@ -229,6 +234,15 @@
             this.$router.push(`/address/1/${this.searchInputValue}`)
           }
         });
+        axios.get(urlproposals).then((data)=>{
+          if (data.status === 200) {
+            return data.data;
+          }
+        }).then((data)=>{
+          if(data && typeof data === "object"){
+            this.$router.push(`/ProposalsDetail/${this.searchInputValue}`)
+          }
+        });
       },
       onInputChange() {
         this.getData();
@@ -246,7 +260,9 @@
           this.activeClassName = '/home';
         } else if (path.includes('/faucet')) {
           this.activeClassName = '/faucet';
-        } else{
+        } else if(path.includes('/Proposals')){
+          this.activeClassName = '/Proposals';
+        }else {
           this.activeClassName = '';
         }
       },

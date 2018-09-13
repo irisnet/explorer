@@ -29,9 +29,13 @@ export default class Tools{
   static conversionTimeToUTC(originTime){
     return `${originTime.substr(5,2)}/${originTime.substr(8,2)}/${originTime.substr(0,4)} ${originTime.substr(11,8)}+UTC`;
   }
+  static conversionTimeToUTCToYYMMDD(originTime){
+    return `${originTime.substr(0,4)}/${originTime.substr(5,2)}/${originTime.substr(8,2)} ${originTime.substr(11,8)}+UTC`;
+  }
   static conversionTimeToUTCByValidatorsLine(originTime){
     return `${originTime.substr(0,4)}/${originTime.substr(5,2)}/${originTime.substr(8,2)} ${originTime.substr(11,8)}`;
   }
+
   static formatNumber(num){
     return num/1000000000000000000;
   }

@@ -88,6 +88,21 @@
         </span>
       </template>
     </b-table>
+    <b-table :fields='fields' :items='items' striped v-if="type === 'Proposals'">
+      <template slot='Title' slot-scope='data'>
+        <span class="skip_route"  @click="skipRoute(`/ProposalsDetail/${data.item['Proposal ID']}`)">
+          <!--{{data}}-->
+          {{data.item['Title']}}
+        </span>
+      </template>
+    </b-table>
+    <b-table :fields='fields' :items='items' striped v-if="type === 'ProposalsDetail'">
+      <template slot='Voter' slot-scope='data'>
+        <span class="skip_route_gray">
+          {{data.item['Voter']}}
+        </span>
+      </template>
+    </b-table>
   </div>
 
 </template>
