@@ -456,11 +456,11 @@
           }
         }
         let url;
-        if(tabTime == "2week"){
+        if(tabTime == "14days"){
           url = `/api/stake/candidate/${this.$route.params.param}/power/week`;
-        }else if(tabTime == "1month"){
+        }else if(tabTime == "30days"){
           url = `/api/stake/candidate/${this.$route.params.param}/power/month`;
-        }else if(tabTime == "2months"){
+        }else if(tabTime == "60days"){
           url = `/api/stake/candidate/${this.$route.params.param}/power/months`;
         }
         axios.get(url).then((data)=>{
@@ -503,9 +503,9 @@
         let url;
         if(tabTime == "24hours"){
           url = `/api/stake/candidate/${this.$route.params.param}/uptime/hour `;
-        }else if(tabTime == "2week"){
+        }else if(tabTime == "14days"){
           url = `/api/stake/candidate/${this.$route.params.param}/uptime/week `;
-        }else if(tabTime == "1month"){
+        }else if(tabTime == "60days"){
           url = `/api/stake/candidate/${this.$route.params.param}/uptime/month `;
         }
         axios.get(url).then((data)=>{
@@ -556,7 +556,7 @@
                 currayDate = new Date().toISOString();
               }
 
-              if (tabTime == "2week") {
+              if (tabTime == "14days") {
                 let dataDateLength = data.length,
 
                 //获取需要补全的天数
@@ -574,7 +574,7 @@
                   data.unshift({Time: complementdate, Uptime: ""});
                 }
 
-              } else if (tabTime == "1month") {
+              } else if (tabTime == "30days") {
 
                 let dataDateLength = data.length,
                   complementdateLength = 30 - dataDateLength,
@@ -620,7 +620,7 @@
               });
               xData = data.map(item => item.Time);
 
-            } else if (tabTime == "2week") {
+            } else if (tabTime == "14days") {
               currayDate = new Date().toISOString();
                 //获取需要补全的天数
               let complementdateLength = 14 ,
@@ -637,7 +637,7 @@
                 data.unshift({Time: complementdate, Uptime: ""});
               }
               xData = data.map(item => `${String(item.Time).substr(5, 2)}/${String(item.Time).substr(8, 2)}`);
-            } else if (tabTime == "1month") {
+            } else if (tabTime == "30days") {
               currayDate = new Date().toISOString();
               let complementdateLength = 30 ,
                   monthDate = new Date(currayDate),
