@@ -23,16 +23,25 @@
         let radius = this.deviceType === 1 ? '85%' : '65%';
         let option = {
           tooltip : {
-            trigger: 'item',
+            trigger: 'axis',
             formatter(params){
-              params.value[0] = Tools.formatDateYearAndMinutesAndSeconds(params.value[0]);
-              let res =  `<span style="display:block;">${params.value[0].substr(5,11)} +UTC</span>`;
-              res += `<span style="display:block;">Voting Power:${params.value[1]}</span>`;
+              params[0].value[0] = Tools.formatDateYearAndMinutesAndSeconds(params[0].value[0]);
+              let res =  `<span style="display:block;">${params[0].value[0].substr(5,11)} +UTC</span>`;
+              res += `<span style="display:block;">Voting Power:${params[0].value[1]}</span>`;
               return res;
-            }
+            },
+            axisPointer:{
+              show: true,
+              axis:"x",
+              type:"line",
+              lineStyle:{
+                color:"#a2a2ae",
+              },
+            },
           },
           xAxis: {
             axisLabel:{
+              color: "#000",
               show:true,
               rotate:45,
               interval: '0',
@@ -60,6 +69,9 @@
                 color: '#a2a2ae'
               }
             },
+            axisLabel:{
+              color:"#000",
+            },
             min:0,
             splitNumber:5,
             splitLine: {
@@ -86,8 +98,7 @@
                   color: new echarts.graphic.LinearGradient(//设置渐变颜色
                     0, 0, 0, 1,
                     [
-                      {offset: 0, color: '#3498db'},
-                      {offset: 0.5, color: '#91ccef'},
+                      {offset: 0, color: '#a4d7f4'},
                       {offset: 1, color: '#dcf6ff'}
                     ]
                   )
@@ -98,6 +109,7 @@
                 normal:{
                   color:'#3598db',
                   borderColor:'#3598db',  //拐点边框颜色
+                  opacity:0,//拐点显示隐藏 0为隐藏
                 }
               },
             }

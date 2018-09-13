@@ -23,16 +23,23 @@
         let radius = this.deviceType === 1 ? '85%' : '65%';
         let option = {
           tooltip : {
-            trigger: 'item',
+            trigger: 'axis',
+            axisPointer:{
+              axis:"x",
+              type:"line",
+              lineStyle:{
+                color:"#a2a2ae",
+              },
+            },
             formatter(params){
               let res;
-              if(params.name.indexOf(":") != -1){
-                res =  `<span style="display:block;">${params.name} +UTC</span>`;
-                res += `<span style="display:block;">Average Uptime: ${params.value}%</span>`;
+              if(params[0].name.indexOf(":") != -1){
+                res =  `<span style="display:block;">${params[0].name} +UTC</span>`;
+                res += `<span style="display:block;">Average Uptime: ${params[0].value}%</span>`;
                 return res;
               }else {
-                res =  `<span style="display:block;">${params.name} </span>`;
-                res += `<span style="display:block;">Average Uptime: ${params.value}%</span>`;
+                res =  `<span style="display:block;">${params[0].name} </span>`;
+                res += `<span style="display:block;">Average Uptime: ${params[0].value}%</span>`;
               }
               return res;
             }
@@ -43,10 +50,11 @@
             data: [],
             axisLine: {
               lineStyle: {
-                color: '#a2a2ae'
+                color: '#a2a2ae',
               }
             },
             axisLabel:{
+              color:"#000",
               interval:5,
               margin:12,
               rotate:45,
@@ -63,8 +71,11 @@
             type: 'value',
             axisLine: {
               lineStyle: {
-                color: '#a2a2ae'
+                color: '#a2a2ae',
               }
+            },
+            axisLabel:{
+              color:"#000",
             },
             min:0,
             splitNumber:5,
@@ -91,8 +102,7 @@
                   color: new echarts.graphic.LinearGradient(//设置渐变颜色
                     0, 0, 0, 1,
                     [
-                      {offset: 0, color: '#3498db'},
-                      {offset: 0.5, color: '#91ccef'},
+                      {offset: 0, color: '#a4d7f4'},
                       {offset: 1, color: '#dcf6ff'}
                     ]
                   )
@@ -103,6 +113,7 @@
                 normal:{
                   color:'#3598db',
                   borderColor:'#3598db',  //拐点边框颜色
+                  opacity:0,//拐点显示隐藏 0为隐藏
                 }
               },
             }
