@@ -505,7 +505,7 @@
           url = `/api/stake/candidate/${this.$route.params.param}/uptime/hour `;
         }else if(tabTime == "14days"){
           url = `/api/stake/candidate/${this.$route.params.param}/uptime/week `;
-        }else if(tabTime == "60days"){
+        }else if(tabTime == "30days"){
           url = `/api/stake/candidate/${this.$route.params.param}/uptime/month `;
         }
         axios.get(url).then((data)=>{
