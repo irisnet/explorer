@@ -18,7 +18,7 @@
         <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
         </b-pagination>
       </div>
-      <div style="position:relative;overflow-x: auto;">
+      <div style="position:relative;overflow-x: auto;-webkit-overflow-scrolling: touch;">
         <spin-component :showLoading="showLoading"/>
         <blocks-list-table :items="items" :type="this.$route.params.type"
                            :minWidth="tableMinWidth"
@@ -183,7 +183,7 @@
                 };
               })
             }else{
-              this.items = [{Height:'',Txn:'',Fee:'',Timestamp:'','Precommit Validators':'','Voting Power':''}]
+              this.items = [{Height:'',Txn:'',Fee:'',Timestamp:'','Precommit Validators':'','Voting Power':''}];
               this.showNoData = true;
             }
             this.showLoading = false;
@@ -346,7 +346,7 @@
         height:0.62rem;
         span{
           height:0.62rem;
-      line-height:0.62rem;
+          line-height:0.62rem;
         }
       }
       .personal_computer_blocks_list_page_wrap {
@@ -356,6 +356,7 @@
       .mobile_blocks_list_page_wrap {
         @include flex;
         flex-direction: column;
+        -webkit-overflow-scrolling: touch;
         overflow-x: auto;
         width:100%;
         .blocks_list_page_wrap_hash_var{
@@ -424,6 +425,7 @@
           margin-bottom: 0.05rem;
           .information_value {
             overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
           }
 
         }
@@ -439,6 +441,7 @@
       }
       .blocks_list_page_wrap_hash_var {
         overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
         height: 0.3rem;
         line-height: 0.3rem;
         font-size: 0.18rem;
