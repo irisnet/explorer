@@ -681,6 +681,7 @@
         line-height: 0.3rem;
         font-size: 0.18rem;
         color: #a2a2ae;
+        display: flex;
         i{
           font-style:normal;
           padding:0.02rem 0.07rem;
@@ -688,6 +689,7 @@
           border-radius:0.04rem;
           color:#ffffff;
           font-size:0.18rem;
+          margin: 0 0.11rem;
         }
       }
 
