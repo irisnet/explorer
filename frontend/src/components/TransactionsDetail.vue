@@ -222,6 +222,7 @@ padding:0.16rem 0rem;
           margin-bottom:0.05rem;
           .information_value{
             overflow-x:auto;
+            -webkit-overflow-scrolling: touch;
           }
 
         }
@@ -236,6 +237,7 @@ padding:0.16rem 0rem;
       }
       .transactions_detail_wrap_hash_var {
         overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
         height: 0.3rem;
         line-height: 0.3rem;
         font-size: 0.22rem;
