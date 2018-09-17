@@ -100,7 +100,7 @@
         <p class="line_history_title">History</p>
         <div class="line_content">
           <div class="line_echarts_content">
-            <div  class="line_left_container" style="overflow-x: auto;">
+            <div  class="line_left_container" style="overflow-x: auto;-webkit-overflow-scrolling:touch;">
               <echarts-validators-line :informationValidatorsLine="informationValidatorsLine" ></echarts-validators-line>
             </div>
             <div class="line_tab_content">
@@ -110,7 +110,7 @@
           </div>
           <div class="line_echarts_content " :class="transactionsDetailWrap === 'personal_computer_transactions_detail_wrap' ?
            'content_right' : 'model_content_right' ">
-            <div class="line_right_container" style="overflow-x: auto;">
+            <div class="line_right_container" style="overflow-x: auto;-webkit-overflow-scrolling:touch;">
               <echarts-validators-uptime-line :informationUptimeLine="informationUptimeLine" ></echarts-validators-uptime-line>
             </div>
             <div class="line_tab_content">
@@ -657,6 +657,7 @@
           margin-bottom:0.05rem;
           .information_value{
             overflow-x:auto;
+            -webkit-overflow-scrolling:touch;
             color: #a2a2ae;
           }
           .information_props{
@@ -677,6 +678,7 @@
       }
       .transactions_detail_wrap_hash_var {
         overflow-x: auto;
+        -webkit-overflow-scrolling:touch;
         height: 0.3rem;
         line-height: 0.3rem;
         font-size: 0.18rem;
@@ -823,6 +825,7 @@
         }
         .transaction_table{
           overflow-x:auto;
+          -webkit-overflow-scrolling:touch;
           .no_data_show{
             @include flex;
             justify-content: center;
