@@ -364,6 +364,7 @@
       padding: 0.1rem;
       .information_preview {
         overflow-x: auto;
+        -webkit-overflow-scrolling:touch;
         .information_preview_module {
           min-width: 1.6rem;
         }
@@ -379,6 +380,7 @@
         }
         .home_module_item_pie {
           overflow-x: auto;
+          -webkit-overflow-scrolling:touch;
         }
       }
     }

@@ -291,6 +291,7 @@
     .proposals_detail_table_wrap {
       width: 100%;
       overflow-x: auto;
+      -webkit-overflow-scrolling:touch;
       margin-bottom:0.4rem;
     .no_data_show {
       @include flex;
@@ -311,6 +312,7 @@
           margin-bottom: 0.05rem;
         .information_value {
           overflow-x: auto;
+          -webkit-overflow-scrolling:touch;
         }
         .flag_item_left {
           display: inline-block;
@@ -356,6 +358,7 @@
       }
       .transactions_detail_wrap_hash_var {
         overflow-x: auto;
+        -webkit-overflow-scrolling:touch;
         height: 0.3rem;
         line-height: 0.3rem;
         font-size: 0.22rem;

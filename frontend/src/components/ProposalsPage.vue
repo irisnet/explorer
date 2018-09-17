@@ -12,7 +12,7 @@
         <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
         </b-pagination>
       </div>
-      <div style="position:relative;overflow-x: auto;">
+      <div style="position:relative;overflow-x: auto;-webkit-overflow-scrolling:touch;">
         <spin-component :showLoading="showLoading"/>
         <blocks-list-table :items="items" :type="'Proposals'"></blocks-list-table>
         <div v-show="showNoData" class="no_data_show">
@@ -197,6 +197,7 @@
       @include flex;
       flex-direction: column;
       overflow-x: auto;
+      -webkit-overflow-scrolling:touch;
       width:100%;
       .proposals_list_page_wrap_hash_var{
         min-width:7rem;
@@ -263,6 +264,7 @@
       margin-bottom: 0.05rem;
       .information_value {
         overflow-x: auto;
+        -webkit-overflow-scrolling:touch;
       }
     }
   }
@@ -277,6 +279,7 @@
   }
   .proposals_list_page_wrap_hash_var {
     overflow-x: auto;
+    -webkit-overflow-scrolling:touch;
     height: 0.3rem;
     line-height: 0.3rem;
     font-size: 0.18rem;

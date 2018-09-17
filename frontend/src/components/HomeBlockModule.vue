@@ -160,6 +160,7 @@
     .home_module_block_content{
       flex:1;
       overflow-y:hidden;
+      -webkit-overflow-scrolling:touch;
       .home_module_block_content_item{
         @include flex;
         justify-content:space-between;
