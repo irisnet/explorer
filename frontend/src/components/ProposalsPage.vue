@@ -105,13 +105,16 @@
           if(data.Data && typeof data === "object"){
             this.count = data.Count;
             this.items = data.Data.map(item =>{
-              let title = item.title;
               let proposalId = item.proposal_id;
               let type = item.type;
               let status  = item.status;
               let submitBlock = item.submit_block;
               let submitTime = Tools.conversionTimeToUTCToYYMMDD(item.submit_time);
               let votingStartBlock = item.voting_start_block ? item.voting_start_block : "" ;
+              if(item.title.length > 20){
+                item.title = item.title.substr(0 ,20) + "..."
+              }
+              let title = item.title;
               return {
                 Title : title,
                 'Proposal ID' : proposalId,
