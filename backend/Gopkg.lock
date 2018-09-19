@@ -27,7 +27,7 @@
 
 [[projects]]
   branch = "develop"
-  digest = "1:d367f9550c6ebd93d149a28a31a8b47d4c2d5472a9ff0f574371813d5a0263c2"
+  digest = "1:02c4fc1a621599bae394aae6fb1a35e70cfadba35d3960066edf7473ac29573a"
   name = "github.com/irisnet/irishub-sync"
   packages = [
     "conf/db",
@@ -37,7 +37,7 @@
     "util/constant",
   ]
   pruneopts = "UT"
-  revision = "aa7ead6d53b01c25035aa72107ce2c99252ffb8f"
+  revision = "543b5870aecffd66dc7d6e07f50e7b35e7aa6fe7"
 
 [[projects]]
   branch = "v2"
@@ -59,6 +59,7 @@
   input-imports = [
     "github.com/gorilla/handlers",
     "github.com/gorilla/mux",
+    "github.com/irisnet/irishub-sync/store",
     "github.com/irisnet/irishub-sync/store/document",
     "gopkg.in/mgo.v2",
     "gopkg.in/mgo.v2/bson",
