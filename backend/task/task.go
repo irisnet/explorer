@@ -44,7 +44,9 @@ func init() {
 	pipe.All(&powerChanges)
 
 	for _, powerChange := range powerChanges {
-		validatorMap[powerChange.Address] = types.PowerChange{Address: powerChange.Address, Time: powerChange.Time, Power: powerChange.Power, Change: powerChange.Change}
+		if powerChange.Change != types.Slash {
+			validatorMap[powerChange.Address] = types.PowerChange{Address: powerChange.Address, Time: powerChange.Time, Power: powerChange.Power, Change: powerChange.Change}
+		}
 	}
 }
 
@@ -145,17 +147,17 @@ func UptimeChange() {
 					validatorMap[validator.Address] = powerChange
 					p.Insert(&powerChange)
 				}
-				if validatorMap[validator.Address].Change == types.Slash {
-					powerChange := types.PowerChange{
-						Address: validator.Address,
-						Power:   validator.VotingPower,
-						Time:    block.Time,
-						Height:  block.Height,
-						Change:  types.Recover,
-					}
-					validatorMap[validator.Address] = powerChange
-					p.Insert(&powerChange)
-				}
+				//if validatorMap[validator.Address].Change == types.Slash {
+				//	powerChange := types.PowerChange{
+				//		Address: validator.Address,
+				//		Power:   validator.VotingPower,
+				//		Time:    block.Time,
+				//		Height:  block.Height,
+				//		Change:  types.Recover,
+				//	}
+				//	validatorMap[validator.Address] = powerChange
+				//	p.Insert(&powerChange)
+				//}
 			}
 		}
 
@@ -172,7 +174,7 @@ func UptimeChange() {
 					Height:  block.Height,
 					Change:  types.Slash,
 				}
-				validatorMap[k] = powerChange
+				delete(validatorMap, k)
 				p.Insert(&powerChange)
 			}
 		}
