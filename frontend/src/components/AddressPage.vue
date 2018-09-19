@@ -427,6 +427,7 @@
         }).then((data)=>{
           this.totalBlocks = data.Count;
           if(data.Data && typeof data === "object"){
+            this.showNoData2 = false;
             this.itemsPre = data.Data.map(item=>{
               return{
                 'Block Height':item.Height,
