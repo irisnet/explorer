@@ -142,9 +142,9 @@
         </div>
 
         <div class="transaction_table">
-          <blocks-list-table :items="items" :type="'6'" v-show="activeBtn === 0" :showNoData="showNoData1"></blocks-list-table>
-          <blocks-list-table :items="itemsPre" :type="'7'" v-show="activeBtn === 1" :showNoData="showNoData2" :minWidth="5.4"></blocks-list-table>
-          <div v-show="(activeBtn === 0 && showNoData1) || (activeBtn === 1 && showNoData2)" class="no_data_show">
+          <blocks-list-table :items="items" :type="'6'" v-show="activeBtn === 0" :showNoData="TransactionsShowNoData"></blocks-list-table>
+          <blocks-list-table :items="itemsPre" :type="'7'" v-show="activeBtn === 1" :showNoData="PrecommitBlocksshowNoData" :minWidth="5.4"></blocks-list-table>
+          <div v-show="(activeBtn === 0 && TransactionsShowNoData) || (activeBtn === 1 && PrecommitBlocksshowNoData)" class="no_data_show">
             No Data
           </div>
         </div>
@@ -210,8 +210,8 @@
         type:this.$route.params.type,
         totalBlocks:0,
         totalFee:0,
-        showNoData1:false,//无数据的时候显示无数据状态
-        showNoData2:false,
+        TransactionsShowNoData:false,//无数据的时候显示无数据状态
+        PrecommitBlocksshowNoData:false,
         transactionsCount:0,
         showProfile:true,
         informationValidatorsLine: {},//折线图端所有信息
@@ -413,7 +413,7 @@
               Fees:'',
               Timestamp:'',
             }];
-            this.showNoData1 = true;
+            this.TransactionsShowNoData = true;
           }
 
         })
@@ -427,6 +427,7 @@
         }).then((data)=>{
           this.totalBlocks = data.Count;
           if(data.Data && typeof data === "object"){
+            this.PrecommitBlocksshowNoData = false;
             this.itemsPre = data.Data.map(item=>{
               return{
                 'Block Height':item.Height,
@@ -444,7 +445,7 @@
               Timestamp:'',
               'Precommit Validators':'',
             }];
-            this.showNoData2 = true;
+            this.PrecommitBlocksshowNoData = true;
           }
         })
       },
@@ -548,7 +549,6 @@
 
               xData = data.map(item => item.Time);
             } else {
-
               let currayDate;
               if(data.length > 2){
                 currayDate = data[0].Time;
@@ -567,7 +567,7 @@
                   //24小时的时间戳（毫秒数）
                   dayNumberOfMilliseconds = 60 * 60 * 1000 * 24 ;
                 //补全日期的逻辑
-                for (var lackOfDateNum = 0; lackOfDateNum < complementdateLenth; lackOfDateNum++) {
+                for (var lackOfDateNum = 0; lackOfDateNum < complementdateLength; lackOfDateNum++) {
                   millisecondstime = millisecondstime - dayNumberOfMilliseconds;
                   let complementdate = Tools.formatDateYearToDate(millisecondstime);
 
@@ -577,11 +577,11 @@
               } else if (tabTime == "30days") {
 
                 let dataDateLength = data.length,
-                  complementdateLenth = 30 - dataDateLength,
+                  complementdateLength = 30 - dataDateLength,
                   monthDate = new Date(data[0].Time),
                   millisecondstime = monthDate.getTime(),
                   dayNumberOfMilliseconds = 60 * 60 * 1000 * 24;
-                for (var lackOfDateNum = 0; lackOfDateNum < complementdateLenth; lackOfDateNum++) {
+                for (var lackOfDateNum = 0; lackOfDateNum < complementdateLength; lackOfDateNum++) {
                   millisecondstime = millisecondstime - dayNumberOfMilliseconds;
                   let complementdate = Tools.formatDateYearToDate(millisecondstime);
 
