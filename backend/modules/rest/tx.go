@@ -74,7 +74,18 @@ func registerQueryTxsByDay(r *mux.Router) error {
 
 func queryTxs(w http.ResponseWriter, r *http.Request) {
 	var data []document.CommonTx
-	w.Write(utils.QueryList("tx_common", &data, nil, "-time", r))
+	query := bson.M{}
+	query["type"] = bson.M{
+		"$in": []string{
+			"Transfer",
+			"CreateValidator",
+			"EditValidator",
+			"Delegate",
+			"BeginUnbonding",
+			"CompleteUnbonding",
+		},
+	}
+	w.Write(utils.QueryList("tx_common", &data, query, "-time", r))
 }
 
 // queryTx is to query transaction by hash
@@ -119,7 +130,19 @@ func queryTxsByBlock(w http.ResponseWriter, r *http.Request) {
 	args := mux.Vars(r)
 	height := args["height"]
 	iHeight, _ := strconv.Atoi(height)
-	w.Write(utils.QueryList("tx_common", &data, bson.M{"height": iHeight}, "-time", r))
+	query := bson.M{}
+	query["height"] = iHeight
+	query["type"] = bson.M{
+		"$in": []string{
+			"Transfer",
+			"CreateValidator",
+			"EditValidator",
+			"Delegate",
+			"BeginUnbonding",
+			"CompleteUnbonding",
+		},
+	}
+	w.Write(utils.QueryList("tx_common", &data, query, "-time", r))
 }
 
 func queryTxsByDay(w http.ResponseWriter, r *http.Request) {
