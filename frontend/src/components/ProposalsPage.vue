@@ -230,12 +230,14 @@
       color: #000000;
       margin-right: 0.2rem;
       font-weight: 500;
+      margin-left: 0.2rem;
     }
     .proposals_list_page_wrap_hash_var {
       height:  0.62rem;
       line-height: 0.62rem;
       font-size: 0.22rem;
       color: #a2a2ae;
+      margin-left: 0.2rem;
     }
     .for_proposals{
       display:inline-block;

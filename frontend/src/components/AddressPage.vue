@@ -38,23 +38,23 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Website:</span>
-          <a class="information_value" :href="websiteValue" target="_blank"
+          <span class="information_value"
              v-show="websiteValue !== '--'"
-             style="color:#3598db;">{{websiteValue}}</a>
+             style="color:#a2a2ae;">{{websiteValue}}</span>
           <i v-show="websiteValue === '--'" style="font-style:normal;color:#a2a2ae">--</i>
         </div>
-        <!--<div class="information_props_wrap" style="border-bottom:0.01rem solid #eee">
+        <div class="information_props_wrap" style="border-bottom:0.01rem solid #eee">
           <span class="information_props">Description:</span>
           <span class="information_value">{{descriptionValue}}</span>
         </div>
-        <div class="information_props_wrap">
-          <span class="information_props">Commission Rate:</span>
-          <span class="information_value">{{commissionRateValue}}</span>
-        </div>
-        <div class="information_props_wrap">
-          <span class="information_props">Announcement:</span>
-          <span class="information_value">{{announcementValue}}</span>
-        </div>-->
+        <!--<div class="information_props_wrap">-->
+          <!--<span class="information_props">Commission Rate:</span>-->
+          <!--<span class="information_value">{{commissionRateValue}}</span>-->
+        <!--</div>-->
+        <!--<div class="information_props_wrap">-->
+          <!--<span class="information_props">Announcement:</span>-->
+          <!--<span class="information_value">{{announcementValue}}</span>-->
+        <!--</div>-->
 
 
       </div>
@@ -173,7 +173,7 @@
         this.getProfileInformation();
         this.getPrecommitBlocksList();
         this.getCurrentTenureInformation();
-        this.getValidatorHistory('2week');
+        this.getValidatorHistory('14days');
         this.getValidatorUptimeHistory('24hours');
       },
       activeBtn(activeBtn){
@@ -219,15 +219,15 @@
         transactionsTitle: "",
         tabVotingPower:[
           {
-            "title":"2week",
+            "title":"14days",
             "active":true
           },
           {
-            "title":"1month",
+            "title":"30days",
             "active":false
           },
           {
-            "title":"2months",
+            "title":"60days",
             "active":false
           }
         ],
@@ -237,11 +237,11 @@
             "active":true
           },
           {
-            "title":"2week",
+            "title":"14days",
             "active":false
           },
           {
-            "title":"1month",
+            "title":"30days",
             "active":false
           }
         ],
@@ -266,7 +266,7 @@
       this.getProfileInformation();
       this.getPrecommitBlocksList();
       this.getCurrentTenureInformation();
-      this.getValidatorHistory('2week');
+      this.getValidatorHistory('14days');
       this.getValidatorUptimeHistory('24hours')
     },
     methods: {
@@ -427,6 +427,7 @@
         }).then((data)=>{
           this.totalBlocks = data.Count;
           if(data.Data && typeof data === "object"){
+            this.showNoData2 = false;
             this.itemsPre = data.Data.map(item=>{
               return{
                 'Block Height':item.Height,
@@ -456,11 +457,11 @@
           }
         }
         let url;
-        if(tabTime == "2week"){
+        if(tabTime == "14days"){
           url = `/api/stake/candidate/${this.$route.params.param}/power/week`;
-        }else if(tabTime == "1month"){
+        }else if(tabTime == "30days"){
           url = `/api/stake/candidate/${this.$route.params.param}/power/month`;
-        }else if(tabTime == "2months"){
+        }else if(tabTime == "60days"){
           url = `/api/stake/candidate/${this.$route.params.param}/power/months`;
         }
         axios.get(url).then((data)=>{
@@ -484,8 +485,12 @@
               }
             });
           }
-          let seriesData = array;
-          this.informationValidatorsLine = {maxValue,seriesData};
+          let seriesData = array, noDatayAxisDefaultMax;
+          //如果没有votingPower，返回的数据中会默认带两条数据
+          if(seriesData.length < 3){
+            noDatayAxisDefaultMax = "100"
+          }
+          this.informationValidatorsLine = {maxValue,seriesData,noDatayAxisDefaultMax};
         })
       },
       getValidatorUptimeHistory(tabTime,index){
@@ -499,68 +504,156 @@
         let url;
         if(tabTime == "24hours"){
           url = `/api/stake/candidate/${this.$route.params.param}/uptime/hour `;
-        }else if(tabTime == "2week"){
+        }else if(tabTime == "14days"){
           url = `/api/stake/candidate/${this.$route.params.param}/uptime/week `;
-        }else if(tabTime == "1month"){
+        }else if(tabTime == "30days"){
           url = `/api/stake/candidate/${this.$route.params.param}/uptime/month `;
         }
         axios.get(url).then((data)=>{
+
           if(data.status === 200){
             return data.data;
           }
         }).then((data)=>{
           if(data && typeof data === "object") {
-            //获取y轴最大值
-            let maxValue = 0;
-            data.forEach(item => {
-              if (item.Uptime > maxValue) {
-                maxValue = item.Uptime;
-              }
-              //取整
-              item.Uptime = item.Uptime.toString().split(".")[0];
-            });
-            //格式化x轴的数据
-            let xData;
+            let xData , currayDate;
             if (tabTime == "24hours") {
+              if(data.length !== 0){
+                currayDate = data[0].Time;
+              }else {
+                currayDate = new Date().toISOString().substr(0,13).replace("T", " ");
+              }
+              if(data.length < 24){
+                let complementHourLength = 24 - data.length;
+                let hourTime = currayDate.split(" ")[1];
+                let yearAndDayTime = currayDate.split(" ")[0];
+
+                for (let k = 0; k < complementHourLength; k++){
+                  hourTime--;
+                  //当hourTime的数值为负数的时候，+24格式化成24小时显示
+                  if(hourTime < 0){
+                    hourTime = 24 + hourTime;
+                  }
+                  //当小时数为一位的时候补零
+                  if(String(hourTime).length < 2){
+                    hourTime = "0" + hourTime;
+                  }
+                  let hoursDate = yearAndDayTime + " " + hourTime;
+                  data.unshift({AddressL:data.Address,Time: hoursDate ,Uptime: ""})
+                }
+              }
+
               data.forEach((item) => {
                 item.Time = item.Time.substr(10, 12)+ ":00";
               });
+
               xData = data.map(item => item.Time);
             } else {
-              if (tabTime == "2week") {
+              if(data.length > 2){
+                currayDate = data[0].Time;
+              }else {
+                currayDate = new Date().toISOString();
+              }
+
+              if (tabTime == "14days") {
                 let dataDateLength = data.length,
-                  //获取需要补全的天数
-                  complementdateLenth = 14 - dataDateLength,
+
+                //获取需要补全的天数
+                  complementdateLength = 14 - dataDateLength,
                   //从那天需要补全的日期
                   weekDate = new Date(data[0].Time),
                   millisecondstime = weekDate.getTime(),
                   //24小时的时间戳（毫秒数）
                   dayNumberOfMilliseconds = 60 * 60 * 1000 * 24 ;
                 //补全日期的逻辑
-                for (var lackOfDateNum = 0; lackOfDateNum < complementdateLenth; lackOfDateNum++) {
+                for (var lackOfDateNum = 0; lackOfDateNum < complementdateLength; lackOfDateNum++) {
                   millisecondstime = millisecondstime - dayNumberOfMilliseconds;
                   let complementdate = Tools.formatDateYearToDate(millisecondstime);
 
                   data.unshift({Time: complementdate, Uptime: ""});
                 }
-              } else if (tabTime == "1month") {
+
+              } else if (tabTime == "30days") {
+
                 let dataDateLength = data.length,
-                  complementdateLenth = 30 - dataDateLength,
+                  complementdateLength = 30 - dataDateLength,
                   monthDate = new Date(data[0].Time),
                   millisecondstime = monthDate.getTime(),
                   dayNumberOfMilliseconds = 60 * 60 * 1000 * 24;
-                for (var lackOfDateNum = 0; lackOfDateNum < complementdateLenth; lackOfDateNum++) {
+                for (var lackOfDateNum = 0; lackOfDateNum < complementdateLength; lackOfDateNum++) {
                   millisecondstime = millisecondstime - dayNumberOfMilliseconds;
                   let complementdate = Tools.formatDateYearToDate(millisecondstime);
 
                   data.unshift({Time: complementdate, Uptime: ""});
                 }
               }
+
               xData = data.map(item => `${String(item.Time).substr(5, 2)}/${String(item.Time).substr(8, 2)}`);
             }
-            let seriesData = data.map(item => item.Uptime);
-            this.informationUptimeLine = {maxValue, xData, seriesData};
+            let seriesData = data.map(item => item.Uptime.toString().split(".")[0]);
+            this.informationUptimeLine = {xData, seriesData};
+          }else {
+            let xData , currayDate  , data = [];
+            if (tabTime == "24hours") {
+                 currayDate = new Date().toISOString().substr(0, 13).replace("T", " ");
+                let complementHourLength = 24;
+                let hourTime = currayDate.split(" ")[1];
+                let yearAndDayTime = currayDate.split(" ")[0];
+
+                for (let k = 0; k < complementHourLength; k++) {
+                  hourTime--;
+                  //当hourTime的数值为负数的时候，+24格式化成24小时显示
+                  if (hourTime < 0) {
+                    hourTime = 24 + hourTime;
+                  }
+                  //当小时数为一位的时候补零
+                  if (String(hourTime).length < 2) {
+                    hourTime = "0" + hourTime;
+                  }
+                  let hoursDate = yearAndDayTime + " " + hourTime;
+                  data.unshift({AddressL: data.Address, Time: hoursDate, Uptime: ""})
+                }
+
+              data.forEach((item) => {
+                item.Time = item.Time.substr(10, 12) + ":00";
+              });
+              xData = data.map(item => item.Time);
+
+            } else if (tabTime == "14days") {
+              currayDate = new Date().toISOString();
+                //获取需要补全的天数
+              let complementdateLength = 14 ,
+                //从那天需要补全的日期
+                weekDate = new Date(currayDate),
+                millisecondstime = weekDate.getTime(),
+                //24小时的时间戳（毫秒数）
+                dayNumberOfMilliseconds = 60 * 60 * 1000 * 24 ;
+              //补全日期的逻辑
+              for (let lackOfDateNum = 0; lackOfDateNum < complementdateLength; lackOfDateNum++) {
+                millisecondstime = millisecondstime - dayNumberOfMilliseconds;
+                let complementdate = Tools.formatDateYearToDate(millisecondstime);
+
+                data.unshift({Time: complementdate, Uptime: ""});
+              }
+              xData = data.map(item => `${String(item.Time).substr(5, 2)}/${String(item.Time).substr(8, 2)}`);
+            } else if (tabTime == "30days") {
+              currayDate = new Date().toISOString();
+              let complementdateLength = 30 ,
+                  monthDate = new Date(currayDate),
+                  millisecondstime = monthDate.getTime(),
+                  dayNumberOfMilliseconds = 60 * 60 * 1000 * 24;
+                  for (let lackOfDateNum = 0; lackOfDateNum < complementdateLength; lackOfDateNum++) {
+                    millisecondstime = millisecondstime - dayNumberOfMilliseconds;
+                    let complementdate = Tools.formatDateYearToDate(millisecondstime);
+                data.unshift({Time: complementdate, Uptime: ""});
+              }
+              xData = data.map(item => `${String(item.Time).substr(5, 2)}/${String(item.Time).substr(8, 2)}`);
+            }
+            let noDatayAxisDefaultMax = "100";
+            let seriesData = data.map(item => item.Uptime.toString().split(".")[0]);
+            this.informationUptimeLine = {xData, seriesData,noDatayAxisDefaultMax};
           }
+
         })
       },
     }
@@ -896,9 +989,11 @@
     margin-left: 0.4rem;
   }
   .border-none{
+    color: #000!important;
     border-top: 0.01rem solid #fff !important;
   }
   .border-block{
+    color: #a2a2ae!important;
     border-top: 0.01rem solid #e4e4e4 !important;
   }
   .mobile_transactions_detail_wrap{
