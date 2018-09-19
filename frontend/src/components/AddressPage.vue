@@ -549,6 +549,7 @@
 
               xData = data.map(item => item.Time);
             } else {
+              let currayDate;
               if(data.length > 2){
                 currayDate = data[0].Time;
               }else {
