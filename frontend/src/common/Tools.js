@@ -113,6 +113,32 @@ export default class Tools{
   static dealWithFees(num){
     return Tools.scientificToNumber(Tools.decimalPlace(Tools.formatNumber(num)))
   }
+  /**
+   * 根据字节截取字符串
+   */
+  static getShortForm(string,cutOutlength,addSuffix){
+    var stringLength = string.replace(/[^\x00-\xff]/g,"**").length;
+    if(stringLength>cutOutlength){
+      if(!addSuffix) {
+        addSuffix="......";
+      }
+      var i=0;
+      for(var z=0;z<cutOutlength;z++){
+        if(string.charCodeAt(z)>255){
+          i=i+2;
+        }else{
+          i=i+1;
+        }
+        if(i>=cutOutlength){
+          string=string.slice(0,(z + 1))+addSuffix;
+          break;
+        }
+      }
+      return string;
+    }else{
+      return string+"";
+    }
+  }
 
   /**
    * 格式化空格

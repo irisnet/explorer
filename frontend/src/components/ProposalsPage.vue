@@ -103,6 +103,7 @@
           }
         }).then((data)=>{
           if(data.Data && typeof data === "object"){
+            this.showNoData = false;
             this.count = data.Count;
             this.items = data.Data.map(item =>{
               let proposalId = item.proposal_id;
@@ -111,10 +112,7 @@
               let submitBlock = item.submit_block;
               let submitTime = Tools.conversionTimeToUTCToYYMMDD(item.submit_time);
               let votingStartBlock = item.voting_start_block ? item.voting_start_block : "" ;
-              if(item.title.length > 20){
-                item.title = item.title.substr(0 ,20) + "..."
-              }
-              let title = item.title;
+              let title = Tools.getShortForm(item.title,20,"...");
               return {
                 Title : title,
                 'Proposal ID' : proposalId,
@@ -126,7 +124,8 @@
               }
             })
           }else {
-            this.items = [{Title:"",'Proposal ID':"",Type:"",Status:"",'Submit Block':"",'Submit Time':'','Voting Start Block':''}]
+            this.items = [{Title:"",'Proposal ID':"",Type:"",Status:"",'Submit Block':"",'Submit Time':'','Voting Start Block':''}];
+            this.showNoData = true;
           }
           this.showLoading = false;
         })

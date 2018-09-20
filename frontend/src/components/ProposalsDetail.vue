@@ -131,7 +131,7 @@
           }
         }).then((data) => {
           if(data && typeof  data === "object" ){
-            // this.count = data.votes || data.proposal.status === "DepositPeriod" ? data.votes.length : "--";
+            this.showNoData = false;
             this.proposalsId = data.proposal.proposal_id;
             this.title = data.proposal.title;
             this.type = data.proposal.type;
@@ -152,6 +152,8 @@
             }
             if(data.proposal.status === "DepositPeriod"){
               this.count = "--"
+            }else {
+              this.count = 0;
             }
             if(data.votes){
               this.count = data.votes.length;
@@ -168,7 +170,8 @@
                 Voter: "",
                 "Vote Option": "",
                 "Vote Time": ""
-              }]
+              }];
+              this.showNoData = true
             }
           }
           this.showLoading = false;
