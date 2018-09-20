@@ -13,7 +13,13 @@ import (
 
 type BlockRsp struct {
 	CandidateMap map[string]string
+	Counter      Counter
 	document.Block
+}
+
+type Counter struct {
+	TxCnt    int
+	PropoCnt int
 }
 
 func queryBlock(w http.ResponseWriter, r *http.Request) {
@@ -46,6 +52,24 @@ func queryBlock(w http.ResponseWriter, r *http.Request) {
 			result.CandidateMap = candidateMap
 		}
 		result.Block = block
+
+		//query txs from block height
+		txCommonC := utils.GetDatabase().C("tx_common")
+		var txs []document.CommonTx
+		err = txCommonC.Find(bson.M{"height": iHeight}).All(&txs)
+		if err == nil {
+			var counter Counter
+			for _, tx := range txs {
+				if tx.Type == "SubmitProposal" || tx.Type == "Deposit" || tx.Type == "Vote" {
+					counter.PropoCnt = counter.PropoCnt + 1
+				} else {
+					counter.TxCnt = counter.TxCnt + 1
+				}
+
+			}
+			result.Counter = counter
+		}
+
 		resultByte, _ := json.Marshal(result)
 		w.Write(resultByte)
 	}
