@@ -29,11 +29,14 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Transactions:</span>
-          <span class="information_value"
-                @click="skipTransactions"
-                v-show="transactionsValue != 0"
-                style="color:#3598db;cursor:pointer;">{{transactionsValue}}</span>
-          <span v-show="transactionsValue == 0" style="color:#a2a2ae;">0</span>
+          <div class="information_value">
+            <span
+                  @click="skipTransactions"
+                  v-show="transactionsValue != 0"
+                  style="color:#3598db;cursor:pointer;">{{transactionsValue}}</span><span v-show="transactionsValue != 0"> transactions</span><span v-show="ProposalsTransactionsNum !=0"> and {{ProposalsTransactionsNum}} proposal transactions.</span>
+          </div>
+
+          <span v-show="transactionsValue == 0" style="color:#a2a2ae;">0 transactions</span>
         </div>
         <!--<div class="information_props_wrap">-->
           <!--<span class="information_props">Fees:</span>-->
@@ -113,7 +116,7 @@
         acitve: true,
         activeNext: true,
         maxBlock: 0,
-
+        ProposalsTransactionsNum: 0,
       }
     },
     beforeMount() {
@@ -176,11 +179,17 @@
               this.heightValue = data.Height;
               this.timestampValue = Tools.conversionTimeToUTC(data.Time);
               this.blockHashValue = data.Hash;
-              this.transactionsValue = data.NumTxs;
               // this.feeValue = '0 IRIS';
               this.lastBlockHashValue = data.Block.LastCommit.BlockID.Hash;
               this.precommitValidatorsValue = data.Validators.length !== 0 ? `${data.Block.LastCommit.Precommits.length}/${data.Validators.length}` : '';
               this.votingPowerValue = denominator !== 0 ? `${numerator / denominator * 100}%` : '';
+              if(data.Counter){
+                this.transactionsValue = data.Counter.TxCnt;
+                this.ProposalsTransactionsNum = data.Counter.PropoCnt;
+              }else {
+                this.transactionsValue = 0;
+                this.ProposalsTransactionsNum = 0;
+              }
             }
           } else {
             this.items = [{
@@ -227,7 +236,9 @@
           }
         }).then((data) => {
           if (data && typeof data === "object") {
-            this.maxBlock = data.Data[0].Height;
+            if(data.Data && data.Data.length !==0){
+              this.maxBlock = data.Data[0].Height;
+            }
             if (Number(this.$route.params.height) >= this.maxBlock) {
               this.activeNext = false;
             } else {

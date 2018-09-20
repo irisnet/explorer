@@ -702,7 +702,7 @@
           .information_value{
             color: #a2a2ae;
             font-size:0.14rem;
-            flex:1;
+            /*flex:1;*/
           }
         }
       }
