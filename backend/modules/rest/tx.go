@@ -136,7 +136,19 @@ func queryTxsByAccount(w http.ResponseWriter, r *http.Request) {
 	var data []document.CommonTx
 	args := mux.Vars(r)
 	address := args["address"]
-	w.Write(utils.QueryList("tx_common", &data, bson.M{"$or": []bson.M{{"from": address}, {"to": address}}}, "-time", r))
+	query := bson.M{}
+	query["$or"] = []bson.M{{"from": address}, {"to": address}}
+	query["type"] = bson.M{
+		"$in": []string{
+			"Transfer",
+			"CreateValidator",
+			"EditValidator",
+			"Delegate",
+			"BeginUnbonding",
+			"CompleteUnbonding",
+		},
+	}
+	w.Write(utils.QueryList("tx_common", &data, query, "-time", r))
 }
 
 func queryTxsByBlock(w http.ResponseWriter, r *http.Request) {
