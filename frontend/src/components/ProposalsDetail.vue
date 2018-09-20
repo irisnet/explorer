@@ -3,7 +3,7 @@
     <div class="proposals_title_wrap">
       <p :class="proposalsDetailWrap" style="margin-bottom:0;">
         <span class="proposals_detail_title">Proposals</span>
-        <span class="proposals_detail_wrap_hash_var">{{`#${count}`}}</span>
+        <span class="proposals_detail_wrap_hash_var">{{`#${proposalsId}`}}</span>
       </p>
     </div>
 
@@ -55,7 +55,7 @@
           <span>Total:{{count}}</span>
         </div>
         <div class="voting_options">
-          <span>Yes:{{voteDetalsYes}}</span>|<span>No: {{voteDetalsNo}}</span>|<span>NowithVeto:{{voteDetalsNoWithVeto}}</span>|<span>Abstain:{{voteDetalsAbstain}}</span>
+          <span>Yes:{{voteDetalsYes}}</span>|<span>No: {{voteDetalsNo}}</span>|<span>NoWithVeto:{{voteDetalsNoWithVeto}}</span>|<span>Abstain:{{voteDetalsAbstain}}</span>
         </div>
       </div>
     </div>
@@ -131,21 +131,30 @@
           }
         }).then((data) => {
           if(data && typeof  data === "object" ){
-            this.count = data.votes ? data.votes.length : "--";
+            // this.count = data.votes || data.proposal.status === "DepositPeriod" ? data.votes.length : "--";
             this.proposalsId = data.proposal.proposal_id;
             this.title = data.proposal.title;
             this.type = data.proposal.type;
             this.status = data.proposal.status;
             this.submitBlock = data.proposal.submit_block;
             this.submitTime = Tools.conversionTimeToUTCToYYMMDD(data.proposal.submit_time);
-            this.totalDeposit = Tools.scientificToNumber(Tools.formatNumber(data.proposal.total_deposit[0].amount)) + " " +data.proposal.total_deposit[0].denom.toUpperCase();
             this.votingStartBlock = data.proposal.voting_start_block ? data.proposal.voting_start_block : " -- ";
             this.description = data.proposal.description ? data.proposal.description : " -- ";
-            this.voteDetalsYes = data.result.Yes;
-            this.voteDetalsNo = data.result.No;
-            this.voteDetalsNoWithVeto = data.result.NoWithVeto;
-            this.voteDetalsAbstain = data.result.Abstain;
+            this.voteDetalsYes = data.proposal.status === "DepositPeriod" ? "--" : data.result.Yes;
+            this.voteDetalsNo = data.proposal.status === "DepositPeriod" ? "--" : data.result.No;
+            this.voteDetalsNoWithVeto = data.proposal.status === "DepositPeriod" ? "--" : data.result.NoWithVeto;
+            this.voteDetalsAbstain = data.proposal.status === "DepositPeriod" ? "--" : data.result.Abstain;
+
+            if(data.proposal && data.proposal.total_deposit.length !==0){
+              this.totalDeposit = Tools.scientificToNumber(Tools.formatNumber(data.proposal.total_deposit[0].amount)) + " " +data.proposal.total_deposit[0].denom.toUpperCase();
+            }else {
+              this.totalDeposit = "";
+            }
+            if(data.proposal.status === "DepositPeriod"){
+              this.count = "--"
+            }
             if(data.votes){
+              this.count = data.votes.length;
               this.items = data.votes.map(item =>{
                 item.time = Tools.conversionTimeToUTCToYYMMDD(item.time);
                 return {
@@ -193,6 +202,7 @@
   }
   .personal_computer_transactions_detail_wrap {
     .proposals_information_content_title {
+      margin-left: 0.2rem !important;
       height: 0.5rem !important;
       line-height: 0.5rem !important;
       font-size: 0.18rem !important;
@@ -204,6 +214,7 @@
     @include pcCenter;
       .proposals_detail_information_wrap {
         margin-top: 0.21rem;
+        margin-left: 0.2rem;
       .information_props_wrap {
         @include flex;
         margin-bottom:0.08rem;
@@ -266,6 +277,7 @@
       color: #000000;
       margin-right: 0.2rem;
       font-weight: 500;
+      margin-left: 0.2rem;
     }
     .proposals_detail_wrap_hash_var {
       height: 0.61rem;
@@ -377,6 +389,7 @@
   .total_num{
     font-size: 0.14rem;
     color: #a2a2ae;
+    margin-left: 0.2rem;
   }
   .voting_options{
     display: flex;

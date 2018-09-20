@@ -55,12 +55,13 @@
                 <!--v-show="showSubValidators">Candidates</span>-->
 
         </div>
-        <span class="nav_item common_item_style" :class="activeClassName === '/faucet'?'nav_item_active':''"
-              @click="featureButtonClick('/faucet')"
-        >Faucet</span>
         <span class="nav_item common_item_style" :class="activeClassName === '/Proposals'?'nav_item_active':''"
               @click="featureButtonClick('/Proposals')"
         >Proposals</span>
+        <span class="nav_item common_item_style" :class="activeClassName === '/faucet'?'nav_item_active':''"
+              @click="featureButtonClick('/faucet')"
+        >Faucet</span>
+
       </div>
 
     </div>
