@@ -122,15 +122,15 @@ export default class Tools{
       if(!addSuffix) {
         addSuffix="......";
       }
-      var i=0;
-      for(var z=0;z<cutOutlength;z++){
-        if(string.charCodeAt(z)>255){
-          i=i+2;
+      var bytesLength = 0;
+      for(var index = 0;index < cutOutlength;index++){
+        if(string.charCodeAt(index)>255){
+          bytesLength = bytesLength + 2;
         }else{
-          i=i+1;
+          bytesLength = bytesLength + 1;
         }
-        if(i>=cutOutlength){
-          string=string.slice(0,(z + 1))+addSuffix;
+        if(bytesLength >= cutOutlength){
+          string=string.slice(0,(index + 1))+addSuffix;
           break;
         }
       }
