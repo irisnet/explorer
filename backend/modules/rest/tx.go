@@ -96,7 +96,21 @@ func queryTx(w http.ResponseWriter, r *http.Request) {
 	c := utils.GetDatabase().C("tx_common")
 	defer c.Database.Session.Close()
 	var result document.CommonTx
-	err := c.Find(bson.M{"tx_hash": hash}).Sort("-time").One(&result)
+
+	query := bson.M{}
+	query["tx_hash"] = hash
+	query["type"] = bson.M{
+		"$in": []string{
+			"Transfer",
+			"CreateValidator",
+			"EditValidator",
+			"Delegate",
+			"BeginUnbonding",
+			"CompleteUnbonding",
+		},
+	}
+
+	err := c.Find(query).Sort("-time").One(&result)
 	if err == nil {
 		resultByte, _ := json.Marshal(result)
 		w.Write(resultByte)
@@ -122,7 +136,19 @@ func queryTxsByAccount(w http.ResponseWriter, r *http.Request) {
 	var data []document.CommonTx
 	args := mux.Vars(r)
 	address := args["address"]
-	w.Write(utils.QueryList("tx_common", &data, bson.M{"$or": []bson.M{{"from": address}, {"to": address}}}, "-time", r))
+	query := bson.M{}
+	query["$or"] = []bson.M{{"from": address}, {"to": address}}
+	query["type"] = bson.M{
+		"$in": []string{
+			"Transfer",
+			"CreateValidator",
+			"EditValidator",
+			"Delegate",
+			"BeginUnbonding",
+			"CompleteUnbonding",
+		},
+	}
+	w.Write(utils.QueryList("tx_common", &data, query, "-time", r))
 }
 
 func queryTxsByBlock(w http.ResponseWriter, r *http.Request) {
