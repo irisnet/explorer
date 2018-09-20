@@ -123,8 +123,9 @@ export default class Tools{
         addSuffix="......";
       }
       var bytesLength = 0;
+      var unitStringUnicodeMaxlength = 255;
       for(var index = 0;index < cutOutlength;index++){
-        if(string.charCodeAt(index)>255){
+        if(string.charCodeAt(index) > unitStringUnicodeMaxlength){
           bytesLength = bytesLength + 2;
         }else{
           bytesLength = bytesLength + 1;
