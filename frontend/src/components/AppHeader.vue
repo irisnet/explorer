@@ -207,7 +207,7 @@
         let urlBlock = `/api/block/${this.searchInputValue}`;
         let urlTransaction = `/api/tx/${this.searchInputValue}`;
         let urlAddress = `/api/account/${this.searchInputValue}`;
-        let urlproposals = `/api/proposal/${this.searchInputValue}`;
+        // let urlproposals = `/api/proposal/${this.searchInputValue}`;
         axios.get(urlBlock).then((data)=>{
           if (data.status === 200) {
             return data.data;
@@ -235,15 +235,15 @@
             this.$router.push(`/address/1/${this.searchInputValue}`)
           }
         });
-        axios.get(urlproposals).then((data)=>{
-          if (data.status === 200) {
-            return data.data;
-          }
-        }).then((data)=>{
-          if(data && typeof data === "object"){
-            this.$router.push(`/ProposalsDetail/${this.searchInputValue}`)
-          }
-        });
+        // axios.get(urlproposals).then((data)=>{
+        //   if (data.status === 200) {
+        //     return data.data;
+        //   }
+        // }).then((data)=>{
+        //   if(data && typeof data === "object"){
+        //     this.$router.push(`/ProposalsDetail/${this.searchInputValue}`)
+        //   }
+        // });
       },
       onInputChange() {
         this.getData();
