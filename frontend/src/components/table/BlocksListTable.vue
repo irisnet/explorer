@@ -88,10 +88,10 @@
         </span>
       </template>
     </b-table>
-    <b-table :fields='fields' :items='items' striped  v-if="type === 'Proposals'">
+    <b-table :fields='fields' :items='items' striped  v-if="type === 'Proposals'" class="show_trim">
       <template slot='Title' slot-scope='data'>
-        <span class="skip_route"  @click="skipRoute(`/ProposalsDetail/${data.item['Proposal ID']}`)">
-          {{data.item['Title']}}
+        <span class="skip_route" @click="skipRoute(`/ProposalsDetail/${data.item['Proposal ID']}`)">
+          <pre class="proposals-list">{{data.item['Title']}}</pre>
         </span>
       </template>
     </b-table>
@@ -218,5 +218,14 @@
     th:nth-child(2){
       width: 35% !important;
     }
+  }
+  .proposals-list{
+    color: #3598db;
+    cursor: pointer;
+    margin: 0;
+    padding: 0;
+  }
+  .show_trim td span{
+    white-space: pre;
   }
 </style>
