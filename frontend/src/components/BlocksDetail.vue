@@ -33,10 +33,14 @@
             <span
                   @click="skipTransactions"
                   v-show="transactionsValue != 0"
-                  style="color:#3598db;cursor:pointer;">{{transactionsValue}}</span><span v-show="transactionsValue != 0"> transactions</span><span v-show="ProposalsTransactionsNum !=0"> and {{ProposalsTransactionsNum}} proposal transactions.</span>
+                  style="color:#3598db;cursor:pointer;">{{transactionsValue}}
+            </span>
+            <span v-show="transactionsValue == 0" style="color:#a2a2ae;">0 transactions</span>
+            <span v-show="transactionsValue != 0"> transactions</span>
+            <span v-show="ProposalsTransactionsNum !=0"> and {{ProposalsTransactionsNum}} proposal transactions.</span>
           </div>
 
-          <span v-show="transactionsValue == 0" style="color:#a2a2ae;">0 transactions</span>
+
         </div>
         <!--<div class="information_props_wrap">-->
           <!--<span class="information_props">Fees:</span>-->
