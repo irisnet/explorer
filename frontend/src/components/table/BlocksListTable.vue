@@ -88,15 +88,14 @@
         </span>
       </template>
     </b-table>
-    <b-table :fields='fields' :items='items' striped v-if="type === 'Proposals'">
+    <b-table :fields='fields' :items='items' striped  v-if="type === 'Proposals'">
       <template slot='Title' slot-scope='data'>
         <span class="skip_route"  @click="skipRoute(`/ProposalsDetail/${data.item['Proposal ID']}`)">
-          <!--{{data}}-->
           {{data.item['Title']}}
         </span>
       </template>
     </b-table>
-    <b-table :fields='fields' :items='items' striped v-if="type === 'ProposalsDetail'">
+    <b-table :fields='fields' :items='items' striped v-if="type === 'ProposalsDetail'" nodelabel  class="proposal_detail_list">
       <template slot='Voter' slot-scope='data'>
         <span class="skip_route_gray">
           {{data.item['Voter']}}
@@ -122,9 +121,6 @@
       }
     },
     props: ['items', 'type','showNoData','minWidth'],
-    mounted() {
-
-    },
     methods: {
       skipRoute(path) {
         this.$router.push(path);
@@ -215,5 +211,12 @@
       }
     }
   }
-
+  .proposal_detail_list tr{
+    th:nth-child(1){
+      width: 50% !important;
+    }
+    th:nth-child(2){
+      width: 35% !important;
+    }
+  }
 </style>
