@@ -181,7 +181,6 @@
       },
 
     },
-
     data() {
 
       return {
@@ -469,9 +468,9 @@
             return data.data;
           }
         }).then((data)=>{
-          let maxValue = 0;
-          let array = [];
           if(data && typeof data === "object"){
+            let seriesData = [], noDatayAxisDefaultMaxByValidators;
+
             data.forEach(item=>{
               if(item.Power == 0){
                 item.Power = ""
@@ -479,20 +478,17 @@
               let obj =[];
               obj[0] = Tools.conversionTimeToUTCByValidatorsLine(item.Time);
               obj[1] = item.Power;
-              array.push(obj);
-              if(item.Power > maxValue){
-                maxValue = item.Power;
-              }
+              seriesData.push(obj);
             });
-          }
-          let seriesData = array, noDatayAxisDefaultMax;
           //如果没有votingPower，返回的数据中会默认带两条数据
           if(seriesData.length < 3){
-            noDatayAxisDefaultMax = "100"
+            noDatayAxisDefaultMaxByValidators = "100"
           }
-          this.informationValidatorsLine = {maxValue,seriesData,noDatayAxisDefaultMax};
+            this.informationValidatorsLine = {seriesData,noDatayAxisDefaultMaxByValidators};
+
+          }
         })
-      },
+    },
       getValidatorUptimeHistory(tabTime,index){
         if(index != undefined){
           for(var i = 0; i < this.tabUptime.length; i++){
