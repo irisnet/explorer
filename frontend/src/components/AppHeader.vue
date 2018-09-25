@@ -88,8 +88,9 @@
               @click="featureButtonClick('/validators/3/0')">Validators</span>
         <!--<span class="feature_btn_mobile feature_nav"-->
               <!--@click="featureButtonClick('/candidates/4/0')">Candidates</span>-->
-        <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/faucet')">Faucet</span>
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/Proposals')">Proposals</span>
+        <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/faucet')">Faucet</span>
+
       </div>
       <div class="search_input_mobile">
         <div style="width:95%;position:relative">

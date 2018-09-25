@@ -1,6 +1,7 @@
 /**
  * 工具类
  */
+import BigNumber from 'bignumber.js';
 export default class Tools{
 
   /**
@@ -37,13 +38,12 @@ export default class Tools{
   }
 
   static formatNumber(num){
-    return num/1000000000000000000;
+    return new BigNumber(num).div(1000000000000000000).toNumber();
   }
-
 
   static decimalPlace(num,val){
     if(val){
-      return (parseInt(String(num*100000000))/100000000).toFixed(8);
+      return Tools.toFixedformatNumber(num ,val);
     }else{
       if(/^\+?[1-9][0-9]*$/.test(num)){
         return num + " "
@@ -52,7 +52,7 @@ export default class Tools{
           num = Tools.scientificToNumber(num);
           let str = String(num).split(".")[1];
           if(str.length > 2){
-            return (parseInt(String(num*100))/100).toFixed(2) + "...";
+            return Tools.toFixedformatNumber(Number(num) ,2)+ "...";
           }else {
             return (parseInt(String(num*100))/100)
           }
@@ -61,20 +61,15 @@ export default class Tools{
     }
 
   }
-  static scientificToNumber(num){
-    //处理非数字
-    if(isNaN(num)){return num}
-    //处理不需要转换的数字
-    let str = ''+num;
-    if(!/e/i.test(str)){return num;}
-    return (num).toFixed(18).replace(/\.?0+$/, "");
-  }
+  static  toFixedformatNumber(num,val){
+    return new BigNumber(num).toFixed(val,1);
 
-  static formatNumberToFixedNumber(num){
-    return (parseInt(String(num*10000))/10000).toFixed(4);
+  }
+  static scientificToNumber(num){
+    return new BigNumber(num).toFixed();
   }
   static formatFeeToFixedNumber(num){
-    return (Tools.scientificToNumber(parseInt(String(Tools.formatNumber(num)*10000))/10000)).toFixed(4) + "...";
+    return  Tools.toFixedformatNumber(Tools.formatNumber(num) ,4) + "...";
   }
   /**
    * 格式化年月日
@@ -111,7 +106,7 @@ export default class Tools{
    * return string
    */
   static dealWithFees(num){
-    return Tools.scientificToNumber(Tools.decimalPlace(Tools.formatNumber(num)))
+    return Tools.decimalPlace(Tools.formatNumber(num))
   }
   /**
    * 根据字节截取字符串
