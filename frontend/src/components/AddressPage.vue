@@ -17,7 +17,7 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Deposits:</span>
-          <span class="information_value">{{depositsValue?depositsValue:'--'}}</span>
+          <span class="information_value information_show_trim">{{depositsValue?depositsValue:'--'}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Transactions:</span>
@@ -30,7 +30,7 @@
       <div class="transactions_detail_information_wrap">
         <div class="information_props_wrap">
           <span class="information_props">Name:</span>
-          <span class="information_value">{{nameValue?nameValue:'--'}}</span>
+          <span class="information_value information_show_trim">{{nameValue?nameValue:'--'}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Pub Key:</span>
@@ -38,14 +38,15 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Website:</span>
-          <span class="information_value"
+          <span class="information_value information_show_trim"
              v-show="websiteValue !== '--'"
-             style="color:#a2a2ae;">{{websiteValue}}</span>
+             style="color:#a2a2ae;">{{websiteValue}}
+          </span>
           <i v-show="websiteValue === '--'" style="font-style:normal;color:#a2a2ae">--</i>
         </div>
         <div class="information_props_wrap" style="border-bottom:0.01rem solid #eee">
           <span class="information_props">Description:</span>
-          <span class="information_value">{{descriptionValue}}</span>
+          <span class="information_value information_show_trim">{{descriptionValue}}</span>
         </div>
         <!--<div class="information_props_wrap">-->
           <!--<span class="information_props">Commission Rate:</span>-->
@@ -1021,5 +1022,8 @@
   }
   .model_content_right{
     margin-left: 0 ;
+  }
+  .information_show_trim{
+    white-space: pre-wrap ;
   }
 </style>
