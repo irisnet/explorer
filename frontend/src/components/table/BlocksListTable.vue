@@ -97,7 +97,7 @@
     </b-table>
     <b-table :fields='fields' :items='items' striped v-if="type === 'ProposalsDetail'" nodelabel  class="proposal_detail_list">
       <template slot='Voter' slot-scope='data'>
-        <span class="skip_route_gray" style="text-align: right!important;">
+        <span class="skip_route_gray">
           {{data.item['Voter']}}
         </span>
       </template>
