@@ -11,10 +11,6 @@
       <p class="proposals_information_content_title">Proposals Information</p>
       <div class="proposals_detail_information_wrap">
         <div class="information_props_wrap">
-          <span class="information_props">Proposal ID:</span>
-          <span class="information_value">{{proposalsId}}</span>
-        </div>
-        <div class="information_props_wrap">
           <span class="information_props">Title:</span>
           <span class="information_value information_show_trim">{{title}}</span>
         </div>

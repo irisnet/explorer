@@ -2,6 +2,7 @@
   <div :class="showNoData?'show_no_data':''"
        class="table_wrap"
        :style="`${minWidth?(`min-width:${minWidth}rem`):''}`">
+
     <b-table :fields='fields' :items='items' striped v-if="type === '1'">
       <template slot='Height' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/blocks_detail/${data.item.Height}`)">
@@ -17,6 +18,7 @@
         <span v-show="data.item.Txn == 0">{{data.item.Txn}}</span>
       </template>
     </b-table>
+
     <b-table :fields='fields' :items='items' striped v-if="type === '2'">
       <template slot='TxHash' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/tx?txHash=${data.item.TxHash}`)">
@@ -39,13 +41,15 @@
         </span>
       </template>
     </b-table>
-    <b-table :fields='fields' :items='items' striped v-if="type === '3' || type === '4'">
+
+    <b-table :fields='fields' :items='items' striped v-if="type === '3' || type === '4'" class="show_trim">
       <template slot='Address' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/address/1/${data.item.Address}`)">
-          {{data.item.Address?`${String(data.item.Address).substr(0,16)}...`:''}}
+          <pre class="remove_default_style">{{data.item.Address?`${String(data.item.Address).substr(0,16)}...`:''}}</pre>
         </span>
       </template>
     </b-table>
+
     <b-table :fields='fields' :items='items' striped v-if="type === '5'">
       <template slot='Address' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/address/1/${data.item.Address}`)">
@@ -53,6 +57,7 @@
         </span>
       </template>
     </b-table>
+
     <b-table :fields='fields' :items='items' striped v-if="type === '6'" style="margin-bottom:0;">
       <template slot='TxHash' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/tx?txHash=${data.item.TxHash}`)">
@@ -78,9 +83,8 @@
           {{data.item.To?`${String(data.item.To).substr(0,16)}...`:''}}
         </span>
       </template>
-
-
     </b-table>
+
     <b-table :fields='fields' :items='items' striped v-if="type === '7'" style="margin-bottom:0;">
       <template slot='Block Height' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/blocks_detail/${data.item['Block Height']}`)">
@@ -88,6 +92,7 @@
         </span>
       </template>
     </b-table>
+
     <b-table :fields='fields' :items='items' striped  v-if="type === 'Proposals'" class="show_trim">
       <template slot='Title' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/ProposalsDetail/${data.item['Proposal ID']}`)">
@@ -95,6 +100,7 @@
         </span>
       </template>
     </b-table>
+
     <b-table :fields='fields' :items='items' striped v-if="type === 'ProposalsDetail'" nodelabel  class="proposal_detail_list">
       <template slot='Voter' slot-scope='data'>
         <span class="skip_route_gray">
@@ -224,6 +230,14 @@
     cursor: pointer;
     margin: 0;
     padding: 0;
+  }
+  .remove_default_style{
+    margin: 0!important;
+    padding: 0!important;
+    color: #3598db;
+  }
+  .show_trim td{
+    white-space: pre;
   }
   .show_trim td span{
     white-space: pre;
