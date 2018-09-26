@@ -1,12 +1,12 @@
 package task
 
 import (
-	"gopkg.in/mgo.v2/bson"
-	"time"
+	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/irishub-sync/store/document"
+	"gopkg.in/mgo.v2/bson"
 	"log"
-	"github.com/irisnet/explorer/backend/types"
+	"time"
 )
 
 var validatorMap = make(map[string]types.PowerChange)
@@ -73,7 +73,7 @@ func UptimeChange() {
 		b.Find(nil).Sort("height").One(&firstBlock)
 		startTime = firstBlock.Time
 	} else {
-		startTime, _ = time.ParseInLocation("2006-01-02 15", uptimeChange.Time, time.Local)
+		startTime, _ = time.ParseInLocation("2006-01-02 15", uptimeChange.Time, time.UTC)
 		startTime = startTime.Add(d)
 	}
 
@@ -89,13 +89,15 @@ func UptimeChange() {
 	startTime = time.Date(startTime.Year(), startTime.Month(), startTime.Day(), startTime.Hour(), 0, 0, 0, startTime.Location())
 	endTime = time.Date(endTime.Year(), endTime.Month(), endTime.Day(), endTime.Hour(), 0, 0, 0, endTime.Location())
 
+	log.Printf("startTime:%s,endTime:%s", startTime.UTC().Format("2006-01-02 15"), endTime.UTC().Format("2006-01-02 15"))
+
 	if !endTime.Before(lastTime) {
 		log.Printf("handle to now %s, task end\n", startTime.Format("2006-01-02 15"))
 		time.Sleep(10 * time.Minute)
 		return
 	}
 
-	b.Find(bson.M{"time": bson.M{"$gte": startTime, "$lt": endTime,}}).Sort("height").All(&blocks)
+	b.Find(bson.M{"time": bson.M{"$gte": startTime, "$lt": endTime}}).Sort("height").All(&blocks)
 
 	if err != nil {
 		log.Println(err.Error())
@@ -147,17 +149,6 @@ func UptimeChange() {
 					validatorMap[validator.Address] = powerChange
 					p.Insert(&powerChange)
 				}
-				//if validatorMap[validator.Address].Change == types.Slash {
-				//	powerChange := types.PowerChange{
-				//		Address: validator.Address,
-				//		Power:   validator.VotingPower,
-				//		Time:    block.Time,
-				//		Height:  block.Height,
-				//		Change:  types.Recover,
-				//	}
-				//	validatorMap[validator.Address] = powerChange
-				//	p.Insert(&powerChange)
-				//}
 			}
 		}
 
@@ -180,14 +171,26 @@ func UptimeChange() {
 		}
 
 		// uptime handle
+		for _, validator := range block.Validators {
+			if _, ok := uptimeMap[validator.Address]; !ok {
+				uptimeMap[validator.Address] = 0
+			}
+		}
 		for _, commit := range block.Block.LastCommit.Precommits {
-			uptimeMap[commit.ValidatorAddress] ++
+			uptimeMap[commit.ValidatorAddress]++
 		}
 	}
 
-	doneTime := startTime.Format("2006-01-02 15")
+	doneTime := startTime.UTC().Format("2006-01-02 15")
 	for k, v := range uptimeMap {
 		uptimeChange := types.UptimeChange{Address: k, Uptime: float64(100*v) / float64(len(blocks)), Time: doneTime}
+		if uptimeChange.Uptime == 0 {
+			c := db.C("stake_role_candidate")
+			cnt, err := c.Find(bson.M{"address": uptimeChange.Address}).Count()
+			if err != nil || cnt == 0 {
+				uptimeChange.Uptime = -1
+			}
+		}
 		u.Insert(&uptimeChange)
 	}
 	log.Println("task end")
