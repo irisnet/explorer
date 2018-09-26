@@ -44,7 +44,7 @@
           </span>
           <i v-show="websiteValue === '--'" style="font-style:normal;color:#a2a2ae">--</i>
         </div>
-        <div class="information_props_wrap" style="border-bottom:0.01rem solid #eee">
+        <div class="information_props_wrap">
           <span class="information_props">Description:</span>
           <span class="information_value information_show_trim">{{descriptionValue}}</span>
         </div>
@@ -313,15 +313,15 @@
           }
         }).then((data)=>{
           if(data && typeof data === "object"){
-            this.nameValue = data.Description.Moniker;
-            this.pubKeyValue = data.PubKey;
+            this.nameValue = data.Description.Moniker ? data.Description.Moniker : "--";
+            this.pubKeyValue = data.PubKey ? data.PubKey : "--";
             this.websiteValue = data.Description.Website?data.Description.Website:'--';
-            this.descriptionValue= data.Description.Details;
+            this.descriptionValue= data.Description.Details ? data.Description.Details : "--";
             this.commissionRateValue = '';
             this.announcementValue = '';
-            this.votingPowerValue = `${(data.VotingPower/data.PowerAll*100).toFixed(2)}%`;
+            this.votingPowerValue = data.VotingPower ? `${(data.VotingPower/data.PowerAll*100).toFixed(2)}%` : "--";
             this.showProfile = true;
-            this.bondHeightValue = data.BondHeight;
+            this.bondHeightValue = data.BondHeight ? data.BondHeight : "--";
           }else{
             this.showProfile = false;
           }
@@ -336,9 +336,9 @@
           }
         }).then((data)=>{
           if(data && typeof data === "object"){
-            this.precommitedBlocksValue = data.PrecommitCount;
+            this.precommitedBlocksValue = data.PrecommitCount ? data.PrecommitCount : '--';
             this.returnsValue = '';
-            this.firstPercent = `${data.Uptime}%`;
+            this.firstPercent = data.Uptime ? `${data.Uptime}%` : "--";
           }
 
         })
@@ -409,7 +409,7 @@
               From:'',
               To:'',
               Type:'',
-              millisecondstime:'',
+              Amount:'',
               Fees:'',
               Timestamp:'',
             }];
