@@ -182,6 +182,13 @@ func UptimeChange() {
 	doneTime := startTime.UTC().Format("2006-01-02 15")
 	for k, v := range uptimeMap {
 		uptimeChange := types.UptimeChange{Address: k, Uptime: float64(100*v) / float64(len(blocks)), Time: doneTime}
+		if uptimeChange.Uptime == 0 {
+			c := db.C("stake_role_candidate")
+			cnt, err := c.Find(bson.M{"address": uptimeChange.Address}).Count()
+			if err != nil || cnt == 0 {
+				uptimeChange.Uptime = -1
+			}
+		}
 		u.Insert(&uptimeChange)
 	}
 	log.Println("task end")
