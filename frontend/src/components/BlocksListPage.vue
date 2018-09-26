@@ -271,7 +271,7 @@
               this.items = data.Candidates.map(item => {
                 return {
                   Address: item.Address,
-                  Name:item.Description.Moniker,
+                  Name:Tools.getShortForm(item.Description.Moniker,20,"..."),
                   'Voting Power':`${(item.VotingPower/data.PowerAll*100).toFixed(2)}%`,
                   'Uptime':`${item.Uptime}%`,
                   'Commission Rate':'',
