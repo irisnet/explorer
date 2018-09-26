@@ -89,6 +89,8 @@ func UptimeChange() {
 	startTime = time.Date(startTime.Year(), startTime.Month(), startTime.Day(), startTime.Hour(), 0, 0, 0, startTime.Location())
 	endTime = time.Date(endTime.Year(), endTime.Month(), endTime.Day(), endTime.Hour(), 0, 0, 0, endTime.Location())
 
+	log.Printf("startTime:%s,endTime:%s", startTime.UTC().Format("2006-01-02 15"), endTime.UTC().Format("2006-01-02 15"))
+
 	if !endTime.Before(lastTime) {
 		log.Printf("handle to now %s, task end\n", startTime.Format("2006-01-02 15"))
 		time.Sleep(10 * time.Minute)
