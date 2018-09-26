@@ -316,7 +316,7 @@
             this.nameValue = data.Description.Moniker;
             this.pubKeyValue = data.PubKey;
             this.websiteValue = data.Description.Website?data.Description.Website:'--';
-            this.descriptionValue= data.Description.Details;
+            this.descriptionValue= data.Description.Details ? data.Description.Details : "--";
             this.commissionRateValue = '';
             this.announcementValue = '';
             this.votingPowerValue = `${(data.VotingPower/data.PowerAll*100).toFixed(2)}%`;
