@@ -409,7 +409,7 @@
               From:'',
               To:'',
               Type:'',
-              millisecondstime:'',
+              Amount:'',
               Fees:'',
               Timestamp:'',
             }];
