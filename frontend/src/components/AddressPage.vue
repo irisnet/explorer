@@ -513,8 +513,16 @@
           }
         }).then((data)=>{
           if(data && typeof data === "object") {
+            data.forEach(item => {
+              if(item.Uptime === -1){
+                item.Uptime = ""
+              }
+            });
             let xData , currayDate;
             if (tabTime == "24hours") {
+              data.forEach(item => {
+                item.Time = item.Time.split(" ")[0] + " " + String(Number(item.Time.split(" ")[1])+1);
+              });
               if(data.length !== 0){
                 currayDate = data[0].Time;
               }else {

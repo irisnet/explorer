@@ -33,7 +33,7 @@
 
           <div class="key_value_wrap">
             <span class="blocks_module_props">{{item.Height?'Txn:':'Amount:'}}</span>
-            <span class="blocks_module_value" style="color:#000000;">{{item.Height?item.Txn:item.Amount}}</span>
+            <span class="blocks_module_Amount" style="color:#000000;">{{item.Height?item.Txn:item.Amount}}</span>
           </div>
         </div>
         <div class="blocks_module_right" :style="`${title === 'Blocks'?'flex:2;':''}`">
@@ -188,7 +188,11 @@
               font-size:0.14rem;
               display:inline-block;
             }
-
+            .blocks_module_Amount{
+              font-size:0.14rem;
+              color:#000000;
+              display:inline-block;
+            }
             .blocks_module_props{
               font-size:0.14rem;
               color:#000000;
