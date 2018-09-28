@@ -7,11 +7,11 @@ import (
 
 	"encoding/json"
 
+	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
 	"time"
-	"github.com/irisnet/explorer/backend/types"
 )
 
 func RegisterStake(r *mux.Router) error {
@@ -164,19 +164,16 @@ func QueryCandidateUptime(w http.ResponseWriter, r *http.Request) {
 		endTimeHour := endTime.Add(d2)
 		for startTime.Before(endTime) {
 			startStr := startTime.UTC().Format("2006-01-02 15")
-			var uptime float64
+			var uptime = float64(-1)
 			if _, ok := upChangeMap[startStr]; ok {
 				uptime = upChangeMap[startStr]
-			}else if startTime.Equal(endTimeHour){
+			} else if startTime.Equal(endTimeHour) {
 				startTime = startTime.Add(d1)
 				continue
 			}
 			result = append(result, types.UptimeChange{Address: address, Uptime: uptime, Time: startStr})
 			startTime = startTime.Add(d1)
 		}
-		end := result[len(result)-1]
-		end.Time = endStr
-		result = append(result, end)
 		resultByte, _ := json.Marshal(result)
 		w.Write(resultByte)
 		break
@@ -187,7 +184,7 @@ func QueryCandidateUptime(w http.ResponseWriter, r *http.Request) {
 			agoStr = "-720h"
 		}
 		now := time.Now()
-		endTime := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
+		endTime := now
 		d, _ := time.ParseDuration(agoStr)
 		startTime := endTime.Add(d)
 		startStr := startTime.Format("2006-01-02 15")
@@ -223,19 +220,16 @@ func QueryCandidateUptime(w http.ResponseWriter, r *http.Request) {
 		endTimeDay := endTime.Add(d2)
 		for startTime.Before(endTime) {
 			startStr := startTime.UTC().Format("2006-01-02")
-			var uptime float64
+			var uptime = float64(-1)
 			if _, ok := upChangeMap[startStr]; ok {
 				uptime = upChangeMap[startStr]
-			}else if startTime.Equal(endTimeDay){
+			} else if startTime.Equal(endTimeDay) {
 				startTime = startTime.Add(d1)
 				continue
 			}
 			result = append(result, types.UptimeChange{Address: address, Uptime: uptime, Time: startStr})
 			startTime = startTime.Add(d1)
 		}
-		end := result[len(result)-1]
-		end.Time = endStr
-		result = append(result, end)
 		resultByte, _ := json.Marshal(result)
 		w.Write(resultByte)
 	}
