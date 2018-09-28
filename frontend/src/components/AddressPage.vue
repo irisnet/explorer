@@ -552,11 +552,9 @@
                   data.unshift({AddressL:data.Address,Time: hoursDate ,Uptime: ""})
                 }
               }
-
               data.forEach((item) => {
                 item.Time = item.Time.substr(10, 12)+ ":00";
               });
-
               xData = data.map(item => item.Time);
             } else {
               let currayDate;
@@ -565,14 +563,13 @@
               }else {
                 currayDate = new Date().toISOString();
               }
-
               if (tabTime == "14days") {
                 let dataDateLength = data.length,
 
                 //获取需要补全的天数
                   complementdateLength = 14 - dataDateLength,
                   //从那天需要补全的日期
-                  weekDate = new Date(data[0].Time),
+                  weekDate = new Date(currayDate),
                   millisecondstime = weekDate.getTime(),
                   //24小时的时间戳（毫秒数）
                   dayNumberOfMilliseconds = 60 * 60 * 1000 * 24 ;
@@ -588,7 +585,7 @@
 
                 let dataDateLength = data.length,
                   complementdateLength = 30 - dataDateLength,
-                  monthDate = new Date(data[0].Time),
+                  monthDate = new Date(currayDate),
                   millisecondstime = monthDate.getTime(),
                   dayNumberOfMilliseconds = 60 * 60 * 1000 * 24;
                 for (var lackOfDateNum = 0; lackOfDateNum < complementdateLength; lackOfDateNum++) {
@@ -602,7 +599,15 @@
               xData = data.map(item => `${String(item.Time).substr(5, 2)}/${String(item.Time).substr(8, 2)}`);
             }
             let seriesData = data.map(item => item.Uptime.toString().split(".")[0]);
-            this.informationUptimeLine = {xData, seriesData};
+            let noDatayAxisDefaultMax ;
+
+            for(let seriesDataIndex = 0 ;seriesDataIndex < seriesData.length; seriesDataIndex++){
+              if(seriesData[seriesDataIndex] === ""){
+                noDatayAxisDefaultMax = "100"
+              }
+            }
+            this.informationUptimeLine = {xData, seriesData,noDatayAxisDefaultMax};
+
           }else {
             let xData , currayDate  , data = [];
             if (tabTime == "24hours") {
