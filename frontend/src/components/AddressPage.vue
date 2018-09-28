@@ -514,14 +514,19 @@
         }).then((data)=>{
           if(data && typeof data === "object") {
             data.forEach(item => {
-              if(item.Uptime === -1){
+              let notValidatorTag = -1;
+              if(item.Uptime === notValidatorTag){
                 item.Uptime = ""
               }
             });
             let xData , currayDate;
             if (tabTime == "24hours") {
               data.forEach(item => {
-                item.Time = item.Time.split(" ")[0] + " " + String(Number(item.Time.split(" ")[1])+1);
+                let hourseconds = item.Time+":00:00";
+                let changeMilliseconds = new Date(hourseconds).getTime();
+                //展示需加一小时
+                changeMilliseconds = changeMilliseconds + 60*60*1000;
+                item.Time = Tools.formatDateYearAndMinutesAndSeconds(changeMilliseconds).split(":")[0];
               });
               if(data.length !== 0){
                 currayDate = data[0].Time;
