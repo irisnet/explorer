@@ -262,6 +262,8 @@
           }
           this.balanceValue = Amount;
 
+        }).catch(e =>{
+          console.log(e)
         })
       },
       //点击view all跳转页面
@@ -294,6 +296,8 @@
             this.showProfile = false;
           }
 
+        }).catch(e => {
+          console.log(e)
         })
       },
       getCurrentTenureInformation(){
@@ -309,6 +313,8 @@
             this.firstPercent = data.Uptime ? `${data.Uptime}%` : "--";
           }
 
+        }).catch(e => {
+          console.log(e)
         })
       },
       getTransactionsList(){
@@ -384,6 +390,8 @@
             this.TransactionsShowNoData = true;
           }
 
+        }).catch(e => {
+          console.log(e)
         })
       },
       getPrecommitBlocksList(){
@@ -633,6 +641,8 @@
             this.informationUptimeLine = {xData, seriesData,noDatayAxisDefaultMax};
           }
 
+        }).catch(e => {
+          console.log(e)
         })
       },
     }

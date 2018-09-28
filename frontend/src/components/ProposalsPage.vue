@@ -128,6 +128,8 @@
             this.showNoData = true;
           }
           this.showLoading = false;
+        }).catch(e => {
+          console.log(e)
         })
       }
     }

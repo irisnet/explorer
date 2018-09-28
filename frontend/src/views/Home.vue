@@ -146,6 +146,8 @@
           this.transactionValue = `${num}(${data.Tps.toFixed(2)} TPS)`;
 
         }
+        }).catch(e => {
+          console.log(e)
         })
       },
       getValidatorsList() {
@@ -188,6 +190,8 @@
           }
           this.information = {legendData, seriesData}
 
+        }).catch(e => {
+          console.log(e)
         })
       },
       getTransactionHistory() {
@@ -209,6 +213,8 @@
             let seriesData = data.map(item=>item.Count);
             this.informationLine = {maxValue,xData,seriesData};
           }
+        }).catch(e => {
+          console.log(e)
         })
 
       },
@@ -243,6 +249,8 @@
               }
             })
           }
+        }).catch(e => {
+          console.log(e)
         })
       },
       skipValidators(){
@@ -289,6 +297,8 @@
             })
           }
 
+        }).catch(e => {
+          console.log(e)
         })
       }
     }

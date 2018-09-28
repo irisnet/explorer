@@ -202,8 +202,8 @@
             this.precommitValidatorsValue = '';
             this.votingPowerValue = '';
           }
-
-
+        }).catch(e => {
+          console.log(e)
         })
       },
       skipNext(num) {
@@ -238,6 +238,8 @@
               this.activeNext = true;
             }
           }
+        }).catch(e => {
+          console.log(e)
         })
       },
       skipTransactions() {

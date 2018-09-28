@@ -187,6 +187,8 @@
               this.showNoData = true;
             }
             this.showLoading = false;
+          }).catch(e => {
+            console.log(e)
           })
         } else if (type === '2') {
           let url;
@@ -258,6 +260,8 @@
               this.showNoData = true;
             }
             this.showLoading = false;
+          }).catch(e => {
+            console.log(e)
           })
         }else if (type === '3' || type === '4') {
           let url = `/api/stake/candidates/${currentPage}/${pageSize}`;
@@ -290,6 +294,8 @@
               }]
             }
             this.showLoading = false;
+          }).catch(e => {
+            console.log(e)
           })
         }
 

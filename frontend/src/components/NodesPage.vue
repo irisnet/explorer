@@ -170,6 +170,8 @@
             this.showLoading = false;
             return this.nodeList
           }
+        }).catch(e => {
+          console.log(e)
         })
       },
     }
