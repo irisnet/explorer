@@ -113,7 +113,7 @@
                 normal:{
                   color:'#3598db',
                   borderColor:'#3598db',  //拐点边框颜色
-                  opacity:0,//拐点显示隐藏 0为隐藏
+                  // opacity:0,拐点显示隐藏 0为隐藏
                 }
               },
             }
