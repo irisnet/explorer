@@ -21,7 +21,7 @@
           <fieldset class="form-group">
             <input type="text" class="form-control" id="address" v-model="address" placeholder="Please enter the collection address">
             <div class="alert_information" :style="{visibility:alertShow}">{{errMsg}}</div>
-            
+
           </fieldset>
           <fieldset class="form-group">
             <div id="sc" style="margin:0 auto;" class="text-left">
@@ -125,6 +125,7 @@
         }
         this.tokenName = data.value.coins[0].denom.toUpperCase();
       }).catch(e =>{
+        console.log(e);
         this.faucetBalance = "Error";
         this.errStyle = true;
         this.btnDisabled = true
