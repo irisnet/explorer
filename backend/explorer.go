@@ -23,6 +23,7 @@ func AddRoutes(r *mux.Router) {
 		version.RegisterQueryVersion,
 		rest.RegisterChain,
 		rest.RegisterProposal,
+		rest.RegisterQueryIp,
 	}
 
 	for _, routeRegistrar := range routeRegistrars {
