@@ -120,7 +120,7 @@
           ]
         };
         if (line) {
-          if(informationUptimeLine.noDatayAxisDefaultMax){
+          if(informationUptimeLine.noDatayAxisDefaultMax === "100"){
               option.yAxis.max = "100"
           }else {
               option.yAxis.max = null
