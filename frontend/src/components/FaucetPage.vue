@@ -21,7 +21,7 @@
           <fieldset class="form-group">
             <input type="text" class="form-control" id="address" v-model="address" placeholder="Please enter the collection address">
             <div class="alert_information" :style="{visibility:alertShow}">{{errMsg}}</div>
-
+            
           </fieldset>
           <fieldset class="form-group">
             <div id="sc" style="margin:0 auto;" class="text-left">
@@ -115,7 +115,8 @@
         this.errStyle = false;
         this.btnDisabled = true;
         this.faucetBalance = Tools.formatBalance(Number(Tools.formatNumber(data.value.coins[0].amount)).toString().split(".")[0]);
-        if(this.faucetBalance < 10){
+        let faucetQuota = 10;
+        if(this.faucetBalance < faucetQuota){
           this.errStyle = true;
           this.btnDisabled = true;
           this.btninfo = "Insufficient Balance"
