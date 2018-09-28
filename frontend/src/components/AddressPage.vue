@@ -122,38 +122,6 @@
         </div>
       </div>
     </div>
-    <div :class="transactionsDetailWrap" class="transaction_precommit_table">
-      <div class="tab_wrap">
-        <span @click="activeBtn = 0" :class="activeBtn === 0?'transactions_btn_active':''">Transactions</span>
-        <span v-show="showProfile" @click="activeBtn = 1" :class="activeBtn === 1?'transactions_btn_active':''">Precommit Blocks</span>
-      </div>
-      <div class="table_wrap">
-        <div class="transactions_view_all" v-show="activeBtn === 0">
-          <span>{{transactionsTitle}}</span>
-          <span @click="viewAllClick(2)">View All</span>
-        </div>
-        <div class="precommit_view_all" v-show="activeBtn === 1">
-          <p class="table_instruction">
-            <span>Total blocks:</span>
-            <span>{{totalBlocks}}</span>
-            <!--<span>Total Fees:</span>-->
-            <!--<span>{{totalFee}}</span>-->
-          </p>
-          <span class="view_all_btn" @click="viewAllClick(1)">View All</span>
-        </div>
-
-        <div class="transaction_table">
-          <blocks-list-table :items="items" :type="'6'" v-show="activeBtn === 0" :showNoData="TransactionsShowNoData"></blocks-list-table>
-          <blocks-list-table :items="itemsPre" :type="'7'" v-show="activeBtn === 1" :showNoData="PrecommitBlocksshowNoData" :minWidth="5.4"></blocks-list-table>
-          <div v-show="(activeBtn === 0 && TransactionsShowNoData) || (activeBtn === 1 && PrecommitBlocksshowNoData)" class="no_data_show">
-            No Data
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-
   </div>
 </template>
 
