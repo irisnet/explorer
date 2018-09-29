@@ -221,6 +221,8 @@
           if(data && typeof data === "object"){
             this.$router.push(`/blocks_detail/${this.searchInputValue}`)
           }
+        }).catch(e => {
+          console.log(e)
         });
         axios.get(urlTransaction).then((data)=>{
           if (data.status === 200) {
@@ -239,6 +241,8 @@
           if(data && typeof data === "object"){
             this.$router.push(`/address/1/${this.searchInputValue}`)
           }
+        }).catch(e =>{
+          console.log(e)
         });
         // axios.get(urlproposals).then((data)=>{
         //   if (data.status === 200) {

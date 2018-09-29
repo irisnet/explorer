@@ -122,6 +122,8 @@
           this.feeValue = `${Tools.scientificToNumber(Tools.formatNumber(data.ActualFee.amount))} ${data.ActualFee.denom.toUpperCase()}`;
         }
 
+      }).catch(e => {
+        console.log(e)
       })
     },
     methods: {
