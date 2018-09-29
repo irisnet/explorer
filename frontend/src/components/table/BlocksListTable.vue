@@ -10,11 +10,7 @@
         </span>
       </template>
       <template slot='Txn' slot-scope='data'>
-        <span class="no_skip"
-              v-show="data.item.Txn != 0">
-          {{data.item.Txn}}
-        </span>
-        <span v-show="data.item.Txn == 0">{{data.item.Txn}}</span>
+        <span>{{data.item.Txn}}</span>
       </template>
     </b-table>
 
