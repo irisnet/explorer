@@ -516,13 +516,15 @@
             data.forEach(item => {
               let notValidatorTag = -1;
               if(item.Uptime === notValidatorTag){
-                item.Uptime = ""
+                item.Uptime = "0"
               }
             });
             let xData , currayDate;
             if (tabTime == "24hours") {
               data.forEach(item => {
-                let hourseconds = item.Time+":00:00";
+                //兼容火狐
+                let hourseconds = item.Time.replace("-", "/").replace("-", "/")+":00:00";
+
                 let changeMilliseconds = new Date(hourseconds).getTime();
                 //展示需加一小时
                 changeMilliseconds = changeMilliseconds + 60*60*1000;
