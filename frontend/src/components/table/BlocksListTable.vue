@@ -10,12 +10,7 @@
         </span>
       </template>
       <template slot='Txn' slot-scope='data'>
-        <span class="skip_route"
-              v-show="data.item.Txn != 0"
-              @click="skipRoute(`/recent_transactions/2/recent?block=${data.item.Height}`)">
-          {{data.item.Txn}}
-        </span>
-        <span v-show="data.item.Txn == 0">{{data.item.Txn}}</span>
+        <span>{{data.item.Txn}}</span>
       </template>
     </b-table>
 
