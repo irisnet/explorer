@@ -516,7 +516,7 @@
             data.forEach(item => {
               let notValidatorTag = -1;
               if(item.Uptime === notValidatorTag){
-                item.Uptime = "0"
+                item.Uptime = ""
               }
             });
             let xData , currayDate;
