@@ -994,7 +994,7 @@
       flex: 1;
       text-align: center;
       line-height: 0.4rem;
-      font-size: 0.16rem;
+      font-size: 0.12rem !important;
       color: #000;
       border-top: 0.01rem solid #e4e4e4;
       border-right: 0.01rem solid #e4e4e4;

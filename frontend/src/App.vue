@@ -146,10 +146,11 @@
     width: 100%;
     height: 100%;
   }
-
   body {
     font-size: 16px !important;
     font-family:Arial !important;
+    overflow-y: scroll;
+    position: relative;
   }
 
   p {
