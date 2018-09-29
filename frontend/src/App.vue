@@ -146,10 +146,11 @@
     width: 100%;
     height: 100%;
   }
-
   body {
     font-size: 16px !important;
     font-family:Arial !important;
+    overflow-y: scroll;
+    position: relative;
   }
 
   p {
@@ -163,6 +164,9 @@
   #app {
     width: 100%;
     height: 100%;
+    &::-webkit-scrollbar{
+      display: none;
+    }
     #router_wrap {
       .router_view {
         min-height: 4.5rem;
