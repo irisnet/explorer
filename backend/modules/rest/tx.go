@@ -17,6 +17,40 @@ type TxDay struct {
 	Count int
 }
 
+func registerQueryTxList(r *mux.Router) error {
+	r.HandleFunc("/api/tx/{type}/{page}/{size}", func(writer http.ResponseWriter, request *http.Request) {
+		args := mux.Vars(request)
+		query := bson.M{}
+		request.ParseForm()
+		if len(request.Form["address"]) > 0 {
+			address := request.Form["address"][0]
+			query["$or"] = []bson.M{{"from": address}, {"to": address}}
+		}
+
+		if len(request.Form["height"]) > 0 {
+			query["height"] = request.Form["height"][0]
+		}
+
+		txType := args["type"]
+		switch types.TxTypeFromString(txType) {
+		case types.Trans:
+			queryTransferTx(writer, request, query)
+			break
+		case types.Declaration:
+			queryDeclarationTx(writer, request, query)
+			break
+		case types.Stake:
+			queryStakeTx(writer, request, query)
+			break
+		case types.Gov:
+			queryGovTx(writer, request, query)
+			break
+		}
+
+	}).Methods("GET")
+	return nil
+}
+
 func registerQueryAllCoinTxByPage(r *mux.Router) error {
 	r.HandleFunc("/api/txs/coin/{page}/{size}", queryAllCoinTxByPage).Methods("GET")
 	return nil
@@ -213,10 +247,7 @@ func RegisterTx(r *mux.Router) error {
 		registerQueryAllStakeTxByPage,
 		registerQueryTxsByDay,
 		//new
-		registerQueryTransTx,
-		registerQueryStakeTx,
-		registerQueryGovTx,
-		registerQueryDeclarationTx,
+		registerQueryTxList,
 	}
 
 	for _, fn := range funs {

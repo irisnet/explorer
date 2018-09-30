@@ -2,7 +2,6 @@ package rest
 
 import (
 	"encoding/json"
-	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/irishub-sync/store/document"
@@ -10,14 +9,8 @@ import (
 	"net/http"
 )
 
-func registerQueryStakeTx(r *mux.Router) error {
-	r.HandleFunc("/api/tx/stake/{page}/{size}", queryStakeTx).Methods("GET")
-	return nil
-}
-
-func queryStakeTx(w http.ResponseWriter, r *http.Request) {
+func queryStakeTx(w http.ResponseWriter, r *http.Request, query bson.M) {
 	var data []document.CommonTx
-	query := bson.M{}
 	query["type"] = bson.M{
 		"$in": types.StakeList,
 	}

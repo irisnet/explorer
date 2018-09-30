@@ -76,3 +76,15 @@ func Convert(typ string) TxType {
 	}
 	panic("invalid tx type")
 }
+func TxTypeFromString(typ string) TxType {
+	if typ == "trans" {
+		return Trans
+	} else if typ == "stake" {
+		return Stake
+	} else if typ == "declar" {
+		return Declaration
+	} else if typ == "gov" {
+		return Gov
+	}
+	panic("invalid tx type")
+}

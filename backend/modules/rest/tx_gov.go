@@ -2,7 +2,6 @@ package rest
 
 import (
 	"encoding/json"
-	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/irishub-sync/store/document"
@@ -10,14 +9,8 @@ import (
 	"net/http"
 )
 
-func registerQueryGovTx(r *mux.Router) error {
-	r.HandleFunc("/api/tx/gov/{page}/{size}", queryGovTx).Methods("GET")
-	return nil
-}
-
-func queryGovTx(w http.ResponseWriter, r *http.Request) {
+func queryGovTx(w http.ResponseWriter, r *http.Request, query bson.M) {
 	var data []document.CommonTx
-	query := bson.M{}
 	query["type"] = bson.M{
 		"$in": types.GovernanceList,
 	}
