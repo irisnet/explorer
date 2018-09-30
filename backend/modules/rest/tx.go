@@ -2,6 +2,7 @@ package rest
 
 import (
 	"encoding/json"
+	"github.com/irisnet/explorer/backend/types"
 	"net/http"
 	"strconv"
 	"time"
@@ -99,20 +100,12 @@ func queryTx(w http.ResponseWriter, r *http.Request) {
 
 	query := bson.M{}
 	query["tx_hash"] = hash
-	query["type"] = bson.M{
-		"$in": []string{
-			"Transfer",
-			"CreateValidator",
-			"EditValidator",
-			"Delegate",
-			"BeginUnbonding",
-			"CompleteUnbonding",
-		},
-	}
-
 	err := c.Find(query).Sort("-time").One(&result)
+
+	tx := buildTx(result)
+
 	if err == nil {
-		resultByte, _ := json.Marshal(result)
+		resultByte, _ := json.Marshal(tx)
 		w.Write(resultByte)
 	}
 }
@@ -246,6 +239,11 @@ func RegisterTx(r *mux.Router) error {
 		registerQueryPageStakeTxByAccount,
 		registerQueryAllStakeTxByPage,
 		registerQueryTxsByDay,
+		//new
+		registerQueryTransTx,
+		registerQueryStakeTx,
+		registerQueryGovTx,
+		registerQueryDeclarationTx,
 	}
 
 	for _, fn := range funs {
@@ -254,4 +252,63 @@ func RegisterTx(r *mux.Router) error {
 		}
 	}
 	return nil
+}
+
+func buildTx(tx document.CommonTx) interface{} {
+	switch types.Convert(tx.Type) {
+	case types.Trans:
+		return types.TransTx{
+			BaseTx: buildBaseTx(tx),
+			From:   tx.From,
+			To:     tx.To,
+			Amount: tx.Amount,
+		}
+	case types.Declaration:
+		dtx := types.DeclarationTx{
+			BaseTx:   buildBaseTx(tx),
+			SelfBond: tx.Amount,
+			Owner:    tx.From,
+		}
+		if tx.Type == "CreateValidator" {
+			dtx.Moniker = tx.StakeCreateValidator.Description.Moniker
+			dtx.Details = tx.StakeCreateValidator.Description.Details
+			dtx.Website = tx.StakeCreateValidator.Description.Website
+			dtx.Identity = tx.StakeCreateValidator.Description.Identity
+		} else {
+			dtx.Moniker = tx.StakeEditValidator.Description.Moniker
+			dtx.Details = tx.StakeEditValidator.Description.Details
+			dtx.Website = tx.StakeEditValidator.Description.Website
+			dtx.Identity = tx.StakeEditValidator.Description.Identity
+		}
+		return dtx
+	case types.Stake:
+		return types.StakeTx{
+			TransTx: types.TransTx{
+				BaseTx: buildBaseTx(tx),
+				From:   tx.From,
+				To:     tx.To,
+				Amount: tx.Amount,
+			},
+		}
+	case types.Gov:
+		return types.GovTx{
+			BaseTx: buildBaseTx(tx),
+			From:   tx.From,
+		}
+	}
+	return nil
+}
+
+func buildBaseTx(tx document.CommonTx) types.BaseTx {
+	return types.BaseTx{
+		Hash:        tx.TxHash,
+		BlockHeight: tx.Height,
+		Type:        tx.Type,
+		Fee:         tx.ActualFee,
+		GasLimit:    tx.Fee.Gas,
+		GasUsed:     tx.GasUsed,
+		GasPrice:    tx.GasPrice,
+		Memo:        tx.Memo,
+		Timestamp:   tx.Time,
+	}
 }
