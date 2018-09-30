@@ -332,7 +332,7 @@ func queryCandidates(w http.ResponseWriter, r *http.Request) {
 	cs.Find(bson.M{"revoked": false}).Sort("-voting_power").Skip((page - 1) * size).Limit(size).All(&candidates)
 	votePipe := cs.Pipe(
 		[]bson.M{
-			{"$match": bson.M{"revoked": false}},
+			//{"$match": bson.M{"revoked": false}},
 			{"$group": bson.M{
 				"_id":   "voting_power",
 				"count": bson.M{"$sum": "$voting_power"},
