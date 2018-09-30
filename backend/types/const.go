@@ -1,10 +1,21 @@
 package types
 
 var (
-	Transfer        = "Transfer"
-	DeclarationList = []string{"CreateValidator", "EditValidator"}
-	StakeList       = []string{"Delegate", "BeginRedelegation", "CompleteRedelegation", "BeginUnbonding", "CompleteUnbonding"}
-	GovernanceList  = []string{"SubmitProposal", "Deposit", "Vote"}
+	TypeTransfer             = "Transfer"
+	TypeCreateValidator      = "CreateValidator"
+	TypeEditValidator        = "EditValidator"
+	TypeDelegate             = "Delegate"
+	TypeBeginRedelegation    = "BeginRedelegation"
+	TypeCompleteRedelegation = "CompleteRedelegation"
+	TypeBeginUnbonding       = "BeginUnbonding"
+	TypeCompleteUnbonding    = "CompleteUnbonding"
+	TypeSubmitProposal       = "SubmitProposal"
+	TypeDeposit              = "Deposit"
+	TypeVote                 = "Vote"
+
+	DeclarationList = []string{TypeCreateValidator, TypeEditValidator}
+	StakeList       = []string{TypeDelegate, TypeBeginRedelegation, TypeCompleteRedelegation, TypeBeginUnbonding, TypeCompleteUnbonding}
+	GovernanceList  = []string{TypeSubmitProposal, TypeDeposit, TypeVote}
 )
 
 func isDeclarationType(typ string) bool {
@@ -54,7 +65,7 @@ const (
 )
 
 func Convert(typ string) TxType {
-	if typ == Transfer {
+	if typ == TypeTransfer {
 		return Trans
 	} else if isStakeType(typ) {
 		return Stake
