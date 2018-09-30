@@ -18,7 +18,7 @@ func registerQueryTransTx(r *mux.Router) error {
 func queryTransferTx(w http.ResponseWriter, r *http.Request) {
 	var data []document.CommonTx
 	query := bson.M{}
-	query["type"] = types.Transfer
+	query["type"] = types.TypeTransfer
 	count := utils.QueryByPage("tx_common", &data, query, "-time", r)
 
 	var result types.Page
