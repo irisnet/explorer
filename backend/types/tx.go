@@ -47,4 +47,5 @@ type GovTx struct {
 	Description string
 	Amount      store.Coins
 	Option      string
+	Title       string
 }

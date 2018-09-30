@@ -2,25 +2,19 @@ package rest
 
 import (
 	"encoding/json"
-	"github.com/irisnet/explorer/backend/types"
-	"net/http"
-	"strconv"
-	"time"
-
 	"github.com/gorilla/mux"
+	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
+	"net/http"
+	"strconv"
+	"time"
 )
 
 type TxDay struct {
 	Time  string `bson:"_id,omitempty"`
 	Count int
-}
-
-func registerQueryTx(r *mux.Router) error {
-	r.HandleFunc("/api/tx/{hash}", queryTx).Methods("GET")
-	return nil
 }
 
 func registerQueryAllCoinTxByPage(r *mux.Router) error {
@@ -87,27 +81,6 @@ func queryTxs(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 	w.Write(utils.QueryList("tx_common", &data, query, "-time", r))
-}
-
-// queryTx is to query transaction by hash
-func queryTx(w http.ResponseWriter, r *http.Request) {
-	args := mux.Vars(r)
-	hash := args["hash"]
-
-	c := utils.GetDatabase().C("tx_common")
-	defer c.Database.Session.Close()
-	var result document.CommonTx
-
-	query := bson.M{}
-	query["tx_hash"] = hash
-	err := c.Find(query).Sort("-time").One(&result)
-
-	tx := buildTx(result)
-
-	if err == nil {
-		resultByte, _ := json.Marshal(tx)
-		w.Write(resultByte)
-	}
 }
 
 func queryAllCoinTxByPage(w http.ResponseWriter, r *http.Request) {
@@ -268,6 +241,7 @@ func buildTx(tx document.CommonTx) interface{} {
 			BaseTx:   buildBaseTx(tx),
 			SelfBond: tx.Amount,
 			Owner:    tx.From,
+			Pubkey:   tx.StakeCreateValidator.PubKey,
 		}
 		if tx.Type == "CreateValidator" {
 			dtx.Moniker = tx.StakeCreateValidator.Description.Moniker
@@ -291,10 +265,12 @@ func buildTx(tx document.CommonTx) interface{} {
 			},
 		}
 	case types.Gov:
-		return types.GovTx{
+		govTx := types.GovTx{
 			BaseTx: buildBaseTx(tx),
+			Amount: tx.Amount,
 			From:   tx.From,
 		}
+		return govTx
 	}
 	return nil
 }
