@@ -14,7 +14,6 @@
     "commander": "^2.16.0",
     "echarts": "^4.1.0",
     "fs": "^0.0.1-security",
-    "register-service-worker": "^1.0.0",
     "typescript": "^3.0.1",
     "vue": "^2.5.16",
     "vue-class-component": "^6.0.0",

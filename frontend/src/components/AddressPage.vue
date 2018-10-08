@@ -122,38 +122,13 @@
         </div>
       </div>
     </div>
-    <div :class="transactionsDetailWrap" class="transaction_precommit_table">
-      <div class="tab_wrap">
-        <span @click="activeBtn = 0" :class="activeBtn === 0?'transactions_btn_active':''">Transactions</span>
-        <span v-show="showProfile" @click="activeBtn = 1" :class="activeBtn === 1?'transactions_btn_active':''">Precommit Blocks</span>
-      </div>
-      <div class="table_wrap">
-        <div class="transactions_view_all" v-show="activeBtn === 0">
-          <span>{{transactionsTitle}}</span>
-          <span @click="viewAllClick(2)">View All</span>
-        </div>
-        <div class="precommit_view_all" v-show="activeBtn === 1">
-          <p class="table_instruction">
-            <span>Total blocks:</span>
-            <span>{{totalBlocks}}</span>
-            <!--<span>Total Fees:</span>-->
-            <!--<span>{{totalFee}}</span>-->
-          </p>
-          <span class="view_all_btn" @click="viewAllClick(1)">View All</span>
-        </div>
-
-        <div class="transaction_table">
-          <blocks-list-table :items="items" :type="'6'" v-show="activeBtn === 0" :showNoData="TransactionsShowNoData"></blocks-list-table>
-          <blocks-list-table :items="itemsPre" :type="'7'" v-show="activeBtn === 1" :showNoData="PrecommitBlocksshowNoData" :minWidth="5.4"></blocks-list-table>
-          <div v-show="(activeBtn === 0 && TransactionsShowNoData) || (activeBtn === 1 && PrecommitBlocksshowNoData)" class="no_data_show">
-            No Data
-          </div>
-        </div>
+    <div class="list_tab_wrap" :class="transactionsDetailWrap">
+      <div class="list_tab_content">
+        <ul class="list_tab_container">
+          <li class="list_tab_item" v-for="(item,index) in txTab">{{item.txTabName}}</li>
+        </ul>
       </div>
     </div>
-
-
-
   </div>
 </template>
 
@@ -245,6 +220,20 @@
             "active":false
           }
         ],
+        txTab:[
+          {
+            "txTabName":"Transfers"
+          },
+          {
+            "txTabName":"Stakes"
+          },
+          {
+            "txTabName":"Declarations"
+          },
+          {
+            "txTabName":"Governance"
+          }
+        ]
       }
     },
     components:{
@@ -294,6 +283,8 @@
           }
           this.balanceValue = Amount;
 
+        }).catch(e =>{
+          console.log(e)
         })
       },
       //点击view all跳转页面
@@ -326,6 +317,8 @@
             this.showProfile = false;
           }
 
+        }).catch(e => {
+          console.log(e)
         })
       },
       getCurrentTenureInformation(){
@@ -341,6 +334,8 @@
             this.firstPercent = data.Uptime ? `${data.Uptime}%` : "--";
           }
 
+        }).catch(e => {
+          console.log(e)
         })
       },
       getTransactionsList(){
@@ -416,6 +411,8 @@
             this.TransactionsShowNoData = true;
           }
 
+        }).catch(e => {
+          console.log(e)
         })
       },
       getPrecommitBlocksList(){
@@ -672,6 +669,8 @@
             this.informationUptimeLine = {xData, seriesData,noDatayAxisDefaultMax};
           }
 
+        }).catch(e => {
+          console.log(e)
         })
       },
     }
@@ -1045,5 +1044,35 @@
   }
   .information_show_trim{
     white-space: pre-wrap ;
+  }
+  .list_tab_wrap{
+    width: 100%;
+    padding-top: 0.44rem;
+    margin-bottom: 0.71rem;
+    .list_tab_content{
+      width: 80%;
+      border-bottom: 0.01rem solid #3598db;
+      .list_tab_container{
+        @include flex;
+        height: 0.38rem;
+        min-width: 4rem;
+        max-width: 12.8rem;
+        margin-left: 0.2rem;
+        border-left: 0.01rem solid #e4e4e4;
+        .list_tab_item{
+          position: relative;
+          top: 0.01rem;
+          text-align: center;
+          line-height: 0.38rem;
+          width: 1.54rem;
+          border-top: 0.01rem solid #e4e4e4;
+          border-right: 0.01rem solid #e4e4e4;
+          border-bottom: 0.01rem solid #fff;
+          z-index: 5;
+        }
+      }
+    }
+
+
   }
 </style>

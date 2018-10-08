@@ -60,17 +60,6 @@
         </div>
       </div>
     </div>
-    <div :class="transactionsDetailWrap">
-      <p class="transaction_information_content_title" style='border-bottom:none !important;'>Precommit Details</p>
-      <div class="block_detail_table_wrap">
-        <blocks-list-table :items="items" :type="'5'" :showNoData="showNoData"></blocks-list-table>
-        <div v-show="showNoData" class="no_data_show">
-          No Data
-        </div>
-      </div>
-    </div>
-
-
   </div>
 </template>
 
@@ -213,8 +202,8 @@
             this.precommitValidatorsValue = '';
             this.votingPowerValue = '';
           }
-
-
+        }).catch(e => {
+          console.log(e)
         })
       },
       skipNext(num) {
@@ -249,6 +238,8 @@
               this.activeNext = true;
             }
           }
+        }).catch(e => {
+          console.log(e)
         })
       },
       skipTransactions() {

@@ -11,7 +11,7 @@
       </div>
       <p style="font-size:0.14rem;color:#A2A2AE;padding:0 0.1rem;">Get IRIS from this faucet for the latest IRISnet Testnet.</p>
       <p style="font-size:0.14rem;color:#A2A2AE;padding:0 0.1rem;">This faucet will send 10 IRIS to any valid testnet address.</p>
-      <p class="Balance_number">Balance:{{faucetBalance}} {{tokenName}}</p>
+      <p class="Balance_number" :class="errStyle ? 'err_red' : 'err_black ' ">Balance:{{faucetBalance}} {{tokenName}}</p>
       <br/>
       <form @submit.prevent="apply">
         <div class="faucet-form">
@@ -21,13 +21,13 @@
           <fieldset class="form-group">
             <input type="text" class="form-control" id="address" v-model="address" placeholder="Please enter the collection address">
             <div class="alert_information" :style="{visibility:alertShow}">{{errMsg}}</div>
-            
+
           </fieldset>
           <fieldset class="form-group">
             <div id="sc" style="margin:0 auto;" class="text-left">
             </div>
           </fieldset>
-          <button id="submit" type="submit" class="btn btn-primary" disabled>Send me IRIS</button>
+          <button id="submit" type="submit" class="btn btn-primary" :disabled="btnDisabled">{{btninfo}}</button>
         </div>
       </form>
     </div>
@@ -99,6 +99,10 @@
         showTitle: !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer()),
         faucetBalance: 0,
         tokenName:"",
+        errStyle: false,
+        btnDisabled: true,
+        btninfo:"Send me IRIS"
+
       }
     },
     beforeCreate(){
@@ -108,11 +112,27 @@
           return data.data;
         }
       }).then((data)=>{
+        this.errStyle = false;
+        this.btnDisabled = true;
         this.faucetBalance = Tools.formatBalance(Number(Tools.formatNumber(data.value.coins[0].amount)).toString().split(".")[0]);
+        let faucetQuota = 10;
+        if(this.faucetBalance < faucetQuota){
+          this.errStyle = true;
+          this.btnDisabled = true;
+          this.btninfo = "Insufficient Balance"
+        }else {
+          this.btninfo = "Send me IRIS"
+        }
         this.tokenName = data.value.coins[0].denom.toUpperCase();
+      }).catch(e =>{
+        console.log(e);
+        this.faucetBalance = "Error";
+        this.errStyle = true;
+        this.btnDisabled = true
       })
       },
     created: function () {
+      let that = this;
       let nvc = document.createElement('script');
       nvc.setAttribute('src', "//g.alicdn.com/sd/nvc/1.1.112/guide.js");
       document.head.appendChild(nvc);
@@ -133,7 +153,11 @@
               document.getElementById("token").value = NVC_Opt.token;
               document.getElementById("session_id").value = data.sessionId;
               document.getElementById("sig").value = data.sig;
-              document.getElementById("submit").removeAttribute("disabled");
+              if(that.faucetBalance === "Error" || that.btninfo === "Insufficient Balance"){
+                that.btnDisabled = true
+              }else {
+                that.btnDisabled = false
+              }
             },
           });
           ic.init();
@@ -200,7 +224,7 @@
 
   .faucet {
     background: white;
-    padding:1rem 0;
+    padding: 0.38rem 0;
   }
 
   .faucet-form {
@@ -230,10 +254,10 @@
       margin-top:0.2rem;
       /*box-shadow: 0 0 0 transparent;*/
       @include borderRadius(0.04rem);
-      width:1.28rem;
-      height:0.36rem;
+      padding: 0.11rem 0.19rem!important;
       background:#3498DB;
-
+      @include fontSize;
+      color: #fff;
       &:disabled{
         background: rgba(214,217,224,1);
         border-color:rgba(214,217,224,1);
@@ -242,7 +266,12 @@
 
 
   }
-
+  .err_red{
+    color: red !important;
+  }
+  .err_black{
+    color: #000;
+  }
   .err-msg {
     color: red
   }
