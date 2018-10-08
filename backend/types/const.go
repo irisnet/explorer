@@ -81,7 +81,7 @@ func TxTypeFromString(typ string) TxType {
 		return Trans
 	} else if typ == "stake" {
 		return Stake
-	} else if typ == "declar" {
+	} else if typ == "declaration" {
 		return Declaration
 	} else if typ == "gov" {
 		return Gov
