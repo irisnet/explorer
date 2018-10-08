@@ -33,12 +33,14 @@
             Transactions
             <span class="bottom_arrow"></span>
           </span>
-          <span class="sub_btn_item" @click="featureButtonClick('/recent_transactions/2/recent')"
-                v-show="showSubTransaction">Recent Transactions</span>
-          <span class="sub_btn_item" @click="featureButtonClick('/transfer_transactions/2/transfer')"
-                v-show="showSubTransaction">Transfer Transactions</span>
-          <span class="sub_btn_item" @click="featureButtonClick('/stake_transactions/2/stake')"
-                v-show="showSubTransaction">Stake Transactions</span>
+          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/transfer')"
+                v-show="showSubTransaction">Transfers</span>
+          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/declaration')"
+                v-show="showSubTransaction">Declaration</span>
+          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/stake')"
+                v-show="showSubTransaction">Stake</span>
+          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/governance')"
+                v-show="showSubTransaction">Governance</span>
         </div>
         <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === '/validators'?'nav_item_active':''"
              @mouseover="validatorsMouseOver" @mouseleave="validatorsMouseLeave">
@@ -450,7 +452,7 @@
             font-size:0.14rem;
             background: #005a98;
             color: #c9eafd;
-            width:1.92rem;
+            width:1.6rem;
             text-align: left;
             padding-left:0.18rem;
             &:hover{

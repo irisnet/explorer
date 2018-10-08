@@ -41,13 +41,13 @@ export default new Router({
 
     },
     {
-      path: '/recent_transactions/:type/:param', component: BlocksListPage
+      path: '/transactions/:type/:param', component: BlocksListPage
     },
     {
-      path: '/transfer_transactions/:type/:param', component: BlocksListPage
+      path: '/transactions/:type/:param', component: BlocksListPage
     },
     {
-      path: '/stake_transactions/:type/:param', component: BlocksListPage
+      path: '/transactions/:type/:param', component: BlocksListPage
     },
     {
       path: '/validators/:type/:param', component: BlocksListPage

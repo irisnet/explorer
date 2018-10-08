@@ -122,6 +122,13 @@
         </div>
       </div>
     </div>
+    <div class="list_tab_wrap" :class="transactionsDetailWrap">
+      <div class="list_tab_content">
+        <ul class="list_tab_container">
+          <li class="list_tab_item" v-for="(item,index) in txTab">{{item.txTabName}}</li>
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -213,6 +220,20 @@
             "active":false
           }
         ],
+        txTab:[
+          {
+            "txTabName":"Transfers"
+          },
+          {
+            "txTabName":"Stakes"
+          },
+          {
+            "txTabName":"Declarations"
+          },
+          {
+            "txTabName":"Governance"
+          }
+        ]
       }
     },
     components:{
@@ -1016,5 +1037,35 @@
   }
   .information_show_trim{
     white-space: pre-wrap ;
+  }
+  .list_tab_wrap{
+    width: 100%;
+    padding-top: 0.44rem;
+    margin-bottom: 0.71rem;
+    .list_tab_content{
+      width: 80%;
+      border-bottom: 0.01rem solid #3598db;
+      .list_tab_container{
+        @include flex;
+        height: 0.38rem;
+        min-width: 4rem;
+        max-width: 12.8rem;
+        margin-left: 0.2rem;
+        border-left: 0.01rem solid #e4e4e4;
+        .list_tab_item{
+          position: relative;
+          top: 0.01rem;
+          text-align: center;
+          line-height: 0.38rem;
+          width: 1.54rem;
+          border-top: 0.01rem solid #e4e4e4;
+          border-right: 0.01rem solid #e4e4e4;
+          border-bottom: 0.01rem solid #fff;
+          z-index: 5;
+        }
+      }
+    }
+
+
   }
 </style>

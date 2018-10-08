@@ -150,6 +150,8 @@
   body {
     font-size: 16px !important;
     font-family:Arial !important;
+    overflow-y: scroll;
+    position: relative;
   }
 
   p {

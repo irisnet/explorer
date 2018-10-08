@@ -2,7 +2,7 @@
   <div class="blocks_list_page_wrap">
     <div class="blocks_list_title_wrap">
       <p :class="blocksListPageWrap" style="margin-bottom:0;">
-        <span class="blocks_list_title">{{titleVar}}</span>
+        <span class="blocks_list_title">{{listTitleName}}</span>
         <!--<span class="blocks_list_page_wrap_hash_var">{{blocksValue}}</span>-->
 
         <span class="blocks_list_page_wrap_hash_var for_block"
@@ -65,15 +65,10 @@
         this.getDataList(1, 30, this.$route.params.type);
         this.showNoData = false;
         switch (this.$route.params.type) {
-          case '1': this.titleVar = 'Blocks';
+          case '1': this.listTitleName = 'Blocks';
                   break;
-          case '2': this.titleVar = 'Transactions';
+          case '3': this.listTitleName = 'Validators';
                   break;
-          case '3': this.titleVar = 'Validators';
-                  break;
-          case '4': this.titleVar = 'Candidates';
-                  break;
-
         };
         this.computeMinWidth();
       }
@@ -95,6 +90,7 @@
         blockVar:'',
         innerWidth : window.innerWidth,
         tableMinWidth:'',
+        listTitleName:"",
       }
     },
     beforeMount() {
@@ -109,13 +105,9 @@
       //组件页面根据路由类型判断是哪个页面
       this.getDataList(1, 30, this.$route.params.type);
       switch (this.$route.params.type) {
-        case '1': this.titleVar = 'Blocks';
+        case '1': this.listTitleName = 'Blocks';
           break;
-        case '2': this.titleVar = 'Transactions';
-          break;
-        case '3': this.titleVar = 'Validators';
-          break;
-        case '4': this.titleVar = 'Candidates';
+        case '3': this.listTitleName = 'Validators';
           break;
 
       }
@@ -150,7 +142,7 @@
           let url = `/api/blocks/${currentPage}/${pageSize}`;
           if(this.$route.query.address){
             url = `/api/blocks/precommits/${this.$route.query.address}/${currentPage}/${pageSize}`;
-            this.blockVar = `Precommit by ${this.$route.query.address}`;
+            this.listTitleName = `Precommit by ${this.$route.query.address}`;
           }
           axios.get(url).then((data) => {
             if (data.status === 200) {
@@ -192,20 +184,20 @@
           })
         } else if (type === '2') {
           let url;
+          let that = this;
           if(this.$route.params.param === 'transfer'){
-            url = `/api/txs/coin/${currentPage}/${pageSize}`
+            this.listTitleName = "Transfer";
+            url = `/api/tx/trans/${currentPage}/${pageSize}`
           }else if(this.$route.params.param === 'stake'){
-            url = `/api/txs/stake/${currentPage}/${pageSize}`
-          }else if(this.$route.params.param === 'recent'){
-            if(this.$route.query.block){
-              url = `/api/txsByBlock/${this.$route.query.block}/${currentPage}/${pageSize}`;
-              this.blockVar = `for block ${this.$route.query.block}`;
-            }else if(this.$route.query.address){
-              url = `/api/txsByAddress/${this.$route.query.address}/${currentPage}/${pageSize}`;
-              this.blockVar = `for ${this.$route.query.address}`;
-            } else{
-              url = `/api/txs/${currentPage}/${pageSize}`;
-            }
+            this.listTitleName = "Stake";
+            url = `/api/tx/stake/${currentPage}/${pageSize}`
+
+          }else if(this.$route.params.param === 'declaration'){
+            this.listTitleName = "Declaration";
+            url = `/api/tx/declaration/${currentPage}/${pageSize}`
+          }else if(this.$route.params.param === 'governance'){
+            this.listTitleName = "Governance";
+            url = `/api/tx/gov/${currentPage}/${pageSize}`
           }
           axios.get(url).then((data) => {
             if (data.status === 200) {
@@ -213,55 +205,125 @@
             }
           }).then((data) => {
             this.count = data.Count;
-            if(data.Data && typeof data === "object"){
+            if(data.Data){
               this.items = data.Data.map(item => {
-                if(item.Amount.length > 0){
-                  item.Amount[0].amount = Tools.dealWithFees(item.Amount[0].amount);
-                }
-                let [Amount,Fees] = ['',''];
-                if(item.Amount instanceof Array){
-                  Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
-                  if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
-                    Amount = item.Amount.map(listItem => `${listItem.amount}shares`).join(',');
+                let [Amount,Fee] = ['',''];
+                if(that.$route.params.param === 'transfer' || that.$route.params.param === 'stake' || that.$route.params.param === 'governance'){
+                  if(item.Amount !== null && item.Amount.length > 0){
+                    item.Amount[0].amount = Tools.dealWithFees(item.Amount[0].amount);
                   }
-                }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
-                  Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
-                  if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
-                    Amount = `${item.Amount.amount}shares`;
+                  if(item.Amount instanceof Array){
+                    Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
+                    if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
+                      Amount = item.Amount.map(listItem => `${listItem.amount}shares`).join(',');
+                    }
+                  }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
+                    Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
+                    if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
+                      Amount = `${item.Amount.amount}shares`;
+                    }
+                  }else if(item.Amount === null){
+                    Amount = '';
                   }
-                }else if(item.Amount === null){
-                  Amount = '';
+                  if(item.Fee.amount && item.Fee.denom){
+                    Fee = item.Fee.amount = Tools.formatFeeToFixedNumber(item.Fee.amount) + item.Fee.denom.toUpperCase();
+
+                  }
                 }
-                if(item.ActualFee.amount && item.ActualFee.denom){
-                  Fees = item.ActualFee.amount = Tools.formatFeeToFixedNumber(item.ActualFee.amount) + item.ActualFee.denom.toUpperCase();
+                let objList;
+                if(that.$route.params.param === 'transfer'){
+                  objList = {
+                    TxHash: item.Hash,
+                    Block:item.BlockHeight,
+                    From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
+                    To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
+                    Amount,
+                    Fee,
+                    Timestamp: Tools.conversionTimeToUTC(item.Timestamp),
+                  };
+                }else if(that.$route.params.param === 'declaration'){
+                  objList = {
+                    TxHash: item.Hash,
+                    Block: item.BlockHeight,
+                    Owner: item.Owner ? item.Owner : "--",
+                    Moniker: item.Moniker ? item.Moniker : "--",
+                    "Self-Bond":Tools.dealWithFees(item.SelfBond[0].amount) + item.SelfBond[0].denom.toUpperCase(),
+                    Type: item.Type,
+                    Fee: Tools.dealWithFees(item.Fee.amount) + item.Fee.denom.toUpperCase(),
+                    Timestamp: Tools.conversionTimeToUTC(item.Timestamp),
+                  }
+                }else if(that.$route.params.param === 'stake'){
+                  objList = {
+                    TxHash: item.Hash,
+                    Block:item.BlockHeight,
+                    From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
+                    To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
+                    Type:item.Type === 'coin'?'transfer':item.Type,
+                    Amount,
+                    Fee,
+                    Timestamp: Tools.conversionTimeToUTC(item.Timestamp),
+                  }
+                }else if(that.$route.params.param === 'governance'){
+                  objList = {
+                    TxHash: item.Hash,
+                    Block:item.BlockHeight,
+                    From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
+                    "Proposal_ID": item.ProposalId,
+                    Type: item.Type,
+                    Fee,
+                  }
                 }
-                return {
-                  TxHash: item.TxHash,
-                  Block:item.Height,
-                  From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
-                  To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
-                  Type:item.Type === 'coin'?'transfer':item.Type,
-                  Amount,
-                  Fees,
-                  Timestamp: Tools.conversionTimeToUTC(item.Time),
-                };
+
+                return objList;
               })
             }else{
-              this.items = [{
-                TxHash: '',
-                Block:'',
-                From:'',
-                To:'',
-                Type:'',
-                Amount:'',
-                Fees:'',
-                Timestamp:'',
-              }];
-              this.showNoData = true;
+              if(that.$route.params.param === 'transfer'){
+                this.items = [{
+                  TxHash: '',
+                  Block:'',
+                  From:'',
+                  To:'',
+                  Amount:'',
+                  Fee:'',
+                  Timestamp:'',
+                }];
+              }else if(that.$route.params.param === 'declaration'){
+                this.items = [{
+                  TxHash: '',
+                  Block:'',
+                  Owner:'',
+                  Moniker:'',
+                  "Self-Bond":'',
+                  Type:'',
+                  Fee:'',
+                  Timestamp:'',
+                }];
+              }else if(that.$route.params.param === 'stake'){
+                this.items = [{
+                  TxHash: '',
+                  Block:'',
+                  From:'',
+                  To:'',
+                  Type:'',
+                  Amount:'',
+                  Fee:'',
+                  Timestamp:'',
+                }];
+              }else if(that.$route.params.param === 'governance'){
+                this.items = [{
+                  TxHash: '',
+                  Block:'',
+                  From:'',
+                  "Proposal_ID":'',
+                  Type:'',
+                  Fee:'',
+                  Timestamp:'',
+                }];
+              }
+
+              that.showNoData = true;
             }
-            this.showLoading = false;
-          }).catch(e => {
-            console.log(e)
+            that.showLoading = false;
           })
         }else if (type === '3' || type === '4') {
           let url = `/api/stake/candidates/${currentPage}/${pageSize}`;
