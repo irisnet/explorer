@@ -122,13 +122,13 @@
         </div>
       </div>
     </div>
-    <div class="list_tab_wrap" :class="transactionsDetailWrap">
-      <div class="list_tab_content">
-        <ul class="list_tab_container">
-          <li class="list_tab_item" v-for="(item,index) in txTab">{{item.txTabName}}</li>
-        </ul>
-      </div>
-    </div>
+    <!--<div class="list_tab_wrap" :class="transactionsDetailWrap">-->
+      <!--<div class="list_tab_content">-->
+        <!--<ul class="list_tab_container">-->
+          <!--<li class="list_tab_item" v-for="(item,index) in txTab">{{item.txTabName}}</li>-->
+        <!--</ul>-->
+      <!--</div>-->
+    <!--</div>-->
   </div>
 </template>
 
