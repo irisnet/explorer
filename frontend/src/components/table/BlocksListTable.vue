@@ -35,6 +35,11 @@
           {{data.item.To?`${String(data.item.To).substr(0,16)}...`:''}}
         </span>
       </template>
+      <template slot='Owner' slot-scope='data'>
+        <span class="skip_route" @click="skipRoute(`/address/1/${data.item.Owner}`)">
+          {{data.item.Owner?`${String(data.item.Owner).substr(0,16)}...`:''}}
+        </span>
+      </template>
     </b-table>
 
     <b-table :fields='fields' :items='items' striped v-if="type === '3' || type === '4'" class="show_trim">
