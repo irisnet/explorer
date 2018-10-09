@@ -6,7 +6,6 @@
         <span class="transactions_detail_wrap_hash_var">{{hashValue}}</span>
       </p>
     </div>
-
     <div :class="transactionsDetailWrap">
       <p class="transaction_information_content_title">Transaction Information</p>
       <div class="transactions_detail_information_wrap">
@@ -16,31 +15,95 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Block Height:</span>
-          <span class="information_value" style="color:#3598db;cursor:pointer;" @click="skipRoute(`/blocks_detail/${blockValue}`)">{{blockValue}}</span>
+          <span class="information_value link_active_style" @click="skipRoute(`/blocks_detail/${blockValue}`)">{{blockValue}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Type:</span>
           <span class="information_value">{{typeValue}}</span>
         </div>
-        <div class="information_props_wrap">
-          <span class="information_props">From:</span>
-          <span class="information_value" style="color:#3598db;cursor:pointer;" @click="skipRoute(`/address/1/${fromValue}`)">{{fromValue}}</span>
+        <div class="information_props_wrap" v-if="showProposer">
+          <span class="information_props">Proposer:</span>
+          <span class="information_value link_active_style" @click="skipRoute(`/address/1/${proposer}`)">{{proposer}}</span>
         </div>
-        <div class="information_props_wrap">
+        <div class="information_props_wrap" v-if="title">
+          <span class="information_props">Title:</span>
+          <span class="information_value">{{title}}</span>
+        </div>
+        <div class="information_props_wrap" v-if="showInitialDeposit">
+          <span class="information_props">InitialDeposit:</span>
+          <span class="information_value">{{initialDeposit}}</span>
+        </div>
+        <div class="information_props_wrap" v-if="description">
+          <span class="information_props">Description:</span>
+          <span class="information_value">{{description}}</span>
+        </div>
+        <div class="information_props_wrap" v-if="depositer">
+          <span class="information_props">Depositer:</span>
+          <span class="information_value">{{depositer}}</span>
+        </div>
+        <div class="information_props_wrap" v-if="showProposalId">
+          <span class="information_props">Proposal ID:</span>
+          <span class="information_value link_active_style" @click="skipRoute(`/ProposalsDetail/${proposalId}`)">{{proposalId}}</span>
+        </div>
+        <div class="information_props_wrap" v-if="showVoter">
+          <span class="information_props">Voter:</span>
+          <span class="information_value">{{voter}}</span>
+        </div>
+        <div class="information_props_wrap" v-if="showTypeTransfer">
+          <span class="information_props">From:</span>
+          <span class="information_value link_active_style" @click="skipRoute(`/address/1/${fromValue}`)">{{fromValue}}</span>
+        </div>
+        <div class="information_props_wrap" v-if="showSource">
+          <span class="information_props">Source:</span>
+          <span class="information_value link_active_style" @click="skipRoute(`/address/1/${source}`)">{{source}}</span>
+        </div>
+        <div class="information_props_wrap" v-if="showTypeTransfer">
           <span class="information_props">To:</span>
-          <span class="information_value" style="color:#3598db;cursor:pointer;" @click="skipRoute(`/address/1/${toValue}`)">{{toValue}}</span>
+          <span class="information_value link_active_style" @click="skipRoute(`/address/1/${toValue}`)">{{toValue}}</span>
+        </div>
+        <div class="information_props_wrap" v-if="moniker">
+          <span class="information_props">Moniker:</span>
+          <span class="information_value">{{moniker}}</span>
+        </div>
+        <div class="information_props_wrap" v-if="identity">
+          <span class="information_props">Identity:</span>
+          <span class="information_value">{{identity}}</span>
+        </div>
+        <div class="information_props_wrap" v-if="owner">
+          <span class="information_props">Owner:</span>
+          <span class="information_value link_active_style" @click="skipRoute(`/address/1/${owner}`)">{{owner}}</span>
+        </div>
+        <div class="information_props_wrap" v-if="pubkey">
+          <span class="information_props">Pub key:</span>
+          <span class="information_value">{{pubkey}}</span>
+        </div>
+        <div class="information_props_wrap" v-if="website">
+          <span class="information_props">Website:</span>
+          <span class="information_value">{{website}}</span>
+        </div>
+        <div class="information_props_wrap" v-if="selfBond">
+          <span class="information_props">Self-Bond:</span>
+          <span class="information_value">{{selfBond}}</span>
+        </div>
+        <div class="information_props_wrap" v-if="details">
+          <span class="information_props">Details:</span>
+          <span class="information_value">{{details}}</span>
+        </div>
+        <div class="information_props_wrap" v-if="showVoter">
+          <span class="information_props">Option:</span>
+          <span class="information_value">{{option}}</span>
+        </div>
+        <div class="information_props_wrap" v-if="showTypeTransfer || showTypeDeposit">
+          <span class="information_props">Amount:</span>
+          <span class="information_value">{{amountValue}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Timestamp:</span>
           <span class="information_value">{{timestampValue}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Amount:</span>
-          <span class="information_value">{{amountValue}}</span>
-        </div>
-        <div class="information_props_wrap">
-          <span class="information_props">Fees:</span>
-          <span class="information_value">{{feeValue}}</span>
+          <span class="information_props">Actual Tx Fee:</span>
+          <span class="information_value">{{actualTxFee}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Gas Limit:</span>
@@ -53,6 +116,10 @@
         <div class="information_props_wrap">
           <span class="information_props">Gas Price:</span>
           <span class="information_value">{{gasPrice}} <span v-if="gasPrice">IRIS</span></span>
+        </div>
+        <div class="information_props_wrap">
+          <span class="information_props">Memo:</span>
+          <span class="information_value">{{memo}}</span>
         </div>
       </div>
     </div>
@@ -76,12 +143,34 @@
         toValue: '',
         timestampValue: '',
         amountValue: '',
-        feeValue: '',
+        actualTxFee: '',
         gasLimit:'',
         gasUsedByTxn:'',
         gasPrice:'',
-
-
+        memo: "",
+        owner: "",
+        moniker: "",
+        selfBond: "",
+        pubkey: "",
+        identity: "",
+        website: "",
+        details: "",
+        source: "",
+        showSource: "",
+        proposer: "",
+        initialDeposit: "",
+        title: "",
+        description: "",
+        proposalId: "",
+        depositer: "",
+        voter: "",
+        option: "",
+        showProposalId: false,
+        showProposer: false,
+        showInitialDeposit: false,
+        showTypeTransfer:false,
+        showVoter: false,
+        showTypeDeposit: false,
       }
     },
     beforeMount() {
@@ -91,6 +180,7 @@
         this.transactionsDetailWrap = 'mobile_transactions_detail_wrap';
       }
     },
+
     mounted() {
       let url = `/api/tx/${this.$route.query.txHash}`;
       if(!this.$route.query.txHash){
@@ -102,24 +192,78 @@
         }
       }).then((data)=>{
         if(data && typeof data === "object"){
-          this.hashValue = data.TxHash;
-          this.blockValue = data.Height;
+          this.hashValue = data.Hash;
+          this.blockValue = data.BlockHeight;
           this.typeValue = data.Type === 'coin'?'transfer':data.Type;
-          this.fromValue = data.From;
-          this.toValue = data.To;
-          this.timestampValue = Tools.conversionTimeToUTC(data.Time);
+          this.timestampValue = Tools.conversionTimeToUTC(data.Timestamp);
           this.gasPrice = Tools.scientificToNumber(Tools.formatNumber(data.GasPrice));
-          this.gasLimit = data.Fee.Gas;
+          this.gasLimit = data.GasLimit;
           this.gasUsedByTxn = data.GasUsed;
-          this.amountValue = data.Amount.map(item=>{
-            item.amount = Tools.scientificToNumber(Tools.formatNumber(item.amount));
-            if(data.Type === 'CompleteUnbonding' || data.Type === 'BeginUnbonding'){
-              return `${item.amount}shares`;
-            }else{
-              return `${item.amount} ${item.denom.toUpperCase()}`;
+          this.memo = data.Memo ? data.Memo : '--';
+
+          if(data.Amount && data.Amount.length !==0){
+            this.amountValue = data.Amount.map(item=>{
+              item.amount = Tools.scientificToNumber(Tools.formatNumber(item.amount));
+              if(data.Type === 'CompleteUnbonding' || data.Type === 'BeginUnbonding'){
+                return `${item.amount}shares`;
+              }else{
+                return `${item.amount} ${item.denom.toUpperCase()}`;
+              }
+            }).join(',') ;
+          }else {
+            this.amountValue = "--"
+          }
+          this.actualTxFee = `${Tools.scientificToNumber(Tools.formatNumber(data.Fee.amount))} ${data.Fee.denom.toUpperCase()}`;
+
+
+          if(data.Type === "Transfer" || data.Type === "Delegate" || data.Type === "BeginUnbonding" || data.Type === "CompleteUnbonding"){
+            this.showTypeTransfer = true;
+            this.fromValue = data.From;
+            this.toValue = data.To;
+          }else if(data.Type === "CreateValidator" || data.Type === "EditValidator"){
+            this.owner = data.Owner ? data.Owner : '--';
+            this.moniker = data.Moniker ? data.Moniker : '--';
+            this.pubkey = data.Pubkey ? data.Pubkey : "--";
+            this.identity = data.Identity ? data.Identity : '--';
+            this.website = data.Website ? data.Website : '--';
+            this.details = data.Details ? data.Details : '--';
+            if(data.SelfBond && data.SelfBond.length !== 0){
+              this.selfBond = `${Tools.scientificToNumber(Tools.formatNumber(data.SelfBond[0].amount))} ${data.SelfBond[0].denom.toUpperCase()}`;
+            }else {
+              this.selfBond = "--"
             }
-          }).join(',');
-          this.feeValue = `${Tools.scientificToNumber(Tools.formatNumber(data.ActualFee.amount))} ${data.ActualFee.denom.toUpperCase()}`;
+          }else if(data.Type === "BeginRedelegate" || data.Type === "CompleteRedelegate" ){
+            this.showTypeTransfer = true;
+            this.showSource = true;
+            this.fromValue = data.From ? data.From : '';
+            this.toValue = data.To ? data.To : "";
+            this.source = data.Source ? data.Source : "";
+          }else if(data.Type === "SubmitProposal"){
+            this.showProposer = true;
+            this.showInitialDeposit = true;
+            this.title = data.Title ? data.Title : '--';
+            this.proposer = data.From;
+            if(data.Amount && data.Amount.length !==0){
+              this.initialDeposit = data.Amount.map(item=>{
+                item.amount = Tools.scientificToNumber(Tools.formatNumber(item.amount));
+                return `${item.amount} ${item.denom.toUpperCase()}`;
+              }).join(',') ;
+            }else {
+              this.initialDeposit = "--"
+            }
+            this.description = data.Description ? data.Description : '--';
+          }else if(data.Type === "Deposit"){
+            this.showProposalId = true;
+            this.showTypeDeposit = true;
+            this.proposalId = data.ProposalId;
+            this.depositer = data.Depositer ? data.Depositer : "--";
+          }else if(data.Type === "Vote"){
+            this.showProposalId = true;
+            this.showVoter = true;
+            this.proposalId = data.ProposalId;
+            this.voter = data.Voter ? data.Voter : '--';
+            this.option = data.Option ? data.Option : "--";
+          }
         }
 
       }).catch(e => {
@@ -247,5 +391,8 @@ padding:0.16rem 0rem;
       }
     }
   }
-
+  .link_active_style{
+    color:#3598db;
+    cursor:pointer;
+  }
 </style>
