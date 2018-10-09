@@ -15,7 +15,7 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Block Height:</span>
-          <span class="information_value" style="color:#3598db;cursor:pointer;" @click="skipRoute(`/blocks_detail/${blockValue}`)">{{blockValue}}</span>
+          <span class="information_value link_active_style" @click="skipRoute(`/blocks_detail/${blockValue}`)">{{blockValue}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Type:</span>
@@ -23,7 +23,7 @@
         </div>
         <div class="information_props_wrap" v-if="showProposer">
           <span class="information_props">Proposer:</span>
-          <span class="information_value" style="color:#3598db;cursor:pointer;" @click="skipRoute(`/address/1/${proposer}`)">{{proposer}}</span>
+          <span class="information_value link_active_style" @click="skipRoute(`/address/1/${proposer}`)">{{proposer}}</span>
         </div>
         <div class="information_props_wrap" v-if="title">
           <span class="information_props">Title:</span>
@@ -43,7 +43,7 @@
         </div>
         <div class="information_props_wrap" v-if="showProposalId">
           <span class="information_props">Proposal ID:</span>
-          <span class="information_value" style="color:#3598db;cursor:pointer;" @click="skipRoute(`/ProposalsDetail/${proposalId}`)">{{proposalId}}</span>
+          <span class="information_value link_active_style" @click="skipRoute(`/ProposalsDetail/${proposalId}`)">{{proposalId}}</span>
         </div>
         <div class="information_props_wrap" v-if="showVoter">
           <span class="information_props">Voter:</span>
@@ -51,15 +51,15 @@
         </div>
         <div class="information_props_wrap" v-if="showTypeTransfer">
           <span class="information_props">From:</span>
-          <span class="information_value" style="color:#3598db;cursor:pointer;" @click="skipRoute(`/address/1/${fromValue}`)">{{fromValue}}</span>
+          <span class="information_value link_active_style" @click="skipRoute(`/address/1/${fromValue}`)">{{fromValue}}</span>
         </div>
         <div class="information_props_wrap" v-if="showSource">
           <span class="information_props">Source:</span>
-          <span class="information_value" style="color:#3598db;cursor:pointer;" @click="skipRoute(`/address/1/${source}`)">{{source}}</span>
+          <span class="information_value link_active_style" @click="skipRoute(`/address/1/${source}`)">{{source}}</span>
         </div>
         <div class="information_props_wrap" v-if="showTypeTransfer">
           <span class="information_props">To:</span>
-          <span class="information_value" style="color:#3598db;cursor:pointer;" @click="skipRoute(`/address/1/${toValue}`)">{{toValue}}</span>
+          <span class="information_value link_active_style" @click="skipRoute(`/address/1/${toValue}`)">{{toValue}}</span>
         </div>
         <div class="information_props_wrap" v-if="moniker">
           <span class="information_props">Moniker:</span>
@@ -71,7 +71,7 @@
         </div>
         <div class="information_props_wrap" v-if="owner">
           <span class="information_props">Owner:</span>
-          <span class="information_value" style="color:#3598db;cursor:pointer;" @click="skipRoute(`/address/1/${owner}`)">{{owner}}</span>
+          <span class="information_value link_active_style" @click="skipRoute(`/address/1/${owner}`)">{{owner}}</span>
         </div>
         <div class="information_props_wrap" v-if="pubkey">
           <span class="information_props">Pub key:</span>
@@ -391,5 +391,8 @@ padding:0.16rem 0rem;
       }
     }
   }
-
+  .link_active_style{
+    color:#3598db;
+    cursor:pointer;
+  }
 </style>
