@@ -392,7 +392,7 @@ padding:0.16rem 0rem;
     }
   }
   .link_active_style{
-    color:#3598db;
+    color:#3598db !important;
     cursor:pointer;
   }
 </style>
