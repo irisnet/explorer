@@ -247,7 +247,7 @@
                     Block: item.BlockHeight,
                     Owner: item.Owner ? item.Owner : "--",
                     Moniker: item.Moniker ? item.Moniker : "--",
-                    "Self-Bond":Tools.dealWithFees(item.SelfBond[0].amount) + item.SelfBond[0].denom.toUpperCase(),
+                    "Self-Bond": item.SelfBond && item.SelfBond.length > 0 ? Tools.dealWithFees(item.SelfBond[0].amount) + item.SelfBond[0].denom.toUpperCase() : "--",
                     Type: item.Type,
                     Fee: Tools.dealWithFees(item.Fee.amount) + item.Fee.denom.toUpperCase(),
                     Timestamp: Tools.conversionTimeToUTC(item.Timestamp),
@@ -271,6 +271,7 @@
                     "Proposal_ID": item.ProposalId,
                     Type: item.Type,
                     Fee,
+                    Timestamp: Tools.conversionTimeToUTC(item.Timestamp),
                   }
                 }
 
