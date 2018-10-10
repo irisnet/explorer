@@ -108,6 +108,69 @@
         </span>
       </template>
     </b-table>
+
+    <b-table :fields='fields' :items='items' striped v-if="type === 'addressTxList'" nodelabel >
+      <template slot='TxHash' slot-scope='data'>
+        <span class="skip_route" @click="skipRoute(`/tx?txHash=${data.item.TxHash}`)">
+          {{data.item['TxHash']}}
+        </span>
+      </template>
+      <template slot='Block' slot-scope='data'>
+        <span class="skip_route" @click="skipRoute(`/blocks_detail/${data.item.Block}`)">
+          {{data.item.Block}}
+        </span>
+      </template>
+      <template slot='From' slot-scope='data'>
+        <span class="skip_route"
+              :class="data.item.From === $route.params.param?'no_skip':''"
+              @click="skipRoute(`/address/1/${data.item.From}`)">
+          {{data.item.From?`${String(data.item.From).substr(0,16)}...`:''}}
+        </span>
+      </template>
+      <template slot='To' slot-scope='data'>
+        <span class="skip_route"
+              :class="data.item.To === $route.params.param?'no_skip':''"
+              @click="skipRoute(`/address/1/${data.item.To}`)">
+          {{data.item.To?`${String(data.item.To).substr(0,16)}...`:''}}
+        </span>
+      </template>
+      <!--<template slot='Owner' slot-scope='data'>-->
+        <!--<span class="skip_route" @click="skipRoute(`/address/1/${data.item.Owner}`)">-->
+          <!--{{data.item.Owner?`${String(data.item.Owner).substr(0,16)}...`:''}}-->
+        <!--</span>-->
+      <!--</template>-->
+    </b-table>
+    <b-table :fields='fields' :items='items' striped v-if="type === 'blockTxList'" nodelabel >
+      <template slot='TxHash' slot-scope='data'>
+        <span class="skip_route" @click="skipRoute(`/tx?txHash=${data.item.TxHash}`)">
+          {{data.item['TxHash']}}
+        </span>
+      </template>
+      <template slot='Block' slot-scope='data'>
+        <span class="skip_route" @click="skipRoute(`/blocks_detail/${data.item.Block}`)">
+          {{data.item.Block}}
+        </span>
+      </template>
+      <template slot='From' slot-scope='data'>
+        <span class="skip_route"
+              :class="data.item.From === $route.params.param?'no_skip':''"
+              @click="skipRoute(`/address/1/${data.item.From}`)">
+          {{data.item.From?`${String(data.item.From).substr(0,16)}...`:''}}
+        </span>
+      </template>
+      <template slot='To' slot-scope='data'>
+        <span class="skip_route"
+              :class="data.item.To === $route.params.param?'no_skip':''"
+              @click="skipRoute(`/address/1/${data.item.To}`)">
+          {{data.item.To?`${String(data.item.To).substr(0,16)}...`:''}}
+        </span>
+      </template>
+      <template slot='Owner' slot-scope='data'>
+      <span class="skip_route" @click="skipRoute(`/address/1/${data.item.Owner}`)">
+      {{data.item.Owner?`${String(data.item.Owner).substr(0,16)}...`:''}}
+      </span>
+      </template>
+    </b-table>
   </div>
 
 </template>
