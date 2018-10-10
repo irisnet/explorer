@@ -1065,6 +1065,7 @@
   }
   .line_container_wrap{
     width: 100%;
+    padding-bottom: 0.2rem;
     .line_container{
       width: 80%;
       min-width: 3.2rem;
@@ -1160,9 +1161,65 @@
     white-space: pre-wrap ;
   }
   .list_tab_wrap{
+    padding: 0!important;
+  }
+  .mobile_transactions_detail_wrap{
+    .list_tab_content{
+      width: 100%;
+      margin-bottom: 0.2rem;
+      border-bottom: 0.01rem solid #fff!important;
+      overflow-x: auto;
+      .list_tab_container{
+        @include flex;
+        height: 0.38rem;
+        min-width: 4rem;
+        max-width: 12.8rem;
+        padding-left: 0!important;
+        margin-left: 0!important;
+        .list_tab_item{
+          text-align: center;
+          line-height: 0.38rem;
+          width: 1.54rem;
+          color: #A2A2AE;
+          border-left: none!important;
+          border-top: 0.01rem solid #e4e4e4;
+          border-right: none!important;
+          border-bottom: 0.02rem solid #e4e4e4;
+        }
+        }
+        .activeStyle{
+          color: #3598db!important;
+          border-top: 0.01rem solid #e4e4e4 !important;
+          /*border-right: 0.01rem solid #3598db !important;*/
+          /*border-left: 0.01rem solid #3598db !important;*/
+          border-bottom: 0.02rem solid #3598db !important;
+          z-index: 5;
+        }
+      }
+    .no_data_show{
+      @include flex;
+      justify-content: center;
+      border-top:0.01rem solid #eee;
+      border-bottom:0.01rem solid #eee;
+      font-size:0.14rem;
+      height:3rem;
+      align-items: center;
+    }
+    .blocks_list_table_contianer{
+      position:relative;
+      overflow-x: auto;
+      -webkit-overflow-scrolling:touch;
+      top: 0.2rem;
+      padding-bottom: 0.2rem;
+    }
+  }
+
+.personal_computer_transactions_detail_wrap{
+  .list_tab_wrap{
     width: 100%;
     padding-top: 0.44rem;
     padding-bottom: 0.2rem;
+    overflow-x: auto;
     .list_tab_content{
       width: 100%;
       border-bottom: 0.01rem solid #3598db;
@@ -1171,7 +1228,7 @@
         height: 0.38rem;
         min-width: 4rem;
         max-width: 12.8rem;
-        margin-left: 0.2rem;
+        padding-left: 0.2rem;
         .list_tab_item{
           position: relative;
           top: 0.01rem;
@@ -1211,4 +1268,5 @@
     top: 0.2rem;
     padding-bottom: 0.2rem;
   }
+}
 </style>
