@@ -127,7 +127,7 @@
         <ul class="list_tab_container">
           <li class="list_tab_item"
               :class="item.active ? 'activeStyle' : 'unactiveStyle'" v-for="(item,index) in txTab"
-              @click="tabTxList(index,item.txTabName,1,10)">{{item.txTabName}}
+              @click="tabTxList(index,item.txTabName,1,20)">{{item.txTabName}}
           </li>
         </ul>
       </div>
@@ -168,7 +168,7 @@
           currentPage(currentPage) {
               this.currentPage = currentPage;
               new Promise((resolve)=>{
-                  this.getDataList(currentPage, 30, this.$route.params.type);
+                  this.tabTxList(this.currentTabIndex,this.currentTxTabName,currentPage, this.pageSize);
                   resolve();
               }).then(()=>{
                   document.getElementById('router_wrap').scrollTop = 0;
@@ -196,7 +196,7 @@
               transactionsDetailWrap: 'personal_computer_transactions_detail',//1是显示pc端，0是移动端
               activeBtn:0,
               currentPage: 1,
-              pageSize: 30,
+              pageSize: 20,
               addressTxList: "",
               firstPercent:'',
               secondPercent:'%',
@@ -230,6 +230,10 @@
               informationUptimeLine:{},
               transactionsTitle: "",
               count: 0,
+              txTabName:"Transfers",
+              tabTxListIndex:0,
+              currentTabIndex:"",
+              currentTxTabName:"",
               tabVotingPower:[
                 {
                   "title":"14days",
@@ -294,7 +298,7 @@
       }
     },
     mounted() {
-      this.tabTxList(0,"Transfers",1,10);
+      this.tabTxList(this.tabTxListIndex,this.txTabName,this.currentPage,this.pageSize);
       this.getAddressInformation(this.$route.params.param);
       this.getTransactionsList(1,10,this.$route.params.type);
       this.getProfileInformation();
@@ -304,6 +308,9 @@
     },
     methods: {
       tabTxList(index,txTabName,currentPage,pageSize){
+        this.currentPage = currentPage;
+        this.currentTabIndex = index;
+        this.currentTxTabName = txTabName;
         this.showLoading = true;
         for (let txTabIndex = 0; txTabIndex < this.txTab.length; txTabIndex++){
           this.txTab[txTabIndex].active = false;
@@ -328,6 +335,7 @@
         }).then((data) => {
           this.showLoading = false;
           this.showNoData = false;
+          this.count = data.Count;
           if(data.Data){
             that.items = data.Data.map(item => {
               let [Amount,Fee] = ['',''];
@@ -1180,7 +1188,7 @@
       }
     }
     .activeStyle{
-      color: #3598db;
+      color: #3598db!important;
       border-top: 0.01rem solid #3598db !important;
       border-right: 0.01rem solid #3598db !important;
       border-left: 0.01rem solid #3598db !important;
