@@ -28,7 +28,8 @@ func registerQueryTxList(r *mux.Router) error {
 		}
 
 		if len(request.Form["height"]) > 0 {
-			query["height"] = request.Form["height"][0]
+			height, _ := strconv.Atoi(request.Form["height"][0])
+			query["height"] = height
 		}
 
 		txType := args["type"]
@@ -104,17 +105,64 @@ func registerQueryTxsByDay(r *mux.Router) error {
 func queryTxs(w http.ResponseWriter, r *http.Request) {
 	var data []document.CommonTx
 	query := bson.M{}
+	var typeArr []string
+	typeArr = append(typeArr, types.TypeTransfer)
+	typeArr = append(typeArr, types.DeclarationList...)
+	typeArr = append(typeArr, types.StakeList...)
+	typeArr = append(typeArr, types.GovernanceList...)
 	query["type"] = bson.M{
-		"$in": []string{
-			"Transfer",
-			"CreateValidator",
-			"EditValidator",
-			"Delegate",
-			"BeginUnbonding",
-			"CompleteUnbonding",
-		},
+		"$in": typeArr,
 	}
-	w.Write(utils.QueryList("tx_common", &data, query, "-time", r))
+
+	utils.QueryByPage("tx_common", &data, query, "-time", r)
+	var result struct {
+		TransCnt       int
+		StakeCnt       int
+		DeclarationCnt int
+		GovCnt         int
+		Data           []document.CommonTx
+	}
+	result.Data = data
+
+	var counter []struct {
+		Type  string `bson:"_id,omitempty"`
+		Count int
+	}
+
+	c := utils.GetDatabase().C("tx_common")
+	defer c.Database.Session.Close()
+
+	pipe := c.Pipe(
+		[]bson.M{
+			{"$match": bson.M{
+				"type": bson.M{
+					"$in": typeArr,
+				},
+			}},
+			{"$group": bson.M{
+				"_id":   "$type",
+				"count": bson.M{"$sum": 1},
+			}},
+		},
+	)
+
+	pipe.All(&counter)
+
+	for _, cnt := range counter {
+		switch types.Convert(cnt.Type) {
+		case types.Trans:
+			result.TransCnt = result.TransCnt + cnt.Count
+		case types.Declaration:
+			result.DeclarationCnt = result.DeclarationCnt + cnt.Count
+		case types.Stake:
+			result.StakeCnt = result.StakeCnt + cnt.Count
+		case types.Gov:
+			result.GovCnt = result.GovCnt + cnt.Count
+		}
+	}
+
+	res, _ := json.Marshal(result)
+	w.Write(res)
 }
 
 func queryAllCoinTxByPage(w http.ResponseWriter, r *http.Request) {
@@ -138,15 +186,13 @@ func queryTxsByAccount(w http.ResponseWriter, r *http.Request) {
 	address := args["address"]
 	query := bson.M{}
 	query["$or"] = []bson.M{{"from": address}, {"to": address}}
+	var typeArr []string
+	typeArr = append(typeArr, types.TypeTransfer)
+	typeArr = append(typeArr, types.DeclarationList...)
+	typeArr = append(typeArr, types.StakeList...)
+	typeArr = append(typeArr, types.GovernanceList...)
 	query["type"] = bson.M{
-		"$in": []string{
-			"Transfer",
-			"CreateValidator",
-			"EditValidator",
-			"Delegate",
-			"BeginUnbonding",
-			"CompleteUnbonding",
-		},
+		"$in": typeArr,
 	}
 	w.Write(utils.QueryList("tx_common", &data, query, "-time", r))
 }
@@ -158,15 +204,13 @@ func queryTxsByBlock(w http.ResponseWriter, r *http.Request) {
 	iHeight, _ := strconv.Atoi(height)
 	query := bson.M{}
 	query["height"] = iHeight
+	var typeArr []string
+	typeArr = append(typeArr, types.TypeTransfer)
+	typeArr = append(typeArr, types.DeclarationList...)
+	typeArr = append(typeArr, types.StakeList...)
+	typeArr = append(typeArr, types.GovernanceList...)
 	query["type"] = bson.M{
-		"$in": []string{
-			"Transfer",
-			"CreateValidator",
-			"EditValidator",
-			"Delegate",
-			"BeginUnbonding",
-			"CompleteUnbonding",
-		},
+		"$in": typeArr,
 	}
 	w.Write(utils.QueryList("tx_common", &data, query, "-time", r))
 }

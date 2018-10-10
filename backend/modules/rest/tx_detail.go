@@ -70,7 +70,7 @@ func queryTx(w http.ResponseWriter, r *http.Request) {
 		return
 	case types.StakeTx:
 		stakeTx := tx.(types.StakeTx)
-		if stakeTx.Type == types.TypeBeginRedelegation {
+		if stakeTx.Type == types.TypeBeginRedelegation || stakeTx.Type == types.TypeCompleteRedelegation {
 			c := utils.GetDatabase().C("tx_msg")
 			var res document.TxMsg
 			err := c.Find(bson.M{"hash": stakeTx.Hash}).One(&res)
