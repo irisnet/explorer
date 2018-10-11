@@ -266,25 +266,6 @@
 
           }
           if(data.Data){
-
-            console.log(data,"返回的数据是什么")
-
-            // {value:335,name:'直接访问',label:{normal:{fontSize:12}},itemStyle:{color:"#e4e4e4"}},
-            // {value:1548, name:'\n66',itemStyle:{color:"#3498DB"}}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             this.transactionInformation = data.Data.map(item => {
               if(item.Amount.length > 0){
                 item.Amount[0].amount = Tools.dealWithFees(item.Amount[0].amount);
