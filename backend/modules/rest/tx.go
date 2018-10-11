@@ -307,6 +307,34 @@ func buildTx(tx document.CommonTx) interface{} {
 			Amount: tx.Amount,
 			From:   tx.From,
 		}
+
+		c := utils.GetDatabase().C("tx_msg")
+		var res document.TxMsg
+		err := c.Find(bson.M{"hash": govTx.Hash}).One(&res)
+		if err != nil {
+			return govTx
+		}
+
+		if govTx.Type == types.TypeSubmitProposal {
+			var msg MsgSubmitProposal
+			if err = json.Unmarshal([]byte(res.Content), &msg); err == nil {
+				govTx.Title = msg.Title
+				govTx.Description = msg.Description
+			}
+		} else if govTx.Type == types.TypeDeposit {
+			var msg MsgDeposit
+			if err = json.Unmarshal([]byte(res.Content), &msg); err == nil {
+				govTx.ProposalId = msg.ProposalID
+				govTx.Amount = msg.Amount
+			}
+		} else if govTx.Type == types.TypeVote {
+			var msg MsgVote
+			if err = json.Unmarshal([]byte(res.Content), &msg); err == nil {
+				govTx.ProposalId = msg.ProposalID
+				govTx.Option = msg.Option
+			}
+		}
+
 		return govTx
 	}
 	return nil
