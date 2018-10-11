@@ -87,6 +87,11 @@ func registerQueryTxs(r *mux.Router) error {
 	return nil
 }
 
+func registerQueryTxsCounter(r *mux.Router) error {
+	r.HandleFunc("/api/txs/statistics", countTxs).Methods("GET")
+	return nil
+}
+
 func registerQueryTxsByAccount(r *mux.Router) error {
 	r.HandleFunc("/api/txsByAddress/{address}/{page}/{size}", queryTxsByAccount).Methods("GET")
 	return nil
@@ -115,52 +120,8 @@ func queryTxs(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.QueryByPage("tx_common", &data, query, "-time", r)
-	var result struct {
-		TransCnt       int
-		StakeCnt       int
-		DeclarationCnt int
-		GovCnt         int
-		Data           []document.CommonTx
-	}
+	var result = countTxByType(r)
 	result.Data = data
-
-	var counter []struct {
-		Type  string `bson:"_id,omitempty"`
-		Count int
-	}
-
-	c := utils.GetDatabase().C("tx_common")
-	defer c.Database.Session.Close()
-
-	pipe := c.Pipe(
-		[]bson.M{
-			{"$match": bson.M{
-				"type": bson.M{
-					"$in": typeArr,
-				},
-			}},
-			{"$group": bson.M{
-				"_id":   "$type",
-				"count": bson.M{"$sum": 1},
-			}},
-		},
-	)
-
-	pipe.All(&counter)
-
-	for _, cnt := range counter {
-		switch types.Convert(cnt.Type) {
-		case types.Trans:
-			result.TransCnt = result.TransCnt + cnt.Count
-		case types.Declaration:
-			result.DeclarationCnt = result.DeclarationCnt + cnt.Count
-		case types.Stake:
-			result.StakeCnt = result.StakeCnt + cnt.Count
-		case types.Gov:
-			result.GovCnt = result.GovCnt + cnt.Count
-		}
-	}
-
 	res, _ := json.Marshal(result)
 	w.Write(res)
 }
@@ -292,6 +253,7 @@ func RegisterTx(r *mux.Router) error {
 		registerQueryTxsByDay,
 		//new
 		registerQueryTxList,
+		registerQueryTxsCounter,
 	}
 
 	for _, fn := range funs {
