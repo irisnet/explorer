@@ -38,15 +38,15 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Website:</span>
-          <span class="information_value information_show_trim"
+          <span class="information_value"
              v-show="websiteValue !== '--'"
-             style="color:#a2a2ae;">{{websiteValue}}
+             style="color:#a2a2ae;"><pre>{{websiteValue}}</pre>
           </span>
           <i v-show="websiteValue === '--'" style="font-style:normal;color:#a2a2ae">--</i>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Description:</span>
-          <span class="information_value information_show_trim">{{descriptionValue}}</span>
+          <span class="information_value"><pre>{{descriptionValue}}</pre></span>
         </div>
         <!--<div class="information_props_wrap">-->
           <!--<span class="information_props">Commission Rate:</span>-->
@@ -127,7 +127,7 @@
         <ul class="list_tab_container">
           <li class="list_tab_item"
               :class="item.active ? 'activeStyle' : 'unactiveStyle'" v-for="(item,index) in txTab"
-              @click="tabTxList(index,item.txTabName,1,20)">{{item.txTabName}}
+              @click="tabTxList(index,item.txTabName,1,20)">{{item.txTabName}} ({{item.txTotal}})
           </li>
         </ul>
       </div>
@@ -265,20 +265,24 @@
               txTab:[
                 {
                   "txTabName":"Transfers",
-                  "active": true
+                  "active": true,
+                  txTotal:"",
                 },
                 {
                   "txTabName":"Stakes",
-                  "active": false
+                  "active": false,
+                  txTotal:"",
 
                 },
                 {
                   "txTabName":"Declarations",
-                  "active": false
+                  "active": false,
+                  txTotal: "",
                 },
                 {
                   "txTabName":"Governance",
-                  "active": false
+                  "active": false,
+                  txTotal: ""
                 }
               ]
           }
@@ -304,9 +308,27 @@
       this.getProfileInformation();
       this.getCurrentTenureInformation();
       this.getValidatorHistory('14days');
-      this.getValidatorUptimeHistory('24hours')
+      this.getValidatorUptimeHistory('24hours');
+      this.getAddressTxStatistics();
     },
     methods: {
+      getAddressTxStatistics(){
+        let url = `/api/txs/statistics?address=${this.$route.params.param}`;
+        axios.get(url).then((data) => {
+          if(data.status === 200){
+            return data.data
+          }
+        }).then((data) => {
+          if(data){
+            this.txTab[0].txTotal= data.TransCnt;
+            this.txTab[1].txTotal = data.StakeCnt;
+            this.txTab[2].txTotal = data.DeclarationCnt;
+            this.txTab[3].txTotal = data.GovCnt;
+          }
+        }).catch((e) => {
+          console.log(e)
+        })
+      },
       tabTxList(index,txTabName,currentPage,pageSize){
         this.currentPage = currentPage;
         this.currentTabIndex = index;
@@ -1065,7 +1087,7 @@
   }
   .line_container_wrap{
     width: 100%;
-    padding-bottom: 0.2rem;
+    padding-bottom: 0.44rem;
     .line_container{
       width: 80%;
       min-width: 3.2rem;
@@ -1215,6 +1237,9 @@
   }
 
 .personal_computer_transactions_detail_wrap{
+  .list_tab_content{
+   margin-bottom: 0.2rem;
+  }
   .list_tab_wrap{
     width: 100%;
     padding-top: 0.44rem;
@@ -1240,7 +1265,7 @@
           border-top: 0.01rem solid #e4e4e4;
           border-right: 0.01rem solid #e4e4e4;
           border-bottom: 0.01rem solid #3598db;
-          z-index: 5;
+          cursor: pointer;
         }
       }
     }
