@@ -20,7 +20,8 @@
     "vue-msgbox": "^0.2.14",
     "vue-nocaptcha": "^0.1.1",
     "vue-property-decorator": "^6.0.0",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "irisnet-crypto": "git+https://github.com/irisnet/irisnet-crypto.git#v1.1.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.0-beta.15",
