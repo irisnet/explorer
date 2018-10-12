@@ -54,7 +54,7 @@
         <ul class="list_tab_container">
           <li class="list_tab_item"
               :class="item.active ? 'activeStyle' : 'unactiveStyle'" v-for="(item,index) in txTab"
-              @click="tabTxList(index,item.txTabName,1,20)">{{item.txTabName}}
+              @click="tabTxList(index,item.txTabName,1,20)">{{item.txTabName}} ({{item.BlockTxStatistics}})
           </li>
         </ul>
       </div>
@@ -148,20 +148,23 @@
         txTab:[
           {
             "txTabName":"Transfers",
-            "active": true
+            "active": true,
+            BlockTxStatistics:"",
           },
           {
             "txTabName":"Stakes",
-            "active": false
-
+            "active": false,
+            BlockTxStatistics:"",
           },
           {
             "txTabName":"Declarations",
-            "active": false
+            "active": false,
+            BlockTxStatistics:"",
           },
           {
             "txTabName":"Governance",
-            "active": false
+            "active": false,
+            BlockTxStatistics:"",
           }
         ]
       }
@@ -182,8 +185,26 @@
         this.acitve = true;
       }
       this.getMaxBlock();
+      this.getBlockTxStatistics();
     },
     methods: {
+      getBlockTxStatistics(){
+        let url = `/api/txs/statistics?height=${this.$route.params.height}`;
+        axios.get(url).then((data) => {
+          if(data.status === 200){
+            return data.data
+          }
+        }).then((data) => {
+          if(data){
+            this.txTab[0].BlockTxStatistics = data.TransCnt;
+            this.txTab[1].BlockTxStatistics = data.StakeCnt;
+            this.txTab[2].BlockTxStatistics = data.DeclarationCnt;
+            this.txTab[3].BlockTxStatistics = data.GovCnt;
+          }
+        }).catch((e) => {
+          console.log(e)
+        })
+      },
       tabTxList(index,txTabName,currentPage,pageSize){
         this.currentPage = currentPage;
         this.showLoading = true;
@@ -635,6 +656,7 @@
     padding-bottom: 0.2rem;
     .list_tab_content{
       width: 100%;
+      padding-top: 0.2rem;
       border-bottom: 0.01rem solid #3598db;
       .list_tab_container{
         @include flex;
@@ -653,7 +675,7 @@
           border-top: 0.01rem solid #e4e4e4;
           border-right: 0.01rem solid #e4e4e4;
           border-bottom: 0.01rem solid #3598db;
-          z-index: 5;
+          cursor: pointer;
         }
       }
     }
