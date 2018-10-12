@@ -320,6 +320,7 @@ func buildTx(tx document.CommonTx) interface{} {
 			if err = json.Unmarshal([]byte(res.Content), &msg); err == nil {
 				govTx.Title = msg.Title
 				govTx.Description = msg.Description
+				govTx.ProposalType = msg.ProposalType
 			}
 		} else if govTx.Type == types.TypeDeposit {
 			var msg MsgDeposit
