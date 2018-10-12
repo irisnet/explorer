@@ -26,8 +26,12 @@
           <span class="information_value link_active_style" @click="skipRoute(`/address/1/${proposer}`)">{{proposer}}</span>
         </div>
         <div class="information_props_wrap" v-if="title">
-          <span class="information_props">Title:</span>
+          <span class="information_props">ProposalTitle:</span>
           <span class="information_value">{{title}}</span>
+        </div>
+        <div class="information_props_wrap" v-if="proposalType">
+          <span class="information_props">ProposalType:</span>
+          <span class="information_value">{{proposalType}}</span>
         </div>
         <div class="information_props_wrap" v-if="showInitialDeposit">
           <span class="information_props">InitialDeposit:</span>
@@ -39,7 +43,7 @@
         </div>
         <div class="information_props_wrap" v-if="depositer">
           <span class="information_props">Depositer:</span>
-          <span class="information_value">{{depositer}}</span>
+          <span class="information_value link_active_style" @click="skipRoute(`/address/1/${depositer}`)">{{depositer}}</span>
         </div>
         <div class="information_props_wrap" v-if="showProposalId">
           <span class="information_props">Proposal ID:</span>
@@ -47,7 +51,7 @@
         </div>
         <div class="information_props_wrap" v-if="showVoter">
           <span class="information_props">Voter:</span>
-          <span class="information_value">{{voter}}</span>
+          <span class="information_value link_active_style" @click="skipRoute(`/address/1/${voter}`)">{{voter}}</span>
         </div>
         <div class="information_props_wrap" v-if="showTypeTransfer">
           <span class="information_props">From:</span>
@@ -110,7 +114,7 @@
           <span class="information_value">{{gasLimit}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Gas Used by Txn:</span>
+          <span class="information_props">Gas Used by Tx:</span>
           <span class="information_value">{{gasUsedByTxn}}</span>
         </div>
         <div class="information_props_wrap">
@@ -162,6 +166,7 @@
         title: "",
         description: "",
         proposalId: "",
+        proposalType:"",
         depositer: "",
         voter: "",
         option: "",
@@ -243,6 +248,7 @@
             this.showInitialDeposit = true;
             this.title = data.Title ? data.Title : '--';
             this.proposer = data.From;
+            this.proposalType = data.ProposalType;
             if(data.Amount && data.Amount.length !==0){
               this.initialDeposit = data.Amount.map(item=>{
                 item.amount = Tools.scientificToNumber(Tools.formatNumber(item.amount));
@@ -256,12 +262,12 @@
             this.showProposalId = true;
             this.showTypeDeposit = true;
             this.proposalId = data.ProposalId;
-            this.depositer = data.Depositer ? data.Depositer : "--";
+            this.depositer = data.From ? data.From : "--";
           }else if(data.Type === "Vote"){
             this.showProposalId = true;
             this.showVoter = true;
             this.proposalId = data.ProposalId;
-            this.voter = data.Voter ? data.Voter : '--';
+            this.voter = data.From ? data.From : '--';
             this.option = data.Option ? data.Option : "--";
           }
         }
@@ -325,12 +331,6 @@
             }
           }
       }
-
-
-
-
-
-
       .transactions_detail_title {
         height: 0.4rem;
         line-height: 0.4rem;

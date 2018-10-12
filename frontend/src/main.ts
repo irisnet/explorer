@@ -4,10 +4,10 @@ import router from './router'
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
-
+import crypto from  "irisnet-crypto"
 Vue.use(BootstrapVue);
+Vue.prototype.$Crypto=crypto
 Vue.config.productionTip = false;
-
 let faucet_url;
 let fuxi;
 

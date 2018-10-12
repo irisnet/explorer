@@ -20,16 +20,31 @@
           <input type="text" class="form-control" id="sig" name="sig" hidden>
           <fieldset class="form-group">
             <input type="text" class="form-control" id="address" v-model="address" placeholder="Please enter the collection address">
-            <div class="alert_information" :style="{visibility:alertShow}">{{errMsg}}</div>
+            <div class="alert_information" :style="{visibility:alertShowErrMsg}">{{errMsg}}</div>
 
           </fieldset>
           <fieldset class="form-group">
             <div id="sc" style="margin:0 auto;" class="text-left">
             </div>
           </fieldset>
-          <button id="submit" type="submit" class="btn btn-primary" :disabled="btnDisabled">{{btninfo}}</button>
+          <button id="submit" type="submit" class="btn btn-primary" :disabled="btnDisabled" :class="showSendingImg ? 'waitingStyle' : ''">
+            {{btninfo}}
+            <span v-show="showSendingImg" style="padding: 0 0.06rem">
+              <img src="../assets/wait.gif">
+            </span>
+          </button>
         </div>
       </form>
+    </div>
+    <div class="alert_block" v-if="showAlert">
+        <div class="img_font_container">
+          <div class="img_container">
+            <img v-if="showSuccess" src="../assets/success.png">
+            <img v-if="!showSuccess" src="../assets/x.png" alt="">
+          </div>
+          <span class="font_style" v-if="showSuccess">Success !</span>
+          <span class="font_style" v-if="!showSuccess">Failed,try again.</span>
+        </div>
     </div>
   </div>
 </template>
@@ -89,23 +104,45 @@
     $route() {
       this.showTitle = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
     },
+    watch:{
+      address(address){
+        if(this.insufficientBalanceStatus === false){
+          if(this.$Crypto.getCrypto("iris").isValidAddress(address)){
+            if(this.verifyStatus === true ){
+              this.btnDisabled = false;
+            }
+            this.verifyStatus = true;
+            this.alertShowErrMsg = 'hidden';
+          }else {
+            this.btnDisabled = true;
+            this.errMsg = "Please enter a valid address";
+            this.alertShowErrMsg = 'visible';
+          }
+        }
+      }
+    },
     data() {
       return {
         faucet_url: this.faucet_url,
         address: "",
         errMsg: "",
-        alertShow:'hidden',
+        alertShowErrMsg:'hidden',
         innerWidth : window.innerWidth,
         showTitle: !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer()),
         faucetBalance: 0,
+        insufficientBalanceStatus: false,
         tokenName:"",
+        verifyStatus:false,
         errStyle: false,
         btnDisabled: true,
-        btninfo:"Send me IRIS"
-
+        btninfo:"Send me IRIS",
+        showSendingImg: false,
+        showAlert: false,
+        showSuccess: false,
       }
     },
     beforeCreate(){
+
       let faucet_url = this.faucet_url + "/account";
       axios.get(faucet_url).then((data)=>{
         if(data.status === 200){
@@ -115,12 +152,14 @@
         this.errStyle = false;
         this.btnDisabled = true;
         this.faucetBalance = Tools.formatBalance(Number(Tools.formatNumber(data.value.coins[0].amount)).toString().split(".")[0]);
-        let faucetQuota = 10;
+        let faucetQuota = 20;
         if(this.faucetBalance < faucetQuota){
           this.errStyle = true;
           this.btnDisabled = true;
-          this.btninfo = "Insufficient Balance"
+          this.btninfo = "Insufficient Balance";
+          this.insufficientBalanceStatus = true
         }else {
+          this.insufficientBalanceStatus = false;
           this.btninfo = "Send me IRIS"
         }
         this.tokenName = data.value.coins[0].denom.toUpperCase();
@@ -128,7 +167,8 @@
         console.log(e);
         this.faucetBalance = "Error";
         this.errStyle = true;
-        this.btnDisabled = true
+        this.btnDisabled = true;
+        this.insufficientBalanceStatus = true
       })
       },
     created: function () {
@@ -136,7 +176,6 @@
       let nvc = document.createElement('script');
       nvc.setAttribute('src', "//g.alicdn.com/sd/nvc/1.1.112/guide.js");
       document.head.appendChild(nvc);
-
       nvc.onload = () => {
         let captcha = document.createElement('script');
         captcha.setAttribute('src', "//g.alicdn.com/sd/smartCaptcha/0.0.3/index.js");
@@ -153,16 +192,17 @@
               document.getElementById("token").value = NVC_Opt.token;
               document.getElementById("session_id").value = data.sessionId;
               document.getElementById("sig").value = data.sig;
-              if(that.faucetBalance === "Error" || that.btninfo === "Insufficient Balance"){
-                that.btnDisabled = true
+              if(that.faucetBalance === "Error" || that.btninfo === "Insufficient Balance" || that.address === "" || that.verifyStatus === false){
+                that.btnDisabled = true;
               }else {
-                that.btnDisabled = false
+                that.btnDisabled = false;
               }
+              that.verifyStatus = true;
             },
           });
-          ic.init();
+            ic.init();
         }
-      }
+      };
       let addr = this.$route.query.address;
       if (addr && addr !== "") {
         this.address = addr
@@ -174,15 +214,18 @@
           alert("address is empty");
           return false;
         }*/
-        if(!this.errMsg && this.alertShow === 'hidden'){
-          this.alertShow = 'visible';
+        if(!this.errMsg && this.alertShowErrMsg === 'hidden'){
+          this.alertShowErrMsg = 'visible';
           setTimeout(()=>{
-            if(this.alertShow === 'visible'){
-              this.alertShow= 'hidden';
+            if(this.alertShowErrMsg === 'visible'){
+              this.alertShowErrMsg= 'hidden';
               this.errMsg = "";
             }
           },2000);
         }
+        this.btninfo = "Sending";
+        this.btnDisabled = true;
+        this.showSendingImg = true;
         axios.post(this.faucet_url + '/apply', JSON.stringify({
           address: document.getElementById("address").value,
           token: document.getElementById("token").value,
@@ -192,18 +235,33 @@
         })).then(result => {
           let data = result.data;
           let that = this;
+          this.btninfo = "Send me IRIS";
+          this.showSendingImg = false;
+          this.showAlert = true;
           if (data.err_code) {
-            this.alertShow = 'visible';
-            if(data.err_msg === "address is empty"){
-              that.errMsg = "Please enter a valid address"
-            }else {
-              that.errMsg = data.err_msg;
-            }
+            this.showSuccess = false;
           } else {
-            alert("apply successfully");
-            location.reload();
+            this.showSuccess = true;
           }
+          setTimeout(function () {
+            that.showAlert = false;
+            that.showSuccess = false;
+            location.reload();
+          },2000)
+        }).catch((e) => {
+          console.log(e);
+          this.btninfo = "Send me IRIS";
+          this.showSendingImg = false;
+          this.showAlert = true;
+          this.showSuccess = false;
+          let that = this;
+          setTimeout(function () {
+            that.showAlert = false;
+            that.showSuccess = false;
+            location.reload();
+          },2000)
         });
+
       },
       resize(){
         this.innerWidth = window.innerWidth;
@@ -339,5 +397,33 @@
   .btn-primary:focus{
     -webkit-box-shadow:0 0 0 .2rem rgba(255,255,255,.5);
     box-shadow:0 0 0 .2rem rgba(255,255,255,.5)
+  }
+  .alert_block{
+    width: 2.54rem;
+    height: 1.32rem;
+    background:rgba(0,0,0,0.6);
+    @include fixedCenter;
+    border-radius: 0.1rem;
+    z-index: 2000;
+    .img_container{
+      width: 36px;
+      height:36px;
+      margin: auto;
+      margin-bottom: 0.1rem;
+      img{
+        width: 100%;
+      }
+    }
+    .font_style{
+      color: #fff;
+      @include fontSize;
+    }
+    .img_font_container{
+      @include center;
+      padding-top: 0.02rem;
+    }
+  }
+  .waitingStyle{
+    color: #000!important;
   }
 </style>
