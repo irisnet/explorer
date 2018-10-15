@@ -1,12 +1,13 @@
+declare var require: any;
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
-import crypto from  "irisnet-crypto"
+const  crypto = require("irisnet-crypto");
 Vue.use(BootstrapVue);
-Vue.prototype.$Crypto=crypto
+Vue.prototype.$Crypto = crypto;
 Vue.config.productionTip = false;
 let faucet_url;
 let fuxi;
