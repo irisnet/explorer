@@ -99,7 +99,7 @@ func UptimeChange() {
 
 	b.Find(bson.M{"time": bson.M{"$gte": startTime, "$lt": endTime}}).Sort("height").All(&blocks)
 	for len(blocks) == 0 {
-		//往前推进一个小时
+		//往前推进一个小时 hotfix/0.5.0
 		startTime = startTime.Add(d)
 		endTime = endTime.Add(d)
 		if !endTime.Before(lastTime) {
