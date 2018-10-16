@@ -106,7 +106,7 @@
             this.showNoData = false;
             this.count = data.Count;
             this.items = data.Data.map(item =>{
-              let proposalId = item.proposal_id;
+              let proposalId = item.proposal_id === 0 ? "--" : item.proposal_id;
               let type = item.type;
               let status  = item.status;
               let submitBlock = item.submit_block;

@@ -42,7 +42,7 @@
             <img v-if="showSuccess" src="../assets/success.png">
             <img v-if="!showSuccess" src="../assets/x.png" alt="">
           </div>
-          <span class="font_style" v-if="showSuccess">Success !</span>
+          <span class="font_style" v-if="showSuccess">Submitted successfully!</span>
           <span class="font_style" v-if="!showSuccess">Failed,try again.</span>
         </div>
     </div>
