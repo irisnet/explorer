@@ -214,12 +214,12 @@
                   }
                   if(item.Amount instanceof Array){
                     Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
-                    if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
+                    if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === 'BeginRedelegate'){
                       Amount = item.Amount.map(listItem => `${listItem.amount}shares`).join(',');
                     }
                   }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
                     Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
-                    if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
+                    if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === "BeginRedelegate"){
                       Amount = `${item.Amount.amount}shares`;
                     }
                   }else if(item.Amount === null){
@@ -268,7 +268,7 @@
                     TxHash: item.Hash,
                     Block:item.BlockHeight,
                     From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
-                    "Proposal_ID": item.ProposalId,
+                    "Proposal_ID": item.ProposalId === 0 ? "--" : item.ProposalId,
                     Type: item.Type,
                     Fee,
                     Timestamp: Tools.conversionTimeToUTC(item.Timestamp),

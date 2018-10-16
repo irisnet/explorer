@@ -235,27 +235,25 @@
           this.showNoData = false;
           if(data.Data){
             that.items = data.Data.map(item => {
-              let [Amount,Fee] = ['',''];
-              if(txTabName === 'Transfers' || txTabName === 'Stakes' || txTabName === 'Governance'){
-                if(item.Amount !== null && item.Amount.length > 0){
-                  item.Amount[0].amount = Tools.dealWithFees(item.Amount[0].amount);
-                }
-                if(item.Amount instanceof Array){
-                  Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
-                  if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
-                    Amount = item.Amount.map(listItem => `${listItem.amount}shares`).join(',');
+              let [Amount,Fee] = ['--','--'];
+              if(txTabName === 'Transfers' || txTabName === 'Stakes' || txTabName === 'Governance' ||  txTabName === 'Declarations' ){
+                if(item.Amount){
+                  if(item.Amount instanceof Array){
+                    if(item.Amount.length > 0){
+                      Amount = item.Amount.map(listItem=>`${Tools.dealWithFees(listItem.amount)} ${listItem.denom.toUpperCase()}`).join(',');
+                      if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === "BeginRedelegate"){
+                        Amount = item.Amount.map(listItem => `${listItem.amount}shares`).join(',');
+                      }
+                    }
+                  }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
+                    Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
+                    if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === "BeginRedelegate"){
+                      Amount = `${item.Amount.amount}shares`;
+                    }
                   }
-                }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
-                  Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
-                  if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
-                    Amount = `${item.Amount.amount}shares`;
-                  }
-                }else if(item.Amount === null){
-                  Amount = '';
                 }
                 if(item.Fee.amount && item.Fee.denom){
                   Fee = item.Fee.amount = Tools.formatFeeToFixedNumber(item.Fee.amount) + item.Fee.denom.toUpperCase();
-
                 }
               }
               let objList;
@@ -286,7 +284,7 @@
                   Block:item.BlockHeight,
                   Owner:item.Owner,
                   Moniker: item.Moniker,
-                  'Self-Bond': item.SelfBond,
+                  'Self-Bond':item.SelfBond && item.SelfBond.length > 0 ? Tools.dealWithFees(item.SelfBond[0].amount) + item.SelfBond[0].denom.toUpperCase() : "--",
                   Type: item.Type,
                   Fee,
                   Timestamp: Tools.conversionTimeToUTC(item.Timestamp),
@@ -296,7 +294,7 @@
                   TxHash: item.Hash,
                   Block:item.BlockHeight,
                   From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
-                  "Proposal_ID": item.ProposalId,
+                  "Proposal_ID": item.ProposalId === 0 ? "--" : item.ProposalId,
                   Type:item.Type === 'coin'?'transfer':item.Type,
                   Fee,
                   Timestamp: Tools.conversionTimeToUTC(item.Timestamp),
