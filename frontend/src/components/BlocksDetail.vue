@@ -103,6 +103,8 @@
       },
       $route() {
         this.getBlockInformation();
+        this.getBlockTxStatistics();
+        this.tabTxList(this.tabTxListIndex,this.txTabName,this.currentPage,this.pageSize);
         if (Number(this.$route.params.height) <= 0) {
           this.acitve = false;
         } else {
