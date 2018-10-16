@@ -38,9 +38,8 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Website:</span>
-          <span class="information_value"
-             v-show="websiteValue !== '--'"
-             style="color:#a2a2ae;"><pre class="information_pre">{{websiteValue}}</pre>
+          <span class="information_value" v-show="websiteValue !== '--'">
+            <pre class="information_pre">{{websiteValue}}</pre>
           </span>
           <i v-show="websiteValue === '--'" style="font-style:normal;color:#a2a2ae">--</i>
         </div>

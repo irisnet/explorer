@@ -67,7 +67,7 @@
         </div>
         <div class="information_props_wrap" v-if="moniker">
           <span class="information_props">Moniker:</span>
-          <span class="information_value">{{moniker}}</span>
+          <span class="information_value"><pre class="information_pre">{{moniker}}</pre></span>
         </div>
         <div class="information_props_wrap" v-if="identity">
           <span class="information_props">Identity:</span>
@@ -83,7 +83,7 @@
         </div>
         <div class="information_props_wrap" v-if="website">
           <span class="information_props">Website:</span>
-          <span class="information_value">{{website}}</span>
+          <span class="information_value"><pre class="information_pre">{{website}}</pre></span>
         </div>
         <div class="information_props_wrap" v-if="selfBond">
           <span class="information_props">Self-Bond:</span>
@@ -209,7 +209,7 @@
           if(data.Amount && data.Amount.length !==0){
             this.amountValue = data.Amount.map(item=>{
               item.amount = Tools.scientificToNumber(Tools.formatNumber(item.amount));
-              if(data.Type === 'CompleteUnbonding' || data.Type === 'BeginUnbonding'){
+              if(data.Type === 'CompleteUnbonding' || data.Type === 'BeginUnbonding' || data.Type === "BeginRedelegate"){
                 return `${item.amount}shares`;
               }else{
                 return `${item.amount} ${item.denom.toUpperCase()}`;
@@ -261,12 +261,12 @@
           }else if(data.Type === "Deposit"){
             this.showProposalId = true;
             this.showTypeDeposit = true;
-            this.proposalId = data.ProposalId;
+            this.proposalId = data.ProposalId === 0 ? "--" : data.ProposalId;
             this.depositer = data.From ? data.From : "--";
           }else if(data.Type === "Vote"){
             this.showProposalId = true;
             this.showVoter = true;
-            this.proposalId = data.ProposalId;
+            this.proposalId = data.ProposalId === 0 ? "--" : data.ProposalId;
             this.voter = data.From ? data.From : '--';
             this.option = data.Option ? data.Option : "--";
           }
@@ -285,7 +285,9 @@
 </script>
 <style lang="scss">
   @import '../style/mixin.scss';
-
+  .information_pre{
+    color: #a2a2ae;
+  }
   .transactions_detail_wrap {
     @include flex;
     @include pcContainer;
@@ -369,6 +371,7 @@ padding:0.16rem 0rem;
           .information_value{
             overflow-x:auto;
             -webkit-overflow-scrolling:touch;
+
           }
 
         }
