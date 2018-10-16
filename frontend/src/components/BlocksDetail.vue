@@ -240,12 +240,14 @@
                 if(item.Amount){
                   if(item.Amount instanceof Array){
                     if(item.Amount.length > 0){
-                      Amount = item.Amount.map(listItem=>`${Tools.dealWithFees(listItem.amount)} ${listItem.denom.toUpperCase()}`).join(',');
+                      item.Amount[0].amount = Tools.dealWithFees(item.Amount[0].amount);
+                      Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
                       if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === "BeginRedelegate"){
                         Amount = item.Amount.map(listItem => `${listItem.amount}shares`).join(',');
                       }
                     }
                   }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
+                    item.Amount.amount = Tools.dealWithFees(item.Amount.amount);
                     Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
                     if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === "BeginRedelegate"){
                       Amount = `${item.Amount.amount}shares`;
