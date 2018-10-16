@@ -235,30 +235,25 @@
           this.showNoData = false;
           if(data.Data){
             that.items = data.Data.map(item => {
-              let [Amount,Fee] = ['',''];
+              let [Amount,Fee] = ['--','--'];
               if(txTabName === 'Transfers' || txTabName === 'Stakes' || txTabName === 'Governance' ||  txTabName === 'Declarations' ){
                 if(item.Amount){
-                  if(item.Amount !== null && item.Amount.length > 0){
-                    item.Amount[0].amount = Tools.dealWithFees(item.Amount[0].amount);
-                  }
                   if(item.Amount instanceof Array){
-                    Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
-                    if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === "BeginRedelegate"){
-                      Amount = item.Amount.map(listItem => `${listItem.amount}shares`).join(',');
+                    if(item.Amount.length > 0){
+                      Amount = item.Amount.map(listItem=>`${Tools.dealWithFees(listItem.amount)} ${listItem.denom.toUpperCase()}`).join(',');
+                      if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === "BeginRedelegate"){
+                        Amount = item.Amount.map(listItem => `${listItem.amount}shares`).join(',');
+                      }
                     }
                   }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
                     Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
                     if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === "BeginRedelegate"){
                       Amount = `${item.Amount.amount}shares`;
                     }
-                  }else if(item.Amount === null){
-                    Amount = '--';
                   }
                 }
                 if(item.Fee.amount && item.Fee.denom){
                   Fee = item.Fee.amount = Tools.formatFeeToFixedNumber(item.Fee.amount) + item.Fee.denom.toUpperCase();
-                }else {
-                  Fee = "--"
                 }
               }
               let objList;
