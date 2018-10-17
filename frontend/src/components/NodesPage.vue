@@ -17,7 +17,7 @@
       </div>
       <div style="position:relative;overflow-x: auto;">
         <spin-component :showLoading="showLoading"/>
-          <ul id="node-ul-container">
+          <ul id="node-ul-container" :class="showLoading == false ? '' : 'default_container' ">
             <li class="list-items">
               <span>Moniker / NodeID</span>
               <span>IP / Region</span>
@@ -133,12 +133,13 @@
       },
       getDataList() {
         this.showLoading = true;
-        let url = `https://gog.irisplorer.io/api/net_info`;
+        let url = `/api/net_info`;
         let searchIpUrl = `/api/ip/`;
         axios.get(url).then((data) => {
           if (data.status === 200) {
             return data.data;
           }
+
         }).then((data) => {
           if(data && typeof data === "object") {
             this.count = data.result.peers.length;
@@ -146,7 +147,7 @@
             this.nodeList.forEach(item => {
               item.connection_status.SendMonitor.Start = Tools.conversionTimeToUTC(item.connection_status.SendMonitor.Start);
               item.node_info.listen_addr = item.node_info.listen_addr.split(":")[0];
-              item.node_info.moniker = Tools.getShortForm(item.node_info.moniker,20,"...")
+              item.node_info.moniker = Tools.getShortForm(item.node_info.moniker,20,"...");
               axios.get(searchIpUrl + item.node_info.listen_addr).then((data) => {
                 if (data.status === 200) {
                   return data.data;
@@ -167,12 +168,15 @@
                 }
               })
             });
+
             this.showLoading = false;
             return this.nodeList
           }
         }).catch(e => {
-          console.log(e)
-        })
+          console.log(e);
+          this.showLoading = false;
+          this.showNoData = true;
+        });
       },
     }
   }
@@ -354,10 +358,12 @@
       }
     }
   }
+  .default_container{
+    min-height: 3rem;
+  }
   #node-ul-container{
     min-width: 10rem;
     max-width: 12.8rem;
-    min-height: 4.6rem;
     margin-bottom: 0.44rem !important;
   }
   .list-items{
