@@ -93,8 +93,8 @@
         this.pageClassName = 'personal_computer_home_wrap';
         this.module_item_wrap = 'module_item_wrap_computer';
         if(document.getElementsByClassName('fixed_item_height').length > 0){
-          document.getElementsByClassName('fixed_item_height')[0].style.height = '5.9rem';
-          document.getElementsByClassName('fixed_item_height')[1].style.height = '5.9rem';
+          document.getElementsByClassName('fixed_item_height')[0].style.height = '6.55rem';
+          document.getElementsByClassName('fixed_item_height')[1].style.height = '6.55rem';
         }
       } else {
         this.pageClassName = 'mobile_home_wrap';
@@ -111,8 +111,8 @@
           this.pageClassName = 'personal_computer_home_wrap';
           this.module_item_wrap = 'module_item_wrap_computer';
           if(document.getElementsByClassName('fixed_item_height').length > 0) {
-            document.getElementsByClassName('fixed_item_height')[0].style.height = '5.9rem';
-            document.getElementsByClassName('fixed_item_height')[1].style.height = '5.9rem';
+            document.getElementsByClassName('fixed_item_height')[0].style.height = '6.55rem';
+            document.getElementsByClassName('fixed_item_height')[1].style.height = '6.55rem';
           }
         }else {
           this.pageClassName = 'mobile_home_wrap';

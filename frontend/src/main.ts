@@ -5,12 +5,19 @@ import router from './router'
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import axios from "axios"
 const  crypto = require("irisnet-crypto");
 Vue.use(BootstrapVue);
 Vue.prototype.$Crypto = crypto;
 Vue.config.productionTip = false;
 let faucet_url;
 let fuxi;
+axios.defaults.timeout = 3000;
+axios.interceptors.request.use(function (config) {
+  return config;
+}, function (error) {
+  return Promise.reject(error);
+});
 
 if(localStorage.getItem('Faucet_url') && localStorage.getItem('Faucet_url') !== "null"){
   faucet_url = localStorage.getItem('Faucet_url')
