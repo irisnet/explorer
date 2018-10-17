@@ -420,6 +420,8 @@
     }
     .img_font_container{
       @include center;
+      width: 100%;
+      text-align: center;
       padding-top: 0.02rem;
     }
   }
