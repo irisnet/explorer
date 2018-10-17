@@ -160,16 +160,11 @@ func QueryCandidateUptime(w http.ResponseWriter, r *http.Request) {
 		}
 		var result []types.UptimeChange
 		d1, _ := time.ParseDuration("1h")
-		d2, _ := time.ParseDuration("-1h")
-		endTimeHour := endTime.Add(d2)
 		for startTime.Before(endTime) {
 			startStr := startTime.UTC().Format("2006-01-02 15")
 			var uptime = float64(-1)
 			if _, ok := upChangeMap[startStr]; ok {
 				uptime = upChangeMap[startStr]
-			} else if startTime.Equal(endTimeHour) {
-				startTime = startTime.Add(d1)
-				continue
 			}
 			result = append(result, types.UptimeChange{Address: address, Uptime: uptime, Time: startStr})
 			startTime = startTime.Add(d1)
@@ -216,16 +211,11 @@ func QueryCandidateUptime(w http.ResponseWriter, r *http.Request) {
 		}
 		var result []types.UptimeChange
 		d1, _ := time.ParseDuration("24h")
-		d2, _ := time.ParseDuration("-24h")
-		endTimeDay := endTime.Add(d2)
 		for startTime.Before(endTime) {
 			startStr := startTime.UTC().Format("2006-01-02")
 			var uptime = float64(-1)
 			if _, ok := upChangeMap[startStr]; ok {
 				uptime = upChangeMap[startStr]
-			} else if startTime.Equal(endTimeDay) {
-				startTime = startTime.Add(d1)
-				continue
 			}
 			result = append(result, types.UptimeChange{Address: address, Uptime: uptime, Time: startStr})
 			startTime = startTime.Add(d1)
