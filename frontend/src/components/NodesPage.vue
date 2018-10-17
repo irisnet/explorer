@@ -133,9 +133,7 @@
       },
       getDataList() {
         this.showLoading = true;
-
-        // let url = `/api/net_info`;
-        let url = `https://gog.irisplorer.io/api/net_info`;
+        let url = `/api/net_info`;
         let searchIpUrl = `/api/ip/`;
         axios.get(url).then((data) => {
           if (data.status === 200) {
