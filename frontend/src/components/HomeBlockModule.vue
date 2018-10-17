@@ -4,43 +4,27 @@
       <span class="home_module_block_title"
             :class="homeModuleBlockTitleVar"
       >{{title}}</span>
-      <span class="view_all_btn" @click="viewAllClick()">View All</span>
+      <span v-if="blockModuleTypeVar === 'blocks_background_type'" class="view_all_btn" @click="viewAllClick()">View All</span>
     </div>
     <div class="home_module_block_content">
       <div class="home_module_block_content_item" v-for="item in information" :style="innerWidth<500?'padding:0.1rem;':''">
         <div class="blocks_module_left" :style="`${title === 'Blocks'?'flex:1;':''}`">
           <div class="key_value_wrap">
-            <span class="blocks_module_value"
-                  :class="blockModuleTypeVar"
-                  @click="skipRouter(item.Height?`/blocks_detail/${item.Height}`:`/tx?txHash=${item.TxHash}`)">
-              {{item.Height?item.Height:`TX# ${item.TxHash.substr(0,16)}...`}}</span>
+            <span class="blocks_module_value" :class="blockModuleTypeVar">
+              <span class="transactions_tx" v-if="item.TxHash">TX# </span>
+              <span style="cursor:pointer;" @click="skipRouter(item.Height?`/blocks_detail/${item.Height}`:`/tx?txHash=${item.TxHash}`)">{{item.Height?item.Height:`${item.TxHash.substr(0,16)}...`}}</span></span>
+            <span class="key_value_time">{{item.Time}}</span>
           </div>
-          <div class="from_to_wrap">
-            <div class="key_value_wrap" v-show="item.TxHash">
-              <span class="blocks_module_props">From:</span>
-              <span class="blocks_module_value" @click="skipRouter(`/address/1/${item.From}`)">
-              {{item.From?`${String(item.From).substr(0,16)}...`:''}}
-            </span>
-            </div>
-            <div class="key_value_wrap" v-show="item.TxHash">
-              <span class="blocks_module_props">To:</span>
-              <span class="blocks_module_value" @click="skipRouter(`/address/1/${item.To}`)">
-              {{item.To?`${String(item.To).substr(0,16)}...`:''}}
-            </span>
+          <div class="key_value_wrap_bottom">
+            <span class="blocks_module_props">{{item.Height?'Txn:':''}}</span>
+            <span class="blocks_module_Amount">{{item.Height?item.Txn:''}}</span>
+            <span class="blocks_module_type" v-show="item.TxHash">{{item.Type}}</span>
+            <div class="blocks_module_right" :style="`${title === 'Blocks'?'flex:2;':''}`">
+              <span :class="`${title === 'Blocks' ? 'hide_fee' : 'show_fee'}`">Fees: {{item.Fee}}</span>
             </div>
           </div>
-
-
-          <div class="key_value_wrap">
-            <span class="blocks_module_props">{{item.Height?'Txn:':'Amount:'}}</span>
-            <span class="blocks_module_Amount">{{item.Height?item.Txn:item.Amount}}</span>
-          </div>
         </div>
-        <div class="blocks_module_right" :style="`${title === 'Blocks'?'flex:2;':''}`">
-          <span>{{item.Time}}</span>
-          <span :class="`${title === 'Blocks' ? 'hide_fee' : 'show_fee'}`">Fees: {{item.Fee}}</span>
-          <span v-show="item.TxHash">{{item.Type}}</span>
-        </div>
+
       </div>
     </div>
   </div>
@@ -50,7 +34,6 @@
 
 <script>
   import Tools from '../common/Tools';
-
   export default {
     name: 'home-block-module',
     watch:{
@@ -72,13 +55,7 @@
 
     },
     mounted() {
-      if(window.innerWidth > 910){
-        this.listenEvent();
-
-      }
       window.addEventListener('resize',this.onresize);
-
-
     },
     beforeDestroy(){
       window.removeEventListener('resize',this.onresize);
@@ -97,31 +74,18 @@
       },
       onresize(){
         this.innerWidth = window.innerWidth;
-        if(window.innerWidth > 910){
-          this.listenEvent();
-        }else {
-
-        }
       },
-      listenEvent(){
-        document.getElementsByClassName('home_module_block_content')[0].onmouseover = function(){
-          document.getElementsByClassName('home_module_block_content')[0].style.overflowY = 'auto';
-        };
-        document.getElementsByClassName('home_module_block_content')[1].onmouseover = function(){
-          document.getElementsByClassName('home_module_block_content')[1].style.overflowY = 'auto';
-        };
-        document.getElementsByClassName('home_module_block_content')[0].onmouseout = function(){
-          document.getElementsByClassName('home_module_block_content')[0].style.overflowY = 'hidden';
-        };
-        document.getElementsByClassName('home_module_block_content')[1].onmouseout = function(){
-          document.getElementsByClassName('home_module_block_content')[1].style.overflowY = 'hidden';
-        };
-      }
     }
   }
 </script>
 <style lang="scss">
   @import '../style/mixin.scss';
+  .module_item_wrap_mobile
+  .home_module_item .home_module_block
+  .home_module_block_content
+  .home_module_block_content_item{
+    height: auto!important;
+  }
 
   .home_module_block{
     width:100%;
@@ -138,7 +102,6 @@
       align-items: center;
       .home_module_block_title{
         font-size:0.18rem;
-
         font-weight:600;
       }
       .blocks_background{
@@ -165,8 +128,8 @@
         @include flex;
         justify-content:space-between;
         border-bottom:1px solid #eee;
-        padding:0.1rem 0.2rem;
-        height:1.09rem;
+        padding:0.12rem 0.2rem;
+        height: 0.59rem;
         &:last-child{
           border-bottom:none;
         }
@@ -179,24 +142,49 @@
             @include flex;
             flex-wrap: wrap;
           }
-          .key_value_wrap{
+          .key_value_wrap_bottom{
             @include flex;
-            flex-direction:row;
-            .blocks_module_value{
-              color:#3598db;
-              cursor:pointer;
-              @include fontSize;
+            justify-content: space-between;
+            @include fontSize;
+            .blocks_module_Amount{
+              color:#A2A2AE;
               display:inline-block;
             }
-            .blocks_module_Amount{
+            .blocks_module_type{
               @include fontSize;
-              color:#000000;
+              color:#A2A2AE;
               display:inline-block;
             }
             .blocks_module_props{
               @include fontSize;
               color:#000000;
               font-weight:600;
+            }
+          }
+          .key_value_wrap{
+            @include flex;
+            justify-content: space-between;
+            .key_value_time{
+              display: inline-block;
+              @include fontSize;
+              color: #A2A2AE;
+              text-align: right;
+            }
+            .blocks_module_value{
+              color:#3598db;
+              @include fontSize;
+              display:inline-block;
+              .transactions_tx{
+                color: #000;
+              }
+              .transactions_background_type{
+                display: inline-block;
+                width: 0.18rem;
+                height: 0.18rem;
+                img{
+                  width: 100%;
+                }
+              }
             }
             .blocks_background_type{
               background: url('../assets/block.png') no-repeat 0 0.02rem;
@@ -217,7 +205,7 @@
           flex:1;
           justify-content:center;
           span{
-            font-size:0.14rem;
+            @include fontSize;
             color:#a2a2ae;
             text-align: right;
           }

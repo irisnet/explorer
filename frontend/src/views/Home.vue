@@ -41,7 +41,6 @@
           <home-block-module :title="'Transactions'" :information="transactionInformation"></home-block-module>
         </div>
       </div>
-
     </div>
   </div>
 
@@ -94,8 +93,8 @@
         this.pageClassName = 'personal_computer_home_wrap';
         this.module_item_wrap = 'module_item_wrap_computer';
         if(document.getElementsByClassName('fixed_item_height').length > 0){
-          document.getElementsByClassName('fixed_item_height')[0].style.height = '7.19rem';
-          document.getElementsByClassName('fixed_item_height')[1].style.height = '7.19rem';
+          document.getElementsByClassName('fixed_item_height')[0].style.height = '6.55rem';
+          document.getElementsByClassName('fixed_item_height')[1].style.height = '6.55rem';
         }
       } else {
         this.pageClassName = 'mobile_home_wrap';
@@ -112,8 +111,8 @@
           this.pageClassName = 'personal_computer_home_wrap';
           this.module_item_wrap = 'module_item_wrap_computer';
           if(document.getElementsByClassName('fixed_item_height').length > 0) {
-            document.getElementsByClassName('fixed_item_height')[0].style.height = '7.19rem';
-            document.getElementsByClassName('fixed_item_height')[1].style.height = '7.19rem';
+            document.getElementsByClassName('fixed_item_height')[0].style.height = '6.55rem';
+            document.getElementsByClassName('fixed_item_height')[1].style.height = '6.55rem';
           }
         }else {
           this.pageClassName = 'mobile_home_wrap';
@@ -263,6 +262,9 @@
             return data.data;
           }
         }).then((data) => {
+          if(data.TransCnt){
+
+          }
           if(data.Data){
             this.transactionInformation = data.Data.map(item => {
               if(item.Amount.length > 0){
@@ -271,12 +273,12 @@
               let [Amount, Fee] = ['', ''];
               if (item.Amount instanceof Array) {
                 Amount = item.Amount.map(listItem => `${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
-                if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
+                if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === "BeginRedelegate"){
                   Amount = item.Amount.map(listItem => `${listItem.amount}shares`).join(',');
                 }
               } else if (item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')) {
                 Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
-                if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
+                if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === "BeginRedelegate"){
                   Amount = `${item.Amount.amount}shares`;
                 }
               } else if (item.Amount === null) {
@@ -424,5 +426,42 @@
 
       }
     }
+  }
+  .blocks_background_type{
+    background: url('../assets/block.png') no-repeat 0 0.02rem;
+    text-indent:0.2rem;
+    color:#3598db;
+  }
+  .home_module_transaction_title_wrap{
+    @include flex;
+    padding:0.2rem;
+    height:0.64rem;
+    justify-content: space-between;
+    background: #efeff1;
+    border-bottom:1px solid #e4e4e4;
+    align-items: center;
+    .home_module_transaction_title{
+      font-size:0.18rem;
+
+      font-weight:600;
+    }
+    .blocks_background{
+      background: url('../assets/blocks.png') no-repeat 0 0.02rem;
+      text-indent:0.35rem;
+    }
+    .transactions_background{
+      background: url('../assets/transactions.png') no-repeat 0 0.02rem;
+      text-indent:0.3rem;
+    }
+    .view_all_btn{
+      @include viewBtn;
+    }
+  }
+  .transaction_title_name{
+    padding-left: 0.1rem;
+  }
+  .transactions_background_type{
+    background: url('../assets/transactions.png') no-repeat 0 0.02rem;
+    text-indent:0.2rem;
   }
 </style>

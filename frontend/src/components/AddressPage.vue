@@ -38,15 +38,14 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Website:</span>
-          <span class="information_value information_show_trim"
-             v-show="websiteValue !== '--'"
-             style="color:#a2a2ae;">{{websiteValue}}
+          <span class="information_value" v-show="websiteValue !== '--'">
+            <pre class="information_pre">{{websiteValue}}</pre>
           </span>
           <i v-show="websiteValue === '--'" style="font-style:normal;color:#a2a2ae">--</i>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Description:</span>
-          <span class="information_value information_show_trim">{{descriptionValue}}</span>
+          <span class="information_value"><pre class="information_pre">{{descriptionValue}}</pre></span>
         </div>
         <!--<div class="information_props_wrap">-->
           <!--<span class="information_props">Commission Rate:</span>-->
@@ -122,13 +121,35 @@
         </div>
       </div>
     </div>
-    <!--<div class="list_tab_wrap" :class="transactionsDetailWrap">-->
-      <!--<div class="list_tab_content">-->
-        <!--<ul class="list_tab_container">-->
-          <!--<li class="list_tab_item" v-for="(item,index) in txTab">{{item.txTabName}}</li>-->
-        <!--</ul>-->
-      <!--</div>-->
-    <!--</div>-->
+    <div class="list_tab_wrap" :class="transactionsDetailWrap">
+      <div class="list_tab_content">
+        <ul class="list_tab_container">
+          <li class="list_tab_item"
+              :class="item.active ? 'activeStyle' : 'unactiveStyle'" v-for="(item,index) in txTab"
+              @click="tabTxList(index,item.txTabName,1,20)">{{item.txTabName}} ({{item.txTotal}})
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div :class="transactionsDetailWrap">
+      <div class="pagination total_num">
+        <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
+        </b-pagination>
+      </div>
+      <div class="blocks_list_table_contianer">
+        <spin-component :showLoading="showLoading"/>
+        <blocks-list-table :items="items" :type="'addressTxList'"
+                           :showNoData="showNoData"></blocks-list-table>
+        <div v-show="showNoData" class="no_data_show">
+          No Data
+        </div>
+      </div>
+      <div class="pagination" style='margin:0.2rem 0;'>
+        <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
+        </b-pagination>
+      </div>
+  </div>
+
   </div>
 </template>
 
@@ -139,108 +160,138 @@
   import EchartsLine from "./EchartsLine";
   import EchartsValidatorsLine from "./EchartsValidatorsLine";
   import EchartsValidatorsUptimeLine from "./EchartsValidatorsUpTimeLine";
+  import SpinComponent from './commonComponents/SpinComponent';
 
   export default {
-    watch:{
-      $route(){
-        this.type = this.$route.params.type;
-        this.getAddressInformation(this.$route.params.param);
-        this.getTransactionsList(1,10,this.$route.params.type);
-        this.getProfileInformation();
-        this.getPrecommitBlocksList();
-        this.getCurrentTenureInformation();
-        this.getValidatorHistory('14days');
-        this.getValidatorUptimeHistory('24hours');
-      },
-      activeBtn(activeBtn){
-        //0是Transactions List 1是Precommit Blocks List
-      },
+      watch:{
+          currentPage(currentPage) {
+              this.currentPage = currentPage;
+              new Promise((resolve)=>{
+                  this.tabTxList(this.currentTabIndex,this.currentTxTabName,currentPage, this.pageSize);
+                  resolve();
+              }).then(()=>{
+                  document.getElementById('router_wrap').scrollTop = 0;
+              })
 
-    },
-    data() {
+          },
+          $route(){
+              this.type = this.$route.params.type;
+              this.getAddressInformation(this.$route.params.param);
+              this.getTransactionsList(1,10,this.$route.params.type);
+              this.getProfileInformation();
+              this.getCurrentTenureInformation();
+              this.getValidatorHistory('14days');
+              this.getValidatorUptimeHistory('24hours');
+          },
+          activeBtn(activeBtn){
+            //0是Transactions List 1是Precommit Blocks List
+          },
 
-      return {
-        devicesWidth: window.innerWidth,
-        transactionsDetailWrap: 'personal_computer_transactions_detail',//1是显示pc端，0是移动端
-        activeBtn:0,
-        firstPercent:'',
-        secondPercent:'%',
-        address:this.$route.params.param,
-        balanceValue:'',
-        depositsValue:'',
-        transactionsValue:'',
-        nameValue:'',
-        pubKeyValue:'',
-        websiteValue:'',
-        descriptionValue:'',
-        commissionRateValue:'',
-        announcementValue:'',
-        bondHeightValue:'',
-        votingPowerValue:'',
-        uptimeValue:'',
-        precommitedBlocksValue:'',
-        returnsValue:'',
-        items:[],
-        itemsPre:[],
-        type:this.$route.params.type,
-        totalBlocks:0,
-        totalFee:0,
-        TransactionsShowNoData:false,//无数据的时候显示无数据状态
-        PrecommitBlocksshowNoData:false,
-        transactionsCount:0,
-        showProfile:true,
-        informationValidatorsLine: {},//折线图端所有信息
-        informationUptimeLine:{},
-        transactionsTitle: "",
-        tabVotingPower:[
-          {
-            "title":"14days",
-            "active":true
-          },
-          {
-            "title":"30days",
-            "active":false
-          },
-          {
-            "title":"60days",
-            "active":false
+      },
+      data() {
+
+          return {
+              devicesWidth: window.innerWidth,
+              transactionsDetailWrap: 'personal_computer_transactions_detail',//1是显示pc端，0是移动端
+              activeBtn:0,
+              currentPage: 1,
+              pageSize: 20,
+              addressTxList: "",
+              firstPercent:'',
+              secondPercent:'%',
+              address:this.$route.params.param,
+              balanceValue:'',
+              depositsValue:'',
+              transactionsValue:'',
+              nameValue:'',
+              pubKeyValue:'',
+              websiteValue:'',
+              descriptionValue:'',
+              commissionRateValue:'',
+              announcementValue:'',
+              bondHeightValue:'',
+              votingPowerValue:'',
+              uptimeValue:'',
+              precommitedBlocksValue:'',
+              returnsValue:'',
+              items:[],
+              itemsPre:[],
+              type:this.$route.params.type,
+              totalBlocks:0,
+              totalFee:0,
+              TransactionsShowNoData:false,//无数据的时候显示无数据状态
+              PrecommitBlocksshowNoData:false,
+              transactionsCount:0,
+              showProfile:true,
+              showNoData:false,//是否显示列表的无数据
+              showLoading:false,
+              informationValidatorsLine: {},//折线图端所有信息
+              informationUptimeLine:{},
+              transactionsTitle: "",
+              count: 0,
+              txTabName:"Transfers",
+              tabTxListIndex:0,
+              currentTabIndex:"",
+              currentTxTabName:"",
+              tabVotingPower:[
+                {
+                  "title":"14days",
+                  "active":true
+                },
+                {
+                  "title":"30days",
+                  "active":false
+                },
+                {
+                  "title":"60days",
+                  "active":false
+                }
+              ],
+              tabUptime:[
+                {
+                  "title":"24hours",
+                  "active":true
+                },
+                {
+                  "title":"14days",
+                  "active":false
+                },
+                {
+                  "title":"30days",
+                  "active":false
+                }
+              ],
+              txTab:[
+                {
+                  "txTabName":"Transfers",
+                  "active": true,
+                  txTotal:"",
+                },
+                {
+                  "txTabName":"Stakes",
+                  "active": false,
+                  txTotal:"",
+
+                },
+                {
+                  "txTabName":"Declarations",
+                  "active": false,
+                  txTotal: "",
+                },
+                {
+                  "txTabName":"Governance",
+                  "active": false,
+                  txTotal: ""
+                }
+              ]
           }
-        ],
-        tabUptime:[
-          {
-            "title":"24hours",
-            "active":true
-          },
-          {
-            "title":"14days",
-            "active":false
-          },
-          {
-            "title":"30days",
-            "active":false
-          }
-        ],
-        txTab:[
-          {
-            "txTabName":"Transfers"
-          },
-          {
-            "txTabName":"Stakes"
-          },
-          {
-            "txTabName":"Declarations"
-          },
-          {
-            "txTabName":"Governance"
-          }
-        ]
-      }
-    },
+      },
     components:{
       EchartsValidatorsUptimeLine,
       EchartsValidatorsLine,
       EchartsLine,
       BlocksListTable,
+      SpinComponent,
     },
     beforeMount() {
       if (Tools.currentDeviceIsPersonComputer()) {
@@ -250,15 +301,183 @@
       }
     },
     mounted() {
+      this.tabTxList(this.tabTxListIndex,this.txTabName,this.currentPage,this.pageSize);
       this.getAddressInformation(this.$route.params.param);
       this.getTransactionsList(1,10,this.$route.params.type);
       this.getProfileInformation();
-      this.getPrecommitBlocksList();
       this.getCurrentTenureInformation();
       this.getValidatorHistory('14days');
-      this.getValidatorUptimeHistory('24hours')
+      this.getValidatorUptimeHistory('24hours');
+      this.getAddressTxStatistics();
     },
     methods: {
+      getAddressTxStatistics(){
+        let url = `/api/txs/statistics?address=${this.$route.params.param}`;
+        axios.get(url).then((data) => {
+          if(data.status === 200){
+            return data.data
+          }
+        }).then((data) => {
+          if(data){
+            this.txTab[0].txTotal= data.TransCnt;
+            this.txTab[1].txTotal = data.StakeCnt;
+            this.txTab[2].txTotal = data.DeclarationCnt;
+            this.txTab[3].txTotal = data.GovCnt;
+          }
+        }).catch((e) => {
+          console.log(e)
+        })
+      },
+      tabTxList(index,txTabName,currentPage,pageSize){
+        this.currentPage = currentPage;
+        this.currentTabIndex = index;
+        this.currentTxTabName = txTabName;
+        this.showLoading = true;
+        for (let txTabIndex = 0; txTabIndex < this.txTab.length; txTabIndex++){
+          this.txTab[txTabIndex].active = false;
+          this.txTab[index].active = true;
+        }
+        let url;
+        let that = this;
+        if(txTabName === 'Transfers'){
+          url = `/api/tx/trans/${currentPage}/${pageSize}?address=${this.$route.params.param}`
+        }else if(txTabName === 'Stakes'){
+          url = `/api/tx/stake/${currentPage}/${pageSize}?address=${this.$route.params.param}`
+
+        }else if(txTabName === 'Declarations'){
+          url = `/api/tx/declaration/${currentPage}/${pageSize}?address=${this.$route.params.param}`
+        }else if(txTabName === 'Governance'){
+          url = `/api/tx/gov/${currentPage}/${pageSize}?address=${this.$route.params.param}`
+        }
+        axios.get(url).then((data) => {
+          if(data.status === 200){
+            return data.data;
+          }
+        }).then((data) => {
+          this.showLoading = false;
+          this.showNoData = false;
+          this.count = data.Count;
+          if(data.Data){
+            that.items = data.Data.map(item => {
+              let [Amount,Fee] = ['--','--'];
+              if(txTabName === 'Transfers' || txTabName === 'Stakes' || txTabName === 'Governance' || txTabName === 'Declarations'){
+                if(item.Amount){
+                  if(item.Amount instanceof Array){
+                    if(item.Amount.length > 0){
+                      item.Amount[0].amount = Tools.dealWithFees(item.Amount[0].amount);
+                      Amount = item.Amount.map(listItem=>
+                        `${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
+                      if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === "BeginRedelegate"){
+                        Amount = item.Amount.map(listItem => `${listItem.amount}shares`).join(',');
+                      }
+                    }
+                  }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
+                    item.Amount.amount = Tools.dealWithFees(item.Amount.amount);
+                    Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
+                    if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === "BeginRedelegate"){
+                      Amount = `${item.Amount.amount}shares`;
+                    }
+                  }
+                }
+                if(item.Fee.amount && item.Fee.denom){
+                  Fee = item.Fee.amount = Tools.formatFeeToFixedNumber(item.Fee.amount) + item.Fee.denom.toUpperCase();
+                }
+              }
+              let objList;
+              if(txTabName === 'Transfers'){
+                objList = {
+                  TxHash: item.Hash,
+                  Block:item.BlockHeight,
+                  From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
+                  To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
+                  Amount,
+                  Fee,
+                  Timestamp: Tools.conversionTimeToUTC(item.Timestamp),
+                }
+              }else if(txTabName === 'Stakes'){
+                objList = {
+                  TxHash: item.Hash,
+                  Block:item.BlockHeight,
+                  From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
+                  To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
+                  Type:item.Type === 'coin'?'transfer':item.Type,
+                  Amount,
+                  Fee,
+                  Timestamp: Tools.conversionTimeToUTC(item.Timestamp),
+                };
+              }else if(txTabName === 'Declarations'){
+                objList = {
+                  TxHash: item.Hash,
+                  Block:item.BlockHeight,
+                  Owner:item.Owner,
+                  Moniker: item.Moniker,
+                  'Self-Bond': item.SelfBond && item.SelfBond.length > 0 ? Tools.dealWithFees(item.SelfBond[0].amount) + item.SelfBond[0].denom.toUpperCase() : "--",
+                  Type: item.Type,
+                  Fee,
+                  Timestamp: Tools.conversionTimeToUTC(item.Timestamp),
+                };
+              }else if(txTabName === 'Governance'){
+                objList = {
+                  TxHash: item.Hash,
+                  Block:item.BlockHeight,
+                  From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
+                  "Proposal_ID": item.ProposalId === 0 ? "--" : item.ProposalId,
+                  Type:item.Type === 'coin'?'transfer':item.Type,
+                  Fee,
+                  Timestamp: Tools.conversionTimeToUTC(item.Timestamp),
+                };
+              }
+              return objList
+            })
+
+          }else {
+            this.showNoData = true;
+              if(txTabName === 'Transfers'){
+                this.items = [{
+                  'Tx Hash': "",
+                  Block: "",
+                  From: "",
+                  To: "",
+                  Amount: "",
+                  Fee: "",
+                  Timestamp: "",
+                }]
+              }else if(txTabName === 'Stakes'){
+                 this.items = [{
+                   'Tx Hash': "",
+                   Block: "",
+                   From: "",
+                   To: "",
+                   Type: "",
+                   Amount: "",
+                   Fee: "",
+                   Timestamp: "",
+                 }]
+              }else if(txTabName === 'Declarations'){
+                this.items = [{
+                  'Tx Hash': "",
+                  Block: "",
+                  Owner: "",
+                  Moniker: "",
+                  'Self-Bond': "",
+                  Type: "",
+                  Fee: "",
+                  Timestamp: "",
+                }]
+              }else if(txTabName === 'Governance'){
+                this.items = [{
+                  'Tx Hash': "",
+                  Block: "",
+                  From: "",
+                  'Proposal_ID': "",
+                  Type: "",
+                  Fee: "",
+                  Timestamp: "",
+                }]
+              }
+          }
+        })
+      },
       getAddressInformation(address){
         this.address = address;
         let url = `/api/account/${this.$route.params.param}`;
@@ -345,105 +564,13 @@
             return data.data;
           }
         }).then((data)=>{
-          if(data.Count > 30 && typeof data === "object"){
-            this.transactionsTitle = "Last 30 txn from a total of " + data.Count + " transactions"
-          }else {
-            this.transactionsTitle = "Last 30 txn"
-          }
+
           this.transactionsCount = data.Count;
           this.transactionsValue = data.Count;
-          if(data.Data && typeof data === "object"){
-            this.items = data.Data.map(item=>{
 
-              if(item.Amount.length > 0){
-                item.Amount[0].amount = Tools.dealWithFees(item.Amount[0].amount);
-              }
-              let [Amount,Fees] = ['',''];
-              if(item.Amount instanceof Array){
-                Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
-                if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
-                  Amount = item.Amount.map(listItem => `${listItem.amount} shares`).join(',');
-                }
-              }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
-                Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
-                if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding'){
-                  Amount = `${item.Amount.amount} shares`;
-                }
-              }else if(item.Amount === null){
-                Amount = '';
-              }
-              if(item.ActualFee.amount && item.ActualFee.denom){
-                Fees = item.ActualFee.amount = Tools.formatFeeToFixedNumber(item.ActualFee.amount) + ' ' + item.ActualFee.denom.toUpperCase();
-
-              }
-              let type = '';
-              if(item.Type === 'Transfer'){
-                if(this.$route.params.param === item.From){
-                  type = 'Send';
-                }else{
-                  type = 'Receive';
-                }
-              }else{
-                type = item.Type;
-              }
-              return {
-                TxHash:item.TxHash,
-                Block:item.Height,
-                From:item.From,
-                To:item.To,
-                Type:type,
-                Amount,
-                Fees,
-                Timestamp:Tools.conversionTimeToUTC(item.Time),
-              }
-            })
-          }else{
-            this.items = [{
-              TxHash:'',
-              Block:'',
-              From:'',
-              To:'',
-              Type:'',
-              Amount:'',
-              Fees:'',
-              Timestamp:'',
-            }];
-            this.TransactionsShowNoData = true;
-          }
-
+          this.TransactionsShowNoData = true;
         }).catch(e => {
           console.log(e)
-        })
-      },
-      getPrecommitBlocksList(){
-        let url = `/api/blocks/precommits/${this.$route.params.param}/1/6`;
-        axios.get(url).then((data)=>{
-          if(data.status === 200){
-            return data.data;
-          }
-        }).then((data)=>{
-          this.totalBlocks = data.Count;
-          if(data.Data && typeof data === "object"){
-            this.PrecommitBlocksshowNoData = false;
-            this.itemsPre = data.Data.map(item=>{
-              return{
-                'Block Height':item.Height,
-                Txn:item.NumTxs,
-                // Fees:'0 IRIS',
-                Timestamp:Tools.conversionTimeToUTC(item.Time),
-                'Precommit Validators':item.Validators.length !== 0?`${item.Block.LastCommit.Precommits.length}/${item.Validators.length}`:'',
-              }
-            });
-          }else{
-            this.itemsPre = [{
-              'Block Height':'',
-              Txn:'',
-              // Fees:'',
-              Timestamp:'',
-              'Precommit Validators':'',
-            }];
-            this.PrecommitBlocksshowNoData = true;
-          }
         })
       },
       getValidatorHistory(tabTime,index){
@@ -683,6 +810,15 @@
     @include flex;
     @include pcContainer;
     font-size:0.14rem;
+    .pagination {
+      @include flex;
+      justify-content: flex-end;
+      @include borderRadius(0.025rem);
+      height:0.3rem;
+      li{
+        height:0.3rem !important;
+      }
+    }
     .transactions_title_wrap {
       width: 100%;
       border-bottom: 0.01rem solid #eee;
@@ -951,6 +1087,7 @@
   }
   .line_container_wrap{
     width: 100%;
+    padding-bottom: 0.44rem;
     .line_container{
       width: 80%;
       min-width: 3.2rem;
@@ -1046,33 +1183,115 @@
     white-space: pre-wrap ;
   }
   .list_tab_wrap{
+    padding: 0!important;
+  }
+  .mobile_transactions_detail_wrap{
+    .list_tab_content{
+      width: 100%;
+      margin-bottom: 0.2rem;
+      border-bottom: 0.01rem solid #fff!important;
+      overflow-x: auto;
+      .list_tab_container{
+        @include flex;
+        height: 0.38rem;
+        min-width: 4rem;
+        max-width: 12.8rem;
+        padding-left: 0!important;
+        margin-left: 0!important;
+        .list_tab_item{
+          text-align: center;
+          line-height: 0.38rem;
+          width: 1.54rem;
+          color: #A2A2AE;
+          border-left: none!important;
+          border-top: 0.01rem solid #e4e4e4;
+          border-right: none!important;
+          border-bottom: 0.02rem solid #e4e4e4;
+        }
+        }
+        .activeStyle{
+          color: #3598db!important;
+          border-top: 0.01rem solid #e4e4e4 !important;
+          /*border-right: 0.01rem solid #3598db !important;*/
+          /*border-left: 0.01rem solid #3598db !important;*/
+          border-bottom: 0.02rem solid #3598db !important;
+          z-index: 5;
+        }
+      }
+    .no_data_show{
+      @include flex;
+      justify-content: center;
+      border-top:0.01rem solid #eee;
+      border-bottom:0.01rem solid #eee;
+      font-size:0.14rem;
+      height:3rem;
+      align-items: center;
+    }
+    .blocks_list_table_contianer{
+      position:relative;
+      overflow-x: auto;
+      -webkit-overflow-scrolling:touch;
+      top: 0.2rem;
+      padding-bottom: 0.2rem;
+    }
+  }
+
+.personal_computer_transactions_detail_wrap{
+  .list_tab_content{
+   margin-bottom: 0.2rem;
+  }
+  .list_tab_wrap{
     width: 100%;
     padding-top: 0.44rem;
-    margin-bottom: 0.71rem;
+    padding-bottom: 0.2rem;
+    overflow-x: auto;
     .list_tab_content{
-      width: 80%;
+      width: 100%;
       border-bottom: 0.01rem solid #3598db;
       .list_tab_container{
         @include flex;
         height: 0.38rem;
         min-width: 4rem;
         max-width: 12.8rem;
-        margin-left: 0.2rem;
-        border-left: 0.01rem solid #e4e4e4;
+        padding-left: 0.2rem;
         .list_tab_item{
           position: relative;
           top: 0.01rem;
           text-align: center;
           line-height: 0.38rem;
           width: 1.54rem;
+          color: #A2A2AE;
+          border-left: 0.01rem solid #e4e4e4;
           border-top: 0.01rem solid #e4e4e4;
           border-right: 0.01rem solid #e4e4e4;
-          border-bottom: 0.01rem solid #fff;
-          z-index: 5;
+          border-bottom: 0.01rem solid #3598db;
+          cursor: pointer;
         }
       }
     }
-
-
+    .activeStyle{
+      color: #3598db!important;
+      border-top: 0.01rem solid #3598db !important;
+      border-right: 0.01rem solid #3598db !important;
+      border-left: 0.01rem solid #3598db !important;
+      border-bottom: 0.01rem solid #fff !important;
+    }
   }
+  .no_data_show{
+    @include flex;
+    justify-content: center;
+    border-top:0.01rem solid #eee;
+    border-bottom:0.01rem solid #eee;
+    font-size:0.14rem;
+    height:3rem;
+    align-items: center;
+  }
+  .blocks_list_table_contianer{
+    position:relative;
+    overflow-x: auto;
+    -webkit-overflow-scrolling:touch;
+    top: 0.2rem;
+    padding-bottom: 0.2rem;
+  }
+}
 </style>
