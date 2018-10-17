@@ -232,7 +232,9 @@
           session_id: document.getElementById("session_id").value,
           sig: document.getElementById("sig").value,
           "scene": scene
-        })).then(result => {
+        }),{
+          timeout:100000
+        }).then(result => {
           let data = result.data;
           let that = this;
           this.btninfo = "Send me IRIS";
@@ -420,8 +422,6 @@
     }
     .img_font_container{
       @include center;
-      width: 100%;
-      text-align: center;
       padding-top: 0.02rem;
     }
   }
