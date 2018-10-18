@@ -90,7 +90,6 @@ func UptimeChange() {
 	endTime = time.Date(endTime.Year(), endTime.Month(), endTime.Day(), endTime.Hour(), 0, 0, 0, endTime.Location())
 
 	log.Printf("startTime:%s,endTime:%s", startTime.UTC().Format("2006-01-02 15"), endTime.UTC().Format("2006-01-02 15"))
-
 	if !endTime.Before(lastTime) {
 		log.Printf("handle to now %s, task end\n", startTime.Format("2006-01-02 15"))
 		time.Sleep(10 * time.Minute)
@@ -98,6 +97,17 @@ func UptimeChange() {
 	}
 
 	b.Find(bson.M{"time": bson.M{"$gte": startTime, "$lt": endTime}}).Sort("height").All(&blocks)
+	for len(blocks) == 0 {
+		//往前推进一个小时
+		startTime = startTime.Add(d)
+		endTime = endTime.Add(d)
+		if !endTime.Before(lastTime) {
+			log.Printf("handle to now %s, task end\n", startTime.Format("2006-01-02 15"))
+			time.Sleep(10 * time.Minute)
+			return
+		}
+		b.Find(bson.M{"time": bson.M{"$gte": startTime, "$lt": endTime}}).Sort("height").All(&blocks)
+	}
 
 	if err != nil {
 		log.Println(err.Error())

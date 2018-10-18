@@ -33,10 +33,17 @@ func queryAccount(w http.ResponseWriter, r *http.Request) {
 	defer c.Database.Session.Close()
 	var result document.Account
 	err := c.Find(bson.M{"address": address}).Sort("-amount.amount").One(&result)
-	if err == nil {
-		resultByte, _ := json.Marshal(result)
-		w.Write(resultByte)
+	if err != nil {
+		w.Write([]byte("not find account"))
+		return
 	}
+
+	balance := utils.GetBalance(result.Address)
+	if len(balance) >= 0 {
+		result.Amount = balance
+	}
+	resultByte, _ := json.Marshal(result)
+	w.Write(resultByte)
 }
 
 func queryAccounts(w http.ResponseWriter, r *http.Request) {

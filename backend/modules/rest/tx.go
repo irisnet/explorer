@@ -2,14 +2,14 @@ package rest
 
 import (
 	"encoding/json"
-	"net/http"
-	"strconv"
-	"time"
-
 	"github.com/gorilla/mux"
+	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
+	"net/http"
+	"strconv"
+	"time"
 )
 
 type TxDay struct {
@@ -17,8 +17,38 @@ type TxDay struct {
 	Count int
 }
 
-func registerQueryTx(r *mux.Router) error {
-	r.HandleFunc("/api/tx/{hash}", queryTx).Methods("GET")
+func registerQueryTxList(r *mux.Router) error {
+	r.HandleFunc("/api/tx/{type}/{page}/{size}", func(writer http.ResponseWriter, request *http.Request) {
+		args := mux.Vars(request)
+		query := bson.M{}
+		request.ParseForm()
+		if len(request.Form["address"]) > 0 {
+			address := request.Form["address"][0]
+			query["$or"] = []bson.M{{"from": address}, {"to": address}}
+		}
+
+		if len(request.Form["height"]) > 0 {
+			height, _ := strconv.Atoi(request.Form["height"][0])
+			query["height"] = height
+		}
+
+		txType := args["type"]
+		switch types.TxTypeFromString(txType) {
+		case types.Trans:
+			queryTransferTx(writer, request, query)
+			break
+		case types.Declaration:
+			queryDeclarationTx(writer, request, query)
+			break
+		case types.Stake:
+			queryStakeTx(writer, request, query)
+			break
+		case types.Gov:
+			queryGovTx(writer, request, query)
+			break
+		}
+
+	}).Methods("GET")
 	return nil
 }
 
@@ -57,6 +87,11 @@ func registerQueryTxs(r *mux.Router) error {
 	return nil
 }
 
+func registerQueryTxsCounter(r *mux.Router) error {
+	r.HandleFunc("/api/txs/statistics", countTxs).Methods("GET")
+	return nil
+}
+
 func registerQueryTxsByAccount(r *mux.Router) error {
 	r.HandleFunc("/api/txsByAddress/{address}/{page}/{size}", queryTxsByAccount).Methods("GET")
 	return nil
@@ -75,46 +110,20 @@ func registerQueryTxsByDay(r *mux.Router) error {
 func queryTxs(w http.ResponseWriter, r *http.Request) {
 	var data []document.CommonTx
 	query := bson.M{}
+	var typeArr []string
+	typeArr = append(typeArr, types.TypeTransfer)
+	typeArr = append(typeArr, types.DeclarationList...)
+	typeArr = append(typeArr, types.StakeList...)
+	typeArr = append(typeArr, types.GovernanceList...)
 	query["type"] = bson.M{
-		"$in": []string{
-			"Transfer",
-			"CreateValidator",
-			"EditValidator",
-			"Delegate",
-			"BeginUnbonding",
-			"CompleteUnbonding",
-		},
-	}
-	w.Write(utils.QueryList("tx_common", &data, query, "-time", r))
-}
-
-// queryTx is to query transaction by hash
-func queryTx(w http.ResponseWriter, r *http.Request) {
-	args := mux.Vars(r)
-	hash := args["hash"]
-
-	c := utils.GetDatabase().C("tx_common")
-	defer c.Database.Session.Close()
-	var result document.CommonTx
-
-	query := bson.M{}
-	query["tx_hash"] = hash
-	query["type"] = bson.M{
-		"$in": []string{
-			"Transfer",
-			"CreateValidator",
-			"EditValidator",
-			"Delegate",
-			"BeginUnbonding",
-			"CompleteUnbonding",
-		},
+		"$in": typeArr,
 	}
 
-	err := c.Find(query).Sort("-time").One(&result)
-	if err == nil {
-		resultByte, _ := json.Marshal(result)
-		w.Write(resultByte)
-	}
+	utils.QueryByPage("tx_common", &data, query, "-time", r)
+	var result = countTxByType(r)
+	result.Data = data
+	res, _ := json.Marshal(result)
+	w.Write(res)
 }
 
 func queryAllCoinTxByPage(w http.ResponseWriter, r *http.Request) {
@@ -138,15 +147,13 @@ func queryTxsByAccount(w http.ResponseWriter, r *http.Request) {
 	address := args["address"]
 	query := bson.M{}
 	query["$or"] = []bson.M{{"from": address}, {"to": address}}
+	var typeArr []string
+	typeArr = append(typeArr, types.TypeTransfer)
+	typeArr = append(typeArr, types.DeclarationList...)
+	typeArr = append(typeArr, types.StakeList...)
+	typeArr = append(typeArr, types.GovernanceList...)
 	query["type"] = bson.M{
-		"$in": []string{
-			"Transfer",
-			"CreateValidator",
-			"EditValidator",
-			"Delegate",
-			"BeginUnbonding",
-			"CompleteUnbonding",
-		},
+		"$in": typeArr,
 	}
 	w.Write(utils.QueryList("tx_common", &data, query, "-time", r))
 }
@@ -158,15 +165,13 @@ func queryTxsByBlock(w http.ResponseWriter, r *http.Request) {
 	iHeight, _ := strconv.Atoi(height)
 	query := bson.M{}
 	query["height"] = iHeight
+	var typeArr []string
+	typeArr = append(typeArr, types.TypeTransfer)
+	typeArr = append(typeArr, types.DeclarationList...)
+	typeArr = append(typeArr, types.StakeList...)
+	typeArr = append(typeArr, types.GovernanceList...)
 	query["type"] = bson.M{
-		"$in": []string{
-			"Transfer",
-			"CreateValidator",
-			"EditValidator",
-			"Delegate",
-			"BeginUnbonding",
-			"CompleteUnbonding",
-		},
+		"$in": typeArr,
 	}
 	w.Write(utils.QueryList("tx_common", &data, query, "-time", r))
 }
@@ -246,6 +251,9 @@ func RegisterTx(r *mux.Router) error {
 		registerQueryPageStakeTxByAccount,
 		registerQueryAllStakeTxByPage,
 		registerQueryTxsByDay,
+		//new
+		registerQueryTxList,
+		registerQueryTxsCounter,
 	}
 
 	for _, fn := range funs {
@@ -254,4 +262,95 @@ func RegisterTx(r *mux.Router) error {
 		}
 	}
 	return nil
+}
+
+func buildTx(tx document.CommonTx) interface{} {
+	switch types.Convert(tx.Type) {
+	case types.Trans:
+		return types.TransTx{
+			BaseTx: buildBaseTx(tx),
+			From:   tx.From,
+			To:     tx.To,
+			Amount: tx.Amount,
+		}
+	case types.Declaration:
+		dtx := types.DeclarationTx{
+			BaseTx:   buildBaseTx(tx),
+			SelfBond: tx.Amount,
+			Owner:    tx.From,
+			Pubkey:   tx.StakeCreateValidator.PubKey,
+		}
+		if tx.Type == "CreateValidator" {
+			dtx.Moniker = tx.StakeCreateValidator.Description.Moniker
+			dtx.Details = tx.StakeCreateValidator.Description.Details
+			dtx.Website = tx.StakeCreateValidator.Description.Website
+			dtx.Identity = tx.StakeCreateValidator.Description.Identity
+		} else {
+			dtx.Moniker = tx.StakeEditValidator.Description.Moniker
+			dtx.Details = tx.StakeEditValidator.Description.Details
+			dtx.Website = tx.StakeEditValidator.Description.Website
+			dtx.Identity = tx.StakeEditValidator.Description.Identity
+		}
+		return dtx
+	case types.Stake:
+		return types.StakeTx{
+			TransTx: types.TransTx{
+				BaseTx: buildBaseTx(tx),
+				From:   tx.From,
+				To:     tx.To,
+				Amount: tx.Amount,
+			},
+		}
+	case types.Gov:
+		govTx := types.GovTx{
+			BaseTx: buildBaseTx(tx),
+			Amount: tx.Amount,
+			From:   tx.From,
+		}
+
+		c := utils.GetDatabase().C("tx_msg")
+		var res document.TxMsg
+		err := c.Find(bson.M{"hash": govTx.Hash}).One(&res)
+		if err != nil {
+			return govTx
+		}
+
+		if govTx.Type == types.TypeSubmitProposal {
+			var msg MsgSubmitProposal
+			if err = json.Unmarshal([]byte(res.Content), &msg); err == nil {
+				govTx.Title = msg.Title
+				govTx.Description = msg.Description
+				govTx.ProposalType = msg.ProposalType
+			}
+		} else if govTx.Type == types.TypeDeposit {
+			var msg MsgDeposit
+			if err = json.Unmarshal([]byte(res.Content), &msg); err == nil {
+				govTx.ProposalId = msg.ProposalID
+				govTx.Amount = msg.Amount
+			}
+		} else if govTx.Type == types.TypeVote {
+			var msg MsgVote
+			if err = json.Unmarshal([]byte(res.Content), &msg); err == nil {
+				govTx.ProposalId = msg.ProposalID
+				govTx.Option = msg.Option
+			}
+		}
+
+		return govTx
+	}
+	return nil
+}
+
+func buildBaseTx(tx document.CommonTx) types.BaseTx {
+	return types.BaseTx{
+		Hash:        tx.TxHash,
+		BlockHeight: tx.Height,
+		Type:        tx.Type,
+		Fee:         tx.ActualFee,
+		GasLimit:    tx.Fee.Gas,
+		GasUsed:     tx.GasUsed,
+		GasPrice:    tx.GasPrice,
+		Memo:        tx.Memo,
+		Timestamp:   tx.Time,
+	}
 }
