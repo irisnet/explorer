@@ -421,6 +421,8 @@
       @include fontSize;
     }
     .img_font_container{
+      width: 100%;
+      text-align: center;
       @include center;
       padding-top: 0.02rem;
     }
