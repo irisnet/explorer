@@ -55,6 +55,7 @@ func queryBlock(w http.ResponseWriter, r *http.Request) {
 
 		//query txs from block height
 		txCommonC := utils.GetDatabase().C("tx_common")
+		defer txCommonC.Database.Session.Clone()
 		var txs []document.CommonTx
 		err = txCommonC.Find(bson.M{"height": iHeight}).All(&txs)
 		if err == nil {
@@ -73,13 +74,6 @@ func queryBlock(w http.ResponseWriter, r *http.Request) {
 		resultByte, _ := json.Marshal(result)
 		w.Write(resultByte)
 	}
-}
-
-func queryValidators(w http.ResponseWriter, r *http.Request) {
-
-}
-
-func queryRecentBlock(w http.ResponseWriter, r *http.Request) {
 }
 
 func queryBlocks(w http.ResponseWriter, r *http.Request) {
@@ -108,16 +102,6 @@ func registerQueryBlock(r *mux.Router) error {
 	return nil
 }
 
-func registerQueryValidators(r *mux.Router) error {
-	r.HandleFunc("/api/validators/{height}", queryValidators).Methods("GET")
-	return nil
-}
-
-func registerQueryRecentBlock(r *mux.Router) error {
-	r.HandleFunc("/api/blocks/recent", queryRecentBlock).Methods("GET")
-	return nil
-}
-
 func registerQueryBlocks(r *mux.Router) error {
 	r.HandleFunc("/api/blocks/{page}/{size}", queryBlocks).Methods("GET")
 	return nil
@@ -131,8 +115,6 @@ func registerQueryBlocksPrecommits(r *mux.Router) error {
 func RegisterBlock(r *mux.Router) error {
 	funs := []func(*mux.Router) error{
 		registerQueryBlock,
-		registerQueryValidators,
-		registerQueryRecentBlock,
 		registerQueryBlocks,
 		registerQueryBlocksPrecommits,
 	}

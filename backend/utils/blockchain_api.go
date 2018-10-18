@@ -3,11 +3,11 @@ package utils
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/irisnet/irishub-server/utils/helper"
 	"github.com/irisnet/irishub-sync/store"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 var AddrNodeServer string
@@ -66,9 +66,13 @@ func GetBalance(address string) store.Coins {
 
 				if len(coins) > 0 {
 					for _, v := range coins {
+						amount, err := strconv.ParseFloat(v.Amount, 64)
+						if err != nil {
+							log.Println("Convert str to int failed")
+						}
 						coin := store.Coin{
 							Denom:  v.Denom,
-							Amount: helper.ConvertStrToFloat(v.Amount),
+							Amount: amount,
 						}
 						resCoins = append(resCoins, coin)
 					}

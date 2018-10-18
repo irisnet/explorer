@@ -16,7 +16,8 @@ import (
 
 func RegisterStake(r *mux.Router) error {
 	funs := []func(*mux.Router) error{
-		registerQueryCandidatesByAccount,
+		registerQueryValidator,
+		registerQueryRevokedValidator,
 		registerQueryCandidates,
 		registerQueryCandidate,
 		registerQueryCandidateStatus,
@@ -60,11 +61,14 @@ type CandidateWithPower struct {
 	document.Candidate
 }
 
-func registerQueryCandidatesByAccount(r *mux.Router) error {
-	r.HandleFunc("/api/stake/candidates/{address}", queryCandidatesByAccount).Methods("GET")
+func registerQueryValidator(r *mux.Router) error {
+	r.HandleFunc("/api/stake/validators/{page}/{size}", queryValidators).Methods("GET")
 	return nil
 }
-
+func registerQueryRevokedValidator(r *mux.Router) error {
+	r.HandleFunc("/api/stake/revokedVal/{page}/{size}", queryRevokedValidator).Methods("GET")
+	return nil
+}
 func registerQueryCandidates(r *mux.Router) error {
 	r.HandleFunc("/api/stake/candidates/{page}/{size}", queryCandidates).Methods("GET")
 	return nil
@@ -93,10 +97,6 @@ func registerQueryCandidatePower(r *mux.Router) error {
 func registerQueryCandidateStatus(r *mux.Router) error {
 	r.HandleFunc("/api/stake/candidate/{address}/status", queryCandidateStatus).Methods("GET")
 	return nil
-}
-
-func queryCandidatesByAccount(w http.ResponseWriter, r *http.Request) {
-
 }
 
 func queryCandidate(w http.ResponseWriter, r *http.Request) {
@@ -311,57 +311,6 @@ func queryCandidateStatus(w http.ResponseWriter, r *http.Request) {
 		w.Write(resultByte)
 	}
 }
-
-func queryCandidates(w http.ResponseWriter, r *http.Request) {
-	var candidates []document.Candidate
-	page, size := utils.TransferPage(r)
-	db := utils.GetDatabase()
-	defer db.Session.Close()
-	cs := db.C("stake_role_candidate")
-	cb := db.C("block")
-	cs.Find(bson.M{"revoked": false}).Sort("-voting_power").Skip((page - 1) * size).Limit(size).All(&candidates)
-	votePipe := cs.Pipe(
-		[]bson.M{
-			{"$match": bson.M{"revoked": false}},
-			{"$group": bson.M{
-				"_id":   "voting_power",
-				"count": bson.M{"$sum": "$voting_power"},
-			}},
-		},
-	)
-	var voteCount count
-	votePipe.One(&voteCount)
-
-	validatorsCount, _ := cs.Find(bson.M{"revoked": false}).Count()
-	var candidatesAll []CandidateAll
-	upTimeMap := make(map[string]int)
-	var result []document.Block
-	cb.Find(nil).Limit(100).Sort("-height").All(&result)
-	for _, block := range result {
-		for _, pre := range block.Block.LastCommit.Precommits {
-			upTimeMap[pre.ValidatorAddress]++
-		}
-	}
-	for _, candidate := range candidates {
-		status := CandidateStatus{
-			Uptime:     upTimeMap[candidate.PubKeyAddr],
-			TotalBlock: len(result),
-		}
-		candidateAll := CandidateAll{
-			Candidate:       candidate,
-			CandidateStatus: status,
-		}
-		candidatesAll = append(candidatesAll, candidateAll)
-	}
-	resp := Candidates{
-		Count:      validatorsCount,
-		PowerAll:   voteCount.Count,
-		Candidates: candidatesAll,
-	}
-	resultByte, _ := json.Marshal(resp)
-	w.Write(resultByte)
-}
-
 func queryCandidatesTop(w http.ResponseWriter, r *http.Request) {
 	var candidates []document.Candidate
 
@@ -391,21 +340,6 @@ func queryCandidatesTop(w http.ResponseWriter, r *http.Request) {
 			upTimeMap[pre.ValidatorAddress]++
 		}
 	}
-	//prePipe := cb.Pipe(
-	//	[]bson.M{
-	//		{"$unwind": "$block.last_commit.precommits"},
-	//		{"$group": bson.M{
-	//			"_id":   "$block.last_commit.precommits.validator_address",
-	//			"count": bson.M{"$sum": 1},
-	//		}},
-	//	},
-	//)
-	//var preCount []count
-	//prePipe.All(&preCount)
-	//preMap := make(map[string]float64)
-	//for _, pre := range preCount {
-	//	preMap[pre.Id.String()] = pre.Count
-	//}
 	for _, candidate := range candidates {
 		status := CandidateStatus{
 			Uptime:     upTimeMap[candidate.PubKeyAddr],

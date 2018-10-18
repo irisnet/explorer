@@ -27,7 +27,7 @@
 
 [[projects]]
   branch = "develop"
-  digest = "1:95a85ca39dc0e24f7e775b35202e1b7bd0dd34d27d0396ec639b7ed8ba515ea8"
+  digest = "1:34ca751fd481a36dd1d957d1845399276e5f072dd6bb41bc552e60a14a69a2a2"
   name = "github.com/irisnet/irishub-sync"
   packages = [
     "conf/db",
@@ -38,7 +38,7 @@
     "util/constant",
   ]
   pruneopts = "UT"
-  revision = "9cacdf944a630e6e5e203c393e2bbe82a4e750cf"
+  revision = "cbf70aee4441651d406615d5243f5ba13dace22e"
 
 [[projects]]
   digest = "1:3c1a69cdae3501bf75e76d0d86dc6f2b0a7421bc205c0cb7b96b19eed464a34d"
