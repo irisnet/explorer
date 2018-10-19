@@ -42,19 +42,19 @@
           <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/governance')"
                 v-show="showSubTransaction">Governance</span>
         </div>
+
         <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === '/validators'?'nav_item_active':''"
              @mouseover="validatorsMouseOver" @mouseleave="validatorsMouseLeave">
-
-          <span class="nav_item common_item_style"  @click="featureButtonClick('/validators/3/0')">
+          <span class="nav_item common_item_style">
             Validators
-            <!--<span class="bottom_arrow" style="right:0.22rem;"></span>-->
+            <span class="bottom_arrow"></span>
           </span>
-          <!--<span class="sub_btn_item" @click="featureButtonClick('/validators/3/0')"-->
-                <!--style="width:1.6rem;padding-left:0.27rem;"-->
-                <!--v-show="showSubValidators">Validators</span>-->
-          <!--<span class="sub_btn_item" @click="featureButtonClick('/candidates/4/0')"-->
-                <!--style="width:1.6rem;padding-left:0.27rem;"-->
-                <!--v-show="showSubValidators">Candidates</span>-->
+          <span class="sub_btn_item" @click="featureButtonClick('/validators/3/active')"
+                v-show="showSubValidators">Active</span>
+          <span class="sub_btn_item" @click="featureButtonClick('/validators/3/revoked')"
+                v-show="showSubValidators">Revoked</span>
+          <span class="sub_btn_item" @click="featureButtonClick('/validators/3/candidates')"
+                v-show="showSubValidators">Candidates</span>
 
         </div>
         <span class="nav_item common_item_style" :class="activeClassName === '/Proposals'?'nav_item_active':''"
@@ -80,16 +80,13 @@
       <div class="use_feature_mobile" v-show="featureShow">
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/home')">Home</span>
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/block/1/0')">Blocks</span>
-
+        <!--<span class="feature_btn_mobile feature_nav feature_arrow" @click="transactionShow =! transactionShow">Transactions</span>-->
         <span class="feature_btn_mobile feature_nav"
-              @click="featureButtonClick('/transactions/2/transfer')">Transfer Transactions</span>
+              @click="featureButtonClick('/recent_transactions/2/recent')">Recent Transactions</span>
         <span class="feature_btn_mobile feature_nav"
-              @click="featureButtonClick('/transactions/2/declaration')">Declaration Transactions</span>
+              @click="featureButtonClick('/transfer_transactions/2/transfer')">Transfer Transactions</span>
         <span class="feature_btn_mobile feature_nav"
-              @click="featureButtonClick('/transactions/2/stake')">Stake Transactions</span>
-        <span class="feature_btn_mobile feature_nav"
-              @click="featureButtonClick('/transactions/2/governance')">Governance Transactions</span>
-
+              @click="featureButtonClick('/stake_transactions/2/stake')">Stake Transactions</span>
         <!--<span class="feature_btn_mobile feature_nav feature_arrow"
               @click="validatorsShow =! validatorsShow">Validators</span>-->
         <span class="feature_btn_mobile feature_nav"
