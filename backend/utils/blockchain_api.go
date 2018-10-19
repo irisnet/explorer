@@ -11,12 +11,14 @@ import (
 )
 
 var AddrNodeServer string
+var AddrHubRpc string
 
 func init() {
 	AddrNodeServer = GetEnv("ADDR_NODE_SERVER", "http://116.62.62.39:1317")
+	AddrHubRpc = GetEnv("ADDR_HUB_RPC", "http://116.62.62.39:26657")
 }
 func get(uri string) (int, []byte) {
-	res, err := http.Get(AddrNodeServer + uri)
+	res, err := http.Get(uri)
 	defer res.Body.Close()
 
 	if err != nil {
@@ -53,7 +55,7 @@ func GetBalance(address string) store.Coins {
 		}
 	}()
 
-	uri := fmt.Sprintf("/accounts/%s", address)
+	uri := fmt.Sprintf("%s/accounts/%s", AddrNodeServer, address)
 	statusCode, resBytes := get(uri)
 
 	var account Account
@@ -77,4 +79,13 @@ func GetBalance(address string) store.Coins {
 		}
 	}
 	return resCoins
+}
+
+func GetNodes() []byte {
+	uri := fmt.Sprintf("%s/net_info", AddrHubRpc)
+	statusCode, resBytes := get(uri)
+	if statusCode != 200 {
+		log.Println("query error,statusCode:", statusCode)
+	}
+	return resBytes
 }
