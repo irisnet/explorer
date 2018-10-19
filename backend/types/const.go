@@ -13,6 +13,10 @@ var (
 	TypeDeposit              = "Deposit"
 	TypeVote                 = "Vote"
 
+	TypeValStatusUnbonded  = "Unbonded"
+	TypeValStatusUnbonding = "Unbonding"
+	TypeValStatusBonded    = "Bonded"
+
 	DeclarationList = []string{TypeCreateValidator, TypeEditValidator}
 	StakeList       = []string{TypeDelegate, TypeBeginRedelegation, TypeCompleteRedelegation, TypeBeginUnbonding, TypeCompleteUnbonding}
 	GovernanceList  = []string{TypeSubmitProposal, TypeDeposit, TypeVote}
