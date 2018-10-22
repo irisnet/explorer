@@ -142,7 +142,6 @@
         this.showHeader = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
       },
       searchInputValue(searchInputValue){
-        console.log(searchInputValue)
         if(searchInputValue){
           this.showClear = true;
         }else{
