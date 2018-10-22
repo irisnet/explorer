@@ -83,7 +83,7 @@
         <span class="feature_btn_mobile feature_nav select_option_container" @click="transactionsSelect(transactionsSelectOption)">
          <span>Transactions</span>
           <div class="img_content">
-            <img :src="upOrdown ? upImg : downImg ">
+            <img :src="upOrDown ? upImg : downImg ">
           </div>
         </span>
         <div class="select_option" v-show="transactionsSelectOption">
@@ -168,7 +168,7 @@
         innerWidth : window.innerWidth,
         transactionsSelectOption: false,
         validatorsSelectOption: false,
-        upOrdown: false,
+        upOrDown: false,
         validatorsUpOrDown: false,
         upImg: require("../assets/up.png"),
         downImg: require("../assets/down.png")
@@ -196,9 +196,9 @@
       transactionsSelect(transactionsSelectOption){
         if(transactionsSelectOption == false){
           this.transactionsSelectOption = true;
-          this.upOrdown = true
+          this.upOrDown = true
         }else {
-          this.upOrdown = false
+          this.upOrDown = false
           this.transactionsSelectOption = false
         }
       },
