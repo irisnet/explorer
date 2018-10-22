@@ -80,25 +80,37 @@
       <div class="use_feature_mobile" v-show="featureShow">
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/home')">Home</span>
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/block/1/0')">Blocks</span>
-        <!--<span class="feature_btn_mobile feature_nav feature_arrow" @click="transactionShow =! transactionShow"
-        >Transactions</span>-->
-        <span class="feature_btn_mobile feature_nav"
-              @click="featureButtonClick('/transactions/2/transfer')">Transfer Transactions</span>
-        <span class="feature_btn_mobile feature_nav"
-              @click="featureButtonClick('/transactions/2/declaration')">Declaration Transactions</span>
+        <span class="feature_btn_mobile feature_nav select_option_container" @click="transactionsSelect(transactionsSelectOption)">
+         <span>Transactions</span>
+          <div class="img_content">
+            <img :src="upOrdown ? upImg : downImg ">
+          </div>
+        </span>
+        <div class="select_option" v-show="transactionsSelectOption">
+             <span class="feature_btn_mobile feature_nav"
+                   @click="featureButtonClick('/transactions/2/transfer')">Transfer</span>
+          <span class="feature_btn_mobile feature_nav"
+                @click="featureButtonClick('/transactions/2/declaration')">Declaration</span>
 
-        <span class="feature_btn_mobile feature_nav"
-              @click="featureButtonClick('/transactions/2/stake')">Stake Transactions</span>
-        <span class="feature_btn_mobile feature_nav"
-              @click="featureButtonClick('/transactions/2/governance')">Governance Transactions</span>
-        <!--<span class="feature_btn_mobile feature_nav feature_arrow"
-              @click="validatorsShow =! validatorsShow">Validators</span>-->
-        <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/active')">Active Validators</span>
-        <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/revoked')">Revoked Validators</span>
-        <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/candidates')">Candidates Validators</span>
+          <span class="feature_btn_mobile feature_nav"
+                @click="featureButtonClick('/transactions/2/stake')">Stake</span>
+          <span class="feature_btn_mobile feature_nav"
+                @click="featureButtonClick('/transactions/2/governance')">Governance</span>
+        </div>
 
-        <!--<span class="feature_btn_mobile feature_nav"-->
-              <!--@click="featureButtonClick('/candidates/4/0')">Candidates</span>-->
+        <span class="feature_btn_mobile feature_nav select_option_container" @click="validatorsSelect(validatorsSelectOption)">
+         <span>Validators</span>
+          <div class="img_content">
+            <img :src="validatorsUpOrDown ? upImg : downImg ">
+          </div>
+        </span>
+        <div class="select_option" v-show="validatorsSelectOption">
+          <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/active')">Active</span>
+          <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/revoked')">Revoked</span>
+          <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/candidates')">Candidates</span>
+        </div>
+
+
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/Proposals')">Proposals</span>
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/nodespage')">Nodes</span>
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/faucet')">Faucet</span>
@@ -154,7 +166,13 @@
         showSubTransaction:false,
         showSubValidators:false,
         showClear:false,
-        innerWidth : window.innerWidth
+        innerWidth : window.innerWidth,
+        transactionsSelectOption: false,
+        validatorsSelectOption: false,
+        upOrdown: false,
+        validatorsUpOrDown: false,
+        upImg: require("../assets/up.png"),
+        downImg: require("../assets/down.png")
       }
     },
     beforeMount() {
@@ -176,6 +194,24 @@
       window.removeEventListener('resize',this.onWindowResize);
     },
     methods: {
+      transactionsSelect(transactionsSelectOption){
+        if(transactionsSelectOption == false){
+          this.transactionsSelectOption = true;
+          this.upOrdown = true
+        }else {
+          this.upOrdown = false
+          this.transactionsSelectOption = false
+        }
+      },
+      validatorsSelect(validatorsSelectOption){
+        if(validatorsSelectOption == false){
+          this.validatorsSelectOption = true;
+          this.validatorsUpOrDown = true
+        }else {
+          this.validatorsSelectOption = false;
+          this.validatorsUpOrDown = false
+        }
+      },
       hideFeature() {
         if (this.featureShow) {
           this.featureShow = false;
@@ -577,6 +613,20 @@
         @include flex();
         z-index: 100;
         flex-direction: column;
+        .select_option{
+          display: flex;
+          flex-direction: column;
+          .feature_btn_mobile {
+            border-bottom: 0.01rem solid #d6d9e0;
+            height: 0.39rem;
+            line-height: 0.39rem;
+            padding-left: 0.15rem;
+            background: #ffffff;
+            color: #3598db;
+            font-size:0.14rem;
+          }
+        }
+
         .feature_btn_mobile {
           border-bottom: 0.01rem solid #d6d9e0;
           height: 0.39rem;
@@ -603,6 +653,17 @@
     font-size: 0.16rem;
     color: #F2711C;
     font-weight: 600;
+  }
+  .select_option_container{
+    display: flex;
+
+    .img_content{
+      width: 0.35rem;
+      padding-left: 0.2rem;
+      img{
+        width: 100%;
+      }
+    }
   }
 
 </style>
