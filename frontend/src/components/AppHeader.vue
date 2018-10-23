@@ -80,13 +80,13 @@
       <div class="use_feature_mobile" v-show="featureShow">
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/home')">Home</span>
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/block/1/0')">Blocks</span>
-        <span class="feature_btn_mobile feature_nav select_option_container" @click="transactionsSelect(transactionsSelectOption)">
+        <span class="feature_btn_mobile feature_nav select_option_container" @click="transactionsSelect(flShowTransactionsSelect)">
          <span>Transactions</span>
-          <div :class="upOrDown ? 'upImg_content' : 'downImg_content'">
-            <img :src="upOrDown ? upImg : downImg ">
+          <div :class="flShowUpOrDown ? 'upImg_content' : 'downImg_content'">
+            <img :src="flShowUpOrDown ? upImg : downImg ">
           </div>
         </span>
-        <div class="select_option" v-show="transactionsSelectOption">
+        <div class="select_option" v-show="flShowTransactionsSelect">
              <span class="feature_btn_mobile feature_nav"
                    @click="featureButtonClick('/transactions/2/transfer')">Transfer</span>
           <span class="feature_btn_mobile feature_nav"
@@ -98,13 +98,13 @@
                 @click="featureButtonClick('/transactions/2/governance')">Governance</span>
         </div>
 
-        <span class="feature_btn_mobile feature_nav select_option_container" @click="validatorsSelect(validatorsSelectOption)">
+        <span class="feature_btn_mobile feature_nav select_option_container" @click="validatorsSelect(flShowValidatorsSelect)">
          <span>Validators</span>
-          <div :class="validatorsUpOrDown ? 'upImg_content' : 'downImg_content'">
-            <img :src="validatorsUpOrDown ? upImg : downImg ">
+          <div :class="flShowValidatorsUpOrDown ? 'upImg_content' : 'downImg_content'">
+            <img :src="flShowValidatorsUpOrDown ? upImg : downImg ">
           </div>
         </span>
-        <div class="select_option" v-show="validatorsSelectOption">
+        <div class="select_option" v-show="flShowValidatorsSelect">
           <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/active')">Active</span>
           <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/revoked')">Revoked</span>
           <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/candidates')">Candidates</span>
@@ -166,10 +166,10 @@
         showSubValidators:false,
         showClear:false,
         innerWidth : window.innerWidth,
-        transactionsSelectOption: false,
-        validatorsSelectOption: false,
-        upOrDown: false,
-        validatorsUpOrDown: false,
+        flShowTransactionsSelect: false,
+        flShowValidatorsSelect: false,
+        flShowUpOrDown: false,
+        flShowValidatorsUpOrDown: false,
         upImg: require("../assets/up.png"),
         downImg: require("../assets/homeright.png")
       }
@@ -195,20 +195,20 @@
     methods: {
       transactionsSelect(transactionsSelectOption){
         if(transactionsSelectOption == false){
-          this.transactionsSelectOption = true;
-          this.upOrDown = true
+          this.flShowTransactionsSelect = true;
+          this.flShowUpOrDown = true
         }else {
-          this.upOrDown = false
-          this.transactionsSelectOption = false
+          this.flShowUpOrDown = false
+          this.flShowTransactionsSelect = false
         }
       },
       validatorsSelect(validatorsSelectOption){
         if(validatorsSelectOption == false){
-          this.validatorsSelectOption = true;
-          this.validatorsUpOrDown = true
+          this.flShowValidatorsSelect = true;
+          this.flShowValidatorsUpOrDown = true
         }else {
-          this.validatorsSelectOption = false;
-          this.validatorsUpOrDown = false
+          this.flShowValidatorsSelect = false;
+          this.flShowValidatorsUpOrDown = false
         }
       },
       hideFeature() {
