@@ -80,25 +80,36 @@
       <div class="use_feature_mobile" v-show="featureShow">
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/home')">Home</span>
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/block/1/0')">Blocks</span>
-        <!--<span class="feature_btn_mobile feature_nav feature_arrow" @click="transactionShow =! transactionShow"
-        >Transactions</span>-->
-        <span class="feature_btn_mobile feature_nav"
-              @click="featureButtonClick('/transactions/2/transfer')">Transfer Transactions</span>
-        <span class="feature_btn_mobile feature_nav"
-              @click="featureButtonClick('/transactions/2/declaration')">Declaration Transactions</span>
+        <span class="feature_btn_mobile feature_nav select_option_container" @click="transactionsSelect(flShowTransactionsSelect)">
+         <span>Transactions</span>
+          <div :class="flShowUpOrDown ? 'upImg_content' : 'downImg_content'">
+            <img :src="flShowUpOrDown ? upImg : downImg ">
+          </div>
+        </span>
+        <div class="select_option" v-show="flShowTransactionsSelect">
+             <span class="feature_btn_mobile feature_nav"
+                   @click="featureButtonClick('/transactions/2/transfer')">Transfer</span>
+          <span class="feature_btn_mobile feature_nav"
+                @click="featureButtonClick('/transactions/2/declaration')">Declaration</span>
 
-        <span class="feature_btn_mobile feature_nav"
-              @click="featureButtonClick('/transactions/2/stake')">Stake Transactions</span>
-        <span class="feature_btn_mobile feature_nav"
-              @click="featureButtonClick('/transactions/2/governance')">Governance Transactions</span>
-        <!--<span class="feature_btn_mobile feature_nav feature_arrow"
-              @click="validatorsShow =! validatorsShow">Validators</span>-->
-        <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/active')">Active Validators</span>
-        <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/revoked')">Revoked Validators</span>
-        <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/candidates')">Candidates Validators</span>
+          <span class="feature_btn_mobile feature_nav"
+                @click="featureButtonClick('/transactions/2/stake')">Stake</span>
+          <span class="feature_btn_mobile feature_nav"
+                @click="featureButtonClick('/transactions/2/governance')">Governance</span>
+        </div>
 
-        <!--<span class="feature_btn_mobile feature_nav"-->
-              <!--@click="featureButtonClick('/candidates/4/0')">Candidates</span>-->
+        <span class="feature_btn_mobile feature_nav select_option_container" @click="validatorsSelect(flShowValidatorsSelect)">
+         <span>Validators</span>
+          <div :class="flShowValidatorsUpOrDown ? 'upImg_content' : 'downImg_content'">
+            <img :src="flShowValidatorsUpOrDown ? upImg : downImg ">
+          </div>
+        </span>
+        <div class="select_option" v-show="flShowValidatorsSelect">
+          <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/active')">Active</span>
+          <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/revoked')">Revoked</span>
+          <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/candidates')">Candidates</span>
+        </div>
+
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/Proposals')">Proposals</span>
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/nodespage')">Nodes</span>
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/faucet')">Faucet</span>
@@ -154,7 +165,13 @@
         showSubTransaction:false,
         showSubValidators:false,
         showClear:false,
-        innerWidth : window.innerWidth
+        innerWidth : window.innerWidth,
+        flShowTransactionsSelect: false,
+        flShowValidatorsSelect: false,
+        flShowUpOrDown: false,
+        flShowValidatorsUpOrDown: false,
+        upImg: require("../assets/up.png"),
+        downImg: require("../assets/homeright.png")
       }
     },
     beforeMount() {
@@ -176,6 +193,24 @@
       window.removeEventListener('resize',this.onWindowResize);
     },
     methods: {
+      transactionsSelect(flShowTransactionsSelect){
+        if(flShowTransactionsSelect == false){
+          this.flShowTransactionsSelect = true;
+          this.flShowUpOrDown = true
+        }else {
+          this.flShowUpOrDown = false
+          this.flShowTransactionsSelect = false
+        }
+      },
+      validatorsSelect(flShowValidatorsSelect){
+        if(flShowValidatorsSelect == false){
+          this.flShowValidatorsSelect = true;
+          this.flShowValidatorsUpOrDown = true
+        }else {
+          this.flShowValidatorsSelect = false;
+          this.flShowValidatorsUpOrDown = false
+        }
+      },
       hideFeature() {
         if (this.featureShow) {
           this.featureShow = false;
@@ -577,6 +612,20 @@
         @include flex();
         z-index: 100;
         flex-direction: column;
+        .select_option {
+          display: flex;
+          flex-direction: column;
+          .feature_btn_mobile {
+            border-bottom: 0.01rem solid #d6d9e0;
+            height: 0.39rem;
+            line-height: 0.39rem;
+            padding-left: 0.15rem;
+            background: #ffffff;
+            color: #3598db;
+            font-size: 0.14rem;
+          }
+        }
+
         .feature_btn_mobile {
           border-bottom: 0.01rem solid #d6d9e0;
           height: 0.39rem;
@@ -604,5 +653,22 @@
     color: #F2711C;
     font-weight: 600;
   }
+  .select_option_container{
+    display: flex;
 
+    .upImg_content{
+      width: 0.35rem;
+      padding-left: 0.2rem;
+      img{
+        width: 100%;
+      }
+    }
+    .downImg_content{
+      width: 0.28rem;
+      padding-left: 0.2rem;
+      img{
+        width: 100%;
+      }
+    }
+  }
 </style>

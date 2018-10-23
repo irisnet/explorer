@@ -143,6 +143,7 @@
             flex-wrap: wrap;
           }
           .key_value_wrap_bottom{
+            padding-top: 0.1rem;
             @include flex;
             justify-content: space-between;
             @include fontSize;

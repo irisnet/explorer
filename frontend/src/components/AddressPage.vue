@@ -392,7 +392,7 @@
                   To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
                   Amount,
                   Fee,
-                  Timestamp: Tools.conversionTimeToUTC(item.Timestamp),
+                  Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
                 }
               }else if(txTabName === 'Stakes'){
                 objList = {
@@ -403,7 +403,7 @@
                   Type:item.Type === 'coin'?'transfer':item.Type,
                   Amount,
                   Fee,
-                  Timestamp: Tools.conversionTimeToUTC(item.Timestamp),
+                  Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
                 };
               }else if(txTabName === 'Declarations'){
                 objList = {
@@ -414,7 +414,7 @@
                   'Self-Bond': item.SelfBond && item.SelfBond.length > 0 ? Tools.dealWithFees(item.SelfBond[0].amount) + item.SelfBond[0].denom.toUpperCase() : "--",
                   Type: item.Type,
                   Fee,
-                  Timestamp: Tools.conversionTimeToUTC(item.Timestamp),
+                  Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
                 };
               }else if(txTabName === 'Governance'){
                 objList = {
@@ -424,7 +424,7 @@
                   "Proposal_ID": item.ProposalId === 0 ? "--" : item.ProposalId,
                   Type:item.Type === 'coin'?'transfer':item.Type,
                   Fee,
-                  Timestamp: Tools.conversionTimeToUTC(item.Timestamp),
+                  Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
                 };
               }
               return objList
@@ -1087,7 +1087,7 @@
   }
   .line_container_wrap{
     width: 100%;
-    padding-bottom: 0.44rem;
+    padding-bottom: 0.2rem;
     .line_container{
       width: 80%;
       min-width: 3.2rem;
