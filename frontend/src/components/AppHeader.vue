@@ -193,8 +193,8 @@
       window.removeEventListener('resize',this.onWindowResize);
     },
     methods: {
-      transactionsSelect(transactionsSelectOption){
-        if(transactionsSelectOption == false){
+      transactionsSelect(flShowTransactionsSelect){
+        if(flShowTransactionsSelect == false){
           this.flShowTransactionsSelect = true;
           this.flShowUpOrDown = true
         }else {
@@ -202,8 +202,8 @@
           this.flShowTransactionsSelect = false
         }
       },
-      validatorsSelect(validatorsSelectOption){
-        if(validatorsSelectOption == false){
+      validatorsSelect(flShowValidatorsSelect){
+        if(flShowValidatorsSelect == false){
           this.flShowValidatorsSelect = true;
           this.flShowValidatorsUpOrDown = true
         }else {
