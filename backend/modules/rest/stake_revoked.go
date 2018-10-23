@@ -18,25 +18,21 @@ func queryRevokedValidator(w http.ResponseWriter, r *http.Request) {
 	query := bson.M{}
 	query["revoked"] = true
 
+	validatorsCount, _ := cs.Find(query).Count()
+
 	cs.Find(query).Sort("-voting_power").Skip((page - 1) * size).Limit(size).All(&candidates)
 
-	var result []CandidateVo
+	var result []CandidateAll
 	for _, ca := range candidates {
-		result = append(result, CandidateVo{
-			Address:     ca.Address,
-			Name:        ca.Description.Moniker,
-			VotingPower: ca.VotingPower,
-			Height:      ca.BondHeight, //TODO
+		result = append(result, CandidateAll{
+			Candidate: ca,
 		})
 	}
 
-	resultByte, _ := json.Marshal(result)
+	resp := Candidates{
+		Count:      validatorsCount,
+		Candidates: result,
+	}
+	resultByte, _ := json.Marshal(resp)
 	w.Write(resultByte)
-}
-
-type CandidateVo struct {
-	Address     string
-	Name        string
-	VotingPower float64
-	Height      int64
 }
