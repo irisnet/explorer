@@ -267,7 +267,7 @@
                   To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
                   Amount,
                   Fee,
-                  Timestamp: Tools.conversionTimeToUTC(item.Timestamp),
+                  Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
                 }
               }else if(txTabName === 'Stakes'){
                 objList = {
@@ -278,7 +278,7 @@
                   Type:item.Type === 'coin'?'transfer':item.Type,
                   Amount,
                   Fee,
-                  Timestamp: Tools.conversionTimeToUTC(item.Timestamp),
+                  Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
                 };
               }else if(txTabName === 'Declarations'){
                 objList = {
@@ -289,7 +289,7 @@
                   'Self-Bond':item.SelfBond && item.SelfBond.length > 0 ? Tools.dealWithFees(item.SelfBond[0].amount) + item.SelfBond[0].denom.toUpperCase() : "--",
                   Type: item.Type,
                   Fee,
-                  Timestamp: Tools.conversionTimeToUTC(item.Timestamp),
+                  Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
                 };
               }else if(txTabName === 'Governance'){
                 objList = {
@@ -299,7 +299,7 @@
                   "Proposal_ID": item.ProposalId === 0 ? "--" : item.ProposalId,
                   Type:item.Type === 'coin'?'transfer':item.Type,
                   Fee,
-                  Timestamp: Tools.conversionTimeToUTC(item.Timestamp),
+                  Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
                 };
               }
               return objList
@@ -376,7 +376,7 @@
               this.transactionsValue = data.NumTxs;
               this.hashValue = data.Height;
               this.heightValue = data.Height;
-              this.timestampValue = Tools.conversionTimeToUTC(data.Time);
+              this.timestampValue = Tools.conversionTimeToUTCToYYMMDD(data.Time);
               this.blockHashValue = data.Hash;
               // this.feeValue = '0 IRIS';
               this.lastBlockHashValue = data.Block.LastCommit.BlockID.Hash;

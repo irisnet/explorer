@@ -169,7 +169,7 @@
                   Height: item.Height,
                   Txn:txn,
                   // Fees: '0 IRIS',
-                  Timestamp: Tools.conversionTimeToUTC(item.Time),
+                  Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Time),
                   'Precommit Validators':precommit,
                   'Voting Power': denominator !== 0? `${(numerator/denominator).toFixed(2)*100}%`:'',
                 };
@@ -239,7 +239,7 @@
                     To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
                     Amount,
                     Fee,
-                    Timestamp: Tools.conversionTimeToUTC(item.Timestamp),
+                    Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
                   };
                 }else if(that.$route.params.param === 'declaration'){
                   objList = {
@@ -250,7 +250,7 @@
                     "Self-Bond": item.SelfBond && item.SelfBond.length > 0 ? Tools.dealWithFees(item.SelfBond[0].amount) + item.SelfBond[0].denom.toUpperCase() : "--",
                     Type: item.Type,
                     Fee: Tools.dealWithFees(item.Fee.amount) + item.Fee.denom.toUpperCase(),
-                    Timestamp: Tools.conversionTimeToUTC(item.Timestamp),
+                    Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
                   }
                 }else if(that.$route.params.param === 'stake'){
                   objList = {
@@ -261,7 +261,7 @@
                     Type:item.Type === 'coin'?'transfer':item.Type,
                     Amount,
                     Fee,
-                    Timestamp: Tools.conversionTimeToUTC(item.Timestamp),
+                    Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
                   }
                 }else if(that.$route.params.param === 'governance'){
                   objList = {
@@ -271,7 +271,7 @@
                     "Proposal_ID": item.ProposalId === 0 ? "--" : item.ProposalId,
                     Type: item.Type,
                     Fee,
-                    Timestamp: Tools.conversionTimeToUTC(item.Timestamp),
+                    Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
                   }
                 }
 
@@ -366,7 +366,7 @@
     }
   }
 </script>
-<style lang="scss">
+<style lang="scss" >
   @import '../style/mixin.scss';
 
   .blocks_list_page_wrap {
@@ -385,8 +385,11 @@
     .total_num{
       @include flex;
       justify-content: space-between;
-      height:0.7rem;
+      height:0.7rem !important;
       align-items: center;
+      .blocks_list_page_wrap_hash_var{
+        padding-left: 0.2rem;
+      }
     }
     .no_data_show{
       @include flex;
@@ -430,6 +433,7 @@
         width:100%;
         .blocks_list_page_wrap_hash_var{
           min-width:7rem;
+          margin-left: 0.2rem!important;
         }
       }
 
@@ -454,6 +458,7 @@
       }
 
       .blocks_list_title {
+        margin-left: 0.2rem;
         height: 0.62rem;
         line-height: 0.62rem;
         font-size: 0.22rem;
