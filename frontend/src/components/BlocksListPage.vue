@@ -67,9 +67,7 @@
         switch (this.$route.params.type) {
           case '1': this.listTitleName = 'Blocks';
                   break;
-          case '3': this.listTitleName = 'Validators';
-                  break;
-        };
+        }
         this.computeMinWidth();
       }
     },
@@ -107,9 +105,6 @@
       switch (this.$route.params.type) {
         case '1': this.listTitleName = 'Blocks';
           break;
-        case '3': this.listTitleName = 'Validators';
-          break;
-
       }
       window.addEventListener('resize',this.onresize);
       this.computeMinWidth();
@@ -327,37 +322,89 @@
             that.showLoading = false;
           })
         }else if (type === '3' || type === '4') {
-          let url = `/api/stake/candidates/${currentPage}/${pageSize}`;
+          let url;
+          if(this.$route.params.param === "active"){
+            this.listTitleName = "Active Validators";
+            url = `/api/stake/validators/${currentPage}/${pageSize}`;
+          }else if(this.$route.params.param === "revoked"){
+            this.listTitleName = "Revoked Validators";
+            url = `/api/stake/revokedVal/${currentPage}/${pageSize}`;
+          }else if(this.$route.params.param === "candidates"){
+            this.listTitleName = "Validator Candidates";
+            url = `/api/stake/candidates/${currentPage}/${pageSize}`;
+          }
           axios.get(url).then((data) => {
             if (data.status === 200) {
               return data.data;
             }
           }).then((data) => {
-            this.count = data.Count;
-            if(data.Candidates && typeof data === "object"){
-              this.items = data.Candidates.map(item => {
-                return {
-                  Address: item.Address,
-                  Name:Tools.getShortForm(item.Description.Moniker,20,"..."),
-                  'Voting Power':`${(item.VotingPower/data.PowerAll*100).toFixed(2)}%`,
-                  'Uptime':`${item.Uptime}%`,
-                  'Commission Rate':'',
-                  Returns:'',
-                };
-              })
-            }else{
-              this.showNoData = true;
-              this.items = [{
-                Address: '',
-                Name:'',
-                'Voting Power':'',
-                'Uptime':'',
-                'Commission Rate':'',
-                Returns:'',
-              }]
+            if(data && typeof data === "object"){
+              this.count = data.Count;
+              if(this.$route.params.param === "active"){
+                if(data.Candidates){
+                  this.items = data.Candidates.map(item => {
+                    return {
+                      Address: item.Address,
+                      Name:Tools.getShortForm(item.Description.Moniker,20,"..."),
+                      'Voting Power':`${(item.VotingPower/data.PowerAll*100).toFixed(2)}%`,
+                      'Uptime':`${item.Uptime}%`,
+                      'Bond Height': item.BondHeight
+                    };
+                  })
+                }else{
+                  this.showNoData = true;
+                  this.items = [{
+                    Address: '',
+                    Name:'',
+                    'Voting Power':'',
+                    'Uptime':'',
+                  }]
+                }
+              }else if(this.$route.params.param === "revoked"){
+                if(data.Candidates){
+                  this.items = data.Candidates.map(item => {
+                    return {
+                      Address: item.Address,
+                      Name:Tools.getShortForm(item.Description.Moniker,20,"..."),
+                      'Voting Power':Tools.formatNumber(item.VotingPower),
+                      'Revoked Height': item.BondHeight
+                    };
+
+                  })
+                }else{
+                  this.showNoData = true;
+                  this.items = [{
+                    Address: '',
+                    Name:'',
+                    'Voting Power':'',
+                    'Revoked Height': ""
+                  }]
+                }
+              }else if(this.$route.params.param === "candidates"){
+                if(data.Candidates){
+                  this.items = data.Candidates.map(item => {
+                    return {
+                      Address: item.Address,
+                      Name: Tools.getShortForm(item.Description.Moniker,20,"..."),
+                      'Voting Power': Tools.formatNumber(item.VotingPower),
+                      'Declare Height' : item.BondHeight
+                    };
+                  })
+                }else{
+                  this.showNoData = true;
+                  this.items = [{
+                    Address: '',
+                    Name:'',
+                    'Voting Power':'',
+                    'Declare Height' :""
+                  }]
+                }
+              }
             }
             this.showLoading = false;
           }).catch(e => {
+            this.showLoading = false;
+            this.showNoData = true;
             console.log(e)
           })
         }
