@@ -476,6 +476,7 @@
 
     }
     .personal_computer_transactions_detail_wrap {
+      padding-bottom: 0.2rem;
       .transaction_information_content_title {
         height: 0.5rem !important;
         line-height: 0.5rem !important;
@@ -658,7 +659,6 @@
     padding-bottom: 0.2rem;
     .list_tab_content{
       width: 100%;
-      padding-top: 0.2rem;
       border-bottom: 0.01rem solid #3598db;
       .list_tab_container{
         @include flex;

@@ -1087,7 +1087,7 @@
   }
   .line_container_wrap{
     width: 100%;
-    padding-bottom: 0.44rem;
+    padding-bottom: 0.2rem;
     .line_container{
       width: 80%;
       min-width: 3.2rem;
