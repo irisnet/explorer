@@ -231,7 +231,7 @@
               flShowValidatorRevoked: false,
               flShowValidatorCandidate: false,
               flShowUptime: true,
-              CandidateOrRevoked:"#3598db",
+              validatorsStatusColor:"#3598db",
               tabVotingPower:[
                 {
                   "title":"14days",
@@ -532,28 +532,28 @@
           if(data.status === 200){
             return data.data;
           }
-        }).then((data)=>{
-          if(data && typeof data === "object"){
-            if(data.Revoked === true){
+        }).then((validators)=>{
+          if(validators && typeof validators === "object"){
+            if(validators.Revoked === true){
               this.flShowUptime = false;
               this.flShowValidatorRevoked = true;
-              this.CandidateOrRevoked = "#f00";
-              this.votingPowerValue = Tools.formatNumber(data.VotingPower);
-            }else if(data.Revoked === false ){
-              if(data.Status === 'Unbonded' || data.Status === 'Unbonding' ){
+              this.validatorsStatusColor = "#f00";
+              this.votingPowerValue = Tools.formatNumber(validators.VotingPower);
+            }else{
+              if(validators.Status === 'Unbonded' || validators.Status === 'Unbonding' ){
                 this.flShowValidatorCandidate = true;
-                this.CandidateOrRevoked = "#45B035";
+                this.validatorsStatusColor = "#45B035";
                 this.flShowUptime = false;
-                this.votingPowerValue =Tools.formatNumber(data.VotingPower);
-              }else if(data.Status === "Bonded"){
-                this.bondHeightValue = data.BondHeight;
-                this.votingPowerValue = data.VotingPower ? `${(data.VotingPower/data.PowerAll*100).toFixed(2)}%` : "--";
+                this.votingPowerValue =Tools.formatNumber(validators.VotingPower);
+              }else if(validators.Status === "Bonded"){
+                this.bondHeightValue = validators.BondHeight;
+                this.votingPowerValue = validators.VotingPower ? `${(validators.VotingPower/validators.PowerAll*100).toFixed(2)}%` : "--";
               }
             }
-            this.nameValue = data.Description.Moniker ? data.Description.Moniker : '--';
-            this.pubKeyValue = data.PubKey ? data.PubKey : "--";
-            this.websiteValue = data.Description.Website?data.Description.Website:'--';
-            this.descriptionValue= data.Description.Details ? data.Description.Details : "--";
+            this.nameValue = validators.Description.Moniker ? validators.Description.Moniker : '--';
+            this.pubKeyValue = validators.PubKey ? validators.PubKey : "--";
+            this.websiteValue = validators.Description.Website?validators.Description.Website:'--';
+            this.descriptionValue= validators.Description.Details ? validators.Description.Details : "--";
             this.commissionRateValue = '';
             this.announcementValue = '';
             this.showProfile = true;
