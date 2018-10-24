@@ -23,8 +23,10 @@ func queryCandidates(w http.ResponseWriter, r *http.Request) {
 		"$in": []string{types.TypeValStatusUnbonded, types.TypeValStatusUnbonding},
 	}
 
+	validatorsCount, _ := cs.Find(query).Count()
 	cs.Find(query).Sort("-voting_power").Skip((page - 1) * size).Limit(size).All(&candidates)
-	var result []CandidateVo
+	var result []CandidateAll
+	var resp Candidates
 	if len(candidates) > 0 {
 		q := bson.M{}
 		q["type"] = types.TypeCreateValidator
@@ -34,15 +36,18 @@ func queryCandidates(w http.ResponseWriter, r *http.Request) {
 			q["from"] = ca.Address
 			txDoc.Find(q).Sort("height").One(tx)
 
-			result = append(result, CandidateVo{
-				Address:     ca.Address,
-				Name:        ca.Description.Moniker,
-				VotingPower: ca.VotingPower,
-				Height:      tx.Height,
+			ca.BondHeight = tx.Height
+			result = append(result, CandidateAll{
+				Candidate: ca,
 			})
 		}
+
+		resp = Candidates{
+			Count:      validatorsCount,
+			Candidates: result,
+		}
 	}
-	resultByte, _ := json.Marshal(result)
+	resultByte, _ := json.Marshal(resp)
 	w.Write(resultByte)
 
 }
