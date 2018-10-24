@@ -154,4 +154,9 @@ export default class Tools{
       j = (j = i.length) > 3 ? j % 3 : 0;
     return symbol + negative + (j ? i.substr(0, j) + thousand : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousand) + (places ? decimal : "");
   }
+  static formatDenom(denom){
+    if(denom === "iris-atto"){
+      return "IRIS"
+    }
+  }
 }
