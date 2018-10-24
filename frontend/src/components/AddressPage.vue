@@ -4,7 +4,11 @@
       <p :class="transactionsDetailWrap" style="margin-bottom:0;">
         <span class="transactions_detail_title">Address</span>
         <span class="transactions_detail_wrap_hash_var">
-          {{address}} <i v-if="showProfile">v</i></span>
+          {{address}}
+          <i v-if="showProfile" :style="{background:CandidateOrRevoked}">v</i>
+            <span v-show="flShowValidatorCandidate && showProfile" class="candidate_validator">(This Validator is a Candidate)</span>
+            <span v-show="flShowValidatorRevoked && showProfile" class="revoked_validator">(This Validator is revoked!)</span>
+        </span>
       </p>
     </div>
 
@@ -26,7 +30,7 @@
       </div>
     </div>
     <div :class="transactionsDetailWrap" class="address_profile" v-if="showProfile">
-      <p class="transaction_information_content_title">Profile</p>
+      <p class="transaction_information_content_title">Validator Profile</p>
       <div class="transactions_detail_information_wrap">
         <div class="information_props_wrap">
           <span class="information_props">Name:</span>
@@ -44,26 +48,21 @@
           <i v-show="websiteValue === '--'" style="font-style:normal;color:#a2a2ae">--</i>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Description:</span>
+          <span class="information_props">Identity:</span>
+          <span class="information_value">
+            <pre class="information_pre">{{identity}}</pre></span>
+        </div>
+        <div class="information_props_wrap">
+          <span class="information_props">Details:</span>
           <span class="information_value"><pre class="information_pre">{{descriptionValue}}</pre></span>
         </div>
-        <!--<div class="information_props_wrap">-->
-          <!--<span class="information_props">Commission Rate:</span>-->
-          <!--<span class="information_value">{{commissionRateValue}}</span>-->
-        <!--</div>-->
-        <!--<div class="information_props_wrap">-->
-          <!--<span class="information_props">Announcement:</span>-->
-          <!--<span class="information_value">{{announcementValue}}</span>-->
-        <!--</div>-->
-
-
       </div>
     </div>
     <div :class="transactionsDetailWrap" class="current_tenure" v-show="showProfile">
-      <p class="transaction_information_content_title" style="border-bottom:1px solid #eee">Current Tenure</p>
+      <p class="transaction_information_content_title" style="border-bottom:1px solid #eee">Current Stake</p>
       <div class="current_tenure_wrap">
         <div class="transactions_detail_information_wrap">
-          <div class="information_props_wrap">
+          <div class="information_props_wrap" v-show="flShowUptime">
             <span class="information_props">Bond Height:</span>
             <span class="information_value">{{bondHeightValue}}</span>
           </div>
@@ -71,17 +70,12 @@
             <span class="information_props">Voting Power:</span>
             <span class="information_value">{{votingPowerValue}}</span>
           </div>
-          <div class="information_props_wrap">
+          <div class="information_props_wrap" v-show="flShowUptime">
             <span class="information_props">Precommited Blocks:</span>
             <span class="information_value">{{precommitedBlocksValue}}</span>
           </div>
-          <div class="information_props_wrap">
-            <span class="information_props">Returns:</span>
-            <span class="information_value">{{returnsValue?returnsValue:'--'}}</span>
-          </div>
-
         </div>
-        <div class="canvas_voting_power">
+        <div class="canvas_voting_power" v-show="flShowUptime">
           <div class="progress_wrap">
             <span>Uptime(in last 100)</span>
             <div class="progress_wrap_background">
@@ -108,7 +102,7 @@
                    :class="item.active ? 'border-none' : 'border-block' " >{{item.title}}</div>
             </div>
           </div>
-          <div class="line_echarts_content " :class="transactionsDetailWrap === 'personal_computer_transactions_detail_wrap' ?
+          <div v-show="flShowUptime" class="line_echarts_content " :class="transactionsDetailWrap === 'personal_computer_transactions_detail_wrap' ?
            'content_right' : 'model_content_right' ">
             <div class="line_right_container" style="overflow-x: auto;-webkit-overflow-scrolling:touch;">
               <echarts-validators-uptime-line :informationUptimeLine="informationUptimeLine" ></echarts-validators-uptime-line>
@@ -233,6 +227,11 @@
               tabTxListIndex:0,
               currentTabIndex:"",
               currentTxTabName:"",
+              identity: "",
+              flShowValidatorRevoked: false,
+              flShowValidatorCandidate: false,
+              flShowUptime: true,
+              CandidateOrRevoked:"#3598db",
               tabVotingPower:[
                 {
                   "title":"14days",
@@ -366,12 +365,21 @@
                     if(item.Amount.length > 0){
                       item.Amount[0].amount = Tools.dealWithFees(item.Amount[0].amount);
                       Amount = item.Amount.map(listItem=>
-                        `${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
+                      {
+                        if(listItem.denom === "iris-atto"){
+                          listItem.denom = "IRIS"
+                        }
+                       return `${listItem.amount} ${listItem.denom.toUpperCase()}`;
+                      }
+                      );
                       if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === "BeginRedelegate"){
                         Amount = item.Amount.map(listItem => `${listItem.amount}shares`).join(',');
                       }
                     }
                   }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
+                    if(item.Amount.denom === "iris-atto"){
+                      item.Amount.denom = "IRIS"
+                    }
                     item.Amount.amount = Tools.dealWithFees(item.Amount.amount);
                     Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
                     if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === "BeginRedelegate"){
@@ -380,6 +388,9 @@
                   }
                 }
                 if(item.Fee.amount && item.Fee.denom){
+                  if(item.Fee.denom === "iris-atto"){
+                    item.Fee.denom = "IRIS"
+                  }
                   Fee = item.Fee.amount = Tools.formatFeeToFixedNumber(item.Fee.amount) + item.Fee.denom.toUpperCase();
                 }
               }
@@ -523,15 +534,29 @@
           }
         }).then((data)=>{
           if(data && typeof data === "object"){
-            this.nameValue = data.Description.Moniker ? data.Description.Moniker : "--";
+            if(data.Revoked === true){
+              this.flShowUptime = false;
+              this.flShowValidatorRevoked = true;
+              this.CandidateOrRevoked = "#f00";
+              this.votingPowerValue = Tools.formatNumber(data.VotingPower);
+            }else if(data.Revoked === false ){
+              if(data.Status === 'Unbonded' || data.Status === 'Unbonding' ){
+                this.flShowValidatorCandidate = true;
+                this.CandidateOrRevoked = "#45B035";
+                this.flShowUptime = false;
+                this.votingPowerValue =Tools.formatNumber(data.VotingPower);
+              }else if(data.Status === "Bonded"){
+                this.bondHeightValue = data.BondHeight;
+                this.votingPowerValue = data.VotingPower ? `${(data.VotingPower/data.PowerAll*100).toFixed(2)}%` : "--";
+              }
+            }
+            this.nameValue = data.Description.Moniker ? data.Description.Moniker : '--';
             this.pubKeyValue = data.PubKey ? data.PubKey : "--";
             this.websiteValue = data.Description.Website?data.Description.Website:'--';
             this.descriptionValue= data.Description.Details ? data.Description.Details : "--";
             this.commissionRateValue = '';
             this.announcementValue = '';
-            this.votingPowerValue = data.VotingPower ? `${(data.VotingPower/data.PowerAll*100).toFixed(2)}%` : "--";
             this.showProfile = true;
-            this.bondHeightValue = data.BondHeight ? data.BondHeight : "--";
           }else{
             this.showProfile = false;
           }
@@ -879,6 +904,9 @@
           color:#ffffff;
           font-size:0.18rem;
         }
+        span{
+          display: inline-block;
+        }
       }
     }
 
@@ -1103,6 +1131,7 @@
       .line_content{
         @include flex;
         .line_echarts_content{
+          max-width: 50%;
           margin-top: 0.2rem;
           flex: 1;
           border: 0.01rem solid #e4e4e4;
@@ -1156,6 +1185,7 @@
       @include flex;
       flex-direction: column;
       .line_echarts_content {
+        max-width: 100%!important;
         margin-top: 0.2rem;
         padding: 0 0.1rem;
         flex: 1;
@@ -1235,7 +1265,24 @@
       padding-bottom: 0.2rem;
     }
   }
-
+  .candidate_validator{
+    color: #45B035;
+    @include fontSize;
+    padding-left: 0.09rem;
+  }
+  .revoked_validator{
+    width: 2rem;
+    color: #f00;
+    white-space: nowrap;
+    @include fontSize;
+    padding-left: 0.09rem;
+  }
+  .candidate_color{
+    background: #45B035!important;
+  }
+  .revoked_color{
+    background: #f00!important;
+  }
 .personal_computer_transactions_detail_wrap{
   .list_tab_content{
    margin-bottom: 0.2rem;
