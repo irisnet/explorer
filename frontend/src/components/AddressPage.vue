@@ -597,11 +597,11 @@
             let seriesData = [], noDatayAxisDefaultMaxByValidators;
             let maxValue = 0;
             data.forEach(item=>{
-              if(item.Power == 0){
-                item.Power = ""
-              }
               if(item.Power > maxValue){
                 maxValue = item.Power;
+              }
+              if(item.Power == 0){
+                item.Power = ""
               }
               let obj =[];
               obj[0] = Tools.conversionTimeToUTCByValidatorsLine(item.Time);
