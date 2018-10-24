@@ -595,22 +595,23 @@
         }).then((data)=>{
           if(data && typeof data === "object"){
             let seriesData = [], noDatayAxisDefaultMaxByValidators;
-
+            let maxValue = 0;
             data.forEach(item=>{
               if(item.Power == 0){
                 item.Power = ""
+              }
+              if(item.Power > maxValue){
+                maxValue = item.Power;
               }
               let obj =[];
               obj[0] = Tools.conversionTimeToUTCByValidatorsLine(item.Time);
               obj[1] = item.Power;
               seriesData.push(obj);
             });
-          //如果没有votingPower，返回的数据中会默认带两条数据
-          if(seriesData.length < 3){
-            noDatayAxisDefaultMaxByValidators = "100"
-          }
-            this.informationValidatorsLine = {seriesData,noDatayAxisDefaultMaxByValidators};
-
+            if(maxValue < 100){
+              noDatayAxisDefaultMaxByValidators = "100"
+            }
+            this.informationValidatorsLine = {seriesData,noDatayAxisDefaultMaxByValidators}
           }
         })
     },
