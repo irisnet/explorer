@@ -596,8 +596,8 @@
           if(validatorsVotingPowerList && typeof validatorsVotingPowerList === "object"){
             let seriesData = [], noDatayAxisDefaultMaxByValidators;
             let maxValue = 0;
-            let votingPowerObj = Object.assign(validatorsVotingPowerList);
-            votingPowerObj.forEach(item=>{
+            let votingPowerList = Object.assign(validatorsVotingPowerList);
+            votingPowerList.forEach(item=>{
               if(item.Power > maxValue){
                 maxValue = item.Power;
               }
