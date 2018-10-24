@@ -263,6 +263,7 @@ func QueryCandidatePower(w http.ResponseWriter, r *http.Request) {
 	var power types.PowerChange
 	p.Find(bson.M{"address": address, "time": bson.M{"$lt": startTime}}).Sort("-time").One(&power)
 	if power.Address != "" {
+		power.Time = startTime
 		result = []types.PowerChange{power}
 	} else {
 		result = []types.PowerChange{{Address: address, Time: startTime}}
