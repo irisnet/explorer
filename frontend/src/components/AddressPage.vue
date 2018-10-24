@@ -592,11 +592,11 @@
           if(data.status === 200){
             return data.data;
           }
-        }).then((data)=>{
-          if(data && typeof data === "object"){
+        }).then((validatorsVotingPowerList)=>{
+          if(validatorsVotingPowerList && typeof validatorsVotingPowerList === "object"){
             let seriesData = [], noDatayAxisDefaultMaxByValidators;
             let maxValue = 0;
-            let votingPowerObj = Object.assign(data);
+            let votingPowerObj = Object.assign(validatorsVotingPowerList);
             votingPowerObj.forEach(item=>{
               if(item.Power > maxValue){
                 maxValue = item.Power;
