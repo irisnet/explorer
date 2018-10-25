@@ -15,6 +15,16 @@
           <span class="information_value information_show_trim">{{title}}</span>
         </div>
         <div class="information_props_wrap">
+          <span class="information_props">Proposer:</span>
+          <span v-show="proposer !== '--'" class="information_value information_show_trim jump_route" @click="jumpRoute(`/address/1/${proposer}`)">{{proposer}}</span>
+          <span v-show="proposer == '--'" class="information_value information_show_trim ">{{proposer}}</span>
+        </div>
+        <div class="information_props_wrap">
+          <span class="information_props">Submit Hash:</span>
+          <span v-show="submitHash !== '--'" class="information_value information_show_trim jump_route" @click="jumpRoute(`/tx?txHash=${submitHash}`)">{{submitHash}}</span>
+          <span v-show="submitHash == '--'" class="information_value information_show_trim ">{{submitHash}}</span>
+        </div>
+        <div class="information_props_wrap">
           <span class="information_props">Type:</span>
           <span class="information_value">{{type}}</span>
         </div>
@@ -105,6 +115,8 @@
         voteDetalsNo: "",
         voteDetalsNoWithVeto: "",
         voteDetalsAbstain: "",
+        proposer: "",
+        submitHash: "",
       }
     },
     beforeMount() {
@@ -126,42 +138,66 @@
             return data.data
           }
         }).then((data) => {
+          this.showLoading = false;
           if(data && typeof  data === "object" ){
             this.showNoData = false;
-            this.proposalsId = data.proposal.proposal_id === 0 ? "--" : data.proposal.proposal_id;
-            this.title = data.proposal.title;
-            this.type = data.proposal.type;
-            this.status = data.proposal.status;
-            this.submitBlock = data.proposal.submit_block;
-            this.submitTime = Tools.conversionTimeToUTCToYYMMDD(data.proposal.submit_time);
-            this.votingStartBlock = data.proposal.voting_start_block ? data.proposal.voting_start_block : " -- ";
-            this.description = data.proposal.description ? data.proposal.description : " -- ";
-            this.voteDetalsYes = data.proposal.status === "DepositPeriod" ? "--" : data.result.Yes;
-            this.voteDetalsNo = data.proposal.status === "DepositPeriod" ? "--" : data.result.No;
-            this.voteDetalsNoWithVeto = data.proposal.status === "DepositPeriod" ? "--" : data.result.NoWithVeto;
-            this.voteDetalsAbstain = data.proposal.status === "DepositPeriod" ? "--" : data.result.Abstain;
-
-            if(data.proposal && data.proposal.total_deposit.length !==0){
-              this.totalDeposit = `${Tools.scientificToNumber(Tools.formatNumber(data.proposal.total_deposit[0].amount))} ${Tools.formatDenom(data.proposal.total_deposit[0].denom).toUpperCase()}`;
-            }else {
-              this.totalDeposit = "";
-            }
-            if(data.proposal.status === "DepositPeriod"){
-              this.count = "--"
-            }else {
+            if(data.proposal.proposal_id === 0){
+              this.proposalsId = '--';
+              this.title = '--';
+              this.type = '--';
+              this.status = '--';
+              this.proposer = '--';
+              this.submitHash = '--';
+              this.submitBlock = '--';
+              this.submitTime = '--';
+              this.votingStartBlock = '--';
+              this.description = '--';
+              this.voteDetalsYes = '--';
+              this.voteDetalsNo = '--';
+              this.voteDetalsNoWithVeto = '--';
+              this.voteDetalsAbstain = '--';
+              this.voteDetalsAbstain = '--';
+              this.totalDeposit = '--';
               this.count = 0;
-            }
-            if(data.votes){
-              this.count = data.votes.length;
-              this.items = data.votes.map(item =>{
-                item.time = Tools.conversionTimeToUTCToYYMMDD(item.time);
-                return {
-                  Voter: item.voter,
-                  "Voter Option": item.option,
-                  "Vote Time": item.time
-                }
-              })
             }else {
+              this.proposalsId = data.proposal.proposal_id === 0 ? "--" : data.proposal.proposal_id;
+              this.title = data.proposal.title;
+              this.type = data.proposal.type;
+              this.status = data.proposal.status;
+              this.proposer = data.proposal.proposer ? data.proposal.proposer : "--";
+              this.submitHash = data.proposal.tx_hash ? data.proposal.tx_hash : "--";
+              this.submitBlock = data.proposal.submit_block;
+              this.submitTime = Tools.conversionTimeToUTCToYYMMDD(data.proposal.submit_time);
+              this.votingStartBlock = data.proposal.voting_start_block ? data.proposal.voting_start_block : " -- ";
+              this.description = data.proposal.description ? data.proposal.description : " -- ";
+              this.voteDetalsYes = data.proposal.status === "DepositPeriod" ? "--" : data.result.Yes;
+              this.voteDetalsNo = data.proposal.status === "DepositPeriod" ? "--" : data.result.No;
+              this.voteDetalsNoWithVeto = data.proposal.status === "DepositPeriod" ? "--" : data.result.NoWithVeto;
+              this.voteDetalsAbstain = data.proposal.status === "DepositPeriod" ? "--" : data.result.Abstain;
+              if(data.proposal && data.proposal.total_deposit.length !==0){
+                this.totalDeposit = `${Tools.scientificToNumber(Tools.formatNumber(data.proposal.total_deposit[0].amount))} ${Tools.formatDenom(data.proposal.total_deposit[0].denom).toUpperCase()}`;
+              }else {
+                this.totalDeposit = "";
+              }
+              if(data.proposal.status === "DepositPeriod"){
+                this.count = "--"
+              }else {
+                this.count = 0;
+              }
+              if(data.votes){
+                this.count = data.votes.length;
+                this.items = data.votes.map(item =>{
+                  item.time = Tools.conversionTimeToUTCToYYMMDD(item.time);
+                  return {
+                    Voter: item.voter,
+                    "Voter Option": item.option,
+                    "Vote Time": item.time
+                  }
+                })
+              }
+            }
+          }else {
+              this.showNoData = false;
               this.items = [{
                 Voter: "",
                 "Vote Option": "",
@@ -169,13 +205,15 @@
               }];
               this.showNoData = true
             }
-          }
-          this.showLoading = false;
         }).catch(e => {
+          this.showNoData = false;
           console.log(e)
         })
 
       },
+      jumpRoute(path) {
+        this.$router.push(path);
+      }
 
     }
   }
@@ -404,5 +442,9 @@
   }
   .information_show_trim{
     white-space: pre-wrap ;
+  }
+  .jump_route {
+    color: #3598db;
+    cursor: pointer;
   }
 </style>

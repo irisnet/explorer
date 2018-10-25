@@ -32,7 +32,7 @@
               },
             },
             formatter(params){
-              let res =  `<span style="display:block;">${params[0].name}</span>`;
+              let res =  `<span style="display:block;">${params[0].name.substr(6,12)}/${params[0].name.substr(0,5)}</span>`;
               res += `<span style="display:block;">Transactions: ${params[0].value}</span>`;
               return res;
             }
