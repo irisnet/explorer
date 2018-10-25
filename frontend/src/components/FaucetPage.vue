@@ -162,7 +162,7 @@
           this.insufficientBalanceStatus = false;
           this.btninfo = "Send me IRIS"
         }
-        this.tokenName = data.value.coins[0].denom.toUpperCase();
+        this.tokenName = Tools.formatDenom(data.value.coins[0].denom).toUpperCase();
       }).catch(e =>{
         console.log(e);
         this.faucetBalance = "Error";

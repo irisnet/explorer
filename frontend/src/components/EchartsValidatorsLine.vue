@@ -152,7 +152,7 @@
           ]
         };
         if (line) {
-          if (this.informationValidatorsLine.noDatayAxisDefaultMaxByValidators) {
+          if (this.informationValidatorsLine.noDatayAxisDefaultMaxByValidators === "100") {
             option.yAxis.max = "100"
           } else {
             option.yAxis.max = null
