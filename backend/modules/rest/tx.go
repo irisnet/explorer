@@ -317,23 +317,20 @@ func buildTx(tx document.CommonTx) interface{} {
 
 		if govTx.Type == types.TypeSubmitProposal {
 			var msg MsgSubmitProposal
-			if err = json.Unmarshal([]byte(res.Content), &msg); err == nil {
-				govTx.Title = msg.Title
-				govTx.Description = msg.Description
-				govTx.ProposalType = msg.ProposalType
-			}
+			json.Unmarshal([]byte(res.Content), &msg)
+			govTx.Title = msg.Title
+			govTx.Description = msg.Description
+			govTx.ProposalType = msg.ProposalType
 		} else if govTx.Type == types.TypeDeposit {
 			var msg MsgDeposit
-			if err = json.Unmarshal([]byte(res.Content), &msg); err == nil {
-				govTx.ProposalId = msg.ProposalID
-				govTx.Amount = msg.Amount
-			}
+			json.Unmarshal([]byte(res.Content), &msg)
+			govTx.ProposalId = msg.ProposalID
+			govTx.Amount = msg.Amount
 		} else if govTx.Type == types.TypeVote {
 			var msg MsgVote
-			if err = json.Unmarshal([]byte(res.Content), &msg); err == nil {
-				govTx.ProposalId = msg.ProposalID
-				govTx.Option = msg.Option
-			}
+			json.Unmarshal([]byte(res.Content), &msg)
+			govTx.ProposalId = msg.ProposalID
+			govTx.Option = msg.Option
 		}
 
 		return govTx
