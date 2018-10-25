@@ -593,11 +593,14 @@
           if(data.status === 200){
             return data.data;
           }
-        }).then((data)=>{
-          if(data && typeof data === "object"){
+        }).then((validatorVotingPowerList)=>{
+          if(validatorVotingPowerList && typeof validatorVotingPowerList === "object"){
             let seriesData = [], noDatayAxisDefaultMaxByValidators;
-
-            data.forEach(item=>{
+            let maxPowerValue = 0;
+            validatorVotingPowerList.forEach(item=>{
+              if(item.Power > maxPowerValue){
+                maxPowerValue = item.Power
+              }
               if(item.Power == 0){
                 item.Power = ""
               }
@@ -606,13 +609,9 @@
               obj[1] = item.Power;
               seriesData.push(obj);
             });
-          //正常返回数据会默认有最少两条数据 如果两条数据的power都为0的话说明没有voting power
-          //没有voting power y轴默认值最大值为100
-          if(seriesData.length < 3){
-            if(seriesData[0].Power === 0 && seriesData[1].Power === 0){
+            if(maxPowerValue < 100){
               noDatayAxisDefaultMaxByValidators = "100"
             }
-          }
             this.informationValidatorsLine = {seriesData,noDatayAxisDefaultMaxByValidators};
 
           }
