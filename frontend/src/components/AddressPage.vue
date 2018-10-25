@@ -5,7 +5,7 @@
         <span class="transactions_detail_title">Address</span>
         <span class="transactions_detail_wrap_hash_var">
           {{address}}
-          <i v-if="showProfile" :style="{background:CandidateOrRevoked}">v</i>
+          <i v-if="showProfile" :style="{background:validatorsStatusColor}">v</i>
             <span v-show="flShowValidatorCandidate && showProfile" class="candidate_validator">(This Validator is a Candidate)</span>
             <span v-show="flShowValidatorRevoked && showProfile" class="revoked_validator">(This Validator is revoked!)</span>
         </span>
@@ -42,10 +42,9 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Website:</span>
-          <span class="information_value" v-show="websiteValue !== '--'">
+          <span class="information_value">
             <pre class="information_pre">{{websiteValue}}</pre>
           </span>
-          <i v-show="websiteValue === '--'" style="font-style:normal;color:#a2a2ae">--</i>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Identity:</span>
@@ -177,9 +176,7 @@
               this.getValidatorHistory('14days');
               this.getValidatorUptimeHistory('24hours');
           },
-          activeBtn(activeBtn){
-            //0是Transactions List 1是Precommit Blocks List
-          },
+
 
       },
       data() {
@@ -483,35 +480,26 @@
           if(data.status === 200){
             return data.data;
           }
-        }).then((data)=>{
-          let Amount = '';
-          if(data !== null && data !=="" && data && typeof data === "object"){
-            if(data.Amount.length > 0 ){
-              data.Amount[0].amount = Tools.formatNumber(data.Amount[0].amount);
+        }).then((validatorAddressInformation)=>{
+          let Amount = '--';
+          if(validatorAddressInformation && typeof validatorAddressInformation === "object"){
+            if(validatorAddressInformation.Amount){
+              if(validatorAddressInformation.Amount instanceof Array){
+                if(validatorAddressInformation.Amount.length > 0 ){
+                  validatorAddressInformation.Amount[0].amount = Tools.formatNumber(validatorAddressInformation.Amount[0].amount);
+                }
+                Amount = validatorAddressInformation.Amount.map(listItem=>`${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
+              }else if(validatorAddressInformation.Amount && Object.keys(validatorAddressInformation.Amount).includes('amount') && Object.keys(validatorAddressInformation.Amount).includes('denom')){
+                Amount = `${validatorAddressInformation.Amount.amount} ${Tools.formatDenom(validatorAddressInformation.Amount.denom).toUpperCase()}`;
+              }
             }
           }
 
-          if(data.Amount instanceof Array){
-            Amount = data.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
-          }else if(data.Amount && Object.keys(data.Amount).includes('amount') && Object.keys(data.Amount).includes('denom')){
-            Amount = `${data.Amount.amount} ${data.Amount.denom.toUpperCase()}`;
-          }else if(data.Amount === null){
-            Amount = '';
-          }
           this.balanceValue = Amount;
 
         }).catch(e =>{
           console.log(e)
         })
-      },
-      //点击view all跳转页面
-      viewAllClick(type){
-        if(type === 1){
-          this.$router.push(`/block/${type}/0?address=${this.$route.params.param}`);
-        }else if(type === 2){
-          this.$router.push(`/recent_transactions/2/recent?address=${this.$route.params.param}`)
-        }
-
       },
       getProfileInformation(){
         let url = `/api/stake/candidate/${this.$route.params.param}`;
@@ -534,9 +522,10 @@
                 this.votingPowerValue =Tools.formatNumber(validators.VotingPower);
               }else if(validators.Status === "Bonded"){
                 this.bondHeightValue = validators.BondHeight;
-                this.votingPowerValue = validators.VotingPower ? `${(validators.VotingPower/validators.PowerAll*100).toFixed(2)}%` : "--";
+                this.votingPowerValue = validators.VotingPower ? `${Tools.formatNumber(validators.VotingPower)} (${(validators.VotingPower/validators.PowerAll*100).toFixed(2)}%)` : "--";
               }
             }
+            this.identity = validators.Description.Identity ? validators.Description.Identity : "--";
             this.nameValue = validators.Description.Moniker ? validators.Description.Moniker : '--';
             this.pubKeyValue = validators.PubKey ? validators.PubKey : "--";
             this.websiteValue = validators.Description.Website?validators.Description.Website:'--';
