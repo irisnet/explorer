@@ -23,10 +23,17 @@
         let radius = this.deviceType === 1 ? '85%' : '65%';
         let option = {
           tooltip : {
-            trigger: 'item',
+            trigger: 'axis',
+            axisPointer:{
+              axis:"x",
+              type:"line",
+              lineStyle:{
+                color:"#a2a2ae",
+              },
+            },
             formatter(params){
-              let res =  `<span style="display:block;">${params.name}</span>`;
-              res += `<span style="display:block;">Transactions: ${params.value}</span>`;
+              let res =  `<span style="display:block;">${params[0].name}</span>`;
+              res += `<span style="display:block;">Transactions: ${params[0].value}</span>`;
               return res;
             }
           },
@@ -100,6 +107,8 @@
         if (line) {
           option.xAxis.data = informationLine.xData;
           option.series[0].data = informationLine.seriesData;
+          console.log(informationLine.xData,informationLine.seriesData);
+
           line.setOption(option)
         }
       }
