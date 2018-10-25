@@ -4,6 +4,7 @@ var (
 	TypeTransfer             = "Transfer"
 	TypeCreateValidator      = "CreateValidator"
 	TypeEditValidator        = "EditValidator"
+	TypeUnRevoke             = "unRevoke"
 	TypeDelegate             = "Delegate"
 	TypeBeginRedelegation    = "BeginRedelegate"
 	TypeCompleteRedelegation = "CompleteRedelegate"
@@ -17,7 +18,7 @@ var (
 	TypeValStatusUnbonding = "Unbonding"
 	TypeValStatusBonded    = "Bonded"
 
-	DeclarationList = []string{TypeCreateValidator, TypeEditValidator}
+	DeclarationList = []string{TypeCreateValidator, TypeEditValidator, TypeUnRevoke}
 	StakeList       = []string{TypeDelegate, TypeBeginRedelegation, TypeCompleteRedelegation, TypeBeginUnbonding, TypeCompleteUnbonding}
 	GovernanceList  = []string{TypeSubmitProposal, TypeDeposit, TypeVote}
 )
