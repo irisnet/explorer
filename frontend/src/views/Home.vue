@@ -267,25 +267,25 @@
           }
           if(data.Data){
             this.transactionInformation = data.Data.map(item => {
-              if(item.Amount.length > 0){
-                item.Amount[0].amount = Tools.dealWithFees(item.Amount[0].amount);
-              }
-              let [Amount, Fee] = ['', ''];
+              let [Amount, Fee] = ['--', '--'];
               if (item.Amount instanceof Array) {
-                Amount = item.Amount.map(listItem => `${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
+                if(item.Amount.length > 0){
+                  item.Amount[0].amount = Tools.dealWithFees(item.Amount[0].amount);
+                }
+                Amount = item.Amount.map(listItem => `${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
                 if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === "BeginRedelegate"){
-                  Amount = item.Amount.map(listItem => `${listItem.amount}shares`).join(',');
+                  Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
                 }
               } else if (item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')) {
-                Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
+                Amount = `${item.Amount.amount} ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
                 if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === "BeginRedelegate"){
-                  Amount = `${item.Amount.amount}shares`;
+                  Amount = `${item.Amount.amount} SHARES`;
                 }
               } else if (item.Amount === null) {
                 Amount = '';
               }
               if(item.ActualFee.amount && item.ActualFee.denom){
-                Fee =  Tools.formatFeeToFixedNumber(item.ActualFee.amount) + item.ActualFee.denom.toUpperCase();
+                Fee =  `${Tools.formatFeeToFixedNumber(item.ActualFee.amount)} ${Tools.formatDenom(item.ActualFee.denom).toUpperCase()}`;
               }
               return {
                 TxHash: item.TxHash,

@@ -210,15 +210,15 @@
             this.amountValue = data.Amount.map(item=>{
               item.amount = Tools.scientificToNumber(Tools.formatNumber(item.amount));
               if(data.Type === 'CompleteUnbonding' || data.Type === 'BeginUnbonding' || data.Type === "BeginRedelegate"){
-                return `${item.amount}shares`;
+                return `${item.amount} SHARES`;
               }else{
-                return `${item.amount} ${item.denom.toUpperCase()}`;
+                return `${item.amount} ${Tools.formatDenom(item.denom).toUpperCase()}`;
               }
             }).join(',') ;
           }else {
             this.amountValue = "--"
           }
-          this.actualTxFee = `${Tools.scientificToNumber(Tools.formatNumber(data.Fee.amount))} ${data.Fee.denom.toUpperCase()}`;
+          this.actualTxFee = `${Tools.scientificToNumber(Tools.formatNumber(data.Fee.amount))} ${Tools.formatDenom(data.Fee.denom).toUpperCase()}`;
 
 
           if(data.Type === "Transfer" || data.Type === "Delegate" || data.Type === "BeginUnbonding" || data.Type === "CompleteUnbonding"){
@@ -233,7 +233,7 @@
             this.website = data.Website ? data.Website : '--';
             this.details = data.Details ? data.Details : '--';
             if(data.SelfBond && data.SelfBond.length !== 0){
-              this.selfBond = `${Tools.scientificToNumber(Tools.formatNumber(data.SelfBond[0].amount))} ${data.SelfBond[0].denom.toUpperCase()}`;
+              this.selfBond = `${Tools.scientificToNumber(Tools.formatNumber(data.SelfBond[0].amount))} ${Tools.formatDenom(data.SelfBond[0].denom).toUpperCase()}`;
             }else {
               this.selfBond = "--"
             }
@@ -252,7 +252,7 @@
             if(data.Amount && data.Amount.length !==0){
               this.initialDeposit = data.Amount.map(item=>{
                 item.amount = Tools.scientificToNumber(Tools.formatNumber(item.amount));
-                return `${item.amount} ${item.denom.toUpperCase()}`;
+                return `${item.amount} ${Tools.formatDenom(item.denom).toUpperCase()}`;
               }).join(',') ;
             }else {
               this.initialDeposit = "--"

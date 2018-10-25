@@ -375,7 +375,7 @@
                   }
                 }
                 if(item.Fee.amount && item.Fee.denom){
-                  Fee = item.Fee.amount = Tools.formatFeeToFixedNumber(item.Fee.amount) + Tools.formatDenom(item.Fee.denom).toUpperCase();
+                  Fee = item.Fee.amount = `${Tools.formatFeeToFixedNumber(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`;
                 }
               }
               let objList;

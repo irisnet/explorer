@@ -163,14 +163,13 @@
                 return {
                   Height: item.Height,
                   Txn:txn,
-                  // Fees: '0 IRIS',
                   Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Time),
                   'Precommit Validators':precommit,
                   'Voting Power': denominator !== 0? `${(numerator/denominator).toFixed(2)*100}%`:'',
                 };
               })
             }else{
-              this.items = [{Height:'',Txn:'',Fee:'',Timestamp:'','Precommit Validators':'','Voting Power':''}]
+              this.items = [{Height:'',Txn:'',Fee:'',Timestamp:'','Precommit Validators':'','Voting Power':''}];
               this.showNoData = true;
             }
             this.showLoading = false;
@@ -202,26 +201,26 @@
             this.count = data.Count;
             if(data.Data){
               this.items = data.Data.map(item => {
-                let [Amount,Fee] = ['',''];
+                let [Amount,Fee] = ['--','--'];
                 if(that.$route.params.param === 'transfer' || that.$route.params.param === 'stake' || that.$route.params.param === 'governance'){
                   if(item.Amount !== null && item.Amount.length > 0){
                     item.Amount[0].amount = Tools.dealWithFees(item.Amount[0].amount);
                   }
                   if(item.Amount instanceof Array){
-                    Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
+                    Amount = item.Amount.map(listItem=>`${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
                     if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === 'BeginRedelegate'){
-                      Amount = item.Amount.map(listItem => `${listItem.amount}shares`).join(',');
+                      Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
                     }
                   }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
-                    Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
+                    Amount = `${item.Amount.amount}  ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
                     if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === "BeginRedelegate"){
-                      Amount = `${item.Amount.amount}shares`;
+                      Amount = `${item.Amount.amount} SHARES`;
                     }
                   }else if(item.Amount === null){
-                    Amount = '';
+                    Amount = '--';
                   }
                   if(item.Fee.amount && item.Fee.denom){
-                    Fee = item.Fee.amount = Tools.formatFeeToFixedNumber(item.Fee.amount) + item.Fee.denom.toUpperCase();
+                    Fee = item.Fee.amount = `${Tools.formatFeeToFixedNumber(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`;
 
                   }
                 }
@@ -241,10 +240,10 @@
                     TxHash: item.Hash,
                     Block: item.BlockHeight,
                     Owner: item.Owner ? item.Owner : "--",
-                    Moniker: item.Moniker ? item.Moniker : "--",
-                    "Self-Bond": item.SelfBond && item.SelfBond.length > 0 ? Tools.dealWithFees(item.SelfBond[0].amount) + item.SelfBond[0].denom.toUpperCase() : "--",
+                    Moniker: item.Moniker ? Tools.getShortForm(item.Moniker) : "--",
+                    "Self-Bond": item.SelfBond && item.SelfBond.length > 0 ? `${Tools.dealWithFees(item.SelfBond[0].amount)} ${Tools.formatDenom(item.SelfBond[0].denom).toUpperCase()}` : "--",
                     Type: item.Type,
-                    Fee: Tools.dealWithFees(item.Fee.amount) + item.Fee.denom.toUpperCase(),
+                    Fee: `${Tools.dealWithFees(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`,
                     Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
                   }
                 }else if(that.$route.params.param === 'stake'){
@@ -346,7 +345,7 @@
                     return {
                       Address: item.Address,
                       Name:Tools.getShortForm(item.Description.Moniker,20,"..."),
-                      'Voting Power':`${(item.VotingPower/data.PowerAll*100).toFixed(2)}%`,
+                      'Voting Power':`${Tools.formatNumber(item.VotingPower)} (${(item.VotingPower/data.PowerAll*100).toFixed(2)}%)`,
                       'Uptime':`${item.Uptime}%`,
                       'Bond Height': item.BondHeight
                     };

@@ -134,7 +134,6 @@
       getDataList() {
         this.showLoading = true;
         let url = `/api/net_info`;
-        let searchIpUrl = `/api/ip/`;
         axios.get(url).then((data) => {
           if (data.status === 200) {
             return data.data;
@@ -148,25 +147,6 @@
               item.connection_status.SendMonitor.Start = Tools.conversionTimeToUTCToYYMMDD(item.connection_status.SendMonitor.Start);
               item.node_info.listen_addr = item.node_info.listen_addr.split(":")[0];
               item.node_info.moniker = Tools.getShortForm(item.node_info.moniker,20,"...");
-              axios.get(searchIpUrl + item.node_info.listen_addr).then((data) => {
-                if (data.status === 200) {
-                  return data.data;
-                }
-              }).then((data) => {
-                if (data && data.data) {
-                  if (data.data.country_id === "xx") {
-                    data.data.country_id = "local"
-                  }
-                  let tempNodeList = JSON.parse(JSON.stringify(this.nodeList));
-                  for (let i = 0; i < tempNodeList.length; i++) {
-                    if (tempNodeList[i].node_info.listen_addr.split(":")[0] === data.data.ip) {
-                      tempNodeList[i].node_info.country = data.data.country_id;
-                      break;
-                    }
-                  }
-                  this.nodeList = tempNodeList;
-                }
-              })
             });
 
             this.showLoading = false;

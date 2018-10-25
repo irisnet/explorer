@@ -20,7 +20,7 @@
             <span class="blocks_module_Amount">{{item.Height?item.Txn:''}}</span>
             <span class="blocks_module_type" v-show="item.TxHash">{{item.Type}}</span>
             <div class="blocks_module_right" :style="`${title === 'Blocks'?'flex:2;':''}`">
-              <span :class="`${title === 'Blocks' ? 'hide_fee' : 'show_fee'}`">Fees: {{item.Fee}}</span>
+              <span :class="`${title === 'Blocks' ? 'hide_fee' : 'show_fee'}`">Fee: {{item.Fee}}</span>
             </div>
           </div>
         </div>

@@ -130,7 +130,6 @@
         timestampValue: '',
         blockHashValue: '',
         transactionsValue: '',
-        // feeValue: '',
         lastBlockHashValue: '',
         precommitValidatorsValue: '',
         votingPowerValue: '',
@@ -241,21 +240,21 @@
                   if(item.Amount instanceof Array){
                     if(item.Amount.length > 0){
                       item.Amount[0].amount = Tools.dealWithFees(item.Amount[0].amount);
-                      Amount = item.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
+                      Amount = item.Amount.map(listItem=>`${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
                       if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === "BeginRedelegate"){
-                        Amount = item.Amount.map(listItem => `${listItem.amount}shares`).join(',');
+                        Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
                       }
                     }
                   }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
                     item.Amount.amount = Tools.dealWithFees(item.Amount.amount);
-                    Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
+                    Amount = `${item.Amount.amount} ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
                     if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === "BeginRedelegate"){
-                      Amount = `${item.Amount.amount}shares`;
+                      Amount = `${item.Amount.amount} SHARES`;
                     }
                   }
                 }
                 if(item.Fee.amount && item.Fee.denom){
-                  Fee = item.Fee.amount = Tools.formatFeeToFixedNumber(item.Fee.amount) + item.Fee.denom.toUpperCase();
+                  Fee = item.Fee.amount = `${Tools.formatFeeToFixedNumber(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`;
                 }
               }
               let objList;
@@ -286,7 +285,7 @@
                   Block:item.BlockHeight,
                   Owner:item.Owner,
                   Moniker: item.Moniker,
-                  'Self-Bond':item.SelfBond && item.SelfBond.length > 0 ? Tools.dealWithFees(item.SelfBond[0].amount) + item.SelfBond[0].denom.toUpperCase() : "--",
+                  'Self-Bond':item.SelfBond && item.SelfBond.length > 0 ? `${Tools.dealWithFees(item.SelfBond[0].amount)} ${item.SelfBond[0].denom.toUpperCase()}`: "--",
                   Type: item.Type,
                   Fee,
                   Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
@@ -378,7 +377,6 @@
               this.heightValue = data.Height;
               this.timestampValue = Tools.conversionTimeToUTCToYYMMDD(data.Time);
               this.blockHashValue = data.Hash;
-              // this.feeValue = '0 IRIS';
               this.lastBlockHashValue = data.Block.LastCommit.BlockID.Hash;
               this.precommitValidatorsValue = data.Validators.length !== 0 ? `${data.Block.LastCommit.Precommits.length}/${data.Validators.length}` : '';
               this.votingPowerValue = denominator !== 0 ? `${numerator / denominator * 100}%` : '';
@@ -396,7 +394,6 @@
             this.timestampValue = '';
             this.blockHashValue = '';
             this.transactionsValue = '';
-            this.feeValue = '0 IRIS';
             this.lastBlockHashValue = '';
             this.precommitValidatorsValue = '';
             this.votingPowerValue = '';
