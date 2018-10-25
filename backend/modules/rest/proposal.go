@@ -84,7 +84,7 @@ func registerQueryProposal(r *mux.Router) error {
 		}
 
 		var tx document.CommonTx
-		if err := txStore.Find(bson.M{"type": types.TypeSubmitProposal, "proposal_id": pid}).One(tx); err == nil {
+		if err := txStore.Find(bson.M{"type": types.TypeSubmitProposal, "proposal_id": pid}).One(&tx); err == nil {
 			proposal.Proposer = tx.From
 			proposal.TxHash = tx.TxHash
 		}
