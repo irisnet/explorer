@@ -221,7 +221,6 @@
                   }
                   if(item.Fee.amount && item.Fee.denom){
                     Fee = item.Fee.amount = `${Tools.formatFeeToFixedNumber(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`;
-
                   }
                 }
                 let objList;
@@ -366,7 +365,6 @@
                       Address: item.Address,
                       Name:Tools.getShortForm(item.Description.Moniker,20,"..."),
                       'Voting Power':Tools.formatNumber(item.VotingPower),
-                      'Revoked Height': item.BondHeight
                     };
 
                   })
@@ -376,7 +374,6 @@
                     Address: '',
                     Name:'',
                     'Voting Power':'',
-                    'Revoked Height': ""
                   }]
                 }
               }else if(this.$route.params.param === "candidates"){
@@ -581,6 +578,7 @@
     td{
       max-width:2.2rem !important;
       overflow-wrap: break-word !important;
+      word-wrap: break-word !important;
     }
   }
   .page-item{

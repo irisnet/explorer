@@ -207,6 +207,7 @@
     td {
       max-width: 2.2rem !important;
       overflow-wrap: break-word !important;
+      word-wrap: break-word !important;
       .skip_route {
         color: #3598db;
         cursor: pointer;

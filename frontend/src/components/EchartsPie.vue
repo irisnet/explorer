@@ -14,6 +14,7 @@
 
 <script>
   import echarts from 'echarts';
+  import Tools from "../common/Tools";
 
   let pie = null;
   export default {
@@ -47,7 +48,7 @@
           tooltip : {
             trigger: 'item',
             formatter(params){
-              let res =  `<span style="display:block;color:#00f0ff;padding:0 0.05rem;">${params.name}</span>`;
+              let res =  `<span style="display:block;color:#00f0ff;padding:0 0.05rem;">${Tools.getShortForm(params.name,20,"...")}</span>`;
               if(params.name !== 'others'){
                 res += `<span style="display:block;padding:0 0.05rem;">Uptime: ${params.data.upTime}</span>`;
               }
@@ -115,7 +116,7 @@
           tooltip : {
             trigger: 'item',
             formatter(params){
-              let res =  `<span style="display:block;color:#00f0ff;padding:0 0.05rem;">${params.name}</span>`;
+              let res = `<span style="display:block;color:#00f0ff;padding:0 0.05rem;">${Tools.getShortForm(params.name,20,"...")}</span>`;
               if(params.name !== 'others'){
                 res += `<span style="display:block;padding:0 0.05rem;">Uptime: ${params.data.upTime}</span>`;
               }
@@ -126,7 +127,6 @@
           legend,
           series : [
             {
-              name: '访问来源',
               type: 'pie',
               radius,
               center,
