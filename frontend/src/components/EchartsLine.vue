@@ -23,10 +23,17 @@
         let radius = this.deviceType === 1 ? '85%' : '65%';
         let option = {
           tooltip : {
-            trigger: 'item',
+            trigger: 'axis',
+            axisPointer:{
+              axis:"x",
+              type:"line",
+              lineStyle:{
+                color:"#a2a2ae",
+              },
+            },
             formatter(params){
-              let res =  `<span style="display:block;">${params.name}</span>`;
-              res += `<span style="display:block;">Transactions: ${params.value}</span>`;
+              let res =  `<span style="display:block;">${params[0].name.substr(6,12)}/${params[0].name.substr(0,5)}</span>`;
+              res += `<span style="display:block;">Transactions: ${params[0].value}</span>`;
               return res;
             }
           },

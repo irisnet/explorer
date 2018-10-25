@@ -155,7 +155,7 @@ export default class Tools{
     return symbol + negative + (j ? i.substr(0, j) + thousand : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousand) + (places ? decimal : "");
   }
   static formatDenom(denom){
-    if(denom === "iris-atto"){
+    if(denom === "iris-atto" || denom === "iris"){
       return "IRIS"
     }
   }

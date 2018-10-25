@@ -36,8 +36,16 @@
         </span>
       </template>
       <template slot='Owner' slot-scope='data'>
-        <span class="skip_route" @click="skipRoute(`/address/1/${data.item.Owner}`)">
+        <span class="skip_route"  @click="skipRoute(`/address/1/${data.item.Owner}`)">
           {{data.item.Owner?`${String(data.item.Owner).substr(0,16)}...`:''}}
+        </span>
+      </template>
+      <template slot='Proposal_ID' slot-scope='data'>
+        <span class="skip_route" v-show="data.item.Proposal_ID !== '--'" @click="skipRoute(`/ProposalsDetail/${data.item.Proposal_ID}`)">
+          {{data.item.Proposal_ID?`${String(data.item.Proposal_ID)}`:''}}
+        </span>
+        <span v-show="data.item.Proposal_ID == '--'">
+          {{data.item.Proposal_ID?`${String(data.item.Proposal_ID)}`:''}}
         </span>
       </template>
     </b-table>
@@ -98,6 +106,9 @@
         <span class="skip_route" @click="skipRoute(`/ProposalsDetail/${data.item['Proposal ID']}`)">
           <pre class="proposals-list">{{data.item['Title']}}</pre>
         </span>
+      </template>
+      <template slot='Proposal ID' slot-scope='data'>
+        <span class="skip_route" @click="skipRoute(`/ProposalsDetail/${data.item['Proposal ID']}`)">{{data.item['Proposal ID']}}</span>
       </template>
     </b-table>
 
@@ -166,10 +177,9 @@
         </span>
       </template>
       <template slot='Owner' slot-scope='data'>
-      <span class="skip_route" @click="skipRoute(`/address/1/${data.item.Owner}`)">
-      {{data.item.Owner?`${String(data.item.Owner).substr(0,16)}...`:''}}
-      </span>
+        <span class="skip_route" @click="skipRoute(`/address/1/${data.item.Owner}`)">{{data.item.Owner?`${String(data.item.Owner).substr(0,16)}...`:''}}</span>
       </template>
+
     </b-table>
   </div>
 
