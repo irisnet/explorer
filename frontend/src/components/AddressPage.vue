@@ -4,7 +4,11 @@
       <p :class="transactionsDetailWrap" style="margin-bottom:0;">
         <span class="transactions_detail_title">Address</span>
         <span class="transactions_detail_wrap_hash_var">
-          {{address}} <i v-if="showProfile">v</i></span>
+          {{address}}
+          <i v-if="showProfile" :style="{background:validatorsStatusColor}">v</i>
+            <span v-show="flShowValidatorCandidate && showProfile" class="candidate_validator">(This Validator is a Candidate)</span>
+            <span v-show="flShowValidatorRevoked && showProfile" class="revoked_validator">(This Validator is revoked!)</span>
+        </span>
       </p>
     </div>
 
@@ -26,7 +30,7 @@
       </div>
     </div>
     <div :class="transactionsDetailWrap" class="address_profile" v-if="showProfile">
-      <p class="transaction_information_content_title">Profile</p>
+      <p class="transaction_information_content_title">Validator Profile</p>
       <div class="transactions_detail_information_wrap">
         <div class="information_props_wrap">
           <span class="information_props">Name:</span>
@@ -38,32 +42,26 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Website:</span>
-          <span class="information_value" v-show="websiteValue !== '--'">
+          <span class="information_value">
             <pre class="information_pre">{{websiteValue}}</pre>
           </span>
-          <i v-show="websiteValue === '--'" style="font-style:normal;color:#a2a2ae">--</i>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Description:</span>
+          <span class="information_props">Identity:</span>
+          <span class="information_value">
+            <pre class="information_pre">{{identity}}</pre></span>
+        </div>
+        <div class="information_props_wrap">
+          <span class="information_props">Details:</span>
           <span class="information_value"><pre class="information_pre">{{descriptionValue}}</pre></span>
         </div>
-        <!--<div class="information_props_wrap">-->
-          <!--<span class="information_props">Commission Rate:</span>-->
-          <!--<span class="information_value">{{commissionRateValue}}</span>-->
-        <!--</div>-->
-        <!--<div class="information_props_wrap">-->
-          <!--<span class="information_props">Announcement:</span>-->
-          <!--<span class="information_value">{{announcementValue}}</span>-->
-        <!--</div>-->
-
-
       </div>
     </div>
     <div :class="transactionsDetailWrap" class="current_tenure" v-show="showProfile">
-      <p class="transaction_information_content_title" style="border-bottom:1px solid #eee">Current Tenure</p>
+      <p class="transaction_information_content_title" style="border-bottom:1px solid #eee">Current Stake</p>
       <div class="current_tenure_wrap">
         <div class="transactions_detail_information_wrap">
-          <div class="information_props_wrap">
+          <div class="information_props_wrap" v-show="flShowUptime">
             <span class="information_props">Bond Height:</span>
             <span class="information_value">{{bondHeightValue}}</span>
           </div>
@@ -71,17 +69,12 @@
             <span class="information_props">Voting Power:</span>
             <span class="information_value">{{votingPowerValue}}</span>
           </div>
-          <div class="information_props_wrap">
+          <div class="information_props_wrap" v-show="flShowUptime">
             <span class="information_props">Precommited Blocks:</span>
             <span class="information_value">{{precommitedBlocksValue}}</span>
           </div>
-          <div class="information_props_wrap">
-            <span class="information_props">Returns:</span>
-            <span class="information_value">{{returnsValue?returnsValue:'--'}}</span>
-          </div>
-
         </div>
-        <div class="canvas_voting_power">
+        <div class="canvas_voting_power" v-show="flShowUptime">
           <div class="progress_wrap">
             <span>Uptime(in last 100)</span>
             <div class="progress_wrap_background">
@@ -108,7 +101,7 @@
                    :class="item.active ? 'border-none' : 'border-block' " >{{item.title}}</div>
             </div>
           </div>
-          <div class="line_echarts_content " :class="transactionsDetailWrap === 'personal_computer_transactions_detail_wrap' ?
+          <div v-show="flShowUptime" class="line_echarts_content " :class="transactionsDetailWrap === 'personal_computer_transactions_detail_wrap' ?
            'content_right' : 'model_content_right' ">
             <div class="line_right_container" style="overflow-x: auto;-webkit-overflow-scrolling:touch;">
               <echarts-validators-uptime-line :informationUptimeLine="informationUptimeLine" ></echarts-validators-uptime-line>
@@ -183,9 +176,7 @@
               this.getValidatorHistory('14days');
               this.getValidatorUptimeHistory('24hours');
           },
-          activeBtn(activeBtn){
-            //0是Transactions List 1是Precommit Blocks List
-          },
+
 
       },
       data() {
@@ -233,6 +224,11 @@
               tabTxListIndex:0,
               currentTabIndex:"",
               currentTxTabName:"",
+              identity: "",
+              flShowValidatorRevoked: false,
+              flShowValidatorCandidate: false,
+              flShowUptime: true,
+              validatorsStatusColor:"#3598db",
               tabVotingPower:[
                 {
                   "title":"14days",
@@ -365,22 +361,21 @@
                   if(item.Amount instanceof Array){
                     if(item.Amount.length > 0){
                       item.Amount[0].amount = Tools.dealWithFees(item.Amount[0].amount);
-                      Amount = item.Amount.map(listItem=>
-                        `${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
+                      Amount = item.Amount.map(listItem=> `${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`);
                       if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === "BeginRedelegate"){
-                        Amount = item.Amount.map(listItem => `${listItem.amount}shares`).join(',');
+                        Amount = item.Amount.map(listItem => `${listItem.amount}SHARES`).join(',');
                       }
                     }
                   }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
                     item.Amount.amount = Tools.dealWithFees(item.Amount.amount);
-                    Amount = `${item.Amount.amount} ${item.Amount.denom.toUpperCase()}`;
+                    Amount = `${item.Amount.amount} ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
                     if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === "BeginRedelegate"){
-                      Amount = `${item.Amount.amount}shares`;
+                      Amount = `${item.Amount.amount}SHARES`;
                     }
                   }
                 }
                 if(item.Fee.amount && item.Fee.denom){
-                  Fee = item.Fee.amount = Tools.formatFeeToFixedNumber(item.Fee.amount) + item.Fee.denom.toUpperCase();
+                  Fee = item.Fee.amount = Tools.formatFeeToFixedNumber(item.Fee.amount) + Tools.formatDenom(item.Fee.denom).toUpperCase();
                 }
               }
               let objList;
@@ -411,7 +406,7 @@
                   Block:item.BlockHeight,
                   Owner:item.Owner,
                   Moniker: item.Moniker,
-                  'Self-Bond': item.SelfBond && item.SelfBond.length > 0 ? Tools.dealWithFees(item.SelfBond[0].amount) + item.SelfBond[0].denom.toUpperCase() : "--",
+                  'Self-Bond': item.SelfBond && item.SelfBond.length > 0 ? Tools.dealWithFees(item.SelfBond[0].amount) + Tools.formatDenom(item.SelfBond[0].denom).toUpperCase() : "--",
                   Type: item.Type,
                   Fee,
                   Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
@@ -485,35 +480,26 @@
           if(data.status === 200){
             return data.data;
           }
-        }).then((data)=>{
-          let Amount = '';
-          if(data !== null && data !=="" && data && typeof data === "object"){
-            if(data.Amount.length > 0 ){
-              data.Amount[0].amount = Tools.formatNumber(data.Amount[0].amount);
+        }).then((validatorAddressInformation)=>{
+          let Amount = '--';
+          if(validatorAddressInformation && typeof validatorAddressInformation === "object"){
+            if(validatorAddressInformation.Amount){
+              if(validatorAddressInformation.Amount instanceof Array){
+                if(validatorAddressInformation.Amount.length > 0 ){
+                  validatorAddressInformation.Amount[0].amount = Tools.formatNumber(validatorAddressInformation.Amount[0].amount);
+                }
+                Amount = validatorAddressInformation.Amount.map(listItem=>`${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
+              }else if(validatorAddressInformation.Amount && Object.keys(validatorAddressInformation.Amount).includes('amount') && Object.keys(validatorAddressInformation.Amount).includes('denom')){
+                Amount = `${validatorAddressInformation.Amount.amount} ${Tools.formatDenom(validatorAddressInformation.Amount.denom).toUpperCase()}`;
+              }
             }
           }
 
-          if(data.Amount instanceof Array){
-            Amount = data.Amount.map(listItem=>`${listItem.amount} ${listItem.denom.toUpperCase()}`).join(',');
-          }else if(data.Amount && Object.keys(data.Amount).includes('amount') && Object.keys(data.Amount).includes('denom')){
-            Amount = `${data.Amount.amount} ${data.Amount.denom.toUpperCase()}`;
-          }else if(data.Amount === null){
-            Amount = '';
-          }
           this.balanceValue = Amount;
 
         }).catch(e =>{
           console.log(e)
         })
-      },
-      //点击view all跳转页面
-      viewAllClick(type){
-        if(type === 1){
-          this.$router.push(`/block/${type}/0?address=${this.$route.params.param}`);
-        }else if(type === 2){
-          this.$router.push(`/recent_transactions/2/recent?address=${this.$route.params.param}`)
-        }
-
       },
       getProfileInformation(){
         let url = `/api/stake/candidate/${this.$route.params.param}`;
@@ -521,17 +507,32 @@
           if(data.status === 200){
             return data.data;
           }
-        }).then((data)=>{
-          if(data && typeof data === "object"){
-            this.nameValue = data.Description.Moniker ? data.Description.Moniker : "--";
-            this.pubKeyValue = data.PubKey ? data.PubKey : "--";
-            this.websiteValue = data.Description.Website?data.Description.Website:'--';
-            this.descriptionValue= data.Description.Details ? data.Description.Details : "--";
+        }).then((validators)=>{
+          if(validators && typeof validators === "object"){
+            if(validators.Revoked === true){
+              this.flShowUptime = false;
+              this.flShowValidatorRevoked = true;
+              this.validatorsStatusColor = "#f00";
+              this.votingPowerValue = Tools.formatNumber(validators.VotingPower);
+            }else{
+              if(validators.Status === 'Unbonded' || validators.Status === 'Unbonding' ){
+                this.flShowValidatorCandidate = true;
+                this.validatorsStatusColor = "#45B035";
+                this.flShowUptime = false;
+                this.votingPowerValue =Tools.formatNumber(validators.VotingPower);
+              }else if(validators.Status === "Bonded"){
+                this.bondHeightValue = validators.BondHeight;
+                this.votingPowerValue = validators.VotingPower ? `${Tools.formatNumber(validators.VotingPower)} (${(validators.VotingPower/validators.PowerAll*100).toFixed(2)}%)` : "--";
+              }
+            }
+            this.identity = validators.Description.Identity ? validators.Description.Identity : "--";
+            this.nameValue = validators.Description.Moniker ? validators.Description.Moniker : '--';
+            this.pubKeyValue = validators.PubKey ? validators.PubKey : "--";
+            this.websiteValue = validators.Description.Website?validators.Description.Website:'--';
+            this.descriptionValue= validators.Description.Details ? validators.Description.Details : "--";
             this.commissionRateValue = '';
             this.announcementValue = '';
-            this.votingPowerValue = data.VotingPower ? `${(data.VotingPower/data.PowerAll*100).toFixed(2)}%` : "--";
             this.showProfile = true;
-            this.bondHeightValue = data.BondHeight ? data.BondHeight : "--";
           }else{
             this.showProfile = false;
           }
@@ -592,11 +593,14 @@
           if(data.status === 200){
             return data.data;
           }
-        }).then((data)=>{
-          if(data && typeof data === "object"){
+        }).then((validatorVotingPowerList)=>{
+          if(validatorVotingPowerList && typeof validatorVotingPowerList === "object"){
             let seriesData = [], noDatayAxisDefaultMaxByValidators;
-
-            data.forEach(item=>{
+            let maxPowerValue = 0;
+            validatorVotingPowerList.forEach(item=>{
+              if(item.Power > maxPowerValue){
+                maxPowerValue = item.Power
+              }
               if(item.Power == 0){
                 item.Power = ""
               }
@@ -605,10 +609,9 @@
               obj[1] = item.Power;
               seriesData.push(obj);
             });
-          //如果没有votingPower，返回的数据中会默认带两条数据
-          if(seriesData.length < 3){
-            noDatayAxisDefaultMaxByValidators = "100"
-          }
+            if(maxPowerValue < 100){
+              noDatayAxisDefaultMaxByValidators = "100"
+            }
             this.informationValidatorsLine = {seriesData,noDatayAxisDefaultMaxByValidators};
 
           }
@@ -879,6 +882,9 @@
           color:#ffffff;
           font-size:0.18rem;
         }
+        span{
+          display: inline-block;
+        }
       }
     }
 
@@ -1103,6 +1109,7 @@
       .line_content{
         @include flex;
         .line_echarts_content{
+          max-width: 50%;
           margin-top: 0.2rem;
           flex: 1;
           border: 0.01rem solid #e4e4e4;
@@ -1156,6 +1163,7 @@
       @include flex;
       flex-direction: column;
       .line_echarts_content {
+        max-width: 100%!important;
         margin-top: 0.2rem;
         padding: 0 0.1rem;
         flex: 1;
@@ -1235,7 +1243,24 @@
       padding-bottom: 0.2rem;
     }
   }
-
+  .candidate_validator{
+    color: #45B035;
+    @include fontSize;
+    padding-left: 0.09rem;
+  }
+  .revoked_validator{
+    width: 2rem;
+    color: #f00;
+    white-space: nowrap;
+    @include fontSize;
+    padding-left: 0.09rem;
+  }
+  .candidate_color{
+    background: #45B035!important;
+  }
+  .revoked_color{
+    background: #f00!important;
+  }
 .personal_computer_transactions_detail_wrap{
   .list_tab_content{
    margin-bottom: 0.2rem;
