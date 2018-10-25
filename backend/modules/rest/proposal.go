@@ -57,15 +57,20 @@ func registerQueryProposals(r *mux.Router) error {
 func registerQueryProposal(r *mux.Router) error {
 	r.HandleFunc("/api/proposal/{pid}", func(writer http.ResponseWriter, request *http.Request) {
 		var data document.Proposal
-		c := utils.GetDatabase().C("proposal")
-		defer c.Database.Session.Close()
+		db := utils.GetDatabase()
+		defer db.Session.Close()
+		propoStore := db.C("proposal")
+		txStore := db.C("tx_common")
 		args := mux.Vars(request)
 		pid, _ := strconv.Atoi(args["pid"])
-		if err := c.Find(bson.M{"proposal_id": pid}).One(&data); err != nil {
-			writer.Write([]byte("error"))
+
+		var info ProposalInfo
+		if err := propoStore.Find(bson.M{"proposal_id": pid}).One(&data); err != nil {
+			res, _ := json.Marshal(info)
+			writer.Write(res)
 			return
 		}
-		var info ProposalInfo
+
 		proposal := Proposal{
 			Title:            data.Title,
 			ProposalId:       data.ProposalId,
@@ -77,6 +82,13 @@ func registerQueryProposal(r *mux.Router) error {
 			TotalDeposit:     data.TotalDeposit,
 			VotingStartBlock: data.VotingStartBlock,
 		}
+
+		var tx document.CommonTx
+		if err := txStore.Find(bson.M{"type": types.TypeSubmitProposal, "proposal_id": pid}).One(tx); err == nil {
+			proposal.Proposer = tx.From
+			proposal.TxHash = tx.TxHash
+		}
+
 		info.Proposal = proposal
 
 		var votes []Vote
@@ -119,6 +131,8 @@ type Proposal struct {
 	SubmitTime       time.Time   `json:"submit_time"`
 	TotalDeposit     store.Coins `json:"total_deposit"`
 	VotingStartBlock int64       `json:"voting_start_block"`
+	Proposer         string      `json:"proposer"`
+	TxHash           string      `json:"tx_hash"`
 }
 
 type Vote struct {

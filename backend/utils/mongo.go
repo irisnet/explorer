@@ -19,13 +19,12 @@ func init() {
 	passwd := GetEnv("DB_PASSWORD", "irispassword")
 	log.Println("Connecting " + mongoUrl + "/" + database)
 	dialInfo := &mgo.DialInfo{
-		Addrs:     []string{mongoUrl},
-		Database:  database,
-		Username:  user,
-		Password:  passwd,
-		Direct:    false,
-		Timeout:   time.Second * 10,
-		PoolLimit: 100, // Session.SetPoolLimit
+		Addrs:    []string{mongoUrl},
+		Database: database,
+		Username: user,
+		Password: passwd,
+		Direct:   false,
+		Timeout:  time.Second * 10,
 	}
 
 	var err error
@@ -34,7 +33,6 @@ func init() {
 		log.Fatalln(err)
 	}
 	session.SetMode(mgo.Monotonic, true)
-	session.SetPoolLimit(300)
 }
 
 var session *mgo.Session

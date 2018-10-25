@@ -263,6 +263,7 @@ func QueryCandidatePower(w http.ResponseWriter, r *http.Request) {
 	var power types.PowerChange
 	p.Find(bson.M{"address": address, "time": bson.M{"$lt": startTime}}).Sort("-time").One(&power)
 	if power.Address != "" {
+		power.Time = startTime
 		result = []types.PowerChange{power}
 	} else {
 		result = []types.PowerChange{{Address: address, Time: startTime}}
@@ -318,7 +319,12 @@ func queryCandidatesTop(w http.ResponseWriter, r *http.Request) {
 	defer db.Session.Close()
 	cs := db.C("stake_role_candidate")
 	cb := db.C("block")
-	cs.Find(bson.M{"revoked": false}).Sort("-voting_power").Limit(10).All(&candidates)
+
+	query := bson.M{}
+	query["revoked"] = false
+	query["status"] = types.TypeValStatusBonded
+
+	cs.Find(query).Sort("-voting_power").Limit(10).All(&candidates)
 	votePipe := cs.Pipe(
 		[]bson.M{
 			{"$match": bson.M{"revoked": false}},
