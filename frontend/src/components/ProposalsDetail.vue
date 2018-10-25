@@ -120,6 +120,7 @@
       }
     },
     beforeMount() {
+      document.body.scrollTop = 0;
       if (Tools.currentDeviceIsPersonComputer()) {
         this.proposalsDetailWrap = 'personal_computer_transactions_detail_wrap';
       } else {
