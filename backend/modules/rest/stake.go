@@ -107,9 +107,14 @@ func queryCandidate(w http.ResponseWriter, r *http.Request) {
 	defer c.Database.Session.Close()
 	var candidate document.Candidate
 	err := c.Find(bson.M{"address": address}).Sort("-update_time").One(&candidate)
+
+	query := bson.M{}
+	query["revoked"] = false
+	query["status"] = types.TypeValStatusBonded
+
 	pipe := c.Pipe(
 		[]bson.M{
-			{"$match": bson.M{"revoked": false}},
+			{"$match": query},
 			{"$group": bson.M{
 				"_id":   "voting_power",
 				"count": bson.M{"$sum": "$voting_power"},
