@@ -107,8 +107,6 @@
         if (line) {
           option.xAxis.data = informationLine.xData;
           option.series[0].data = informationLine.seriesData;
-          console.log(informationLine.xData,informationLine.seriesData);
-
           line.setOption(option)
         }
       }
