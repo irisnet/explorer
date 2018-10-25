@@ -111,7 +111,7 @@ export default class Tools{
   /**
    * 根据字节截取字符串
    */
-  static getShortForm(string,cutOutlength,addSuffix){
+  static formatString(string,cutOutlength,addSuffix){
     var stringLength = string.replace(/[^\x00-\xff]/g,"**").length;
     if(stringLength>cutOutlength){
       if(!addSuffix) {

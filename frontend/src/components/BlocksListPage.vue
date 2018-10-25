@@ -221,7 +221,6 @@
                   }
                   if(item.Fee.amount && item.Fee.denom){
                     Fee = item.Fee.amount = `${Tools.formatFeeToFixedNumber(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`;
-
                   }
                 }
                 let objList;
@@ -240,7 +239,7 @@
                     TxHash: item.Hash,
                     Block: item.BlockHeight,
                     Owner: item.Owner ? item.Owner : "--",
-                    Moniker: item.Moniker ? Tools.getShortForm(item.Moniker) : "--",
+                    Moniker: item.Moniker ? Tools.formatString(item.Moniker) : "--",
                     "Self-Bond": item.SelfBond && item.SelfBond.length > 0 ? `${Tools.dealWithFees(item.SelfBond[0].amount)} ${Tools.formatDenom(item.SelfBond[0].denom).toUpperCase()}` : "--",
                     Type: item.Type,
                     Fee: `${Tools.dealWithFees(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`,
@@ -344,7 +343,7 @@
                   this.items = data.Candidates.map(item => {
                     return {
                       Address: item.Address,
-                      Name:Tools.getShortForm(item.Description.Moniker,20,"..."),
+                      Name:Tools.formatString(item.Description.Moniker,20,"..."),
                       'Voting Power':`${Tools.formatNumber(item.VotingPower)} (${(item.VotingPower/data.PowerAll*100).toFixed(2)}%)`,
                       'Uptime':`${item.Uptime}%`,
                       'Bond Height': item.BondHeight
@@ -364,9 +363,8 @@
                   this.items = data.Candidates.map(item => {
                     return {
                       Address: item.Address,
-                      Name:Tools.getShortForm(item.Description.Moniker,20,"..."),
+                      Name:Tools.formatString(item.Description.Moniker,20,"..."),
                       'Voting Power':Tools.formatNumber(item.VotingPower),
-                      'Revoked Height': item.BondHeight
                     };
 
                   })
@@ -376,7 +374,6 @@
                     Address: '',
                     Name:'',
                     'Voting Power':'',
-                    'Revoked Height': ""
                   }]
                 }
               }else if(this.$route.params.param === "candidates"){
@@ -384,7 +381,7 @@
                   this.items = data.Candidates.map(item => {
                     return {
                       Address: item.Address,
-                      Name: Tools.getShortForm(item.Description.Moniker,20,"..."),
+                      Name: Tools.formatString(item.Description.Moniker,20,"..."),
                       'Voting Power': Tools.formatNumber(item.VotingPower),
                       'Declare Height' : item.BondHeight
                     };
@@ -581,6 +578,7 @@
     td{
       max-width:2.2rem !important;
       overflow-wrap: break-word !important;
+      word-wrap: break-word !important;
     }
   }
   .page-item{
