@@ -168,13 +168,13 @@
             for (let i = 0; i < data.Candidates.length; i++) {
               seriesData.push({
                 value: data.Candidates[i].VotingPower,
-                name: data.Candidates[i].Description.Moniker ? `${Tools.getShortForm(data.Candidates[i].Description.Moniker,10,"")} (${Tools.getShortForm(data.Candidates[i].Address,10,"")})` : (data.Candidates[i].Address ? data.Candidates[i].Address : ''),
+                name: data.Candidates[i].Description.Moniker ? `${Tools.formatString(data.Candidates[i].Description.Moniker,10,"")} (${Tools.formatString(data.Candidates[i].Address,10,"")})` : (data.Candidates[i].Address ? data.Candidates[i].Address : ''),
                 itemStyle: {color: colors[i]},
                 upTime:`${data.Candidates[i].Uptime}%`,
                 address:data.Candidates[i].Address,
                 totalCount,
               });
-              legendData.push(data.Candidates[i].Description.Moniker ? `${Tools.getShortForm(data.Candidates[i].Description.Moniker,10,"")} (${Tools.getShortForm(data.Candidates[i].Address,10,"")})` : (data.Candidates[i].Address ? data.Candidates[i].Address : ''))
+              legendData.push(data.Candidates[i].Description.Moniker ? `${Tools.formatString(data.Candidates[i].Description.Moniker,10,"")} (${Tools.formatString(data.Candidates[i].Address,10,"")})` : (data.Candidates[i].Address ? data.Candidates[i].Address : ''))
             }
 
             if(data.Candidates.length > 10){

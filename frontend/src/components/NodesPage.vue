@@ -146,7 +146,7 @@
             this.nodeList.forEach(item => {
               item.connection_status.SendMonitor.Start = Tools.conversionTimeToUTCToYYMMDD(item.connection_status.SendMonitor.Start);
               item.node_info.listen_addr = item.node_info.listen_addr.split(":")[0];
-              item.node_info.moniker = Tools.getShortForm(item.node_info.moniker,20,"...");
+              item.node_info.moniker = Tools.formatString(item.node_info.moniker,20,"...");
             });
 
             this.showLoading = false;

@@ -112,7 +112,7 @@
               let submitBlock = item.submit_block;
               let submitTime = Tools.conversionTimeToUTCToYYMMDD(item.submit_time);
               let votingStartBlock = item.voting_start_block ? item.voting_start_block : "" ;
-              let title = Tools.getShortForm(item.title,20,"...");
+              let title = Tools.formatString(item.title,20,"...");
               return {
                 Title : title,
                 'Proposal ID' : proposalId,

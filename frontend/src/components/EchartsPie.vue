@@ -48,7 +48,7 @@
           tooltip : {
             trigger: 'item',
             formatter(params){
-              let res =  `<span style="display:block;color:#00f0ff;padding:0 0.05rem;">${Tools.getShortForm(params.name,20,"...")}</span>`;
+              let res =  `<span style="display:block;color:#00f0ff;padding:0 0.05rem;">${Tools.formatString(params.name,20,"...")}</span>`;
               if(params.name !== 'others'){
                 res += `<span style="display:block;padding:0 0.05rem;">Uptime: ${params.data.upTime}</span>`;
               }
@@ -116,7 +116,7 @@
           tooltip : {
             trigger: 'item',
             formatter(params){
-              let res = `<span style="display:block;color:#00f0ff;padding:0 0.05rem;">${Tools.getShortForm(params.name,20,"...")}</span>`;
+              let res = `<span style="display:block;color:#00f0ff;padding:0 0.05rem;">${Tools.formatString(params.name,20,"...")}</span>`;
               if(params.name !== 'others'){
                 res += `<span style="display:block;padding:0 0.05rem;">Uptime: ${params.data.upTime}</span>`;
               }
