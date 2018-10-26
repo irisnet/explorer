@@ -117,8 +117,6 @@
             this.activeNext = true;
           }
         }
-
-
       }
     },
     data() {
@@ -171,6 +169,7 @@
       }
     },
     beforeMount() {
+      document.body.scrollTop = 0;
       if (Tools.currentDeviceIsPersonComputer()) {
         this.transactionsDetailWrap = 'personal_computer_transactions_detail_wrap';
       } else {
@@ -203,6 +202,7 @@
             this.txTab[3].BlockTxStatistics = data.GovCnt;
           }
         }).catch((e) => {
+
           console.log(e)
         })
       },
