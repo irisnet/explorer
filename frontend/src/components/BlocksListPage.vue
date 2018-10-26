@@ -208,13 +208,11 @@
                     if(item.Amount instanceof Array){
                       if(item.Amount.length > 0){
                         item.Amount[0].amount = Tools.dealWithFees(item.Amount[0].amount);
-                      }
-                      if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === 'BeginRedelegate'){
-                        if(item.Amount.length > 0){
+                        if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === 'BeginRedelegate'){
                           Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
+                        }else {
+                          Amount = item.Amount.map(listItem=>`${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
                         }
-                      }else {
-                        Amount = item.Amount.map(listItem=>`${listItem.amount} ${Tools.formatDenom(listItem.denom)}`).join(',');
                       }
                     }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
                       Amount = `${item.Amount.amount}  ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
