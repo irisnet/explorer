@@ -202,22 +202,26 @@
             if(data.Data){
               this.items = data.Data.map(item => {
                 let [Amount,Fee] = ['--','--'];
+
                 if(that.$route.params.param === 'transfer' || that.$route.params.param === 'stake' || that.$route.params.param === 'governance'){
-                  if(item.Amount !== null && item.Amount.length > 0){
-                    item.Amount[0].amount = Tools.dealWithFees(item.Amount[0].amount);
-                  }
-                  if(item.Amount instanceof Array){
-                    Amount = item.Amount.map(listItem=>`${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
-                    if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === 'BeginRedelegate'){
-                      Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
+                  if(item.Amount){
+                    if(item.Amount instanceof Array){
+                      if(item.Amount.length > 0){
+                        item.Amount[0].amount = Tools.dealWithFees(item.Amount[0].amount);
+                      }
+                      if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === 'BeginRedelegate'){
+                        if(item.Amount.length > 0){
+                          Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
+                        }
+                      }else {
+                        Amount = item.Amount.map(listItem=>`${listItem.amount} ${Tools.formatDenom(listItem.denom)}`).join(',');
+                      }
+                    }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
+                      Amount = `${item.Amount.amount}  ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
+                      if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === "BeginRedelegate"){
+                        Amount = `${item.Amount.amount} SHARES`;
+                      }
                     }
-                  }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
-                    Amount = `${item.Amount.amount}  ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
-                    if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === "BeginRedelegate"){
-                      Amount = `${item.Amount.amount} SHARES`;
-                    }
-                  }else if(item.Amount === null){
-                    Amount = '--';
                   }
                   if(item.Fee.amount && item.Fee.denom){
                     Fee = item.Fee.amount = `${Tools.formatFeeToFixedNumber(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`;
