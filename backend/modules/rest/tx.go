@@ -303,9 +303,10 @@ func buildTx(tx document.CommonTx) interface{} {
 		}
 	case types.Gov:
 		govTx := types.GovTx{
-			BaseTx: buildBaseTx(tx),
-			Amount: tx.Amount,
-			From:   tx.From,
+			BaseTx:     buildBaseTx(tx),
+			Amount:     tx.Amount,
+			From:       tx.From,
+			ProposalId: tx.ProposalId,
 		}
 
 		c := utils.GetDatabase().C("tx_msg")
