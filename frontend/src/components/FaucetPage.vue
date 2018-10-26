@@ -143,7 +143,8 @@
     },
     beforeCreate(){
 
-      let faucet_url = this.faucet_url + "/account";
+      // let faucet_url = this.faucet_url + "/account";
+      let faucet_url = "http://47.104.155.125:30200/account";
       axios.get(faucet_url).then((data)=>{
         if(data.status === 200){
           return data.data;

@@ -207,7 +207,7 @@
                   if(item.Amount){
                     if(item.Amount instanceof Array){
                       if(item.Amount.length > 0){
-                        item.Amount[0].amount = Tools.dealWithFees(item.Amount[0].amount);
+                        item.Amount[0].amount = Tools.formatAmount(item.Amount[0].amount);
                         if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === 'BeginRedelegate' || item.Type === 'CompleteRedelegation'){
                           Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
                         }else {
@@ -242,9 +242,9 @@
                     Block: item.BlockHeight,
                     Owner: item.Owner ? item.Owner : "--",
                     Moniker: item.Moniker ? Tools.formatString(item.Moniker) : "--",
-                    "Self-Bond": item.SelfBond && item.SelfBond.length > 0 ? `${Tools.dealWithFees(item.SelfBond[0].amount)} ${Tools.formatDenom(item.SelfBond[0].denom).toUpperCase()}` : "--",
+                    "Self-Bond": item.SelfBond && item.SelfBond.length > 0 ? `${Tools.formatAmount(item.SelfBond[0].amount)} ${Tools.formatDenom(item.SelfBond[0].denom).toUpperCase()}` : "--",
                     Type: item.Type,
-                    Fee: `${Tools.dealWithFees(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`,
+                    Fee: `${Tools.formatAmount(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`,
                     Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
                   }
                 }else if(that.$route.params.param === 'stake'){

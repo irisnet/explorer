@@ -105,7 +105,7 @@ export default class Tools{
    * param string;
    * return string
    */
-  static dealWithFees(num){
+  static formatAmount(num){
     return Tools.decimalPlace(Tools.formatNumber(num))
   }
   /**

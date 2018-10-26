@@ -270,7 +270,7 @@
               let [Amount, Fee] = ['--', '--'];
               if (item.Amount instanceof Array) {
                 if(item.Amount.length > 0){
-                  item.Amount[0].amount = Tools.dealWithFees(item.Amount[0].amount);
+                  item.Amount[0].amount = Tools.formatAmount(item.Amount[0].amount);
                 }
                 Amount = item.Amount.map(listItem => `${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
                 if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === "BeginRedelegate"){
