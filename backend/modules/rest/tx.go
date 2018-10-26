@@ -265,6 +265,9 @@ func RegisterTx(r *mux.Router) error {
 }
 
 func buildTx(tx document.CommonTx) interface{} {
+	db := utils.GetDatabase()
+	defer db.Session.Close()
+
 	switch types.Convert(tx.Type) {
 	case types.Trans:
 		return types.TransTx{
@@ -280,16 +283,24 @@ func buildTx(tx document.CommonTx) interface{} {
 			Owner:    tx.From,
 			Pubkey:   tx.StakeCreateValidator.PubKey,
 		}
-		if tx.Type == "CreateValidator" {
+		if tx.Type == types.TypeCreateValidator {
 			dtx.Moniker = tx.StakeCreateValidator.Description.Moniker
 			dtx.Details = tx.StakeCreateValidator.Description.Details
 			dtx.Website = tx.StakeCreateValidator.Description.Website
 			dtx.Identity = tx.StakeCreateValidator.Description.Identity
-		} else {
+		} else if tx.Type == types.TypeEditValidator {
 			dtx.Moniker = tx.StakeEditValidator.Description.Moniker
 			dtx.Details = tx.StakeEditValidator.Description.Details
 			dtx.Website = tx.StakeEditValidator.Description.Website
 			dtx.Identity = tx.StakeEditValidator.Description.Identity
+		} else if tx.Type == types.TypeUnRevoke {
+			candidateDb := db.C("stake_role_candidate")
+			var can document.Candidate
+			candidateDb.Find(bson.M{"address": dtx.Owner}).One(&can)
+			dtx.Moniker = can.Description.Moniker
+			dtx.Details = can.Description.Details
+			dtx.Website = can.Description.Website
+			dtx.Identity = can.Description.Identity
 		}
 		return dtx
 	case types.Stake:
@@ -309,9 +320,9 @@ func buildTx(tx document.CommonTx) interface{} {
 			ProposalId: tx.ProposalId,
 		}
 
-		c := utils.GetDatabase().C("tx_msg")
+		txMsgDb := db.C("tx_msg")
 		var res document.TxMsg
-		err := c.Find(bson.M{"hash": govTx.Hash}).One(&res)
+		err := txMsgDb.Find(bson.M{"hash": govTx.Hash}).One(&res)
 		if err != nil {
 			return govTx
 		}
