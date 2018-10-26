@@ -151,7 +151,7 @@
       }).then((data)=>{
         this.errStyle = false;
         this.btnDisabled = true;
-        this.faucetBalance = Tools.formatBalance(Number(Tools.formatNumber(data.value.coins[0].amount)).toString().split(".")[0]);
+        this.faucetBalance = `${Tools.formatAccountCoinsAmount(data.coins[0])[0].split(".")[0]}`;
         let faucetQuota = 20;
         if(this.faucetBalance < faucetQuota){
           this.errStyle = true;
@@ -162,7 +162,7 @@
           this.insufficientBalanceStatus = false;
           this.btninfo = "Send me IRIS"
         }
-        this.tokenName = Tools.formatDenom(data.value.coins[0].denom).toUpperCase();
+        this.tokenName = Tools.formatAccountCoinsDenom(data.coins[0])[0].toUpperCase();
       }).catch(e =>{
         console.log(e);
         this.faucetBalance = "Error";

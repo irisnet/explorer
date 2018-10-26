@@ -105,7 +105,7 @@ export default class Tools{
    * param string;
    * return string
    */
-  static dealWithFees(num){
+  static formatAmount(num){
     return Tools.decimalPlace(Tools.formatNumber(num))
   }
   /**
@@ -158,5 +158,11 @@ export default class Tools{
     if(denom === "iris-atto" || denom === "iris"){
       return "IRIS"
     }
+  }
+  static formatAccountCoinsAmount(coinsAmount){
+    return coinsAmount = /[0-9]+[.]?[0-9]*/.exec(coinsAmount)
+  }
+  static formatAccountCoinsDenom(coinsDenom){
+    return coinsDenom = /[A-Za-z\-]{2,15}/.exec(coinsDenom)
   }
 }

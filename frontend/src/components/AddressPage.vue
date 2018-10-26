@@ -362,14 +362,14 @@
                 if(item.Amount){
                   if(item.Amount instanceof Array){
                     if(item.Amount.length > 0){
-                      item.Amount[0].amount = Tools.dealWithFees(item.Amount[0].amount);
+                      item.Amount[0].amount = Tools.formatAmount(item.Amount[0].amount);
                       Amount = item.Amount.map(listItem=> `${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`);
                       if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === "BeginRedelegate"){
                         Amount = item.Amount.map(listItem => `${listItem.amount}SHARES`).join(',');
                       }
                     }
                   }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
-                    item.Amount.amount = Tools.dealWithFees(item.Amount.amount);
+                    item.Amount.amount = Tools.formatAmount(item.Amount.amount);
                     Amount = `${item.Amount.amount} ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
                     if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === "BeginRedelegate"){
                       Amount = `${item.Amount.amount}SHARES`;
@@ -408,7 +408,7 @@
                   Block:item.BlockHeight,
                   Owner:item.Owner,
                   Moniker: item.Moniker,
-                  'Self-Bond': item.SelfBond && item.SelfBond.length > 0 ? Tools.dealWithFees(item.SelfBond[0].amount) + Tools.formatDenom(item.SelfBond[0].denom).toUpperCase() : "--",
+                  'Self-Bond': item.SelfBond && item.SelfBond.length > 0 ? Tools.formatAmount(item.SelfBond[0].amount) + Tools.formatDenom(item.SelfBond[0].denom).toUpperCase() : "--",
                   Type: item.Type,
                   Fee,
                   Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),

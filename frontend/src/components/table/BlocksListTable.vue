@@ -40,14 +40,6 @@
           {{data.item.Owner?`${String(data.item.Owner).substr(0,16)}...`:''}}
         </span>
       </template>
-      <template slot='Proposal_ID' slot-scope='data'>
-        <span class="skip_route" v-show="data.item.Proposal_ID !== '--'" @click="skipRoute(`/ProposalsDetail/${data.item.Proposal_ID}`)">
-          {{data.item.Proposal_ID?`${String(data.item.Proposal_ID)}`:''}}
-        </span>
-        <span v-show="data.item.Proposal_ID == '--'">
-          {{data.item.Proposal_ID?`${String(data.item.Proposal_ID)}`:''}}
-        </span>
-      </template>
     </b-table>
 
     <b-table :fields='fields' :items='items' striped v-if="type === '3' || type === '4'" class="show_trim">
@@ -106,9 +98,6 @@
         <span class="skip_route" @click="skipRoute(`/ProposalsDetail/${data.item['Proposal ID']}`)">
           <pre class="proposals-list">{{data.item['Title']}}</pre>
         </span>
-      </template>
-      <template slot='Proposal ID' slot-scope='data'>
-        <span class="skip_route" @click="skipRoute(`/ProposalsDetail/${data.item['Proposal ID']}`)">{{data.item['Proposal ID']}}</span>
       </template>
     </b-table>
 
