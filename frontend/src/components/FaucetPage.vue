@@ -151,7 +151,7 @@
       }).then((data)=>{
         this.errStyle = false;
         this.btnDisabled = true;
-        this.faucetBalance = `${Tools.formatAccountCoinsAmount(data.coins[0]).toString().split(".")[0]}`;
+        this.faucetBalance = `${Tools.formatAccountCoinsAmount(data.coins[0])[0].split(".")[0]}`;
         let faucetQuota = 20;
         if(this.faucetBalance < faucetQuota){
           this.errStyle = true;
