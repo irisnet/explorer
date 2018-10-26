@@ -4,7 +4,7 @@ var (
 	TypeTransfer             = "Transfer"
 	TypeCreateValidator      = "CreateValidator"
 	TypeEditValidator        = "EditValidator"
-	TypeUnRevoke             = "unRevoke"
+	TypeUnRevoke             = "Unrevoke"
 	TypeDelegate             = "Delegate"
 	TypeBeginRedelegation    = "BeginRedelegate"
 	TypeCompleteRedelegation = "CompleteRedelegate"
