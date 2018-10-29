@@ -176,7 +176,7 @@
               this.voteDetalsNoWithVeto = data.proposal.status === "DepositPeriod" ? "--" : data.result.NoWithVeto;
               this.voteDetalsAbstain = data.proposal.status === "DepositPeriod" ? "--" : data.result.Abstain;
               if(data.proposal && data.proposal.total_deposit.length !==0){
-                this.totalDeposit = `${Tools.scientificNotationConversionNumber(Tools.formatNumber(data.proposal.total_deposit[0].amount))} ${Tools.formatDenom(data.proposal.total_deposit[0].denom).toUpperCase()}`;
+                this.totalDeposit = `${Tools.convertScientificNotation2Number(Tools.formatNumber(data.proposal.total_deposit[0].amount))} ${Tools.formatDenom(data.proposal.total_deposit[0].denom).toUpperCase()}`;
               }else {
                 this.totalDeposit = "";
               }

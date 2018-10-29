@@ -49,7 +49,7 @@ export default class Tools{
         return num + " "
       }else {
         if(num){
-          num = Tools.scientificNotationConversionNumber(num);
+          num = Tools.convertScientificNotation2Number(num);
           let str = String(num).split(".")[1];
           if(str.length > 2){
             return Tools.toFixedformatNumber(Number(num) ,2)+ "...";
@@ -65,7 +65,8 @@ export default class Tools{
     return new BigNumber(num).toFixed(val,1);
 
   }
-  static scientificNotationConversionNumber(num){
+  convertScientificNotation2Number
+  static convertScientificNotation2Number(num){
     return new BigNumber(num).toFixed();
   }
   static formatFeeToFixedNumber(num){
