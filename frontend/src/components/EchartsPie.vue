@@ -181,7 +181,7 @@
 
     methods: {
       viewAllClick(){
-          this.$router.push('/validators/3/0')
+          this.$router.push('/validators/3/active')
       },
       onWindowResize(){
         pie.resize();
