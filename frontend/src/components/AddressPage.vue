@@ -170,6 +170,8 @@
           $route(){
               document.body.scrollTop = 0;
               this.type = this.$route.params.type;
+              this.tabTxList(this.tabTxListIndex,this.txTabName,this.currentPage,this.pageSize);
+              this.getAddressTxStatistics();
               this.getAddressInformation(this.$route.params.param);
               this.getTransactionsList(1,10,this.$route.params.type);
               this.getProfileInformation();
