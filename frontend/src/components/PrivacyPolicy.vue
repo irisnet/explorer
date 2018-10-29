@@ -136,6 +136,9 @@
       width:100%;
       padding:0.15rem;
     }
+    a{
+      color: #3498db!important;
+    }
 
     h4{
       font-size:0.18rem;
@@ -145,7 +148,7 @@
 
     }
     ul{
-      margin-left:-0.2rem;
+      margin-left:0.2rem;
     }
     p, li{
       font-size:0.14rem;
