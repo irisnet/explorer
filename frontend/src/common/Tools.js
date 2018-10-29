@@ -65,7 +65,6 @@ export default class Tools{
     return new BigNumber(num).toFixed(val,1);
 
   }
-  convertScientificNotation2Number
   static convertScientificNotation2Number(num){
     return new BigNumber(num).toFixed();
   }
