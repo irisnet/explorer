@@ -7,15 +7,14 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strconv"
 )
 
 var AddrNodeServer string
 var AddrHubRpc string
 
 func init() {
-	AddrNodeServer = GetEnv("ADDR_NODE_SERVER", "http://116.62.62.39:1317")
-	AddrHubRpc = GetEnv("ADDR_HUB_RPC", "http://116.62.62.39:26657")
+	AddrNodeServer = GetEnv("ADDR_NODE_SERVER", "http://127.0.0.1:1317")
+	AddrHubRpc = GetEnv("ADDR_HUB_RPC", "http://192.168.150.7:26657")
 }
 func get(uri string) (int, []byte) {
 	res, err := http.Get(uri)
@@ -34,18 +33,9 @@ func get(uri string) (int, []byte) {
 }
 
 type Account struct {
-	Type  string `json:"type"`
-	Value Value  `json:"value"`
-}
-
-type Value struct {
-	Coins      []Coin `json:"coins"`
-	AccountNum string `json:"account_number"`
-	Sequence   string `json:"sequence"`
-}
-type Coin struct {
-	Denom  string `json:"denom"`
-	Amount string `json:"amount"`
+	Coins      []string `json:"coins"`
+	AccountNum string   `json:"account_number"`
+	Sequence   string   `json:"sequence"`
 }
 
 func GetBalance(address string) store.Coins {
@@ -55,31 +45,23 @@ func GetBalance(address string) store.Coins {
 		}
 	}()
 
-	uri := fmt.Sprintf("%s/accounts/%s", AddrNodeServer, address)
+	uri := fmt.Sprintf("%s/bank/accounts/%s", AddrNodeServer, address)
 	statusCode, resBytes := get(uri)
 
 	var account Account
 	var resCoins []store.Coin
 	if statusCode == 200 {
 		if err := json.Unmarshal(resBytes, &account); err == nil {
-			funBuildCoins := func(coins []Coin) []store.Coin {
-
+			funBuildCoins := func(coins []string) []store.Coin {
 				if len(coins) > 0 {
-					for _, v := range coins {
-						amount, err := strconv.ParseFloat(v.Amount, 64)
-						if err != nil {
-							log.Println("Convert str to int failed")
-						}
-						coin := store.Coin{
-							Denom:  v.Denom,
-							Amount: amount,
-						}
-						resCoins = append(resCoins, coin)
+					for _, coinstr := range coins {
+						coin := ParseCoin(coinstr)
+						resCoins = append(resCoins, CovertCoin(coin, CoinTypeAtto))
 					}
 				}
 				return resCoins
 			}
-			return funBuildCoins(account.Value.Coins)
+			return funBuildCoins(account.Coins)
 		}
 	}
 	return resCoins
