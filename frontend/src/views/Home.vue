@@ -272,13 +272,14 @@
                 if(item.Amount.length > 0){
                   item.Amount[0].amount = Tools.formatAmount(item.Amount[0].amount);
                 }
-                Amount = item.Amount.map(listItem => `${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
-                if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === "BeginRedelegate"){
+                if(Tools.flTxType(item.Type)){
                   Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
+                }else {
+                  Amount = item.Amount.map(listItem => `${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
                 }
               } else if (item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')) {
                 Amount = `${item.Amount.amount} ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
-                if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === "BeginRedelegate"){
+                if(Tools.flTxType(item.Type)){
                   Amount = `${item.Amount.amount} SHARES`;
                 }
               } else if (item.Amount === null) {

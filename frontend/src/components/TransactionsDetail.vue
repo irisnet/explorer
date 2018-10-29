@@ -209,7 +209,7 @@
           if(data.Amount && data.Amount.length !==0){
             this.amountValue = data.Amount.map(item=>{
               item.amount = Tools.scientificToNumber(Tools.formatNumber(item.amount));
-              if(data.Type === 'CompleteUnbonding' || data.Type === 'BeginUnbonding' || data.Type === "BeginRedelegate"){
+              if(Tools.flTxType(item.Type)){
                 return `${item.amount} SHARES`;
               }else{
                 return `${item.amount} ${Tools.formatDenom(item.denom).toUpperCase()}`;

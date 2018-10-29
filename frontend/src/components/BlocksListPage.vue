@@ -208,7 +208,7 @@
                     if(item.Amount instanceof Array){
                       if(item.Amount.length > 0){
                         item.Amount[0].amount = Tools.formatAmount(item.Amount[0].amount);
-                        if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === 'BeginRedelegate' || item.Type === 'CompleteRedelegation'){
+                        if(Tools.flTxType(item.Type)){
                           Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
                         }else {
                           Amount = item.Amount.map(listItem=>`${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
@@ -216,7 +216,7 @@
                       }
                     }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
                       Amount = `${item.Amount.amount}  ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
-                      if(item.Type === 'CompleteUnbonding' || item.Type === 'BeginUnbonding' || item.Type === "BeginRedelegate" || item.Type === 'CompleteRedelegation'){
+                      if(Tools.flTxType(item.Type)){
                         Amount = `${item.Amount.amount} SHARES`;
                       }
                     }

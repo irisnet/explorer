@@ -165,4 +165,9 @@ export default class Tools{
   static formatAccountCoinsDenom(coinsDenom){
     return coinsDenom = /[A-Za-z\-]{2,15}/.exec(coinsDenom)
   }
+  static flTxType(TxType){
+    if(TxType === "CompleteUnbonding" || TxType === "BeginUnbonding" || TxType === "BeginRedelegate" || TxType === "CompleteRedelegation" ){
+      return true
+    }
+  }
 }
