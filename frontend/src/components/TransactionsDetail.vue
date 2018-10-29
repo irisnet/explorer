@@ -201,24 +201,27 @@
           this.blockValue = data.BlockHeight;
           this.typeValue = data.Type === 'coin'?'transfer':data.Type;
           this.timestampValue = Tools.conversionTimeToUTCToYYMMDD(data.Timestamp);
-          this.gasPrice = Tools.scientificToNumber(Tools.formatNumber(data.GasPrice));
+          this.gasPrice = Tools.convertScientificNotation2Number(Tools.formatNumber(data.GasPrice));
           this.gasLimit = data.GasLimit;
           this.gasUsedByTxn = data.GasUsed;
           this.memo = data.Memo ? data.Memo : '--';
 
           if(data.Amount && data.Amount.length !==0){
             this.amountValue = data.Amount.map(item=>{
-              item.amount = Tools.scientificToNumber(Tools.formatNumber(item.amount));
-              if(Tools.flTxType(item.Type)){
+              item.amount = Tools.convertScientificNotation2Number(Tools.formatNumber(item.amount));
+              if(Tools.flTxType(data.Type)){
                 return `${item.amount} SHARES`;
               }else{
                 return `${item.amount} ${Tools.formatDenom(item.denom).toUpperCase()}`;
               }
             }).join(',') ;
+          }else if(data.Amount && Object.keys(data.Amount).includes('amount') && Object.keys(data.Amount).includes('denom')){
+            data.Amount =  Tools.convertScientificNotation2Number(Tools.formatNumber(data.Amount.amount));
+            this.amountValue = `${data.Amount.amount} ${Tools.formatDenom(data.Amount.denom).toUpperCase()}`
           }else {
             this.amountValue = "--"
           }
-          this.actualTxFee = `${Tools.scientificToNumber(Tools.formatNumber(data.Fee.amount))} ${Tools.formatDenom(data.Fee.denom).toUpperCase()}`;
+          this.actualTxFee = `${Tools.convertScientificNotation2Number(Tools.formatNumber(data.Fee.amount))} ${Tools.formatDenom(data.Fee.denom).toUpperCase()}`;
 
 
           if(data.Type === "Transfer" || data.Type === "Delegate" || data.Type === "BeginUnbonding" || data.Type === "CompleteUnbonding"){
@@ -233,7 +236,7 @@
             this.website = data.Website ? data.Website : '--';
             this.details = data.Details ? data.Details : '--';
             if(data.SelfBond && data.SelfBond.length !== 0){
-              this.selfBond = `${Tools.scientificToNumber(Tools.formatNumber(data.SelfBond[0].amount))} ${Tools.formatDenom(data.SelfBond[0].denom).toUpperCase()}`;
+              this.selfBond = `${Tools.convertScientificNotation2Number(Tools.formatNumber(data.SelfBond[0].amount))} ${Tools.formatDenom(data.SelfBond[0].denom).toUpperCase()}`;
             }else {
               this.selfBond = "--"
             }
@@ -251,7 +254,7 @@
             this.proposalType = data.ProposalType;
             if(data.Amount && data.Amount.length !==0){
               this.initialDeposit = data.Amount.map(item=>{
-                item.amount = Tools.scientificToNumber(Tools.formatNumber(item.amount));
+                item.amount = Tools.convertScientificNotation2Number(Tools.formatNumber(item.amount));
                 return `${item.amount} ${Tools.formatDenom(item.denom).toUpperCase()}`;
               }).join(',') ;
             }else {
