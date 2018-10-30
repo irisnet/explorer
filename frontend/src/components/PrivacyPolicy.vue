@@ -151,6 +151,7 @@
       margin-left:0.2rem;
     }
     p, li{
+      list-style: inherit!important;
       font-size:0.14rem;
       color:#a2a2ae;
     }
