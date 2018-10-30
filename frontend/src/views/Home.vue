@@ -253,7 +253,7 @@
         })
       },
       skipValidators(){
-        this.$router.push('/validators/3/0');
+        this.$router.push('/validators/3/active');
       },
       getTransactionList() {
         let url = `/api/txs/1/10`;
