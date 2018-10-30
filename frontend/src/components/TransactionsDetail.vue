@@ -254,7 +254,6 @@
             this.proposalType = data.ProposalType;
             if(data.Amount && data.Amount.length !==0){
               this.initialDeposit = data.Amount.map(item=>{
-                item.amount = Tools.convertScientificNotation2Number(Tools.formatNumber(item.amount));
                 return `${item.amount} ${Tools.formatDenom(item.denom).toUpperCase()}`;
               }).join(',') ;
             }else {
