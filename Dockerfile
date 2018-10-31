@@ -1,4 +1,4 @@
-FROM node:10.4.1-alpine as builder
+FROM node as builder
 WORKDIR /app
 COPY ./frontend/ /app
 
