@@ -2,7 +2,7 @@ FROM node:10-alpine as builder
 WORKDIR /app
 COPY ./frontend/ /app
 
-RUN npm i yarn -g && yarn install && yarn dev && yarn build
+RUN yarn install && yarn dev && yarn build
 
 FROM golang:1.10.3-alpine3.7 as go-builder
 ENV GOPATH       /root/go
