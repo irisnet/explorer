@@ -6,6 +6,7 @@ RUN npm i yarn -g
 COPY ./frontend/ /app
 
 RUN yarn install && yarn dev && yarn build
+RUN ls -al
 
 FROM golang:1.10.3-alpine3.7 as go-builder
 ENV GOPATH       /root/go
