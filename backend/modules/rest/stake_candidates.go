@@ -34,7 +34,7 @@ func queryCandidates(w http.ResponseWriter, r *http.Request) {
 		for _, ca := range candidates {
 			var tx document.CommonTx
 			q["from"] = ca.Address
-			txDoc.Find(q).Sort("height").One(tx)
+			txDoc.Find(q).Sort("height").One(&tx)
 
 			ca.BondHeight = tx.Height
 			result = append(result, CandidateAll{
