@@ -78,3 +78,11 @@ $fc:#fff;
   text-overflow:ellipsis;
   white-space:nowrap;
 }
+//输入框内阴影
+@mixin inputBoxShadow{
+  box-shadow: 0 0 0.03rem 0.03rem rgba(214,217,224,0.4) inset;
+}
+//统一字体加粗
+@mixin  addFontWeight{
+  font-weight: 600 !important;
+}

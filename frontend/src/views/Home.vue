@@ -93,8 +93,8 @@
         this.pageClassName = 'personal_computer_home_wrap';
         this.module_item_wrap = 'module_item_wrap_computer';
         if(document.getElementsByClassName('fixed_item_height').length > 0){
-          document.getElementsByClassName('fixed_item_height')[0].style.height = '6.55rem';
-          document.getElementsByClassName('fixed_item_height')[1].style.height = '6.55rem';
+          document.getElementsByClassName('fixed_item_height')[0].style.height = '6.67rem';
+          document.getElementsByClassName('fixed_item_height')[1].style.height = '6.67rem';
         }
       } else {
         this.pageClassName = 'mobile_home_wrap';
@@ -111,8 +111,8 @@
           this.pageClassName = 'personal_computer_home_wrap';
           this.module_item_wrap = 'module_item_wrap_computer';
           if(document.getElementsByClassName('fixed_item_height').length > 0) {
-            document.getElementsByClassName('fixed_item_height')[0].style.height = '6.55rem';
-            document.getElementsByClassName('fixed_item_height')[1].style.height = '6.55rem';
+            document.getElementsByClassName('fixed_item_height')[0].style.height = '6.67rem';
+            document.getElementsByClassName('fixed_item_height')[1].style.height = '6.67rem';
           }
         }else {
           this.pageClassName = 'mobile_home_wrap';
@@ -331,7 +331,7 @@
           span {
             &:first-child {
               font-size: 0.18rem;
-              font-weight: 500;
+              @include addFontWeight;
             }
           }
           .information_module_key {
@@ -402,7 +402,7 @@
       background: #3190e8;
 
       .current_block {
-        font-weight: 500;
+        @include addFontWeight;
         color: #fff;
         display: inline-block;
         height: 0.28rem;
@@ -443,8 +443,7 @@
     align-items: center;
     .home_module_transaction_title{
       font-size:0.18rem;
-
-      font-weight:600;
+      @include addFontWeight;
     }
     .blocks_background{
       background: url('../assets/blocks.png') no-repeat 0 0.02rem;

@@ -14,7 +14,7 @@
       </template>
     </b-table>
 
-    <b-table :fields='fields' :items='items' striped v-if="type === '2'">
+    <b-table :fields='fields' :items='items' striped v-if="type === '2'" class="block_style">
       <template slot='TxHash' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/tx?txHash=${data.item.TxHash}`)">
           {{data.item.TxHash?`${String(data.item.TxHash).substr(0,16)}...`:''}}
@@ -112,7 +112,7 @@
     <b-table :fields='fields' :items='items' striped v-if="type === 'addressTxList'" nodelabel >
       <template slot='TxHash' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/tx?txHash=${data.item.TxHash}`)">
-          {{data.item['TxHash']}}
+          {{data.item['TxHash'] ? `${String(data.item.TxHash).substr(0,16)}...` : ''}}
         </span>
       </template>
       <template slot='Block' slot-scope='data'>
@@ -134,16 +134,16 @@
           {{data.item.To?`${String(data.item.To).substr(0,16)}...`:''}}
         </span>
       </template>
-      <!--<template slot='Owner' slot-scope='data'>-->
-        <!--<span class="skip_route" @click="skipRoute(`/address/1/${data.item.Owner}`)">-->
-          <!--{{data.item.Owner?`${String(data.item.Owner).substr(0,16)}...`:''}}-->
-        <!--</span>-->
-      <!--</template>-->
+      <template slot='Owner' slot-scope='data'>
+        <span>
+          {{data.item.Owner?`${String(data.item.Owner).substr(0,16)}...`:''}}
+        </span>
+      </template>
     </b-table>
-    <b-table :fields='fields' :items='items' striped v-if="type === 'blockTxList'" nodelabel >
+    <b-table :fields='fields' :items='items' striped v-if="type === 'blockTxList'" nodelabel class="block_style">
       <template slot='TxHash' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/tx?txHash=${data.item.TxHash}`)">
-          {{data.item['TxHash']}}
+          {{data.item['TxHash'] ? `${String(data.item.TxHash).substr(0,16)}...` : ''}}
         </span>
       </template>
       <template slot='Block' slot-scope='data'>
@@ -255,8 +255,11 @@
     }
     tbody{
       tr{
-        &:nth-of-type(odd){
+        &:nth-of-type(even){
           background-color: #f6f6f6 !important;
+        }
+        &:nth-of-type(odd){
+          background-color: #fff !important;
         }
         &:last-child{
           border-bottom:1px solid #dee2e6;
@@ -304,5 +307,11 @@
   }
   .show_trim td span{
     white-space: pre;
+  }
+  .block_style thead tr th:nth-child(1){
+    width: 16%;
+  }
+  .block_style thead tr th:nth-child(2){
+    width: 8%;
   }
 </style>

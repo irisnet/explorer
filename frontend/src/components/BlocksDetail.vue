@@ -476,17 +476,20 @@
     .personal_computer_transactions_detail_wrap {
       padding-bottom: 0.2rem;
       .transaction_information_content_title {
+        @include addFontWeight;
         height: 0.5rem !important;
         line-height: 0.5rem !important;
         font-size: 0.18rem !important;
         color: #000000;
         margin-bottom: 0;
+        padding-left: 0.2rem !important;
         border-bottom:1px solid #d6d9e0 !important;
       }
       @include pcCenter;
       .transactions_detail_information_wrap {
         .information_props_wrap {
           @include flex;
+          padding-left: 0.2rem;
           margin-bottom:0.08rem;
           .information_props {
             width: 1.5rem;
@@ -546,7 +549,8 @@
         font-size: 0.22rem;
         color: #000000;
         margin-right: 0.2rem;
-        font-weight: 500;
+        padding-left: 0.2rem;
+        @include addFontWeight;
       }
       .transactions_detail_wrap_hash_var {
         height: 0.4rem;
@@ -567,6 +571,7 @@
         font-size: 0.18rem !important;
         color: #000000;
         margin-bottom: 0;
+        @include addFontWeight;
       }
       .block_detail_table_wrap {
         width: 100%;
@@ -634,7 +639,7 @@
         font-size: 0.22rem;
         color: #000000;
         margin-right: 0.02rem;
-        font-weight: 500;
+        @include addFontWeight;
       }
       .transactions_detail_wrap_hash_var {
         overflow-x: auto;

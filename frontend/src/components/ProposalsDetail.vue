@@ -195,6 +195,12 @@
                     "Vote Time": item.time
                   }
                 })
+              }else {
+                this.items = [{
+                  Voter: "",
+                  "Vote Option": "",
+                  "Vote Time": ""
+                }];
               }
             }
           }else {
@@ -242,13 +248,13 @@
   }
   .personal_computer_transactions_detail_wrap {
     .proposals_information_content_title {
-      margin-left: 0.2rem !important;
+      padding-left: 0.2rem !important;
       height: 0.5rem !important;
       line-height: 0.5rem !important;
       font-size: 0.18rem !important;
       color: #000000;
       margin-bottom: 0;
-      font-weight: 500!important;
+      @include addFontWeight;
       border-bottom:1px solid #d6d9e0 !important;
     }
     @include pcCenter;
@@ -260,7 +266,6 @@
         margin-bottom:0.08rem;
     .information_props {
       width: 1.5rem;
-      font-weight: 500;
     }
     .flag_item_left {
       display: inline-block;
@@ -316,7 +321,7 @@
       font-size: 0.22rem;
       color: #000000;
       margin-right: 0.2rem;
-      font-weight: 500;
+      @include addFontWeight;
       margin-left: 0.2rem;
     }
     .proposals_detail_wrap_hash_var {
@@ -338,7 +343,7 @@
       font-size: 0.18rem !important;
       color: #000000;
       margin-bottom: 0;
-      font-weight: 500!important;
+      @include addFontWeight;
     }
     .proposals_detail_table_wrap {
       width: 100%;
@@ -406,7 +411,7 @@
         font-size: 0.22rem;
         color: #000000;
         margin-right: 0.02rem;
-        font-weight: 500;
+        @include addFontWeight;
       }
       .transactions_detail_wrap_hash_var {
         overflow-x: auto;
@@ -437,7 +442,7 @@
     span{
       font-size: 0.14rem;
       color: #000;
-      font-weight: 500;
+      @include addFontWeight;
       padding: 0 0.18rem;
     }
   }
