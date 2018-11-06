@@ -102,7 +102,7 @@
       align-items: center;
       .home_module_block_title{
         font-size:0.18rem;
-        font-weight:600;
+        @include addFontWeight;
       }
       .blocks_background{
         background: url('../assets/blocks.png') no-repeat 0 0.02rem;
@@ -128,8 +128,7 @@
         @include flex;
         justify-content:space-between;
         border-bottom:1px solid #eee;
-        padding:0.12rem 0.2rem;
-        height: 0.59rem;
+        padding:0 0.2rem;
         &:last-child{
           border-bottom:none;
         }
@@ -158,7 +157,6 @@
             .blocks_module_props{
               @include fontSize;
               color:#000000;
-              font-weight:600;
             }
           }
           .key_value_wrap{
@@ -218,6 +216,7 @@
   }
   .show_fee{
     display: block;
+    line-height: 1;
   }
 
 

@@ -93,6 +93,7 @@
       }
     },
     beforeMount() {
+      document.body.scrollTop = 0;
       if (this.devicesWidth > 500) {
         this.privacyPolicyVar = 'person_computer_privacy_policy_wrap';
       } else {

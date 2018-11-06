@@ -847,6 +847,7 @@
         line-height:0.4rem;
         font-size:0.18rem;
         color:#000000;
+        @include addFontWeight;
         margin-bottom:0;
         border-bottom:0.01rem solid #efefef;
       }
@@ -872,7 +873,7 @@
         font-size: 0.22rem;
         color: #000000;
         margin-right: 0.2rem;
-        font-weight:500;
+        @include addFontWeight;
       }
       .transactions_detail_wrap_hash_var {
         height: 0.4rem;
@@ -903,6 +904,7 @@
         line-height:0.4rem;
         font-size:0.18rem;
         color:#000000;
+        @include addFontWeight;
         margin-bottom:0;
       }
       .transactions_detail_information_wrap{
@@ -931,7 +933,7 @@
         font-size: 0.18rem;
         color: #000000;
         margin-right: 0.2rem;
-        font-weight:500;
+        @include addFontWeight;
       }
       .transactions_detail_wrap_hash_var {
         overflow-x: auto;
@@ -1107,9 +1109,10 @@
       .line_history_title{
         height:0.5rem;
         line-height: 0.5rem;
-        border-bottom: 1px solid #d6d9e0 !important;
         font-size: 0.18rem;
+        padding-left: 0.2rem;
         color: #000;
+        @include addFontWeight;
       }
       .line_content{
         @include flex;
@@ -1157,10 +1160,16 @@
   .border-none{
     color: #000!important;
     border-top: 0.01rem solid #fff !important;
+    &:hover{
+      cursor: pointer;
+    }
   }
   .border-block{
     color: #a2a2ae!important;
     border-top: 0.01rem solid #e4e4e4 !important;
+    &:hover{
+      cursor: pointer;
+    }
   }
   .mobile_transactions_detail_wrap{
     width: 100%!important;
@@ -1225,8 +1234,6 @@
         .activeStyle{
           color: #3598db!important;
           border-top: 0.01rem solid #e4e4e4 !important;
-          /*border-right: 0.01rem solid #3598db !important;*/
-          /*border-left: 0.01rem solid #3598db !important;*/
           border-bottom: 0.02rem solid #3598db !important;
           z-index: 5;
         }

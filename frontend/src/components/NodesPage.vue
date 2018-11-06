@@ -229,7 +229,7 @@
         width:100%;
         .blocks_list_page_wrap_hash_var{
           min-width:7rem;
-          font-size: 0.22rem;
+          font-size: 0.18rem;
           color: #a2a2ae;
         }
       }
@@ -242,6 +242,7 @@
         font-size: 0.18rem;
         color: #000000;
         margin-bottom: 0;
+        @include addFontWeight;
       }
       @include pcCenter;
       min-height:4.6rem;
@@ -260,12 +261,12 @@
         font-size: 0.22rem;
         color: #000000;
         margin-right: 0.2rem;
-        font-weight: 500;
+        @include addFontWeight;
       }
       .blocks_list_page_wrap_hash_var {
         height:  0.62rem;
         line-height: 0.62rem;
-        font-size: 0.22rem;
+        font-size: 0.18rem;
         color: #a2a2ae;
       }
       .for_block{
@@ -285,6 +286,7 @@
         font-size: 0.18rem;
         color: #000000;
         margin-bottom: 0;
+        @include addFontWeight;
       }
       .transactions_detail_information_wrap {
 
@@ -306,7 +308,7 @@
         font-size: 0.18rem;
         color: #000000;
         margin-right: 0.2rem;
-        font-weight: 500;
+        @include addFontWeight;
       }
       .blocks_list_page_wrap_hash_var {
         overflow-x: auto;
@@ -351,7 +353,7 @@
     box-sizing: border-box;
     padding: 0 0.2rem;
     @include flex;
-    font-weight: 600;
+    @include addFontWeight;
     font-size: 0.14rem;
     height: 0.5rem;
     line-height: 0.5rem;
@@ -385,7 +387,7 @@
       flex: 4;
       p:nth-child(1){
         color: #000;
-        font-weight: 400;
+        @include addFontWeight;
       }
       p:nth-child(2){
         color: #a2a2ae;
@@ -395,7 +397,7 @@
       flex: 2;
       p:nth-child(1){
         color: #000;
-        font-weight: 400;
+        @include addFontWeight;
       }
       p:nth-child(2){
         color: #a2a2ae;
@@ -408,14 +410,14 @@
         line-height: 0.40rem;
         display: inline-block;
         color: #000;
-        font-weight: 400;
+        @include addFontWeight;
       }
     };
     div:nth-child(4){
       flex: 2;
       p:nth-child(1){
         color: #000;
-        font-weight: 400;
+        @include addFontWeight;
       }
       p:nth-child(2){
         color: #a2a2ae;
