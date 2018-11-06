@@ -291,6 +291,7 @@
             }
           }).then((searchResult) => {
             if(searchResult){
+              //searchResult：[ {} ，{} ]
               if(searchResult.length === 1){
                 if(searchResult[0].Type === "block" && searchResult[0].Data.Height !== 0){
                   this.$router.push(`/blocks_detail/${this.searchInputValue}`);
