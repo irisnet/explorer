@@ -12,6 +12,7 @@ import (
 	"github.com/irisnet/explorer/backend/modules/rest"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/version"
+	_ "net/http/pprof"
 )
 
 func AddRoutes(r *mux.Router) {
@@ -59,10 +60,8 @@ func main() {
 
 	log.Printf("Serving on %q", addr)
 
-	// loggedRouter := handlers.LoggingHandler(os.Stdout, router)
-	//return http.ListenAndServe(addr, router)
-	//TODO 生产环境需要借助nginx配置
-	http.ListenAndServe(addr, loggedRouter)
+	http.Handle("/", loggedRouter)
+	http.ListenAndServe(addr, nil)
 }
 
 func AddHeader(h http.Handler) http.Handler {
