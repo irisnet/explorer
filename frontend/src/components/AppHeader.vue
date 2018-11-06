@@ -291,8 +291,10 @@
             }
           }).then((searchResult) => {
             if(searchResult){
-              //searchResult：[ {} ，{} ]
-              if(searchResult.length === 1){
+              //searchResult：[ {Type：block，Data:{}} ，{Type：proposal,Data:{}} ]
+              let searchResultIsBlockOrproposalId = 1;
+              let searchResultIsBlockAndproposalId = 2;
+              if(searchResult.length === searchResultIsBlockOrproposalId){
                 if(searchResult[0].Type === "block" && searchResult[0].Data.Height !== 0){
                   this.$router.push(`/blocks_detail/${this.searchInputValue}`);
                   return
@@ -300,7 +302,7 @@
                   this.$router.push(`/ProposalsDetail/${this.searchInputValue}`);
                   return
                 }
-              }else if(searchResult.length === 2){
+              }else if(searchResult.length === searchResultIsBlockAndproposalId){
                 this.$router.push(`/searchResult/${this.searchInputValue}`)
               }
             }else {
