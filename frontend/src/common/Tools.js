@@ -40,6 +40,9 @@ export default class Tools{
   static formatNumber(num){
     return new BigNumber(num).div(1000000000000000000).toNumber();
   }
+  static formaNumberAboutGasPrice(num){
+    return new BigNumber(num).div(1000000000).toNumber();
+  }
 
   static decimalPlace(num,val){
     if(val){

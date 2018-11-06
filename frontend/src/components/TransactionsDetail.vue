@@ -119,7 +119,7 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Gas Price:</span>
-          <span class="information_value">{{gasPrice}} <span v-if="gasPrice">IRIS</span></span>
+          <span class="information_value">{{gasPrice}} <span v-if="gasPrice"></span>Nano</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Memo:</span>
@@ -201,7 +201,7 @@
           this.blockValue = data.BlockHeight;
           this.typeValue = data.Type === 'coin'?'transfer':data.Type;
           this.timestampValue = Tools.conversionTimeToUTCToYYMMDD(data.Timestamp);
-          this.gasPrice = Tools.convertScientificNotation2Number(Tools.formatNumber(data.GasPrice));
+          this.gasPrice = Tools.convertScientificNotation2Number(Tools.formaNumberAboutGasPrice(data.GasPrice));
           this.gasLimit = data.GasLimit;
           this.gasUsedByTxn = data.GasUsed;
           this.memo = data.Memo ? data.Memo : '--';
