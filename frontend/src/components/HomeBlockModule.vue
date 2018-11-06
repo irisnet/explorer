@@ -102,7 +102,7 @@
       align-items: center;
       .home_module_block_title{
         font-size:0.18rem;
-        @include addFontWeight;
+        @include fontWeight;
       }
       .blocks_background{
         background: url('../assets/blocks.png') no-repeat 0 0.02rem;

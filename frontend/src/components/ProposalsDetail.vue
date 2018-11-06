@@ -254,7 +254,7 @@
       font-size: 0.18rem !important;
       color: #000000;
       margin-bottom: 0;
-      @include addFontWeight;
+      @include fontWeight;
       border-bottom:1px solid #d6d9e0 !important;
     }
     @include pcCenter;
@@ -321,7 +321,7 @@
       font-size: 0.22rem;
       color: #000000;
       margin-right: 0.2rem;
-      @include addFontWeight;
+      @include fontWeight;
       margin-left: 0.2rem;
     }
     .proposals_detail_wrap_hash_var {
@@ -343,7 +343,7 @@
       font-size: 0.18rem !important;
       color: #000000;
       margin-bottom: 0;
-      @include addFontWeight;
+      @include fontWeight;
     }
     .proposals_detail_table_wrap {
       width: 100%;
@@ -411,7 +411,7 @@
         font-size: 0.22rem;
         color: #000000;
         margin-right: 0.02rem;
-        @include addFontWeight;
+        @include fontWeight;
       }
       .transactions_detail_wrap_hash_var {
         overflow-x: auto;
@@ -442,7 +442,7 @@
     span{
       font-size: 0.14rem;
       color: #000;
-      @include addFontWeight;
+      @include fontWeight;
       padding: 0 0.18rem;
     }
   }

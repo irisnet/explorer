@@ -331,7 +331,7 @@
           span {
             &:first-child {
               font-size: 0.18rem;
-              @include addFontWeight;
+              @include fontWeight;
             }
           }
           .information_module_key {
@@ -402,7 +402,7 @@
       background: #3190e8;
 
       .current_block {
-        @include addFontWeight;
+        @include fontWeight;
         color: #fff;
         display: inline-block;
         height: 0.28rem;
@@ -443,7 +443,7 @@
     align-items: center;
     .home_module_transaction_title{
       font-size:0.18rem;
-      @include addFontWeight;
+      @include fontWeight;
     }
     .blocks_background{
       background: url('../assets/blocks.png') no-repeat 0 0.02rem;

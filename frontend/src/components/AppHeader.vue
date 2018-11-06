@@ -251,50 +251,64 @@
       },
 
       getData(data) {
-        let urlBlock = `/api/block/${this.searchInputValue}`;
-        let urlTransaction = `/api/tx/${this.searchInputValue}`;
-        let urlAddress = `/api/account/${this.searchInputValue}`;
-        // let urlproposals = `/api/proposal/${this.searchInputValue}`;
-        axios.get(urlBlock).then((data)=>{
-          if (data.status === 200) {
-            return data.data;
-          }
-        }).then((data)=>{
-          if(data && typeof data === "object"){
-            this.$router.push(`/blocks_detail/${this.searchInputValue}`)
-          }
-        }).catch(e => {
-          console.log(e)
-        });
-        axios.get(urlTransaction).then((data)=>{
-          if (data.status === 200) {
-            return data.data;
-          }
-        }).then((data)=>{
-          if(data && typeof data === "object"){
-            this.$router.push(`/tx?txHash=${this.searchInputValue}`)
-          }
-        });
-        axios.get(urlAddress).then((data)=>{
-          if (data.status === 200) {
-            return data.data;
-          }
-        }).then((data)=>{
-          if(data && typeof data === "object"){
-            this.$router.push(`/address/1/${this.searchInputValue}`)
-          }
-        }).catch(e =>{
-          console.log(e)
-        });
-        // axios.get(urlproposals).then((data)=>{
-        //   if (data.status === 200) {
-        //     return data.data;
-        //   }
-        // }).then((data)=>{
-        //   if(data && typeof data === "object"){
-        //     this.$router.push(`/ProposalsDetail/${this.searchInputValue}`)
-        //   }
-        // });
+        if(/^[A-F0-9]{40}$/.test(this.searchInputValue)){
+          let urlTransaction = `/api/tx/${this.searchInputValue}`;
+          axios.get(urlTransaction).then((data) => {
+            if (data.status === 200) {
+              return data.data;
+            }
+          }).then((data) => {
+            if (data && typeof data === "object") {
+              this.$router.push(`/tx?txHash=${this.searchInputValue}`)
+            }else {
+              this.$router.push(`/searchResult/${this.searchInputValue}`);
+            }
+          }).catch(e => {
+            this.$router.push(`/searchResult/${this.searchInputValue}`);
+            console.log(e)
+          });
+        }else if(this.$Crypto.getCrypto("iris").isValidAddress(this.searchInputValue)){
+          let urlAddress = `/api/account/${this.searchInputValue}`;
+          axios.get(urlAddress).then((data) => {
+            if (data.status === 200) {
+              return data.data;
+            }
+          }).then((data) => {
+            if (data && typeof data === "object") {
+              this.$router.push(`/address/1/${this.searchInputValue}`)
+            }else {
+              this.$router.push(`/searchResult/${this.searchInputValue}`);
+            }
+          }).catch(e => {
+            this.$router.push(`/searchResult/${this.searchInputValue}`);
+            console.log(e)
+          });
+        }else if(/^\+?[1-9][0-9]*$/.test(this.searchInputValue)){
+          let BlockAndProposalUrl = `/api/search/${this.searchInputValue}`;
+          axios.get(BlockAndProposalUrl).then((data) => {
+            if(data.status === 200){
+              return data.data;
+            }
+          }).then((searchResult) => {
+            if(searchResult){
+              if(searchResult.length === 1){
+                if(searchResult[0].Type === "block" && searchResult[0].Data.Height !== 0){
+                  this.$router.push(`/blocks_detail/${this.searchInputValue}`);
+                  return
+                }else if(searchResult[0].Type === "proposal" && searchResult[0].Data.ProposalID !== 0){
+                  this.$router.push(`/ProposalsDetail/${this.searchInputValue}`);
+                  return
+                }
+              }else if(searchResult.length === 2){
+                this.$router.push(`/searchResult/${this.searchInputValue}`)
+              }
+            }else {
+              this.$router.push(`/searchResult/${this.searchInputValue}`)
+            }
+          });
+        }else {
+          this.$router.push(`/searchResult/${this.searchInputValue}`);
+        }
       },
       onInputChange() {
         this.getData();
@@ -396,6 +410,7 @@
           }
 
           .search_input {
+            @include inputBoxShadow;
             @include borderRadius(0.06rem);
             width: 5.04rem;
             height: 0.36rem;
@@ -471,7 +486,7 @@
           font-size: 0.18rem;
           cursor: pointer;
           color: #c9eafd;
-          font-weight:300;
+          @include fontWeight;
           .bottom_arrow{
             display:inline-block;
             height:0.11rem;
@@ -650,7 +665,7 @@
     padding-right: 0.26rem;
     font-size: 0.16rem;
     color: #F2711C;
-    font-weight: 600;
+    @include fontWeight;
   }
   .select_option_container{
     display: flex;
