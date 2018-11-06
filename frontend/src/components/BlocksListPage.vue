@@ -490,7 +490,7 @@
         font-size: 0.18rem;
         color: #000000;
         margin-bottom: 0;
-        @include addFontWeight;
+        @include fontWeight;
       }
       @include pcCenter;
       min-height:4.6rem;
@@ -510,7 +510,7 @@
         font-size: 0.22rem;
         color: #000000;
         margin-right: 0.2rem;
-        @include addFontWeight;
+        @include fontWeight;
       }
       .blocks_list_page_wrap_hash_var {
         height:  0.62rem;
@@ -535,7 +535,7 @@
         font-size: 0.18rem;
         color: #000000;
         margin-bottom: 0;
-        @include addFontWeight;
+        @include fontWeight;
       }
       .transactions_detail_information_wrap {
 
@@ -558,7 +558,7 @@
         font-size: 0.18rem;
         color: #000000;
         margin-right: 0.2rem;
-        @include addFontWeight;
+        @include fontWeight;
       }
       .blocks_list_page_wrap_hash_var {
         overflow-x: auto;

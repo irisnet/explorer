@@ -476,7 +476,7 @@
     .personal_computer_transactions_detail_wrap {
       padding-bottom: 0.2rem;
       .transaction_information_content_title {
-        @include addFontWeight;
+        @include fontWeight;
         height: 0.5rem !important;
         line-height: 0.5rem !important;
         font-size: 0.18rem !important;
@@ -550,7 +550,7 @@
         color: #000000;
         margin-right: 0.2rem;
         padding-left: 0.2rem;
-        @include addFontWeight;
+        @include fontWeight;
       }
       .transactions_detail_wrap_hash_var {
         height: 0.4rem;
@@ -571,7 +571,7 @@
         font-size: 0.18rem !important;
         color: #000000;
         margin-bottom: 0;
-        @include addFontWeight;
+        @include fontWeight;
       }
       .block_detail_table_wrap {
         width: 100%;
@@ -639,7 +639,7 @@
         font-size: 0.22rem;
         color: #000000;
         margin-right: 0.02rem;
-        @include addFontWeight;
+        @include fontWeight;
       }
       .transactions_detail_wrap_hash_var {
         overflow-x: auto;

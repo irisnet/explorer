@@ -322,7 +322,7 @@
         line-height:0.5rem;
         font-size:0.18rem;
         color:#000000;
-        @include addFontWeight;
+        @include fontWeight;
         margin-bottom:0;
         font-family:ArialMT;
       }
@@ -342,7 +342,7 @@
         font-size: 0.22rem;
         color: #000000;
         margin-right: 0.2rem;
-        @include addFontWeight;
+        @include fontWeight;
       }
       .transactions_detail_wrap_hash_var {
         height: 0.4rem;
@@ -363,7 +363,7 @@
         font-size: 0.18rem;
         color: #000000;
         margin-bottom:0;
-        @include addFontWeight;
+        @include fontWeight;
       }
       .transactions_detail_information_wrap{
 padding:0.16rem 0rem;
@@ -386,7 +386,7 @@ padding:0.16rem 0rem;
         font-size: 0.22rem;
         color: #000000;
         margin-right: 0.2rem;
-        @include addFontWeight;
+        @include fontWeight;
       }
       .transactions_detail_wrap_hash_var {
         overflow-x: auto;

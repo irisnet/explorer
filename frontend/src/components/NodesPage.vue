@@ -242,7 +242,7 @@
         font-size: 0.18rem;
         color: #000000;
         margin-bottom: 0;
-        @include addFontWeight;
+        @include fontWeight;
       }
       @include pcCenter;
       min-height:4.6rem;
@@ -261,7 +261,7 @@
         font-size: 0.22rem;
         color: #000000;
         margin-right: 0.2rem;
-        @include addFontWeight;
+        @include fontWeight;
       }
       .blocks_list_page_wrap_hash_var {
         height:  0.62rem;
@@ -286,7 +286,7 @@
         font-size: 0.18rem;
         color: #000000;
         margin-bottom: 0;
-        @include addFontWeight;
+        @include fontWeight;
       }
       .transactions_detail_information_wrap {
 
@@ -308,7 +308,7 @@
         font-size: 0.18rem;
         color: #000000;
         margin-right: 0.2rem;
-        @include addFontWeight;
+        @include fontWeight;
       }
       .blocks_list_page_wrap_hash_var {
         overflow-x: auto;
@@ -353,7 +353,7 @@
     box-sizing: border-box;
     padding: 0 0.2rem;
     @include flex;
-    @include addFontWeight;
+    @include fontWeight;
     font-size: 0.14rem;
     height: 0.5rem;
     line-height: 0.5rem;
@@ -387,7 +387,7 @@
       flex: 4;
       p:nth-child(1){
         color: #000;
-        @include addFontWeight;
+        @include fontWeight;
       }
       p:nth-child(2){
         color: #a2a2ae;
@@ -397,7 +397,7 @@
       flex: 2;
       p:nth-child(1){
         color: #000;
-        @include addFontWeight;
+        @include fontWeight;
       }
       p:nth-child(2){
         color: #a2a2ae;
@@ -410,14 +410,14 @@
         line-height: 0.40rem;
         display: inline-block;
         color: #000;
-        @include addFontWeight;
+        @include fontWeight;
       }
     };
     div:nth-child(4){
       flex: 2;
       p:nth-child(1){
         color: #000;
-        @include addFontWeight;
+        @include fontWeight;
       }
       p:nth-child(2){
         color: #a2a2ae;
