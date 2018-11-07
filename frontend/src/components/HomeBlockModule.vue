@@ -129,6 +129,7 @@
         justify-content:space-between;
         border-bottom:1px solid #eee;
         padding:0 0.2rem;
+        height: 0.59rem;
         &:last-child{
           border-bottom:none;
         }

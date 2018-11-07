@@ -93,8 +93,8 @@
         this.pageClassName = 'personal_computer_home_wrap';
         this.module_item_wrap = 'module_item_wrap_computer';
         if(document.getElementsByClassName('fixed_item_height').length > 0){
-          document.getElementsByClassName('fixed_item_height')[0].style.height = '6.67rem';
-          document.getElementsByClassName('fixed_item_height')[1].style.height = '6.67rem';
+          document.getElementsByClassName('fixed_item_height')[0].style.height = '6.55rem';
+          document.getElementsByClassName('fixed_item_height')[1].style.height = '6.55rem';
         }
       } else {
         this.pageClassName = 'mobile_home_wrap';
@@ -111,8 +111,8 @@
           this.pageClassName = 'personal_computer_home_wrap';
           this.module_item_wrap = 'module_item_wrap_computer';
           if(document.getElementsByClassName('fixed_item_height').length > 0) {
-            document.getElementsByClassName('fixed_item_height')[0].style.height = '6.67rem';
-            document.getElementsByClassName('fixed_item_height')[1].style.height = '6.67rem';
+            document.getElementsByClassName('fixed_item_height')[0].style.height = '6.55rem';
+            document.getElementsByClassName('fixed_item_height')[1].style.height = '6.55rem';
           }
         }else {
           this.pageClassName = 'mobile_home_wrap';
@@ -168,20 +168,20 @@
             for (let i = 0; i < data.Candidates.length; i++) {
               seriesData.push({
                 value: data.Candidates[i].VotingPower,
-                name: data.Candidates[i].Description.Moniker ? `${Tools.formatString(data.Candidates[i].Description.Moniker,10,"")} (${Tools.formatString(data.Candidates[i].Address,10,"")})` : (data.Candidates[i].Address ? data.Candidates[i].Address : ''),
+                name: data.Candidates[i].Description.Moniker ? `${Tools.formatString(data.Candidates[i].Description.Moniker,10,"...")} (${Tools.formatString(data.Candidates[i].Address,6,"...")})` : (data.Candidates[i].Address ? data.Candidates[i].Address : ''),
                 itemStyle: {color: colors[i]},
                 upTime:`${data.Candidates[i].Uptime}%`,
                 address:data.Candidates[i].Address,
                 totalCount,
               });
-              legendData.push(data.Candidates[i].Description.Moniker ? `${Tools.formatString(data.Candidates[i].Description.Moniker,10,"")} (${Tools.formatString(data.Candidates[i].Address,10,"")})` : (data.Candidates[i].Address ? data.Candidates[i].Address : ''))
+              legendData.push(data.Candidates[i].Description.Moniker ? `${Tools.formatString(data.Candidates[i].Description.Moniker,10,"...")} (${Tools.formatString(data.Candidates[i].Address,6,"...")})` : (data.Candidates[i].Address ? data.Candidates[i].Address : ''))
             }
 
-            if(data.Candidates.length > 10){
-              legendData.push('others');
+            if(others > 0 ){
               seriesData.push({
-                value:others,
+                value: others,
                 name:'others',
+                totalCount,
                 itemStyle:{color:colors[10]},
               });
             }

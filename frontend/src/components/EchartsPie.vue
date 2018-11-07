@@ -29,13 +29,6 @@
             right: '10%',
             data: [],
             top:30,
-            formatter(name){
-              let val = name;
-              if(val.length > 10){
-                val = `${val.substr(0,10)}...`;
-              }
-              return val;
-            }
           } : {
             orient: 'horizontal',
             bottom:'5%',
@@ -48,7 +41,7 @@
           tooltip : {
             trigger: 'item',
             formatter(params){
-              let res =  `<span style="display:block;color:#00f0ff;padding:0 0.05rem;">${Tools.formatString(params.name,20,"...")}</span>`;
+              let res =  `<span style="display:block;color:#00f0ff;padding:0 0.05rem;">${params.name}</span>`;
               if(params.name !== 'others'){
                 res += `<span style="display:block;padding:0 0.05rem;">Uptime: ${params.data.upTime}</span>`;
               }
@@ -95,16 +88,9 @@
         let legend = this.innerWidth > 1258 ?
           {
             orient: 'vertical',
-            right: '10%',
+            right: '5%',
             data: [],
             top:30,
-            formatter(name){
-              let val = name;
-              if(val.length > 10){
-                val = `${val.substr(0,10)}...`;
-              }
-              return val;
-            }
         } : {
           orient: 'horizontal',
             data: [],
@@ -116,7 +102,7 @@
           tooltip : {
             trigger: 'item',
             formatter(params){
-              let res = `<span style="display:block;color:#00f0ff;padding:0 0.05rem;">${Tools.formatString(params.name,20,"...")}</span>`;
+              let res = `<span style="display:block;color:#00f0ff;padding:0 0.05rem;">${params.name}</span>`;
               if(params.name !== 'others'){
                 res += `<span style="display:block;padding:0 0.05rem;">Uptime: ${params.data.upTime}</span>`;
               }
@@ -208,7 +194,7 @@
       .validators_title{
         font-size:0.18rem;
         text-indent:0.35rem;
-        font-weight:600;
+        @include fontWeight;
         background: url('../assets/people.svg') no-repeat 0 -0.02rem;
       }
       .validators_top{
