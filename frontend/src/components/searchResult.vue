@@ -85,6 +85,7 @@
       },
       mounted(){
         if(/^\+?[1-9][0-9]*$/.test(this.$route.params.searchContent)){
+          this.flshowResult = false;
           this.searchResult(this.$route.params.searchContent)
         }
       },
