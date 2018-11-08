@@ -468,7 +468,7 @@
       }
       .personal_computer_blocks_list_page_wrap {
         @include flex;
-
+        padding-bottom: 0.2rem;
       }
       .mobile_blocks_list_page_wrap {
         @include flex;
@@ -484,6 +484,7 @@
 
     }
     .personal_computer_blocks_list_page_wrap {
+      padding-bottom: 0.2rem;
       .transaction_information_content_title {
         height: 0.4rem;
         line-height: 0.4rem;

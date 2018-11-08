@@ -282,7 +282,7 @@
 
   .faucet {
     background: white;
-    padding: 0.38rem 0;
+    padding: 0.7rem 0;
   }
 
   .faucet-form {
