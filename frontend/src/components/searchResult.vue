@@ -3,7 +3,7 @@
     <div class="transactions_title_wrap">
       <p :class="transactionsDetailWrap" style="margin-bottom:0;">
         <span class="transactions_detail_title">Search Results</span>
-        <span class="transactions_detail_wrap_hash_var"> for {{this.$route.params.searchContent}}</span>
+        <span class="transactions_detail_wrap_hash_var"><span v-show="flshowTitle">for</span> {{this.$route.params.searchContent}}</span>
       </p>
     </div>
     <div :class="transactionsDetailWrap">
@@ -81,9 +81,25 @@
           proposalType: "",
           proposalStatus: "",
           proposalTime: "",
+          flshowTitle: true,
+        }
+      },
+      watch:{
+        $route(){
+          if(!this.$route.params.searchContent){
+            this.flshowTitle = false
+          }
+          this.flshowResult = true;
+          if(/^\+?[1-9][0-9]*$/.test(this.$route.params.searchContent)){
+            this.flshowResult = false;
+            this.searchResult(this.$route.params.searchContent)
+          }
         }
       },
       mounted(){
+        if(!this.$route.params.searchContent){
+          this.flshowTitle = false
+        }
         if(/^\+?[1-9][0-9]*$/.test(this.$route.params.searchContent)){
           this.flshowResult = false;
           this.searchResult(this.$route.params.searchContent)
@@ -112,14 +128,14 @@
                 searchResult.forEach((item) => {
                   if(item.Type == "block"){
                     that.blockHeight = item.Data.Height;
-                    that.blockTime = Tools.formatDateYearAndMinutesAndSeconds(item.Data.Timestamp);
+                    that.blockTime = Tools.conversionTimeToUTCToYYMMDD(item.Data.Timestamp);
                     that.blockHash = item.Data.Hash;
                   }else if(item.Type == "proposal"){
                     that.proposalId = item.Data.ProposalId;
                     that.proposalTitle = item.Data.Title;
                     that.proposalType = item.Data.Type;
                     that.proposalStatus = item.Data.Status;
-                    that.proposalTime = Tools.formatDateYearAndMinutesAndSeconds(item.Data.SubmitTime)
+                    that.proposalTime = Tools.conversionTimeToUTCToYYMMDD(item.Data.SubmitTime)
                   }
                 })
               }else {
