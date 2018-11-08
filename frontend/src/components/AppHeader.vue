@@ -49,11 +49,11 @@
             Validators
             <span class="bottom_arrow"></span>
           </span>
-          <span class="sub_btn_item" @click="featureButtonClick('/validators/3/active')"
+          <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/active')"
                 v-show="showSubValidators">Active</span>
-          <span class="sub_btn_item" @click="featureButtonClick('/validators/3/revoked')"
+          <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/revoked')"
                 v-show="showSubValidators">Revoked</span>
-          <span class="sub_btn_item" @click="featureButtonClick('/validators/3/candidates')"
+          <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/candidates')"
                 v-show="showSubValidators">Candidates</span>
 
         </div>
@@ -66,9 +66,7 @@
         <span class="nav_item common_item_style" :class="activeClassName === '/faucet'?'nav_item_active':''"
               @click="featureButtonClick('/faucet')"
         >Faucet</span>
-
       </div>
-
     </div>
 
     <div class="app_header_mobile" v-show="devicesShow === 0">
@@ -495,7 +493,7 @@
           .bottom_arrow{
             display:inline-block;
             height:0.11rem;
-            width:0.2rem;
+            width:0.11rem;
             background: url('../assets/caret-bottom.png') no-repeat 0 0;
             top:0.27rem;
             right:0.1rem;
@@ -514,10 +512,13 @@
             color: #c9eafd;
             width:1.6rem;
             text-align: left;
-            padding-left:0.18rem;
+            padding-left:0.2rem;
             &:hover{
               color: #00f0ff;
             }
+          }
+          .validators_btn_item{
+            padding-left:0.35rem;
           }
         }
         .nav_item_active {

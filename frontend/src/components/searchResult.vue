@@ -52,7 +52,7 @@
           <div class="result_img">
             <img src="../assets/resultless.png">
           </div>
-          <p class="resultless_title">There is no valid result</p>
+          <p class="resultless_title">There is no valid result.</p>
           <p class="try_info">Try to search with Address, Transaction, Block Number, Proposal ID.</p>
           <div class="back_home_btn" @click="backHome">
             <span>Back Home</span>
@@ -183,13 +183,13 @@
       }
       .back_home_btn{
         width: 1.58rem;
-        height: 0.3rem;
+        height: 0.36rem;
         margin: 0 auto;
         background: #3498DB;
         border-radius: 0.05rem;
         color: #fff;
         font-size: 0.14rem;
-        line-height: 0.3rem
+        line-height: 0.36rem
       }
     }
   }

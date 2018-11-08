@@ -328,4 +328,7 @@
     font-size: 0.14rem;
     color: #a2a2ae;
   }
+  pre{
+    font-family: Arial !important;
+  }
 </style>

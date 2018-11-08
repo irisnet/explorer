@@ -11,45 +11,45 @@
       <p class="proposals_information_content_title">Proposals Information</p>
       <div class="proposals_detail_information_wrap">
         <div class="information_props_wrap">
-          <span class="information_props">Title:</span>
+          <span class="information_props">Title :</span>
           <span class="information_value information_show_trim">{{title}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Proposer:</span>
+          <span class="information_props">Proposer :</span>
           <span v-show="proposer !== '--'" class="information_value information_show_trim jump_route" @click="jumpRoute(`/address/1/${proposer}`)">{{proposer}}</span>
           <span v-show="proposer == '--'" class="information_value information_show_trim ">{{proposer}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Submit Hash:</span>
+          <span class="information_props">Submit Hash :</span>
           <span v-show="submitHash !== '--'" class="information_value information_show_trim jump_route" @click="jumpRoute(`/tx?txHash=${submitHash}`)">{{submitHash}}</span>
           <span v-show="submitHash == '--'" class="information_value information_show_trim ">{{submitHash}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Type:</span>
+          <span class="information_props">Type :</span>
           <span class="information_value">{{type}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Status:</span>
+          <span class="information_props">Status :</span>
           <span class="information_value">{{status}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Submit Block:</span>
+          <span class="information_props">Submit Block :</span>
           <span class="information_value">{{submitBlock}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Submit Time:</span>
+          <span class="information_props">Submit Time :</span>
           <span class="information_value">{{submitTime}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Total Deposit:</span>
+          <span class="information_props">Total Deposit :</span>
           <span class="information_value">{{totalDeposit}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Voting Start Block:</span>
+          <span class="information_props">Voting Start Block :</span>
           <span class="information_value">{{votingStartBlock}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Description:</span>
+          <span class="information_props">Description :</span>
           <span class="information_value information_show_trim">{{description}}</span>
         </div>
       </div>
@@ -58,10 +58,10 @@
       <p class="proposals_information_content_title" style='border-bottom:none !important;'>Vote Detals</p>
       <div class="vote-detals-content">
         <div class="total_num">
-          <span>Total:{{count}}</span>
+          <span>{{count}} Total</span>
         </div>
         <div class="voting_options">
-          <span>Yes:{{voteDetalsYes}}</span>|<span>No: {{voteDetalsNo}}</span>|<span>NoWithVeto:{{voteDetalsNoWithVeto}}</span>|<span>Abstain:{{voteDetalsAbstain}}</span>
+          <span>Yes :{{voteDetalsYes}}</span>|<span>No : {{voteDetalsNo}}</span>|<span>NoWithVeto :{{voteDetalsNoWithVeto}}</span>|<span>Abstain :{{voteDetalsAbstain}}</span>
         </div>
       </div>
     </div>
@@ -452,5 +452,8 @@
   .jump_route {
     color: #3598db;
     cursor: pointer;
+  }
+  pre{
+    font-family: Arial !important;
   }
 </style>
