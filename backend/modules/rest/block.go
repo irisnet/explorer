@@ -26,15 +26,15 @@ func queryBlock(w http.ResponseWriter, r *http.Request) {
 	args := mux.Vars(r)
 	height := args["height"]
 
-	c := utils.GetDatabase().C("block")
-	defer c.Database.Session.Close()
+	dbm := utils.GetDatabase()
+	defer dbm.Session.Close()
 	var iHeight int
 	if iHeight, _ = strconv.Atoi(height); iHeight < 0 {
 		iHeight = 0
 	}
 	var block document.Block
 	var result BlockRsp
-	err := c.Find(bson.M{"height": iHeight}).Sort("-time").One(&block)
+	err := dbm.C("block").Find(bson.M{"height": iHeight}).Sort("-time").One(&block)
 	var pres []string
 	if err == nil {
 		for _, pre := range block.Block.LastCommit.Precommits {
@@ -42,9 +42,9 @@ func queryBlock(w http.ResponseWriter, r *http.Request) {
 		}
 		if len(pres) > 0 {
 			var candidates []document.Candidate
-			ca := utils.GetDatabase().C("stake_role_candidate")
-			defer ca.Database.Session.Close()
-			err = ca.Find(bson.M{"pub_key_addr": bson.M{"$in": pres}}).All(&candidates)
+			//ca := utils.GetDatabase().C("stake_role_candidate")
+			//defer ca.Database.Session.Close()
+			err = dbm.C("stake_role_candidate").Find(bson.M{"pub_key_addr": bson.M{"$in": pres}}).All(&candidates)
 			candidateMap := make(map[string]string)
 			for _, candidate := range candidates {
 				candidateMap[candidate.PubKeyAddr] = candidate.Address
@@ -54,10 +54,10 @@ func queryBlock(w http.ResponseWriter, r *http.Request) {
 		result.Block = block
 
 		//query txs from block height
-		txCommonC := utils.GetDatabase().C("tx_common")
-		defer txCommonC.Database.Session.Clone()
+		//txCommonC := utils.GetDatabase().C("tx_common")
+		//defer txCommonC.Database.Session.Clone()
 		var txs []document.CommonTx
-		err = txCommonC.Find(bson.M{"height": iHeight}).All(&txs)
+		err = dbm.C("tx_common").Find(bson.M{"height": iHeight}).All(&txs)
 		if err == nil {
 			var counter Counter
 			for _, tx := range txs {

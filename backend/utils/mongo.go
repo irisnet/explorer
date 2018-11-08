@@ -13,7 +13,7 @@ import (
 var database string
 
 func init() {
-	mongoUrl := GetEnv("DB_URL", "192.168.150.7:30000")
+	mongoUrl := GetEnv("DB_URL", "35.220.168.203:30000")
 	database := GetEnv("DB_DATABASE", "sync-iris")
 	user := GetEnv("DB_USER", "iris")
 	passwd := GetEnv("DB_PASSWORD", "irispassword")
@@ -39,7 +39,7 @@ var session *mgo.Session
 
 func GetDatabase() *mgo.Database {
 	// max session num is 4096
-	return session.Copy().DB(database)
+	return session.Clone().DB(database)
 }
 
 func QueryList(collation string, data interface{}, m map[string]interface{}, sort string, r *http.Request) []byte {

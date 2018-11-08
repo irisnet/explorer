@@ -15,12 +15,14 @@
     "echarts": "^4.1.0",
     "fs": "^0.0.1-security",
     "typescript": "^3.0.1",
+    "register-service-worker": "^1.0.0",
     "vue": "^2.5.16",
     "vue-class-component": "^6.0.0",
     "vue-msgbox": "^0.2.14",
     "vue-nocaptcha": "^0.1.1",
     "vue-property-decorator": "^6.0.0",
     "vue-router": "^3.0.1",
+    "jquery": "^3.2.1",
     "irisnet-crypto": "git+https://github.com/irisnet/irisnet-crypto.git#v1.1.2"
   },
   "devDependencies": {
