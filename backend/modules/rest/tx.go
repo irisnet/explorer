@@ -18,7 +18,7 @@ type TxDay struct {
 }
 
 func registerQueryTxList(r *mux.Router) error {
-	r.HandleFunc("/api/tx/{type}/{page}/{size}", func(writer http.ResponseWriter, request *http.Request) {
+	r.HandleFunc(types.UrlRegisterQueryTxList, func(writer http.ResponseWriter, request *http.Request) {
 		args := mux.Vars(request)
 		query := bson.M{}
 		request.ParseForm()
@@ -52,58 +52,38 @@ func registerQueryTxList(r *mux.Router) error {
 	return nil
 }
 
-func registerQueryAllCoinTxByPage(r *mux.Router) error {
-	r.HandleFunc("/api/txs/coin/{page}/{size}", queryAllCoinTxByPage).Methods("GET")
-	return nil
-}
-
-func registerQueryCoinTxByAccount(r *mux.Router) error {
-	r.HandleFunc("/api/tx/coin/{address}", queryCoinTxByAccount).Methods("GET")
-	return nil
-}
-
-func registerQueryPageCoinTxByAccount(r *mux.Router) error {
-	r.HandleFunc("/api/tx/coin/{address}/{page}/{size}", queryCoinTxPageByAccount).Methods("GET")
-	return nil
-}
-
 func registerQueryAllStakeTxByPage(r *mux.Router) error {
-	r.HandleFunc("/api/txs/stake/{page}/{size}", queryAllStakeTxByPage).Methods("GET")
+	r.HandleFunc(types.UrlRegisterQueryAllStakeTxByPage, queryAllStakeTxByPage).Methods("GET")
 	return nil
 }
 
 func registerQueryStakeTxByAccount(r *mux.Router) error {
-	r.HandleFunc("/api/tx/stake/{address}", queryStakeTxByAccount).Methods("GET")
+	r.HandleFunc(types.UrlRegisterQueryStakeTxByAccount, queryStakeTxByAccount).Methods("GET")
 	return nil
 }
 
 func registerQueryPageStakeTxByAccount(r *mux.Router) error {
-	r.HandleFunc("/api/tx/stake/{address}/{page}/{size}", queryPageStakeTxByAccount).Methods("GET")
+	r.HandleFunc(types.UrlRegisterQueryPageStakeTxByAccount, queryPageStakeTxByAccount).Methods("GET")
 	return nil
 }
 
 func registerQueryTxs(r *mux.Router) error {
-	r.HandleFunc("/api/txs/{page}/{size}", queryTxs).Methods("GET")
+	r.HandleFunc(types.UrlRegisterQueryTxs, queryTxs).Methods("GET")
 	return nil
 }
 
 func registerQueryTxsCounter(r *mux.Router) error {
-	r.HandleFunc("/api/txs/statistics", countTxs).Methods("GET")
+	r.HandleFunc(types.UrlRegisterQueryTxsCounter, countTxs).Methods("GET")
 	return nil
 }
 
 func registerQueryTxsByAccount(r *mux.Router) error {
-	r.HandleFunc("/api/txsByAddress/{address}/{page}/{size}", queryTxsByAccount).Methods("GET")
-	return nil
-}
-
-func registerQueryTxsByBlock(r *mux.Router) error {
-	r.HandleFunc("/api/txsByBlock/{height}/{page}/{size}", queryTxsByBlock).Methods("GET")
+	r.HandleFunc(types.UrlRegisterQueryTxsByAccount, queryTxsByAccount).Methods("GET")
 	return nil
 }
 
 func registerQueryTxsByDay(r *mux.Router) error {
-	r.HandleFunc("/api/txsByDay", queryTxsByDay).Methods("GET")
+	r.HandleFunc(types.UrlRegisterQueryTxsByDay, queryTxsByDay).Methods("GET")
 	return nil
 }
 
@@ -243,10 +223,6 @@ func RegisterTx(r *mux.Router) error {
 		registerQueryTx,
 		registerQueryTxs,
 		registerQueryTxsByAccount,
-		registerQueryTxsByBlock,
-		registerQueryCoinTxByAccount,
-		registerQueryPageCoinTxByAccount,
-		registerQueryAllCoinTxByPage,
 		registerQueryStakeTxByAccount,
 		registerQueryPageStakeTxByAccount,
 		registerQueryAllStakeTxByPage,
