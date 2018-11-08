@@ -167,6 +167,7 @@
             let others = data.PowerAll - totalCount;
             let monikerReserveLength = 10;
             let addressReserveLength = 6;
+            let powerAll = data.PowerAll;
             for (let i = 0; i < data.Candidates.length; i++) {
               seriesData.push({
                 value: data.Candidates[i].VotingPower,
@@ -174,7 +175,7 @@
                 itemStyle: {color: colors[i]},
                 upTime:`${data.Candidates[i].Uptime}%`,
                 address:data.Candidates[i].Address,
-                totalCount,
+                powerAll,
               });
               legendData.push(data.Candidates[i].Description.Moniker ? `${Tools.formatString(data.Candidates[i].Description.Moniker,monikerReserveLength,"...")} (${Tools.formatString(data.Candidates[i].Address,addressReserveLength,"...")})` : (data.Candidates[i].Address ? data.Candidates[i].Address : ''))
             }
@@ -183,7 +184,7 @@
               seriesData.push({
                 value: others,
                 name:'others',
-                totalCount,
+                powerAll,
                 itemStyle:{color:colors[10]},
               });
             }

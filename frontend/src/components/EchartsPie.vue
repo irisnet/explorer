@@ -106,7 +106,7 @@
               if(params.name !== 'others'){
                 res += `<span style="display:block;padding:0 0.05rem;">Uptime: ${params.data.upTime}</span>`;
               }
-              res += `<span style="display:block;padding:0 0.05rem;">Voting Power: ${(params.value/params.data.totalCount*100).toFixed(2)}%</span>`;
+              res += `<span style="display:block;padding:0 0.05rem;">Voting Power: ${(params.value/params.data.powerAll*100).toFixed(2)}%</span>`;
               return res;
             }
           },
