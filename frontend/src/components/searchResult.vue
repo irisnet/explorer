@@ -119,7 +119,7 @@
                     that.proposalTitle = item.Data.Title;
                     that.proposalType = item.Data.Type;
                     that.proposalStatus = item.Data.Status;
-                    that.proposalTime = Tools.formatDateYearAndMinutesAndSeconds(item.Data.Timestamp)
+                    that.proposalTime = Tools.formatDateYearAndMinutesAndSeconds(item.Data.SubmitTime)
                   }
                 })
               }else {
