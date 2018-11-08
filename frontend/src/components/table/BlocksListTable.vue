@@ -40,12 +40,22 @@
           {{data.item.Owner?`${String(data.item.Owner).substr(0,16)}...`:''}}
         </span>
       </template>
+      <template slot='Moniker' slot-scope='data'>
+        <span>
+          <pre class="pre_global_style">{{data.item.Moniker ? data.item.Moniker : ''}}</pre>
+        </span>
+      </template>
     </b-table>
 
     <b-table :fields='fields' :items='items' striped v-if="type === '3' || type === '4'" class="show_trim">
       <template slot='Address' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/address/1/${data.item.Address}`)">
           <span class="remove_default_style">{{data.item.Address?`${String(data.item.Address).substr(0,16)}...`:''}}</span>
+        </span>
+      </template>
+      <template slot='Name' slot-scope='data'>
+        <span>
+          <pre class="pre_global_style">{{data.item['Name']}}</pre>
         </span>
       </template>
     </b-table>
@@ -313,5 +323,9 @@
   }
   .block_style thead tr th:nth-child(2){
     width: 8%;
+  }
+  .pre_global_style{
+    font-size: 0.14rem;
+    color: #a2a2ae;
   }
 </style>

@@ -428,4 +428,7 @@
   .waitingStyle{
     color: #000!important;
   }
+  #address{
+    @include inputBoxShadow;
+  }
 </style>

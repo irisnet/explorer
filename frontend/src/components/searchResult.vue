@@ -162,7 +162,7 @@
     .resultless_content_container{
       width: 100%;
       text-align: center;
-      margin-top: 1.6rem;
+      margin-top: 1.1rem;
       .result_img{
         margin: 0 auto;
         width: 1rem;
@@ -179,7 +179,6 @@
       .try_info{
         font-size: 0.14rem;
         color: #A2A2AE;
-        margin-top: 19px;
         margin-bottom: 0.44rem !important;
       }
       .back_home_btn{
@@ -187,7 +186,7 @@
         height: 0.3rem;
         margin: 0 auto;
         background: #3498DB;
-        border-radius: 5px;
+        border-radius: 0.05rem;
         color: #fff;
         font-size: 0.14rem;
         line-height: 0.3rem
