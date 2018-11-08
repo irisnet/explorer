@@ -31,7 +31,7 @@ func registerQueryText(r *mux.Router) error {
 		db := utils.GetDatabase()
 		defer db.Session.Close()
 
-		var result QueryTextResp
+		var result []ResultVo
 		i, isUint := utils.ParseUint(text)
 		if isUint {
 			//查询block信息
@@ -39,11 +39,15 @@ func registerQueryText(r *mux.Router) error {
 			blockStore := db.C("block")
 			err := blockStore.Find(bson.M{"height": i}).One(&block)
 			if err == nil {
-				result.Block = SimpleBlock{
-					Height:    block.Height,
-					Timestamp: block.Time,
-					Hash:      block.Hash,
+				vo := ResultVo{
+					Type: "block",
+					Data: SimpleBlock{
+						Height:    block.Height,
+						Timestamp: block.Time,
+						Hash:      block.Hash,
+					},
 				}
+				result = append(result, vo)
 			}
 
 			//查询proposal信息
@@ -51,13 +55,17 @@ func registerQueryText(r *mux.Router) error {
 			proposalStore := db.C("proposal")
 			err = proposalStore.Find(bson.M{"proposal_id": i}).One(&proposal)
 			if err == nil {
-				result.Proposal = SimpleProposal{
-					ProposalId: proposal.ProposalId,
-					Title:      proposal.Title,
-					Type:       proposal.Type,
-					Status:     proposal.Status,
-					SubmitTime: proposal.SubmitTime,
+				vo := ResultVo{
+					Type: "proposal",
+					Data: SimpleProposal{
+						ProposalId: proposal.ProposalId,
+						Title:      proposal.Title,
+						Type:       proposal.Type,
+						Status:     proposal.Status,
+						SubmitTime: proposal.SubmitTime,
+					},
 				}
+				result = append(result, vo)
 			}
 		}
 
@@ -68,9 +76,9 @@ func registerQueryText(r *mux.Router) error {
 	return nil
 }
 
-type QueryTextResp struct {
-	Block    SimpleBlock
-	Proposal SimpleProposal
+type ResultVo struct {
+	Type string      `json:"Type,omitempty"`
+	Data interface{} `json:"Data,omitempty"`
 }
 
 type SimpleBlock struct {

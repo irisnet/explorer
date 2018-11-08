@@ -1,4 +1,4 @@
-FROM node:10 as builder
+FROM node:10-alpine as builder
 WORKDIR /app
 COPY . /app
 RUN npm i yarn -g && yarn install && yarn build
