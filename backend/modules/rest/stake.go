@@ -62,40 +62,40 @@ type CandidateWithPower struct {
 }
 
 func registerQueryValidator(r *mux.Router) error {
-	r.HandleFunc("/api/stake/validators/{page}/{size}", queryValidators).Methods("GET")
+	r.HandleFunc(types.UrlRegisterQueryValidator, queryValidators).Methods("GET")
 	return nil
 }
 func registerQueryRevokedValidator(r *mux.Router) error {
-	r.HandleFunc("/api/stake/revokedVal/{page}/{size}", queryRevokedValidator).Methods("GET")
+	r.HandleFunc(types.UrlRegisterQueryRevokedValidator, queryRevokedValidator).Methods("GET")
 	return nil
 }
 func registerQueryCandidates(r *mux.Router) error {
-	r.HandleFunc("/api/stake/candidates/{page}/{size}", queryCandidates).Methods("GET")
+	r.HandleFunc(types.UrlRegisterQueryCandidates, queryCandidates).Methods("GET")
 	return nil
 }
 
 func registerQueryCandidatesTop(r *mux.Router) error {
-	r.HandleFunc("/api/stake/candidatesTop", queryCandidatesTop).Methods("GET")
+	r.HandleFunc(types.UrlRegisterQueryCandidatesTop, queryCandidatesTop).Methods("GET")
 	return nil
 }
 
 func registerQueryCandidate(r *mux.Router) error {
-	r.HandleFunc("/api/stake/candidate/{address}", queryCandidate).Methods("GET")
+	r.HandleFunc(types.UrlRegisterQueryCandidate, queryCandidate).Methods("GET")
 	return nil
 }
 
 func registerQueryCandidateUptime(r *mux.Router) error {
-	r.HandleFunc("/api/stake/candidate/{address}/uptime/{category}", QueryCandidateUptime).Methods("GET")
+	r.HandleFunc(types.UrlRegisterQueryCandidateUptime, QueryCandidateUptime).Methods("GET")
 	return nil
 }
 
 func registerQueryCandidatePower(r *mux.Router) error {
-	r.HandleFunc("/api/stake/candidate/{address}/power/{category}", QueryCandidatePower).Methods("GET")
+	r.HandleFunc(types.UrlRegisterQueryCandidatePower, QueryCandidatePower).Methods("GET")
 	return nil
 }
 
 func registerQueryCandidateStatus(r *mux.Router) error {
-	r.HandleFunc("/api/stake/candidate/{address}/status", queryCandidateStatus).Methods("GET")
+	r.HandleFunc(types.UrlRegisterQueryCandidateStatus, queryCandidateStatus).Methods("GET")
 	return nil
 }
 

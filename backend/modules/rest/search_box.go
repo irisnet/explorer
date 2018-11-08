@@ -3,6 +3,7 @@ package rest
 import (
 	"encoding/json"
 	"github.com/gorilla/mux"
+	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
@@ -24,7 +25,7 @@ func RegisterTextSearch(r *mux.Router) error {
 }
 
 func registerQueryText(r *mux.Router) error {
-	r.HandleFunc("/api/search/{text}", func(writer http.ResponseWriter, request *http.Request) {
+	r.HandleFunc(types.UrlRegisterQueryText, func(writer http.ResponseWriter, request *http.Request) {
 		args := mux.Vars(request)
 		text := args["text"]
 
