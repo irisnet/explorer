@@ -241,10 +241,10 @@
                     TxHash: item.Hash,
                     Block: item.BlockHeight,
                     Owner: item.Owner ? item.Owner : "--",
-                    Moniker: item.Moniker ? Tools.formatString(item.Moniker) : "--",
+                    Moniker: item.Moniker ? Tools.formatString(item.Moniker,20,"...") : "--",
                     "Self-Bond": item.SelfBond && item.SelfBond.length > 0 ? `${Tools.formatAmount(item.SelfBond[0].amount)} ${Tools.formatDenom(item.SelfBond[0].denom).toUpperCase()}` : "--",
                     Type: item.Type,
-                    Fee: `${Tools.formatAmount(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`,
+                    Fee: `${Tools.formatFeeToFixedNumber(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`,
                     Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
                   }
                 }else if(that.$route.params.param === 'stake'){

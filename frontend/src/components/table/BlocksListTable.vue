@@ -45,7 +45,7 @@
     <b-table :fields='fields' :items='items' striped v-if="type === '3' || type === '4'" class="show_trim">
       <template slot='Address' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/address/1/${data.item.Address}`)">
-          <pre class="remove_default_style">{{data.item.Address?`${String(data.item.Address).substr(0,16)}...`:''}}</pre>
+          <span class="remove_default_style">{{data.item.Address?`${String(data.item.Address).substr(0,16)}...`:''}}</span>
         </span>
       </template>
     </b-table>
