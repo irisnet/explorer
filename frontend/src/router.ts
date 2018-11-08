@@ -76,6 +76,9 @@ export default new Router({
     {
       path: '/searchResult/:searchContent', component: SearchResult,
     },
+    {
+      path: '/searchResult/', component: SearchResult,
+    },
   ]
 
 })
