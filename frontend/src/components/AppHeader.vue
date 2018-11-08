@@ -251,7 +251,9 @@
       },
 
       getData(data) {
-        if(/^[A-F0-9]{40}$/.test(this.searchInputValue)){
+        if(this.searchInputValue === ''){
+          this.$router.push(`/searchResult/${this.searchInputValue}`);
+        }else if(/^[A-F0-9]{40}$/.test(this.searchInputValue)){
           let urlTransaction = `/api/tx/${this.searchInputValue}`;
           axios.get(urlTransaction).then((data) => {
             if (data.status === 200) {
@@ -489,7 +491,7 @@
           font-size: 0.18rem;
           cursor: pointer;
           color: #c9eafd;
-          @include fontWeight;
+          font-weight: 500!important;
           .bottom_arrow{
             display:inline-block;
             height:0.11rem;
