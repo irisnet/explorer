@@ -57,18 +57,20 @@
     <div :class="proposalsDetailWrap">
       <p class="proposals_information_content_title" style='border-bottom:none !important;'>Vote Detals</p>
       <div class="vote-detals-content">
-        <div class="total_num">
-          <span>{{count}} Total</span>
-        </div>
-        <div class="voting_options">
-          <span>Yes : {{voteDetalsYes}}</span>|<span>No : {{voteDetalsNo}}</span>|<span>NoWithVeto : {{voteDetalsNoWithVeto}}</span>|<span>Abstain : {{voteDetalsAbstain}}</span>
+        <div class="vote_content_container">
+          <div class="total_num">
+            <span>{{count}} Total</span>
+          </div>
+          <div class="voting_options">
+            <span>Yes : {{voteDetalsYes}}</span>|<span>No : {{voteDetalsNo}}</span>|<span>NoWithVeto : {{voteDetalsNoWithVeto}}</span>|<span>Abstain : {{voteDetalsAbstain}}</span>
+          </div>
         </div>
       </div>
     </div>
     <div :class="proposalsDetailWrap">
       <div class="proposals_detail_table_wrap">
         <spin-component :showLoading="showLoading"/>
-        <blocks-list-table :items="items" :type="'ProposalsDetail'" :showNoData="showNoData"></blocks-list-table>
+        <blocks-list-table :items="items" :type="'ProposalsDetail'" :showNoData="showNoData" :min-width="tableMinWidth"></blocks-list-table>
         <div v-show="showNoData" class="no_data_show">
           No Data
         </div>
@@ -117,6 +119,7 @@
         voteDetalsAbstain: "",
         proposer: "",
         submitHash: "",
+        tableMinWidth: "",
       }
     },
     beforeMount() {
@@ -129,8 +132,15 @@
     },
     mounted() {
       this.getProposalsInformation();
+      this.computeMinWidth();
     },
     methods: {
+      computeMinWidth(){
+        console.log(this.$route,"969696966")
+        if(this.$route.params.proposal_id){
+          this.tableMinWidth = 8.8;
+        }
+      },
       getProposalsInformation() {
         this.showLoading = true;
         let url = `/api/proposal/${this.$route.params.proposal_id}`;
@@ -336,7 +346,10 @@
     width: 100%;
     @include flex;
     flex-direction: column;
-    padding: 0 0.1rem;
+    padding-left: 0.1rem;
+    .proposals_detail_wrap_hash_var{
+      color: #a2a2ae;
+    }
     .proposals_information_content_title {
       height: 0.5rem !important;
       line-height: 0.5rem !important;
@@ -344,6 +357,7 @@
       color: #000000;
       margin-bottom: 0;
       @include fontWeight;
+      border-bottom: 1px solid #d6d9e0 !important;
     }
     .proposals_detail_table_wrap {
       width: 100%;
@@ -365,7 +379,6 @@
       .information_props_wrap {
         @include flex;
           flex-direction: column;
-          border-bottom: 0.01rem solid #eee;
           margin-bottom: 0.05rem;
         .information_value {
           overflow-x: auto;
@@ -421,8 +434,27 @@
         font-size: 0.22rem;
         color: #a2a2ae;
       }
+      .vote-detals-content{
+        width: 100%;
+        overflow-x: auto;
+        border-top: 1px solid #d6d9e0;
+        display: flex;
+        justify-content: space-between;
+        height: 0.62rem;
+        line-height: 0.62rem;
+        .vote_content_container{
+          min-width: 150%;
+          display: flex;
+          justify-content: space-between;
+        }
+      }
     }
-
+  }
+  .information_show_trim{
+    color: #a2a2ae;
+  }
+  .information_value{
+    color: #a2a2ae;
   }
   .vote-detals-content{
     border-top: 1px solid #d6d9e0;

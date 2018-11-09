@@ -3,7 +3,7 @@
     <div class="transactions_title_wrap">
       <p :class="transactionsDetailWrap" style="margin-bottom:0;">
         <span class="transactions_detail_title">Search Results</span>
-        <span class="transactions_detail_wrap_hash_var"><span v-show="flshowTitle">for</span> {{this.$route.params.searchContent}}</span>
+        <span class="transactions_detail_wrap_hash_var"><span class="title_for" v-show="flshowTitle">for </span>   {{this.$route.params.searchContent}}</span>
       </p>
     </div>
     <div :class="transactionsDetailWrap">
@@ -81,15 +81,16 @@
           proposalType: "",
           proposalStatus: "",
           proposalTime: "",
-          flshowTitle: true,
+          flshowTitle: false,
         }
       },
       watch:{
         $route(){
-          if(!this.$route.params.searchContent){
+          if(!this.$route.path === "/searchResult/"){
             this.flshowTitle = false
+          }else {
+            this.flshowTitle = true;
           }
-          this.flshowResult = true;
           if(/^\+?[1-9][0-9]*$/.test(this.$route.params.searchContent)){
             this.flshowResult = false;
             this.searchResult(this.$route.params.searchContent)
@@ -97,7 +98,9 @@
         }
       },
       mounted(){
-        if(!this.$route.params.searchContent){
+        if(!this.$route.path === "/searchResult/"){
+          this.flshowTitle = true
+        }else {
           this.flshowTitle = false
         }
         if(/^\+?[1-9][0-9]*$/.test(this.$route.params.searchContent)){
@@ -325,8 +328,13 @@
     margin-top: 0.27rem;
   }
   .mobile_transactions_detail_wrap{
+
     .resultless_content_container{
       margin-top: 0.8rem!important;
+      margin-bottom: 1.6rem !important;
     }
+  }
+  .title_for{
+    padding-right: 0.05rem;
   }
 </style>

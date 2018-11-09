@@ -6,7 +6,7 @@
       </p>
   </h3>
     <div class="faucet text-center" :style="innerWidth<=500?'padding-top:0;':''">
-      <div class="coin" style="display:flex;justify-content: center;margin-bottom:10px;">
+      <div class="coin" >
         <img src="../assets/coin.png" alt="">
       </div>
       <p style="font-size:0.14rem;color:#A2A2AE;padding:0 0.1rem;">Get IRIS from this faucet for the latest IRISnet Testnet.</p>
@@ -285,6 +285,12 @@
   .faucet {
     background: white;
     padding: 0.7rem 0;
+    .coin{
+      display:flex;
+      justify-content: center;
+      margin-bottom:10px;
+      margin-top: 0.35rem;
+    }
   }
 
   .faucet-form {
@@ -364,11 +370,12 @@
       border-bottom:1px solid #d6d9e0;
       .title{
         width:80%;
+        padding-left: 0.28rem!important;
         max-width: 12.8rem;
-        font-size:0.22rem;
+        font-size:0.18rem;
         color:#000000;
         height:0.62rem;
-      line-height:0.62rem;
+        line-height:0.62rem;
       }
     }
 

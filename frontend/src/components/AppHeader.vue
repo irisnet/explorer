@@ -9,7 +9,7 @@
         <div class="navSearch">
           <span class="chain_id">{{fuxi.toUpperCase()}}</span>
           <input type="text" class="search_input"
-                 placeholder="Search by Address / Txhash / Block"
+                 placeholder="Search by Address / Txhash / Block / Proposal ID"
                  v-model="searchInputValue"
                  @keyup.enter="onInputChange">
           <i class="search_icon" @click="getData(searchInputValue)"></i>
@@ -70,7 +70,9 @@
     </div>
 
     <div class="app_header_mobile" v-show="devicesShow === 0">
-      <div class="feature_btn" @click="showFeature"></div>
+      <div class="feature_btn" @click="showFeature">
+        <img src="../assets/menu.png">
+      </div>
       <div class="image_wrap_mobile" @click="featureButtonClick('/home',true)">
         <img src="../assets/logo.png" alt="失去网络了..."/>
       </div>
@@ -167,8 +169,8 @@
         flShowValidatorsSelect: false,
         flShowUpOrDown: false,
         flShowValidatorsUpOrDown: false,
-        upImg: require("../assets/up.png"),
-        downImg: require("../assets/homeright.png")
+        upImg: require("../assets/caret-bottom.png"),
+        downImg: require("../assets/caret-bottom.png")
       }
     },
     beforeMount() {
@@ -191,7 +193,8 @@
     },
     methods: {
       transactionsSelect(flShowTransactionsSelect){
-        if(flShowTransactionsSelect == false){
+        this.flShowValidatorsSelect = false;
+        if(!flShowTransactionsSelect){
           this.flShowTransactionsSelect = true;
           this.flShowUpOrDown = true
         }else {
@@ -200,7 +203,8 @@
         }
       },
       validatorsSelect(flShowValidatorsSelect){
-        if(flShowValidatorsSelect == false){
+        this.flShowTransactionsSelect = false;
+        if(!flShowValidatorsSelect){
           this.flShowValidatorsSelect = true;
           this.flShowValidatorsUpOrDown = true
         }else {
@@ -370,7 +374,12 @@
         .imageWrap{
           @include flex;
           cursor:pointer;
-          margin-top:0.16rem;
+          margin-top:0.2rem;
+          width: 1.7rem;
+          height: 0.5rem;
+          img{
+            width: 100%;
+          }
           .logo_title_wrap{
             margin-left:0.16rem;
             @include flex;
@@ -532,23 +541,34 @@
     }
     .app_header_mobile {
       width: 100%;
-      padding: 0.1rem;
+      padding: 0.15rem;
       @include flex();
       flex-direction: column;
       position: relative;
       height: 1.8rem;
       border-bottom: 0.01rem solid #cccccc;
+      .search_input {
+        @include inputBoxShadow;
+      }
       .feature_btn {
         position: absolute;
-        width: 0.34rem;
-        height: 0.34rem;
-        top: 0.1rem;
+        width: 0.25rem;
+        height: 0.25rem;
+        top: 0.26rem;
         right: 0.1rem;
-        background: url('../assets/menu.png') no-repeat;
+        img{
+          width: 100%;
+        }
+        /*background: url('../assets/menu.png') no-repeat;*/
       }
       .image_wrap_mobile {
         @include flex;
-        width:2.5rem;
+        width: 1.5rem;
+        height: 0.5rem;
+        img{
+          width: 100%;
+          height: 100%;
+        }
         .logo_title_wrap{
           margin-left:0.16rem;
           @include flex;
@@ -623,35 +643,33 @@
         }
       }
       .use_feature_mobile {
+        z-index: 1010;
         position: absolute;
         width: 100%;
         top: 1.2rem;
         left: 0;
-        background: #f2f2f2;
+        background: #3598db;
         @include flex();
-        z-index: 100;
         flex-direction: column;
         .select_option {
           display: flex;
           flex-direction: column;
           .feature_btn_mobile {
-            border-bottom: 0.01rem solid #d6d9e0;
             height: 0.39rem;
             line-height: 0.39rem;
             padding-left: 0.15rem;
-            background: #ffffff;
-            color: #3598db;
+            background: #005a98;
+            color: #fff;
             font-size: 0.14rem;
           }
         }
 
         .feature_btn_mobile {
-          border-bottom: 0.01rem solid #d6d9e0;
           height: 0.39rem;
           line-height: 0.39rem;
           padding-left: 0.15rem;
-          background: #ffffff;
-          color: #3598db;
+          background: #3598db;
+          color: #fff;
           font-size:0.14rem;
         }
         .feature_arrow {
@@ -674,9 +692,10 @@
   }
   .select_option_container{
     display: flex;
-
+    padding-right: 0.2rem;
+    justify-content: space-between;
     .upImg_content{
-      width: 0.35rem;
+      width: 0.28rem;
       padding-left: 0.2rem;
       img{
         width: 100%;

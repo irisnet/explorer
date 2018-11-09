@@ -124,11 +124,11 @@
       //根绝页面的不同展示最小宽度,不换行显示列表
       computeMinWidth(){
         if(this.$route.params.type === '1'){
-          this.tableMinWidth = 6.5;
+          this.tableMinWidth = 8.5;
         }else if(this.$route.params.type === '2' && this.$route.params.param === 'transfer'){
-          this.tableMinWidth = 4.7;
+          this.tableMinWidth = 12;
         }else if(this.$route.params.type === '3' || this.$route.params.type === '4'){
-          this.tableMinWidth = 6.1;
+          this.tableMinWidth = 8.1;
         }
       },
       getDataList(currentPage, pageSize, type) {
@@ -559,6 +559,7 @@
         font-size: 0.18rem;
         color: #000000;
         margin-right: 0.2rem;
+        padding-left: 0.2rem;
         @include fontWeight;
       }
       .blocks_list_page_wrap_hash_var {
