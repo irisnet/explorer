@@ -417,7 +417,6 @@
             @include borderRadius(0.06rem);
             width: 5.04rem;
             height: 0.36rem;
-            line-height: 0.36rem;
             text-indent: 0.1rem;
             outline: none;
             border: 0.01rem solid #dddddd;
