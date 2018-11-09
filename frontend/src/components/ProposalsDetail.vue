@@ -61,7 +61,7 @@
           <span>{{count}} Total</span>
         </div>
         <div class="voting_options">
-          <span>Yes :{{voteDetalsYes}}</span>|<span>No : {{voteDetalsNo}}</span>|<span>NoWithVeto :{{voteDetalsNoWithVeto}}</span>|<span>Abstain :{{voteDetalsAbstain}}</span>
+          <span>Yes : {{voteDetalsYes}}</span>|<span>No : {{voteDetalsNo}}</span>|<span>NoWithVeto : {{voteDetalsNoWithVeto}}</span>|<span>Abstain : {{voteDetalsAbstain}}</span>
         </div>
       </div>
     </div>
