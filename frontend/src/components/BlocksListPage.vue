@@ -554,8 +554,8 @@
       }
 
       .blocks_list_title {
-        height: 0.3rem;
-        line-height: 0.3rem;
+        height: 0.6rem !important;
+        line-height: 0.6rem !important;
         font-size: 0.18rem;
         color: #000000;
         margin-right: 0.2rem;
