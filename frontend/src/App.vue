@@ -318,4 +318,8 @@
     }
 
   }
+  pre{
+    font-family: Arial !important;
+    font-size: 0.14rem !important;
+  }
 </style>

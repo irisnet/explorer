@@ -191,13 +191,13 @@
       items(items) {
 
       },
-
     },
     data() {
       return {
         fields: [],
       }
     },
+
     props: ['items', 'type','showNoData','minWidth'],
     methods: {
       skipRoute(path) {
@@ -245,6 +245,7 @@
     th, td{
       padding:0.075rem !important;
       color:#A2A2AE;
+      @include fontWeight;
     }
     margin-bottom:0 !important;
     thead{
@@ -327,5 +328,8 @@
   .pre_global_style{
     font-size: 0.14rem;
     color: #a2a2ae;
+  }
+  pre{
+    font-family: Arial !important;
   }
 </style>

@@ -16,15 +16,15 @@
       <p class="transaction_information_content_title">Address Information</p>
       <div class="transactions_detail_information_wrap">
         <div class="information_props_wrap">
-          <span class="information_props">Balance:</span>
+          <span class="information_props">Balance :</span>
           <span class="information_value">{{balanceValue?balanceValue:'--'}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Deposits:</span>
+          <span class="information_props">Deposits :</span>
           <span class="information_value information_show_trim">{{depositsValue?depositsValue:'--'}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Transactions:</span>
+          <span class="information_props">Transactions :</span>
           <span class="information_value">{{transactionsValue?transactionsValue:'--'}}</span>
         </div>
       </div>
@@ -33,26 +33,26 @@
       <p class="transaction_information_content_title">Validator Profile</p>
       <div class="transactions_detail_information_wrap">
         <div class="information_props_wrap">
-          <span class="information_props">Name:</span>
+          <span class="information_props">Name :</span>
           <span class="information_value information_show_trim">{{nameValue?nameValue:'--'}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Pub Key:</span>
+          <span class="information_props">Pub Key :</span>
           <span class="information_value">{{pubKeyValue?pubKeyValue:'--'}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Website:</span>
+          <span class="information_props">Website :</span>
           <span class="information_value">
             <pre class="information_pre">{{websiteValue}}</pre>
           </span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Identity:</span>
+          <span class="information_props">Identity :</span>
           <span class="information_value">
             <pre class="information_pre">{{identity}}</pre></span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Details:</span>
+          <span class="information_props">Details :</span>
           <span class="information_value"><pre class="information_pre">{{descriptionValue}}</pre></span>
         </div>
       </div>
@@ -62,15 +62,15 @@
       <div class="current_tenure_wrap">
         <div class="transactions_detail_information_wrap">
           <div class="information_props_wrap" v-show="flShowUptime">
-            <span class="information_props">Bond Height:</span>
+            <span class="information_props">Bond Height :</span>
             <span class="information_value">{{bondHeightValue}}</span>
           </div>
           <div class="information_props_wrap">
-            <span class="information_props">Voting Power:</span>
+            <span class="information_props">Voting Power :</span>
             <span class="information_value">{{votingPowerValue}}</span>
           </div>
           <div class="information_props_wrap" v-show="flShowUptime">
-            <span class="information_props">Precommited Blocks:</span>
+            <span class="information_props">Precommited Blocks :</span>
             <span class="information_value">{{precommitedBlocksValue}}</span>
           </div>
         </div>

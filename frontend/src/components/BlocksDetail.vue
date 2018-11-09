@@ -67,7 +67,7 @@
       <div class="blocks_list_table_contianer">
         <spin-component :showLoading="showLoading"/>
         <blocks-list-table :items="items" :type="'blockTxList'"
-                           :showNoData="showNoData"></blocks-list-table>
+                           :showNoData="showNoData" :min-width="tableMinWidth"></blocks-list-table>
         <div v-show="showNoData" class="no_data_show">
           No Data
         </div>
@@ -104,6 +104,7 @@
       $route() {
         this.getBlockInformation();
         this.getBlockTxStatistics();
+        this.computeMinWidth();
         this.tabTxList(this.tabTxListIndex,this.txTabName,this.currentPage,this.pageSize);
         if (Number(this.$route.params.height) <= 0) {
           this.acitve = false;
@@ -144,6 +145,7 @@
         currentPage: 1,
         pageSize: 20,
         addressTxList: "",
+        tableMinWidth:"",
         txTab:[
           {
             "txTabName":"Transfers",
@@ -186,8 +188,14 @@
       }
       this.getMaxBlock();
       this.getBlockTxStatistics();
+      this.computeMinWidth();
     },
     methods: {
+      computeMinWidth(){
+        if(this.$route.params.height){
+          this.tableMinWidth = 8.8;
+        }
+      },
       getBlockTxStatistics(){
         let url = `/api/txs/statistics?height=${this.$route.params.height}`;
         axios.get(url).then((data) => {
@@ -572,6 +580,7 @@
         color: #000000;
         margin-bottom: 0;
         @include fontWeight;
+        border-bottom: 0.01rem solid #d6d9e0;
       }
       .block_detail_table_wrap {
         width: 100%;

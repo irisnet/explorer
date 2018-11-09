@@ -6,7 +6,7 @@
       </p>
   </h3>
     <div class="faucet text-center" :style="innerWidth<=500?'padding-top:0;':''">
-      <div class="coin" style="display:flex;justify-content: center;margin-bottom:10px;">
+      <div class="coin" >
         <img src="../assets/coin.png" alt="">
       </div>
       <p style="font-size:0.14rem;color:#A2A2AE;padding:0 0.1rem;">Get IRIS from this faucet for the latest IRISnet Testnet.</p>
@@ -115,6 +115,7 @@
             this.alertShowErrMsg = 'hidden';
           }else {
             this.btnDisabled = true;
+            this.invalid = true;
             this.errMsg = "Please enter a valid address";
             this.alertShowErrMsg = 'visible';
           }
@@ -133,6 +134,7 @@
         insufficientBalanceStatus: false,
         tokenName:"",
         verifyStatus:false,
+        invalidAddress: false,
         errStyle: false,
         btnDisabled: true,
         btninfo:"Send me IRIS",
@@ -192,7 +194,7 @@
               document.getElementById("token").value = NVC_Opt.token;
               document.getElementById("session_id").value = data.sessionId;
               document.getElementById("sig").value = data.sig;
-              if(that.faucetBalance === "Error" || that.btninfo === "Insufficient Balance" || that.address === "" || that.verifyStatus === false){
+              if(that.faucetBalance === "Error" || that.btninfo === "Insufficient Balance" || that.address === "" || that.verifyStatus === false || that.invalidAddress === true){
                 that.btnDisabled = true;
               }else {
                 that.btnDisabled = false;
@@ -283,6 +285,12 @@
   .faucet {
     background: white;
     padding: 0.7rem 0;
+    .coin{
+      display:flex;
+      justify-content: center;
+      margin-bottom:10px;
+      margin-top: 0.35rem;
+    }
   }
 
   .faucet-form {
@@ -312,7 +320,7 @@
       margin-top:0.2rem;
       /*box-shadow: 0 0 0 transparent;*/
       @include borderRadius(0.04rem);
-      padding: 0.11rem 0.19rem!important;
+      padding: 0.09rem 0.19rem!important;
       background:#3498DB;
       @include fontSize;
       color: #fff;
@@ -334,7 +342,8 @@
     color: red
   }
   .btn{
-    padding:0.0375rem 0.075rem !important;
+    width: 1.58rem;
+    height: 0.36rem;
     font-size:0.14rem !important;
   }
   .form-control{
@@ -361,11 +370,12 @@
       border-bottom:1px solid #d6d9e0;
       .title{
         width:80%;
+        padding-left: 0.28rem!important;
         max-width: 12.8rem;
-        font-size:0.22rem;
+        font-size:0.18rem;
         color:#000000;
         height:0.62rem;
-      line-height:0.62rem;
+        line-height:0.62rem;
       }
     }
 
@@ -430,5 +440,10 @@
   }
   #address{
     @include inputBoxShadow;
+  }
+  #address:-webkit-autofill{
+    background-color: rgb(255, 255, 255) !important;
+    background-image: none !important;
+    color: rgb(0, 0, 0) !important;
   }
 </style>

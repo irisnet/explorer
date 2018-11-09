@@ -10,119 +10,119 @@
       <p class="transaction_information_content_title">Transaction Information</p>
       <div class="transactions_detail_information_wrap">
         <div class="information_props_wrap">
-          <span class="information_props">TxHash:</span>
+          <span class="information_props">TxHash :</span>
           <span class="information_value">{{hashValue}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Block Height:</span>
+          <span class="information_props">Block Height :</span>
           <span class="information_value link_active_style" @click="skipRoute(`/blocks_detail/${blockValue}`)">{{blockValue}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Type:</span>
+          <span class="information_props">Type :</span>
           <span class="information_value">{{typeValue}}</span>
         </div>
         <div class="information_props_wrap" v-if="showProposer">
-          <span class="information_props">Proposer:</span>
+          <span class="information_props">Proposer :</span>
           <span class="information_value link_active_style" @click="skipRoute(`/address/1/${proposer}`)">{{proposer}}</span>
         </div>
         <div class="information_props_wrap" v-if="title">
-          <span class="information_props">ProposalTitle:</span>
+          <span class="information_props">ProposalTitle :</span>
           <span class="information_value">{{title}}</span>
         </div>
         <div class="information_props_wrap" v-if="proposalType">
-          <span class="information_props">ProposalType:</span>
+          <span class="information_props">ProposalType :</span>
           <span class="information_value">{{proposalType}}</span>
         </div>
         <div class="information_props_wrap" v-if="showInitialDeposit">
-          <span class="information_props">InitialDeposit:</span>
+          <span class="information_props">InitialDeposit :</span>
           <span class="information_value">{{initialDeposit}}</span>
         </div>
         <div class="information_props_wrap" v-if="description">
-          <span class="information_props">Description:</span>
+          <span class="information_props">Description :</span>
           <span class="information_value">{{description}}</span>
         </div>
         <div class="information_props_wrap" v-if="depositer">
-          <span class="information_props">Depositer:</span>
+          <span class="information_props">Depositer :</span>
           <span class="information_value link_active_style" @click="skipRoute(`/address/1/${depositer}`)">{{depositer}}</span>
         </div>
         <div class="information_props_wrap" v-if="showProposalId">
-          <span class="information_props">Proposal ID:</span>
+          <span class="information_props">Proposal ID :</span>
           <span class="information_value link_active_style" @click="skipRoute(`/ProposalsDetail/${proposalId}`)">{{proposalId}}</span>
         </div>
         <div class="information_props_wrap" v-if="showVoter">
-          <span class="information_props">Voter:</span>
+          <span class="information_props">Voter :</span>
           <span class="information_value link_active_style" @click="skipRoute(`/address/1/${voter}`)">{{voter}}</span>
         </div>
         <div class="information_props_wrap" v-if="showTypeTransfer">
-          <span class="information_props">From:</span>
+          <span class="information_props">From :</span>
           <span class="information_value link_active_style" @click="skipRoute(`/address/1/${fromValue}`)">{{fromValue}}</span>
         </div>
         <div class="information_props_wrap" v-if="showSource">
-          <span class="information_props">Source:</span>
+          <span class="information_props">Source :</span>
           <span class="information_value link_active_style" @click="skipRoute(`/address/1/${source}`)">{{source}}</span>
         </div>
         <div class="information_props_wrap" v-if="showTypeTransfer">
-          <span class="information_props">To:</span>
+          <span class="information_props">To :</span>
           <span class="information_value link_active_style" @click="skipRoute(`/address/1/${toValue}`)">{{toValue}}</span>
         </div>
         <div class="information_props_wrap" v-if="moniker">
-          <span class="information_props">Moniker:</span>
+          <span class="information_props">Moniker :</span>
           <span class="information_value"><pre class="information_pre">{{moniker}}</pre></span>
         </div>
         <div class="information_props_wrap" v-if="identity">
-          <span class="information_props">Identity:</span>
+          <span class="information_props">Identity :</span>
           <span class="information_value">{{identity}}</span>
         </div>
         <div class="information_props_wrap" v-if="owner">
-          <span class="information_props">Owner:</span>
+          <span class="information_props">Owner :</span>
           <span class="information_value link_active_style" @click="skipRoute(`/address/1/${owner}`)">{{owner}}</span>
         </div>
         <div class="information_props_wrap" v-if="pubkey">
-          <span class="information_props">Pub key:</span>
+          <span class="information_props">Pub key :</span>
           <span class="information_value">{{pubkey}}</span>
         </div>
         <div class="information_props_wrap" v-if="website">
-          <span class="information_props">Website:</span>
+          <span class="information_props">Website :</span>
           <span class="information_value"><pre class="information_pre">{{website}}</pre></span>
         </div>
         <div class="information_props_wrap" v-if="selfBond">
-          <span class="information_props">Self-Bond:</span>
+          <span class="information_props">Self-Bond :</span>
           <span class="information_value">{{selfBond}}</span>
         </div>
         <div class="information_props_wrap" v-if="details">
-          <span class="information_props">Details:</span>
+          <span class="information_props">Details :</span>
           <span class="information_value">{{details}}</span>
         </div>
         <div class="information_props_wrap" v-if="showVoter">
-          <span class="information_props">Option:</span>
+          <span class="information_props">Option :</span>
           <span class="information_value">{{option}}</span>
         </div>
         <div class="information_props_wrap" v-if="showTypeTransfer || showTypeDeposit">
-          <span class="information_props">Amount:</span>
+          <span class="information_props">Amount :</span>
           <span class="information_value">{{amountValue}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Timestamp:</span>
+          <span class="information_props">Timestamp :</span>
           <span class="information_value">{{timestampValue}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Actual Tx Fee:</span>
+          <span class="information_props">Actual Tx Fee :</span>
           <span class="information_value">{{actualTxFee}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Gas Limit:</span>
+          <span class="information_props">Gas Limit :</span>
           <span class="information_value">{{gasLimit}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Gas Used by Tx:</span>
+          <span class="information_props">Gas Used by Tx :</span>
           <span class="information_value">{{gasUsedByTxn}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Gas Price:</span>
+          <span class="information_props">Gas Price :</span>
           <span class="information_value">{{gasPrice}} <span v-if="gasPrice"></span>Nano</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Memo:</span>
+          <span class="information_props">Memo :</span>
           <span class="information_value">{{memo}}</span>
         </div>
       </div>
