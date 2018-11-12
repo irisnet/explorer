@@ -485,6 +485,11 @@
     color: #3598db;
     cursor: pointer;
   }
+  .vote_content_container{
+    min-width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
   pre{
     font-family: Arial !important;
   }

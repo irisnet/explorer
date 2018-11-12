@@ -14,7 +14,7 @@
       </div>
       <div style="position:relative;overflow-x: auto;-webkit-overflow-scrolling:touch;">
         <spin-component :showLoading="showLoading"/>
-        <blocks-list-table :items="items" :type="'Proposals'" :minWidth="tableMinWidth"></blocks-list-table>
+        <blocks-list-table :items="items" :type="'Proposals'" :showNoData="showNoData" :minWidth="tableMinWidth"></blocks-list-table>
         <div v-show="showNoData" class="no_data_show">
           No Data
         </div>
