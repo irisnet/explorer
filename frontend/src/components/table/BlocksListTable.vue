@@ -208,11 +208,8 @@
 </script>
 <style lang="scss">
   @import '../../style/mixin.scss';
-
   //重置bootstrap-vue的表格样式
   table {
-
-
     td {
       max-width: 2.2rem !important;
       overflow-wrap: break-word !important;
@@ -265,6 +262,11 @@
       }
     }
     tbody{
+      tr:nth-child(1){
+        td{
+          border-top:none;
+        }
+      }
       tr{
         &:nth-of-type(even){
           background-color: #f6f6f6 !important;
@@ -305,8 +307,8 @@
   .proposals-list{
     color: #3598db;
     cursor: pointer;
-    margin: 0;
-    padding: 0;
+    margin: 0!important;
+    padding: 0!important;
   }
   .remove_default_style{
     margin: 0!important;
