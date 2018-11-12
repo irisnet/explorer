@@ -16,15 +16,15 @@
       <p class="transaction_information_content_title">Address Information</p>
       <div class="transactions_detail_information_wrap">
         <div class="information_props_wrap">
-          <span class="information_props">Balance:</span>
+          <span class="information_props">Balance :</span>
           <span class="information_value">{{balanceValue?balanceValue:'--'}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Deposits:</span>
+          <span class="information_props">Deposits :</span>
           <span class="information_value information_show_trim">{{depositsValue?depositsValue:'--'}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Transactions:</span>
+          <span class="information_props">Transactions :</span>
           <span class="information_value">{{transactionsValue?transactionsValue:'--'}}</span>
         </div>
       </div>
@@ -33,26 +33,26 @@
       <p class="transaction_information_content_title">Validator Profile</p>
       <div class="transactions_detail_information_wrap">
         <div class="information_props_wrap">
-          <span class="information_props">Name:</span>
+          <span class="information_props">Name :</span>
           <span class="information_value information_show_trim">{{nameValue?nameValue:'--'}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Pub Key:</span>
+          <span class="information_props">Pub Key :</span>
           <span class="information_value">{{pubKeyValue?pubKeyValue:'--'}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Website:</span>
+          <span class="information_props">Website :</span>
           <span class="information_value">
             <pre class="information_pre">{{websiteValue}}</pre>
           </span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Identity:</span>
+          <span class="information_props">Identity :</span>
           <span class="information_value">
             <pre class="information_pre">{{identity}}</pre></span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Details:</span>
+          <span class="information_props">Details :</span>
           <span class="information_value"><pre class="information_pre">{{descriptionValue}}</pre></span>
         </div>
       </div>
@@ -62,15 +62,15 @@
       <div class="current_tenure_wrap">
         <div class="transactions_detail_information_wrap">
           <div class="information_props_wrap" v-show="flShowUptime">
-            <span class="information_props">Bond Height:</span>
+            <span class="information_props">Bond Height :</span>
             <span class="information_value">{{bondHeightValue}}</span>
           </div>
           <div class="information_props_wrap">
-            <span class="information_props">Voting Power:</span>
+            <span class="information_props">Voting Power :</span>
             <span class="information_value">{{votingPowerValue}}</span>
           </div>
           <div class="information_props_wrap" v-show="flShowUptime">
-            <span class="information_props">Precommited Blocks:</span>
+            <span class="information_props">Precommited Blocks :</span>
             <span class="information_value">{{precommitedBlocksValue}}</span>
           </div>
         </div>
@@ -847,6 +847,7 @@
         line-height:0.4rem;
         font-size:0.18rem;
         color:#000000;
+        @include fontWeight;
         margin-bottom:0;
         border-bottom:0.01rem solid #efefef;
       }
@@ -872,7 +873,7 @@
         font-size: 0.22rem;
         color: #000000;
         margin-right: 0.2rem;
-        font-weight:500;
+        @include fontWeight;
       }
       .transactions_detail_wrap_hash_var {
         height: 0.4rem;
@@ -903,6 +904,7 @@
         line-height:0.4rem;
         font-size:0.18rem;
         color:#000000;
+        @include fontWeight;
         margin-bottom:0;
       }
       .transactions_detail_information_wrap{
@@ -931,7 +933,7 @@
         font-size: 0.18rem;
         color: #000000;
         margin-right: 0.2rem;
-        font-weight:500;
+        @include fontWeight;
       }
       .transactions_detail_wrap_hash_var {
         overflow-x: auto;
@@ -1107,9 +1109,10 @@
       .line_history_title{
         height:0.5rem;
         line-height: 0.5rem;
-        border-bottom: 1px solid #d6d9e0 !important;
         font-size: 0.18rem;
+        padding-left: 0.2rem;
         color: #000;
+        @include fontWeight;
       }
       .line_content{
         @include flex;
@@ -1157,10 +1160,16 @@
   .border-none{
     color: #000!important;
     border-top: 0.01rem solid #fff !important;
+    &:hover{
+      cursor: pointer;
+    }
   }
   .border-block{
     color: #a2a2ae!important;
     border-top: 0.01rem solid #e4e4e4 !important;
+    &:hover{
+      cursor: pointer;
+    }
   }
   .mobile_transactions_detail_wrap{
     width: 100%!important;
@@ -1225,8 +1234,6 @@
         .activeStyle{
           color: #3598db!important;
           border-top: 0.01rem solid #e4e4e4 !important;
-          /*border-right: 0.01rem solid #3598db !important;*/
-          /*border-left: 0.01rem solid #3598db !important;*/
           border-bottom: 0.02rem solid #3598db !important;
           z-index: 5;
         }

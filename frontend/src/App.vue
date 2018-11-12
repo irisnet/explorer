@@ -44,6 +44,7 @@
           </div>
         </div>
       </footer>
+      <backToTop :scrollHeight="scrollHeight"></backToTop>
     </div>
 
   </div>
@@ -52,10 +53,11 @@
   import AppHeader from './components/AppHeader';
   import Tools from './common/Tools';
   import testVersion from '../testVersion';
-
+  import BackToTop from "./components/BackToTop"
   export default {
     components: {
       AppHeader,
+      BackToTop
     },
     watch: {
       $route() {
@@ -80,6 +82,7 @@
         env: testVersion.app.env,
         version: testVersion.app.version,
         innerWidth: window.innerWidth,
+        scrollHeight:0,
       }
     },
     beforeMount() {
@@ -101,11 +104,15 @@
         this.footerLeftVar = 'mobile_footer_left';
         this.footerRightVar = 'mobile_footer_right';
       }
+      window.addEventListener("scroll",this.handleScroll,true);
     },
     beforeDestroy() {
       window.removeEventListener('resize', this.onWindowResize);
     },
     methods: {
+      handleScroll(e){
+        this.scrollHeight = e.target.scrollTop
+      },
       footerLinkClick(path) {
         this.$router.push(path);
       },
@@ -310,5 +317,9 @@
       }
     }
 
+  }
+  pre{
+    font-family: Arial !important;
+    font-size: 0.14rem !important;
   }
 </style>

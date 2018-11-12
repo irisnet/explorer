@@ -2,7 +2,7 @@
   <div class="blocks_list_page_wrap">
     <div class="blocks_list_title_wrap">
       <p :class="blocksListPageWrap" style="margin-bottom:0;">
-        <span class="blocks_list_title">{{titleVar}}</span><span class="blocks_list_page_wrap_hash_var" >{{count}} total</span>
+        <span class="blocks_list_title">{{titleVar}}</span><span class="blocks_list_page_wrap_hash_var" ></span>
         <!--<span class="blocks_list_page_wrap_hash_var">{{blocksValue}}</span>-->
 
         <span class="blocks_list_page_wrap_hash_var for_block"
@@ -14,6 +14,7 @@
 
     <div :class="blocksListPageWrap">
       <div class="pagination total_num">
+        <span class="total_count">{{count}} total</span>
       </div>
       <div style="position:relative;overflow-x: auto;">
         <spin-component :showLoading="showLoading"/>
@@ -31,7 +32,6 @@
               </div>
               <div>
                 <p>{{item.node_info.listen_addr}}</p>
-                <p>{{item.node_info.country}}</p>
               </div>
               <div>
                 <p>{{item.connection_status.SendMonitor.Start}}</p>
@@ -168,6 +168,11 @@
     @include pcContainer;
     font-size: 0.14rem;
     .pagination {
+      .total_count{
+        padding-left: 0.18rem;
+        font-size: 0.18rem;
+        color: #a2a2ae;
+      }
       @include flex;
       justify-content: flex-end;
       @include borderRadius(0.025rem);
@@ -229,7 +234,7 @@
         width:100%;
         .blocks_list_page_wrap_hash_var{
           min-width:7rem;
-          font-size: 0.22rem;
+          font-size: 0.18rem;
           color: #a2a2ae;
         }
       }
@@ -242,6 +247,7 @@
         font-size: 0.18rem;
         color: #000000;
         margin-bottom: 0;
+        @include fontWeight;
       }
       @include pcCenter;
       min-height:4.6rem;
@@ -260,12 +266,12 @@
         font-size: 0.22rem;
         color: #000000;
         margin-right: 0.2rem;
-        font-weight: 500;
+        @include fontWeight;
       }
       .blocks_list_page_wrap_hash_var {
         height:  0.62rem;
         line-height: 0.62rem;
-        font-size: 0.22rem;
+        font-size: 0.18rem;
         color: #a2a2ae;
       }
       .for_block{
@@ -285,6 +291,7 @@
         font-size: 0.18rem;
         color: #000000;
         margin-bottom: 0;
+        @include fontWeight;
       }
       .transactions_detail_information_wrap {
 
@@ -306,7 +313,7 @@
         font-size: 0.18rem;
         color: #000000;
         margin-right: 0.2rem;
-        font-weight: 500;
+        @include fontWeight;
       }
       .blocks_list_page_wrap_hash_var {
         overflow-x: auto;
@@ -351,7 +358,7 @@
     box-sizing: border-box;
     padding: 0 0.2rem;
     @include flex;
-    font-weight: 600;
+    @include fontWeight;
     font-size: 0.14rem;
     height: 0.5rem;
     line-height: 0.5rem;
@@ -382,10 +389,14 @@
     line-height: 0.2rem;
     border-bottom: 0.01rem solid #dee2e6;
     div:nth-child(1){
+      pre{
+        font-size: 0.14rem;
+        color: #000;
+        font-weight: 500;
+      }
       flex: 4;
       p:nth-child(1){
         color: #000;
-        font-weight: 400;
       }
       p:nth-child(2){
         color: #a2a2ae;
@@ -394,12 +405,11 @@
     div:nth-child(2){
       flex: 2;
       p:nth-child(1){
-        color: #000;
-        font-weight: 400;
-      }
-      p:nth-child(2){
+        line-height: 0.40rem;
+        display: inline-block;
         color: #a2a2ae;
       }
+
     };
     div:nth-child(3){
       flex: 2;
@@ -407,15 +417,13 @@
       p{
         line-height: 0.40rem;
         display: inline-block;
-        color: #000;
-        font-weight: 400;
+        color: #a2a2ae;;
       }
     };
     div:nth-child(4){
       flex: 2;
       p:nth-child(1){
         color: #000;
-        font-weight: 400;
       }
       p:nth-child(2){
         color: #a2a2ae;

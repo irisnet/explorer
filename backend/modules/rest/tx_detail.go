@@ -22,13 +22,13 @@ func queryTx(w http.ResponseWriter, r *http.Request) {
 	args := mux.Vars(r)
 	hash := args["hash"]
 
-	c := utils.GetDatabase().C("tx_common")
-	defer c.Database.Session.Close()
+	dbm := utils.GetDatabase()
+	defer dbm.Session.Close()
 
 	var result document.CommonTx
 	query := bson.M{}
 	query["tx_hash"] = hash
-	err := c.Find(query).Sort("-time").One(&result)
+	err := dbm.C("tx_common").Find(query).Sort("-time").One(&result)
 	if err != nil {
 		log.Println(err.Error())
 		w.Write([]byte("not found"))
@@ -45,9 +45,8 @@ func queryTx(w http.ResponseWriter, r *http.Request) {
 	case types.StakeTx:
 		stakeTx := tx.(types.StakeTx)
 		if stakeTx.Type == types.TypeBeginRedelegation || stakeTx.Type == types.TypeCompleteRedelegation {
-			c := utils.GetDatabase().C("tx_msg")
 			var res document.TxMsg
-			err := c.Find(bson.M{"hash": stakeTx.Hash}).One(&res)
+			err := dbm.C("tx_msg").Find(bson.M{"hash": stakeTx.Hash}).One(&res)
 			if err != nil {
 				break
 			}

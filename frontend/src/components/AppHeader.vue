@@ -9,7 +9,7 @@
         <div class="navSearch">
           <span class="chain_id">{{fuxi.toUpperCase()}}</span>
           <input type="text" class="search_input"
-                 placeholder="Search by Address / Txhash / Block"
+                 placeholder="Search by Address / Txhash / Block / Proposal ID"
                  v-model="searchInputValue"
                  @keyup.enter="onInputChange">
           <i class="search_icon" @click="getData(searchInputValue)"></i>
@@ -49,11 +49,11 @@
             Validators
             <span class="bottom_arrow"></span>
           </span>
-          <span class="sub_btn_item" @click="featureButtonClick('/validators/3/active')"
+          <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/active')"
                 v-show="showSubValidators">Active</span>
-          <span class="sub_btn_item" @click="featureButtonClick('/validators/3/revoked')"
+          <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/revoked')"
                 v-show="showSubValidators">Revoked</span>
-          <span class="sub_btn_item" @click="featureButtonClick('/validators/3/candidates')"
+          <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/candidates')"
                 v-show="showSubValidators">Candidates</span>
 
         </div>
@@ -66,13 +66,13 @@
         <span class="nav_item common_item_style" :class="activeClassName === '/faucet'?'nav_item_active':''"
               @click="featureButtonClick('/faucet')"
         >Faucet</span>
-
       </div>
-
     </div>
 
     <div class="app_header_mobile" v-show="devicesShow === 0">
-      <div class="feature_btn" @click="showFeature"></div>
+      <div class="feature_btn" @click="showFeature">
+        <img src="../assets/menu.png">
+      </div>
       <div class="image_wrap_mobile" @click="featureButtonClick('/home',true)">
         <img src="../assets/logo.png" alt="失去网络了..."/>
       </div>
@@ -169,8 +169,8 @@
         flShowValidatorsSelect: false,
         flShowUpOrDown: false,
         flShowValidatorsUpOrDown: false,
-        upImg: require("../assets/up.png"),
-        downImg: require("../assets/homeright.png")
+        upImg: require("../assets/caret-bottom.png"),
+        downImg: require("../assets/caret-bottom.png")
       }
     },
     beforeMount() {
@@ -193,7 +193,8 @@
     },
     methods: {
       transactionsSelect(flShowTransactionsSelect){
-        if(flShowTransactionsSelect == false){
+        this.flShowValidatorsSelect = false;
+        if(!flShowTransactionsSelect){
           this.flShowTransactionsSelect = true;
           this.flShowUpOrDown = true
         }else {
@@ -202,7 +203,8 @@
         }
       },
       validatorsSelect(flShowValidatorsSelect){
-        if(flShowValidatorsSelect == false){
+        this.flShowTransactionsSelect = false;
+        if(!flShowValidatorsSelect){
           this.flShowValidatorsSelect = true;
           this.flShowValidatorsUpOrDown = true
         }else {
@@ -251,50 +253,69 @@
       },
 
       getData(data) {
-        let urlBlock = `/api/block/${this.searchInputValue}`;
-        let urlTransaction = `/api/tx/${this.searchInputValue}`;
-        let urlAddress = `/api/account/${this.searchInputValue}`;
-        // let urlproposals = `/api/proposal/${this.searchInputValue}`;
-        axios.get(urlBlock).then((data)=>{
-          if (data.status === 200) {
-            return data.data;
-          }
-        }).then((data)=>{
-          if(data && typeof data === "object"){
-            this.$router.push(`/blocks_detail/${this.searchInputValue}`)
-          }
-        }).catch(e => {
-          console.log(e)
-        });
-        axios.get(urlTransaction).then((data)=>{
-          if (data.status === 200) {
-            return data.data;
-          }
-        }).then((data)=>{
-          if(data && typeof data === "object"){
-            this.$router.push(`/tx?txHash=${this.searchInputValue}`)
-          }
-        });
-        axios.get(urlAddress).then((data)=>{
-          if (data.status === 200) {
-            return data.data;
-          }
-        }).then((data)=>{
-          if(data && typeof data === "object"){
-            this.$router.push(`/address/1/${this.searchInputValue}`)
-          }
-        }).catch(e =>{
-          console.log(e)
-        });
-        // axios.get(urlproposals).then((data)=>{
-        //   if (data.status === 200) {
-        //     return data.data;
-        //   }
-        // }).then((data)=>{
-        //   if(data && typeof data === "object"){
-        //     this.$router.push(`/ProposalsDetail/${this.searchInputValue}`)
-        //   }
-        // });
+        if(this.searchInputValue === ''){
+          this.$router.push(`/searchResult/${this.searchInputValue}`);
+        }else if(/^[A-F0-9]{40}$/.test(this.searchInputValue)){
+          let urlTransaction = `/api/tx/${this.searchInputValue}`;
+          axios.get(urlTransaction).then((data) => {
+            if (data.status === 200) {
+              return data.data;
+            }
+          }).then((data) => {
+            if (data && typeof data === "object") {
+              this.$router.push(`/tx?txHash=${this.searchInputValue}`)
+            }else {
+              this.$router.push(`/searchResult/${this.searchInputValue}`);
+            }
+          }).catch(e => {
+            this.$router.push(`/searchResult/${this.searchInputValue}`);
+            console.log(e)
+          });
+        }else if(this.$Crypto.getCrypto("iris").isValidAddress(this.searchInputValue)){
+          let urlAddress = `/api/account/${this.searchInputValue}`;
+          axios.get(urlAddress).then((data) => {
+            if (data.status === 200) {
+              return data.data;
+            }
+          }).then((data) => {
+            if (data && typeof data === "object") {
+              this.$router.push(`/address/1/${this.searchInputValue}`)
+            }else {
+              this.$router.push(`/searchResult/${this.searchInputValue}`);
+            }
+          }).catch(e => {
+            this.$router.push(`/searchResult/${this.searchInputValue}`);
+            console.log(e)
+          });
+        }else if(/^\+?[1-9][0-9]*$/.test(this.searchInputValue)){
+          let BlockAndProposalUrl = `/api/search/${this.searchInputValue}`;
+          axios.get(BlockAndProposalUrl).then((data) => {
+            if(data.status === 200){
+              return data.data;
+            }
+          }).then((searchResult) => {
+            if(searchResult){
+              //searchResult：[ {Type：block，Data:{}} ，{Type：proposal,Data:{}} ]
+              let searchResultIsBlockOrproposalId = 1;
+              let searchResultIsBlockAndproposalId = 2;
+              if(searchResult.length === searchResultIsBlockOrproposalId){
+                if(searchResult[0].Type === "block" && searchResult[0].Data.Height !== 0){
+                  this.$router.push(`/blocks_detail/${this.searchInputValue}`);
+                  return
+                }else if(searchResult[0].Type === "proposal" && searchResult[0].Data.ProposalID !== 0){
+                  this.$router.push(`/ProposalsDetail/${this.searchInputValue}`);
+                  return
+                }
+              }else if(searchResult.length === searchResultIsBlockAndproposalId){
+                this.$router.push(`/searchResult/${this.searchInputValue}`)
+              }
+            }else {
+              this.$router.push(`/searchResult/${this.searchInputValue}`)
+            }
+          });
+        }else {
+          this.$router.push(`/searchResult/${this.searchInputValue}`);
+        }
       },
       onInputChange() {
         this.getData();
@@ -353,7 +374,12 @@
         .imageWrap{
           @include flex;
           cursor:pointer;
-          margin-top:0.16rem;
+          margin-top:0.2rem;
+          width: 1.7rem;
+          height: 0.5rem;
+          img{
+            width: 100%;
+          }
           .logo_title_wrap{
             margin-left:0.16rem;
             @include flex;
@@ -396,10 +422,10 @@
           }
 
           .search_input {
+            @include inputBoxShadow;
             @include borderRadius(0.06rem);
             width: 5.04rem;
             height: 0.36rem;
-            line-height: 0.36rem;
             text-indent: 0.1rem;
             outline: none;
             border: 0.01rem solid #dddddd;
@@ -471,11 +497,11 @@
           font-size: 0.18rem;
           cursor: pointer;
           color: #c9eafd;
-          font-weight:300;
+          font-weight: 500!important;
           .bottom_arrow{
             display:inline-block;
             height:0.11rem;
-            width:0.2rem;
+            width:0.11rem;
             background: url('../assets/caret-bottom.png') no-repeat 0 0;
             top:0.27rem;
             right:0.1rem;
@@ -494,10 +520,13 @@
             color: #c9eafd;
             width:1.6rem;
             text-align: left;
-            padding-left:0.18rem;
+            padding-left:0.2rem;
             &:hover{
               color: #00f0ff;
             }
+          }
+          .validators_btn_item{
+            padding-left:0.35rem;
           }
         }
         .nav_item_active {
@@ -512,23 +541,34 @@
     }
     .app_header_mobile {
       width: 100%;
-      padding: 0.1rem;
+      padding: 0.15rem;
       @include flex();
       flex-direction: column;
       position: relative;
       height: 1.8rem;
       border-bottom: 0.01rem solid #cccccc;
+      .search_input {
+        @include inputBoxShadow;
+      }
       .feature_btn {
         position: absolute;
-        width: 0.34rem;
-        height: 0.34rem;
-        top: 0.1rem;
+        width: 0.25rem;
+        height: 0.25rem;
+        top: 0.26rem;
         right: 0.1rem;
-        background: url('../assets/menu.png') no-repeat;
+        img{
+          width: 100%;
+        }
+        /*background: url('../assets/menu.png') no-repeat;*/
       }
       .image_wrap_mobile {
         @include flex;
-        width:2.5rem;
+        width: 1.5rem;
+        height: 0.5rem;
+        img{
+          width: 100%;
+          height: 100%;
+        }
         .logo_title_wrap{
           margin-left:0.16rem;
           @include flex;
@@ -603,35 +643,33 @@
         }
       }
       .use_feature_mobile {
+        z-index: 1010;
         position: absolute;
         width: 100%;
         top: 1.2rem;
         left: 0;
-        background: #f2f2f2;
+        background: #3598db;
         @include flex();
-        z-index: 100;
         flex-direction: column;
         .select_option {
           display: flex;
           flex-direction: column;
           .feature_btn_mobile {
-            border-bottom: 0.01rem solid #d6d9e0;
             height: 0.39rem;
             line-height: 0.39rem;
             padding-left: 0.15rem;
-            background: #ffffff;
-            color: #3598db;
+            background: #005a98;
+            color: #fff;
             font-size: 0.14rem;
           }
         }
 
         .feature_btn_mobile {
-          border-bottom: 0.01rem solid #d6d9e0;
           height: 0.39rem;
           line-height: 0.39rem;
           padding-left: 0.15rem;
-          background: #ffffff;
-          color: #3598db;
+          background: #3598db;
+          color: #fff;
           font-size:0.14rem;
         }
         .feature_arrow {
@@ -650,13 +688,14 @@
     padding-right: 0.26rem;
     font-size: 0.16rem;
     color: #F2711C;
-    font-weight: 600;
+    @include fontWeight;
   }
   .select_option_container{
     display: flex;
-
+    padding-right: 0.2rem;
+    justify-content: space-between;
     .upImg_content{
-      width: 0.35rem;
+      width: 0.28rem;
       padding-left: 0.2rem;
       img{
         width: 100%;

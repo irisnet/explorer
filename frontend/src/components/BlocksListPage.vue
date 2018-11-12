@@ -124,11 +124,11 @@
       //根绝页面的不同展示最小宽度,不换行显示列表
       computeMinWidth(){
         if(this.$route.params.type === '1'){
-          this.tableMinWidth = 6.5;
+          this.tableMinWidth = 8.5;
         }else if(this.$route.params.type === '2' && this.$route.params.param === 'transfer'){
-          this.tableMinWidth = 4.7;
+          this.tableMinWidth = 12;
         }else if(this.$route.params.type === '3' || this.$route.params.type === '4'){
-          this.tableMinWidth = 6.1;
+          this.tableMinWidth = 8.1;
         }
       },
       getDataList(currentPage, pageSize, type) {
@@ -241,10 +241,10 @@
                     TxHash: item.Hash,
                     Block: item.BlockHeight,
                     Owner: item.Owner ? item.Owner : "--",
-                    Moniker: item.Moniker ? Tools.formatString(item.Moniker) : "--",
+                    Moniker: item.Moniker ? Tools.formatString(item.Moniker,20,"...") : "--",
                     "Self-Bond": item.SelfBond && item.SelfBond.length > 0 ? `${Tools.formatAmount(item.SelfBond[0].amount)} ${Tools.formatDenom(item.SelfBond[0].denom).toUpperCase()}` : "--",
                     Type: item.Type,
-                    Fee: `${Tools.formatAmount(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`,
+                    Fee: `${Tools.formatFeeToFixedNumber(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`,
                     Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
                   }
                 }else if(that.$route.params.param === 'stake'){
@@ -468,7 +468,7 @@
       }
       .personal_computer_blocks_list_page_wrap {
         @include flex;
-
+        padding-bottom: 0.2rem;
       }
       .mobile_blocks_list_page_wrap {
         @include flex;
@@ -484,12 +484,14 @@
 
     }
     .personal_computer_blocks_list_page_wrap {
+      padding-bottom: 0.2rem;
       .transaction_information_content_title {
         height: 0.4rem;
         line-height: 0.4rem;
         font-size: 0.18rem;
         color: #000000;
         margin-bottom: 0;
+        @include fontWeight;
       }
       @include pcCenter;
       min-height:4.6rem;
@@ -509,12 +511,12 @@
         font-size: 0.22rem;
         color: #000000;
         margin-right: 0.2rem;
-        font-weight: 500;
+        @include fontWeight;
       }
       .blocks_list_page_wrap_hash_var {
         height:  0.62rem;
         line-height: 0.62rem;
-        font-size: 0.22rem;
+        font-size: 0.18rem;
         color: #a2a2ae;
       }
       .for_block{
@@ -534,6 +536,7 @@
         font-size: 0.18rem;
         color: #000000;
         margin-bottom: 0;
+        @include fontWeight;
       }
       .transactions_detail_information_wrap {
 
@@ -551,12 +554,13 @@
       }
 
       .blocks_list_title {
-        height: 0.3rem;
-        line-height: 0.3rem;
+        height: 0.6rem !important;
+        line-height: 0.6rem !important;
         font-size: 0.18rem;
         color: #000000;
         margin-right: 0.2rem;
-        font-weight: 500;
+        padding-left: 0.2rem;
+        @include fontWeight;
       }
       .blocks_list_page_wrap_hash_var {
         overflow-x: auto;

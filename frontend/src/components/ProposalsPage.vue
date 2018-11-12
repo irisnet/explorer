@@ -14,7 +14,7 @@
       </div>
       <div style="position:relative;overflow-x: auto;-webkit-overflow-scrolling:touch;">
         <spin-component :showLoading="showLoading"/>
-        <blocks-list-table :items="items" :type="'Proposals'"></blocks-list-table>
+        <blocks-list-table :items="items" :type="'Proposals'" :showNoData="showNoData" :minWidth="tableMinWidth"></blocks-list-table>
         <div v-show="showNoData" class="no_data_show">
           No Data
         </div>
@@ -56,6 +56,7 @@
         this.currentPage = 1;
         this.getDataList(1, 30);
         this.showNoData = false;
+        this.computeMinWidth();
       }
     },
     data() {
@@ -69,15 +70,18 @@
         showNoData:false,
         showLoading:false,
         innerWidth : window.innerWidth,
+        tableMinWidth:"",
       }
     },
     beforeMount() {
+      this.computeMinWidth();
       if (window.innerWidth > 910) {
         this.proposalsListPageWrap = 'personal_computer_proposals_list_page_wrap';
       } else {
         this.proposalsListPageWrap = 'mobile_proposals_list_page_wrap';
       }
     },
+
     mounted() {
       this.getDataList(1, 30);
       window.addEventListener('resize',this.onresize);
@@ -92,6 +96,12 @@
           this.proposalsListPageWrap = 'personal_computer_proposals_list_page_wrap';
         } else {
           this.proposalsListPageWrap = 'mobile_proposals_list_page_wrap';
+        }
+      },
+      //根绝页面的不同展示最小宽度,不换行显示列表
+      computeMinWidth(){
+        if(this.$route.path === '/Proposals'){
+          this.tableMinWidth = 8.8;
         }
       },
       getDataList(currentPage, pageSize) {
@@ -196,6 +206,7 @@
   }
     .personal_computer_proposals_list_page_wrap {
       @include flex;
+      padding-bottom: 0.2rem;
     }
     .mobile_proposals_list_page_wrap {
       @include flex;
@@ -209,12 +220,14 @@
     }
   }
   .personal_computer_proposals_list_page_wrap {
+    padding-bottom: 0.2rem;
     .transaction_information_content_title {
       height: 0.4rem;
       line-height: 0.4rem;
       font-size: 0.18rem;
       color: #000000;
       margin-bottom: 0;
+      @include fontWeight;
     }
     @include pcCenter;
     min-height:4.6rem;
@@ -233,13 +246,13 @@
       font-size: 0.22rem;
       color: #000000;
       margin-right: 0.2rem;
-      font-weight: 500;
+      @include fontWeight;
       margin-left: 0.2rem;
     }
     .proposals_list_page_wrap_hash_var {
       height:  0.62rem;
       line-height: 0.62rem;
-      font-size: 0.22rem;
+      font-size: 0.18rem;
       color: #a2a2ae;
       margin-left: 0.2rem;
     }
@@ -260,6 +273,7 @@
       font-size: 0.18rem;
       color: #000000;
       margin-bottom: 0;
+      @include fontWeight;
     }
   .transactions_detail_information_wrap {
 
@@ -274,14 +288,17 @@
       }
     }
   }
-
+  .pagination{
+    padding-left: 0.2rem;
+  }
   .proposals_list_title {
-    height: 0.3rem;
-    line-height: 0.3rem;
+    height: 0.6rem;
+    line-height: 0.6rem;
     font-size: 0.18rem;
     color: #000000;
     margin-right: 0.2rem;
-    font-weight: 500;
+    padding-left: 0.2rem;
+    @include fontWeight;
   }
   .proposals_list_page_wrap_hash_var {
     overflow-x: auto;

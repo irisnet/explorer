@@ -165,23 +165,26 @@
             data.Candidates.forEach(item=>totalCount += item.VotingPower);
             //其他部分的
             let others = data.PowerAll - totalCount;
+            let monikerReserveLength = 10;
+            let addressReserveLength = 6;
+            let powerAll = data.PowerAll;
             for (let i = 0; i < data.Candidates.length; i++) {
               seriesData.push({
                 value: data.Candidates[i].VotingPower,
-                name: data.Candidates[i].Description.Moniker ? `${Tools.formatString(data.Candidates[i].Description.Moniker,10,"")} (${Tools.formatString(data.Candidates[i].Address,10,"")})` : (data.Candidates[i].Address ? data.Candidates[i].Address : ''),
+                name: data.Candidates[i].Description.Moniker ? `${Tools.formatString(data.Candidates[i].Description.Moniker,monikerReserveLength,"...")} (${Tools.formatString(data.Candidates[i].Address,addressReserveLength,"...")})` : (data.Candidates[i].Address ? data.Candidates[i].Address : ''),
                 itemStyle: {color: colors[i]},
                 upTime:`${data.Candidates[i].Uptime}%`,
                 address:data.Candidates[i].Address,
-                totalCount,
+                powerAll,
               });
-              legendData.push(data.Candidates[i].Description.Moniker ? `${Tools.formatString(data.Candidates[i].Description.Moniker,10,"")} (${Tools.formatString(data.Candidates[i].Address,10,"")})` : (data.Candidates[i].Address ? data.Candidates[i].Address : ''))
+              legendData.push(data.Candidates[i].Description.Moniker ? `${Tools.formatString(data.Candidates[i].Description.Moniker,monikerReserveLength,"...")} (${Tools.formatString(data.Candidates[i].Address,addressReserveLength,"...")})` : (data.Candidates[i].Address ? data.Candidates[i].Address : ''))
             }
 
-            if(data.Candidates.length > 10){
-              legendData.push('others');
+            if(others > 0 ){
               seriesData.push({
-                value:others,
+                value: others,
                 name:'others',
+                powerAll,
                 itemStyle:{color:colors[10]},
               });
             }
@@ -331,7 +334,7 @@
           span {
             &:first-child {
               font-size: 0.18rem;
-              font-weight: 500;
+              @include fontWeight;
             }
           }
           .information_module_key {
@@ -402,7 +405,7 @@
       background: #3190e8;
 
       .current_block {
-        font-weight: 500;
+        @include fontWeight;
         color: #fff;
         display: inline-block;
         height: 0.28rem;
@@ -443,8 +446,7 @@
     align-items: center;
     .home_module_transaction_title{
       font-size:0.18rem;
-
-      font-weight:600;
+      @include fontWeight;
     }
     .blocks_background{
       background: url('../assets/blocks.png') no-repeat 0 0.02rem;

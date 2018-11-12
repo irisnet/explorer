@@ -178,7 +178,7 @@
     .echarts_title_wrap_line {
       height: 15%;
       font-size:0.18rem;
-      font-weight:600;
+      @include fontWeight;
       line-height: 0.53rem;
       padding-left: 0.2rem;
     }

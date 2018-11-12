@@ -67,7 +67,7 @@
       <div class="blocks_list_table_contianer">
         <spin-component :showLoading="showLoading"/>
         <blocks-list-table :items="items" :type="'blockTxList'"
-                           :showNoData="showNoData"></blocks-list-table>
+                           :showNoData="showNoData" :min-width="tableMinWidth"></blocks-list-table>
         <div v-show="showNoData" class="no_data_show">
           No Data
         </div>
@@ -104,6 +104,7 @@
       $route() {
         this.getBlockInformation();
         this.getBlockTxStatistics();
+        this.computeMinWidth();
         this.tabTxList(this.tabTxListIndex,this.txTabName,this.currentPage,this.pageSize);
         if (Number(this.$route.params.height) <= 0) {
           this.acitve = false;
@@ -144,6 +145,7 @@
         currentPage: 1,
         pageSize: 20,
         addressTxList: "",
+        tableMinWidth:"",
         txTab:[
           {
             "txTabName":"Transfers",
@@ -186,8 +188,14 @@
       }
       this.getMaxBlock();
       this.getBlockTxStatistics();
+      this.computeMinWidth();
     },
     methods: {
+      computeMinWidth(){
+        if(this.$route.params.height){
+          this.tableMinWidth = 8.8;
+        }
+      },
       getBlockTxStatistics(){
         let url = `/api/txs/statistics?height=${this.$route.params.height}`;
         axios.get(url).then((data) => {
@@ -476,17 +484,20 @@
     .personal_computer_transactions_detail_wrap {
       padding-bottom: 0.2rem;
       .transaction_information_content_title {
+        @include fontWeight;
         height: 0.5rem !important;
         line-height: 0.5rem !important;
         font-size: 0.18rem !important;
         color: #000000;
         margin-bottom: 0;
+        padding-left: 0.2rem !important;
         border-bottom:1px solid #d6d9e0 !important;
       }
       @include pcCenter;
       .transactions_detail_information_wrap {
         .information_props_wrap {
           @include flex;
+          padding-left: 0.2rem;
           margin-bottom:0.08rem;
           .information_props {
             width: 1.5rem;
@@ -546,7 +557,8 @@
         font-size: 0.22rem;
         color: #000000;
         margin-right: 0.2rem;
-        font-weight: 500;
+        padding-left: 0.2rem;
+        @include fontWeight;
       }
       .transactions_detail_wrap_hash_var {
         height: 0.4rem;
@@ -567,6 +579,8 @@
         font-size: 0.18rem !important;
         color: #000000;
         margin-bottom: 0;
+        @include fontWeight;
+        border-bottom: 0.01rem solid #d6d9e0;
       }
       .block_detail_table_wrap {
         width: 100%;
@@ -634,7 +648,7 @@
         font-size: 0.22rem;
         color: #000000;
         margin-right: 0.02rem;
-        font-weight: 500;
+        @include fontWeight;
       }
       .transactions_detail_wrap_hash_var {
         overflow-x: auto;

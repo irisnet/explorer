@@ -9,7 +9,8 @@ import AddressPage from './components/AddressPage.vue';
 import PrivacyPolicy from './components/PrivacyPolicy.vue';
 import ProposalsPage from "./components/ProposalsPage.vue";
 import ProposalsDetail from "./components/ProposalsDetail.vue";
-import Nodespage from "./components/NodesPage.vue"
+import Nodespage from "./components/NodesPage.vue";
+import SearchResult from "./components/searchResult.vue"
 Vue.use(Router);
 
 export default new Router({
@@ -71,6 +72,12 @@ export default new Router({
     {
       path:'/privacy_policy',
       component:PrivacyPolicy,
+    },
+    {
+      path: '/searchResult/:searchContent', component: SearchResult,
+    },
+    {
+      path: '/searchResult/', component: SearchResult,
     },
   ]
 

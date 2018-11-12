@@ -26,6 +26,14 @@
         </div>
 
       </div>
+      <div class="none_data_img_container" v-if="information.length === 0">
+        <div class="nodata_img_container">
+          <div>
+            <img src="../assets/nodata.png">
+          </div>
+          <span>No Transaction</span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -86,7 +94,33 @@
   .home_module_block_content_item{
     height: auto!important;
   }
+  .none_data_img_container{
+    width: 100%;
+    height: 100%;
+    min-height: 6.95rem;
+    position: relative;
+    top: -0.2rem;
+    .nodata_img_container{
+      @include center;
+      display: flex;
+      flex-direction: column;
 
+      div{
+        margin: 0 auto;
+        width: 0.84rem;
+        height: 0.84rem;
+        img{
+          width: 100%;
+        }
+      }
+      span{
+        padding-top: 0.16rem;
+        @include fontSize;
+        color: #a2a2ae;
+      }
+    }
+
+  }
   .home_module_block{
     width:100%;
     height:100%;
@@ -102,7 +136,7 @@
       align-items: center;
       .home_module_block_title{
         font-size:0.18rem;
-        font-weight:600;
+        @include fontWeight;
       }
       .blocks_background{
         background: url('../assets/blocks.png') no-repeat 0 0.02rem;
@@ -128,7 +162,7 @@
         @include flex;
         justify-content:space-between;
         border-bottom:1px solid #eee;
-        padding:0.12rem 0.2rem;
+        padding:0 0.2rem;
         height: 0.59rem;
         &:last-child{
           border-bottom:none;
@@ -158,7 +192,6 @@
             .blocks_module_props{
               @include fontSize;
               color:#000000;
-              font-weight:600;
             }
           }
           .key_value_wrap{
@@ -218,6 +251,7 @@
   }
   .show_fee{
     display: block;
+    line-height: 1;
   }
 
 
