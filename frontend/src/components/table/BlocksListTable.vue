@@ -40,12 +40,22 @@
           {{data.item.Owner?`${String(data.item.Owner).substr(0,16)}...`:''}}
         </span>
       </template>
+      <template slot='Moniker' slot-scope='data'>
+        <span>
+          <pre class="pre_global_style">{{data.item.Moniker ? data.item.Moniker : ''}}</pre>
+        </span>
+      </template>
     </b-table>
 
     <b-table :fields='fields' :items='items' striped v-if="type === '3' || type === '4'" class="show_trim">
       <template slot='Address' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/address/1/${data.item.Address}`)">
-          <pre class="remove_default_style">{{data.item.Address?`${String(data.item.Address).substr(0,16)}...`:''}}</pre>
+          <span class="remove_default_style">{{data.item.Address?`${String(data.item.Address).substr(0,16)}...`:''}}</span>
+        </span>
+      </template>
+      <template slot='Name' slot-scope='data'>
+        <span>
+          <pre class="pre_global_style">{{data.item['Name']}}</pre>
         </span>
       </template>
     </b-table>
@@ -181,13 +191,13 @@
       items(items) {
 
       },
-
     },
     data() {
       return {
         fields: [],
       }
     },
+
     props: ['items', 'type','showNoData','minWidth'],
     methods: {
       skipRoute(path) {
@@ -198,11 +208,8 @@
 </script>
 <style lang="scss">
   @import '../../style/mixin.scss';
-
   //重置bootstrap-vue的表格样式
   table {
-
-
     td {
       max-width: 2.2rem !important;
       overflow-wrap: break-word !important;
@@ -235,6 +242,7 @@
     th, td{
       padding:0.075rem !important;
       color:#A2A2AE;
+      @include fontWeight;
     }
     margin-bottom:0 !important;
     thead{
@@ -254,6 +262,11 @@
       }
     }
     tbody{
+      tr:nth-child(1){
+        td{
+          border-top:none;
+        }
+      }
       tr{
         &:nth-of-type(even){
           background-color: #f6f6f6 !important;
@@ -294,8 +307,8 @@
   .proposals-list{
     color: #3598db;
     cursor: pointer;
-    margin: 0;
-    padding: 0;
+    margin: 0!important;
+    padding: 0!important;
   }
   .remove_default_style{
     margin: 0!important;
@@ -313,5 +326,12 @@
   }
   .block_style thead tr th:nth-child(2){
     width: 8%;
+  }
+  .pre_global_style{
+    font-size: 0.14rem;
+    color: #a2a2ae;
+  }
+  pre{
+    font-family: Arial !important;
   }
 </style>

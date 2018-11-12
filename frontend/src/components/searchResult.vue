@@ -3,7 +3,7 @@
     <div class="transactions_title_wrap">
       <p :class="transactionsDetailWrap" style="margin-bottom:0;">
         <span class="transactions_detail_title">Search Results</span>
-        <span class="transactions_detail_wrap_hash_var"> for {{this.$route.params.searchContent}}</span>
+        <span class="transactions_detail_wrap_hash_var"><span class="title_for" v-show="flshowTitle">for </span>   {{this.$route.params.searchContent}}</span>
       </p>
     </div>
     <div :class="transactionsDetailWrap">
@@ -52,7 +52,7 @@
           <div class="result_img">
             <img src="../assets/resultless.png">
           </div>
-          <p class="resultless_title">There is no valid result</p>
+          <p class="resultless_title">There is no valid result.</p>
           <p class="try_info">Try to search with Address, Transaction, Block Number, Proposal ID.</p>
           <div class="back_home_btn" @click="backHome">
             <span>Back Home</span>
@@ -81,9 +81,28 @@
           proposalType: "",
           proposalStatus: "",
           proposalTime: "",
+          flshowTitle: false,
+        }
+      },
+      watch:{
+        $route(){
+          if(!this.$route.path === "/searchResult/"){
+            this.flshowTitle = false
+          }else {
+            this.flshowTitle = true;
+          }
+          if(/^\+?[1-9][0-9]*$/.test(this.$route.params.searchContent)){
+            this.flshowResult = false;
+            this.searchResult(this.$route.params.searchContent)
+          }
         }
       },
       mounted(){
+        if(!this.$route.path === "/searchResult/"){
+          this.flshowTitle = true
+        }else {
+          this.flshowTitle = false
+        }
         if(/^\+?[1-9][0-9]*$/.test(this.$route.params.searchContent)){
           this.flshowResult = false;
           this.searchResult(this.$route.params.searchContent)
@@ -112,14 +131,14 @@
                 searchResult.forEach((item) => {
                   if(item.Type == "block"){
                     that.blockHeight = item.Data.Height;
-                    that.blockTime = Tools.formatDateYearAndMinutesAndSeconds(item.Data.Timestamp);
+                    that.blockTime = Tools.conversionTimeToUTCToYYMMDD(item.Data.Timestamp);
                     that.blockHash = item.Data.Hash;
                   }else if(item.Type == "proposal"){
                     that.proposalId = item.Data.ProposalId;
                     that.proposalTitle = item.Data.Title;
                     that.proposalType = item.Data.Type;
                     that.proposalStatus = item.Data.Status;
-                    that.proposalTime = Tools.formatDateYearAndMinutesAndSeconds(item.Data.Timestamp)
+                    that.proposalTime = Tools.conversionTimeToUTCToYYMMDD(item.Data.SubmitTime)
                   }
                 })
               }else {
@@ -146,7 +165,7 @@
     .resultless_content_container{
       width: 100%;
       text-align: center;
-      margin-top: 1.6rem;
+      margin-top: 1.1rem;
       .result_img{
         margin: 0 auto;
         width: 1rem;
@@ -163,18 +182,17 @@
       .try_info{
         font-size: 0.14rem;
         color: #A2A2AE;
-        margin-top: 19px;
         margin-bottom: 0.44rem !important;
       }
       .back_home_btn{
         width: 1.58rem;
-        height: 0.3rem;
+        height: 0.36rem;
         margin: 0 auto;
         background: #3498DB;
-        border-radius: 5px;
+        border-radius: 0.05rem;
         color: #fff;
         font-size: 0.14rem;
-        line-height: 0.3rem
+        line-height: 0.36rem
       }
     }
   }
@@ -310,8 +328,13 @@
     margin-top: 0.27rem;
   }
   .mobile_transactions_detail_wrap{
+
     .resultless_content_container{
       margin-top: 0.8rem!important;
+      margin-bottom: 1.6rem !important;
     }
+  }
+  .title_for{
+    padding-right: 0.05rem;
   }
 </style>

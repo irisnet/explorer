@@ -26,6 +26,14 @@
         </div>
 
       </div>
+      <div class="none_data_img_container" v-if="information.length === 0">
+        <div class="nodata_img_container">
+          <div>
+            <img src="../assets/nodata.png">
+          </div>
+          <span>No Transaction</span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -86,7 +94,33 @@
   .home_module_block_content_item{
     height: auto!important;
   }
+  .none_data_img_container{
+    width: 100%;
+    height: 100%;
+    min-height: 6.95rem;
+    position: relative;
+    top: -0.2rem;
+    .nodata_img_container{
+      @include center;
+      display: flex;
+      flex-direction: column;
 
+      div{
+        margin: 0 auto;
+        width: 0.84rem;
+        height: 0.84rem;
+        img{
+          width: 100%;
+        }
+      }
+      span{
+        padding-top: 0.16rem;
+        @include fontSize;
+        color: #a2a2ae;
+      }
+    }
+
+  }
   .home_module_block{
     width:100%;
     height:100%;
