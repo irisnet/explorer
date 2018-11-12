@@ -4,32 +4,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/irisnet/irishub-sync/store"
-	"io/ioutil"
 	"log"
-	"net/http"
 )
 
 var AddrNodeServer string
 var AddrHubRpc string
 
 func init() {
-	AddrNodeServer = GetEnv("ADDR_NODE_SERVER", "http://127.0.0.1:1317")
-	AddrHubRpc = GetEnv("ADDR_HUB_RPC", "http://192.168.150.7:26657")
-}
-func get(uri string) (int, []byte) {
-	res, err := http.Get(uri)
-	defer res.Body.Close()
-
-	if err != nil {
-		log.Println(err)
-	}
-
-	resByte, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		log.Println(err)
-	}
-
-	return res.StatusCode, resByte
+	AddrNodeServer = GetEnv("ADDR_NODE_SERVER", "http://47.104.155.125:1317")
+	AddrHubRpc = GetEnv("ADDR_HUB_RPC", "http://47.104.155.125:26657")
 }
 
 type Account struct {
@@ -38,7 +21,7 @@ type Account struct {
 	Sequence   string   `json:"sequence"`
 }
 
-func GetBalance(address string) store.Coins {
+func GetBalance(address string) (amoumt store.Coins) {
 	defer func() {
 		if err := recover(); err != nil {
 			log.Println(err)
@@ -46,32 +29,31 @@ func GetBalance(address string) store.Coins {
 	}()
 
 	uri := fmt.Sprintf("%s/bank/accounts/%s", AddrNodeServer, address)
-	statusCode, resBytes := get(uri)
-
-	var account Account
-	var resCoins []store.Coin
-	if statusCode == 200 {
+	resBytes, err := Get(uri)
+	if err == nil {
+		var account Account
 		if err := json.Unmarshal(resBytes, &account); err == nil {
 			funBuildCoins := func(coins []string) []store.Coin {
 				if len(coins) > 0 {
 					for _, coinstr := range coins {
 						coin := ParseCoin(coinstr)
-						resCoins = append(resCoins, CovertCoin(coin, CoinTypeAtto))
+						amoumt = append(amoumt, CovertCoin(coin, CoinTypeAtto))
 					}
 				}
-				return resCoins
+				return amoumt
 			}
 			return funBuildCoins(account.Coins)
 		}
+		return amoumt
 	}
-	return resCoins
+	return
 }
 
-func GetNodes() []byte {
+func GetNodes() (bz []byte) {
 	uri := fmt.Sprintf("%s/net_info", AddrHubRpc)
-	statusCode, resBytes := get(uri)
-	if statusCode != 200 {
-		log.Println("query error,statusCode:", statusCode)
+	bz, err := Get(uri)
+	if err != nil {
+		return
 	}
-	return resBytes
+	return bz
 }

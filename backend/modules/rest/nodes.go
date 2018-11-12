@@ -2,6 +2,7 @@ package rest
 
 import (
 	"github.com/gorilla/mux"
+	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"net/http"
 )
@@ -20,7 +21,7 @@ func RegisterNodes(r *mux.Router) error {
 }
 
 func RegisterQueryNodes(r *mux.Router) error {
-	r.HandleFunc("/api/net_info", func(w http.ResponseWriter, request *http.Request) {
+	r.HandleFunc(types.UrlRegisterQueryNodes, func(w http.ResponseWriter, request *http.Request) {
 		bz := utils.GetNodes()
 		w.Write(bz)
 	}).Methods("GET")
