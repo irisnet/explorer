@@ -2,7 +2,6 @@ package rest
 
 import (
 	"encoding/json"
-	"github.com/irisnet/explorer/backend/types"
 	"net/http"
 	"strconv"
 
@@ -99,17 +98,17 @@ func QueryBlocksPrecommits(w http.ResponseWriter, r *http.Request) {
 // mux.Router registrars
 
 func registerQueryBlock(r *mux.Router) error {
-	r.HandleFunc(types.UrlRegisterQueryBlock, queryBlock).Methods("GET")
+	r.HandleFunc("/api/block/{height}", queryBlock).Methods("GET")
 	return nil
 }
 
 func registerQueryBlocks(r *mux.Router) error {
-	r.HandleFunc(types.UrlRegisterQueryBlocks, queryBlocks).Methods("GET")
+	r.HandleFunc("/api/blocks/{page}/{size}", queryBlocks).Methods("GET")
 	return nil
 }
 
 func registerQueryBlocksPrecommits(r *mux.Router) error {
-	r.HandleFunc(types.UrlRegisterQueryBlocksPrecommits, QueryBlocksPrecommits).Methods("GET")
+	r.HandleFunc("/api/blocks/precommits/{address}/{page}/{size}", QueryBlocksPrecommits).Methods("GET")
 	return nil
 }
 

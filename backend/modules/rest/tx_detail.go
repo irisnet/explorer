@@ -13,7 +13,7 @@ import (
 )
 
 func registerQueryTx(r *mux.Router) error {
-	r.HandleFunc(types.UrlRegisterQueryTx, queryTx).Methods("GET")
+	r.HandleFunc("/api/tx/{hash}", queryTx).Methods("GET")
 	return nil
 }
 

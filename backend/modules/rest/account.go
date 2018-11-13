@@ -2,7 +2,6 @@ package rest
 
 import (
 	"encoding/json"
-	"github.com/irisnet/explorer/backend/types"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -53,11 +52,11 @@ func queryAccounts(w http.ResponseWriter, r *http.Request) {
 }
 
 func RegisterQueryAccount(r *mux.Router) error {
-	r.HandleFunc(types.UrlRegisterQueryAccount, queryAccount).Methods("GET")
+	r.HandleFunc("/api/account/{address}", queryAccount).Methods("GET")
 	return nil
 }
 
 func RegisterQueryAllAccount(r *mux.Router) error {
-	r.HandleFunc(types.UrlRegisterQueryAllAccount, queryAccounts).Methods("GET")
+	r.HandleFunc("/api/accounts/{page}/{size}", queryAccounts).Methods("GET")
 	return nil
 }

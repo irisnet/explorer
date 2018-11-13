@@ -2,7 +2,6 @@ package rest
 
 import (
 	"encoding/json"
-	"github.com/irisnet/explorer/backend/types"
 	"net/http"
 	"time"
 
@@ -37,7 +36,7 @@ func RegisterChain(r *mux.Router) error {
 }
 
 func RegisterQueryChain(r *mux.Router) error {
-	r.HandleFunc(types.UrlRegisterQueryChain, queryChainStatus).Methods("GET")
+	r.HandleFunc("/api/chain/status", queryChainStatus).Methods("GET")
 	return nil
 }
 

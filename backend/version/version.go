@@ -1,15 +1,15 @@
 package version
 
 import (
-	"encoding/json"
 	"github.com/gorilla/mux"
+	"encoding/json"
 	"net/http"
 )
 
 const Version = "0.1.0"
 
 func RegisterQueryVersion(r *mux.Router) error {
-	r.HandleFunc("/version", queryVersion).Methods("GET")
+	r.HandleFunc("/api/version", queryVersion).Methods("GET")
 	return nil
 }
 

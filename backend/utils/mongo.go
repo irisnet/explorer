@@ -13,7 +13,7 @@ import (
 var database string
 
 func init() {
-	mongoUrl := GetEnv("DB_URL", "127.0.0.1:27017")
+	mongoUrl := GetEnv("DB_URL", "35.220.168.203:30000")
 	database := GetEnv("DB_DATABASE", "sync-iris")
 	user := GetEnv("DB_USER", "iris")
 	passwd := GetEnv("DB_PASSWORD", "irispassword")
