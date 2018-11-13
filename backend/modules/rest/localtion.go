@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/irisnet/explorer/backend/types"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -13,7 +12,7 @@ import (
 const IPURI = "http://opendata.baidu.com/api.php?query=%s&resource_id=6006&ie=utf8&oe=utf8"
 
 func RegisterQueryIp(r *mux.Router) error {
-	r.HandleFunc(types.UrlRegisterQueryIp, queryIp).Methods("POST")
+	r.HandleFunc("/api/ip/", queryIp).Methods("POST")
 	return nil
 }
 

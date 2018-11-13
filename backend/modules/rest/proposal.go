@@ -28,7 +28,7 @@ func RegisterProposal(r *mux.Router) error {
 }
 
 func registerQueryProposals(r *mux.Router) error {
-	r.HandleFunc(types.UrlRegisterQueryProposals, func(writer http.ResponseWriter, request *http.Request) {
+	r.HandleFunc("/api/proposals/{page}/{size}", func(writer http.ResponseWriter, request *http.Request) {
 		var data []document.Proposal
 		result := utils.QueryList("proposal", &data, nil, "-submit_block", request)
 		var pageInfo types.Page
@@ -55,7 +55,7 @@ func registerQueryProposals(r *mux.Router) error {
 }
 
 func registerQueryProposal(r *mux.Router) error {
-	r.HandleFunc(types.UrlRegisterQueryProposal, func(writer http.ResponseWriter, request *http.Request) {
+	r.HandleFunc("/api/proposal/{pid}", func(writer http.ResponseWriter, request *http.Request) {
 		var data document.Proposal
 		db := utils.GetDatabase()
 		defer db.Session.Close()

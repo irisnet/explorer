@@ -1,54 +1,5 @@
 package types
 
-const (
-	//Account
-	UrlRegisterQueryAccount    = "/account/{address}"
-	UrlRegisterQueryAllAccount = "/accounts/{page}/{size}"
-
-	//Block
-	UrlRegisterQueryBlock            = "/block/{height}"
-	UrlRegisterQueryBlocks           = "/blocks/{page}/{size}"
-	UrlRegisterQueryBlocksPrecommits = "/blocks/precommits/{address}/{page}/{size}"
-
-	//Chain
-	UrlRegisterQueryChain = "/chain/status"
-
-	//Location
-	UrlRegisterQueryIp = "/ip/"
-
-	//Node
-	UrlRegisterQueryNodes = "/net_info"
-
-	//Proposal
-	UrlRegisterQueryProposals = "/proposals/{page}/{size}"
-	UrlRegisterQueryProposal  = "/proposal/{pid}"
-
-	//SearchBox
-	UrlRegisterQueryText = "/search/{text}"
-
-	//Stake
-	UrlRegisterQueryValidator        = "/stake/validators/{page}/{size}"
-	UrlRegisterQueryRevokedValidator = "/stake/revokedVal/{page}/{size}"
-	UrlRegisterQueryCandidates       = "/stake/candidates/{page}/{size}"
-	UrlRegisterQueryCandidatesTop    = "/stake/candidatesTop"
-	UrlRegisterQueryCandidate        = "/stake/candidate/{address}"
-	UrlRegisterQueryCandidateUptime  = "/stake/candidate/{address}/uptime/{category}"
-	UrlRegisterQueryCandidatePower   = "/stake/candidate/{address}/power/{category}"
-	UrlRegisterQueryCandidateStatus  = "/stake/candidate/{address}/status"
-
-	//Tx
-	UrlRegisterQueryTxList               = "/tx/{type}/{page}/{size}"
-	UrlRegisterQueryAllStakeTxByPage     = "/txs/stake/{page}/{size}"
-	UrlRegisterQueryStakeTxByAccount     = "/tx/stake/{address}"
-	UrlRegisterQueryPageStakeTxByAccount = "/tx/stake/{address}/{page}/{size}"
-	UrlRegisterQueryTxs                  = "/txs/{page}/{size}"
-	UrlRegisterQueryTxsCounter           = "/txs/statistics"
-	UrlRegisterQueryTxsByAccount         = "/txsByAddress/{address}/{page}/{size}"
-	UrlRegisterQueryTxsByBlock           = "/txsByBlock/{height}/{page}/{size}"
-	UrlRegisterQueryTxsByDay             = "/txsByDay"
-	UrlRegisterQueryTx                   = "/tx/{hash}"
-)
-
 var (
 	TypeTransfer             = "Transfer"
 	TypeCreateValidator      = "CreateValidator"
