@@ -55,7 +55,7 @@
       </div>
     </div>
     <div :class="proposalsDetailWrap">
-      <p class="proposals_information_content_title" style='border-bottom:none !important;'>Vote Detals</p>
+      <p class="proposals_information_content_title" style='border-bottom:none !important;'>Vote Details</p>
       <div class="vote-detals-content">
         <div class="vote_content_container">
           <div class="total_num">

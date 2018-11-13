@@ -98,10 +98,10 @@
         }
       },
       mounted(){
-        if(!this.$route.path === "/searchResult/"){
-          this.flshowTitle = true
-        }else {
+        if(this.$route.path === "/searchResult/"){
           this.flshowTitle = false
+        }else {
+          this.flshowTitle = true
         }
         if(/^\+?[1-9][0-9]*$/.test(this.$route.params.searchContent)){
           this.flshowResult = false;
