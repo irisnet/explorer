@@ -2,7 +2,7 @@ FROM node:10.4.1-alpine as builder
 WORKDIR /app
 
 RUN npm i yarn -g
-
+RUN apk add --no-cache git
 COPY ./frontend/ /app
 
 RUN yarn install && yarn dev && yarn build
