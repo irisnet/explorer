@@ -45,7 +45,7 @@ func main() {
 	// latest
 	AddRoutes(router)
 
-	//router.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("../frontend/dist/"))))
+	router.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("../frontend/dist/"))))
 
 	loggedRouter := handlers.LoggingHandler(os.Stdout, handlers.CORS(
 		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
