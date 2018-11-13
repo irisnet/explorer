@@ -15,7 +15,6 @@
     "echarts": "^4.1.0",
     "fs": "^0.0.1-security",
     "typescript": "^3.0.1",
-    "register-service-worker": "^1.0.0",
     "vue": "^2.5.16",
     "vue-class-component": "^6.0.0",
     "vue-msgbox": "^0.2.14",
