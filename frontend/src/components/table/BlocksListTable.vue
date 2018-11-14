@@ -3,7 +3,7 @@
        class="table_wrap"
        :style="`${minWidth?(`min-width:${minWidth}rem`):''}`">
 
-    <b-table :fields='fields' :items='items' striped v-if="type === '1'">
+    <b-table :fields='fields' :items='items' striped v-if="type === 'list'">
       <template slot='Height' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/blocks_detail/${data.item.Height}`)">
           {{data.item.Height}}

@@ -11,6 +11,7 @@ import ProposalsPage from "./components/ProposalsPage.vue";
 import ProposalsDetail from "./components/ProposalsDetail.vue";
 import Nodespage from "./components/NodesPage.vue";
 import SearchResult from "./components/searchResult.vue"
+import BlockPage from './components/BlockPage.vue'
 Vue.use(Router);
 
 export default new Router({
@@ -79,6 +80,10 @@ export default new Router({
     {
       path: '/searchResult/', component: SearchResult,
     },
+    {
+      path: '/block/:type', component: BlockPage,
+    },
+   
   ]
 
 })

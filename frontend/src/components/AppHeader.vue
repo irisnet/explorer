@@ -24,7 +24,7 @@
               @click="featureButtonClick('/home')"
         >Home</span>
         <span class="nav_item common_item_style" :class="activeClassName === '/block'?'nav_item_active':''"
-              @click="featureButtonClick('/block/1/0')"
+              @click="featureButtonClick('/block/list?pagenum=1')"
         >Blocks</span>
         <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === '/transaction'?'nav_item_active':''"
              @mouseover="transactionMouseOver" @mouseleave="transactionMouseLeave">
@@ -253,6 +253,7 @@
       },
 
       getData(data) {
+        console.log(/^\+?[1-9][0-9]*$/.test(this.searchInputValue),"返回值")
         if(this.searchInputValue === ''){
           this.$router.push(`/searchResult/${this.searchInputValue}`);
         }else if(/^[A-F0-9]{40}$/.test(this.searchInputValue)){
@@ -375,7 +376,7 @@
           @include flex;
           cursor:pointer;
           margin-top:0.2rem;
-          width: 1.7rem;
+          width: 1.58rem;
           height: 0.5rem;
           img{
             width: 100%;
