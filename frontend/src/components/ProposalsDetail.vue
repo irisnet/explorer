@@ -167,7 +167,6 @@
               this.voteDetailsNo = '--';
               this.voteDetailsNoWithVeto = '--';
               this.voteDetailsAbstain = '--';
-              this.voteDetailsAbstain = '--';
               this.totalDeposit = '--';
               this.count = 0;
             }else {
