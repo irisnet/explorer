@@ -6,6 +6,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/modules"
+	"github.com/irisnet/explorer/backend/task"
 	"log"
 	"net/http"
 	"os"
@@ -13,7 +14,7 @@ import (
 )
 
 func main() {
-	//go task.Start()
+	go task.Start()
 	router := mux.NewRouter().
 		PathPrefix("/api").Subrouter()
 
