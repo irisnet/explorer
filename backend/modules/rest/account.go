@@ -2,12 +2,12 @@ package rest
 
 import (
 	"encoding/json"
+	"github.com/irisnet/explorer/backend/service"
+	"github.com/irisnet/explorer/backend/types"
 	"net/http"
 
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/utils"
-	"github.com/irisnet/irishub-sync/store/document"
-	"gopkg.in/mgo.v2/bson"
 )
 
 // mux.Router registrars
@@ -25,38 +25,27 @@ func RegisterAccount(r *mux.Router) error {
 	return nil
 }
 
-func queryAccount(w http.ResponseWriter, r *http.Request) {
-	args := mux.Vars(r)
-	address := args["address"]
-
-	c := utils.GetDatabase().C("account")
-	defer c.Database.Session.Close()
-	var result document.Account
-	err := c.Find(bson.M{"address": address}).Sort("-amount.amount").One(&result)
-	if err != nil {
-		w.Write([]byte("not find account"))
-		return
-	}
-
-	balance := utils.GetBalance(result.Address)
-	if len(balance) >= 0 {
-		result.Amount = balance
-	}
-	resultByte, _ := json.Marshal(result)
-	w.Write(resultByte)
-}
-
-func queryAccounts(w http.ResponseWriter, r *http.Request) {
-	var data []document.Account
-	w.Write(utils.QueryList("account", &data, nil, "-time", r))
-}
-
 func RegisterQueryAccount(r *mux.Router) error {
-	r.HandleFunc("/api/account/{address}", queryAccount).Methods("GET")
+	r.HandleFunc(types.UrlRegisterQueryAccount, func(writer http.ResponseWriter, request *http.Request) {
+		args := mux.Vars(request)
+		address := args["address"]
+
+		result := service.GetAccount().Query(address)
+		resultByte, _ := json.Marshal(result)
+		writer.Write(resultByte)
+
+	}).Methods("GET")
 	return nil
 }
 
 func RegisterQueryAllAccount(r *mux.Router) error {
-	r.HandleFunc("/api/accounts/{page}/{size}", queryAccounts).Methods("GET")
+	r.HandleFunc(types.UrlRegisterQueryAllAccount, func(writer http.ResponseWriter, request *http.Request) {
+		page, size := utils.GetPage(request)
+
+		result := service.GetAccount().QueryList(page, size)
+		resultByte, _ := json.Marshal(result)
+		writer.Write(resultByte)
+
+	}).Methods("GET")
 	return nil
 }

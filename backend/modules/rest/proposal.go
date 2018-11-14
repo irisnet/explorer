@@ -3,14 +3,11 @@ package rest
 import (
 	"encoding/json"
 	"github.com/gorilla/mux"
+	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
-	"github.com/irisnet/irishub-sync/store"
-	"github.com/irisnet/irishub-sync/store/document"
-	"gopkg.in/mgo.v2/bson"
 	"net/http"
 	"strconv"
-	"time"
 )
 
 func RegisterProposal(r *mux.Router) error {
@@ -28,128 +25,24 @@ func RegisterProposal(r *mux.Router) error {
 }
 
 func registerQueryProposals(r *mux.Router) error {
-	r.HandleFunc("/api/proposals/{page}/{size}", func(writer http.ResponseWriter, request *http.Request) {
-		var data []document.Proposal
-		result := utils.QueryList("proposal", &data, nil, "-submit_block", request)
-		var pageInfo types.Page
-		json.Unmarshal(result, &pageInfo)
-		var proposals []Proposal
-		for _, propo := range data {
-			mP := Proposal{
-				Title:            propo.Title,
-				ProposalId:       propo.ProposalId,
-				Type:             propo.Type,
-				Description:      propo.Description,
-				Status:           propo.Status,
-				SubmitBlock:      propo.SubmitBlock,
-				SubmitTime:       propo.SubmitTime,
-				VotingStartBlock: propo.VotingStartBlock,
-			}
-			proposals = append(proposals, mP)
-		}
-		pageInfo.Data = proposals
-		res, _ := json.Marshal(pageInfo)
-		writer.Write(res)
+	r.HandleFunc(types.UrlRegisterQueryProposals, func(writer http.ResponseWriter, request *http.Request) {
+		page, size := utils.GetPage(request)
+
+		result := service.GetProposal().QueryList(page, size)
+		resultByte, _ := json.Marshal(result)
+		writer.Write(resultByte)
 	}).Methods("GET")
 	return nil
 }
 
 func registerQueryProposal(r *mux.Router) error {
-	r.HandleFunc("/api/proposal/{pid}", func(writer http.ResponseWriter, request *http.Request) {
-		var data document.Proposal
-		db := utils.GetDatabase()
-		defer db.Session.Close()
-		propoStore := db.C("proposal")
-		txStore := db.C("tx_common")
+	r.HandleFunc(types.UrlRegisterQueryProposal, func(writer http.ResponseWriter, request *http.Request) {
 		args := mux.Vars(request)
 		pid, _ := strconv.Atoi(args["pid"])
 
-		var info ProposalInfo
-		if err := propoStore.Find(bson.M{"proposal_id": pid}).One(&data); err != nil {
-			res, _ := json.Marshal(info)
-			writer.Write(res)
-			return
-		}
-
-		proposal := Proposal{
-			Title:            data.Title,
-			ProposalId:       data.ProposalId,
-			Type:             data.Type,
-			Description:      data.Description,
-			Status:           data.Status,
-			SubmitBlock:      data.SubmitBlock,
-			SubmitTime:       data.SubmitTime,
-			TotalDeposit:     data.TotalDeposit,
-			VotingStartBlock: data.VotingStartBlock,
-		}
-
-		var tx document.CommonTx
-		if err := txStore.Find(bson.M{"type": types.TypeSubmitProposal, "proposal_id": pid}).One(&tx); err == nil {
-			proposal.Proposer = tx.From
-			proposal.TxHash = tx.TxHash
-		}
-
-		info.Proposal = proposal
-
-		var votes []Vote
-		var result VoteResult
-		for _, v := range data.Votes {
-			vote := Vote{
-				Voter:  v.Voter,
-				Option: v.Option,
-				Time:   v.Time,
-			}
-			votes = append(votes, vote)
-
-			switch v.Option {
-			case "Yes":
-				result.Yes++
-			case "Abstain":
-				result.Abstain++
-			case "No":
-				result.No++
-			case "NoWithVeto":
-				result.NoWithVeto++
-			}
-		}
-		info.Votes = votes
-		info.Result = result
-		res, _ := json.Marshal(info)
-		writer.Write(res)
-
+		result := service.GetProposal().Query(pid)
+		resultByte, _ := json.Marshal(result)
+		writer.Write(resultByte)
 	}).Methods("GET")
 	return nil
-}
-
-type Proposal struct {
-	Title            string      `json:"title"`
-	ProposalId       int64       `json:"proposal_id"`
-	Type             string      `json:"type"`
-	Description      string      `json:"description"`
-	Status           string      `json:"status"`
-	SubmitBlock      int64       `json:"submit_block"`
-	SubmitTime       time.Time   `json:"submit_time"`
-	TotalDeposit     store.Coins `json:"total_deposit"`
-	VotingStartBlock int64       `json:"voting_start_block"`
-	Proposer         string      `json:"proposer"`
-	TxHash           string      `json:"tx_hash"`
-}
-
-type Vote struct {
-	Voter  string    `json:"voter"`
-	Option string    `json:"option"`
-	Time   time.Time `json:"time"`
-}
-
-type ProposalInfo struct {
-	Proposal Proposal   `json:"proposal"`
-	Votes    []Vote     `json:"votes"`
-	Result   VoteResult `json:"result"`
-}
-
-type VoteResult struct {
-	Yes        int
-	No         int
-	NoWithVeto int
-	Abstain    int
 }
