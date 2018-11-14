@@ -173,4 +173,14 @@ export default class Tools{
       return true
     }
   }
+  /**
+   * 根据窗口的大小加载不同的class名
+   */
+  static getClassByWindowInnerWidth(windowInnerWidth){
+         if(windowInnerWidth > 910){
+           return "personal_computer_blocks_list_page_wrap"
+         }else {
+           return "mobile_blocks_list_page_wrap"
+         }
+  }
 }

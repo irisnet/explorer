@@ -55,14 +55,14 @@
       </div>
     </div>
     <div :class="proposalsDetailWrap">
-      <p class="proposals_information_content_title" style='border-bottom:none !important;'>Vote Detals</p>
-      <div class="vote-detals-content">
+      <p class="proposals_information_content_title" style='border-bottom:none !important;'>Vote Details</p>
+      <div class="vote-details-content">
         <div class="vote_content_container">
           <div class="total_num">
             <span>{{count}} Total</span>
           </div>
           <div class="voting_options">
-            <span>Yes : {{voteDetalsYes}}</span>|<span>No : {{voteDetalsNo}}</span>|<span>NoWithVeto : {{voteDetalsNoWithVeto}}</span>|<span>Abstain : {{voteDetalsAbstain}}</span>
+            <span>Yes : {{voteDetalisYes}}</span>|<span>No : {{voteDetailsNo}}</span>|<span>NoWithVeto : {{voteDetailsNoWithVeto}}</span>|<span>Abstain : {{voteDetailsAbstain}}</span>
           </div>
         </div>
       </div>
@@ -113,10 +113,10 @@
         totalDeposit: "",
         votingStartBlock: "",
         description: "",
-        voteDetalsYes: "",
-        voteDetalsNo: "",
-        voteDetalsNoWithVeto: "",
-        voteDetalsAbstain: "",
+        voteDetailsYes: "",
+        voteDetailsNo: "",
+        voteDetailsNoWithVeto: "",
+        voteDetailsAbstain: "",
         proposer: "",
         submitHash: "",
         tableMinWidth: "",
@@ -163,11 +163,10 @@
               this.submitTime = '--';
               this.votingStartBlock = '--';
               this.description = '--';
-              this.voteDetalsYes = '--';
-              this.voteDetalsNo = '--';
-              this.voteDetalsNoWithVeto = '--';
-              this.voteDetalsAbstain = '--';
-              this.voteDetalsAbstain = '--';
+              this.voteDetailsYes = '--';
+              this.voteDetailsNo = '--';
+              this.voteDetailsNoWithVeto = '--';
+              this.voteDetailsAbstain = '--';
               this.totalDeposit = '--';
               this.count = 0;
             }else {
@@ -181,10 +180,10 @@
               this.submitTime = Tools.conversionTimeToUTCToYYMMDD(data.proposal.submit_time);
               this.votingStartBlock = data.proposal.voting_start_block ? data.proposal.voting_start_block : " -- ";
               this.description = data.proposal.description ? data.proposal.description : " -- ";
-              this.voteDetalsYes = data.proposal.status === "DepositPeriod" ? "--" : data.result.Yes;
-              this.voteDetalsNo = data.proposal.status === "DepositPeriod" ? "--" : data.result.No;
-              this.voteDetalsNoWithVeto = data.proposal.status === "DepositPeriod" ? "--" : data.result.NoWithVeto;
-              this.voteDetalsAbstain = data.proposal.status === "DepositPeriod" ? "--" : data.result.Abstain;
+              this.voteDetailsYes = data.proposal.status === "DepositPeriod" ? "--" : data.result.Yes;
+              this.voteDetailsNo = data.proposal.status === "DepositPeriod" ? "--" : data.result.No;
+              this.voteDetailsNoWithVeto = data.proposal.status === "DepositPeriod" ? "--" : data.result.NoWithVeto;
+              this.voteDetailsAbstain = data.proposal.status === "DepositPeriod" ? "--" : data.result.Abstain;
               if(data.proposal && data.proposal.total_deposit.length !==0){
                 this.totalDeposit = `${Tools.convertScientificNotation2Number(Tools.formatNumber(data.proposal.total_deposit[0].amount))} ${Tools.formatDenom(data.proposal.total_deposit[0].denom).toUpperCase()}`;
               }else {
@@ -434,7 +433,7 @@
         font-size: 0.22rem;
         color: #a2a2ae;
       }
-      .vote-detals-content{
+      .vote-details-content{
         width: 100%;
         overflow-x: auto;
         border-top: 1px solid #d6d9e0;
@@ -456,7 +455,7 @@
   .information_value{
     color: #a2a2ae;
   }
-  .vote-detals-content{
+  .vote-details-content{
     border-top: 1px solid #d6d9e0;
     display: flex;
     justify-content: space-between;
