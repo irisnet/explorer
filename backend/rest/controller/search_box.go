@@ -1,7 +1,6 @@
-package rest
+package controller
 
 import (
-	"encoding/json"
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/types"
@@ -23,12 +22,10 @@ func RegisterTextSearch(r *mux.Router) error {
 
 func registerQueryText(r *mux.Router) error {
 	r.HandleFunc(types.UrlRegisterQueryText, func(writer http.ResponseWriter, request *http.Request) {
-		args := mux.Vars(request)
-		text := args["text"]
+		text := Var(request, "text")
 
 		result := service.GetCommon().QueryText(text)
-		res, _ := json.Marshal(result)
-		writer.Write(res)
+		WriteResonse(writer, result)
 		return
 	}).Methods("GET")
 	return nil

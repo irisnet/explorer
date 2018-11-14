@@ -1,4 +1,4 @@
-package rest
+package controller
 
 import (
 	"encoding/json"
@@ -7,7 +7,6 @@ import (
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"io/ioutil"
-	"log"
 	"net/http"
 )
 
@@ -40,21 +39,23 @@ func RegisterQueryNodeLocation(r *mux.Router) error {
 		json.Unmarshal(body, &params)
 		ips := params["ipdata"]
 		var ipMap = make([]string, len(ips))
+		var error types.Error
 		for i, ip := range ips {
 			url := fmt.Sprintf(types.UrlNodeLocation, ip)
 			resp, err := http.Get(url)
 			if err != nil {
-				log.Printf("get request access err: %s", err.Error())
+				error = types.ErrorCodeExtSysFailed
 				return
 			}
 			body, _ := ioutil.ReadAll(resp.Body)
 			ipMap[i] = string(body)
-			fmt.Println(ipMap[i])
 		}
-		res, err := json.Marshal(ipMap)
-		if err == nil {
-			writer.Write(res)
+		if error.Success() {
+			WriteResonse(writer, ipMap)
+		} else {
+			WriteResonse(writer, error)
 		}
+
 	}).Methods("POST")
 	return nil
 }

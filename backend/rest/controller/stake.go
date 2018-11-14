@@ -1,4 +1,4 @@
-package rest
+package controller
 
 import (
 	"github.com/irisnet/explorer/backend/service"
@@ -6,10 +6,7 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"encoding/json"
-
 	"github.com/irisnet/explorer/backend/types"
-	"github.com/irisnet/explorer/backend/utils"
 )
 
 func RegisterStake(r *mux.Router) error {
@@ -35,34 +32,25 @@ func RegisterStake(r *mux.Router) error {
 
 func registerQueryValidator(r *mux.Router) error {
 	r.HandleFunc(types.UrlRegisterQueryValidator, func(writer http.ResponseWriter, request *http.Request) {
-		page, size := utils.GetPage(request)
+		page, size := GetPage(request)
 		result := service.GetStake().QueryValidators(page, size)
-		resp, err := json.Marshal(result)
-		if err == nil {
-			writer.Write(resp)
-		}
+		WriteResonse(writer, result)
 	}).Methods("GET")
 	return nil
 }
 func registerQueryRevokedValidator(r *mux.Router) error {
 	r.HandleFunc(types.UrlRegisterQueryRevokedValidator, func(writer http.ResponseWriter, request *http.Request) {
-		page, size := utils.GetPage(request)
+		page, size := GetPage(request)
 		result := service.GetStake().QueryRevokedValidator(page, size)
-		resp, err := json.Marshal(result)
-		if err == nil {
-			writer.Write(resp)
-		}
+		WriteResonse(writer, result)
 	}).Methods("GET")
 	return nil
 }
 func registerQueryCandidates(r *mux.Router) error {
 	r.HandleFunc(types.UrlRegisterQueryCandidates, func(writer http.ResponseWriter, request *http.Request) {
-		page, size := utils.GetPage(request)
+		page, size := GetPage(request)
 		result := service.GetStake().QueryCandidates(page, size)
-		resp, err := json.Marshal(result)
-		if err == nil {
-			writer.Write(resp)
-		}
+		WriteResonse(writer, result)
 	}).Methods("GET")
 	return nil
 }
@@ -70,38 +58,27 @@ func registerQueryCandidates(r *mux.Router) error {
 func registerQueryCandidatesTop(r *mux.Router) error {
 	r.HandleFunc(types.UrlRegisterQueryCandidatesTop, func(writer http.ResponseWriter, request *http.Request) {
 		result := service.GetStake().QueryCandidatesTopN()
-		resp, err := json.Marshal(result)
-		if err == nil {
-			writer.Write(resp)
-		}
+		WriteResonse(writer, result)
 	}).Methods("GET")
 	return nil
 }
 
 func registerQueryCandidate(r *mux.Router) error {
 	r.HandleFunc(types.UrlRegisterQueryCandidate, func(writer http.ResponseWriter, request *http.Request) {
-		args := mux.Vars(request)
-		address := args["address"]
+		address := Var(request, "address")
 		result := service.GetStake().QueryCandidate(address)
-		resp, err := json.Marshal(result)
-		if err == nil {
-			writer.Write(resp)
-		}
+		WriteResonse(writer, result)
 	}).Methods("GET")
 	return nil
 }
 
 func registerQueryCandidateUptime(r *mux.Router) error {
 	r.HandleFunc(types.UrlRegisterQueryCandidateUptime, func(writer http.ResponseWriter, request *http.Request) {
-		args := mux.Vars(request)
-		address := args["address"]
-		category := args["category"]
+		address := Var(request, "address")
+		category := Var(request, "category")
 
 		result := service.GetStake().QueryCandidateUptime(address, category)
-		resp, err := json.Marshal(result)
-		if err == nil {
-			writer.Write(resp)
-		}
+		WriteResonse(writer, result)
 
 	}).Methods("GET")
 	return nil
@@ -109,29 +86,21 @@ func registerQueryCandidateUptime(r *mux.Router) error {
 
 func registerQueryCandidatePower(r *mux.Router) error {
 	r.HandleFunc(types.UrlRegisterQueryCandidatePower, func(writer http.ResponseWriter, request *http.Request) {
-		args := mux.Vars(request)
-		address := args["address"]
-		category := args["category"]
+		address := Var(request, "address")
+		category := Var(request, "category")
 
 		result := service.GetStake().QueryCandidatePower(address, category)
-		resp, err := json.Marshal(result)
-		if err == nil {
-			writer.Write(resp)
-		}
+		WriteResonse(writer, result)
 	}).Methods("GET")
 	return nil
 }
 
 func registerQueryCandidateStatus(r *mux.Router) error {
 	r.HandleFunc(types.UrlRegisterQueryCandidateStatus, func(writer http.ResponseWriter, request *http.Request) {
-		args := mux.Vars(request)
-		address := args["address"]
+		address := Var(request, "address")
 
 		result := service.GetStake().QueryCandidateStatus(address)
-		resp, err := json.Marshal(result)
-		if err == nil {
-			writer.Write(resp)
-		}
+		WriteResonse(writer, result)
 	}).Methods("GET")
 	return nil
 }
@@ -139,10 +108,7 @@ func registerQueryCandidateStatus(r *mux.Router) error {
 func registerQueryChain(r *mux.Router) error {
 	r.HandleFunc(types.UrlRegisterQueryChain, func(writer http.ResponseWriter, request *http.Request) {
 		result := service.GetStake().QueryChainStatus()
-		resp, err := json.Marshal(result)
-		if err == nil {
-			writer.Write(resp)
-		}
+		WriteResonse(writer, result)
 	}).Methods("GET")
 	return nil
 }

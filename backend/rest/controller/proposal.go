@@ -1,11 +1,9 @@
-package rest
+package controller
 
 import (
-	"encoding/json"
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/types"
-	"github.com/irisnet/explorer/backend/utils"
 	"net/http"
 	"strconv"
 )
@@ -26,23 +24,29 @@ func RegisterProposal(r *mux.Router) error {
 
 func registerQueryProposals(r *mux.Router) error {
 	r.HandleFunc(types.UrlRegisterQueryProposals, func(writer http.ResponseWriter, request *http.Request) {
-		page, size := utils.GetPage(request)
+		page, size := GetPage(request)
 
 		result := service.GetProposal().QueryList(page, size)
-		resultByte, _ := json.Marshal(result)
-		writer.Write(resultByte)
+		WriteResonse(writer, result)
 	}).Methods("GET")
 	return nil
 }
 
 func registerQueryProposal(r *mux.Router) error {
 	r.HandleFunc(types.UrlRegisterQueryProposal, func(writer http.ResponseWriter, request *http.Request) {
-		args := mux.Vars(request)
-		pid, _ := strconv.Atoi(args["pid"])
+		pid, err := strconv.Atoi(Var(request, "pid"))
+		if err != nil {
+			WriteResonse(writer, types.ErrorCodeInValidParam)
+			return
+		}
 
-		result := service.GetProposal().Query(pid)
-		resultByte, _ := json.Marshal(result)
-		writer.Write(resultByte)
+		result, error := service.GetProposal().Query(pid)
+
+		if error.Success() {
+			WriteResonse(writer, result)
+			return
+		}
+		WriteResonse(writer, err)
 	}).Methods("GET")
 	return nil
 }

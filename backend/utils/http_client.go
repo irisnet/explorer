@@ -2,7 +2,6 @@ package utils
 
 import (
 	"crypto/tls"
-	"github.com/gorilla/mux"
 	"io/ioutil"
 	"log"
 	"net"
@@ -52,19 +51,4 @@ func Get(url string) (bz []byte, err error) {
 	}
 
 	return
-}
-
-func GetPage(r *http.Request) (int, int) {
-	args := mux.Vars(r)
-	page := args["page"]
-	size := args["size"]
-	iPage := 0
-	iSize := 20
-	if p, ok := ParseInt(page); ok {
-		iPage = int(p)
-	}
-	if s, ok := ParseInt(size); ok {
-		iSize = int(s)
-	}
-	return iPage, iSize
 }
