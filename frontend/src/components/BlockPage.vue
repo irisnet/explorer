@@ -1,11 +1,11 @@
 <template>
   <div class="blocks_list_page_wrap">
     <div class="blocks_list_title_wrap">
-      <p :class="blocksListPageWrap">
+      <p :class="blockListPageWrap">
         <span class="blocks_list_title">{{listTitleName}}</span>
       </p>
     </div>
-    <div :class="blocksListPageWrap">
+    <div :class="blockListPageWrap">
       <div class="pagination total_num">
         <span class="blocks_list_page_wrap_hash_var" v-show="count">{{count}} total</span>
         <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
@@ -48,7 +48,7 @@
         this.$router.push({
           path: this.$route.path,
           query:{
-            pagenum: Number(this.currentPage)
+            pagenum: this.currentPage
           }
         });
         new Promise((resolve)=>{
@@ -70,10 +70,10 @@
     data() {
       return {
         devicesWidth: window.innerWidth,
-        blocksListPageWrap: 'personal_computer_blocks_list_page',
+        blockListPageWrap: 'personal_computer_blocks_list_page',
         currentPage: Number(this.$route.query.pagenum),
         pageSize: 30,
-        count: Number(localStorage.getItem("count")) ? Number(localStorage.getItem("count")) : 0,
+        count: localStorage.getItem("count") ? Number(localStorage.getItem("count")) : 0,
         items: [],
         type: 'list',
         showNoData: false,
@@ -85,7 +85,7 @@
     },
     beforeMount() {
       this.type = this.$route.params.type;
-      this.blocksListPageWrap = Tools.addClassByWindowInnerWidth(window.innerWidth);
+      this.blockListPageWrap = Tools.getClassByWindowInnerWidth(window.innerWidth);
     },
     mounted() {
       this.getDataList(Number(this.$route.query.pagenum), this.pageSize, this.$route.params.type);
@@ -106,14 +106,14 @@
           if(data.Data && typeof data === "object"){
             this.items = data.Data.map(item => {
               let txn = item.NumTxs;
-              let precommit = item.Block.LastCommit.Precommits.length;
-              let [votingPower,denominator,numerator] = [0,0,0];
+              let precommitValidatorsLength = item.Block.LastCommit.Precommits.length;
+              let [votingPower,computeValidatorsVotingPowerDenominator,computeValidatorsVotingPowerNumerator] = [0,0,0];
               item.Validators.forEach(listItem=>votingPower += listItem.VotingPower);
-              item.Validators.forEach(item=>denominator += item.VotingPower);
+              item.Validators.forEach(item=>computeValidatorsVotingPowerDenominator += item.VotingPower);
               for(let i = 0; i < item.Block.LastCommit.Precommits.length; i++){
                 for (let j = 0; j < item.Validators.length; j++){
                   if(item.Block.LastCommit.Precommits[i].ValidatorAddress === item.Validators[j].Address){
-                    numerator += item.Validators[j].VotingPower;
+                    computeValidatorsVotingPowerNumerator += item.Validators[j].VotingPower;
                     break;
                   }
                 }
@@ -122,8 +122,8 @@
                 Height: item.Height,
                 Txn:txn,
                 Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Time),
-                'Precommit Validators':precommit,
-                'Voting Power': denominator !== 0? `${(numerator/denominator).toFixed(2)*100}%`:'',
+                'Precommit Validators':precommitValidatorsLength,
+                'Voting Power': computeValidatorsVotingPowerDenominator !== 0? `${(computeValidatorsVotingPowerNumerator/computeValidatorsVotingPowerDenominator).toFixed(2)*100}%`:'',
               };
             })
           }else{
@@ -132,6 +132,7 @@
           }
           this.showLoading = false;
         }).catch(e => {
+          this.showLoading = false;
           console.log(e)
         })
         }

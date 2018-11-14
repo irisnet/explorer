@@ -176,7 +176,7 @@ export default class Tools{
   /**
    * 根据窗口的大小加载不同的class名
    */
-  static addClassByWindowInnerWidth(windowInnerWidth){
+  static getClassByWindowInnerWidth(windowInnerWidth){
          if(windowInnerWidth > 910){
            return "personal_computer_blocks_list_page_wrap"
          }else {
