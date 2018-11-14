@@ -253,7 +253,6 @@
       },
 
       getData(data) {
-        console.log(/^\+?[1-9][0-9]*$/.test(this.searchInputValue),"返回值")
         if(this.searchInputValue === ''){
           this.$router.push(`/searchResult/${this.searchInputValue}`);
         }else if(/^[A-F0-9]{40}$/.test(this.searchInputValue)){
