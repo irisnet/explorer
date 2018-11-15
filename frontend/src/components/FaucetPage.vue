@@ -372,7 +372,7 @@
         width:80%;
         padding-left: 0.28rem!important;
         max-width: 12.8rem;
-        font-size:0.18rem;
+        font-size:0.24rem;
         color:#000000;
         height:0.62rem;
         line-height:0.62rem;
