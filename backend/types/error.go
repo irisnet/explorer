@@ -1,6 +1,7 @@
 package types
 
 var (
+	ErrorCodeSuccess      = NewError("0", "success")
 	ErrorCodeNotFound     = NewError("EX-100001", "data Not found")
 	ErrorCodeSysFailed    = NewError("EX-100002", "system exception")
 	ErrorCodeInValidParam = NewError("EX-100003", "invalid input param")
@@ -22,5 +23,5 @@ func NewError(code string, msg string) Error {
 }
 
 func (e Error) Success() bool {
-	return len(e.Code) == 0
+	return e.Code == "0"
 }

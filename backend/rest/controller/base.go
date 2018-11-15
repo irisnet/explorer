@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"log"
@@ -54,8 +55,20 @@ func GetPage(r *http.Request) (int, int) {
 	return iPage, iSize
 }
 
-func WriteResponse(writer http.ResponseWriter, data interface{}) {
-	resultByte, err := json.Marshal(data)
+func WriteResponse(writer http.ResponseWriter, data ...interface{}) {
+	var resp = model.Response{
+		Code: types.ErrorCodeSuccess.Code,
+	}
+
+	if len(data) == 2 {
+		if succ, ok := data[1].(bool); ok && !succ {
+			err := data[0].(types.Error)
+			resp.Code = err.Code
+			resp.Msg = err.Msg
+		}
+	}
+	resp.Data = data[0]
+	resultByte, err := json.Marshal(resp)
 	if err != nil {
 		log.Println(fmt.Sprintf("json.Marshal failed:%s", err.Error()))
 	}
@@ -73,7 +86,7 @@ func wrap(action Action) Action {
 				apiName := request.RequestURI
 				switch r.(type) {
 				case types.Error:
-					WriteResponse(writer, r)
+					WriteResponse(writer, r, false)
 					break
 				case error:
 					err := r.(error)
@@ -81,7 +94,7 @@ func wrap(action Action) Action {
 						Code: types.ErrorCodeUnKnown.Code,
 						Msg:  err.Error(),
 					}
-					WriteResponse(writer, e)
+					WriteResponse(writer, e, false)
 					break
 				}
 				log.Println(fmt.Sprintf("API[%s] execute failed,%+v", apiName, r))
