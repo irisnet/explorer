@@ -10,8 +10,9 @@ import PrivacyPolicy from './components/PrivacyPolicy.vue';
 import ProposalsPage from "./components/ProposalsPage.vue";
 import ProposalsDetail from "./components/ProposalsDetail.vue";
 import Nodespage from "./components/NodesPage.vue";
-import SearchResult from "./components/searchResult.vue"
-import BlockPage from './components/BlockPage.vue'
+import SearchResult from "./components/searchResult.vue";
+import BlockPage from './components/BlockPage.vue';
+import Transfers from './components/Transfers.vue';
 Vue.use(Router);
 
 export default new Router({
@@ -83,7 +84,9 @@ export default new Router({
     {
       path: '/block/:type', component: BlockPage,
     },
-   
+    {
+      path: '/transfers/:type', component: Transfers,
+    },
   ]
 
 })

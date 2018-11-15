@@ -33,7 +33,7 @@
             Transactions
             <span class="bottom_arrow"></span>
           </span>
-          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/transfer')"
+          <span class="sub_btn_item" @click="featureButtonClick('/transfers/transfer?pagenum=1')"
                 v-show="showSubTransaction">Transfers</span>
           <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/declaration')"
                 v-show="showSubTransaction">Declaration</span>

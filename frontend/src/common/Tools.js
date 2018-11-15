@@ -183,4 +183,28 @@ export default class Tools{
            return "mobile_blocks_list_page_wrap"
          }
   }
+  /**
+   * 处理TxList的Amount
+   */
+  static formatTxAmount (transactionsType,amount) {
+    if(transactionsType === 'transfer' || transactionsType === 'stake' || transactionsType === 'governance'){
+      if(amount){
+        if(amount instanceof Array){
+          if(amount.length > 0){
+            amount[0].amount = Tools.formatAmount(amount[0].amount);
+            if(Tools.flTxType(transactionsType)){
+              return amount.map(listItem => `${listItem.amount} SHARES`).join(',');
+            }else {
+              return amount.map(listItem=>`${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
+            }
+          }
+        }else if(amount && Object.keys(amount).includes('amount') && Object.keys(amount).includes('denom')){
+            return `${amount.amount}  ${Tools.formatDenom(amount.denom).toUpperCase()}`;
+          if(Tools.flTxType(item.Type)){
+            return `${amount.amount} SHARES`;
+          }
+        }
+      }
+    }
+  }
 }
