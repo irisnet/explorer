@@ -27,7 +27,11 @@ func (service *StakeService) QueryValidators(page, pageSize int) model.Candidate
 	query["revoked"] = false
 	query["status"] = types.TypeValStatusBonded
 
-	cs.Find(query).Sort("-voting_power").Skip((page - 1) * pageSize).Limit(pageSize).All(&candidates)
+	err := cs.Find(query).Sort("-voting_power").Skip((page - 1) * pageSize).Limit(pageSize).All(&candidates)
+	if err != nil {
+		panic(types.ErrorCodeNotFound)
+	}
+
 	votePipe := cs.Pipe(
 		[]bson.M{
 			{"$match": query},
@@ -80,7 +84,10 @@ func (service *StakeService) QueryRevokedValidator(page, size int) model.Candida
 
 	validatorsCount, _ := cs.Find(query).Count()
 
-	cs.Find(query).Sort("-voting_power").Skip((page - 1) * size).Limit(size).All(&candidates)
+	err := cs.Find(query).Sort("-voting_power").Skip((page - 1) * size).Limit(size).All(&candidates)
+	if err != nil {
+		panic(types.ErrorCodeNotFound)
+	}
 
 	var result []model.CandidateAll
 	for _, ca := range candidates {
@@ -110,7 +117,10 @@ func (service *StakeService) QueryCandidates(page, size int) model.Candidates {
 	}
 
 	validatorsCount, _ := cs.Find(query).Count()
-	cs.Find(query).Sort("-voting_power").Skip((page - 1) * size).Limit(size).All(&candidates)
+	err := cs.Find(query).Sort("-voting_power").Skip((page - 1) * size).Limit(size).All(&candidates)
+	if err != nil {
+		panic(types.ErrorCodeNotFound)
+	}
 	var result []model.CandidateAll
 	var resp model.Candidates
 	if len(candidates) > 0 {
@@ -142,7 +152,10 @@ func (service *StakeService) QueryCandidate(address string) model.CandidateWithP
 	defer c.Database.Session.Close()
 	var candidate document.Candidate
 
-	c.Find(bson.M{"address": address}).Sort("-update_time").One(&candidate)
+	err := c.Find(bson.M{"address": address}).Sort("-update_time").One(&candidate)
+	if err != nil {
+		panic(types.ErrorCodeNotFound)
+	}
 
 	query := bson.M{}
 	query["revoked"] = false
@@ -178,7 +191,10 @@ func (service *StakeService) QueryCandidatesTopN() model.CandidatesTopN {
 	query["revoked"] = false
 	query["status"] = types.TypeValStatusBonded
 
-	cs.Find(query).Sort("-voting_power").Limit(10).All(&candidates)
+	err := cs.Find(query).Sort("-voting_power").Limit(10).All(&candidates)
+	if err != nil {
+		panic(types.ErrorCodeNotFound)
+	}
 	votePipe := cs.Pipe(
 		[]bson.M{
 			{"$match": query},
@@ -227,7 +243,7 @@ func (service *StakeService) QueryCandidateUptime(address, category string) (res
 	err := c.Find(bson.M{"address": address}).Sort("-update_time").One(&candidate)
 	address = candidate.PubKeyAddr
 	if err != nil || address == "" {
-		return
+		panic(types.ErrorCodeNotFound)
 	}
 
 	switch category {
@@ -317,7 +333,7 @@ func (service *StakeService) QueryCandidatePower(address, category string) (resu
 	err := c.Find(bson.M{"address": address}).Sort("-update_time").One(&candidate)
 	address = candidate.PubKeyAddr
 	if err != nil || address == "" {
-		return
+		panic(types.ErrorCodeNotFound)
 	}
 	var powers []model.PowerChange
 	var agoStr string
@@ -357,7 +373,10 @@ func (service *StakeService) QueryCandidateStatus(address string) (resp model.Ca
 	cs := db.C(document.CollectionNmStakeRoleCandidate)
 	cb := db.C(document.CollectionNmBlock)
 	var candidate document.Candidate
-	cs.Find(bson.M{"address": address}).Sort("-update_time").One(&candidate)
+	err := cs.Find(bson.M{"address": address}).Sort("-update_time").One(&candidate)
+	if err != nil {
+		panic(types.ErrorCodeNotFound)
+	}
 
 	var upTime int
 	var result []document.Block

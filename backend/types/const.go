@@ -37,16 +37,18 @@ const (
 	UrlRegisterQueryCandidateStatus  = "/stake/candidate/{address}/status"
 
 	//Tx
-	UrlRegisterQueryTxList = "/tx/{type}/{page}/{size}"
-	//UrlRegisterQueryAllStakeTxByPage     = "/txs/stake/{page}/{size}"
-	//UrlRegisterQueryStakeTxByAccount     = "/tx/stake/{address}"
-	//UrlRegisterQueryPageStakeTxByAccount = "/tx/stake/{address}/{page}/{size}"
+	UrlRegisterQueryTxList       = "/tx/{type}/{page}/{size}"
 	UrlRegisterQueryTxs          = "/txs/{page}/{size}"
 	UrlRegisterQueryTxsCounter   = "/txs/statistics"
 	UrlRegisterQueryTxsByAccount = "/txsByAddress/{address}/{page}/{size}"
-	//UrlRegisterQueryTxsByBlock           = "/txsByBlock/{height}/{page}/{size}"
-	UrlRegisterQueryTxsByDay = "/txsByDay"
-	UrlRegisterQueryTx       = "/tx/{hash}"
+	UrlRegisterQueryTxsByDay     = "/txsByDay"
+	UrlRegisterQueryTx           = "/tx/{hash}"
+
+	//version
+	UrlRegisterQueryApiVersion = "/version"
+
+	//ping
+	UrlRegisterPing = "/ping"
 
 	//BlockChainRpc
 	UrlIrisHubAccount = "%s/bank/accounts/%s"
@@ -138,7 +140,7 @@ func Convert(typ string) TxType {
 	} else if IsGovernanceType(typ) {
 		return Gov
 	}
-	panic("invalid tx type")
+	panic(ErrorCodeUnSupportTx)
 }
 func TxTypeFromString(typ string) TxType {
 	if typ == "trans" {
@@ -150,5 +152,5 @@ func TxTypeFromString(typ string) TxType {
 	} else if typ == "gov" {
 		return Gov
 	}
-	panic("invalid tx type")
+	panic(ErrorCodeUnSupportTx)
 }

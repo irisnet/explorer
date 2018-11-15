@@ -1,4 +1,4 @@
-package rest
+package controller
 
 import (
 	"encoding/json"
@@ -7,7 +7,6 @@ import (
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"io/ioutil"
-	"log"
 	"net/http"
 )
 
@@ -26,15 +25,16 @@ func RegisterNodes(r *mux.Router) error {
 }
 
 func RegisterQueryNodes(r *mux.Router) error {
-	r.HandleFunc(types.UrlRegisterQueryNodes, func(w http.ResponseWriter, request *http.Request) {
+	RegisterApi(r, types.UrlRegisterQueryNodes, "GET", func(writer http.ResponseWriter, request *http.Request) {
 		bz := utils.GetNodes()
-		w.Write(bz)
-	}).Methods("GET")
+		writer.Write(bz)
+	})
+
 	return nil
 }
 
 func RegisterQueryNodeLocation(r *mux.Router) error {
-	r.HandleFunc(types.UrlRegisterQueryIp, func(writer http.ResponseWriter, request *http.Request) {
+	RegisterApi(r, types.UrlRegisterQueryIp, "POST", func(writer http.ResponseWriter, request *http.Request) {
 		body, _ := ioutil.ReadAll(request.Body)
 		var params map[string][]string
 		json.Unmarshal(body, &params)
@@ -44,17 +44,14 @@ func RegisterQueryNodeLocation(r *mux.Router) error {
 			url := fmt.Sprintf(types.UrlNodeLocation, ip)
 			resp, err := http.Get(url)
 			if err != nil {
-				log.Printf("get request access err: %s", err.Error())
+				panic(types.ErrorCodeExtSysFailed)
 				return
 			}
 			body, _ := ioutil.ReadAll(resp.Body)
 			ipMap[i] = string(body)
-			fmt.Println(ipMap[i])
 		}
-		res, err := json.Marshal(ipMap)
-		if err == nil {
-			writer.Write(res)
-		}
-	}).Methods("POST")
+		WriteResponse(writer, ipMap)
+	})
+
 	return nil
 }

@@ -20,4 +20,4 @@ In addition, the command also opens a lightweight client program that provides a
 ```
 
 ##### 4 api doc for developer 
-- See the [Rest Guide](modules/rest/doc.md)
+- See the [Rest Guide](rest/controller/doc.md)

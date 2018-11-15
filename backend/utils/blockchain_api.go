@@ -47,7 +47,7 @@ func GetNodes() (bz []byte) {
 	uri := fmt.Sprintf(types.UrlIrisHubNetInfo, conf.Get().Server.HubNodeUrl)
 	bz, err := Get(uri)
 	if err != nil {
-		return
+		panic(err)
 	}
 	return bz
 }
