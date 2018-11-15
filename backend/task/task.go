@@ -1,15 +1,16 @@
 package task
 
 import (
+	"github.com/irisnet/explorer/backend/model"
+	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/types"
-	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
 	"log"
 	"time"
 )
 
-var validatorMap = make(map[string]types.PowerChange)
+var validatorMap = make(map[string]model.PowerChange)
 
 type ResValidatorPreCommits struct {
 	Id            ID    `bson:"_id"`
@@ -28,8 +29,8 @@ func Start() {
 }
 
 func init() {
-	var powerChanges []types.PowerChangeOrder
-	db := utils.GetDatabase()
+	var powerChanges []model.PowerChangeOrder
+	db := orm.GetDatabase()
 	p := db.C("power_change")
 	pipe := p.Pipe(
 		[]bson.M{
@@ -45,19 +46,19 @@ func init() {
 
 	for _, powerChange := range powerChanges {
 		if powerChange.Change != types.Slash {
-			validatorMap[powerChange.Address] = types.PowerChange{Address: powerChange.Address, Time: powerChange.Time, Power: powerChange.Power, Change: powerChange.Change}
+			validatorMap[powerChange.Address] = model.PowerChange{Address: powerChange.Address, Time: powerChange.Time, Power: powerChange.Power, Change: powerChange.Change}
 		}
 	}
 }
 
 func UptimeChange() {
 	log.Println("task start")
-	var uptimeChange types.UptimeChange
+	var uptimeChange model.UptimeChange
 	var blocks []document.Block
 	var firstBlock document.Block
 	var lastBlock document.Block
 
-	db := utils.GetDatabase()
+	db := orm.GetDatabase()
 	b := db.C("block")
 	u := db.C("uptime_change")
 	p := db.C("power_change")
@@ -117,7 +118,7 @@ func UptimeChange() {
 	//init validatorMap if validatorMap length is 0
 	if len(validatorMap) == 0 && len(blocks) > 0 {
 		for _, validator := range blocks[0].Validators {
-			powerChange := types.PowerChange{
+			powerChange := model.PowerChange{
 				Address: validator.Address,
 				Power:   validator.VotingPower,
 				Time:    blocks[0].Time,
@@ -138,7 +139,7 @@ func UptimeChange() {
 
 			// validator add or update
 			if _, ok := validatorMap[validator.Address]; !ok {
-				powerChange := types.PowerChange{
+				powerChange := model.PowerChange{
 					Address: validator.Address,
 					Power:   validator.VotingPower,
 					Time:    block.Time,
@@ -149,7 +150,7 @@ func UptimeChange() {
 				p.Insert(&powerChange)
 			} else {
 				if validatorMap[validator.Address].Power != validator.VotingPower {
-					powerChange := types.PowerChange{
+					powerChange := model.PowerChange{
 						Address: validator.Address,
 						Power:   validator.VotingPower,
 						Time:    block.Time,
@@ -168,7 +169,7 @@ func UptimeChange() {
 				continue
 			}
 			if _, ok := validatorMapNow[k]; !ok {
-				powerChange := types.PowerChange{
+				powerChange := model.PowerChange{
 					Address: v.Address,
 					Power:   v.Power,
 					Time:    block.Time,
@@ -193,7 +194,7 @@ func UptimeChange() {
 
 	doneTime := startTime.UTC().Format("2006-01-02 15")
 	for k, v := range uptimeMap {
-		uptimeChange := types.UptimeChange{Address: k, Uptime: float64(100*v) / float64(len(blocks)), Time: doneTime}
+		uptimeChange := model.UptimeChange{Address: k, Uptime: float64(100*v) / float64(len(blocks)), Time: doneTime}
 		u.Insert(&uptimeChange)
 	}
 	log.Println("task end")
