@@ -19,6 +19,7 @@ const (
 	KeyAddrHubNode = "ADDR_HUB_RPC"
 	KeyAddrFaucet  = "FAUCET_URL"
 	KeyChainId     = "CHAIN_ID"
+	KeyApiVersion  = "API_VERSION"
 
 	EnvironmentDevelop = "develop"
 	EnvironmentLocal   = "local"
@@ -51,6 +52,7 @@ func init() {
 		HubNodeUrl:   getEnv(KeyAddrHubNode, DefaultEnvironment),
 		HubFaucetUrl: getEnv(KeyAddrFaucet, DefaultEnvironment),
 		ChainId:      getEnv(KeyChainId, DefaultEnvironment),
+		ApiVersion:   getEnv(KeyApiVersion, DefaultEnvironment),
 	}
 
 	config.Server = server
@@ -69,6 +71,7 @@ func loadDefault() {
 		KeyAddrHubNode: "http://192.168.150.7:26657",
 		KeyAddrFaucet:  "http://dev.faucet.irisplorer.io",
 		KeyChainId:     "rainbow-dev",
+		KeyApiVersion:  "v0.6.5",
 	}
 
 	defaultConfig[EnvironmentLocal] = map[string]string{
@@ -82,6 +85,7 @@ func loadDefault() {
 		KeyAddrHubNode: "http://127.0.0.1:26657",
 		KeyAddrFaucet:  "http://dev.faucet.irisplorer.io",
 		KeyChainId:     "rainbow-dev",
+		KeyApiVersion:  "v0.6.5",
 	}
 }
 
@@ -108,6 +112,7 @@ type serverConf struct {
 	HubNodeUrl   string
 	HubFaucetUrl string
 	ChainId      string
+	ApiVersion   string
 }
 
 func getEnv(key string, environment string) string {

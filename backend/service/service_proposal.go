@@ -1,12 +1,10 @@
 package service
 
 import (
-	"fmt"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
-	"log"
 )
 
 type ProposalService struct {
@@ -47,7 +45,7 @@ func (service *ProposalService) Query(id int) (resp model.ProposalInfo) {
 	txStore := db.C(document.CollectionNmCommonTx)
 
 	if err := propoStore.Find(bson.M{"proposal_id": id}).One(&data); err != nil {
-		log.Println(fmt.Sprintf("proposal [%d] not found", id))
+		panic(types.ErrorCodeNotFound)
 		return
 	}
 

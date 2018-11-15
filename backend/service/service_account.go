@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"github.com/irisnet/explorer/backend/model"
+	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
@@ -21,9 +22,11 @@ func (service *AccountService) Query(address string) (result document.Account) {
 
 	c := service.GetDb().C(document.CollectionNmAccount)
 	defer c.Database.Session.Close()
-	err := c.Find(bson.M{"address": address}).Sort("-amount.amount").One(&result)
+	err := c.Find(bson.M{"address": address}).One(&result)
 	if err != nil {
+		error := types.ErrorCodeNotFound
 		log.Println(fmt.Sprintf("account [%s] not found", address))
+		panic(error)
 		return
 	}
 

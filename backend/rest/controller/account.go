@@ -1,13 +1,11 @@
-package rest
+package controller
 
 import (
-	"encoding/json"
 	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/types"
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/irisnet/explorer/backend/utils"
 )
 
 // mux.Router registrars
@@ -26,26 +24,23 @@ func RegisterAccount(r *mux.Router) error {
 }
 
 func RegisterQueryAccount(r *mux.Router) error {
-	r.HandleFunc(types.UrlRegisterQueryAccount, func(writer http.ResponseWriter, request *http.Request) {
-		args := mux.Vars(request)
-		address := args["address"]
+	RegisterApi(r, types.UrlRegisterQueryAccount, "GET", func(writer http.ResponseWriter, request *http.Request) {
+		address := Var(request, "address")
 
 		result := service.GetAccount().Query(address)
-		resultByte, _ := json.Marshal(result)
-		writer.Write(resultByte)
+		WriteResponse(writer, result)
 
-	}).Methods("GET")
+	})
+
 	return nil
 }
 
 func RegisterQueryAllAccount(r *mux.Router) error {
-	r.HandleFunc(types.UrlRegisterQueryAllAccount, func(writer http.ResponseWriter, request *http.Request) {
-		page, size := utils.GetPage(request)
+	RegisterApi(r, types.UrlRegisterQueryAllAccount, "GET", func(writer http.ResponseWriter, request *http.Request) {
+		page, size := GetPage(request)
 
 		result := service.GetAccount().QueryList(page, size)
-		resultByte, _ := json.Marshal(result)
-		writer.Write(resultByte)
-
-	}).Methods("GET")
+		WriteResponse(writer, result)
+	})
 	return nil
 }
