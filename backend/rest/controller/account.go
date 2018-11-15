@@ -28,7 +28,7 @@ func RegisterQueryAccount(r *mux.Router) error {
 		address := Var(request, "address")
 
 		result := service.GetAccount().Query(address)
-		WriteResonse(writer, result)
+		WriteResponse(writer, result)
 
 	})
 
@@ -40,7 +40,7 @@ func RegisterQueryAllAccount(r *mux.Router) error {
 		page, size := GetPage(request)
 
 		result := service.GetAccount().QueryList(page, size)
-		WriteResonse(writer, result)
+		WriteResponse(writer, result)
 	})
 	return nil
 }

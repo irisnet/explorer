@@ -54,7 +54,7 @@ func GetPage(r *http.Request) (int, int) {
 	return iPage, iSize
 }
 
-func WriteResonse(writer http.ResponseWriter, data interface{}) {
+func WriteResponse(writer http.ResponseWriter, data interface{}) {
 	resultByte, err := json.Marshal(data)
 	if err != nil {
 		log.Println(fmt.Sprintf("json.Marshal failed:%s", err.Error()))
@@ -73,7 +73,7 @@ func wrap(action Action) Action {
 				apiName := request.RequestURI
 				switch r.(type) {
 				case types.Error:
-					WriteResonse(writer, r)
+					WriteResponse(writer, r)
 					break
 				case error:
 					err := r.(error)
@@ -81,7 +81,7 @@ func wrap(action Action) Action {
 						Code: types.ErrorCodeUnKnown.Code,
 						Msg:  err.Error(),
 					}
-					WriteResonse(writer, e)
+					WriteResponse(writer, e)
 					break
 				}
 				log.Println(fmt.Sprintf("API[%s] execute failed,%+v", apiName, r))

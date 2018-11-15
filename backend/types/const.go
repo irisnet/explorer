@@ -140,7 +140,7 @@ func Convert(typ string) TxType {
 	} else if IsGovernanceType(typ) {
 		return Gov
 	}
-	panic("invalid tx type")
+	panic(ErrorCodeUnSupportTx)
 }
 func TxTypeFromString(typ string) TxType {
 	if typ == "trans" {
@@ -152,5 +152,5 @@ func TxTypeFromString(typ string) TxType {
 	} else if typ == "gov" {
 		return Gov
 	}
-	panic("invalid tx type")
+	panic(ErrorCodeUnSupportTx)
 }

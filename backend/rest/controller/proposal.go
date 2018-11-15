@@ -28,7 +28,7 @@ func registerQueryProposals(r *mux.Router) error {
 		page, size := GetPage(request)
 
 		result := service.GetProposal().QueryList(page, size)
-		WriteResonse(writer, result)
+		WriteResponse(writer, result)
 	})
 
 	return nil
@@ -44,7 +44,7 @@ func registerQueryProposal(r *mux.Router) error {
 		}
 
 		result := service.GetProposal().Query(pid)
-		WriteResonse(writer, result)
+		WriteResponse(writer, result)
 	})
 
 	return nil

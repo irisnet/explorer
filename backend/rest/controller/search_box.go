@@ -25,7 +25,7 @@ func registerQueryText(r *mux.Router) error {
 		text := Var(request, "text")
 
 		result := service.GetCommon().QueryText(text)
-		WriteResonse(writer, result)
+		WriteResponse(writer, result)
 	})
 
 	return nil

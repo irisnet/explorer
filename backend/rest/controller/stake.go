@@ -34,7 +34,7 @@ func registerQueryValidator(r *mux.Router) error {
 	RegisterApi(r, types.UrlRegisterQueryValidator, "GET", func(writer http.ResponseWriter, request *http.Request) {
 		page, size := GetPage(request)
 		result := service.GetStake().QueryValidators(page, size)
-		WriteResonse(writer, result)
+		WriteResponse(writer, result)
 	})
 
 	return nil
@@ -43,7 +43,7 @@ func registerQueryRevokedValidator(r *mux.Router) error {
 	RegisterApi(r, types.UrlRegisterQueryRevokedValidator, "GET", func(writer http.ResponseWriter, request *http.Request) {
 		page, size := GetPage(request)
 		result := service.GetStake().QueryRevokedValidator(page, size)
-		WriteResonse(writer, result)
+		WriteResponse(writer, result)
 	})
 	return nil
 }
@@ -51,7 +51,7 @@ func registerQueryCandidates(r *mux.Router) error {
 	RegisterApi(r, types.UrlRegisterQueryCandidates, "GET", func(writer http.ResponseWriter, request *http.Request) {
 		page, size := GetPage(request)
 		result := service.GetStake().QueryCandidates(page, size)
-		WriteResonse(writer, result)
+		WriteResponse(writer, result)
 	})
 
 	return nil
@@ -60,7 +60,7 @@ func registerQueryCandidates(r *mux.Router) error {
 func registerQueryCandidatesTop(r *mux.Router) error {
 	RegisterApi(r, types.UrlRegisterQueryCandidatesTop, "GET", func(writer http.ResponseWriter, request *http.Request) {
 		result := service.GetStake().QueryCandidatesTopN()
-		WriteResonse(writer, result)
+		WriteResponse(writer, result)
 	})
 
 	return nil
@@ -70,7 +70,7 @@ func registerQueryCandidate(r *mux.Router) error {
 	RegisterApi(r, types.UrlRegisterQueryCandidate, "GET", func(writer http.ResponseWriter, request *http.Request) {
 		address := Var(request, "address")
 		result := service.GetStake().QueryCandidate(address)
-		WriteResonse(writer, result)
+		WriteResponse(writer, result)
 	})
 
 	return nil
@@ -82,7 +82,7 @@ func registerQueryCandidateUptime(r *mux.Router) error {
 		category := Var(request, "category")
 
 		result := service.GetStake().QueryCandidateUptime(address, category)
-		WriteResonse(writer, result)
+		WriteResponse(writer, result)
 	})
 
 	return nil
@@ -94,7 +94,7 @@ func registerQueryCandidatePower(r *mux.Router) error {
 		category := Var(request, "category")
 
 		result := service.GetStake().QueryCandidatePower(address, category)
-		WriteResonse(writer, result)
+		WriteResponse(writer, result)
 	})
 	return nil
 }
@@ -104,7 +104,7 @@ func registerQueryCandidateStatus(r *mux.Router) error {
 		address := Var(request, "address")
 
 		result := service.GetStake().QueryCandidateStatus(address)
-		WriteResonse(writer, result)
+		WriteResponse(writer, result)
 	})
 
 	return nil
@@ -113,7 +113,7 @@ func registerQueryCandidateStatus(r *mux.Router) error {
 func registerQueryChain(r *mux.Router) error {
 	RegisterApi(r, types.UrlRegisterQueryChain, "GET", func(writer http.ResponseWriter, request *http.Request) {
 		result := service.GetStake().QueryChainStatus()
-		WriteResonse(writer, result)
+		WriteResponse(writer, result)
 	})
 
 	return nil

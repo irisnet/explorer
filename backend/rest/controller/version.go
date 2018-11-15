@@ -10,7 +10,7 @@ import (
 func RegisterQueryVersion(r *mux.Router) error {
 
 	RegisterApi(r, types.UrlRegisterQueryApiVersion, "GET", func(writer http.ResponseWriter, request *http.Request) {
-		WriteResonse(writer, map[string]string{"version": conf.Get().Server.ApiVersion})
+		WriteResponse(writer, map[string]string{"version": conf.Get().Server.ApiVersion})
 	})
 
 	return nil

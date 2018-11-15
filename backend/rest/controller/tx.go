@@ -67,7 +67,7 @@ func registerQueryTxList(r *mux.Router) error {
 			break
 		}
 		result = service.GetTx().QueryList(query, page, size)
-		WriteResonse(writer, result)
+		WriteResponse(writer, result)
 	})
 	return nil
 }
@@ -77,7 +77,7 @@ func registerQueryTx(r *mux.Router) error {
 		hash := Var(request, "hash")
 
 		tx := service.GetTx().Query(hash)
-		WriteResonse(writer, tx)
+		WriteResponse(writer, tx)
 	})
 
 	return nil
@@ -97,7 +97,7 @@ func registerQueryTxs(r *mux.Router) error {
 		page, pageSize := GetPage(request)
 		result := service.GetTx().QueryLatest(query, page, pageSize)
 
-		WriteResonse(writer, result)
+		WriteResponse(writer, result)
 	})
 
 	return nil
@@ -119,7 +119,7 @@ func registerQueryTxsCounter(r *mux.Router) error {
 		}
 
 		result := service.GetTx().CountByType(query)
-		WriteResonse(writer, result)
+		WriteResponse(writer, result)
 	})
 
 	return nil
@@ -131,7 +131,7 @@ func registerQueryTxsByAccount(r *mux.Router) error {
 		page, size := GetPage(request)
 		result := service.GetTx().QueryByAcc(address, page, size)
 
-		WriteResonse(writer, result)
+		WriteResponse(writer, result)
 	})
 
 	return nil
@@ -140,7 +140,7 @@ func registerQueryTxsByAccount(r *mux.Router) error {
 func registerQueryTxsByDay(r *mux.Router) error {
 	RegisterApi(r, types.UrlRegisterQueryTxsByDay, "GET", func(writer http.ResponseWriter, request *http.Request) {
 		result := service.GetTx().CountByDay()
-		WriteResonse(writer, result)
+		WriteResponse(writer, result)
 	})
 	return nil
 }

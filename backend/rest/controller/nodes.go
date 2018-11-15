@@ -50,7 +50,7 @@ func RegisterQueryNodeLocation(r *mux.Router) error {
 			body, _ := ioutil.ReadAll(resp.Body)
 			ipMap[i] = string(body)
 		}
-		WriteResonse(writer, ipMap)
+		WriteResponse(writer, ipMap)
 	})
 
 	return nil

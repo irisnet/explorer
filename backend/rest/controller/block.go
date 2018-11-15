@@ -34,7 +34,7 @@ func registerQueryBlock(r *mux.Router) error {
 		}
 
 		result := service.GetBlock().Query(height)
-		WriteResonse(writer, result)
+		WriteResponse(writer, result)
 	})
 	return nil
 }
@@ -43,7 +43,7 @@ func registerQueryBlocks(r *mux.Router) error {
 	RegisterApi(r, types.UrlRegisterQueryBlocks, "GET", func(writer http.ResponseWriter, request *http.Request) {
 		page, size := GetPage(request)
 		result := service.GetBlock().QueryList(page, size)
-		WriteResonse(writer, result)
+		WriteResponse(writer, result)
 	})
 
 	return nil
@@ -56,7 +56,7 @@ func registerQueryBlocksPrecommits(r *mux.Router) error {
 		page, size := GetPage(request)
 
 		result := service.GetBlock().QueryPrecommits(address, page, size)
-		WriteResonse(writer, result)
+		WriteResponse(writer, result)
 	})
 
 	return nil
