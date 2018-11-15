@@ -18,14 +18,15 @@ func GetAccount() *AccountService {
 	return accountService
 }
 
-func (service *AccountService) Query(address string) (result document.Account, error types.Error) {
+func (service *AccountService) Query(address string) (result document.Account) {
 
 	c := service.GetDb().C(document.CollectionNmAccount)
 	defer c.Database.Session.Close()
 	err := c.Find(bson.M{"address": address}).One(&result)
 	if err != nil {
-		error = types.ErrorCodeNotFound
+		error := types.ErrorCodeNotFound
 		log.Println(fmt.Sprintf("account [%s] not found", address))
+		panic(error)
 		return
 	}
 

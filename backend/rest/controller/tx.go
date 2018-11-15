@@ -29,7 +29,7 @@ func RegisterTx(r *mux.Router) error {
 }
 
 func registerQueryTxList(r *mux.Router) error {
-	r.HandleFunc(types.UrlRegisterQueryTxList, func(writer http.ResponseWriter, request *http.Request) {
+	RegisterApi(r, types.UrlRegisterQueryTxList, "GET", func(writer http.ResponseWriter, request *http.Request) {
 		query := bson.M{}
 
 		address := GetString(request, "address")
@@ -68,27 +68,23 @@ func registerQueryTxList(r *mux.Router) error {
 		}
 		result = service.GetTx().QueryList(query, page, size)
 		WriteResonse(writer, result)
-
-	}).Methods("GET")
+	})
 	return nil
 }
 
 func registerQueryTx(r *mux.Router) error {
-	r.HandleFunc(types.UrlRegisterQueryTx, func(writer http.ResponseWriter, request *http.Request) {
+	RegisterApi(r, types.UrlRegisterQueryTx, "GET", func(writer http.ResponseWriter, request *http.Request) {
 		hash := Var(request, "hash")
 
-		tx, err := service.GetTx().Query(hash)
-		if err != nil {
-			writer.Write([]byte(err.Error()))
-			return
-		}
+		tx := service.GetTx().Query(hash)
 		WriteResonse(writer, tx)
-	}).Methods("GET")
+	})
+
 	return nil
 }
 
 func registerQueryTxs(r *mux.Router) error {
-	r.HandleFunc(types.UrlRegisterQueryTxs, func(writer http.ResponseWriter, request *http.Request) {
+	RegisterApi(r, types.UrlRegisterQueryTxs, "GET", func(writer http.ResponseWriter, request *http.Request) {
 		query := bson.M{}
 		var typeArr []string
 		typeArr = append(typeArr, types.TypeTransfer)
@@ -102,12 +98,13 @@ func registerQueryTxs(r *mux.Router) error {
 		result := service.GetTx().QueryLatest(query, page, pageSize)
 
 		WriteResonse(writer, result)
-	}).Methods("GET")
+	})
+
 	return nil
 }
 
 func registerQueryTxsCounter(r *mux.Router) error {
-	r.HandleFunc(types.UrlRegisterQueryTxsCounter, func(writer http.ResponseWriter, request *http.Request) {
+	RegisterApi(r, types.UrlRegisterQueryTxsCounter, "GET", func(writer http.ResponseWriter, request *http.Request) {
 		query := bson.M{}
 		request.ParseForm()
 
@@ -123,25 +120,27 @@ func registerQueryTxsCounter(r *mux.Router) error {
 
 		result := service.GetTx().CountByType(query)
 		WriteResonse(writer, result)
-	}).Methods("GET")
+	})
+
 	return nil
 }
 
 func registerQueryTxsByAccount(r *mux.Router) error {
-	r.HandleFunc(types.UrlRegisterQueryTxsByAccount, func(writer http.ResponseWriter, request *http.Request) {
+	RegisterApi(r, types.UrlRegisterQueryTxsByAccount, "GET", func(writer http.ResponseWriter, request *http.Request) {
 		address := Var(request, "address")
 		page, size := GetPage(request)
 		result := service.GetTx().QueryByAcc(address, page, size)
 
 		WriteResonse(writer, result)
-	}).Methods("GET")
+	})
+
 	return nil
 }
 
 func registerQueryTxsByDay(r *mux.Router) error {
-	r.HandleFunc(types.UrlRegisterQueryTxsByDay, func(writer http.ResponseWriter, request *http.Request) {
+	RegisterApi(r, types.UrlRegisterQueryTxsByDay, "GET", func(writer http.ResponseWriter, request *http.Request) {
 		result := service.GetTx().CountByDay()
 		WriteResonse(writer, result)
-	}).Methods("GET")
+	})
 	return nil
 }

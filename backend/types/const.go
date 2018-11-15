@@ -44,6 +44,12 @@ const (
 	UrlRegisterQueryTxsByDay     = "/txsByDay"
 	UrlRegisterQueryTx           = "/tx/{hash}"
 
+	//version
+	UrlRegisterQueryApiVersion = "/version"
+
+	//ping
+	UrlRegisterPing = "/ping"
+
 	//BlockChainRpc
 	UrlIrisHubAccount = "%s/bank/accounts/%s"
 	UrlIrisHubNetInfo = "%s/net_info"

@@ -37,7 +37,7 @@ func (service *ProposalService) QueryList(page, size int) (resp model.Page) {
 	return resp
 }
 
-func (service *ProposalService) Query(id int) (resp model.ProposalInfo, error types.Error) {
+func (service *ProposalService) Query(id int) (resp model.ProposalInfo) {
 	var data document.Proposal
 	db := service.GetDb()
 	defer db.Session.Close()
@@ -45,7 +45,7 @@ func (service *ProposalService) Query(id int) (resp model.ProposalInfo, error ty
 	txStore := db.C(document.CollectionNmCommonTx)
 
 	if err := propoStore.Find(bson.M{"proposal_id": id}).One(&data); err != nil {
-		error = types.ErrorCodeNotFound
+		panic(types.ErrorCodeNotFound)
 		return
 	}
 

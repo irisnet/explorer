@@ -2,7 +2,6 @@ package service
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
@@ -33,7 +32,7 @@ func (service *TxService) QueryLatest(query bson.M, page, pageSize int) model.Pa
 	return pageInfo
 }
 
-func (service *TxService) Query(hash string) (interface{}, error) {
+func (service *TxService) Query(hash string) interface{} {
 	dbm := service.GetDb()
 	defer dbm.Session.Close()
 
@@ -42,8 +41,7 @@ func (service *TxService) Query(hash string) (interface{}, error) {
 	query["tx_hash"] = hash
 	err := dbm.C(document.CollectionNmCommonTx).Find(query).Sort("-time").One(&result)
 	if err != nil {
-		log.Println(err.Error())
-		return nil, errors.New(fmt.Sprintf("Hash [%s] has not existed", hash))
+		panic(types.ErrorCodeNotFound)
 	}
 
 	tx := service.buildTx(result)
@@ -51,7 +49,7 @@ func (service *TxService) Query(hash string) (interface{}, error) {
 	switch tx.(type) {
 	case model.GovTx:
 		govTx := tx.(model.GovTx)
-		return govTx, nil
+		return govTx
 	case model.StakeTx:
 		stakeTx := tx.(model.StakeTx)
 		if stakeTx.Type == types.TypeBeginRedelegation || stakeTx.Type == types.TypeCompleteRedelegation {
@@ -67,9 +65,9 @@ func (service *TxService) Query(hash string) (interface{}, error) {
 				stakeTx.Source = msg.ValidatorSrcAddr
 			}
 		}
-		return stakeTx, nil
+		return stakeTx
 	}
-	return tx, nil
+	return tx
 }
 
 func (service *TxService) QueryByAcc(address string, page, size int) model.Page {

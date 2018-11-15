@@ -3,8 +3,9 @@ package types
 var (
 	ErrorCodeNotFound     = NewError("EX-100001", "Data Not Found")
 	ErrorCodeSysFailed    = NewError("EX-100002", "System Exception")
-	ErrorCodeInValidParam = NewError("EX-100003", "invalid param")
+	ErrorCodeInValidParam = NewError("EX-100003", "invalid input param")
 	ErrorCodeExtSysFailed = NewError("EX-100004", "External system exception")
+	ErrorCodeUnKnown      = NewError("EX-100005", "unknown error ")
 )
 
 type Error struct {

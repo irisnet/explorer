@@ -31,84 +31,90 @@ func RegisterStake(r *mux.Router) error {
 }
 
 func registerQueryValidator(r *mux.Router) error {
-	r.HandleFunc(types.UrlRegisterQueryValidator, func(writer http.ResponseWriter, request *http.Request) {
+	RegisterApi(r, types.UrlRegisterQueryValidator, "GET", func(writer http.ResponseWriter, request *http.Request) {
 		page, size := GetPage(request)
 		result := service.GetStake().QueryValidators(page, size)
 		WriteResonse(writer, result)
-	}).Methods("GET")
+	})
+
 	return nil
 }
 func registerQueryRevokedValidator(r *mux.Router) error {
-	r.HandleFunc(types.UrlRegisterQueryRevokedValidator, func(writer http.ResponseWriter, request *http.Request) {
+	RegisterApi(r, types.UrlRegisterQueryRevokedValidator, "GET", func(writer http.ResponseWriter, request *http.Request) {
 		page, size := GetPage(request)
 		result := service.GetStake().QueryRevokedValidator(page, size)
 		WriteResonse(writer, result)
-	}).Methods("GET")
+	})
 	return nil
 }
 func registerQueryCandidates(r *mux.Router) error {
-	r.HandleFunc(types.UrlRegisterQueryCandidates, func(writer http.ResponseWriter, request *http.Request) {
+	RegisterApi(r, types.UrlRegisterQueryCandidates, "GET", func(writer http.ResponseWriter, request *http.Request) {
 		page, size := GetPage(request)
 		result := service.GetStake().QueryCandidates(page, size)
 		WriteResonse(writer, result)
-	}).Methods("GET")
+	})
+
 	return nil
 }
 
 func registerQueryCandidatesTop(r *mux.Router) error {
-	r.HandleFunc(types.UrlRegisterQueryCandidatesTop, func(writer http.ResponseWriter, request *http.Request) {
+	RegisterApi(r, types.UrlRegisterQueryCandidatesTop, "GET", func(writer http.ResponseWriter, request *http.Request) {
 		result := service.GetStake().QueryCandidatesTopN()
 		WriteResonse(writer, result)
-	}).Methods("GET")
+	})
+
 	return nil
 }
 
 func registerQueryCandidate(r *mux.Router) error {
-	r.HandleFunc(types.UrlRegisterQueryCandidate, func(writer http.ResponseWriter, request *http.Request) {
+	RegisterApi(r, types.UrlRegisterQueryCandidate, "GET", func(writer http.ResponseWriter, request *http.Request) {
 		address := Var(request, "address")
 		result := service.GetStake().QueryCandidate(address)
 		WriteResonse(writer, result)
-	}).Methods("GET")
+	})
+
 	return nil
 }
 
 func registerQueryCandidateUptime(r *mux.Router) error {
-	r.HandleFunc(types.UrlRegisterQueryCandidateUptime, func(writer http.ResponseWriter, request *http.Request) {
+	RegisterApi(r, types.UrlRegisterQueryCandidateUptime, "GET", func(writer http.ResponseWriter, request *http.Request) {
 		address := Var(request, "address")
 		category := Var(request, "category")
 
 		result := service.GetStake().QueryCandidateUptime(address, category)
 		WriteResonse(writer, result)
+	})
 
-	}).Methods("GET")
 	return nil
 }
 
 func registerQueryCandidatePower(r *mux.Router) error {
-	r.HandleFunc(types.UrlRegisterQueryCandidatePower, func(writer http.ResponseWriter, request *http.Request) {
+	RegisterApi(r, types.UrlRegisterQueryCandidatePower, "GET", func(writer http.ResponseWriter, request *http.Request) {
 		address := Var(request, "address")
 		category := Var(request, "category")
 
 		result := service.GetStake().QueryCandidatePower(address, category)
 		WriteResonse(writer, result)
-	}).Methods("GET")
+	})
 	return nil
 }
 
 func registerQueryCandidateStatus(r *mux.Router) error {
-	r.HandleFunc(types.UrlRegisterQueryCandidateStatus, func(writer http.ResponseWriter, request *http.Request) {
+	RegisterApi(r, types.UrlRegisterQueryCandidateStatus, "GET", func(writer http.ResponseWriter, request *http.Request) {
 		address := Var(request, "address")
 
 		result := service.GetStake().QueryCandidateStatus(address)
 		WriteResonse(writer, result)
-	}).Methods("GET")
+	})
+
 	return nil
 }
 
 func registerQueryChain(r *mux.Router) error {
-	r.HandleFunc(types.UrlRegisterQueryChain, func(writer http.ResponseWriter, request *http.Request) {
+	RegisterApi(r, types.UrlRegisterQueryChain, "GET", func(writer http.ResponseWriter, request *http.Request) {
 		result := service.GetStake().QueryChainStatus()
 		WriteResonse(writer, result)
-	}).Methods("GET")
+	})
+
 	return nil
 }

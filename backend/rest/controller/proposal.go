@@ -23,30 +23,29 @@ func RegisterProposal(r *mux.Router) error {
 }
 
 func registerQueryProposals(r *mux.Router) error {
-	r.HandleFunc(types.UrlRegisterQueryProposals, func(writer http.ResponseWriter, request *http.Request) {
+
+	RegisterApi(r, types.UrlRegisterQueryProposals, "GET", func(writer http.ResponseWriter, request *http.Request) {
 		page, size := GetPage(request)
 
 		result := service.GetProposal().QueryList(page, size)
 		WriteResonse(writer, result)
-	}).Methods("GET")
+	})
+
 	return nil
 }
 
 func registerQueryProposal(r *mux.Router) error {
-	r.HandleFunc(types.UrlRegisterQueryProposal, func(writer http.ResponseWriter, request *http.Request) {
+
+	RegisterApi(r, types.UrlRegisterQueryProposal, "GET", func(writer http.ResponseWriter, request *http.Request) {
 		pid, err := strconv.Atoi(Var(request, "pid"))
 		if err != nil {
-			WriteResonse(writer, types.ErrorCodeInValidParam)
+			panic(types.ErrorCodeInValidParam)
 			return
 		}
 
-		result, error := service.GetProposal().Query(pid)
+		result := service.GetProposal().Query(pid)
+		WriteResonse(writer, result)
+	})
 
-		if error.Success() {
-			WriteResonse(writer, result)
-			return
-		}
-		WriteResonse(writer, err)
-	}).Methods("GET")
 	return nil
 }

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"log"
 	"net/http"
@@ -59,4 +60,42 @@ func WriteResonse(writer http.ResponseWriter, data interface{}) {
 		log.Println(fmt.Sprintf("json.Marshal failed:%s", err.Error()))
 	}
 	writer.Write(resultByte)
+}
+
+// 用户处理逻辑函数
+type Action func(writer http.ResponseWriter, request *http.Request)
+
+//封装用户处理逻辑函数，捕获panic异常，统一处理
+func wrap(action Action) Action {
+	return func(writer http.ResponseWriter, request *http.Request) {
+		defer func() {
+			if r := recover(); r != nil {
+				apiName := request.RequestURI
+				switch r.(type) {
+				case types.Error:
+					WriteResonse(writer, r)
+					break
+				case error:
+					err := r.(error)
+					e := types.Error{
+						Code: types.ErrorCodeUnKnown.Code,
+						Msg:  err.Error(),
+					}
+					WriteResonse(writer, e)
+					break
+				}
+				log.Println(fmt.Sprintf("API[%s] execute failed,%+v", apiName, r))
+			}
+		}()
+		action(writer, request)
+	}
+}
+
+//注册api接口
+// url : api路径
+// method : api请求方法
+// action : 用户处理逻辑
+func RegisterApi(r *mux.Router, url, method string, action Action) {
+	wrapperAction := wrap(action)
+	r.HandleFunc(url, wrapperAction).Methods(method)
 }
