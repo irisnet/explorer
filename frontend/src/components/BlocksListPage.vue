@@ -180,14 +180,14 @@
           let url;
           let that = this;
           if(this.$route.params.param === 'transfer'){
-            this.listTitleName = "Transfer";
+            this.listTitleName = "Transfers";
             url = `/api/tx/trans/${currentPage}/${pageSize}`
           }else if(this.$route.params.param === 'stake'){
-            this.listTitleName = "Stake";
+            this.listTitleName = "Stakes";
             url = `/api/tx/stake/${currentPage}/${pageSize}`
 
           }else if(this.$route.params.param === 'declaration'){
-            this.listTitleName = "Declaration";
+            this.listTitleName = "Declarations";
             url = `/api/tx/declaration/${currentPage}/${pageSize}`
           }else if(this.$route.params.param === 'governance'){
             this.listTitleName = "Governance";
