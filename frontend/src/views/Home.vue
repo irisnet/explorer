@@ -173,6 +173,7 @@
                 value: data.Candidates[i].VotingPower,
                 name: data.Candidates[i].Description.Moniker ? `${Tools.formatString(data.Candidates[i].Description.Moniker,monikerReserveLength,"...")} (${Tools.formatString(data.Candidates[i].Address,addressReserveLength,"...")})` : (data.Candidates[i].Address ? data.Candidates[i].Address : ''),
                 itemStyle: {color: colors[i]},
+                emphasis : {itemStyle:{color: colors[i]}},
                 upTime:`${data.Candidates[i].Uptime}%`,
                 address:data.Candidates[i].Address,
                 powerAll,
