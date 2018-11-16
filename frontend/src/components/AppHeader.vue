@@ -33,13 +33,13 @@
             Transactions
             <span class="bottom_arrow"></span>
           </span>
-          <span class="sub_btn_item" @click="featureButtonClick('/transfers/transfer?pagenum=1')"
+          <span class="sub_btn_item" @click="featureButtonClick('/transfer/transfer?pagenum=1')"
                 v-show="showSubTransaction">Transfers</span>
-          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/declaration')"
+          <span class="sub_btn_item" @click="featureButtonClick('/declaration/declaration?pagenum=1')"
                 v-show="showSubTransaction">Declaration</span>
-          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/stake')"
+          <span class="sub_btn_item" @click="featureButtonClick('/stake/stake?pagenum=1')"
                 v-show="showSubTransaction">Stake</span>
-          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/governance')"
+          <span class="sub_btn_item" @click="featureButtonClick('/governance/governance?pagenum=1')"
                 v-show="showSubTransaction">Governance</span>
         </div>
 
@@ -262,8 +262,12 @@
               return data.data;
             }
           }).then((data) => {
-            if (data && typeof data === "object") {
-              this.$router.push(`/tx?txHash=${this.searchInputValue}`)
+            if(data.code === "0"){
+              if (data.data && typeof data.data === "object") {
+                this.$router.push(`/tx?txHash=${this.searchInputValue}`)
+              }else {
+                this.$router.push(`/searchResult/${this.searchInputValue}`);
+              }
             }else {
               this.$router.push(`/searchResult/${this.searchInputValue}`);
             }
@@ -278,8 +282,12 @@
               return data.data;
             }
           }).then((data) => {
-            if (data && typeof data === "object") {
-              this.$router.push(`/address/1/${this.searchInputValue}`)
+            if(data.code === "0"){
+              if (data.data && typeof data.data === "object") {
+                this.$router.push(`/address/1/${this.searchInputValue}`)
+              }else {
+                this.$router.push(`/searchResult/${this.searchInputValue}`);
+              }
             }else {
               this.$router.push(`/searchResult/${this.searchInputValue}`);
             }
@@ -294,24 +302,29 @@
               return data.data;
             }
           }).then((searchResult) => {
-            if(searchResult){
-              //searchResult：[ {Type：block，Data:{}} ，{Type：proposal,Data:{}} ]
-              let searchResultIsBlockOrproposalId = 1;
-              let searchResultIsBlockAndproposalId = 2;
-              if(searchResult.length === searchResultIsBlockOrproposalId){
-                if(searchResult[0].Type === "block" && searchResult[0].Data.Height !== 0){
-                  this.$router.push(`/blocks_detail/${this.searchInputValue}`);
-                  return
-                }else if(searchResult[0].Type === "proposal" && searchResult[0].Data.ProposalID !== 0){
-                  this.$router.push(`/ProposalsDetail/${this.searchInputValue}`);
-                  return
+            if(searchResult.code === "0"){
+              if(searchResult.data){
+                //searchResult：[ {Type：block，Data:{}} ，{Type：proposal,Data:{}} ]
+                let searchResultIsBlockOrproposalId = 1;
+                let searchResultIsBlockAndproposalId = 2;
+                if(searchResult.data.length === searchResultIsBlockOrproposalId){
+                  if(searchResult.data[0].Type === "block" && searchResult.data[0].Data.Height !== 0){
+                    this.$router.push(`/blocks_detail/${this.searchInputValue}`);
+                    return
+                  }else if(searchResult.data[0].Type === "proposal" && searchResult.data[0].Data.ProposalID !== 0){
+                    this.$router.push(`/ProposalsDetail/${this.searchInputValue}`);
+                    return
+                  }
+                }else if(searchResult.data.length === searchResultIsBlockAndproposalId){
+                  this.$router.push(`/searchResult/${this.searchInputValue}`)
                 }
-              }else if(searchResult.length === searchResultIsBlockAndproposalId){
+              }else {
                 this.$router.push(`/searchResult/${this.searchInputValue}`)
               }
             }else {
               this.$router.push(`/searchResult/${this.searchInputValue}`)
             }
+
           });
         }else {
           this.$router.push(`/searchResult/${this.searchInputValue}`);
@@ -609,7 +622,6 @@
           text-align: center;
           font-size: 0.14rem;
           color: #cccccc;
-          line-height: 0.28rem;
         }
         input {
           width: 100%;

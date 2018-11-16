@@ -127,8 +127,9 @@
             }
           }).then((searchResult) =>{
             that.flshowResult = false;
-              if(searchResult){
-                searchResult.forEach((item) => {
+            if(searchResult.code === "0"){
+              if(searchResult.data){
+                searchResult.data.forEach((item) => {
                   if(item.Type == "block"){
                     that.blockHeight = item.Data.Height;
                     that.blockTime = Tools.conversionTimeToUTCToYYMMDD(item.Data.Timestamp);
@@ -144,6 +145,9 @@
               }else {
                 that.flshowResult = true;
               }
+            }else {
+              that.flshowResult = true;
+            }
           })
         }
       },

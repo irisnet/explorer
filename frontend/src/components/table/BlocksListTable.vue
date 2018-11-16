@@ -14,7 +14,7 @@
       </template>
     </b-table>
 
-    <b-table :fields='fields' :items='items' striped v-if="type === 'transfer'" class="block_style">
+    <b-table :fields='fields' :items='items' striped v-if="type === 'transfer' || type === 'declaration' || type === 'stake' || type === 'governance' " class="block_style">
       <template slot='TxHash' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/tx?txHash=${data.item.TxHash}`)">
           {{data.item.TxHash?`${String(data.item.TxHash).substr(0,16)}...`:''}}

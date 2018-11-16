@@ -112,31 +112,36 @@
             return data.data
           }
         }).then((data)=>{
-          if(data.Data && typeof data === "object"){
-            this.showNoData = false;
-            this.count = data.Count;
-            this.items = data.Data.map(item =>{
-              let proposalId = item.proposal_id === 0 ? "--" : item.proposal_id;
-              let type = item.type;
-              let status  = item.status;
-              let submitBlock = item.submit_block;
-              let submitTime = Tools.conversionTimeToUTCToYYMMDD(item.submit_time);
-              let votingStartBlock = item.voting_start_block ? item.voting_start_block : "" ;
-              let title = Tools.formatString(item.title,20,"...");
-              return {
-                Title : title,
-                'Proposal ID' : proposalId,
-                Type : type,
-                Status : status,
-                'Submit Block' : submitBlock,
-                'Submit Time' : submitTime,
-                'Voting Start Block' : votingStartBlock,
-              }
-            })
+          if(data.code === "0"){
+            if(data.data.Data && typeof data.data === "object"){
+              this.showNoData = false;
+              this.count = data.data.Count;
+              this.items = data.data.Data.map(item =>{
+                let proposalId = item.proposal_id === 0 ? "--" : item.proposal_id;
+                let type = item.type;
+                let status  = item.status;
+                let submitBlock = item.submit_block;
+                let submitTime = Tools.conversionTimeToUTCToYYMMDD(item.submit_time);
+                let votingStartBlock = item.voting_start_block ? item.voting_start_block : "" ;
+                let title = Tools.formatString(item.title,20,"...");
+                return {
+                  Title : title,
+                  'Proposal ID' : proposalId,
+                  Type : type,
+                  Status : status,
+                  'Submit Block' : submitBlock,
+                  'Submit Time' : submitTime,
+                  'Voting Start Block' : votingStartBlock,
+                }
+              })
+            }else {
+              this.items = [{Title:"",'Proposal ID':"",Type:"",Status:"",'Submit Block':"",'Submit Time':'','Voting Start Block':''}];
+              this.showNoData = true;
+            }
           }else {
-            this.items = [{Title:"",'Proposal ID':"",Type:"",Status:"",'Submit Block':"",'Submit Time':'','Voting Start Block':''}];
-            this.showNoData = true;
+            console.log(data.msg)
           }
+
           this.showLoading = false;
         }).catch(e => {
           console.log(e)

@@ -13,6 +13,9 @@ import Nodespage from "./components/NodesPage.vue";
 import SearchResult from "./components/searchResult.vue";
 import BlockPage from './components/BlockPage.vue';
 import Transfers from './components/Transfers.vue';
+import Declaration from './components/Declaration.vue';
+import Stake from "./components/Stake.vue";
+import Governance from './components/Governance.vue'
 Vue.use(Router);
 
 export default new Router({
@@ -85,7 +88,16 @@ export default new Router({
       path: '/block/:type', component: BlockPage,
     },
     {
-      path: '/transfers/:type', component: Transfers,
+      path: '/transfer/:type', component: Transfers,
+    },
+    {
+      path: '/declaration/:type', component: Declaration,
+    },
+    {
+      path: '/stake/:type', component: Stake,
+    },
+    {
+      path: '/governance/:type', component: Governance,
     },
   ]
 

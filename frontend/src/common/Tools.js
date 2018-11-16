@@ -2,6 +2,7 @@
  * 工具类
  */
 import BigNumber from 'bignumber.js';
+import axios from "axios"
 export default class Tools{
 
   /**

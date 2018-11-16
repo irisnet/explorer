@@ -203,12 +203,17 @@
             return data.data
           }
         }).then((data) => {
-          if(data){
-            this.txTab[0].BlockTxStatistics = data.TransCnt;
-            this.txTab[1].BlockTxStatistics = data.StakeCnt;
-            this.txTab[2].BlockTxStatistics = data.DeclarationCnt;
-            this.txTab[3].BlockTxStatistics = data.GovCnt;
+          if(data.code === "0"){
+            if(data.data){
+              this.txTab[0].BlockTxStatistics = data.data.TransCnt;
+              this.txTab[1].BlockTxStatistics = data.data.StakeCnt;
+              this.txTab[2].BlockTxStatistics = data.data.DeclarationCnt;
+              this.txTab[3].BlockTxStatistics = data.data.GovCnt;
+            }
+          }else {
+            console.log(data.msg)
           }
+
         }).catch((e) => {
 
           console.log(e)
@@ -240,125 +245,130 @@
         }).then((data) => {
           this.showLoading = false;
           this.showNoData = false;
-          if(data.Data){
-            that.items = data.Data.map(item => {
-              let [Amount,Fee] = ['--','--'];
-              if(txTabName === 'Transfers' || txTabName === 'Stakes' || txTabName === 'Governance' ||  txTabName === 'Declarations' ){
-                if(item.Amount){
-                  if(item.Amount instanceof Array){
-                    if(item.Amount.length > 0){
-                      item.Amount[0].amount = Tools.formatAmount(item.Amount[0].amount);
+          if(data.code === "0"){
+            if(data.data.Data){
+              that.items = data.data.Data.map(item => {
+                let [Amount,Fee] = ['--','--'];
+                if(txTabName === 'Transfers' || txTabName === 'Stakes' || txTabName === 'Governance' ||  txTabName === 'Declarations' ){
+                  if(item.Amount){
+                    if(item.Amount instanceof Array){
+                      if(item.Amount.length > 0){
+                        item.Amount[0].amount = Tools.formatAmount(item.Amount[0].amount);
+                        if(Tools.flTxType(item.Type)){
+                          Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
+                        }else {
+                          Amount = item.Amount.map(listItem=>`${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
+                        }
+                      }
+                    }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
+                      item.Amount.amount = Tools.formatAmount(item.Amount.amount);
+                      Amount = `${item.Amount.amount} ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
                       if(Tools.flTxType(item.Type)){
-                        Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
-                      }else {
-                        Amount = item.Amount.map(listItem=>`${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
+                        Amount = `${item.Amount.amount} SHARES`;
                       }
                     }
-                  }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
-                    item.Amount.amount = Tools.formatAmount(item.Amount.amount);
-                    Amount = `${item.Amount.amount} ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
-                    if(Tools.flTxType(item.Type)){
-                      Amount = `${item.Amount.amount} SHARES`;
-                    }
+                  }
+                  if(item.Fee.amount && item.Fee.denom){
+                    Fee = item.Fee.amount = `${Tools.formatFeeToFixedNumber(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`;
                   }
                 }
-                if(item.Fee.amount && item.Fee.denom){
-                  Fee = item.Fee.amount = `${Tools.formatFeeToFixedNumber(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`;
+                let objList;
+                if(txTabName === 'Transfers'){
+                  objList = {
+                    TxHash: item.Hash,
+                    Block:item.BlockHeight,
+                    From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
+                    To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
+                    Amount,
+                    Fee,
+                    Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
+                  }
+                }else if(txTabName === 'Stakes'){
+                  objList = {
+                    TxHash: item.Hash,
+                    Block:item.BlockHeight,
+                    From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
+                    To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
+                    Type:item.Type === 'coin'?'transfer':item.Type,
+                    Amount,
+                    Fee,
+                    Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
+                  };
+                }else if(txTabName === 'Declarations'){
+                  objList = {
+                    TxHash: item.Hash,
+                    Block:item.BlockHeight,
+                    Owner:item.Owner,
+                    Moniker: item.Moniker,
+                    'Self-Bond':item.SelfBond && item.SelfBond.length > 0 ? `${Tools.formatAmount(item.SelfBond[0].amount)} ${item.SelfBond[0].denom.toUpperCase()}`: "--",
+                    Type: item.Type,
+                    Fee,
+                    Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
+                  };
+                }else if(txTabName === 'Governance'){
+                  objList = {
+                    TxHash: item.Hash,
+                    Block:item.BlockHeight,
+                    From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
+                    "Proposal_ID": item.ProposalId === 0 ? "--" : item.ProposalId,
+                    Type:item.Type === 'coin'?'transfer':item.Type,
+                    Fee,
+                    Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
+                  };
                 }
-              }
-              let objList;
-              if(txTabName === 'Transfers'){
-                objList = {
-                  TxHash: item.Hash,
-                  Block:item.BlockHeight,
-                  From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
-                  To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
-                  Amount,
-                  Fee,
-                  Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
-                }
-              }else if(txTabName === 'Stakes'){
-                objList = {
-                  TxHash: item.Hash,
-                  Block:item.BlockHeight,
-                  From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
-                  To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
-                  Type:item.Type === 'coin'?'transfer':item.Type,
-                  Amount,
-                  Fee,
-                  Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
-                };
-              }else if(txTabName === 'Declarations'){
-                objList = {
-                  TxHash: item.Hash,
-                  Block:item.BlockHeight,
-                  Owner:item.Owner,
-                  Moniker: item.Moniker,
-                  'Self-Bond':item.SelfBond && item.SelfBond.length > 0 ? `${Tools.formatAmount(item.SelfBond[0].amount)} ${item.SelfBond[0].denom.toUpperCase()}`: "--",
-                  Type: item.Type,
-                  Fee,
-                  Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
-                };
-              }else if(txTabName === 'Governance'){
-                objList = {
-                  TxHash: item.Hash,
-                  Block:item.BlockHeight,
-                  From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
-                  "Proposal_ID": item.ProposalId === 0 ? "--" : item.ProposalId,
-                  Type:item.Type === 'coin'?'transfer':item.Type,
-                  Fee,
-                  Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
-                };
-              }
-              return objList
-            })
+                return objList
+              })
 
-          }else {
-            this.showNoData = true;
-            if(txTabName === 'Transfers'){
-              this.items = [{
-                'Tx Hash': "",
-                Block: "",
-                From: "",
-                To: "",
-                Amount: "",
-                Fee: "",
-                Timestamp: "",
-              }]
-            }else if(txTabName === 'Stakes'){
-              this.items = [{
-                'Tx Hash': "",
-                Block: "",
-                From: "",
-                To: "",
-                Type: "",
-                Amount: "",
-                Fee: "",
-                Timestamp: "",
-              }]
-            }else if(txTabName === 'Declarations'){
-              this.items = [{
-                'Tx Hash': "",
-                Block: "",
-                Owner: "",
-                Moniker: "",
-                'Self-Bond': "",
-                Type: "",
-                Fee: "",
-                Timestamp: "",
-              }]
-            }else if(txTabName === 'Governance'){
-              this.items = [{
-                'Tx Hash': "",
-                Block: "",
-                From: "",
-                'Proposal_ID': "",
-                Type: "",
-                Fee: "",
-                Timestamp: "",
-              }]
+            }else {
+              this.showNoData = true;
+              if(txTabName === 'Transfers'){
+                this.items = [{
+                  'Tx Hash': "",
+                  Block: "",
+                  From: "",
+                  To: "",
+                  Amount: "",
+                  Fee: "",
+                  Timestamp: "",
+                }]
+              }else if(txTabName === 'Stakes'){
+                this.items = [{
+                  'Tx Hash': "",
+                  Block: "",
+                  From: "",
+                  To: "",
+                  Type: "",
+                  Amount: "",
+                  Fee: "",
+                  Timestamp: "",
+                }]
+              }else if(txTabName === 'Declarations'){
+                this.items = [{
+                  'Tx Hash': "",
+                  Block: "",
+                  Owner: "",
+                  Moniker: "",
+                  'Self-Bond': "",
+                  Type: "",
+                  Fee: "",
+                  Timestamp: "",
+                }]
+              }else if(txTabName === 'Governance'){
+                this.items = [{
+                  'Tx Hash': "",
+                  Block: "",
+                  From: "",
+                  'Proposal_ID': "",
+                  Type: "",
+                  Fee: "",
+                  Timestamp: "",
+                }]
+              }
             }
+          }else {
+            console.log(data.msg)
           }
+
         })
       },
       getBlockInformation() {
@@ -368,44 +378,46 @@
             return data.data;
           }
         }).then((data) => {
-          if (data) {
-            let denominator = 0;
-            data.Validators.forEach(item => denominator += item.VotingPower);
-            let numerator = 0;
-            for (let i = 0; i < data.Block.LastCommit.Precommits.length; i++) {
-              for (let j = 0; j < data.Validators.length; j++) {
-                if (data.Block.LastCommit.Precommits[i].ValidatorAddress === data.Validators[j].Address) {
-                  numerator += data.Validators[j].VotingPower;
-                  break;
+          if(data.code === "0"){
+            if(data.data) {
+              let denominator = 0;
+              data.data.Validators.forEach(item => denominator += item.VotingPower);
+              let numerator = 0;
+              for (let i = 0; i < data.data.Block.LastCommit.Precommits.length; i++) {
+                for (let j = 0; j < data.data.Validators.length; j++) {
+                  if (data.data.Block.LastCommit.Precommits[i].ValidatorAddress === data.data.Validators[j].Address) {
+                    numerator += data.data.Validators[j].VotingPower;
+                    break;
+                  }
                 }
               }
+              if (data.data) {
+                this.transactionsValue = data.data.NumTxs;
+                this.hashValue = data.data.Height;
+                this.heightValue = data.data.Height;
+                this.timestampValue = Tools.conversionTimeToUTCToYYMMDD(data.data.Time);
+                this.blockHashValue = data.data.Hash;
+                this.lastBlockHashValue = data.data.Block.LastCommit.BlockID.Hash;
+                this.precommitValidatorsValue = data.data.Validators.length !== 0 ? `${data.data.Block.LastCommit.Precommits.length}/${data.data.Validators.length}` : '';
+                this.votingPowerValue = denominator !== 0 ? `${numerator / denominator * 100}%` : '';
+              }
+            } else {
+              this.items = [{
+                Address: '',
+                Index: '',
+                Round: '',
+                Signature: '',
+              }];
+              this.showNoData = true;
+              this.hashValue = this.$route.params.height;
+              this.heightValue = this.$route.params.height;
+              this.timestampValue = '';
+              this.blockHashValue = '';
+              this.transactionsValue = '';
+              this.lastBlockHashValue = '';
+              this.precommitValidatorsValue = '';
+              this.votingPowerValue = '';
             }
-            if (data) {
-              this.transactionsValue = data.NumTxs;
-              this.hashValue = data.Height;
-              this.heightValue = data.Height;
-              this.timestampValue = Tools.conversionTimeToUTCToYYMMDD(data.Time);
-              this.blockHashValue = data.Hash;
-              this.lastBlockHashValue = data.Block.LastCommit.BlockID.Hash;
-              this.precommitValidatorsValue = data.Validators.length !== 0 ? `${data.Block.LastCommit.Precommits.length}/${data.Validators.length}` : '';
-              this.votingPowerValue = denominator !== 0 ? `${numerator / denominator * 100}%` : '';
-            }
-          } else {
-            this.items = [{
-              Address: '',
-              Index: '',
-              Round: '',
-              Signature: '',
-            }];
-            this.showNoData = true;
-            this.hashValue = this.$route.params.height;
-            this.heightValue = this.$route.params.height;
-            this.timestampValue = '';
-            this.blockHashValue = '';
-            this.transactionsValue = '';
-            this.lastBlockHashValue = '';
-            this.precommitValidatorsValue = '';
-            this.votingPowerValue = '';
           }
         }).catch(e => {
           console.log(e)
@@ -433,16 +445,21 @@
             return data.data;
           }
         }).then((data) => {
-          if (data && typeof data === "object") {
-            if(data.Data && data.Data.length !==0){
-              this.maxBlock = data.Data[0].Height;
+          if(data.code === "0"){
+            if (data.data && typeof data.data === "object") {
+              if(data.data.Data && data.data.Data.length !==0){
+                this.maxBlock = data.data.Data[0].Height;
+              }
+              if (Number(this.$route.params.height) >= this.maxBlock) {
+                this.activeNext = false;
+              } else {
+                this.activeNext = true;
+              }
             }
-            if (Number(this.$route.params.height) >= this.maxBlock) {
-              this.activeNext = false;
-            } else {
-              this.activeNext = true;
-            }
+          }else {
+            console.log(data.msg)
           }
+
         }).catch(e => {
           console.log(e)
         })

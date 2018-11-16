@@ -196,83 +196,88 @@
           return data.data;
         }
       }).then((data)=>{
-        if(data && typeof data === "object"){
-          this.hashValue = data.Hash;
-          this.blockValue = data.BlockHeight;
-          this.typeValue = data.Type === 'coin'?'transfer':data.Type;
-          this.timestampValue = Tools.conversionTimeToUTCToYYMMDD(data.Timestamp);
-          this.gasPrice = Tools.convertScientificNotation2Number(Tools.formaNumberAboutGasPrice(data.GasPrice));
-          this.gasLimit = data.GasLimit;
-          this.gasUsedByTxn = data.GasUsed;
-          this.memo = data.Memo ? data.Memo : '--';
+        if(data.code === "0"){
+          if(data.data && typeof data.data === "object"){
+            this.hashValue = data.data.Hash;
+            this.blockValue = data.data.BlockHeight;
+            this.typeValue = data.data.Type === 'coin'?'transfer':data.data.Type;
+            this.timestampValue = Tools.conversionTimeToUTCToYYMMDD(data.data.Timestamp);
+            this.gasPrice = Tools.convertScientificNotation2Number(Tools.formaNumberAboutGasPrice(data.data.GasPrice));
+            this.gasLimit = data.data.GasLimit;
+            this.gasUsedByTxn = data.data.GasUsed;
+            this.memo = data.data.Memo ? data.data.Memo : '--';
 
-          if(data.Amount && data.Amount.length !==0){
-            this.amountValue = data.Amount.map(item=>{
-              item.amount = Tools.convertScientificNotation2Number(Tools.formatNumber(item.amount));
-              if(Tools.flTxType(data.Type)){
-                return `${item.amount} SHARES`;
-              }else{
-                return `${item.amount} ${Tools.formatDenom(item.denom).toUpperCase()}`;
-              }
-            }).join(',') ;
-          }else if(data.Amount && Object.keys(data.Amount).includes('amount') && Object.keys(data.Amount).includes('denom')){
-            data.Amount =  Tools.convertScientificNotation2Number(Tools.formatNumber(data.Amount.amount));
-            this.amountValue = `${data.Amount.amount} ${Tools.formatDenom(data.Amount.denom).toUpperCase()}`
-          }else {
-            this.amountValue = "--"
-          }
-          this.actualTxFee = `${Tools.convertScientificNotation2Number(Tools.formatNumber(data.Fee.amount))} ${Tools.formatDenom(data.Fee.denom).toUpperCase()}`;
-
-
-          if(data.Type === "Transfer" || data.Type === "Delegate" || data.Type === "BeginUnbonding" || data.Type === "CompleteUnbonding"){
-            this.showTypeTransfer = true;
-            this.fromValue = data.From;
-            this.toValue = data.To;
-          }else if(data.Type === "CreateValidator" || data.Type === "EditValidator"){
-            this.owner = data.Owner ? data.Owner : '--';
-            this.moniker = data.Moniker ? data.Moniker : '--';
-            this.pubkey = data.Pubkey ? data.Pubkey : "--";
-            this.identity = data.Identity ? data.Identity : '--';
-            this.website = data.Website ? data.Website : '--';
-            this.details = data.Details ? data.Details : '--';
-            if(data.SelfBond && data.SelfBond.length !== 0){
-              this.selfBond = `${Tools.convertScientificNotation2Number(Tools.formatNumber(data.SelfBond[0].amount))} ${Tools.formatDenom(data.SelfBond[0].denom).toUpperCase()}`;
-            }else {
-              this.selfBond = "--"
-            }
-          }else if(data.Type === "BeginRedelegate" || data.Type === "CompleteRedelegate" ){
-            this.showTypeTransfer = true;
-            this.showSource = true;
-            this.fromValue = data.From ? data.From : '';
-            this.toValue = data.To ? data.To : "";
-            this.source = data.Source ? data.Source : "";
-          }else if(data.Type === "SubmitProposal"){
-            this.showProposer = true;
-            this.showInitialDeposit = true;
-            this.title = data.Title ? data.Title : '--';
-            this.proposer = data.From;
-            this.proposalType = data.ProposalType;
-            if(data.Amount && data.Amount.length !==0){
-              this.initialDeposit = data.Amount.map(item=>{
-                return `${item.amount} ${Tools.formatDenom(item.denom).toUpperCase()}`;
+            if(data.data.Amount && data.data.Amount.length !==0){
+              this.amountValue = data.data.Amount.map(item=>{
+                item.amount = Tools.convertScientificNotation2Number(Tools.formatNumber(item.amount));
+                if(Tools.flTxType(data.data.Type)){
+                  return `${item.amount} SHARES`;
+                }else{
+                  return `${item.amount} ${Tools.formatDenom(item.denom).toUpperCase()}`;
+                }
               }).join(',') ;
+            }else if(data.data.Amount && Object.keys(data.data.Amount).includes('amount') && Object.keys(data.data.Amount).includes('denom')){
+              data.data.Amount =  Tools.convertScientificNotation2Number(Tools.formatNumber(data.data.Amount.amount));
+              this.amountValue = `${data.data.Amount.amount} ${Tools.formatDenom(data.data.Amount.denom).toUpperCase()}`
             }else {
-              this.initialDeposit = "--"
+              this.amountValue = "--"
             }
-            this.description = data.Description ? data.Description : '--';
-          }else if(data.Type === "Deposit"){
-            this.showProposalId = true;
-            this.showTypeDeposit = true;
-            this.proposalId = data.ProposalId === 0 ? "--" : data.ProposalId;
-            this.depositer = data.From ? data.From : "--";
-          }else if(data.Type === "Vote"){
-            this.showProposalId = true;
-            this.showVoter = true;
-            this.proposalId = data.ProposalId === 0 ? "--" : data.ProposalId;
-            this.voter = data.From ? data.From : '--';
-            this.option = data.Option ? data.Option : "--";
+            this.actualTxFee = `${Tools.convertScientificNotation2Number(Tools.formatNumber(data.data.Fee.amount))} ${Tools.formatDenom(data.data.Fee.denom).toUpperCase()}`;
+
+
+            if(data.data.Type === "Transfer" || data.data.Type === "Delegate" || data.data.Type === "BeginUnbonding" || data.data.Type === "CompleteUnbonding"){
+              this.showTypeTransfer = true;
+              this.fromValue = data.data.From;
+              this.toValue = data.data.To;
+            }else if(data.data.Type === "CreateValidator" || data.data.Type === "EditValidator"){
+              this.owner = data.data.Owner ? data.data.Owner : '--';
+              this.moniker = data.data.Moniker ? data.data.Moniker : '--';
+              this.pubkey = data.data.Pubkey ? data.data.Pubkey : "--";
+              this.identity = data.data.Identity ? data.data.Identity : '--';
+              this.website = data.data.Website ? data.data.Website : '--';
+              this.details = data.data.Details ? data.data.Details : '--';
+              if(data.data.SelfBond && data.data.SelfBond.length !== 0){
+                this.selfBond = `${Tools.convertScientificNotation2Number(Tools.formatNumber(data.data.SelfBond[0].amount))} ${Tools.formatDenom(data.data.SelfBond[0].denom).toUpperCase()}`;
+              }else {
+                this.selfBond = "--"
+              }
+            }else if(data.data.Type === "BeginRedelegate" || data.data.Type === "CompleteRedelegate" ){
+              this.showTypeTransfer = true;
+              this.showSource = true;
+              this.fromValue = data.data.From ? data.data.From : '';
+              this.toValue = data.data.To ? data.data.To : "";
+              this.source = data.data.Source ? data.data.Source : "";
+            }else if(data.data.Type === "SubmitProposal"){
+              this.showProposer = true;
+              this.showInitialDeposit = true;
+              this.title = data.data.Title ? data.data.Title : '--';
+              this.proposer = data.data.From;
+              this.proposalType = data.data.ProposalType;
+              if(data.data.Amount && data.data.Amount.length !==0){
+                this.initialDeposit = data.data.Amount.map(item=>{
+                  return `${item.amount} ${Tools.formatDenom(item.denom).toUpperCase()}`;
+                }).join(',') ;
+              }else {
+                this.initialDeposit = "--"
+              }
+              this.description = data.data.Description ? data.data.Description : '--';
+            }else if(data.data.Type === "Deposit"){
+              this.showProposalId = true;
+              this.showTypeDeposit = true;
+              this.proposalId = data.data.ProposalId === 0 ? "--" : data.data.ProposalId;
+              this.depositer = data.data.From ? data.data.From : "--";
+            }else if(data.data.Type === "Vote"){
+              this.showProposalId = true;
+              this.showVoter = true;
+              this.proposalId = data.data.ProposalId === 0 ? "--" : data.data.ProposalId;
+              this.voter = data.data.From ? data.data.From : '--';
+              this.option = data.data.Option ? data.data.Option : "--";
+            }
           }
+        }else {
+          console.log(data.msg)
         }
+
 
       }).catch(e => {
         console.log(e)

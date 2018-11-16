@@ -53,6 +53,7 @@
           series : [
             {
               name: '访问来源',
+              legendHoverLink:false,
               type: 'pie',
               radius,
               center,
@@ -114,6 +115,8 @@
           series : [
             {
               type: 'pie',
+              legendHoverLink:true,
+              hoverAnimation:true,
               radius,
               center,
               label:{

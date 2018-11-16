@@ -136,7 +136,6 @@
     },
     methods: {
       computeMinWidth(){
-        console.log(this.$route,"969696966")
         if(this.$route.params.proposal_id){
           this.tableMinWidth = 8.8;
         }
@@ -150,69 +149,70 @@
           }
         }).then((data) => {
           this.showLoading = false;
-          if(data && typeof  data === "object" ){
-            this.showNoData = false;
-            if(data.proposal.proposal_id === 0){
-              this.proposalsId = '--';
-              this.title = '--';
-              this.type = '--';
-              this.status = '--';
-              this.proposer = '--';
-              this.submitHash = '--';
-              this.submitBlock = '--';
-              this.submitTime = '--';
-              this.votingStartBlock = '--';
-              this.description = '--';
-              this.voteDetailsYes = '--';
-              this.voteDetailsNo = '--';
-              this.voteDetailsNoWithVeto = '--';
-              this.voteDetailsAbstain = '--';
-              this.totalDeposit = '--';
-              this.count = 0;
-            }else {
-              this.proposalsId = data.proposal.proposal_id === 0 ? "--" : data.proposal.proposal_id;
-              this.title = data.proposal.title;
-              this.type = data.proposal.type;
-              this.status = data.proposal.status;
-              this.proposer = data.proposal.proposer ? data.proposal.proposer : "--";
-              this.submitHash = data.proposal.tx_hash ? data.proposal.tx_hash : "--";
-              this.submitBlock = data.proposal.submit_block;
-              this.submitTime = Tools.conversionTimeToUTCToYYMMDD(data.proposal.submit_time);
-              this.votingStartBlock = data.proposal.voting_start_block ? data.proposal.voting_start_block : " -- ";
-              this.description = data.proposal.description ? data.proposal.description : " -- ";
-              this.voteDetailsYes = data.proposal.status === "DepositPeriod" ? "--" : data.result.Yes;
-              this.voteDetailsNo = data.proposal.status === "DepositPeriod" ? "--" : data.result.No;
-              this.voteDetailsNoWithVeto = data.proposal.status === "DepositPeriod" ? "--" : data.result.NoWithVeto;
-              this.voteDetailsAbstain = data.proposal.status === "DepositPeriod" ? "--" : data.result.Abstain;
-              if(data.proposal && data.proposal.total_deposit.length !==0){
-                this.totalDeposit = `${Tools.convertScientificNotation2Number(Tools.formatNumber(data.proposal.total_deposit[0].amount))} ${Tools.formatDenom(data.proposal.total_deposit[0].denom).toUpperCase()}`;
-              }else {
-                this.totalDeposit = "";
-              }
-              if(data.proposal.status === "DepositPeriod"){
-                this.count = "--"
-              }else {
+          if(data.code === "0"){
+            if(data.data && typeof  data.data === "object" ){
+              this.showNoData = false;
+              if(data.data.proposal.proposal_id === 0){
+                this.proposalsId = '--';
+                this.title = '--';
+                this.type = '--';
+                this.status = '--';
+                this.proposer = '--';
+                this.submitHash = '--';
+                this.submitBlock = '--';
+                this.submitTime = '--';
+                this.votingStartBlock = '--';
+                this.description = '--';
+                this.voteDetailsYes = '--';
+                this.voteDetailsNo = '--';
+                this.voteDetailsNoWithVeto = '--';
+                this.voteDetailsAbstain = '--';
+                this.totalDeposit = '--';
                 this.count = 0;
-              }
-              if(data.votes){
-                this.count = data.votes.length;
-                this.items = data.votes.map(item =>{
-                  item.time = Tools.conversionTimeToUTCToYYMMDD(item.time);
-                  return {
-                    Voter: item.voter,
-                    "Voter Option": item.option,
-                    "Vote Time": item.time
-                  }
-                })
               }else {
-                this.items = [{
-                  Voter: "",
-                  "Vote Option": "",
-                  "Vote Time": ""
-                }];
+                this.proposalsId = data.data.proposal.proposal_id === 0 ? "--" : data.data.proposal.proposal_id;
+                this.title = data.data.proposal.title;
+                this.type = data.data.proposal.type;
+                this.status = data.data.proposal.status;
+                this.proposer = data.data.proposal.proposer ? data.data.proposal.proposer : "--";
+                this.submitHash = data.data.proposal.tx_hash ? data.data.proposal.tx_hash : "--";
+                this.submitBlock = data.data.proposal.submit_block;
+                this.submitTime = Tools.conversionTimeToUTCToYYMMDD(data.data.proposal.submit_time);
+                this.votingStartBlock = data.data.proposal.voting_start_block ? data.data.proposal.voting_start_block : " -- ";
+                this.description = data.data.proposal.description ? data.data.proposal.description : " -- ";
+                this.voteDetailsYes = data.data.proposal.status === "DepositPeriod" ? "--" : data.data.result.Yes;
+                this.voteDetailsNo = data.data.proposal.status === "DepositPeriod" ? "--" : data.data.result.No;
+                this.voteDetailsNoWithVeto = data.data.proposal.status === "DepositPeriod" ? "--" : data.data.result.NoWithVeto;
+                this.voteDetailsAbstain = data.data.proposal.status === "DepositPeriod" ? "--" : data.data.result.Abstain;
+                if(data.data.proposal && data.data.proposal.total_deposit.length !==0){
+                  this.totalDeposit = `${Tools.convertScientificNotation2Number(Tools.formatNumber(data.data.proposal.total_deposit[0].amount))} ${Tools.formatDenom(data.data.proposal.total_deposit[0].denom).toUpperCase()}`;
+                }else {
+                  this.totalDeposit = "";
+                }
+                if(data.data.proposal.status === "DepositPeriod"){
+                  this.count = "--"
+                }else {
+                  this.count = 0;
+                }
+                if(data.data.votes){
+                  this.count = data.data.votes.length;
+                  this.items = data.data.votes.map(item =>{
+                    item.time = Tools.conversionTimeToUTCToYYMMDD(item.time);
+                    return {
+                      Voter: item.voter,
+                      "Voter Option": item.option,
+                      "Vote Time": item.time
+                    }
+                  })
+                }else {
+                  this.items = [{
+                    Voter: "",
+                    "Vote Option": "",
+                    "Vote Time": ""
+                  }];
+                }
               }
-            }
-          }else {
+            }else {
               this.showNoData = false;
               this.items = [{
                 Voter: "",
@@ -221,6 +221,7 @@
               }];
               this.showNoData = true
             }
+          }
         }).catch(e => {
           this.showNoData = false;
           console.log(e)

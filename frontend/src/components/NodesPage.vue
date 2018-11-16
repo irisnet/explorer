@@ -140,17 +140,21 @@
           }
 
         }).then((data) => {
-          if(data && typeof data === "object") {
-            this.count = data.result.peers.length;
-            this.nodeList = data.result.peers;
-            this.nodeList.forEach(item => {
-              item.connection_status.SendMonitor.Start = Tools.conversionTimeToUTCToYYMMDD(item.connection_status.SendMonitor.Start);
-              item.node_info.listen_addr = item.node_info.listen_addr.split(":")[0];
-              item.node_info.moniker = Tools.formatString(item.node_info.moniker,20,"...");
-            });
+          if(data.code === "0"){
+            if(data.data && typeof data.data === "object") {
+              this.count = data.data.result.peers.length;
+              this.nodeList = data.data.result.peers;
+              this.nodeList.forEach(item => {
+                item.connection_status.SendMonitor.Start = Tools.conversionTimeToUTCToYYMMDD(item.connection_status.SendMonitor.Start);
+                item.node_info.listen_addr = item.node_info.listen_addr.split(":")[0];
+                item.node_info.moniker = Tools.formatString(item.node_info.moniker,20,"...");
+              });
 
-            this.showLoading = false;
-            return this.nodeList
+              this.showLoading = false;
+              return this.nodeList
+            }
+          }else {
+            console.log(data.data.msg)
           }
         }).catch(e => {
           console.log(e);
