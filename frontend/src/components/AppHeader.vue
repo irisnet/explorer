@@ -609,7 +609,6 @@
           text-align: center;
           font-size: 0.14rem;
           color: #cccccc;
-          line-height: 0.28rem;
         }
         input {
           width: 100%;
