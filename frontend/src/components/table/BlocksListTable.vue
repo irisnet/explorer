@@ -185,7 +185,7 @@
 </template>
 
 <script>
-
+ import Tools from '../../common/Tools';
   export default {
     watch: {
       items(items) {
@@ -202,6 +202,7 @@
     methods: {
       skipRoute(path) {
         this.$router.push(path);
+        Tools.scrollToTop()
       }
     }
   }

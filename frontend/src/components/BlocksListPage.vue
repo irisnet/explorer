@@ -180,14 +180,14 @@
           let url;
           let that = this;
           if(this.$route.params.param === 'transfer'){
-            this.listTitleName = "Transfer";
+            this.listTitleName = "Transfers";
             url = `/api/tx/trans/${currentPage}/${pageSize}`
           }else if(this.$route.params.param === 'stake'){
-            this.listTitleName = "Stake";
+            this.listTitleName = "Stakes";
             url = `/api/tx/stake/${currentPage}/${pageSize}`
 
           }else if(this.$route.params.param === 'declaration'){
-            this.listTitleName = "Declaration";
+            this.listTitleName = "Declarations";
             url = `/api/tx/declaration/${currentPage}/${pageSize}`
           }else if(this.$route.params.param === 'governance'){
             this.listTitleName = "Governance";
@@ -346,7 +346,7 @@
                     return {
                       Address: item.Address,
                       Name:Tools.formatString(item.Description.Moniker,20,"..."),
-                      'Voting Power':`${Tools.formatNumber(item.VotingPower)} (${(item.VotingPower/data.PowerAll*100).toFixed(2)}%)`,
+                      'Voting Power':`${Tools.formatAmount(item.VotingPower)} (${(item.VotingPower/data.PowerAll*100).toFixed(2)}%)`,
                       'Uptime':`${item.Uptime}%`,
                       'Bond Height': item.BondHeight
                     };

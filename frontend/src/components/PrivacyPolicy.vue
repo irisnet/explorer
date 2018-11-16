@@ -75,6 +75,8 @@
 </template>
 
 <script>
+  import Tools from "../common/Tools";
+
   export default {
     data() {
       return {
@@ -93,7 +95,7 @@
       }
     },
     beforeMount() {
-      document.body.scrollTop = 0;
+      Tools.scrollToTop();
       if (this.devicesWidth > 500) {
         this.privacyPolicyVar = 'person_computer_privacy_policy_wrap';
       } else {

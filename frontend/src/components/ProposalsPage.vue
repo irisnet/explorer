@@ -46,7 +46,7 @@
           this.getDataList(currentPage, 30);
           resolve();
         }).then(()=>{
-          document.getElementById('router_wrap').scrollTop = 0;
+          Tools.scrollToTop()
         })
 
       },

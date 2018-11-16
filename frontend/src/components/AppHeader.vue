@@ -36,9 +36,9 @@
           <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/transfer')"
                 v-show="showSubTransaction">Transfers</span>
           <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/declaration')"
-                v-show="showSubTransaction">Declaration</span>
+                v-show="showSubTransaction">Declarations</span>
           <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/stake')"
-                v-show="showSubTransaction">Stake</span>
+                v-show="showSubTransaction">Stakes</span>
           <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/governance')"
                 v-show="showSubTransaction">Governance</span>
         </div>
@@ -88,12 +88,12 @@
         </span>
         <div class="select_option" v-show="flShowTransactionsSelect">
              <span class="feature_btn_mobile feature_nav"
-                   @click="featureButtonClick('/transactions/2/transfer')">Transfer</span>
+                   @click="featureButtonClick('/transactions/2/transfer')">Transfers</span>
           <span class="feature_btn_mobile feature_nav"
-                @click="featureButtonClick('/transactions/2/declaration')">Declaration</span>
+                @click="featureButtonClick('/transactions/2/declaration')">Declarations</span>
 
           <span class="feature_btn_mobile feature_nav"
-                @click="featureButtonClick('/transactions/2/stake')">Stake</span>
+                @click="featureButtonClick('/transactions/2/stake')">Stakes</span>
           <span class="feature_btn_mobile feature_nav"
                 @click="featureButtonClick('/transactions/2/governance')">Governance</span>
         </div>
@@ -132,11 +132,11 @@
 <script>
   import Tools from '../common/Tools';
   import axios from 'axios';
-
   export default {
     name: 'app-header',
     watch:{
       $route(){
+        this.searchInputValue = "";
         this.listenRouteForChangeActiveButton();
         this.showHeader = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
       },
@@ -609,7 +609,6 @@
           text-align: center;
           font-size: 0.14rem;
           color: #cccccc;
-          line-height: 0.28rem;
         }
         input {
           width: 100%;
