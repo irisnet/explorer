@@ -156,7 +156,7 @@
             return data.data;
           }
         }).then((data) => {
-          let colors = ['#3498db', '#47a2df', '#59ade3', '#6cb7e7', '#7fc2eb', '#91ccef', '#a4d7f3', '#b7e1f7', '#c9ecfb', '#dcf6ff', '#efeff1',];
+          let colors = ['#3498db', '#47a2df', '#59ade3', '#6cb7e7', '#7fc2eb', '#91ccef', '#a4d7f3', '#b7e1f7', '#c9ecfb', '#dcf6ff', '#DADDE3',];
           //跟series的name匹配
           let [seriesData, legendData] = [[], []];
           if (data.Candidates instanceof Array) {
