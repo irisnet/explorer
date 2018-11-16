@@ -46,7 +46,7 @@
           this.getDataList(currentPage, 30);
           resolve();
         }).then(()=>{
-          document.body.scrollTop = 0;
+          Tools.scrollToTop()
         })
 
       },

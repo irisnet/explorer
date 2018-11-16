@@ -98,7 +98,7 @@
           this.getDataList(this.currentTabIndex,this.currentTxTabName,currentPage, this.pageSize);
           resolve();
         }).then(()=>{
-          document.body.scrollTop = 0;
+          Tools.scrollToTop()
         })
       },
       $route() {
@@ -171,7 +171,7 @@
       }
     },
     beforeMount() {
-      document.body.scrollTop = 0;
+      Tools.scrollToTop();
       if (Tools.currentDeviceIsPersonComputer()) {
         this.transactionsDetailWrap = 'personal_computer_transactions_detail_wrap';
       } else {

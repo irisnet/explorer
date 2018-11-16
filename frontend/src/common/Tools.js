@@ -173,4 +173,7 @@ export default class Tools{
       return true
     }
   }
+  static scrollToTop(){
+    document.body.scrollTop = 0;
+  }
 }
