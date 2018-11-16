@@ -132,11 +132,11 @@
 <script>
   import Tools from '../common/Tools';
   import axios from 'axios';
-
   export default {
     name: 'app-header',
     watch:{
       $route(){
+        this.searchInputValue = "";
         this.listenRouteForChangeActiveButton();
         this.showHeader = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
       },

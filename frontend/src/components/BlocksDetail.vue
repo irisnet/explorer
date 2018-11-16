@@ -98,7 +98,7 @@
           this.getDataList(this.currentTabIndex,this.currentTxTabName,currentPage, this.pageSize);
           resolve();
         }).then(()=>{
-          document.getElementById('router_wrap').scrollTop = 0;
+          document.body.scrollTop = 0;
         })
       },
       $route() {

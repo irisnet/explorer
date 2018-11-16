@@ -62,7 +62,7 @@
     watch: {
       $route() {
         this.showFooter = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
-        document.getElementById('router_wrap').scrollTop = 0;
+        document.body.scrollTop = 0;
       }
     },
     data() {

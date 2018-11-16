@@ -202,6 +202,7 @@
     methods: {
       skipRoute(path) {
         this.$router.push(path);
+        document.body.scrollTop = 0;
       }
     }
   }

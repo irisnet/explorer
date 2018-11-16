@@ -346,7 +346,7 @@
                     return {
                       Address: item.Address,
                       Name:Tools.formatString(item.Description.Moniker,20,"..."),
-                      'Voting Power':`${Tools.formatNumber(item.VotingPower)} (${(item.VotingPower/data.PowerAll*100).toFixed(2)}%)`,
+                      'Voting Power':`${Tools.formatAmount(item.VotingPower)} (${(item.VotingPower/data.PowerAll*100).toFixed(2)}%)`,
                       'Uptime':`${item.Uptime}%`,
                       'Bond Height': item.BondHeight
                     };
