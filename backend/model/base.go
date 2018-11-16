@@ -11,3 +11,17 @@ type Page struct {
 	Count int
 	Data  interface{}
 }
+
+type Response struct {
+	Code string      `json:"code"`
+	Msg  string      `json:"msg"`
+	Data interface{} `json:"data"`
+}
+
+func NewResponse(code, msg string, data interface{}) Response {
+	return Response{
+		Code: code,
+		Msg:  msg,
+		Data: data,
+	}
+}
