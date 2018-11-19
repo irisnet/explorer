@@ -71,7 +71,7 @@
         </div>
         <div class="information_props_wrap" v-if="identity">
           <span class="information_props">Identity :</span>
-          <span class="information_value">{{identity}}</span>
+          <span class="information_value"><pre class="information_pre">{{identity}}</pre></span>
         </div>
         <div class="information_props_wrap" v-if="owner">
           <span class="information_props">Owner :</span>
@@ -91,7 +91,7 @@
         </div>
         <div class="information_props_wrap" v-if="details">
           <span class="information_props">Details :</span>
-          <span class="information_value">{{details}}</span>
+          <span class="information_value"><pre class="information_pre">{{details}}</pre></span>
         </div>
         <div class="information_props_wrap" v-if="showVoter">
           <span class="information_props">Option :</span>
@@ -123,7 +123,7 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Memo :</span>
-          <span class="information_value">{{memo}}</span>
+          <span class="information_value"><pre class="information_pre">{{memo}}</pre></span>
         </div>
       </div>
     </div>
@@ -289,6 +289,7 @@
   @import '../style/mixin.scss';
   .information_pre{
     color: #a2a2ae;
+    white-space: pre-wrap;
   }
   .transactions_detail_wrap {
     @include flex;

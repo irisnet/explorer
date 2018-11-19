@@ -856,11 +856,12 @@
         .information_props_wrap{
           @include flex;
           .information_props{
-            width:1.5rem;
+            min-width:1.5rem;
             font-size:0.14rem;
             color:#000000;
           }
           .information_value{
+            word-break: break-all;
             color: #a2a2ae;
             font-size:0.14rem;
             /*flex:1;*/
