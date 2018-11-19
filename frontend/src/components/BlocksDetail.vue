@@ -106,7 +106,7 @@
         this.getBlockTxStatistics();
         this.computeMinWidth();
         this.tabTxList(this.tabTxListIndex,this.txTabName,this.currentPage,this.pageSize);
-        if (Number(this.$route.params.height) <= 0) {
+        if (Number(this.$route.params.height) <= 1) {
           this.acitve = false;
         } else {
           this.acitve = true;
@@ -181,7 +181,7 @@
     mounted() {
       this.tabTxList(this.tabTxListIndex,this.txTabName,this.currentPage,this.pageSize);
       this.getBlockInformation();
-      if (Number(this.$route.params.height) <= 0) {
+      if (Number(this.$route.params.height) <= 1) {
         this.acitve = false;
       } else {
         this.acitve = true;
@@ -412,7 +412,7 @@
         })
       },
       skipNext(num) {
-        if (Number(this.$route.params.height) <= 0) {
+        if (Number(this.$route.params.height) <= 1) {
           this.acitve = false;
           if (num !== -1) {
             this.$router.push(`/blocks_detail/${Number(this.$route.params.height) + num}`)
