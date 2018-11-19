@@ -198,58 +198,11 @@
               return data.data;
             }
           }).then((data) => {
-            this.count = data.Count;
-            if(data.Data){
-              this.items = Tools.commonTxListItem(data.Data,that.$route.params.param)
+            that.count = data.Count;
+            if(data.Data && data.Data !== null){
+              that.items = Tools.commonTxListItem(data.Data,that.$route.params.param)
             }else{
-              if(that.$route.params.param === 'transfer'){
-                this.items = [{
-                  TxHash: '',
-                  Block:'',
-                  From:'',
-                  To:'',
-                  Amount:'',
-                  Fee:'',
-                  Status: "",
-                  Timestamp:'',
-                }];
-              }else if(that.$route.params.param === 'declaration'){
-                this.items = [{
-                  TxHash: '',
-                  Block:'',
-                  Owner:'',
-                  Moniker:'',
-                  "Self-Bond":'',
-                  Type:'',
-                  Fee:'',
-                  Status: "",
-                  Timestamp:'',
-                }];
-              }else if(that.$route.params.param === 'stake'){
-                this.items = [{
-                  TxHash: '',
-                  Block:'',
-                  From:'',
-                  To:'',
-                  Type:'',
-                  Amount:'',
-                  Fee:'',
-                  Status: "",
-                  Timestamp:'',
-                }];
-              }else if(that.$route.params.param === 'governance'){
-                this.items = [{
-                  TxHash: '',
-                  Block:'',
-                  From:'',
-                  "Proposal_ID":'',
-                  Type:'',
-                  Fee:'',
-                  Status: "",
-                  Timestamp:'',
-                }];
-              }
-
+              that.items = Tools.commonTxListItem(null,that.$route.params.param);
               that.showNoData = true;
             }
             that.showLoading = false;

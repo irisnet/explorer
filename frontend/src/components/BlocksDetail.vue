@@ -238,59 +238,13 @@
             return data.data;
           }
         }).then((data) => {
-          this.showLoading = false;
-          this.showNoData = false;
-          if(data.Data){
+          that.showLoading = false;
+          that.showNoData = false;
+          if(data.Data && data.Data !== null){
             that.items = Tools.commonTxListItem(data.Data,txTabName)
           }else {
-            this.showNoData = true;
-            if(txTabName === 'Transfers'){
-              this.items = [{
-                'Tx Hash': "",
-                Block: "",
-                From: "",
-                To: "",
-                Amount: "",
-                Fee: "",
-                Status: "",
-                Timestamp: "",
-              }]
-            }else if(txTabName === 'Stakes'){
-              this.items = [{
-                'Tx Hash': "",
-                Block: "",
-                From: "",
-                To: "",
-                Type: "",
-                Amount: "",
-                Fee: "",
-                Status: "",
-                Timestamp: "",
-              }]
-            }else if(txTabName === 'Declarations'){
-              this.items = [{
-                'Tx Hash': "",
-                Block: "",
-                Owner: "",
-                Moniker: "",
-                'Self-Bond': "",
-                Type: "",
-                Fee: "",
-                Status: "",
-                Timestamp: "",
-              }]
-            }else if(txTabName === 'Governance'){
-              this.items = [{
-                'Tx Hash': "",
-                Block: "",
-                From: "",
-                'Proposal_ID': "",
-                Type: "",
-                Fee: "",
-                Status: "",
-                Timestamp: "",
-              }]
-            }
+            that.showNoData = true;
+            that.items = Tools.commonTxListItem(null,txTabName)
           }
         })
       },
