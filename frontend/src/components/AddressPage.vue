@@ -358,78 +358,7 @@
           this.showNoData = false;
           this.count = data.Count;
           if(data.Data){
-            that.items = data.Data.map(item => {
-              let [Amount,Fee] = ['--','--'];
-              if(txTabName === 'Transfers' || txTabName === 'Stakes' || txTabName === 'Governance' || txTabName === 'Declarations'){
-                if(item.Amount){
-                  if(item.Amount instanceof Array){
-                    if(item.Amount.length > 0){
-                      item.Amount[0].amount = Tools.formatAmount(item.Amount[0].amount);
-                      if(Tools.flTxType(item.Type)){
-                        Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
-                      }else {
-                        Amount = item.Amount.map(listItem=> `${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`);
-                      }
-                    }
-                  }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
-                    item.Amount.amount = Tools.formatAmount(item.Amount.amount);
-                    Amount = `${item.Amount.amount} ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
-                    if(Tools.flTxType(item.Type)){
-                      Amount = `${item.Amount.amount} SHARES`;
-                    }
-                  }
-                }
-                if(item.Fee.amount && item.Fee.denom){
-                  Fee = item.Fee.amount = `${Tools.formatFeeToFixedNumber(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`;
-                }
-              }
-              let objList;
-              if(txTabName === 'Transfers'){
-                objList = {
-                  TxHash: item.Hash,
-                  Block:item.BlockHeight,
-                  From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
-                  To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
-                  Amount,
-                  Fee,
-                  Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
-                }
-              }else if(txTabName === 'Stakes'){
-                objList = {
-                  TxHash: item.Hash,
-                  Block:item.BlockHeight,
-                  From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
-                  To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
-                  Type:item.Type === 'coin'?'transfer':item.Type,
-                  Amount,
-                  Fee,
-                  Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
-                };
-              }else if(txTabName === 'Declarations'){
-                objList = {
-                  TxHash: item.Hash,
-                  Block:item.BlockHeight,
-                  Owner:item.Owner,
-                  Moniker: item.Moniker,
-                  'Self-Bond': item.SelfBond && item.SelfBond.length > 0 ? Tools.formatAmount(item.SelfBond[0].amount) + Tools.formatDenom(item.SelfBond[0].denom).toUpperCase() : "--",
-                  Type: item.Type,
-                  Fee,
-                  Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
-                };
-              }else if(txTabName === 'Governance'){
-                objList = {
-                  TxHash: item.Hash,
-                  Block:item.BlockHeight,
-                  From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
-                  "Proposal_ID": item.ProposalId === 0 ? "--" : item.ProposalId,
-                  Type:item.Type === 'coin'?'transfer':item.Type,
-                  Fee,
-                  Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
-                };
-              }
-              return objList
-            })
-
+            that.items = Tools.commonTxListItem(data.Data,txTabName)
           }else {
             this.showNoData = true;
               if(txTabName === 'Transfers'){
@@ -440,6 +369,7 @@
                   To: "",
                   Amount: "",
                   Fee: "",
+                  Status: "",
                   Timestamp: "",
                 }]
               }else if(txTabName === 'Stakes'){
@@ -451,6 +381,7 @@
                    Type: "",
                    Amount: "",
                    Fee: "",
+                   Status: "",
                    Timestamp: "",
                  }]
               }else if(txTabName === 'Declarations'){
@@ -462,6 +393,7 @@
                   'Self-Bond': "",
                   Type: "",
                   Fee: "",
+                  Status: "",
                   Timestamp: "",
                 }]
               }else if(txTabName === 'Governance'){
@@ -472,6 +404,7 @@
                   'Proposal_ID': "",
                   Type: "",
                   Fee: "",
+                  Status: "",
                   Timestamp: "",
                 }]
               }

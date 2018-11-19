@@ -179,17 +179,17 @@
         } else if (type === '2') {
           let url;
           let that = this;
-          if(this.$route.params.param === 'transfer'){
+          if(this.$route.params.param === 'Transfers'){
             this.listTitleName = "Transfers";
             url = `/api/tx/trans/${currentPage}/${pageSize}`
-          }else if(this.$route.params.param === 'stake'){
+          }else if(this.$route.params.param === 'Stakes'){
             this.listTitleName = "Stakes";
             url = `/api/tx/stake/${currentPage}/${pageSize}`
 
-          }else if(this.$route.params.param === 'declaration'){
+          }else if(this.$route.params.param === 'Declarations'){
             this.listTitleName = "Declarations";
             url = `/api/tx/declaration/${currentPage}/${pageSize}`
-          }else if(this.$route.params.param === 'governance'){
+          }else if(this.$route.params.param === 'Governance'){
             this.listTitleName = "Governance";
             url = `/api/tx/gov/${currentPage}/${pageSize}`
           }
@@ -200,78 +200,7 @@
           }).then((data) => {
             this.count = data.Count;
             if(data.Data){
-              this.items = data.Data.map(item => {
-                let [Amount,Fee] = ['--','--'];
-
-                if(that.$route.params.param === 'transfer' || that.$route.params.param === 'stake' || that.$route.params.param === 'governance'){
-                  if(item.Amount){
-                    if(item.Amount instanceof Array){
-                      if(item.Amount.length > 0){
-                        item.Amount[0].amount = Tools.formatAmount(item.Amount[0].amount);
-                        if(Tools.flTxType(item.Type)){
-                          Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
-                        }else {
-                          Amount = item.Amount.map(listItem=>`${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
-                        }
-                      }
-                    }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
-                      Amount = `${item.Amount.amount}  ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
-                      if(Tools.flTxType(item.Type)){
-                        Amount = `${item.Amount.amount} SHARES`;
-                      }
-                    }
-                  }
-                  if(item.Fee.amount && item.Fee.denom){
-                    Fee = item.Fee.amount = `${Tools.formatFeeToFixedNumber(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`;
-                  }
-                }
-                let objList;
-                if(that.$route.params.param === 'transfer'){
-                  objList = {
-                    TxHash: item.Hash,
-                    Block:item.BlockHeight,
-                    From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
-                    To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
-                    Amount,
-                    Fee,
-                    Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
-                  };
-                }else if(that.$route.params.param === 'declaration'){
-                  objList = {
-                    TxHash: item.Hash,
-                    Block: item.BlockHeight,
-                    Owner: item.Owner ? item.Owner : "--",
-                    Moniker: item.Moniker ? Tools.formatString(item.Moniker,20,"...") : "--",
-                    "Self-Bond": item.SelfBond && item.SelfBond.length > 0 ? `${Tools.formatAmount(item.SelfBond[0].amount)} ${Tools.formatDenom(item.SelfBond[0].denom).toUpperCase()}` : "--",
-                    Type: item.Type,
-                    Fee: `${Tools.formatFeeToFixedNumber(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`,
-                    Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
-                  }
-                }else if(that.$route.params.param === 'stake'){
-                  objList = {
-                    TxHash: item.Hash,
-                    Block:item.BlockHeight,
-                    From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
-                    To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
-                    Type:item.Type === 'coin'?'transfer':item.Type,
-                    Amount,
-                    Fee,
-                    Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
-                  }
-                }else if(that.$route.params.param === 'governance'){
-                  objList = {
-                    TxHash: item.Hash,
-                    Block:item.BlockHeight,
-                    From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
-                    "Proposal_ID": item.ProposalId === 0 ? "--" : item.ProposalId,
-                    Type: item.Type,
-                    Fee,
-                    Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
-                  }
-                }
-
-                return objList;
-              })
+              this.items = Tools.commonTxListItem(data.Data,that.$route.params.param)
             }else{
               if(that.$route.params.param === 'transfer'){
                 this.items = [{
@@ -281,6 +210,7 @@
                   To:'',
                   Amount:'',
                   Fee:'',
+                  Status: "",
                   Timestamp:'',
                 }];
               }else if(that.$route.params.param === 'declaration'){
@@ -292,6 +222,7 @@
                   "Self-Bond":'',
                   Type:'',
                   Fee:'',
+                  Status: "",
                   Timestamp:'',
                 }];
               }else if(that.$route.params.param === 'stake'){
@@ -303,6 +234,7 @@
                   Type:'',
                   Amount:'',
                   Fee:'',
+                  Status: "",
                   Timestamp:'',
                 }];
               }else if(that.$route.params.param === 'governance'){
@@ -313,6 +245,7 @@
                   "Proposal_ID":'',
                   Type:'',
                   Fee:'',
+                  Status: "",
                   Timestamp:'',
                 }];
               }
