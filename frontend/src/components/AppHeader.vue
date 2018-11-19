@@ -253,9 +253,6 @@
       },
 
       getData(data) {
-        // if(this.searchInputValue === data){
-        //   return
-        // }
         if(this.searchInputValue === ''){
           this.$router.push(`/searchResult/${this.searchInputValue}`);
         }else if(/^[A-F0-9]{40}$/.test(this.searchInputValue)){
@@ -319,7 +316,6 @@
         }else {
           this.$router.push(`/searchResult/${this.searchInputValue}`);
         }
-         // this.searchInputValue = ""
       },
       onInputChange() {
         this.getData();
