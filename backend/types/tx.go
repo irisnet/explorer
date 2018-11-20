@@ -10,6 +10,7 @@ type BaseTx struct {
 	BlockHeight int64
 	Type        string
 	Fee         store.ActualFee
+	Status      string
 	GasLimit    int64
 	GasUsed     int64
 	GasPrice    float64
