@@ -86,26 +86,30 @@
       },
       watch:{
         $route(){
-          if(!this.$route.path === "/searchResult/"){
-            this.flshowTitle = false
+          if(this.$route.path === "/searchResult/"){
+            this.flshowTitle = false;
           }else {
             this.flshowTitle = true;
           }
           if(/^\+?[1-9][0-9]*$/.test(this.$route.params.searchContent)){
             this.flshowResult = false;
             this.searchResult(this.$route.params.searchContent)
+          }else {
+            this.flshowResult = true;
           }
         }
       },
       mounted(){
         if(this.$route.path === "/searchResult/"){
-          this.flshowTitle = false
+          this.flshowTitle = false;
         }else {
           this.flshowTitle = true
         }
         if(/^\+?[1-9][0-9]*$/.test(this.$route.params.searchContent)){
           this.flshowResult = false;
           this.searchResult(this.$route.params.searchContent)
+        }else {
+          this.flshowResult = true;
         }
       },
       methods:{
