@@ -405,16 +405,16 @@
               this.flShowUptime = false;
               this.flShowValidatorRevoked = true;
               this.validatorsStatusColor = "#f00";
-              this.votingPowerValue = Tools.formatNumber(validators.VotingPower);
+              this.votingPowerValue = Tools.formatNumberTypeOfString(validators.OriginalTokens);
             }else{
               if(validators.Status === 'Unbonded' || validators.Status === 'Unbonding' ){
                 this.flShowValidatorCandidate = true;
                 this.validatorsStatusColor = "#45B035";
                 this.flShowUptime = false;
-                this.votingPowerValue =Tools.formatNumber(validators.VotingPower);
+                this.votingPowerValue = Tools.formatNumberTypeOfString(validators.OriginalTokens);
               }else if(validators.Status === "Bonded"){
                 this.bondHeightValue = validators.BondHeight;
-                this.votingPowerValue = validators.VotingPower ? `${Tools.formatNumber(validators.VotingPower)} (${(validators.VotingPower/validators.PowerAll*100).toFixed(2)}%)` : "--";
+                this.votingPowerValue = validators.OriginalTokens ? `${Tools.formatNumberTypeOfString(validators.OriginalTokens)} (${(validators.OriginalTokens/validators.PowerAll*100).toFixed(2)}%)` : "--";
               }
             }
             this.identity = validators.Description.Identity ? validators.Description.Identity : "--";
