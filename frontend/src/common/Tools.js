@@ -49,7 +49,7 @@ export default class Tools{
    * return string
    */
 
-  static formatNumberTypeOfString(number){
+  static formatStringToNumber(number){
     let stringLength = number.length;
     let splitSite = 18;
     let stringSplitSiteLength = 19;

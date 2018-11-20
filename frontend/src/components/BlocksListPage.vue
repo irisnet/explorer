@@ -232,7 +232,7 @@
                     return {
                       Address: item.Address,
                       Name:Tools.formatString(item.Description.Moniker,20,"..."),
-                      'Voting Power':`${Tools.formatNumberTypeOfStringToFixed(Tools.formatNumberTypeOfString(item.OriginalTokens),2)} (${(item.OriginalTokens/data.PowerAll*100).toFixed(2)}%)`,
+                      'Voting Power':`${Tools.formatNumberTypeOfStringToFixed(Tools.formatStringToNumber(item.OriginalTokens),2)} (${(item.OriginalTokens/data.PowerAll*100).toFixed(2)}%)`,
                       'Uptime':`${item.Uptime}%`,
                       'Bond Height': item.BondHeight
                     };
@@ -252,7 +252,7 @@
                     return {
                       Address: item.Address,
                       Name:Tools.formatString(item.Description.Moniker,20,"..."),
-                      'Voting Power':Tools.formatNumberTypeOfStringToFixed(Tools.formatNumberTypeOfString(item.OriginalTokens),2),
+                      'Voting Power':Tools.formatNumberTypeOfStringToFixed(Tools.formatStringToNumber(item.OriginalTokens),2),
                     };
 
                   })
@@ -270,7 +270,7 @@
                     return {
                       Address: item.Address,
                       Name: Tools.formatString(item.Description.Moniker,20,"..."),
-                      'Voting Power': Tools.formatNumberTypeOfStringToFixed(Tools.formatNumberTypeOfString(item.OriginalTokens),2),
+                      'Voting Power': Tools.formatNumberTypeOfStringToFixed(Tools.formatStringToNumber(item.OriginalTokens),2),
                       'Declare Height' : item.BondHeight
                     };
                   })
