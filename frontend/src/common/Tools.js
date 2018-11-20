@@ -176,4 +176,129 @@ export default class Tools{
   static scrollToTop(){
     document.body.scrollTop = 0;
   }
+
+  static commonTxListItem(list,txType){
+    if(list !== null){
+      return list.map(item => {
+        let [Amount,Fee] = ['--','--'];
+        let commonHeaderObjList,objList,commonFooterObjList;
+        if(txType === 'Transfers' || txType === 'Stakes' || txType === 'governance'){
+          if(item.Amount){
+            if(item.Amount instanceof Array){
+              if(item.Amount.length > 0){
+                item.Amount[0].amount = Tools.formatAmount(item.Amount[0].amount);
+                if(Tools.flTxType(item.Type)){
+                  Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
+                }else {
+                  Amount = item.Amount.map(listItem=>`${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
+                }
+              }
+            }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
+              Amount = `${item.Amount.amount}  ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
+              if(Tools.flTxType(item.Type)){
+                Amount = `${item.Amount.amount} SHARES`;
+              }
+            }
+          }
+          if(item.Fee.amount && item.Fee.denom){
+            Fee = item.Fee.amount = `${Tools.formatFeeToFixedNumber(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`;
+          }
+        }
+        commonHeaderObjList = {
+          TxHash : item.Hash,
+          Block : item.BlockHeight
+        };
+        commonFooterObjList = {
+          Status : item.Status,
+          Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp)
+        };
+        if(txType === 'Transfers' ){
+          objList = {
+            From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
+            To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
+            Amount,
+            Fee,
+          };
+        }else if(txType === 'Declarations'){
+          objList = {
+            Owner: item.Owner ? item.Owner : "--",
+            Moniker: item.Moniker ? Tools.formatString(item.Moniker,20,"...") : "--",
+            "Self-Bond": item.SelfBond && item.SelfBond.length > 0 ? `${Tools.formatAmount(item.SelfBond[0].amount)} ${Tools.formatDenom(item.SelfBond[0].denom).toUpperCase()}` : "--",
+            Type: item.Type,
+            Fee: `${Tools.formatFeeToFixedNumber(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`,
+          }
+        }else if(txType === 'Stakes'){
+          objList = {
+            TxHash: item.Hash,
+            Block:item.BlockHeight,
+            From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
+            To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
+            Type:item.Type === 'coin'?'transfer':item.Type,
+            Amount,
+            Fee,
+          }
+        }else if(txType === 'Governance'){
+          objList = {
+            From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
+            "Proposal_ID": item.ProposalId === 0 ? "--" : item.ProposalId,
+            Type: item.Type,
+            Fee,
+          }
+        }
+        let allObjList = Object.assign(commonHeaderObjList,objList,commonFooterObjList);
+        return allObjList;
+      })
+    }else {
+      let noObjList;
+      if(txType === 'Transfers'){
+        noObjList = [{
+          TxHash: '',
+          Block:'',
+          From:'',
+          To:'',
+          Amount:'',
+          Fee:'',
+          Status: "",
+          Timestamp:'',
+        }];
+      }else if(txType === 'Declarations'){
+        noObjList = [{
+          TxHash: '',
+          Block:'',
+          Owner:'',
+          Moniker:'',
+          "Self-Bond":'',
+          Type:'',
+          Fee:'',
+          Status: "",
+          Timestamp:'',
+        }];
+      }else if(txType === 'Stakes'){
+        noObjList = [{
+          TxHash: '',
+          Block:'',
+          From:'',
+          To:'',
+          Type:'',
+          Amount:'',
+          Fee:'',
+          Status: "",
+          Timestamp:'',
+        }];
+      }else if(txType === 'Governance'){
+        noObjList = [{
+          TxHash: '',
+          Block:'',
+          From:'',
+          "Proposal_ID":'',
+          Type:'',
+          Fee:'',
+          Status: "",
+          Timestamp:'',
+        }];
+      }
+      return noObjList;
+    }
+
+  }
 }

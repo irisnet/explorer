@@ -102,6 +102,10 @@
           <span class="information_value">{{amountValue}}</span>
         </div>
         <div class="information_props_wrap">
+          <span class="information_props">Status :</span>
+          <span class="information_value">{{status}}</span>
+        </div>
+        <div class="information_props_wrap">
           <span class="information_props">Timestamp :</span>
           <span class="information_value">{{timestampValue}}</span>
         </div>
@@ -170,6 +174,7 @@
         depositer: "",
         voter: "",
         option: "",
+        status:"",
         showProposalId: false,
         showProposer: false,
         showInitialDeposit: false,
@@ -205,7 +210,7 @@
           this.gasLimit = data.GasLimit;
           this.gasUsedByTxn = data.GasUsed;
           this.memo = data.Memo ? data.Memo : '--';
-
+          this.status = data.Status ? data.Status: '--';
           if(data.Amount && data.Amount.length !==0){
             this.amountValue = data.Amount.map(item=>{
               item.amount = Tools.convertScientificNotation2Number(Tools.formatNumber(item.amount));

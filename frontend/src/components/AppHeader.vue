@@ -33,13 +33,13 @@
             Transactions
             <span class="bottom_arrow"></span>
           </span>
-          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/transfer')"
+          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/Transfers')"
                 v-show="showSubTransaction">Transfers</span>
-          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/declaration')"
+          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/Declarations')"
                 v-show="showSubTransaction">Declarations</span>
-          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/stake')"
+          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/Stakes')"
                 v-show="showSubTransaction">Stakes</span>
-          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/governance')"
+          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/Governance')"
                 v-show="showSubTransaction">Governance</span>
         </div>
 
@@ -88,14 +88,14 @@
         </span>
         <div class="select_option" v-show="flShowTransactionsSelect">
              <span class="feature_btn_mobile feature_nav"
-                   @click="featureButtonClick('/transactions/2/transfer')">Transfers</span>
+                   @click="featureButtonClick('/transactions/2/Transfers')">Transfers</span>
           <span class="feature_btn_mobile feature_nav"
-                @click="featureButtonClick('/transactions/2/declaration')">Declarations</span>
+                @click="featureButtonClick('/transactions/2/Declarations')">Declarations</span>
 
           <span class="feature_btn_mobile feature_nav"
-                @click="featureButtonClick('/transactions/2/stake')">Stakes</span>
+                @click="featureButtonClick('/transactions/2/Stakes')">Stakes</span>
           <span class="feature_btn_mobile feature_nav"
-                @click="featureButtonClick('/transactions/2/governance')">Governance</span>
+                @click="featureButtonClick('/transactions/2/Governance')">Governance</span>
         </div>
 
         <span class="feature_btn_mobile feature_nav select_option_container" @click="validatorsSelect(flShowValidatorsSelect)">
