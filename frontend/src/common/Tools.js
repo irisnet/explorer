@@ -49,7 +49,7 @@ export default class Tools{
    * return string
    */
 
-  static formatNumberTypeOfString(number){
+  static formatStringToNumber(number){
     let stringLength = number.length;
     let splitSite = 18;
     let stringSplitSiteLength = 19;
@@ -85,11 +85,11 @@ export default class Tools{
     return str.substring(0,i+1);
   }
   /**
-   * 格式化数字的类型是string的数字并展示小数点后面超过多少位加 ...
+   * 格式化数字的类型是string的数字并在小数点后面超过多少位以后加 ...
    * param string;
    * return string
    */
-  static formatNumberTypeOfStringToFixed(str,splitNum){
+  static formatStringToFixedNumber(str,splitNum){
     if(str.indexOf(".") !== -1) {
       let splitString = str.split(".")[1];
       if(splitString.length > splitNum){
