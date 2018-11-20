@@ -49,22 +49,22 @@ export default class Tools{
    * return string
    */
 
-  static formatNumberTypeOfString(stringnum){
-    let stringLength = stringnum.length;
+  static formatNumberTypeOfString(number){
+    let stringLength = number.length;
     let splitSite = 18;
     let stringSplitSiteLength = 19;
     let completeNumberString;
     if(stringLength >= stringSplitSiteLength){
       let integePartLength = stringLength - splitSite;
-      let integePart = stringnum.substr(0,integePartLength);
-      let fractionalPart = stringnum.substr(integePartLength,stringLength);
+      let integePart = number.substr(0,integePartLength);
+      let fractionalPart = number.substr(integePartLength,stringLength);
           completeNumberString = integePart.concat(".",fractionalPart);
       return  Tools.formatContinuousNumberZero(completeNumberString).split(".")[1] == "" ?
               Tools.formatContinuousNumberZero(completeNumberString).split(".")[0] :
               Tools.formatContinuousNumberZero(completeNumberString);
     }else {
         let integePartLength = splitSite - stringLength;
-        let srtingNumArray = stringnum.split("");
+        let srtingNumArray = number.split("");
         for(let j = 0; j < integePartLength; j++){
           srtingNumArray.unshift("0")
         }
@@ -80,7 +80,7 @@ export default class Tools{
   static formatContinuousNumberZero(str){
     let i;
     for(i = str.length - 1;i >= 0;i--) {
-      if(str.charAt(i) != "0" && str.charAt(i) != "0")break;
+      if(str.charAt(i) != "0")break;
     }
     return str.substring(0,i+1);
   }
