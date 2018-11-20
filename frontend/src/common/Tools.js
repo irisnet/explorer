@@ -43,6 +43,68 @@ export default class Tools{
   static formaNumberAboutGasPrice(num){
     return new BigNumber(num).div(1000000000).toNumber();
   }
+  /**
+   * 格式化数字类型是string的数字并让小数点左移18位
+   * param string;
+   * return string
+   */
+
+  static formatNumberTypeOfString(number){
+    let stringLength = number.length;
+    let splitSite = 18;
+    let stringSplitSiteLength = 19;
+    let completeNumberString;
+    if(stringLength >= stringSplitSiteLength){
+      let integePartLength = stringLength - splitSite;
+      let integePart = number.substr(0,integePartLength);
+      let fractionalPart = number.substr(integePartLength,stringLength);
+          completeNumberString = integePart.concat(".",fractionalPart);
+      return  Tools.formatContinuousNumberZero(completeNumberString).split(".")[1] == "" ?
+              Tools.formatContinuousNumberZero(completeNumberString).split(".")[0] :
+              Tools.formatContinuousNumberZero(completeNumberString);
+    }else {
+        let integePartLength = splitSite - stringLength;
+        let srtingNumArray = number.split("");
+        for(let j = 0; j < integePartLength; j++){
+          srtingNumArray.unshift("0")
+        }
+        completeNumberString = "0." + srtingNumArray.join("");
+        return Tools.formatContinuousNumberZero(completeNumberString)
+    }
+  }
+  /**
+   * 去除数字的类型是string的尾部连续为 0 的数字
+   * param string;
+   * return string
+   */
+  static formatContinuousNumberZero(str){
+    let i;
+    for(i = str.length - 1;i >= 0;i--) {
+      if(str.charAt(i) != "0")break;
+    }
+    return str.substring(0,i+1);
+  }
+  /**
+   * 格式化数字的类型是string的数字并展示小数点后面超过多少位加 ...
+   * param string;
+   * return string
+   */
+  static formatNumberTypeOfStringToFixed(str,splitNum){
+    if(str.indexOf(".") !== -1) {
+      let splitString = str.split(".")[1];
+      if(splitString.length > splitNum){
+        return str.split(".")[0] + '.' +  splitString.substr(0,splitNum) + "..."
+      }else {
+        return str.split(".")[0] + '.' + splitString
+      }
+    }else {
+      return str
+    }
+  }
+
+
+
+
 
   static decimalPlace(num,val){
     if(val){

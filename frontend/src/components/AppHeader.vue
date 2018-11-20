@@ -146,7 +146,7 @@
         }else{
           this.showClear = false;
         }
-      }
+      },
     },
     data() {
       return {
@@ -263,12 +263,15 @@
             }
           }).then((data) => {
             if (data && typeof data === "object") {
-              this.$router.push(`/tx?txHash=${this.searchInputValue}`)
+              this.$router.push(`/tx?txHash=${this.searchInputValue}`);
+              this.searchInputValue = ""
             }else {
               this.$router.push(`/searchResult/${this.searchInputValue}`);
+              this.searchInputValue = ""
             }
           }).catch(e => {
             this.$router.push(`/searchResult/${this.searchInputValue}`);
+            this.searchInputValue = "";
             console.log(e)
           });
         }else if(this.$Crypto.getCrypto("iris").isValidAddress(this.searchInputValue)){
@@ -279,11 +282,14 @@
             }
           }).then((data) => {
             if (data && typeof data === "object") {
-              this.$router.push(`/address/1/${this.searchInputValue}`)
+              this.$router.push(`/address/1/${this.searchInputValue}`);
+              this.searchInputValue = "";
             }else {
               this.$router.push(`/searchResult/${this.searchInputValue}`);
+              this.searchInputValue = "";
             }
           }).catch(e => {
+            this.searchInputValue = "";
             this.$router.push(`/searchResult/${this.searchInputValue}`);
             console.log(e)
           });
@@ -301,20 +307,29 @@
               if(searchResult.length === searchResultIsBlockOrproposalId){
                 if(searchResult[0].Type === "block" && searchResult[0].Data.Height !== 0){
                   this.$router.push(`/blocks_detail/${this.searchInputValue}`);
+                  this.searchInputValue = "";
                   return
                 }else if(searchResult[0].Type === "proposal" && searchResult[0].Data.ProposalID !== 0){
                   this.$router.push(`/ProposalsDetail/${this.searchInputValue}`);
+                  this.searchInputValue = "";
                   return
                 }
               }else if(searchResult.length === searchResultIsBlockAndproposalId){
-                this.$router.push(`/searchResult/${this.searchInputValue}`)
+                this.$router.push(`/searchResult/${this.searchInputValue}`);
+                this.searchInputValue = "";
               }
             }else {
-              this.$router.push(`/searchResult/${this.searchInputValue}`)
+              this.$router.push(`/searchResult/${this.searchInputValue}`);
+              this.searchInputValue = "";
             }
+          }).catch((e) => {
+            console.log(e);
+            this.$router.push(`/searchResult/${this.searchInputValue}`);
+            this.searchInputValue = "";
           });
         }else {
           this.$router.push(`/searchResult/${this.searchInputValue}`);
+          this.searchInputValue = "";
         }
       },
       onInputChange() {
@@ -343,8 +358,7 @@
       },
       clearData(){
         this.searchInputValue = '';
-      }
-
+      },
 
     }
   }
