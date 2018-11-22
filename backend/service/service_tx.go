@@ -293,6 +293,7 @@ func buildBaseTx(tx document.CommonTx) model.BaseTx {
 		BlockHeight: tx.Height,
 		Type:        tx.Type,
 		Fee:         tx.ActualFee,
+		Status:      tx.Status,
 		GasLimit:    tx.Fee.Gas,
 		GasUsed:     tx.GasUsed,
 		GasPrice:    tx.GasPrice,
