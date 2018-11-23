@@ -44,7 +44,7 @@ type DeclarationTx struct {
 type GovTx struct {
 	BaseTx
 	From         string
-	ProposalId   int64
+	ProposalId   uint64
 	Description  string
 	Amount       store.Coins
 	Option       string

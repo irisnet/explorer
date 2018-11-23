@@ -44,7 +44,7 @@ func queryTx(w http.ResponseWriter, r *http.Request) {
 		return
 	case types.StakeTx:
 		stakeTx := tx.(types.StakeTx)
-		if stakeTx.Type == types.TypeBeginRedelegation || stakeTx.Type == types.TypeCompleteRedelegation {
+		if stakeTx.Type == types.TypeBeginRedelegation {
 			var res document.TxMsg
 			err := dbm.C("tx_msg").Find(bson.M{"hash": stakeTx.Hash}).One(&res)
 			if err != nil {
@@ -81,13 +81,13 @@ type Param struct {
 }
 
 type MsgDeposit struct {
-	ProposalID int64       `json:"proposal_id"` // ID of the proposal
+	ProposalID uint64      `json:"proposal_id"` // ID of the proposal
 	Depositer  string      `json:"depositer"`   // Address of the depositer
 	Amount     store.Coins `json:"amount"`      // Coins to add to the proposal's deposit
 }
 
 type MsgVote struct {
-	ProposalID int64  `json:"proposal_id"`
+	ProposalID uint64 `json:"proposal_id"`
 	Voter      string `json:"voter"`
 	Option     string `json:"option"`
 }
