@@ -30,9 +30,11 @@ export default class Tools{
   static conversionTimeToUTC(originTime){
     return `${originTime.substr(5,2)}/${originTime.substr(8,2)}/${originTime.substr(0,4)} ${originTime.substr(11,8)}+UTC`;
   }
+
   static conversionTimeToUTCToYYMMDD(originTime){
     return `${originTime.substr(0,4)}/${originTime.substr(5,2)}/${originTime.substr(8,2)} ${originTime.substr(11,8)}+UTC`;
   }
+
   static conversionTimeToUTCByValidatorsLine(originTime){
     return `${originTime.substr(0,4)}/${originTime.substr(5,2)}/${originTime.substr(8,2)} ${originTime.substr(11,8)}`;
   }
@@ -40,6 +42,7 @@ export default class Tools{
   static formatNumber(num){
     return new BigNumber(num).div(1000000000000000000).toNumber();
   }
+
   static formaNumberAboutGasPrice(num){
     return new BigNumber(num).div(1000000000).toNumber();
   }
@@ -102,10 +105,6 @@ export default class Tools{
     }
   }
 
-
-
-
-
   static decimalPlace(num,val){
     if(val){
       return Tools.toFixedformatNumber(num ,val);
@@ -126,13 +125,16 @@ export default class Tools{
     }
 
   }
+
   static  toFixedformatNumber(num,val){
     return new BigNumber(num).toFixed(val,1);
 
   }
+
   static convertScientificNotation2Number(num){
     return new BigNumber(num).toFixed();
   }
+
   static formatFeeToFixedNumber(num){
     return  Tools.toFixedformatNumber(Tools.formatNumber(num) ,4) + "...";
   }
@@ -219,24 +221,35 @@ export default class Tools{
       j = (j = i.length) > 3 ? j % 3 : 0;
     return symbol + negative + (j ? i.substr(0, j) + thousand : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousand) + (places ? decimal : "");
   }
+
   static formatDenom(denom){
     if(denom === "iris-atto" || denom === "iris"){
       return "IRIS"
     }
   }
+
   static formatAccountCoinsAmount(coinsAmount){
     return coinsAmount = /[0-9]+[.]?[0-9]*/.exec(coinsAmount)
   }
+
   static formatAccountCoinsDenom(coinsDenom){
     return coinsDenom = /[A-Za-z\-]{2,15}/.exec(coinsDenom)
   }
+
   static flTxType(TxType){
     if(TxType === "CompleteUnbonding" || TxType === "BeginUnbonding" || TxType === "BeginRedelegate" || TxType === "CompleteRedelegation" ){
       return true
     }
   }
+
   static scrollToTop(){
     document.body.scrollTop = 0;
+  }
+
+  static firstWordUpperCase (str){
+    return str.toLowerCase().replace(/(\s|^)[a-z]/g, function(char){
+      return char.toUpperCase();
+    });
   }
 
   static commonTxListItem(list,txType){
@@ -271,7 +284,7 @@ export default class Tools{
           Block : item.BlockHeight
         };
         commonFooterObjList = {
-          Status : item.Status,
+          Status : Tools.firstWordUpperCase(item.Status),
           Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp)
         };
         if(txType === 'Transfers' ){

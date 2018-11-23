@@ -50,11 +50,15 @@
     .to_top_img_container{
       width: 0.46rem;
       height: 0.48rem;
-      background: rgba(0,0,0,0.7);
-      border-radius: 0.05rem;
+      background: rgba(0,0,0,0.3);
+      border-radius: 0.05rem 0 0 0.05rem;
       position: fixed;
       right: 0.18rem;
-      bottom: 1.52rem;
+      bottom: 1rem;
+      img{
+        width: 100%;
+        height: 100%;
+      }
       &:hover{
         cursor: pointer;
       }
