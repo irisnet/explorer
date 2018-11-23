@@ -36,14 +36,16 @@ func registerQueryProposals(r *mux.Router) error {
 		var proposals []Proposal
 		for _, propo := range data {
 			mP := Proposal{
-				Title:            propo.Title,
-				ProposalId:       propo.ProposalId,
-				Type:             propo.Type,
-				Description:      propo.Description,
-				Status:           propo.Status,
-				SubmitBlock:      propo.SubmitBlock,
-				SubmitTime:       propo.SubmitTime,
-				VotingStartBlock: propo.VotingStartBlock,
+				Title:           propo.Title,
+				ProposalId:      propo.ProposalId,
+				Type:            propo.Type,
+				Description:     propo.Description,
+				Status:          propo.Status,
+				SubmitTime:      propo.SubmitTime,
+				DepositEndTime:  propo.DepositEndTime,
+				VotingStartTime: propo.VotingStartTime,
+				VotingEndTime:   propo.VotingEndTime,
+				TotalDeposit:    propo.TotalDeposit,
 			}
 			proposals = append(proposals, mP)
 		}
@@ -72,15 +74,16 @@ func registerQueryProposal(r *mux.Router) error {
 		}
 
 		proposal := Proposal{
-			Title:            data.Title,
-			ProposalId:       data.ProposalId,
-			Type:             data.Type,
-			Description:      data.Description,
-			Status:           data.Status,
-			SubmitBlock:      data.SubmitBlock,
-			SubmitTime:       data.SubmitTime,
-			TotalDeposit:     data.TotalDeposit,
-			VotingStartBlock: data.VotingStartBlock,
+			Title:           data.Title,
+			ProposalId:      data.ProposalId,
+			Type:            data.Type,
+			Description:     data.Description,
+			Status:          data.Status,
+			SubmitTime:      data.SubmitTime,
+			DepositEndTime:  data.DepositEndTime,
+			VotingStartTime: data.VotingStartTime,
+			VotingEndTime:   data.VotingEndTime,
+			TotalDeposit:    data.TotalDeposit,
 		}
 
 		var tx document.CommonTx
@@ -123,12 +126,14 @@ func registerQueryProposal(r *mux.Router) error {
 
 type Proposal struct {
 	Title            string      `json:"title"`
-	ProposalId       int64       `json:"proposal_id"`
+	ProposalId       uint64      `json:"proposal_id"`
 	Type             string      `json:"type"`
 	Description      string      `json:"description"`
 	Status           string      `json:"status"`
-	SubmitBlock      int64       `json:"submit_block"`
 	SubmitTime       time.Time   `json:"submit_time"`
+	DepositEndTime   time.Time   `json:"deposit_end_time"`
+	VotingStartTime  time.Time   `json:"voting_start_time"`
+	VotingEndTime    time.Time   `json:"voting_end_time"`
 	TotalDeposit     store.Coins `json:"total_deposit"`
 	VotingStartBlock int64       `json:"voting_start_block"`
 	Proposer         string      `json:"proposer"`

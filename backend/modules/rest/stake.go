@@ -17,7 +17,7 @@ import (
 func RegisterStake(r *mux.Router) error {
 	funs := []func(*mux.Router) error{
 		registerQueryValidator,
-		registerQueryRevokedValidator,
+		registerQueryJailedValidator,
 		registerQueryCandidates,
 		registerQueryCandidate,
 		registerQueryCandidateStatus,
@@ -65,8 +65,8 @@ func registerQueryValidator(r *mux.Router) error {
 	r.HandleFunc("/api/stake/validators/{page}/{size}", queryValidators).Methods("GET")
 	return nil
 }
-func registerQueryRevokedValidator(r *mux.Router) error {
-	r.HandleFunc("/api/stake/revokedVal/{page}/{size}", queryRevokedValidator).Methods("GET")
+func registerQueryJailedValidator(r *mux.Router) error {
+	r.HandleFunc("/api/stake/revokedVal/{page}/{size}", queryJailedValidator).Methods("GET")
 	return nil
 }
 func registerQueryCandidates(r *mux.Router) error {
@@ -109,7 +109,7 @@ func queryCandidate(w http.ResponseWriter, r *http.Request) {
 	err := c.Find(bson.M{"address": address}).Sort("-update_time").One(&candidate)
 
 	query := bson.M{}
-	query["revoked"] = false
+	query["jailed"] = false
 	query["status"] = types.TypeValStatusBonded
 
 	pipe := c.Pipe(
@@ -326,7 +326,7 @@ func queryCandidatesTop(w http.ResponseWriter, r *http.Request) {
 	cb := db.C("block")
 
 	query := bson.M{}
-	query["revoked"] = false
+	query["jailed"] = false
 	query["status"] = types.TypeValStatusBonded
 
 	cs.Find(query).Sort("-voting_power").Limit(10).All(&candidates)
