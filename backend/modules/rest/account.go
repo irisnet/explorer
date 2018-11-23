@@ -2,7 +2,10 @@ package rest
 
 import (
 	"encoding/json"
+	"github.com/irisnet/explorer/backend/types"
+	"github.com/irisnet/irishub-sync/store"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/utils"
@@ -29,19 +32,32 @@ func queryAccount(w http.ResponseWriter, r *http.Request) {
 	args := mux.Vars(r)
 	address := args["address"]
 
-	c := utils.GetDatabase().C("account")
-	defer c.Database.Session.Close()
-	var result document.Account
-	err := c.Find(bson.M{"address": address}).Sort("-amount.amount").One(&result)
+	db := utils.GetDatabase()
+	accountStore := db.C("account")
+	defer db.Session.Close()
+	var result AccountResp
+	err := accountStore.Find(bson.M{"address": address}).One(&result)
 	if err != nil {
 		w.Write([]byte("not find account"))
 		return
 	}
 
 	balance := utils.GetBalance(result.Address)
-	if len(balance) >= 0 {
+	if len(balance) > 0 {
 		result.Amount = balance
 	}
+	result.WithdrawAddress = address
+
+	txStore := db.C("tx_common")
+	query := bson.M{}
+	query["from"] = address
+	query["type"] = types.TxTypeSetWithdrawAddress
+
+	var tx document.CommonTx
+	if err := txStore.Find(query).Sort("-time").One(&tx); err == nil {
+		result.WithdrawAddress = tx.To
+	}
+
 	resultByte, _ := json.Marshal(result)
 	w.Write(resultByte)
 }
@@ -59,4 +75,12 @@ func RegisterQueryAccount(r *mux.Router) error {
 func RegisterQueryAllAccount(r *mux.Router) error {
 	r.HandleFunc("/api/accounts/{page}/{size}", queryAccounts).Methods("GET")
 	return nil
+}
+
+type AccountResp struct {
+	Address         string      `bson:"address"`
+	Amount          store.Coins `bson:"amount"`
+	Time            time.Time   `bson:"time"`
+	Height          int64       `bson:"height"`
+	WithdrawAddress string
 }

@@ -293,7 +293,7 @@ func buildTx(tx document.CommonTx) interface{} {
 			dtx.Details = tx.StakeEditValidator.Description.Details
 			dtx.Website = tx.StakeEditValidator.Description.Website
 			dtx.Identity = tx.StakeEditValidator.Description.Identity
-		} else if tx.Type == types.TypeUnRevoke {
+		} else if tx.Type == types.TypeJailed {
 			candidateDb := db.C("stake_role_candidate")
 			var can document.Candidate
 			candidateDb.Find(bson.M{"address": dtx.Owner}).One(&can)

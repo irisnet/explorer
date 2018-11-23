@@ -55,7 +55,7 @@ func queryChainStatus(w http.ResponseWriter, r *http.Request) {
 	var count count
 	pipe.One(&count)
 
-	validatorsCount, _ := cs.Find(bson.M{"revoked": false}).Count()
+	validatorsCount, _ := cs.Find(bson.M{"jailed": false}).Count()
 	cc := db.C("tx_common")
 	txCount, _ := cc.Count()
 

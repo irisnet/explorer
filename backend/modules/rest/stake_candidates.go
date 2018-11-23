@@ -18,7 +18,7 @@ func queryCandidates(w http.ResponseWriter, r *http.Request) {
 	txDoc := db.C("tx_common")
 
 	query := bson.M{}
-	query["revoked"] = false
+	query["jailed"] = false
 	query["status"] = bson.M{
 		"$in": []string{types.TypeValStatusUnbonded, types.TypeValStatusUnbonding},
 	}

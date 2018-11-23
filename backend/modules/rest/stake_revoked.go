@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-func queryRevokedValidator(w http.ResponseWriter, r *http.Request) {
+func queryJailedValidator(w http.ResponseWriter, r *http.Request) {
 	var candidates []document.Candidate
 	page, size := utils.TransferPage(r)
 	db := utils.GetDatabase()
@@ -16,7 +16,7 @@ func queryRevokedValidator(w http.ResponseWriter, r *http.Request) {
 	cs := db.C("stake_role_candidate")
 
 	query := bson.M{}
-	query["revoked"] = true
+	query["jailed"] = true
 
 	validatorsCount, _ := cs.Find(query).Count()
 

@@ -1,25 +1,27 @@
 package types
 
 var (
-	TypeTransfer             = "Transfer"
-	TypeCreateValidator      = "CreateValidator"
-	TypeEditValidator        = "EditValidator"
-	TypeUnRevoke             = "Unrevoke"
-	TypeDelegate             = "Delegate"
-	TypeBeginRedelegation    = "BeginRedelegate"
-	TypeCompleteRedelegation = "CompleteRedelegate"
-	TypeBeginUnbonding       = "BeginUnbonding"
-	TypeCompleteUnbonding    = "CompleteUnbonding"
-	TypeSubmitProposal       = "SubmitProposal"
-	TypeDeposit              = "Deposit"
-	TypeVote                 = "Vote"
+	TypeTransfer                      = "Transfer"
+	TypeCreateValidator               = "CreateValidator"
+	TypeEditValidator                 = "EditValidator"
+	TypeJailed                        = "Jailed"
+	TypeDelegate                      = "Delegate"
+	TypeBeginRedelegation             = "BeginRedelegate"
+	TypeBeginUnbonding                = "BeginUnbonding"
+	TxTypeSetWithdrawAddress          = "SetWithdrawAddress"
+	TxTypeWithdrawDelegatorReward     = "WithdrawDelegatorReward"
+	TxTypeWithdrawDelegatorRewardsAll = "WithdrawDelegatorRewardsAll"
+	TxTypeWithdrawValidatorRewardsAll = "WithdrawValidatorRewardsAll"
+	TypeSubmitProposal                = "SubmitProposal"
+	TypeDeposit                       = "Deposit"
+	TypeVote                          = "Vote"
 
 	TypeValStatusUnbonded  = "Unbonded"
 	TypeValStatusUnbonding = "Unbonding"
 	TypeValStatusBonded    = "Bonded"
 
-	DeclarationList = []string{TypeCreateValidator, TypeEditValidator, TypeUnRevoke}
-	StakeList       = []string{TypeDelegate, TypeBeginRedelegation, TypeCompleteRedelegation, TypeBeginUnbonding, TypeCompleteUnbonding}
+	DeclarationList = []string{TypeCreateValidator, TypeEditValidator, TypeJailed}
+	StakeList       = []string{TypeDelegate, TypeBeginRedelegation, TxTypeSetWithdrawAddress, TypeBeginUnbonding, TxTypeWithdrawDelegatorReward, TxTypeWithdrawDelegatorRewardsAll, TxTypeWithdrawValidatorRewardsAll}
 	GovernanceList  = []string{TypeSubmitProposal, TypeDeposit, TypeVote}
 )
 

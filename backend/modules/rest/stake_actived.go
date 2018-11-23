@@ -18,7 +18,7 @@ func queryValidators(w http.ResponseWriter, r *http.Request) {
 	cb := db.C("block")
 
 	query := bson.M{}
-	query["revoked"] = false
+	query["jailed"] = false
 	query["status"] = types.TypeValStatusBonded
 
 	cs.Find(query).Sort("-voting_power").Skip((page - 1) * size).Limit(size).All(&candidates)
