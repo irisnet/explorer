@@ -21,7 +21,7 @@
           <span class="information_props">Type :</span>
           <span class="information_value">{{typeValue}}</span>
         </div>
-        <div class="information_props_wrap" v-if="showProposer">
+        <div class="information_props_wrap" v-if="flShowProposer">
           <span class="information_props">Proposer :</span>
           <span class="information_value link_active_style" @click="skipRoute(`/address/1/${proposer}`)">{{proposer}}</span>
         </div>
@@ -33,7 +33,7 @@
           <span class="information_props">ProposalType :</span>
           <span class="information_value">{{proposalType}}</span>
         </div>
-        <div class="information_props_wrap" v-if="showInitialDeposit">
+        <div class="information_props_wrap" v-if="flShowInitialDeposit">
           <span class="information_props">InitialDeposit :</span>
           <span class="information_value">{{initialDeposit}}</span>
         </div>
@@ -45,23 +45,35 @@
           <span class="information_props">Depositer :</span>
           <span class="information_value link_active_style" @click="skipRoute(`/address/1/${depositer}`)">{{depositer}}</span>
         </div>
-        <div class="information_props_wrap" v-if="showProposalId">
+        <div class="information_props_wrap" v-if="flShowProposalId">
           <span class="information_props">Proposal ID :</span>
           <span class="information_value link_active_style" @click="skipRoute(`/ProposalsDetail/${proposalId}`)">{{proposalId}}</span>
         </div>
-        <div class="information_props_wrap" v-if="showVoter">
+        <div class="information_props_wrap" v-if="flShowVoter">
           <span class="information_props">Voter :</span>
           <span class="information_value link_active_style" @click="skipRoute(`/address/1/${voter}`)">{{voter}}</span>
         </div>
-        <div class="information_props_wrap" v-if="showTypeTransfer">
+        <div class="information_props_wrap" v-if="flShowTypeTransfer || flShowWithdrawAddress">
           <span class="information_props">From :</span>
           <span class="information_value link_active_style" @click="skipRoute(`/address/1/${fromValue}`)">{{fromValue}}</span>
+        </div>
+        <div class="information_props_wrap" v-if="flShowWithdrawAddress">
+          <span class="information_props">Withdraw Address :</span>
+          <span class="information_value link_active_style" @click="skipRoute(`/address/1/${withdrawAddress}`)">{{withdrawAddress}}</span>
+        </div>
+        <div class="information_props_wrap" v-if="flShowDelegatorAddress">
+          <span class="information_props">Delegator Address :</span>
+          <span class="information_value link_active_style" @click="skipRoute(`/address/1/${delegatorAddress}`)">{{delegatorAddress}}</span>
+        </div>
+        <div class="information_props_wrap" v-if="flShowValidatorAddress">
+          <span class="information_props">Validator Address :</span>
+          <span class="information_value link_active_style" @click="skipRoute(`/address/1/${validatorAddress}`)">{{validatorAddress}}</span>
         </div>
         <div class="information_props_wrap" v-if="showSource">
           <span class="information_props">Source :</span>
           <span class="information_value link_active_style" @click="skipRoute(`/address/1/${source}`)">{{source}}</span>
         </div>
-        <div class="information_props_wrap" v-if="showTypeTransfer">
+        <div class="information_props_wrap" v-if="flShowTypeTransfer">
           <span class="information_props">To :</span>
           <span class="information_value link_active_style" @click="skipRoute(`/address/1/${toValue}`)">{{toValue}}</span>
         </div>
@@ -93,11 +105,11 @@
           <span class="information_props">Details :</span>
           <span class="information_value"><pre class="information_pre">{{details}}</pre></span>
         </div>
-        <div class="information_props_wrap" v-if="showVoter">
+        <div class="information_props_wrap" v-if="flShowVoter">
           <span class="information_props">Option :</span>
           <span class="information_value">{{option}}</span>
         </div>
-        <div class="information_props_wrap" v-if="showTypeTransfer || showTypeDeposit">
+        <div class="information_props_wrap" v-if="flShowTypeTransfer || flShowTypeDeposit">
           <span class="information_props">Amount :</span>
           <span class="information_value">{{amountValue}}</span>
         </div>
@@ -174,13 +186,19 @@
         depositer: "",
         voter: "",
         option: "",
-        status:"",
-        showProposalId: false,
-        showProposer: false,
-        showInitialDeposit: false,
-        showTypeTransfer:false,
-        showVoter: false,
-        showTypeDeposit: false,
+        status: "",
+        withdrawAddress: "",
+        delegatorAddress: "",
+        validatorAddress: "",
+        flShowProposalId: false,
+        flShowProposer: false,
+        flShowInitialDeposit: false,
+        flShowTypeTransfer:false,
+        flShowVoter: false,
+        flShowTypeDeposit: false,
+        flShowWithdrawAddress: false,
+        flShowDelegatorAddress: false,
+        flShowValidatorAddress: false,
       }
     },
     beforeMount() {
@@ -228,9 +246,8 @@
           }
           this.actualTxFee = `${Tools.convertScientificNotation2Number(Tools.formatNumber(data.Fee.amount))} ${Tools.formatDenom(data.Fee.denom).toUpperCase()}`;
 
-
-          if(data.Type === "Transfer" || data.Type === "Delegate" || data.Type === "BeginUnbonding" || data.Type === "CompleteUnbonding"){
-            this.showTypeTransfer = true;
+          if(data.Type === "Transfer" || data.Type === "Delegate" || data.Type === "BeginUnbonding"){
+            this.flShowTypeTransfer = true;
             this.fromValue = data.From;
             this.toValue = data.To;
           }else if(data.Type === "CreateValidator" || data.Type === "EditValidator"){
@@ -245,15 +262,15 @@
             }else {
               this.selfBond = "--"
             }
-          }else if(data.Type === "BeginRedelegate" || data.Type === "CompleteRedelegate" ){
-            this.showTypeTransfer = true;
+          }else if(data.Type === "BeginRedelegate"){
+            this.flShowTypeTransfer = true;
             this.showSource = true;
             this.fromValue = data.From ? data.From : '';
             this.toValue = data.To ? data.To : "";
             this.source = data.Source ? data.Source : "";
           }else if(data.Type === "SubmitProposal"){
-            this.showProposer = true;
-            this.showInitialDeposit = true;
+            this.flShowProposer = true;
+            this.flShowInitialDeposit = true;
             this.title = data.Title ? data.Title : '--';
             this.proposer = data.From;
             this.proposalType = data.ProposalType;
@@ -266,16 +283,31 @@
             }
             this.description = data.Description ? data.Description : '--';
           }else if(data.Type === "Deposit"){
-            this.showProposalId = true;
-            this.showTypeDeposit = true;
+            this.flShowProposalId = true;
+            this.flShowTypeDeposit = true;
             this.proposalId = data.ProposalId === 0 ? "--" : data.ProposalId;
             this.depositer = data.From ? data.From : "--";
           }else if(data.Type === "Vote"){
-            this.showProposalId = true;
-            this.showVoter = true;
+            this.flShowProposalId = true;
+            this.flShowVoter = true;
             this.proposalId = data.ProposalId === 0 ? "--" : data.ProposalId;
             this.voter = data.From ? data.From : '--';
             this.option = data.Option ? data.Option : "--";
+          }else if(data.Type === "SetWithdrawAddress"){
+            this.flShowWithdrawAddress = true;
+            this.fromValue = data.From ? data.From : '';
+            this.withdrawAddress = data.To ? data.To : '';
+          }else if(data.Type === "WithdrawDelegatorRewardsAll"){
+            this.flShowDelegatorAddress = true;
+            this.delegatorAddress = data.From ? data.From : '';
+          }else if(data.Type === "WithdrawDelegatorReward"){
+            this.flShowDelegatorAddress = true;
+            this.flShowValidatorAddress = true;
+            this.delegatorAddress = data.From ? data.From : '';
+            this.validatorAddress = data.To ? data.To : "";
+          } else if(data.Type === "WithdrawValidatorRewardsAll"){
+            this.flShowValidatorAddress = true;
+            this.validatorAddress = data.From ? data.From : "";
           }
         }
 

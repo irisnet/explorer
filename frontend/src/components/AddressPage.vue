@@ -7,7 +7,7 @@
           {{address}}
           <i v-if="showProfile" :style="{background:validatorsStatusColor}">v</i>
             <span v-show="flShowValidatorCandidate && showProfile" class="candidate_validator">(This Validator is a Candidate)</span>
-            <span v-show="flShowValidatorRevoked && showProfile" class="revoked_validator">(This Validator is revoked!)</span>
+            <span v-show="flShowValidatorJailed && showProfile" class="jailed_validator">(This Validator is jailed!)</span>
         </span>
       </p>
     </div>
@@ -22,6 +22,10 @@
         <div class="information_props_wrap">
           <span class="information_props">Deposits :</span>
           <span class="information_value information_show_trim">{{depositsValue?depositsValue:'--'}}</span>
+        </div>
+        <div class="information_props_wrap">
+          <span class="information_props">Withdraw Address :</span>
+          <span class="information_value information_show_trim">{{withdrawAddress}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Transactions :</span>
@@ -228,7 +232,8 @@
               currentTabIndex:"",
               currentTxTabName:"",
               identity: "",
-              flShowValidatorRevoked: false,
+              withdrawAddress:"",
+              flShowValidatorJailed: false,
               flShowValidatorCandidate: false,
               flShowUptime: true,
               validatorsStatusColor:"#3598db",
@@ -386,7 +391,7 @@
               }
             }
           }
-
+          this.withdrawAddress = validatorAddressInformation.WithdrawAddress ? validatorAddressInformation.WithdrawAddress : '--';
           this.balanceValue = Amount;
 
         }).catch(e =>{
@@ -401,9 +406,9 @@
           }
         }).then((validators)=>{
           if(validators && typeof validators === "object"){
-            if(validators.Revoked === true){
+            if(validators.Jailed === true){
               this.flShowUptime = false;
-              this.flShowValidatorRevoked = true;
+              this.flShowValidatorJailed = true;
               this.validatorsStatusColor = "#f00";
               this.votingPowerValue = Tools.formatStringToNumber(validators.OriginalTokens);
             }else{
@@ -855,7 +860,7 @@
       }
     }
     .personal_computer_transactions_detail_wrap{
-      width:80%;
+      width:100%!important;
       .current_tenure_wrap{
         @include flex;
         flex-direction:row;
@@ -1148,7 +1153,7 @@
     @include fontSize;
     padding-left: 0.09rem;
   }
-  .revoked_validator{
+  .jailed_validator{
     width: 2rem;
     color: #f00;
     white-space: nowrap;
@@ -1158,7 +1163,7 @@
   .candidate_color{
     background: #45B035!important;
   }
-  .revoked_color{
+  .jailed_color{
     background: #f00!important;
   }
 .personal_computer_transactions_detail_wrap{
