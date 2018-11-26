@@ -351,6 +351,7 @@
     }
 
     .personal_computer_home_wrap {
+      width: 100%!important;
       @include pcCenter;
       .information_preview {
         .information_preview_module {

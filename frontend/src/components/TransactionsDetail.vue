@@ -210,7 +210,7 @@
           this.gasLimit = data.GasLimit;
           this.gasUsedByTxn = data.GasUsed;
           this.memo = data.Memo ? data.Memo : '--';
-          this.status = data.Status ? data.Status: '--';
+          this.status = data.Status ? Tools.firstWordUpperCase(data.Status): '--';
           if(data.Amount && data.Amount.length !==0){
             this.amountValue = data.Amount.map(item=>{
               item.amount = Tools.convertScientificNotation2Number(Tools.formatNumber(item.amount));

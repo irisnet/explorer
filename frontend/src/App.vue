@@ -20,7 +20,6 @@
             <a target="_blank" href='https://twitter.com/irisnetwork' class="twitter"></a>
             <a target="_blank" href='https://medium.com/irisnet-blog' class="facebook"></a>
             <span class="we_chat" @click="showQRCode"></span>
-            <span class="qq"></span>
           </div>
           <div class="footer_center">
             <a href="https://www.irisnet.org/" target="_blank">
@@ -115,7 +114,9 @@
     },
     methods: {
       handleScroll(e){
-        this.scrollHeight = e.target.scrollTop
+        if(e.target.scrollTop > 0){
+          this.scrollHeight = e.target.scrollTop
+        }
       },
       footerLinkClick(path) {
         this.$router.push(path);
@@ -239,6 +240,7 @@
           flex-direction: column;
           .footer_left {
             flex-direction: row;
+            justify-content: center;
           }
           .footer_center {
             text-align: center;
