@@ -24,7 +24,7 @@
           <span class="information_value information_show_trim">{{depositsValue?depositsValue:'--'}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">WithdrawAddress :</span>
+          <span class="information_props">Withdraw Address :</span>
           <span class="information_value information_show_trim">{{withdrawAddress}}</span>
         </div>
         <div class="information_props_wrap">
