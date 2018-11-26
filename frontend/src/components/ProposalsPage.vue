@@ -119,18 +119,14 @@
               let proposalId = item.proposal_id === 0 ? "--" : item.proposal_id;
               let type = item.type;
               let status  = item.status;
-              let submitBlock = item.submit_block;
-              let submitTime = Tools.conversionTimeToUTCToYYMMDD(item.submit_time);
-              let votingStartBlock = item.voting_start_block ? item.voting_start_block : "" ;
+              let submitTime = Tools.conversionTimeToUTC(item.submit_time);
               let title = Tools.formatString(item.title,20,"...");
               return {
                 Title : title,
                 'Proposal ID' : proposalId,
                 Type : type,
                 Status : status,
-                'Submit Block' : submitBlock,
                 'Submit Time' : submitTime,
-                'Voting Start Block' : votingStartBlock,
               }
             })
           }else {
@@ -221,6 +217,7 @@
   }
   .personal_computer_proposals_list_page_wrap {
     padding-bottom: 0.2rem;
+    width: 100%!important;
     .transaction_information_content_title {
       height: 0.4rem;
       line-height: 0.4rem;

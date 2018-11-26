@@ -271,7 +271,7 @@
               this.transactionsValue = data.NumTxs;
               this.hashValue = data.Height;
               this.heightValue = data.Height;
-              this.timestampValue = Tools.conversionTimeToUTCToYYMMDD(data.Time);
+              this.timestampValue = Tools.conversionTimeToUTC(data.Time);
               this.blockHashValue = data.Hash;
               this.lastBlockHashValue = data.Block.LastCommit.BlockID.Hash;
               this.precommitValidatorsValue = data.Validators.length !== 0 ? `${data.Block.LastCommit.Precommits.length}/${data.Validators.length}` : '';
