@@ -163,7 +163,7 @@
                 return {
                   Height: item.Height,
                   Txn:txn,
-                  Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Time),
+                  Timestamp: Tools.conversionTimeToUTC(item.Time),
                   'Precommit Validators':precommit,
                   'Voting Power': denominator !== 0? `${(numerator/denominator).toFixed(2)*100}%`:'',
                 };
@@ -212,8 +212,8 @@
           if(this.$route.params.param === "active"){
             this.listTitleName = "Active Validators";
             url = `/api/stake/validators/${currentPage}/${pageSize}`;
-          }else if(this.$route.params.param === "revoked"){
-            this.listTitleName = "Revoked Validators";
+          }else if(this.$route.params.param === "jailed"){
+            this.listTitleName = "Jailed Validators";
             url = `/api/stake/revokedVal/${currentPage}/${pageSize}`;
           }else if(this.$route.params.param === "candidates"){
             this.listTitleName = "Validator Candidates";
@@ -246,7 +246,7 @@
                     'Uptime':'',
                   }]
                 }
-              }else if(this.$route.params.param === "revoked"){
+              }else if(this.$route.params.param === "jailed"){
                 if(data.Candidates){
                   this.items = data.Candidates.map(item => {
                     return {
@@ -304,6 +304,7 @@
     @include flex;
     @include pcContainer;
     font-size: 0.14rem;
+    width: 100%!important;
     .pagination {
       @include flex;
       justify-content: flex-end;
@@ -371,6 +372,7 @@
     }
     .personal_computer_blocks_list_page_wrap {
       padding-bottom: 0.2rem;
+      width: 100%!important;
       .transaction_information_content_title {
         height: 0.4rem;
         line-height: 0.4rem;
