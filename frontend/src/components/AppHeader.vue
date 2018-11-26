@@ -51,8 +51,8 @@
           </span>
           <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/active')"
                 v-show="showSubValidators">Active</span>
-          <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/revoked')"
-                v-show="showSubValidators">Revoked</span>
+          <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/jailed')"
+                v-show="showSubValidators">Jailed</span>
           <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/candidates')"
                 v-show="showSubValidators">Candidates</span>
 
@@ -106,7 +106,7 @@
         </span>
         <div class="select_option" v-show="flShowValidatorsSelect">
           <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/active')">Active</span>
-          <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/revoked')">Revoked</span>
+          <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/jailed')">Jailed</span>
           <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/candidates')">Candidates</span>
         </div>
 
@@ -382,6 +382,7 @@
       @include pcCenter;
       justify-content: space-between;
       padding-top: 0.01rem;
+      width: 100%;
       .header_top {
         @include flex();
         justify-content: space-between;
@@ -493,6 +494,7 @@
       align-items: center;
       background: #3598db;
       .navButton {
+        width: 100%!important;
         height:0.66rem;
         @include pcCenter;
         @include flex;
