@@ -45,7 +45,7 @@ func GetBalance(address string) store.Coins {
 		}
 	}()
 
-	uri := fmt.Sprintf("%s/bank/accounts/%s", AddrNodeServer, address)
+	uri := fmt.Sprintf("%s/auth/accounts/%s", AddrNodeServer, address)
 	statusCode, resBytes := get(uri)
 
 	var account Account
