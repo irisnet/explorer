@@ -20,7 +20,7 @@
         </div>
       </div>
       <router-view class="router_view" :style="`min-height:${vh/100-2.72}rem;`"/>
-      <footer :class="footerClass" v-show="showFooter" id="footer">
+      <footer :class="footerClass" v-show="flShowFooter" id="footer">
         <div :class="footerClassName" style="height:100%;">
           <div class="footer_left" :class="footerLeftVar">
             <a target="_blank" href='https://github.com/irisnet' class="github"></a>
@@ -70,14 +70,7 @@
     },
     watch: {
       $route() {
-        if(this.$route.path === "/version"){
-          this.showFooter = false;
-          this.flShowHeader = false;
-        }else {
-          this.showFooter = true;
-          this.flShowHeader = true;
-          this.showFooter = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
-        }
+        this.showHeaderAndFooterByVersionPath();
         Tools.scrollToTop()
       }
     },
@@ -90,7 +83,7 @@
         footerClassName: 'person_computer_footer',
         footerLeftVar: 'person_computer_footer_left',
         footerRightVar: 'person_computer_footer_right',
-        showFooter: !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer()),
+        flShowFooter: !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer()),
         vh: window.innerHeight,
         vw: window.innerWidth,
         weChatQRShow: false,
@@ -110,13 +103,7 @@
 
     },
     mounted() {
-      if(this.$route.path === "/version"){
-        this.showFooter = false;
-        this.flShowHeader = false;
-      }else {
-        this.showFooter = true;
-        this.flShowHeader = true;
-      }
+      this.showHeaderAndFooterByVersionPath();
       window.addEventListener('resize', this.onresize);
       if (window.innerWidth > 960) {
         this.footerClass = 'person_computer_wrap';
@@ -157,6 +144,16 @@
           this.footerClassName = 'mobile_footer';
           this.footerLeftVar = 'mobile_footer_left';
           this.footerRightVar = 'mobile_footer_right';
+        }
+      },
+      showHeaderAndFooterByVersionPath(){
+        if(this.$route.path === "/version"){
+          this.flShowFooter = false;
+          this.flShowHeader = false;
+        }else {
+          this.flShowFooter = true;
+          this.flShowHeader = true;
+          this.flShowFooter = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
         }
       },
       showQRCode() {
