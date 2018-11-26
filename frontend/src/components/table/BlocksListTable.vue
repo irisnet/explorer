@@ -35,7 +35,7 @@
           {{data.item.To?`${String(data.item.To).substr(0,16)}...`:''}}
         </span>
         <span class="no_skip" v-show="data.item.To === '--'">
-          {{data.item.To}}
+          --
         </span>
       </template>
       <template slot='Owner' slot-scope='data'>
@@ -147,7 +147,7 @@
           {{data.item.To?`${String(data.item.To).substr(0,16)}...`:''}}
         </span>
         <span class="no_skip" v-show="data.item.To == '--'">
-          {{data.item.To}}
+          --
         </span>
       </template>
       <template slot='Owner' slot-scope='data'>
