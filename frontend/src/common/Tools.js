@@ -28,10 +28,6 @@ export default class Tools{
    * return string
    */
   static conversionTimeToUTC(originTime){
-    return `${originTime.substr(5,2)}/${originTime.substr(8,2)}/${originTime.substr(0,4)} ${originTime.substr(11,8)}+UTC`;
-  }
-
-  static conversionTimeToUTCToYYMMDD(originTime){
     return `${originTime.substr(0,4)}/${originTime.substr(5,2)}/${originTime.substr(8,2)} ${originTime.substr(11,8)}+UTC`;
   }
 
@@ -237,7 +233,9 @@ export default class Tools{
   }
 
   static flTxType(TxType){
-    if(TxType === "CompleteUnbonding" || TxType === "BeginUnbonding" || TxType === "BeginRedelegate" || TxType === "CompleteRedelegation" ){
+    if(TxType === "WithdrawAddress " || TxType === "BeginUnbonding"
+      || TxType === "BeginRedelegate" || TxType === "WithdrawDelegatorRewardsAll"
+      || TxType === "WithdrawDelegatorReward" || TxType === "WithdrawDelegatorReward"){
       return true
     }
   }
@@ -285,7 +283,7 @@ export default class Tools{
         };
         commonFooterObjList = {
           Status : Tools.firstWordUpperCase(item.Status),
-          Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp)
+          Timestamp: Tools.conversionTimeToUTC(item.Timestamp)
         };
         if(txType === 'Transfers' ){
           objList = {
@@ -307,7 +305,7 @@ export default class Tools{
             TxHash: item.Hash,
             Block:item.BlockHeight,
             From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
-            To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
+            To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:'--'),
             Type:item.Type === 'coin'?'transfer':item.Type,
             Amount,
             Fee,

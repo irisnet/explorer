@@ -223,7 +223,7 @@
           this.hashValue = data.Hash;
           this.blockValue = data.BlockHeight;
           this.typeValue = data.Type === 'coin'?'transfer':data.Type;
-          this.timestampValue = Tools.conversionTimeToUTCToYYMMDD(data.Timestamp);
+          this.timestampValue = Tools.conversionTimeToUTC(data.Timestamp);
           this.gasPrice = Tools.convertScientificNotation2Number(Tools.formaNumberAboutGasPrice(data.GasPrice));
           this.gasLimit = data.GasLimit;
           this.gasUsedByTxn = data.GasUsed;

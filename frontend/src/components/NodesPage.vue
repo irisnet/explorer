@@ -144,7 +144,7 @@
             this.count = data.result.peers.length;
             this.nodeList = data.result.peers;
             this.nodeList.forEach(item => {
-              item.connection_status.SendMonitor.Start = Tools.conversionTimeToUTCToYYMMDD(item.connection_status.SendMonitor.Start);
+              item.connection_status.SendMonitor.Start = Tools.conversionTimeToUTC(item.connection_status.SendMonitor.Start);
               item.node_info.listen_addr = item.node_info.listen_addr.split(":")[0];
               item.node_info.moniker = Tools.formatString(item.node_info.moniker,20,"...");
             });

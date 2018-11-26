@@ -119,7 +119,7 @@
               let proposalId = item.proposal_id === 0 ? "--" : item.proposal_id;
               let type = item.type;
               let status  = item.status;
-              let submitTime = Tools.conversionTimeToUTCToYYMMDD(item.submit_time);
+              let submitTime = Tools.conversionTimeToUTC(item.submit_time);
               let title = Tools.formatString(item.title,20,"...");
               return {
                 Title : title,

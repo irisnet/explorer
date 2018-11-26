@@ -247,7 +247,7 @@
                 Height: item.Height,
                 Proposer: item.Hash,
                 Txn: item.NumTxs,
-                Time: Tools.conversionTimeToUTCToYYMMDD(item.Time),
+                Time: Tools.conversionTimeToUTC(item.Time),
                 Fee: '0 IRIS',
               }
             })
@@ -299,7 +299,7 @@
                 Type: item.Type === 'coin'?'transfer':item.Type,
                 Fee,
                 Amount,
-                Time: Tools.conversionTimeToUTCToYYMMDD(item.Time),
+                Time: Tools.conversionTimeToUTC(item.Time),
               };
             })
           }

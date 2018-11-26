@@ -188,10 +188,10 @@
               this.status = data.proposal.status;
               this.proposer = data.proposal.proposer ? data.proposal.proposer : "--";
               this.submitHash = data.proposal.tx_hash ? data.proposal.tx_hash : "--";
-              this.submitTime = data.proposal.submit_time ? Tools.conversionTimeToUTCToYYMMDD(data.proposal.submit_time) : '--';
-              this.depositEndTime = data.proposal.deposit_end_time ? Tools.conversionTimeToUTCToYYMMDD(data.proposal.deposit_end_time) : '--';
-              this.votingStartTime = data.proposal.voting_start_time ? Tools.conversionTimeToUTCToYYMMDD(data.proposal.voting_start_time) : '--';
-              this.votingEndTime = data.proposal.voting_end_time ? Tools.conversionTimeToUTCToYYMMDD(data.proposal.voting_end_time) : '--';
+              this.submitTime = data.proposal.submit_time ? Tools.conversionTimeToUTC(data.proposal.submit_time) : '--';
+              this.depositEndTime = data.proposal.deposit_end_time ? Tools.conversionTimeToUTC(data.proposal.deposit_end_time) : '--';
+              this.votingStartTime = data.proposal.voting_start_time ? Tools.conversionTimeToUTC(data.proposal.voting_start_time) : '--';
+              this.votingEndTime = data.proposal.voting_end_time ? Tools.conversionTimeToUTC(data.proposal.voting_end_time) : '--';
               this.description = data.proposal.description ? data.proposal.description : " -- ";
               this.voteDetailsYes = data.proposal.status === "DepositPeriod" ? "--" : data.result.Yes;
               this.voteDetailsNo = data.proposal.status === "DepositPeriod" ? "--" : data.result.No;
@@ -210,7 +210,7 @@
               if(data.votes){
                 this.count = data.votes.length;
                 this.items = data.votes.map(item =>{
-                  item.time = Tools.conversionTimeToUTCToYYMMDD(item.time);
+                  item.time = Tools.conversionTimeToUTC(item.time);
                   return {
                     Voter: item.voter,
                     "Vote Option": item.option,
