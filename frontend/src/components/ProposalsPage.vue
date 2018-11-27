@@ -130,7 +130,7 @@
               }
             })
           }else {
-            this.items = [{Title:"",'Proposal ID':"",Type:"",Status:"",'Submit Block':"",'Submit Time':'','Voting Start Block':''}];
+            this.items = [{Title:"",'Proposal ID':"",Type:"",Status:"",'Submit Time':'',}];
             this.showNoData = true;
           }
           this.showLoading = false;
