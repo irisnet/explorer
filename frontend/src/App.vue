@@ -151,7 +151,6 @@
           this.flShowFooter = false;
           this.flShowHeader = false;
         }else {
-          this.flShowFooter = true;
           this.flShowHeader = true;
           this.flShowFooter = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
         }
