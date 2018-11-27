@@ -1,18 +1,26 @@
 <template>
   <div id="app">
-    <app-header></app-header>
+    <app-header v-show="flShowHeader"></app-header>
     <div id="router_wrap">
-      <div class="weChat_qr_code"
+      <div class="qr_code"
            @click="hideQRCode"
-           :style="`width:${vw}px;height:${vh}px`" v-show="qrShow">
-        <div class="weChat_all">
-          <img src="./assets/wechat_qr.png" alt="失去网络了..." style="width:1.8rem;height:1.8rem;">
+           :style="`width:${vw}px;height:${vh}px`" v-show="weChatQRShow">
+        <div class="qr_mask">
+          <img src="./assets/wechat_qr.png" style="width:1.8rem;height:1.8rem;">
           <h2>Scan QR Code</h2>
           <p>to follow our SubScriptions</p>
         </div>
       </div>
+      <div class="qr_code"
+           @click="hideQRCode"
+           :style="`width:${vw}px;height:${vh}px`" v-show="qqQRShow">
+        <div class="qr_mask">
+          <img src="./assets/qq_qr.png" style="width:1.8rem;height:1.8rem;">
+          <h2>Join QQ group</h2>
+        </div>
+      </div>
       <router-view class="router_view" :style="`min-height:${vh/100-2.72}rem;`"/>
-      <footer :class="footerClass" v-show="showFooter" id="footer">
+      <footer :class="footerClass" v-show="flShowFooter" id="footer">
         <div :class="footerClassName" style="height:100%;">
           <div class="footer_left" :class="footerLeftVar">
             <a target="_blank" href='https://github.com/irisnet' class="github"></a>
@@ -20,6 +28,7 @@
             <a target="_blank" href='https://twitter.com/irisnetwork' class="twitter"></a>
             <a target="_blank" href='https://medium.com/irisnet-blog' class="facebook"></a>
             <span class="we_chat" @click="showQRCode"></span>
+            <span class="qq" @click="showqqQRCode"></span>
           </div>
           <div class="footer_center">
             <a href="https://www.irisnet.org/" target="_blank">
@@ -41,9 +50,6 @@
             <p class="footer_copyright_wrap">
               ©️ IRISplorer 2018 all rights reserved
             </p>
-            <!--<p class="footer_copyright_wrap">
-              {{`v${version}(${env}_${build})`}}
-            </p>-->
           </div>
         </div>
       </footer>
@@ -64,7 +70,7 @@
     },
     watch: {
       $route() {
-        this.showFooter = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
+        this.showHeaderAndFooterByVersionPath();
         Tools.scrollToTop()
       }
     },
@@ -77,15 +83,17 @@
         footerClassName: 'person_computer_footer',
         footerLeftVar: 'person_computer_footer_left',
         footerRightVar: 'person_computer_footer_right',
-        showFooter: !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer()),
+        flShowFooter: !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer()),
         vh: window.innerHeight,
         vw: window.innerWidth,
-        qrShow: false,
+        weChatQRShow: false,
+        qqQRShow: false,
         build: testVersion.app.buildNumber,
         env: testVersion.app.env,
         version: testVersion.app.version,
         innerWidth: window.innerWidth,
         scrollHeight:0,
+        flShowHeader : true,
       }
     },
     beforeMount() {
@@ -95,6 +103,7 @@
 
     },
     mounted() {
+      this.showHeaderAndFooterByVersionPath();
       window.addEventListener('resize', this.onresize);
       if (window.innerWidth > 960) {
         this.footerClass = 'person_computer_wrap';
@@ -137,11 +146,24 @@
           this.footerRightVar = 'mobile_footer_right';
         }
       },
+      showHeaderAndFooterByVersionPath(){
+        if(this.$route.path === "/version"){
+          this.flShowFooter = false;
+          this.flShowHeader = false;
+        }else {
+          this.flShowHeader = true;
+          this.flShowFooter = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
+        }
+      },
       showQRCode() {
-        this.qrShow = true;
+        this.weChatQRShow = true;
+      },
+      showqqQRCode(){
+        this.qqQRShow =  true;
       },
       hideQRCode() {
-        this.qrShow = false;
+        this.weChatQRShow = false;
+        this.qqQRShow =  false;
       }
     }
   }
@@ -186,7 +208,7 @@
       .mobile_wrap_footer {
         /*height:21rem;*/
       }
-      .weChat_qr_code { //微信二维码弹框
+      .qr_code { //微信二维码弹框
         position: fixed;
         top: 0;
         left: 0;
@@ -195,7 +217,7 @@
         @include flex;
         justify-content: center;
         align-items: center;
-        .weChat_all {
+        .qr_mask {
           width: 3.7rem;
           height: 3.7rem;
           background: #141426;
