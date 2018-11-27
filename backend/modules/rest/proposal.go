@@ -41,10 +41,10 @@ func registerQueryProposals(r *mux.Router) error {
 				Type:            propo.Type,
 				Description:     propo.Description,
 				Status:          propo.Status,
-				SubmitTime:      propo.SubmitTime,
-				DepositEndTime:  propo.DepositEndTime,
-				VotingStartTime: propo.VotingStartTime,
-				VotingEndTime:   propo.VotingEndTime,
+				SubmitTime:      utils.FmtUTCTime(propo.SubmitTime),
+				DepositEndTime:  utils.FmtUTCTime(propo.DepositEndTime),
+				VotingStartTime: utils.FmtUTCTime(propo.VotingStartTime),
+				VotingEndTime:   utils.FmtUTCTime(propo.VotingEndTime),
 				TotalDeposit:    propo.TotalDeposit,
 			}
 			proposals = append(proposals, mP)
@@ -79,10 +79,10 @@ func registerQueryProposal(r *mux.Router) error {
 			Type:            data.Type,
 			Description:     data.Description,
 			Status:          data.Status,
-			SubmitTime:      data.SubmitTime,
-			DepositEndTime:  data.DepositEndTime,
-			VotingStartTime: data.VotingStartTime,
-			VotingEndTime:   data.VotingEndTime,
+			SubmitTime:      utils.FmtUTCTime(data.SubmitTime),
+			DepositEndTime:  utils.FmtUTCTime(data.DepositEndTime),
+			VotingStartTime: utils.FmtUTCTime(data.VotingStartTime),
+			VotingEndTime:   utils.FmtUTCTime(data.VotingEndTime),
 			TotalDeposit:    data.TotalDeposit,
 		}
 
@@ -130,10 +130,10 @@ type Proposal struct {
 	Type             string      `json:"type"`
 	Description      string      `json:"description"`
 	Status           string      `json:"status"`
-	SubmitTime       time.Time   `json:"submit_time"`
-	DepositEndTime   time.Time   `json:"deposit_end_time"`
-	VotingStartTime  time.Time   `json:"voting_start_time"`
-	VotingEndTime    time.Time   `json:"voting_end_time"`
+	SubmitTime       string      `json:"submit_time"`
+	DepositEndTime   string      `json:"deposit_end_time"`
+	VotingStartTime  string      `json:"voting_start_time"`
+	VotingEndTime    string      `json:"voting_end_time"`
 	TotalDeposit     store.Coins `json:"total_deposit"`
 	VotingStartBlock int64       `json:"voting_start_block"`
 	Proposer         string      `json:"proposer"`
