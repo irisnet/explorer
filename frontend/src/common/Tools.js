@@ -255,7 +255,7 @@ export default class Tools{
       return list.map(item => {
         let [Amount,Fee] = ['--','--'];
         let commonHeaderObjList,objList,commonFooterObjList;
-        if(txType === 'Transfers' || txType === 'Stakes' || txType === 'governance'){
+        if(txType === 'Transfers' || txType === 'Stakes' || txType === 'Governance'){
           if(item.Amount){
             if(item.Amount instanceof Array){
               if(item.Amount.length > 0){
