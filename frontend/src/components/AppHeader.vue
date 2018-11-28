@@ -251,89 +251,116 @@
       validatorsMouseLeave(){
         this.showSubValidators = false;
       },
-
-      getData(data) {
-        if(this.searchInputValue === ''){
-          this.$router.push(`/searchResult/${this.searchInputValue}`);
-        }else if(/^[A-F0-9]{40}$/.test(this.searchInputValue)){
-          let urlTransaction = `/api/tx/${this.searchInputValue}`;
-          axios.get(urlTransaction).then((data) => {
-            if (data.status === 200) {
-              return data.data;
-            }
-          }).then((data) => {
-            if (data && typeof data === "object") {
-              this.$router.push(`/tx?txHash=${this.searchInputValue}`);
-              this.searchInputValue = ""
-            }else {
-              this.$router.push(`/searchResult/${this.searchInputValue}`);
-              this.searchInputValue = ""
-            }
-          }).catch(e => {
-            this.$router.push(`/searchResult/${this.searchInputValue}`);
-            this.searchInputValue = "";
-            console.log(e)
-          });
-        }else if(this.$Crypto.getCrypto("iris").isValidAddress(this.searchInputValue)){
-          let urlAddress = `/api/account/${this.searchInputValue}`;
-          axios.get(urlAddress).then((data) => {
-            if (data.status === 200) {
-              return data.data;
-            }
-          }).then((data) => {
-            if (data && typeof data === "object") {
-              this.$router.push(`/address/1/${this.searchInputValue}`);
-              this.searchInputValue = "";
-            }else {
-              this.$router.push(`/searchResult/${this.searchInputValue}`);
-              this.searchInputValue = "";
-            }
-          }).catch(e => {
-            this.searchInputValue = "";
-            this.$router.push(`/searchResult/${this.searchInputValue}`);
-            console.log(e)
-          });
-        }else if(/^\+?[1-9][0-9]*$/.test(this.searchInputValue)){
-          let BlockAndProposalUrl = `/api/search/${this.searchInputValue}`;
-          axios.get(BlockAndProposalUrl).then((data) => {
-            if(data.status === 200){
-              return data.data;
-            }
-          }).then((searchResult) => {
-            if(searchResult){
-              //searchResult：[ {Type：block，Data:{}} ，{Type：proposal,Data:{}} ]
-              let searchResultIsBlockOrproposalId = 1;
-              let searchResultIsBlockAndproposalId = 2;
-              if(searchResult.length === searchResultIsBlockOrproposalId){
-                if(searchResult[0].Type === "block" && searchResult[0].Data.Height !== 0){
-                  this.$router.push(`/blocks_detail/${this.searchInputValue}`);
-                  this.searchInputValue = "";
-                  return
-                }else if(searchResult[0].Type === "proposal" && searchResult[0].Data.ProposalID !== 0){
-                  this.$router.push(`/ProposalsDetail/${this.searchInputValue}`);
-                  this.searchInputValue = "";
-                  return
-                }
-              }else if(searchResult.length === searchResultIsBlockAndproposalId){
-                this.$router.push(`/searchResult/${this.searchInputValue}`);
-                this.searchInputValue = "";
+      searchTx(){
+        let uri = `/api/tx/${this.searchInputValue}`;
+        axios.get(uri).then((data) => {
+          if (data.status === 200) {
+            return data.data;
+          }
+        }).then((txInfomation) => {
+          if (txInfomation && typeof txInfomation === "object") {
+            this.$router.push(`/tx?txHash=${this.searchInputValue}`);
+            this.clearSearchInputValue();
+          }else {
+            this.toSearchResultPage();
+          }
+        }).catch(e => {
+          this.toSearchResultPage();
+          console.error(e)
+        });
+      },
+      searchDelegator(){
+        let uri = `/api/account/${this.searchInputValue}`;
+        axios.get(uri).then((data) => {
+          if (data.status === 200) {
+            return data.data;
+          }
+        }).then((addressInfomation) => {
+          if (addressInfomation && typeof addressInfomation === "object") {
+            this.$router.push(`/address/1/${this.searchInputValue}`);
+            this.clearSearchInputValue();
+          }else {
+            this.toSearchResultPage()
+          }
+        }).catch(e => {
+          this.toSearchResultPage();
+          console.error(e)
+        });
+      },
+      searchValidator(){
+        let uri = `/api/stake/candidate/${this.searchInputValue}`;
+        axios.get(uri).then((data) => {
+          if (data.status === 200) {
+            return data.data;
+          }
+        }).then((validatorAddressInfomation) => {
+          if (validatorAddressInfomation && typeof validatorAddressInfomation === "object") {
+            this.$router.push(`/address/1/${this.searchInputValue}`);
+            this.clearSearchInputValue();
+          }else {
+            this.toSearchResultPage()
+          }
+        }).catch(e => {
+          this.toSearchResultPage();
+          console.error(e)
+        });
+      },
+      searchBlockAndProposal(){
+        let uri = `/api/search/${this.searchInputValue}`;
+        axios.get(uri).then((data) => {
+          if(data.status === 200){
+            return data.data;
+          }
+        }).then((searchResult) => {
+          if(searchResult){
+            //searchResult：[ {Type：block，Data:{}} ，{Type：proposal,Data:{}} ]
+            let searchResultIsBlockOrProposalId = 1;
+            let searchBlockAndProposalInResult = 2;
+            if(searchResult.length === searchResultIsBlockOrProposalId){
+              if(searchResult[0].Type === "block" && searchResult[0].Data.Height !== 0){
+                this.$router.push(`/blocks_detail/${this.searchInputValue}`);
+                this.clearSearchInputValue();
+              }else if(searchResult[0].Type === "proposal" && searchResult[0].Data.ProposalID !== 0){
+                this.$router.push(`/ProposalsDetail/${this.searchInputValue}`);
+                this.clearSearchInputValue();
               }
-            }else {
-              this.$router.push(`/searchResult/${this.searchInputValue}`);
-              this.searchInputValue = "";
+            }else if(searchResult.length === searchBlockAndProposalInResult){
+              this.toSearchResultPage();
             }
-          }).catch((e) => {
-            console.log(e);
-            this.$router.push(`/searchResult/${this.searchInputValue}`);
-            this.searchInputValue = "";
-          });
-        }else {
-          this.$router.push(`/searchResult/${this.searchInputValue}`);
-          this.searchInputValue = "";
+          }else {
+            this.toSearchResultPage();
+          }
+        }).catch((e) => {
+          console.error(e);
+          this.toSearchResultPage();
+        });
+      },
+      getData() {
+        if(this.searchInputValue === ''){
+          this.toSearchResultPage();
+        }else{
+          if(/^[A-F0-9]{64}$/.test(this.searchInputValue)){
+            this.searchTx()
+          }else if(this.$Codec.Bech32.isBech32(this.$Crypto.Constants.IRIS.IrisNetConfig.PREFIX_BECH32_ACCADDR,this.searchInputValue) ) {
+            this.searchDelegator();
+          }else if(this.$Codec.Bech32.isBech32(this.$Crypto.Constants.IRIS.IrisNetConfig.PREFIX_BECH32_VALADDR,this.searchInputValue)){
+            this.searchValidator();
+          }else if (/^\+?[1-9][0-9]*$/.test(this.searchInputValue)){
+            this.searchBlockAndProposal();
+          }else {
+            this.toSearchResultPage();
+          }
         }
+      },
+      toSearchResultPage(){
+        this.$router.push(`/searchResult/${this.searchInputValue}`);
+        this.searchInputValue = "";
       },
       onInputChange() {
         this.getData();
+      },
+      clearSearchInputValue(){
+        this.searchInputValue = "";
       },
       listenRouteForChangeActiveButton(){
         //刷新的时候路由不变，active按钮不变

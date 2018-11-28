@@ -6,9 +6,12 @@ import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import axios from "axios"
+const  codec  = require("irisnet-crypto/util/codec.js") ;
 const  crypto = require("irisnet-crypto");
+
 Vue.use(BootstrapVue);
 Vue.prototype.$Crypto = crypto;
+Vue.prototype.$Codec = codec;
 Vue.config.productionTip = false;
 let faucet_url;
 let fuxi;
