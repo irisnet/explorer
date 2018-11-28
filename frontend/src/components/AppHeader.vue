@@ -132,7 +132,6 @@
 <script>
   import Tools from '../common/Tools';
   import axios from 'axios';
-  import Codec from "irisnet-crypto/util/codec"
   export default {
     name: 'app-header',
     watch:{
@@ -275,7 +274,7 @@
             this.searchInputValue = "";
             console.log(e)
           });
-        }else if(Codec.Bech32.isBech32('faa',this.searchInputValue) || Codec.Bech32.isBech32('fva',this.searchInputValue)){
+        }else if(this.$Codec.Bech32.isBech32(this.$Crypto.Constants.IRIS.IrisNetConfig.PREFIX_BECH32_ACCADDR,this.searchInputValue) || this.$Codec.Bech32.isBech32(this.$Crypto.Constants.IRIS.IrisNetConfig.PREFIX_BECH32_VALADDR,this.searchInputValue)){
           let urlAddress = `/api/account/${this.searchInputValue}`;
           axios.get(urlAddress).then((data) => {
             if (data.status === 200) {
