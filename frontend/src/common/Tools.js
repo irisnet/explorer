@@ -294,7 +294,7 @@ export default class Tools{
           };
         }else if(txType === 'Declarations'){
           objList = {
-            Owner: item.Owner ? item.Owner : "--",
+            From: item.Owner ? item.Owner : "--",
             Moniker: item.Moniker ? Tools.formatString(item.Moniker,20,"...") : "--",
             "Self-Bond": item.SelfBond && item.SelfBond.length > 0 ? `${Tools.formatAmount(item.SelfBond[0].amount)} ${Tools.formatDenom(item.SelfBond[0].denom).toUpperCase()}` : "--",
             Type: item.Type,
@@ -338,7 +338,7 @@ export default class Tools{
         noObjList = [{
           TxHash: '',
           Block:'',
-          Owner:'',
+          From:'',
           Moniker:'',
           "Self-Bond":'',
           Type:'',

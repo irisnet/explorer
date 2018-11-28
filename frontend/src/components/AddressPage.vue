@@ -45,6 +45,10 @@
           <span class="information_value">{{pubKeyValue?pubKeyValue:'--'}}</span>
         </div>
         <div class="information_props_wrap">
+          <span class="information_props">Owner :</span>
+          <span class="information_value operator_value" @click="skipRoute(`/address/1/${operatorValue}`)">{{operatorValue ? operatorValue : '--'}}</span>
+        </div>
+        <div class="information_props_wrap">
           <span class="information_props">Website :</span>
           <span class="information_value">
             <pre class="information_pre">{{websiteValue}}</pre>
@@ -158,7 +162,6 @@
   import EchartsValidatorsLine from "./EchartsValidatorsLine";
   import EchartsValidatorsUptimeLine from "./EchartsValidatorsUpTimeLine";
   import SpinComponent from './commonComponents/SpinComponent';
-
   export default {
       watch:{
           currentPage(currentPage) {
@@ -212,6 +215,7 @@
               uptimeValue:'',
               precommitedBlocksValue:'',
               returnsValue:'',
+              operatorValue:'',
               items:[],
               itemsPre:[],
               type:this.$route.params.type,
@@ -330,7 +334,7 @@
             this.txTab[3].txTotal = data.GovCnt;
           }
         }).catch((e) => {
-          console.log(e)
+          console.error(e)
         })
       },
       tabTxList(index,txTabName,currentPage,pageSize){
@@ -395,8 +399,11 @@
           this.balanceValue = Amount;
 
         }).catch(e =>{
-          console.log(e)
+          console.error(e)
         })
+      },
+      skipRoute(path){
+        this.$router.push(path)
       },
       getProfileInformation(){
         let url = `/api/stake/candidate/${this.$route.params.param}`;
@@ -429,13 +436,14 @@
             this.descriptionValue= validators.Description.Details ? validators.Description.Details : "--";
             this.commissionRateValue = '';
             this.announcementValue = '';
+            this.operatorValue = this.$Codec.Bech32.toBech32(this.$Crypto.Constants.IRIS.IrisNetConfig.PREFIX_BECH32_ACCADDR,this.$Codec.Bech32.fromBech32(validators.Address));
             this.showProfile = true;
           }else{
             this.showProfile = false;
           }
 
-        }).catch(e => {
-          console.log(e)
+        }).catch(err => {
+          console.error(err)
         })
       },
       getCurrentTenureInformation(){
@@ -451,8 +459,8 @@
             this.firstPercent = data.Uptime ? `${data.Uptime}%` : "--";
           }
 
-        }).catch(e => {
-          console.log(e)
+        }).catch(err => {
+          console.error(err)
         })
       },
       getTransactionsList(){
@@ -468,7 +476,7 @@
 
           this.TransactionsShowNoData = true;
         }).catch(e => {
-          console.log(e)
+          console.error(e)
         })
       },
       getValidatorHistory(tabTime,index){
@@ -697,7 +705,7 @@
           }
 
         }).catch(e => {
-          console.log(e)
+          console.error(e)
         })
       },
     }
@@ -751,6 +759,10 @@
             min-width:1.5rem;
             font-size:0.14rem;
             color:#000000;
+          }
+          .operator_value{
+            cursor: pointer;
+            color: #3598db !important;
           }
           .information_value{
             word-break: break-all;
@@ -812,6 +824,7 @@
             -webkit-overflow-scrolling:touch;
             color: #a2a2ae;
           }
+
           .information_props{
             font-size:0.14rem;
             color:#000000;
