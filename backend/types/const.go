@@ -4,7 +4,7 @@ var (
 	TypeTransfer                      = "Transfer"
 	TypeCreateValidator               = "CreateValidator"
 	TypeEditValidator                 = "EditValidator"
-	TypeJailed                        = "Jailed"
+	TypeUnjail                        = "Unjail"
 	TypeDelegate                      = "Delegate"
 	TypeBeginRedelegation             = "BeginRedelegate"
 	TypeBeginUnbonding                = "BeginUnbonding"
@@ -20,7 +20,7 @@ var (
 	TypeValStatusUnbonding = "Unbonding"
 	TypeValStatusBonded    = "Bonded"
 
-	DeclarationList = []string{TypeCreateValidator, TypeEditValidator, TypeJailed}
+	DeclarationList = []string{TypeCreateValidator, TypeEditValidator, TypeUnjail}
 	StakeList       = []string{TypeDelegate, TypeBeginRedelegation, TxTypeSetWithdrawAddress, TypeBeginUnbonding, TxTypeWithdrawDelegatorReward, TxTypeWithdrawDelegatorRewardsAll, TxTypeWithdrawValidatorRewardsAll}
 	GovernanceList  = []string{TypeSubmitProposal, TypeDeposit, TypeVote}
 )
