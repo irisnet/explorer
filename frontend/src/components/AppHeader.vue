@@ -266,7 +266,7 @@
           }
         }).catch(e => {
           this.toSearchResultPage();
-          console.log(e)
+          console.error(e)
         });
       },
       searchDelegator(){
@@ -284,7 +284,7 @@
           }
         }).catch(e => {
           this.toSearchResultPage();
-          console.log(e)
+          console.error(e)
         });
       },
       searchValidator(){
@@ -302,7 +302,7 @@
           }
         }).catch(e => {
           this.toSearchResultPage();
-          console.log(e)
+          console.error(e)
         });
       },
       searchBlockAndProposal(){
@@ -331,7 +331,7 @@
             this.toSearchResultPage();
           }
         }).catch((e) => {
-          console.log(e);
+          console.error(e);
           this.toSearchResultPage();
         });
       },
