@@ -252,8 +252,8 @@
         this.showSubValidators = false;
       },
       searchTx(){
-        let urlTransaction = `/api/tx/${this.searchInputValue}`;
-        axios.get(urlTransaction).then((data) => {
+        let uri = `/api/tx/${this.searchInputValue}`;
+        axios.get(uri).then((data) => {
           if (data.status === 200) {
             return data.data;
           }
@@ -270,8 +270,8 @@
         });
       },
       searchDelegator(){
-        let urlAddress = `/api/account/${this.searchInputValue}`;
-        axios.get(urlAddress).then((data) => {
+        let uri = `/api/account/${this.searchInputValue}`;
+        axios.get(uri).then((data) => {
           if (data.status === 200) {
             return data.data;
           }
@@ -288,8 +288,8 @@
         });
       },
       searchValidator(){
-        let urlAddress = `/api/stake/candidate/${this.searchInputValue}`;
-        axios.get(urlAddress).then((data) => {
+        let uri = `/api/stake/candidate/${this.searchInputValue}`;
+        axios.get(uri).then((data) => {
           if (data.status === 200) {
             return data.data;
           }
@@ -306,8 +306,8 @@
         });
       },
       searchBlockAndProposal(){
-        let BlockAndProposalUrl = `/api/search/${this.searchInputValue}`;
-        axios.get(BlockAndProposalUrl).then((data) => {
+        let uri = `/api/search/${this.searchInputValue}`;
+        axios.get(uri).then((data) => {
           if(data.status === 200){
             return data.data;
           }
