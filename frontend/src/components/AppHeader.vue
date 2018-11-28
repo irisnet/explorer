@@ -251,7 +251,7 @@
       validatorsMouseLeave(){
         this.showSubValidators = false;
       },
-      searchTxHash(){
+      searchTx(){
         let urlTransaction = `/api/tx/${this.searchInputValue}`;
         axios.get(urlTransaction).then((data) => {
           if (data.status === 200) {
@@ -262,14 +262,14 @@
             this.$router.push(`/tx?txHash=${this.searchInputValue}`);
             this.clearSearchInputValue();
           }else {
-            this.goSearchResultPage();
+            this.toSearchResultPage();
           }
         }).catch(e => {
-          this.goSearchResultPage();
+          this.toSearchResultPage();
           console.log(e)
         });
       },
-      searchAddress(){
+      searchDelegator(){
         let urlAddress = `/api/account/${this.searchInputValue}`;
         axios.get(urlAddress).then((data) => {
           if (data.status === 200) {
@@ -280,14 +280,14 @@
             this.$router.push(`/address/1/${this.searchInputValue}`);
             this.clearSearchInputValue();
           }else {
-            this.goSearchResultPage()
+            this.toSearchResultPage()
           }
         }).catch(e => {
-          this.goSearchResultPage();
+          this.toSearchResultPage();
           console.log(e)
         });
       },
-      searchValidatorAddress(){
+      searchValidator(){
         let urlAddress = `/api/stake/candidate/${this.searchInputValue}`;
         axios.get(urlAddress).then((data) => {
           if (data.status === 200) {
@@ -298,10 +298,10 @@
             this.$router.push(`/address/1/${this.searchInputValue}`);
             this.clearSearchInputValue();
           }else {
-            this.goSearchResultPage()
+            this.toSearchResultPage()
           }
         }).catch(e => {
-          this.goSearchResultPage();
+          this.toSearchResultPage();
           console.log(e)
         });
       },
@@ -314,9 +314,9 @@
         }).then((searchResult) => {
           if(searchResult){
             //searchResult：[ {Type：block，Data:{}} ，{Type：proposal,Data:{}} ]
-            let searchResultIsBlockOrproposalId = 1;
-            let searchResultIsBlockAndproposalId = 2;
-            if(searchResult.length === searchResultIsBlockOrproposalId){
+            let searchResultIsBlockOrProposalId = 1;
+            let searchBlockAndProposalInResult = 2;
+            if(searchResult.length === searchResultIsBlockOrProposalId){
               if(searchResult[0].Type === "block" && searchResult[0].Data.Height !== 0){
                 this.$router.push(`/blocks_detail/${this.searchInputValue}`);
                 this.clearSearchInputValue();
@@ -324,35 +324,35 @@
                 this.$router.push(`/ProposalsDetail/${this.searchInputValue}`);
                 this.clearSearchInputValue();
               }
-            }else if(searchResult.length === searchResultIsBlockAndproposalId){
-              this.goSearchResultPage();
+            }else if(searchResult.length === searchBlockAndProposalInResult){
+              this.toSearchResultPage();
             }
           }else {
-            this.goSearchResultPage();
+            this.toSearchResultPage();
           }
         }).catch((e) => {
           console.log(e);
-          this.goSearchResultPage();
+          this.toSearchResultPage();
         });
       },
       getData() {
         if(this.searchInputValue === ''){
-          this.goSearchResultPage();
+          this.toSearchResultPage();
         }else{
           if(/^[A-F0-9]{64}$/.test(this.searchInputValue)){
-            this.searchTxHash()
+            this.searchTx()
           }else if(this.$Codec.Bech32.isBech32(this.$Crypto.Constants.IRIS.IrisNetConfig.PREFIX_BECH32_ACCADDR,this.searchInputValue) ) {
-            this.searchAddress();
+            this.searchDelegator();
           }else if(this.$Codec.Bech32.isBech32(this.$Crypto.Constants.IRIS.IrisNetConfig.PREFIX_BECH32_VALADDR,this.searchInputValue)){
-            this.searchValidatorAddress();
+            this.searchValidator();
           }else if (/^\+?[1-9][0-9]*$/.test(this.searchInputValue)){
             this.searchBlockAndProposal();
           }else {
-            this.goSearchResultPage();
+            this.toSearchResultPage();
           }
         }
       },
-      goSearchResultPage(){
+      toSearchResultPage(){
         this.$router.push(`/searchResult/${this.searchInputValue}`);
         this.searchInputValue = "";
       },
