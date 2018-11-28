@@ -86,7 +86,7 @@
           <span class="information_value"><pre class="information_pre">{{identity}}</pre></span>
         </div>
         <div class="information_props_wrap" v-if="owner">
-          <span class="information_props">Owner :</span>
+          <span class="information_props">From :</span>
           <span class="information_value link_active_style" @click="skipRoute(`/address/1/${owner}`)">{{owner}}</span>
         </div>
         <div class="information_props_wrap" v-if="pubkey">
@@ -258,7 +258,7 @@
                 this.flShowTypeTransfer = true;
                 this.fromValue = data.From;
                 this.toValue = data.To;
-              }else if(data.Type === "CreateValidator" || data.Type === "EditValidator"){
+              }else if(data.Type === "CreateValidator" || data.Type === "EditValidator" || data.Type === "Unjail"){
                 this.owner = data.Owner ? data.Owner : '--';
                 this.moniker = data.Moniker ? data.Moniker : '--';
                 this.pubkey = data.Pubkey ? data.Pubkey : "--";
