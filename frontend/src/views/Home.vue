@@ -35,10 +35,10 @@
       </div>
       <div :class="module_item_wrap">
         <div class="home_module_item fixed_item_height">
-          <home-block-module :title="'Blocks'" :information="blocksInformation"></home-block-module>
+          <home-block-module :moduleName="'Blocks'" :information="blocksInformation"></home-block-module>
         </div>
         <div class="home_module_item fixed_item_height">
-          <home-block-module :title="'Transactions'" :information="transactionInformation"></home-block-module>
+          <home-block-module :moduleName="'Transactions'" :information="transactionInformation"></home-block-module>
         </div>
       </div>
     </div>
