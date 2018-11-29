@@ -9,7 +9,6 @@ import AddressPage from './components/AddressPage.vue';
 import PrivacyPolicy from './components/PrivacyPolicy.vue';
 import ProposalsPage from "./components/ProposalsPage.vue";
 import ProposalsDetail from "./components/ProposalsDetail.vue";
-import Nodespage from "./components/NodesPage.vue";
 import SearchResult from "./components/searchResult.vue";
 import Version from "./components/version.vue";
 
@@ -24,9 +23,6 @@ export default new Router({
     {
       path: '/home',
       component: Home,
-    },
-    {
-      path: '/nodespage', component: Nodespage
     },
     {
       path: '/faucet', component: FaucetPage
