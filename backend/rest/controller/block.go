@@ -25,25 +25,25 @@ func RegisterBlock(r *mux.Router) error {
 }
 
 func registerQueryBlock(r *mux.Router) error {
-	RegisterApi(r, types.UrlRegisterQueryBlock, "GET", func(writer http.ResponseWriter, request *http.Request) {
+	doApi(r, types.UrlRegisterQueryBlock, "GET", func(request *http.Request) interface{} {
 		h := Var(request, "height")
 		height, ok := utils.ParseInt(h)
 		if !ok {
 			panic(types.ErrorCodeInValidParam)
-			return
+			return nil
 		}
 
 		result := service.GetBlock().Query(height)
-		WriteResponse(writer, result)
+		return result
 	})
 	return nil
 }
 
 func registerQueryBlocks(r *mux.Router) error {
-	RegisterApi(r, types.UrlRegisterQueryBlocks, "GET", func(writer http.ResponseWriter, request *http.Request) {
+	doApi(r, types.UrlRegisterQueryBlocks, "GET", func(request *http.Request) interface{} {
 		page, size := GetPage(request)
 		result := service.GetBlock().QueryList(page, size)
-		WriteResponse(writer, result)
+		return result
 	})
 
 	return nil
@@ -51,12 +51,12 @@ func registerQueryBlocks(r *mux.Router) error {
 
 func registerQueryBlocksPrecommits(r *mux.Router) error {
 
-	RegisterApi(r, types.UrlRegisterQueryBlocksPrecommits, "GET", func(writer http.ResponseWriter, request *http.Request) {
+	doApi(r, types.UrlRegisterQueryBlocksPrecommits, "GET", func(request *http.Request) interface{} {
 		address := Var(request, "address")
 		page, size := GetPage(request)
 
 		result := service.GetBlock().QueryPrecommits(address, page, size)
-		WriteResponse(writer, result)
+		return result
 	})
 
 	return nil

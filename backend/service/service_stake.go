@@ -24,7 +24,7 @@ func (service *StakeService) QueryValidators(page, pageSize int) model.Candidate
 	cb := db.C(document.CollectionNmBlock)
 
 	query := bson.M{}
-	query["revoked"] = false
+	query["jailed"] = false
 	query["status"] = types.TypeValStatusBonded
 
 	err := cs.Find(query).Sort("-voting_power").Skip((page - 1) * pageSize).Limit(pageSize).All(&candidates)
@@ -80,7 +80,7 @@ func (service *StakeService) QueryRevokedValidator(page, size int) model.Candida
 	cs := db.C(document.CollectionNmStakeRoleCandidate)
 
 	query := bson.M{}
-	query["revoked"] = true
+	query["jailed"] = true
 
 	validatorsCount, _ := cs.Find(query).Count()
 
@@ -111,7 +111,7 @@ func (service *StakeService) QueryCandidates(page, size int) model.Candidates {
 	txDoc := db.C(document.CollectionNmCommonTx)
 
 	query := bson.M{}
-	query["revoked"] = false
+	query["jailed"] = false
 	query["status"] = bson.M{
 		"$in": []string{types.TypeValStatusUnbonded, types.TypeValStatusUnbonding},
 	}
@@ -158,7 +158,7 @@ func (service *StakeService) QueryCandidate(address string) model.CandidateWithP
 	}
 
 	query := bson.M{}
-	query["revoked"] = false
+	query["jailed"] = false
 	query["status"] = types.TypeValStatusBonded
 
 	pipe := c.Pipe(
@@ -188,7 +188,7 @@ func (service *StakeService) QueryCandidatesTopN() model.CandidatesTopN {
 	cb := db.C(document.CollectionNmBlock)
 
 	query := bson.M{}
-	query["revoked"] = false
+	query["jailed"] = false
 	query["status"] = types.TypeValStatusBonded
 
 	err := cs.Find(query).Sort("-voting_power").Limit(10).All(&candidates)
@@ -421,7 +421,7 @@ func (service *StakeService) QueryChainStatus() model.ChainStatus {
 	var count model.Count
 	pipe.One(&count)
 
-	validatorsCount, _ := cs.Find(bson.M{"revoked": false}).Count()
+	validatorsCount, _ := cs.Find(bson.M{"jailed": false}).Count()
 	cc := db.C(document.CollectionNmCommonTx)
 	txCount, _ := cc.Count()
 

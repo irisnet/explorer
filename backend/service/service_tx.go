@@ -52,7 +52,7 @@ func (service *TxService) Query(hash string) interface{} {
 		return govTx
 	case model.StakeTx:
 		stakeTx := tx.(model.StakeTx)
-		if stakeTx.Type == types.TypeBeginRedelegation || stakeTx.Type == types.TypeCompleteRedelegation {
+		if stakeTx.Type == types.TypeBeginRedelegation {
 			var res document.TxMsg
 			err := dbm.C(document.CollectionNmTxMsg).Find(bson.M{"hash": stakeTx.Hash}).One(&res)
 			if err != nil {
@@ -230,7 +230,7 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 			dtx.Details = tx.StakeEditValidator.Description.Details
 			dtx.Website = tx.StakeEditValidator.Description.Website
 			dtx.Identity = tx.StakeEditValidator.Description.Identity
-		} else if tx.Type == types.TypeUnRevoke {
+		} else if tx.Type == types.TypeUnjail {
 			candidateDb := db.C(document.CollectionNmStakeRoleCandidate)
 			var can document.Candidate
 			candidateDb.Find(bson.M{"address": dtx.Owner}).One(&can)

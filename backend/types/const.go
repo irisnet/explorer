@@ -51,36 +51,40 @@ const (
 	UrlRegisterPing = "/ping"
 
 	//BlockChainRpc
-	UrlIrisHubAccount = "%s/bank/accounts/%s"
+	UrlIrisHubAccount = "%s/auth/accounts/%s"
 	UrlIrisHubNetInfo = "%s/net_info"
 
 	UrlNodeLocation = "http://opendata.baidu.com/api.php?query=%s&resource_id=6006&ie=utf8&oe=utf8"
+
+	UtcFormat = "2006/01/02 15:04:05+UTC"
+
+	Change  = "powerChange"
+	Slash   = "slash"
+	Recover = "recover"
 )
 
 var (
-	TypeTransfer             = "Transfer"
-	TypeCreateValidator      = "CreateValidator"
-	TypeEditValidator        = "EditValidator"
-	TypeUnRevoke             = "Unrevoke"
-	TypeDelegate             = "Delegate"
-	TypeBeginRedelegation    = "BeginRedelegate"
-	TypeCompleteRedelegation = "CompleteRedelegate"
-	TypeBeginUnbonding       = "BeginUnbonding"
-	TypeCompleteUnbonding    = "CompleteUnbonding"
-	TypeSubmitProposal       = "SubmitProposal"
-	TypeDeposit              = "Deposit"
-	TypeVote                 = "Vote"
+	TypeTransfer                      = "Transfer"
+	TypeCreateValidator               = "CreateValidator"
+	TypeEditValidator                 = "EditValidator"
+	TypeUnjail                        = "Unjail"
+	TypeDelegate                      = "Delegate"
+	TypeBeginRedelegation             = "BeginRedelegate"
+	TypeBeginUnbonding                = "BeginUnbonding"
+	TxTypeSetWithdrawAddress          = "SetWithdrawAddress"
+	TxTypeWithdrawDelegatorReward     = "WithdrawDelegatorReward"
+	TxTypeWithdrawDelegatorRewardsAll = "WithdrawDelegatorRewardsAll"
+	TxTypeWithdrawValidatorRewardsAll = "WithdrawValidatorRewardsAll"
+	TypeSubmitProposal                = "SubmitProposal"
+	TypeDeposit                       = "Deposit"
+	TypeVote                          = "Vote"
 
 	TypeValStatusUnbonded  = "Unbonded"
 	TypeValStatusUnbonding = "Unbonding"
 	TypeValStatusBonded    = "Bonded"
 
-	Change  = "powerChange"
-	Slash   = "slash"
-	Recover = "recover"
-
-	DeclarationList = []string{TypeCreateValidator, TypeEditValidator, TypeUnRevoke}
-	StakeList       = []string{TypeDelegate, TypeBeginRedelegation, TypeCompleteRedelegation, TypeBeginUnbonding, TypeCompleteUnbonding}
+	DeclarationList = []string{TypeCreateValidator, TypeEditValidator, TypeUnjail}
+	StakeList       = []string{TypeDelegate, TypeBeginRedelegation, TxTypeSetWithdrawAddress, TypeBeginUnbonding, TxTypeWithdrawDelegatorReward, TxTypeWithdrawDelegatorRewardsAll, TxTypeWithdrawValidatorRewardsAll}
 	GovernanceList  = []string{TypeSubmitProposal, TypeDeposit, TypeVote}
 )
 

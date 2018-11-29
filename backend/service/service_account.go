@@ -15,13 +15,16 @@ type AccountService struct {
 }
 
 func GetAccount() *AccountService {
-	return accountService
+	return &AccountService{
+		baseService,
+	}
 }
 
-func (service *AccountService) Query(address string) (result document.Account) {
+func (service *AccountService) Query(address string) (result model.AccountResp) {
 
-	c := service.GetDb().C(document.CollectionNmAccount)
-	defer c.Database.Session.Close()
+	db := service.GetDb()
+	c := db.C(document.CollectionNmAccount)
+	defer db.Session.Close()
 	err := c.Find(bson.M{"address": address}).One(&result)
 	if err != nil {
 		error := types.ErrorCodeNotFound
@@ -31,9 +34,20 @@ func (service *AccountService) Query(address string) (result document.Account) {
 	}
 
 	balance := utils.GetBalance(result.Address)
-	if len(balance) >= 0 {
+	if len(balance) > 0 {
 		result.Amount = balance
 	}
+	result.WithdrawAddress = address
+
+	txStore := db.C(document.CollectionNmCommonTx)
+	query := bson.M{}
+	query["from"] = address
+	query["type"] = types.TxTypeSetWithdrawAddress
+	var tx document.CommonTx
+	if err := txStore.Find(query).Sort("-time").One(&tx); err == nil {
+		result.WithdrawAddress = tx.To
+	}
+
 	return
 }
 

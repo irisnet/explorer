@@ -9,15 +9,16 @@ import (
 
 func RegisterQueryVersion(r *mux.Router) error {
 
-	RegisterApi(r, types.UrlRegisterQueryApiVersion, "GET", func(writer http.ResponseWriter, request *http.Request) {
-		WriteResponse(writer, map[string]string{"version": conf.Get().Server.ApiVersion})
+	doApi(r, types.UrlRegisterQueryApiVersion, "GET", func(request *http.Request) interface{} {
+		return map[string]string{"version": conf.Get().Server.ApiVersion}
 	})
 
 	return nil
 }
 
 func RegisterPing(r *mux.Router) error {
-	RegisterApi(r, types.UrlRegisterPing, "GET", func(writer http.ResponseWriter, request *http.Request) {
+	doApi(r, types.UrlRegisterPing, "GET", func(request *http.Request) interface{} {
+		return nil
 	})
 	return nil
 }

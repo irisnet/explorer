@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
+	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -22,14 +23,16 @@ func (service *ProposalService) QueryList(page, size int) (resp model.Page) {
 	var proposals []model.Proposal
 	for _, propo := range data {
 		mP := model.Proposal{
-			Title:            propo.Title,
-			ProposalId:       propo.ProposalId,
-			Type:             propo.Type,
-			Description:      propo.Description,
-			Status:           propo.Status,
-			SubmitBlock:      propo.SubmitBlock,
-			SubmitTime:       propo.SubmitTime,
-			VotingStartBlock: propo.VotingStartBlock,
+			Title:           propo.Title,
+			ProposalId:      propo.ProposalId,
+			Type:            propo.Type,
+			Description:     propo.Description,
+			Status:          propo.Status,
+			SubmitTime:      utils.FmtUTCTime(propo.SubmitTime),
+			DepositEndTime:  utils.FmtUTCTime(propo.DepositEndTime),
+			VotingStartTime: utils.FmtUTCTime(propo.VotingStartTime),
+			VotingEndTime:   utils.FmtUTCTime(propo.VotingEndTime),
+			TotalDeposit:    propo.TotalDeposit,
 		}
 		proposals = append(proposals, mP)
 	}
@@ -50,15 +53,16 @@ func (service *ProposalService) Query(id int) (resp model.ProposalInfo) {
 	}
 
 	proposal := model.Proposal{
-		Title:            data.Title,
-		ProposalId:       data.ProposalId,
-		Type:             data.Type,
-		Description:      data.Description,
-		Status:           data.Status,
-		SubmitBlock:      data.SubmitBlock,
-		SubmitTime:       data.SubmitTime,
-		TotalDeposit:     data.TotalDeposit,
-		VotingStartBlock: data.VotingStartBlock,
+		Title:           data.Title,
+		ProposalId:      data.ProposalId,
+		Type:            data.Type,
+		Description:     data.Description,
+		Status:          data.Status,
+		SubmitTime:      utils.FmtUTCTime(data.SubmitTime),
+		DepositEndTime:  utils.FmtUTCTime(data.DepositEndTime),
+		VotingStartTime: utils.FmtUTCTime(data.VotingStartTime),
+		VotingEndTime:   utils.FmtUTCTime(data.VotingEndTime),
+		TotalDeposit:    data.TotalDeposit,
 	}
 
 	var tx document.CommonTx

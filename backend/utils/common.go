@@ -2,7 +2,9 @@ package utils
 
 import (
 	"fmt"
+	"github.com/irisnet/explorer/backend/types"
 	"strconv"
+	"time"
 )
 
 func ParseInt(text string) (i int64, b bool) {
@@ -29,4 +31,11 @@ func RoundFloat(num float64, bit int) (i float64, b bool) {
 		return i, false
 	}
 	return i, true
+}
+
+func FmtUTCTime(time time.Time) string {
+	if time.IsZero() {
+		return ""
+	}
+	return time.UTC().Format(types.UtcFormat)
 }

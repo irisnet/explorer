@@ -22,13 +22,13 @@ type Param struct {
 }
 
 type MsgDeposit struct {
-	ProposalID int64       `json:"proposal_id"` // ID of the proposal
+	ProposalID uint64      `json:"proposal_id"` // ID of the proposal
 	Depositer  string      `json:"depositer"`   // Address of the depositer
 	Amount     store.Coins `json:"amount"`      // Coins to add to the proposal's deposit
 }
 
 type MsgVote struct {
-	ProposalID int64  `json:"proposal_id"`
+	ProposalID uint64 `json:"proposal_id"`
 	Voter      string `json:"voter"`
 	Option     string `json:"option"`
 }
@@ -92,7 +92,7 @@ type DeclarationTx struct {
 type GovTx struct {
 	BaseTx
 	From         string
-	ProposalId   int64
+	ProposalId   uint64
 	Description  string
 	Amount       store.Coins
 	Option       string

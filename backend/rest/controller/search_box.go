@@ -21,11 +21,11 @@ func RegisterTextSearch(r *mux.Router) error {
 }
 
 func registerQueryText(r *mux.Router) error {
-	RegisterApi(r, types.UrlRegisterQueryText, "GET", func(writer http.ResponseWriter, request *http.Request) {
+	doApi(r, types.UrlRegisterQueryText, "GET", func(request *http.Request) interface{} {
 		text := Var(request, "text")
 
 		result := service.GetCommon().QueryText(text)
-		WriteResponse(writer, result)
+		return result
 	})
 
 	return nil

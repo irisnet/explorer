@@ -9,10 +9,6 @@ import (
 var (
 	baseService = &BaseService{}
 
-	accountService = &AccountService{
-		baseService,
-	}
-
 	blockService = &BlockService{
 		baseService,
 	}

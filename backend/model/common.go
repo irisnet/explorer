@@ -14,7 +14,7 @@ type SimpleBlock struct {
 }
 
 type SimpleProposal struct {
-	ProposalId int64
+	ProposalId uint64
 	Title      string
 	Type       string
 	Status     string

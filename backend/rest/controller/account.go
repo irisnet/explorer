@@ -24,23 +24,23 @@ func RegisterAccount(r *mux.Router) error {
 }
 
 func RegisterQueryAccount(r *mux.Router) error {
-	RegisterApi(r, types.UrlRegisterQueryAccount, "GET", func(writer http.ResponseWriter, request *http.Request) {
+
+	doApi(r, types.UrlRegisterQueryAccount, "GET", func(request *http.Request) interface{} {
 		address := Var(request, "address")
 
 		result := service.GetAccount().Query(address)
-		WriteResponse(writer, result)
-
+		return result
 	})
 
 	return nil
 }
 
 func RegisterQueryAllAccount(r *mux.Router) error {
-	RegisterApi(r, types.UrlRegisterQueryAllAccount, "GET", func(writer http.ResponseWriter, request *http.Request) {
+	doApi(r, types.UrlRegisterQueryAllAccount, "GET", func(request *http.Request) interface{} {
 		page, size := GetPage(request)
 
 		result := service.GetAccount().QueryList(page, size)
-		WriteResponse(writer, result)
+		return result
 	})
 	return nil
 }
