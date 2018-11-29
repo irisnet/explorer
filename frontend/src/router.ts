@@ -26,9 +26,6 @@ export default new Router({
       component: Home,
     },
     {
-      path: '/nodespage', component: Nodespage
-    },
-    {
       path: '/faucet', component: FaucetPage
     },
     {

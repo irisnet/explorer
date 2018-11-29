@@ -60,9 +60,6 @@
         <span class="nav_item common_item_style" :class="activeClassName === '/Proposals'?'nav_item_active':''"
               @click="featureButtonClick('/Proposals')"
         >Proposals</span>
-        <span class="nav_item common_item_style" :class="activeClassName === '/nodespage'?'nav_item_active':''"
-              @click="featureButtonClick('/nodespage')"
-        >Nodes</span>
         <span class="nav_item common_item_style" :class="activeClassName === '/faucet'?'nav_item_active':''"
               @click="featureButtonClick('/faucet')"
         >Faucet</span>
@@ -111,7 +108,6 @@
         </div>
 
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/Proposals')">Proposals</span>
-        <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/nodespage')">Nodes</span>
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/faucet')">Faucet</span>
 
       </div>
