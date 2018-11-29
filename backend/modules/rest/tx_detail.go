@@ -93,8 +93,8 @@ type MsgVote struct {
 }
 
 type MsgBeginRedelegate struct {
-	DelegatorAddr    string  `json:"delegator_addr"`
-	ValidatorSrcAddr string  `json:"validator_src_addr"`
-	ValidatorDstAddr string  `json:"validator_dst_addr"`
-	SharesAmount     float64 `json:"shares_amount"`
+	DelegatorAddr    string `json:"delegator_addr"`
+	ValidatorSrcAddr string `json:"validator_src_addr"`
+	ValidatorDstAddr string `json:"validator_dst_addr"`
+	SharesAmount     string `json:"shares_amount"`
 }
