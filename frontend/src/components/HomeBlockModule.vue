@@ -31,7 +31,8 @@
           <div>
             <img src="../assets/nodata.png">
           </div>
-          <span>No Transaction</span>
+          <span v-show="title !== 'Blocks'">No Transaction</span>
+          <span v-show="title === 'Blocks'">No Block</span>
         </div>
       </div>
     </div>
@@ -114,6 +115,7 @@
         }
       }
       span{
+        text-align: center;
         padding-top: 0.16rem;
         @include fontSize;
         color: #a2a2ae;

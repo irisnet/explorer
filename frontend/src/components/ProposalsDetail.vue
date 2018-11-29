@@ -327,6 +327,7 @@
   .proposals_detail_table_wrap {
     width: 100%;
     overflow-x: auto;
+    margin-bottom: 1rem;
     .no_data_show {
       @include flex;
         justify-content: center;
