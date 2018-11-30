@@ -258,7 +258,6 @@ func (service *StakeService) QueryCandidateUptime(address, category string) (res
 		for _, upChange := range upChanges {
 			upChangeMap[upChange.Time] = upChange.Uptime
 		}
-		var result []model.UptimeChange
 		d1, _ := time.ParseDuration("1h")
 		for startTime.Before(endTime) {
 			startStr := startTime.UTC().Format("2006-01-02 15")
@@ -307,7 +306,6 @@ func (service *StakeService) QueryCandidateUptime(address, category string) (res
 		for _, upChange := range upChanges {
 			upChangeMap[upChange.Time] = upChange.Uptime
 		}
-		var result []model.UptimeChange
 		d1, _ := time.ParseDuration("24h")
 		for startTime.Before(endTime) {
 			startStr := startTime.UTC().Format("2006-01-02")

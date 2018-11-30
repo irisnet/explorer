@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"log"
@@ -56,19 +55,19 @@ func GetPage(r *http.Request) (int, int) {
 }
 
 func WriteResponse(writer http.ResponseWriter, data ...interface{}) {
-	var resp = model.Response{
-		Code: types.ErrorCodeSuccess.Code,
-	}
-
-	if len(data) == 2 {
-		if succ, ok := data[1].(bool); ok && !succ {
-			err := data[0].(types.Error)
-			resp.Code = err.Code
-			resp.Msg = err.Msg
-		}
-	}
-	resp.Data = data[0]
-	resultByte, err := json.Marshal(resp)
+	//var resp = model.Response{
+	//	Code: types.ErrorCodeSuccess.Code,
+	//}
+	//
+	//if len(data) == 2 {
+	//	if succ, ok := data[1].(bool); ok && !succ {
+	//		err := data[0].(types.Error)
+	//		resp.Code = err.Code
+	//		resp.Msg = err.Msg
+	//	}
+	//}
+	//resp.Data = data[0]
+	resultByte, err := json.Marshal(data[0])
 	if err != nil {
 		log.Println(fmt.Sprintf("json.Marshal failed:%s", err.Error()))
 	}

@@ -10,7 +10,6 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 	"os"
-	"time"
 )
 
 type ApiServer struct {
@@ -27,12 +26,12 @@ func NewApiServer() *ApiServer {
 	log.Printf("Serving on %q", addr)
 
 	server := &http.Server{
-		ReadTimeout:       5 * time.Second,
-		WriteTimeout:      10 * time.Second,
-		ReadHeaderTimeout: 10 * time.Second,
-		IdleTimeout:       10 * time.Second,
-		Addr:              addr,
-		Handler:           handler,
+		//ReadTimeout:       5 * time.Second,
+		//WriteTimeout:      10 * time.Second,
+		//ReadHeaderTimeout: 10 * time.Second,
+		//IdleTimeout:       10 * time.Second,
+		Addr:    addr,
+		Handler: handler,
 	}
 	return &ApiServer{
 		server,

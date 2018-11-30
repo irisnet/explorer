@@ -63,7 +63,7 @@ func init() {
 
 func loadDefault() {
 	defaultConfig[EnvironmentDevelop] = map[string]string{
-		KeyDbUrl:       "192.168.150.7:30000",
+		KeyDbUrl:       "35.220.204.121:30001",
 		KeyDATABASE:    "sync-iris",
 		KeyDbUser:      "iris",
 		KeyDbPwd:       "irispassword",

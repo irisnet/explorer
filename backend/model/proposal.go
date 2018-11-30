@@ -11,10 +11,10 @@ type Proposal struct {
 	Type            string      `json:"type"`
 	Description     string      `json:"description"`
 	Status          string      `json:"status"`
-	SubmitTime      string      `bson:"submit_time"`
-	DepositEndTime  string      `bson:"deposit_end_time"`
-	VotingStartTime string      `bson:"voting_start_time"`
-	VotingEndTime   string      `bson:"voting_end_time"`
+	SubmitTime      string      `json:"submit_time"`
+	DepositEndTime  string      `json:"deposit_end_time"`
+	VotingStartTime string      `json:"voting_start_time"`
+	VotingEndTime   string      `json:"voting_end_time"`
 	TotalDeposit    store.Coins `json:"total_deposit"`
 	Proposer        string      `json:"proposer"`
 	TxHash          string      `json:"tx_hash"`
