@@ -20,11 +20,19 @@ func RegisterTextSearch(r *mux.Router) error {
 	return nil
 }
 
+type Common struct {
+	*service.CommonService
+}
+
+var common = Common{
+	service.Get(service.Common).(*service.CommonService),
+}
+
 func registerQueryText(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryText, "GET", func(request *http.Request) interface{} {
 		text := Var(request, "text")
 
-		result := service.GetCommon().QueryText(text)
+		result := common.QueryText(text)
 		return result
 	})
 

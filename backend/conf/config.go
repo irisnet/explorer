@@ -23,6 +23,8 @@ const (
 
 	EnvironmentDevelop = "develop"
 	EnvironmentLocal   = "local"
+	EnvironmentStage   = "stage"
+	EnvironmentProd    = "prod"
 
 	DefaultEnvironment = EnvironmentDevelop
 )
@@ -120,6 +122,9 @@ func getEnv(key string, environment string) string {
 	if v, ok := os.LookupEnv(key); ok {
 		value = v
 	} else {
+		if DefaultEnvironment == EnvironmentStage || DefaultEnvironment == EnvironmentProd {
+			panic(fmt.Sprintf("Environment [%s] is not able to use default config", DefaultEnvironment))
+		}
 		value = defaultConfig[environment][key]
 	}
 	if value == "" {
@@ -134,6 +139,9 @@ func getEnvInt(key string, environment string) int {
 	if v, ok := os.LookupEnv(key); ok {
 		value = v
 	} else {
+		if DefaultEnvironment == EnvironmentStage || DefaultEnvironment == EnvironmentProd {
+			panic(fmt.Sprintf("Environment [%s] is not able to use default config", DefaultEnvironment))
+		}
 		value = defaultConfig[environment][key]
 	}
 

@@ -28,6 +28,14 @@ func RegisterTx(r *mux.Router) error {
 	return nil
 }
 
+type Tx struct {
+	*service.TxService
+}
+
+var tx = Tx{
+	service.Get(service.Tx).(*service.TxService),
+}
+
 func registerQueryTxList(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryTxList, "GET", func(request *http.Request) interface{} {
 		query := bson.M{}
@@ -66,7 +74,7 @@ func registerQueryTxList(r *mux.Router) error {
 			}
 			break
 		}
-		result = service.GetTx().QueryList(query, page, size)
+		result = tx.QueryList(query, page, size)
 		return result
 	})
 	return nil
@@ -76,7 +84,7 @@ func registerQueryTx(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryTx, "GET", func(request *http.Request) interface{} {
 		hash := Var(request, "hash")
 
-		result := service.GetTx().Query(hash)
+		result := tx.Query(hash)
 		return result
 	})
 
@@ -95,7 +103,7 @@ func registerQueryTxs(r *mux.Router) error {
 			"$in": typeArr,
 		}
 		page, pageSize := GetPage(request)
-		result := service.GetTx().QueryLatest(query, page, pageSize)
+		result := tx.QueryLatest(query, page, pageSize)
 
 		return result
 	})
@@ -118,7 +126,7 @@ func registerQueryTxsCounter(r *mux.Router) error {
 			query["height"] = height
 		}
 
-		result := service.GetTx().CountByType(query)
+		result := tx.CountByType(query)
 		return result
 	})
 
@@ -129,7 +137,7 @@ func registerQueryTxsByAccount(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryTxsByAccount, "GET", func(request *http.Request) interface{} {
 		address := Var(request, "address")
 		page, size := GetPage(request)
-		result := service.GetTx().QueryByAcc(address, page, size)
+		result := tx.QueryByAcc(address, page, size)
 
 		return result
 	})
@@ -139,7 +147,7 @@ func registerQueryTxsByAccount(r *mux.Router) error {
 
 func registerQueryTxsByDay(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryTxsByDay, "GET", func(request *http.Request) interface{} {
-		result := service.GetTx().CountByDay()
+		result := tx.CountByDay()
 		return result
 	})
 	return nil

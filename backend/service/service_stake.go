@@ -8,26 +8,24 @@ import (
 	"time"
 )
 
-type StakeService struct {
-	*BaseService
-}
+type StakeService struct{}
 
-func GetStake() *StakeService {
-	return stakeService
+func (service *StakeService) GetModule() Module {
+	return Stake
 }
 
 func (service *StakeService) QueryValidators(page, pageSize int) model.Candidates {
 	var candidates []document.Candidate
-	db := service.GetDb()
+	db := getDb()
 	defer db.Session.Close()
 	cs := db.C(document.CollectionNmStakeRoleCandidate)
 	cb := db.C(document.CollectionNmBlock)
 
 	query := bson.M{}
-	query["jailed"] = false
-	query["status"] = types.TypeValStatusBonded
+	query[document.Candidate_Field_Jailed] = false
+	query[document.Candidate_Field_Status] = types.TypeValStatusBonded
 
-	err := cs.Find(query).Sort("-voting_power").Skip((page - 1) * pageSize).Limit(pageSize).All(&candidates)
+	err := cs.Find(query).Sort(desc(document.Candidate_Field_VotingPower)).Skip((page - 1) * pageSize).Limit(pageSize).All(&candidates)
 	if err != nil {
 		panic(types.ErrorCodeNotFound)
 	}
@@ -36,7 +34,7 @@ func (service *StakeService) QueryValidators(page, pageSize int) model.Candidate
 		[]bson.M{
 			{"$match": query},
 			{"$group": bson.M{
-				"_id":   "voting_power",
+				"_id":   document.Candidate_Field_VotingPower,
 				"count": bson.M{"$sum": "$voting_power"},
 			}},
 		},
@@ -48,7 +46,7 @@ func (service *StakeService) QueryValidators(page, pageSize int) model.Candidate
 	var candidatesAll []model.CandidateAll
 	upTimeMap := make(map[string]int)
 	var result []document.Block
-	cb.Find(nil).Limit(100).Sort("-height").All(&result)
+	cb.Find(nil).Limit(100).Sort(desc(document.Block_Field_Height)).All(&result)
 	for _, block := range result {
 		for _, pre := range block.Block.LastCommit.Precommits {
 			upTimeMap[pre.ValidatorAddress]++
@@ -75,16 +73,16 @@ func (service *StakeService) QueryValidators(page, pageSize int) model.Candidate
 
 func (service *StakeService) QueryRevokedValidator(page, size int) model.Candidates {
 	var candidates []document.Candidate
-	db := service.GetDb()
+	db := getDb()
 	defer db.Session.Close()
 	cs := db.C(document.CollectionNmStakeRoleCandidate)
 
 	query := bson.M{}
-	query["jailed"] = true
+	query[document.Candidate_Field_Jailed] = true
 
 	validatorsCount, _ := cs.Find(query).Count()
 
-	err := cs.Find(query).Sort("-voting_power").Skip((page - 1) * size).Limit(size).All(&candidates)
+	err := cs.Find(query).Sort(desc(document.Candidate_Field_VotingPower)).Skip((page - 1) * size).Limit(size).All(&candidates)
 	if err != nil {
 		panic(types.ErrorCodeNotFound)
 	}
@@ -105,19 +103,19 @@ func (service *StakeService) QueryRevokedValidator(page, size int) model.Candida
 
 func (service *StakeService) QueryCandidates(page, size int) model.Candidates {
 	var candidates []document.Candidate
-	db := service.GetDb()
+	db := getDb()
 	defer db.Session.Close()
 	cs := db.C(document.CollectionNmStakeRoleCandidate)
 	txDoc := db.C(document.CollectionNmCommonTx)
 
 	query := bson.M{}
-	query["jailed"] = false
-	query["status"] = bson.M{
+	query[document.Candidate_Field_Jailed] = false
+	query[document.Candidate_Field_Status] = bson.M{
 		"$in": []string{types.TypeValStatusUnbonded, types.TypeValStatusUnbonding},
 	}
 
 	validatorsCount, _ := cs.Find(query).Count()
-	err := cs.Find(query).Sort("-voting_power").Skip((page - 1) * size).Limit(size).All(&candidates)
+	err := cs.Find(query).Sort(desc(document.Candidate_Field_VotingPower)).Skip((page - 1) * size).Limit(size).All(&candidates)
 	if err != nil {
 		panic(types.ErrorCodeNotFound)
 	}
@@ -125,12 +123,12 @@ func (service *StakeService) QueryCandidates(page, size int) model.Candidates {
 	var resp model.Candidates
 	if len(candidates) > 0 {
 		q := bson.M{}
-		q["type"] = types.TypeCreateValidator
+		q[document.Tx_Field_Type] = types.TypeCreateValidator
 
 		for _, ca := range candidates {
 			var tx document.CommonTx
-			q["from"] = ca.Address
-			txDoc.Find(q).Sort("height").One(&tx)
+			q[document.Tx_Field_From] = ca.Address
+			txDoc.Find(q).Sort(document.Tx_Field_Height).One(&tx)
 
 			ca.BondHeight = tx.Height
 			result = append(result, model.CandidateAll{
@@ -148,24 +146,24 @@ func (service *StakeService) QueryCandidates(page, size int) model.Candidates {
 
 func (service *StakeService) QueryCandidate(address string) model.CandidateWithPower {
 
-	c := service.GetDb().C(document.CollectionNmStakeRoleCandidate)
+	c := getDb().C(document.CollectionNmStakeRoleCandidate)
 	defer c.Database.Session.Close()
 	var candidate document.Candidate
 
-	err := c.Find(bson.M{"address": address}).Sort("-update_time").One(&candidate)
+	err := c.Find(bson.M{document.Candidate_Field_Address: address}).One(&candidate)
 	if err != nil {
 		panic(types.ErrorCodeNotFound)
 	}
 
 	query := bson.M{}
-	query["jailed"] = false
-	query["status"] = types.TypeValStatusBonded
+	query[document.Candidate_Field_Jailed] = false
+	query[document.Candidate_Field_Status] = types.TypeValStatusBonded
 
 	pipe := c.Pipe(
 		[]bson.M{
 			{"$match": query},
 			{"$group": bson.M{
-				"_id":   "voting_power",
+				"_id":   document.Candidate_Field_VotingPower,
 				"count": bson.M{"$sum": "$voting_power"},
 			}},
 		},
@@ -182,16 +180,16 @@ func (service *StakeService) QueryCandidate(address string) model.CandidateWithP
 func (service *StakeService) QueryCandidatesTopN() model.CandidatesTopN {
 	var candidates []document.Candidate
 
-	db := service.GetDb()
+	db := getDb()
 	defer db.Session.Close()
 	cs := db.C(document.CollectionNmStakeRoleCandidate)
 	cb := db.C(document.CollectionNmBlock)
 
 	query := bson.M{}
-	query["jailed"] = false
-	query["status"] = types.TypeValStatusBonded
+	query[document.Candidate_Field_Jailed] = false
+	query[document.Candidate_Field_Status] = types.TypeValStatusBonded
 
-	err := cs.Find(query).Sort("-voting_power").Limit(10).All(&candidates)
+	err := cs.Find(query).Sort(desc(document.Candidate_Field_VotingPower)).Limit(10).All(&candidates)
 	if err != nil {
 		panic(types.ErrorCodeNotFound)
 	}
@@ -199,7 +197,7 @@ func (service *StakeService) QueryCandidatesTopN() model.CandidatesTopN {
 		[]bson.M{
 			{"$match": query},
 			{"$group": bson.M{
-				"_id":   "voting_power",
+				"_id":   document.Candidate_Field_VotingPower,
 				"count": bson.M{"$sum": "$voting_power"},
 			}},
 		},
@@ -210,7 +208,7 @@ func (service *StakeService) QueryCandidatesTopN() model.CandidatesTopN {
 	var candidatesAll []model.CandidateAll
 	upTimeMap := make(map[string]int)
 	var result []document.Block
-	cb.Find(nil).Limit(100).Sort("-height").All(&result)
+	cb.Find(nil).Limit(100).Sort(desc(document.Block_Field_Height)).All(&result)
 	for _, block := range result {
 		for _, pre := range block.Block.LastCommit.Precommits {
 			upTimeMap[pre.ValidatorAddress]++
@@ -235,12 +233,12 @@ func (service *StakeService) QueryCandidatesTopN() model.CandidatesTopN {
 }
 
 func (service *StakeService) QueryCandidateUptime(address, category string) (result []model.UptimeChange) {
-	db := service.GetDb()
+	db := getDb()
 	c := db.C(document.CollectionNmStakeRoleCandidate)
 	u := db.C("uptime_change")
 	defer db.Session.Close()
 	var candidate document.Candidate
-	err := c.Find(bson.M{"address": address}).Sort("-update_time").One(&candidate)
+	err := c.Find(bson.M{document.Candidate_Field_Address: address}).One(&candidate)
 	address = candidate.PubKeyAddr
 	if err != nil || address == "" {
 		panic(types.ErrorCodeNotFound)
@@ -325,12 +323,12 @@ func (service *StakeService) QueryCandidateUptime(address, category string) (res
 }
 
 func (service *StakeService) QueryCandidatePower(address, category string) (result []model.PowerChange) {
-	db := service.GetDb()
+	db := getDb()
 	c := db.C(document.CollectionNmStakeRoleCandidate)
 	p := db.C("power_change")
 	defer db.Session.Close()
 	var candidate document.Candidate
-	err := c.Find(bson.M{"address": address}).Sort("-update_time").One(&candidate)
+	err := c.Find(bson.M{document.Candidate_Field_Address: address}).One(&candidate)
 	address = candidate.PubKeyAddr
 	if err != nil || address == "" {
 		panic(types.ErrorCodeNotFound)
@@ -368,19 +366,19 @@ func (service *StakeService) QueryCandidatePower(address, category string) (resu
 }
 
 func (service *StakeService) QueryCandidateStatus(address string) (resp model.CandidateStatus) {
-	db := service.GetDb()
+	db := getDb()
 	defer db.Session.Close()
 	cs := db.C(document.CollectionNmStakeRoleCandidate)
 	cb := db.C(document.CollectionNmBlock)
 	var candidate document.Candidate
-	err := cs.Find(bson.M{"address": address}).Sort("-update_time").One(&candidate)
+	err := cs.Find(bson.M{document.Candidate_Field_Address: address}).One(&candidate)
 	if err != nil {
 		panic(types.ErrorCodeNotFound)
 	}
 
 	var upTime int
 	var result []document.Block
-	cb.Find(nil).Limit(100).Sort("-height").All(&result)
+	cb.Find(nil).Limit(100).Sort(desc(document.Block_Field_Height)).All(&result)
 	validatorAddress := ""
 	for _, block := range result {
 		var index1 int
@@ -407,7 +405,7 @@ func (service *StakeService) QueryCandidateStatus(address string) (resp model.Ca
 }
 
 func (service *StakeService) QueryChainStatus() model.ChainStatus {
-	db := service.GetDb()
+	db := getDb()
 	defer db.Session.Close()
 	cs := db.C(document.CollectionNmStakeRoleCandidate)
 	pipe := cs.Pipe(
@@ -421,12 +419,12 @@ func (service *StakeService) QueryChainStatus() model.ChainStatus {
 	var count model.Count
 	pipe.One(&count)
 
-	validatorsCount, _ := cs.Find(bson.M{"jailed": false}).Count()
+	validatorsCount, _ := cs.Find(bson.M{document.Candidate_Field_Jailed: false}).Count()
 	cc := db.C(document.CollectionNmCommonTx)
 	txCount, _ := cc.Count()
 
 	t := time.Now().Add(-1 * time.Minute)
-	txs, _ := cc.Find(bson.M{"time": bson.M{"$gte": t}}).Count()
+	txs, _ := cc.Find(bson.M{document.Tx_Field_Time: bson.M{"$gte": t}}).Count()
 
 	resp := model.ChainStatus{
 		ValidatorsCount: validatorsCount,

@@ -30,10 +30,18 @@ func RegisterStake(r *mux.Router) error {
 	return nil
 }
 
+type Stake struct {
+	*service.StakeService
+}
+
+var stake = Stake{
+	service.Get(service.Stake).(*service.StakeService),
+}
+
 func registerQueryValidator(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryValidator, "GET", func(request *http.Request) interface{} {
 		page, size := GetPage(request)
-		result := service.GetStake().QueryValidators(page, size)
+		result := stake.QueryValidators(page, size)
 		return result
 	})
 
@@ -42,7 +50,7 @@ func registerQueryValidator(r *mux.Router) error {
 func registerQueryRevokedValidator(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryRevokedValidator, "GET", func(request *http.Request) interface{} {
 		page, size := GetPage(request)
-		result := service.GetStake().QueryRevokedValidator(page, size)
+		result := stake.QueryRevokedValidator(page, size)
 		return result
 	})
 	return nil
@@ -50,7 +58,7 @@ func registerQueryRevokedValidator(r *mux.Router) error {
 func registerQueryCandidates(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryCandidates, "GET", func(request *http.Request) interface{} {
 		page, size := GetPage(request)
-		result := service.GetStake().QueryCandidates(page, size)
+		result := stake.QueryCandidates(page, size)
 		return result
 	})
 
@@ -59,7 +67,7 @@ func registerQueryCandidates(r *mux.Router) error {
 
 func registerQueryCandidatesTop(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryCandidatesTop, "GET", func(request *http.Request) interface{} {
-		result := service.GetStake().QueryCandidatesTopN()
+		result := stake.QueryCandidatesTopN()
 		return result
 	})
 
@@ -69,7 +77,7 @@ func registerQueryCandidatesTop(r *mux.Router) error {
 func registerQueryCandidate(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryCandidate, "GET", func(request *http.Request) interface{} {
 		address := Var(request, "address")
-		result := service.GetStake().QueryCandidate(address)
+		result := stake.QueryCandidate(address)
 		return result
 	})
 
@@ -81,7 +89,7 @@ func registerQueryCandidateUptime(r *mux.Router) error {
 		address := Var(request, "address")
 		category := Var(request, "category")
 
-		result := service.GetStake().QueryCandidateUptime(address, category)
+		result := stake.QueryCandidateUptime(address, category)
 		return result
 	})
 
@@ -93,7 +101,7 @@ func registerQueryCandidatePower(r *mux.Router) error {
 		address := Var(request, "address")
 		category := Var(request, "category")
 
-		result := service.GetStake().QueryCandidatePower(address, category)
+		result := stake.QueryCandidatePower(address, category)
 		return result
 	})
 	return nil
@@ -103,7 +111,7 @@ func registerQueryCandidateStatus(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryCandidateStatus, "GET", func(request *http.Request) interface{} {
 		address := Var(request, "address")
 
-		result := service.GetStake().QueryCandidateStatus(address)
+		result := stake.QueryCandidateStatus(address)
 		return result
 	})
 
@@ -112,7 +120,7 @@ func registerQueryCandidateStatus(r *mux.Router) error {
 
 func registerQueryChain(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryChain, "GET", func(request *http.Request) interface{} {
-		result := service.GetStake().QueryChainStatus()
+		result := stake.QueryChainStatus()
 		return result
 	})
 

@@ -24,6 +24,14 @@ func RegisterBlock(r *mux.Router) error {
 	return nil
 }
 
+type Block struct {
+	*service.BlockService
+}
+
+var block = Block{
+	service.Get(service.Block).(*service.BlockService),
+}
+
 func registerQueryBlock(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryBlock, "GET", func(request *http.Request) interface{} {
 		h := Var(request, "height")
@@ -33,7 +41,7 @@ func registerQueryBlock(r *mux.Router) error {
 			return nil
 		}
 
-		result := service.GetBlock().Query(height)
+		result := block.Query(height)
 		return result
 	})
 	return nil
@@ -42,7 +50,7 @@ func registerQueryBlock(r *mux.Router) error {
 func registerQueryBlocks(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryBlocks, "GET", func(request *http.Request) interface{} {
 		page, size := GetPage(request)
-		result := service.GetBlock().QueryList(page, size)
+		result := block.QueryList(page, size)
 		return result
 	})
 
@@ -50,12 +58,11 @@ func registerQueryBlocks(r *mux.Router) error {
 }
 
 func registerQueryBlocksPrecommits(r *mux.Router) error {
-
 	doApi(r, types.UrlRegisterQueryBlocksPrecommits, "GET", func(request *http.Request) interface{} {
 		address := Var(request, "address")
 		page, size := GetPage(request)
 
-		result := service.GetBlock().QueryPrecommits(address, page, size)
+		result := block.QueryPrecommits(address, page, size)
 		return result
 	})
 

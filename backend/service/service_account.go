@@ -10,22 +10,18 @@ import (
 	"log"
 )
 
-type AccountService struct {
-	*BaseService
-}
+type AccountService struct{}
 
-func GetAccount() *AccountService {
-	return &AccountService{
-		baseService,
-	}
+func (service *AccountService) GetModule() Module {
+	return Account
 }
 
 func (service *AccountService) Query(address string) (result model.AccountResp) {
 
-	db := service.GetDb()
+	db := getDb()
 	c := db.C(document.CollectionNmAccount)
 	defer db.Session.Close()
-	err := c.Find(bson.M{"address": address}).One(&result)
+	err := c.Find(bson.M{document.Account_Field_Addres: address}).One(&result)
 	if err != nil {
 		error := types.ErrorCodeNotFound
 		log.Println(fmt.Sprintf("account [%s] not found", address))
@@ -41,10 +37,11 @@ func (service *AccountService) Query(address string) (result model.AccountResp) 
 
 	txStore := db.C(document.CollectionNmCommonTx)
 	query := bson.M{}
-	query["from"] = address
-	query["type"] = types.TxTypeSetWithdrawAddress
+	query[document.Tx_Field_From] = address
+	query[document.Tx_Field_Type] = types.TxTypeSetWithdrawAddress
 	var tx document.CommonTx
-	if err := txStore.Find(query).Sort("-time").One(&tx); err == nil {
+	sort := desc(document.Tx_Field_Time)
+	if err := txStore.Find(query).Sort(sort).One(&tx); err == nil {
 		result.WithdrawAddress = tx.To
 	}
 
@@ -53,5 +50,6 @@ func (service *AccountService) Query(address string) (result model.AccountResp) 
 
 func (service *AccountService) QueryList(page, size int) model.Page {
 	var result []document.Account
-	return service.QueryPage(document.CollectionNmAccount, &result, nil, "-time", page, size)
+	sort := desc(document.Tx_Field_Time)
+	return queryPage(document.CollectionNmAccount, &result, nil, sort, page, size)
 }

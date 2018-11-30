@@ -8,17 +8,16 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-type ProposalService struct {
-	*BaseService
-}
+type ProposalService struct{}
 
-func GetProposal() *ProposalService {
-	return proposalService
+func (service *ProposalService) GetModule() Module {
+	return Proposal
 }
 
 func (service *ProposalService) QueryList(page, size int) (resp model.Page) {
 	var data []document.Proposal
-	resp = service.QueryPage(document.CollectionNmProposal, &data, nil, "-submit_block", page, size)
+	sort := desc(document.Proposal_Field_SubmitTime)
+	resp = queryPage(document.CollectionNmProposal, &data, nil, sort, page, size)
 
 	var proposals []model.Proposal
 	for _, propo := range data {
@@ -42,12 +41,12 @@ func (service *ProposalService) QueryList(page, size int) (resp model.Page) {
 
 func (service *ProposalService) Query(id int) (resp model.ProposalInfo) {
 	var data document.Proposal
-	db := service.GetDb()
+	db := getDb()
 	defer db.Session.Close()
 	propoStore := db.C(document.CollectionNmProposal)
 	txStore := db.C(document.CollectionNmCommonTx)
 
-	if err := propoStore.Find(bson.M{"proposal_id": id}).One(&data); err != nil {
+	if err := propoStore.Find(bson.M{document.Proposal_Field_ProposalId: id}).One(&data); err != nil {
 		panic(types.ErrorCodeNotFound)
 		return
 	}
@@ -66,7 +65,7 @@ func (service *ProposalService) Query(id int) (resp model.ProposalInfo) {
 	}
 
 	var tx document.CommonTx
-	if err := txStore.Find(bson.M{"type": types.TypeSubmitProposal, "proposal_id": id}).One(&tx); err == nil {
+	if err := txStore.Find(bson.M{document.Tx_Field_Type: types.TypeSubmitProposal, document.Proposal_Field_ProposalId: id}).One(&tx); err == nil {
 		proposal.Proposer = tx.From
 		proposal.TxHash = tx.TxHash
 	}
