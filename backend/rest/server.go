@@ -6,10 +6,10 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/rest/controller"
+	"github.com/irisnet/irishub-sync/module/logger"
 	"log"
 	"net/http"
 	_ "net/http/pprof"
-	"os"
 	"time"
 )
 
@@ -24,6 +24,7 @@ func NewApiServer() *ApiServer {
 	port := conf.Get().Server.ServerPort
 	addr := fmt.Sprintf(":%d", port)
 
+	logger.Info("server will start", logger.String("addr", addr))
 	log.Printf("Serving on %q", addr)
 
 	server := &http.Server{
@@ -34,6 +35,7 @@ func NewApiServer() *ApiServer {
 		Addr:              addr,
 		Handler:           handler,
 	}
+
 	return &ApiServer{
 		server,
 	}
@@ -41,9 +43,9 @@ func NewApiServer() *ApiServer {
 
 func (s *ApiServer) Start() error {
 	go func() {
-		log.Printf("pprof will Serve on 6060")
+		logger.Info("pprof will Serve on 6060")
 		if err := http.ListenAndServe("localhost:6060", nil); err != nil {
-			log.Fatal("ListenAndServe Failed: ", err)
+			logger.Fatal("ListenAndServe Failed: ", logger.Any("err", err))
 		}
 	}()
 	return s.ListenAndServe()
@@ -79,12 +81,12 @@ func NewAPIMux() *mux.Router {
 }
 
 func newHandler(h http.Handler) http.Handler {
-	handler := handlers.LoggingHandler(os.Stdout, handlers.CORS(
-		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
-		handlers.AllowedOrigins([]string{"*"}),
-		handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}))(h))
+	//handler := handlers.LoggingHandler(os.Stdout, handlers.CORS(
+	//	handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
+	//	handlers.AllowedOrigins([]string{"*"}),
+	//	handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}))(h))
 
-	handler = addHeader(handler)
+	handler := addHeader(h)
 	handler = handlers.CompressHandler(handler)
 	return handler
 }

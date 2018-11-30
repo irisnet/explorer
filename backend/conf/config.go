@@ -1,8 +1,7 @@
 package conf
 
 import (
-	"fmt"
-	"log"
+	"github.com/irisnet/irishub-sync/module/logger"
 	"os"
 	"strconv"
 )
@@ -35,7 +34,7 @@ var (
 )
 
 func init() {
-	log.Printf("==================================load config start==================================")
+	logger.Info("==================================load config start==================================")
 	loadDefault()
 
 	db := dbConf{
@@ -58,12 +57,12 @@ func init() {
 	}
 
 	config.Server = server
-	log.Printf("==================================load config end==================================")
+	logger.Info("==================================load config end==================================")
 }
 
 func loadDefault() {
 	defaultConfig[EnvironmentDevelop] = map[string]string{
-		KeyDbUrl:       "35.220.204.121:30001",
+		KeyDbUrl:       "192.168.150.7:30000",
 		KeyDATABASE:    "sync-iris",
 		KeyDbUser:      "iris",
 		KeyDbPwd:       "irispassword",
@@ -123,14 +122,14 @@ func getEnv(key string, environment string) string {
 		value = v
 	} else {
 		if DefaultEnvironment == EnvironmentStage || DefaultEnvironment == EnvironmentProd {
-			panic(fmt.Sprintf("Environment [%s] is not able to use default config", DefaultEnvironment))
+			logger.Panic("config is not able to use default config", logger.String("Environment", DefaultEnvironment))
 		}
 		value = defaultConfig[environment][key]
 	}
 	if value == "" {
-		panic(fmt.Sprintf("key [%s] must be not empty", key))
+		logger.Panic("config must be not empty", logger.String("key", key))
 	}
-	log.Printf(fmt.Sprintf("%s=%s", key, value))
+	logger.Info("config", logger.String(key, value))
 	return value
 }
 
@@ -140,15 +139,15 @@ func getEnvInt(key string, environment string) int {
 		value = v
 	} else {
 		if DefaultEnvironment == EnvironmentStage || DefaultEnvironment == EnvironmentProd {
-			panic(fmt.Sprintf("Environment [%s] is not able to use default config", DefaultEnvironment))
+			logger.Panic("config is not able to use default config", logger.String("Environment", DefaultEnvironment))
 		}
 		value = defaultConfig[environment][key]
 	}
 
 	i, err := strconv.ParseInt(value, 10, 0)
 	if err != nil {
-		panic(fmt.Sprintf("key [%s] must be int ", key))
+		logger.Panic("config must be not empty", logger.String("key", key))
 	}
-	log.Printf(fmt.Sprintf("%s=%d", key, i))
+	logger.Info("config", logger.Int64(key, i))
 	return int(i)
 }

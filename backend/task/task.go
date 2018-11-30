@@ -4,9 +4,9 @@ import (
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/types"
+	"github.com/irisnet/irishub-sync/module/logger"
 	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
-	"log"
 	"time"
 )
 
@@ -52,7 +52,7 @@ func init() {
 }
 
 func UptimeChange() {
-	log.Println("task start")
+	logger.Info("UptimeChange task start")
 	var uptimeChange model.UptimeChange
 	var blocks []document.Block
 	var firstBlock document.Block
@@ -80,7 +80,7 @@ func UptimeChange() {
 
 	err = b.Find(nil).Sort("-height").One(&lastBlock)
 	if err != nil {
-		log.Println(err.Error())
+		logger.Error("can't find any block")
 		return
 	}
 
@@ -90,9 +90,9 @@ func UptimeChange() {
 	startTime = time.Date(startTime.Year(), startTime.Month(), startTime.Day(), startTime.Hour(), 0, 0, 0, startTime.Location())
 	endTime = time.Date(endTime.Year(), endTime.Month(), endTime.Day(), endTime.Hour(), 0, 0, 0, endTime.Location())
 
-	log.Printf("startTime:%s,endTime:%s", startTime.UTC().Format("2006-01-02 15"), endTime.UTC().Format("2006-01-02 15"))
+	logger.Info("UptimeChange", logger.String("startTime", startTime.UTC().Format("2006-01-02 15")), logger.String("endTime", endTime.UTC().Format("2006-01-02 15")))
 	if !endTime.Before(lastTime) {
-		log.Printf("handle to now %s, task end\n", startTime.Format("2006-01-02 15"))
+		logger.Info("UptimeChange end", logger.String("startTime", startTime.Format("2006-01-02 15")))
 		time.Sleep(10 * time.Minute)
 		return
 	}
@@ -103,7 +103,7 @@ func UptimeChange() {
 		startTime = startTime.Add(d)
 		endTime = endTime.Add(d)
 		if !endTime.Before(lastTime) {
-			log.Printf("handle to now %s, task end\n", startTime.Format("2006-01-02 15"))
+			logger.Info("UptimeChange end", logger.String("startTime", startTime.Format("2006-01-02 15")))
 			time.Sleep(10 * time.Minute)
 			return
 		}
@@ -111,7 +111,7 @@ func UptimeChange() {
 	}
 
 	if err != nil {
-		log.Println(err.Error())
+		logger.Error("can't find any block")
 		return
 	}
 
@@ -197,5 +197,5 @@ func UptimeChange() {
 		uptimeChange := model.UptimeChange{Address: k, Uptime: float64(100*v) / float64(len(blocks)), Time: doneTime}
 		u.Insert(&uptimeChange)
 	}
-	log.Println("task end")
+	logger.Info("UptimeChange task end")
 }

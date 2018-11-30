@@ -2,13 +2,14 @@ package controller
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
-	"log"
+	"github.com/irisnet/irishub-sync/module/logger"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 func GetString(request *http.Request, key string) (result string) {
@@ -17,7 +18,7 @@ func GetString(request *http.Request, key string) (result string) {
 	request.ParseForm()
 	if len(request.Form[key]) > 0 {
 		result = request.Form[key][0]
-		log.Println(fmt.Sprintf("Api[%s] Param[%s=%s]", apiName, key, result))
+		logger.Info("Api Param", logger.String("Api", apiName), logger.String(key, result))
 	}
 	return
 }
@@ -29,7 +30,7 @@ func GetInt(request *http.Request, key string) (result int) {
 	}
 	result, err := strconv.Atoi(value)
 	if err != nil {
-		log.Println(fmt.Sprintf("%s is not int type", key))
+		logger.Error("param is not int type", logger.String("param", key))
 	}
 	return
 }
@@ -54,22 +55,27 @@ func GetPage(r *http.Request) (int, int) {
 	return iPage, iSize
 }
 
-func WriteResponse(writer http.ResponseWriter, data ...interface{}) {
-	//var resp = model.Response{
-	//	Code: types.ErrorCodeSuccess.Code,
-	//}
-	//
-	//if len(data) == 2 {
-	//	if succ, ok := data[1].(bool); ok && !succ {
-	//		err := data[0].(types.Error)
-	//		resp.Code = err.Code
-	//		resp.Msg = err.Msg
-	//	}
-	//}
-	//resp.Data = data[0]
-	resultByte, err := json.Marshal(data[0])
+func buildResponse(data ...interface{}) model.Response {
+	var resp = model.Response{
+		Code: types.ErrorCodeSuccess.Code,
+	}
+
+	if len(data) == 2 {
+		if succ, ok := data[1].(bool); ok && !succ {
+			err := data[0].(types.Error)
+			resp.Code = err.Code
+			resp.Msg = err.Msg
+		}
+	}
+	resp.Data = data[0]
+	return resp
+}
+func writeResponse(writer http.ResponseWriter, data ...interface{}) {
+	//resp := buildResponse(data)
+	resp := data[0]
+	resultByte, err := json.Marshal(resp)
 	if err != nil {
-		log.Println(fmt.Sprintf("json.Marshal failed:%s", err.Error()))
+		logger.Error("json.Marshal failed")
 	}
 	writer.Write(resultByte)
 }
@@ -80,12 +86,12 @@ type Action func(request *http.Request) interface{}
 //封装用户处理逻辑函数，捕获panic异常，统一处理
 func wrap(action Action) func(writer http.ResponseWriter, request *http.Request) {
 	return func(writer http.ResponseWriter, request *http.Request) {
+		apiName := request.RequestURI
 		defer func() {
 			if r := recover(); r != nil {
-				apiName := request.RequestURI
 				switch r.(type) {
 				case types.Error:
-					WriteResponse(writer, r, false)
+					writeResponse(writer, r, false)
 					break
 				case error:
 					err := r.(error)
@@ -93,14 +99,27 @@ func wrap(action Action) func(writer http.ResponseWriter, request *http.Request)
 						Code: types.ErrorCodeUnKnown.Code,
 						Msg:  err.Error(),
 					}
-					WriteResponse(writer, e, false)
+					writeResponse(writer, e, false)
 					break
 				}
-				log.Println(fmt.Sprintf("API[%s] execute failed,%+v", apiName, r))
+				logger.Error("API execute failed", logger.Any("errMsg", r))
+
 			}
 		}()
+
+		start := time.Now()
 		result := action(request)
-		WriteResponse(writer, result)
+		end := time.Now()
+
+		bizTime := end.Unix() - start.Unix()
+
+		logger.Info("process information", logger.String("Api", apiName), logger.Int64("coast(s)", bizTime), logger.Any("result", result))
+
+		if bizTime >= 3 {
+			logger.Warn("api coast most time", logger.String("Api", apiName))
+		}
+
+		writeResponse(writer, result)
 	}
 }
 

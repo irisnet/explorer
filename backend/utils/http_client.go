@@ -2,8 +2,8 @@ package utils
 
 import (
 	"crypto/tls"
+	"github.com/irisnet/irishub-sync/module/logger"
 	"io/ioutil"
-	"log"
 	"net"
 	"net/http"
 	"time"
@@ -26,20 +26,20 @@ func init() {
 }
 
 func Get(url string) (bz []byte, err error) {
-	log.Println("http Get url:" + url)
+	logger.Info("http Get url", logger.String("url", url))
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
-		log.Println("req error:" + err.Error())
+		logger.Error("req error", logger.Any("err", err))
 		return
 	}
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Println("do error,err:" + err.Error())
+		logger.Error("req error", logger.Any("err", err))
 		return
 	}
 	if resp.StatusCode != http.StatusOK {
-		log.Println("do Get err:" + resp.Status)
+		logger.Error("req error", logger.Any("http_Status", resp.Status))
 		return
 	}
 
@@ -47,7 +47,7 @@ func Get(url string) (bz []byte, err error) {
 
 	defer resp.Body.Close()
 	if err != nil {
-		log.Println("ioutil.ReadAll err:" + err.Error())
+		logger.Error("ioutil.ReadAll err", logger.Any("io", err))
 	}
 
 	return
