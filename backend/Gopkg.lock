@@ -2,6 +2,14 @@
 
 
 [[projects]]
+  digest = "1:ffe9824d294da03b391f44e1ae8281281b4afc1bdaa9588c9097785e3af10cec"
+  name = "github.com/davecgh/go-spew"
+  packages = ["spew"]
+  pruneopts = "UT"
+  revision = "8991bc29aa16c548c550c7ff78260e27b9ab7c73"
+  version = "v1.1.1"
+
+[[projects]]
   digest = "1:c79fb010be38a59d657c48c6ba1d003a8aa651fa56b579d959d74573b7dff8e1"
   name = "github.com/gorilla/context"
   packages = ["."]
@@ -27,18 +35,33 @@
 
 [[projects]]
   branch = "develop"
-  digest = "1:f1e819eb4ed689cdd8861ae08a00f0814d7741d436903dcd9a84d8ebe6596bd9"
+  digest = "1:602f258cf537531d3d16c0e4ff7fe08ac117671a30235d7384a9bc595b674104"
   name = "github.com/irisnet/irishub-sync"
   packages = [
     "conf/db",
-    "conf/log",
     "module/logger",
     "store",
     "store/document",
     "util/constant",
   ]
   pruneopts = "UT"
-  revision = "aeabdd55abf2042f38d0da4a8f70b454b11e0e77"
+  revision = "a08385c4abc8779c41d24149426e90f22c31de8f"
+
+[[projects]]
+  digest = "1:0028cb19b2e4c3112225cd871870f2d9cf49b9b4276531f03438a88e94be86fe"
+  name = "github.com/pmezard/go-difflib"
+  packages = ["difflib"]
+  pruneopts = "UT"
+  revision = "792786c7400a136282c1664665ae0a8db921c6c2"
+  version = "v1.0.0"
+
+[[projects]]
+  digest = "1:18752d0b95816a1b777505a97f71c7467a8445b8ffb55631a7bf779f6ba4fa83"
+  name = "github.com/stretchr/testify"
+  packages = ["assert"]
+  pruneopts = "UT"
+  revision = "f35b8ab0b5a2cef36673838d662e249dd9c94686"
+  version = "v1.2.2"
 
 [[projects]]
   digest = "1:3c1a69cdae3501bf75e76d0d86dc6f2b0a7421bc205c0cb7b96b19eed464a34d"
@@ -101,6 +124,7 @@
     "github.com/gorilla/mux",
     "github.com/irisnet/irishub-sync/store",
     "github.com/irisnet/irishub-sync/store/document",
+    "github.com/stretchr/testify/assert",
     "gopkg.in/mgo.v2",
     "gopkg.in/mgo.v2/bson",
   ]

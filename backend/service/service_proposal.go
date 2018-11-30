@@ -3,33 +3,35 @@ package service
 import (
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
+	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
 )
 
-type ProposalService struct {
-	*BaseService
-}
+type ProposalService struct{}
 
-func GetProposal() *ProposalService {
-	return proposalService
+func (service *ProposalService) GetModule() Module {
+	return Proposal
 }
 
 func (service *ProposalService) QueryList(page, size int) (resp model.Page) {
 	var data []document.Proposal
-	resp = service.QueryPage(document.CollectionNmProposal, &data, nil, "-submit_block", page, size)
+	sort := desc(document.Proposal_Field_SubmitTime)
+	resp = queryPage(document.CollectionNmProposal, &data, nil, sort, page, size)
 
 	var proposals []model.Proposal
 	for _, propo := range data {
 		mP := model.Proposal{
-			Title:            propo.Title,
-			ProposalId:       propo.ProposalId,
-			Type:             propo.Type,
-			Description:      propo.Description,
-			Status:           propo.Status,
-			SubmitBlock:      propo.SubmitBlock,
-			SubmitTime:       propo.SubmitTime,
-			VotingStartBlock: propo.VotingStartBlock,
+			Title:           propo.Title,
+			ProposalId:      propo.ProposalId,
+			Type:            propo.Type,
+			Description:     propo.Description,
+			Status:          propo.Status,
+			SubmitTime:      utils.FmtUTCTime(propo.SubmitTime),
+			DepositEndTime:  utils.FmtUTCTime(propo.DepositEndTime),
+			VotingStartTime: utils.FmtUTCTime(propo.VotingStartTime),
+			VotingEndTime:   utils.FmtUTCTime(propo.VotingEndTime),
+			TotalDeposit:    propo.TotalDeposit,
 		}
 		proposals = append(proposals, mP)
 	}
@@ -39,30 +41,31 @@ func (service *ProposalService) QueryList(page, size int) (resp model.Page) {
 
 func (service *ProposalService) Query(id int) (resp model.ProposalInfo) {
 	var data document.Proposal
-	db := service.GetDb()
+	db := getDb()
 	defer db.Session.Close()
 	propoStore := db.C(document.CollectionNmProposal)
 	txStore := db.C(document.CollectionNmCommonTx)
 
-	if err := propoStore.Find(bson.M{"proposal_id": id}).One(&data); err != nil {
+	if err := propoStore.Find(bson.M{document.Proposal_Field_ProposalId: id}).One(&data); err != nil {
 		panic(types.ErrorCodeNotFound)
 		return
 	}
 
 	proposal := model.Proposal{
-		Title:            data.Title,
-		ProposalId:       data.ProposalId,
-		Type:             data.Type,
-		Description:      data.Description,
-		Status:           data.Status,
-		SubmitBlock:      data.SubmitBlock,
-		SubmitTime:       data.SubmitTime,
-		TotalDeposit:     data.TotalDeposit,
-		VotingStartBlock: data.VotingStartBlock,
+		Title:           data.Title,
+		ProposalId:      data.ProposalId,
+		Type:            data.Type,
+		Description:     data.Description,
+		Status:          data.Status,
+		SubmitTime:      utils.FmtUTCTime(data.SubmitTime),
+		DepositEndTime:  utils.FmtUTCTime(data.DepositEndTime),
+		VotingStartTime: utils.FmtUTCTime(data.VotingStartTime),
+		VotingEndTime:   utils.FmtUTCTime(data.VotingEndTime),
+		TotalDeposit:    data.TotalDeposit,
 	}
 
 	var tx document.CommonTx
-	if err := txStore.Find(bson.M{"type": types.TypeSubmitProposal, "proposal_id": id}).One(&tx); err == nil {
+	if err := txStore.Find(bson.M{document.Tx_Field_Type: types.TypeSubmitProposal, document.Proposal_Field_ProposalId: id}).One(&tx); err == nil {
 		proposal.Proposer = tx.From
 		proposal.TxHash = tx.TxHash
 	}

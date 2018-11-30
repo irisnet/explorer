@@ -11,35 +11,33 @@ import (
 	"time"
 )
 
-type TxService struct {
-	*BaseService
-}
+type TxService struct{}
 
-func GetTx() *TxService {
-	return txService
+func (service *TxService) GetModule() Module {
+	return Tx
 }
 
 func (service *TxService) QueryList(query bson.M, page, pageSize int) model.Page {
 	var data []document.CommonTx
-	pageInfo := service.QueryPage(document.CollectionNmCommonTx, &data, query, "-time", page, pageSize)
+	pageInfo := queryPage(document.CollectionNmCommonTx, &data, query, desc(document.Tx_Field_Time), page, pageSize)
 	pageInfo.Data = buildData(data)
 	return pageInfo
 }
 
 func (service *TxService) QueryLatest(query bson.M, page, pageSize int) model.Page {
 	var data []document.CommonTx
-	pageInfo := service.QueryPage(document.CollectionNmCommonTx, &data, query, "-time", page, pageSize)
+	pageInfo := queryPage(document.CollectionNmCommonTx, &data, query, desc(document.Tx_Field_Time), page, pageSize)
 	return pageInfo
 }
 
 func (service *TxService) Query(hash string) interface{} {
-	dbm := service.GetDb()
+	dbm := getDb()
 	defer dbm.Session.Close()
 
 	var result document.CommonTx
 	query := bson.M{}
-	query["tx_hash"] = hash
-	err := dbm.C(document.CollectionNmCommonTx).Find(query).Sort("-time").One(&result)
+	query[document.Tx_Field_Hash] = hash
+	err := dbm.C(document.CollectionNmCommonTx).Find(query).Sort(desc(document.Tx_Field_Time)).One(&result)
 	if err != nil {
 		panic(types.ErrorCodeNotFound)
 	}
@@ -52,9 +50,9 @@ func (service *TxService) Query(hash string) interface{} {
 		return govTx
 	case model.StakeTx:
 		stakeTx := tx.(model.StakeTx)
-		if stakeTx.Type == types.TypeBeginRedelegation || stakeTx.Type == types.TypeCompleteRedelegation {
+		if stakeTx.Type == types.TypeBeginRedelegation {
 			var res document.TxMsg
-			err := dbm.C(document.CollectionNmTxMsg).Find(bson.M{"hash": stakeTx.Hash}).One(&res)
+			err := dbm.C(document.CollectionNmTxMsg).Find(bson.M{document.TxMsg_Field_Hash: stakeTx.Hash}).One(&res)
 			if err != nil {
 				break
 			}
@@ -73,16 +71,16 @@ func (service *TxService) Query(hash string) interface{} {
 func (service *TxService) QueryByAcc(address string, page, size int) model.Page {
 	var data []document.CommonTx
 	query := bson.M{}
-	query["$or"] = []bson.M{{"from": address}, {"to": address}}
+	query["$or"] = []bson.M{{document.Tx_Field_From: address}, {document.Tx_Field_To: address}}
 	var typeArr []string
 	typeArr = append(typeArr, types.TypeTransfer)
 	typeArr = append(typeArr, types.DeclarationList...)
 	typeArr = append(typeArr, types.StakeList...)
 	typeArr = append(typeArr, types.GovernanceList...)
-	query["type"] = bson.M{
+	query[document.Tx_Field_Type] = bson.M{
 		"$in": typeArr,
 	}
-	return service.QueryPage(document.CollectionNmCommonTx, &data, query, "-time", page, size)
+	return queryPage(document.CollectionNmCommonTx, &data, query, desc(document.Tx_Field_Time), page, size)
 }
 
 func (service *TxService) CountByType(query bson.M) model.TxCounter {
@@ -91,7 +89,7 @@ func (service *TxService) CountByType(query bson.M) model.TxCounter {
 	typeArr = append(typeArr, types.DeclarationList...)
 	typeArr = append(typeArr, types.StakeList...)
 	typeArr = append(typeArr, types.GovernanceList...)
-	query["type"] = bson.M{
+	query[document.Tx_Field_Type] = bson.M{
 		"$in": typeArr,
 	}
 
@@ -100,7 +98,7 @@ func (service *TxService) CountByType(query bson.M) model.TxCounter {
 		Count int
 	}
 
-	c := service.GetDb().C(document.CollectionNmCommonTx)
+	c := getDb().C(document.CollectionNmCommonTx)
 	defer c.Database.Session.Close()
 
 	pipe := c.Pipe(
@@ -132,7 +130,7 @@ func (service *TxService) CountByType(query bson.M) model.TxCounter {
 }
 
 func (service *TxService) CountByDay() []model.TxDay {
-	c := service.GetDb().C(document.CollectionNmCommonTx)
+	c := getDb().C(document.CollectionNmCommonTx)
 	defer c.Database.Session.Close()
 
 	now := time.Now()
@@ -202,7 +200,7 @@ func buildData(txs []document.CommonTx) []interface{} {
 }
 
 func (service *TxService) buildTx(tx document.CommonTx) interface{} {
-	db := service.GetDb()
+	db := getDb()
 	defer db.Session.Close()
 
 	switch types.Convert(tx.Type) {
@@ -230,10 +228,10 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 			dtx.Details = tx.StakeEditValidator.Description.Details
 			dtx.Website = tx.StakeEditValidator.Description.Website
 			dtx.Identity = tx.StakeEditValidator.Description.Identity
-		} else if tx.Type == types.TypeUnRevoke {
+		} else if tx.Type == types.TypeUnjail {
 			candidateDb := db.C(document.CollectionNmStakeRoleCandidate)
 			var can document.Candidate
-			candidateDb.Find(bson.M{"address": dtx.Owner}).One(&can)
+			candidateDb.Find(bson.M{document.Candidate_Field_Address: dtx.Owner}).One(&can)
 			dtx.Moniker = can.Description.Moniker
 			dtx.Details = can.Description.Details
 			dtx.Website = can.Description.Website
@@ -259,7 +257,7 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 
 		txMsgDb := db.C(document.CollectionNmTxMsg)
 		var res document.TxMsg
-		err := txMsgDb.Find(bson.M{"hash": govTx.Hash}).One(&res)
+		err := txMsgDb.Find(bson.M{document.TxMsg_Field_Hash: govTx.Hash}).One(&res)
 		if err != nil {
 			return govTx
 		}
@@ -293,6 +291,7 @@ func buildBaseTx(tx document.CommonTx) model.BaseTx {
 		BlockHeight: tx.Height,
 		Type:        tx.Type,
 		Fee:         tx.ActualFee,
+		Status:      tx.Status,
 		GasLimit:    tx.Fee.Gas,
 		GasUsed:     tx.GasUsed,
 		GasPrice:    tx.GasPrice,

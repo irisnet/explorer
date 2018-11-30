@@ -22,13 +22,21 @@ func RegisterProposal(r *mux.Router) error {
 	return nil
 }
 
+type Proposal struct {
+	*service.ProposalService
+}
+
+var proposal = Proposal{
+	service.Get(service.Proposal).(*service.ProposalService),
+}
+
 func registerQueryProposals(r *mux.Router) error {
 
-	RegisterApi(r, types.UrlRegisterQueryProposals, "GET", func(writer http.ResponseWriter, request *http.Request) {
+	doApi(r, types.UrlRegisterQueryProposals, "GET", func(request *http.Request) interface{} {
 		page, size := GetPage(request)
 
-		result := service.GetProposal().QueryList(page, size)
-		WriteResponse(writer, result)
+		result := proposal.QueryList(page, size)
+		return result
 	})
 
 	return nil
@@ -36,15 +44,15 @@ func registerQueryProposals(r *mux.Router) error {
 
 func registerQueryProposal(r *mux.Router) error {
 
-	RegisterApi(r, types.UrlRegisterQueryProposal, "GET", func(writer http.ResponseWriter, request *http.Request) {
+	doApi(r, types.UrlRegisterQueryProposal, "GET", func(request *http.Request) interface{} {
 		pid, err := strconv.Atoi(Var(request, "pid"))
 		if err != nil {
 			panic(types.ErrorCodeInValidParam)
-			return
+			return nil
 		}
 
-		result := service.GetProposal().Query(pid)
-		WriteResponse(writer, result)
+		result := proposal.Query(pid)
+		return result
 	})
 
 	return nil

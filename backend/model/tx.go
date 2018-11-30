@@ -22,22 +22,22 @@ type Param struct {
 }
 
 type MsgDeposit struct {
-	ProposalID int64       `json:"proposal_id"` // ID of the proposal
+	ProposalID uint64      `json:"proposal_id"` // ID of the proposal
 	Depositer  string      `json:"depositer"`   // Address of the depositer
 	Amount     store.Coins `json:"amount"`      // Coins to add to the proposal's deposit
 }
 
 type MsgVote struct {
-	ProposalID int64  `json:"proposal_id"`
+	ProposalID uint64 `json:"proposal_id"`
 	Voter      string `json:"voter"`
 	Option     string `json:"option"`
 }
 
 type MsgBeginRedelegate struct {
-	DelegatorAddr    string  `json:"delegator_addr"`
-	ValidatorSrcAddr string  `json:"validator_src_addr"`
-	ValidatorDstAddr string  `json:"validator_dst_addr"`
-	SharesAmount     float64 `json:"shares_amount"`
+	DelegatorAddr    string `json:"delegator_addr"`
+	ValidatorSrcAddr string `json:"validator_src_addr"`
+	ValidatorDstAddr string `json:"validator_dst_addr"`
+	SharesAmount     string `json:"shares_amount"`
 }
 
 type TxCounter struct {
@@ -58,6 +58,7 @@ type BaseTx struct {
 	BlockHeight int64
 	Type        string
 	Fee         store.ActualFee
+	Status      string
 	GasLimit    int64
 	GasUsed     int64
 	GasPrice    float64
@@ -91,7 +92,7 @@ type DeclarationTx struct {
 type GovTx struct {
 	BaseTx
 	From         string
-	ProposalId   int64
+	ProposalId   uint64
 	Description  string
 	Amount       store.Coins
 	Option       string

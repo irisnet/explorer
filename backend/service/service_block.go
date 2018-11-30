@@ -7,20 +7,18 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-type BlockService struct {
-	*BaseService
-}
+type BlockService struct{}
 
-func GetBlock() *BlockService {
-	return blockService
+func (service *BlockService) GetModule() Module {
+	return Block
 }
 
 func (service *BlockService) Query(height int64) (result model.BlockRsp) {
-	dbm := service.GetDb()
+	dbm := getDb()
 	defer dbm.Session.Close()
 
 	var block document.Block
-	err := dbm.C(document.CollectionNmBlock).Find(bson.M{"height": height}).Sort("-time").One(&block)
+	err := dbm.C(document.CollectionNmBlock).Find(bson.M{document.Block_Field_Height: height}).Sort("-time").One(&block)
 
 	if err != nil {
 		panic(types.ErrorCodeNotFound)
@@ -32,7 +30,7 @@ func (service *BlockService) Query(height int64) (result model.BlockRsp) {
 	}
 	if len(pres) > 0 {
 		var candidates []document.Candidate
-		err = dbm.C(document.CollectionNmStakeRoleCandidate).Find(bson.M{"pub_key_addr": bson.M{"$in": pres}}).All(&candidates)
+		err = dbm.C(document.CollectionNmStakeRoleCandidate).Find(bson.M{document.Candidate_Field_PubKeyAddr: bson.M{"$in": pres}}).All(&candidates)
 		candidateMap := make(map[string]string)
 		for _, candidate := range candidates {
 			candidateMap[candidate.PubKeyAddr] = candidate.Address
@@ -43,7 +41,7 @@ func (service *BlockService) Query(height int64) (result model.BlockRsp) {
 
 	//query txs from block height
 	var txs []document.CommonTx
-	err = dbm.C(document.CollectionNmCommonTx).Find(bson.M{"height": height}).All(&txs)
+	err = dbm.C(document.CollectionNmCommonTx).Find(bson.M{document.Block_Field_Height: height}).All(&txs)
 	if err == nil {
 		var counter model.Counter
 		for _, tx := range txs {
@@ -61,20 +59,24 @@ func (service *BlockService) Query(height int64) (result model.BlockRsp) {
 
 func (service *BlockService) QueryList(page, size int) model.Page {
 	var data []document.Block
-	return service.QueryPage(document.CollectionNmBlock, &data, nil, "-height", page, size)
+	sort := desc(document.Block_Field_Height)
+	return queryPage(document.CollectionNmBlock, &data, nil, sort, page, size)
 }
 
 func (service *BlockService) QueryPrecommits(address string, page, size int) (result model.Page) {
-	c := service.GetDb().C(document.CollectionNmStakeRoleCandidate)
+	c := getDb().C(document.CollectionNmStakeRoleCandidate)
 	defer c.Database.Session.Close()
+
+	sort := desc(document.Candidate_Field_BondHeight)
 	var candidate document.Candidate
-	err := c.Find(bson.M{"address": address}).Sort("-bond_height").One(&candidate)
+	err := c.Find(bson.M{document.Candidate_Field_Address: address}).Sort(sort).One(&candidate)
 	if err != nil {
 		panic(types.ErrorCodeNotFound)
 		return
 	}
 
 	var data []document.Block
+	sort = desc(document.Block_Field_Height)
 
-	return service.QueryPage(document.CollectionNmBlock, &data, bson.M{"block.last_commit.precommits": bson.M{"$elemMatch": bson.M{"validator_address": candidate.PubKeyAddr}}}, "-height", page, size)
+	return queryPage(document.CollectionNmBlock, &data, bson.M{"block.last_commit.precommits": bson.M{"$elemMatch": bson.M{"validator_address": candidate.PubKeyAddr}}}, sort, page, size)
 }

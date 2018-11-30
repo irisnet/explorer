@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"log"
@@ -56,19 +55,19 @@ func GetPage(r *http.Request) (int, int) {
 }
 
 func WriteResponse(writer http.ResponseWriter, data ...interface{}) {
-	var resp = model.Response{
-		Code: types.ErrorCodeSuccess.Code,
-	}
-
-	if len(data) == 2 {
-		if succ, ok := data[1].(bool); ok && !succ {
-			err := data[0].(types.Error)
-			resp.Code = err.Code
-			resp.Msg = err.Msg
-		}
-	}
-	resp.Data = data[0]
-	resultByte, err := json.Marshal(resp)
+	//var resp = model.Response{
+	//	Code: types.ErrorCodeSuccess.Code,
+	//}
+	//
+	//if len(data) == 2 {
+	//	if succ, ok := data[1].(bool); ok && !succ {
+	//		err := data[0].(types.Error)
+	//		resp.Code = err.Code
+	//		resp.Msg = err.Msg
+	//	}
+	//}
+	//resp.Data = data[0]
+	resultByte, err := json.Marshal(data[0])
 	if err != nil {
 		log.Println(fmt.Sprintf("json.Marshal failed:%s", err.Error()))
 	}
@@ -76,10 +75,10 @@ func WriteResponse(writer http.ResponseWriter, data ...interface{}) {
 }
 
 // 用户处理逻辑函数
-type Action func(writer http.ResponseWriter, request *http.Request)
+type Action func(request *http.Request) interface{}
 
 //封装用户处理逻辑函数，捕获panic异常，统一处理
-func wrap(action Action) Action {
+func wrap(action Action) func(writer http.ResponseWriter, request *http.Request) {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		defer func() {
 			if r := recover(); r != nil {
@@ -100,15 +99,16 @@ func wrap(action Action) Action {
 				log.Println(fmt.Sprintf("API[%s] execute failed,%+v", apiName, r))
 			}
 		}()
-		action(writer, request)
+		result := action(request)
+		WriteResponse(writer, result)
 	}
 }
 
-//注册api接口
+//处理api接口
 // url : api路径
 // method : api请求方法
 // action : 用户处理逻辑
-func RegisterApi(r *mux.Router, url, method string, action Action) {
+func doApi(r *mux.Router, url, method string, action Action) {
 	wrapperAction := wrap(action)
 	r.HandleFunc(url, wrapperAction).Methods(method)
 }

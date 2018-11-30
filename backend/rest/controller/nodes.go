@@ -24,17 +24,18 @@ func RegisterNodes(r *mux.Router) error {
 	return nil
 }
 
+// TODO
 func RegisterQueryNodes(r *mux.Router) error {
-	RegisterApi(r, types.UrlRegisterQueryNodes, "GET", func(writer http.ResponseWriter, request *http.Request) {
+	doApi(r, types.UrlRegisterQueryNodes, "GET", func(request *http.Request) interface{} {
 		bz := utils.GetNodes()
-		writer.Write(bz)
+		return bz
 	})
 
 	return nil
 }
 
 func RegisterQueryNodeLocation(r *mux.Router) error {
-	RegisterApi(r, types.UrlRegisterQueryIp, "POST", func(writer http.ResponseWriter, request *http.Request) {
+	doApi(r, types.UrlRegisterQueryIp, "POST", func(request *http.Request) interface{} {
 		body, _ := ioutil.ReadAll(request.Body)
 		var params map[string][]string
 		json.Unmarshal(body, &params)
@@ -45,12 +46,12 @@ func RegisterQueryNodeLocation(r *mux.Router) error {
 			resp, err := http.Get(url)
 			if err != nil {
 				panic(types.ErrorCodeExtSysFailed)
-				return
+				return nil
 			}
 			body, _ := ioutil.ReadAll(resp.Body)
 			ipMap[i] = string(body)
 		}
-		WriteResponse(writer, ipMap)
+		return ipMap
 	})
 
 	return nil

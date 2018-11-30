@@ -49,17 +49,3 @@ func QueryList(collation string, data interface{}, m map[string]interface{}, sor
 		return model.Page{Count: count, Data: data}
 	}
 }
-
-func QueryByPage(collation string, data interface{}, m map[string]interface{}, sort string, page, size int) int {
-	c := GetDatabase().C(collation)
-	defer c.Database.Session.Close()
-	count, err := c.Find(m).Count()
-	if err != nil {
-		return 0
-	}
-	err = c.Find(m).Skip((page - 1) * size).Limit(size).Sort(sort).All(data)
-	if err != nil {
-		return count
-	}
-	return count
-}

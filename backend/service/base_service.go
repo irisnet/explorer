@@ -1,46 +1,72 @@
 package service
 
 import (
+	"fmt"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm"
 	"gopkg.in/mgo.v2"
 )
 
 var (
-	baseService = &BaseService{}
+	accountService = &AccountService{}
 
-	accountService = &AccountService{
-		baseService,
-	}
+	blockService = &BlockService{}
 
-	blockService = &BlockService{
-		baseService,
-	}
+	commonService = &CommonService{}
 
-	commonService = &CommonService{
-		baseService,
-	}
+	proposalService = &ProposalService{}
 
-	proposalService = &ProposalService{
-		baseService,
-	}
+	stakeService = &StakeService{}
 
-	stakeService = &StakeService{
-		baseService,
-	}
-
-	txService = &TxService{
-		baseService,
-	}
+	txService = &TxService{}
 )
 
-type BaseService struct {
+const (
+	_ Module = iota
+	Account
+	Block
+	Common
+	Proposal
+	Stake
+	Tx
+)
+
+type Module int
+
+func Get(m Module) Service {
+	switch m {
+	case Account:
+		return accountService
+	case Block:
+		return blockService
+	case Common:
+		return commonService
+	case Proposal:
+		return proposalService
+	case Stake:
+		return stakeService
+	case Tx:
+		return txService
+	}
+	return nil
 }
 
-func (service *BaseService) QueryPage(collation string, data interface{}, m map[string]interface{}, sort string, page, size int) model.Page {
+type Service interface {
+	GetModule() Module
+}
+
+func queryPage(collation string, data interface{}, m map[string]interface{}, sort string, page, size int) model.Page {
 	return orm.QueryList(collation, data, m, sort, page, size)
 }
 
-func (service *BaseService) GetDb() *mgo.Database {
+func getDb() *mgo.Database {
 	return orm.GetDatabase()
+}
+
+func desc(field string) string {
+	return fmt.Sprintf("-%s", field)
+}
+
+func asc(field string) string {
+	return fmt.Sprintf("%s", field)
 }
