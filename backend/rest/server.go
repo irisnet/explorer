@@ -25,7 +25,6 @@ func NewApiServer() *ApiServer {
 	addr := fmt.Sprintf(":%d", port)
 
 	logger.Info("server will start", logger.String("addr", addr))
-	log.Printf("Serving on %q", addr)
 
 	server := &http.Server{
 		ReadTimeout:       5 * time.Second,
