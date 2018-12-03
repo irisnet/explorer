@@ -4,13 +4,13 @@
       <span class="home_module_block_title"
             :class="homeModuleBlockTitle"
       >{{moduleName}}</span>
-      <span v-if="moduleNameTitle === 'blocks'" class="view_all_btn" @click="viewAllClick()">View All</span>
+      <span v-if="moduleTitle === 'blocks'" class="view_all_btn" @click="viewAllClick()">View All</span>
     </div>
     <div class="home_module_block_content">
       <div class="home_module_block_content_item" v-for="item in information" :style="innerWidth<500?'padding:0.1rem;':''">
         <div class="blocks_module_left" :style="`${moduleName === 'Blocks'?'flex:1;':''}`">
           <div class="key_value_wrap">
-            <span class="blocks_module_value" :class="moduleNameTitle">
+            <span class="blocks_module_value" :class="moduleTitle">
               <span class="transactions_tx" v-if="item.TxHash">TX# </span>
               <span style="cursor:pointer;" @click="skipRouter(item.Height?`/blocks_detail/${item.Height}`:`/tx?txHash=${item.TxHash}`)">{{item.Height?item.Height:`${item.TxHash.substr(0,16)}...`}}</span></span>
             <span class="key_value_time">{{item.Time}}</span>
@@ -31,8 +31,8 @@
           <div>
             <img src="../assets/nodata.png">
           </div>
-          <span v-show="moduleNameTitle !== 'blocks'">No Transaction</span>
-          <span v-show="moduleNameTitle === 'blocks'">No Block</span>
+          <span v-show="moduleTitle !== 'blocks'">No Transaction</span>
+          <span v-show="moduleTitle === 'blocks'">No Block</span>
         </div>
       </div>
     </div>
@@ -55,7 +55,7 @@
       return {
         deviceType:window.innerWidth,
         homeModuleBlockTitle:this.moduleName === 'Blocks'?'blocks_background_img':'transactions_background_img',
-        moduleNameTitle:this.moduleName === 'Blocks'?'blocks':'transactions',
+        moduleTitle:this.moduleName === 'Blocks'?'blocks':'transactions',
         innerWidth : window.innerWidth
       }
     },

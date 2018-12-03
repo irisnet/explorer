@@ -3,8 +3,8 @@
         <div class="clear_storage_title_wrap">
           <p><span>{{title}}</span></p>
         </div>
-        <div class="information_content_wrap">
-          <div v-for="(item,index) in clearBrowserCacheSteps" class="information_content">
+        <div class="content_wrap">
+          <div v-for="(item,index) in clearBrowserCacheSteps" class="content">
             <div class="clear_storage_content">
               <div class="title_content">
                 <div class="logo_img">
@@ -12,30 +12,30 @@
                 </div>
                 <span>{{item.name}}</span>
               </div>
-              <div :class="index == 1 ? '' : 'line' " class="step_content">
+              <div :class="index == 1 ? '' : 'line' " class="step_container">
                 <p class="step">
                   <span class="step_num">{{item.stepNum.one}}</span>
-                  <span class="step_infomation">{{item.stepInfo.one}}</span>
+                  <span class="step_content">{{item.stepInfo.one}}</span>
                 </p>
-                <div class="step_img_content">
+                <div class="step_img">
                   <img :src="item.stepImg.one">
                 </div>
               </div>
-              <div class="step_content" :class="index == 3 || index == 4 ? 'line' : ''">
+              <div class="step_container" :class="index == 3 || index == 4 ? 'line' : ''">
                 <p class="step" v-show="item.stepNum.two">
                   <span class="step_num">{{item.stepNum.two}}</span>
-                  <span class="step_infomation">{{item.stepInfo.two}}</span>
+                  <span class="step_content">{{item.stepInfo.two}}</span>
                 </p>
-                <div class="step_img_content" v-show="item.stepImg.two">
+                <div class="step_img" v-show="item.stepImg.two">
                   <img :src="item.stepImg.two">
                 </div>
               </div>
-              <div class="step_content">
+              <div class="step_container">
                 <p class="step" v-show="item.stepNum.three">
                   <span class="step_num">{{item.stepNum.three}}</span>
-                  <span class="step_infomation">{{item.stepInfo.three}}</span>
+                  <span class="step_content">{{item.stepInfo.three}}</span>
                 </p>
-                <div class="step_img_content" v-show="item.stepImg.three">
+                <div class="step_img" v-show="item.stepImg.three">
                   <img :src="item.stepImg.three">
                 </div>
               </div>
@@ -54,7 +54,7 @@
             clearBrowserCacheSteps:[
               {
                 logoImg:require('../assets/google_logo.png'),
-                name:"GoogleChrome",
+                name:"Google Chrome",
                 stepNum:{
                   one: "1",
                   two: "2",
@@ -170,7 +170,7 @@
       text-align: center;
       line-height: 0.24rem;
     }
-    .step_infomation{
+    .step_content{
       margin-left: 0.1rem;
       line-height: 0.18rem;
     }
@@ -182,10 +182,10 @@
       position: relative;
       left: -0.13rem!important;
     }
-    .step_content{
+    .step_container{
       margin-left: 0.2rem;
     }
-    .step_img_content{
+    .step_img{
       width: 100%!important;
       padding: 0.2rem 0.1rem 0.3rem 0.17rem;
       img{
@@ -221,12 +221,12 @@
     }
 
   }
-  .information_content_wrap{
+  .content_wrap{
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    .information_content{
+    .content{
       width: 100%;
       max-width: 12.8rem;
     }
@@ -256,7 +256,7 @@
     }
   }
 }
-  .step_content{
+  .step_container{
     margin-left: 0.4rem;
     border-left: 0.01rem solid #fff;
   }
@@ -274,7 +274,7 @@
     background: #3498db;
     color: #fff;
   }
-  .step_infomation{
+  .step_content{
     display: inline-block;
     max-width: 8rem;
     margin-left: 0.18rem;
@@ -282,7 +282,7 @@
     font-size: 0.14rem;
     color: #a2a2ae;
   }
-  .step_img_content{
+  .step_img{
     padding: 0.2rem 0  0.6rem 0.33rem;
 
   }
