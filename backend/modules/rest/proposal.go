@@ -30,7 +30,7 @@ func RegisterProposal(r *mux.Router) error {
 func registerQueryProposals(r *mux.Router) error {
 	r.HandleFunc("/api/proposals/{page}/{size}", func(writer http.ResponseWriter, request *http.Request) {
 		var data []document.Proposal
-		result := utils.QueryList("proposal", &data, nil, "-submit_block", request)
+		result := utils.QueryList("proposal", &data, nil, "-submit_time", request)
 		var pageInfo types.Page
 		json.Unmarshal(result, &pageInfo)
 		var proposals []Proposal
