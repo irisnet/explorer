@@ -153,8 +153,8 @@
           this.flShowFooter = false;
           this.flShowHeader = false;
         }else {
-          this.flShowHeader = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
-          this.flShowFooter = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
+          this.flShowHeader = !(this.$route.query.flShow && this.$route.query.flShow === 'false');
+          this.flShowFooter = !(this.$route.query.flShow && this.$route.query.flShow === 'false');
         }
       },
       showQRCode() {
