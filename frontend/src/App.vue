@@ -46,6 +46,8 @@
               </a>
               <span class="footer_link_join">|</span>
               <span class="footer_link_privacy" @click="footerLinkClick('/privacy_policy')">Privacy Policy</span>
+              <span class="footer_link_join">|</span>
+              <span @click="footerLinkClick('/help')">Help</span>
             </div>
             <p class="footer_copyright_wrap">
               ©️ IRISplorer 2018 all rights reserved
@@ -151,7 +153,7 @@
           this.flShowFooter = false;
           this.flShowHeader = false;
         }else {
-          this.flShowHeader = true;
+          this.flShowHeader = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
           this.flShowFooter = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
         }
       },
