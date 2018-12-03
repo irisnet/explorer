@@ -11,8 +11,8 @@ import (
 // mux.Router registrars
 func RegisterAccount(r *mux.Router) error {
 	funs := []func(*mux.Router) error{
-		RegisterQueryAccount,
-		RegisterQueryAllAccount,
+		registerQueryAccount,
+		registerQueryAllAccount,
 	}
 
 	for _, fn := range funs {
@@ -27,27 +27,27 @@ type AccountController struct {
 	*service.AccountService
 }
 
-var accController = AccountController{
+var account = AccountController{
 	service.Get(service.Account).(*service.AccountService),
 }
 
-func RegisterQueryAccount(r *mux.Router) error {
+func registerQueryAccount(r *mux.Router) error {
 
 	doApi(r, types.UrlRegisterQueryAccount, "GET", func(request *http.Request) interface{} {
 		address := Var(request, "address")
 
-		result := accController.Query(address)
+		result := account.Query(address)
 		return result
 	})
 
 	return nil
 }
 
-func RegisterQueryAllAccount(r *mux.Router) error {
+func registerQueryAllAccount(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryAllAccount, "GET", func(request *http.Request) interface{} {
 		page, size := GetPage(request)
 
-		result := accController.QueryList(page, size)
+		result := account.QueryList(page, size)
 		return result
 	})
 	return nil

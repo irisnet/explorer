@@ -5,6 +5,7 @@ import (
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
+	"github.com/irisnet/irishub-sync/module/logger"
 	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
 	"log"
@@ -24,6 +25,7 @@ func (service *AccountService) Query(address string) (result model.AccountResp) 
 	err := c.Find(bson.M{document.Account_Field_Addres: address}).One(&result)
 	if err != nil {
 		error := types.ErrorCodeNotFound
+		logger.Error("account don't found", logger.String("address", address))
 		log.Println(fmt.Sprintf("account [%s] not found", address))
 		panic(error)
 		return
