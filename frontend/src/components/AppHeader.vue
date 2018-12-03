@@ -14,6 +14,9 @@
                  @keyup.enter="onInputChange">
           <i class="search_icon" @click="getData(searchInputValue)"></i>
           <i class="clear_icon" @click="clearData" v-show="showClear"></i>
+          <span class="help_icon" @click="toHelp">
+            <img src="../assets/help.png">
+          </span>
         </div>
       </div>
 
@@ -120,7 +123,6 @@
           <i class="search_icon" @click="getData(searchInputValue)"></i>
           <i class="clear_icon" @click="clearData" v-show="showClear"></i>
         </div>
-
       </div>
     </div>
   </div>
@@ -382,7 +384,9 @@
       clearData(){
         this.searchInputValue = '';
       },
-
+      toHelp(){
+        this.$router.push('/help')
+      }
     }
   }
 </script>
@@ -490,7 +494,7 @@
           .search_icon {
             position: absolute;
             top: 0.4rem;
-            right: 0.1rem;
+            right: 0.5rem;
             width: 0.15rem;
             height: 0.15rem;
             background: url('../assets/search.svg') no-repeat;
@@ -499,11 +503,17 @@
           .clear_icon{
             position: absolute;
             top: 0.42rem;
-            right: 0.3rem;
+            right: 0.7rem;
             width: 0.15rem;
             height: 0.15rem;
             background: url('../assets/clear.png') no-repeat;
             cursor: pointer;
+          }
+          .help_icon{
+            margin-left: 0.1rem;
+            &:hover{
+              cursor: pointer;
+            }
           }
         }
       }

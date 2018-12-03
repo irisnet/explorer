@@ -10,6 +10,7 @@ import PrivacyPolicy from './components/PrivacyPolicy.vue';
 import ProposalsPage from "./components/ProposalsPage.vue";
 import ProposalsDetail from "./components/ProposalsDetail.vue";
 import SearchResult from "./components/searchResult.vue";
+import Help from "./components/clearStorageHelpPage.vue";
 import Version from "./components/version.vue";
 
 Vue.use(Router);
@@ -80,7 +81,9 @@ export default new Router({
     {
       path: '/version', component: Version,
     },
-
+    {
+      path: '/help', component: Help,
+    },
   ]
 
 })

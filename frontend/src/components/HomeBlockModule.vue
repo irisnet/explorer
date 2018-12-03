@@ -2,15 +2,15 @@
   <div class="home_module_block">
     <div class="home_module_block_title_wrap">
       <span class="home_module_block_title"
-            :class="homeModuleBlockTitleVar"
-      >{{title}}</span>
-      <span v-if="blockModuleTypeVar === 'blocks_background_type'" class="view_all_btn" @click="viewAllClick()">View All</span>
+            :class="homeModuleBlockTitle"
+      >{{moduleName}}</span>
+      <span v-if="moduleTitle === 'blocks'" class="view_all_btn" @click="viewAllClick()">View All</span>
     </div>
     <div class="home_module_block_content">
       <div class="home_module_block_content_item" v-for="item in information" :style="innerWidth<500?'padding:0.1rem;':''">
-        <div class="blocks_module_left" :style="`${title === 'Blocks'?'flex:1;':''}`">
+        <div class="blocks_module_left" :style="`${moduleName === 'Blocks'?'flex:1;':''}`">
           <div class="key_value_wrap">
-            <span class="blocks_module_value" :class="blockModuleTypeVar">
+            <span class="blocks_module_value" :class="moduleTitle">
               <span class="transactions_tx" v-if="item.TxHash">TX# </span>
               <span style="cursor:pointer;" @click="skipRouter(item.Height?`/blocks_detail/${item.Height}`:`/tx?txHash=${item.TxHash}`)">{{item.Height?item.Height:`${item.TxHash.substr(0,16)}...`}}</span></span>
             <span class="key_value_time">{{item.Time}}</span>
@@ -19,19 +19,20 @@
             <span class="blocks_module_props">{{item.Height?'Txn:':''}}</span>
             <span class="blocks_module_Amount">{{item.Height?item.Txn:''}}</span>
             <span class="blocks_module_type" v-show="item.TxHash">{{item.Type}}</span>
-            <div class="blocks_module_right" :style="`${title === 'Blocks'?'flex:2;':''}`">
-              <span :class="`${title === 'Blocks' ? 'hide_fee' : 'show_fee'}`">Fee: {{item.Fee}}</span>
+            <div class="blocks_module_right" :style="`${moduleName === 'Blocks'?'flex:2;':''}`">
+              <span :class="`${moduleName === 'Blocks' ? 'hide_fee' : 'show_fee'}`">Fee: {{item.Fee}}</span>
             </div>
           </div>
         </div>
 
       </div>
       <div class="none_data_img_container" v-if="information.length === 0">
-        <div class="nodata_img_container">
+        <div class="nodata_img_content">
           <div>
             <img src="../assets/nodata.png">
           </div>
-          <span>No Transaction</span>
+          <span v-show="moduleTitle !== 'blocks'">No Transaction</span>
+          <span v-show="moduleTitle === 'blocks'">No Block</span>
         </div>
       </div>
     </div>
@@ -53,12 +54,12 @@
     data() {
       return {
         deviceType:window.innerWidth,
-        homeModuleBlockTitleVar:this.title === 'Blocks'?'blocks_background':'transactions_background',
-        blockModuleTypeVar:this.title === 'Blocks'?'blocks_background_type':'transactions_background_type',
+        homeModuleBlockTitle:this.moduleName === 'Blocks'?'blocks_background_img':'transactions_background_img',
+        moduleTitle:this.moduleName === 'Blocks'?'blocks':'transactions',
         innerWidth : window.innerWidth
       }
     },
-    props:['title','information',],
+    props:['moduleName','information'],
     beforeMount() {
 
     },
@@ -74,9 +75,9 @@
         this.$router.push(path);
       },
       viewAllClick(){
-        if(this.title === 'Blocks'){
+        if(this.moduleName === 'Blocks'){
           this.$router.push('/block/1/0')
-        }else if(this.title === 'Transactions'){
+        }else if(this.moduleName === 'Transactions'){
           this.$router.push('/recent_transactions/2/recent')
         }
       },
@@ -100,7 +101,7 @@
     min-height: 6.95rem;
     position: relative;
     top: -0.2rem;
-    .nodata_img_container{
+    .nodata_img_content{
       @include center;
       display: flex;
       flex-direction: column;
@@ -114,6 +115,7 @@
         }
       }
       span{
+        text-align: center;
         padding-top: 0.16rem;
         @include fontSize;
         color: #a2a2ae;
@@ -138,11 +140,11 @@
         font-size:0.18rem;
         @include fontWeight;
       }
-      .blocks_background{
+      .blocks_background_img{
         background: url('../assets/blocks.png') no-repeat 0 0.02rem;
         text-indent:0.35rem;
       }
-      .transactions_background{
+      .transactions_background_img{
         background: url('../assets/transactions.png') no-repeat 0 0.02rem;
         text-indent:0.3rem;
       }
@@ -210,7 +212,7 @@
               .transactions_tx{
                 color: #000;
               }
-              .transactions_background_type{
+              .transactions{
                 display: inline-block;
                 width: 0.18rem;
                 height: 0.18rem;
@@ -219,12 +221,12 @@
                 }
               }
             }
-            .blocks_background_type{
+            .blocks{
               background: url('../assets/block.png') no-repeat 0 0.02rem;
               text-indent:0.2rem;
               color:#3598db;
             }
-            .transactions_background_type{
+            .transactions{
               background: url('../assets/transaction.png') no-repeat 0 0.02rem;
               text-indent:0.2rem;
             }
