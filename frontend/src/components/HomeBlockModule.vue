@@ -54,8 +54,8 @@
     data() {
       return {
         deviceType:window.innerWidth,
-        homeModuleBlockTitle:this.moduleName === 'Blocks'?'blocks_background':'transactions_background',
-        moduleNameTitle:this.moduleName === 'Blocks'?'blocks':'transactions_background_type',
+        homeModuleBlockTitle:this.moduleName === 'Blocks'?'blocks_background_img':'transactions_background_img',
+        moduleNameTitle:this.moduleName === 'Blocks'?'blocks':'transactions',
         innerWidth : window.innerWidth
       }
     },
@@ -140,11 +140,11 @@
         font-size:0.18rem;
         @include fontWeight;
       }
-      .blocks_background{
+      .blocks_background_img{
         background: url('../assets/blocks.png') no-repeat 0 0.02rem;
         text-indent:0.35rem;
       }
-      .transactions_background{
+      .transactions_background_img{
         background: url('../assets/transactions.png') no-repeat 0 0.02rem;
         text-indent:0.3rem;
       }
@@ -212,7 +212,7 @@
               .transactions_tx{
                 color: #000;
               }
-              .transactions_background_type{
+              .transactions{
                 display: inline-block;
                 width: 0.18rem;
                 height: 0.18rem;
@@ -226,7 +226,7 @@
               text-indent:0.2rem;
               color:#3598db;
             }
-            .transactions_background_type{
+            .transactions{
               background: url('../assets/transaction.png') no-repeat 0 0.02rem;
               text-indent:0.2rem;
             }
