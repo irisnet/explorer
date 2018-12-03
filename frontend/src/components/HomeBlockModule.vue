@@ -8,7 +8,7 @@
     </div>
     <div class="home_module_block_content">
       <div class="home_module_block_content_item" v-for="item in information" :style="innerWidth<500?'padding:0.1rem;':''">
-        <div class="blocks_module_left" :style="`${moduleNameTitle === 'Blocks'?'flex:1;':''}`">
+        <div class="blocks_module_left" :style="`${moduleName === 'Blocks'?'flex:1;':''}`">
           <div class="key_value_wrap">
             <span class="blocks_module_value" :class="moduleNameTitle">
               <span class="transactions_tx" v-if="item.TxHash">TX# </span>
@@ -19,8 +19,8 @@
             <span class="blocks_module_props">{{item.Height?'Txn:':''}}</span>
             <span class="blocks_module_Amount">{{item.Height?item.Txn:''}}</span>
             <span class="blocks_module_type" v-show="item.TxHash">{{item.Type}}</span>
-            <div class="blocks_module_right" :style="`${moduleNameTitle === 'Blocks'?'flex:2;':''}`">
-              <span :class="`${moduleNameTitle === 'Blocks' ? 'hide_fee' : 'show_fee'}`">Fee: {{item.Fee}}</span>
+            <div class="blocks_module_right" :style="`${moduleName === 'Blocks'?'flex:2;':''}`">
+              <span :class="`${moduleName === 'Blocks' ? 'hide_fee' : 'show_fee'}`">Fee: {{item.Fee}}</span>
             </div>
           </div>
         </div>
