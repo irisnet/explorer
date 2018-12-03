@@ -4,7 +4,7 @@
           <p><span>{{title}}</span></p>
         </div>
         <div class="information_content_wrap">
-          <div v-for="(item,index) in information" class="information_content">
+          <div v-for="(item,index) in ClearBrowserCacheSteps" class="information_content">
             <div class="clear_storage_content">
               <div class="title_content">
                 <div class="logo_img">
@@ -51,7 +51,7 @@
         name: "clearStorageHelpPage",
       data(){
           return{
-            information:[
+            ClearBrowserCacheSteps:[
               {
                 logoImg:require('../assets/google_logo.png'),
                 name:"GoogleChrome",
