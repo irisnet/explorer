@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
@@ -87,6 +88,8 @@ type Action func(request *http.Request) interface{}
 func wrap(action Action) func(writer http.ResponseWriter, request *http.Request) {
 	return func(writer http.ResponseWriter, request *http.Request) {
 		apiName := request.RequestURI
+		api := logger.String("Api", apiName)
+
 		defer func() {
 			if r := recover(); r != nil {
 				switch r.(type) {
@@ -102,22 +105,29 @@ func wrap(action Action) func(writer http.ResponseWriter, request *http.Request)
 					writeResponse(writer, e, false)
 					break
 				}
-				logger.Error("API execute failed", logger.Any("errMsg", r))
+				logger.Error("API execute failed", api, logger.Any("errMsg", r))
 
 			}
 		}()
 
+		logger.Info(fmt.Sprintf("========================[api]========================"))
+		logger.Info("Value From Form", api, logger.Any("Params", request.Form))
+		logger.Info("Value From Url", api, logger.Any("Params", mux.Vars(request)))
+
 		start := time.Now()
+		//执行用户的api逻辑
 		result := action(request)
 		end := time.Now()
 
 		bizTime := end.Unix() - start.Unix()
 
-		logger.Info("process information", logger.String("Api", apiName), logger.Int64("coast(s)", bizTime), logger.Any("result", result))
+		logger.Info("Api Result", api, logger.Any("result", result))
+		logger.Info("Api Coast Time", api, logger.Int64("coast(s)", bizTime))
 
 		if bizTime >= 3 {
-			logger.Warn("api coast most time", logger.String("Api", apiName))
+			logger.Warn("api coast most time", api)
 		}
+		logger.Info(fmt.Sprintf("========================[api]========================"))
 
 		writeResponse(writer, result)
 	}

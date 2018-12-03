@@ -15,7 +15,7 @@ type Account struct {
 	Sequence   string   `json:"sequence"`
 }
 
-func GetBalance(address string) (amoumt store.Coins) {
+func GetBalance(address string) (amount store.Coins) {
 	defer func() {
 		if err := recover(); err != nil {
 			log.Println(err)
@@ -31,14 +31,14 @@ func GetBalance(address string) (amoumt store.Coins) {
 				if len(coins) > 0 {
 					for _, coinstr := range coins {
 						coin := ParseCoin(coinstr)
-						amoumt = append(amoumt, CovertCoin(coin, CoinTypeAtto))
+						amount = append(amount, CovertCoin(coin, CoinTypeAtto))
 					}
 				}
-				return amoumt
+				return amount
 			}
 			return funBuildCoins(account.Coins)
 		}
-		return amoumt
+		return amount
 	}
 	return
 }
