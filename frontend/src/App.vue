@@ -47,7 +47,7 @@
               <span class="footer_link_join">|</span>
               <span class="footer_link_privacy" @click="footerLinkClick('/privacy_policy')">Privacy Policy</span>
               <span class="footer_link_join">|</span>
-              <span @click="footerLinkClick('/help')">Help</span>
+              <span @click="footerLinkClick('/help')">Cache Problem</span>
             </div>
             <p class="footer_copyright_wrap">
               ©️ IRISplorer 2018 all rights reserved
