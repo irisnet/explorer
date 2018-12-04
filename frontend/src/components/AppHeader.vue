@@ -14,9 +14,6 @@
                  @keyup.enter="onInputChange">
           <i class="search_icon" @click="getData(searchInputValue)"></i>
           <i class="clear_icon" @click="clearData" v-show="showClear"></i>
-          <span class="help_icon" @click="toHelp">
-            <img src="../assets/help.png">
-          </span>
         </div>
       </div>
 
@@ -494,7 +491,7 @@
           .search_icon {
             position: absolute;
             top: 0.4rem;
-            right: 0.5rem;
+            right: 0.1rem;
             width: 0.15rem;
             height: 0.15rem;
             background: url('../assets/search.svg') no-repeat;
@@ -503,17 +500,11 @@
           .clear_icon{
             position: absolute;
             top: 0.42rem;
-            right: 0.7rem;
+            right: 0.3rem;
             width: 0.15rem;
             height: 0.15rem;
             background: url('../assets/clear.png') no-repeat;
             cursor: pointer;
-          }
-          .help_icon{
-            margin-left: 0.1rem;
-            &:hover{
-              cursor: pointer;
-            }
           }
         }
       }
