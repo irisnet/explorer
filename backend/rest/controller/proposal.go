@@ -47,7 +47,7 @@ func registerQueryProposal(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryProposal, "GET", func(request *http.Request) interface{} {
 		pid, err := strconv.Atoi(Var(request, "pid"))
 		if err != nil {
-			panic(types.ErrorCodeInValidParam)
+			panic(types.CodeInValidParam)
 			return nil
 		}
 

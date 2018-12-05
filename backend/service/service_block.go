@@ -21,7 +21,7 @@ func (service *BlockService) Query(height int64) (result model.BlockRsp) {
 	err := dbm.C(document.CollectionNmBlock).Find(bson.M{document.Block_Field_Height: height}).Sort("-time").One(&block)
 
 	if err != nil {
-		panic(types.ErrorCodeNotFound)
+		panic(types.CodeNotFound)
 	}
 
 	var pres []string
@@ -71,7 +71,7 @@ func (service *BlockService) QueryPrecommits(address string, page, size int) (re
 	var candidate document.Candidate
 	err := c.Find(bson.M{document.Candidate_Field_Address: address}).Sort(sort).One(&candidate)
 	if err != nil {
-		panic(types.ErrorCodeNotFound)
+		panic(types.CodeNotFound)
 		return
 	}
 

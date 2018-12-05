@@ -39,7 +39,7 @@ func (service *TxService) Query(hash string) interface{} {
 	query[document.Tx_Field_Hash] = hash
 	err := dbm.C(document.CollectionNmCommonTx).Find(query).Sort(desc(document.Tx_Field_Time)).One(&result)
 	if err != nil {
-		panic(types.ErrorCodeNotFound)
+		panic(types.CodeNotFound)
 	}
 
 	tx := service.buildTx(result)

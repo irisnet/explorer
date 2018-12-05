@@ -37,7 +37,7 @@ func registerQueryBlock(r *mux.Router) error {
 		h := Var(request, "height")
 		height, ok := utils.ParseInt(h)
 		if !ok {
-			panic(types.ErrorCodeInValidParam)
+			panic(types.CodeInValidParam)
 			return nil
 		}
 

@@ -26,6 +26,13 @@ const (
 	//SearchBox
 	UrlRegisterQueryText = "/search/{text}"
 
+	//faucet
+	UrlRegisterQueryFaucet = "/faucet/account"
+	UrlRegisterApply       = "/faucet/apply"
+
+	UrlFaucetAccountService = "%s/account"
+	UrlFaucetApplyService   = "%s/apply"
+
 	//Stake
 	UrlRegisterQueryValidator        = "/stake/validators/{page}/{size}"
 	UrlRegisterQueryRevokedValidator = "/stake/revokedVal/{page}/{size}"
@@ -144,7 +151,7 @@ func Convert(typ string) TxType {
 	} else if IsGovernanceType(typ) {
 		return Gov
 	}
-	panic(ErrorCodeUnSupportTx)
+	panic(CodeUnSupportTx)
 }
 func TxTypeFromString(typ string) TxType {
 	if typ == "trans" {
@@ -156,5 +163,5 @@ func TxTypeFromString(typ string) TxType {
 	} else if typ == "gov" {
 		return Gov
 	}
-	panic(ErrorCodeUnSupportTx)
+	panic(CodeUnSupportTx)
 }

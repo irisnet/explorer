@@ -52,3 +52,37 @@ func Get(url string) (bz []byte, err error) {
 
 	return
 }
+
+func Forward(req *http.Request, url string) (bz []byte) {
+	r := forkRequest(req, url)
+	res, err := client.Do(r)
+	if err != nil {
+		logger.Error("Forward err", logger.String("err", err.Error()))
+	}
+
+	defer res.Body.Close()
+
+	bz, err = ioutil.ReadAll(res.Body)
+	if err != nil {
+		logger.Error("Forward err", logger.String("err", err.Error()))
+	}
+	return
+}
+
+func forkRequest(req *http.Request, url string) *http.Request {
+	r, _ := http.NewRequest(req.Method, url, req.Body)
+	for k, v := range req.Header {
+		for _, vv := range v {
+			r.Header.Add(k, vv)
+		}
+	}
+	r.RemoteAddr = req.RemoteAddr
+	r.Form = req.Form
+	r.PostForm = req.PostForm
+	r.MultipartForm = req.MultipartForm
+	r.Proto = req.Proto
+	r.ProtoMajor = req.ProtoMajor
+	r.ProtoMinor = req.ProtoMinor
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
+	return r
+}
