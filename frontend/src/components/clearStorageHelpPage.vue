@@ -139,7 +139,7 @@
                 }
               }
             ],
-            title:"Steps to clear the browser caching manually",
+            title:"How could I clear the browser cache?",
             clearStroageDetailWrap:"",
           }
       },
@@ -148,6 +148,8 @@
         if (Tools.currentDeviceIsPersonComputer()) {
           this.clearStroageDetailWrap = 'computer_clear_storage_detail_wrap';
         } else {
+          this.$set(this.clearBrowserCacheSteps[2],"name","Safari Mobile");
+          this.$set(this.clearBrowserCacheSteps[4],"name","Android Browser");
           this.clearStroageDetailWrap = 'mobile_clear_storage_detail_wrap';
         }
       },
@@ -159,7 +161,10 @@
   .mobile_clear_storage_detail_wrap{
     .clear_storage_title_wrap{
       p{
-        font-size: 0.15rem!important;
+        font-size: 0.15rem !important;
+        span{
+          font-size: 0.18rem !important;
+        }
       }
     }
     .step_num{
