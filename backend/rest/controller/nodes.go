@@ -14,6 +14,8 @@ func RegisterNodes(r *mux.Router) error {
 	apis := []func(*mux.Router) error{
 		RegisterQueryNodes,
 		RegisterQueryNodeLocation,
+		RegisterQueryFaucet,
+		RegisterApply,
 	}
 
 	for _, fn := range apis {
@@ -24,7 +26,6 @@ func RegisterNodes(r *mux.Router) error {
 	return nil
 }
 
-// TODO
 func RegisterQueryNodes(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryNodes, "GET", func(request *http.Request) interface{} {
 		bz := utils.GetNodes()
@@ -45,7 +46,7 @@ func RegisterQueryNodeLocation(r *mux.Router) error {
 			url := fmt.Sprintf(types.UrlNodeLocation, ip)
 			resp, err := http.Get(url)
 			if err != nil {
-				panic(types.ErrorCodeExtSysFailed)
+				panic(types.CodeExtSysFailed)
 				return nil
 			}
 			body, _ := ioutil.ReadAll(resp.Body)
@@ -54,5 +55,19 @@ func RegisterQueryNodeLocation(r *mux.Router) error {
 		return ipMap
 	})
 
+	return nil
+}
+
+func RegisterQueryFaucet(r *mux.Router) error {
+	doApi(r, types.UrlRegisterQueryFaucet, "GET", func(request *http.Request) interface{} {
+		return utils.GetFaucetAccount(request)
+	})
+	return nil
+}
+
+func RegisterApply(r *mux.Router) error {
+	doApi(r, types.UrlRegisterApply, "POST", func(request *http.Request) interface{} {
+		return utils.Apply(request)
+	})
 	return nil
 }

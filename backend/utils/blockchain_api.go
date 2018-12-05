@@ -7,6 +7,7 @@ import (
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/irishub-sync/store"
 	"log"
+	"net/http"
 )
 
 type Account struct {
@@ -50,4 +51,14 @@ func GetNodes() (bz []byte) {
 		panic(err)
 	}
 	return bz
+}
+
+func GetFaucetAccount(req *http.Request) (bz []byte) {
+	uri := fmt.Sprintf(types.UrlFaucetAccountService, conf.Get().Server.HubFaucetUrl)
+	return Forward(req, uri)
+}
+
+func Apply(req *http.Request) (bz []byte) {
+	uri := fmt.Sprintf(types.UrlFaucetApplyService, conf.Get().Server.HubFaucetUrl)
+	return Forward(req, uri)
 }

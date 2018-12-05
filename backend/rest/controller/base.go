@@ -58,27 +58,40 @@ func GetPage(r *http.Request) (int, int) {
 
 func buildResponse(data ...interface{}) model.Response {
 	var resp = model.Response{
-		Code: types.ErrorCodeSuccess.Code,
+		Code: types.CodeSuccess.Code,
+		Msg:  types.CodeSuccess.Msg,
 	}
 
 	if len(data) == 2 {
 		if succ, ok := data[1].(bool); ok && !succ {
-			err := data[0].(types.Error)
+			err := data[0].(types.BizCode)
 			resp.Code = err.Code
 			resp.Msg = err.Msg
 		}
+	} else {
+		var bz []byte
+		switch data[0].(type) {
+		case []byte:
+			bz = data[0].([]byte)
+		default:
+			bz, _ = json.Marshal(resp)
+		}
+		resp.Data = bz
 	}
-	resp.Data = data[0]
 	return resp
 }
 func writeResponse(writer http.ResponseWriter, data ...interface{}) {
 	//resp := buildResponse(data)
+	var bz []byte
 	resp := data[0]
-	resultByte, err := json.Marshal(resp)
-	if err != nil {
-		logger.Error("json.Marshal failed")
+	switch resp.(type) {
+	case []byte:
+		bz = resp.([]byte)
+	default:
+		bz, _ = json.Marshal(resp)
 	}
-	writer.Write(resultByte)
+
+	writer.Write(bz)
 }
 
 // 用户处理逻辑函数
@@ -93,13 +106,13 @@ func wrap(action Action) func(writer http.ResponseWriter, request *http.Request)
 		defer func() {
 			if r := recover(); r != nil {
 				switch r.(type) {
-				case types.Error:
+				case types.BizCode:
 					writeResponse(writer, r, false)
 					break
 				case error:
 					err := r.(error)
-					e := types.Error{
-						Code: types.ErrorCodeUnKnown.Code,
+					e := types.BizCode{
+						Code: types.CodeUnKnown.Code,
 						Msg:  err.Error(),
 					}
 					writeResponse(writer, e, false)

@@ -27,7 +27,7 @@ func (service *StakeService) QueryValidators(page, pageSize int) model.Candidate
 
 	err := cs.Find(query).Sort(desc(document.Candidate_Field_VotingPower)).Skip((page - 1) * pageSize).Limit(pageSize).All(&candidates)
 	if err != nil {
-		panic(types.ErrorCodeNotFound)
+		panic(types.CodeNotFound)
 	}
 
 	votePipe := cs.Pipe(
@@ -84,7 +84,7 @@ func (service *StakeService) QueryRevokedValidator(page, size int) model.Candida
 
 	err := cs.Find(query).Sort(desc(document.Candidate_Field_VotingPower)).Skip((page - 1) * size).Limit(size).All(&candidates)
 	if err != nil {
-		panic(types.ErrorCodeNotFound)
+		panic(types.CodeNotFound)
 	}
 
 	var result []model.CandidateAll
@@ -117,7 +117,7 @@ func (service *StakeService) QueryCandidates(page, size int) model.Candidates {
 	validatorsCount, _ := cs.Find(query).Count()
 	err := cs.Find(query).Sort(desc(document.Candidate_Field_VotingPower)).Skip((page - 1) * size).Limit(size).All(&candidates)
 	if err != nil {
-		panic(types.ErrorCodeNotFound)
+		panic(types.CodeNotFound)
 	}
 	var result []model.CandidateAll
 	var resp model.Candidates
@@ -152,7 +152,7 @@ func (service *StakeService) QueryCandidate(address string) model.CandidateWithP
 
 	err := c.Find(bson.M{document.Candidate_Field_Address: address}).One(&candidate)
 	if err != nil {
-		panic(types.ErrorCodeNotFound)
+		panic(types.CodeNotFound)
 	}
 
 	query := bson.M{}
@@ -191,7 +191,7 @@ func (service *StakeService) QueryCandidatesTopN() model.CandidatesTopN {
 
 	err := cs.Find(query).Sort(desc(document.Candidate_Field_VotingPower)).Limit(10).All(&candidates)
 	if err != nil {
-		panic(types.ErrorCodeNotFound)
+		panic(types.CodeNotFound)
 	}
 	votePipe := cs.Pipe(
 		[]bson.M{
@@ -241,7 +241,7 @@ func (service *StakeService) QueryCandidateUptime(address, category string) (res
 	err := c.Find(bson.M{document.Candidate_Field_Address: address}).One(&candidate)
 	address = candidate.PubKeyAddr
 	if err != nil || address == "" {
-		panic(types.ErrorCodeNotFound)
+		panic(types.CodeNotFound)
 	}
 
 	switch category {
@@ -329,7 +329,7 @@ func (service *StakeService) QueryCandidatePower(address, category string) (resu
 	err := c.Find(bson.M{document.Candidate_Field_Address: address}).One(&candidate)
 	address = candidate.PubKeyAddr
 	if err != nil || address == "" {
-		panic(types.ErrorCodeNotFound)
+		panic(types.CodeNotFound)
 	}
 	var powers []model.PowerChange
 	var agoStr string
@@ -371,7 +371,7 @@ func (service *StakeService) QueryCandidateStatus(address string) (resp model.Ca
 	var candidate document.Candidate
 	err := cs.Find(bson.M{document.Candidate_Field_Address: address}).One(&candidate)
 	if err != nil {
-		panic(types.ErrorCodeNotFound)
+		panic(types.CodeNotFound)
 	}
 
 	var upTime int

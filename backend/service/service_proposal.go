@@ -47,7 +47,7 @@ func (service *ProposalService) Query(id int) (resp model.ProposalInfo) {
 	txStore := db.C(document.CollectionNmCommonTx)
 
 	if err := propoStore.Find(bson.M{document.Proposal_Field_ProposalId: id}).One(&data); err != nil {
-		panic(types.ErrorCodeNotFound)
+		panic(types.CodeNotFound)
 		return
 	}
 
