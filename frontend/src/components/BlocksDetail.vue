@@ -240,6 +240,7 @@
         }).then((data) => {
           that.showLoading = false;
           that.showNoData = false;
+          that.count = data.Count;
           if(data.Data && data.Data !== null){
             that.items = Tools.commonTxListItem(data.Data,txTabName)
           }else {

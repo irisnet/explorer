@@ -203,7 +203,8 @@
     },
     watch:{
       $route(){
-        this.getTransactionInfo()
+        this.getTransactionInfo();
+        Tools.scrollToTop();
       }
     },
     beforeMount() {
