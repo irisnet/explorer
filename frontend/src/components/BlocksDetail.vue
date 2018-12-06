@@ -95,7 +95,7 @@
       currentPage(currentPage) {
         this.currentPage = currentPage;
         new Promise((resolve)=>{
-          this.getDataList(this.currentTabIndex,this.currentTxTabName,currentPage, this.pageSize);
+          this.tabTxList(this.currentTabIndex,this.currentTxTabName,currentPage, this.pageSize);
           resolve();
         }).then(()=>{
           Tools.scrollToTop()
@@ -140,6 +140,8 @@
         ProposalsTransactionsNum: 0,
         txTabName:"Transfers",
         tabTxListIndex:0,
+        currentTabIndex:"",
+        currentTxTabName:"",
         count: 0,
         showLoading:false,
         currentPage: 1,
@@ -216,6 +218,8 @@
       },
       tabTxList(index,txTabName,currentPage,pageSize){
         this.currentPage = currentPage;
+        this.currentTabIndex = index;
+        this.currentTxTabName = txTabName;
         this.showLoading = true;
         for (let txTabIndex = 0; txTabIndex < this.txTab.length; txTabIndex++){
           this.txTab[txTabIndex].active = false;
