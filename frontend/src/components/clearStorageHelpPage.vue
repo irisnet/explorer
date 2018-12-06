@@ -153,6 +153,11 @@
           this.clearStroageDetailWrap = 'mobile_clear_storage_detail_wrap';
         }
       },
+      watch:{
+          $route(){
+            Tools.scrollToTop();
+          }
+      }
     }
 </script>
 
