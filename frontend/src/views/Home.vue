@@ -35,10 +35,10 @@
       </div>
       <div :class="module_item_wrap">
         <div class="home_module_item fixed_item_height">
-          <home-block-module :title="'Blocks'" :information="blocksInformation"></home-block-module>
+          <home-block-module :moduleName="'Blocks'" :information="blocksInformation"></home-block-module>
         </div>
         <div class="home_module_item fixed_item_height">
-          <home-block-module :title="'Transactions'" :information="transactionInformation"></home-block-module>
+          <home-block-module :moduleName="'Transactions'" :information="transactionInformation"></home-block-module>
         </div>
       </div>
     </div>
@@ -131,23 +131,20 @@
             return data.data;
           }
         }).then((data) => {
-          if(data.code === "0"){
-            let num = data.data.TxCount;
-            if(data.data && typeof data.data === "object") {
-              if(data.data.TxCount > 1000000000){
-                num = `${(data.data.TxCount/1000000000).toFixed(2)} B`;
-              }else if(data.data.TxCount > 1000000){
-                num = `${(data.data.TxCount/1000000).toFixed(2)} M`;
-              }else if(data.data.TxCount > 1000){
-                num = `${(data.data.TxCount/1000).toFixed(2)} K`;
-              }
-              this.marketCapValue = '--';
-              this.priceValue = '--';
-              this.transactionValue = `${num}(${data.data.Tps.toFixed(2)} TPS)`;
-            }
-          }else {
-            console.log(data.msg)
+          let num = data.TxCount;
+          if(data && typeof data === "object") {
+          if(data.TxCount > 1000000000){
+            num = `${(data.TxCount/1000000000).toFixed(2)} B`;
+          }else if(data.TxCount > 1000000){
+            num = `${(data.TxCount/1000000).toFixed(2)} M`;
+          }else if(data.TxCount > 1000){
+            num = `${(data.TxCount/1000).toFixed(2)} K`;
           }
+          this.marketCapValue = '--';
+          this.priceValue = '--';
+          this.transactionValue = `${num}(${data.Tps.toFixed(2)} TPS)`;
+
+        }
         }).catch(e => {
           console.log(e)
         })
@@ -159,278 +156,43 @@
             return data.data;
           }
         }).then((data) => {
-          if(data.code === "0"){
-            let colors = ['#3498db', '#47a2df', '#59ade3', '#6cb7e7', '#7fc2eb', '#91ccef', '#a4d7f3', '#b7e1f7', '#c9ecfb', '#dcf6ff', '#D7DAE1',];
-            //跟series的name匹配
-            let [seriesData, legendData] = [[], []];
-            if (data.data.Candidates instanceof Array) {
-              //计算前十的voting power总数；
-              let totalCount = 0;
-              data.data.Candidates = [
-                {
-                  Address: "faa1xk48e23p27cksuksj252y0cg6jz86nscdvr6yw",
-                  BondHeight: 0,
-                  DelegatorShares: 1.315272721e+21,
-                  Description:{
-                    Details: "",
-                    Identity: "",
-                    Moniker: "node4",
-                    Website: "",
-                  },
-                  OriginalTokens: "1315272721000000000100",
-                  PrecommitCount: 0,
-                  PubKey: "fvp1zcjduepqw5ky5y9mfzutumakeywsq8e5a6cdds5dqesdcjun4cshnfexsm4qag986c",
-                  PubKeyAddr: "C669D4760DE683DD8A880BFC5A5ED1B4DF7A3C86",
-                  Revoked: false,
-                  Status: "Bonded",
-                  Tokens: 1.315272721e+21,
-                  TotalBlock: 100,
-                  Uptime: 100,
-                  VotingPower: 1.315272721e+21
-                },
-                {
-                  Address: "faa1xk48e23p27cksuksj252y0cg6jz86nscdvr6yw",
-                  BondHeight: 0,
-                  DelegatorShares: 1.315272721e+21,
-                  Description:{
-                    Details: "",
-                    Identity: "",
-                    Moniker: "node4",
-                    Website: "",
-                  },
-                  OriginalTokens: "1315272721000000000100",
-                  PrecommitCount: 0,
-                  PubKey: "fvp1zcjduepqw5ky5y9mfzutumakeywsq8e5a6cdds5dqesdcjun4cshnfexsm4qag986c",
-                  PubKeyAddr: "C669D4760DE683DD8A880BFC5A5ED1B4DF7A3C86",
-                  Revoked: false,
-                  Status: "Bonded",
-                  Tokens: 1.315272721e+21,
-                  TotalBlock: 100,
-                  Uptime: 100,
-                  VotingPower: 1.315272721e+21
-                },
-                {
-                  Address: "faa1xk48e23p27cksuksj252y0cg6jz86nscdvr6yw",
-                  BondHeight: 0,
-                  DelegatorShares: 1.315272721e+21,
-                  Description:{
-                    Details: "",
-                    Identity: "",
-                    Moniker: "node4",
-                    Website: "",
-                  },
-                  OriginalTokens: "1315272721000000000100",
-                  PrecommitCount: 0,
-                  PubKey: "fvp1zcjduepqw5ky5y9mfzutumakeywsq8e5a6cdds5dqesdcjun4cshnfexsm4qag986c",
-                  PubKeyAddr: "C669D4760DE683DD8A880BFC5A5ED1B4DF7A3C86",
-                  Revoked: false,
-                  Status: "Bonded",
-                  Tokens: 1.315272721e+21,
-                  TotalBlock: 100,
-                  Uptime: 100,
-                  VotingPower: 1.315272721e+21
-                },
-                {
-                  Address: "faa1xk48e23p27cksuksj252y0cg6jz86nscdvr6yw",
-                  BondHeight: 0,
-                  DelegatorShares: 1.315272721e+21,
-                  Description:{
-                    Details: "",
-                    Identity: "",
-                    Moniker: "node4",
-                    Website: "",
-                  },
-                  OriginalTokens: "1315272721000000000100",
-                  PrecommitCount: 0,
-                  PubKey: "fvp1zcjduepqw5ky5y9mfzutumakeywsq8e5a6cdds5dqesdcjun4cshnfexsm4qag986c",
-                  PubKeyAddr: "C669D4760DE683DD8A880BFC5A5ED1B4DF7A3C86",
-                  Revoked: false,
-                  Status: "Bonded",
-                  Tokens: 1.315272721e+21,
-                  TotalBlock: 100,
-                  Uptime: 100,
-                  VotingPower: 1.315272721e+21
-                },
-                {
-                  Address: "faa1xk48e23p27cksuksj252y0cg6jz86nscdvr6yw",
-                  BondHeight: 0,
-                  DelegatorShares: 1.315272721e+21,
-                  Description:{
-                    Details: "",
-                    Identity: "",
-                    Moniker: "node4",
-                    Website: "",
-                  },
-                  OriginalTokens: "1315272721000000000100",
-                  PrecommitCount: 0,
-                  PubKey: "fvp1zcjduepqw5ky5y9mfzutumakeywsq8e5a6cdds5dqesdcjun4cshnfexsm4qag986c",
-                  PubKeyAddr: "C669D4760DE683DD8A880BFC5A5ED1B4DF7A3C86",
-                  Revoked: false,
-                  Status: "Bonded",
-                  Tokens: 1.315272721e+21,
-                  TotalBlock: 100,
-                  Uptime: 100,
-                  VotingPower: 1.315272721e+21
-                },
-                {
-                  Address: "faa1xk48e23p27cksuksj252y0cg6jz86nscdvr6yw",
-                  BondHeight: 0,
-                  DelegatorShares: 1.315272721e+21,
-                  Description:{
-                    Details: "",
-                    Identity: "",
-                    Moniker: "node4",
-                    Website: "",
-                  },
-                  OriginalTokens: "1315272721000000000100",
-                  PrecommitCount: 0,
-                  PubKey: "fvp1zcjduepqw5ky5y9mfzutumakeywsq8e5a6cdds5dqesdcjun4cshnfexsm4qag986c",
-                  PubKeyAddr: "C669D4760DE683DD8A880BFC5A5ED1B4DF7A3C86",
-                  Revoked: false,
-                  Status: "Bonded",
-                  Tokens: 1.315272721e+21,
-                  TotalBlock: 100,
-                  Uptime: 100,
-                  VotingPower: 1.315272721e+21
-                },
-                {
-                  Address: "faa1xk48e23p27cksuksj252y0cg6jz86nscdvr6yw",
-                  BondHeight: 0,
-                  DelegatorShares: 1.315272721e+21,
-                  Description:{
-                    Details: "",
-                    Identity: "",
-                    Moniker: "node4",
-                    Website: "",
-                  },
-                  OriginalTokens: "1315272721000000000100",
-                  PrecommitCount: 0,
-                  PubKey: "fvp1zcjduepqw5ky5y9mfzutumakeywsq8e5a6cdds5dqesdcjun4cshnfexsm4qag986c",
-                  PubKeyAddr: "C669D4760DE683DD8A880BFC5A5ED1B4DF7A3C86",
-                  Revoked: false,
-                  Status: "Bonded",
-                  Tokens: 1.315272721e+21,
-                  TotalBlock: 100,
-                  Uptime: 100,
-                  VotingPower: 1.315272721e+21
-                },
-                {
-                  Address: "faa1xk48e23p27cksuksj252y0cg6jz86nscdvr6yw",
-                  BondHeight: 0,
-                  DelegatorShares: 1.315272721e+21,
-                  Description:{
-                    Details: "",
-                    Identity: "",
-                    Moniker: "node4",
-                    Website: "",
-                  },
-                  OriginalTokens: "1315272721000000000100",
-                  PrecommitCount: 0,
-                  PubKey: "fvp1zcjduepqw5ky5y9mfzutumakeywsq8e5a6cdds5dqesdcjun4cshnfexsm4qag986c",
-                  PubKeyAddr: "C669D4760DE683DD8A880BFC5A5ED1B4DF7A3C86",
-                  Revoked: false,
-                  Status: "Bonded",
-                  Tokens: 1.315272721e+21,
-                  TotalBlock: 100,
-                  Uptime: 100,
-                  VotingPower: 1.315272721e+21
-                },
-                {
-                  Address: "faa1xk48e23p27cksuksj252y0cg6jz86nscdvr6yw",
-                  BondHeight: 0,
-                  DelegatorShares: 1.315272721e+21,
-                  Description:{
-                    Details: "",
-                    Identity: "",
-                    Moniker: "node4",
-                    Website: "",
-                  },
-                  OriginalTokens: "1315272721000000000100",
-                  PrecommitCount: 0,
-                  PubKey: "fvp1zcjduepqw5ky5y9mfzutumakeywsq8e5a6cdds5dqesdcjun4cshnfexsm4qag986c",
-                  PubKeyAddr: "C669D4760DE683DD8A880BFC5A5ED1B4DF7A3C86",
-                  Revoked: false,
-                  Status: "Bonded",
-                  Tokens: 1.315272721e+21,
-                  TotalBlock: 100,
-                  Uptime: 100,
-                  VotingPower: 1.315272721e+21
-                },
-                {
-                  Address: "faa1xk48e23p27cksuksj252y0cg6jz86nscdvr6yw",
-                  BondHeight: 0,
-                  DelegatorShares: 1.315272721e+21,
-                  Description:{
-                    Details: "",
-                    Identity: "",
-                    Moniker: "node4",
-                    Website: "",
-                  },
-                  OriginalTokens: "1315272721000000000100",
-                  PrecommitCount: 0,
-                  PubKey: "fvp1zcjduepqw5ky5y9mfzutumakeywsq8e5a6cdds5dqesdcjun4cshnfexsm4qag986c",
-                  PubKeyAddr: "C669D4760DE683DD8A880BFC5A5ED1B4DF7A3C86",
-                  Revoked: false,
-                  Status: "Bonded",
-                  Tokens: 1.315272721e+21,
-                  TotalBlock: 100,
-                  Uptime: 100,
-                  VotingPower: 1.315272721e+21
-                },
-                {
-                  Address: "faa1xk48e23p27cksuksj252y0cg6jz86nscdvr6yw",
-                  BondHeight: 0,
-                  DelegatorShares: 1.315272721e+21,
-                  Description:{
-                    Details: "",
-                    Identity: "",
-                    Moniker: "node4",
-                    Website: "",
-                  },
-                  OriginalTokens: "1315272721000000000100",
-                  PrecommitCount: 0,
-                  PubKey: "fvp1zcjduepqw5ky5y9mfzutumakeywsq8e5a6cdds5dqesdcjun4cshnfexsm4qag986c",
-                  PubKeyAddr: "C669D4760DE683DD8A880BFC5A5ED1B4DF7A3C86",
-                  Revoked: false,
-                  Status: "Bonded",
-                  Tokens: 1.315272721e+21,
-                  TotalBlock: 100,
-                  Uptime: 100,
-                  VotingPower: 1.315272721e+21
-                },
-              ]
-              data.data.Candidates.forEach(item=>totalCount += item.VotingPower);
-              //其他部分的
-              let others = data.data.PowerAll - totalCount;
-              let monikerReserveLength = 10;
-              let addressReserveLength = 6;
-              let powerAll = data.data.PowerAll;
-              for (let i = 0; i < data.data.Candidates.length; i++) {
-                seriesData.push({
-                  value: data.data.Candidates[i].VotingPower,
-                  name: data.data.Candidates[i].Description.Moniker ? `${Tools.formatString(data.data.Candidates[i].Description.Moniker,monikerReserveLength,"...")} (${Tools.formatString(data.data.Candidates[i].Address,addressReserveLength,"...")})` : (data.data.Candidates[i].Address ? data.data.Candidates[i].Address : ''),
-                  itemStyle: {color: colors[i]},
-                  upTime:`${data.data.Candidates[i].Uptime}%`,
-                  address:data.data.Candidates[i].Address,
-                  powerAll,
-                });
-                legendData.push(data.data.Candidates[i].Description.Moniker ? `${Tools.formatString(data.data.Candidates[i].Description.Moniker,monikerReserveLength,"...")} (${Tools.formatString(data.data.Candidates[i].Address,addressReserveLength,"...")})` : (data.data.Candidates[i].Address ? data.data.Candidates[i].Address : ''))
-              }
-
-              if(others > 0 ){
-                seriesData.push({
-                  value: others,
-                  name:'others',
-                  powerAll,
-                  itemStyle:{color:colors[10]},
-                });
-              }
-
+          let colors = ['#3498db', '#47a2df', '#59ade3', '#6cb7e7', '#7fc2eb', '#91ccef', '#a4d7f3', '#b7e1f7', '#c9ecfb', '#dcf6ff', '#DADDE3',];
+          //跟series的name匹配
+          let [seriesData, legendData] = [[], []];
+          if (data.Candidates instanceof Array) {
+            //计算前十的voting power总数；
+            let totalCount = 0;
+            data.Candidates.forEach(item=>totalCount += item.VotingPower);
+            //其他部分的
+            let others = data.PowerAll - totalCount;
+            let monikerReserveLength = 10;
+            let addressReserveLength = 6;
+            let powerAll = data.PowerAll;
+            for (let i = 0; i < data.Candidates.length; i++) {
+              seriesData.push({
+                value: data.Candidates[i].VotingPower,
+                name: data.Candidates[i].Description.Moniker ? `${Tools.formatString(data.Candidates[i].Description.Moniker,monikerReserveLength,"...")} (${Tools.formatString(data.Candidates[i].Address,addressReserveLength,"...")})` : (data.Candidates[i].Address ? data.Candidates[i].Address : ''),
+                itemStyle: {color: colors[i]},
+                emphasis : {itemStyle:{color: colors[i]}},
+                upTime:`${data.Candidates[i].Uptime}%`,
+                address:data.Candidates[i].Address,
+                powerAll,
+              });
+              legendData.push(data.Candidates[i].Description.Moniker ? `${Tools.formatString(data.Candidates[i].Description.Moniker,monikerReserveLength,"...")} (${Tools.formatString(data.Candidates[i].Address,addressReserveLength,"...")})` : (data.Candidates[i].Address ? data.Candidates[i].Address : ''))
             }
-            this.information = {legendData, seriesData}
-          }else {
-            console.log(data.msg)
+
+            if(others > 0 ){
+              seriesData.push({
+                value: others,
+                name:'others',
+                powerAll,
+                itemStyle:{color:colors[10]},
+              });
+            }
+
           }
+          this.information = {legendData, seriesData}
+
         }).catch(e => {
           console.log(e)
         })
@@ -442,23 +204,18 @@
             return data.data;
           }
         }).then((data) => {
-          if(data.code === "0"){
-            //找出最大的数据
-            let maxValue = 0;
-            if(data.data){
-              data.data.forEach(item=>{
-                if(item.Count > maxValue){
-                  maxValue = item.Count;
-                }
-              });
-              let xData = data.data.map(item=>`${String(item.Time).substr(5,2)}/${String(item.Time).substr(8,2)}/${String(item.Time).substr(0,4)}`);
-              let seriesData = data.data.map(item=>item.Count);
-              this.informationLine = {maxValue,xData,seriesData};
-            }
-          }else {
-            console.log(data.msg)
+          //找出最大的数据
+          let maxValue = 0;
+          if(data){
+            data.forEach(item=>{
+              if(item.Count > maxValue){
+                maxValue = item.Count;
+              }
+            });
+            let xData = data.map(item=>`${String(item.Time).substr(5,2)}/${String(item.Time).substr(8,2)}/${String(item.Time).substr(0,4)}`);
+            let seriesData = data.map(item=>item.Count);
+            this.informationLine = {maxValue,xData,seriesData};
           }
-
         }).catch(e => {
           console.log(e)
         })
@@ -471,33 +228,29 @@
             return data.data;
           }
         }).then((data) => {
-          if(data.code === "0"){
-            if(data.data.Data){
-              let denominator = 0;
-              data.data.Data[0].Validators.forEach(item=>denominator += item.VotingPower);
-              let numerator = 0;
-              for(let i = 0; i < data.data.Data[0].Block.LastCommit.Precommits.length; i++){
-                for (let j = 0; j < data.data.Data[0].Validators.length; j++){
-                  if(data.data.Data[0].Block.LastCommit.Precommits[i].ValidatorAddress === data.data.Data[0].Validators[j].Address){
-                    numerator += data.data.Data[0].Validators[j].VotingPower;
-                    break;
-                  }
+          if(data.Data){
+            let denominator = 0;
+            data.Data[0].Validators.forEach(item=>denominator += item.VotingPower);
+            let numerator = 0;
+            for(let i = 0; i < data.Data[0].Block.LastCommit.Precommits.length; i++){
+              for (let j = 0; j < data.Data[0].Validators.length; j++){
+                if(data.Data[0].Block.LastCommit.Precommits[i].ValidatorAddress === data.Data[0].Validators[j].Address){
+                  numerator += data.Data[0].Validators[j].VotingPower;
+                  break;
                 }
               }
-              this.votingPowerValue = denominator !== 0? `${(numerator/denominator).toFixed(2)*100}%`:'';
-              this.validatorsValue = `${data.data.Data[0].Block.LastCommit.Precommits.length} voting / ${data.data.Data[0].Validators.length} total`;
-              this.blocksInformation = data.data.Data.map(item => {
-                return {
-                  Height: item.Height,
-                  Proposer: item.Hash,
-                  Txn: item.NumTxs,
-                  Time: Tools.conversionTimeToUTCToYYMMDD(item.Time),
-                  Fee: '0 IRIS',
-                }
-              })
             }
-          }else {
-            console.log(data.msg)
+            this.votingPowerValue = denominator !== 0? `${(numerator/denominator).toFixed(2)*100}%`:'';
+            this.validatorsValue = `${data.Data[0].Block.LastCommit.Precommits.length} voting / ${data.Data[0].Validators.length} total`;
+            this.blocksInformation = data.Data.map(item => {
+              return {
+                Height: item.Height,
+                Proposer: item.Hash,
+                Txn: item.NumTxs,
+                Time: Tools.conversionTimeToUTC(item.Time),
+                Fee: '0 IRIS',
+              }
+            })
           }
         }).catch(e => {
           console.log(e)
@@ -513,44 +266,44 @@
             return data.data;
           }
         }).then((data) => {
-          if(data.code === "0"){
-            if(data.data.Data){
-              this.transactionInformation = data.data.Data.map(item => {
-                let [Amount, Fee] = ['--', '--'];
-                if (item.Amount instanceof Array) {
-                  if(item.Amount.length > 0){
-                    item.Amount[0].amount = Tools.formatAmount(item.Amount[0].amount);
-                  }
-                  if(Tools.flTxType(item.Type)){
-                    Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
-                  }else {
-                    Amount = item.Amount.map(listItem => `${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
-                  }
-                } else if (item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')) {
-                  Amount = `${item.Amount.amount} ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
-                  if(Tools.flTxType(item.Type)){
-                    Amount = `${item.Amount.amount} SHARES`;
-                  }
-                } else if (item.Amount === null) {
-                  Amount = '';
-                }
-                if(item.ActualFee.amount && item.ActualFee.denom){
-                  Fee =  `${Tools.formatFeeToFixedNumber(item.ActualFee.amount)} ${Tools.formatDenom(item.ActualFee.denom).toUpperCase()}`;
-                }
-                return {
-                  TxHash: item.TxHash,
-                  From: item.From,
-                  To: item.To,
-                  Type: item.Type === 'coin'?'transfer':item.Type,
-                  Fee,
-                  Amount,
-                  Time: Tools.conversionTimeToUTCToYYMMDD(item.Time),
-                };
-              })
-            }
-          }else {
-            console.log(data.msg)
+          if(data.TransCnt){
+
           }
+          if(data.Data){
+            this.transactionInformation = data.Data.map(item => {
+              let [Amount, Fee] = ['--', '--'];
+              if (item.Amount instanceof Array) {
+                if(item.Amount.length > 0){
+                  item.Amount[0].amount = Tools.formatAmount(item.Amount[0].amount);
+                }
+                if(Tools.flTxType(item.Type)){
+                  Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
+                }else {
+                  Amount = item.Amount.map(listItem => `${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
+                }
+              } else if (item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')) {
+                Amount = `${item.Amount.amount} ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
+                if(Tools.flTxType(item.Type)){
+                  Amount = `${item.Amount.amount} SHARES`;
+                }
+              } else if (item.Amount === null) {
+                Amount = '';
+              }
+              if(item.ActualFee.amount && item.ActualFee.denom){
+                Fee =  `${Tools.formatFeeToFixedNumber(item.ActualFee.amount)} ${Tools.formatDenom(item.ActualFee.denom).toUpperCase()}`;
+              }
+              return {
+                TxHash: item.TxHash,
+                From: item.From,
+                To: item.To,
+                Type: item.Type === 'coin'?'transfer':item.Type,
+                Fee,
+                Amount,
+                Time: Tools.conversionTimeToUTC(item.Time),
+              };
+            })
+          }
+
         }).catch(e => {
           console.log(e)
         })
@@ -598,6 +351,7 @@
     }
 
     .personal_computer_home_wrap {
+      width: 100%!important;
       @include pcCenter;
       .information_preview {
         .information_preview_module {

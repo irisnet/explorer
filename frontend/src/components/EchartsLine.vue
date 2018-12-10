@@ -94,7 +94,7 @@
                   )
                 }
               },
-              smooth:false,
+              smooth:false,//曲线平滑
               itemStyle:{
                 normal:{
                   color:'#3598db',

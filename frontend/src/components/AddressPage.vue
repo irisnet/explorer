@@ -7,7 +7,7 @@
           {{address}}
           <i v-if="showProfile" :style="{background:validatorsStatusColor}">v</i>
             <span v-show="flShowValidatorCandidate && showProfile" class="candidate_validator">(This Validator is a Candidate)</span>
-            <span v-show="flShowValidatorRevoked && showProfile" class="revoked_validator">(This Validator is revoked!)</span>
+            <span v-show="flShowValidatorJailed && showProfile" class="jailed_validator">(This Validator is jailed!)</span>
         </span>
       </p>
     </div>
@@ -22,6 +22,10 @@
         <div class="information_props_wrap">
           <span class="information_props">Deposits :</span>
           <span class="information_value information_show_trim">{{depositsValue?depositsValue:'--'}}</span>
+        </div>
+        <div class="information_props_wrap">
+          <span class="information_props">Withdraw Address :</span>
+          <span class="information_value information_show_trim">{{withdrawAddress}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Transactions :</span>
@@ -39,6 +43,10 @@
         <div class="information_props_wrap">
           <span class="information_props">Pub Key :</span>
           <span class="information_value">{{pubKeyValue?pubKeyValue:'--'}}</span>
+        </div>
+        <div class="information_props_wrap">
+          <span class="information_props">Owner :</span>
+          <span class="information_value operator_value" @click="skipRoute(`/address/1/${operatorValue}`)">{{operatorValue ? operatorValue : '--'}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Website :</span>
@@ -154,7 +162,6 @@
   import EchartsValidatorsLine from "./EchartsValidatorsLine";
   import EchartsValidatorsUptimeLine from "./EchartsValidatorsUpTimeLine";
   import SpinComponent from './commonComponents/SpinComponent';
-
   export default {
       watch:{
           currentPage(currentPage) {
@@ -168,7 +175,7 @@
 
           },
           $route(){
-              document.body.scrollTop = 0;
+              Tools.scrollToTop();
               this.type = this.$route.params.type;
               this.tabTxList(this.tabTxListIndex,this.txTabName,this.currentPage,this.pageSize);
               this.getAddressTxStatistics();
@@ -208,6 +215,7 @@
               uptimeValue:'',
               precommitedBlocksValue:'',
               returnsValue:'',
+              operatorValue:'',
               items:[],
               itemsPre:[],
               type:this.$route.params.type,
@@ -228,7 +236,8 @@
               currentTabIndex:"",
               currentTxTabName:"",
               identity: "",
-              flShowValidatorRevoked: false,
+              withdrawAddress:"",
+              flShowValidatorJailed: false,
               flShowValidatorCandidate: false,
               flShowUptime: true,
               validatorsStatusColor:"#3598db",
@@ -300,7 +309,7 @@
       }
     },
     mounted() {
-      document.body.scrollTop = 0;
+      Tools.scrollToTop();
       this.tabTxList(this.tabTxListIndex,this.txTabName,this.currentPage,this.pageSize);
       this.getAddressInformation(this.$route.params.param);
       this.getTransactionsList(1,10,this.$route.params.type);
@@ -325,7 +334,7 @@
             this.txTab[3].txTotal = data.GovCnt;
           }
         }).catch((e) => {
-          console.log(e)
+          console.error(e)
         })
       },
       tabTxList(index,txTabName,currentPage,pageSize){
@@ -354,127 +363,14 @@
             return data.data;
           }
         }).then((data) => {
-          this.showLoading = false;
-          this.showNoData = false;
-          this.count = data.Count;
-          if(data.Data){
-            that.items = data.Data.map(item => {
-              let [Amount,Fee] = ['--','--'];
-              if(txTabName === 'Transfers' || txTabName === 'Stakes' || txTabName === 'Governance' || txTabName === 'Declarations'){
-                if(item.Amount){
-                  if(item.Amount instanceof Array){
-                    if(item.Amount.length > 0){
-                      item.Amount[0].amount = Tools.formatAmount(item.Amount[0].amount);
-                      if(Tools.flTxType(item.Type)){
-                        Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
-                      }else {
-                        Amount = item.Amount.map(listItem=> `${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`);
-                      }
-                    }
-                  }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
-                    item.Amount.amount = Tools.formatAmount(item.Amount.amount);
-                    Amount = `${item.Amount.amount} ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
-                    if(Tools.flTxType(item.Type)){
-                      Amount = `${item.Amount.amount} SHARES`;
-                    }
-                  }
-                }
-                if(item.Fee.amount && item.Fee.denom){
-                  Fee = item.Fee.amount = `${Tools.formatFeeToFixedNumber(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`;
-                }
-              }
-              let objList;
-              if(txTabName === 'Transfers'){
-                objList = {
-                  TxHash: item.Hash,
-                  Block:item.BlockHeight,
-                  From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
-                  To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
-                  Amount,
-                  Fee,
-                  Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
-                }
-              }else if(txTabName === 'Stakes'){
-                objList = {
-                  TxHash: item.Hash,
-                  Block:item.BlockHeight,
-                  From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
-                  To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
-                  Type:item.Type === 'coin'?'transfer':item.Type,
-                  Amount,
-                  Fee,
-                  Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
-                };
-              }else if(txTabName === 'Declarations'){
-                objList = {
-                  TxHash: item.Hash,
-                  Block:item.BlockHeight,
-                  Owner:item.Owner,
-                  Moniker: item.Moniker,
-                  'Self-Bond': item.SelfBond && item.SelfBond.length > 0 ? Tools.formatAmount(item.SelfBond[0].amount) + Tools.formatDenom(item.SelfBond[0].denom).toUpperCase() : "--",
-                  Type: item.Type,
-                  Fee,
-                  Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
-                };
-              }else if(txTabName === 'Governance'){
-                objList = {
-                  TxHash: item.Hash,
-                  Block:item.BlockHeight,
-                  From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
-                  "Proposal_ID": item.ProposalId === 0 ? "--" : item.ProposalId,
-                  Type:item.Type === 'coin'?'transfer':item.Type,
-                  Fee,
-                  Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
-                };
-              }
-              return objList
-            })
-
+          that.showLoading = false;
+          that.showNoData = false;
+          that.count = data.Count;
+          if(data.Data && data.Data !== null){
+            that.items = Tools.commonTxListItem(data.Data,txTabName)
           }else {
-            this.showNoData = true;
-              if(txTabName === 'Transfers'){
-                this.items = [{
-                  'Tx Hash': "",
-                  Block: "",
-                  From: "",
-                  To: "",
-                  Amount: "",
-                  Fee: "",
-                  Timestamp: "",
-                }]
-              }else if(txTabName === 'Stakes'){
-                 this.items = [{
-                   'Tx Hash': "",
-                   Block: "",
-                   From: "",
-                   To: "",
-                   Type: "",
-                   Amount: "",
-                   Fee: "",
-                   Timestamp: "",
-                 }]
-              }else if(txTabName === 'Declarations'){
-                this.items = [{
-                  'Tx Hash': "",
-                  Block: "",
-                  Owner: "",
-                  Moniker: "",
-                  'Self-Bond': "",
-                  Type: "",
-                  Fee: "",
-                  Timestamp: "",
-                }]
-              }else if(txTabName === 'Governance'){
-                this.items = [{
-                  'Tx Hash': "",
-                  Block: "",
-                  From: "",
-                  'Proposal_ID': "",
-                  Type: "",
-                  Fee: "",
-                  Timestamp: "",
-                }]
-              }
+            that.items = Tools.commonTxListItem(null,txTabName);
+            that.showNoData = true;
           }
         })
       },
@@ -499,12 +395,15 @@
               }
             }
           }
-
+          this.withdrawAddress = validatorAddressInformation.WithdrawAddress ? validatorAddressInformation.WithdrawAddress : '--';
           this.balanceValue = Amount;
 
         }).catch(e =>{
-          console.log(e)
+          console.error(e)
         })
+      },
+      skipRoute(path){
+        this.$router.push(path)
       },
       getProfileInformation(){
         let url = `/api/stake/candidate/${this.$route.params.param}`;
@@ -514,20 +413,20 @@
           }
         }).then((validators)=>{
           if(validators && typeof validators === "object"){
-            if(validators.Revoked === true){
+            if(validators.Jailed === true){
               this.flShowUptime = false;
-              this.flShowValidatorRevoked = true;
+              this.flShowValidatorJailed = true;
               this.validatorsStatusColor = "#f00";
-              this.votingPowerValue = Tools.formatNumber(validators.VotingPower);
+              this.votingPowerValue = Tools.formatStringToNumber(validators.OriginalTokens);
             }else{
               if(validators.Status === 'Unbonded' || validators.Status === 'Unbonding' ){
                 this.flShowValidatorCandidate = true;
                 this.validatorsStatusColor = "#45B035";
                 this.flShowUptime = false;
-                this.votingPowerValue =Tools.formatNumber(validators.VotingPower);
+                this.votingPowerValue = Tools.formatStringToNumber(validators.OriginalTokens);
               }else if(validators.Status === "Bonded"){
                 this.bondHeightValue = validators.BondHeight;
-                this.votingPowerValue = validators.VotingPower ? `${Tools.formatNumber(validators.VotingPower)} (${(validators.VotingPower/validators.PowerAll*100).toFixed(2)}%)` : "--";
+                this.votingPowerValue = validators.OriginalTokens ? `${Tools.formatStringToNumber(validators.OriginalTokens)} (${(validators.OriginalTokens/validators.PowerAll*100).toFixed(2)}%)` : "--";
               }
             }
             this.identity = validators.Description.Identity ? validators.Description.Identity : "--";
@@ -537,13 +436,14 @@
             this.descriptionValue= validators.Description.Details ? validators.Description.Details : "--";
             this.commissionRateValue = '';
             this.announcementValue = '';
+            this.operatorValue = this.$Codec.Bech32.toBech32(this.$Crypto.Constants.IRIS.IrisNetConfig.PREFIX_BECH32_ACCADDR,this.$Codec.Bech32.fromBech32(validators.Address));
             this.showProfile = true;
           }else{
             this.showProfile = false;
           }
 
-        }).catch(e => {
-          console.log(e)
+        }).catch(err => {
+          console.error(err)
         })
       },
       getCurrentTenureInformation(){
@@ -559,8 +459,8 @@
             this.firstPercent = data.Uptime ? `${data.Uptime}%` : "--";
           }
 
-        }).catch(e => {
-          console.log(e)
+        }).catch(err => {
+          console.error(err)
         })
       },
       getTransactionsList(){
@@ -576,7 +476,7 @@
 
           this.TransactionsShowNoData = true;
         }).catch(e => {
-          console.log(e)
+          console.error(e)
         })
       },
       getValidatorHistory(tabTime,index){
@@ -805,7 +705,7 @@
           }
 
         }).catch(e => {
-          console.log(e)
+          console.error(e)
         })
       },
     }
@@ -856,11 +756,16 @@
         .information_props_wrap{
           @include flex;
           .information_props{
-            width:1.5rem;
+            min-width:1.5rem;
             font-size:0.14rem;
             color:#000000;
           }
+          .operator_value{
+            cursor: pointer;
+            color: #3598db !important;
+          }
           .information_value{
+            word-break: break-all;
             color: #a2a2ae;
             font-size:0.14rem;
             /*flex:1;*/
@@ -919,6 +824,7 @@
             -webkit-overflow-scrolling:touch;
             color: #a2a2ae;
           }
+
           .information_props{
             font-size:0.14rem;
             color:#000000;
@@ -967,7 +873,7 @@
       }
     }
     .personal_computer_transactions_detail_wrap{
-      width:80%;
+      width:100%!important;
       .current_tenure_wrap{
         @include flex;
         flex-direction:row;
@@ -1260,7 +1166,7 @@
     @include fontSize;
     padding-left: 0.09rem;
   }
-  .revoked_validator{
+  .jailed_validator{
     width: 2rem;
     color: #f00;
     white-space: nowrap;
@@ -1270,7 +1176,7 @@
   .candidate_color{
     background: #45B035!important;
   }
-  .revoked_color{
+  .jailed_color{
     background: #f00!important;
   }
 .personal_computer_transactions_detail_wrap{

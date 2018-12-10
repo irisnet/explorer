@@ -46,7 +46,7 @@
           this.getDataList(currentPage, 30);
           resolve();
         }).then(()=>{
-          document.getElementById('router_wrap').scrollTop = 0;
+          Tools.scrollToTop()
         })
 
       },
@@ -112,36 +112,27 @@
             return data.data
           }
         }).then((data)=>{
-          if(data.code === "0"){
-            if(data.data.Data && typeof data.data === "object"){
-              this.showNoData = false;
-              this.count = data.data.Count;
-              this.items = data.data.Data.map(item =>{
-                let proposalId = item.proposal_id === 0 ? "--" : item.proposal_id;
-                let type = item.type;
-                let status  = item.status;
-                let submitBlock = item.submit_block;
-                let submitTime = Tools.conversionTimeToUTCToYYMMDD(item.submit_time);
-                let votingStartBlock = item.voting_start_block ? item.voting_start_block : "" ;
-                let title = Tools.formatString(item.title,20,"...");
-                return {
-                  Title : title,
-                  'Proposal ID' : proposalId,
-                  Type : type,
-                  Status : status,
-                  'Submit Block' : submitBlock,
-                  'Submit Time' : submitTime,
-                  'Voting Start Block' : votingStartBlock,
-                }
-              })
-            }else {
-              this.items = [{Title:"",'Proposal ID':"",Type:"",Status:"",'Submit Block':"",'Submit Time':'','Voting Start Block':''}];
-              this.showNoData = true;
-            }
+          if(data.Data && typeof data === "object"){
+            this.showNoData = false;
+            this.count = data.Count;
+            this.items = data.Data.map(item =>{
+              let proposalId = item.proposal_id === 0 ? "--" : item.proposal_id;
+              let type = item.type;
+              let status  = item.status;
+              let submitTime = item.submit_time;
+              let title = Tools.formatString(item.title,20,"...");
+              return {
+                Title : title,
+                'Proposal ID' : proposalId,
+                Type : type,
+                Status : status,
+                'Submit Time' : submitTime,
+              }
+            })
           }else {
-            console.log(data.msg)
+            this.items = [{"Title":"","Proposal ID":"","Type":"","Status":"","Submit Time":"",}];
+            this.showNoData = true;
           }
-
           this.showLoading = false;
         }).catch(e => {
           console.log(e)
@@ -226,6 +217,7 @@
   }
   .personal_computer_proposals_list_page_wrap {
     padding-bottom: 0.2rem;
+    width: 100%!important;
     .transaction_information_content_title {
       height: 0.4rem;
       line-height: 0.4rem;

@@ -6,13 +6,16 @@ import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import axios from "axios"
+const  codec  = require("irisnet-crypto/util/codec.js") ;
 const  crypto = require("irisnet-crypto");
+
 Vue.use(BootstrapVue);
 Vue.prototype.$Crypto = crypto;
+Vue.prototype.$Codec = codec;
 Vue.config.productionTip = false;
 let faucet_url;
 let fuxi;
-axios.defaults.timeout = 3000;
+axios.defaults.timeout = 5000;
 axios.interceptors.request.use(function (config) {
   return config;
 }, function (error) {

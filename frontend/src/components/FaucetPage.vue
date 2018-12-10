@@ -2,7 +2,7 @@
   <div type="light" class='facet_wrap' :style="showTitle?'':'padding-top:0.38rem;'">
     <h3 class='faucet_title' :style="`width:${innerWidth/100}rem;`" v-show="showTitle">
       <p class="title" :style="innerWidth<=500?'width:100%;padding-left:0.1rem;':''">
-        Faucet
+        <span>Faucet</span>
       </p>
   </h3>
     <div class="faucet text-center" :style="innerWidth<=500?'padding-top:0;':''">
@@ -369,13 +369,15 @@
       justify-content:center;
       border-bottom:1px solid #d6d9e0;
       .title{
-        width:80%;
-        padding-left: 0.28rem!important;
+        width:100%;
         max-width: 12.8rem;
-        font-size:0.18rem;
+        font-size:0.24rem;
         color:#000000;
         height:0.62rem;
         line-height:0.62rem;
+        span{
+          margin-left: 0.2rem;
+        }
       }
     }
 
