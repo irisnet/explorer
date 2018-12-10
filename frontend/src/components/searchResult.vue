@@ -86,26 +86,30 @@
       },
       watch:{
         $route(){
-          if(!this.$route.path === "/searchResult/"){
-            this.flshowTitle = false
+          if(this.$route.path === "/searchResult/"){
+            this.flshowTitle = false;
           }else {
             this.flshowTitle = true;
           }
           if(/^\+?[1-9][0-9]*$/.test(this.$route.params.searchContent)){
             this.flshowResult = false;
             this.searchResult(this.$route.params.searchContent)
+          }else {
+            this.flshowResult = true;
           }
         }
       },
       mounted(){
         if(this.$route.path === "/searchResult/"){
-          this.flshowTitle = false
+          this.flshowTitle = false;
         }else {
           this.flshowTitle = true
         }
         if(/^\+?[1-9][0-9]*$/.test(this.$route.params.searchContent)){
           this.flshowResult = false;
           this.searchResult(this.$route.params.searchContent)
+        }else {
+          this.flshowResult = true;
         }
       },
       methods:{
@@ -131,14 +135,14 @@
                 searchResult.forEach((item) => {
                   if(item.Type == "block"){
                     that.blockHeight = item.Data.Height;
-                    that.blockTime = Tools.conversionTimeToUTCToYYMMDD(item.Data.Timestamp);
+                    that.blockTime = Tools.conversionTimeToUTC(item.Data.Timestamp);
                     that.blockHash = item.Data.Hash;
                   }else if(item.Type == "proposal"){
                     that.proposalId = item.Data.ProposalId;
                     that.proposalTitle = item.Data.Title;
                     that.proposalType = item.Data.Type;
                     that.proposalStatus = item.Data.Status;
-                    that.proposalTime = Tools.conversionTimeToUTCToYYMMDD(item.Data.SubmitTime)
+                    that.proposalTime = Tools.conversionTimeToUTC(item.Data.SubmitTime)
                   }
                 })
               }else {

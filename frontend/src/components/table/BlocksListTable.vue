@@ -3,7 +3,7 @@
        class="table_wrap"
        :style="`${minWidth?(`min-width:${minWidth}rem`):''}`">
 
-    <b-table :fields='fields' :items='items' striped v-if="type === 'list'">
+    <b-table :fields='fields' :items='items' striped v-if="type === '1'">
       <template slot='Height' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/blocks_detail/${data.item.Height}`)">
           {{data.item.Height}}
@@ -31,8 +31,11 @@
         </span>
       </template>
       <template slot='To' slot-scope='data'>
-        <span class="skip_route" @click="skipRoute(`/address/1/${data.item.To}`)">
+        <span class="skip_route" @click="skipRoute(`/address/1/${data.item.To}`)" v-show="data.item.To !== '--' ">
           {{data.item.To?`${String(data.item.To).substr(0,16)}...`:''}}
+        </span>
+        <span class="no_skip" v-show="data.item.To === '--'">
+          --
         </span>
       </template>
       <template slot='Owner' slot-scope='data'>
@@ -82,14 +85,14 @@
       <template slot='From' slot-scope='data'>
         <span class="skip_route"
               :class="data.item.From === $route.params.param?'no_skip':''"
-              @click="skipRoute(`/address/1/${data.item.From}`)">
+              @click="skipRoute(data.item.From === $route.params.param ? '' : `/address/1/${data.item.From}`)">
           {{data.item.From?`${String(data.item.From).substr(0,16)}...`:''}}
         </span>
       </template>
       <template slot='To' slot-scope='data'>
         <span class="skip_route"
               :class="data.item.To === $route.params.param?'no_skip':''"
-              @click="skipRoute(`/address/1/${data.item.To}`)">
+              @click="skipRoute(data.item.To === $route.params.param ? '' : `/address/1/${data.item.To}`)">
           {{data.item.To?`${String(data.item.To).substr(0,16)}...`:''}}
         </span>
       </template>
@@ -133,15 +136,18 @@
       <template slot='From' slot-scope='data'>
         <span class="skip_route"
               :class="data.item.From === $route.params.param?'no_skip':''"
-              @click="skipRoute(`/address/1/${data.item.From}`)">
+              @click="skipRoute(data.item.From === $route.params.param ? '' : `/address/1/${data.item.From}`)">
           {{data.item.From?`${String(data.item.From).substr(0,16)}...`:''}}
         </span>
       </template>
       <template slot='To' slot-scope='data'>
         <span class="skip_route"
               :class="data.item.To === $route.params.param?'no_skip':''"
-              @click="skipRoute(`/address/1/${data.item.To}`)">
+              @click="skipRoute(data.item.To === $route.params.param ? '' : `/address/1/${data.item.To}`)" v-show="data.item.To !== '--'">
           {{data.item.To?`${String(data.item.To).substr(0,16)}...`:''}}
+        </span>
+        <span class="no_skip" v-show="data.item.To == '--'">
+          --
         </span>
       </template>
       <template slot='Owner' slot-scope='data'>
@@ -164,14 +170,14 @@
       <template slot='From' slot-scope='data'>
         <span class="skip_route"
               :class="data.item.From === $route.params.param?'no_skip':''"
-              @click="skipRoute(`/address/1/${data.item.From}`)">
+              @click="skipRoute(data.item.From === $route.params.param ? '' : `/address/1/${data.item.From}`)">
           {{data.item.From?`${String(data.item.From).substr(0,16)}...`:''}}
         </span>
       </template>
       <template slot='To' slot-scope='data'>
         <span class="skip_route"
               :class="data.item.To === $route.params.param?'no_skip':''"
-              @click="skipRoute(`/address/1/${data.item.To}`)">
+              @click="skipRoute(data.item.To === $route.params.param ? '' : `/address/1/${data.item.To}`)">
           {{data.item.To?`${String(data.item.To).substr(0,16)}...`:''}}
         </span>
       </template>
@@ -185,7 +191,7 @@
 </template>
 
 <script>
-
+ import Tools from '../../common/Tools';
   export default {
     watch: {
       items(items) {
@@ -201,7 +207,10 @@
     props: ['items', 'type','showNoData','minWidth'],
     methods: {
       skipRoute(path) {
-        this.$router.push(path);
+        if(path !== "") {
+          this.$router.push(path);
+          Tools.scrollToTop()
+        }
       }
     }
   }
@@ -304,6 +313,17 @@
       width: 35% !important;
     }
   }
+  //使用rem设置max-width不生效
+  @media screen and (max-width: 910px) {
+    .proposal_detail_list tr{
+      th:nth-child(1){
+        width: 50% !important;
+      }
+      th:nth-child(2){
+        width: auto !important;
+      }
+    }
+  }
   .proposals-list{
     color: #3598db;
     cursor: pointer;
@@ -330,6 +350,16 @@
   .pre_global_style{
     font-size: 0.14rem;
     color: #a2a2ae;
+  }
+  .proposals_detail_table_wrap{
+    tbody tr td:last-child{
+      min-width: 2rem;
+    }
+  }
+  .table_wrap{
+    tbody tr td:last-child{
+      min-width: 2rem;
+    }
   }
   pre{
     font-family: Arial !important;

@@ -24,7 +24,7 @@
               @click="featureButtonClick('/home')"
         >Home</span>
         <span class="nav_item common_item_style" :class="activeClassName === '/block'?'nav_item_active':''"
-              @click="featureButtonClick('/block/list?pagenum=1')"
+              @click="featureButtonClick('/block/1/0')"
         >Blocks</span>
         <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === '/transaction'?'nav_item_active':''"
              @mouseover="transactionMouseOver" @mouseleave="transactionMouseLeave">
@@ -33,13 +33,13 @@
             Transactions
             <span class="bottom_arrow"></span>
           </span>
-          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/transfer')"
+          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/Transfers')"
                 v-show="showSubTransaction">Transfers</span>
-          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/declaration')"
-                v-show="showSubTransaction">Declaration</span>
-          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/stake')"
-                v-show="showSubTransaction">Stake</span>
-          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/governance')"
+          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/Declarations')"
+                v-show="showSubTransaction">Declarations</span>
+          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/Stakes')"
+                v-show="showSubTransaction">Stakes</span>
+          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/Governance')"
                 v-show="showSubTransaction">Governance</span>
         </div>
 
@@ -51,8 +51,8 @@
           </span>
           <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/active')"
                 v-show="showSubValidators">Active</span>
-          <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/revoked')"
-                v-show="showSubValidators">Revoked</span>
+          <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/jailed')"
+                v-show="showSubValidators">Jailed</span>
           <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/candidates')"
                 v-show="showSubValidators">Candidates</span>
 
@@ -60,9 +60,6 @@
         <span class="nav_item common_item_style" :class="activeClassName === '/Proposals'?'nav_item_active':''"
               @click="featureButtonClick('/Proposals')"
         >Proposals</span>
-        <span class="nav_item common_item_style" :class="activeClassName === '/nodespage'?'nav_item_active':''"
-              @click="featureButtonClick('/nodespage')"
-        >Nodes</span>
         <span class="nav_item common_item_style" :class="activeClassName === '/faucet'?'nav_item_active':''"
               @click="featureButtonClick('/faucet')"
         >Faucet</span>
@@ -88,14 +85,14 @@
         </span>
         <div class="select_option" v-show="flShowTransactionsSelect">
              <span class="feature_btn_mobile feature_nav"
-                   @click="featureButtonClick('/transactions/2/transfer')">Transfer</span>
+                   @click="featureButtonClick('/transactions/2/Transfers')">Transfers</span>
           <span class="feature_btn_mobile feature_nav"
-                @click="featureButtonClick('/transactions/2/declaration')">Declaration</span>
+                @click="featureButtonClick('/transactions/2/Declarations')">Declarations</span>
 
           <span class="feature_btn_mobile feature_nav"
-                @click="featureButtonClick('/transactions/2/stake')">Stake</span>
+                @click="featureButtonClick('/transactions/2/Stakes')">Stakes</span>
           <span class="feature_btn_mobile feature_nav"
-                @click="featureButtonClick('/transactions/2/governance')">Governance</span>
+                @click="featureButtonClick('/transactions/2/Governance')">Governance</span>
         </div>
 
         <span class="feature_btn_mobile feature_nav select_option_container" @click="validatorsSelect(flShowValidatorsSelect)">
@@ -106,12 +103,11 @@
         </span>
         <div class="select_option" v-show="flShowValidatorsSelect">
           <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/active')">Active</span>
-          <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/revoked')">Revoked</span>
+          <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/jailed')">Jailed</span>
           <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/candidates')">Candidates</span>
         </div>
 
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/Proposals')">Proposals</span>
-        <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/nodespage')">Nodes</span>
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/faucet')">Faucet</span>
 
       </div>
@@ -124,7 +120,6 @@
           <i class="search_icon" @click="getData(searchInputValue)"></i>
           <i class="clear_icon" @click="clearData" v-show="showClear"></i>
         </div>
-
       </div>
     </div>
   </div>
@@ -132,11 +127,11 @@
 <script>
   import Tools from '../common/Tools';
   import axios from 'axios';
-
   export default {
     name: 'app-header',
     watch:{
       $route(){
+        this.searchInputValue = "";
         this.listenRouteForChangeActiveButton();
         this.showHeader = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
       },
@@ -146,7 +141,7 @@
         }else{
           this.showClear = false;
         }
-      }
+      },
     },
     data() {
       return {
@@ -251,74 +246,116 @@
       validatorsMouseLeave(){
         this.showSubValidators = false;
       },
-
-      getData(data) {
-        if(this.searchInputValue === ''){
-          this.$router.push(`/searchResult/${this.searchInputValue}`);
-        }else if(/^[A-F0-9]{40}$/.test(this.searchInputValue)){
-          let urlTransaction = `/api/tx/${this.searchInputValue}`;
-          axios.get(urlTransaction).then((data) => {
-            if (data.status === 200) {
-              return data.data;
-            }
-          }).then((data) => {
-            if (data && typeof data === "object") {
-              this.$router.push(`/tx?txHash=${this.searchInputValue}`)
-            }else {
-              this.$router.push(`/searchResult/${this.searchInputValue}`);
-            }
-          }).catch(e => {
-            this.$router.push(`/searchResult/${this.searchInputValue}`);
-            console.log(e)
-          });
-        }else if(this.$Crypto.getCrypto("iris").isValidAddress(this.searchInputValue)){
-          let urlAddress = `/api/account/${this.searchInputValue}`;
-          axios.get(urlAddress).then((data) => {
-            if (data.status === 200) {
-              return data.data;
-            }
-          }).then((data) => {
-            if (data && typeof data === "object") {
-              this.$router.push(`/address/1/${this.searchInputValue}`)
-            }else {
-              this.$router.push(`/searchResult/${this.searchInputValue}`);
-            }
-          }).catch(e => {
-            this.$router.push(`/searchResult/${this.searchInputValue}`);
-            console.log(e)
-          });
-        }else if(/^\+?[1-9][0-9]*$/.test(this.searchInputValue)){
-          let BlockAndProposalUrl = `/api/search/${this.searchInputValue}`;
-          axios.get(BlockAndProposalUrl).then((data) => {
-            if(data.status === 200){
-              return data.data;
-            }
-          }).then((searchResult) => {
-            if(searchResult){
-              //searchResult：[ {Type：block，Data:{}} ，{Type：proposal,Data:{}} ]
-              let searchResultIsBlockOrproposalId = 1;
-              let searchResultIsBlockAndproposalId = 2;
-              if(searchResult.length === searchResultIsBlockOrproposalId){
-                if(searchResult[0].Type === "block" && searchResult[0].Data.Height !== 0){
-                  this.$router.push(`/blocks_detail/${this.searchInputValue}`);
-                  return
-                }else if(searchResult[0].Type === "proposal" && searchResult[0].Data.ProposalID !== 0){
-                  this.$router.push(`/ProposalsDetail/${this.searchInputValue}`);
-                  return
-                }
-              }else if(searchResult.length === searchResultIsBlockAndproposalId){
-                this.$router.push(`/searchResult/${this.searchInputValue}`)
+      searchTx(){
+        let uri = `/api/tx/${this.searchInputValue}`;
+        axios.get(uri).then((data) => {
+          if (data.status === 200) {
+            return data.data;
+          }
+        }).then((txInfomation) => {
+          if (txInfomation && typeof txInfomation === "object") {
+            this.$router.push(`/tx?txHash=${this.searchInputValue}`);
+            this.clearSearchInputValue();
+          }else {
+            this.toSearchResultPage();
+          }
+        }).catch(e => {
+          this.toSearchResultPage();
+          console.error(e)
+        });
+      },
+      searchDelegator(){
+        let uri = `/api/account/${this.searchInputValue}`;
+        axios.get(uri).then((data) => {
+          if (data.status === 200) {
+            return data.data;
+          }
+        }).then((addressInfomation) => {
+          if (addressInfomation && typeof addressInfomation === "object") {
+            this.$router.push(`/address/1/${this.searchInputValue}`);
+            this.clearSearchInputValue();
+          }else {
+            this.toSearchResultPage()
+          }
+        }).catch(e => {
+          this.toSearchResultPage();
+          console.error(e)
+        });
+      },
+      searchValidator(){
+        let uri = `/api/stake/candidate/${this.searchInputValue}`;
+        axios.get(uri).then((data) => {
+          if (data.status === 200) {
+            return data.data;
+          }
+        }).then((validatorAddressInfomation) => {
+          if (validatorAddressInfomation && typeof validatorAddressInfomation === "object") {
+            this.$router.push(`/address/1/${this.searchInputValue}`);
+            this.clearSearchInputValue();
+          }else {
+            this.toSearchResultPage()
+          }
+        }).catch(e => {
+          this.toSearchResultPage();
+          console.error(e)
+        });
+      },
+      searchBlockAndProposal(){
+        let uri = `/api/search/${this.searchInputValue}`;
+        axios.get(uri).then((data) => {
+          if(data.status === 200){
+            return data.data;
+          }
+        }).then((searchResult) => {
+          if(searchResult){
+            //searchResult：[ {Type：block，Data:{}} ，{Type：proposal,Data:{}} ]
+            let searchResultIsBlockOrProposalId = 1;
+            let searchBlockAndProposalInResult = 2;
+            if(searchResult.length === searchResultIsBlockOrProposalId){
+              if(searchResult[0].Type === "block" && searchResult[0].Data.Height !== 0){
+                this.$router.push(`/blocks_detail/${this.searchInputValue}`);
+                this.clearSearchInputValue();
+              }else if(searchResult[0].Type === "proposal" && searchResult[0].Data.ProposalID !== 0){
+                this.$router.push(`/ProposalsDetail/${this.searchInputValue}`);
+                this.clearSearchInputValue();
               }
-            }else {
-              this.$router.push(`/searchResult/${this.searchInputValue}`)
+            }else if(searchResult.length === searchBlockAndProposalInResult){
+              this.toSearchResultPage();
             }
-          });
-        }else {
-          this.$router.push(`/searchResult/${this.searchInputValue}`);
+          }else {
+            this.toSearchResultPage();
+          }
+        }).catch((e) => {
+          console.error(e);
+          this.toSearchResultPage();
+        });
+      },
+      getData() {
+        if(this.searchInputValue === ''){
+          this.toSearchResultPage();
+        }else{
+          if(/^[A-F0-9]{64}$/.test(this.searchInputValue)){
+            this.searchTx()
+          }else if(this.$Codec.Bech32.isBech32(this.$Crypto.Constants.IRIS.IrisNetConfig.PREFIX_BECH32_ACCADDR,this.searchInputValue) ) {
+            this.searchDelegator();
+          }else if(this.$Codec.Bech32.isBech32(this.$Crypto.Constants.IRIS.IrisNetConfig.PREFIX_BECH32_VALADDR,this.searchInputValue)){
+            this.searchValidator();
+          }else if (/^\+?[1-9][0-9]*$/.test(this.searchInputValue)){
+            this.searchBlockAndProposal();
+          }else {
+            this.toSearchResultPage();
+          }
         }
+      },
+      toSearchResultPage(){
+        this.$router.push(`/searchResult/${this.searchInputValue}`);
+        this.searchInputValue = "";
       },
       onInputChange() {
         this.getData();
+      },
+      clearSearchInputValue(){
+        this.searchInputValue = "";
       },
       listenRouteForChangeActiveButton(){
         //刷新的时候路由不变，active按钮不变
@@ -343,9 +380,10 @@
       },
       clearData(){
         this.searchInputValue = '';
+      },
+      toHelp(){
+        this.$router.push('/help')
       }
-
-
     }
   }
 </script>
@@ -368,6 +406,7 @@
       @include pcCenter;
       justify-content: space-between;
       padding-top: 0.01rem;
+      width: 100%;
       .header_top {
         @include flex();
         justify-content: space-between;
@@ -375,7 +414,7 @@
           @include flex;
           cursor:pointer;
           margin-top:0.2rem;
-          width: 1.58rem;
+          width: 1.7rem;
           height: 0.5rem;
           img{
             width: 100%;
@@ -479,6 +518,7 @@
       align-items: center;
       background: #3598db;
       .navButton {
+        width: 100%!important;
         height:0.66rem;
         @include pcCenter;
         @include flex;
@@ -609,7 +649,6 @@
           text-align: center;
           font-size: 0.14rem;
           color: #cccccc;
-          line-height: 0.28rem;
         }
         input {
           width: 100%;

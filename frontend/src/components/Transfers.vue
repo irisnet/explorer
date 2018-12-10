@@ -1,11 +1,11 @@
 <template>
   <div class="blocks_list_page_wrap">
     <div class="blocks_list_title_wrap">
-      <p :class="blockListPageWrap">
+      <p :class="transferListPageWrap">
         <span class="blocks_list_title">{{listTitleName}}</span>
       </p>
     </div>
-    <div :class="blockListPageWrap">
+    <div :class="transferListPageWrap">
       <div class="pagination total_num">
         <span class="blocks_list_page_wrap_hash_var" v-show="count">{{count}} total</span>
         <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
@@ -26,7 +26,6 @@
         </b-pagination>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -37,7 +36,6 @@
   import SpinComponent from './commonComponents/SpinComponent';
 
   export default {
-    name:"blockListPage",
     components:{
       BlocksListTable,
       SpinComponent,
@@ -64,93 +62,91 @@
         this.currentPage = Number(this.$route.query.pagenum);
         this.getDataList(Number(this.$route.query.pagenum), this.pageSize);
         this.showNoData = false;
-        this.listTitleName = 'Blocks';
+        this.listTitleName = 'Transfers';
       }
     },
     data() {
       return {
         devicesWidth: window.innerWidth,
-        blockListPageWrap: 'personal_computer_blocks_list_page',
+        transferListPageWrap: 'personal_computer_blocks_list_page',
         currentPage: Number(this.$route.query.pagenum),
         pageSize: 30,
-        count: localStorage.getItem("blockListCount") ? Number(localStorage.getItem("blockListCount")) : 0,
+        count: localStorage.getItem("transferListCount") ? Number(localStorage.getItem("transferListCount")) : 0,
         items: [],
         type: 'list',
         showNoData: false,
         showLoading: false,
         tableMinWidth: '',
         listTitleName: "",
-        minWidth: 8.5,
+        minWidth: 12,
       }
+
     },
     beforeMount() {
       this.type = this.$route.params.type;
-      this.blockListPageWrap = Tools.getClassByWindowInnerWidth(window.innerWidth);
+      this.transferListPageWrap = Tools.getClassByWindowInnerWidth(window.innerWidth);
     },
     mounted() {
-      this.getDataList(Number(this.$route.query.pagenum), this.pageSize, this.$route.params.type);
-      this.listTitleName = 'Blocks';
+      this.getDataList(Number(this.$route.query.pagenum), this.pageSize);
+      this.listTitleName = 'Transfers';
       this.tableMinWidth = this.minWidth;
     },
     methods: {
       getDataList(currentPage, pageSize) {
         this.showLoading = true;
-        let url = `/api/blocks/${currentPage}/${pageSize}`;
+        let url = `/api/tx/trans/${currentPage}/${pageSize}`;
+        let that = this;
         axios.get(url).then((data) => {
           if (data.status === 200) {
             return data.data;
           }
         }).then((data) => {
-          if(data.code === "0"){
+          if(data.code == 0){
             this.count = data.data.Count;
-            localStorage.setItem("blockListCount",this.count);
-            if(data.data.Data && typeof data.data === "object"){
+            localStorage.setItem("transferListCount",this.count);
+            if(data.data.Data){
               this.items = data.data.Data.map(item => {
-                let txn = item.NumTxs;
-                let precommitValidatorsLength = item.Block.LastCommit.Precommits.length;
-                let [votingPower,computeValidatorsVotingPowerDenominator,computeValidatorsVotingPowerNumerator] = [0,0,0];
-                item.Validators.forEach(listItem=>votingPower += listItem.VotingPower);
-                item.Validators.forEach(item=>computeValidatorsVotingPowerDenominator += item.VotingPower);
-                for(let i = 0; i < item.Block.LastCommit.Precommits.length; i++){
-                  for (let j = 0; j < item.Validators.length; j++){
-                    if(item.Block.LastCommit.Precommits[i].ValidatorAddress === item.Validators[j].Address){
-                      computeValidatorsVotingPowerNumerator += item.Validators[j].VotingPower;
-                      break;
-                    }
-                  }
+                let [Amount,Fee] = ['--','--'],objList;
+                Amount = Tools.formatTxAmount(this.$route.params.type,item.Amount);
+                if(item.Fee.amount && item.Fee.denom){
+                  Fee = item.Fee.amount = `${Tools.formatFeeToFixedNumber(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`;
                 }
-                return {
-                  Height: item.Height,
-                  Txn: txn,
-                  Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Time),
-                  'Precommit Validators': precommitValidatorsLength,
-                  'Voting Power': computeValidatorsVotingPowerDenominator !== 0 ? `${(computeValidatorsVotingPowerNumerator/computeValidatorsVotingPowerDenominator).toFixed(2)*100}%` : '',
+                objList = {
+                  TxHash: item.Hash,
+                  Block: item.BlockHeight,
+                  From: item.From ? item.From : (item.DelegatorAddr ? item.DelegatorAddr : ''),
+                  To: item.To ? item.To : (item.ValidatorAddr ? item.ValidatorAddr : ''),
+                  Amount,
+                  Fee,
+                  Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
                 };
+                return objList;
               })
             }else{
-              this.items = [
-                {
-                  Height: '',
-                  Txn: '',
-                  Fee: '',
-                  Timestamp: '',
-                  'Precommit Validators': '',
-                  'Voting Power': ''
-                }
-              ];
-              this.showNoData = true;
+              this.items = [{
+                TxHash: '',
+                Block: '',
+                From: '',
+                To: '',
+                Amount: '',
+                Fee: '',
+                Timestamp: '',
+              }];
+              that.showNoData = true;
             }
-            this.showLoading = false;
+            that.showLoading = false;
           }else {
-            console.log(data.msg)
+            localStorage.setItem("transferListCount",0);
           }
-        }).catch(e => {
-          this.showLoading = false;
+        })
+        .catch(e => {
+          localStorage.setItem("transferListCount",0);
+          that.showLoading = false;
           console.log(e)
         })
-        }
       }
     }
+  }
 </script>
 <style lang="scss" scoped>
   @import "../style/tabListCommonStyle.scss";

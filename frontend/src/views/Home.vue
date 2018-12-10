@@ -35,10 +35,10 @@
       </div>
       <div :class="module_item_wrap">
         <div class="home_module_item fixed_item_height">
-          <home-block-module :title="'Blocks'" :information="blocksInformation"></home-block-module>
+          <home-block-module :moduleName="'Blocks'" :information="blocksInformation"></home-block-module>
         </div>
         <div class="home_module_item fixed_item_height">
-          <home-block-module :title="'Transactions'" :information="transactionInformation"></home-block-module>
+          <home-block-module :moduleName="'Transactions'" :information="transactionInformation"></home-block-module>
         </div>
       </div>
     </div>
@@ -156,7 +156,7 @@
             return data.data;
           }
         }).then((data) => {
-          let colors = ['#3498db', '#47a2df', '#59ade3', '#6cb7e7', '#7fc2eb', '#91ccef', '#a4d7f3', '#b7e1f7', '#c9ecfb', '#dcf6ff', '#efeff1',];
+          let colors = ['#3498db', '#47a2df', '#59ade3', '#6cb7e7', '#7fc2eb', '#91ccef', '#a4d7f3', '#b7e1f7', '#c9ecfb', '#dcf6ff', '#DADDE3',];
           //跟series的name匹配
           let [seriesData, legendData] = [[], []];
           if (data.Candidates instanceof Array) {
@@ -173,6 +173,7 @@
                 value: data.Candidates[i].VotingPower,
                 name: data.Candidates[i].Description.Moniker ? `${Tools.formatString(data.Candidates[i].Description.Moniker,monikerReserveLength,"...")} (${Tools.formatString(data.Candidates[i].Address,addressReserveLength,"...")})` : (data.Candidates[i].Address ? data.Candidates[i].Address : ''),
                 itemStyle: {color: colors[i]},
+                emphasis : {itemStyle:{color: colors[i]}},
                 upTime:`${data.Candidates[i].Uptime}%`,
                 address:data.Candidates[i].Address,
                 powerAll,
@@ -246,7 +247,7 @@
                 Height: item.Height,
                 Proposer: item.Hash,
                 Txn: item.NumTxs,
-                Time: Tools.conversionTimeToUTCToYYMMDD(item.Time),
+                Time: Tools.conversionTimeToUTC(item.Time),
                 Fee: '0 IRIS',
               }
             })
@@ -298,7 +299,7 @@
                 Type: item.Type === 'coin'?'transfer':item.Type,
                 Fee,
                 Amount,
-                Time: Tools.conversionTimeToUTCToYYMMDD(item.Time),
+                Time: Tools.conversionTimeToUTC(item.Time),
               };
             })
           }
@@ -350,6 +351,7 @@
     }
 
     .personal_computer_home_wrap {
+      width: 100%!important;
       @include pcCenter;
       .information_preview {
         .information_preview_module {

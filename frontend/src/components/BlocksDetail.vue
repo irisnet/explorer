@@ -95,10 +95,10 @@
       currentPage(currentPage) {
         this.currentPage = currentPage;
         new Promise((resolve)=>{
-          this.getDataList(this.currentTabIndex,this.currentTxTabName,currentPage, this.pageSize);
+          this.tabTxList(this.currentTabIndex,this.currentTxTabName,currentPage, this.pageSize);
           resolve();
         }).then(()=>{
-          document.getElementById('router_wrap').scrollTop = 0;
+          Tools.scrollToTop()
         })
       },
       $route() {
@@ -106,7 +106,7 @@
         this.getBlockTxStatistics();
         this.computeMinWidth();
         this.tabTxList(this.tabTxListIndex,this.txTabName,this.currentPage,this.pageSize);
-        if (Number(this.$route.params.height) <= 0) {
+        if (Number(this.$route.params.height) <= 1) {
           this.acitve = false;
         } else {
           this.acitve = true;
@@ -140,6 +140,8 @@
         ProposalsTransactionsNum: 0,
         txTabName:"Transfers",
         tabTxListIndex:0,
+        currentTabIndex:"",
+        currentTxTabName:"",
         count: 0,
         showLoading:false,
         currentPage: 1,
@@ -171,7 +173,7 @@
       }
     },
     beforeMount() {
-      document.body.scrollTop = 0;
+      Tools.scrollToTop();
       if (Tools.currentDeviceIsPersonComputer()) {
         this.transactionsDetailWrap = 'personal_computer_transactions_detail_wrap';
       } else {
@@ -181,7 +183,7 @@
     mounted() {
       this.tabTxList(this.tabTxListIndex,this.txTabName,this.currentPage,this.pageSize);
       this.getBlockInformation();
-      if (Number(this.$route.params.height) <= 0) {
+      if (Number(this.$route.params.height) <= 1) {
         this.acitve = false;
       } else {
         this.acitve = true;
@@ -216,6 +218,8 @@
       },
       tabTxList(index,txTabName,currentPage,pageSize){
         this.currentPage = currentPage;
+        this.currentTabIndex = index;
+        this.currentTxTabName = txTabName;
         this.showLoading = true;
         for (let txTabIndex = 0; txTabIndex < this.txTab.length; txTabIndex++){
           this.txTab[txTabIndex].active = false;
@@ -238,126 +242,14 @@
             return data.data;
           }
         }).then((data) => {
-          this.showLoading = false;
-          this.showNoData = false;
-          if(data.Data){
-            that.items = data.Data.map(item => {
-              let [Amount,Fee] = ['--','--'];
-              if(txTabName === 'Transfers' || txTabName === 'Stakes' || txTabName === 'Governance' ||  txTabName === 'Declarations' ){
-                if(item.Amount){
-                  if(item.Amount instanceof Array){
-                    if(item.Amount.length > 0){
-                      item.Amount[0].amount = Tools.formatAmount(item.Amount[0].amount);
-                      if(Tools.flTxType(item.Type)){
-                        Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
-                      }else {
-                        Amount = item.Amount.map(listItem=>`${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
-                      }
-                    }
-                  }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
-                    item.Amount.amount = Tools.formatAmount(item.Amount.amount);
-                    Amount = `${item.Amount.amount} ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
-                    if(Tools.flTxType(item.Type)){
-                      Amount = `${item.Amount.amount} SHARES`;
-                    }
-                  }
-                }
-                if(item.Fee.amount && item.Fee.denom){
-                  Fee = item.Fee.amount = `${Tools.formatFeeToFixedNumber(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`;
-                }
-              }
-              let objList;
-              if(txTabName === 'Transfers'){
-                objList = {
-                  TxHash: item.Hash,
-                  Block:item.BlockHeight,
-                  From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
-                  To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
-                  Amount,
-                  Fee,
-                  Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
-                }
-              }else if(txTabName === 'Stakes'){
-                objList = {
-                  TxHash: item.Hash,
-                  Block:item.BlockHeight,
-                  From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
-                  To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
-                  Type:item.Type === 'coin'?'transfer':item.Type,
-                  Amount,
-                  Fee,
-                  Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
-                };
-              }else if(txTabName === 'Declarations'){
-                objList = {
-                  TxHash: item.Hash,
-                  Block:item.BlockHeight,
-                  Owner:item.Owner,
-                  Moniker: item.Moniker,
-                  'Self-Bond':item.SelfBond && item.SelfBond.length > 0 ? `${Tools.formatAmount(item.SelfBond[0].amount)} ${item.SelfBond[0].denom.toUpperCase()}`: "--",
-                  Type: item.Type,
-                  Fee,
-                  Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
-                };
-              }else if(txTabName === 'Governance'){
-                objList = {
-                  TxHash: item.Hash,
-                  Block:item.BlockHeight,
-                  From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
-                  "Proposal_ID": item.ProposalId === 0 ? "--" : item.ProposalId,
-                  Type:item.Type === 'coin'?'transfer':item.Type,
-                  Fee,
-                  Timestamp: Tools.conversionTimeToUTCToYYMMDD(item.Timestamp),
-                };
-              }
-              return objList
-            })
-
+          that.showLoading = false;
+          that.showNoData = false;
+          that.count = data.Count;
+          if(data.Data && data.Data !== null){
+            that.items = Tools.commonTxListItem(data.Data,txTabName)
           }else {
-            this.showNoData = true;
-            if(txTabName === 'Transfers'){
-              this.items = [{
-                'Tx Hash': "",
-                Block: "",
-                From: "",
-                To: "",
-                Amount: "",
-                Fee: "",
-                Timestamp: "",
-              }]
-            }else if(txTabName === 'Stakes'){
-              this.items = [{
-                'Tx Hash': "",
-                Block: "",
-                From: "",
-                To: "",
-                Type: "",
-                Amount: "",
-                Fee: "",
-                Timestamp: "",
-              }]
-            }else if(txTabName === 'Declarations'){
-              this.items = [{
-                'Tx Hash': "",
-                Block: "",
-                Owner: "",
-                Moniker: "",
-                'Self-Bond': "",
-                Type: "",
-                Fee: "",
-                Timestamp: "",
-              }]
-            }else if(txTabName === 'Governance'){
-              this.items = [{
-                'Tx Hash': "",
-                Block: "",
-                From: "",
-                'Proposal_ID': "",
-                Type: "",
-                Fee: "",
-                Timestamp: "",
-              }]
-            }
+            that.showNoData = true;
+            that.items = Tools.commonTxListItem(null,txTabName)
           }
         })
       },
@@ -384,7 +276,7 @@
               this.transactionsValue = data.NumTxs;
               this.hashValue = data.Height;
               this.heightValue = data.Height;
-              this.timestampValue = Tools.conversionTimeToUTCToYYMMDD(data.Time);
+              this.timestampValue = Tools.conversionTimeToUTC(data.Time);
               this.blockHashValue = data.Hash;
               this.lastBlockHashValue = data.Block.LastCommit.BlockID.Hash;
               this.precommitValidatorsValue = data.Validators.length !== 0 ? `${data.Block.LastCommit.Precommits.length}/${data.Validators.length}` : '';
@@ -412,7 +304,7 @@
         })
       },
       skipNext(num) {
-        if (Number(this.$route.params.height) <= 0) {
+        if (Number(this.$route.params.height) <= 1) {
           this.acitve = false;
           if (num !== -1) {
             this.$router.push(`/blocks_detail/${Number(this.$route.params.height) + num}`)
