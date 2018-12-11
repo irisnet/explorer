@@ -124,7 +124,6 @@
     },
     data() {
       return {
-        faucet_url: this.faucet_url,
         address: "",
         errMsg: "",
         alertShowErrMsg:'hidden',
@@ -145,7 +144,7 @@
     },
     beforeCreate(){
 
-      let faucet_url = this.faucet_url + "/account";
+      let faucet_url = "/api/faucet/account";
       axios.get(faucet_url).then((data)=>{
         if(data.status === 200){
           return data.data;
@@ -228,7 +227,7 @@
         this.btninfo = "Sending";
         this.btnDisabled = true;
         this.showSendingImg = true;
-        axios.post(this.faucet_url + '/apply', JSON.stringify({
+        axios.post('/api/faucet/apply', JSON.stringify({
           address: document.getElementById("address").value,
           token: document.getElementById("token").value,
           session_id: document.getElementById("session_id").value,
