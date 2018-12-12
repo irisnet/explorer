@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/irisnet/explorer/backend/types"
@@ -13,13 +14,12 @@ import (
 var database string
 
 func init() {
-	mongoUrl := GetEnv("DB_URL", "127.0.0.1:27017")
+	addrs := strings.Split(GetEnv("DB_URL", "127.0.0.1:27017"), ",")
 	database := GetEnv("DB_DATABASE", "sync-iris")
 	user := GetEnv("DB_USER", "iris")
 	passwd := GetEnv("DB_PASSWORD", "irispassword")
-	log.Println("Connecting " + mongoUrl + "/" + database)
 	dialInfo := &mgo.DialInfo{
-		Addrs:    []string{mongoUrl},
+		Addrs:    addrs,
 		Database: database,
 		Username: user,
 		Password: passwd,
