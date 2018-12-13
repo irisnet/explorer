@@ -14,7 +14,7 @@ import (
 var database string
 
 func init() {
-	addrs := strings.Split(GetEnv("DB_URL", "127.0.0.1:27017"), ",")
+	addrs := strings.Split(GetEnv("DB_ADDR", "127.0.0.1:27017"), ",")
 	database := GetEnv("DB_DATABASE", "sync-iris")
 	user := GetEnv("DB_USER", "iris")
 	passwd := GetEnv("DB_PASSWORD", "irispassword")
