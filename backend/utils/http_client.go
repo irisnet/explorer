@@ -2,7 +2,7 @@ package utils
 
 import (
 	"crypto/tls"
-	"github.com/irisnet/irishub-sync/module/logger"
+	"github.com/irisnet/irishub-sync/logger"
 	"io/ioutil"
 	"net"
 	"net/http"
