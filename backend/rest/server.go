@@ -6,7 +6,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/rest/controller"
-	"github.com/irisnet/irishub-sync/module/logger"
+	"github.com/irisnet/irishub-sync/logger"
 	"log"
 	"net/http"
 	_ "net/http/pprof"

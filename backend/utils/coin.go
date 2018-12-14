@@ -2,7 +2,7 @@ package utils
 
 import (
 	"fmt"
-	"github.com/irisnet/irishub-sync/module/logger"
+	"github.com/irisnet/irishub-sync/logger"
 	"github.com/irisnet/irishub-sync/store"
 	"regexp"
 	"strconv"
