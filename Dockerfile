@@ -5,8 +5,8 @@ RUN npm i yarn -g
 RUN apk add --no-cache git
 COPY ./frontend/ /app
 
-RUN yarn install && yarn replace && yarn dev && yarn build
-RUN cat node_modules/irisnet-crypto/chains/iris/conf.json
+RUN rm -rf ./node_modules && yarn install && yarn replace && yarn dev && yarn build
+RUN cat ./node_modules/irisnet-crypto/chains/iris/conf.json
 
 FROM golang:1.10.3-alpine3.7 as go-builder
 ENV GOPATH       /root/go
