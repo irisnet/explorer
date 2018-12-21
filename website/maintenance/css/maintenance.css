@@ -99,8 +99,8 @@ body {
     align-items: center;
 }
 a{
-    outline:none !important;
-    -webkit-tap-highlight-color:transparent !important;
+    outline:none;
+    -webkit-tap-highlight-color:transparent;
 }
 .irisnet_logo_img{
     height: 0.21rem;
