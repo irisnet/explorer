@@ -351,6 +351,5 @@
   pre{
     font-family: Arial !important;
     font-size: 0.14rem !important;
-    margin: 0 !important;
   }
 </style>
