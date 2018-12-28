@@ -3,12 +3,12 @@
     <div :class="pageClassName">
       <div class="information_preview">
         <div class="information_preview_module">
-          <span>{{marketCapValue}}</span>
-          <span class="information_module_key">Market Cap</span>
+          <span>{{currentBlockHeight}}</span>
+          <span class="information_module_key">Current Block</span>
         </div>
         <div class="information_preview_module">
-          <span>{{priceValue}}</span>
-          <span class="information_module_key">Price</span>
+          <span>{{lastBlockAgeTime}}</span>
+          <span class="information_module_key">Last Block</span>
         </div>
         <div class="information_preview_module"
              style="cursor:pointer;" @click="skipValidators"
@@ -53,7 +53,7 @@
   import EchartsLine from "../components/EchartsLine";
   import HomeBlockModule from "../components/HomeBlockModule";
   import axios from 'axios';
-
+  import Global from "../common/Global"
   export default {
     name: 'app-header',
     components: {EchartsPie, EchartsLine, HomeBlockModule},
@@ -62,10 +62,10 @@
         devicesWidth: window.innerWidth,
         pageClassName: 'personal_computer_home_wrap',//1是显示pc端，0是移动端
         module_item_wrap: 'module_item_wrap_computer',//module_item_wrap_computer是pc端，module_item_wrap_mobile是移动端
-        marketCapValue: '--',
+        currentBlockHeight: '--',
         validatorsValue: '',
         transactionValue: '',
-        priceValue: '--',
+        lastBlockAgeTime: 0,
         votingPowerValue: '',
         blockHeightValue: '',
         timestampValue: '',
@@ -74,20 +74,29 @@
         blocksInformation: [],
         transactionInformation: [],
         innerWidth : window.innerWidth,
-
+        blockList: null,
+        blocksTimer:null,
+        transfersTimer:null,
       }
     },
     beforeMount() {
-
-    },
-    mounted() {
-      document.getElementById('router_wrap').addEventListener('click', this.hideFeature);
-      //请求各个列表数据
       this.getBlocksStatusData();
       this.getBlocksList();
       this.getTransactionHistory();
       this.getTransactionList();
       this.getValidatorsList();
+    },
+    mounted() {
+      document.getElementById('router_wrap').addEventListener('click', this.hideFeature);
+      //请求各个列表数据
+      let that =this;
+      setInterval(function () {
+        that.getBlocksStatusData();
+        that.getBlocksList();
+        that.getTransactionHistory();
+        that.getTransactionList();
+        that.getValidatorsList();
+      },10000);
       window.addEventListener('resize',this.onresize);
       if (window.innerWidth > 910) {
         this.pageClassName = 'personal_computer_home_wrap';
@@ -123,7 +132,6 @@
           }
         }
       },
-
       getBlocksStatusData() {
         let url = `/api/chain/status`;
         axios.get(url).then((data) => {
@@ -140,8 +148,6 @@
           }else if(data.TxCount > 1000){
             num = `${(data.TxCount/1000).toFixed(2)} K`;
           }
-          this.marketCapValue = '--';
-          this.priceValue = '--';
           this.transactionValue = `${num}(${data.Tps.toFixed(2)} TPS)`;
 
         }
@@ -219,7 +225,6 @@
         }).catch(e => {
           console.log(e)
         })
-
       },
       getBlocksList() {
         let url = `/api/blocks/1/10`;
@@ -242,15 +247,24 @@
             }
             this.votingPowerValue = denominator !== 0? `${(numerator/denominator).toFixed(2)*100}%`:'';
             this.validatorsValue = `${data.Data[0].Block.LastCommit.Precommits.length} voting / ${data.Data[0].Validators.length} total`;
-            this.blocksInformation = data.Data.map(item => {
-              return {
-                Height: item.Height,
-                Proposer: item.Hash,
-                Txn: item.NumTxs,
-                Time: Tools.conversionTimeToUTC(item.Time),
-                Fee: '0 IRIS',
+            let that = this;
+            clearInterval(this.blocksTimer);
+            this.blocksTimer = setInterval(function () {
+              that.currentBlockHeight = data.Data[0].Height;
+              if(this.currentBlockHeight !== data.Data[0].Height){
+                that.lastBlockAgeTime = Global.formatTimeDiff(data.Data[0].Time)
               }
-            })
+              that.blocksInformation = data.Data.map(item => {
+                return {
+                  Height: item.Height,
+                  Proposer: item.Hash,
+                  Txn: item.NumTxs,
+                  Time: Tools.conversionTimeToUTC(item.Time),
+                  Fee: '0 IRIS',
+                  ageTime: Global.formatTimeDiff(item.Time)
+                };
+              });
+            },1000);
           }
         }).catch(e => {
           console.log(e)
@@ -270,40 +284,43 @@
 
           }
           if(data.Data){
-            this.transactionInformation = data.Data.map(item => {
-              let [Amount, Fee] = ['--', '--'];
-              if (item.Amount instanceof Array) {
-                if(item.Amount.length > 0){
-                  item.Amount[0].amount = Tools.formatAmount(item.Amount[0].amount);
+            let that = this;
+            this.transfersTimer = setInterval(function () {
+              that.transactionInformation = data.Data.map(item => {
+                let [Amount, Fee] = ['--', '--'];
+                if (item.Amount instanceof Array) {
+                  if(item.Amount.length > 0){
+                    item.Amount[0].amount = Tools.formatAmount(item.Amount[0].amount);
+                  }
+                  if(Tools.flTxType(item.Type)){
+                    Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
+                  }else {
+                    Amount = item.Amount.map(listItem => `${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
+                  }
+                } else if (item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')) {
+                  Amount = `${item.Amount.amount} ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
+                  if(Tools.flTxType(item.Type)){
+                    Amount = `${item.Amount.amount} SHARES`;
+                  }
+                } else if (item.Amount === null) {
+                  Amount = '';
                 }
-                if(Tools.flTxType(item.Type)){
-                  Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
-                }else {
-                  Amount = item.Amount.map(listItem => `${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
+                if(item.ActualFee.amount && item.ActualFee.denom){
+                  Fee =  `${Tools.formatFeeToFixedNumber(item.ActualFee.amount)} ${Tools.formatDenom(item.ActualFee.denom).toUpperCase()}`;
                 }
-              } else if (item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')) {
-                Amount = `${item.Amount.amount} ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
-                if(Tools.flTxType(item.Type)){
-                  Amount = `${item.Amount.amount} SHARES`;
-                }
-              } else if (item.Amount === null) {
-                Amount = '';
-              }
-              if(item.ActualFee.amount && item.ActualFee.denom){
-                Fee =  `${Tools.formatFeeToFixedNumber(item.ActualFee.amount)} ${Tools.formatDenom(item.ActualFee.denom).toUpperCase()}`;
-              }
-              return {
-                TxHash: item.TxHash,
-                From: item.From,
-                To: item.To,
-                Type: item.Type === 'coin'?'transfer':item.Type,
-                Fee,
-                Amount,
-                Time: Tools.conversionTimeToUTC(item.Time),
-              };
-            })
+                return {
+                  TxHash: item.TxHash,
+                  From: item.From,
+                  To: item.To,
+                  Type: item.Type === 'coin'?'transfer':item.Type,
+                  Fee,
+                  Amount,
+                  Time: Tools.conversionTimeToUTC(item.Time),
+                  ageTime: Global.formatTimeDiff(item.Time)
+                };
+              })
+            },1000)
           }
-
         }).catch(e => {
           console.log(e)
         })
