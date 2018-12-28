@@ -65,7 +65,7 @@
         currentBlockHeight: '--',
         validatorsValue: '',
         transactionValue: '',
-        lastBlockAgeTime: 0,
+        lastBlockAgeTime: '--',
         votingPowerValue: '',
         blockHeightValue: '',
         timestampValue: '',
@@ -252,7 +252,7 @@
             this.blocksTimer = setInterval(function () {
               that.currentBlockHeight = data.Data[0].Height;
               if(this.currentBlockHeight !== data.Data[0].Height){
-                that.lastBlockAgeTime = Global.formatTimeDiff(data.Data[0].Time)
+                that.lastBlockAgeTime = Global.formatAge(data.Data[0].Time)
               }
               that.blocksInformation = data.Data.map(item => {
                 return {
@@ -261,7 +261,7 @@
                   Txn: item.NumTxs,
                   Time: Tools.conversionTimeToUTC(item.Time),
                   Fee: '0 IRIS',
-                  ageTime: Global.formatTimeDiff(item.Time)
+                  ageTime: Global.formatAge(item.Time)
                 };
               });
             },1000);
@@ -316,7 +316,7 @@
                   Fee,
                   Amount,
                   Time: Tools.conversionTimeToUTC(item.Time),
-                  ageTime: Global.formatTimeDiff(item.Time)
+                  ageTime: Global.formatAge(item.Time)
                 };
               })
             },1000)

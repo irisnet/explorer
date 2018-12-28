@@ -1,5 +1,5 @@
 export default class Global {
-   static formatTimeDiff(time){
+   static formatAge(time){
       let dateBegin = new Date(time);//将-转化为/，使用new Date
       let dateEnd = new Date();
       let dateDiff = dateEnd.getTime() - dateBegin.getTime();//时间差的毫秒数
