@@ -74,7 +74,6 @@
         blocksInformation: [],
         transactionInformation: [],
         innerWidth : window.innerWidth,
-        blockList: null,
         blocksTimer:null,
         transfersTimer:null,
       }
