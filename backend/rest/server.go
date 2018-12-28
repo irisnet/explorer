@@ -43,7 +43,7 @@ func NewApiServer() *ApiServer {
 func (s *ApiServer) Start() error {
 	go func() {
 		logger.Info("pprof will Serve on 6060")
-		if err := http.ListenAndServe("localhost:6060", nil); err != nil {
+		if err := http.ListenAndServe("localhost:6061", nil); err != nil {
 			logger.Fatal("ListenAndServe Failed: ", logger.Any("err", err))
 		}
 	}()

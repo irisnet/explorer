@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/irishub-sync/logger"
@@ -56,39 +55,29 @@ func GetPage(r *http.Request) (int, int) {
 	return iPage, iSize
 }
 
-func buildResponse(data ...interface{}) model.Response {
-	var resp = model.Response{
-		Code: types.CodeSuccess.Code,
-		Msg:  types.CodeSuccess.Msg,
-	}
-
-	if len(data) == 2 {
-		if succ, ok := data[1].(bool); ok && !succ {
-			err := data[0].(types.BizCode)
-			resp.Code = err.Code
-			resp.Msg = err.Msg
-		}
-	} else {
-		var bz []byte
-		switch data[0].(type) {
-		case []byte:
-			bz = data[0].([]byte)
-		default:
-			bz, _ = json.Marshal(resp)
-		}
-		resp.Data = bz
-	}
-	return resp
-}
-func writeResponse(writer http.ResponseWriter, data ...interface{}) {
-	//resp := buildResponse(data)
+func writeResponse(writer http.ResponseWriter, data interface{}) {
 	var bz []byte
-	resp := data[0]
-	switch resp.(type) {
+	//var resp = model.Response{
+	//	Code: types.CodeSuccess.Code,
+	//	Msg:  types.CodeSuccess.Msg,
+	//}
+	//
+	//switch data.(type) {
+	//case types.BizCode:
+	//	err := data.(types.BizCode)
+	//	resp.Code = err.Code
+	//	resp.Msg = err.Msg
+	//default:
+	//	resp.Data = data
+	//}
+	//
+	//bz, _ = json.Marshal(resp)
+
+	switch data.(type) {
 	case []byte:
-		bz = resp.([]byte)
+		bz = data.([]byte)
 	default:
-		bz, _ = json.Marshal(resp)
+		bz, _ = json.Marshal(data)
 	}
 
 	writer.Write(bz)
@@ -107,7 +96,7 @@ func wrap(action Action) func(writer http.ResponseWriter, request *http.Request)
 			if r := recover(); r != nil {
 				switch r.(type) {
 				case types.BizCode:
-					writeResponse(writer, r, false)
+					writeResponse(writer, r)
 					break
 				case error:
 					err := r.(error)
@@ -115,7 +104,7 @@ func wrap(action Action) func(writer http.ResponseWriter, request *http.Request)
 						Code: types.CodeUnKnown.Code,
 						Msg:  err.Error(),
 					}
-					writeResponse(writer, e, false)
+					writeResponse(writer, e)
 					break
 				}
 				logger.Error("API execute failed", api, logger.Any("errMsg", r))

@@ -12,6 +12,7 @@ var (
 	CodeExtSysFailed = NewCode("EX-100004", "external system exception")
 	CodeUnKnown      = NewCode("EX-100005", "unknown error ")
 	CodeUnSupportTx  = NewCode("EX-100006", "unsupported tx type")
+	CodeJsonMarshal  = NewCode("EX-100007", "json marshal error")
 )
 
 type BizCode struct {
@@ -28,6 +29,10 @@ func NewCode(code string, msg string) BizCode {
 
 func (e BizCode) Success() bool {
 	return e.Code == "0"
+}
+
+func (e BizCode) Error() string {
+	return fmt.Sprintf("Code:%s,Msg:%s", e.Code, e.Msg)
 }
 
 func ErrForEmpty(args ...string) BizCode {

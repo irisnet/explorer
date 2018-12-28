@@ -25,7 +25,7 @@ const (
 	EnvironmentStage   = "stage"
 	EnvironmentProd    = "prod"
 
-	DefaultEnvironment = EnvironmentDevelop
+	DefaultEnvironment = EnvironmentLocal
 )
 
 var (
@@ -81,7 +81,7 @@ func loadDefault() {
 		KeyDbUser:      "iris",
 		KeyDbPwd:       "irispassword",
 		KeyDbPoolLimit: "4096",
-		KeyServerPort:  "8080",
+		KeyServerPort:  "8081",
 		KeyAddrHubLcd:  "http://127.0.0.1:1317",
 		KeyAddrHubNode: "http://127.0.0.1:26657",
 		KeyAddrFaucet:  "http://dev.faucet.irisplorer.io",

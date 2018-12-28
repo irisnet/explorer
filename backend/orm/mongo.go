@@ -3,7 +3,7 @@ package orm
 import (
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/model"
-	"log"
+	"github.com/irisnet/irishub-sync/logger"
 	"time"
 
 	"gopkg.in/mgo.v2"
@@ -24,7 +24,7 @@ func init() {
 	var err error
 	session, err = mgo.DialWithInfo(dialInfo)
 	if err != nil {
-		log.Fatalln(err)
+		logger.Error("start mongo client failed", logger.String("err", err.Error()))
 	}
 	session.SetMode(mgo.Monotonic, true)
 }
@@ -48,4 +48,10 @@ func QueryList(collation string, data interface{}, m map[string]interface{}, sor
 	} else {
 		return model.Page{Count: count, Data: data}
 	}
+}
+
+func QueryOne(collation string, data interface{}, m map[string]interface{}) error {
+	c := GetDatabase().C(collation)
+	defer c.Database.Session.Close()
+	return c.Find(m).One(data)
 }

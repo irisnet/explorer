@@ -24,7 +24,8 @@ const (
 	UrlRegisterQueryProposal  = "/proposal/{pid}"
 
 	//SearchBox
-	UrlRegisterQueryText = "/search/{text}"
+	UrlRegisterQueryText    = "/search/{text}"
+	UrlRegisterQuerySysDate = "/search/sysdate"
 
 	//faucet
 	UrlRegisterQueryFaucet = "/faucet/account"
