@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/irishub-sync/logger"
@@ -76,6 +77,13 @@ func writeResponse(writer http.ResponseWriter, data interface{}) {
 	switch data.(type) {
 	case []byte:
 		bz = data.([]byte)
+	case int64:
+		var resp = model.Response{
+			Code: types.CodeSuccess.Code,
+			Msg:  types.CodeSuccess.Msg,
+			Data: data.(int64),
+		}
+		bz, _ = json.Marshal(resp)
 	default:
 		bz, _ = json.Marshal(data)
 	}
