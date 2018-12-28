@@ -5,11 +5,13 @@ import (
 	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/types"
 	"net/http"
+	"time"
 )
 
 func RegisterTextSearch(r *mux.Router) error {
 	funs := []func(*mux.Router) error{
 		registerQueryText,
+		registerQuerySysDate,
 	}
 
 	for _, fn := range funs {
@@ -34,6 +36,14 @@ func registerQueryText(r *mux.Router) error {
 
 		result := common.QueryText(text)
 		return result
+	})
+
+	return nil
+}
+
+func registerQuerySysDate(r *mux.Router) error {
+	doApi(r, types.UrlRegisterQuerySysDate, "GET", func(request *http.Request) interface{} {
+		return time.Now().Unix()
 	})
 
 	return nil

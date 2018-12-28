@@ -58,6 +58,20 @@ func ParseCoin(coinStr string) (coin store.Coin) {
 		Amount: amt,
 	}
 }
+func ParseCoins(coinsStr string) (coins store.Coins) {
+	coinsStr = strings.TrimSpace(coinsStr)
+	if len(coinsStr) == 0 {
+		return
+	}
+
+	coinStrs := strings.Split(coinsStr, ",")
+	for _, coinStr := range coinStrs {
+		coin := ParseCoin(coinStr)
+		coins = append(coins, coin)
+	}
+
+	return coins
+}
 
 func CovertCoin(srcCoin store.Coin, denom string) (destCoin store.Coin) {
 	srcPreci := coinsMap[srcCoin.Denom]
