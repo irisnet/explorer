@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"bytes"
+	"encoding/binary"
 	"fmt"
 	"github.com/irisnet/explorer/backend/types"
 	"strconv"
@@ -38,4 +40,10 @@ func FmtUTCTime(time time.Time) string {
 		return ""
 	}
 	return time.UTC().Format(types.UtcFormat)
+}
+
+func IntToByte(num int64) []byte {
+	var buffer bytes.Buffer
+	binary.Write(&buffer, binary.BigEndian, num)
+	return buffer.Bytes()
 }

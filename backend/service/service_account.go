@@ -1,14 +1,12 @@
 package service
 
 import (
-	"fmt"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/irishub-sync/logger"
 	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
-	"log"
 )
 
 type AccountService struct{}
@@ -26,7 +24,6 @@ func (service *AccountService) Query(address string) (result model.AccountResp) 
 	if err != nil {
 		error := types.CodeNotFound
 		logger.Error("account don't found", logger.String("address", address))
-		log.Println(fmt.Sprintf("account [%s] not found", address))
 		panic(error)
 		return
 	}
