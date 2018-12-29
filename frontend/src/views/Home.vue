@@ -254,7 +254,7 @@ import axios from 'axios';
                     Height: item.Height,
                     Proposer: item.Hash,
                     Txn: item.NumTxs,
-                    Time: Tools.conversionUTCTime(item.Time),
+                    Time: Tools.format2UTC(item.Time),
                     Fee: '0 IRIS',
                     ageTime: Tools.formatAge(item.Time)
                   };
@@ -312,7 +312,7 @@ import axios from 'axios';
                     Type: item.Type === 'coin'?'transfer':item.Type,
                     Fee,
                     Amount,
-                    Time: Tools.conversionUTCTime(item.Time),
+                    Time: Tools.format2UTC(item.Time),
                     ageTime: Tools.formatAge(item.Time)
                   };
                 })

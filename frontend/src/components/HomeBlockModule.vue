@@ -12,8 +12,10 @@
           <div class="key_value_wrap">
             <span class="blocks_module_value" :class="moduleTitle">
               <span class="transactions_tx" v-if="item.TxHash">TX# </span>
-              <span style="cursor:pointer;" @click="skipRouter(item.Height?`/blocks_detail/${item.Height}`:`/tx?txHash=${item.TxHash}`)">{{item.Height?item.Height:`${item.TxHash.substr(0,16)}...`}}</span></span>
-            <span class="key_value_time">{{item.Time}}</span>
+             <span style="cursor:pointer;" @click="skipRouter(item.Height?`/blocks_detail/${item.Height}`:`/tx?txHash=${item.TxHash}`)">{{item.Height?item.Height:`${item.TxHash.substr(0,16)}...`}}</span>
+              </span>
+            <span class="key_value_transfers_age_time" v-show="moduleName !== 'Blocks'"> > {{item.ageTime}} ago</span>
+            <span class="key_value_block_age_time" v-show="moduleName == 'Blocks'">> {{item.ageTime}} ago</span>
           </div>
           <div class="key_value_wrap_bottom">
             <span class="blocks_module_props">{{item.Height?'Txn:':''}}</span>
@@ -21,6 +23,7 @@
             <span class="blocks_module_type" v-show="item.TxHash">{{item.Type}}</span>
             <div class="blocks_module_right" :style="`${moduleName === 'Blocks'?'flex:2;':''}`">
               <span :class="`${moduleName === 'Blocks' ? 'hide_fee' : 'show_fee'}`">Fee: {{item.Fee}}</span>
+              <span v-show="moduleName === 'Blocks'">{{item.Time}}</span>
             </div>
           </div>
         </div>
@@ -199,7 +202,13 @@
           .key_value_wrap{
             @include flex;
             justify-content: space-between;
-            .key_value_time{
+            .key_value_transfers_age_time{
+              display: inline-block;
+              @include fontSize;
+              color: #A2A2AE;
+              text-align: right;
+            }
+            .key_value_block_age_time{
               display: inline-block;
               @include fontSize;
               color: #A2A2AE;
