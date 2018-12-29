@@ -6,7 +6,7 @@
           <span>{{currentBlockHeight}}</span>
           <span class="information_module_key">Current Block</span>
         </div>
-        <div class="information_preview_module" :class="Number(lastBlockAgeTime.indexOf('d') === -1 || lastBlockAgeTime.indexOf('h') === -1 || lastBlockAgeTime.split('m')[0])*3600 < 108000 ? '' : 'red' ">
+        <div class="information_preview_module">
           <span>{{lastBlockAgeTime}}</span>
           <span class="information_module_key">Last Block</span>
         </div>
