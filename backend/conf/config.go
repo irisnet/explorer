@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	KeyDbUrl       = "DB_URL"
+	KeyDbAddr      = "DB_ADDR"
 	KeyDATABASE    = "DB_DATABASE"
 	KeyDbUser      = "DB_USER"
 	KeyDbPwd       = "DB_PASSWORD"
@@ -38,7 +38,7 @@ func init() {
 	loadDefault()
 
 	db := dbConf{
-		Url:       getEnv(KeyDbUrl, DefaultEnvironment),
+		Addr:      getEnv(KeyDbAddr, DefaultEnvironment),
 		Database:  getEnv(KeyDATABASE, DefaultEnvironment),
 		UserName:  getEnv(KeyDbUser, DefaultEnvironment),
 		Password:  getEnv(KeyDbPwd, DefaultEnvironment),
@@ -62,7 +62,7 @@ func init() {
 
 func loadDefault() {
 	defaultConfig[EnvironmentDevelop] = map[string]string{
-		KeyDbUrl:       "192.168.150.7:30000",
+		KeyDbAddr:      "192.168.150.7:30000",
 		KeyDATABASE:    "sync-iris",
 		KeyDbUser:      "iris",
 		KeyDbPwd:       "irispassword",
@@ -76,7 +76,7 @@ func loadDefault() {
 	}
 
 	defaultConfig[EnvironmentLocal] = map[string]string{
-		KeyDbUrl:       "127.0.0.1:27017",
+		KeyDbAddr:      "127.0.0.1:27017",
 		KeyDATABASE:    "sync-iris",
 		KeyDbUser:      "iris",
 		KeyDbPwd:       "irispassword",
@@ -100,7 +100,7 @@ type Config struct {
 }
 
 type dbConf struct {
-	Url       string
+	Addr      string
 	Database  string
 	UserName  string
 	Password  string
