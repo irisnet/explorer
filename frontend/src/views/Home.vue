@@ -7,7 +7,7 @@
           <span class="information_module_key">Current Block</span>
         </div>
         <div class="information_preview_module">
-          <span>{{lastBlockAgeTime}}</span>
+          <span>{{lastBlockAge}}</span>
           <span class="information_module_key">Last Block</span>
         </div>
         <div class="information_preview_module"
@@ -63,7 +63,7 @@ import axios from 'axios';
                   currentBlockHeight: '--',
                   validatorsValue: '',
                   transactionValue: '',
-                  lastBlockAgeTime: '--',
+                  lastBlockAge: '--',
                   votingPowerValue: '',
                   blockHeightValue: '',
                   timestampValue: '',
@@ -247,7 +247,7 @@ import axios from 'axios';
               this.blocksTimer = setInterval(function () {
                 that.currentBlockHeight = data.Data[0].Height;
                 if(this.currentBlockHeight !== data.Data[0].Height){
-                  that.lastBlockAgeTime = Tools.formatAge(data.Data[0].Time);
+                  that.lastBlockAge = Tools.formatAge(data.Data[0].Time);
                 }
                 that.blocksInformation = data.Data.map(item => {
                   return {
@@ -256,7 +256,7 @@ import axios from 'axios';
                     Txn: item.NumTxs,
                     Time: Tools.format2UTC(item.Time),
                     Fee: '0 IRIS',
-                    ageTime: Tools.formatAge(item.Time)
+                    age: Tools.formatAge(item.Time)
                   };
                 });
               },1000);
@@ -313,7 +313,7 @@ import axios from 'axios';
                     Fee,
                     Amount,
                     Time: Tools.format2UTC(item.Time),
-                    ageTime: Tools.formatAge(item.Time)
+                    age: Tools.formatAge(item.Time)
                   };
                 })
               },1000)

@@ -14,8 +14,8 @@
               <span class="transactions_tx" v-if="item.TxHash">TX# </span>
              <span style="cursor:pointer;" @click="skipRouter(item.Height?`/blocks_detail/${item.Height}`:`/tx?txHash=${item.TxHash}`)">{{item.Height?item.Height:`${item.TxHash.substr(0,16)}...`}}</span>
               </span>
-            <span class="key_value_transfers_age_time" v-show="moduleName !== 'Blocks'"> > {{item.ageTime}} ago</span>
-            <span class="key_value_block_age_time" v-show="moduleName == 'Blocks'">> {{item.ageTime}} ago</span>
+            <span class="key_value_transfers_age_time" v-show="moduleName !== 'Blocks'"> > {{item.age}} ago</span>
+            <span class="key_value_block_age_time" v-show="moduleName == 'Blocks'">> {{item.age}} ago</span>
           </div>
           <div class="key_value_wrap_bottom">
             <span class="blocks_module_props">{{item.Height?'Txn:':''}}</span>
