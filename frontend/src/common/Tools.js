@@ -3,6 +3,22 @@
  */
 import BigNumber from 'bignumber.js';
 export default class Tools{
+  static formatAge(time){
+    let dateBegin = new Date(time);
+    let dateEnd = new Date();
+    let dateDiff = dateEnd.getTime() - dateBegin.getTime();
+    let dayDiff = Math.floor(dateDiff / (24 * 3600 * 1000));
+    let hourLevel = dateDiff % (24 * 3600 * 1000);
+    let hours = Math.floor(hourLevel / (3600 * 1000));
+    let minuteLevel = hourLevel % (3600 * 1000);
+    let minutes = Math.floor(minuteLevel / (60 * 1000));
+    let secondLevel = minuteLevel % (60 * 1000) ;
+    let seconds = Math.round(secondLevel / 1000);
+    return`${dayDiff?`${dayDiff}d`:''}
+        ${hours ? `${hours}h` : ''}
+        ${dayDiff && hours ? '' : (minutes ? `${minutes}m`:'')}
+        ${dayDiff || hours ? '' : (seconds ? `${seconds}s`:'')}`
+  }
 
   /**
    * 判断当前是移动端还是pc端
@@ -27,7 +43,7 @@ export default class Tools{
    * param string;
    * return string
    */
-  static conversionTimeToUTC(originTime){
+  static conversionUTCTime(originTime){
     return `${originTime.substr(0,4)}/${originTime.substr(5,2)}/${originTime.substr(8,2)} ${originTime.substr(11,8)}+UTC`;
   }
 
@@ -283,7 +299,7 @@ export default class Tools{
         };
         commonFooterObjList = {
           Status : Tools.firstWordUpperCase(item.Status),
-          Timestamp: Tools.conversionTimeToUTC(item.Timestamp)
+          Timestamp: Tools.formatAge(item.Timestamp)
         };
         if(txType === 'Transfers' ){
           objList = {

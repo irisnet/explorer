@@ -6,7 +6,7 @@
           <span>{{currentBlockHeight}}</span>
           <span class="information_module_key">Current Block</span>
         </div>
-        <div class="information_preview_module">
+        <div class="information_preview_module" :class="Number(lastBlockAgeTime.indexOf('d') === -1 || lastBlockAgeTime.indexOf('h') === -1 || lastBlockAgeTime.split('m')[0])*3600 < 108000 ? '' : 'red' ">
           <span>{{lastBlockAgeTime}}</span>
           <span class="information_module_key">Last Block</span>
         </div>
@@ -47,289 +47,289 @@
 </template>
 
 <script>
-
-  import Tools from '../common/Tools';
-  import EchartsPie from "../components/EchartsPie";
-  import EchartsLine from "../components/EchartsLine";
-  import HomeBlockModule from "../components/HomeBlockModule";
-  import axios from 'axios';
-  import Global from "../common/Global"
+import Tools from '../common/Tools';
+import EchartsPie from "../components/EchartsPie";
+import EchartsLine from "../components/EchartsLine";
+import HomeBlockModule from "../components/HomeBlockModule";
+import axios from 'axios';
   export default {
-    name: 'app-header',
-    components: {EchartsPie, EchartsLine, HomeBlockModule},
-    data() {
-      return {
-        devicesWidth: window.innerWidth,
-        pageClassName: 'personal_computer_home_wrap',//1是显示pc端，0是移动端
-        module_item_wrap: 'module_item_wrap_computer',//module_item_wrap_computer是pc端，module_item_wrap_mobile是移动端
-        currentBlockHeight: '--',
-        validatorsValue: '',
-        transactionValue: '',
-        lastBlockAgeTime: '--',
-        votingPowerValue: '',
-        blockHeightValue: '',
-        timestampValue: '',
-        information: {},//饼图的所有信息
-        informationLine: {},//折线图端所有信息
-        blocksInformation: [],
-        transactionInformation: [],
-        innerWidth : window.innerWidth,
-        blocksTimer:null,
-        transfersTimer:null,
-      }
-    },
-    beforeMount() {
-      this.getBlocksStatusData();
-      this.getBlocksList();
-      this.getTransactionHistory();
-      this.getTransactionList();
-      this.getValidatorsList();
-    },
-    mounted() {
-      document.getElementById('router_wrap').addEventListener('click', this.hideFeature);
-      //请求各个列表数据
-      let that =this;
-      setInterval(function () {
-        that.getBlocksStatusData();
-        that.getBlocksList();
-        that.getTransactionHistory();
-        that.getTransactionList();
-        that.getValidatorsList();
-      },10000);
-      window.addEventListener('resize',this.onresize);
-      if (window.innerWidth > 910) {
-        this.pageClassName = 'personal_computer_home_wrap';
-        this.module_item_wrap = 'module_item_wrap_computer';
-        if(document.getElementsByClassName('fixed_item_height').length > 0){
-          document.getElementsByClassName('fixed_item_height')[0].style.height = '6.55rem';
-          document.getElementsByClassName('fixed_item_height')[1].style.height = '6.55rem';
-        }
-      } else {
-        this.pageClassName = 'mobile_home_wrap';
-        this.module_item_wrap = 'module_item_wrap_mobile';
-      }
-    },
-    beforeDestroy(){
-      window.removeEventListener('resize',this.onWindowResize);
-    },
-    methods: {
-      onresize(){
-        this.innerWidth = window.innerWidth;
-        if(window.innerWidth > 910){
-          this.pageClassName = 'personal_computer_home_wrap';
-          this.module_item_wrap = 'module_item_wrap_computer';
-          if(document.getElementsByClassName('fixed_item_height').length > 0) {
-            document.getElementsByClassName('fixed_item_height')[0].style.height = '6.55rem';
-            document.getElementsByClassName('fixed_item_height')[1].style.height = '6.55rem';
-          }
-        }else {
-          this.pageClassName = 'mobile_home_wrap';
-          this.module_item_wrap = 'module_item_wrap_mobile';
-          if(document.getElementsByClassName('fixed_item_height').length > 0) {
-            document.getElementsByClassName('fixed_item_height')[0].style.height = 'auto';
-            document.getElementsByClassName('fixed_item_height')[1].style.height = 'auto';
-          }
-        }
-      },
-      getBlocksStatusData() {
-        let url = `/api/chain/status`;
-        axios.get(url).then((data) => {
-          if (data.status === 200) {
-            return data.data;
-          }
-        }).then((data) => {
-          let num = data.TxCount;
-          if(data && typeof data === "object") {
-          if(data.TxCount > 1000000000){
-            num = `${(data.TxCount/1000000000).toFixed(2)} B`;
-          }else if(data.TxCount > 1000000){
-            num = `${(data.TxCount/1000000).toFixed(2)} M`;
-          }else if(data.TxCount > 1000){
-            num = `${(data.TxCount/1000).toFixed(2)} K`;
-          }
-          this.transactionValue = `${num}(${data.Tps.toFixed(2)} TPS)`;
-
-        }
-        }).catch(e => {
-          console.log(e)
-        })
-      },
-      getValidatorsList() {
-        let url = `/api/stake/candidatesTop`;
-        axios.get(url).then((data) => {
-          if (data.status === 200) {
-            return data.data;
-          }
-        }).then((data) => {
-          let colors = ['#3498db', '#47a2df', '#59ade3', '#6cb7e7', '#7fc2eb', '#91ccef', '#a4d7f3', '#b7e1f7', '#c9ecfb', '#dcf6ff', '#DADDE3',];
-          //跟series的name匹配
-          let [seriesData, legendData] = [[], []];
-          if (data.Candidates instanceof Array) {
-            //计算前十的voting power总数；
-            let totalCount = 0;
-            data.Candidates.forEach(item=>totalCount += item.VotingPower);
-            //其他部分的
-            let others = data.PowerAll - totalCount;
-            let monikerReserveLength = 10;
-            let addressReserveLength = 6;
-            let powerAll = data.PowerAll;
-            for (let i = 0; i < data.Candidates.length; i++) {
-              seriesData.push({
-                value: data.Candidates[i].VotingPower,
-                name: data.Candidates[i].Description.Moniker ? `${Tools.formatString(data.Candidates[i].Description.Moniker,monikerReserveLength,"...")} (${Tools.formatString(data.Candidates[i].Address,addressReserveLength,"...")})` : (data.Candidates[i].Address ? data.Candidates[i].Address : ''),
-                itemStyle: {color: colors[i]},
-                emphasis : {itemStyle:{color: colors[i]}},
-                upTime:`${data.Candidates[i].Uptime}%`,
-                address:data.Candidates[i].Address,
-                powerAll,
-              });
-              legendData.push(data.Candidates[i].Description.Moniker ? `${Tools.formatString(data.Candidates[i].Description.Moniker,monikerReserveLength,"...")} (${Tools.formatString(data.Candidates[i].Address,addressReserveLength,"...")})` : (data.Candidates[i].Address ? data.Candidates[i].Address : ''))
-            }
-
-            if(others > 0 ){
-              seriesData.push({
-                value: others,
-                name:'others',
-                powerAll,
-                itemStyle:{color:colors[10]},
-              });
-            }
-
-          }
-          this.information = {legendData, seriesData}
-
-        }).catch(e => {
-          console.log(e)
-        })
-      },
-      getTransactionHistory() {
-        let url = `/api/txsByDay`;
-        axios.get(url).then((data) => {
-          if (data.status === 200) {
-            return data.data;
-          }
-        }).then((data) => {
-          //找出最大的数据
-          let maxValue = 0;
-          if(data){
-            data.forEach(item=>{
-              if(item.Count > maxValue){
-                maxValue = item.Count;
+      name: 'app-header',
+      components: {EchartsPie, EchartsLine, HomeBlockModule},
+          data() {
+              return {
+                  devicesWidth: window.innerWidth,
+                  pageClassName: 'personal_computer_home_wrap',//1是显示pc端，0是移动端
+                  module_item_wrap: 'module_item_wrap_computer',//module_item_wrap_computer是pc端，module_item_wrap_mobile是移动端
+                  currentBlockHeight: '--',
+                  validatorsValue: '',
+                  transactionValue: '',
+                  lastBlockAgeTime: '--',
+                  votingPowerValue: '',
+                  blockHeightValue: '',
+                  timestampValue: '',
+                  information: {},//饼图的所有信息
+                  informationLine: {},//折线图端所有信息
+                  blocksInformation: [],
+                  transactionInformation: [],
+                  innerWidth : window.innerWidth,
+                  blocksTimer:null,
+                  transfersTimer:null,
               }
-            });
-            let xData = data.map(item=>`${String(item.Time).substr(5,2)}/${String(item.Time).substr(8,2)}/${String(item.Time).substr(0,4)}`);
-            let seriesData = data.map(item=>item.Count);
-            this.informationLine = {maxValue,xData,seriesData};
-          }
-        }).catch(e => {
-          console.log(e)
-        })
-      },
-      getBlocksList() {
-        let url = `/api/blocks/1/10`;
-        axios.get(url).then((data) => {
-          if (data.status === 200) {
-            return data.data;
-          }
-        }).then((data) => {
-          if(data.Data){
-            let denominator = 0;
-            data.Data[0].Validators.forEach(item=>denominator += item.VotingPower);
-            let numerator = 0;
-            for(let i = 0; i < data.Data[0].Block.LastCommit.Precommits.length; i++){
-              for (let j = 0; j < data.Data[0].Validators.length; j++){
-                if(data.Data[0].Block.LastCommit.Precommits[i].ValidatorAddress === data.Data[0].Validators[j].Address){
-                  numerator += data.Data[0].Validators[j].VotingPower;
-                  break;
-                }
+          },
+          beforeMount() {
+              this.getBlocksStatusData();
+              this.getBlocksList();
+              this.getTransactionHistory();
+              this.getTransactionList();
+              this.getValidatorsList();
+          },
+          mounted() {
+              document.getElementById('router_wrap').addEventListener('click', this.hideFeature);
+              let that =this;
+              setInterval(function () {
+                  that.getBlocksStatusData();
+                  that.getBlocksList();
+                  that.getTransactionHistory();
+                  that.getTransactionList();
+                  that.getValidatorsList();
+              },10000);
+              window.addEventListener('resize',this.onresize);
+              if (window.innerWidth > 910) {
+                  this.pageClassName = 'personal_computer_home_wrap';
+                  this.module_item_wrap = 'module_item_wrap_computer';
+                  if(document.getElementsByClassName('fixed_item_height').length > 0){
+                      document.getElementsByClassName('fixed_item_height')[0].style.height = '6.55rem';
+                      document.getElementsByClassName('fixed_item_height')[1].style.height = '6.55rem';
+                  }
+              } else {
+                  this.pageClassName = 'mobile_home_wrap';
+                  this.module_item_wrap = 'module_item_wrap_mobile';
               }
-            }
-            this.votingPowerValue = denominator !== 0? `${(numerator/denominator).toFixed(2)*100}%`:'';
-            this.validatorsValue = `${data.Data[0].Block.LastCommit.Precommits.length} voting / ${data.Data[0].Validators.length} total`;
-            let that = this;
-            clearInterval(this.blocksTimer);
-            this.blocksTimer = setInterval(function () {
-              that.currentBlockHeight = data.Data[0].Height;
-              if(this.currentBlockHeight !== data.Data[0].Height){
-                that.lastBlockAgeTime = Global.formatAge(data.Data[0].Time)
+          },
+          beforeDestroy(){
+            window.removeEventListener('resize',this.onWindowResize);
+          },
+      methods: {
+          onresize(){
+              this.innerWidth = window.innerWidth;
+              if(window.innerWidth > 910){
+                  this.pageClassName = 'personal_computer_home_wrap';
+                  this.module_item_wrap = 'module_item_wrap_computer';
+                  if(document.getElementsByClassName('fixed_item_height').length > 0) {
+                      document.getElementsByClassName('fixed_item_height')[0].style.height = '6.55rem';
+                      document.getElementsByClassName('fixed_item_height')[1].style.height = '6.55rem';
+                  }
+              }else {
+                  this.pageClassName = 'mobile_home_wrap';
+                  this.module_item_wrap = 'module_item_wrap_mobile';
+                  if(document.getElementsByClassName('fixed_item_height').length > 0) {
+                      document.getElementsByClassName('fixed_item_height')[0].style.height = 'auto';
+                      document.getElementsByClassName('fixed_item_height')[1].style.height = 'auto';
+                  }
               }
-              that.blocksInformation = data.Data.map(item => {
-                return {
-                  Height: item.Height,
-                  Proposer: item.Hash,
-                  Txn: item.NumTxs,
-                  Time: Tools.conversionTimeToUTC(item.Time),
-                  Fee: '0 IRIS',
-                  ageTime: Global.formatAge(item.Time)
-                };
-              });
-            },1000);
-          }
-        }).catch(e => {
-          console.log(e)
-        })
-      },
-      skipValidators(){
-        this.$router.push('/validators/3/active');
-      },
-      getTransactionList() {
-        let url = `/api/txs/1/10`;
-        axios.get(url).then((data) => {
-          if (data.status === 200) {
-            return data.data;
-          }
-        }).then((data) => {
-          if(data.TransCnt){
-
-          }
-          if(data.Data){
-            let that = this;
-            this.transfersTimer = setInterval(function () {
-              that.transactionInformation = data.Data.map(item => {
-                let [Amount, Fee] = ['--', '--'];
-                if (item.Amount instanceof Array) {
-                  if(item.Amount.length > 0){
-                    item.Amount[0].amount = Tools.formatAmount(item.Amount[0].amount);
+          },
+          getBlocksStatusData() {
+              let url = `/api/chain/status`;
+              axios.get(url).then((data) => {
+                  if (data.status === 200) {
+                      return data.data;
                   }
-                  if(Tools.flTxType(item.Type)){
-                    Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
-                  }else {
-                    Amount = item.Amount.map(listItem => `${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
+              }).then((data) => {
+                  let num = data.TxCount;
+                  if(data && typeof data === "object") {
+                      if(data.TxCount > 1000000000){
+                          num = `${(data.TxCount/1000000000).toFixed(2)} B`;
+                      }else if(data.TxCount > 1000000){
+                          num = `${(data.TxCount/1000000).toFixed(2)} M`;
+                      }else if(data.TxCount > 1000){
+                          num = `${(data.TxCount/1000).toFixed(2)} K`;
                   }
-                } else if (item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')) {
-                  Amount = `${item.Amount.amount} ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
-                  if(Tools.flTxType(item.Type)){
-                    Amount = `${item.Amount.amount} SHARES`;
-                  }
-                } else if (item.Amount === null) {
-                  Amount = '';
-                }
-                if(item.ActualFee.amount && item.ActualFee.denom){
-                  Fee =  `${Tools.formatFeeToFixedNumber(item.ActualFee.amount)} ${Tools.formatDenom(item.ActualFee.denom).toUpperCase()}`;
-                }
-                return {
-                  TxHash: item.TxHash,
-                  From: item.From,
-                  To: item.To,
-                  Type: item.Type === 'coin'?'transfer':item.Type,
-                  Fee,
-                  Amount,
-                  Time: Tools.conversionTimeToUTC(item.Time),
-                  ageTime: Global.formatAge(item.Time)
-                };
+                  this.transactionValue = `${num}(${data.Tps.toFixed(2)} TPS)`;
+              }
+              }).catch(e => {
+                  console.log(e)
               })
-            },1000)
-          }
-        }).catch(e => {
-          console.log(e)
-        })
+          },
+          getValidatorsList() {
+              let url = `/api/stake/candidatesTop`;
+              axios.get(url).then((data) => {
+                  if (data.status === 200) {
+                      return data.data;
+                  }
+              }).then((data) => {
+                  let colors = ['#3498db', '#47a2df', '#59ade3', '#6cb7e7', '#7fc2eb', '#91ccef', '#a4d7f3', '#b7e1f7', '#c9ecfb', '#dcf6ff', '#DADDE3',];
+                  //跟series的name匹配
+                  let [seriesData, legendData] = [[], []];
+                  if (data.Candidates instanceof Array) {
+                    //计算前十的voting power总数；
+                      let totalCount = 0;
+                      data.Candidates.forEach(item=>totalCount += item.VotingPower);
+                      //其他部分的
+                      let others = data.PowerAll - totalCount;
+                      let monikerReserveLength = 10;
+                      let addressReserveLength = 6;
+                      let powerAll = data.PowerAll;
+                      for (let i = 0; i < data.Candidates.length; i++) {
+                        seriesData.push({
+                          value: data.Candidates[i].VotingPower,
+                          name: data.Candidates[i].Description.Moniker ? `${Tools.formatString(data.Candidates[i].Description.Moniker,monikerReserveLength,"...")} (${Tools.formatString(data.Candidates[i].Address,addressReserveLength,"...")})` : (data.Candidates[i].Address ? data.Candidates[i].Address : ''),
+                          itemStyle: {color: colors[i]},
+                          emphasis : {itemStyle:{color: colors[i]}},
+                          upTime:`${data.Candidates[i].Uptime}%`,
+                          address:data.Candidates[i].Address,
+                          powerAll,
+                        });
+                        legendData.push(data.Candidates[i].Description.Moniker ? `${Tools.formatString(data.Candidates[i].Description.Moniker,monikerReserveLength,"...")} (${Tools.formatString(data.Candidates[i].Address,addressReserveLength,"...")})` : (data.Candidates[i].Address ? data.Candidates[i].Address : ''))
+                      }
+
+                    if(others > 0 ){
+                      seriesData.push({
+                        value: others,
+                        name:'others',
+                        powerAll,
+                        itemStyle:{color:colors[10]},
+                      });
+                    }
+
+                  }
+                  this.information = {legendData, seriesData}
+
+              }).catch(e => {
+                console.log(e)
+              })
+          },
+        getTransactionHistory() {
+          let url = `/api/txsByDay`;
+          axios.get(url).then((data) => {
+            if (data.status === 200) {
+              return data.data;
+            }
+          }).then((data) => {
+            //找出最大的数据
+            let maxValue = 0;
+            if(data){
+              data.forEach(item=>{
+                if(item.Count > maxValue){
+                  maxValue = item.Count;
+                }
+              });
+              let xData = data.map(item=>`${String(item.Time).substr(5,2)}/${String(item.Time).substr(8,2)}/${String(item.Time).substr(0,4)}`);
+              let seriesData = data.map(item=>item.Count);
+              this.informationLine = {maxValue,xData,seriesData};
+            }
+          }).catch(e => {
+            console.log(e)
+          })
+        },
+        getBlocksList() {
+          let url = `/api/blocks/1/10`;
+          axios.get(url).then((data) => {
+            if (data.status === 200) {
+              return data.data;
+            }
+          }).then((data) => {
+            if(data.Data){
+              let denominator = 0;
+              data.Data[0].Validators.forEach(item=>denominator += item.VotingPower);
+              let numerator = 0;
+              for(let i = 0; i < data.Data[0].Block.LastCommit.Precommits.length; i++){
+                for (let j = 0; j < data.Data[0].Validators.length; j++){
+                  if(data.Data[0].Block.LastCommit.Precommits[i].ValidatorAddress === data.Data[0].Validators[j].Address){
+                    numerator += data.Data[0].Validators[j].VotingPower;
+                    break;
+                  }
+                }
+              }
+              this.votingPowerValue = denominator !== 0? `${(numerator/denominator).toFixed(2)*100}%`:'';
+              this.validatorsValue = `${data.Data[0].Block.LastCommit.Precommits.length} voting / ${data.Data[0].Validators.length} total`;
+              let that = this;
+              clearInterval(this.blocksTimer);
+              this.blocksTimer = setInterval(function () {
+                that.currentBlockHeight = data.Data[0].Height;
+                if(this.currentBlockHeight !== data.Data[0].Height){
+                  that.lastBlockAgeTime = Tools.formatAge(data.Data[0].Time);
+                }
+                that.blocksInformation = data.Data.map(item => {
+                  return {
+                    Height: item.Height,
+                    Proposer: item.Hash,
+                    Txn: item.NumTxs,
+                    Time: Tools.conversionUTCTime(item.Time),
+                    Fee: '0 IRIS',
+                    ageTime: Tools.formatAge(item.Time)
+                  };
+                });
+              },1000);
+            }
+          }).catch(e => {
+            console.log(e)
+          })
+        },
+        skipValidators(){
+          this.$router.push('/validators/3/active');
+        },
+        getTransactionList() {
+          let url = `/api/txs/1/10`;
+          axios.get(url).then((data) => {
+            if (data.status === 200) {
+              return data.data;
+            }
+          }).then((data) => {
+            if(data.TransCnt){
+
+            }
+            if(data.Data){
+              let that = this;
+              this.transfersTimer = setInterval(function () {
+                that.transactionInformation = data.Data.map(item => {
+                  let [Amount, Fee] = ['--', '--'];
+                  if(item.Amount){
+                    if (item.Amount instanceof Array) {
+                      if(item.Amount.length > 0){
+                        item.Amount[0].amount = Tools.formatAmount(item.Amount[0].amount);
+                      }
+                      if(Tools.flTxType(item.Type)){
+                        Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
+                      }else {
+                        Amount = item.Amount.map(listItem => `${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
+                      }
+                    } else if (item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')) {
+                      Amount = `${item.Amount.amount} ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
+                      if(Tools.flTxType(item.Type)){
+                        Amount = `${item.Amount.amount} SHARES`;
+                      }
+                    }
+                  }else {
+                    Amount = '';
+                  }
+                  if(item.ActualFee.amount && item.ActualFee.denom){
+                    Fee =  `${Tools.formatFeeToFixedNumber(item.ActualFee.amount)} ${Tools.formatDenom(item.ActualFee.denom).toUpperCase()}`;
+                  }
+                  return {
+                    TxHash: item.TxHash,
+                    From: item.From,
+                    To: item.To,
+                    Type: item.Type === 'coin'?'transfer':item.Type,
+                    Fee,
+                    Amount,
+                    Time: Tools.conversionUTCTime(item.Time),
+                    ageTime: Tools.formatAge(item.Time)
+                  };
+                })
+              },1000)
+            }
+          }).catch(e => {
+            console.log(e)
+          })
+        }
       }
-    }
   }
 </script>
 <style lang="scss">
   @import '../style/mixin.scss';
-
+  .red{
+    color: #d43f3a;
+  }
   .home_wrap {
     @include flex();
     @include pcContainer;
