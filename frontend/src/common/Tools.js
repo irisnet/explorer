@@ -14,10 +14,7 @@ export default class Tools{
     let minutes = Math.floor(minuteLevel / (60 * 1000));
     let secondLevel = minuteLevel % (60 * 1000) ;
     let seconds = Math.round(secondLevel / 1000);
-    return`${dayDiff?`${dayDiff}d`:''}
-        ${hours ? `${hours}h` : ''}
-        ${dayDiff && hours ? '' : (minutes ? `${minutes}m`:'')}
-        ${dayDiff || hours ? '' : (seconds ? `${seconds}s`:'')}`
+    return`${dayDiff?`${dayDiff}d`:''} ${hours ? `${hours}h` : ''} ${dayDiff && hours ? '' : (minutes ? `${minutes}m`:'')}${dayDiff || hours ? '' : (seconds ? `${seconds}s`:'')}`
   }
 
   /**
@@ -275,11 +272,11 @@ export default class Tools{
           if(item.Amount){
             if(item.Amount instanceof Array){
               if(item.Amount.length > 0){
-                item.Amount[0].cloneAmount = Tools.formatAmount(item.Amount[0].amount);
+                item.Amount[0].formatAmount = Tools.formatAmount(item.Amount[0].amount);
                 if(Tools.flTxType(item.Type)){
-                  Amount = item.Amount.map(listItem => `${listItem.cloneAmount} SHARES`).join(',');
+                  Amount = item.Amount.map(listItem => `${listItem.formatAmount} SHARES`).join(',');
                 }else {
-                  Amount = item.Amount.map(listItem=>`${listItem.cloneAmount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
+                  Amount = item.Amount.map(listItem=>`${listItem.formatAmount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
                 }
               }
             }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
@@ -290,8 +287,8 @@ export default class Tools{
             }
           }
           if(item.Fee.amount && item.Fee.denom){
-            let cloneFeeAmount = item.Fee.amount;
-            Fee = `${Tools.formatFeeToFixedNumber(cloneFeeAmount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`;
+            let feeAmount = item.Fee.amount;
+            Fee = `${Tools.formatFeeToFixedNumber(feeAmount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`;
           }
         }
         commonHeaderObjList = {
