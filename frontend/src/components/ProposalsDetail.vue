@@ -210,7 +210,7 @@
               if(data.votes){
                 this.count = data.votes.length;
                 this.items = data.votes.map(item =>{
-                  item.time = Tools.conversionTimeToUTC(item.time);
+                  item.time = Tools.format2UTC(item.time);
                   return {
                     Voter: item.voter,
                     "Vote Option": item.option,

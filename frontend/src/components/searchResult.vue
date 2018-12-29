@@ -135,14 +135,14 @@
                 searchResult.forEach((item) => {
                   if(item.Type == "block"){
                     that.blockHeight = item.Data.Height;
-                    that.blockTime = Tools.conversionTimeToUTC(item.Data.Timestamp);
+                    that.blockTime = Tools.format2UTC(item.Data.Timestamp);
                     that.blockHash = item.Data.Hash;
                   }else if(item.Type == "proposal"){
                     that.proposalId = item.Data.ProposalId;
                     that.proposalTitle = item.Data.Title;
                     that.proposalType = item.Data.Type;
                     that.proposalStatus = item.Data.Status;
-                    that.proposalTime = Tools.conversionTimeToUTC(item.Data.SubmitTime)
+                    that.proposalTime = Tools.format2UTC(item.Data.SubmitTime)
                   }
                 })
               }else {
