@@ -15,7 +15,7 @@
              <span style="cursor:pointer;" @click="skipRouter(item.Height?`/blocks_detail/${item.Height}`:`/tx?txHash=${item.TxHash}`)">{{item.Height?item.Height:`${item.TxHash.substr(0,16)}...`}}</span>
               </span>
             <span class="key_value_transfers_age" v-show="moduleName !== 'Blocks'"> > {{item.age}} ago</span>
-            <span class="key_value_block_age" v-show="moduleName == 'Blocks'">> {{item.age}} ago</span>
+            <span class="key_value_blocks_age" v-show="moduleName == 'Blocks'">> {{item.age}} ago</span>
           </div>
           <div class="key_value_wrap_bottom">
             <span class="blocks_module_props">{{item.Height?'Txn:':''}}</span>
@@ -208,7 +208,7 @@
               color: #A2A2AE;
               text-align: right;
             }
-            .key_value_block_age{
+            .key_value_blocks_age{
               display: inline-block;
               @include fontSize;
               color: #A2A2AE;
