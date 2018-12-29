@@ -74,7 +74,6 @@ import axios from 'axios';
                   innerWidth : window.innerWidth,
                   blocksTimer:null,
                   transfersTimer:null,
-                  testSetInterval:0,
               }
           },
           beforeMount() {
