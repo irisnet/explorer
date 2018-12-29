@@ -119,7 +119,7 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Age(Timestamp) :</span>
-          <span class="information_value">{{timestampAge}} ago ({{timestampValue}})</span>
+          <span class="information_value">{{ageValue}} ago ({{timestampValue}})</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Actual Tx Fee :</span>
@@ -199,7 +199,7 @@
         flShowWithdrawAddress: false,
         flShowDelegatorAddress: false,
         flShowValidatorAddress: false,
-        timestampAge: '',
+        ageValue: '',
         transactionDetailTimer: null,
       }
     },
@@ -217,7 +217,7 @@
       }
     },
     mounted() {
-      this.getTransactionInfo();
+      this.getTransactionInfo()
     },
     methods: {
       skipRoute(path) {
@@ -235,7 +235,7 @@
             if(data && typeof data === "object"){
               let that = this;
               this.transactionDetailTimer = setInterval(function () {
-                that.timestampAge = Tools.formatAge(data.Timestamp);
+                that.ageValue = Tools.formatAge(data.Timestamp);
               });
 
               this.timestampValue = Tools.format2UTC(data.Timestamp);

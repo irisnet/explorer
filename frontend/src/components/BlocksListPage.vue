@@ -180,8 +180,7 @@
           }).catch(e => {
             console.log(e)
           })
-        }
-        else if (type === '2') {
+        }else if (type === '2') {
           let url;
           let that = this;
           if(this.$route.params.param === 'Transfers'){
@@ -215,8 +214,7 @@
               }
             that.showLoading = false;
           })
-        }
-        else if (type === '3' || type === '4') {
+        }else if (type === '3' || type === '4') {
           let url;
           if(this.$route.params.param === "active"){
             this.listTitleName = "Active Validators";
