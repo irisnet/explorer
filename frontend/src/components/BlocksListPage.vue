@@ -41,7 +41,6 @@
   import axios from 'axios';
   import BlocksListTable from './table/BlocksListTable.vue';
   import SpinComponent from './commonComponents/SpinComponent';
-
   export default {
     components:{
       BlocksListTable,
@@ -59,6 +58,8 @@
 
       },
       $route() {
+        clearInterval(this.timer);
+        clearInterval(this.transactionTimer);
         this.items = [];
         this.type = this.$route.params.type;
         this.currentPage = 1;
@@ -89,6 +90,8 @@
         innerWidth : window.innerWidth,
         tableMinWidth:'',
         listTitleName:"",
+        timer: null,
+        transactionTimer: null,
       }
     },
     beforeMount() {
@@ -135,18 +138,17 @@
         this.showLoading = true;
         if (type === '1') {
           let url = `/api/blocks/${currentPage}/${pageSize}`;
-          if(this.$route.query.address){
-            url = `/api/blocks/precommits/${this.$route.query.address}/${currentPage}/${pageSize}`;
-            this.listTitleName = `Precommit by ${this.$route.query.address}`;
-          }
           axios.get(url).then((data) => {
             if (data.status === 200) {
               return data.data;
             }
           }).then((data) => {
-            this.count = data.Count;
             if(data.Data && typeof data === "object"){
-              this.items = data.Data.map(item => {
+              let that = this;
+              clearInterval(this.timer);
+              this.timer = setInterval(function () {
+                that.count = data.Count;
+                that.items = data.Data.map(item => {
                 let txn = item.NumTxs;
                 let precommit = item.Block.LastCommit.Precommits.length;
                 let [votingPower,denominator,numerator] = [0,0,0];
@@ -163,20 +165,23 @@
                 return {
                   Height: item.Height,
                   Txn:txn,
-                  Timestamp: Tools.conversionTimeToUTC(item.Time),
+                  Age: Tools.formatAge(item.Time),
                   'Precommit Validators':precommit,
                   'Voting Power': denominator !== 0? `${(numerator/denominator).toFixed(2)*100}%`:'',
                 };
               })
+            },1000)
+
             }else{
-              this.items = [{Height:'',Txn:'',Fee:'',Timestamp:'','Precommit Validators':'','Voting Power':''}];
+              this.items = [{Height:'',Txn:'',Fee:'',Age:'','Precommit Validators':'','Voting Power':''}];
               this.showNoData = true;
             }
             this.showLoading = false;
           }).catch(e => {
             console.log(e)
           })
-        } else if (type === '2') {
+        }
+        else if (type === '2') {
           let url;
           let that = this;
           if(this.$route.params.param === 'Transfers'){
@@ -199,15 +204,19 @@
             }
           }).then((data) => {
             that.count = data.Count;
+            clearInterval(this.transactionTimer);
             if(data.Data && data.Data !== null){
-              that.items = Tools.commonTxListItem(data.Data,that.$route.params.param)
-            }else{
-              that.items = Tools.commonTxListItem(null,that.$route.params.param);
-              that.showNoData = true;
-            }
+                that.transactionTimer = setInterval(function () {
+                that.items = Tools.commonTxListItem(data.Data,that.$route.params.param)
+                },1000);
+              }else{
+                that.items = Tools.commonTxListItem(null,that.$route.params.param);
+                that.showNoData = true;
+              }
             that.showLoading = false;
           })
-        }else if (type === '3' || type === '4') {
+        }
+        else if (type === '3' || type === '4') {
           let url;
           if(this.$route.params.param === "active"){
             this.listTitleName = "Active Validators";
@@ -228,15 +237,15 @@
               this.count = data.Count;
               if(this.$route.params.param === "active"){
                 if(data.Candidates){
-                  this.items = data.Candidates.map(item => {
-                    return {
-                      Address: item.Address,
-                      Name:Tools.formatString(item.Description.Moniker,20,"..."),
-                      'Voting Power':`${Tools.formatStringToFixedNumber(Tools.formatStringToNumber(item.OriginalTokens),2)} (${(item.OriginalTokens/data.PowerAll*100).toFixed(2)}%)`,
-                      'Uptime':`${item.Uptime}%`,
-                      'Bond Height': item.BondHeight
-                    };
-                  })
+                    this.items = data.Candidates.map(item => {
+                      return {
+                        Address: item.Address,
+                        Name:Tools.formatString(item.Description.Moniker,20,"..."),
+                        'Voting Power':`${Tools.formatStringToFixedNumber(Tools.formatStringToNumber(item.OriginalTokens),2)} (${(item.OriginalTokens/data.PowerAll*100).toFixed(2)}%)`,
+                        'Uptime':`${item.Uptime}%`,
+                        'Bond Height': item.BondHeight
+                      };
+                    })
                 }else{
                   this.showNoData = true;
                   this.items = [{

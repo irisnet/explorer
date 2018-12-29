@@ -122,6 +122,7 @@
     },
     data() {
       return {
+        transactionsTimer:null,
         devicesWidth: window.innerWidth,
         transactionsDetailWrap: 'personal_computer_transactions_detail',//1是显示pc端，0是移动端
         hashValue: '',
@@ -245,8 +246,11 @@
           that.showLoading = false;
           that.showNoData = false;
           that.count = data.Count;
+          clearInterval(this.transactionsTimer);
           if(data.Data && data.Data !== null){
-            that.items = Tools.commonTxListItem(data.Data,txTabName)
+            setInterval(function () {
+              that.items = Tools.commonTxListItem(data.Data,txTabName)
+            },1000);
           }else {
             that.showNoData = true;
             that.items = Tools.commonTxListItem(null,txTabName)

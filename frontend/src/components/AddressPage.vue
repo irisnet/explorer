@@ -192,6 +192,7 @@
       data() {
 
           return {
+              transactionTimer: null,
               devicesWidth: window.innerWidth,
               transactionsDetailWrap: 'personal_computer_transactions_detail',//1是显示pc端，0是移动端
               activeBtn:0,
@@ -366,8 +367,11 @@
           that.showLoading = false;
           that.showNoData = false;
           that.count = data.Count;
+          clearInterval(this.transactionTimer);
           if(data.Data && data.Data !== null){
-            that.items = Tools.commonTxListItem(data.Data,txTabName)
+            this.transactionTimer = setInterval(function () {
+              that.items = Tools.commonTxListItem(data.Data,txTabName)
+            },1000);
           }else {
             that.items = Tools.commonTxListItem(null,txTabName);
             that.showNoData = true;

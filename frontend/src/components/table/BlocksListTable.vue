@@ -12,6 +12,9 @@
       <template slot='Txn' slot-scope='data'>
         <span>{{data.item.Txn}}</span>
       </template>
+      <template slot='Age' slot-scope='data'>
+        <span> > {{data.item.Age}} ago</span>
+      </template>
     </b-table>
 
     <b-table :fields='fields' :items='items' striped v-if="type === '2'" class="block_style">
@@ -19,6 +22,9 @@
         <span class="skip_route" @click="skipRoute(`/tx?txHash=${data.item.TxHash}`)">
           {{data.item.TxHash?`${String(data.item.TxHash).substr(0,16)}...`:''}}
         </span>
+      </template>
+      <template slot='Age' slot-scope='data'>
+        <span> > {{data.item.Age}} ago</span>
       </template>
       <template slot='Block' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/blocks_detail/${data.item.Block}`)">
@@ -120,6 +126,9 @@
           {{data.item['Voter']}}
         </span>
       </template>
+      <template slot='Age' slot-scope='data'>
+        <span> > {{data.item}} ago</span>
+      </template>
     </b-table>
 
     <b-table :fields='fields' :items='items' striped v-if="type === 'addressTxList'" nodelabel >
@@ -127,6 +136,9 @@
         <span class="skip_route" @click="skipRoute(`/tx?txHash=${data.item.TxHash}`)">
           {{data.item['TxHash'] ? `${String(data.item.TxHash).substr(0,16)}...` : ''}}
         </span>
+      </template>
+      <template slot='Age' slot-scope='data'>
+        <span> > {{data.item.Age}} ago</span>
       </template>
       <template slot='Block' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/blocks_detail/${data.item.Block}`)">
@@ -350,6 +362,7 @@
   .pre_global_style{
     font-size: 0.14rem;
     color: #a2a2ae;
+    margin: 0;
   }
   .proposals_detail_table_wrap{
     tbody tr td:last-child{
@@ -363,5 +376,6 @@
   }
   pre{
     font-family: Arial !important;
+    margin: 0;
   }
 </style>

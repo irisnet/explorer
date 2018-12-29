@@ -275,11 +275,11 @@ export default class Tools{
           if(item.Amount){
             if(item.Amount instanceof Array){
               if(item.Amount.length > 0){
-                item.Amount[0].amount = Tools.formatAmount(item.Amount[0].amount);
+                item.Amount[0].cloneAmount = Tools.formatAmount(item.Amount[0].amount);
                 if(Tools.flTxType(item.Type)){
-                  Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
+                  Amount = item.Amount.map(listItem => `${listItem.cloneAmount} SHARES`).join(',');
                 }else {
-                  Amount = item.Amount.map(listItem=>`${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
+                  Amount = item.Amount.map(listItem=>`${listItem.cloneAmount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
                 }
               }
             }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
@@ -290,7 +290,8 @@ export default class Tools{
             }
           }
           if(item.Fee.amount && item.Fee.denom){
-            Fee = item.Fee.amount = `${Tools.formatFeeToFixedNumber(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`;
+            let cloneFeeAmount = item.Fee.amount;
+            Fee = `${Tools.formatFeeToFixedNumber(cloneFeeAmount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`;
           }
         }
         commonHeaderObjList = {
@@ -299,7 +300,7 @@ export default class Tools{
         };
         commonFooterObjList = {
           Status : Tools.firstWordUpperCase(item.Status),
-          Timestamp: Tools.formatAge(item.Timestamp)
+          Age: Tools.formatAge(item.Timestamp)
         };
         if(txType === 'Transfers' ){
           objList = {
@@ -309,9 +310,10 @@ export default class Tools{
             Fee,
           };
         }else if(txType === 'Declarations'){
+          let Moniker = item.Moniker;
           objList = {
             From: item.Owner ? item.Owner : "--",
-            Moniker: item.Moniker ? Tools.formatString(item.Moniker,20,"...") : "--",
+            Moniker: item.Moniker ? Tools.formatString(Moniker,20,"...") : "--",
             "Self-Bond": item.SelfBond && item.SelfBond.length > 0 ? `${Tools.formatAmount(item.SelfBond[0].amount)} ${Tools.formatDenom(item.SelfBond[0].denom).toUpperCase()}` : "--",
             Type: item.Type,
             Fee: `${Tools.formatFeeToFixedNumber(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`,
@@ -348,7 +350,7 @@ export default class Tools{
           Amount:'',
           Fee:'',
           Status: "",
-          Timestamp:'',
+          Age:'',
         }];
       }else if(txType === 'Declarations'){
         noObjList = [{
@@ -360,7 +362,7 @@ export default class Tools{
           Type:'',
           Fee:'',
           Status: "",
-          Timestamp:'',
+          Age:'',
         }];
       }else if(txType === 'Stakes'){
         noObjList = [{
@@ -372,7 +374,7 @@ export default class Tools{
           Amount:'',
           Fee:'',
           Status: "",
-          Timestamp:'',
+          Age:'',
         }];
       }else if(txType === 'Governance'){
         noObjList = [{
@@ -383,7 +385,7 @@ export default class Tools{
           Type:'',
           Fee:'',
           Status: "",
-          Timestamp:'',
+          Age:'',
         }];
       }
       return noObjList;
