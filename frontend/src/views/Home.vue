@@ -67,13 +67,14 @@ import axios from 'axios';
                   votingPowerValue: '',
                   blockHeightValue: '',
                   timestampValue: '',
-                  information: {},//饼图的所有信息
-                  informationLine: {},//折线图端所有信息
+                  information: {},
+                  informationLine: {},
                   blocksInformation: [],
                   transactionInformation: [],
                   innerWidth : window.innerWidth,
                   blocksTimer:null,
                   transfersTimer:null,
+                  testSetInterval:0,
               }
           },
           beforeMount() {
@@ -86,6 +87,7 @@ import axios from 'axios';
           mounted() {
               document.getElementById('router_wrap').addEventListener('click', this.hideFeature);
               let that =this;
+
               setInterval(function () {
                   that.getBlocksStatusData();
                   that.getBlocksList();
@@ -158,13 +160,10 @@ import axios from 'axios';
                   }
               }).then((data) => {
                   let colors = ['#3498db', '#47a2df', '#59ade3', '#6cb7e7', '#7fc2eb', '#91ccef', '#a4d7f3', '#b7e1f7', '#c9ecfb', '#dcf6ff', '#DADDE3',];
-                  //跟series的name匹配
                   let [seriesData, legendData] = [[], []];
                   if (data.Candidates instanceof Array) {
-                    //计算前十的voting power总数；
                       let totalCount = 0;
                       data.Candidates.forEach(item=>totalCount += item.VotingPower);
-                      //其他部分的
                       let others = data.PowerAll - totalCount;
                       let monikerReserveLength = 10;
                       let addressReserveLength = 6;
@@ -205,7 +204,6 @@ import axios from 'axios';
               return data.data;
             }
           }).then((data) => {
-            //找出最大的数据
             let maxValue = 0;
             if(data){
               data.forEach(item=>{
@@ -484,5 +482,8 @@ import axios from 'axios';
   .transactions_background_type{
     background: url('../assets/transactions.png') no-repeat 0 0.02rem;
     text-indent:0.2rem;
+  }
+  pre{
+    margin: 0!important;
   }
 </style>
