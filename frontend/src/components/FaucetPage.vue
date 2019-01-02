@@ -89,8 +89,7 @@
       }
     },
     beforeCreate(){
-      let faucet_url = this.faucet_url + "/account";
-      axios.get(faucet_url).then((data)=>{
+      axios.get("/api/faucet/account").then((data)=>{
         if(data.status === 200){
           return data.data;
         }
@@ -117,12 +116,14 @@
         this.insufficientBalanceStatus = true
       })
       },
+    created(){
+      let addr = this.$route.query.address;
+      if (addr && addr !== "") {
+        this.address = addr
+      }
+    },
     methods: {
       apply() {
-        /*if (document.getElementById("address").value === "") {
-          alert("address is empty");
-          return false;
-        }*/
         if(!this.errMsg && this.alertShowErrMsg === 'hidden'){
           this.alertShowErrMsg = 'visible';
           setTimeout(()=>{
@@ -135,7 +136,7 @@
         this.btninfo = "Sending";
         this.btnDisabled = true;
         this.showSendingImg = true;
-        axios.post(this.faucet_url + '/apply', JSON.stringify({
+        axios.post('/api/faucet/apply', JSON.stringify({
           address: this.address
         })).then(result => {
           let data = result.data;
