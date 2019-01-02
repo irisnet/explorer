@@ -12,7 +12,7 @@ import (
 func init() {
 
 	dialInfo := &mgo.DialInfo{
-		Addrs:     []string{conf.Get().Db.Url},
+		Addrs:     []string{conf.Get().Db.Addr},
 		Database:  conf.Get().Db.Database,
 		Username:  conf.Get().Db.UserName,
 		Password:  conf.Get().Db.Password,
