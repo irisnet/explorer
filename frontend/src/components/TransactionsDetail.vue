@@ -118,8 +118,8 @@
           <span class="information_value">{{status}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Timestamp :</span>
-          <span class="information_value">{{timestampValue}}</span>
+          <span class="information_props">Age(Timestamp) :</span>
+          <span class="information_value">{{ageValue}} ago ({{timestampValue}})</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Actual Tx Fee :</span>
@@ -199,6 +199,8 @@
         flShowWithdrawAddress: false,
         flShowDelegatorAddress: false,
         flShowValidatorAddress: false,
+        ageValue: '',
+        transactionDetailTimer: null,
       }
     },
     watch:{
@@ -229,11 +231,17 @@
               return data.data;
             }
           }).then((data)=>{
+            clearInterval(this.transactionDetailTimer)
             if(data && typeof data === "object"){
+              let that = this;
+              this.transactionDetailTimer = setInterval(function () {
+                that.ageValue = Tools.formatAge(data.Timestamp);
+              });
+
+              this.timestampValue = Tools.format2UTC(data.Timestamp);
               this.hashValue = data.Hash;
               this.blockValue = data.BlockHeight;
               this.typeValue = data.Type === 'coin'?'transfer':data.Type;
-              this.timestampValue = Tools.format2UTC(data.Timestamp);
               this.gasPrice = Tools.convertScientificNotation2Number(Tools.formaNumberAboutGasPrice(data.GasPrice));
               this.gasLimit = data.GasLimit;
               this.gasUsedByTxn = data.GasUsed;

@@ -3,10 +3,9 @@
  */
 import BigNumber from 'bignumber.js';
 export default class Tools{
-  static formatAge(time){
+  static formatAge(Sysdate,time){
     let dateBegin = new Date(time);
-    let dateEnd = new Date();
-    let dateDiff = dateEnd.getTime() - dateBegin.getTime();
+    let dateDiff = Sysdate*1000 - dateBegin.getTime();
     let dayDiff = Math.floor(dateDiff / (24 * 3600 * 1000));
     let hourLevel = dateDiff % (24 * 3600 * 1000);
     let hours = Math.floor(hourLevel / (3600 * 1000));
@@ -14,12 +13,13 @@ export default class Tools{
     let minutes = Math.floor(minuteLevel / (60 * 1000));
     let secondLevel = minuteLevel % (60 * 1000) ;
     let seconds = Math.round(secondLevel / 1000);
-    return`${dayDiff?`${dayDiff}d`:''}
-        ${hours ? `${hours}h` : ''}
-        ${dayDiff && hours ? '' : (minutes ? `${minutes}m`:'')}
-        ${dayDiff || hours ? '' : (seconds ? `${seconds}s`:'')}`
+    return`${dayDiff?`${dayDiff}d`:''} ${hours ? `${hours}h` : ''} ${dayDiff && hours ? '' : (minutes ? `${minutes}m`:'')} ${dayDiff || hours ? '' : (seconds ? `${seconds}s`:'')}`
   }
-
+  static getDiffMilliseconds(Sysdate,time){
+    let dateBegin = new Date(time);
+    let dateDiff = Sysdate*1000 - dateBegin.getTime();
+    return dateDiff
+  }
   /**
    * 判断当前是移动端还是pc端
    * param void;
@@ -266,7 +266,7 @@ export default class Tools{
     });
   }
 
-  static commonTxListItem(list,txType){
+  static formatTxList(list,txType){
     if(list !== null){
       return list.map(item => {
         let [Amount,Fee] = ['--','--'];
@@ -275,11 +275,11 @@ export default class Tools{
           if(item.Amount){
             if(item.Amount instanceof Array){
               if(item.Amount.length > 0){
-                item.Amount[0].amount = Tools.formatAmount(item.Amount[0].amount);
+                item.Amount[0].formatAmount = Tools.formatAmount(item.Amount[0].amount);
                 if(Tools.flTxType(item.Type)){
-                  Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
+                  Amount = item.Amount.map(listItem => `${listItem.formatAmount} SHARES`).join(',');
                 }else {
-                  Amount = item.Amount.map(listItem=>`${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
+                  Amount = item.Amount.map(listItem=>`${listItem.formatAmount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
                 }
               }
             }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
@@ -290,7 +290,8 @@ export default class Tools{
             }
           }
           if(item.Fee.amount && item.Fee.denom){
-            Fee = item.Fee.amount = `${Tools.formatFeeToFixedNumber(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`;
+            let feeAmount = item.Fee.amount;
+            Fee = `${Tools.formatFeeToFixedNumber(feeAmount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`;
           }
         }
         commonHeaderObjList = {
@@ -299,7 +300,7 @@ export default class Tools{
         };
         commonFooterObjList = {
           Status : Tools.firstWordUpperCase(item.Status),
-          Timestamp: Tools.formatAge(item.Timestamp)
+          Age: Tools.formatAge(item.Timestamp)
         };
         if(txType === 'Transfers' ){
           objList = {
@@ -309,9 +310,10 @@ export default class Tools{
             Fee,
           };
         }else if(txType === 'Declarations'){
+          let Moniker = item.Moniker;
           objList = {
             From: item.Owner ? item.Owner : "--",
-            Moniker: item.Moniker ? Tools.formatString(item.Moniker,20,"...") : "--",
+            Moniker: item.Moniker ? Tools.formatString(Moniker,20,"...") : "--",
             "Self-Bond": item.SelfBond && item.SelfBond.length > 0 ? `${Tools.formatAmount(item.SelfBond[0].amount)} ${Tools.formatDenom(item.SelfBond[0].denom).toUpperCase()}` : "--",
             Type: item.Type,
             Fee: `${Tools.formatFeeToFixedNumber(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`,
@@ -348,7 +350,7 @@ export default class Tools{
           Amount:'',
           Fee:'',
           Status: "",
-          Timestamp:'',
+          Age:'',
         }];
       }else if(txType === 'Declarations'){
         noObjList = [{
@@ -360,7 +362,7 @@ export default class Tools{
           Type:'',
           Fee:'',
           Status: "",
-          Timestamp:'',
+          Age:'',
         }];
       }else if(txType === 'Stakes'){
         noObjList = [{
@@ -372,7 +374,7 @@ export default class Tools{
           Amount:'',
           Fee:'',
           Status: "",
-          Timestamp:'',
+          Age:'',
         }];
       }else if(txType === 'Governance'){
         noObjList = [{
@@ -383,7 +385,7 @@ export default class Tools{
           Type:'',
           Fee:'',
           Status: "",
-          Timestamp:'',
+          Age:'',
         }];
       }
       return noObjList;

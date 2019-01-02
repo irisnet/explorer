@@ -5,7 +5,7 @@
         <span class="transactions_detail_title">Address</span>
         <span class="transactions_detail_wrap_hash_var">
           {{address}}
-          <i v-if="showProfile" :style="{background:validatorsStatusColor}">v</i>
+          <i v-if="showProfile" :style="{background:validatorStatusColor}">v</i>
             <span v-show="flShowValidatorCandidate && showProfile" class="candidate_validator">(This Validator is a Candidate)</span>
             <span v-show="flShowValidatorJailed && showProfile" class="jailed_validator">(This Validator is jailed!)</span>
         </span>
@@ -155,13 +155,14 @@
 </template>
 
 <script>
-  import Tools from '../common/Tools';
+  import Tools from '../util/Tools';
   import axios from 'axios';
   import BlocksListTable from './table/BlocksListTable';
   import EchartsLine from "./EchartsLine";
   import EchartsValidatorsLine from "./EchartsValidatorsLine";
   import EchartsValidatorsUptimeLine from "./EchartsValidatorsUpTimeLine";
   import SpinComponent from './commonComponents/SpinComponent';
+  import Service from "../util/axios"
   export default {
       watch:{
           currentPage(currentPage) {
@@ -192,8 +193,9 @@
       data() {
 
           return {
+              transactionTimer: null,
               devicesWidth: window.innerWidth,
-              transactionsDetailWrap: 'personal_computer_transactions_detail',//1是显示pc端，0是移动端
+              transactionsDetailWrap: 'personal_computer_transactions_detail',
               activeBtn:0,
               currentPage: 1,
               pageSize: 20,
@@ -221,13 +223,13 @@
               type:this.$route.params.type,
               totalBlocks:0,
               totalFee:0,
-              TransactionsShowNoData:false,//无数据的时候显示无数据状态
+              TransactionsShowNoData:false,
               PrecommitBlocksshowNoData:false,
               transactionsCount:0,
               showProfile:true,
-              showNoData:false,//是否显示列表的无数据
+              showNoData:false,
               showLoading:false,
-              informationValidatorsLine: {},//折线图端所有信息
+              informationValidatorsLine: {},
               informationUptimeLine:{},
               transactionsTitle: "",
               count: 0,
@@ -240,7 +242,7 @@
               flShowValidatorJailed: false,
               flShowValidatorCandidate: false,
               flShowUptime: true,
-              validatorsStatusColor:"#3598db",
+              validatorStatusColor:"#3598db",
               tabVotingPower:[
                 {
                   "title":"14days",
@@ -322,11 +324,7 @@
     methods: {
       getAddressTxStatistics(){
         let url = `/api/txs/statistics?address=${this.$route.params.param}`;
-        axios.get(url).then((data) => {
-          if(data.status === 200){
-            return data.data
-          }
-        }).then((data) => {
+        Service.http(url).then((data) => {
           if(data){
             this.txTab[0].txTotal= data.TransCnt;
             this.txTab[1].txTotal = data.StakeCnt;
@@ -358,18 +356,17 @@
         }else if(txTabName === 'Governance'){
           url = `/api/tx/gov/${currentPage}/${pageSize}?address=${this.$route.params.param}`
         }
-        axios.get(url).then((data) => {
-          if(data.status === 200){
-            return data.data;
-          }
-        }).then((data) => {
-          that.showLoading = false;
-          that.showNoData = false;
-          that.count = data.Count;
-          if(data.Data && data.Data !== null){
-            that.items = Tools.commonTxListItem(data.Data,txTabName)
+        Service.http(url).then((data) => {
+          this.showLoading = false;
+          this.showNoData = false;
+          this.count = data.Count;
+          clearInterval(this.transactionTimer);
+          if(data.Data){
+            this.transactionTimer = setInterval(function () {
+              that.items = Tools.formatTxList(data.Data,txTabName)
+            },1000);
           }else {
-            that.items = Tools.commonTxListItem(null,txTabName);
+            that.items = Tools.formatTxList(null,txTabName);
             that.showNoData = true;
           }
         })
@@ -377,13 +374,9 @@
       getAddressInformation(address){
         this.address = address;
         let url = `/api/account/${this.$route.params.param}`;
-        axios.get(url).then((data)=>{
-          if(data.status === 200){
-            return data.data;
-          }
-        }).then((validatorAddressInformation)=>{
+        Service.http(url).then((validatorAddressInformation)=>{
           let Amount = '--';
-          if(validatorAddressInformation && typeof validatorAddressInformation === "object"){
+          if(validatorAddressInformation){
             if(validatorAddressInformation.Amount){
               if(validatorAddressInformation.Amount instanceof Array){
                 if(validatorAddressInformation.Amount.length > 0 ){
@@ -407,36 +400,32 @@
       },
       getProfileInformation(){
         let url = `/api/stake/candidate/${this.$route.params.param}`;
-        axios.get(url).then((data)=>{
-          if(data.status === 200){
-            return data.data;
-          }
-        }).then((validators)=>{
-          if(validators && typeof validators === "object"){
-            if(validators.Jailed === true){
+        Service.http(url).then((validator)=>{
+          if(validator){
+            if(validator.Jailed === true){
               this.flShowUptime = false;
               this.flShowValidatorJailed = true;
-              this.validatorsStatusColor = "#f00";
-              this.votingPowerValue = Tools.formatStringToNumber(validators.OriginalTokens);
+              this.validatorStatusColor = "#f00";
+              this.votingPowerValue = Tools.formatStringToNumber(validator.OriginalTokens);
             }else{
-              if(validators.Status === 'Unbonded' || validators.Status === 'Unbonding' ){
+              if(validator.Status === 'Unbonded' || validator.Status === 'Unbonding' ){
                 this.flShowValidatorCandidate = true;
-                this.validatorsStatusColor = "#45B035";
+                this.validatorStatusColor = "#45B035";
                 this.flShowUptime = false;
-                this.votingPowerValue = Tools.formatStringToNumber(validators.OriginalTokens);
-              }else if(validators.Status === "Bonded"){
-                this.bondHeightValue = validators.BondHeight;
-                this.votingPowerValue = validators.OriginalTokens ? `${Tools.formatStringToNumber(validators.OriginalTokens)} (${(validators.OriginalTokens/validators.PowerAll*100).toFixed(2)}%)` : "--";
+                this.votingPowerValue = Tools.formatStringToNumber(validator.OriginalTokens);
+              }else if(validator.Status === "Bonded"){
+                this.bondHeightValue = validator.BondHeight;
+                this.votingPowerValue = validator.OriginalTokens ? `${Tools.formatStringToNumber(validator.OriginalTokens)} (${(validator.OriginalTokens/validator.PowerAll*100).toFixed(2)}%)` : "--";
               }
             }
-            this.identity = validators.Description.Identity ? validators.Description.Identity : "--";
-            this.nameValue = validators.Description.Moniker ? validators.Description.Moniker : '--';
-            this.pubKeyValue = validators.PubKey ? validators.PubKey : "--";
-            this.websiteValue = validators.Description.Website?validators.Description.Website:'--';
-            this.descriptionValue= validators.Description.Details ? validators.Description.Details : "--";
+            this.identity = validator.Description.Identity ? validator.Description.Identity : "--";
+            this.nameValue = validator.Description.Moniker ? validator.Description.Moniker : '--';
+            this.pubKeyValue = validator.PubKey ? validator.PubKey : "--";
+            this.websiteValue = validator.Description.Website?validator.Description.Website:'--';
+            this.descriptionValue= validator.Description.Details ? validator.Description.Details : "--";
             this.commissionRateValue = '';
             this.announcementValue = '';
-            this.operatorValue = this.$Codec.Bech32.toBech32(this.$Crypto.Constants.IRIS.IrisNetConfig.PREFIX_BECH32_ACCADDR,this.$Codec.Bech32.fromBech32(validators.Address));
+            this.operatorValue = this.$Codec.Bech32.toBech32(this.$Crypto.Constants.IRIS.IrisNetConfig.PREFIX_BECH32_ACCADDR,this.$Codec.Bech32.fromBech32(validator.Address));
             this.showProfile = true;
           }else{
             this.showProfile = false;
@@ -448,33 +437,24 @@
       },
       getCurrentTenureInformation(){
         let url = `/api/stake/candidate/${this.$route.params.param}/status`;
-        axios.get(url).then((data)=>{
-          if(data.status === 200){
-            return data.data;
-          }
-        }).then((data)=>{
-          if(data && typeof data === "object"){
+        Service.http(url).then((data)=>{
+          if(data){
             this.precommitedBlocksValue = data.PrecommitCount ? data.PrecommitCount : '--';
             this.returnsValue = '';
             this.firstPercent = data.Uptime ? `${data.Uptime}%` : "--";
           }
-
         }).catch(err => {
           console.error(err)
         })
       },
       getTransactionsList(){
         let url = `/api/txsByAddress/${this.$route.params.param}/1/30`;
-        axios.get(url).then((data)=>{
-          if(data.status === 200){
-            return data.data;
+        Service.http(url).then((data)=>{
+          if(data){
+            this.transactionsCount = data.Count;
+            this.transactionsValue = data.Count;
+            this.TransactionsShowNoData = true;
           }
-        }).then((data)=>{
-
-          this.transactionsCount = data.Count;
-          this.transactionsValue = data.Count;
-
-          this.TransactionsShowNoData = true;
         }).catch(e => {
           console.error(e)
         })
@@ -494,12 +474,8 @@
         }else if(tabTime == "60days"){
           url = `/api/stake/candidate/${this.$route.params.param}/power/months`;
         }
-        axios.get(url).then((data)=>{
-          if(data.status === 200){
-            return data.data;
-          }
-        }).then((validatorVotingPowerList)=>{
-          if(validatorVotingPowerList && typeof validatorVotingPowerList === "object"){
+        Service.http(url).then((validatorVotingPowerList)=>{
+          if(validatorVotingPowerList){
             let seriesData = [], noDatayAxisDefaultMaxByValidators;
             let maxPowerValue = 0;
             validatorVotingPowerList.forEach(item=>{
@@ -538,13 +514,8 @@
         }else if(tabTime == "30days"){
           url = `/api/stake/candidate/${this.$route.params.param}/uptime/month `;
         }
-        axios.get(url).then((data)=>{
-
-          if(data.status === 200){
-            return data.data;
-          }
-        }).then((data)=>{
-          if(data && typeof data === "object") {
+        Service.http(url).then((data)=>{
+          if(data) {
             data.forEach(item => {
               let notValidatorTag = -1;
               if(item.Uptime === notValidatorTag){
