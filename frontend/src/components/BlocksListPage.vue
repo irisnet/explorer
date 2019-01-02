@@ -37,8 +37,9 @@
 </template>
 
 <script>
-  import Tools from '../common/Tools';
+  import Tools from '../util/Tools';
   import axios from 'axios';
+  import Service from "../util/axios"
   import BlocksListTable from './table/BlocksListTable.vue';
   import SpinComponent from './commonComponents/SpinComponent';
   export default {
@@ -134,21 +135,15 @@
           this.tableMinWidth = 8.1;
         }
       },
-      getDataList(currentPage, pageSize, type) {
-        this.showLoading = true;
-        if (type === '1') {
-          let url = `/api/blocks/${currentPage}/${pageSize}`;
-          axios.get(url).then((data) => {
-            if (data.status === 200) {
-              return data.data;
-            }
-          }).then((data) => {
-            if(data.Data && typeof data === "object"){
-              let that = this;
-              clearInterval(this.timer);
-              this.timer = setInterval(function () {
-                that.count = data.Count;
-                that.items = data.Data.map(item => {
+      getBlockList(currentPage, pageSize){
+        let url = `/api/blocks/${currentPage}/${pageSize}`;
+        Service.http(url).then((data) => {
+          if(data){
+            let that = this;
+            clearInterval(this.timer);
+            this.timer = setInterval(function () {
+              that.count = data.Count;
+              that.items = data.Data.map(item => {
                 let txn = item.NumTxs;
                 let precommit = item.Block.LastCommit.Precommits.length;
                 let [votingPower,denominator,numerator] = [0,0,0];
@@ -172,132 +167,135 @@
               })
             },1000)
 
-            }else{
-              this.items = [{Height:'',Txn:'',Fee:'',Age:'','Precommit Validators':'','Voting Power':''}];
-              this.showNoData = true;
-            }
-            this.showLoading = false;
-          }).catch(e => {
-            console.log(e)
-          })
-        }else if (type === '2') {
-          let url;
-          let that = this;
-          if(this.$route.params.param === 'Transfers'){
-            this.listTitleName = "Transfers";
-            url = `/api/tx/trans/${currentPage}/${pageSize}`
-          }else if(this.$route.params.param === 'Stakes'){
-            this.listTitleName = "Stakes";
-            url = `/api/tx/stake/${currentPage}/${pageSize}`
-
-          }else if(this.$route.params.param === 'Declarations'){
-            this.listTitleName = "Declarations";
-            url = `/api/tx/declaration/${currentPage}/${pageSize}`
-          }else if(this.$route.params.param === 'Governance'){
-            this.listTitleName = "Governance";
-            url = `/api/tx/gov/${currentPage}/${pageSize}`
-          }
-          axios.get(url).then((data) => {
-            if (data.status === 200) {
-              return data.data;
-            }
-          }).then((data) => {
-            that.count = data.Count;
-            clearInterval(this.transactionTimer);
-            if(data.Data && data.Data !== null){
-                that.transactionTimer = setInterval(function () {
-                that.items = Tools.commonTxListItem(data.Data,that.$route.params.param)
-                },1000);
-              }else{
-                that.items = Tools.commonTxListItem(null,that.$route.params.param);
-                that.showNoData = true;
-              }
-            that.showLoading = false;
-          })
-        }else if (type === '3' || type === '4') {
-          let url;
-          if(this.$route.params.param === "active"){
-            this.listTitleName = "Active Validators";
-            url = `/api/stake/validators/${currentPage}/${pageSize}`;
-          }else if(this.$route.params.param === "jailed"){
-            this.listTitleName = "Jailed Validators";
-            url = `/api/stake/revokedVal/${currentPage}/${pageSize}`;
-          }else if(this.$route.params.param === "candidates"){
-            this.listTitleName = "Validator Candidates";
-            url = `/api/stake/candidates/${currentPage}/${pageSize}`;
-          }
-          axios.get(url).then((data) => {
-            if (data.status === 200) {
-              return data.data;
-            }
-          }).then((data) => {
-            if(data && typeof data === "object"){
-              this.count = data.Count;
-              if(this.$route.params.param === "active"){
-                if(data.Candidates){
-                    this.items = data.Candidates.map(item => {
-                      return {
-                        Address: item.Address,
-                        Name:Tools.formatString(item.Description.Moniker,20,"..."),
-                        'Voting Power':`${Tools.formatStringToFixedNumber(Tools.formatStringToNumber(item.OriginalTokens),2)} (${(item.OriginalTokens/data.PowerAll*100).toFixed(2)}%)`,
-                        'Uptime':`${item.Uptime}%`,
-                        'Bond Height': item.BondHeight
-                      };
-                    })
-                }else{
-                  this.showNoData = true;
-                  this.items = [{
-                    Address: '',
-                    Name:'',
-                    'Voting Power':'',
-                    'Uptime':'',
-                  }]
-                }
-              }else if(this.$route.params.param === "jailed"){
-                if(data.Candidates){
-                  this.items = data.Candidates.map(item => {
-                    return {
-                      Address: item.Address,
-                      Name:Tools.formatString(item.Description.Moniker,20,"..."),
-                      'Voting Power':Tools.formatStringToFixedNumber(Tools.formatStringToNumber(item.OriginalTokens),2),
-                    };
-
-                  })
-                }else{
-                  this.showNoData = true;
-                  this.items = [{
-                    Address: '',
-                    Name:'',
-                    'Voting Power':'',
-                  }]
-                }
-              }else if(this.$route.params.param === "candidates"){
-                if(data.Candidates){
-                  this.items = data.Candidates.map(item => {
-                    return {
-                      Address: item.Address,
-                      Name: Tools.formatString(item.Description.Moniker,20,"..."),
-                      'Voting Power': Tools.formatStringToFixedNumber(Tools.formatStringToNumber(item.OriginalTokens),2),
-                      'Declare Height' : item.BondHeight
-                    };
-                  })
-                }else{
-                  this.showNoData = true;
-                  this.items = [{
-                    Address: '',
-                    Name:'',
-                    'Voting Power':'',
-                    'Declare Height' :""
-                  }]
-                }
-              }
-            }
-            this.showLoading = false;
-          }).catch(e => {
-            this.showLoading = false;
+          }else{
+            this.items = [{Height:'',Txn:'',Fee:'',Age:'','Precommit Validators':'','Voting Power':''}];
             this.showNoData = true;
-            console.log(e)
-          })
+          }
+          this.showLoading = false;
+        }).catch(e => {
+          console.log(e)
+        })
+      },
+      getTransactionList(currentPage, pageSize){
+        let url;
+        let that = this;
+        if(this.$route.params.param === 'Transfers'){
+          this.listTitleName = "Transfers";
+          url = `/api/tx/trans/${currentPage}/${pageSize}`
+        }else if(this.$route.params.param === 'Stakes'){
+          this.listTitleName = "Stakes";
+          url = `/api/tx/stake/${currentPage}/${pageSize}`
+
+        }else if(this.$route.params.param === 'Declarations'){
+          this.listTitleName = "Declarations";
+          url = `/api/tx/declaration/${currentPage}/${pageSize}`
+        }else if(this.$route.params.param === 'Governance'){
+          this.listTitleName = "Governance";
+          url = `/api/tx/gov/${currentPage}/${pageSize}`
+        }
+        Service.http(url).then((data) => {
+          that.count = data.Count;
+          clearInterval(this.transactionTimer);
+          if(data){
+            that.transactionTimer = setInterval(function () {
+              that.items = Tools.formatTxList(data.Data,that.$route.params.param)
+            },1000);
+          }else{
+            that.items = Tools.formatTxList(null,that.$route.params.param);
+            that.showNoData = true;
+          }
+          that.showLoading = false;
+        })
+      },
+      getValidatorList(currentPage, pageSize){
+        let url;
+        if(this.$route.params.param === "active"){
+          this.listTitleName = "Active Validators";
+          url = `/api/stake/validators/${currentPage}/${pageSize}`;
+        }else if(this.$route.params.param === "jailed"){
+          this.listTitleName = "Jailed Validators";
+          url = `/api/stake/revokedVal/${currentPage}/${pageSize}`;
+        }else if(this.$route.params.param === "candidates"){
+          this.listTitleName = "Validator Candidates";
+          url = `/api/stake/candidates/${currentPage}/${pageSize}`;
+        }
+        Service.http(url).then((data) => {
+          if(data){
+            this.count = data.Count;
+            if(this.$route.params.param === "active"){
+              if(data.Candidates){
+                this.items = data.Candidates.map(item => {
+                  return {
+                    Address: item.Address,
+                    Name:Tools.formatString(item.Description.Moniker,20,"..."),
+                    'Voting Power':`${Tools.formatStringToFixedNumber(Tools.formatStringToNumber(item.OriginalTokens),2)} (${(item.OriginalTokens/data.PowerAll*100).toFixed(2)}%)`,
+                    'Uptime':`${item.Uptime}%`,
+                    'Bond Height': item.BondHeight
+                  };
+                })
+              }else{
+                this.showNoData = true;
+                this.items = [{
+                  Address: '',
+                  Name:'',
+                  'Voting Power':'',
+                  'Uptime':'',
+                }]
+              }
+            }else if(this.$route.params.param === "jailed"){
+              if(data.Candidates){
+                this.items = data.Candidates.map(item => {
+                  return {
+                    Address: item.Address,
+                    Name:Tools.formatString(item.Description.Moniker,20,"..."),
+                    'Voting Power':Tools.formatStringToFixedNumber(Tools.formatStringToNumber(item.OriginalTokens),2),
+                  };
+
+                })
+              }else{
+                this.showNoData = true;
+                this.items = [{
+                  Address: '',
+                  Name:'',
+                  'Voting Power':'',
+                }]
+              }
+            }else if(this.$route.params.param === "candidates"){
+              if(data.Candidates){
+                this.items = data.Candidates.map(item => {
+                  return {
+                    Address: item.Address,
+                    Name: Tools.formatString(item.Description.Moniker,20,"..."),
+                    'Voting Power': Tools.formatStringToFixedNumber(Tools.formatStringToNumber(item.OriginalTokens),2),
+                    'Declare Height' : item.BondHeight
+                  };
+                })
+              }else{
+                this.showNoData = true;
+                this.items = [{
+                  Address: '',
+                  Name:'',
+                  'Voting Power':'',
+                  'Declare Height' :""
+                }]
+              }
+            }
+          }
+          this.showLoading = false;
+        }).catch(e => {
+          this.showLoading = false;
+          this.showNoData = true;
+          console.log(e)
+        })
+      },
+      getDataList(currentPage, pageSize, type) {
+        this.showLoading = true;
+        if (type === '1') {
+          this.getBlockList(currentPage, pageSize);
+        }else if (type === '2') {
+          this.getTransactionList(currentPage, pageSize)
+        }else if (type === '3' || type === '4') {
+          this.getValidatorList(currentPage, pageSize)
         }
 
       }

@@ -155,13 +155,14 @@
 </template>
 
 <script>
-  import Tools from '../common/Tools';
+  import Tools from '../util/Tools';
   import axios from 'axios';
   import BlocksListTable from './table/BlocksListTable';
   import EchartsLine from "./EchartsLine";
   import EchartsValidatorsLine from "./EchartsValidatorsLine";
   import EchartsValidatorsUptimeLine from "./EchartsValidatorsUpTimeLine";
   import SpinComponent from './commonComponents/SpinComponent';
+  import Service from "../util/axios"
   export default {
       watch:{
           currentPage(currentPage) {
@@ -194,7 +195,7 @@
           return {
               transactionTimer: null,
               devicesWidth: window.innerWidth,
-              transactionsDetailWrap: 'personal_computer_transactions_detail',//1是显示pc端，0是移动端
+              transactionsDetailWrap: 'personal_computer_transactions_detail',
               activeBtn:0,
               currentPage: 1,
               pageSize: 20,
@@ -222,13 +223,13 @@
               type:this.$route.params.type,
               totalBlocks:0,
               totalFee:0,
-              TransactionsShowNoData:false,//无数据的时候显示无数据状态
+              TransactionsShowNoData:false,
               PrecommitBlocksshowNoData:false,
               transactionsCount:0,
               showProfile:true,
-              showNoData:false,//是否显示列表的无数据
+              showNoData:false,
               showLoading:false,
-              informationValidatorsLine: {},//折线图端所有信息
+              informationValidatorsLine: {},
               informationUptimeLine:{},
               transactionsTitle: "",
               count: 0,
@@ -323,11 +324,7 @@
     methods: {
       getAddressTxStatistics(){
         let url = `/api/txs/statistics?address=${this.$route.params.param}`;
-        axios.get(url).then((data) => {
-          if(data.status === 200){
-            return data.data
-          }
-        }).then((data) => {
+        Service.http(url).then((data) => {
           if(data){
             this.txTab[0].txTotal= data.TransCnt;
             this.txTab[1].txTotal = data.StakeCnt;
@@ -359,21 +356,17 @@
         }else if(txTabName === 'Governance'){
           url = `/api/tx/gov/${currentPage}/${pageSize}?address=${this.$route.params.param}`
         }
-        axios.get(url).then((data) => {
-          if(data.status === 200){
-            return data.data;
-          }
-        }).then((data) => {
-          that.showLoading = false;
-          that.showNoData = false;
-          that.count = data.Count;
+        Service.http(url).then((data) => {
+          this.showLoading = false;
+          this.showNoData = false;
+          this.count = data.Count;
           clearInterval(this.transactionTimer);
-          if(data.Data && data.Data !== null){
+          if(data.Data){
             this.transactionTimer = setInterval(function () {
-              that.items = Tools.commonTxListItem(data.Data,txTabName)
+              that.items = Tools.formatTxList(data.Data,txTabName)
             },1000);
           }else {
-            that.items = Tools.commonTxListItem(null,txTabName);
+            that.items = Tools.formatTxList(null,txTabName);
             that.showNoData = true;
           }
         })
@@ -381,13 +374,9 @@
       getAddressInformation(address){
         this.address = address;
         let url = `/api/account/${this.$route.params.param}`;
-        axios.get(url).then((data)=>{
-          if(data.status === 200){
-            return data.data;
-          }
-        }).then((validatorAddressInformation)=>{
+        Service.http(url).then((validatorAddressInformation)=>{
           let Amount = '--';
-          if(validatorAddressInformation && typeof validatorAddressInformation === "object"){
+          if(validatorAddressInformation !== null){
             if(validatorAddressInformation.Amount){
               if(validatorAddressInformation.Amount instanceof Array){
                 if(validatorAddressInformation.Amount.length > 0 ){
@@ -411,12 +400,8 @@
       },
       getProfileInformation(){
         let url = `/api/stake/candidate/${this.$route.params.param}`;
-        axios.get(url).then((data)=>{
-          if(data.status === 200){
-            return data.data;
-          }
-        }).then((validators)=>{
-          if(validators && typeof validators === "object"){
+        Service.http(url).then((validators)=>{
+          if(validators !== null){
             if(validators.Jailed === true){
               this.flShowUptime = false;
               this.flShowValidatorJailed = true;
@@ -452,33 +437,24 @@
       },
       getCurrentTenureInformation(){
         let url = `/api/stake/candidate/${this.$route.params.param}/status`;
-        axios.get(url).then((data)=>{
-          if(data.status === 200){
-            return data.data;
-          }
-        }).then((data)=>{
-          if(data && typeof data === "object"){
+        Service.http(url).then((data)=>{
+          if(data){
             this.precommitedBlocksValue = data.PrecommitCount ? data.PrecommitCount : '--';
             this.returnsValue = '';
             this.firstPercent = data.Uptime ? `${data.Uptime}%` : "--";
           }
-
         }).catch(err => {
           console.error(err)
         })
       },
       getTransactionsList(){
         let url = `/api/txsByAddress/${this.$route.params.param}/1/30`;
-        axios.get(url).then((data)=>{
-          if(data.status === 200){
-            return data.data;
+        Service.http(url).then((data)=>{
+          if(data){
+            this.transactionsCount = data.Count;
+            this.transactionsValue = data.Count;
+            this.TransactionsShowNoData = true;
           }
-        }).then((data)=>{
-
-          this.transactionsCount = data.Count;
-          this.transactionsValue = data.Count;
-
-          this.TransactionsShowNoData = true;
         }).catch(e => {
           console.error(e)
         })
@@ -498,11 +474,7 @@
         }else if(tabTime == "60days"){
           url = `/api/stake/candidate/${this.$route.params.param}/power/months`;
         }
-        axios.get(url).then((data)=>{
-          if(data.status === 200){
-            return data.data;
-          }
-        }).then((validatorVotingPowerList)=>{
+        Service.http(url).then((validatorVotingPowerList)=>{
           if(validatorVotingPowerList && typeof validatorVotingPowerList === "object"){
             let seriesData = [], noDatayAxisDefaultMaxByValidators;
             let maxPowerValue = 0;
@@ -542,13 +514,8 @@
         }else if(tabTime == "30days"){
           url = `/api/stake/candidate/${this.$route.params.param}/uptime/month `;
         }
-        axios.get(url).then((data)=>{
-
-          if(data.status === 200){
-            return data.data;
-          }
-        }).then((data)=>{
-          if(data && typeof data === "object") {
+        Service.http(url).then((data)=>{
+          if(data) {
             data.forEach(item => {
               let notValidatorTag = -1;
               if(item.Uptime === notValidatorTag){

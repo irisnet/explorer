@@ -81,11 +81,11 @@
 </template>
 
 <script>
-  import Tools from '../common/Tools';
+  import Tools from '../util/Tools';
   import axios from 'axios';
   import BlocksListTable from './table/BlocksListTable.vue';
   import SpinComponent from './commonComponents/SpinComponent';
-
+  import Service from "../util/axios"
   export default {
     components: {
       BlocksListTable,
@@ -124,7 +124,7 @@
       return {
         transactionsTimer:null,
         devicesWidth: window.innerWidth,
-        transactionsDetailWrap: 'personal_computer_transactions_detail',//1是显示pc端，0是移动端
+        transactionsDetailWrap: 'personal_computer_transactions_detail',
         hashValue: '',
         heightValue: '',
         timestampValue: '',
@@ -134,7 +134,7 @@
         precommitValidatorsValue: '',
         votingPowerValue: '',
         items: [],
-        showNoData: false,//列表无数据的时候显示
+        showNoData: false,
         acitve: true,
         activeNext: true,
         maxBlock: 0,
@@ -201,11 +201,7 @@
       },
       getBlockTxStatistics(){
         let url = `/api/txs/statistics?height=${this.$route.params.height}`;
-        axios.get(url).then((data) => {
-          if(data.status === 200){
-            return data.data
-          }
-        }).then((data) => {
+        Service.http(url).then((data) => {
           if(data){
             this.txTab[0].BlockTxStatistics = data.TransCnt;
             this.txTab[1].BlockTxStatistics = data.StakeCnt;
@@ -213,7 +209,6 @@
             this.txTab[3].BlockTxStatistics = data.GovCnt;
           }
         }).catch((e) => {
-
           console.log(e)
         })
       },
@@ -238,32 +233,24 @@
         }else if(txTabName === 'Governance'){
           url = `/api/tx/gov/${currentPage}/${pageSize}?height=${this.$route.params.height}`
         }
-        axios.get(url).then((data) => {
-          if(data.status === 200){
-            return data.data;
-          }
-        }).then((data) => {
+        Service.http(url).then((data) => {
           that.showLoading = false;
           that.showNoData = false;
           that.count = data.Count;
           clearInterval(this.transactionsTimer);
-          if(data.Data && data.Data !== null){
+          if(data.Data){
             setInterval(function () {
-              that.items = Tools.commonTxListItem(data.Data,txTabName)
+              that.items = Tools.formatTxList(data.Data,txTabName)
             },1000);
           }else {
             that.showNoData = true;
-            that.items = Tools.commonTxListItem(null,txTabName)
+            that.items = Tools.formatTxList(null,txTabName)
           }
         })
       },
       getBlockInformation() {
         let url = `/api/block/${this.$route.params.height}`;
-        axios.get(url).then((data) => {
-          if (data.status === 200) {
-            return data.data;
-          }
-        }).then((data) => {
+        Service.http(url).then((data) => {
           if (data) {
             let denominator = 0;
             data.Validators.forEach(item => denominator += item.VotingPower);
