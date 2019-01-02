@@ -13,7 +13,7 @@
         <div class="information_preview_module"
              style="cursor:pointer;" @click="skipValidators"
         >
-          <span style="text-align:center;">{{validatorsValue}}</span>
+          <span style="text-align:center;">{{validatorValue}}</span>
           <span class="information_module_key">Validators</span>
         </div>
         <div class="information_preview_module">
@@ -62,7 +62,7 @@ import Service from '../util/axios'
                   pageClassName: 'personal_computer_home_wrap',
                   module_item_wrap: 'module_item_wrap_computer',
                   currentBlockHeight: '--',
-                  validatorsValue: '',
+                  validatorValue: '',
                   transactionValue: '',
                   lastBlockAge: '--',
                   votingPowerValue: '',
@@ -224,13 +224,13 @@ import Service from '../util/axios'
                 }
               }
               this.votingPowerValue = denominator !== 0? `${(numerator/denominator).toFixed(2)*100}%`:'';
-              this.validatorsValue = `${blockList.Data[0].Block.LastCommit.Precommits.length} voting / ${blockList.Data[0].Validators.length} total`;
+              this.validatorValue = `${blockList.Data[0].Block.LastCommit.Precommits.length} voting / ${blockList.Data[0].Validators.length} total`;
               let that = this;
               clearInterval(this.blocksTimer);
               this.blocksTimer = setInterval(function () {
                 that.currentBlockHeight = blockList.Data[0].Height;
                 if(this.currentBlockHeight !== blockList.Data[0].Height){
-                  that.lastBlockAge = Tools.formatAge(that.Sysdate,blockList.Data[0].Time);
+                  that.lastBlockAge = Tools.formatAge(that.sysdate,blockList.Data[0].Time);
                   that.diffSeconds = Math.floor(Tools.getDiffMilliseconds(that.sysdate,blockList.Data[0].Time)/1000);
                 }
                 that.blocksInformation = blockList.Data.map(item => {
@@ -290,7 +290,7 @@ import Service from '../util/axios'
                     Fee,
                     Amount,
                     Time: Tools.format2UTC(item.Time),
-                    age: Tools.formatAge(that.Sysdate,item.Time)
+                    age: Tools.formatAge(that.sysdate,item.Time)
                   };
                 })
               },1000)

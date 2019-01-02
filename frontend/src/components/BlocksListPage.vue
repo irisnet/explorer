@@ -160,7 +160,7 @@
                 return {
                   Height: item.Height,
                   Txn:txn,
-                  Age: Tools.formatAge(item.Time),
+                  Age: Tools.formatAge(that.sysdate,item.Time),
                   'Precommit Validators':precommit,
                   'Voting Power': denominator !== 0? `${(numerator/denominator).toFixed(2)*100}%`:'',
                 };
@@ -198,10 +198,10 @@
           clearInterval(this.transactionTimer);
           if(data){
             that.transactionTimer = setInterval(function () {
-              that.items = Tools.formatTxList(data.Data,that.$route.params.param)
+              that.items = Tools.formatTxList(data.Data,that.$route.params.param,that.sysdate)
             },1000);
           }else{
-            that.items = Tools.formatTxList(null,that.$route.params.param);
+            that.items = Tools.formatTxList(null,that.$route.params.param,that.sysdate);
             that.showNoData = true;
           }
           that.showLoading = false;

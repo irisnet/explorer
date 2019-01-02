@@ -188,10 +188,10 @@
             }else {
               let that = this;
               setInterval(function () {
-                that.submitAge = data.proposal.submit_time ? Tools.formatAge(that.getSplitTime(data.proposal.submit_time)) : '--';
-                that.depositEedAge = data.proposal.deposit_end_time ? Tools.formatAge(that.getSplitTime(data.proposal.deposit_end_time)) : '--';
-                that.votingStartAge = data.proposal.voting_start_time ? Tools.formatAge(that.getSplitTime(data.proposal.voting_start_time)) : '--';
-                that.votingEndAge = data.proposal.voting_end_time ? Tools.formatAge(that.getSplitTime(data.proposal.voting_end_time)) : '--';
+                that.submitAge = data.proposal.submit_time ? Tools.formatAge(that.sysdate,that.getSplitTime(data.proposal.submit_time)) : '--';
+                that.depositEedAge = data.proposal.deposit_end_time ? Tools.formatAge(that.sysdate,that.getSplitTime(data.proposal.deposit_end_time)) : '--';
+                that.votingStartAge = data.proposal.voting_start_time ? Tools.formatAge(that.sysdate,that.getSplitTime(data.proposal.voting_start_time)) : '--';
+                that.votingEndAge = data.proposal.voting_end_time ? Tools.formatAge(that.sysdate,that.getSplitTime(data.proposal.voting_end_time)) : '--';
               });
               this.proposalsId = data.proposal.proposal_id === 0 ? "--" : data.proposal.proposal_id;
               this.title = data.proposal.title;
@@ -225,7 +225,7 @@
                 this.votingTimer = setInterval(function () {
                   that.items = data.votes.map(item =>{
                     let votingListItemTime;
-                        votingListItemTime = Tools.formatAge(item.time);
+                        votingListItemTime = Tools.formatAge(that.sysdate,item.time);
                     return {
                       Voter: item.voter,
                       "Vote Option": item.option,

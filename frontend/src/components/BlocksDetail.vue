@@ -240,11 +240,11 @@
           clearInterval(this.transactionsTimer);
           if(data.Data){
             setInterval(function () {
-              that.items = Tools.formatTxList(data.Data,txTabName)
+              that.items = Tools.formatTxList(data.Data,txTabName,that.sysdate)
             },1000);
           }else {
             that.showNoData = true;
-            that.items = Tools.formatTxList(null,txTabName)
+            that.items = Tools.formatTxList(null,txTabName,that.sysdate)
           }
         })
       },
