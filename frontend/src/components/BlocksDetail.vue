@@ -238,7 +238,7 @@
           that.showNoData = false;
           that.count = txList.Count;
           clearInterval(this.transactionsTimer);
-          if(data.Data){
+          if(txList.Data){
             setInterval(function () {
               that.items = Tools.formatTxList(txList.Data,txTabName,that.sysdate)
             },1000);

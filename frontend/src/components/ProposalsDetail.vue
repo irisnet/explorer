@@ -136,6 +136,7 @@
         votingStartAge:'',
         votingEndAge: '',
         votingTimer: null,
+        proposalTimer: null,
       }
     },
     beforeMount() {
@@ -187,7 +188,8 @@
               this.count = 0;
             }else {
               let that = this;
-              setInterval(function () {
+              clearInterval(this.proposalTimer);
+              this.proposalTimer = setInterval(function () {
                 that.submitAge = data.proposal.submit_time ? Tools.formatAge(that.sysdate,that.getSplitTime(data.proposal.submit_time)) : '--';
                 that.depositEedAge = data.proposal.deposit_end_time ? Tools.formatAge(that.sysdate,that.getSplitTime(data.proposal.deposit_end_time)) : '--';
                 that.votingStartAge = data.proposal.voting_start_time ? Tools.formatAge(that.sysdate,that.getSplitTime(data.proposal.voting_start_time)) : '--';

@@ -257,6 +257,7 @@ import Service from '../util/axios'
           Service.http(url).then((data) => {
             if(data.Data){
               let that = this;
+              clearInterval(this.transfersTimer);
               this.transfersTimer = setInterval(function () {
                 that.transactionInformation = data.Data.map(item => {
                   let [Amount, Fee] = ['--', '--'];
