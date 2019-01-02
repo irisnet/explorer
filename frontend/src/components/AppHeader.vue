@@ -263,8 +263,8 @@
       },
       searchDelegator(){
         let uri = `/api/account/${this.searchInputValue}`;
-        Service.http(uri).then((address) => {
-          if (address) {
+        Service.http(uri).then((delegatorAddress) => {
+          if (delegatorAddress) {
             this.$router.push(`/address/1/${this.searchInputValue}`);
             this.clearSearchInputValue();
           }else {

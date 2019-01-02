@@ -193,12 +193,12 @@
           this.listTitleName = "Governance";
           url = `/api/tx/gov/${currentPage}/${pageSize}`
         }
-        Service.http(url).then((data) => {
-          that.count = data.Count;
+        Service.http(url).then((txList) => {
+          that.count = txList.Count;
           clearInterval(this.transactionTimer);
-          if(data){
+          if(txList){
             that.transactionTimer = setInterval(function () {
-              that.items = Tools.formatTxList(data.Data,that.$route.params.param,that.sysdate)
+              that.items = Tools.formatTxList(txList.Data,that.$route.params.param,that.sysdate)
             },1000);
           }else{
             that.items = Tools.formatTxList(null,that.$route.params.param,that.sysdate);

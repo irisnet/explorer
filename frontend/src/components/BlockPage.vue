@@ -95,12 +95,12 @@
       getDataList(currentPage, pageSize) {
         this.showLoading = true;
         let uri = `/api/blocks/${currentPage}/${pageSize}`;
-        Service.http(uri).then((data) => {
-          if(data){
-            this.count = data.data.Count;
+        Service.http(uri).then((blockList) => {
+          if(blockList){
+            this.count = blockList.Count;
             localStorage.setItem("blockListCount",this.count);
-            if(data.data.Data && typeof data.data === "object"){
-              this.items = data.data.Data.map(item => {
+            if(blockList.Data && typeof blockList.data === "object"){
+              this.items = blockList.Data.map(item => {
                 let txn = item.NumTxs;
                 let precommitValidatorsLength = item.Block.LastCommit.Precommits.length;
                 let [votingPower,computeValidatorsVotingPowerDenominator,computeValidatorsVotingPowerNumerator] = [0,0,0];
@@ -137,7 +137,7 @@
             }
             this.showLoading = false;
           }else {
-            console.log(data.msg)
+            console.log(blockList.msg)
           }
         }).catch(e => {
           this.showLoading = false;
