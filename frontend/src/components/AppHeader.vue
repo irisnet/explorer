@@ -249,8 +249,8 @@
       },
       searchTx(){
         let uri = `/api/tx/${this.searchInputValue}`;
-        Service.http(uri).then((txInfomation) => {
-          if (txInfomation) {
+        Service.http(uri).then((tx) => {
+          if (tx) {
             this.$router.push(`/tx?txHash=${this.searchInputValue}`);
             this.clearSearchInputValue();
           }else {
@@ -263,8 +263,8 @@
       },
       searchDelegator(){
         let uri = `/api/account/${this.searchInputValue}`;
-        Service.http(uri).then((addressInfomation) => {
-          if (addressInfomation) {
+        Service.http(uri).then((address) => {
+          if (address) {
             this.$router.push(`/address/1/${this.searchInputValue}`);
             this.clearSearchInputValue();
           }else {
@@ -277,8 +277,8 @@
       },
       searchValidator(){
         let uri = `/api/stake/candidate/${this.searchInputValue}`;
-        Service.http(uri).then((validatorAddressInfomation) => {
-          if (validatorAddressInfomation) {
+        Service.http(uri).then((validatorAddress) => {
+          if (validatorAddress) {
             this.$router.push(`/address/1/${this.searchInputValue}`);
             this.clearSearchInputValue();
           }else {

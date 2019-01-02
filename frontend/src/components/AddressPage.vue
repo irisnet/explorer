@@ -356,14 +356,14 @@
         }else if(txTabName === 'Governance'){
           url = `/api/tx/gov/${currentPage}/${pageSize}?address=${this.$route.params.param}`
         }
-        Service.http(url).then((data) => {
+        Service.http(url).then((TxList) => {
           this.showLoading = false;
           this.showNoData = false;
-          this.count = data.Count;
+          this.count = TxList.Count;
           clearInterval(this.transactionTimer);
-          if(data.Data){
+          if(TxList.Data){
             this.transactionTimer = setInterval(function () {
-              that.items = Tools.formatTxList(data.Data,txTabName,that.sysdate)
+              that.items = Tools.formatTxList(TxList.Data,txTabName,that.sysdate)
             },1000);
           }else {
             that.items = Tools.formatTxList(null,txTabName,that.sysdate);

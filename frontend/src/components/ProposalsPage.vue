@@ -107,14 +107,14 @@
       getDataList(currentPage, pageSize) {
         this.showLoading = true;
         let url=`/api/proposals/${currentPage}/${pageSize}`;
-        Service.http(url).then((data)=>{
-          if(data.Data){
+        Service.http(url).then((proposalList)=>{
+          if(proposalList.Data){
             this.showNoData = false;
-            this.count = data.Count;
+            this.count = proposalList.Count;
             let that = this;
             clearInterval(this.proposalListTimer);
             this.proposalListTimer = setInterval(function () {
-              that.items = data.Data.map(item =>{
+              that.items = proposalList.Data.map(item =>{
                 let proposalId = item.proposal_id === 0 ? "--" : item.proposal_id;
                 let type = item.type;
                 let status  = item.status;
