@@ -76,7 +76,7 @@
     data() {
       return {
         devicesWidth: window.innerWidth,
-        blocksListPageWrap: 'personal_computer_blocks_list_page',//1是显示pc端，0是移动端
+        blocksListPageWrap: 'personal_computer_blocks_list_page',
         blocksValue: '',
         currentPage: 1,
         pageSize: 30,

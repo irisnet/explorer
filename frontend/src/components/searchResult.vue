@@ -66,8 +66,9 @@
 
 <script>
 
-    import Tools from '../common/Tools';
-    import axios from 'axios';
+    import Tools from '../util/Tools';
+    import Service from "../util/axios"
+
     export default {
       name: "searchResult",
       data() {
@@ -125,11 +126,7 @@
         searchResult(searchValue){
           let searchUrl = `/api/search/${searchValue}`;
           let that = this;
-          axios.get(searchUrl).then((data) => {
-            if(data.status === 200){
-              return data.data
-            }
-          }).then((searchResult) =>{
+          Service.http(searchUrl).then((searchResult) =>{
             that.flshowResult = false;
               if(searchResult){
                 searchResult.forEach((item) => {

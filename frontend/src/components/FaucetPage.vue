@@ -46,7 +46,7 @@
 
 <script>
   import axios from 'axios';
-  import Tools from '../common/Tools';
+  import Tools from '../util/Tools';
 
 
   export default {
@@ -117,6 +117,12 @@
         this.insufficientBalanceStatus = true
       })
       },
+    created(){
+      let addr = this.$route.query.address;
+      if (addr && addr !== "") {
+        this.address = addr
+      }
+    },
     methods: {
       apply() {
         /*if (document.getElementById("address").value === "") {

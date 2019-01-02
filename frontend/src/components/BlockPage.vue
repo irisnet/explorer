@@ -31,11 +31,10 @@
 </template>
 
 <script>
-  import Tools from '../common/Tools';
-  import axios from 'axios';
+  import Tools from '../util/Tools';
   import BlocksListTable from './table/BlocksListTable.vue';
   import SpinComponent from './commonComponents/SpinComponent';
-
+  import Service from "../util/axios"
   export default {
     name:"blockListPage",
     components:{
@@ -95,13 +94,9 @@
     methods: {
       getDataList(currentPage, pageSize) {
         this.showLoading = true;
-        let url = `/api/blocks/${currentPage}/${pageSize}`;
-        axios.get(url).then((data) => {
-          if (data.status === 200) {
-            return data.data;
-          }
-        }).then((data) => {
-          if(data.code === "0"){
+        let uri = `/api/blocks/${currentPage}/${pageSize}`;
+        Service.http(uri).then((data) => {
+          if(data){
             this.count = data.data.Count;
             localStorage.setItem("blockListCount",this.count);
             if(data.data.Data && typeof data.data === "object"){

@@ -46,7 +46,7 @@
 </template>
 
 <script>
-  import Tools from "../common/Tools";
+  import Tools from "../util/Tools";
     export default {
         name: "clearStorageHelpPage",
       data(){
