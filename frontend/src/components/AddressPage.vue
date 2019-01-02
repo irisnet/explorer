@@ -5,7 +5,7 @@
         <span class="transactions_detail_title">Address</span>
         <span class="transactions_detail_wrap_hash_var">
           {{address}}
-          <i v-if="showProfile" :style="{background:validatorsStatusColor}">v</i>
+          <i v-if="showProfile" :style="{background:validatorStatusColor}">v</i>
             <span v-show="flShowValidatorCandidate && showProfile" class="candidate_validator">(This Validator is a Candidate)</span>
             <span v-show="flShowValidatorJailed && showProfile" class="jailed_validator">(This Validator is jailed!)</span>
         </span>
@@ -242,7 +242,7 @@
               flShowValidatorJailed: false,
               flShowValidatorCandidate: false,
               flShowUptime: true,
-              validatorsStatusColor:"#3598db",
+              validatorStatusColor:"#3598db",
               tabVotingPower:[
                 {
                   "title":"14days",
@@ -376,7 +376,7 @@
         let url = `/api/account/${this.$route.params.param}`;
         Service.http(url).then((validatorAddressInformation)=>{
           let Amount = '--';
-          if(validatorAddressInformation !== null){
+          if(validatorAddressInformation){
             if(validatorAddressInformation.Amount){
               if(validatorAddressInformation.Amount instanceof Array){
                 if(validatorAddressInformation.Amount.length > 0 ){
@@ -400,32 +400,32 @@
       },
       getProfileInformation(){
         let url = `/api/stake/candidate/${this.$route.params.param}`;
-        Service.http(url).then((validators)=>{
-          if(validators !== null){
-            if(validators.Jailed === true){
+        Service.http(url).then((validator)=>{
+          if(validator){
+            if(validator.Jailed === true){
               this.flShowUptime = false;
               this.flShowValidatorJailed = true;
-              this.validatorsStatusColor = "#f00";
-              this.votingPowerValue = Tools.formatStringToNumber(validators.OriginalTokens);
+              this.validatorStatusColor = "#f00";
+              this.votingPowerValue = Tools.formatStringToNumber(validator.OriginalTokens);
             }else{
-              if(validators.Status === 'Unbonded' || validators.Status === 'Unbonding' ){
+              if(validator.Status === 'Unbonded' || validator.Status === 'Unbonding' ){
                 this.flShowValidatorCandidate = true;
-                this.validatorsStatusColor = "#45B035";
+                this.validatorStatusColor = "#45B035";
                 this.flShowUptime = false;
-                this.votingPowerValue = Tools.formatStringToNumber(validators.OriginalTokens);
-              }else if(validators.Status === "Bonded"){
-                this.bondHeightValue = validators.BondHeight;
-                this.votingPowerValue = validators.OriginalTokens ? `${Tools.formatStringToNumber(validators.OriginalTokens)} (${(validators.OriginalTokens/validators.PowerAll*100).toFixed(2)}%)` : "--";
+                this.votingPowerValue = Tools.formatStringToNumber(validator.OriginalTokens);
+              }else if(validator.Status === "Bonded"){
+                this.bondHeightValue = validator.BondHeight;
+                this.votingPowerValue = validator.OriginalTokens ? `${Tools.formatStringToNumber(validator.OriginalTokens)} (${(validator.OriginalTokens/validator.PowerAll*100).toFixed(2)}%)` : "--";
               }
             }
-            this.identity = validators.Description.Identity ? validators.Description.Identity : "--";
-            this.nameValue = validators.Description.Moniker ? validators.Description.Moniker : '--';
-            this.pubKeyValue = validators.PubKey ? validators.PubKey : "--";
-            this.websiteValue = validators.Description.Website?validators.Description.Website:'--';
-            this.descriptionValue= validators.Description.Details ? validators.Description.Details : "--";
+            this.identity = validator.Description.Identity ? validator.Description.Identity : "--";
+            this.nameValue = validator.Description.Moniker ? validator.Description.Moniker : '--';
+            this.pubKeyValue = validator.PubKey ? validator.PubKey : "--";
+            this.websiteValue = validator.Description.Website?validator.Description.Website:'--';
+            this.descriptionValue= validator.Description.Details ? validator.Description.Details : "--";
             this.commissionRateValue = '';
             this.announcementValue = '';
-            this.operatorValue = this.$Codec.Bech32.toBech32(this.$Crypto.Constants.IRIS.IrisNetConfig.PREFIX_BECH32_ACCADDR,this.$Codec.Bech32.fromBech32(validators.Address));
+            this.operatorValue = this.$Codec.Bech32.toBech32(this.$Crypto.Constants.IRIS.IrisNetConfig.PREFIX_BECH32_ACCADDR,this.$Codec.Bech32.fromBech32(validator.Address));
             this.showProfile = true;
           }else{
             this.showProfile = false;
@@ -475,7 +475,7 @@
           url = `/api/stake/candidate/${this.$route.params.param}/power/months`;
         }
         Service.http(url).then((validatorVotingPowerList)=>{
-          if(validatorVotingPowerList && typeof validatorVotingPowerList === "object"){
+          if(validatorVotingPowerList){
             let seriesData = [], noDatayAxisDefaultMaxByValidators;
             let maxPowerValue = 0;
             validatorVotingPowerList.forEach(item=>{
