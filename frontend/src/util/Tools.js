@@ -3,6 +3,12 @@
  */
 import BigNumber from 'bignumber.js';
 export default class Tools{
+  /**
+   * 根据展示的需求拼接字符串展示成 > xxdxxhxxmxxs ago 或者 xxdxxhxxmxxs ago 或者 xxdxxhxxmxxs
+   * param symbol string;
+   * param ago string;
+   * return string
+   * */
   static formatAge(sysdate,time,symbol,ago){
     let dateBegin = new Date(time);
     let dateDiff = sysdate * 1000 - dateBegin.getTime();
