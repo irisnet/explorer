@@ -120,7 +120,7 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Age(Timestamp) :</span>
-          <span class="information_value" v-show="ageValue">{{ageValue}} ago ({{timestampValue}})</span>
+          <span class="information_value" v-show="ageValue">{{ageValue}} ({{timestampValue}})</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Actual Tx Fee :</span>
@@ -232,9 +232,8 @@
             if(data){
               let that = this;
               this.transactionDetailTimer = setInterval(function () {
-                that.ageValue = Tools.formatAge(that.sysdate,data.Timestamp);
+                that.ageValue = Tools.formatAge(that.sysdate,data.Timestamp,"","ago");
               });
-
               this.timestampValue = Tools.format2UTC(data.Timestamp);
               this.hashValue = data.Hash;
               this.blockValue = data.BlockHeight;

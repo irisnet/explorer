@@ -222,11 +222,18 @@ import Service from '../util/axios'
                   }
                 }
               }
+              let lastBlockHeight = localStorage.getItem("lastBlockHeight");
+              for(let index = 0; index < blockList.Data.length; index++){
+                if(blockList.Data[index].Height > lastBlockHeight){
+                  blockList.Data[index].showAnimation = "show"
+                }
+              }
               this.votingPowerValue = denominator !== 0? `${(numerator/denominator).toFixed(2)*100}%`:'';
               this.validatorValue = `${blockList.Data[0].Block.LastCommit.Precommits.length} voting / ${blockList.Data[0].Validators.length} total`;
               let that = this;
               clearInterval(this.blocksTimer);
               this.blocksTimer = setInterval(function () {
+                localStorage.setItem("lastBlockHeight",blockList.Data[0].Height);
                 that.currentBlockHeight = blockList.Data[0].Height;
                 if(this.currentBlockHeight !== blockList.Data[0].Height){
                   that.lastBlockAge = Tools.formatAge(that.sysdate,blockList.Data[0].Time);
@@ -234,12 +241,13 @@ import Service from '../util/axios'
                 }
                 that.blocksInformation = blockList.Data.map(item => {
                   return {
+                    showAnimation: item.showAnimation ? item.showAnimation : "",
                     Height: item.Height,
                     Proposer: item.Hash,
                     Txn: item.NumTxs,
                     Time: Tools.format2UTC(item.Time),
                     Fee: '0 IRIS',
-                    age: Tools.formatAge(that.sysdate,item.Time)
+                    age: Tools.formatAge(that.sysdate,item.Time,"symbol","ago")
                   };
                 });
               },1000);
@@ -290,7 +298,7 @@ import Service from '../util/axios'
                     Fee,
                     Amount,
                     Time: Tools.format2UTC(item.Time),
-                    age: Tools.formatAge(that.sysdate,item.Time)
+                    age: Tools.formatAge(that.sysdate,item.Time,"symbol","ago")
                   };
                 })
               },1000)

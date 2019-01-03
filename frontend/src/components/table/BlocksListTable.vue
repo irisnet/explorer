@@ -13,7 +13,7 @@
         <span>{{data.item.Txn}}</span>
       </template>
       <template slot='Age' slot-scope='data'>
-        <span v-show="data.item.Age"> > {{data.item.Age}} ago</span>
+        <span v-show="data.item.Age">{{data.item.Age}}</span>
       </template>
     </b-table>
 
@@ -24,7 +24,7 @@
         </span>
       </template>
       <template slot='Age' slot-scope='data'>
-        <span v-show="data.item.Age"> > {{data.item.Age}} ago</span>
+        <span v-show="data.item.Age">{{data.item.Age}}</span>
       </template>
       <template slot='Block' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/blocks_detail/${data.item.Block}`)">
@@ -119,7 +119,7 @@
         </span>
       </template>
       <template slot="SubmitTime" slot-scope='data'>
-        <span v-show="data.item.SubmitTime">> {{data.item.SubmitTime}} ago</span>
+        <span v-show="data.item.SubmitTime">{{data.item.SubmitTime}}</span>
       </template>
     </b-table>
 
@@ -130,7 +130,7 @@
         </span>
       </template>
       <template slot='VoteTime' slot-scope='data'>
-        <span v-show="data.item.VoteTime"> > {{data.item.VoteTime}} ago</span>
+        <span v-show="data.item.VoteTime">{{data.item.VoteTime}}</span>
       </template>
     </b-table>
 
@@ -141,7 +141,7 @@
         </span>
       </template>
       <template slot='Age' slot-scope='data'>
-        <span v-show="data.item.Age"> > {{data.item.Age}} ago</span>
+        <span v-show="data.item.Age">{{data.item.Age}}</span>
       </template>
       <template slot='Block' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/blocks_detail/${data.item.Block}`)">

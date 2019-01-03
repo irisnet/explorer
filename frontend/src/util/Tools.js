@@ -3,7 +3,7 @@
  */
 import BigNumber from 'bignumber.js';
 export default class Tools{
-  static formatAge(sysdate,time){
+  static formatAge(sysdate,time,symbol,ago){
     let dateBegin = new Date(time);
     let dateDiff = sysdate * 1000 - dateBegin.getTime();
     let dayDiff = Math.floor(dateDiff / (24 * 3600 * 1000));
@@ -13,7 +13,13 @@ export default class Tools{
     let minutes = Math.floor(minuteLevel / (60 * 1000));
     let secondLevel = minuteLevel % (60 * 1000) ;
     let seconds = Math.round(secondLevel / 1000);
-    return`${dayDiff?`${dayDiff}d`:''} ${hours ? `${hours}h` : ''} ${dayDiff && hours ? '' : (minutes ? `${minutes}m`:'')} ${dayDiff || hours ? '' : (seconds ? `${seconds}s`:'')}`
+    if(symbol && ago){
+      return`> ${dayDiff?`${dayDiff}d`:''} ${hours ? `${hours}h` : ''} ${dayDiff && hours ? '' : (minutes ? `${minutes}m`:'')} ${dayDiff || hours ? '' : (seconds ? `${seconds}s`:'')} ago`
+    }else if(ago){
+      return`${dayDiff?`${dayDiff}d`:''} ${hours ? `${hours}h` : ''} ${dayDiff && hours ? '' : (minutes ? `${minutes}m`:'')} ${dayDiff || hours ? '' : (seconds ? `${seconds}s`:'')} ago`
+    }else {
+      return`${dayDiff?`${dayDiff}d`:''} ${hours ? `${hours}h` : ''} ${dayDiff && hours ? '' : (minutes ? `${minutes}m`:'')} ${dayDiff || hours ? '' : (seconds ? `${seconds}s`:'')}`
+    }
   }
   static getDiffMilliseconds(sysdate,time){
     let dateBegin = new Date(time);
@@ -300,7 +306,7 @@ export default class Tools{
         };
         commonFooterObjList = {
           Status : Tools.firstWordUpperCase(item.Status),
-          Age: Tools.formatAge(sysdate,item.Timestamp)
+          Age: Tools.formatAge(sysdate,item.Timestamp,"symbol","ago")
         };
         if(txType === 'Transfers' ){
           objList = {

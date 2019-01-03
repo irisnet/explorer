@@ -8,14 +8,14 @@
     </div>
     <div class="home_module_block_content">
       <div class="home_module_block_content_item" v-for="item in information" :style="innerWidth<500?'padding:0.1rem;':''">
-        <div class="blocks_module_left" :style="`${moduleName === 'Blocks'?'flex:1;':''}`">
+        <div class="blocks_module_left" :class="item.showAnimation === 'show' ? 'animation ' : ''" :style="`${moduleName === 'Blocks'?'flex:1;':''}`">
           <div class="key_value_wrap">
             <span class="blocks_module_value" :class="moduleTitle">
               <span class="transactions_tx" v-if="item.TxHash">TX# </span>
              <span style="cursor:pointer;" @click="skipRouter(item.Height?`/blocks_detail/${item.Height}`:`/tx?txHash=${item.TxHash}`)">{{item.Height?item.Height:`${item.TxHash.substr(0,16)}...`}}</span>
               </span>
-            <span class="key_value_transfers_age" v-show="moduleName !== 'Blocks'"> > {{item.age}} ago</span>
-            <span class="key_value_blocks_age" v-show="moduleName == 'Blocks'">> {{item.age}} ago</span>
+            <span class="key_value_transfers_age" v-show="moduleName !== 'Blocks'">{{item.age}}</span>
+            <span class="key_value_blocks_age" v-show="moduleName == 'Blocks'">{{item.age}}</span>
           </div>
           <div class="key_value_wrap_bottom">
             <span class="blocks_module_props">{{item.Height?'Txn:':''}}</span>
@@ -50,9 +50,14 @@
     name: 'home-block-module',
     watch:{
       information(information){
-
+        setTimeout(function () {
+         information.forEach(item => {
+           if(item.showAnimation){
+             item.showAnimation = " "
+           }
+         })
+        },1000)
       },
-
     },
     data() {
       return {
@@ -264,6 +269,19 @@
     display: block;
     line-height: 1;
   }
-
+  .animation{
+   animation: fadeIn 1s 1 0s;
+  }
+  @-webkit-keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
 
 </style>
