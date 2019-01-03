@@ -160,6 +160,9 @@
       getSplitTime(Time){
         return Time.split('+')[0];
       },
+      formatProposalTime(time){
+        return time ? Tools.formatAge(that.sysdate,that.getSplitTime(time),"","ago") : '--';
+      },
       getProposalsInformation() {
         this.showLoading = true;
         let url = `/api/proposal/${this.$route.params.proposal_id}`;
@@ -190,10 +193,10 @@
               let that = this;
               clearInterval(this.proposalTimer);
               this.proposalTimer = setInterval(function () {
-                that.submitAge = data.proposal.submit_time ? Tools.formatAge(that.sysdate,that.getSplitTime(data.proposal.submit_time),"","ago") : '--';
-                that.depositEedAge = data.proposal.deposit_end_time ? Tools.formatAge(that.sysdate,that.getSplitTime(data.proposal.deposit_end_time),"","ago") : '--';
-                that.votingStartAge = data.proposal.voting_start_time ? Tools.formatAge(that.sysdate,that.getSplitTime(data.proposal.voting_start_time),"","ago") : '--';
-                that.votingEndAge = data.proposal.voting_end_time ? Tools.formatAge(that.sysdate,that.getSplitTime(data.proposal.voting_end_time),"","ago") : '--';
+                that.submitAge = this.formatProposalTime(data.proposal.submit_time);
+                that.depositEedAge = this.formatProposalTime(data.proposal.deposit_end_time);
+                that.votingStartAge = this.formatProposalTime(data.proposal.voting_start_time);
+                that.votingEndAge = this.formatProposalTime(data.proposal.voting_end_time);
               });
               this.proposalsId = data.proposal.proposal_id === 0 ? "--" : data.proposal.proposal_id;
               this.title = data.proposal.title;
