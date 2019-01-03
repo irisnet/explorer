@@ -13,7 +13,7 @@
 
 <script>
   import echarts from 'echarts';
-  import Tools from "../common/Tools";
+  import Tools from "../util/Tools";
 
   let line = null;
   export default {

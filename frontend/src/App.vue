@@ -62,9 +62,10 @@
 </template>
 <script>
   import AppHeader from './components/AppHeader';
-  import Tools from './common/Tools';
+  import Tools from './util/Tools';
   import testVersion from '../testVersion';
-  import BackToTop from "./components/BackToTop"
+  import BackToTop from "./components/BackToTop";
+  import Service from './util/axios'
   export default {
     components: {
       AppHeader,

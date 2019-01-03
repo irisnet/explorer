@@ -75,13 +75,13 @@
 </template>
 
 <script>
-  import Tools from "../common/Tools";
+  import Tools from "../util/Tools";
 
   export default {
     data() {
       return {
         devicesWidth: window.innerWidth,
-        privacyPolicyVar: 'person_computer_privacy_policy_wrap',//1是显示pc端，0是移动端
+        privacyPolicyVar: 'person_computer_privacy_policy_wrap',
 
       }
     },

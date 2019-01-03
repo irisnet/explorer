@@ -3,9 +3,9 @@
  */
 import BigNumber from 'bignumber.js';
 export default class Tools{
-  static formatAge(Sysdate,time){
+  static formatAge(sysdate,time){
     let dateBegin = new Date(time);
-    let dateDiff = Sysdate*1000 - dateBegin.getTime();
+    let dateDiff = sysdate * 1000 - dateBegin.getTime();
     let dayDiff = Math.floor(dateDiff / (24 * 3600 * 1000));
     let hourLevel = dateDiff % (24 * 3600 * 1000);
     let hours = Math.floor(hourLevel / (3600 * 1000));
@@ -15,9 +15,9 @@ export default class Tools{
     let seconds = Math.round(secondLevel / 1000);
     return`${dayDiff?`${dayDiff}d`:''} ${hours ? `${hours}h` : ''} ${dayDiff && hours ? '' : (minutes ? `${minutes}m`:'')} ${dayDiff || hours ? '' : (seconds ? `${seconds}s`:'')}`
   }
-  static getDiffMilliseconds(Sysdate,time){
+  static getDiffMilliseconds(sysdate,time){
     let dateBegin = new Date(time);
-    let dateDiff = Sysdate*1000 - dateBegin.getTime();
+    let dateDiff = sysdate*1000 - dateBegin.getTime();
     return dateDiff
   }
   /**
@@ -266,7 +266,7 @@ export default class Tools{
     });
   }
 
-  static formatTxList(list,txType){
+  static formatTxList(list,txType,sysdate){
     if(list !== null){
       return list.map(item => {
         let [Amount,Fee] = ['--','--'];
@@ -300,7 +300,7 @@ export default class Tools{
         };
         commonFooterObjList = {
           Status : Tools.firstWordUpperCase(item.Status),
-          Age: Tools.formatAge(item.Timestamp)
+          Age: Tools.formatAge(sysdate,item.Timestamp)
         };
         if(txType === 'Transfers' ){
           objList = {

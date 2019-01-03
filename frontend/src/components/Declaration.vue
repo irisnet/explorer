@@ -31,7 +31,7 @@
 </template>
 
 <script>
-  import Tools from '../common/Tools';
+  import Tools from '../util/Tools';
   import axios from 'axios';
   import BlocksListTable from './table/BlocksListTable.vue';
   import SpinComponent from './commonComponents/SpinComponent';

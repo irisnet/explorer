@@ -33,9 +33,19 @@ if(localStorage.getItem('Chain_id') && localStorage.getItem('Chain_id') !== "nul
 }else{
   fuxi = ''
 }
-Vue.prototype.faucet_url = faucet_url
+Vue.prototype.faucet_url = faucet_url;
 Vue.prototype.fuxi = fuxi;
+axios.get(`/api/sysdate`).then(data => {
+  if(data.status === 200){
+    return data.data
+  }
+}).then(sysdate => {
+  setInterval(function () {
+    sysdate.data+= 1;
+    Vue.prototype.sysdate = sysdate.data;
+  },1000)
 
+});
 new Vue({
   router,
   render: h => h(App)

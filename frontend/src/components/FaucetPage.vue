@@ -46,7 +46,7 @@
 
 <script>
   import axios from 'axios';
-  import Tools from '../common/Tools';
+  import Tools from '../util/Tools';
 
 
   export default {
@@ -70,7 +70,6 @@
     },
     data() {
       return {
-        faucet_url: this.faucet_url,
         address: "",
         errMsg: "",
         alertShowErrMsg:'hidden',
@@ -89,7 +88,7 @@
       }
     },
     beforeCreate(){
-      axios.get("/api/faucet/account").then((data)=>{
+      axios.get('/api/faucet/account').then((data)=>{
         if(data.status === 200){
           return data.data;
         }

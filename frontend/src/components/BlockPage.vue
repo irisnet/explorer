@@ -31,11 +31,10 @@
 </template>
 
 <script>
-  import Tools from '../common/Tools';
-  import axios from 'axios';
+  import Tools from '../util/Tools';
   import BlocksListTable from './table/BlocksListTable.vue';
   import SpinComponent from './commonComponents/SpinComponent';
-
+  import Service from "../util/axios"
   export default {
     name:"blockListPage",
     components:{
@@ -95,17 +94,13 @@
     methods: {
       getDataList(currentPage, pageSize) {
         this.showLoading = true;
-        let url = `/api/blocks/${currentPage}/${pageSize}`;
-        axios.get(url).then((data) => {
-          if (data.status === 200) {
-            return data.data;
-          }
-        }).then((data) => {
-          if(data.code === "0"){
-            this.count = data.data.Count;
+        let uri = `/api/blocks/${currentPage}/${pageSize}`;
+        Service.http(uri).then((blockList) => {
+          if(blockList){
+            this.count = blockList.Count;
             localStorage.setItem("blockListCount",this.count);
-            if(data.data.Data && typeof data.data === "object"){
-              this.items = data.data.Data.map(item => {
+            if(blockList.Data && typeof blockList.data === "object"){
+              this.items = blockList.Data.map(item => {
                 let txn = item.NumTxs;
                 let precommitValidatorsLength = item.Block.LastCommit.Precommits.length;
                 let [votingPower,computeValidatorsVotingPowerDenominator,computeValidatorsVotingPowerNumerator] = [0,0,0];
@@ -142,7 +137,7 @@
             }
             this.showLoading = false;
           }else {
-            console.log(data.msg)
+            console.log(blockList.msg)
           }
         }).catch(e => {
           this.showLoading = false;

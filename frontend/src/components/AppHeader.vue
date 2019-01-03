@@ -125,8 +125,9 @@
   </div>
 </template>
 <script>
-  import Tools from '../common/Tools';
-  import axios from 'axios';
+  import Tools from '../util/Tools';
+  import Service from "../util/axios"
+
   export default {
     name: 'app-header',
     watch:{
@@ -146,12 +147,12 @@
     data() {
       return {
         devicesWidth: window.innerWidth,
-        devicesShow: 1,//1是显示pc端，0是移动端
+        devicesShow: 1,
         searchValue: '',
         appHeaderVar: 'person_computer_header_var',
-        featureShow: false,//是否显示功能菜单栏
-        transactionShow: false,//点击显示Transactions菜单
-        validatorsShow: false,//点击显示validators菜单
+        featureShow: false,
+        transactionShow: false,
+        validatorsShow: false,
         searchInputValue: '',
         activeClassName: '/home',
         showHeader:!(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer()),
@@ -193,7 +194,7 @@
           this.flShowTransactionsSelect = true;
           this.flShowUpOrDown = true
         }else {
-          this.flShowUpOrDown = false
+          this.flShowUpOrDown = false;
           this.flShowTransactionsSelect = false
         }
       },
@@ -248,12 +249,8 @@
       },
       searchTx(){
         let uri = `/api/tx/${this.searchInputValue}`;
-        axios.get(uri).then((data) => {
-          if (data.status === 200) {
-            return data.data;
-          }
-        }).then((txInfomation) => {
-          if (txInfomation && typeof txInfomation === "object") {
+        Service.http(uri).then((tx) => {
+          if (tx) {
             this.$router.push(`/tx?txHash=${this.searchInputValue}`);
             this.clearSearchInputValue();
           }else {
@@ -266,12 +263,8 @@
       },
       searchDelegator(){
         let uri = `/api/account/${this.searchInputValue}`;
-        axios.get(uri).then((data) => {
-          if (data.status === 200) {
-            return data.data;
-          }
-        }).then((addressInfomation) => {
-          if (addressInfomation && typeof addressInfomation === "object") {
+        Service.http(uri).then((delegatorAddress) => {
+          if (delegatorAddress) {
             this.$router.push(`/address/1/${this.searchInputValue}`);
             this.clearSearchInputValue();
           }else {
@@ -284,12 +277,8 @@
       },
       searchValidator(){
         let uri = `/api/stake/candidate/${this.searchInputValue}`;
-        axios.get(uri).then((data) => {
-          if (data.status === 200) {
-            return data.data;
-          }
-        }).then((validatorAddressInfomation) => {
-          if (validatorAddressInfomation && typeof validatorAddressInfomation === "object") {
+        Service.http(uri).then((validatorAddress) => {
+          if (validatorAddress) {
             this.$router.push(`/address/1/${this.searchInputValue}`);
             this.clearSearchInputValue();
           }else {
@@ -302,11 +291,7 @@
       },
       searchBlockAndProposal(){
         let uri = `/api/search/${this.searchInputValue}`;
-        axios.get(uri).then((data) => {
-          if(data.status === 200){
-            return data.data;
-          }
-        }).then((searchResult) => {
+        Service.http(uri).then((searchResult) => {
           if(searchResult){
             //searchResult：[ {Type：block，Data:{}} ，{Type：proposal,Data:{}} ]
             let searchResultIsBlockOrProposalId = 1;

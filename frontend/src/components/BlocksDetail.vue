@@ -233,18 +233,18 @@
         }else if(txTabName === 'Governance'){
           url = `/api/tx/gov/${currentPage}/${pageSize}?height=${this.$route.params.height}`
         }
-        Service.http(url).then((data) => {
+        Service.http(url).then((txList) => {
           that.showLoading = false;
           that.showNoData = false;
-          that.count = data.Count;
+          that.count = txList.Count;
           clearInterval(this.transactionsTimer);
-          if(data.Data){
+          if(txList.Data){
             setInterval(function () {
-              that.items = Tools.formatTxList(data.Data,txTabName)
+              that.items = Tools.formatTxList(txList.Data,txTabName,that.sysdate)
             },1000);
           }else {
             that.showNoData = true;
-            that.items = Tools.formatTxList(null,txTabName)
+            that.items = Tools.formatTxList(null,txTabName,that.sysdate)
           }
         })
       },

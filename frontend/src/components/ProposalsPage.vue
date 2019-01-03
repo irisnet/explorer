@@ -29,11 +29,10 @@
 </template>
 
 <script>
-  import Tools from '../common/Tools';
-  import axios from 'axios';
+  import Tools from '../util/Tools';
   import BlocksListTable from './table/BlocksListTable.vue';
   import SpinComponent from './commonComponents/SpinComponent';
-
+  import Service from "../util/axios"
   export default {
     components:{
       BlocksListTable,
@@ -62,7 +61,7 @@
     data() {
       return {
         devicesWidth: window.innerWidth,
-        proposalsListPageWrap: 'personal_computer_proposals_list_page',//1是显示pc端，0是移动端
+        proposalsListPageWrap: 'personal_computer_proposals_list_page',
         currentPage: 1,
         pageSize: 30,
         count: 0,
@@ -71,6 +70,7 @@
         showLoading:false,
         innerWidth : window.innerWidth,
         tableMinWidth:"",
+        proposalListTimer: null,
       }
     },
     beforeMount() {
@@ -107,28 +107,29 @@
       getDataList(currentPage, pageSize) {
         this.showLoading = true;
         let url=`/api/proposals/${currentPage}/${pageSize}`;
-        axios.get(url).then((data)=>{
-          if(data.status === 200){
-            return data.data
-          }
-        }).then((data)=>{
-          if(data.Data && typeof data === "object"){
+        Service.http(url).then((proposalList)=>{
+          if(proposalList.Data){
             this.showNoData = false;
-            this.count = data.Count;
-            this.items = data.Data.map(item =>{
-              let proposalId = item.proposal_id === 0 ? "--" : item.proposal_id;
-              let type = item.type;
-              let status  = item.status;
-              let submitTime = item.submit_time;
-              let title = Tools.formatString(item.title,20,"...");
-              return {
-                Title : title,
-                'Proposal ID' : proposalId,
-                Type : type,
-                Status : status,
-                'Submit Time' : submitTime,
-              }
-            })
+            this.count = proposalList.Count;
+            let that = this;
+            clearInterval(this.proposalListTimer);
+            this.proposalListTimer = setInterval(function () {
+              that.items = proposalList.Data.map(item =>{
+                let proposalId = item.proposal_id === 0 ? "--" : item.proposal_id;
+                let type = item.type;
+                let status  = item.status;
+                let submitTime = Tools.formatAge(that.sysdate,item.submit_time.split("+")[0]);
+                let title = Tools.formatString(item.title,20,"...");
+                return {
+                  Title : title,
+                  'Proposal ID' : proposalId,
+                  Type : type,
+                  Status : status,
+                  SubmitTime : submitTime,
+                }
+              })
+            },1000);
+
           }else {
             this.items = [{"Title":"","Proposal ID":"","Type":"","Status":"","Submit Time":"",}];
             this.showNoData = true;

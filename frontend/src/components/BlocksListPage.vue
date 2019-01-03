@@ -76,7 +76,7 @@
     data() {
       return {
         devicesWidth: window.innerWidth,
-        blocksListPageWrap: 'personal_computer_blocks_list_page',//1是显示pc端，0是移动端
+        blocksListPageWrap: 'personal_computer_blocks_list_page',
         blocksValue: '',
         currentPage: 1,
         pageSize: 30,
@@ -160,7 +160,7 @@
                 return {
                   Height: item.Height,
                   Txn:txn,
-                  Age: Tools.formatAge(item.Time),
+                  Age: Tools.formatAge(that.sysdate,item.Time),
                   'Precommit Validators':precommit,
                   'Voting Power': denominator !== 0? `${(numerator/denominator).toFixed(2)*100}%`:'',
                 };
@@ -193,15 +193,15 @@
           this.listTitleName = "Governance";
           url = `/api/tx/gov/${currentPage}/${pageSize}`
         }
-        Service.http(url).then((data) => {
-          that.count = data.Count;
+        Service.http(url).then((txList) => {
+          that.count = txList.Count;
           clearInterval(this.transactionTimer);
-          if(data){
+          if(txList){
             that.transactionTimer = setInterval(function () {
-              that.items = Tools.formatTxList(data.Data,that.$route.params.param)
+              that.items = Tools.formatTxList(txList.Data,that.$route.params.param,that.sysdate)
             },1000);
           }else{
-            that.items = Tools.formatTxList(null,that.$route.params.param);
+            that.items = Tools.formatTxList(null,that.$route.params.param,that.sysdate);
             that.showNoData = true;
           }
           that.showLoading = false;

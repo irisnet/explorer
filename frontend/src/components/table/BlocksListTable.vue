@@ -13,7 +13,7 @@
         <span>{{data.item.Txn}}</span>
       </template>
       <template slot='Age' slot-scope='data'>
-        <span> > {{data.item.Age}} ago</span>
+        <span v-show="data.item.Age"> > {{data.item.Age}} ago</span>
       </template>
     </b-table>
 
@@ -24,7 +24,7 @@
         </span>
       </template>
       <template slot='Age' slot-scope='data'>
-        <span> > {{data.item.Age}} ago</span>
+        <span v-show="data.item.Age"> > {{data.item.Age}} ago</span>
       </template>
       <template slot='Block' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/blocks_detail/${data.item.Block}`)">
@@ -118,6 +118,9 @@
           <pre class="proposals-list">{{data.item['Title']}}</pre>
         </span>
       </template>
+      <template slot="SubmitTime" slot-scope='data'>
+        <span v-show="data.item.SubmitTime">> {{data.item.SubmitTime}} ago</span>
+      </template>
     </b-table>
 
     <b-table :fields='fields' :items='items' striped v-if="type === 'ProposalsDetail'" nodelabel  class="proposal_detail_list">
@@ -126,8 +129,8 @@
           {{data.item['Voter']}}
         </span>
       </template>
-      <template slot='Age' slot-scope='data'>
-        <span> > {{data.item}} ago</span>
+      <template slot='VoteTime' slot-scope='data'>
+        <span v-show="data.item.VoteTime"> > {{data.item.VoteTime}} ago</span>
       </template>
     </b-table>
 
@@ -138,7 +141,7 @@
         </span>
       </template>
       <template slot='Age' slot-scope='data'>
-        <span> > {{data.item.Age}} ago</span>
+        <span v-show="data.item.Age"> > {{data.item.Age}} ago</span>
       </template>
       <template slot='Block' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/blocks_detail/${data.item.Block}`)">
@@ -203,7 +206,7 @@
 </template>
 
 <script>
- import Tools from '../../common/Tools';
+ import Tools from '../../util/Tools';
   export default {
     watch: {
       items(items) {

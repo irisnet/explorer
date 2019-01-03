@@ -47,7 +47,8 @@
         </div>
         <div class="information_props_wrap" v-if="flShowProposalId">
           <span class="information_props">Proposal ID :</span>
-          <span class="information_value link_active_style" @click="skipRoute(`/ProposalsDetail/${proposalId}`)">{{proposalId}}</span>
+          <span v-show="proposalId !== '--' " class="information_value link_active_style" @click="skipRoute(`/ProposalsDetail/${proposalId}`)">{{proposalId}}</span>
+          <span v-show="proposalId === '--' " class="information_value link_active_style">{{proposalId}}</span>
         </div>
         <div class="information_props_wrap" v-if="flShowVoter">
           <span class="information_props">Voter :</span>
@@ -119,7 +120,7 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Age(Timestamp) :</span>
-          <span class="information_value">{{ageValue}} ago ({{timestampValue}})</span>
+          <span class="information_value" v-show="ageValue">{{ageValue}} ago ({{timestampValue}})</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Actual Tx Fee :</span>
@@ -148,14 +149,14 @@
 </template>
 
 <script>
-  import Tools from '../common/Tools';
-  import axios from 'axios';
+  import Tools from '../util/Tools';
+  import Service from "../util/axios"
   export default {
 
     data() {
       return {
         devicesWidth: window.innerWidth,
-        transactionsDetailWrap: 'personal_computer_transactions_detail',//1是显示pc端，0是移动端
+        transactionsDetailWrap: 'personal_computer_transactions_detail',
         hashValue: '',
         blockValue: '',
         typeValue: '',
@@ -226,16 +227,12 @@
       getTransactionInfo(){
         if(this.$route.query.txHash){
           let url = `/api/tx/${this.$route.query.txHash}`;
-          axios.get(url).then((data)=>{
-            if(data.status === 200){
-              return data.data;
-            }
-          }).then((data)=>{
-            clearInterval(this.transactionDetailTimer)
-            if(data && typeof data === "object"){
+          Service.http(url).then((data)=>{
+            clearInterval(this.transactionDetailTimer);
+            if(data){
               let that = this;
               this.transactionDetailTimer = setInterval(function () {
-                that.ageValue = Tools.formatAge(data.Timestamp);
+                that.ageValue = Tools.formatAge(that.sysdate,data.Timestamp);
               });
 
               this.timestampValue = Tools.format2UTC(data.Timestamp);
