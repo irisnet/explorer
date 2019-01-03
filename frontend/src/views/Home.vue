@@ -261,12 +261,19 @@ import Service from '../util/axios'
         },
         getTransactionList() {
           let url = `/api/txs/1/10`;
-          Service.http(url).then((data) => {
-            if(data.Data){
+          Service.http(url).then((transactionList) => {
+            if(transactionList.Data){
               let that = this;
+              for (let txIndex = 0; txIndex < transactionList.Data.length; txIndex++){
+                if(new Date(transactionList.Data[txIndex].Time).getTime() > localStorage.getItem("lastTxTime")){
+                  transactionList.Data[txIndex].showAnimation = "show"
+                }
+              }
+              let lastTxTime = new Date(transactionList.Data[0].Time).getTime();
               clearInterval(this.transfersTimer);
               this.transfersTimer = setInterval(function () {
-                that.transactionInformation = data.Data.map(item => {
+                localStorage.setItem('lastTxTime',lastTxTime);
+                that.transactionInformation = transactionList.Data.map(item => {
                   let [Amount, Fee] = ['--', '--'];
                   if(item.Amount){
                     if (item.Amount instanceof Array) {
@@ -291,6 +298,7 @@ import Service from '../util/axios'
                     Fee =  `${Tools.formatFeeToFixedNumber(item.ActualFee.amount)} ${Tools.formatDenom(item.ActualFee.denom).toUpperCase()}`;
                   }
                   return {
+                    showAnimation: item.showAnimation ? item.showAnimation : '',
                     TxHash: item.TxHash,
                     From: item.From,
                     To: item.To,

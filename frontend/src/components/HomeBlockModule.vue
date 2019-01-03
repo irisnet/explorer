@@ -45,7 +45,6 @@
 </template>
 
 <script>
-  import Tools from '../util/Tools';
   export default {
     name: 'home-block-module',
     watch:{
