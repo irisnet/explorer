@@ -51,7 +51,6 @@ import Tools from '../util/Tools';
 import EchartsPie from "../components/EchartsPie";
 import EchartsLine from "../components/EchartsLine";
 import HomeBlockModule from "../components/HomeBlockModule";
-import axios from 'axios';
 import Service from '../util/axios'
   export default {
       name: 'app-header',
@@ -306,7 +305,7 @@ import Service from '../util/axios'
 <style lang="scss">
   @import '../style/mixin.scss';
   .red{
-    color: #d43f3a;
+    color: #ff001b;
   }
   .home_wrap {
     @include flex();
