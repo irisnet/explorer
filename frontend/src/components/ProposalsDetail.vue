@@ -226,8 +226,7 @@
                 clearInterval(this.votingTimer);
                 this.votingTimer = setInterval(function () {
                   that.items = data.votes.map(item =>{
-                    let votingListItemTime;
-                        votingListItemTime = Tools.formatAge(that.sysdate,item.time);
+                    let votingListItemTime = Tools.formatAge(that.sysdate,item.time);
                     return {
                       Voter: item.voter,
                       "Vote Option": item.option,
