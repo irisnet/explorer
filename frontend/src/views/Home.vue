@@ -7,7 +7,7 @@
           <span class="information_module_key">Current Block</span>
         </div>
         <div class="information_preview_module">
-          <span :class="diffSeconds > 180 ? 'red' : '' ">{{lastBlockAge}}</span>
+          <span :class="diffSeconds > 120 ? 'red' : '' ">{{lastBlockAge}}</span>
           <span class="information_module_key">Last Block</span>
         </div>
         <div class="information_preview_module"
