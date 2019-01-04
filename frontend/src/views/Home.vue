@@ -51,7 +51,8 @@ import Tools from '../util/Tools';
 import EchartsPie from "../components/EchartsPie";
 import EchartsLine from "../components/EchartsLine";
 import HomeBlockModule from "../components/HomeBlockModule";
-import Service from '../util/axios'
+import Service from '../util/axios';
+import Constant from "../constant/Constant"
   export default {
       name: 'app-header',
       components: {EchartsPie, EchartsLine, HomeBlockModule},
@@ -247,7 +248,7 @@ import Service from '../util/axios'
                     Txn: item.NumTxs,
                     Time: Tools.format2UTC(item.Time),
                     Fee: '0 IRIS',
-                    age: Tools.formatAge(that.sysdate,item.Time,"prefix","suffix")
+                    age: Tools.formatAge(that.sysdate,item.Time,Constant.prefix,Constant.suffix)
                   };
                 });
               },1000);
@@ -306,7 +307,7 @@ import Service from '../util/axios'
                     Fee,
                     Amount,
                     Time: Tools.format2UTC(item.Time),
-                    age: Tools.formatAge(that.sysdate,item.Time,"prefix","suffix")
+                    age: Tools.formatAge(that.sysdate,item.Time,Constant.prefix,Constant.suffix)
                   };
                 })
               },1000)

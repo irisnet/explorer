@@ -94,6 +94,7 @@
   import Service from "../util/axios"
   import BlocksListTable from './table/BlocksListTable.vue';
   import SpinComponent from './commonComponents/SpinComponent';
+  import Constant from "../constant/Constant"
   export default {
     components: {
       BlocksListTable,
@@ -161,7 +162,7 @@
         return Time.split('+')[0];
       },
       formatProposalTime(time){
-        return time ? Tools.formatAge(this.sysdate,this.getSplitTime(time),"","suffix") : '--';
+        return time ? Tools.formatAge(this.sysdate,this.getSplitTime(time),"",Constant.suffix) : '--';
       },
       getProposalsInformation() {
         this.showLoading = true;
@@ -229,7 +230,7 @@
                 clearInterval(this.votingTimer);
                 this.votingTimer = setInterval(function () {
                   that.items = data.votes.map(item =>{
-                    let votingListItemTime = Tools.formatAge(that.sysdate,item.time,"prefix","suffix");
+                    let votingListItemTime = Tools.formatAge(that.sysdate,item.time,Constant.prefix,Constant.suffix);
                     return {
                       Voter: item.voter,
                       "Vote Option": item.option,

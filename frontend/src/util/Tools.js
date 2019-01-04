@@ -2,6 +2,7 @@
  * 工具类
  */
 import BigNumber from 'bignumber.js';
+import Constant from "../constant/Constant"
 export default class Tools{
   /**
    * 根据展示的需求拼接字符串展示成 > xxdxxhxxmxxs ago 或者 xxdxxhxxmxxs ago 或者 xxdxxhxxmxxs
@@ -20,11 +21,11 @@ export default class Tools{
     let secondLevel = minuteLevel % (60 * 1000) ;
     let seconds = Math.round(secondLevel / 1000);
 
-  let str = `${dayDiff?`${dayDiff}d`:''} ${hours ? `${hours}h` : ''} ${dayDiff && hours ? '' : (minutes ? `${minutes}m`:'')} ${dayDiff || hours ? '' : (seconds ? `${seconds}s`:'')}`;
+    let str = `${dayDiff?`${dayDiff}d`:''} ${hours ? `${hours}h` : ''} ${dayDiff && hours ? '' : (minutes ? `${minutes}m`:'')} ${dayDiff || hours ? '' : (seconds ? `${seconds}s`:'')}`;
     if(prefix && suffix){
-      return`> ${str} ago`
+      return`${prefix} ${str} ${suffix}`
     }else if(suffix){
-      return`${str} ago`
+      return`${str} ${suffix}`
     }else {
       return`${str}`
     }
@@ -314,7 +315,7 @@ export default class Tools{
         };
         commonFooterObjList = {
           Status : Tools.firstWordUpperCase(item.Status),
-          Age: Tools.formatAge(sysdate,item.Timestamp,"prefix","suffix")
+          Age: Tools.formatAge(sysdate,item.Timestamp,Constant.prefix,Constant.suffix)
         };
         if(txType === 'Transfers' ){
           objList = {

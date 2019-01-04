@@ -150,7 +150,8 @@
 
 <script>
   import Tools from '../util/Tools';
-  import Service from "../util/axios"
+  import Service from "../util/axios";
+  import Constant from "../constant/Constant"
   export default {
 
     data() {
@@ -232,7 +233,7 @@
             if(data){
               let that = this;
               this.transactionDetailTimer = setInterval(function () {
-                that.ageValue = Tools.formatAge(that.sysdate,data.Timestamp,"","suffix");
+                that.ageValue = Tools.formatAge(that.sysdate,data.Timestamp,"",Constant.suffix);
               });
               this.timestampValue = Tools.format2UTC(data.Timestamp);
               this.hashValue = data.Hash;

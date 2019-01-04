@@ -85,7 +85,8 @@
   import axios from 'axios';
   import BlocksListTable from './table/BlocksListTable.vue';
   import SpinComponent from './commonComponents/SpinComponent';
-  import Service from "../util/axios"
+  import Service from "../util/axios";
+  import Constant from "../constant/Constant"
   export default {
     components: {
       BlocksListTable,
@@ -272,7 +273,7 @@
               this.hashValue = data.Height;
               this.heightValue = data.Height;
               this.blockDetailTimer = setInterval(function () {
-                that.ageValue = Tools.formatAge(that.sysdate,data.Time,"","suffix");
+                that.ageValue = Tools.formatAge(that.sysdate,data.Time,"",Constant.suffix);
               });
               this.timestampValue = Tools.format2UTC(data.Time);
               this.blockHashValue = data.Hash;
