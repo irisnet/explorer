@@ -1,7 +1,7 @@
 const prefix = ">";
 const suffix ="ago";
 
-module.exports = {
+export default {
   prefix,
   suffix
 };
