@@ -3,6 +3,7 @@
   "version": "0.3.0",
   "private": true,
   "scripts": {
+    "replace": "node package.js -p",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "dev":"node config.js"
