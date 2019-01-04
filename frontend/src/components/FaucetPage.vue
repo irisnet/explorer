@@ -94,7 +94,6 @@
         }
       }).then((data)=>{
         this.errStyle = false;
-        this.btnDisabled = true;
         this.faucetBalance = `${Tools.formatAccountCoinsAmount(data.coins[0])[0].split(".")[0]}`;
         let faucetQuota = 20;
         if(this.faucetBalance < faucetQuota){
@@ -104,7 +103,7 @@
           this.insufficientBalanceStatus = true
         }else {
           this.insufficientBalanceStatus = false;
-          this.btninfo = "Send me IRIS"
+          this.btninfo = "Send me IRIS";
         }
         this.tokenName = Tools.formatAccountCoinsDenom(data.coins[0])[0].toUpperCase();
       }).catch(e =>{

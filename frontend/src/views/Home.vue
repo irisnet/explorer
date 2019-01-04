@@ -10,6 +10,10 @@
           <span :class="diffSeconds > 120 ? 'red' : '' ">{{lastBlockAge}}</span>
           <span class="information_module_key">Last Block</span>
         </div>
+        <div class="information_preview_module">
+          <span>{{transactionValue}}</span>
+          <span class="information_module_key">Transactions</span>
+        </div>
         <div class="information_preview_module"
              style="cursor:pointer;" @click="skipValidators"
         >
@@ -18,12 +22,9 @@
         </div>
         <div class="information_preview_module">
           <span>{{votingPowerValue}}</span>
-          <span class="information_module_key">Voting Power</span>
+          <span class="information_module_key">Online Voting Power</span>
         </div>
-        <div class="information_preview_module">
-          <span>{{transactionValue}}</span>
-          <span class="information_module_key">Transactions</span>
-        </div>
+
       </div>
       <div :class="module_item_wrap">
         <div class="home_module_item home_module_item_pie" style="overflow-x: hidden;">

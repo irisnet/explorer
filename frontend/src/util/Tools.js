@@ -21,7 +21,7 @@ export default class Tools{
     let secondLevel = minuteLevel % (60 * 1000) ;
     let seconds = Math.round(secondLevel / 1000);
 
-    let str = `${dayDiff?`${dayDiff}d`:''} ${hours ? `${hours}h` : ''} ${dayDiff && hours ? '' : (minutes ? `${minutes}m`:'')} ${dayDiff || hours ? '' : (seconds ? `${seconds}s`:'')}`;
+    let str = `${dayDiff?`${dayDiff}d`:''} ${hours ? `${hours}h` : ''} ${dayDiff && hours ? '' : (minutes ? `${minutes}m`:'')} ${dayDiff || hours || minutes? '' : (seconds ? `${seconds}s`:'')}`;
     if(prefix && suffix){
       return`${prefix} ${str} ${suffix}`
     }else if(suffix){
