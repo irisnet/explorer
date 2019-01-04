@@ -96,7 +96,7 @@
       </div>
 
     </div>
-    <div class="line_container_wrap" v-if="showProfile">
+    <div class="line_container_wrap"  v-show="flShowUptime">
       <div class="line_container" :class="transactionsDetailWrap">
         <p class="line_history_title">History</p>
         <div class="line_content">
@@ -109,7 +109,7 @@
                    :class="item.active ? 'border-none' : 'border-block' " >{{item.title}}</div>
             </div>
           </div>
-          <div v-show="flShowUptime" class="line_echarts_content " :class="transactionsDetailWrap === 'personal_computer_transactions_detail_wrap' ?
+          <div class="line_echarts_content " :class="transactionsDetailWrap === 'personal_computer_transactions_detail_wrap' ?
            'content_right' : 'model_content_right' ">
             <div class="line_right_container" style="overflow-x: auto;-webkit-overflow-scrolling:touch;">
               <echarts-validators-uptime-line :informationUptimeLine="informationUptimeLine" ></echarts-validators-uptime-line>
