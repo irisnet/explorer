@@ -3,7 +3,7 @@ Blockchain explorer for the IRIS network
 
 
 # ENV
-DB_URL: mongo url ( eg. 192.168.150.7:27017)
+DB_ADDR: mongo url ( eg. 192.168.150.7:27017)
 
 DB_DATABASE: mongo database name ( eg. sync-iris )
 
