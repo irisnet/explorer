@@ -234,7 +234,7 @@
               let that = this;
               this.transactionDetailTimer = setInterval(function () {
                 that.ageValue = Tools.formatAge(that.sysdate,data.Timestamp,"",Constant.suffix);
-              });
+              },1000);
               this.timestampValue = Tools.format2UTC(data.Timestamp);
               this.hashValue = data.Hash;
               this.blockValue = data.BlockHeight;

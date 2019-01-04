@@ -274,7 +274,7 @@
               this.heightValue = data.Height;
               this.blockDetailTimer = setInterval(function () {
                 that.ageValue = Tools.formatAge(that.sysdate,data.Time,"",Constant.suffix);
-              });
+              },1000);
               this.timestampValue = Tools.format2UTC(data.Time);
               this.blockHashValue = data.Hash;
               this.lastBlockHashValue = data.Block.LastCommit.BlockID.Hash;

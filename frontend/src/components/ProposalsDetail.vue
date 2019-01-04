@@ -198,7 +198,7 @@
                 that.depositEedAge = that.formatProposalTime(data.proposal.deposit_end_time);
                 that.votingStartAge = that.formatProposalTime(data.proposal.voting_start_time);
                 that.votingEndAge = that.formatProposalTime(data.proposal.voting_end_time);
-              });
+              },1000);
               this.proposalsId = data.proposal.proposal_id === 0 ? "--" : data.proposal.proposal_id;
               this.title = data.proposal.title;
               this.type = data.proposal.type;
