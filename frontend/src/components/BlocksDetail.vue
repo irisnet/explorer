@@ -272,7 +272,7 @@
               this.hashValue = data.Height;
               this.heightValue = data.Height;
               this.blockDetailTimer = setInterval(function () {
-                that.ageValue = Tools.formatAge(that.sysdate,data.Time,"","ago");
+                that.ageValue = Tools.formatAge(that.sysdate,data.Time,"","suffix");
               });
               this.timestampValue = Tools.format2UTC(data.Time);
               this.blockHashValue = data.Hash;

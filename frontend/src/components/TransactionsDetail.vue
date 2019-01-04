@@ -232,7 +232,7 @@
             if(data){
               let that = this;
               this.transactionDetailTimer = setInterval(function () {
-                that.ageValue = Tools.formatAge(that.sysdate,data.Timestamp,"","ago");
+                that.ageValue = Tools.formatAge(that.sysdate,data.Timestamp,"","suffix");
               });
               this.timestampValue = Tools.format2UTC(data.Timestamp);
               this.hashValue = data.Hash;

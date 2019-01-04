@@ -5,11 +5,11 @@ import BigNumber from 'bignumber.js';
 export default class Tools{
   /**
    * 根据展示的需求拼接字符串展示成 > xxdxxhxxmxxs ago 或者 xxdxxhxxmxxs ago 或者 xxdxxhxxmxxs
-   * param symbol string;
-   * param ago string;
+   * param prefix string;
+   * param suffix string;
    * return string
    * */
-  static formatAge(sysdate,time,symbol,ago){
+  static formatAge(sysdate,time,prefix,suffix){
     let dateBegin = new Date(time);
     let dateDiff = sysdate * 1000 - dateBegin.getTime();
     let dayDiff = Math.floor(dateDiff / (24 * 3600 * 1000));
@@ -19,12 +19,14 @@ export default class Tools{
     let minutes = Math.floor(minuteLevel / (60 * 1000));
     let secondLevel = minuteLevel % (60 * 1000) ;
     let seconds = Math.round(secondLevel / 1000);
-    if(symbol && ago){
-      return`> ${dayDiff?`${dayDiff}d`:''} ${hours ? `${hours}h` : ''} ${dayDiff && hours ? '' : (minutes ? `${minutes}m`:'')} ${dayDiff || hours ? '' : (seconds ? `${seconds}s`:'')} ago`
-    }else if(ago){
-      return`${dayDiff?`${dayDiff}d`:''} ${hours ? `${hours}h` : ''} ${dayDiff && hours ? '' : (minutes ? `${minutes}m`:'')} ${dayDiff || hours ? '' : (seconds ? `${seconds}s`:'')} ago`
+
+  let str = `${dayDiff?`${dayDiff}d`:''} ${hours ? `${hours}h` : ''} ${dayDiff && hours ? '' : (minutes ? `${minutes}m`:'')} ${dayDiff || hours ? '' : (seconds ? `${seconds}s`:'')}`;
+    if(prefix && suffix){
+      return`> ${str} ago`
+    }else if(suffix){
+      return`${str} ago`
     }else {
-      return`${dayDiff?`${dayDiff}d`:''} ${hours ? `${hours}h` : ''} ${dayDiff && hours ? '' : (minutes ? `${minutes}m`:'')} ${dayDiff || hours ? '' : (seconds ? `${seconds}s`:'')}`
+      return`${str}`
     }
   }
   static getDiffMilliseconds(sysdate,time){
@@ -312,7 +314,7 @@ export default class Tools{
         };
         commonFooterObjList = {
           Status : Tools.firstWordUpperCase(item.Status),
-          Age: Tools.formatAge(sysdate,item.Timestamp,"symbol","ago")
+          Age: Tools.formatAge(sysdate,item.Timestamp,"prefix","suffix")
         };
         if(txType === 'Transfers' ){
           objList = {

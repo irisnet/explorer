@@ -247,7 +247,7 @@ import Service from '../util/axios'
                     Txn: item.NumTxs,
                     Time: Tools.format2UTC(item.Time),
                     Fee: '0 IRIS',
-                    age: Tools.formatAge(that.sysdate,item.Time,"symbol","ago")
+                    age: Tools.formatAge(that.sysdate,item.Time,"prefix","suffix")
                   };
                 });
               },1000);
@@ -306,7 +306,7 @@ import Service from '../util/axios'
                     Fee,
                     Amount,
                     Time: Tools.format2UTC(item.Time),
-                    age: Tools.formatAge(that.sysdate,item.Time,"symbol","ago")
+                    age: Tools.formatAge(that.sysdate,item.Time,"prefix","suffix")
                   };
                 })
               },1000)
