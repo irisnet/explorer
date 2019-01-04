@@ -35,17 +35,18 @@
 
 [[projects]]
   branch = "develop"
-  digest = "1:dce648febe745d165a3058f517cefa60a0d175df7b9ab3df2d71ddc351ccbac3"
+  digest = "1:954dff293c29a1f3a65c53b0fce915b97a83c3d0ad08e6f8c6b44a060deda0ca"
   name = "github.com/irisnet/irishub-sync"
   packages = [
     "conf/db",
-    "logger",
+    "conf/log",
+    "module/logger",
     "store",
     "store/document",
     "util/constant",
   ]
   pruneopts = "UT"
-  revision = "2e78a2f931cb98e56bd143919ba53b8f88f54613"
+  revision = "0b31ece3494780c74b2ff5ab28d2106bcd10f9c5"
 
 [[projects]]
   digest = "1:0028cb19b2e4c3112225cd871870f2d9cf49b9b4276531f03438a88e94be86fe"
@@ -122,7 +123,6 @@
   input-imports = [
     "github.com/gorilla/handlers",
     "github.com/gorilla/mux",
-    "github.com/irisnet/irishub-sync/logger",
     "github.com/irisnet/irishub-sync/store",
     "github.com/irisnet/irishub-sync/store/document",
     "github.com/stretchr/testify/assert",

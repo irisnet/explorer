@@ -1,8 +1,10 @@
 package utils
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"time"
 )
 
 func TestParseInt(t *testing.T) {
@@ -14,4 +16,8 @@ func TestParseInt(t *testing.T) {
 
 	_, ok = ParseInt("sd")
 	assert.False(t, ok)
+}
+
+func TestFormatTime(t *testing.T) {
+	fmt.Println(FmtUTCTime(time.Now()))
 }

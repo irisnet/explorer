@@ -21,7 +21,7 @@
           <span class="information_props">Type :</span>
           <span class="information_value">{{typeValue}}</span>
         </div>
-        <div class="information_props_wrap" v-if="flShowProposer">
+        <div class="information_props_wrap" v-if="showProposer">
           <span class="information_props">Proposer :</span>
           <span class="information_value link_active_style" @click="skipRoute(`/address/1/${proposer}`)">{{proposer}}</span>
         </div>
@@ -33,7 +33,7 @@
           <span class="information_props">ProposalType :</span>
           <span class="information_value">{{proposalType}}</span>
         </div>
-        <div class="information_props_wrap" v-if="flShowInitialDeposit">
+        <div class="information_props_wrap" v-if="showInitialDeposit">
           <span class="information_props">InitialDeposit :</span>
           <span class="information_value">{{initialDeposit}}</span>
         </div>
@@ -45,36 +45,23 @@
           <span class="information_props">Depositer :</span>
           <span class="information_value link_active_style" @click="skipRoute(`/address/1/${depositer}`)">{{depositer}}</span>
         </div>
-        <div class="information_props_wrap" v-if="flShowProposalId">
+        <div class="information_props_wrap" v-if="showProposalId">
           <span class="information_props">Proposal ID :</span>
-          <span v-show="proposalId !== '--' " class="information_value link_active_style" @click="skipRoute(`/ProposalsDetail/${proposalId}`)">{{proposalId}}</span>
-          <span v-show="proposalId === '--' " class="information_value link_active_style">{{proposalId}}</span>
+          <span class="information_value link_active_style" @click="skipRoute(`/ProposalsDetail/${proposalId}`)">{{proposalId}}</span>
         </div>
-        <div class="information_props_wrap" v-if="flShowVoter">
+        <div class="information_props_wrap" v-if="showVoter">
           <span class="information_props">Voter :</span>
           <span class="information_value link_active_style" @click="skipRoute(`/address/1/${voter}`)">{{voter}}</span>
         </div>
-        <div class="information_props_wrap" v-if="flShowTypeTransfer || flShowWithdrawAddress">
+        <div class="information_props_wrap" v-if="showTypeTransfer">
           <span class="information_props">From :</span>
           <span class="information_value link_active_style" @click="skipRoute(`/address/1/${fromValue}`)">{{fromValue}}</span>
-        </div>
-        <div class="information_props_wrap" v-if="flShowWithdrawAddress">
-          <span class="information_props">Withdraw Address :</span>
-          <span class="information_value link_active_style" @click="skipRoute(`/address/1/${withdrawAddress}`)">{{withdrawAddress}}</span>
-        </div>
-        <div class="information_props_wrap" v-if="flShowDelegatorAddress">
-          <span class="information_props">Delegator Address :</span>
-          <span class="information_value link_active_style" @click="skipRoute(`/address/1/${delegatorAddress}`)">{{delegatorAddress}}</span>
-        </div>
-        <div class="information_props_wrap" v-if="flShowValidatorAddress">
-          <span class="information_props">Validator Address :</span>
-          <span class="information_value link_active_style" @click="skipRoute(`/address/1/${validatorAddress}`)">{{validatorAddress}}</span>
         </div>
         <div class="information_props_wrap" v-if="showSource">
           <span class="information_props">Source :</span>
           <span class="information_value link_active_style" @click="skipRoute(`/address/1/${source}`)">{{source}}</span>
         </div>
-        <div class="information_props_wrap" v-if="flShowTypeTransfer">
+        <div class="information_props_wrap" v-if="showTypeTransfer">
           <span class="information_props">To :</span>
           <span class="information_value link_active_style" @click="skipRoute(`/address/1/${toValue}`)">{{toValue}}</span>
         </div>
@@ -84,10 +71,10 @@
         </div>
         <div class="information_props_wrap" v-if="identity">
           <span class="information_props">Identity :</span>
-          <span class="information_value"><pre class="information_pre">{{identity}}</pre></span>
+          <span class="information_value">{{identity}}</span>
         </div>
         <div class="information_props_wrap" v-if="owner">
-          <span class="information_props">From :</span>
+          <span class="information_props">Owner :</span>
           <span class="information_value link_active_style" @click="skipRoute(`/address/1/${owner}`)">{{owner}}</span>
         </div>
         <div class="information_props_wrap" v-if="pubkey">
@@ -104,23 +91,19 @@
         </div>
         <div class="information_props_wrap" v-if="details">
           <span class="information_props">Details :</span>
-          <span class="information_value"><pre class="information_pre">{{details}}</pre></span>
+          <span class="information_value">{{details}}</span>
         </div>
-        <div class="information_props_wrap" v-if="flShowVoter">
+        <div class="information_props_wrap" v-if="showVoter">
           <span class="information_props">Option :</span>
           <span class="information_value">{{option}}</span>
         </div>
-        <div class="information_props_wrap" v-if="flShowTypeTransfer || flShowTypeDeposit">
+        <div class="information_props_wrap" v-if="showTypeTransfer || showTypeDeposit">
           <span class="information_props">Amount :</span>
           <span class="information_value">{{amountValue}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Status :</span>
-          <span class="information_value">{{status}}</span>
-        </div>
-        <div class="information_props_wrap">
-          <span class="information_props">Age(Timestamp) :</span>
-          <span class="information_value" v-show="ageValue">{{ageValue}} ({{timestampValue}})</span>
+          <span class="information_props">Timestamp :</span>
+          <span class="information_value">{{timestampValue}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Actual Tx Fee :</span>
@@ -140,7 +123,7 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Memo :</span>
-          <span class="information_value"><pre class="information_pre">{{memo}}</pre></span>
+          <span class="information_value">{{memo}}</span>
         </div>
       </div>
     </div>
@@ -149,15 +132,14 @@
 </template>
 
 <script>
-  import Tools from '../util/Tools';
-  import Service from "../util/axios";
-  import Constant from "../constant/Constant"
+  import Tools from '../common/Tools';
+  import axios from 'axios';
   export default {
 
     data() {
       return {
         devicesWidth: window.innerWidth,
-        transactionsDetailWrap: 'personal_computer_transactions_detail',
+        transactionsDetailWrap: 'personal_computer_transactions_detail',//1是显示pc端，0是移动端
         hashValue: '',
         blockValue: '',
         typeValue: '',
@@ -188,27 +170,12 @@
         depositer: "",
         voter: "",
         option: "",
-        status: "",
-        withdrawAddress: "",
-        delegatorAddress: "",
-        validatorAddress: "",
-        flShowProposalId: false,
-        flShowProposer: false,
-        flShowInitialDeposit: false,
-        flShowTypeTransfer:false,
-        flShowVoter: false,
-        flShowTypeDeposit: false,
-        flShowWithdrawAddress: false,
-        flShowDelegatorAddress: false,
-        flShowValidatorAddress: false,
-        ageValue: '',
-        transactionDetailTimer: null,
-      }
-    },
-    watch:{
-      $route(){
-        this.getTransactionInfo();
-        Tools.scrollToTop();
+        showProposalId: false,
+        showProposer: false,
+        showInitialDeposit: false,
+        showTypeTransfer:false,
+        showVoter: false,
+        showTypeDeposit: false,
       }
     },
     beforeMount() {
@@ -218,117 +185,102 @@
         this.transactionsDetailWrap = 'mobile_transactions_detail_wrap';
       }
     },
+
     mounted() {
-      this.getTransactionInfo()
+      let url = `/api/tx/${this.$route.query.txHash}`;
+      if(!this.$route.query.txHash){
+        return;
+      }
+      axios.get(url).then((data)=>{
+        if(data.status === 200){
+          return data.data;
+        }
+      }).then((data)=>{
+        if(data && typeof data === "object"){
+          this.hashValue = data.Hash;
+          this.blockValue = data.BlockHeight;
+          this.typeValue = data.Type === 'coin'?'transfer':data.Type;
+          this.timestampValue = Tools.conversionTimeToUTCToYYMMDD(data.Timestamp);
+          this.gasPrice = Tools.convertScientificNotation2Number(Tools.formaNumberAboutGasPrice(data.GasPrice));
+          this.gasLimit = data.GasLimit;
+          this.gasUsedByTxn = data.GasUsed;
+          this.memo = data.Memo ? data.Memo : '--';
+
+          if(data.Amount && data.Amount.length !==0){
+            this.amountValue = data.Amount.map(item=>{
+              item.amount = Tools.convertScientificNotation2Number(Tools.formatNumber(item.amount));
+              if(Tools.flTxType(data.Type)){
+                return `${item.amount} SHARES`;
+              }else{
+                return `${item.amount} ${Tools.formatDenom(item.denom).toUpperCase()}`;
+              }
+            }).join(',') ;
+          }else if(data.Amount && Object.keys(data.Amount).includes('amount') && Object.keys(data.Amount).includes('denom')){
+            data.Amount =  Tools.convertScientificNotation2Number(Tools.formatNumber(data.Amount.amount));
+            this.amountValue = `${data.Amount.amount} ${Tools.formatDenom(data.Amount.denom).toUpperCase()}`
+          }else {
+            this.amountValue = "--"
+          }
+          this.actualTxFee = `${Tools.convertScientificNotation2Number(Tools.formatNumber(data.Fee.amount))} ${Tools.formatDenom(data.Fee.denom).toUpperCase()}`;
+
+
+          if(data.Type === "Transfer" || data.Type === "Delegate" || data.Type === "BeginUnbonding" || data.Type === "CompleteUnbonding"){
+            this.showTypeTransfer = true;
+            this.fromValue = data.From;
+            this.toValue = data.To;
+          }else if(data.Type === "CreateValidator" || data.Type === "EditValidator"){
+            this.owner = data.Owner ? data.Owner : '--';
+            this.moniker = data.Moniker ? data.Moniker : '--';
+            this.pubkey = data.Pubkey ? data.Pubkey : "--";
+            this.identity = data.Identity ? data.Identity : '--';
+            this.website = data.Website ? data.Website : '--';
+            this.details = data.Details ? data.Details : '--';
+            if(data.SelfBond && data.SelfBond.length !== 0){
+              this.selfBond = `${Tools.convertScientificNotation2Number(Tools.formatNumber(data.SelfBond[0].amount))} ${Tools.formatDenom(data.SelfBond[0].denom).toUpperCase()}`;
+            }else {
+              this.selfBond = "--"
+            }
+          }else if(data.Type === "BeginRedelegate" || data.Type === "CompleteRedelegate" ){
+            this.showTypeTransfer = true;
+            this.showSource = true;
+            this.fromValue = data.From ? data.From : '';
+            this.toValue = data.To ? data.To : "";
+            this.source = data.Source ? data.Source : "";
+          }else if(data.Type === "SubmitProposal"){
+            this.showProposer = true;
+            this.showInitialDeposit = true;
+            this.title = data.Title ? data.Title : '--';
+            this.proposer = data.From;
+            this.proposalType = data.ProposalType;
+            if(data.Amount && data.Amount.length !==0){
+              this.initialDeposit = data.Amount.map(item=>{
+                return `${item.amount} ${Tools.formatDenom(item.denom).toUpperCase()}`;
+              }).join(',') ;
+            }else {
+              this.initialDeposit = "--"
+            }
+            this.description = data.Description ? data.Description : '--';
+          }else if(data.Type === "Deposit"){
+            this.showProposalId = true;
+            this.showTypeDeposit = true;
+            this.proposalId = data.ProposalId === 0 ? "--" : data.ProposalId;
+            this.depositer = data.From ? data.From : "--";
+          }else if(data.Type === "Vote"){
+            this.showProposalId = true;
+            this.showVoter = true;
+            this.proposalId = data.ProposalId === 0 ? "--" : data.ProposalId;
+            this.voter = data.From ? data.From : '--';
+            this.option = data.Option ? data.Option : "--";
+          }
+        }
+
+      }).catch(e => {
+        console.log(e)
+      })
     },
     methods: {
       skipRoute(path) {
         this.$router.push(path);
-      },
-      getTransactionInfo(){
-        if(this.$route.query.txHash){
-          let url = `/api/tx/${this.$route.query.txHash}`;
-          Service.http(url).then((data)=>{
-            clearInterval(this.transactionDetailTimer);
-            if(data){
-              let that = this;
-              this.transactionDetailTimer = setInterval(function () {
-                that.ageValue = Tools.formatAge(that.sysdate,data.Timestamp,"",Constant.suffix);
-              });
-              this.timestampValue = Tools.format2UTC(data.Timestamp);
-              this.hashValue = data.Hash;
-              this.blockValue = data.BlockHeight;
-              this.typeValue = data.Type === 'coin'?'transfer':data.Type;
-              this.gasPrice = Tools.convertScientificNotation2Number(Tools.formaNumberAboutGasPrice(data.GasPrice));
-              this.gasLimit = data.GasLimit;
-              this.gasUsedByTxn = data.GasUsed;
-              this.memo = data.Memo ? data.Memo : '--';
-              this.status = data.Status ? Tools.firstWordUpperCase(data.Status): '--';
-              if(data.Amount && data.Amount.length !==0){
-                this.amountValue = data.Amount.map(item=>{
-                  item.amount = Tools.convertScientificNotation2Number(Tools.formatNumber(item.amount));
-                  if(Tools.flTxType(data.Type)){
-                    return `${item.amount} SHARES`;
-                  }else{
-                    return `${item.amount} ${Tools.formatDenom(item.denom).toUpperCase()}`;
-                  }
-                }).join(',') ;
-              }else if(data.Amount && Object.keys(data.Amount).includes('amount') && Object.keys(data.Amount).includes('denom')){
-                data.Amount =  Tools.convertScientificNotation2Number(Tools.formatNumber(data.Amount.amount));
-                this.amountValue = `${data.Amount.amount} ${Tools.formatDenom(data.Amount.denom).toUpperCase()}`
-              }else {
-                this.amountValue = "--"
-              }
-              this.actualTxFee = `${Tools.convertScientificNotation2Number(Tools.formatNumber(data.Fee.amount))} ${Tools.formatDenom(data.Fee.denom).toUpperCase()}`;
-              if(data.Type === "Transfer" || data.Type === "Delegate" || data.Type === "BeginUnbonding"){
-                this.flShowTypeTransfer = true;
-                this.fromValue = data.From;
-                this.toValue = data.To;
-              }else if(data.Type === "CreateValidator" || data.Type === "EditValidator" || data.Type === "Unjail"){
-                this.owner = data.Owner ? data.Owner : '--';
-                this.moniker = data.Moniker ? data.Moniker : '--';
-                this.pubkey = data.Pubkey ? data.Pubkey : "--";
-                this.identity = data.Identity ? data.Identity : '--';
-                this.website = data.Website ? data.Website : '--';
-                this.details = data.Details ? data.Details : '--';
-                if(data.SelfBond && data.SelfBond.length !== 0){
-                  this.selfBond = `${Tools.convertScientificNotation2Number(Tools.formatNumber(data.SelfBond[0].amount))} ${Tools.formatDenom(data.SelfBond[0].denom).toUpperCase()}`;
-                }else {
-                  this.selfBond = "--"
-                }
-              }else if(data.Type === "BeginRedelegate"){
-                this.flShowTypeTransfer = true;
-                this.showSource = true;
-                this.fromValue = data.From ? data.From : '';
-                this.toValue = data.To ? data.To : "";
-                this.source = data.Source ? data.Source : "";
-              }else if(data.Type === "SubmitProposal"){
-                this.flShowProposer = true;
-                this.flShowInitialDeposit = true;
-                this.title = data.Title ? data.Title : '--';
-                this.proposer = data.From;
-                this.proposalType = data.ProposalType;
-                if(data.Amount && data.Amount.length !==0){
-                  this.initialDeposit = data.Amount.map(item=>{
-                    return `${item.amount} ${Tools.formatDenom(item.denom).toUpperCase()}`;
-                  }).join(',') ;
-                }else {
-                  this.initialDeposit = "--"
-                }
-                this.description = data.Description ? data.Description : '--';
-              }else if(data.Type === "Deposit"){
-                this.flShowProposalId = true;
-                this.flShowTypeDeposit = true;
-                this.proposalId = data.ProposalId === 0 ? "--" : data.ProposalId;
-                this.depositer = data.From ? data.From : "--";
-              }else if(data.Type === "Vote"){
-                this.flShowProposalId = true;
-                this.flShowVoter = true;
-                this.proposalId = data.ProposalId === 0 ? "--" : data.ProposalId;
-                this.voter = data.From ? data.From : '--';
-                this.option = data.Option ? data.Option : "--";
-              }else if(data.Type === "SetWithdrawAddress"){
-                this.flShowWithdrawAddress = true;
-                this.fromValue = data.From ? data.From : '';
-                this.withdrawAddress = data.To ? data.To : '';
-              }else if(data.Type === "WithdrawDelegatorRewardsAll"){
-                this.flShowDelegatorAddress = true;
-                this.delegatorAddress = data.From ? data.From : '';
-              }else if(data.Type === "WithdrawDelegatorReward"){
-                this.flShowDelegatorAddress = true;
-                this.flShowValidatorAddress = true;
-                this.delegatorAddress = data.From ? data.From : '';
-                this.validatorAddress = data.To ? data.To : "";
-              } else if(data.Type === "WithdrawValidatorRewardsAll"){
-                this.flShowValidatorAddress = true;
-                this.validatorAddress = data.From ? data.From : "";
-              }
-            }
-
-          }).catch(e => {
-            console.log(e)
-          })
-        }
       }
     }
   }
@@ -337,7 +289,6 @@
   @import '../style/mixin.scss';
   .information_pre{
     color: #a2a2ae;
-    white-space: pre-wrap;
   }
   .transactions_detail_wrap {
     @include flex;

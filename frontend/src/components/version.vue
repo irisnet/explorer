@@ -1,6 +1,10 @@
 <template>
     <div>
+<<<<<<< HEAD
       <p class="version_title">Version: 0.7.5</p>
+=======
+      <p class="version_title">Version: 0.7.0</p>
+>>>>>>> feature/0.7.2
       <button class="go_home_btn" @click="goHome">HOME</button>
     </div>
 </template>

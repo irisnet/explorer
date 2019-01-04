@@ -1,10 +1,6 @@
 package utils
 
 import (
-	"bytes"
-	"encoding/binary"
-	"fmt"
-	"github.com/irisnet/explorer/backend/types"
 	"strconv"
 	"time"
 )
@@ -25,25 +21,9 @@ func ParseUint(text string) (i int64, b bool) {
 	return i, ok
 }
 
-func RoundFloat(num float64, bit int) (i float64, b bool) {
-	format := "%" + fmt.Sprintf("0.%d", bit) + "f"
-	s := fmt.Sprintf(format, num)
-	i, err := strconv.ParseFloat(s, 0)
-	if err != nil {
-		return i, false
-	}
-	return i, true
-}
-
 func FmtUTCTime(time time.Time) string {
 	if time.IsZero() {
 		return ""
 	}
-	return time.UTC().Format(types.UtcFormat)
-}
-
-func IntToByte(num int64) []byte {
-	var buffer bytes.Buffer
-	binary.Write(&buffer, binary.BigEndian, num)
-	return buffer.Bytes()
+	return time.UTC().Format("2006/01/02 15:04:05+UTC")
 }

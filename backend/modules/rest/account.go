@@ -1,0 +1,86 @@
+package rest
+
+import (
+	"encoding/json"
+	"github.com/irisnet/explorer/backend/types"
+	"github.com/irisnet/irishub-sync/store"
+	"net/http"
+	"time"
+
+	"github.com/gorilla/mux"
+	"github.com/irisnet/explorer/backend/utils"
+	"github.com/irisnet/irishub-sync/store/document"
+	"gopkg.in/mgo.v2/bson"
+)
+
+// mux.Router registrars
+func RegisterAccount(r *mux.Router) error {
+	funs := []func(*mux.Router) error{
+		RegisterQueryAccount,
+		RegisterQueryAllAccount,
+	}
+
+	for _, fn := range funs {
+		if err := fn(r); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func queryAccount(w http.ResponseWriter, r *http.Request) {
+	args := mux.Vars(r)
+	address := args["address"]
+
+	db := utils.GetDatabase()
+	accountStore := db.C("account")
+	defer db.Session.Close()
+	var result AccountResp
+	err := accountStore.Find(bson.M{"address": address}).One(&result)
+	if err != nil {
+		w.Write([]byte("not find account"))
+		return
+	}
+
+	balance := utils.GetBalance(result.Address)
+	if len(balance) > 0 {
+		result.Amount = balance
+	}
+	result.WithdrawAddress = address
+
+	txStore := db.C("tx_common")
+	query := bson.M{}
+	query["from"] = address
+	query["type"] = types.TxTypeSetWithdrawAddress
+
+	var tx document.CommonTx
+	if err := txStore.Find(query).Sort("-time").One(&tx); err == nil {
+		result.WithdrawAddress = tx.To
+	}
+
+	resultByte, _ := json.Marshal(result)
+	w.Write(resultByte)
+}
+
+func queryAccounts(w http.ResponseWriter, r *http.Request) {
+	var data []document.Account
+	w.Write(utils.QueryList("account", &data, nil, "-time", r))
+}
+
+func RegisterQueryAccount(r *mux.Router) error {
+	r.HandleFunc("/api/account/{address}", queryAccount).Methods("GET")
+	return nil
+}
+
+func RegisterQueryAllAccount(r *mux.Router) error {
+	r.HandleFunc("/api/accounts/{page}/{size}", queryAccounts).Methods("GET")
+	return nil
+}
+
+type AccountResp struct {
+	Address         string      `bson:"address"`
+	Amount          store.Coins `bson:"amount"`
+	Time            time.Time   `bson:"time"`
+	Height          int64       `bson:"height"`
+	WithdrawAddress string
+}
