@@ -38,7 +38,7 @@
 
 <script>
   import Tools from '../util/Tools';
-  import axios from 'axios';
+  import Constant from "../constant/Constant"
   import Service from "../util/axios"
   import BlocksListTable from './table/BlocksListTable.vue';
   import SpinComponent from './commonComponents/SpinComponent';
@@ -160,7 +160,7 @@
                 return {
                   Height: item.Height,
                   Txn:txn,
-                  Age: Tools.formatAge(that.sysdate,item.Time),
+                  Age: Tools.formatAge(that.sysdate,item.Time,Constant.prefix,Constant.suffix),
                   'Precommit Validators':precommit,
                   'Voting Power': denominator !== 0? `${(numerator/denominator).toFixed(2)*100}%`:'',
                 };

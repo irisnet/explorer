@@ -20,7 +20,7 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Timestamp:</span>
-          <span class="information_value">{{timestampValue}}</span>
+          <span class="information_value">{{ageValue}} ({{timestampValue}})</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Block Hash:</span>
@@ -85,7 +85,8 @@
   import axios from 'axios';
   import BlocksListTable from './table/BlocksListTable.vue';
   import SpinComponent from './commonComponents/SpinComponent';
-  import Service from "../util/axios"
+  import Service from "../util/axios";
+  import Constant from "../constant/Constant"
   export default {
     components: {
       BlocksListTable,
@@ -149,6 +150,8 @@
         pageSize: 20,
         addressTxList: "",
         tableMinWidth:"",
+        blockDetailTimer: null,
+        ageValue: "",
         txTab:[
           {
             "txTabName":"Transfers",
@@ -251,6 +254,7 @@
       getBlockInformation() {
         let url = `/api/block/${this.$route.params.height}`;
         Service.http(url).then((data) => {
+          clearInterval(this.blockDetailTimer);
           if (data) {
             let denominator = 0;
             data.Validators.forEach(item => denominator += item.VotingPower);
@@ -264,9 +268,13 @@
               }
             }
             if (data) {
+              let that = this;
               this.transactionsValue = data.NumTxs;
               this.hashValue = data.Height;
               this.heightValue = data.Height;
+              this.blockDetailTimer = setInterval(function () {
+                that.ageValue = Tools.formatAge(that.sysdate,data.Time,"",Constant.suffix);
+              });
               this.timestampValue = Tools.format2UTC(data.Time);
               this.blockHashValue = data.Hash;
               this.lastBlockHashValue = data.Block.LastCommit.BlockID.Hash;

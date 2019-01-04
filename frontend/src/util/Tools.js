@@ -2,8 +2,15 @@
  * 工具类
  */
 import BigNumber from 'bignumber.js';
+import Constant from "../constant/Constant"
 export default class Tools{
-  static formatAge(sysdate,time){
+  /**
+   * 根据展示的需求拼接字符串展示成 > xxdxxhxxmxxs ago 或者 xxdxxhxxmxxs ago 或者 xxdxxhxxmxxs
+   * param prefix string;
+   * param suffix string;
+   * return string
+   * */
+  static formatAge(sysdate,time,prefix,suffix){
     let dateBegin = new Date(time);
     let dateDiff = sysdate * 1000 - dateBegin.getTime();
     let dayDiff = Math.floor(dateDiff / (24 * 3600 * 1000));
@@ -13,7 +20,15 @@ export default class Tools{
     let minutes = Math.floor(minuteLevel / (60 * 1000));
     let secondLevel = minuteLevel % (60 * 1000) ;
     let seconds = Math.round(secondLevel / 1000);
-    return`${dayDiff?`${dayDiff}d`:''} ${hours ? `${hours}h` : ''} ${dayDiff && hours ? '' : (minutes ? `${minutes}m`:'')} ${dayDiff || hours ? '' : (seconds ? `${seconds}s`:'')}`
+
+    let str = `${dayDiff?`${dayDiff}d`:''} ${hours ? `${hours}h` : ''} ${dayDiff && hours ? '' : (minutes ? `${minutes}m`:'')} ${dayDiff || hours ? '' : (seconds ? `${seconds}s`:'')}`;
+    if(prefix && suffix){
+      return`${prefix} ${str} ${suffix}`
+    }else if(suffix){
+      return`${str} ${suffix}`
+    }else {
+      return`${str}`
+    }
   }
   static getDiffMilliseconds(sysdate,time){
     let dateBegin = new Date(time);
@@ -300,7 +315,7 @@ export default class Tools{
         };
         commonFooterObjList = {
           Status : Tools.firstWordUpperCase(item.Status),
-          Age: Tools.formatAge(sysdate,item.Timestamp)
+          Age: Tools.formatAge(sysdate,item.Timestamp,Constant.prefix,Constant.suffix)
         };
         if(txType === 'Transfers' ){
           objList = {

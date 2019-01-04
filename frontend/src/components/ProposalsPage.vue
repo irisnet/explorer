@@ -32,7 +32,8 @@
   import Tools from '../util/Tools';
   import BlocksListTable from './table/BlocksListTable.vue';
   import SpinComponent from './commonComponents/SpinComponent';
-  import Service from "../util/axios"
+  import Service from "../util/axios";
+  import Constant from "../constant/Constant"
   export default {
     components:{
       BlocksListTable,
@@ -118,7 +119,7 @@
                 let proposalId = item.proposal_id === 0 ? "--" : item.proposal_id;
                 let type = item.type;
                 let status  = item.status;
-                let submitTime = Tools.formatAge(that.sysdate,item.submit_time.split("+")[0]);
+                let submitTime = Tools.formatAge(that.sysdate,item.submit_time.split("+")[0],Constant.prefix,Constant.suffix);
                 let title = Tools.formatString(item.title,20,"...");
                 return {
                   Title : title,
