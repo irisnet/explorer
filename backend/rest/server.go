@@ -20,6 +20,7 @@ type ApiServer struct {
 func NewApiServer() *ApiServer {
 	router := NewAPIMux()
 	handler := handlers.CompressHandler(router)
+	handler = AddHeader(handler)
 
 	port := conf.Get().Server.ServerPort
 	addr := fmt.Sprintf(":%d", port)
@@ -77,4 +78,11 @@ func NewAPIMux() *mux.Router {
 
 	r.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("../frontend/dist/"))))
 	return r
+}
+
+func AddHeader(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("CHAIN_ID", conf.Get().Server.ChainId)
+		h.ServeHTTP(w, r)
+	})
 }
