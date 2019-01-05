@@ -19,7 +19,7 @@
           <h2>Join QQ group</h2>
         </div>
       </div>
-      <router-view class="router_view" :style="`min-height:${vh/100-2.72}rem;`"/>
+      <router-view class="router_view" :style="`min-height:${vh/100-2.72}rem;`" :key="key"/>
       <footer :class="footerClass" v-show="flShowFooter" id="footer">
         <div :class="footerClassName" style="height:100%;">
           <div class="footer_left" :class="footerLeftVar">
@@ -65,7 +65,6 @@
   import Tools from './util/Tools';
   import testVersion from '../testVersion';
   import BackToTop from "./components/BackToTop";
-  import Service from './util/axios'
   export default {
     components: {
       AppHeader,
@@ -75,6 +74,11 @@
       $route() {
         this.showHeaderAndFooterByVersionPath();
         Tools.scrollToTop()
+      }
+    },
+    computed: {
+      key() {
+        return this.$route.name !== undefined ? this.$route.name + new Date() : this.$route + new Date()
       }
     },
     data() {
