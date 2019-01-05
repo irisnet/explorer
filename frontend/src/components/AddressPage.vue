@@ -5,9 +5,9 @@
         <span class="transactions_detail_title">Address</span>
         <span class="transactions_detail_wrap_hash_var">
           {{address}}
-          <i v-if="showProfile" :style="{background:validatorStatusColor}">v</i>
-            <span v-show="flShowValidatorCandidate && showProfile" class="candidate_validator">(This Validator is a Candidate)</span>
-            <span v-show="flShowValidatorJailed && showProfile" class="jailed_validator">(This Validator is jailed!)</span>
+          <i v-if="flShowProfile" :style="{background:validatorStatusColor}">v</i>
+            <span v-show="flShowValidatorCandidate && flShowProfile" class="candidate_validator">(This Validator is a Candidate)</span>
+            <span v-show="flShowValidatorJailed && flShowProfile" class="jailed_validator">(This Validator is jailed!)</span>
         </span>
       </p>
     </div>
@@ -33,7 +33,7 @@
         </div>
       </div>
     </div>
-    <div :class="transactionsDetailWrap" class="address_profile" v-if="showProfile">
+    <div :class="transactionsDetailWrap" class="address_profile" v-if="flShowProfile">
       <p class="transaction_information_content_title">Validator Profile</p>
       <div class="transactions_detail_information_wrap">
         <div class="information_props_wrap">
@@ -65,7 +65,7 @@
         </div>
       </div>
     </div>
-    <div :class="transactionsDetailWrap" class="current_tenure" v-show="showProfile">
+    <div :class="transactionsDetailWrap" class="current_tenure" v-show="flShowProfile">
       <p class="transaction_information_content_title" style="border-bottom:1px solid #eee">Current Stake</p>
       <div class="current_tenure_wrap">
         <div class="transactions_detail_information_wrap">
@@ -96,7 +96,7 @@
       </div>
 
     </div>
-    <div class="line_container_wrap"  v-show="flShowUptime">
+    <div class="line_container_wrap"  v-show="flShowUptime && flShowProfile">
       <div class="line_container" :class="transactionsDetailWrap">
         <p class="line_history_title">History</p>
         <div class="line_content">
@@ -226,7 +226,7 @@
               TransactionsShowNoData:false,
               PrecommitBlocksshowNoData:false,
               transactionsCount:0,
-              showProfile:true,
+              flShowProfile:true,
               showNoData:false,
               showLoading:false,
               informationValidatorsLine: {},
@@ -426,9 +426,9 @@
             this.commissionRateValue = '';
             this.announcementValue = '';
             this.operatorValue = this.$Codec.Bech32.toBech32(this.$Crypto.Constants.IRIS.IrisNetConfig.PREFIX_BECH32_ACCADDR,this.$Codec.Bech32.fromBech32(validator.Address));
-            this.showProfile = true;
+            this.flShowProfile = true;
           }else{
-            this.showProfile = false;
+            this.flShowProfile = false;
           }
 
         }).catch(err => {
