@@ -96,7 +96,7 @@
       </div>
 
     </div>
-    <div class="line_container_wrap"  v-show="flShowUptime">
+    <div class="line_container_wrap"  v-show="flShowUptime && showProfile">
       <div class="line_container" :class="transactionsDetailWrap">
         <p class="line_history_title">History</p>
         <div class="line_content">
