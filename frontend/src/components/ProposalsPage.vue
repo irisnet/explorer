@@ -119,7 +119,7 @@
                 let proposalId = item.proposal_id === 0 ? "--" : item.proposal_id;
                 let type = item.type;
                 let status  = item.status;
-                let submitTime = Tools.formatAge(that.sysdate,item.submit_time.split("+")[0],Constant.PREFIX,Constant.SUFFIX);
+                let submitTime = Tools.formatAge(that.sysdate,item.submit_time.split("+")[0],Constant.SUFFIX,Constant.PREFIX);
                 let title = Tools.formatString(item.title,20,"...");
                 return {
                   Title : title,
