@@ -15,6 +15,12 @@ Vue.prototype.$Codec = codec;
 Vue.config.productionTip = false;
 let faucet_url;
 let fuxi;
+axios.defaults.timeout = 120000;
+axios.interceptors.request.use(function (config) {
+  return config;
+}, function (error) {
+  return Promise.reject(error);
+});
 
 if(localStorage.getItem('Faucet_url') && localStorage.getItem('Faucet_url') !== "null"){
   faucet_url = localStorage.getItem('Faucet_url')

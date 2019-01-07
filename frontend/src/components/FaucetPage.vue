@@ -136,9 +136,7 @@
         this.showSendingImg = true;
         axios.post('/api/faucet/apply', JSON.stringify({
           address: this.address
-        }),{
-          timeout: Constant.TIMEOUT
-        }).then(result => {
+        })).then(result => {
           let data = result.data;
           let that = this;
           this.btninfo = "Send me IRIS";
