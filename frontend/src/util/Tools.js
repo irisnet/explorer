@@ -10,7 +10,7 @@ export default class Tools{
    * param suffix string;
    * return string
    * */
-  static formatAge(sysdate,time,prefix,suffix){
+  static formatAge(sysdate,time,suffix,prefix){
     let dateBegin = new Date(time);
     let dateDiff = sysdate * 1000 - dateBegin.getTime();
     let dayDiff = Math.floor(dateDiff / (24 * 3600 * 1000));
@@ -315,7 +315,7 @@ export default class Tools{
         };
         commonFooterObjList = {
           Status : Tools.firstWordUpperCase(item.Status),
-          Age: Tools.formatAge(sysdate,item.Timestamp,Constant.prefix,Constant.suffix)
+          Age: Tools.formatAge(sysdate,item.Timestamp,Constant.SUFFIX,Constant.PREFIX,)
         };
         if(txType === 'Transfers' ){
           objList = {

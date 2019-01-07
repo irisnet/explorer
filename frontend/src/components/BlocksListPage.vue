@@ -160,7 +160,7 @@
                 return {
                   Height: item.Height,
                   Txn:txn,
-                  Age: Tools.formatAge(that.sysdate,item.Time,Constant.prefix,Constant.suffix),
+                  Age: Tools.formatAge(that.sysdate,item.Time,Constant.SUFFIX,Constant.PREFIX),
                   'Precommit Validators':precommit,
                   'Voting Power': denominator !== 0? `${(numerator/denominator).toFixed(2)*100}%`:'',
                 };

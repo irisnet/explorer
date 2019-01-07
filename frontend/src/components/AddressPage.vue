@@ -46,7 +46,8 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Owner :</span>
-          <span class="information_value operator_value" @click="skipRoute(`/address/1/${operatorValue}`)">{{operatorValue ? operatorValue : '--'}}</span>
+          <span class="information_value operator_value" v-show="operatorValue" @click="skipRoute(`/address/1/${operatorValue}`)">{{operatorValue}}</span>
+          <span class="information_value" v-show="!operatorValue">--</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Website :</span>
@@ -156,7 +157,6 @@
 
 <script>
   import Tools from '../util/Tools';
-  import axios from 'axios';
   import BlocksListTable from './table/BlocksListTable';
   import EchartsLine from "./EchartsLine";
   import EchartsValidatorsLine from "./EchartsValidatorsLine";

@@ -1,7 +1,8 @@
-const prefix = ">";
-const suffix ="ago";
-
+const PREFIX = ">";
+const SUFFIX = "ago";
+const TIMEOUT = 10000;
 export default {
-  prefix,
-  suffix
+  PREFIX,
+  SUFFIX,
+  TIMEOUT
 };
