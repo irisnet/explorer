@@ -47,7 +47,7 @@
 <script>
   import axios from 'axios';
   import Tools from '../util/Tools';
-
+  import Constant from "../constant/Constant"
 
   export default {
     name: "FaucetPage",
@@ -136,7 +136,9 @@
         this.showSendingImg = true;
         axios.post('/api/faucet/apply', JSON.stringify({
           address: this.address
-        })).then(result => {
+        }),{
+          timeout: Constant.TIMEOUT
+        }).then(result => {
           let data = result.data;
           let that = this;
           this.btninfo = "Send me IRIS";

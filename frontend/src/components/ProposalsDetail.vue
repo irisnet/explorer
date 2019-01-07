@@ -162,7 +162,7 @@
         return Time.split('+')[0];
       },
       formatProposalTime(time){
-        return time ? Tools.formatAge(this.sysdate,this.getSplitTime(time),"",Constant.suffix) : '--';
+        return time ? Tools.formatAge(this.sysdate,this.getSplitTime(time),"",Constant.SUFFIX) : '--';
       },
       getProposalsInformation() {
         this.showLoading = true;
@@ -230,7 +230,7 @@
                 clearInterval(this.votingTimer);
                 this.votingTimer = setInterval(function () {
                   that.items = data.votes.map(item =>{
-                    let votingListItemTime = Tools.formatAge(that.sysdate,item.time,Constant.prefix,Constant.suffix);
+                    let votingListItemTime = Tools.formatAge(that.sysdate,item.time,Constant.PREFIX,Constant.SUFFIX);
                     return {
                       Voter: item.voter,
                       "Vote Option": item.option,

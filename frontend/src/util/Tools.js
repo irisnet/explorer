@@ -315,7 +315,7 @@ export default class Tools{
         };
         commonFooterObjList = {
           Status : Tools.firstWordUpperCase(item.Status),
-          Age: Tools.formatAge(sysdate,item.Timestamp,Constant.prefix,Constant.suffix)
+          Age: Tools.formatAge(sysdate,item.Timestamp,Constant.PREFIX,Constant.SUFFIX)
         };
         if(txType === 'Transfers' ){
           objList = {
