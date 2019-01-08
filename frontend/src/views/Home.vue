@@ -140,11 +140,11 @@ import Constant from "../constant/Constant"
           getBlocksStatusData() {
               this.flFadeIntTransaction = false;
               let url = `/api/chain/status`;
-              let transferObj =  {};
+              let lastTransfer =  {};
               Service.http(url).then((data) => {
-                  if(this.getLocalStorage('transferObj')){
-                    if(this.getLocalStorage('transferObj').txCount !== data.TxCount
-                      || this.getLocalStorage('transferObj').tps !== data.Tps){
+                  if(this.getLocalStorage('lastTransfer')){
+                    if(this.getLocalStorage('lastTransfer').txCount !== data.TxCount
+                      || this.getLocalStorage('lastTransfer').tps !== data.Tps){
                       this.flFadeIntTransaction = true
                     }
                   }
@@ -160,9 +160,9 @@ import Constant from "../constant/Constant"
                   }
                   this.transactionValue = `${num}(${data.Tps.toFixed(2)} TPS)`;
                 }
-                transferObj.txCount = data.TxCount;
-                transferObj.tps = data.Tps;
-                this.setLocalStorage('transferObj',JSON.stringify(transferObj))
+                lastTransfer.txCount = data.TxCount;
+                lastTransfer.tps = data.Tps;
+                this.setLocalStorage('lastTransfer',JSON.stringify(lastTransfer))
               }).catch(e => {
                   console.log(e)
               })
@@ -238,11 +238,11 @@ import Constant from "../constant/Constant"
           this.flFadeInVotingPower = false;
         },
         showFadeinAnimation(blockList,numerator,denominator){
-          if(this.getLocalStorage('localStorageObj')){
-            if(this.getLocalStorage('localStorageObj').activeValidator !== blockList.Data[0].Block.LastCommit.Precommits.length || this.getLocalStorage('validatorLength').totalValidator !== blockList.Data[0].Validators.length){
+          if(this.getLocalStorage('lastBlockInfomation')){
+            if(this.getLocalStorage('lastBlockInfomation').activeValidator !== blockList.Data[0].Block.LastCommit.Precommits.length || this.getLocalStorage('validatorLength').totalValidator !== blockList.Data[0].Validators.length){
               this.flFadeInValidator = true;
             }
-            if(this.getLocalStorage('localStorageObj').numerator !== numerator || this.getLocalStorage('validatorLength').denominator !== denominator){
+            if(this.getLocalStorage('lastBlockInfomation').numerator !== numerator || this.getLocalStorage('validatorLength').denominator !== denominator){
               this.flFadeInVotingPower = true
             }
           }
@@ -263,7 +263,7 @@ import Constant from "../constant/Constant"
 
             this.hideFadeinAnimation();
             if(blockList.Data){
-              let denominator = 0,localStorageObj = {};
+              let denominator = 0,lastBlockInfomation = {};
               blockList.Data[0].Validators.forEach(item=>denominator += item.VotingPower);
               let numerator = 0;
               for(let i = 0; i < blockList.Data[0].Block.LastCommit.Precommits.length; i++){
@@ -274,11 +274,11 @@ import Constant from "../constant/Constant"
                   }
                 }
               }
-              localStorageObj.lastBlockHeight = blockList.Data[0].Height;
-              localStorageObj.numerator = numerator;
-              localStorageObj.denominator = denominator;
-              localStorageObj.activeValidator = blockList.Data[0].Block.LastCommit.Precommits.length;
-              localStorageObj.totalValidator = blockList.Data[0].Validators.length;
+              lastBlockInfomation.lastBlockHeight = blockList.Data[0].Height;
+              lastBlockInfomation.numerator = numerator;
+              lastBlockInfomation.denominator = denominator;
+              lastBlockInfomation.activeValidator = blockList.Data[0].Block.LastCommit.Precommits.length;
+              lastBlockInfomation.totalValidator = blockList.Data[0].Validators.length;
               this.validatorValue = `${blockList.Data[0].Block.LastCommit.Precommits.length} voting / ${blockList.Data[0].Validators.length} total`;
               this.votingPowerValue = denominator !== 0? `${(numerator/denominator).toFixed(2)*100}%`:'';
               this.showFadeinAnimation(blockList,numerator,denominator);
@@ -293,7 +293,7 @@ import Constant from "../constant/Constant"
                 }
                 that.lastBlockAge = Tools.formatAge(that.diffMilliseconds,blockList.Data[0].Time);
                 that.diffSeconds = Math.floor(Tools.getDiffMilliseconds(that.diffMilliseconds,blockList.Data[0].Time)/1000);
-                that.setLocalStorage('localStorageObj',JSON.stringify(localStorageObj));
+                that.setLocalStorage('lastBlockInfomation',JSON.stringify(lastBlockInfomation));
                 that.setLocalStorage("lastBlockHeight",blockList.Data[0].Height);
                 that.currentBlockHeight = blockList.Data[0].Height;
                 that.blocksInformation = blockList.Data.map(item => {
