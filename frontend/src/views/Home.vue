@@ -143,7 +143,7 @@ import Constant from "../constant/Constant"
               let url = `/api/chain/status`;
               let lastTransfer =  {};
               Service.http(url).then((data) => {
-                let storedLastTransfer  = localStorage.getItem('lastTransfer');
+                let storedLastTransfer  = JSON.parse(localStorage.getItem('lastTransfer'));
                   if(storedLastTransfer){
                     if(storedLastTransfer.txCount !== data.TxCount
                       || storedLastTransfer.tps !== data.Tps){
@@ -234,7 +234,7 @@ import Constant from "../constant/Constant"
           this.flFadeInVotingPower = false;
         },
         showFadeinAnimation(blockList,numerator,denominator){
-          let storedLastBlock = localStorage.getItem('lastBlock');
+          let storedLastBlock = JSON.parse(localStorage.getItem('lastBlock'));
           if(storedLastBlock){
             if(storedLastBlock.activeValidator !== blockList.Data[0].Block.LastCommit.Precommits.length || storedLastBlock.totalValidator !== blockList.Data[0].Validators.length){
               this.flFadeInValidator = true;
