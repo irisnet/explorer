@@ -26,6 +26,7 @@ func init() {
 }
 
 func Get(url string) (bz []byte, err error) {
+	start := time.Now()
 	logger.Info("http Get url", logger.String("url", url))
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
@@ -49,7 +50,8 @@ func Get(url string) (bz []byte, err error) {
 	if err != nil {
 		logger.Error("ioutil.ReadAll err", logger.Any("io", err))
 	}
-
+	end := time.Now()
+	logger.Info("http get coast second", logger.Int64("time", end.Unix()-start.Unix()))
 	return
 }
 

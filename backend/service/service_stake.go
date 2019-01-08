@@ -8,7 +8,9 @@ import (
 	"time"
 )
 
-type StakeService struct{}
+type StakeService struct {
+	BaseService
+}
 
 func (service *StakeService) GetModule() Module {
 	return Stake

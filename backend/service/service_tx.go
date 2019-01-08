@@ -11,7 +11,9 @@ import (
 	"time"
 )
 
-type TxService struct{}
+type TxService struct {
+	BaseService
+}
 
 func (service *TxService) GetModule() Module {
 	return Tx

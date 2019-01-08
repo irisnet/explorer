@@ -22,6 +22,7 @@ const (
 
 	EnvironmentDevelop = "develop"
 	EnvironmentLocal   = "local"
+	EnvironmentQa      = "qa"
 	EnvironmentStage   = "stage"
 	EnvironmentProd    = "prod"
 
@@ -86,6 +87,20 @@ func loadDefault() {
 		KeyAddrHubNode: "http://127.0.0.1:26657",
 		KeyAddrFaucet:  "http://dev.faucet.irisplorer.io",
 		KeyChainId:     "rainbow-dev",
+		KeyApiVersion:  "v0.6.5",
+	}
+
+	defaultConfig[EnvironmentQa] = map[string]string{
+		KeyDbAddr:      "35.220.215.42:30000",
+		KeyDATABASE:    "sync-iris",
+		KeyDbUser:      "iris",
+		KeyDbPwd:       "irispassword",
+		KeyDbPoolLimit: "4096",
+		KeyServerPort:  "8080",
+		KeyAddrHubLcd:  "http://35.220.215.42:30417",
+		KeyAddrHubNode: "http://35.220.215.42:30657",
+		KeyAddrFaucet:  "http://35.220.215.42:30200",
+		KeyChainId:     "rainbow-qa",
 		KeyApiVersion:  "v0.6.5",
 	}
 }

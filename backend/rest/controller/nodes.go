@@ -27,7 +27,7 @@ func RegisterNodes(r *mux.Router) error {
 }
 
 func RegisterQueryNodes(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryNodes, "GET", func(request *http.Request) interface{} {
+	doApi(r, types.UrlRegisterQueryNodes, "GET", func(request IrisReq) interface{} {
 		bz := utils.GetNodes()
 		return bz
 	})
@@ -36,7 +36,7 @@ func RegisterQueryNodes(r *mux.Router) error {
 }
 
 func RegisterQueryNodeLocation(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryIp, "POST", func(request *http.Request) interface{} {
+	doApi(r, types.UrlRegisterQueryIp, "POST", func(request IrisReq) interface{} {
 		body, _ := ioutil.ReadAll(request.Body)
 		var params map[string][]string
 		json.Unmarshal(body, &params)
@@ -59,15 +59,15 @@ func RegisterQueryNodeLocation(r *mux.Router) error {
 }
 
 func RegisterQueryFaucet(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryFaucet, "GET", func(request *http.Request) interface{} {
-		return utils.GetFaucetAccount(request)
+	doApi(r, types.UrlRegisterQueryFaucet, "GET", func(request IrisReq) interface{} {
+		return utils.GetFaucetAccount(request.Request)
 	})
 	return nil
 }
 
 func RegisterApply(r *mux.Router) error {
-	doApi(r, types.UrlRegisterApply, "POST", func(request *http.Request) interface{} {
-		return utils.Apply(request)
+	doApi(r, types.UrlRegisterApply, "POST", func(request IrisReq) interface{} {
+		return utils.Apply(request.Request)
 	})
 	return nil
 }

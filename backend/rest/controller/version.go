@@ -4,12 +4,11 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/types"
-	"net/http"
 )
 
 func RegisterQueryVersion(r *mux.Router) error {
 
-	doApi(r, types.UrlRegisterQueryApiVersion, "GET", func(request *http.Request) interface{} {
+	doApi(r, types.UrlRegisterQueryApiVersion, "GET", func(request IrisReq) interface{} {
 		return map[string]string{"version": conf.Get().Server.ApiVersion}
 	})
 
@@ -17,7 +16,7 @@ func RegisterQueryVersion(r *mux.Router) error {
 }
 
 func RegisterPing(r *mux.Router) error {
-	doApi(r, types.UrlRegisterPing, "GET", func(request *http.Request) interface{} {
+	doApi(r, types.UrlRegisterPing, "GET", func(request IrisReq) interface{} {
 		return nil
 	})
 	return nil

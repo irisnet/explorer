@@ -6,7 +6,6 @@ import (
 	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/types"
 	"gopkg.in/mgo.v2/bson"
-	"net/http"
 )
 
 func RegisterTx(r *mux.Router) error {
@@ -37,7 +36,7 @@ var tx = Tx{
 }
 
 func registerQueryTxList(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryTxList, "GET", func(request *http.Request) interface{} {
+	doApi(r, types.UrlRegisterQueryTxList, "GET", func(request IrisReq) interface{} {
 		query := bson.M{}
 
 		address := GetString(request, "address")
@@ -81,7 +80,7 @@ func registerQueryTxList(r *mux.Router) error {
 }
 
 func registerQueryTx(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryTx, "GET", func(request *http.Request) interface{} {
+	doApi(r, types.UrlRegisterQueryTx, "GET", func(request IrisReq) interface{} {
 		hash := Var(request, "hash")
 
 		result := tx.Query(hash)
@@ -92,7 +91,7 @@ func registerQueryTx(r *mux.Router) error {
 }
 
 func registerQueryTxs(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryTxs, "GET", func(request *http.Request) interface{} {
+	doApi(r, types.UrlRegisterQueryTxs, "GET", func(request IrisReq) interface{} {
 		query := bson.M{}
 		var typeArr []string
 		typeArr = append(typeArr, types.TypeTransfer)
@@ -112,7 +111,7 @@ func registerQueryTxs(r *mux.Router) error {
 }
 
 func registerQueryTxsCounter(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryTxsCounter, "GET", func(request *http.Request) interface{} {
+	doApi(r, types.UrlRegisterQueryTxsCounter, "GET", func(request IrisReq) interface{} {
 		query := bson.M{}
 		request.ParseForm()
 
@@ -134,7 +133,7 @@ func registerQueryTxsCounter(r *mux.Router) error {
 }
 
 func registerQueryTxsByAccount(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryTxsByAccount, "GET", func(request *http.Request) interface{} {
+	doApi(r, types.UrlRegisterQueryTxsByAccount, "GET", func(request IrisReq) interface{} {
 		address := Var(request, "address")
 		page, size := GetPage(request)
 		result := tx.QueryByAcc(address, page, size)
@@ -146,7 +145,7 @@ func registerQueryTxsByAccount(r *mux.Router) error {
 }
 
 func registerQueryTxsByDay(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryTxsByDay, "GET", func(request *http.Request) interface{} {
+	doApi(r, types.UrlRegisterQueryTxsByDay, "GET", func(request IrisReq) interface{} {
 		result := tx.CountByDay()
 		return result
 	})

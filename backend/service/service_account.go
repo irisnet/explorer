@@ -9,21 +9,22 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-type AccountService struct{}
+type AccountService struct {
+	BaseService
+}
 
 func (service *AccountService) GetModule() Module {
 	return Account
 }
 
 func (service *AccountService) Query(address string) (result model.AccountResp) {
-
 	db := getDb()
 	c := db.C(document.CollectionNmAccount)
 	defer db.Session.Close()
 	err := c.Find(bson.M{document.Account_Field_Addres: address}).One(&result)
 	if err != nil {
 		error := types.CodeNotFound
-		logger.Error("account don't found", logger.String("address", address))
+		logger.Error("account don't found", service.GetTraceLog(), logger.String("address", address))
 		panic(error)
 		return
 	}
