@@ -2,7 +2,6 @@ package controller
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
@@ -13,18 +12,24 @@ import (
 	"time"
 )
 
-func GetString(request *http.Request, key string) (result string) {
-	apiName := request.RequestURI
+type IrisReq struct {
+	*http.Request
+	TraceId int64
+	Start   time.Time
+}
 
+// user business action
+type Action func(request IrisReq) interface{}
+
+func GetString(request IrisReq, key string) (result string) {
 	request.ParseForm()
 	if len(request.Form[key]) > 0 {
 		result = request.Form[key][0]
-		logger.Info("Api Param", logger.String("Api", apiName), logger.String(key, result))
 	}
 	return
 }
 
-func GetInt(request *http.Request, key string) (result int) {
+func GetInt(request IrisReq, key string) (result int) {
 	value := GetString(request, key)
 	if len(value) == 0 {
 		return
@@ -36,13 +41,13 @@ func GetInt(request *http.Request, key string) (result int) {
 	return
 }
 
-func Var(request *http.Request, key string) (result string) {
-	args := mux.Vars(request)
+func Var(request IrisReq, key string) (result string) {
+	args := mux.Vars(request.Request)
 	result = args[key]
 	return
 }
 
-func GetPage(r *http.Request) (int, int) {
+func GetPage(r IrisReq) (int, int) {
 	page := Var(r, "page")
 	size := Var(r, "size")
 	iPage := 0
@@ -56,23 +61,72 @@ func GetPage(r *http.Request) (int, int) {
 	return iPage, iSize
 }
 
-func writeResponse(writer http.ResponseWriter, data interface{}) {
+// doBefore display user's request information,optional
+func doBefore(request IrisReq) {
+	traceId := logger.Int64("traceId", request.TraceId)
+	apiPath := logger.String("path", request.RequestURI)
+	formValue := logger.Any("form", request.Form)
+	urlValue := logger.Any("url", mux.Vars(request.Request))
+	agent := logger.String("agent", request.UserAgent())
+	defer func() {
+		if r := recover(); r != nil {
+			logger.Error("doBefore failed", traceId)
+		}
+	}()
+
+	logger.Info("doBefore", traceId, apiPath, agent, formValue, urlValue)
+}
+
+// execute user's business code
+func doAction(request IrisReq, action Action) interface{} {
+	//do business action
+	logger.Info("doAction", logger.Int64("traceId", request.TraceId))
+	result := action(request)
+	return result
+}
+
+// doAfter display user's request information,optional
+func doAfter(request IrisReq, result interface{}) {
+	traceId := logger.Int64("traceId", request.TraceId)
+	res := logger.Any("result", result)
+	coastSecond := time.Now().Unix() - request.Start.Unix()
+	coast := logger.Int64("coast", coastSecond)
+	defer func() {
+		if r := recover(); r != nil {
+			logger.Error("doAfter failed", traceId)
+		}
+	}()
+	logger.Info("doAfter", traceId, res, coast)
+	if coastSecond >= 3 {
+		logger.Warn("doAfter api coast most time", traceId)
+	}
+}
+
+// deal with exception for business action
+func doException(request IrisReq, writer http.ResponseWriter) {
+	if r := recover(); r != nil {
+		trace := logger.Int64("traceId", request.TraceId)
+		errMsg := logger.Any("errMsg", r)
+		switch r.(type) {
+		case types.BizCode:
+			doResponse(writer, r)
+			break
+		case error:
+			err := r.(error)
+			e := types.BizCode{
+				Code: types.CodeUnKnown.Code,
+				Msg:  err.Error(),
+			}
+			doResponse(writer, e)
+			break
+		}
+		logger.Error("doException", trace, errMsg)
+	}
+}
+
+// response action's result to user
+func doResponse(writer http.ResponseWriter, data interface{}) {
 	var bz []byte
-	//var resp = model.Response{
-	//	Code: types.CodeSuccess.Code,
-	//	Msg:  types.CodeSuccess.Msg,
-	//}
-	//
-	//switch data.(type) {
-	//case types.BizCode:
-	//	err := data.(types.BizCode)
-	//	resp.Code = err.Code
-	//	resp.Msg = err.Msg
-	//default:
-	//	resp.Data = data
-	//}
-	//
-	//bz, _ = json.Marshal(resp)
 
 	switch data.(type) {
 	case []byte:
@@ -91,63 +145,24 @@ func writeResponse(writer http.ResponseWriter, data interface{}) {
 	writer.Write(bz)
 }
 
-// 用户处理逻辑函数
-type Action func(request *http.Request) interface{}
-
-//封装用户处理逻辑函数，捕获panic异常，统一处理
-func wrap(action Action) func(writer http.ResponseWriter, request *http.Request) {
-	return func(writer http.ResponseWriter, request *http.Request) {
-		apiName := request.RequestURI
-		api := logger.String("Api", apiName)
-
-		defer func() {
-			if r := recover(); r != nil {
-				switch r.(type) {
-				case types.BizCode:
-					writeResponse(writer, r)
-					break
-				case error:
-					err := r.(error)
-					e := types.BizCode{
-						Code: types.CodeUnKnown.Code,
-						Msg:  err.Error(),
-					}
-					writeResponse(writer, e)
-					break
-				}
-				logger.Error("API execute failed", api, logger.Any("errMsg", r))
-
-			}
-		}()
-
-		logger.Info(fmt.Sprintf("========================[api]========================"))
-		logger.Info("Value From Form", api, logger.Any("Params", request.Form))
-		logger.Info("Value From Url", api, logger.Any("Params", mux.Vars(request)))
-
-		start := time.Now()
-		//执行用户的api逻辑
-		result := action(request)
-		end := time.Now()
-
-		bizTime := end.Unix() - start.Unix()
-
-		logger.Info("Api Result", api, logger.Any("result", result))
-		logger.Info("Api Coast Time", api, logger.Int64("coast(s)", bizTime))
-
-		if bizTime >= 3 {
-			logger.Warn("api coast most time", api)
-		}
-		logger.Info(fmt.Sprintf("========================[api]========================"))
-
-		writeResponse(writer, result)
-	}
-}
-
-//处理api接口
-// url : api路径
-// method : api请求方法
-// action : 用户处理逻辑
+// doApi
+// url : api path
+// method : api method type
+// action : business code
 func doApi(r *mux.Router, url, method string, action Action) {
-	wrapperAction := wrap(action)
+	//wrap business code
+	wrapperAction := func(writer http.ResponseWriter, request *http.Request) {
+		start := time.Now()
+		req := IrisReq{
+			Request: request,
+			TraceId: start.UnixNano(),
+			Start:   start,
+		}
+		defer doException(req, writer)
+		doBefore(req)
+		result := doAction(req, action)
+		doAfter(req, result)
+		doResponse(writer, result)
+	}
 	r.HandleFunc(url, wrapperAction).Methods(method)
 }

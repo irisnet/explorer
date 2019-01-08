@@ -4,7 +4,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/types"
-	"net/http"
 	"time"
 )
 
@@ -31,7 +30,7 @@ var common = Common{
 }
 
 func registerQueryText(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryText, "GET", func(request *http.Request) interface{} {
+	doApi(r, types.UrlRegisterQueryText, "GET", func(request IrisReq) interface{} {
 		text := Var(request, "text")
 
 		result := common.QueryText(text)
@@ -42,7 +41,7 @@ func registerQueryText(r *mux.Router) error {
 }
 
 func registerQuerySysDate(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQuerySysDate, "GET", func(request *http.Request) interface{} {
+	doApi(r, types.UrlRegisterQuerySysDate, "GET", func(request IrisReq) interface{} {
 		return time.Now().Unix()
 	})
 

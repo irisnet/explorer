@@ -7,7 +7,9 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-type CommonService struct{}
+type CommonService struct {
+	BaseService
+}
 
 func (service *CommonService) GetModule() Module {
 	return Common

@@ -5,7 +5,6 @@ import (
 	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
-	"net/http"
 )
 
 // mux.Router registrars
@@ -33,7 +32,7 @@ var block = Block{
 }
 
 func registerQueryBlock(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryBlock, "GET", func(request *http.Request) interface{} {
+	doApi(r, types.UrlRegisterQueryBlock, "GET", func(request IrisReq) interface{} {
 		h := Var(request, "height")
 		height, ok := utils.ParseInt(h)
 		if !ok {
@@ -48,7 +47,7 @@ func registerQueryBlock(r *mux.Router) error {
 }
 
 func registerQueryBlocks(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryBlocks, "GET", func(request *http.Request) interface{} {
+	doApi(r, types.UrlRegisterQueryBlocks, "GET", func(request IrisReq) interface{} {
 		page, size := GetPage(request)
 		result := block.QueryList(page, size)
 		return result
@@ -58,7 +57,7 @@ func registerQueryBlocks(r *mux.Router) error {
 }
 
 func registerQueryBlocksPrecommits(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryBlocksPrecommits, "GET", func(request *http.Request) interface{} {
+	doApi(r, types.UrlRegisterQueryBlocksPrecommits, "GET", func(request IrisReq) interface{} {
 		address := Var(request, "address")
 		page, size := GetPage(request)
 

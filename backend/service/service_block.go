@@ -7,7 +7,9 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-type BlockService struct{}
+type BlockService struct {
+	BaseService
+}
 
 func (service *BlockService) GetModule() Module {
 	return Block

@@ -8,7 +8,9 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-type ProposalService struct{}
+type ProposalService struct {
+	BaseService
+}
 
 func (service *ProposalService) GetModule() Module {
 	return Proposal

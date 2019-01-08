@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm"
+	"github.com/irisnet/irishub-sync/logger"
+	"go.uber.org/zap"
 	"gopkg.in/mgo.v2"
 )
 
@@ -53,6 +55,22 @@ func Get(m Module) Service {
 
 type Service interface {
 	GetModule() Module
+}
+
+type BaseService struct {
+	tid int64
+}
+
+func (base *BaseService) SetTid(traceId int64) {
+	base.tid = traceId
+}
+
+func (base *BaseService) GetTid() int64 {
+	return base.tid
+}
+
+func (base *BaseService) GetTraceLog() zap.Field {
+	return logger.Int64("traceId", base.GetTid())
 }
 
 func queryPage(collation string, data interface{}, m map[string]interface{}, sort string, page, size int) model.Page {
