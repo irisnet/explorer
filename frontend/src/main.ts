@@ -8,7 +8,6 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import axios from "axios"
 const  codec  = require("irisnet-crypto/util/codec.js") ;
 const  crypto = require("irisnet-crypto");
-
 Vue.use(BootstrapVue);
 Vue.prototype.$Crypto = crypto;
 Vue.prototype.$Codec = codec;
@@ -35,15 +34,14 @@ if(localStorage.getItem('Chain_id') && localStorage.getItem('Chain_id') !== "nul
 }
 Vue.prototype.faucet_url = faucet_url;
 Vue.prototype.fuxi = fuxi;
+let currentDate = new Date().getTime();
 axios.get(`/api/sysdate`).then(data => {
   if(data.status === 200){
     return data.data
   }
 }).then(sysdate => {
-  setInterval(function () {
-    sysdate.data+= 1;
-    Vue.prototype.sysdate = sysdate.data;
-  },1000)
+    Vue.prototype.diffMilliseconds = sysdate.data*1000 - currentDate;
+
 
 });
 new Vue({

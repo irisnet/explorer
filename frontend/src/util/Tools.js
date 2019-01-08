@@ -10,9 +10,10 @@ export default class Tools{
    * param suffix string;
    * return string
    * */
-  static formatAge(sysdate,time,suffix,prefix){
+  static formatAge(diffMilliseconds,time,suffix,prefix){
     let dateBegin = new Date(time);
-    let dateDiff = sysdate * 1000 - dateBegin.getTime();
+    let currentDate = new Date().getTime() + diffMilliseconds;
+    let dateDiff = currentDate - dateBegin.getTime();
     let dayDiff = Math.floor(dateDiff / (24 * 3600 * 1000));
     let hourLevel = dateDiff % (24 * 3600 * 1000);
     let hours = Math.floor(hourLevel / (3600 * 1000));
@@ -30,9 +31,10 @@ export default class Tools{
       return`${str}`
     }
   }
-  static getDiffMilliseconds(sysdate,time){
+  static getDiffMilliseconds(diffMilliseconds,time){
     let dateBegin = new Date(time);
-    let dateDiff = sysdate*1000 - dateBegin.getTime();
+    let currentDate = new Date().getTime() + diffMilliseconds;
+    let dateDiff = currentDate - dateBegin.getTime();
     return dateDiff
   }
   /**
@@ -281,7 +283,7 @@ export default class Tools{
     });
   }
 
-  static formatTxList(list,txType,sysdate){
+  static formatTxList(list,txType,diffMilliseconds){
     if(list !== null){
       return list.map(item => {
         let [Amount,Fee] = ['--','--'];
@@ -315,7 +317,7 @@ export default class Tools{
         };
         commonFooterObjList = {
           Status : Tools.firstWordUpperCase(item.Status),
-          Age: Tools.formatAge(sysdate,item.Timestamp,Constant.SUFFIX,Constant.PREFIX,)
+          Age: Tools.formatAge(diffMilliseconds,item.Timestamp,Constant.SUFFIX,Constant.PREFIX,)
         };
         if(txType === 'Transfers' ){
           objList = {

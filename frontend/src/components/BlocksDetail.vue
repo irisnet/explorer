@@ -243,11 +243,11 @@
           clearInterval(this.transactionsTimer);
           if(txList.Data){
             this.transactionsTimer = setInterval(function () {
-              that.items = Tools.formatTxList(txList.Data,txTabName,that.sysdate)
+              that.items = Tools.formatTxList(txList.Data,txTabName,that.diffMilliseconds)
             },1000);
           }else {
             that.showNoData = true;
-            that.items = Tools.formatTxList(null,txTabName,that.sysdate)
+            that.items = Tools.formatTxList(null,txTabName,that.diffMilliseconds)
           }
         })
       },
@@ -273,7 +273,7 @@
               this.hashValue = data.Height;
               this.heightValue = data.Height;
               this.blockDetailTimer = setInterval(function () {
-                that.ageValue = Tools.formatAge(that.sysdate,data.Time,Constant.SUFFIX);
+                that.ageValue = Tools.formatAge(that.diffMilliseconds,data.Time,Constant.SUFFIX);
               },1000);
               this.timestampValue = Tools.format2UTC(data.Time);
               this.blockHashValue = data.Hash;
