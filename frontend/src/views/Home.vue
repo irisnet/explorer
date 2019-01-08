@@ -11,7 +11,7 @@
           <span class="information_module_key">Last Block</span>
         </div>
         <div class="information_preview_module">
-          <span :class="flFadeIntTransaction ? 'animation' : '' ">{{transactionValue}}</span>
+          <span :class="flFadeInTransaction ? 'animation' : '' ">{{transactionValue}}</span>
           <span class="information_module_key">Transactions</span>
         </div>
         <div class="information_preview_module"
@@ -139,7 +139,7 @@ import Constant from "../constant/Constant"
               }
           },
           getBlocksStatusData() {
-              this.flFadeIntTransaction = false;
+              this.flFadeInTransaction = false;
               let url = `/api/chain/status`;
               let lastTransfer =  {};
               Service.http(url).then((data) => {
@@ -147,7 +147,7 @@ import Constant from "../constant/Constant"
                   if(storedLastTransfer){
                     if(storedLastTransfer.txCount !== data.TxCount
                       || storedLastTransfer.tps !== data.Tps){
-                      this.flFadeIntTransaction = true
+                      this.flFadeInTransaction = true
                     }
                   }
 
@@ -236,7 +236,7 @@ import Constant from "../constant/Constant"
         showFadeinAnimation(blockList,numerator,denominator){
           let storedLastBlock = localStorage.getItem('lastBlock');
           if(storedLastBlock){
-            if(storedLastBlock.activeValidator !== blockList.Data[0].Block.LastCommit.Precommits.length || this.getLocalStorage('validatorLength').totalValidator !== blockList.Data[0].Validators.length){
+            if(storedLastBlock.activeValidator !== blockList.Data[0].Block.LastCommit.Precommits.length || storedLastBlock.totalValidator !== blockList.Data[0].Validators.length){
               this.flFadeInValidator = true;
             }
             if(storedLastBlock.numerator !== numerator || storedLastBlock.denominator !== denominator){
@@ -370,8 +370,8 @@ import Constant from "../constant/Constant"
           }).catch(e => {
             console.log(e)
           })
-        },
-      },
+        }
+      }
   }
 </script>
 <style lang="scss">
