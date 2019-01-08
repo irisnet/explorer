@@ -36,11 +36,11 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Submit Time :</span>
-          <span class="information_value" v-show="submitAge">{{submitAge}} ({{submitTime}})</span>
+          <span class="information_value">{{submitAge}} ({{submitTime}})</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Deposit End Time :</span>
-          <span class="information_value" v-show="depositEedAge">{{depositEedAge}} ({{depositEndTime}})</span>
+          <span class="information_value">{{depositEedAge}} ({{depositEndTime}})</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Total Deposit :</span>
@@ -162,7 +162,8 @@
         return Time.split('+')[0];
       },
       formatProposalTime(time){
-        return time ? Tools.formatAge(this.sysdate,this.getSplitTime(time),Constant.SUFFIX) : '--';
+        let currentServerTime  = new Date().getTime() + this.diffMilliseconds;
+        return time ? Tools.formatAge(currentServerTime,this.getSplitTime(time),Constant.SUFFIX) : '--';
       },
       getProposalsInformation() {
         this.showLoading = true;
@@ -229,8 +230,9 @@
                 let that = this;
                 clearInterval(this.votingTimer);
                 this.votingTimer = setInterval(function () {
+                  let currentServerTime = new Date().getTime() + that.diffMilliseconds;
                   that.items = data.votes.map(item =>{
-                    let votingListItemTime = Tools.formatAge(that.sysdate,item.time,Constant.SUFFIX,Constant.PREFIX);
+                    let votingListItemTime = Tools.formatAge(currentServerTime,item.time,Constant.SUFFIX,Constant.PREFIX);
                     return {
                       Voter: item.voter,
                       "Vote Option": item.option,
@@ -346,6 +348,7 @@
     }
   }
   .proposals_detail_table_wrap {
+    margin-bottom: 0.2rem;
     width: 100%;
     overflow-x: auto;
     .no_data_show {

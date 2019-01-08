@@ -88,3 +88,18 @@ $fc:#fff;
 @mixin  fontWeight{
   font-weight: 500 !important;
 }
+@mixin fadeInAnimation{
+  animation: fadeIn 1s 1 0s;
+
+}
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
