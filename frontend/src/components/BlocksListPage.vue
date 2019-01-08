@@ -157,10 +157,11 @@
                     }
                   }
                 }
+                let currentDate = new Date().getTime() + that.diffMilliseconds;
                 return {
                   Height: item.Height,
                   Txn:txn,
-                  Age: Tools.formatAge(that.diffMilliseconds,item.Time,Constant.SUFFIX,Constant.PREFIX),
+                  Age: Tools.formatAge(currentDate,item.Time,Constant.SUFFIX,Constant.PREFIX),
                   'Precommit Validators':precommit,
                   'Voting Power': denominator !== 0? `${(numerator/denominator).toFixed(2)*100}%`:'',
                 };

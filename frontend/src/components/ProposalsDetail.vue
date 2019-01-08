@@ -162,7 +162,8 @@
         return Time.split('+')[0];
       },
       formatProposalTime(time){
-        return time ? Tools.formatAge(this.diffMilliseconds,this.getSplitTime(time),Constant.SUFFIX) : '--';
+        let currentDate  = new Date().getTime() + this.diffMilliseconds;
+        return time ? Tools.formatAge(currentDate,this.getSplitTime(time),Constant.SUFFIX) : '--';
       },
       getProposalsInformation() {
         this.showLoading = true;
@@ -229,8 +230,9 @@
                 let that = this;
                 clearInterval(this.votingTimer);
                 this.votingTimer = setInterval(function () {
+                  let currentDate = new Date().getTime() + that.diffMilliseconds;
                   that.items = data.votes.map(item =>{
-                    let votingListItemTime = Tools.formatAge(that.diffMilliseconds,item.time,Constant.SUFFIX,Constant.PREFIX);
+                    let votingListItemTime = Tools.formatAge(currentDate,item.time,Constant.SUFFIX,Constant.PREFIX);
                     return {
                       Voter: item.voter,
                       "Vote Option": item.option,
@@ -346,6 +348,7 @@
     }
   }
   .proposals_detail_table_wrap {
+    margin-bottom: 0.2rem;
     width: 100%;
     overflow-x: auto;
     .no_data_show {

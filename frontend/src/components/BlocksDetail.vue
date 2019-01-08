@@ -273,7 +273,8 @@
               this.hashValue = data.Height;
               this.heightValue = data.Height;
               this.blockDetailTimer = setInterval(function () {
-                that.ageValue = Tools.formatAge(that.diffMilliseconds,data.Time,Constant.SUFFIX);
+                let currentDate = new Date().getTime() + that.diffMilliseconds;
+                that.ageValue = Tools.formatAge(currentDate,data.Time,Constant.SUFFIX);
               },1000);
               this.timestampValue = Tools.format2UTC(data.Time);
               this.blockHashValue = data.Hash;

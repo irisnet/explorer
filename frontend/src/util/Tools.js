@@ -10,9 +10,8 @@ export default class Tools{
    * param suffix string;
    * return string
    * */
-  static formatAge(diffMilliseconds,time,suffix,prefix){
+  static formatAge(currentDate,time,suffix,prefix){
     let dateBegin = new Date(time);
-    let currentDate = new Date().getTime() + diffMilliseconds;
     let dateDiff = currentDate - dateBegin.getTime();
     let dayDiff = Math.floor(dateDiff / (24 * 3600 * 1000));
     let hourLevel = dateDiff % (24 * 3600 * 1000);
@@ -31,9 +30,8 @@ export default class Tools{
       return`${str}`
     }
   }
-  static getDiffMilliseconds(diffMilliseconds,time){
+  static getDiffMilliseconds(currentDate,time){
     let dateBegin = new Date(time);
-    let currentDate = new Date().getTime() + diffMilliseconds;
     let dateDiff = currentDate - dateBegin.getTime();
     return dateDiff
   }

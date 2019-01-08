@@ -251,7 +251,7 @@
         let uri = `/api/tx/${this.searchInputValue}`;
         Service.http(uri).then((tx) => {
           if (tx) {
-            this.$router.push(`/tx?txHash=${this.searchInputValue}`);
+            this.$router.push(`/tx?txHash=${tx.Hash}`);
             this.clearSearchInputValue();
           }else {
             this.toSearchResultPage();
@@ -265,7 +265,7 @@
         let uri = `/api/account/${this.searchInputValue}`;
         Service.http(uri).then((delegatorAddress) => {
           if (delegatorAddress) {
-            this.$router.push(`/address/1/${this.searchInputValue}`);
+            this.$router.push(`/address/1/${delegatorAddress.Address}`);
             this.clearSearchInputValue();
           }else {
             this.toSearchResultPage()
@@ -279,7 +279,7 @@
         let uri = `/api/stake/candidate/${this.searchInputValue}`;
         Service.http(uri).then((validatorAddress) => {
           if (validatorAddress) {
-            this.$router.push(`/address/1/${this.searchInputValue}`);
+            this.$router.push(`/address/1/${validatorAddress.Address}`);
             this.clearSearchInputValue();
           }else {
             this.toSearchResultPage()
@@ -298,10 +298,10 @@
             let searchBlockAndProposalInResult = 2;
             if(searchResult.length === searchResultIsBlockOrProposalId){
               if(searchResult[0].Type === "block" && searchResult[0].Data.Height !== 0){
-                this.$router.push(`/blocks_detail/${this.searchInputValue}`);
+                this.$router.push(`/blocks_detail/${searchResult[0].Data.Height}`);
                 this.clearSearchInputValue();
               }else if(searchResult[0].Type === "proposal" && searchResult[0].Data.ProposalID !== 0){
-                this.$router.push(`/ProposalsDetail/${this.searchInputValue}`);
+                this.$router.push(`/ProposalsDetail/${searchResult[0].Data.ProposalID}`);
                 this.clearSearchInputValue();
               }
             }else if(searchResult.length === searchBlockAndProposalInResult){

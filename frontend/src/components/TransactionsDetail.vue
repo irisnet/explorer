@@ -233,7 +233,8 @@
             if(data){
               let that = this;
               this.transactionDetailTimer = setInterval(function () {
-                that.ageValue = Tools.formatAge(that.diffMilliseconds,data.Timestamp,Constant.SUFFIX);
+                let currentDate = new Date().getTime() + that.diffMilliseconds;
+                that.ageValue = Tools.formatAge(currentDate,data.Timestamp,Constant.SUFFIX);
               },1000);
               this.timestampValue = Tools.format2UTC(data.Timestamp);
               this.hashValue = data.Hash;
