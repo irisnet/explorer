@@ -10,9 +10,9 @@ export default class Tools{
    * param suffix string;
    * return string
    * */
-  static formatAge(currentTime,time,suffix,prefix){
+  static formatAge(currentServerTime,time,suffix,prefix){
     let dateBegin = new Date(time);
-    let dateDiff = currentTime - dateBegin.getTime();
+    let dateDiff = currentServerTime - dateBegin.getTime();
     let dayDiff = Math.floor(dateDiff / (24 * 3600 * 1000));
     let hourLevel = dateDiff % (24 * 3600 * 1000);
     let hours = Math.floor(hourLevel / (3600 * 1000));
@@ -30,9 +30,9 @@ export default class Tools{
       return`${str}`
     }
   }
-  static getDiffMilliseconds(currentTime,time){
+  static getDiffMilliseconds(currentServerTime,time){
     let dateBegin = new Date(time);
-    let dateDiff = currentTime - dateBegin.getTime();
+    let dateDiff = currentServerTime - dateBegin.getTime();
     return dateDiff
   }
   /**
@@ -281,7 +281,7 @@ export default class Tools{
     });
   }
 
-  static formatTxList(list,txType,currentTime){
+  static formatTxList(list,txType,currentServerTime){
     if(list !== null){
       return list.map(item => {
         let [Amount,Fee] = ['--','--'];
@@ -315,7 +315,7 @@ export default class Tools{
         };
         commonFooterObjList = {
           Status : Tools.firstWordUpperCase(item.Status),
-          Age: Tools.formatAge(currentTime,item.Timestamp,Constant.SUFFIX,Constant.PREFIX,)
+          Age: Tools.formatAge(currentServerTime,item.Timestamp,Constant.SUFFIX,Constant.PREFIX,)
         };
         if(txType === 'Transfers' ){
           objList = {

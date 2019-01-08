@@ -363,12 +363,12 @@
           clearInterval(this.transactionTimer);
           if(txList.Data){
             this.transactionTimer = setInterval(function () {
-              let currentTime = new Date().getTime() + that.diffMilliseconds;
-              that.items = Tools.formatTxList(txList.Data,txTabName,currentTime)
+              let currentServerTime = new Date().getTime() + that.diffMilliseconds;
+              that.items = Tools.formatTxList(txList.Data,txTabName,currentServerTime)
             },1000);
           }else {
-            let currentTime = new Date().getTime() + that.diffMilliseconds;
-            that.items = Tools.formatTxList(null,txTabName,currentTime);
+            let currentServerTime = new Date().getTime() + that.diffMilliseconds;
+            that.items = Tools.formatTxList(null,txTabName,currentServerTime);
             that.showNoData = true;
           }
         })
