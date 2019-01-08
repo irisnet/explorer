@@ -288,9 +288,9 @@ import Constant from "../constant/Constant"
                     that.flFadeInBlockHeight = true;
                   }
                 }
-                let currentDate = new Date().getTime() + that.diffMilliseconds;
-                that.lastBlockAge = Tools.formatAge(currentDate,blockList.Data[0].Time);
-                that.diffSeconds = Math.floor(Tools.getDiffMilliseconds(currentDate,blockList.Data[0].Time)/1000);
+                let currentTime = new Date().getTime() + that.diffMilliseconds;
+                that.lastBlockAge = Tools.formatAge(currentTime,blockList.Data[0].Time);
+                that.diffSeconds = Math.floor(Tools.getDiffMilliseconds(currentTime,blockList.Data[0].Time)/1000);
                 localStorage.setItem('lastBlock',JSON.stringify(lastBlock));
                 localStorage.setItem("lastBlockHeight",blockList.Data[0].Height);
                 that.currentBlockHeight = blockList.Data[0].Height;
@@ -302,7 +302,7 @@ import Constant from "../constant/Constant"
                     Txn: item.NumTxs,
                     Time: Tools.format2UTC(item.Time),
                     Fee: '0 IRIS',
-                    age: Tools.formatAge(currentDate,item.Time,Constant.SUFFIX,Constant.PREFIX)
+                    age: Tools.formatAge(currentTime,item.Time,Constant.SUFFIX,Constant.PREFIX)
                   };
                 });
               },1000);
@@ -352,7 +352,7 @@ import Constant from "../constant/Constant"
                   if(item.ActualFee.amount && item.ActualFee.denom){
                     Fee =  `${Tools.formatFeeToFixedNumber(item.ActualFee.amount)} ${Tools.formatDenom(item.ActualFee.denom).toUpperCase()}`;
                   }
-                  let currentDate = new Date().getTime() + that.diffMilliseconds;
+                  let currentTime = new Date().getTime() + that.diffMilliseconds;
                   return {
                     showAnimation: item.showAnimation ? item.showAnimation : '',
                     TxHash: item.TxHash,
@@ -362,7 +362,7 @@ import Constant from "../constant/Constant"
                     Fee,
                     Amount,
                     Time: Tools.format2UTC(item.Time),
-                    age: Tools.formatAge(currentDate,item.Time,Constant.SUFFIX,Constant.PREFIX)
+                    age: Tools.formatAge(currentTime,item.Time,Constant.SUFFIX,Constant.PREFIX)
                   };
                 })
               },1000)

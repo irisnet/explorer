@@ -157,11 +157,11 @@
                     }
                   }
                 }
-                let currentDate = new Date().getTime() + that.diffMilliseconds;
+                let currentTime = new Date().getTime() + that.diffMilliseconds;
                 return {
                   Height: item.Height,
                   Txn:txn,
-                  Age: Tools.formatAge(currentDate,item.Time,Constant.SUFFIX,Constant.PREFIX),
+                  Age: Tools.formatAge(currentTime,item.Time,Constant.SUFFIX,Constant.PREFIX),
                   'Precommit Validators':precommit,
                   'Voting Power': denominator !== 0? `${(numerator/denominator).toFixed(2)*100}%`:'',
                 };
@@ -199,12 +199,12 @@
           clearInterval(this.transactionTimer);
           if(txList){
             that.transactionTimer = setInterval(function () {
-              let currentDate = new Date().getTime() + that.diffMilliseconds;
-              that.items = Tools.formatTxList(txList.Data,that.$route.params.param,currentDate)
+              let currentTime = new Date().getTime() + that.diffMilliseconds;
+              that.items = Tools.formatTxList(txList.Data,that.$route.params.param,currentTime)
             },1000);
           }else{
-            let currentDate = new Date().getTime() + that.diffMilliseconds;
-            that.items = Tools.formatTxList(null,that.$route.params.param,currentDate);
+            let currentTime = new Date().getTime() + that.diffMilliseconds;
+            that.items = Tools.formatTxList(null,that.$route.params.param,currentTime);
             that.showNoData = true;
           }
           that.showLoading = false;

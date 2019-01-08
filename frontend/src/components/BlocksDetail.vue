@@ -243,13 +243,13 @@
           clearInterval(this.transactionsTimer);
           if(txList.Data){
             this.transactionsTimer = setInterval(function () {
-              let currentDate = new Date().getTime() + that.diffMilliseconds;
-              that.items = Tools.formatTxList(txList.Data,txTabName,currentDate)
+              let currentTime = new Date().getTime() + that.diffMilliseconds;
+              that.items = Tools.formatTxList(txList.Data,txTabName,currentTime)
             },1000);
           }else {
             that.showNoData = true;
-            let currentDate = new Date().getTime() + that.diffMilliseconds;
-            that.items = Tools.formatTxList(null,txTabName,currentDate)
+            let currentTime = new Date().getTime() + that.diffMilliseconds;
+            that.items = Tools.formatTxList(null,txTabName,currentTime)
           }
         })
       },
@@ -275,8 +275,8 @@
               this.hashValue = data.Height;
               this.heightValue = data.Height;
               this.blockDetailTimer = setInterval(function () {
-                let currentDate = new Date().getTime() + that.diffMilliseconds;
-                that.ageValue = Tools.formatAge(currentDate,data.Time,Constant.SUFFIX);
+                let currentTime = new Date().getTime() + that.diffMilliseconds;
+                that.ageValue = Tools.formatAge(currentTime,data.Time,Constant.SUFFIX);
               },1000);
               this.timestampValue = Tools.format2UTC(data.Time);
               this.blockHashValue = data.Hash;

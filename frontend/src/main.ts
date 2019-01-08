@@ -34,13 +34,13 @@ if(localStorage.getItem('Chain_id') && localStorage.getItem('Chain_id') !== "nul
 }
 Vue.prototype.faucet_url = faucet_url;
 Vue.prototype.fuxi = fuxi;
-let currentDate = new Date().getTime();
+let currentTime = new Date().getTime();
 axios.get(`/api/sysdate`).then(data => {
   if(data.status === 200){
     return data.data
   }
 }).then(sysdate => {
-    Vue.prototype.diffMilliseconds = sysdate.data*1000 - currentDate;
+    Vue.prototype.diffMilliseconds = sysdate.data*1000 - currentTime;
 
 
 });
