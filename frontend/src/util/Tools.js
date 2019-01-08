@@ -281,7 +281,7 @@ export default class Tools{
     });
   }
 
-  static formatTxList(list,txType,diffMilliseconds){
+  static formatTxList(list,txType,currentDate){
     if(list !== null){
       return list.map(item => {
         let [Amount,Fee] = ['--','--'];
@@ -315,7 +315,7 @@ export default class Tools{
         };
         commonFooterObjList = {
           Status : Tools.firstWordUpperCase(item.Status),
-          Age: Tools.formatAge(diffMilliseconds,item.Timestamp,Constant.SUFFIX,Constant.PREFIX,)
+          Age: Tools.formatAge(currentDate,item.Timestamp,Constant.SUFFIX,Constant.PREFIX,)
         };
         if(txType === 'Transfers' ){
           objList = {

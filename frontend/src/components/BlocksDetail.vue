@@ -243,11 +243,13 @@
           clearInterval(this.transactionsTimer);
           if(txList.Data){
             this.transactionsTimer = setInterval(function () {
-              that.items = Tools.formatTxList(txList.Data,txTabName,that.diffMilliseconds)
+              let currentDate = new Date().getTime() + that.diffMilliseconds;
+              that.items = Tools.formatTxList(txList.Data,txTabName,currentDate)
             },1000);
           }else {
             that.showNoData = true;
-            that.items = Tools.formatTxList(null,txTabName,that.diffMilliseconds)
+            let currentDate = new Date().getTime() + that.diffMilliseconds;
+            that.items = Tools.formatTxList(null,txTabName,currentDate)
           }
         })
       },

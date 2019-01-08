@@ -199,10 +199,12 @@
           clearInterval(this.transactionTimer);
           if(txList){
             that.transactionTimer = setInterval(function () {
-              that.items = Tools.formatTxList(txList.Data,that.$route.params.param,that.diffMilliseconds)
+              let currentDate = new Date().getTime() + that.diffMilliseconds;
+              that.items = Tools.formatTxList(txList.Data,that.$route.params.param,currentDate)
             },1000);
           }else{
-            that.items = Tools.formatTxList(null,that.$route.params.param,that.diffMilliseconds);
+            let currentDate = new Date().getTime() + that.diffMilliseconds;
+            that.items = Tools.formatTxList(null,that.$route.params.param,currentDate);
             that.showNoData = true;
           }
           that.showLoading = false;

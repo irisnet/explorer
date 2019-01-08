@@ -290,7 +290,7 @@ import Constant from "../constant/Constant"
                 }
                 let currentDate = new Date().getTime() + that.diffMilliseconds;
                 that.lastBlockAge = Tools.formatAge(currentDate,blockList.Data[0].Time);
-                that.diffSeconds = Math.floor(Tools.getDiffMilliseconds(that.diffMilliseconds,blockList.Data[0].Time)/1000);
+                that.diffSeconds = Math.floor(Tools.getDiffMilliseconds(currentDate,blockList.Data[0].Time)/1000);
                 localStorage.setItem('lastBlock',JSON.stringify(lastBlock));
                 localStorage.setItem("lastBlockHeight",blockList.Data[0].Height);
                 that.currentBlockHeight = blockList.Data[0].Height;

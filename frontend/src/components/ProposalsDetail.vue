@@ -36,11 +36,11 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Submit Time :</span>
-          <span class="information_value" v-show="submitAge">{{submitAge}} ({{submitTime}})</span>
+          <span class="information_value">{{submitAge}} ({{submitTime}})</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Deposit End Time :</span>
-          <span class="information_value" v-show="depositEedAge">{{depositEedAge}} ({{depositEndTime}})</span>
+          <span class="information_value">{{depositEedAge}} ({{depositEndTime}})</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Total Deposit :</span>
