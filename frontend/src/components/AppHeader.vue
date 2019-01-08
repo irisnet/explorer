@@ -9,7 +9,7 @@
         <div class="navSearch">
           <span class="chain_id">{{fuxi.toUpperCase()}}</span>
           <input type="text" class="search_input"
-                 :placeholder="placeholder"
+                 placeholder="Search by Address / Txhash / Block"
                  v-model="searchInputValue"
                  @keyup.enter="onInputChange">
           <i class="search_icon" @click="getData(searchInputValue)"></i>
@@ -167,8 +167,6 @@
         flShowValidatorsUpOrDown: false,
         upImg: require("../assets/caret-bottom.png"),
         downImg: require("../assets/caret-bottom.png"),
-        placeholder: "Search by Address / Txhash / Block / Proposal ID"
-
     }
     },
     beforeMount() {
