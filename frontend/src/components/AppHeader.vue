@@ -10,7 +10,7 @@
           <span class="chain_id">{{fuxi.toUpperCase()}}</span>
           <input type="text" class="search_input"
                  placeholder="Search by Address / Txhash / Block"
-                 v-model="searchInputValue"
+                 v-model.trim="searchInputValue"
                  @keyup.enter="onInputChange">
           <i class="search_icon" @click="getData(searchInputValue)"></i>
           <i class="clear_icon" @click="clearData" v-show="showClear"></i>
@@ -114,7 +114,7 @@
       <div class="search_input_mobile">
         <div style="width:95%;position:relative">
           <input type="text" class="search_input"
-                 v-model="searchInputValue"
+                 v-model.trim="searchInputValue"
                  @keyup.enter="onInputChange"
                  placeholder="Search by Address / Txhash / Block">
           <i class="search_icon" @click="getData(searchInputValue)"></i>
@@ -316,8 +316,9 @@
         });
       },
       getData() {
-        if(this.searchInputValue === ''){
-          this.toSearchResultPage();
+        if(Tools.removeAllSpace(this.searchInputValue) === ''){
+          this.clearData();
+          return
         }else{
           if(/^[A-F0-9]{64}$/.test(this.searchInputValue)){
             this.searchTx()
