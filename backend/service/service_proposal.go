@@ -3,7 +3,6 @@ package service
 import (
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
-	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -29,10 +28,10 @@ func (service *ProposalService) QueryList(page, size int) (resp model.Page) {
 			Type:            propo.Type,
 			Description:     propo.Description,
 			Status:          propo.Status,
-			SubmitTime:      utils.FmtUTCTime(propo.SubmitTime),
-			DepositEndTime:  utils.FmtUTCTime(propo.DepositEndTime),
-			VotingStartTime: utils.FmtUTCTime(propo.VotingStartTime),
-			VotingEndTime:   utils.FmtUTCTime(propo.VotingEndTime),
+			SubmitTime:      propo.SubmitTime.UTC(),
+			DepositEndTime:  propo.DepositEndTime.UTC(),
+			VotingStartTime: propo.VotingStartTime.UTC(),
+			VotingEndTime:   propo.VotingEndTime.UTC(),
 			TotalDeposit:    propo.TotalDeposit,
 		}
 		proposals = append(proposals, mP)
@@ -59,10 +58,10 @@ func (service *ProposalService) Query(id int) (resp model.ProposalInfo) {
 		Type:            data.Type,
 		Description:     data.Description,
 		Status:          data.Status,
-		SubmitTime:      utils.FmtUTCTime(data.SubmitTime),
-		DepositEndTime:  utils.FmtUTCTime(data.DepositEndTime),
-		VotingStartTime: utils.FmtUTCTime(data.VotingStartTime),
-		VotingEndTime:   utils.FmtUTCTime(data.VotingEndTime),
+		SubmitTime:      data.SubmitTime.UTC(),
+		DepositEndTime:  data.DepositEndTime.UTC(),
+		VotingStartTime: data.VotingStartTime.UTC(),
+		VotingEndTime:   data.VotingEndTime.UTC(),
 		TotalDeposit:    data.TotalDeposit,
 	}
 

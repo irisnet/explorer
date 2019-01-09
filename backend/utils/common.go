@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"github.com/irisnet/explorer/backend/types"
 	"strconv"
 	"time"
 )
@@ -35,11 +34,11 @@ func RoundFloat(num float64, bit int) (i float64, b bool) {
 	return i, true
 }
 
-func FmtUTCTime(time time.Time) string {
+func FmtTimeToString(time time.Time) string {
 	if time.IsZero() {
 		return ""
 	}
-	return time.UTC().Format(types.UtcFormat)
+	return time.String()
 }
 
 func IntToByte(num int64) []byte {
