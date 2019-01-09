@@ -86,7 +86,7 @@ import Constant from "../constant/Constant"
           },
 
           beforeMount() {
-              this.getBlocksStatusData();
+              this.getBlocksStatus();
               this.getBlocksList();
               this.getTransactionHistory();
               this.getTransactionList();
@@ -137,14 +137,14 @@ import Constant from "../constant/Constant"
                   }
               }
           },
-          getBlocksStatusData() {
+          getBlocksStatus() {
               this.flFadeInTransaction = false;
               let url = `/api/chain/status`;
               let lastTransfer =  {};
               let that = this;
               Service.http(url).then((data) => {
                 setTimeout(function () {
-                  let storedLastTransfer  = JSON.parse(localStorage.getItem('lastTransfer'));
+                  let storedLastTransfer  = localStorage.getItem('lastTransfer') ? JSON.parse(localStorage.getItem('lastTransfer')) : '';
                   if(storedLastTransfer){
                     if(storedLastTransfer.txCount !== data.TxCount
                       || storedLastTransfer.tps !== data.Tps){
@@ -237,7 +237,7 @@ import Constant from "../constant/Constant"
           this.flFadeInVotingPower = false;
         },
         showFadeinAnimation(blockList,numerator,denominator){
-          let storedLastBlock = JSON.parse(localStorage.getItem('lastBlock'));
+          let storedLastBlock = localStorage.getItem('lastBlock') ? JSON.parse(localStorage.getItem('lastBlock')) : '';
           if(storedLastBlock){
             if(storedLastBlock.activeValidator !== blockList.Data[0].Block.LastCommit.Precommits.length || storedLastBlock.totalValidator !== blockList.Data[0].Validators.length){
               this.flFadeInValidator = true;
@@ -248,7 +248,7 @@ import Constant from "../constant/Constant"
           }
         },
         showBlockFadeinAnimation(blockList){
-          let storedLastBlockHeight = localStorage.getItem('lastBlockHeight');
+          let storedLastBlockHeight = localStorage.getItem('lastBlockHeight') ? localStorage.getItem('lastBlockHeight') : '';
           if(storedLastBlockHeight){
             for(let index = 0; index < blockList.Data.length; index++){
               if(blockList.Data[index].Height > storedLastBlockHeight){
@@ -260,7 +260,7 @@ import Constant from "../constant/Constant"
         getBlocksList() {
           let url = `/api/blocks/1/10`;
           Service.http(url).then((blockList) => {
-            this.getBlocksStatusData();
+            this.getBlocksStatus();
             this.hideFadeinAnimation();
             if(blockList.Data){
               let denominator = 0,lastBlock = {};
