@@ -13,7 +13,7 @@
                  v-model.trim="searchInputValue"
                  @keyup.enter="onInputChange">
           <i class="search_icon" @click="getData(searchInputValue)"></i>
-          <i class="clear_icon" @click="clearData" v-show="showClear"></i>
+          <i class="clear_icon" @click="clearSearchContent" v-show="showClear"></i>
         </div>
       </div>
 
@@ -118,7 +118,7 @@
                  @keyup.enter="onInputChange"
                  placeholder="Search by Address / Txhash / Block">
           <i class="search_icon" @click="getData(searchInputValue)"></i>
-          <i class="clear_icon" @click="clearData" v-show="showClear"></i>
+          <i class="clear_icon" @click="clearSearchContent" v-show="showClear"></i>
         </div>
       </div>
     </div>
@@ -317,7 +317,7 @@
       },
       getData() {
         if(Tools.removeAllSpace(this.searchInputValue) === ''){
-          this.clearData();
+          this.clearSearchContent();
           return
         }else{
           if(/^[A-F0-9]{64}$/.test(this.searchInputValue)){
@@ -364,7 +364,7 @@
           this.activeClassName = '';
         }
       },
-      clearData(){
+      clearSearchContent(){
         this.searchInputValue = '';
       },
       toHelp(){
