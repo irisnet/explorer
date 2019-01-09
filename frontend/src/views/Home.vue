@@ -86,7 +86,7 @@ import Constant from "../constant/Constant"
           },
 
           beforeMount() {
-              this.getBlocksStatusData();
+              this.getBlocksStatus();
               this.getBlocksList();
               this.getTransactionHistory();
               this.getTransactionList();
@@ -96,7 +96,6 @@ import Constant from "../constant/Constant"
               document.getElementById('router_wrap').addEventListener('click', this.hideFeature);
               let that =this;
               this.timer = setInterval(function () {
-                  that.getBlocksStatusData();
                   that.getBlocksList();
                   that.getTransactionHistory();
                   that.getTransactionList();
@@ -138,33 +137,37 @@ import Constant from "../constant/Constant"
                   }
               }
           },
-          getBlocksStatusData() {
+          getBlocksStatus() {
               this.flFadeInTransaction = false;
               let url = `/api/chain/status`;
               let lastTransfer =  {};
+              let that = this;
               Service.http(url).then((data) => {
-                let storedLastTransfer  = localStorage.getItem('lastTransfer');
+                setTimeout(function () {
+                  let storedLastTransfer  = localStorage.getItem('lastTransfer') ? JSON.parse(localStorage.getItem('lastTransfer')) : '';
                   if(storedLastTransfer){
                     if(storedLastTransfer.txCount !== data.TxCount
                       || storedLastTransfer.tps !== data.Tps){
-                      this.flFadeInTransaction = true
+                      that.flFadeInTransaction = true
                     }
                   }
 
                   let num = data.TxCount;
                   if(data) {
-                      if(data.TxCount > 1000000000){
-                          num = `${(data.TxCount/1000000000).toFixed(2)} B`;
-                      }else if(data.TxCount > 1000000){
-                          num = `${(data.TxCount/1000000).toFixed(2)} M`;
-                      }else if(data.TxCount > 1000){
-                          num = `${(data.TxCount/1000).toFixed(2)} K`;
+                    if(data.TxCount > 1000000000){
+                      num = `${(data.TxCount/1000000000).toFixed(2)} B`;
+                    }else if(data.TxCount > 1000000){
+                      num = `${(data.TxCount/1000000).toFixed(2)} M`;
+                    }else if(data.TxCount > 1000){
+                      num = `${(data.TxCount/1000).toFixed(2)} K`;
+                    }
+                    that.transactionValue = `${num}(${data.Tps.toFixed(2)} TPS)`;
                   }
-                  this.transactionValue = `${num}(${data.Tps.toFixed(2)} TPS)`;
-                }
-                lastTransfer.txCount = data.TxCount;
-                lastTransfer.tps = data.Tps;
-                localStorage.setItem('lastTransfer',JSON.stringify(lastTransfer))
+                  lastTransfer.txCount = data.TxCount;
+                  lastTransfer.tps = data.Tps;
+                  localStorage.setItem('lastTransfer',JSON.stringify(lastTransfer))
+                },1000)
+
               }).catch(e => {
                   console.log(e)
               })
@@ -234,7 +237,7 @@ import Constant from "../constant/Constant"
           this.flFadeInVotingPower = false;
         },
         showFadeinAnimation(blockList,numerator,denominator){
-          let storedLastBlock = localStorage.getItem('lastBlock');
+          let storedLastBlock = localStorage.getItem('lastBlock') ? JSON.parse(localStorage.getItem('lastBlock')) : '';
           if(storedLastBlock){
             if(storedLastBlock.activeValidator !== blockList.Data[0].Block.LastCommit.Precommits.length || storedLastBlock.totalValidator !== blockList.Data[0].Validators.length){
               this.flFadeInValidator = true;
@@ -245,7 +248,7 @@ import Constant from "../constant/Constant"
           }
         },
         showBlockFadeinAnimation(blockList){
-          let storedLastBlockHeight = localStorage.getItem('lastBlockHeight');
+          let storedLastBlockHeight = localStorage.getItem('lastBlockHeight') ? localStorage.getItem('lastBlockHeight') : '';
           if(storedLastBlockHeight){
             for(let index = 0; index < blockList.Data.length; index++){
               if(blockList.Data[index].Height > storedLastBlockHeight){
@@ -257,6 +260,7 @@ import Constant from "../constant/Constant"
         getBlocksList() {
           let url = `/api/blocks/1/10`;
           Service.http(url).then((blockList) => {
+            this.getBlocksStatus();
             this.hideFadeinAnimation();
             if(blockList.Data){
               let denominator = 0,lastBlock = {};

@@ -9,11 +9,11 @@
         <div class="navSearch">
           <span class="chain_id">{{fuxi.toUpperCase()}}</span>
           <input type="text" class="search_input"
-                 :placeholder="placeholder"
-                 v-model="searchInputValue"
+                 placeholder="Search by Address / Txhash / Block"
+                 v-model.trim="searchInputValue"
                  @keyup.enter="onInputChange">
           <i class="search_icon" @click="getData(searchInputValue)"></i>
-          <i class="clear_icon" @click="clearData" v-show="showClear"></i>
+          <i class="clear_icon" @click="clearSearchContent" v-show="showClear"></i>
         </div>
       </div>
 
@@ -114,11 +114,11 @@
       <div class="search_input_mobile">
         <div style="width:95%;position:relative">
           <input type="text" class="search_input"
-                 v-model="searchInputValue"
+                 v-model.trim="searchInputValue"
                  @keyup.enter="onInputChange"
                  placeholder="Search by Address / Txhash / Block">
           <i class="search_icon" @click="getData(searchInputValue)"></i>
-          <i class="clear_icon" @click="clearData" v-show="showClear"></i>
+          <i class="clear_icon" @click="clearSearchContent" v-show="showClear"></i>
         </div>
       </div>
     </div>
@@ -167,8 +167,6 @@
         flShowValidatorsUpOrDown: false,
         upImg: require("../assets/caret-bottom.png"),
         downImg: require("../assets/caret-bottom.png"),
-        placeholder: "Search by Address / Txhash / Block / Proposal ID"
-
     }
     },
     beforeMount() {
@@ -318,8 +316,9 @@
         });
       },
       getData() {
-        if(this.searchInputValue === ''){
-          this.toSearchResultPage();
+        if(Tools.removeAllSpace(this.searchInputValue) === ''){
+          this.clearSearchContent();
+          return
         }else{
           if(/^[A-F0-9]{64}$/.test(this.searchInputValue)){
             this.searchTx()
@@ -365,7 +364,7 @@
           this.activeClassName = '';
         }
       },
-      clearData(){
+      clearSearchContent(){
         this.searchInputValue = '';
       },
       toHelp(){
