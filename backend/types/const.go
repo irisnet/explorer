@@ -64,7 +64,7 @@ const (
 
 	UrlNodeLocation = "http://opendata.baidu.com/api.php?query=%s&resource_id=6006&ie=utf8&oe=utf8"
 
-	UtcFormat = "2006/01/02 15:04:05+UTC"
+	Format = "2006/01/02T15:04:05Z07:00"
 
 	Change  = "powerChange"
 	Slash   = "slash"
