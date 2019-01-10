@@ -40,7 +40,7 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Deposit End Time :</span>
-          <span class="information_value">{{depositEedAge}} <span v-show="depositEedAge">(</span>{{depositEndTime}}<span v-show="depositEedAge">)</span>
+          <span class="information_value">{{depositEndAge}} <span v-show="depositEndAge">(</span>{{depositEndTime}}<span v-show="depositEndAge">)</span>
           </span>
         </div>
         <div class="information_props_wrap">
@@ -135,7 +135,7 @@
         votingStartTime: "",
         votingEndTime: "",
         submitAge: '',
-        depositEedAge: '',
+        depositEndAge: '',
         votingStartAge:'',
         votingEndAge: '',
         votingTimer: null,
@@ -208,7 +208,7 @@
               clearInterval(this.proposalTimer);
               this.proposalTimer = setInterval(function () {
                 that.submitAge = that.formatProposalTime(data.proposal.submit_time ? data.proposal.submit_time : '');
-                that.depositEedAge = that.formatProposalTime(that.flShowProposalTime('depositEndTime',data.proposal.status) ? data.proposal.deposit_end_time : '');
+                that.depositEndAge = that.formatProposalTime(that.flShowProposalTime('depositEndTime',data.proposal.status) ? data.proposal.deposit_end_time : '');
                 that.votingStartAge = that.formatProposalTime(that.flShowProposalTime('votingStartTime',data.proposal.status) ? data.proposal.voting_start_time : '');
                 that.votingEndAge = that.formatProposalTime(that.flShowProposalTime('votingEndTime',data.proposal.status) ? data.proposal.voting_end_time : '' );
               },1000);
