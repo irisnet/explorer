@@ -20,7 +20,7 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Timestamp:</span>
-          <span class="information_value">{{timestampValue}}</span>
+          <span class="information_value">{{ageValue}} ({{timestampValue}})</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Block Hash:</span>
@@ -81,11 +81,12 @@
 </template>
 
 <script>
-  import Tools from '../common/Tools';
+  import Tools from '../util/Tools';
   import axios from 'axios';
   import BlocksListTable from './table/BlocksListTable.vue';
   import SpinComponent from './commonComponents/SpinComponent';
-
+  import Service from "../util/axios";
+  import Constant from "../constant/Constant"
   export default {
     components: {
       BlocksListTable,
@@ -122,8 +123,9 @@
     },
     data() {
       return {
+        transactionsTimer:null,
         devicesWidth: window.innerWidth,
-        transactionsDetailWrap: 'personal_computer_transactions_detail',//1是显示pc端，0是移动端
+        transactionsDetailWrap: 'personal_computer_transactions_detail',
         hashValue: '',
         heightValue: '',
         timestampValue: '',
@@ -133,7 +135,7 @@
         precommitValidatorsValue: '',
         votingPowerValue: '',
         items: [],
-        showNoData: false,//列表无数据的时候显示
+        showNoData: false,
         acitve: true,
         activeNext: true,
         maxBlock: 0,
@@ -148,6 +150,8 @@
         pageSize: 20,
         addressTxList: "",
         tableMinWidth:"",
+        blockDetailTimer: null,
+        ageValue: "",
         txTab:[
           {
             "txTabName":"Transfers",
@@ -200,11 +204,7 @@
       },
       getBlockTxStatistics(){
         let url = `/api/txs/statistics?height=${this.$route.params.height}`;
-        axios.get(url).then((data) => {
-          if(data.status === 200){
-            return data.data
-          }
-        }).then((data) => {
+        Service.http(url).then((data) => {
           if(data){
             this.txTab[0].BlockTxStatistics = data.TransCnt;
             this.txTab[1].BlockTxStatistics = data.StakeCnt;
@@ -212,7 +212,6 @@
             this.txTab[3].BlockTxStatistics = data.GovCnt;
           }
         }).catch((e) => {
-
           console.log(e)
         })
       },
@@ -237,29 +236,27 @@
         }else if(txTabName === 'Governance'){
           url = `/api/tx/gov/${currentPage}/${pageSize}?height=${this.$route.params.height}`
         }
-        axios.get(url).then((data) => {
-          if(data.status === 200){
-            return data.data;
-          }
-        }).then((data) => {
+        Service.http(url).then((txList) => {
           that.showLoading = false;
           that.showNoData = false;
-          that.count = data.Count;
-          if(data.Data && data.Data !== null){
-            that.items = Tools.commonTxListItem(data.Data,txTabName)
+          that.count = txList.Count;
+          clearInterval(this.transactionsTimer);
+          if(txList.Data){
+            this.transactionsTimer = setInterval(function () {
+              let currentServerTime = new Date().getTime() + that.diffMilliseconds;
+              that.items = Tools.formatTxList(txList.Data,txTabName,currentServerTime)
+            },1000);
           }else {
             that.showNoData = true;
-            that.items = Tools.commonTxListItem(null,txTabName)
+            let currentServerTime = new Date().getTime() + that.diffMilliseconds;
+            that.items = Tools.formatTxList(null,txTabName,currentServerTime)
           }
         })
       },
       getBlockInformation() {
         let url = `/api/block/${this.$route.params.height}`;
-        axios.get(url).then((data) => {
-          if (data.status === 200) {
-            return data.data;
-          }
-        }).then((data) => {
+        Service.http(url).then((data) => {
+          clearInterval(this.blockDetailTimer);
           if (data) {
             let denominator = 0;
             data.Validators.forEach(item => denominator += item.VotingPower);
@@ -273,10 +270,15 @@
               }
             }
             if (data) {
+              let that = this;
               this.transactionsValue = data.NumTxs;
               this.hashValue = data.Height;
               this.heightValue = data.Height;
-              this.timestampValue = Tools.conversionTimeToUTC(data.Time);
+              this.blockDetailTimer = setInterval(function () {
+                let currentServerTime = new Date().getTime() + that.diffMilliseconds;
+                that.ageValue = Tools.formatAge(currentServerTime,data.Time,Constant.SUFFIX);
+              },1000);
+              this.timestampValue = Tools.format2UTC(data.Time);
               this.blockHashValue = data.Hash;
               this.lastBlockHashValue = data.Block.LastCommit.BlockID.Hash;
               this.precommitValidatorsValue = data.Validators.length !== 0 ? `${data.Block.LastCommit.Precommits.length}/${data.Validators.length}` : '';

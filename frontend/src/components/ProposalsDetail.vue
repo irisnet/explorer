@@ -36,11 +36,12 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Submit Time :</span>
-          <span class="information_value">{{submitTime}}</span>
+          <span class="information_value">{{submitAge}} <span v-show="submitAge">(</span>{{submitTime}}<span v-show="submitAge">)</span></span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Deposit End Time :</span>
-          <span class="information_value">{{depositEndTime}}</span>
+          <span class="information_value">{{depositEndAge}} <span v-show="depositEndAge">(</span>{{depositEndTime}}<span v-show="depositEndAge">)</span>
+          </span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Total Deposit :</span>
@@ -48,11 +49,12 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Voting Start Time :</span>
-          <span class="information_value">{{votingStartTime}}</span>
+          <span class="information_value">{{votingStartAge}} <span v-show="votingStartAge">(</span>{{votingStartTime}}<span v-show="votingStartAge">)</span>
+          </span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Voting End Time :</span>
-          <span class="information_value">{{votingEndTime}}</span>
+          <span class="information_value">{{votingEndAge}} <span v-show="votingEndAge">(</span>{{votingEndTime}}<span v-show="votingEndAge">)</span></span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Description :</span>
@@ -90,10 +92,11 @@
 </template>
 
 <script>
-  import Tools from '../common/Tools';
-  import axios from 'axios';
+  import Tools from '../util/Tools';
+  import Service from "../util/axios"
   import BlocksListTable from './table/BlocksListTable.vue';
   import SpinComponent from './commonComponents/SpinComponent';
+  import Constant from "../constant/Constant"
   export default {
     components: {
       BlocksListTable,
@@ -107,10 +110,10 @@
     data() {
       return {
         devicesWidth: window.innerWidth,
-        proposalsDetailWrap: 'personal_computer_transactions_detail',//1是显示pc端，0是移动端
+        proposalsDetailWrap: 'personal_computer_transactions_detail',
         items: [],
         showLoading:false,
-        showNoData: false,//列表无数据的时候显示
+        showNoData: false,
         count: "",
         proposalsId: "",
         title: "",
@@ -131,6 +134,12 @@
         depositEndTime: "",
         votingStartTime: "",
         votingEndTime: "",
+        submitAge: '',
+        depositEndAge: '',
+        votingStartAge:'',
+        votingEndAge: '',
+        votingTimer: null,
+        proposalTimer: null,
       }
     },
     beforeMount() {
@@ -151,16 +160,29 @@
           this.tableMinWidth = 7.5;
         }
       },
+      flShowProposalTime(proposalTimeName,status){
+       if(status === 'Rejected' || status === 'Passed' || status === 'VotingPeriod'){
+         return true
+       }else{
+         switch (proposalTimeName){
+           case proposalTimeName === 'depositEndTime' && status === 'DepositPeriod' : return true ;
+           case proposalTimeName === 'votingStartTime' && status === 'VotingPeriod' : return true ;
+           case proposalTimeName === 'votingEndTime' && status === 'VotingPeriod' : return true ;
+         }
+       }
+      },
+      formatProposalTime(time){
+        let currentServerTime  = new Date().getTime() + this.diffMilliseconds;
+        if(time && new Date(time).getTime() < currentServerTime){
+          return Tools.formatAge(currentServerTime,time,Constant.SUFFIX);
+        }
+      },
       getProposalsInformation() {
         this.showLoading = true;
         let url = `/api/proposal/${this.$route.params.proposal_id}`;
-        axios.get(url).then((data) => {
-          if(data.status === 200) {
-            return data.data
-          }
-        }).then((data) => {
+        Service.http(url).then((data) => {
           this.showLoading = false;
-          if(data && typeof  data === "object" ){
+          if(data){
             this.showNoData = false;
             if(data.proposal.proposal_id === 0){
               this.proposalsId = '--';
@@ -182,16 +204,24 @@
               this.totalDeposit = '--';
               this.count = 0;
             }else {
+              let that = this;
+              clearInterval(this.proposalTimer);
+              this.proposalTimer = setInterval(function () {
+                that.submitAge = that.formatProposalTime(data.proposal.submit_time ? data.proposal.submit_time : '');
+                that.depositEndAge = that.formatProposalTime(that.flShowProposalTime('depositEndTime',data.proposal.status) ? data.proposal.deposit_end_time : '');
+                that.votingStartAge = that.formatProposalTime(that.flShowProposalTime('votingStartTime',data.proposal.status) ? data.proposal.voting_start_time : '');
+                that.votingEndAge = that.formatProposalTime(that.flShowProposalTime('votingEndTime',data.proposal.status) ? data.proposal.voting_end_time : '' );
+              },1000);
               this.proposalsId = data.proposal.proposal_id === 0 ? "--" : data.proposal.proposal_id;
               this.title = data.proposal.title;
               this.type = data.proposal.type;
               this.status = data.proposal.status;
               this.proposer = data.proposal.proposer ? data.proposal.proposer : "--";
               this.submitHash = data.proposal.tx_hash ? data.proposal.tx_hash : "--";
-              this.submitTime = data.proposal.submit_time ? data.proposal.submit_time : '--';
-              this.depositEndTime = data.proposal.deposit_end_time ? data.proposal.deposit_end_time : '--';
-              this.votingStartTime = data.proposal.voting_start_time ? data.proposal.voting_start_time : '--';
-              this.votingEndTime = data.proposal.voting_end_time ? data.proposal.voting_end_time : '--';
+              this.submitTime = data.proposal.submit_time ? Tools.format2UTC(data.proposal.submit_time) : '--';
+              this.depositEndTime = that.flShowProposalTime('depositEndTime',data.proposal.status) ? Tools.format2UTC(data.proposal.deposit_end_time) : '--';
+              this.votingStartTime = that.flShowProposalTime('votingStartTime',data.proposal.status) ? Tools.format2UTC(data.proposal.voting_start_time) : '--';
+              this.votingEndTime = that.flShowProposalTime('votingEndTime',data.proposal.status) ? Tools.format2UTC(data.proposal.voting_end_time) : '--';
               this.description = data.proposal.description ? data.proposal.description : " -- ";
               this.voteDetailsYes = data.proposal.status === "DepositPeriod" ? "--" : data.result.Yes;
               this.voteDetailsNo = data.proposal.status === "DepositPeriod" ? "--" : data.result.No;
@@ -209,14 +239,19 @@
               }
               if(data.votes){
                 this.count = data.votes.length;
-                this.items = data.votes.map(item =>{
-                  item.time = Tools.conversionTimeToUTC(item.time);
-                  return {
-                    Voter: item.voter,
-                    "Vote Option": item.option,
-                    "Vote Time": item.time
-                  }
-                })
+                let that = this;
+                clearInterval(this.votingTimer);
+                this.votingTimer = setInterval(function () {
+                  let currentServerTime = new Date().getTime() + that.diffMilliseconds;
+                  that.items = data.votes.map(item =>{
+                    let votingListItemTime = Tools.formatAge(currentServerTime,item.time,Constant.SUFFIX,Constant.PREFIX);
+                    return {
+                      Voter: item.voter,
+                      "Vote Option": item.option,
+                      VoteTime: votingListItemTime
+                    }
+                  })
+                },1000);
               }else {
                 this.items = [{
                   Voter: "",
@@ -325,6 +360,7 @@
     }
   }
   .proposals_detail_table_wrap {
+    margin-bottom: 0.2rem;
     width: 100%;
     overflow-x: auto;
     .no_data_show {

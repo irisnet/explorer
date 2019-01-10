@@ -1,6 +1,6 @@
 <template>
     <div>
-      <p class="version_title">Version: 0.7.0</p>
+      <p class="version_title">Version: 0.7.5</p>
       <button class="go_home_btn" @click="goHome">HOME</button>
     </div>
 </template>

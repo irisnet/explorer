@@ -9,11 +9,11 @@
         <div class="navSearch">
           <span class="chain_id">{{fuxi.toUpperCase()}}</span>
           <input type="text" class="search_input"
-                 placeholder="Search by Address / Txhash / Block / Proposal ID"
-                 v-model="searchInputValue"
+                 placeholder="Search by Address / Txhash / Block"
+                 v-model.trim="searchInputValue"
                  @keyup.enter="onInputChange">
           <i class="search_icon" @click="getData(searchInputValue)"></i>
-          <i class="clear_icon" @click="clearData" v-show="showClear"></i>
+          <i class="clear_icon" @click="clearSearchContent" v-show="showClear"></i>
         </div>
       </div>
 
@@ -114,19 +114,20 @@
       <div class="search_input_mobile">
         <div style="width:95%;position:relative">
           <input type="text" class="search_input"
-                 v-model="searchInputValue"
+                 v-model.trim="searchInputValue"
                  @keyup.enter="onInputChange"
                  placeholder="Search by Address / Txhash / Block">
           <i class="search_icon" @click="getData(searchInputValue)"></i>
-          <i class="clear_icon" @click="clearData" v-show="showClear"></i>
+          <i class="clear_icon" @click="clearSearchContent" v-show="showClear"></i>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-  import Tools from '../common/Tools';
-  import axios from 'axios';
+  import Tools from '../util/Tools';
+  import Service from "../util/axios"
+
   export default {
     name: 'app-header',
     watch:{
@@ -146,12 +147,12 @@
     data() {
       return {
         devicesWidth: window.innerWidth,
-        devicesShow: 1,//1是显示pc端，0是移动端
+        devicesShow: 1,
         searchValue: '',
         appHeaderVar: 'person_computer_header_var',
-        featureShow: false,//是否显示功能菜单栏
-        transactionShow: false,//点击显示Transactions菜单
-        validatorsShow: false,//点击显示validators菜单
+        featureShow: false,
+        transactionShow: false,
+        validatorsShow: false,
         searchInputValue: '',
         activeClassName: '/home',
         showHeader:!(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer()),
@@ -165,8 +166,8 @@
         flShowUpOrDown: false,
         flShowValidatorsUpOrDown: false,
         upImg: require("../assets/caret-bottom.png"),
-        downImg: require("../assets/caret-bottom.png")
-      }
+        downImg: require("../assets/caret-bottom.png"),
+    }
     },
     beforeMount() {
       if (window.innerWidth > 910) {
@@ -193,7 +194,7 @@
           this.flShowTransactionsSelect = true;
           this.flShowUpOrDown = true
         }else {
-          this.flShowUpOrDown = false
+          this.flShowUpOrDown = false;
           this.flShowTransactionsSelect = false
         }
       },
@@ -248,13 +249,9 @@
       },
       searchTx(){
         let uri = `/api/tx/${this.searchInputValue}`;
-        axios.get(uri).then((data) => {
-          if (data.status === 200) {
-            return data.data;
-          }
-        }).then((txInfomation) => {
-          if (txInfomation && typeof txInfomation === "object") {
-            this.$router.push(`/tx?txHash=${this.searchInputValue}`);
+        Service.http(uri).then((tx) => {
+          if (tx) {
+            this.$router.push(`/tx?txHash=${tx.Hash}`);
             this.clearSearchInputValue();
           }else {
             this.toSearchResultPage();
@@ -266,13 +263,9 @@
       },
       searchDelegator(){
         let uri = `/api/account/${this.searchInputValue}`;
-        axios.get(uri).then((data) => {
-          if (data.status === 200) {
-            return data.data;
-          }
-        }).then((addressInfomation) => {
-          if (addressInfomation && typeof addressInfomation === "object") {
-            this.$router.push(`/address/1/${this.searchInputValue}`);
+        Service.http(uri).then((delegatorAddress) => {
+          if (delegatorAddress) {
+            this.$router.push(`/address/1/${delegatorAddress.Address}`);
             this.clearSearchInputValue();
           }else {
             this.toSearchResultPage()
@@ -284,13 +277,9 @@
       },
       searchValidator(){
         let uri = `/api/stake/candidate/${this.searchInputValue}`;
-        axios.get(uri).then((data) => {
-          if (data.status === 200) {
-            return data.data;
-          }
-        }).then((validatorAddressInfomation) => {
-          if (validatorAddressInfomation && typeof validatorAddressInfomation === "object") {
-            this.$router.push(`/address/1/${this.searchInputValue}`);
+        Service.http(uri).then((validatorAddress) => {
+          if (validatorAddress) {
+            this.$router.push(`/address/1/${validatorAddress.Address}`);
             this.clearSearchInputValue();
           }else {
             this.toSearchResultPage()
@@ -302,21 +291,17 @@
       },
       searchBlockAndProposal(){
         let uri = `/api/search/${this.searchInputValue}`;
-        axios.get(uri).then((data) => {
-          if(data.status === 200){
-            return data.data;
-          }
-        }).then((searchResult) => {
+        Service.http(uri).then((searchResult) => {
           if(searchResult){
             //searchResult：[ {Type：block，Data:{}} ，{Type：proposal,Data:{}} ]
             let searchResultIsBlockOrProposalId = 1;
             let searchBlockAndProposalInResult = 2;
             if(searchResult.length === searchResultIsBlockOrProposalId){
               if(searchResult[0].Type === "block" && searchResult[0].Data.Height !== 0){
-                this.$router.push(`/blocks_detail/${this.searchInputValue}`);
+                this.$router.push(`/blocks_detail/${searchResult[0].Data.Height}`);
                 this.clearSearchInputValue();
               }else if(searchResult[0].Type === "proposal" && searchResult[0].Data.ProposalID !== 0){
-                this.$router.push(`/ProposalsDetail/${this.searchInputValue}`);
+                this.$router.push(`/ProposalsDetail/${searchResult[0].Data.ProposalID}`);
                 this.clearSearchInputValue();
               }
             }else if(searchResult.length === searchBlockAndProposalInResult){
@@ -331,8 +316,9 @@
         });
       },
       getData() {
-        if(this.searchInputValue === ''){
-          this.toSearchResultPage();
+        if(Tools.removeAllSpace(this.searchInputValue) === ''){
+          this.clearSearchContent();
+          return
         }else{
           if(/^[A-F0-9]{64}$/.test(this.searchInputValue)){
             this.searchTx()
@@ -378,7 +364,7 @@
           this.activeClassName = '';
         }
       },
-      clearData(){
+      clearSearchContent(){
         this.searchInputValue = '';
       },
       toHelp(){

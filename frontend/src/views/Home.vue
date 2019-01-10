@@ -3,27 +3,28 @@
     <div :class="pageClassName">
       <div class="information_preview">
         <div class="information_preview_module">
-          <span>{{marketCapValue}}</span>
-          <span class="information_module_key">Market Cap</span>
+          <span :class="flFadeInBlockHeight ? 'animation' : '' ">{{currentBlockHeight}}</span>
+          <span class="information_module_key">Current Block</span>
         </div>
         <div class="information_preview_module">
-          <span>{{priceValue}}</span>
-          <span class="information_module_key">Price</span>
+          <span :class="flFadeInBlockHeight ? 'animation' : '' " :style="{color:diffSeconds > 120 ? '#ff001b' : ''}">{{lastBlockAge}}</span>
+          <span class="information_module_key">Last Block</span>
+        </div>
+        <div class="information_preview_module">
+          <span :class="flFadeInTransaction ? 'animation' : '' ">{{transactionValue}}</span>
+          <span class="information_module_key">Transactions</span>
         </div>
         <div class="information_preview_module"
              style="cursor:pointer;" @click="skipValidators"
         >
-          <span style="text-align:center;">{{validatorsValue}}</span>
+          <span style="text-align:center;" :class="flFadeInValidator ? 'animation' : '' ">{{validatorValue}}</span>
           <span class="information_module_key">Validators</span>
         </div>
         <div class="information_preview_module">
-          <span>{{votingPowerValue}}</span>
-          <span class="information_module_key">Voting Power</span>
+          <span :class="flFadeInVotingPower ? 'animation' : '' ">{{votingPowerValue}}</span>
+          <span class="information_module_key">Online Voting Power</span>
         </div>
-        <div class="information_preview_module">
-          <span>{{transactionValue}}</span>
-          <span class="information_module_key">Transactions</span>
-        </div>
+
       </div>
       <div :class="module_item_wrap">
         <div class="home_module_item home_module_item_pie" style="overflow-x: hidden;">
@@ -47,273 +48,338 @@
 </template>
 
 <script>
-
-  import Tools from '../common/Tools';
-  import EchartsPie from "../components/EchartsPie";
-  import EchartsLine from "../components/EchartsLine";
-  import HomeBlockModule from "../components/HomeBlockModule";
-  import axios from 'axios';
-
+import Tools from '../util/Tools';
+import EchartsPie from "../components/EchartsPie";
+import EchartsLine from "../components/EchartsLine";
+import HomeBlockModule from "../components/HomeBlockModule";
+import Service from '../util/axios';
+import Constant from "../constant/Constant"
   export default {
-    name: 'app-header',
-    components: {EchartsPie, EchartsLine, HomeBlockModule},
-    data() {
-      return {
-        devicesWidth: window.innerWidth,
-        pageClassName: 'personal_computer_home_wrap',//1是显示pc端，0是移动端
-        module_item_wrap: 'module_item_wrap_computer',//module_item_wrap_computer是pc端，module_item_wrap_mobile是移动端
-        marketCapValue: '--',
-        validatorsValue: '',
-        transactionValue: '',
-        priceValue: '--',
-        votingPowerValue: '',
-        blockHeightValue: '',
-        timestampValue: '',
-        information: {},//饼图的所有信息
-        informationLine: {},//折线图端所有信息
-        blocksInformation: [],
-        transactionInformation: [],
-        innerWidth : window.innerWidth,
-
-      }
-    },
-    beforeMount() {
-
-    },
-    mounted() {
-      document.getElementById('router_wrap').addEventListener('click', this.hideFeature);
-      //请求各个列表数据
-      this.getBlocksStatusData();
-      this.getBlocksList();
-      this.getTransactionHistory();
-      this.getTransactionList();
-      this.getValidatorsList();
-      window.addEventListener('resize',this.onresize);
-      if (window.innerWidth > 910) {
-        this.pageClassName = 'personal_computer_home_wrap';
-        this.module_item_wrap = 'module_item_wrap_computer';
-        if(document.getElementsByClassName('fixed_item_height').length > 0){
-          document.getElementsByClassName('fixed_item_height')[0].style.height = '6.55rem';
-          document.getElementsByClassName('fixed_item_height')[1].style.height = '6.55rem';
-        }
-      } else {
-        this.pageClassName = 'mobile_home_wrap';
-        this.module_item_wrap = 'module_item_wrap_mobile';
-      }
-    },
-    beforeDestroy(){
-      window.removeEventListener('resize',this.onWindowResize);
-    },
-    methods: {
-      onresize(){
-        this.innerWidth = window.innerWidth;
-        if(window.innerWidth > 910){
-          this.pageClassName = 'personal_computer_home_wrap';
-          this.module_item_wrap = 'module_item_wrap_computer';
-          if(document.getElementsByClassName('fixed_item_height').length > 0) {
-            document.getElementsByClassName('fixed_item_height')[0].style.height = '6.55rem';
-            document.getElementsByClassName('fixed_item_height')[1].style.height = '6.55rem';
-          }
-        }else {
-          this.pageClassName = 'mobile_home_wrap';
-          this.module_item_wrap = 'module_item_wrap_mobile';
-          if(document.getElementsByClassName('fixed_item_height').length > 0) {
-            document.getElementsByClassName('fixed_item_height')[0].style.height = 'auto';
-            document.getElementsByClassName('fixed_item_height')[1].style.height = 'auto';
-          }
-        }
-      },
-
-      getBlocksStatusData() {
-        let url = `/api/chain/status`;
-        axios.get(url).then((data) => {
-          if (data.status === 200) {
-            return data.data;
-          }
-        }).then((data) => {
-          let num = data.TxCount;
-          if(data && typeof data === "object") {
-          if(data.TxCount > 1000000000){
-            num = `${(data.TxCount/1000000000).toFixed(2)} B`;
-          }else if(data.TxCount > 1000000){
-            num = `${(data.TxCount/1000000).toFixed(2)} M`;
-          }else if(data.TxCount > 1000){
-            num = `${(data.TxCount/1000).toFixed(2)} K`;
-          }
-          this.marketCapValue = '--';
-          this.priceValue = '--';
-          this.transactionValue = `${num}(${data.Tps.toFixed(2)} TPS)`;
-
-        }
-        }).catch(e => {
-          console.log(e)
-        })
-      },
-      getValidatorsList() {
-        let url = `/api/stake/candidatesTop`;
-        axios.get(url).then((data) => {
-          if (data.status === 200) {
-            return data.data;
-          }
-        }).then((data) => {
-          let colors = ['#3498db', '#47a2df', '#59ade3', '#6cb7e7', '#7fc2eb', '#91ccef', '#a4d7f3', '#b7e1f7', '#c9ecfb', '#dcf6ff', '#DADDE3',];
-          //跟series的name匹配
-          let [seriesData, legendData] = [[], []];
-          if (data.Candidates instanceof Array) {
-            //计算前十的voting power总数；
-            let totalCount = 0;
-            data.Candidates.forEach(item=>totalCount += item.VotingPower);
-            //其他部分的
-            let others = data.PowerAll - totalCount;
-            let monikerReserveLength = 10;
-            let addressReserveLength = 6;
-            let powerAll = data.PowerAll;
-            for (let i = 0; i < data.Candidates.length; i++) {
-              seriesData.push({
-                value: data.Candidates[i].VotingPower,
-                name: data.Candidates[i].Description.Moniker ? `${Tools.formatString(data.Candidates[i].Description.Moniker,monikerReserveLength,"...")} (${Tools.formatString(data.Candidates[i].Address,addressReserveLength,"...")})` : (data.Candidates[i].Address ? data.Candidates[i].Address : ''),
-                itemStyle: {color: colors[i]},
-                emphasis : {itemStyle:{color: colors[i]}},
-                upTime:`${data.Candidates[i].Uptime}%`,
-                address:data.Candidates[i].Address,
-                powerAll,
-              });
-              legendData.push(data.Candidates[i].Description.Moniker ? `${Tools.formatString(data.Candidates[i].Description.Moniker,monikerReserveLength,"...")} (${Tools.formatString(data.Candidates[i].Address,addressReserveLength,"...")})` : (data.Candidates[i].Address ? data.Candidates[i].Address : ''))
-            }
-
-            if(others > 0 ){
-              seriesData.push({
-                value: others,
-                name:'others',
-                powerAll,
-                itemStyle:{color:colors[10]},
-              });
-            }
-
-          }
-          this.information = {legendData, seriesData}
-
-        }).catch(e => {
-          console.log(e)
-        })
-      },
-      getTransactionHistory() {
-        let url = `/api/txsByDay`;
-        axios.get(url).then((data) => {
-          if (data.status === 200) {
-            return data.data;
-          }
-        }).then((data) => {
-          //找出最大的数据
-          let maxValue = 0;
-          if(data){
-            data.forEach(item=>{
-              if(item.Count > maxValue){
-                maxValue = item.Count;
-              }
-            });
-            let xData = data.map(item=>`${String(item.Time).substr(5,2)}/${String(item.Time).substr(8,2)}/${String(item.Time).substr(0,4)}`);
-            let seriesData = data.map(item=>item.Count);
-            this.informationLine = {maxValue,xData,seriesData};
-          }
-        }).catch(e => {
-          console.log(e)
-        })
-
-      },
-      getBlocksList() {
-        let url = `/api/blocks/1/10`;
-        axios.get(url).then((data) => {
-          if (data.status === 200) {
-            return data.data;
-          }
-        }).then((data) => {
-          if(data.Data){
-            let denominator = 0;
-            data.Data[0].Validators.forEach(item=>denominator += item.VotingPower);
-            let numerator = 0;
-            for(let i = 0; i < data.Data[0].Block.LastCommit.Precommits.length; i++){
-              for (let j = 0; j < data.Data[0].Validators.length; j++){
-                if(data.Data[0].Block.LastCommit.Precommits[i].ValidatorAddress === data.Data[0].Validators[j].Address){
-                  numerator += data.Data[0].Validators[j].VotingPower;
-                  break;
-                }
-              }
-            }
-            this.votingPowerValue = denominator !== 0? `${(numerator/denominator).toFixed(2)*100}%`:'';
-            this.validatorsValue = `${data.Data[0].Block.LastCommit.Precommits.length} voting / ${data.Data[0].Validators.length} total`;
-            this.blocksInformation = data.Data.map(item => {
+      name: 'app-header',
+      components: {EchartsPie, EchartsLine, HomeBlockModule},
+          data() {
               return {
-                Height: item.Height,
-                Proposer: item.Hash,
-                Txn: item.NumTxs,
-                Time: Tools.conversionTimeToUTC(item.Time),
-                Fee: '0 IRIS',
+                  devicesWidth: window.innerWidth,
+                  pageClassName: 'personal_computer_home_wrap',
+                  module_item_wrap: 'module_item_wrap_computer',
+                  currentBlockHeight: '--',
+                  validatorValue: '--',
+                  transactionValue: '--',
+                  lastBlockAge: '--',
+                  votingPowerValue: '--',
+                  blockHeightValue: '',
+                  timestampValue: '',
+                  information: {},
+                  informationLine: {},
+                  blocksInformation: [],
+                  transactionInformation: [],
+                  innerWidth : window.innerWidth,
+                  blocksTimer:null,
+                  transfersTimer:null,
+                  diffSeconds: 0,
+                  flFadeInBlockHeight:false,
+                  flFadeInTransaction: false,
+                  flFadeInValidator:false,
+                  flFadeInVotingPower:false,
+                  timer: null
               }
-            })
-          }
-        }).catch(e => {
-          console.log(e)
-        })
-      },
-      skipValidators(){
-        this.$router.push('/validators/3/active');
-      },
-      getTransactionList() {
-        let url = `/api/txs/1/10`;
-        axios.get(url).then((data) => {
-          if (data.status === 200) {
-            return data.data;
-          }
-        }).then((data) => {
-          if(data.TransCnt){
+          },
 
-          }
-          if(data.Data){
-            this.transactionInformation = data.Data.map(item => {
-              let [Amount, Fee] = ['--', '--'];
-              if (item.Amount instanceof Array) {
-                if(item.Amount.length > 0){
-                  item.Amount[0].amount = Tools.formatAmount(item.Amount[0].amount);
-                }
-                if(Tools.flTxType(item.Type)){
-                  Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
-                }else {
-                  Amount = item.Amount.map(listItem => `${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
-                }
-              } else if (item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')) {
-                Amount = `${item.Amount.amount} ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
-                if(Tools.flTxType(item.Type)){
-                  Amount = `${item.Amount.amount} SHARES`;
-                }
-              } else if (item.Amount === null) {
-                Amount = '';
+          beforeMount() {
+              this.getBlocksStatus();
+              this.getBlocksList();
+              this.getTransactionHistory();
+              this.getTransactionList();
+              this.getValidatorsList();
+          },
+          mounted() {
+              document.getElementById('router_wrap').addEventListener('click', this.hideFeature);
+              let that =this;
+              this.timer = setInterval(function () {
+                  that.getBlocksList();
+                  that.getTransactionHistory();
+                  that.getTransactionList();
+                  that.getValidatorsList();
+              },10000);
+              window.addEventListener('resize',this.onresize);
+              if (window.innerWidth > 910) {
+                  this.pageClassName = 'personal_computer_home_wrap';
+                  this.module_item_wrap = 'module_item_wrap_computer';
+                  if(document.getElementsByClassName('fixed_item_height').length > 0){
+                      document.getElementsByClassName('fixed_item_height')[0].style.height = '6.55rem';
+                      document.getElementsByClassName('fixed_item_height')[1].style.height = '6.55rem';
+                  }
+              } else {
+                  this.pageClassName = 'mobile_home_wrap';
+                  this.module_item_wrap = 'module_item_wrap_mobile';
               }
-              if(item.ActualFee.amount && item.ActualFee.denom){
-                Fee =  `${Tools.formatFeeToFixedNumber(item.ActualFee.amount)} ${Tools.formatDenom(item.ActualFee.denom).toUpperCase()}`;
+          },
+          beforeDestroy(){
+            window.removeEventListener('resize',this.onWindowResize);
+            clearInterval(this.timer)
+          },
+      methods: {
+          onresize(){
+              this.innerWidth = window.innerWidth;
+              if(window.innerWidth > 910){
+                  this.pageClassName = 'personal_computer_home_wrap';
+                  this.module_item_wrap = 'module_item_wrap_computer';
+                  if(document.getElementsByClassName('fixed_item_height').length > 0) {
+                      document.getElementsByClassName('fixed_item_height')[0].style.height = '6.55rem';
+                      document.getElementsByClassName('fixed_item_height')[1].style.height = '6.55rem';
+                  }
+              }else {
+                  this.pageClassName = 'mobile_home_wrap';
+                  this.module_item_wrap = 'module_item_wrap_mobile';
+                  if(document.getElementsByClassName('fixed_item_height').length > 0) {
+                      document.getElementsByClassName('fixed_item_height')[0].style.height = 'auto';
+                      document.getElementsByClassName('fixed_item_height')[1].style.height = 'auto';
+                  }
               }
-              return {
-                TxHash: item.TxHash,
-                From: item.From,
-                To: item.To,
-                Type: item.Type === 'coin'?'transfer':item.Type,
-                Fee,
-                Amount,
-                Time: Tools.conversionTimeToUTC(item.Time),
-              };
-            })
-          }
+          },
+          getBlocksStatus() {
+              this.flFadeInTransaction = false;
+              let url = `/api/chain/status`;
+              let lastTransfer =  {};
+              let that = this;
+              Service.http(url).then((data) => {
+                setTimeout(function () {
+                  let storedLastTransfer  = localStorage.getItem('lastTransfer') ? JSON.parse(localStorage.getItem('lastTransfer')) : '';
+                  if(storedLastTransfer){
+                    if(storedLastTransfer.txCount !== data.TxCount
+                      || storedLastTransfer.tps !== data.Tps){
+                      that.flFadeInTransaction = true
+                    }
+                  }
 
-        }).catch(e => {
-          console.log(e)
-        })
+                  let num = data.TxCount;
+                  if(data) {
+                    if(data.TxCount > 1000000000){
+                      num = `${(data.TxCount/1000000000).toFixed(2)} B`;
+                    }else if(data.TxCount > 1000000){
+                      num = `${(data.TxCount/1000000).toFixed(2)} M`;
+                    }else if(data.TxCount > 1000){
+                      num = `${(data.TxCount/1000).toFixed(2)} K`;
+                    }
+                    that.transactionValue = `${num}(${data.Tps.toFixed(2)} TPS)`;
+                  }
+                  lastTransfer.txCount = data.TxCount;
+                  lastTransfer.tps = data.Tps;
+                  localStorage.setItem('lastTransfer',JSON.stringify(lastTransfer))
+                },1000)
+
+              }).catch(e => {
+                  console.log(e)
+              })
+          },
+          getValidatorsList() {
+              let url = `/api/stake/candidatesTop`;
+              Service.http(url).then((data) => {
+                  let colors = ['#3498db', '#47a2df', '#59ade3', '#6cb7e7', '#7fc2eb', '#91ccef', '#a4d7f3', '#b7e1f7', '#c9ecfb', '#dcf6ff', '#DADDE3',];
+                  let [seriesData, legendData] = [[], []];
+                  if (data.Candidates instanceof Array) {
+                      let totalCount = 0;
+                      data.Candidates.forEach(item=>totalCount += item.VotingPower);
+                      let others = data.PowerAll - totalCount;
+                      let monikerReserveLength = 10;
+                      let addressReserveLength = 6;
+                      let powerAll = data.PowerAll;
+                      for (let i = 0; i < data.Candidates.length; i++) {
+                        seriesData.push({
+                          value: data.Candidates[i].VotingPower,
+                          name: data.Candidates[i].Description.Moniker ? `${Tools.formatString(data.Candidates[i].Description.Moniker,monikerReserveLength,"...")} (${Tools.formatString(data.Candidates[i].Address,addressReserveLength,"...")})` : (data.Candidates[i].Address ? data.Candidates[i].Address : ''),
+                          itemStyle: {color: colors[i]},
+                          emphasis : {itemStyle:{color: colors[i]}},
+                          upTime:`${data.Candidates[i].Uptime}%`,
+                          address:data.Candidates[i].Address,
+                          powerAll,
+                        });
+                        legendData.push(data.Candidates[i].Description.Moniker ? `${Tools.formatString(data.Candidates[i].Description.Moniker,monikerReserveLength,"...")} (${Tools.formatString(data.Candidates[i].Address,addressReserveLength,"...")})` : (data.Candidates[i].Address ? data.Candidates[i].Address : ''))
+                      }
+
+                    if(others > 0 ){
+                      seriesData.push({
+                        value: others,
+                        name:'others',
+                        powerAll,
+                        itemStyle:{color:colors[10]},
+                      });
+                    }
+
+                  }
+                  this.information = {legendData, seriesData}
+
+              }).catch(e => {
+                console.log(e)
+              })
+          },
+        getTransactionHistory() {
+          let url = `/api/txsByDay`;
+          Service.http(url).then((data) => {
+            let maxValue = 0;
+            if(data){
+              data.forEach(item=>{
+                if(item.Count > maxValue){
+                  maxValue = item.Count;
+                }
+              });
+              let xData = data.map(item=>`${String(item.Time).substr(5,2)}/${String(item.Time).substr(8,2)}/${String(item.Time).substr(0,4)}`);
+              let seriesData = data.map(item=>item.Count);
+              this.informationLine = {maxValue,xData,seriesData};
+            }
+          }).catch(e => {
+            console.log(e)
+          })
+        },
+        hideFadeinAnimation(){
+          this.flFadeInBlockHeight = false;
+          this.flFadeInValidator = false;
+          this.flFadeInVotingPower = false;
+        },
+        showFadeinAnimation(blockList,numerator,denominator){
+          let storedLastBlock = localStorage.getItem('lastBlock') ? JSON.parse(localStorage.getItem('lastBlock')) : '';
+          if(storedLastBlock){
+            if(storedLastBlock.activeValidator !== blockList.Data[0].Block.LastCommit.Precommits.length || storedLastBlock.totalValidator !== blockList.Data[0].Validators.length){
+              this.flFadeInValidator = true;
+            }
+            if(storedLastBlock.numerator !== numerator || storedLastBlock.denominator !== denominator){
+              this.flFadeInVotingPower = true
+            }
+          }
+        },
+        showBlockFadeinAnimation(blockList){
+          let storedLastBlockHeight = localStorage.getItem('lastBlockHeight') ? localStorage.getItem('lastBlockHeight') : '';
+          if(storedLastBlockHeight){
+            for(let index = 0; index < blockList.Data.length; index++){
+              if(blockList.Data[index].Height > storedLastBlockHeight){
+                blockList.Data[index].showAnimation = "show"
+              }
+            }
+          }
+        },
+        getBlocksList() {
+          let url = `/api/blocks/1/10`;
+          Service.http(url).then((blockList) => {
+            this.getBlocksStatus();
+            this.hideFadeinAnimation();
+            if(blockList.Data){
+              let denominator = 0,lastBlock = {};
+              blockList.Data[0].Validators.forEach(item=>denominator += item.VotingPower);
+              let numerator = 0;
+              for(let i = 0; i < blockList.Data[0].Block.LastCommit.Precommits.length; i++){
+                for (let j = 0; j < blockList.Data[0].Validators.length; j++){
+                  if(blockList.Data[0].Block.LastCommit.Precommits[i].ValidatorAddress === blockList.Data[0].Validators[j].Address){
+                    numerator += blockList.Data[0].Validators[j].VotingPower;
+                    break;
+                  }
+                }
+              }
+              lastBlock.lastBlockHeight = blockList.Data[0].Height;
+              lastBlock.numerator = numerator;
+              lastBlock.denominator = denominator;
+              lastBlock.activeValidator = blockList.Data[0].Block.LastCommit.Precommits.length;
+              lastBlock.totalValidator = blockList.Data[0].Validators.length;
+              this.validatorValue = `${blockList.Data[0].Block.LastCommit.Precommits.length} voting / ${blockList.Data[0].Validators.length} total`;
+              this.votingPowerValue = denominator !== 0? `${(numerator/denominator).toFixed(2)*100}%`:'';
+              this.showFadeinAnimation(blockList,numerator,denominator);
+              this.showBlockFadeinAnimation(blockList);
+              let that = this;
+              clearInterval(this.blocksTimer);
+              this.blocksTimer = setInterval(function () {
+                let storedLastBlockHeight = localStorage.getItem('lastBlockHeight');
+                if(storedLastBlockHeight){
+                  if(storedLastBlockHeight !== blockList.Data[0].Height){
+                    that.flFadeInBlockHeight = true;
+                  }
+                }
+                let currentServerTime = new Date().getTime() + that.diffMilliseconds;
+                that.lastBlockAge = Tools.formatAge(currentServerTime,blockList.Data[0].Time);
+                that.diffSeconds = Math.floor(Tools.getDiffMilliseconds(currentServerTime,blockList.Data[0].Time)/1000);
+                localStorage.setItem('lastBlock',JSON.stringify(lastBlock));
+                localStorage.setItem("lastBlockHeight",blockList.Data[0].Height);
+                that.currentBlockHeight = blockList.Data[0].Height;
+                that.blocksInformation = blockList.Data.map(item => {
+                  return {
+                    showAnimation: item.showAnimation ? item.showAnimation : "",
+                    Height: item.Height,
+                    Proposer: item.Hash,
+                    Txn: item.NumTxs,
+                    Time: Tools.format2UTC(item.Time),
+                    Fee: '0 IRIS',
+                    age: Tools.formatAge(currentServerTime,item.Time,Constant.SUFFIX,Constant.PREFIX)
+                  };
+                });
+              },1000);
+            }
+          }).catch(e => {
+            console.log(e)
+          })
+        },
+        skipValidators(){
+          this.$router.push('/validators/3/active');
+        },
+        getTransactionList() {
+          let url = `/api/txs/1/10`;
+          Service.http(url).then((transactionList) => {
+            if(transactionList.Data){
+              let that = this;
+              for (let txIndex = 0; txIndex < transactionList.Data.length; txIndex++){
+                if(new Date(transactionList.Data[txIndex].Time).getTime() > localStorage.getItem("lastTxTime")){
+                  transactionList.Data[txIndex].showAnimation = "show"
+                }
+              }
+              let lastTxTime = new Date(transactionList.Data[0].Time).getTime();
+              clearInterval(this.transfersTimer);
+              this.transfersTimer = setInterval(function () {
+                localStorage.setItem('lastTxTime',lastTxTime);
+                that.transactionInformation = transactionList.Data.map(item => {
+                  let [Amount, Fee] = ['--', '--'];
+                  if(item.Amount){
+                    if (item.Amount instanceof Array) {
+                      if(item.Amount.length > 0){
+                        item.Amount[0].amount = Tools.formatAmount(item.Amount[0].amount);
+                      }
+                      if(Tools.flTxType(item.Type)){
+                        Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
+                      }else {
+                        Amount = item.Amount.map(listItem => `${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
+                      }
+                    } else if (item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')) {
+                      Amount = `${item.Amount.amount} ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
+                      if(Tools.flTxType(item.Type)){
+                        Amount = `${item.Amount.amount} SHARES`;
+                      }
+                    }
+                  }else {
+                    Amount = '';
+                  }
+                  if(item.ActualFee.amount && item.ActualFee.denom){
+                    Fee =  `${Tools.formatFeeToFixedNumber(item.ActualFee.amount)} ${Tools.formatDenom(item.ActualFee.denom).toUpperCase()}`;
+                  }
+                  let currentServerTime = new Date().getTime() + that.diffMilliseconds;
+                  return {
+                    showAnimation: item.showAnimation ? item.showAnimation : '',
+                    TxHash: item.TxHash,
+                    From: item.From,
+                    To: item.To,
+                    Type: item.Type === 'coin'?'transfer':item.Type,
+                    Fee,
+                    Amount,
+                    Time: Tools.format2UTC(item.Time),
+                    age: Tools.formatAge(currentServerTime,item.Time,Constant.SUFFIX,Constant.PREFIX)
+                  };
+                })
+              },1000)
+            }
+          }).catch(e => {
+            console.log(e)
+          })
+        }
       }
-    }
   }
 </script>
 <style lang="scss">
   @import '../style/mixin.scss';
-
   .home_wrap {
     @include flex();
     @include pcContainer;
@@ -468,5 +534,11 @@
   .transactions_background_type{
     background: url('../assets/transactions.png') no-repeat 0 0.02rem;
     text-indent:0.2rem;
+  }
+  pre{
+    margin: 0!important;
+  }
+  .animation{
+    @include fadeInAnimation
   }
 </style>

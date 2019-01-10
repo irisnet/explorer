@@ -2,8 +2,8 @@ package utils
 
 import (
 	"fmt"
+	"github.com/irisnet/irishub-sync/logger"
 	"github.com/irisnet/irishub-sync/store"
-	"log"
 	"regexp"
 	"strconv"
 	"strings"
@@ -43,21 +43,34 @@ func ParseCoin(coinStr string) (coin store.Coin) {
 
 	matches := reCoin.FindStringSubmatch(coinStr)
 	if matches == nil {
-		err := fmt.Errorf("invalid coin expression: %s", coinStr)
-		log.Println(err.Error())
+		logger.Error("invalid coin expression", logger.Any("coin", coinStr))
 		return
 	}
 	denom, amount := matches[2], matches[1]
 
 	amt, err := strconv.ParseFloat(amount, 64)
 	if err != nil {
-		log.Println("Convert str to int failed")
+		logger.Error("Convert str to int failed", logger.Any("amount", amount))
 	}
 
 	return store.Coin{
 		Denom:  denom,
 		Amount: amt,
 	}
+}
+func ParseCoins(coinsStr string) (coins store.Coins) {
+	coinsStr = strings.TrimSpace(coinsStr)
+	if len(coinsStr) == 0 {
+		return
+	}
+
+	coinStrs := strings.Split(coinsStr, ",")
+	for _, coinStr := range coinStrs {
+		coin := ParseCoin(coinStr)
+		coins = append(coins, coin)
+	}
+
+	return coins
 }
 
 func CovertCoin(srcCoin store.Coin, denom string) (destCoin store.Coin) {

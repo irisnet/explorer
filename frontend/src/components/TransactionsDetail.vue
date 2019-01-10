@@ -47,7 +47,8 @@
         </div>
         <div class="information_props_wrap" v-if="flShowProposalId">
           <span class="information_props">Proposal ID :</span>
-          <span class="information_value link_active_style" @click="skipRoute(`/ProposalsDetail/${proposalId}`)">{{proposalId}}</span>
+          <span v-show="proposalId !== '--' " class="information_value link_active_style" @click="skipRoute(`/ProposalsDetail/${proposalId}`)">{{proposalId}}</span>
+          <span v-show="proposalId === '--' " class="information_value link_active_style">{{proposalId}}</span>
         </div>
         <div class="information_props_wrap" v-if="flShowVoter">
           <span class="information_props">Voter :</span>
@@ -118,8 +119,8 @@
           <span class="information_value">{{status}}</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Timestamp :</span>
-          <span class="information_value">{{timestampValue}}</span>
+          <span class="information_props">Age(Timestamp) :</span>
+          <span class="information_value" v-show="ageValue">{{ageValue}} ({{timestampValue}})</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Actual Tx Fee :</span>
@@ -148,14 +149,15 @@
 </template>
 
 <script>
-  import Tools from '../common/Tools';
-  import axios from 'axios';
+  import Tools from '../util/Tools';
+  import Service from "../util/axios";
+  import Constant from "../constant/Constant"
   export default {
 
     data() {
       return {
         devicesWidth: window.innerWidth,
-        transactionsDetailWrap: 'personal_computer_transactions_detail',//1是显示pc端，0是移动端
+        transactionsDetailWrap: 'personal_computer_transactions_detail',
         hashValue: '',
         blockValue: '',
         typeValue: '',
@@ -199,6 +201,8 @@
         flShowWithdrawAddress: false,
         flShowDelegatorAddress: false,
         flShowValidatorAddress: false,
+        ageValue: '',
+        transactionDetailTimer: null,
       }
     },
     watch:{
@@ -224,16 +228,18 @@
       getTransactionInfo(){
         if(this.$route.query.txHash){
           let url = `/api/tx/${this.$route.query.txHash}`;
-          axios.get(url).then((data)=>{
-            if(data.status === 200){
-              return data.data;
-            }
-          }).then((data)=>{
-            if(data && typeof data === "object"){
+          Service.http(url).then((data)=>{
+            clearInterval(this.transactionDetailTimer);
+            if(data){
+              let that = this;
+              this.transactionDetailTimer = setInterval(function () {
+                let currentServerTime = new Date().getTime() + that.diffMilliseconds;
+                that.ageValue = Tools.formatAge(currentServerTime,data.Timestamp,Constant.SUFFIX);
+              },1000);
+              this.timestampValue = Tools.format2UTC(data.Timestamp);
               this.hashValue = data.Hash;
               this.blockValue = data.BlockHeight;
               this.typeValue = data.Type === 'coin'?'transfer':data.Type;
-              this.timestampValue = Tools.conversionTimeToUTC(data.Timestamp);
               this.gasPrice = Tools.convertScientificNotation2Number(Tools.formaNumberAboutGasPrice(data.GasPrice));
               this.gasLimit = data.GasLimit;
               this.gasUsedByTxn = data.GasUsed;

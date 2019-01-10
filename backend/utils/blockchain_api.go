@@ -3,34 +3,12 @@ package utils
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/irisnet/explorer/backend/conf"
+	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/irishub-sync/store"
-	"io/ioutil"
 	"log"
 	"net/http"
 )
-
-var AddrNodeServer string
-var AddrHubRpc string
-
-func init() {
-	AddrNodeServer = GetEnv("ADDR_NODE_SERVER", "http://127.0.0.1:1317")
-	AddrHubRpc = GetEnv("ADDR_HUB_RPC", "http://192.168.150.7:26657")
-}
-func get(uri string) (int, []byte) {
-	res, err := http.Get(uri)
-	defer res.Body.Close()
-
-	if err != nil {
-		log.Println(err)
-	}
-
-	resByte, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		log.Println(err)
-	}
-
-	return res.StatusCode, resByte
-}
 
 type Account struct {
 	Coins      []string `json:"coins"`
@@ -38,40 +16,49 @@ type Account struct {
 	Sequence   string   `json:"sequence"`
 }
 
-func GetBalance(address string) store.Coins {
+func GetBalance(address string) (amount store.Coins) {
 	defer func() {
 		if err := recover(); err != nil {
 			log.Println(err)
 		}
 	}()
 
-	uri := fmt.Sprintf("%s/auth/accounts/%s", AddrNodeServer, address)
-	statusCode, resBytes := get(uri)
-
-	var account Account
-	var resCoins []store.Coin
-	if statusCode == 200 {
+	uri := fmt.Sprintf(types.UrlIrisHubAccount, conf.Get().Server.HubLcdUrl, address)
+	resBytes, err := Get(uri)
+	if err == nil {
+		var account Account
 		if err := json.Unmarshal(resBytes, &account); err == nil {
 			funBuildCoins := func(coins []string) []store.Coin {
 				if len(coins) > 0 {
 					for _, coinstr := range coins {
 						coin := ParseCoin(coinstr)
-						resCoins = append(resCoins, CovertCoin(coin, CoinTypeAtto))
+						amount = append(amount, CovertCoin(coin, CoinTypeAtto))
 					}
 				}
-				return resCoins
+				return amount
 			}
 			return funBuildCoins(account.Coins)
 		}
+		return amount
 	}
-	return resCoins
+	return
 }
 
-func GetNodes() []byte {
-	uri := fmt.Sprintf("%s/net_info", AddrHubRpc)
-	statusCode, resBytes := get(uri)
-	if statusCode != 200 {
-		log.Println("query error,statusCode:", statusCode)
+func GetNodes() (bz []byte) {
+	uri := fmt.Sprintf(types.UrlIrisHubNetInfo, conf.Get().Server.HubNodeUrl)
+	bz, err := Get(uri)
+	if err != nil {
+		panic(err)
 	}
-	return resBytes
+	return bz
+}
+
+func GetFaucetAccount(req *http.Request) (bz []byte) {
+	uri := fmt.Sprintf(types.UrlFaucetAccountService, conf.Get().Server.HubFaucetUrl)
+	return Forward(req, uri)
+}
+
+func Apply(req *http.Request) (bz []byte) {
+	uri := fmt.Sprintf(types.UrlFaucetApplyService, conf.Get().Server.HubFaucetUrl)
+	return Forward(req, uri)
 }

@@ -1,5 +1,76 @@
 package types
 
+const (
+	//Account
+	UrlRegisterQueryAccount    = "/account/{address}"
+	UrlRegisterQueryAllAccount = "/accounts/{page}/{size}"
+
+	//Block
+	UrlRegisterQueryBlock            = "/block/{height}"
+	UrlRegisterQueryBlocks           = "/blocks/{page}/{size}"
+	UrlRegisterQueryBlocksPrecommits = "/blocks/precommits/{address}/{page}/{size}"
+
+	//Chain
+	UrlRegisterQueryChain = "/chain/status"
+
+	//Location
+	UrlRegisterQueryIp = "/ip/"
+
+	//Node
+	UrlRegisterQueryNodes = "/net_info"
+
+	//Proposal
+	UrlRegisterQueryProposals = "/proposals/{page}/{size}"
+	UrlRegisterQueryProposal  = "/proposal/{pid}"
+
+	//SearchBox
+	UrlRegisterQueryText    = "/search/{text}"
+	UrlRegisterQuerySysDate = "/sysdate"
+
+	//faucet
+	UrlRegisterQueryFaucet = "/faucet/account"
+	UrlRegisterApply       = "/faucet/apply"
+
+	UrlFaucetAccountService = "%s/account"
+	UrlFaucetApplyService   = "%s/apply"
+
+	//Stake
+	UrlRegisterQueryValidator        = "/stake/validators/{page}/{size}"
+	UrlRegisterQueryRevokedValidator = "/stake/revokedVal/{page}/{size}"
+	UrlRegisterQueryCandidates       = "/stake/candidates/{page}/{size}"
+	UrlRegisterQueryCandidatesTop    = "/stake/candidatesTop"
+	UrlRegisterQueryCandidate        = "/stake/candidate/{address}"
+	UrlRegisterQueryCandidateUptime  = "/stake/candidate/{address}/uptime/{category}"
+	UrlRegisterQueryCandidatePower   = "/stake/candidate/{address}/power/{category}"
+	UrlRegisterQueryCandidateStatus  = "/stake/candidate/{address}/status"
+
+	//Tx
+	UrlRegisterQueryTxList       = "/tx/{type}/{page}/{size}"
+	UrlRegisterQueryTxs          = "/txs/{page}/{size}"
+	UrlRegisterQueryTxsCounter   = "/txs/statistics"
+	UrlRegisterQueryTxsByAccount = "/txsByAddress/{address}/{page}/{size}"
+	UrlRegisterQueryTxsByDay     = "/txsByDay"
+	UrlRegisterQueryTx           = "/tx/{hash}"
+
+	//version
+	UrlRegisterQueryApiVersion = "/version"
+
+	//ping
+	UrlRegisterPing = "/ping"
+
+	//BlockChainRpc
+	UrlIrisHubAccount = "%s/auth/accounts/%s"
+	UrlIrisHubNetInfo = "%s/net_info"
+
+	UrlNodeLocation = "http://opendata.baidu.com/api.php?query=%s&resource_id=6006&ie=utf8&oe=utf8"
+
+	Format = "2006/01/02T15:04:05Z07:00"
+
+	Change  = "powerChange"
+	Slash   = "slash"
+	Recover = "recover"
+)
+
 var (
 	TypeTransfer                      = "Transfer"
 	TypeCreateValidator               = "CreateValidator"
@@ -25,7 +96,7 @@ var (
 	GovernanceList  = []string{TypeSubmitProposal, TypeDeposit, TypeVote}
 )
 
-func isDeclarationType(typ string) bool {
+func IsDeclarationType(typ string) bool {
 	if len(typ) == 0 {
 		return false
 	}
@@ -37,7 +108,7 @@ func isDeclarationType(typ string) bool {
 	return false
 }
 
-func isStakeType(typ string) bool {
+func IsStakeType(typ string) bool {
 	if len(typ) == 0 {
 		return false
 	}
@@ -49,7 +120,7 @@ func isStakeType(typ string) bool {
 	return false
 }
 
-func isGovernanceType(typ string) bool {
+func IsGovernanceType(typ string) bool {
 	if len(typ) == 0 {
 		return false
 	}
@@ -74,14 +145,14 @@ const (
 func Convert(typ string) TxType {
 	if typ == TypeTransfer {
 		return Trans
-	} else if isStakeType(typ) {
+	} else if IsStakeType(typ) {
 		return Stake
-	} else if isDeclarationType(typ) {
+	} else if IsDeclarationType(typ) {
 		return Declaration
-	} else if isGovernanceType(typ) {
+	} else if IsGovernanceType(typ) {
 		return Gov
 	}
-	panic("invalid tx type")
+	panic(CodeUnSupportTx)
 }
 func TxTypeFromString(typ string) TxType {
 	if typ == "trans" {
@@ -93,5 +164,5 @@ func TxTypeFromString(typ string) TxType {
 	} else if typ == "gov" {
 		return Gov
 	}
-	panic("invalid tx type")
+	panic(CodeUnSupportTx)
 }

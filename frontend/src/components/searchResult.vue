@@ -66,8 +66,9 @@
 
 <script>
 
-    import Tools from '../common/Tools';
-    import axios from 'axios';
+    import Tools from '../util/Tools';
+    import Service from "../util/axios"
+
     export default {
       name: "searchResult",
       data() {
@@ -125,24 +126,20 @@
         searchResult(searchValue){
           let searchUrl = `/api/search/${searchValue}`;
           let that = this;
-          axios.get(searchUrl).then((data) => {
-            if(data.status === 200){
-              return data.data
-            }
-          }).then((searchResult) =>{
+          Service.http(searchUrl).then((searchResult) =>{
             that.flshowResult = false;
               if(searchResult){
                 searchResult.forEach((item) => {
                   if(item.Type == "block"){
                     that.blockHeight = item.Data.Height;
-                    that.blockTime = Tools.conversionTimeToUTC(item.Data.Timestamp);
+                    that.blockTime = Tools.format2UTC(item.Data.Timestamp);
                     that.blockHash = item.Data.Hash;
                   }else if(item.Type == "proposal"){
                     that.proposalId = item.Data.ProposalId;
                     that.proposalTitle = item.Data.Title;
                     that.proposalType = item.Data.Type;
                     that.proposalStatus = item.Data.Status;
-                    that.proposalTime = Tools.conversionTimeToUTC(item.Data.SubmitTime)
+                    that.proposalTime = Tools.format2UTC(item.Data.SubmitTime)
                   }
                 })
               }else {

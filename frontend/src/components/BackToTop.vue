@@ -8,7 +8,7 @@
 
 <script>
   import $ from "jquery"
-  import Tools from "../common/Tools"
+  import Tools from "../util/Tools"
     export default {
         name: "backToTop",
         data(){
