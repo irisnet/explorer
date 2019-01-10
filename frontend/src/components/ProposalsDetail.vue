@@ -36,11 +36,12 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Submit Time :</span>
-          <span class="information_value">{{submitAge}} ({{submitTime}})</span>
+          <span class="information_value">{{submitAge}} <span v-show="submitAge">(</span>{{submitTime}}<span v-show="submitAge">)</span></span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Deposit End Time :</span>
-          <span class="information_value">{{depositEedAge}} ({{depositEndTime}})</span>
+          <span class="information_value">{{depositEndAge}} <span v-show="depositEndAge">(</span>{{depositEndTime}}<span v-show="depositEndAge">)</span>
+          </span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Total Deposit :</span>
@@ -48,11 +49,12 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Voting Start Time :</span>
-          <span class="information_value">{{votingStartAge}} ({{votingStartTime}})</span>
+          <span class="information_value">{{votingStartAge}} <span v-show="votingStartAge">(</span>{{votingStartTime}}<span v-show="votingStartAge">)</span>
+          </span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Voting End Time :</span>
-          <span class="information_value">{{votingEndAge}} ({{votingEndTime}})</span>
+          <span class="information_value">{{votingEndAge}} <span v-show="votingEndAge">(</span>{{votingEndTime}}<span v-show="votingEndAge">)</span></span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Description :</span>
@@ -133,7 +135,7 @@
         votingStartTime: "",
         votingEndTime: "",
         submitAge: '',
-        depositEedAge: '',
+        depositEndAge: '',
         votingStartAge:'',
         votingEndAge: '',
         votingTimer: null,
@@ -158,12 +160,22 @@
           this.tableMinWidth = 7.5;
         }
       },
-      getSplitTime(Time){
-        return Time.split('+')[0];
+      flShowProposalTime(proposalTimeName,status){
+       if(status === 'Rejected' || status === 'Passed' || status === 'VotingPeriod'){
+         return true
+       }else{
+         switch (proposalTimeName){
+           case proposalTimeName === 'depositEndTime' && status === 'DepositPeriod' : return true ;
+           case proposalTimeName === 'votingStartTime' && status === 'VotingPeriod' : return true ;
+           case proposalTimeName === 'votingEndTime' && status === 'VotingPeriod' : return true ;
+         }
+       }
       },
       formatProposalTime(time){
         let currentServerTime  = new Date().getTime() + this.diffMilliseconds;
-        return time ? Tools.formatAge(currentServerTime,this.getSplitTime(time),Constant.SUFFIX) : '--';
+        if(time && new Date(time).getTime() < currentServerTime){
+          return Tools.formatAge(currentServerTime,time,Constant.SUFFIX);
+        }
       },
       getProposalsInformation() {
         this.showLoading = true;
@@ -195,10 +207,10 @@
               let that = this;
               clearInterval(this.proposalTimer);
               this.proposalTimer = setInterval(function () {
-                that.submitAge = that.formatProposalTime(data.proposal.submit_time);
-                that.depositEedAge = that.formatProposalTime(data.proposal.deposit_end_time);
-                that.votingStartAge = that.formatProposalTime(data.proposal.voting_start_time);
-                that.votingEndAge = that.formatProposalTime(data.proposal.voting_end_time);
+                that.submitAge = that.formatProposalTime(data.proposal.submit_time ? data.proposal.submit_time : '');
+                that.depositEndAge = that.formatProposalTime(that.flShowProposalTime('depositEndTime',data.proposal.status) ? data.proposal.deposit_end_time : '');
+                that.votingStartAge = that.formatProposalTime(that.flShowProposalTime('votingStartTime',data.proposal.status) ? data.proposal.voting_start_time : '');
+                that.votingEndAge = that.formatProposalTime(that.flShowProposalTime('votingEndTime',data.proposal.status) ? data.proposal.voting_end_time : '' );
               },1000);
               this.proposalsId = data.proposal.proposal_id === 0 ? "--" : data.proposal.proposal_id;
               this.title = data.proposal.title;
@@ -206,10 +218,10 @@
               this.status = data.proposal.status;
               this.proposer = data.proposal.proposer ? data.proposal.proposer : "--";
               this.submitHash = data.proposal.tx_hash ? data.proposal.tx_hash : "--";
-              this.submitTime = data.proposal.submit_time ? data.proposal.submit_time : '--';
-              this.depositEndTime = data.proposal.deposit_end_time ? data.proposal.deposit_end_time : '--';
-              this.votingStartTime = data.proposal.voting_start_time ? data.proposal.voting_start_time : '--';
-              this.votingEndTime = data.proposal.voting_end_time ? data.proposal.voting_end_time : '--';
+              this.submitTime = data.proposal.submit_time ? Tools.format2UTC(data.proposal.submit_time) : '--';
+              this.depositEndTime = that.flShowProposalTime('depositEndTime',data.proposal.status) ? Tools.format2UTC(data.proposal.deposit_end_time) : '--';
+              this.votingStartTime = that.flShowProposalTime('votingStartTime',data.proposal.status) ? Tools.format2UTC(data.proposal.voting_start_time) : '--';
+              this.votingEndTime = that.flShowProposalTime('votingEndTime',data.proposal.status) ? Tools.format2UTC(data.proposal.voting_end_time) : '--';
               this.description = data.proposal.description ? data.proposal.description : " -- ";
               this.voteDetailsYes = data.proposal.status === "DepositPeriod" ? "--" : data.result.Yes;
               this.voteDetailsNo = data.proposal.status === "DepositPeriod" ? "--" : data.result.No;
