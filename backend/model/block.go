@@ -1,6 +1,6 @@
 package model
 
-import "github.com/irisnet/irishub-sync/store/document"
+import "github.com/irisnet/explorer/backend/orm/document"
 
 type BlockRsp struct {
 	CandidateMap map[string]string

@@ -1,18 +1,17 @@
 package model
 
 import (
-	"github.com/irisnet/irishub-sync/store"
-	"github.com/irisnet/irishub-sync/store/document"
+	"github.com/irisnet/explorer/backend/orm/document"
 	"time"
 )
 
 type MsgSubmitProposal struct {
-	Title          string      `json:"title"`          //  Title of the proposal
-	Description    string      `json:"description"`    //  Description of the proposal
-	ProposalType   string      `json:"proposalType"`   //  Type of proposal. Initial set {PlainTextProposal, SoftwareUpgradeProposal}
-	Proposer       string      `json:"proposer"`       //  Address of the proposer
-	InitialDeposit store.Coins `json:"initialDeposit"` //  Initial deposit paid by sender. Must be strictly positive.
-	Params         []Param     `json:"params"`
+	Title          string         `json:"title"`          //  Title of the proposal
+	Description    string         `json:"description"`    //  Description of the proposal
+	ProposalType   string         `json:"proposalType"`   //  Type of proposal. Initial set {PlainTextProposal, SoftwareUpgradeProposal}
+	Proposer       string         `json:"proposer"`       //  Address of the proposer
+	InitialDeposit document.Coins `json:"initialDeposit"` //  Initial deposit paid by sender. Must be strictly positive.
+	Params         []Param        `json:"params"`
 }
 
 type Param struct {
@@ -22,9 +21,9 @@ type Param struct {
 }
 
 type MsgDeposit struct {
-	ProposalID uint64      `json:"proposal_id"` // ID of the proposal
-	Depositer  string      `json:"depositer"`   // Address of the depositer
-	Amount     store.Coins `json:"amount"`      // Coins to add to the proposal's deposit
+	ProposalID uint64         `json:"proposal_id"` // ID of the proposal
+	Depositer  string         `json:"depositer"`   // Address of the depositer
+	Amount     document.Coins `json:"amount"`      // Coins to add to the proposal's deposit
 }
 
 type MsgVote struct {
@@ -57,7 +56,7 @@ type BaseTx struct {
 	Hash        string
 	BlockHeight int64
 	Type        string
-	Fee         store.ActualFee
+	Fee         document.ActualFee
 	Status      string
 	GasLimit    int64
 	GasUsed     int64
@@ -70,7 +69,7 @@ type TransTx struct {
 	BaseTx
 	From   string
 	To     string
-	Amount store.Coins
+	Amount document.Coins
 }
 
 type StakeTx struct {
@@ -84,7 +83,7 @@ type DeclarationTx struct {
 	Moniker  string
 	Pubkey   string
 	Identity string
-	SelfBond store.Coins
+	SelfBond document.Coins
 	Website  string
 	Details  string
 }
@@ -94,7 +93,7 @@ type GovTx struct {
 	From         string
 	ProposalId   uint64
 	Description  string
-	Amount       store.Coins
+	Amount       document.Coins
 	Option       string
 	Title        string
 	ProposalType string

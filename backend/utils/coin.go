@@ -2,8 +2,8 @@ package utils
 
 import (
 	"fmt"
-	"github.com/irisnet/irishub-sync/logger"
-	"github.com/irisnet/irishub-sync/store"
+	"github.com/irisnet/explorer/backend/logger"
+	"github.com/irisnet/explorer/backend/orm/document"
 	"regexp"
 	"strconv"
 	"strings"
@@ -31,7 +31,7 @@ func init() {
 	coinsMap[CoinTypeAtto] = float64(1000000000000000000)
 }
 
-func ParseCoin(coinStr string) (coin store.Coin) {
+func ParseCoin(coinStr string) (coin document.Coin) {
 	var (
 		reDnm  = `[A-Za-z\-]{2,15}`
 		reAmt  = `[0-9]+[.]?[0-9]*`
@@ -53,12 +53,12 @@ func ParseCoin(coinStr string) (coin store.Coin) {
 		logger.Error("Convert str to int failed", logger.Any("amount", amount))
 	}
 
-	return store.Coin{
+	return document.Coin{
 		Denom:  denom,
 		Amount: amt,
 	}
 }
-func ParseCoins(coinsStr string) (coins store.Coins) {
+func ParseCoins(coinsStr string) (coins document.Coins) {
 	coinsStr = strings.TrimSpace(coinsStr)
 	if len(coinsStr) == 0 {
 		return
@@ -73,7 +73,7 @@ func ParseCoins(coinsStr string) (coins store.Coins) {
 	return coins
 }
 
-func CovertCoin(srcCoin store.Coin, denom string) (destCoin store.Coin) {
+func CovertCoin(srcCoin document.Coin, denom string) (destCoin document.Coin) {
 	srcPreci := coinsMap[srcCoin.Denom]
 	dstPreci := coinsMap[denom]
 

@@ -2,9 +2,9 @@ package service
 
 import (
 	"fmt"
+	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm"
-	"github.com/irisnet/irishub-sync/logger"
 	"go.uber.org/zap"
 	"gopkg.in/mgo.v2"
 )

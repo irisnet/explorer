@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/irisnet/irishub-sync/store/document"
+	"github.com/irisnet/explorer/backend/orm/document"
 	"time"
 )
 

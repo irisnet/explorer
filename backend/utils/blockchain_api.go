@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/irisnet/explorer/backend/conf"
+	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
-	"github.com/irisnet/irishub-sync/store"
 	"log"
 	"net/http"
 )
@@ -16,7 +16,7 @@ type Account struct {
 	Sequence   string   `json:"sequence"`
 }
 
-func GetBalance(address string) (amount store.Coins) {
+func GetBalance(address string) (amount document.Coins) {
 	defer func() {
 		if err := recover(); err != nil {
 			log.Println(err)
@@ -28,7 +28,7 @@ func GetBalance(address string) (amount store.Coins) {
 	if err == nil {
 		var account Account
 		if err := json.Unmarshal(resBytes, &account); err == nil {
-			funBuildCoins := func(coins []string) []store.Coin {
+			funBuildCoins := func(coins []string) []document.Coin {
 				if len(coins) > 0 {
 					for _, coinstr := range coins {
 						coin := ParseCoin(coinstr)
