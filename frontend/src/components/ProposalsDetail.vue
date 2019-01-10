@@ -36,7 +36,7 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Submit Time :</span>
-          <span class="information_value">{{submitAge}} <span v-show="submitAge">(</span>{{submitTime}})<span v-show="submitAge">)</span></span>
+          <span class="information_value">{{submitAge}} <span v-show="submitAge">(</span>{{submitTime}}<span v-show="submitAge">)</span></span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Deposit End Time :</span>
