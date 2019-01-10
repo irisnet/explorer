@@ -426,14 +426,12 @@ func (service *StakeService) QueryChainStatus() model.ChainStatus {
 
 	t := time.Now().Add(-1 * time.Minute)
 	logger.Info("compute tps,find tx condition", service.GetTraceLog(), logger.String("start", t.String()), logger.String("end", time.Now().String()))
-	var txList []document.CommonTx
-	cc.Find(bson.M{document.Tx_Field_Time: bson.M{"$gte": t}}).All(&txList)
-	logger.Info("tx count", service.GetTraceLog(), logger.Any("txList", txList))
+	txs, _ := cc.Find(bson.M{document.Tx_Field_Time: bson.M{"$gte": t}}).Count()
 	resp := model.ChainStatus{
 		ValidatorsCount: validatorsCount,
 		TxCount:         txCount,
 		VotingPower:     count.Count,
-		Tps:             float64(len(txList)) / 60,
+		Tps:             float64(txs) / 60,
 	}
 	return resp
 }
