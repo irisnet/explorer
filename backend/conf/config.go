@@ -26,7 +26,7 @@ const (
 	EnvironmentStage   = "stage"
 	EnvironmentProd    = "prod"
 
-	DefaultEnvironment = EnvironmentQa
+	DefaultEnvironment = EnvironmentDevelop
 )
 
 var (
