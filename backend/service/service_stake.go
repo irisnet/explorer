@@ -1,10 +1,10 @@
 package service
 
 import (
+	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
+	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
-	"github.com/irisnet/irishub-sync/logger"
-	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
 	"time"
 )
@@ -420,7 +420,10 @@ func (service *StakeService) QueryChainStatus() model.ChainStatus {
 	var count model.Count
 	pipe.One(&count)
 
-	validatorsCount, _ := cs.Find(bson.M{document.Candidate_Field_Jailed: false}).Count()
+	query := bson.M{}
+	query[document.Candidate_Field_Status] = types.TypeValStatusBonded
+	query[document.Candidate_Field_Jailed] = false
+	activeValidatorsCnt, _ := cs.Find(query).Count()
 	cc := db.C(document.CollectionNmCommonTx)
 	txCount, _ := cc.Count()
 
@@ -428,7 +431,7 @@ func (service *StakeService) QueryChainStatus() model.ChainStatus {
 	logger.Info("compute tps,find tx condition", service.GetTraceLog(), logger.String("start", t.String()), logger.String("end", time.Now().String()))
 	txs, _ := cc.Find(bson.M{document.Tx_Field_Time: bson.M{"$gte": t}}).Count()
 	resp := model.ChainStatus{
-		ValidatorsCount: validatorsCount,
+		ValidatorsCount: activeValidatorsCnt,
 		TxCount:         txCount,
 		VotingPower:     count.Count,
 		Tps:             float64(txs) / 60,
