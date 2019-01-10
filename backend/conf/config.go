@@ -4,6 +4,7 @@ import (
 	"github.com/irisnet/irishub-sync/logger"
 	"os"
 	"strconv"
+	"strings"
 )
 
 const (
@@ -26,7 +27,7 @@ const (
 	EnvironmentStage   = "stage"
 	EnvironmentProd    = "prod"
 
-	DefaultEnvironment = EnvironmentQa
+	DefaultEnvironment = EnvironmentDevelop
 )
 
 var (
@@ -38,8 +39,9 @@ func init() {
 	logger.Info("==================================load config start==================================")
 	loadDefault()
 
+	addrs := strings.Split(getEnv(KeyDbAddr, DefaultEnvironment), ",")
 	db := dbConf{
-		Addr:      getEnv(KeyDbAddr, DefaultEnvironment),
+		Addrs:     addrs,
 		Database:  getEnv(KeyDATABASE, DefaultEnvironment),
 		UserName:  getEnv(KeyDbUser, DefaultEnvironment),
 		Password:  getEnv(KeyDbPwd, DefaultEnvironment),
@@ -89,20 +91,6 @@ func loadDefault() {
 		KeyChainId:     "rainbow-dev",
 		KeyApiVersion:  "v0.6.5",
 	}
-
-	defaultConfig[EnvironmentQa] = map[string]string{
-		KeyDbAddr:      "35.220.215.42:30000",
-		KeyDATABASE:    "sync-iris",
-		KeyDbUser:      "iris",
-		KeyDbPwd:       "irispassword",
-		KeyDbPoolLimit: "4096",
-		KeyServerPort:  "8080",
-		KeyAddrHubLcd:  "http://35.220.215.42:30417",
-		KeyAddrHubNode: "http://35.220.215.42:30657",
-		KeyAddrFaucet:  "http://35.220.215.42:30200",
-		KeyChainId:     "rainbow-qa",
-		KeyApiVersion:  "v0.6.5",
-	}
 }
 
 func Get() Config {
@@ -115,7 +103,7 @@ type Config struct {
 }
 
 type dbConf struct {
-	Addr      string
+	Addrs     []string
 	Database  string
 	UserName  string
 	Password  string

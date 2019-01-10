@@ -31,6 +31,7 @@ var common = Common{
 
 func registerQueryText(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryText, "GET", func(request IrisReq) interface{} {
+		common.SetTid(request.TraceId)
 		text := Var(request, "text")
 
 		result := common.QueryText(text)
