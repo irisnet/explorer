@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
+	"github.com/irisnet/irishub-sync/logger"
 	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
 	"time"
@@ -424,13 +425,15 @@ func (service *StakeService) QueryChainStatus() model.ChainStatus {
 	txCount, _ := cc.Count()
 
 	t := time.Now().Add(-1 * time.Minute)
-	txs, _ := cc.Find(bson.M{document.Tx_Field_Time: bson.M{"$gte": t}}).Count()
-
+	logger.Info("compute tps,find tx condition", service.GetTraceLog(), logger.String("start", t.String()), logger.String("end", time.Now().String()))
+	var txList []document.CommonTx
+	cc.Find(bson.M{document.Tx_Field_Time: bson.M{"$gte": t}}).All(&txList)
+	logger.Info("tx count", service.GetTraceLog(), logger.Any("txList", txList))
 	resp := model.ChainStatus{
 		ValidatorsCount: validatorsCount,
 		TxCount:         txCount,
 		VotingPower:     count.Count,
-		Tps:             float64(txs) / 60,
+		Tps:             float64(len(txList)) / 60,
 	}
 	return resp
 }

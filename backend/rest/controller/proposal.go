@@ -32,6 +32,7 @@ var proposal = Proposal{
 func registerQueryProposals(r *mux.Router) error {
 
 	doApi(r, types.UrlRegisterQueryProposals, "GET", func(request IrisReq) interface{} {
+		proposal.SetTid(request.TraceId)
 		page, size := GetPage(request)
 
 		result := proposal.QueryList(page, size)
@@ -44,6 +45,7 @@ func registerQueryProposals(r *mux.Router) error {
 func registerQueryProposal(r *mux.Router) error {
 
 	doApi(r, types.UrlRegisterQueryProposal, "GET", func(request IrisReq) interface{} {
+		proposal.SetTid(request.TraceId)
 		pid, err := strconv.Atoi(Var(request, "pid"))
 		if err != nil {
 			panic(types.CodeInValidParam)
