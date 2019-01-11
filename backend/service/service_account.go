@@ -17,7 +17,7 @@ func (service *AccountService) GetModule() Module {
 	return Account
 }
 
-func (service *AccountService) Query(address string) (result model.AccountResp) {
+func (service *AccountService) Query(address string) (result model.AccountVo) {
 	db := getDb()
 	c := db.C(document.CollectionNmAccount)
 	defer db.Session.Close()
@@ -48,7 +48,7 @@ func (service *AccountService) Query(address string) (result model.AccountResp) 
 	return
 }
 
-func (service *AccountService) QueryList(page, size int) model.Page {
+func (service *AccountService) QueryList(page, size int) model.PageVo {
 	var result []document.Account
 	sort := desc(document.Tx_Field_Time)
 	return queryPage(document.CollectionNmAccount, &result, nil, sort, page, size)

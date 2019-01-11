@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-type AccountResp struct {
+type AccountVo struct {
 	Address         string         `bson:"address"`
 	Amount          document.Coins `bson:"amount"`
 	Time            time.Time      `bson:"time"`

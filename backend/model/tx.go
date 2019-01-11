@@ -39,7 +39,7 @@ type MsgBeginRedelegate struct {
 	SharesAmount     string `json:"shares_amount"`
 }
 
-type TxCounter struct {
+type TxStatisticsVo struct {
 	TransCnt       int
 	StakeCnt       int
 	DeclarationCnt int
@@ -47,7 +47,7 @@ type TxCounter struct {
 	Data           []document.CommonTx
 }
 
-type TxDay struct {
+type TxDayVo struct {
 	Time  string `bson:"_id,omitempty"`
 	Count int
 }

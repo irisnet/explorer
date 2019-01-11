@@ -35,18 +35,18 @@ func GetDatabase() *mgo.Database {
 	return session.Clone().DB(conf.Get().Db.Database)
 }
 
-func QueryList(collation string, data interface{}, m map[string]interface{}, sort string, page, size int) model.Page {
+func QueryList(collation string, data interface{}, m map[string]interface{}, sort string, page, size int) model.PageVo {
 	c := GetDatabase().C(collation)
 	defer c.Database.Session.Close()
 	count, err := c.Find(m).Count()
 	if err != nil {
-		return model.Page{Count: 0, Data: nil}
+		return model.PageVo{Count: 0, Data: nil}
 	}
 	err = c.Find(m).Skip((page - 1) * size).Limit(size).Sort(sort).All(data)
 	if err != nil {
-		return model.Page{Count: count, Data: nil}
+		return model.PageVo{Count: count, Data: nil}
 	} else {
-		return model.Page{Count: count, Data: data}
+		return model.PageVo{Count: count, Data: data}
 	}
 }
 

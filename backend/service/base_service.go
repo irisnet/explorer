@@ -73,7 +73,7 @@ func (base *BaseService) GetTraceLog() zap.Field {
 	return logger.Int64("traceId", base.GetTid())
 }
 
-func queryPage(collation string, data interface{}, m map[string]interface{}, sort string, page, size int) model.Page {
+func queryPage(collation string, data interface{}, m map[string]interface{}, sort string, page, size int) model.PageVo {
 	return orm.QueryList(collation, data, m, sort, page, size)
 }
 

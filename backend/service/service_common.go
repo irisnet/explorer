@@ -29,7 +29,7 @@ func (service CommonService) QueryText(text string) []model.ResultVo {
 		if err == nil {
 			vo := model.ResultVo{
 				Type: "block",
-				Data: model.SimpleBlock{
+				Data: model.SimpleBlockVo{
 					Height:    block.Height,
 					Timestamp: block.Time,
 					Hash:      block.Hash,
@@ -45,7 +45,7 @@ func (service CommonService) QueryText(text string) []model.ResultVo {
 		if err == nil {
 			vo := model.ResultVo{
 				Type: "proposal",
-				Data: model.SimpleProposal{
+				Data: model.SimpleProposalVo{
 					ProposalId: proposal.ProposalId,
 					Title:      proposal.Title,
 					Type:       proposal.Type,

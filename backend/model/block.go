@@ -2,13 +2,13 @@ package model
 
 import "github.com/irisnet/explorer/backend/orm/document"
 
-type BlockRsp struct {
+type BlockVo struct {
 	CandidateMap map[string]string
-	Counter      Counter
+	Counter      CounterVo
 	document.Block
 }
 
-type Counter struct {
+type CounterVo struct {
 	TxCnt    int
 	PropoCnt int
 }

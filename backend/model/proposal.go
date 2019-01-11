@@ -26,7 +26,7 @@ type Vote struct {
 	Time   time.Time `json:"time"`
 }
 
-type ProposalInfo struct {
+type ProposalInfoVo struct {
 	Proposal Proposal   `json:"proposal"`
 	Votes    []Vote     `json:"votes"`
 	Result   VoteResult `json:"result"`

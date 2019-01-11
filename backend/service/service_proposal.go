@@ -15,7 +15,7 @@ func (service *ProposalService) GetModule() Module {
 	return Proposal
 }
 
-func (service *ProposalService) QueryList(page, size int) (resp model.Page) {
+func (service *ProposalService) QueryList(page, size int) (resp model.PageVo) {
 	var data []document.Proposal
 	sort := desc(document.Proposal_Field_SubmitTime)
 	resp = queryPage(document.CollectionNmProposal, &data, nil, sort, page, size)
@@ -40,7 +40,7 @@ func (service *ProposalService) QueryList(page, size int) (resp model.Page) {
 	return resp
 }
 
-func (service *ProposalService) Query(id int) (resp model.ProposalInfo) {
+func (service *ProposalService) Query(id int) (resp model.ProposalInfoVo) {
 	var data document.Proposal
 	db := getDb()
 	defer db.Session.Close()
