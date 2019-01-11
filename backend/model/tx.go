@@ -8,16 +8,16 @@ import (
 type MsgSubmitProposal struct {
 	Title          string         `json:"title"`          //  Title of the proposal
 	Description    string         `json:"description"`    //  Description of the proposal
-	ProposalType   string         `json:"proposalType"`   //  Type of proposal. Initial set {PlainTextProposal, SoftwareUpgradeProposal}
+	ProposalType   string         `json:"proposalType"`   //
 	Proposer       string         `json:"proposer"`       //  Address of the proposer
 	InitialDeposit document.Coins `json:"initialDeposit"` //  Initial deposit paid by sender. Must be strictly positive.
 	Params         []Param        `json:"params"`
 }
 
 type Param struct {
-	Key   string `bson:"key"`
-	Value string `bson:"value"`
-	Op    string `bson:"op"`
+	Subspace string `json:"subspace"`
+	Key      string `json:"key"`
+	Value    string `json:"value"`
 }
 
 type MsgDeposit struct {
