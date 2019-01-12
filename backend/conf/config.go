@@ -1,7 +1,7 @@
 package conf
 
 import (
-	"github.com/irisnet/irishub-sync/logger"
+	"github.com/irisnet/explorer/backend/logger"
 	"os"
 	"strconv"
 	"strings"

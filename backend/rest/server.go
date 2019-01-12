@@ -5,8 +5,8 @@ import (
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/conf"
+	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/rest/controller"
-	"github.com/irisnet/irishub-sync/logger"
 	"log"
 	"net/http"
 	_ "net/http/pprof"
@@ -43,7 +43,7 @@ func NewApiServer() *ApiServer {
 
 func (s *ApiServer) Start() error {
 	go func() {
-		logger.Info("pprof will Serve on 6060")
+		logger.Info("pprof will Serve on 6061")
 		if err := http.ListenAndServe("localhost:6061", nil); err != nil {
 			logger.Fatal("ListenAndServe Failed: ", logger.Any("err", err))
 		}

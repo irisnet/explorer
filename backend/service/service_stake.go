@@ -1,10 +1,10 @@
 package service
 
 import (
+	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
+	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
-	"github.com/irisnet/irishub-sync/logger"
-	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
 	"time"
 )
@@ -17,7 +17,7 @@ func (service *StakeService) GetModule() Module {
 	return Stake
 }
 
-func (service *StakeService) QueryValidators(page, pageSize int) model.Candidates {
+func (service *StakeService) QueryValidators(page, pageSize int) model.CandidatesVo {
 	var candidates []document.Candidate
 	db := getDb()
 	defer db.Session.Close()
@@ -42,7 +42,7 @@ func (service *StakeService) QueryValidators(page, pageSize int) model.Candidate
 			}},
 		},
 	)
-	var voteCount model.Count
+	var voteCount model.CountVo
 	votePipe.One(&voteCount)
 
 	validatorsCount, _ := cs.Find(query).Count()
@@ -66,7 +66,7 @@ func (service *StakeService) QueryValidators(page, pageSize int) model.Candidate
 		}
 		candidatesAll = append(candidatesAll, candidateAll)
 	}
-	resp := model.Candidates{
+	resp := model.CandidatesVo{
 		Count:      validatorsCount,
 		PowerAll:   voteCount.Count,
 		Candidates: candidatesAll,
@@ -74,7 +74,7 @@ func (service *StakeService) QueryValidators(page, pageSize int) model.Candidate
 	return resp
 }
 
-func (service *StakeService) QueryRevokedValidator(page, size int) model.Candidates {
+func (service *StakeService) QueryRevokedValidator(page, size int) model.CandidatesVo {
 	var candidates []document.Candidate
 	db := getDb()
 	defer db.Session.Close()
@@ -97,14 +97,14 @@ func (service *StakeService) QueryRevokedValidator(page, size int) model.Candida
 		})
 	}
 
-	resp := model.Candidates{
+	resp := model.CandidatesVo{
 		Count:      validatorsCount,
 		Candidates: result,
 	}
 	return resp
 }
 
-func (service *StakeService) QueryCandidates(page, size int) model.Candidates {
+func (service *StakeService) QueryCandidates(page, size int) model.CandidatesVo {
 	var candidates []document.Candidate
 	db := getDb()
 	defer db.Session.Close()
@@ -123,7 +123,7 @@ func (service *StakeService) QueryCandidates(page, size int) model.Candidates {
 		panic(types.CodeNotFound)
 	}
 	var result []model.CandidateAll
-	var resp model.Candidates
+	var resp model.CandidatesVo
 	if len(candidates) > 0 {
 		q := bson.M{}
 		q[document.Tx_Field_Type] = types.TypeCreateValidator
@@ -139,7 +139,7 @@ func (service *StakeService) QueryCandidates(page, size int) model.Candidates {
 			})
 		}
 
-		resp = model.Candidates{
+		resp = model.CandidatesVo{
 			Count:      validatorsCount,
 			Candidates: result,
 		}
@@ -147,7 +147,7 @@ func (service *StakeService) QueryCandidates(page, size int) model.Candidates {
 	return resp
 }
 
-func (service *StakeService) QueryCandidate(address string) model.CandidateWithPower {
+func (service *StakeService) QueryCandidate(address string) model.CandidatesInfoVo {
 
 	c := getDb().C(document.CollectionNmStakeRoleCandidate)
 	defer c.Database.Session.Close()
@@ -171,16 +171,16 @@ func (service *StakeService) QueryCandidate(address string) model.CandidateWithP
 			}},
 		},
 	)
-	var count model.Count
+	var count model.CountVo
 	pipe.One(&count)
-	result := model.CandidateWithPower{
+	result := model.CandidatesInfoVo{
 		PowerAll:  count.Count,
 		Candidate: candidate,
 	}
 	return result
 }
 
-func (service *StakeService) QueryCandidatesTopN() model.CandidatesTopN {
+func (service *StakeService) QueryCandidatesTopN() model.CandidatesTopNVo {
 	var candidates []document.Candidate
 
 	db := getDb()
@@ -205,7 +205,7 @@ func (service *StakeService) QueryCandidatesTopN() model.CandidatesTopN {
 			}},
 		},
 	)
-	var voteCount model.Count
+	var voteCount model.CountVo
 	votePipe.One(&voteCount)
 
 	var candidatesAll []model.CandidateAll
@@ -228,14 +228,14 @@ func (service *StakeService) QueryCandidatesTopN() model.CandidatesTopN {
 		}
 		candidatesAll = append(candidatesAll, candidateAll)
 	}
-	resp := model.CandidatesTopN{
+	resp := model.CandidatesTopNVo{
 		PowerAll:   voteCount.Count,
 		Candidates: candidatesAll,
 	}
 	return resp
 }
 
-func (service *StakeService) QueryCandidateUptime(address, category string) (result []model.UptimeChange) {
+func (service *StakeService) QueryCandidateUptime(address, category string) (result []model.UptimeChangeVo) {
 	db := getDb()
 	c := db.C(document.CollectionNmStakeRoleCandidate)
 	u := db.C("uptime_change")
@@ -249,7 +249,7 @@ func (service *StakeService) QueryCandidateUptime(address, category string) (res
 
 	switch category {
 	case "hour":
-		var upChanges []model.UptimeChange
+		var upChanges []model.UptimeChangeVo
 		now := time.Now()
 		endTime := time.Date(now.Year(), now.Month(), now.Day(), now.Hour(), 0, 0, 0, now.Location())
 		d, _ := time.ParseDuration("-24h")
@@ -268,12 +268,12 @@ func (service *StakeService) QueryCandidateUptime(address, category string) (res
 			if _, ok := upChangeMap[startStr]; ok {
 				uptime = upChangeMap[startStr]
 			}
-			result = append(result, model.UptimeChange{Address: address, Uptime: uptime, Time: startStr})
+			result = append(result, model.UptimeChangeVo{Address: address, Uptime: uptime, Time: startStr})
 			startTime = startTime.Add(d1)
 		}
 		break
 	case "week", "month":
-		var upChanges []model.CandidateUptime
+		var upChanges []model.CandidateUpTimeVo
 		agoStr := "-336h"
 		if category == "month" {
 			agoStr = "-720h"
@@ -316,14 +316,14 @@ func (service *StakeService) QueryCandidateUptime(address, category string) (res
 			if _, ok := upChangeMap[startStr]; ok {
 				uptime = upChangeMap[startStr]
 			}
-			result = append(result, model.UptimeChange{Address: address, Uptime: uptime, Time: startStr})
+			result = append(result, model.UptimeChangeVo{Address: address, Uptime: uptime, Time: startStr})
 			startTime = startTime.Add(d1)
 		}
 	}
 	return result
 }
 
-func (service *StakeService) QueryCandidatePower(address, category string) (result []model.PowerChange) {
+func (service *StakeService) QueryCandidatePower(address, category string) (result []model.ValVotingPowerChangeVo) {
 	db := getDb()
 	c := db.C(document.CollectionNmStakeRoleCandidate)
 	p := db.C("power_change")
@@ -334,7 +334,7 @@ func (service *StakeService) QueryCandidatePower(address, category string) (resu
 	if err != nil || address == "" {
 		panic(types.CodeNotFound)
 	}
-	var powers []model.PowerChange
+	var powers []model.ValVotingPowerChangeVo
 	var agoStr string
 	switch category {
 	case "week":
@@ -353,16 +353,16 @@ func (service *StakeService) QueryCandidatePower(address, category string) (resu
 	startTime := endTime.Add(d)
 	p.Find(bson.M{"address": address, "time": bson.M{"$gte": startTime, "$lt": endTime}}).All(&powers)
 
-	var power model.PowerChange
+	var power model.ValVotingPowerChangeVo
 	p.Find(bson.M{"address": address, "time": bson.M{"$lt": startTime}}).Sort("-time").One(&power)
 	if power.Address != "" {
 		power.Time = startTime
-		result = []model.PowerChange{power}
+		result = []model.ValVotingPowerChangeVo{power}
 	} else {
-		result = []model.PowerChange{{Address: address, Time: startTime}}
+		result = []model.ValVotingPowerChangeVo{{Address: address, Time: startTime}}
 	}
 	result = append(result, powers...)
-	result = append(result, model.PowerChange{Address: address, Time: endTime, Power: result[len(result)-1].Power})
+	result = append(result, model.ValVotingPowerChangeVo{Address: address, Time: endTime, Power: result[len(result)-1].Power})
 	return result
 }
 
@@ -405,7 +405,7 @@ func (service *StakeService) QueryCandidateStatus(address string) (resp model.Ca
 	return resp
 }
 
-func (service *StakeService) QueryChainStatus() model.ChainStatus {
+func (service *StakeService) QueryChainStatus() model.ChainStatusVo {
 	db := getDb()
 	defer db.Session.Close()
 	cs := db.C(document.CollectionNmStakeRoleCandidate)
@@ -417,18 +417,21 @@ func (service *StakeService) QueryChainStatus() model.ChainStatus {
 			}},
 		},
 	)
-	var count model.Count
+	var count model.CountVo
 	pipe.One(&count)
 
-	validatorsCount, _ := cs.Find(bson.M{document.Candidate_Field_Jailed: false}).Count()
+	query := bson.M{}
+	query[document.Candidate_Field_Status] = types.TypeValStatusBonded
+	query[document.Candidate_Field_Jailed] = false
+	activeValidatorsCnt, _ := cs.Find(query).Count()
 	cc := db.C(document.CollectionNmCommonTx)
 	txCount, _ := cc.Count()
 
 	t := time.Now().Add(-1 * time.Minute)
 	logger.Info("compute tps,find tx condition", service.GetTraceLog(), logger.String("start", t.String()), logger.String("end", time.Now().String()))
 	txs, _ := cc.Find(bson.M{document.Tx_Field_Time: bson.M{"$gte": t}}).Count()
-	resp := model.ChainStatus{
-		ValidatorsCount: validatorsCount,
+	resp := model.ChainStatusVo{
+		ValidatorsCount: activeValidatorsCnt,
 		TxCount:         txCount,
 		VotingPower:     count.Count,
 		Tps:             float64(txs) / 60,

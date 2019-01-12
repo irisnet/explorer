@@ -34,20 +34,6 @@
   version = "v1.6.2"
 
 [[projects]]
-  branch = "develop"
-  digest = "1:dce648febe745d165a3058f517cefa60a0d175df7b9ab3df2d71ddc351ccbac3"
-  name = "github.com/irisnet/irishub-sync"
-  packages = [
-    "conf/db",
-    "logger",
-    "store",
-    "store/document",
-    "util/constant",
-  ]
-  pruneopts = "UT"
-  revision = "2e78a2f931cb98e56bd143919ba53b8f88f54613"
-
-[[projects]]
   digest = "1:0028cb19b2e4c3112225cd871870f2d9cf49b9b4276531f03438a88e94be86fe"
   name = "github.com/pmezard/go-difflib"
   packages = ["difflib"]
@@ -56,12 +42,12 @@
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:18752d0b95816a1b777505a97f71c7467a8445b8ffb55631a7bf779f6ba4fa83"
+  digest = "1:972c2427413d41a1e06ca4897e8528e5a1622894050e2f527b38ddf0f343f759"
   name = "github.com/stretchr/testify"
   packages = ["assert"]
   pruneopts = "UT"
-  revision = "f35b8ab0b5a2cef36673838d662e249dd9c94686"
-  version = "v1.2.2"
+  revision = "ffdc059bfe9ce6a4e144ba849dbedead332c6053"
+  version = "v1.3.0"
 
 [[projects]]
   digest = "1:3c1a69cdae3501bf75e76d0d86dc6f2b0a7421bc205c0cb7b96b19eed464a34d"
@@ -122,12 +108,12 @@
   input-imports = [
     "github.com/gorilla/handlers",
     "github.com/gorilla/mux",
-    "github.com/irisnet/irishub-sync/logger",
-    "github.com/irisnet/irishub-sync/store",
-    "github.com/irisnet/irishub-sync/store/document",
     "github.com/stretchr/testify/assert",
+    "go.uber.org/zap",
+    "go.uber.org/zap/zapcore",
     "gopkg.in/mgo.v2",
     "gopkg.in/mgo.v2/bson",
+    "gopkg.in/natefinch/lumberjack.v2",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

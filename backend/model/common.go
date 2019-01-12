@@ -7,13 +7,13 @@ type ResultVo struct {
 	Data interface{} `json:"Data,omitempty"`
 }
 
-type SimpleBlock struct {
+type SimpleBlockVo struct {
 	Height    int64
 	Timestamp time.Time
 	Hash      string
 }
 
-type SimpleProposal struct {
+type SimpleProposalVo struct {
 	ProposalId uint64
 	Title      string
 	Type       string

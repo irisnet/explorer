@@ -53,7 +53,7 @@ func registerQueryTxList(r *mux.Router) error {
 		txType := Var(request, "type")
 		page, size := GetPage(request)
 
-		var result model.Page
+		var result model.PageVo
 		switch types.TxTypeFromString(txType) {
 		case types.Trans:
 			query["type"] = types.TypeTransfer

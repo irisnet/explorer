@@ -3,10 +3,10 @@ package controller
 import (
 	"encoding/json"
 	"github.com/gorilla/mux"
+	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
-	"github.com/irisnet/irishub-sync/logger"
 	"net/http"
 	"strconv"
 	"time"

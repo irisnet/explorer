@@ -1,14 +1,14 @@
 package model
 
 import (
-	"github.com/irisnet/irishub-sync/store"
+	"github.com/irisnet/explorer/backend/orm/document"
 	"time"
 )
 
-type AccountResp struct {
-	Address         string      `bson:"address"`
-	Amount          store.Coins `bson:"amount"`
-	Time            time.Time   `bson:"time"`
-	Height          int64       `bson:"height"`
+type AccountVo struct {
+	Address         string         `bson:"address"`
+	Amount          document.Coins `bson:"amount"`
+	Time            time.Time      `bson:"time"`
+	Height          int64          `bson:"height"`
 	WithdrawAddress string
 }
