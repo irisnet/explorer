@@ -20,7 +20,9 @@
           </p>
           <p class="block_hash_container">
             <span>Block Hash</span>
-            <span>{{blockHash}}</span>
+            <span class="block_hash">
+              <span>{{blockHash}}</span>
+            </span>
           </p>
         </div>
         <p class="transaction_information_content_title proposal_title">Proposal</p>
@@ -329,10 +331,22 @@
     margin-top: 0.27rem;
   }
   .mobile_transactions_detail_wrap{
-
+    .proposal_content_container{
+      margin-bottom: 0.2rem;
+    }
     .resultless_content_container{
       margin-top: 0.8rem!important;
       margin-bottom: 1.6rem !important;
+    }
+    .block_content_container{
+      .block_hash_container{
+        .block_hash{
+          width: 100%;
+          display: inline-block;
+          overflow-x: auto;
+          webkit-overflow-scrolling: touch
+        }
+      }
     }
   }
   .title_for{
