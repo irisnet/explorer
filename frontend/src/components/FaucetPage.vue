@@ -47,7 +47,7 @@
 <script>
   import axios from 'axios';
   import Tools from '../util/Tools';
-
+  import Constant from "../constant/Constant"
 
   export default {
     name: "FaucetPage",
