@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/gorilla/mux"
+	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/types"
 	"time"
@@ -30,7 +31,7 @@ var common = Common{
 }
 
 func registerQueryText(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryText, "GET", func(request IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryText, "GET", func(request model.IrisReq) interface{} {
 		common.SetTid(request.TraceId)
 		text := Var(request, "text")
 
@@ -42,7 +43,7 @@ func registerQueryText(r *mux.Router) error {
 }
 
 func registerQuerySysDate(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQuerySysDate, "GET", func(request IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQuerySysDate, "GET", func(request model.IrisReq) interface{} {
 		return time.Now().Unix()
 	})
 

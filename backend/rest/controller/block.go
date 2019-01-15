@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/gorilla/mux"
+	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
@@ -32,7 +33,7 @@ var block = Block{
 }
 
 func registerQueryBlock(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryBlock, "GET", func(request IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryBlock, "GET", func(request model.IrisReq) interface{} {
 		h := Var(request, "height")
 		height, ok := utils.ParseInt(h)
 		if !ok {
@@ -47,7 +48,7 @@ func registerQueryBlock(r *mux.Router) error {
 }
 
 func registerQueryBlocks(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryBlocks, "GET", func(request IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryBlocks, "GET", func(request model.IrisReq) interface{} {
 		block.SetTid(request.TraceId)
 		page, size := GetPage(request)
 		result := block.QueryList(page, size)
@@ -58,7 +59,7 @@ func registerQueryBlocks(r *mux.Router) error {
 }
 
 func registerQueryBlocksPrecommits(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryBlocksPrecommits, "GET", func(request IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryBlocksPrecommits, "GET", func(request model.IrisReq) interface{} {
 		block.SetTid(request.TraceId)
 
 		address := Var(request, "address")
