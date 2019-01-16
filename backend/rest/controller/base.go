@@ -5,23 +5,17 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
+	"github.com/irisnet/explorer/backend/rest/filter"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"net/http"
 	"strconv"
-	"time"
 )
 
-type IrisReq struct {
-	*http.Request
-	TraceId int64
-	Start   time.Time
-}
-
 // user business action
-type Action func(request IrisReq) interface{}
+type Action func(request model.IrisReq) interface{}
 
-func GetString(request IrisReq, key string) (result string) {
+func GetString(request model.IrisReq, key string) (result string) {
 	request.ParseForm()
 	if len(request.Form[key]) > 0 {
 		result = request.Form[key][0]
@@ -29,7 +23,7 @@ func GetString(request IrisReq, key string) (result string) {
 	return
 }
 
-func GetInt(request IrisReq, key string) (result int) {
+func GetInt(request model.IrisReq, key string) (result int) {
 	value := GetString(request, key)
 	if len(value) == 0 {
 		return
@@ -41,13 +35,13 @@ func GetInt(request IrisReq, key string) (result int) {
 	return
 }
 
-func Var(request IrisReq, key string) (result string) {
+func Var(request model.IrisReq, key string) (result string) {
 	args := mux.Vars(request.Request)
 	result = args[key]
 	return
 }
 
-func GetPage(r IrisReq) (int, int) {
+func GetPage(r model.IrisReq) (int, int) {
 	page := Var(r, "page")
 	size := Var(r, "size")
 	iPage := 0
@@ -61,49 +55,17 @@ func GetPage(r IrisReq) (int, int) {
 	return iPage, iSize
 }
 
-// doBefore display user's request information,optional
-func doBefore(request IrisReq) {
-	traceId := logger.Int64("traceId", request.TraceId)
-	apiPath := logger.String("path", request.RequestURI)
-	formValue := logger.Any("form", request.Form)
-	urlValue := logger.Any("url", mux.Vars(request.Request))
-	agent := logger.String("agent", request.UserAgent())
-	defer func() {
-		if r := recover(); r != nil {
-			logger.Error("doBefore failed", traceId)
-		}
-	}()
-
-	logger.Info("doBefore", traceId, apiPath, agent, formValue, urlValue)
-}
-
 // execute user's business code
-func doAction(request IrisReq, action Action) interface{} {
+func doAction(request model.IrisReq, action Action) interface{} {
 	//do business action
-	logger.Info("doAction", logger.Int64("traceId", request.TraceId))
+	logger.Debug("doAction", logger.Int64("traceId", request.TraceId))
 	result := action(request)
+	logger.Debug("doAction result", logger.Int64("traceId", request.TraceId), logger.Any("result", result))
 	return result
 }
 
-// doAfter display user's request information,optional
-func doAfter(request IrisReq, result interface{}) {
-	traceId := logger.Int64("traceId", request.TraceId)
-	res := logger.Any("result", result)
-	coastSecond := time.Now().Unix() - request.Start.Unix()
-	coast := logger.Int64("coast", coastSecond)
-	defer func() {
-		if r := recover(); r != nil {
-			logger.Error("doAfter failed", traceId)
-		}
-	}()
-	logger.Info("doAfter", traceId, res, coast)
-	if coastSecond >= 3 {
-		logger.Warn("doAfter api coast most time", traceId)
-	}
-}
-
 // deal with exception for business action
-func doException(request IrisReq, writer http.ResponseWriter) {
+func doException(request model.IrisReq, writer http.ResponseWriter) {
 	if r := recover(); r != nil {
 		trace := logger.Int64("traceId", request.TraceId)
 		errMsg := logger.Any("errMsg", r)
@@ -152,16 +114,19 @@ func doResponse(writer http.ResponseWriter, data interface{}) {
 func doApi(r *mux.Router, url, method string, action Action) {
 	//wrap business code
 	wrapperAction := func(writer http.ResponseWriter, request *http.Request) {
-		start := time.Now()
-		req := IrisReq{
+		req := model.IrisReq{
 			Request: request,
-			TraceId: start.UnixNano(),
-			Start:   start,
 		}
 		defer doException(req, writer)
-		doBefore(req)
+		rs, _, err := filter.DoFilters(&req, filter.Pre)
+		if !rs {
+			panic(err)
+		}
 		result := doAction(req, action)
-		doAfter(req, result)
+		rs, _, err = filter.DoFilters(&req, filter.Post)
+		if !rs {
+			panic(err)
+		}
 		doResponse(writer, result)
 	}
 	r.HandleFunc(url, wrapperAction).Methods(method)

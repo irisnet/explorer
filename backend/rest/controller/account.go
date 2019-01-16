@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/gorilla/mux"
+	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/types"
 )
@@ -31,7 +32,7 @@ var account = AccountController{
 
 func registerQueryAccount(r *mux.Router) error {
 
-	doApi(r, types.UrlRegisterQueryAccount, "GET", func(request IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryAccount, "GET", func(request model.IrisReq) interface{} {
 		address := Var(request, "address")
 		account.SetTid(request.TraceId)
 		result := account.Query(address)
@@ -42,7 +43,7 @@ func registerQueryAccount(r *mux.Router) error {
 }
 
 func registerQueryAllAccount(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryAllAccount, "GET", func(request IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryAllAccount, "GET", func(request model.IrisReq) interface{} {
 		page, size := GetPage(request)
 		account.SetTid(request.TraceId)
 		result := account.QueryList(page, size)

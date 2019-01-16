@@ -7,6 +7,7 @@ import (
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/rest/controller"
+	"github.com/irisnet/explorer/backend/rest/filter"
 	"log"
 	"net/http"
 	_ "net/http/pprof"
@@ -71,10 +72,16 @@ func registerApi(r *mux.Router) {
 	}
 }
 
+func registerFilters() {
+	filter.RegisterFilters(filter.GlobalFilterPath, filter.Pre, []filter.Filter{filter.LogPreFilter{}})
+	filter.RegisterFilters(filter.GlobalFilterPath, filter.Post, []filter.Filter{filter.LogPostFilter{}})
+}
+
 func NewAPIMux() *mux.Router {
 	r := mux.NewRouter()
 	s := r.PathPrefix("/api").Subrouter()
 	registerApi(s)
+	registerFilters()
 
 	r.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("../frontend/dist/"))))
 	return r

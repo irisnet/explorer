@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/gorilla/mux"
+	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/types"
 	"strconv"
@@ -31,7 +32,7 @@ var proposal = Proposal{
 
 func registerQueryProposals(r *mux.Router) error {
 
-	doApi(r, types.UrlRegisterQueryProposals, "GET", func(request IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryProposals, "GET", func(request model.IrisReq) interface{} {
 		proposal.SetTid(request.TraceId)
 		page, size := GetPage(request)
 
@@ -44,7 +45,7 @@ func registerQueryProposals(r *mux.Router) error {
 
 func registerQueryProposal(r *mux.Router) error {
 
-	doApi(r, types.UrlRegisterQueryProposal, "GET", func(request IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryProposal, "GET", func(request model.IrisReq) interface{} {
 		proposal.SetTid(request.TraceId)
 		pid, err := strconv.Atoi(Var(request, "pid"))
 		if err != nil {

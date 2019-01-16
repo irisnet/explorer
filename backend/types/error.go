@@ -5,14 +5,15 @@ import (
 )
 
 var (
-	CodeSuccess      = NewCode("0", "success")
-	CodeNotFound     = NewCode("EX-100001", "data Not found")
-	CodeSysFailed    = NewCode("EX-100002", "system exception")
-	CodeInValidParam = NewCode("EX-100003", "invalid input param")
-	CodeExtSysFailed = NewCode("EX-100004", "external system exception")
-	CodeUnKnown      = NewCode("EX-100005", "unknown error ")
-	CodeUnSupportTx  = NewCode("EX-100006", "unsupported tx type")
-	CodeJsonMarshal  = NewCode("EX-100007", "json marshal error")
+	CodeSuccess        = NewCode("0", "success")
+	CodeSysmaintenance = NewCode("EX-100000", "the system is under maintenance")
+	CodeNotFound       = NewCode("EX-100001", "data Not found")
+	CodeSysFailed      = NewCode("EX-100002", "system exception")
+	CodeInValidParam   = NewCode("EX-100003", "invalid input param")
+	CodeExtSysFailed   = NewCode("EX-100004", "external system exception")
+	CodeUnKnown        = NewCode("EX-100005", "unknown error ")
+	CodeUnSupportTx    = NewCode("EX-100006", "unsupported tx type")
+	CodeJsonMarshal    = NewCode("EX-100007", "json marshal error")
 )
 
 type BizCode struct {
