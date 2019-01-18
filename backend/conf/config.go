@@ -19,6 +19,7 @@ const (
 	KeyAddrFaucet  = "FAUCET_URL"
 	KeyChainId     = "CHAIN_ID"
 	KeyApiVersion  = "API_VERSION"
+	KeyMaxDrawCnt  = "MAX_DRAW_CNT"
 
 	EnvironmentDevelop = "develop"
 	EnvironmentLocal   = "local"
@@ -26,7 +27,7 @@ const (
 	EnvironmentStage   = "stage"
 	EnvironmentProd    = "prod"
 
-	DefaultEnvironment = EnvironmentQa
+	DefaultEnvironment = EnvironmentDevelop
 )
 
 var (
@@ -55,6 +56,7 @@ func init() {
 		HubFaucetUrl: getEnv(KeyAddrFaucet, DefaultEnvironment),
 		ChainId:      getEnv(KeyChainId, DefaultEnvironment),
 		ApiVersion:   getEnv(KeyApiVersion, DefaultEnvironment),
+		MaxDrawCnt:   getEnvInt(KeyMaxDrawCnt, DefaultEnvironment),
 	}
 
 	config.Server = server
@@ -69,11 +71,12 @@ func loadDefault() {
 		KeyDbPwd:       "irispassword",
 		KeyDbPoolLimit: "4096",
 		KeyServerPort:  "8080",
-		KeyAddrHubLcd:  "http://192.168.150.7:1317",
+		KeyAddrHubLcd:  "http://192.168.150.7:30317",
 		KeyAddrHubNode: "http://192.168.150.7:26657",
-		KeyAddrFaucet:  "http://dev.faucet.irisplorer.io",
+		KeyAddrFaucet:  "http://192.168.150.7:30200",
 		KeyChainId:     "rainbow-dev",
 		KeyApiVersion:  "v0.6.5",
+		KeyMaxDrawCnt:  "10",
 	}
 
 	defaultConfig[EnvironmentLocal] = map[string]string{
@@ -85,23 +88,10 @@ func loadDefault() {
 		KeyServerPort:  "8080",
 		KeyAddrHubLcd:  "http://127.0.0.1:1317",
 		KeyAddrHubNode: "http://127.0.0.1:26657",
-		KeyAddrFaucet:  "http://dev.faucet.irisplorer.io",
+		KeyAddrFaucet:  "http://192.168.150.7:30200",
 		KeyChainId:     "rainbow-dev",
 		KeyApiVersion:  "v0.6.5",
-	}
-
-	defaultConfig[EnvironmentQa] = map[string]string{
-		KeyDbAddr:      "35.220.215.42:30000",
-		KeyDATABASE:    "sync-iris",
-		KeyDbUser:      "iris",
-		KeyDbPwd:       "irispassword",
-		KeyDbPoolLimit: "4096",
-		KeyServerPort:  "8080",
-		KeyAddrHubLcd:  "http://35.220.215.42:30417",
-		KeyAddrHubNode: "http://35.220.215.42:30657",
-		KeyAddrFaucet:  "http://35.220.215.42:30200",
-		KeyChainId:     "rainbow-qa",
-		KeyApiVersion:  "v0.6.5",
+		KeyMaxDrawCnt:  "10",
 	}
 }
 
@@ -129,6 +119,7 @@ type serverConf struct {
 	HubFaucetUrl string
 	ChainId      string
 	ApiVersion   string
+	MaxDrawCnt   int
 }
 
 func getEnv(key string, environment string) string {

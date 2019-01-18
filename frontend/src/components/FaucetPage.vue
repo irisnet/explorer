@@ -142,7 +142,7 @@
           this.btninfo = "Send me IRIS";
           this.showSendingImg = false;
           this.showAlert = true;
-          if (data.err_code) {
+          if (data.code) {
             this.showSuccess = false;
           } else {
             this.showSuccess = true;
