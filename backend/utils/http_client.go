@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -87,4 +88,33 @@ func forkRequest(req *http.Request, url string) *http.Request {
 	r.ProtoMinor = req.ProtoMinor
 	r.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
 	return r
+}
+
+func GetIpAddr(req *http.Request) string {
+	addrs := req.Header["X-Forwarded-For"]
+	if len(addrs) > 0 && "unknown" != addrs[0] {
+		return addrs[0]
+	}
+
+	addrs = req.Header["Proxy-Client-IP"]
+	if len(addrs) > 0 && "unknown" != addrs[0] {
+		return addrs[0]
+	}
+
+	addrs = req.Header["WL-Proxy-Client-IP"]
+	if len(addrs) > 0 && "unknown" != addrs[0] {
+		return addrs[0]
+	}
+
+	addrs = req.Header["X-Real-IP"]
+	if len(addrs) > 0 && "unknown" != addrs[0] {
+		return addrs[0]
+	}
+
+	addrs = strings.Split(req.RemoteAddr, ":")
+	if len(addrs) > 0 && "unknown" != addrs[0] {
+		return addrs[0]
+	}
+
+	return ""
 }

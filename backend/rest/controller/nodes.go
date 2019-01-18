@@ -4,11 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/irisnet/explorer/backend/conf"
+	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 func RegisterNodes(r *mux.Router) error {
@@ -66,9 +69,36 @@ func RegisterQueryFaucet(r *mux.Router) error {
 	return nil
 }
 
+var rateLimitMap = make(map[string]int, 0)
+
 func RegisterApply(r *mux.Router) error {
 	doApi(r, types.UrlRegisterApply, "POST", func(request model.IrisReq) interface{} {
+		var addr = utils.GetIpAddr(request.Request)
+		cnt, ok := rateLimitMap[addr]
+		if ok {
+			if cnt >= conf.Get().Server.MaxDrawCnt {
+				logger.Warn("exceed the upper limit", logger.String("addr", addr))
+				panic(types.CodeRateLimit)
+			}
+		}
+		rateLimitMap[addr] = cnt + 1
 		return utils.Apply(request.Request)
 	})
 	return nil
+}
+
+func init() {
+	go func() {
+		for {
+			now := time.Now()
+			next := now.Add(time.Hour * 24)
+			next = time.Date(next.Year(), next.Month(), next.Day(), 0, 0, 0, 0, next.Location())
+			t := time.NewTimer(next.Sub(now))
+			select {
+			case <-t.C:
+				logger.Warn("clear count")
+				rateLimitMap = make(map[string]int, 0)
+			}
+		}
+	}()
 }
