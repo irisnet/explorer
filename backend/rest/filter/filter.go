@@ -1,83 +1,56 @@
 package filter
 
 import (
-	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
+	"strings"
 )
-
-const GlobalFilterPath = "*"
-
-type Filter interface {
-	Do(request *model.IrisReq) (bool, interface{}, types.BizCode)
-}
-
-type Type int
 
 const (
 	Pre  Type = 0
 	Post Type = 1
+
+	GlobalFilterPath = "*"
 )
 
-type RouteFilter map[string][]Filter
+var filterChain = make(FChain, 0)
 
-var preFilters = make(RouteFilter, 0)
-var postFilters = make(RouteFilter, 0)
-
-func RegisterFilters(path string, typ Type, fs []Filter) {
-	var filers RouteFilter
-	switch typ {
-	case Pre:
-		filers = preFilters
-		break
-	case Post:
-		filers = postFilters
-	default:
-		logger.Panic("not existed filter type", logger.Any("type", typ))
-
-	}
-	if _, ok := filers[path]; ok {
-		logger.Panic("duplicate registration filter", logger.String("path", path))
-	}
-	filers[path] = fs
+type Filter interface {
+	Do(request *model.IrisReq, data interface{}) (interface{}, types.BizCode)
+	Paths() []string
+	Type() Type
 }
 
-func DoFilters(req *model.IrisReq, typ Type) (bool, interface{}, types.BizCode) {
-	var filers RouteFilter
-	switch typ {
-	case Pre:
-		filers = preFilters
-		break
-	case Post:
-		filers = postFilters
-	default:
-		logger.Panic("not existed filter type", logger.Any("type", typ))
+type FChain []Filter
+type Type int
 
-	}
-	return doFilter(req, filers)
+func Register(filter Filter) {
+	filterChain = append(filterChain, filter)
 }
 
-func doFilter(req *model.IrisReq, filters RouteFilter) (bool, interface{}, types.BizCode) {
-	//check global filters
-	globalFilters, ok := filters[GlobalFilterPath]
-	if ok {
-		for _, f := range globalFilters {
-			ok, data, err := f.Do(req)
-			if !ok {
-				return false, data, err
+func DoFilters(req *model.IrisReq, data interface{}, typ Type) (interface{}, types.BizCode) {
+	var reqUrl = strings.TrimPrefix(req.RequestURI, types.UrlRoot)
+	for _, f := range filterChain {
+		if typ != f.Type() {
+			continue
+		}
+		paths := f.Paths()
+		if paths[0] == GlobalFilterPath {
+			data, err := f.Do(req, data)
+			if !err.Success() {
+				return data, err
+			}
+		} else {
+			for _, path := range paths {
+				if reqUrl == path {
+					data, err := f.Do(req, data)
+					if !err.Success() {
+						return data, err
+					}
+				}
 			}
 		}
-	}
 
-	//check custom filters
-	customFilters, ok := filters[req.RequestURI]
-	if ok {
-		for _, f := range customFilters {
-			ok, data, err := f.Do(req)
-			if !ok {
-				return false, data, err
-			}
-		}
 	}
-	return true, nil, types.CodeSuccess
+	return nil, types.CodeSuccess
 }
