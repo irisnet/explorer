@@ -58,7 +58,7 @@ func GetPage(r model.IrisReq) (int, int) {
 // execute user's business code
 func doAction(request model.IrisReq, action Action) interface{} {
 	//do business action
-	logger.Debug("doAction", logger.Int64("traceId", request.TraceId))
+	logger.Debug("doAction exec", logger.Int64("traceId", request.TraceId))
 	result := action(request)
 	logger.Debug("doAction result", logger.Int64("traceId", request.TraceId), logger.Any("result", result))
 	return result
@@ -103,7 +103,6 @@ func doResponse(writer http.ResponseWriter, data interface{}) {
 	default:
 		bz, _ = json.Marshal(data)
 	}
-
 	writer.Write(bz)
 }
 
@@ -118,13 +117,13 @@ func doApi(r *mux.Router, url, method string, action Action) {
 			Request: request,
 		}
 		defer doException(req, writer)
-		rs, _, err := filter.DoFilters(&req, filter.Pre)
-		if !rs {
+		_, err := filter.DoFilters(&req, nil, filter.Pre)
+		if !err.Success() {
 			panic(err)
 		}
 		result := doAction(req, action)
-		rs, _, err = filter.DoFilters(&req, filter.Post)
-		if !rs {
+		_, err = filter.DoFilters(&req, &result, filter.Post)
+		if !err.Success() {
 			panic(err)
 		}
 		doResponse(writer, result)

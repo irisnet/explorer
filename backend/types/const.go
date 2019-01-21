@@ -1,6 +1,8 @@
 package types
 
 const (
+	UrlRoot = "/api"
+
 	//Account
 	UrlRegisterQueryAccount    = "/account/{address}"
 	UrlRegisterQueryAllAccount = "/accounts/{page}/{size}"
