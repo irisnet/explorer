@@ -77,7 +77,7 @@ var rateLimitMap = make(map[string]int, 0)
 
 func RegisterApply(r *mux.Router) error {
 	doApi(r, types.UrlRegisterApply, "POST", func(request IrisReq) interface{} {
-		var addr = utils.GetIpAddr(request.Request)
+		var addr = Var(request, "address")
 		cnt, ok := rateLimitMap[addr]
 		if ok {
 			if cnt >= conf.Get().Server.MaxDrawCnt {
