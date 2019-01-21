@@ -92,8 +92,10 @@ func forkRequest(req *http.Request, url string) *http.Request {
 }
 
 func GetIpAddr(req *http.Request) string {
+	logger.Info("http header", logger.Any("header", req.Header))
 	addrs := req.Header["X-Forwarded-For"]
 	if len(addrs) > 0 && "unknown" != addrs[0] {
+
 		return addrs[0]
 	}
 
