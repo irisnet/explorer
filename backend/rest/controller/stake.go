@@ -38,6 +38,7 @@ var stake = Stake{
 
 func registerQueryValidator(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryValidator, "GET", func(request IrisReq) interface{} {
+		stake.SetTid(request.TraceId)
 		page, size := GetPage(request)
 		result := stake.QueryValidators(page, size)
 		return result
@@ -47,6 +48,7 @@ func registerQueryValidator(r *mux.Router) error {
 }
 func registerQueryRevokedValidator(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryRevokedValidator, "GET", func(request IrisReq) interface{} {
+		stake.SetTid(request.TraceId)
 		page, size := GetPage(request)
 		result := stake.QueryRevokedValidator(page, size)
 		return result
@@ -55,6 +57,7 @@ func registerQueryRevokedValidator(r *mux.Router) error {
 }
 func registerQueryCandidates(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryCandidates, "GET", func(request IrisReq) interface{} {
+		stake.SetTid(request.TraceId)
 		page, size := GetPage(request)
 		result := stake.QueryCandidates(page, size)
 		return result
@@ -65,6 +68,7 @@ func registerQueryCandidates(r *mux.Router) error {
 
 func registerQueryCandidatesTop(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryCandidatesTop, "GET", func(request IrisReq) interface{} {
+		stake.SetTid(request.TraceId)
 		result := stake.QueryCandidatesTopN()
 		return result
 	})
@@ -74,6 +78,7 @@ func registerQueryCandidatesTop(r *mux.Router) error {
 
 func registerQueryCandidate(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryCandidate, "GET", func(request IrisReq) interface{} {
+		stake.SetTid(request.TraceId)
 		address := Var(request, "address")
 		result := stake.QueryCandidate(address)
 		return result
@@ -84,6 +89,7 @@ func registerQueryCandidate(r *mux.Router) error {
 
 func registerQueryCandidateUptime(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryCandidateUptime, "GET", func(request IrisReq) interface{} {
+		stake.SetTid(request.TraceId)
 		address := Var(request, "address")
 		category := Var(request, "category")
 
@@ -96,6 +102,7 @@ func registerQueryCandidateUptime(r *mux.Router) error {
 
 func registerQueryCandidatePower(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryCandidatePower, "GET", func(request IrisReq) interface{} {
+		stake.SetTid(request.TraceId)
 		address := Var(request, "address")
 		category := Var(request, "category")
 
@@ -107,6 +114,7 @@ func registerQueryCandidatePower(r *mux.Router) error {
 
 func registerQueryCandidateStatus(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryCandidateStatus, "GET", func(request IrisReq) interface{} {
+		stake.SetTid(request.TraceId)
 		address := Var(request, "address")
 
 		result := stake.QueryCandidateStatus(address)
@@ -118,6 +126,7 @@ func registerQueryCandidateStatus(r *mux.Router) error {
 
 func registerQueryChain(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryChain, "GET", func(request IrisReq) interface{} {
+		stake.SetTid(request.TraceId)
 		result := stake.QueryChainStatus()
 		return result
 	})

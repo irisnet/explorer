@@ -39,7 +39,7 @@ func registerQueryBlock(r *mux.Router) error {
 			panic(types.CodeInValidParam)
 			return nil
 		}
-
+		block.SetTid(request.TraceId)
 		result := block.Query(height)
 		return result
 	})
@@ -48,6 +48,7 @@ func registerQueryBlock(r *mux.Router) error {
 
 func registerQueryBlocks(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryBlocks, "GET", func(request IrisReq) interface{} {
+		block.SetTid(request.TraceId)
 		page, size := GetPage(request)
 		result := block.QueryList(page, size)
 		return result
@@ -58,6 +59,8 @@ func registerQueryBlocks(r *mux.Router) error {
 
 func registerQueryBlocksPrecommits(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryBlocksPrecommits, "GET", func(request IrisReq) interface{} {
+		block.SetTid(request.TraceId)
+
 		address := Var(request, "address")
 		page, size := GetPage(request)
 

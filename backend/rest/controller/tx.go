@@ -37,6 +37,7 @@ var tx = Tx{
 
 func registerQueryTxList(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryTxList, "GET", func(request IrisReq) interface{} {
+		tx.SetTid(request.TraceId)
 		query := bson.M{}
 
 		address := GetString(request, "address")
@@ -81,6 +82,7 @@ func registerQueryTxList(r *mux.Router) error {
 
 func registerQueryTx(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryTx, "GET", func(request IrisReq) interface{} {
+		tx.SetTid(request.TraceId)
 		hash := Var(request, "hash")
 
 		result := tx.Query(hash)
@@ -92,6 +94,7 @@ func registerQueryTx(r *mux.Router) error {
 
 func registerQueryTxs(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryTxs, "GET", func(request IrisReq) interface{} {
+		tx.SetTid(request.TraceId)
 		query := bson.M{}
 		var typeArr []string
 		typeArr = append(typeArr, types.TypeTransfer)
@@ -112,6 +115,7 @@ func registerQueryTxs(r *mux.Router) error {
 
 func registerQueryTxsCounter(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryTxsCounter, "GET", func(request IrisReq) interface{} {
+		tx.SetTid(request.TraceId)
 		query := bson.M{}
 		request.ParseForm()
 
@@ -134,6 +138,7 @@ func registerQueryTxsCounter(r *mux.Router) error {
 
 func registerQueryTxsByAccount(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryTxsByAccount, "GET", func(request IrisReq) interface{} {
+		tx.SetTid(request.TraceId)
 		address := Var(request, "address")
 		page, size := GetPage(request)
 		result := tx.QueryByAcc(address, page, size)
@@ -146,6 +151,7 @@ func registerQueryTxsByAccount(r *mux.Router) error {
 
 func registerQueryTxsByDay(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryTxsByDay, "GET", func(request IrisReq) interface{} {
+		tx.SetTid(request.TraceId)
 		result := tx.CountByDay()
 		return result
 	})
