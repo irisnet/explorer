@@ -53,12 +53,12 @@ func GetNodes() (bz []byte) {
 	return bz
 }
 
-func GetFaucetAccount(req *http.Request) (bz []byte) {
+func GetFaucetAccount(req *http.Request) (bz []byte, err error) {
 	uri := fmt.Sprintf(types.UrlFaucetAccountService, conf.Get().Server.HubFaucetUrl)
 	return Forward(req, uri)
 }
 
-func Apply(req *http.Request) (bz []byte) {
+func Apply(req *http.Request) (bz []byte, err error) {
 	uri := fmt.Sprintf(types.UrlFaucetApplyService, conf.Get().Server.HubFaucetUrl)
 	return Forward(req, uri)
 }
