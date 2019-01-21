@@ -12,26 +12,29 @@
 
 <div id="all" class="container-fluid" hidden="hidden">
     <div class="main pc">
-        <div class="iris_explorer_logo">
-            <img src="img/irisplorer.png">
-        </div>
-        <div class="upgrade_text">
-            <p>IRISnet is Upgrading...</p>
-            <p>The current testnet is upgrading.</p>
-            <p>The next testnet will be launching soon.</p>
-        </div>
-        <div class="pc_web_site_link_content">
-            <a href="https://www.irisnet.org/" target="_blank">
-                <img src="img/irisnet.png">
-            </a>
-            <a href="https://twitter.com/irisnetwork" target="_blank">
-                <img src="img/twitter.png">
-            </a>
-            <a href="https://riot.im/app/#/room/#iris:matrix.org" target="_blank">
-                <img src="img/riotRoom.png">
-            </a>
+        <div class="content">
+            <div class="iris_explorer_logo">
+                <img src="img/irisplorer.png">
+            </div>
+            <div class="upgrade_text">
+                <p>IRISnet is Upgrading...</p>
+                <p>The current testnet is upgrading.</p>
+                <p>The next testnet will be launching soon.</p>
+            </div>
+            <div class="pc_web_site_link_content">
+                <a href="https://www.irisnet.org/" target="_blank">
+                    <img src="img/irisnet.png">
+                </a>
+                <a href="https://twitter.com/irisnetwork" target="_blank">
+                    <img src="img/twitter.png">
+                </a>
+                <a href="https://riot.im/app/#/room/#iris:matrix.org" target="_blank">
+                    <img src="img/riotRoom.png">
+                </a>
+            </div>
         </div>
     </div>
+
     <div class="phone">
         <div class="mobile_container">
             <img class="mobile_logo_content" src="img/app_irisplorer.png">
@@ -74,6 +77,17 @@
             $("div.pc").show();
             $("div.phone").hide();
             $("#all").show();
+        }
+        window.onresize = function () {
+            if(window.innerWidth < 768){
+                $("div.pc").hide();
+                $("div.phone").show();
+                $("#all").show();
+            }else {
+                $("div.pc").show();
+                $("div.phone").hide();
+                $("#all").show();
+            }
         }
     })
 

@@ -56,11 +56,12 @@ func Get(url string) (bz []byte, err error) {
 	return
 }
 
-func Forward(req *http.Request, url string) (bz []byte) {
+func Forward(req *http.Request, url string) (bz []byte, err error) {
 	r := forkRequest(req, url)
 	res, err := client.Do(r)
-	if err != nil {
+	if err != nil || res.StatusCode != 200 {
 		logger.Error("Forward err", logger.String("err", err.Error()))
+		return bz, err
 	}
 
 	defer res.Body.Close()
@@ -69,7 +70,7 @@ func Forward(req *http.Request, url string) (bz []byte) {
 	if err != nil {
 		logger.Error("Forward err", logger.String("err", err.Error()))
 	}
-	return
+	return bz, err
 }
 
 func forkRequest(req *http.Request, url string) *http.Request {

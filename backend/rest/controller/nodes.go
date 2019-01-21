@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/model"
+	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
+	"github.com/irisnet/irishub-sync/logger"
 	"io/ioutil"
 	"net/http"
 )
@@ -60,15 +62,38 @@ func RegisterQueryNodeLocation(r *mux.Router) error {
 }
 
 func RegisterQueryFaucet(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryFaucet, "GET", func(request model.IrisReq) interface{} {
-		return utils.GetFaucetAccount(request.Request)
+
+	doApi(r, types.UrlRegisterQueryFaucet, "GET", func(request IrisReq) interface{} {
+		result, err := utils.GetFaucetAccount(request.Request)
+		if err != nil {
+			panic(types.CodeExtSysFailed)
+			return err
+		}
+		return result
 	})
 	return nil
 }
 
+var rateLimitMap = make(map[string]int, 0)
+
 func RegisterApply(r *mux.Router) error {
-	doApi(r, types.UrlRegisterApply, "POST", func(request model.IrisReq) interface{} {
-		return utils.Apply(request.Request)
+
+	doApi(r, types.UrlRegisterApply, "POST", func(request IrisReq) interface{} {
+		var addr = utils.GetIpAddr(request.Request)
+		cnt, ok := rateLimitMap[addr]
+		if ok {
+			if cnt >= conf.Get().Server.MaxDrawCnt {
+				logger.Warn("exceed the upper limit", logger.String("addr", addr))
+				panic(types.CodeRateLimit)
+			}
+		}
+		result, err := utils.Apply(request.Request)
+		if err != nil {
+			panic(types.CodeExtSysFailed)
+			return err
+		}
+		rateLimitMap[addr] = cnt + 1
+		return result
 	})
 	return nil
 }
