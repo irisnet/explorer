@@ -10,6 +10,7 @@ import (
 	"github.com/irisnet/irishub-sync/logger"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 func RegisterNodes(r *mux.Router) error {
@@ -93,4 +94,20 @@ func RegisterApply(r *mux.Router) error {
 		return result
 	})
 	return nil
+}
+
+func init() {
+	go func() {
+		for {
+			now := time.Now()
+			next := now.Add(time.Hour * 24)
+			next = time.Date(next.Year(), next.Month(), next.Day(), 0, 0, 0, 0, next.Location())
+			t := time.NewTimer(next.Sub(now))
+			select {
+			case <-t.C:
+				logger.Warn("clear count")
+				rateLimitMap = make(map[string]int, 0)
+			}
+		}
+	}()
 }
