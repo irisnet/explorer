@@ -122,7 +122,7 @@ func doApi(r *mux.Router, url, method string, action Action) {
 			panic(err)
 		}
 		result := doAction(req, action)
-		_, err = filter.DoFilters(&req, &result, filter.Post)
+		_, err = filter.DoFilters(&req, result, filter.Post)
 		if !err.Success() {
 			panic(err)
 		}

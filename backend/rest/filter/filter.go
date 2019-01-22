@@ -42,7 +42,8 @@ func DoFilters(req *model.IrisReq, data interface{}, typ Type) (interface{}, typ
 			}
 		} else {
 			for _, path := range paths {
-				if reqUrl == path {
+				p := removeUrlParam(path)
+				if strings.HasPrefix(reqUrl, p) {
 					data, err := f.Do(req, data)
 					if !err.Success() {
 						return data, err
@@ -53,4 +54,13 @@ func DoFilters(req *model.IrisReq, data interface{}, typ Type) (interface{}, typ
 
 	}
 	return nil, types.CodeSuccess
+}
+
+func removeUrlParam(url string) string {
+	var starting = "{"
+	firstIndex := strings.Index(url, starting)
+	if firstIndex < 0 {
+		return url
+	}
+	return url[:firstIndex]
 }
