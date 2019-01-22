@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/model"
@@ -61,14 +62,22 @@ func RegisterQueryNodeLocation(r *mux.Router) error {
 
 func RegisterQueryFaucet(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryFaucet, "GET", func(request model.IrisReq) interface{} {
-		return utils.GetFaucetAccount(request.Request)
+		res, err := utils.GetFaucetAccount(request.Request)
+		if err != nil {
+			panic(err)
+		}
+		return res
 	})
 	return nil
 }
 
 func RegisterApply(r *mux.Router) error {
 	doApi(r, types.UrlRegisterApply, "POST", func(request model.IrisReq) interface{} {
-		return utils.Apply(request.Request)
+		res, err := utils.Apply(request.Request)
+		if err != nil {
+			panic(errors.New("draw iris fail " + err.Error()))
+		}
+		return res
 	})
 	return nil
 }
