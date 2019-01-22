@@ -13,12 +13,22 @@ const (
 	GlobalFilterPath = "*"
 )
 
+var globalCondition = Condition{path: GlobalFilterPath}
 var filterChain = make(FChain, 0)
 
 type Filter interface {
 	Do(request *model.IrisReq, data interface{}) (interface{}, types.BizCode)
-	Paths() []string
+	Match() []Condition
 	Type() Type
+}
+
+type Condition struct {
+	path   string
+	method string
+}
+
+func (c Condition) isGlobal() bool {
+	return c.path == GlobalFilterPath
 }
 
 type FChain []Filter
@@ -34,16 +44,16 @@ func DoFilters(req *model.IrisReq, data interface{}, typ Type) (interface{}, typ
 		if typ != f.Type() {
 			continue
 		}
-		paths := f.Paths()
-		if paths[0] == GlobalFilterPath {
+		conditions := f.Match()
+		if conditions[0].isGlobal() {
 			data, err := f.Do(req, data)
 			if !err.Success() {
 				return data, err
 			}
 		} else {
-			for _, path := range paths {
-				p := removeUrlParam(path)
-				if strings.HasPrefix(reqUrl, p) {
+			for _, condition := range conditions {
+				p := removeUrlParam(condition.path)
+				if strings.HasPrefix(reqUrl, p) && equal(condition.method, req.Method) {
 					data, err := f.Do(req, data)
 					if !err.Success() {
 						return data, err
@@ -63,4 +73,10 @@ func removeUrlParam(url string) string {
 		return url
 	}
 	return url[:firstIndex]
+}
+
+func equal(src, dest string) bool {
+	src = strings.ToLower(src)
+	dest = strings.ToLower(dest)
+	return src == dest
 }

@@ -30,8 +30,11 @@ func init() {
 
 type FaucetLimitPreFilter struct{}
 
-func (FaucetLimitPreFilter) Paths() []string {
-	return []string{types.UrlRegisterApply}
+func (FaucetLimitPreFilter) Match() []Condition {
+	return []Condition{{
+		path:   types.UrlRegisterApply,
+		method: "POST",
+	}}
 }
 
 func (FaucetLimitPreFilter) Type() Type {
