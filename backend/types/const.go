@@ -31,7 +31,7 @@ const (
 
 	//faucet
 	UrlRegisterQueryFaucet = "/faucet/account"
-	UrlRegisterApply       = "/faucet/apply"
+	UrlRegisterApply       = "/faucet/apply/{address}"
 
 	UrlFaucetAccountService = "%s/account"
 	UrlFaucetApplyService   = "%s/apply"

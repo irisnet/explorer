@@ -1,11 +1,12 @@
 package filter
 
 import (
+	"encoding/json"
+	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
-	"github.com/irisnet/explorer/backend/utils"
 	"time"
 )
 
@@ -39,16 +40,44 @@ func (FaucetLimitPreFilter) Type() Type {
 
 func (FaucetLimitPreFilter) Do(request *model.IrisReq, data interface{}) (interface{}, types.BizCode) {
 	traceId := logger.Int64("traceId", request.TraceId)
-	logger.Warn("FaucetLimitPreFilter", traceId)
+	logger.Info("FaucetLimitPreFilter", traceId)
 
-	var addr = utils.GetIpAddr(request.Request)
-	cnt, ok := rateLimitMap[addr]
-	if ok {
-		if cnt >= conf.Get().Server.MaxDrawCnt {
-			logger.Warn("exceed draw coin limit", traceId, logger.String("addr", addr))
-			return nil, types.CodeRateLimit
-		}
+	args := mux.Vars(request.Request)
+	var addr = args["address"]
+	cnt := rateLimitMap[addr]
+	if cnt >= conf.Get().Server.MaxDrawCnt {
+		logger.Warn("exceed draw coin limit", traceId, logger.String("addr", addr))
+		return nil, types.CodeRateLimit
 	}
-	rateLimitMap[addr] = cnt + 1
 	return nil, types.CodeSuccess
+}
+
+type FaucetLimitPostFilter struct{}
+
+func (FaucetLimitPostFilter) Paths() []string {
+	return []string{types.UrlRegisterApply}
+}
+
+func (FaucetLimitPostFilter) Type() Type {
+	return Post
+}
+
+func (FaucetLimitPostFilter) Do(request *model.IrisReq, data interface{}) (interface{}, types.BizCode) {
+	traceId := logger.Int64("traceId", request.TraceId)
+	logger.Info("FaucetLimitPostFilter", traceId)
+	d := data.([]byte)
+	var res fErr
+	if err := json.Unmarshal(d, &res); err == nil {
+		args := mux.Vars(request.Request)
+		var addr = args["address"]
+		cnt := rateLimitMap[addr]
+		rateLimitMap[addr] = cnt + 1
+	}
+
+	return nil, types.CodeSuccess
+}
+
+type fErr struct {
+	Code string `json:"err_code,omitempty"`
+	Msg  string `json:"err_msg,omitempty"`
 }
