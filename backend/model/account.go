@@ -6,10 +6,10 @@ import (
 )
 
 type AccountVo struct {
-	Address         string         `bson:"address"`
-	Amount          document.Coins `bson:"amount"`
-	Time            time.Time      `bson:"time"`
-	Height          int64          `bson:"height"`
-	WithdrawAddress string         `bson:"withdrawAddress"`
-	Deposits        float64        `bson:"deposits"`
+	Address         string         `json:"address"`
+	Amount          document.Coins `json:"amount"`
+	Time            time.Time      `json:"time"`
+	Height          int64          `json:"height"`
+	WithdrawAddress string         `json:"withdrawAddress"`
+	Deposits        float64        `json:"deposits"`
 }
