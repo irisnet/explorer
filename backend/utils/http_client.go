@@ -69,6 +69,7 @@ func Forward(req *http.Request, url string) (bz []byte, err error) {
 	bz, err = ioutil.ReadAll(res.Body)
 	if err != nil {
 		logger.Error("Forward err", logger.String("err", err.Error()))
+		return bz, err
 	}
 	return bz, err
 }

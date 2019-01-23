@@ -10,5 +10,6 @@ type AccountVo struct {
 	Amount          document.Coins `bson:"amount"`
 	Time            time.Time      `bson:"time"`
 	Height          int64          `bson:"height"`
-	WithdrawAddress string
+	WithdrawAddress string         `bson:"withdrawAddress"`
+	Deposits        float64        `bson:"deposits"`
 }

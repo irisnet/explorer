@@ -18,9 +18,10 @@ var (
 
 	proposalService = &ProposalService{}
 
-	stakeService = &StakeService{}
+	stakeService = &CandidateService{}
 
-	txService = &TxService{}
+	txService        = &TxService{}
+	delegatorService = &DelegatorService{}
 )
 
 const (
@@ -29,8 +30,9 @@ const (
 	Block
 	Common
 	Proposal
-	Stake
+	Candidate
 	Tx
+	Delegator
 )
 
 type Module int
@@ -45,10 +47,12 @@ func Get(m Module) Service {
 		return commonService
 	case Proposal:
 		return proposalService
-	case Stake:
+	case Candidate:
 		return stakeService
 	case Tx:
 		return txService
+	case Delegator:
+		return delegatorService
 	}
 	return nil
 }

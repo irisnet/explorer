@@ -30,8 +30,13 @@ func init() {
 
 type FaucetLimitPreFilter struct{}
 
-func (FaucetLimitPreFilter) Paths() []string {
-	return []string{types.UrlRegisterApply}
+func (FaucetLimitPreFilter) Match() []Condition {
+	return []Condition{
+		{
+			path:   types.UrlRegisterApply,
+			method: "POST",
+		},
+	}
 }
 
 func (FaucetLimitPreFilter) Type() Type {
@@ -54,8 +59,13 @@ func (FaucetLimitPreFilter) Do(request *model.IrisReq, data interface{}) (interf
 
 type FaucetLimitPostFilter struct{}
 
-func (FaucetLimitPostFilter) Paths() []string {
-	return []string{types.UrlRegisterApply}
+func (FaucetLimitPostFilter) Match() []Condition {
+	return []Condition{
+		{
+			path:   types.UrlRegisterApply,
+			method: "POST",
+		},
+	}
 }
 
 func (FaucetLimitPostFilter) Type() Type {

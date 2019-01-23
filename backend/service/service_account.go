@@ -44,6 +44,7 @@ func (service *AccountService) Query(address string) (result model.AccountVo) {
 	if err := txStore.Find(query).Sort(sort).One(&tx); err == nil {
 		result.WithdrawAddress = tx.To
 	}
+	result.Deposits = delegatorService.GetTotalDeposits(address)
 
 	return
 }
