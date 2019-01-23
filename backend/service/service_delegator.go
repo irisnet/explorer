@@ -46,10 +46,7 @@ func (service *DelegatorService) GetDeposits(delAddr string) (coin document.Coin
 
 	var totalAmt float64
 	for _, v := range validators {
-		delegation, ok := delegationMap[v.Address]
-		if !ok {
-			continue
-		}
+		delegation := delegationMap[v.Address]
 		rate := v.Tokens / v.DelegatorShares
 		totalAmt += delegation.Shares * rate
 	}
