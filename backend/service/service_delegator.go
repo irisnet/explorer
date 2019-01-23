@@ -29,16 +29,18 @@ func (service *DelegatorService) GetDeposits(delAddr string) (coin document.Coin
 	}
 
 	var delegationMap = make(map[string]document.Delegator, len(delegations))
+	var valAddr []string
 	for _, d := range delegations {
 		delegationMap[d.ValidatorAddr] = d
+		valAddr = append(valAddr, d.ValidatorAddr)
 	}
 
 	var validatorStore = dbInstance.C(document.CollectionNmStakeRoleCandidate)
 	var validators []document.Candidate
 
-	err = validatorStore.Find(nil).All(&validators)
+	err = validatorStore.Find(bson.M{"$in": valAddr}).All(&validators)
 	if err != nil {
-		logger.Error("validator set is empty")
+		logger.Error("validator not found", logger.Any("valAddrs", valAddr))
 		return
 	}
 
