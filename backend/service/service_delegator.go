@@ -2,8 +2,8 @@ package service
 
 import (
 	"github.com/irisnet/explorer/backend/logger"
-	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm/document"
+	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -15,25 +15,43 @@ func (service *DelegatorService) GetModule() Module {
 	return Delegator
 }
 
-func (service *DelegatorService) GetTotalDeposits(delAddr string) float64 {
-	delegatorStore := getDb().C(document.CollectionNmStakeRoleDelegator)
-	defer delegatorStore.Database.Session.Close()
+func (service *DelegatorService) GetDeposits(delAddr string) (coin document.Coin) {
+	var dbInstance = getDb()
+	defer dbInstance.Session.Close()
 
-	query := bson.M{}
-	query[document.Delegator_Field_Addres] = delAddr
+	var delegatorStore = dbInstance.C(document.CollectionNmStakeRoleDelegator)
+	var delegations []document.Delegator
 
-	pipe := delegatorStore.Pipe(
-		[]bson.M{
-			{"$match": query},
-			{"$group": bson.M{
-				"_id":   document.Delegator_Field_Addres,
-				"count": bson.M{"$sum": "$shares"},
-			}},
-		},
-	)
-	var result model.CountVo
-	if err := pipe.One(&result); err != nil {
+	err := delegatorStore.Find(bson.M{document.Delegator_Field_Addres: delAddr}).All(&delegations)
+	if err != nil {
 		logger.Warn("delegator address not exist", logger.String("delAddr", delAddr))
+		return
 	}
-	return result.Count
+
+	var delegationMap = make(map[string]document.Delegator, len(delegations))
+	var valAddr []string
+	for _, d := range delegations {
+		delegationMap[d.ValidatorAddr] = d
+		valAddr = append(valAddr, d.ValidatorAddr)
+	}
+
+	var validatorStore = dbInstance.C(document.CollectionNmStakeRoleCandidate)
+	var validators []document.Candidate
+
+	err = validatorStore.Find(bson.M{"$in": valAddr}).All(&validators)
+	if err != nil {
+		logger.Error("validator not found", logger.Any("valAddrs", valAddr))
+		return
+	}
+
+	var totalAmt float64
+	for _, v := range validators {
+		delegation := delegationMap[v.Address]
+		rate := v.Tokens / v.DelegatorShares
+		totalAmt += delegation.Shares * rate
+	}
+	return document.Coin{
+		Denom:  utils.CoinTypeAtto,
+		Amount: totalAmt,
+	}
 }
