@@ -30,11 +30,11 @@ func RegisterStake(r *mux.Router) error {
 }
 
 type Stake struct {
-	*service.StakeService
+	*service.CandidateService
 }
 
 var stake = Stake{
-	service.Get(service.Stake).(*service.StakeService),
+	service.Get(service.Candidate).(*service.CandidateService),
 }
 
 func registerQueryValidator(r *mux.Router) error {

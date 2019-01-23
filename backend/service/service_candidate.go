@@ -9,15 +9,15 @@ import (
 	"time"
 )
 
-type StakeService struct {
+type CandidateService struct {
 	BaseService
 }
 
-func (service *StakeService) GetModule() Module {
-	return Stake
+func (service *CandidateService) GetModule() Module {
+	return Candidate
 }
 
-func (service *StakeService) QueryValidators(page, pageSize int) model.CandidatesVo {
+func (service *CandidateService) QueryValidators(page, pageSize int) model.CandidatesVo {
 	var candidates []document.Candidate
 	db := getDb()
 	defer db.Session.Close()
@@ -74,7 +74,7 @@ func (service *StakeService) QueryValidators(page, pageSize int) model.Candidate
 	return resp
 }
 
-func (service *StakeService) QueryRevokedValidator(page, size int) model.CandidatesVo {
+func (service *CandidateService) QueryRevokedValidator(page, size int) model.CandidatesVo {
 	var candidates []document.Candidate
 	db := getDb()
 	defer db.Session.Close()
@@ -104,7 +104,7 @@ func (service *StakeService) QueryRevokedValidator(page, size int) model.Candida
 	return resp
 }
 
-func (service *StakeService) QueryCandidates(page, size int) model.CandidatesVo {
+func (service *CandidateService) QueryCandidates(page, size int) model.CandidatesVo {
 	var candidates []document.Candidate
 	db := getDb()
 	defer db.Session.Close()
@@ -147,7 +147,7 @@ func (service *StakeService) QueryCandidates(page, size int) model.CandidatesVo 
 	return resp
 }
 
-func (service *StakeService) QueryCandidate(address string) model.CandidatesInfoVo {
+func (service *CandidateService) QueryCandidate(address string) model.CandidatesInfoVo {
 
 	c := getDb().C(document.CollectionNmStakeRoleCandidate)
 	defer c.Database.Session.Close()
@@ -180,7 +180,7 @@ func (service *StakeService) QueryCandidate(address string) model.CandidatesInfo
 	return result
 }
 
-func (service *StakeService) QueryCandidatesTopN() model.CandidatesTopNVo {
+func (service *CandidateService) QueryCandidatesTopN() model.CandidatesTopNVo {
 	var candidates []document.Candidate
 
 	db := getDb()
@@ -235,7 +235,7 @@ func (service *StakeService) QueryCandidatesTopN() model.CandidatesTopNVo {
 	return resp
 }
 
-func (service *StakeService) QueryCandidateUptime(address, category string) (result []model.UptimeChangeVo) {
+func (service *CandidateService) QueryCandidateUptime(address, category string) (result []model.UptimeChangeVo) {
 	db := getDb()
 	c := db.C(document.CollectionNmStakeRoleCandidate)
 	u := db.C("uptime_change")
@@ -323,7 +323,7 @@ func (service *StakeService) QueryCandidateUptime(address, category string) (res
 	return result
 }
 
-func (service *StakeService) QueryCandidatePower(address, category string) (result []model.ValVotingPowerChangeVo) {
+func (service *CandidateService) QueryCandidatePower(address, category string) (result []model.ValVotingPowerChangeVo) {
 	db := getDb()
 	c := db.C(document.CollectionNmStakeRoleCandidate)
 	p := db.C("power_change")
@@ -366,7 +366,7 @@ func (service *StakeService) QueryCandidatePower(address, category string) (resu
 	return result
 }
 
-func (service *StakeService) QueryCandidateStatus(address string) (resp model.CandidateStatus) {
+func (service *CandidateService) QueryCandidateStatus(address string) (resp model.CandidateStatus) {
 	db := getDb()
 	defer db.Session.Close()
 	cs := db.C(document.CollectionNmStakeRoleCandidate)
@@ -405,7 +405,7 @@ func (service *StakeService) QueryCandidateStatus(address string) (resp model.Ca
 	return resp
 }
 
-func (service *StakeService) QueryChainStatus() model.ChainStatusVo {
+func (service *CandidateService) QueryChainStatus() model.ChainStatusVo {
 	db := getDb()
 	defer db.Session.Close()
 	cs := db.C(document.CollectionNmStakeRoleCandidate)
@@ -428,7 +428,7 @@ func (service *StakeService) QueryChainStatus() model.ChainStatusVo {
 	txCount, _ := cc.Count()
 
 	t := time.Now().Add(-1 * time.Minute)
-	logger.Info("compute tps,find tx condition", service.GetTraceLog(), logger.String("start", t.String()), logger.String("end", time.Now().String()))
+	logger.Debug("compute tps,find tx condition", service.GetTraceLog(), logger.String("start", t.String()), logger.String("end", time.Now().String()))
 	txs, _ := cc.Find(bson.M{document.Tx_Field_Time: bson.M{"$gte": t}}).Count()
 	resp := model.ChainStatusVo{
 		ValidatorsCount: activeValidatorsCnt,
