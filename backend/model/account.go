@@ -11,5 +11,5 @@ type AccountVo struct {
 	Time            time.Time      `json:"time"`
 	Height          int64          `json:"height"`
 	WithdrawAddress string         `json:"withdrawAddress"`
-	Deposits        float64        `json:"deposits"`
+	Deposits        document.Coin  `json:"deposits"`
 }
