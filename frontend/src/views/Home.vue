@@ -4,11 +4,11 @@
       <div class="information_preview">
         <div class="information_preview_module">
           <span :class="flFadeInBlockHeight ? 'animation' : '' ">{{currentBlockHeight}}</span>
-          <span class="information_module_key">Current Block</span>
+          <span class="information_module_key">Latest Block</span>
         </div>
         <div class="information_preview_module">
           <span :class="flFadeInBlockHeight ? 'animation' : '' " :style="{color:diffSeconds > 120 ? '#ff001b' : ''}">{{lastBlockAge}}</span>
-          <span class="information_module_key">Last Block</span>
+          <span class="information_module_key">Age</span>
         </div>
         <div class="information_preview_module">
           <span :class="flFadeInTransaction ? 'animation' : '' ">{{transactionValue}}</span>
@@ -288,7 +288,7 @@ import Constant from "../constant/Constant"
               this.blocksTimer = setInterval(function () {
                 let storedLastBlockHeight = localStorage.getItem('lastBlockHeight');
                 if(storedLastBlockHeight){
-                  if(storedLastBlockHeight !== blockList.Data[0].Height){
+                  if(Number(storedLastBlockHeight) !== blockList.Data[0].Height){
                     that.flFadeInBlockHeight = true;
                   }
                 }

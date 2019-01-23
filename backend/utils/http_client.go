@@ -59,7 +59,7 @@ func Get(url string) (bz []byte, err error) {
 func Forward(req *http.Request, url string) (bz []byte, err error) {
 	r := forkRequest(req, url)
 	res, err := client.Do(r)
-	if err != nil {
+	if err != nil || res.StatusCode != 200 {
 		logger.Error("Forward err", logger.String("err", err.Error()))
 		return bz, err
 	}
@@ -71,7 +71,7 @@ func Forward(req *http.Request, url string) (bz []byte, err error) {
 		logger.Error("Forward err", logger.String("err", err.Error()))
 		return bz, err
 	}
-	return
+	return bz, err
 }
 
 func forkRequest(req *http.Request, url string) *http.Request {
@@ -93,8 +93,10 @@ func forkRequest(req *http.Request, url string) *http.Request {
 }
 
 func GetIpAddr(req *http.Request) string {
+	logger.Info("http header", logger.Any("header", req.Header))
 	addrs := req.Header["X-Forwarded-For"]
 	if len(addrs) > 0 && "unknown" != addrs[0] {
+
 		return addrs[0]
 	}
 

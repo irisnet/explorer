@@ -797,7 +797,10 @@
             -webkit-overflow-scrolling:touch;
             color: #a2a2ae;
           }
-
+          .operator_value{
+            cursor: pointer;
+            color: #3598db !important;
+          }
           .information_props{
             font-size:0.14rem;
             color:#000000;
