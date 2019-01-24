@@ -112,7 +112,12 @@ export default class Tools{
     for(i = str.length - 1;i >= 0;i--) {
       if(str.charAt(i) != "0")break;
     }
-    return str.substring(0,i+1);
+    //TODO(zhangjinbiao)判断逻辑后面要更改
+    if(str.substring(0,i+1) === '0.'){
+      return '0'
+    }else {
+      return str.substring(0,i+1);
+    }
   }
   /**
    * 格式化数字的类型是string的数字并在小数点后面超过多少位以后加 ...

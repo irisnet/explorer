@@ -224,16 +224,16 @@
         }
         Service.http(url).then((data) => {
           if(data){
-            this.count = data.Count;
+            this.count = data.count;
             if(this.$route.params.param === "active"){
-              if(data.Candidates){
-                this.items = data.Candidates.map(item => {
+              if(data.validators){
+                this.items = data.validators.map(item => {
                   return {
-                    Address: item.Address,
-                    Name:Tools.formatString(item.Description.Moniker,20,"..."),
-                    'Voting Power':`${Tools.formatStringToFixedNumber(Tools.formatStringToNumber(item.OriginalTokens),2)} (${(item.OriginalTokens/data.PowerAll*100).toFixed(2)}%)`,
-                    'Uptime':`${item.Uptime}%`,
-                    'Bond Height': item.BondHeight
+                    Address: item.address,
+                    Name:Tools.formatString(item.description && item.description.moniker ? item.description.moniker : '',20,"..."),
+                    'Voting Power':`${item.voting_power} (${(item.voting_power/data.power_all*100).toFixed(2)}%)`,
+                    'Uptime':`${item.up_time}%`,
+                    'Bond Height': item.bond_height
                   };
                 })
               }else{
@@ -246,31 +246,30 @@
                 }]
               }
             }else if(this.$route.params.param === "jailed"){
-              if(data.Candidates){
-                this.items = data.Candidates.map(item => {
+              if(data.validators){
+                this.items = data.validators.map(item => {
                   return {
-                    Address: item.Address,
-                    Name:Tools.formatString(item.Description.Moniker,20,"..."),
-                    'Voting Power':Tools.formatStringToFixedNumber(Tools.formatStringToNumber(item.OriginalTokens),2),
+                    Address: item.address,
+                    Name:Tools.formatString(item.description && item.description.moniker ? item.description.moniker : ' ',20,"..."),
+                    'Stakes':Tools.formatStringToFixedNumber(Tools.formatStringToNumber(item.original_tokens),2),
                   };
-
                 })
               }else{
                 this.showNoData = true;
                 this.items = [{
                   Address: '',
                   Name:'',
-                  'Voting Power':'',
+                  'Stakes':'',
                 }]
               }
             }else if(this.$route.params.param === "candidates"){
-              if(data.Candidates){
-                this.items = data.Candidates.map(item => {
+              if(data.validators){
+                this.items = data.validators.map(item => {
                   return {
-                    Address: item.Address,
-                    Name: Tools.formatString(item.Description.Moniker,20,"..."),
-                    'Voting Power': Tools.formatStringToFixedNumber(Tools.formatStringToNumber(item.OriginalTokens),2),
-                    'Declare Height' : item.BondHeight
+                    Address: item.address,
+                    Name: Tools.formatString(item.description && item.description.moniker ? item.description.moniker : '',20,"..."),
+                    'Stakes': Tools.formatStringToFixedNumber(Tools.formatStringToNumber(item.original_tokens),2),
+                    'Declare Height' : item.bond_height
                   };
                 })
               }else{
@@ -278,7 +277,7 @@
                 this.items = [{
                   Address: '',
                   Name:'',
-                  'Voting Power':'',
+                  'Stakes':'',
                   'Declare Height' :""
                 }]
               }
