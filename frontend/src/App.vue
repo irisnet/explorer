@@ -37,7 +37,7 @@
           </div>
           <div class="footer_right" :class="footerRightVar">
             <div class="footer_link_wrap">
-              <a href="https://www.irisnetwork.cn/testnets/pc" target="_blank">
+              <a href="https://www.irisnetwork.cn/testnets" target="_blank">
                 <span class="footer_link_contact">Join Testnet</span>
               </a>
               <span class="footer_link_forum">|</span>
