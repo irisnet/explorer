@@ -9,7 +9,8 @@ import (
 )
 
 func NodeInfo() (result NodeInfoVo, err error) {
-	resBytes, err := utils.Get(getUrl(nodeInfoUrl))
+	url := fmt.Sprintf(nodeInfoUrl, conf.Get().Server.HubLcdUrl)
+	resBytes, err := utils.Get(url)
 	if err != nil {
 		return result, err
 	}
@@ -22,7 +23,8 @@ func NodeInfo() (result NodeInfoVo, err error) {
 }
 
 func Genesis() (result GenesisVo, err error) {
-	resBytes, err := utils.Get(fmt.Sprintf(genesisUrl, conf.Get().Server.HubNodeUrl))
+	url := fmt.Sprintf(genesisUrl, conf.Get().Server.HubNodeUrl)
+	resBytes, err := utils.Get(url)
 	if err != nil {
 		return result, err
 	}

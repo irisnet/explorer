@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
-	"github.com/irisnet/explorer/backend/utils"
 	"io/ioutil"
 	"net/http"
 )
@@ -30,8 +30,11 @@ func RegisterNodes(r *mux.Router) error {
 
 func RegisterQueryNodes(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryNodes, "GET", func(request model.IrisReq) interface{} {
-		bz := utils.GetNodes()
-		return bz
+		result, err := lcd.NodeInfo()
+		if err != nil {
+			panic(types.CodeNotFound)
+		}
+		return result
 	})
 
 	return nil
@@ -62,7 +65,7 @@ func RegisterQueryNodeLocation(r *mux.Router) error {
 
 func RegisterQueryFaucet(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryFaucet, "GET", func(request model.IrisReq) interface{} {
-		res, err := utils.GetFaucetAccount(request.Request)
+		res, err := lcd.Faucet(request.Request)
 		if err != nil {
 			panic(err)
 		}
@@ -73,7 +76,7 @@ func RegisterQueryFaucet(r *mux.Router) error {
 
 func RegisterApply(r *mux.Router) error {
 	doApi(r, types.UrlRegisterApply, "POST", func(request model.IrisReq) interface{} {
-		res, err := utils.Apply(request.Request)
+		res, err := lcd.GetToken(request.Request)
 		if err != nil {
 			panic(errors.New("draw iris fail " + err.Error()))
 		}
