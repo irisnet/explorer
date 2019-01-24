@@ -291,6 +291,6 @@ type GenesisVo struct {
 	} `json:"result"`
 }
 
-func getUrl(fmtUrl string, params ...string) string {
-	return fmt.Sprintf(fmtUrl, conf.Get().Server.HubLcdUrl, params)
+func getUrl(params ...interface{}) string {
+	return fmt.Sprintf(conf.Get().Server.HubLcdUrl, params...)
 }

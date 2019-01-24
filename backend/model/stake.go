@@ -17,13 +17,14 @@ type ValStatus struct {
 }
 
 type Validator struct {
-	Address     string      `json:"address"` // owner, identity key
-	PubKey      string      `json:"pub_key"`
-	Jailed      bool        `json:"jailed"`                // has the validator been revoked from bonded status
-	VotingPower int64       `json:"voting_power"`          // Voting power if pubKey is a considered a validator
-	Description Description `json:"description,omitempty"` // Description terms for the candidate
-	BondHeight  int64       `json:"bond_height"`
-	Status      string      `json:"status"`
+	Address        string      `json:"address"` // owner, identity key
+	PubKey         string      `json:"pub_key"`
+	Jailed         bool        `json:"jailed"`                // has the validator been revoked from bonded status
+	VotingPower    int64       `json:"voting_power"`          // Voting power if pubKey is a considered a validator
+	Description    Description `json:"description,omitempty"` // Description terms for the candidate
+	BondHeight     int64       `json:"bond_height"`
+	Status         string      `json:"status"`
+	OriginalTokens string      `json:"original_tokens"`
 	ValStatus
 }
 

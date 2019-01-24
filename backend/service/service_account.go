@@ -2,6 +2,7 @@ package service
 
 import (
 	"github.com/irisnet/explorer/backend/conf"
+	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
@@ -24,7 +25,15 @@ func (service *AccountService) Query(address string) (result model.AccountVo) {
 		result.Amount = document.Coins{valinfo.selfBond}
 		result.Deposits = valinfo.delegated
 	} else {
-		result.Amount = utils.GetBalance(address)
+		res, err := lcd.Account(address)
+		if err == nil {
+			var amount document.Coins
+			for _, coinStr := range res.Coins {
+				coin := utils.ParseCoin(coinStr)
+				amount = append(amount, coin)
+			}
+			result.Amount = amount
+		}
 		result.Deposits = delegatorService.GetDeposits(address)
 	}
 

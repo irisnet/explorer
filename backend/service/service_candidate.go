@@ -429,12 +429,13 @@ func (service *CandidateService) QueryChainStatus() model.ChainStatusVo {
 
 func convert(candidate document.Candidate) model.Validator {
 	return model.Validator{
-		Address:     candidate.Address,
-		PubKey:      candidate.PubKey,
-		Jailed:      candidate.Jailed,
-		Status:      candidate.Status,
-		BondHeight:  candidate.BondHeight,
-		VotingPower: getVotingPowerFromToken(candidate.Tokens),
+		Address:        candidate.Address,
+		PubKey:         candidate.PubKey,
+		Jailed:         candidate.Jailed,
+		Status:         candidate.Status,
+		BondHeight:     candidate.BondHeight,
+		OriginalTokens: candidate.OriginalTokens,
+		VotingPower:    getVotingPowerFromToken(candidate.Tokens),
 		Description: model.Description{
 			Moniker:  candidate.Description.Moniker,
 			Identity: candidate.Description.Identity,
