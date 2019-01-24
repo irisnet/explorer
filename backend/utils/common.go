@@ -36,7 +36,7 @@ func RoundFloat(num float64, bit int) (i float64, b bool) {
 }
 
 func Round(x float64) int {
-	return int(math.Floor(x + 0/5))
+	return int(math.Floor(x + 0.5))
 }
 
 func FmtTimeToString(time time.Time) string {
