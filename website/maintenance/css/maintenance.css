@@ -1,5 +1,7 @@
 html {
-    font-size: 625%
+    font-size: 625%;
+    width: 100%;
+    height: 100%;
 }
 
 body {
@@ -10,33 +12,48 @@ body {
 *{
     margin: 0;
     padding: 0;
+
+}
+#all{
+    width: 100%;
+    height: 100%;
 }
 .main {
     width: 100%;
     height: 100%;
     position: absolute;
-    background: url("../img/maintenance.png")no-repeat center center fixed;
+    background: url("../img/maintenance.png") no-repeat center center fixed;
     background-size: cover;
+}
+.content{
+    width:100%;
+    height:100%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
 }
 .iris_explorer_logo{
     margin: 0.3rem 0 0 0.7rem;
+}
+.iris_explorer_logo img{
+    width: 180px;
 }
 .upgrade_text{
     margin: 16vh 0 0 0.7rem;
     color: #000;
 }
 .upgrade_text p:nth-child(1){
-    font-size: 0.48rem;
+    font-size: 0.36rem;
     font-weight: 600;
 }
 .upgrade_text p:nth-child(2){
     margin-top: 0.2rem;
-    font-size: 0.26rem;
+    font-size: 0.2rem;
     line-height: 0.35rem;
     color: #7d7d7d;
 }
 .upgrade_text p:nth-child(3){
-    font-size: 0.26rem;
+    font-size: 0.2rem;
     color: #7d7d7d;
 }
 .link_content{
@@ -45,10 +62,10 @@ body {
     display: -moz-flex;
     display: -ms-flex;
     display: -o-flex;
-    margin: 40vh 0 0 0.7rem;
+    margin: 10vh 0 0 0.7rem;
 }
-.link_content a{
-    padding-left: 0.3rem;
+.link_content a:nth-child(2){
+    padding: 0 0.3rem;
 }
 .phone{
     width: 100%;
@@ -112,3 +129,28 @@ a{
 .riot_room_logo_img{
     height: 0.31rem;
 }
+/*@media screen  and (max-height: 799px) {*/
+    /*.main {*/
+        /*width: 100%;*/
+        /*height: 100%;*/
+        /*background: url("../img/maintenance.png") no-repeat bottom right;*/
+        /*background-size: cover;*/
+    /*}*/
+/*}*/
+
+/*@media screen  and (max-height: 699px) {*/
+    /*.main {*/
+        /*width: 100%;*/
+        /*height: 100%;*/
+        /*background: url("../img/maintenance.png") no-repeat bottom right;*/
+        /*background-size: cover;*/
+    /*}*/
+/*}*/
+/*@media screen and (max-height:599px) {*/
+    /*.main {*/
+        /*width: 100%;*/
+        /*height: 100%;*/
+        /*background: url("../img/maintenance.png") no-repeat bottom right;*/
+        /*background-size: cover;*/
+    /*}*/
+/*}*/
