@@ -13,6 +13,7 @@ var (
 	CodeUnKnown      = NewCode("EX-100005", "unknown error ")
 	CodeUnSupportTx  = NewCode("EX-100006", "unsupported tx type")
 	CodeJsonMarshal  = NewCode("EX-100007", "json marshal error")
+	CodeRateLimit    = NewCode("EX-100008", "exceed the upper limit")
 )
 
 type BizCode struct {
