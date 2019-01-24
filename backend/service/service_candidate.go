@@ -61,6 +61,7 @@ func (service *CandidateService) QueryValidators(page, pageSize int) model.Candi
 			Uptime:     upTimeMap[candidate.PubKeyAddr],
 			TotalBlock: len(result),
 		}
+		candidate.Tokens = float64(utils.Round(candidate.Tokens))
 		candidateAll := model.CandidateAll{
 			Candidate:       candidate,
 			CandidateStatus: status,
