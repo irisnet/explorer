@@ -14,6 +14,14 @@ type MsgSubmitProposal struct {
 	Params         []Param        `json:"params"`
 }
 
+type MsgSubmitSoftwareUpgradeProposal struct {
+	MsgSubmitProposal
+	Version      uint64 `json:"version"`
+	Software     string `json:"software"`
+	SwitchHeight uint64 `json:"switch_height"`
+	Threshold    string `json:"threshold"`
+}
+
 type Param struct {
 	Subspace string `json:"subspace"`
 	Key      string `json:"key"`

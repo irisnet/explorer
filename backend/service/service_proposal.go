@@ -1,6 +1,7 @@
 package service
 
 import (
+	"encoding/json"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
@@ -46,6 +47,7 @@ func (service *ProposalService) Query(id int) (resp model.ProposalInfoVo) {
 	defer db.Session.Close()
 	propoStore := db.C(document.CollectionNmProposal)
 	txStore := db.C(document.CollectionNmCommonTx)
+	txMsgStore := db.C(document.CollectionNmTxMsg)
 
 	if err := propoStore.Find(bson.M{document.Proposal_Field_ProposalId: id}).One(&data); err != nil {
 		panic(types.CodeNotFound)
@@ -69,6 +71,20 @@ func (service *ProposalService) Query(id int) (resp model.ProposalInfoVo) {
 	if err := txStore.Find(bson.M{document.Tx_Field_Type: types.TypeSubmitProposal, document.Proposal_Field_ProposalId: id}).One(&tx); err == nil {
 		proposal.Proposer = tx.From
 		proposal.TxHash = tx.TxHash
+	}
+
+	if proposal.Type == "ParameterChange" || proposal.Type == "SoftwareUpgrade" {
+		var txMsg document.TxMsg
+		if err := txMsgStore.Find(bson.M{document.TxMsg_Field_Hash: proposal.TxHash}).One(&txMsg); err == nil {
+			var msg model.MsgSubmitSoftwareUpgradeProposal
+			if err := json.Unmarshal([]byte(txMsg.Content), &msg); err == nil {
+				proposal.Parameters = msg.Params
+				proposal.Version = msg.Version
+				proposal.Software = msg.Software
+				proposal.SwitchHeight = msg.SwitchHeight
+				proposal.Threshold = msg.Threshold
+			}
+		}
 	}
 
 	resp.Proposal = proposal
