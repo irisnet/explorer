@@ -5,6 +5,7 @@ import (
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
+	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
 	"time"
 )
@@ -157,6 +158,8 @@ func (service *CandidateService) QueryCandidate(address string) model.Candidates
 	if err != nil {
 		panic(types.CodeNotFound)
 	}
+
+	candidate.Tokens = float64(utils.Round(candidate.Tokens))
 
 	query := bson.M{}
 	query[document.Candidate_Field_Jailed] = false

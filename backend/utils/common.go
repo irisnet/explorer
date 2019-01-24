@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
+	"math"
 	"strconv"
 	"time"
 )
@@ -32,6 +33,10 @@ func RoundFloat(num float64, bit int) (i float64, b bool) {
 		return i, false
 	}
 	return i, true
+}
+
+func Round(x float64) int {
+	return int(math.Floor(x + 0/5))
 }
 
 func FmtTimeToString(time time.Time) string {
