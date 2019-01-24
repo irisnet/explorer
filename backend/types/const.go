@@ -63,6 +63,7 @@ const (
 	//BlockChainRpc
 	UrlIrisHubAccount = "%s/auth/accounts/%s"
 	UrlIrisHubNetInfo = "%s/net_info"
+	UrlIrisHubGenesis = "%s/genesis"
 
 	UrlNodeLocation = "http://opendata.baidu.com/api.php?query=%s&resource_id=6006&ie=utf8&oe=utf8"
 

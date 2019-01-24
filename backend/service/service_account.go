@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/irisnet/explorer/backend/logger"
+	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
@@ -18,39 +18,50 @@ func (service *AccountService) GetModule() Module {
 }
 
 func (service *AccountService) Query(address string) (result model.AccountVo) {
-	db := getDb()
-	c := db.C(document.CollectionNmAccount)
-	defer db.Session.Close()
-	err := c.Find(bson.M{document.Account_Field_Addres: address}).One(&result)
-	if err != nil {
-		error := types.CodeNotFound
-		logger.Error("account don't found", service.GetTraceLog(), logger.String("address", address))
-		panic(error)
-		return
+	prefix, _, _ := utils.DecodeAndConvert(address)
+	if prefix == conf.Get().Hub.Prefix.ValAddr {
+		valinfo := delegatorService.QueryDelegation(address)
+		result.Amount = document.Coins{valinfo.selfBond}
+		result.Deposits = valinfo.delegated
+	} else {
+		result.Amount = utils.GetBalance(address)
+		result.Deposits = delegatorService.GetDeposits(address)
 	}
 
-	balance := utils.GetBalance(result.Address)
-	if len(balance) > 0 {
-		result.Amount = balance
-	}
-	result.WithdrawAddress = address
-
-	txStore := db.C(document.CollectionNmCommonTx)
-	query := bson.M{}
-	query[document.Tx_Field_From] = address
-	query[document.Tx_Field_Type] = types.TxTypeSetWithdrawAddress
-	var tx document.CommonTx
-	sort := desc(document.Tx_Field_Time)
-	if err := txStore.Find(query).Sort(sort).One(&tx); err == nil {
-		result.WithdrawAddress = tx.To
-	}
-	result.Deposits = delegatorService.GetDeposits(address)
-
-	return
+	result.WithdrawAddress = queryWithdrawAddr(address)
+	result.IsProfiler = isProfiler(address)
+	return result
 }
 
-func (service *AccountService) QueryList(page, size int) model.PageVo {
+func (service *AccountService) QueryAll(page, size int) model.PageVo {
 	var result []document.Account
 	sort := desc(document.Tx_Field_Time)
 	return queryPage(document.CollectionNmAccount, &result, nil, sort, page, size)
+}
+
+func queryWithdrawAddr(address string) (result string) {
+	var accAddr = utils.Convert(conf.Get().Hub.Prefix.AccAddr, address)
+	db := getDb()
+
+	txStore := db.C(document.CollectionNmCommonTx)
+	query := bson.M{}
+	query[document.Tx_Field_From] = accAddr
+	query[document.Tx_Field_Type] = types.TxTypeSetWithdrawAddress
+	var tx document.CommonTx
+	if err := txStore.Find(query).Sort(desc(document.Tx_Field_Time)).One(&tx); err == nil {
+		result = tx.To
+	} else {
+		result = accAddr
+	}
+	return
+}
+
+func isProfiler(address string) bool {
+	genesis := commonService.GetGenesis()
+	for _, profiler := range genesis.Result.Genesis.AppState.Guardian.Profilers {
+		if profiler.Address == address {
+			return true
+		}
+	}
+	return false
 }

@@ -46,7 +46,7 @@ func registerQueryAllAccount(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryAllAccount, "GET", func(request model.IrisReq) interface{} {
 		page, size := GetPage(request)
 		account.SetTid(request.TraceId)
-		result := account.QueryList(page, size)
+		result := account.QueryAll(page, size)
 		return result
 	})
 	return nil

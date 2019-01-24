@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/irisnet/explorer/backend/conf"
+	"github.com/irisnet/explorer/backend/logger"
+	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
 	"log"
@@ -61,4 +63,17 @@ func GetFaucetAccount(req *http.Request) (bz []byte, err error) {
 func Apply(req *http.Request) (bz []byte, err error) {
 	uri := fmt.Sprintf(types.UrlFaucetApplyService, conf.Get().Server.HubFaucetUrl)
 	return Forward(req, uri)
+}
+
+func Genesis() model.Genesis {
+	uri := fmt.Sprintf(types.UrlIrisHubGenesis, conf.Get().Server.HubNodeUrl)
+	bz, err := Get(uri)
+	if err != nil {
+		panic(err)
+	}
+	var genesis model.Genesis
+	if json.Unmarshal(bz, &genesis); err != nil {
+		logger.Error("json Unmarshal genesis fail", logger.String("err", err.Error()))
+	}
+	return genesis
 }
