@@ -1,12 +1,9 @@
 package utils
 
 import (
-	"bytes"
-	"encoding/binary"
 	"fmt"
 	"math"
 	"strconv"
-	"time"
 )
 
 func ParseInt(text string) (i int64, b bool) {
@@ -35,19 +32,6 @@ func RoundFloat(num float64, bit int) (i float64, b bool) {
 	return i, true
 }
 
-func Round(x float64) int {
-	return int(math.Floor(x + 0/5))
-}
-
-func FmtTimeToString(time time.Time) string {
-	if time.IsZero() {
-		return ""
-	}
-	return time.String()
-}
-
-func IntToByte(num int64) []byte {
-	var buffer bytes.Buffer
-	binary.Write(&buffer, binary.BigEndian, num)
-	return buffer.Bytes()
+func Round(x float64) int64 {
+	return int64(math.Floor(x + 0.5))
 }
