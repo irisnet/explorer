@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/irisnet/irishub-sync/store/document"
+	"github.com/irisnet/explorer/backend/orm/document"
 	"time"
 )
 
@@ -11,12 +11,12 @@ type CandidateStatus struct {
 	PrecommitCount float64
 }
 
-type CandidatesTopN struct {
+type CandidatesTopNVo struct {
 	PowerAll   float64
 	Candidates []CandidateAll
 }
 
-type Candidates struct {
+type CandidatesVo struct {
 	Count      int
 	PowerAll   float64
 	Candidates []CandidateAll
@@ -27,37 +27,37 @@ type CandidateAll struct {
 	CandidateStatus
 }
 
-type CandidateWithPower struct {
+type CandidatesInfoVo struct {
 	PowerAll float64
 	document.Candidate
 }
 
-type ChainStatus struct {
+type ChainStatusVo struct {
 	ValidatorsCount int
 	TxCount         int
 	VotingPower     float64
 	Tps             float64
 }
 
-type UptimeChange struct {
+type UptimeChangeVo struct {
 	Address string
 	Time    string
 	Uptime  float64
 }
 
-type CandidateUptime struct {
+type CandidateUpTimeVo struct {
 	Time   string `bson:"_id,omitempty"`
 	Uptime float64
 }
 
-type PowerChangeOrder struct {
+type ValVotingPowerChangeInfo struct {
 	Address string `bson:"_id,omitempty"`
 	Power   int64
 	Time    time.Time
 	Change  string
 }
 
-type PowerChange struct {
+type ValVotingPowerChangeVo struct {
 	Height  int64
 	Address string
 	Power   int64

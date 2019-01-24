@@ -1,13 +1,17 @@
 package model
 
-import "gopkg.in/mgo.v2/bson"
+import (
+	"gopkg.in/mgo.v2/bson"
+	"net/http"
+	"time"
+)
 
-type Count struct {
+type CountVo struct {
 	Id    bson.ObjectId `bson:"_id,omitempty"`
 	Count float64
 }
 
-type Page struct {
+type PageVo struct {
 	Count int
 	Data  interface{}
 }
@@ -24,4 +28,10 @@ func NewResponse(code, msg string, data interface{}) Response {
 		Msg:  msg,
 		Data: data,
 	}
+}
+
+type IrisReq struct {
+	*http.Request
+	TraceId int64
+	Start   time.Time
 }

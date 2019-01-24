@@ -2,13 +2,14 @@ package service
 
 import (
 	"github.com/irisnet/explorer/backend/model"
+	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/utils"
-	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
 )
 
 type CommonService struct {
 	BaseService
+	genesis model.Genesis
 }
 
 func (service *CommonService) GetModule() Module {
@@ -29,7 +30,7 @@ func (service CommonService) QueryText(text string) []model.ResultVo {
 		if err == nil {
 			vo := model.ResultVo{
 				Type: "block",
-				Data: model.SimpleBlock{
+				Data: model.SimpleBlockVo{
 					Height:    block.Height,
 					Timestamp: block.Time,
 					Hash:      block.Hash,
@@ -45,7 +46,7 @@ func (service CommonService) QueryText(text string) []model.ResultVo {
 		if err == nil {
 			vo := model.ResultVo{
 				Type: "proposal",
-				Data: model.SimpleProposal{
+				Data: model.SimpleProposalVo{
 					ProposalId: proposal.ProposalId,
 					Title:      proposal.Title,
 					Type:       proposal.Type,
@@ -57,4 +58,11 @@ func (service CommonService) QueryText(text string) []model.ResultVo {
 		}
 	}
 	return result
+}
+
+func (service CommonService) GetGenesis() model.Genesis {
+	if len(service.genesis.Result.Genesis.ChainID) == 0 {
+		service.genesis = utils.Genesis()
+	}
+	return service.genesis
 }

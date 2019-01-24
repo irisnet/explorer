@@ -2,8 +2,10 @@ package controller
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"io/ioutil"
@@ -27,7 +29,7 @@ func RegisterNodes(r *mux.Router) error {
 }
 
 func RegisterQueryNodes(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryNodes, "GET", func(request IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryNodes, "GET", func(request model.IrisReq) interface{} {
 		bz := utils.GetNodes()
 		return bz
 	})
@@ -36,7 +38,7 @@ func RegisterQueryNodes(r *mux.Router) error {
 }
 
 func RegisterQueryNodeLocation(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryIp, "POST", func(request IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryIp, "POST", func(request model.IrisReq) interface{} {
 		body, _ := ioutil.ReadAll(request.Body)
 		var params map[string][]string
 		json.Unmarshal(body, &params)
@@ -59,15 +61,23 @@ func RegisterQueryNodeLocation(r *mux.Router) error {
 }
 
 func RegisterQueryFaucet(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryFaucet, "GET", func(request IrisReq) interface{} {
-		return utils.GetFaucetAccount(request.Request)
+	doApi(r, types.UrlRegisterQueryFaucet, "GET", func(request model.IrisReq) interface{} {
+		res, err := utils.GetFaucetAccount(request.Request)
+		if err != nil {
+			panic(err)
+		}
+		return res
 	})
 	return nil
 }
 
 func RegisterApply(r *mux.Router) error {
-	doApi(r, types.UrlRegisterApply, "POST", func(request IrisReq) interface{} {
-		return utils.Apply(request.Request)
+	doApi(r, types.UrlRegisterApply, "POST", func(request model.IrisReq) interface{} {
+		res, err := utils.Apply(request.Request)
+		if err != nil {
+			panic(errors.New("draw iris fail " + err.Error()))
+		}
+		return res
 	})
 	return nil
 }

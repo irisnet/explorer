@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/irisnet/explorer/backend/model"
+	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
-	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
 	"log"
 	"time"
@@ -19,14 +19,14 @@ func (service *TxService) GetModule() Module {
 	return Tx
 }
 
-func (service *TxService) QueryList(query bson.M, page, pageSize int) model.Page {
+func (service *TxService) QueryList(query bson.M, page, pageSize int) model.PageVo {
 	var data []document.CommonTx
 	pageInfo := queryPage(document.CollectionNmCommonTx, &data, query, desc(document.Tx_Field_Time), page, pageSize)
 	pageInfo.Data = buildData(data)
 	return pageInfo
 }
 
-func (service *TxService) QueryLatest(query bson.M, page, pageSize int) model.Page {
+func (service *TxService) QueryLatest(query bson.M, page, pageSize int) model.PageVo {
 	var data []document.CommonTx
 	pageInfo := queryPage(document.CollectionNmCommonTx, &data, query, desc(document.Tx_Field_Time), page, pageSize)
 	return pageInfo
@@ -70,7 +70,7 @@ func (service *TxService) Query(hash string) interface{} {
 	return tx
 }
 
-func (service *TxService) QueryByAcc(address string, page, size int) model.Page {
+func (service *TxService) QueryByAcc(address string, page, size int) model.PageVo {
 	var data []document.CommonTx
 	query := bson.M{}
 	query["$or"] = []bson.M{{document.Tx_Field_From: address}, {document.Tx_Field_To: address}}
@@ -85,7 +85,7 @@ func (service *TxService) QueryByAcc(address string, page, size int) model.Page 
 	return queryPage(document.CollectionNmCommonTx, &data, query, desc(document.Tx_Field_Time), page, size)
 }
 
-func (service *TxService) CountByType(query bson.M) model.TxCounter {
+func (service *TxService) CountByType(query bson.M) model.TxStatisticsVo {
 	var typeArr []string
 	typeArr = append(typeArr, types.TypeTransfer)
 	typeArr = append(typeArr, types.DeclarationList...)
@@ -115,7 +115,7 @@ func (service *TxService) CountByType(query bson.M) model.TxCounter {
 
 	pipe.All(&counter)
 
-	var result model.TxCounter
+	var result model.TxStatisticsVo
 	for _, cnt := range counter {
 		switch types.Convert(cnt.Type) {
 		case types.Trans:
@@ -131,7 +131,7 @@ func (service *TxService) CountByType(query bson.M) model.TxCounter {
 	return result
 }
 
-func (service *TxService) CountByDay() []model.TxDay {
+func (service *TxService) CountByDay() []model.TxDayVo {
 	c := getDb().C(document.CollectionNmCommonTx)
 	defer c.Database.Session.Close()
 
@@ -164,8 +164,8 @@ func (service *TxService) CountByDay() []model.TxDay {
 			}},
 		},
 	)
-	var txDays []model.TxDay
-	var result []model.TxDay
+	var txDays []model.TxDayVo
+	var result []model.TxDayVo
 	pipe.All(&txDays)
 	var i time.Duration
 	var j int
@@ -176,7 +176,7 @@ func (service *TxService) CountByDay() []model.TxDay {
 			result = append(result, txDays[j])
 			j++
 		} else {
-			var txDay model.TxDay
+			var txDay model.TxDayVo
 			txDay.Time = key
 			txDay.Count = 0
 			result = append(result, txDay)

@@ -1,16 +1,16 @@
 package task
 
 import (
+	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm"
+	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
-	"github.com/irisnet/irishub-sync/logger"
-	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
 	"time"
 )
 
-var validatorMap = make(map[string]model.PowerChange)
+var validatorMap = make(map[string]model.ValVotingPowerChangeVo)
 
 type ResValidatorPreCommits struct {
 	Id            ID    `bson:"_id"`
@@ -29,7 +29,7 @@ func Start() {
 }
 
 func init() {
-	var powerChanges []model.PowerChangeOrder
+	var powerChanges []model.ValVotingPowerChangeInfo
 	db := orm.GetDatabase()
 	p := db.C("power_change")
 	pipe := p.Pipe(
@@ -46,14 +46,14 @@ func init() {
 
 	for _, powerChange := range powerChanges {
 		if powerChange.Change != types.Slash {
-			validatorMap[powerChange.Address] = model.PowerChange{Address: powerChange.Address, Time: powerChange.Time, Power: powerChange.Power, Change: powerChange.Change}
+			validatorMap[powerChange.Address] = model.ValVotingPowerChangeVo{Address: powerChange.Address, Time: powerChange.Time, Power: powerChange.Power, Change: powerChange.Change}
 		}
 	}
 }
 
 func UptimeChange() {
-	logger.Info("UptimeChange task start")
-	var uptimeChange model.UptimeChange
+	logger.Info("UptimeChangeVo task start")
+	var uptimeChange model.UptimeChangeVo
 	var blocks []document.Block
 	var firstBlock document.Block
 	var lastBlock document.Block
@@ -90,9 +90,9 @@ func UptimeChange() {
 	startTime = time.Date(startTime.Year(), startTime.Month(), startTime.Day(), startTime.Hour(), 0, 0, 0, startTime.Location())
 	endTime = time.Date(endTime.Year(), endTime.Month(), endTime.Day(), endTime.Hour(), 0, 0, 0, endTime.Location())
 
-	logger.Info("UptimeChange", logger.String("startTime", startTime.UTC().Format("2006-01-02 15")), logger.String("endTime", endTime.UTC().Format("2006-01-02 15")))
+	logger.Info("UptimeChangeVo", logger.String("startTime", startTime.UTC().Format("2006-01-02 15")), logger.String("endTime", endTime.UTC().Format("2006-01-02 15")))
 	if !endTime.Before(lastTime) {
-		logger.Info("UptimeChange end", logger.String("startTime", startTime.Format("2006-01-02 15")))
+		logger.Info("UptimeChangeVo end", logger.String("startTime", startTime.Format("2006-01-02 15")))
 		time.Sleep(10 * time.Minute)
 		return
 	}
@@ -103,7 +103,7 @@ func UptimeChange() {
 		startTime = startTime.Add(d)
 		endTime = endTime.Add(d)
 		if !endTime.Before(lastTime) {
-			logger.Info("UptimeChange end", logger.String("startTime", startTime.Format("2006-01-02 15")))
+			logger.Info("UptimeChangeVo end", logger.String("startTime", startTime.Format("2006-01-02 15")))
 			time.Sleep(10 * time.Minute)
 			return
 		}
@@ -118,7 +118,7 @@ func UptimeChange() {
 	//init validatorMap if validatorMap length is 0
 	if len(validatorMap) == 0 && len(blocks) > 0 {
 		for _, validator := range blocks[0].Validators {
-			powerChange := model.PowerChange{
+			powerChange := model.ValVotingPowerChangeVo{
 				Address: validator.Address,
 				Power:   validator.VotingPower,
 				Time:    blocks[0].Time,
@@ -139,7 +139,7 @@ func UptimeChange() {
 
 			// validator add or update
 			if _, ok := validatorMap[validator.Address]; !ok {
-				powerChange := model.PowerChange{
+				powerChange := model.ValVotingPowerChangeVo{
 					Address: validator.Address,
 					Power:   validator.VotingPower,
 					Time:    block.Time,
@@ -150,7 +150,7 @@ func UptimeChange() {
 				p.Insert(&powerChange)
 			} else {
 				if validatorMap[validator.Address].Power != validator.VotingPower {
-					powerChange := model.PowerChange{
+					powerChange := model.ValVotingPowerChangeVo{
 						Address: validator.Address,
 						Power:   validator.VotingPower,
 						Time:    block.Time,
@@ -169,7 +169,7 @@ func UptimeChange() {
 				continue
 			}
 			if _, ok := validatorMapNow[k]; !ok {
-				powerChange := model.PowerChange{
+				powerChange := model.ValVotingPowerChangeVo{
 					Address: v.Address,
 					Power:   v.Power,
 					Time:    block.Time,
@@ -194,8 +194,8 @@ func UptimeChange() {
 
 	doneTime := startTime.UTC().Format("2006-01-02 15")
 	for k, v := range uptimeMap {
-		uptimeChange := model.UptimeChange{Address: k, Uptime: float64(100*v) / float64(len(blocks)), Time: doneTime}
+		uptimeChange := model.UptimeChangeVo{Address: k, Uptime: float64(100*v) / float64(len(blocks)), Time: doneTime}
 		u.Insert(&uptimeChange)
 	}
-	logger.Info("UptimeChange task end")
+	logger.Info("UptimeChangeVo task end")
 }

@@ -2,8 +2,8 @@ package service
 
 import (
 	"github.com/irisnet/explorer/backend/model"
+	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
-	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -15,7 +15,7 @@ func (service *BlockService) GetModule() Module {
 	return Block
 }
 
-func (service *BlockService) Query(height int64) (result model.BlockRsp) {
+func (service *BlockService) Query(height int64) (result model.BlockVo) {
 	dbm := getDb()
 	defer dbm.Session.Close()
 
@@ -45,7 +45,7 @@ func (service *BlockService) Query(height int64) (result model.BlockRsp) {
 	var txs []document.CommonTx
 	err = dbm.C(document.CollectionNmCommonTx).Find(bson.M{document.Block_Field_Height: height}).All(&txs)
 	if err == nil {
-		var counter model.Counter
+		var counter model.CounterVo
 		for _, tx := range txs {
 			if types.IsGovernanceType(tx.Type) {
 				counter.PropoCnt = counter.PropoCnt + 1
@@ -59,13 +59,13 @@ func (service *BlockService) Query(height int64) (result model.BlockRsp) {
 	return
 }
 
-func (service *BlockService) QueryList(page, size int) model.Page {
+func (service *BlockService) QueryList(page, size int) model.PageVo {
 	var data []document.Block
 	sort := desc(document.Block_Field_Height)
 	return queryPage(document.CollectionNmBlock, &data, nil, sort, page, size)
 }
 
-func (service *BlockService) QueryPrecommits(address string, page, size int) (result model.Page) {
+func (service *BlockService) QueryPrecommits(address string, page, size int) (result model.PageVo) {
 	c := getDb().C(document.CollectionNmStakeRoleCandidate)
 	defer c.Database.Session.Close()
 

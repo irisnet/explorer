@@ -2,9 +2,9 @@ package service
 
 import (
 	"fmt"
+	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm"
-	"github.com/irisnet/irishub-sync/logger"
 	"go.uber.org/zap"
 	"gopkg.in/mgo.v2"
 )
@@ -18,9 +18,10 @@ var (
 
 	proposalService = &ProposalService{}
 
-	stakeService = &StakeService{}
+	stakeService = &CandidateService{}
 
-	txService = &TxService{}
+	txService        = &TxService{}
+	delegatorService = &DelegatorService{}
 )
 
 const (
@@ -29,8 +30,9 @@ const (
 	Block
 	Common
 	Proposal
-	Stake
+	Candidate
 	Tx
+	Delegator
 )
 
 type Module int
@@ -45,10 +47,12 @@ func Get(m Module) Service {
 		return commonService
 	case Proposal:
 		return proposalService
-	case Stake:
+	case Candidate:
 		return stakeService
 	case Tx:
 		return txService
+	case Delegator:
+		return delegatorService
 	}
 	return nil
 }
@@ -73,7 +77,7 @@ func (base *BaseService) GetTraceLog() zap.Field {
 	return logger.Int64("traceId", base.GetTid())
 }
 
-func queryPage(collation string, data interface{}, m map[string]interface{}, sort string, page, size int) model.Page {
+func queryPage(collation string, data interface{}, m map[string]interface{}, sort string, page, size int) model.PageVo {
 	return orm.QueryList(collation, data, m, sort, page, size)
 }
 

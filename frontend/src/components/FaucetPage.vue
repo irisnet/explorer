@@ -134,7 +134,7 @@
         this.btninfo = "Sending";
         this.btnDisabled = true;
         this.showSendingImg = true;
-        axios.post('/api/faucet/apply', JSON.stringify({
+        axios.post('/api/faucet/apply/'+this.address, JSON.stringify({
           address: this.address
         })).then(result => {
           let data = result.data;
@@ -142,7 +142,7 @@
           this.btninfo = "Send me IRIS";
           this.showSendingImg = false;
           this.showAlert = true;
-          if (data.err_code) {
+          if (data.code) {
             this.showSuccess = false;
           } else {
             this.showSuccess = true;

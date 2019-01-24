@@ -2,10 +2,11 @@ package utils
 
 import (
 	"crypto/tls"
-	"github.com/irisnet/irishub-sync/logger"
+	"github.com/irisnet/explorer/backend/logger"
 	"io/ioutil"
 	"net"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -55,11 +56,12 @@ func Get(url string) (bz []byte, err error) {
 	return
 }
 
-func Forward(req *http.Request, url string) (bz []byte) {
+func Forward(req *http.Request, url string) (bz []byte, err error) {
 	r := forkRequest(req, url)
 	res, err := client.Do(r)
-	if err != nil {
+	if err != nil || res.StatusCode != 200 {
 		logger.Error("Forward err", logger.String("err", err.Error()))
+		return bz, err
 	}
 
 	defer res.Body.Close()
@@ -67,8 +69,9 @@ func Forward(req *http.Request, url string) (bz []byte) {
 	bz, err = ioutil.ReadAll(res.Body)
 	if err != nil {
 		logger.Error("Forward err", logger.String("err", err.Error()))
+		return bz, err
 	}
-	return
+	return bz, err
 }
 
 func forkRequest(req *http.Request, url string) *http.Request {
@@ -87,4 +90,35 @@ func forkRequest(req *http.Request, url string) *http.Request {
 	r.ProtoMinor = req.ProtoMinor
 	r.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
 	return r
+}
+
+func GetIpAddr(req *http.Request) string {
+	logger.Info("http header", logger.Any("header", req.Header))
+	addrs := req.Header["X-Forwarded-For"]
+	if len(addrs) > 0 && "unknown" != addrs[0] {
+
+		return addrs[0]
+	}
+
+	addrs = req.Header["Proxy-Client-IP"]
+	if len(addrs) > 0 && "unknown" != addrs[0] {
+		return addrs[0]
+	}
+
+	addrs = req.Header["WL-Proxy-Client-IP"]
+	if len(addrs) > 0 && "unknown" != addrs[0] {
+		return addrs[0]
+	}
+
+	addrs = req.Header["X-Real-IP"]
+	if len(addrs) > 0 && "unknown" != addrs[0] {
+		return addrs[0]
+	}
+
+	addrs = strings.Split(req.RemoteAddr, ":")
+	if len(addrs) > 0 && "unknown" != addrs[0] {
+		return addrs[0]
+	}
+
+	return ""
 }
