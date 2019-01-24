@@ -9,6 +9,7 @@ import (
 
 type CommonService struct {
 	BaseService
+	genesis model.Genesis
 }
 
 func (service *CommonService) GetModule() Module {
@@ -57,4 +58,11 @@ func (service CommonService) QueryText(text string) []model.ResultVo {
 		}
 	}
 	return result
+}
+
+func (service CommonService) GetGenesis() model.Genesis {
+	if len(service.genesis.Result.Genesis.ChainID) == 0 {
+		service.genesis = utils.Genesis()
+	}
+	return service.genesis
 }

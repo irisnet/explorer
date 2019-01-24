@@ -22,6 +22,13 @@ const (
 	KeyApiVersion  = "API_VERSION"
 	KeyMaxDrawCnt  = "MAX_DRAW_CNT"
 
+	KeyPrefixAccAddr  = "PrefixAccAddr"
+	KeyPrefixAccPub   = "PrefixAccPub"
+	KeyPrefixValAddr  = "PrefixValAddr"
+	KeyPrefixValPub   = "PrefixValPub"
+	KeyPrefixConsAddr = "PrefixConsAddr"
+	KeyPrefixConsPub  = "PrefixConsPub"
+
 	EnvironmentDevelop = "develop"
 	EnvironmentLocal   = "local"
 	EnvironmentQa      = "qa"
@@ -62,38 +69,64 @@ func init() {
 	}
 
 	config.Server = server
+
+	var hubcf hubConf
+
+	prefix := bech32Prefix{
+		AccAddr:  getEnv(KeyPrefixAccAddr, DefaultEnvironment),
+		AccPub:   getEnv(KeyPrefixAccPub, DefaultEnvironment),
+		ValAddr:  getEnv(KeyPrefixValAddr, DefaultEnvironment),
+		ValPub:   getEnv(KeyPrefixValPub, DefaultEnvironment),
+		ConsAddr: getEnv(KeyPrefixConsAddr, DefaultEnvironment),
+		ConsPub:  getEnv(KeyPrefixConsPub, DefaultEnvironment),
+	}
+	hubcf.Prefix = prefix
+
+	config.Hub = hubcf
 	logger.Info("==================================load config end==================================")
 }
 
 func loadDefault() {
 	defaultConfig[EnvironmentDevelop] = map[string]string{
-		KeyDbAddr:      "192.168.150.7:30000",
-		KeyDATABASE:    "sync-iris",
-		KeyDbUser:      "iris",
-		KeyDbPwd:       "irispassword",
-		KeyDbPoolLimit: "4096",
-		KeyServerPort:  "8080",
-		KeyAddrHubLcd:  "http://192.168.150.7:30317",
-		KeyAddrHubNode: "http://192.168.150.7:26657",
-		KeyAddrFaucet:  "http://192.168.150.7:30200",
-		KeyChainId:     "rainbow-dev",
-		KeyApiVersion:  "v0.6.5",
-		KeyMaxDrawCnt:  "10",
+		KeyDbAddr:         "192.168.150.7:30000",
+		KeyDATABASE:       "sync-iris",
+		KeyDbUser:         "iris",
+		KeyDbPwd:          "irispassword",
+		KeyDbPoolLimit:    "4096",
+		KeyServerPort:     "8080",
+		KeyAddrHubLcd:     "http://192.168.150.7:30317",
+		KeyAddrHubNode:    "http://192.168.150.7:30657",
+		KeyAddrFaucet:     "http://192.168.150.7:30200",
+		KeyChainId:        "rainbow-dev",
+		KeyApiVersion:     "v0.6.5",
+		KeyMaxDrawCnt:     "10",
+		KeyPrefixAccAddr:  "faa",
+		KeyPrefixAccPub:   "fap",
+		KeyPrefixValAddr:  "fva",
+		KeyPrefixValPub:   "fvp",
+		KeyPrefixConsAddr: "fca",
+		KeyPrefixConsPub:  "fcp",
 	}
 
 	defaultConfig[EnvironmentLocal] = map[string]string{
-		KeyDbAddr:      "127.0.0.1:27017",
-		KeyDATABASE:    "sync-iris",
-		KeyDbUser:      "iris",
-		KeyDbPwd:       "irispassword",
-		KeyDbPoolLimit: "4096",
-		KeyServerPort:  "8080",
-		KeyAddrHubLcd:  "http://127.0.0.1:1317",
-		KeyAddrHubNode: "http://127.0.0.1:26657",
-		KeyAddrFaucet:  "http://192.168.150.7:30200",
-		KeyChainId:     "rainbow-dev",
-		KeyApiVersion:  "v0.6.5",
-		KeyMaxDrawCnt:  "10",
+		KeyDbAddr:         "127.0.0.1:27017",
+		KeyDATABASE:       "sync-iris",
+		KeyDbUser:         "iris",
+		KeyDbPwd:          "irispassword",
+		KeyDbPoolLimit:    "4096",
+		KeyServerPort:     "8080",
+		KeyAddrHubLcd:     "http://127.0.0.1:1317",
+		KeyAddrHubNode:    "http://127.0.0.1:26657",
+		KeyAddrFaucet:     "http://192.168.150.7:30200",
+		KeyChainId:        "rainbow-dev",
+		KeyApiVersion:     "v0.6.5",
+		KeyMaxDrawCnt:     "10",
+		KeyPrefixAccAddr:  "faa",
+		KeyPrefixAccPub:   "fap",
+		KeyPrefixValAddr:  "fva",
+		KeyPrefixValPub:   "fvp",
+		KeyPrefixConsAddr: "fca",
+		KeyPrefixConsPub:  "fcp",
 	}
 }
 
@@ -104,6 +137,7 @@ func Get() Config {
 type Config struct {
 	Db     dbConf
 	Server serverConf
+	Hub    hubConf
 }
 
 type dbConf struct {
@@ -122,6 +156,19 @@ type serverConf struct {
 	ChainId      string
 	ApiVersion   string
 	MaxDrawCnt   int
+}
+
+type hubConf struct {
+	Prefix bech32Prefix
+}
+
+type bech32Prefix struct {
+	AccAddr  string
+	AccPub   string
+	ValAddr  string
+	ValPub   string
+	ConsAddr string
+	ConsPub  string
 }
 
 func getEnv(key string, environment string) string {

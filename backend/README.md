@@ -27,6 +27,15 @@ Blockchain explorer for the IRIS Hub
     CHAIN_ID         : irishub chain-id
     API_VERSION      : explorer api version
     MAX_DRAW_CNT     : Maximum number of collections
+    
+    //irishub v0.11.0 add
+    PrefixAccAddr    : faa
+    PrefixAccPub     : fap
+    PrefixValAddr    : fva
+    PrefixValPub     : fvp
+    PrefixConsAddr   : fca
+    PrefixConsPub    : fcp
+    
 
 ```
 

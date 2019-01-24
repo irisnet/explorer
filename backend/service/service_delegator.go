@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/utils"
@@ -13,6 +14,63 @@ type DelegatorService struct {
 
 func (service *DelegatorService) GetModule() Module {
 	return Delegator
+}
+
+func (service *DelegatorService) QueryDelegation(valAddr string) (info ValInfo) {
+	var dbInstance = getDb()
+	defer dbInstance.Session.Close()
+
+	var delegatorStore = dbInstance.C(document.CollectionNmStakeRoleDelegator)
+
+	// query delegation info
+	var accAddr = utils.Convert(conf.Get().Hub.Prefix.AccAddr, valAddr)
+	var delegations []document.Delegator
+	var selfBondShares float64
+	var delegatedShares float64
+
+	var query = bson.M{}
+	query[document.Delegator_Field_ValidatorAddr] = valAddr
+	err := delegatorStore.Find(query).All(&delegations)
+	if err != nil {
+		logger.Warn("validator not exist", logger.String("valAddr", valAddr))
+		return
+	}
+
+	for _, d := range delegations {
+		if d.Address == accAddr {
+			selfBondShares = d.Shares
+		} else {
+			delegatedShares += d.Shares
+		}
+	}
+
+	//query validator info
+	var validatorStore = dbInstance.C(document.CollectionNmStakeRoleCandidate)
+	var validator document.Candidate
+	err = validatorStore.Find(bson.M{document.Candidate_Field_Address: valAddr}).One(&validator)
+	if err != nil {
+		logger.Error("validator not found", logger.Any("valAddr", valAddr))
+		return
+	}
+
+	rate := validator.Tokens / validator.DelegatorShares
+
+	selfBond := document.Coin{
+		Denom:  utils.CoinTypeAtto,
+		Amount: selfBondShares * rate,
+	}
+
+	delegated := document.Coin{
+		Denom:  utils.CoinTypeAtto,
+		Amount: delegatedShares * rate,
+	}
+
+	return ValInfo{
+		valAddr:   valAddr,
+		selfBond:  selfBond,
+		delegated: delegated,
+	}
+
 }
 
 func (service *DelegatorService) GetDeposits(delAddr string) (coin document.Coin) {
@@ -54,4 +112,10 @@ func (service *DelegatorService) GetDeposits(delAddr string) (coin document.Coin
 		Denom:  utils.CoinTypeAtto,
 		Amount: totalAmt,
 	}
+}
+
+type ValInfo struct {
+	valAddr   string
+	selfBond  document.Coin
+	delegated document.Coin
 }
