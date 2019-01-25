@@ -67,8 +67,8 @@ import Constant from "../constant/Constant"
                   transactionValue: '--',
                   lastBlockAge: '--',
                   votingPowerValue: '--',
-                  blockHeightValue: '',
-                  timestampValue: '',
+                  blockHeightValue: '--',
+                  timestampValue: '--',
                   information: {},
                   informationLine: {},
                   blocksInformation: [],
@@ -177,24 +177,24 @@ import Constant from "../constant/Constant"
               Service.http(url).then((data) => {
                   let colors = ['#3498db', '#47a2df', '#59ade3', '#6cb7e7', '#7fc2eb', '#91ccef', '#a4d7f3', '#b7e1f7', '#c9ecfb', '#dcf6ff', '#DADDE3',];
                   let [seriesData, legendData] = [[], []];
-                  if (data.Candidates instanceof Array) {
+                  if (data.validators instanceof Array) {
                       let totalCount = 0;
-                      data.Candidates.forEach(item=>totalCount += item.VotingPower);
-                      let others = data.PowerAll - totalCount;
+                      data.validators.forEach(item=>totalCount += item.voting_power);
+                      let others = data.power_all - totalCount;
                       let monikerReserveLength = 10;
                       let addressReserveLength = 6;
-                      let powerAll = data.PowerAll;
-                      for (let i = 0; i < data.Candidates.length; i++) {
+                      let powerAll = data.power_all;
+                      for (let i = 0; i < data.validators.length; i++) {
                         seriesData.push({
-                          value: data.Candidates[i].VotingPower,
-                          name: data.Candidates[i].Description.Moniker ? `${Tools.formatString(data.Candidates[i].Description.Moniker,monikerReserveLength,"...")} (${Tools.formatString(data.Candidates[i].Address,addressReserveLength,"...")})` : (data.Candidates[i].Address ? data.Candidates[i].Address : ''),
+                          value: data.validators[i].voting_power,
+                          name: data.validators[i].description && data.validators[i].description.moniker ? `${Tools.formatString(data.validators[i].description.moniker,monikerReserveLength,"...")} (${Tools.formatString(data.validators[i].address,addressReserveLength,"...")})` : (data.validators[i].address ? data.validators[i].address : ''),
                           itemStyle: {color: colors[i]},
                           emphasis : {itemStyle:{color: colors[i]}},
-                          upTime:`${data.Candidates[i].Uptime}%`,
-                          address:data.Candidates[i].Address,
+                          upTime:`${data.validators[i].up_time}%`,
+                          address:data.validators[i].address,
                           powerAll,
                         });
-                        legendData.push(data.Candidates[i].Description.Moniker ? `${Tools.formatString(data.Candidates[i].Description.Moniker,monikerReserveLength,"...")} (${Tools.formatString(data.Candidates[i].Address,addressReserveLength,"...")})` : (data.Candidates[i].Address ? data.Candidates[i].Address : ''))
+                        legendData.push(data.validators[i].description && data.validators[i].description.moniker ? `${Tools.formatString(data.validators[i].description.moniker,monikerReserveLength,"...")} (${Tools.formatString(data.validators[i].address,addressReserveLength,"...")})` : (data.validators[i].address ? data.validators[i].address : ''))
                       }
 
                     if(others > 0 ){
@@ -213,7 +213,7 @@ import Constant from "../constant/Constant"
                 console.log(e)
               })
           },
-        getTransactionHistory() {
+          getTransactionHistory() {
           let url = `/api/txsByDay`;
           Service.http(url).then((data) => {
             let maxValue = 0;
@@ -395,6 +395,9 @@ import Constant from "../constant/Constant"
           @include flex;
           flex-direction: column;
           align-items: center;
+          span:nth-child(1){
+            height: 0.27rem;
+          }
           &:last-child {
             border-right: none;
           }

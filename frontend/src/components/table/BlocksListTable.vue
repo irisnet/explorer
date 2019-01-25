@@ -171,6 +171,7 @@
         </span>
       </template>
     </b-table>
+
     <b-table :fields='fields' :items='items' striped v-if="type === 'blockTxList'" nodelabel class="block_style">
       <template slot='TxHash' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/tx?txHash=${data.item.TxHash}`)">
@@ -192,8 +193,11 @@
       <template slot='To' slot-scope='data'>
         <span class="skip_route"
               :class="data.item.To === $route.params.param?'no_skip':''"
-              @click="skipRoute(data.item.To === $route.params.param ? '' : `/address/1/${data.item.To}`)">
+              @click="skipRoute(data.item.To === $route.params.param ? '' : `/address/1/${data.item.To}`)" v-show="data.item.To !== '--'">
           {{data.item.To?`${String(data.item.To).substr(0,16)}...`:''}}
+        </span>
+        <span class="no_skip" v-show="data.item.To == '--'">
+          --
         </span>
       </template>
       <template slot='Owner' slot-scope='data'>
