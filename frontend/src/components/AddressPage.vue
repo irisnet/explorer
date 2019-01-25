@@ -5,9 +5,10 @@
         <span class="transactions_detail_title">Address</span>
         <span class="transactions_detail_wrap_hash_var">
           {{address}}
-          <i v-if="flShowProfile" :style="{background:validatorStatusColor}">v</i>
-            <span v-show="flShowValidatorCandidate && flShowProfile" class="candidate_validator">(This Validator is a Candidate)</span>
-            <span v-show="flShowValidatorJailed && flShowProfile" class="jailed_validator">(This Validator is jailed!)</span>
+          <i v-if="flValidator" :style="{background:validatorStatusColor}">v</i>
+            <img v-show="flShowProfileLogo" class="profile_logo_img" src="../assets/profiler_logo.png">
+            <span v-show="flShowValidatorCandidate && flValidator" class="candidate_validator">(This Validator is a Candidate)</span>
+            <span v-show="flShowValidatorJailed && flValidator" class="jailed_validator">(This Validator is jailed!)</span>
         </span>
       </p>
     </div>
@@ -15,17 +16,25 @@
     <div :class="transactionsDetailWrap">
       <p class="transaction_information_content_title">Address Information</p>
       <div class="transactions_detail_information_wrap">
-        <div class="information_props_wrap">
+        <div class="information_props_wrap" v-show="flValidator">
+          <span class="information_props">Self-Bond :</span>
+          <span class="information_value">{{balanceValue?balanceValue:'--'}}</span>
+        </div>
+        <div class="information_props_wrap" v-show="!flValidator">
           <span class="information_props">Balance :</span>
           <span class="information_value">{{balanceValue?balanceValue:'--'}}</span>
         </div>
-        <div class="information_props_wrap">
+        <div class="information_props_wrap" v-show="flValidator">
+          <span class="information_props">Delegated :</span>
+          <span class="information_value information_show_trim">{{depositsValue?depositsValue:'--'}}</span>
+        </div>
+        <div class="information_props_wrap" v-show="!flValidator">
           <span class="information_props">Deposits :</span>
           <span class="information_value information_show_trim">{{depositsValue?depositsValue:'--'}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Withdraw Address :</span>
-          <span class="information_value information_show_trim">{{withdrawAddress}}</span>
+          <span class="information_value information_show_trim">{{withdrawAddress?withdrawAddress:'--'}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Transactions :</span>
@@ -33,7 +42,7 @@
         </div>
       </div>
     </div>
-    <div :class="transactionsDetailWrap" class="address_profile" v-if="flShowProfile">
+    <div :class="transactionsDetailWrap" class="address_profile" v-if="flValidator">
       <p class="transaction_information_content_title">Validator Profile</p>
       <div class="transactions_detail_information_wrap">
         <div class="information_props_wrap">
@@ -66,11 +75,11 @@
         </div>
       </div>
     </div>
-    <div :class="transactionsDetailWrap" class="current_tenure" v-show="flShowProfile">
-      <p class="transaction_information_content_title" style="border-bottom:1px solid #eee">Current Stake</p>
+    <div :class="transactionsDetailWrap" class="current_tenure" v-show="flActiveValidator">
+      <p class="transaction_information_content_title" style="border-bottom:1px solid #eee">Current Tenure</p>
       <div class="current_tenure_wrap">
         <div class="transactions_detail_information_wrap">
-          <div class="information_props_wrap" v-show="flShowUptime">
+          <div class="information_props_wrap">
             <span class="information_props">Bond Height :</span>
             <span class="information_value">{{bondHeightValue}}</span>
           </div>
@@ -78,12 +87,12 @@
             <span class="information_props">Voting Power :</span>
             <span class="information_value">{{votingPowerValue}}</span>
           </div>
-          <div class="information_props_wrap" v-show="flShowUptime">
+          <div class="information_props_wrap">
             <span class="information_props">Precommited Blocks :</span>
             <span class="information_value">{{precommitedBlocksValue}}</span>
           </div>
         </div>
-        <div class="canvas_voting_power" v-show="flShowUptime">
+        <div class="canvas_voting_power" v-show="flActiveValidator">
           <div class="progress_wrap">
             <span>Uptime(in last 100)</span>
             <div class="progress_wrap_background">
@@ -91,13 +100,11 @@
             </div>
           </div>
           <div class="progress_wrap">
-
           </div>
         </div>
       </div>
-
     </div>
-    <div class="line_container_wrap"  v-show="flShowUptime && flShowProfile">
+    <div class="line_container_wrap"  v-show="flActiveValidator">
       <div class="line_container" :class="transactionsDetailWrap">
         <p class="line_history_title">History</p>
         <div class="line_content">
@@ -162,7 +169,8 @@
   import EchartsValidatorsLine from "./EchartsValidatorsLine";
   import EchartsValidatorsUptimeLine from "./EchartsValidatorsUpTimeLine";
   import SpinComponent from './commonComponents/SpinComponent';
-  import Service from "../util/axios"
+  import Service from "../util/axios";
+  import Constants from "../constant/Constant"
   export default {
       watch:{
           currentPage(currentPage) {
@@ -226,7 +234,7 @@
               TransactionsShowNoData:false,
               PrecommitBlocksshowNoData:false,
               transactionsCount:0,
-              flShowProfile:true,
+              flValidator:false,
               showNoData:false,
               showLoading:false,
               informationValidatorsLine: {},
@@ -241,7 +249,8 @@
               withdrawAddress:"",
               flShowValidatorJailed: false,
               flShowValidatorCandidate: false,
-              flShowUptime: true,
+              flActiveValidator: true,
+              flShowProfileLogo:false,
               validatorStatusColor:"#3598db",
               tabVotingPower:[
                 {
@@ -376,21 +385,28 @@
       getAddressInformation(address){
         this.address = address;
         let url = `/api/account/${this.$route.params.param}`;
-        Service.http(url).then((validatorAddressInformation)=>{
+        Service.http(url).then((result)=>{
           let Amount = '--';
-          if(validatorAddressInformation){
-            if(validatorAddressInformation.Amount){
-              if(validatorAddressInformation.Amount instanceof Array){
-                if(validatorAddressInformation.Amount.length > 0 ){
-                  validatorAddressInformation.Amount[0].amount = Tools.formatNumber(validatorAddressInformation.Amount[0].amount);
-                }
-                Amount = validatorAddressInformation.Amount.map(listItem=>`${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
-              }else if(validatorAddressInformation.Amount && Object.keys(validatorAddressInformation.Amount).includes('amount') && Object.keys(validatorAddressInformation.Amount).includes('denom')){
-                Amount = `${validatorAddressInformation.Amount.amount} ${Tools.formatDenom(validatorAddressInformation.Amount.denom).toUpperCase()}`;
-              }
+          if(result){
+            if (result.amount && result.amount instanceof Array && result.amount[0].denom === Constants.Denom.IRISATTO){
+              result.amount[0].amount = Tools.formatNumber(result.amount[0].amount);
+              Amount = result.amount.map(listItem => `${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',')
+            }else if(result.amount && result.amount instanceof Array && result.amount[0].denom === Constants.Denom.IRIS){
+              Amount = result.amount.map(listItem => `${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',')
+            }else if(result.amount && Object.keys(result.amount).includes('amount') && Object.keys(result.amount).includes('denom') && result.amount.denom === Constants.Denom.IRISATTO){
+              Amount = `${Tools.formatNumber(result.amount)} ${result.denom.toUpperCase()}`
+            }else if(result.amount && Object.keys(result.amount).includes('amount') && Object.keys(result.amount).includes('denom') && result.amount.denom === Constants.Denom.IRIS){
+              Amount = `${result.amount}${result.denom.toUpperCase()}`
+            }else {
+              Amount = ''
             }
           }
-          this.withdrawAddress = validatorAddressInformation.WithdrawAddress ? validatorAddressInformation.WithdrawAddress : '--';
+
+          this.flShowProfileLogo = result.profile;
+          if(result.deposits){
+            this.depositsValue = result.deposits.amount && result.deposits.amount !== 0 ? Tools.formatNumber(result.deposits.amount) : '';
+          }
+          this.withdrawAddress = result.withdrawAddress ? result.withdrawAddress : '--';
           this.balanceValue = Amount;
 
         }).catch(e =>{
@@ -402,38 +418,40 @@
       },
       getProfileInformation(){
         let url = `/api/stake/candidate/${this.$route.params.param}`;
-        Service.http(url).then((validator)=>{
-          if(validator){
-            if(validator.Jailed === true){
-              this.flShowUptime = false;
+        Service.http(url).then((result)=>{
+          if(result){
+            let validator = result.validator;
+            this.flValidator = true;
+            if(validator.jailed === true){
+              this.flActiveValidator = false;
               this.flShowValidatorJailed = true;
               this.validatorStatusColor = "#f00";
-              this.votingPowerValue = Tools.formatStringToNumber(validator.OriginalTokens);
+              this.votingPowerValue = Tools.formatStringToNumber(validator.original_tokens);
             }else{
-              if(validator.Status === 'Unbonded' || validator.Status === 'Unbonding' ){
+              if(validator.status === 'Unbonded' || validator.status === 'Unbonding' ){
                 this.flShowValidatorCandidate = true;
                 this.validatorStatusColor = "#45B035";
-                this.flShowUptime = false;
-                this.votingPowerValue = Tools.formatStringToNumber(validator.OriginalTokens);
-              }else if(validator.Status === "Bonded"){
-                this.bondHeightValue = validator.BondHeight;
-                this.votingPowerValue = validator.OriginalTokens ? `${Tools.formatStringToNumber(validator.OriginalTokens)} (${(validator.OriginalTokens/validator.PowerAll*100).toFixed(2)}%)` : "--";
+                this.flActiveValidator = false;
+              }else if(validator.status === "Bonded"){
+                this.bondHeightValue = validator.bond_height;
+                this.votingPowerValue = validator.voting_power;
               }
             }
-            this.identity = validator.Description.Identity ? validator.Description.Identity : "--";
-            this.nameValue = validator.Description.Moniker ? validator.Description.Moniker : '--';
-            this.pubKeyValue = validator.PubKey ? validator.PubKey : "--";
-            this.websiteValue = validator.Description.Website?validator.Description.Website:'--';
-            this.descriptionValue= validator.Description.Details ? validator.Description.Details : "--";
+            this.identity = validator.description && validator.description.identity ? validator.description.identity : "--";
+            this.nameValue = validator.description && validator.description.moniker ? validator.description.moniker : '--';
+            this.pubKeyValue = validator.pub_key ? validator.pub_key : "--";
+            this.websiteValue = validator.description && validator.description.website?validator.description.website:'--';
+            this.descriptionValue= validator.description && validator.description.details ? validator.description.details : "--";
             this.commissionRateValue = '';
             this.announcementValue = '';
-            this.operatorValue = this.$Codec.Bech32.toBech32(this.$Crypto.Constants.IRIS.IrisNetConfig.PREFIX_BECH32_ACCADDR,this.$Codec.Bech32.fromBech32(validator.Address));
-            this.flShowProfile = true;
+            this.operatorValue = this.$Codec.Bech32.toBech32(this.$Crypto.Constants.IRIS.IrisNetConfig.PREFIX_BECH32_ACCADDR,this.$Codec.Bech32.fromBech32(validator.address));
           }else{
-            this.flShowProfile = false;
+            this.flValidator = false;
+            this.flActiveValidator = false;
           }
 
         }).catch(err => {
+          this.flActiveValidator = false;
           console.error(err)
         })
       },
@@ -441,9 +459,9 @@
         let url = `/api/stake/candidate/${this.$route.params.param}/status`;
         Service.http(url).then((data)=>{
           if(data){
-            this.precommitedBlocksValue = data.PrecommitCount ? data.PrecommitCount : '--';
+            this.precommitedBlocksValue = data.precommit_cnt ? data.precommit_cnt : '--';
             this.returnsValue = '';
-            this.firstPercent = data.Uptime ? `${data.Uptime}%` : "--";
+            this.firstPercent = data.up_time ? `${data.up_time}%` : "--";
           }
         }).catch(err => {
           console.error(err)
@@ -760,11 +778,16 @@
         color: #a2a2ae;
         i{
           font-style:normal;
-          padding:0.02rem 0.07rem;
+          padding: 0 0.07rem;
           background:#3598db;
           border-radius:0.04rem;
           color:#ffffff;
-          font-size:0.18rem;
+          font-size:0.22rem;
+        }
+        .profile_logo_img{
+          margin-bottom:0.03rem;
+          border-radius: 0.04rem;
+          margin-left: 0.05rem;
         }
         span{
           display: inline-block;
@@ -833,6 +856,11 @@
           color:#ffffff;
           font-size:0.18rem;
           margin: 0 0.11rem;
+        }
+        .profile_logo_img{
+          border-radius: 0.04rem;
+          margin-left: 0.03rem;
+          margin-right: 0.03rem;
         }
       }
 
