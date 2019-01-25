@@ -2,7 +2,7 @@
   <div class="home_wrap">
     <div :class="pageClassName">
       <div class="information_preview">
-        <div class="information_preview_module">
+        <div class="information_preview_module latest_block_content" @click="toBlockDetail(currentBlockHeight)">
           <span :class="flFadeInBlockHeight ? 'animation' : '' ">{{currentBlockHeight}}</span>
           <span class="information_module_key">Latest Block</span>
         </div>
@@ -374,6 +374,12 @@ import Constant from "../constant/Constant"
           }).catch(e => {
             console.log(e)
           })
+        },
+        toBlockDetail(blockHeight){
+            if(blockHeight && blockHeight !== '--'){
+              let path = `/blocks_detail/${blockHeight}`;
+              this.$router.push(path)
+            }
         }
       }
   }
@@ -543,5 +549,8 @@ import Constant from "../constant/Constant"
   }
   .animation{
     @include fadeInAnimation
+  }
+  .latest_block_content:hover{
+    cursor: pointer;
   }
 </style>

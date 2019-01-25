@@ -251,7 +251,7 @@
                   return {
                     Address: item.address,
                     Name:Tools.formatString(item.description && item.description.moniker ? item.description.moniker : ' ',20,"..."),
-                    'Stakes':Tools.formatStringToFixedNumber(Tools.formatStringToNumber(item.original_tokens),2),
+                    'Stakes':Tools.formatStringToFixedNumber(Tools.formatStringToNumber(item.original_tokens),4),
                   };
                 })
               }else{
@@ -268,7 +268,7 @@
                   return {
                     Address: item.address,
                     Name: Tools.formatString(item.description && item.description.moniker ? item.description.moniker : '',20,"..."),
-                    'Stakes': Tools.formatStringToFixedNumber(Tools.formatStringToNumber(item.original_tokens),2),
+                    'Stakes': Tools.formatStringToFixedNumber(Tools.formatStringToNumber(item.original_tokens),4),
                     'Declare Height' : item.bond_height
                   };
                 })

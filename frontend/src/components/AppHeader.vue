@@ -265,7 +265,7 @@
         let uri = `/api/account/${this.searchInputValue}`;
         Service.http(uri).then((delegatorAddress) => {
           if (delegatorAddress) {
-            this.$router.push(`/address/1/${delegatorAddress.Address}`);
+            this.$router.push(`/address/1/${delegatorAddress.address}`);
             this.clearSearchInputValue();
           }else {
             this.toSearchResultPage()
@@ -279,7 +279,7 @@
         let uri = `/api/stake/candidate/${this.searchInputValue}`;
         Service.http(uri).then((validatorAddress) => {
           if (validatorAddress) {
-            this.$router.push(`/address/1/${validatorAddress.Address}`);
+            this.$router.push(`/address/1/${validatorAddress.validator.address}`);
             this.clearSearchInputValue();
           }else {
             this.toSearchResultPage()
