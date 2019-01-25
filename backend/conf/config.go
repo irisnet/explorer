@@ -55,37 +55,31 @@ func init() {
 		Password:  getEnv(KeyDbPwd, DefaultEnvironment),
 		PoolLimit: getEnvInt(KeyDbPoolLimit, DefaultEnvironment),
 	}
-
 	config.Db = db
 
 	server := serverConf{
 		ServerPort: getEnvInt(KeyServerPort, DefaultEnvironment),
-
-		FaucetUrl: getEnv(KeyAddrFaucet, DefaultEnvironment),
-
+		FaucetUrl:  getEnv(KeyAddrFaucet, DefaultEnvironment),
 		ApiVersion: getEnv(KeyApiVersion, DefaultEnvironment),
 		MaxDrawCnt: getEnvInt(KeyMaxDrawCnt, DefaultEnvironment),
 	}
-
 	config.Server = server
 
-	prefix := bech32Prefix{
-		AccAddr:  getEnv(KeyPrefixAccAddr, DefaultEnvironment),
-		AccPub:   getEnv(KeyPrefixAccPub, DefaultEnvironment),
-		ValAddr:  getEnv(KeyPrefixValAddr, DefaultEnvironment),
-		ValPub:   getEnv(KeyPrefixValPub, DefaultEnvironment),
-		ConsAddr: getEnv(KeyPrefixConsAddr, DefaultEnvironment),
-		ConsPub:  getEnv(KeyPrefixConsPub, DefaultEnvironment),
-	}
-
 	hubcf := hubConf{
-		Prefix:  prefix,
+		Prefix: bech32Prefix{
+			AccAddr:  getEnv(KeyPrefixAccAddr, DefaultEnvironment),
+			AccPub:   getEnv(KeyPrefixAccPub, DefaultEnvironment),
+			ValAddr:  getEnv(KeyPrefixValAddr, DefaultEnvironment),
+			ValPub:   getEnv(KeyPrefixValPub, DefaultEnvironment),
+			ConsAddr: getEnv(KeyPrefixConsAddr, DefaultEnvironment),
+			ConsPub:  getEnv(KeyPrefixConsPub, DefaultEnvironment),
+		},
 		LcdUrl:  getEnv(KeyAddrHubLcd, DefaultEnvironment),
 		NodeUrl: getEnv(KeyAddrHubNode, DefaultEnvironment),
 		ChainId: getEnv(KeyChainId, DefaultEnvironment),
 	}
-
 	config.Hub = hubcf
+
 	logger.Info("==================================load config end==================================")
 }
 
