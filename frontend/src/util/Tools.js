@@ -102,6 +102,15 @@ export default class Tools{
         return Tools.formatContinuousNumberZero(completeNumberString)
     }
   }
+  static formatToken (token, denom) {
+    let destCoin = {};
+    let srcPreci = Constant.CoinsMap[token.denom];
+    let dstPreci = Constant.CoinsMap[denom];
+    let dstAmt = token.amount * (dstPreci / srcPreci);
+    destCoin.amount = dstAmt;
+    destCoin.denom = denom.toUpperCase();
+    return destCoin
+  }
   /**
    * 去除数字的类型是string的尾部连续为 0 的数字
    * param string;

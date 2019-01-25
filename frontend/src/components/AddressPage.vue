@@ -401,10 +401,10 @@
               Amount = ''
             }
           }
-
           this.flShowProfileLogo = result.profile;
           if(result.deposits){
-            this.depositsValue = result.deposits.amount && result.deposits.amount !== 0 ? Tools.formatNumber(result.deposits.amount) : '';
+            let deposits = Tools.formatToken(result.deposits,Constants.Denom.IRIS);
+            this.depositsValue = result.deposits.amount && result.deposits.amount !== 0 ?`${deposits.amount} ${deposits.denom}`  : '';
           }
           this.withdrawAddress = result.withdrawAddress ? result.withdrawAddress : '--';
           this.balanceValue = Amount;
