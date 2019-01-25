@@ -62,6 +62,40 @@
             <pre class="information_pre">{{description}}</pre>
           </span>
         </div>
+
+        <div v-show="type === 'SoftwareUpgrade'">
+          <div class="information_props_wrap">
+            <span class="information_props">Software :</span>
+            <span class="information_value information_show_trim">
+            <a class="information_link" :href="software" target="_blank">{{software}}</a>
+          </span>
+          </div>
+          <div class="information_props_wrap">
+            <span class="information_props">Version :</span>
+            <span class="information_value information_show_trim">
+            <span class="information_pre">{{version}}</span>
+          </span>
+          </div>
+          <div class="information_props_wrap">
+            <span class="information_props">Switch Height :</span>
+            <span class="information_value information_show_trim">
+            <span class="information_pre">{{switchHeight}}</span>
+          </span>
+          </div>
+          <div class="information_props_wrap">
+            <span class="information_props">Threshold :</span>
+            <span class="information_value information_show_trim">
+            <span class="information_pre">{{threshold}}</span>
+          </span>
+          </div>
+        </div>
+        <div class="parameter_container" v-show="type === 'ParameterChange'">
+          <div class="information_props_wrap">
+            <span class="information_props">Parameter Details :</span>
+            <textarea :rows="textareaRows" readonly spellcheck="false" class="parameter_detail_content">{{parameterValue}}
+            </textarea>
+          </div>
+        </div>
       </div>
     </div>
     <div :class="proposalsDetailWrap">
@@ -140,6 +174,12 @@
         votingEndAge: '',
         votingTimer: null,
         proposalTimer: null,
+        software: ' ',
+        version: ' ',
+        switchHeight: ' ',
+        threshold: ' ',
+        textareaRows: '2',
+        parameterValue: ' '
       }
     },
     beforeMount() {
@@ -212,6 +252,10 @@
                 that.votingStartAge = that.formatProposalTime(that.flShowProposalTime('votingStartTime',data.proposal.status) ? data.proposal.voting_start_time : '');
                 that.votingEndAge = that.formatProposalTime(that.flShowProposalTime('votingEndTime',data.proposal.status) ? data.proposal.voting_end_time : '' );
               },1000);
+              this.software = data.proposal.software;
+              this.version = data.proposal.version;
+              this.switchHeight = data.proposal.switch_height;
+              this.threshold = data.proposal.threshold;
               this.proposalsId = data.proposal.proposal_id === 0 ? "--" : data.proposal.proposal_id;
               this.title = data.proposal.title;
               this.type = data.proposal.type;
@@ -236,6 +280,13 @@
                 this.count = "--"
               }else {
                 this.count = 0;
+              }
+              if(data.proposal.type === 'ParameterChange'){
+                for (let index = 0; index < data.proposal.parameters.length; index++){
+                  this.parameterValue+= `${data.proposal.parameters[index].subspace}/${data.proposal.parameters[index].key} = ${data.proposal.parameters[index].value}\n`
+                }
+                let defaultTextareaRows = 2;
+                this.textareaRows = data.proposal.parameters.length + defaultTextareaRows;
               }
               if(data.votes){
                 this.count = data.votes.length;
@@ -301,6 +352,17 @@
   .mobile_transactions_detail_wrap {
     @include flex;
     flex-direction: column;
+    .proposals_detail_information_wrap{
+      .parameter_container{
+        .information_props_wrap{
+          .parameter_detail_content{
+            width: 90%;
+            margin-right:20%;
+            background: #EEE;
+          }
+        }
+      }
+    }
     }
   }
   .personal_computer_transactions_detail_wrap {
@@ -356,6 +418,11 @@
       background: url('../assets/right_disabled.png') no-repeat 0 0;
       margin-left: 0.05rem;
       cursor: pointer;
+      }
+      .parameter_detail_content{
+        width: 100%;
+        margin-right:20%;
+        background: #eee;
       }
     }
   }
@@ -542,5 +609,8 @@
   }
   pre{
     font-family: Arial !important;
+  }
+  .information_link{
+    color: #3498db !important;
   }
 </style>
