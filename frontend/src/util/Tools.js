@@ -104,11 +104,14 @@ export default class Tools{
   }
   static formatToken (token, denom) {
     let destCoin = {};
-    let srcPreci = Constant.CoinsMap[token.denom];
-    let dstPreci = Constant.CoinsMap[denom];
-    let dstAmt = token.amount * (dstPreci / srcPreci);
+    let dstAmt;
+    if(token.denom === Constant.Denom.IRISATTO){
+      dstAmt  = Tools.convertScientificNotation2Number(Tools.formatNumber(token.amount));
+    }else if(token.denom === Constant.Denom.IRIS){
+      dstAmt  = token.amount;
+    }
     destCoin.amount = dstAmt;
-    destCoin.denom = denom.toUpperCase();
+    destCoin.denom = Constant.Denom.IRIS.toUpperCase();
     return destCoin
   }
   /**
