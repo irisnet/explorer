@@ -102,7 +102,7 @@ export default class Tools{
         return Tools.formatContinuousNumberZero(completeNumberString)
     }
   }
-  static formatToken (token, denom) {
+  static formatToken (token) {
     let destCoin = {};
     let dstAmt;
     if(token.denom === Constant.Denom.IRISATTO){
