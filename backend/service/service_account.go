@@ -39,6 +39,7 @@ func (service *AccountService) Query(address string) (result model.AccountVo) {
 
 	result.WithdrawAddress = queryWithdrawAddr(address)
 	result.IsProfiler = isProfiler(address)
+	result.Address = address
 	return result
 }
 
