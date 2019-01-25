@@ -11,7 +11,7 @@ import (
 )
 
 func Account(address string) (result AccountVo, err error) {
-	url := fmt.Sprintf(accountUrl, conf.Get().Server.HubLcdUrl, address)
+	url := fmt.Sprintf(accountUrl, conf.Get().Hub.LcdUrl, address)
 	resBytes, err := utils.Get(url)
 	if err != nil {
 		return result, err
@@ -25,11 +25,11 @@ func Account(address string) (result AccountVo, err error) {
 }
 
 func Faucet(req *http.Request) (bz []byte, err error) {
-	uri := fmt.Sprintf(types.UrlFaucetAccountService, conf.Get().Server.HubFaucetUrl)
+	uri := fmt.Sprintf(types.UrlFaucetAccountService, conf.Get().Server.FaucetUrl)
 	return utils.Forward(req, uri)
 }
 
 func GetToken(req *http.Request) (bz []byte, err error) {
-	uri := fmt.Sprintf(types.UrlFaucetApplyService, conf.Get().Server.HubFaucetUrl)
+	uri := fmt.Sprintf(types.UrlFaucetApplyService, conf.Get().Server.FaucetUrl)
 	return utils.Forward(req, uri)
 }

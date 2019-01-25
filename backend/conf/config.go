@@ -59,18 +59,15 @@ func init() {
 	config.Db = db
 
 	server := serverConf{
-		ServerPort:   getEnvInt(KeyServerPort, DefaultEnvironment),
-		HubLcdUrl:    getEnv(KeyAddrHubLcd, DefaultEnvironment),
-		HubNodeUrl:   getEnv(KeyAddrHubNode, DefaultEnvironment),
-		HubFaucetUrl: getEnv(KeyAddrFaucet, DefaultEnvironment),
-		ChainId:      getEnv(KeyChainId, DefaultEnvironment),
-		ApiVersion:   getEnv(KeyApiVersion, DefaultEnvironment),
-		MaxDrawCnt:   getEnvInt(KeyMaxDrawCnt, DefaultEnvironment),
+		ServerPort: getEnvInt(KeyServerPort, DefaultEnvironment),
+
+		FaucetUrl: getEnv(KeyAddrFaucet, DefaultEnvironment),
+
+		ApiVersion: getEnv(KeyApiVersion, DefaultEnvironment),
+		MaxDrawCnt: getEnvInt(KeyMaxDrawCnt, DefaultEnvironment),
 	}
 
 	config.Server = server
-
-	var hubcf hubConf
 
 	prefix := bech32Prefix{
 		AccAddr:  getEnv(KeyPrefixAccAddr, DefaultEnvironment),
@@ -80,7 +77,13 @@ func init() {
 		ConsAddr: getEnv(KeyPrefixConsAddr, DefaultEnvironment),
 		ConsPub:  getEnv(KeyPrefixConsPub, DefaultEnvironment),
 	}
-	hubcf.Prefix = prefix
+
+	hubcf := hubConf{
+		Prefix:  prefix,
+		LcdUrl:  getEnv(KeyAddrHubLcd, DefaultEnvironment),
+		NodeUrl: getEnv(KeyAddrHubNode, DefaultEnvironment),
+		ChainId: getEnv(KeyChainId, DefaultEnvironment),
+	}
 
 	config.Hub = hubcf
 	logger.Info("==================================load config end==================================")
@@ -149,17 +152,17 @@ type dbConf struct {
 }
 
 type serverConf struct {
-	ServerPort   int
-	HubLcdUrl    string
-	HubNodeUrl   string
-	HubFaucetUrl string
-	ChainId      string
-	ApiVersion   string
-	MaxDrawCnt   int
+	ServerPort int
+	FaucetUrl  string
+	ApiVersion string
+	MaxDrawCnt int
 }
 
 type hubConf struct {
-	Prefix bech32Prefix
+	Prefix  bech32Prefix
+	LcdUrl  string
+	NodeUrl string
+	ChainId string
 }
 
 type bech32Prefix struct {

@@ -9,7 +9,7 @@ import (
 )
 
 func Validator(address string) (result ValidatorVo, err error) {
-	url := fmt.Sprintf(validatorUrl, conf.Get().Server.HubLcdUrl, address)
+	url := fmt.Sprintf(validatorUrl, conf.Get().Hub.LcdUrl, address)
 	resBytes, err := utils.Get(url)
 	if err != nil {
 		return result, err

@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-var (
+const (
 	accountUrl   = "%s/auth/accounts/%s"
 	validatorUrl = "%s/stake/validators/%s"
 	nodeInfoUrl  = "%s/node_info"
@@ -292,5 +292,5 @@ type GenesisVo struct {
 }
 
 func getUrl(params ...interface{}) string {
-	return fmt.Sprintf(conf.Get().Server.HubLcdUrl, params...)
+	return fmt.Sprintf(conf.Get().Hub.LcdUrl, params...)
 }
