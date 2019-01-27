@@ -31,16 +31,6 @@ ValidatorStatus.UNBONDED = 'Bonded';
 const Denom = {};
 Denom.IRISATTO = 'iris-atto';
 Denom.IRIS = 'iris';
-const CoinsMap = {};
-
-
-CoinsMap['iris'] = 1;
-CoinsMap['iris-milli'] = 1000;
-CoinsMap['iris-micro'] = 1000000;
-CoinsMap['iris-nano'] = 1000000000;
-CoinsMap['iris-pico'] = 1000000000000;
-CoinsMap['iris-femto'] = 1000000000000000;
-CoinsMap['iris-atto'] = 1000000000000000000;
 
 export default {
   PREFIX,
@@ -48,5 +38,4 @@ export default {
   TxType,
   ValidatorStatus,
   Denom,
-  CoinsMap
 };
