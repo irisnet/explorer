@@ -274,7 +274,7 @@ export default class Tools{
   /**
    * 获取水龙头Amount
    * param ['11.1111iris']
-   * return ['1.1111']
+   * return ['11.1111']
    */
   static formatAccountCoinsAmount(coinsAmount){
     return coinsAmount = /[0-9]+[.]?[0-9]*/.exec(coinsAmount)
