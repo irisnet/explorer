@@ -103,16 +103,16 @@ export default class Tools{
     }
   }
   static formatToken (token) {
-    let destCoin = {};
-    let dstAmt;
-    if(token.denom === Constant.Denom.IRISATTO){
-      dstAmt  = Tools.convertScientificNotation2Number(Tools.formatNumber(token.amount));
+    let coin = {};
+    let amount = '';
+    if(token.amount && token.amount !== '' && token.amount !== 0 && token.denom === Constant.Denom.IRISATTO){
+      amount  = Tools.convertScientificNotation2Number(Tools.formatNumber(token.amount));
     }else if(token.denom === Constant.Denom.IRIS){
-      dstAmt  = token.amount;
+      amount  = token.amount;
     }
-    destCoin.amount = dstAmt;
-    destCoin.denom = Constant.Denom.IRIS.toUpperCase();
-    return destCoin
+    coin.amount = amount;
+    coin.denom = Constant.Denom.IRIS.toUpperCase();
+    return coin
   }
   /**
    * 去除数字的类型是string的尾部连续为 0 的数字
