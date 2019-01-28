@@ -20,6 +20,7 @@ const (
 	KeyChainId     = "CHAIN_ID"
 	KeyApiVersion  = "API_VERSION"
 	KeyMaxDrawCnt  = "MAX_DRAW_CNT"
+	KeyShowFaucet = "SHOW_FAUCET"
 
 	EnvironmentDevelop = "develop"
 	EnvironmentLocal   = "local"
@@ -57,6 +58,7 @@ func init() {
 		ChainId:      getEnv(KeyChainId, DefaultEnvironment),
 		ApiVersion:   getEnv(KeyApiVersion, DefaultEnvironment),
 		MaxDrawCnt:   getEnvInt(KeyMaxDrawCnt, DefaultEnvironment),
+		ShowFaucet:   getEnvInt(KeyShowFaucet,"1"),
 	}
 
 	config.Server = server
@@ -120,6 +122,7 @@ type serverConf struct {
 	ChainId      string
 	ApiVersion   string
 	MaxDrawCnt   int
+	ShowFaucet   int
 }
 
 func getEnv(key string, environment string) string {
