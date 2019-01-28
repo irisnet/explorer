@@ -1,41 +1,49 @@
 package model
 
 import (
-	"github.com/irisnet/explorer/backend/orm/document"
 	"time"
 )
 
-type CandidateStatus struct {
-	Uptime         int
-	TotalBlock     int
-	PrecommitCount float64
+type ValDetailVo struct {
+	Count      int         `json:"count"`
+	PowerAll   int64       `json:"power_all"`
+	Validators []Validator `json:"validators"`
 }
 
-type CandidatesTopNVo struct {
-	PowerAll   float64
-	Candidates []CandidateAll
+type ValStatus struct {
+	Uptime         int     `json:"up_time"`
+	TotalBlock     int     `json:"total_block"`
+	PrecommitCount float64 `json:"precommit_cnt"`
 }
 
-type CandidatesVo struct {
-	Count      int
-	PowerAll   float64
-	Candidates []CandidateAll
+type Validator struct {
+	Address        string      `json:"address"` // owner, identity key
+	PubKey         string      `json:"pub_key"`
+	Jailed         bool        `json:"jailed"`                // has the validator been revoked from bonded status
+	VotingPower    int64       `json:"voting_power"`          // Voting power if pubKey is a considered a validator
+	Description    Description `json:"description,omitempty"` // Description terms for the candidate
+	BondHeight     int64       `json:"bond_height"`
+	Status         string      `json:"status"`
+	OriginalTokens string      `json:"original_tokens"`
+	ValStatus
 }
 
-type CandidateAll struct {
-	document.Candidate
-	CandidateStatus
+type Description struct {
+	Moniker  string `json:"moniker,omitempty"`
+	Identity string `json:"identity,omitempty"`
+	Website  string `json:"website,omitempty"`
+	Details  string `json:"details,omitempty"`
 }
 
 type CandidatesInfoVo struct {
-	PowerAll float64
-	document.Candidate
+	PowerAll  int64 `json:"power_all"`
+	Validator `json:"validator"`
 }
 
 type ChainStatusVo struct {
 	ValidatorsCount int
 	TxCount         int
-	VotingPower     float64
+	VotingPower     int64
 	Tps             float64
 }
 
@@ -45,7 +53,7 @@ type UptimeChangeVo struct {
 	Uptime  float64
 }
 
-type CandidateUpTimeVo struct {
+type ValUpTimeVo struct {
 	Time   string `bson:"_id,omitempty"`
 	Uptime float64
 }

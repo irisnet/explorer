@@ -18,6 +18,11 @@ type Proposal struct {
 	TotalDeposit    document.Coins `json:"total_deposit"`
 	Proposer        string         `json:"proposer"`
 	TxHash          string         `json:"tx_hash"`
+	Parameters      []Param        `json:"parameters,omitempty"`
+	Version         uint64         `json:"version,omitempty"`
+	Software        string         `json:"software,omitempty"`
+	SwitchHeight    uint64         `json:"switch_height,omitempty"`
+	Threshold       string         `json:"threshold,omitempty"`
 }
 
 type Vote struct {

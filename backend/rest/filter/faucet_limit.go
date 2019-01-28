@@ -51,7 +51,7 @@ func (FaucetLimitPreFilter) Do(request *model.IrisReq, data interface{}) (interf
 	var addr = args["address"]
 	cnt := rateLimitMap[addr]
 	if cnt >= conf.Get().Server.MaxDrawCnt {
-		logger.Warn("exceed draw coin limit", traceId, logger.String("addr", addr))
+		logger.Warn("exceed draw coin limit", traceId, logger.String("addr", addr), logger.Int("count", cnt))
 		return nil, types.CodeRateLimit
 	}
 	return nil, types.CodeSuccess
@@ -82,6 +82,7 @@ func (FaucetLimitPostFilter) Do(request *model.IrisReq, data interface{}) (inter
 		var addr = args["address"]
 		cnt := rateLimitMap[addr]
 		rateLimitMap[addr] = cnt + 1
+		logger.Info("already draw count", logger.String("addr", addr), logger.Int("count", cnt+1))
 	}
 
 	return nil, types.CodeSuccess

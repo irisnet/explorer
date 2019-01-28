@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/utils"
@@ -9,7 +10,7 @@ import (
 
 type CommonService struct {
 	BaseService
-	genesis model.Genesis
+	genesis lcd.GenesisVo
 }
 
 func (service *CommonService) GetModule() Module {
@@ -60,9 +61,13 @@ func (service CommonService) QueryText(text string) []model.ResultVo {
 	return result
 }
 
-func (service CommonService) GetGenesis() model.Genesis {
+func (service CommonService) GetGenesis() lcd.GenesisVo {
 	if len(service.genesis.Result.Genesis.ChainID) == 0 {
-		service.genesis = utils.Genesis()
+		result, err := lcd.Genesis()
+		if err != nil {
+			panic(err)
+		}
+		service.genesis = result
 	}
 	return service.genesis
 }
