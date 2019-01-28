@@ -102,6 +102,18 @@ export default class Tools{
         return Tools.formatContinuousNumberZero(completeNumberString)
     }
   }
+  static formatToken (token) {
+    let coin = {};
+    let amount = '';
+    if(token.amount && token.amount !== '' && token.amount !== 0 && token.denom === Constant.Denom.IRISATTO){
+      amount  = Tools.convertScientificNotation2Number(Tools.formatNumber(token.amount));
+    }else if(token.denom === Constant.Denom.IRIS){
+      amount  = token.amount;
+    }
+    coin.amount = amount;
+    coin.denom = Constant.Denom.IRIS.toUpperCase();
+    return coin
+  }
   /**
    * 去除数字的类型是string的尾部连续为 0 的数字
    * param string;
@@ -259,11 +271,19 @@ export default class Tools{
       return "IRIS"
     }
   }
-
+  /**
+   * 获取水龙头Amount
+   * param ['11.1111iris']
+   * return ['11.1111']
+   */
   static formatAccountCoinsAmount(coinsAmount){
     return coinsAmount = /[0-9]+[.]?[0-9]*/.exec(coinsAmount)
   }
-
+  /**
+   * 获取水龙头demon
+   * param ['11.1111iris']
+   * return ['iris']
+   */
   static formatAccountCoinsDenom(coinsDenom){
     return coinsDenom = /[A-Za-z\-]{2,15}/.exec(coinsDenom)
   }
