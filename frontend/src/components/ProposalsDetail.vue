@@ -255,7 +255,7 @@
               this.software = data.proposal.software;
               this.version = data.proposal.version;
               this.switchHeight = data.proposal.switch_height;
-              this.threshold = data.proposal.threshold;
+              this.threshold = data.proposal.threshold ? `${Number(data.proposal.threshold) * 100}%` : '--';
               this.proposalsId = data.proposal.proposal_id === 0 ? "--" : data.proposal.proposal_id;
               this.title = data.proposal.title;
               this.type = data.proposal.type;
