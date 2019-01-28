@@ -58,7 +58,7 @@ func init() {
 		ChainId:      getEnv(KeyChainId, DefaultEnvironment),
 		ApiVersion:   getEnv(KeyApiVersion, DefaultEnvironment),
 		MaxDrawCnt:   getEnvInt(KeyMaxDrawCnt, DefaultEnvironment),
-		ShowFaucet:   getEnvInt(KeyShowFaucet,"1"),
+		ShowFaucet:   getEnvInt(KeyShowFaucet,DefaultEnvironment),
 	}
 
 	config.Server = server
@@ -79,6 +79,7 @@ func loadDefault() {
 		KeyChainId:     "rainbow-dev",
 		KeyApiVersion:  "v0.6.5",
 		KeyMaxDrawCnt:  "10",
+		KeyShowFaucet:	"1",
 	}
 
 	defaultConfig[EnvironmentLocal] = map[string]string{
@@ -94,6 +95,7 @@ func loadDefault() {
 		KeyChainId:     "rainbow-dev",
 		KeyApiVersion:  "v0.6.5",
 		KeyMaxDrawCnt:  "10",
+		KeyShowFaucet:	"1",
 	}
 }
 
