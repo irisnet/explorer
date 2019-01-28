@@ -179,7 +179,7 @@
         switchHeight: ' ',
         threshold: ' ',
         textareaRows: '2',
-        parameterValue: ' '
+        parameterValue: ''
       }
     },
     beforeMount() {
@@ -419,11 +419,6 @@
       margin-left: 0.05rem;
       cursor: pointer;
       }
-      .parameter_detail_content{
-        width: 100%;
-        margin-right:20%;
-        background: #eee;
-      }
     }
   }
   .proposals_detail_table_wrap {
@@ -612,5 +607,12 @@
   }
   .information_link{
     color: #3498db !important;
+  }
+  .parameter_detail_content{
+    box-sizing: border-box;
+    padding: 0.1rem;
+    width: 95%;
+    margin-right:20%;
+    background: #EEE !important;
   }
 </style>
