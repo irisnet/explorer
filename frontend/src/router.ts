@@ -26,7 +26,15 @@ export default new Router({
       component: Home,
     },
     {
-      path: '/faucet', component: FaucetPage
+      path: '/faucet',
+      component: FaucetPage,
+      beforeEnter (to, from, next) {
+        if (localStorage.getItem('Show_faucet') === '0'){
+          next(false)
+        }else{
+          next()
+        }
+      }
     },
     {
       path: '/Proposals', component: ProposalsPage
