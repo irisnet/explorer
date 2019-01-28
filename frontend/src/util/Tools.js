@@ -271,11 +271,19 @@ export default class Tools{
       return "IRIS"
     }
   }
-
+  /**
+   * 获取水龙头Amount
+   * param ['11.1111iris']
+   * return ['1.1111']
+   */
   static formatAccountCoinsAmount(coinsAmount){
     return coinsAmount = /[0-9]+[.]?[0-9]*/.exec(coinsAmount)
   }
-
+  /**
+   * 获取水龙头demon
+   * param ['11.1111iris']
+   * return ['iris']
+   */
   static formatAccountCoinsDenom(coinsDenom){
     return coinsDenom = /[A-Za-z\-]{2,15}/.exec(coinsDenom)
   }
