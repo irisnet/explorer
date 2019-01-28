@@ -63,7 +63,7 @@ func init() {
 		FaucetUrl:  getEnv(KeyAddrFaucet, DefaultEnvironment),
 		ApiVersion: getEnv(KeyApiVersion, DefaultEnvironment),
 		MaxDrawCnt: getEnvInt(KeyMaxDrawCnt, DefaultEnvironment),
-		ShowFaucet:   getEnvInt(KeyShowFaucet,"1"),
+		ShowFaucet:   getEnvInt(KeyShowFaucet,DefaultEnvironment),
 	}
 	config.Server = server
 
@@ -105,6 +105,7 @@ func loadDefault() {
 		KeyPrefixValPub:   "fvp",
 		KeyPrefixConsAddr: "fca",
 		KeyPrefixConsPub:  "fcp",
+		KeyShowFaucet:"1",
 	}
 
 	defaultConfig[EnvironmentLocal] = map[string]string{
@@ -126,6 +127,7 @@ func loadDefault() {
 		KeyPrefixValPub:   "fvp",
 		KeyPrefixConsAddr: "fca",
 		KeyPrefixConsPub:  "fcp",
+		KeyShowFaucet:"1",
 	}
 }
 
