@@ -108,7 +108,7 @@
         </div>
 
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/Proposals')">Proposals</span>
-        <span class="feature_btn_mobile feature_nav faucet_content" @click="featureButtonClick('/faucet')">Faucet</span>
+        <span class="feature_btn_mobile feature_nav mobile_faucet_content" @click="featureButtonClick('/faucet')">Faucet</span>
 
       </div>
       <div class="search_input_mobile">
@@ -183,8 +183,10 @@
       window.addEventListener('resize',this.onresize);
       let showFaucet = localStorage.getItem('Show_faucet');
       let faucetDom = document.getElementsByClassName('faucet_content')[0];
+      let mobileFaucetDom = document.getElementsByClassName('mobile_faucet_content')[0];
       if(showFaucet === "0"){
-        faucetDom.parentNode.removeChild(faucetDom)
+        faucetDom.parentNode.removeChild(faucetDom);
+        mobileFaucetDom.parentNode.removeChild(mobileFaucetDom)
       }
     },
     beforeDestroy() {
