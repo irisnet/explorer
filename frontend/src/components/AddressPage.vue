@@ -5,7 +5,7 @@
         <span class="transactions_detail_title">Address</span>
         <span class="transactions_detail_wrap_hash_var">
           {{address}}
-          <i v-if="flValidator" :style="{background:validatorStatusColor}">v</i>
+          <i v-if="true" :style="{background:validatorStatusColor}">v</i>
             <img v-show="flShowProfileLogo" class="profile_logo_img" src="../assets/profiler_logo.png">
             <span v-show="flShowValidatorCandidate && flValidator" class="candidate_validator">(This Validator is a Candidate)</span>
             <span v-show="flShowValidatorJailed && flValidator" class="jailed_validator">(This Validator is jailed!)</span>
@@ -1166,6 +1166,8 @@
     }
   }
   .candidate_validator{
+    width: 2rem;
+    white-space: nowrap;
     color: #45B035;
     @include fontSize;
     padding-left: 0.09rem;
