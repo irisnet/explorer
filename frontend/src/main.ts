@@ -21,12 +21,6 @@ axios.interceptors.request.use(function (config) {
   return Promise.reject(error);
 });
 
-if(localStorage.getItem('Faucet_url') && localStorage.getItem('Faucet_url') !== "null"){
-  faucet_url = localStorage.getItem('Faucet_url')
-}else{
-  faucet_url = ''
-}
-
 if(localStorage.getItem('Chain_id') && localStorage.getItem('Chain_id') !== "null"){
   fuxi = localStorage.getItem('Chain_id')
 }else{

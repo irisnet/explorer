@@ -60,7 +60,7 @@
         <span class="nav_item common_item_style" :class="activeClassName === '/Proposals'?'nav_item_active':''"
               @click="featureButtonClick('/Proposals')"
         >Proposals</span>
-        <span class="nav_item common_item_style" :class="activeClassName === '/faucet'?'nav_item_active':''"
+        <span v-show="flShowFaucet" class="nav_item common_item_style" :class="activeClassName === '/faucet'?'nav_item_active':''"
               @click="featureButtonClick('/faucet')"
         >Faucet</span>
       </div>
@@ -108,7 +108,7 @@
         </div>
 
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/Proposals')">Proposals</span>
-        <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/faucet')">Faucet</span>
+        <span v-show="flShowFaucet" class="feature_btn_mobile feature_nav" @click="featureButtonClick('/faucet')">Faucet</span>
 
       </div>
       <div class="search_input_mobile">
@@ -167,6 +167,7 @@
         flShowValidatorsUpOrDown: false,
         upImg: require("../assets/caret-bottom.png"),
         downImg: require("../assets/caret-bottom.png"),
+        flShowFaucet: false
     }
     },
     beforeMount() {
@@ -182,6 +183,10 @@
       document.getElementById('router_wrap').addEventListener('click', this.hideFeature);
       this.listenRouteForChangeActiveButton();
       window.addEventListener('resize',this.onresize);
+      let showFaucet = localStorage.getItem('Show_faucet');
+      if(showFaucet === "1"){
+        this.flShowFaucet = true
+      }
     },
     beforeDestroy() {
       document.getElementById('router_wrap').removeEventListener('click', this.hideFeature);
