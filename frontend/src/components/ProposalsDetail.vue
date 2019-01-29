@@ -304,6 +304,7 @@
                   })
                 },1000);
               }else {
+                this.showNoData = true
                 this.items = [{
                   Voter: "",
                   "Vote Option": "",
@@ -611,7 +612,7 @@
   .parameter_detail_content{
     box-sizing: border-box;
     padding: 0.1rem;
-    width: 95%;
+    width: 97%;
     margin-right:20%;
     background: #EEE !important;
   }
