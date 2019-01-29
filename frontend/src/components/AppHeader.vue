@@ -127,7 +127,6 @@
 <script>
   import Tools from '../util/Tools';
   import Service from "../util/axios"
-  import $ from "jquery"
   export default {
     name: 'app-header',
     watch:{
@@ -183,8 +182,9 @@
       this.listenRouteForChangeActiveButton();
       window.addEventListener('resize',this.onresize);
       let showFaucet = localStorage.getItem('Show_faucet');
+      let faucetDom = document.getElementsByClassName('faucet_content')[0];
       if(showFaucet === "0"){
-        $('.faucet_content').remove()
+        faucetDom.parentNode.removeChild(faucetDom)
       }
     },
     beforeDestroy() {
