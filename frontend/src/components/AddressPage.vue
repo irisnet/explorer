@@ -1166,6 +1166,8 @@
     }
   }
   .candidate_validator{
+    width: 2rem;
+    white-space: nowrap;
     color: #45B035;
     @include fontSize;
     padding-left: 0.09rem;

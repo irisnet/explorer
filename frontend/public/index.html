@@ -23,9 +23,9 @@
       req.open('GET', document.location, false);
       req.send(null);
       var Chain_id = req.getResponseHeader('Chain_id');
-      var Faucet_url = req.getResponseHeader('Faucet_url');
-      localStorage.Chain_id = Chain_id
-      localStorage.Faucet_url = Faucet_url
+      var Show_faucet = req.getResponseHeader('Show_faucet');
+      localStorage.Chain_id = Chain_id;
+      localStorage.Show_faucet = Show_faucet
     </script>
   </head>
   <body>
