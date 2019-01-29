@@ -1,7 +1,6 @@
 package service
 
 import (
-	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
@@ -394,10 +393,10 @@ func (service *CandidateService) QueryCandidateStatus(address string) (resp mode
 }
 
 func (service *CandidateService) QueryChainStatus() model.ChainStatusVo {
-	db := getDb()
-	defer db.Session.Close()
-	cs := db.C(document.CollectionNmStakeRoleCandidate)
-	pipe := cs.Pipe(
+	store := getDb()
+	defer store.Session.Close()
+	candidateStore := store.C(document.CollectionNmStakeRoleCandidate)
+	pipe := candidateStore.Pipe(
 		[]bson.M{
 			{"$group": bson.M{
 				"_id":   "voting_power",
@@ -411,18 +410,23 @@ func (service *CandidateService) QueryChainStatus() model.ChainStatusVo {
 	query := bson.M{}
 	query[document.Candidate_Field_Status] = types.TypeValStatusBonded
 	query[document.Candidate_Field_Jailed] = false
-	activeValidatorsCnt, _ := cs.Find(query).Count()
-	cc := db.C(document.CollectionNmCommonTx)
-	txCount, _ := cc.Count()
+	activeValidatorsCnt, _ := candidateStore.Find(query).Count()
+	txStore := store.C(document.CollectionNmCommonTx)
+	txCount, _ := txStore.Count()
 
-	t := time.Now().Add(-1 * time.Minute)
-	logger.Debug("compute tps,find tx condition", service.GetTraceLog(), logger.String("start", t.String()), logger.String("end", time.Now().String()))
-	txs, _ := cc.Find(bson.M{document.Tx_Field_Time: bson.M{"$gte": t}}).Count()
+	var lastTx document.CommonTx
+	var txCnt int
+	err := txStore.Find(nil).Sort(desc(document.Tx_Field_Time)).Limit(1).One(&lastTx)
+	if err == nil {
+		t := lastTx.Time.Add(-1 * time.Minute)
+		txCnt, _ = txStore.Find(bson.M{document.Tx_Field_Time: bson.M{"$gte": t}}).Count()
+	}
+
 	resp := model.ChainStatusVo{
 		ValidatorsCount: activeValidatorsCnt,
 		TxCount:         txCount,
 		VotingPower:     getVotingPowerFromToken(count.Count),
-		Tps:             float64(txs) / 60,
+		Tps:             float64(txCnt) / 60,
 	}
 	return resp
 }
