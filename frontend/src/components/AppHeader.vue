@@ -60,7 +60,7 @@
         <span class="nav_item common_item_style" :class="activeClassName === '/Proposals'?'nav_item_active':''"
               @click="featureButtonClick('/Proposals')"
         >Proposals</span>
-        <span v-show="flShowFaucet" class="nav_item common_item_style" :class="activeClassName === '/faucet'?'nav_item_active':''"
+        <span class="nav_item common_item_style faucet_content" :class="activeClassName === '/faucet'?'nav_item_active':''"
               @click="featureButtonClick('/faucet')"
         >Faucet</span>
       </div>
@@ -108,7 +108,7 @@
         </div>
 
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/Proposals')">Proposals</span>
-        <span v-show="flShowFaucet" class="feature_btn_mobile feature_nav" @click="featureButtonClick('/faucet')">Faucet</span>
+        <span class="feature_btn_mobile feature_nav faucet_content" @click="featureButtonClick('/faucet')">Faucet</span>
 
       </div>
       <div class="search_input_mobile">
@@ -127,7 +127,7 @@
 <script>
   import Tools from '../util/Tools';
   import Service from "../util/axios"
-
+  import $ from "jquery"
   export default {
     name: 'app-header',
     watch:{
@@ -167,7 +167,6 @@
         flShowValidatorsUpOrDown: false,
         upImg: require("../assets/caret-bottom.png"),
         downImg: require("../assets/caret-bottom.png"),
-        flShowFaucet: false
     }
     },
     beforeMount() {
@@ -184,8 +183,8 @@
       this.listenRouteForChangeActiveButton();
       window.addEventListener('resize',this.onresize);
       let showFaucet = localStorage.getItem('Show_faucet');
-      if(showFaucet === "1"){
-        this.flShowFaucet = true
+      if(showFaucet === "0"){
+        $('.faucet_content').remove()
       }
     },
     beforeDestroy() {
