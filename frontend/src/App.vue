@@ -32,7 +32,7 @@
           </div>
           <div class="footer_center">
             <a href="https://www.irisnet.org/" target="_blank">
-              <img src="./assets/IRIS-logo.png" alt="">
+              <img src="./assets/irisnet.png" alt="">
             </a>
           </div>
           <div class="footer_right" :class="footerRightVar">
@@ -345,13 +345,10 @@
               margin-top: 0.1rem;
               font-size: 0.14rem;
             }
-
           }
-
         }
       }
     }
-
   }
   pre{
     font-family: Arial !important;
