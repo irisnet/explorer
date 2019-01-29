@@ -60,7 +60,7 @@
         <span class="nav_item common_item_style" :class="activeClassName === '/Proposals'?'nav_item_active':''"
               @click="featureButtonClick('/Proposals')"
         >Proposals</span>
-        <span class="nav_item common_item_style" :class="activeClassName === '/faucet'?'nav_item_active':''"
+        <span class="nav_item common_item_style faucet_content" :class="activeClassName === '/faucet'?'nav_item_active':''"
               @click="featureButtonClick('/faucet')"
         >Faucet</span>
       </div>
@@ -108,7 +108,7 @@
         </div>
 
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/Proposals')">Proposals</span>
-        <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/faucet')">Faucet</span>
+        <span class="feature_btn_mobile feature_nav faucet_content" @click="featureButtonClick('/faucet')">Faucet</span>
 
       </div>
       <div class="search_input_mobile">
@@ -127,7 +127,6 @@
 <script>
   import Tools from '../util/Tools';
   import Service from "../util/axios"
-
   export default {
     name: 'app-header',
     watch:{
@@ -182,6 +181,11 @@
       document.getElementById('router_wrap').addEventListener('click', this.hideFeature);
       this.listenRouteForChangeActiveButton();
       window.addEventListener('resize',this.onresize);
+      let showFaucet = localStorage.getItem('Show_faucet');
+      let faucetDom = document.getElementsByClassName('faucet_content')[0];
+      if(showFaucet === "0"){
+        faucetDom.parentNode.removeChild(faucetDom)
+      }
     },
     beforeDestroy() {
       document.getElementById('router_wrap').removeEventListener('click', this.hideFeature);

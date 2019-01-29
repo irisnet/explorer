@@ -32,7 +32,7 @@
           </div>
           <div class="footer_center">
             <a href="https://www.irisnet.org/" target="_blank">
-              <img src="./assets/IRIS-logo.png" alt="">
+              <img src="./assets/irisnet.png">
             </a>
           </div>
           <div class="footer_right" :class="footerRightVar">
