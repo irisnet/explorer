@@ -30,8 +30,8 @@ func NewApiServer() *ApiServer {
 
 	server := &http.Server{
 		ReadTimeout:       5 * time.Second,
-		WriteTimeout:      10 * time.Second,
-		ReadHeaderTimeout: 10 * time.Second,
+		WriteTimeout:      60 * time.Second,
+		ReadHeaderTimeout: 60 * time.Second,
 		IdleTimeout:       10 * time.Second,
 		Addr:              addr,
 		Handler:           handler,
