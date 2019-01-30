@@ -411,15 +411,17 @@ func (service *CandidateService) QueryChainStatus() model.ChainStatusVo {
 	query[document.Candidate_Field_Status] = types.TypeValStatusBonded
 	query[document.Candidate_Field_Jailed] = false
 	activeValidatorsCnt, _ := candidateStore.Find(query).Count()
+
+	blockStore := store.C(document.CollectionNmBlock)
 	txStore := store.C(document.CollectionNmCommonTx)
 	txCount, _ := txStore.Count()
 
-	var lastTx document.CommonTx
+	var recentBlock document.Block
 	var txCnt int
-	err := txStore.Find(nil).Sort(desc(document.Tx_Field_Time)).Limit(1).One(&lastTx)
+	err := blockStore.Find(nil).Sort(desc(document.Block_Field_Height)).Limit(1).One(&recentBlock)
 	if err == nil {
-		t := lastTx.Time.Add(-1 * time.Minute)
-		txCnt, _ = txStore.Find(bson.M{document.Tx_Field_Time: bson.M{"$gte": t}}).Count()
+		startTime := recentBlock.Time.Add(-1 * time.Minute)
+		txCnt, _ = txStore.Find(bson.M{document.Tx_Field_Time: bson.M{"$gte": startTime}}).Count()
 	}
 
 	resp := model.ChainStatusVo{
