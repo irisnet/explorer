@@ -32,6 +32,6 @@ func NewResponse(code, msg string, data interface{}) Response {
 
 type IrisReq struct {
 	*http.Request
-	TraceId int64
+	TraceId string
 	Start   time.Time
 }

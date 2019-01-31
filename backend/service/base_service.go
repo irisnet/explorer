@@ -63,19 +63,19 @@ type Service interface {
 }
 
 type BaseService struct {
-	tid int64
+	tid string
 }
 
-func (base *BaseService) SetTid(traceId int64) {
+func (base *BaseService) SetTid(traceId string) {
 	base.tid = traceId
 }
 
-func (base *BaseService) GetTid() int64 {
+func (base *BaseService) GetTid() string {
 	return base.tid
 }
 
 func (base *BaseService) GetTraceLog() zap.Field {
-	return logger.Int64("traceId", base.GetTid())
+	return logger.String("traceId", base.GetTid())
 }
 
 func queryRows(collation string, data interface{}, m map[string]interface{}, sort string, page, size int) model.PageVo {

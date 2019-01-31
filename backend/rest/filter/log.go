@@ -14,10 +14,10 @@ type LogPreFilter struct {
 
 func (LogPreFilter) Do(request *model.IrisReq, data interface{}) (interface{}, types.BizCode) {
 	start := time.Now()
-	request.TraceId = start.UnixNano()
+	request.TraceId = string(start.UnixNano())
 	request.Start = start
 
-	traceId := logger.Int64("traceId", request.TraceId)
+	traceId := logger.String("traceId", request.TraceId)
 	apiPath := logger.String("path", request.RequestURI)
 	formValue := logger.Any("form", request.Form)
 	urlValue := logger.Any("url", mux.Vars(request.Request))
@@ -45,7 +45,7 @@ type LogPostFilter struct {
 }
 
 func (LogPostFilter) Do(request *model.IrisReq, data interface{}) (interface{}, types.BizCode) {
-	traceId := logger.Int64("traceId", request.TraceId)
+	traceId := logger.String("traceId", request.TraceId)
 	coastSecond := time.Now().Unix() - request.Start.Unix()
 	coast := logger.Int64("coast", coastSecond)
 	apiPath := logger.String("path", request.RequestURI)
