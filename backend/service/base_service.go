@@ -78,11 +78,11 @@ func (base *BaseService) GetTraceLog() zap.Field {
 	return logger.Int64("traceId", base.GetTid())
 }
 
-func queryPage(collation string, data interface{}, m map[string]interface{}, sort string, page, size int) model.PageVo {
-	return orm.QueryList(collation, data, m, sort, page, size)
+func queryRows(collation string, data interface{}, m map[string]interface{}, sort string, page, size int) model.PageVo {
+	return orm.QueryRows(collation, data, m, sort, page, size)
 }
 
-func QueryListField(collation string, selector bson.M, m map[string]interface{}, sort string, page, size int) (int, []map[string]interface{}) {
+func queryRowsField(collation string, selector bson.M, m map[string]interface{}, sort string, page, size int) (int, []map[string]interface{}) {
 	var query = orm.MQuery{
 		C:        collation,
 		Q:        m,
@@ -91,24 +91,24 @@ func QueryListField(collation string, selector bson.M, m map[string]interface{},
 		Page:     page,
 		Size:     size,
 	}
-	count, data, err := orm.QueryListField(query)
+	count, data, err := orm.QueryRowsField(query)
 	if err != nil {
-		logger.Error("QueryListField error", logger.Any("query", m), logger.String("err", err.Error()))
+		logger.Error("QueryRowsField error", logger.Any("query", m), logger.String("err", err.Error()))
 	}
 	return count, data
 }
 
-func queryOne(collation string, data interface{}, m map[string]interface{}) error {
-	return orm.QueryOne(collation, data, m)
+func queryRow(collation string, data interface{}, m map[string]interface{}) error {
+	return orm.QueryRow(collation, data, m)
 }
 
-func queryOneField(collation string, selector bson.M, m map[string]interface{}) map[string]interface{} {
+func queryRowField(collation string, selector bson.M, m map[string]interface{}) map[string]interface{} {
 	var query = orm.MQuery{
 		C:        collation,
 		Q:        m,
 		Selector: selector,
 	}
-	return orm.QueryOneField(query)
+	return orm.QueryRowField(query)
 }
 
 func getDb() *mgo.Database {

@@ -19,7 +19,7 @@ func (service *ProposalService) GetModule() Module {
 func (service *ProposalService) QueryList(page, size int) (resp model.PageVo) {
 	var data []document.Proposal
 	sort := desc(document.Proposal_Field_SubmitTime)
-	resp = queryPage(document.CollectionNmProposal, &data, nil, sort, page, size)
+	resp = queryRows(document.CollectionNmProposal, &data, nil, sort, page, size)
 
 	var proposals []model.Proposal
 	for _, propo := range data {

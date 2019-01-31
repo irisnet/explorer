@@ -20,7 +20,7 @@ func (service *BlockService) GetModule() Module {
 }
 
 func (service *BlockService) Query(height int64) model.BlockInfoVo {
-	var data = queryOneField(document.CollectionNmBlock, blockSelector, bson.M{document.Block_Field_Height: height})
+	var data = queryRowField(document.CollectionNmBlock, blockSelector, bson.M{document.Block_Field_Height: height})
 	var b TmpBlock
 	utils.Map2Struct(data, &b)
 	return buildBlock(b)
@@ -31,7 +31,7 @@ func (service *BlockService) QueryList(page, size int) model.PageVo {
 	var pageInfo model.PageVo
 
 	sort := desc(document.Block_Field_Height)
-	cnt, data := QueryListField(document.CollectionNmBlock, blockSelector, nil, sort, page, size)
+	cnt, data := queryRowsField(document.CollectionNmBlock, blockSelector, nil, sort, page, size)
 
 	for _, block := range data {
 		var b TmpBlock
@@ -58,7 +58,7 @@ func (service *BlockService) QueryPrecommits(address string, page, size int) (re
 	var data []document.Block
 	sort = desc(document.Block_Field_Height)
 
-	return queryPage(document.CollectionNmBlock, &data, bson.M{"block.last_commit.precommits": bson.M{"$elemMatch": bson.M{"validator_address": candidate.PubKeyAddr}}}, sort, page, size)
+	return queryRows(document.CollectionNmBlock, &data, bson.M{"block.last_commit.precommits": bson.M{"$elemMatch": bson.M{"validator_address": candidate.PubKeyAddr}}}, sort, page, size)
 }
 
 func buildBlock(block TmpBlock) (result model.BlockInfoVo) {
