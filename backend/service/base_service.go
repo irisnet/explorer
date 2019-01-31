@@ -7,6 +7,7 @@ import (
 	"github.com/irisnet/explorer/backend/orm"
 	"go.uber.org/zap"
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 var (
@@ -81,8 +82,33 @@ func queryPage(collation string, data interface{}, m map[string]interface{}, sor
 	return orm.QueryList(collation, data, m, sort, page, size)
 }
 
+func QueryListField(collation string, selector bson.M, m map[string]interface{}, sort string, page, size int) (int, []map[string]interface{}) {
+	var query = orm.MQuery{
+		C:        collation,
+		Q:        m,
+		Selector: selector,
+		Sort:     sort,
+		Page:     page,
+		Size:     size,
+	}
+	count, data, err := orm.QueryListField(query)
+	if err != nil {
+		logger.Error("QueryListField error", logger.Any("query", m), logger.String("err", err.Error()))
+	}
+	return count, data
+}
+
 func queryOne(collation string, data interface{}, m map[string]interface{}) error {
 	return orm.QueryOne(collation, data, m)
+}
+
+func queryOneField(collation string, selector bson.M, m map[string]interface{}) map[string]interface{} {
+	var query = orm.MQuery{
+		C:        collation,
+		Q:        m,
+		Selector: selector,
+	}
+	return orm.QueryOneField(query)
 }
 
 func getDb() *mgo.Database {

@@ -50,8 +50,41 @@ func QueryList(collation string, data interface{}, m map[string]interface{}, sor
 	}
 }
 
+func QueryListField(query MQuery) (int, []map[string]interface{}, error) {
+	var result []map[string]interface{}
+	c := GetDatabase().C(query.C)
+	defer c.Database.Session.Close()
+	count, err := c.Find(query.Q).Count()
+	if err != nil {
+		return count, result, err
+	}
+	err = c.Find(query.Q).Select(query.Selector).Skip((query.Page - 1) * query.Size).Limit(query.Size).Sort(query.Sort).All(&result)
+	return count, result, err
+}
+
 func QueryOne(collation string, data interface{}, m map[string]interface{}) error {
 	c := GetDatabase().C(collation)
 	defer c.Database.Session.Close()
 	return c.Find(m).One(data)
+}
+
+func QueryOneField(query MQuery) map[string]interface{} {
+	var result map[string]interface{}
+	c := GetDatabase().C(query.C)
+	defer c.Database.Session.Close()
+	err := c.Find(query.Q).One(&result)
+	if err != nil {
+		logger.Error("data not found", logger.String("err", err.Error()))
+	}
+	return result
+}
+
+type MQuery struct {
+	C        string
+	Result   interface{}
+	Q        map[string]interface{}
+	Sort     string
+	Page     int
+	Size     int
+	Selector interface{}
 }
