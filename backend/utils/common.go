@@ -41,10 +41,10 @@ func Round(x float64) int64 {
 func Map2Struct(srcMap map[string]interface{}, obj interface{}) {
 	bz, err := json.Marshal(srcMap)
 	if err != nil {
-		logger.Error("map convert to struct failed")
+		logger.Error("map convert to json failed")
 	}
 	err = json.Unmarshal(bz, obj)
 	if err != nil {
-		logger.Error("map convert to struct failed")
+		logger.Error("json convert to struct failed")
 	}
 }
