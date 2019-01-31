@@ -21,14 +21,14 @@ func (service *TxService) GetModule() Module {
 
 func (service *TxService) QueryList(query bson.M, page, pageSize int) model.PageVo {
 	var data []document.CommonTx
-	pageInfo := queryPage(document.CollectionNmCommonTx, &data, query, desc(document.Tx_Field_Time), page, pageSize)
+	pageInfo := queryRows(document.CollectionNmCommonTx, &data, query, desc(document.Tx_Field_Time), page, pageSize)
 	pageInfo.Data = buildData(data)
 	return pageInfo
 }
 
 func (service *TxService) QueryLatest(query bson.M, page, pageSize int) model.PageVo {
 	var data []document.CommonTx
-	pageInfo := queryPage(document.CollectionNmCommonTx, &data, query, desc(document.Tx_Field_Time), page, pageSize)
+	pageInfo := queryRows(document.CollectionNmCommonTx, &data, query, desc(document.Tx_Field_Time), page, pageSize)
 	return pageInfo
 }
 
@@ -82,7 +82,7 @@ func (service *TxService) QueryByAcc(address string, page, size int) model.PageV
 	query[document.Tx_Field_Type] = bson.M{
 		"$in": typeArr,
 	}
-	return queryPage(document.CollectionNmCommonTx, &data, query, desc(document.Tx_Field_Time), page, size)
+	return queryRows(document.CollectionNmCommonTx, &data, query, desc(document.Tx_Field_Time), page, size)
 }
 
 func (service *TxService) CountByType(query bson.M) model.TxStatisticsVo {

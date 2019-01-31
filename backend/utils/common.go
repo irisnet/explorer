@@ -1,7 +1,9 @@
 package utils
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/irisnet/explorer/backend/logger"
 	"math"
 	"strconv"
 )
@@ -34,4 +36,15 @@ func RoundFloat(num float64, bit int) (i float64, b bool) {
 
 func Round(x float64) int64 {
 	return int64(math.Floor(x + 0.5))
+}
+
+func Map2Struct(srcMap map[string]interface{}, obj interface{}) {
+	bz, err := json.Marshal(srcMap)
+	if err != nil {
+		logger.Error("map convert to json failed")
+	}
+	err = json.Unmarshal(bz, obj)
+	if err != nil {
+		logger.Error("json convert to struct failed")
+	}
 }

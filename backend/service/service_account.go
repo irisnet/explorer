@@ -46,7 +46,7 @@ func (service *AccountService) Query(address string) (result model.AccountVo) {
 func (service *AccountService) QueryAll(page, size int) model.PageVo {
 	var result []document.Account
 	sort := desc(document.Tx_Field_Time)
-	return queryPage(document.CollectionNmAccount, &result, nil, sort, page, size)
+	return queryRows(document.CollectionNmAccount, &result, nil, sort, page, size)
 }
 
 func queryWithdrawAddr(address string) (result string) {
