@@ -38,7 +38,7 @@ var tx = Tx{
 func registerQueryTxList(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryTxList, "GET", func(request IrisReq) interface{} {
 		query := bson.M{}
-
+		tx.SetTid(request.TraceId)
 		address := GetString(request, "address")
 		if len(address) > 0 {
 			query["$or"] = []bson.M{{"from": address}, {"to": address}}
@@ -82,7 +82,7 @@ func registerQueryTxList(r *mux.Router) error {
 func registerQueryTx(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryTx, "GET", func(request IrisReq) interface{} {
 		hash := Var(request, "hash")
-
+		tx.SetTid(request.TraceId)
 		result := tx.Query(hash)
 		return result
 	})
@@ -93,6 +93,7 @@ func registerQueryTx(r *mux.Router) error {
 func registerQueryTxs(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryTxs, "GET", func(request IrisReq) interface{} {
 		query := bson.M{}
+		tx.SetTid(request.TraceId)
 		var typeArr []string
 		typeArr = append(typeArr, types.TypeTransfer)
 		typeArr = append(typeArr, types.DeclarationList...)
@@ -114,7 +115,7 @@ func registerQueryTxsCounter(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryTxsCounter, "GET", func(request IrisReq) interface{} {
 		query := bson.M{}
 		request.ParseForm()
-
+		tx.SetTid(request.TraceId)
 		address := GetString(request, "address")
 		if len(address) > 0 {
 			query["$or"] = []bson.M{{"from": address}, {"to": address}}
@@ -134,6 +135,7 @@ func registerQueryTxsCounter(r *mux.Router) error {
 
 func registerQueryTxsByAccount(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryTxsByAccount, "GET", func(request IrisReq) interface{} {
+		tx.SetTid(request.TraceId)
 		address := Var(request, "address")
 		page, size := GetPage(request)
 		result := tx.QueryByAcc(address, page, size)
@@ -146,6 +148,7 @@ func registerQueryTxsByAccount(r *mux.Router) error {
 
 func registerQueryTxsByDay(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryTxsByDay, "GET", func(request IrisReq) interface{} {
+		tx.SetTid(request.TraceId)
 		result := tx.CountByDay()
 		return result
 	})

@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
@@ -14,7 +15,7 @@ import (
 
 type IrisReq struct {
 	*http.Request
-	TraceId int64
+	TraceId string
 	Start   time.Time
 }
 
@@ -63,7 +64,7 @@ func GetPage(r IrisReq) (int, int) {
 
 // doBefore display user's request information,optional
 func doBefore(request IrisReq) {
-	traceId := logger.Int64("traceId", request.TraceId)
+	traceId := logger.String("traceId", request.TraceId)
 	apiPath := logger.String("path", request.RequestURI)
 	formValue := logger.Any("form", request.Form)
 	urlValue := logger.Any("url", mux.Vars(request.Request))
@@ -80,32 +81,33 @@ func doBefore(request IrisReq) {
 // execute user's business code
 func doAction(request IrisReq, action Action) interface{} {
 	//do business action
-	logger.Info("doAction", logger.Int64("traceId", request.TraceId))
+	apiPath := logger.String("path", request.RequestURI)
+	logger.Info("doAction", logger.String("traceId", request.TraceId), apiPath)
 	result := action(request)
 	return result
 }
 
 // doAfter display user's request information,optional
 func doAfter(request IrisReq, result interface{}) {
-	traceId := logger.Int64("traceId", request.TraceId)
-	res := logger.Any("result", result)
+	traceId := logger.String("traceId", request.TraceId)
+	apiPath := logger.String("path", request.RequestURI)
 	coastSecond := time.Now().Unix() - request.Start.Unix()
 	coast := logger.Int64("coast", coastSecond)
 	defer func() {
 		if r := recover(); r != nil {
-			logger.Error("doAfter failed", traceId)
+			logger.Error("doAfter failed", traceId, apiPath)
 		}
 	}()
-	logger.Info("doAfter", traceId, res, coast)
+	logger.Info("doAfter", apiPath, traceId, coast)
 	if coastSecond >= 3 {
-		logger.Warn("doAfter api coast most time", traceId)
+		logger.Warn("doAfter api coast most time", traceId, apiPath)
 	}
 }
 
 // deal with exception for business action
 func doException(request IrisReq, writer http.ResponseWriter) {
 	if r := recover(); r != nil {
-		trace := logger.Int64("traceId", request.TraceId)
+		trace := logger.String("traceId", request.TraceId)
 		errMsg := logger.Any("errMsg", r)
 		switch r.(type) {
 		case types.BizCode:
@@ -153,9 +155,10 @@ func doApi(r *mux.Router, url, method string, action Action) {
 	//wrap business code
 	wrapperAction := func(writer http.ResponseWriter, request *http.Request) {
 		start := time.Now()
+		traceId := fmt.Sprintf("%d", start.UnixNano())
 		req := IrisReq{
 			Request: request,
-			TraceId: start.UnixNano(),
+			TraceId: traceId,
 			Start:   start,
 		}
 		defer doException(req, writer)
