@@ -259,6 +259,7 @@ import Constant from "../constant/Constant"
         },
         getBlocksList() {
           let url = `/api/blocks/1/10`;
+
           Service.http(url).then((blockList) => {
             this.getBlocksStatus();
             this.hideFadeinAnimation();
