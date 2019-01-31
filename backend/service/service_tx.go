@@ -3,6 +3,7 @@ package service
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
@@ -20,19 +21,24 @@ func (service *TxService) GetModule() Module {
 }
 
 func (service *TxService) QueryList(query bson.M, page, pageSize int) model.PageVo {
+	logger.Info("QueryList start", service.GetTraceLog())
 	var data []document.CommonTx
 	pageInfo := queryRows(document.CollectionNmCommonTx, &data, query, desc(document.Tx_Field_Time), page, pageSize)
 	pageInfo.Data = buildData(data)
+	logger.Info("QueryList end", service.GetTraceLog())
 	return pageInfo
 }
 
 func (service *TxService) QueryLatest(query bson.M, page, pageSize int) model.PageVo {
+	logger.Info("QueryList", service.GetTraceLog())
 	var data []document.CommonTx
 	pageInfo := queryRows(document.CollectionNmCommonTx, &data, query, desc(document.Tx_Field_Time), page, pageSize)
+	logger.Info("QueryList end", service.GetTraceLog())
 	return pageInfo
 }
 
 func (service *TxService) Query(hash string) interface{} {
+	logger.Info("QueryList start", service.GetTraceLog())
 	dbm := getDb()
 	defer dbm.Session.Close()
 
@@ -67,6 +73,7 @@ func (service *TxService) Query(hash string) interface{} {
 		}
 		return stakeTx
 	}
+	logger.Info("QueryList end", service.GetTraceLog())
 	return tx
 }
 

@@ -48,14 +48,15 @@ func (LogPostFilter) Do(request *model.IrisReq, data interface{}) (interface{}, 
 	traceId := logger.Int64("traceId", request.TraceId)
 	coastSecond := time.Now().Unix() - request.Start.Unix()
 	coast := logger.Int64("coast", coastSecond)
+	apiPath := logger.String("path", request.RequestURI)
 	defer func() {
 		if r := recover(); r != nil {
 			logger.Error("LogPostFilter failed", traceId)
 		}
 	}()
-	logger.Info("LogPostFilter", traceId, coast)
+	logger.Info("LogPostFilter", apiPath, traceId, coast)
 	if coastSecond >= 3 {
-		logger.Warn("LogPostFilter api coast most time", traceId)
+		logger.Warn("LogPostFilter api coast most time", apiPath, traceId, coast)
 	}
 	return nil, types.CodeSuccess
 }
