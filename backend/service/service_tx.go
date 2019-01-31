@@ -8,7 +8,6 @@ import (
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
 	"gopkg.in/mgo.v2/bson"
-	"log"
 	"time"
 )
 
@@ -30,15 +29,15 @@ func (service *TxService) QueryList(query bson.M, page, pageSize int) model.Page
 }
 
 func (service *TxService) QueryLatest(query bson.M, page, pageSize int) model.PageVo {
-	logger.Info("QueryList", service.GetTraceLog())
+	logger.Info("QueryLatest", service.GetTraceLog())
 	var data []document.CommonTx
 	pageInfo := queryRows(document.CollectionNmCommonTx, &data, query, desc(document.Tx_Field_Time), page, pageSize)
-	logger.Info("QueryList end", service.GetTraceLog())
+	logger.Info("QueryLatest end", service.GetTraceLog())
 	return pageInfo
 }
 
 func (service *TxService) Query(hash string) interface{} {
-	logger.Info("QueryList start", service.GetTraceLog())
+	logger.Info("Query start", service.GetTraceLog())
 	dbm := getDb()
 	defer dbm.Session.Close()
 
@@ -93,6 +92,7 @@ func (service *TxService) QueryByAcc(address string, page, size int) model.PageV
 }
 
 func (service *TxService) CountByType(query bson.M) model.TxStatisticsVo {
+	logger.Info("CountByType start", service.GetTraceLog())
 	var typeArr []string
 	typeArr = append(typeArr, types.TypeTransfer)
 	typeArr = append(typeArr, types.DeclarationList...)
@@ -135,10 +135,12 @@ func (service *TxService) CountByType(query bson.M) model.TxStatisticsVo {
 			result.GovCnt = result.GovCnt + cnt.Count
 		}
 	}
+	logger.Info("CountByType end", service.GetTraceLog())
 	return result
 }
 
 func (service *TxService) CountByDay() []model.TxDayVo {
+	logger.Info("CountByDay start", service.GetTraceLog())
 	c := getDb().C(document.CollectionNmCommonTx)
 	defer c.Database.Session.Close()
 
@@ -149,7 +151,7 @@ func (service *TxService) CountByDay() []model.TxDayVo {
 	fromDate := time.Date(start.Year(), start.Month(), start.Day(), 0, 0, 0, 0, start.Location())
 	endDate := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, start.Location())
 
-	log.Println(fmt.Sprintf("from:%s,to:%s", fromDate.String(), endDate.String()))
+	logger.Info(fmt.Sprintf("from:%s,to:%s", fromDate.String(), endDate.String()))
 
 	pipe := c.Pipe(
 		[]bson.M{
@@ -191,6 +193,7 @@ func (service *TxService) CountByDay() []model.TxDayVo {
 		i++
 		day = start.Add(i * 24 * time.Hour)
 	}
+	logger.Info("CountByDay end", service.GetTraceLog())
 	return result
 }
 
