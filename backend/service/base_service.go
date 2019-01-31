@@ -7,6 +7,7 @@ import (
 	"github.com/irisnet/irishub-sync/logger"
 	"go.uber.org/zap"
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 var (
@@ -77,8 +78,48 @@ func queryPage(collation string, data interface{}, m map[string]interface{}, sor
 	return orm.QueryList(collation, data, m, sort, page, size)
 }
 
+func QueryListField(collation string, selector bson.M, m map[string]interface{}, sort string, page, size int) (int, []map[string]interface{}) {
+	var query = orm.MQuery{
+		C:        collation,
+		Q:        m,
+		Selector: selector,
+		Sort:     sort,
+		Page:     page,
+		Size:     size,
+	}
+	count, data, err := orm.QueryListField(query)
+	if err != nil {
+		logger.Error("QueryListField error", logger.Any("query", m), logger.String("err", err.Error()))
+	}
+	return count, data
+}
+
+func LimitQuery(collation string, selector bson.M, m map[string]interface{}, sort string, size int) ([]map[string]interface{}, error) {
+	var query = orm.MQuery{
+		C:        collation,
+		Q:        m,
+		Selector: selector,
+		Sort:     sort,
+		Size:     size,
+	}
+	data, err := orm.LimitQuery(query)
+	if err != nil {
+		logger.Error("QueryListField error", logger.Any("query", m), logger.String("err", err.Error()))
+	}
+	return data, err
+}
+
 func queryOne(collation string, data interface{}, m map[string]interface{}) error {
 	return orm.QueryOne(collation, data, m)
+}
+
+func queryOneField(collation string, selector bson.M, m map[string]interface{}) map[string]interface{} {
+	var query = orm.MQuery{
+		C:        collation,
+		Q:        m,
+		Selector: selector,
+	}
+	return orm.QueryOneField(query)
 }
 
 func getDb() *mgo.Database {

@@ -1,11 +1,11 @@
 package utils
 
 import (
-	"bytes"
-	"encoding/binary"
+	"encoding/json"
 	"fmt"
+	"github.com/irisnet/irishub-sync/logger"
+	"math"
 	"strconv"
-	"time"
 )
 
 func ParseInt(text string) (i int64, b bool) {
@@ -34,15 +34,17 @@ func RoundFloat(num float64, bit int) (i float64, b bool) {
 	return i, true
 }
 
-func FmtTimeToString(time time.Time) string {
-	if time.IsZero() {
-		return ""
-	}
-	return time.String()
+func Round(x float64) int64 {
+	return int64(math.Floor(x + 0.5))
 }
 
-func IntToByte(num int64) []byte {
-	var buffer bytes.Buffer
-	binary.Write(&buffer, binary.BigEndian, num)
-	return buffer.Bytes()
+func Map2Struct(srcMap map[string]interface{}, obj interface{}) {
+	bz, err := json.Marshal(srcMap)
+	if err != nil {
+		logger.Error("map convert to struct failed")
+	}
+	err = json.Unmarshal(bz, obj)
+	if err != nil {
+		logger.Error("map convert to struct failed")
+	}
 }
