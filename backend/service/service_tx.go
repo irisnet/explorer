@@ -20,24 +20,24 @@ func (service *TxService) GetModule() Module {
 }
 
 func (service *TxService) QueryList(query bson.M, page, pageSize int) model.PageVo {
-	logger.Info("QueryList start", service.GetTraceLog())
+	logger.Debug("QueryList start", service.GetTraceLog())
 	var data []document.CommonTx
 	pageInfo := queryRows(document.CollectionNmCommonTx, &data, query, desc(document.Tx_Field_Time), page, pageSize)
 	pageInfo.Data = buildData(data)
-	logger.Info("QueryList end", service.GetTraceLog())
+	logger.Debug("QueryList end", service.GetTraceLog())
 	return pageInfo
 }
 
 func (service *TxService) QueryLatest(query bson.M, page, pageSize int) model.PageVo {
-	logger.Info("QueryLatest", service.GetTraceLog())
+	logger.Debug("QueryLatest", service.GetTraceLog())
 	var data []document.CommonTx
 	pageInfo := queryRows(document.CollectionNmCommonTx, &data, query, desc(document.Tx_Field_Time), page, pageSize)
-	logger.Info("QueryLatest end", service.GetTraceLog())
+	logger.Debug("QueryLatest end", service.GetTraceLog())
 	return pageInfo
 }
 
 func (service *TxService) Query(hash string) interface{} {
-	logger.Info("Query start", service.GetTraceLog())
+	logger.Debug("Query start", service.GetTraceLog())
 	dbm := getDb()
 	defer dbm.Session.Close()
 
@@ -72,7 +72,7 @@ func (service *TxService) Query(hash string) interface{} {
 		}
 		return stakeTx
 	}
-	logger.Info("QueryList end", service.GetTraceLog())
+	logger.Debug("QueryList end", service.GetTraceLog())
 	return tx
 }
 
@@ -92,7 +92,7 @@ func (service *TxService) QueryByAcc(address string, page, size int) model.PageV
 }
 
 func (service *TxService) CountByType(query bson.M) model.TxStatisticsVo {
-	logger.Info("CountByType start", service.GetTraceLog())
+	logger.Debug("CountByType start", service.GetTraceLog())
 	var typeArr []string
 	typeArr = append(typeArr, types.TypeTransfer)
 	typeArr = append(typeArr, types.DeclarationList...)
@@ -135,12 +135,12 @@ func (service *TxService) CountByType(query bson.M) model.TxStatisticsVo {
 			result.GovCnt = result.GovCnt + cnt.Count
 		}
 	}
-	logger.Info("CountByType end", service.GetTraceLog())
+	logger.Debug("CountByType end", service.GetTraceLog())
 	return result
 }
 
 func (service *TxService) CountByDay() []model.TxDayVo {
-	logger.Info("CountByDay start", service.GetTraceLog())
+	logger.Debug("CountByDay start", service.GetTraceLog())
 	c := getDb().C(document.CollectionNmCommonTx)
 	defer c.Database.Session.Close()
 
@@ -193,7 +193,7 @@ func (service *TxService) CountByDay() []model.TxDayVo {
 		i++
 		day = start.Add(i * 24 * time.Hour)
 	}
-	logger.Info("CountByDay end", service.GetTraceLog())
+	logger.Debug("CountByDay end", service.GetTraceLog())
 	return result
 }
 

@@ -47,16 +47,16 @@ type LogPostFilter struct {
 func (LogPostFilter) Do(request *model.IrisReq, data interface{}) (interface{}, types.BizCode) {
 	traceId := logger.String("traceId", request.TraceId)
 	coastSecond := time.Now().Unix() - request.Start.Unix()
-	coast := logger.Int64("coast", coastSecond)
+	cost := logger.Int64("cost", coastSecond)
 	apiPath := logger.String("path", request.RequestURI)
 	defer func() {
 		if r := recover(); r != nil {
 			logger.Error("LogPostFilter failed", traceId)
 		}
 	}()
-	logger.Info("LogPostFilter", apiPath, traceId, coast)
+	logger.Info("LogPostFilter", apiPath, traceId, cost)
 	if coastSecond >= 3 {
-		logger.Warn("LogPostFilter api coast most time", apiPath, traceId, coast)
+		logger.Warn("LogPostFilter api too slow", apiPath, traceId, cost)
 	}
 	return nil, types.CodeSuccess
 }
