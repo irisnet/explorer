@@ -243,7 +243,7 @@ import Constant from "../constant/Constant"
         showFadeinAnimation(blockList,numerator,denominator){
           let storedLastBlock = localStorage.getItem('lastBlock') ? JSON.parse(localStorage.getItem('lastBlock')) : '';
           if(storedLastBlock){
-            if(storedLastBlock.activeValidator !== blockList.Data[0].Block.LastCommit.Precommits.length || storedLastBlock.totalValidator !== blockList.Data[0].Validators.length){
+            if(storedLastBlock.activeValidator !== blockList[0].last_commit.length || storedLastBlock.totalValidator !== blockList[0].validators.length){
               this.flFadeInValidator = true;
             }
             if(storedLastBlock.numerator !== numerator || storedLastBlock.denominator !== denominator){
@@ -254,36 +254,36 @@ import Constant from "../constant/Constant"
         showBlockFadeinAnimation(blockList){
           let storedLastBlockHeight = localStorage.getItem('lastBlockHeight') ? localStorage.getItem('lastBlockHeight') : '';
           if(storedLastBlockHeight){
-            for(let index = 0; index < blockList.Data.length; index++){
-              if(blockList.Data[index].Height > storedLastBlockHeight){
-                blockList.Data[index].showAnimation = "show"
+            for(let index = 0; index < blockList.length; index++){
+              if(blockList[index].height > storedLastBlockHeight){
+                blockList[index].showAnimation = "show"
               }
             }
           }
         },
         getBlocksList() {
-          let url = `/api/blocks/1/10`;
+          let url = `/api/blocks/recent`;
           Service.http(url).then((blockList) => {
             this.getBlocksStatus();
             this.hideFadeinAnimation();
-            if(blockList.Data){
+            if(blockList){
               let denominator = 0,lastBlock = {};
-              blockList.Data[0].Validators.forEach(item=>denominator += item.VotingPower);
+              blockList[0].validators.forEach(item=>denominator += item.voting_power);
               let numerator = 0;
-              for(let i = 0; i < blockList.Data[0].Block.LastCommit.Precommits.length; i++){
-                for (let j = 0; j < blockList.Data[0].Validators.length; j++){
-                  if(blockList.Data[0].Block.LastCommit.Precommits[i].ValidatorAddress === blockList.Data[0].Validators[j].Address){
-                    numerator += blockList.Data[0].Validators[j].VotingPower;
+              for(let i = 0; i < blockList[0].last_commit.length; i++){
+                for (let j = 0; j < blockList[0].validators.length; j++){
+                  if(blockList[0].last_commit[i] === blockList[0].validators[j].address){
+                    numerator += blockList[0].validators[j].voting_power;
                     break;
                   }
                 }
               }
-              lastBlock.lastBlockHeight = blockList.Data[0].Height;
+              lastBlock.lastBlockHeight = blockList[0].height;
               lastBlock.numerator = numerator;
               lastBlock.denominator = denominator;
-              lastBlock.activeValidator = blockList.Data[0].Block.LastCommit.Precommits.length;
-              lastBlock.totalValidator = blockList.Data[0].Validators.length;
-              this.validatorValue = `${blockList.Data[0].Block.LastCommit.Precommits.length} voting / ${blockList.Data[0].Validators.length} total`;
+              lastBlock.activeValidator = blockList[0].last_commit.length;
+              lastBlock.totalValidator = blockList[0].validators.length;
+              this.validatorValue = `${blockList[0].last_commit.length} voting / ${blockList[0].validators.length} total`;
               this.votingPowerValue = denominator !== 0? `${(numerator/denominator).toFixed(2)*100}%`:'';
               this.showFadeinAnimation(blockList,numerator,denominator);
               this.showBlockFadeinAnimation(blockList);
@@ -292,25 +292,25 @@ import Constant from "../constant/Constant"
               this.blocksTimer = setInterval(function () {
                 let storedLastBlockHeight = localStorage.getItem('lastBlockHeight');
                 if(storedLastBlockHeight){
-                  if(Number(storedLastBlockHeight) !== blockList.Data[0].Height){
+                  if(Number(storedLastBlockHeight) !== blockList[0].height){
                     that.flFadeInBlockHeight = true;
                   }
                 }
                 let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-                that.lastBlockAge = Tools.formatAge(currentServerTime,blockList.Data[0].Time);
-                that.diffSeconds = Math.floor(Tools.getDiffMilliseconds(currentServerTime,blockList.Data[0].Time)/1000);
+                that.lastBlockAge = Tools.formatAge(currentServerTime,blockList[0].time);
+                that.diffSeconds = Math.floor(Tools.getDiffMilliseconds(currentServerTime,blockList[0].time)/1000);
                 localStorage.setItem('lastBlock',JSON.stringify(lastBlock));
-                localStorage.setItem("lastBlockHeight",blockList.Data[0].Height);
-                that.currentBlockHeight = blockList.Data[0].Height;
-                that.blocksInformation = blockList.Data.map(item => {
+                localStorage.setItem("lastBlockHeight",blockList[0].height);
+                that.currentBlockHeight = blockList[0].height;
+                that.blocksInformation = blockList.map(item => {
                   return {
                     showAnimation: item.showAnimation ? item.showAnimation : "",
-                    Height: item.Height,
-                    Proposer: item.Hash,
-                    Txn: item.NumTxs,
-                    Time: Tools.format2UTC(item.Time),
+                    Height: item.height,
+                    Proposer: item.hash,
+                    Txn: item.num_txs,
+                    Time: Tools.format2UTC(item.time),
                     Fee: '0 IRIS',
-                    age: Tools.formatAge(currentServerTime,item.Time,Constant.SUFFIX,Constant.PREFIX)
+                    age: Tools.formatAge(currentServerTime,item.time,Constant.SUFFIX,Constant.PREFIX)
                   };
                 });
               },1000);
@@ -323,55 +323,61 @@ import Constant from "../constant/Constant"
           this.$router.push('/validators/3/active');
         },
         getTransactionList() {
-          let url = `/api/txs/1/10`;
+          let url = `/api/txs/recent`;
           Service.http(url).then((transactionList) => {
-            if(transactionList.Data){
+            if(transactionList){
               let that = this;
-              for (let txIndex = 0; txIndex < transactionList.Data.length; txIndex++){
-                if(new Date(transactionList.Data[txIndex].Time).getTime() > localStorage.getItem("lastTxTime")){
-                  transactionList.Data[txIndex].showAnimation = "show"
+              for (let txIndex = 0; txIndex < transactionList.length; txIndex++){
+                if(new Date(transactionList[txIndex].time).getTime() > localStorage.getItem("lastTxTime")){
+                  transactionList[txIndex].showAnimation = "show"
                 }
               }
-              let lastTxTime = new Date(transactionList.Data[0].Time).getTime();
+              let lastTxTime = new Date(transactionList[0].time).getTime();
               clearInterval(this.transfersTimer);
+              that.transactionInformation = transactionList.map(item => {
+                let [Amount, Fee] = ['--', '--'];
+                if(item.fee.amount){
+                  if (item.fee.amount instanceof Array) {
+                    if(item.fee.amount.length > 0){
+                      item.fee.amount[0].amount = Tools.formatAmount(item.fee.amount[0].amount);
+                    }
+                    if(Tools.flTxType(item.type)){
+                      Amount = item.fee.amount.map(listItem => `${listItem.amount} SHARES`).join(',');
+                    }else {
+                      Amount = item.fee.amount.map(listItem => `${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
+                    }
+                  } else if (item.fee.amount && Object.keys(item.fee.amount).includes('amount') && Object.keys(item.fee.amount).includes('denom')) {
+                    Amount = `${item.fee.amount} ${Tools.formatDenom(item.fee.amount.denom).toUpperCase()}`;
+                    if(Tools.flTxType(item.Type)){
+                      Amount = `${item.fee.amount.amount} SHARES`;
+                    }
+                  }
+                }else {
+                  Amount = '';
+                }
+                if(item.fee.amount && item.fee.amount[0] && item.fee.amount[0].amount && item.fee.amount[0].denom){
+                  Fee =  `${Tools.formatFeeToFixedNumber(item.fee.amount[0].amount)} ${Tools.formatDenom(item.fee.amount[0].denom).toUpperCase()}`;
+                }
+                let currentServerTime = new Date().getTime() + that.diffMilliseconds;
+                return {
+                  showAnimation: item.showAnimation ? item.showAnimation : '',
+                  TxHash: item.tx_hash,
+                  From: '',
+                  To: '',
+                  Type: item.type === 'coin'?'transfer':item.type,
+                  Fee,
+                  Amount,
+                  Time: Tools.format2UTC(item.time),
+                  age: Tools.formatAge(currentServerTime,item.time,Constant.SUFFIX,Constant.PREFIX),
+                  time:item.time
+                };
+              });
               this.transfersTimer = setInterval(function () {
                 localStorage.setItem('lastTxTime',lastTxTime);
-                that.transactionInformation = transactionList.Data.map(item => {
-                  let [Amount, Fee] = ['--', '--'];
-                  if(item.Amount){
-                    if (item.Amount instanceof Array) {
-                      if(item.Amount.length > 0){
-                        item.Amount[0].amount = Tools.formatAmount(item.Amount[0].amount);
-                      }
-                      if(Tools.flTxType(item.Type)){
-                        Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
-                      }else {
-                        Amount = item.Amount.map(listItem => `${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
-                      }
-                    } else if (item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')) {
-                      Amount = `${item.Amount.amount} ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
-                      if(Tools.flTxType(item.Type)){
-                        Amount = `${item.Amount.amount} SHARES`;
-                      }
-                    }
-                  }else {
-                    Amount = '';
-                  }
-                  if(item.ActualFee.amount && item.ActualFee.denom){
-                    Fee =  `${Tools.formatFeeToFixedNumber(item.ActualFee.amount)} ${Tools.formatDenom(item.ActualFee.denom).toUpperCase()}`;
-                  }
-                  let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-                  return {
-                    showAnimation: item.showAnimation ? item.showAnimation : '',
-                    TxHash: item.TxHash,
-                    From: item.From,
-                    To: item.To,
-                    Type: item.Type === 'coin'?'transfer':item.Type,
-                    Fee,
-                    Amount,
-                    Time: Tools.format2UTC(item.Time),
-                    age: Tools.formatAge(currentServerTime,item.Time,Constant.SUFFIX,Constant.PREFIX)
-                  };
+                let currentServerTime = new Date().getTime() + that.diffMilliseconds;
+                that.transactionInformation = that.transactionInformation.map(t=>{
+                  t.age = Tools.formatAge(currentServerTime,t.time,Constant.SUFFIX,Constant.PREFIX);
+                  return t;
                 })
               },1000)
             }
