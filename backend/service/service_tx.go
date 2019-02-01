@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
+	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/irishub-sync/logger"
 	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
@@ -92,6 +93,23 @@ func (service *TxService) QueryByAcc(address string, page, size int) model.Page 
 	}
 	logger.Info("QueryByAcc end", service.GetTraceLog())
 	return queryPage(document.CollectionNmCommonTx, &data, query, desc(document.Tx_Field_Time), page, size)
+}
+
+func (service *TxService) QueryRecentTx() []RecentTx {
+	logger.Info("QueryRecentTx start", service.GetTraceLog())
+	var selector = bson.M{"time": 1, "tx_hash": 1, "fee.amount": 1, "type": 1}
+	result, err := LimitQuery(document.CollectionNmCommonTx, selector, nil, desc(document.Tx_Field_Time), 10)
+	if err != nil {
+		panic(err)
+	}
+	var txList []RecentTx
+	for _, block := range result {
+		var b RecentTx
+		utils.Map2Struct(block, &b)
+		txList = append(txList, b)
+	}
+	logger.Info("QueryRecentTx end", service.GetTraceLog())
+	return txList
 }
 
 func (service *TxService) CountByType(query bson.M) model.TxCounter {
@@ -313,4 +331,16 @@ func buildBaseTx(tx document.CommonTx) model.BaseTx {
 		Memo:        tx.Memo,
 		Timestamp:   tx.Time,
 	}
+}
+
+type RecentTx struct {
+	Fee struct {
+		Amount []struct {
+			Amount int64  `json:"amount"`
+			Denom  string `json:"denom"`
+		} `json:"amount"`
+	} `json:"fee"`
+	Time   time.Time `json:"time"`
+	TxHash string    `json:"tx_hash"`
+	Type   string    `json:"type"`
 }
