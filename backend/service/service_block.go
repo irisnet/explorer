@@ -66,9 +66,9 @@ func buildBlock(block TmpBlock) (result model.BlockInfoVo) {
 	result.Hash = block.Hash
 	result.Time = block.Time
 	result.NumTxs = block.NumTxs
-	var validators []model.V
+	var validators []model.ValInfo
 	for _, v := range block.Validators {
-		validators = append(validators, model.V{
+		validators = append(validators, model.ValInfo{
 			Address:     v.Address,
 			VotingPower: v.VotingPower,
 		})
