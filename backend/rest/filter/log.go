@@ -46,8 +46,8 @@ type LogPostFilter struct {
 
 func (LogPostFilter) Do(request *model.IrisReq, data interface{}) (interface{}, types.BizCode) {
 	traceId := logger.String("traceId", request.TraceId)
-	coastSecond := time.Now().Unix() - request.Start.Unix()
-	cost := logger.Int64("cost", coastSecond)
+	costSecond := time.Now().Unix() - request.Start.Unix()
+	cost := logger.Int64("cost", costSecond)
 	apiPath := logger.String("path", request.RequestURI)
 	defer func() {
 		if r := recover(); r != nil {
@@ -55,7 +55,7 @@ func (LogPostFilter) Do(request *model.IrisReq, data interface{}) (interface{}, 
 		}
 	}()
 	logger.Info("LogPostFilter", apiPath, traceId, cost)
-	if coastSecond >= 3 {
+	if costSecond >= 3 {
 		logger.Warn("LogPostFilter api too slow", apiPath, traceId, cost)
 	}
 	return nil, types.CodeSuccess
