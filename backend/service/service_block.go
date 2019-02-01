@@ -19,28 +19,70 @@ func (service *BlockService) GetModule() Module {
 	return Block
 }
 
-func (service *BlockService) Query(height int64) model.BlockInfoVo {
-	var data = queryOneField(document.CollectionNmBlock, blockSelector, bson.M{document.Block_Field_Height: height})
-	var b TmpBlock
-	utils.Map2Struct(data, &b)
-	return buildBlock(b)
+func (service *BlockService) Query(height int64) (result model.BlockVo) {
+	dbm := getDb()
+	defer dbm.Session.Close()
+
+	var block document.Block
+	err := dbm.C(document.CollectionNmBlock).Find(bson.M{document.Block_Field_Height: height}).Sort("-time").One(&block)
+
+	if err != nil {
+		panic(types.CodeNotFound)
+	}
+
+	var pres []string
+	for _, pre := range block.Block.LastCommit.Precommits {
+		pres = append(pres, pre.ValidatorAddress)
+	}
+	if len(pres) > 0 {
+		var candidates []document.Candidate
+		err = dbm.C(document.CollectionNmStakeRoleCandidate).Find(bson.M{document.Candidate_Field_PubKeyAddr: bson.M{"$in": pres}}).All(&candidates)
+		candidateMap := make(map[string]string)
+		for _, candidate := range candidates {
+			candidateMap[candidate.PubKeyAddr] = candidate.Address
+		}
+		result.CandidateMap = candidateMap
+	}
+	result.Block = block
+
+	//query txs from block height
+	var txs []document.CommonTx
+	err = dbm.C(document.CollectionNmCommonTx).Find(bson.M{document.Block_Field_Height: height}).All(&txs)
+	if err == nil {
+		var counter model.CounterVo
+		for _, tx := range txs {
+			if types.IsGovernanceType(tx.Type) {
+				counter.PropoCnt = counter.PropoCnt + 1
+			} else {
+				counter.TxCnt = counter.TxCnt + 1
+			}
+
+		}
+		result.Counter = counter
+	}
+	return
 }
 
 func (service *BlockService) QueryList(page, size int) model.Page {
+	var data []document.Block
+	sort := desc(document.Block_Field_Height)
+	return queryPage(document.CollectionNmBlock, &data, nil, sort, page, size)
+}
+
+func (service *BlockService) QueryRecent() []model.BlockInfoVo {
 	var result []model.BlockInfoVo
-	var pageInfo model.Page
 
 	sort := desc(document.Block_Field_Height)
-	cnt, data := QueryListField(document.CollectionNmBlock, blockSelector, nil, sort, page, size)
-
+	data, err := LimitQuery(document.CollectionNmBlock, blockSelector, nil, sort, 10)
+	if err != nil {
+		panic(types.CodeNotFound)
+	}
 	for _, block := range data {
 		var b TmpBlock
 		utils.Map2Struct(block, &b)
 		result = append(result, buildBlock(b))
 	}
-	pageInfo.Data = result
-	pageInfo.Count = cnt
-	return pageInfo
+	return result
 }
 
 func (service *BlockService) QueryPrecommits(address string, page, size int) (result model.Page) {
@@ -52,7 +94,6 @@ func (service *BlockService) QueryPrecommits(address string, page, size int) (re
 	err := c.Find(bson.M{document.Candidate_Field_Address: address}).Sort(sort).One(&candidate)
 	if err != nil {
 		panic(types.CodeNotFound)
-		return
 	}
 
 	var data []document.Block

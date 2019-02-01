@@ -7,6 +7,7 @@ const (
 
 	//Block
 	UrlRegisterQueryBlock            = "/block/{height}"
+	UrlRegisterQueryRecentBlocks     = "/blocks/recent"
 	UrlRegisterQueryBlocks           = "/blocks/{page}/{size}"
 	UrlRegisterQueryBlocksPrecommits = "/blocks/precommits/{address}/{page}/{size}"
 

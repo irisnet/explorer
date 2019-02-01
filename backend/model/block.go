@@ -1,6 +1,7 @@
 package model
 
 import (
+	"github.com/irisnet/irishub-sync/store/document"
 	"time"
 )
 
@@ -17,4 +18,15 @@ type BlockInfoVo struct {
 type ValInfo struct {
 	Address     string `json:"address"`
 	VotingPower int64  `json:"voting_power"`
+}
+
+type BlockVo struct {
+	CandidateMap map[string]string
+	Counter      CounterVo
+	document.Block
+}
+
+type CounterVo struct {
+	TxCnt    int
+	PropoCnt int
 }
