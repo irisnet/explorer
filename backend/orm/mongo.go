@@ -40,10 +40,12 @@ func QueryRows(collation string, data interface{}, m map[string]interface{}, sor
 	defer c.Database.Session.Close()
 	count, err := c.Find(m).Count()
 	if err != nil {
+		logger.Error("QueryRows Count failed", logger.String("err", err.Error()))
 		return model.PageVo{Count: 0, Data: nil}
 	}
 	err = c.Find(m).Skip((page - 1) * size).Limit(size).Sort(sort).All(data)
 	if err != nil {
+		logger.Error("QueryRows Find failed", logger.String("err", err.Error()))
 		return model.PageVo{Count: count, Data: nil}
 	} else {
 		return model.PageVo{Count: count, Data: data}
