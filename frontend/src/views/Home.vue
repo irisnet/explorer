@@ -95,16 +95,12 @@ import Constant from "../constant/Constant"
           mounted() {
               document.getElementById('router_wrap').addEventListener('click', this.hideFeature);
               let that =this;
-            that.getBlocksList();
-            that.getTransactionHistory();
-            that.getTransactionList();
-            that.getValidatorsList();
-              /*this.timer = setInterval(function () {
+              this.timer = setInterval(function () {
                   that.getBlocksList();
                   that.getTransactionHistory();
                   that.getTransactionList();
                   that.getValidatorsList();
-              },10000);*/
+              },10000);
               window.addEventListener('resize',this.onresize);
               if (window.innerWidth > 910) {
                   this.pageClassName = 'personal_computer_home_wrap';
