@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>IRISplorer</title>
+    <link rel="icon" href="favicon.ico">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/upgrading.css">
+</head>
+<body>
+
+<div id="all" class="container-fluid" hidden="hidden">
+    <div class="main pc">
+        <div class="content">
+            <div class="iris_explorer_logo">
+                <img src="img/irisplorer.png">
+            </div>
+            <div class="upgrade_text">
+                <p>IRISnet is Upgrading...</p>
+                <p>The current testnet is upgrading.</p>
+                <p>The next testnet will be launching soon.</p>
+            </div>
+            <div class="pc_web_site_link_content">
+                <a href="https://www.irisnet.org/" target="_blank">
+                    <img src="img/irisnet.png">
+                </a>
+                <a href="https://twitter.com/irisnetwork" target="_blank">
+                    <img src="img/twitter.png">
+                </a>
+                <a href="https://riot.im/app/#/room/#iris:matrix.org" target="_blank">
+                    <img src="img/riotRoom.png">
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="phone">
+        <div class="mobile_container">
+            <img class="mobile_logo_content" src="img/app_irisplorer.png">
+            <div class="mobil_text_content">
+                <p>IRISnet is Upgrading...</p>
+                <p>The current testnet is upgrading.</p>
+                <p>The next testnet will be launching soon.</p>
+            </div>
+            <div class="mobile_web_site_link_content">
+                <a href="https://www.irisnet.org/" target="_blank">
+                    <img class="irisnet_logo_img" src="img/app_irisnet.png">
+                </a>
+                <a href="https://twitter.com/irisnetwork" target="_blank">
+                    <img class="twitter_logo_img" src="img/app_twitter.png">
+                </a>
+                <a href="https://riot.im/app/#/room/#iris:matrix.org" target="_blank">
+                    <img class="riot_room_logo_img" src="img/app_riot.png">
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<script src="js/jquery.min.js"></script>
+<script type="application/javascript">
+    $(document).ready(function () {
+        var ua = navigator.userAgent;
+
+        var ipad = ua.match(/(iPad).*OS\s([\d_]+)/),
+            isIphone = !ipad && ua.match(/(iPhone\sOS)\s([\d_]+)/),
+            isAndroid = ua.match(/(Android)\s+([\d.]+)/),
+            isMobile = isIphone || isAndroid;
+
+        if (isMobile) {
+            $("div.pc").hide();
+            $("div.phone").show();
+            $("#all").show();
+        } else {
+            $("div.pc").show();
+            $("div.phone").hide();
+            $("#all").show();
+        }
+        window.onresize = function () {
+            if(window.innerWidth < 768){
+                $("div.pc").hide();
+                $("div.phone").show();
+                $("#all").show();
+            }else {
+                $("div.pc").show();
+                $("div.phone").hide();
+                $("#all").show();
+            }
+        }
+    })
+
+</script>
+</body>
+</html>
