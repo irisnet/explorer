@@ -1,6 +1,7 @@
 package filter
 
 import (
+	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
@@ -14,7 +15,7 @@ type LogPreFilter struct {
 
 func (LogPreFilter) Do(request *model.IrisReq, data interface{}) (interface{}, types.BizCode) {
 	start := time.Now()
-	request.TraceId = string(start.UnixNano())
+	request.TraceId = fmt.Sprintf("%d", start.UnixNano())
 	request.Start = start
 
 	traceId := logger.String("traceId", request.TraceId)

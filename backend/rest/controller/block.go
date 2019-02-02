@@ -13,6 +13,7 @@ func RegisterBlock(r *mux.Router) error {
 	funs := []func(*mux.Router) error{
 		registerQueryBlock,
 		registerQueryBlocks,
+		registerQueryRecentBlocks,
 		registerQueryBlocksPrecommits,
 	}
 
@@ -53,6 +54,14 @@ func registerQueryBlocks(r *mux.Router) error {
 		page, size := GetPage(request)
 		result := block.QueryList(page, size)
 		return result
+	})
+
+	return nil
+}
+
+func registerQueryRecentBlocks(r *mux.Router) error {
+	doApi(r, types.UrlRegisterQueryRecentBlocks, "GET", func(request model.IrisReq) interface{} {
+		return block.QueryRecent()
 	})
 
 	return nil

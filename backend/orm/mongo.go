@@ -64,6 +64,17 @@ func QueryRowsField(query MQuery) (int, []map[string]interface{}, error) {
 	return count, result, err
 }
 
+func LimitQuery(query MQuery) ([]map[string]interface{}, error) {
+	var result []map[string]interface{}
+	c := GetDatabase().C(query.C)
+	defer c.Database.Session.Close()
+	err := c.Find(query.Q).Select(query.Selector).Sort(query.Sort).Limit(query.Size).All(&result)
+	if err != nil {
+		logger.Error("Limit error", logger.String("err", err.Error()))
+	}
+	return result, err
+}
+
 func QueryRow(collation string, data interface{}, m map[string]interface{}) error {
 	c := GetDatabase().C(collation)
 	defer c.Database.Session.Close()

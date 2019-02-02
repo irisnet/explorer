@@ -9,6 +9,7 @@ const (
 
 	//Block
 	UrlRegisterQueryBlock            = "/block/{height}"
+	UrlRegisterQueryRecentBlocks     = "/blocks/recent"
 	UrlRegisterQueryBlocks           = "/blocks/{page}/{size}"
 	UrlRegisterQueryBlocksPrecommits = "/blocks/precommits/{address}/{page}/{size}"
 
@@ -48,6 +49,7 @@ const (
 
 	//Tx
 	UrlRegisterQueryTxList       = "/tx/{type}/{page}/{size}"
+	UrlRegisterQueryRecentTx     = "/txs/recent"
 	UrlRegisterQueryTxs          = "/txs/{page}/{size}"
 	UrlRegisterQueryTxsCounter   = "/txs/statistics"
 	UrlRegisterQueryTxsByAccount = "/txsByAddress/{address}/{page}/{size}"
