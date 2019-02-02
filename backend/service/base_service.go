@@ -102,6 +102,21 @@ func queryRow(collation string, data interface{}, m map[string]interface{}) erro
 	return orm.QueryRow(collation, data, m)
 }
 
+func LimitQuery(collation string, selector bson.M, m map[string]interface{}, sort string, size int) ([]map[string]interface{}, error) {
+	var query = orm.MQuery{
+		C:        collation,
+		Q:        m,
+		Selector: selector,
+		Sort:     sort,
+		Size:     size,
+	}
+	data, err := orm.LimitQuery(query)
+	if err != nil {
+		logger.Error("LimitQuery error", logger.Any("query", m), logger.String("err", err.Error()))
+	}
+	return data, err
+}
+
 func queryRowField(collation string, selector bson.M, m map[string]interface{}) map[string]interface{} {
 	var query = orm.MQuery{
 		C:        collation,

@@ -17,6 +17,7 @@ func RegisterTx(r *mux.Router) error {
 		//new
 		registerQueryTxList,
 		registerQueryTxsCounter,
+		registerQueryRecentTx,
 	}
 
 	for _, fn := range funs {
@@ -153,6 +154,15 @@ func registerQueryTxsByDay(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryTxsByDay, "GET", func(request model.IrisReq) interface{} {
 		tx.SetTid(request.TraceId)
 		result := tx.CountByDay()
+		return result
+	})
+	return nil
+}
+
+func registerQueryRecentTx(r *mux.Router) error {
+	doApi(r, types.UrlRegisterQueryRecentTx, "GET", func(request model.IrisReq) interface{} {
+		tx.SetTid(request.TraceId)
+		result := tx.QueryRecentTx()
 		return result
 	})
 	return nil

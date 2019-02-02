@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-var blockSelector = bson.M{"height": 1, "time": 1, "num_txs": 1, "hash": 1, "validators.address": "1", "validators.voting_power": "1", "block.last_commit.precommits.validator_address": "1"}
+var blockSelector = bson.M{"height": 1, "time": 1, "num_txs": 1, "hash": 1, "validators.address": 1, "validators.voting_power": 1, "block.last_commit.precommits.validator_address": 1, "meta.header.total_txs": 1}
 
 type BlockService struct {
 	BaseService
@@ -41,6 +41,22 @@ func (service *BlockService) QueryList(page, size int) model.PageVo {
 	pageInfo.Data = result
 	pageInfo.Count = cnt
 	return pageInfo
+}
+
+func (service *BlockService) QueryRecent() []model.BlockInfoVo {
+	var result []model.BlockInfoVo
+
+	sort := desc(document.Block_Field_Height)
+	data, err := LimitQuery(document.CollectionNmBlock, blockSelector, nil, sort, 10)
+	if err != nil {
+		panic(types.CodeNotFound)
+	}
+	for _, block := range data {
+		var b TmpBlock
+		utils.Map2Struct(block, &b)
+		result = append(result, buildBlock(b))
+	}
+	return result
 }
 
 func (service *BlockService) QueryPrecommits(address string, page, size int) (result model.PageVo) {
@@ -80,6 +96,7 @@ func buildBlock(block TmpBlock) (result model.BlockInfoVo) {
 		lastCommit = append(lastCommit, v.ValidatorAddress)
 	}
 	result.LastCommit = lastCommit
+	result.TotalTxs = block.Meta.Header.TotalTxs
 	return result
 }
 
@@ -92,6 +109,11 @@ type TmpBlock struct {
 			} `json:"precommits"`
 		} `json:"last_commit"`
 	} `json:"block"`
+	Meta struct {
+		Header struct {
+			TotalTxs int64 `json:"total_txs"`
+		} `json:"header"`
+	} `json:"meta"`
 	Hash       string    `json:"hash"`
 	Height     int64     `json:"height"`
 	NumTxs     int64     `json:"num_txs"`

@@ -11,6 +11,7 @@ type BlockInfoVo struct {
 	NumTxs     int64     `json:"num_txs"`
 	Validators []ValInfo `json:"validators"`
 	LastCommit []string  `json:"last_commit"`
+	TotalTxs   int64     `json:"total_txs"`
 }
 
 type ValInfo struct {
