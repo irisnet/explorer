@@ -38,19 +38,19 @@ func (service *TxService) QueryLatest(query bson.M, page, pageSize int) model.Pa
 }
 
 func (service *TxService) QueryRecentTx() []RecentTx {
-	logger.Info("QueryRecentTx start", service.GetTraceLog())
-	var selector = bson.M{"time": 1, "tx_hash": 1, "fee.amount": 1, "type": 1}
+	logger.Debug("QueryRecentTx start", service.GetTraceLog())
+	var selector = bson.M{"time": 1, "tx_hash": 1, "actual_fee": 1, "type": 1}
 	result, err := LimitQuery(document.CollectionNmCommonTx, selector, nil, desc(document.Tx_Field_Time), 10)
 	if err != nil {
 		panic(err)
 	}
 	var txList []RecentTx
-	for _, block := range result {
+	for _, tx := range result {
 		var b RecentTx
-		utils.Map2Struct(block, &b)
+		utils.Map2Struct(tx, &b)
 		txList = append(txList, b)
 	}
-	logger.Info("QueryRecentTx end", service.GetTraceLog())
+	logger.Debug("QueryRecentTx end", service.GetTraceLog())
 	return txList
 }
 
@@ -332,11 +332,9 @@ func buildBaseTx(tx document.CommonTx) model.BaseTx {
 
 type RecentTx struct {
 	Fee struct {
-		Amount []struct {
-			Amount int64  `json:"amount"`
-			Denom  string `json:"denom"`
-		} `json:"amount"`
-	} `json:"fee"`
+		Amount int64  `json:"amount"`
+		Denom  string `json:"denom"`
+	} `json:"actual_fee"`
 	Time   time.Time `json:"time"`
 	TxHash string    `json:"tx_hash"`
 	Type   string    `json:"type"`
