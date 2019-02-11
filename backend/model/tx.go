@@ -106,3 +106,15 @@ type GovTx struct {
 	Title        string
 	ProposalType string
 }
+
+type RecentTx struct {
+	Fee    Coin      `json:"actual_fee"`
+	Time   time.Time `json:"time"`
+	TxHash string    `json:"tx_hash"`
+	Type   string    `json:"type"`
+}
+
+type Coin struct {
+	Amount float64 `json:"amount"`
+	Denom  string  `json:"denom"`
+}

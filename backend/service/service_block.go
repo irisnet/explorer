@@ -4,12 +4,8 @@ import (
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
-	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
-	"time"
 )
-
-var blockSelector = bson.M{"height": 1, "time": 1, "num_txs": 1, "hash": 1, "validators.address": 1, "validators.voting_power": 1, "block.last_commit.precommits.validator_address": 1, "meta.header.total_txs": 1}
 
 type BlockService struct {
 	BaseService
@@ -20,23 +16,31 @@ func (service *BlockService) GetModule() Module {
 }
 
 func (service *BlockService) Query(height int64) model.BlockInfoVo {
-	var data = queryRowField(document.CollectionNmBlock, blockSelector, bson.M{document.Block_Field_Height: height})
-	var b TmpBlock
-	utils.Map2Struct(data, &b)
-	return buildBlock(b)
+	var selector = bson.M{"height": 1, "time": 1, "num_txs": 1, "hash": 1, "validators.address": 1, "validators.voting_power": 1, "block.last_commit.precommits.validator_address": 1, "block.last_commit.block_id.hash": 1, "meta.header.total_txs": 1}
+	var result document.Block
+
+	var err = one(document.CollectionNmBlock, selector, bson.M{document.Block_Field_Height: height}, &result)
+	if err != nil {
+		panic(types.CodeNotFound)
+	}
+	return buildBlock(result)
 }
 
 func (service *BlockService) QueryList(page, size int) model.PageVo {
 	var result []model.BlockInfoVo
 	var pageInfo model.PageVo
 
-	sort := desc(document.Block_Field_Height)
-	cnt, data := queryRowsField(document.CollectionNmBlock, blockSelector, nil, sort, page, size)
+	var selector = bson.M{"height": 1, "time": 1, "num_txs": 1, "hash": 1, "validators.address": 1, "validators.voting_power": 1, "block.last_commit.precommits.validator_address": 1, "meta.header.total_txs": 1}
 
-	for _, block := range data {
-		var b TmpBlock
-		utils.Map2Struct(block, &b)
-		result = append(result, buildBlock(b))
+	var blocks []document.Block
+
+	sort := desc(document.Block_Field_Height)
+	var cnt, err = all(document.CollectionNmBlock, selector, nil, sort, page, size, &blocks)
+	if err != nil {
+		panic(types.CodeNotFound)
+	}
+	for _, block := range blocks {
+		result = append(result, buildBlock(block))
 	}
 	pageInfo.Data = result
 	pageInfo.Count = cnt
@@ -45,16 +49,16 @@ func (service *BlockService) QueryList(page, size int) model.PageVo {
 
 func (service *BlockService) QueryRecent() []model.BlockInfoVo {
 	var result []model.BlockInfoVo
+	var blocks []document.Block
+	var selector = bson.M{"height": 1, "time": 1, "num_txs": 1, "hash": 1, "validators.address": 1, "validators.voting_power": 1, "block.last_commit.precommits.validator_address": 1, "meta.header.total_txs": 1}
 
 	sort := desc(document.Block_Field_Height)
-	data, err := LimitQuery(document.CollectionNmBlock, blockSelector, nil, sort, 10)
+	err := limitQuery(document.CollectionNmBlock, selector, nil, sort, 10, &blocks)
 	if err != nil {
 		panic(types.CodeNotFound)
 	}
-	for _, block := range data {
-		var b TmpBlock
-		utils.Map2Struct(block, &b)
-		result = append(result, buildBlock(b))
+	for _, block := range blocks {
+		result = append(result, buildBlock(block))
 	}
 	return result
 }
@@ -77,7 +81,7 @@ func (service *BlockService) QueryPrecommits(address string, page, size int) (re
 	return queryRows(document.CollectionNmBlock, &data, bson.M{"block.last_commit.precommits": bson.M{"$elemMatch": bson.M{"validator_address": candidate.PubKeyAddr}}}, sort, page, size)
 }
 
-func buildBlock(block TmpBlock) (result model.BlockInfoVo) {
+func buildBlock(block document.Block) (result model.BlockInfoVo) {
 	result.Height = block.Height
 	result.Hash = block.Hash
 	result.Time = block.Time
@@ -97,29 +101,6 @@ func buildBlock(block TmpBlock) (result model.BlockInfoVo) {
 	}
 	result.LastCommit = lastCommit
 	result.TotalTxs = block.Meta.Header.TotalTxs
+	result.LastBlockHash = block.Block.LastCommit.BlockID.Hash
 	return result
-}
-
-type TmpBlock struct {
-	ID    string `json:"_id"`
-	Block struct {
-		LastCommit struct {
-			Precommits []struct {
-				ValidatorAddress string `json:"validator_address"`
-			} `json:"precommits"`
-		} `json:"last_commit"`
-	} `json:"block"`
-	Meta struct {
-		Header struct {
-			TotalTxs int64 `json:"total_txs"`
-		} `json:"header"`
-	} `json:"meta"`
-	Hash       string    `json:"hash"`
-	Height     int64     `json:"height"`
-	NumTxs     int64     `json:"num_txs"`
-	Time       time.Time `json:"time"`
-	Validators []struct {
-		Address     string `json:"address"`
-		VotingPower int64  `json:"voting_power"`
-	} `json:"validators"`
 }
