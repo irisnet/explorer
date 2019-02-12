@@ -7,7 +7,6 @@ import (
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
-	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
 	"time"
 )
@@ -37,18 +36,27 @@ func (service *TxService) QueryLatest(query bson.M, page, pageSize int) model.Pa
 	return pageInfo
 }
 
-func (service *TxService) QueryRecentTx() []RecentTx {
+func (service *TxService) QueryRecentTx() []model.RecentTx {
 	logger.Debug("QueryRecentTx start", service.GetTraceLog())
 	var selector = bson.M{"time": 1, "tx_hash": 1, "actual_fee": 1, "type": 1}
-	result, err := LimitQuery(document.CollectionNmCommonTx, selector, nil, desc(document.Tx_Field_Time), 10)
+	var txs []document.CommonTx
+
+	err := limitQuery(document.CollectionNmCommonTx, selector, nil, desc(document.Tx_Field_Time), 10, &txs)
 	if err != nil {
 		panic(err)
 	}
-	var txList []RecentTx
-	for _, tx := range result {
-		var b RecentTx
-		utils.Map2Struct(tx, &b)
-		txList = append(txList, b)
+	var txList []model.RecentTx
+	for _, tx := range txs {
+		var recentTx = model.RecentTx{
+			Fee: model.Coin{
+				Amount: tx.ActualFee.Amount,
+				Denom:  tx.ActualFee.Denom,
+			},
+			Time:   tx.Time,
+			TxHash: tx.TxHash,
+			Type:   tx.Type,
+		}
+		txList = append(txList, recentTx)
 	}
 	logger.Debug("QueryRecentTx end", service.GetTraceLog())
 	return txList
@@ -328,14 +336,4 @@ func buildBaseTx(tx document.CommonTx) model.BaseTx {
 		Memo:        tx.Memo,
 		Timestamp:   tx.Time,
 	}
-}
-
-type RecentTx struct {
-	Fee struct {
-		Amount int64  `json:"amount"`
-		Denom  string `json:"denom"`
-	} `json:"actual_fee"`
-	Time   time.Time `json:"time"`
-	TxHash string    `json:"tx_hash"`
-	Type   string    `json:"type"`
 }

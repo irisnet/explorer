@@ -82,48 +82,43 @@ func queryRows(collation string, data interface{}, m map[string]interface{}, sor
 	return orm.QueryRows(collation, data, m, sort, page, size)
 }
 
-func queryRowsField(collation string, selector bson.M, m map[string]interface{}, sort string, page, size int) (int, []map[string]interface{}) {
+func limitQuery(collation string, selector bson.M, m map[string]interface{}, sort string, size int, result interface{}) error {
 	var query = orm.MQuery{
 		C:        collation,
 		Q:        m,
 		Selector: selector,
+		Result:   result,
+		Sort:     sort,
+		Size:     size,
+	}
+	err := orm.All(query)
+	if err != nil {
+		logger.Error("limitQuery error", logger.Any("query", m), logger.String("err", err.Error()))
+	}
+	return err
+}
+
+func one(collation string, selector bson.M, m map[string]interface{}, result interface{}) error {
+	var query = orm.MQuery{
+		C:        collation,
+		Q:        m,
+		Selector: selector,
+		Result:   result,
+	}
+	return orm.One(query)
+}
+
+func all(collation string, selector bson.M, m map[string]interface{}, sort string, page, size int, result interface{}) (int, error) {
+	var query = orm.MQuery{
+		C:        collation,
+		Q:        m,
+		Selector: selector,
+		Result:   result,
 		Sort:     sort,
 		Page:     page,
 		Size:     size,
 	}
-	count, data, err := orm.QueryRowsField(query)
-	if err != nil {
-		logger.Error("QueryRowsField error", logger.Any("query", m), logger.String("err", err.Error()))
-	}
-	return count, data
-}
-
-func queryRow(collation string, data interface{}, m map[string]interface{}) error {
-	return orm.QueryRow(collation, data, m)
-}
-
-func LimitQuery(collation string, selector bson.M, m map[string]interface{}, sort string, size int) ([]map[string]interface{}, error) {
-	var query = orm.MQuery{
-		C:        collation,
-		Q:        m,
-		Selector: selector,
-		Sort:     sort,
-		Size:     size,
-	}
-	data, err := orm.LimitQuery(query)
-	if err != nil {
-		logger.Error("LimitQuery error", logger.Any("query", m), logger.String("err", err.Error()))
-	}
-	return data, err
-}
-
-func queryRowField(collation string, selector bson.M, m map[string]interface{}) map[string]interface{} {
-	var query = orm.MQuery{
-		C:        collation,
-		Q:        m,
-		Selector: selector,
-	}
-	return orm.QueryRowField(query)
+	return orm.AllWithCount(query)
 }
 
 func getDb() *mgo.Database {
