@@ -253,21 +253,14 @@ import Constant from "../constant/Constant"
         },
         handelTotalTxs(totalTxs){
           let thousand = 1000,million = 1000000,billion = 1000000000;
-          switch (true){
-            case totalTxs < thousand :
-              return totalTxs;
-              break
-            case totalTxs > thousand :
-              return `${(totalTxs/thousand).toFixed(2)} K`;
-              break
-            case totalTxs > million :
-              return `${(totalTxs/million).toFixed(2)} M`;
-              break
-            case totalTxs > billion :
-              return `${(totalTxs/billion).toFixed(2)} B`;
-              break
-            default:
-              totalTxs;
+          if(totalTxs < thousand){
+            return totalTxs;
+          }else if(totalTxs > thousand){
+            return `${(totalTxs/thousand).toFixed(2)} K`;
+          }else if(totalTxs > million){
+            return `${(totalTxs/million).toFixed(2)} M`;
+          }else if(totalTxs > billion){
+            return `${(totalTxs/billion).toFixed(2)} B`;
           }
         },
         getBlocksList() {
