@@ -11,7 +11,7 @@
           <span class="information_module_key">Age</span>
         </div>
         <div class="information_preview_module">
-          <span :class="flFadeInTransaction ? 'animation' : '' ">{{transactionValue}}</span>
+          <span :class="flFadeInTransaction ? 'animation' : '' ">{{transactionValue}}{{tpsValue}}</span>
           <span class="information_module_key">Transactions</span>
         </div>
         <div class="information_preview_module"
@@ -69,6 +69,7 @@ import Constant from "../constant/Constant"
                   votingPowerValue: '--',
                   blockHeightValue: '--',
                   timestampValue: '--',
+                  tpsValue:'',
                   information: {},
                   informationLine: {},
                   blocksInformation: [],
@@ -95,16 +96,16 @@ import Constant from "../constant/Constant"
           mounted() {
               document.getElementById('router_wrap').addEventListener('click', this.hideFeature);
               let that =this;
-            that.getBlocksList();
-            that.getTransactionHistory();
-            that.getTransactionList();
-            that.getValidatorsList();
-              /*this.timer = setInterval(function () {
+              that.getBlocksList();
+              that.getTransactionHistory();
+              that.getTransactionList();
+              that.getValidatorsList();
+              this.timer = setInterval(function () {
                   that.getBlocksList();
                   that.getTransactionHistory();
                   that.getTransactionList();
                   that.getValidatorsList();
-              },10000);*/
+              },10000);
               window.addEventListener('resize',this.onresize);
               if (window.innerWidth > 910) {
                   this.pageClassName = 'personal_computer_home_wrap';
@@ -155,18 +156,7 @@ import Constant from "../constant/Constant"
                       that.flFadeInTransaction = true
                     }
                   }
-
-                  let num = data.TxCount;
-                  if(data) {
-                    if(data.TxCount > 1000000000){
-                      num = `${(data.TxCount/1000000000).toFixed(2)} B`;
-                    }else if(data.TxCount > 1000000){
-                      num = `${(data.TxCount/1000000).toFixed(2)} M`;
-                    }else if(data.TxCount > 1000){
-                      num = `${(data.TxCount/1000).toFixed(2)} K`;
-                    }
-                    that.transactionValue = `${num}(${data.Tps.toFixed(2)} TPS)`;
-                  }
+                  that.tpsValue = `(${data.Tps.toFixed(2)} TPS)`;
                   lastTransfer.txCount = data.TxCount;
                   lastTransfer.tps = data.Tps;
                   localStorage.setItem('lastTransfer',JSON.stringify(lastTransfer))
@@ -261,6 +251,18 @@ import Constant from "../constant/Constant"
             }
           }
         },
+        handelTotalTxs(totalTxs){
+          let thousand = 1000,million = 1000000,billion = 1000000000;
+          if(totalTxs < thousand){
+            return totalTxs;
+          }else if(totalTxs > thousand){
+            return `${(totalTxs/thousand).toFixed(2)} K`;
+          }else if(totalTxs > million){
+            return `${(totalTxs/million).toFixed(2)} M`;
+          }else if(totalTxs > billion){
+            return `${(totalTxs/billion).toFixed(2)} B`;
+          }
+        },
         getBlocksList() {
           let url = `/api/blocks/recent`;
           Service.http(url).then((blockList) => {
@@ -289,7 +291,6 @@ import Constant from "../constant/Constant"
               this.showBlockFadeinAnimation(blockList);
               let that = this;
               clearInterval(this.blocksTimer);
-              this.blocksTimer = setInterval(function () {
                 let storedLastBlockHeight = localStorage.getItem('lastBlockHeight');
                 if(storedLastBlockHeight){
                   if(Number(storedLastBlockHeight) !== blockList[0].height){
@@ -303,6 +304,9 @@ import Constant from "../constant/Constant"
                 localStorage.setItem("lastBlockHeight",blockList[0].height);
                 that.currentBlockHeight = blockList[0].height;
                 that.blocksInformation = blockList.map(item => {
+                  if(!item.num_txs){
+                    item.num_txs = 0
+                  }
                   return {
                     showAnimation: item.showAnimation ? item.showAnimation : "",
                     Height: item.height,
@@ -310,9 +314,18 @@ import Constant from "../constant/Constant"
                     Txn: item.num_txs,
                     Time: Tools.format2UTC(item.time),
                     Fee: '0 IRIS',
+                    time:item.time,
                     age: Tools.formatAge(currentServerTime,item.time,Constant.SUFFIX,Constant.PREFIX)
                   };
                 });
+              this.blocksTimer = setInterval(function () {
+                that.transactionValue = that.handelTotalTxs(blockList[0].total_txs);
+                let currentServerTime = new Date().getTime() + that.diffMilliseconds;
+                that.lastBlockAge = Tools.formatAge(currentServerTime,blockList[0].time);
+                that.blocksInformation = that.blocksInformation.map(item => {
+                  item.age = Tools.formatAge(currentServerTime,item.time,Constant.SUFFIX,Constant.PREFIX);
+                  return item
+                })
               },1000);
             }
           }).catch(e => {
@@ -335,28 +348,9 @@ import Constant from "../constant/Constant"
               let lastTxTime = new Date(transactionList[0].time).getTime();
               clearInterval(this.transfersTimer);
               that.transactionInformation = transactionList.map(item => {
-                let [Amount, Fee] = ['--', '--'];
-                if(item.fee.amount){
-                  if (item.fee.amount instanceof Array) {
-                    if(item.fee.amount.length > 0){
-                      item.fee.amount[0].amount = Tools.formatAmount(item.fee.amount[0].amount);
-                    }
-                    if(Tools.flTxType(item.type)){
-                      Amount = item.fee.amount.map(listItem => `${listItem.amount} SHARES`).join(',');
-                    }else {
-                      Amount = item.fee.amount.map(listItem => `${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
-                    }
-                  } else if (item.fee.amount && Object.keys(item.fee.amount).includes('amount') && Object.keys(item.fee.amount).includes('denom')) {
-                    Amount = `${item.fee.amount} ${Tools.formatDenom(item.fee.amount.denom).toUpperCase()}`;
-                    if(Tools.flTxType(item.Type)){
-                      Amount = `${item.fee.amount.amount} SHARES`;
-                    }
-                  }
-                }else {
-                  Amount = '';
-                }
-                if(item.fee.amount && item.fee.amount[0] && item.fee.amount[0].amount && item.fee.amount[0].denom){
-                  Fee =  `${Tools.formatFeeToFixedNumber(item.fee.amount[0].amount)} ${Tools.formatDenom(item.fee.amount[0].denom).toUpperCase()}`;
+                let Fee = '--';
+                if(item.actual_fee.amount){
+                  Fee = `${Tools.formatFeeToFixedNumber(item.actual_fee.amount)} ${Tools.formatDenom(item.actual_fee.denom).toUpperCase()}`;
                 }
                 let currentServerTime = new Date().getTime() + that.diffMilliseconds;
                 return {
@@ -366,7 +360,6 @@ import Constant from "../constant/Constant"
                   To: '',
                   Type: item.type === 'coin'?'transfer':item.type,
                   Fee,
-                  Amount,
                   Time: Tools.format2UTC(item.time),
                   age: Tools.formatAge(currentServerTime,item.time,Constant.SUFFIX,Constant.PREFIX),
                   time:item.time
@@ -482,6 +475,7 @@ import Constant from "../constant/Constant"
           border: 0.01rem solid #d6d9e0;
         }
         .home_module_item_pie {
+          height: 100%;
           overflow-x: auto;
           -webkit-overflow-scrolling:touch;
         }
