@@ -1,11 +1,16 @@
 package task
 
-import "testing"
+import (
+	"testing"
+	"time"
+)
 
 func TestTask(t *testing.T) {
-	t.Run("uptime change test", func(t *testing.T) {
-		for true {
-			UptimeChange()
-		}
-	})
+	UpTimeChangeTask{}.Start()
+	time.Sleep(1 * time.Hour)
+}
+
+func TestStartTask(t *testing.T) {
+	TxNumStatTask{}.Start()
+	time.Sleep(1 * time.Hour)
 }

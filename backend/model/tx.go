@@ -57,7 +57,7 @@ type TxStatisticsVo struct {
 
 type TxDayVo struct {
 	Time  string `bson:"_id,omitempty"`
-	Count int
+	Count int64
 }
 
 type BaseTx struct {

@@ -6,6 +6,7 @@ import (
 	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
+	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
 	"time"
 )
@@ -22,13 +23,20 @@ type ID struct {
 	Hour    string `bson:"hour"`
 }
 
-func Start() {
-	for true {
-		UptimeChange()
-	}
+type UpTimeChangeTask struct{}
+
+func (task UpTimeChangeTask) Name() string {
+	return "uptime_change_task"
 }
 
-func init() {
+func (task UpTimeChangeTask) Start() {
+	task.init()
+	utils.RunTimer(10*time.Minute, utils.Min, func() {
+		exec()
+	})
+}
+
+func (task UpTimeChangeTask) init() {
 	var powerChanges []model.ValVotingPowerChangeInfo
 	db := orm.GetDatabase()
 	p := db.C("power_change")
@@ -51,7 +59,7 @@ func init() {
 	}
 }
 
-func UptimeChange() {
+func exec() {
 	logger.Info("UptimeChangeVo task start")
 	var uptimeChange model.UptimeChangeVo
 	var blocks []document.Block
@@ -93,7 +101,6 @@ func UptimeChange() {
 	logger.Info("UptimeChangeVo", logger.String("startTime", startTime.UTC().Format("2006-01-02 15")), logger.String("endTime", endTime.UTC().Format("2006-01-02 15")))
 	if !endTime.Before(lastTime) {
 		logger.Info("UptimeChangeVo end", logger.String("startTime", startTime.Format("2006-01-02 15")))
-		time.Sleep(10 * time.Minute)
 		return
 	}
 
@@ -104,7 +111,6 @@ func UptimeChange() {
 		endTime = endTime.Add(d)
 		if !endTime.Before(lastTime) {
 			logger.Info("UptimeChangeVo end", logger.String("startTime", startTime.Format("2006-01-02 15")))
-			time.Sleep(10 * time.Minute)
 			return
 		}
 		b.Find(bson.M{"time": bson.M{"$gte": startTime, "$lt": endTime}}).Sort("height").All(&blocks)

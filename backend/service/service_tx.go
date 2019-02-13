@@ -2,11 +2,12 @@ package service
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
+	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
+	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
 	"time"
 )
@@ -171,54 +172,33 @@ func (service *TxService) CountByDay() []model.TxDayVo {
 	defer c.Database.Session.Close()
 
 	now := time.Now()
-	d, _ := time.ParseDuration("-336h") //14 days ago
-	start := now.Add(d)
+	start := now.Add(-336 * time.Hour)
 
-	fromDate := time.Date(start.Year(), start.Month(), start.Day(), 0, 0, 0, 0, start.Location())
-	endDate := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, start.Location())
+	fromDate := utils.FmtTime(utils.TruncateTime(start, utils.Day), utils.DateFmtYYYYMMDD)
+	endDate := utils.FmtTime(utils.TruncateTime(now, utils.Day), utils.DateFmtYYYYMMDD)
 
-	logger.Info(fmt.Sprintf("from:%s,to:%s", fromDate.String(), endDate.String()))
+	query := bson.M{}
+	query["date"] = bson.M{"$gte": fromDate, "$lt": endDate}
 
-	pipe := c.Pipe(
-		[]bson.M{
-			{"$match": bson.M{
-				"time": bson.M{
-					"$gte": fromDate,
-					"$lt":  endDate,
-				},
-			}},
-			{"$project": bson.M{
-				"day": bson.M{"$substr": []interface{}{"$time", 0, 10}},
-			}},
-			{"$group": bson.M{
-				"_id":   "$day",
-				"count": bson.M{"$sum": 1},
-			}},
-			{"$sort": bson.M{
-				"_id": 1,
-			}},
-		},
-	)
-	var txDays []model.TxDayVo
-	var result []model.TxDayVo
-	pipe.All(&txDays)
-	var i time.Duration
-	var j int
-	day := start
-	for day.Unix() < endDate.Unix() {
-		key := day.Format("2006-01-02")
-		if len(txDays) > j && txDays[j].Time == key {
-			result = append(result, txDays[j])
-			j++
-		} else {
-			var txDay model.TxDayVo
-			txDay.Time = key
-			txDay.Count = 0
-			result = append(result, txDay)
-		}
-		i++
-		day = start.Add(i * 24 * time.Hour)
+	var txNumStatList []document.TxNumStat
+
+	q := orm.MQuery{
+		C:      document.CollectionTxNumStat,
+		Q:      query,
+		Result: &txNumStatList,
 	}
+
+	var result []model.TxDayVo
+
+	if err := orm.All(q); err == nil {
+		for _, t := range txNumStatList {
+			result = append(result, model.TxDayVo{
+				Time:  t.Date,
+				Count: t.Num,
+			})
+		}
+	}
+
 	logger.Debug("CountByDay end", service.GetTraceLog())
 	return result
 }
