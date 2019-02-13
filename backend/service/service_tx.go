@@ -7,7 +7,6 @@ import (
 	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
-	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
 	"time"
 )

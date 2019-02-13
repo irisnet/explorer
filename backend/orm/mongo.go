@@ -74,14 +74,6 @@ func One(query MQuery) error {
 	return q.One(query.Result)
 }
 
-func Count(query MQuery) int {
-	var count = 0
-	c := GetDatabase().C(query.C)
-	defer c.Database.Session.Close()
-	count, _ = c.Find(query.Q).Count()
-	return count
-}
-
 func AllWithCount(query MQuery) (int, error) {
 	c := GetDatabase().C(query.C)
 	defer c.Database.Session.Close()
