@@ -2,9 +2,9 @@ package service
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
+	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
@@ -37,20 +37,29 @@ func (service *TxService) QueryLatest(query bson.M, page, pageSize int) model.Pa
 	return pageInfo
 }
 
-func (service *TxService) QueryRecentTx() []RecentTx {
-	logger.Info("QueryRecentTx start", service.GetTraceLog())
-	var selector = bson.M{"time": 1, "tx_hash": 1, "fee.amount": 1, "type": 1}
-	result, err := LimitQuery(document.CollectionNmCommonTx, selector, nil, desc(document.Tx_Field_Time), 10)
+func (service *TxService) QueryRecentTx() []model.RecentTx {
+	logger.Debug("QueryRecentTx start", service.GetTraceLog())
+	var selector = bson.M{"time": 1, "tx_hash": 1, "actual_fee": 1, "type": 1}
+	var txs []document.CommonTx
+
+	err := limitQuery(document.CollectionNmCommonTx, selector, nil, desc(document.Tx_Field_Time), 10, &txs)
 	if err != nil {
 		panic(err)
 	}
-	var txList []RecentTx
-	for _, block := range result {
-		var b RecentTx
-		utils.Map2Struct(block, &b)
-		txList = append(txList, b)
+	var txList []model.RecentTx
+	for _, tx := range txs {
+		var recentTx = model.RecentTx{
+			Fee: model.Coin{
+				Amount: tx.ActualFee.Amount,
+				Denom:  tx.ActualFee.Denom,
+			},
+			Time:   tx.Time,
+			TxHash: tx.TxHash,
+			Type:   tx.Type,
+		}
+		txList = append(txList, recentTx)
 	}
-	logger.Info("QueryRecentTx end", service.GetTraceLog())
+	logger.Debug("QueryRecentTx end", service.GetTraceLog())
 	return txList
 }
 
@@ -157,61 +166,42 @@ func (service *TxService) CountByType(query bson.M) model.TxStatisticsVo {
 	return result
 }
 
-func (service *TxService) CountByDay() []model.TxDayVo {
-	logger.Debug("CountByDay start", service.GetTraceLog())
+func (service *TxService) QueryTxNumGroupByDay() []model.TxNumGroupByDayVo {
+	logger.Debug("QueryTxNumGroupByDay start", service.GetTraceLog())
 	c := getDb().C(document.CollectionNmCommonTx)
 	defer c.Database.Session.Close()
 
 	now := time.Now()
-	d, _ := time.ParseDuration("-336h") //14 days ago
-	start := now.Add(d)
+	start := now.Add(-336 * time.Hour)
 
-	fromDate := time.Date(start.Year(), start.Month(), start.Day(), 0, 0, 0, 0, start.Location())
-	endDate := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, start.Location())
+	fromDate := utils.FmtTime(utils.TruncateTime(start, utils.Day), utils.DateFmtYYYYMMDD)
+	endDate := utils.FmtTime(utils.TruncateTime(now, utils.Day), utils.DateFmtYYYYMMDD)
 
-	logger.Info(fmt.Sprintf("from:%s,to:%s", fromDate.String(), endDate.String()))
+	query := bson.M{}
+	query["date"] = bson.M{"$gte": fromDate, "$lt": endDate}
 
-	pipe := c.Pipe(
-		[]bson.M{
-			{"$match": bson.M{
-				"time": bson.M{
-					"$gte": fromDate,
-					"$lt":  endDate,
-				},
-			}},
-			{"$project": bson.M{
-				"day": bson.M{"$substr": []interface{}{"$time", 0, 10}},
-			}},
-			{"$group": bson.M{
-				"_id":   "$day",
-				"count": bson.M{"$sum": 1},
-			}},
-			{"$sort": bson.M{
-				"_id": 1,
-			}},
-		},
-	)
-	var txDays []model.TxDayVo
-	var result []model.TxDayVo
-	pipe.All(&txDays)
-	var i time.Duration
-	var j int
-	day := start
-	for day.Unix() < endDate.Unix() {
-		key := day.Format("2006-01-02")
-		if len(txDays) > j && txDays[j].Time == key {
-			result = append(result, txDays[j])
-			j++
-		} else {
-			var txDay model.TxDayVo
-			txDay.Time = key
-			txDay.Count = 0
-			result = append(result, txDay)
-		}
-		i++
-		day = start.Add(i * 24 * time.Hour)
+	var selector = bson.M{"date": 1, "num": 1}
+	var txNumStatList []document.TxNumStat
+
+	q := orm.MQuery{
+		C:        document.CollectionTxNumStat,
+		Q:        query,
+		Result:   &txNumStatList,
+		Selector: selector,
 	}
-	logger.Debug("CountByDay end", service.GetTraceLog())
+
+	var result []model.TxNumGroupByDayVo
+
+	if err := orm.All(q); err == nil {
+		for _, t := range txNumStatList {
+			result = append(result, model.TxNumGroupByDayVo{
+				Date: t.Date,
+				Num:  t.Num,
+			})
+		}
+	}
+
+	logger.Debug("QueryTxNumGroupByDay end", service.GetTraceLog())
 	return result
 }
 
@@ -328,16 +318,4 @@ func buildBaseTx(tx document.CommonTx) model.BaseTx {
 		Memo:        tx.Memo,
 		Timestamp:   tx.Time,
 	}
-}
-
-type RecentTx struct {
-	Fee struct {
-		Amount []struct {
-			Amount int64  `json:"amount"`
-			Denom  string `json:"denom"`
-		} `json:"amount"`
-	} `json:"fee"`
-	Time   time.Time `json:"time"`
-	TxHash string    `json:"tx_hash"`
-	Type   string    `json:"type"`
 }
