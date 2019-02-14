@@ -10,14 +10,14 @@ import (
 	"time"
 )
 
-type TxNumStatTask struct{}
+type TxNumGroupByDayTask struct{}
 
-func (task TxNumStatTask) Name() string {
+func (task TxNumGroupByDayTask) Name() string {
 	return "tx_num_stat_task"
 }
-func (task TxNumStatTask) Start() {
+func (task TxNumGroupByDayTask) Start() {
 	task.init()
-	utils.RunTimer(24*time.Hour, utils.Day, func() {
+	utils.RunTimer(1, utils.Day, func() {
 		db := orm.GetDatabase()
 		defer db.Session.Close()
 
@@ -44,7 +44,8 @@ func (task TxNumStatTask) Start() {
 	})
 }
 
-func (task TxNumStatTask) init() {
+// init ex_tx_num_stat document
+func (task TxNumGroupByDayTask) init() {
 	db := orm.GetDatabase()
 	defer db.Session.Close()
 	var txNumStatList []interface{}
@@ -85,12 +86,12 @@ func (task TxNumStatTask) init() {
 			},
 		)
 
-		var result []model.TxDayVo
+		var result []model.TxNumGroupByDayVo
 
 		if err := pipe.All(&result); err == nil {
 			var dayMap = make(map[string]int64)
 			for _, r := range result {
-				dayMap[r.Time] = int64(r.Count)
+				dayMap[r.Date] = int64(r.Num)
 			}
 			var tmp = beginDate
 			for tmp.Unix() < endDate.Unix() {
@@ -101,6 +102,10 @@ func (task TxNumStatTask) init() {
 					CreateTime: time.Now(),
 				})
 				tmp = tmp.Add(24 * time.Hour)
+			}
+
+			if len(txNumStatList) == 0 {
+				return
 			}
 
 			if err := txNumStatStore.Insert(txNumStatList...); err != nil {

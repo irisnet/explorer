@@ -2,14 +2,14 @@ package utils
 
 import "time"
 
-func RunTimer(d time.Duration, prec Prec, fn func()) {
+func RunTimer(num int, uint Unit, fn func()) {
 	go func() {
 		// run once right now
 		fn()
 		for {
 			now := time.Now()
-			next := now.Add(d)
-			next = TruncateTime(next, prec)
+			next := now.Add(ParseDuration(num, uint))
+			next = TruncateTime(next, uint)
 			t := time.NewTimer(next.Sub(now))
 			select {
 			case <-t.C:

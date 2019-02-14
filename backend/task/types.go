@@ -13,7 +13,7 @@ var engine = Engine{
 
 func init() {
 	engine.AppendTask(UpTimeChangeTask{})
-	engine.AppendTask(TxNumStatTask{})
+	engine.AppendTask(TxNumGroupByDayTask{})
 }
 
 type TimerTask interface {

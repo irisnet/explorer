@@ -166,8 +166,8 @@ func (service *TxService) CountByType(query bson.M) model.TxStatisticsVo {
 	return result
 }
 
-func (service *TxService) CountByDay() []model.TxDayVo {
-	logger.Debug("CountByDay start", service.GetTraceLog())
+func (service *TxService) QueryTxNumGroupByDay() []model.TxNumGroupByDayVo {
+	logger.Debug("QueryTxNumGroupByDay start", service.GetTraceLog())
 	c := getDb().C(document.CollectionNmCommonTx)
 	defer c.Database.Session.Close()
 
@@ -180,26 +180,28 @@ func (service *TxService) CountByDay() []model.TxDayVo {
 	query := bson.M{}
 	query["date"] = bson.M{"$gte": fromDate, "$lt": endDate}
 
+	var selector = bson.M{"date": 1, "num": 1}
 	var txNumStatList []document.TxNumStat
 
 	q := orm.MQuery{
-		C:      document.CollectionTxNumStat,
-		Q:      query,
-		Result: &txNumStatList,
+		C:        document.CollectionTxNumStat,
+		Q:        query,
+		Result:   &txNumStatList,
+		Selector: selector,
 	}
 
-	var result []model.TxDayVo
+	var result []model.TxNumGroupByDayVo
 
 	if err := orm.All(q); err == nil {
 		for _, t := range txNumStatList {
-			result = append(result, model.TxDayVo{
-				Time:  t.Date,
-				Count: t.Num,
+			result = append(result, model.TxNumGroupByDayVo{
+				Date: t.Date,
+				Num:  t.Num,
 			})
 		}
 	}
 
-	logger.Debug("CountByDay end", service.GetTraceLog())
+	logger.Debug("QueryTxNumGroupByDay end", service.GetTraceLog())
 	return result
 }
 

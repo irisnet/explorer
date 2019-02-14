@@ -19,7 +19,7 @@ func TestParseInt(t *testing.T) {
 }
 
 func TestRunTimer(t *testing.T) {
-	RunTimer(1*time.Second, Sec, func() {
+	RunTimer(1, Sec, func() {
 		fmt.Printf("test RunTimer:%s\n", time.Now().String())
 	})
 	time.Sleep(1 * time.Hour)

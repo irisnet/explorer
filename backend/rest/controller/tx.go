@@ -153,7 +153,7 @@ func registerQueryTxsByAccount(r *mux.Router) error {
 func registerQueryTxsByDay(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryTxsByDay, "GET", func(request model.IrisReq) interface{} {
 		tx.SetTid(request.TraceId)
-		result := tx.CountByDay()
+		result := tx.QueryTxNumGroupByDay()
 		return result
 	})
 	return nil

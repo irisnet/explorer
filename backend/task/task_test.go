@@ -11,6 +11,6 @@ func TestTask(t *testing.T) {
 }
 
 func TestStartTask(t *testing.T) {
-	TxNumStatTask{}.Start()
+	TxNumGroupByDayTask{}.Start()
 	time.Sleep(1 * time.Hour)
 }
