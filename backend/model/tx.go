@@ -55,9 +55,9 @@ type TxStatisticsVo struct {
 	Data           []document.CommonTx
 }
 
-type TxDayVo struct {
-	Time  string `bson:"_id,omitempty"`
-	Count int
+type TxNumGroupByDayVo struct {
+	Date string `json:"date"`
+	Num  int64  `json:"num"`
 }
 
 type BaseTx struct {

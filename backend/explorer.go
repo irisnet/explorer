@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	go task.Start()
+	task.Start()
 	server := rest.NewApiServer()
 
 	if err := server.Start(); err != nil {
