@@ -1,7 +1,9 @@
 package service
 
 import (
+	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
+	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
@@ -20,50 +22,48 @@ func (service *CandidateService) GetModule() Module {
 
 func (service *CandidateService) QueryValidators(page, pageSize int) model.ValDetailVo {
 	var candidates []document.Candidate
-	db := getDb()
-	defer db.Session.Close()
-	cs := db.C(document.CollectionNmStakeRoleCandidate)
-	cb := db.C(document.CollectionNmBlock)
+	var query = orm.NewQuery()
+	defer query.Release()
 
-	query := bson.M{}
-	query[document.Candidate_Field_Jailed] = false
-	query[document.Candidate_Field_Status] = types.TypeValStatusBonded
+	condition := bson.M{}
+	condition[document.Candidate_Field_Jailed] = false
+	condition[document.Candidate_Field_Status] = types.TypeValStatusBonded
 
-	err := cs.Find(query).Sort(desc(document.Candidate_Field_VotingPower)).Skip((page - 1) * pageSize).Limit(pageSize).All(&candidates)
+	query.SetCollection(document.CollectionNmStakeRoleCandidate).
+		SetCondition(condition).
+		SetSort(desc(document.Candidate_Field_VotingPower)).
+		SetPage(page).
+		SetSize(pageSize).
+		SetResult(&candidates)
+	count, err := query.ExecPage()
+
 	if err != nil {
 		panic(types.CodeNotFound)
 	}
 
-	votePipe := cs.Pipe(
-		[]bson.M{
-			{"$match": query},
-			{"$group": bson.M{
-				"_id":   document.Candidate_Field_VotingPower,
-				"count": bson.M{"$sum": "$tokens"},
-			}},
-		},
-	)
 	var voteCount model.CountVo
-	votePipe.One(&voteCount)
-
-	validatorsCount, _ := cs.Find(query).Count()
-	var validators []model.Validator
-	upTimeMap := make(map[string]int)
-	var result []document.Block
-	cb.Find(nil).Limit(100).Sort(desc(document.Block_Field_Height)).All(&result)
-	for _, block := range result {
-		for _, pre := range block.Block.LastCommit.Precommits {
-			upTimeMap[pre.ValidatorAddress]++
-		}
+	query.SetResult(&voteCount)
+	var pipeline = []bson.M{
+		{"$match": condition},
+		{"$group": bson.M{
+			"_id":   document.Candidate_Field_VotingPower,
+			"count": bson.M{"$sum": "$tokens"},
+		}},
 	}
+
+	if err = query.PipeQuery(pipeline); err != nil {
+		panic(types.CodeNotFound)
+	}
+
+	var upTimeMap = getValUpTime(query)
+	var validators []model.Validator
 	for _, candidate := range candidates {
 		validator := convert(candidate)
 		validator.Uptime = upTimeMap[candidate.PubKeyAddr]
-		validator.TotalBlock = len(result)
 		validators = append(validators, validator)
 	}
 	resp := model.ValDetailVo{
-		Count:      validatorsCount,
+		Count:      count,
 		PowerAll:   getVotingPowerFromToken(voteCount.Count),
 		Validators: validators,
 	}
@@ -72,18 +72,19 @@ func (service *CandidateService) QueryValidators(page, pageSize int) model.ValDe
 
 func (service *CandidateService) QueryRevokedValidator(page, size int) model.ValDetailVo {
 	var candidates []document.Candidate
-	db := getDb()
-	defer db.Session.Close()
-	cs := db.C(document.CollectionNmStakeRoleCandidate)
+	var query = orm.NewQuery()
+	defer query.Release()
+	query.Reset().
+		SetCollection(document.CollectionNmStakeRoleCandidate).
+		SetCondition(bson.M{document.Candidate_Field_Jailed: true}).
+		SetPage(page).
+		SetSize(size).
+		SetSort(desc(document.Candidate_Field_VotingPower)).
+		SetResult(&candidates)
 
-	query := bson.M{}
-	query[document.Candidate_Field_Jailed] = true
-
-	validatorsCount, _ := cs.Find(query).Count()
-
-	err := cs.Find(query).Sort(desc(document.Candidate_Field_VotingPower)).Skip((page - 1) * size).Limit(size).All(&candidates)
+	count, err := query.ExecPage()
 	if err != nil {
-		panic(types.CodeNotFound)
+		logger.Info("QueryRevokedValidator error", logger.String("err", err.Error()))
 	}
 
 	var validators []model.Validator
@@ -92,7 +93,7 @@ func (service *CandidateService) QueryRevokedValidator(page, size int) model.Val
 	}
 
 	resp := model.ValDetailVo{
-		Count:      validatorsCount,
+		Count:      count,
 		Validators: validators,
 	}
 	return resp
@@ -100,39 +101,51 @@ func (service *CandidateService) QueryRevokedValidator(page, size int) model.Val
 
 func (service *CandidateService) QueryCandidates(page, size int) model.ValDetailVo {
 	var candidates []document.Candidate
-	db := getDb()
-	defer db.Session.Close()
-	cs := db.C(document.CollectionNmStakeRoleCandidate)
-	txDoc := db.C(document.CollectionNmCommonTx)
+	var query = orm.NewQuery()
+	defer query.Release()
 
-	query := bson.M{}
-	query[document.Candidate_Field_Jailed] = false
-	query[document.Candidate_Field_Status] = bson.M{
+	var condition = bson.M{}
+	condition[document.Candidate_Field_Jailed] = false
+	condition[document.Candidate_Field_Status] = bson.M{
 		"$in": []string{types.TypeValStatusUnbonded, types.TypeValStatusUnbonding},
 	}
 
-	validatorsCount, _ := cs.Find(query).Count()
-	err := cs.Find(query).Sort(desc(document.Candidate_Field_VotingPower)).Skip((page - 1) * size).Limit(size).All(&candidates)
+	query.Reset().
+		SetCollection(document.CollectionNmStakeRoleCandidate).
+		SetCondition(condition).
+		SetPage(page).
+		SetSize(size).
+		SetSort(desc(document.Candidate_Field_VotingPower)).
+		SetResult(&candidates)
+
+	count, err := query.ExecPage()
 	if err != nil {
-		panic(types.CodeNotFound)
+		logger.Info("QueryRevokedValidator error", logger.String("err", err.Error()))
 	}
+
 	var validators []model.Validator
 	var resp model.ValDetailVo
 	if len(candidates) > 0 {
-		q := bson.M{}
-		q[document.Tx_Field_Type] = types.TypeCreateValidator
-
+		var tx document.CommonTx
+		var condition = bson.M{}
+		var selector = bson.M{"height": 1}
+		condition[document.Tx_Field_Type] = types.TypeCreateValidator
+		query.Reset().
+			SetCollection(document.CollectionNmCommonTx).
+			SetSelector(selector).
+			SetSort(desc(document.Tx_Field_Height)).
+			SetResult(&tx)
 		for _, ca := range candidates {
-			var tx document.CommonTx
-			q[document.Tx_Field_From] = ca.Address
-			txDoc.Find(q).Sort(document.Tx_Field_Height).One(&tx)
-
-			ca.BondHeight = tx.Height
+			condition[document.Tx_Field_From] = ca.Address
+			query.SetCondition(condition)
+			if err := query.Exec(); err == nil {
+				ca.BondHeight = tx.Height
+			}
 			validators = append(validators, convert(ca))
 		}
 
 		resp = model.ValDetailVo{
-			Count:      validatorsCount,
+			Count:      count,
 			Validators: validators,
 		}
 	}
@@ -140,31 +153,32 @@ func (service *CandidateService) QueryCandidates(page, size int) model.ValDetail
 }
 
 func (service *CandidateService) QueryCandidate(address string) model.CandidatesInfoVo {
-
-	c := getDb().C(document.CollectionNmStakeRoleCandidate)
-	defer c.Database.Session.Close()
 	var candidate document.Candidate
+	var query = orm.NewQuery()
+	defer query.Release()
 
-	err := c.Find(bson.M{document.Candidate_Field_Address: address}).One(&candidate)
-	if err != nil {
+	query.SetCollection(document.CollectionNmStakeRoleCandidate).
+		SetCondition(bson.M{document.Candidate_Field_Address: address}).
+		SetResult(&candidate)
+
+	if err := query.Exec(); err != nil {
 		panic(types.CodeNotFound)
 	}
 
-	query := bson.M{}
-	query[document.Candidate_Field_Jailed] = false
-	query[document.Candidate_Field_Status] = types.TypeValStatusBonded
+	condition := bson.M{}
+	condition[document.Candidate_Field_Jailed] = false
+	condition[document.Candidate_Field_Status] = types.TypeValStatusBonded
 
-	pipe := c.Pipe(
-		[]bson.M{
-			{"$match": query},
-			{"$group": bson.M{
-				"_id":   document.Candidate_Field_VotingPower,
-				"count": bson.M{"$sum": "$tokens"},
-			}},
-		},
-	)
 	var count model.CountVo
-	pipe.One(&count)
+	query.SetResult(&count)
+	query.PipeQuery([]bson.M{
+		{"$match": condition},
+		{"$group": bson.M{
+			"_id":   document.Candidate_Field_VotingPower,
+			"count": bson.M{"$sum": "$tokens"},
+		}},
+	})
+
 	result := model.CandidatesInfoVo{
 		PowerAll:  getVotingPowerFromToken(count.Count),
 		Validator: convert(candidate),
@@ -174,49 +188,42 @@ func (service *CandidateService) QueryCandidate(address string) model.Candidates
 
 func (service *CandidateService) QueryCandidatesTopN() model.ValDetailVo {
 	var candidates []document.Candidate
+	var query = orm.NewQuery()
+	defer query.Release()
 
-	db := getDb()
-	defer db.Session.Close()
-	cs := db.C(document.CollectionNmStakeRoleCandidate)
-	cb := db.C(document.CollectionNmBlock)
+	condition := bson.M{}
+	condition[document.Candidate_Field_Jailed] = false
+	condition[document.Candidate_Field_Status] = types.TypeValStatusBonded
 
-	query := bson.M{}
-	query[document.Candidate_Field_Jailed] = false
-	query[document.Candidate_Field_Status] = types.TypeValStatusBonded
-
-	err := cs.Find(query).Sort(desc(document.Candidate_Field_VotingPower)).Limit(10).All(&candidates)
-	if err != nil {
+	query.SetCollection(document.CollectionNmStakeRoleCandidate).
+		SetCondition(condition).
+		SetSort(desc(document.Candidate_Field_VotingPower)).SetSize(10).
+		SetResult(&candidates)
+	if err := query.Exec(); err != nil {
 		panic(types.CodeNotFound)
 	}
-	votePipe := cs.Pipe(
+
+	var allPower model.CountVo
+	query.SetResult(&allPower)
+	query.PipeQuery(
 		[]bson.M{
-			{"$match": query},
+			{"$match": condition},
 			{"$group": bson.M{
 				"_id":   document.Candidate_Field_VotingPower,
 				"count": bson.M{"$sum": "$tokens"},
 			}},
 		},
 	)
-	var voteCount model.CountVo
-	votePipe.One(&voteCount)
 
 	var validators []model.Validator
-	upTimeMap := make(map[string]int)
-	var result []document.Block
-	cb.Find(nil).Limit(100).Sort(desc(document.Block_Field_Height)).All(&result)
-	for _, block := range result {
-		for _, pre := range block.Block.LastCommit.Precommits {
-			upTimeMap[pre.ValidatorAddress]++
-		}
-	}
+	var upTimeMap = getValUpTime(query)
 	for _, candidate := range candidates {
 		validator := convert(candidate)
 		validator.Uptime = upTimeMap[candidate.PubKeyAddr]
-		validator.TotalBlock = len(result)
 		validators = append(validators, validator)
 	}
 	resp := model.ValDetailVo{
-		PowerAll:   getVotingPowerFromToken(voteCount.Count),
+		PowerAll:   getVotingPowerFromToken(allPower.Count),
 		Validators: validators,
 	}
 	return resp
@@ -354,39 +361,30 @@ func (service *CandidateService) QueryCandidatePower(address, category string) (
 }
 
 func (service *CandidateService) QueryCandidateStatus(address string) (resp model.ValStatus) {
-	db := getDb()
-	defer db.Session.Close()
-	cs := db.C(document.CollectionNmStakeRoleCandidate)
-	cb := db.C(document.CollectionNmBlock)
+
+	var query = orm.NewQuery()
+	defer query.Release()
+
 	var candidate document.Candidate
-	err := cs.Find(bson.M{document.Candidate_Field_Address: address}).One(&candidate)
-	if err != nil {
+	query.SetCollection(document.CollectionNmStakeRoleCandidate).
+		SetCondition(bson.M{document.Candidate_Field_Address: address}).
+		SetResult(&candidate)
+	if err := query.Exec(); err != nil {
 		panic(types.CodeNotFound)
 	}
 
-	var upTime int
-	var result []document.Block
-	cb.Find(nil).Limit(100).Sort(desc(document.Block_Field_Height)).All(&result)
-	validatorAddress := ""
-	for _, block := range result {
-		var index1 int
-		for _, validator := range block.Validators {
-			if validatorAddress == "" && validator.Address == candidate.PubKeyAddr {
-				validatorAddress = validator.Address
-			}
-			if index1+1 <= len(block.Block.LastCommit.Precommits) && block.Block.LastCommit.Precommits[index1].ValidatorAddress == validator.Address {
-				if validator.Address == candidate.PubKeyAddr {
-					upTime++
-				}
-				index1++
-			}
-		}
+	var upTimeMap = getValUpTime(query)
+	query.Reset().SetCollection(document.CollectionNmBlock).
+		SetCondition(bson.M{"block.last_commit.precommits": bson.M{"$elemMatch": bson.M{"validator_address": candidate.PubKeyAddr}}})
+
+	var preCommitCount int
+	if cnt, err := query.Count(); err == nil {
+		preCommitCount = cnt
 	}
-	precommitCount, _ := cb.Find(bson.M{"block.last_commit.precommits": bson.M{"$elemMatch": bson.M{"validator_address": validatorAddress}}}).Count()
+
 	resp = model.ValStatus{
-		Uptime:         upTime,
-		TotalBlock:     len(result),
-		PrecommitCount: float64(precommitCount),
+		Uptime:         upTimeMap[candidate.PubKeyAddr],
+		PrecommitCount: float64(preCommitCount),
 	}
 
 	return resp
@@ -453,4 +451,26 @@ func convert(candidate document.Candidate) model.Validator {
 
 func getVotingPowerFromToken(token float64) int64 {
 	return utils.Round(token / math.Pow10(18))
+}
+
+func getValUpTime(query *orm.Query) map[string]int {
+	var result []document.Block
+	var upTimeMap = make(map[string]int)
+	var selector = bson.M{"block.last_commit.precommits.validator_address": 1}
+	query.Reset().
+		SetCollection(document.CollectionNmBlock).
+		SetSelector(selector).
+		SetSize(100).
+		SetSort(desc(document.Block_Field_Height)).
+		SetResult(&result)
+
+	if err := query.Exec(); err != nil {
+		logger.Error("getValUpTime error", logger.String("err", err.Error()))
+	}
+	for _, block := range result {
+		for _, pre := range block.Block.LastCommit.Precommits {
+			upTimeMap[pre.ValidatorAddress]++
+		}
+	}
+	return upTimeMap
 }

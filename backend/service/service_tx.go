@@ -42,7 +42,7 @@ func (service *TxService) QueryRecentTx() []model.RecentTx {
 	var selector = bson.M{"time": 1, "tx_hash": 1, "actual_fee": 1, "type": 1}
 	var txs []document.CommonTx
 
-	err := limitQuery(document.CollectionNmCommonTx, selector, nil, desc(document.Tx_Field_Time), 10, &txs)
+	err := queryAll(document.CollectionNmCommonTx, selector, nil, desc(document.Tx_Field_Time), 10, &txs)
 	if err != nil {
 		panic(err)
 	}
@@ -168,8 +168,6 @@ func (service *TxService) CountByType(query bson.M) model.TxStatisticsVo {
 
 func (service *TxService) QueryTxNumGroupByDay() []model.TxNumGroupByDayVo {
 	logger.Debug("QueryTxNumGroupByDay start", service.GetTraceLog())
-	c := getDb().C(document.CollectionNmCommonTx)
-	defer c.Database.Session.Close()
 
 	now := time.Now()
 	start := now.Add(-336 * time.Hour)
@@ -183,16 +181,17 @@ func (service *TxService) QueryTxNumGroupByDay() []model.TxNumGroupByDayVo {
 	var selector = bson.M{"date": 1, "num": 1}
 	var txNumStatList []document.TxNumStat
 
-	q := orm.MQuery{
-		C:        document.CollectionTxNumStat,
-		Q:        query,
-		Result:   &txNumStatList,
-		Selector: selector,
-	}
+	q := orm.NewQuery()
+	q.SetCollection(document.CollectionTxNumStat)
+	q.SetCondition(query)
+	q.SetSelector(selector)
+	q.SetResult(&txNumStatList)
+
+	defer q.Release()
 
 	var result []model.TxNumGroupByDayVo
 
-	if err := orm.All(q); err == nil {
+	if err := q.Exec(); err == nil {
 		for _, t := range txNumStatList {
 			result = append(result, model.TxNumGroupByDayVo{
 				Date: t.Date,

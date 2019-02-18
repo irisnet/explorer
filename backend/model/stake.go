@@ -12,8 +12,17 @@ type ValDetailVo struct {
 
 type ValStatus struct {
 	Uptime         int     `json:"up_time"`
-	TotalBlock     int     `json:"total_block"`
 	PrecommitCount float64 `json:"precommit_cnt"`
+}
+
+type ValProfile struct {
+	Description
+	PubKey         string `json:"pub_key"`
+	Owner          string `json:"owner"`
+	BondHeight     int64  `json:"bond_height"`
+	VotingPower    int64  `json:"voting_power"`
+	CommitBlockNum int64  `json:"commit_block_num"`
+	UpTime         int    `json:"up_time"`
 }
 
 type Validator struct {
