@@ -23,7 +23,7 @@
             </div>
             <div class="header-title-info" style="color:#000">
                 <p class="expect-title">Mainnet will launch soon, please stay tuned...</p>
-                <p class="header-title-explorer">You can also visit <a id="link">testnet explorer</a> to preview</p>
+                <p class="header-title-explorer">You can also visit <a id="link" target="_blank">testnet explorer</a> to preview</p>
             </div>
         </div>
     </div>
@@ -36,7 +36,7 @@
                <img src="img/welcome-mobile.jpg">
               <div class="mobile-title-content">
                   <p class="mobile-expect-title">Mainnet will launch soon, please stay tuned...</p>
-                  <p class="mobile-header-title-explorer">You can also visit <a id="mobile_link">testnet explorer</a> to preview</p>
+                  <p class="mobile-header-title-explorer">You can also visit <a id="mobile_link" target="_blank">testnet explorer</a> to preview</p>
               </div>
            </div>
         </div>
@@ -67,6 +67,11 @@
             $('#link').attr('href',"https://testnet.irisplorer.cn/#/home")
         }else {
             $('#link').attr('href',"https://testnet.irisplorer.io/#/home")
+        }
+        if(window.location.hostname.split('.')[2] === 'cn'){
+            $('#mobile_link').attr('href',"https://testnet.irisplorer.cn/#/home")
+        }else {
+            $('#mobile_link').attr('href',"https://testnet.irisplorer.io/#/home")
         }
     })
 
