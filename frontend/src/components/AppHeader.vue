@@ -4,7 +4,7 @@
     <header class="app_header_person_computer" v-show="devicesShow === 1">
       <div class="header_top">
         <div class="imageWrap" @click="featureButtonClick('/home')">
-          <img src="../assets/logo.png" alt="失去网络了..."/>
+          <img src="../assets/logo.png"/>
         </div>
         <div class="navSearch">
           <span class="chain_id">{{fuxi.toUpperCase()}}</span>
@@ -71,7 +71,7 @@
         <img src="../assets/menu.png">
       </div>
       <div class="image_wrap_mobile" @click="featureButtonClick('/home',true)">
-        <img src="../assets/logo.png" alt="失去网络了..."/>
+        <img src="../assets/logo.png"/>
       </div>
 
       <div class="use_feature_mobile" v-show="featureShow">
