@@ -7,7 +7,7 @@
   </h3>
     <div class="faucet text-center" :style="innerWidth<=500?'padding-top:0;':''">
       <div class="coin" >
-        <img src="../assets/coin.png" alt="">
+        <img src="../assets/coin.png">
       </div>
       <p style="font-size:0.14rem;color:#A2A2AE;padding:0 0.1rem;">Get IRIS from this faucet for the latest IRISnet Testnet.</p>
       <p style="font-size:0.14rem;color:#A2A2AE;padding:0 0.1rem;">This faucet will send 10 IRIS to any valid testnet address.</p>
@@ -35,7 +35,7 @@
         <div class="img_font_container">
           <div class="img_container">
             <img v-if="showSuccess" src="../assets/success.png">
-            <img v-if="!showSuccess" src="../assets/x.png" alt="">
+            <img v-if="!showSuccess" src="../assets/x.png">
           </div>
           <span class="font_style" v-if="showSuccess">Submitted successfully!</span>
           <span class="font_style" v-if="!showSuccess">Failed,try again.</span>
