@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/model"
+	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
@@ -18,17 +19,21 @@ func (service *CommonService) GetModule() Module {
 }
 
 func (service CommonService) QueryText(text string) []model.ResultVo {
-	db := getDb()
-	defer db.Session.Close()
-
 	var result []model.ResultVo
 	i, isUint := utils.ParseUint(text)
 	if isUint {
 		//查询block信息
 		var block document.Block
-		blockStore := db.C(document.CollectionNmBlock)
-		err := blockStore.Find(bson.M{document.Block_Field_Height: i}).One(&block)
-		if err == nil {
+		var selector = bson.M{"height": 1, "time": 1, "hash": 1}
+		var query = orm.NewQuery().
+			SetCollection(document.CollectionNmBlock).
+			SetSelector(selector).
+			SetCondition(bson.M{document.Block_Field_Height: i}).
+			SetResult(&block)
+
+		defer query.Release()
+
+		if err := query.Exec(); err == nil {
 			vo := model.ResultVo{
 				Type: "block",
 				Data: model.SimpleBlockVo{
@@ -42,9 +47,14 @@ func (service CommonService) QueryText(text string) []model.ResultVo {
 
 		//查询proposal信息
 		var proposal document.Proposal
-		proposalStore := db.C(document.CollectionNmProposal)
-		err = proposalStore.Find(bson.M{document.Proposal_Field_ProposalId: i}).One(&proposal)
-		if err == nil {
+		selector = bson.M{"proposal_id": 1, "title": 1, "type": 1, "status": 1, "submit_time": 1}
+		var condition = bson.M{document.Proposal_Field_ProposalId: i}
+		query.Reset().
+			SetCollection(document.CollectionNmProposal).
+			SetSelector(selector).
+			SetCondition(condition).
+			SetResult(&proposal)
+		if err := query.Exec(); err == nil {
 			vo := model.ResultVo{
 				Type: "proposal",
 				Data: model.SimpleProposalVo{

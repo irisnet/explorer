@@ -3,6 +3,8 @@ package service
 import (
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
+	"github.com/irisnet/explorer/backend/model"
+	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
@@ -17,40 +19,42 @@ func (service *DelegatorService) GetModule() Module {
 }
 
 func (service *DelegatorService) QueryDelegation(valAddr string) (info ValInfo) {
-	var dbInstance = getDb()
-	defer dbInstance.Session.Close()
-
-	var delegatorStore = dbInstance.C(document.CollectionNmStakeRoleDelegator)
-
 	// query delegation info
 	var accAddr = utils.Convert(conf.Get().Hub.Prefix.AccAddr, valAddr)
-	var delegations []document.Delegator
-	var selfBondShares float64
-	var delegatedShares float64
 
-	var query = bson.M{}
-	query[document.Delegator_Field_ValidatorAddr] = valAddr
-	err := delegatorStore.Find(query).All(&delegations)
-	if err != nil {
+	var query = orm.NewQuery()
+	defer query.Release()
+
+	var validator document.Candidate
+	query.SetCollection(document.CollectionNmStakeRoleCandidate).
+		SetCondition(bson.M{document.Candidate_Field_Address: valAddr}).
+		SetResult(&validator)
+
+	//query validator info
+	if err := query.Exec(); err != nil {
+		logger.Error("validator not found", logger.Any("err", err.Error()))
+		return
+	}
+
+	var delegations []document.Delegator
+	query.Reset().
+		SetCollection(document.CollectionNmStakeRoleDelegator).
+		SetCondition(bson.M{document.Delegator_Field_ValidatorAddr: valAddr}).
+		SetResult(&delegations)
+
+	if err := query.Exec(); err != nil {
 		logger.Warn("validator not exist", logger.String("valAddr", valAddr))
 		return
 	}
 
+	var selfBondShares float64
+	var delegatedShares float64
 	for _, d := range delegations {
 		if d.Address == accAddr {
 			selfBondShares = d.Shares
 		} else {
 			delegatedShares += d.Shares
 		}
-	}
-
-	//query validator info
-	var validatorStore = dbInstance.C(document.CollectionNmStakeRoleCandidate)
-	var validator document.Candidate
-	err = validatorStore.Find(bson.M{document.Candidate_Field_Address: valAddr}).One(&validator)
-	if err != nil {
-		logger.Error("validator not found", logger.Any("valAddr", valAddr))
-		return
 	}
 
 	rate := validator.Tokens / validator.DelegatorShares
@@ -65,10 +69,35 @@ func (service *DelegatorService) QueryDelegation(valAddr string) (info ValInfo) 
 		Amount: delegatedShares * rate,
 	}
 
+	query.Reset().
+		SetCollection(document.CollectionNmBlock).
+		SetCondition(bson.M{"block.last_commit.precommits": bson.M{"$elemMatch": bson.M{"validator_address": validator.PubKeyAddr}}})
+
+	var preCommitCount int
+	if cnt, err := query.Count(); err == nil {
+		preCommitCount = cnt
+	}
+
+	//query uptime
+	var upTime = getValUpTime(query)[validator.PubKeyAddr]
+
 	return ValInfo{
-		valAddr:   valAddr,
 		selfBond:  selfBond,
 		delegated: delegated,
+		ValProfile: model.ValProfile{
+			PubKey:         validator.PubKey,
+			Owner:          accAddr,
+			BondHeight:     validator.BondHeight,
+			VotingPower:    getVotingPowerFromToken(validator.Tokens),
+			CommitBlockNum: int64(preCommitCount),
+			UpTime:         upTime,
+			Description: model.Description{
+				Moniker:  validator.Description.Moniker,
+				Identity: validator.Description.Identity,
+				Website:  validator.Description.Website,
+				Details:  validator.Description.Details,
+			},
+		},
 	}
 
 }
@@ -119,7 +148,7 @@ func (service *DelegatorService) GetDeposits(delAddr string) (coin document.Coin
 }
 
 type ValInfo struct {
-	valAddr   string
+	model.ValProfile
 	selfBond  document.Coin
 	delegated document.Coin
 }
