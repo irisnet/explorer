@@ -5,7 +5,7 @@
       <div class="header_top">
         <div class="imageWrap" @click="featureButtonClick('/home')">
           <img src="../assets/logo.png"/>
-          <span class="testnet_logo" v-if="flShowTestnetLogo">{{chainId}}</span>
+          <span class="chain_content" v-if="flShowChainId">{{chainId}}</span>
         </div>
         <div class="navSearch">
           <input type="text" class="search_input"
@@ -83,7 +83,7 @@
       </div>
       <div class="image_wrap_mobile" @click="featureButtonClick('/home',true)">
         <img src="../assets/logo.png"/>
-        <span class="mobile_testnet_logo">{{chainId}}</span>
+        <span class="mobile_chain_content">{{chainId}}</span>
       </div>
 
       <div class="use_feature_mobile" v-show="featureShow">
@@ -189,7 +189,7 @@
         flShowNetworkSelect:false,
         flShowUpOrDown: false,
         flShowNetwork: false,
-        flShowTestnetLogo: true,
+        flShowChainId: true,
         flShowValidatorsUpOrDown: false,
         flShowNetworkUpOrDown: false,
         chainId: '',
@@ -437,7 +437,7 @@
       },
       toggleTestnetLogo(currentEnv){
         if(currentEnv.cur_env === constant.ENVCONFIG.MAINNET){
-          this.flShowTestnetLogo = false
+          this.flShowChainId = false
         }
       },
       explorerLink(envLink){
@@ -484,7 +484,7 @@
           img{
             width: 100%;
           }
-          .testnet_logo{
+          .chain_content{
             font-size: 0.18rem;
             height: 0.38rem;
             line-height: 0.38rem;
@@ -698,7 +698,7 @@
           width: 100%;
           height: 100%;
         }
-        .mobile_testnet_logo{
+        .mobile_chain_content{
           white-space: nowrap;
           font-size: 0.16rem;
           color: #F2711D;
