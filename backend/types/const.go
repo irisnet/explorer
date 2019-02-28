@@ -28,6 +28,7 @@ const (
 	//SearchBox
 	UrlRegisterQueryText    = "/search/{text}"
 	UrlRegisterQuerySysDate = "/sysdate"
+	UrlRegisterQueryConfig  = "/config"
 
 	//faucet
 	UrlRegisterQueryFaucet = "/faucet/account"
