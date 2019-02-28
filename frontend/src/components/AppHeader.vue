@@ -486,13 +486,14 @@
           }
           .chain_content{
             font-size: 0.18rem;
-            height: 0.38rem;
-            line-height: 0.38rem;
             white-space: nowrap;
             display: flex;
+            height: 0.36rem;
+            margin-top: 0.09rem;
+            line-height: 0.36rem;
             align-items: center;
             margin-left: 0.2rem;
-            padding: 0.1rem 0.14rem;
+            padding: 0 0.14rem;
             color: #F2711D;
             border: 0.01rem solid #FFD3B6;
             border-radius: 0.04rem;
