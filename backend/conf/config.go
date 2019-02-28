@@ -18,7 +18,6 @@ const (
 	KeyAddrHubLcd  = "ADDR_NODE_SERVER"
 	KeyAddrHubNode = "ADDR_HUB_RPC"
 	KeyAddrFaucet  = "FAUCET_URL"
-	KeyChainId     = "CHAIN_ID"
 	KeyApiVersion  = "API_VERSION"
 	KeyMaxDrawCnt  = "MAX_DRAW_CNT"
 	KeyShowFaucet  = "SHOW_FAUCET"
@@ -30,13 +29,13 @@ const (
 	KeyPrefixConsAddr = "PrefixConsAddr"
 	KeyPrefixConsPub  = "PrefixConsPub"
 
-	EnvironmentDevelop = "develop"
+	KeyCurEnv = "CUR_ENV"
+
+	EnvironmentDevelop = "dev"
 	EnvironmentLocal   = "local"
 	EnvironmentQa      = "qa"
 	EnvironmentStage   = "stage"
 	EnvironmentProd    = "prod"
-
-	DefaultEnvironment = EnvironmentDevelop
 )
 
 var (
@@ -48,37 +47,38 @@ func init() {
 	logger.Info("==================================load config start==================================")
 	loadDefault()
 
-	addrs := strings.Split(getEnv(KeyDbAddr, DefaultEnvironment), ",")
+	env := getEnv(KeyCurEnv, EnvironmentDevelop)
+
+	addrs := strings.Split(getEnv(KeyDbAddr, env), ",")
 	db := dbConf{
 		Addrs:     addrs,
-		Database:  getEnv(KeyDATABASE, DefaultEnvironment),
-		UserName:  getEnv(KeyDbUser, DefaultEnvironment),
-		Password:  getEnv(KeyDbPwd, DefaultEnvironment),
-		PoolLimit: getEnvInt(KeyDbPoolLimit, DefaultEnvironment),
+		Database:  getEnv(KeyDATABASE, env),
+		UserName:  getEnv(KeyDbUser, env),
+		Password:  getEnv(KeyDbPwd, env),
+		PoolLimit: getEnvInt(KeyDbPoolLimit, env),
 	}
 	config.Db = db
 
 	server := serverConf{
-		ServerPort: getEnvInt(KeyServerPort, DefaultEnvironment),
-		FaucetUrl:  getEnv(KeyAddrFaucet, DefaultEnvironment),
-		ApiVersion: getEnv(KeyApiVersion, DefaultEnvironment),
-		MaxDrawCnt: getEnvInt(KeyMaxDrawCnt, DefaultEnvironment),
-		ShowFaucet: getEnv(KeyShowFaucet, DefaultEnvironment),
+		ServerPort: getEnvInt(KeyServerPort, env),
+		FaucetUrl:  getEnv(KeyAddrFaucet, env),
+		ApiVersion: getEnv(KeyApiVersion, env),
+		MaxDrawCnt: getEnvInt(KeyMaxDrawCnt, env),
+		CurEnv:     getEnv(KeyCurEnv, env),
 	}
 	config.Server = server
 
 	hubcf := hubConf{
 		Prefix: bech32Prefix{
-			AccAddr:  getEnv(KeyPrefixAccAddr, DefaultEnvironment),
-			AccPub:   getEnv(KeyPrefixAccPub, DefaultEnvironment),
-			ValAddr:  getEnv(KeyPrefixValAddr, DefaultEnvironment),
-			ValPub:   getEnv(KeyPrefixValPub, DefaultEnvironment),
-			ConsAddr: getEnv(KeyPrefixConsAddr, DefaultEnvironment),
-			ConsPub:  getEnv(KeyPrefixConsPub, DefaultEnvironment),
+			AccAddr:  getEnv(KeyPrefixAccAddr, env),
+			AccPub:   getEnv(KeyPrefixAccPub, env),
+			ValAddr:  getEnv(KeyPrefixValAddr, env),
+			ValPub:   getEnv(KeyPrefixValPub, env),
+			ConsAddr: getEnv(KeyPrefixConsAddr, env),
+			ConsPub:  getEnv(KeyPrefixConsPub, env),
 		},
-		LcdUrl:  getEnv(KeyAddrHubLcd, DefaultEnvironment),
-		NodeUrl: getEnv(KeyAddrHubNode, DefaultEnvironment),
-		ChainId: getEnv(KeyChainId, DefaultEnvironment),
+		LcdUrl:  getEnv(KeyAddrHubLcd, env),
+		NodeUrl: getEnv(KeyAddrHubNode, env),
 	}
 	config.Hub = hubcf
 
@@ -96,7 +96,6 @@ func loadDefault() {
 		KeyAddrHubLcd:     "http://192.168.150.7:30317",
 		KeyAddrHubNode:    "http://192.168.150.7:30657",
 		KeyAddrFaucet:     "http://192.168.150.7:30200",
-		KeyChainId:        "rainbow-dev",
 		KeyApiVersion:     "v0.6.5",
 		KeyMaxDrawCnt:     "10",
 		KeyPrefixAccAddr:  "faa",
@@ -106,6 +105,7 @@ func loadDefault() {
 		KeyPrefixConsAddr: "fca",
 		KeyPrefixConsPub:  "fcp",
 		KeyShowFaucet:     "1",
+		KeyCurEnv:         "dev",
 	}
 
 	defaultConfig[EnvironmentLocal] = map[string]string{
@@ -118,7 +118,6 @@ func loadDefault() {
 		KeyAddrHubLcd:     "http://127.0.0.1:1317",
 		KeyAddrHubNode:    "http://127.0.0.1:26657",
 		KeyAddrFaucet:     "http://192.168.150.7:30200",
-		KeyChainId:        "rainbow-dev",
 		KeyApiVersion:     "v0.6.5",
 		KeyMaxDrawCnt:     "10",
 		KeyPrefixAccAddr:  "faa",
@@ -127,7 +126,6 @@ func loadDefault() {
 		KeyPrefixValPub:   "fvp",
 		KeyPrefixConsAddr: "fca",
 		KeyPrefixConsPub:  "fcp",
-		KeyShowFaucet:     "1",
 	}
 }
 
@@ -154,14 +152,13 @@ type serverConf struct {
 	FaucetUrl  string
 	ApiVersion string
 	MaxDrawCnt int
-	ShowFaucet string
+	CurEnv     string
 }
 
 type hubConf struct {
 	Prefix  bech32Prefix
 	LcdUrl  string
 	NodeUrl string
-	ChainId string
 }
 
 type bech32Prefix struct {
@@ -173,15 +170,18 @@ type bech32Prefix struct {
 	ConsPub  string
 }
 
-func getEnv(key string, environment string) string {
+func getEnv(key string, environment ...string) string {
 	var value string
 	if v, ok := os.LookupEnv(key); ok {
 		value = v
 	} else {
-		if DefaultEnvironment == EnvironmentStage || DefaultEnvironment == EnvironmentProd {
-			logger.Panic("config is not able to use default config", logger.String("Environment", DefaultEnvironment))
+		if len(environment) == 0 {
+			logger.Panic("config must be not empty", logger.String("key", key))
 		}
-		value = defaultConfig[environment][key]
+		if environment[0] == EnvironmentStage || environment[0] == EnvironmentProd {
+			logger.Panic("config is not able to use default config", logger.String("Environment", environment[0]))
+		}
+		value = defaultConfig[environment[0]][key]
 	}
 	if value == "" {
 		logger.Panic("config must be not empty", logger.String("key", key))
@@ -190,15 +190,18 @@ func getEnv(key string, environment string) string {
 	return value
 }
 
-func getEnvInt(key string, environment string) int {
+func getEnvInt(key string, environment ...string) int {
 	var value string
 	if v, ok := os.LookupEnv(key); ok {
 		value = v
 	} else {
-		if DefaultEnvironment == EnvironmentStage || DefaultEnvironment == EnvironmentProd {
-			logger.Panic("config is not able to use default config", logger.String("Environment", DefaultEnvironment))
+		if len(environment) == 0 {
+			logger.Panic("config must be not empty", logger.String("key", key))
 		}
-		value = defaultConfig[environment][key]
+		if environment[0] == EnvironmentStage || environment[0] == EnvironmentProd {
+			logger.Panic("config is not able to use default config", logger.String("Environment", environment[0]))
+		}
+		value = defaultConfig[environment[0]][key]
 	}
 
 	i, err := strconv.ParseInt(value, 10, 0)
