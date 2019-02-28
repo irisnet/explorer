@@ -5,10 +5,9 @@
       <div class="header_top">
         <div class="imageWrap" @click="featureButtonClick('/home')">
           <img src="../assets/logo.png"/>
-          <span class="testnet_logo" v-if="flShowTestnetLogo">{{testnetLogo}}</span>
+          <span class="testnet_logo" v-if="flShowTestnetLogo">{{chainId}}</span>
         </div>
         <div class="navSearch">
-          <span class="chain_id">{{fuxi.toUpperCase()}}</span>
           <input type="text" class="search_input"
                  placeholder="Search by Address / Txhash / Block"
                  v-model.trim="searchInputValue"
@@ -61,7 +60,7 @@
         <span class="nav_item common_item_style" :class="activeClassName === '/Proposals'?'nav_item_active':''"
               @click="featureButtonClick('/Proposals')"
         >Proposals</span>
-        <span class="nav_item common_item_style faucet_content" :class="activeClassName === '/faucet'?'nav_item_active':''"
+        <span v-if="flShowFaucet" class="nav_item common_item_style faucet_content" :class="activeClassName === '/faucet'?'nav_item_active':''"
               @click="featureButtonClick('/faucet')"
         >Faucet</span>
         <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === 'netWork'?'nav_item_active':''"
@@ -72,8 +71,8 @@
             Network
             <span class="bottom_arrow"></span>
           </span>
-          <span class="sub_btn_item" v-show="flShowNetwork"><a href="https://www.irisplorer.io/">Mainnet</a></span>
-          <span class="sub_btn_item" v-show="flShowNetwork"><a href="https://testnet.irisplorer.io/">Testnet</a></span>
+          <span class="sub_btn_item" v-show="flShowNetwork"><a :href="mainnetHref">Mainnet</a></span>
+          <span class="sub_btn_item" v-show="flShowNetwork"><a :href="testnetHref">Testnet</a></span>
         </div>
       </div>
     </div>
@@ -84,7 +83,7 @@
       </div>
       <div class="image_wrap_mobile" @click="featureButtonClick('/home',true)">
         <img src="../assets/logo.png"/>
-        <span class="mobile_testnet_logo">{{testnetLogo}}</span>
+        <span class="mobile_testnet_logo">{{chainId}}</span>
       </div>
 
       <div class="use_feature_mobile" v-show="featureShow">
@@ -121,7 +120,7 @@
         </div>
 
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/Proposals')">Proposals</span>
-        <span class="feature_btn_mobile feature_nav mobile_faucet_content" @click="featureButtonClick('/faucet')">Faucet</span>
+        <span v-if="flShowFaucet" class="feature_btn_mobile feature_nav mobile_faucet_content" @click="featureButtonClick('/faucet')">Faucet</span>
 
         <span class="feature_btn_mobile feature_nav select_option_container" @click="netWorkSelect(flShowNetworkSelect)">
          <span>Network</span>
@@ -130,8 +129,8 @@
           </div>
         </span>
         <div class="select_option" v-show="flShowNetworkSelect">
-          <span class="feature_btn_mobile feature_nav"><a href="https://www.irisplorer.io/">Mainnet</a></span>
-          <span class="feature_btn_mobile feature_nav"><a href="https://testnet.irisplorer.io/">Testnet</a></span>
+          <span class="feature_btn_mobile feature_nav"><a :href="mainnetHref">Mainnet</a></span>
+          <span class="feature_btn_mobile feature_nav"><a :href="testnetHref">Testnet</a></span>
         </div>
 
       </div>
@@ -180,7 +179,7 @@
         searchInputValue: '',
         activeClassName: '/home',
         showHeader:!(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer()),
-        fuxi:this.fuxi,
+        flShowFaucet: false,
         showSubTransaction:false,
         showSubValidators:false,
         showClear:false,
@@ -190,10 +189,12 @@
         flShowNetworkSelect:false,
         flShowUpOrDown: false,
         flShowNetwork: false,
-        flShowTestnetLogo: false,
+        flShowTestnetLogo: true,
         flShowValidatorsUpOrDown: false,
         flShowNetworkUpOrDown: false,
-        testnetLogo: constant.TESTNETLOGO,
+        chainId: '',
+        mainnetHref:'',
+        testnetHref:'',
         upImg: require("../assets/caret-bottom.png"),
         downImg: require("../assets/caret-bottom.png"),
     }
@@ -211,13 +212,7 @@
       document.getElementById('router_wrap').addEventListener('click', this.hideFeature);
       this.listenRouteForChangeActiveButton();
       window.addEventListener('resize',this.onresize);
-      let showFaucet = localStorage.getItem('Show_faucet');
-      let faucetDom = document.getElementsByClassName('faucet_content')[0];
-      let mobileFaucetDom = document.getElementsByClassName('mobile_faucet_content')[0];
-      if(showFaucet === "0"){
-        faucetDom.parentNode.removeChild(faucetDom);
-        mobileFaucetDom.parentNode.removeChild(mobileFaucetDom)
-      }
+      this.getConfig();
     },
     beforeDestroy() {
       document.getElementById('router_wrap').removeEventListener('click', this.hideFeature);
@@ -423,6 +418,36 @@
       },
       toHelp(){
         this.$router.push('/help')
+      },
+      getConfig(){
+        Service.http('/api/config').then(res => {
+          this.toggleTestnetLogo(res);
+          this.explorerLink(res);
+          res.configs.forEach( item => {
+            if(res.cur_env === item.env_nm){
+              this.chainId = `${item.chain_id.toUpperCase()} ${item.env_nm.toUpperCase()}`
+              if(item.show_faucet && item.show_faucet === 1){
+                this.flShowFaucet = true
+              }else {
+                this.flShowFaucet = false
+              }
+            }
+          })
+        });
+      },
+      toggleTestnetLogo(currentEnv){
+        if(currentEnv.cur_env === constant.ENVCONFIG.MAINNET){
+          this.flShowTestnetLogo = false
+        }
+      },
+      explorerLink(envLink){
+        envLink.configs.forEach( item => {
+          if(item.env_nm === constant.ENVCONFIG.MAINNET){
+            this.mainnetHref = item.host
+          }else if(item.env_nm === constant.ENVCONFIG.TESTNET){
+            this.testnetHref = item.host
+          }
+        });
       }
     }
   }
@@ -466,7 +491,7 @@
             white-space: nowrap;
             display: flex;
             align-items: center;
-            margin-left: 0.4rem;
+            margin-left: 0.2rem;
             padding: 0.1rem 0.14rem;
             color: #F2711D;
             border: 0.01rem solid #FFD3B6;

@@ -31,12 +31,18 @@ ValidatorStatus.UNBONDED = 'Bonded';
 const Denom = {};
 Denom.IRISATTO = 'iris-atto';
 Denom.IRIS = 'iris';
-const TESTNETLOGO = 'FUXI TESTNET';
+const ENVCONFIG = {};
+ENVCONFIG.DEV = 'dev';
+ENVCONFIG.QA = 'qa';
+ENVCONFIG.STAGE = 'stage';
+ENVCONFIG.TESTNET = 'testnet';
+ENVCONFIG.MAINNET = 'mainnet';
+
 export default {
   PREFIX,
   SUFFIX,
   TxType,
   ValidatorStatus,
   Denom,
-  TESTNETLOGO
+  ENVCONFIG
 };
