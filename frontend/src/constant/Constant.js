@@ -31,11 +31,12 @@ ValidatorStatus.UNBONDED = 'Bonded';
 const Denom = {};
 Denom.IRISATTO = 'iris-atto';
 Denom.IRIS = 'iris';
-
+const TESTNETLOGO = 'FUXI TESTNET';
 export default {
   PREFIX,
   SUFFIX,
   TxType,
   ValidatorStatus,
   Denom,
+  TESTNETLOGO
 };

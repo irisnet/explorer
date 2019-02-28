@@ -5,6 +5,7 @@
       <div class="header_top">
         <div class="imageWrap" @click="featureButtonClick('/home')">
           <img src="../assets/logo.png"/>
+          <span class="testnet_logo" v-if="flShowTestnetLogo">{{testnetLogo}}</span>
         </div>
         <div class="navSearch">
           <span class="chain_id">{{fuxi.toUpperCase()}}</span>
@@ -63,6 +64,17 @@
         <span class="nav_item common_item_style faucet_content" :class="activeClassName === '/faucet'?'nav_item_active':''"
               @click="featureButtonClick('/faucet')"
         >Faucet</span>
+        <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === 'netWork'?'nav_item_active':''"
+             @mouseover="netWorkMouseOver" @mouseleave="netWorkMouseLeave">
+
+          <span class="nav_item common_item_style" :class="activeClassName === 'netWork'?'nav_item_active':''"
+                @mouseover="netWorkMouseOver" @mouseleave="netWorkMouseLeave" @click="featureButtonClick('network')">
+            Network
+            <span class="bottom_arrow"></span>
+          </span>
+          <span class="sub_btn_item" v-show="flShowNetwork"><a href="https://www.irisplorer.io/">Mainnet</a></span>
+          <span class="sub_btn_item" v-show="flShowNetwork"><a href="https://testnet.irisplorer.io/">Testnet</a></span>
+        </div>
       </div>
     </div>
 
@@ -72,6 +84,7 @@
       </div>
       <div class="image_wrap_mobile" @click="featureButtonClick('/home',true)">
         <img src="../assets/logo.png"/>
+        <span class="mobile_testnet_logo">{{testnetLogo}}</span>
       </div>
 
       <div class="use_feature_mobile" v-show="featureShow">
@@ -110,6 +123,17 @@
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/Proposals')">Proposals</span>
         <span class="feature_btn_mobile feature_nav mobile_faucet_content" @click="featureButtonClick('/faucet')">Faucet</span>
 
+        <span class="feature_btn_mobile feature_nav select_option_container" @click="netWorkSelect(flShowNetworkSelect)">
+         <span>Network</span>
+          <div :class="flShowNetworkUpOrDown ? 'upImg_content' : 'downImg_content'">
+            <img :src="flShowNetworkUpOrDown ? upImg : downImg ">
+          </div>
+        </span>
+        <div class="select_option" v-show="flShowNetworkSelect">
+          <span class="feature_btn_mobile feature_nav"><a href="https://www.irisplorer.io/">Mainnet</a></span>
+          <span class="feature_btn_mobile feature_nav"><a href="https://testnet.irisplorer.io/">Testnet</a></span>
+        </div>
+
       </div>
       <div class="search_input_mobile">
         <div style="width:95%;position:relative">
@@ -126,7 +150,8 @@
 </template>
 <script>
   import Tools from '../util/Tools';
-  import Service from "../util/axios"
+  import Service from "../util/axios";
+  import constant from '../constant/Constant'
   export default {
     name: 'app-header',
     watch:{
@@ -162,8 +187,13 @@
         innerWidth : window.innerWidth,
         flShowTransactionsSelect: false,
         flShowValidatorsSelect: false,
+        flShowNetworkSelect:false,
         flShowUpOrDown: false,
+        flShowNetwork: false,
+        flShowTestnetLogo: false,
         flShowValidatorsUpOrDown: false,
+        flShowNetworkUpOrDown: false,
+        testnetLogo: constant.TESTNETLOGO,
         upImg: require("../assets/caret-bottom.png"),
         downImg: require("../assets/caret-bottom.png"),
     }
@@ -214,6 +244,16 @@
           this.flShowValidatorsUpOrDown = false
         }
       },
+      netWorkSelect(flShowNetworkSelect){
+        this.flShowNetworkSelect = false;
+        if(!flShowNetworkSelect){
+          this.flShowNetworkSelect = true;
+          this.flShowNetworkUpOrDown = true
+        }else {
+          this.flShowNetworkSelect = false;
+          this.flShowNetworkUpOrDown = false
+        }
+      },
       hideFeature() {
         if (this.featureShow) {
           this.featureShow = false;
@@ -239,7 +279,9 @@
         this.showSubTransaction = false;
         this.showSubValidators = false;
         this.listenRouteForChangeActiveButton();
-        this.$router.push(path);
+        if(path !== 'network'){
+          this.$router.push(path);
+        }
       },
       transactionMouseOver(){
         this.showSubTransaction = true;
@@ -252,6 +294,12 @@
       },
       validatorsMouseLeave(){
         this.showSubValidators = false;
+      },
+      netWorkMouseOver(){
+        this.flShowNetwork = true;
+      },
+      netWorkMouseLeave(){
+        this.flShowNetwork = false;
       },
       searchTx(){
         let uri = `/api/tx/${this.searchInputValue}`;
@@ -411,6 +459,20 @@
           img{
             width: 100%;
           }
+          .testnet_logo{
+            font-size: 0.18rem;
+            height: 0.38rem;
+            line-height: 0.38rem;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            margin-left: 0.4rem;
+            padding: 0.1rem 0.14rem;
+            color: #F2711D;
+            border: 0.01rem solid #FFD3B6;
+            border-radius: 0.04rem;
+            background: #FFF9F5;
+          }
           .logo_title_wrap{
             margin-left:0.16rem;
             @include flex;
@@ -553,6 +615,15 @@
             width:1.6rem;
             text-align: left;
             padding-left:0.2rem;
+            a{
+              width: 100%;
+              display: inline-block;
+              padding-left: 0.19rem;
+              color: #c9eafd!important;
+              &:hover{
+                color: #00f0ff!important;
+              }
+            }
             &:hover{
               color: #00f0ff;
             }
@@ -595,11 +666,23 @@
       }
       .image_wrap_mobile {
         @include flex;
+        align-items: center;
         width: 1.5rem;
         height: 0.5rem;
         img{
           width: 100%;
           height: 100%;
+        }
+        .mobile_testnet_logo{
+          white-space: nowrap;
+          font-size: 0.16rem;
+          color: #F2711D;
+          line-height: 1;
+          border:0.01rem solid #FFD3B6;
+          padding: 0.07rem 0.13rem;
+          border-radius: 0.04rem;
+          background: #FFF9F5;
+          margin-left: 0.1rem;
         }
         .logo_title_wrap{
           margin-left:0.16rem;
@@ -702,6 +785,11 @@
           background: #3598db;
           color: #fff;
           font-size:0.14rem;
+          a{
+            display: inline-block;
+            width: 100%;
+            color: #fff!important;
+          }
         }
         .feature_arrow {
           position: relative;
