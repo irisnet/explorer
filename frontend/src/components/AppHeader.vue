@@ -63,7 +63,7 @@
         <span v-if="flShowFaucet" class="nav_item common_item_style faucet_content" :class="activeClassName === '/faucet'?'nav_item_active':''"
               @click="featureButtonClick('/faucet')"
         >Faucet</span>
-        <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === 'netWork'?'nav_item_active':''"
+        <div class="nav_item sub_btn_wrap common_item_style" style="width:2rem;padding-right: 0.4rem" :class="activeClassName === 'netWork'?'nav_item_active':''"
              @mouseover="netWorkMouseOver" @mouseleave="netWorkMouseLeave">
 
           <span class="nav_item common_item_style" :class="activeClassName === 'netWork'?'nav_item_active':''"
@@ -71,8 +71,9 @@
             Network
             <span class="bottom_arrow"></span>
           </span>
-          <span class="sub_btn_item" v-show="flShowNetwork"><a :href="mainnetHref">Mainnet</a></span>
-          <span class="sub_btn_item" v-show="flShowNetwork"><a :href="testnetHref">Testnet</a></span>
+          <span class="sub_btn_item " style="width: 2rem" v-show="flShowNetwork"><a :href="mainnetHref">Mainnet</a></span>
+          <span class="sub_btn_item " style="width: 2rem" v-show="flShowNetwork"><a :href="testnetHref">FUXI Testnet</a></span>
+          <span class="sub_btn_item " style="width: 2rem" v-show="flShowNetwork"><a style="white-space: nowrap" :href="nyanCatsHref">NYAN_CATS Testnet</a></span>
         </div>
       </div>
     </div>
@@ -130,7 +131,8 @@
         </span>
         <div class="select_option" v-show="flShowNetworkSelect">
           <span class="feature_btn_mobile feature_nav"><a :href="mainnetHref">Mainnet</a></span>
-          <span class="feature_btn_mobile feature_nav"><a :href="testnetHref">Testnet</a></span>
+          <span class="feature_btn_mobile feature_nav"><a :href="testnetHref">FUXI Testnet</a></span>
+          <span class="feature_btn_mobile feature_nav"><a :href="nyanCatsHref">NYAN_CATS Testnet</a></span>
         </div>
 
       </div>
@@ -195,6 +197,7 @@
         chainId: '',
         mainnetHref:'',
         testnetHref:'',
+        nyanCatsHref:'',
         upImg: require("../assets/caret-bottom.png"),
         downImg: require("../assets/caret-bottom.png"),
     }
@@ -446,6 +449,8 @@
             this.mainnetHref = item.host
           }else if(item.env_nm === constant.ENVCONFIG.TESTNET){
             this.testnetHref = item.host
+          }else if(item.env_nm  === "NYAN_CATS"){
+           this.nyanCatsHref = item.host
           }
         });
       }
