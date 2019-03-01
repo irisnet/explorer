@@ -32,7 +32,7 @@
           <span class="information_props">Deposits :</span>
           <span class="information_value information_show_trim">{{depositsValue?depositsValue:'--'}}</span>
         </div>
-        <div class="information_props_wrap">
+        <div class="information_props_wrap" v-if="!flValidator">
           <span class="information_props">Withdraw Address :</span>
           <span class="information_value information_show_trim">{{withdrawAddress?withdrawAddress:'--'}}</span>
         </div>
