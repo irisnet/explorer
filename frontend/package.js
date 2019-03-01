@@ -8,7 +8,7 @@ function list (val) {
 }
 
 console.log('Replacing environments ...');
-let accAddr = "fva", accPub = "fap", valAddr = "fva";
+let accAddr = "faa", accPub = "fap", valAddr = "fva";
 
 
 
