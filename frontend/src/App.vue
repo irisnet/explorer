@@ -275,10 +275,6 @@
             .footer_link_wrap {
               align-items: center;
               justify-content: center;
-              .footer_link_privacy{
-                height: 0.16rem;
-                line-height: 0.16rem;
-              }
             }
             .footer_copyright_wrap {
               text-align: center;
