@@ -14,13 +14,8 @@ db.createCollection("ex_config");
 // create index
 db.ex_config.createIndex({"env_nm": 1}, {"unique": true});
 
-
-
-
-
-
-
-
-
-
+// init data
+db.ex_config.insert({"env_nm":"dev","host":"https://dev.irisplorer.io","chain_id":"rainbow-dev","show_faucet":1});
+db.ex_config.insert({"env_nm":"mainnet","host":"https://www.irisplorer.io","chain_id":"fuxi","show_faucet":0});
+db.ex_config.insert({"env_nm":"testnet","host":"https://testnet.irisplorer.io","chain_id":"fuxi","show_faucet":1});
 
