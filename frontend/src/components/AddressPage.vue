@@ -444,7 +444,8 @@
             this.descriptionValue= validator.description && validator.description.details ? validator.description.details : "--";
             this.commissionRateValue = '';
             this.announcementValue = '';
-            this.operatorValue = this.$Codec.Bech32.toBech32(this.$Crypto.Constants.IRIS.IrisNetConfig.PREFIX_BECH32_ACCADDR,this.$Codec.Bech32.fromBech32(validator.address));
+            debugger
+            this.operatorValue = this.$Codec.Bech32.toBech32(this.$Crypto.config.iris.bech32.accAddr,this.$Codec.Bech32.fromBech32(validator.address));
           }else{
             this.flValidator = false;
             this.flActiveValidator = false;

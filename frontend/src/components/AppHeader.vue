@@ -371,9 +371,9 @@
         }else{
           if(/^[A-F0-9]{64}$/.test(this.searchInputValue)){
             this.searchTx()
-          }else if(this.$Codec.Bech32.isBech32(this.$Crypto.Constants.IRIS.IrisNetConfig.PREFIX_BECH32_ACCADDR,this.searchInputValue) ) {
+          }else if(this.$Codec.Bech32.isBech32(this.$Crypto.config.iris.bech32.accAddr,this.searchInputValue) ) {
             this.searchDelegator();
-          }else if(this.$Codec.Bech32.isBech32(this.$Crypto.Constants.IRIS.IrisNetConfig.PREFIX_BECH32_VALADDR,this.searchInputValue)){
+          }else if(this.$Codec.Bech32.isBech32(this.$Crypto.config.iris.bech32.valAddr,this.searchInputValue)){
             this.searchValidator();
           }else if (/^\+?[1-9][0-9]*$/.test(this.searchInputValue)){
             this.searchBlockAndProposal();

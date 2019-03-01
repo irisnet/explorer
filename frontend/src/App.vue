@@ -38,11 +38,7 @@
           <div class="footer_right" :class="footerRightVar">
             <div class="footer_link_wrap">
               <a href="https://www.irisnetwork.cn/testnets" target="_blank">
-                <span class="footer_link_contact">Join Testnet</span>
-              </a>
-              <span class="footer_link_forum">|</span>
-              <a href="https://www.irisnetwork.cn/?lang=EN#/0/5" target="_blank">
-                <span class="footer_link_chat">Contact Us</span>
+                <span class="footer_link_contact">Use Testnet</span>
               </a>
               <span class="footer_link_join">|</span>
               <span class="footer_link_privacy" @click="footerLinkClick('/privacy_policy')">Privacy Policy</span>
@@ -277,7 +273,12 @@
           }
           .footer_right {
             .footer_link_wrap {
+              align-items: center;
               justify-content: center;
+              .footer_link_privacy{
+                height: 0.16rem;
+                line-height: 0.16rem;
+              }
             }
             .footer_copyright_wrap {
               text-align: center;
@@ -333,6 +334,7 @@
                 &:nth-child(2n-1) {
                   color: #3698db;
                   cursor: pointer;
+                  margin-top: 0.02rem;
                 }
                 &:nth-child(2n) {
                   color: #a2a2ae;
