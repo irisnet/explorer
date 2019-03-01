@@ -46,7 +46,7 @@
               <span @click="footerLinkClick('/help')">FAQ</span>
             </div>
             <p class="footer_copyright_wrap">
-              ©️ IRISplorer 2018 all rights reserved
+              ©️ IRISplorer 2019 all rights reserved
             </p>
           </div>
         </div>
