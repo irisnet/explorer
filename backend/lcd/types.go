@@ -7,10 +7,11 @@ import (
 )
 
 const (
-	accountUrl   = "%s/auth/accounts/%s"
-	validatorUrl = "%s/stake/validators/%s"
-	nodeInfoUrl  = "%s/node_info"
-	genesisUrl   = "%s/genesis"
+	accountUrl         = "%s/auth/accounts/%s"
+	validatorUrl       = "%s/stake/validators/%s"
+	nodeInfoUrl        = "%s/node_info"
+	genesisUrl         = "%s/genesis"
+	withdrawAddressUrl = "%s/distribution/%s/withdrawAddress"
 )
 
 type AccountVo struct {
