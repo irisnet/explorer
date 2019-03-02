@@ -4,10 +4,10 @@
     <header class="app_header_person_computer" v-show="devicesShow === 1">
       <div class="header_top">
         <div class="imageWrap" @click="featureButtonClick('/home')">
-          <img src="../assets/logo.png" alt="失去网络了..."/>
+          <img src="../assets/logo.png"/>
+          <span class="chain_content" v-if="flShowChainId">{{chainId}}</span>
         </div>
         <div class="navSearch">
-          <span class="chain_id">{{fuxi.toUpperCase()}}</span>
           <input type="text" class="search_input"
                  placeholder="Search by Address / Txhash / Block"
                  v-model.trim="searchInputValue"
@@ -60,9 +60,21 @@
         <span class="nav_item common_item_style" :class="activeClassName === '/Proposals'?'nav_item_active':''"
               @click="featureButtonClick('/Proposals')"
         >Proposals</span>
-        <span class="nav_item common_item_style faucet_content" :class="activeClassName === '/faucet'?'nav_item_active':''"
+        <span v-if="flShowFaucet" class="nav_item common_item_style faucet_content" :class="activeClassName === '/faucet'?'nav_item_active':''"
               @click="featureButtonClick('/faucet')"
         >Faucet</span>
+        <div class="nav_item sub_btn_wrap common_item_style" style="width:2rem;padding-right: 0.4rem" :class="activeClassName === 'netWork'?'nav_item_active':''"
+             @mouseover="netWorkMouseOver" @mouseleave="netWorkMouseLeave">
+
+          <span class="nav_item common_item_style" :class="activeClassName === 'netWork'?'nav_item_active':''"
+                @mouseover="netWorkMouseOver" @mouseleave="netWorkMouseLeave" @click="featureButtonClick('network')">
+            Network
+            <span class="bottom_arrow"></span>
+          </span>
+          <span class="sub_btn_item " style="width: 2rem" v-show="flShowNetwork"><a :href="mainnetHref">Mainnet</a></span>
+          <span class="sub_btn_item " style="width: 2rem" v-show="flShowNetwork"><a :href="testnetHref">FUXI Testnet</a></span>
+          <span class="sub_btn_item " style="width: 2rem" v-show="flShowNetwork"><a style="white-space: nowrap" :href="nyanCatsHref">NYAN_CATS Testnet</a></span>
+        </div>
       </div>
     </div>
 
@@ -71,7 +83,8 @@
         <img src="../assets/menu.png">
       </div>
       <div class="image_wrap_mobile" @click="featureButtonClick('/home',true)">
-        <img src="../assets/logo.png" alt="失去网络了..."/>
+        <img src="../assets/logo.png"/>
+        <span class="mobile_chain_content" v-if="flShowChainId">{{chainId}}</span>
       </div>
 
       <div class="use_feature_mobile" v-show="featureShow">
@@ -108,7 +121,19 @@
         </div>
 
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/Proposals')">Proposals</span>
-        <span class="feature_btn_mobile feature_nav mobile_faucet_content" @click="featureButtonClick('/faucet')">Faucet</span>
+        <span v-if="flShowFaucet" class="feature_btn_mobile feature_nav mobile_faucet_content" @click="featureButtonClick('/faucet')">Faucet</span>
+
+        <span class="feature_btn_mobile feature_nav select_option_container" @click="netWorkSelect(flShowNetworkSelect)">
+         <span>Network</span>
+          <div :class="flShowNetworkUpOrDown ? 'upImg_content' : 'downImg_content'">
+            <img :src="flShowNetworkUpOrDown ? upImg : downImg ">
+          </div>
+        </span>
+        <div class="select_option" v-show="flShowNetworkSelect">
+          <span class="feature_btn_mobile feature_nav"><a :href="mainnetHref">Mainnet</a></span>
+          <span class="feature_btn_mobile feature_nav"><a :href="testnetHref">FUXI Testnet</a></span>
+          <span class="feature_btn_mobile feature_nav"><a :href="nyanCatsHref">NYAN_CATS Testnet</a></span>
+        </div>
 
       </div>
       <div class="search_input_mobile">
@@ -126,7 +151,8 @@
 </template>
 <script>
   import Tools from '../util/Tools';
-  import Service from "../util/axios"
+  import Service from "../util/axios";
+  import constant from '../constant/Constant'
   export default {
     name: 'app-header',
     watch:{
@@ -155,15 +181,23 @@
         searchInputValue: '',
         activeClassName: '/home',
         showHeader:!(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer()),
-        fuxi:this.fuxi,
+        flShowFaucet: false,
         showSubTransaction:false,
         showSubValidators:false,
         showClear:false,
         innerWidth : window.innerWidth,
         flShowTransactionsSelect: false,
         flShowValidatorsSelect: false,
+        flShowNetworkSelect:false,
         flShowUpOrDown: false,
+        flShowNetwork: false,
+        flShowChainId: true,
         flShowValidatorsUpOrDown: false,
+        flShowNetworkUpOrDown: false,
+        chainId: '',
+        mainnetHref:'',
+        testnetHref:'',
+        nyanCatsHref:'',
         upImg: require("../assets/caret-bottom.png"),
         downImg: require("../assets/caret-bottom.png"),
     }
@@ -181,13 +215,7 @@
       document.getElementById('router_wrap').addEventListener('click', this.hideFeature);
       this.listenRouteForChangeActiveButton();
       window.addEventListener('resize',this.onresize);
-      let showFaucet = localStorage.getItem('Show_faucet');
-      let faucetDom = document.getElementsByClassName('faucet_content')[0];
-      let mobileFaucetDom = document.getElementsByClassName('mobile_faucet_content')[0];
-      if(showFaucet === "0"){
-        faucetDom.parentNode.removeChild(faucetDom);
-        mobileFaucetDom.parentNode.removeChild(mobileFaucetDom)
-      }
+      this.getConfig();
     },
     beforeDestroy() {
       document.getElementById('router_wrap').removeEventListener('click', this.hideFeature);
@@ -212,6 +240,16 @@
         }else {
           this.flShowValidatorsSelect = false;
           this.flShowValidatorsUpOrDown = false
+        }
+      },
+      netWorkSelect(flShowNetworkSelect){
+        this.flShowNetworkSelect = false;
+        if(!flShowNetworkSelect){
+          this.flShowNetworkSelect = true;
+          this.flShowNetworkUpOrDown = true
+        }else {
+          this.flShowNetworkSelect = false;
+          this.flShowNetworkUpOrDown = false
         }
       },
       hideFeature() {
@@ -239,7 +277,9 @@
         this.showSubTransaction = false;
         this.showSubValidators = false;
         this.listenRouteForChangeActiveButton();
-        this.$router.push(path);
+        if(path !== 'network'){
+          this.$router.push(path);
+        }
       },
       transactionMouseOver(){
         this.showSubTransaction = true;
@@ -252,6 +292,12 @@
       },
       validatorsMouseLeave(){
         this.showSubValidators = false;
+      },
+      netWorkMouseOver(){
+        this.flShowNetwork = true;
+      },
+      netWorkMouseLeave(){
+        this.flShowNetwork = false;
       },
       searchTx(){
         let uri = `/api/tx/${this.searchInputValue}`;
@@ -328,9 +374,9 @@
         }else{
           if(/^[A-F0-9]{64}$/.test(this.searchInputValue)){
             this.searchTx()
-          }else if(this.$Codec.Bech32.isBech32(this.$Crypto.Constants.IRIS.IrisNetConfig.PREFIX_BECH32_ACCADDR,this.searchInputValue) ) {
+          }else if(this.$Codec.Bech32.isBech32(this.$Crypto.config.iris.bech32.accAddr,this.searchInputValue) ) {
             this.searchDelegator();
-          }else if(this.$Codec.Bech32.isBech32(this.$Crypto.Constants.IRIS.IrisNetConfig.PREFIX_BECH32_VALADDR,this.searchInputValue)){
+          }else if(this.$Codec.Bech32.isBech32(this.$Crypto.config.iris.bech32.valAddr,this.searchInputValue)){
             this.searchValidator();
           }else if (/^\+?[1-9][0-9]*$/.test(this.searchInputValue)){
             this.searchBlockAndProposal();
@@ -375,6 +421,38 @@
       },
       toHelp(){
         this.$router.push('/help')
+      },
+      getConfig(){
+        Service.http('/api/config').then(res => {
+          this.toggleTestnetLogo(res);
+          this.explorerLink(res);
+          res.configs.forEach( item => {
+            if(res.cur_env === item.env_nm){
+              this.chainId = `${item.chain_id.toUpperCase()} ${item.env_nm.toUpperCase()}`
+              if(item.show_faucet && item.show_faucet === 1){
+                this.flShowFaucet = true
+              }else {
+                this.flShowFaucet = false
+              }
+            }
+          })
+        });
+      },
+      toggleTestnetLogo(currentEnv){
+        if(currentEnv.cur_env === constant.ENVCONFIG.MAINNET){
+          this.flShowChainId = false
+        }
+      },
+      explorerLink(envLink){
+        envLink.configs.forEach( item => {
+          if(item.env_nm === constant.ENVCONFIG.MAINNET){
+            this.mainnetHref = item.host
+          }else if(item.env_nm === constant.ENVCONFIG.TESTNET){
+            this.testnetHref = item.host
+          }else if(item.env_nm  === "NYAN_CATS"){
+           this.nyanCatsHref = item.host
+          }
+        });
       }
     }
   }
@@ -410,6 +488,21 @@
           height: 0.5rem;
           img{
             width: 100%;
+          }
+          .chain_content{
+            font-size: 0.18rem;
+            white-space: nowrap;
+            display: flex;
+            height: 0.36rem;
+            margin-top: 0.09rem;
+            line-height: 0.36rem;
+            align-items: center;
+            margin-left: 0.2rem;
+            padding: 0 0.14rem;
+            color: #F2711D;
+            border: 0.01rem solid #FFD3B6;
+            border-radius: 0.04rem;
+            background: #FFF9F5;
           }
           .logo_title_wrap{
             margin-left:0.16rem;
@@ -553,6 +646,15 @@
             width:1.6rem;
             text-align: left;
             padding-left:0.2rem;
+            a{
+              width: 100%;
+              display: inline-block;
+              padding-left: 0.19rem;
+              color: #c9eafd!important;
+              &:hover{
+                color: #00f0ff!important;
+              }
+            }
             &:hover{
               color: #00f0ff;
             }
@@ -595,11 +697,23 @@
       }
       .image_wrap_mobile {
         @include flex;
+        align-items: center;
         width: 1.5rem;
         height: 0.5rem;
         img{
           width: 100%;
           height: 100%;
+        }
+        .mobile_chain_content{
+          white-space: nowrap;
+          font-size: 0.16rem;
+          color: #F2711D;
+          line-height: 1;
+          border:0.01rem solid #FFD3B6;
+          padding: 0.07rem 0.13rem;
+          border-radius: 0.04rem;
+          background: #FFF9F5;
+          margin-left: 0.1rem;
         }
         .logo_title_wrap{
           margin-left:0.16rem;
@@ -702,6 +816,11 @@
           background: #3598db;
           color: #fff;
           font-size:0.14rem;
+          a{
+            display: inline-block;
+            width: 100%;
+            color: #fff!important;
+          }
         }
         .feature_arrow {
           position: relative;
