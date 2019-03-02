@@ -114,9 +114,9 @@
           <span class="information_props">Amount :</span>
           <span class="information_value">{{amountValue}}</span>
         </div>
-        <div class="information_props_wrap">
-          <span class="information_props" v-if="flShowReceivedRewardsValue">Received Rewards :</span>
-          <span class="information_value"><pre class="information_pre">{{amountValue}}</pre></span>
+        <div class="information_props_wrap" v-if="flShowReceivedRewardsValue">
+          <span class="information_props">Received Rewards :</span>
+          <span class="information_value">{{amountValue}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Status :</span>
@@ -254,7 +254,7 @@
               if(data.Amount && data.Amount.length !==0){
                 this.amountValue = data.Amount.map(item=>{
                   item.amount = Tools.convertScientificNotation2Number(Tools.formatNumber(item.amount));
-                  if(!item.Amount[0].denom){
+                  if(!item.denom){
                     return `${item.amount} SHARES`;
                   }else{
                     return `${item.amount} ${Tools.formatDenom(item.denom).toUpperCase()}`;
