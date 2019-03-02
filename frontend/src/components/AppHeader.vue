@@ -84,7 +84,7 @@
       </div>
       <div class="image_wrap_mobile" @click="featureButtonClick('/home',true)">
         <img src="../assets/logo.png"/>
-        <span class="mobile_chain_content">{{chainId}}</span>
+        <span class="mobile_chain_content" v-if="flShowChainId">{{chainId}}</span>
       </div>
 
       <div class="use_feature_mobile" v-show="featureShow">
