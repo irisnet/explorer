@@ -314,9 +314,10 @@ export default class Tools{
                 }
               }
             }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
-              Amount = `${item.Amount.amount}  ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
               if(!item.Amount.denom){
                 Amount = `${item.Amount.amount} SHARES`;
+              }else {
+                Amount = `${item.Amount.amount}  ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
               }
             }
           }

@@ -345,9 +345,10 @@ import Constant from "../constant/Constant"
                         Amount = item.Amount.map(listItem => `${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
                       }
                     } else if (item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')) {
-                      Amount = `${item.Amount.amount} ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
                       if(!item.Amount.denom){
                         Amount = `${item.Amount.amount} SHARES`;
+                      }else {
+                        Amount = `${item.Amount.amount} ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
                       }
                     }
                   }else {
