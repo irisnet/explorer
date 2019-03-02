@@ -18,35 +18,29 @@ func (service *AccountService) GetModule() Module {
 	return Account
 }
 
-func (service *AccountService) Query(address string) interface{} {
+func (service *AccountService) Query(address string) (result model.AccountVo) {
 	prefix, _, _ := utils.DecodeAndConvert(address)
 	if prefix == conf.Get().Hub.Prefix.ValAddr {
-		var valAccInfo model.ValAccVo
-		valInfo := delegatorService.QueryDelegation(address)
-		valAccInfo.Amount = document.Coins{valInfo.selfBond}
-		valAccInfo.Deposits = valInfo.delegated
-		valAccInfo.ValProfile = valInfo.ValProfile
-		valAccInfo.WithdrawAddress = queryWithdrawAddr(address)
-		valAccInfo.IsProfiler = isProfiler(address)
-		valAccInfo.Address = address
-		return valAccInfo
+		valinfo := delegatorService.QueryDelegation(address)
+		result.Amount = document.Coins{valinfo.selfBond}
+		result.Deposits = valinfo.delegated
+	} else {
+		res, err := lcd.Account(address)
+		if err == nil {
+			var amount document.Coins
+			for _, coinStr := range res.Coins {
+				coin := utils.ParseCoin(coinStr)
+				amount = append(amount, coin)
+			}
+			result.Amount = amount
+		}
+		result.Deposits = delegatorService.GetDeposits(address)
 	}
 
-	var accInfo model.AccountVo
-	res, err := lcd.Account(address)
-	if err == nil {
-		var amount document.Coins
-		for _, coinStr := range res.Coins {
-			coin := utils.ParseCoin(coinStr)
-			amount = append(amount, coin)
-		}
-		accInfo.Amount = amount
-	}
-	accInfo.Deposits = delegatorService.GetDeposits(address)
-	accInfo.WithdrawAddress = queryWithdrawAddr(address)
-	accInfo.IsProfiler = isProfiler(address)
-	accInfo.Address = address
-	return accInfo
+	result.WithdrawAddress = lcd.QueryWithdrawAddr(address)
+	result.IsProfiler = isProfiler(address)
+	result.Address = address
+	return result
 }
 
 func (service *AccountService) QueryAll(page, size int) model.PageVo {
@@ -57,23 +51,6 @@ func (service *AccountService) QueryAll(page, size int) model.PageVo {
 		Count: cnt,
 		Data:  result,
 	}
-}
-
-func queryWithdrawAddr(address string) (result string) {
-	var tx document.CommonTx
-	var selector = bson.M{"to": 1}
-	var accAddr = utils.Convert(conf.Get().Hub.Prefix.AccAddr, address)
-
-	condition := bson.M{}
-	condition[document.Tx_Field_From] = accAddr
-	condition[document.Tx_Field_Type] = types.TxTypeSetWithdrawAddress
-
-	if err := queryOne(document.CollectionNmCommonTx, selector, condition, &tx); err == nil {
-		result = tx.To
-	} else {
-		result = accAddr
-	}
-	return
 }
 
 func isProfiler(address string) bool {

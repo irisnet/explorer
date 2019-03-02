@@ -21,3 +21,13 @@ func Validator(address string) (result ValidatorVo, err error) {
 	}
 	return result, nil
 }
+
+func QueryWithdrawAddr(address string) (result string) {
+	url := fmt.Sprintf(withdrawAddressUrl, conf.Get().Hub.LcdUrl, address)
+	resBytes, err := utils.Get(url)
+	if err != nil {
+		return result
+	}
+	result = string(resBytes)
+	return
+}
