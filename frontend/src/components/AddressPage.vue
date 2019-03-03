@@ -33,7 +33,7 @@
           <span class="information_value information_show_trim">{{depositsValue?depositsValue:'--'}}</span>
         </div>
         <div class="information_props_wrap" v-show="!flValidator">
-          <span class="information_props">withdraw to :</span>
+          <span class="information_props">Withdraw To :</span>
           <span class="information_value information_show_trim jump_link_style" v-show="withdrawAddress" @click="skipRoute(`/address/1/${withdrawAddress}`)">{{withdrawAddress}}</span>
           <span class="information_value information_show_trim" v-show="!withdrawAddress">--</span>
         </div>
