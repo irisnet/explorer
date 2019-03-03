@@ -211,7 +211,7 @@
         })
       },
       getValidatorList(currentPage, pageSize){
-        pageSize = 100;
+        this.pageSize = 100;
         let url;
         if(this.$route.params.param === "active"){
           this.listTitleName = "Active Validators";
@@ -298,6 +298,8 @@
         }else if (type === '2') {
           this.getTransactionList(currentPage, pageSize)
         }else if (type === '3' || type === '4') {
+          //TODO(ZHANGJINBIAO) 分页配置需单独控制,后面需更改逻辑
+          pageSize = 100;
           this.getValidatorList(currentPage, pageSize)
         }
 
