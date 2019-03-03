@@ -69,7 +69,15 @@ export default class Tools{
   static formatNumber(num){
     return new BigNumber(num).div(1000000000000000000).toNumber();
   }
-
+  static formatRate(rate){
+    let toFixedValue = 2;
+    let rateNum = new BigNumber(rate).multipliedBy(100).toNumber();
+    if(rateNum.toString().indexOf(".") !== -1 && rateNum.toString().split('.')[1].length > 2){
+      return rateNum
+    }else {
+      return Tools.toFixedformatNumber(rateNum,toFixedValue)
+    }
+  }
   static formaNumberAboutGasPrice(num){
     return new BigNumber(num).div(1000000000).toNumber();
   }
