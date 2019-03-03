@@ -339,15 +339,16 @@ import Constant from "../constant/Constant"
                       if(item.Amount.length > 0){
                         item.Amount[0].amount = Tools.formatAmount(item.Amount[0].amount);
                       }
-                      if(Tools.flTxType(item.Type)){
+                      if(!item.Amount[0].denom){
                         Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
                       }else {
                         Amount = item.Amount.map(listItem => `${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
                       }
                     } else if (item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')) {
-                      Amount = `${item.Amount.amount} ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
-                      if(Tools.flTxType(item.Type)){
+                      if(!item.Amount.denom){
                         Amount = `${item.Amount.amount} SHARES`;
+                      }else {
+                        Amount = `${item.Amount.amount} ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
                       }
                     }
                   }else {
