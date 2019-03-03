@@ -25,6 +25,7 @@ type Validator struct {
 	BondHeight     int64       `json:"bond_height"`
 	Status         string      `json:"status"`
 	OriginalTokens string      `json:"original_tokens"`
+	Rate           string      `json:"rate"`
 	ValStatus
 }
 

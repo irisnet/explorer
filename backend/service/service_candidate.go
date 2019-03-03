@@ -2,6 +2,7 @@ package service
 
 import (
 	"github.com/irisnet/explorer/backend/conf"
+	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
@@ -144,17 +145,32 @@ func (service *CandidateService) QueryCandidate(address string) model.Candidates
 
 	c := getDb().C(document.CollectionNmStakeRoleCandidate)
 	defer c.Database.Session.Close()
-	var candidate document.Candidate
 
-	err := c.Find(bson.M{document.Candidate_Field_Address: address}).One(&candidate)
+	validator, err := lcd.Validator(address)
 	if err != nil {
 		panic(types.CodeNotFound)
+	}
+
+	var val = model.Validator{
+		Address:        validator.OperatorAddress,
+		PubKey:         validator.ConsensusPubkey,
+		Jailed:         validator.Jailed,
+		Status:         BondStatusToString(validator.Status),
+		BondHeight:     utils.ParseIntWithDefault(validator.BondHeight, 0),
+		OriginalTokens: utils.RoundToString(validator.Tokens, 0),
+		VotingPower:    utils.RoundString(validator.Tokens),
+		Description: model.Description{
+			Moniker:  validator.Description.Moniker,
+			Identity: validator.Description.Identity,
+			Website:  validator.Description.Website,
+			Details:  validator.Description.Details,
+		},
+		Rate: validator.Commission.Rate,
 	}
 
 	query := bson.M{}
 	query[document.Candidate_Field_Jailed] = false
 	query[document.Candidate_Field_Status] = types.TypeValStatusBonded
-
 	pipe := c.Pipe(
 		[]bson.M{
 			{"$match": query},
@@ -168,7 +184,7 @@ func (service *CandidateService) QueryCandidate(address string) model.Candidates
 	pipe.One(&count)
 	result := model.CandidatesInfoVo{
 		PowerAll:  getVotingPowerFromToken(count.Count),
-		Validator: convert(candidate),
+		Validator: val,
 	}
 	return result
 }
@@ -454,4 +470,17 @@ func convert(candidate document.Candidate) model.Validator {
 
 func getVotingPowerFromToken(token float64) int64 {
 	return utils.Round(token / math.Pow10(18))
+}
+
+func BondStatusToString(b int) string {
+	switch b {
+	case 0:
+		return types.TypeValStatusUnbonded
+	case 1:
+		return types.TypeValStatusUnbonding
+	case 2:
+		return types.TypeValStatusBonded
+	default:
+		panic("improper use of BondStatusToString")
+	}
 }
