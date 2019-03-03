@@ -60,8 +60,8 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Website :</span>
-          <span class="information_value">
-            <pre class="information_pre">{{websiteValue}}</pre>
+          <span class="information_value" :class="websiteValue && websiteValue !== '--' ? 'link_style' : ''">
+            <pre class="information_pre" @click="openUrl(websiteValue)">{{websiteValue}}</pre>
           </span>
         </div>
         <div class="information_props_wrap">
@@ -699,6 +699,15 @@
           console.error(e)
         })
       },
+
+      openUrl(url){
+        if(url && url !== '--'){
+          if(!/(http|https):\/\/([\w.]+\/?)\S*/.test(url)){
+            url = `http://${url}`
+          }
+          window.open(url)
+        }
+      }
     }
   }
 </script>
@@ -761,6 +770,12 @@
             font-size:0.14rem;
             /*flex:1;*/
           }
+          .link_style{
+            pre{
+              color: #3598db !important;
+              cursor: pointer;
+            }
+          }
         }
       }
       .transactions_detail_title {
@@ -819,6 +834,12 @@
             overflow-x:auto;
             -webkit-overflow-scrolling:touch;
             color: #a2a2ae;
+          }
+          .link_style{
+            pre{
+              color: #3598db !important;
+              cursor: pointer;
+            }
           }
           .operator_value{
             cursor: pointer;
