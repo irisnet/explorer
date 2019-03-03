@@ -32,9 +32,10 @@
           <span class="information_props">Deposits :</span>
           <span class="information_value information_show_trim">{{depositsValue?depositsValue:'--'}}</span>
         </div>
-        <div class="information_props_wrap">
+        <div class="information_props_wrap" v-show="!flValidator">
           <span class="information_props">Withdraw Address :</span>
-          <span class="information_value information_show_trim">{{withdrawAddress?withdrawAddress:'--'}}</span>
+          <span class="information_value information_show_trim jump_link_style" v-show="withdrawAddress" @click="skipRoute(`/address/1/${withdrawAddress}`)">{{withdrawAddress}}</span>
+          <span class="information_value information_show_trim" v-show="!withdrawAddress">--</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Transactions :</span>
@@ -1134,6 +1135,10 @@
   }
   .information_show_trim{
     white-space: pre-wrap ;
+  }
+  .jump_link_style{
+    cursor: pointer;
+    color: #3598db !important;
   }
   .list_tab_wrap{
     padding: 0!important;
