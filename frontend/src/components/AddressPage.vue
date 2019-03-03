@@ -33,7 +33,7 @@
           <span class="information_value information_show_trim">{{depositsValue?depositsValue:'--'}}</span>
         </div>
         <div class="information_props_wrap" v-show="!flValidator">
-          <span class="information_props">Withdraw Address :</span>
+          <span class="information_props">withdraw to :</span>
           <span class="information_value information_show_trim jump_link_style" v-show="withdrawAddress" @click="skipRoute(`/address/1/${withdrawAddress}`)">{{withdrawAddress}}</span>
           <span class="information_value information_show_trim" v-show="!withdrawAddress">--</span>
         </div>
@@ -59,6 +59,11 @@
           <span class="information_value operator_value" v-show="operatorValue" @click="skipRoute(`/address/1/${operatorValue}`)">{{operatorValue}}</span>
           <span class="information_value" v-show="!operatorValue">--</span>
         </div>
+        <div class="information_props_wrap">
+          <span class="information_props">Comission Rate :</span>
+          <span class="information_value">{{rateValue}}</span>
+        </div>
+
         <div class="information_props_wrap">
           <span class="information_props">Website :</span>
           <span class="information_value" :class="websiteValue && websiteValue !== '--' ? 'link_style' : ''">
@@ -202,6 +207,7 @@
       data() {
 
           return {
+              rateValue: '',
               transactionTimer: null,
               devicesWidth: window.innerWidth,
               transactionsDetailWrap: 'personal_computer_transactions_detail',
@@ -438,6 +444,7 @@
                 this.votingPowerValue = validator.voting_power;
               }
             }
+            this.rateValue = validator.rate ? `${Tools.formatRate(validator.rate.toString())}%`  : '--';
             this.identity = validator.description && validator.description.identity ? validator.description.identity : "--";
             this.nameValue = validator.description && validator.description.moniker ? validator.description.moniker : '--';
             this.pubKeyValue = validator.pub_key ? validator.pub_key : "--";
