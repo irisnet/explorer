@@ -6,7 +6,7 @@
       </div>
       <div :class="privacyPolicyVar">
         <h4 style="margin-top:0.4rem;">PLEASE READ THE PRIVACY POLICY CAREFULLY. (July 2018)</h4>
-        <p>This Privacy Policy is designed to assist you with understanding how bianjie.ai (referred to as the "Company","bianjie.ai", "we", "us" or "our") collect, use and disclose the information you provide us when accessing or using the website,<a href="">irisplorer.io</a>.</p>
+        <p>This Privacy Policy is designed to assist you with understanding how IRIS Foundation Limited (referred to as ,"the Foundation", "we", "us" or "our") collect, use and disclose the information you provide us when accessing or using the website,<a href="">testnet.irisplorer.io</a>.</p>
         <h4>WHAT INFORMATION DO WE COLLECT?</h4>
         <p>You may provide us your personal information that you voluntarily disclose that is collected on an individual basis; and information collected automatically when you use our Website or the services available on our Website. Each time you use any Site, or any Services, the current version of this Privacy Policy will apply. Personal Information may include (but is not limited to):</p>
         <ul>
@@ -42,7 +42,7 @@
           <li>communicating with you about news, products, services, events and other information we think will be of interest to you;</li>
           <li>monitoring and analyzing trends, usage and activities in connection with our Website;</li>
           <li>detecting, investigating and preventing fraudulent transactions or unauthorized or illegal activities;</li>
-          <li>protecting the rights and property of the bianjie.ai Parties (as defined below) and others;</li>
+          <li>protecting the rights and property of the Parties (as defined below) and others;</li>
           <li>for all other purposes ancillary to any of the purposes stated above.</li>
         </ul>
         <h4>INFORMATION DISCLOSING</h4>
@@ -64,7 +64,7 @@
 
         <h4>ADDITIONAL INFORMATION OR ASSISTANCE</h4>
         <p>We may change this Privacy Policy in our sole discretion at any time. Any revisions to this Privacy Policy will be posted on the home page of our Website. It is your obligation to periodically visit our Website to review any changes that may be made to this Privacy Policy. Your continued use of our Website constitutes your agreement to be bound by any such changes to this Privacy Policy. If you do not agree with this Privacy Policy, please do not use the Wesite, or any of our Services.</p>
-        <p>If you have any questions about this Privacy Policy, please contact us at service@bianjie.ai.</p>
+        <p>If you have any questions about this Privacy Policy, please contact us at contact@irisnet.org.</p>
 
 
 
