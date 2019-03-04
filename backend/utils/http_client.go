@@ -42,9 +42,11 @@ func Get(url string) (bz []byte, err error) {
 		return
 	}
 	if resp.StatusCode != http.StatusOK {
-		bz, err = ioutil.ReadAll(resp.Body)
-		resp.Body.Close()
-		logger.Error("req error", logger.Any("error", string(bz)))
+		if bz2, err := ioutil.ReadAll(resp.Body); err == nil {
+			resp.Body.Close()
+			logger.Error("req error", logger.Any("error", string(bz2)))
+		}
+
 		return
 	}
 
@@ -64,8 +66,10 @@ func Forward(req *http.Request, url string) (bz []byte, err error) {
 	res, err := client.Do(r)
 	defer res.Body.Close()
 	if err != nil || res.StatusCode != 200 {
-		bz, err = ioutil.ReadAll(res.Body)
-		logger.Error("Forward err", logger.String("err", string(bz)))
+		if bz2, err := ioutil.ReadAll(res.Body); err == nil {
+			res.Body.Close()
+			logger.Error("Forward err", logger.Any("error", string(bz2)))
+		}
 		return bz, err
 	}
 
