@@ -91,8 +91,6 @@ func NewAPIMux() *mux.Router {
 
 func AddHeader(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Add("CHAIN_ID", conf.Get().Hub.ChainId)
-		w.Header().Add("SHOW_FAUCET", conf.Get().Server.ShowFaucet)
 		h.ServeHTTP(w, r)
 	})
 }

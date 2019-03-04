@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/irisnet/explorer/backend/logger"
 	"math"
@@ -14,6 +13,15 @@ func ParseInt(text string) (i int64, b bool) {
 		return i, false
 	}
 	return i, true
+}
+
+func ParseIntWithDefault(text string, def int64) (i int64) {
+	i, err := strconv.ParseInt(text, 10, 0)
+	if err != nil {
+		logger.Error("ParseIntWithDefault error", logger.String("str", text))
+		return def
+	}
+	return i
 }
 
 func ParseUint(text string) (i int64, b bool) {
@@ -38,13 +46,18 @@ func Round(x float64) int64 {
 	return int64(math.Floor(x + 0.5))
 }
 
-func Map2Struct(srcMap map[string]interface{}, obj interface{}) {
-	bz, err := json.Marshal(srcMap)
+func RoundString(x string) int64 {
+	f, err := strconv.ParseFloat(x, 0)
 	if err != nil {
-		logger.Error("map convert to json failed")
+		logger.Error("RoundString error", logger.String("str", x))
 	}
-	err = json.Unmarshal(bz, obj)
+	return int64(math.Floor(f + 0.5))
+}
+
+func RoundToString(decimal string, bit int) (i string) {
+	f, err := strconv.ParseFloat(decimal, bit)
 	if err != nil {
-		logger.Error("json convert to struct failed")
+		logger.Error("RoundFloatString error", logger.String("str", decimal))
 	}
+	return strconv.FormatFloat(f, 'f', bit, 64)
 }

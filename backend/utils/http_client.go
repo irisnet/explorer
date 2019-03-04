@@ -31,17 +31,20 @@ func Get(url string) (bz []byte, err error) {
 	logger.Info("http Get url", logger.String("url", url))
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
-		logger.Error("req error", logger.Any("err", err))
+		logger.Error("req error", logger.Any("err", err), logger.String("url", url))
 		return
 	}
 
 	resp, err := client.Do(req)
 	if err != nil {
-		logger.Error("req error", logger.Any("err", err))
+		logger.Error("req error", logger.Any("err", err), logger.String("url", url))
 		return
 	}
 	if resp.StatusCode != http.StatusOK {
-		logger.Error("req error", logger.Any("http_Status", resp.Status))
+		if bz2, err := ioutil.ReadAll(resp.Body); err == nil {
+			resp.Body.Close()
+			logger.Error("req error", logger.Any("err", string(bz2)), logger.String("url", url))
+		}
 		return
 	}
 
@@ -49,10 +52,10 @@ func Get(url string) (bz []byte, err error) {
 
 	defer resp.Body.Close()
 	if err != nil {
-		logger.Error("ioutil.ReadAll err", logger.Any("io", err))
+		logger.Error("ioutil.ReadAll err", logger.Any("io", err), logger.String("url", url))
 	}
 	end := time.Now()
-	logger.Info("http get coast second", logger.Int64("time", end.Unix()-start.Unix()))
+	logger.Info("http get coast second", logger.Int64("time", end.Unix()-start.Unix()), logger.String("url", url))
 	return
 }
 
