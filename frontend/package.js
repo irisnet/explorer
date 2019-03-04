@@ -8,12 +8,12 @@ function list (val) {
 }
 
 console.log('Replacing environments ...');
-let accAddr = "faa", accPub = "fap", valAddr = "fva";
+let accAddr = "iaa", accPub = "iap", valAddr = "iva";
 
 
 
 replaceEnv([
-    "node_modules/irisnet-crypto/chains/iris/conf.json"
+    "node_modules/irisnet-crypto/config.json"
     ],
     {
         "accAddr": accAddr,

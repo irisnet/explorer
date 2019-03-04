@@ -6,6 +6,7 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 	"net/http"
 	"os"
+	"strings"
 )
 
 var (
@@ -40,37 +41,47 @@ type Logger struct {
 
 func Info(msg string, fields ...zap.Field) {
 	defer logger.Sync()
-	logger.Info(msg, fields...)
+	logger.Info(msg, desensitize(fields)...)
 }
 
 func Debug(msg string, fields ...zap.Field) {
 	defer logger.Sync()
-	logger.Debug(msg, fields...)
+	logger.Debug(msg, desensitize(fields)...)
 }
 
 func Warn(msg string, fields ...zap.Field) {
 	defer logger.Sync()
-	logger.Warn(msg, fields...)
+	logger.Warn(msg, desensitize(fields)...)
 }
 
 func Error(msg string, fields ...zap.Field) {
 	defer logger.Sync()
-	logger.Error(msg, fields...)
+	logger.Error(msg, desensitize(fields)...)
 }
 
 func Panic(msg string, fields ...zap.Field) {
 	defer logger.Sync()
-	logger.Panic(msg, fields...)
+	logger.Panic(msg, desensitize(fields)...)
 }
 
 func Fatal(msg string, fields ...zap.Field) {
 	defer logger.Sync()
-	logger.Fatal(msg, fields...)
+	logger.Fatal(msg, desensitize(fields)...)
 }
 
 func With(fields ...zap.Field) {
 	defer logger.Sync()
-	logger.With(fields...)
+	logger.With(desensitize(fields)...)
+}
+
+func desensitize(fields []zap.Field) (fs []zap.Field) {
+	for _, f := range fields {
+		key := strings.ToLower(f.Key)
+		if !strings.Contains(key, "password") {
+			fs = append(fs, f)
+		}
+	}
+	return fs
 }
 
 func Sync() {

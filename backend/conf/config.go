@@ -22,6 +22,7 @@ const (
 	KeyApiVersion  = "API_VERSION"
 	KeyMaxDrawCnt  = "MAX_DRAW_CNT"
 	KeyShowFaucet  = "SHOW_FAUCET"
+	KeyCurEnv      = "CUR_ENV"
 
 	KeyPrefixAccAddr  = "PrefixAccAddr"
 	KeyPrefixAccPub   = "PrefixAccPub"
@@ -64,6 +65,7 @@ func init() {
 		ApiVersion: getEnv(KeyApiVersion, DefaultEnvironment),
 		MaxDrawCnt: getEnvInt(KeyMaxDrawCnt, DefaultEnvironment),
 		ShowFaucet: getEnv(KeyShowFaucet, DefaultEnvironment),
+		CurEnv:     getEnv(KeyCurEnv, DefaultEnvironment),
 	}
 	config.Server = server
 
@@ -106,6 +108,7 @@ func loadDefault() {
 		KeyPrefixConsAddr: "fca",
 		KeyPrefixConsPub:  "fcp",
 		KeyShowFaucet:     "1",
+		KeyCurEnv:         "dev",
 	}
 
 	defaultConfig[EnvironmentLocal] = map[string]string{
@@ -128,6 +131,7 @@ func loadDefault() {
 		KeyPrefixConsAddr: "fca",
 		KeyPrefixConsPub:  "fcp",
 		KeyShowFaucet:     "1",
+		KeyCurEnv:         "dev",
 	}
 }
 
@@ -155,6 +159,7 @@ type serverConf struct {
 	ApiVersion string
 	MaxDrawCnt int
 	ShowFaucet string
+	CurEnv     string
 }
 
 type hubConf struct {
