@@ -5,6 +5,7 @@ import (
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/orm/document"
+	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -80,4 +81,16 @@ func (service CommonService) GetGenesis() lcd.GenesisVo {
 		service.genesis = result
 	}
 	return service.genesis
+}
+
+func (service CommonService) GetConfig() []document.Config {
+	dbm := getDb()
+	defer dbm.Session.Close()
+
+	var configs []document.Config
+	configStore := dbm.C(document.CollectionNmConfig)
+	if err := configStore.Find(nil).All(&configs); err != nil {
+		panic(types.ErrForEmpty("config document is not set"))
+	}
+	return configs
 }
