@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm"
@@ -153,21 +154,35 @@ func (service *CandidateService) QueryCandidates(page, size int) model.ValDetail
 }
 
 func (service *CandidateService) QueryCandidate(address string) model.CandidatesInfoVo {
-	var candidate document.Candidate
-	var query = orm.NewQuery()
-	defer query.Release()
+	//var candidate document.Candidate
 
-	query.SetCollection(document.CollectionNmStakeRoleCandidate).
-		SetCondition(bson.M{document.Candidate_Field_Address: address}).
-		SetResult(&candidate)
-
-	if err := query.Exec(); err != nil {
+	validator, err := lcd.Validator(address)
+	if err != nil {
 		panic(types.CodeNotFound)
+	}
+	var val = model.Validator{
+		Address:        validator.OperatorAddress,
+		PubKey:         validator.ConsensusPubkey,
+		Jailed:         validator.Jailed,
+		Status:         BondStatusToString(validator.Status),
+		BondHeight:     utils.ParseIntWithDefault(validator.BondHeight, 0),
+		OriginalTokens: utils.RoundToString(validator.Tokens, 0),
+		VotingPower:    utils.RoundString(validator.Tokens),
+		Description: model.Description{
+			Moniker:  validator.Description.Moniker,
+			Identity: validator.Description.Identity,
+			Website:  validator.Description.Website,
+			Details:  validator.Description.Details,
+		},
+		Rate: validator.Commission.Rate,
 	}
 
 	condition := bson.M{}
 	condition[document.Candidate_Field_Jailed] = false
 	condition[document.Candidate_Field_Status] = types.TypeValStatusBonded
+
+	var query = orm.NewQuery()
+	defer query.Release()
 
 	var count model.CountVo
 	query.SetResult(&count)
@@ -181,7 +196,7 @@ func (service *CandidateService) QueryCandidate(address string) model.Candidates
 
 	result := model.CandidatesInfoVo{
 		PowerAll:  getVotingPowerFromToken(count.Count),
-		Validator: convert(candidate),
+		Validator: val,
 	}
 	return result
 }
@@ -451,6 +466,19 @@ func convert(candidate document.Candidate) model.Validator {
 
 func getVotingPowerFromToken(token float64) int64 {
 	return utils.Round(token / math.Pow10(18))
+}
+
+func BondStatusToString(b int) string {
+	switch b {
+	case 0:
+		return types.TypeValStatusUnbonded
+	case 1:
+		return types.TypeValStatusUnbonding
+	case 2:
+		return types.TypeValStatusBonded
+	default:
+		panic("improper use of BondStatusToString")
+	}
 }
 
 func getValUpTime(query *orm.Query) map[string]int {
