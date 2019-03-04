@@ -36,18 +36,19 @@ func Get(url string) (bz []byte, err error) {
 	}
 
 	resp, err := client.Do(req)
+	defer resp.Body.Close()
 	if err != nil {
 		logger.Error("req error", logger.Any("err", err))
 		return
 	}
 	if resp.StatusCode != http.StatusOK {
-		logger.Error("req error", logger.Any("http_Status", resp.Status))
+		bz, err = ioutil.ReadAll(resp.Body)
+		logger.Error("req error", logger.Any("error", string(bz)))
 		return
 	}
 
 	bz, err = ioutil.ReadAll(resp.Body)
 
-	defer resp.Body.Close()
 	if err != nil {
 		logger.Error("ioutil.ReadAll err", logger.Any("io", err))
 	}
@@ -59,12 +60,12 @@ func Get(url string) (bz []byte, err error) {
 func Forward(req *http.Request, url string) (bz []byte, err error) {
 	r := forkRequest(req, url)
 	res, err := client.Do(r)
+	defer res.Body.Close()
 	if err != nil || res.StatusCode != 200 {
-		logger.Error("Forward err", logger.String("err", err.Error()))
+		bz, err = ioutil.ReadAll(res.Body)
+		logger.Error("Forward err", logger.String("err", string(bz)))
 		return bz, err
 	}
-
-	defer res.Body.Close()
 
 	bz, err = ioutil.ReadAll(res.Body)
 	if err != nil {
