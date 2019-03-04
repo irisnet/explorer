@@ -211,6 +211,7 @@
         })
       },
       getValidatorList(currentPage, pageSize){
+        pageSize = 100;
         let url;
         if(this.$route.params.param === "active"){
           this.listTitleName = "Active Validators";
