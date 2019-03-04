@@ -38,7 +38,7 @@ func Get(url string) (bz []byte, err error) {
 	resp, err := client.Do(req)
 	defer resp.Body.Close()
 	if err != nil {
-		logger.Error("req error", logger.Any("err", err))
+		logger.Error("req error", logger.Any("err", err.Error()))
 		return
 	}
 	if resp.StatusCode != http.StatusOK {
