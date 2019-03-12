@@ -3,7 +3,6 @@ package service
 import (
 	"fmt"
 	"github.com/irisnet/explorer/backend/logger"
-	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm"
 	"go.uber.org/zap"
 	"gopkg.in/mgo.v2"
@@ -76,11 +75,6 @@ func (base *BaseService) GetTid() string {
 
 func (base *BaseService) GetTraceLog() zap.Field {
 	return logger.String("traceId", base.GetTid())
-}
-
-// TODO will replace with pageQuery
-func queryRows(collation string, data interface{}, m bson.M, sort string, page, size int) model.PageVo {
-	return orm.QueryRows(collation, data, m, sort, page, size)
 }
 
 func queryAll(collation string, selector, condition bson.M, sort string, size int, result interface{}) error {

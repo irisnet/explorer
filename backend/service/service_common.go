@@ -84,12 +84,11 @@ func (service CommonService) GetGenesis() lcd.GenesisVo {
 }
 
 func (service CommonService) GetConfig() []document.Config {
-	dbm := getDb()
-	defer dbm.Session.Close()
-
 	var configs []document.Config
-	configStore := dbm.C(document.CollectionNmConfig)
-	if err := configStore.Find(nil).All(&configs); err != nil {
+	var query = orm.NewQuery().
+		SetCollection(document.CollectionNmConfig).
+		SetResult(&configs)
+	if err := query.Exec(); err != nil {
 		panic(types.ErrForEmpty("config document is not set"))
 	}
 	return configs

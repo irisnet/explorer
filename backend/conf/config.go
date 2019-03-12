@@ -89,14 +89,14 @@ func init() {
 
 func loadDefault() {
 	defaultConfig[EnvironmentDevelop] = map[string]string{
-		KeyDbAddr:         "192.168.150.7:30000",
+		KeyDbAddr:         "192.168.150.31:27017",
 		KeyDATABASE:       "sync-iris",
 		KeyDbUser:         "iris",
 		KeyDbPwd:          "irispassword",
 		KeyDbPoolLimit:    "4096",
 		KeyServerPort:     "8080",
 		KeyAddrHubLcd:     "http://192.168.150.7:30317",
-		KeyAddrHubNode:    "http://192.168.150.7:30657",
+		KeyAddrHubNode:    "http://irisnet-rpc.dev.rainbow.one",
 		KeyAddrFaucet:     "http://192.168.150.7:30200",
 		KeyChainId:        "rainbow-dev",
 		KeyApiVersion:     "v0.6.5",
@@ -190,12 +190,7 @@ func getEnv(key string, environment string) string {
 	if value == "" {
 		logger.Panic("config must be not empty", logger.String("key", key))
 	}
-	if key == KeyDbUser || key == KeyDbPwd {
-		logger.Info("config", logger.Bool(key+" is empty", value == ""))
-	} else {
-		logger.Info("config", logger.String(key, value))
-	}
-
+	logger.Info("config", logger.String(key, value))
 	return value
 }
 
