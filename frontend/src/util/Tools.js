@@ -170,7 +170,7 @@ export default class Tools{
           if(str.length > 2){
             return Tools.toFixedformatNumber(Number(num) ,2)+ "...";
           }else {
-            return (String(num*100)/100)
+            return num
           }
         }
       }
