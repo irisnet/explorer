@@ -59,7 +59,7 @@
           <span class="information_value link_active_style" @click="skipRoute(`/address/1/${fromValue}`)">{{fromValue}}</span>
         </div>
         <div class="information_props_wrap" v-if="flShowWithdrawAddress">
-          <span class="information_props">Withdraw Address :</span>
+          <span class="information_props">Withdraw To :</span>
           <span class="information_value link_active_style" @click="skipRoute(`/address/1/${withdrawAddress}`)">{{withdrawAddress}}</span>
         </div>
         <div class="information_props_wrap" v-if="flShowDelegatorAddress">
