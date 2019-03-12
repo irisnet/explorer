@@ -25,11 +25,11 @@
           <span class="information_value">{{balanceValue?balanceValue:'--'}}</span>
         </div>
         <div class="information_props_wrap" v-show="flValidator">
-          <span class="information_props">Delegated :</span>
+          <span class="information_props">Bonded Stake :</span>
           <span class="information_value information_show_trim">{{depositsValue?depositsValue:'--'}}</span>
         </div>
         <div class="information_props_wrap" v-show="!flValidator">
-          <span class="information_props">Deposits :</span>
+          <span class="information_props">Delegated :</span>
           <span class="information_value information_show_trim">{{depositsValue?depositsValue:'--'}}</span>
         </div>
         <div class="information_props_wrap" v-show="!flValidator">

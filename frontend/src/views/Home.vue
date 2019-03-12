@@ -279,7 +279,7 @@ import Constant from "../constant/Constant"
               lastBlock.denominator = denominator;
               lastBlock.activeValidator = blockList.Data[0].Block.LastCommit.Precommits.length;
               lastBlock.totalValidator = blockList.Data[0].Validators.length;
-              this.validatorValue = `${blockList.Data[0].Block.LastCommit.Precommits.length} voting / ${blockList.Data[0].Validators.length} total`;
+              this.validatorValue = `${blockList.Data[0].Block.LastCommit.Precommits.length} Voting / ${blockList.Data[0].Validators.length} Active`;
               this.votingPowerValue = denominator !== 0? `${(numerator/denominator).toFixed(2)*100}%`:'';
               this.showFadeinAnimation(blockList,numerator,denominator);
               this.showBlockFadeinAnimation(blockList);
