@@ -6,15 +6,15 @@
           <span :class="flFadeInBlockHeight ? 'animation' : '' ">{{currentBlockHeight}}</span>
           <span class="information_module_key">Latest Block</span>
         </div>
-        <div class="information_preview_module">
+        <div class="information_preview_module mobile_age_content">
           <span :class="flFadeInBlockHeight ? 'animation' : '' " :style="{color:diffSeconds > 120 ? '#ff001b' : ''}">{{lastBlockAge}}</span>
           <span class="information_module_key">Age</span>
         </div>
-        <div class="information_preview_module">
+        <div class="information_preview_module mobile_transaction_content">
           <span :class="flFadeInTransaction ? 'animation' : '' ">{{transactionValue}}</span>
           <span class="information_module_key">Transactions</span>
         </div>
-        <div class="information_preview_module"
+        <div class="information_preview_module mobile_validator"
              style="cursor:pointer;" @click="skipValidators"
         >
           <span style="text-align:center;" :class="flFadeInValidator ? 'animation' : '' ">{{validatorValue}}</span>
@@ -461,6 +461,15 @@ import Constant from "../constant/Constant"
         -webkit-overflow-scrolling:touch;
         .information_preview_module {
           min-width: 1.6rem;
+        }
+        .mobile_transaction_content{
+          min-width: 2rem !important;
+        }
+        .mobile_age_content{
+          min-width: 1.2rem !important;
+        }
+        .mobile_validator{
+          min-width: 2rem !important;
         }
       }
       .module_item_wrap_mobile {
