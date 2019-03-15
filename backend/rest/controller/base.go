@@ -90,6 +90,7 @@ func doException(request model.IrisReq, writer http.ResponseWriter) {
 func doResponse(writer http.ResponseWriter, data interface{}) {
 	var bz []byte
 	var err error
+
 	switch data.(type) {
 	case []byte:
 		bz = data.([]byte)
@@ -104,7 +105,7 @@ func doResponse(writer http.ResponseWriter, data interface{}) {
 		bz, err = json.Marshal(data)
 	}
 	if err != nil {
-		logger.Error("doResponse error", logger.NamedError("err", err))
+		logger.Error("doResponse", logger.String("err", err.Error()))
 	}
 	writer.Write(bz)
 }

@@ -52,7 +52,6 @@
           legend,
           series : [
             {
-              name: '访问来源',
               type: 'pie',
               radius,
               center,

@@ -59,7 +59,7 @@
           <span class="information_value link_active_style" @click="skipRoute(`/address/1/${fromValue}`)">{{fromValue}}</span>
         </div>
         <div class="information_props_wrap" v-if="flShowWithdrawAddress">
-          <span class="information_props">Withdraw Address :</span>
+          <span class="information_props">Withdraw To :</span>
           <span class="information_value link_active_style" @click="skipRoute(`/address/1/${withdrawAddress}`)">{{withdrawAddress}}</span>
         </div>
         <div class="information_props_wrap" v-if="flShowDelegatorAddress">
@@ -114,6 +114,10 @@
           <span class="information_props">Amount :</span>
           <span class="information_value">{{amountValue}}</span>
         </div>
+        <div class="information_props_wrap" v-if="flShowReceivedRewardsValue">
+          <span class="information_props">Received Rewards :</span>
+          <span class="information_value">{{amountValue}}</span>
+        </div>
         <div class="information_props_wrap">
           <span class="information_props">Status :</span>
           <span class="information_value">{{status}}</span>
@@ -142,6 +146,7 @@
           <span class="information_props">Memo :</span>
           <span class="information_value"><pre class="information_pre">{{memo}}</pre></span>
         </div>
+
       </div>
     </div>
 
@@ -201,6 +206,7 @@
         flShowWithdrawAddress: false,
         flShowDelegatorAddress: false,
         flShowValidatorAddress: false,
+        flShowReceivedRewardsValue: false,
         ageValue: '',
         transactionDetailTimer: null,
       }
@@ -248,7 +254,7 @@
               if(data.Amount && data.Amount.length !==0){
                 this.amountValue = data.Amount.map(item=>{
                   item.amount = Tools.convertScientificNotation2Number(Tools.formatNumber(item.amount));
-                  if(Tools.flTxType(data.Type)){
+                  if(!item.denom){
                     return `${item.amount} SHARES`;
                   }else{
                     return `${item.amount} ${Tools.formatDenom(item.denom).toUpperCase()}`;
@@ -313,14 +319,17 @@
                 this.fromValue = data.From ? data.From : '';
                 this.withdrawAddress = data.To ? data.To : '';
               }else if(data.Type === "WithdrawDelegatorRewardsAll"){
+                this.flShowReceivedRewardsValue = true;
                 this.flShowDelegatorAddress = true;
                 this.delegatorAddress = data.From ? data.From : '';
               }else if(data.Type === "WithdrawDelegatorReward"){
+                this.flShowReceivedRewardsValue = true;
                 this.flShowDelegatorAddress = true;
                 this.flShowValidatorAddress = true;
                 this.delegatorAddress = data.From ? data.From : '';
                 this.validatorAddress = data.To ? data.To : "";
               } else if(data.Type === "WithdrawValidatorRewardsAll"){
+                this.flShowReceivedRewardsValue = true;
                 this.flShowValidatorAddress = true;
                 this.validatorAddress = data.From ? data.From : "";
               }

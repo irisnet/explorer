@@ -6,7 +6,7 @@
 <template>
   <div class="spin-component" v-show="loading">
     <div class="spin-content">
-      <img src="../../assets/loading.gif" alt="">
+      <img src="../../assets/loading.gif">
       <p>Loading,please wait...</p>
     </div>
   </div>

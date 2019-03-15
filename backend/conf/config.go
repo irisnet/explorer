@@ -131,6 +131,7 @@ func loadDefault() {
 		KeyPrefixConsAddr: "fca",
 		KeyPrefixConsPub:  "fcp",
 		KeyShowFaucet:     "1",
+		KeyCurEnv:         "dev",
 	}
 }
 
