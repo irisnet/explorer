@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/irisnet/explorer/backend/logger"
 	"math"
+	"math/big"
 	"strconv"
 )
 
@@ -13,6 +14,22 @@ func ParseInt(text string) (i int64, b bool) {
 		return i, false
 	}
 	return i, true
+}
+
+func ParseBigInt(str string) *big.Int {
+	f, ok := ParseInt(str)
+	if !ok {
+		logger.Error("ParseBigInt error", logger.String("str", str))
+	}
+	return big.NewInt(f)
+}
+
+func ParseBigFloat(str string, bit int) *big.Float {
+	f, err := strconv.ParseFloat(str, bit)
+	if err != nil {
+		logger.Error("ParseBigFloat error", logger.String("str", str))
+	}
+	return big.NewFloat(f)
 }
 
 func ParseIntWithDefault(text string, def int64) (i int64) {

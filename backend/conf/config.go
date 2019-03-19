@@ -14,15 +14,18 @@ const (
 	KeyDbPwd       = "DB_PASSWORD"
 	KeyDbPoolLimit = "DB_POOL_LIMIT"
 
-	KeyServerPort  = "PORT"
-	KeyAddrHubLcd  = "ADDR_NODE_SERVER"
-	KeyAddrHubNode = "ADDR_HUB_RPC"
-	KeyAddrFaucet  = "FAUCET_URL"
-	KeyChainId     = "CHAIN_ID"
-	KeyApiVersion  = "API_VERSION"
-	KeyMaxDrawCnt  = "MAX_DRAW_CNT"
-	KeyShowFaucet  = "SHOW_FAUCET"
-	KeyCurEnv      = "CUR_ENV"
+	KeyServerPort    = "PORT"
+	KeyAddrHubLcd    = "ADDR_NODE_SERVER"
+	KeyAddrHubNode   = "ADDR_HUB_RPC"
+	KeyAddrFaucet    = "FAUCET_URL"
+	KeyChainId       = "CHAIN_ID"
+	KeyApiVersion    = "API_VERSION"
+	KeyMaxDrawCnt    = "MAX_DRAW_CNT"
+	KeyShowFaucet    = "SHOW_FAUCET"
+	KeyCurEnv        = "CUR_ENV"
+	KeyCosmosLcd     = "COSMOS_LCD"
+	KeyCosmosValAddr = "COSMOS_VAL_ADDR"
+	KeyCosmosValPub  = "COSMOS_VAL_PUB"
 
 	KeyPrefixAccAddr  = "PrefixAccAddr"
 	KeyPrefixAccPub   = "PrefixAccPub"
@@ -78,9 +81,12 @@ func init() {
 			ConsAddr: getEnv(KeyPrefixConsAddr, DefaultEnvironment),
 			ConsPub:  getEnv(KeyPrefixConsPub, DefaultEnvironment),
 		},
-		LcdUrl:  getEnv(KeyAddrHubLcd, DefaultEnvironment),
-		NodeUrl: getEnv(KeyAddrHubNode, DefaultEnvironment),
-		ChainId: getEnv(KeyChainId, DefaultEnvironment),
+		LcdUrl:        getEnv(KeyAddrHubLcd, DefaultEnvironment),
+		NodeUrl:       getEnv(KeyAddrHubNode, DefaultEnvironment),
+		ChainId:       getEnv(KeyChainId, DefaultEnvironment),
+		CosmosLcd:     getEnv(KeyCosmosLcd, DefaultEnvironment),
+		CosmosValAddr: getEnv(KeyCosmosValAddr, DefaultEnvironment),
+		CosmosValPub:  getEnv(KeyCosmosValPub, DefaultEnvironment),
 	}
 	config.Hub = hubcf
 
@@ -89,15 +95,15 @@ func init() {
 
 func loadDefault() {
 	defaultConfig[EnvironmentDevelop] = map[string]string{
-		KeyDbAddr:         "192.168.150.7:30000",
+		KeyDbAddr:         "192.168.150.31:27017",
 		KeyDATABASE:       "sync-iris",
 		KeyDbUser:         "iris",
 		KeyDbPwd:          "irispassword",
 		KeyDbPoolLimit:    "4096",
 		KeyServerPort:     "8080",
-		KeyAddrHubLcd:     "http://192.168.150.7:30317",
-		KeyAddrHubNode:    "http://192.168.150.7:30657",
-		KeyAddrFaucet:     "http://192.168.150.7:30200",
+		KeyAddrHubLcd:     "http://irisnet-lcd.dev.rainbow.one",
+		KeyAddrHubNode:    "http://192.168.150.31:30657",
+		KeyAddrFaucet:     "http://192.168.150.31:4000",
 		KeyChainId:        "rainbow-dev",
 		KeyApiVersion:     "v0.6.5",
 		KeyMaxDrawCnt:     "10",
@@ -109,6 +115,9 @@ func loadDefault() {
 		KeyPrefixConsPub:  "fcp",
 		KeyShowFaucet:     "1",
 		KeyCurEnv:         "dev",
+		KeyCosmosLcd:      "http://35.220.142.249:2317",
+		KeyCosmosValAddr:  "cosmosvaloper1ssm0d433seakyak8kcf93yefhknjleeds4y3em",
+		KeyCosmosValPub:   "cosmosvalconspub1zcjduepqrgyyjxpe0ujefxwnkpmqz9m0hj03y09tdz9lwc0s7mvy469hulfq69f8sd",
 	}
 
 	defaultConfig[EnvironmentLocal] = map[string]string{
@@ -163,10 +172,13 @@ type serverConf struct {
 }
 
 type hubConf struct {
-	Prefix  bech32Prefix
-	LcdUrl  string
-	NodeUrl string
-	ChainId string
+	Prefix        bech32Prefix
+	LcdUrl        string
+	NodeUrl       string
+	ChainId       string
+	CosmosLcd     string
+	CosmosValAddr string
+	CosmosValPub  string
 }
 
 type bech32Prefix struct {
