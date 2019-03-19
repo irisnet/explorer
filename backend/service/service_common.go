@@ -128,6 +128,7 @@ func (service CommonService) QueryBjValInfo() interface{} {
 
 		if err != nil {
 			logger.Error("staking/pool not found", service.GetTraceLog(), logger.String("url", url))
+			return
 		}
 
 		var pool struct {
@@ -136,6 +137,7 @@ func (service CommonService) QueryBjValInfo() interface{} {
 		}
 		if err := json.Unmarshal(resBytes, &pool); err != nil {
 			logger.Error("staking/pool unmarshal error", service.GetTraceLog(), logger.String("err", err.Error()))
+			return
 		}
 		var totalBondTokens = utils.ParseBigFloat(pool.BondedTokens, 4)
 		var toketFloat = utils.ParseBigFloat(validator.Tokens, 4)
@@ -149,6 +151,7 @@ func (service CommonService) QueryBjValInfo() interface{} {
 
 		if err != nil {
 			logger.Error("slashing/validators not found", service.GetTraceLog(), logger.String("url", url))
+			return
 		}
 
 		var signInfo struct {
@@ -159,6 +162,7 @@ func (service CommonService) QueryBjValInfo() interface{} {
 		}
 		if err := json.Unmarshal(resBytes, &signInfo); err != nil {
 			logger.Error("slashing/validators unmarshal error", service.GetTraceLog(), logger.String("err", err.Error()))
+			return
 		}
 		valInfo.MissedBlocksCnt = int(utils.ParseIntWithDefault(signInfo.MissedBlocksCounter, 0))
 	}
@@ -171,6 +175,7 @@ func (service CommonService) QueryBjValInfo() interface{} {
 
 		if err != nil {
 			logger.Error("slashing/parameters not found", service.GetTraceLog(), logger.String("url", url))
+			return
 		}
 
 		var slashParams struct {
@@ -183,6 +188,7 @@ func (service CommonService) QueryBjValInfo() interface{} {
 		}
 		if err := json.Unmarshal(resBytes, &slashParams); err != nil {
 			logger.Error("slashing/validators unmarshal error", service.GetTraceLog(), logger.String("err", err.Error()))
+			return
 		}
 		valInfo.SignedBlocksWindow = int(utils.ParseIntWithDefault(slashParams.SignedBlocksWindow, 0))
 
