@@ -29,7 +29,7 @@ const (
 	UrlRegisterQueryText      = "/search/{text}"
 	UrlRegisterQuerySysDate   = "/sysdate"
 	UrlRegisterQueryConfig    = "/config"
-	UrlRegisterQueryBjValInfo = "/bj/validator"
+	UrlRegisterQueryBjValInfo = "/cosmos/validator/bj"
 
 	//faucet
 	UrlRegisterQueryFaucet = "/faucet/account"
