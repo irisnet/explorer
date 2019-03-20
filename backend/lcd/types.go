@@ -9,6 +9,7 @@ import (
 const (
 	accountUrl         = "%s/auth/accounts/%s"
 	validatorUrl       = "%s/stake/validators/%s"
+	validatorsUrl      = "%s/stake/validators?page=%d&size=%d"
 	nodeInfoUrl        = "%s/node_info"
 	genesisUrl         = "%s/genesis"
 	withdrawAddressUrl = "%s/distribution/%s/withdrawAddress"

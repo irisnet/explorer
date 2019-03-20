@@ -5,6 +5,7 @@ import (
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm"
+	"github.com/irisnet/explorer/backend/orm/document"
 	"go.uber.org/zap"
 	"gopkg.in/mgo.v2"
 )
@@ -75,6 +76,18 @@ func (base *BaseService) GetTid() int64 {
 
 func (base *BaseService) GetTraceLog() zap.Field {
 	return logger.Int64("traceId", base.GetTid())
+}
+
+func (base *BaseService) QueryBlackList(database *mgo.Database) map[string]document.BlackList {
+	var blackListStore = database.C(document.CollectionNmBlackList)
+	var blackList []document.BlackList
+	var blackListMap = make(map[string]document.BlackList)
+	if err := blackListStore.Find(nil).All(&blackList); err == nil {
+		for _, v := range blackList {
+			blackListMap[v.OperatorAddr] = v
+		}
+	}
+	return blackListMap
 }
 
 func queryPage(collation string, data interface{}, m map[string]interface{}, sort string, page, size int) model.PageVo {
