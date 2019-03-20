@@ -258,7 +258,7 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 			var identity = can.Description.Identity
 			var website = can.Description.Website
 			var details = can.Description.Details
-			if tx.From == "iva18claj4r9x3gj5yurjxec29p2c9x6t49r6dqp00" {
+			if can.Address == "iva18claj4r9x3gj5yurjxec29p2c9x6t49r6dqp00" {
 				moniker = "Validator20190320-1"
 				identity = ""
 				website = ""
