@@ -22,6 +22,21 @@ func Validator(address string) (result ValidatorVo, err error) {
 	return result, nil
 }
 
+func Validators(page, size int) (result []ValidatorVo) {
+	url := fmt.Sprintf(validatorsUrl, conf.Get().Hub.LcdUrl, page, size)
+	resBytes, err := utils.Get(url)
+	if err != nil {
+		logger.Error("get Validators error", logger.String("err", err.Error()))
+		return result
+	}
+
+	if err := json.Unmarshal(resBytes, &result); err != nil {
+		logger.Error("Unmarshal Validators error", logger.String("err", err.Error()))
+		return result
+	}
+	return result
+}
+
 func QueryWithdrawAddr(address string) (result string) {
 	url := fmt.Sprintf(withdrawAddressUrl, conf.Get().Hub.LcdUrl, address)
 	resBytes, err := utils.Get(url)

@@ -4,6 +4,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/service"
+	"github.com/irisnet/explorer/backend/utils"
 
 	"github.com/irisnet/explorer/backend/types"
 )
@@ -19,6 +20,8 @@ func RegisterStake(r *mux.Router) error {
 		registerQueryCandidateUptime,
 		registerQueryCandidatePower,
 		registerQueryChain,
+		registerGetValidators,
+		registerGetValidator,
 	}
 
 	for _, fn := range funs {
@@ -45,6 +48,25 @@ func registerQueryValidator(r *mux.Router) error {
 		return result
 	})
 
+	return nil
+}
+func registerGetValidators(r *mux.Router) error {
+	doApi(r, types.UrlRegisterGetValidators, "GET", func(request model.IrisReq) interface{} {
+		stake.SetTid(request.TraceId)
+		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
+		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 100))
+		result := stake.GetValidators(page, size)
+		return result
+	})
+	return nil
+}
+func registerGetValidator(r *mux.Router) error {
+	doApi(r, types.UrlRegisterGetValidator, "GET", func(request model.IrisReq) interface{} {
+		stake.SetTid(request.TraceId)
+		address := Var(request, "address")
+		result := stake.GetValidator(address)
+		return result
+	})
 	return nil
 }
 func registerQueryRevokedValidator(r *mux.Router) error {

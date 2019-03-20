@@ -7,6 +7,7 @@ import (
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
+	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"math"
 	"time"
@@ -59,7 +60,7 @@ func (service *CandidateService) QueryValidators(page, pageSize int) model.ValDe
 		}
 	}
 	for _, candidate := range candidates {
-		validator := convert(candidate)
+		validator := service.convert(db, candidate)
 		validator.Uptime = upTimeMap[candidate.PubKeyAddr]
 		validator.TotalBlock = len(result)
 		validators = append(validators, validator)
@@ -70,6 +71,39 @@ func (service *CandidateService) QueryValidators(page, pageSize int) model.ValDe
 		Validators: validators,
 	}
 	return resp
+}
+
+func (service *CandidateService) GetValidators(page, size int) []lcd.ValidatorVo {
+	var validators = lcd.Validators(page, size)
+	db := getDb()
+	defer db.Session.Close()
+	var blackList = service.QueryBlackList(db)
+	for i, v := range validators {
+		if desc, ok := blackList[v.OperatorAddress]; ok {
+			validators[i].Description.Moniker = desc.Moniker
+			validators[i].Description.Identity = desc.Identity
+			validators[i].Description.Website = desc.Website
+			validators[i].Description.Details = desc.Details
+		}
+	}
+	return validators
+}
+
+func (service *CandidateService) GetValidator(address string) lcd.ValidatorVo {
+	var validator, err = lcd.Validator(address)
+	if err != nil {
+		panic(types.CodeNotFound)
+	}
+	db := getDb()
+	defer db.Session.Close()
+	var blackList = service.QueryBlackList(db)
+	if desc, ok := blackList[validator.OperatorAddress]; ok {
+		validator.Description.Moniker = desc.Moniker
+		validator.Description.Identity = desc.Identity
+		validator.Description.Website = desc.Website
+		validator.Description.Details = desc.Details
+	}
+	return validator
 }
 
 func (service *CandidateService) QueryRevokedValidator(page, size int) model.ValDetailVo {
@@ -90,7 +124,7 @@ func (service *CandidateService) QueryRevokedValidator(page, size int) model.Val
 
 	var validators []model.Validator
 	for _, ca := range candidates {
-		validators = append(validators, convert(ca))
+		validators = append(validators, service.convert(db, ca))
 	}
 
 	resp := model.ValDetailVo{
@@ -130,7 +164,7 @@ func (service *CandidateService) QueryCandidates(page, size int) model.ValDetail
 			txDoc.Find(q).Sort(document.Tx_Field_Height).One(&tx)
 
 			ca.BondHeight = tx.Height
-			validators = append(validators, convert(ca))
+			validators = append(validators, service.convert(db, ca))
 		}
 
 		resp = model.ValDetailVo{
@@ -236,7 +270,7 @@ func (service *CandidateService) QueryCandidatesTopN() model.ValDetailVo {
 		}
 	}
 	for _, candidate := range candidates {
-		validator := convert(candidate)
+		validator := service.convert(db, candidate)
 		validator.Uptime = upTimeMap[candidate.PubKeyAddr]
 		validator.TotalBlock = len(result)
 		validators = append(validators, validator)
@@ -459,16 +493,17 @@ func (service *CandidateService) QueryChainStatus() model.ChainStatusVo {
 	return resp
 }
 
-func convert(candidate document.Candidate) model.Validator {
+func (service *CandidateService) convert(database *mgo.Database, candidate document.Candidate) model.Validator {
 	var moniker = candidate.Description.Moniker
 	var identity = candidate.Description.Identity
 	var website = candidate.Description.Website
 	var details = candidate.Description.Details
-	if candidate.Address == "iva18claj4r9x3gj5yurjxec29p2c9x6t49r6dqp00" {
-		moniker = "Validator20190320-1"
-		identity = ""
-		website = ""
-		details = ""
+	var blackList = service.QueryBlackList(database)
+	if desc, ok := blackList[candidate.Address]; ok {
+		moniker = desc.Moniker
+		identity = desc.Identity
+		website = desc.Website
+		details = desc.Details
 	}
 	return model.Validator{
 		Address:        candidate.Address,
