@@ -150,7 +150,16 @@ func (service *CandidateService) QueryCandidate(address string) model.Candidates
 	if err != nil {
 		panic(types.CodeNotFound)
 	}
-
+	var moniker = validator.Description.Moniker
+	var identity = validator.Description.Identity
+	var website = validator.Description.Website
+	var details = validator.Description.Details
+	if validator.OperatorAddress == "iva18claj4r9x3gj5yurjxec29p2c9x6t49r6dqp00" {
+		moniker = "Validator20190320-1"
+		identity = ""
+		website = ""
+		details = ""
+	}
 	var val = model.Validator{
 		Address:        validator.OperatorAddress,
 		PubKey:         validator.ConsensusPubkey,
@@ -160,10 +169,10 @@ func (service *CandidateService) QueryCandidate(address string) model.Candidates
 		OriginalTokens: utils.RoundToString(validator.Tokens, 0),
 		VotingPower:    utils.RoundString(validator.Tokens),
 		Description: model.Description{
-			Moniker:  validator.Description.Moniker,
-			Identity: validator.Description.Identity,
-			Website:  validator.Description.Website,
-			Details:  validator.Description.Details,
+			Moniker:  moniker,
+			Identity: identity,
+			Website:  website,
+			Details:  details,
 		},
 		Rate: validator.Commission.Rate,
 	}
@@ -451,6 +460,16 @@ func (service *CandidateService) QueryChainStatus() model.ChainStatusVo {
 }
 
 func convert(candidate document.Candidate) model.Validator {
+	var moniker = candidate.Description.Moniker
+	var identity = candidate.Description.Identity
+	var website = candidate.Description.Website
+	var details = candidate.Description.Details
+	if candidate.Address == "iva18claj4r9x3gj5yurjxec29p2c9x6t49r6dqp00" {
+		moniker = "Validator20190320-1"
+		identity = ""
+		website = ""
+		details = ""
+	}
 	return model.Validator{
 		Address:        candidate.Address,
 		PubKey:         utils.Convert(conf.Get().Hub.Prefix.ConsPub, candidate.PubKey),
@@ -460,10 +479,10 @@ func convert(candidate document.Candidate) model.Validator {
 		OriginalTokens: candidate.OriginalTokens,
 		VotingPower:    getVotingPowerFromToken(candidate.Tokens),
 		Description: model.Description{
-			Moniker:  candidate.Description.Moniker,
-			Identity: candidate.Description.Identity,
-			Website:  candidate.Description.Website,
-			Details:  candidate.Description.Details,
+			Moniker:  moniker,
+			Identity: identity,
+			Website:  website,
+			Details:  details,
 		},
 	}
 }
