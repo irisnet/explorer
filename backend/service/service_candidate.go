@@ -176,9 +176,9 @@ func (service *CandidateService) QueryCandidates(page, size int) model.ValDetail
 }
 
 func (service *CandidateService) QueryCandidate(address string) model.CandidatesInfoVo {
-
-	c := getDb().C(document.CollectionNmStakeRoleCandidate)
-	defer c.Database.Session.Close()
+	db := getDb()
+	defer db.Session.Close()
+	c := db.C(document.CollectionNmStakeRoleCandidate)
 
 	validator, err := lcd.Validator(address)
 	if err != nil {
@@ -188,11 +188,12 @@ func (service *CandidateService) QueryCandidate(address string) model.Candidates
 	var identity = validator.Description.Identity
 	var website = validator.Description.Website
 	var details = validator.Description.Details
-	if validator.OperatorAddress == "iva18claj4r9x3gj5yurjxec29p2c9x6t49r6dqp00" {
-		moniker = "Validator20190320-1"
-		identity = ""
-		website = ""
-		details = ""
+	var blackList = service.QueryBlackList(db)
+	if desc, ok := blackList[validator.OperatorAddress]; ok {
+		moniker = desc.Moniker
+		identity = desc.Identity
+		website = desc.Website
+		details = desc.Details
 	}
 	var val = model.Validator{
 		Address:        validator.OperatorAddress,
