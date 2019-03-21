@@ -3,13 +3,14 @@ package service
 import (
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/lcd"
+	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
-	"math"
+	"strconv"
 	"time"
 )
 
@@ -49,6 +50,8 @@ func (service *CandidateService) QueryValidators(page, pageSize int) model.ValDe
 	var voteCount model.CountVo
 	votePipe.One(&voteCount)
 
+	power := strconv.FormatFloat(voteCount.Count, 'f', 10, 64)
+
 	validatorsCount, _ := cs.Find(query).Count()
 	var validators []model.Validator
 	upTimeMap := make(map[string]int)
@@ -65,9 +68,10 @@ func (service *CandidateService) QueryValidators(page, pageSize int) model.ValDe
 		validator.TotalBlock = len(result)
 		validators = append(validators, validator)
 	}
+
 	resp := model.ValDetailVo{
 		Count:      validatorsCount,
-		PowerAll:   getVotingPowerFromToken(voteCount.Count),
+		PowerAll:   getVotingPowerFromToken(power),
 		Validators: validators,
 	}
 	return resp
@@ -202,7 +206,7 @@ func (service *CandidateService) QueryCandidate(address string) model.Candidates
 		Status:         BondStatusToString(validator.Status),
 		BondHeight:     utils.ParseIntWithDefault(validator.BondHeight, 0),
 		OriginalTokens: utils.RoundToString(validator.Tokens, 0),
-		VotingPower:    utils.RoundString(validator.Tokens),
+		VotingPower:    getVotingPowerFromToken(validator.Tokens),
 		Description: model.Description{
 			Moniker:  moniker,
 			Identity: identity,
@@ -226,8 +230,9 @@ func (service *CandidateService) QueryCandidate(address string) model.Candidates
 	)
 	var count model.CountVo
 	pipe.One(&count)
+	power := strconv.FormatFloat(count.Count, 'f', 10, 64)
 	result := model.CandidatesInfoVo{
-		PowerAll:  getVotingPowerFromToken(count.Count),
+		PowerAll:  getVotingPowerFromToken(power),
 		Validator: val,
 	}
 	return result
@@ -260,6 +265,7 @@ func (service *CandidateService) QueryCandidatesTopN() model.ValDetailVo {
 	)
 	var voteCount model.CountVo
 	votePipe.One(&voteCount)
+	power := strconv.FormatFloat(voteCount.Count, 'f', 10, 64)
 
 	var validators []model.Validator
 	upTimeMap := make(map[string]int)
@@ -277,7 +283,7 @@ func (service *CandidateService) QueryCandidatesTopN() model.ValDetailVo {
 		validators = append(validators, validator)
 	}
 	resp := model.ValDetailVo{
-		PowerAll:   getVotingPowerFromToken(voteCount.Count),
+		PowerAll:   getVotingPowerFromToken(power),
 		Validators: validators,
 	}
 	return resp
@@ -484,11 +490,11 @@ func (service *CandidateService) QueryChainStatus() model.ChainStatusVo {
 		startTime := recentBlock.Time.Add(-1 * time.Minute)
 		txCnt, _ = txStore.Find(bson.M{document.Tx_Field_Time: bson.M{"$gte": startTime}}).Count()
 	}
-
+	power := strconv.FormatFloat(count.Count, 'f', 10, 64)
 	resp := model.ChainStatusVo{
 		ValidatorsCount: activeValidatorsCnt,
 		TxCount:         txCount,
-		VotingPower:     getVotingPowerFromToken(count.Count),
+		VotingPower:     getVotingPowerFromToken(power),
 		Tps:             float64(txCnt) / 60,
 	}
 	return resp
@@ -513,7 +519,7 @@ func (service *CandidateService) convert(database *mgo.Database, candidate docum
 		Status:         candidate.Status,
 		BondHeight:     candidate.BondHeight,
 		OriginalTokens: candidate.OriginalTokens,
-		VotingPower:    getVotingPowerFromToken(candidate.Tokens),
+		VotingPower:    getVotingPowerFromToken(candidate.OriginalTokens),
 		Description: model.Description{
 			Moniker:  moniker,
 			Identity: identity,
@@ -523,8 +529,14 @@ func (service *CandidateService) convert(database *mgo.Database, candidate docum
 	}
 }
 
-func getVotingPowerFromToken(token float64) int64 {
-	return utils.Round(token / math.Pow10(18))
+func getVotingPowerFromToken(token string) int64 {
+	tokenPrecision := types.NewIntWithDecimal(1, 18)
+	power, err := types.NewDecFromStr(token)
+	if err != nil {
+		logger.Error("invalid token", logger.String("token", token))
+		return 0
+	}
+	return power.QuoInt(tokenPrecision).RoundInt64()
 }
 
 func BondStatusToString(b int) string {
