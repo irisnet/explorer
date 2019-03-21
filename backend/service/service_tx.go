@@ -220,24 +220,55 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 			Owner:    tx.From,
 			Pubkey:   tx.StakeCreateValidator.PubKey,
 		}
+		var blackList = service.QueryBlackList(db)
 		if tx.Type == types.TypeCreateValidator {
-			dtx.Moniker = tx.StakeCreateValidator.Description.Moniker
-			dtx.Details = tx.StakeCreateValidator.Description.Details
-			dtx.Website = tx.StakeCreateValidator.Description.Website
-			dtx.Identity = tx.StakeCreateValidator.Description.Identity
+			var moniker = tx.StakeCreateValidator.Description.Moniker
+			var identity = tx.StakeCreateValidator.Description.Identity
+			var website = tx.StakeCreateValidator.Description.Website
+			var details = tx.StakeCreateValidator.Description.Details
+			if desc, ok := blackList[tx.To]; ok {
+				moniker = desc.Moniker
+				identity = desc.Identity
+				website = desc.Website
+				details = desc.Details
+			}
+			dtx.Moniker = moniker
+			dtx.Details = details
+			dtx.Website = website
+			dtx.Identity = identity
 		} else if tx.Type == types.TypeEditValidator {
-			dtx.Moniker = tx.StakeEditValidator.Description.Moniker
-			dtx.Details = tx.StakeEditValidator.Description.Details
-			dtx.Website = tx.StakeEditValidator.Description.Website
-			dtx.Identity = tx.StakeEditValidator.Description.Identity
+			var moniker = tx.StakeEditValidator.Description.Moniker
+			var identity = tx.StakeEditValidator.Description.Identity
+			var website = tx.StakeEditValidator.Description.Website
+			var details = tx.StakeEditValidator.Description.Details
+			if desc, ok := blackList[tx.From]; ok {
+				moniker = desc.Moniker
+				identity = desc.Identity
+				website = desc.Website
+				details = desc.Details
+			}
+			dtx.Moniker = moniker
+			dtx.Details = details
+			dtx.Website = website
+			dtx.Identity = identity
 		} else if tx.Type == types.TypeUnjail {
 			candidateDb := db.C(document.CollectionNmStakeRoleCandidate)
 			var can document.Candidate
 			candidateDb.Find(bson.M{document.Candidate_Field_Address: dtx.Owner}).One(&can)
-			dtx.Moniker = can.Description.Moniker
-			dtx.Details = can.Description.Details
-			dtx.Website = can.Description.Website
-			dtx.Identity = can.Description.Identity
+			var moniker = can.Description.Moniker
+			var identity = can.Description.Identity
+			var website = can.Description.Website
+			var details = can.Description.Details
+			if desc, ok := blackList[tx.From]; ok {
+				moniker = desc.Moniker
+				identity = desc.Identity
+				website = desc.Website
+				details = desc.Details
+			}
+			dtx.Moniker = moniker
+			dtx.Details = identity
+			dtx.Website = website
+			dtx.Identity = details
 		}
 		return dtx
 	case types.Stake:

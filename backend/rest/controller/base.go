@@ -9,6 +9,7 @@ import (
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"net/http"
+	"net/url"
 	"strconv"
 )
 
@@ -31,6 +32,14 @@ func GetInt(request model.IrisReq, key string) (result int) {
 	result, err := strconv.Atoi(value)
 	if err != nil {
 		logger.Error("param is not int type", logger.String("param", key))
+	}
+	return
+}
+
+func QueryParam(request model.IrisReq, key string) (result string) {
+	queryForm, err := url.ParseQuery(request.URL.RawQuery)
+	if err == nil && len(queryForm[key]) > 0 {
+		return queryForm[key][0]
 	}
 	return
 }

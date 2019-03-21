@@ -40,6 +40,8 @@ const (
 
 	//Stake
 	UrlRegisterQueryValidator        = "/stake/validators/{page}/{size}"
+	UrlRegisterGetValidators         = "/stake/validators"
+	UrlRegisterGetValidator          = "/stake/validators/{address}"
 	UrlRegisterQueryRevokedValidator = "/stake/revokedVal/{page}/{size}"
 	UrlRegisterQueryCandidates       = "/stake/candidates/{page}/{size}"
 	UrlRegisterQueryCandidatesTop    = "/stake/candidatesTop"
