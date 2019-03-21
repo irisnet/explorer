@@ -14,7 +14,6 @@ func RegisterTextSearch(r *mux.Router) error {
 		registerQueryText,
 		registerQuerySysDate,
 		registerQueryEnvConfig,
-		registerQueryBjValInfo,
 	}
 
 	for _, fn := range funs {
@@ -63,15 +62,6 @@ func registerQueryEnvConfig(r *mux.Router) error {
 			Configs: common.GetConfig(),
 		}
 		return envConf
-	})
-
-	return nil
-}
-
-func registerQueryBjValInfo(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryBjValInfo, "GET", func(request model.IrisReq) interface{} {
-		common.SetTid(request.TraceId)
-		return common.QueryBjValInfo()
 	})
 
 	return nil

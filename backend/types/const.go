@@ -26,10 +26,9 @@ const (
 	UrlRegisterQueryProposal  = "/proposal/{pid}"
 
 	//SearchBox
-	UrlRegisterQueryText      = "/search/{text}"
-	UrlRegisterQuerySysDate   = "/sysdate"
-	UrlRegisterQueryConfig    = "/config"
-	UrlRegisterQueryBjValInfo = "/cosmos/validator/bj"
+	UrlRegisterQueryText    = "/search/{text}"
+	UrlRegisterQuerySysDate = "/sysdate"
+	UrlRegisterQueryConfig  = "/config"
 
 	//faucet
 	UrlRegisterQueryFaucet = "/faucet/account"
