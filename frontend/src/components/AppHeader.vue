@@ -8,7 +8,7 @@
             <img src="../assets/logo.png"/>
           </div>
           <div class="network_select_container" v-show="flShowHeaderNetwork">
-            <div class="network_select_option" @click.stop="showSelectOption()">
+            <div class="network_select_option" @click.stop="toggleSelectOption()">
               <div class="select_content">
                 <div class="current_select_content">{{currentSelected}} <i class="iconfont icon-arrowdown"></i></div>
                 <div class="select_option_content" v-if="$store.state.flShowSelectOption">
@@ -486,7 +486,7 @@
       toNyanCats(nyanCatsHref){
         window.open(nyanCatsHref)
       },
-      showSelectOption(){
+      toggleSelectOption(){
         this.$store.commit('flShowSelectOption',!this.$store.state.flShowSelectOption)
       }
     },

@@ -1,5 +1,5 @@
 <template>
-  <div id="app" @click.stop="closeSelect">
+  <div id="app" @click.stop="closeSelectOption">
     <app-header v-show="flShowHeader"></app-header>
     <div id="router_wrap">
       <div class="qr_code"
@@ -168,7 +168,7 @@
         this.weChatQRShow = false;
         this.qqQRShow =  false;
       },
-      closeSelect(){
+      closeSelectOption(){
         this.$store.commit('flShowSelectOption',false)
       }
     }
