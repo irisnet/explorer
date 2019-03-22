@@ -7,6 +7,9 @@ const (
 	UrlRegisterQueryAccount    = "/account/{address}"
 	UrlRegisterQueryAllAccount = "/accounts/{page}/{size}"
 
+	//home
+	UrlRegisterNavigationBar = "/home/navigation"
+
 	//Block
 	UrlRegisterQueryBlock            = "/block/{height}"
 	UrlRegisterQueryBlocks           = "/blocks/{page}/{size}"
