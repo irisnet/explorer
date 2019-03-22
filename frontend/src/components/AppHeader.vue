@@ -8,10 +8,10 @@
             <img src="../assets/logo.png"/>
           </div>
           <div class="network_select_container" v-show="flShowHeaderNetwork">
-            <div class="network_select_option">
+            <div class="network_select_option" @click.stop="showSelectOption()">
               <div class="select_content">
                 <div class="current_select_content">{{currentSelected}} <i class="iconfont icon-arrowdown"></i></div>
-                <div class="select_option_content">
+                <div class="select_option_content" v-if="$store.state.flShowSelectOption">
                   <div class="common_option" v-if="flShowMainnet" @click="toMainnet(mainnetHref)">{{lang.home.mainnet}}</div>
                   <div class="common_option" v-if="flShowTestnet" @click="toTestnet(testnetHref)">{{lang.home.testnet}}</div>
                   <div class="common_option" @click="toNyanCats(nyanCatsHref)">{{lang.home.catsNet}}</div>
@@ -39,6 +39,20 @@
         <span class="nav_item common_item_style" :class="activeClassName === '/home'?'nav_item_active':''"
               @click="featureButtonClick('/home')"
         >Home</span>
+        <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === '/validators'?'nav_item_active':''"
+             @mouseover="validatorsMouseOver" @mouseleave="validatorsMouseLeave">
+          <span class="nav_item common_item_style">
+            Validators
+            <span class="bottom_arrow"></span>
+          </span>
+          <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/active')"
+                v-show="showSubValidators">Active</span>
+          <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/jailed')"
+                v-show="showSubValidators">Jailed</span>
+          <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/candidates')"
+                v-show="showSubValidators">Candidates</span>
+
+        </div>
         <span class="nav_item common_item_style" :class="activeClassName === '/block'?'nav_item_active':''"
               @click="featureButtonClick('/block/1/0')"
         >Blocks</span>
@@ -57,21 +71,6 @@
                 v-show="showSubTransaction">Stakes</span>
           <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/Governance')"
                 v-show="showSubTransaction">Governance</span>
-        </div>
-
-        <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === '/validators'?'nav_item_active':''"
-             @mouseover="validatorsMouseOver" @mouseleave="validatorsMouseLeave">
-          <span class="nav_item common_item_style">
-            Validators
-            <span class="bottom_arrow"></span>
-          </span>
-          <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/active')"
-                v-show="showSubValidators">Active</span>
-          <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/jailed')"
-                v-show="showSubValidators">Jailed</span>
-          <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/candidates')"
-                v-show="showSubValidators">Candidates</span>
-
         </div>
         <span class="nav_item common_item_style" :class="activeClassName === '/Proposals'?'nav_item_active':''"
               @click="featureButtonClick('/Proposals')"
@@ -105,6 +104,18 @@
       </div>
       <div class="use_feature_mobile" :style="{'top':absoluteTop}" v-show="featureShow">
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/home')">Home</span>
+        <span class="feature_btn_mobile feature_nav select_option_container" @click="validatorsSelect(flShowValidatorsSelect)">
+         <span>Validators</span>
+          <div :class="flShowValidatorsUpOrDown ? 'upImg_content' : 'downImg_content'">
+            <img :src="flShowValidatorsUpOrDown ? upImg : downImg ">
+          </div>
+        </span>
+        <div class="select_option" v-show="flShowValidatorsSelect">
+          <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/active')">Active</span>
+          <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/jailed')">Jailed</span>
+          <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/candidates')">Candidates</span>
+        </div>
+
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/block/1/0')">Blocks</span>
         <span class="feature_btn_mobile feature_nav select_option_container" @click="transactionsSelect(flShowTransactionsSelect)">
          <span>Transactions</span>
@@ -122,18 +133,6 @@
                 @click="featureButtonClick('/transactions/2/Stakes')">Stakes</span>
           <span class="feature_btn_mobile feature_nav"
                 @click="featureButtonClick('/transactions/2/Governance')">Governance</span>
-        </div>
-
-        <span class="feature_btn_mobile feature_nav select_option_container" @click="validatorsSelect(flShowValidatorsSelect)">
-         <span>Validators</span>
-          <div :class="flShowValidatorsUpOrDown ? 'upImg_content' : 'downImg_content'">
-            <img :src="flShowValidatorsUpOrDown ? upImg : downImg ">
-          </div>
-        </span>
-        <div class="select_option" v-show="flShowValidatorsSelect">
-          <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/active')">Active</span>
-          <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/jailed')">Jailed</span>
-          <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/candidates')">Candidates</span>
         </div>
 
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/Proposals')">Proposals</span>
@@ -486,6 +485,9 @@
       },
       toNyanCats(nyanCatsHref){
         window.open(nyanCatsHref)
+      },
+      showSelectOption(){
+        this.$store.commit('flShowSelectOption',!this.$store.state.flShowSelectOption)
       }
     },
     updated(){
@@ -507,6 +509,7 @@
       padding-top: 0.01rem;
       width: 100%;
       .header_top {
+        padding: 0 0.2rem;
         height: 0.96rem;
         @include flex;
         justify-content: space-between;
@@ -598,11 +601,6 @@
             .select_content{
               width: 1.9rem;
               cursor: pointer;
-              &:hover{
-                .select_option_content{
-                  display: block;
-                }
-              }
               .current_select_content{
                 color: rgba(53, 152, 219, 1);
                 display: flex;
@@ -616,11 +614,12 @@
               }
               .select_option_content{
                 background: rgba(255,255,255,1);
+                color: rgba(102, 102, 102, 1);
                 border-radius: 0.06rem;
                 overflow: hidden;
                 margin-top: 0.04rem;
                 box-shadow:0 0 0.04rem 0 rgba(0,20,33,0.12);
-                display: none;
+                user-select: none;
               }
               .common_option{
                 padding-left: 0.08rem;
@@ -707,6 +706,7 @@
       background: #3598db;
       .navButton {
         width: 100%!important;
+        padding: 0 0.2rem;
         height:0.66rem;
         @include pcCenter;
         @include flex;
@@ -718,7 +718,7 @@
         }
         .nav_item {
           display: inline-block;
-          height: 0.66rem;
+          height: 0.65rem;
           line-height: 0.66rem;
           width:1.6rem;
           text-align: center;
