@@ -199,6 +199,7 @@ func (service *CandidateService) QueryCandidate(address string) model.Candidates
 		website = desc.Website
 		details = desc.Details
 	}
+	var tokenDec, _ = types.NewDecFromStr(validator.Tokens)
 	var val = model.Validator{
 		Address:        validator.OperatorAddress,
 		PubKey:         validator.ConsensusPubkey,
@@ -206,7 +207,7 @@ func (service *CandidateService) QueryCandidate(address string) model.Candidates
 		Status:         BondStatusToString(validator.Status),
 		BondHeight:     utils.ParseIntWithDefault(validator.BondHeight, 0),
 		OriginalTokens: utils.RoundToString(validator.Tokens, 0),
-		VotingPower:    getVotingPowerFromToken(validator.Tokens),
+		VotingPower:    tokenDec.RoundInt64(),
 		Description: model.Description{
 			Moniker:  moniker,
 			Identity: identity,
