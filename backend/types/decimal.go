@@ -129,6 +129,13 @@ func NewDecFromStr(str string) (d Dec, err error) {
 		return d, errors.New("decimal string is empty")
 	}
 
+	if strings.Contains(str, ".") {
+		str = strings.TrimRight(str, "0")
+		if strings.Index(str, ".") == len(str)-1 {
+			str = str[0 : len(str)-1]
+		}
+	}
+
 	// first extract any negative symbol
 	neg := false
 	if str[0] == '-' {
