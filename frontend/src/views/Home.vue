@@ -2,29 +2,58 @@
   <div class="home_wrap">
     <div :class="pageClassName">
       <div class="information_preview">
-        <div class="information_preview_module latest_block_content" @click="toBlockDetail(currentBlockHeight)">
-          <span :class="flFadeInBlockHeight ? 'animation' : '' ">{{currentBlockHeight}}</span>
-          <span class="information_module_key">Latest Block</span>
-        </div>
-        <div class="information_preview_module mobile_age_content">
-          <span :class="flFadeInBlockHeight ? 'animation' : '' " :style="{color:diffSeconds > 120 ? '#ff001b' : ''}">{{lastBlockAge}}</span>
-          <span class="information_module_key">Age</span>
-        </div>
-        <div class="information_preview_module mobile_transaction_content">
-          <span :class="flFadeInTransaction ? 'animation' : '' ">{{transactionValue}}</span>
-          <span class="information_module_key">Transactions</span>
-        </div>
-        <div class="information_preview_module mobile_validator"
-             style="cursor:pointer;" @click="skipValidators"
-        >
-          <span style="text-align:center;" :class="flFadeInValidator ? 'animation' : '' ">{{validatorValue}}</span>
-          <span class="information_module_key">Validators</span>
-        </div>
-        <div class="information_preview_module">
-          <span :class="flFadeInVotingPower ? 'animation' : '' ">{{votingPowerValue}}</span>
-          <span class="information_module_key">Online Voting Power</span>
-        </div>
-
+        <ul class="current_net_status_list">
+          <li class="item_status">
+            <div class="img_container">
+              <div class="img_content">
+                <img src="../assets/block_height.png" alt="">
+              </div>
+              <span class="item_name">{{lang.home.blockHeight}}</span>
+            </div>
+            <p class="current_block">{{currentBlockHeight}}</p>
+            <p class="block_time">{{blockTime}}</p>
+          </li>
+          <li class="item_status">
+            <div class="img_container">
+              <div class="img_content">
+                <img src="../assets/home_transactions.png" alt="">
+              </div>
+              <span class="item_name">{{lang.home.transactions}}</span>
+            </div>
+            <p class="current_block">{{transactionValue}}</p>
+            <p class="block_time">{{ageTime}}</p>
+          </li>
+          <li class="item_status">
+            <div class="img_container">
+              <div class="img_content">
+                <img src="../assets/age_block_time.png" alt="">
+              </div>
+              <span class="item_name">{{lang.home.ageTime}}</span>
+            </div>
+            <p class="current_block" :style="{color:diffSeconds > 120 ? '#ff001b' : ''}">{{averageBlockTime}}</p>
+            <p class="block_time">{{lang.home.LatestBlocks}}</p>
+          </li>
+          <li class="item_status">
+            <div class="img_container">
+              <div class="img_content">
+                <img src="../assets/voting_power.png" alt="">
+              </div>
+              <span  class="item_name">{{lang.home.votingPower }}</span>
+            </div>
+            <p class="current_block">{{votingPowerValue}}</p>
+            <p class="block_time">{{validatorValue}}</p>
+          </li>
+          <li class="item_status">
+            <div class="img_container">
+              <div class="img_content">
+                <img src="../assets/network_bonded.png" alt="">
+              </div>
+              <span class="item_name">{{lang.home.bondedTokens}}</span>
+            </div>
+            <p class="current_block">{{bondedRatio}}</p>
+            <p class="block_time">{{bondedTokens}}</p>
+          </li>
+        </ul>
       </div>
       <div :class="module_item_wrap">
         <div class="home_module_item home_module_item_pie" style="overflow-x: hidden;">
@@ -53,7 +82,8 @@ import EchartsPie from "../components/EchartsPie";
 import EchartsLine from "../components/EchartsLine";
 import HomeBlockModule from "../components/HomeBlockModule";
 import Service from '../util/axios';
-import Constant from "../constant/Constant"
+import Constant from "../constant/Constant";
+  import lang from "../lang/index"
   export default {
       name: 'app-header',
       components: {EchartsPie, EchartsLine, HomeBlockModule},
@@ -65,42 +95,50 @@ import Constant from "../constant/Constant"
                   currentBlockHeight: '--',
                   validatorValue: '--',
                   transactionValue: '--',
-                  lastBlockAge: '--',
+                  averageBlockTime: '--',
+                  ageTime: '--',
                   votingPowerValue: '--',
                   blockHeightValue: '--',
                   timestampValue: '--',
+                  bondedTokens: '--',
+                  bondedRatio:'--',
+                  blockTime : '--',
                   information: {},
                   informationLine: {},
                   blocksInformation: [],
                   transactionInformation: [],
                   innerWidth : window.innerWidth,
                   blocksTimer:null,
+                  latestBlockTimer:null,
                   transfersTimer:null,
+                  navigationTimer:null,
                   diffSeconds: 0,
-                  flFadeInBlockHeight:false,
-                  flFadeInTransaction: false,
-                  flFadeInValidator:false,
-                  flFadeInVotingPower:false,
-                  timer: null
+                  timer: null,
+                  lang:lang,
               }
           },
 
           beforeMount() {
-              this.getBlocksStatus();
               this.getBlocksList();
               this.getTransactionHistory();
               this.getTransactionList();
               this.getValidatorsList();
+              this.getNavigation();
           },
           mounted() {
               document.getElementById('router_wrap').addEventListener('click', this.hideFeature);
               let that =this;
+              clearInterval(this.timer);
+              clearInterval(this.navigationTimer);
               this.timer = setInterval(function () {
                   that.getBlocksList();
                   that.getTransactionHistory();
                   that.getTransactionList();
                   that.getValidatorsList();
               },10000);
+              this.navigationTimer = setInterval(function() {
+                  that.getNavigation();
+              },5000)
               window.addEventListener('resize',this.onresize);
               if (window.innerWidth > 910) {
                   this.pageClassName = 'personal_computer_home_wrap';
@@ -136,41 +174,6 @@ import Constant from "../constant/Constant"
                       document.getElementsByClassName('fixed_item_height')[1].style.height = 'auto';
                   }
               }
-          },
-          getBlocksStatus() {
-              this.flFadeInTransaction = false;
-              let url = `/api/chain/status`;
-              let lastTransfer =  {};
-              let that = this;
-              Service.http(url).then((data) => {
-                setTimeout(function () {
-                  let storedLastTransfer  = localStorage.getItem('lastTransfer') ? JSON.parse(localStorage.getItem('lastTransfer')) : '';
-                  if(storedLastTransfer){
-                    if(storedLastTransfer.txCount !== data.TxCount
-                      || storedLastTransfer.tps !== data.Tps){
-                      that.flFadeInTransaction = true
-                    }
-                  }
-
-                  let num = data.TxCount;
-                  if(data) {
-                    if(data.TxCount > 1000000000){
-                      num = `${(data.TxCount/1000000000).toFixed(2)} B`;
-                    }else if(data.TxCount > 1000000){
-                      num = `${(data.TxCount/1000000).toFixed(2)} M`;
-                    }else if(data.TxCount > 1000){
-                      num = `${(data.TxCount/1000).toFixed(2)} K`;
-                    }
-                    that.transactionValue = `${num}(${data.Tps.toFixed(2)} TPS)`;
-                  }
-                  lastTransfer.txCount = data.TxCount;
-                  lastTransfer.tps = data.Tps;
-                  localStorage.setItem('lastTransfer',JSON.stringify(lastTransfer))
-                },1000)
-
-              }).catch(e => {
-                  console.log(e)
-              })
           },
           getValidatorsList() {
               let url = `/api/stake/candidatesTop`;
@@ -231,22 +234,6 @@ import Constant from "../constant/Constant"
             console.log(e)
           })
         },
-        hideFadeinAnimation(){
-          this.flFadeInBlockHeight = false;
-          this.flFadeInValidator = false;
-          this.flFadeInVotingPower = false;
-        },
-        showFadeinAnimation(blockList,numerator,denominator){
-          let storedLastBlock = localStorage.getItem('lastBlock') ? JSON.parse(localStorage.getItem('lastBlock')) : '';
-          if(storedLastBlock){
-            if(storedLastBlock.activeValidator !== blockList.Data[0].Block.LastCommit.Precommits.length || storedLastBlock.totalValidator !== blockList.Data[0].Validators.length){
-              this.flFadeInValidator = true;
-            }
-            if(storedLastBlock.numerator !== numerator || storedLastBlock.denominator !== denominator){
-              this.flFadeInVotingPower = true
-            }
-          }
-        },
         showBlockFadeinAnimation(blockList){
           let storedLastBlockHeight = localStorage.getItem('lastBlockHeight') ? localStorage.getItem('lastBlockHeight') : '';
           if(storedLastBlockHeight){
@@ -260,10 +247,8 @@ import Constant from "../constant/Constant"
         getBlocksList() {
           let url = `/api/blocks/1/10`;
           Service.http(url).then((blockList) => {
-            this.getBlocksStatus();
-            this.hideFadeinAnimation();
             if(blockList.Data){
-              let denominator = 0,lastBlock = {};
+            let denominator = 0;
               blockList.Data[0].Validators.forEach(item=>denominator += item.VotingPower);
               let numerator = 0;
               for(let i = 0; i < blockList.Data[0].Block.LastCommit.Precommits.length; i++){
@@ -274,49 +259,33 @@ import Constant from "../constant/Constant"
                   }
                 }
               }
-              lastBlock.lastBlockHeight = blockList.Data[0].Height;
-              lastBlock.numerator = numerator;
-              lastBlock.denominator = denominator;
-              lastBlock.activeValidator = blockList.Data[0].Block.LastCommit.Precommits.length;
-              lastBlock.totalValidator = blockList.Data[0].Validators.length;
-              this.validatorValue = `${blockList.Data[0].Block.LastCommit.Precommits.length} Voting / ${blockList.Data[0].Validators.length} Active`;
-              this.votingPowerValue = denominator !== 0? `${(numerator/denominator).toFixed(2)*100}%`:'';
-              this.showFadeinAnimation(blockList,numerator,denominator);
               this.showBlockFadeinAnimation(blockList);
               let that = this;
-              clearInterval(this.blocksTimer);
-              this.blocksTimer = setInterval(function () {
-                let storedLastBlockHeight = localStorage.getItem('lastBlockHeight');
-                if(storedLastBlockHeight){
-                  if(Number(storedLastBlockHeight) !== blockList.Data[0].Height){
-                    that.flFadeInBlockHeight = true;
-                  }
-                }
                 let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-                that.lastBlockAge = Tools.formatAge(currentServerTime,blockList.Data[0].Time);
-                that.diffSeconds = Math.floor(Tools.getDiffMilliseconds(currentServerTime,blockList.Data[0].Time)/1000);
-                localStorage.setItem('lastBlock',JSON.stringify(lastBlock));
                 localStorage.setItem("lastBlockHeight",blockList.Data[0].Height);
-                that.currentBlockHeight = blockList.Data[0].Height;
-                that.blocksInformation = blockList.Data.map(item => {
+                this.blocksInformation = blockList.Data.map(item => {
                   return {
                     showAnimation: item.showAnimation ? item.showAnimation : "",
                     Height: item.Height,
                     Proposer: item.Hash,
                     Txn: item.NumTxs,
-                    Time: Tools.format2UTC(item.Time),
+                    Time: item.Time,
                     Fee: '0 IRIS',
                     age: Tools.formatAge(currentServerTime,item.Time,Constant.SUFFIX,Constant.PREFIX)
                   };
                 });
+                clearInterval(this.blocksTimer);
+                this.blocksTimer = setInterval(function () {
+                  currentServerTime = new Date().getTime() + that.diffMilliseconds;
+                  that.blocksInformation.map(item => {
+                  item.age = Tools.formatAge(currentServerTime,item.Time,Constant.SUFFIX,Constant.PREFIX)
+                  return item
+                })
               },1000);
             }
           }).catch(e => {
             console.log(e)
           })
-        },
-        skipValidators(){
-          this.$router.push('/validators/3/active');
         },
         getTransactionList() {
           let url = `/api/txs/1/10`;
@@ -329,9 +298,8 @@ import Constant from "../constant/Constant"
                 }
               }
               let lastTxTime = new Date(transactionList.Data[0].Time).getTime();
-              clearInterval(this.transfersTimer);
-              this.transfersTimer = setInterval(function () {
                 localStorage.setItem('lastTxTime',lastTxTime);
+                let currentServerTime = new Date().getTime() + that.diffMilliseconds;
                 that.transactionInformation = transactionList.Data.map(item => {
                   let [Amount, Fee] = ['--', '--'];
                   if(item.Amount){
@@ -357,7 +325,6 @@ import Constant from "../constant/Constant"
                   if(item.ActualFee.amount && item.ActualFee.denom){
                     Fee =  `${Tools.formatFeeToFixedNumber(item.ActualFee.amount)} ${Tools.formatDenom(item.ActualFee.denom).toUpperCase()}`;
                   }
-                  let currentServerTime = new Date().getTime() + that.diffMilliseconds;
                   return {
                     showAnimation: item.showAnimation ? item.showAnimation : '',
                     TxHash: item.TxHash,
@@ -366,9 +333,16 @@ import Constant from "../constant/Constant"
                     Type: item.Type === 'coin'?'transfer':item.Type,
                     Fee,
                     Amount,
-                    Time: Tools.format2UTC(item.Time),
+                    Time: item.Time,
                     age: Tools.formatAge(currentServerTime,item.Time,Constant.SUFFIX,Constant.PREFIX)
                   };
+                })
+            clearInterval(this.transfersTimer);
+                this.transfersTimer = setInterval(function () {
+                  that.transactionInformation.map(item => {
+                  lastTxTime = new Date(transactionList.Data[0].Time).getTime();
+                  item.age = Tools.formatAge(currentServerTime,item.Time,Constant.SUFFIX,Constant.PREFIX);
+                  return item
                 })
               },1000)
             }
@@ -381,8 +355,52 @@ import Constant from "../constant/Constant"
               let path = `/blocks_detail/${blockHeight}`;
               this.$router.push(path)
             }
+      },
+      getNavigation(){
+        let url = `/api/home/navigation`;
+        Service.http(url).then(res => {
+          this.diffSeconds = Number(res.avg_block_time);
+          this.currentBlockHeight = res.block_height;
+          this.transactionValue = this.formatTransactions(res.total_txs);
+          this.averageBlockTime = `${Number(res.avg_block_time).toFixed(2)} s`;
+          this.votingPowerValue = `${Number(res.voting_ratio * 100).toFixed(2)} %`;
+          this.bondedTokens = this.formatBondedTokens(res.bonded_tokens);
+          this.validatorValue = `${res.vote_val_num} / ${res.active_val_num} Validators`;
+          this.bondedRatio = `${(res.bonded_ratio * 100).toFixed(2)} %`;
+          this.blockTime = Tools.format2UTC(res.block_time);
+          let that = this;
+          let currentServerTime = new Date().getTime() + that.diffMilliseconds;
+          this.ageTime = Tools.formatAge(currentServerTime,res.block_time,Tools.firstWordUpperCase(Constant.SUFFIX));
+          clearInterval(this.latestBlockTimer);
+          this.latestBlockTimer = setInterval(function () {
+            currentServerTime = new Date().getTime() + that.diffMilliseconds;
+            that.ageTime = Tools.formatAge(currentServerTime,res.block_time,Tools.firstWordUpperCase(Constant.SUFFIX));
+          },1000)
+        })
+      },
+      formatTransactions(totalTxs){
+        let num, thousand = 1000,million = 1000000,billion = 1000000000;
+        if(totalTxs > billion){
+          num = `${(totalTxs/billion).toFixed(2)} B`;
+        }else if(totalTxs > million){
+          num = `${(totalTxs/million).toFixed(2)} M`;
+        }else if(totalTxs > thousand){
+          num = `${(totalTxs/thousand).toFixed(2)} K`;
+        }else {
+          num = totalTxs
         }
+        return num
+      },
+      formatBondedTokens(bondedTokens){
+        let tokens,million = 1000000;
+        if(bondedTokens > million){
+          tokens = `${(Number(bondedTokens) / million).toFixed(2)} M`
+        } else {
+          tokens = `${Number(bondedTokens).toFixed(2)}`;
+        }
+        return tokens
       }
+    }
   }
 </script>
 <style lang="scss">
@@ -392,11 +410,10 @@ import Constant from "../constant/Constant"
     @include pcContainer;
     //pc端和移动端公共样式
     .personal_computer_home_wrap, .mobile_home_wrap {
-      margin-top: 0.35rem;
+      padding-top: 0.3rem;
       .information_preview {
         @include flex;
-        margin-bottom: 0.35rem;
-
+        margin-bottom: 0.3rem;
         .information_preview_module {
           border-right: 1px solid #d6d9e0;
           @include flex;
@@ -420,6 +437,50 @@ import Constant from "../constant/Constant"
           }
         }
       }
+      .current_net_status_list{
+        display: flex;
+        width: 100%;
+        .item_status{
+          flex: 1;
+          background: #fff;
+          border: 0.01rem solid rgba(215, 217, 224, 1);
+          border-radius: 0.01rem;
+          margin-right: 3%;
+          box-sizing: border-box;
+          padding: 0.14rem;
+          .img_container{
+            display: flex;
+            align-items: center;
+            .img_content{
+              display: flex;
+              align-items: center;
+              width: 0.15rem;
+              img{
+                width: 100%;
+              }
+            }
+            .item_name{
+              margin-left: 0.08rem;
+              font-size: 0.14rem;
+              color: rgba(162, 162, 174, 1);
+            }
+          }
+          .current_block{
+            padding-top: 0.2rem;
+            font-size: 0.2rem;
+            line-height: 0.23rem;
+            color: rgba(34, 37, 42, 1);
+          }
+          .block_time{
+            color: rgba(162, 162, 174, 1);
+            font-size: 0.14rem;
+            padding-top: 0.1rem;
+          }
+        }
+        .item_status:last-child{
+          margin-right: 0;
+        }
+      }
       //饼状图
       .home_module_item_pie {
         height: 3.5rem;
@@ -428,6 +489,7 @@ import Constant from "../constant/Constant"
 
     .personal_computer_home_wrap {
       width: 100%!important;
+      padding: 0.3rem 0.2rem 0 0.2rem;
       @include pcCenter;
       .information_preview {
         .information_preview_module {
@@ -442,7 +504,7 @@ import Constant from "../constant/Constant"
         .home_module_item {
           flex:1;
           border: 0.01rem solid #d6d9e0;
-          margin-bottom: 0.4rem;
+          margin-bottom: 0.3rem;
           height: 3.54rem;
           &:nth-child(2n+1){
             margin-right:0.4rem;
@@ -459,17 +521,18 @@ import Constant from "../constant/Constant"
       .information_preview {
         overflow-x: auto;
         -webkit-overflow-scrolling:touch;
-        .information_preview_module {
-          min-width: 1.6rem;
-        }
-        .mobile_transaction_content{
-          min-width: 2rem !important;
-        }
-        .mobile_age_content{
-          min-width: 1.2rem !important;
-        }
-        .mobile_validator{
-          min-width: 2rem !important;
+        .current_net_status_list{
+          display: flex;
+          flex-direction: column;
+          .item_status{
+            min-height: 1.24rem;
+            border-radius: 0.01rem;
+            margin-top: 0.1rem;
+            box-sizing: border-box;
+            padding: 0.14rem;
+            width: 100%;
+            border: 0.01rem solid rgba(215, 217, 224, 1);
+          }
         }
       }
       .module_item_wrap_mobile {
