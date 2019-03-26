@@ -7,8 +7,8 @@ export default {
       bondedTokens: 'Bonded Tokens',
       mainnet: 'Mainnet',
       testnet: 'FUXI Testnet',
-      catsNet: 'NYAN_CATS Testnet'
-    
+      catsNet: 'NYAN_CATS Testnet',
+      LatestBlocks:'Last 100 Blocks'
     
   }
 }
