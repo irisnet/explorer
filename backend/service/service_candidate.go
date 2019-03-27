@@ -203,6 +203,7 @@ func (service *CandidateService) QueryCandidate(address string) model.Candidates
 	var val = model.Validator{
 		Address:        validator.OperatorAddress,
 		PubKey:         validator.ConsensusPubkey,
+		Owner:          utils.Convert(conf.Get().Hub.Prefix.AccAddr, validator.OperatorAddress),
 		Jailed:         validator.Jailed,
 		Status:         BondStatusToString(validator.Status),
 		BondHeight:     utils.ParseIntWithDefault(validator.BondHeight, 0),
@@ -516,6 +517,7 @@ func (service *CandidateService) convert(database *mgo.Database, candidate docum
 	return model.Validator{
 		Address:        candidate.Address,
 		PubKey:         utils.Convert(conf.Get().Hub.Prefix.ConsPub, candidate.PubKey),
+		Owner:          utils.Convert(conf.Get().Hub.Prefix.AccAddr, candidate.Address),
 		Jailed:         candidate.Jailed,
 		Status:         candidate.Status,
 		BondHeight:     candidate.BondHeight,
