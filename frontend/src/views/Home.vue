@@ -31,7 +31,7 @@
               <span class="item_name">{{lang.home.ageTime}}</span>
             </div>
             <p class="current_block" :style="{color:diffSeconds > 120 ? '#ff001b' : ''}">{{averageBlockTime}}</p>
-            <p class="block_time">{{lang.home.LatestBlocks}}</p>
+            <p class="block_time">{{lang.home.latestBlocks}}</p>
           </li>
           <li class="item_status">
             <div class="img_container">
@@ -269,7 +269,8 @@ import Constant from "../constant/Constant";
                     Height: item.Height,
                     Proposer: item.Hash,
                     Txn: item.NumTxs,
-                    Time: item.Time,
+                    blockUTCTime: Tools.format2UTC(item.Time),
+                    time: item.Time,
                     Fee: '0 IRIS',
                     age: Tools.formatAge(currentServerTime,item.Time,Constant.SUFFIX,Constant.PREFIX)
                   };
@@ -278,7 +279,7 @@ import Constant from "../constant/Constant";
                 this.blocksTimer = setInterval(function () {
                   currentServerTime = new Date().getTime() + that.diffMilliseconds;
                   that.blocksInformation.map(item => {
-                  item.age = Tools.formatAge(currentServerTime,item.Time,Constant.SUFFIX,Constant.PREFIX)
+                  item.age = Tools.formatAge(currentServerTime,item.time,Constant.SUFFIX,Constant.PREFIX)
                   return item
                 })
               },1000);
