@@ -401,7 +401,11 @@ import Constant from "../constant/Constant";
         }
         return tokens
       }
-    }
+    },
+      destroyed () {
+        clearInterval(this.timer);
+        clearInterval(this.navigationTimer);
+      }
   }
 </script>
 <style lang="scss">

@@ -433,6 +433,7 @@
           this.toggleTestnetLogo(res);
           this.explorerLink(res);
           this.setCurrentSelectOption(res.cur_env);
+          this.setEnvConfig(res);
           this.flShowHeaderNetwork = true;
           res.configs.forEach( item => {
             if(res.cur_env === item.env_nm){
@@ -445,6 +446,12 @@
             }
           })
         });
+      },
+      setEnvConfig(currentEnv){
+        if(currentEnv.cur_env !== constant.ENVCONFIG.MAINNET){
+          this.$Crypto.getCrypto(constant.CHAINNAME,constant.ENVCONFIG.TESTNET);
+          this.$store.commit('currentEnv',constant.ENVCONFIG.TESTNET)
+        }
       },
       toggleTestnetLogo(currentEnv){
         if(currentEnv.cur_env === constant.ENVCONFIG.MAINNET){
@@ -499,6 +506,9 @@
   @import '../style/mixin.scss';
   .person_computer_header_var {
     height: 1.62rem;
+    position: fixed;
+    z-index: 10000000;
+    background: rgba(255,255,255,1);
   }
   .person_computer_header_var, .mobile_header_var {
     @include flex();
@@ -960,10 +970,5 @@
         width: 100%;
       }
     }
-  }
-  #header{
-    position: fixed;
-    z-index: 10000000;
-    background: rgba(255,255,255,1);
   }
 </style>
