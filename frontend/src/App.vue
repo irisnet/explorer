@@ -1,7 +1,7 @@
 <template>
   <div id="app" @click.stop="closeSelectOption">
     <app-header v-show="flShowHeader"></app-header>
-    <div id="router_wrap" :style="{'padding-top':headerHeight}">
+    <div id="router_wrap" :style="{'padding-top':headerHeightStyle}">
       <div class="qr_code"
            @click="hideQRCode"
            :style="`width:${vw}px;height:${vh}px`" v-show="weChatQRShow">
@@ -97,7 +97,7 @@
         innerWidth: window.innerWidth,
         scrollHeight:0,
         flShowHeader : true,
-        headerHeight:''
+        headerHeightStyle:''
       }
     },
     beforeMount() {
@@ -174,7 +174,7 @@
       }
     },
     updated () {
-      this.headerHeight = `${document.getElementById('header').clientHeight/100}rem`
+      this.headerHeightStyle = `${document.getElementById('header').clientHeight/100}rem`
     }
   }
 </script>

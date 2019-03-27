@@ -8,7 +8,7 @@ export default {
       mainnet: 'Mainnet',
       testnet: 'FUXI Testnet',
       catsNet: 'NYAN_CATS Testnet',
-      latestblocks:'Last 100 Blocks'
+      latestBlocks:'Last 100 Blocks'
     
   }
 }
