@@ -961,4 +961,9 @@
       }
     }
   }
+  #header{
+    position: fixed;
+    z-index: 10000000;
+    background: rgba(255,255,255,1);
+  }
 </style>

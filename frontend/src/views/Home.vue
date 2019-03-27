@@ -269,7 +269,8 @@ import Constant from "../constant/Constant";
                     Height: item.Height,
                     Proposer: item.Hash,
                     Txn: item.NumTxs,
-                    Time: item.Time,
+                    Time: Tools.format2UTC(item.Time),
+                    time: item.Time,
                     Fee: '0 IRIS',
                     age: Tools.formatAge(currentServerTime,item.Time,Constant.SUFFIX,Constant.PREFIX)
                   };
@@ -278,7 +279,7 @@ import Constant from "../constant/Constant";
                 this.blocksTimer = setInterval(function () {
                   currentServerTime = new Date().getTime() + that.diffMilliseconds;
                   that.blocksInformation.map(item => {
-                  item.age = Tools.formatAge(currentServerTime,item.Time,Constant.SUFFIX,Constant.PREFIX)
+                  item.age = Tools.formatAge(currentServerTime,item.time,Constant.SUFFIX,Constant.PREFIX)
                   return item
                 })
               },1000);

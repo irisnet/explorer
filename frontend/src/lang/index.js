@@ -2,7 +2,7 @@ export default {
   home:{
       blockHeight: 'Block Height',
       transactions: 'Transactions',
-      ageTime: 'Average Block Time',
+      ageTime: 'Avg Block Time',
       votingPower: 'Voting Power',
       bondedTokens: 'Bonded Tokens',
       mainnet: 'Mainnet',
