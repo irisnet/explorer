@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
@@ -449,7 +450,7 @@ func (service *CandidateService) QueryChainStatus() model.ChainStatusVo {
 func convert(candidate document.Candidate) model.Validator {
 	return model.Validator{
 		Address:        candidate.Address,
-		PubKey:         candidate.PubKey,
+		PubKey:         utils.Convert(conf.Get().Hub.Prefix.ConsPub, candidate.PubKey),
 		Jailed:         candidate.Jailed,
 		Status:         candidate.Status,
 		BondHeight:     candidate.BondHeight,

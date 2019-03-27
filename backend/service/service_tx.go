@@ -20,20 +20,16 @@ func (service *TxService) GetModule() Module {
 	return Tx
 }
 
-func (service *TxService) QueryList(query bson.M, page, pageSize int) model.PageVo {
+func (service *TxService) QueryList(query bson.M, page, pageSize int) (pageInfo model.PageVo) {
 	logger.Debug("QueryList start", service.GetTraceLog())
 	var data []document.CommonTx
-	pageInfo := queryRows(document.CollectionNmCommonTx, &data, query, desc(document.Tx_Field_Time), page, pageSize)
-	pageInfo.Data = buildData(data)
-	logger.Debug("QueryList end", service.GetTraceLog())
-	return pageInfo
-}
 
-func (service *TxService) QueryLatest(query bson.M, page, pageSize int) model.PageVo {
-	logger.Debug("QueryLatest", service.GetTraceLog())
-	var data []document.CommonTx
-	pageInfo := queryRows(document.CollectionNmCommonTx, &data, query, desc(document.Tx_Field_Time), page, pageSize)
-	logger.Debug("QueryLatest end", service.GetTraceLog())
+	if cnt, err := pageQuery(document.CollectionNmCommonTx, nil,
+		query, desc(document.Tx_Field_Time), page, pageSize, &data); err == nil {
+		pageInfo.Data = buildData(data)
+		pageInfo.Count = cnt
+	}
+	logger.Debug("QueryList end", service.GetTraceLog())
 	return pageInfo
 }
 
@@ -103,7 +99,7 @@ func (service *TxService) Query(hash string) interface{} {
 	return tx
 }
 
-func (service *TxService) QueryByAcc(address string, page, size int) model.PageVo {
+func (service *TxService) QueryByAcc(address string, page, size int) (result model.PageVo) {
 	var data []document.CommonTx
 	query := bson.M{}
 	query["$or"] = []bson.M{{document.Tx_Field_From: address}, {document.Tx_Field_To: address}}
@@ -115,7 +111,12 @@ func (service *TxService) QueryByAcc(address string, page, size int) model.PageV
 	query[document.Tx_Field_Type] = bson.M{
 		"$in": typeArr,
 	}
-	return queryRows(document.CollectionNmCommonTx, &data, query, desc(document.Tx_Field_Time), page, size)
+	cnt, err := pageQuery(document.CollectionNmCommonTx, nil, query, desc(document.Tx_Field_Time), page, size, &data)
+	if err == nil {
+		result.Count = cnt
+		result.Data = data
+	}
+	return
 }
 
 func (service *TxService) CountByType(query bson.M) model.TxStatisticsVo {

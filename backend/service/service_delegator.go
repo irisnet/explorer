@@ -103,14 +103,16 @@ func (service *DelegatorService) QueryDelegation(valAddr string) (info ValInfo) 
 }
 
 func (service *DelegatorService) GetDeposits(delAddr string) (coin document.Coin) {
-	var dbInstance = getDb()
-	defer dbInstance.Session.Close()
 
-	var delegatorStore = dbInstance.C(document.CollectionNmStakeRoleDelegator)
+	var query = orm.NewQuery()
+	defer query.Release()
+
 	var delegations []document.Delegator
+	query.SetCollection(document.CollectionNmStakeRoleDelegator).
+		SetCondition(bson.M{document.Delegator_Field_Addres: delAddr}).
+		SetResult(&delegations)
 
-	err := delegatorStore.Find(bson.M{document.Delegator_Field_Addres: delAddr}).All(&delegations)
-	if err != nil {
+	if query.Exec() != nil {
 		logger.Warn("delegator address not exist", logger.String("delAddr", delAddr))
 		return
 	}
@@ -122,15 +124,16 @@ func (service *DelegatorService) GetDeposits(delAddr string) (coin document.Coin
 		valAddrs = append(valAddrs, d.ValidatorAddr)
 	}
 
-	var validatorStore = dbInstance.C(document.CollectionNmStakeRoleCandidate)
-	var validators []document.Candidate
-
-	var query = bson.M{}
-	query[document.Candidate_Field_Address] = bson.M{
+	var condition = bson.M{}
+	condition[document.Candidate_Field_Address] = bson.M{
 		"$in": valAddrs,
 	}
-	err = validatorStore.Find(query).All(&validators)
-	if err != nil {
+	var validators []document.Candidate
+	query.Reset().SetCollection(document.CollectionNmStakeRoleCandidate).
+		SetCondition(condition).
+		SetResult(&validators)
+
+	if query.Exec() != nil {
 		logger.Error("validator not found", logger.Any("valAddrs", valAddrs))
 		return
 	}

@@ -1,6 +1,8 @@
 package document
 
-import "gopkg.in/mgo.v2/bson"
+import (
+	"gopkg.in/mgo.v2/bson"
+)
 
 const (
 	CollectionNmConfig = "ex_config"

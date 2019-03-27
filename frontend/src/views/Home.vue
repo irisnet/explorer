@@ -6,15 +6,15 @@
           <span :class="flFadeInBlockHeight ? 'animation' : '' ">{{currentBlockHeight}}</span>
           <span class="information_module_key">Latest Block</span>
         </div>
-        <div class="information_preview_module">
+        <div class="information_preview_module mobile_age_content">
           <span :class="flFadeInBlockHeight ? 'animation' : '' " :style="{color:diffSeconds > 120 ? '#ff001b' : ''}">{{lastBlockAge}}</span>
           <span class="information_module_key">Age</span>
         </div>
-        <div class="information_preview_module">
-          <span :class="flFadeInTransaction ? 'animation' : '' ">{{transactionValue}}{{tpsValue}}</span>
+        <div class="information_preview_module mobile_transaction_content">
+          <span :class="flFadeInTransaction ? 'animation' : '' ">{{transactionValue}}</span>
           <span class="information_module_key">Transactions</span>
         </div>
-        <div class="information_preview_module"
+        <div class="information_preview_module mobile_validator"
              style="cursor:pointer;" @click="skipValidators"
         >
           <span style="text-align:center;" :class="flFadeInValidator ? 'animation' : '' ">{{validatorValue}}</span>
@@ -283,9 +283,9 @@ import Constant from "../constant/Constant"
               lastBlock.lastBlockHeight = blockList[0].height;
               lastBlock.numerator = numerator;
               lastBlock.denominator = denominator;
-              lastBlock.activeValidator = blockList[0].last_commit.length;
-              lastBlock.totalValidator = blockList[0].validators.length;
-              this.validatorValue = `${blockList[0].last_commit.length} voting / ${blockList[0].validators.length} total`;
+              lastBlock.activeValidator = blockList.Data[0].Block.LastCommit.Precommits.length;
+              lastBlock.totalValidator = blockList.Data[0].Validators.length;
+              this.validatorValue = `${blockList.Data[0].Block.LastCommit.Precommits.length} Voting / ${blockList.Data[0].Validators.length} Active`;
               this.votingPowerValue = denominator !== 0? `${(numerator/denominator).toFixed(2)*100}%`:'';
               this.showFadeinAnimation(blockList,numerator,denominator);
               this.showBlockFadeinAnimation(blockList);
@@ -347,30 +347,45 @@ import Constant from "../constant/Constant"
               }
               let lastTxTime = new Date(transactionList[0].time).getTime();
               clearInterval(this.transfersTimer);
-              that.transactionInformation = transactionList.map(item => {
-                let Fee = '--';
-                if(item.actual_fee.amount){
-                  Fee = `${Tools.formatFeeToFixedNumber(item.actual_fee.amount)} ${Tools.formatDenom(item.actual_fee.denom).toUpperCase()}`;
-                }
-                let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-                return {
-                  showAnimation: item.showAnimation ? item.showAnimation : '',
-                  TxHash: item.tx_hash,
-                  From: '',
-                  To: '',
-                  Type: item.type === 'coin'?'transfer':item.type,
-                  Fee,
-                  Time: Tools.format2UTC(item.time),
-                  age: Tools.formatAge(currentServerTime,item.time,Constant.SUFFIX,Constant.PREFIX),
-                  time:item.time
-                };
-              });
               this.transfersTimer = setInterval(function () {
                 localStorage.setItem('lastTxTime',lastTxTime);
-                let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-                that.transactionInformation = that.transactionInformation.map(t=>{
-                  t.age = Tools.formatAge(currentServerTime,t.time,Constant.SUFFIX,Constant.PREFIX);
-                  return t;
+                that.transactionInformation = transactionList.Data.map(item => {
+                  let [Amount, Fee] = ['--', '--'];
+                  if(item.Amount){
+                    if (item.Amount instanceof Array) {
+                      if(item.Amount.length > 0){
+                        item.Amount[0].amount = Tools.formatAmount(item.Amount[0].amount);
+                        if(!item.Amount[0].denom){
+                          Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
+                        }else {
+                          Amount = item.Amount.map(listItem => `${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
+                        }
+                      }
+                    } else if (item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')) {
+                      if(!item.Amount.denom){
+                        Amount = `${item.Amount.amount} SHARES`;
+                      }else {
+                        Amount = `${item.Amount.amount} ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
+                      }
+                    }
+                  }else {
+                    Amount = '';
+                  }
+                  if(item.ActualFee.amount && item.ActualFee.denom){
+                    Fee =  `${Tools.formatFeeToFixedNumber(item.ActualFee.amount)} ${Tools.formatDenom(item.ActualFee.denom).toUpperCase()}`;
+                  }
+                  let currentServerTime = new Date().getTime() + that.diffMilliseconds;
+                  return {
+                    showAnimation: item.showAnimation ? item.showAnimation : '',
+                    TxHash: item.TxHash,
+                    From: item.From,
+                    To: item.To,
+                    Type: item.Type === 'coin'?'transfer':item.Type,
+                    Fee,
+                    Amount,
+                    Time: Tools.format2UTC(item.Time),
+                    age: Tools.formatAge(currentServerTime,item.Time,Constant.SUFFIX,Constant.PREFIX)
+                  };
                 })
               },1000)
             }
@@ -463,6 +478,15 @@ import Constant from "../constant/Constant"
         -webkit-overflow-scrolling:touch;
         .information_preview_module {
           min-width: 1.6rem;
+        }
+        .mobile_transaction_content{
+          min-width: 2rem !important;
+        }
+        .mobile_age_content{
+          min-width: 1.2rem !important;
+        }
+        .mobile_validator{
+          min-width: 2rem !important;
         }
       }
       .module_item_wrap_mobile {

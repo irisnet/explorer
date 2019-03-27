@@ -25,16 +25,17 @@
           <span class="information_value">{{balanceValue?balanceValue:'--'}}</span>
         </div>
         <div class="information_props_wrap" v-show="flValidator">
+          <span class="information_props">Bonded Stake :</span>
+          <span class="information_value information_show_trim">{{depositsValue?depositsValue:'--'}}</span>
+        </div>
+        <div class="information_props_wrap" v-show="!flValidator">
           <span class="information_props">Delegated :</span>
           <span class="information_value information_show_trim">{{depositsValue?depositsValue:'--'}}</span>
         </div>
         <div class="information_props_wrap" v-show="!flValidator">
-          <span class="information_props">Deposits :</span>
-          <span class="information_value information_show_trim">{{depositsValue?depositsValue:'--'}}</span>
-        </div>
-        <div class="information_props_wrap">
-          <span class="information_props">Withdraw Address :</span>
-          <span class="information_value information_show_trim">{{withdrawAddress?withdrawAddress:'--'}}</span>
+          <span class="information_props">Withdraw To :</span>
+          <span class="information_value information_show_trim jump_link_style" v-show="withdrawAddress" @click="skipRoute(`/address/1/${withdrawAddress}`)">{{withdrawAddress}}</span>
+          <span class="information_value information_show_trim" v-show="!withdrawAddress">--</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Transactions :</span>
@@ -59,9 +60,14 @@
           <span class="information_value" v-show="!operatorValue">--</span>
         </div>
         <div class="information_props_wrap">
+          <span class="information_props">Comission Rate :</span>
+          <span class="information_value">{{rateValue}}</span>
+        </div>
+
+        <div class="information_props_wrap">
           <span class="information_props">Website :</span>
-          <span class="information_value">
-            <pre class="information_pre">{{websiteValue}}</pre>
+          <span class="information_value" :class="websiteValue && websiteValue !== '--' ? 'link_style' : ''">
+            <pre class="information_pre" @click="openUrl(websiteValue)">{{websiteValue}}</pre>
           </span>
         </div>
         <div class="information_props_wrap">
@@ -201,6 +207,7 @@
       data() {
 
           return {
+              rateValue: '',
               transactionTimer: null,
               devicesWidth: window.innerWidth,
               transactionsDetailWrap: 'personal_computer_transactions_detail',
@@ -437,6 +444,7 @@
                 this.votingPowerValue = validator.voting_power;
               }
             }
+            this.rateValue = validator.rate ? `${Tools.formatRate(validator.rate.toString())}%`  : '--';
             this.identity = validator.description && validator.description.identity ? validator.description.identity : "--";
             this.nameValue = validator.description && validator.description.moniker ? validator.description.moniker : '--';
             this.pubKeyValue = validator.pub_key ? validator.pub_key : "--";
@@ -444,7 +452,7 @@
             this.descriptionValue= validator.description && validator.description.details ? validator.description.details : "--";
             this.commissionRateValue = '';
             this.announcementValue = '';
-            this.operatorValue = this.$Codec.Bech32.toBech32(this.$Crypto.Constants.IRIS.IrisNetConfig.PREFIX_BECH32_ACCADDR,this.$Codec.Bech32.fromBech32(validator.address));
+            this.operatorValue = this.$Codec.Bech32.toBech32(this.$Crypto.config.iris.bech32.accAddr,this.$Codec.Bech32.fromBech32(validator.address));
           }else{
             this.flValidator = false;
             this.flActiveValidator = false;
@@ -699,6 +707,15 @@
           console.error(e)
         })
       },
+
+      openUrl(url){
+        if(url && url !== '--'){
+          if(!/(http|https):\/\/([\w.]+\/?)\S*/.test(url)){
+            url = `http://${url}`
+          }
+          window.open(url)
+        }
+      }
     }
   }
 </script>
@@ -761,6 +778,12 @@
             font-size:0.14rem;
             /*flex:1;*/
           }
+          .link_style{
+            pre{
+              color: #3598db !important;
+              cursor: pointer;
+            }
+          }
         }
       }
       .transactions_detail_title {
@@ -819,6 +842,12 @@
             overflow-x:auto;
             -webkit-overflow-scrolling:touch;
             color: #a2a2ae;
+          }
+          .link_style{
+            pre{
+              color: #3598db !important;
+              cursor: pointer;
+            }
           }
           .operator_value{
             cursor: pointer;
@@ -1113,6 +1142,10 @@
   }
   .information_show_trim{
     white-space: pre-wrap ;
+  }
+  .jump_link_style{
+    cursor: pointer;
+    color: #3598db !important;
   }
   .list_tab_wrap{
     padding: 0!important;

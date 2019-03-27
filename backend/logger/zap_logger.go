@@ -74,6 +74,7 @@ func With(fields ...zap.Field) {
 	defer logger.Sync()
 	logger.With(desensitize(fields)...)
 }
+
 func desensitize(fields []zap.Field) (fs []zap.Field) {
 	for _, f := range fields {
 		key := strings.ToLower(f.Key)

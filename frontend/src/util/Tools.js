@@ -69,7 +69,15 @@ export default class Tools{
   static formatNumber(num){
     return new BigNumber(num).div(1000000000000000000).toNumber();
   }
-
+  static formatRate(rate){
+    let toFixedValue = 2;
+    let rateNum = new BigNumber(rate).multipliedBy(100).toNumber();
+    if(rateNum.toString().indexOf(".") !== -1 && rateNum.toString().split('.')[1].length > 2){
+      return rateNum
+    }else {
+      return Tools.toFixedformatNumber(rateNum,toFixedValue)
+    }
+  }
   static formaNumberAboutGasPrice(num){
     return new BigNumber(num).div(1000000000).toNumber();
   }
@@ -162,7 +170,7 @@ export default class Tools{
           if(str.length > 2){
             return Tools.toFixedformatNumber(Number(num) ,2)+ "...";
           }else {
-            return (parseInt(String(num*100))/100)
+            return num
           }
         }
       }
@@ -287,15 +295,6 @@ export default class Tools{
   static formatAccountCoinsDenom(coinsDenom){
     return coinsDenom = /[A-Za-z\-]{2,15}/.exec(coinsDenom)
   }
-
-  static flTxType(TxType){
-    if(TxType === "WithdrawAddress " || TxType === "BeginUnbonding"
-      || TxType === "BeginRedelegate" || TxType === "WithdrawDelegatorRewardsAll"
-      || TxType === "WithdrawDelegatorReward" || TxType === "WithdrawDelegatorReward"){
-      return true
-    }
-  }
-
   static scrollToTop(){
     document.body.scrollTop = 0;
   }
@@ -316,16 +315,17 @@ export default class Tools{
             if(item.Amount instanceof Array){
               if(item.Amount.length > 0){
                 item.Amount[0].formatAmount = Tools.formatAmount(item.Amount[0].amount);
-                if(Tools.flTxType(item.Type)){
+                if(!item.Amount[0].denom){
                   Amount = item.Amount.map(listItem => `${listItem.formatAmount} SHARES`).join(',');
                 }else {
                   Amount = item.Amount.map(listItem=>`${listItem.formatAmount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
                 }
               }
             }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
-              Amount = `${item.Amount.amount}  ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
-              if(Tools.flTxType(item.Type)){
+              if(!item.Amount.denom){
                 Amount = `${item.Amount.amount} SHARES`;
+              }else {
+                Amount = `${item.Amount.amount}  ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
               }
             }
           }

@@ -11,7 +11,6 @@ import (
 func RegisterTx(r *mux.Router) error {
 	funs := []func(*mux.Router) error{
 		registerQueryTx,
-		registerQueryTxs,
 		registerQueryTxsByAccount,
 		registerQueryTxsByDay,
 		//new
@@ -87,27 +86,6 @@ func registerQueryTx(r *mux.Router) error {
 		hash := Var(request, "hash")
 
 		result := tx.Query(hash)
-		return result
-	})
-
-	return nil
-}
-
-func registerQueryTxs(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryTxs, "GET", func(request model.IrisReq) interface{} {
-		tx.SetTid(request.TraceId)
-		query := bson.M{}
-		var typeArr []string
-		typeArr = append(typeArr, types.TypeTransfer)
-		typeArr = append(typeArr, types.DeclarationList...)
-		typeArr = append(typeArr, types.StakeList...)
-		typeArr = append(typeArr, types.GovernanceList...)
-		query["type"] = bson.M{
-			"$in": typeArr,
-		}
-		page, pageSize := GetPage(request)
-		result := tx.QueryLatest(query, page, pageSize)
-
 		return result
 	})
 

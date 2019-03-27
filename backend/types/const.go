@@ -51,7 +51,6 @@ const (
 	//Tx
 	UrlRegisterQueryTxList       = "/tx/{type}/{page}/{size}"
 	UrlRegisterQueryRecentTx     = "/txs/recent"
-	UrlRegisterQueryTxs          = "/txs/{page}/{size}"
 	UrlRegisterQueryTxsCounter   = "/txs/statistics"
 	UrlRegisterQueryTxsByAccount = "/txsByAddress/{address}/{page}/{size}"
 	UrlRegisterQueryTxsByDay     = "/txsByDay"
