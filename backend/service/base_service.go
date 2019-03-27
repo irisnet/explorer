@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm"
+	"github.com/irisnet/explorer/backend/orm/document"
 	"go.uber.org/zap"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -75,6 +76,18 @@ func (base *BaseService) GetTid() string {
 
 func (base *BaseService) GetTraceLog() zap.Field {
 	return logger.String("traceId", base.GetTid())
+}
+
+func (base *BaseService) QueryBlackList(database *mgo.Database) map[string]document.BlackList {
+	var blackListStore = database.C(document.CollectionNmBlackList)
+	var blackList []document.BlackList
+	var blackListMap = make(map[string]document.BlackList)
+	if err := blackListStore.Find(nil).All(&blackList); err == nil {
+		for _, v := range blackList {
+			blackListMap[v.OperatorAddr] = v
+		}
+	}
+	return blackListMap
 }
 
 func queryAll(collation string, selector, condition bson.M, sort string, size int, result interface{}) error {

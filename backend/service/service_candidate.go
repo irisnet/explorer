@@ -9,8 +9,9 @@ import (
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
+	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
-	"math"
+	"strconv"
 	"time"
 )
 
@@ -60,16 +61,51 @@ func (service *CandidateService) QueryValidators(page, pageSize int) model.ValDe
 	var upTimeMap = getValUpTime(query)
 	var validators []model.Validator
 	for _, candidate := range candidates {
-		validator := convert(candidate)
+		validator := service.convert(query.GetDb(), candidate)
 		validator.Uptime = upTimeMap[candidate.PubKeyAddr]
 		validators = append(validators, validator)
 	}
+
+	power := strconv.FormatFloat(voteCount.Count, 'f', 10, 64)
 	resp := model.ValDetailVo{
 		Count:      count,
-		PowerAll:   getVotingPowerFromToken(voteCount.Count),
+		PowerAll:   getVotingPowerFromToken(power),
 		Validators: validators,
 	}
 	return resp
+}
+
+func (service *CandidateService) GetValidators(page, size int) []lcd.ValidatorVo {
+	var validators = lcd.Validators(page, size)
+	var query = orm.NewQuery()
+	defer query.Release()
+	var blackList = service.QueryBlackList(query.GetDb())
+	for i, v := range validators {
+		if desc, ok := blackList[v.OperatorAddress]; ok {
+			validators[i].Description.Moniker = desc.Moniker
+			validators[i].Description.Identity = desc.Identity
+			validators[i].Description.Website = desc.Website
+			validators[i].Description.Details = desc.Details
+		}
+	}
+	return validators
+}
+
+func (service *CandidateService) GetValidator(address string) lcd.ValidatorVo {
+	var validator, err = lcd.Validator(address)
+	if err != nil {
+		panic(types.CodeNotFound)
+	}
+	var query = orm.NewQuery()
+	defer query.Release()
+	var blackList = service.QueryBlackList(query.GetDb())
+	if desc, ok := blackList[validator.OperatorAddress]; ok {
+		validator.Description.Moniker = desc.Moniker
+		validator.Description.Identity = desc.Identity
+		validator.Description.Website = desc.Website
+		validator.Description.Details = desc.Details
+	}
+	return validator
 }
 
 func (service *CandidateService) QueryRevokedValidator(page, size int) model.ValDetailVo {
@@ -91,7 +127,7 @@ func (service *CandidateService) QueryRevokedValidator(page, size int) model.Val
 
 	var validators []model.Validator
 	for _, ca := range candidates {
-		validators = append(validators, convert(ca))
+		validators = append(validators, service.convert(query.GetDb(), ca))
 	}
 
 	resp := model.ValDetailVo{
@@ -143,7 +179,7 @@ func (service *CandidateService) QueryCandidates(page, size int) model.ValDetail
 			if err := query.Exec(); err == nil {
 				ca.BondHeight = tx.Height
 			}
-			validators = append(validators, convert(ca))
+			validators = append(validators, service.convert(query.GetDb(), ca))
 		}
 
 		resp = model.ValDetailVo{
@@ -161,19 +197,36 @@ func (service *CandidateService) QueryCandidate(address string) model.Candidates
 	if err != nil {
 		panic(types.CodeNotFound)
 	}
+
+	var query = orm.NewQuery()
+	defer query.Release()
+
+	var moniker = validator.Description.Moniker
+	var identity = validator.Description.Identity
+	var website = validator.Description.Website
+	var details = validator.Description.Details
+	var blackList = service.QueryBlackList(query.GetDb())
+	if desc, ok := blackList[validator.OperatorAddress]; ok {
+		moniker = desc.Moniker
+		identity = desc.Identity
+		website = desc.Website
+		details = desc.Details
+	}
+	var tokenDec, _ = types.NewDecFromStr(validator.Tokens)
 	var val = model.Validator{
 		Address:        validator.OperatorAddress,
 		PubKey:         validator.ConsensusPubkey,
+		Owner:          utils.Convert(conf.Get().Hub.Prefix.AccAddr, validator.OperatorAddress),
 		Jailed:         validator.Jailed,
 		Status:         BondStatusToString(validator.Status),
 		BondHeight:     utils.ParseIntWithDefault(validator.BondHeight, 0),
 		OriginalTokens: utils.RoundToString(validator.Tokens, 0),
-		VotingPower:    utils.RoundString(validator.Tokens),
+		VotingPower:    tokenDec.RoundInt64(),
 		Description: model.Description{
-			Moniker:  validator.Description.Moniker,
-			Identity: validator.Description.Identity,
-			Website:  validator.Description.Website,
-			Details:  validator.Description.Details,
+			Moniker:  moniker,
+			Identity: identity,
+			Website:  website,
+			Details:  details,
 		},
 		Rate: validator.Commission.Rate,
 	}
@@ -182,11 +235,10 @@ func (service *CandidateService) QueryCandidate(address string) model.Candidates
 	condition[document.Candidate_Field_Jailed] = false
 	condition[document.Candidate_Field_Status] = types.TypeValStatusBonded
 
-	var query = orm.NewQuery()
-	defer query.Release()
-
 	var count model.CountVo
-	query.SetResult(&count)
+	query.Reset().
+		SetResult(&count).
+		SetCollection(document.CollectionNmStakeRoleCandidate)
 	query.PipeQuery([]bson.M{
 		{"$match": condition},
 		{"$group": bson.M{
@@ -194,9 +246,9 @@ func (service *CandidateService) QueryCandidate(address string) model.Candidates
 			"count": bson.M{"$sum": "$tokens"},
 		}},
 	})
-
+	power := strconv.FormatFloat(count.Count, 'f', 10, 64)
 	result := model.CandidatesInfoVo{
-		PowerAll:  getVotingPowerFromToken(count.Count),
+		PowerAll:  getVotingPowerFromToken(power),
 		Validator: val,
 	}
 	return result
@@ -231,15 +283,17 @@ func (service *CandidateService) QueryCandidatesTopN() model.ValDetailVo {
 		},
 	)
 
+	power := strconv.FormatFloat(allPower.Count, 'f', 10, 64)
+
 	var validators []model.Validator
 	var upTimeMap = getValUpTime(query)
 	for _, candidate := range candidates {
-		validator := convert(candidate)
+		validator := service.convert(query.GetDb(), candidate)
 		validator.Uptime = upTimeMap[candidate.PubKeyAddr]
 		validators = append(validators, validator)
 	}
 	resp := model.ValDetailVo{
-		PowerAll:   getVotingPowerFromToken(allPower.Count),
+		PowerAll:   getVotingPowerFromToken(power),
 		Validators: validators,
 	}
 	return resp
@@ -437,36 +491,54 @@ func (service *CandidateService) QueryChainStatus() model.ChainStatusVo {
 		startTime := recentBlock.Time.Add(-1 * time.Minute)
 		txCnt, _ = txStore.Find(bson.M{document.Tx_Field_Time: bson.M{"$gte": startTime}}).Count()
 	}
-
+	power := strconv.FormatFloat(count.Count, 'f', 10, 64)
 	resp := model.ChainStatusVo{
 		ValidatorsCount: activeValidatorsCnt,
 		TxCount:         txCount,
-		VotingPower:     getVotingPowerFromToken(count.Count),
+		VotingPower:     getVotingPowerFromToken(power),
 		Tps:             float64(txCnt) / 60,
 	}
 	return resp
 }
 
-func convert(candidate document.Candidate) model.Validator {
+func (service *CandidateService) convert(database *mgo.Database, candidate document.Candidate) model.Validator {
+	var moniker = candidate.Description.Moniker
+	var identity = candidate.Description.Identity
+	var website = candidate.Description.Website
+	var details = candidate.Description.Details
+	var blackList = service.QueryBlackList(database)
+	if desc, ok := blackList[candidate.Address]; ok {
+		moniker = desc.Moniker
+		identity = desc.Identity
+		website = desc.Website
+		details = desc.Details
+	}
 	return model.Validator{
 		Address:        candidate.Address,
 		PubKey:         utils.Convert(conf.Get().Hub.Prefix.ConsPub, candidate.PubKey),
+		Owner:          utils.Convert(conf.Get().Hub.Prefix.AccAddr, candidate.Address),
 		Jailed:         candidate.Jailed,
 		Status:         candidate.Status,
 		BondHeight:     candidate.BondHeight,
 		OriginalTokens: candidate.OriginalTokens,
-		VotingPower:    getVotingPowerFromToken(candidate.Tokens),
+		VotingPower:    getVotingPowerFromToken(candidate.OriginalTokens),
 		Description: model.Description{
-			Moniker:  candidate.Description.Moniker,
-			Identity: candidate.Description.Identity,
-			Website:  candidate.Description.Website,
-			Details:  candidate.Description.Details,
+			Moniker:  moniker,
+			Identity: identity,
+			Website:  website,
+			Details:  details,
 		},
 	}
 }
 
-func getVotingPowerFromToken(token float64) int64 {
-	return utils.Round(token / math.Pow10(18))
+func getVotingPowerFromToken(token string) int64 {
+	tokenPrecision := types.NewIntWithDecimal(1, 18)
+	power, err := types.NewDecFromStr(token)
+	if err != nil {
+		logger.Error("invalid token", logger.String("token", token))
+		return 0
+	}
+	return power.QuoInt(tokenPrecision).RoundInt64()
 }
 
 func BondStatusToString(b int) string {

@@ -8,6 +8,7 @@ import (
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
+	"strconv"
 )
 
 type DelegatorService struct {
@@ -80,7 +81,7 @@ func (service *DelegatorService) QueryDelegation(valAddr string) (info ValInfo) 
 
 	//query uptime
 	var upTime = getValUpTime(query)[validator.PubKeyAddr]
-
+	power := strconv.FormatFloat(validator.Tokens, 'f', 10, 64)
 	return ValInfo{
 		selfBond:  selfBond,
 		delegated: delegated,
@@ -88,7 +89,7 @@ func (service *DelegatorService) QueryDelegation(valAddr string) (info ValInfo) 
 			PubKey:         validator.PubKey,
 			Owner:          accAddr,
 			BondHeight:     validator.BondHeight,
-			VotingPower:    getVotingPowerFromToken(validator.Tokens),
+			VotingPower:    getVotingPowerFromToken(power),
 			CommitBlockNum: int64(preCommitCount),
 			UpTime:         upTime,
 			Description: model.Description{
