@@ -31,7 +31,7 @@
               <span class="item_name">{{lang.home.ageTime}}</span>
             </div>
             <p class="current_block" :style="{color:diffSeconds > 120 ? '#ff001b' : ''}">{{averageBlockTime}}</p>
-            <p class="block_time">{{lang.home.LatestBlocks}}</p>
+            <p class="block_time">{{lang.home.latestblocks}}</p>
           </li>
           <li class="item_status">
             <div class="img_container">
