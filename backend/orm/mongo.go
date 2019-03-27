@@ -72,6 +72,10 @@ func NewQuery() *Query {
 	return q
 }
 
+func (query *Query) GetDb() *mgo.Database {
+	return query.db
+}
+
 func (query *Query) Exec() error {
 	q := query.buildQuery()
 	vType := reflect.ValueOf(query.result)
