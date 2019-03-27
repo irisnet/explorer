@@ -23,7 +23,7 @@
             <span class="blocks_module_type" v-show="item.TxHash">{{item.Type}}</span>
             <div class="blocks_module_right" :style="`${moduleName === 'Blocks'?'flex:2;':''}`">
               <span :class="`${moduleName === 'Blocks' ? 'hide_fee' : 'show_fee'}`">Fee: {{item.Fee}}</span>
-              <span v-show="moduleName === 'Blocks'">{{item.Time}}</span>
+              <span v-show="moduleName === 'Blocks'">{{item.blockUTCTime}}</span>
             </div>
           </div>
         </div>

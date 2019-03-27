@@ -269,7 +269,7 @@ import Constant from "../constant/Constant";
                     Height: item.Height,
                     Proposer: item.Hash,
                     Txn: item.NumTxs,
-                    Time: Tools.format2UTC(item.Time),
+                    blockUTCTime: Tools.format2UTC(item.Time),
                     time: item.Time,
                     Fee: '0 IRIS',
                     age: Tools.formatAge(currentServerTime,item.Time,Constant.SUFFIX,Constant.PREFIX)
