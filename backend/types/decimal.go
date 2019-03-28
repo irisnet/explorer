@@ -18,7 +18,7 @@ type Dec struct {
 
 // number of decimal places
 const (
-	Precision = 10
+	Precision = 18
 
 	// bytes required to represent the above precision
 	// ceil(log2(9999999999))
