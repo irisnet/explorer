@@ -220,16 +220,17 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 			Owner:    tx.From,
 			Pubkey:   tx.StakeCreateValidator.PubKey,
 		}
+		var blackList = service.QueryBlackList(db)
 		if tx.Type == types.TypeCreateValidator {
 			var moniker = tx.StakeCreateValidator.Description.Moniker
 			var identity = tx.StakeCreateValidator.Description.Identity
 			var website = tx.StakeCreateValidator.Description.Website
 			var details = tx.StakeCreateValidator.Description.Details
-			if tx.From == "iaa18claj4r9x3gj5yurjxec29p2c9x6t49r0u2wjg" {
-				moniker = "Validator20190320-1"
-				identity = ""
-				website = ""
-				details = ""
+			if desc, ok := blackList[tx.To]; ok {
+				moniker = desc.Moniker
+				identity = desc.Identity
+				website = desc.Website
+				details = desc.Details
 			}
 			dtx.Moniker = moniker
 			dtx.Details = details
@@ -240,11 +241,11 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 			var identity = tx.StakeEditValidator.Description.Identity
 			var website = tx.StakeEditValidator.Description.Website
 			var details = tx.StakeEditValidator.Description.Details
-			if tx.From == "iva18claj4r9x3gj5yurjxec29p2c9x6t49r6dqp00" {
-				moniker = "Validator20190320-1"
-				identity = ""
-				website = ""
-				details = ""
+			if desc, ok := blackList[tx.From]; ok {
+				moniker = desc.Moniker
+				identity = desc.Identity
+				website = desc.Website
+				details = desc.Details
 			}
 			dtx.Moniker = moniker
 			dtx.Details = details
@@ -258,11 +259,11 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 			var identity = can.Description.Identity
 			var website = can.Description.Website
 			var details = can.Description.Details
-			if tx.From == "iva18claj4r9x3gj5yurjxec29p2c9x6t49r6dqp00" {
-				moniker = "Validator20190320-1"
-				identity = ""
-				website = ""
-				details = ""
+			if desc, ok := blackList[tx.From]; ok {
+				moniker = desc.Moniker
+				identity = desc.Identity
+				website = desc.Website
+				details = desc.Details
 			}
 			dtx.Moniker = moniker
 			dtx.Details = identity
