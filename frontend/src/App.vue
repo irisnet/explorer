@@ -1,7 +1,7 @@
 <template>
   <div id="app" @click.stop="closeSelectOption">
     <app-header v-show="flShowHeader"></app-header>
-    <div id="router_wrap" :style="{'padding-top':headerHeightStyle}">
+    <div id="router_wrap" :style="{'padding-top': $store.state.isMobile ? '' :`${headerHeightStyle}`}">
       <div class="qr_code"
            @click="hideQRCode"
            :style="`width:${vw}px;height:${vh}px`" v-show="weChatQRShow">

@@ -201,8 +201,6 @@
               this.getValidatorHistory('14days');
               this.getValidatorUptimeHistory('24hours');
           },
-
-
       },
       data() {
 
@@ -328,14 +326,23 @@
     },
     mounted() {
       Tools.scrollToTop();
-      this.tabTxList(this.tabTxListIndex,this.txTabName,this.currentPage,this.pageSize);
-      this.getAddressInformation(this.$route.params.param);
-      this.getTransactionsList(1,10,this.$route.params.type);
-      this.getProfileInformation();
-      this.getCurrentTenureInformation();
-      this.getValidatorHistory('14days');
-      this.getValidatorUptimeHistory('24hours');
-      this.getAddressTxStatistics();
+      if(this.$route.params.param.substring(0,3) === this.$Crypto.config.iris.bech32.valAddr){
+        this.tabTxList(this.tabTxListIndex,this.txTabName,this.currentPage,this.pageSize);
+        this.getAddressInformation(this.$route.params.param);
+        this.getTransactionsList(1,10,this.$route.params.type);
+        this.getProfileInformation();
+        this.getCurrentTenureInformation();
+        this.getValidatorHistory('14days');
+        this.getValidatorUptimeHistory('24hours');
+        this.getAddressTxStatistics();
+      }else {
+        this.tabTxList(this.tabTxListIndex,this.txTabName,this.currentPage,this.pageSize);
+        this.getAddressInformation(this.$route.params.param);
+        this.getTransactionsList(1,10,this.$route.params.type);
+        this.getProfileInformation();
+        this.getAddressTxStatistics();
+      }
+
     },
     methods: {
       getAddressTxStatistics(){

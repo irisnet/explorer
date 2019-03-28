@@ -4,7 +4,8 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   state:{
     flShowSelectOption: false,
-    currentEnv:''
+    currentEnv:'',
+    isMobile:false,
   },
   mutations:{
     flShowSelectOption(state,data){
@@ -12,6 +13,9 @@ const store = new Vuex.Store({
     },
     currentEnv(state,data){
       state.currentEnv = data
+    },
+    isMobile(state,data){
+      state.isMobile = data
     }
   }
 })
