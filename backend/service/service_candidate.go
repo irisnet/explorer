@@ -179,6 +179,19 @@ func (service *CandidateService) QueryCandidates(page, size int) model.ValDetail
 	return resp
 }
 
+func (service *CandidateService) QueryValidatorByConAddr(address string) document.Candidate {
+	db := getDb()
+	defer db.Session.Close()
+	c := db.C(document.CollectionNmStakeRoleCandidate)
+	var result document.Candidate
+	query := bson.M{}
+	query[document.Candidate_Field_PubKeyAddr] = address
+	if err := c.Find(query).Limit(1).One(&result); err != nil {
+		logger.Error("not found validator by conAddr", logger.String("conAddr", address))
+	}
+	return result
+}
+
 func (service *CandidateService) QueryCandidate(address string) model.CandidatesInfoVo {
 	db := getDb()
 	defer db.Session.Close()
