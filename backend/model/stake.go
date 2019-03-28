@@ -17,7 +17,8 @@ type ValStatus struct {
 }
 
 type Validator struct {
-	Address        string      `json:"address"` // owner, identity key
+	Address        string      `json:"address"` // operator
+	Owner          string      `json:"owner"`   // owner, identity key
 	PubKey         string      `json:"pub_key"`
 	Jailed         bool        `json:"jailed"`                // has the validator been revoked from bonded status
 	VotingPower    int64       `json:"voting_power"`          // Voting power if pubKey is a considered a validator

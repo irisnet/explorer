@@ -11,7 +11,7 @@ import (
 )
 
 func Account(address string) (result AccountVo, err error) {
-	url := fmt.Sprintf(accountUrl, conf.Get().Hub.LcdUrl, address)
+	url := fmt.Sprintf(UrlAccount, conf.Get().Hub.LcdUrl, address)
 	resBytes, err := utils.Get(url)
 	if err != nil {
 		return result, err

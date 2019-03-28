@@ -7,6 +7,9 @@ const (
 	UrlRegisterQueryAccount    = "/account/{address}"
 	UrlRegisterQueryAllAccount = "/accounts/{page}/{size}"
 
+	//home
+	UrlRegisterNavigationBar = "/home/navigation"
+
 	//Block
 	UrlRegisterQueryBlock            = "/block/{height}"
 	UrlRegisterQueryBlocks           = "/blocks/{page}/{size}"
@@ -39,6 +42,8 @@ const (
 
 	//Stake
 	UrlRegisterQueryValidator        = "/stake/validators/{page}/{size}"
+	UrlRegisterGetValidators         = "/stake/validators"
+	UrlRegisterGetValidator          = "/stake/validators/{address}"
 	UrlRegisterQueryRevokedValidator = "/stake/revokedVal/{page}/{size}"
 	UrlRegisterQueryCandidates       = "/stake/candidates/{page}/{size}"
 	UrlRegisterQueryCandidatesTop    = "/stake/candidatesTop"
