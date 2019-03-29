@@ -11,7 +11,9 @@
               <span class="item_name">{{lang.home.blockHeight}}</span>
             </div>
             <p class="current_block">{{currentBlockHeight}}</p>
-            <p class="block_time proposer_content" @click="toAddressDetail(proposerAddress)">{{moniker}}</p>
+            <p class="block_time proposer_container">
+              <span class="proposer_content" @click="toAddressDetail(proposerAddress)">{{moniker}}</span>
+            </p>
           </li>
           <li class="item_status">
             <div class="img_container">
@@ -116,7 +118,7 @@ import Constant from "../constant/Constant";
                   lang:lang,
                   isMobile: false,
                   moniker:'',
-                  proposerAddress:""
+                  proposerAddress:"",
               }
           },
 
@@ -635,5 +637,6 @@ import Constant from "../constant/Constant";
   }
   .proposer_content{
     cursor: pointer;
+    color:#3598db;
   }
 </style>
