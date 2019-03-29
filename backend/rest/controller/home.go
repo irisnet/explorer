@@ -5,6 +5,7 @@ import (
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
+	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"strconv"
@@ -37,6 +38,7 @@ func registerNavigationBar(r *mux.Router) error {
 			TotalTxs:    utils.ParseIntWithDefault(block.BlockMeta.Header.TotalTxs, 0),
 			BlockTime:   block.BlockMeta.Header.Time,
 		}
+		var proposer = block.BlockMeta.Header.ProposerAddress
 		var funGroup []func()
 		var group sync.WaitGroup
 		var queryVoteInfo = func() {
@@ -63,6 +65,10 @@ func registerNavigationBar(r *mux.Router) error {
 			result.VotingTokens = strconv.FormatInt(voteVp, 10)
 			result.VoteValNum = voteValNum
 			result.ActiveValNum = len(validatorSet.Validators)
+
+			validator := service.Get(service.Candidate).(*service.CandidateService).QueryValidatorByConAddr(proposer)
+			result.Moniker = validator.Description.Moniker
+			result.OperatorAddr = validator.Address
 		}
 		funGroup = append(funGroup, queryVoteInfo)
 		group.Add(1)
@@ -126,4 +132,6 @@ type NavigationData struct {
 	BondedRatio  string    `json:"bonded_ratio"`
 	BondedTokens string    `json:"bonded_tokens"`
 	TotalSupply  string    `json:"total_supply"`
+	Moniker      string    `json:"moniker"`
+	OperatorAddr string    `json:"operator_addr"`
 }
