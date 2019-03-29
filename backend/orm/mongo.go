@@ -1,6 +1,8 @@
 package orm
 
 import (
+	"errors"
+	"fmt"
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
@@ -104,11 +106,14 @@ func (query *Query) PipeQuery(pipeline interface{}) error {
 }
 
 func (query *Query) ExecPage() (cnt int, err error) {
-	q := query.buildQuery()
+	var c = query.db.C(query.collection)
+	var q = c.Find(query.condition)
 	cnt, err = q.Count()
-	if err != nil {
-		return cnt, err
+	if err != nil || cnt == 0 {
+		return cnt, errors.New(fmt.Sprintf("query error,collection:%s,condition:%+v",
+			query.collection, query.condition))
 	}
+	q = query.buildQuery()
 	return cnt, q.All(query.result)
 }
 
