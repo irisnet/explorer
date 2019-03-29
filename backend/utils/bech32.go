@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"encoding/hex"
 	"fmt"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/pkg/errors"
@@ -17,6 +18,21 @@ func Convert(dst, bech32str string) string {
 	dstAddr, err := convertAndEncode(dst, bz)
 	if err != nil {
 		logger.Error("decoding Bech32 address failed: must provide an valid bech32 address", logger.String("bech32str", bech32str))
+		return ""
+	}
+	return dstAddr
+}
+
+func ConvertFromHex(dst, hexStr string) string {
+	bz, err := hex.DecodeString(hexStr)
+	if err != nil {
+		logger.Error("decoding hex address failed: must provide an valid hex address", logger.String("hexStr", hexStr))
+		return ""
+	}
+
+	dstAddr, err := convertAndEncode(dst, bz)
+	if err != nil {
+		logger.Error("decoding hex address failed: must provide an valid bech32 address", logger.String("hexStr", hexStr))
 		return ""
 	}
 	return dstAddr
