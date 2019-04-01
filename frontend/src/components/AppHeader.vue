@@ -3,9 +3,25 @@
   <div :class="appHeaderVar" v-show="showHeader" id="header">
     <header class="app_header_person_computer" v-show="devicesShow === 1">
       <div class="header_top">
-        <div class="imageWrap" @click="featureButtonClick('/home')">
-          <img src="../assets/logo.png"/>
-          <span class="chain_content" v-if="flShowChainId">{{chainId}}</span>
+        <div class="header_left">
+          <div class="imageWrap" @click="featureButtonClick('/home')">
+            <img src="../assets/logo.png"/>
+          </div>
+          <div class="network_select_container" v-show="flShowHeaderNetwork">
+            <div class="network_select_option" @click.stop="toggleSelectOption()">
+              <div class="select_content">
+                <div class="current_select_content">{{currentSelected}} <i class="iconfont icon-arrowdown"></i></div>
+                <div class="select_option_content" v-if="$store.state.flShowSelectOption">
+                  <div class="common_option" v-if="flShowMainnet" @click="toMainnet(mainnetHref)">{{lang.home.mainnet}}</div>
+                  <div class="common_option" v-if="flShowTestnet" @click="toTestnet(testnetHref)">{{lang.home.testnet}}</div>
+                  <div class="common_option" @click="toNyanCats(nyanCatsHref)">{{lang.home.catsNet}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="chain_id_container" v-if="flShowChainId">
+            <span>{{chainId}}</span>
+          </div>
         </div>
         <div class="navSearch">
           <input type="text" class="search_input"
@@ -23,6 +39,20 @@
         <span class="nav_item common_item_style" :class="activeClassName === '/home'?'nav_item_active':''"
               @click="featureButtonClick('/home')"
         >Home</span>
+        <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === '/validators'?'nav_item_active':''"
+             @mouseover="validatorsMouseOver" @mouseleave="validatorsMouseLeave">
+          <span class="nav_item common_item_style">
+            Validators
+            <span class="bottom_arrow"></span>
+          </span>
+          <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/active')"
+                v-show="showSubValidators">Active</span>
+          <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/jailed')"
+                v-show="showSubValidators">Jailed</span>
+          <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/candidates')"
+                v-show="showSubValidators">Candidates</span>
+
+        </div>
         <span class="nav_item common_item_style" :class="activeClassName === '/block'?'nav_item_active':''"
               @click="featureButtonClick('/block/1/0')"
         >Blocks</span>
@@ -42,53 +72,50 @@
           <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/Governance')"
                 v-show="showSubTransaction">Governance</span>
         </div>
-
-        <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === '/validators'?'nav_item_active':''"
-             @mouseover="validatorsMouseOver" @mouseleave="validatorsMouseLeave">
-          <span class="nav_item common_item_style">
-            Validators
-            <span class="bottom_arrow"></span>
-          </span>
-          <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/active')"
-                v-show="showSubValidators">Active</span>
-          <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/jailed')"
-                v-show="showSubValidators">Jailed</span>
-          <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/candidates')"
-                v-show="showSubValidators">Candidates</span>
-
-        </div>
         <span class="nav_item common_item_style" :class="activeClassName === '/Proposals'?'nav_item_active':''"
               @click="featureButtonClick('/Proposals')"
         >Proposals</span>
         <span v-if="flShowFaucet" class="nav_item common_item_style faucet_content" :class="activeClassName === '/faucet'?'nav_item_active':''"
               @click="featureButtonClick('/faucet')"
         >Faucet</span>
-        <div class="nav_item sub_btn_wrap common_item_style" style="width:2rem;padding-right: 0.4rem" :class="activeClassName === 'netWork'?'nav_item_active':''"
-             @mouseover="netWorkMouseOver" @mouseleave="netWorkMouseLeave">
-
-          <span class="nav_item common_item_style" :class="activeClassName === 'netWork'?'nav_item_active':''"
-                @mouseover="netWorkMouseOver" @mouseleave="netWorkMouseLeave" @click="featureButtonClick('network')">
-            Network
-            <span class="bottom_arrow"></span>
-          </span>
-          <span class="sub_btn_item " style="width: 2rem" v-show="flShowNetwork"><a :href="mainnetHref">Mainnet</a></span>
-          <span class="sub_btn_item " style="width: 2rem" v-show="flShowNetwork"><a :href="testnetHref">FUXI Testnet</a></span>
-          <span class="sub_btn_item " style="width: 2rem" v-show="flShowNetwork"><a style="white-space: nowrap" :href="nyanCatsHref">NYAN_CATS Testnet</a></span>
-        </div>
       </div>
     </div>
-
-    <div class="app_header_mobile" v-show="devicesShow === 0">
-      <div class="feature_btn" @click="showFeature">
-        <img src="../assets/menu.png">
+    <div class="app_header_mobile" v-show="devicesShow === 0" ref="header_content">
+      <div style="display: flex;flex-direction: row-reverse;justify-content: space-between;align-items: center;padding: 0 0.15rem;">
+        <div class="feature_btn" @click="showFeature">
+          <img src="../assets/menu.png">
+        </div>
+        <div class="image_wrap_mobile" @click="featureButtonClick('/home',true)">
+          <img src="../assets/logo.png"/>
+        </div>
       </div>
-      <div class="image_wrap_mobile" @click="featureButtonClick('/home',true)">
-        <img src="../assets/logo.png"/>
-        <span class="mobile_chain_content" v-if="flShowChainId">{{chainId}}</span>
+      <div class="search_input_mobile">
+        <div style="width:100%;display: flex;justify-content: center;">
+          <input type="text" class="search_input"
+                 v-model.trim="searchInputValue"
+                 @keyup.enter="onInputChange"
+                 placeholder="Search by Address / Txhash / Block">
+          <i class="search_icon" @click="getData(searchInputValue)"></i>
+          <i class="clear_icon" @click="clearSearchContent" v-show="showClear"></i>
+        </div>
       </div>
-
-      <div class="use_feature_mobile" v-show="featureShow">
+      <div class="mobile_chain_id_content" v-if="flShowChainId">
+        <span class="mobile_chain_content">{{chainId}}</span>
+      </div>
+      <div class="use_feature_mobile" :style="{'top':absoluteTop}" v-show="featureShow">
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/home')">Home</span>
+        <span class="feature_btn_mobile feature_nav select_option_container" @click="validatorsSelect(flShowValidatorsSelect)">
+         <span>Validators</span>
+          <div :class="flShowValidatorsUpOrDown ? 'upImg_content' : 'downImg_content'">
+            <img :src="flShowValidatorsUpOrDown ? upImg : downImg ">
+          </div>
+        </span>
+        <div class="select_option" v-show="flShowValidatorsSelect">
+          <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/active')">Active</span>
+          <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/jailed')">Jailed</span>
+          <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/candidates')">Candidates</span>
+        </div>
+
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/block/1/0')">Blocks</span>
         <span class="feature_btn_mobile feature_nav select_option_container" @click="transactionsSelect(flShowTransactionsSelect)">
          <span>Transactions</span>
@@ -108,18 +135,6 @@
                 @click="featureButtonClick('/transactions/2/Governance')">Governance</span>
         </div>
 
-        <span class="feature_btn_mobile feature_nav select_option_container" @click="validatorsSelect(flShowValidatorsSelect)">
-         <span>Validators</span>
-          <div :class="flShowValidatorsUpOrDown ? 'upImg_content' : 'downImg_content'">
-            <img :src="flShowValidatorsUpOrDown ? upImg : downImg ">
-          </div>
-        </span>
-        <div class="select_option" v-show="flShowValidatorsSelect">
-          <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/active')">Active</span>
-          <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/jailed')">Jailed</span>
-          <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/candidates')">Candidates</span>
-        </div>
-
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/Proposals')">Proposals</span>
         <span v-if="flShowFaucet" class="feature_btn_mobile feature_nav mobile_faucet_content" @click="featureButtonClick('/faucet')">Faucet</span>
 
@@ -130,21 +145,11 @@
           </div>
         </span>
         <div class="select_option" v-show="flShowNetworkSelect">
-          <span class="feature_btn_mobile feature_nav"><a :href="mainnetHref">Mainnet</a></span>
-          <span class="feature_btn_mobile feature_nav"><a :href="testnetHref">FUXI Testnet</a></span>
-          <span class="feature_btn_mobile feature_nav"><a :href="nyanCatsHref">NYAN_CATS Testnet</a></span>
+          <span class="feature_btn_mobile feature_nav"><a :href="mainnetHref" target="_blank">Mainnet</a></span>
+          <span class="feature_btn_mobile feature_nav"><a :href="testnetHref" target="_blank">FUXI Testnet</a></span>
+          <span class="feature_btn_mobile feature_nav"><a :href="nyanCatsHref" target="_blank">NYAN_CATS Testnet</a></span>
         </div>
 
-      </div>
-      <div class="search_input_mobile">
-        <div style="width:95%;position:relative">
-          <input type="text" class="search_input"
-                 v-model.trim="searchInputValue"
-                 @keyup.enter="onInputChange"
-                 placeholder="Search by Address / Txhash / Block">
-          <i class="search_icon" @click="getData(searchInputValue)"></i>
-          <i class="clear_icon" @click="clearSearchContent" v-show="showClear"></i>
-        </div>
       </div>
     </div>
   </div>
@@ -152,7 +157,8 @@
 <script>
   import Tools from '../util/Tools';
   import Service from "../util/axios";
-  import constant from '../constant/Constant'
+  import constant from '../constant/Constant';
+  import lang from "../lang/index"
   export default {
     name: 'app-header',
     watch:{
@@ -191,9 +197,15 @@
         flShowNetworkSelect:false,
         flShowUpOrDown: false,
         flShowNetwork: false,
-        flShowChainId: true,
+        flShowHeaderNetwork: false,
+        flShowChainId: false,
         flShowValidatorsUpOrDown: false,
         flShowNetworkUpOrDown: false,
+        flShowMainnet:false,
+        flShowTestnet:false,
+        currentSelected:'',
+        absoluteTop:'',
+        lang: lang,
         chainId: '',
         mainnetHref:'',
         testnetHref:'',
@@ -292,12 +304,6 @@
       },
       validatorsMouseLeave(){
         this.showSubValidators = false;
-      },
-      netWorkMouseOver(){
-        this.flShowNetwork = true;
-      },
-      netWorkMouseLeave(){
-        this.flShowNetwork = false;
       },
       searchTx(){
         let uri = `/api/tx/${this.searchInputValue}`;
@@ -426,6 +432,9 @@
         Service.http('/api/config').then(res => {
           this.toggleTestnetLogo(res);
           this.explorerLink(res);
+          this.setCurrentSelectOption(res.cur_env);
+          this.setEnvConfig(res);
+          this.flShowHeaderNetwork = true;
           res.configs.forEach( item => {
             if(res.cur_env === item.env_nm){
               this.chainId = `${item.chain_id.toUpperCase()} ${item.env_nm.toUpperCase()}`
@@ -438,9 +447,17 @@
           })
         });
       },
+      setEnvConfig(currentEnv){
+        if(currentEnv.cur_env !== constant.ENVCONFIG.MAINNET){
+          this.$Crypto.getCrypto(constant.CHAINNAME,constant.ENVCONFIG.TESTNET);
+          this.$store.commit('currentEnv',constant.ENVCONFIG.TESTNET)
+        }
+      },
       toggleTestnetLogo(currentEnv){
         if(currentEnv.cur_env === constant.ENVCONFIG.MAINNET){
-          this.flShowChainId = false
+          this.flShowChainId = false;
+        }else {
+          this.flShowChainId = true;
         }
       },
       explorerLink(envLink){
@@ -453,92 +470,185 @@
            this.nyanCatsHref = item.host
           }
         });
+      },
+      setCurrentSelectOption(currentEnv){
+        if(currentEnv === constant.ENVCONFIG.MAINNET){
+          this.currentSelected = lang.home.mainnet;
+          this.flShowTestnet = true;
+        }else if(currentEnv === constant.ENVCONFIG.TESTNET){
+          this.currentSelected = lang.home.testnet;
+          this.flShowMainnet = true;
+        }else {
+          this.flShowMainnet = false;
+          this.flShowTestnet = true;
+          this.currentSelected = lang.home.mainnet;
+        }
+      },
+      toMainnet(MainnetHref){
+        window.open(MainnetHref)
+      },
+      toTestnet(testnetHref){
+        window.open(testnetHref)
+      },
+      toNyanCats(nyanCatsHref){
+        window.open(nyanCatsHref)
+      },
+      toggleSelectOption(){
+        this.$store.commit('flShowSelectOption',!this.$store.state.flShowSelectOption)
       }
+    },
+    updated(){
+      this.absoluteTop = `${this.$refs.header_content.clientHeight/100}rem`
     }
   }
 </script>
 <style lang="scss">
   @import '../style/mixin.scss';
-
   .person_computer_header_var {
     height: 1.62rem;
+    position: fixed;
+    z-index: 10001;
+    background: rgba(255,255,255,1);
   }
-
-  .mobile_header_var {
-    height: 1.2rem;
-  }
-
   .person_computer_header_var, .mobile_header_var {
     @include flex();
     @include pcContainer;
     .app_header_person_computer {
-      height: 0.96rem;
       @include pcCenter;
       justify-content: space-between;
       padding-top: 0.01rem;
       width: 100%;
       .header_top {
-        @include flex();
+        padding: 0 0.2rem;
+        height: 0.96rem;
+        @include flex;
         justify-content: space-between;
-        .imageWrap{
+        .header_left{
           @include flex;
-          cursor:pointer;
-          margin-top:0.2rem;
-          width: 1.7rem;
-          height: 0.5rem;
-          img{
-            width: 100%;
-          }
-          .chain_content{
-            font-size: 0.18rem;
-            white-space: nowrap;
-            display: flex;
-            height: 0.36rem;
-            margin-top: 0.09rem;
-            line-height: 0.36rem;
-            align-items: center;
-            margin-left: 0.2rem;
-            padding: 0 0.14rem;
-            color: #F2711D;
-            border: 0.01rem solid #FFD3B6;
-            border-radius: 0.04rem;
-            background: #FFF9F5;
-          }
-          .logo_title_wrap{
-            margin-left:0.16rem;
+          .imageWrap{
             @include flex;
-            flex-direction:column;
-            justify-content: center;
-            .logo_title_content{
-              height:0.27rem;
-              line-height:0.27rem;
-              span{
-                &:first-child{
-                  font-size:0.24rem;
-                  color:#005a98;
-                }
-                &:last-child{
-                  font-size:0.24rem;
-                  color:#3598db;
-                }
+            cursor:pointer;
+            margin-top:0.2rem;
+            width: 1.7rem;
+            height: 0.5rem;
+            img{
+              width: 100%;
+            }
+            .chain_content{
+              font-size: 0.18rem;
+              white-space: nowrap;
+              display: flex;
+              height: 0.36rem;
+              margin-top: 0.09rem;
+              line-height: 0.36rem;
+              align-items: center;
+              margin-left: 0.2rem;
+              padding: 0 0.14rem;
+              color: #F2711D;
+              border: 0.01rem solid #FFD3B6;
+              border-radius: 0.04rem;
+              background: #FFF9F5;
+            }
+            .logo_title_wrap{
+              margin-left:0.16rem;
+              @include flex;
+              flex-direction:column;
+              justify-content: center;
+              .logo_title_content{
+                height:0.27rem;
+                line-height:0.27rem;
+                span{
+                  &:first-child{
+                    font-size:0.24rem;
+                    color:#005a98;
+                  }
+                  &:last-child{
+                    font-size:0.24rem;
+                    color:#3598db;
+                  }
 
+                }
+              }
+              p{
+                font-size:0.14rem;
+                height:0.16rem;
+                line-height:0.16rem;
+                margin-top:0.04rem;
+                span{
+                  color:#a2a2ae;
+                }
+              }
+
+            }
+          }
+        }
+        .chain_id_container{
+          display: flex;
+          align-items: center;
+          margin-left: 0.15rem;
+          span{
+            font-size: 0.16rem;
+            height: 0.36rem;
+            line-height: 0.36rem;
+            border-radius: 0.06rem;
+            padding: 0 0.13rem;
+            background: rgba(234, 248, 254, 1);
+            color: rgba(34, 37, 42, 1);
+          }
+        }
+        .network_select_container{
+          display: flex;
+          align-items: center;
+          margin-left: 0.1rem;
+          .network_select_option{
+            height: 0.36rem;
+            position: relative;
+            line-height: 0.36rem;
+            text-align: center;
+            z-index: 1000;
+            border-radius: 0.06rem;
+            border: 0.01rem solid rgba(215, 217, 224, 1);
+            .select_content{
+              width: 1.9rem;
+              cursor: pointer;
+              .current_select_content{
+                color: rgba(53, 152, 219, 1);
+                display: flex;
+                justify-content: space-between;
+                box-sizing: border-box;
+                padding: 0 0.08rem;
+                i{
+                  color: rgba(53, 152, 219, 1);
+                  font-size: 0.16rem;
+                }
+              }
+              .select_option_content{
+                background: rgba(255,255,255,1);
+                color: rgba(102, 102, 102, 1);
+                border-radius: 0.06rem;
+                overflow: hidden;
+                margin-top: 0.04rem;
+                box-shadow:0 0 0.04rem 0 rgba(0,20,33,0.12);
+                user-select: none;
+              }
+              .common_option{
+                padding-left: 0.08rem;
+                text-align: left;
+                &:hover{
+                  color: rgba(53, 152, 219, 1);
+                  background: rgba(234, 248, 254, 1);
+                }
               }
             }
-            p{
-              font-size:0.14rem;
-              height:0.16rem;
-              line-height:0.16rem;
-              margin-top:0.04rem;
-              span{
-                color:#a2a2ae;
-              }
-            }
-
           }
         }
         .navSearch {
+          flex: 1;
+          display: flex;
+          justify-content: flex-end;
           margin-bottom: 0.01rem;
           position: relative;
+          margin-left: 0.2rem;
           input::-webkit-input-placeholder {
             text-align: left;
             font-size: 0.14rem;
@@ -548,7 +658,9 @@
           .search_input {
             @include inputBoxShadow;
             @include borderRadius(0.06rem);
-            width: 5.04rem;
+            flex: 1;
+            width: 100%;
+            max-width: 4.5rem;
             height: 0.36rem;
             text-indent: 0.1rem;
             outline: none;
@@ -604,6 +716,7 @@
       background: #3598db;
       .navButton {
         width: 100%!important;
+        padding: 0 0.2rem;
         height:0.66rem;
         @include pcCenter;
         @include flex;
@@ -615,7 +728,7 @@
         }
         .nav_item {
           display: inline-block;
-          height: 0.66rem;
+          height: 0.65rem;
           line-height: 0.66rem;
           width:1.6rem;
           text-align: center;
@@ -675,17 +788,15 @@
     }
     .app_header_mobile {
       width: 100%;
-      padding: 0.15rem;
+      padding: 0.15rem 0 0 0;
       @include flex();
       flex-direction: column;
-      position: relative;
-      height: 1.8rem;
       border-bottom: 0.01rem solid #cccccc;
+      position: relative;
       .search_input {
         @include inputBoxShadow;
       }
       .feature_btn {
-        position: absolute;
         width: 0.25rem;
         height: 0.25rem;
         top: 0.26rem;
@@ -703,17 +814,6 @@
         img{
           width: 100%;
           height: 100%;
-        }
-        .mobile_chain_content{
-          white-space: nowrap;
-          font-size: 0.16rem;
-          color: #F2711D;
-          line-height: 1;
-          border:0.01rem solid #FFD3B6;
-          padding: 0.07rem 0.13rem;
-          border-radius: 0.04rem;
-          background: #FFF9F5;
-          margin-left: 0.1rem;
         }
         .logo_title_wrap{
           margin-left:0.16rem;
@@ -745,8 +845,7 @@
         }
       }
       .search_input_mobile {
-        width: 100%;
-        margin-top: 0.1rem;
+        margin: 0.1rem 0.15rem;
         @include flex();
         flex-direction: column;
         align-items: center;
@@ -787,15 +886,28 @@
           cursor: pointer;
         }
       }
+      .mobile_chain_id_content{
+        height: 0.3rem;
+        margin:  0 0.15rem;
+        background: rgba(234, 248, 254, 1);
+        display: flex;
+        justify-content: flex-start;
+        line-height: 0.3rem;
+        font-size: 0.14rem;
+        margin-bottom: 0.1rem;
+        border-radius: 0.06rem;
+        .mobile_chain_content{
+          padding-left: 0.1rem;
+        }
+      }
       .use_feature_mobile {
         z-index: 1010;
-        position: absolute;
         width: 100%;
-        top: 1.2rem;
         left: 0;
         background: #3598db;
         @include flex();
         flex-direction: column;
+        position: absolute;
         .select_option {
           display: flex;
           flex-direction: column;

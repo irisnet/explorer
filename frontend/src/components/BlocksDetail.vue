@@ -259,29 +259,29 @@
           clearInterval(this.blockDetailTimer);
           if (data) {
             let denominator = 0;
-            data.Validators.forEach(item => denominator += item.VotingPower);
+            data.validators.forEach(item => denominator += item.voting_power);
             let numerator = 0;
-            for (let i = 0; i < data.Block.LastCommit.Precommits.length; i++) {
-              for (let j = 0; j < data.Validators.length; j++) {
-                if (data.Block.LastCommit.Precommits[i].ValidatorAddress === data.Validators[j].Address) {
-                  numerator += data.Validators[j].VotingPower;
+            for (let i = 0; i < data.last_commit.length; i++) {
+              for (let j = 0; j < data.validators.length; j++) {
+                if (data.last_commit[i] === data.validators[j].address) {
+                  numerator += data.validators[j].voting_power;
                   break;
                 }
               }
             }
             if (data) {
               let that = this;
-              this.transactionsValue = data.NumTxs;
-              this.hashValue = data.Height;
-              this.heightValue = data.Height;
+              this.transactionsValue = data.total_txs;
+              this.hashValue = data.hash;
+              this.heightValue = data.height;
               this.blockDetailTimer = setInterval(function () {
                 let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-                that.ageValue = Tools.formatAge(currentServerTime,data.Time,Constant.SUFFIX);
+                that.ageValue = Tools.formatAge(currentServerTime,data.time,Constant.SUFFIX);
               },1000);
-              this.timestampValue = Tools.format2UTC(data.Time);
-              this.blockHashValue = data.Hash;
-              this.lastBlockHashValue = data.Block.LastCommit.BlockID.Hash;
-              this.precommitValidatorsValue = data.Validators.length !== 0 ? `${data.Block.LastCommit.Precommits.length}/${data.Validators.length}` : '';
+              this.timestampValue = Tools.format2UTC(data.time);
+              this.blockHashValue = data.hash;
+              this.lastBlockHashValue = data.last_block_hash;
+              this.precommitValidatorsValue = data.validators.length !== 0 ? `${data.last_commit.length}/${data.validators.length}` : '';
               this.votingPowerValue = denominator !== 0 ? `${numerator / denominator * 100}%` : '';
             }
           } else {
@@ -329,7 +329,7 @@
         }).then((data) => {
           if (data && typeof data === "object") {
             if(data.Data && data.Data.length !==0){
-              this.maxBlock = data.Data[0].Height;
+              this.maxBlock = data.Data[0].height;
             }
             if (Number(this.$route.params.height) >= this.maxBlock) {
               this.activeNext = false;
