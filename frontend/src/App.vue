@@ -1,7 +1,7 @@
 <template>
-  <div id="app">
+  <div id="app" @click.stop="closeSelectOption">
     <app-header v-show="flShowHeader"></app-header>
-    <div id="router_wrap">
+    <div id="router_wrap" :style="{'padding-top': $store.state.isMobile ? '' :`${headerHeightStyle}`}">
       <div class="qr_code"
            @click="hideQRCode"
            :style="`width:${vw}px;height:${vh}px`" v-show="weChatQRShow">
@@ -97,6 +97,7 @@
         innerWidth: window.innerWidth,
         scrollHeight:0,
         flShowHeader : true,
+        headerHeightStyle:''
       }
     },
     beforeMount() {
@@ -167,7 +168,13 @@
       hideQRCode() {
         this.weChatQRShow = false;
         this.qqQRShow =  false;
+      },
+      closeSelectOption(){
+        this.$store.commit('flShowSelectOption',false)
       }
+    },
+    updated () {
+      this.headerHeightStyle = `${document.getElementById('header').clientHeight/100}rem`
     }
   }
 </script>
@@ -186,7 +193,6 @@
   body {
     font-size: 16px !important;
     font-family:Arial !important;
-    overflow-y: scroll;
     position: relative;
   }
 
@@ -216,7 +222,7 @@
         top: 0;
         left: 0;
         background: rgba(0, 0, 0, .6);
-        z-index: 1000;
+        z-index: 10002;
         @include flex;
         justify-content: center;
         align-items: center;

@@ -144,24 +144,24 @@
             this.timer = setInterval(function () {
               that.count = data.Count;
               that.items = data.Data.map(item => {
-                let txn = item.NumTxs;
-                let precommit = item.Block.LastCommit.Precommits.length;
+                let txn = item.total_txs;
+                let precommit = item.last_commit.length;
                 let [votingPower,denominator,numerator] = [0,0,0];
-                item.Validators.forEach(listItem=>votingPower += listItem.VotingPower);
-                item.Validators.forEach(item=>denominator += item.VotingPower);
-                for(let i = 0; i < item.Block.LastCommit.Precommits.length; i++){
-                  for (let j = 0; j < item.Validators.length; j++){
-                    if(item.Block.LastCommit.Precommits[i].ValidatorAddress === item.Validators[j].Address){
-                      numerator += item.Validators[j].VotingPower;
+                item.validators.forEach(listItem=>votingPower += listItem.voting_power);
+                item.validators.forEach(item=>denominator += item.voting_power);
+                for(let i = 0; i < item.last_commit.length; i++){
+                  for (let j = 0; j < item.validators.length; j++){
+                    if(item.last_commit[i].ValidatorAddress === item.validators[j].Address){
+                      numerator += item.validators[j].voting_power;
                       break;
                     }
                   }
                 }
                 let currentServerTime = new Date().getTime() + that.diffMilliseconds;
                 return {
-                  Height: item.Height,
+                  Height: item.height,
                   Txn:txn,
-                  Age: Tools.formatAge(currentServerTime,item.Time,Constant.SUFFIX,Constant.PREFIX),
+                  Age: Tools.formatAge(currentServerTime,item.time,Constant.SUFFIX,Constant.PREFIX),
                   'Precommit Validators':precommit,
                   'Voting Power': denominator !== 0? `${(numerator/denominator).toFixed(2)*100}%`:'',
                 };

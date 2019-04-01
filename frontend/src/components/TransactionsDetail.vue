@@ -238,10 +238,12 @@
             clearInterval(this.transactionDetailTimer);
             if(data){
               let that = this;
+              let currentServerTime = new Date().getTime() + that.diffMilliseconds;
               this.transactionDetailTimer = setInterval(function () {
-                let currentServerTime = new Date().getTime() + that.diffMilliseconds;
+                currentServerTime = new Date().getTime() + that.diffMilliseconds;
                 that.ageValue = Tools.formatAge(currentServerTime,data.Timestamp,Constant.SUFFIX);
               },1000);
+              this.ageValue = Tools.formatAge(currentServerTime,data.Timestamp,Constant.SUFFIX);
               this.timestampValue = Tools.format2UTC(data.Timestamp);
               this.hashValue = data.Hash;
               this.blockValue = data.BlockHeight;
