@@ -222,7 +222,7 @@
         top: 0;
         left: 0;
         background: rgba(0, 0, 0, .6);
-        z-index: 1000;
+        z-index: 10002;
         @include flex;
         justify-content: center;
         align-items: center;

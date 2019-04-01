@@ -507,7 +507,7 @@
   .person_computer_header_var {
     height: 1.62rem;
     position: fixed;
-    z-index: 10000000;
+    z-index: 10001;
     background: rgba(255,255,255,1);
   }
   .person_computer_header_var, .mobile_header_var {
@@ -970,10 +970,5 @@
         width: 100%;
       }
     }
-  }
-  #header{
-    position: fixed;
-    z-index: 10000000;
-    background: rgba(255,255,255,1);
   }
 </style>

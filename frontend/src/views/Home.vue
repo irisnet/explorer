@@ -225,12 +225,12 @@ import Constant from "../constant/Constant";
             let maxValue = 0;
             if(data){
               data.forEach(item=>{
-                if(item.Count > maxValue){
-                  maxValue = item.Count;
+                if(item.num > maxValue){
+                  maxValue = item.num;
                 }
               });
-              let xData = data.map(item=>`${String(item.Time).substr(5,2)}/${String(item.Time).substr(8,2)}/${String(item.Time).substr(0,4)}`);
-              let seriesData = data.map(item=>item.Count);
+              let xData = data.map(item=>`${String(item.date).substr(5,2)}/${String(item.date).substr(8,2)}/${String(item.date).substr(0,4)}`);
+              let seriesData = data.map(item=>item.num);
               this.informationLine = {maxValue,xData,seriesData};
             }
           }).catch(e => {
@@ -251,7 +251,7 @@ import Constant from "../constant/Constant";
           let url = `/api/blocks/recent`;
           Service.http(url).then((blockList) => {
             if(blockList){
-              let denominator = 0,lastBlock = {};
+              let denominator = 0;
               blockList[0].validators.forEach(item=>denominator += item.voting_power);
               let numerator = 0;
               for(let i = 0; i < blockList[0].last_commit.length; i++){
@@ -265,13 +265,13 @@ import Constant from "../constant/Constant";
               this.showBlockFadeinAnimation(blockList);
               let that = this;
                 let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-                localStorage.setItem("lastBlockHeight",blockList.Data[0].Height);
-                this.blocksInformation = blockList.Data.map(item => {
+                localStorage.setItem("lastBlockHeight",blockList[0].height);
+                this.blocksInformation = blockList.map(item => {
                   return {
                     showAnimation: item.showAnimation ? item.showAnimation : "",
                     Height: item.height,
                     Proposer: item.hash,
-                    Txn: item.num_txs,
+                    Txn: item.total_txs,
                     Time: Tools.format2UTC(item.time),
                     Fee: '0 IRIS',
                     time:item.time,
@@ -279,7 +279,6 @@ import Constant from "../constant/Constant";
                   };
                 });
               this.blocksTimer = setInterval(function () {
-                that.transactionValue = that.handelTotalTxs(blockList[0].total_txs);
                 let currentServerTime = new Date().getTime() + that.diffMilliseconds;
                 that.lastBlockAge = Tools.formatAge(currentServerTime,blockList[0].time);
                 that.blocksInformation = that.blocksInformation.map(item => {
@@ -292,9 +291,6 @@ import Constant from "../constant/Constant";
             console.log(e)
           })
         },
-        skipValidators(){
-          this.$router.push('/validators/3/active');
-        },
         getTransactionList() {
           let url = `/api/txs/recent`;
           Service.http(url).then((transactionList) => {
@@ -306,52 +302,29 @@ import Constant from "../constant/Constant";
                 }
               }
               let lastTxTime = new Date(transactionList[0].time).getTime();
-              clearInterval(this.transfersTimer);
-              this.transfersTimer = setInterval(function () {
                 localStorage.setItem('lastTxTime',lastTxTime);
                 let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-                that.transactionInformation = transactionList.Data.map(item => {
-                  let [Amount, Fee] = ['--', '--'];
-                  if(item.Amount){
-                    if (item.Amount instanceof Array) {
-                      if(item.Amount.length > 0){
-                        item.Amount[0].amount = Tools.formatAmount(item.Amount[0].amount);
-                        if(!item.Amount[0].denom){
-                          Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
-                        }else {
-                          Amount = item.Amount.map(listItem => `${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
-                        }
-                      }
-                    } else if (item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')) {
-                      if(!item.Amount.denom){
-                        Amount = `${item.Amount.amount} SHARES`;
-                      }else {
-                        Amount = `${item.Amount.amount} ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
-                      }
-                    }
-                  }else {
-                    Amount = '';
-                  }
-                  if(item.ActualFee.amount && item.ActualFee.denom){
-                    Fee =  `${Tools.formatFeeToFixedNumber(item.ActualFee.amount)} ${Tools.formatDenom(item.ActualFee.denom).toUpperCase()}`;
+                that.transactionInformation = transactionList.map(item => {
+                  let [Fee] = ['--'];
+                  if(item.actual_fee.amount && item.actual_fee.denom){
+                    Fee =  `${Tools.formatFeeToFixedNumber(item.actual_fee.amount)} ${Tools.formatDenom(item.actual_fee.denom).toUpperCase()}`;
                   }
                   let currentServerTime = new Date().getTime() + that.diffMilliseconds;
                   return {
                     showAnimation: item.showAnimation ? item.showAnimation : '',
-                    TxHash: item.TxHash,
-                    From: item.From,
-                    To: item.To,
-                    Type: item.Type === 'coin'?'transfer':item.Type,
+                    TxHash: item.tx_hash,
+                    From: item.from,
+                    To: item.to,
+                    Type: item.type === 'coin'?'transfer':item.type,
                     Fee,
-                    Amount,
-                    Time: Tools.format2UTC(item.Time),
-                    age: Tools.formatAge(currentServerTime,item.Time,Constant.SUFFIX,Constant.PREFIX)
+                    Time: item.time,
+                    age: Tools.formatAge(currentServerTime,item.time,Constant.SUFFIX,Constant.PREFIX)
                   };
                 })
             clearInterval(this.transfersTimer);
                 this.transfersTimer = setInterval(function () {
                   that.transactionInformation.map(item => {
-                  lastTxTime = new Date(transactionList.Data[0].Time).getTime();
+                  lastTxTime = new Date(transactionList[0].time).getTime();
                   item.age = Tools.formatAge(currentServerTime,item.Time,Constant.SUFFIX,Constant.PREFIX);
                   return item
                 })
