@@ -11,7 +11,9 @@
               <span class="item_name">{{lang.home.blockHeight}}</span>
             </div>
             <p class="current_block">{{currentBlockHeight}}</p>
-            <p class="block_time">{{blockTime}}</p>
+            <p class="block_time proposer_container">
+              <span class="proposer_content" @click="toAddressDetail(proposerAddress)">{{moniker}}</span>
+            </p>
           </li>
           <li class="item_status">
             <div class="img_container">
@@ -21,7 +23,7 @@
               <span class="item_name">{{lang.home.transactions}}</span>
             </div>
             <p class="current_block">{{transactionValue}}</p>
-            <p class="block_time">{{ageTime}}</p>
+            <p class="block_time">{{blockTime}}</p>
           </li>
           <li class="item_status">
             <div class="img_container">
@@ -116,6 +118,8 @@ import Constant from "../constant/Constant";
                   timer: null,
                   lang:lang,
                   isMobile: false,
+                  moniker:'',
+                  proposerAddress:"",
               }
           },
 
@@ -341,6 +345,9 @@ import Constant from "../constant/Constant";
       getNavigation(){
         let url = `/api/home/navigation`;
         Service.http(url).then(res => {
+          let reservedStringLength = 12;
+          this.moniker = Tools.formatString(res.moniker,reservedStringLength,'...');
+          this.proposerAddress = res.operator_addr;
           this.diffSeconds = Number(res.avg_block_time);
           this.currentBlockHeight = res.block_height;
           this.transactionValue = this.formatTransactions(res.total_txs);
@@ -350,14 +357,6 @@ import Constant from "../constant/Constant";
           this.validatorValue = `${res.vote_val_num} / ${res.active_val_num} Validators`;
           this.bondedRatio = `${(res.bonded_ratio * 100).toFixed(2)} %`;
           this.blockTime = Tools.format2UTC(res.block_time);
-          let that = this;
-          let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-          this.ageTime = Tools.formatAge(currentServerTime,res.block_time,Tools.firstWordUpperCase(Constant.SUFFIX));
-          clearInterval(this.latestBlockTimer);
-          this.latestBlockTimer = setInterval(function () {
-            currentServerTime = new Date().getTime() + that.diffMilliseconds;
-            that.ageTime = Tools.formatAge(currentServerTime,res.block_time,Tools.firstWordUpperCase(Constant.SUFFIX));
-          },1000)
         })
       },
       formatTransactions(totalTxs){
@@ -381,6 +380,9 @@ import Constant from "../constant/Constant";
           tokens = `${Number(bondedTokens).toFixed(2)}`;
         }
         return tokens
+      },
+      toAddressDetail(address){
+        this.$router.push(`/address/1/${address}`)
       }
     },
       destroyed () {
@@ -611,5 +613,9 @@ import Constant from "../constant/Constant";
   }
   .latest_block_content:hover{
     cursor: pointer;
+  }
+  .proposer_content{
+    cursor: pointer;
+    color:#3598db;
   }
 </style>
