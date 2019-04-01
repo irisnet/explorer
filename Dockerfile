@@ -5,7 +5,7 @@ RUN npm i yarn -g
 RUN apk add --no-cache git
 COPY ./frontend/ /app
 
-RUN rm -rf ./node_modules && yarn install && yarn dev && yarn build
+RUN yarn install && yarn dev && yarn build
 
 FROM golang:1.10.3-alpine3.7 as go-builder
 ENV GOPATH       /root/go
