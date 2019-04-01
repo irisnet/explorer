@@ -60,7 +60,7 @@
           <span class="information_value" v-show="!operatorValue">--</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Commission Rate :</span>
+          <span class="information_props">Comission Rate :</span>
           <span class="information_value">{{rateValue}}</span>
         </div>
 
@@ -201,6 +201,8 @@
               this.getValidatorHistory('14days');
               this.getValidatorUptimeHistory('24hours');
           },
+
+
       },
       data() {
 
@@ -326,23 +328,14 @@
     },
     mounted() {
       Tools.scrollToTop();
-      if(this.$route.params.param.substring(0,3) === this.$Crypto.config.iris.bech32.valAddr){
-        this.tabTxList(this.tabTxListIndex,this.txTabName,this.currentPage,this.pageSize);
-        this.getAddressInformation(this.$route.params.param);
-        this.getTransactionsList(1,10,this.$route.params.type);
-        this.getProfileInformation();
-        this.getCurrentTenureInformation();
-        this.getValidatorHistory('14days');
-        this.getValidatorUptimeHistory('24hours');
-        this.getAddressTxStatistics();
-      }else {
-        this.tabTxList(this.tabTxListIndex,this.txTabName,this.currentPage,this.pageSize);
-        this.getAddressInformation(this.$route.params.param);
-        this.getTransactionsList(1,10,this.$route.params.type);
-        this.getProfileInformation();
-        this.getAddressTxStatistics();
-      }
-
+      this.tabTxList(this.tabTxListIndex,this.txTabName,this.currentPage,this.pageSize);
+      this.getAddressInformation(this.$route.params.param);
+      this.getTransactionsList(1,10,this.$route.params.type);
+      this.getProfileInformation();
+      this.getCurrentTenureInformation();
+      this.getValidatorHistory('14days');
+      this.getValidatorUptimeHistory('24hours');
+      this.getAddressTxStatistics();
     },
     methods: {
       getAddressTxStatistics(){
@@ -459,7 +452,7 @@
             this.descriptionValue= validator.description && validator.description.details ? validator.description.details : "--";
             this.commissionRateValue = '';
             this.announcementValue = '';
-            this.operatorValue = validator.owner;
+            this.operatorValue = this.$Codec.Bech32.toBech32(this.$Crypto.config.iris.bech32.accAddr,this.$Codec.Bech32.fromBech32(validator.address));
           }else{
             this.flValidator = false;
             this.flActiveValidator = false;

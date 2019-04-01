@@ -447,12 +447,6 @@
           })
         });
       },
-      setEnvConfig(currentEnv){
-        if(currentEnv.cur_env !== constant.ENVCONFIG.MAINNET){
-          this.$Crypto.getCrypto(constant.CHAINNAME,constant.ENVCONFIG.TESTNET);
-          this.$store.commit('currentEnv',constant.ENVCONFIG.TESTNET)
-        }
-      },
       toggleTestnetLogo(currentEnv){
         if(currentEnv.cur_env === constant.ENVCONFIG.MAINNET){
           this.flShowChainId = false;

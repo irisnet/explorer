@@ -142,7 +142,6 @@ import Constant from "../constant/Constant";
               },5000)
               window.addEventListener('resize',this.onresize);
               if (window.innerWidth > 910) {
-                  this.$store.commit('isMobile',this.isMobile)
                   this.pageClassName = 'personal_computer_home_wrap';
                   this.module_item_wrap = 'module_item_wrap_computer';
                   if(document.getElementsByClassName('fixed_item_height').length > 0){
@@ -150,7 +149,6 @@ import Constant from "../constant/Constant";
                       document.getElementsByClassName('fixed_item_height')[1].style.height = '6.55rem';
                   }
               } else {
-                  this.$store.commit('isMobile',!this.isMobile);
                   this.pageClassName = 'mobile_home_wrap';
                   this.module_item_wrap = 'module_item_wrap_mobile';
               }
