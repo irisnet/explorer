@@ -23,60 +23,9 @@ func (service *CandidateService) GetModule() Module {
 	return Candidate
 }
 
-func (service *CandidateService) QueryValidators(page, pageSize int) model.ValDetailVo {
-	var candidates []document.Candidate
-	var query = orm.NewQuery()
-	defer query.Release()
-
-	condition := bson.M{}
-	condition[document.Candidate_Field_Jailed] = false
-	condition[document.Candidate_Field_Status] = types.TypeValStatusBonded
-
-	query.SetCollection(document.CollectionNmStakeRoleCandidate).
-		SetCondition(condition).
-		SetSort(desc(document.Candidate_Field_VotingPower)).
-		SetPage(page).
-		SetSize(pageSize).
-		SetResult(&candidates)
-	count, err := query.ExecPage()
-
-	if err != nil {
-		panic(types.CodeNotFound)
-	}
-
-	var voteCount model.CountVo
-	query.SetResult(&voteCount)
-	var pipeline = []bson.M{
-		{"$match": condition},
-		{"$group": bson.M{
-			"_id":   document.Candidate_Field_VotingPower,
-			"count": bson.M{"$sum": "$tokens"},
-		}},
-	}
-
-	if err = query.PipeQuery(pipeline); err != nil {
-		panic(types.CodeNotFound)
-	}
-
-	var upTimeMap = getValUpTime(query)
-	var validators []model.Validator
-	for _, candidate := range candidates {
-		validator := service.convert(query.GetDb(), candidate)
-		validator.Uptime = upTimeMap[candidate.PubKeyAddr]
-		validators = append(validators, validator)
-	}
-
-	power := strconv.FormatFloat(voteCount.Count, 'f', 10, 64)
-	resp := model.ValDetailVo{
-		Count:      count,
-		PowerAll:   getVotingPowerFromToken(power),
-		Validators: validators,
-	}
-	return resp
-}
-
-func (service *CandidateService) GetValidators(page, size int) []lcd.ValidatorVo {
+func (service *CandidateService) GetValidators(typ string, page, size int) []lcd.ValidatorVo {
 	var validators = lcd.Validators(page, size)
+	var result []lcd.ValidatorVo
 	var query = orm.NewQuery()
 	defer query.Release()
 	var blackList = service.QueryBlackList(query.GetDb())
@@ -87,8 +36,30 @@ func (service *CandidateService) GetValidators(page, size int) []lcd.ValidatorVo
 			validators[i].Description.Website = desc.Website
 			validators[i].Description.Details = desc.Details
 		}
+
+		status := BondStatusToString(v.Status)
+		switch typ {
+		case types.RoleValidator:
+			if status == types.TypeValStatusBonded && !v.Jailed {
+				result = append(result, validators[i])
+			}
+			break
+		case types.RoleCandidate:
+			if (status == types.TypeValStatusUnbonding || status == types.TypeValStatusUnbonded) && !v.Jailed {
+				result = append(result, validators[i])
+			}
+			break
+		case types.RoleJailed:
+			if v.Jailed {
+				result = append(result, validators[i])
+			}
+			break
+		default:
+			result = append(result, validators[i])
+		}
+
 	}
-	return validators
+	return result
 }
 
 func (service *CandidateService) GetValidator(address string) lcd.ValidatorVo {
@@ -106,88 +77,6 @@ func (service *CandidateService) GetValidator(address string) lcd.ValidatorVo {
 		validator.Description.Details = desc.Details
 	}
 	return validator
-}
-
-func (service *CandidateService) QueryRevokedValidator(page, size int) model.ValDetailVo {
-	var candidates []document.Candidate
-	var query = orm.NewQuery()
-	defer query.Release()
-	query.Reset().
-		SetCollection(document.CollectionNmStakeRoleCandidate).
-		SetCondition(bson.M{document.Candidate_Field_Jailed: true}).
-		SetPage(page).
-		SetSize(size).
-		SetSort(desc(document.Candidate_Field_VotingPower)).
-		SetResult(&candidates)
-
-	count, err := query.ExecPage()
-	if err != nil {
-		logger.Info("QueryRevokedValidator error", logger.String("err", err.Error()))
-	}
-
-	var validators []model.Validator
-	for _, ca := range candidates {
-		validators = append(validators, service.convert(query.GetDb(), ca))
-	}
-
-	resp := model.ValDetailVo{
-		Count:      count,
-		Validators: validators,
-	}
-	return resp
-}
-
-func (service *CandidateService) QueryCandidates(page, size int) model.ValDetailVo {
-	var candidates []document.Candidate
-	var query = orm.NewQuery()
-	defer query.Release()
-
-	var condition = bson.M{}
-	condition[document.Candidate_Field_Jailed] = false
-	condition[document.Candidate_Field_Status] = bson.M{
-		"$in": []string{types.TypeValStatusUnbonded, types.TypeValStatusUnbonding},
-	}
-
-	query.Reset().
-		SetCollection(document.CollectionNmStakeRoleCandidate).
-		SetCondition(condition).
-		SetPage(page).
-		SetSize(size).
-		SetSort(desc(document.Candidate_Field_VotingPower)).
-		SetResult(&candidates)
-
-	count, err := query.ExecPage()
-	if err != nil {
-		logger.Info("QueryRevokedValidator error", logger.String("err", err.Error()))
-	}
-
-	var validators []model.Validator
-	var resp model.ValDetailVo
-	if len(candidates) > 0 {
-		var tx document.CommonTx
-		var condition = bson.M{}
-		var selector = bson.M{"height": 1}
-		condition[document.Tx_Field_Type] = types.TypeCreateValidator
-		query.Reset().
-			SetCollection(document.CollectionNmCommonTx).
-			SetSelector(selector).
-			SetSort(desc(document.Tx_Field_Height)).
-			SetResult(&tx)
-		for _, ca := range candidates {
-			condition[document.Tx_Field_From] = ca.Address
-			query.SetCondition(condition)
-			if err := query.Exec(); err == nil {
-				ca.BondHeight = tx.Height
-			}
-			validators = append(validators, service.convert(query.GetDb(), ca))
-		}
-
-		resp = model.ValDetailVo{
-			Count:      count,
-			Validators: validators,
-		}
-	}
-	return resp
 }
 
 func (service *CandidateService) QueryValidatorByConAddr(address string) document.Candidate {
