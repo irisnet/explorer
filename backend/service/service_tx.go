@@ -185,7 +185,7 @@ func (service *TxService) QueryTxNumGroupByDay() []model.TxNumGroupByDayVo {
 	q := orm.NewQuery()
 	q.SetCollection(document.CollectionTxNumStat)
 	q.SetCondition(query)
-	q.SetSelector(selector)
+	q.SetSelector(selector).SetSort("date")
 	q.SetResult(&txNumStatList)
 
 	defer q.Release()
