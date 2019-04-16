@@ -39,19 +39,10 @@
         <span class="nav_item common_item_style" :class="activeClassName === '/home'?'nav_item_active':''"
               @click="featureButtonClick('/home')"
         >Home</span>
-        <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === '/validators'?'nav_item_active':''"
-             @mouseover="validatorsMouseOver" @mouseleave="validatorsMouseLeave">
-          <span class="nav_item common_item_style">
+        <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === '/validators'?'nav_item_active':''">
+          <span class="nav_item common_item_style" @click="featureButtonClick('/validators/3/active')">
             Validators
-            <span class="bottom_arrow"></span>
           </span>
-          <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/active')"
-                v-show="showSubValidators">Active</span>
-          <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/jailed')"
-                v-show="showSubValidators">Jailed</span>
-          <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/candidates')"
-                v-show="showSubValidators">Candidates</span>
-
         </div>
         <span class="nav_item common_item_style" :class="activeClassName === '/block'?'nav_item_active':''"
               @click="featureButtonClick('/block/1/0')"
@@ -104,18 +95,9 @@
       </div>
       <div class="use_feature_mobile" :style="{'top':absoluteTop}" v-show="featureShow">
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/home')">Home</span>
-        <span class="feature_btn_mobile feature_nav select_option_container" @click="validatorsSelect(flShowValidatorsSelect)">
+        <span class="feature_btn_mobile feature_nav select_option_container" @click="featureButtonClick('/validators/3/active')">
          <span>Validators</span>
-          <div :class="flShowValidatorsUpOrDown ? 'upImg_content' : 'downImg_content'">
-            <img :src="flShowValidatorsUpOrDown ? upImg : downImg ">
-          </div>
         </span>
-        <div class="select_option" v-show="flShowValidatorsSelect">
-          <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/active')">Active</span>
-          <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/jailed')">Jailed</span>
-          <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/candidates')">Candidates</span>
-        </div>
-
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/block/1/0')">Blocks</span>
         <span class="feature_btn_mobile feature_nav select_option_container" @click="transactionsSelect(flShowTransactionsSelect)">
          <span>Transactions</span>
@@ -292,18 +274,17 @@
         if(path !== 'network'){
           this.$router.push(path);
         }
+        if(path.includes('/validators/3')){
+          this.$store.commit('flShowValidatorStatus',true)
+        }else {
+          this.$store.commit('flShowValidatorStatus',false)
+        }
       },
       transactionMouseOver(){
         this.showSubTransaction = true;
       },
       transactionMouseLeave(){
         this.showSubTransaction = false;
-      },
-      validatorsMouseOver(){
-        this.showSubValidators = true;
-      },
-      validatorsMouseLeave(){
-        this.showSubValidators = false;
       },
       searchTx(){
         let uri = `/api/tx/${this.searchInputValue}`;

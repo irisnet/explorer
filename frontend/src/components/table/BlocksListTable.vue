@@ -3,7 +3,7 @@
        class="table_wrap"
        :style="`${minWidth?(`min-width:${minWidth}rem`):''}`">
 
-    <b-table :fields='fields' :items='items' striped v-if="type === '1'">
+    <b-table :fields='blockFields' :items='items' striped v-if="type === '1'">
       <template slot='Height' slot-scope='data'>
         <span class="skip_route" @click="skipRoute(`/blocks_detail/${data.item.Height}`)">
           {{data.item.Height}}
@@ -56,15 +56,31 @@
       </template>
     </b-table>
 
-    <b-table :fields='fields' :items='items' striped v-if="type === '3' || type === '4'" class="show_trim">
-      <template slot='Address' slot-scope='data'>
-        <span class="skip_route" @click="skipRoute(`/address/1/${data.item.Address}`)">
-          <span class="remove_default_style">{{data.item.Address?`${String(data.item.Address).substr(0,16)}...`:''}}</span>
+    <b-table :fields='status === "active" ? validatorFields : fields' :status="status" :items='items' striped v-if="type === '3' || type === '4'" class="show_trim">
+      //TODO(ZHANGJINBIAO) 路由设计不合理，下个迭代会更改不合理的路由。
+      <template slot="index" slot-scope="data" small>
+          {{data.index + 1}}
+      </template>
+      <template slot='moniker' slot-scope='data'>
+        <span class="skip_route" style="display: flex" @click="skipRoute(`/address/1/${data.item.operatorAddress}`)">
+          <div style="width: 0.3rem;height: 0.3rem;" v-if="data.item.url">
+            <img style="width: 100%;" :src="data.item.url ? data.item.url : ''">
+          </div>
+          <div class="name_address" style="margin-left:0.2rem;">
+            <span class="remove_default_style">
+              <router-link :to="`/address/1/${data.item.operatorAddress}`" class="link_style">{{data.item.moniker}}</router-link>
+            </span>
+          </div>
         </span>
       </template>
-      <template slot='Name' slot-scope='data'>
-        <span>
-          <pre class="pre_global_style">{{data.item['Name']}}</pre>
+      <template slot='operatorAddress' slot-scope='data'>
+        <span class="skip_route" style="display: flex" v-if="data.item.operatorAddress">
+          <div class="name_address">
+            <span class="remove_default_style">
+              <router-link :to="`/address/1/${data.item.operatorAddress}`" class="link_style">{{formatAddress(data.item.operatorAddress)}}</router-link>
+            </span>
+            <span class="address">{{data.item.operatorAddress}}</span>
+          </div>
         </span>
       </template>
     </b-table>
@@ -220,22 +236,106 @@
     data() {
       return {
         fields: [],
+        validatorFields:
+          {
+          // index:{
+          //   label:'Moniker',
+          // },
+          moniker:{
+            label:'Moniker',
+            sortable:true,
+          },
+          operatorAddress:{
+            label:'Operator_Address',
+            sortable:false,
+          },
+          commission:{
+            label:'Commission',
+            sortable:true,
+          },
+          'bondedToken':{
+            label:'Bonded Tokens',
+            sortable:true,
+          },
+          'votingPower':{
+            label:'Voting Power',
+            sortable:true,
+          },
+          'uptime':{
+            label:'Uptime',
+            sortable:true,
+          },
+          'selfBond':{
+            label:'Self Bonded',
+            sortable:true,
+          },
+          'delegatorNum':{
+            label:'Delegator Number',
+            sortable:true,
+          },
+          'bondHeight':{
+            label:'Bond Height',
+            sortable:false,
+          },
+        },
+        blockFields:['Height','Txn','Age','Precommit Validators','Voting Power']
       }
     },
 
-    props: ['items', 'type','showNoData','minWidth'],
+    props: ['items', 'type','showNoData','minWidth','status'],
     methods: {
       skipRoute(path) {
         if(path !== "") {
           this.$router.push(path);
           Tools.scrollToTop()
         }
+      },
+      formatAddress(address){
+        return Tools.formatValidatorAddress(address)
       }
     }
   }
 </script>
 <style lang="scss">
   @import '../../style/mixin.scss';
+  .name_address{
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    .address{
+      display: none;
+      position: absolute;
+      left: -0.95rem;
+      top: -0.35rem;
+      color: #3598db;
+      background: rgba(0,0,0,0.8);
+      border-radius:0.04rem;
+      z-index: 10;
+    }
+    &:hover{
+      .address{
+        background: rgba(0,0,0,1);
+        color: #fff;
+        padding: 0.06rem 0.15rem 0 0.15rem;
+        display: block;
+        border-radius:0.04rem;
+        font-size: 0.14rem;
+        &::after{
+          content: '';
+          display: block;
+          background: rgba(0,0,0,1);
+          transform: rotate(45deg);
+          width: 0;
+          height: 0;
+          border: 0.04rem solid transparent;
+          position: relative;
+          top: 0.03rem;
+          z-index: 1;
+          left: 1.45rem;
+        }
+      }
+    }
+  }
   //重置bootstrap-vue的表格样式
   table {
     td {
@@ -259,7 +359,6 @@
     color:#3598db !important;
   }
   .active{
-
     .page-link{
       background-color: #3598db !important;
       border-color:#3598db !important;
@@ -304,11 +403,6 @@
         }
         &:last-child{
           border-bottom:1px solid #dee2e6;
-        }
-        td{
-          &:first-child{
-            padding-left:0.2rem !important;
-          }
         }
       }
     }
@@ -360,6 +454,18 @@
   .show_trim td span{
     white-space: pre;
   }
+  .show_trim thead tr th{
+    outline: transparent;
+    &::after{
+      margin-bottom: 0.07rem;
+    }
+  }
+  .show_trim thead tr th:nth-child(1){
+    text-align: center;
+  }
+  .show_trim tbody tr td:nth-child(1){
+    padding: 0.075rem !important;
+  }
   .block_style thead tr th:nth-child(1){
     width: 16%;
   }
@@ -384,5 +490,8 @@
   pre{
     font-family: Arial !important;
     margin: 0;
+  }
+  .link_style{
+    color: #3598db !important;
   }
 </style>
