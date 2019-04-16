@@ -6,7 +6,7 @@ const store = new Vuex.Store({
     flShowSelectOption: false,
     currentEnv:'',
     isMobile:false,
-    tabIndex:0,
+    validatorTabIndex:0,
     flShowValidatorStatus: false
   },
   mutations:{
@@ -19,8 +19,8 @@ const store = new Vuex.Store({
     isMobile(state,data){
       state.isMobile = data
     },
-    tabIndex(state,data){
-      state.tabIndex = data
+    validatorTabIndex(state,data){
+      state.validatorTabIndex = data
     },
     flShowValidatorStatus(state,data){
       state.flShowValidatorStatus = data
