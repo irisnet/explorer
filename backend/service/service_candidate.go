@@ -603,12 +603,14 @@ func updateValidators(vs []document.Validator) error {
 	return orm.Batch(txs)
 }
 
-func buildValidators() (result []document.Validator) {
+func buildValidators() []document.Validator {
+
 	res := lcd.Validators(1, 100)
 	if res2 := lcd.Validators(2, 100); len(res2) > 0 {
 		res = append(res, res2...)
 	}
 
+	var result []document.Validator
 	height := utils.ParseIntWithDefault(lcd.BlockLatest().BlockMeta.Header.Height, 0)
 
 	var buildValidator = func(v lcd.ValidatorVo) (document.Validator, error) {
