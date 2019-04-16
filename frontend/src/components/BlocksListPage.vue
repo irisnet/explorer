@@ -1,35 +1,36 @@
 <template>
   <div class="blocks_list_page_wrap">
     <div class="blocks_list_title_wrap">
-      <p :class="blocksListPageWrap" style="margin-bottom:0;">
-        <span class="blocks_list_title">{{listTitleName}}</span>
+      <div :class="blocksListPageWrap" style="margin-bottom:0;">
+        <span class="blocks_list_title" v-show="!$store.state.flShowValidatorStatus">{{listTitleName}}</span>
         <!--<span class="blocks_list_page_wrap_hash_var">{{blocksValue}}</span>-->
-
         <span class="blocks_list_page_wrap_hash_var for_block"
               v-show="$route.query.block || $route.query.address">
           {{blockVar}}
         </span>
-      </p>
+        <div class="validators_status_tab" v-show="$store.state.flShowValidatorStatus">
+          <span class="validators_status_title" v-for="(item,index) in validatorStatusTitleList" :class="item.isActive ? 'active_title' : '' " @click="selectValidatorStatus(index)">{{item.title}}</span>
+        </div>
+      </div>
     </div>
 
     <div :class="blocksListPageWrap">
-      <div class="pagination total_num">
+      <div class="pagination total_num" v-if="!$store.state.flShowValidatorStatus">
         <span class="blocks_list_page_wrap_hash_var" v-show="['1','2','3','4'].includes(type)">{{count}} total</span>
-        <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
-        </b-pagination>
-      </div>
+        <b-pagination-nav :link-gen="linkGen" :number-of-pages="totalPageNum" use-router></b-pagination-nav>
+    </div>
       <div style="position:relative;overflow-x: auto;-webkit-overflow-scrolling:touch;">
         <spin-component :showLoading="showLoading"/>
         <blocks-list-table :items="items" :type="this.$route.params.type"
                            :minWidth="tableMinWidth"
-                           :showNoData="showNoData"></blocks-list-table>
+                           :showNoData="showNoData" :status="this.$route.params.param"></blocks-list-table>
         <div v-show="showNoData" class="no_data_show">
           No Data
         </div>
       </div>
-      <div class="pagination" style='margin:0.2rem 0;'>
-        <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
-        </b-pagination>
+      <div class="pagination" :class="$store.state.flShowValidatorStatus ? 'total_num' : '' " style='margin:0.2rem 0;'>
+        <span v-if="$store.state.flShowValidatorStatus" class="blocks_list_page_wrap_hash_var" v-show="['1','2','3','4'].includes(type)">{{count}} total</span>
+        <b-pagination-nav :link-gen="linkGen" :number-of-pages="totalPageNum" use-router></b-pagination-nav>
       </div>
     </div>
 
@@ -48,30 +49,24 @@
       SpinComponent,
     },
     watch: {
-      currentPage(currentPage) {
-        this.currentPage = currentPage;
-        new Promise((resolve)=>{
-          this.getDataList(currentPage, 30, this.$route.params.type);
-          resolve();
-        }).then(()=>{
-          document.getElementById('router_wrap').scrollTop = 0;
-        })
-
-      },
       $route() {
         clearInterval(this.timer);
         clearInterval(this.transactionTimer);
         this.items = [];
         this.type = this.$route.params.type;
         this.currentPage = 1;
-        this.getDataList(1, 30, this.$route.params.type);
         this.showNoData = false;
         switch (this.$route.params.type) {
           case '1': this.listTitleName = 'Blocks';
                   break;
         }
         this.computeMinWidth();
+        this.getDataList(this.$route.query.page ? this.$route.query.page : this.defaultValidatorPageNumber, this.pageSize, this.$route.params.type);
       }
+    },
+    beforeRouteUpdate(to, from, next) {
+      this.getDataList(this.$route.query.page ? this.$route.query.page : this.defaultValidatorPageNumber, this.pageSize, this.$route.params.type);
+      next();
     },
     data() {
       return {
@@ -80,6 +75,9 @@
         blocksValue: '',
         currentPage: 1,
         pageSize: 30,
+        validatorPageSize: 100,
+        defaultValidatorPageNumber:1,
+        totalPageNum:localStorage.getItem("pagenum") ? localStorage.getItem("pagenum") : 1,
         count: 0,
         fields: [],
         items: [],
@@ -93,6 +91,21 @@
         listTitleName:"",
         timer: null,
         transactionTimer: null,
+        validatorTabIndex: localStorage.getItem('validatorTabIndex') ? localStorage.getItem('validatorTabIndex') : 0,
+        validatorStatusTitleList:[
+          {
+            title:'Active',
+            isActive: true,
+          },
+          {
+            title:'Jailed',
+            isActive: false,
+          },
+          {
+            title:'Candidate',
+            isActive: false,
+          }
+        ]
       }
     },
     beforeMount() {
@@ -104,8 +117,7 @@
       }
     },
     mounted() {
-      //组件页面根据路由类型判断是哪个页面
-      this.getDataList(1, 30, this.$route.params.type);
+      this.getDataList(this.$route.query.page ? this.$route.query.page : this.defaultValidatorPageNumber, this.pageSize, this.$route.params.type);
       switch (this.$route.params.type) {
         case '1': this.listTitleName = 'Blocks';
           break;
@@ -117,6 +129,17 @@
       window.removeEventListener('resize',this.onWindowResize);
     },
     methods: {
+      linkGen(pageNum){
+        return pageNum === 1 ? '?' : `?page=${pageNum}`
+      },
+      selectValidatorStatus(index){
+        this.validatorStatusTitleList.forEach( item => {
+          item.isActive = false
+        });
+        localStorage.setItem('validatorTabIndex',index);
+        this.validatorStatusTitleList[index].isActive = true;
+        this.getValidatorList(this.defaultValidatorPageNumber,this.validatorPageSize,this.getValidatorStatus(index))
+      },
       onresize(){
         this.innerWidth = window.innerWidth;
         if(window.innerWidth > 910){
@@ -125,26 +148,25 @@
           this.blocksListPageWrap = 'mobile_blocks_list_page_wrap';
         }
       },
-      //根绝页面的不同展示最小宽度,不换行显示列表
       computeMinWidth(){
         if(this.$route.params.type === '1'){
           this.tableMinWidth = 8.5;
         }else if(this.$route.params.type === '2' && this.$route.params.param === 'transfer'){
           this.tableMinWidth = 12;
         }else if(this.$route.params.type === '3' || this.$route.params.type === '4'){
-          this.tableMinWidth = 8.1;
+          this.tableMinWidth = 12;
         }
       },
       getBlockList(currentPage, pageSize){
-        let url = `/api/blocks/${currentPage}/${pageSize}`;
+        let url = `/api/blocks?page=${currentPage}&size=${pageSize}`;
         Service.http(url).then((data) => {
           if(data){
             let that = this;
             clearInterval(this.timer);
-            this.timer = setInterval(function () {
-              that.count = data.Count;
-              that.items = data.Data.map(item => {
-                let txn = item.total_txs;
+              this.count = data.Count;
+              this.setTotalPageNum(this.count,this.pageSize);
+              this.items = data.Data.map(item => {
+                let txn = item.num_txs;
                 let precommit = item.last_commit.length;
                 let [votingPower,denominator,numerator] = [0,0,0];
                 item.validators.forEach(listItem=>votingPower += listItem.voting_power);
@@ -161,10 +183,17 @@
                 return {
                   Height: item.height,
                   Txn:txn,
+                  Time:item.time,
                   Age: Tools.formatAge(currentServerTime,item.time,Constant.SUFFIX,Constant.PREFIX),
                   'Precommit Validators':precommit,
                   'Voting Power': denominator !== 0? `${(numerator/denominator).toFixed(2)*100}%`:'',
                 };
+              })
+            this.timer = setInterval(function () {
+              that.items = that.items.map(item => {
+                let currentServerTime = new Date().getTime() + that.diffMilliseconds;
+                item.Age = Tools.formatAge(currentServerTime,item.Time,Constant.SUFFIX,Constant.PREFIX)
+                return item
               })
             },1000)
 
@@ -196,6 +225,7 @@
         }
         Service.http(url).then((txList) => {
           that.count = txList.Count;
+          this.setTotalPageNum(this.count,this.pageSize);
           clearInterval(this.transactionTimer);
           if(txList){
             that.transactionTimer = setInterval(function () {
@@ -210,86 +240,82 @@
           that.showLoading = false;
         })
       },
-      getValidatorList(currentPage, pageSize){
-        this.pageSize = 100;
+      getValidatorList(currentPage, pageSize,status){
         let url;
-        if(this.$route.params.param === "active"){
-          this.listTitleName = "Active Validators";
-          url = `/api/stake/validators/${currentPage}/${pageSize}`;
-        }else if(this.$route.params.param === "jailed"){
-          this.listTitleName = "Jailed Validators";
-          url = `/api/stake/revokedVal/${currentPage}/${pageSize}`;
-        }else if(this.$route.params.param === "candidates"){
-          this.listTitleName = "Validator Candidates";
-          url = `/api/stake/candidates/${currentPage}/${pageSize}`;
-        }
-        Service.http(url).then((data) => {
-          if(data){
-            this.count = data.count;
-            if(this.$route.params.param === "active"){
-              if(data.validators){
-                this.items = data.validators.map(item => {
-                  return {
-                    Address: item.address,
-                    Name:Tools.formatString(item.description && item.description.moniker ? item.description.moniker : '',20,"..."),
-                    'Voting Power':`${item.voting_power} (${(item.voting_power/data.power_all*100).toFixed(2)}%)`,
-                    'Uptime':`${item.up_time}%`,
-                    'Bond Height': item.bond_height
-                  };
-                })
-              }else{
-                this.showNoData = true;
-                this.items = [{
-                  Address: '',
-                  Name:'',
-                  'Voting Power':'',
-                  'Uptime':'',
-                }]
+        url = `/api/stake/validators?page=${currentPage}&size=${pageSize}&type=${status}&origin=browser`;
+        Service.http(url).then((result) => {
+          this.count = result && result.Count ? result.Count : 0;
+          result = result && result.Data ? result.Data : null;
+          this.setTotalPageNum(this.count,pageSize);
+          if(result){
+            this.items = result.map((item) => {
+              return {
+                url:"",
+                moniker: Tools.formatString(item.description.moniker,15,'...'),
+                operatorAddress: item.operator_address,
+                commission: `${(item.commission.rate * 100).toFixed(2)} %`,
+                bondedToken: `${Number(item.tokens).toFixed(2)} ${Constant.CHAINNAME.toLocaleUpperCase()}`,
+                uptime: `${(item.uptime * 100).toFixed(2)}%`,
+                votingPower: `${(item.voting_rate * 100).toFixed(2)}%`,
+                selfBond: `${Number(item.self_bond)} ${Constant.CHAINNAME.toLocaleUpperCase()}`,
+                delegatorNum: item.delegator_num,
+                bondHeight: item.bond_height,
+                identity: item.description.identity,
               }
-            }else if(this.$route.params.param === "jailed"){
-              if(data.validators){
-                this.items = data.validators.map(item => {
-                  return {
-                    Address: item.address,
-                    Name:Tools.formatString(item.description && item.description.moniker ? item.description.moniker : ' ',20,"..."),
-                    'Stakes':Tools.formatStringToFixedNumber(Tools.formatStringToNumber(item.original_tokens),4),
-                  };
-                })
-              }else{
-                this.showNoData = true;
-                this.items = [{
-                  Address: '',
-                  Name:'',
-                  'Stakes':'',
-                }]
-              }
-            }else if(this.$route.params.param === "candidates"){
-              if(data.validators){
-                this.items = data.validators.map(item => {
-                  return {
-                    Address: item.address,
-                    Name: Tools.formatString(item.description && item.description.moniker ? item.description.moniker : '',20,"..."),
-                    'Stakes': Tools.formatStringToFixedNumber(Tools.formatStringToNumber(item.original_tokens),4),
-                    'Declare Height' : item.bond_height
-                  };
-                })
-              }else{
-                this.showNoData = true;
-                this.items = [{
-                  Address: '',
-                  Name:'',
-                  'Stakes':'',
-                  'Declare Height' :""
-                }]
-              }
-            }
+            });
+            this.items = this.getValidatorHeaderImg(this.items);
+            this.showNoData = false;
+          }else {
+            this.showNoData = true;
+            this.items = [{
+              moniker: "",
+              operatorAddress: "",
+              commission: "",
+              bondedToken: "",
+              votingPower: "",
+              uptime: "",
+              selfBond: "",
+              delegatorNum:"",
+              bondHeight: "",
+              identity: "",
+            }]
           }
           this.showLoading = false;
-        }).catch(e => {
+        }).catch(e =>{
           this.showLoading = false;
           this.showNoData = true;
           console.log(e)
-        })
+        });
+      },
+      getValidatorHeaderImg(data){
+        let url = 'https://keybase.io/_/api/1.0/user/lookup.json?fields=pictures&key_suffix=';
+        let that = this;
+        for(let i = 0; i < data.length; i++){
+          if(data[i].identity){
+            that.items[i].url = Service.http(`${url}${data[i].identity}`).then(res =>{
+              if(res && res.them[0].pictures && res.them[0].pictures.primary && res.them[0].pictures.primary.url){
+                data[i].url = res.them[0].pictures.primary.url;
+              }
+            })
+          }else {
+            data[i].url = require('../assets/header_img.png');
+          }
+        }
+        return data
+      },
+      getValidatorStatus(index){
+        let validatorStatus;
+        switch (index) {
+          case 0 :
+            validatorStatus = 'validator';
+            break;
+          case 1 :
+            validatorStatus = 'jailed';
+            break;
+          case 2 :
+            validatorStatus = 'candidate'
+        }
+        return validatorStatus
       },
       getDataList(currentPage, pageSize, type) {
         this.showLoading = true;
@@ -298,199 +324,26 @@
         }else if (type === '2') {
           this.getTransactionList(currentPage, pageSize)
         }else if (type === '3' || type === '4') {
-          //TODO(ZHANGJINBIAO) 分页配置需单独控制,后面需更改逻辑
-          pageSize = 100;
-          this.getValidatorList(currentPage, pageSize)
+          this.$store.commit('flShowValidatorStatus',true)
+          this.selectValidatorStatus(Number(this.validatorTabIndex))
         }
-
-      }
+      },
+      setTotalPageNum(count,pageSize){
+        if(count === 0 ){
+          this.totalPageNum = 1
+        }else {
+          this.totalPageNum = Math.ceil(count / pageSize);
+        }
+        localStorage.setItem("pagenum",this.totalPageNum);
+      },
+    },
+    beforeDestroy () {
+      let defaultValidatorTabIndex = 0;
+      localStorage.setItem('validatorTabIndex',defaultValidatorTabIndex);
     }
   }
 </script>
 <style lang="scss" >
   @import '../style/mixin.scss';
-
-  .blocks_list_page_wrap {
-    @include flex;
-    @include pcContainer;
-    font-size: 0.14rem;
-    width: 100%!important;
-    .pagination {
-      @include flex;
-      justify-content: flex-end;
-      @include borderRadius(0.025rem);
-      height:0.3rem;
-      li{
-        height:0.3rem !important;
-      }
-    }
-    .total_num{
-      @include flex;
-      justify-content: space-between;
-      height:0.7rem !important;
-      align-items: center;
-      .blocks_list_page_wrap_hash_var{
-        padding-left: 0.2rem;
-      }
-    }
-    .no_data_show{
-      @include flex;
-      justify-content: center;
-      border-top:0.01rem solid #eee;
-      border-bottom:0.01rem solid #eee;
-      font-size:0.14rem;
-      height:3rem;
-      align-items: center;
-    }
-    .b-table {
-      //min-width: 8rem;
-
-      a {
-        text-decoration: none;
-      }
-    }
-    .blocks_list_title_wrap {
-      width: 100%;
-      border-bottom: 1px solid #d6d9e0 !important;
-      @include flex;
-      @include pcContainer;
-      height:0.62rem;
-      background:#efeff1;
-      p{
-        height:0.62rem;
-        span{
-          height:0.62rem;
-      line-height:0.62rem;
-        }
-      }
-      .personal_computer_blocks_list_page_wrap {
-        @include flex;
-        padding-bottom: 0.2rem;
-      }
-      .mobile_blocks_list_page_wrap {
-        @include flex;
-        flex-direction: column;
-        overflow-x: auto;
-        -webkit-overflow-scrolling:touch;
-        width:100%;
-        .blocks_list_page_wrap_hash_var{
-          min-width:7rem;
-          margin-left: 0.2rem!important;
-        }
-      }
-
-    }
-    .personal_computer_blocks_list_page_wrap {
-      padding-bottom: 0.2rem;
-      width: 100%!important;
-      .transaction_information_content_title {
-        height: 0.4rem;
-        line-height: 0.4rem;
-        font-size: 0.18rem;
-        color: #000000;
-        margin-bottom: 0;
-        @include fontWeight;
-      }
-      @include pcCenter;
-      min-height:4.6rem;
-      .transactions_detail_information_wrap {
-        .information_props_wrap {
-          @include flex;
-          .information_props {
-            width: 15rem;
-          }
-        }
-      }
-
-      .blocks_list_title {
-        margin-left: 0.2rem;
-        height: 0.62rem;
-        line-height: 0.62rem;
-        font-size: 0.22rem;
-        color: #000000;
-        margin-right: 0.2rem;
-        @include fontWeight;
-      }
-      .blocks_list_page_wrap_hash_var {
-        height:  0.62rem;
-        line-height: 0.62rem;
-        font-size: 0.18rem;
-        color: #a2a2ae;
-      }
-      .for_block{
-        display:inline-block;
-        margin-left:0.1rem;
-      }
-    }
-
-    .mobile_blocks_list_page_wrap {
-      width: 100%;
-      @include flex;
-      flex-direction: column;
-      padding: 0 0.1rem;
-      .transaction_information_content_title {
-        height: 0.4rem;
-        line-height: 0.4rem;
-        font-size: 0.18rem;
-        color: #000000;
-        margin-bottom: 0;
-        @include fontWeight;
-      }
-      .transactions_detail_information_wrap {
-
-        .information_props_wrap {
-          @include flex;
-          flex-direction: column;
-          border-bottom: 0.01rem solid #eee;
-          margin-bottom: 0.05rem;
-          .information_value {
-            overflow-x: auto;
-            -webkit-overflow-scrolling:touch;
-          }
-
-        }
-      }
-
-      .blocks_list_title {
-        height: 0.6rem !important;
-        line-height: 0.6rem !important;
-        font-size: 0.18rem;
-        color: #000000;
-        margin-right: 0.2rem;
-        padding-left: 0.2rem;
-        @include fontWeight;
-      }
-      .blocks_list_page_wrap_hash_var {
-        overflow-x: auto;
-        -webkit-overflow-scrolling:touch;
-        height: 0.3rem;
-        line-height: 0.3rem;
-        font-size: 0.18rem;
-        color: #a2a2ae;
-      }
-      .for_block{
-        display:inline-block;
-        //margin-left:0.1rem;
-      }
-
-    }
-  }
-
-  //重置bootstrap-vue的表格样式
-  table{
-
-    td{
-      max-width:2.2rem !important;
-      overflow-wrap: break-word !important;
-      word-wrap: break-word !important;
-    }
-  }
-  .page-item{
-    &:first-child, &:last-child{
-      .page-link{
-        @include borderRadius(0.025rem);
-      }
-    }
-  }
-
+  @import '../style/block_list_page.scss';
 </style>

@@ -226,16 +226,6 @@
           this.flShowTransactionsSelect = false
         }
       },
-      validatorsSelect(flShowValidatorsSelect){
-        this.flShowTransactionsSelect = false;
-        if(!flShowValidatorsSelect){
-          this.flShowValidatorsSelect = true;
-          this.flShowValidatorsUpOrDown = true
-        }else {
-          this.flShowValidatorsSelect = false;
-          this.flShowValidatorsUpOrDown = false
-        }
-      },
       netWorkSelect(flShowNetworkSelect){
         this.flShowNetworkSelect = false;
         if(!flShowNetworkSelect){
