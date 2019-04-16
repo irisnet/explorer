@@ -14,6 +14,7 @@ var engine = Engine{
 func init() {
 	engine.AppendTask(UpTimeChangeTask{})
 	engine.AppendTask(TxNumGroupByDayTask{})
+	engine.AppendTask(UpdateValidator{})
 }
 
 type TimerTask interface {

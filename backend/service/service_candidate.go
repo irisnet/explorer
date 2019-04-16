@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
@@ -24,22 +23,6 @@ type CandidateService struct {
 
 func (service *CandidateService) GetModule() Module {
 	return Candidate
-}
-
-func init() {
-	var validators []document.Validator
-	var query = orm.NewQuery()
-	defer query.Release()
-	query.SetCollection(document.CollectionNmValidator).
-		SetResult(&validators)
-	if err := query.Exec(); err != nil {
-		logger.Error("queryValidators failed", logger.String("errmsg", err.Error()))
-		panic(err)
-	}
-	if err := updateValidators(validators); err != nil {
-		logger.Error("updateValidators failed", logger.String("errmsg", err.Error()))
-		panic(err)
-	}
 }
 
 func (service *CandidateService) GetValidators(typ, origin string, page, size int) interface{} {
@@ -76,12 +59,6 @@ func (service *CandidateService) GetValidators(typ, origin string, page, size in
 
 		count, err := query.ExecPage()
 
-		utils.DefaultPool().Submit(func() {
-			if err := updateValidators(validators); err != nil {
-				logger.Error("updateValidators failed", logger.String("errmsg", err.Error()))
-			}
-		})
-
 		if err != nil || count <= 0 {
 			panic(types.CodeNotFound)
 		}
@@ -99,7 +76,6 @@ func (service *CandidateService) GetValidators(typ, origin string, page, size in
 				panic(types.CodeSysFailed)
 			}
 			power, _ := types.NewDecFromStr(v.Tokens)
-			fmt.Println(power.RoundInt64())
 			validator.VotingRate = float32(power.RoundInt64()) / float32(totalVotingPower)
 			result = append(result, validator)
 		}
@@ -560,7 +536,7 @@ func (service *CandidateService) queryValForRainbow(typ string, page, size int) 
 	return validators
 }
 
-func updateValidators(vs []document.Validator) error {
+func (service *CandidateService) UpdateValidators(vs []document.Validator) error {
 	var vMap = make(map[string]document.Validator)
 	for _, v := range vs {
 		vMap[v.OperatorAddress] = v
@@ -685,7 +661,7 @@ func isDiffValidator(src, dst document.Validator) bool {
 		src.Commission.Rate != dst.Commission.Rate ||
 		src.Commission.MaxRate != dst.Commission.MaxRate ||
 		src.Commission.MaxChangeRate != dst.Commission.MaxChangeRate ||
-		src.Commission.UpdateTime != dst.Commission.UpdateTime {
+		src.Commission.UpdateTime.Second() != dst.Commission.UpdateTime.Second() {
 		logger.Info("validator has changed", logger.String("OperatorAddress", src.OperatorAddress))
 		return true
 	}
