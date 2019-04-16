@@ -57,6 +57,7 @@
     </b-table>
 
     <b-table :fields='status === "active" ? validatorFields : fields' :status="status" :items='items' striped v-if="type === '3' || type === '4'" class="show_trim">
+      //TODO(ZHANGJINBIAO) 路由设计不合理，下个迭代会更改不合理的路由。
       <template slot="index" slot-scope="data" small>
           {{data.index + 1}}
       </template>
