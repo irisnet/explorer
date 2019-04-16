@@ -57,7 +57,7 @@
     watch:{
       address(address){
         if(this.insufficientBalanceStatus === false){
-          if(this.$Crypto.getCrypto("iris").isValidAddress(address)){
+          if(this.$Crypto.getCrypto(Constant.CHAINNAME,this.$store.state.currentEnv).isValidAddress(address)){
               this.btnDisabled = false;
             this.alertShowErrMsg = 'hidden';
           }else {

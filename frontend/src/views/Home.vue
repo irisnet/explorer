@@ -244,7 +244,10 @@ import Constant from "../constant/Constant";
           if(storedLastBlockHeight){
             for(let index = 0; index < blockList.length; index++){
               if(blockList[index].height > storedLastBlockHeight){
-                blockList[index].showAnimation = "show"
+                blockList.forEach(item => {
+                  item.flShowTranslationalAnimation = true
+                });
+                blockList[index].showAnimation = "show";
               }
             }
           }
@@ -266,14 +269,21 @@ import Constant from "../constant/Constant";
               }
               this.showBlockFadeinAnimation(blockList);
               let that = this;
-                let currentServerTime = new Date().getTime() + that.diffMilliseconds;
+              setTimeout(function () {
+                that.blocksInformation.map(item => {
+                  return item.flShowTranslationalAnimation = false
+                })
+              },1000)
+              let currentServerTime = new Date().getTime() + that.diffMilliseconds;
                 localStorage.setItem("lastBlockHeight",blockList[0].height);
+
                 this.blocksInformation = blockList.map(item => {
                   return {
+                    flShowTranslationalAnimation :  item.flShowTranslationalAnimation ? item.flShowTranslationalAnimation : "",
                     showAnimation: item.showAnimation ? item.showAnimation : "",
                     Height: item.height,
                     Proposer: item.hash,
-                    Txn: item.total_txs,
+                    Txn: item.num_txs,
                     Time: Tools.format2UTC(item.time),
                     Fee: '0 IRIS',
                     time:item.time,
@@ -300,9 +310,17 @@ import Constant from "../constant/Constant";
               let that = this;
               for (let txIndex = 0; txIndex < transactionList.length; txIndex++){
                 if(new Date(transactionList[txIndex].time).getTime() > localStorage.getItem("lastTxTime")){
-                  transactionList[txIndex].showAnimation = "show"
+                  transactionList[txIndex].showAnimation = "show";
+                  transactionList.forEach(item => {
+                    item.flShowTranslationalAnimation = true
+                  })
                 }
               }
+              setTimeout(function () {
+                that.transactionInformation.map(item => {
+                  return item.flShowTranslationalAnimation = false
+                })
+              },1000)
               let lastTxTime = new Date(transactionList[0].time).getTime();
                 localStorage.setItem('lastTxTime',lastTxTime);
                 let currentServerTime = new Date().getTime() + that.diffMilliseconds;
@@ -313,6 +331,7 @@ import Constant from "../constant/Constant";
                   }
                   let currentServerTime = new Date().getTime() + that.diffMilliseconds;
                   return {
+                    flShowTranslationalAnimation :  item.flShowTranslationalAnimation ? item.flShowTranslationalAnimation : "",
                     showAnimation: item.showAnimation ? item.showAnimation : '',
                     TxHash: item.tx_hash,
                     From: item.from,
