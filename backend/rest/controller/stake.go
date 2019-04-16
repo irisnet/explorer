@@ -43,7 +43,8 @@ func registerGetValidators(r *mux.Router) error {
 		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 100))
 		typ := QueryParam(request, "type")
-		result := stake.GetValidators(typ, page, size)
+		origin := QueryParam(request, "origin")
+		result := stake.GetValidators(typ, origin, page, size)
 		return result
 	})
 	return nil

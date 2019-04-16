@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
@@ -11,7 +12,9 @@ import (
 	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
+	"gopkg.in/mgo.v2/txn"
 	"strconv"
+	"sync"
 	"time"
 )
 
@@ -23,43 +26,90 @@ func (service *CandidateService) GetModule() Module {
 	return Candidate
 }
 
-func (service *CandidateService) GetValidators(typ string, page, size int) []lcd.ValidatorVo {
-	var validators = lcd.Validators(page, size)
-	var result []lcd.ValidatorVo
+func init() {
+	var validators []document.Validator
 	var query = orm.NewQuery()
 	defer query.Release()
-	var blackList = service.QueryBlackList(query.GetDb())
-	for i, v := range validators {
-		if desc, ok := blackList[v.OperatorAddress]; ok {
-			validators[i].Description.Moniker = desc.Moniker
-			validators[i].Description.Identity = desc.Identity
-			validators[i].Description.Website = desc.Website
-			validators[i].Description.Details = desc.Details
-		}
+	query.SetCollection(document.CollectionNmValidator).
+		SetResult(&validators)
+	if err := query.Exec(); err != nil {
+		logger.Error("queryValidators failed", logger.String("errmsg", err.Error()))
+		panic(err)
+	}
+	if err := updateValidators(validators); err != nil {
+		logger.Error("updateValidators failed", logger.String("errmsg", err.Error()))
+		panic(err)
+	}
+}
 
-		status := BondStatusToString(v.Status)
+func (service *CandidateService) GetValidators(typ, origin string, page, size int) interface{} {
+	if origin == "browser" {
+		var result []lcd.ValidatorVo
+		var query = orm.NewQuery()
+		defer query.Release()
+		var blackList = service.QueryBlackList(query.GetDb())
+		var validators []document.Validator
+		condition := bson.M{}
 		switch typ {
 		case types.RoleValidator:
-			if status == types.TypeValStatusBonded && !v.Jailed {
-				result = append(result, validators[i])
-			}
+			condition[document.ValidatorFieldJailed] = false
+			condition[document.ValidatorFieldStatus] = types.Bonded
 			break
 		case types.RoleCandidate:
-			if (status == types.TypeValStatusUnbonding || status == types.TypeValStatusUnbonded) && !v.Jailed {
-				result = append(result, validators[i])
+			condition[document.ValidatorFieldJailed] = false
+			condition[document.Candidate_Field_Status] = bson.M{
+				"$in": []int{types.Unbonded, types.Unbonding},
 			}
 			break
 		case types.RoleJailed:
-			if v.Jailed {
-				result = append(result, validators[i])
-			}
+			condition[document.ValidatorFieldJailed] = true
 			break
 		default:
-			result = append(result, validators[i])
 		}
 
+		query.SetCollection(document.CollectionNmValidator).
+			SetCondition(condition).
+			SetSort(desc(document.ValidatorFieldTokens)).
+			SetPage(page).
+			SetSize(size).
+			SetResult(&validators)
+
+		count, err := query.ExecPage()
+
+		utils.DefaultPool().Submit(func() {
+			if err := updateValidators(validators); err != nil {
+				logger.Error("updateValidators failed", logger.String("errmsg", err.Error()))
+			}
+		})
+
+		if err != nil || count <= 0 {
+			panic(types.CodeNotFound)
+		}
+
+		var totalVotingPower = getTotalVotingPower()
+		for i, v := range validators {
+			if desc, ok := blackList[v.OperatorAddress]; ok {
+				validators[i].Description.Moniker = desc.Moniker
+				validators[i].Description.Identity = desc.Identity
+				validators[i].Description.Website = desc.Website
+				validators[i].Description.Details = desc.Details
+			}
+			var validator lcd.ValidatorVo
+			if err := utils.Copy(validators[i], &validator); err != nil {
+				panic(types.CodeSysFailed)
+			}
+			power, _ := types.NewDecFromStr(v.Tokens)
+			fmt.Println(power.RoundInt64())
+			validator.VotingRate = float32(power.RoundInt64()) / float32(totalVotingPower)
+			result = append(result, validator)
+		}
+
+		return model.PageVo{
+			Data:  result,
+			Count: count,
+		}
 	}
-	return result
+	return service.queryValForRainbow(typ, page, size)
 }
 
 func (service *CandidateService) GetValidator(address string) lcd.ValidatorVo {
@@ -449,6 +499,16 @@ func getVotingPowerFromToken(token string) int64 {
 	return power.QuoInt(tokenPrecision).RoundInt64()
 }
 
+func getTotalVotingPower() int64 {
+	var total = int64(0)
+	var set = lcd.LatestValidatorSet()
+	for _, v := range set.Validators {
+		votingPower := utils.ParseIntWithDefault(v.VotingPower, 0)
+		total += votingPower
+	}
+	return total
+}
+
 func BondStatusToString(b int) string {
 	switch b {
 	case 0:
@@ -482,4 +542,150 @@ func getValUpTime(query *orm.Query) map[string]int {
 		}
 	}
 	return upTimeMap
+}
+
+func (service *CandidateService) queryValForRainbow(typ string, page, size int) interface{} {
+	var validators = lcd.Validators(page, size)
+	var query = orm.NewQuery()
+	defer query.Release()
+	var blackList = service.QueryBlackList(query.GetDb())
+	for i, v := range validators {
+		if desc, ok := blackList[v.OperatorAddress]; ok {
+			validators[i].Description.Moniker = desc.Moniker
+			validators[i].Description.Identity = desc.Identity
+			validators[i].Description.Website = desc.Website
+			validators[i].Description.Details = desc.Details
+		}
+	}
+	return validators
+}
+
+func updateValidators(vs []document.Validator) error {
+	var vMap = make(map[string]document.Validator)
+	for _, v := range vs {
+		vMap[v.OperatorAddress] = v
+	}
+
+	var txs []txn.Op
+	dstValidators := buildValidators()
+	for _, v := range dstValidators {
+		if v1, ok := vMap[v.OperatorAddress]; ok {
+			if isDiffValidator(v1, v) {
+				v.ID = v1.ID
+				txs = append(txs, txn.Op{
+					C:  document.CollectionNmValidator,
+					Id: v1.ID,
+					Update: bson.M{
+						"$set": v,
+					},
+				})
+			}
+			delete(vMap, v.OperatorAddress)
+		} else {
+			v.ID = bson.NewObjectId()
+			txs = append(txs, txn.Op{
+				C:      document.CollectionNmValidator,
+				Id:     bson.NewObjectId(),
+				Insert: v,
+			})
+		}
+	}
+	if len(vMap) > 0 {
+		for addr := range vMap {
+			v := vMap[addr]
+			txs = append(txs, txn.Op{
+				C:      document.CollectionNmValidator,
+				Id:     v.ID,
+				Remove: true,
+			})
+		}
+	}
+	return orm.Batch(txs)
+}
+
+func buildValidators() (result []document.Validator) {
+	res := lcd.Validators(1, 100)
+	if res2 := lcd.Validators(2, 100); len(res2) > 0 {
+		res = append(res, res2...)
+	}
+
+	height := utils.ParseIntWithDefault(lcd.BlockLatest().BlockMeta.Header.Height, 0)
+
+	var buildValidator = func(v lcd.ValidatorVo) (document.Validator, error) {
+		var validator document.Validator
+		if err := utils.Copy(v, &validator); err != nil {
+			logger.Error("utils.copy validator failed")
+			return validator, err
+		}
+		validator.Uptime = computeUptime(v.ConsensusPubkey, height)
+		validator.SelfBond, validator.ProposerAddr, validator.DelegatorNum = queryDelegationInfo(v.OperatorAddress, v.ConsensusPubkey)
+		return validator, nil
+	}
+	var group sync.WaitGroup
+	group.Add(len(res))
+	for _, v := range res {
+		var genValidator = func(va lcd.ValidatorVo, result *[]document.Validator) {
+			defer group.Done()
+			validator, err := buildValidator(va)
+			if err != nil {
+				logger.Error("utils.copy validator failed")
+				panic(err)
+			}
+			*result = append(*result, validator)
+		}
+		go genValidator(v, &result)
+	}
+	group.Wait()
+	return result
+}
+
+func computeUptime(valPub string, height int64) float32 {
+	result := lcd.SignInfo(valPub)
+	missedBlocksCounter := utils.ParseIntWithDefault(result.MissedBlocksCounter, 0)
+	startHeight := utils.ParseIntWithDefault(result.StartHeight, 0)
+	tmp := missedBlocksCounter / (height - startHeight + 1)
+	return float32(1 - tmp)
+}
+
+func queryDelegationInfo(operatorAddress string, consensusPubkey string) (string, string, int) {
+	delegations := lcd.DelegationByValidator(operatorAddress)
+	var selfBond string
+	for _, d := range delegations {
+		addr := utils.Convert(conf.Get().Hub.Prefix.AccAddr, operatorAddress)
+		if d.DelegatorAddr == addr {
+			selfBond = d.Shares
+			break
+		}
+	}
+	proposerAddr := utils.GenHexAddrFromPubKey(consensusPubkey)
+	delegatorNum := len(delegations)
+	return selfBond, proposerAddr, delegatorNum
+}
+
+func isDiffValidator(src, dst document.Validator) bool {
+	if src.OperatorAddress != dst.OperatorAddress ||
+		src.ConsensusPubkey != dst.ConsensusPubkey ||
+		src.Jailed != dst.Jailed ||
+		src.Status != dst.Status ||
+		src.Tokens != dst.Tokens ||
+		src.DelegatorShares != dst.DelegatorShares ||
+		src.BondHeight != dst.BondHeight ||
+		src.UnbondingHeight != dst.UnbondingHeight ||
+		src.UnbondingTime.Second() != dst.UnbondingTime.Second() ||
+		src.Uptime != dst.Uptime ||
+		src.SelfBond != dst.SelfBond ||
+		src.DelegatorNum != dst.DelegatorNum ||
+		src.ProposerAddr != dst.ProposerAddr ||
+		src.Description.Moniker != dst.Description.Moniker ||
+		src.Description.Identity != dst.Description.Identity ||
+		src.Description.Website != dst.Description.Website ||
+		src.Description.Details != dst.Description.Details ||
+		src.Commission.Rate != dst.Commission.Rate ||
+		src.Commission.MaxRate != dst.Commission.MaxRate ||
+		src.Commission.MaxChangeRate != dst.Commission.MaxChangeRate ||
+		src.Commission.UpdateTime != dst.Commission.UpdateTime {
+		logger.Info("validator has changed", logger.String("OperatorAddress", src.OperatorAddress))
+		return true
+	}
+	return false
 }

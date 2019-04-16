@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/irisnet/explorer/backend/logger"
 	"math"
@@ -60,4 +61,16 @@ func RoundToString(decimal string, bit int) (i string) {
 		logger.Error("RoundFloatString error", logger.String("str", decimal))
 	}
 	return strconv.FormatFloat(f, 'f', bit, 64)
+}
+
+func Copy(src interface{}, dest interface{}) error {
+	bz, err := json.Marshal(src)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(bz, dest)
+	if err != nil {
+		return err
+	}
+	return nil
 }

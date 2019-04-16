@@ -98,6 +98,10 @@ var (
 	TypeValStatusUnbonding = "Unbonding"
 	TypeValStatusBonded    = "Bonded"
 
+	Unbonded  = 0x00
+	Unbonding = 0x01
+	Bonded    = 0x02
+
 	RoleValidator = "validator"
 	RoleCandidate = "candidate"
 	RoleJailed    = "jailed"

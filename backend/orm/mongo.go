@@ -7,6 +7,7 @@ import (
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
 	"gopkg.in/mgo.v2/bson"
+	"gopkg.in/mgo.v2/txn"
 	"reflect"
 	"time"
 
@@ -180,4 +181,30 @@ func (query *Query) buildQuery() *mgo.Query {
 		q = q.Sort(query.sort)
 	}
 	return q
+}
+
+// mgo transaction method
+// detail to see: https://godoc.org/gopkg.in/mgo.v2/txn
+func Batch(ops []txn.Op) error {
+	if len(ops) == 0 {
+		return nil
+	}
+	c := GetDatabase().C("mgo_txn")
+	defer c.Database.Session.Close()
+	runner := txn.NewRunner(c)
+
+	txObjectId := bson.NewObjectId()
+	err := runner.Run(ops, txObjectId, nil)
+	if err != nil {
+		if err == txn.ErrAborted {
+			err = runner.Resume(txObjectId)
+			if err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+	}
+
+	return nil
 }
