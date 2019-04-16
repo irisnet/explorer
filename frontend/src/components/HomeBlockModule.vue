@@ -112,8 +112,8 @@
     }
   }
   @keyframes translational_animation{
-    from{transform: translateY(-59px);}
-    to{transform: translateY(0px)}
+    from{transform: translateY(-0.59rem);}
+    to{transform: translateY(0)}
   }
   .none_data_img_container{
     width: 100%;
