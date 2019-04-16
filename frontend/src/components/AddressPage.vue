@@ -56,18 +56,18 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Owner :</span>
-          <span class="information_value operator_value" v-show="operatorValue" @click="skipRoute(`/address/1/${operatorValue}`)">{{operatorValue}}</span>
+          <span class="information_value operator_value" v-show="operatorValue" @click="skipRoute(`/address/1/${operatorValue}`)"><router-link :to="`/address/1/${operatorValue}`" target="_blank">{{operatorValue}}</router-link></span>
           <span class="information_value" v-show="!operatorValue">--</span>
         </div>
         <div class="information_props_wrap">
-          <span class="information_props">Comission Rate :</span>
+          <span class="information_props">Commission Rate :</span>
           <span class="information_value">{{rateValue}}</span>
         </div>
 
         <div class="information_props_wrap">
           <span class="information_props">Website :</span>
           <span class="information_value" :class="websiteValue && websiteValue !== '--' ? 'link_style' : ''">
-            <pre class="information_pre" @click="openUrl(websiteValue)">{{websiteValue}}</pre>
+            <pre class="information_pre" @click="openUrl(websiteValue)"><a href="https://www.baidu.com/">www.baidu.com</a></pre>
           </span>
         </div>
         <div class="information_props_wrap">
@@ -151,7 +151,7 @@
         <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
         </b-pagination>
       </div>
-      <div class="blocks_list_table_contianer">
+      <div class="blocks_list_table_container">
         <spin-component :showLoading="showLoading"/>
         <blocks-list-table :items="items" :type="'addressTxList'"
                            :showNoData="showNoData"></blocks-list-table>
@@ -328,14 +328,22 @@
     },
     mounted() {
       Tools.scrollToTop();
-      this.tabTxList(this.tabTxListIndex,this.txTabName,this.currentPage,this.pageSize);
-      this.getAddressInformation(this.$route.params.param);
-      this.getTransactionsList(1,10,this.$route.params.type);
-      this.getProfileInformation();
-      this.getCurrentTenureInformation();
-      this.getValidatorHistory('14days');
-      this.getValidatorUptimeHistory('24hours');
-      this.getAddressTxStatistics();
+      if(this.$route.params.param.substring(0,3) === this.$Crypto.config.iris.bech32.valAddr){
+        this.tabTxList(this.tabTxListIndex,this.txTabName,this.currentPage,this.pageSize);
+        this.getAddressInformation(this.$route.params.param);
+        this.getTransactionsList(1,10,this.$route.params.type);
+        this.getProfileInformation();
+        this.getCurrentTenureInformation();
+        this.getValidatorHistory('14days');
+        this.getValidatorUptimeHistory('24hours');
+        this.getAddressTxStatistics();
+      }else {
+        this.tabTxList(this.tabTxListIndex,this.txTabName,this.currentPage,this.pageSize);
+        this.getAddressInformation(this.$route.params.param);
+        this.getTransactionsList(1,10,this.$route.params.type);
+        this.getProfileInformation();
+        this.getAddressTxStatistics();
+      }
     },
     methods: {
       getAddressTxStatistics(){
@@ -422,6 +430,7 @@
       },
       skipRoute(path){
         this.$router.push(path)
+        window.open("")
       },
       getProfileInformation(){
         let url = `/api/stake/candidate/${this.$route.params.param}`;
@@ -452,7 +461,7 @@
             this.descriptionValue= validator.description && validator.description.details ? validator.description.details : "--";
             this.commissionRateValue = '';
             this.announcementValue = '';
-            this.operatorValue = this.$Codec.Bech32.toBech32(this.$Crypto.config.iris.bech32.accAddr,this.$Codec.Bech32.fromBech32(validator.address));
+            this.operatorValue = validator.owner;
           }else{
             this.flValidator = false;
             this.flActiveValidator = false;
@@ -757,7 +766,7 @@
         color:#000000;
         @include fontWeight;
         margin-bottom:0;
-        border-bottom:0.01rem solid #efefef;
+        /*border-bottom:0.01rem solid #efefef;*/
       }
       @include pcCenter;
       .transactions_detail_information_wrap{
@@ -771,6 +780,9 @@
           .operator_value{
             cursor: pointer;
             color: #3598db !important;
+            a{
+              color: #3598db !important;
+            }
           }
           .information_value{
             word-break: break-all;
@@ -1190,7 +1202,7 @@
       height:3rem;
       align-items: center;
     }
-    .blocks_list_table_contianer{
+    .blocks_list_table_container{
       position:relative;
       overflow-x: auto;
       -webkit-overflow-scrolling:touch;
@@ -1268,7 +1280,7 @@
     height:3rem;
     align-items: center;
   }
-  .blocks_list_table_contianer{
+  .blocks_list_table_container{
     position:relative;
     overflow-x: auto;
     -webkit-overflow-scrolling:touch;
@@ -1276,4 +1288,9 @@
     padding-bottom: 0.2rem;
   }
 }
+  .information_pre{
+    a{
+      color: #3598db !important;
+    }
+  }
 </style>
