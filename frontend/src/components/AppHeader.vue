@@ -275,9 +275,9 @@
           this.$router.push(path);
         }
         if(path.includes('/validators/3')){
-          this.$store.commit('validatorStatus',true)
+          this.$store.commit('flShowValidatorStatus',true)
         }else {
-          this.$store.commit('validatorStatus',false)
+          this.$store.commit('flShowValidatorStatus',false)
         }
       },
       transactionMouseOver(){
