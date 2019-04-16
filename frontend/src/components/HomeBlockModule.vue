@@ -13,7 +13,7 @@
             <div class="key_value_wrap">
             <span class="blocks_module_value" :class="moduleTitle">
               <span class="transactions_tx" v-if="item.TxHash">TX# </span>
-             <span style="cursor:pointer;" @click="skipRouter(item.Height?`/blocks_detail/transfers/${item.Height}`:`/tx?txHash=${item.TxHash}`)">{{item.Height?item.Height:`${item.TxHash.substr(0,16)}...`}}</span>
+             <span style="cursor:pointer;" @click="skipRouter(item.Height?`/blocks_detail/${item.Height}`:`/tx?txHash=${item.TxHash}`)">{{item.Height?item.Height:`${item.TxHash.substr(0,16)}...`}}</span>
               </span>
               <span class="key_value_transfers_age" v-show="moduleName !== 'Blocks'">{{item.age}}</span>
               <span class="key_value_blocks_age" v-show="moduleName == 'Blocks'">{{item.age}}</span>
