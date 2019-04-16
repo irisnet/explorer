@@ -11,7 +11,9 @@
               <span class="item_name">{{lang.home.blockHeight}}</span>
             </div>
             <p class="current_block">{{currentBlockHeight}}</p>
-            <p class="block_time">{{blockTime}}</p>
+            <p class="block_time proposer_container">
+              <span class="proposer_content" @click="toAddressDetail(proposerAddress)">{{moniker}}</span>
+            </p>
           </li>
           <li class="item_status">
             <div class="img_container">
@@ -21,7 +23,7 @@
               <span class="item_name">{{lang.home.transactions}}</span>
             </div>
             <p class="current_block">{{transactionValue}}</p>
-            <p class="block_time">{{ageTime}}</p>
+            <p class="block_time">{{blockTime}}</p>
           </li>
           <li class="item_status">
             <div class="img_container">
@@ -116,6 +118,8 @@ import Constant from "../constant/Constant";
                   timer: null,
                   lang:lang,
                   isMobile: false,
+                  moniker:'',
+                  proposerAddress:"",
               }
           },
 
@@ -240,7 +244,10 @@ import Constant from "../constant/Constant";
           if(storedLastBlockHeight){
             for(let index = 0; index < blockList.length; index++){
               if(blockList[index].height > storedLastBlockHeight){
-                blockList[index].showAnimation = "show"
+                blockList.forEach(item => {
+                  item.flShowTranslationalAnimation = true
+                });
+                blockList[index].showAnimation = "show";
               }
             }
           }
@@ -262,14 +269,21 @@ import Constant from "../constant/Constant";
               }
               this.showBlockFadeinAnimation(blockList);
               let that = this;
-                let currentServerTime = new Date().getTime() + that.diffMilliseconds;
+              setTimeout(function () {
+                that.blocksInformation.map(item => {
+                  return item.flShowTranslationalAnimation = false
+                })
+              },1000)
+              let currentServerTime = new Date().getTime() + that.diffMilliseconds;
                 localStorage.setItem("lastBlockHeight",blockList[0].height);
+
                 this.blocksInformation = blockList.map(item => {
                   return {
+                    flShowTranslationalAnimation :  item.flShowTranslationalAnimation ? item.flShowTranslationalAnimation : "",
                     showAnimation: item.showAnimation ? item.showAnimation : "",
                     Height: item.height,
                     Proposer: item.hash,
-                    Txn: item.total_txs,
+                    Txn: item.num_txs,
                     Time: Tools.format2UTC(item.time),
                     Fee: '0 IRIS',
                     time:item.time,
@@ -296,9 +310,17 @@ import Constant from "../constant/Constant";
               let that = this;
               for (let txIndex = 0; txIndex < transactionList.length; txIndex++){
                 if(new Date(transactionList[txIndex].time).getTime() > localStorage.getItem("lastTxTime")){
-                  transactionList[txIndex].showAnimation = "show"
+                  transactionList[txIndex].showAnimation = "show";
+                  transactionList.forEach(item => {
+                    item.flShowTranslationalAnimation = true
+                  })
                 }
               }
+              setTimeout(function () {
+                that.transactionInformation.map(item => {
+                  return item.flShowTranslationalAnimation = false
+                })
+              },1000)
               let lastTxTime = new Date(transactionList[0].time).getTime();
                 localStorage.setItem('lastTxTime',lastTxTime);
                 let currentServerTime = new Date().getTime() + that.diffMilliseconds;
@@ -309,6 +331,7 @@ import Constant from "../constant/Constant";
                   }
                   let currentServerTime = new Date().getTime() + that.diffMilliseconds;
                   return {
+                    flShowTranslationalAnimation :  item.flShowTranslationalAnimation ? item.flShowTranslationalAnimation : "",
                     showAnimation: item.showAnimation ? item.showAnimation : '',
                     TxHash: item.tx_hash,
                     From: item.from,
@@ -341,6 +364,9 @@ import Constant from "../constant/Constant";
       getNavigation(){
         let url = `/api/home/navigation`;
         Service.http(url).then(res => {
+          let reservedStringLength = 12;
+          this.moniker = Tools.formatString(res.moniker,reservedStringLength,'...');
+          this.proposerAddress = res.operator_addr;
           this.diffSeconds = Number(res.avg_block_time);
           this.currentBlockHeight = res.block_height;
           this.transactionValue = this.formatTransactions(res.total_txs);
@@ -350,14 +376,6 @@ import Constant from "../constant/Constant";
           this.validatorValue = `${res.vote_val_num} / ${res.active_val_num} Validators`;
           this.bondedRatio = `${(res.bonded_ratio * 100).toFixed(2)} %`;
           this.blockTime = Tools.format2UTC(res.block_time);
-          let that = this;
-          let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-          this.ageTime = Tools.formatAge(currentServerTime,res.block_time,Tools.firstWordUpperCase(Constant.SUFFIX));
-          clearInterval(this.latestBlockTimer);
-          this.latestBlockTimer = setInterval(function () {
-            currentServerTime = new Date().getTime() + that.diffMilliseconds;
-            that.ageTime = Tools.formatAge(currentServerTime,res.block_time,Tools.firstWordUpperCase(Constant.SUFFIX));
-          },1000)
         })
       },
       formatTransactions(totalTxs){
@@ -381,6 +399,9 @@ import Constant from "../constant/Constant";
           tokens = `${Number(bondedTokens).toFixed(2)}`;
         }
         return tokens
+      },
+      toAddressDetail(address){
+        this.$router.push(`/address/1/${address}`)
       }
     },
       destroyed () {
@@ -611,5 +632,9 @@ import Constant from "../constant/Constant";
   }
   .latest_block_content:hover{
     cursor: pointer;
+  }
+  .proposer_content{
+    cursor: pointer;
+    color:#3598db;
   }
 </style>

@@ -184,6 +184,8 @@
   html {
     font-size: 625%;
     -webkit-text-size-adjust: none;
+    overflow-y: scroll;
+    position: relative;
   }
 
   body, html {
