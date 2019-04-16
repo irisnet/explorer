@@ -246,7 +246,7 @@
         Service.http(url).then((result) => {
           this.count = result && result.Count ? result.Count : 0;
           result = result && result.Data ? result.Data : null;
-          this.setTotalPageNum(this.count,this.pageSize);
+          this.setTotalPageNum(this.count,pageSize);
           if(result){
             this.items = result.map((item) => {
               return {
@@ -264,10 +264,8 @@
               }
             });
             this.items = this.getValidatorHeaderImg(this.items);
-            this.showLoading = false;
             this.showNoData = false;
           }else {
-            this.showLoading = false;
             this.showNoData = true;
             this.items = [{
               moniker: "",
@@ -282,6 +280,7 @@
               identity: "",
             }]
           }
+          this.showLoading = false;
         }).catch(e =>{
           this.showLoading = false;
           this.showNoData = true;
@@ -305,18 +304,18 @@
         return data
       },
       getValidatorStatus(index){
-        let status;
+        let validatorStatus;
         switch (index) {
           case 0 :
-            status = 'validator';
+            validatorStatus = 'validator';
             break;
           case 1 :
-            status = 'jailed';
+            validatorStatus = 'jailed';
             break;
           case 2 :
-            status = 'candidate'
+            validatorStatus = 'candidate'
         }
-        return status
+        return validatorStatus
       },
       getDataList(currentPage, pageSize, type) {
         this.showLoading = true;

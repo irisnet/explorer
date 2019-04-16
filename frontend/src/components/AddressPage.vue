@@ -67,7 +67,7 @@
         <div class="information_props_wrap">
           <span class="information_props">Website :</span>
           <span class="information_value" :class="websiteValue && websiteValue !== '--' ? 'link_style' : ''">
-            <pre class="information_pre" @click="openUrl(websiteValue)"><a href="https://www.baidu.com/">www.baidu.com</a></pre>
+            <pre class="information_pre" @click="openUrl(websiteValue)">{{websiteValue}}</pre>
           </span>
         </div>
         <div class="information_props_wrap">
@@ -430,7 +430,6 @@
       },
       skipRoute(path){
         this.$router.push(path)
-        window.open("")
       },
       getProfileInformation(){
         let url = `/api/stake/candidate/${this.$route.params.param}`;
@@ -766,7 +765,7 @@
         color:#000000;
         @include fontWeight;
         margin-bottom:0;
-        /*border-bottom:0.01rem solid #efefef;*/
+        border-bottom:0.01rem solid #efefef;
       }
       @include pcCenter;
       .transactions_detail_information_wrap{
