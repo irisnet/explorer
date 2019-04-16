@@ -11,10 +11,12 @@
 
 db.createCollection("ex_config");
 db.createCollection("val_black_list");
+db.createCollection("validator");
 
 // create index
 db.ex_config.createIndex({"env_nm": 1}, {"unique": true});
 db.val_black_list.createIndex({"operator_addr": 1}, {"unique": true});
+db.validator.createIndex({"operator_addr": 1}, {"unique": true});
 
 // init data
 db.ex_config.insert({"env_nm":"mainnet","host":"https://www.irisplorer.io","chain_id":"irishub","show_faucet":0});

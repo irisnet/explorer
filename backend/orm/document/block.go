@@ -18,14 +18,14 @@ const (
 )
 
 type Block struct {
-	Height     int64        `bson:"height"`
-	Hash       string       `bson:"hash"`
-	Time       time.Time    `bson:"time"`
-	NumTxs     int64        `bson:"num_txs"`
-	Meta       BlockMeta    `bson:"meta"`
-	Block      BlockContent `bson:"block"`
-	Validators []Validator  `bson:"validators"`
-	Result     BlockResults `bson:"results"`
+	Height     int64         `bson:"height"`
+	Hash       string        `bson:"hash"`
+	Time       time.Time     `bson:"time"`
+	NumTxs     int64         `bson:"num_txs"`
+	Meta       BlockMeta     `bson:"meta"`
+	Block      BlockContent  `bson:"block"`
+	Validators []TmValidator `bson:"validators"`
+	Result     BlockResults  `bson:"results"`
 }
 
 type BlockMeta struct {
@@ -97,7 +97,7 @@ type Signature struct {
 	Value string `bson:"value"`
 }
 
-type Validator struct {
+type TmValidator struct {
 	Address     string `bson:"address"`
 	PubKey      string `bson:"pub_key"`
 	VotingPower int64  `bson:"voting_power"`

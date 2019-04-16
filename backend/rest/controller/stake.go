@@ -11,9 +11,6 @@ import (
 
 func RegisterStake(r *mux.Router) error {
 	funs := []func(*mux.Router) error{
-		registerQueryValidator,
-		registerQueryRevokedValidator,
-		registerQueryCandidates,
 		registerQueryCandidate,
 		registerQueryCandidateStatus,
 		registerQueryCandidatesTop,
@@ -40,22 +37,14 @@ var stake = Stake{
 	service.Get(service.Candidate).(*service.CandidateService),
 }
 
-func registerQueryValidator(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryValidator, "GET", func(request model.IrisReq) interface{} {
-		stake.SetTid(request.TraceId)
-		page, size := GetPage(request)
-		result := stake.QueryValidators(page, size)
-		return result
-	})
-
-	return nil
-}
 func registerGetValidators(r *mux.Router) error {
 	doApi(r, types.UrlRegisterGetValidators, "GET", func(request model.IrisReq) interface{} {
 		stake.SetTid(request.TraceId)
 		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 100))
-		result := stake.GetValidators(page, size)
+		typ := QueryParam(request, "type")
+		origin := QueryParam(request, "origin")
+		result := stake.GetValidators(typ, origin, page, size)
 		return result
 	})
 	return nil
@@ -67,25 +56,6 @@ func registerGetValidator(r *mux.Router) error {
 		result := stake.GetValidator(address)
 		return result
 	})
-	return nil
-}
-func registerQueryRevokedValidator(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryRevokedValidator, "GET", func(request model.IrisReq) interface{} {
-		stake.SetTid(request.TraceId)
-		page, size := GetPage(request)
-		result := stake.QueryRevokedValidator(page, size)
-		return result
-	})
-	return nil
-}
-func registerQueryCandidates(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryCandidates, "GET", func(request model.IrisReq) interface{} {
-		stake.SetTid(request.TraceId)
-		page, size := GetPage(request)
-		result := stake.QueryCandidates(page, size)
-		return result
-	})
-
 	return nil
 }
 

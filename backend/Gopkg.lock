@@ -34,6 +34,14 @@
   version = "v1.6.2"
 
 [[projects]]
+  digest = "1:cf31692c14422fa27c83a05292eb5cbe0fb2775972e8f1f8446a71549bd8980b"
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "ba968bfe8b2f7e042a574c888954fccecfa385b4"
+  version = "v0.8.1"
+
+[[projects]]
   digest = "1:0028cb19b2e4c3112225cd871870f2d9cf49b9b4276531f03438a88e94be86fe"
   name = "github.com/pmezard/go-difflib"
   packages = ["difflib"]
@@ -81,8 +89,24 @@
   version = "v1.9.1"
 
 [[projects]]
+  branch = "master"
+  digest = "1:1fa95129371749532e2ac8b93a0016c549ebe77f25c6fad296b6ee271fae2fd6"
+  name = "golang.org/x/crypto"
+  packages = ["ripemd160"]
+  pruneopts = "UT"
+  revision = "88737f569e3a9c7ab309cdc09a07fe7fc87233c3"
+
+[[projects]]
+  branch = "master"
+  digest = "1:7427036b6d926b3d1fa0773771820735b35554a98296f1074df440ee30a97296"
+  name = "golang.org/x/net"
+  packages = ["websocket"]
+  pruneopts = "UT"
+  revision = "eb5bcb51f2a31c7d5141d810b70815c05d9c9146"
+
+[[projects]]
   branch = "v2"
-  digest = "1:988de7520a09024d5d94cd99bd545afbf194893994ec759b1cda0a0bbb6adb80"
+  digest = "1:df1ffb6d59bacf4d162d65d50acaf21a16c8947086c638e86aaa01c1ae59f5ac"
   name = "gopkg.in/mgo.v2"
   packages = [
     ".",
@@ -90,6 +114,7 @@
     "internal/json",
     "internal/sasl",
     "internal/scram",
+    "txn",
   ]
   pruneopts = "UT"
   revision = "9856a29383ce1c59f308dd1cf0363a79b5bef6b5"
@@ -108,11 +133,15 @@
   input-imports = [
     "github.com/gorilla/handlers",
     "github.com/gorilla/mux",
+    "github.com/pkg/errors",
     "github.com/stretchr/testify/assert",
     "go.uber.org/zap",
     "go.uber.org/zap/zapcore",
+    "golang.org/x/crypto/ripemd160",
+    "golang.org/x/net/websocket",
     "gopkg.in/mgo.v2",
     "gopkg.in/mgo.v2/bson",
+    "gopkg.in/mgo.v2/txn",
     "gopkg.in/natefinch/lumberjack.v2",
   ]
   solver-name = "gps-cdcl"

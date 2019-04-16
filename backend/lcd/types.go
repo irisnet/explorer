@@ -5,16 +5,19 @@ import (
 )
 
 const (
-	UrlAccount         = "%s/auth/accounts/%s"
-	UrlValidator       = "%s/stake/validators/%s"
-	UrlValidators      = "%s/stake/validators?page=%d&size=%d"
-	UrlNodeInfo        = "%s/node_info"
-	UrlGenesis         = "%s/genesis"
-	UrlWithdrawAddress = "%s/distribution/%s/withdrawAddress"
-	UrlBlockLatest     = "%s/blocks/latest"
-	UrlBlock           = "%s/blocks/%d"
-	UrlValidatorSet    = "%s/validatorsets/%d"
-	UrlStakePool       = "%s/stake/pool"
+	UrlAccount            = "%s/auth/accounts/%s"
+	UrlValidator          = "%s/stake/validators/%s"
+	UrlValidators         = "%s/stake/validators?page=%d&size=%d"
+	UrlDelegationByVal    = "%s/stake/validators/%s/delegations"
+	UrlSignInfo           = "%s/slashing/validators/%s/signing_info"
+	UrlNodeInfo           = "%s/node_info"
+	UrlGenesis            = "%s/genesis"
+	UrlWithdrawAddress    = "%s/distribution/%s/withdrawAddress"
+	UrlBlockLatest        = "%s/blocks/latest"
+	UrlBlock              = "%s/blocks/%d"
+	UrlValidatorSet       = "%s/validatorsets/%d"
+	UrlValidatorSetLatest = "%s/validatorsets/latest"
+	UrlStakePool          = "%s/stake/pool"
 )
 
 type AccountVo struct {
@@ -29,27 +32,35 @@ type AccountVo struct {
 }
 
 type ValidatorVo struct {
-	OperatorAddress string `json:"operator_address"`
-	ConsensusPubkey string `json:"consensus_pubkey"`
-	Jailed          bool   `json:"jailed"`
-	Status          int    `json:"status"`
-	Tokens          string `json:"tokens"`
-	DelegatorShares string `json:"delegator_shares"`
-	Description     struct {
-		Moniker  string `json:"moniker"`
-		Identity string `json:"identity"`
-		Website  string `json:"website"`
-		Details  string `json:"details"`
-	} `json:"description"`
-	BondHeight      string    `json:"bond_height"`
-	UnbondingHeight string    `json:"unbonding_height"`
-	UnbondingTime   time.Time `json:"unbonding_time"`
-	Commission      struct {
-		Rate          string    `json:"rate"`
-		MaxRate       string    `json:"max_rate"`
-		MaxChangeRate string    `json:"max_change_rate"`
-		UpdateTime    time.Time `json:"update_time"`
-	} `json:"commission"`
+	OperatorAddress string      `json:"operator_address"`
+	ConsensusPubkey string      `json:"consensus_pubkey"`
+	Jailed          bool        `json:"jailed"`
+	Status          int         `json:"status"`
+	Tokens          string      `json:"tokens"`
+	DelegatorShares string      `json:"delegator_shares"`
+	Description     Description `json:"description"`
+	BondHeight      string      `json:"bond_height"`
+	UnbondingHeight string      `json:"unbonding_height"`
+	UnbondingTime   time.Time   `json:"unbonding_time"`
+	Commission      Commission  `json:"commission"`
+	Uptime          float32     `json:"uptime"`
+	SelfBond        string      `json:"self_bond"`
+	DelegatorNum    int         `json:"delegator_num"`
+	ProposerAddr    string      `json:"proposer_addr"`
+	VotingRate      float32     `json:"voting_rate"`
+}
+
+type Description struct {
+	Moniker  string `json:"moniker"`
+	Identity string `json:"identity"`
+	Website  string `json:"website"`
+	Details  string `json:"details"`
+}
+type Commission struct {
+	Rate          string    `json:"rate"`
+	MaxRate       string    `json:"max_rate"`
+	MaxChangeRate string    `json:"max_change_rate"`
+	UpdateTime    time.Time `json:"update_time"`
 }
 
 type NodeInfoVo struct {
@@ -409,4 +420,18 @@ type StakePoolVo struct {
 	BondedTokens string `json:"bonded_tokens"`
 	TotalSupply  string `json:"total_supply"`
 	BondedRatio  string `json:"bonded_ratio"`
+}
+
+type DelegationVo struct {
+	DelegatorAddr string `json:"delegator_addr"`
+	ValidatorAddr string `json:"validator_addr"`
+	Shares        string `json:"shares"`
+	Height        string `json:"height"`
+}
+
+type SignInfoVo struct {
+	StartHeight         string    `json:"start_height"`
+	IndexOffset         string    `json:"index_offset"`
+	JailedUntil         time.Time `json:"jailed_until"`
+	MissedBlocksCounter string    `json:"missed_blocks_counter"`
 }

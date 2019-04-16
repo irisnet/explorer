@@ -47,6 +47,19 @@ func QueryWithdrawAddr(address string) (result string) {
 	return
 }
 
+func DelegationByValidator(address string) (result []DelegationVo) {
+	url := fmt.Sprintf(UrlDelegationByVal, conf.Get().Hub.LcdUrl, address)
+	resBytes, err := utils.Get(url)
+	if err != nil {
+		return result
+	}
+	if err := json.Unmarshal(resBytes, &result); err != nil {
+		logger.Error("Unmarshal Delegation error", logger.String("err", err.Error()))
+		return result
+	}
+	return
+}
+
 func StakePool() (result StakePoolVo) {
 	url := fmt.Sprintf(UrlStakePool, conf.Get().Hub.LcdUrl)
 	resBytes, err := utils.Get(url)
@@ -55,6 +68,19 @@ func StakePool() (result StakePoolVo) {
 	}
 	if err := json.Unmarshal(resBytes, &result); err != nil {
 		logger.Error("Unmarshal StakePool error", logger.String("err", err.Error()))
+		return result
+	}
+	return
+}
+
+func SignInfo(consensusPubkey string) (result SignInfoVo) {
+	url := fmt.Sprintf(UrlSignInfo, conf.Get().Hub.LcdUrl, consensusPubkey)
+	resBytes, err := utils.Get(url)
+	if err != nil {
+		return result
+	}
+	if err := json.Unmarshal(resBytes, &result); err != nil {
+		logger.Error("Unmarshal SignInfoVo error", logger.String("err", err.Error()))
 		return result
 	}
 	return

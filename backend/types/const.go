@@ -13,7 +13,7 @@ const (
 	//Block
 	UrlRegisterQueryBlock            = "/block/{height}"
 	UrlRegisterQueryRecentBlocks     = "/blocks/recent"
-	UrlRegisterQueryBlocks           = "/blocks/{page}/{size}"
+	UrlRegisterQueryBlocks           = "/blocks"
 	UrlRegisterQueryBlocksPrecommits = "/blocks/precommits/{address}/{page}/{size}"
 
 	//Chain
@@ -42,16 +42,13 @@ const (
 	UrlFaucetApplyService   = "%s/apply"
 
 	//Stake
-	UrlRegisterQueryValidator        = "/stake/validators/{page}/{size}"
-	UrlRegisterGetValidators         = "/stake/validators"
-	UrlRegisterGetValidator          = "/stake/validators/{address}"
-	UrlRegisterQueryRevokedValidator = "/stake/revokedVal/{page}/{size}"
-	UrlRegisterQueryCandidates       = "/stake/candidates/{page}/{size}"
-	UrlRegisterQueryCandidatesTop    = "/stake/candidatesTop"
-	UrlRegisterQueryCandidate        = "/stake/candidate/{address}"
-	UrlRegisterQueryCandidateUptime  = "/stake/candidate/{address}/uptime/{category}"
-	UrlRegisterQueryCandidatePower   = "/stake/candidate/{address}/power/{category}"
-	UrlRegisterQueryCandidateStatus  = "/stake/candidate/{address}/status"
+	UrlRegisterGetValidators        = "/stake/validators"
+	UrlRegisterGetValidator         = "/stake/validators/{address}"
+	UrlRegisterQueryCandidatesTop   = "/stake/candidatesTop"
+	UrlRegisterQueryCandidate       = "/stake/candidate/{address}"
+	UrlRegisterQueryCandidateUptime = "/stake/candidate/{address}/uptime/{category}"
+	UrlRegisterQueryCandidatePower  = "/stake/candidate/{address}/power/{category}"
+	UrlRegisterQueryCandidateStatus = "/stake/candidate/{address}/status"
 
 	//Tx
 	UrlRegisterQueryTxList       = "/tx/{type}/{page}/{size}"
@@ -100,6 +97,14 @@ var (
 	TypeValStatusUnbonded  = "Unbonded"
 	TypeValStatusUnbonding = "Unbonding"
 	TypeValStatusBonded    = "Bonded"
+
+	Unbonded  = 0x00
+	Unbonding = 0x01
+	Bonded    = 0x02
+
+	RoleValidator = "validator"
+	RoleCandidate = "candidate"
+	RoleJailed    = "jailed"
 
 	DeclarationList = []string{TypeCreateValidator, TypeEditValidator, TypeUnjail}
 	StakeList       = []string{TypeDelegate, TypeBeginRedelegation, TxTypeSetWithdrawAddress, TypeBeginUnbonding, TxTypeWithdrawDelegatorReward, TxTypeWithdrawDelegatorRewardsAll, TxTypeWithdrawValidatorRewardsAll}
