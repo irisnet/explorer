@@ -43,7 +43,7 @@
     @include flex;
     @include pcContainer;
     height:0.62rem;
-    background:$backgroundGray;
+    background:#efeff1;
     p{
       height:0.62rem;
       span{
@@ -68,7 +68,7 @@
           cursor: pointer;
       }
       .active_title{
-        border-bottom: 0.02rem solid $blue;
+        border-bottom: 0.02rem solid #3598db;
       }
     }
     .mobile_blocks_list_page_wrap {
@@ -119,7 +119,7 @@
       height:  0.62rem;
       line-height: 0.62rem;
       font-size: 0.18rem;
-      color: $listColor;
+      color: #a2a2ae;
     }
     .for_block{
       display:inline-block;
@@ -170,7 +170,7 @@
       height: 0.3rem;
       line-height: 0.3rem;
       font-size: 0.18rem;
-      color: $listColor;
+      color: #a2a2ae;
     }
     .for_block{
       display:inline-block;
