@@ -1,8 +1,8 @@
 package task
 
 import (
+	"fmt"
 	"github.com/irisnet/explorer/backend/logger"
-	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/utils"
@@ -50,21 +50,17 @@ func (task TxNumGroupByDayTask) init() {
 	defer db.Session.Close()
 	var txNumStatList []interface{}
 
-	today := utils.TruncateTime(time.Now(), utils.Day)
-	yesterday := today.Add(-24 * time.Hour)
+	now := utils.TruncateTime(time.Now(), utils.Day)
+
+	skip := time.Duration(-14 * 24 * time.Hour)
+	beginDate := now.Add(skip)
+	endDate := now.Add(-24 * time.Hour)
+
+	fmt.Println(now, beginDate, endDate)
 
 	txNumStatStore := db.C(document.CollectionTxNumStat)
 	txStore := db.C(document.CollectionNmCommonTx)
 	if cnt, _ := txNumStatStore.Count(); cnt == 0 {
-		blockStore := db.C(document.CollectionNmBlock)
-		var block document.Block
-		err := blockStore.Find(bson.M{document.Block_Field_Height: int64(1)}).Select(bson.M{"time": 1}).One(&block)
-		if err != nil {
-			panic("block not exist with height equal 1")
-		}
-		beginDate := utils.TruncateTime(block.Time, utils.Day)
-		endDate := yesterday
-
 		pipe := txStore.Pipe(
 			[]bson.M{
 				{"$match": bson.M{
@@ -86,7 +82,7 @@ func (task TxNumGroupByDayTask) init() {
 			},
 		)
 
-		var result []model.TxNumGroupByDayVo
+		var result []txNumGroup
 
 		if err := pipe.All(&result); err == nil {
 			var dayMap = make(map[string]int64)
@@ -114,4 +110,9 @@ func (task TxNumGroupByDayTask) init() {
 		}
 	}
 	return
+}
+
+type txNumGroup struct {
+	Date string `bson:"_id"`
+	Num  int64  `bson:"count"`
 }
