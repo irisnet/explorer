@@ -32,13 +32,23 @@
         </span>
       </template>
       <template slot='From' slot-scope='data'>
-        <span class="skip_route" @click="skipRoute(`/address/1/${data.item.From}`)">
-          {{data.item.From?`${String(data.item.From).substr(0,16)}...`:''}}
+        <span class="skip_route" style="display: flex" v-if="data.item.From">
+          <div class="name_address">
+            <span class="remove_default_style">
+              <router-link :to="`/address/1/${data.item.From}`" class="link_style">{{formatAddress(data.item.From)}}</router-link>
+            </span>
+            <span class="address">{{data.item.From}}</span>
+          </div>
         </span>
       </template>
       <template slot='To' slot-scope='data'>
-        <span class="skip_route" @click="skipRoute(`/address/1/${data.item.To}`)" v-show="data.item.To !== '--' ">
-          {{data.item.To?`${String(data.item.To).substr(0,16)}...`:''}}
+        <span class="skip_route" style="display: flex" v-if="data.item.To !== '--'">
+          <div class="name_address">
+            <span class="remove_default_style">
+              <router-link :to="`/address/1/${data.item.To}`" class="link_style">{{formatAddress(data.item.To)}}</router-link>
+            </span>
+            <span class="address">{{data.item.To}}</span>
+          </div>
         </span>
         <span class="no_skip" v-show="data.item.To === '--'">
           --
@@ -87,8 +97,13 @@
 
     <b-table :fields='fields' :items='items' striped v-if="type === '5'">
       <template slot='Address' slot-scope='data'>
-        <span class="skip_route" @click="skipRoute(`/address/1/${data.item.Address}`)">
-          {{data.item.Address?`${String(data.item.Address).substr(0,16)}...`:''}}
+        <span class="skip_route" style="display: flex">
+          <div class="name_address">
+            <span class="remove_default_style">
+              <router-link :to="`/address/1/${data.item.Address}`" class="link_style">{{formatAddress(data.item.Address)}}</router-link>
+            </span>
+            <span class="address">{{data.item.Address?`${formatAddress(data.item.Address)}`:''}}</span>
+          </div>
         </span>
       </template>
     </b-table>
@@ -105,6 +120,14 @@
         </span>
       </template>
       <template slot='From' slot-scope='data'>
+        <span class="skip_route" style="display: flex">
+          <div class="name_address">
+            <span class="remove_default_style" :class="data.item.From === $route.params.param?'no_skip':''">
+              <router-link :to="`/address/1/${data.item.Address}`" class="link_style">{{formatAddress(data.item.Address)}}</router-link>
+            </span>
+            <span class="address">{{data.item.Address?`${formatAddress(data.item.Address)}`:''}}</span>
+          </div>
+        </span>
         <span class="skip_route"
               :class="data.item.From === $route.params.param?'no_skip':''"
               @click="skipRoute(data.item.From === $route.params.param ? '' : `/address/1/${data.item.From}`)">
@@ -306,7 +329,7 @@
       display: none;
       position: absolute;
       left: -0.95rem;
-      top: -0.35rem;
+      top: -0.38rem;
       color: #3598db;
       background: rgba(0,0,0,0.8);
       border-radius:0.04rem;
