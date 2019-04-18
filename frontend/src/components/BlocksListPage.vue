@@ -17,7 +17,7 @@
     <div :class="blocksListPageWrap">
       <div class="pagination total_num" v-if="!$store.state.flShowValidatorStatus">
         <span class="blocks_list_page_wrap_hash_var" v-show="['1','2','3','4'].includes(type)">{{count}} total</span>
-        <b-pagination-nav :link-gen="linkGen" :number-of-pages="totalPageNum" use-router></b-pagination-nav>
+        <b-pagination-nav :link-gen="linkGen" :number-of-pages="totalPageNum" v-model="navCurrentPage" use-router></b-pagination-nav>
     </div>
       <div style="overflow-x: auto;-webkit-overflow-scrolling:touch;">
         <spin-component :showLoading="showLoading"/>
@@ -30,7 +30,7 @@
       </div>
       <div class="pagination" :class="$store.state.flShowValidatorStatus ? 'total_num' : '' " style='margin:0.2rem 0;'>
         <span v-if="$store.state.flShowValidatorStatus" class="blocks_list_page_wrap_hash_var" v-show="['1','2','3','4'].includes(type)">{{count}} total</span>
-        <b-pagination-nav :link-gen="linkGen" :number-of-pages="totalPageNum" use-router></b-pagination-nav>
+        <b-pagination-nav :link-gen="linkGen" :number-of-pages="totalPageNum" v-model="navCurrentPage" use-router></b-pagination-nav>
       </div>
     </div>
 
@@ -64,16 +64,13 @@
         this.getDataList(this.$route.query.page ? this.$route.query.page : this.defaultValidatorPageNumber, this.pageSize, this.$route.params.type);
       }
     },
-    beforeRouteUpdate(to, from, next) {
-      this.getDataList(this.$route.query.page ? this.$route.query.page : this.defaultValidatorPageNumber, this.pageSize, this.$route.params.type);
-      next();
-    },
     data() {
       return {
         devicesWidth: window.innerWidth,
         blocksListPageWrap: 'personal_computer_blocks_list_page',
         blocksValue: '',
         currentPage: 1,
+        navCurrentPage: this.$route.query.page ? this.$route.query.page : null,
         pageSize: 30,
         validatorPageSize: 100,
         defaultValidatorPageNumber:1,

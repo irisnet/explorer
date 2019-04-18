@@ -145,6 +145,11 @@
     name: 'app-header',
     watch:{
       $route(){
+        if(this.$route.path.includes('/validators/3')){
+          this.$store.commit('flShowValidatorStatus',true)
+        }else {
+          this.$store.commit('flShowValidatorStatus',false)
+        }
         this.searchInputValue = "";
         this.listenRouteForChangeActiveButton();
         this.showHeader = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
