@@ -321,7 +321,7 @@
         }
       },
       getMaxBlock() {
-        let url = `/api/blocks/1/1`;
+        let url = `/api/blocks?page=1&size=1`;
         axios.get(url).then((data) => {
           if (data.status === 200) {
             return data.data;

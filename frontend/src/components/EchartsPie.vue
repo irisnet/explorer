@@ -2,7 +2,9 @@
   <div class="echarts_component_wrap" :style="`min-width:${minWidth}rem;`">
     <div class="echarts_title_wrap">
       <span class="validators_title">Validators Top10</span>
-      <span class="validators_top" @click="viewAllClick()">View All</span>
+      <router-link class="validators_top" :to="`/validators/3/active`">
+        <span>View All</span>
+      </router-link>
     </div>
     <div id="echarts_pie">
 
@@ -165,9 +167,6 @@
     },
 
     methods: {
-      viewAllClick(){
-          this.$router.push('/validators/3/active')
-      },
       onWindowResize(){
         pie.resize();
         this.innerWidth = window.innerWidth;
@@ -197,6 +196,9 @@
         background: url('../assets/people.svg') no-repeat 0 -0.02rem;
       }
       .validators_top{
+        span{
+          color:#c9eafd;
+        }
         @include viewBtn;
       }
     }

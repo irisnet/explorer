@@ -4,7 +4,9 @@
       <span class="home_module_block_title"
             :class="homeModuleBlockTitle"
       >{{moduleName}}</span>
-      <span v-if="moduleTitle === 'blocks'" class="view_all_btn" @click="viewAllClick()">View All</span>
+      <router-link class="view_all_btn" v-if="moduleTitle === 'blocks'" :to="moduleName === 'Blocks' ? `/block/1/0` : `/recent_transactions/2/recent`">
+        <span class="view_all_Content">View All</span>
+      </router-link>
     </div>
     <div class="home_module_block_content">
       <div class="content" >
@@ -13,7 +15,8 @@
             <div class="key_value_wrap">
             <span class="blocks_module_value" :class="moduleTitle">
               <span class="transactions_tx" v-if="item.TxHash">TX# </span>
-             <span style="cursor:pointer;" @click="skipRouter(item.Height?`/blocks_detail/${item.Height}`:`/tx?txHash=${item.TxHash}`)">{{item.Height?item.Height:`${item.TxHash.substr(0,16)}...`}}</span>
+             <span style="cursor:pointer;">
+               <router-link :to="item.Height?`/blocks_detail/${item.Height}`:`/tx?txHash=${item.TxHash}`" style="color: #3598db !important;">{{item.Height?item.Height:`${item.TxHash.substr(0,16)}...`}}</router-link></span>
               </span>
               <span class="key_value_transfers_age" v-show="moduleName !== 'Blocks'">{{item.age}}</span>
               <span class="key_value_blocks_age" v-show="moduleName == 'Blocks'">{{item.age}}</span>
@@ -80,16 +83,6 @@
     },
 
     methods: {
-      skipRouter(path){
-        this.$router.push(path);
-      },
-      viewAllClick(){
-        if(this.moduleName === 'Blocks'){
-          this.$router.push('/block/1/0')
-        }else if(this.moduleName === 'Transactions'){
-          this.$router.push('/recent_transactions/2/recent')
-        }
-      },
       onresize(){
         this.innerWidth = window.innerWidth;
       },
@@ -295,5 +288,7 @@
       opacity: 1;
     }
   }
-
+  .view_all_Content{
+    color: #fff;
+  }
 </style>

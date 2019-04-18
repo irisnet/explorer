@@ -41,9 +41,9 @@
                 <span class="footer_link_contact">Use Testnet</span>
               </a>
               <span class="footer_link_join">|</span>
-              <span class="footer_link_privacy" @click="footerLinkClick('/privacy_policy')">Privacy Policy</span>
+              <span class="footer_link_privacy"><router-link :to="`/privacy_policy`">Privacy Policy</router-link></span>
               <span class="footer_link_join">|</span>
-              <span @click="footerLinkClick('/help')">FAQ</span>
+              <span class="footer-faq"><router-link :to="`/help`">FAQ</router-link></span>
             </div>
             <p class="footer_copyright_wrap">
               ©️ IRISplorer 2019 all rights reserved
@@ -283,6 +283,7 @@
             .footer_link_wrap {
               align-items: center;
               justify-content: center;
+
             }
             .footer_copyright_wrap {
               text-align: center;
@@ -343,6 +344,16 @@
                 &:nth-child(2n) {
                   color: #a2a2ae;
                   margin: 0 0.1rem;
+                }
+              }
+              .footer_link_privacy{
+                a{
+                  color: #3598db !important;
+                }
+              }
+              .footer-faq{
+                a{
+                  color: #3598db !important;
                 }
               }
             }

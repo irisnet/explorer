@@ -19,7 +19,7 @@
         <span class="blocks_list_page_wrap_hash_var" v-show="['1','2','3','4'].includes(type)">{{count}} total</span>
         <b-pagination-nav :link-gen="linkGen" :number-of-pages="totalPageNum" use-router></b-pagination-nav>
     </div>
-      <div style="position:relative;overflow-x: auto;-webkit-overflow-scrolling:touch;">
+      <div style="overflow-x: auto;-webkit-overflow-scrolling:touch;">
         <spin-component :showLoading="showLoading"/>
         <blocks-list-table :items="items" :type="this.$route.params.type"
                            :minWidth="tableMinWidth"
@@ -250,7 +250,7 @@
           if(result){
             this.items = result.map((item) => {
               return {
-                url:"",
+                url:require('../assets/header_img.png'),
                 moniker: Tools.formatString(item.description.moniker,15,'...'),
                 operatorAddress: item.operator_address,
                 commission: `${(item.commission.rate * 100).toFixed(2)} %`,
@@ -289,12 +289,13 @@
       },
       getValidatorHeaderImg(data){
         let url = 'https://keybase.io/_/api/1.0/user/lookup.json?fields=pictures&key_suffix=';
-        let that = this;
         for(let i = 0; i < data.length; i++){
           if(data[i].identity){
-            that.items[i].url = Service.http(`${url}${data[i].identity}`).then(res =>{
-              if(res && res.them[0].pictures && res.them[0].pictures.primary && res.them[0].pictures.primary.url){
+            Service.http(`${url}${data[i].identity}`).then(res =>{
+              if(res && res.them && res.them[0].pictures && res.them[0].pictures.primary && res.them[0].pictures.primary.url){
                 data[i].url = res.them[0].pictures.primary.url;
+              }else {
+                data[i].url = require('../assets/header_img.png');
               }
             })
           }else {
