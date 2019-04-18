@@ -377,6 +377,9 @@
       .no_skip{
         color:#A2A2AE;
         cursor:default;
+        .link_style{
+            color:#a2a2ae !important;
+        }
       }
     }
   }
