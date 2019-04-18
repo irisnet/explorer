@@ -485,7 +485,7 @@
   .show_trim thead tr th{
     outline: transparent;
     &::after{
-      margin-bottom: 0.07rem;
+      margin-bottom: 0.13rem;
     }
   }
   .show_trim tbody tr td:nth-child(1){
@@ -513,5 +513,27 @@
   }
   .link_style{
     color: #3598db !important;
+  }
+  //覆盖bootstrap-vue默认排序样式
+  .b-table.table > thead > tr > th[aria-sort][aria-sort="descending"]::after, .b-table.table > tfoot > tr > th[aria-sort][aria-sort="descending"]::after{
+    background: url("../../assets/desc.png") no-repeat center;
+    content:"" !important;
+    width: 0.1rem;
+    height: 0.20rem;
+    background-size: 100% ;
+  }
+  .b-table.table > thead > tr > th[aria-sort][aria-sort="ascending"]::after, .b-table.table > tfoot > tr > th[aria-sort][aria-sort="ascending"]::after{
+    background: url("../../assets/asc.png") no-repeat center;
+    content:"" !important;
+    width: 0.1rem;
+    height: 0.20rem;
+    background-size: 100% ;
+  }
+  .b-table.table > thead > tr > th[aria-sort]::after, .b-table.table > tfoot > tr > th[aria-sort]::after{
+    background: url("../../assets/default.png") no-repeat center;
+    background-size: 100% ;
+    width: 0.1rem;
+    height: 0.20rem;
+    content:"" !important;
   }
 </style>
