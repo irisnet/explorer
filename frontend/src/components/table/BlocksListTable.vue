@@ -45,7 +45,7 @@
         <span class="skip_route" style="display: flex" v-if="data.item.To !== '--'">
           <div class="name_address">
             <span class="remove_default_style">
-              <router-link :to="`/address/1/${data.item.To}`" class="link_style justify">{{formatAddress(data.item.To)}}</router-link>
+              <router-link :to="`/address/1/${data.item.To}`" class="link_style">{{formatAddress(data.item.To)}}</router-link>
             </span>
             <span class="address">{{data.item.To}}</span>
           </div>
@@ -87,7 +87,7 @@
         <span class="skip_route" style="display: flex" v-if="data.item.operatorAddress">
           <div class="name_address">
             <span class="remove_default_style">
-              <router-link :to="`/address/1/${data.item.operatorAddress}`" class="link_style justify">{{formatAddress(data.item.operatorAddress)}}</router-link>
+              <router-link :to="`/address/1/${data.item.operatorAddress}`" class="link_style">{{formatAddress(data.item.operatorAddress)}}</router-link>
             </span>
             <span class="address">{{data.item.operatorAddress}}</span>
           </div>
@@ -100,7 +100,7 @@
         <span class="skip_route" style="display: flex">
           <div class="name_address">
             <span class="remove_default_style">
-              <router-link :to="`/address/1/${data.item.Address}`" class="link_style justify">{{formatAddress(data.item.Address)}}</router-link>
+              <router-link :to="`/address/1/${data.item.Address}`" class="link_style">{{formatAddress(data.item.Address)}}</router-link>
             </span>
             <span class="address">{{data.item.Address?`${formatAddress(data.item.Address)}`:''}}</span>
           </div>
@@ -123,7 +123,7 @@
         <span class="skip_route" style="display: flex">
           <div class="name_address">
             <span class="remove_default_style" :class="data.item.From === $route.params.param?'no_skip':''">
-              <router-link :to="`/address/1/${data.item.Address}`" class="link_style justify">{{formatAddress(data.item.Address)}}</router-link>
+              <router-link :to="`/address/1/${data.item.Address}`" class="link_style">{{formatAddress(data.item.Address)}}</router-link>
             </span>
             <span class="address">{{data.item.Address?`${formatAddress(data.item.Address)}`:''}}</span>
           </div>
@@ -190,7 +190,7 @@
       <template slot='From' slot-scope='data'>
         <div class="name_address" v-show="data.item.From">
             <span class="remove_default_style" :class="data.item.From === $route.params.param?'no_skip':''">
-              <router-link :to="`/address/1/${data.item.From}`" class="link_style justify">{{formatAddress(data.item.From)}}</router-link>
+              <router-link :to="`/address/1/${data.item.From}`" class="link_style">{{formatAddress(data.item.From)}}</router-link>
             </span>
           <span class="address">{{data.item.From ? data.item.From : ''}}</span>
         </div>
@@ -198,7 +198,7 @@
       <template slot='To' slot-scope='data'>
         <div class="name_address" v-show="data.item.To && data.item.To !== '--'">
             <span class="remove_default_style" :class="data.item.To === $route.params.param?'no_skip':''">
-              <router-link :to="`/address/1/${data.item.To}`" class="link_style justify">{{formatAddress(data.item.To)}}</router-link>
+              <router-link :to="`/address/1/${data.item.To}`" class="link_style">{{formatAddress(data.item.To)}}</router-link>
             </span>
           <span class="address">{{data.item.To ? data.item.To : ''}}</span>
         </div>
@@ -243,7 +243,7 @@
       </template>
       <template slot='Owner' slot-scope='data'>
         <span class="skip_route">
-          <router-link :to="`/address/1/${data.item.Owner}`">{{data.item.Owner?`${String(data.item.Owner).substr(0,16)}...`:''}}</router-link>
+          <router-link :to="`/address/1/${data.item.Owner}`">{{data.item.Owner?`${formatAddress(data.item.Owner)}`:''}}</router-link>
         </span>
       </template>
     </b-table>
