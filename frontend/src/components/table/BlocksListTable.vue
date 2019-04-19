@@ -72,7 +72,7 @@
           {{data.index + 1}}
       </template>
       <template slot='moniker' slot-scope='data'>
-        <span class="skip_route" style="display: flex" @click="skipRoute(`/address/1/${data.item.operatorAddress}`)">
+        <span class="skip_route" style="display: flex">
           <div style="width: 0.3rem;height: 0.3rem;" v-if="data.item.url">
             <img style="width: 100%;" :src="data.item.url ? data.item.url : ''">
           </div>
@@ -128,18 +128,14 @@
             <span class="address">{{data.item.Address?`${formatAddress(data.item.Address)}`:''}}</span>
           </div>
         </span>
-        <span class="skip_route"
-              :class="data.item.From === $route.params.param?'no_skip':''"
-              @click="skipRoute(data.item.From === $route.params.param ? '' : `/address/1/${data.item.From}`)">
-          {{data.item.From?`${String(data.item.From).substr(0,16)}...`:''}}
-        </span>
       </template>
       <template slot='To' slot-scope='data'>
-        <span class="skip_route"
-              :class="data.item.To === $route.params.param?'no_skip':''"
-              @click="skipRoute(data.item.To === $route.params.param ? '' : `/address/1/${data.item.To}`)">
-          {{data.item.To?`${String(data.item.To).substr(0,16)}...`:''}}
-        </span>
+        <div class="name_address">
+            <span class="remove_default_style">
+              <router-link :to="data.item.To === $route.params.param ? '' : `/address/1/${data.item.To}`" class="link_style">{{formatAddress(data.item.To)}}</router-link>
+            </span>
+          <span class="address">{{data.item.Address?`${formatAddress(data.item.To)}`:''}}</span>
+        </div>
       </template>
     </b-table>
 
@@ -225,18 +221,20 @@
         </span>
       </template>
       <template slot='From' slot-scope='data'>
-        <span class="skip_route"
-              :class="data.item.From === $route.params.param?'no_skip':''"
-              @click="skipRoute(data.item.From === $route.params.param ? '' : `/address/1/${data.item.From}`)">
-          {{data.item.From?`${formatAddress(data.item.From)}`:''}}
-        </span>
+        <div class="name_address" v-show="data.item.From && data.item.From !== '--'">
+            <span class="remove_default_style" :class="data.item.From === $route.params.param?'no_skip':''">
+              <router-link :to="data.item.From === $route.params.param ? '' : `/address/1/${data.item.From}`" class="link_style">{{formatAddress(data.item.From)}}</router-link>
+            </span>
+          <span class="address">{{data.item.From ? data.item.From : ''}}</span>
+        </div>
       </template>
       <template slot='To' slot-scope='data'>
-        <span class="skip_route"
-              :class="data.item.To === $route.params.param?'no_skip':''"
-              @click="skipRoute(data.item.To === $route.params.param ? '' : `/address/1/${data.item.To}`)" v-show="data.item.To !== '--'">
-          {{data.item.To?`${formatAddress(data.item.To)}`:''}}
-        </span>
+        <div class="name_address" v-show="data.item.To && data.item.To !== '--'">
+            <span class="remove_default_style" :class="data.item.To === $route.params.param?'no_skip':''">
+              <router-link :to="data.item.To === $route.params.param ? '' : `/address/1/${data.item.To}`" class="link_style">{{formatAddress(data.item.To)}}</router-link>
+            </span>
+          <span class="address">{{data.item.To ? data.item.To : ''}}</span>
+        </div>
         <span class="no_skip" v-show="data.item.To == '--'">
           --
         </span>
@@ -310,12 +308,6 @@
 
     props: ['items', 'type','showNoData','minWidth','status'],
     methods: {
-      skipRoute(path) {
-        if(path !== "") {
-          this.$router.push(path);
-          Tools.scrollToTop()
-        }
-      },
       formatAddress(address){
         return Tools.formatValidatorAddress(address)
       }
@@ -525,6 +517,7 @@
     width: 0.1rem;
     height: 0.20rem;
     background-size: 100% ;
+    opacity: 1;
   }
   .b-table.table > thead > tr > th[aria-sort][aria-sort="ascending"]::after, .b-table.table > tfoot > tr > th[aria-sort][aria-sort="ascending"]::after{
     background: url("../../assets/asc.png") no-repeat center;
@@ -532,6 +525,7 @@
     width: 0.1rem;
     height: 0.20rem;
     background-size: 100% ;
+    opacity: 1;
   }
   .b-table.table > thead > tr > th[aria-sort]::after, .b-table.table > tfoot > tr > th[aria-sort]::after{
     background: url("../../assets/default.png") no-repeat center;
@@ -539,5 +533,17 @@
     width: 0.1rem;
     height: 0.20rem;
     content:"" !important;
+    opacity: 1;
+  }
+  table.b-table>tfoot>tr>th.sorting:before, table.b-table>thead>tr>th.sorting:before{
+    content:"" !important;
+  }
+  table.b-table>tfoot>tr>th.sorting:after, table.b-table>thead>tr>th.sorting:after{
+    background: url("../../assets/default.png") no-repeat center;
+    background-size: 100% ;
+    width: 0.1rem;
+    height: 0.20rem;
+    content:"" !important;
+    opacity: 1;
   }
 </style>
