@@ -34,7 +34,7 @@
         </div>
         <div class="information_props_wrap" v-show="!flValidator">
           <span class="information_props">Withdraw To :</span>
-          <span class="information_value information_show_trim jump_link_style" v-show="withdrawAddress" @click="skipRoute(`/address/1/${withdrawAddress}`)">{{withdrawAddress}}</span>
+          <span class="information_value information_show_trim jump_link_style" v-show="withdrawAddress"><router-link :to="`/address/1/${withdrawAddress}`">{{withdrawAddress}}</router-link></span>
           <span class="information_value information_show_trim" v-show="!withdrawAddress">--</span>
         </div>
         <div class="information_props_wrap">
@@ -56,7 +56,7 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Owner :</span>
-          <span class="information_value operator_value" v-show="operatorValue" @click="skipRoute(`/address/1/${operatorValue}`)"><router-link :to="`/address/1/${operatorValue}`" target="_blank">{{operatorValue}}</router-link></span>
+          <span class="information_value operator_value" v-show="operatorValue"><router-link :to="`/address/1/${operatorValue}`" target="_blank">{{operatorValue}}</router-link></span>
           <span class="information_value" v-show="!operatorValue">--</span>
         </div>
         <div class="information_props_wrap">
@@ -427,9 +427,6 @@
         }).catch(e =>{
           console.error(e)
         })
-      },
-      skipRoute(path){
-        this.$router.push(path)
       },
       getProfileInformation(){
         let url = `/api/stake/candidate/${this.$route.params.param}`;
@@ -1157,6 +1154,9 @@
   .jump_link_style{
     cursor: pointer;
     color: #3598db !important;
+    a{
+      color: #3598db !important;
+    }
   }
   .list_tab_wrap{
     padding: 0!important;
