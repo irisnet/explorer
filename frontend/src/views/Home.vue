@@ -12,7 +12,7 @@
             </div>
             <p class="current_block">{{currentBlockHeight}}</p>
             <p class="block_time proposer_container">
-              <span class="proposer_content" @click="toAddressDetail(proposerAddress)">{{moniker}}</span>
+              <span class="proposer_content"><router-link :to="`/address/1/${proposerAddress}`">{{moniker}}</router-link></span>
             </p>
           </li>
           <li class="item_status">
@@ -346,6 +346,7 @@ import Constant from "../constant/Constant";
             clearInterval(this.transfersTimer);
                 this.transfersTimer = setInterval(function () {
                   that.transactionInformation.map(item => {
+                  currentServerTime = new Date().getTime() + that.diffMilliseconds;
                   lastTxTime = new Date(transactionList[0].time).getTime();
                   item.age = Tools.formatAge(currentServerTime,item.Time,Constant.SUFFIX,Constant.PREFIX);
                   return item
@@ -356,12 +357,6 @@ import Constant from "../constant/Constant";
             console.log(e)
           })
         },
-        toBlockDetail(blockHeight){
-            if(blockHeight && blockHeight !== '--'){
-              let path = `/blocks_detail/${blockHeight}`;
-              this.$router.push(path)
-            }
-      },
       getNavigation(){
         let url = `/api/home/navigation`;
         Service.http(url).then(res => {
@@ -401,9 +396,6 @@ import Constant from "../constant/Constant";
         }
         return tokens
       },
-      toAddressDetail(address){
-        this.$router.push(`/address/1/${address}`)
-      }
     },
       destroyed () {
         clearInterval(this.timer);
@@ -636,6 +628,8 @@ import Constant from "../constant/Constant";
   }
   .proposer_content{
     cursor: pointer;
-    color:#3598db;
+    a{
+      color:#3598db !important;
+    }
   }
 </style>

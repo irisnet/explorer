@@ -5,8 +5,8 @@
 
     <b-table :fields='blockFields' :items='items' striped v-if="type === '1'">
       <template slot='Height' slot-scope='data'>
-        <span class="skip_route" @click="skipRoute(`/blocks_detail/${data.item.Height}`)">
-          {{data.item.Height}}
+        <span class="skip_route">
+          <router-link :to="`/blocks_detail/${data.item.Height}`">{{data.item.Height}}</router-link>
         </span>
       </template>
       <template slot='Txn' slot-scope='data'>
@@ -19,23 +19,23 @@
 
     <b-table :fields='fields' :items='items' striped v-if="type === '2'" class="block_style">
       <template slot='TxHash' slot-scope='data'>
-        <span class="skip_route" @click="skipRoute(`/tx?txHash=${data.item.TxHash}`)">
-          {{data.item.TxHash?`${String(data.item.TxHash).substr(0,16)}...`:''}}
+        <span class="skip_route">
+          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item.TxHash?`${String(data.item.TxHash).substr(0,16)}...`:''}}</router-link>
         </span>
       </template>
       <template slot='Age' slot-scope='data'>
         <span v-show="data.item.Age">{{data.item.Age}}</span>
       </template>
       <template slot='Block' slot-scope='data'>
-        <span class="skip_route" @click="skipRoute(`/blocks_detail/${data.item.Block}`)">
-          {{data.item.Block}}
+        <span class="skip_route">
+          <router-link :to="`/blocks_detail/${data.item.Block}`">{{data.item.Block}}</router-link>
         </span>
       </template>
       <template slot='From' slot-scope='data'>
         <span class="skip_route" style="display: flex" v-if="data.item.From">
           <div class="name_address">
             <span class="remove_default_style">
-              <router-link :to="`/address/1/${data.item.From}`" class="link_style">{{formatAddress(data.item.From)}}</router-link>
+              <router-link :to="`/address/1/${data.item.From}`" class="link_style justify">{{formatAddress(data.item.From)}}</router-link>
             </span>
             <span class="address">{{data.item.From}}</span>
           </div>
@@ -55,8 +55,8 @@
         </span>
       </template>
       <template slot='Owner' slot-scope='data'>
-        <span class="skip_route"  @click="skipRoute(`/address/1/${data.item.Owner}`)">
-          {{data.item.Owner?`${String(data.item.Owner).substr(0,16)}...`:''}}
+        <span class="skip_route">
+          <router-link :to="`/address/1/${data.item.Owner}`">{{data.item.Owner?`${String(data.item.Owner).substr(0,16)}...`:''}}</router-link>
         </span>
       </template>
       <template slot='Moniker' slot-scope='data'>
@@ -110,13 +110,13 @@
 
     <b-table :fields='fields' :items='items' striped v-if="type === '6'" style="margin-bottom:0;">
       <template slot='TxHash' slot-scope='data'>
-        <span class="skip_route" @click="skipRoute(`/tx?txHash=${data.item.TxHash}`)">
-          {{data.item.TxHash?`${String(data.item.TxHash).substr(0,16)}...`:''}}
+        <span class="skip_route">
+          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item.TxHash?`${String(data.item.TxHash).substr(0,16)}...`:''}}</router-link>
         </span>
       </template>
       <template slot='Block' slot-scope='data'>
-        <span class="skip_route" @click="skipRoute(`/blocks_detail/${data.item.Block}`)">
-          {{data.item.Block}}
+        <span class="skip_route">
+          <router-link :to="`/blocks_detail/${data.item.Block}`">{{data.item.Block}}</router-link>
         </span>
       </template>
       <template slot='From' slot-scope='data'>
@@ -145,16 +145,16 @@
 
     <b-table :fields='fields' :items='items' striped v-if="type === '7'" style="margin-bottom:0;">
       <template slot='Block Height' slot-scope='data'>
-        <span class="skip_route" @click="skipRoute(`/blocks_detail/${data.item['Block Height']}`)">
-          {{data.item['Block Height']}}
+        <span class="skip_route">
+          <router-link :to="`/blocks_detail/${data.item['Block Height']}`">{{data.item['Block Height']}}</router-link>
         </span>
       </template>
     </b-table>
 
     <b-table :fields='fields' :items='items' striped  v-if="type === 'Proposals'" class="show_trim">
       <template slot='Title' slot-scope='data'>
-        <span class="skip_route" @click="skipRoute(`/ProposalsDetail/${data.item['Proposal ID']}`)">
-          <pre class="proposals-list">{{data.item['Title']}}</pre>
+        <span class="skip_route">
+         <router-link :to="`/ProposalsDetail/${data.item['Proposal ID']}`"><pre class="proposals-list">{{data.item['Title']}}</pre></router-link>
         </span>
       </template>
       <template slot="SubmitTime" slot-scope='data'>
@@ -175,74 +175,77 @@
 
     <b-table :fields='fields' :items='items' striped v-if="type === 'addressTxList'" nodelabel >
       <template slot='TxHash' slot-scope='data'>
-        <span class="skip_route" @click="skipRoute(`/tx?txHash=${data.item.TxHash}`)">
-          {{data.item['TxHash'] ? `${String(data.item.TxHash).substr(0,16)}...` : ''}}
+        <span class="skip_route">
+          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item['TxHash'] ? `${String(data.item.TxHash).substr(0,16)}...` : ''}}</router-link>
         </span>
       </template>
       <template slot='Age' slot-scope='data'>
         <span v-show="data.item.Age">{{data.item.Age}}</span>
       </template>
       <template slot='Block' slot-scope='data'>
-        <span class="skip_route" @click="skipRoute(`/blocks_detail/${data.item.Block}`)">
-          {{data.item.Block}}
+        <span class="skip_route">
+          <router-link :to="`/blocks_detail/${data.item.Block}`">{{data.item.Block}}</router-link>
         </span>
       </template>
       <template slot='From' slot-scope='data'>
-        <span class="skip_route"
-              :class="data.item.From === $route.params.param?'no_skip':''"
-              @click="skipRoute(data.item.From === $route.params.param ? '' : `/address/1/${data.item.From}`)">
-          {{data.item.From?`${String(data.item.From).substr(0,16)}...`:''}}
-        </span>
+        <div class="name_address" v-show="data.item.From">
+            <span class="remove_default_style" :class="data.item.From === $route.params.param?'no_skip':''">
+              <router-link :to="`/address/1/${data.item.From}`" class="link_style">{{formatAddress(data.item.From)}}</router-link>
+            </span>
+          <span class="address">{{data.item.From ? data.item.From : ''}}</span>
+        </div>
       </template>
       <template slot='To' slot-scope='data'>
-        <span class="skip_route"
-              :class="data.item.To === $route.params.param?'no_skip':''"
-              @click="skipRoute(data.item.To === $route.params.param ? '' : `/address/1/${data.item.To}`)" v-show="data.item.To !== '--'">
-          {{data.item.To?`${String(data.item.To).substr(0,16)}...`:''}}
-        </span>
+        <div class="name_address" v-show="data.item.To && data.item.To !== '--'">
+            <span class="remove_default_style" :class="data.item.To === $route.params.param?'no_skip':''">
+              <router-link :to="`/address/1/${data.item.To}`" class="link_style">{{formatAddress(data.item.To)}}</router-link>
+            </span>
+          <span class="address">{{data.item.To ? data.item.To : ''}}</span>
+        </div>
         <span class="no_skip" v-show="data.item.To == '--'">
           --
         </span>
       </template>
       <template slot='Owner' slot-scope='data'>
         <span>
-          {{data.item.Owner?`${String(data.item.Owner).substr(0,16)}...`:''}}
+          {{data.item.Owner?`${formatAddress(data.item.Owner)}`:''}}
         </span>
       </template>
     </b-table>
 
     <b-table :fields='fields' :items='items' striped v-if="type === 'blockTxList'" nodelabel class="block_style">
       <template slot='TxHash' slot-scope='data'>
-        <span class="skip_route" @click="skipRoute(`/tx?txHash=${data.item.TxHash}`)">
-          {{data.item['TxHash'] ? `${String(data.item.TxHash).substr(0,16)}...` : ''}}
+        <span class="skip_route">
+          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item['TxHash'] ? `${String(data.item.TxHash).substr(0,16)}...` : ''}}</router-link>
         </span>
       </template>
       <template slot='Block' slot-scope='data'>
-        <span class="skip_route" @click="skipRoute(`/blocks_detail/${data.item.Block}`)">
-          {{data.item.Block}}
+        <span class="skip_route">
+          <router-link :to="`/blocks_detail/${data.item.Block}`">{{data.item.Block}}</router-link>
         </span>
       </template>
       <template slot='From' slot-scope='data'>
         <span class="skip_route"
               :class="data.item.From === $route.params.param?'no_skip':''"
               @click="skipRoute(data.item.From === $route.params.param ? '' : `/address/1/${data.item.From}`)">
-          {{data.item.From?`${String(data.item.From).substr(0,16)}...`:''}}
+          {{data.item.From?`${formatAddress(data.item.From)}`:''}}
         </span>
       </template>
       <template slot='To' slot-scope='data'>
         <span class="skip_route"
               :class="data.item.To === $route.params.param?'no_skip':''"
               @click="skipRoute(data.item.To === $route.params.param ? '' : `/address/1/${data.item.To}`)" v-show="data.item.To !== '--'">
-          {{data.item.To?`${String(data.item.To).substr(0,16)}...`:''}}
+          {{data.item.To?`${formatAddress(data.item.To)}`:''}}
         </span>
         <span class="no_skip" v-show="data.item.To == '--'">
           --
         </span>
       </template>
       <template slot='Owner' slot-scope='data'>
-        <span class="skip_route" @click="skipRoute(`/address/1/${data.item.Owner}`)">{{data.item.Owner?`${String(data.item.Owner).substr(0,16)}...`:''}}</span>
+        <span class="skip_route">
+          <router-link :to="`/address/1/${data.item.Owner}`">{{data.item.Owner?`${formatAddress(data.item.Owner)}`:''}}</router-link>
+        </span>
       </template>
-
     </b-table>
   </div>
 
@@ -328,7 +331,7 @@
     .address{
       display: none;
       position: absolute;
-      left: -0.95rem;
+      left: -1.05rem;
       top: -0.38rem;
       color: #3598db;
       background: rgba(0,0,0,0.8);
@@ -366,12 +369,17 @@
       overflow-wrap: break-word !important;
       word-wrap: break-word !important;
       .skip_route {
-        color: #3598db;
-        cursor: pointer;
+        a{
+          color: #3598db!important;
+          cursor: pointer;
+        }
       }
       .no_skip{
         color:#A2A2AE;
         cursor:default;
+        .link_style{
+            color:#a2a2ae !important;
+        }
       }
     }
   }
@@ -480,11 +488,8 @@
   .show_trim thead tr th{
     outline: transparent;
     &::after{
-      margin-bottom: 0.07rem;
+      margin-bottom: 0.13rem;
     }
-  }
-  .show_trim thead tr th:nth-child(1){
-    text-align: center;
   }
   .show_trim tbody tr td:nth-child(1){
     padding: 0.075rem !important;
@@ -505,16 +510,33 @@
       min-width: 2rem;
     }
   }
-  .table_wrap{
-    tbody tr td:last-child{
-      min-width: 2rem;
-    }
-  }
   pre{
     font-family: Arial !important;
     margin: 0;
   }
   .link_style{
     color: #3598db !important;
+  }
+  //覆盖bootstrap-vue默认排序样式
+  .b-table.table > thead > tr > th[aria-sort][aria-sort="descending"]::after, .b-table.table > tfoot > tr > th[aria-sort][aria-sort="descending"]::after{
+    background: url("../../assets/desc.png") no-repeat center;
+    content:"" !important;
+    width: 0.1rem;
+    height: 0.20rem;
+    background-size: 100% ;
+  }
+  .b-table.table > thead > tr > th[aria-sort][aria-sort="ascending"]::after, .b-table.table > tfoot > tr > th[aria-sort][aria-sort="ascending"]::after{
+    background: url("../../assets/asc.png") no-repeat center;
+    content:"" !important;
+    width: 0.1rem;
+    height: 0.20rem;
+    background-size: 100% ;
+  }
+  .b-table.table > thead > tr > th[aria-sort]::after, .b-table.table > tfoot > tr > th[aria-sort]::after{
+    background: url("../../assets/default.png") no-repeat center;
+    background-size: 100% ;
+    width: 0.1rem;
+    height: 0.20rem;
+    content:"" !important;
   }
 </style>
