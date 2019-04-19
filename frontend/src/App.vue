@@ -110,11 +110,13 @@
       this.showHeaderAndFooterByVersionPath();
       window.addEventListener('resize', this.onresize);
       if (window.innerWidth > 960) {
+        this.$store.commit('isMobile',false);
         this.footerClass = 'person_computer_wrap';
         this.footerClassName = 'person_computer_footer';
         this.footerLeftVar = 'person_computer_footer_left';
         this.footerRightVar = 'person_computer_footer_right';
       } else {
+        this.$store.commit('isMobile',true);
         this.footerClass = 'mobile_wrap_footer';
         this.footerClassName = 'mobile_footer';
         this.footerLeftVar = 'mobile_footer_left';
@@ -130,9 +132,6 @@
         if(e.target.scrollTop > 0){
           this.scrollHeight = e.target.scrollTop
         }
-      },
-      footerLinkClick(path) {
-        this.$router.push(path);
       },
       onresize() {
         this.innerWidth = window.innerWidth;

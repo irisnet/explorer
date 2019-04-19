@@ -164,15 +164,17 @@
               this.setTotalPageNum(this.count,this.pageSize);
               this.items = data.Data.map(item => {
                 let txn = item.num_txs;
-                let precommit = item.last_commit.length;
+                let precommit = item.last_commit && item.last_commit.length !== 0  ? item.last_commit.length : 0;
                 let [votingPower,denominator,numerator] = [0,0,0];
                 item.validators.forEach(listItem=>votingPower += listItem.voting_power);
                 item.validators.forEach(item=>denominator += item.voting_power);
-                for(let i = 0; i < item.last_commit.length; i++){
-                  for (let j = 0; j < item.validators.length; j++){
-                    if(item.last_commit[i].ValidatorAddress === item.validators[j].Address){
-                      numerator += item.validators[j].voting_power;
-                      break;
+                if(item.last_commit && item.last_commit.length !== 0){
+                  for(let i = 0; i < item.last_commit.length; i++){
+                    for (let j = 0; j < item.validators.length; j++){
+                      if(item.last_commit[i] === item.validators[j].address){
+                        numerator += item.validators[j].voting_power;
+                        break;
+                      }
                     }
                   }
                 }

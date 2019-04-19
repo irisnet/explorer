@@ -493,6 +493,7 @@
   }
   .show_trim tbody tr td:nth-child(1){
     padding: 0.075rem !important;
+    width: 1.9rem;
   }
   .block_style thead tr th:nth-child(1){
     width: 16%;
