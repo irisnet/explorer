@@ -153,7 +153,6 @@ import Constant from "../constant/Constant";
                       document.getElementsByClassName('fixed_item_height')[1].style.height = '6.55rem';
                   }
               } else {
-                  this.$store.commit('isMobile',true)
                   this.pageClassName = 'mobile_home_wrap';
                   this.module_item_wrap = 'module_item_wrap_mobile';
               }
