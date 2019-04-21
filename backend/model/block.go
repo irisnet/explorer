@@ -2,6 +2,8 @@ package model
 
 import (
 	"time"
+
+	"github.com/irisnet/explorer/backend/orm/document"
 )
 
 type BlockInfoVo struct {
@@ -31,4 +33,25 @@ type BlockValidator struct {
 type ValidatorSet struct {
 	Total int              `json:"total"`
 	Items []BlockValidator `json:"items"`
+}
+
+type Block struct {
+	BlockInfo    BlockInfo    `json:"block_info"`
+	ValidatorSet ValidatorSet `json:"validator_set"`
+	TokenFlows   TokenFlows   `json:"token_flows"`
+	Proposals    []Proposal   `json:"proposals"`
+}
+
+type BlockInfo struct {
+	BlockHeight         string        `json:"block_height"`
+	Timestamp           time.Time     `json:"timestamp"`
+	BlockHash           string        `json:"block_hash"`
+	Transactions        string        `json:"transactions"`
+	Propopser           string        `json:"propopser"`
+	Reward              document.Coin `json:"reward"`
+	LastBlock           int           `json:"last_block"`
+	LastBlockHash       string        `json:"last_block_hash"`
+	PrecommitValidators string        `json:"precommit_validators"`
+	VotingPower         string        `json:"voting_power"`
+	LatestHeight        string        `json:"latest_height"`
 }

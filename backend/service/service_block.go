@@ -1,11 +1,15 @@
 package service
 
 import (
+	"fmt"
+	"strconv"
+
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
+	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -15,6 +19,16 @@ type BlockService struct {
 
 func (service *BlockService) GetModule() Module {
 	return Block
+}
+
+func (service *BlockService) QueryBlock(blockHeight int64) model.Block {
+	result := model.Block{}
+	result.BlockInfo = service.Query(blockHeight)
+	result.ValidatorSet = service.GetValidatorSet(blockHeight, 1, 10)
+	result.TokenFlows = Get(Tx).(*TxService).QueryTokenFlow(blockHeight, 1, 10)
+	result.Proposals = Get(Proposal).(*ProposalService).QueryProposalsByBlockHeight(blockHeight)
+
+	return result
 }
 
 func (service *BlockService) GetValidatorSet(height int64, page, size int) model.ValidatorSet {
@@ -31,7 +45,8 @@ func (service *BlockService) GetValidatorSet(height int64, page, size int) model
 			tmp.VotingPower = v.VotingPower
 			tmp.ProposerPriority = v.ProposerPriority
 			var validatorDoc document.Validator
-			err := queryOne(document.CollectionNmValidator, nil, bson.M{"consensus_pubkey": v.PubKey}, &validatorDoc)
+			var selector = bson.M{"description.moniker": 1, "operator_address": 1}
+			err := queryOne(document.CollectionNmValidator, selector, bson.M{"consensus_pubkey": v.PubKey}, &validatorDoc)
 			if err != nil {
 				logger.Error("get validator set err", logger.String("error", err.Error()), service.GetTraceLog())
 			}
@@ -45,15 +60,68 @@ func (service *BlockService) GetValidatorSet(height int64, page, size int) model
 	return result
 }
 
-func (service *BlockService) Query(height int64) model.BlockInfoVo {
-	var selector = bson.M{"height": 1, "time": 1, "num_txs": 1, "hash": 1, "validators.address": 1, "validators.voting_power": 1, "block.last_commit.precommits.validator_address": 1, "block.last_commit.block_id.hash": 1, "meta.header.total_txs": 1}
-	var result document.Block
+func (service *BlockService) Query(height int64) model.BlockInfo {
+	var result model.BlockInfo
 
-	var err = queryOne(document.CollectionNmBlock, selector, bson.M{document.Block_Field_Height: height}, &result)
-	if err != nil {
+	b := lcd.Block(height)
+	if b.Block.Header.Height == "" {
 		panic(types.CodeNotFound)
 	}
-	return buildBlock(result)
+
+	result.BlockHash = b.BlockMeta.BlockID.Hash
+	result.BlockHeight = b.Block.Header.Height
+
+	heightAsInt, err := strconv.Atoi(b.Block.Header.Height)
+	if err != nil {
+		logger.Error("block header height is not int type")
+	}
+	result.LastBlock = heightAsInt - 1
+	result.LastBlockHash = b.Block.Header.LastBlockID.Hash
+
+	var selector = bson.M{"description.moniker": 1}
+	var validatorDoc document.Validator
+	err = queryOne(document.CollectionNmValidator, selector, bson.M{"proposer_addr": b.BlockMeta.Header.ProposerAddress}, &validatorDoc)
+
+	if err != nil {
+		logger.Error("query validator collection  err", logger.String("error", err.Error()), service.GetTraceLog())
+		return result
+	}
+
+	result.Propopser = validatorDoc.Description.Moniker
+	result.Timestamp = b.BlockMeta.Header.Time
+	result.Transactions = b.BlockMeta.Header.TotalTxs
+	if height <= 1 {
+		result.PrecommitValidators = "0/0"
+		result.VotingPower = "0%"
+	} else {
+		lcdValidators := lcd.ValidatorSet(height - 1)
+		result.PrecommitValidators = strconv.Itoa(len(b.Block.LastCommit.Precommits)) + "/" + strconv.Itoa(len(lcdValidators.Validators))
+		var totalVotingPower, precommitVotingPower int
+		for k, v := range lcdValidators.Validators {
+			powerAsInt, err := strconv.Atoi(v.VotingPower)
+			if err != nil {
+				logger.Error("strconv VotingPower err", logger.String("error", err.Error()), service.GetTraceLog())
+			}
+			totalVotingPower += powerAsInt
+			for _, precommitValidator := range b.Block.LastCommit.Precommits {
+				if strconv.Itoa(k) == precommitValidator.ValidatorIndex {
+					precommitVotingPower += powerAsInt
+				}
+			}
+		}
+		percent := strconv.Itoa(precommitVotingPower * 10000 / totalVotingPower)
+		preLen := len(percent) - 2
+		result.VotingPower = fmt.Sprintf(percent[:preLen]+"."+percent[preLen:]) + "%"
+	}
+	blockRes := lcd.BlockResult(height)
+	for _, v := range blockRes.Results.BeginBlock.Tags {
+		if v.Key == "mint-coin" {
+			result.Reward = utils.ParseCoin(v.Value)
+		}
+	}
+
+	result.LatestHeight = lcd.BlockLatest().BlockMeta.Header.Height
+	return result
 }
 
 func (service *BlockService) QueryList(page, size int) model.PageVo {

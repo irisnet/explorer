@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"strconv"
+
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/service"
@@ -34,14 +36,13 @@ var block = Block{
 
 func registerQueryBlock(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryBlock, "GET", func(request model.IrisReq) interface{} {
-		h := Var(request, "height")
-		height, ok := utils.ParseInt(h)
-		if !ok {
-			panic(types.CodeInValidParam)
-			return nil
-		}
 		block.SetTid(request.TraceId)
-		result := block.Query(height)
+
+		height, err := strconv.ParseInt(Var(request, "height"), 10, 0)
+		if err != nil || height < 1 {
+			panic(types.CodeInValidParam)
+		}
+		result := block.QueryBlock(height)
 		return result
 	})
 	return nil
