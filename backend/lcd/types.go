@@ -18,6 +18,7 @@ const (
 	UrlValidatorSet       = "%s/validatorsets/%d"
 	UrlValidatorSetLatest = "%s/validatorsets/latest"
 	UrlStakePool          = "%s/stake/pool"
+	UrlBlocksResult       = "%s/blocks-result/%d"
 )
 
 type AccountVo struct {
@@ -434,4 +435,42 @@ type SignInfoVo struct {
 	IndexOffset         string    `json:"index_offset"`
 	JailedUntil         time.Time `json:"jailed_until"`
 	MissedBlocksCounter string    `json:"missed_blocks_counter"`
+}
+
+type BlockResultVo struct {
+	Height  string `json:"height"`
+	Results struct {
+		DeliverTx []struct {
+			Code      int         `json:"code"`
+			Data      interface{} `json:"data"`
+			Log       string      `json:"log"`
+			Info      string      `json:"info"`
+			GasWanted string      `json:"gas_wanted"`
+			GasUsed   string      `json:"gas_used"`
+			Tags      []struct {
+				Key   string `json:"key"`
+				Value string `json:"value"`
+			} `json:"tags"`
+		} `json:"deliver_tx"`
+		EndBlock struct {
+			ValidatorUpdates []struct {
+				PubKey struct {
+					Type string `json:"type"`
+					Data string `json:"data"`
+				} `json:"pub_key"`
+				Power string `json:"power"`
+			} `json:"validator_updates"`
+			ConsensusParamUpdates interface{} `json:"consensus_param_updates"`
+			Tags                  []struct {
+				Key   string `json:"key"`
+				Value string `json:"value"`
+			} `json:"tags"`
+		} `json:"end_block"`
+		BeginBlock struct {
+			Tags []struct {
+				Key   string `json:"key"`
+				Value string `json:"value"`
+			} `json:"tags"`
+		} `json:"begin_block"`
+	} `json:"results"`
 }
