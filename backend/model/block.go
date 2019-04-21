@@ -19,3 +19,16 @@ type ValInfo struct {
 	Address     string `json:"address"`
 	VotingPower int64  `json:"voting_power"`
 }
+
+type BlockValidator struct {
+	Moniker          string `json:"moniker"`
+	OperatorAddress  string `json:"operator_address"`
+	Consensus        string `json:"consensus"`
+	ProposerPriority string `json:"proposer_priority"`
+	VotingPower      string `json:"voting_power"`
+}
+
+type ValidatorSet struct {
+	Total int              `json:"total"`
+	Items []BlockValidator `json:"items"`
+}
