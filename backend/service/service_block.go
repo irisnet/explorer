@@ -1,6 +1,8 @@
 package service
 
 import (
+	"github.com/irisnet/explorer/backend/lcd"
+	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
@@ -13,6 +15,34 @@ type BlockService struct {
 
 func (service *BlockService) GetModule() Module {
 	return Block
+}
+
+func (service *BlockService) GetValidatorSet(height int64, page, size int) model.ValidatorSet {
+	result := model.ValidatorSet{}
+	lcdValidators := lcd.ValidatorSet(height)
+	if page > 0 {
+		page = page - 1
+	}
+	items := []model.BlockValidator{}
+	for k, v := range lcdValidators.Validators {
+		if k >= page*size && k < (page+1)*size {
+			var tmp model.BlockValidator
+			tmp.Consensus = v.PubKey
+			tmp.VotingPower = v.VotingPower
+			tmp.ProposerPriority = v.ProposerPriority
+			var validatorDoc document.Validator
+			err := queryOne(document.CollectionNmValidator, nil, bson.M{"consensus_pubkey": v.PubKey}, &validatorDoc)
+			if err != nil {
+				logger.Error("get validator set err", logger.String("error", err.Error()), service.GetTraceLog())
+			}
+			tmp.OperatorAddress = validatorDoc.OperatorAddress
+			tmp.Moniker = validatorDoc.Description.Moniker
+			items = append(items, tmp)
+		}
+	}
+	result.Items = items
+	result.Total = len(lcdValidators.Validators)
+	return result
 }
 
 func (service *BlockService) Query(height int64) model.BlockInfoVo {
