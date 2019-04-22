@@ -261,11 +261,13 @@
             let denominator = 0;
             data.validators.forEach(item => denominator += item.voting_power);
             let numerator = 0;
-            for (let i = 0; i < data.last_commit.length; i++) {
-              for (let j = 0; j < data.validators.length; j++) {
-                if (data.last_commit[i] === data.validators[j].address) {
-                  numerator += data.validators[j].voting_power;
-                  break;
+            if(data.last_commit && data.last_commit.length !== 0 ){
+              for (let i = 0; i < data.last_commit.length; i++) {
+                for (let j = 0; j < data.validators.length; j++) {
+                  if (data.last_commit[i] === data.validators[j].address) {
+                    numerator += data.validators[j].voting_power;
+                    break;
+                  }
                 }
               }
             }
