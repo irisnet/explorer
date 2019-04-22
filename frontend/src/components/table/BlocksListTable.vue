@@ -261,10 +261,6 @@
             this.validatorStatus(items);
           }
         })
-     /*   if(items){
-          this.validatorStatus(items);
-          // this.noDataValidatorStatus(items)
-        }*/
       },
     },
     data() {
@@ -386,6 +382,7 @@
       },
       validatorStatus(validatorList){
         validatorList.forEach(item => {
+          //TODO(ZHANGJINBIAO) 后端返回魔法数字含义不清，需跟后端确认含义
           if(item && item.jailedValue && item.status === 0){
             this.validatorFields = this.jailedValidatorFields
           }else if(item && !item.jailedValue && item.status === 2){
