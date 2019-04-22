@@ -33,6 +33,7 @@ var (
 	Time       = zap.Time
 	Any        = zap.Any
 	Duration   = zap.Duration
+	NamedError = zap.NamedError
 )
 
 type Logger struct {

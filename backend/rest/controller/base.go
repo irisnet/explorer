@@ -67,16 +67,16 @@ func GetPage(r model.IrisReq) (int, int) {
 // execute user's business code
 func doAction(request model.IrisReq, action Action) interface{} {
 	//do business action
-	logger.Debug("doAction exec", logger.Int64("traceId", request.TraceId))
+	logger.Debug("doAction exec", logger.String("traceId", request.TraceId))
 	result := action(request)
-	logger.Debug("doAction result", logger.Int64("traceId", request.TraceId), logger.Any("result", result))
+	logger.Debug("doAction result", logger.String("traceId", request.TraceId), logger.Any("result", result))
 	return result
 }
 
 // deal with exception for business action
 func doException(request model.IrisReq, writer http.ResponseWriter) {
 	if r := recover(); r != nil {
-		trace := logger.Int64("traceId", request.TraceId)
+		trace := logger.String("traceId", request.TraceId)
 		errMsg := logger.Any("errMsg", r)
 		switch r.(type) {
 		case types.BizCode:

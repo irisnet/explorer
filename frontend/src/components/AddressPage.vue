@@ -34,7 +34,7 @@
         </div>
         <div class="information_props_wrap" v-show="!flValidator">
           <span class="information_props">Withdraw To :</span>
-          <span class="information_value information_show_trim jump_link_style" v-show="withdrawAddress" @click="skipRoute(`/address/1/${withdrawAddress}`)">{{withdrawAddress}}</span>
+          <span class="information_value information_show_trim jump_link_style" v-show="withdrawAddress"><router-link :to="`/address/1/${withdrawAddress}`">{{withdrawAddress}}</router-link></span>
           <span class="information_value information_show_trim" v-show="!withdrawAddress">--</span>
         </div>
         <div class="information_props_wrap">
@@ -56,7 +56,7 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Owner :</span>
-          <span class="information_value operator_value" v-show="operatorValue" @click="skipRoute(`/address/1/${operatorValue}`)">{{operatorValue}}</span>
+          <span class="information_value operator_value" v-show="operatorValue"><router-link :to="`/address/1/${operatorValue}`">{{operatorValue}}</router-link></span>
           <span class="information_value" v-show="!operatorValue">--</span>
         </div>
         <div class="information_props_wrap">
@@ -151,7 +151,7 @@
         <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
         </b-pagination>
       </div>
-      <div class="blocks_list_table_contianer">
+      <div class="blocks_list_table_container">
         <spin-component :showLoading="showLoading"/>
         <blocks-list-table :items="items" :type="'addressTxList'"
                            :showNoData="showNoData"></blocks-list-table>
@@ -201,6 +201,8 @@
               this.getValidatorHistory('14days');
               this.getValidatorUptimeHistory('24hours');
           },
+
+
       },
       data() {
 
@@ -342,7 +344,6 @@
         this.getProfileInformation();
         this.getAddressTxStatistics();
       }
-
     },
     methods: {
       getAddressTxStatistics(){
@@ -426,9 +427,6 @@
         }).catch(e =>{
           console.error(e)
         })
-      },
-      skipRoute(path){
-        this.$router.push(path)
       },
       getProfileInformation(){
         let url = `/api/stake/candidate/${this.$route.params.param}`;
@@ -778,6 +776,9 @@
           .operator_value{
             cursor: pointer;
             color: #3598db !important;
+            a{
+              color: #3598db !important;
+            }
           }
           .information_value{
             word-break: break-all;
@@ -859,13 +860,14 @@
           .operator_value{
             cursor: pointer;
             color: #3598db !important;
+            a{
+              color: #3598db !important;
+            }
           }
           .information_props{
             font-size:0.14rem;
             color:#000000;
           }
-
-
         }
       }
       .transactions_detail_title {
@@ -1153,6 +1155,9 @@
   .jump_link_style{
     cursor: pointer;
     color: #3598db !important;
+    a{
+      color: #3598db !important;
+    }
   }
   .list_tab_wrap{
     padding: 0!important;
@@ -1197,7 +1202,7 @@
       height:3rem;
       align-items: center;
     }
-    .blocks_list_table_contianer{
+    .blocks_list_table_container{
       position:relative;
       overflow-x: auto;
       -webkit-overflow-scrolling:touch;
@@ -1275,7 +1280,7 @@
     height:3rem;
     align-items: center;
   }
-  .blocks_list_table_contianer{
+  .blocks_list_table_container{
     position:relative;
     overflow-x: auto;
     -webkit-overflow-scrolling:touch;
@@ -1283,4 +1288,9 @@
     padding-bottom: 0.2rem;
   }
 }
+  .information_pre{
+    a{
+      color: #3598db !important;
+    }
+  }
 </style>

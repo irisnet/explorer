@@ -1,6 +1,7 @@
 package filter
 
 import (
+	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
@@ -14,10 +15,10 @@ type LogPreFilter struct {
 
 func (LogPreFilter) Do(request *model.IrisReq, data interface{}) (interface{}, types.BizCode) {
 	start := time.Now()
-	request.TraceId = start.UnixNano()
+	request.TraceId = fmt.Sprintf("%d", start.UnixNano())
 	request.Start = start
 
-	traceId := logger.Int64("traceId", request.TraceId)
+	traceId := logger.String("traceId", request.TraceId)
 	apiPath := logger.String("path", request.RequestURI)
 	formValue := logger.Any("form", request.Form)
 	urlValue := logger.Any("url", mux.Vars(request.Request))
@@ -45,17 +46,18 @@ type LogPostFilter struct {
 }
 
 func (LogPostFilter) Do(request *model.IrisReq, data interface{}) (interface{}, types.BizCode) {
-	traceId := logger.Int64("traceId", request.TraceId)
-	coastSecond := time.Now().Unix() - request.Start.Unix()
-	coast := logger.Int64("coast", coastSecond)
+	traceId := logger.String("traceId", request.TraceId)
+	costSecond := time.Now().Unix() - request.Start.Unix()
+	cost := logger.Int64("cost", costSecond)
+	apiPath := logger.String("path", request.RequestURI)
 	defer func() {
 		if r := recover(); r != nil {
 			logger.Error("LogPostFilter failed", traceId)
 		}
 	}()
-	logger.Info("LogPostFilter", traceId, coast)
-	if coastSecond >= 3 {
-		logger.Warn("LogPostFilter api coast most time", traceId)
+	logger.Info("LogPostFilter", apiPath, traceId, cost)
+	if costSecond >= 3 {
+		logger.Warn("LogPostFilter api too slow", apiPath, traceId, cost)
 	}
 	return nil, types.CodeSuccess
 }

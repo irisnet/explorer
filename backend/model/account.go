@@ -11,3 +11,8 @@ type AccountVo struct {
 	Deposits        document.Coin  `json:"deposits"`
 	IsProfiler      bool           `json:"isProfiler"`
 }
+
+type ValAccVo struct {
+	AccountVo
+	ValProfile
+}

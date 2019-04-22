@@ -2,12 +2,13 @@ package service
 
 import (
 	"encoding/json"
-	"fmt"
+	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
+	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
+	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
-	"log"
 	"time"
 )
 
@@ -19,20 +20,47 @@ func (service *TxService) GetModule() Module {
 	return Tx
 }
 
-func (service *TxService) QueryList(query bson.M, page, pageSize int) model.PageVo {
+func (service *TxService) QueryList(query bson.M, page, pageSize int) (pageInfo model.PageVo) {
+	logger.Debug("QueryList start", service.GetTraceLog())
 	var data []document.CommonTx
-	pageInfo := queryPage(document.CollectionNmCommonTx, &data, query, desc(document.Tx_Field_Time), page, pageSize)
-	pageInfo.Data = buildData(data)
+
+	if cnt, err := pageQuery(document.CollectionNmCommonTx, nil,
+		query, desc(document.Tx_Field_Time), page, pageSize, &data); err == nil {
+		pageInfo.Data = buildData(data)
+		pageInfo.Count = cnt
+	}
+	logger.Debug("QueryList end", service.GetTraceLog())
 	return pageInfo
 }
 
-func (service *TxService) QueryLatest(query bson.M, page, pageSize int) model.PageVo {
-	var data []document.CommonTx
-	pageInfo := queryPage(document.CollectionNmCommonTx, &data, query, desc(document.Tx_Field_Time), page, pageSize)
-	return pageInfo
+func (service *TxService) QueryRecentTx() []model.RecentTx {
+	logger.Debug("QueryRecentTx start", service.GetTraceLog())
+	var selector = bson.M{"time": 1, "tx_hash": 1, "actual_fee": 1, "type": 1}
+	var txs []document.CommonTx
+
+	err := queryAll(document.CollectionNmCommonTx, selector, nil, desc(document.Tx_Field_Time), 10, &txs)
+	if err != nil {
+		panic(err)
+	}
+	var txList []model.RecentTx
+	for _, tx := range txs {
+		var recentTx = model.RecentTx{
+			Fee: model.Coin{
+				Amount: tx.ActualFee.Amount,
+				Denom:  tx.ActualFee.Denom,
+			},
+			Time:   tx.Time,
+			TxHash: tx.TxHash,
+			Type:   tx.Type,
+		}
+		txList = append(txList, recentTx)
+	}
+	logger.Debug("QueryRecentTx end", service.GetTraceLog())
+	return txList
 }
 
 func (service *TxService) Query(hash string) interface{} {
+	logger.Debug("Query start", service.GetTraceLog())
 	dbm := getDb()
 	defer dbm.Session.Close()
 
@@ -67,10 +95,11 @@ func (service *TxService) Query(hash string) interface{} {
 		}
 		return stakeTx
 	}
+	logger.Debug("QueryList end", service.GetTraceLog())
 	return tx
 }
 
-func (service *TxService) QueryByAcc(address string, page, size int) model.PageVo {
+func (service *TxService) QueryByAcc(address string, page, size int) (result model.PageVo) {
 	var data []document.CommonTx
 	query := bson.M{}
 	query["$or"] = []bson.M{{document.Tx_Field_From: address}, {document.Tx_Field_To: address}}
@@ -82,10 +111,16 @@ func (service *TxService) QueryByAcc(address string, page, size int) model.PageV
 	query[document.Tx_Field_Type] = bson.M{
 		"$in": typeArr,
 	}
-	return queryPage(document.CollectionNmCommonTx, &data, query, desc(document.Tx_Field_Time), page, size)
+	cnt, err := pageQuery(document.CollectionNmCommonTx, nil, query, desc(document.Tx_Field_Time), page, size, &data)
+	if err == nil {
+		result.Count = cnt
+		result.Data = data
+	}
+	return
 }
 
 func (service *TxService) CountByType(query bson.M) model.TxStatisticsVo {
+	logger.Debug("CountByType start", service.GetTraceLog())
 	var typeArr []string
 	typeArr = append(typeArr, types.TypeTransfer)
 	typeArr = append(typeArr, types.DeclarationList...)
@@ -128,62 +163,45 @@ func (service *TxService) CountByType(query bson.M) model.TxStatisticsVo {
 			result.GovCnt = result.GovCnt + cnt.Count
 		}
 	}
+	logger.Debug("CountByType end", service.GetTraceLog())
 	return result
 }
 
-func (service *TxService) CountByDay() []model.TxDayVo {
-	c := getDb().C(document.CollectionNmCommonTx)
-	defer c.Database.Session.Close()
+func (service *TxService) QueryTxNumGroupByDay() []model.TxNumGroupByDayVo {
+	logger.Debug("QueryTxNumGroupByDay start", service.GetTraceLog())
 
 	now := time.Now()
-	d, _ := time.ParseDuration("-336h") //14 days ago
-	start := now.Add(d)
+	start := now.Add(-336 * time.Hour)
 
-	fromDate := time.Date(start.Year(), start.Month(), start.Day(), 0, 0, 0, 0, start.Location())
-	endDate := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, start.Location())
+	fromDate := utils.FmtTime(utils.TruncateTime(start, utils.Day), utils.DateFmtYYYYMMDD)
+	endDate := utils.FmtTime(utils.TruncateTime(now, utils.Day), utils.DateFmtYYYYMMDD)
 
-	log.Println(fmt.Sprintf("from:%s,to:%s", fromDate.String(), endDate.String()))
+	query := bson.M{}
+	query["date"] = bson.M{"$gte": fromDate, "$lt": endDate}
 
-	pipe := c.Pipe(
-		[]bson.M{
-			{"$match": bson.M{
-				"time": bson.M{
-					"$gte": fromDate,
-					"$lt":  endDate,
-				},
-			}},
-			{"$project": bson.M{
-				"day": bson.M{"$substr": []interface{}{"$time", 0, 10}},
-			}},
-			{"$group": bson.M{
-				"_id":   "$day",
-				"count": bson.M{"$sum": 1},
-			}},
-			{"$sort": bson.M{
-				"_id": 1,
-			}},
-		},
-	)
-	var txDays []model.TxDayVo
-	var result []model.TxDayVo
-	pipe.All(&txDays)
-	var i time.Duration
-	var j int
-	day := start
-	for day.Unix() < endDate.Unix() {
-		key := day.Format("2006-01-02")
-		if len(txDays) > j && txDays[j].Time == key {
-			result = append(result, txDays[j])
-			j++
-		} else {
-			var txDay model.TxDayVo
-			txDay.Time = key
-			txDay.Count = 0
-			result = append(result, txDay)
+	var selector = bson.M{"date": 1, "num": 1}
+	var txNumStatList []document.TxNumStat
+
+	q := orm.NewQuery()
+	q.SetCollection(document.CollectionTxNumStat)
+	q.SetCondition(query)
+	q.SetSelector(selector).SetSort("date")
+	q.SetResult(&txNumStatList)
+
+	defer q.Release()
+
+	var result []model.TxNumGroupByDayVo
+
+	if err := q.Exec(); err == nil {
+		for _, t := range txNumStatList {
+			result = append(result, model.TxNumGroupByDayVo{
+				Date: t.Date,
+				Num:  t.Num,
+			})
 		}
-		i++
-		day = start.Add(i * 24 * time.Hour)
 	}
+
+	logger.Debug("QueryTxNumGroupByDay end", service.GetTraceLog())
 	return result
 }
 

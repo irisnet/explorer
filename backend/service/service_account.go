@@ -44,7 +44,11 @@ func (service *AccountService) Query(address string) (result model.AccountVo) {
 func (service *AccountService) QueryAll(page, size int) model.PageVo {
 	var result []document.Account
 	sort := desc(document.Tx_Field_Time)
-	return queryPage(document.CollectionNmAccount, &result, nil, sort, page, size)
+	cnt, _ := pageQuery(document.CollectionNmAccount, nil, nil, sort, page, size, &result)
+	return model.PageVo{
+		Count: cnt,
+		Data:  result,
+	}
 }
 
 func isProfiler(address string) bool {

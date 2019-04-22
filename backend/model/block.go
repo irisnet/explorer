@@ -1,14 +1,21 @@
 package model
 
-import "github.com/irisnet/explorer/backend/orm/document"
+import (
+	"time"
+)
 
-type BlockVo struct {
-	CandidateMap map[string]string
-	Counter      CounterVo
-	document.Block
+type BlockInfoVo struct {
+	Height        int64     `json:"height"`
+	Hash          string    `json:"hash"`
+	Time          time.Time `json:"time"`
+	NumTxs        int64     `json:"num_txs"`
+	Validators    []ValInfo `json:"validators"`
+	LastCommit    []string  `json:"last_commit"`
+	TotalTxs      int64     `json:"total_txs"`
+	LastBlockHash string    `json:"last_block_hash"`
 }
 
-type CounterVo struct {
-	TxCnt    int
-	PropoCnt int
+type ValInfo struct {
+	Address     string `json:"address"`
+	VotingPower int64  `json:"voting_power"`
 }

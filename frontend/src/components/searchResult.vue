@@ -12,7 +12,7 @@
         <div class="block_content_container">
           <p  class="block_height_container">
             <span>Height:</span>
-            <span @click="toBlockDetail(blockHeight)">{{blockHeight}}</span>
+            <span><router-link :to="`/blocks_detail/${blockHeight}`" style="color: #3598db !important;">{{blockHeight}}</router-link></span>
           </p>
           <p class="block_time_container">
             <span>Timestamp</span>
@@ -29,7 +29,7 @@
         <div class="proposal_content_container">
           <p class="proposal_id_container">
             <span>Proposal id :</span>
-            <span @click="toProposalsDetail(proposalId)">{{proposalId}}</span>
+            <span><router-link :to="`/ProposalsDetail/${proposalId}`" style="color: #3598db !important;">{{proposalId}}</router-link></span>
           </p>
           <p class="proposal_title_container">
             <span>Title :</span>
@@ -118,12 +118,6 @@
       methods:{
         backHome(){
           this.$router.push("/home")
-        },
-        toBlockDetail(blockHeight){
-          this.$router.push(`/blocks_detail/${blockHeight}`)
-        },
-        toProposalsDetail(proposalId){
-          this.$router.push(`/ProposalsDetail/${proposalId}`)
         },
         searchResult(searchValue){
           let searchUrl = `/api/search/${searchValue}`;

@@ -39,19 +39,10 @@
         <span class="nav_item common_item_style" :class="activeClassName === '/home'?'nav_item_active':''"
               @click="featureButtonClick('/home')"
         >Home</span>
-        <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === '/validators'?'nav_item_active':''"
-             @mouseover="validatorsMouseOver" @mouseleave="validatorsMouseLeave">
-          <span class="nav_item common_item_style">
+        <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === '/validators'?'nav_item_active':''">
+          <span class="nav_item common_item_style" @click="featureButtonClick('/validators/3/active')">
             Validators
-            <span class="bottom_arrow"></span>
           </span>
-          <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/active')"
-                v-show="showSubValidators">Active</span>
-          <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/jailed')"
-                v-show="showSubValidators">Jailed</span>
-          <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/candidates')"
-                v-show="showSubValidators">Candidates</span>
-
         </div>
         <span class="nav_item common_item_style" :class="activeClassName === '/block'?'nav_item_active':''"
               @click="featureButtonClick('/block/1/0')"
@@ -104,18 +95,9 @@
       </div>
       <div class="use_feature_mobile" :style="{'top':absoluteTop}" v-show="featureShow">
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/home')">Home</span>
-        <span class="feature_btn_mobile feature_nav select_option_container" @click="validatorsSelect(flShowValidatorsSelect)">
+        <span class="feature_btn_mobile feature_nav select_option_container" @click="featureButtonClick('/validators/3/active')">
          <span>Validators</span>
-          <div :class="flShowValidatorsUpOrDown ? 'upImg_content' : 'downImg_content'">
-            <img :src="flShowValidatorsUpOrDown ? upImg : downImg ">
-          </div>
         </span>
-        <div class="select_option" v-show="flShowValidatorsSelect">
-          <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/active')">Active</span>
-          <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/jailed')">Jailed</span>
-          <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/candidates')">Candidates</span>
-        </div>
-
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/block/1/0')">Blocks</span>
         <span class="feature_btn_mobile feature_nav select_option_container" @click="transactionsSelect(flShowTransactionsSelect)">
          <span>Transactions</span>
@@ -163,6 +145,11 @@
     name: 'app-header',
     watch:{
       $route(){
+        if(this.$route.path.includes('/validators/3')){
+          this.$store.commit('flShowValidatorStatus',true)
+        }else {
+          this.$store.commit('flShowValidatorStatus',false)
+        }
         this.searchInputValue = "";
         this.listenRouteForChangeActiveButton();
         this.showHeader = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
@@ -244,16 +231,6 @@
           this.flShowTransactionsSelect = false
         }
       },
-      validatorsSelect(flShowValidatorsSelect){
-        this.flShowTransactionsSelect = false;
-        if(!flShowValidatorsSelect){
-          this.flShowValidatorsSelect = true;
-          this.flShowValidatorsUpOrDown = true
-        }else {
-          this.flShowValidatorsSelect = false;
-          this.flShowValidatorsUpOrDown = false
-        }
-      },
       netWorkSelect(flShowNetworkSelect){
         this.flShowNetworkSelect = false;
         if(!flShowNetworkSelect){
@@ -292,18 +269,17 @@
         if(path !== 'network'){
           this.$router.push(path);
         }
+        if(path.includes('/validators/3')){
+          this.$store.commit('flShowValidatorStatus',true)
+        }else {
+          this.$store.commit('flShowValidatorStatus',false)
+        }
       },
       transactionMouseOver(){
         this.showSubTransaction = true;
       },
       transactionMouseLeave(){
         this.showSubTransaction = false;
-      },
-      validatorsMouseOver(){
-        this.showSubValidators = true;
-      },
-      validatorsMouseLeave(){
-        this.showSubValidators = false;
       },
       searchTx(){
         let uri = `/api/tx/${this.searchInputValue}`;
@@ -507,7 +483,7 @@
   .person_computer_header_var {
     height: 1.62rem;
     position: fixed;
-    z-index: 10000000;
+    z-index: 10001;
     background: rgba(255,255,255,1);
   }
   .person_computer_header_var, .mobile_header_var {

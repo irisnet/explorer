@@ -2,13 +2,13 @@
  * css for download html
  */
 html {
-    font-size: 62.5%
+    font-size: 625%
 }
 
 body {
     color: white;
     font-family: "Microsoft YaHei UI", "serif","PingFang SC Bold","PingFang SC Regular";
-    font-size:1rem;
+    font-size:16px;
 
     /*background-position: center;*/
 }
@@ -67,7 +67,7 @@ div.footer {
     background: #4781ff;
     color: white;
     font-size: 1.5rem;
-    padding: 8px 0;
+    padding: 0.08rem 0;
 }
 
 .btn-download-ios {
@@ -75,7 +75,7 @@ div.footer {
     background: #6750e9;
     color: white;
     font-size: 1.5rem;
-    padding: 8px 0;
+    padding: 0.08rem 0;
 }
 .header-title{
     width: 68%;
@@ -85,11 +85,11 @@ div.footer {
     width: 100%;
 }
 .lang-block{
-    height: 54px;
-    line-height:54px;
+    height: 0.54rem;
+    line-height: 0.54rem;
 }
 .header-logo{
-    padding-top: 42px;
+    padding-top: 0.42rem;
 }
 .font-container{
     position: absolute;
@@ -98,37 +98,31 @@ div.footer {
     color: #000;
 }
 .title{
-    font-size: 26px;
+    font-size: 0.26rem;
     color: #646466;
 }
 .header-title-info{
     width: 68%;
     margin-left: 16%;
-    padding-top: 38px;
+    padding-top: 0.38rem;
 }
 .expect-title{
-    font-size: 25px;
+    font-size: 0.35rem;
     color: #A2A2AE;
     margin: 0;
     padding: 0;
  }
 
 .header-title-explorer{
-    font-size: 35px;
+    font-size: 0.28rem;
     color: #3498DB;
 }
-
-.explorer-btn{
-    margin-top: 33px;
-    background: #3498DB;
-    display: inline-block;
-    color: #fff;
-    padding: 17px 31px;
-    text-decoration: none;
-    border-radius: 9px;
-    text-align: center;
-    font-size: 18px;
-
+.header-title-content{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
 }
 .explorer-btn:hover{
     color: #fff;
@@ -143,9 +137,9 @@ div.footer {
 }
 .logo-content{
     position: absolute;
-    width: 17.1rem;
-    height: 5.6rem;
-    margin: 3.7rem 0 0 2.8rem;
+    width: 1.71rem;
+    height: 0.56rem;
+    margin: 0.37rem 0 0 0.28rem;
 
 }
 .logo-content img{
@@ -154,29 +148,45 @@ div.footer {
 .mobile-title-content{
     text-align: left;
     position: absolute;
-    margin: 1rem 0 0 2.8rem;
-    top:9.3rem;
+    margin: 0.1rem 0.28rem 0 0.28rem;
+    top:0.93rem;
     color: #000;
 }
 .mobile-expect-title{
-    font-size: 1.5rem;
+    font-size: 0.2rem;
     color: #A2A2AE;
 }
 .mobile-header-title-explorer{
-    font-size: 3rem;
+    font-size: 0.16rem;
     color: #3498DB;
 }
 .mobile-explorer-btn{
     display: inline-block;
-    font-size: 1.3rem;
-    padding: 1.4rem 2.1rem;
+    font-size: 0.13rem;
+    padding: 0.14rem 0.21rem;
     background: #3498DB;
     color: #fff;
-    border-radius: 0.8rem;
-    margin-top: 3rem;
+    border-radius: 0.08rem;
+    margin-top: 0.3rem;
 
 }
 .mobile-explorer-btn:hover{
     color: #fff;
     text-decoration: none;
+}
+#link{
+    color: #3498DB !important;
+    text-decoration: none;
+    font-style: italic;
+    margin-right: 0.05rem;
+}
+#link:hover{
+    border-bottom: 0.02rem solid #3498DB;
+}
+#mobile_link{
+    color: #3498DB !important;
+    height: 0.18rem;
+    line-height: 0.18rem;
+    border-bottom: 0.01rem solid #3498DB;
+    text-decoration: none ;
 }

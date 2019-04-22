@@ -37,6 +37,7 @@ ENVCONFIG.QA = 'qa';
 ENVCONFIG.STAGE = 'stage';
 ENVCONFIG.TESTNET = 'testnet';
 ENVCONFIG.MAINNET = 'mainnet';
+
 const CHAINNAME = 'iris';
 export default {
   PREFIX,

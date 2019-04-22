@@ -1,12 +1,26 @@
 package utils
 
 import (
+	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/pkg/errors"
+	"golang.org/x/crypto/ripemd160"
 	"strings"
 )
+
+func GenHexAddrFromPubKey(bech32Pubkey string) string {
+	_, bz, _ := DecodeAndConvert(bech32Pubkey)
+	var genAddr = func(pubKey []byte) []byte {
+		hash := sha256.Sum256(pubKey[5:])
+		rip := ripemd160.New()
+		addrBz := rip.Sum(hash[:])[:20]
+		return addrBz
+	}
+	var addr = genAddr(bz)
+	return strings.ToUpper(hex.EncodeToString(addr))
+}
 
 func Convert(dst, bech32str string) string {
 	_, bz, err := DecodeAndConvert(bech32str)

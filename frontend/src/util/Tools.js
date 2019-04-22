@@ -231,7 +231,7 @@ export default class Tools{
    * 根据字节截取字符串
    */
   static formatString(string,cutOutlength,addSuffix){
-    var stringLength = string.replace(/[^\x00-\xff]/g,"**").length;
+    let stringLength = string.replace(/[^\x00-\xff]/g,"**").length;
     if(stringLength>cutOutlength){
       if(!addSuffix) {
         addSuffix="......";
@@ -304,7 +304,14 @@ export default class Tools{
       return char.toUpperCase();
     });
   }
-
+  /**
+   * format address
+   * param String
+   * return String
+   */
+  static formatValidatorAddress(address){
+    return `${address.substring(0,8)}...${address.substring(address.length - 8)}`
+  }
   static formatTxList(list,txType,currentServerTime){
     if(list !== null){
       return list.map(item => {
