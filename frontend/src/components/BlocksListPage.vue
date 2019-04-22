@@ -74,7 +74,7 @@
         pageSize: 30,
         validatorPageSize: 100,
         defaultValidatorPageNumber:1,
-        totalPageNum:localStorage.getItem("pagenum") ? localStorage.getItem("pagenum") : 1,
+        totalPageNum:localStorage.getItem("pagenum") ? Number(localStorage.getItem("pagenum")) : 1,
         count: 0,
         fields: [],
         items: [],
@@ -249,6 +249,7 @@
           if(result){
             this.items = result.map((item) => {
               return {
+                validatorStatus: status,
                 url:require('../assets/header_img.png'),
                 moniker: Tools.formatString(item.description.moniker,15,'...'),
                 operatorAddress: item.operator_address,
@@ -267,6 +268,7 @@
           }else {
             this.showNoData = true;
             this.items = [{
+              validatorStatus: status,
               moniker: "",
               operatorAddress: "",
               commission: "",

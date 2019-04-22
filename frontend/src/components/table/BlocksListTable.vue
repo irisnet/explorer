@@ -66,7 +66,7 @@
       </template>
     </b-table>
 
-    <b-table :fields='status === "active" ? validatorFields : fields' :status="status" :items='items' striped v-if="type === '3' || type === '4'" class="show_trim">
+    <b-table :fields='validatorFields' :status="status" :items='items' striped v-if="type === '3' || type === '4'" class="show_trim" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc">
       //TODO(ZHANGJINBIAO) 路由设计不合理，下个迭代会更改不合理的路由。
       <template slot="index" slot-scope="data" small>
           {{data.index + 1}}
@@ -254,14 +254,17 @@
   export default {
     watch: {
       items(items) {
-
+        this.setValidatorFields(items);
       },
     },
     data() {
       return {
         fields: [],
-        validatorFields:
-          {
+        sortBy: 'votingPower',
+        sortDesc: true,
+        validatorFields:null,
+        activeValidatorFields: {
+
           // index:{
           //   label:'Moniker',
           // },
@@ -302,14 +305,85 @@
             sortable:false,
           },
         },
+        jailedValidatorFields: {
+          moniker:{
+            label:'Moniker',
+            sortable:true,
+          },
+          operatorAddress:{
+            label:'Operator_Address',
+            sortable:false,
+          },
+          commission:{
+            label:'Commission',
+            sortable:true,
+          },
+          'bondedToken':{
+            label:'Bonded Tokens',
+            sortable:true,
+          },
+          'selfBond':{
+            label:'Self Bonded',
+            sortable:true,
+          },
+          'bondHeight':{
+            label:'Bond Height',
+            sortable:false,
+          },
+        },
+        candidateValidatorFields: {
+
+          moniker:{
+            label:'Moniker',
+            sortable:true,
+          },
+          operatorAddress:{
+            label:'Operator_Address',
+            sortable:false,
+          },
+          commission:{
+            label:'Commission',
+            sortable:true,
+          },
+          'bondedToken':{
+            label:'Bonded Tokens',
+            sortable:true,
+          },
+          'selfBond':{
+            label:'Self Bonded',
+            sortable:true,
+          },
+          'delegatorNum':{
+            label:'Delegator Number',
+            sortable:true,
+          },
+          'bondHeight':{
+            label:'Bond Height',
+            sortable:false,
+          },
+        },
         blockFields:['Height','Txn','Age','Precommit Validators','Voting Power']
       }
     },
 
     props: ['items', 'type','showNoData','minWidth','status'],
+    mounted(){
+      this.validatorFields =  this.activeValidatorFields;
+    },
     methods: {
       formatAddress(address){
         return Tools.formatValidatorAddress(address)
+      },
+      setValidatorFields(validatorList){
+        validatorList.forEach(item => {
+          if(item && item.validatorStatus && item.validatorStatus === 'jailed'){
+            this.validatorFields = this.jailedValidatorFields
+          }else if(item && item.validatorStatus && item.validatorStatus === 'validator'){
+            this.validatorFields = this.activeValidatorFields
+          }else if(item && item.validatorStatus && item.validatorStatus === 'candidate'){
+            this.validatorFields = this.candidateValidatorFields
+          }
+        })
       }
     }
   }
