@@ -269,7 +269,6 @@
             this.showNoData = true;
             this.items = [{
               validatorStatus: status,
-              status: "",
               moniker: "",
               operatorAddress: "",
               commission: "",
