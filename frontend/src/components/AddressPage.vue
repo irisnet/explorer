@@ -56,7 +56,7 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Owner :</span>
-          <span class="information_value operator_value" v-show="operatorValue"><router-link :to="`/address/1/${operatorValue}`" target="_blank">{{operatorValue}}</router-link></span>
+          <span class="information_value operator_value" v-show="operatorValue"><router-link :to="`/address/1/${operatorValue}`">{{operatorValue}}</router-link></span>
           <span class="information_value" v-show="!operatorValue">--</span>
         </div>
         <div class="information_props_wrap">

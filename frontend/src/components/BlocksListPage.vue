@@ -17,7 +17,8 @@
     <div :class="blocksListPageWrap">
       <div class="pagination total_num" v-if="!$store.state.flShowValidatorStatus">
         <span class="blocks_list_page_wrap_hash_var" v-show="['1','2','3','4'].includes(type)">{{count}} total</span>
-        <b-pagination-nav :link-gen="linkGen" :number-of-pages="totalPageNum" v-model="navCurrentPage" use-router></b-pagination-nav>
+        <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
+        </b-pagination>
     </div>
       <div style="overflow-x: auto;-webkit-overflow-scrolling:touch;">
         <spin-component :showLoading="showLoading"/>
@@ -30,7 +31,8 @@
       </div>
       <div class="pagination" :class="$store.state.flShowValidatorStatus ? 'total_num' : '' " style='margin:0.2rem 0;'>
         <span v-if="$store.state.flShowValidatorStatus" class="blocks_list_page_wrap_hash_var" v-show="['1','2','3','4'].includes(type)">{{count}} total</span>
-        <b-pagination-nav :link-gen="linkGen" :number-of-pages="totalPageNum" v-model="navCurrentPage" use-router></b-pagination-nav>
+        <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
+        </b-pagination>
       </div>
     </div>
 
@@ -49,6 +51,15 @@
       SpinComponent,
     },
     watch: {
+      currentPage(currentPage) {
+        this.currentPage = currentPage;
+        new Promise((resolve)=>{
+          this.getDataList(currentPage, 30, this.$route.params.type);
+          resolve();
+        }).then(()=>{
+          document.getElementById('router_wrap').scrollTop = 0;
+        })
+      },
       $route() {
         clearInterval(this.timer);
         clearInterval(this.transactionTimer);
@@ -70,7 +81,6 @@
         blocksListPageWrap: 'personal_computer_blocks_list_page',
         blocksValue: '',
         currentPage: 1,
-        navCurrentPage: this.$route.query.page ? this.$route.query.page : null,
         pageSize: 30,
         validatorPageSize: 100,
         defaultValidatorPageNumber:1,
