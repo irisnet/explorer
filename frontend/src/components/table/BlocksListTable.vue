@@ -254,7 +254,7 @@
   export default {
     watch: {
       items(items) {
-        this.validatorStatus(items);
+        this.setValidatorFields(items);
       },
     },
     data() {
@@ -374,7 +374,7 @@
       formatAddress(address){
         return Tools.formatValidatorAddress(address)
       },
-      validatorStatus(validatorList){
+      setValidatorFields(validatorList){
         validatorList.forEach(item => {
           if(item && item.validatorStatus && item.validatorStatus === 'jailed'){
             this.validatorFields = this.jailedValidatorFields
