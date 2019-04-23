@@ -1,0 +1,106 @@
+---
+swagger: "2.0"
+info:
+  version: 1.0.0
+  description: A REST interface for irisnet state queries.
+  title: explorer for the irisnet
+
+schemes:
+- http
+
+tags:
+    - name: BlockInfo
+      description: Block APIs, such as query coin flow,proposal,validatorset
+
+paths:
+  /api/stake/validatorset:
+    get:
+      tags:
+        - BlockInfo
+      parameters:
+        - name: height
+          in: query
+          type: integer
+          format: int64
+          default: 1
+          required: false
+        - name: page
+          in: query
+          type: integer
+          format: int
+          default: 1
+          required: false
+        - name: size
+          in: query
+          type: integer
+          format: int
+          default: 10
+          required: false
+
+      responses:
+        200:
+          description: list the validator
+          schema:
+              $ref: "#/definitions/ValidatorSet"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+definitions:
+  ValidatorSet:
+    type: object
+    properties:
+      total:
+        type: integer
+      items:
+         type: array
+         items:
+           $ref: "#/definitions/Validator"
+    example:
+        total: 4
+        items:
+          [{
+            "moniker": "irishub-node-2",
+            "operator_address": "fva1xtstdchjyzkddaptgyug62g23cta7eyzq49svq",
+            "consensus": "fcp1zcjduepqevwqk73gun8pp59wz6raddnsg2fczvs237cefl9ve7f94feh6lzsdr4qrf",
+            "proposer_priority": "-100",
+            "voting_power": "100"
+          }, {
+            "moniker": "irishub-node-1",
+            "operator_address": "fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx",
+            "consensus": "fcp1zcjduepqcjgmderfahnlyrse563r2hcc3d4vjpafw03axzn3e87kfuqznjcsur8xrq",
+            "proposer_priority": "-100",
+            "voting_power": "100"
+          }, {
+            "moniker": "irishub-node-3",
+            "operator_address": "fva1amca8h9msuee5j8pg54q3sc9n9p2ss060wvhd5",
+            "consensus": "fcp1zcjduepq3hy0q3ltgktya5gzvjfmkrhkeqzqau9t927ne8wdts36en490q7s8lxjq2",
+            "proposer_priority": "-100",
+            "voting_power": "100"
+          }, {
+            "moniker": "irishub-node-0",
+            "operator_address": "fva1d7rxfhyhqzgudv5nmne548t3xrk4tvazpg94cu",
+            "consensus": "fcp1zcjduepqujegylnmyuymekm7sk70g5up0xq6p5r8zaj5rpjey7tqxxp0z3zqjns5cy",
+            "proposer_priority": "300",
+            "voting_power": "100"
+          }]
+  Validator:
+    type: object
+    properties:
+      moniker:
+        type: string
+      operator_address:
+        type: string
+      consensus:
+        type: string
+      proposer_priority:
+        type: string
+      voting_power:
+        type: string
+  error:
+    type: object
+    properties:
+      code:
+        type: string
+      msg:
+        type: string
