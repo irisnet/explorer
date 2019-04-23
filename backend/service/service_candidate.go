@@ -621,8 +621,8 @@ func computeUptime(valPub string, height int64) float32 {
 	result := lcd.SignInfo(valPub)
 	missedBlocksCounter := utils.ParseIntWithDefault(result.MissedBlocksCounter, 0)
 	startHeight := utils.ParseIntWithDefault(result.StartHeight, 0)
-	tmp := missedBlocksCounter / (height - startHeight + 1)
-	return float32(1 - tmp)
+	tmp := float32(missedBlocksCounter) / float32(height-startHeight+1)
+	return 1 - tmp
 }
 
 func queryDelegationInfo(operatorAddress string, consensusPubkey string) (string, string, int) {
