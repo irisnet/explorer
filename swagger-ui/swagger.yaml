@@ -5,14 +5,41 @@ info:
   description: A REST interface for irisnet state queries.
   title: explorer for the irisnet
 
+consumes:
+  - application/json
+produces:
+  - application/json
+
 schemes:
-- http
+  - http
 
 tags:
-    - name: BlockInfo
-      description: Block APIs, such as query coin flow,proposal,validatorset
+  - name: BlockInfo
+    description: Block APIs, such as query coin flow,proposal,validatorset
 
 paths:
+  /api/block/{height}:
+    get:
+      summary: Get a block information at a certain height
+      tags:
+        - BlockInfo
+      parameters:
+        - in: path
+          name: height
+          description: Block height
+          required: true
+          type: number
+          x-example: 1
+      responses:
+        200:
+          description: The block info at a specific height
+          schema:
+            $ref: "#/definitions/Block"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+
   /api/stake/validatorset:
     get:
       tags:
@@ -20,10 +47,9 @@ paths:
       parameters:
         - name: height
           in: query
-          type: integer
-          format: int64
-          default: 1
-          required: false
+          description: Block height
+          type: number
+          x-example: 1
         - name: page
           in: query
           type: integer
@@ -36,54 +62,264 @@ paths:
           format: int
           default: 10
           required: false
-
       responses:
         200:
-          description: list the validator
+          description: get a validatorset by block height
           schema:
-              $ref: "#/definitions/ValidatorSet"
+            $ref: "#/definitions/ValidatorSet"
         default:
           description: generic error response
           schema:
             $ref: "#/definitions/error"
+  /api/tx/token/flow:
+    get:
+      tags:
+        - BlockInfo
+      parameters:
+        - name: height
+          in: query
+          description: Block height
+          type: number
+          x-example: 1
+        - name: page
+          in: query
+          type: integer
+          format: int
+          default: 1
+          required: false
+        - name: size
+          in: query
+          type: integer
+          format: int
+          default: 10
+          required: false
+      responses:
+        200:
+          description: list the token flow
+          schema:
+            $ref: "#/definitions/TokenFlows"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+
 definitions:
+  Block:
+    type: object
+    properties:
+      block_info:
+        $ref: "#/definitions/BlockInfo"
+      validator_set:
+        $ref: "#/definitions/ValidatorSet"
+      token_flows:
+        $ref: "#/definitions/TokenFlows"
+      proposals:
+        type: array
+        items:
+          $ref: "#/definitions/Proposal"
+  BlockInfo:
+    type: object
+    properties:
+      block_height:
+        type: string
+      timestamp:
+        type: string
+      block_hash:
+        type: string
+      transactions:
+        type: string
+      propopser:
+        type: string
+      reward:
+        $ref: "#/definitions/Coin"
+      last_block:
+        type: integer
+        format: int64
+      last_block_hash:
+        type: string
+      precommit_validators:
+        type: string
+      voting_power:
+        type: string
+      latest_height:
+        type: string
+
+  Proposal:
+    type: object
+    properties:
+      title:
+        type: string
+      proposal_id:
+        type: integer
+        format: uint64
+      type:
+        type: string
+      status:
+        type: string
+      proposer:
+        type: string
+      submit_time:
+        type: string
+      voting_start_time:
+        type: string
+      total_deposit:
+        $ref: "#/definitions/Coins"
+      votes_validators:
+        $ref: "#/definitions/VotesValidators"
+
+  VotesValidators:
+    type: object
+    properties:
+      vote_len:
+        type: integer
+        format: int
+      validator_len:
+        type: integer
+        format: int
+
+  TokenFlow:
+    type: object
+    properties:
+      block_height:
+        type: integer
+        format: int64
+      block_hash:
+        type: string
+      tx_hash:
+        type: string
+      from:
+        type: string
+      to:
+        type: string
+      tx_initiator:
+        type: string
+      tx_type:
+        type: string
+      flow_type:
+        type: string
+      status:
+        type: string
+      timestamp:
+        type: string
+      amount:
+        $ref: "#/definitions/Coin"
+      fee:
+        $ref: "#/definitions/Fee"
+  TokenFlows:
+    type: object
+    properties:
+      total:
+        type: integer
+        format: int64
+      items:
+        type: array
+        items:
+          $ref: "#/definitions/TokenFlow"
+    example:
+      total: 4
+      items:
+        [
+          {
+            "block_height": 1468,
+            "block_hash": "88AFE4D3DDC828BA58DFF1125B9BC87140CEB06DD4C756C464D06FC944E55235",
+            "tx_hash": "A462379AD307B12E9909CBCB832E6B9DFF1A6628BD6BAD73194A47C52081E6BD",
+            "from": "fva1xtstdchjyzkddaptgyug62g23cta7eyzq49svq",
+            "to": "faa1xtstdchjyzkddaptgyug62g23cta7eyz4y0l38",
+            "amount": { "denom": "iris-atto", "amount": 319449898495734250000 },
+            "fee":
+              {
+                "amount":
+                  [{ "denom": "iris-atto", "amount": 400000000000000000 }],
+                "gas": 50000,
+              },
+            "tx_initiator": "faa1ljemm0yznz58qxxs8xyak7fashcfxf5lssn6jm",
+            "tx_type": "Delegate",
+            "flow_type": "ValidatorReward",
+            "status": "success",
+            "timestamp": "2019-04-23T14:26:52.226+08:00",
+          },
+          {
+            "block_height": 1468,
+            "block_hash": "88AFE4D3DDC828BA58DFF1125B9BC87140CEB06DD4C756C464D06FC944E55235",
+            "tx_hash": "A462379AD307B12E9909CBCB832E6B9DFF1A6628BD6BAD73194A47C52081E6BD",
+            "from": "faa1ljemm0yznz58qxxs8xyak7fashcfxf5lssn6jm",
+            "to": "fva1xtstdchjyzkddaptgyug62g23cta7eyzq49svq",
+            "amount": { "denom": "iris-atto", "amount": 21000000000000000000 },
+            "fee":
+              {
+                "amount":
+                  [{ "denom": "iris-atto", "amount": 400000000000000000 }],
+                "gas": 50000,
+              },
+            "tx_initiator": "faa1ljemm0yznz58qxxs8xyak7fashcfxf5lssn6jm",
+            "tx_type": "Delegate",
+            "flow_type": "Delegation",
+            "status": "success",
+            "timestamp": "2019-04-23T14:26:52.226+08:00",
+          },
+        ]
+  Fee:
+    type: object
+    properties:
+      amount:
+        $ref: "#/definitions/Coins"
+      gas:
+        type: integer
+        format: int64
+  Coins:
+    type: array
+    items:
+      $ref: "#/definitions/Coin"
+  Coin:
+    type: object
+    properties:
+      denom:
+        type: string
+      amount:
+        type: integer
+        format: float64
   ValidatorSet:
     type: object
     properties:
       total:
         type: integer
       items:
-         type: array
-         items:
-           $ref: "#/definitions/Validator"
-    example:
-        total: 4
+        type: array
         items:
-          [{
+          $ref: "#/definitions/Validator"
+    example:
+      total: 4
+      items:
+        [
+          {
             "moniker": "irishub-node-2",
             "operator_address": "fva1xtstdchjyzkddaptgyug62g23cta7eyzq49svq",
             "consensus": "fcp1zcjduepqevwqk73gun8pp59wz6raddnsg2fczvs237cefl9ve7f94feh6lzsdr4qrf",
             "proposer_priority": "-100",
-            "voting_power": "100"
-          }, {
+            "voting_power": "100",
+          },
+          {
             "moniker": "irishub-node-1",
             "operator_address": "fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx",
             "consensus": "fcp1zcjduepqcjgmderfahnlyrse563r2hcc3d4vjpafw03axzn3e87kfuqznjcsur8xrq",
             "proposer_priority": "-100",
-            "voting_power": "100"
-          }, {
+            "voting_power": "100",
+          },
+          {
             "moniker": "irishub-node-3",
             "operator_address": "fva1amca8h9msuee5j8pg54q3sc9n9p2ss060wvhd5",
             "consensus": "fcp1zcjduepq3hy0q3ltgktya5gzvjfmkrhkeqzqau9t927ne8wdts36en490q7s8lxjq2",
             "proposer_priority": "-100",
-            "voting_power": "100"
-          }, {
+            "voting_power": "100",
+          },
+          {
             "moniker": "irishub-node-0",
             "operator_address": "fva1d7rxfhyhqzgudv5nmne548t3xrk4tvazpg94cu",
             "consensus": "fcp1zcjduepqujegylnmyuymekm7sk70g5up0xq6p5r8zaj5rpjey7tqxxp0z3zqjns5cy",
             "proposer_priority": "300",
-            "voting_power": "100"
-          }]
+            "voting_power": "100",
+          },
+        ]
   Validator:
     type: object
     properties:
