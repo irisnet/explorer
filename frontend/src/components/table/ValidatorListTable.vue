@@ -391,6 +391,5 @@
     height: 0.20rem;
     content:"" !important;
     opacity: 1;
-    right: 1rem !important;
   }
 </style>
