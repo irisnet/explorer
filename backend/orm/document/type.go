@@ -8,8 +8,8 @@ type Coin struct {
 type Coins []Coin
 
 type Fee struct {
-	Amount Coins
-	Gas    int64
+	Amount Coins `json:"amount"`
+	Gas    int64 `json:"gas"`
 }
 
 type ActualFee struct {
