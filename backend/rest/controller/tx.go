@@ -150,9 +150,9 @@ func registerQueryRecentTx(r *mux.Router) error {
 func registerQueryTokenFlow(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryTokenFlow, "GET", func(request model.IrisReq) interface{} {
 		tx.SetTid(request.TraceId)
-		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
-		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 10))
-		height := utils.ParseIntWithDefault(QueryParam(request, "height"), 0)
+		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), DefaultPageNum))
+		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), DefaultPageSize))
+		height := utils.ParseIntWithDefault(QueryParam(request, "height"), DefaultBlockHeight)
 		return tx.QueryTokenFlow(height, page, size)
 	})
 	return nil

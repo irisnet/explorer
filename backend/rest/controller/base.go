@@ -14,6 +14,12 @@ import (
 	"github.com/irisnet/explorer/backend/utils"
 )
 
+const (
+	DefaultPageSize    = 10
+	DefaultPageNum     = 1
+	DefaultBlockHeight = 1
+)
+
 // user business action
 type Action func(request model.IrisReq) interface{}
 
