@@ -87,7 +87,7 @@ func NewAPIMux() *mux.Router {
 	registerApi(s)
 	registerFilters()
 
-	if conf.DefaultEnvironment == conf.EnvironmentDevelop || conf.DefaultEnvironment == conf.EnvironmentLocal || conf.DefaultEnvironment == conf.EnvironmentQa {
+	if conf.Get().Server.CurEnv == conf.EnvironmentDevelop || conf.Get().Server.CurEnv == conf.EnvironmentLocal || conf.Get().Server.CurEnv == conf.EnvironmentQa {
 		r.PathPrefix("/swagger-ui/").Handler(http.StripPrefix("/swagger-ui/", http.FileServer(http.Dir("../swagger-ui"))))
 	}
 
