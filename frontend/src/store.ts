@@ -7,7 +7,6 @@ const store = new Vuex.Store({
     currentEnv:'',
     isMobile:false,
     validatorTabIndex:0,
-    flShowValidatorStatus: false
   },
   mutations:{
     flShowSelectOption(state,data){
@@ -22,9 +21,6 @@ const store = new Vuex.Store({
     validatorTabIndex(state,data){
       state.validatorTabIndex = data
     },
-    flShowValidatorStatus(state,data){
-      state.flShowValidatorStatus = data
-    }
   }
 })
 export default store
