@@ -1,6 +1,6 @@
 <template>
   <div class="blocks_list_page_wrap">
-    <div class="blocks_list_title_wrap" style="position: fixed;z-index: 10">
+    <div class="blocks_list_title_wrap">
       <div :class="blocksListPageWrap" style="margin-bottom:0;">
         <div class="validators_status_tab">
           <span class="validators_status_title" v-for="(item,index) in validatorStatusTitleList" :class="item.isActive ? 'active_title' : '' " @click="selectValidatorStatus(index)">{{item.title}}</span>
