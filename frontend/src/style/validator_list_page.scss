@@ -44,6 +44,9 @@
     @include pcContainer;
     height:0.62rem;
     background:#efeff1;
+    position: fixed;
+    left: 0;
+    z-index: 10;
     p{
       height:0.62rem;
       span{

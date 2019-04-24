@@ -1,5 +1,5 @@
 <template>
-    <div :style="`${minWidth?(`min-width:${minWidth}rem`):''}`">
+    <div :class="showNoData?'show_no_data':''" :style="`${minWidth?(`min-width:${minWidth}rem`):''}`">
       <b-table :fields='validatorFields' :status="status" :items='items' striped class="show_trim" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc">
         <template slot="index" slot-scope="data" small>
           {{data.index + 1}}
