@@ -25,8 +25,8 @@ func (service *BlockService) GetModule() Module {
 func (service *BlockService) QueryBlock(blockHeight int64) model.Block {
 	result := model.Block{}
 	result.BlockInfo = service.Query(blockHeight)
-	result.ValidatorSet = service.GetValidatorSet(blockHeight, 1, 10)
-	result.TokenFlows = Get(Tx).(*TxService).QueryTokenFlow(blockHeight, 1, 10)
+	result.ValidatorSet = service.GetValidatorSet(blockHeight, DefaultPageNum, DefaultPageSize)
+	result.TokenFlows = Get(Tx).(*TxService).QueryTokenFlow(blockHeight, DefaultPageNum, DefaultPageSize)
 	result.Proposals = Get(Proposal).(*ProposalService).QueryProposalsByBlockHeight(blockHeight)
 
 	return result
@@ -72,11 +72,12 @@ func (service *BlockService) Query(height int64) model.BlockInfo {
 	result.BlockHash = b.BlockMeta.BlockID.Hash
 	result.BlockHeight = b.Block.Header.Height
 
-	heightAsInt, err := strconv.Atoi(b.Block.Header.Height)
+	heightAsInt64, err := strconv.ParseInt(b.Block.Header.Height, 10, 0)
+
 	if err != nil {
 		logger.Error("block header height is not int type")
 	}
-	result.LastBlock = heightAsInt - 1
+	result.LastBlock = heightAsInt64 - 1
 	result.LastBlockHash = b.Block.Header.LastBlockID.Hash
 
 	var selector = bson.M{"description.moniker": 1}
@@ -92,8 +93,8 @@ func (service *BlockService) Query(height int64) model.BlockInfo {
 	result.Timestamp = b.BlockMeta.Header.Time
 	result.Transactions = b.BlockMeta.Header.TotalTxs
 	if height <= 1 {
-		result.PrecommitValidators = "0/0"
-		result.VotingPower = "0%"
+		result.PrecommitValidators = InitPrecommitValidators
+		result.VotingPower = InitVotingPower
 	} else {
 		lcdValidators := lcd.ValidatorSet(height - 1)
 		result.PrecommitValidators = strconv.Itoa(len(b.Block.LastCommit.Precommits)) + "/" + strconv.Itoa(len(lcdValidators.Validators))

@@ -49,7 +49,7 @@ type BlockInfo struct {
 	Transactions        string        `json:"transactions"`
 	Propopser           string        `json:"propopser"`
 	Reward              document.Coin `json:"reward"`
-	LastBlock           int           `json:"last_block"`
+	LastBlock           int64         `json:"last_block"`
 	LastBlockHash       string        `json:"last_block_hash"`
 	PrecommitValidators string        `json:"precommit_validators"`
 	VotingPower         string        `json:"voting_power"`

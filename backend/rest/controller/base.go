@@ -2,15 +2,22 @@ package controller
 
 import (
 	"encoding/json"
+	"net/http"
+	"net/url"
+	"strconv"
+
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/rest/filter"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
-	"net/http"
-	"net/url"
-	"strconv"
+)
+
+const (
+	DefaultPageSize    = 10
+	DefaultPageNum     = 1
+	DefaultBlockHeight = 1
 )
 
 // user business action

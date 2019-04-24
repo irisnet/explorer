@@ -87,9 +87,9 @@ func registerQueryBlocksPrecommits(r *mux.Router) error {
 func registerQueryValidatorSet(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryValidatorSet, "GET", func(request model.IrisReq) interface{} {
 		block.SetTid(request.TraceId)
-		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
-		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 10))
-		height := utils.ParseIntWithDefault(QueryParam(request, "height"), 1)
+		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), DefaultPageNum))
+		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), DefaultPageSize))
+		height := utils.ParseIntWithDefault(QueryParam(request, "height"), DefaultBlockHeight)
 		if height < 1 {
 			panic(types.CodeInValidParam)
 		}
