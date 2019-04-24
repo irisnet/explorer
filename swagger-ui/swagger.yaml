@@ -28,8 +28,9 @@ paths:
           name: height
           description: Block height
           required: true
-          type: number
-          x-example: 1
+          type: integer
+          format: int64
+          default: 1
       responses:
         200:
           description: The block info at a specific height
@@ -48,8 +49,9 @@ paths:
         - name: height
           in: query
           description: Block height
-          type: number
-          x-example: 1
+          type: integer
+          format: int64
+          default: 1
         - name: page
           in: query
           type: integer
@@ -79,8 +81,9 @@ paths:
         - name: height
           in: query
           description: Block height
-          type: number
-          x-example: 1
+          type: integer
+          format: int64
+          default: 1
         - name: page
           in: query
           type: integer
