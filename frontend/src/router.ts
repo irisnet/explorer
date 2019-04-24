@@ -12,7 +12,7 @@ import ProposalsDetail from "./components/ProposalsDetail.vue";
 import SearchResult from "./components/searchResult.vue";
 import Help from "./components/clearStorageHelpPage.vue";
 import Version from "./components/version.vue";
-
+import ValidatorListPage from "./components/ValidatorListPage.vue"
 Vue.use(Router);
 
 export default new Router({
@@ -58,7 +58,7 @@ export default new Router({
       path: '/transactions/:type/:param', component: BlocksListPage
     },
     {
-      path: '/validators/:type/:param', component: BlocksListPage
+      path: '/validators', component: ValidatorListPage
     },
     {
       path: '/candidates/:type/:param', component: BlocksListPage

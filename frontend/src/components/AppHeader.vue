@@ -40,7 +40,7 @@
               @click="featureButtonClick('/home')"
         >Home</span>
         <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === '/validators'?'nav_item_active':''">
-          <span class="nav_item common_item_style" @click="featureButtonClick('/validators/3/active')">
+          <span class="nav_item common_item_style" @click="featureButtonClick('/validators')">
             Validators
           </span>
         </div>
@@ -95,7 +95,7 @@
       </div>
       <div class="use_feature_mobile" :style="{'top':absoluteTop}" v-show="featureShow">
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/home')">Home</span>
-        <span class="feature_btn_mobile feature_nav select_option_container" @click="featureButtonClick('/validators/3/active')">
+        <span class="feature_btn_mobile feature_nav select_option_container" @click="featureButtonClick('/validators')">
          <span>Validators</span>
         </span>
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/block/1/0')">Blocks</span>
@@ -145,11 +145,6 @@
     name: 'app-header',
     watch:{
       $route(){
-        if(this.$route.path.includes('/validators/3')){
-          this.$store.commit('flShowValidatorStatus',true)
-        }else {
-          this.$store.commit('flShowValidatorStatus',false)
-        }
         this.searchInputValue = "";
         this.listenRouteForChangeActiveButton();
         this.showHeader = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
@@ -269,11 +264,6 @@
         if(path !== 'network'){
           this.$router.push(path);
         }
-        if(path.includes('/validators/3')){
-          this.$store.commit('flShowValidatorStatus',true)
-        }else {
-          this.$store.commit('flShowValidatorStatus',false)
-        }
       },
       transactionMouseOver(){
         this.showSubTransaction = true;
@@ -382,7 +372,7 @@
         let path = window.location.href;
         if (path.includes('transactions/2') || path.includes('tx?')) {
           this.activeClassName = '/transaction';
-        } else if (path.includes('/validators/3') || path.includes('/candidates/4')) {
+        } else if (path.includes('/validators')) {
           this.activeClassName = '/validators';
         } else if (path.includes('/block')) {
           this.activeClassName = '/block';
