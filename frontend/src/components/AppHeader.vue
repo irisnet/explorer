@@ -76,9 +76,6 @@
                 v-show="flShowGovernanceOption">Proposals</span>
 
         </div>
-        <!--<span class="nav_item common_item_style" :class="activeClassName === '/Proposals'?'nav_item_active':''"
-              @click="featureButtonClick('/Proposals')"
-        >Proposals</span>-->
         <span v-if="flShowFaucet" class="nav_item common_item_style faucet_content" :class="activeClassName === '/faucet'?'nav_item_active':''"
               @click="featureButtonClick('/faucet')"
         >Faucet</span>
