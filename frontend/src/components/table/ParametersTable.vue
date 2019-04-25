@@ -68,19 +68,6 @@
       }
     }
   }
-
-  .page-link{
-    padding:0.05rem 0.075rem !important;
-    height:0.29rem !important;
-    color:#3598db !important;
-  }
-  .active{
-    .page-link{
-      background-color: #3598db !important;
-      border-color:#3598db !important;
-      color:#fff !important;
-    }
-  }
   .table{
     th, td{
       padding:0.075rem !important;
@@ -134,36 +121,6 @@
       }
     }
   }
-  .proposal_detail_list tr{
-    th:nth-child(1){
-      width: 50% !important;
-    }
-    th:nth-child(2){
-      width: 35% !important;
-    }
-  }
-  //使用rem设置max-width不生效
-  @media screen and (max-width: 910px) {
-    .proposal_detail_list tr{
-      th:nth-child(1){
-        width: 50% !important;
-      }
-      th:nth-child(2){
-        width: auto !important;
-      }
-    }
-  }
-  .proposals-list{
-    color: #3598db;
-    cursor: pointer;
-    margin: 0!important;
-    padding: 0!important;
-  }
-  .remove_default_style{
-    margin: 0!important;
-    padding: 0!important;
-    color: #3598db;
-  }
   .parameter_table_container td{
     white-space: pre;
   }
@@ -179,19 +136,6 @@
   .parameter_table_container tbody tr td:nth-child(1){
     padding: 0.075rem !important;
     width: 1.9rem;
-  }
-  .block_style thead tr th:nth-child(1){
-    width: 16%;
-  }
-  .block_style thead tr th:nth-child(2){
-    width: 8%;
-  }
-  pre{
-    font-family: Arial !important;
-    margin: 0;
-  }
-  .link_style{
-    color: #3598db !important;
   }
   .parameter_table_container tbody tr td{
     word-break: break-all;
