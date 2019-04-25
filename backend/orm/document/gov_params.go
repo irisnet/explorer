@@ -8,6 +8,9 @@ const (
 	CollectionNmGovParams = "gov_params"
 	GovParamsFieldModule  = "module"
 	GovParamsFieldKey     = "key"
+
+	EQ  Sign = "eq"
+	NEQ Sign = "neq"
 )
 
 type GovParams struct {
@@ -21,9 +24,16 @@ type GovParams struct {
 }
 
 type Range struct {
-	Minimum string `bson:"minimum" json:"minimum"`
-	Maximum string `bson:"maximum" json:"maximum"`
+	Minimum Op `bson:"minimum" json:"minimum"`
+	Maximum Op `bson:"maximum" json:"maximum"`
 }
+
+type Op struct {
+	Sign Sign   `bson:"sign" json:"sign"`
+	Data string `bson:"data" json:"data"`
+}
+
+type Sign string
 
 func (g GovParams) Name() string {
 	return CollectionNmGovParams
