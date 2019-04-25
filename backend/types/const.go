@@ -4,26 +4,15 @@ const (
 	UrlRoot = "/api"
 
 	//Account
-	UrlRegisterQueryAccount    = "/account/{address}"
-	UrlRegisterQueryAllAccount = "/accounts/{page}/{size}"
+	UrlRegisterQueryAccount = "/account/{address}"
 
 	//home
 	UrlRegisterNavigationBar = "/home/navigation"
 
 	//Block
-	UrlRegisterQueryBlock            = "/block/{height}"
-	UrlRegisterQueryRecentBlocks     = "/blocks/recent"
-	UrlRegisterQueryBlocks           = "/blocks"
-	UrlRegisterQueryBlocksPrecommits = "/blocks/precommits/{address}/{page}/{size}"
-
-	//Chain
-	UrlRegisterQueryChain = "/chain/status"
-
-	//Location
-	UrlRegisterQueryIp = "/ip/"
-
-	//Node
-	UrlRegisterQueryNodes = "/net_info"
+	UrlRegisterQueryBlock        = "/block/{height}"
+	UrlRegisterQueryRecentBlocks = "/blocks/recent"
+	UrlRegisterQueryBlocks       = "/blocks"
 
 	//Proposal
 	UrlRegisterQueryProposals = "/proposals/{page}/{size}"
@@ -60,16 +49,6 @@ const (
 
 	//version
 	UrlRegisterQueryApiVersion = "/version"
-
-	//ping
-	UrlRegisterPing = "/ping"
-
-	//BlockChainRpc
-	UrlIrisHubAccount = "%s/auth/accounts/%s"
-	UrlIrisHubNetInfo = "%s/net_info"
-	UrlIrisHubGenesis = "%s/genesis"
-
-	UrlNodeLocation = "http://opendata.baidu.com/api.php?query=%s&resource_id=6006&ie=utf8&oe=utf8"
 
 	Format = "2006/01/02T15:04:05Z07:00"
 
