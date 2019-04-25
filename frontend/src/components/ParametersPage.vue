@@ -59,7 +59,7 @@
                   })
                 }else {
                   this.parametersList = [{
-                    key:'test',
+                    key:'',
                     'Description/Usage' : '',
                     'Genesis Value' :'',
                     'Range' : '',
@@ -80,7 +80,7 @@
                   'Note' : ''
                 }];
                 this.showNoData = true;
-                console.log(e)
+                console.error(e)
               })
 
             },
