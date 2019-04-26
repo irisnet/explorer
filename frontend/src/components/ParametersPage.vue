@@ -25,7 +25,8 @@
 <script>
     import VParameters from "./table/ParametersTable";
     import SpinComponent from './commonComponents/SpinComponent';
-    import Service from '../util/axios'
+    import Service from '../util/axios';
+    import Tools from "../util/Tools"
     export default {
         name: "Parameters",
         components: {SpinComponent, VParameters},
@@ -46,8 +47,10 @@
               let parametersListUrl = `/api/gov/params`;
               Service.http(parametersListUrl).then((res) => {
                 this.showLoading = false;
+
                 if(res){
                   this.parametersList = res.map( item => {
+                    this.handleParameterItem(item);
                     return {
                       key: `${item.module}/${item.key}`,
                       'Description/Usage' : item.description,
@@ -65,7 +68,7 @@
                     'Range' : '',
                     'Type' : '',
                     'Note' : ''
-                  }]
+                  }];
                   this.showNoData = true;
                 }
               }).catch(e => {
@@ -84,6 +87,45 @@
               })
 
             },
+            handleParameterItem(parameterItem){
+              if(parameterItem.key === "max_validators"){
+              }else if(parameterItem.key === "unbonding_time"){
+                parameterItem.value = this.formatUnbondingTime(parameterItem.value);
+                parameterItem.range.minimum.data = this.formatUnbondingTimeminimum(parameterItem.range.minimum.data
+                )
+              }else if(parameterItem.key === "inflation"){
+                parameterItem.value = `${Number(parameterItem.value)} %`;
+                parameterItem.range.minimum.data = `${Number(parameterItem.range.minimum.data)} %`;
+                parameterItem.range.maximum.data = `${Number(parameterItem.range.maximum.data)} %`
+              }else if(parameterItem.key === "base_proposer_reward"){
+                parameterItem.value = `${Number(parameterItem.value)} %`;
+                parameterItem.range.minimum.data = `${Number(parameterItem.range.minimum.data)} %`;
+                parameterItem.range.maximum.data = `${Number(parameterItem.range.maximum.data)} %`
+              }else if(parameterItem.key === "bonus_proposer_reward"){
+                parameterItem.value = `${Number(parameterItem.value)} %`;
+                parameterItem.range.minimum.data = `${Number(parameterItem.range.minimum.data)} %`;
+                parameterItem.range.maximum.data = `${Number(parameterItem.range.maximum.data)} %`
+              }else if(parameterItem.key === "community_tax"){
+                parameterItem.value = `${Number(parameterItem.value)} %`;
+                parameterItem.range.minimum.data = `${Number(parameterItem.range.minimum.data)} %`;
+                parameterItem.range.maximum.data = `${Number(parameterItem.range.maximum.data)} %`
+              }else if(parameterItem.key === "gas_price_threshold"){
+                parameterItem.value = `${Tools.formatNumber(parameterItem.value)} IRIS`;
+                parameterItem.range.maximum.data = `${Tools.formatNumber(parameterItem.range.maximum.data)} IRIS`
+              }else if(parameterItem.key === "tx_size"){
+                parameterItem.value = `${parameterItem.value} Byte`;
+                parameterItem.range.minimum.data = `${parameterItem.range.minimum.data} Byte`;
+                parameterItem.range.maximum.data = `${parameterItem.range.maximum.data} Byte`
+              }
+            },
+            formatUnbondingTime(time){
+              let nsToMSRatio = 1000000000,mToSRatio = 60,hToSRatio = 60,dToSRatio = 24;
+              return `${(Math.ceil(Number(time)/nsToMSRatio/mToSRatio/hToSRatio/dToSRatio))} days`
+            },
+            formatUnbondingTimeminimum(time){
+              let nsToMSRatio = 1000000000,mToSRatio = 60,hToSRatio = 60,dToSRatio = 24;
+              return `${(Math.ceil(Number(time)/nsToMSRatio/mToSRatio/hToSRatio/dToSRatio))} days`
+            }
         }
     }
 </script>
