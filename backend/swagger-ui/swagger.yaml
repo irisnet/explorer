@@ -20,6 +20,8 @@ tags:
     description: query blocks
   - name: Governance/Proposal
     description: query proposal
+  - name: stake
+    description:
 paths:
   /api/block/{height}:
     get:
@@ -117,12 +119,14 @@ paths:
           type: integer
           format: int
           default: 1
+
           required: false
         - name: size
           in: query
           type: integer
           format: int
           default: 100
+
           required: false
       responses:
         200:
@@ -187,14 +191,41 @@ paths:
           default: 20
       responses:
         200:
-          description: T
           schema:
             $ref: "#/definitions/GovProposals"
         default:
           description: generic error response
           schema:
             $ref: "#/definitions/error"
-
+  /api/stake/validators:
+    get:
+      tags:
+      - stake
+      parameters:
+        - name: page
+          in: query
+          type: integer
+          format: int64
+          default: 1
+        - name: size
+          in: query
+          type: integer
+          format: int64
+          default: 100
+        - name: type
+          in: query
+          type: string
+        - name: origin
+          in: query
+          type: string
+      responses:
+        200:
+          description:
+          schemas:
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
 definitions:
   Blocks:
     type: object
