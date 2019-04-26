@@ -364,6 +364,12 @@
     height: 0.20rem;
     background-size: 100% ;
     opacity: 1;
+    display: inline-block !important;
+    vertical-align: middle !important;
+    margin-left: .05rem !important;
+    position: relative !important;
+    right: 0 !important;
+    margin-bottom: 0!important;
   }
   .b-table.table > thead > tr > th[aria-sort][aria-sort="ascending"]::after, .b-table.table > tfoot > tr > th[aria-sort][aria-sort="ascending"]::after{
     background: url("../../assets/asc.png") no-repeat center;
@@ -372,6 +378,12 @@
     height: 0.20rem;
     background-size: 100% ;
     opacity: 1;
+    display: inline-block !important;
+    vertical-align: middle !important;
+    margin-left: .05rem !important;
+    position: relative !important;
+    right: 0 !important;
+    margin-bottom: 0!important;
   }
   .b-table.table > thead > tr > th[aria-sort]::after, .b-table.table > tfoot > tr > th[aria-sort]::after{
     background: url("../../assets/default.png") no-repeat center;
@@ -380,6 +392,12 @@
     height: 0.20rem;
     content:"" !important;
     opacity: 1;
+    display: inline-block !important;
+    vertical-align: middle !important;
+    margin-left: .05rem !important;
+    position: relative !important;
+    right: 0 !important;
+    margin-bottom: 0!important;
   }
   table.b-table>tfoot>tr>th.sorting:before, table.b-table>thead>tr>th.sorting:before{
     content:"" !important;
@@ -391,5 +409,11 @@
     height: 0.20rem;
     content:"" !important;
     opacity: 1;
+    display: inline-block !important;
+    vertical-align: middle !important;
+    margin-left: .05rem !important;
+    position: relative !important;
+    right: 0 !important;
+    margin-bottom: 0 !important;
   }
 </style>
