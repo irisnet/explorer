@@ -88,7 +88,10 @@ func NewAPIMux() *mux.Router {
 	registerFilters()
 
 	if conf.Get().Server.CurEnv == conf.EnvironmentDevelop || conf.Get().Server.CurEnv == conf.EnvironmentLocal || conf.Get().Server.CurEnv == conf.EnvironmentQa {
-		r.PathPrefix("/swagger-ui/").Handler(http.StripPrefix("/swagger-ui/", http.FileServer(http.Dir("../swagger-ui"))))
+		logger.Info(fmt.Sprintf("enalbe swagger ui in %s environment.", conf.Get().Server.CurEnv))
+		r.PathPrefix("/swagger-ui/").Handler(http.StripPrefix("/swagger-ui/", http.FileServer(http.Dir("./swagger-ui"))))
+	} else {
+		logger.Info(fmt.Sprintf("disable swagger ui in %s environment.", conf.Get().Server.CurEnv))
 	}
 
 	r.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("../frontend/dist/"))))

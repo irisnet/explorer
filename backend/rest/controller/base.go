@@ -60,7 +60,7 @@ func Var(request model.IrisReq, key string) (result string) {
 func GetPage(r model.IrisReq) (int, int) {
 	page := Var(r, "page")
 	size := Var(r, "size")
-	iPage := 0
+	iPage := 1
 	iSize := 20
 	if p, ok := utils.ParseInt(page); ok {
 		iPage = int(p)
