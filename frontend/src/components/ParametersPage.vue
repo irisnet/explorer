@@ -94,21 +94,21 @@
                 parameterItem.range.minimum.data = this.formatUnbondingTime(parameterItem.range.minimum.data)
                 parameterItem.range.maximum.data = this.formatUnbondingTime(parameterItem.range.maximum.data)
               }else if(parameterItem.key === "inflation"){
-                parameterItem.value = `${Number(parameterItem.value)} %`;
-                parameterItem.range.minimum.data = `${Number(parameterItem.range.minimum.data)} %`;
-                parameterItem.range.maximum.data = `${Number(parameterItem.range.maximum.data)} %`
+                parameterItem.value = `${Number(parameterItem.value)*100}%`;
+                parameterItem.range.minimum.data = `${Number(parameterItem.range.minimum.data)*100}%`;
+                parameterItem.range.maximum.data = `${Number(parameterItem.range.maximum.data)*100}%`
               }else if(parameterItem.key === "base_proposer_reward"){
-                parameterItem.value = `${Number(parameterItem.value)} %`;
-                parameterItem.range.minimum.data = `${Number(parameterItem.range.minimum.data)} %`;
-                parameterItem.range.maximum.data = `${Number(parameterItem.range.maximum.data)} %`
+                parameterItem.value = `${Number(parameterItem.value)*100}%`;
+                parameterItem.range.minimum.data = `${Number(parameterItem.range.minimum.data)*100}%`;
+                parameterItem.range.maximum.data = `${Number(parameterItem.range.maximum.data)*100}%`
               }else if(parameterItem.key === "bonus_proposer_reward"){
-                parameterItem.value = `${Number(parameterItem.value)} %`;
-                parameterItem.range.minimum.data = `${Number(parameterItem.range.minimum.data)} %`;
-                parameterItem.range.maximum.data = `${Number(parameterItem.range.maximum.data)} %`
+                parameterItem.value = `${Number(parameterItem.value)*100}%`;
+                parameterItem.range.minimum.data = `${Number(parameterItem.range.minimum.data)*100}%`;
+                parameterItem.range.maximum.data = `${Number(parameterItem.range.maximum.data)*100}%`
               }else if(parameterItem.key === "community_tax"){
-                parameterItem.value = `${Number(parameterItem.value)} %`;
-                parameterItem.range.minimum.data = `${Number(parameterItem.range.minimum.data)} %`;
-                parameterItem.range.maximum.data = `${Number(parameterItem.range.maximum.data)} %`
+                parameterItem.value = `${Number(parameterItem.value)*100}%`;
+                parameterItem.range.minimum.data = `${Number(parameterItem.range.minimum.data)*100}%`;
+                parameterItem.range.maximum.data = `${Number(parameterItem.range.maximum.data)*100}%`
               }else if(parameterItem.key === "gas_price_threshold"){
                 parameterItem.value = `${Tools.formatNumber(parameterItem.value)} IRIS`;
                 parameterItem.range.maximum.data = `${Tools.formatNumber(parameterItem.range.maximum.data)} IRIS`

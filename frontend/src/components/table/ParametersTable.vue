@@ -3,7 +3,7 @@
     <b-table :fields='fields' :items='items' striped class="parameter_table_container">
       <template slot="Range" slot-scope="data">
         <div v-if="data.item.Range.minimum.data || data.item.Range.maximum.data">
-          <span>{{formatMinRange(data.item.Range.minimum)}}{{data.item.Range.minimum.data}} : {{data.item.Range.maximum.data}}{{formatMaxRange(data.item.Range.maximum)}}</span>
+          <span>{{formatMinRange(data.item.Range.minimum)}}{{data.item.Range.minimum.data}} , {{data.item.Range.maximum.data}}{{formatMaxRange(data.item.Range.maximum)}}</span>
         </div>
       </template>
     </b-table>
@@ -138,7 +138,6 @@
     width: 1.9rem;
   }
   .parameter_table_container tbody tr td{
-    word-break: break-all;
     white-space: inherit;
   }
   .parameter_table_container tbody tr td:nth-child(1){
