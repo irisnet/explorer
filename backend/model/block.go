@@ -36,23 +36,23 @@ type ValidatorSet struct {
 }
 
 type Block struct {
-	BlockInfo    BlockInfo    `json:"block_info"`
-	ValidatorSet ValidatorSet `json:"validator_set"`
-	TokenFlows   TokenFlows   `json:"token_flows"`
-	Proposals    []Proposal   `json:"proposals"`
+	BlockInfo    BlockInfo        `json:"block_info"`
+	ValidatorSet ValidatorSet     `json:"validator_set"`
+	TokenFlows   TokenFlows       `json:"token_flows"`
+	Proposals    []ProposalInfoVo `json:"proposals_info"`
 }
 
 type BlockInfo struct {
-	BlockHeight         string        `json:"block_height"`
-	Timestamp           time.Time     `json:"timestamp"`
-	BlockHash           string        `json:"block_hash"`
-	Transactions        string        `json:"transactions"`
-	PropopserMoniker    string        `json:"propopser_moniker"`
-	PropoperAddr        string        `json:"propopser_addr"`
-	Reward              document.Coin `json:"reward"`
-	LastBlock           int64         `json:"last_block"`
-	LastBlockHash       string        `json:"last_block_hash"`
-	PrecommitValidators string        `json:"precommit_validators"`
-	VotingPower         string        `json:"voting_power"`
-	LatestHeight        string        `json:"latest_height"`
+	BlockHeight         string         `json:"block_height"`
+	Timestamp           time.Time      `json:"timestamp"`
+	BlockHash           string         `json:"block_hash"`
+	Transactions        string         `json:"transactions"`
+	PropopserMoniker    string         `json:"propopser_moniker"`
+	PropoperAddr        string         `json:"propopser_addr"`
+	Rewards             document.Coins `json:"rewards"`
+	LastBlock           int64          `json:"last_block"`
+	LastBlockHash       string         `json:"last_block_hash"`
+	PrecommitValidators string         `json:"precommit_validators"`
+	VotingPower         string         `json:"voting_power"`
+	LatestHeight        string         `json:"latest_height"`
 }

@@ -118,7 +118,7 @@ func (service *BlockService) Query(height int64) model.BlockInfo {
 	blockRes := lcd.BlockResult(height)
 	for _, v := range blockRes.Results.BeginBlock.Tags {
 		if v.Key == "mint-coin" {
-			result.Reward = utils.ParseCoin(v.Value)
+			result.Rewards = utils.ParseCoins(v.Value)
 		}
 	}
 
