@@ -3,7 +3,6 @@ package service
 import (
 	"encoding/json"
 
-	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm"
@@ -20,9 +19,9 @@ func (service *ProposalService) GetModule() Module {
 	return Proposal
 }
 
-func (service *ProposalService) QueryProposalsByBlockHeight(height int64) []model.Proposal {
+func (service *ProposalService) QueryProposalsByBlockHeight(height int64) []model.ProposalInfoVo {
 
-	resp := []model.Proposal{}
+	resp := []model.ProposalInfoVo{}
 
 	var query = orm.NewQuery()
 	defer query.Release()
@@ -40,36 +39,7 @@ func (service *ProposalService) QueryProposalsByBlockHeight(height int64) []mode
 	}
 
 	for _, v := range data {
-		var tmp model.Proposal
-		tmp.ProposalId = v.ProposalId
-		var docProposal document.Proposal
-
-		var selectorProposal = bson.M{"status": 1, "submit_time": 1, "total_deposit": 1, "voting_start_time": 1, "voting_end_time": 1, "title": 1, "votes": 1}
-
-		query.SetCollection(document.CollectionNmProposal).
-			SetSelector(selectorProposal).
-			SetCondition(bson.M{document.Proposal_Field_ProposalId: v.ProposalId}).
-			SetResult(&docProposal)
-		if err := query.Exec(); err != nil {
-			logger.Error("query proposal err", logger.String("error", err.Error()), service.GetTraceLog())
-		}
-
-		tmp.Type = v.Type
-		tmp.Status = docProposal.Status
-		tmp.SubmitTime = docProposal.SubmitTime
-		tmp.TotalDeposit = docProposal.TotalDeposit
-		tmp.VotingStartTime = docProposal.VotingStartTime
-		tmp.VotingEndTime = docProposal.VotingEndTime
-		tmp.Title = docProposal.Title
-		tmp.Proposer = v.From
-
-		var vv model.VotesValidators
-		vv.VotesLen = len(docProposal.Votes)
-		lcdValidators := lcd.ValidatorSet(height)
-		vv.ValidatorsLen = len(lcdValidators.Validators)
-		tmp.VotesValidators = vv
-
-		resp = append(resp, tmp)
+		resp = append(resp, service.Query(int(v.ProposalId)))
 	}
 
 	return resp
@@ -112,7 +82,6 @@ func (service *ProposalService) Query(id int) (resp model.ProposalInfoVo) {
 
 	if err := query.Exec(); err != nil {
 		panic(types.CodeNotFound)
-		return
 	}
 
 	proposal := model.Proposal{
