@@ -91,8 +91,8 @@
               if(parameterItem.key === "max_validators"){
               }else if(parameterItem.key === "unbonding_time"){
                 parameterItem.value = this.formatUnbondingTime(parameterItem.value);
-                parameterItem.range.minimum.data = this.formatUnbondingTimeminimum(parameterItem.range.minimum.data
-                )
+                parameterItem.range.minimum.data = this.formatUnbondingTime(parameterItem.range.minimum.data)
+                parameterItem.range.maximum.data = this.formatUnbondingTime(parameterItem.range.maximum.data)
               }else if(parameterItem.key === "inflation"){
                 parameterItem.value = `${Number(parameterItem.value)} %`;
                 parameterItem.range.minimum.data = `${Number(parameterItem.range.minimum.data)} %`;
@@ -118,13 +118,25 @@
                 parameterItem.range.maximum.data = `${parameterItem.range.maximum.data} Byte`
               }
             },
-            formatUnbondingTime(time){
-              let nsToMSRatio = 1000000000,mToSRatio = 60,hToSRatio = 60,dToSRatio = 24;
-              return `${(Math.ceil(Number(time)/nsToMSRatio/mToSRatio/hToSRatio/dToSRatio))} days`
-            },
-            formatUnbondingTimeminimum(time){
-              let nsToMSRatio = 1000000000,mToSRatio = 60,hToSRatio = 60,dToSRatio = 24;
-              return `${(Math.ceil(Number(time)/nsToMSRatio/mToSRatio/hToSRatio/dToSRatio))} days`
+            formatUnbondingTime(time) {
+                let nsToMSRatio = 1000000, dToHRatio = 24, HToMRatio = 60;
+                let dateTime = Tools.formatDuring(Number(time) / nsToMSRatio), d, h, m;
+                if (dateTime.days >= 1) {
+                    d = `${Math.floor(dateTime.days)}d`
+                } else {
+                    d = ''
+                }
+                if (dateTime.hours >= 1 && dateTime.hours < dToHRatio) {
+                    h = `${Math.floor(dateTime.hours)}h`
+                } else {
+                    h = ''
+                }
+                if (dateTime.minutes >= 1 && dateTime.minutes < HToMRatio) {
+                    m = `${Math.floor(dateTime.minutes)}m`
+                } else {
+                    m = ''
+                }
+                return `${d ? d :''}${h ? h :''}${m ? m :''}`
             }
         }
     }

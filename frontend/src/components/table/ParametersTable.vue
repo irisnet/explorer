@@ -28,18 +28,18 @@
         methods:{
             formatMinRange(range){
                 if(range.sign === Constant.PARAMETER.EQUAL){
-                  return `[`
+                  return `[ `
                 }else if(range.sign === Constant.PARAMETER.UNEQUAL){
-                  return '('
+                  return '( '
                 }
             },
             formatMaxRange(range){
               if(range.sign === Constant.PARAMETER.EQUAL){
-                return `]`
+                return ` ]`
               }else if(range.sign === Constant.PARAMETER.UNEQUAL){
-                return ')'
+                return ' )'
               }else{
-                return '+∞)'
+                return '+∞ )'
               }
             },
         }
