@@ -14,9 +14,10 @@ const (
 	UrlRegisterQueryRecentBlocks = "/blocks/recent"
 	UrlRegisterQueryBlocks       = "/blocks"
 
-	//Proposal
-	UrlRegisterQueryProposals = "/proposals/{page}/{size}"
-	UrlRegisterQueryProposal  = "/proposal/{pid}"
+	//Governance
+	UrlRegisterQueryProposals = "/gov/proposals"
+	UrlRegisterQueryProposal  = "/gov/proposal/{pid}"
+	UrlRegisterQueryGovParams = "/gov/params"
 
 	//SearchBox
 	UrlRegisterQueryText    = "/search/{text}"

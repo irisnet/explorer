@@ -7,7 +7,7 @@
         </div>
       </div>
     </div>
-    <div :class="blocksListPageWrap" style="margin-top: 0.62rem">
+    <div :class="blocksListPageWrap" style="margin-top: 0.61rem">
       <div style="overflow-x: auto;-webkit-overflow-scrolling:touch;">
         <spin-component :showLoading="showLoading"/>
         <validator-list-table :items="items" :minWidth="tableMinWidth" :showNoData="showNoData"></validator-list-table>
