@@ -144,8 +144,8 @@ paths:
         - Block
       responses:
         200:
-          # description: recent blocks
-          # schema:
+          description: 
+          schema:
           type: array
           items:
             $ref: "#/definitions/BlockInfoVo"
@@ -296,7 +296,7 @@ definitions:
       proposals:
         type: array
         items:
-          $ref: "#/definitions/Proposal"
+          $ref: "#/definitions/ProposalInfoVo"
   BlockInfo:
     type: object
     properties:
@@ -311,7 +311,7 @@ definitions:
       propopser:
         type: string
       reward:
-        $ref: "#/definitions/Coin"
+        $ref: "#/definitions/Coins"
       last_block:
         type: integer
         format: int64
@@ -415,28 +415,6 @@ definitions:
         type: string
       value:
         type: string
-  Proposal:
-    type: object
-    properties:
-      title:
-        type: string
-      proposal_id:
-        type: integer
-        format: uint64
-      type:
-        type: string
-      status:
-        type: string
-      proposer:
-        type: string
-      submit_time:
-        type: string
-      voting_start_time:
-        type: string
-      total_deposit:
-        $ref: "#/definitions/Coins"
-      votes_validators:
-        $ref: "#/definitions/VotesValidators"
   Vote:
     type: object
     required:
@@ -470,15 +448,7 @@ definitions:
        Abstain:
          type: integer
          fromat: int
-  VotesValidators:
-    type: object
-    properties:
-      vote_len:
-        type: integer
-        format: int
-      validator_len:
-        type: integer
-        format: int
+
   TokenFlow:
     type: object
     properties:
