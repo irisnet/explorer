@@ -109,7 +109,7 @@ func init() {
 				Module: "stake",
 				Key:    "unbonding_time",
 				Value:  gen.Result.Genesis.AppState.Stake.Params.UnbondingTime,
-				Type:   "int",
+				Type:   "time.Duration",
 				Range: document.Range{
 					Minimum: document.Op{
 						Sign: document.EQ,
@@ -117,6 +117,7 @@ func init() {
 					},
 				},
 				Description: "unbonding time",
+				Note:        "the locking time of unbonding and redelegation",
 			},
 		})
 
