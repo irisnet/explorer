@@ -121,23 +121,17 @@
             formatUnbondingTime(time) {
                 let nsToMSRatio = 1000000, dToHRatio = 24, HToMRatio = 60;
                 let dateTime = Tools.formatDuring(Number(time) / nsToMSRatio), d, h, m;
-                if (dateTime.days > 1) {
-                    d = `${Math.floor(dateTime.days)}d`
-                } else if (dateTime.days === 1) {
+                if (dateTime.days >= 1) {
                     d = `${Math.floor(dateTime.days)}d`
                 } else {
                     d = ''
                 }
-                if (dateTime.hours > 1 && dateTime.hours < dToHRatio) {
-                    h = `${Math.floor(dateTime.hours)}h`
-                } else if (dateTime.hours === 1) {
+                if (dateTime.hours >= 1 && dateTime.hours < dToHRatio) {
                     h = `${Math.floor(dateTime.hours)}h`
                 } else {
                     h = ''
                 }
-                if (dateTime.minutes > 1 && dateTime.minutes < HToMRatio) {
-                    m = `${Math.floor(dateTime.minutes)}m`
-                } else if (dateTime.minutes === 1) {
+                if (dateTime.minutes >= 1 && dateTime.minutes < HToMRatio) {
                     m = `${Math.floor(dateTime.minutes)}m`
                 } else {
                     m = ''
