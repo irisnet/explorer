@@ -91,7 +91,7 @@ func (service *BlockService) Query(height int64) model.BlockInfo {
 
 	result.Propopser = validatorDoc.Description.Moniker
 	result.Timestamp = b.BlockMeta.Header.Time
-	result.Transactions = b.BlockMeta.Header.TotalTxs
+	result.Transactions = b.BlockMeta.Header.NumTxs
 	if height <= 1 {
 		result.PrecommitValidators = InitPrecommitValidators
 		result.VotingPower = InitVotingPower
