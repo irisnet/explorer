@@ -1,10 +1,11 @@
 package conf
 
 import (
-	"github.com/irisnet/explorer/backend/logger"
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/irisnet/explorer/backend/logger"
 )
 
 const (
@@ -31,7 +32,7 @@ const (
 	KeyPrefixConsAddr = "PrefixConsAddr"
 	KeyPrefixConsPub  = "PrefixConsPub"
 
-	EnvironmentDevelop = "develop"
+	EnvironmentDevelop = "dev"
 	EnvironmentLocal   = "local"
 	EnvironmentQa      = "qa"
 	EnvironmentStage   = "stage"

@@ -47,7 +47,8 @@ type BlockInfo struct {
 	Timestamp           time.Time     `json:"timestamp"`
 	BlockHash           string        `json:"block_hash"`
 	Transactions        string        `json:"transactions"`
-	Propopser           string        `json:"propopser"`
+	PropopserMoniker    string        `json:"propopser_moniker"`
+	PropoperAddr        string        `json:"propopser_addr"`
 	Reward              document.Coin `json:"reward"`
 	LastBlock           int64         `json:"last_block"`
 	LastBlockHash       string        `json:"last_block_hash"`

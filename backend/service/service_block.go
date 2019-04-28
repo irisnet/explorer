@@ -80,7 +80,7 @@ func (service *BlockService) Query(height int64) model.BlockInfo {
 	result.LastBlock = heightAsInt64 - 1
 	result.LastBlockHash = b.Block.Header.LastBlockID.Hash
 
-	var selector = bson.M{"description.moniker": 1}
+	var selector = bson.M{"description.moniker": 1, "operator_address": 1}
 	var validatorDoc document.Validator
 	err = queryOne(document.CollectionNmValidator, selector, bson.M{"proposer_addr": b.BlockMeta.Header.ProposerAddress}, &validatorDoc)
 
@@ -88,8 +88,8 @@ func (service *BlockService) Query(height int64) model.BlockInfo {
 		logger.Error("query validator collection  err", logger.String("error", err.Error()), service.GetTraceLog())
 		return result
 	}
-
-	result.Propopser = validatorDoc.Description.Moniker
+	result.PropoperAddr = validatorDoc.OperatorAddress
+	result.PropopserMoniker = validatorDoc.Description.Moniker
 	result.Timestamp = b.BlockMeta.Header.Time
 	result.Transactions = b.BlockMeta.Header.NumTxs
 	if height <= 1 {
