@@ -12,7 +12,8 @@ import ProposalsDetail from "./components/ProposalsDetail.vue";
 import SearchResult from "./components/searchResult.vue";
 import Help from "./components/clearStorageHelpPage.vue";
 import Version from "./components/version.vue";
-import ValidatorListPage from "./components/ValidatorListPage.vue"
+import ValidatorListPage from "./components/ValidatorListPage.vue";
+import Parameters from "./components/ParametersPage.vue"
 Vue.use(Router);
 
 export default new Router({
@@ -38,6 +39,9 @@ export default new Router({
     },
     {
       path: '/Proposals', component: ProposalsPage
+    },
+    {
+      path: '/parameters', component: Parameters
     },
     {
       //BlocksListPage为一个组件，根据type类型不同相应不同页面
