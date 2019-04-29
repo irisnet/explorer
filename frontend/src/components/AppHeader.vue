@@ -63,9 +63,19 @@
           <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/Governance')"
                 v-show="showSubTransaction">Governance</span>
         </div>
-        <span class="nav_item common_item_style" :class="activeClassName === '/Proposals'?'nav_item_active':''"
-              @click="featureButtonClick('/Proposals')"
-        >Proposals</span>
+        <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === '/governance'?'nav_item_active':''"
+             @mouseover="governanceMouseOver" @mouseleave="governanceMouseLeave">
+
+          <span class="nav_item common_item_style" >
+            Governance
+            <span class="bottom_arrow"></span>
+          </span>
+          <span class="sub_btn_item" @click="featureButtonClick('/parameters')"
+                v-show="flShowGovernanceOption">Parameters</span>
+          <span class="sub_btn_item" @click="featureButtonClick('/proposals')"
+                v-show="flShowGovernanceOption">Proposals</span>
+
+        </div>
         <span v-if="flShowFaucet" class="nav_item common_item_style faucet_content" :class="activeClassName === '/faucet'?'nav_item_active':''"
               @click="featureButtonClick('/faucet')"
         >Faucet</span>
@@ -116,6 +126,20 @@
           <span class="feature_btn_mobile feature_nav"
                 @click="featureButtonClick('/transactions/2/Governance')">Governance</span>
         </div>
+        <span class="feature_btn_mobile feature_nav select_option_container" @click="governanceSelect(flShowGovernanceSelect)">
+         <span>Governance</span>
+          <div :class="flShowUpOrDown ? 'upImg_content' : 'downImg_content'">
+            <img :src="flShowUpOrDown ? upImg : downImg ">
+          </div>
+        </span>
+        <div class="select_option" v-show="flShowGovernanceSelect">
+             <span class="feature_btn_mobile feature_nav"
+                   @click="featureButtonClick('/parameters')">Parameters</span>
+          <span class="feature_btn_mobile feature_nav"
+                @click="featureButtonClick('/proposals')">Proposals</span>
+
+        </div>
+
 
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/Proposals')">Proposals</span>
         <span v-if="flShowFaucet" class="feature_btn_mobile feature_nav mobile_faucet_content" @click="featureButtonClick('/faucet')">Faucet</span>
@@ -166,6 +190,7 @@
         featureShow: false,
         transactionShow: false,
         validatorsShow: false,
+        flShowGovernanceOption: false,
         searchInputValue: '',
         activeClassName: '/home',
         showHeader:!(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer()),
@@ -177,6 +202,7 @@
         flShowTransactionsSelect: false,
         flShowValidatorsSelect: false,
         flShowNetworkSelect:false,
+        flShowGovernanceSelect:false,
         flShowUpOrDown: false,
         flShowNetwork: false,
         flShowHeaderNetwork: false,
@@ -236,6 +262,16 @@
           this.flShowNetworkUpOrDown = false
         }
       },
+      governanceSelect(flShowNetworkSelect){
+        this.flShowGovernanceSelect = false;
+        if(!flShowNetworkSelect){
+          this.flShowGovernanceSelect = true;
+          this.flShowNetworkUpOrDown = true
+        }else {
+          this.flShowGovernanceSelect = false;
+          this.flShowNetworkUpOrDown = false
+        }
+      },
       hideFeature() {
         if (this.featureShow) {
           this.featureShow = false;
@@ -260,6 +296,7 @@
         }
         this.showSubTransaction = false;
         this.showSubValidators = false;
+        this.flShowGovernanceOption = false;
         this.listenRouteForChangeActiveButton();
         if(path !== 'network'){
           this.$router.push(path);
@@ -270,6 +307,12 @@
       },
       transactionMouseLeave(){
         this.showSubTransaction = false;
+      },
+      governanceMouseOver() {
+        this.flShowGovernanceOption = true
+      },
+      governanceMouseLeave() {
+        this.flShowGovernanceOption = false
       },
       searchTx(){
         let uri = `/api/tx/${this.searchInputValue}`;
@@ -380,10 +423,10 @@
           this.activeClassName = '/home';
         } else if (path.includes('/faucet')) {
           this.activeClassName = '/faucet';
-        } else if(path.includes('/Proposals')){
-          this.activeClassName = '/Proposals';
-        }else if(path.includes('/nodespage')){
-          this.activeClassName = '/nodespage';
+        } else if(path.includes('/parameters')){
+          this.activeClassName = '/governance';
+        }else if(path.includes('/proposals')){
+          this.activeClassName = '/governance';
         }else {
           this.activeClassName = '';
         }

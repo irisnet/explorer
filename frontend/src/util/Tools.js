@@ -35,6 +35,16 @@ export default class Tools{
     let dateDiff = currentServerTime - dateBegin.getTime();
     return dateDiff
   }
+  static formatDuring(ms) {
+    let s = ms/1000;
+    let days = (s / (60 * 60 * 24));
+    let hours = ((s % (60 * 60 * 24)) / (60 * 60));
+    let minutes = ((s % (60 * 60)) / (60));
+    let seconds = (s % 60);
+    return {
+      days,hours,minutes,seconds
+    }
+  }
   /**
    * 判断当前是移动端还是pc端
    * param void;
