@@ -11,7 +11,7 @@
       </div>
     </div>
 
-    <div :class="blocksListPageWrap" style="margin-top: 0.62rem">
+    <div :class="blocksListPageWrap">
       <div class="pagination total_num">
         <span class="blocks_list_page_wrap_hash_var" v-show="['1','2','3','4'].includes(type)">{{count}} total</span>
         <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
@@ -277,7 +277,7 @@
     },
   }
 </script>
-<style lang="scss" >
+<style scoped lang="scss" >
   @import '../style/mixin.scss';
   @import '../style/block_list_page.scss';
 </style>

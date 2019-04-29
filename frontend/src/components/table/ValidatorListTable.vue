@@ -85,7 +85,7 @@
               },
               'bondHeight':{
                 label:'Bond Height',
-                sortable:false,
+                sortable:true,
               },
             },
             jailedValidatorFields: {
@@ -111,7 +111,7 @@
               },
               'bondHeight':{
                 label:'Bond Height',
-                sortable:false,
+                sortable:true,
               },
             },
             candidateValidatorFields: {
@@ -141,7 +141,7 @@
               },
               'bondHeight':{
                 label:'Bond Height',
-                sortable:false,
+                sortable:true,
               },
             },
           }
