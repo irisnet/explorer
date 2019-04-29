@@ -2,7 +2,6 @@ package service
 
 import (
 	"github.com/irisnet/explorer/backend/model"
-	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
 	"gopkg.in/mgo.v2/bson"
@@ -62,43 +61,6 @@ func (service *BlockService) QueryRecent() []model.BlockInfoVo {
 		result = append(result, buildBlock(block))
 	}
 	return result
-}
-
-//TODO
-func (service *BlockService) QueryPrecommits(address string, page, size int) (result model.PageVo) {
-	var candidate document.Candidate
-	var selector = bson.M{"pub_key_addr": 1}
-	var query = orm.NewQuery().
-		SetCollection(document.CollectionNmStakeRoleCandidate).
-		SetSelector(selector).
-		SetCondition(bson.M{document.Candidate_Field_Address: address}).
-		SetResult(&candidate)
-	defer query.Release()
-	err := query.Exec()
-	if err != nil {
-		panic(types.CodeNotFound)
-		return
-	}
-
-	var data []document.Block
-	//var selector = bson.M{"pub_key_addr": 1}
-	query.Reset().
-		SetCollection(document.CollectionNmBlock).
-		SetResult(&data).
-		SetCondition(bson.M{"block.last_commit.precommits": bson.M{"$elemMatch": bson.M{"validator_address": candidate.PubKeyAddr}}}).
-		SetSort(desc(document.Block_Field_Height)).
-		SetPage(page).
-		SetSize(size)
-
-	cnt, err := query.ExecPage()
-	if err != nil {
-		panic(types.CodeNotFound)
-		return
-	}
-	return model.PageVo{
-		Count: cnt,
-		Data:  data, //TODO
-	}
 }
 
 func buildBlock(block document.Block) (result model.BlockInfoVo) {

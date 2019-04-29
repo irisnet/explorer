@@ -63,7 +63,6 @@ func registerApi(r *mux.Router) {
 		controller.RegisterProposal,
 		controller.RegisterNodes,
 		controller.RegisterTextSearch,
-		controller.RegisterPing,
 		controller.RegisterHome,
 	}
 
