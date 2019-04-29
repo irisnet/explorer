@@ -44,9 +44,7 @@
     @include pcContainer;
     height:0.62rem;
     background:#efeff1;
-    position: fixed;
-    left: 0;
-    z-index: 10;
+
     p{
       height:0.62rem;
       span{
@@ -86,6 +84,11 @@
       }
     }
 
+  }
+  .fixed_style{
+    position: fixed;
+    left: 0;
+    z-index: 10;
   }
   .personal_computer_blocks_list_page_wrap {
     padding-bottom: 0.2rem;
