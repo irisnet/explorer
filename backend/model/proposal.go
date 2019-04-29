@@ -26,11 +26,6 @@ type Proposal struct {
 	Threshold       string         `json:"threshold,omitempty"`
 }
 
-type VotesValidators struct {
-	VotesLen      int `json:"vote_len"`
-	ValidatorsLen int `json:"validator_len"`
-}
-
 type Vote struct {
 	Voter  string    `json:"voter"`
 	Option string    `json:"option"`

@@ -19,7 +19,7 @@ func (service *ProposalService) GetModule() Module {
 	return Proposal
 }
 
-func (service *ProposalService) QueryProposalsByBlockHeight(height int64) []model.ProposalInfoVo {
+func (service *ProposalService) QueryProposalsByHeight(height int64) []model.ProposalInfoVo {
 
 	resp := []model.ProposalInfoVo{}
 

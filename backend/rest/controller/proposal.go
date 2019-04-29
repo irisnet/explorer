@@ -1,11 +1,12 @@
 package controller
 
 import (
+	"strconv"
+
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/types"
-	"strconv"
 )
 
 func RegisterProposal(r *mux.Router) error {

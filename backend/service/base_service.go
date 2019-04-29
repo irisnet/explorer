@@ -27,11 +27,13 @@ var (
 )
 
 const (
-	InitPrecommitValidators        = "0/0"
-	InitVotingPower                = "0%"
-	DefaultPageSize                = 10
-	DefaultPageNum                 = 1
-	_                       Module = iota
+	InitVoteValidatorNum            = 0
+	InitValidatorNum                = 0
+	InitPrecommitVotingPower        = 0
+	InitTotalVotingPower            = 0
+	DefaultPageSize                 = 10
+	DefaultPageNum                  = 1
+	_                        Module = iota
 	Account
 	Block
 	Common
