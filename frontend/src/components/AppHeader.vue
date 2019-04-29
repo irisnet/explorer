@@ -139,9 +139,6 @@
                 @click="featureButtonClick('/proposals')">Proposals</span>
 
         </div>
-
-
-        <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/Proposals')">Proposals</span>
         <span v-if="flShowFaucet" class="feature_btn_mobile feature_nav mobile_faucet_content" @click="featureButtonClick('/faucet')">Faucet</span>
 
         <span class="feature_btn_mobile feature_nav select_option_container" @click="netWorkSelect(flShowNetworkSelect)">
