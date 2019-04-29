@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/irisnet/explorer/backend/lcd"
@@ -21,12 +20,12 @@ func (service *BlockService) GetModule() Module {
 	return Block
 }
 
-func (service *BlockService) QueryBlock(blockHeight int64) model.Block {
+func (service *BlockService) Query(height int64) model.Block {
 	result := model.Block{}
-	result.BlockInfo = service.Query(blockHeight)
-	result.ValidatorSet = service.GetValidatorSet(blockHeight, DefaultPageNum, DefaultPageSize)
-	result.TokenFlows = Get(Tx).(*TxService).QueryTokenFlow(blockHeight, DefaultPageNum, DefaultPageSize)
-	result.Proposals = Get(Proposal).(*ProposalService).QueryProposalsByBlockHeight(blockHeight)
+	result.BlockInfo = service.QueryBlockInfo(height)
+	result.ValidatorSet = service.GetValidatorSet(height, DefaultPageNum, DefaultPageSize)
+	result.TokenFlows = Get(Tx).(*TxService).QueryTokenFlow(height, DefaultPageNum, DefaultPageSize)
+	result.Proposals = Get(Proposal).(*ProposalService).QueryProposalsByHeight(height)
 
 	return result
 }
@@ -37,6 +36,16 @@ func (service *BlockService) GetValidatorSet(height int64, page, size int) model
 	if page > 0 {
 		page = page - 1
 	}
+
+	var validatorsDoc []document.Validator
+	var selector = bson.M{"description.moniker": 1, "operator_address": 1, "consensus_pubkey": 1}
+
+	err := queryAll(document.CollectionNmValidator, selector, nil, "", 0, &validatorsDoc)
+	if err != nil {
+		logger.Error("get validator set err", logger.String("error", err.Error()), service.GetTraceLog())
+		return result
+	}
+
 	items := []model.BlockValidator{}
 	for k, v := range lcdValidators.Validators {
 		if k >= page*size && k < (page+1)*size {
@@ -44,14 +53,12 @@ func (service *BlockService) GetValidatorSet(height int64, page, size int) model
 			tmp.Consensus = v.PubKey
 			tmp.VotingPower = v.VotingPower
 			tmp.ProposerPriority = v.ProposerPriority
-			var validatorDoc document.Validator
-			var selector = bson.M{"description.moniker": 1, "operator_address": 1}
-			err := queryOne(document.CollectionNmValidator, selector, bson.M{"consensus_pubkey": v.PubKey}, &validatorDoc)
-			if err != nil {
-				logger.Error("get validator set err", logger.String("error", err.Error()), service.GetTraceLog())
+			for _, validator := range validatorsDoc {
+				if validator.ConsensusPubkey == v.PubKey {
+					tmp.OperatorAddress = validator.OperatorAddress
+					tmp.Moniker = validator.Description.Moniker
+				}
 			}
-			tmp.OperatorAddress = validatorDoc.OperatorAddress
-			tmp.Moniker = validatorDoc.Description.Moniker
 			items = append(items, tmp)
 		}
 	}
@@ -60,7 +67,7 @@ func (service *BlockService) GetValidatorSet(height int64, page, size int) model
 	return result
 }
 
-func (service *BlockService) Query(height int64) model.BlockInfo {
+func (service *BlockService) QueryBlockInfo(height int64) model.BlockInfo {
 	var result model.BlockInfo
 
 	b := lcd.Block(height)
@@ -68,35 +75,28 @@ func (service *BlockService) Query(height int64) model.BlockInfo {
 		panic(types.CodeNotFound)
 	}
 
-	result.BlockHash = b.BlockMeta.BlockID.Hash
-	result.BlockHeight = b.Block.Header.Height
-
-	heightAsInt64, err := strconv.ParseInt(b.Block.Header.Height, 10, 0)
-
-	if err != nil {
-		logger.Error("block header height is not int type")
-	}
-	result.LastBlock = heightAsInt64 - 1
-	result.LastBlockHash = b.Block.Header.LastBlockID.Hash
-
 	var selector = bson.M{"description.moniker": 1, "operator_address": 1}
 	var validatorDoc document.Validator
-	err = queryOne(document.CollectionNmValidator, selector, bson.M{"proposer_addr": b.BlockMeta.Header.ProposerAddress}, &validatorDoc)
+	err := queryOne(document.CollectionNmValidator, selector, bson.M{"proposer_addr": b.BlockMeta.Header.ProposerAddress}, &validatorDoc)
 
 	if err != nil {
 		logger.Error("query validator collection  err", logger.String("error", err.Error()), service.GetTraceLog())
 		return result
 	}
-	result.PropoperAddr = validatorDoc.OperatorAddress
-	result.PropopserMoniker = validatorDoc.Description.Moniker
-	result.Timestamp = b.BlockMeta.Header.Time
-	result.Transactions = b.BlockMeta.Header.NumTxs
-	if height <= 1 {
-		result.PrecommitValidators = InitPrecommitValidators
-		result.VotingPower = InitVotingPower
+
+	result.LatestHeight = lcd.BlockLatest().BlockMeta.Header.Height
+
+	blockRes := lcd.BlockResult(height)
+
+	if height == 1 {
+		result.VoteValidatorNum = InitVoteValidatorNum
+		result.ValidatorNum = InitValidatorNum
+		result.PrecommitVotingPower = InitPrecommitVotingPower
+		result.TotalVotingPower = InitTotalVotingPower
 	} else {
 		lcdValidators := lcd.ValidatorSet(height - 1)
-		result.PrecommitValidators = strconv.Itoa(len(b.Block.LastCommit.Precommits)) + "/" + strconv.Itoa(len(lcdValidators.Validators))
+		result.VoteValidatorNum = len(b.Block.LastCommit.Precommits)
+		result.ValidatorNum = len(lcdValidators.Validators)
 		var totalVotingPower, precommitVotingPower int
 		for k, v := range lcdValidators.Validators {
 			powerAsInt, err := strconv.Atoi(v.VotingPower)
@@ -110,18 +110,25 @@ func (service *BlockService) Query(height int64) model.BlockInfo {
 				}
 			}
 		}
-		percent := strconv.Itoa(precommitVotingPower * 10000 / totalVotingPower)
-		preLen := len(percent) - 2
-		result.VotingPower = fmt.Sprintf(percent[:preLen]+"."+percent[preLen:]) + "%"
+		result.PrecommitVotingPower = precommitVotingPower
+		result.TotalVotingPower = totalVotingPower
 	}
-	blockRes := lcd.BlockResult(height)
+
 	for _, v := range blockRes.Results.BeginBlock.Tags {
 		if v.Key == "mint-coin" {
 			result.Rewards = utils.ParseCoins(v.Value)
 		}
 	}
 
-	result.LatestHeight = lcd.BlockLatest().BlockMeta.Header.Height
+	result.PropoperAddr = validatorDoc.OperatorAddress
+	result.PropopserMoniker = validatorDoc.Description.Moniker
+	result.LastBlock = height - 1
+	result.BlockHash = b.BlockMeta.BlockID.Hash
+	result.BlockHeight = b.Block.Header.Height
+	result.LastBlockHash = b.Block.Header.LastBlockID.Hash
+	result.Timestamp = b.BlockMeta.Header.Time
+	result.Transactions = b.BlockMeta.Header.NumTxs
+
 	return result
 }
 
