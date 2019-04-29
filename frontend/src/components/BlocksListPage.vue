@@ -2,20 +2,17 @@
   <div class="blocks_list_page_wrap">
     <div class="blocks_list_title_wrap">
       <div :class="blocksListPageWrap" style="margin-bottom:0;">
-        <span class="blocks_list_title" v-show="!$store.state.flShowValidatorStatus">{{listTitleName}}</span>
+        <span class="blocks_list_title">{{listTitleName}}</span>
         <!--<span class="blocks_list_page_wrap_hash_var">{{blocksValue}}</span>-->
         <span class="blocks_list_page_wrap_hash_var for_block"
               v-show="$route.query.block || $route.query.address">
           {{blockVar}}
         </span>
-        <div class="validators_status_tab" v-show="$store.state.flShowValidatorStatus">
-          <span class="validators_status_title" v-for="(item,index) in validatorStatusTitleList" :class="item.isActive ? 'active_title' : '' " @click="selectValidatorStatus(index)">{{item.title}}</span>
-        </div>
       </div>
     </div>
 
     <div :class="blocksListPageWrap">
-      <div class="pagination total_num" v-if="!$store.state.flShowValidatorStatus">
+      <div class="pagination total_num">
         <span class="blocks_list_page_wrap_hash_var" v-show="['1','2','3','4'].includes(type)">{{count}} total</span>
         <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
         </b-pagination>
@@ -29,8 +26,7 @@
           No Data
         </div>
       </div>
-      <div class="pagination" :class="$store.state.flShowValidatorStatus ? 'total_num' : '' " style='margin:0.2rem 0;'>
-        <span v-if="$store.state.flShowValidatorStatus" class="blocks_list_page_wrap_hash_var" v-show="['1','2','3','4'].includes(type)">{{count}} total</span>
+      <div class="pagination" style='margin:0.2rem 0;'>
         <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
         </b-pagination>
       </div>
@@ -98,21 +94,6 @@
         listTitleName:"",
         timer: null,
         transactionTimer: null,
-        validatorTabIndex: localStorage.getItem('validatorTabIndex') ? localStorage.getItem('validatorTabIndex') : 0,
-        validatorStatusTitleList:[
-          {
-            title:'Active',
-            isActive: true,
-          },
-          {
-            title:'Jailed',
-            isActive: false,
-          },
-          {
-            title:'Candidate',
-            isActive: false,
-          }
-        ]
       }
     },
     beforeMount() {
@@ -136,17 +117,6 @@
       window.removeEventListener('resize',this.onWindowResize);
     },
     methods: {
-      linkGen(pageNum){
-        return pageNum === 1 ? '?' : `?page=${pageNum}`
-      },
-      selectValidatorStatus(index){
-        this.validatorStatusTitleList.forEach( item => {
-          item.isActive = false
-        });
-        localStorage.setItem('validatorTabIndex',index);
-        this.validatorStatusTitleList[index].isActive = true;
-        this.getValidatorList(this.defaultValidatorPageNumber,this.validatorPageSize,this.getValidatorStatus(index))
-      },
       onresize(){
         this.innerWidth = window.innerWidth;
         if(window.innerWidth > 910){
@@ -171,7 +141,6 @@
             let that = this;
             clearInterval(this.timer);
               this.count = data.Count;
-              this.setTotalPageNum(this.count,this.pageSize);
               this.items = data.Data.map(item => {
                 let txn = item.num_txs;
                 let precommit = item.last_commit && item.last_commit.length !== 0  ? item.last_commit.length : 0;
@@ -234,7 +203,6 @@
         }
         Service.http(url).then((txList) => {
           that.count = txList.Count;
-          this.setTotalPageNum(this.count,this.pageSize);
           clearInterval(this.transactionTimer);
           if(txList){
             that.transactionTimer = setInterval(function () {
@@ -256,7 +224,6 @@
         Service.http(url).then((result) => {
           this.count = result && result.Count ? result.Count : 0;
           result = result && result.Data ? result.Data : null;
-          this.setTotalPageNum(this.count,pageSize);
           if(result){
             this.items = result.map((item) => {
               return {
@@ -299,64 +266,18 @@
           console.log(e)
         });
       },
-      getValidatorHeaderImg(data){
-        let url = 'https://keybase.io/_/api/1.0/user/lookup.json?fields=pictures&key_suffix=';
-        for(let i = 0; i < data.length; i++){
-          if(data[i].identity){
-            Service.http(`${url}${data[i].identity}`).then(res =>{
-              if(res && res.them && res.them[0].pictures && res.them[0].pictures.primary && res.them[0].pictures.primary.url){
-                data[i].url = res.them[0].pictures.primary.url;
-              }else {
-                data[i].url = require('../assets/header_img.png');
-              }
-            })
-          }else {
-            data[i].url = require('../assets/header_img.png');
-          }
-        }
-        return data
-      },
-      getValidatorStatus(index){
-        let validatorStatus;
-        switch (index) {
-          case 0 :
-            validatorStatus = 'validator';
-            break;
-          case 1 :
-            validatorStatus = 'jailed';
-            break;
-          case 2 :
-            validatorStatus = 'candidate'
-        }
-        return validatorStatus
-      },
       getDataList(currentPage, pageSize, type) {
         this.showLoading = true;
         if (type === '1') {
           this.getBlockList(currentPage, pageSize);
         }else if (type === '2') {
           this.getTransactionList(currentPage, pageSize)
-        }else if (type === '3' || type === '4') {
-          this.$store.commit('flShowValidatorStatus',true)
-          this.selectValidatorStatus(Number(this.validatorTabIndex))
         }
-      },
-      setTotalPageNum(count,pageSize){
-        if(count === 0 ){
-          this.totalPageNum = 1
-        }else {
-          this.totalPageNum = Math.ceil(count / pageSize);
-        }
-        localStorage.setItem("pagenum",this.totalPageNum);
       },
     },
-    beforeDestroy () {
-      let defaultValidatorTabIndex = 0;
-      localStorage.setItem('validatorTabIndex',defaultValidatorTabIndex);
-    }
   }
 </script>
-<style lang="scss" >
+<style scoped lang="scss" >
   @import '../style/mixin.scss';
   @import '../style/block_list_page.scss';
 </style>

@@ -219,7 +219,7 @@
       },
       getProposalsInformation() {
         this.showLoading = true;
-        let url = `/api/proposal/${this.$route.params.proposal_id}`;
+        let url = `/api/gov/proposal/${this.$route.params.proposal_id}`;
         Service.http(url).then((data) => {
           this.showLoading = false;
           if(data){

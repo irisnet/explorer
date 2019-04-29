@@ -16,7 +16,6 @@ func RegisterStake(r *mux.Router) error {
 		registerQueryCandidatesTop,
 		registerQueryCandidateUptime,
 		registerQueryCandidatePower,
-		registerQueryChain,
 		registerGetValidators,
 		registerGetValidator,
 	}
@@ -111,16 +110,6 @@ func registerQueryCandidateStatus(r *mux.Router) error {
 		address := Var(request, "address")
 
 		result := stake.QueryCandidateStatus(address)
-		return result
-	})
-
-	return nil
-}
-
-func registerQueryChain(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryChain, "GET", func(request model.IrisReq) interface{} {
-		stake.SetTid(request.TraceId)
-		result := stake.QueryChainStatus()
 		return result
 	})
 
