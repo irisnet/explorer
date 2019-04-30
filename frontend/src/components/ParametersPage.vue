@@ -7,7 +7,7 @@
     </div>
     <div class="parameters_list_container">
       <div class="parameter_list_content">
-        <h5 class="parameter_list_title_content">All Governance Params In IRISnet</h5>
+        <h5 class="parameter_list_title_content">Governance Params In IRISnet</h5>
         <div class="parameters_list_table_wrap">
           <div class="parameters_list_table_content">
             <spin-component :showLoading="showLoading"></spin-component>
