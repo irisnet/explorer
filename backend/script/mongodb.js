@@ -23,6 +23,7 @@ db.createCollection("ex_tx_num_stat");
 db.createCollection("ex_config");
 db.createCollection("val_black_list");
 db.createCollection("validator");
+db.createCollection("gov_params");
 
 // create index
 db.block.createIndex({"height": -1}, {"unique": true});

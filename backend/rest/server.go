@@ -2,16 +2,17 @@ package rest
 
 import (
 	"fmt"
+	"log"
+	"net/http"
+	_ "net/http/pprof"
+	"time"
+
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/rest/controller"
 	"github.com/irisnet/explorer/backend/rest/filter"
-	"log"
-	"net/http"
-	_ "net/http/pprof"
-	"time"
 )
 
 type ApiServer struct {
@@ -62,7 +63,6 @@ func registerApi(r *mux.Router) {
 		controller.RegisterProposal,
 		controller.RegisterNodes,
 		controller.RegisterTextSearch,
-		controller.RegisterPing,
 		controller.RegisterHome,
 	}
 
@@ -85,6 +85,10 @@ func NewAPIMux() *mux.Router {
 	s := r.PathPrefix("/api").Subrouter()
 	registerApi(s)
 	registerFilters()
+
+	if conf.Get().Server.CurEnv == conf.EnvironmentDevelop || conf.Get().Server.CurEnv == conf.EnvironmentLocal || conf.Get().Server.CurEnv == conf.EnvironmentQa {
+		r.PathPrefix("/swagger-ui/").Handler(http.StripPrefix("/swagger-ui/", http.FileServer(http.Dir("../swagger-ui"))))
+	}
 
 	r.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("../frontend/dist/"))))
 	return r

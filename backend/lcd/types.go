@@ -80,7 +80,6 @@ type NodeInfoVo struct {
 		RPCAddress string `json:"rpc_address"`
 	} `json:"other"`
 }
-
 type GenesisVo struct {
 	Jsonrpc string `json:"jsonrpc"`
 	ID      string `json:"id"`
@@ -115,6 +114,7 @@ type GenesisVo struct {
 					} `json:"data"`
 					Params struct {
 						GasPriceThreshold string `json:"gas_price_threshold"`
+						TxSize            string `json:"tx_size"`
 					} `json:"params"`
 				} `json:"auth"`
 				Stake struct {
@@ -205,26 +205,26 @@ type GenesisVo struct {
 						UpgradeInfo struct {
 							ProposalID string `json:"ProposalID"`
 							Protocol   struct {
-								Version  string `json:"version"`
-								Software string `json:"software"`
-								Height   string `json:"height"`
+								Version   string `json:"version"`
+								Software  string `json:"software"`
+								Height    string `json:"height"`
+								Threshold string `json:"threshold"`
 							} `json:"Protocol"`
 						} `json:"UpgradeInfo"`
 						Success bool `json:"Success"`
 					} `json:"GenesisVersion"`
-					UpgradeParams struct {
-						Threshold string `json:"threshold"`
-					} `json:"UpgradeParams"`
 				} `json:"upgrade"`
 				Slashing struct {
 					Params struct {
-						MaxEvidenceAge           string `json:"max-evidence-age"`
-						SignedBlocksWindow       string `json:"signed-blocks-window"`
-						MinSignedPerWindow       string `json:"min-signed-per-window"`
-						DoubleSignUnbondDuration string `json:"double-sign-unbond-duration"`
-						DowntimeUnbondDuration   string `json:"downtime-unbond-duration"`
-						SlashFractionDoubleSign  string `json:"slash-fraction-double-sign"`
-						SlashFractionDowntime    string `json:"slash-fraction-downtime"`
+						MaxEvidenceAge          string `json:"max_evidence_age"`
+						SignedBlocksWindow      string `json:"signed_blocks_window"`
+						MinSignedPerWindow      string `json:"min_signed_per_window"`
+						DoubleSignJailDuration  string `json:"double_sign_jail_duration"`
+						DowntimeJailDuration    string `json:"downtime_jail_duration"`
+						CensorshipJailDuration  string `json:"censorship_jail_duration"`
+						SlashFractionDoubleSign string `json:"slash_fraction_double_sign"`
+						SlashFractionDowntime   string `json:"slash_fraction_downtime"`
+						SlashFractionCensorship string `json:"slash_fraction_censorship"`
 					} `json:"params"`
 					SigningInfos struct {
 					} `json:"signing_infos"`
@@ -240,6 +240,7 @@ type GenesisVo struct {
 						SlashFraction        string `json:"slash_fraction"`
 						ComplaintRetrospect  string `json:"complaint_retrospect"`
 						ArbitrationTimeLimit string `json:"arbitration_time_limit"`
+						TxSizeLimit          string `json:"tx_size_limit"`
 					} `json:"params"`
 				} `json:"service"`
 				Guardian struct {

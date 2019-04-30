@@ -394,47 +394,6 @@ func (service *CandidateService) QueryCandidateStatus(address string) (resp mode
 	return resp
 }
 
-func (service *CandidateService) QueryChainStatus() model.ChainStatusVo {
-	store := getDb()
-	defer store.Session.Close()
-	candidateStore := store.C(document.CollectionNmStakeRoleCandidate)
-	pipe := candidateStore.Pipe(
-		[]bson.M{
-			{"$group": bson.M{
-				"_id":   "voting_power",
-				"count": bson.M{"$sum": "$tokens"},
-			}},
-		},
-	)
-	var count model.CountVo
-	pipe.One(&count)
-
-	query := bson.M{}
-	query[document.Candidate_Field_Status] = types.TypeValStatusBonded
-	query[document.Candidate_Field_Jailed] = false
-	activeValidatorsCnt, _ := candidateStore.Find(query).Count()
-
-	blockStore := store.C(document.CollectionNmBlock)
-	txStore := store.C(document.CollectionNmCommonTx)
-	txCount, _ := txStore.Count()
-
-	var recentBlock document.Block
-	var txCnt int
-	err := blockStore.Find(nil).Sort(desc(document.Block_Field_Height)).Limit(1).One(&recentBlock)
-	if err == nil {
-		startTime := recentBlock.Time.Add(-1 * time.Minute)
-		txCnt, _ = txStore.Find(bson.M{document.Tx_Field_Time: bson.M{"$gte": startTime}}).Count()
-	}
-	power := strconv.FormatFloat(count.Count, 'f', 10, 64)
-	resp := model.ChainStatusVo{
-		ValidatorsCount: activeValidatorsCnt,
-		TxCount:         txCount,
-		VotingPower:     getVotingPowerFromToken(power),
-		Tps:             float64(txCnt) / 60,
-	}
-	return resp
-}
-
 func (service *CandidateService) convert(database *mgo.Database, candidate document.Candidate) model.Validator {
 	var moniker = candidate.Description.Moniker
 	var identity = candidate.Description.Identity

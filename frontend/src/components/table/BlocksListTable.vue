@@ -65,36 +65,6 @@
         </span>
       </template>
     </b-table>
-
-    <b-table :fields='validatorFields' :status="status" :items='items' striped v-if="type === '3' || type === '4'" class="show_trim" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc">
-      //TODO(ZHANGJINBIAO) 路由设计不合理，下个迭代会更改不合理的路由。
-      <template slot="index" slot-scope="data" small>
-          {{data.index + 1}}
-      </template>
-      <template slot='moniker' slot-scope='data'>
-        <span class="skip_route" style="display: flex">
-          <div style="width: 0.3rem;height: 0.3rem;" v-if="data.item.url">
-            <img style="width: 100%;" :src="data.item.url ? data.item.url : ''">
-          </div>
-          <div class="name_address" style="margin-left:0.2rem;">
-            <span class="remove_default_style">
-              <router-link :to="`/address/1/${data.item.operatorAddress}`" class="link_style">{{data.item.moniker}}</router-link>
-            </span>
-          </div>
-        </span>
-      </template>
-      <template slot='operatorAddress' slot-scope='data'>
-        <span class="skip_route" style="display: flex" v-if="data.item.operatorAddress">
-          <div class="name_address">
-            <span class="remove_default_style">
-              <router-link :to="`/address/1/${data.item.operatorAddress}`" class="link_style">{{formatAddress(data.item.operatorAddress)}}</router-link>
-            </span>
-            <span class="address">{{data.item.operatorAddress}}</span>
-          </div>
-        </span>
-      </template>
-    </b-table>
-
     <b-table :fields='fields' :items='items' striped v-if="type === '5'">
       <template slot='Address' slot-scope='data'>
         <span class="skip_route" style="display: flex">
@@ -254,137 +224,20 @@
   export default {
     watch: {
       items(items) {
-        this.setValidatorFields(items);
+
       },
     },
     data() {
       return {
         fields: [],
-        sortBy: 'votingPower',
-        sortDesc: true,
-        validatorFields:null,
-        activeValidatorFields: {
-
-          // index:{
-          //   label:'Moniker',
-          // },
-          moniker:{
-            label:'Moniker',
-            sortable:true,
-          },
-          operatorAddress:{
-            label:'Operator_Address',
-            sortable:false,
-          },
-          commission:{
-            label:'Commission',
-            sortable:true,
-          },
-          'bondedToken':{
-            label:'Bonded Tokens',
-            sortable:true,
-          },
-          'votingPower':{
-            label:'Voting Power',
-            sortable:true,
-          },
-          'uptime':{
-            label:'Uptime',
-            sortable:true,
-          },
-          'selfBond':{
-            label:'Self Bonded',
-            sortable:true,
-          },
-          'delegatorNum':{
-            label:'Delegator Number',
-            sortable:true,
-          },
-          'bondHeight':{
-            label:'Bond Height',
-            sortable:false,
-          },
-        },
-        jailedValidatorFields: {
-          moniker:{
-            label:'Moniker',
-            sortable:true,
-          },
-          operatorAddress:{
-            label:'Operator_Address',
-            sortable:false,
-          },
-          commission:{
-            label:'Commission',
-            sortable:true,
-          },
-          'bondedToken':{
-            label:'Bonded Tokens',
-            sortable:true,
-          },
-          'selfBond':{
-            label:'Self Bonded',
-            sortable:true,
-          },
-          'bondHeight':{
-            label:'Bond Height',
-            sortable:false,
-          },
-        },
-        candidateValidatorFields: {
-
-          moniker:{
-            label:'Moniker',
-            sortable:true,
-          },
-          operatorAddress:{
-            label:'Operator_Address',
-            sortable:false,
-          },
-          commission:{
-            label:'Commission',
-            sortable:true,
-          },
-          'bondedToken':{
-            label:'Bonded Tokens',
-            sortable:true,
-          },
-          'selfBond':{
-            label:'Self Bonded',
-            sortable:true,
-          },
-          'delegatorNum':{
-            label:'Delegator Number',
-            sortable:true,
-          },
-          'bondHeight':{
-            label:'Bond Height',
-            sortable:false,
-          },
-        },
         blockFields:['Height','Txn','Age','Precommit Validators','Voting Power']
       }
     },
-
     props: ['items', 'type','showNoData','minWidth','status'],
-    mounted(){
-      this.validatorFields =  this.activeValidatorFields;
-    },
     methods: {
       formatAddress(address){
         return Tools.formatValidatorAddress(address)
       },
-      setValidatorFields(validatorList){
-        validatorList.forEach(item => {
-          if(item && item.validatorStatus && item.validatorStatus === 'jailed'){
-            this.validatorFields = this.jailedValidatorFields
-          }else if(item && item.validatorStatus && item.validatorStatus === 'validator'){
-            this.validatorFields = this.activeValidatorFields
-          }else if(item && item.validatorStatus && item.validatorStatus === 'candidate'){
-            this.validatorFields = this.candidateValidatorFields
-          }
-        })
-      }
     }
   }
 </script>
@@ -583,41 +436,5 @@
   }
   .link_style{
     color: #3598db !important;
-  }
-  //覆盖bootstrap-vue默认排序样式
-  .b-table.table > thead > tr > th[aria-sort][aria-sort="descending"]::after, .b-table.table > tfoot > tr > th[aria-sort][aria-sort="descending"]::after{
-    background: url("../../assets/desc.png") no-repeat center;
-    content:"" !important;
-    width: 0.1rem;
-    height: 0.20rem;
-    background-size: 100% ;
-    opacity: 1;
-  }
-  .b-table.table > thead > tr > th[aria-sort][aria-sort="ascending"]::after, .b-table.table > tfoot > tr > th[aria-sort][aria-sort="ascending"]::after{
-    background: url("../../assets/asc.png") no-repeat center;
-    content:"" !important;
-    width: 0.1rem;
-    height: 0.20rem;
-    background-size: 100% ;
-    opacity: 1;
-  }
-  .b-table.table > thead > tr > th[aria-sort]::after, .b-table.table > tfoot > tr > th[aria-sort]::after{
-    background: url("../../assets/default.png") no-repeat center;
-    background-size: 100% ;
-    width: 0.1rem;
-    height: 0.20rem;
-    content:"" !important;
-    opacity: 1;
-  }
-  table.b-table>tfoot>tr>th.sorting:before, table.b-table>thead>tr>th.sorting:before{
-    content:"" !important;
-  }
-  table.b-table>tfoot>tr>th.sorting:after, table.b-table>thead>tr>th.sorting:after{
-    background: url("../../assets/default.png") no-repeat center;
-    background-size: 100% ;
-    width: 0.1rem;
-    height: 0.20rem;
-    content:"" !important;
-    opacity: 1;
   }
 </style>
