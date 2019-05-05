@@ -137,10 +137,8 @@
                    @click="featureButtonClick('/parameters')">Parameters</span>
           <span class="feature_btn_mobile feature_nav"
                 @click="featureButtonClick('/proposals')">Proposals</span>
-
         </div>
         <span v-if="flShowFaucet" class="feature_btn_mobile feature_nav mobile_faucet_content" @click="featureButtonClick('/faucet')">Faucet</span>
-
         <span class="feature_btn_mobile feature_nav select_option_container" @click="netWorkSelect(flShowNetworkSelect)">
          <span>Network</span>
           <div :class="flShowNetworkUpOrDown ? 'upImg_content' : 'downImg_content'">
