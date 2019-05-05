@@ -3,6 +3,7 @@ package lcd
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/utils"
@@ -94,4 +95,21 @@ func LatestValidatorSet() (result ValidatorSetVo) {
 		return result
 	}
 	return result
+}
+
+func BlockResult(height int64) (result BlockResultVo) {
+
+	url := fmt.Sprintf(UrlBlocksResult, conf.Get().Hub.LcdUrl, height)
+	resBytes, err := utils.Get(url)
+	if err != nil {
+		logger.Error("BlockResult error", logger.String("err", err.Error()))
+		return result
+	}
+
+	if err := json.Unmarshal(resBytes, &result); err != nil {
+		logger.Error("BlockResult error", logger.String("err", err.Error()))
+		return result
+	}
+	return result
+
 }

@@ -5,6 +5,7 @@ import (
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/types"
+	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -17,6 +18,7 @@ func RegisterTx(r *mux.Router) error {
 		registerQueryTxList,
 		registerQueryTxsCounter,
 		registerQueryRecentTx,
+		registerQueryTokenFlow,
 	}
 
 	for _, fn := range funs {
@@ -142,6 +144,16 @@ func registerQueryRecentTx(r *mux.Router) error {
 		tx.SetTid(request.TraceId)
 		result := tx.QueryRecentTx()
 		return result
+	})
+	return nil
+}
+func registerQueryTokenFlow(r *mux.Router) error {
+	doApi(r, types.UrlRegisterQueryTokenFlow, "GET", func(request model.IrisReq) interface{} {
+		tx.SetTid(request.TraceId)
+		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), DefaultPageNum))
+		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), DefaultPageSize))
+		height := utils.ParseIntWithDefault(QueryParam(request, "height"), DefaultBlockHeight)
+		return tx.QueryTokenFlow(height, page, size)
 	})
 	return nil
 }

@@ -2,6 +2,8 @@ package service
 
 import (
 	"encoding/json"
+	"time"
+
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm"
@@ -9,7 +11,6 @@ import (
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
-	"time"
 )
 
 type TxService struct {
@@ -202,6 +203,20 @@ func (service *TxService) QueryTxNumGroupByDay() []model.TxNumGroupByDayVo {
 	}
 
 	logger.Debug("QueryTxNumGroupByDay end", service.GetTraceLog())
+	return result
+}
+
+func (service *TxService) QueryTokenFlow(blockHeight int64, page, size int) model.TokenFlows {
+	items := []document.TokenFlow{}
+	result := model.TokenFlows{}
+
+	cnt, err := pageQuery(document.CollectionNmTokenFlow, nil, bson.M{"block_height": blockHeight, "flow_type": bson.M{"$nin": []string{"GovDeposit", "GovDepositBurn", "GovDepositRefund"}}}, "", page, size, &items)
+	if err != nil {
+		logger.Error("query token flow err", logger.String("error", err.Error()), service.GetTraceLog())
+	}
+	result.Total = cnt
+	result.Items = items
+
 	return result
 }
 
