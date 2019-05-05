@@ -3,7 +3,7 @@
     <div class="transactions_title_wrap">
       <p :class="transactionsDetailWrap" style="margin-bottom:0;">
         <span class="transactions_detail_title">Search Results</span>
-        <span class="transactions_detail_wrap_hash_var"><span class="title_for" v-show="flshowTitle">for </span>   {{this.$route.params.searchContent}}</span>
+        <span class="transactions_detail_wrap_hash_var"><span class="title_for" v-show="flshowTitle">for </span>   {{Object.keys(this.$route.query)[0]}}</span>
       </p>
     </div>
     <div :class="transactionsDetailWrap">
@@ -12,7 +12,7 @@
         <div class="block_content_container">
           <p  class="block_height_container">
             <span>Height:</span>
-            <span><router-link :to="`/blocks_detail/${blockHeight}`" style="color: #3598db !important;">{{blockHeight}}</router-link></span>
+            <span><router-link :to="`/block/${blockHeight}`" style="color: #3598db !important;">{{blockHeight}}</router-link></span>
           </p>
           <p class="block_time_container">
             <span>Timestamp</span>
@@ -94,9 +94,9 @@
           }else {
             this.flshowTitle = true;
           }
-          if(/^\+?[1-9][0-9]*$/.test(this.$route.params.searchContent)){
+          if(/^\+?[1-9][0-9]*$/.test(Object.keys(this.$route.query)[0])){
             this.flshowResult = false;
-            this.searchResult(this.$route.params.searchContent)
+            this.searchResult(Object.keys(this.$route.query)[0])
           }else {
             this.flshowResult = true;
           }
@@ -104,13 +104,13 @@
       },
       mounted(){
         if(this.$route.path === "/searchResult/"){
-          this.flshowTitle = false;
+          this.flshowTitle = true;
         }else {
-          this.flshowTitle = true
+          this.flshowTitle = false
         }
-        if(/^\+?[1-9][0-9]*$/.test(this.$route.params.searchContent)){
+        if(/^\+?[1-9][0-9]*$/.test(Object.keys(this.$route.query)[0])){
           this.flshowResult = false;
-          this.searchResult(this.$route.params.searchContent)
+          this.searchResult(Object.keys(this.$route.query)[0])
         }else {
           this.flshowResult = true;
         }
@@ -120,7 +120,7 @@
           this.$router.push("/home")
         },
         searchResult(searchValue){
-          let searchUrl = `/api/search/${searchValue}`;
+        let searchUrl = `/api/search/${searchValue}`;
           let that = this;
           Service.http(searchUrl).then((searchResult) =>{
             that.flshowResult = false;

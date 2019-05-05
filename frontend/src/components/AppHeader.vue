@@ -139,9 +139,6 @@
                 @click="featureButtonClick('/proposals')">Proposals</span>
 
         </div>
-
-
-        <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/Proposals')">Proposals</span>
         <span v-if="flShowFaucet" class="feature_btn_mobile feature_nav mobile_faucet_content" @click="featureButtonClick('/faucet')">Faucet</span>
 
         <span class="feature_btn_mobile feature_nav select_option_container" @click="netWorkSelect(flShowNetworkSelect)">
@@ -365,7 +362,7 @@
             let searchBlockAndProposalInResult = 2;
             if(searchResult.length === searchResultIsBlockOrProposalId){
               if(searchResult[0].Type === "block" && searchResult[0].Data.Height !== 0){
-                this.$router.push(`/blocks_detail/${searchResult[0].Data.Height}`);
+                this.$router.push(`/block/${searchResult[0].Data.Height}`);
                 this.clearSearchInputValue();
               }else if(searchResult[0].Type === "proposal" && searchResult[0].Data.ProposalID !== 0){
                 this.$router.push(`/ProposalsDetail/${searchResult[0].Data.ProposalID}`);
@@ -401,7 +398,7 @@
         }
       },
       toSearchResultPage(){
-        this.$router.push(`/searchResult/${this.searchInputValue}`);
+        this.$router.push(`/searchResult?${this.searchInputValue}`);
         this.searchInputValue = "";
       },
       onInputChange() {

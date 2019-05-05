@@ -85,7 +85,7 @@
               },
               'bondHeight':{
                 label:'Bond Height',
-                sortable:false,
+                sortable:true,
               },
             },
             jailedValidatorFields: {
@@ -111,7 +111,7 @@
               },
               'bondHeight':{
                 label:'Bond Height',
-                sortable:false,
+                sortable:true,
               },
             },
             candidateValidatorFields: {
@@ -141,7 +141,7 @@
               },
               'bondHeight':{
                 label:'Bond Height',
-                sortable:false,
+                sortable:true,
               },
             },
           }
@@ -359,27 +359,18 @@
   //覆盖bootstrap-vue默认排序样式
   .b-table.table > thead > tr > th[aria-sort][aria-sort="descending"]::after, .b-table.table > tfoot > tr > th[aria-sort][aria-sort="descending"]::after{
     background: url("../../assets/desc.png") no-repeat center;
-    content:"" !important;
-    width: 0.1rem;
-    height: 0.20rem;
     background-size: 100% ;
-    opacity: 1;
+    @include validatorCommonSortIcon
   }
   .b-table.table > thead > tr > th[aria-sort][aria-sort="ascending"]::after, .b-table.table > tfoot > tr > th[aria-sort][aria-sort="ascending"]::after{
     background: url("../../assets/asc.png") no-repeat center;
-    content:"" !important;
-    width: 0.1rem;
-    height: 0.20rem;
     background-size: 100% ;
-    opacity: 1;
+    @include validatorCommonSortIcon
   }
   .b-table.table > thead > tr > th[aria-sort]::after, .b-table.table > tfoot > tr > th[aria-sort]::after{
     background: url("../../assets/default.png") no-repeat center;
     background-size: 100% ;
-    width: 0.1rem;
-    height: 0.20rem;
-    content:"" !important;
-    opacity: 1;
+    @include validatorCommonSortIcon
   }
   table.b-table>tfoot>tr>th.sorting:before, table.b-table>thead>tr>th.sorting:before{
     content:"" !important;
@@ -387,9 +378,6 @@
   table.b-table>tfoot>tr>th.sorting:after, table.b-table>thead>tr>th.sorting:after{
     background: url("../../assets/default.png") no-repeat center;
     background-size: 100% ;
-    width: 0.1rem;
-    height: 0.20rem;
-    content:"" !important;
-    opacity: 1;
+    @include validatorCommonSortIcon
   }
 </style>
