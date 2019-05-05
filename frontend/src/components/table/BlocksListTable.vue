@@ -6,7 +6,7 @@
     <b-table :fields='blockFields' :items='items' striped v-if="type === '1'">
       <template slot='Height' slot-scope='data'>
         <span class="skip_route">
-          <router-link :to="`/blocks_detail/${data.item.Height}`">{{data.item.Height}}</router-link>
+          <router-link :to="`/block/${data.item.Height}`">{{data.item.Height}}</router-link>
         </span>
       </template>
       <template slot='Txn' slot-scope='data'>
@@ -28,7 +28,7 @@
       </template>
       <template slot='Block' slot-scope='data'>
         <span class="skip_route">
-          <router-link :to="`/blocks_detail/${data.item.Block}`">{{data.item.Block}}</router-link>
+          <router-link :to="`/block/${data.item.Block}`">{{data.item.Block}}</router-link>
         </span>
       </template>
       <template slot='From' slot-scope='data'>
@@ -86,7 +86,7 @@
       </template>
       <template slot='Block' slot-scope='data'>
         <span class="skip_route">
-          <router-link :to="`/blocks_detail/${data.item.Block}`">{{data.item.Block}}</router-link>
+          <router-link :to="`/block/${data.item.Block}`">{{data.item.Block}}</router-link>
         </span>
       </template>
       <template slot='From' slot-scope='data'>
@@ -112,7 +112,7 @@
     <b-table :fields='fields' :items='items' striped v-if="type === '7'" style="margin-bottom:0;">
       <template slot='Block Height' slot-scope='data'>
         <span class="skip_route">
-          <router-link :to="`/blocks_detail/${data.item['Block Height']}`">{{data.item['Block Height']}}</router-link>
+          <router-link :to="`/block/${data.item['Block Height']}`">{{data.item['Block Height']}}</router-link>
         </span>
       </template>
     </b-table>
@@ -150,7 +150,7 @@
       </template>
       <template slot='Block' slot-scope='data'>
         <span class="skip_route">
-          <router-link :to="`/blocks_detail/${data.item.Block}`">{{data.item.Block}}</router-link>
+          <router-link :to="`/block/${data.item.Block}`">{{data.item.Block}}</router-link>
         </span>
       </template>
       <template slot='From' slot-scope='data'>
@@ -187,7 +187,7 @@
       </template>
       <template slot='Block' slot-scope='data'>
         <span class="skip_route">
-          <router-link :to="`/blocks_detail/${data.item.Block}`">{{data.item.Block}}</router-link>
+          <router-link :to="`/block/${data.item.Block}`">{{data.item.Block}}</router-link>
         </span>
       </template>
       <template slot='From' slot-scope='data'>
