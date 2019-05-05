@@ -141,7 +141,7 @@ func (service *BlockService) QueryList(page, size int) model.PageVo {
 	var blocks []document.Block
 
 	sort := desc(document.Block_Field_Height)
-	var cnt, err = pageQuery(document.CollectionNmBlock, selector, nil, sort, page, size, &blocks)
+	var cnt, err = pageQuery(document.CollectionNmBlock, selector, bson.M{"height": bson.M{"$gt": 0}}, sort, page, size, &blocks)
 	if err != nil {
 		panic(types.CodeNotFound)
 	}
