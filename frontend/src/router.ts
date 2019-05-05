@@ -71,7 +71,7 @@ export default new Router({
       path: '/tx', component: TransactionsDetail
     },
     {
-      path: '/blocks_detail/:height', component: BlocksDetail,
+      path: '/block/:height', component: BlocksDetail,
     },
     {
       path: '/ProposalsDetail/:proposal_id', component: ProposalsDetail,
@@ -88,7 +88,7 @@ export default new Router({
       path: '/searchResult/:searchContent', component: SearchResult,
     },
     {
-      path: '/searchResult/', component: SearchResult,
+      path: '/searchResult', component: SearchResult,
     },
     {
       path: '/version', component: Version,

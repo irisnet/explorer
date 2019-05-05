@@ -16,7 +16,7 @@
         <div class="information_props_wrap">
           <span class="information_props">Block Height :</span>
           <span class="information_value link_active_style">
-            <router-link :to="`/blocks_detail/${blockValue}`">{{blockValue}}</router-link>
+            <router-link :to="`/block/${blockValue}`">{{blockValue}}</router-link>
           </span>
         </div>
         <div class="information_props_wrap">
