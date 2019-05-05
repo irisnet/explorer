@@ -149,7 +149,7 @@ paths:
           description: generic error response
           schema:
             $ref: "#/definitions/error"
-  /api/proposal/{pid}:
+  /api/gov/proposal/{pid}:
     get:
       summary: query a proposal
       tags:
@@ -170,17 +170,17 @@ paths:
           description: generic error response
           schema:
             $ref: "#/definitions/error"
-  /api/proposals/{page}/{size}:
+  /api/gov/proposals:
     get:
       tags:
         - Governance/Proposal
       parameters:
-        - in: path
+        - in: query
           name: page
           type: integer
           format: int
           default: 1
-        - in: path
+        - in: query
           name: size
           type: integer
           format: int

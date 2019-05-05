@@ -16,6 +16,7 @@ func RegisterBlock(r *mux.Router) error {
 		registerQueryBlock,
 		registerQueryBlocks,
 		registerQueryRecentBlocks,
+		registerQueryValidatorSet,
 	}
 
 	for _, fn := range funs {
@@ -65,5 +66,20 @@ func registerQueryRecentBlocks(r *mux.Router) error {
 		return block.QueryRecent()
 	})
 
+	return nil
+}
+
+func registerQueryValidatorSet(r *mux.Router) error {
+	doApi(r, types.UrlRegisterQueryValidatorSet, "GET", func(request model.IrisReq) interface{} {
+		block.SetTid(request.TraceId)
+		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), DefaultPageNum))
+		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), DefaultPageSize))
+		height := utils.ParseIntWithDefault(QueryParam(request, "height"), DefaultBlockHeight)
+		if height < 1 {
+			panic(types.CodeInValidParam)
+		}
+		result := block.GetValidatorSet(height, page, size)
+		return result
+	})
 	return nil
 }

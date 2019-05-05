@@ -8,7 +8,6 @@ import (
 	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
-	"strconv"
 )
 
 func RegisterProposal(r *mux.Router) error {
