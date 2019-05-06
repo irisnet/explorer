@@ -25,12 +25,12 @@ func ParseIntWithDefault(text string, def int64) (i int64) {
 	return i
 }
 
-func ParseUint(text string) (i int64, b bool) {
-	i, ok := ParseInt(text)
-	if ok {
-		return i, i > 0
+func ParseUint(text string) (uint64, bool) {
+	i, err := strconv.ParseUint(text, 10, 64)
+	if err != nil {
+		return i, false
 	}
-	return i, ok
+	return i, true
 }
 
 func RoundFloat(num float64, bit int) (i float64, b bool) {
