@@ -20,6 +20,8 @@ tags:
     description: query blocks
   - name: Governance/Proposal
     description: query proposal
+  - name: Account
+    description:
 paths:
   /api/block/{height}:
     get:
@@ -107,6 +109,24 @@ paths:
           description: generic error response
           schema:
             $ref: "#/definitions/error"
+  /api/account/{address}:
+    get:
+      summary:
+      tags:
+        - Account
+      parameters:
+        - in: path
+          name: address
+          description:
+          required: true
+          type: string
+      responses:
+        200:
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+
   /api/blocks:
     get:
       tags:

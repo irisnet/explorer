@@ -2,13 +2,14 @@ package service
 
 import (
 	"github.com/irisnet/explorer/backend/conf"
+	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/utils"
+	"github.com/shopspring/decimal"
 	"gopkg.in/mgo.v2/bson"
-	"strconv"
 )
 
 type DelegatorService struct {
@@ -19,88 +20,57 @@ func (service *DelegatorService) GetModule() Module {
 	return Delegator
 }
 
-func (service *DelegatorService) QueryDelegation(valAddr string) (info ValInfo) {
-	// query delegation info
+func (service *DelegatorService) QueryDelegation(valAddr string) (document.Coin, document.Coin) {
+
 	var accAddr = utils.Convert(conf.Get().Hub.Prefix.AccAddr, valAddr)
 
-	var query = orm.NewQuery()
-	defer query.Release()
+	var validator document.Validator
+	var selector = bson.M{
+		"tokens":           1,
+		"delegator_shares": 1}
 
-	var validator document.Candidate
-	query.SetCollection(document.CollectionNmStakeRoleCandidate).
-		SetCondition(bson.M{document.Candidate_Field_Address: valAddr}).
-		SetResult(&validator)
+	err := queryOne(document.CollectionNmValidator, selector, bson.M{document.ValidatorFieldOperatorAddress: valAddr}, &validator)
 
-	//query validator info
-	if err := query.Exec(); err != nil {
+	if err != nil {
 		logger.Error("validator not found", logger.Any("err", err.Error()))
-		return
+		return document.Coin{}, document.Coin{}
 	}
 
-	var delegations []document.Delegator
-	query.Reset().
-		SetCollection(document.CollectionNmStakeRoleDelegator).
-		SetCondition(bson.M{document.Delegator_Field_ValidatorAddr: valAddr}).
-		SetResult(&delegations)
-
-	if err := query.Exec(); err != nil {
-		logger.Warn("validator not exist", logger.String("valAddr", valAddr))
-		return
-	}
-
-	var selfBondShares float64
-	var delegatedShares float64
+	delegations := lcd.DelegationByValidator(valAddr)
+	var selfBondShares decimal.Decimal
+	var delegatedShares decimal.Decimal
 	for _, d := range delegations {
-		if d.Address == accAddr {
-			selfBondShares = d.Shares
+		tmp, err := decimal.NewFromString(d.Shares)
+		if err != nil {
+			logger.Error("convert string to decimal err", logger.Any("err", err.Error()))
+			continue
+		}
+		if d.DelegatorAddr == accAddr {
+			selfBondShares = selfBondShares.Add(tmp)
 		} else {
-			delegatedShares += d.Shares
+			delegatedShares = delegatedShares.Add(tmp)
 		}
 	}
 
-	rate := validator.Tokens / validator.DelegatorShares
+	valTokensDec, err := decimal.NewFromString(validator.Tokens)
+	delSharesDec, err := decimal.NewFromString(validator.DelegatorShares)
+
+	rate := valTokensDec.Div(delSharesDec)
+
+	selfAsFloat64, _ := selfBondShares.Mul(rate).Mul(decimal.New(10, 17)).Float64()
+	delegatedAsFloat64, _ := delSharesDec.Mul(rate).Mul(decimal.New(10, 17)).Float64()
 
 	selfBond := document.Coin{
 		Denom:  utils.CoinTypeAtto,
-		Amount: selfBondShares * rate,
+		Amount: selfAsFloat64,
 	}
 
 	delegated := document.Coin{
 		Denom:  utils.CoinTypeAtto,
-		Amount: delegatedShares * rate,
+		Amount: delegatedAsFloat64,
 	}
 
-	query.Reset().
-		SetCollection(document.CollectionNmBlock).
-		SetCondition(bson.M{"block.last_commit.precommits": bson.M{"$elemMatch": bson.M{"validator_address": validator.PubKeyAddr}}})
-
-	var preCommitCount int
-	if cnt, err := query.Count(); err == nil {
-		preCommitCount = cnt
-	}
-
-	//query uptime
-	var upTime = getValUpTime(query)[validator.PubKeyAddr]
-	power := strconv.FormatFloat(validator.Tokens, 'f', 10, 64)
-	return ValInfo{
-		selfBond:  selfBond,
-		delegated: delegated,
-		ValProfile: model.ValProfile{
-			PubKey:         validator.PubKey,
-			Owner:          accAddr,
-			BondHeight:     validator.BondHeight,
-			VotingPower:    getVotingPowerFromToken(power),
-			CommitBlockNum: int64(preCommitCount),
-			UpTime:         upTime,
-			Description: model.Description{
-				Moniker:  validator.Description.Moniker,
-				Identity: validator.Description.Identity,
-				Website:  validator.Description.Website,
-				Details:  validator.Description.Details,
-			},
-		},
-	}
-
+	return selfBond, delegated
 }
 
 func (service *DelegatorService) GetDeposits(delAddr string) (coin document.Coin) {
