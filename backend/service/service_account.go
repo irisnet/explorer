@@ -4,6 +4,7 @@ import (
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/model"
+	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
@@ -44,27 +45,35 @@ func (service *AccountService) Query(address string) (result model.AccountVo) {
 
 func (service *AccountService) QueryRichList() interface{} {
 	var result []document.Account
-	if err := queryAll(document.CollectionNmAccount, nil, nil, desc(document.AccountFieldBalance), 100, &result); err != nil {
+
+	var query = orm.NewQuery()
+	defer query.Release()
+
+	query.SetCollection(document.CollectionNmAccount).
+		SetSort(desc("coin_iris.amount"), document.AccountFieldCoinIrisUpdateAt, document.AccountFieldAccountNumber).
+		SetSize(100).
+		SetResult(&result)
+
+	if err := query.Exec(); err != nil {
 		panic(types.CodeNotFound)
 	}
 	var accList []model.AccountInfo
 	var totalAmt = float64(0)
 
 	for _, acc := range result {
-		totalAmt += acc.Balance
+		totalAmt += acc.CoinIris.Amount
 	}
 
-	for _, acc := range result {
-		rate, _ := utils.RoundFloat(acc.Balance/totalAmt, 6)
+	for index, acc := range result {
+		rate, _ := utils.RoundFloat(acc.CoinIris.Amount/totalAmt, 6)
 		accList = append(accList, model.AccountInfo{
+			Rank:    index + 1,
 			Address: acc.Address,
 			Balance: document.Coins{
-				{
-					Amount: acc.Balance,
-					Denom:  "iris-atto",
-				},
+				acc.CoinIris,
 			},
-			Percent: rate,
+			Percent:  rate,
+			UpdateAt: acc.CoinIrisUpdateAt,
 		})
 	}
 	return accList

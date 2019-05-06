@@ -5,15 +5,17 @@ import (
 )
 
 const (
-	CollectionNmAccount = "account"
-	AccountFieldAddress = "address"
-	AccountFieldBalance = "balance"
+	CollectionNmAccount          = "account"
+	AccountFieldAddress          = "address"
+	AccountFieldAccountNumber    = "account_number"
+	AccountFieldCoinIrisUpdateAt = "coin_iris_update_at"
 )
 
 type Account struct {
-	Address         string  `bson:"address"`
-	Balance         float64 `bson:"balance"`
-	BalanceUpdateAt int64   `bson:"balance_update_at"`
+	Address          string `bson:"address"`
+	AccountNumber    uint64 `bson:"account_number"`
+	CoinIris         Coin   `bson:"coin_iris"`
+	CoinIrisUpdateAt int64  `bson:"coin_iris_update_at"`
 }
 
 func (a Account) Name() string {

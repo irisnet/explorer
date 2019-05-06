@@ -21,7 +21,7 @@ func (service *CommonService) GetModule() Module {
 
 func (service CommonService) QueryText(text string) []model.ResultVo {
 	var result []model.ResultVo
-	i, isUint := utils.ParseUint(text)
+	i, isUint := utils.ParseInt(text)
 	if isUint {
 		//查询block信息
 		var block document.Block
