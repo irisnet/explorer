@@ -2,23 +2,18 @@ package document
 
 import (
 	"gopkg.in/mgo.v2/bson"
-	"time"
 )
 
 const (
 	CollectionNmAccount = "account"
-
-	Account_Field_Addres = "address"
-	Account_Field_Amount = "amount"
-	Account_Field_Time   = "time"
-	Account_Field_Height = "height"
+	AccountFieldAddress = "address"
+	AccountFieldBalance = "balance"
 )
 
 type Account struct {
-	Address string    `bson:"address"`
-	Amount  Coins     `bson:"amount"`
-	Time    time.Time `bson:"time"`
-	Height  int64     `bson:"height"`
+	Address         string  `bson:"address"`
+	Balance         float64 `bson:"balance"`
+	BalanceUpdateAt int64   `bson:"balance_update_at"`
 }
 
 func (a Account) Name() string {
@@ -26,5 +21,5 @@ func (a Account) Name() string {
 }
 
 func (a Account) PkKvPair() map[string]interface{} {
-	return bson.M{Account_Field_Addres: a.Address}
+	return bson.M{AccountFieldAddress: a.Address}
 }

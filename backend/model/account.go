@@ -16,3 +16,9 @@ type ValAccVo struct {
 	AccountVo
 	ValProfile
 }
+
+type AccountInfo struct {
+	Address string          `json:"address"`
+	Balance []document.Coin `json:"balance"`
+	Percent float64         `json:"percent"`
+}

@@ -19,7 +19,14 @@ const (
 	CoinTypeMilli = "iris-milli"
 )
 
-var coinsMap = make(map[string]float64)
+var (
+	coinsMap = make(map[string]float64)
+
+	reDnm  = `[A-Za-z\-]{2,15}`
+	reAmt  = `[0-9]+[.]?[0-9]*`
+	reSpc  = `[[:space:]]*`
+	reCoin = regexp.MustCompile(fmt.Sprintf(`^(%s)%s(%s)$`, reAmt, reSpc, reDnm))
+)
 
 func init() {
 	coinsMap[CoinTypeIris] = float64(1)
@@ -32,13 +39,6 @@ func init() {
 }
 
 func ParseCoin(coinStr string) (coin document.Coin) {
-	var (
-		reDnm  = `[A-Za-z\-]{2,15}`
-		reAmt  = `[0-9]+[.]?[0-9]*`
-		reSpc  = `[[:space:]]*`
-		reCoin = regexp.MustCompile(fmt.Sprintf(`^(%s)%s(%s)$`, reAmt, reSpc, reDnm))
-	)
-
 	coinStr = strings.TrimSpace(coinStr)
 
 	matches := reCoin.FindStringSubmatch(coinStr)
@@ -71,6 +71,17 @@ func ParseCoins(coinsStr string) (coins document.Coins) {
 	}
 
 	return coins
+}
+
+func Parse(coinsStr string) (string, string) {
+	coinsStr = strings.TrimSpace(coinsStr)
+
+	matches := reCoin.FindStringSubmatch(coinsStr)
+	if matches == nil {
+		logger.Error("invalid coin expression", logger.Any("coin", coinsStr))
+		return "", ""
+	}
+	return matches[2], matches[1]
 }
 
 func CovertCoin(srcCoin document.Coin, denom string) (destCoin document.Coin) {
