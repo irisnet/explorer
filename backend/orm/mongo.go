@@ -177,7 +177,7 @@ func (query *Query) buildQuery() *mgo.Query {
 	if query.page != 0 {
 		q = q.Skip((query.page - 1) * query.size)
 	}
-	if query.sort != nil && len(query.sort) > 1 {
+	if query.sort != nil && len(query.sort) > 0 {
 		q = q.Sort(query.sort...)
 	}
 	return q
