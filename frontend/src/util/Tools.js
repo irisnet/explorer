@@ -196,7 +196,9 @@ export default class Tools{
   static convertScientificNotation2Number(num){
     return new BigNumber(num).toFixed();
   }
-
+  static convertScientificNotation3Number(num){
+    return new BigNumber(num).toFixed(6);
+  }
   static formatFeeToFixedNumber(num){
     return  Tools.toFixedformatNumber(Tools.formatNumber(num) ,4) + "...";
   }
@@ -270,6 +272,15 @@ export default class Tools{
    */
   static removeAllSpace(str) {
     return str.replace(/\s+/g, "");
+  }
+  /**
+   * 格式化货币价格
+   */
+  static formatPrice(value) {
+    let integer = value.split('.')[0];
+    let decimals = value.split('.')[1];
+    let formattedInteger = integer.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return`${formattedInteger}.${decimals}`
   }
 
   static formatBalance(number, places, symbol, thousand, decimal) {
