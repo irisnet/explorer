@@ -50,7 +50,7 @@ func (service *AccountService) QueryRichList() interface{} {
 	defer query.Release()
 
 	query.SetCollection(document.CollectionNmAccount).
-		SetSort(desc("coin_iris.amount"), document.AccountFieldCoinIrisUpdateAt, document.AccountFieldAccountNumber).
+		SetSort(desc("total.amount"), document.AccountFieldTotalUpdateAt, document.AccountFieldAccountNumber).
 		SetSize(100).
 		SetResult(&result)
 
@@ -61,19 +61,19 @@ func (service *AccountService) QueryRichList() interface{} {
 	var totalAmt = float64(0)
 
 	for _, acc := range result {
-		totalAmt += acc.CoinIris.Amount
+		totalAmt += acc.Total.Amount
 	}
 
 	for index, acc := range result {
-		rate, _ := utils.RoundFloat(acc.CoinIris.Amount/totalAmt, 6)
+		rate, _ := utils.RoundFloat(acc.Total.Amount/totalAmt, 6)
 		accList = append(accList, model.AccountInfo{
 			Rank:    index + 1,
 			Address: acc.Address,
 			Balance: document.Coins{
-				acc.CoinIris,
+				acc.Total,
 			},
 			Percent:  rate,
-			UpdateAt: acc.CoinIrisUpdateAt,
+			UpdateAt: acc.TotalUpdateAt,
 		})
 	}
 	return accList
