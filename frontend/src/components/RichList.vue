@@ -2,12 +2,15 @@
     <div class="top_list_page">
       <div class="top_list_title_container">
         <div class="top_list_title_content">
-          <span class="top_list_title">Top 100 Addresses by IRIS (Balance + Delegated + Unbonding)</span>
+          <span class="top_list_title">Top 100 Rich List</span>
         </div>
       </div>
       <div class="top_list_container">
         <div class="top_list_content">
-          <h5 class="top_list_time_content"><span v-show="latestTime">Updated ：{{latestTime}}+UTC</span></h5>
+          <div class="top_list_title_wrap" style="">
+            <h5 class="top_list_time_content"><span v-show="latestTime">Updated ：{{latestTime}}+UTC</span></h5>
+            <h5 class="top_list_assets_content"><span><i>*</i> The assets include the delegated, unbonding and balance.</span></h5>
+          </div>
           <div class="top_list_table_wrap">
             <div class="top_list_table_content">
               <spin-component :show-loading="showLoading"></spin-component>
@@ -45,7 +48,7 @@
             let that = this;
             this.richListTimer = setInterval(function () {
               that.getTopList();
-            },60000)
+            },60000);
         },
         methods:{
             getTopList(){
@@ -62,8 +65,8 @@
                               Address: item.address,
                               Balance: `${Tools.formatPrice(Tools.convertScientificNotation3Number(Tools.formatNumber(item.balance[0].amount)))}`,
                               Percentage: `${(item.percent * 100).toFixed(4)}`
-                            }
-                        })
+                               }
+                           })
                     }else {
                         this.showLoading = false;
                         this.showNoData = true;
@@ -84,8 +87,7 @@
                         Balance: '',
                         Percentage: ''
                     }];
-
-                })
+                   })
             },
             getUpDatedTime(upDatedTime){
               let maxUpDatedTime = 0;
@@ -132,14 +134,19 @@
       width: 100%;
       margin: 0 auto;
       .top_list_time_content{
-        height: 0.5rem;
-        line-height: 0.5rem;
-        padding: 0 0.3rem 0 0.2rem;
-        display: flex;
-        opacity:0.5;
+        padding-left: 0.2rem;
+        opacity:0.6;
         color:#000;
-        justify-content:flex-end;
         font-size: 0.12rem;
+      }
+      .top_list_assets_content{
+        padding: 0 0.3rem 0 0;
+        opacity:0.8;
+        color:#000;
+        font-size: 0.12rem;
+        i{
+          color: #3598db;
+        }
       }
       .top_list_table_wrap{
         overflow-x: auto;
@@ -157,5 +164,23 @@
     font-size: 0.14rem;
     height: 3rem;
     align-items: center;
+  }
+  @media (min-width: 960px){
+    .top_list_title_wrap{
+      padding: 0.15rem 0;
+      display: flex;
+      justify-content: space-between
+    }
+  }
+  @media (max-width: 959px){
+    .top_list_title_wrap{
+      padding: 0.15rem 0;
+      display: flex;
+      flex-direction:column;
+      align-items:flex-start;
+      .top_list_assets_content{
+        padding: 0.1rem 0.3rem 0 0.2rem !important;
+      }
+    }
   }
 </style>
