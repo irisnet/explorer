@@ -5,20 +5,21 @@ import (
 )
 
 const (
-	UrlAccount            = "%s/auth/accounts/%s"
-	UrlValidator          = "%s/stake/validators/%s"
-	UrlValidators         = "%s/stake/validators?page=%d&size=%d"
-	UrlDelegationByVal    = "%s/stake/validators/%s/delegations"
-	UrlSignInfo           = "%s/slashing/validators/%s/signing_info"
-	UrlNodeInfo           = "%s/node_info"
-	UrlGenesis            = "%s/genesis"
-	UrlWithdrawAddress    = "%s/distribution/%s/withdrawAddress"
-	UrlBlockLatest        = "%s/blocks/latest"
-	UrlBlock              = "%s/blocks/%d"
-	UrlValidatorSet       = "%s/validatorsets/%d"
-	UrlValidatorSetLatest = "%s/validatorsets/latest"
-	UrlStakePool          = "%s/stake/pool"
-	UrlBlocksResult       = "%s/blocks-result/%d"
+	UrlAccount                = "%s/auth/accounts/%s"
+	UrlValidator              = "%s/stake/validators/%s"
+	UrlValidators             = "%s/stake/validators?page=%d&size=%d"
+	UrlDelegationByVal        = "%s/stake/validators/%s/delegations"
+	UrlDelegationsByDelegator = "%s/stake/delegators/%s/delegations"
+	UrlSignInfo               = "%s/slashing/validators/%s/signing_info"
+	UrlNodeInfo               = "%s/node_info"
+	UrlGenesis                = "%s/genesis"
+	UrlWithdrawAddress        = "%s/distribution/%s/withdrawAddress"
+	UrlBlockLatest            = "%s/blocks/latest"
+	UrlBlock                  = "%s/blocks/%d"
+	UrlValidatorSet           = "%s/validatorsets/%d"
+	UrlValidatorSetLatest     = "%s/validatorsets/latest"
+	UrlStakePool              = "%s/stake/pool"
+	UrlBlocksResult           = "%s/blocks-result/%d"
 )
 
 type AccountVo struct {

@@ -117,11 +117,10 @@ paths:
       parameters:
         - in: path
           name: address
-          description:
+          description:  Bech32 AccAddress of Delegator or Bech32 ValAddress
           required: true
           type: string
       responses:
-        200:
         default:
           description: generic error response
           schema:

@@ -4,8 +4,6 @@ import (
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
-	"github.com/irisnet/explorer/backend/model"
-	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/shopspring/decimal"
@@ -42,7 +40,7 @@ func (service *DelegatorService) QueryDelegation(valAddr string) (document.Coin,
 	for _, d := range delegations {
 		tmp, err := decimal.NewFromString(d.Shares)
 		if err != nil {
-			logger.Error("convert string to decimal err", logger.Any("err", err.Error()))
+			logger.Error("convert delegations-Shares type (string to decimal) err", logger.Any("err", err.Error()), logger.String("delegation shares str", d.Shares))
 			continue
 		}
 		if d.DelegatorAddr == accAddr {
@@ -57,8 +55,8 @@ func (service *DelegatorService) QueryDelegation(valAddr string) (document.Coin,
 
 	rate := valTokensDec.Div(delSharesDec)
 
-	selfAsFloat64, _ := selfBondShares.Mul(rate).Mul(decimal.New(10, 17)).Float64()
-	delegatedAsFloat64, _ := delSharesDec.Mul(rate).Mul(decimal.New(10, 17)).Float64()
+	selfAsFloat64, _ := selfBondShares.Mul(rate).Mul(decimal.New(1, 18)).Float64()
+	delegatedAsFloat64, _ := delSharesDec.Mul(rate).Mul(decimal.New(1, 18)).Float64()
 
 	selfBond := document.Coin{
 		Denom:  utils.CoinTypeAtto,
@@ -73,58 +71,64 @@ func (service *DelegatorService) QueryDelegation(valAddr string) (document.Coin,
 	return selfBond, delegated
 }
 
-func (service *DelegatorService) GetDeposits(delAddr string) (coin document.Coin) {
-
-	var query = orm.NewQuery()
-	defer query.Release()
-
-	var delegations []document.Delegator
-	query.SetCollection(document.CollectionNmStakeRoleDelegator).
-		SetCondition(bson.M{document.Delegator_Field_Addres: delAddr}).
-		SetResult(&delegations)
-
-	if query.Exec() != nil {
-		logger.Warn("delegator address not exist", logger.String("delAddr", delAddr))
-		return
-	}
-
-	var delegationMap = make(map[string]document.Delegator, len(delegations))
+func (service *DelegatorService) GetDeposits(address string) document.Coin {
+	delegations := lcd.GetAllDelegationsByDelegatorAddr(address)
+	var delegationMap = make(map[string]lcd.DelegationVo, len(delegations))
 	var valAddrs []string
 	for _, d := range delegations {
 		delegationMap[d.ValidatorAddr] = d
 		valAddrs = append(valAddrs, d.ValidatorAddr)
 	}
 
+	var validators []document.Validator
+	var selector = bson.M{
+		document.ValidatorFieldOperatorAddress: 1,
+		"tokens":                               1,
+		"delegator_shares":                     1}
+
 	var condition = bson.M{}
-	condition[document.Candidate_Field_Address] = bson.M{
+	condition[document.ValidatorFieldOperatorAddress] = bson.M{
 		"$in": valAddrs,
 	}
-	var validators []document.Candidate
-	query.Reset().SetCollection(document.CollectionNmStakeRoleCandidate).
-		SetCondition(condition).
-		SetResult(&validators)
 
-	if query.Exec() != nil {
-		logger.Error("validator not found", logger.Any("valAddrs", valAddrs))
-		return
+	err := queryAll(document.CollectionNmValidator, selector, condition, "", 0, &validators)
+
+	if err != nil {
+		logger.Error("validator not found", logger.Any("err", err.Error()))
+		return document.Coin{}
 	}
 
-	var totalAmt float64
+	var totalAmtAsDecimal decimal.Decimal
+
 	for _, v := range validators {
-		delegation := delegationMap[v.Address]
-		if v.Tokens > 0 && v.DelegatorShares > 0 {
-			rate := v.Tokens / v.DelegatorShares
-			totalAmt += delegation.Shares * rate
+		delegation := delegationMap[v.OperatorAddress]
+
+		tokenAsDecimal, err := decimal.NewFromString(v.Tokens)
+		if err != nil {
+			logger.Error("convert validator->tokens type  (string to decimal) err", logger.String("err", err.Error()), logger.String("tokensStr", v.Tokens))
+			continue
+		}
+
+		valDelSharesAsDecimal, err := decimal.NewFromString(v.DelegatorShares)
+		if err != nil {
+			logger.Error("convert validator->DelegatorShares type (string to decimal) err", logger.String("err", err.Error()), logger.String("validator delegator shares", v.DelegatorShares))
+			continue
+		}
+
+		delegationSharesAsDecimal, err := decimal.NewFromString(delegation.Shares)
+		if err != nil {
+			logger.Error("convert Delegation->Shares type (string to decimal) err", logger.String("err", err.Error()), logger.String("delegation share", delegation.Shares))
+			continue
+		}
+
+		if tokenAsDecimal.GreaterThan(decimal.New(0, 0)) && valDelSharesAsDecimal.GreaterThan(decimal.New(0, 0)) {
+			rate := tokenAsDecimal.Div(valDelSharesAsDecimal)
+			totalAmtAsDecimal = totalAmtAsDecimal.Add(delegationSharesAsDecimal.Mul(rate))
 		}
 	}
+	totalAmtAsFloat64, _ := totalAmtAsDecimal.Mul(decimal.New(1, 18)).Float64()
 	return document.Coin{
 		Denom:  utils.CoinTypeAtto,
-		Amount: totalAmt,
+		Amount: totalAmtAsFloat64,
 	}
-}
-
-type ValInfo struct {
-	model.ValProfile
-	selfBond  document.Coin
-	delegated document.Coin
 }

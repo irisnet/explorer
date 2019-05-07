@@ -47,6 +47,20 @@ func QueryWithdrawAddr(address string) (result string) {
 	return
 }
 
+func GetAllDelegationsByDelegatorAddr(delAddr string) (delegations []DelegationVo) {
+	url := fmt.Sprintf(UrlDelegationsByDelegator, conf.Get().Hub.LcdUrl, delAddr)
+	resAsBytes, err := utils.Get(url)
+	if err != nil {
+		logger.Error("get delegations by delegator adr from lcd error", logger.String("err", err.Error()), logger.String("URL", url))
+		return
+	}
+
+	if err := json.Unmarshal(resAsBytes, &delegations); err != nil {
+		logger.Error("Unmarshal Delegations error", logger.String("err", err.Error()), logger.String("URL", url))
+	}
+	return
+}
+
 func DelegationByValidator(address string) (result []DelegationVo) {
 	url := fmt.Sprintf(UrlDelegationByVal, conf.Get().Hub.LcdUrl, address)
 	resBytes, err := utils.Get(url)
