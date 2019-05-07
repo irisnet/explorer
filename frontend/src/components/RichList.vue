@@ -7,7 +7,7 @@
       </div>
       <div class="top_list_container">
         <div class="top_list_content">
-          <div class="top_list_title_wrap" style="">
+          <div class="top_list_title_wrap">
             <h5 class="top_list_time_content"><span v-show="latestTime">Updated ：{{latestTime}}+UTC</span></h5>
             <h5 class="top_list_assets_content"><span><i>*</i> The assets include the delegated, unbonding and balance.</span></h5>
           </div>
