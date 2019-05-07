@@ -63,6 +63,18 @@
           <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/Governance')"
                 v-show="showSubTransaction">Governance</span>
         </div>
+        <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === '/statistics'?'nav_item_active':''"
+             @mouseover="statisticsMouseOver" @mouseleave="statisticsMouseLeave">
+
+          <span class="nav_item common_item_style" >
+            Statistics
+            <span class="bottom_arrow"></span>
+          </span>
+          <span class="sub_btn_item top_list_option" @click="featureButtonClick('/statistics/richlist')"
+                v-show="flShowStatistics">Rich List</span>
+        </div>
+
+
         <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === '/governance'?'nav_item_active':''"
              @mouseover="governanceMouseOver" @mouseleave="governanceMouseLeave">
 
@@ -70,12 +82,13 @@
             Governance
             <span class="bottom_arrow"></span>
           </span>
-          <span class="sub_btn_item" @click="featureButtonClick('/parameters')"
+          <span class="sub_btn_item" @click="featureButtonClick('/gov/parameters')"
                 v-show="flShowGovernanceOption">Parameters</span>
-          <span class="sub_btn_item" @click="featureButtonClick('/proposals')"
+          <span class="sub_btn_item" @click="featureButtonClick('/gov/proposals')"
                 v-show="flShowGovernanceOption">Proposals</span>
 
         </div>
+
         <span v-if="flShowFaucet" class="nav_item common_item_style faucet_content" :class="activeClassName === '/faucet'?'nav_item_active':''"
               @click="featureButtonClick('/faucet')"
         >Faucet</span>
@@ -126,6 +139,18 @@
           <span class="feature_btn_mobile feature_nav"
                 @click="featureButtonClick('/transactions/2/Governance')">Governance</span>
         </div>
+        <span class="feature_btn_mobile feature_nav select_option_container" @click="topListSelect(flShowTopListSelection)">
+         <span>Statistics</span>
+          <div :class="flShowUpOrDown ? 'upImg_content' : 'downImg_content'">
+            <img :src="flShowUpOrDown ? upImg : downImg ">
+          </div>
+        </span>
+        <div class="select_option" v-show="flShowTopListSelection">
+             <span class="feature_btn_mobile feature_nav"
+                   @click="featureButtonClick('/statistics/richlist')">Rich List</span>
+
+        </div>
+
         <span class="feature_btn_mobile feature_nav select_option_container" @click="governanceSelect(flShowGovernanceSelect)">
          <span>Governance</span>
           <div :class="flShowUpOrDown ? 'upImg_content' : 'downImg_content'">
@@ -134,9 +159,9 @@
         </span>
         <div class="select_option" v-show="flShowGovernanceSelect">
              <span class="feature_btn_mobile feature_nav"
-                   @click="featureButtonClick('/parameters')">Parameters</span>
+                   @click="featureButtonClick('/gov/parameters')">Parameters</span>
           <span class="feature_btn_mobile feature_nav"
-                @click="featureButtonClick('/proposals')">Proposals</span>
+                @click="featureButtonClick('/gov/proposals')">Proposals</span>
 
         </div>
         <span v-if="flShowFaucet" class="feature_btn_mobile feature_nav mobile_faucet_content" @click="featureButtonClick('/faucet')">Faucet</span>
@@ -188,6 +213,7 @@
         transactionShow: false,
         validatorsShow: false,
         flShowGovernanceOption: false,
+        flShowStatistics: false,
         searchInputValue: '',
         activeClassName: '/home',
         showHeader:!(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer()),
@@ -200,6 +226,7 @@
         flShowValidatorsSelect: false,
         flShowNetworkSelect:false,
         flShowGovernanceSelect:false,
+        flShowTopListSelection:false,
         flShowUpOrDown: false,
         flShowNetwork: false,
         flShowHeaderNetwork: false,
@@ -269,6 +296,16 @@
           this.flShowNetworkUpOrDown = false
         }
       },
+      topListSelect(flShowTopListSelection){
+        this.flShowTopListSelection = false;
+        if(!flShowTopListSelection){
+          this.flShowTopListSelection = true;
+          this.flShowNetworkUpOrDown = true
+        }else {
+          this.flShowTopListSelection = false;
+          this.flShowNetworkUpOrDown = false
+        }
+      },
       hideFeature() {
         if (this.featureShow) {
           this.featureShow = false;
@@ -294,6 +331,7 @@
         this.showSubTransaction = false;
         this.showSubValidators = false;
         this.flShowGovernanceOption = false;
+        this.flShowStatistics = false;
         this.listenRouteForChangeActiveButton();
         if(path !== 'network'){
           this.$router.push(path);
@@ -310,6 +348,12 @@
       },
       governanceMouseLeave() {
         this.flShowGovernanceOption = false
+      },
+      statisticsMouseOver() {
+        this.flShowStatistics = true
+      },
+      statisticsMouseLeave() {
+        this.flShowStatistics = false
       },
       searchTx(){
         let uri = `/api/tx/${this.searchInputValue}`;
@@ -424,6 +468,8 @@
           this.activeClassName = '/governance';
         }else if(path.includes('/proposals')){
           this.activeClassName = '/governance';
+        }else if(path.includes('/statistics')){
+          this.activeClassName = '/statistics';
         }else {
           this.activeClassName = '';
         }
@@ -777,6 +823,9 @@
             &:hover{
               color: #00f0ff;
             }
+          }
+          .top_list_option{
+            padding-left: 0.38rem;
           }
           .validators_btn_item{
             padding-left:0.35rem;
