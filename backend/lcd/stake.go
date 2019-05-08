@@ -47,7 +47,7 @@ func QueryWithdrawAddr(address string) (result string) {
 	return
 }
 
-func GetAllDelegationsByDelegatorAddr(delAddr string) (delegations []DelegationVo) {
+func GetDelegationsByDelAddr(delAddr string) (delegations []DelegationVo) {
 	url := fmt.Sprintf(UrlDelegationsByDelegator, conf.Get().Hub.LcdUrl, delAddr)
 	resAsBytes, err := utils.Get(url)
 	if err != nil {

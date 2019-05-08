@@ -82,7 +82,7 @@ func (service *DelegatorService) QueryDelegation(valAddr string) (document.Coin,
 }
 
 func (service *DelegatorService) GetDeposits(addressAsAccount string) document.Coin {
-	delegations := lcd.GetAllDelegationsByDelegatorAddr(addressAsAccount)
+	delegations := lcd.GetDelegationsByDelAddr(addressAsAccount)
 	delegationMap := make(map[string]lcd.DelegationVo, len(delegations))
 	valAddrs := []string{}
 	for _, d := range delegations {
