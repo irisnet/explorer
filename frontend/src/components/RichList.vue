@@ -64,7 +64,7 @@
                               rank: item.rank,
                               Address: item.address,
                               Balance: `${Tools.formatPrice(Tools.convertScientificNotation3Number(Tools.formatNumber(item.balance[0].amount)))}`,
-                              Percentage: `${(item.percent * 100).toFixed(4)}`
+                              Percentage: this.formatPercentage(item.percent)
                                }
                            })
                     }else {
@@ -88,6 +88,17 @@
                         Percentage: ''
                     }];
                    })
+            },
+            formatPercentage(percentage){
+                let minToFixedNumber = 0.0001,maxSubStrLength = 8;
+                //科学计数法转成数字
+                let percentageNumber = percentage.toExponential().match(/\d(?:\.(\d*))?e([+-]\d+)/);
+                let toFixedNumber = ((percentage.toFixed(Math.max(0, (percentageNumber[1] || '').length - percentageNumber[2]))).toString().substring(0,maxSubStrLength) * 100).toFixed(4);
+                if( toFixedNumber < minToFixedNumber){
+                  return '< 0.0001'
+                }else {
+                  return toFixedNumber;
+                }
             },
             getUpDatedTime(upDatedTime){
               let maxUpDatedTime = 0;
