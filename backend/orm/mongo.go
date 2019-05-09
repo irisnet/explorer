@@ -63,7 +63,7 @@ type Query struct {
 	collection string
 	result     interface{}
 	condition  bson.M
-	sort       string
+	sort       []string
 	page       int
 	size       int
 	selector   interface{}
@@ -122,7 +122,7 @@ func (query *Query) Reset() *Query {
 	query.collection = ""
 	query.result = nil
 	query.condition = nil
-	query.sort = ""
+	query.sort = nil
 	query.page = 0
 	query.size = 0
 	query.selector = nil
@@ -141,7 +141,7 @@ func (query *Query) SetCondition(condition bson.M) *Query {
 	query.condition = condition
 	return query
 }
-func (query *Query) SetSort(sort string) *Query {
+func (query *Query) SetSort(sort ...string) *Query {
 	query.sort = sort
 	return query
 }
@@ -177,8 +177,8 @@ func (query *Query) buildQuery() *mgo.Query {
 	if query.page != 0 {
 		q = q.Skip((query.page - 1) * query.size)
 	}
-	if query.sort != "" {
-		q = q.Sort(query.sort)
+	if query.sort != nil && len(query.sort) > 0 {
+		q = q.Sort(query.sort...)
 	}
 	return q
 }

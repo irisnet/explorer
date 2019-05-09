@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/irisnet/explorer/backend/logger"
 	"math"
+	"math/big"
 	"strconv"
 )
 
@@ -25,12 +26,12 @@ func ParseIntWithDefault(text string, def int64) (i int64) {
 	return i
 }
 
-func ParseUint(text string) (i int64, b bool) {
-	i, ok := ParseInt(text)
-	if ok {
-		return i, i > 0
+func ParseUint(text string) (uint64, bool) {
+	i, err := strconv.ParseUint(text, 10, 64)
+	if err != nil {
+		return i, false
 	}
-	return i, ok
+	return i, true
 }
 
 func RoundFloat(num float64, bit int) (i float64, b bool) {
@@ -73,4 +74,8 @@ func Copy(src interface{}, dest interface{}) error {
 		return err
 	}
 	return nil
+}
+
+func NewRatFromFloat64(f float64) *big.Rat {
+	return new(big.Rat).SetFloat64(f)
 }

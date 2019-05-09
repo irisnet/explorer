@@ -4,7 +4,8 @@ const (
 	UrlRoot = "/api"
 
 	//Account
-	UrlRegisterQueryAccount = "/account/{address}"
+	UrlRegisterQueryAccount  = "/account/{address}"
+	UrlRegisterQueryAccounts = "/accounts"
 
 	//home
 	UrlRegisterNavigationBar = "/home/navigation"
