@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/irisnet/explorer/backend/logger"
 	"math"
+	"math/big"
 	"strconv"
 )
 
@@ -73,4 +74,8 @@ func Copy(src interface{}, dest interface{}) error {
 		return err
 	}
 	return nil
+}
+
+func NewRatFromFloat64(f float64) *big.Rat {
+	return new(big.Rat).SetFloat64(f)
 }
