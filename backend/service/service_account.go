@@ -65,7 +65,7 @@ func (service *AccountService) QueryRichList() interface{} {
 	}
 
 	for index, acc := range result {
-		rate, _ := utils.RoundFloat(acc.Total.Amount/totalAmt, 6)
+		rate, _ := utils.NewRatFromFloat64(acc.Total.Amount / totalAmt).Float64()
 		accList = append(accList, model.AccountInfo{
 			Rank:    index + 1,
 			Address: acc.Address,
