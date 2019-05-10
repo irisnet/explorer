@@ -77,7 +77,7 @@ paths:
           description: generic error response
           schema:
             $ref: "#/definitions/error"
-  /api/tx/token/flow:
+  /api/tx/coinflow:
     get:
       tags:
         - BlockInfo
@@ -121,6 +121,10 @@ paths:
           required: true
           type: string
       responses:
+        200:
+          description:
+          schema:
+            $ref: "#/definitions/AccountVo"
         default:
           description: generic error response
           schema:
@@ -623,6 +627,19 @@ definitions:
         type: string
       voting_power:
         type: string
+  AccountVo:
+    type: object
+    properties:
+      amount:
+        $ref: "#/definitions/Coins"
+      withdrawAddress:
+        type: string
+      address:
+        type: string
+      deposits:
+        $ref: "#/definitions/Coin"
+      isProfiler:
+        type: boolean
   error:
     type: object
     properties:

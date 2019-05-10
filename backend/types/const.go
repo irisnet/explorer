@@ -47,7 +47,7 @@ const (
 	UrlRegisterQueryTxsByAccount = "/txsByAddress/{address}/{page}/{size}"
 	UrlRegisterQueryTxsByDay     = "/txsByDay"
 	UrlRegisterQueryTx           = "/tx/{hash}"
-	UrlRegisterQueryTokenFlow    = "/tx/token/flow"
+	UrlRegisterQueryCoinFlow     = "/tx/coinflow"
 	//version
 	UrlRegisterQueryApiVersion = "/version"
 

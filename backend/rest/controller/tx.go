@@ -11,6 +11,7 @@ import (
 
 func RegisterTx(r *mux.Router) error {
 	funs := []func(*mux.Router) error{
+		registerQueryTokenFlow,
 		registerQueryTx,
 		registerQueryTxsByAccount,
 		registerQueryTxsByDay,
@@ -18,7 +19,6 @@ func RegisterTx(r *mux.Router) error {
 		registerQueryTxList,
 		registerQueryTxsCounter,
 		registerQueryRecentTx,
-		registerQueryTokenFlow,
 	}
 
 	for _, fn := range funs {
@@ -148,7 +148,7 @@ func registerQueryRecentTx(r *mux.Router) error {
 	return nil
 }
 func registerQueryTokenFlow(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryTokenFlow, "GET", func(request model.IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryCoinFlow, "GET", func(request model.IrisReq) interface{} {
 		tx.SetTid(request.TraceId)
 		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), DefaultPageNum))
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), DefaultPageSize))
