@@ -39,7 +39,7 @@
                   label:'Address',
                 },
                 Balance:{
-                  label:'Assets (IRIS)',
+                  label:'Amount (IRIS)',
                 },
                 Percentage:{
                   label:'Percentage',
