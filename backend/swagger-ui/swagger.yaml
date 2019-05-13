@@ -167,7 +167,7 @@ paths:
           # schema:
           type: array
           items:
-            $ref: "#/definitions/BlockInfoVo"
+            $ref: "#/definitions/RecentBlockInfoVo"
         default:
           description: generic error response
           schema:
@@ -232,6 +232,21 @@ definitions:
         type: array
         items:
           $ref: "#/definitions/BlockInfoVo"
+  RecentBlockInfoVo:
+    type: object
+    required:
+      - height
+      - time
+      - num_txs
+    properties:
+      height:
+        type: integer
+        format: int64
+      time:
+        type: string
+      num_txs:
+        type: integer
+        format: int64
   BlockInfoVo:
     type: object
     required:

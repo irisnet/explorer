@@ -156,7 +156,7 @@ func (service *BlockService) QueryList(page, size int) model.PageVo {
 func (service *BlockService) QueryRecent() []model.BlockInfoVo {
 	var result []model.BlockInfoVo
 	var blocks []document.Block
-	var selector = bson.M{"height": 1, "time": 1, "num_txs": 1, "hash": 1, "validators.address": 1, "validators.voting_power": 1, "block.last_commit.precommits.validator_address": 1, "meta.header.total_txs": 1}
+	var selector = bson.M{"height": 1, "time": 1, "num_txs": 1}
 
 	sort := desc(document.Block_Field_Height)
 	err := queryAll(document.CollectionNmBlock, selector, nil, sort, 10, &blocks)
@@ -164,7 +164,11 @@ func (service *BlockService) QueryRecent() []model.BlockInfoVo {
 		panic(types.CodeNotFound)
 	}
 	for _, block := range blocks {
-		result = append(result, buildBlock(block))
+		result = append(result, model.BlockInfoVo{
+			Time:   block.Time,
+			Height: block.Height,
+			NumTxs: block.NumTxs,
+		})
 	}
 	return result
 }

@@ -8,13 +8,13 @@ import (
 
 type BlockInfoVo struct {
 	Height        int64     `json:"height"`
-	Hash          string    `json:"hash"`
+	Hash          string    `json:"hash,omitempty"`
 	Time          time.Time `json:"time"`
 	NumTxs        int64     `json:"num_txs"`
-	Validators    []ValInfo `json:"validators"`
-	LastCommit    []string  `json:"last_commit"`
-	TotalTxs      int64     `json:"total_txs"`
-	LastBlockHash string    `json:"last_block_hash"`
+	Validators    []ValInfo `json:"validators,omitempty"`
+	LastCommit    []string  `json:"last_commit,omitempty"`
+	TotalTxs      int64     `json:"total_txs,omitempty"`
+	LastBlockHash string    `json:"last_block_hash,omitempty"`
 }
 
 type ValInfo struct {
