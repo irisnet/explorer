@@ -163,8 +163,6 @@ paths:
         - Block
       responses:
         200:
-          # description: recent blocks
-          # schema:
           type: array
           items:
             $ref: "#/definitions/RecentBlockInfoVo"
