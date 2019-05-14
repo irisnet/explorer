@@ -65,9 +65,6 @@
         showNoData(showNoData){
         }
       },
-      mounted(){
-          console.log(this.items,"???????????")
-      },
       methods:{
         formatAddress(address){
           return Tools.formatValidatorAddress(address)
