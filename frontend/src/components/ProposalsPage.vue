@@ -145,7 +145,7 @@
   }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   @import '../style/mixin.scss';
 
   .proposals_list_page_wrap {
