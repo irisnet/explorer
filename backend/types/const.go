@@ -39,7 +39,7 @@ const (
 	UrlRegisterQueryCandidateUptime = "/stake/candidate/{address}/uptime/{category}"
 	UrlRegisterQueryCandidatePower  = "/stake/candidate/{address}/power/{category}"
 	UrlRegisterQueryCandidateStatus = "/stake/candidate/{address}/status"
-
+	UrlRegisterQueryValidatorSet    = "/stake/validatorset"
 	//Tx
 	UrlRegisterQueryTxList       = "/tx/{type}/{page}/{size}"
 	UrlRegisterQueryRecentTx     = "/txs/recent"
@@ -47,7 +47,7 @@ const (
 	UrlRegisterQueryTxsByAccount = "/txsByAddress/{address}/{page}/{size}"
 	UrlRegisterQueryTxsByDay     = "/txsByDay"
 	UrlRegisterQueryTx           = "/tx/{hash}"
-
+	UrlRegisterQueryCoinFlow     = "/tx/coinflow"
 	//version
 	UrlRegisterQueryApiVersion = "/version"
 

@@ -1,9 +1,14 @@
 package service
 
 import (
+	"strconv"
+
+	"github.com/irisnet/explorer/backend/lcd"
+	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
+	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -15,15 +20,116 @@ func (service *BlockService) GetModule() Module {
 	return Block
 }
 
-func (service *BlockService) Query(height int64) model.BlockInfoVo {
-	var selector = bson.M{"height": 1, "time": 1, "num_txs": 1, "hash": 1, "validators.address": 1, "validators.voting_power": 1, "block.last_commit.precommits.validator_address": 1, "block.last_commit.block_id.hash": 1, "meta.header.total_txs": 1}
-	var result document.Block
+func (service *BlockService) Query(height int64) model.Block {
+	result := model.Block{}
+	result.BlockInfo = service.QueryBlockInfo(height)
+	result.ValidatorSet = service.GetValidatorSet(height, DefaultPageNum, DefaultPageSize)
+	result.TokenFlows = Get(Tx).(*TxService).QueryTokenFlow(height, DefaultPageNum, DefaultPageSize)
+	result.Proposals = Get(Proposal).(*ProposalService).QueryProposalsByHeight(height)
 
-	var err = queryOne(document.CollectionNmBlock, selector, bson.M{document.Block_Field_Height: height}, &result)
+	return result
+}
+
+func (service *BlockService) GetValidatorSet(height int64, page, size int) model.ValidatorSet {
+	result := model.ValidatorSet{}
+	lcdValidators := lcd.ValidatorSet(height)
+	if page > 0 {
+		page = page - 1
+	}
+
+	var validatorsDoc []document.Validator
+	var selector = bson.M{"description.moniker": 1, "operator_address": 1, "consensus_pubkey": 1}
+
+	err := queryAll(document.CollectionNmValidator, selector, nil, "", 0, &validatorsDoc)
 	if err != nil {
+		logger.Error("get validator set err", logger.String("error", err.Error()), service.GetTraceLog())
+		return result
+	}
+
+	items := []model.BlockValidator{}
+	for k, v := range lcdValidators.Validators {
+		if k >= page*size && k < (page+1)*size {
+			var tmp model.BlockValidator
+			tmp.Consensus = v.PubKey
+			tmp.VotingPower = v.VotingPower
+			tmp.ProposerPriority = v.ProposerPriority
+			for _, validator := range validatorsDoc {
+				if validator.ConsensusPubkey == v.PubKey {
+					tmp.OperatorAddress = validator.OperatorAddress
+					tmp.Moniker = validator.Description.Moniker
+				}
+			}
+			items = append(items, tmp)
+		}
+	}
+	result.Items = items
+	result.Total = len(lcdValidators.Validators)
+	return result
+}
+
+func (service *BlockService) QueryBlockInfo(height int64) model.BlockInfo {
+	var result model.BlockInfo
+
+	b := lcd.Block(height)
+	if b.Block.Header.Height == "" {
 		panic(types.CodeNotFound)
 	}
-	return buildBlock(result)
+
+	var selector = bson.M{"description.moniker": 1, "operator_address": 1}
+	var validatorDoc document.Validator
+	err := queryOne(document.CollectionNmValidator, selector, bson.M{"proposer_addr": b.BlockMeta.Header.ProposerAddress}, &validatorDoc)
+
+	if err != nil {
+		logger.Error("query validator collection  err", logger.String("error", err.Error()), service.GetTraceLog())
+		return result
+	}
+
+	result.LatestHeight = lcd.BlockLatest().BlockMeta.Header.Height
+
+	blockRes := lcd.BlockResult(height)
+
+	if height == 1 {
+		result.VoteValidatorNum = InitVoteValidatorNum
+		result.ValidatorNum = InitValidatorNum
+		result.PrecommitVotingPower = InitPrecommitVotingPower
+		result.TotalVotingPower = InitTotalVotingPower
+	} else {
+		lcdValidators := lcd.ValidatorSet(height - 1)
+		result.VoteValidatorNum = len(b.Block.LastCommit.Precommits)
+		result.ValidatorNum = len(lcdValidators.Validators)
+		var totalVotingPower, precommitVotingPower int
+		for k, v := range lcdValidators.Validators {
+			powerAsInt, err := strconv.Atoi(v.VotingPower)
+			if err != nil {
+				logger.Error("strconv VotingPower err", logger.String("error", err.Error()), service.GetTraceLog())
+			}
+			totalVotingPower += powerAsInt
+			for _, precommitValidator := range b.Block.LastCommit.Precommits {
+				if strconv.Itoa(k) == precommitValidator.ValidatorIndex {
+					precommitVotingPower += powerAsInt
+				}
+			}
+		}
+		result.PrecommitVotingPower = precommitVotingPower
+		result.TotalVotingPower = totalVotingPower
+	}
+
+	for _, v := range blockRes.Results.BeginBlock.Tags {
+		if v.Key == "mint-coin" {
+			result.Rewards = utils.ParseCoins(v.Value)
+		}
+	}
+
+	result.PropoperAddr = validatorDoc.OperatorAddress
+	result.PropopserMoniker = validatorDoc.Description.Moniker
+	result.LastBlock = height - 1
+	result.BlockHash = b.BlockMeta.BlockID.Hash
+	result.BlockHeight = b.Block.Header.Height
+	result.LastBlockHash = b.Block.Header.LastBlockID.Hash
+	result.Timestamp = b.BlockMeta.Header.Time
+	result.Transactions = b.BlockMeta.Header.NumTxs
+
+	return result
 }
 
 func (service *BlockService) QueryList(page, size int) model.PageVo {
@@ -35,7 +141,7 @@ func (service *BlockService) QueryList(page, size int) model.PageVo {
 	var blocks []document.Block
 
 	sort := desc(document.Block_Field_Height)
-	var cnt, err = pageQuery(document.CollectionNmBlock, selector, nil, sort, page, size, &blocks)
+	var cnt, err = pageQuery(document.CollectionNmBlock, selector, bson.M{"height": bson.M{"$gt": 0}}, sort, page, size, &blocks)
 	if err != nil {
 		panic(types.CodeNotFound)
 	}
@@ -50,7 +156,7 @@ func (service *BlockService) QueryList(page, size int) model.PageVo {
 func (service *BlockService) QueryRecent() []model.BlockInfoVo {
 	var result []model.BlockInfoVo
 	var blocks []document.Block
-	var selector = bson.M{"height": 1, "time": 1, "num_txs": 1, "hash": 1, "validators.address": 1, "validators.voting_power": 1, "block.last_commit.precommits.validator_address": 1, "meta.header.total_txs": 1}
+	var selector = bson.M{"height": 1, "time": 1, "num_txs": 1}
 
 	sort := desc(document.Block_Field_Height)
 	err := queryAll(document.CollectionNmBlock, selector, nil, sort, 10, &blocks)
@@ -58,7 +164,11 @@ func (service *BlockService) QueryRecent() []model.BlockInfoVo {
 		panic(types.CodeNotFound)
 	}
 	for _, block := range blocks {
-		result = append(result, buildBlock(block))
+		result = append(result, model.BlockInfoVo{
+			Time:   block.Time,
+			Height: block.Height,
+			NumTxs: block.NumTxs,
+		})
 	}
 	return result
 }

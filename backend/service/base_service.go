@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/orm/document"
@@ -27,7 +28,13 @@ var (
 )
 
 const (
-	_ Module = iota
+	InitVoteValidatorNum            = 0
+	InitValidatorNum                = 0
+	InitPrecommitVotingPower        = 0
+	InitTotalVotingPower            = 0
+	DefaultPageSize                 = 10
+	DefaultPageNum                  = 1
+	_                        Module = iota
 	Account
 	Block
 	Common

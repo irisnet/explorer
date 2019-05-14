@@ -8,9 +8,10 @@ import (
 const (
 	CollectionNmValidator = "validator"
 
-	ValidatorFieldVotingPower = "voting_power"
-	ValidatorFieldJailed      = "jailed"
-	ValidatorFieldStatus      = "status"
+	ValidatorFieldVotingPower     = "voting_power"
+	ValidatorFieldJailed          = "jailed"
+	ValidatorFieldStatus          = "status"
+	ValidatorFieldOperatorAddress = "operator_address"
 )
 
 type Validator struct {
