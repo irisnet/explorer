@@ -1,12 +1,12 @@
 <template>
-  <div class="transactions_detail_wrap">
-    <div class="transactions_title_wrap">
-      <p :class="transactionsDetailWrap" style="margin-bottom:0;">
-        <span class="transactions_detail_title">Search Results</span>
-        <span class="transactions_detail_wrap_hash_var"><span class="title_for" v-show="flshowTitle">for </span>   {{Object.keys(this.$route.query)[0]}}</span>
+  <div class="search_result_detail_wrap">
+    <div class="search_result_title_wrap">
+      <p :class="searchResultDetailWrap" style="margin-bottom:0;">
+        <span class="search_result_detail_title">Search Results</span>
+        <span class="search_result_detail_wrap_hash_var"><span class="title_for" v-show="flshowTitle">for </span>   {{Object.keys(this.$route.query)[0]}}</span>
       </p>
     </div>
-    <div :class="transactionsDetailWrap">
+    <div :class="searchResultDetailWrap">
       <div v-show="!flshowResult">
         <p class="transaction_information_content_title">Block</p>
         <div class="block_content_container">
@@ -43,18 +43,18 @@
             <span>Status :</span>
             <span>{{proposalStatus}}</span>
           </p>
-          <p class="proposa_time_container">
+          <p class="proposal_time_container">
             <span>Submit Time :</span>
             <span>{{proposalTime}}</span>
           </p>
         </div>
       </div>
-      <div class="resultless_container" v-show="flshowResult">
-        <div class="resultless_content_container">
+      <div class="result_container" v-show="flshowResult">
+        <div class="result_content_container">
           <div class="result_img">
             <img src="../assets/resultless.png">
           </div>
-          <p class="resultless_title">There is no valid result.</p>
+          <p class="result_title">There is no valid result.</p>
           <p class="try_info">Try to search with Address, Transaction, Block Number, Proposal ID.</p>
           <div class="back_home_btn" @click="backHome">
             <span>Back Home</span>
@@ -89,7 +89,7 @@
       },
       watch:{
         $route(){
-          if(this.$route.path === "/searchResult/"){
+          if(this.$route.path === "/searchResult"){
             this.flshowTitle = false;
           }else {
             this.flshowTitle = true;
@@ -103,7 +103,7 @@
         }
       },
       mounted(){
-        if(this.$route.path === "/searchResult/"){
+        if(this.$route.path === "/searchResult"){
           this.flshowTitle = true;
         }else {
           this.flshowTitle = false
@@ -146,20 +146,50 @@
       },
       beforeMount() {
         if (Tools.currentDeviceIsPersonComputer()) {
-          this.transactionsDetailWrap = 'personal_computer_transactions_detail_wrap';
+          this.searchResultDetailWrap = 'personal_computer_search_result_detail_wrap';
         } else {
-          this.transactionsDetailWrap = 'mobile_transactions_detail_wrap';
+          this.searchResultDetailWrap = 'mobile_search_result_detail_wrap';
         }
       },
 
     }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   @import "../style/mixin";
-  .resultless_container{
+  .search_result_detail_wrap{
     width: 100%;
-    .resultless_content_container{
+    .search_result_title_wrap{
+      width: 100%;
+      border-bottom: 0.01rem solid #d6d9e0;
+      background: #efeff1;
+      .personal_computer_search_result_detail_wrap{
+          max-width: 12.8rem;
+          margin: 0 auto;
+          height: 0.62rem;
+          display: flex;
+          align-items: center;
+          .search_result_detail_title{
+            font-size: 0.22rem;
+              padding-left: 0.2rem;
+              color: #000;
+              margin-right: 0.2rem;
+          }
+          .search_result_detail_wrap_hash_var{
+
+            font-size: 0.22rem;
+              color: #a2a2ae;
+          }
+      }
+      .mobile_search_result_detail_wrap{
+          max-width: 12.8rem;
+          margin: 0 auto;
+          height: 0.62rem;
+          display: flex;
+          align-items: center;
+      }
+    }
+    .result_content_container{
       width: 100%;
       text-align: center;
       margin-top: 1.1rem;
@@ -171,7 +201,7 @@
           width: 100%;
         }
       }
-      .resultless_title{
+      .result_title{
         margin-top: 0.2rem;
         color: #000;
         font-size: 0.18rem;
@@ -191,6 +221,16 @@
         font-size: 0.14rem;
         line-height: 0.36rem
       }
+    }
+    .personal_computer_search_result_detail_wrap{
+        max-width: 12.8rem;
+        margin: 0 auto;
+        margin-top: 0.27rem;
+        .transaction_information_content_title{
+            padding-left: 0.2rem;
+            padding-bottom: 0.2rem;
+            border-bottom: 0.01rem solid #d7d9e0;
+        }
     }
   }
   .block_content_container{
@@ -304,7 +344,7 @@
         color: #A2A2AE;
       }
     }
-    .proposa_time_container{
+    .proposal_time_container{
       line-height: 1;
       margin-top: 0.08rem;
       span:nth-child(1){
@@ -324,11 +364,11 @@
   .proposal_title{
     margin-top: 0.27rem;
   }
-  .mobile_transactions_detail_wrap{
+  .mobile_search_result_detail_wrap{
     .proposal_content_container{
       margin-bottom: 0.2rem;
     }
-    .resultless_content_container{
+    .result_content_container{
       margin-top: 0.8rem!important;
       margin-bottom: 1.6rem !important;
     }

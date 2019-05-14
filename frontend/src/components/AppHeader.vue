@@ -44,8 +44,8 @@
             Validators
           </span>
         </div>
-        <span class="nav_item common_item_style" :class="activeClassName === '/block'?'nav_item_active':''"
-              @click="featureButtonClick('/block/1/0')"
+        <span class="nav_item common_item_style" :class="activeClassName === '/blocks'?'nav_item_active':''"
+              @click="featureButtonClick('/blocks')"
         >Blocks</span>
         <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === '/transaction'?'nav_item_active':''"
              @mouseover="transactionMouseOver" @mouseleave="transactionMouseLeave">
@@ -54,13 +54,13 @@
             Transactions
             <span class="bottom_arrow"></span>
           </span>
-          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/Transfers')"
+          <span class="sub_btn_item" @click="featureButtonClick('/txs/transfers')"
                 v-show="showSubTransaction">Transfers</span>
-          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/Declarations')"
+          <span class="sub_btn_item" @click="featureButtonClick('/txs/declarations')"
                 v-show="showSubTransaction">Declarations</span>
-          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/Stakes')"
+          <span class="sub_btn_item" @click="featureButtonClick('/txs/stakes')"
                 v-show="showSubTransaction">Stakes</span>
-          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/Governance')"
+          <span class="sub_btn_item" @click="featureButtonClick('/txs/governance')"
                 v-show="showSubTransaction">Governance</span>
         </div>
         <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === '/governance'?'nav_item_active':''"
@@ -108,7 +108,7 @@
         <span class="feature_btn_mobile feature_nav select_option_container" @click="featureButtonClick('/validators')">
          <span>Validators</span>
         </span>
-        <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/block/1/0')">Blocks</span>
+        <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/blocks')">Blocks</span>
         <span class="feature_btn_mobile feature_nav select_option_container" @click="transactionsSelect(flShowTransactionsSelect)">
          <span>Transactions</span>
           <div :class="flShowUpOrDown ? 'upImg_content' : 'downImg_content'">
@@ -117,14 +117,14 @@
         </span>
         <div class="select_option" v-show="flShowTransactionsSelect">
              <span class="feature_btn_mobile feature_nav"
-                   @click="featureButtonClick('/transactions/2/Transfers')">Transfers</span>
+                   @click="featureButtonClick('/txs/transfers')">Transfers</span>
           <span class="feature_btn_mobile feature_nav"
-                @click="featureButtonClick('/transactions/2/Declarations')">Declarations</span>
+                @click="featureButtonClick('/txs/declarations')">Declarations</span>
 
           <span class="feature_btn_mobile feature_nav"
-                @click="featureButtonClick('/transactions/2/Stakes')">Stakes</span>
+                @click="featureButtonClick('/txs/stakes')">Stakes</span>
           <span class="feature_btn_mobile feature_nav"
-                @click="featureButtonClick('/transactions/2/Governance')">Governance</span>
+                @click="featureButtonClick('/txs/governance')">Governance</span>
         </div>
         <span class="feature_btn_mobile feature_nav select_option_container" @click="governanceSelect(flShowGovernanceSelect)">
          <span>Governance</span>
@@ -408,12 +408,12 @@
       listenRouteForChangeActiveButton(){
         //刷新的时候路由不变，active按钮不变
         let path = window.location.href;
-        if (path.includes('transactions/2') || path.includes('tx?')) {
+        if (path.includes('txs') || path.includes('tx?')) {
           this.activeClassName = '/transaction';
         } else if (path.includes('/validators')) {
           this.activeClassName = '/validators';
-        } else if (path.includes('/block')) {
-          this.activeClassName = '/block';
+        } else if (path.includes('/blocks')) {
+          this.activeClassName = '/blocks';
         } else if (path.includes('/home')) {
           this.activeClassName = '/home';
         } else if (path.includes('/faucet')) {

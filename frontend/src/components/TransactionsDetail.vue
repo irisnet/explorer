@@ -360,7 +360,7 @@
     }
   }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
   @import '../style/mixin.scss';
   .information_pre{
     color: #a2a2ae;
@@ -407,9 +407,13 @@
         padding:0.16rem 0rem;
           .information_props_wrap{
             @include flex;
+              margin-bottom: 0.08rem;
             .information_props{
               width:1.5rem;
             }
+              .information_value{
+                  color: #a2a2ae;
+              }
           }
       }
       .transactions_detail_title {
@@ -442,18 +446,19 @@
         @include fontWeight;
       }
       .transactions_detail_information_wrap{
-padding:0.16rem 0rem;
+        padding:0.16rem 0rem;
         .information_props_wrap{
           @include flex;
           flex-direction:column;
-          border-bottom:0.01rem solid #eee;
           margin-bottom:0.05rem;
           .information_value{
             overflow-x:auto;
             -webkit-overflow-scrolling:touch;
-
+            overflow-y:hidden;
           }
-
+            .information_value{
+                color: #a2a2ae;
+            }
         }
       }
       .transactions_detail_title {
@@ -469,7 +474,7 @@ padding:0.16rem 0rem;
         -webkit-overflow-scrolling:touch;
         height: 0.3rem;
         line-height: 0.3rem;
-        font-size: 0.22rem;
+        font-size: 0.18rem;
         color: #a2a2ae;
       }
     }
