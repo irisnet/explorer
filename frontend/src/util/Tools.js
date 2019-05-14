@@ -314,6 +314,11 @@ export default class Tools{
       return char.toUpperCase();
     });
   }
+    static firstWordLowerCase (str){
+        return str.toLowerCase().replace(/(\s|^)[a-z]/g, function(char){
+            return char.toLocaleLowerCase();
+        });
+    }
   /**
    * format address
    * param String
@@ -327,7 +332,7 @@ export default class Tools{
       return list.map(item => {
         let [Amount,Fee] = ['--','--'];
         let commonHeaderObjList,objList,commonFooterObjList;
-        if(txType === 'Transfers' || txType === 'Stakes' || txType === 'Governance'){
+        if(txType === 'transfers' || txType === 'stakes' || txType === 'governance'){
           if(item.Amount){
             if(item.Amount instanceof Array){
               if(item.Amount.length > 0){
@@ -359,14 +364,14 @@ export default class Tools{
           Status : Tools.firstWordUpperCase(item.Status),
           Age: Tools.formatAge(currentServerTime,item.Timestamp,Constant.SUFFIX,Constant.PREFIX,)
         };
-        if(txType === 'Transfers' ){
+        if(txType === 'transfers' ){
           objList = {
             From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
             To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
             Amount,
             Fee,
           };
-        }else if(txType === 'Declarations'){
+        }else if(txType === 'declarations'){
           let Moniker = item.Moniker;
           objList = {
             From: item.Owner ? item.Owner : "--",
@@ -375,7 +380,7 @@ export default class Tools{
             Type: item.Type,
             Fee: `${Tools.formatFeeToFixedNumber(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`,
           }
-        }else if(txType === 'Stakes'){
+        }else if(txType === 'stakes'){
           objList = {
             TxHash: item.Hash,
             Block:item.BlockHeight,
@@ -385,7 +390,7 @@ export default class Tools{
             Amount,
             Fee,
           }
-        }else if(txType === 'Governance'){
+        }else if(txType === 'governance'){
           objList = {
             From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
             "Proposal_ID": item.ProposalId === 0 ? "--" : item.ProposalId,
@@ -398,7 +403,7 @@ export default class Tools{
       })
     }else {
       let noObjList;
-      if(txType === 'Transfers'){
+      if(txType === 'transfers'){
         noObjList = [{
           TxHash: '',
           Block:'',
@@ -409,7 +414,7 @@ export default class Tools{
           Status: "",
           Age:'',
         }];
-      }else if(txType === 'Declarations'){
+      }else if(txType === 'declarations'){
         noObjList = [{
           TxHash: '',
           Block:'',
@@ -421,7 +426,7 @@ export default class Tools{
           Status: "",
           Age:'',
         }];
-      }else if(txType === 'Stakes'){
+      }else if(txType === 'stakes'){
         noObjList = [{
           TxHash: '',
           Block:'',
@@ -433,7 +438,7 @@ export default class Tools{
           Status: "",
           Age:'',
         }];
-      }else if(txType === 'Governance'){
+      }else if(txType === 'governance'){
         noObjList = [{
           TxHash: '',
           Block:'',

@@ -219,7 +219,7 @@
     }
   }
 </script>
-<style lang="scss" >
+<style lang="scss" scoped>
   @import '../style/mixin.scss';
   @import '../style/validator_list_page.scss';
 </style>
