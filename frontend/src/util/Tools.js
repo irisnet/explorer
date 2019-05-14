@@ -306,7 +306,7 @@ export default class Tools{
     return coinsDenom = /[A-Za-z\-]{2,15}/.exec(coinsDenom)
   }
   static scrollToTop(){
-    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
   }
 
   static firstWordUpperCase (str){
