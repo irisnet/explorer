@@ -52,7 +52,7 @@ func (service *CandidateService) GetValidators(typ, origin string, page, size in
 
 		query.SetCollection(document.CollectionNmValidator).
 			SetCondition(condition).
-			SetSort(desc(document.ValidatorFieldTokens)).
+			SetSort(desc(document.ValidatorFieldVotingPower)).
 			SetPage(page).
 			SetSize(size).
 			SetResult(&validators)
@@ -75,8 +75,7 @@ func (service *CandidateService) GetValidators(typ, origin string, page, size in
 			if err := utils.Copy(validators[i], &validator); err != nil {
 				panic(types.CodeSysFailed)
 			}
-			power, _ := types.NewDecFromStr(v.Tokens)
-			validator.VotingRate = float32(power.RoundInt64()) / float32(totalVotingPower)
+			validator.VotingRate = float32(v.VotingPower) / float32(totalVotingPower)
 			result = append(result, validator)
 		}
 
@@ -556,6 +555,12 @@ func buildValidators() []document.Validator {
 		}
 		validator.Uptime = computeUptime(v.ConsensusPubkey, height)
 		validator.SelfBond, validator.ProposerAddr, validator.DelegatorNum = queryDelegationInfo(v.OperatorAddress, v.ConsensusPubkey)
+
+		votingPower, err := types.NewDecFromStr(v.Tokens)
+		if err == nil {
+			validator.VotingPower = votingPower.RoundInt64()
+		}
+
 		return validator, nil
 	}
 	var group sync.WaitGroup
