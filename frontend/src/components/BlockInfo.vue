@@ -274,9 +274,9 @@
             },
             getTxList(currentPage,pageSize){
                 let url = `/api/tx/token/flow?height=${this.$route.params.height}&page=${currentPage}&size=${pageSize}`;
-                Service.http(url).then((validatorSetList) => {
-                    if(validatorSetList){
-                        this.handleTxList(validatorSetList)
+                Service.http(url).then((txList) => {
+                    if(txList){
+                        this.handleTxList(txList)
                     }
                 })
             },
