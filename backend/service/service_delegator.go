@@ -33,27 +33,22 @@ func (service *DelegatorService) QueryDelegation(valAddr string) (document.Coin,
 		return document.Coin{}, document.Coin{}
 	}
 
-	valTokenAsRat, ok := new(big.Rat).SetString(validator.Tokens)
-	if !ok {
-		logger.Error("convert validator.tokens type (string to big.Rat) err", logger.Any("err", err.Error()), logger.String("validator.Tokens str", validator.Tokens))
-		return document.Coin{}, document.Coin{}
-	}
-	valDelegatorSharesAsRat, ok := new(big.Rat).SetString(validator.DelegatorShares)
-	if !ok {
-		logger.Error("convert validator.DelegatorShares type (string to big.Rat) err", logger.Any("err", err.Error()), logger.String("delegation shares str", validator.DelegatorShares))
-		return document.Coin{}, document.Coin{}
-	}
+	rate, err := utils.QuoByStr(validator.Tokens, validator.DelegatorShares)
 
-	rate := new(big.Rat).Quo(valTokenAsRat, valDelegatorSharesAsRat)
+	if err != nil {
+		logger.Error("validator.Tokens / validator.DelegatorShares", logger.String("err", err.Error()), logger.String("validator.Tokens", validator.Tokens), logger.String("validator.DelegqtorShares", validator.DelegatorShares))
+		return document.Coin{}, document.Coin{}
+	}
 
 	delegations := lcd.DelegationByValidator(valAddr)
 
 	selfBondShares := new(big.Rat)
 	otherBondShares := new(big.Rat)
+
 	for _, d := range delegations {
 		tmp, ok := new(big.Rat).SetString(d.Shares)
 		if !ok {
-			logger.Info("convert delegation->Shares type (string to big.Rat) ", logger.Any("ok", ok), logger.String("delegation shares str", d.Shares))
+			logger.Info("convert delegation.Shares type (string to big.Rat) ", logger.Any("ok", ok), logger.String("delegation shares str", d.Shares))
 			continue
 		}
 		if d.DelegatorAddr == accAddr {
@@ -105,37 +100,23 @@ func (service *DelegatorService) GetDeposits(addressAsAccount string) document.C
 	}
 
 	totalAmtAsRat := new(big.Rat)
+
 	for _, v := range validators {
 		delegation := delegationMap[v.OperatorAddress]
 
-		tokenAsRat, ok := new(big.Rat).SetString(v.Tokens)
-		if !ok {
-			logger.Info("convert validator->tokens type  (string to big.Rat)",
-				logger.Any("ok", ok),
-				logger.String("tokensStr", v.Tokens))
-			continue
-		}
-
-		valDelSharesAsRat, ok := new(big.Rat).SetString(v.DelegatorShares)
-		if !ok {
-			logger.Info("convert validator->DelegatorShares type (string to big.Rat) ",
-				logger.Any("ok", ok),
-				logger.String("validator delegator shares", v.DelegatorShares))
+		rate, err := utils.QuoByStr(v.Tokens, v.DelegatorShares)
+		if err != nil {
+			logger.Error("validator.Tokens / validator.DelegatorShares", logger.String("err", err.Error()))
 			continue
 		}
 
 		delegationSharesAsRat, ok := new(big.Rat).SetString(delegation.Shares)
 		if !ok {
-			logger.Info("convert Delegation->Shares type (string to big.Rat) ",
-				logger.String("err", err.Error()),
-				logger.String("delegation share", delegation.Shares))
+			logger.Info("convert Delegation.Shares type (string to big.Rat) ", logger.Any("result", ok), logger.String("delegation share", delegation.Shares))
 			continue
 		}
 
-		if tokenAsRat.Cmp(new(big.Rat).SetInt64(0)) == 1 && valDelSharesAsRat.Cmp(new(big.Rat).SetInt64(0)) == 1 {
-			rate := new(big.Rat).Quo(tokenAsRat, valDelSharesAsRat)
-			totalAmtAsRat.Add(totalAmtAsRat, new(big.Rat).Mul(delegationSharesAsRat, rate))
-		}
+		totalAmtAsRat.Add(totalAmtAsRat, new(big.Rat).Mul(delegationSharesAsRat, rate))
 	}
 	totalAmtAsFloat64, exact := new(big.Rat).Mul(totalAmtAsRat, new(big.Rat).SetFloat64(math.Pow10(18))).Float64()
 	if !exact {

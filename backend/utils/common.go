@@ -2,9 +2,11 @@ package utils
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/irisnet/explorer/backend/logger"
 	"math"
+	"math/big"
 	"strconv"
 )
 
@@ -73,4 +75,22 @@ func Copy(src interface{}, dest interface{}) error {
 		return err
 	}
 	return nil
+}
+
+// x / y  and returns *big.Rat.
+func QuoByStr(xStr, yStr string) (*big.Rat, error) {
+	xAsRat, ok := new(big.Rat).SetString(xStr)
+	if !ok {
+		return nil, errors.New(fmt.Sprintf("Convert string(%v) to big.Rat fail \n", xStr))
+	}
+	yAsRat, ok := new(big.Rat).SetString(yStr)
+	if !ok {
+		return nil, errors.New(fmt.Sprintf("Convert string(%v) to big.Rat fail \n", yStr))
+	}
+
+	if yAsRat.Cmp(new(big.Rat).SetInt64(0)) != 1 {
+		return nil, errors.New("yStr must != 0")
+	}
+
+	return new(big.Rat).Quo(xAsRat, yAsRat), nil
 }
