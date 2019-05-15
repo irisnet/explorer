@@ -4,7 +4,9 @@ import (
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/model"
+	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/orm/document"
+	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 )
 
@@ -42,14 +44,40 @@ func (service *AccountService) Query(address string) (result model.AccountVo) {
 	return result
 }
 
-func (service *AccountService) QueryAll(page, size int) model.PageVo {
+func (service *AccountService) QueryRichList() interface{} {
 	var result []document.Account
-	sort := desc(document.Tx_Field_Time)
-	cnt, _ := pageQuery(document.CollectionNmAccount, nil, nil, sort, page, size, &result)
-	return model.PageVo{
-		Count: cnt,
-		Data:  result,
+
+	var query = orm.NewQuery()
+	defer query.Release()
+
+	query.SetCollection(document.CollectionNmAccount).
+		SetSort(desc("total.amount"), document.AccountFieldTotalUpdateAt, document.AccountFieldAccountNumber).
+		SetSize(100).
+		SetResult(&result)
+
+	if err := query.Exec(); err != nil {
+		panic(types.CodeNotFound)
 	}
+	var accList []model.AccountInfo
+	var totalAmt = float64(0)
+
+	for _, acc := range result {
+		totalAmt += acc.Total.Amount
+	}
+
+	for index, acc := range result {
+		rate, _ := utils.NewRatFromFloat64(acc.Total.Amount / totalAmt).Float64()
+		accList = append(accList, model.AccountInfo{
+			Rank:    index + 1,
+			Address: acc.Address,
+			Balance: document.Coins{
+				acc.Total,
+			},
+			Percent:  rate,
+			UpdateAt: acc.TotalUpdateAt,
+		})
+	}
+	return accList
 }
 
 func isProfiler(address string) bool {

@@ -40,10 +40,10 @@ export default new Router({
       }
     },
     {
-      path: '/Proposals', component: ProposalsPage
+      path: '/gov/proposals', component: ProposalsPage
     },
     {
-      path: '/parameters', component: Parameters
+      path: '/gov/parameters', component: Parameters
     },
     {
       //BlocksListPage为一个组件，根据type类型不同相应不同页面
@@ -94,6 +94,9 @@ export default new Router({
     },
     {
       path: '/help', component: Help,
+    },
+    {
+      path: '/statistics/richlist', component: RichList,
     },
   ]
 
