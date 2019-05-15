@@ -54,7 +54,6 @@ func registerQueryProposal(r *mux.Router) error {
 		pid, err := strconv.Atoi(Var(request, "pid"))
 		if err != nil {
 			panic(types.CodeInValidParam)
-			return nil
 		}
 
 		result := gov.Query(pid)

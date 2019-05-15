@@ -17,6 +17,7 @@ func RegisterBlock(r *mux.Router) error {
 		registerQueryBlocks,
 		registerQueryRecentBlocks,
 		registerQueryValidatorSet,
+		registerQueryTokenFlow,
 	}
 
 	for _, fn := range funs {
@@ -72,14 +73,30 @@ func registerQueryRecentBlocks(r *mux.Router) error {
 func registerQueryValidatorSet(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryValidatorSet, "GET", func(request model.IrisReq) interface{} {
 		block.SetTid(request.TraceId)
-		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), DefaultPageNum))
-		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), DefaultPageSize))
-		height := utils.ParseIntWithDefault(QueryParam(request, "height"), DefaultBlockHeight)
-		if height < 1 {
+		height, err := strconv.ParseInt(Var(request, "height"), 10, 0)
+		if err != nil || height < 1 {
 			panic(types.CodeInValidParam)
 		}
+
+		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), DefaultPageNum))
+		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), DefaultPageSize))
 		result := block.GetValidatorSet(height, page, size)
+
 		return result
+	})
+	return nil
+}
+
+func registerQueryTokenFlow(r *mux.Router) error {
+	doApi(r, types.UrlRegisterQueryCoinFlow, "GET", func(request model.IrisReq) interface{} {
+		tx.SetTid(request.TraceId)
+		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), DefaultPageNum))
+		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), DefaultPageSize))
+		height, err := strconv.ParseInt(Var(request, "height"), 10, 0)
+		if err != nil || height < 1 {
+			panic(types.CodeInValidParam)
+		}
+		return block.QueryTokenFlow(height, page, size)
 	})
 	return nil
 }

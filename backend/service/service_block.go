@@ -24,7 +24,7 @@ func (service *BlockService) Query(height int64) model.Block {
 	result := model.Block{}
 	result.BlockInfo = service.QueryBlockInfo(height)
 	result.ValidatorSet = service.GetValidatorSet(height, DefaultPageNum, DefaultPageSize)
-	result.TokenFlows = Get(Tx).(*TxService).QueryTokenFlow(height, DefaultPageNum, DefaultPageSize)
+	result.TokenFlows = service.QueryTokenFlow(height, DefaultPageNum, DefaultPageSize)
 	result.Proposals = Get(Proposal).(*ProposalService).QueryProposalsByHeight(height)
 
 	return result
@@ -170,6 +170,20 @@ func (service *BlockService) QueryRecent() []model.BlockInfoVo {
 			NumTxs: block.NumTxs,
 		})
 	}
+	return result
+}
+
+func (service *BlockService) QueryTokenFlow(height int64, page, size int) model.TokenFlows {
+	items := []document.TokenFlow{}
+	result := model.TokenFlows{}
+
+	cnt, err := pageQuery(document.CollectionNmTokenFlow, nil, bson.M{"block_height": height, "flow_type": bson.M{"$nin": []string{"GovDeposit", "GovDepositBurn", "GovDepositRefund"}}}, "", page, size, &items)
+	if err != nil {
+		logger.Error("query token flow err", logger.String("error", err.Error()), service.GetTraceLog())
+	}
+	result.Total = cnt
+	result.Items = items
+
 	return result
 }
 
