@@ -17,7 +17,8 @@
                 <div class="current_block_information_content">
                     <div class="block_information_item">
                         <span>Timestamp:</span>
-                        <span>{{ageValue}} ({{timestampValue}})</span>
+                        <span v-if="timestampValue">{{ageValue}} ({{timestampValue}})</span>
+                        <span v-if="!timestampValue">--</span>
                     </div>
                     <div class="block_information_item">
                         <span>Block Hash:</span>
@@ -29,7 +30,8 @@
                     </div>
                     <div class="block_information_item">
                         <span>Proposer:</span>
-                        <span><router-link class="common_link_style" :to="`/address/1/${proposerAddress}`">{{proposerValue}}</router-link></span>
+                        <span v-if="proposerAddress !== '--'"><router-link class="common_link_style" :to="`/address/1/${proposerAddress}`">{{proposerValue}}</router-link></span>
+                        <span v-if="proposerAddress === '--'">--</span>
                     </div>
                     <div class="block_information_item">
                         <span>Rewards:</span>
@@ -39,7 +41,8 @@
                 <div class="last_block_information_content">
                     <div class="last_block_information_item">
                         <span>Last Block:</span>
-                        <span><router-link :to="`/block/${lastBlockValue}`" class="common_link_style">{{lastBlockValue}}</router-link></span>
+                        <span v-if="lastBlockValue !== '--'"><router-link :to="`/block/${lastBlockValue}`" class="common_link_style">{{lastBlockValue}}</router-link></span>
+                        <span v-if="lastBlockValue === '--'">--</span>
                     </div>
                     <div class="last_block_information_item">
                         <span>Last Block Hash:</span>
@@ -245,20 +248,26 @@
                         this.proposerValue = data.block_info.propopser_moniker;
                         this.proposerAddress = data.block_info.propopser_addr;
                         this.rewardsValue = `${Tools.convertScientificNotation2Number(Tools.formatNumber(data.block_info.rewards[0].amount))} ${Tools.formatDenom(data.block_info.rewards [0].denom)}`;
-                        this.precommitValidatorsValue = data.block_info.precommit_validators !== 0 ? data.block_info.precommit_validators : '--';
-                        this.votingPowerValue = data.block_info.voting_power !== 0 ? data.block_info.voting_power : '--';
+                        this.precommitValidatorsValue = data.block_info.validator_num !== 0 ? data.block_info.validator_num : '--';
+                        this.votingPowerValue = data.block_info.total_voting_power !== 0 ? data.block_info.total_voting_power : '--';
                         this.handleTxList(data.token_flows);
                         this.handleGovernance(data.proposals_info);
                         this.handleValidatorSetList(data.validator_set);
                         this.getMaxBlock(data.block_info.latest_height);
                     } else {
-                        this.heightValue = this.$route.params.height;
+                        this.handleTxList(null);
+                        this.handleGovernance(null);
+                        this.handleValidatorSetList(null);
+                        this.lastBlockValue = '--';
+                        this.proposerAddress = '--';
+                        this.rewardsValue = '--';
+                        this.heightValue = '';
                         this.timestampValue = '';
-                        this.blockHashValue = '';
-                        this.transactionsValue = '';
-                        this.lastBlockHashValue = '';
-                        this.precommitValidatorsValue = '';
-                        this.votingPowerValue = '';
+                        this.blockHashValue = '--';
+                        this.transactionsValue = '--';
+                        this.lastBlockHashValue = '--';
+                        this.precommitValidatorsValue = '--';
+                        this.votingPowerValue = '--';
                     }
                 }).catch(e => {
                     console.log(e)
@@ -281,7 +290,7 @@
                 })
             },
             handleTxList(txList){
-                if(txList.items && txList.items.length !== 0){
+                if(txList && txList.items && txList.items.length !== 0){
                     this.txListCount  = txList.total;
                     if(txList.total > this.pageSize){
                         this.flShowTxListPagination = true
@@ -378,7 +387,7 @@
                 }
             },
             handleValidatorSetList(validatorList){
-                if(validatorList.items && validatorList.items.length !== 0){
+                if(validatorList && validatorList.items && validatorList.items.length !== 0){
                     this.validatorSetListCount = validatorList.total;
                     if(validatorList.total > this.pageSize){
                         this.flShowValidatorListSetPagination = true
