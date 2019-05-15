@@ -244,10 +244,10 @@
                         this.timestampValue = Tools.format2UTC(data.block_info.timestamp);
                         this.blockHashValue = data.block_info.block_hash;
                         this.lastBlockValue = data.block_info.last_block !== 0 ? data.block_info.last_block : '--';
-                        this.lastBlockHashValue = data.block_info.last_block_hash !== 0 ? data.block_info.last_block_hash : '--';
+                        this.lastBlockHashValue = data.block_info.last_block_hash ? data.block_info.last_block_hash : '--';
                         this.proposerValue = data.block_info.propopser_moniker;
                         this.proposerAddress = data.block_info.propopser_addr;
-                        this.rewardsValue = `${Tools.convertScientificNotation2Number(Tools.formatNumber(data.block_info.rewards[0].amount))} ${Tools.formatDenom(data.block_info.rewards [0].denom)}`;
+                        this.rewardsValue = data.block_info.rewards ? `${Tools.convertScientificNotation2Number(Tools.formatNumber(data.block_info.rewards[0].amount))} ${Tools.formatDenom(data.block_info.rewards [0].denom)}` : '--';
                         this.precommitValidatorsValue = data.block_info.validator_num !== 0 ? data.block_info.validator_num : '--';
                         this.votingPowerValue = data.block_info.total_voting_power !== 0 ? data.block_info.total_voting_power : '--';
                         this.handleTxList(data.token_flows);
