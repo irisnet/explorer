@@ -507,8 +507,8 @@ definitions:
         type: string
       amount:
         $ref: "#/definitions/Coin"
-      fee:
-        $ref: "#/definitions/Fee"
+      actual_fee:
+        $ref: "#/definitions/ActualFee"
   TokenFlows:
     type: object
     properties:
@@ -522,46 +522,6 @@ definitions:
     example:
       total: 4
       items:
-        [
-          {
-            "block_height": 1468,
-            "block_hash": "88AFE4D3DDC828BA58DFF1125B9BC87140CEB06DD4C756C464D06FC944E55235",
-            "tx_hash": "A462379AD307B12E9909CBCB832E6B9DFF1A6628BD6BAD73194A47C52081E6BD",
-            "from": "fva1xtstdchjyzkddaptgyug62g23cta7eyzq49svq",
-            "to": "faa1xtstdchjyzkddaptgyug62g23cta7eyz4y0l38",
-            "amount": { "denom": "iris-atto", "amount": 319449898495734250000 },
-            "fee":
-              {
-                "amount":
-                  [{ "denom": "iris-atto", "amount": 400000000000000000 }],
-                "gas": 50000,
-              },
-            "tx_initiator": "faa1ljemm0yznz58qxxs8xyak7fashcfxf5lssn6jm",
-            "tx_type": "Delegate",
-            "flow_type": "ValidatorReward",
-            "status": "success",
-            "timestamp": "2019-04-23T14:26:52.226+08:00",
-          },
-          {
-            "block_height": 1468,
-            "block_hash": "88AFE4D3DDC828BA58DFF1125B9BC87140CEB06DD4C756C464D06FC944E55235",
-            "tx_hash": "A462379AD307B12E9909CBCB832E6B9DFF1A6628BD6BAD73194A47C52081E6BD",
-            "from": "faa1ljemm0yznz58qxxs8xyak7fashcfxf5lssn6jm",
-            "to": "fva1xtstdchjyzkddaptgyug62g23cta7eyzq49svq",
-            "amount": { "denom": "iris-atto", "amount": 21000000000000000000 },
-            "fee":
-              {
-                "amount":
-                  [{ "denom": "iris-atto", "amount": 400000000000000000 }],
-                "gas": 50000,
-              },
-            "tx_initiator": "faa1ljemm0yznz58qxxs8xyak7fashcfxf5lssn6jm",
-            "tx_type": "Delegate",
-            "flow_type": "Delegation",
-            "status": "success",
-            "timestamp": "2019-04-23T14:26:52.226+08:00",
-          },
-        ]
   Fee:
     type: object
     properties:
@@ -570,6 +530,14 @@ definitions:
       gas:
         type: integer
         format: int64
+  ActualFee:
+    type: object
+    properties:
+      denom:
+        type: string
+      amount:
+        type: integer
+        format: float64
   Coins:
     type: array
     items:
