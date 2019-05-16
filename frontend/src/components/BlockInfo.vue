@@ -274,7 +274,7 @@
                 })
             },
             getValidatorSetList(currentPage,pageSize){
-                let url = `/api/stake/validatorset?height=${this.$route.params.height}&page=${currentPage}&size=${pageSize}`;
+                let url = `/api/block/validatorset/${this.$route.params.height}&page=${currentPage}&size=${pageSize}`;
                 Service.http(url).then((validatorSetList) => {
                     if(validatorSetList){
                         this.handleValidatorSetList(validatorSetList)
@@ -282,7 +282,7 @@
                 })
             },
             getTxList(currentPage,pageSize){
-                let url = `/api/tx/token/flow?height=${this.$route.params.height}&page=${currentPage}&size=${pageSize}`;
+                let url = `/api/block/coinflow/${this.$route.params.height}&page=${currentPage}&size=${pageSize}`;
                 Service.http(url).then((txList) => {
                     if(txList){
                         this.handleTxList(txList)
@@ -319,7 +319,7 @@
                     this.blockListTxTimer = setInterval(function () {
                         that.items = that.items.map( item => {
                             let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-                            item.Age = Tools.formatAge(currentServerTime,item.txTime,Constant.SUFFIX,Constant.PREFIX)
+                            item.Timestamp = Tools.formatAge(currentServerTime,item.txTime,Constant.SUFFIX,Constant.PREFIX)
                             return item
                         })
                     },1000)
