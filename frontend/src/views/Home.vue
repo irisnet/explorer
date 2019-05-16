@@ -12,7 +12,7 @@
             </div>
             <p class="current_block">{{currentBlockHeight}}</p>
             <p class="block_time proposer_container">
-              <span class="proposer_content" @click="toAddressDetail(proposerAddress)">{{moniker}}</span>
+              <span class="proposer_content"><router-link :to="`/address/1/${proposerAddress}`">{{moniker}}</router-link></span>
             </p>
           </li>
           <li class="item_status">
@@ -111,6 +111,7 @@ import Constant from "../constant/Constant";
                   transactionInformation: [],
                   innerWidth : window.innerWidth,
                   blocksTimer:null,
+                  latestBlockTimer:null,
                   transfersTimer:null,
                   navigationTimer:null,
                   diffSeconds: 0,
@@ -145,7 +146,6 @@ import Constant from "../constant/Constant";
               },5000)
               window.addEventListener('resize',this.onresize);
               if (window.innerWidth > 910) {
-                  this.$store.commit('isMobile',this.isMobile)
                   this.pageClassName = 'personal_computer_home_wrap';
                   this.module_item_wrap = 'module_item_wrap_computer';
                   if(document.getElementsByClassName('fixed_item_height').length > 0){
@@ -153,7 +153,6 @@ import Constant from "../constant/Constant";
                       document.getElementsByClassName('fixed_item_height')[1].style.height = '6.55rem';
                   }
               } else {
-                  this.$store.commit('isMobile',!this.isMobile);
                   this.pageClassName = 'mobile_home_wrap';
                   this.module_item_wrap = 'module_item_wrap_mobile';
               }
@@ -228,12 +227,12 @@ import Constant from "../constant/Constant";
             let maxValue = 0;
             if(data){
               data.forEach(item=>{
-                if(item.Count > maxValue){
-                  maxValue = item.Count;
+                if(item.num > maxValue){
+                  maxValue = item.num;
                 }
               });
-              let xData = data.map(item=>`${String(item.Time).substr(5,2)}/${String(item.Time).substr(8,2)}/${String(item.Time).substr(0,4)}`);
-              let seriesData = data.map(item=>item.Count);
+              let xData = data.map(item=>`${String(item.date).substr(5,2)}/${String(item.date).substr(8,2)}/${String(item.date).substr(0,4)}`);
+              let seriesData = data.map(item=>item.num);
               this.informationLine = {maxValue,xData,seriesData};
             }
           }).catch(e => {
@@ -243,49 +242,59 @@ import Constant from "../constant/Constant";
         showBlockFadeinAnimation(blockList){
           let storedLastBlockHeight = localStorage.getItem('lastBlockHeight') ? localStorage.getItem('lastBlockHeight') : '';
           if(storedLastBlockHeight){
-            for(let index = 0; index < blockList.Data.length; index++){
-              if(blockList.Data[index].Height > storedLastBlockHeight){
-                blockList.Data[index].showAnimation = "show"
+            for(let index = 0; index < blockList.length; index++){
+              if(blockList[index].height > storedLastBlockHeight){
+                blockList.forEach(item => {
+                  item.flShowTranslationalAnimation = true
+                });
+                blockList[index].showAnimation = "show";
               }
             }
           }
         },
         getBlocksList() {
-          let url = `/api/blocks/1/10`;
+          let url = `/api/blocks/recent`;
           Service.http(url).then((blockList) => {
-            if(blockList.Data){
-            let denominator = 0;
-              blockList.Data[0].Validators.forEach(item=>denominator += item.VotingPower);
+            if(blockList){
+              let denominator = 0;
+              blockList[0].validators.forEach(item=>denominator += item.voting_power);
               let numerator = 0;
-              for(let i = 0; i < blockList.Data[0].Block.LastCommit.Precommits.length; i++){
-                for (let j = 0; j < blockList.Data[0].Validators.length; j++){
-                  if(blockList.Data[0].Block.LastCommit.Precommits[i].ValidatorAddress === blockList.Data[0].Validators[j].Address){
-                    numerator += blockList.Data[0].Validators[j].VotingPower;
+              for(let i = 0; i < blockList[0].last_commit.length; i++){
+                for (let j = 0; j < blockList[0].validators.length; j++){
+                  if(blockList[0].last_commit[i] === blockList[0].validators[j].address){
+                    numerator += blockList[0].validators[j].voting_power;
                     break;
                   }
                 }
               }
               this.showBlockFadeinAnimation(blockList);
               let that = this;
-                let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-                localStorage.setItem("lastBlockHeight",blockList.Data[0].Height);
-                this.blocksInformation = blockList.Data.map(item => {
+              setTimeout(function () {
+                that.blocksInformation.map(item => {
+                  return item.flShowTranslationalAnimation = false
+                })
+              },1000)
+              let currentServerTime = new Date().getTime() + that.diffMilliseconds;
+                localStorage.setItem("lastBlockHeight",blockList[0].height);
+
+                this.blocksInformation = blockList.map(item => {
                   return {
+                    flShowTranslationalAnimation :  item.flShowTranslationalAnimation ? item.flShowTranslationalAnimation : "",
                     showAnimation: item.showAnimation ? item.showAnimation : "",
-                    Height: item.Height,
-                    Proposer: item.Hash,
-                    Txn: item.NumTxs,
-                    blockUTCTime: Tools.format2UTC(item.Time),
-                    time: item.Time,
+                    Height: item.height,
+                    Proposer: item.hash,
+                    Txn: item.num_txs,
+                    Time: Tools.format2UTC(item.time),
                     Fee: '0 IRIS',
-                    age: Tools.formatAge(currentServerTime,item.Time,Constant.SUFFIX,Constant.PREFIX)
+                    time:item.time,
+                    age: Tools.formatAge(currentServerTime,item.time,Constant.SUFFIX,Constant.PREFIX)
                   };
                 });
-                clearInterval(this.blocksTimer);
-                this.blocksTimer = setInterval(function () {
-                  currentServerTime = new Date().getTime() + that.diffMilliseconds;
-                  that.blocksInformation.map(item => {
-                  item.age = Tools.formatAge(currentServerTime,item.time,Constant.SUFFIX,Constant.PREFIX)
+              this.blocksTimer = setInterval(function () {
+                let currentServerTime = new Date().getTime() + that.diffMilliseconds;
+                that.lastBlockAge = Tools.formatAge(currentServerTime,blockList[0].time);
+                that.blocksInformation = that.blocksInformation.map(item => {
+                  item.age = Tools.formatAge(currentServerTime,item.time,Constant.SUFFIX,Constant.PREFIX);
                   return item
                 })
               },1000);
@@ -295,59 +304,49 @@ import Constant from "../constant/Constant";
           })
         },
         getTransactionList() {
-          let url = `/api/txs/1/10`;
+          let url = `/api/txs/recent`;
           Service.http(url).then((transactionList) => {
-            if(transactionList.Data){
+            if(transactionList){
               let that = this;
-              for (let txIndex = 0; txIndex < transactionList.Data.length; txIndex++){
-                if(new Date(transactionList.Data[txIndex].Time).getTime() > localStorage.getItem("lastTxTime")){
-                  transactionList.Data[txIndex].showAnimation = "show"
+              for (let txIndex = 0; txIndex < transactionList.length; txIndex++){
+                if(new Date(transactionList[txIndex].time).getTime() > localStorage.getItem("lastTxTime")){
+                  transactionList[txIndex].showAnimation = "show";
+                  transactionList.forEach(item => {
+                    item.flShowTranslationalAnimation = true
+                  })
                 }
               }
-              let lastTxTime = new Date(transactionList.Data[0].Time).getTime();
+              setTimeout(function () {
+                that.transactionInformation.map(item => {
+                  return item.flShowTranslationalAnimation = false
+                })
+              },1000)
+              let lastTxTime = new Date(transactionList[0].time).getTime();
                 localStorage.setItem('lastTxTime',lastTxTime);
                 let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-                that.transactionInformation = transactionList.Data.map(item => {
-                  let [Amount, Fee] = ['--', '--'];
-                  if(item.Amount){
-                    if (item.Amount instanceof Array) {
-                      if(item.Amount.length > 0){
-                        item.Amount[0].amount = Tools.formatAmount(item.Amount[0].amount);
-                        if(!item.Amount[0].denom){
-                          Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
-                        }else {
-                          Amount = item.Amount.map(listItem => `${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
-                        }
-                      }
-                    } else if (item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')) {
-                      if(!item.Amount.denom){
-                        Amount = `${item.Amount.amount} SHARES`;
-                      }else {
-                        Amount = `${item.Amount.amount} ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
-                      }
-                    }
-                  }else {
-                    Amount = '';
+                that.transactionInformation = transactionList.map(item => {
+                  let [Fee] = ['--'];
+                  if(item.actual_fee.amount && item.actual_fee.denom){
+                    Fee =  `${Tools.formatFeeToFixedNumber(item.actual_fee.amount)} ${Tools.formatDenom(item.actual_fee.denom).toUpperCase()}`;
                   }
-                  if(item.ActualFee.amount && item.ActualFee.denom){
-                    Fee =  `${Tools.formatFeeToFixedNumber(item.ActualFee.amount)} ${Tools.formatDenom(item.ActualFee.denom).toUpperCase()}`;
-                  }
+                  let currentServerTime = new Date().getTime() + that.diffMilliseconds;
                   return {
+                    flShowTranslationalAnimation :  item.flShowTranslationalAnimation ? item.flShowTranslationalAnimation : "",
                     showAnimation: item.showAnimation ? item.showAnimation : '',
-                    TxHash: item.TxHash,
-                    From: item.From,
-                    To: item.To,
-                    Type: item.Type === 'coin'?'transfer':item.Type,
+                    TxHash: item.tx_hash,
+                    From: item.from,
+                    To: item.to,
+                    Type: item.type === 'coin'?'transfer':item.type,
                     Fee,
-                    Amount,
-                    Time: item.Time,
-                    age: Tools.formatAge(currentServerTime,item.Time,Constant.SUFFIX,Constant.PREFIX)
+                    Time: item.time,
+                    age: Tools.formatAge(currentServerTime,item.time,Constant.SUFFIX,Constant.PREFIX)
                   };
                 })
             clearInterval(this.transfersTimer);
                 this.transfersTimer = setInterval(function () {
                   that.transactionInformation.map(item => {
-                  lastTxTime = new Date(transactionList.Data[0].Time).getTime();
+                  currentServerTime = new Date().getTime() + that.diffMilliseconds;
+                  lastTxTime = new Date(transactionList[0].time).getTime();
                   item.age = Tools.formatAge(currentServerTime,item.Time,Constant.SUFFIX,Constant.PREFIX);
                   return item
                 })
@@ -357,12 +356,6 @@ import Constant from "../constant/Constant";
             console.log(e)
           })
         },
-        toBlockDetail(blockHeight){
-            if(blockHeight && blockHeight !== '--'){
-              let path = `/blocks_detail/${blockHeight}`;
-              this.$router.push(path)
-            }
-      },
       getNavigation(){
         let url = `/api/home/navigation`;
         Service.http(url).then(res => {
@@ -402,9 +395,6 @@ import Constant from "../constant/Constant";
         }
         return tokens
       },
-      toAddressDetail(address){
-          this.$router.push(`/address/1/${address}`)
-      }
     },
       destroyed () {
         clearInterval(this.timer);
@@ -637,6 +627,8 @@ import Constant from "../constant/Constant";
   }
   .proposer_content{
     cursor: pointer;
-    color:#3598db;
+    a{
+      color:#3598db !important;
+    }
   }
 </style>

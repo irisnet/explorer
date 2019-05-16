@@ -18,12 +18,12 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Proposer :</span>
-          <span v-show="proposer !== '--'" class="information_value information_show_trim jump_route" @click="jumpRoute(`/address/1/${proposer}`)">{{proposer}}</span>
+          <span v-show="proposer !== '--'" class="information_value information_show_trim jump_route"><router-link :to="`/address/1/${proposer}`">{{proposer}}</router-link></span>
           <span v-show="proposer == '--'" class="information_value information_show_trim ">{{proposer}}</span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Submit Hash :</span>
-          <span v-show="submitHash !== '--'" class="information_value information_show_trim jump_route" @click="jumpRoute(`/tx?txHash=${submitHash}`)">{{submitHash}}</span>
+          <span v-show="submitHash !== '--'" class="information_value information_show_trim jump_route"><router-link :to="`/tx?txHash=${submitHash}`">{{submitHash}}</router-link></span>
           <span v-show="submitHash == '--'" class="information_value information_show_trim ">{{submitHash}}</span>
         </div>
         <div class="information_props_wrap">
@@ -219,7 +219,7 @@
       },
       getProposalsInformation() {
         this.showLoading = true;
-        let url = `/api/proposal/${this.$route.params.proposal_id}`;
+        let url = `/api/gov/proposal/${this.$route.params.proposal_id}`;
         Service.http(url).then((data) => {
           this.showLoading = false;
           if(data){
@@ -595,7 +595,9 @@
     white-space: pre-wrap ;
   }
   .jump_route {
-    color: #3598db;
+    a{
+      color: #3598db !important;
+    }
     cursor: pointer;
   }
   .vote_content_container{
@@ -615,5 +617,8 @@
     width: 97%;
     margin-right:20%;
     background: #EEE !important;
+  }
+  .information_pre{
+      color: #a2a2ae;
   }
 </style>

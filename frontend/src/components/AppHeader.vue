@@ -39,22 +39,13 @@
         <span class="nav_item common_item_style" :class="activeClassName === '/home'?'nav_item_active':''"
               @click="featureButtonClick('/home')"
         >Home</span>
-        <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === '/validators'?'nav_item_active':''"
-             @mouseover="validatorsMouseOver" @mouseleave="validatorsMouseLeave">
-          <span class="nav_item common_item_style">
+        <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === '/validators'?'nav_item_active':''">
+          <span class="nav_item common_item_style" @click="featureButtonClick('/validators')">
             Validators
-            <span class="bottom_arrow"></span>
           </span>
-          <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/active')"
-                v-show="showSubValidators">Active</span>
-          <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/jailed')"
-                v-show="showSubValidators">Jailed</span>
-          <span class="sub_btn_item validators_btn_item" @click="featureButtonClick('/validators/3/candidates')"
-                v-show="showSubValidators">Candidates</span>
-
         </div>
-        <span class="nav_item common_item_style" :class="activeClassName === '/block'?'nav_item_active':''"
-              @click="featureButtonClick('/block/1/0')"
+        <span class="nav_item common_item_style" :class="activeClassName === '/blocks'?'nav_item_active':''"
+              @click="featureButtonClick('/blocks')"
         >Blocks</span>
         <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === '/transaction'?'nav_item_active':''"
              @mouseover="transactionMouseOver" @mouseleave="transactionMouseLeave">
@@ -63,18 +54,28 @@
             Transactions
             <span class="bottom_arrow"></span>
           </span>
-          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/Transfers')"
+          <span class="sub_btn_item" @click="featureButtonClick('/txs/transfers')"
                 v-show="showSubTransaction">Transfers</span>
-          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/Declarations')"
+          <span class="sub_btn_item" @click="featureButtonClick('/txs/declarations')"
                 v-show="showSubTransaction">Declarations</span>
-          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/Stakes')"
+          <span class="sub_btn_item" @click="featureButtonClick('/txs/stakes')"
                 v-show="showSubTransaction">Stakes</span>
-          <span class="sub_btn_item" @click="featureButtonClick('/transactions/2/Governance')"
+          <span class="sub_btn_item" @click="featureButtonClick('/txs/governance')"
                 v-show="showSubTransaction">Governance</span>
         </div>
-        <span class="nav_item common_item_style" :class="activeClassName === '/Proposals'?'nav_item_active':''"
-              @click="featureButtonClick('/Proposals')"
-        >Proposals</span>
+        <div class="nav_item sub_btn_wrap common_item_style" :class="activeClassName === '/governance'?'nav_item_active':''"
+             @mouseover="governanceMouseOver" @mouseleave="governanceMouseLeave">
+
+          <span class="nav_item common_item_style" >
+            Governance
+            <span class="bottom_arrow"></span>
+          </span>
+          <span class="sub_btn_item" @click="featureButtonClick('/parameters')"
+                v-show="flShowGovernanceOption">Parameters</span>
+          <span class="sub_btn_item" @click="featureButtonClick('/proposals')"
+                v-show="flShowGovernanceOption">Proposals</span>
+
+        </div>
         <span v-if="flShowFaucet" class="nav_item common_item_style faucet_content" :class="activeClassName === '/faucet'?'nav_item_active':''"
               @click="featureButtonClick('/faucet')"
         >Faucet</span>
@@ -104,19 +105,10 @@
       </div>
       <div class="use_feature_mobile" :style="{'top':absoluteTop}" v-show="featureShow">
         <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/home')">Home</span>
-        <span class="feature_btn_mobile feature_nav select_option_container" @click="validatorsSelect(flShowValidatorsSelect)">
+        <span class="feature_btn_mobile feature_nav select_option_container" @click="featureButtonClick('/validators')">
          <span>Validators</span>
-          <div :class="flShowValidatorsUpOrDown ? 'upImg_content' : 'downImg_content'">
-            <img :src="flShowValidatorsUpOrDown ? upImg : downImg ">
-          </div>
         </span>
-        <div class="select_option" v-show="flShowValidatorsSelect">
-          <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/active')">Active</span>
-          <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/jailed')">Jailed</span>
-          <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/validators/3/candidates')">Candidates</span>
-        </div>
-
-        <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/block/1/0')">Blocks</span>
+        <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/blocks')">Blocks</span>
         <span class="feature_btn_mobile feature_nav select_option_container" @click="transactionsSelect(flShowTransactionsSelect)">
          <span>Transactions</span>
           <div :class="flShowUpOrDown ? 'upImg_content' : 'downImg_content'">
@@ -125,19 +117,28 @@
         </span>
         <div class="select_option" v-show="flShowTransactionsSelect">
              <span class="feature_btn_mobile feature_nav"
-                   @click="featureButtonClick('/transactions/2/Transfers')">Transfers</span>
+                   @click="featureButtonClick('/txs/transfers')">Transfers</span>
           <span class="feature_btn_mobile feature_nav"
-                @click="featureButtonClick('/transactions/2/Declarations')">Declarations</span>
+                @click="featureButtonClick('/txs/declarations')">Declarations</span>
 
           <span class="feature_btn_mobile feature_nav"
-                @click="featureButtonClick('/transactions/2/Stakes')">Stakes</span>
+                @click="featureButtonClick('/txs/stakes')">Stakes</span>
           <span class="feature_btn_mobile feature_nav"
-                @click="featureButtonClick('/transactions/2/Governance')">Governance</span>
+                @click="featureButtonClick('/txs/governance')">Governance</span>
         </div>
-
-        <span class="feature_btn_mobile feature_nav" @click="featureButtonClick('/Proposals')">Proposals</span>
+        <span class="feature_btn_mobile feature_nav select_option_container" @click="governanceSelect(flShowGovernanceSelect)">
+         <span>Governance</span>
+          <div :class="flShowUpOrDown ? 'upImg_content' : 'downImg_content'">
+            <img :src="flShowUpOrDown ? upImg : downImg ">
+          </div>
+        </span>
+        <div class="select_option" v-show="flShowGovernanceSelect">
+             <span class="feature_btn_mobile feature_nav"
+                   @click="featureButtonClick('/parameters')">Parameters</span>
+          <span class="feature_btn_mobile feature_nav"
+                @click="featureButtonClick('/proposals')">Proposals</span>
+        </div>
         <span v-if="flShowFaucet" class="feature_btn_mobile feature_nav mobile_faucet_content" @click="featureButtonClick('/faucet')">Faucet</span>
-
         <span class="feature_btn_mobile feature_nav select_option_container" @click="netWorkSelect(flShowNetworkSelect)">
          <span>Network</span>
           <div :class="flShowNetworkUpOrDown ? 'upImg_content' : 'downImg_content'">
@@ -184,6 +185,7 @@
         featureShow: false,
         transactionShow: false,
         validatorsShow: false,
+        flShowGovernanceOption: false,
         searchInputValue: '',
         activeClassName: '/home',
         showHeader:!(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer()),
@@ -195,6 +197,7 @@
         flShowTransactionsSelect: false,
         flShowValidatorsSelect: false,
         flShowNetworkSelect:false,
+        flShowGovernanceSelect:false,
         flShowUpOrDown: false,
         flShowNetwork: false,
         flShowHeaderNetwork: false,
@@ -244,16 +247,6 @@
           this.flShowTransactionsSelect = false
         }
       },
-      validatorsSelect(flShowValidatorsSelect){
-        this.flShowTransactionsSelect = false;
-        if(!flShowValidatorsSelect){
-          this.flShowValidatorsSelect = true;
-          this.flShowValidatorsUpOrDown = true
-        }else {
-          this.flShowValidatorsSelect = false;
-          this.flShowValidatorsUpOrDown = false
-        }
-      },
       netWorkSelect(flShowNetworkSelect){
         this.flShowNetworkSelect = false;
         if(!flShowNetworkSelect){
@@ -261,6 +254,16 @@
           this.flShowNetworkUpOrDown = true
         }else {
           this.flShowNetworkSelect = false;
+          this.flShowNetworkUpOrDown = false
+        }
+      },
+      governanceSelect(flShowNetworkSelect){
+        this.flShowGovernanceSelect = false;
+        if(!flShowNetworkSelect){
+          this.flShowGovernanceSelect = true;
+          this.flShowNetworkUpOrDown = true
+        }else {
+          this.flShowGovernanceSelect = false;
           this.flShowNetworkUpOrDown = false
         }
       },
@@ -288,6 +291,7 @@
         }
         this.showSubTransaction = false;
         this.showSubValidators = false;
+        this.flShowGovernanceOption = false;
         this.listenRouteForChangeActiveButton();
         if(path !== 'network'){
           this.$router.push(path);
@@ -299,11 +303,11 @@
       transactionMouseLeave(){
         this.showSubTransaction = false;
       },
-      validatorsMouseOver(){
-        this.showSubValidators = true;
+      governanceMouseOver() {
+        this.flShowGovernanceOption = true
       },
-      validatorsMouseLeave(){
-        this.showSubValidators = false;
+      governanceMouseLeave() {
+        this.flShowGovernanceOption = false
       },
       searchTx(){
         let uri = `/api/tx/${this.searchInputValue}`;
@@ -356,7 +360,7 @@
             let searchBlockAndProposalInResult = 2;
             if(searchResult.length === searchResultIsBlockOrProposalId){
               if(searchResult[0].Type === "block" && searchResult[0].Data.Height !== 0){
-                this.$router.push(`/blocks_detail/${searchResult[0].Data.Height}`);
+                this.$router.push(`/block/${searchResult[0].Data.Height}`);
                 this.clearSearchInputValue();
               }else if(searchResult[0].Type === "proposal" && searchResult[0].Data.ProposalID !== 0){
                 this.$router.push(`/ProposalsDetail/${searchResult[0].Data.ProposalID}`);
@@ -392,7 +396,7 @@
         }
       },
       toSearchResultPage(){
-        this.$router.push(`/searchResult/${this.searchInputValue}`);
+        this.$router.push(`/searchResult?${this.searchInputValue}`);
         this.searchInputValue = "";
       },
       onInputChange() {
@@ -404,20 +408,20 @@
       listenRouteForChangeActiveButton(){
         //刷新的时候路由不变，active按钮不变
         let path = window.location.href;
-        if (path.includes('transactions/2') || path.includes('tx?')) {
+        if (path.includes('txs') || path.includes('tx?')) {
           this.activeClassName = '/transaction';
-        } else if (path.includes('/validators/3') || path.includes('/candidates/4')) {
+        } else if (path.includes('/validators')) {
           this.activeClassName = '/validators';
-        } else if (path.includes('/block')) {
-          this.activeClassName = '/block';
+        } else if (path.includes('/blocks')) {
+          this.activeClassName = '/blocks';
         } else if (path.includes('/home')) {
           this.activeClassName = '/home';
         } else if (path.includes('/faucet')) {
           this.activeClassName = '/faucet';
-        } else if(path.includes('/Proposals')){
-          this.activeClassName = '/Proposals';
-        }else if(path.includes('/nodespage')){
-          this.activeClassName = '/nodespage';
+        } else if(path.includes('/parameters')){
+          this.activeClassName = '/governance';
+        }else if(path.includes('/proposals')){
+          this.activeClassName = '/governance';
         }else {
           this.activeClassName = '';
         }
@@ -507,7 +511,7 @@
   .person_computer_header_var {
     height: 1.62rem;
     position: fixed;
-    z-index: 10000000;
+    z-index: 10001;
     background: rgba(255,255,255,1);
   }
   .person_computer_header_var, .mobile_header_var {

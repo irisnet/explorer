@@ -15,7 +15,9 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Block Height :</span>
-          <span class="information_value link_active_style" @click="skipRoute(`/blocks_detail/${blockValue}`)">{{blockValue}}</span>
+          <span class="information_value link_active_style">
+            <router-link :to="`/block/${blockValue}`">{{blockValue}}</router-link>
+          </span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Type :</span>
@@ -23,7 +25,8 @@
         </div>
         <div class="information_props_wrap" v-if="flShowProposer">
           <span class="information_props">Proposer :</span>
-          <span class="information_value link_active_style" @click="skipRoute(`/address/1/${proposer}`)">{{proposer}}</span>
+          <span class="information_value link_active_style">
+            <router-link :to="`/address/1/${proposer}`">{{proposer}}</router-link></span>
         </div>
         <div class="information_props_wrap" v-if="title">
           <span class="information_props">ProposalTitle :</span>
@@ -43,40 +46,54 @@
         </div>
         <div class="information_props_wrap" v-if="depositer">
           <span class="information_props">Depositer :</span>
-          <span class="information_value link_active_style" @click="skipRoute(`/address/1/${depositer}`)">{{depositer}}</span>
+          <span class="information_value link_active_style">
+            <router-link :to="`/address/1/${depositer}`">{{depositer}}</router-link>
+          </span>
         </div>
         <div class="information_props_wrap" v-if="flShowProposalId">
           <span class="information_props">Proposal ID :</span>
-          <span v-show="proposalId !== '--' " class="information_value link_active_style" @click="skipRoute(`/ProposalsDetail/${proposalId}`)">{{proposalId}}</span>
+          <span v-show="proposalId !== '--' " class="information_value link_active_style">
+            <router-link :to="`/ProposalsDetail/${proposalId}`">{{proposalId}}</router-link>
+          </span>
           <span v-show="proposalId === '--' " class="information_value link_active_style">{{proposalId}}</span>
         </div>
         <div class="information_props_wrap" v-if="flShowVoter">
           <span class="information_props">Voter :</span>
-          <span class="information_value link_active_style" @click="skipRoute(`/address/1/${voter}`)">{{voter}}</span>
+          <span class="information_value link_active_style">
+            <router-link :to="`/address/1/${voter}`">{{voter}}</router-link></span>
         </div>
         <div class="information_props_wrap" v-if="flShowTypeTransfer || flShowWithdrawAddress">
           <span class="information_props">From :</span>
-          <span class="information_value link_active_style" @click="skipRoute(`/address/1/${fromValue}`)">{{fromValue}}</span>
+          <span class="information_value link_active_style">
+            <router-link :to="`/address/1/${fromValue}`">{{fromValue}}</router-link>
+          </span>
         </div>
         <div class="information_props_wrap" v-if="flShowWithdrawAddress">
           <span class="information_props">Withdraw To :</span>
-          <span class="information_value link_active_style" @click="skipRoute(`/address/1/${withdrawAddress}`)">{{withdrawAddress}}</span>
+          <span class="information_value link_active_style">
+            <router-link :to="`/address/1/${withdrawAddress}`">{{withdrawAddress}}</router-link></span>
         </div>
         <div class="information_props_wrap" v-if="flShowDelegatorAddress">
           <span class="information_props">Delegator Address :</span>
-          <span class="information_value link_active_style" @click="skipRoute(`/address/1/${delegatorAddress}`)">{{delegatorAddress}}</span>
+          <span class="information_value link_active_style">
+            <router-link :to="`/address/1/${delegatorAddress}`">{{delegatorAddress}}</router-link></span>
         </div>
         <div class="information_props_wrap" v-if="flShowValidatorAddress">
           <span class="information_props">Validator Address :</span>
-          <span class="information_value link_active_style" @click="skipRoute(`/address/1/${validatorAddress}`)">{{validatorAddress}}</span>
+          <span class="information_value link_active_style">
+            <router-link :to="`/address/1/${validatorAddress}`">{{validatorAddress}}</router-link>
+          </span>
         </div>
         <div class="information_props_wrap" v-if="showSource">
           <span class="information_props">Source :</span>
-          <span class="information_value link_active_style" @click="skipRoute(`/address/1/${source}`)">{{source}}</span>
+          <span class="information_value link_active_style">
+            <router-link :to="`/address/1/${source}`">{{source}}</router-link>
+          </span>
         </div>
         <div class="information_props_wrap" v-if="flShowTypeTransfer">
           <span class="information_props">To :</span>
-          <span class="information_value link_active_style" @click="skipRoute(`/address/1/${toValue}`)">{{toValue}}</span>
+          <span class="information_value link_active_style">
+            <router-link :to="`/address/1/${toValue}`">{{toValue}}</router-link></span>
         </div>
         <div class="information_props_wrap" v-if="moniker">
           <span class="information_props">Moniker :</span>
@@ -88,7 +105,8 @@
         </div>
         <div class="information_props_wrap" v-if="owner">
           <span class="information_props">From :</span>
-          <span class="information_value link_active_style" @click="skipRoute(`/address/1/${owner}`)">{{owner}}</span>
+          <span class="information_value link_active_style">
+            <router-link :to="`/address/1/${owner}`">{{owner}}</router-link></span>
         </div>
         <div class="information_props_wrap" v-if="pubkey">
           <span class="information_props">Pub key :</span>
@@ -228,9 +246,6 @@
       this.getTransactionInfo()
     },
     methods: {
-      skipRoute(path) {
-        this.$router.push(path);
-      },
       getTransactionInfo(){
         if(this.$route.query.txHash){
           let url = `/api/tx/${this.$route.query.txHash}`;
@@ -238,10 +253,12 @@
             clearInterval(this.transactionDetailTimer);
             if(data){
               let that = this;
+              let currentServerTime = new Date().getTime() + that.diffMilliseconds;
               this.transactionDetailTimer = setInterval(function () {
-                let currentServerTime = new Date().getTime() + that.diffMilliseconds;
+                currentServerTime = new Date().getTime() + that.diffMilliseconds;
                 that.ageValue = Tools.formatAge(currentServerTime,data.Timestamp,Constant.SUFFIX);
               },1000);
+              this.ageValue = Tools.formatAge(currentServerTime,data.Timestamp,Constant.SUFFIX);
               this.timestampValue = Tools.format2UTC(data.Timestamp);
               this.hashValue = data.Hash;
               this.blockValue = data.BlockHeight;
@@ -343,7 +360,7 @@
     }
   }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
   @import '../style/mixin.scss';
   .information_pre{
     color: #a2a2ae;
@@ -390,9 +407,13 @@
         padding:0.16rem 0rem;
           .information_props_wrap{
             @include flex;
+              margin-bottom: 0.08rem;
             .information_props{
               width:1.5rem;
             }
+              .information_value{
+                  color: #a2a2ae;
+              }
           }
       }
       .transactions_detail_title {
@@ -425,18 +446,19 @@
         @include fontWeight;
       }
       .transactions_detail_information_wrap{
-padding:0.16rem 0rem;
+        padding:0.16rem 0rem;
         .information_props_wrap{
           @include flex;
           flex-direction:column;
-          border-bottom:0.01rem solid #eee;
           margin-bottom:0.05rem;
           .information_value{
             overflow-x:auto;
             -webkit-overflow-scrolling:touch;
-
+            overflow-y:hidden;
           }
-
+            .information_value{
+                color: #a2a2ae;
+            }
         }
       }
       .transactions_detail_title {
@@ -452,12 +474,15 @@ padding:0.16rem 0rem;
         -webkit-overflow-scrolling:touch;
         height: 0.3rem;
         line-height: 0.3rem;
-        font-size: 0.22rem;
+        font-size: 0.18rem;
         color: #a2a2ae;
       }
     }
   }
   .link_active_style{
+    a{
+      color:#3598db !important;
+    }
     color:#3598db !important;
     cursor:pointer;
   }

@@ -37,6 +37,11 @@ ENVCONFIG.QA = 'qa';
 ENVCONFIG.STAGE = 'stage';
 ENVCONFIG.TESTNET = 'testnet';
 ENVCONFIG.MAINNET = 'mainnet';
+
+const PARAMETER = {};
+PARAMETER.EQUAL = 'eq';
+PARAMETER.UNEQUAL = 'neq';
+
 const CHAINNAME = 'iris';
 export default {
   PREFIX,
@@ -45,5 +50,6 @@ export default {
   ValidatorStatus,
   Denom,
   ENVCONFIG,
-  CHAINNAME
+  CHAINNAME,
+  PARAMETER
 };

@@ -1,8 +1,11 @@
 package utils
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
+	"golang.org/x/net/websocket"
 	"testing"
+	"time"
 )
 
 func TestParseInt(t *testing.T) {
@@ -14,4 +17,38 @@ func TestParseInt(t *testing.T) {
 
 	_, ok = ParseInt("sd")
 	assert.False(t, ok)
+}
+
+func TestRunTimer(t *testing.T) {
+	RunTimer(1, Sec, func() {
+		fmt.Printf("test RunTimer:%s\n", time.Now().String())
+	})
+	time.Sleep(1 * time.Hour)
+}
+
+func TestWebsocket(t *testing.T) {
+	conn, err := websocket.Dial("ws://192.168.150.7:30657/websocket", "", "http://192.168.150.7:30657")
+	fmt.Println(err)
+	conn.Write([]byte(`{
+                    "jsonrpc": "2.0",
+                    "method": "subscribe",
+                    "id": "0",
+                    "params": {
+                        "query": "tm.event='NewBlock'"
+                    }}`))
+
+	conn.Write([]byte(`{
+                    "jsonrpc": "2.0",
+                    "method": "subscribe",
+                    "id": "1",
+                    "params": {
+                        "query": "tm.event='CompleteProposal'"
+                    }}`))
+
+	for {
+		request := make([]byte, 128)
+		readLen, _ := conn.Read(request)
+		fmt.Println(string(request[0:readLen]))
+	}
+
 }

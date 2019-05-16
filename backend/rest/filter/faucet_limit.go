@@ -44,7 +44,7 @@ func (FaucetLimitPreFilter) Type() Type {
 }
 
 func (FaucetLimitPreFilter) Do(request *model.IrisReq, data interface{}) (interface{}, types.BizCode) {
-	traceId := logger.Int64("traceId", request.TraceId)
+	traceId := logger.String("traceId", request.TraceId)
 	logger.Info("FaucetLimitPreFilter", traceId)
 
 	args := mux.Vars(request.Request)
@@ -73,7 +73,7 @@ func (FaucetLimitPostFilter) Type() Type {
 }
 
 func (FaucetLimitPostFilter) Do(request *model.IrisReq, data interface{}) (interface{}, types.BizCode) {
-	traceId := logger.Int64("traceId", request.TraceId)
+	traceId := logger.String("traceId", request.TraceId)
 	logger.Info("FaucetLimitPostFilter", traceId)
 	d := data.([]byte)
 	var res fErr

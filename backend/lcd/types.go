@@ -5,16 +5,21 @@ import (
 )
 
 const (
-	UrlAccount         = "%s/auth/accounts/%s"
-	UrlValidator       = "%s/stake/validators/%s"
-	UrlValidators      = "%s/stake/validators?page=%d&size=%d"
-	UrlNodeInfo        = "%s/node_info"
-	UrlGenesis         = "%s/genesis"
-	UrlWithdrawAddress = "%s/distribution/%s/withdrawAddress"
-	UrlBlockLatest     = "%s/blocks/latest"
-	UrlBlock           = "%s/blocks/%d"
-	UrlValidatorSet    = "%s/validatorsets/%d"
-	UrlStakePool       = "%s/stake/pool"
+	UrlAccount                = "%s/auth/accounts/%s"
+	UrlValidator              = "%s/stake/validators/%s"
+	UrlValidators             = "%s/stake/validators?page=%d&size=%d"
+	UrlDelegationByVal        = "%s/stake/validators/%s/delegations"
+	UrlDelegationsByDelegator = "%s/stake/delegators/%s/delegations"
+	UrlSignInfo               = "%s/slashing/validators/%s/signing_info"
+	UrlNodeInfo               = "%s/node_info"
+	UrlGenesis                = "%s/genesis"
+	UrlWithdrawAddress        = "%s/distribution/%s/withdrawAddress"
+	UrlBlockLatest            = "%s/blocks/latest"
+	UrlBlock                  = "%s/blocks/%d"
+	UrlValidatorSet           = "%s/validatorsets/%d"
+	UrlValidatorSetLatest     = "%s/validatorsets/latest"
+	UrlStakePool              = "%s/stake/pool"
+	UrlBlocksResult           = "%s/blocks-result/%d"
 )
 
 type AccountVo struct {
@@ -29,27 +34,35 @@ type AccountVo struct {
 }
 
 type ValidatorVo struct {
-	OperatorAddress string `json:"operator_address"`
-	ConsensusPubkey string `json:"consensus_pubkey"`
-	Jailed          bool   `json:"jailed"`
-	Status          int    `json:"status"`
-	Tokens          string `json:"tokens"`
-	DelegatorShares string `json:"delegator_shares"`
-	Description     struct {
-		Moniker  string `json:"moniker"`
-		Identity string `json:"identity"`
-		Website  string `json:"website"`
-		Details  string `json:"details"`
-	} `json:"description"`
-	BondHeight      string    `json:"bond_height"`
-	UnbondingHeight string    `json:"unbonding_height"`
-	UnbondingTime   time.Time `json:"unbonding_time"`
-	Commission      struct {
-		Rate          string    `json:"rate"`
-		MaxRate       string    `json:"max_rate"`
-		MaxChangeRate string    `json:"max_change_rate"`
-		UpdateTime    time.Time `json:"update_time"`
-	} `json:"commission"`
+	OperatorAddress string      `json:"operator_address"`
+	ConsensusPubkey string      `json:"consensus_pubkey"`
+	Jailed          bool        `json:"jailed"`
+	Status          int         `json:"status"`
+	Tokens          string      `json:"tokens"`
+	DelegatorShares string      `json:"delegator_shares"`
+	Description     Description `json:"description"`
+	BondHeight      string      `json:"bond_height"`
+	UnbondingHeight string      `json:"unbonding_height"`
+	UnbondingTime   time.Time   `json:"unbonding_time"`
+	Commission      Commission  `json:"commission"`
+	Uptime          float32     `json:"uptime"`
+	SelfBond        string      `json:"self_bond"`
+	DelegatorNum    int         `json:"delegator_num"`
+	ProposerAddr    string      `json:"proposer_addr"`
+	VotingRate      float32     `json:"voting_rate"`
+}
+
+type Description struct {
+	Moniker  string `json:"moniker"`
+	Identity string `json:"identity"`
+	Website  string `json:"website"`
+	Details  string `json:"details"`
+}
+type Commission struct {
+	Rate          string    `json:"rate"`
+	MaxRate       string    `json:"max_rate"`
+	MaxChangeRate string    `json:"max_change_rate"`
+	UpdateTime    time.Time `json:"update_time"`
 }
 
 type NodeInfoVo struct {
@@ -69,7 +82,6 @@ type NodeInfoVo struct {
 		RPCAddress string `json:"rpc_address"`
 	} `json:"other"`
 }
-
 type GenesisVo struct {
 	Jsonrpc string `json:"jsonrpc"`
 	ID      string `json:"id"`
@@ -104,6 +116,7 @@ type GenesisVo struct {
 					} `json:"data"`
 					Params struct {
 						GasPriceThreshold string `json:"gas_price_threshold"`
+						TxSize            string `json:"tx_size"`
 					} `json:"params"`
 				} `json:"auth"`
 				Stake struct {
@@ -194,26 +207,26 @@ type GenesisVo struct {
 						UpgradeInfo struct {
 							ProposalID string `json:"ProposalID"`
 							Protocol   struct {
-								Version  string `json:"version"`
-								Software string `json:"software"`
-								Height   string `json:"height"`
+								Version   string `json:"version"`
+								Software  string `json:"software"`
+								Height    string `json:"height"`
+								Threshold string `json:"threshold"`
 							} `json:"Protocol"`
 						} `json:"UpgradeInfo"`
 						Success bool `json:"Success"`
 					} `json:"GenesisVersion"`
-					UpgradeParams struct {
-						Threshold string `json:"threshold"`
-					} `json:"UpgradeParams"`
 				} `json:"upgrade"`
 				Slashing struct {
 					Params struct {
-						MaxEvidenceAge           string `json:"max-evidence-age"`
-						SignedBlocksWindow       string `json:"signed-blocks-window"`
-						MinSignedPerWindow       string `json:"min-signed-per-window"`
-						DoubleSignUnbondDuration string `json:"double-sign-unbond-duration"`
-						DowntimeUnbondDuration   string `json:"downtime-unbond-duration"`
-						SlashFractionDoubleSign  string `json:"slash-fraction-double-sign"`
-						SlashFractionDowntime    string `json:"slash-fraction-downtime"`
+						MaxEvidenceAge          string `json:"max_evidence_age"`
+						SignedBlocksWindow      string `json:"signed_blocks_window"`
+						MinSignedPerWindow      string `json:"min_signed_per_window"`
+						DoubleSignJailDuration  string `json:"double_sign_jail_duration"`
+						DowntimeJailDuration    string `json:"downtime_jail_duration"`
+						CensorshipJailDuration  string `json:"censorship_jail_duration"`
+						SlashFractionDoubleSign string `json:"slash_fraction_double_sign"`
+						SlashFractionDowntime   string `json:"slash_fraction_downtime"`
+						SlashFractionCensorship string `json:"slash_fraction_censorship"`
 					} `json:"params"`
 					SigningInfos struct {
 					} `json:"signing_infos"`
@@ -229,6 +242,7 @@ type GenesisVo struct {
 						SlashFraction        string `json:"slash_fraction"`
 						ComplaintRetrospect  string `json:"complaint_retrospect"`
 						ArbitrationTimeLimit string `json:"arbitration_time_limit"`
+						TxSizeLimit          string `json:"tx_size_limit"`
 					} `json:"params"`
 				} `json:"service"`
 				Guardian struct {
@@ -409,4 +423,56 @@ type StakePoolVo struct {
 	BondedTokens string `json:"bonded_tokens"`
 	TotalSupply  string `json:"total_supply"`
 	BondedRatio  string `json:"bonded_ratio"`
+}
+
+type DelegationVo struct {
+	DelegatorAddr string `json:"delegator_addr"`
+	ValidatorAddr string `json:"validator_addr"`
+	Shares        string `json:"shares"`
+	Height        string `json:"height"`
+}
+
+type SignInfoVo struct {
+	StartHeight         string    `json:"start_height"`
+	IndexOffset         string    `json:"index_offset"`
+	JailedUntil         time.Time `json:"jailed_until"`
+	MissedBlocksCounter string    `json:"missed_blocks_counter"`
+}
+
+type BlockResultVo struct {
+	Height  string `json:"height"`
+	Results struct {
+		DeliverTx []struct {
+			Code      int         `json:"code"`
+			Data      interface{} `json:"data"`
+			Log       string      `json:"log"`
+			Info      string      `json:"info"`
+			GasWanted string      `json:"gas_wanted"`
+			GasUsed   string      `json:"gas_used"`
+			Tags      []struct {
+				Key   string `json:"key"`
+				Value string `json:"value"`
+			} `json:"tags"`
+		} `json:"deliver_tx"`
+		EndBlock struct {
+			ValidatorUpdates []struct {
+				PubKey struct {
+					Type string `json:"type"`
+					Data string `json:"data"`
+				} `json:"pub_key"`
+				Power string `json:"power"`
+			} `json:"validator_updates"`
+			ConsensusParamUpdates interface{} `json:"consensus_param_updates"`
+			Tags                  []struct {
+				Key   string `json:"key"`
+				Value string `json:"value"`
+			} `json:"tags"`
+		} `json:"end_block"`
+		BeginBlock struct {
+			Tags []struct {
+				Key   string `json:"key"`
+				Value string `json:"value"`
+			} `json:"tags"`
+		} `json:"begin_block"`
+	} `json:"results"`
 }

@@ -5,18 +5,20 @@ import (
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/types"
+	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
 )
 
 func RegisterTx(r *mux.Router) error {
 	funs := []func(*mux.Router) error{
+		registerQueryTokenFlow,
 		registerQueryTx,
-		registerQueryTxs,
 		registerQueryTxsByAccount,
 		registerQueryTxsByDay,
 		//new
 		registerQueryTxList,
 		registerQueryTxsCounter,
+		registerQueryRecentTx,
 	}
 
 	for _, fn := range funs {
@@ -92,27 +94,6 @@ func registerQueryTx(r *mux.Router) error {
 	return nil
 }
 
-func registerQueryTxs(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryTxs, "GET", func(request model.IrisReq) interface{} {
-		tx.SetTid(request.TraceId)
-		query := bson.M{}
-		var typeArr []string
-		typeArr = append(typeArr, types.TypeTransfer)
-		typeArr = append(typeArr, types.DeclarationList...)
-		typeArr = append(typeArr, types.StakeList...)
-		typeArr = append(typeArr, types.GovernanceList...)
-		query["type"] = bson.M{
-			"$in": typeArr,
-		}
-		page, pageSize := GetPage(request)
-		result := tx.QueryLatest(query, page, pageSize)
-
-		return result
-	})
-
-	return nil
-}
-
 func registerQueryTxsCounter(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryTxsCounter, "GET", func(request model.IrisReq) interface{} {
 		tx.SetTid(request.TraceId)
@@ -152,8 +133,27 @@ func registerQueryTxsByAccount(r *mux.Router) error {
 func registerQueryTxsByDay(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryTxsByDay, "GET", func(request model.IrisReq) interface{} {
 		tx.SetTid(request.TraceId)
-		result := tx.CountByDay()
+		result := tx.QueryTxNumGroupByDay()
 		return result
+	})
+	return nil
+}
+
+func registerQueryRecentTx(r *mux.Router) error {
+	doApi(r, types.UrlRegisterQueryRecentTx, "GET", func(request model.IrisReq) interface{} {
+		tx.SetTid(request.TraceId)
+		result := tx.QueryRecentTx()
+		return result
+	})
+	return nil
+}
+func registerQueryTokenFlow(r *mux.Router) error {
+	doApi(r, types.UrlRegisterQueryCoinFlow, "GET", func(request model.IrisReq) interface{} {
+		tx.SetTid(request.TraceId)
+		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), DefaultPageNum))
+		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), DefaultPageSize))
+		height := utils.ParseIntWithDefault(QueryParam(request, "height"), DefaultBlockHeight)
+		return tx.QueryTokenFlow(height, page, size)
 	})
 	return nil
 }

@@ -19,9 +19,10 @@ func (service *AccountService) GetModule() Module {
 func (service *AccountService) Query(address string) (result model.AccountVo) {
 	prefix, _, _ := utils.DecodeAndConvert(address)
 	if prefix == conf.Get().Hub.Prefix.ValAddr {
-		valinfo := delegatorService.QueryDelegation(address)
-		result.Amount = document.Coins{valinfo.selfBond}
-		result.Deposits = valinfo.delegated
+		self, delegated := delegatorService.QueryDelegation(address)
+		result.Amount = document.Coins{self}
+		result.Deposits = delegated
+
 	} else {
 		res, err := lcd.Account(address)
 		if err == nil {
@@ -44,7 +45,11 @@ func (service *AccountService) Query(address string) (result model.AccountVo) {
 func (service *AccountService) QueryAll(page, size int) model.PageVo {
 	var result []document.Account
 	sort := desc(document.Tx_Field_Time)
-	return queryPage(document.CollectionNmAccount, &result, nil, sort, page, size)
+	cnt, _ := pageQuery(document.CollectionNmAccount, nil, nil, sort, page, size, &result)
+	return model.PageVo{
+		Count: cnt,
+		Data:  result,
+	}
 }
 
 func isProfiler(address string) bool {

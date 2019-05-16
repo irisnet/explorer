@@ -55,9 +55,9 @@ type TxStatisticsVo struct {
 	Data           []document.CommonTx
 }
 
-type TxDayVo struct {
-	Time  string `bson:"_id,omitempty"`
-	Count int
+type TxNumGroupByDayVo struct {
+	Date string `json:"date"`
+	Num  int64  `json:"num"`
 }
 
 type BaseTx struct {
@@ -105,4 +105,16 @@ type GovTx struct {
 	Option       string
 	Title        string
 	ProposalType string
+}
+
+type RecentTx struct {
+	Fee    Coin      `json:"actual_fee"`
+	Time   time.Time `json:"time"`
+	TxHash string    `json:"tx_hash"`
+	Type   string    `json:"type"`
+}
+
+type Coin struct {
+	Amount float64 `json:"amount"`
+	Denom  string  `json:"denom"`
 }

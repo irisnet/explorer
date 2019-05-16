@@ -46,13 +46,12 @@ func Get(url string) (bz []byte, err error) {
 			resp.Body.Close()
 			logger.Error("req error", logger.Any("err", string(bz2)), logger.String("url", url))
 		}
-
 		return
 	}
 
 	bz, err = ioutil.ReadAll(resp.Body)
-	defer resp.Body.Close()
 
+	defer resp.Body.Close()
 	if err != nil {
 		logger.Error("ioutil.ReadAll err", logger.Any("io", err), logger.String("url", url))
 	}

@@ -107,7 +107,7 @@
       },
       getDataList(currentPage, pageSize) {
         this.showLoading = true;
-        let url=`/api/proposals/${currentPage}/${pageSize}`;
+        let url=`/api/gov/proposals?page=${currentPage}&size=${pageSize}`;
         Service.http(url).then((proposalList)=>{
           if(proposalList.Data){
             this.showNoData = false;
@@ -145,7 +145,7 @@
   }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   @import '../style/mixin.scss';
 
   .proposals_list_page_wrap {
@@ -195,6 +195,7 @@
     @include flex;
     @include pcContainer;
     height:0.62rem;
+    min-height: 0 !important;
     background:#efeff1;
     p{
       height:0.62rem;
@@ -230,7 +231,6 @@
       @include fontWeight;
     }
     @include pcCenter;
-    min-height:4.6rem;
     .transactions_detail_information_wrap {
       .information_props_wrap {
         @include flex;

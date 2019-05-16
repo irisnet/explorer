@@ -1,10 +1,11 @@
 package conf
 
 import (
-	"github.com/irisnet/explorer/backend/logger"
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/irisnet/explorer/backend/logger"
 )
 
 const (
@@ -31,7 +32,7 @@ const (
 	KeyPrefixConsAddr = "PrefixConsAddr"
 	KeyPrefixConsPub  = "PrefixConsPub"
 
-	EnvironmentDevelop = "develop"
+	EnvironmentDevelop = "dev"
 	EnvironmentLocal   = "local"
 	EnvironmentQa      = "qa"
 	EnvironmentStage   = "stage"
@@ -96,8 +97,8 @@ func loadDefault() {
 		KeyDbPoolLimit:    "4096",
 		KeyServerPort:     "8080",
 		KeyAddrHubLcd:     "http://irisnet-lcd.dev.rainbow.one",
-		KeyAddrHubNode:    "http://192.168.150.31:30657",
-		KeyAddrFaucet:     "http://192.168.150.31:4000",
+		KeyAddrHubNode:    "http://irisnet-rpc.dev.rainbow.one:26657",
+		KeyAddrFaucet:     "http://192.168.150.7:30200",
 		KeyChainId:        "rainbow-dev",
 		KeyApiVersion:     "v0.6.5",
 		KeyMaxDrawCnt:     "10",
@@ -118,9 +119,9 @@ func loadDefault() {
 		KeyDbPwd:          "irispassword",
 		KeyDbPoolLimit:    "4096",
 		KeyServerPort:     "8080",
-		KeyAddrHubLcd:     "http://irisnet-lcd.dev.rainbow.one",
-		KeyAddrHubNode:    "http://192.168.150.31:30657",
-		KeyAddrFaucet:     "http://192.168.150.31:4000",
+		KeyAddrHubLcd:     "http://127.0.0.1:1317",
+		KeyAddrHubNode:    "http://127.0.0.1:26657",
+		KeyAddrFaucet:     "http://192.168.150.7:30200",
 		KeyChainId:        "rainbow-dev",
 		KeyApiVersion:     "v0.6.5",
 		KeyMaxDrawCnt:     "10",
