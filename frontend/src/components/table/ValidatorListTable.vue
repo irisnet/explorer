@@ -113,6 +113,13 @@
                 label:'Bond Height',
                 sortable:true,
               },
+              'unbondingHeight':{
+                label:'Unbonding Height',
+                sortable:true,
+              },
+              'unbondingTime':{
+                label:'Unbonding Time',
+              },
             },
             candidateValidatorFields: {
               moniker:{
@@ -142,6 +149,13 @@
               'bondHeight':{
                 label:'Bond Height',
                 sortable:true,
+              },
+              'unbondingHeight':{
+                label:'Unbonding Height',
+                sortable:true,
+              },
+              'unbondingTime':{
+                label:'Unbonding Time',
               },
             },
           }
