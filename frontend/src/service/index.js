@@ -1,5 +1,5 @@
 import Service from '../util/axios'
-import URlApi from "../api"
+import urlApi from "../api"
 const Server = {
   /**
     * params
@@ -12,12 +12,12 @@ const Server = {
   commonInterface(params,callback){
       let url ;
       if(JSON.stringify(params[Object.keys(params)[0]]) === '{}'){
-        url = URlApi[Object.keys(params)[0]]
+        url = urlApi[Object.keys(params)[0]]
       }else {
         for(let key in params[Object.keys(params)[0]]){
           let rule =`{${key}}`;
-          URlApi[Object.keys(params)[0]] = URlApi[Object.keys(params)[0]].replace(new RegExp(rule,"g"),params[Object.keys(params)[0]][key]);
-          url = URlApi[Object.keys(params)[0]]
+          urlApi[Object.keys(params)[0]] = urlApi[Object.keys(params)[0]].replace(new RegExp(rule,"g"),params[Object.keys(params)[0]][key]);
+          url = urlApi[Object.keys(params)[0]]
         }
       }
       Service.http(url).then( res => {

@@ -1,5 +1,5 @@
 
-const UrlApi = {
+const urlApi = {
   //home
   candidatesTop: `/api/stake/candidatesTop`,
   txsByDay: `/api/txsByDay`,
@@ -56,4 +56,4 @@ const UrlApi = {
   sysdate: '/service/sysdate',
 };
 
-export default UrlApi
+export default urlApi
