@@ -17,7 +17,8 @@ func RegisterBlock(r *mux.Router) error {
 		registerQueryBlocks,
 		registerQueryRecentBlocks,
 		registerQueryValidatorSet,
-		registerQueryTokenFlow,
+		registerQueryTxsByBlock,
+		registerQueryProposalByBlock,
 	}
 
 	for _, fn := range funs {
@@ -71,7 +72,7 @@ func registerQueryRecentBlocks(r *mux.Router) error {
 }
 
 func registerQueryValidatorSet(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryValidatorSet, "GET", func(request model.IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryBlockValidatorSet, "GET", func(request model.IrisReq) interface{} {
 		block.SetTid(request.TraceId)
 		height, err := strconv.ParseInt(Var(request, "height"), 10, 0)
 		if err != nil || height < 1 {
@@ -87,8 +88,8 @@ func registerQueryValidatorSet(r *mux.Router) error {
 	return nil
 }
 
-func registerQueryTokenFlow(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryCoinFlow, "GET", func(request model.IrisReq) interface{} {
+func registerQueryTxsByBlock(r *mux.Router) error {
+	doApi(r, types.UrlRegisterQueryBlockTxs, "GET", func(request model.IrisReq) interface{} {
 		tx.SetTid(request.TraceId)
 		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), DefaultPageNum))
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), DefaultPageSize))
@@ -96,7 +97,21 @@ func registerQueryTokenFlow(r *mux.Router) error {
 		if err != nil || height < 1 {
 			panic(types.CodeInValidParam)
 		}
-		return block.QueryTokenFlow(height, page, size)
+		return block.QueryTxsExcludeProposalByBlock(height, page, size)
+	})
+	return nil
+}
+
+func registerQueryProposalByBlock(r *mux.Router) error {
+	doApi(r, types.UrlRegisterQueryBlockProposals, "GET", func(request model.IrisReq) interface{} {
+		tx.SetTid(request.TraceId)
+		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), DefaultPageNum))
+		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), DefaultPageSize))
+		height, err := strconv.ParseInt(Var(request, "height"), 10, 0)
+		if err != nil || height < 1 {
+			panic(types.CodeInValidParam)
+		}
+		return block.QueryTxsOnlyProposalByBlock(height, page, size)
 	})
 	return nil
 }

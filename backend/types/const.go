@@ -10,11 +10,12 @@ const (
 	UrlRegisterNavigationBar = "/home/navigation"
 
 	//Block
-	UrlRegisterQueryBlock        = "/block/{height}"
-	UrlRegisterQueryRecentBlocks = "/blocks/recent"
-	UrlRegisterQueryBlocks       = "/blocks"
-	UrlRegisterQueryCoinFlow     = "/block/coinflow/{height}"
-	UrlRegisterQueryValidatorSet = "/block/validatorset/{height}"
+	UrlRegisterQueryBlock             = "/block/{height}"
+	UrlRegisterQueryRecentBlocks      = "/blocks/recent"
+	UrlRegisterQueryBlocks            = "/blocks"
+	UrlRegisterQueryBlockTxs          = "/block/txs/{height}"
+	UrlRegisterQueryBlockProposals    = "/block/proposals/{height}"
+	UrlRegisterQueryBlockValidatorSet = "/block/validatorset/{height}"
 
 	//Governance
 	UrlRegisterQueryProposals = "/gov/proposals"

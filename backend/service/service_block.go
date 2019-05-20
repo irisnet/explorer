@@ -1,6 +1,9 @@
 package service
 
 import (
+	"encoding/json"
+	"errors"
+	"fmt"
 	"strconv"
 
 	"github.com/irisnet/explorer/backend/lcd"
@@ -10,6 +13,23 @@ import (
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
+)
+
+const (
+	TxTypeTransfer                    = "Transfer"
+	TxTypeStakeCreateValidator        = "CreateValidator"
+	TxTypeStakeEditValidator          = "EditValidator"
+	TxTypeStakeDelegate               = "Delegate"
+	TxTypeStakeBeginUnbonding         = "BeginUnbonding"
+	TxTypeBeginRedelegate             = "BeginRedelegate"
+	TxTypeUnjail                      = "Unjail"
+	TxTypeSetWithdrawAddress          = "SetWithdrawAddress"
+	TxTypeWithdrawDelegatorReward     = "WithdrawDelegatorReward"
+	TxTypeWithdrawDelegatorRewardsAll = "WithdrawDelegatorRewardsAll"
+	TxTypeWithdrawValidatorRewardsAll = "WithdrawValidatorRewardsAll"
+	TxTypeSubmitProposal              = "SubmitProposal"
+	TxTypeDeposit                     = "Deposit"
+	TxTypeVote                        = "Vote"
 )
 
 type BlockService struct {
@@ -24,7 +44,7 @@ func (service *BlockService) Query(height int64) model.Block {
 	result := model.Block{}
 	result.BlockInfo = service.QueryBlockInfo(height)
 	result.ValidatorSet = service.GetValidatorSet(height, DefaultPageNum, DefaultPageSize)
-	result.TokenFlows = service.QueryTokenFlow(height, DefaultPageNum, DefaultPageSize)
+	//	result.TokenFlows = service.QueryTokenFlow(height, DefaultPageNum, DefaultPageSize)
 	result.Proposals = Get(Proposal).(*ProposalService).QueryProposalsByHeight(height)
 
 	return result
@@ -173,18 +193,183 @@ func (service *BlockService) QueryRecent() []model.BlockInfoVo {
 	return result
 }
 
-func (service *BlockService) QueryTokenFlow(height int64, page, size int) model.TokenFlows {
-	items := []document.TokenFlow{}
-	result := model.TokenFlows{}
+func (service *BlockService) QueryTxsExcludeProposalByBlock(height int64, page, size int) model.TxsWithPage {
 
-	cnt, err := pageQuery(document.CollectionNmTokenFlow, nil, bson.M{"block_height": height, "flow_type": bson.M{"$nin": []string{"GovDeposit", "GovDepositBurn", "GovDepositRefund"}}}, "", page, size, &items)
+	items, total, err := service.GetTxsByBlock(height, false, page, size)
+
 	if err != nil {
-		logger.Error("query token flow err", logger.String("error", err.Error()), service.GetTraceLog())
+		logger.Error("QueryTxsExcludeProposal err", logger.String("error", err.Error()))
 	}
-	result.Total = cnt
-	result.Items = items
 
-	return result
+	return model.TxsWithPage{
+		Total: total,
+		Items: items,
+	}
+}
+
+func (service *BlockService) QueryTxsOnlyProposalByBlock(height int64, page, size int) model.TxsWithPage {
+
+	items, total, err := service.GetTxsByBlock(height, true, page, size)
+
+	if err != nil {
+		logger.Error("QueryTxsExcludeProposal err", logger.String("error", err.Error()))
+	}
+	return model.TxsWithPage{
+		Total: total,
+		Items: items,
+	}
+}
+
+func (service *BlockService) GetTxsByBlock(height int64, onlyOrExcludeProposal bool, page, size int) ([]model.Tx, int, error) {
+
+	itemsAsDoc := make([]document.CommonTx, 0, size)
+
+	selector := bson.M{
+		document.Tx_Field_Hash:   1,
+		document.Tx_Field_From:   1,
+		document.Tx_Field_To:     1,
+		document.Tx_Field_Amount: 1,
+		document.Tx_Field_Fee:    1,
+		document.Tx_Field_Type:   1,
+		document.Tx_Field_Status: 1,
+		document.Tx_Field_Time:   1,
+	}
+	condition := bson.M{}
+	if onlyOrExcludeProposal {
+		condition = bson.M{
+			document.Tx_Field_Height: height,
+			document.Tx_Field_Type:   bson.M{"$in": []string{"GovDeposit", "GovDepositBurn", "GovDepositRefund"}}}
+	} else {
+		condition = bson.M{
+			document.Tx_Field_Height: height,
+			document.Tx_Field_Type:   bson.M{"$nin": []string{"GovDeposit", "GovDepositBurn", "GovDepositRefund"}}}
+	}
+
+	total, err := pageQuery(document.CollectionNmCommonTx, selector, condition, "", page, size, &itemsAsDoc)
+	if err != nil {
+		return nil, total, err
+	}
+
+	items := make([]model.Tx, 0, len(itemsAsDoc))
+
+	// A sign,  transfer coin from B to C
+	transferTxHashs := make([]string, 0, len(itemsAsDoc))
+	for _, v := range itemsAsDoc {
+		tmp := model.Tx{
+			Hash:        v.TxHash,
+			TxInitiator: v.From,
+			To:          v.To,
+			Amount:      v.Amount,
+			Fee:         v.Fee,
+			Type:        v.Type,
+			Status:      v.Status,
+			Timestamp:   v.Time,
+		}
+		if service.isTransferTxByType(v.Type) {
+			transferTxHashs = append(transferTxHashs, v.TxHash)
+		} else {
+			tmp.From = v.From
+		}
+		items = append(items, tmp)
+	}
+
+	if len(transferTxHashs) == 0 {
+		return items, total, nil
+	}
+
+	selectorAsTxMsg := bson.M{
+		document.TxMsg_Field_Hash:    1,
+		document.TxMsg_Field_Content: 1,
+		document.TxMsg_Field_Type:    1,
+	}
+	conditionAsTxMsg := bson.M{
+		document.TxMsg_Field_Hash: bson.M{"$in": transferTxHashs},
+	}
+
+	txMsgs := make([]document.TxMsg, 0, len(transferTxHashs))
+
+	if err := queryAll(document.CollectionNmTxMsg, selectorAsTxMsg, conditionAsTxMsg, "", 0, &txMsgs); err != nil {
+		return nil, 0, err
+	}
+
+	for _, vMsg := range txMsgs {
+		for k, vTx := range items {
+			if vMsg.Hash == vTx.Hash {
+				transferAddr, err := service.GetTransferAddr(vMsg.Type, vMsg.Content)
+				if err != nil {
+					logger.Error("get transfer addr ", logger.String("err", err.Error()))
+					continue
+				}
+				items[k].From = transferAddr
+			}
+		}
+	}
+
+	return items, total, nil
+}
+
+func (service *BlockService) GetTransferAddr(txType interface{}, content string) (string, error) {
+
+	m := make(map[string]interface{})
+	err := json.Unmarshal([]byte(content), &m)
+	if err != nil {
+		return "", err
+	}
+	switch txType {
+	case TxTypeBeginRedelegate:
+		if v, ok := m["delegator_addr"].(string); ok {
+			return v, nil
+		}
+	case TxTypeWithdrawDelegatorReward:
+		if v, ok := m["delegator_addr"].(string); ok {
+			return v, nil
+		}
+	case TxTypeWithdrawDelegatorRewardsAll:
+		if v, ok := m["delegator_addr"].(string); ok {
+			return v, nil
+		}
+	default:
+		return "", nil
+	}
+	return "", errors.New(fmt.Sprintf("assert type err, expect string but actual: %T   value: %v", m["degelator"], m["degelator"]))
+}
+
+//  MsgBeginRedelegate MsgWithdrawDelegatorReward MsgWithdrawDelegatorRewardsAll
+func (service *BlockService) isTransferTxByType(t string) bool {
+
+	switch t {
+	case TxTypeBeginRedelegate:
+		return true
+	case TxTypeWithdrawDelegatorReward:
+		return true
+	case TxTypeWithdrawDelegatorRewardsAll:
+		return true
+	case TxTypeWithdrawValidatorRewardsAll:
+		return false
+	case TxTypeTransfer:
+		return false
+	case TxTypeStakeCreateValidator:
+		return false
+	case TxTypeStakeEditValidator:
+		return false
+	case TxTypeStakeDelegate:
+		return false
+	case TxTypeStakeBeginUnbonding:
+		return false
+	case TxTypeUnjail:
+		return false
+	case TxTypeSetWithdrawAddress:
+		return false
+	case TxTypeSubmitProposal:
+		return false
+	case TxTypeDeposit:
+		return false
+	case TxTypeVote:
+		return false
+	default:
+		return false
+	}
+
 }
 
 func buildBlock(block document.Block) (result model.BlockInfoVo) {
