@@ -273,7 +273,7 @@
             }
             if (data) {
               let that = this;
-              this.transactionsValue = data.total_txs;
+              this.transactionsValue = data.num_txs;
               this.hashValue = data.hash;
               this.heightValue = data.height;
               this.blockDetailTimer = setInterval(function () {
