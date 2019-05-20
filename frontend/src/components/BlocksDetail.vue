@@ -3,7 +3,7 @@
     <div class="transactions_title_wrap">
       <p :class="transactionsDetailWrap" style="margin-bottom:0;">
         <span class="transactions_detail_title">Block</span>
-        <span class="transactions_detail_wrap_hash_var">{{`#${hashValue}`}}</span>
+        <span class="transactions_detail_wrap_hash_var">{{`#${heightValue}`}}</span>
       </p>
     </div>
 
@@ -126,7 +126,6 @@
         transactionsTimer:null,
         devicesWidth: window.innerWidth,
         transactionsDetailWrap: 'personal_computer_transactions_detail',
-        hashValue: '',
         heightValue: '',
         timestampValue: '',
         blockHashValue: '',
@@ -274,7 +273,6 @@
             if (data) {
               let that = this;
               this.transactionsValue = data.num_txs;
-              this.hashValue = data.hash;
               this.heightValue = data.height;
               this.blockDetailTimer = setInterval(function () {
                 let currentServerTime = new Date().getTime() + that.diffMilliseconds;
@@ -294,7 +292,6 @@
               Signature: '',
             }];
             this.showNoData = true;
-            this.hashValue = this.$route.params.height;
             this.heightValue = this.$route.params.height;
             this.timestampValue = '';
             this.blockHashValue = '';
