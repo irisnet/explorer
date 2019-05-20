@@ -126,7 +126,7 @@
         }
       },
       computeMinWidth(){
-        this.tableMinWidth = 12;
+        this.tableMinWidth = 12.8;
       },
       getValidatorList(currentPage, pageSize,status){
         this.pageSize = this.validatorPageSize;
