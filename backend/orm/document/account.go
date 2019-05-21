@@ -2,23 +2,30 @@ package document
 
 import (
 	"gopkg.in/mgo.v2/bson"
-	"time"
 )
 
 const (
-	CollectionNmAccount = "account"
-
-	Account_Field_Addres = "address"
-	Account_Field_Amount = "amount"
-	Account_Field_Time   = "time"
-	Account_Field_Height = "height"
+	CollectionNmAccount       = "account"
+	AccountFieldAddress       = "address"
+	AccountFieldAccountNumber = "account_number"
+	AccountFieldTotalUpdateAt = "total_update_at"
 )
 
 type Account struct {
-	Address string    `bson:"address"`
-	Amount  Coins     `bson:"amount"`
-	Time    time.Time `bson:"time"`
-	Height  int64     `bson:"height"`
+	Address                         string `bson:"address"`
+	AccountNumber                   uint64 `bson:"account_number"`
+	Total                           Coin   `bson:"total"`
+	TotalUpdateHeight               int64  `bson:"total_update_height"`
+	TotalUpdateAt                   int64  `bson:"total_update_at"`
+	CoinIris                        Coin   `bson:"coin_iris"`
+	CoinIrisUpdateHeight            int64  `bson:"coin_iris_update_height"`
+	CoinIrisUpdateAt                int64  `bson:"coin_iris_update_at"`
+	Delegation                      Coin   `bson:"delegation"`
+	DelegationUpdateHeight          int64  `bson:"delegation_update_height"`
+	DelegationUpdateAt              int64  `bson:"delegation_update_at"`
+	UnbondingDelegation             Coin   `bson:"unbonding_delegation"`
+	UnbondingDelegationUpdateHeight int64  `bson:"unbonding_delegation_update_height"`
+	UnbondingDelegationUpdateAt     int64  `bson:"unbonding_delegation_update_at"`
 }
 
 func (a Account) Name() string {
@@ -26,5 +33,5 @@ func (a Account) Name() string {
 }
 
 func (a Account) PkKvPair() map[string]interface{} {
-	return bson.M{Account_Field_Addres: a.Address}
+	return bson.M{AccountFieldAddress: a.Address}
 }

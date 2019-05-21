@@ -256,17 +256,6 @@ import Constant from "../constant/Constant";
           let url = `/api/blocks/recent`;
           Service.http(url).then((blockList) => {
             if(blockList){
-              let denominator = 0;
-              blockList[0].validators.forEach(item=>denominator += item.voting_power);
-              let numerator = 0;
-              for(let i = 0; i < blockList[0].last_commit.length; i++){
-                for (let j = 0; j < blockList[0].validators.length; j++){
-                  if(blockList[0].last_commit[i] === blockList[0].validators[j].address){
-                    numerator += blockList[0].validators[j].voting_power;
-                    break;
-                  }
-                }
-              }
               this.showBlockFadeinAnimation(blockList);
               let that = this;
               setTimeout(function () {
@@ -282,10 +271,8 @@ import Constant from "../constant/Constant";
                     flShowTranslationalAnimation :  item.flShowTranslationalAnimation ? item.flShowTranslationalAnimation : "",
                     showAnimation: item.showAnimation ? item.showAnimation : "",
                     Height: item.height,
-                    Proposer: item.hash,
                     Txn: item.num_txs,
                     Time: Tools.format2UTC(item.time),
-                    Fee: '0 IRIS',
                     time:item.time,
                     age: Tools.formatAge(currentServerTime,item.time,Constant.SUFFIX,Constant.PREFIX)
                   };
