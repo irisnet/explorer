@@ -14,8 +14,9 @@ const (
 	UrlRegisterQueryRecentBlocks      = "/blocks/recent"
 	UrlRegisterQueryBlocks            = "/blocks"
 	UrlRegisterQueryBlockTxs          = "/block/txs/{height}"
-	UrlRegisterQueryBlockProposals    = "/block/proposals/{height}"
+	UrlRegisterQueryBlockTxGov        = "/block/txgov/{height}"
 	UrlRegisterQueryBlockValidatorSet = "/block/validatorset/{height}"
+	UrlRegisterQueryBlockInfo         = "/block/blockinfo/{height}"
 
 	//Governance
 	UrlRegisterQueryProposals = "/gov/proposals"
@@ -61,20 +62,21 @@ const (
 )
 
 var (
-	TypeTransfer                      = "Transfer"
-	TypeCreateValidator               = "CreateValidator"
-	TypeEditValidator                 = "EditValidator"
-	TypeUnjail                        = "Unjail"
-	TypeDelegate                      = "Delegate"
-	TypeBeginRedelegation             = "BeginRedelegate"
-	TypeBeginUnbonding                = "BeginUnbonding"
+	TxTypeTransfer                    = "Transfer"
+	TxTypeBurn                        = "Burn"
+	TxTypeStakeCreateValidator        = "CreateValidator"
+	TxTypeStakeEditValidator          = "EditValidator"
+	TxTypeStakeDelegate               = "Delegate"
+	TxTypeStakeBeginUnbonding         = "BeginUnbonding"
+	TxTypeBeginRedelegate             = "BeginRedelegate"
+	TxTypeUnjail                      = "Unjail"
 	TxTypeSetWithdrawAddress          = "SetWithdrawAddress"
 	TxTypeWithdrawDelegatorReward     = "WithdrawDelegatorReward"
 	TxTypeWithdrawDelegatorRewardsAll = "WithdrawDelegatorRewardsAll"
 	TxTypeWithdrawValidatorRewardsAll = "WithdrawValidatorRewardsAll"
-	TypeSubmitProposal                = "SubmitProposal"
-	TypeDeposit                       = "Deposit"
-	TypeVote                          = "Vote"
+	TxTypeSubmitProposal              = "SubmitProposal"
+	TxTypeDeposit                     = "Deposit"
+	TxTypeVote                        = "Vote"
 
 	TypeValStatusUnbonded  = "Unbonded"
 	TypeValStatusUnbonding = "Unbonding"
@@ -88,9 +90,12 @@ var (
 	RoleCandidate = "candidate"
 	RoleJailed    = "jailed"
 
-	DeclarationList = []string{TypeCreateValidator, TypeEditValidator, TypeUnjail}
-	StakeList       = []string{TypeDelegate, TypeBeginRedelegation, TxTypeSetWithdrawAddress, TypeBeginUnbonding, TxTypeWithdrawDelegatorReward, TxTypeWithdrawDelegatorRewardsAll, TxTypeWithdrawValidatorRewardsAll}
-	GovernanceList  = []string{TypeSubmitProposal, TypeDeposit, TypeVote}
+	BankList        = []string{TxTypeTransfer, TxTypeBurn}
+	DeclarationList = []string{TxTypeStakeCreateValidator, TxTypeStakeEditValidator, TxTypeUnjail}
+	StakeList       = []string{TxTypeStakeDelegate, TxTypeBeginRedelegate, TxTypeSetWithdrawAddress, TxTypeStakeBeginUnbonding, TxTypeWithdrawDelegatorReward, TxTypeWithdrawDelegatorRewardsAll, TxTypeWithdrawValidatorRewardsAll}
+	GovernanceList  = []string{TxTypeSubmitProposal, TxTypeDeposit, TxTypeVote}
+
+	TxTypeExcludeGov = append(append(DeclarationList, StakeList...), BankList...)
 )
 
 func IsDeclarationType(typ string) bool {
@@ -140,7 +145,7 @@ const (
 )
 
 func Convert(typ string) TxType {
-	if typ == TypeTransfer {
+	if typ == TxTypeTransfer {
 		return Trans
 	} else if IsStakeType(typ) {
 		return Stake

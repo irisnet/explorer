@@ -15,39 +15,12 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-const (
-	TxTypeTransfer                    = "Transfer"
-	TxTypeStakeCreateValidator        = "CreateValidator"
-	TxTypeStakeEditValidator          = "EditValidator"
-	TxTypeStakeDelegate               = "Delegate"
-	TxTypeStakeBeginUnbonding         = "BeginUnbonding"
-	TxTypeBeginRedelegate             = "BeginRedelegate"
-	TxTypeUnjail                      = "Unjail"
-	TxTypeSetWithdrawAddress          = "SetWithdrawAddress"
-	TxTypeWithdrawDelegatorReward     = "WithdrawDelegatorReward"
-	TxTypeWithdrawDelegatorRewardsAll = "WithdrawDelegatorRewardsAll"
-	TxTypeWithdrawValidatorRewardsAll = "WithdrawValidatorRewardsAll"
-	TxTypeSubmitProposal              = "SubmitProposal"
-	TxTypeDeposit                     = "Deposit"
-	TxTypeVote                        = "Vote"
-)
-
 type BlockService struct {
 	BaseService
 }
 
 func (service *BlockService) GetModule() Module {
 	return Block
-}
-
-func (service *BlockService) Query(height int64) model.Block {
-	result := model.Block{}
-	result.BlockInfo = service.QueryBlockInfo(height)
-	result.ValidatorSet = service.GetValidatorSet(height, DefaultPageNum, DefaultPageSize)
-	//	result.TokenFlows = service.QueryTokenFlow(height, DefaultPageNum, DefaultPageSize)
-	result.Proposals = Get(Proposal).(*ProposalService).QueryProposalsByHeight(height)
-
-	return result
 }
 
 func (service *BlockService) GetValidatorSet(height int64, page, size int) model.ValidatorSet {
@@ -57,13 +30,25 @@ func (service *BlockService) GetValidatorSet(height int64, page, size int) model
 		page = page - 1
 	}
 
+	b := lcd.Block(height)
+	if b.Block.Header.Height == "" {
+		panic(types.CodeNotFound)
+	}
+
 	var validatorsDoc []document.Validator
-	var selector = bson.M{"description.moniker": 1, "operator_address": 1, "consensus_pubkey": 1}
+	var selector = bson.M{"description.moniker": 1, "operator_address": 1, "consensus_pubkey": 1, "proposer_addr": 1}
 
 	err := queryAll(document.CollectionNmValidator, selector, nil, "", 0, &validatorsDoc)
 	if err != nil {
 		logger.Error("get validator set err", logger.String("error", err.Error()), service.GetTraceLog())
-		return result
+		panic(types.CodeNotFound)
+	}
+
+	var proposal string
+	for _, v := range validatorsDoc {
+		if v.ProposerAddr == b.BlockMeta.Header.ProposerAddress {
+			proposal = v.OperatorAddress
+		}
 	}
 
 	items := []model.BlockValidator{}
@@ -77,6 +62,7 @@ func (service *BlockService) GetValidatorSet(height int64, page, size int) model
 				if validator.ConsensusPubkey == v.PubKey {
 					tmp.OperatorAddress = validator.OperatorAddress
 					tmp.Moniker = validator.Description.Moniker
+					tmp.IsProposer = tmp.OperatorAddress == proposal
 				}
 			}
 			items = append(items, tmp)
@@ -90,64 +76,66 @@ func (service *BlockService) GetValidatorSet(height int64, page, size int) model
 func (service *BlockService) QueryBlockInfo(height int64) model.BlockInfo {
 	var result model.BlockInfo
 
-	b := lcd.Block(height)
-	if b.Block.Header.Height == "" {
+	currentBlock := lcd.Block(height)
+	if currentBlock.Block.Header.Height == "" {
 		panic(types.CodeNotFound)
 	}
 
 	var selector = bson.M{"description.moniker": 1, "operator_address": 1}
 	var validatorDoc document.Validator
-	err := queryOne(document.CollectionNmValidator, selector, bson.M{"proposer_addr": b.BlockMeta.Header.ProposerAddress}, &validatorDoc)
+	err := queryOne(document.CollectionNmValidator, selector, bson.M{"proposer_addr": currentBlock.BlockMeta.Header.ProposerAddress}, &validatorDoc)
 
 	if err != nil {
 		logger.Error("query validator collection  err", logger.String("error", err.Error()), service.GetTraceLog())
-		return result
+		panic(types.CodeNotFound)
 	}
 
 	result.LatestHeight = lcd.BlockLatest().BlockMeta.Header.Height
+	currentBlockRes := lcd.BlockResult(height)
+	lcdValidators := lcd.ValidatorSet(height)
 
-	blockRes := lcd.BlockResult(height)
+	result.TotalValidatorNum = len(lcdValidators.Validators)
+	nextBlock := lcd.Block(height + 1)
+	var totalVotingPower, precommitVotingPower, precommitValidatorNum int
+	for k, v := range lcdValidators.Validators {
+		powerAsInt, err := strconv.Atoi(v.VotingPower)
+		if err != nil {
+			logger.Error("strconv VotingPower err", logger.String("error", err.Error()), service.GetTraceLog())
+		}
+		totalVotingPower += powerAsInt
 
-	if height == 1 {
-		result.VoteValidatorNum = InitVoteValidatorNum
-		result.ValidatorNum = InitValidatorNum
-		result.PrecommitVotingPower = InitPrecommitVotingPower
-		result.TotalVotingPower = InitTotalVotingPower
-	} else {
-		lcdValidators := lcd.ValidatorSet(height - 1)
-		result.VoteValidatorNum = len(b.Block.LastCommit.Precommits)
-		result.ValidatorNum = len(lcdValidators.Validators)
-		var totalVotingPower, precommitVotingPower int
-		for k, v := range lcdValidators.Validators {
-			powerAsInt, err := strconv.Atoi(v.VotingPower)
-			if err != nil {
-				logger.Error("strconv VotingPower err", logger.String("error", err.Error()), service.GetTraceLog())
-			}
-			totalVotingPower += powerAsInt
-			for _, precommitValidator := range b.Block.LastCommit.Precommits {
+		if nextBlock.Block.Header.Height != "" {
+			for _, precommitValidator := range nextBlock.Block.LastCommit.Precommits {
 				if strconv.Itoa(k) == precommitValidator.ValidatorIndex {
 					precommitVotingPower += powerAsInt
+					precommitValidatorNum++
 				}
 			}
 		}
-		result.PrecommitVotingPower = precommitVotingPower
-		result.TotalVotingPower = totalVotingPower
 	}
 
-	for _, v := range blockRes.Results.BeginBlock.Tags {
+	if precommitVotingPower != 0 {
+		result.PrecommitVotingPower = precommitVotingPower
+	}
+	result.TotalVotingPower = totalVotingPower
+
+	if precommitValidatorNum != 0 {
+		result.PrecommitValidatorNum = precommitValidatorNum
+	}
+	result.TotalValidatorNum = len(lcdValidators.Validators)
+
+	for _, v := range currentBlockRes.Results.BeginBlock.Tags {
 		if v.Key == "mint-coin" {
-			result.Rewards = utils.ParseCoins(v.Value)
+			result.MintCoin = utils.ParseCoin(v.Value)
 		}
 	}
 
 	result.PropoperAddr = validatorDoc.OperatorAddress
 	result.PropopserMoniker = validatorDoc.Description.Moniker
-	result.LastBlock = height - 1
-	result.BlockHash = b.BlockMeta.BlockID.Hash
-	result.BlockHeight = b.Block.Header.Height
-	result.LastBlockHash = b.Block.Header.LastBlockID.Hash
-	result.Timestamp = b.BlockMeta.Header.Time
-	result.Transactions = b.BlockMeta.Header.NumTxs
+	result.BlockHash = currentBlock.BlockMeta.BlockID.Hash
+	result.BlockHeight = currentBlock.Block.Header.Height
+	result.Timestamp = currentBlock.BlockMeta.Header.Time
+	result.Transactions = currentBlock.BlockMeta.Header.NumTxs
 
 	return result
 }
@@ -193,65 +181,16 @@ func (service *BlockService) QueryRecent() []model.BlockInfoVo {
 	return result
 }
 
-func (service *BlockService) QueryTxsExcludeProposalByBlock(height int64, page, size int) model.TxsWithPage {
+func (service *BlockService) QueryTxsExcludeTxGovByBlock(height int64, page, size int) model.TxPage {
 
-	items, total, err := service.GetTxsByBlock(height, false, page, size)
-
-	if err != nil {
-		logger.Error("QueryTxsExcludeProposal err", logger.String("error", err.Error()))
-	}
-
-	return model.TxsWithPage{
-		Total: total,
-		Items: items,
-	}
-}
-
-func (service *BlockService) QueryTxsOnlyProposalByBlock(height int64, page, size int) model.TxsWithPage {
-
-	items, total, err := service.GetTxsByBlock(height, true, page, size)
+	itemsAsDoc, total, err := service.getTxsByBlock(height, false, page, size)
 
 	if err != nil {
 		logger.Error("QueryTxsExcludeProposal err", logger.String("error", err.Error()))
-	}
-	return model.TxsWithPage{
-		Total: total,
-		Items: items,
-	}
-}
-
-func (service *BlockService) GetTxsByBlock(height int64, onlyOrExcludeProposal bool, page, size int) ([]model.Tx, int, error) {
-
-	itemsAsDoc := make([]document.CommonTx, 0, size)
-
-	selector := bson.M{
-		document.Tx_Field_Hash:   1,
-		document.Tx_Field_From:   1,
-		document.Tx_Field_To:     1,
-		document.Tx_Field_Amount: 1,
-		document.Tx_Field_Fee:    1,
-		document.Tx_Field_Type:   1,
-		document.Tx_Field_Status: 1,
-		document.Tx_Field_Time:   1,
-	}
-	condition := bson.M{}
-	if onlyOrExcludeProposal {
-		condition = bson.M{
-			document.Tx_Field_Height: height,
-			document.Tx_Field_Type:   bson.M{"$in": []string{"GovDeposit", "GovDepositBurn", "GovDepositRefund"}}}
-	} else {
-		condition = bson.M{
-			document.Tx_Field_Height: height,
-			document.Tx_Field_Type:   bson.M{"$nin": []string{"GovDeposit", "GovDepositBurn", "GovDepositRefund"}}}
-	}
-
-	total, err := pageQuery(document.CollectionNmCommonTx, selector, condition, "", page, size, &itemsAsDoc)
-	if err != nil {
-		return nil, total, err
+		panic(types.CodeNotFound)
 	}
 
 	items := make([]model.Tx, 0, len(itemsAsDoc))
-
 	// A sign,  transfer coin from B to C
 	transferTxHashs := make([]string, 0, len(itemsAsDoc))
 	for _, v := range itemsAsDoc {
@@ -260,7 +199,7 @@ func (service *BlockService) GetTxsByBlock(height int64, onlyOrExcludeProposal b
 			TxInitiator: v.From,
 			To:          v.To,
 			Amount:      v.Amount,
-			Fee:         v.Fee,
+			ActualFee:   v.ActualFee,
 			Type:        v.Type,
 			Status:      v.Status,
 			Timestamp:   v.Time,
@@ -274,28 +213,32 @@ func (service *BlockService) GetTxsByBlock(height int64, onlyOrExcludeProposal b
 	}
 
 	if len(transferTxHashs) == 0 {
-		return items, total, nil
+		return model.TxPage{
+			Total: total,
+			Items: items,
+		}
 	}
 
-	selectorAsTxMsg := bson.M{
+	selector := bson.M{
 		document.TxMsg_Field_Hash:    1,
 		document.TxMsg_Field_Content: 1,
 		document.TxMsg_Field_Type:    1,
 	}
-	conditionAsTxMsg := bson.M{
+	condition := bson.M{
 		document.TxMsg_Field_Hash: bson.M{"$in": transferTxHashs},
 	}
 
 	txMsgs := make([]document.TxMsg, 0, len(transferTxHashs))
 
-	if err := queryAll(document.CollectionNmTxMsg, selectorAsTxMsg, conditionAsTxMsg, "", 0, &txMsgs); err != nil {
-		return nil, 0, err
+	if err := queryAll(document.CollectionNmTxMsg, selector, condition, "", 0, &txMsgs); err != nil {
+		logger.Error("query tx msg", logger.String("err", err.Error()))
+		panic(types.CodeNotFound)
 	}
 
 	for _, vMsg := range txMsgs {
 		for k, vTx := range items {
 			if vMsg.Hash == vTx.Hash {
-				transferAddr, err := service.GetTransferAddr(vMsg.Type, vMsg.Content)
+				transferAddr, err := service.getTransferAddr(vMsg.Type, vMsg.Content)
 				if err != nil {
 					logger.Error("get transfer addr ", logger.String("err", err.Error()))
 					continue
@@ -305,71 +248,158 @@ func (service *BlockService) GetTxsByBlock(height int64, onlyOrExcludeProposal b
 		}
 	}
 
-	return items, total, nil
+	return model.TxPage{
+		Total: total,
+		Items: items,
+	}
 }
 
-func (service *BlockService) GetTransferAddr(txType interface{}, content string) (string, error) {
+func (service *BlockService) QueryTxsOnlyTxGovByBlock(height int64, page, size int) model.ProposalPage {
 
+	itemsAsDoc, total, err := service.getTxsByBlock(height, true, page, size)
+	if err != nil {
+		logger.Error("QueryTxsExcludeProposal err", logger.String("error", err.Error()))
+		panic(types.CodeNotFound)
+	}
+
+	txHashArr := make([]string, 0, size)
+	for _, v := range itemsAsDoc {
+		txHashArr = append(txHashArr, v.TxHash)
+	}
+
+	selector := bson.M{
+		document.TxMsg_Field_Hash:    1,
+		document.TxMsg_Field_Content: 1,
+		document.TxMsg_Field_Type:    1,
+	}
+	condition := bson.M{
+		document.TxMsg_Field_Hash: bson.M{"$in": txHashArr},
+	}
+
+	txMsgs := make([]document.TxMsg, 0, size)
+	if err := queryAll(document.CollectionNmTxMsg, selector, condition, "", 0, &txMsgs); err != nil {
+		logger.Error("query tx msg", logger.String("err", err.Error()))
+		panic(types.CodeNotFound)
+	}
+
+	items := make([]model.ProposalInfo, 0, len(txHashArr))
+	for _, v := range itemsAsDoc {
+		for _, vAsMsg := range txMsgs {
+			if v.TxHash == vAsMsg.Hash {
+				proType, err := service.GetValueByKey(vAsMsg.Content, "title")
+				if err != nil {
+					logger.Error("query proposal type from txMsg", logger.String("k", document.Proposal_Field_Type), logger.String("err", err.Error()), logger.String("JsonStr", vAsMsg.Content))
+				}
+
+				proTitle, err := service.GetValueByKey(vAsMsg.Content, "proposalType")
+				if err != nil {
+					logger.Error("query proposal title from txMsg", logger.String("k", document.Proposal_Field_Title), logger.String("err", err.Error()), logger.String("JsonStr", vAsMsg.Content))
+				}
+				tmp := model.ProposalInfo{
+					ProposalType:  proType,
+					ProposalTitle: proTitle,
+					ProposalId:    v.ProposalId,
+					Hash:          v.TxHash,
+					ActualFee:     v.ActualFee,
+					TxInitiator:   v.From,
+					TxType:        v.Type,
+					Status:        v.Status,
+				}
+				items = append(items, tmp)
+			}
+		}
+	}
+
+	return model.ProposalPage{
+		Total: total,
+		Items: items,
+	}
+}
+
+func (service *BlockService) getTxsByBlock(height int64, onlyOrExcludeProposal bool, page, size int) ([]document.CommonTx, int, error) {
+
+	itemsAsDoc := make([]document.CommonTx, 0, size)
+
+	selector := bson.M{}
+	condition := bson.M{}
+	if onlyOrExcludeProposal {
+		selector = bson.M{
+			document.Tx_Field_Hash:       1,
+			document.Tx_Field_ActualFee:  1,
+			document.Tx_Field_From:       1,
+			document.Tx_Field_Type:       1,
+			document.Tx_Field_Status:     1,
+			document.Tx_Field_ProposalId: 1,
+		}
+
+		condition = bson.M{
+			document.Tx_Field_Height: height,
+			document.Tx_Field_Type:   bson.M{"$in": types.GovernanceList}}
+	} else {
+		selector = bson.M{
+			document.Tx_Field_Hash:      1,
+			document.Tx_Field_From:      1,
+			document.Tx_Field_To:        1,
+			document.Tx_Field_Amount:    1,
+			document.Tx_Field_ActualFee: 1,
+			document.Tx_Field_Type:      1,
+			document.Tx_Field_Status:    1,
+			document.Tx_Field_Time:      1,
+		}
+
+		condition = bson.M{
+			document.Tx_Field_Height: height,
+			document.Tx_Field_Type:   bson.M{"$in": types.TxTypeExcludeGov}}
+	}
+
+	total, err := pageQuery(document.CollectionNmCommonTx, selector, condition, "", page, size, &itemsAsDoc)
+	if err != nil {
+		return nil, total, err
+	}
+
+	return itemsAsDoc, total, nil
+}
+
+func (service *BlockService) GetValueByKey(content, k string) (string, error) {
 	m := make(map[string]interface{})
 	err := json.Unmarshal([]byte(content), &m)
 	if err != nil {
 		return "", err
 	}
-	switch txType {
-	case TxTypeBeginRedelegate:
-		if v, ok := m["delegator_addr"].(string); ok {
-			return v, nil
-		}
-	case TxTypeWithdrawDelegatorReward:
-		if v, ok := m["delegator_addr"].(string); ok {
-			return v, nil
-		}
-	case TxTypeWithdrawDelegatorRewardsAll:
-		if v, ok := m["delegator_addr"].(string); ok {
-			return v, nil
-		}
-	default:
-		return "", nil
+
+	if v, ok := m[k].(string); ok {
+		return v, nil
 	}
-	return "", errors.New(fmt.Sprintf("assert type err, expect string but actual: %T   value: %v", m["degelator"], m["degelator"]))
+
+	return "", errors.New(fmt.Sprintf("assert type err, expect string but actual: %T   value: %v", m[k], m[k]))
 }
 
-//  MsgBeginRedelegate MsgWithdrawDelegatorReward MsgWithdrawDelegatorRewardsAll
-func (service *BlockService) isTransferTxByType(t string) bool {
+func (service *BlockService) getTransferAddr(txType, content string) (string, error) {
 
-	switch t {
-	case TxTypeBeginRedelegate:
-		return true
-	case TxTypeWithdrawDelegatorReward:
-		return true
-	case TxTypeWithdrawDelegatorRewardsAll:
-		return true
-	case TxTypeWithdrawValidatorRewardsAll:
-		return false
-	case TxTypeTransfer:
-		return false
-	case TxTypeStakeCreateValidator:
-		return false
-	case TxTypeStakeEditValidator:
-		return false
-	case TxTypeStakeDelegate:
-		return false
-	case TxTypeStakeBeginUnbonding:
-		return false
-	case TxTypeUnjail:
-		return false
-	case TxTypeSetWithdrawAddress:
-		return false
-	case TxTypeSubmitProposal:
-		return false
-	case TxTypeDeposit:
-		return false
-	case TxTypeVote:
-		return false
-	default:
-		return false
+	for _, v := range types.GovernanceList {
+		if txType == v {
+			m := make(map[string]interface{})
+			err := json.Unmarshal([]byte(content), &m)
+			if err != nil {
+				return "", err
+			}
+			if v, ok := m["delegator_addr"].(string); ok {
+				return v, nil
+			}
+			return "", errors.New(fmt.Sprintf("assert type err, expert tring but actual: %T  %v", m["delegator_addr"], m["delegator_addr"]))
+		}
 	}
 
+	return "", nil
+}
+
+func (service *BlockService) isTransferTxByType(t string) bool {
+	for _, v := range types.GovernanceList {
+		if v == t {
+			return true
+		}
+	}
+	return false
 }
 
 func buildBlock(block document.Block) (result model.BlockInfoVo) {

@@ -21,28 +21,6 @@ tags:
   - name: Account
     description:
 paths:
-  /api/block/{height}:
-    get:
-      summary: Get a block information at a certain height
-      tags:
-        - Block
-      parameters:
-        - in: path
-          name: height
-          description: Block height
-          required: true
-          type: integer
-          format: int64
-          default: 1
-      responses:
-        200:
-          description: The block info at a specific height
-          schema:
-            $ref: "#/definitions/Block"
-        default:
-          description: generic error response
-          schema:
-            $ref: "#/definitions/error"
   /api/block/validatorset/{height}:
     get:
       tags:
@@ -75,7 +53,7 @@ paths:
           description: generic error response
           schema:
             $ref: "#/definitions/error"
-  /api/block/coinflow/{height}:
+  /api/block/txs/{height}:
     get:
       tags:
         - Block
@@ -100,9 +78,61 @@ paths:
           required: false
       responses:
         200:
-          description: list the token flow
+          description:
           schema:
-            $ref: "#/definitions/TokenFlows"
+            $ref: "#/definitions/TxPage"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/block/blockinfo/{height}:
+    get:
+      tags:
+        - Block
+      parameters:
+        - name: height
+          in: path
+          description: Block height
+          type: integer
+          format: int64
+          default: 1
+      responses:
+        200:
+          description:
+          schema:
+            $ref: "#/definitions/BlockInfo"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/block/txgov/{height}:
+    get:
+      tags:
+        - Block
+      parameters:
+        - name: height
+          in: path
+          description: Block height
+          type: integer
+          format: int64
+          default: 1
+        - name: page
+          in: query
+          type: integer
+          format: int
+          default: 1
+          required: false
+        - name: size
+          in: query
+          type: integer
+          format: int
+          default: 10
+          required: false
+      responses:
+        200:
+          description:
+          schema:
+            $ref: "#/definitions/TxGovPage"
         default:
           description: generic error response
           schema:
@@ -293,12 +323,12 @@ definitions:
         $ref: "#/definitions/BlockInfo"
       validator_set:
         $ref: "#/definitions/ValidatorSet"
-      token_flows:
-        $ref: "#/definitions/TokenFlows"
-      proposals:
+      tx_page:
+        $ref: "#/definitions/TxPage"
+      proposals_page:
         type: array
         items:
-          $ref: "#/definitions/Proposal"
+          $ref: "#/definitions/ProposalPage"
   BlockInfo:
     type: object
     properties:
@@ -312,7 +342,7 @@ definitions:
         type: string
       propopser:
         type: string
-      reward:
+      mint_coin:
         $ref: "#/definitions/Coin"
       last_block:
         type: integer
@@ -481,6 +511,27 @@ definitions:
       validator_len:
         type: integer
         format: int
+  Tx:
+    type: object
+    properties:
+      hash:
+        type: string
+      from:
+        type: string
+      to:
+        type: to
+      amount:
+        $ref: "#/definitions/Coin"
+      actual_fee:
+        $ref: "#/definitions/ActualFee"
+      tx_initiator:
+        type: string
+      type:
+        type: string
+      status:
+        type: string
+      timestamp:
+        type: string
   TokenFlow:
     type: object
     properties:
@@ -509,7 +560,7 @@ definitions:
         $ref: "#/definitions/Coin"
       actual_fee:
         $ref: "#/definitions/ActualFee"
-  TokenFlows:
+  TxPage:
     type: object
     properties:
       total:
@@ -518,10 +569,44 @@ definitions:
       items:
         type: array
         items:
-          $ref: "#/definitions/TokenFlow"
+          $ref: "#/definitions/Tx"
     example:
       total: 4
       items:
+
+  TxGovPage:
+    type: object
+    properties:
+      total:
+        type: integer
+        format: int64
+      items:
+        type: array
+        items:
+          $ref: "#/definitions/TxGov"
+    example:
+      total: 4
+      items:
+  TxGov:
+    type: object
+    properties:
+      hash:
+        type: string
+      fee:
+        $ref: "#/definitions/Fee"
+      tx_initiator:
+        type: string
+      tx_type:
+        type: string
+      status:
+        type: string
+      proposal_id:
+        type: integer
+        format: uint64
+      proposal_type:
+        type: string
+      proposal_title:
+        type: string
   Fee:
     type: object
     properties:
@@ -605,6 +690,8 @@ definitions:
         type: string
       voting_power:
         type: string
+      is_proposer:
+        type: boolean
   AccountVo:
     type: object
     properties:

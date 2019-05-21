@@ -81,7 +81,7 @@ func (service *TxService) Query(hash string) interface{} {
 		return govTx
 	case model.StakeTx:
 		stakeTx := tx.(model.StakeTx)
-		if stakeTx.Type == types.TypeBeginRedelegation {
+		if stakeTx.Type == types.TxTypeBeginRedelegate {
 			var res document.TxMsg
 			err := dbm.C(document.CollectionNmTxMsg).Find(bson.M{document.TxMsg_Field_Hash: stakeTx.Hash}).One(&res)
 			if err != nil {
@@ -105,7 +105,7 @@ func (service *TxService) QueryByAcc(address string, page, size int) (result mod
 	query := bson.M{}
 	query["$or"] = []bson.M{{document.Tx_Field_From: address}, {document.Tx_Field_To: address}}
 	var typeArr []string
-	typeArr = append(typeArr, types.TypeTransfer)
+	typeArr = append(typeArr, types.TxTypeTransfer)
 	typeArr = append(typeArr, types.DeclarationList...)
 	typeArr = append(typeArr, types.StakeList...)
 	typeArr = append(typeArr, types.GovernanceList...)
@@ -123,7 +123,7 @@ func (service *TxService) QueryByAcc(address string, page, size int) (result mod
 func (service *TxService) CountByType(query bson.M) model.TxStatisticsVo {
 	logger.Debug("CountByType start", service.GetTraceLog())
 	var typeArr []string
-	typeArr = append(typeArr, types.TypeTransfer)
+	typeArr = append(typeArr, types.TxTypeTransfer)
 	typeArr = append(typeArr, types.DeclarationList...)
 	typeArr = append(typeArr, types.StakeList...)
 	typeArr = append(typeArr, types.GovernanceList...)
@@ -240,7 +240,7 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 			Pubkey:   tx.StakeCreateValidator.PubKey,
 		}
 		var blackList = service.QueryBlackList(db)
-		if tx.Type == types.TypeCreateValidator {
+		if tx.Type == types.TxTypeStakeCreateValidator {
 			var moniker = tx.StakeCreateValidator.Description.Moniker
 			var identity = tx.StakeCreateValidator.Description.Identity
 			var website = tx.StakeCreateValidator.Description.Website
@@ -255,7 +255,7 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 			dtx.Details = details
 			dtx.Website = website
 			dtx.Identity = identity
-		} else if tx.Type == types.TypeEditValidator {
+		} else if tx.Type == types.TxTypeStakeEditValidator {
 			var moniker = tx.StakeEditValidator.Description.Moniker
 			var identity = tx.StakeEditValidator.Description.Identity
 			var website = tx.StakeEditValidator.Description.Website
@@ -270,7 +270,7 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 			dtx.Details = details
 			dtx.Website = website
 			dtx.Identity = identity
-		} else if tx.Type == types.TypeUnjail {
+		} else if tx.Type == types.TxTypeUnjail {
 			candidateDb := db.C(document.CollectionNmStakeRoleCandidate)
 			var can document.Candidate
 			candidateDb.Find(bson.M{document.Candidate_Field_Address: dtx.Owner}).One(&can)
@@ -314,18 +314,18 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 			return govTx
 		}
 
-		if govTx.Type == types.TypeSubmitProposal {
+		if govTx.Type == types.TxTypeSubmitProposal {
 			var msg model.MsgSubmitProposal
 			json.Unmarshal([]byte(res.Content), &msg)
 			govTx.Title = msg.Title
 			govTx.Description = msg.Description
 			govTx.ProposalType = msg.ProposalType
-		} else if govTx.Type == types.TypeDeposit {
+		} else if govTx.Type == types.TxTypeDeposit {
 			var msg model.MsgDeposit
 			json.Unmarshal([]byte(res.Content), &msg)
 			govTx.ProposalId = msg.ProposalID
 			govTx.Amount = msg.Amount
-		} else if govTx.Type == types.TypeVote {
+		} else if govTx.Type == types.TxTypeVote {
 			var msg model.MsgVote
 			json.Unmarshal([]byte(res.Content), &msg)
 			govTx.ProposalId = msg.ProposalID

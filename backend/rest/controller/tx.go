@@ -56,7 +56,7 @@ func registerQueryTxList(r *mux.Router) error {
 		var result model.PageVo
 		switch types.TxTypeFromString(txType) {
 		case types.Trans:
-			query["type"] = types.TypeTransfer
+			query["type"] = types.TxTypeTransfer
 			break
 		case types.Declaration:
 			query["type"] = bson.M{

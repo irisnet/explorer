@@ -99,7 +99,7 @@ func (service *ProposalService) Query(id int) (resp model.ProposalInfoVo) {
 
 	var tx document.CommonTx
 	query.Reset().SetCollection(document.CollectionNmCommonTx).
-		SetCondition(bson.M{document.Tx_Field_Type: types.TypeSubmitProposal, document.Proposal_Field_ProposalId: id}).
+		SetCondition(bson.M{document.Tx_Field_Type: types.TxTypeSubmitProposal, document.Proposal_Field_ProposalId: id}).
 		SetResult(&tx)
 	if err := query.Exec(); err == nil {
 		proposal.Proposer = tx.From
