@@ -564,9 +564,10 @@
     .no_data_show{
         display: flex;
         justify-content: center;
-        border-top:0.01rem solid #eee;
         border-bottom:0.01rem solid #eee;
         font-size:0.14rem;
+        min-width: 12rem;
+        padding-top: 0.1rem;
         height:1rem;
         align-items: center;
     }
