@@ -6,6 +6,18 @@ $fc:#fff;
 @mixin fontSize{
   font-size: 0.14rem;
 }
+@mixin validatorCommonSortIcon{
+  width: 0.1rem;
+  height: 0.20rem;
+  content:"" !important;
+  opacity: 1;
+  display: inline-block !important;
+  vertical-align: middle !important;
+  margin-left: .05rem !important;
+  position: relative !important;
+  right: 0 !important;
+  margin-bottom: 0 !important;
+}
 @mixin borderRadius($radius) {
   -webkit-border-radius: $radius !important;
   -moz-border-radius: $radius !important;

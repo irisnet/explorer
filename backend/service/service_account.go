@@ -4,10 +4,10 @@ import (
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/model"
+	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
-	"gopkg.in/mgo.v2/bson"
 )
 
 type AccountService struct {
@@ -21,9 +21,10 @@ func (service *AccountService) GetModule() Module {
 func (service *AccountService) Query(address string) (result model.AccountVo) {
 	prefix, _, _ := utils.DecodeAndConvert(address)
 	if prefix == conf.Get().Hub.Prefix.ValAddr {
-		valinfo := delegatorService.QueryDelegation(address)
-		result.Amount = document.Coins{valinfo.selfBond}
-		result.Deposits = valinfo.delegated
+		self, delegated := delegatorService.QueryDelegation(address)
+		result.Amount = document.Coins{self}
+		result.Deposits = delegated
+
 	} else {
 		res, err := lcd.Account(address)
 		if err == nil {
@@ -37,33 +38,46 @@ func (service *AccountService) Query(address string) (result model.AccountVo) {
 		result.Deposits = delegatorService.GetDeposits(address)
 	}
 
-	result.WithdrawAddress = queryWithdrawAddr(address)
+	result.WithdrawAddress = lcd.QueryWithdrawAddr(address)
 	result.IsProfiler = isProfiler(address)
 	result.Address = address
 	return result
 }
 
-func (service *AccountService) QueryAll(page, size int) model.PageVo {
+func (service *AccountService) QueryRichList() interface{} {
 	var result []document.Account
-	sort := desc(document.Tx_Field_Time)
-	return queryRows(document.CollectionNmAccount, &result, nil, sort, page, size)
-}
 
-func queryWithdrawAddr(address string) (result string) {
-	var accAddr = utils.Convert(conf.Get().Hub.Prefix.AccAddr, address)
-	db := getDb()
+	var query = orm.NewQuery()
+	defer query.Release()
 
-	txStore := db.C(document.CollectionNmCommonTx)
-	query := bson.M{}
-	query[document.Tx_Field_From] = accAddr
-	query[document.Tx_Field_Type] = types.TxTypeSetWithdrawAddress
-	var tx document.CommonTx
-	if err := txStore.Find(query).Sort(desc(document.Tx_Field_Time)).One(&tx); err == nil {
-		result = tx.To
-	} else {
-		result = accAddr
+	query.SetCollection(document.CollectionNmAccount).
+		SetSort(desc("total.amount"), document.AccountFieldTotalUpdateAt, document.AccountFieldAccountNumber).
+		SetSize(100).
+		SetResult(&result)
+
+	if err := query.Exec(); err != nil {
+		panic(types.CodeNotFound)
 	}
-	return
+	var accList []model.AccountInfo
+	var totalAmt = float64(0)
+
+	for _, acc := range result {
+		totalAmt += acc.Total.Amount
+	}
+
+	for index, acc := range result {
+		rate, _ := utils.NewRatFromFloat64(acc.Total.Amount / totalAmt).Float64()
+		accList = append(accList, model.AccountInfo{
+			Rank:    index + 1,
+			Address: acc.Address,
+			Balance: document.Coins{
+				acc.Total,
+			},
+			Percent:  rate,
+			UpdateAt: acc.TotalUpdateAt,
+		})
+	}
+	return accList
 }
 
 func isProfiler(address string) bool {

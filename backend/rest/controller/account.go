@@ -11,7 +11,7 @@ import (
 func RegisterAccount(r *mux.Router) error {
 	funs := []func(*mux.Router) error{
 		registerQueryAccount,
-		registerQueryAllAccount,
+		registerQueryAccountList,
 	}
 
 	for _, fn := range funs {
@@ -42,12 +42,9 @@ func registerQueryAccount(r *mux.Router) error {
 	return nil
 }
 
-func registerQueryAllAccount(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryAllAccount, "GET", func(request model.IrisReq) interface{} {
-		page, size := GetPage(request)
-		account.SetTid(request.TraceId)
-		result := account.QueryAll(page, size)
-		return result
+func registerQueryAccountList(r *mux.Router) error {
+	doApi(r, types.UrlRegisterQueryAccounts, "GET", func(request model.IrisReq) interface{} {
+		return account.QueryRichList()
 	})
 	return nil
 }

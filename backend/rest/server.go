@@ -2,16 +2,18 @@ package rest
 
 import (
 	"fmt"
-	"github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
-	"github.com/irisnet/explorer/backend/conf"
-	"github.com/irisnet/explorer/backend/logger"
-	"github.com/irisnet/explorer/backend/rest/controller"
-	"github.com/irisnet/explorer/backend/rest/filter"
 	"log"
 	"net/http"
 	_ "net/http/pprof"
 	"time"
+
+	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
+	"github.com/irisnet/explorer/backend/conf"
+	"github.com/irisnet/explorer/backend/lcd/lite"
+	"github.com/irisnet/explorer/backend/logger"
+	"github.com/irisnet/explorer/backend/rest/controller"
+	"github.com/irisnet/explorer/backend/rest/filter"
 )
 
 type ApiServer struct {
@@ -62,7 +64,7 @@ func registerApi(r *mux.Router) {
 		controller.RegisterProposal,
 		controller.RegisterNodes,
 		controller.RegisterTextSearch,
-		controller.RegisterPing,
+		controller.RegisterHome,
 	}
 
 	for _, routeRegistrar := range routeRegistrars {
@@ -84,15 +86,13 @@ func NewAPIMux() *mux.Router {
 	s := r.PathPrefix("/api").Subrouter()
 	registerApi(s)
 	registerFilters()
-
+	lite.RegisterSwaggerUI(r)
 	r.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("../frontend/dist/"))))
 	return r
 }
 
 func AddHeader(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Add("CHAIN_ID", conf.Get().Hub.ChainId)
-		w.Header().Add("SHOW_FAUCET", conf.Get().Server.ShowFaucet)
 		h.ServeHTTP(w, r)
 	})
 }

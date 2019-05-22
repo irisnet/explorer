@@ -2,9 +2,10 @@ package service
 
 import (
 	"fmt"
+
 	"github.com/irisnet/explorer/backend/logger"
-	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm"
+	"github.com/irisnet/explorer/backend/orm/document"
 	"go.uber.org/zap"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -23,6 +24,7 @@ var (
 
 	txService        = &TxService{}
 	delegatorService = &DelegatorService{}
+	govParamsService = &GovParamsService{}
 )
 
 const (
@@ -34,6 +36,7 @@ const (
 	Candidate
 	Tx
 	Delegator
+	GovParams
 )
 
 type Module int
@@ -54,6 +57,8 @@ func Get(m Module) Service {
 		return txService
 	case Delegator:
 		return delegatorService
+	case GovParams:
+		return govParamsService
 	}
 	return nil
 }
@@ -78,47 +83,67 @@ func (base *BaseService) GetTraceLog() zap.Field {
 	return logger.String("traceId", base.GetTid())
 }
 
-func queryRows(collation string, data interface{}, m map[string]interface{}, sort string, page, size int) model.PageVo {
-	return orm.QueryRows(collation, data, m, sort, page, size)
+func (base *BaseService) QueryBlackList(database *mgo.Database) map[string]document.BlackList {
+	var blackListStore = database.C(document.CollectionNmBlackList)
+	var blackList []document.BlackList
+	var blackListMap = make(map[string]document.BlackList)
+	if err := blackListStore.Find(nil).All(&blackList); err == nil {
+		for _, v := range blackList {
+			blackListMap[v.OperatorAddr] = v
+		}
+	}
+	return blackListMap
 }
 
-func limitQuery(collation string, selector bson.M, m map[string]interface{}, sort string, size int, result interface{}) error {
-	var query = orm.MQuery{
-		C:        collation,
-		Q:        m,
-		Selector: selector,
-		Result:   result,
-		Sort:     sort,
-		Size:     size,
-	}
-	err := orm.All(query)
+func queryAll(collation string, selector, condition bson.M, sort string, size int, result interface{}) error {
+	var query = orm.NewQuery()
+	defer query.Release()
+	query.SetCollection(collation).
+		SetCondition(condition).
+		SetSelector(selector).
+		SetSort(sort).
+		SetSize(size).
+		SetResult(result)
+
+	err := query.Exec()
 	if err != nil {
-		logger.Error("limitQuery error", logger.Any("query", m), logger.String("err", err.Error()))
+		logger.Error("queryAll error", logger.Any("query", condition), logger.String("err", err.Error()))
 	}
 	return err
 }
 
-func one(collation string, selector bson.M, m map[string]interface{}, result interface{}) error {
-	var query = orm.MQuery{
-		C:        collation,
-		Q:        m,
-		Selector: selector,
-		Result:   result,
+func queryOne(collation string, selector, condition bson.M, result interface{}) error {
+	var query = orm.NewQuery()
+	defer query.Release()
+	query.SetCollection(collation).
+		SetCondition(condition).
+		SetSelector(selector).
+		SetResult(result)
+
+	err := query.Exec()
+	if err != nil {
+		logger.Error("queryOne", logger.Any("query", condition), logger.String("err", err.Error()))
 	}
-	return orm.One(query)
+	return err
 }
 
-func all(collation string, selector bson.M, m map[string]interface{}, sort string, page, size int, result interface{}) (int, error) {
-	var query = orm.MQuery{
-		C:        collation,
-		Q:        m,
-		Selector: selector,
-		Result:   result,
-		Sort:     sort,
-		Page:     page,
-		Size:     size,
+func pageQuery(collation string, selector, condition bson.M, sort string, page, size int, result interface{}) (int, error) {
+	var query = orm.NewQuery()
+	defer query.Release()
+	query.SetCollection(collation).
+		SetCondition(condition).
+		SetSelector(selector).
+		SetSort(sort).
+		SetPage(page).
+		SetSize(size).
+		SetResult(result)
+
+	cnt, err := query.ExecPage()
+	if err != nil {
+		logger.Error("pageQuery", logger.Any("query", condition), logger.String("err", err.Error()))
 	}
-	return orm.AllWithCount(query)
+
+	return cnt, err
 }
 
 func getDb() *mgo.Database {

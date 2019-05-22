@@ -4,21 +4,20 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/service"
+	"github.com/irisnet/explorer/backend/utils"
 
 	"github.com/irisnet/explorer/backend/types"
 )
 
 func RegisterStake(r *mux.Router) error {
 	funs := []func(*mux.Router) error{
-		registerQueryValidator,
-		registerQueryRevokedValidator,
-		registerQueryCandidates,
 		registerQueryCandidate,
 		registerQueryCandidateStatus,
 		registerQueryCandidatesTop,
 		registerQueryCandidateUptime,
 		registerQueryCandidatePower,
-		registerQueryChain,
+		registerGetValidators,
+		registerGetValidator,
 	}
 
 	for _, fn := range funs {
@@ -37,33 +36,25 @@ var stake = Stake{
 	service.Get(service.Candidate).(*service.CandidateService),
 }
 
-func registerQueryValidator(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryValidator, "GET", func(request model.IrisReq) interface{} {
+func registerGetValidators(r *mux.Router) error {
+	doApi(r, types.UrlRegisterGetValidators, "GET", func(request model.IrisReq) interface{} {
 		stake.SetTid(request.TraceId)
-		page, size := GetPage(request)
-		result := stake.QueryValidators(page, size)
-		return result
-	})
-
-	return nil
-}
-func registerQueryRevokedValidator(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryRevokedValidator, "GET", func(request model.IrisReq) interface{} {
-		stake.SetTid(request.TraceId)
-		page, size := GetPage(request)
-		result := stake.QueryRevokedValidator(page, size)
+		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
+		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 100))
+		typ := QueryParam(request, "type")
+		origin := QueryParam(request, "origin")
+		result := stake.GetValidators(typ, origin, page, size)
 		return result
 	})
 	return nil
 }
-func registerQueryCandidates(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryCandidates, "GET", func(request model.IrisReq) interface{} {
+func registerGetValidator(r *mux.Router) error {
+	doApi(r, types.UrlRegisterGetValidator, "GET", func(request model.IrisReq) interface{} {
 		stake.SetTid(request.TraceId)
-		page, size := GetPage(request)
-		result := stake.QueryCandidates(page, size)
+		address := Var(request, "address")
+		result := stake.GetValidator(address)
 		return result
 	})
-
 	return nil
 }
 
@@ -119,16 +110,6 @@ func registerQueryCandidateStatus(r *mux.Router) error {
 		address := Var(request, "address")
 
 		result := stake.QueryCandidateStatus(address)
-		return result
-	})
-
-	return nil
-}
-
-func registerQueryChain(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryChain, "GET", func(request model.IrisReq) interface{} {
-		stake.SetTid(request.TraceId)
-		result := stake.QueryChainStatus()
 		return result
 	})
 

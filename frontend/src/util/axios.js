@@ -7,7 +7,10 @@ export default class Service {
       }
     }).then(data => {
       if(data && typeof data ==="object"){
-        if(data.code && data.code === "EX-100001"){
+        let  errorCodeArray =["EX-100000","EX-100001","EX-100002","EX-100003","EX-100004","EX-100005","EX-100006","EX-100007","EX-100008"];
+        if(data.code &&errorCodeArray.some((item)=> {
+          return item === data.code
+        })){
           return null
         }else {
           return data

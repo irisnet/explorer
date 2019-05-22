@@ -1,11 +1,13 @@
 package service
 
 import (
-	"github.com/irisnet/explorer/backend/conf"
+	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
+	"math"
+	"math/big"
 )
 
 type DelegatorService struct {
@@ -16,110 +18,107 @@ func (service *DelegatorService) GetModule() Module {
 	return Delegator
 }
 
-func (service *DelegatorService) QueryDelegation(valAddr string) (info ValInfo) {
-	var dbInstance = getDb()
-	defer dbInstance.Session.Close()
+func (service *DelegatorService) QueryDelegation(valAddr string) (document.Coin, document.Coin) {
 
-	var delegatorStore = dbInstance.C(document.CollectionNmStakeRoleDelegator)
-
-	// query delegation info
-	var accAddr = utils.Convert(conf.Get().Hub.Prefix.AccAddr, valAddr)
-	var delegations []document.Delegator
-	var selfBondShares float64
-	var delegatedShares float64
-
-	var query = bson.M{}
-	query[document.Delegator_Field_ValidatorAddr] = valAddr
-	err := delegatorStore.Find(query).All(&delegations)
+	validator := document.Validator{}
+	selector := bson.M{
+		"tokens":    1,
+		"self_bond": 1}
+	err := queryOne(document.CollectionNmValidator, selector, bson.M{document.ValidatorFieldOperatorAddress: valAddr}, &validator)
 	if err != nil {
-		logger.Warn("validator not exist", logger.String("valAddr", valAddr))
-		return
+		logger.Error("validator not found", logger.Any("err", err.Error()))
+		return document.Coin{}, document.Coin{}
 	}
 
-	for _, d := range delegations {
-		if d.Address == accAddr {
-			selfBondShares = d.Shares
-		} else {
-			delegatedShares += d.Shares
+	logger.Info("query delegation by validator addres", logger.String("validatorAddr", valAddr), logger.String("tokens", validator.Tokens), logger.String("self_bond", validator.SelfBond))
+
+	tokensAsRat, ok := new(big.Rat).SetString(validator.Tokens)
+	if !ok {
+		logger.Error("convert validator tokens type (string -> big.Rat) err", logger.Any("err", err.Error()), logger.String("token str", validator.Tokens))
+		return document.Coin{}, document.Coin{}
+	}
+
+	selfBondAsRat, ok := new(big.Rat).SetString(validator.SelfBond)
+	if !ok {
+		logger.Error("convert validator selfBond type (string -> big.Rat) err", logger.Any("err", err.Error()), logger.String("self bond str", validator.SelfBond))
+		return document.Coin{}, document.Coin{}
+	}
+
+	selfBondAsFloat64, exact := new(big.Rat).Mul(selfBondAsRat, new(big.Rat).SetFloat64(math.Pow10(18))).Float64()
+	if !exact {
+		logger.Info("convert selfBondAsRat type (big.Rat to float64) ",
+			logger.Any("exact", exact),
+			logger.Any("selfBondAsRat", selfBondAsRat))
+	}
+
+	otherBondAsRat := new(big.Rat)
+	otherBondAsFloat64, exact := otherBondAsRat.Sub(tokensAsRat, selfBondAsRat).Mul(otherBondAsRat, new(big.Rat).SetFloat64(math.Pow10(18))).Float64()
+	if !exact {
+		logger.Info("convert otherBondAsRat type (big.Rat to float64) ",
+			logger.Any("exact", exact),
+			logger.Any("otherBondAsRat", otherBondAsRat))
+	}
+
+	return document.Coin{
+			Denom:  utils.CoinTypeAtto,
+			Amount: selfBondAsFloat64,
+		}, document.Coin{
+			Denom:  utils.CoinTypeAtto,
+			Amount: otherBondAsFloat64,
 		}
-	}
-
-	//query validator info
-	var validatorStore = dbInstance.C(document.CollectionNmStakeRoleCandidate)
-	var validator document.Candidate
-	err = validatorStore.Find(bson.M{document.Candidate_Field_Address: valAddr}).One(&validator)
-	if err != nil {
-		logger.Error("validator not found", logger.Any("valAddr", valAddr))
-		return
-	}
-
-	rate := validator.Tokens / validator.DelegatorShares
-
-	selfBond := document.Coin{
-		Denom:  utils.CoinTypeAtto,
-		Amount: selfBondShares * rate,
-	}
-
-	delegated := document.Coin{
-		Denom:  utils.CoinTypeAtto,
-		Amount: delegatedShares * rate,
-	}
-
-	return ValInfo{
-		valAddr:   valAddr,
-		selfBond:  selfBond,
-		delegated: delegated,
-	}
-
 }
 
-func (service *DelegatorService) GetDeposits(delAddr string) (coin document.Coin) {
-	var dbInstance = getDb()
-	defer dbInstance.Session.Close()
-
-	var delegatorStore = dbInstance.C(document.CollectionNmStakeRoleDelegator)
-	var delegations []document.Delegator
-
-	err := delegatorStore.Find(bson.M{document.Delegator_Field_Addres: delAddr}).All(&delegations)
-	if err != nil {
-		logger.Warn("delegator address not exist", logger.String("delAddr", delAddr))
-		return
-	}
-
-	var delegationMap = make(map[string]document.Delegator, len(delegations))
-	var valAddrs []string
+func (service *DelegatorService) GetDeposits(addressAsAccount string) document.Coin {
+	delegations := lcd.GetDelegationsByDelAddr(addressAsAccount)
+	delegationMap := make(map[string]lcd.DelegationVo, len(delegations))
+	valAddrs := []string{}
 	for _, d := range delegations {
 		delegationMap[d.ValidatorAddr] = d
 		valAddrs = append(valAddrs, d.ValidatorAddr)
 	}
 
-	var validatorStore = dbInstance.C(document.CollectionNmStakeRoleCandidate)
-	var validators []document.Candidate
-
-	var query = bson.M{}
-	query[document.Candidate_Field_Address] = bson.M{
-		"$in": valAddrs,
+	validators := []document.Validator{}
+	selector := bson.M{
+		document.ValidatorFieldOperatorAddress: 1,
+		"tokens":                               1,
+		"delegator_shares":                     1}
+	condition := bson.M{
+		document.ValidatorFieldOperatorAddress: bson.M{"$in": valAddrs},
 	}
-	err = validatorStore.Find(query).All(&validators)
+	err := queryAll(document.CollectionNmValidator, selector, condition, "", 0, &validators)
 	if err != nil {
-		logger.Error("validator not found", logger.Any("valAddrs", valAddrs))
-		return
+		logger.Error("validator not found", logger.Any("err", err.Error()))
+		return document.Coin{}
 	}
 
-	var totalAmt float64
+	totalAmtAsRat := new(big.Rat)
+
 	for _, v := range validators {
-		delegation := delegationMap[v.Address]
-		rate := v.Tokens / v.DelegatorShares
-		totalAmt += delegation.Shares * rate
+		delegation := delegationMap[v.OperatorAddress]
+
+		rate, err := utils.QuoByStr(v.Tokens, v.DelegatorShares)
+		if err != nil {
+			logger.Error("validator.Tokens / validator.DelegatorShares", logger.String("err", err.Error()))
+			continue
+		}
+
+		delegationSharesAsRat, ok := new(big.Rat).SetString(delegation.Shares)
+		if !ok {
+			logger.Info("convert Delegation.Shares type (string to big.Rat) ", logger.Any("result", ok), logger.String("delegation share", delegation.Shares))
+			continue
+		}
+
+		totalAmtAsRat.Add(totalAmtAsRat, new(big.Rat).Mul(delegationSharesAsRat, rate))
 	}
+	totalAmtAsFloat64, exact := new(big.Rat).Mul(totalAmtAsRat, new(big.Rat).SetFloat64(math.Pow10(18))).Float64()
+	if !exact {
+		logger.Info("convert totalAmtAsFloat64 type (big.Rat to float64) ",
+			logger.Any("exact", exact),
+			logger.Any("totalAmtAsRat", totalAmtAsRat))
+	}
+
 	return document.Coin{
 		Denom:  utils.CoinTypeAtto,
-		Amount: totalAmt,
+		Amount: totalAmtAsFloat64,
 	}
-}
-
-type ValInfo struct {
-	valAddr   string
-	selfBond  document.Coin
-	delegated document.Coin
 }

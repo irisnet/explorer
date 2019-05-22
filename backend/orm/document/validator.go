@@ -2,49 +2,55 @@ package document
 
 import (
 	"gopkg.in/mgo.v2/bson"
+	"time"
 )
 
 const (
-	LiftUp        = 1
-	LiftNotChange = 0
-	LiftDown      = -1
+	CollectionNmValidator = "validator"
 
-	CollectionNmStakeRoleCandidate = "stake_role_candidate"
-
-	Candidate_Field_Address         = "address"
-	Candidate_Field_PubKey          = "pub_key"
-	Candidate_Field_PubKeyAddr      = "pub_key_addr"
-	Candidate_Field_Jailed          = "jailed"
-	Candidate_Field_Tokens          = "tokens"
-	Candidate_Field_OriginalTokens  = "original_tokens"
-	Candidate_Field_DelegatorShares = "delegator_shares"
-	Candidate_Field_VotingPower     = "voting_power"
-	Candidate_Field_Description     = "description"
-	Candidate_Field_BondHeight      = "bond_height"
-	Candidate_Field_Status          = "status"
+	ValidatorFieldVotingPower     = "voting_power"
+	ValidatorFieldJailed          = "jailed"
+	ValidatorFieldStatus          = "status"
+	ValidatorFieldOperatorAddress = "operator_address"
 )
 
-type (
-	Candidate struct {
-		Address         string         `bson:"address"` // owner, identity key
-		PubKey          string         `bson:"pub_key"`
-		PubKeyAddr      string         `bson:"pub_key_addr"`
-		Jailed          bool           `bson:"jailed"` // has the validator been revoked from bonded status
-		Tokens          float64        `bson:"tokens"`
-		OriginalTokens  string         `bson:"original_tokens"`
-		DelegatorShares float64        `bson:"delegator_shares"`
-		VotingPower     float64        `bson:"voting_power"` // Voting power if pubKey is a considered a validator
-		Description     ValDescription `bson:"description"`  // Description terms for the candidate
-		BondHeight      int64          `bson:"bond_height"`
-		Status          string         `bson:"status"`
-		Rank            int            `bson:"rank,omitempty"`
-	}
-)
-
-func (d Candidate) Name() string {
-	return CollectionNmStakeRoleCandidate
+type Validator struct {
+	ID              bson.ObjectId `bson:"_id"`
+	OperatorAddress string        `bson:"operator_address" json:"operator_address"`
+	ConsensusPubkey string        `bson:"consensus_pubkey" json:"consensus_pubkey"`
+	Jailed          bool          `bson:"jailed" json:"jailed"`
+	Status          int           `bson:"status" json:"status"`
+	Tokens          string        `bson:"tokens" json:"tokens"`
+	DelegatorShares string        `bson:"delegator_shares" json:"delegator_shares"`
+	Description     Description   `bson:"description" json:"description"`
+	BondHeight      string        `bson:"bond_height" json:"bond_height"`
+	UnbondingHeight string        `bson:"unbonding_height" json:"unbonding_height"`
+	UnbondingTime   time.Time     `bson:"unbonding_time" json:"unbonding_time"`
+	Commission      Commission    `bson:"commission" json:"commission"`
+	Uptime          float32       `bson:"uptime" json:"uptime"`
+	SelfBond        string        `bson:"self_bond" json:"self_bond"`
+	DelegatorNum    int           `bson:"delegator_num" json:"delegator_num"`
+	ProposerAddr    string        `bson:"proposer_addr" json:"proposer_addr"`
+	VotingPower     int64         `bson:"voting_power" json:"voting_power"`
 }
 
-func (d Candidate) PkKvPair() map[string]interface{} {
-	return bson.M{Candidate_Field_Address: d.Address}
+type Description struct {
+	Moniker  string `bson:"moniker" json:"moniker"`
+	Identity string `bson:"identity" json:"identity"`
+	Website  string `bson:"website" json:"website"`
+	Details  string `bson:"details" json:"details"`
+}
+type Commission struct {
+	Rate          string    `bson:"rate" json:"rate"`
+	MaxRate       string    `bson:"max_rate" json:"max_rate"`
+	MaxChangeRate string    `bson:"max_change_rate" json:"max_change_rate"`
+	UpdateTime    time.Time `bson:"update_time" json:"update_time"`
+}
+
+func (v Validator) Name() string {
+	return CollectionNmValidator
+}
+
+func (v Validator) PkKvPair() map[string]interface{} {
+	return bson.M{"operator_address": v.OperatorAddress}
 }

@@ -1,8 +1,9 @@
 package model
 
 import (
-	"github.com/irisnet/explorer/backend/orm/document"
 	"time"
+
+	"github.com/irisnet/explorer/backend/orm/document"
 )
 
 type Proposal struct {

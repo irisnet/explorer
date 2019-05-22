@@ -12,12 +12,22 @@ type ValDetailVo struct {
 
 type ValStatus struct {
 	Uptime         int     `json:"up_time"`
-	TotalBlock     int     `json:"total_block"`
 	PrecommitCount float64 `json:"precommit_cnt"`
 }
 
+type ValProfile struct {
+	Description
+	PubKey         string `json:"pub_key"`
+	Owner          string `json:"owner"`
+	BondHeight     int64  `json:"bond_height"`
+	VotingPower    int64  `json:"voting_power"`
+	CommitBlockNum int64  `json:"commit_block_num"`
+	UpTime         int    `json:"up_time"`
+}
+
 type Validator struct {
-	Address        string      `json:"address"` // owner, identity key
+	Address        string      `json:"address"` // operator
+	Owner          string      `json:"owner"`   // owner, identity key
 	PubKey         string      `json:"pub_key"`
 	Jailed         bool        `json:"jailed"`                // has the validator been revoked from bonded status
 	VotingPower    int64       `json:"voting_power"`          // Voting power if pubKey is a considered a validator
@@ -25,6 +35,7 @@ type Validator struct {
 	BondHeight     int64       `json:"bond_height"`
 	Status         string      `json:"status"`
 	OriginalTokens string      `json:"original_tokens"`
+	Rate           string      `json:"rate"`
 	ValStatus
 }
 

@@ -1,11 +1,26 @@
 package utils
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/pkg/errors"
+	"golang.org/x/crypto/ripemd160"
 	"strings"
 )
+
+func GenHexAddrFromPubKey(bech32Pubkey string) string {
+	_, bz, _ := DecodeAndConvert(bech32Pubkey)
+	var genAddr = func(pubKey []byte) []byte {
+		hash := sha256.Sum256(pubKey[5:])
+		rip := ripemd160.New()
+		addrBz := rip.Sum(hash[:])[:20]
+		return addrBz
+	}
+	var addr = genAddr(bz)
+	return strings.ToUpper(hex.EncodeToString(addr))
+}
 
 func Convert(dst, bech32str string) string {
 	_, bz, err := DecodeAndConvert(bech32str)
@@ -17,6 +32,21 @@ func Convert(dst, bech32str string) string {
 	dstAddr, err := convertAndEncode(dst, bz)
 	if err != nil {
 		logger.Error("decoding Bech32 address failed: must provide an valid bech32 address", logger.String("bech32str", bech32str))
+		return ""
+	}
+	return dstAddr
+}
+
+func ConvertFromHex(dst, hexStr string) string {
+	bz, err := hex.DecodeString(hexStr)
+	if err != nil {
+		logger.Error("decoding hex address failed: must provide an valid hex address", logger.String("hexStr", hexStr))
+		return ""
+	}
+
+	dstAddr, err := convertAndEncode(dst, bz)
+	if err != nil {
+		logger.Error("decoding hex address failed: must provide an valid bech32 address", logger.String("hexStr", hexStr))
 		return ""
 	}
 	return dstAddr

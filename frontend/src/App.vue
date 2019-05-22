@@ -1,7 +1,7 @@
 <template>
-  <div id="app">
+  <div id="app" @click.stop="closeSelectOption">
     <app-header v-show="flShowHeader"></app-header>
-    <div id="router_wrap">
+    <div id="router_wrap" :style="{'padding-top': $store.state.isMobile ? '' :`${headerHeightStyle}`}">
       <div class="qr_code"
            @click="hideQRCode"
            :style="`width:${vw}px;height:${vh}px`" v-show="weChatQRShow">
@@ -38,19 +38,15 @@
           <div class="footer_right" :class="footerRightVar">
             <div class="footer_link_wrap">
               <a href="https://www.irisnetwork.cn/testnets" target="_blank">
-                <span class="footer_link_contact">Join Testnet</span>
-              </a>
-              <span class="footer_link_forum">|</span>
-              <a href="https://www.irisnetwork.cn/?lang=EN#/0/5" target="_blank">
-                <span class="footer_link_chat">Contact Us</span>
+                <span class="footer_link_contact">Use Testnet</span>
               </a>
               <span class="footer_link_join">|</span>
-              <span class="footer_link_privacy" @click="footerLinkClick('/privacy_policy')">Privacy Policy</span>
+              <span class="footer_link_privacy"><router-link :to="`/privacy_policy`">Privacy Policy</router-link></span>
               <span class="footer_link_join">|</span>
-              <span @click="footerLinkClick('/help')">FAQ</span>
+              <span class="footer-faq"><router-link :to="`/help`">FAQ</router-link></span>
             </div>
             <p class="footer_copyright_wrap">
-              ©️ IRISplorer 2018 all rights reserved
+              ©️ IRISplorer 2019 all rights reserved
             </p>
           </div>
         </div>
@@ -101,6 +97,7 @@
         innerWidth: window.innerWidth,
         scrollHeight:0,
         flShowHeader : true,
+        headerHeightStyle:''
       }
     },
     beforeMount() {
@@ -113,11 +110,13 @@
       this.showHeaderAndFooterByVersionPath();
       window.addEventListener('resize', this.onresize);
       if (window.innerWidth > 960) {
+        this.$store.commit('isMobile',false);
         this.footerClass = 'person_computer_wrap';
         this.footerClassName = 'person_computer_footer';
         this.footerLeftVar = 'person_computer_footer_left';
         this.footerRightVar = 'person_computer_footer_right';
       } else {
+        this.$store.commit('isMobile',true);
         this.footerClass = 'mobile_wrap_footer';
         this.footerClassName = 'mobile_footer';
         this.footerLeftVar = 'mobile_footer_left';
@@ -133,9 +132,6 @@
         if(e.target.scrollTop > 0){
           this.scrollHeight = e.target.scrollTop
         }
-      },
-      footerLinkClick(path) {
-        this.$router.push(path);
       },
       onresize() {
         this.innerWidth = window.innerWidth;
@@ -171,7 +167,13 @@
       hideQRCode() {
         this.weChatQRShow = false;
         this.qqQRShow =  false;
+      },
+      closeSelectOption(){
+        this.$store.commit('flShowSelectOption',false)
       }
+    },
+    updated () {
+      this.headerHeightStyle = `${document.getElementById('header').clientHeight/100}rem`
     }
   }
 </script>
@@ -181,6 +183,8 @@
   html {
     font-size: 625%;
     -webkit-text-size-adjust: none;
+    overflow-y: scroll;
+    position: relative;
   }
 
   body, html {
@@ -190,7 +194,6 @@
   body {
     font-size: 16px !important;
     font-family:Arial !important;
-    overflow-y: scroll;
     position: relative;
   }
 
@@ -220,7 +223,7 @@
         top: 0;
         left: 0;
         background: rgba(0, 0, 0, .6);
-        z-index: 1000;
+        z-index: 10002;
         @include flex;
         justify-content: center;
         align-items: center;
@@ -277,7 +280,9 @@
           }
           .footer_right {
             .footer_link_wrap {
+              align-items: center;
               justify-content: center;
+
             }
             .footer_copyright_wrap {
               text-align: center;
@@ -333,10 +338,21 @@
                 &:nth-child(2n-1) {
                   color: #3698db;
                   cursor: pointer;
+                  margin-top: 0.02rem;
                 }
                 &:nth-child(2n) {
                   color: #a2a2ae;
                   margin: 0 0.1rem;
+                }
+              }
+              .footer_link_privacy{
+                a{
+                  color: #3598db !important;
+                }
+              }
+              .footer-faq{
+                a{
+                  color: #3598db !important;
                 }
               }
             }

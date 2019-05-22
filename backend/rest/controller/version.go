@@ -15,10 +15,3 @@ func RegisterQueryVersion(r *mux.Router) error {
 
 	return nil
 }
-
-func RegisterPing(r *mux.Router) error {
-	doApi(r, types.UrlRegisterPing, "GET", func(request model.IrisReq) interface{} {
-		return nil
-	})
-	return nil
-}

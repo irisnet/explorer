@@ -2,14 +2,22 @@ package controller
 
 import (
 	"encoding/json"
+	"net/http"
+	"net/url"
+	"strconv"
+
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/rest/filter"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
-	"net/http"
-	"strconv"
+)
+
+const (
+	DefaultPageSize    = 10
+	DefaultPageNum     = 1
+	DefaultBlockHeight = 1
 )
 
 // user business action
@@ -35,6 +43,14 @@ func GetInt(request model.IrisReq, key string) (result int) {
 	return
 }
 
+func QueryParam(request model.IrisReq, key string) (result string) {
+	queryForm, err := url.ParseQuery(request.URL.RawQuery)
+	if err == nil && len(queryForm[key]) > 0 {
+		return queryForm[key][0]
+	}
+	return
+}
+
 func Var(request model.IrisReq, key string) (result string) {
 	args := mux.Vars(request.Request)
 	result = args[key]
@@ -44,7 +60,7 @@ func Var(request model.IrisReq, key string) (result string) {
 func GetPage(r model.IrisReq) (int, int) {
 	page := Var(r, "page")
 	size := Var(r, "size")
-	iPage := 0
+	iPage := 1
 	iSize := 20
 	if p, ok := utils.ParseInt(page); ok {
 		iPage = int(p)
@@ -89,6 +105,7 @@ func doException(request model.IrisReq, writer http.ResponseWriter) {
 // response action's result to user
 func doResponse(writer http.ResponseWriter, data interface{}) {
 	var bz []byte
+	var err error
 
 	switch data.(type) {
 	case []byte:
@@ -99,9 +116,12 @@ func doResponse(writer http.ResponseWriter, data interface{}) {
 			Msg:  types.CodeSuccess.Msg,
 			Data: data.(int64),
 		}
-		bz, _ = json.Marshal(resp)
+		bz, err = json.Marshal(resp)
 	default:
-		bz, _ = json.Marshal(data)
+		bz, err = json.Marshal(data)
+	}
+	if err != nil {
+		logger.Error("doResponse", logger.String("err", err.Error()))
 	}
 	writer.Write(bz)
 }

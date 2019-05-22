@@ -1,10 +1,16 @@
 package orm
 
 import (
+	"errors"
+	"fmt"
+	"reflect"
+	"time"
+
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
-	"time"
+	"gopkg.in/mgo.v2/bson"
+	"gopkg.in/mgo.v2/txn"
 
 	"gopkg.in/mgo.v2"
 )
@@ -53,62 +59,153 @@ func QueryRows(collation string, data interface{}, m map[string]interface{}, sor
 	}
 }
 
-// TODO will replace with `One`
-func QueryRow(collation string, data interface{}, m map[string]interface{}) error {
-	c := GetDatabase().C(collation)
-	defer c.Database.Session.Close()
-	return c.Find(m).One(data)
+type Query struct {
+	db         *mgo.Database
+	collection string
+	result     interface{}
+	condition  bson.M
+	sort       []string
+	page       int
+	size       int
+	selector   interface{}
 }
 
-func All(query MQuery) error {
-	c := GetDatabase().C(query.C)
-	defer c.Database.Session.Close()
-	q := buildQuery(c, query)
-	return q.All(query.Result)
+func NewQuery() *Query {
+	var q = &Query{}
+	q.db = GetDatabase()
+	return q
 }
 
-func One(query MQuery) error {
-	c := GetDatabase().C(query.C)
-	defer c.Database.Session.Close()
-	q := buildQuery(c, query)
-	return q.One(query.Result)
+func (query *Query) GetDb() *mgo.Database {
+	return query.db
 }
 
-func AllWithCount(query MQuery) (int, error) {
-	c := GetDatabase().C(query.C)
-	defer c.Database.Session.Close()
-	count, err := c.Find(query.Q).Count()
-	if err != nil {
-		return count, err
+func (query *Query) Exec() error {
+	q := query.buildQuery()
+	vType := reflect.ValueOf(query.result)
+	switch vType.Elem().Kind() {
+	case reflect.Slice:
+		return q.All(query.result)
+	default:
+		return q.One(query.result)
 	}
-	q := buildQuery(c, query)
-	err = q.All(query.Result)
-	return count, err
+}
+func (query *Query) Count() (cnt int, err error) {
+	q := query.buildQuery()
+	return q.Count()
 }
 
-type MQuery struct {
-	C        string
-	Result   interface{}
-	Q        map[string]interface{}
-	Sort     string
-	Page     int
-	Size     int
-	Selector interface{}
+func (query *Query) PipeQuery(pipeline interface{}) error {
+	var c = query.db.C(query.collection)
+	var pipe = c.Pipe(pipeline)
+	vType := reflect.ValueOf(query.result)
+	switch vType.Elem().Kind() {
+	case reflect.Slice:
+		return pipe.All(query.result)
+	default:
+		return pipe.One(query.result)
+	}
 }
 
-func buildQuery(c *mgo.Collection, query MQuery) *mgo.Query {
-	var q = c.Find(query.Q)
-	if query.Selector != nil {
-		q = q.Select(query.Selector)
+func (query *Query) ExecPage() (cnt int, err error) {
+	var c = query.db.C(query.collection)
+	var q = c.Find(query.condition)
+	cnt, err = q.Count()
+	if err != nil || cnt == 0 {
+		return cnt, errors.New(fmt.Sprintf("query error,collection:%s,condition:%+v",
+			query.collection, query.condition))
 	}
-	if query.Size != 0 {
-		q = q.Limit(query.Size)
+	q = query.buildQuery()
+	return cnt, q.All(query.result)
+}
+
+func (query *Query) Reset() *Query {
+	query.collection = ""
+	query.result = nil
+	query.condition = nil
+	query.sort = nil
+	query.page = 0
+	query.size = 0
+	query.selector = nil
+	return query
+}
+
+func (query *Query) SetCollection(collection string) *Query {
+	query.collection = collection
+	return query
+}
+func (query *Query) SetResult(result interface{}) *Query {
+	query.result = result
+	return query
+}
+func (query *Query) SetCondition(condition bson.M) *Query {
+	query.condition = condition
+	return query
+}
+func (query *Query) SetSort(sort ...string) *Query {
+	query.sort = sort
+	return query
+}
+func (query *Query) SetPage(page int) *Query {
+	query.page = page
+	return query
+}
+func (query *Query) SetSize(size int) *Query {
+	query.size = size
+	return query
+}
+func (query *Query) SetSelector(selector interface{}) *Query {
+	query.selector = selector
+	return query
+}
+
+func (query *Query) Release() {
+	if query.db == nil {
+		return
 	}
-	if query.Page != 0 {
-		q = q.Skip((query.Page - 1) * query.Size)
+	query.db.Session.Close()
+}
+
+func (query *Query) buildQuery() *mgo.Query {
+	var c = query.db.C(query.collection)
+	var q = c.Find(query.condition)
+	if query.selector != nil {
+		q = q.Select(query.selector)
 	}
-	if query.Sort != "" {
-		q = q.Sort(query.Sort)
+	if query.size != 0 {
+		q = q.Limit(query.size)
+	}
+	if query.page != 0 {
+		q = q.Skip((query.page - 1) * query.size)
+	}
+	if query.sort != nil && len(query.sort) > 0 {
+		q = q.Sort(query.sort...)
 	}
 	return q
+}
+
+// mgo transaction method
+// detail to see: https://godoc.org/gopkg.in/mgo.v2/txn
+func Batch(ops []txn.Op) error {
+	if len(ops) == 0 {
+		return nil
+	}
+	c := GetDatabase().C("mgo_txn")
+	defer c.Database.Session.Close()
+	runner := txn.NewRunner(c)
+
+	txObjectId := bson.NewObjectId()
+	err := runner.Run(ops, txObjectId, nil)
+	if err != nil {
+		if err == txn.ErrAborted {
+			err = runner.Resume(txObjectId)
+			if err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+	}
+
+	return nil
 }
