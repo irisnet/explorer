@@ -343,8 +343,8 @@ export default class Tools{
    * param String
    * return String
    */
-  static formatTxHash(address){
-    return `${address.substring(0,4)}...${address.substring(address.length - 4)}`
+  static formatTxHash(txHash){
+    return `${txHash.substring(0,4)}...${txHash.substring(txHash.length - 4)}`
   }
   static formatTxList(list,txType,currentServerTime){
     if(list !== null){
