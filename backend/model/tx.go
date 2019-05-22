@@ -1,8 +1,9 @@
 package model
 
 import (
-	"github.com/irisnet/explorer/backend/orm/document"
 	"time"
+
+	"github.com/irisnet/explorer/backend/orm/document"
 )
 
 type MsgSubmitProposal struct {
@@ -58,6 +59,39 @@ type TxStatisticsVo struct {
 type TxNumGroupByDayVo struct {
 	Date string `json:"date"`
 	Num  int64  `json:"num"`
+}
+
+type TxPage struct {
+	Total int  `json:"total"`
+	Items []Tx `json:"items"`
+}
+
+type ProposalPage struct {
+	Total int            `json:"total"`
+	Items []ProposalInfo `json:"items"`
+}
+
+type ProposalInfo struct {
+	Hash          string             `json:"hash"`
+	ActualFee     document.ActualFee `json:"actual_fee"`
+	TxInitiator   string             `json:"tx_initiator"`
+	TxType        string             `json:"tx_type"`
+	Status        string             `json:"status"`
+	ProposalId    uint64             `json:"proposal_id"`
+	ProposalType  string             `json:"proposal_type"`
+	ProposalTitle string             `json:"proposal_title"`
+}
+
+type Tx struct {
+	Hash        string             `json:"hash"`
+	From        string             `json:"from"`
+	To          string             `json:"to"`
+	Amount      document.Coins     `json:"amount"`
+	ActualFee   document.ActualFee `json:"actual_fee"`
+	TxInitiator string             `json:"tx_initiator"`
+	Type        string             `json:"type"`
+	Status      string             `json:"status"`
+	Timestamp   time.Time          `json:"timestamp"`
 }
 
 type BaseTx struct {

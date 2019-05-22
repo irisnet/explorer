@@ -3,8 +3,10 @@ package document
 import "gopkg.in/mgo.v2/bson"
 
 const (
-	CollectionNmTxMsg = "tx_msg"
-	TxMsg_Field_Hash  = "hash"
+	CollectionNmTxMsg   = "tx_msg"
+	TxMsg_Field_Hash    = "hash"
+	TxMsg_Field_Content = "content"
+	TxMsg_Field_Type    = "type"
 )
 
 type TxMsg struct {
