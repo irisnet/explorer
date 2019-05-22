@@ -142,7 +142,7 @@
     <b-table :fields='fields' :items='items' striped v-if="type === 'addressTxList'" nodelabel >
       <template slot='TxHash' slot-scope='data'>
         <span class="skip_route">
-          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item['TxHash'] ? `${formatTxHash(String(data.item.TxHash))}` : ''}}</router-link>
+          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item.TxHash ? `${formatTxHash(String(data.item.TxHash))}` : ''}}</router-link>
         </span>
       </template>
       <template slot='Age' slot-scope='data'>
@@ -182,7 +182,7 @@
     <b-table :fields='fields' :items='items' striped v-if="type === 'blockTxList'" nodelabel class="block_style">
       <template slot='TxHash' slot-scope='data'>
         <span class="skip_route">
-          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item['TxHash'] ? `${formatTxHash(String(data.item.TxHash))}` : ''}}</router-link>
+          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item.TxHash ? `${formatTxHash(String(data.item.TxHash))}` : ''}}</router-link>
         </span>
       </template>
       <template slot='Block' slot-scope='data'>
