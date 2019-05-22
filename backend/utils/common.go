@@ -94,3 +94,7 @@ func QuoByStr(xStr, yStr string) (*big.Rat, error) {
 
 	return new(big.Rat).Quo(xAsRat, yAsRat), nil
 }
+
+func NewRatFromFloat64(f float64) *big.Rat {
+	return new(big.Rat).SetFloat64(f)
+}
