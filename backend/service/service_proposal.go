@@ -150,3 +150,19 @@ func (service *ProposalService) Query(id int) (resp model.ProposalInfoVo) {
 	resp.Result = result
 	return
 }
+
+func (service *ProposalService) QueryTypeAndTitleByIds(ids []uint64) ([]document.Proposal, error) {
+
+	proposalDocArr := []document.Proposal{}
+	selector := bson.M{
+		document.Proposal_Field_ProposalId: 1,
+		document.Proposal_Field_Title:      1,
+		document.Proposal_Field_Type:       1,
+	}
+	condition := bson.M{
+		document.Proposal_Field_ProposalId: bson.M{"$in": ids},
+	}
+	err := queryAll(document.CollectionNmProposal, selector, condition, "", 0, &proposalDocArr)
+
+	return proposalDocArr, err
+}

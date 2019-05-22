@@ -24,7 +24,6 @@ func (service *BlockService) GetModule() Module {
 }
 
 func (service *BlockService) GetValidatorSet(height int64, page, size int) model.ValidatorSet {
-	result := model.ValidatorSet{}
 	lcdValidators := lcd.ValidatorSet(height)
 	if page > 0 {
 		page = page - 1
@@ -68,9 +67,11 @@ func (service *BlockService) GetValidatorSet(height int64, page, size int) model
 			items = append(items, tmp)
 		}
 	}
-	result.Items = items
-	result.Total = len(lcdValidators.Validators)
-	return result
+
+	return model.ValidatorSet{
+		Items: items,
+		Total: len(lcdValidators.Validators),
+	}
 }
 
 func (service *BlockService) QueryBlockInfo(height int64) model.BlockInfo {
@@ -256,60 +257,46 @@ func (service *BlockService) QueryTxsExcludeTxGovByBlock(height int64, page, siz
 
 func (service *BlockService) QueryTxsOnlyTxGovByBlock(height int64, page, size int) model.ProposalPage {
 
+	items := make([]model.ProposalInfo, 0, size)
 	itemsAsDoc, total, err := service.getTxsByBlock(height, true, page, size)
 	if err != nil {
 		logger.Error("QueryTxsExcludeProposal err", logger.String("error", err.Error()))
 		panic(types.CodeNotFound)
 	}
 
-	txHashArr := make([]string, 0, size)
+	proposalIdArr := make([]uint64, 0, size)
 	for _, v := range itemsAsDoc {
-		txHashArr = append(txHashArr, v.TxHash)
-	}
-
-	selector := bson.M{
-		document.TxMsg_Field_Hash:    1,
-		document.TxMsg_Field_Content: 1,
-		document.TxMsg_Field_Type:    1,
-	}
-	condition := bson.M{
-		document.TxMsg_Field_Hash: bson.M{"$in": txHashArr},
-	}
-
-	txMsgs := make([]document.TxMsg, 0, size)
-	if err := queryAll(document.CollectionNmTxMsg, selector, condition, "", 0, &txMsgs); err != nil {
-		logger.Error("query tx msg", logger.String("err", err.Error()))
-		panic(types.CodeNotFound)
-	}
-
-	items := make([]model.ProposalInfo, 0, len(txHashArr))
-	for _, v := range itemsAsDoc {
-		for _, vAsMsg := range txMsgs {
-			if v.TxHash == vAsMsg.Hash {
-				proType, err := service.GetValueByKey(vAsMsg.Content, "title")
-				if err != nil {
-					logger.Error("query proposal type from txMsg", logger.String("k", document.Proposal_Field_Type), logger.String("err", err.Error()), logger.String("JsonStr", vAsMsg.Content))
-				}
-
-				proTitle, err := service.GetValueByKey(vAsMsg.Content, "proposalType")
-				if err != nil {
-					logger.Error("query proposal title from txMsg", logger.String("k", document.Proposal_Field_Title), logger.String("err", err.Error()), logger.String("JsonStr", vAsMsg.Content))
-				}
-				tmp := model.ProposalInfo{
-					ProposalType:  proType,
-					ProposalTitle: proTitle,
-					ProposalId:    v.ProposalId,
-					Hash:          v.TxHash,
-					ActualFee:     v.ActualFee,
-					TxInitiator:   v.From,
-					TxType:        v.Type,
-					Status:        v.Status,
-				}
-				items = append(items, tmp)
-			}
+		if v.ProposalId != 0 {
+			proposalIdArr = append(proposalIdArr, v.ProposalId)
 		}
 	}
 
+	proposals := make([]document.Proposal, 0, size)
+	if len(proposalIdArr) != 0 {
+		var err error
+		proposals, err = Get(Proposal).(*ProposalService).QueryTypeAndTitleByIds(proposalIdArr)
+		if err != nil {
+			panic(types.CodeNotFound)
+		}
+	}
+
+	for _, vTx := range itemsAsDoc {
+		tmp := model.ProposalInfo{
+			ProposalId:  vTx.ProposalId,
+			Hash:        vTx.TxHash,
+			ActualFee:   vTx.ActualFee,
+			TxInitiator: vTx.From,
+			TxType:      vTx.Type,
+			Status:      vTx.Status,
+		}
+		for _, vProposal := range proposals {
+			if vTx.ProposalId == vProposal.ProposalId {
+				tmp.ProposalType = vProposal.Type
+				tmp.ProposalTitle = vProposal.Title
+			}
+		}
+		items = append(items, tmp)
+	}
 	return model.ProposalPage{
 		Total: total,
 		Items: items,
