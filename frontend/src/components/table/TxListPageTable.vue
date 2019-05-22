@@ -3,7 +3,7 @@
       <b-table :fields='fields' :items='items' striped class="block_style">
         <template slot='TxHash' slot-scope='data'>
         <span class="skip_route">
-          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item.TxHash?`${String(data.item.TxHash).substr(0,16)}...`:''}}</router-link>
+          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item.TxHash ? `${formatTxHash(String(data.item.TxHash))}` : ''}}</router-link>
         </span>
         </template>
         <template slot='Age' slot-scope='data'>
@@ -68,6 +68,11 @@
       methods:{
         formatAddress(address){
           return Tools.formatValidatorAddress(address)
+        },
+        formatTxHash(TxHash){
+          if(TxHash){
+            return Tools.formatTxHash(TxHash)
+          }
         },
       }
 	}

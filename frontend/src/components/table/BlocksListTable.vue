@@ -20,7 +20,7 @@
     <b-table :fields='fields' :items='items' striped v-if="type === '2'" class="block_style">
       <template slot='TxHash' slot-scope='data'>
         <span class="skip_route">
-          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item.TxHash?`${String(data.item.TxHash).substr(0,16)}...`:''}}</router-link>
+          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item.TxHash ? `${formatTxHash(String(data.item.TxHash))}` : ''}}</router-link>
         </span>
       </template>
       <template slot='Age' slot-scope='data'>
@@ -81,7 +81,7 @@
     <b-table :fields='fields' :items='items' striped v-if="type === '6'" style="margin-bottom:0;">
       <template slot='TxHash' slot-scope='data'>
         <span class="skip_route">
-          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item.TxHash?`${String(data.item.TxHash).substr(0,16)}...`:''}}</router-link>
+          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item.TxHash ? `${formatTxHash(String(data.item.TxHash))}` : ''}}</router-link>
         </span>
       </template>
       <template slot='Block' slot-scope='data'>
@@ -142,7 +142,7 @@
     <b-table :fields='fields' :items='items' striped v-if="type === 'addressTxList'" nodelabel >
       <template slot='TxHash' slot-scope='data'>
         <span class="skip_route">
-          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item['TxHash'] ? `${String(data.item.TxHash).substr(0,16)}...` : ''}}</router-link>
+          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item['TxHash'] ? `${formatTxHash(String(data.item.TxHash))}` : ''}}</router-link>
         </span>
       </template>
       <template slot='Age' slot-scope='data'>
@@ -182,7 +182,7 @@
     <b-table :fields='fields' :items='items' striped v-if="type === 'blockTxList'" nodelabel class="block_style">
       <template slot='TxHash' slot-scope='data'>
         <span class="skip_route">
-          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item['TxHash'] ? `${String(data.item.TxHash).substr(0,16)}...` : ''}}</router-link>
+          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item['TxHash'] ? `${formatTxHash(String(data.item.TxHash))}` : ''}}</router-link>
         </span>
       </template>
       <template slot='Block' slot-scope='data'>
@@ -237,6 +237,11 @@
     methods: {
       formatAddress(address){
         return Tools.formatValidatorAddress(address)
+      },
+      formatTxHash(TxHash){
+        if(TxHash){
+          return Tools.formatTxHash(TxHash)
+        }
       },
     }
   }
