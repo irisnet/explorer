@@ -264,22 +264,31 @@ func (service *BlockService) QueryTxsOnlyTxGovByBlock(height int64, page, size i
 		panic(types.CodeNotFound)
 	}
 
-	proposalIdArr := make([]uint64, 0, size)
+	submitProposalHashArr := make([]string, 0, size)
+	voteDepositIdArr := make([]uint64, 0, size)
 	for _, v := range itemsAsDoc {
+		if v.Type == types.TxTypeSubmitProposal {
+			submitProposalHashArr = append(submitProposalHashArr, v.TxHash)
+			continue
+		}
 		if v.ProposalId != 0 {
-			proposalIdArr = append(proposalIdArr, v.ProposalId)
+			voteDepositIdArr = append(voteDepositIdArr, v.ProposalId)
 		}
 	}
 
-	proposals := make([]document.Proposal, 0, size)
-	if len(proposalIdArr) != 0 {
+	voteDepositProposals := make([]document.Proposal, 0, size)
+	if len(voteDepositIdArr) != 0 {
 		var err error
-		proposals, err = Get(Proposal).(*ProposalService).QueryTypeAndTitleByIds(proposalIdArr)
+		voteDepositProposals, err = Get(Proposal).(*ProposalService).QueryTypeAndTitleByIds(voteDepositIdArr)
 		if err != nil {
 			panic(types.CodeNotFound)
 		}
 	}
 
+	submitProposalTxMsgs := []document.TxMsg{}
+	if len(submitProposalHashArr) != 0 {
+		submitProposalTxMsgs = service.QueryTxMsgByHashArr(submitProposalHashArr)
+	}
 	for _, vTx := range itemsAsDoc {
 		tmp := model.ProposalInfo{
 			ProposalId:  vTx.ProposalId,
@@ -289,10 +298,27 @@ func (service *BlockService) QueryTxsOnlyTxGovByBlock(height int64, page, size i
 			TxType:      vTx.Type,
 			Status:      vTx.Status,
 		}
-		for _, vProposal := range proposals {
-			if vTx.ProposalId == vProposal.ProposalId {
-				tmp.ProposalType = vProposal.Type
-				tmp.ProposalTitle = vProposal.Title
+		if vTx.Type == types.TxTypeSubmitProposal {
+			for _, txMsg := range submitProposalTxMsgs {
+				if vTx.TxHash == txMsg.Hash {
+					proType, err := service.GetValueByKey(txMsg.Content, "title")
+					if err != nil {
+						logger.Error("query proposal type from txMsg", logger.String("k", document.Proposal_Field_Type), logger.String("err", err.Error()), logger.String("JsonStr", txMsg.Content))
+					}
+					proTitle, err := service.GetValueByKey(txMsg.Content, "proposalType")
+					if err != nil {
+						logger.Error("query proposal title from txMsg", logger.String("k", document.Proposal_Field_Title), logger.String("err", err.Error()), logger.String("JsonStr", txMsg.Content))
+					}
+					tmp.ProposalType = proType
+					tmp.ProposalTitle = proTitle
+				}
+			}
+		} else {
+			for _, vProposal := range voteDepositProposals {
+				if vTx.ProposalId == vProposal.ProposalId {
+					tmp.ProposalType = vProposal.Type
+					tmp.ProposalTitle = vProposal.Title
+				}
 			}
 		}
 		items = append(items, tmp)
@@ -301,6 +327,26 @@ func (service *BlockService) QueryTxsOnlyTxGovByBlock(height int64, page, size i
 		Total: total,
 		Items: items,
 	}
+}
+
+func (service *BlockService) QueryTxMsgByHashArr(hashArr []string) []document.TxMsg {
+
+	selector := bson.M{
+		document.TxMsg_Field_Hash:    1,
+		document.TxMsg_Field_Content: 1,
+		document.TxMsg_Field_Type:    1,
+	}
+	condition := bson.M{
+		document.TxMsg_Field_Hash: bson.M{"$in": hashArr},
+	}
+
+	txMsgs := []document.TxMsg{}
+	if err := queryAll(document.CollectionNmTxMsg, selector, condition, "", 0, &txMsgs); err != nil {
+		logger.Error("query tx msg", logger.String("err", err.Error()))
+		panic(types.CodeNotFound)
+	}
+
+	return txMsgs
 }
 
 func (service *BlockService) getTxsByBlock(height int64, onlyOrExcludeProposal bool, page, size int) ([]document.CommonTx, int, error) {
