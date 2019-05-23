@@ -129,10 +129,10 @@
                         label:'Amount',
                       },
                       Fee:{
-                        label:'Fee',
+                        label:'Tx_Fee',
                       },
                       Tx_Initiator:{
-                        label:'Tx_Initiator',
+                        label:'Tx_Signer',
                       },
                       Tx_Type:{
                         label:'Tx_Type',
@@ -144,6 +144,15 @@
                   governanceFields:{
                       'TxHash':{
                           label:'Tx_Hash',
+                      },
+                      'ProposalTitle':{
+                        label:'Proposal_Title',
+                      },
+                      'ProposalId':{
+                        label:'Proposal_ID',
+                      },
+                      'ProposalType':{
+                        label:'Proposal_Type',
                       },
                       'TxFee':{
                           label:'Tx_Fee',
@@ -157,15 +166,7 @@
                       'TxStatus':{
                           label:'Tx_Status',
                       },
-                      'ProposalType':{
-                          label:'Proposal_Type',
-                      },
-                      'ProposalId':{
-                          label:'Proposal_ID',
-                      },
-                      'ProposalTitle':{
-                          label:'Proposal_Title',
-                      },
+
                   },
                   validatorFields:{
                       index:{
