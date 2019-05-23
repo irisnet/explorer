@@ -49,28 +49,22 @@
             </div>
         </div>
         <div class="block_table_container">
-            <div class="block_result_container">
+            <div class="block_result_container" v-show="flBlockResultModule">
                 <div class="block_result_title">Transactions</div>
                 <div class="block_result_table_content" style="overflow-x: auto;">
                     <blocks-list-table :items="items"
                                        :showNoData="flBlockResultNoData" :min-width="tableMinWidth"></blocks-list-table>
-                    <div v-show="flBlockResultNoData" class="no_data_show">
-                        No Data
-                    </div>
                     <div class="pagination" style='margin-top:0.2rem;' v-if="flShowTxListPagination">
                         <b-pagination size="md" :total-rows="txListCount" v-model="txListCurrentPage" :per-page="pageSize">
                         </b-pagination>
                     </div>
                 </div>
             </div>
-            <div class="block_proposal_container">
+            <div class="block_proposal_container" v-show="flGovernanceModule">
                 <div class="block_proposal_title">Governance</div>
                 <div class="block_proposal_content" style="overflow-x: auto;">
                     <blocks-list-table :items="governanceList"
                                        :showNoData="flGovernanceNoData" :min-width="tableMinWidth"></blocks-list-table>
-                    <div v-show="flGovernanceNoData" class="no_data_show">
-                        No Data
-                    </div>
                     <div class="pagination" style='margin-top:0.2rem;' v-if="flShowGovernanceListPagination">
                         <b-pagination size="md" :total-rows="governanceListCount" v-model="governanceListCurrentPage" :per-page="pageSize">
                         </b-pagination>
@@ -169,6 +163,8 @@
                 flShowValidatorListSetPagination: false,
                 validatorValue: null,
 	            inflationValue: null,
+	            flBlockResultModule:false,
+	            flGovernanceModule: false
             }
         },
         beforeMount() {
@@ -215,7 +211,7 @@
                         this.precommitValidatorsValue = result.validator_num !== 0 ? result.validator_num : '--';
                         this.getMaxBlock(result.latest_height)
                     } else {
-	                    this.validatorValue= '--'
+	                    this.validatorValue= '--';
                         this.proposerAddress = '--';
                         this.inflationValue = '--';
                         this.heightValue = '';
@@ -268,6 +264,7 @@
             handleTxList(txList){
                 if(txList && txList.items && txList.items.length !== 0){
 	                this.flBlockResultNoData = false;
+	                this.flBlockResultModule = true;
                     this.txListCount  = txList.total;
                     if(txList.total > this.pageSize){
                         this.flShowTxListPagination = true
@@ -277,9 +274,9 @@
                     this.items = txList.items.map( item => {
 	                    return{
                             'TxHash' : item.hash,
-                            'From' : item.from,
-                            'To' : item.to,
-                            'Amount' : `${Tools.convertScientificNotation2Number(Tools.formatNumber(item.amount[0].amount))} ${Tools.formatDenom(item.amount[0].denom).toUpperCase()}`,
+                            'From' : item.from ? item.from : '--',
+                            'To' : item.to ? item.to : '--',
+                            'Amount' : item.amount ? this.handleAmount(item.amount) : '--',
                             'Fee' : `${Tools.formatFeeToFixedNumber(item.actual_fee.amount)} ${Tools.formatDenom(item.actual_fee.denom).toUpperCase()}`,
                             'Tx_Initiator' : item.tx_initiator,
                             'Tx_Type' : item.type,
@@ -289,22 +286,25 @@
                     });
                 }else {
                     this.flBlockResultNoData = true;
-                    this.items =[{
-                        'TxHash' : '',
-                        'From' : '',
-                        'To' : '',
-                        'Amount' : '',
-                        'Fee' : '',
-                        'Tx_Initiator' : '',
-                        'Tx_Type' : '',
-                        'Status' : '',
-	                    'listName':'tx'
-                    }]
+	                this.flBlockResultModule = false;
+                }
+            },
+            handleAmount(amount){
+	            if(amount && amount.length > 0){
+		            amount[0].amount = Tools.formatAmount(amount[0].amount);
+		            if(!amount[0].denom){
+			            return amount.map(item => `${item.amount} SHARES`).join(',');
+                    }else {
+			            return amount.map(item => `${item.amount} ${Tools.formatDenom(item.denom).toUpperCase()}`).join(',');
+                    }
+                }else {
+	            	return '--'
                 }
             },
             handleGovernance(proposals){
 	            if(proposals && proposals .items && proposals.items.length !== 0){
 	                this.flGovernanceNoData = false;
+	                this.flGovernanceModule = true;
                     this.governanceListCount = proposals.total;
                     if(proposals.total > this.pageSize){
                         this.flShowGovernanceListPagination = true
@@ -326,17 +326,7 @@
                     })
                 }else {
                     this.flGovernanceNoData = true;
-                    this.governanceList = [{
-	                    "TxHash": '',
-	                    "TxFee": '',
-	                    "TxSigner": '',
-	                    "TxType": '',
-	                    "TxStatus": '',
-	                    "ProposalType": '',
-	                    "ProposalId": '',
-	                    "ProposalTitle": '',
-	                    "listName":"gov"
-                    }]
+		            this.flGovernanceModule
                 }
             },
             handleValidatorSetList(validatorList){
