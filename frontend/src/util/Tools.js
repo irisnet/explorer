@@ -395,7 +395,7 @@ export default class Tools{
           objList = {
             From: item.Owner ? item.Owner : "--",
             Moniker: item.Moniker ? Tools.formatString(Moniker,20,"...") : "--",
-            "Self-Bond": item.SelfBond && item.SelfBond.length > 0 ? `${Tools.formatAmount(item.SelfBond[0].amount)} ${Tools.formatDenom(item.SelfBond[0].denom).toUpperCase()}` : "--",
+            "Self-Bonded": item.SelfBond && item.SelfBond.length > 0 ? `${Tools.formatAmount(item.SelfBond[0].amount)} ${Tools.formatDenom(item.SelfBond[0].denom).toUpperCase()}` : "--",
             Type: item.Type,
             Fee: `${Tools.formatFeeToFixedNumber(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`,
           }
@@ -439,7 +439,7 @@ export default class Tools{
           Block:'',
           From:'',
           Moniker:'',
-          "Self-Bond":'',
+          "Self-Bonded":'',
           Type:'',
           Fee:'',
           Status: "",

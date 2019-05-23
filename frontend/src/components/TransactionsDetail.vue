@@ -117,7 +117,7 @@
           <span class="information_value"><pre class="information_pre">{{website}}</pre></span>
         </div>
         <div class="information_props_wrap" v-if="selfBond">
-          <span class="information_props">Self-Bond :</span>
+          <span class="information_props">Self-Bonded :</span>
           <span class="information_value">{{selfBond}}</span>
         </div>
         <div class="information_props_wrap" v-if="details">
