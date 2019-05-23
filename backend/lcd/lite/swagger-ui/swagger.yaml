@@ -12,6 +12,7 @@ produces:
 
 schemes:
   - http
+  - https
 
 tags:
   - name: Block
