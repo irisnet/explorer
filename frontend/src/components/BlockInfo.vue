@@ -183,7 +183,6 @@
             this.getBlockInformation();
             this.getTxList(this.txListCurrentPage,this.pageSize);
 	        this.getValidatorSetList(this.validatorSetListCurrentPage,this.pageSize);
-	        this.getTxList(this.txListCurrentPage,this.pageSize);
             this.getGovList(this.governanceListCurrentPage,this.pageSize);
 	        if (Number(this.$route.params.height) > 1) {
                 this.active = true;
