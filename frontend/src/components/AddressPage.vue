@@ -16,7 +16,7 @@
       <p class="transaction_information_content_title">Address Information</p>
       <div class="transactions_detail_information_wrap">
         <div class="information_props_wrap" v-show="flValidator">
-          <span class="information_props">Self-Bond :</span>
+          <span class="information_props">Self-Bonded :</span>
           <span class="information_value">{{balanceValue?balanceValue:'--'}}</span>
         </div>
         <div class="information_props_wrap" v-show="!flValidator">

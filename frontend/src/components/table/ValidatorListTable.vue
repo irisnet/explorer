@@ -76,11 +76,11 @@
                 sortable:true,
               },
               'selfBond':{
-                label:'Self Bonded',
+                label:'Self-Bonded',
                 sortable:true,
               },
               'delegatorNum':{
-                label:'Delegator Number',
+                label:'Delegators',
                 sortable:true,
               },
               'bondHeight':{
@@ -106,12 +106,19 @@
                 sortable:true,
               },
               'selfBond':{
-                label:'Self Bonded',
+                label:'Self-Bonded',
                 sortable:true,
               },
               'bondHeight':{
                 label:'Bond Height',
                 sortable:true,
+              },
+              'unbondingHeight':{
+                label:'Unbonding Height',
+                sortable:true,
+              },
+              'unbondingTime':{
+                label:'Unbonding Time',
               },
             },
             candidateValidatorFields: {
@@ -132,16 +139,23 @@
                 sortable:true,
               },
               'selfBond':{
-                label:'Self Bonded',
+                label:'Self-Bonded',
                 sortable:true,
               },
               'delegatorNum':{
-                label:'Delegator Number',
+                label:'Delegators',
                 sortable:true,
               },
               'bondHeight':{
                 label:'Bond Height',
                 sortable:true,
+              },
+              'unbondingHeight':{
+                label:'Unbonding Height',
+                sortable:true,
+              },
+              'unbondingTime':{
+                label:'Unbonding Time',
               },
             },
           }
