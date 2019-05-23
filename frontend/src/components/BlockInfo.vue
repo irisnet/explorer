@@ -276,7 +276,7 @@
                             'TxHash' : item.hash,
                             'From' : item.from ? item.from : '--',
                             'To' : item.to ? item.to : '--',
-                            'Amount' : item.amount ? this.handleAmount(item.amount) : '--',
+                            'Amount' : item.amount ? this.handleAmount(item.amount,item.type) : '--',
                             'Fee' : `${Tools.formatFeeToFixedNumber(item.actual_fee.amount)} ${Tools.formatDenom(item.actual_fee.denom).toUpperCase()}`,
                             'Tx_Initiator' : item.tx_initiator,
                             'Tx_Type' : item.type,
@@ -289,11 +289,15 @@
 	                this.flBlockResultModule = false;
                 }
             },
-            handleAmount(amount){
+            handleAmount(amount,txType){
 	            if(amount && amount.length > 0){
 		            amount[0].amount = Tools.formatAmount(amount[0].amount);
 		            if(!amount[0].denom){
-			            return amount.map(item => `${item.amount} SHARES`).join(',');
+		            	if(txType === Constant.TxType.BEGINUNBONDING || txType === Constant.TxType.BEGINREDELEGATE){
+				            return amount.map(item => `${item.amount} SHARES`).join(',');
+                        }else {
+		            		return amount[0].amount
+                        }
                     }else {
 			            return amount.map(item => `${item.amount} ${Tools.formatDenom(item.denom).toUpperCase()}`).join(',');
                     }
