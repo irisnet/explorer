@@ -12,9 +12,10 @@
         </span>
       </template>
       <template slot='ProposalTitle' slot-scope='data'>
-        <span class="skip_route">
-          <router-link :to="`/ProposalsDetail/${data.item.ProposalId}`">{{data.item.ProposalTitle.length > 10 ?`${data.item.ProposalTitle.substring(0,10)}...` : `${data.item.proposalTitle}`}}</router-link>
+        <span class="skip_route" v-if="data.item.ProposalId !== 0">
+          <router-link :to="`/ProposalsDetail/${data.item.ProposalId}`">{{data.item.ProposalTitle.length > 10 ?`${data.item.ProposalTitle.substring(0,10)}...` : `${data.item.ProposalTitle}`}}</router-link>
         </span>
+        <span v-if="data.item.ProposalId === 0">{{data.item.ProposalTitle}}</span>
       </template>
       <template slot='From' slot-scope='data'>
         <div class="name_address" v-show="data.item.From && data.item.From !== '--'">
