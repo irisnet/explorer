@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/irisnet/explorer/backend/orm/document"
@@ -92,6 +93,17 @@ type Tx struct {
 	Type        string             `json:"type"`
 	Status      string             `json:"status"`
 	Timestamp   time.Time          `json:"timestamp"`
+}
+
+func (t Tx) PrintHashFromToAmount() string {
+
+	return fmt.Sprintf(`
+		Hash:   %v
+		Type:   %v
+		From:   %v
+		To:     %v
+		Amount: %v
+		`, t.Hash, t.Type, t.From, t.To, t.Amount)
 }
 
 type BaseTx struct {
