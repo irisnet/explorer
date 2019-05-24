@@ -139,7 +139,7 @@
       </template>
     </b-table>
 
-    <b-table :fields='fields' :items='items' striped v-if="type === 'addressTxList'" nodelabel >
+    <b-table :fields='fields' :items='items' striped v-if="type === 'addressTxList'" nodelabel style="min-width: 12.8rem">
       <template slot='TxHash' slot-scope='data'>
         <span class="skip_route">
           <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item.TxHash ? `${formatTxHash(String(data.item.TxHash))}` : ''}}</router-link>
@@ -175,6 +175,16 @@
       <template slot='Owner' slot-scope='data'>
         <span>
           {{data.item.Owner?`${formatAddress(data.item.Owner)}`:''}}
+        </span>
+      </template>
+      <template slot='Tx_Signer' slot-scope='data'>
+        <span class="skip_route" style="display: flex" v-if="data.item.Tx_Signer">
+          <div class="name_address">
+            <span class="remove_default_style" :class="data.item.Tx_Signer === $route.params.param?'no_skip':''">
+              <router-link :to="`/address/1/${data.item.Tx_Signer}`" class="link_style justify">{{formatAddress(data.item.Tx_Signer)}}</router-link>
+            </span>
+            <span class="address">{{data.item.Tx_Signer}}</span>
+          </div>
         </span>
       </template>
     </b-table>

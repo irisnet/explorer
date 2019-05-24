@@ -405,8 +405,9 @@ export default class Tools{
             Block:item.BlockHeight,
             From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
             To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:'--'),
-            Type:item.Type === 'coin'?'transfer':item.Type,
             Amount,
+            Type:item.Type === 'coin'?'transfer':item.Type,
+            'Tx_Signer': item.Signer ? item.Signer : '',
             Fee,
           }
         }else if(txType === 'governance'){
@@ -451,8 +452,9 @@ export default class Tools{
           Block:'',
           From:'',
           To:'',
-          Type:'',
           Amount:'',
+          Type:'',
+          'Tx_Signer': '',
           Fee:'',
           Status: "",
           Age:'',

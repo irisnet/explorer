@@ -1,6 +1,6 @@
 <template>
-    <div :class="showNoData?'show_no_data':''" style="min-width: 12rem">
-      <b-table :fields='fields' :items='items' striped class="block_style">
+    <div :class="showNoData?'show_no_data':''" style="min-width: 12.8rem">
+      <b-table :fields='fields' :items='items' striped>
         <template slot='TxHash' slot-scope='data'>
         <span class="skip_route">
           <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item.TxHash ? `${formatTxHash(String(data.item.TxHash))}` : ''}}</router-link>
@@ -47,6 +47,16 @@
           <pre class="pre_global_style">{{data.item.Moniker ? data.item.Moniker : ''}}</pre>
         </span>
         </template>
+        <template slot='Tx_Signer' slot-scope='data'>
+        <span class="skip_route" style="display: flex" v-if="data.item.Tx_Signer">
+          <div class="name_address">
+            <span class="remove_default_style">
+              <router-link :to="`/address/1/${data.item.Tx_Signer}`" class="link_style justify">{{formatAddress(data.item.Tx_Signer)}}</router-link>
+            </span>
+            <span class="address">{{data.item.Tx_Signer}}</span>
+          </div>
+        </span>
+      </template>
       </b-table>
     </div>
 </template>
