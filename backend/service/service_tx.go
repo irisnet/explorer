@@ -2,6 +2,7 @@ package service
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/irisnet/explorer/backend/logger"
@@ -19,6 +20,94 @@ type TxService struct {
 
 func (service *TxService) GetModule() Module {
 	return Tx
+}
+
+func (service *TxService) QueryStakeTxList(query bson.M, page, pageSize int) model.PageVo {
+
+	logger.Info("QueryStakeList start", service.GetTraceLog())
+	var data []document.CommonTx
+
+	total, err := pageQuery(document.CollectionNmCommonTx, nil, query, desc(document.Tx_Field_Time), page, pageSize, &data)
+
+	if err != nil {
+		logger.Error("query stake list ", logger.String("err", err.Error()))
+		return model.PageVo{}
+	}
+	items := buildData(data)
+
+	forwardTxHashs := make([]string, 0, len(items))
+	for k, v := range items {
+		if stakeTx, ok := v.(model.StakeTx); ok {
+			logger.Info("query stake list", logger.String(fmt.Sprintf("k: %v ", k), stakeTx.PrintHashFromToAmount()))
+
+			stakeTx.Signer = stakeTx.From
+			items[k] = stakeTx
+			forwardTxHashs = append(forwardTxHashs, stakeTx.Hash)
+		}
+	}
+
+	if len(forwardTxHashs) == 0 {
+		logger.Info("Result")
+		for i := 0; i < len(items); i++ {
+			if stakeTx, ok := items[i].(model.StakeTx); ok {
+				stakeTx.From, stakeTx.To = Get(Block).(*BlockService).ParseCoinFlowFromAndTo(stakeTx.Type, stakeTx.From, stakeTx.To)
+				items[i] = stakeTx
+			}
+		}
+		return model.PageVo{
+			Data:  items,
+			Count: total,
+		}
+	}
+
+	selector := bson.M{
+		document.TxMsg_Field_Hash:    1,
+		document.TxMsg_Field_Content: 1,
+		document.TxMsg_Field_Type:    1,
+	}
+	condition := bson.M{
+		document.TxMsg_Field_Hash: bson.M{"$in": forwardTxHashs},
+	}
+
+	txMsgs := make([]document.TxMsg, 0, len(forwardTxHashs))
+
+	if err := queryAll(document.CollectionNmTxMsg, selector, condition, "", 0, &txMsgs); err != nil {
+		logger.Error("query tx msg", logger.String("err", err.Error()))
+		panic(types.CodeNotFound)
+	}
+
+	logger.Info("TxMsg")
+	for k, v := range txMsgs {
+		logger.Info(fmt.Sprintf("K: %v \n % v", k, v))
+	}
+
+	for _, vMsg := range txMsgs {
+		for k, stakeTx := range items {
+
+			if vTx, ok := stakeTx.(model.StakeTx); ok {
+				if vMsg.Hash == vTx.Hash {
+					forwarAddr, err := Get(Block).(*BlockService).getForwardAddr(vMsg.Type, vMsg.Content)
+					if err != nil {
+						logger.Error("get forward addr ", logger.String("err", err.Error()))
+						continue
+					}
+					vTx.From = forwarAddr
+					items[k] = vTx
+				}
+			}
+		}
+	}
+	logger.Info("Result")
+	for i := 0; i < len(items); i++ {
+		if stakeTx, ok := items[i].(model.StakeTx); ok {
+			stakeTx.From, stakeTx.To = Get(Block).(*BlockService).ParseCoinFlowFromAndTo(stakeTx.Type, stakeTx.From, stakeTx.To)
+			items[i] = stakeTx
+		}
+	}
+	return model.PageVo{
+		Data:  items,
+		Count: total,
+	}
 }
 
 func (service *TxService) QueryList(query bson.M, page, pageSize int) (pageInfo model.PageVo) {

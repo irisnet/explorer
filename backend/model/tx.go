@@ -129,6 +129,16 @@ type TransTx struct {
 type StakeTx struct {
 	TransTx
 	Source string
+	Signer string
+}
+
+func (s StakeTx) PrintHashFromToAmount() string {
+	return fmt.Sprintf(`
+Hash  : %v
+From  : %v
+To    : %v
+Amount: %v
+`, s.Hash, s.From, s.To, s.Amount)
 }
 
 type DeclarationTx struct {
