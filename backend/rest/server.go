@@ -1,4 +1,3 @@
-//go:generate statik -src=../swagger-ui
 package rest
 
 import (
@@ -11,11 +10,10 @@ import (
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/conf"
+	"github.com/irisnet/explorer/backend/lcd/lite"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/rest/controller"
 	"github.com/irisnet/explorer/backend/rest/filter"
-	_ "github.com/irisnet/explorer/backend/rest/statik"
-	"github.com/rakyll/statik/fs"
 )
 
 type ApiServer struct {
@@ -83,28 +81,12 @@ func registerFilters() {
 	filter.Register(filter.FaucetLimitPostFilter{})
 }
 
-func registerSwaggerUI(r *mux.Router) {
-	if conf.Get().Server.CurEnv == conf.EnvironmentDevelop || conf.Get().Server.CurEnv == conf.EnvironmentLocal || conf.Get().Server.CurEnv == conf.EnvironmentQa {
-		statikFS, err := fs.New()
-		if err != nil {
-			panic(err)
-		}
-
-		staticServer := http.FileServer(statikFS)
-		r.PathPrefix("/swagger-ui/").Handler(http.StripPrefix("/swagger-ui/", staticServer))
-		logger.Info(fmt.Sprintf("enalbe swagger ui in %s environment.", conf.Get().Server.CurEnv))
-
-	} else {
-		logger.Info(fmt.Sprintf("disable swagger ui in %s environment.", conf.Get().Server.CurEnv))
-	}
-}
-
 func NewAPIMux() *mux.Router {
 	r := mux.NewRouter()
 	s := r.PathPrefix("/api").Subrouter()
 	registerApi(s)
 	registerFilters()
-	registerSwaggerUI(r)
+	lite.RegisterSwaggerUI(r)
 	r.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("../frontend/dist/"))))
 	return r
 }

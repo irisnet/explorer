@@ -8,7 +8,7 @@
       <div class="top_list_container">
         <div class="top_list_content">
           <div class="top_list_title_wrap">
-            <h5 class="top_list_assets_content"><span><i>*</i> The amount include the delegated, unbonding and balance.</span></h5>
+            <h5 class="top_list_assets_content"><span><i>*</i> Amount (IRIS) is the outstanding balance plus delegated and unbonding tokens.</span></h5>
             <h5 class="top_list_time_content"><span v-show="latestTime">Updated ：{{latestTime}}+UTC</span></h5>
           </div>
           <div class="top_list_table_wrap">
@@ -144,7 +144,7 @@
     width: 100%;
     margin-bottom: 0.2rem;
     .top_list_content{
-      max-width: 12.8rem;
+      max-width: 12.5rem;
       width: 100%;
       margin: 0 auto;
       .top_list_time_content{

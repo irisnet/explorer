@@ -85,6 +85,7 @@ func doException(request model.IrisReq, writer http.ResponseWriter) {
 	if r := recover(); r != nil {
 		trace := logger.String("traceId", request.TraceId)
 		errMsg := logger.Any("errMsg", r)
+
 		switch r.(type) {
 		case types.BizCode:
 			doResponse(writer, r)
@@ -97,6 +98,8 @@ func doException(request model.IrisReq, writer http.ResponseWriter) {
 			}
 			doResponse(writer, e)
 			break
+		default:
+			doResponse(writer, types.CodeNotFound)
 		}
 		logger.Error("doException", trace, errMsg)
 	}

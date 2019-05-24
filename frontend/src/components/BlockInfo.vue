@@ -4,7 +4,7 @@
             <div class="block_detail_title_content">
                 <span class="block_height_content">
                     <i :class="active?'flag_item_left':'flag_item_left_disabled'" @click="skipNext(-1)"></i>
-                        <span class="information_value" style="flex:none;">{{`#${heightValue}`}}</span>
+                        <span class="information_value" style="flex:none;">{{heightValue}}</span>
                     <i :class="activeNext?'flag_item_right':'flag_item_right_disabled'" @click="skipNext(1)"></i>
                 </span>
             </div>
@@ -16,17 +16,8 @@
             <div class="block_information_content">
                 <div class="current_block_information_content">
                     <div class="block_information_item">
-                        <span>Timestamp:</span>
-                        <span v-if="timestampValue">{{ageValue}} ({{timestampValue}})</span>
-                        <span v-if="!timestampValue">--</span>
-                    </div>
-                    <div class="block_information_item">
                         <span>Block Hash:</span>
                         <span>{{blockHashValue}}</span>
-                    </div>
-                    <div class="block_information_item">
-                        <span>Transactions:</span>
-                        <span>{{transactionsValue}}</span>
                     </div>
                     <div class="block_information_item">
                         <span>Proposer:</span>
@@ -34,34 +25,32 @@
                         <span v-if="proposerAddress === '--'">--</span>
                     </div>
                     <div class="block_information_item">
-                        <span>Rewards:</span>
-                        <span>{{rewardsValue}}</span>
+                        <span>Validators:</span>
+                        <span>{{validatorValue}}</span>
                     </div>
-                </div>
-                <div class="last_block_information_content">
-                    <div class="last_block_information_item">
-                        <span>Last Block:</span>
-                        <span v-if="lastBlockValue !== '--'"><router-link :to="`/block/${lastBlockValue}`" class="common_link_style">{{lastBlockValue}}</router-link></span>
-                        <span v-if="lastBlockValue === '--'">--</span>
-                    </div>
-                    <div class="last_block_information_item">
-                        <span>Last Block Hash:</span>
-                        <span>{{lastBlockHashValue}}</span>
-                    </div>
-                    <div class="last_block_information_item">
-                        <span>Precommit Validators:</span>
-                        <span>{{precommitValidatorsValue}}</span>
-                    </div>
-                    <div class="last_block_information_item">
+                    <div class="block_information_item">
                         <span>Voting Power:</span>
                         <span>{{votingPowerValue}}</span>
+                    </div>
+                    <div class="block_information_item">
+                        <span>Transactions:</span>
+                        <span>{{transactionsValue}}</span>
+                    </div>
+                    <div class="block_information_item">
+                        <span>Inflation:</span>
+                        <span>{{inflationValue}}</span>
+                    </div>
+                    <div class="block_information_item">
+                        <span>Timestamp:</span>
+                        <span v-if="timestampValue">{{timestampValue}}</span>
+                        <span v-if="!timestampValue">--</span>
                     </div>
                 </div>
             </div>
         </div>
         <div class="block_table_container">
-            <div class="block_result_container">
-                <div class="block_result_title">Block Result</div>
+            <div class="block_result_container" v-show="flBlockResultModule">
+                <div class="block_result_title">Transactions</div>
                 <div class="block_result_table_content" style="overflow-x: auto;">
                     <blocks-list-table :items="items"
                                        :showNoData="flBlockResultNoData" :min-width="tableMinWidth"></blocks-list-table>
@@ -69,14 +58,10 @@
                         <b-pagination size="md" :total-rows="txListCount" v-model="txListCurrentPage" :per-page="pageSize">
                         </b-pagination>
                     </div>
-                    <div v-show="flBlockResultNoData" class="no_data_show">
-                        No Data
-                    </div>
                 </div>
-
             </div>
-            <div class="block_proposal_container">
-                <div class="block_proposal_title">Proposal</div>
+            <div class="block_proposal_container" v-show="flGovernanceModule">
+                <div class="block_proposal_title">Governance</div>
                 <div class="block_proposal_content" style="overflow-x: auto;">
                     <blocks-list-table :items="governanceList"
                                        :showNoData="flGovernanceNoData" :min-width="tableMinWidth"></blocks-list-table>
@@ -84,26 +69,21 @@
                         <b-pagination size="md" :total-rows="governanceListCount" v-model="governanceListCurrentPage" :per-page="pageSize">
                         </b-pagination>
                     </div>
-                    <div v-show="flGovernanceNoData" class="no_data_show">
-                        No Data
-                    </div>
                 </div>
-
             </div>
             <div class="block_validator_set_container">
                 <div class="block_validator_set_title">Validator Set</div>
                 <div class="block_validator_set_content" style="overflow-x: auto;">
                     <blocks-list-table :items="validatorSetList"
                                        :showNoData="flValidatorNoData" :min-width="tableMinWidth"></blocks-list-table>
+                    <div v-show="flValidatorNoData" class="no_data_show">
+                        No Data
+                    </div>
                     <div class="pagination" style='margin-top:0.2rem;margin-bottom: 0.2rem;' v-if="flShowValidatorListSetPagination">
                         <b-pagination size="md" :total-rows="validatorSetListCount" v-model="validatorSetListCurrentPage" :per-page="pageSize">
                         </b-pagination>
                     </div>
-                    <div v-show="flValidatorNoData" class="no_data_show">
-                        No Data
-                    </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -127,6 +107,9 @@
             validatorSetListCurrentPage(validatorSetListCurrentPage){
                 this.getValidatorSetList(validatorSetListCurrentPage,this.pageSize)
             },
+	        governanceListCurrentPage(governanceListCurrentPage){
+		        this.getGovList(governanceListCurrentPage,this.pageSize)
+	        },
             $route() {
                 this.getBlockInformation();
                 this.computeMinWidth();
@@ -151,7 +134,6 @@
                 timestampValue: '',
                 blockHashValue: '',
                 transactionsValue: '',
-                lastBlockHashValue: '',
                 precommitValidatorsValue: '',
                 votingPowerValue: '',
                 items: [],
@@ -167,12 +149,8 @@
                 showLoading:false,
                 pageSize: 10,
                 tableMinWidth:"",
-                blockDetailTimer: null,
-                ageValue: "",
-                lastBlockValue:null,
                 proposerValue: "",
                 proposerAddress:'',
-                rewardsValue: null,
                 txListCount: 0,
                 governanceListCount: 0,
                 validatorSetListCount: 0,
@@ -183,25 +161,10 @@
                 flShowTxListPagination: false,
                 flShowGovernanceListPagination: false,
                 flShowValidatorListSetPagination: false,
-                flShowSampleIcon: false,
-                sampleIconArray:[
-                    {
-                        color:'#3598DB',
-                        name:'Yes'
-                    },
-                    {
-                        color:'#73D1FF',
-                        name:'Abstain'
-                    },
-                    {
-                        color:'#F9CA18',
-                        name:'No'
-                    },
-                    {
-                        color:'#F27777',
-                        name:'NoWithVeto'
-                    }
-                ]
+                validatorValue: null,
+	            inflationValue: null,
+	            flBlockResultModule:false,
+	            flGovernanceModule: false
             }
         },
         beforeMount() {
@@ -214,10 +177,15 @@
         },
         mounted() {
             this.getBlockInformation();
-            if (Number(this.$route.params.height) <= 1) {
-                this.active = false;
-            } else {
+            this.getTxList(this.txListCurrentPage,this.pageSize);
+	        this.getValidatorSetList(this.validatorSetListCurrentPage,this.pageSize);
+            this.getGovList(this.governanceListCurrentPage,this.pageSize);
+	        if (Number(this.$route.params.height) > 1) {
                 this.active = true;
+		        this.activeNext = true;
+            } else {
+                this.active = false;
+                this.activeNext = false
             }
             this.computeMinWidth();
         },
@@ -228,166 +196,146 @@
                 }
             },
             getBlockInformation() {
-                let url = `/api/block/${this.$route.params.height}`;
-                Service.http(url).then((data) => {
-                    clearInterval(this.blockDetailTimer);
-                    if (data) {
-                        let that = this;
-                        this.transactionsValue = data.block_info.transactions;
-                        this.heightValue = data.block_info.block_height;
-                        let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-                        this.ageValue = Tools.formatAge(currentServerTime,data.block_info.timestamp,Constant.SUFFIX);
-                        this.blockDetailTimer = setInterval(function () {
-                            currentServerTime = new Date().getTime() + that.diffMilliseconds;
-                            that.ageValue = Tools.formatAge(currentServerTime,data.block_info.timestamp,Constant.SUFFIX);
-                        },1000);
-                        this.timestampValue = Tools.format2UTC(data.block_info.timestamp);
-                        this.blockHashValue = data.block_info.block_hash;
-                        this.lastBlockValue = data.block_info.last_block !== 0 ? data.block_info.last_block : '--';
-                        this.lastBlockHashValue = data.block_info.last_block_hash ? data.block_info.last_block_hash : '--';
-                        this.proposerValue = data.block_info.propopser_moniker;
-                        this.proposerAddress = data.block_info.propopser_addr;
-                        this.rewardsValue = data.block_info.rewards ? `${Tools.convertScientificNotation2Number(Tools.formatNumber(data.block_info.rewards[0].amount))} ${Tools.formatDenom(data.block_info.rewards [0].denom)}` : '--';
-                        this.precommitValidatorsValue = data.block_info.validator_num !== 0 ? data.block_info.validator_num : '--';
-                        this.votingPowerValue = data.block_info.total_voting_power !== 0 ? data.block_info.total_voting_power : '--';
-                        this.handleTxList(data.token_flows);
-                        this.handleGovernance(data.proposals_info);
-                        this.handleValidatorSetList(data.validator_set);
-                        this.getMaxBlock(data.block_info.latest_height);
+                let url = `/api/block/blockinfo/${this.$route.params.height}`;
+                Service.http(url).then((result) => {
+                    if (result) {
+                        this.transactionsValue = result.transactions;
+                        this.heightValue = result.block_height;
+                        this.validatorValue = `${result.precommit_validator_num !== null ? result.precommit_validator_num : '--'} / ${result.total_validator_num ? result.total_validator_num : '--'}`;
+                        this.votingPowerValue = result.precommit_voting_power !== null ? `${((result.precommit_voting_power / result.total_voting_power) *100).toFixed(4)} %` : '--';
+                        this.timestampValue = Tools.format2UTC(result.timestamp);
+                        this.blockHashValue = result.block_hash;
+                        this.proposerValue = result.propopser_moniker;
+                        this.proposerAddress = result.propopser_addr;
+                        this.inflationValue = result.mint_coin.denom !== '' ? `${Tools.convertScientificNotation2Number(Tools.formatNumber(result.mint_coin.amount))} ${Tools.formatDenom(result.mint_coin.denom)}` : '--';
+                        this.precommitValidatorsValue = result.validator_num !== 0 ? result.validator_num : '--';
+                        this.getMaxBlock(result.latest_height)
                     } else {
-                        this.handleTxList(null);
-                        this.handleGovernance(null);
-                        this.handleValidatorSetList(null);
-                        this.lastBlockValue = '--';
+	                    this.validatorValue= '--';
                         this.proposerAddress = '--';
-                        this.rewardsValue = '--';
+                        this.inflationValue = '--';
                         this.heightValue = '';
                         this.timestampValue = '';
                         this.blockHashValue = '--';
                         this.transactionsValue = '--';
-                        this.lastBlockHashValue = '--';
                         this.precommitValidatorsValue = '--';
                         this.votingPowerValue = '--';
                     }
-                }).catch(e => {
-                    console.log(e)
+                }).catch(err => {
+                    console.error(err)
+	                this.validatorValue= '--'
+	                this.proposerAddress = '--';
+	                this.inflationValue = '--';
+	                this.heightValue = '';
+	                this.timestampValue = '';
+	                this.blockHashValue = '--';
+	                this.transactionsValue = '--';
+	                this.precommitValidatorsValue = '--';
+	                this.votingPowerValue = '--';
+                })
+            },
+            getGovList(currentPage,pageSize){
+	            let url = `/api/block/txgov/${this.$route.params.height}?page=${currentPage}&size=${pageSize}`;
+	            Service.http(url).then((proposal) => {
+                    this.handleGovernance(proposal)
+	            }).catch(err => {
+	            	console.error(err);
+		            this.handleGovernance(null)
                 })
             },
             getValidatorSetList(currentPage,pageSize){
-                let url = `/api/block/validatorset/${this.$route.params.height}&page=${currentPage}&size=${pageSize}`;
+                let url = `/api/block/validatorset/${this.$route.params.height}?page=${currentPage}&size=${pageSize}`;
                 Service.http(url).then((validatorSetList) => {
-                    if(validatorSetList){
-                        this.handleValidatorSetList(validatorSetList)
-                    }
+                    this.handleValidatorSetList(validatorSetList)
+                }).catch(err => {
+	                console.error(err);
+	                this.handleValidatorSetList(null)
                 })
             },
             getTxList(currentPage,pageSize){
-                let url = `/api/block/coinflow/${this.$route.params.height}&page=${currentPage}&size=${pageSize}`;
+                let url = `/api/block/txs/${this.$route.params.height}?page=${currentPage}&size=${pageSize}`;
                 Service.http(url).then((txList) => {
-                    if(txList){
-                        this.handleTxList(txList)
-                    }
+                    this.handleTxList(txList)
+                }).catch(err => {
+	                console.error(err);
+	                this.handleTxList(null)
                 })
             },
             handleTxList(txList){
                 if(txList && txList.items && txList.items.length !== 0){
+	                this.flBlockResultNoData = false;
+	                this.flBlockResultModule = true;
                     this.txListCount  = txList.total;
                     if(txList.total > this.pageSize){
                         this.flShowTxListPagination = true
                     }else {
                         this.flShowTxListPagination = false
                     }
-                    let that = this;
                     this.items = txList.items.map( item => {
-                        let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-                        return{
-                            'TxHash' : item.tx_hash,
-                            'From' : item.from,
-                            'To' : item.to,
-                            'Amount' : `${Tools.convertScientificNotation2Number(Tools.formatNumber(item.amount.amount))} ${Tools.formatDenom(item.amount.denom).toUpperCase()}`,
-                            'Fee' : `${Tools.formatFeeToFixedNumber(item.fee.amount[0].amount)} ${Tools.formatDenom(item.fee.amount[0].denom).toUpperCase()}`,
+	                    return{
+                            'TxHash' : item.hash,
+                            'From' : item.from ? item.from : '--',
+                            'To' : item.to ? item.to : '--',
+                            'Amount' : item.amount ? this.handleAmount(item.amount,item.type) : '--',
+                            'Fee' : `${Tools.formatFeeToFixedNumber(item.actual_fee.amount)} ${Tools.formatDenom(item.actual_fee.denom).toUpperCase()}`,
                             'Tx_Initiator' : item.tx_initiator,
-                            'Tx_Type' : item.tx_type,
-                            'Tags' : item.flow_type,
+                            'Tx_Type' : item.type,
                             'Status' : item.status,
-                            'Timestamp' : Tools.formatAge(currentServerTime,item.timestamp,Constant.SUFFIX,Constant.PREFIX),
-                            'txTime':item.timestamp,
-                            'listName':"tx"
+                            'listName':'tx'
                         }
                     });
-                    clearInterval(this.blockListTxTimer);
-                    this.blockListTxTimer = setInterval(function () {
-                        that.items = that.items.map( item => {
-                            let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-                            item.Timestamp = Tools.formatAge(currentServerTime,item.txTime,Constant.SUFFIX,Constant.PREFIX)
-                            return item
-                        })
-                    },1000)
                 }else {
                     this.flBlockResultNoData = true;
-                    this.items =[{
-                        'TxHash' : '',
-                        'From' : '',
-                        'To' : '',
-                        'Amount' : '',
-                        'Fee' : '',
-                        'Tx_Initiator' : '',
-                        'Tx_Type' : '',
-                        'Tags' : '',
-                        'Status' : '',
-                        'Timestamp' : '',
-                        'txTime': '',
-                        'listName': ''
-                    }]
+	                this.flBlockResultModule = false;
+                }
+            },
+            handleAmount(amount,txType){
+	            if(amount && amount.length > 0){
+		            amount[0].amount = Tools.formatAmount(amount[0].amount);
+		            if(!amount[0].denom){
+		            	if(txType === Constant.TxType.BEGINUNBONDING || txType === Constant.TxType.BEGINREDELEGATE){
+				            return amount.map(item => `${item.amount} SHARES`).join(',');
+                        }else {
+		            		return amount[0].amount
+                        }
+                    }else {
+			            return amount.map(item => `${item.amount} ${Tools.formatDenom(item.denom).toUpperCase()}`).join(',');
+                    }
+                }else {
+	            	return '--'
                 }
             },
             handleGovernance(proposals){
-                if(proposals && proposals.length !== 0){
-                    this.flShowSampleIcon = true;
-                    this.governanceListCount = proposals.length;
-                    if(proposals.length > this.pageSize){
+	            if(proposals && proposals .items && proposals.items.length !== 0){
+	                this.flGovernanceNoData = false;
+	                this.flGovernanceModule = true;
+                    this.governanceListCount = proposals.total;
+                    if(proposals.total > this.pageSize){
                         this.flShowGovernanceListPagination = true
                     }else {
                         this.flShowGovernanceListPagination = false
                     }
-                    this.governanceList = proposals.map(item => {
-                        let voteTotal = item.result.Abstain + item.result.No + item.result.NoWithVeto + item.result.Yes;
+                    this.governanceList = proposals.items.map(item => {
                         return{
-                            Radio: '',
-                            abstainRadio: `${item.result.Abstain === 0 ? 0 :((item.result.Abstain / voteTotal) * 100 ).toFixed(0)}`,
-                            noRadio: `${item.result.No === 0 ? 0 :((item.result.No / voteTotal) * 100 ).toFixed(0)}`,
-                            noWithVetoRadio: `${item.result.NoWithVeto === 0 ? 0 :((item.result.NoWithVeto / voteTotal) * 100 ).toFixed(0)}`,
-                            yesRadio: `${item.result.Yes === 0 ? 0 :((item.result.Yes / voteTotal) * 100 ).toFixed(0)}`,
-                            Title: item.proposal.title,
-                            'ProposalId': item.proposal.proposal_id,
-                            'Type': item.proposal.type,
-                            'Status': item.proposal.status,
-                            'Proposer': item.proposal.proposer,
-                            'Submit Time': Tools.format2UTC(item.proposal.submit_time),
-                            'Voting Start Time': this.flShowProposalTime('votingStartTime',item.proposal.status) ? Tools.format2UTC(item.proposal.voting_start_time) : '--',
-                            'Total Deposits': `${Tools.convertScientificNotation2Number(Tools.formatNumber(item.proposal.total_deposit[0].amount))} ${Tools.formatDenom(item.proposal.total_deposit[0].denom)}`,
-                            'listName':"gov"
+                        	"TxHash": item.hash,
+                            "TxFee": `${Tools.formatFeeToFixedNumber(item.actual_fee.amount)} ${Tools.formatDenom(item.actual_fee.denom).toUpperCase()}`,
+                            "TxSigner": item.tx_initiator,
+                            "TxType": item.tx_type,
+                            "TxStatus": item.status,
+                            "ProposalType": item.proposal_type,
+                            "ProposalId": item.proposal_id,
+                            "ProposalTitle": item.proposal_title,
+                            "listName":"gov"
                         }
                     })
                 }else {
-                    this.flShowSampleIcon = false;
                     this.flGovernanceNoData = true;
-                    this.governanceList = [{
-                        Title: '',
-                        Radio: '',
-                        'Proposal ID': '',
-                        'Type': '',
-                        'Status': '',
-                        'Proposer': '',
-                        'Submit Time': '',
-                        'Voting Start Time': '',
-                        'Total Deposits': '',
-                        'listName':"gov"
-                    }]
+		            this.flGovernanceModule
                 }
             },
             handleValidatorSetList(validatorList){
                 if(validatorList && validatorList.items && validatorList.items.length !== 0){
+	                this.flValidatorNoData = false;
                     this.validatorSetListCount = validatorList.total;
                     if(validatorList.total > this.pageSize){
                         this.flShowValidatorListSetPagination = true
@@ -396,11 +344,12 @@
                     }
                     this.validatorSetList = validatorList.items.map( validator => {
                         return{
-                            'Moniker' : validator.moniker,
+                            'Moniker' : Tools.formatString(validator.moniker,15,'...'),
                             'OperatorAddress' : validator.operator_address,
                             'Consensus': validator.consensus,
                             'ProposerPriority': validator.proposer_priority,
                             'VotingPower' : validator.voting_power,
+                            'flProposer' : validator.is_proposer
                         }
                     })
                 }else {
@@ -412,24 +361,27 @@
                             'Consensus': '',
                             'ProposerPriority': '',
                             'VotingPower' : '',
+	                        'flProposer': ''
                         }
                     ]
                 }
             },
             skipNext(num) {
-                if (Number(this.$route.params.height) <= 1) {
-                    this.active = false;
-                    if (num !== -1) {
+            	if(Number(this.$route.params.height) >= 1){
+                    if (Number(this.$route.params.height) <= 1) {
+                        this.active = false;
+                        if (num !== -1) {
+                            this.$router.push(`/block/${Number(this.$route.params.height) + num}`)
+                        }
+                    } else if (Number(this.$route.params.height) >= this.maxBlock) {
+                        if (num !== 1) {
+                            this.$router.push(`/block/${Number(this.$route.params.height) + num}`)
+                        }
+                    } else {
+                        this.active = true;
                         this.$router.push(`/block/${Number(this.$route.params.height) + num}`)
                     }
-                } else if (Number(this.$route.params.height) >= this.maxBlock) {
-                    if (num !== 1) {
-                        this.$router.push(`/block/${Number(this.$route.params.height) + num}`)
-                    }
-                } else {
-                    this.active = true;
-                    this.$router.push(`/block/${Number(this.$route.params.height) + num}`)
-                }
+	            }
             },
             getMaxBlock(latestHeight) {
                 this.maxBlock = latestHeight;
@@ -523,7 +475,7 @@
                 border-radius: 0.01rem;
                 .current_block_information_content{
                     box-sizing: border-box;
-                    padding: 0.2rem 0.2rem 0 0.2rem;
+                    padding: 0.2rem;
                     .block_information_item{
                         display: flex;
                         span:nth-of-type(1){
@@ -545,34 +497,15 @@
                             }
                         }
                     }
-                }
-                .last_block_information_content{
-                    box-sizing: border-box;
-                    background: rgba(243, 251, 255, 1);
-                    padding: 0.16rem 0.2rem 0.2rem 0.2rem ;
-                    .last_block_information_item{
-                        margin-bottom: 0.12rem;
-                        display: flex;
+                    .block_information_item:last-child{
                         span:nth-of-type(1){
-                            font-size: 0.14rem;
                             color: rgba(34, 37, 42, 1);
+                            font-size: 0.14rem;
                             line-height: 0.2rem;
                             width: 1.5rem;
                             display: inline-block;
+                            margin-bottom:0;
                         }
-                        span:nth-of-type(2){
-                            flex: 1;
-                            color: rgba(162, 162, 174, 1);
-                            font-size: 0.14rem;
-                            line-height: 0.2rem;
-                            overflow-x: auto;
-                            .common_link_style{
-                                color: rgba(53, 152, 219, 1) !important;
-                            }
-                        }
-                    }
-                    .last_block_information_item:last-child{
-                        margin-bottom: 0;
                     }
                 }
             }
@@ -624,37 +557,25 @@
     .no_data_show{
         display: flex;
         justify-content: center;
-        border-top:0.01rem solid #eee;
         border-bottom:0.01rem solid #eee;
         font-size:0.14rem;
+        min-width: 12rem;
+        padding-top: 0.1rem;
         height:1rem;
         align-items: center;
     }
-    @media screen and (max-width:910px) {
-        .block_table_container{
-            padding: 0 0.1rem;
-            .block_detail_information_container{
-                .block_information_content{
-                    .current_block_information_content{
-                        .block_information_item{
-                            flex-direction: column;
-                            span:nth-of-type(1){
-                                margin-bottom: 0 !important;
-                            }
-                        }
-                    }
-                    .last_block_information_content{
-                        .last_block_information_item{
-                            flex-direction: column;
+    @media screen and (max-width:960px) {
+        .block_detail_information_container{
+            .block_information_content{
+                .current_block_information_content{
+                    .block_information_item{
+                        flex-direction: column;
+                        span:nth-of-type(1){
                             margin-bottom: 0 !important;
-                            span:nth-of-type(1){
-                                margin-bottom: 0 !important;
-                            }
                         }
                     }
                 }
             }
-
         }
     }
 </style>

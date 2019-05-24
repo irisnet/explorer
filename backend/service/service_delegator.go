@@ -1,7 +1,6 @@
 package service
 
 import (
-	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
@@ -21,58 +20,51 @@ func (service *DelegatorService) GetModule() Module {
 
 func (service *DelegatorService) QueryDelegation(valAddr string) (document.Coin, document.Coin) {
 
-	accAddr := utils.Convert(conf.Get().Hub.Prefix.AccAddr, valAddr)
-
 	validator := document.Validator{}
 	selector := bson.M{
-		"tokens":           1,
-		"delegator_shares": 1}
+		"tokens":    1,
+		"self_bond": 1}
 	err := queryOne(document.CollectionNmValidator, selector, bson.M{document.ValidatorFieldOperatorAddress: valAddr}, &validator)
 	if err != nil {
 		logger.Error("validator not found", logger.Any("err", err.Error()))
 		return document.Coin{}, document.Coin{}
 	}
 
-	rate, err := utils.QuoByStr(validator.Tokens, validator.DelegatorShares)
+	logger.Info("query delegation by validator addres", logger.String("validatorAddr", valAddr), logger.String("tokens", validator.Tokens), logger.String("self_bond", validator.SelfBond))
 
-	if err != nil {
-		logger.Error("validator.Tokens / validator.DelegatorShares", logger.String("err", err.Error()), logger.String("validator.Tokens", validator.Tokens), logger.String("validator.DelegqtorShares", validator.DelegatorShares))
+	tokensAsRat, ok := new(big.Rat).SetString(validator.Tokens)
+	if !ok {
+		logger.Error("convert validator tokens type (string -> big.Rat) err", logger.Any("err", err.Error()), logger.String("token str", validator.Tokens))
 		return document.Coin{}, document.Coin{}
 	}
 
-	delegations := lcd.DelegationByValidator(valAddr)
-
-	selfBondShares := new(big.Rat)
-	otherBondShares := new(big.Rat)
-
-	for _, d := range delegations {
-		tmp, ok := new(big.Rat).SetString(d.Shares)
-		if !ok {
-			logger.Info("convert delegation.Shares type (string to big.Rat) ", logger.Any("ok", ok), logger.String("delegation shares str", d.Shares))
-			continue
-		}
-		if d.DelegatorAddr == accAddr {
-			selfBondShares.Add(selfBondShares, tmp)
-		} else {
-			otherBondShares.Add(otherBondShares, tmp)
-		}
+	selfBondAsRat, ok := new(big.Rat).SetString(validator.SelfBond)
+	if !ok {
+		logger.Error("convert validator selfBond type (string -> big.Rat) err", logger.Any("err", err.Error()), logger.String("self bond str", validator.SelfBond))
+		return document.Coin{}, document.Coin{}
 	}
 
-	selfShareAsFloat64, exact := selfBondShares.Mul(selfBondShares, rate).Mul(selfBondShares, new(big.Rat).SetFloat64(math.Pow10(18))).Float64()
+	selfBondAsFloat64, exact := new(big.Rat).Mul(selfBondAsRat, new(big.Rat).SetFloat64(math.Pow10(18))).Float64()
 	if !exact {
-		logger.Info("convert selfBondShares type (big.Rat to float64)", logger.Any("exact", exact))
+		logger.Info("convert selfBondAsRat type (big.Rat to float64) ",
+			logger.Any("exact", exact),
+			logger.Any("selfBondAsRat", selfBondAsRat))
 	}
-	otherShareAsFloat64, exact := otherBondShares.Mul(otherBondShares, rate).Mul(otherBondShares, new(big.Rat).SetFloat64(math.Pow10(18))).Float64()
+
+	otherBondAsRat := new(big.Rat)
+	otherBondAsFloat64, exact := otherBondAsRat.Sub(tokensAsRat, selfBondAsRat).Mul(otherBondAsRat, new(big.Rat).SetFloat64(math.Pow10(18))).Float64()
 	if !exact {
-		logger.Info("convert otherBondShares type (big.Rat to float64)", logger.Any("exact", exact))
+		logger.Info("convert otherBondAsRat type (big.Rat to float64) ",
+			logger.Any("exact", exact),
+			logger.Any("otherBondAsRat", otherBondAsRat))
 	}
 
 	return document.Coin{
 			Denom:  utils.CoinTypeAtto,
-			Amount: selfShareAsFloat64,
+			Amount: selfBondAsFloat64,
 		}, document.Coin{
 			Denom:  utils.CoinTypeAtto,
-			Amount: otherShareAsFloat64,
+			Amount: otherBondAsFloat64,
 		}
 }
 

@@ -338,6 +338,14 @@ export default class Tools{
   static formatValidatorAddress(address){
     return `${address.substring(0,8)}...${address.substring(address.length - 8)}`
   }
+  /**
+   * format txHash
+   * param String
+   * return String
+   */
+  static formatTxHash(txHash){
+    return `${txHash.substring(0,4)}...${txHash.substring(txHash.length - 4)}`
+  }
   static formatTxList(list,txType,currentServerTime){
     if(list !== null){
       return list.map(item => {
@@ -387,7 +395,7 @@ export default class Tools{
           objList = {
             From: item.Owner ? item.Owner : "--",
             Moniker: item.Moniker ? Tools.formatString(Moniker,20,"...") : "--",
-            "Self-Bond": item.SelfBond && item.SelfBond.length > 0 ? `${Tools.formatAmount(item.SelfBond[0].amount)} ${Tools.formatDenom(item.SelfBond[0].denom).toUpperCase()}` : "--",
+            "Self-Bonded": item.SelfBond && item.SelfBond.length > 0 ? `${Tools.formatAmount(item.SelfBond[0].amount)} ${Tools.formatDenom(item.SelfBond[0].denom).toUpperCase()}` : "--",
             Type: item.Type,
             Fee: `${Tools.formatFeeToFixedNumber(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`,
           }
@@ -431,7 +439,7 @@ export default class Tools{
           Block:'',
           From:'',
           Moniker:'',
-          "Self-Bond":'',
+          "Self-Bonded":'',
           Type:'',
           Fee:'',
           Status: "",
