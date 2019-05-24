@@ -365,9 +365,9 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 				details = desc.Details
 			}
 			dtx.Moniker = moniker
-			dtx.Details = identity
+			dtx.Details = details
 			dtx.Website = website
-			dtx.Identity = details
+			dtx.Identity = identity
 		}
 		return dtx
 	case types.Stake:
