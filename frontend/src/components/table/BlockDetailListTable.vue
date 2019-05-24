@@ -43,17 +43,18 @@
             <span class="remove_default_style" :class="data.item.Tx_Initiator === $route.params.param?'no_skip':''">
               <router-link :to="data.item.Tx_Initiator === $route.params.param ? '' : `/address/1/${data.item.Tx_Initiator}`" class="link_style">{{formatAddress(data.item.Tx_Initiator)}}</router-link>
             </span>
-          <span class="address">{{data.item.To ? data.item.To : ''}}</span>
+          <span class="address">{{data.item.Tx_Initiator ? data.item.Tx_Initiator : ''}}</span>
         </div>
-        <span class="no_skip" v-show="data.item.To == '--'">
+        <span class="no_skip" v-show="data.item.Tx_Initiator == '--'">
           --
         </span>
       </template>
       <template slot='ProposalId' slot-scope='data'>
         <div>
-          <span>
+          <span v-show="data.item.ProposalId !== 0">
             <router-link :to="`/ProposalsDetail/${data.item.ProposalId}`" style="color:#3598db !important;">{{data.item.ProposalId}}</router-link>
           </span>
+          <span v-show="data.item.ProposalId === 0">--</span>
         </div>
       </template>
       <template slot='OperatorAddress' slot-scope='data'>
@@ -204,7 +205,7 @@
                 }
               },
               formatListName(items){
-                  items.forEach( item => {
+                items.forEach( item => {
                       if(item.listName === 'tx'){
                           this.listFields = this.txFields;
                       }else if(item.listName === 'gov') {
