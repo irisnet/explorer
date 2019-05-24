@@ -24,6 +24,7 @@
             </span>
           <span class="address">{{data.item.From ? data.item.From : ''}}</span>
         </div>
+        <span v-show="data.item.From && data.item.From == '--'">--</span>
       </template>
       <template slot='To' slot-scope='data'>
         <div class="name_address" v-show="data.item.To && data.item.To !== '--'">
