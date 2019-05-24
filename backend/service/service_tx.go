@@ -2,7 +2,6 @@ package service
 
 import (
 	"encoding/json"
-	"fmt"
 	"time"
 
 	"github.com/irisnet/explorer/backend/logger"
@@ -38,8 +37,6 @@ func (service *TxService) QueryStakeTxList(query bson.M, page, pageSize int) mod
 	forwardTxHashs := make([]string, 0, len(items))
 	for k, v := range items {
 		if stakeTx, ok := v.(model.StakeTx); ok {
-			logger.Info("query stake list", logger.String(fmt.Sprintf("k: %v ", k), stakeTx.PrintHashFromToAmount()))
-
 			stakeTx.Signer = stakeTx.From
 			items[k] = stakeTx
 			forwardTxHashs = append(forwardTxHashs, stakeTx.Hash)
@@ -47,7 +44,6 @@ func (service *TxService) QueryStakeTxList(query bson.M, page, pageSize int) mod
 	}
 
 	if len(forwardTxHashs) == 0 {
-		logger.Info("Result")
 		for i := 0; i < len(items); i++ {
 			if stakeTx, ok := items[i].(model.StakeTx); ok {
 				stakeTx.From, stakeTx.To = Get(Block).(*BlockService).ParseCoinFlowFromAndTo(stakeTx.Type, stakeTx.From, stakeTx.To)
@@ -76,11 +72,6 @@ func (service *TxService) QueryStakeTxList(query bson.M, page, pageSize int) mod
 		panic(types.CodeNotFound)
 	}
 
-	logger.Info("TxMsg")
-	for k, v := range txMsgs {
-		logger.Info(fmt.Sprintf("K: %v \n % v", k, v))
-	}
-
 	for _, vMsg := range txMsgs {
 		for k, stakeTx := range items {
 
@@ -97,7 +88,7 @@ func (service *TxService) QueryStakeTxList(query bson.M, page, pageSize int) mod
 			}
 		}
 	}
-	logger.Info("Result")
+
 	for i := 0; i < len(items); i++ {
 		if stakeTx, ok := items[i].(model.StakeTx); ok {
 			stakeTx.From, stakeTx.To = Get(Block).(*BlockService).ParseCoinFlowFromAndTo(stakeTx.Type, stakeTx.From, stakeTx.To)

@@ -195,11 +195,6 @@ func (service *BlockService) QueryTxsExcludeTxGovByBlock(height int64, page, siz
 	items := make([]model.Tx, 0, len(itemsAsDoc))
 	forwardTxHashs := make([]string, 0, len(itemsAsDoc))
 
-	logger.Info("ItemsAsDoc:")
-	for k, v := range itemsAsDoc {
-		logger.Info(fmt.Sprintf("k: %v   v: %v", k, v.PrintHashTypeFromToAmount()))
-	}
-
 	for _, v := range itemsAsDoc {
 		tmp := model.Tx{
 			Hash:        v.TxHash,
@@ -219,21 +214,10 @@ func (service *BlockService) QueryTxsExcludeTxGovByBlock(height int64, page, siz
 		items = append(items, tmp)
 	}
 
-	logger.Info("Model Items from doc")
-	for k, v := range items {
-		logger.Info(fmt.Sprintf("k %v  v: %v", k, v.PrintHashFromToAmount()))
-	}
-
-	logger.Info("Forward Tx Hashs")
-	for k, v := range forwardTxHashs {
-		logger.Info(fmt.Sprintf("k: %v \n  %v", k, v))
-	}
-
 	if len(forwardTxHashs) == 0 {
-		logger.Info("Result")
+
 		for i := 0; i < len(items); i++ {
 			items[i].From, items[i].To = service.ParseCoinFlowFromAndTo(items[i].Type, items[i].From, items[i].To)
-			logger.Info(fmt.Sprintf("k: %v \n  %v", i, items[i].PrintHashFromToAmount()))
 		}
 		return model.TxPage{
 			Total: total,
@@ -257,11 +241,6 @@ func (service *BlockService) QueryTxsExcludeTxGovByBlock(height int64, page, siz
 		panic(types.CodeNotFound)
 	}
 
-	logger.Info("TxMsg")
-	for k, v := range txMsgs {
-		logger.Info(fmt.Sprintf("K: %v \n % v", k, v))
-	}
-
 	for _, vMsg := range txMsgs {
 		for k, vTx := range items {
 			if vMsg.Hash == vTx.Hash {
@@ -275,10 +254,8 @@ func (service *BlockService) QueryTxsExcludeTxGovByBlock(height int64, page, siz
 		}
 	}
 
-	logger.Info("Result")
 	for i := 0; i < len(items); i++ {
 		items[i].From, items[i].To = service.ParseCoinFlowFromAndTo(items[i].Type, items[i].From, items[i].To)
-		logger.Info(fmt.Sprintf("k: %v \n  %v", i, items[i].PrintHashFromToAmount()))
 	}
 
 	return model.TxPage{
