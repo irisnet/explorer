@@ -403,7 +403,7 @@ export default class Tools{
           objList = {
             TxHash: item.Hash,
             Block:item.BlockHeight,
-            From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
+            From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:'--'),
             To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:'--'),
             Amount,
             Type:item.Type === 'coin'?'transfer':item.Type,
