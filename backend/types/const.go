@@ -96,6 +96,7 @@ var (
 	StakeList       = []string{TxTypeStakeDelegate, TxTypeBeginRedelegate, TxTypeSetWithdrawAddress, TxTypeStakeBeginUnbonding, TxTypeWithdrawDelegatorReward, TxTypeWithdrawDelegatorRewardsAll, TxTypeWithdrawValidatorRewardsAll}
 	GovernanceList  = []string{TxTypeSubmitProposal, TxTypeDeposit, TxTypeVote}
 
+	ForwardList      = []string{TxTypeBeginRedelegate}
 	TxTypeExcludeGov = append(append(DeclarationList, StakeList...), BankList...)
 )
 

@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/irisnet/explorer/backend/orm/document"
@@ -94,6 +95,17 @@ type Tx struct {
 	Timestamp   time.Time          `json:"timestamp"`
 }
 
+func (t Tx) PrintHashFromToAmount() string {
+
+	return fmt.Sprintf(`
+		Hash:   %v
+		Type:   %v
+		From:   %v
+		To:     %v
+		Amount: %v
+		`, t.Hash, t.Type, t.From, t.To, t.Amount)
+}
+
 type BaseTx struct {
 	Hash        string
 	BlockHeight int64
@@ -117,6 +129,16 @@ type TransTx struct {
 type StakeTx struct {
 	TransTx
 	Source string
+	Signer string
+}
+
+func (s StakeTx) PrintHashFromToAmount() string {
+	return fmt.Sprintf(`
+Hash  : %v
+From  : %v
+To    : %v
+Amount: %v
+`, s.Hash, s.From, s.To, s.Amount)
 }
 
 type DeclarationTx struct {

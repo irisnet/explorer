@@ -1,6 +1,10 @@
 package document
 
-import "gopkg.in/mgo.v2/bson"
+import (
+	"fmt"
+
+	"gopkg.in/mgo.v2/bson"
+)
 
 const (
 	CollectionNmTxMsg   = "tx_msg"
@@ -13,6 +17,16 @@ type TxMsg struct {
 	Hash    string `bson:"hash"`
 	Type    string `bson:"type"`
 	Content string `bson:"content"`
+}
+
+func (tm TxMsg) String() string {
+	return fmt.Sprintf(`
+
+Hash:    %v
+Type:    %v
+Content: %v
+
+	  `, tm.Hash, tm.Type, tm.Content)
 }
 
 func (m TxMsg) Name() string {

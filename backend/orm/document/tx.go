@@ -1,8 +1,10 @@
 package document
 
 import (
-	"gopkg.in/mgo.v2/bson"
+	"fmt"
 	"time"
+
+	"gopkg.in/mgo.v2/bson"
 )
 
 const (
@@ -52,6 +54,17 @@ type CommonTx struct {
 
 	StakeCreateValidator StakeCreateValidator `bson:"stake_create_validator"`
 	StakeEditValidator   StakeEditValidator   `bson:"stake_edit_validator"`
+}
+
+func (tx CommonTx) PrintHashTypeFromToAmount() string {
+
+	return fmt.Sprintf(`
+	hash:   %v
+	type:   %v
+	from:   %v
+	to:     %v
+	amount: %v
+		`, tx.TxHash, tx.Type, tx.From, tx.To, tx.Amount)
 }
 
 // Description

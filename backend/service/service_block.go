@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
@@ -192,8 +193,8 @@ func (service *BlockService) QueryTxsExcludeTxGovByBlock(height int64, page, siz
 	}
 
 	items := make([]model.Tx, 0, len(itemsAsDoc))
-	// A sign,  transfer coin from B to C
-	transferTxHashs := make([]string, 0, len(itemsAsDoc))
+	forwardTxHashs := make([]string, 0, len(itemsAsDoc))
+
 	for _, v := range itemsAsDoc {
 		tmp := model.Tx{
 			Hash:        v.TxHash,
@@ -205,15 +206,19 @@ func (service *BlockService) QueryTxsExcludeTxGovByBlock(height int64, page, siz
 			Status:      v.Status,
 			Timestamp:   v.Time,
 		}
-		if service.isTransferTxByType(v.Type) {
-			transferTxHashs = append(transferTxHashs, v.TxHash)
+		if service.isForwardTxByType(v.Type) {
+			forwardTxHashs = append(forwardTxHashs, v.TxHash)
 		} else {
 			tmp.From = v.From
 		}
 		items = append(items, tmp)
 	}
 
-	if len(transferTxHashs) == 0 {
+	if len(forwardTxHashs) == 0 {
+
+		for i := 0; i < len(items); i++ {
+			items[i].From, items[i].To = service.ParseCoinFlowFromAndTo(items[i].Type, items[i].From, items[i].To)
+		}
 		return model.TxPage{
 			Total: total,
 			Items: items,
@@ -226,10 +231,10 @@ func (service *BlockService) QueryTxsExcludeTxGovByBlock(height int64, page, siz
 		document.TxMsg_Field_Type:    1,
 	}
 	condition := bson.M{
-		document.TxMsg_Field_Hash: bson.M{"$in": transferTxHashs},
+		document.TxMsg_Field_Hash: bson.M{"$in": forwardTxHashs},
 	}
 
-	txMsgs := make([]document.TxMsg, 0, len(transferTxHashs))
+	txMsgs := make([]document.TxMsg, 0, len(forwardTxHashs))
 
 	if err := queryAll(document.CollectionNmTxMsg, selector, condition, "", 0, &txMsgs); err != nil {
 		logger.Error("query tx msg", logger.String("err", err.Error()))
@@ -239,19 +244,55 @@ func (service *BlockService) QueryTxsExcludeTxGovByBlock(height int64, page, siz
 	for _, vMsg := range txMsgs {
 		for k, vTx := range items {
 			if vMsg.Hash == vTx.Hash {
-				transferAddr, err := service.getTransferAddr(vMsg.Type, vMsg.Content)
+				forwarAddr, err := service.getForwardAddr(vMsg.Type, vMsg.Content)
 				if err != nil {
-					logger.Error("get transfer addr ", logger.String("err", err.Error()))
+					logger.Error("get forward addr ", logger.String("err", err.Error()))
 					continue
 				}
-				items[k].From = transferAddr
+				items[k].From = forwarAddr
 			}
 		}
+	}
+
+	for i := 0; i < len(items); i++ {
+		items[i].From, items[i].To = service.ParseCoinFlowFromAndTo(items[i].Type, items[i].From, items[i].To)
 	}
 
 	return model.TxPage{
 		Total: total,
 		Items: items,
+	}
+}
+
+func (service *BlockService) ParseCoinFlowFromAndTo(txType, from, to string) (string, string) {
+	switch txType {
+	case types.TxTypeTransfer:
+		return from, to
+	case types.TxTypeBurn:
+		return from, ""
+	case types.TxTypeStakeEditValidator:
+		return "", ""
+	case types.TxTypeStakeDelegate:
+		return from, to
+	case types.TxTypeUnjail:
+		return "", ""
+	case types.TxTypeSetWithdrawAddress:
+		return "", ""
+	case types.TxTypeStakeCreateValidator:
+		return from, to
+		//exchange
+	case types.TxTypeBeginRedelegate:
+		return to, from
+	case types.TxTypeWithdrawDelegatorReward:
+		return to, from
+	case types.TxTypeWithdrawDelegatorRewardsAll:
+		return to, from
+	case types.TxTypeWithdrawValidatorRewardsAll:
+		return to, utils.Convert(conf.Get().Hub.Prefix.AccAddr, from)
+	case types.TxTypeStakeBeginUnbonding:
+		return to, from
+	default:
+		return from, to
 	}
 }
 
@@ -301,11 +342,11 @@ func (service *BlockService) QueryTxsOnlyTxGovByBlock(height int64, page, size i
 		if vTx.Type == types.TxTypeSubmitProposal {
 			for _, txMsg := range submitProposalTxMsgs {
 				if vTx.TxHash == txMsg.Hash {
-					proType, err := service.GetValueByKey(txMsg.Content, "title")
+					proTitle, err := service.GetValueByKey(txMsg.Content, "title")
 					if err != nil {
 						logger.Error("query proposal type from txMsg", logger.String("k", document.Proposal_Field_Type), logger.String("err", err.Error()), logger.String("JsonStr", txMsg.Content))
 					}
-					proTitle, err := service.GetValueByKey(txMsg.Content, "proposalType")
+					proType, err := service.GetValueByKey(txMsg.Content, "proposalType")
 					if err != nil {
 						logger.Error("query proposal title from txMsg", logger.String("k", document.Proposal_Field_Title), logger.String("err", err.Error()), logger.String("JsonStr", txMsg.Content))
 					}
@@ -407,27 +448,33 @@ func (service *BlockService) GetValueByKey(content, k string) (string, error) {
 	return "", errors.New(fmt.Sprintf("assert type err, expect string but actual: %T   value: %v", m[k], m[k]))
 }
 
-func (service *BlockService) getTransferAddr(txType, content string) (string, error) {
-
-	for _, v := range types.GovernanceList {
-		if txType == v {
-			m := make(map[string]interface{})
-			err := json.Unmarshal([]byte(content), &m)
-			if err != nil {
-				return "", err
-			}
-			if v, ok := m["delegator_addr"].(string); ok {
-				return v, nil
-			}
-			return "", errors.New(fmt.Sprintf("assert type err, expert tring but actual: %T  %v", m["delegator_addr"], m["delegator_addr"]))
-		}
+func (service *BlockService) getForwardAddr(txType, content string) (string, error) {
+	m := make(map[string]interface{})
+	err := json.Unmarshal([]byte(content), &m)
+	if err != nil {
+		return "", err
 	}
 
+	switch txType {
+	case types.TxTypeBeginRedelegate:
+		if v, ok := m["validator_src_addr"].(string); ok {
+			return v, nil
+		}
+	case types.TxTypeWithdrawDelegatorReward:
+		if v, ok := m["validator_addr"].(string); ok {
+			return v, nil
+		}
+
+	case types.TxTypeWithdrawValidatorRewardsAll:
+		if v, ok := m["validator_addr"].(string); ok {
+			return v, nil
+		}
+	}
 	return "", nil
 }
 
-func (service *BlockService) isTransferTxByType(t string) bool {
-	for _, v := range types.GovernanceList {
+func (service *BlockService) isForwardTxByType(t string) bool {
+	for _, v := range types.ForwardList {
 		if v == t {
 			return true
 		}

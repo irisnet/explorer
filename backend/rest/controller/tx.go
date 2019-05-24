@@ -67,7 +67,7 @@ func registerQueryTxList(r *mux.Router) error {
 			query["type"] = bson.M{
 				"$in": types.StakeList,
 			}
-			break
+			return tx.QueryStakeTxList(query, page, size)
 		case types.Gov:
 			query["type"] = bson.M{
 				"$in": types.GovernanceList,
