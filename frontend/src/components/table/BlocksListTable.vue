@@ -154,12 +154,13 @@
         </span>
       </template>
       <template slot='From' slot-scope='data'>
-        <div class="name_address" v-show="data.item.From">
+        <div class="name_address" v-show="data.item.From !== '--'">
             <span class="remove_default_style" :class="data.item.From === $route.params.param?'no_skip':''">
               <router-link :to="`/address/1/${data.item.From}`" class="link_style">{{formatAddress(data.item.From)}}</router-link>
             </span>
           <span class="address">{{data.item.From ? data.item.From : ''}}</span>
         </div>
+        <span class="no_skip" v-show="data.item.From === '--'">--</span>
       </template>
       <template slot='To' slot-scope='data'>
         <div class="name_address" v-show="data.item.To && data.item.To !== '--'">
