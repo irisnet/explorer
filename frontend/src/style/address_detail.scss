@@ -397,13 +397,14 @@
                     margin-top: 0.2rem;
                     flex: 1;
                     border: 0.01rem solid #e4e4e4;
+                    height: 4.4rem;
                     .line_left_container{
-                        max-width: 6.2rem;
-                        height: 2.76rem;
+                        max-width: 6.3rem;
+                        height: 4.4rem;
                     }
                     .line_right_container{
-                        max-width: 6.2rem;
-                        height: 2.76rem;
+                        max-width: 6.3rem;
+                        height: 4.4rem;
                     }
                 }
 
@@ -428,6 +429,35 @@
         }
         div:nth-child(3){
             border-right: none;
+        }
+    }
+    .line_tab_content_new {
+        @include flex;
+        width: 2.4rem;
+        height: 0.3rem;
+        box-sizing: border-box;
+        div {
+            width: 0.8rem;
+            line-height: 0.3rem;
+            flex: 1;
+            font-size: 12px;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid rgba(215,220,224,1);
+            box-sizing: border-box;
+            &:first-child {
+                border-radius: 4px 0 0 4px;
+                border-right-width: 0;
+            }
+            &:last-child {
+                border-radius: 0 4px 4px 0;
+                border-left-width: 0;
+            }
+        }
+        .active  {
+            color: #ffffff;
+            background-color: #697CFF;
+            border-color: #697CFF;
         }
     }
     .content_right{

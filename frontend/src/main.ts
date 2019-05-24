@@ -9,6 +9,10 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import axios from "axios"
 const  codec  = require("irisnet-crypto/util/codec.js") ;
 const  crypto = require("irisnet-crypto");
+import {Table, Tooltip} from 'iview';
+import 'iview/dist/styles/iview.css';    // 使用 CSS
+Vue.component('iTable', Table);
+Vue.component('iTooltip', Tooltip);
 Vue.use(BootstrapVue);
 Vue.prototype.$Crypto = crypto;
 Vue.prototype.$Codec = codec;

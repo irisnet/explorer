@@ -1,14 +1,17 @@
 <template>
   <div :class="echartsComponentWrapLine">
     <div class="echarts_title_wrap_line">
-      Uptime
+      <div>
+        <strong>History</strong>
+        <span style="color: #a2a2ae;"> - Uptime</span>
+      </div>
+      <div>
+        <slot name="tabs"></slot>
+      </div>
     </div>
     <div id="echarts_uptime_line">
-
     </div>
   </div>
-
-
 </template>
 
 <script>
@@ -54,7 +57,7 @@
               }
             },
             axisLabel:{
-              color:"#000",
+              color:"#839096",
               interval:5,
               margin:12,
               rotate:45,
@@ -70,52 +73,61 @@
           yAxis: {
             type: 'value',
             axisLine: {
+              show: false,
               lineStyle: {
-                color: '#a2a2ae',
+                color: '#a2a2ae'
               }
             },
-            axisLabel:{
-              color:"#000",
+            axisLabel: {
+              color: "#839096"
             },
             min:0,
             splitNumber:5,
             splitLine: {
               lineStyle: {
                 // 使用深浅的间隔色
-                color: ['#eee']
+                color: ['#D7DCE0'],
+                type: 'dotted'
               }
+            },
+            axisTick: {
+              show: false
             }
           },
           grid: {
-            left: '3%',   //图表距边框的距离
-            right: '5%',
-            bottom: '3%',
-            top:'5%',
+            left: '0',   //图表距边框的距离
+            right: '4',
+            bottom: '20',
+            top:'40',
             containLabel: true
           },
           series: [
             {
               data: [],
               type: 'line',
-              areaStyle: {
-                normal: {
-                  color: new echarts.graphic.LinearGradient(//设置渐变颜色
-                    0, 0, 0, 1,
-                    [
-                      {offset: 0, color: '#a4d7f4'},
-                      {offset: 1, color: '#dcf6ff'}
-                    ]
-                  )
-                }
-              },
+              // areaStyle: {
+              //   normal: {
+              //     color: new echarts.graphic.LinearGradient(//设置渐变颜色
+              //       0, 0, 0, 1,
+              //       [
+              //         {offset: 0, color: '#a4d7f4'},
+              //         {offset: 1, color: '#dcf6ff'}
+              //       ]
+              //     )
+              //   }
+              // },
               smooth:true,//曲线平滑
-              itemStyle:{
-                normal:{
-                  color:'#3598db',
-                  borderColor:'#3598db',  //拐点边框颜色
-                  // opacity:0,拐点显示隐藏 0为隐藏
-                }
+              lineStyle: {
+                color: '#886CFF',
+                width: 2
               },
+              symbol: 'circle',
+              symbolSize: 8,
+              itemStyle: {
+                color: '#886CFF',
+                borderColor: '#fff',
+                borderWidth: 2
+              }
             }
           ]
         };
@@ -168,15 +180,20 @@
     padding: 0!important;
     margin: 0!important;
     .echarts_title_wrap_line {
-      height: 15%;
-      font-size:0.18rem;
+      height: 0.3rem;
+      font-size:0.16rem;
+      padding: 0.25rem;
+      padding-bottom: 0;
       @include fontWeight;
-      padding-left: 0.2rem;
-      line-height: 0.53rem;
+      @include flex;
+      justify-content: space-between;
+      line-height: 30px;
+      box-sizing: content-box;
     }
     #echarts_uptime_line {
-      width: 100%;
-      height: 85%;
+      height: 3.85rem;
+      margin: 0 0.25rem;
+      padding-top: 0;
     }
   }
   .echarts_component_wrap_line_mobile{

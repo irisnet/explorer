@@ -630,7 +630,7 @@
         height:1rem;
         align-items: center;
     }
-    @media screen and (max-width:960px) {
+    @media screen and (max-width:910px) {
         .block_table_container{
             padding: 0 0.1rem;
             .block_detail_information_container{
