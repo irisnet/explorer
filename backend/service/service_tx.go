@@ -37,7 +37,6 @@ func (service *TxService) QueryStakeTxList(query bson.M, page, pageSize int) mod
 	forwardTxHashs := make([]string, 0, len(items))
 	for k, v := range items {
 		if stakeTx, ok := v.(model.StakeTx); ok {
-			stakeTx.Signer = stakeTx.From
 			items[k] = stakeTx
 			forwardTxHashs = append(forwardTxHashs, stakeTx.Hash)
 		}
@@ -371,7 +370,7 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 		}
 		return dtx
 	case types.Stake:
-		return model.StakeTx{
+		tmp := model.StakeTx{
 			TransTx: model.TransTx{
 				BaseTx: buildBaseTx(tx),
 				From:   tx.From,
@@ -379,6 +378,12 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 				Amount: tx.Amount,
 			},
 		}
+
+		if len(tx.Signers) > 0 {
+			tmp.Signer = tx.Signers[0].AddrBech32
+		}
+
+		return tmp
 	case types.Gov:
 		govTx := model.GovTx{
 			BaseTx:     buildBaseTx(tx),

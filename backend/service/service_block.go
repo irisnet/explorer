@@ -197,15 +197,19 @@ func (service *BlockService) QueryTxsExcludeTxGovByBlock(height int64, page, siz
 
 	for _, v := range itemsAsDoc {
 		tmp := model.Tx{
-			Hash:        v.TxHash,
-			TxInitiator: v.From,
-			To:          v.To,
-			Amount:      v.Amount,
-			ActualFee:   v.ActualFee,
-			Type:        v.Type,
-			Status:      v.Status,
-			Timestamp:   v.Time,
+			Hash:      v.TxHash,
+			To:        v.To,
+			Amount:    v.Amount,
+			ActualFee: v.ActualFee,
+			Type:      v.Type,
+			Status:    v.Status,
+			Timestamp: v.Time,
 		}
+
+		if len(v.Signers) > 0 {
+			tmp.TxInitiator = v.Signers[0].AddrBech32
+		}
+
 		if service.isForwardTxByType(v.Type) {
 			forwardTxHashs = append(forwardTxHashs, v.TxHash)
 		} else {
@@ -419,6 +423,7 @@ func (service *BlockService) getTxsByBlock(height int64, onlyOrExcludeProposal b
 			document.Tx_Field_Type:      1,
 			document.Tx_Field_Status:    1,
 			document.Tx_Field_Time:      1,
+			document.Tx_Field_Signers:   1,
 		}
 
 		condition = bson.M{

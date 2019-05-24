@@ -17,6 +17,7 @@ const (
 	Tx_Field_Hash                 = "tx_hash"
 	Tx_Field_From                 = "from"
 	Tx_Field_To                   = "to"
+	Tx_Field_Signers              = "signers"
 	Tx_Field_Amount               = "amount"
 	Tx_Field_Type                 = "type"
 	Tx_Field_Fee                  = "fee"
@@ -33,7 +34,13 @@ const (
 	Tx_Field_StakeEditValidator   = "stake_edit_validator"
 )
 
+type Signer struct {
+	AddrHex    string `bson:"addr_hex"`
+	AddrBech32 string `bson:"addr_bech32"`
+}
+
 type CommonTx struct {
+	Signers    []Signer          `bson:"signers"`
 	Time       time.Time         `bson:"time"`
 	Height     int64             `bson:"height"`
 	TxHash     string            `bson:"tx_hash"`
