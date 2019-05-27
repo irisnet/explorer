@@ -32,6 +32,7 @@ func (service *TxService) QueryStakeTxList(query bson.M, page, pageSize int) mod
 		logger.Error("query stake list ", logger.String("err", err.Error()))
 		return model.PageVo{}
 	}
+
 	items := buildData(data)
 
 	forwardTxHashs := make([]string, 0, len(items))
@@ -106,6 +107,7 @@ func (service *TxService) QueryList(query bson.M, page, pageSize int) (pageInfo 
 
 	if cnt, err := pageQuery(document.CollectionNmCommonTx, nil,
 		query, desc(document.Tx_Field_Time), page, pageSize, &data); err == nil {
+
 		pageInfo.Data = buildData(data)
 		pageInfo.Count = cnt
 	}
@@ -323,6 +325,7 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 		if tx.Type == types.TxTypeStakeCreateValidator {
 			dtx.From = tx.From
 			dtx.To = tx.To
+			dtx.OperatorAddr = tx.To
 			var moniker = tx.StakeCreateValidator.Description.Moniker
 			var identity = tx.StakeCreateValidator.Description.Identity
 			var website = tx.StakeCreateValidator.Description.Website
@@ -340,6 +343,7 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 		} else if tx.Type == types.TxTypeStakeEditValidator {
 			dtx.From = dtx.Signer
 			dtx.To = tx.From
+			dtx.OperatorAddr = tx.From
 			var moniker = tx.StakeEditValidator.Description.Moniker
 			var identity = tx.StakeEditValidator.Description.Identity
 			var website = tx.StakeEditValidator.Description.Website
@@ -357,6 +361,7 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 		} else if tx.Type == types.TxTypeUnjail {
 			dtx.From = dtx.Signer
 			dtx.To = tx.From
+			dtx.OperatorAddr = tx.From
 			candidateDb := db.C(document.CollectionNmStakeRoleCandidate)
 			var can document.Candidate
 			candidateDb.Find(bson.M{document.Candidate_Field_Address: dtx.Owner}).One(&can)
