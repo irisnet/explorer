@@ -346,7 +346,7 @@ export default class Tools{
   static formatTxHash(txHash){
     return `${txHash.substring(0,4)}...${txHash.substring(txHash.length - 4)}`
   }
-  static formatTxList(list,txType,currentServerTime){
+  static formatTxList(list,txType){
     if(list !== null){
       return list.map(item => {
         let [Amount,Fee] = ['--','--'];
@@ -386,9 +386,9 @@ export default class Tools{
         };
         if(txType === 'transfers' ){
           objList = {
-            'From':item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
+            'From':item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:'--'),
             Amount,
-            'To':item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
+            'To':item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:'--'),
             'listName':'transfer'
           };
         }else if(txType === 'declarations'){

@@ -46,8 +46,6 @@
         })
       },
       $route() {
-        clearInterval(this.timer);
-        clearInterval(this.transactionTimer);
         this.items = [];
         this.currentPage = 1;
         this.showNoData = false;
@@ -73,8 +71,6 @@
         innerWidth : window.innerWidth,
         tableMinWidth:'',
         listTitleName:"",
-        timer: null,
-        transactionTimer: null,
         validatorTabIndex: localStorage.getItem('validatorTabIndex') ? localStorage.getItem('validatorTabIndex') : 0,
         validatorStatusTitleList:[
           {
