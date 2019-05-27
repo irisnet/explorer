@@ -59,9 +59,9 @@ func (service *TxService) QueryTxList(query bson.M, page, pageSize int) model.Pa
 				continue
 			}
 
-			if BurnTx, ok := items[i].(model.BurnTx); ok {
-				BurnTx.From, BurnTx.To = Get(Block).(*BlockService).ParseCoinFlowFromAndTo(BurnTx.Type, BurnTx.From, BurnTx.To)
-				items[i] = BurnTx
+			if TransTx, ok := items[i].(model.TransTx); ok {
+				TransTx.From, TransTx.To = Get(Block).(*BlockService).ParseCoinFlowFromAndTo(TransTx.Type, TransTx.From, TransTx.To)
+				items[i] = TransTx
 				continue
 			}
 		}
@@ -117,11 +117,12 @@ func (service *TxService) QueryTxList(query bson.M, page, pageSize int) model.Pa
 			continue
 		}
 
-		if BurnTx, ok := items[i].(model.BurnTx); ok {
-			BurnTx.From, BurnTx.To = Get(Block).(*BlockService).ParseCoinFlowFromAndTo(BurnTx.Type, BurnTx.From, BurnTx.To)
-			items[i] = BurnTx
+		if TransTx, ok := items[i].(model.TransTx); ok {
+			TransTx.From, TransTx.To = Get(Block).(*BlockService).ParseCoinFlowFromAndTo(TransTx.Type, TransTx.From, TransTx.To)
+			items[i] = TransTx
 			continue
 		}
+
 	}
 	return model.PageVo{
 		Data:  items,
@@ -334,12 +335,6 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 	defer db.Session.Close()
 
 	switch types.Convert(tx.Type) {
-	case types.Burn:
-		return model.BurnTx{
-			BaseTx: buildBaseTx(tx),
-			From:   tx.From,
-			Amount: tx.Amount,
-		}
 	case types.Trans:
 		return model.TransTx{
 			BaseTx: buildBaseTx(tx),

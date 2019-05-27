@@ -112,10 +112,17 @@ func IsDeclarationType(typ string) bool {
 	return false
 }
 
-func IsBurnType(typ string) bool {
-	return typ == TxTypeBurn
+func IsBankType(typ string) bool {
+	if len(typ) == 0 {
+		return false
+	}
+	for _, t := range BankList {
+		if t == typ {
+			return true
+		}
+	}
+	return false
 }
-
 func IsStakeType(typ string) bool {
 	if len(typ) == 0 {
 		return false
@@ -148,11 +155,10 @@ const (
 	Declaration
 	Stake
 	Gov
-	Burn
 )
 
 func Convert(typ string) TxType {
-	if typ == TxTypeTransfer {
+	if IsBankType(typ) {
 		return Trans
 	} else if IsStakeType(typ) {
 		return Stake
@@ -160,8 +166,6 @@ func Convert(typ string) TxType {
 		return Declaration
 	} else if IsGovernanceType(typ) {
 		return Gov
-	} else if IsBurnType(typ) {
-		return Burn
 	}
 	panic(CodeUnSupportTx)
 }
