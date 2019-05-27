@@ -127,13 +127,6 @@ type TransTx struct {
 	Amount document.Coins
 }
 
-type BurnTx struct {
-	BaseTx
-	From   string
-	To     string
-	Amount document.Coins
-}
-
 type StakeTx struct {
 	TransTx
 	Source string
