@@ -317,9 +317,12 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 			SelfBond: tx.Amount,
 			Owner:    tx.From,
 			Pubkey:   tx.StakeCreateValidator.PubKey,
+			Amount:   tx.Amount,
 		}
 		var blackList = service.QueryBlackList(db)
 		if tx.Type == types.TxTypeStakeCreateValidator {
+			dtx.From = tx.From
+			dtx.To = tx.To
 			var moniker = tx.StakeCreateValidator.Description.Moniker
 			var identity = tx.StakeCreateValidator.Description.Identity
 			var website = tx.StakeCreateValidator.Description.Website
@@ -335,6 +338,8 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 			dtx.Website = website
 			dtx.Identity = identity
 		} else if tx.Type == types.TxTypeStakeEditValidator {
+			dtx.From = dtx.Signer
+			dtx.To = tx.From
 			var moniker = tx.StakeEditValidator.Description.Moniker
 			var identity = tx.StakeEditValidator.Description.Identity
 			var website = tx.StakeEditValidator.Description.Website
@@ -350,6 +355,8 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 			dtx.Website = website
 			dtx.Identity = identity
 		} else if tx.Type == types.TxTypeUnjail {
+			dtx.From = dtx.Signer
+			dtx.To = tx.From
 			candidateDb := db.C(document.CollectionNmStakeRoleCandidate)
 			var can document.Candidate
 			candidateDb.Find(bson.M{document.Candidate_Field_Address: dtx.Owner}).One(&can)
@@ -378,7 +385,6 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 				Amount: tx.Amount,
 			},
 		}
-
 	case types.Gov:
 		govTx := model.GovTx{
 			BaseTx:     buildBaseTx(tx),

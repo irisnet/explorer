@@ -143,6 +143,10 @@ Amount: %v
 
 type DeclarationTx struct {
 	BaseTx
+	// add fields(From、To、Amount)in the version 0.9.5 .
+	From     string         `json:"from"`
+	To       string         `json:"to"`
+	Amount   document.Coins `json:"amount"`
 	Owner    string
 	Moniker  string
 	Pubkey   string
