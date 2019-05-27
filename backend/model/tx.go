@@ -144,16 +144,17 @@ Amount: %v
 type DeclarationTx struct {
 	BaseTx
 	// add fields(From、To、Amount)in the version 0.9.5 .
-	From     string         `json:"From"`
-	To       string         `json:"To"`
-	Amount   document.Coins `json:"Amount"`
-	Owner    string
-	Moniker  string
-	Pubkey   string
-	Identity string
-	SelfBond document.Coins
-	Website  string
-	Details  string
+	From         string         `json:"From"`
+	To           string         `json:"To"`
+	Amount       document.Coins `json:"Amount"`
+	OperatorAddr string         `json:"OperatorAddr"`
+	Owner        string
+	Moniker      string
+	Pubkey       string
+	Identity     string
+	SelfBond     document.Coins
+	Website      string
+	Details      string
 }
 
 type GovTx struct {
