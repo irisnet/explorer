@@ -1,6 +1,10 @@
 package service
 
 import (
+	"strconv"
+	"sync"
+	"time"
+
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
@@ -12,9 +16,6 @@ import (
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/txn"
-	"strconv"
-	"sync"
-	"time"
 )
 
 type CandidateService struct {
@@ -52,7 +53,7 @@ func (service *CandidateService) GetValidators(typ, origin string, page, size in
 
 		query.SetCollection(document.CollectionNmValidator).
 			SetCondition(condition).
-			SetSort(desc(document.ValidatorFieldTokens)).
+			SetSort(desc(document.ValidatorFieldVotingPower)).
 			SetPage(page).
 			SetSize(size).
 			SetResult(&validators)
@@ -75,8 +76,7 @@ func (service *CandidateService) GetValidators(typ, origin string, page, size in
 			if err := utils.Copy(validators[i], &validator); err != nil {
 				panic(types.CodeSysFailed)
 			}
-			power, _ := types.NewDecFromStr(v.Tokens)
-			validator.VotingRate = float32(power.RoundInt64()) / float32(totalVotingPower)
+			validator.VotingRate = float32(v.VotingPower) / float32(totalVotingPower)
 			result = append(result, validator)
 		}
 
@@ -556,6 +556,12 @@ func buildValidators() []document.Validator {
 		}
 		validator.Uptime = computeUptime(v.ConsensusPubkey, height)
 		validator.SelfBond, validator.ProposerAddr, validator.DelegatorNum = queryDelegationInfo(v.OperatorAddress, v.ConsensusPubkey)
+
+		votingPower, err := types.NewDecFromStr(v.Tokens)
+		if err == nil {
+			validator.VotingPower = votingPower.RoundInt64()
+		}
+
 		return validator, nil
 	}
 	var group sync.WaitGroup
@@ -612,6 +618,7 @@ func isDiffValidator(src, dst document.Validator) bool {
 		src.Uptime != dst.Uptime ||
 		src.SelfBond != dst.SelfBond ||
 		src.DelegatorNum != dst.DelegatorNum ||
+		src.VotingPower != dst.VotingPower ||
 		src.ProposerAddr != dst.ProposerAddr ||
 		src.Description.Moniker != dst.Description.Moniker ||
 		src.Description.Identity != dst.Description.Identity ||

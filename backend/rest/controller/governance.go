@@ -1,12 +1,13 @@
 package controller
 
 import (
+	"strconv"
+
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
-	"strconv"
 )
 
 func RegisterProposal(r *mux.Router) error {
@@ -53,7 +54,6 @@ func registerQueryProposal(r *mux.Router) error {
 		pid, err := strconv.Atoi(Var(request, "pid"))
 		if err != nil {
 			panic(types.CodeInValidParam)
-			return nil
 		}
 
 		result := gov.Query(pid)

@@ -6,7 +6,7 @@
     <b-table :fields='blockFields' :items='items' striped v-if="type === '1'">
       <template slot='Height' slot-scope='data'>
         <span class="skip_route">
-          <router-link :to="`/blocks_detail/${data.item.Height}`">{{data.item.Height}}</router-link>
+          <router-link :to="`/block/${data.item.Height}`">{{data.item.Height}}</router-link>
         </span>
       </template>
       <template slot='Txn' slot-scope='data'>
@@ -20,7 +20,7 @@
     <b-table :fields='fields' :items='items' striped v-if="type === '2'" class="block_style">
       <template slot='TxHash' slot-scope='data'>
         <span class="skip_route">
-          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item.TxHash?`${String(data.item.TxHash).substr(0,16)}...`:''}}</router-link>
+          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item.TxHash ? `${formatTxHash(String(data.item.TxHash))}` : ''}}</router-link>
         </span>
       </template>
       <template slot='Age' slot-scope='data'>
@@ -28,7 +28,7 @@
       </template>
       <template slot='Block' slot-scope='data'>
         <span class="skip_route">
-          <router-link :to="`/blocks_detail/${data.item.Block}`">{{data.item.Block}}</router-link>
+          <router-link :to="`/block/${data.item.Block}`">{{data.item.Block}}</router-link>
         </span>
       </template>
       <template slot='From' slot-scope='data'>
@@ -81,12 +81,12 @@
     <b-table :fields='fields' :items='items' striped v-if="type === '6'" style="margin-bottom:0;">
       <template slot='TxHash' slot-scope='data'>
         <span class="skip_route">
-          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item.TxHash?`${String(data.item.TxHash).substr(0,16)}...`:''}}</router-link>
+          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item.TxHash ? `${formatTxHash(String(data.item.TxHash))}` : ''}}</router-link>
         </span>
       </template>
       <template slot='Block' slot-scope='data'>
         <span class="skip_route">
-          <router-link :to="`/blocks_detail/${data.item.Block}`">{{data.item.Block}}</router-link>
+          <router-link :to="`/block/${data.item.Block}`">{{data.item.Block}}</router-link>
         </span>
       </template>
       <template slot='From' slot-scope='data'>
@@ -112,7 +112,7 @@
     <b-table :fields='fields' :items='items' striped v-if="type === '7'" style="margin-bottom:0;">
       <template slot='Block Height' slot-scope='data'>
         <span class="skip_route">
-          <router-link :to="`/blocks_detail/${data.item['Block Height']}`">{{data.item['Block Height']}}</router-link>
+          <router-link :to="`/block/${data.item['Block Height']}`">{{data.item['Block Height']}}</router-link>
         </span>
       </template>
     </b-table>
@@ -139,10 +139,10 @@
       </template>
     </b-table>
 
-    <b-table :fields='fields' :items='items' striped v-if="type === 'addressTxList'" nodelabel >
+    <b-table :fields='fields' :items='items' striped v-if="type === 'addressTxList'" nodelabel style="min-width: 12.8rem">
       <template slot='TxHash' slot-scope='data'>
         <span class="skip_route">
-          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item['TxHash'] ? `${String(data.item.TxHash).substr(0,16)}...` : ''}}</router-link>
+          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item.TxHash ? `${formatTxHash(String(data.item.TxHash))}` : ''}}</router-link>
         </span>
       </template>
       <template slot='Age' slot-scope='data'>
@@ -150,16 +150,17 @@
       </template>
       <template slot='Block' slot-scope='data'>
         <span class="skip_route">
-          <router-link :to="`/blocks_detail/${data.item.Block}`">{{data.item.Block}}</router-link>
+          <router-link :to="`/block/${data.item.Block}`">{{data.item.Block}}</router-link>
         </span>
       </template>
       <template slot='From' slot-scope='data'>
-        <div class="name_address" v-show="data.item.From">
+        <div class="name_address" v-show="data.item.From && data.item.From !== '--'">
             <span class="remove_default_style" :class="data.item.From === $route.params.param?'no_skip':''">
               <router-link :to="`/address/1/${data.item.From}`" class="link_style">{{formatAddress(data.item.From)}}</router-link>
             </span>
           <span class="address">{{data.item.From ? data.item.From : ''}}</span>
         </div>
+        <span class="no_skip" v-show="data.item.From === '--'">--</span>
       </template>
       <template slot='To' slot-scope='data'>
         <div class="name_address" v-show="data.item.To && data.item.To !== '--'">
@@ -177,17 +178,27 @@
           {{data.item.Owner?`${formatAddress(data.item.Owner)}`:''}}
         </span>
       </template>
+      <template slot='Tx_Signer' slot-scope='data'>
+        <span class="skip_route" style="display: flex" v-if="data.item.Tx_Signer">
+          <div class="name_address">
+            <span class="remove_default_style" :class="data.item.Tx_Signer === $route.params.param?'no_skip':''">
+              <router-link :to="`/address/1/${data.item.Tx_Signer}`" class="link_style justify">{{formatAddress(data.item.Tx_Signer)}}</router-link>
+            </span>
+            <span class="address">{{data.item.Tx_Signer}}</span>
+          </div>
+        </span>
+      </template>
     </b-table>
 
     <b-table :fields='fields' :items='items' striped v-if="type === 'blockTxList'" nodelabel class="block_style">
       <template slot='TxHash' slot-scope='data'>
         <span class="skip_route">
-          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item['TxHash'] ? `${String(data.item.TxHash).substr(0,16)}...` : ''}}</router-link>
+          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item.TxHash ? `${formatTxHash(String(data.item.TxHash))}` : ''}}</router-link>
         </span>
       </template>
       <template slot='Block' slot-scope='data'>
         <span class="skip_route">
-          <router-link :to="`/blocks_detail/${data.item.Block}`">{{data.item.Block}}</router-link>
+          <router-link :to="`/block/${data.item.Block}`">{{data.item.Block}}</router-link>
         </span>
       </template>
       <template slot='From' slot-scope='data'>
@@ -237,6 +248,11 @@
     methods: {
       formatAddress(address){
         return Tools.formatValidatorAddress(address)
+      },
+      formatTxHash(TxHash){
+        if(TxHash){
+          return Tools.formatTxHash(TxHash)
+        }
       },
     }
   }

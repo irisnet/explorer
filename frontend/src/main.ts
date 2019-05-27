@@ -31,8 +31,7 @@ axios.get(`/api/sysdate`).then(data => {
 
 
 });
-
-
+sessionStorage.setItem("Show_faucet",JSON.stringify(0))
 new Vue({
   router,
   store,

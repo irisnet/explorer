@@ -317,7 +317,7 @@ export default class Tools{
     return coinsDenom = /[A-Za-z\-]{2,15}/.exec(coinsDenom)
   }
   static scrollToTop(){
-    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
   }
 
   static firstWordUpperCase (str){
@@ -325,6 +325,11 @@ export default class Tools{
       return char.toUpperCase();
     });
   }
+    static firstWordLowerCase (str){
+        return str.toLowerCase().replace(/(\s|^)[a-z]/g, function(char){
+            return char.toLocaleLowerCase();
+        });
+    }
   /**
    * format address
    * param String
@@ -333,12 +338,20 @@ export default class Tools{
   static formatValidatorAddress(address){
     return `${address.substring(0,8)}...${address.substring(address.length - 8)}`
   }
+  /**
+   * format txHash
+   * param String
+   * return String
+   */
+  static formatTxHash(txHash){
+    return `${txHash.substring(0,4)}...${txHash.substring(txHash.length - 4)}`
+  }
   static formatTxList(list,txType,currentServerTime){
     if(list !== null){
       return list.map(item => {
         let [Amount,Fee] = ['--','--'];
         let commonHeaderObjList,objList,commonFooterObjList;
-        if(txType === 'Transfers' || txType === 'Stakes' || txType === 'Governance'){
+        if(txType === 'transfers' || txType === 'stakes' || txType === 'governance'){
           if(item.Amount){
             if(item.Amount instanceof Array){
               if(item.Amount.length > 0){
@@ -370,33 +383,34 @@ export default class Tools{
           Status : Tools.firstWordUpperCase(item.Status),
           Age: Tools.formatAge(currentServerTime,item.Timestamp,Constant.SUFFIX,Constant.PREFIX,)
         };
-        if(txType === 'Transfers' ){
+        if(txType === 'transfers' ){
           objList = {
             From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
             To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
             Amount,
             Fee,
           };
-        }else if(txType === 'Declarations'){
+        }else if(txType === 'declarations'){
           let Moniker = item.Moniker;
           objList = {
             From: item.Owner ? item.Owner : "--",
             Moniker: item.Moniker ? Tools.formatString(Moniker,20,"...") : "--",
-            "Self-Bond": item.SelfBond && item.SelfBond.length > 0 ? `${Tools.formatAmount(item.SelfBond[0].amount)} ${Tools.formatDenom(item.SelfBond[0].denom).toUpperCase()}` : "--",
+            "Self-Bonded": item.SelfBond && item.SelfBond.length > 0 ? `${Tools.formatAmount(item.SelfBond[0].amount)} ${Tools.formatDenom(item.SelfBond[0].denom).toUpperCase()}` : "--",
             Type: item.Type,
             Fee: `${Tools.formatFeeToFixedNumber(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`,
           }
-        }else if(txType === 'Stakes'){
+        }else if(txType === 'stakes'){
           objList = {
             TxHash: item.Hash,
             Block:item.BlockHeight,
-            From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
+            From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:'--'),
             To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:'--'),
-            Type:item.Type === 'coin'?'transfer':item.Type,
             Amount,
+            Type:item.Type === 'coin'?'transfer':item.Type,
+            'Tx_Signer': item.Signer ? item.Signer : '',
             Fee,
           }
-        }else if(txType === 'Governance'){
+        }else if(txType === 'governance'){
           objList = {
             From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
             "Proposal_ID": item.ProposalId === 0 ? "--" : item.ProposalId,
@@ -409,7 +423,7 @@ export default class Tools{
       })
     }else {
       let noObjList;
-      if(txType === 'Transfers'){
+      if(txType === 'transfers'){
         noObjList = [{
           TxHash: '',
           Block:'',
@@ -420,31 +434,32 @@ export default class Tools{
           Status: "",
           Age:'',
         }];
-      }else if(txType === 'Declarations'){
+      }else if(txType === 'declarations'){
         noObjList = [{
           TxHash: '',
           Block:'',
           From:'',
           Moniker:'',
-          "Self-Bond":'',
+          "Self-Bonded":'',
           Type:'',
           Fee:'',
           Status: "",
           Age:'',
         }];
-      }else if(txType === 'Stakes'){
+      }else if(txType === 'stakes'){
         noObjList = [{
           TxHash: '',
           Block:'',
           From:'',
           To:'',
-          Type:'',
           Amount:'',
+          Type:'',
+          'Tx_Signer': '',
           Fee:'',
           Status: "",
           Age:'',
         }];
-      }else if(txType === 'Governance'){
+      }else if(txType === 'governance'){
         noObjList = [{
           TxHash: '',
           Block:'',

@@ -2,6 +2,8 @@ package service
 
 import (
 	"encoding/json"
+
+	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/orm/document"
@@ -15,6 +17,32 @@ type ProposalService struct {
 
 func (service *ProposalService) GetModule() Module {
 	return Proposal
+}
+
+func (service *ProposalService) QueryProposalsByHeight(height int64) []model.ProposalInfoVo {
+
+	resp := []model.ProposalInfoVo{}
+
+	var query = orm.NewQuery()
+	defer query.Release()
+
+	var data []document.CommonTx
+
+	var selector = bson.M{"proposal_id": 1, "type": 1, "from": 1}
+
+	query.SetCollection(document.CollectionNmCommonTx).
+		SetSelector(selector).
+		SetCondition(bson.M{document.Tx_Field_Height: height, document.Tx_Field_Type: "SubmitProposal"}).
+		SetResult(&data)
+	if err := query.Exec(); err != nil {
+		logger.Error("query proposal err", logger.String("error", err.Error()), service.GetTraceLog())
+	}
+
+	for _, v := range data {
+		resp = append(resp, service.Query(int(v.ProposalId)))
+	}
+
+	return resp
 }
 
 func (service *ProposalService) QueryList(page, size int) (resp model.PageVo) {
@@ -54,7 +82,6 @@ func (service *ProposalService) Query(id int) (resp model.ProposalInfoVo) {
 
 	if err := query.Exec(); err != nil {
 		panic(types.CodeNotFound)
-		return
 	}
 
 	proposal := model.Proposal{
@@ -72,7 +99,7 @@ func (service *ProposalService) Query(id int) (resp model.ProposalInfoVo) {
 
 	var tx document.CommonTx
 	query.Reset().SetCollection(document.CollectionNmCommonTx).
-		SetCondition(bson.M{document.Tx_Field_Type: types.TypeSubmitProposal, document.Proposal_Field_ProposalId: id}).
+		SetCondition(bson.M{document.Tx_Field_Type: types.TxTypeSubmitProposal, document.Proposal_Field_ProposalId: id}).
 		SetResult(&tx)
 	if err := query.Exec(); err == nil {
 		proposal.Proposer = tx.From
@@ -122,4 +149,20 @@ func (service *ProposalService) Query(id int) (resp model.ProposalInfoVo) {
 	resp.Votes = votes
 	resp.Result = result
 	return
+}
+
+func (service *ProposalService) QueryTypeAndTitleByIds(ids []uint64) ([]document.Proposal, error) {
+
+	proposalDocArr := []document.Proposal{}
+	selector := bson.M{
+		document.Proposal_Field_ProposalId: 1,
+		document.Proposal_Field_Title:      1,
+		document.Proposal_Field_Type:       1,
+	}
+	condition := bson.M{
+		document.Proposal_Field_ProposalId: bson.M{"$in": ids},
+	}
+	err := queryAll(document.CollectionNmProposal, selector, condition, "", 0, &proposalDocArr)
+
+	return proposalDocArr, err
 }

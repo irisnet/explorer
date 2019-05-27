@@ -10,6 +10,7 @@ import (
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/conf"
+	"github.com/irisnet/explorer/backend/lcd/lite"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/rest/controller"
 	"github.com/irisnet/explorer/backend/rest/filter"
@@ -85,11 +86,7 @@ func NewAPIMux() *mux.Router {
 	s := r.PathPrefix("/api").Subrouter()
 	registerApi(s)
 	registerFilters()
-
-	if conf.Get().Server.CurEnv == conf.EnvironmentDevelop || conf.Get().Server.CurEnv == conf.EnvironmentLocal || conf.Get().Server.CurEnv == conf.EnvironmentQa {
-		r.PathPrefix("/swagger-ui/").Handler(http.StripPrefix("/swagger-ui/", http.FileServer(http.Dir("../swagger-ui"))))
-	}
-
+	lite.RegisterSwaggerUI(r)
 	r.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("../frontend/dist/"))))
 	return r
 }

@@ -1,8 +1,10 @@
 package model
 
 import (
-	"github.com/irisnet/explorer/backend/orm/document"
+	"fmt"
 	"time"
+
+	"github.com/irisnet/explorer/backend/orm/document"
 )
 
 type MsgSubmitProposal struct {
@@ -60,7 +62,52 @@ type TxNumGroupByDayVo struct {
 	Num  int64  `json:"num"`
 }
 
+type TxPage struct {
+	Total int  `json:"total"`
+	Items []Tx `json:"items"`
+}
+
+type ProposalPage struct {
+	Total int            `json:"total"`
+	Items []ProposalInfo `json:"items"`
+}
+
+type ProposalInfo struct {
+	Hash          string             `json:"hash"`
+	ActualFee     document.ActualFee `json:"actual_fee"`
+	Signer        string             `json:"Signer"`
+	TxType        string             `json:"tx_type"`
+	Status        string             `json:"status"`
+	ProposalId    uint64             `json:"proposal_id"`
+	ProposalType  string             `json:"proposal_type"`
+	ProposalTitle string             `json:"proposal_title"`
+}
+
+type Tx struct {
+	Hash      string             `json:"hash"`
+	From      string             `json:"from"`
+	To        string             `json:"to"`
+	Amount    document.Coins     `json:"amount"`
+	ActualFee document.ActualFee `json:"actual_fee"`
+	Signer    string             `json:"Signer"`
+	Type      string             `json:"type"`
+	Status    string             `json:"status"`
+	Timestamp time.Time          `json:"timestamp"`
+}
+
+func (t Tx) PrintHashFromToAmount() string {
+
+	return fmt.Sprintf(`
+		Hash:   %v
+		Type:   %v
+		From:   %v
+		To:     %v
+		Amount: %v
+		`, t.Hash, t.Type, t.From, t.To, t.Amount)
+}
+
 type BaseTx struct {
+	Signer      string `json:"Signer,omitempty"`
 	Hash        string
 	BlockHeight int64
 	Type        string
@@ -85,15 +132,29 @@ type StakeTx struct {
 	Source string
 }
 
+func (s StakeTx) PrintHashFromToAmount() string {
+	return fmt.Sprintf(`
+Hash  : %v
+From  : %v
+To    : %v
+Amount: %v
+`, s.Hash, s.From, s.To, s.Amount)
+}
+
 type DeclarationTx struct {
 	BaseTx
-	Owner    string
-	Moniker  string
-	Pubkey   string
-	Identity string
-	SelfBond document.Coins
-	Website  string
-	Details  string
+	// add fields(From、To、Amount)in the version 0.9.5 .
+	From         string         `json:"From"`
+	To           string         `json:"To"`
+	Amount       document.Coins `json:"Amount"`
+	OperatorAddr string         `json:"OperatorAddr"`
+	Owner        string
+	Moniker      string
+	Pubkey       string
+	Identity     string
+	SelfBond     document.Coins
+	Website      string
+	Details      string
 }
 
 type GovTx struct {

@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"strconv"
+
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/service"
@@ -11,9 +13,12 @@ import (
 // mux.Router registrars
 func RegisterBlock(r *mux.Router) error {
 	funs := []func(*mux.Router) error{
-		registerQueryBlock,
 		registerQueryBlocks,
 		registerQueryRecentBlocks,
+		registerQueryValidatorSet,
+		registerQueryTxsByBlock,
+		registerQueryTxGovByBlock,
+		registerQueryBlockInfoByBlock,
 	}
 
 	for _, fn := range funs {
@@ -30,21 +35,6 @@ type Block struct {
 
 var block = Block{
 	service.Get(service.Block).(*service.BlockService),
-}
-
-func registerQueryBlock(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryBlock, "GET", func(request model.IrisReq) interface{} {
-		h := Var(request, "height")
-		height, ok := utils.ParseInt(h)
-		if !ok {
-			panic(types.CodeInValidParam)
-			return nil
-		}
-		block.SetTid(request.TraceId)
-		result := block.Query(height)
-		return result
-	})
-	return nil
 }
 
 func registerQueryBlocks(r *mux.Router) error {
@@ -64,5 +54,62 @@ func registerQueryRecentBlocks(r *mux.Router) error {
 		return block.QueryRecent()
 	})
 
+	return nil
+}
+
+func registerQueryValidatorSet(r *mux.Router) error {
+	doApi(r, types.UrlRegisterQueryBlockValidatorSet, "GET", func(request model.IrisReq) interface{} {
+		block.SetTid(request.TraceId)
+		height, err := strconv.ParseInt(Var(request, "height"), 10, 0)
+		if err != nil || height < 1 {
+			panic(types.CodeInValidParam)
+		}
+
+		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), DefaultPageNum))
+		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), DefaultPageSize))
+		result := block.GetValidatorSet(height, page, size)
+
+		return result
+	})
+	return nil
+}
+
+func registerQueryTxsByBlock(r *mux.Router) error {
+	doApi(r, types.UrlRegisterQueryBlockTxs, "GET", func(request model.IrisReq) interface{} {
+		tx.SetTid(request.TraceId)
+		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), DefaultPageNum))
+		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), DefaultPageSize))
+		height, err := strconv.ParseInt(Var(request, "height"), 10, 0)
+		if err != nil || height < 1 {
+			panic(types.CodeInValidParam)
+		}
+		return block.QueryTxsExcludeTxGovByBlock(height, page, size)
+	})
+	return nil
+}
+
+func registerQueryTxGovByBlock(r *mux.Router) error {
+	doApi(r, types.UrlRegisterQueryBlockTxGov, "GET", func(request model.IrisReq) interface{} {
+		tx.SetTid(request.TraceId)
+		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), DefaultPageNum))
+		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), DefaultPageSize))
+		height, err := strconv.ParseInt(Var(request, "height"), 10, 0)
+		if err != nil || height < 1 {
+			panic(types.CodeInValidParam)
+		}
+		return block.QueryTxsOnlyTxGovByBlock(height, page, size)
+	})
+	return nil
+}
+
+func registerQueryBlockInfoByBlock(r *mux.Router) error {
+	doApi(r, types.UrlRegisterQueryBlockInfo, "GET", func(request model.IrisReq) interface{} {
+		tx.SetTid(request.TraceId)
+		height, err := strconv.ParseInt(Var(request, "height"), 10, 0)
+		if err != nil || height < 1 {
+			panic(types.CodeInValidParam)
+		}
+		return block.QueryBlockInfo(height)
+	})
 	return nil
 }

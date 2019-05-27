@@ -21,9 +21,10 @@ func (service *AccountService) GetModule() Module {
 func (service *AccountService) Query(address string) (result model.AccountVo) {
 	prefix, _, _ := utils.DecodeAndConvert(address)
 	if prefix == conf.Get().Hub.Prefix.ValAddr {
-		valinfo := delegatorService.QueryDelegation(address)
-		result.Amount = document.Coins{valinfo.selfBond}
-		result.Deposits = valinfo.delegated
+		self, delegated := delegatorService.QueryDelegation(address)
+		result.Amount = document.Coins{self}
+		result.Deposits = delegated
+
 	} else {
 		res, err := lcd.Account(address)
 		if err == nil {

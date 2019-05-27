@@ -3,8 +3,7 @@ import Router from 'vue-router';
 import Home from './views/Home.vue';
 import FaucetPage from './components/FaucetPage.vue';
 import TransactionsDetail from './components/TransactionsDetail.vue';
-import BlocksDetail from './components/BlocksDetail.vue';
-import BlocksListPage from './components/BlocksListPage.vue';
+import BlocksDetail from './components/BlockInfo.vue';
 import AddressPage from './components/AddressPage.vue';
 import PrivacyPolicy from './components/PrivacyPolicy.vue';
 import ProposalsPage from "./components/ProposalsPage.vue";
@@ -15,9 +14,11 @@ import Version from "./components/version.vue";
 import ValidatorListPage from "./components/ValidatorListPage.vue";
 import Parameters from "./components/ParametersPage.vue"
 import RichList from "./components/RichList.vue"
+import BlockList from "./components/BlockListPage.vue"
+import TxList from "./components/TxListPage.vue"
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: '/',
@@ -31,8 +32,8 @@ export default new Router({
       path: '/faucet',
       component: FaucetPage,
       beforeEnter (to, from, next) {
-        if (localStorage.getItem('Show_faucet') === '0'){
-          next(false)
+        if (sessionStorage.getItem('Show_faucet') === null){
+          next('/')
         }else{
           next()
         }
@@ -50,29 +51,26 @@ export default new Router({
       //2 Transactions页面
       //3 Validators页面
       //4 Candidates页面
-      path: '/block/:type/:param', component: BlocksListPage
+      path: '/blocks', component: BlockList
 
     },
     {
-      path: '/transactions/:type/:param', component: BlocksListPage
+      path: '/txs/:txType', component: TxList
     },
     {
-      path: '/transactions/:type/:param', component: BlocksListPage
+      path: '/txs/:txType', component: TxList
     },
     {
-      path: '/transactions/:type/:param', component: BlocksListPage
+      path: '/txs/:txType', component: TxList
     },
     {
       path: '/validators', component: ValidatorListPage
     },
     {
-      path: '/candidates/:type/:param', component: BlocksListPage
-    },
-    {
       path: '/tx', component: TransactionsDetail
     },
     {
-      path: '/blocks_detail/:height', component: BlocksDetail,
+      path: '/block/:height', component: BlocksDetail,
     },
     {
       path: '/ProposalsDetail/:proposal_id', component: ProposalsDetail,
@@ -89,7 +87,7 @@ export default new Router({
       path: '/searchResult/:searchContent', component: SearchResult,
     },
     {
-      path: '/searchResult/', component: SearchResult,
+      path: '/searchResult', component: SearchResult,
     },
     {
       path: '/version', component: Version,
@@ -103,3 +101,15 @@ export default new Router({
   ]
 
 })
+router.beforeEach((to,from,next) =>{
+  if(sessionStorage.getItem('Show_faucet') === '0'){
+    if(to.path === '/faucet'){
+      next('/')
+    }else {
+      next()
+    }
+  }else {
+    next()
+  }
+})
+export default router;
