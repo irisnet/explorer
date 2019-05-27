@@ -370,7 +370,7 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 		}
 		return dtx
 	case types.Stake:
-		tmp := model.StakeTx{
+		return model.StakeTx{
 			TransTx: model.TransTx{
 				BaseTx: buildBaseTx(tx),
 				From:   tx.From,
@@ -379,11 +379,6 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 			},
 		}
 
-		if len(tx.Signers) > 0 {
-			tmp.Signer = tx.Signers[0].AddrBech32
-		}
-
-		return tmp
 	case types.Gov:
 		govTx := model.GovTx{
 			BaseTx:     buildBaseTx(tx),
@@ -423,7 +418,7 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 }
 
 func buildBaseTx(tx document.CommonTx) model.BaseTx {
-	return model.BaseTx{
+	res := model.BaseTx{
 		Hash:        tx.TxHash,
 		BlockHeight: tx.Height,
 		Type:        tx.Type,
@@ -435,4 +430,9 @@ func buildBaseTx(tx document.CommonTx) model.BaseTx {
 		Memo:        tx.Memo,
 		Timestamp:   tx.Time,
 	}
+
+	if len(tx.Signers) > 0 {
+		res.Signer = tx.Signers[0].AddrBech32
+	}
+	return res
 }
