@@ -230,6 +230,9 @@
         word-wrap: break-word !important;
       }
   }
+  .validator_table table thead tr th:nth-child(2){
+    padding-left: 0.26rem !important;
+  }
   .show_no_data{
     .table{
       tbody{
