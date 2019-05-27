@@ -75,7 +75,7 @@ type ProposalPage struct {
 type ProposalInfo struct {
 	Hash          string             `json:"hash"`
 	ActualFee     document.ActualFee `json:"actual_fee"`
-	Signer        string             `json:"signer"`
+	Signer        string             `json:"Signer"`
 	TxType        string             `json:"tx_type"`
 	Status        string             `json:"status"`
 	ProposalId    uint64             `json:"proposal_id"`
@@ -89,7 +89,7 @@ type Tx struct {
 	To        string             `json:"to"`
 	Amount    document.Coins     `json:"amount"`
 	ActualFee document.ActualFee `json:"actual_fee"`
-	Signer    string             `json:"signer"`
+	Signer    string             `json:"Signer"`
 	Type      string             `json:"type"`
 	Status    string             `json:"status"`
 	Timestamp time.Time          `json:"timestamp"`
@@ -107,7 +107,7 @@ func (t Tx) PrintHashFromToAmount() string {
 }
 
 type BaseTx struct {
-	Signer      string `json:"signer,omitempty"`
+	Signer      string `json:"Signer,omitempty"`
 	Hash        string
 	BlockHeight int64
 	Type        string
@@ -144,9 +144,9 @@ Amount: %v
 type DeclarationTx struct {
 	BaseTx
 	// add fields(From、To、Amount)in the version 0.9.5 .
-	From     string         `json:"from"`
-	To       string         `json:"to"`
-	Amount   document.Coins `json:"amount"`
+	From     string         `json:"From"`
+	To       string         `json:"To"`
+	Amount   document.Coins `json:"Amount"`
 	Owner    string
 	Moniker  string
 	Pubkey   string
