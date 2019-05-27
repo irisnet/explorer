@@ -528,15 +528,11 @@
             align-items: center;
         }
         .blocks_list_table_container{
+            overflow-x: auto;
+            -webkit-overflow-scrolling:touch;
             .address_tx_list_table{
-                top: 0.2rem;
-                padding-bottom: 0.2rem;
-                position:relative;
-                overflow-x: auto;
-                -webkit-overflow-scrolling:touch;
-                .address_tx_list_table{
-                    min-width: 9rem;
-                }
+                min-width: 12.8rem;
+                margin-top: 0.2rem;
             }
         }
     }
@@ -571,15 +567,11 @@
             align-items: center;
         }
         .blocks_list_table_container{
+            overflow-x: auto;
+            -webkit-overflow-scrolling:touch;
             .address_tx_list_table{
-                top: 0.2rem;
-                padding-bottom: 0.2rem;
-                position:relative;
-                overflow-x: auto;
-                -webkit-overflow-scrolling:touch;
-                .address_tx_list_table{
-                    min-width: 9rem;
-                }
+                min-width: 12.8rem;
+                margin-top: 0.2rem;
             }
         }
     }

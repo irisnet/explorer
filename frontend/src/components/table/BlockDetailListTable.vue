@@ -1,10 +1,15 @@
 <template>
   <div :class="showNoData?'show_no_data':''" style="min-width: 12rem;" class="validator_table">
-    <b-table :fields='listFields' :items='items' striped nodelabel>
+    <b-table :fields='listFields' :items='items' striped nodelabel :class="flIsValidatorTable ? 'validator_set_table_style' : ''">
       <template slot='TxHash' slot-scope='data'>
-        <span class="skip_route">
-          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item['TxHash'] ? `${formatTxHash(String(data.item.TxHash))}` : ''}}</router-link>
-        </span>
+          <span class="skip_route" style="display: flex">
+            <div class="hash_container">
+              <span>
+                <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item.TxHash ? `${formatTxHash(String(data.item.TxHash))}` : ''}}</router-link>
+              </span>
+              <span class="hash_content">{{data.item.TxHash}}</span>
+            </div>
+          </span>
       </template>
       <template slot='Block' slot-scope='data'>
         <span class="skip_route">
@@ -40,12 +45,12 @@
       <template slot='Consensus' slot-scope='data'>
         <div>{{data.item.Consensus}}</div>
       </template>
-      <template slot='Tx_Initiator' slot-scope='data'>
-        <div class="name_address" v-show="data.item.Tx_Initiator && data.item.Tx_Initiator !== '--'">
-            <span class="remove_default_style" :class="data.item.Tx_Initiator === $route.params.param?'no_skip':''">
-              <router-link :to="data.item.Tx_Initiator === $route.params.param ? '' : `/address/1/${data.item.Tx_Initiator}`" class="link_style">{{formatAddress(data.item.Tx_Initiator)}}</router-link>
+      <template slot='Tx_Signer' slot-scope='data'>
+        <div class="name_address" v-show="data.item.Tx_Signer && data.item.Tx_Signer !== '--'">
+            <span class="remove_default_style" :class="data.item.Tx_Signer === $route.params.param?'no_skip':''">
+              <router-link :to="data.item.Tx_Signer === $route.params.param ? '' : `/address/1/${data.item.Tx_Signer}`" class="link_style">{{formatAddress(data.item.Tx_Signer)}}</router-link>
             </span>
-          <span class="address">{{data.item.Tx_Initiator ? data.item.Tx_Initiator : ''}}</span>
+          <span class="address">{{data.item.Tx_Signer ? data.item.Tx_Signer : ''}}</span>
         </div>
         <span class="no_skip" v-show="data.item.Tx_Initiator == '--'">
           --
@@ -134,7 +139,7 @@
                       Fee:{
                         label:'Tx_Fee',
                       },
-                      Tx_Initiator:{
+                      Tx_Signer:{
                         label:'Tx_Signer',
                       },
                       Tx_Type:{
@@ -190,7 +195,8 @@
                       'VotingPower':{
                           label:'Voting Power'
                       }
-                  }
+                  },
+                  flIsValidatorTable: false,
               }
           },
           mounted(){
@@ -214,6 +220,7 @@
                           this.listFields = this.governanceFields;
                       }else {
                           this.listFields = this.validatorFields;
+                          this.flIsValidatorTable = true;
                       }
                   })
               }
@@ -230,7 +237,7 @@
         word-wrap: break-word !important;
       }
   }
-  .validator_table table thead tr th:nth-child(2){
+  .validator_table .validator_set_table_style thead tr th:nth-child(2){
     padding-left: 0.26rem !important;
   }
   .show_no_data{
