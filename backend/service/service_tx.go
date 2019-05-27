@@ -317,9 +317,12 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 			SelfBond: tx.Amount,
 			Owner:    tx.From,
 			Pubkey:   tx.StakeCreateValidator.PubKey,
+			Amount:   tx.Amount,
 		}
 		var blackList = service.QueryBlackList(db)
 		if tx.Type == types.TxTypeStakeCreateValidator {
+			dtx.From = tx.From
+			dtx.To = tx.To
 			var moniker = tx.StakeCreateValidator.Description.Moniker
 			var identity = tx.StakeCreateValidator.Description.Identity
 			var website = tx.StakeCreateValidator.Description.Website
@@ -335,6 +338,8 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 			dtx.Website = website
 			dtx.Identity = identity
 		} else if tx.Type == types.TxTypeStakeEditValidator {
+			dtx.From = dtx.Signer
+			dtx.To = tx.From
 			var moniker = tx.StakeEditValidator.Description.Moniker
 			var identity = tx.StakeEditValidator.Description.Identity
 			var website = tx.StakeEditValidator.Description.Website
@@ -350,6 +355,8 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 			dtx.Website = website
 			dtx.Identity = identity
 		} else if tx.Type == types.TxTypeUnjail {
+			dtx.From = dtx.Signer
+			dtx.To = tx.From
 			candidateDb := db.C(document.CollectionNmStakeRoleCandidate)
 			var can document.Candidate
 			candidateDb.Find(bson.M{document.Candidate_Field_Address: dtx.Owner}).One(&can)
@@ -370,7 +377,7 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 		}
 		return dtx
 	case types.Stake:
-		tmp := model.StakeTx{
+		return model.StakeTx{
 			TransTx: model.TransTx{
 				BaseTx: buildBaseTx(tx),
 				From:   tx.From,
@@ -378,12 +385,6 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 				Amount: tx.Amount,
 			},
 		}
-
-		if len(tx.Signers) > 0 {
-			tmp.Signer = tx.Signers[0].AddrBech32
-		}
-
-		return tmp
 	case types.Gov:
 		govTx := model.GovTx{
 			BaseTx:     buildBaseTx(tx),
@@ -423,7 +424,7 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 }
 
 func buildBaseTx(tx document.CommonTx) model.BaseTx {
-	return model.BaseTx{
+	res := model.BaseTx{
 		Hash:        tx.TxHash,
 		BlockHeight: tx.Height,
 		Type:        tx.Type,
@@ -435,4 +436,9 @@ func buildBaseTx(tx document.CommonTx) model.BaseTx {
 		Memo:        tx.Memo,
 		Timestamp:   tx.Time,
 	}
+
+	if len(tx.Signers) > 0 {
+		res.Signer = tx.Signers[0].AddrBech32
+	}
+	return res
 }

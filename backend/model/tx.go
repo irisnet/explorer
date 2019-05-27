@@ -75,7 +75,7 @@ type ProposalPage struct {
 type ProposalInfo struct {
 	Hash          string             `json:"hash"`
 	ActualFee     document.ActualFee `json:"actual_fee"`
-	TxInitiator   string             `json:"tx_initiator"`
+	Signer        string             `json:"signer"`
 	TxType        string             `json:"tx_type"`
 	Status        string             `json:"status"`
 	ProposalId    uint64             `json:"proposal_id"`
@@ -84,15 +84,15 @@ type ProposalInfo struct {
 }
 
 type Tx struct {
-	Hash        string             `json:"hash"`
-	From        string             `json:"from"`
-	To          string             `json:"to"`
-	Amount      document.Coins     `json:"amount"`
-	ActualFee   document.ActualFee `json:"actual_fee"`
-	TxInitiator string             `json:"tx_initiator"`
-	Type        string             `json:"type"`
-	Status      string             `json:"status"`
-	Timestamp   time.Time          `json:"timestamp"`
+	Hash      string             `json:"hash"`
+	From      string             `json:"from"`
+	To        string             `json:"to"`
+	Amount    document.Coins     `json:"amount"`
+	ActualFee document.ActualFee `json:"actual_fee"`
+	Signer    string             `json:"signer"`
+	Type      string             `json:"type"`
+	Status    string             `json:"status"`
+	Timestamp time.Time          `json:"timestamp"`
 }
 
 func (t Tx) PrintHashFromToAmount() string {
@@ -107,6 +107,7 @@ func (t Tx) PrintHashFromToAmount() string {
 }
 
 type BaseTx struct {
+	Signer      string `json:"signer,omitempty"`
 	Hash        string
 	BlockHeight int64
 	Type        string
@@ -129,7 +130,6 @@ type TransTx struct {
 type StakeTx struct {
 	TransTx
 	Source string
-	Signer string
 }
 
 func (s StakeTx) PrintHashFromToAmount() string {
@@ -143,6 +143,10 @@ Amount: %v
 
 type DeclarationTx struct {
 	BaseTx
+	// add fields(From、To、Amount)in the version 0.9.5 .
+	From     string         `json:"from"`
+	To       string         `json:"to"`
+	Amount   document.Coins `json:"amount"`
 	Owner    string
 	Moniker  string
 	Pubkey   string
