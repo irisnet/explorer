@@ -207,7 +207,7 @@ func (service *BlockService) QueryTxsExcludeTxGovByBlock(height int64, page, siz
 		}
 
 		if len(v.Signers) > 0 {
-			tmp.TxInitiator = v.Signers[0].AddrBech32
+			tmp.Signer = v.Signers[0].AddrBech32
 		}
 
 		if service.isForwardTxByType(v.Type) {
@@ -336,13 +336,17 @@ func (service *BlockService) QueryTxsOnlyTxGovByBlock(height int64, page, size i
 	}
 	for _, vTx := range itemsAsDoc {
 		tmp := model.ProposalInfo{
-			ProposalId:  vTx.ProposalId,
-			Hash:        vTx.TxHash,
-			ActualFee:   vTx.ActualFee,
-			TxInitiator: vTx.From,
-			TxType:      vTx.Type,
-			Status:      vTx.Status,
+			ProposalId: vTx.ProposalId,
+			Hash:       vTx.TxHash,
+			ActualFee:  vTx.ActualFee,
+			TxType:     vTx.Type,
+			Status:     vTx.Status,
 		}
+
+		if len(vTx.Signers) > 0 {
+			tmp.Signer = vTx.Signers[0].AddrBech32
+		}
+
 		if vTx.Type == types.TxTypeSubmitProposal {
 			for _, txMsg := range submitProposalTxMsgs {
 				if vTx.TxHash == txMsg.Hash {
