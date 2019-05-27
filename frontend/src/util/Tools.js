@@ -336,7 +336,7 @@ export default class Tools{
    * return String
    */
   static formatValidatorAddress(address){
-    return `${address.substring(0,8)}...${address.substring(address.length - 8)}`
+    return `${address.substring(0,3)}...${address.substring(address.length - 8)}`
   }
   /**
    * format txHash
@@ -351,7 +351,6 @@ export default class Tools{
       return list.map(item => {
         let [Amount,Fee] = ['--','--'];
         let commonHeaderObjList,objList,commonFooterObjList;
-        if(txType === 'transfers' || txType === 'stakes' || txType === 'governance'){
           if(item.Amount){
             if(item.Amount instanceof Array){
               if(item.Amount.length > 0){
@@ -374,48 +373,49 @@ export default class Tools{
             let feeAmount = item.Fee.amount;
             Fee = `${Tools.formatFeeToFixedNumber(feeAmount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`;
           }
-        }
         commonHeaderObjList = {
-          TxHash : item.Hash,
-          Block : item.BlockHeight
+          'Tx_Hash' : item.Hash,
+          'Block' : item.BlockHeight
         };
         commonFooterObjList = {
-          Status : Tools.firstWordUpperCase(item.Status),
-          Age: Tools.formatAge(currentServerTime,item.Timestamp,Constant.SUFFIX,Constant.PREFIX,)
+          'Tx_Type': item.Type,
+          'Tx_Fee': Fee,
+          'Tx_Signer': item.Signer ? item.Signer : '',
+          'Tx_Status': Tools.firstWordUpperCase(item.Status),
+          'Timestamp': Tools.format2UTC(item.Timestamp),
         };
         if(txType === 'transfers' ){
           objList = {
-            From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
-            To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
+            'From':item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
             Amount,
-            Fee,
+            'To':item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:''),
+            'listName':'transfer'
           };
         }else if(txType === 'declarations'){
           let Moniker = item.Moniker;
           objList = {
-            From: item.Owner ? item.Owner : "--",
-            Moniker: item.Moniker ? Tools.formatString(Moniker,20,"...") : "--",
-            "Self-Bonded": item.SelfBond && item.SelfBond.length > 0 ? `${Tools.formatAmount(item.SelfBond[0].amount)} ${Tools.formatDenom(item.SelfBond[0].denom).toUpperCase()}` : "--",
-            Type: item.Type,
-            Fee: `${Tools.formatFeeToFixedNumber(item.Fee.amount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`,
+            'Moniker': item.Moniker ? Tools.formatString(Moniker,15,"...") : "--",
+            'From': item.Owner ? item.Owner : "--",
+            Amount,
+            'To':item.To ? item.To : (item.ValidatorAddr?item.ValidatorAddr:'--'),
+            'OperatorAddr': item.OperatorAddr ? item.OperatorAddr : '--',
+            'listName':'declarations'
           }
         }else if(txType === 'stakes'){
           objList = {
-            TxHash: item.Hash,
-            Block:item.BlockHeight,
-            From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:'--'),
-            To:item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:'--'),
+            'From':item.From ? item.From : (item.DelegatorAddr?item.DelegatorAddr:'--'),
             Amount,
-            Type:item.Type === 'coin'?'transfer':item.Type,
-            'Tx_Signer': item.Signer ? item.Signer : '',
-            Fee,
+            'To':item.To ? item.To : (item.ValidatorAddr?item.ValidatorAddr:'--'),
+            'listName':'stakes'
           }
         }else if(txType === 'governance'){
           objList = {
-            From:item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:''),
             "Proposal_ID": item.ProposalId === 0 ? "--" : item.ProposalId,
-            Type: item.Type,
-            Fee,
+            'Proposal_Title': item.Title ?  Tools.formatString(item.Title,15,"...") : '--',
+            'Amount': '',
+            'Tx_Type': item.Type,
+            'Tx_Fee': '',
+            'listName':'gov'
           }
         }
         let allObjList = Object.assign(commonHeaderObjList,objList,commonFooterObjList);
@@ -425,50 +425,61 @@ export default class Tools{
       let noObjList;
       if(txType === 'transfers'){
         noObjList = [{
-          TxHash: '',
-          Block:'',
-          From:'',
-          To:'',
-          Amount:'',
-          Fee:'',
-          Status: "",
-          Age:'',
+          'Tx_Hash': '',
+          'Block':'',
+          'From':'',
+          'Amount':'',
+          'To':'',
+          'Tx_Type':'',
+          'Tx_Fee':'',
+          'Tx_Signer':'',
+          'Tx_Status': '',
+          'Timestamp':'',
+          'listName':'transfer'
         }];
       }else if(txType === 'declarations'){
         noObjList = [{
-          TxHash: '',
-          Block:'',
-          From:'',
-          Moniker:'',
-          "Self-Bonded":'',
-          Type:'',
-          Fee:'',
-          Status: "",
-          Age:'',
+          'Tx_Hash': '',
+          'Block':'',
+          'Moniker':'',
+          'From':'',
+          'Amount':'',
+          "To":'',
+          'Tx_Type':'',
+          'Tx_Fee':'',
+          'Tx_Signer':'',
+          'Tx_Status': '',
+          'Timestamp':'',
+          'listName':'declarations'
         }];
       }else if(txType === 'stakes'){
         noObjList = [{
-          TxHash: '',
-          Block:'',
-          From:'',
-          To:'',
-          Amount:'',
-          Type:'',
+          'TxHash': '',
+          'Block':'',
+          'From':'',
+          'Amount':'',
+          'To':'',
+          'Tx_Type':'',
+          'Tx_Fee':'',
           'Tx_Signer': '',
-          Fee:'',
-          Status: "",
-          Age:'',
+          'Tx_Status': '',
+          'Timestamp':'',
+          'listName':'stakes'
         }];
       }else if(txType === 'governance'){
         noObjList = [{
-          TxHash: '',
-          Block:'',
-          From:'',
-          "Proposal_ID":'',
-          Type:'',
-          Fee:'',
-          Status: "",
-          Age:'',
+          'Tx_Hash': '',
+          'Block': '',
+          'Proposal_Type': '',
+          "Proposal_ID": '',
+          'Proposal_Title': '',
+          'Amount': '',
+          'Tx_Type': '',
+          'Tx_Fee': '',
+          'Tx_Signer': '',
+          'Tx_Status': '',
+          'Timestamp':'',
+          'listName':'gov'
         }];
       }
       return noObjList;

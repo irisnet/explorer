@@ -31,13 +31,6 @@ const router = new Router({
     {
       path: '/faucet',
       component: FaucetPage,
-      beforeEnter (to, from, next) {
-        if (sessionStorage.getItem('Show_faucet') === null){
-          next('/')
-        }else{
-          next()
-        }
-      }
     },
     {
       path: '/gov/proposals', component: ProposalsPage
@@ -46,13 +39,7 @@ const router = new Router({
       path: '/gov/parameters', component: Parameters
     },
     {
-      //BlocksListPage为一个组件，根据type类型不同相应不同页面
-      //1 BlocksList页面
-      //2 Transactions页面
-      //3 Validators页面
-      //4 Candidates页面
       path: '/blocks', component: BlockList
-
     },
     {
       path: '/txs/:txType', component: TxList
