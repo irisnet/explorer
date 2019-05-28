@@ -1,46 +1,15 @@
 <template>
   <div :class="showNoData?'show_no_data':''" style="min-width: 12rem;" class="validator_table">
     <b-table :fields='listFields' :items='items' striped nodelabel :class="flIsValidatorTable ? 'validator_set_table_style' : ''">
-      <template slot='TxHash' slot-scope='data'>
+      <template slot='Tx_Hash' slot-scope='data'>
           <span class="skip_route" style="display: flex">
             <div class="hash_container">
               <span>
-                <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item.TxHash ? `${formatTxHash(String(data.item.TxHash))}` : ''}}</router-link>
+                <router-link :to="`/tx?txHash=${data.item.Tx_Hash}`">{{data.item.Tx_Hash ? `${formatTxHash(String(data.item.Tx_Hash))}` : ''}}</router-link>
               </span>
-              <span class="hash_content">{{data.item.TxHash}}</span>
+              <span class="hash_content">{{data.item.Tx_Hash}}</span>
             </div>
           </span>
-      </template>
-      <template slot='Block' slot-scope='data'>
-        <span class="skip_route">
-          <router-link :to="`/block/${data.item.Block}`">{{data.item.Block}}</router-link>
-        </span>
-      </template>
-      <template slot='ProposalTitle' slot-scope='data'>
-        <span class="skip_route" v-if="data.item.ProposalId !== 0">
-          <router-link :to="`/ProposalsDetail/${data.item.ProposalId}`">{{data.item.ProposalTitle.length > 10 ?`${data.item.ProposalTitle.substring(0,10)}...` : `${data.item.ProposalTitle}`}}</router-link>
-        </span>
-        <span v-if="data.item.ProposalId === 0">{{data.item.ProposalTitle}}</span>
-      </template>
-      <template slot='From' slot-scope='data'>
-        <div class="name_address" v-show="data.item.From && data.item.From !== '--'">
-            <span class="remove_default_style" :class="data.item.From === $route.params.param?'no_skip':''">
-              <router-link :to="data.item.From === $route.params.param ? '' : `/address/1/${data.item.From}`" class="link_style">{{formatAddress(data.item.From)}}</router-link>
-            </span>
-          <span class="address">{{data.item.From ? data.item.From : ''}}</span>
-        </div>
-        <span class="no_skip" v-show="data.item.From === '--'">--</span>
-      </template>
-      <template slot='To' slot-scope='data'>
-        <div class="name_address" v-show="data.item.To && data.item.To !== '--'">
-            <span class="remove_default_style" :class="data.item.To === $route.params.param?'no_skip':''">
-              <router-link :to="data.item.To === $route.params.param ? '' : `/address/1/${data.item.To}`" class="link_style">{{formatAddress(data.item.To)}}</router-link>
-            </span>
-          <span class="address">{{data.item.To ? data.item.To : ''}}</span>
-        </div>
-        <span class="no_skip" v-show="data.item.To == '--'">
-          --
-        </span>
       </template>
       <template slot='Consensus' slot-scope='data'>
         <div>{{data.item.Consensus}}</div>
@@ -56,14 +25,6 @@
           --
         </span>
       </template>
-      <template slot='ProposalId' slot-scope='data'>
-        <div>
-          <span v-show="data.item.ProposalId !== 0">
-            <router-link :to="`/ProposalsDetail/${data.item.ProposalId}`" style="color:#3598db !important;">{{data.item.ProposalId}}</router-link>
-          </span>
-          <span v-show="data.item.ProposalId === 0">--</span>
-        </div>
-      </template>
       <template slot='OperatorAddress' slot-scope='data'>
         <div class="name_address" v-show="data.item.OperatorAddress && data.item.OperatorAddress !== '--'">
             <span class="remove_default_style" :class="data.item.OperatorAddress === $route.params.param?'no_skip':''">
@@ -75,30 +36,83 @@
           --
         </span>
       </template>
-      <template slot='TxSigner' slot-scope='data'>
-        <div class="name_address" v-show="data.item.TxSigner && data.item.TxSigner !== '--'">
-            <span class="remove_default_style" :class="data.item.TxSigner === $route.params.param?'no_skip':''">
-              <router-link :to="data.item.TxSigner === $route.params.param ? '' : `/address/1/${data.item.TxSigner}`" class="link_style">{{formatAddress(data.item.TxSigner)}}</router-link>
-            </span>
-          <span class="address">{{data.item.TxSigner ? data.item.TxSigner : ''}}</span>
-        </div>
-        <span class="no_skip" v-show="data.item.TxSigner == '--'">
-          --
-        </span>
-      </template>
-      <template slot='Moniker' slot-scope='data'>
+      <template slot='moniker' slot-scope='data'>
         <div class="moniker_conent">
           <div class="proposer_img_content">
             <img :style="{visibility:data.item.flProposer ? 'visible' : 'hidden'}" src="../../assets/proposer_img.png">
           </div>
           <span class="skip_route">
-          <router-link :to="`/address/1/${data.item.OperatorAddress}`">{{data.item.Moniker? data.item.Moniker :''}}</router-link>
+          <router-link :to="`/address/1/${data.item.OperatorAddress}`">{{data.item.moniker? data.item.moniker :''}}</router-link>
         </span>
         </div>
       </template>
       <template slot='index' slot-scope='data'>
         <span class="sequence_number_content">
           {{data.index + 1}}
+        </span>
+      </template>
+      <template slot='Proposal_ID' slot-scope='data'>
+          <span class="skip_route" v-if="data.item.Proposal_ID && data.item.Proposal_ID !== '--'">
+            <router-link :to="`/ProposalsDetail/${data.item.Proposal_ID}`">{{data.item.Proposal_ID}}</router-link>
+          </span>
+        <span v-if="data.item.Proposal_ID && data.item.Proposal_ID === '--'">--</span>
+      </template>
+      <template slot='Proposal_Title' slot-scope='data'>
+          <span class="skip_route" v-if="data.item.Proposal_Title && data.item.Proposal_Title !== '--'">
+            <router-link :to="`/ProposalsDetail/${data.item.Proposal_ID}`">{{data.item.Proposal_Title}}</router-link>
+          </span>
+        <span v-if="data.item.Proposal_Title && data.item.Proposal_Title === '--'">--</span>
+      </template>
+      <template slot='Block' slot-scope='data'>
+        <span class="skip_route">
+          <router-link :to="`/block/${data.item.Block}`">{{data.item.Block}}</router-link>
+        </span>
+      </template>
+      <template slot='From' slot-scope='data'>
+        <span class="skip_route" style="display: flex" v-if="data.item.From !== '--'">
+          <div class="name_address">
+            <span class="remove_default_style">
+              <router-link :to="`/address/1/${data.item.From}`" class="link_style justify">{{formatAddress(data.item.From)}}</router-link>
+            </span>
+            <span class="address">{{data.item.From}}</span>
+          </div>
+        </span>
+        <span class="no_skip" v-show="data.item.From === '--'">--</span>
+      </template>
+      <template slot='To' slot-scope='data'>
+        <span class="skip_route" style="display: flex" v-if="data.item.To !== '--'">
+          <div class="name_address">
+            <span class="remove_default_style">
+              <router-link :to="`/address/1/${data.item.To}`" class="link_style">{{formatAddress(data.item.To)}}</router-link>
+            </span>
+            <span class="address">{{data.item.To}}</span>
+          </div>
+        </span>
+        <span class="no_skip" v-show="data.item.To === '--'">
+          --
+        </span>
+      </template>
+      <template slot='Owner' slot-scope='data'>
+        <span class="skip_route">
+          <router-link :to="`/address/1/${data.item.Owner}`">{{data.item.Owner?`${String(data.item.Owner).substr(0,16)}...`:''}}</router-link>
+        </span>
+      </template>
+      <template slot='Moniker' slot-scope='data'>
+        <span v-show="data.item.Moniker && data.item.Moniker !== '--' ">
+            <router-link :to="`/address/1/${data.item.OperatorAddr}`" class="skip_route">
+              <pre class="pre_global_style moniker_link_style">{{data.item.Moniker}}</pre>
+            </router-link>
+        </span>
+        <span v-show="data.item.Moniker && data.item.Moniker === '--' ">--</span>
+      </template>
+      <template slot='Tx_Signer' slot-scope='data'>
+        <span class="skip_route" style="display: flex" v-if="data.item.Tx_Signer">
+          <div class="name_address">
+            <span class="remove_default_style">
+              <router-link :to="`/address/1/${data.item.Tx_Signer}`" class="link_style justify">{{formatAddress(data.item.Tx_Signer)}}</router-link>
+            </span>
+            <span class="address">{{data.item.Tx_Signer}}</span>
+          </div>
         </span>
       </template>
     </b-table>
@@ -123,64 +137,121 @@
           data () {
               return {
                   listFields: null,
-                  txFields:{
-                      TxHash:{
-                        label:'Tx_Hash',
-                      },
-                      From:{
-                        label:'From',
-                      },
-                      To:{
-                        label:'To',
-                      },
-                      Amount:{
-                        label:'Amount',
-                      },
-                      Fee:{
-                        label:'Tx_Fee',
-                      },
-                      Tx_Signer:{
-                        label:'Tx_Signer',
-                      },
-                      Tx_Type:{
-                        label:'Tx_Type',
-                      },
-                      Status:{
-                        label:'Status',
-                      },
+                  transferFields:{
+                  'Tx_Hash':{
+                    label:'Tx_Hash'
                   },
-                  governanceFields:{
-                      'TxHash':{
-                          label:'Tx_Hash',
-                      },
-                      'ProposalTitle':{
-                        label:'Proposal_Title',
-                      },
-                      'ProposalId':{
-                        label:'Proposal_ID',
-                      },
-                      'ProposalType':{
-                        label:'Proposal_Type',
-                      },
-                      'TxFee':{
-                          label:'Tx_Fee',
-                      },
-                      'TxSigner':{
-                          label:'Tx_Signer',
-                      },
-                      'TxType':{
-                          label:'Tx_Type',
-                      },
-                      'TxStatus':{
-                          label:'Tx_Status',
-                      },
-
+                  'From':{
+                    label:'From'
                   },
+                  'Amount':{
+                    label:'Amount'
+                  },
+                  'To':{
+                    label:'To'
+                  },
+                  'Tx_Type':{
+                    label:'Tx_Type'
+                  },
+                  'Tx_Fee':{
+                    label:'Tx_Fee'
+                  },
+                  'Tx_Signer':{
+                    label:'Tx_Signer'
+                  },
+                  'Tx_Status':{
+                    label:'Tx_Status'
+                  },
+                },
+                  declarationFields:{
+                  'Tx_Hash':{
+                    label:'Tx_Hash'
+                  },
+                  'Moniker':{
+                    label:'Moniker'
+                  },
+                  'From':{
+                    label:'From'
+                  },
+                  'Amount':{
+                    label:'Amount'
+                  },
+                  'To':{
+                    label:'To'
+                  },
+                  'Tx_Type':{
+                    label:'Tx_Type'
+                  },
+                  'Tx_Fee':{
+                    label:'Tx_Fee'
+                  },
+                  'Tx_Signer':{
+                    label:'Tx_Signer'
+                  },
+                  'Tx_Status':{
+                    label:'Tx_Status'
+                  },
+                },
+                  stakeFields:{
+                  'Tx_Hash':{
+                    label:'Tx_Hash'
+                  },
+                  'From':{
+                    label:'From'
+                  },
+                  'Amount':{
+                    label:'Amount'
+                  },
+                  'To':{
+                    label:'To'
+                  },
+                  'Tx_Type':{
+                    label:'Tx_Type'
+                  },
+                  'Tx_Fee':{
+                    label:'Tx_Fee'
+                  },
+                  'Tx_Signer':{
+                    label:'Tx_Signer'
+                  },
+                  'Tx_Status':{
+                    label:'Tx_Status'
+                  },
+                },
+                  govFields:{
+                  'Tx_Hash':{
+                    label:'Tx_Hash'
+                  },
+                  'Proposal_Type':{
+                    label:'Proposal_Type'
+                  },
+                  'Proposal_ID':{
+                    label:'Proposal_ID'
+                  },
+                  'Proposal_Title':{
+                    label:'Proposal_Title'
+                  },
+                  'Amount':{
+                    label:'Amount'
+                  },
+                  'Tx_Type':{
+                    label:'Tx_Type'
+                  },
+                  'Tx_Fee':{
+                    label:'Tx_Fee'
+                  },
+                  'Tx_Signer':{
+                    label:'Tx_Signer'
+                  },
+                  'Tx_Status':{
+                    label:'Tx_Status'
+                  },
+                },
                   validatorFields:{
                       index:{
                           label:'#'
                       },
-                      'Moniker':{
+                      'moniker':{
                           label:'Moniker'
                       },
                       'OperatorAddress':{
@@ -213,14 +284,18 @@
                 }
               },
               formatListName(items){
-                items.forEach( item => {
-                      if(item.listName === 'tx'){
-                          this.listFields = this.txFields;
-                      }else if(item.listName === 'gov') {
-                          this.listFields = this.governanceFields;
+                  items.forEach( (tx) => {
+                      if(tx.listName === 'transfer'){
+                          this.listFields = this.transferFields
+                      }else if(tx.listName === 'declarations') {
+                          this.listFields = this.declarationFields
+                      }else  if(tx.listName === 'stakes'){
+                          this.listFields = this.stakeFields
+                      }else if(tx.listName === 'gov'){
+                          this.listFields = this.govFields
                       }else {
                           this.listFields = this.validatorFields;
-                          this.flIsValidatorTable = true;
+                          this.flIsValidatorTable = true
                       }
                   })
               }
@@ -239,6 +314,9 @@
   }
   .validator_table .validator_set_table_style thead tr th:nth-child(2){
     padding-left: 0.26rem !important;
+  }
+  .validator_table{
+    min-width: 12.8rem;
   }
   .show_no_data{
     .table{
