@@ -18,9 +18,10 @@
           <span v-if="data.item.Proposal_ID && data.item.Proposal_ID === '--'">--</span>
         </template>
         <template slot='Proposal_Title' slot-scope='data'>
-          <span class="skip_route" v-if="data.item.Proposal_Title && data.item.Proposal_Title !== '--'">
+          <span class="skip_route" v-if="data.item.Proposal_ID !== '--' && data.item.Proposal_Title && data.item.Proposal_Title !== '--'">
             <router-link :to="`/ProposalsDetail/${data.item.Proposal_ID}`">{{data.item.Proposal_Title}}</router-link>
           </span>
+          <span v-if="data.item.Proposal_ID === '--' && data.item.Proposal_Title && data.item.Proposal_Title !== '--'">{{data.item.Proposal_Title}}</span>
           <span v-if="data.item.Proposal_Title && data.item.Proposal_Title === '--'">--</span>
         </template>
         <template slot='Block' slot-scope='data'>
@@ -129,14 +130,8 @@
               'Moniker':{
                 label:'Moniker'
               },
-              'From':{
-                label:'From'
-              },
               'Amount':{
-                label:'Amount'
-              },
-              'To':{
-                label:'To'
+                label:'Self_Bonded'
               },
               'Tx_Type':{
                 label:'Tx_Type'

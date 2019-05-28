@@ -371,7 +371,7 @@ export default class Tools{
           }
           if(item.Fee.amount && item.Fee.denom){
             let feeAmount = item.Fee.amount;
-            Fee = `${Tools.formatFeeToFixedNumber(feeAmount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`;
+            Fee = `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(feeAmount)),4)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`;
           }
         commonHeaderObjList = {
           'Tx_Hash' : item.Hash,
@@ -395,9 +395,7 @@ export default class Tools{
           let Moniker = item.Moniker;
           objList = {
             'Moniker': item.Moniker ? Tools.formatString(Moniker,15,"...") : "--",
-            'From': item.Owner ? item.Owner : "--",
             Amount,
-            'To':item.To ? item.To : (item.ValidatorAddr?item.ValidatorAddr:'--'),
             'OperatorAddr': item.OperatorAddr ? item.OperatorAddr : '--',
             'listName':'declarations'
           }
@@ -410,9 +408,10 @@ export default class Tools{
           }
         }else if(txType === 'governance'){
           objList = {
+            'Proposal_Type': item.ProposalType ? item.ProposalType : '--',
             "Proposal_ID": item.ProposalId === 0 ? "--" : item.ProposalId,
             'Proposal_Title': item.Title ?  Tools.formatString(item.Title,15,"...") : '--',
-            'Amount': '',
+            Amount,
             'Tx_Type': item.Type,
             'Tx_Fee': '',
             'listName':'gov'
