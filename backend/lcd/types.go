@@ -5,21 +5,21 @@ import (
 )
 
 const (
-	UrlAccount                = "%s/auth/accounts/%s"
+	UrlAccount                = "%s/bank/accounts/%s"
 	UrlValidator              = "%s/stake/validators/%s"
 	UrlValidators             = "%s/stake/validators?page=%d&size=%d"
 	UrlDelegationByVal        = "%s/stake/validators/%s/delegations"
 	UrlDelegationsByDelegator = "%s/stake/delegators/%s/delegations"
-	UrlSignInfo               = "%s/slashing/validators/%s/signing_info"
-	UrlNodeInfo               = "%s/node_info"
+	UrlSignInfo               = "%s/slashing/validators/%s/signing-info"
+	UrlNodeInfo               = "%s/node-info"
 	UrlGenesis                = "%s/genesis"
-	UrlWithdrawAddress        = "%s/distribution/%s/withdrawAddress"
+	UrlWithdrawAddress        = "%s/distribution/%s/withdraw-address"
 	UrlBlockLatest            = "%s/blocks/latest"
 	UrlBlock                  = "%s/blocks/%d"
 	UrlValidatorSet           = "%s/validatorsets/%d"
 	UrlValidatorSetLatest     = "%s/validatorsets/latest"
 	UrlStakePool              = "%s/stake/pool"
-	UrlBlocksResult           = "%s/blocks-result/%d"
+	UrlBlocksResult           = "%s/block-results/%d"
 )
 
 type AccountVo struct {
