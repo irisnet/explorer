@@ -371,7 +371,7 @@ export default class Tools{
           }
           if(item.Fee.amount && item.Fee.denom){
             let feeAmount = item.Fee.amount;
-            Fee = `${Tools.formatFeeToFixedNumber(feeAmount)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`;
+            Fee = `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(feeAmount)),4)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`;
           }
         commonHeaderObjList = {
           'Tx_Hash' : item.Hash,
@@ -395,7 +395,7 @@ export default class Tools{
           let Moniker = item.Moniker;
           objList = {
             'Moniker': item.Moniker ? Tools.formatString(Moniker,15,"...") : "--",
-            'From': item.Owner ? item.Owner : "--",
+            'From': item.From ? item.From : "--",
             Amount,
             'To':item.To ? item.To : (item.ValidatorAddr?item.ValidatorAddr:'--'),
             'OperatorAddr': item.OperatorAddr ? item.OperatorAddr : '--',

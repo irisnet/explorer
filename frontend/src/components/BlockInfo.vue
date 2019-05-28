@@ -280,7 +280,7 @@
                             'Fee' : `${Tools.formatFeeToFixedNumber(item.actual_fee.amount)} ${Tools.formatDenom(item.actual_fee.denom).toUpperCase()}`,
                             'Tx_Signer' : item.Signer,
                             'Tx_Type' : item.type,
-                            'Status' : item.status,
+                            'Status' : Tools.firstWordUpperCase(item.status),
                             'listName':'tx'
                         }
                     });
@@ -321,7 +321,7 @@
                             "TxFee": `${Tools.formatFeeToFixedNumber(item.actual_fee.amount)} ${Tools.formatDenom(item.actual_fee.denom).toUpperCase()}`,
                             "TxSigner": item.Signer,
                             "TxType": item.tx_type,
-                            "TxStatus": item.status,
+                            "TxStatus": Tools.firstWordUpperCase(item.status),
                             "ProposalType": item.proposal_type,
                             "ProposalId": item.proposal_id,
                             "ProposalTitle": item.proposal_title,
