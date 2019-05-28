@@ -2,6 +2,7 @@ package service
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/irisnet/explorer/backend/logger"
@@ -33,7 +34,7 @@ func (service *TxService) QueryTxList(query bson.M, page, pageSize int) model.Pa
 		return model.PageVo{}
 	}
 
-	items := buildData(data)
+	items := service.buildData(data)
 
 	forwardTxHashs := make([]string, 0, len(items))
 
@@ -137,7 +138,7 @@ func (service *TxService) QueryList(query bson.M, page, pageSize int) (pageInfo 
 	if cnt, err := pageQuery(document.CollectionNmCommonTx, nil,
 		query, desc(document.Tx_Field_Time), page, pageSize, &data); err == nil {
 
-		pageInfo.Data = buildData(data)
+		pageInfo.Data = service.buildData(data)
 		pageInfo.Count = cnt
 	}
 	logger.Debug("QueryList end", service.GetTraceLog())
@@ -183,7 +184,26 @@ func (service *TxService) Query(hash string) interface{} {
 		panic(types.CodeNotFound)
 	}
 
-	tx := service.buildTx(result)
+	blackList := map[string]document.BlackList{}
+	candidateAddrMap := map[string]document.Candidate{}
+	govTxMsgHashMap := map[string]document.TxMsg{}
+	govProposalIdMap := map[uint64]document.Proposal{}
+
+	switch types.Convert(result.Type) {
+	case types.Declaration:
+		blackList = service.QueryBlackList(dbm)
+		candidateAddrMap[result.From] = document.Candidate{}
+		service.GetTxAttachedFields(&candidateAddrMap, &govTxMsgHashMap, &govProposalIdMap)
+	case types.Gov:
+		govTxMsgHashMap[result.TxHash] = document.TxMsg{}
+		if result.Type == types.TxTypeVote || result.Type == types.TxTypeDeposit {
+			govProposalIdMap[result.ProposalId] = document.Proposal{}
+		}
+		service.GetTxAttachedFields(&candidateAddrMap, &govTxMsgHashMap, &govProposalIdMap)
+
+	}
+
+	tx := service.buildTx(result, &blackList, &candidateAddrMap, &govTxMsgHashMap, &govProposalIdMap)
 
 	switch tx.(type) {
 	case model.GovTx:
@@ -393,23 +413,123 @@ func (service *TxService) isForwardTxByType(t string) bool {
 	return false
 }
 
-func buildData(txs []document.CommonTx) []interface{} {
+func (service *TxService) GetTxAttachedFields(candidateAddrMap *map[string]document.Candidate, govTxMsgHashMap *map[string]document.TxMsg, govProposalIdMap *map[uint64]document.Proposal) {
+	candidateAddrs := make([]string, 0, len(*candidateAddrMap))
+	govHashArr := make([]string, 0, len(*govTxMsgHashMap))
+	govProposalIdArr := make([]uint64, 0, len(*govProposalIdMap))
+	for k, _ := range *candidateAddrMap {
+		candidateAddrs = append(candidateAddrs, k)
+	}
+	for k, _ := range *govTxMsgHashMap {
+		govHashArr = append(govHashArr, k)
+	}
+	for k, _ := range *govProposalIdMap {
+		govProposalIdArr = append(govProposalIdArr, k)
+	}
+
+	candidateArr := []document.Candidate{}
+
+	if len(candidateAddrs) > 0 {
+		canCondition := bson.M{
+			document.Candidate_Field_Address: bson.M{"$in": candidateAddrs},
+		}
+
+		if err := queryAll(document.CollectionNmStakeRoleCandidate, nil, canCondition, "", 0, &candidateArr); err != nil {
+			logger.Error(fmt.Sprintf("query collection(%v) with dondition: %v err: %v", document.CollectionNmStakeRoleCandidate, canCondition, err.Error()))
+		}
+
+		for k, _ := range *candidateAddrMap {
+			for _, v := range candidateArr {
+				if k == v.Address {
+					(*candidateAddrMap)[k] = v
+					break
+				}
+			}
+		}
+	}
+
+	govTxMsgArr := []document.TxMsg{}
+	if len(govHashArr) > 0 {
+		txMsgCondition := bson.M{
+			document.TxMsg_Field_Hash: bson.M{"$in": govHashArr},
+		}
+		if err := queryAll(document.CollectionNmTxMsg, nil, txMsgCondition, "", 0, &govTxMsgArr); err != nil {
+			logger.Error(fmt.Sprintf("query collection(%v) with dondition: %v err: %v", document.CollectionNmStakeRoleCandidate, txMsgCondition, err.Error()))
+		}
+
+		for k, _ := range *govTxMsgHashMap {
+			for _, v := range govTxMsgArr {
+				if k == v.Hash {
+					(*govTxMsgHashMap)[k] = v
+					break
+				}
+			}
+		}
+	}
+
+	proposalArr := []document.Proposal{}
+
+	if len(govProposalIdArr) > 0 {
+		depositVoteCondition := bson.M{
+			document.Proposal_Field_ProposalId: bson.M{"$in": govProposalIdArr},
+		}
+
+		if err := queryAll(document.CollectionNmProposal, nil, depositVoteCondition, "", 0, &proposalArr); err != nil {
+			logger.Error(fmt.Sprintf("query collection(%v) with dondition: %v err: %v", document.CollectionNmStakeRoleCandidate, depositVoteCondition, err.Error()))
+		}
+		for k, _ := range *govProposalIdMap {
+			for _, v := range proposalArr {
+				if k == v.ProposalId {
+					(*govProposalIdMap)[k] = v
+					break
+				}
+			}
+		}
+	}
+}
+
+func (service *TxService) buildData(txs []document.CommonTx) []interface{} {
 	var txList []interface{}
 
 	if len(txs) == 0 {
 		return txList
 	}
+
+	db := getDb()
+	defer db.Session.Close()
+
+	blackList := map[string]document.BlackList{}
+	candidateAddrMap := map[string]document.Candidate{}
+	govTxMsgHashMap := map[string]document.TxMsg{}
+	govProposalIdMap := map[uint64]document.Proposal{}
+
+	for _, v := range txs {
+		switch types.Convert(v.Type) {
+		case types.Declaration:
+			if len(blackList) == 0 {
+				blackList = service.QueryBlackList(db)
+			}
+			candidateAddrMap[v.From] = document.Candidate{}
+		case types.Gov:
+			govTxMsgHashMap[v.TxHash] = document.TxMsg{}
+			if v.Type == types.TxTypeVote || v.Type == types.TxTypeDeposit {
+				govProposalIdMap[v.ProposalId] = document.Proposal{}
+			}
+		}
+	}
+
+	service.GetTxAttachedFields(&candidateAddrMap, &govTxMsgHashMap, &govProposalIdMap)
+
 	for _, tx := range txs {
-		txResp := txService.buildTx(tx)
+		txResp := txService.buildTx(tx, &blackList, &candidateAddrMap, &govTxMsgHashMap, &govProposalIdMap)
 		txList = append(txList, txResp)
 	}
 
 	return txList
 }
 
-func (service *TxService) buildTx(tx document.CommonTx) interface{} {
-	db := getDb()
-	defer db.Session.Close()
+func (service *TxService) buildTx(tx document.CommonTx, blackListP *map[string]document.BlackList,
+	candidateAddrMapP *map[string]document.Candidate, govTxMsgHashMapP *map[string]document.TxMsg, govProposalIdMapP *map[uint64]document.Proposal) interface{} {
 
 	switch types.Convert(tx.Type) {
 	case types.Trans:
@@ -427,7 +547,6 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 			Pubkey:   tx.StakeCreateValidator.PubKey,
 			Amount:   tx.Amount,
 		}
-		var blackList = service.QueryBlackList(db)
 		if tx.Type == types.TxTypeStakeCreateValidator {
 			dtx.From = tx.From
 			dtx.To = tx.To
@@ -436,7 +555,7 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 			var identity = tx.StakeCreateValidator.Description.Identity
 			var website = tx.StakeCreateValidator.Description.Website
 			var details = tx.StakeCreateValidator.Description.Details
-			if desc, ok := blackList[tx.To]; ok {
+			if desc, ok := (*blackListP)[tx.To]; ok {
 				moniker = desc.Moniker
 				identity = desc.Identity
 				website = desc.Website
@@ -454,7 +573,7 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 			var identity = tx.StakeEditValidator.Description.Identity
 			var website = tx.StakeEditValidator.Description.Website
 			var details = tx.StakeEditValidator.Description.Details
-			if desc, ok := blackList[tx.From]; ok {
+			if desc, ok := (*blackListP)[tx.From]; ok {
 				moniker = desc.Moniker
 				identity = desc.Identity
 				website = desc.Website
@@ -468,14 +587,13 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 			dtx.From = dtx.Signer
 			dtx.To = tx.From
 			dtx.OperatorAddr = tx.From
-			candidateDb := db.C(document.CollectionNmStakeRoleCandidate)
-			var can document.Candidate
-			candidateDb.Find(bson.M{document.Candidate_Field_Address: dtx.Owner}).One(&can)
+			can := (*candidateAddrMapP)[dtx.Owner]
+
 			var moniker = can.Description.Moniker
 			var identity = can.Description.Identity
 			var website = can.Description.Website
 			var details = can.Description.Details
-			if desc, ok := blackList[tx.From]; ok {
+			if desc, ok := (*blackListP)[tx.From]; ok {
 				moniker = desc.Moniker
 				identity = desc.Identity
 				website = desc.Website
@@ -504,31 +622,49 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 			ProposalId: tx.ProposalId,
 		}
 
-		txMsgDb := db.C(document.CollectionNmTxMsg)
-		var res document.TxMsg
-		err := txMsgDb.Find(bson.M{document.TxMsg_Field_Hash: govTx.Hash}).One(&res)
-		if err != nil {
-			return govTx
-		}
-
 		if govTx.Type == types.TxTypeSubmitProposal {
-			var msg model.MsgSubmitProposal
-			json.Unmarshal([]byte(res.Content), &msg)
-			govTx.Title = msg.Title
-			govTx.Description = msg.Description
-			govTx.ProposalType = msg.ProposalType
+			if v, ok := (*govTxMsgHashMapP)[govTx.Hash]; ok {
+				var msg model.MsgSubmitProposal
+				if err := json.Unmarshal([]byte(v.Content), &msg); err != nil {
+					logger.Error("unmarshal gov tx msg ", logger.String("tx hash", govTx.Hash), logger.String("content", v.Content), logger.Any("err", err.Error()))
+				}
+				govTx.Title = msg.Title
+				govTx.Description = msg.Description
+				govTx.ProposalType = msg.ProposalType
+			}
 		} else if govTx.Type == types.TxTypeDeposit {
-			var msg model.MsgDeposit
-			json.Unmarshal([]byte(res.Content), &msg)
-			govTx.ProposalId = msg.ProposalID
-			govTx.Amount = msg.Amount
-		} else if govTx.Type == types.TxTypeVote {
-			var msg model.MsgVote
-			json.Unmarshal([]byte(res.Content), &msg)
-			govTx.ProposalId = msg.ProposalID
-			govTx.Option = msg.Option
-		}
 
+			if v, ok := (*govTxMsgHashMapP)[govTx.Hash]; ok {
+				var msg model.MsgDeposit
+				if err := json.Unmarshal([]byte(v.Content), &msg); err != nil {
+					logger.Error("unmarshal gov tx msg ", logger.String("tx hash", govTx.Hash), logger.String("content", v.Content), logger.Any("err", err.Error()))
+				}
+				govTx.Amount = msg.Amount
+			}
+
+			if v, ok := (*govProposalIdMapP)[govTx.ProposalId]; ok {
+				govTx.Title = v.Title
+				govTx.ProposalType = v.Type
+				govTx.Description = v.Description
+			}
+
+		} else if govTx.Type == types.TxTypeVote {
+
+			if v, ok := (*govTxMsgHashMapP)[govTx.Hash]; ok {
+				var msg model.MsgVote
+				if err := json.Unmarshal([]byte(v.Content), &msg); err != nil {
+					logger.Error("unmarshal gov tx msg ", logger.String("tx hash", govTx.Hash), logger.String("content", v.Content), logger.Any("err", err.Error()))
+				}
+				govTx.Option = msg.Option
+			}
+
+			if v, ok := (*govProposalIdMapP)[govTx.ProposalId]; ok {
+				govTx.Title = v.Title
+				govTx.ProposalType = v.Type
+				govTx.Description = v.Description
+			}
+
+		}
 		return govTx
 	}
 	return nil
