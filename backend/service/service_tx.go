@@ -21,7 +21,7 @@ func (service *TxService) GetModule() Module {
 	return Tx
 }
 
-func (service *TxService) QueryStakeTxList(query bson.M, page, pageSize int) model.PageVo {
+func (service *TxService) QueryTxList(query bson.M, page, pageSize int) model.PageVo {
 
 	logger.Info("QueryStakeList start", service.GetTraceLog())
 	var data []document.CommonTx
@@ -36,10 +36,12 @@ func (service *TxService) QueryStakeTxList(query bson.M, page, pageSize int) mod
 	items := buildData(data)
 
 	forwardTxHashs := make([]string, 0, len(items))
-	for k, v := range items {
+
+	for _, v := range items {
 		if stakeTx, ok := v.(model.StakeTx); ok {
-			items[k] = stakeTx
-			forwardTxHashs = append(forwardTxHashs, stakeTx.Hash)
+			if Get(Block).(*BlockService).isForwardTxByType(stakeTx.Type) {
+				forwardTxHashs = append(forwardTxHashs, stakeTx.Hash)
+			}
 		}
 	}
 
@@ -48,6 +50,19 @@ func (service *TxService) QueryStakeTxList(query bson.M, page, pageSize int) mod
 			if stakeTx, ok := items[i].(model.StakeTx); ok {
 				stakeTx.From, stakeTx.To = Get(Block).(*BlockService).ParseCoinFlowFromAndTo(stakeTx.Type, stakeTx.From, stakeTx.To)
 				items[i] = stakeTx
+				continue
+			}
+
+			if DeclarationTx, ok := items[i].(model.DeclarationTx); ok {
+				DeclarationTx.From, DeclarationTx.To = Get(Block).(*BlockService).ParseCoinFlowFromAndTo(DeclarationTx.Type, DeclarationTx.From, DeclarationTx.To)
+				items[i] = DeclarationTx
+				continue
+			}
+
+			if TransTx, ok := items[i].(model.TransTx); ok {
+				TransTx.From, TransTx.To = Get(Block).(*BlockService).ParseCoinFlowFromAndTo(TransTx.Type, TransTx.From, TransTx.To)
+				items[i] = TransTx
+				continue
 			}
 		}
 		return model.PageVo{
@@ -93,7 +108,21 @@ func (service *TxService) QueryStakeTxList(query bson.M, page, pageSize int) mod
 		if stakeTx, ok := items[i].(model.StakeTx); ok {
 			stakeTx.From, stakeTx.To = Get(Block).(*BlockService).ParseCoinFlowFromAndTo(stakeTx.Type, stakeTx.From, stakeTx.To)
 			items[i] = stakeTx
+			continue
 		}
+
+		if DeclarationTx, ok := items[i].(model.DeclarationTx); ok {
+			DeclarationTx.From, DeclarationTx.To = Get(Block).(*BlockService).ParseCoinFlowFromAndTo(DeclarationTx.Type, DeclarationTx.From, DeclarationTx.To)
+			items[i] = DeclarationTx
+			continue
+		}
+
+		if TransTx, ok := items[i].(model.TransTx); ok {
+			TransTx.From, TransTx.To = Get(Block).(*BlockService).ParseCoinFlowFromAndTo(TransTx.Type, TransTx.From, TransTx.To)
+			items[i] = TransTx
+			continue
+		}
+
 	}
 	return model.PageVo{
 		Data:  items,

@@ -8,9 +8,11 @@
       </div>
     </div>
     <div :class="blocksListPageWrap" :style="{'margin-top':`${blocksListPageWrap === 'personal_computer_blocks_list_page_wrap' ? '0.61rem' : '0'}`}">
-      <div style="overflow-x: auto;-webkit-overflow-scrolling:touch;">
+      <div style="overflow-x: auto;-webkit-overflow-scrolling:touch; overflow-y: hidden;">
         <spin-component :showLoading="showLoading"/>
-        <validator-list-table :items="items" :minWidth="tableMinWidth" :showNoData="showNoData"></validator-list-table>
+        <!-- <validator-list-table :items="items" :minWidth="tableMinWidth" :showNoData="showNoData"></validator-list-table> -->
+        <!-- <i-view-validator-list-table :items="items" :minWidth="tableMinWidth" :showNoData="showNoData"></i-view-validator-list-table> -->
+        <m-validator-list-table :items="items" :minWidth="tableMinWidth" :showNoData="showNoData"></m-validator-list-table>
         <div v-show="showNoData" class="no_data_show">
           No Data
         </div>
@@ -30,10 +32,15 @@
   import Service from "../util/axios"
   import SpinComponent from './commonComponents/SpinComponent';
   import ValidatorListTable from "./table/ValidatorListTable";
+  import IViewValidatorListTable from "./table/IViewValidatorListTable";
+  import MValidatorListTable from "./table/MValidatorListTable";
+
   export default {
     components:{
       ValidatorListTable,
       SpinComponent,
+      IViewValidatorListTable,
+      MValidatorListTable
     },
     watch: {
       currentPage(currentPage) {
@@ -69,7 +76,7 @@
         showNoData:false,//是否显示列表的无数据
         showLoading:false,
         innerWidth : window.innerWidth,
-        tableMinWidth:'',
+        tableMinWidth:0,
         listTitleName:"",
         validatorTabIndex: localStorage.getItem('validatorTabIndex') ? localStorage.getItem('validatorTabIndex') : 0,
         validatorStatusTitleList:[

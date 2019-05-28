@@ -112,6 +112,17 @@ func IsDeclarationType(typ string) bool {
 	return false
 }
 
+func IsBankType(typ string) bool {
+	if len(typ) == 0 {
+		return false
+	}
+	for _, t := range BankList {
+		if t == typ {
+			return true
+		}
+	}
+	return false
+}
 func IsStakeType(typ string) bool {
 	if len(typ) == 0 {
 		return false
@@ -147,7 +158,7 @@ const (
 )
 
 func Convert(typ string) TxType {
-	if typ == TxTypeTransfer {
+	if IsBankType(typ) {
 		return Trans
 	} else if IsStakeType(typ) {
 		return Stake

@@ -14,6 +14,7 @@
           <div class="table_list_content">
             <spin-component :showLoading="flShowLoading"></spin-component>
             <tx-list-page-table :items="txList" :showNoData="showNoData"></tx-list-page-table>
+            <!-- <i-view-tx-list-page-table :items="txList" :showNoData="showNoData"></i-view-tx-list-page-table> -->
             <div v-show="showNoData" class="no_data_show">
               No Data
             </div>
@@ -27,13 +28,14 @@
 </template>
 
 <script>
+  import IViewTxListPageTable from "./table/IViewTxListPageTable";
 	import TxListPageTable from "./table/TxListPageTable";
 	import Service from "../util/axios";
 	import Tools from "../util/Tools";
 	import SpinComponent from './commonComponents/SpinComponent';
     export default {
 		  name: "TransactionListPage",
-        components: {SpinComponent, TxListPageTable},
+        components: {SpinComponent, TxListPageTable, IViewTxListPageTable},
         data() {
             return {
                 totalPageNum: sessionStorage.getItem("txpagenum") ? JSON.parse(sessionStorage.getItem("txpagenum")) : 1,
