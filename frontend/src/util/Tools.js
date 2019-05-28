@@ -395,9 +395,7 @@ export default class Tools{
           let Moniker = item.Moniker;
           objList = {
             'Moniker': item.Moniker ? Tools.formatString(Moniker,15,"...") : "--",
-            'From': item.From ? item.From : "--",
             Amount,
-            'To':item.To ? item.To : (item.ValidatorAddr?item.ValidatorAddr:'--'),
             'OperatorAddr': item.OperatorAddr ? item.OperatorAddr : '--',
             'listName':'declarations'
           }

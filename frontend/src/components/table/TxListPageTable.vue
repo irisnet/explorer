@@ -130,14 +130,8 @@
               'Moniker':{
                 label:'Moniker'
               },
-              'From':{
-                label:'From'
-              },
               'Amount':{
-                label:'Amount'
-              },
-              'To':{
-                label:'To'
+                label:'Self_Bonded'
               },
               'Tx_Type':{
                 label:'Tx_Type'
