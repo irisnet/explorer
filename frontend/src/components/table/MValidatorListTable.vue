@@ -64,40 +64,44 @@ export default {
         {
           title: 'Commission',
           key: 'commission',
-          sortable: true
+          sortable: true,
+          sortMethod: this.sortMethodPer('commission')
         },
         {
           title: 'Bonded Tokens',
           key: 'bondedToken',
-          sortable: true
+          sortable: true,
+          sortMethod: this.sortMethodSplit('bondedToken')
         },
         {
           title: 'Voting Power',
           key: 'votingPower',
-          sortable: true
+          sortable: true,
+          sortMethod: this.sortMethodPer('votingPower')
         },
         {
           title: 'Uptime',
           key: 'uptime',
-          sortable: true
+          sortable: true,
+          sortMethod: this.sortMethodPer('uptime')
         },
         {
           title: 'Self Bonded',
           key: 'selfBond',
-          sortable: true
+          sortable: true,
+          sortMethod: this.sortMethodSplit('selfBond')
         },
         {
           title: 'Delegator Number',
           key: 'delegatorNum',
-          sortable: true
+          sortable: true,
+          sortMethod: this.sortMethodNumber('delegatorNum')
         },
         {
           title: 'Bond Height',
           key: 'bondHeight',
           sortable: true,
-          sortMethod(a, b) {
-            return Number(a.bondHeight) - Number(b.bondHeight);
-          }
+          sortMethod: this.sortMethodNumber('bondHeight')
         }
       ],
       jailedValidatorFields: [
@@ -109,27 +113,32 @@ export default {
         },
         {
           title: 'Operator_Address',
-          slot: 'operatorAddress'
+          slot: 'operatorAddress',
+          tooltip: true
         },
         {
           title: 'Commission',
           key: 'commission',
-          sortable: true
+          sortable: true,
+          sortMethod: this.sortMethodPer('commission')
         },
         {
           title: 'Bonded Tokens',
           key: 'bondedToken',
-          sortable: true
+          sortable: true,
+          sortMethod: this.sortMethodSplit('bondedToken')
         },
         {
           title: 'Self Bonded',
           key: 'selfBond',
-          sortable: true
+          sortable: true,
+          sortMethod: this.sortMethodSplit('selfBond')
         },
         {
           title: 'Bond Height',
           key: 'bondHeight',
-          sortable: true
+          sortable: true,
+          sortMethod: this.sortMethodNumber('bondHeight')
         }
       ],
       candidateValidatorFields: [
@@ -141,50 +150,67 @@ export default {
         },
         {
           title: 'Operator_Address',
-          slot: 'operatorAddress'
+          slot: 'operatorAddress',
+          tooltip: true
         },
         {
           title: 'Commission',
           key: 'commission',
-          sortable: true
+          sortable: true,
+          sortMethod: this.sortMethodPer('commission')
         },
         {
           title: 'Bonded Tokens',
           key: 'bondedToken',
-          sortable: true
+          sortable: true,
+          sortMethod: this.sortMethodSplit('bondedToken')
         },
         {
           title: 'Self Bonded',
           key: 'selfBond',
-          sortable: true
+          sortable: true,
+          sortMethod: this.sortMethodSplit('selfBond')
         },
         {
           title: 'Bonded Tokens',
           key: 'delegatorNum',
-          sortable: true
+          sortable: true,
+          sortMethod: this.sortMethodNumber('delegatorNum')
         },
         {
           title: 'Delegator Number',
           key: 'bondHeight',
-          sortable: true
+          sortable: true,
+          sortMethod: this.sortMethodNumber('bondHeight')
         }
       ]
     }
   },
   methods: {
+    sortMethodPer(key) {
+      return (a, b) => Number(a[key].split('%')[0]) - Number(b[key].split('%')[0]);
+    },
+    sortMethodNumber(key) {
+      return (a, b) => Number(a[key]) - Number(b[key]);
+    },
+    sortMethodSplit(key) {
+      return (a, b) => Number(a[key].split(' ')[0]) - Number(b[key].split(' ')[0]);
+    },
     formatAddress (address) {
       return Tools.formatValidatorAddress(address);
     },
-    setValidatorFields (validatorList) {
-      validatorList.forEach(item => {
-        if (item && item.validatorStatus && item.validatorStatus === 'jailed') {
-          this.validatorFields = this.jailedValidatorFields;
-        } else if (item && item.validatorStatus && item.validatorStatus === 'validator') {
+    setValidatorField(status) {
+      switch(status) {
+        case 'validator':
           this.validatorFields = this.activeValidatorFields;
-        } else if (item && item.validatorStatus && item.validatorStatus === 'candidate') {
+          break;
+        case 'candidate':
           this.validatorFields = this.candidateValidatorFields;
-        }
-      })
+          break;
+        case 'jailed':
+          this.validatorFields = this.jailedValidatorFields;
+          break;
+      }
     },
     changeScroll (e) {
       let element = document.querySelector('.m-table-header');
@@ -227,11 +253,6 @@ export default {
         node.dettachEvent('onscroll', method);
         window.dettachEvent('onresize', this.resizeFn);
       }
-    }
-  },
-  watch: {
-    items (items) {
-      this.setValidatorFields(items);
     }
   },
   mounted () {

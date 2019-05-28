@@ -12,7 +12,7 @@
         <spin-component :showLoading="showLoading"/>
         <!-- <validator-list-table :items="items" :minWidth="tableMinWidth" :showNoData="showNoData"></validator-list-table> -->
         <!-- <i-view-validator-list-table :items="items" :minWidth="tableMinWidth" :showNoData="showNoData"></i-view-validator-list-table> -->
-        <m-validator-list-table :items="items" :minWidth="tableMinWidth" :showNoData="showNoData"></m-validator-list-table>
+        <m-validator-list-table ref="mtable" :items="items" :minWidth="tableMinWidth" :showNoData="showNoData"></m-validator-list-table>
         <div v-show="showNoData" class="no_data_show">
           No Data
         </div>
@@ -176,9 +176,11 @@
             }]
           }
           this.showLoading = false;
+          this.$refs.mtable && this.$refs.mtable.setValidatorField(status);
         }).catch(e =>{
           this.showLoading = false;
           this.showNoData = true;
+          this.$refs.mtable && this.$refs.mtable.setValidatorField(status);
           console.log(e)
         });
       },

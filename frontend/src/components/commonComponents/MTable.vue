@@ -84,7 +84,8 @@ export default {
       colWidth: [],
       sorted: false,
       sortAsBy: '',
-      sortAsDesc: true
+      sortAsDesc: true,
+      columnsChange: true
     }
   },
   watch: {
@@ -93,14 +94,19 @@ export default {
       this.computedColWidth();
     },
     columns(newVal, oldVal) {
+      this.columnsChange = true;
       this.sorted = false;
     }
   },
   methods: {
     computedColWidth() {
       this.$nextTick(() => {
+        if (!this.columnsChange) {
+          return;
+        }
         let e = this.$refs.table_body && this.$refs.table_body.querySelector('tr');
         if (!e) {
+          this.show = true;
           return;
         }
         let arr = [];
@@ -109,6 +115,7 @@ export default {
         });
         this.colWidth = arr;
         this.show = true;
+        this.columnsChange = false;
       });
     },
     sortData() {
@@ -160,6 +167,7 @@ export default {
     .hidden_thead {
       opacity: 0;
       line-height: 0px;
+      border-color: transparent; 
       th {
         white-space: nowrap;
       }
@@ -215,7 +223,7 @@ export default {
               }
             }
           }
-          height: 48px;
+          height: 50px;
           border-bottom: .02rem solid #3598db;
         }
       }
@@ -244,7 +252,7 @@ export default {
     }
     .tooltip_span_container {
       position: relative;
-      display: inline-block;
+      display: inline;
       cursor: pointer;
       &:hover .tooltip_span{
         display: block;
@@ -253,7 +261,7 @@ export default {
         display: none;
         position: absolute;
         z-index: 1000;
-        bottom: 100%;
+        bottom: calc(100% + 4px);
         left: 50%;
         transform: translateX(-50%);
         margin-top: -10px auto 0;
