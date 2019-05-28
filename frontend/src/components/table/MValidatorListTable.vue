@@ -1,31 +1,26 @@
 <template>
-  <div style="min-width: 12.5rem;"
+  <div style="min-width: 12.8rem;"
        ref="tableContainer">
-    <i-table class="override_itable"
-             :columns="validatorFields"
-             :data="items">
+    <m-table ref="mTable" class="override_mtable" :columns="validatorFields" :data="items" :sort-by.sync="sortBy" :sort-desc.sync="sortDesc">
       <template slot-scope="{ row }"
                 slot="moniker">
         <div>
           <img v-if="row.url"
-               style="width: 0.3rem;height: 0.3rem;border-radius: 0.3rem;overflow: hidden;"
-               :src="row.url ? row.url : ''" />
+                style="width: 0.3rem;height: 0.3rem;border-radius: 0.3rem;overflow: hidden;"
+                :src="row.url ? row.url : ''" />
           <router-link style="margin-left: 0.2rem;"
-                       :to="`/address/1/${row.operatorAddress}`"
-                       class="link_style">{{row.moniker}}</router-link>
+                        :to="`/address/1/${row.operatorAddress}`"
+                        class="link_style">{{row.moniker}}</router-link>
         </div>
       </template>
       <template slot-scope="{ row }"
                 slot="operatorAddress">
-        <i-tooltip :content="row.operatorAddress"
-                   placement="top">
-          <span class="remove_default_style">
-            <router-link :to="`/address/1/${row.operatorAddress}`"
-                         class="link_style">{{formatAddress(row.operatorAddress)}}</router-link>
-          </span>
-        </i-tooltip>
+        <span class="remove_default_style">
+          <router-link :to="`/address/1/${row.operatorAddress}`"
+            class="link_style">{{formatAddress(row.operatorAddress)}}</router-link>
+        </span>
       </template>
-    </i-table>
+    </m-table>
   </div>
 </template>
 
@@ -33,7 +28,7 @@
 import Tools from '../../util/Tools';
 
 export default {
-  name: "IViewValidatorListTable",
+  name: 'MValidatorListTable',
   props: {
     items: {
       type: Array,
@@ -52,59 +47,58 @@ export default {
     return {
       resizeTime: null,
       validatorFields: [],
+      sortBy: 'votingPower',
+      sortDesc: true,
       activeValidatorFields: [
         {
           title: 'Moniker',
           slot: 'moniker',
           width: 190,
-          sortable: true
+          sortable: true,
+          tooltip: true
         },
         {
           title: 'Operator_Address',
           slot: 'operatorAddress',
-          width: 150
+          tooltip: true
         },
         {
           title: 'Commission',
           key: 'commission',
-          width: 120,
           sortable: true
         },
         {
           title: 'Bonded Tokens',
           key: 'bondedToken',
-          minWidth: 140,
           sortable: true
         },
         {
           title: 'Voting Power',
           key: 'votingPower',
-          width: 130,
           sortable: true
         },
         {
           title: 'Uptime',
           key: 'uptime',
-          width: 90,
           sortable: true
         },
         {
           title: 'Self Bonded',
           key: 'selfBond',
-          width: 130,
           sortable: true
         },
         {
           title: 'Delegator Number',
           key: 'delegatorNum',
-          width: 160,
           sortable: true
         },
         {
           title: 'Bond Height',
           key: 'bondHeight',
-          width: 130,
-          sortable: true
+          sortable: true,
+          sortMethod(a, b) {
+            return Number(a.bondHeight) - Number(b.bondHeight);
+          }
         }
       ],
       jailedValidatorFields: [
@@ -192,7 +186,7 @@ export default {
       })
     },
     changeScroll (e) {
-      let element = document.querySelector('.ivu-table-header');
+      let element = document.querySelector('.m-table-header');
       if (e.target.scrollLeft > 0) {
         element.style.left = -e.target.scrollLeft + 'px';
       } else {
@@ -200,9 +194,9 @@ export default {
       }
     },
     windowRisize (node) {
-      let element = document.querySelector('.ivu-table-body');
+      let element = document.querySelector('.m-table-body');
       if (node.offsetWidth === element.offsetWidth) {
-        document.querySelector('.ivu-table-header').style.left = 'auto';
+        document.querySelector('.m-table-header').style.left = 'auto';
       }
     },
     bundEvents (method) {
@@ -250,78 +244,23 @@ export default {
 </script>
 
 <style lang="scss">
-.override_itable {
-  border-left-width: 0 !important;
-  & > .ivu-table {
-    &:before {
-      width: 0;
-    }
-    &:after {
-      width: 0;
-    }
-  }
-  .ivu-table-header {
+.override_mtable {
+  .m-table-header {
     position: fixed;
-    z-index: 1000;
+    margin-top: -0.45rem;
+    background-color: #ffffff;
   }
-  .ivu-table-body {
-    margin-top: 0.5rem;
-  }
-  table {
-    thead {
-      tr {
-        height: 0.49rem;
-        border-bottom: 0.02rem solid #3598db;
-        th {
-          padding: 0.075rem;
-          border-bottom-width: 0;
-          div.ivu-table-cell {
-            padding: 0;
-          }
-        }
-      }
-    }
-    tbody {
-      tr {
-        td {
-          height: 0.45rem;
-          padding: 0.075rem;
-          div.ivu-table-cell {
-            padding: 0;
-          }
-        }
-        &:nth-of-type(2n) {
-          td {
-            background-color: #f6f6f6;
-          }
-        }
-        &:nth-of-type(2n + 1) {
-          td {
-            background-color: #ffffff;
-          }
-        }
-      }
-    }
-  }
-  .ivu-tooltip-popper {
-    .ivu-tooltip-inner {
-      background-color: #000000 !important;
-      max-width: 100% !important;
-      padding-left: 0.15rem;
-      padding-right: 0.15rem;
-      font-size: 14px !important;
-    }
-    .ivu-tooltip-arrow {
-      border-top-color: #000000 !important;
-    }
+  .m-table-body{
+    margin-top: 0.45rem;
   }
 }
 @media screen and (max-width: 910px) {
-  .ivu-table-header {
+  .m-table-header {
     position: static !important;
+    margin-top: 0rem!important;
   }
-  .ivu-table-body {
-    margin-top: 0 !important;
+  .m-table-body{
+    margin-top: -0.05rem!important;
   }
 }
 </style>
