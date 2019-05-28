@@ -39,7 +39,7 @@ func (service *TxService) QueryTxList(query bson.M, page, pageSize int) model.Pa
 
 	for _, v := range items {
 		if stakeTx, ok := v.(model.StakeTx); ok {
-			if Get(Block).(*BlockService).isForwardTxByType(stakeTx.Type) {
+			if service.isForwardTxByType(stakeTx.Type) {
 				forwardTxHashs = append(forwardTxHashs, stakeTx.Hash)
 			}
 		}
@@ -48,19 +48,19 @@ func (service *TxService) QueryTxList(query bson.M, page, pageSize int) model.Pa
 	if len(forwardTxHashs) == 0 {
 		for i := 0; i < len(items); i++ {
 			if stakeTx, ok := items[i].(model.StakeTx); ok {
-				stakeTx.From, stakeTx.To = Get(Block).(*BlockService).ParseCoinFlowFromAndTo(stakeTx.Type, stakeTx.From, stakeTx.To)
+				stakeTx.From, stakeTx.To = service.ParseCoinFlowFromAndTo(stakeTx.Type, stakeTx.From, stakeTx.To)
 				items[i] = stakeTx
 				continue
 			}
 
 			if DeclarationTx, ok := items[i].(model.DeclarationTx); ok {
-				DeclarationTx.From, DeclarationTx.To = Get(Block).(*BlockService).ParseCoinFlowFromAndTo(DeclarationTx.Type, DeclarationTx.From, DeclarationTx.To)
+				DeclarationTx.From, DeclarationTx.To = service.ParseCoinFlowFromAndTo(DeclarationTx.Type, DeclarationTx.From, DeclarationTx.To)
 				items[i] = DeclarationTx
 				continue
 			}
 
 			if TransTx, ok := items[i].(model.TransTx); ok {
-				TransTx.From, TransTx.To = Get(Block).(*BlockService).ParseCoinFlowFromAndTo(TransTx.Type, TransTx.From, TransTx.To)
+				TransTx.From, TransTx.To = service.ParseCoinFlowFromAndTo(TransTx.Type, TransTx.From, TransTx.To)
 				items[i] = TransTx
 				continue
 			}
@@ -92,12 +92,12 @@ func (service *TxService) QueryTxList(query bson.M, page, pageSize int) model.Pa
 
 			if vTx, ok := stakeTx.(model.StakeTx); ok {
 				if vMsg.Hash == vTx.Hash {
-					forwarAddr, err := Get(Block).(*BlockService).getForwardAddr(vMsg.Type, vMsg.Content)
+					forwardAddr, err := service.getForwardAddr(vMsg.Type, vMsg.Content)
 					if err != nil {
 						logger.Error("get forward addr ", logger.String("err", err.Error()))
 						continue
 					}
-					vTx.From = forwarAddr
+					vTx.From = forwardAddr
 					items[k] = vTx
 				}
 			}
@@ -106,19 +106,19 @@ func (service *TxService) QueryTxList(query bson.M, page, pageSize int) model.Pa
 
 	for i := 0; i < len(items); i++ {
 		if stakeTx, ok := items[i].(model.StakeTx); ok {
-			stakeTx.From, stakeTx.To = Get(Block).(*BlockService).ParseCoinFlowFromAndTo(stakeTx.Type, stakeTx.From, stakeTx.To)
+			stakeTx.From, stakeTx.To = service.ParseCoinFlowFromAndTo(stakeTx.Type, stakeTx.From, stakeTx.To)
 			items[i] = stakeTx
 			continue
 		}
 
 		if DeclarationTx, ok := items[i].(model.DeclarationTx); ok {
-			DeclarationTx.From, DeclarationTx.To = Get(Block).(*BlockService).ParseCoinFlowFromAndTo(DeclarationTx.Type, DeclarationTx.From, DeclarationTx.To)
+			DeclarationTx.From, DeclarationTx.To = service.ParseCoinFlowFromAndTo(DeclarationTx.Type, DeclarationTx.From, DeclarationTx.To)
 			items[i] = DeclarationTx
 			continue
 		}
 
 		if TransTx, ok := items[i].(model.TransTx); ok {
-			TransTx.From, TransTx.To = Get(Block).(*BlockService).ParseCoinFlowFromAndTo(TransTx.Type, TransTx.From, TransTx.To)
+			TransTx.From, TransTx.To = service.ParseCoinFlowFromAndTo(TransTx.Type, TransTx.From, TransTx.To)
 			items[i] = TransTx
 			continue
 		}
@@ -314,6 +314,83 @@ func (service *TxService) QueryTxNumGroupByDay() []model.TxNumGroupByDayVo {
 
 	logger.Debug("QueryTxNumGroupByDay end", service.GetTraceLog())
 	return result
+}
+
+func (service *TxService) ParseCoinFlowFromAndTo(txType, from, to string) (string, string) {
+	switch txType {
+	case types.TxTypeTransfer:
+		return from, to
+	case types.TxTypeBurn:
+		return from, ""
+	case types.TxTypeStakeEditValidator:
+		return "", ""
+	case types.TxTypeStakeDelegate:
+		return from, to
+	case types.TxTypeUnjail:
+		return "", ""
+	case types.TxTypeSetWithdrawAddress:
+		return "", ""
+	case types.TxTypeStakeCreateValidator:
+		return from, to
+		//exchange
+	case types.TxTypeBeginRedelegate:
+		return to, from
+	case types.TxTypeWithdrawDelegatorReward:
+		return to, ""
+	case types.TxTypeWithdrawDelegatorRewardsAll:
+		return "", ""
+	case types.TxTypeWithdrawValidatorRewardsAll:
+		return "", ""
+	case types.TxTypeStakeBeginUnbonding:
+		return to, from
+	default:
+		return from, to
+	}
+}
+
+func (service *TxService) QueryTxMsgByHashArr(hashArr []string) []document.TxMsg {
+
+	selector := bson.M{
+		document.TxMsg_Field_Hash:    1,
+		document.TxMsg_Field_Content: 1,
+		document.TxMsg_Field_Type:    1,
+	}
+	condition := bson.M{
+		document.TxMsg_Field_Hash: bson.M{"$in": hashArr},
+	}
+
+	txMsgs := []document.TxMsg{}
+	if err := queryAll(document.CollectionNmTxMsg, selector, condition, "", 0, &txMsgs); err != nil {
+		logger.Error("query tx msg", logger.String("err", err.Error()))
+		panic(types.CodeNotFound)
+	}
+
+	return txMsgs
+}
+
+func (service *TxService) getForwardAddr(txType, content string) (string, error) {
+	m := make(map[string]interface{})
+	err := json.Unmarshal([]byte(content), &m)
+	if err != nil {
+		return "", err
+	}
+
+	switch txType {
+	case types.TxTypeBeginRedelegate:
+		if v, ok := m["validator_src_addr"].(string); ok {
+			return v, nil
+		}
+	}
+	return "", nil
+}
+
+func (service *TxService) isForwardTxByType(t string) bool {
+	for _, v := range types.ForwardList {
+		if v == t {
+			return true
+		}
+	}
+	return false
 }
 
 func buildData(txs []document.CommonTx) []interface{} {
