@@ -18,7 +18,7 @@ import BlockList from "./components/BlockListPage.vue"
 import TxList from "./components/TxListPage.vue"
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: '/',
@@ -31,13 +31,6 @@ export default new Router({
     {
       path: '/faucet',
       component: FaucetPage,
-      beforeEnter (to, from, next) {
-        if (localStorage.getItem('Show_faucet') === '0'){
-          next(false)
-        }else{
-          next()
-        }
-      }
     },
     {
       path: '/gov/proposals', component: ProposalsPage
@@ -46,13 +39,7 @@ export default new Router({
       path: '/gov/parameters', component: Parameters
     },
     {
-      //BlocksListPage为一个组件，根据type类型不同相应不同页面
-      //1 BlocksList页面
-      //2 Transactions页面
-      //3 Validators页面
-      //4 Candidates页面
       path: '/blocks', component: BlockList
-
     },
     {
       path: '/txs/:txType', component: TxList
@@ -101,3 +88,15 @@ export default new Router({
   ]
 
 })
+router.beforeEach((to,from,next) =>{
+  if(sessionStorage.getItem('Show_faucet') === '0'){
+    if(to.path === '/faucet'){
+      next('/')
+    }else {
+      next()
+    }
+  }else {
+    next()
+  }
+})
+export default router;

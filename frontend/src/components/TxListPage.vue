@@ -76,15 +76,10 @@
                     this.count = txList.Count;
                     this.totalPageNum =  Math.ceil((txList.Count/this.pageSize) === 0 ? 1 : (txList.Count/this.pageSize));
                     sessionStorage.setItem('txpagenum',JSON.stringify(this.totalPageNum));
-                    clearInterval(this.transactionTimer);
                     if(txList.Data){
-                        this.transactionTimer = setInterval(function () {
-                            let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-                            that.txList = Tools.formatTxList(txList.Data,that.$route.params.txType,currentServerTime)
-                          },1000);
+                        this.txList = Tools.formatTxList(txList.Data,that.$route.params.txType)
                     }else{
-                        let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-                        this.txList = Tools.formatTxList(null,that.$route.params.txType,currentServerTime);
+                        this.txList = Tools.formatTxList(null,that.$route.params.txType);
                         this.showNoData = true;
                     }
                     this.flShowLoading = false;

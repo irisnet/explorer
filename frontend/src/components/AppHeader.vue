@@ -488,11 +488,13 @@
           this.flShowHeaderNetwork = true;
           res.configs.forEach( item => {
             if(res.cur_env === item.env_nm){
-              this.chainId = `${item.chain_id.toUpperCase()} ${item.env_nm.toUpperCase()}`
+              this.chainId = `${item.chain_id.toUpperCase()} ${item.env_nm.toUpperCase()}`;
               if(item.show_faucet && item.show_faucet === 1){
-                this.flShowFaucet = true
+                this.flShowFaucet = true;
+                sessionStorage.setItem("Show_faucet",JSON.stringify(1))
               }else {
-                this.flShowFaucet = false
+                this.flShowFaucet = false;
+                sessionStorage.setItem("Show_faucet",JSON.stringify(0))
               }
             }
           })

@@ -21,12 +21,122 @@ func (service *TxService) GetModule() Module {
 	return Tx
 }
 
+func (service *TxService) QueryTxList(query bson.M, page, pageSize int) model.PageVo {
+
+	logger.Info("QueryStakeList start", service.GetTraceLog())
+	var data []document.CommonTx
+
+	total, err := pageQuery(document.CollectionNmCommonTx, nil, query, desc(document.Tx_Field_Time), page, pageSize, &data)
+
+	if err != nil {
+		logger.Error("query stake list ", logger.String("err", err.Error()))
+		return model.PageVo{}
+	}
+
+	items := buildData(data)
+
+	forwardTxHashs := make([]string, 0, len(items))
+
+	for _, v := range items {
+		if stakeTx, ok := v.(model.StakeTx); ok {
+			if Get(Block).(*BlockService).isForwardTxByType(stakeTx.Type) {
+				forwardTxHashs = append(forwardTxHashs, stakeTx.Hash)
+			}
+		}
+	}
+
+	if len(forwardTxHashs) == 0 {
+		for i := 0; i < len(items); i++ {
+			if stakeTx, ok := items[i].(model.StakeTx); ok {
+				stakeTx.From, stakeTx.To = Get(Block).(*BlockService).ParseCoinFlowFromAndTo(stakeTx.Type, stakeTx.From, stakeTx.To)
+				items[i] = stakeTx
+				continue
+			}
+
+			if DeclarationTx, ok := items[i].(model.DeclarationTx); ok {
+				DeclarationTx.From, DeclarationTx.To = Get(Block).(*BlockService).ParseCoinFlowFromAndTo(DeclarationTx.Type, DeclarationTx.From, DeclarationTx.To)
+				items[i] = DeclarationTx
+				continue
+			}
+
+			if TransTx, ok := items[i].(model.TransTx); ok {
+				TransTx.From, TransTx.To = Get(Block).(*BlockService).ParseCoinFlowFromAndTo(TransTx.Type, TransTx.From, TransTx.To)
+				items[i] = TransTx
+				continue
+			}
+		}
+		return model.PageVo{
+			Data:  items,
+			Count: total,
+		}
+	}
+
+	selector := bson.M{
+		document.TxMsg_Field_Hash:    1,
+		document.TxMsg_Field_Content: 1,
+		document.TxMsg_Field_Type:    1,
+	}
+	condition := bson.M{
+		document.TxMsg_Field_Hash: bson.M{"$in": forwardTxHashs},
+	}
+
+	txMsgs := make([]document.TxMsg, 0, len(forwardTxHashs))
+
+	if err := queryAll(document.CollectionNmTxMsg, selector, condition, "", 0, &txMsgs); err != nil {
+		logger.Error("query tx msg", logger.String("err", err.Error()))
+		panic(types.CodeNotFound)
+	}
+
+	for _, vMsg := range txMsgs {
+		for k, stakeTx := range items {
+
+			if vTx, ok := stakeTx.(model.StakeTx); ok {
+				if vMsg.Hash == vTx.Hash {
+					forwarAddr, err := Get(Block).(*BlockService).getForwardAddr(vMsg.Type, vMsg.Content)
+					if err != nil {
+						logger.Error("get forward addr ", logger.String("err", err.Error()))
+						continue
+					}
+					vTx.From = forwarAddr
+					items[k] = vTx
+				}
+			}
+		}
+	}
+
+	for i := 0; i < len(items); i++ {
+		if stakeTx, ok := items[i].(model.StakeTx); ok {
+			stakeTx.From, stakeTx.To = Get(Block).(*BlockService).ParseCoinFlowFromAndTo(stakeTx.Type, stakeTx.From, stakeTx.To)
+			items[i] = stakeTx
+			continue
+		}
+
+		if DeclarationTx, ok := items[i].(model.DeclarationTx); ok {
+			DeclarationTx.From, DeclarationTx.To = Get(Block).(*BlockService).ParseCoinFlowFromAndTo(DeclarationTx.Type, DeclarationTx.From, DeclarationTx.To)
+			items[i] = DeclarationTx
+			continue
+		}
+
+		if TransTx, ok := items[i].(model.TransTx); ok {
+			TransTx.From, TransTx.To = Get(Block).(*BlockService).ParseCoinFlowFromAndTo(TransTx.Type, TransTx.From, TransTx.To)
+			items[i] = TransTx
+			continue
+		}
+
+	}
+	return model.PageVo{
+		Data:  items,
+		Count: total,
+	}
+}
+
 func (service *TxService) QueryList(query bson.M, page, pageSize int) (pageInfo model.PageVo) {
 	logger.Debug("QueryList start", service.GetTraceLog())
 	var data []document.CommonTx
 
 	if cnt, err := pageQuery(document.CollectionNmCommonTx, nil,
 		query, desc(document.Tx_Field_Time), page, pageSize, &data); err == nil {
+
 		pageInfo.Data = buildData(data)
 		pageInfo.Count = cnt
 	}
@@ -238,9 +348,13 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 			SelfBond: tx.Amount,
 			Owner:    tx.From,
 			Pubkey:   tx.StakeCreateValidator.PubKey,
+			Amount:   tx.Amount,
 		}
 		var blackList = service.QueryBlackList(db)
 		if tx.Type == types.TxTypeStakeCreateValidator {
+			dtx.From = tx.From
+			dtx.To = tx.To
+			dtx.OperatorAddr = tx.To
 			var moniker = tx.StakeCreateValidator.Description.Moniker
 			var identity = tx.StakeCreateValidator.Description.Identity
 			var website = tx.StakeCreateValidator.Description.Website
@@ -256,6 +370,9 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 			dtx.Website = website
 			dtx.Identity = identity
 		} else if tx.Type == types.TxTypeStakeEditValidator {
+			dtx.From = dtx.Signer
+			dtx.To = tx.From
+			dtx.OperatorAddr = tx.From
 			var moniker = tx.StakeEditValidator.Description.Moniker
 			var identity = tx.StakeEditValidator.Description.Identity
 			var website = tx.StakeEditValidator.Description.Website
@@ -271,6 +388,9 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 			dtx.Website = website
 			dtx.Identity = identity
 		} else if tx.Type == types.TxTypeUnjail {
+			dtx.From = dtx.Signer
+			dtx.To = tx.From
+			dtx.OperatorAddr = tx.From
 			candidateDb := db.C(document.CollectionNmStakeRoleCandidate)
 			var can document.Candidate
 			candidateDb.Find(bson.M{document.Candidate_Field_Address: dtx.Owner}).One(&can)
@@ -285,9 +405,9 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 				details = desc.Details
 			}
 			dtx.Moniker = moniker
-			dtx.Details = identity
+			dtx.Details = details
 			dtx.Website = website
-			dtx.Identity = details
+			dtx.Identity = identity
 		}
 		return dtx
 	case types.Stake:
@@ -338,7 +458,7 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 }
 
 func buildBaseTx(tx document.CommonTx) model.BaseTx {
-	return model.BaseTx{
+	res := model.BaseTx{
 		Hash:        tx.TxHash,
 		BlockHeight: tx.Height,
 		Type:        tx.Type,
@@ -350,4 +470,9 @@ func buildBaseTx(tx document.CommonTx) model.BaseTx {
 		Memo:        tx.Memo,
 		Timestamp:   tx.Time,
 	}
+
+	if len(tx.Signers) > 0 {
+		res.Signer = tx.Signers[0].AddrBech32
+	}
+	return res
 }

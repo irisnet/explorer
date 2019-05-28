@@ -67,7 +67,6 @@
                 items: [],
                 showNoData: false,
                 timer: null,
-                transactionTimer: null,
                 flShowLoading: false
           }
         },

@@ -56,18 +56,20 @@ func registerQueryTxList(r *mux.Router) error {
 		var result model.PageVo
 		switch types.TxTypeFromString(txType) {
 		case types.Trans:
-			query["type"] = types.TxTypeTransfer
-			break
+			query["type"] = bson.M{
+				"$in": types.BankList,
+			}
+			return tx.QueryTxList(query, page, size)
 		case types.Declaration:
 			query["type"] = bson.M{
 				"$in": types.DeclarationList,
 			}
-			break
+			return tx.QueryTxList(query, page, size)
 		case types.Stake:
 			query["type"] = bson.M{
 				"$in": types.StakeList,
 			}
-			break
+			return tx.QueryTxList(query, page, size)
 		case types.Gov:
 			query["type"] = bson.M{
 				"$in": types.GovernanceList,

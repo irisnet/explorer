@@ -212,7 +212,7 @@
                     text-align: center;
                     line-height: 0.38rem;
                     width: 1.54rem;
-                    color: #a2a2ae;
+                    color: #A2A2AE;
                     border-left: 0.01rem solid #e4e4e4;
                     border-top: 0.01rem solid #e4e4e4;
                     border-right: 0.01rem solid #e4e4e4;
@@ -222,7 +222,7 @@
             }
         }
         .activeStyle {
-            color: #3598db !important;
+            color: #3598db!important;
             border-top: 0.01rem solid #3598db !important;
             border-right: 0.01rem solid #3598db !important;
             border-left: 0.01rem solid #3598db !important;
@@ -237,7 +237,7 @@
         }
     }
     .personal_computer_transactions_detail_wrap {
-        width: 100% !important;
+        width: 100%!important;
         .current_tenure_wrap {
             @include flex;
             flex-direction: row;
@@ -385,14 +385,13 @@
                     margin-top: 0.2rem;
                     flex: 1;
                     border: 0.01rem solid #e4e4e4;
-                    height: 4.4rem;
                     .line_left_container {
-                        max-width: 6.3rem;
-                        height: 4.4rem;
+                        max-width: 6.2rem;
+                        height: 2.76rem;
                     }
                     .line_right_container {
-                        max-width: 6.3rem;
-                        height: 4.4rem;
+                        max-width: 6.2rem;
+                        height: 2.76rem;
                     }
                 }
             }
@@ -417,66 +416,37 @@
             border-right: none;
         }
     }
-    .line_tab_content_new {
-        @include flex;
-        width: 2.4rem;
-        height: 0.3rem;
-        box-sizing: border-box;
-        div {
-            width: 0.8rem;
-            line-height: 0.3rem;
-            flex: 1;
-            font-size: 12px;
-            text-align: center;
-            cursor: pointer;
-            border: 1px solid rgba(215, 220, 224, 1);
-            box-sizing: border-box;
-            &:first-child {
-                border-radius: 4px 0 0 4px;
-                border-right-width: 0;
-            }
-            &:last-child {
-                border-radius: 0 4px 4px 0;
-                border-left-width: 0;
-            }
-        }
-        .active {
-            color: #ffffff;
-            background-color: #697cff;
-            border-color: #697cff;
-        }
-    }
     .content_right {
         margin-left: 0.4rem;
     }
     .border-none {
-        color: #000 !important;
+        color: #000!important;
         border-top: 0.01rem solid #fff !important;
         &:hover {
             cursor: pointer;
         }
     }
     .border-block {
-        color: #a2a2ae !important;
+        color: #a2a2ae!important;
         border-top: 0.01rem solid #e4e4e4 !important;
         &:hover {
             cursor: pointer;
         }
     }
     .mobile_transactions_detail_wrap {
-        width: 100% !important;
+        width: 100%!important;
         .line_content {
             @include flex;
             flex-direction: column;
             .line_echarts_content {
-                max-width: 100% !important;
+                max-width: 100%!important;
                 margin-top: 0.2rem;
                 padding: 0 0.1rem;
                 flex: 1;
                 border: 0.01rem solid #e4e4e4;
                 .line_left_container {
                     width: 98%;
-                    max-width: 98% !important;
+                    max-width: 98%!important;
                     height: 2.76rem;
                 }
                 .line_right_container {
@@ -504,28 +474,28 @@
         .list_tab_content {
             width: 100%;
             margin-bottom: 0.2rem;
-            border-bottom: 0.01rem solid #fff !important;
+            border-bottom: 0.01rem solid #fff!important;
             overflow-x: auto;
             .list_tab_container {
                 @include flex;
                 height: 0.38rem;
                 min-width: 4rem;
                 max-width: 12.8rem;
-                padding-left: 0 !important;
-                margin-left: 0 !important;
+                padding-left: 0!important;
+                margin-left: 0!important;
                 .list_tab_item {
                     text-align: center;
                     line-height: 0.38rem;
                     width: 1.54rem;
-                    color: #a2a2ae;
-                    border-left: none !important;
+                    color: #A2A2AE;
+                    border-left: none!important;
                     border-top: 0.01rem solid #e4e4e4;
-                    border-right: none !important;
+                    border-right: none!important;
                     border-bottom: 0.02rem solid #e4e4e4;
                 }
             }
             .activeStyle {
-                color: #3598db !important;
+                color: #3598db!important;
                 border-top: 0.01rem solid #e4e4e4 !important;
                 border-bottom: 0.02rem solid #3598db !important;
                 z-index: 5;
@@ -541,22 +511,18 @@
             align-items: center;
         }
         .blocks_list_table_container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
             .address_tx_list_table {
-                top: 0.2rem;
-                padding-bottom: 0.2rem;
-                position: relative;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                .address_tx_list_table {
-                    min-width: 9rem;
-                }
+                min-width: 12.8rem;
+                margin-top: 0.2rem;
             }
         }
     }
     .candidate_validator {
         width: 2rem;
         white-space: nowrap;
-        color: #45b035;
+        color: #45B035;
         @include fontSize;
         padding-left: 0.09rem;
     }
@@ -568,10 +534,10 @@
         padding-left: 0.09rem;
     }
     .candidate_color {
-        background: #45b035 !important;
+        background: #45B035!important;
     }
     .jailed_color {
-        background: #f00 !important;
+        background: #f00!important;
     }
     .personal_computer_transactions_detail_wrap {
         .no_data_show {
@@ -584,15 +550,11 @@
             align-items: center;
         }
         .blocks_list_table_container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
             .address_tx_list_table {
-                top: 0.2rem;
-                padding-bottom: 0.2rem;
-                position: relative;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                .address_tx_list_table {
-                    min-width: 9rem;
-                }
+                min-width: 12.8rem;
+                margin-top: 0.2rem;
             }
         }
     }

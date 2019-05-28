@@ -278,7 +278,7 @@
                             'To' : item.to ? item.to : '--',
                             'Amount' : item.amount ? this.handleAmount(item.amount,item.type) : '--',
                             'Fee' : `${Tools.formatFeeToFixedNumber(item.actual_fee.amount)} ${Tools.formatDenom(item.actual_fee.denom).toUpperCase()}`,
-                            'Tx_Initiator' : item.tx_initiator,
+                            'Tx_Signer' : item.Signer,
                             'Tx_Type' : item.type,
                             'Status' : item.status,
                             'listName':'tx'
@@ -319,7 +319,7 @@
                         return{
                         	"TxHash": item.hash,
                             "TxFee": `${Tools.formatFeeToFixedNumber(item.actual_fee.amount)} ${Tools.formatDenom(item.actual_fee.denom).toUpperCase()}`,
-                            "TxSigner": item.tx_initiator,
+                            "TxSigner": item.Signer,
                             "TxType": item.tx_type,
                             "TxStatus": item.status,
                             "ProposalType": item.proposal_type,
