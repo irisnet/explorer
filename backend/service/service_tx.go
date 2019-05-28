@@ -92,12 +92,12 @@ func (service *TxService) QueryTxList(query bson.M, page, pageSize int) model.Pa
 
 			if vTx, ok := stakeTx.(model.StakeTx); ok {
 				if vMsg.Hash == vTx.Hash {
-					forwarAddr, err := service.getForwardAddr(vMsg.Type, vMsg.Content)
+					forwardAddr, err := service.getForwardAddr(vMsg.Type, vMsg.Content)
 					if err != nil {
 						logger.Error("get forward addr ", logger.String("err", err.Error()))
 						continue
 					}
-					vTx.From = forwarAddr
+					vTx.From = forwardAddr
 					items[k] = vTx
 				}
 			}
@@ -378,15 +378,6 @@ func (service *TxService) getForwardAddr(txType, content string) (string, error)
 	switch txType {
 	case types.TxTypeBeginRedelegate:
 		if v, ok := m["validator_src_addr"].(string); ok {
-			return v, nil
-		}
-	case types.TxTypeWithdrawDelegatorReward:
-		if v, ok := m["validator_addr"].(string); ok {
-			return v, nil
-		}
-
-	case types.TxTypeWithdrawValidatorRewardsAll:
-		if v, ok := m["validator_addr"].(string); ok {
 			return v, nil
 		}
 	}

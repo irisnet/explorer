@@ -54,38 +54,6 @@ paths:
           description: generic error response
           schema:
             $ref: "#/definitions/error"
-  /api/block/txs/{height}:
-    get:
-      tags:
-        - Block
-      parameters:
-        - name: height
-          in: path
-          description: Block height
-          type: integer
-          format: int64
-          default: 1
-        - name: page
-          in: query
-          type: integer
-          format: int
-          default: 1
-          required: false
-        - name: size
-          in: query
-          type: integer
-          format: int
-          default: 10
-          required: false
-      responses:
-        200:
-          description:
-          schema:
-            $ref: "#/definitions/TxPage"
-        default:
-          description: generic error response
-          schema:
-            $ref: "#/definitions/error"
   /api/block/blockinfo/{height}:
     get:
       tags:
@@ -102,38 +70,6 @@ paths:
           description:
           schema:
             $ref: "#/definitions/BlockInfo"
-        default:
-          description: generic error response
-          schema:
-            $ref: "#/definitions/error"
-  /api/block/txgov/{height}:
-    get:
-      tags:
-        - Block
-      parameters:
-        - name: height
-          in: path
-          description: Block height
-          type: integer
-          format: int64
-          default: 1
-        - name: page
-          in: query
-          type: integer
-          format: int
-          default: 1
-          required: false
-        - name: size
-          in: query
-          type: integer
-          format: int
-          default: 10
-          required: false
-      responses:
-        200:
-          description:
-          schema:
-            $ref: "#/definitions/TxGovPage"
         default:
           description: generic error response
           schema:
