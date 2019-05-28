@@ -410,9 +410,10 @@ export default class Tools{
           }
         }else if(txType === 'governance'){
           objList = {
+            'Proposal_Type': item.ProposalType ? item.ProposalType : '--',
             "Proposal_ID": item.ProposalId === 0 ? "--" : item.ProposalId,
             'Proposal_Title': item.Title ?  Tools.formatString(item.Title,15,"...") : '--',
-            'Amount': '',
+            Amount,
             'Tx_Type': item.Type,
             'Tx_Fee': '',
             'listName':'gov'
