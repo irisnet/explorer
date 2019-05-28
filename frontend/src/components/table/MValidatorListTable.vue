@@ -54,8 +54,7 @@ export default {
           title: 'Moniker',
           slot: 'moniker',
           width: 190,
-          sortable: true,
-          tooltip: true
+          sortable: true
         },
         {
           title: 'Operator_Address',
@@ -105,6 +104,7 @@ export default {
         {
           title: 'Moniker',
           slot: 'moniker',
+          width: 190,
           sortable: true
         },
         {
@@ -136,6 +136,7 @@ export default {
         {
           title: 'Moniker',
           slot: 'moniker',
+          width: 190,
           sortable: true
         },
         {

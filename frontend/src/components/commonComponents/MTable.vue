@@ -36,13 +36,13 @@
           <tr v-for="(v, i) in data" :key="i">
             <td v-for="(it, j) in columns" :width="it.width" :key="j">
               <template v-if="it.key">
-                <div class="tooltip_span_container">
+                <div :class="{'tooltip_span_container': it.tooltip}">
                   {{v[it.key]}}
                   <span class="tooltip_span" v-if="it.tooltip">{{v[it.key || it.slot]}}</span>
                 </div>
               </template>
               <template v-else>
-                <div class="tooltip_span_container">
+                <div :class="{'tooltip_span_container': it.tooltip}">
                   <slot :name="it.slot" :row="v">
                   </slot>
                   <span class="tooltip_span" v-if="it.tooltip">{{v[it.key || it.slot]}}</span>
@@ -228,6 +228,7 @@ export default {
         padding:7.5px;
         box-sizing: border-box;
         line-height: 24px;
+        color: #a2a2ae;
       }
       border-bottom: 1px solid #dee2e6;
       &:nth-of-type(2n) {
