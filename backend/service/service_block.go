@@ -51,7 +51,7 @@ func (service *BlockService) GetValidatorSet(height int64, page, size int) model
 	for k, v := range lcdValidators.Validators {
 		if k >= page*size && k < (page+1)*size {
 			var tmp model.BlockValidator
-			tmp.Consensus = v.PubKey
+			tmp.Consensus = v.Address
 			tmp.VotingPower = v.VotingPower
 			tmp.ProposerPriority = v.ProposerPriority
 			for _, validator := range validatorsDoc {
@@ -81,10 +81,15 @@ func (service *BlockService) QueryBlockInfo(height int64) model.BlockInfo {
 
 	var selector = bson.M{"description.moniker": 1, "operator_address": 1}
 	var validatorDoc document.Validator
-	err := queryOne(document.CollectionNmValidator, selector, bson.M{"proposer_addr": currentBlock.BlockMeta.Header.ProposerAddress}, &validatorDoc)
+	proposerHexAddr := currentBlock.BlockMeta.Header.ProposerAddress
+	err := queryOne(document.CollectionNmValidator, selector, bson.M{"proposer_addr": proposerHexAddr}, &validatorDoc)
 
 	if err != nil {
 		logger.Error("query validator collection  err", logger.String("error", err.Error()), service.GetTraceLog())
+		result.PropopserMoniker = proposerHexAddr
+	} else {
+		result.PropoperAddr = validatorDoc.OperatorAddress
+		result.PropopserMoniker = validatorDoc.Description.Moniker
 	}
 
 	result.LatestHeight = lcd.BlockLatest().BlockMeta.Header.Height
@@ -127,8 +132,6 @@ func (service *BlockService) QueryBlockInfo(height int64) model.BlockInfo {
 		}
 	}
 
-	result.PropoperAddr = validatorDoc.OperatorAddress
-	result.PropopserMoniker = validatorDoc.Description.Moniker
 	result.BlockHash = currentBlock.BlockMeta.BlockID.Hash
 	result.BlockHeight = currentBlock.Block.Header.Height
 	result.Timestamp = currentBlock.BlockMeta.Header.Time
