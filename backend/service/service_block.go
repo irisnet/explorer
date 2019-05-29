@@ -85,7 +85,6 @@ func (service *BlockService) QueryBlockInfo(height int64) model.BlockInfo {
 
 	if err != nil {
 		logger.Error("query validator collection  err", logger.String("error", err.Error()), service.GetTraceLog())
-		panic(types.CodeNotFound)
 	}
 
 	result.LatestHeight = lcd.BlockLatest().BlockMeta.Header.Height
