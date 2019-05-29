@@ -5,19 +5,21 @@ import (
 )
 
 const (
-	UrlAccount            = "%s/auth/accounts/%s"
-	UrlValidator          = "%s/stake/validators/%s"
-	UrlValidators         = "%s/stake/validators?page=%d&size=%d"
-	UrlDelegationByVal    = "%s/stake/validators/%s/delegations"
-	UrlSignInfo           = "%s/slashing/validators/%s/signing_info"
-	UrlNodeInfo           = "%s/node_info"
-	UrlGenesis            = "%s/genesis"
-	UrlWithdrawAddress    = "%s/distribution/%s/withdrawAddress"
-	UrlBlockLatest        = "%s/blocks/latest"
-	UrlBlock              = "%s/blocks/%d"
-	UrlValidatorSet       = "%s/validatorsets/%d"
-	UrlValidatorSetLatest = "%s/validatorsets/latest"
-	UrlStakePool          = "%s/stake/pool"
+	UrlAccount                = "%s/auth/accounts/%s"
+	UrlValidator              = "%s/stake/validators/%s"
+	UrlValidators             = "%s/stake/validators?page=%d&size=%d"
+	UrlDelegationByVal        = "%s/stake/validators/%s/delegations"
+	UrlDelegationsByDelegator = "%s/stake/delegators/%s/delegations"
+	UrlSignInfo               = "%s/slashing/validators/%s/signing_info"
+	UrlNodeInfo               = "%s/node_info"
+	UrlGenesis                = "%s/genesis"
+	UrlWithdrawAddress        = "%s/distribution/%s/withdrawAddress"
+	UrlBlockLatest            = "%s/blocks/latest"
+	UrlBlock                  = "%s/blocks/%d"
+	UrlValidatorSet           = "%s/validatorsets/%d"
+	UrlValidatorSetLatest     = "%s/validatorsets/latest"
+	UrlStakePool              = "%s/stake/pool"
+	UrlBlocksResult           = "%s/blocks-result/%d"
 )
 
 type AccountVo struct {
@@ -435,4 +437,42 @@ type SignInfoVo struct {
 	IndexOffset         string    `json:"index_offset"`
 	JailedUntil         time.Time `json:"jailed_until"`
 	MissedBlocksCounter string    `json:"missed_blocks_counter"`
+}
+
+type BlockResultVo struct {
+	Height  string `json:"height"`
+	Results struct {
+		DeliverTx []struct {
+			Code      int         `json:"code"`
+			Data      interface{} `json:"data"`
+			Log       string      `json:"log"`
+			Info      string      `json:"info"`
+			GasWanted string      `json:"gas_wanted"`
+			GasUsed   string      `json:"gas_used"`
+			Tags      []struct {
+				Key   string `json:"key"`
+				Value string `json:"value"`
+			} `json:"tags"`
+		} `json:"deliver_tx"`
+		EndBlock struct {
+			ValidatorUpdates []struct {
+				PubKey struct {
+					Type string `json:"type"`
+					Data string `json:"data"`
+				} `json:"pub_key"`
+				Power string `json:"power"`
+			} `json:"validator_updates"`
+			ConsensusParamUpdates interface{} `json:"consensus_param_updates"`
+			Tags                  []struct {
+				Key   string `json:"key"`
+				Value string `json:"value"`
+			} `json:"tags"`
+		} `json:"end_block"`
+		BeginBlock struct {
+			Tags []struct {
+				Key   string `json:"key"`
+				Value string `json:"value"`
+			} `json:"tags"`
+		} `json:"begin_block"`
+	} `json:"results"`
 }

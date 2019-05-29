@@ -50,6 +50,14 @@
   version = "v1.0.0"
 
 [[projects]]
+  digest = "1:77b730fa4c2d98f3ddf492acbea351eb6b0560fa5eace4105a6fc33ff937bb1b"
+  name = "github.com/rakyll/statik"
+  packages = ["fs"]
+  pruneopts = "UT"
+  revision = "3bac566d30cdbeddef402a80f3d6305860e59f12"
+  version = "v0.1.6"
+
+[[projects]]
   digest = "1:972c2427413d41a1e06ca4897e8528e5a1622894050e2f527b38ddf0f343f759"
   name = "github.com/stretchr/testify"
   packages = ["assert"]
@@ -134,6 +142,7 @@
     "github.com/gorilla/handlers",
     "github.com/gorilla/mux",
     "github.com/pkg/errors",
+    "github.com/rakyll/statik/fs",
     "github.com/stretchr/testify/assert",
     "go.uber.org/zap",
     "go.uber.org/zap/zapcore",

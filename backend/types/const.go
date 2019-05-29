@@ -11,9 +11,13 @@ const (
 	UrlRegisterNavigationBar = "/home/navigation"
 
 	//Block
-	UrlRegisterQueryBlock        = "/block/{height}"
-	UrlRegisterQueryRecentBlocks = "/blocks/recent"
-	UrlRegisterQueryBlocks       = "/blocks"
+	UrlRegisterQueryBlock             = "/block/{height}"
+	UrlRegisterQueryRecentBlocks      = "/blocks/recent"
+	UrlRegisterQueryBlocks            = "/blocks"
+	UrlRegisterQueryBlockTxs          = "/block/txs/{height}"
+	UrlRegisterQueryBlockTxGov        = "/block/txgov/{height}"
+	UrlRegisterQueryBlockValidatorSet = "/block/validatorset/{height}"
+	UrlRegisterQueryBlockInfo         = "/block/blockinfo/{height}"
 
 	//Governance
 	UrlRegisterQueryProposals = "/gov/proposals"
@@ -48,7 +52,6 @@ const (
 	UrlRegisterQueryTxsByAccount = "/txsByAddress/{address}/{page}/{size}"
 	UrlRegisterQueryTxsByDay     = "/txsByDay"
 	UrlRegisterQueryTx           = "/tx/{hash}"
-
 	//version
 	UrlRegisterQueryApiVersion = "/version"
 
@@ -60,20 +63,21 @@ const (
 )
 
 var (
-	TypeTransfer                      = "Transfer"
-	TypeCreateValidator               = "CreateValidator"
-	TypeEditValidator                 = "EditValidator"
-	TypeUnjail                        = "Unjail"
-	TypeDelegate                      = "Delegate"
-	TypeBeginRedelegation             = "BeginRedelegate"
-	TypeBeginUnbonding                = "BeginUnbonding"
+	TxTypeTransfer                    = "Transfer"
+	TxTypeBurn                        = "Burn"
+	TxTypeStakeCreateValidator        = "CreateValidator"
+	TxTypeStakeEditValidator          = "EditValidator"
+	TxTypeStakeDelegate               = "Delegate"
+	TxTypeStakeBeginUnbonding         = "BeginUnbonding"
+	TxTypeBeginRedelegate             = "BeginRedelegate"
+	TxTypeUnjail                      = "Unjail"
 	TxTypeSetWithdrawAddress          = "SetWithdrawAddress"
 	TxTypeWithdrawDelegatorReward     = "WithdrawDelegatorReward"
 	TxTypeWithdrawDelegatorRewardsAll = "WithdrawDelegatorRewardsAll"
 	TxTypeWithdrawValidatorRewardsAll = "WithdrawValidatorRewardsAll"
-	TypeSubmitProposal                = "SubmitProposal"
-	TypeDeposit                       = "Deposit"
-	TypeVote                          = "Vote"
+	TxTypeSubmitProposal              = "SubmitProposal"
+	TxTypeDeposit                     = "Deposit"
+	TxTypeVote                        = "Vote"
 
 	TypeValStatusUnbonded  = "Unbonded"
 	TypeValStatusUnbonding = "Unbonding"
@@ -87,9 +91,13 @@ var (
 	RoleCandidate = "candidate"
 	RoleJailed    = "jailed"
 
-	DeclarationList = []string{TypeCreateValidator, TypeEditValidator, TypeUnjail}
-	StakeList       = []string{TypeDelegate, TypeBeginRedelegation, TxTypeSetWithdrawAddress, TypeBeginUnbonding, TxTypeWithdrawDelegatorReward, TxTypeWithdrawDelegatorRewardsAll, TxTypeWithdrawValidatorRewardsAll}
-	GovernanceList  = []string{TypeSubmitProposal, TypeDeposit, TypeVote}
+	BankList        = []string{TxTypeTransfer, TxTypeBurn}
+	DeclarationList = []string{TxTypeStakeCreateValidator, TxTypeStakeEditValidator, TxTypeUnjail}
+	StakeList       = []string{TxTypeStakeDelegate, TxTypeBeginRedelegate, TxTypeSetWithdrawAddress, TxTypeStakeBeginUnbonding, TxTypeWithdrawDelegatorReward, TxTypeWithdrawDelegatorRewardsAll, TxTypeWithdrawValidatorRewardsAll}
+	GovernanceList  = []string{TxTypeSubmitProposal, TxTypeDeposit, TxTypeVote}
+
+	ForwardList      = []string{TxTypeBeginRedelegate}
+	TxTypeExcludeGov = append(append(DeclarationList, StakeList...), BankList...)
 )
 
 func IsDeclarationType(typ string) bool {
@@ -104,6 +112,17 @@ func IsDeclarationType(typ string) bool {
 	return false
 }
 
+func IsBankType(typ string) bool {
+	if len(typ) == 0 {
+		return false
+	}
+	for _, t := range BankList {
+		if t == typ {
+			return true
+		}
+	}
+	return false
+}
 func IsStakeType(typ string) bool {
 	if len(typ) == 0 {
 		return false
@@ -139,7 +158,7 @@ const (
 )
 
 func Convert(typ string) TxType {
-	if typ == TypeTransfer {
+	if IsBankType(typ) {
 		return Trans
 	} else if IsStakeType(typ) {
 		return Stake

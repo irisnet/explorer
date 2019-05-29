@@ -56,11 +56,11 @@
                 sortable:true,
               },
               operatorAddress:{
-                label:'Operator_Address',
+                label:'Operator Address',
                 sortable:false,
               },
               commission:{
-                label:'Commission',
+                label:'Commission Rate',
                 sortable:true,
               },
               'bondedToken':{
@@ -94,11 +94,11 @@
                 sortable:true,
               },
               operatorAddress:{
-                label:'Operator_Address',
+                label:'Operator Address',
                 sortable:false,
               },
               commission:{
-                label:'Commission',
+                label:'Commission Rate',
                 sortable:true,
               },
               'bondedToken':{
@@ -127,11 +127,11 @@
                 sortable:true,
               },
               operatorAddress:{
-                label:'Operator_Address',
+                label:'Operator Address',
                 sortable:false,
               },
               commission:{
-                label:'Commission',
+                label:'Commission Rate',
                 sortable:true,
               },
               'bondedToken':{
@@ -191,7 +191,7 @@
   .address{
     display: none;
     position: absolute;
-    left: -1.05rem;
+    left: -1.37rem;
     top: -0.38rem;
     color: #3598db;
     background: rgba(0,0,0,0.8);

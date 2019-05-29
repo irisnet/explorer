@@ -6,7 +6,7 @@
     <b-table :fields='blockFields' :items='items' striped v-if="type === '1'">
       <template slot='Height' slot-scope='data'>
         <span class="skip_route">
-          <router-link :to="`/blocks_detail/${data.item.Height}`">{{data.item.Height}}</router-link>
+          <router-link :to="`/block/${data.item.Height}`">{{data.item.Height}}</router-link>
         </span>
       </template>
       <template slot='Txn' slot-scope='data'>
@@ -17,111 +17,17 @@
       </template>
     </b-table>
 
-    <b-table :fields='fields' :items='items' striped v-if="type === '2'" class="block_style">
-      <template slot='TxHash' slot-scope='data'>
-        <span class="skip_route">
-          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item.TxHash?`${String(data.item.TxHash).substr(0,16)}...`:''}}</router-link>
-        </span>
-      </template>
-      <template slot='Age' slot-scope='data'>
-        <span v-show="data.item.Age">{{data.item.Age}}</span>
-      </template>
-      <template slot='Block' slot-scope='data'>
-        <span class="skip_route">
-          <router-link :to="`/blocks_detail/${data.item.Block}`">{{data.item.Block}}</router-link>
-        </span>
-      </template>
-      <template slot='From' slot-scope='data'>
-        <span class="skip_route" style="display: flex" v-if="data.item.From">
-          <div class="name_address">
-            <span class="remove_default_style">
-              <router-link :to="`/address/1/${data.item.From}`" class="link_style justify">{{formatAddress(data.item.From)}}</router-link>
-            </span>
-            <span class="address">{{data.item.From}}</span>
-          </div>
-        </span>
-      </template>
-      <template slot='To' slot-scope='data'>
-        <span class="skip_route" style="display: flex" v-if="data.item.To !== '--'">
-          <div class="name_address">
-            <span class="remove_default_style">
-              <router-link :to="`/address/1/${data.item.To}`" class="link_style">{{formatAddress(data.item.To)}}</router-link>
-            </span>
-            <span class="address">{{data.item.To}}</span>
-          </div>
-        </span>
-        <span class="no_skip" v-show="data.item.To === '--'">
-          --
-        </span>
-      </template>
-      <template slot='Owner' slot-scope='data'>
-        <span class="skip_route">
-          <router-link :to="`/address/1/${data.item.Owner}`">{{data.item.Owner?`${String(data.item.Owner).substr(0,16)}...`:''}}</router-link>
-        </span>
-      </template>
-      <template slot='Moniker' slot-scope='data'>
-        <span>
-          <pre class="pre_global_style">{{data.item.Moniker ? data.item.Moniker : ''}}</pre>
-        </span>
-      </template>
-    </b-table>
-    <b-table :fields='fields' :items='items' striped v-if="type === '5'">
-      <template slot='Address' slot-scope='data'>
-        <span class="skip_route" style="display: flex">
-          <div class="name_address">
-            <span class="remove_default_style">
-              <router-link :to="`/address/1/${data.item.Address}`" class="link_style">{{formatAddress(data.item.Address)}}</router-link>
-            </span>
-            <span class="address">{{data.item.Address?`${formatAddress(data.item.Address)}`:''}}</span>
-          </div>
-        </span>
-      </template>
-    </b-table>
-
-    <b-table :fields='fields' :items='items' striped v-if="type === '6'" style="margin-bottom:0;">
-      <template slot='TxHash' slot-scope='data'>
-        <span class="skip_route">
-          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item.TxHash?`${String(data.item.TxHash).substr(0,16)}...`:''}}</router-link>
-        </span>
-      </template>
-      <template slot='Block' slot-scope='data'>
-        <span class="skip_route">
-          <router-link :to="`/blocks_detail/${data.item.Block}`">{{data.item.Block}}</router-link>
-        </span>
-      </template>
-      <template slot='From' slot-scope='data'>
-        <span class="skip_route" style="display: flex">
-          <div class="name_address">
-            <span class="remove_default_style" :class="data.item.From === $route.params.param?'no_skip':''">
-              <router-link :to="`/address/1/${data.item.Address}`" class="link_style">{{formatAddress(data.item.Address)}}</router-link>
-            </span>
-            <span class="address">{{data.item.Address?`${formatAddress(data.item.Address)}`:''}}</span>
-          </div>
-        </span>
-      </template>
-      <template slot='To' slot-scope='data'>
-        <div class="name_address">
-            <span class="remove_default_style">
-              <router-link :to="data.item.To === $route.params.param ? '' : `/address/1/${data.item.To}`" class="link_style">{{formatAddress(data.item.To)}}</router-link>
-            </span>
-          <span class="address">{{data.item.Address?`${formatAddress(data.item.To)}`:''}}</span>
-        </div>
-      </template>
-    </b-table>
-
-    <b-table :fields='fields' :items='items' striped v-if="type === '7'" style="margin-bottom:0;">
-      <template slot='Block Height' slot-scope='data'>
-        <span class="skip_route">
-          <router-link :to="`/blocks_detail/${data.item['Block Height']}`">{{data.item['Block Height']}}</router-link>
-        </span>
-      </template>
-    </b-table>
-
     <b-table :fields='fields' :items='items' striped  v-if="type === 'Proposals'" class="show_trim">
       <template slot='Title' slot-scope='data'>
         <span class="skip_route">
          <router-link :to="`/ProposalsDetail/${data.item['Proposal ID']}`"><pre class="proposals-list">{{data.item['Title']}}</pre></router-link>
         </span>
+      </template>
+      <template slot='Proposal ID' slot-scope='data'>
+        <span class="skip_route" v-show="data.item['Proposal ID'] && data.item['Proposal ID'] !== '--'">
+         <router-link :to="`/ProposalsDetail/${data.item['Proposal ID']}`">{{data.item['Proposal ID']}}</router-link>
+        </span>
+        <span v-show="data.item['Proposal ID'] && data.item['Proposal ID'] === '--'">--</span>
       </template>
       <template slot="SubmitTime" slot-scope='data'>
         <span v-show="data.item.SubmitTime">{{data.item.SubmitTime}}</span>
@@ -140,26 +46,41 @@
     </b-table>
 
     <b-table :fields='fields' :items='items' striped v-if="type === 'addressTxList'" nodelabel >
-      <template slot='TxHash' slot-scope='data'>
-        <span class="skip_route">
-          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item['TxHash'] ? `${String(data.item.TxHash).substr(0,16)}...` : ''}}</router-link>
-        </span>
+      <template slot='Tx_Hash' slot-scope='data'>
+         <span class="skip_route" style="display: flex">
+            <div class="hash_container">
+              <span>
+                <router-link :to="`/tx?txHash=${data.item.Tx_Hash}`">{{data.item.Tx_Hash ? `${formatTxHash(String(data.item.Tx_Hash))}` : ''}}</router-link>
+              </span>
+              <span class="hash_content">{{data.item.Tx_Hash}}</span>
+            </div>
+          </span>
       </template>
       <template slot='Age' slot-scope='data'>
         <span v-show="data.item.Age">{{data.item.Age}}</span>
       </template>
       <template slot='Block' slot-scope='data'>
         <span class="skip_route">
-          <router-link :to="`/blocks_detail/${data.item.Block}`">{{data.item.Block}}</router-link>
+          <router-link :to="`/block/${data.item.Block}`">{{data.item.Block}}</router-link>
         </span>
       </template>
       <template slot='From' slot-scope='data'>
-        <div class="name_address" v-show="data.item.From">
+        <div class="name_address" v-show="data.item.From && data.item.From !== '--'">
             <span class="remove_default_style" :class="data.item.From === $route.params.param?'no_skip':''">
               <router-link :to="`/address/1/${data.item.From}`" class="link_style">{{formatAddress(data.item.From)}}</router-link>
             </span>
           <span class="address">{{data.item.From ? data.item.From : ''}}</span>
         </div>
+        <span class="no_skip" v-show="data.item.From === '--'">--</span>
+      </template>
+      <template slot='OperatorAddr' slot-scope='data'>
+        <div class="name_address" v-show="data.item.OperatorAddr && data.item.OperatorAddr !== '--'">
+            <span class="remove_default_style" :class="data.item.OperatorAddr === $route.params.param?'no_skip':''">
+              <router-link :to="`/address/1/${data.item.OperatorAddr}`" class="link_style">{{formatAddress(data.item.OperatorAddr)}}</router-link>
+            </span>
+          <span class="address">{{data.item.OperatorAddr ? data.item.OperatorAddr : ''}}</span>
+        </div>
+        <span class="no_skip" v-show="data.item.OperatorAddr === '--'">--</span>
       </template>
       <template slot='To' slot-scope='data'>
         <div class="name_address" v-show="data.item.To && data.item.To !== '--'">
@@ -177,41 +98,14 @@
           {{data.item.Owner?`${formatAddress(data.item.Owner)}`:''}}
         </span>
       </template>
-    </b-table>
-
-    <b-table :fields='fields' :items='items' striped v-if="type === 'blockTxList'" nodelabel class="block_style">
-      <template slot='TxHash' slot-scope='data'>
-        <span class="skip_route">
-          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item['TxHash'] ? `${String(data.item.TxHash).substr(0,16)}...` : ''}}</router-link>
-        </span>
-      </template>
-      <template slot='Block' slot-scope='data'>
-        <span class="skip_route">
-          <router-link :to="`/blocks_detail/${data.item.Block}`">{{data.item.Block}}</router-link>
-        </span>
-      </template>
-      <template slot='From' slot-scope='data'>
-        <div class="name_address" v-show="data.item.From && data.item.From !== '--'">
-            <span class="remove_default_style" :class="data.item.From === $route.params.param?'no_skip':''">
-              <router-link :to="data.item.From === $route.params.param ? '' : `/address/1/${data.item.From}`" class="link_style">{{formatAddress(data.item.From)}}</router-link>
+      <template slot='Tx_Signer' slot-scope='data'>
+        <span class="skip_route" style="display: flex" v-if="data.item.Tx_Signer">
+          <div class="name_address">
+            <span class="remove_default_style" :class="data.item.Tx_Signer === $route.params.param?'no_skip':''">
+              <router-link :to="`/address/1/${data.item.Tx_Signer}`" class="link_style justify">{{formatAddress(data.item.Tx_Signer)}}</router-link>
             </span>
-          <span class="address">{{data.item.From ? data.item.From : ''}}</span>
-        </div>
-      </template>
-      <template slot='To' slot-scope='data'>
-        <div class="name_address" v-show="data.item.To && data.item.To !== '--'">
-            <span class="remove_default_style" :class="data.item.To === $route.params.param?'no_skip':''">
-              <router-link :to="data.item.To === $route.params.param ? '' : `/address/1/${data.item.To}`" class="link_style">{{formatAddress(data.item.To)}}</router-link>
-            </span>
-          <span class="address">{{data.item.To ? data.item.To : ''}}</span>
-        </div>
-        <span class="no_skip" v-show="data.item.To == '--'">
-          --
-        </span>
-      </template>
-      <template slot='Owner' slot-scope='data'>
-        <span class="skip_route">
-          <router-link :to="`/address/1/${data.item.Owner}`">{{data.item.Owner?`${formatAddress(data.item.Owner)}`:''}}</router-link>
+            <span class="address">{{data.item.Tx_Signer}}</span>
+          </div>
         </span>
       </template>
     </b-table>
@@ -224,13 +118,144 @@
   export default {
     watch: {
       items(items) {
-
+        this.setTxFields(items)
       },
     },
     data() {
       return {
-        fields: [],
-        blockFields:['Height','Txn','Age','Precommit Validators','Voting Power']
+        blockFields:['Height','Txn','Age','Precommit Validators','Voting Power'],
+        fields:null,
+        transferFields:{
+          'Tx_Hash':{
+            label:'Tx_Hash'
+          },
+          'Block':{
+            label:'Block'
+          },
+          'From':{
+            label:'From'
+          },
+          'Amount':{
+            label:'Amount'
+          },
+          'To':{
+            label:'To'
+          },
+          'Tx_Type':{
+            label:'Tx_Type'
+          },
+          'Tx_Fee':{
+            label:'Tx_Fee'
+          },
+          'Tx_Signer':{
+            label:'Tx_Signer'
+          },
+          'Tx_Status':{
+            label:'Tx_Status'
+          },
+          'Timestamp':{
+            label:'Timestamp'
+          },
+        },
+        declarationFields:{
+          'Tx_Hash':{
+            label:'Tx_Hash'
+          },
+          'Block':{
+            label:'Block'
+          },
+          'Moniker':{
+            label:'Moniker'
+          },
+          'OperatorAddr':{
+            label:'Operator_Address'
+          },
+          'Amount':{
+            label:'Self_Bonded'
+          },
+          'Tx_Type':{
+            label:'Tx_Type'
+          },
+          'Tx_Fee':{
+            label:'Tx_Fee'
+          },
+          'Tx_Signer':{
+            label:'Tx_Signer'
+          },
+          'Tx_Status':{
+            label:'Tx_Status'
+          },
+          'Timestamp':{
+            label:'Timestamp'
+          },
+        },
+        stakeFields:{
+          'Tx_Hash':{
+            label:'Tx_Hash'
+          },
+          'Block':{
+            label:'Block'
+          },
+          'From':{
+            label:'From'
+          },
+          'Amount':{
+            label:'Amount'
+          },
+          'To':{
+            label:'To'
+          },
+          'Tx_Type':{
+            label:'Tx_Type'
+          },
+          'Tx_Fee':{
+            label:'Tx_Fee'
+          },
+          'Tx_Signer':{
+            label:'Tx_Signer'
+          },
+          'Tx_Status':{
+            label:'Tx_Status'
+          },
+          'Timestamp':{
+            label:'Timestamp'
+          },
+        },
+        govFields:{
+          'Tx_Hash':{
+            label:'Tx_Hash'
+          },
+          'Block':{
+            label:'Block'
+          },
+          'Proposal_Type':{
+            label:'Proposal_Type'
+          },
+          'Proposal_ID':{
+            label:'Proposal_ID'
+          },
+          'Proposal_Title':{
+            label:'Proposal_Title'
+          },
+          'Amount':{
+            label:'Amount'
+          },
+          'Tx_Type':{
+            label:'Tx_Type'
+          },
+          'Tx_Fee':{
+            label:'Tx_Fee'
+          },
+          'Tx_Signer':{
+            label:'Tx_Signer'
+          },
+          'Tx_Status':{
+            label:'Tx_Status'
+          },
+          'Timestamp':{
+            label:'Timestamp'
+          },
+        },
       }
     },
     props: ['items', 'type','showNoData','minWidth','status'],
@@ -238,6 +263,26 @@
       formatAddress(address){
         return Tools.formatValidatorAddress(address)
       },
+      formatTxHash(TxHash){
+        if(TxHash){
+          return Tools.formatTxHash(TxHash)
+        }
+      },
+      setTxFields(items){
+        items.forEach( (tx) => {
+          if(tx.listName === 'transfer'){
+            this.fields = this.transferFields
+          }else if(tx.listName === 'declarations') {
+            this.fields = this.declarationFields
+          }else  if(tx.listName === 'stakes'){
+            this.fields = this.stakeFields
+          }else if(tx.listName === 'gov'){
+            this.fields = this.govFields
+          }else {
+            this.fields = []
+          }
+        })
+      }
     }
   }
 </script>
@@ -250,7 +295,7 @@
     .address{
       display: none;
       position: absolute;
-      left: -1.05rem;
+      left: -1.37rem;
       top: -0.38rem;
       color: #3598db;
       background: rgba(0,0,0,0.8);

@@ -2,15 +2,22 @@ package controller
 
 import (
 	"encoding/json"
+	"net/http"
+	"net/url"
+	"strconv"
+
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/rest/filter"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
-	"net/http"
-	"net/url"
-	"strconv"
+)
+
+const (
+	DefaultPageSize    = 10
+	DefaultPageNum     = 1
+	DefaultBlockHeight = 1
 )
 
 // user business action
@@ -53,7 +60,7 @@ func Var(request model.IrisReq, key string) (result string) {
 func GetPage(r model.IrisReq) (int, int) {
 	page := Var(r, "page")
 	size := Var(r, "size")
-	iPage := 0
+	iPage := 1
 	iSize := 20
 	if p, ok := utils.ParseInt(page); ok {
 		iPage = int(p)
@@ -78,6 +85,7 @@ func doException(request model.IrisReq, writer http.ResponseWriter) {
 	if r := recover(); r != nil {
 		trace := logger.String("traceId", request.TraceId)
 		errMsg := logger.Any("errMsg", r)
+
 		switch r.(type) {
 		case types.BizCode:
 			doResponse(writer, r)
@@ -90,6 +98,8 @@ func doException(request model.IrisReq, writer http.ResponseWriter) {
 			}
 			doResponse(writer, e)
 			break
+		default:
+			doResponse(writer, types.CodeNotFound)
 		}
 		logger.Error("doException", trace, errMsg)
 	}

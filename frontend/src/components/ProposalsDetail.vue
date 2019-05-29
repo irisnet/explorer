@@ -618,4 +618,7 @@
     margin-right:20%;
     background: #EEE !important;
   }
+  .information_pre{
+      color: #a2a2ae;
+  }
 </style>

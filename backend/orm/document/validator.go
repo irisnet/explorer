@@ -8,9 +8,10 @@ import (
 const (
 	CollectionNmValidator = "validator"
 
-	ValidatorFieldTokens = "tokens"
-	ValidatorFieldJailed = "jailed"
-	ValidatorFieldStatus = "status"
+	ValidatorFieldVotingPower     = "voting_power"
+	ValidatorFieldJailed          = "jailed"
+	ValidatorFieldStatus          = "status"
+	ValidatorFieldOperatorAddress = "operator_address"
 )
 
 type Validator struct {
@@ -30,6 +31,7 @@ type Validator struct {
 	SelfBond        string        `bson:"self_bond" json:"self_bond"`
 	DelegatorNum    int           `bson:"delegator_num" json:"delegator_num"`
 	ProposerAddr    string        `bson:"proposer_addr" json:"proposer_addr"`
+	VotingPower     int64         `bson:"voting_power" json:"voting_power"`
 }
 
 type Description struct {

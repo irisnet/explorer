@@ -123,7 +123,6 @@
     },
     data() {
       return {
-        transactionsTimer:null,
         devicesWidth: window.innerWidth,
         transactionsDetailWrap: 'personal_computer_transactions_detail',
         heightValue: '',
@@ -239,16 +238,11 @@
           that.showLoading = false;
           that.showNoData = false;
           that.count = txList.Count;
-          clearInterval(this.transactionsTimer);
           if(txList.Data){
-            this.transactionsTimer = setInterval(function () {
-              let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-              that.items = Tools.formatTxList(txList.Data,txTabName,currentServerTime)
-            },1000);
+              that.items = Tools.formatTxList(txList.Data,txTabName)
           }else {
             that.showNoData = true;
-            let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-            that.items = Tools.formatTxList(null,txTabName,currentServerTime)
+            that.items = Tools.formatTxList(null,txTabName)
           }
         })
       },
