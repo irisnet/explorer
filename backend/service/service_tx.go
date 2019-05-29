@@ -241,7 +241,7 @@ func (service *TxService) QueryByAcc(address string, page, size int) (result mod
 func (service *TxService) CountByType(query bson.M) model.TxStatisticsVo {
 	logger.Debug("CountByType start", service.GetTraceLog())
 	var typeArr []string
-	typeArr = append(typeArr, types.TxTypeTransfer)
+	typeArr = append(typeArr, types.BankList...)
 	typeArr = append(typeArr, types.DeclarationList...)
 	typeArr = append(typeArr, types.StakeList...)
 	typeArr = append(typeArr, types.GovernanceList...)
