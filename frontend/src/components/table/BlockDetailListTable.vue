@@ -46,6 +46,17 @@
         </span>
         </div>
       </template>
+      <template slot='OperatorAddr' slot-scope='data'>
+        <span class="skip_route" style="display: flex" v-if="data.item.OperatorAddr !== '--'">
+          <div class="name_address">
+            <span class="remove_default_style">
+              <router-link :to="`/address/1/${data.item.OperatorAddr}`" class="link_style justify">{{formatAddress(data.item.OperatorAddr)}}</router-link>
+            </span>
+            <span class="address">{{data.item.OperatorAddr}}</span>
+          </div>
+        </span>
+        <span class="no_skip" v-show="data.item.OperatorAddr === '--'">--</span>
+      </template>
       <template slot='index' slot-scope='data'>
         <span class="sequence_number_content">
           {{data.index + 1}}
@@ -171,8 +182,11 @@
                   'Moniker':{
                     label:'Moniker'
                   },
+                  'OperatorAddr':{
+                    label:'Operator_Address'
+                  },
                   'Amount':{
-                    label:'Self-Bonded'
+                    label:'Self_Bonded'
                   },
                   'Tx_Type':{
                     label:'Tx_Type'
