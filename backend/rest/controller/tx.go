@@ -41,8 +41,9 @@ func registerQueryTxList(r *mux.Router) error {
 		query := bson.M{}
 
 		address := GetString(request, "address")
+
 		if len(address) > 0 {
-			query["$or"] = []bson.M{{"from": address}, {"to": address}}
+			query["$or"] = []bson.M{{"from": address}, {"to": address}, {"signers": bson.M{"$elemMatch": bson.M{"addr_bech32": address}}}}
 		}
 
 		height := GetInt(request, "height")
