@@ -54,12 +54,6 @@ func (service *TxService) QueryTxList(query bson.M, page, pageSize int) model.Pa
 				continue
 			}
 
-			if DeclarationTx, ok := items[i].(model.DeclarationTx); ok {
-				DeclarationTx.From, DeclarationTx.To = service.ParseCoinFlowFromAndTo(DeclarationTx.Type, DeclarationTx.From, DeclarationTx.To)
-				items[i] = DeclarationTx
-				continue
-			}
-
 			if TransTx, ok := items[i].(model.TransTx); ok {
 				TransTx.From, TransTx.To = service.ParseCoinFlowFromAndTo(TransTx.Type, TransTx.From, TransTx.To)
 				items[i] = TransTx
@@ -109,12 +103,6 @@ func (service *TxService) QueryTxList(query bson.M, page, pageSize int) model.Pa
 		if stakeTx, ok := items[i].(model.StakeTx); ok {
 			stakeTx.From, stakeTx.To = service.ParseCoinFlowFromAndTo(stakeTx.Type, stakeTx.From, stakeTx.To)
 			items[i] = stakeTx
-			continue
-		}
-
-		if DeclarationTx, ok := items[i].(model.DeclarationTx); ok {
-			DeclarationTx.From, DeclarationTx.To = service.ParseCoinFlowFromAndTo(DeclarationTx.Type, DeclarationTx.From, DeclarationTx.To)
-			items[i] = DeclarationTx
 			continue
 		}
 
@@ -549,8 +537,7 @@ func (service *TxService) buildTx(tx document.CommonTx, blackListP *map[string]d
 			Amount:   tx.Amount,
 		}
 		if tx.Type == types.TxTypeStakeCreateValidator {
-			dtx.From = tx.From
-			dtx.To = tx.To
+
 			dtx.OperatorAddr = tx.To
 			var moniker = tx.StakeCreateValidator.Description.Moniker
 			var identity = tx.StakeCreateValidator.Description.Identity
@@ -567,8 +554,6 @@ func (service *TxService) buildTx(tx document.CommonTx, blackListP *map[string]d
 			dtx.Website = website
 			dtx.Identity = identity
 		} else if tx.Type == types.TxTypeStakeEditValidator {
-			dtx.From = dtx.Signer
-			dtx.To = tx.From
 			dtx.OperatorAddr = tx.From
 			var moniker = tx.StakeEditValidator.Description.Moniker
 			var identity = tx.StakeEditValidator.Description.Identity
@@ -585,8 +570,6 @@ func (service *TxService) buildTx(tx document.CommonTx, blackListP *map[string]d
 			dtx.Website = website
 			dtx.Identity = identity
 		} else if tx.Type == types.TxTypeUnjail {
-			dtx.From = dtx.Signer
-			dtx.To = tx.From
 			dtx.OperatorAddr = tx.From
 			can := (*candidateAddrMapP)[dtx.Owner]
 
