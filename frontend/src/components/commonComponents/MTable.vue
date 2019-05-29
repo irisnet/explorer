@@ -119,17 +119,16 @@ export default {
       });
     },
     sortData() {
-      if (!this.sortAsBy || this.sorted) {
-        return;
+      if (this.sortAsBy && !this.sorted && this.columns.find(v => this.sortAsBy === (v.key || v.slot) && v.sortable)) {
+        let col = this.columns.find(v => (v.key === this.sortAsBy || v.slot === this.sortAsBy));
+        let func = col && col.sortMethod;
+        if (func) {
+          this.sortAsDesc ? this.data.sort(func).reverse() : this.data.sort(func);
+        } else {
+          this.defaultSortFunc();
+        }
+        this.sorted = true;
       }
-      let col = this.columns.find(v => (v.key === this.sortAsBy || v.slot === this.sortAsBy));
-      let func = col && col.sortMethod;
-      if (func) {
-        this.sortAsDesc ? this.data.sort(func).reverse() : this.data.sort(func);
-      } else {
-        this.defaultSortFunc();
-      }
-      this.sorted = true;
     },
     defaultSortFunc() {
       this.data.sort((a, b) => {
