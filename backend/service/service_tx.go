@@ -221,9 +221,9 @@ func (service *TxService) Query(hash string) interface{} {
 func (service *TxService) QueryByAcc(address string, page, size int) (result model.PageVo) {
 	var data []document.CommonTx
 	query := bson.M{}
-	query["$or"] = []bson.M{{document.Tx_Field_From: address}, {document.Tx_Field_To: address}}
+	query["$or"] = []bson.M{{"from": address}, {"to": address}, {"signers": bson.M{"$elemMatch": bson.M{"addr_bech32": address}}}}
 	var typeArr []string
-	typeArr = append(typeArr, types.TxTypeTransfer)
+	typeArr = append(typeArr, types.BankList...)
 	typeArr = append(typeArr, types.DeclarationList...)
 	typeArr = append(typeArr, types.StakeList...)
 	typeArr = append(typeArr, types.GovernanceList...)
