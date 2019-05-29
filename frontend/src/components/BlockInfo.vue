@@ -21,7 +21,8 @@
                     </div>
                     <div class="block_information_item">
                         <span>Proposer:</span>
-                        <span v-if="proposerAddress !== '--'"><router-link class="common_link_style" :to="`/address/1/${proposerAddress}`">{{proposerValue}}</router-link></span>
+                        <span v-if="proposerAddress !== ''&& proposerAddress !== '--'"><router-link class="common_link_style" :to="`/address/1/${proposerAddress}`">{{proposerValue}}</router-link></span>
+                        <span v-if="proposerAddress === '' && proposerValue">{{proposerValue}}</span>
                         <span v-if="proposerAddress === '--'">--</span>
                     </div>
                     <div class="block_information_item">
@@ -72,7 +73,7 @@
                 </div>
             </div>
             <div class="block_result_container" v-show="flBlockDeclarationModule">
-                <div class="block_result_title">Declaration</div>
+                <div class="block_result_title">Declarations</div>
                 <div class="block_result_table_content">
                     <blocks-list-table :items="declarationList"
                                        :showNoData="flBlockDeclarationNoData" :min-width="tableMinWidth"></blocks-list-table>
@@ -101,10 +102,10 @@
                     <div v-show="flValidatorNoData" class="no_data_show">
                         No Data
                     </div>
-                    <div class="pagination" style='margin-top:0.2rem;margin-bottom: 0.2rem;' v-if="flShowValidatorListSetPagination">
-                        <b-pagination size="md" :total-rows="validatorSetListCount" v-model="validatorSetListCurrentPage" :per-page="pageSize">
-                        </b-pagination>
-                    </div>
+                </div>
+                <div class="pagination" style='margin-top:0.2rem;margin-bottom: 0.2rem;' v-if="flShowValidatorListSetPagination">
+                    <b-pagination size="md" :total-rows="validatorSetListCount" v-model="validatorSetListCurrentPage" :per-page="pageSize">
+                    </b-pagination>
                 </div>
             </div>
         </div>
@@ -245,7 +246,7 @@
                         this.votingPowerValue = result.precommit_voting_power !== null ? `${((result.precommit_voting_power / result.total_voting_power) *100).toFixed(4)} %` : '--';
                         this.timestampValue = Tools.format2UTC(result.timestamp);
                         this.blockHashValue = result.block_hash;
-                        this.proposerValue = result.propopser_moniker;
+                        this.proposerValue = result.propopser_moniker ? result.propopser_moniker : '--';
                         this.proposerAddress = result.propopser_addr;
                         this.inflationValue = result.mint_coin.denom !== '' ? `${Tools.convertScientificNotation2Number(Tools.formatNumber(result.mint_coin.amount))} ${Tools.formatDenom(result.mint_coin.denom)}` : '--';
                         this.precommitValidatorsValue = result.validator_num !== 0 ? result.validator_num : '--';
