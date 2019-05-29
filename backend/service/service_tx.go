@@ -352,9 +352,8 @@ func (service *TxService) ParseCoinFlowFromAndTo(txType, from, to string) (strin
 		return "", ""
 	case types.TxTypeStakeCreateValidator:
 		return from, to
-		//exchange
 	case types.TxTypeBeginRedelegate:
-		return to, from
+		return from, to
 	case types.TxTypeWithdrawDelegatorReward:
 		return to, ""
 	case types.TxTypeWithdrawDelegatorRewardsAll:
@@ -503,11 +502,13 @@ func (service *TxService) buildData(txs []document.CommonTx) []interface{} {
 	govTxMsgHashMap := map[string]document.TxMsg{}
 	govProposalIdMap := map[uint64]document.Proposal{}
 
+	onlyOnce := true
 	for _, v := range txs {
 		switch types.Convert(v.Type) {
 		case types.Declaration:
-			if len(blackList) == 0 {
+			if onlyOnce {
 				blackList = service.QueryBlackList(db)
+				onlyOnce = false
 			}
 			candidateAddrMap[v.From] = document.Candidate{}
 		case types.Gov:
