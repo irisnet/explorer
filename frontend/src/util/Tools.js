@@ -441,6 +441,7 @@ export default class Tools{
           'Tx_Hash': '',
           'Block':'',
           'Moniker':'',
+		  'OperatorAddr':'',
           'From':'',
           'Amount':'',
           "To":'',
