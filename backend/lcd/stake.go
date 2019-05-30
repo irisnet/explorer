@@ -3,6 +3,8 @@ package lcd
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
+
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/utils"
@@ -43,7 +45,8 @@ func QueryWithdrawAddr(address string) (result string) {
 	if err != nil {
 		return result
 	}
-	result = string(resBytes)
+
+	result = strings.Trim(string(resBytes), "\"")
 	return
 }
 
