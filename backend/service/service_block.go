@@ -20,114 +20,122 @@ func (service *BlockService) GetModule() Module {
 	return Block
 }
 
-func (service *BlockService) Query(height int64) model.Block {
-	result := model.Block{}
-	result.BlockInfo = service.QueryBlockInfo(height)
-	result.ValidatorSet = service.GetValidatorSet(height, DefaultPageNum, DefaultPageSize)
-	result.TokenFlows = Get(Tx).(*TxService).QueryTokenFlow(height, DefaultPageNum, DefaultPageSize)
-	result.Proposals = Get(Proposal).(*ProposalService).QueryProposalsByHeight(height)
-
-	return result
-}
-
 func (service *BlockService) GetValidatorSet(height int64, page, size int) model.ValidatorSet {
-	result := model.ValidatorSet{}
 	lcdValidators := lcd.ValidatorSet(height)
 	if page > 0 {
 		page = page - 1
 	}
-
-	var validatorsDoc []document.Validator
-	var selector = bson.M{"description.moniker": 1, "operator_address": 1, "consensus_pubkey": 1}
-
-	err := queryAll(document.CollectionNmValidator, selector, nil, "", 0, &validatorsDoc)
-	if err != nil {
-		logger.Error("get validator set err", logger.String("error", err.Error()), service.GetTraceLog())
-		return result
-	}
-
-	items := []model.BlockValidator{}
-	for k, v := range lcdValidators.Validators {
-		if k >= page*size && k < (page+1)*size {
-			var tmp model.BlockValidator
-			tmp.Consensus = v.PubKey
-			tmp.VotingPower = v.VotingPower
-			tmp.ProposerPriority = v.ProposerPriority
-			for _, validator := range validatorsDoc {
-				if validator.ConsensusPubkey == v.PubKey {
-					tmp.OperatorAddress = validator.OperatorAddress
-					tmp.Moniker = validator.Description.Moniker
-				}
-			}
-			items = append(items, tmp)
-		}
-	}
-	result.Items = items
-	result.Total = len(lcdValidators.Validators)
-	return result
-}
-
-func (service *BlockService) QueryBlockInfo(height int64) model.BlockInfo {
-	var result model.BlockInfo
 
 	b := lcd.Block(height)
 	if b.Block.Header.Height == "" {
 		panic(types.CodeNotFound)
 	}
 
+	var validatorsDoc []document.Validator
+	var selector = bson.M{"description.moniker": 1, "operator_address": 1, "consensus_pubkey": 1, "proposer_addr": 1}
+
+	err := queryAll(document.CollectionNmValidator, selector, nil, "", 0, &validatorsDoc)
+	if err != nil {
+		logger.Error("get validator set err", logger.String("error", err.Error()), service.GetTraceLog())
+		panic(types.CodeNotFound)
+	}
+
+	var proposal string
+	for _, v := range validatorsDoc {
+		if v.ProposerAddr == b.BlockMeta.Header.ProposerAddress {
+			proposal = v.OperatorAddress
+		}
+	}
+
+	items := []model.BlockValidator{}
+	for k, v := range lcdValidators.Validators {
+		if k >= page*size && k < (page+1)*size {
+			var tmp model.BlockValidator
+			tmp.Consensus = v.Address
+			tmp.VotingPower = v.VotingPower
+			tmp.ProposerPriority = v.ProposerPriority
+			for _, validator := range validatorsDoc {
+				if validator.ConsensusPubkey == v.PubKey {
+					tmp.OperatorAddress = validator.OperatorAddress
+					tmp.Moniker = validator.Description.Moniker
+					tmp.IsProposer = tmp.OperatorAddress == proposal
+				}
+			}
+			items = append(items, tmp)
+		}
+	}
+
+	return model.ValidatorSet{
+		Items: items,
+		Total: len(lcdValidators.Validators),
+	}
+}
+
+func (service *BlockService) QueryBlockInfo(height int64) model.BlockInfo {
+	var result model.BlockInfo
+
+	currentBlock := lcd.Block(height)
+	if currentBlock.Block.Header.Height == "" {
+		panic(types.CodeNotFound)
+	}
+
 	var selector = bson.M{"description.moniker": 1, "operator_address": 1}
 	var validatorDoc document.Validator
-	err := queryOne(document.CollectionNmValidator, selector, bson.M{"proposer_addr": b.BlockMeta.Header.ProposerAddress}, &validatorDoc)
+	proposerHexAddr := currentBlock.BlockMeta.Header.ProposerAddress
+	err := queryOne(document.CollectionNmValidator, selector, bson.M{"proposer_addr": proposerHexAddr}, &validatorDoc)
 
 	if err != nil {
 		logger.Error("query validator collection  err", logger.String("error", err.Error()), service.GetTraceLog())
-		return result
+		result.PropopserMoniker = proposerHexAddr
+	} else {
+		result.PropoperAddr = validatorDoc.OperatorAddress
+		result.PropopserMoniker = validatorDoc.Description.Moniker
 	}
 
 	result.LatestHeight = lcd.BlockLatest().BlockMeta.Header.Height
+	currentBlockRes := lcd.BlockResult(height)
+	lcdValidators := lcd.ValidatorSet(height)
 
-	blockRes := lcd.BlockResult(height)
+	result.TotalValidatorNum = len(lcdValidators.Validators)
+	nextBlock := lcd.Block(height + 1)
+	var totalVotingPower, precommitVotingPower, precommitValidatorNum int
+	for k, v := range lcdValidators.Validators {
+		powerAsInt, err := strconv.Atoi(v.VotingPower)
+		if err != nil {
+			logger.Error("strconv VotingPower err", logger.String("error", err.Error()), service.GetTraceLog())
+		}
+		totalVotingPower += powerAsInt
 
-	if height == 1 {
-		result.VoteValidatorNum = InitVoteValidatorNum
-		result.ValidatorNum = InitValidatorNum
-		result.PrecommitVotingPower = InitPrecommitVotingPower
-		result.TotalVotingPower = InitTotalVotingPower
-	} else {
-		lcdValidators := lcd.ValidatorSet(height - 1)
-		result.VoteValidatorNum = len(b.Block.LastCommit.Precommits)
-		result.ValidatorNum = len(lcdValidators.Validators)
-		var totalVotingPower, precommitVotingPower int
-		for k, v := range lcdValidators.Validators {
-			powerAsInt, err := strconv.Atoi(v.VotingPower)
-			if err != nil {
-				logger.Error("strconv VotingPower err", logger.String("error", err.Error()), service.GetTraceLog())
-			}
-			totalVotingPower += powerAsInt
-			for _, precommitValidator := range b.Block.LastCommit.Precommits {
+		if nextBlock.Block.Header.Height != "" {
+			for _, precommitValidator := range nextBlock.Block.LastCommit.Precommits {
 				if strconv.Itoa(k) == precommitValidator.ValidatorIndex {
 					precommitVotingPower += powerAsInt
+					precommitValidatorNum++
 				}
 			}
 		}
-		result.PrecommitVotingPower = precommitVotingPower
-		result.TotalVotingPower = totalVotingPower
 	}
 
-	for _, v := range blockRes.Results.BeginBlock.Tags {
+	if precommitVotingPower != 0 {
+		result.PrecommitVotingPower = precommitVotingPower
+	}
+	result.TotalVotingPower = totalVotingPower
+
+	if precommitValidatorNum != 0 {
+		result.PrecommitValidatorNum = precommitValidatorNum
+	}
+	result.TotalValidatorNum = len(lcdValidators.Validators)
+
+	for _, v := range currentBlockRes.Results.BeginBlock.Tags {
 		if v.Key == "mint-coin" {
-			result.Rewards = utils.ParseCoins(v.Value)
+			result.MintCoin = utils.ParseCoin(v.Value)
 		}
 	}
 
-	result.PropoperAddr = validatorDoc.OperatorAddress
-	result.PropopserMoniker = validatorDoc.Description.Moniker
-	result.LastBlock = height - 1
-	result.BlockHash = b.BlockMeta.BlockID.Hash
-	result.BlockHeight = b.Block.Header.Height
-	result.LastBlockHash = b.Block.Header.LastBlockID.Hash
-	result.Timestamp = b.BlockMeta.Header.Time
-	result.Transactions = b.BlockMeta.Header.NumTxs
+	result.BlockHash = currentBlock.BlockMeta.BlockID.Hash
+	result.BlockHeight = currentBlock.Block.Header.Height
+	result.Timestamp = currentBlock.BlockMeta.Header.Time
+	result.Transactions = currentBlock.BlockMeta.Header.NumTxs
 
 	return result
 }

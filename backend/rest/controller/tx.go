@@ -5,13 +5,11 @@ import (
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/types"
-	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
 )
 
 func RegisterTx(r *mux.Router) error {
 	funs := []func(*mux.Router) error{
-		registerQueryTokenFlow,
 		registerQueryTx,
 		registerQueryTxsByAccount,
 		registerQueryTxsByDay,
@@ -43,8 +41,9 @@ func registerQueryTxList(r *mux.Router) error {
 		query := bson.M{}
 
 		address := GetString(request, "address")
+
 		if len(address) > 0 {
-			query["$or"] = []bson.M{{"from": address}, {"to": address}}
+			query["$or"] = []bson.M{{"from": address}, {"to": address}, {"signers": bson.M{"$elemMatch": bson.M{"addr_bech32": address}}}}
 		}
 
 		height := GetInt(request, "height")
@@ -58,18 +57,20 @@ func registerQueryTxList(r *mux.Router) error {
 		var result model.PageVo
 		switch types.TxTypeFromString(txType) {
 		case types.Trans:
-			query["type"] = types.TypeTransfer
-			break
+			query["type"] = bson.M{
+				"$in": types.BankList,
+			}
+			return tx.QueryTxList(query, page, size)
 		case types.Declaration:
 			query["type"] = bson.M{
 				"$in": types.DeclarationList,
 			}
-			break
+			return tx.QueryTxList(query, page, size)
 		case types.Stake:
 			query["type"] = bson.M{
 				"$in": types.StakeList,
 			}
-			break
+			return tx.QueryTxList(query, page, size)
 		case types.Gov:
 			query["type"] = bson.M{
 				"$in": types.GovernanceList,
@@ -102,7 +103,7 @@ func registerQueryTxsCounter(r *mux.Router) error {
 
 		address := GetString(request, "address")
 		if len(address) > 0 {
-			query["$or"] = []bson.M{{"from": address}, {"to": address}}
+			query["$or"] = []bson.M{{"from": address}, {"to": address}, {"signers": bson.M{"$elemMatch": bson.M{"addr_bech32": address}}}}
 		}
 
 		height := GetInt(request, "height")
@@ -144,16 +145,6 @@ func registerQueryRecentTx(r *mux.Router) error {
 		tx.SetTid(request.TraceId)
 		result := tx.QueryRecentTx()
 		return result
-	})
-	return nil
-}
-func registerQueryTokenFlow(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryCoinFlow, "GET", func(request model.IrisReq) interface{} {
-		tx.SetTid(request.TraceId)
-		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), DefaultPageNum))
-		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), DefaultPageSize))
-		height := utils.ParseIntWithDefault(QueryParam(request, "height"), DefaultBlockHeight)
-		return tx.QueryTokenFlow(height, page, size)
 	})
 	return nil
 }

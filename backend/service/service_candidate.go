@@ -1,6 +1,10 @@
 package service
 
 import (
+	"strconv"
+	"sync"
+	"time"
+
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
@@ -12,9 +16,6 @@ import (
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/txn"
-	"strconv"
-	"sync"
-	"time"
 )
 
 type CandidateService struct {
@@ -617,6 +618,7 @@ func isDiffValidator(src, dst document.Validator) bool {
 		src.Uptime != dst.Uptime ||
 		src.SelfBond != dst.SelfBond ||
 		src.DelegatorNum != dst.DelegatorNum ||
+		src.VotingPower != dst.VotingPower ||
 		src.ProposerAddr != dst.ProposerAddr ||
 		src.Description.Moniker != dst.Description.Moniker ||
 		src.Description.Identity != dst.Description.Identity ||

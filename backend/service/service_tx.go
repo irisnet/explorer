@@ -2,6 +2,9 @@ package service
 
 import (
 	"encoding/json"
+	"fmt"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/irisnet/explorer/backend/logger"
@@ -21,13 +24,111 @@ func (service *TxService) GetModule() Module {
 	return Tx
 }
 
+func (service *TxService) QueryTxList(query bson.M, page, pageSize int) model.PageVo {
+
+	logger.Info("QueryStakeList start", service.GetTraceLog())
+	var data []document.CommonTx
+
+	total, err := pageQuery(document.CollectionNmCommonTx, nil, query, desc(document.Tx_Field_Time), page, pageSize, &data)
+
+	if err != nil {
+		logger.Error("query stake list ", logger.String("err", err.Error()))
+		return model.PageVo{}
+	}
+
+	items := service.buildData(data)
+
+	forwardTxHashs := make([]string, 0, len(items))
+
+	for _, v := range items {
+		if stakeTx, ok := v.(model.StakeTx); ok {
+			if service.isForwardTxByType(stakeTx.Type) {
+				forwardTxHashs = append(forwardTxHashs, stakeTx.Hash)
+			}
+		}
+	}
+
+	if len(forwardTxHashs) == 0 {
+		for i := 0; i < len(items); i++ {
+			if stakeTx, ok := items[i].(model.StakeTx); ok {
+				stakeTx.From, stakeTx.To = service.ParseCoinFlowFromAndTo(stakeTx.Type, stakeTx.From, stakeTx.To)
+				items[i] = stakeTx
+				continue
+			}
+
+			if TransTx, ok := items[i].(model.TransTx); ok {
+				TransTx.From, TransTx.To = service.ParseCoinFlowFromAndTo(TransTx.Type, TransTx.From, TransTx.To)
+				items[i] = TransTx
+				continue
+			}
+		}
+		return model.PageVo{
+			Data:  items,
+			Count: total,
+		}
+	}
+
+	selector := bson.M{
+		document.TxMsg_Field_Hash:    1,
+		document.TxMsg_Field_Content: 1,
+		document.TxMsg_Field_Type:    1,
+	}
+	condition := bson.M{
+		document.TxMsg_Field_Hash: bson.M{"$in": forwardTxHashs},
+	}
+
+	txMsgs := make([]document.TxMsg, 0, len(forwardTxHashs))
+
+	if err := queryAll(document.CollectionNmTxMsg, selector, condition, "", 0, &txMsgs); err != nil {
+		logger.Error("query tx msg", logger.String("err", err.Error()))
+		panic(types.CodeNotFound)
+	}
+
+	for _, vMsg := range txMsgs {
+		for k, stakeTx := range items {
+
+			if vTx, ok := stakeTx.(model.StakeTx); ok {
+				if vMsg.Hash == vTx.Hash {
+					forwardAddr, err := service.getForwardAddr(vMsg.Type, vMsg.Content)
+					if err != nil {
+						logger.Error("get forward addr ", logger.String("err", err.Error()))
+						continue
+					}
+					vTx.From = forwardAddr
+					items[k] = vTx
+				}
+			}
+		}
+	}
+
+	for i := 0; i < len(items); i++ {
+		if stakeTx, ok := items[i].(model.StakeTx); ok {
+			stakeTx.From, stakeTx.To = service.ParseCoinFlowFromAndTo(stakeTx.Type, stakeTx.From, stakeTx.To)
+			items[i] = stakeTx
+			continue
+		}
+
+		if TransTx, ok := items[i].(model.TransTx); ok {
+			TransTx.From, TransTx.To = service.ParseCoinFlowFromAndTo(TransTx.Type, TransTx.From, TransTx.To)
+			items[i] = TransTx
+			continue
+		}
+
+	}
+	return model.PageVo{
+		Data:  items,
+		Count: total,
+	}
+}
+
 func (service *TxService) QueryList(query bson.M, page, pageSize int) (pageInfo model.PageVo) {
 	logger.Debug("QueryList start", service.GetTraceLog())
 	var data []document.CommonTx
 
 	if cnt, err := pageQuery(document.CollectionNmCommonTx, nil,
 		query, desc(document.Tx_Field_Time), page, pageSize, &data); err == nil {
-		pageInfo.Data = buildData(data)
+
+		pageInfo.Data = service.buildData(data)
 		pageInfo.Count = cnt
 	}
 	logger.Debug("QueryList end", service.GetTraceLog())
@@ -73,7 +174,26 @@ func (service *TxService) Query(hash string) interface{} {
 		panic(types.CodeNotFound)
 	}
 
-	tx := service.buildTx(result)
+	blackList := map[string]document.BlackList{}
+	candidateAddrMap := map[string]document.Candidate{}
+	govTxMsgHashMap := map[string]document.TxMsg{}
+	govProposalIdMap := map[uint64]document.Proposal{}
+
+	switch types.Convert(result.Type) {
+	case types.Declaration:
+		blackList = service.QueryBlackList(dbm)
+		candidateAddrMap[result.From] = document.Candidate{}
+		service.GetTxAttachedFields(&candidateAddrMap, &govTxMsgHashMap, &govProposalIdMap)
+	case types.Gov:
+		govTxMsgHashMap[result.TxHash] = document.TxMsg{}
+		if result.Type == types.TxTypeVote || result.Type == types.TxTypeDeposit {
+			govProposalIdMap[result.ProposalId] = document.Proposal{}
+		}
+		service.GetTxAttachedFields(&candidateAddrMap, &govTxMsgHashMap, &govProposalIdMap)
+
+	}
+
+	tx := service.buildTx(result, &blackList, &candidateAddrMap, &govTxMsgHashMap, &govProposalIdMap)
 
 	switch tx.(type) {
 	case model.GovTx:
@@ -81,7 +201,7 @@ func (service *TxService) Query(hash string) interface{} {
 		return govTx
 	case model.StakeTx:
 		stakeTx := tx.(model.StakeTx)
-		if stakeTx.Type == types.TypeBeginRedelegation {
+		if stakeTx.Type == types.TxTypeBeginRedelegate {
 			var res document.TxMsg
 			err := dbm.C(document.CollectionNmTxMsg).Find(bson.M{document.TxMsg_Field_Hash: stakeTx.Hash}).One(&res)
 			if err != nil {
@@ -103,9 +223,9 @@ func (service *TxService) Query(hash string) interface{} {
 func (service *TxService) QueryByAcc(address string, page, size int) (result model.PageVo) {
 	var data []document.CommonTx
 	query := bson.M{}
-	query["$or"] = []bson.M{{document.Tx_Field_From: address}, {document.Tx_Field_To: address}}
+	query["$or"] = []bson.M{{"from": address}, {"to": address}, {"signers": bson.M{"$elemMatch": bson.M{"addr_bech32": address}}}}
 	var typeArr []string
-	typeArr = append(typeArr, types.TypeTransfer)
+	typeArr = append(typeArr, types.BankList...)
 	typeArr = append(typeArr, types.DeclarationList...)
 	typeArr = append(typeArr, types.StakeList...)
 	typeArr = append(typeArr, types.GovernanceList...)
@@ -123,7 +243,7 @@ func (service *TxService) QueryByAcc(address string, page, size int) (result mod
 func (service *TxService) CountByType(query bson.M) model.TxStatisticsVo {
 	logger.Debug("CountByType start", service.GetTraceLog())
 	var typeArr []string
-	typeArr = append(typeArr, types.TypeTransfer)
+	typeArr = append(typeArr, types.BankList...)
 	typeArr = append(typeArr, types.DeclarationList...)
 	typeArr = append(typeArr, types.StakeList...)
 	typeArr = append(typeArr, types.GovernanceList...)
@@ -206,37 +326,201 @@ func (service *TxService) QueryTxNumGroupByDay() []model.TxNumGroupByDayVo {
 	return result
 }
 
-func (service *TxService) QueryTokenFlow(blockHeight int64, page, size int) model.TokenFlows {
-	items := []document.TokenFlow{}
-	result := model.TokenFlows{}
-
-	cnt, err := pageQuery(document.CollectionNmTokenFlow, nil, bson.M{"block_height": blockHeight, "flow_type": bson.M{"$nin": []string{"GovDeposit", "GovDepositBurn", "GovDepositRefund"}}}, "", page, size, &items)
-	if err != nil {
-		logger.Error("query token flow err", logger.String("error", err.Error()), service.GetTraceLog())
+func (service *TxService) ParseCoinFlowFromAndTo(txType, from, to string) (string, string) {
+	switch txType {
+	case types.TxTypeTransfer:
+		return from, to
+	case types.TxTypeBurn:
+		return from, ""
+	case types.TxTypeStakeEditValidator:
+		return "", ""
+	case types.TxTypeStakeDelegate:
+		return from, to
+	case types.TxTypeUnjail:
+		return "", ""
+	case types.TxTypeSetWithdrawAddress:
+		return "", ""
+	case types.TxTypeStakeCreateValidator:
+		return from, to
+	case types.TxTypeBeginRedelegate:
+		return from, to
+	case types.TxTypeWithdrawDelegatorReward:
+		return from, to
+	case types.TxTypeWithdrawDelegatorRewardsAll:
+		return from, to
+	case types.TxTypeWithdrawValidatorRewardsAll:
+		return from, to
+	case types.TxTypeStakeBeginUnbonding:
+		return to, from
+	default:
+		return from, to
 	}
-	result.Total = cnt
-	result.Items = items
-
-	return result
 }
 
-func buildData(txs []document.CommonTx) []interface{} {
+func (service *TxService) QueryTxMsgByHashArr(hashArr []string) []document.TxMsg {
+
+	selector := bson.M{
+		document.TxMsg_Field_Hash:    1,
+		document.TxMsg_Field_Content: 1,
+		document.TxMsg_Field_Type:    1,
+	}
+	condition := bson.M{
+		document.TxMsg_Field_Hash: bson.M{"$in": hashArr},
+	}
+
+	txMsgs := []document.TxMsg{}
+	if err := queryAll(document.CollectionNmTxMsg, selector, condition, "", 0, &txMsgs); err != nil {
+		logger.Error("query tx msg", logger.String("err", err.Error()))
+		panic(types.CodeNotFound)
+	}
+
+	return txMsgs
+}
+
+func (service *TxService) getForwardAddr(txType, content string) (string, error) {
+	m := make(map[string]interface{})
+	err := json.Unmarshal([]byte(content), &m)
+	if err != nil {
+		return "", err
+	}
+
+	switch txType {
+	case types.TxTypeBeginRedelegate:
+		if v, ok := m["validator_src_addr"].(string); ok {
+			return v, nil
+		}
+	}
+	return "", nil
+}
+
+func (service *TxService) isForwardTxByType(t string) bool {
+	for _, v := range types.ForwardList {
+		if v == t {
+			return true
+		}
+	}
+	return false
+}
+
+func (service *TxService) GetTxAttachedFields(candidateAddrMap *map[string]document.Candidate, govTxMsgHashMap *map[string]document.TxMsg, govProposalIdMap *map[uint64]document.Proposal) {
+	candidateAddrs := make([]string, 0, len(*candidateAddrMap))
+	govHashArr := make([]string, 0, len(*govTxMsgHashMap))
+	govProposalIdArr := make([]uint64, 0, len(*govProposalIdMap))
+	for k, _ := range *candidateAddrMap {
+		candidateAddrs = append(candidateAddrs, k)
+	}
+	for k, _ := range *govTxMsgHashMap {
+		govHashArr = append(govHashArr, k)
+	}
+	for k, _ := range *govProposalIdMap {
+		govProposalIdArr = append(govProposalIdArr, k)
+	}
+
+	candidateArr := []document.Candidate{}
+
+	if len(candidateAddrs) > 0 {
+		canCondition := bson.M{
+			document.Candidate_Field_Address: bson.M{"$in": candidateAddrs},
+		}
+
+		if err := queryAll(document.CollectionNmStakeRoleCandidate, nil, canCondition, "", 0, &candidateArr); err != nil {
+			logger.Error(fmt.Sprintf("query collection(%v) with dondition: %v err: %v", document.CollectionNmStakeRoleCandidate, canCondition, err.Error()))
+		}
+
+		for k, _ := range *candidateAddrMap {
+			for _, v := range candidateArr {
+				if k == v.Address {
+					(*candidateAddrMap)[k] = v
+					break
+				}
+			}
+		}
+	}
+
+	govTxMsgArr := []document.TxMsg{}
+	if len(govHashArr) > 0 {
+		txMsgCondition := bson.M{
+			document.TxMsg_Field_Hash: bson.M{"$in": govHashArr},
+		}
+		if err := queryAll(document.CollectionNmTxMsg, nil, txMsgCondition, "", 0, &govTxMsgArr); err != nil {
+			logger.Error(fmt.Sprintf("query collection(%v) with dondition: %v err: %v", document.CollectionNmStakeRoleCandidate, txMsgCondition, err.Error()))
+		}
+
+		for k, _ := range *govTxMsgHashMap {
+			for _, v := range govTxMsgArr {
+				if k == v.Hash {
+					(*govTxMsgHashMap)[k] = v
+					break
+				}
+			}
+		}
+	}
+
+	proposalArr := []document.Proposal{}
+
+	if len(govProposalIdArr) > 0 {
+		depositVoteCondition := bson.M{
+			document.Proposal_Field_ProposalId: bson.M{"$in": govProposalIdArr},
+		}
+
+		if err := queryAll(document.CollectionNmProposal, nil, depositVoteCondition, "", 0, &proposalArr); err != nil {
+			logger.Error(fmt.Sprintf("query collection(%v) with dondition: %v err: %v", document.CollectionNmStakeRoleCandidate, depositVoteCondition, err.Error()))
+		}
+		for k, _ := range *govProposalIdMap {
+			for _, v := range proposalArr {
+				if k == v.ProposalId {
+					(*govProposalIdMap)[k] = v
+					break
+				}
+			}
+		}
+	}
+}
+
+func (service *TxService) buildData(txs []document.CommonTx) []interface{} {
 	var txList []interface{}
 
 	if len(txs) == 0 {
 		return txList
 	}
+
+	db := getDb()
+	defer db.Session.Close()
+
+	blackList := map[string]document.BlackList{}
+	candidateAddrMap := map[string]document.Candidate{}
+	govTxMsgHashMap := map[string]document.TxMsg{}
+	govProposalIdMap := map[uint64]document.Proposal{}
+
+	onlyOnce := true
+	for _, v := range txs {
+		switch types.Convert(v.Type) {
+		case types.Declaration:
+			if onlyOnce {
+				blackList = service.QueryBlackList(db)
+				onlyOnce = false
+			}
+			candidateAddrMap[v.From] = document.Candidate{}
+		case types.Gov:
+			govTxMsgHashMap[v.TxHash] = document.TxMsg{}
+			if v.Type == types.TxTypeVote || v.Type == types.TxTypeDeposit {
+				govProposalIdMap[v.ProposalId] = document.Proposal{}
+			}
+		}
+	}
+
+	service.GetTxAttachedFields(&candidateAddrMap, &govTxMsgHashMap, &govProposalIdMap)
+
 	for _, tx := range txs {
-		txResp := txService.buildTx(tx)
+		txResp := txService.buildTx(tx, &blackList, &candidateAddrMap, &govTxMsgHashMap, &govProposalIdMap)
 		txList = append(txList, txResp)
 	}
 
 	return txList
 }
 
-func (service *TxService) buildTx(tx document.CommonTx) interface{} {
-	db := getDb()
-	defer db.Session.Close()
+func (service *TxService) buildTx(tx document.CommonTx, blackListP *map[string]document.BlackList,
+	candidateAddrMapP *map[string]document.Candidate, govTxMsgHashMapP *map[string]document.TxMsg, govProposalIdMapP *map[uint64]document.Proposal) interface{} {
 
 	switch types.Convert(tx.Type) {
 	case types.Trans:
@@ -252,14 +536,16 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 			SelfBond: tx.Amount,
 			Owner:    tx.From,
 			Pubkey:   tx.StakeCreateValidator.PubKey,
+			Amount:   tx.Amount,
 		}
-		var blackList = service.QueryBlackList(db)
-		if tx.Type == types.TypeCreateValidator {
+		if tx.Type == types.TxTypeStakeCreateValidator {
+
+			dtx.OperatorAddr = tx.To
 			var moniker = tx.StakeCreateValidator.Description.Moniker
 			var identity = tx.StakeCreateValidator.Description.Identity
 			var website = tx.StakeCreateValidator.Description.Website
 			var details = tx.StakeCreateValidator.Description.Details
-			if desc, ok := blackList[tx.To]; ok {
+			if desc, ok := (*blackListP)[tx.To]; ok {
 				moniker = desc.Moniker
 				identity = desc.Identity
 				website = desc.Website
@@ -269,12 +555,13 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 			dtx.Details = details
 			dtx.Website = website
 			dtx.Identity = identity
-		} else if tx.Type == types.TypeEditValidator {
+		} else if tx.Type == types.TxTypeStakeEditValidator {
+			dtx.OperatorAddr = tx.From
 			var moniker = tx.StakeEditValidator.Description.Moniker
 			var identity = tx.StakeEditValidator.Description.Identity
 			var website = tx.StakeEditValidator.Description.Website
 			var details = tx.StakeEditValidator.Description.Details
-			if desc, ok := blackList[tx.From]; ok {
+			if desc, ok := (*blackListP)[tx.From]; ok {
 				moniker = desc.Moniker
 				identity = desc.Identity
 				website = desc.Website
@@ -284,35 +571,55 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 			dtx.Details = details
 			dtx.Website = website
 			dtx.Identity = identity
-		} else if tx.Type == types.TypeUnjail {
-			candidateDb := db.C(document.CollectionNmStakeRoleCandidate)
-			var can document.Candidate
-			candidateDb.Find(bson.M{document.Candidate_Field_Address: dtx.Owner}).One(&can)
+		} else if tx.Type == types.TxTypeUnjail {
+			dtx.OperatorAddr = tx.From
+			can := (*candidateAddrMapP)[dtx.Owner]
+
 			var moniker = can.Description.Moniker
 			var identity = can.Description.Identity
 			var website = can.Description.Website
 			var details = can.Description.Details
-			if desc, ok := blackList[tx.From]; ok {
+			if desc, ok := (*blackListP)[tx.From]; ok {
 				moniker = desc.Moniker
 				identity = desc.Identity
 				website = desc.Website
 				details = desc.Details
 			}
 			dtx.Moniker = moniker
-			dtx.Details = identity
+			dtx.Details = details
 			dtx.Website = website
-			dtx.Identity = details
+			dtx.Identity = identity
 		}
 		return dtx
 	case types.Stake:
-		return model.StakeTx{
+		stakeTx := model.StakeTx{
 			TransTx: model.TransTx{
 				BaseTx: buildBaseTx(tx),
-				From:   tx.From,
-				To:     tx.To,
 				Amount: tx.Amount,
 			},
 		}
+
+		switch stakeTx.Type {
+		case types.TxTypeWithdrawDelegatorReward:
+			stakeTx.From = tx.Tags["source-validator"]
+			stakeTx.To = tx.Tags["withdraw-address"]
+			return stakeTx
+		case types.TxTypeWithdrawDelegatorRewardsAll, types.TxTypeWithdrawValidatorRewardsAll:
+			stakeTx.To = tx.Tags["withdraw-address"]
+			sourceTotal := 0
+			for k, _ := range tx.Tags {
+				if strings.HasPrefix(k, "withdraw-reward-from-validator-") {
+					sourceTotal++
+				}
+			}
+			stakeTx.From = strconv.Itoa(sourceTotal)
+			return stakeTx
+		default:
+			stakeTx.From = tx.From
+			stakeTx.To = tx.To
+			return stakeTx
+		}
+
 	case types.Gov:
 		govTx := model.GovTx{
 			BaseTx:     buildBaseTx(tx),
@@ -321,38 +628,56 @@ func (service *TxService) buildTx(tx document.CommonTx) interface{} {
 			ProposalId: tx.ProposalId,
 		}
 
-		txMsgDb := db.C(document.CollectionNmTxMsg)
-		var res document.TxMsg
-		err := txMsgDb.Find(bson.M{document.TxMsg_Field_Hash: govTx.Hash}).One(&res)
-		if err != nil {
-			return govTx
-		}
+		if govTx.Type == types.TxTypeSubmitProposal {
+			if v, ok := (*govTxMsgHashMapP)[govTx.Hash]; ok {
+				var msg model.MsgSubmitProposal
+				if err := json.Unmarshal([]byte(v.Content), &msg); err != nil {
+					logger.Error("unmarshal gov tx msg ", logger.String("tx hash", govTx.Hash), logger.String("content", v.Content), logger.Any("err", err.Error()))
+				}
+				govTx.Title = msg.Title
+				govTx.Description = msg.Description
+				govTx.ProposalType = msg.ProposalType
+			}
+		} else if govTx.Type == types.TxTypeDeposit {
 
-		if govTx.Type == types.TypeSubmitProposal {
-			var msg model.MsgSubmitProposal
-			json.Unmarshal([]byte(res.Content), &msg)
-			govTx.Title = msg.Title
-			govTx.Description = msg.Description
-			govTx.ProposalType = msg.ProposalType
-		} else if govTx.Type == types.TypeDeposit {
-			var msg model.MsgDeposit
-			json.Unmarshal([]byte(res.Content), &msg)
-			govTx.ProposalId = msg.ProposalID
-			govTx.Amount = msg.Amount
-		} else if govTx.Type == types.TypeVote {
-			var msg model.MsgVote
-			json.Unmarshal([]byte(res.Content), &msg)
-			govTx.ProposalId = msg.ProposalID
-			govTx.Option = msg.Option
-		}
+			if v, ok := (*govTxMsgHashMapP)[govTx.Hash]; ok {
+				var msg model.MsgDeposit
+				if err := json.Unmarshal([]byte(v.Content), &msg); err != nil {
+					logger.Error("unmarshal gov tx msg ", logger.String("tx hash", govTx.Hash), logger.String("content", v.Content), logger.Any("err", err.Error()))
+				}
+				govTx.Amount = msg.Amount
+			}
 
+			if v, ok := (*govProposalIdMapP)[govTx.ProposalId]; ok {
+				govTx.Title = v.Title
+				govTx.ProposalType = v.Type
+				govTx.Description = v.Description
+			}
+
+		} else if govTx.Type == types.TxTypeVote {
+
+			if v, ok := (*govTxMsgHashMapP)[govTx.Hash]; ok {
+				var msg model.MsgVote
+				if err := json.Unmarshal([]byte(v.Content), &msg); err != nil {
+					logger.Error("unmarshal gov tx msg ", logger.String("tx hash", govTx.Hash), logger.String("content", v.Content), logger.Any("err", err.Error()))
+				}
+				govTx.Option = msg.Option
+			}
+
+			if v, ok := (*govProposalIdMapP)[govTx.ProposalId]; ok {
+				govTx.Title = v.Title
+				govTx.ProposalType = v.Type
+				govTx.Description = v.Description
+			}
+
+		}
 		return govTx
 	}
 	return nil
 }
 
 func buildBaseTx(tx document.CommonTx) model.BaseTx {
-	return model.BaseTx{
+	res := model.BaseTx{
 		Hash:        tx.TxHash,
 		BlockHeight: tx.Height,
 		Type:        tx.Type,
@@ -364,4 +689,9 @@ func buildBaseTx(tx document.CommonTx) model.BaseTx {
 		Memo:        tx.Memo,
 		Timestamp:   tx.Time,
 	}
+
+	if len(tx.Signers) > 0 {
+		res.Signer = tx.Signers[0].AddrBech32
+	}
+	return res
 }

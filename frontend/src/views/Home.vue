@@ -183,7 +183,7 @@ import Constant from "../constant/Constant";
           getValidatorsList() {
               let url = `/api/stake/candidatesTop`;
               Service.http(url).then((data) => {
-                  let colors = ['#3498db', '#47a2df', '#59ade3', '#6cb7e7', '#7fc2eb', '#91ccef', '#a4d7f3', '#b7e1f7', '#c9ecfb', '#dcf6ff', '#DADDE3',];
+                  let colors = ['#3498db', '#47a2df', '#59ade3', '#6cb7e7', '#7fc2eb', '#91ccef', '#a4d7f3', '#b7e1f7', '#c9ecfb', '#dcf6ff', '#f0f9ff',];
                   let [seriesData, legendData] = [[], []];
                   if (data.validators instanceof Array) {
                       let totalCount = 0;

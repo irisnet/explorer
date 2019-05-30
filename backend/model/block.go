@@ -28,6 +28,7 @@ type BlockValidator struct {
 	Consensus        string `json:"consensus"`
 	ProposerPriority string `json:"proposer_priority"`
 	VotingPower      string `json:"voting_power"`
+	IsProposer       bool   `json:"is_proposer"`
 }
 
 type ValidatorSet struct {
@@ -36,25 +37,23 @@ type ValidatorSet struct {
 }
 
 type Block struct {
-	BlockInfo    BlockInfo        `json:"block_info"`
-	ValidatorSet ValidatorSet     `json:"validator_set"`
-	TokenFlows   TokenFlows       `json:"token_flows"`
-	Proposals    []ProposalInfoVo `json:"proposals_info"`
+	BlockInfo    BlockInfo    `json:"block_info"`
+	ValidatorSet ValidatorSet `json:"validator_set"`
+	TxPage       TxPage       `json:"tx_page"`
+	ProposalPage ProposalPage `json:"proposals_page"`
 }
 
 type BlockInfo struct {
-	BlockHeight          string         `json:"block_height"`
-	Timestamp            time.Time      `json:"timestamp"`
-	BlockHash            string         `json:"block_hash"`
-	Transactions         string         `json:"transactions"`
-	PropopserMoniker     string         `json:"propopser_moniker"`
-	PropoperAddr         string         `json:"propopser_addr"`
-	Rewards              document.Coins `json:"rewards"`
-	LastBlock            int64          `json:"last_block"`
-	LastBlockHash        string         `json:"last_block_hash"`
-	VoteValidatorNum     int            `json:"vote_validator_num"`
-	ValidatorNum         int            `json:"validator_num"`
-	PrecommitVotingPower int            `json:"precommit_voting_power"`
-	TotalVotingPower     int            `json:"total_voting_power"`
-	LatestHeight         string         `json:"latest_height"`
+	BlockHeight           string        `json:"block_height"`
+	Timestamp             time.Time     `json:"timestamp"`
+	BlockHash             string        `json:"block_hash"`
+	Transactions          string        `json:"transactions"`
+	PropopserMoniker      string        `json:"propopser_moniker"`
+	PropoperAddr          string        `json:"propopser_addr"`
+	PrecommitValidatorNum interface{}   `json:"precommit_validator_num"`
+	TotalValidatorNum     int           `json:"total_validator_num"`
+	PrecommitVotingPower  interface{}   `json:"precommit_voting_power"`
+	TotalVotingPower      int           `json:"total_voting_power"`
+	LatestHeight          string        `json:"latest_height"`
+	MintCoin              document.Coin `json:"mint_coin"`
 }

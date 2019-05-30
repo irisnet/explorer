@@ -16,7 +16,7 @@
       <p class="transaction_information_content_title">Address Information</p>
       <div class="transactions_detail_information_wrap">
         <div class="information_props_wrap" v-show="flValidator">
-          <span class="information_props">Self-Bond :</span>
+          <span class="information_props">Self-Bonded :</span>
           <span class="information_value">{{balanceValue?balanceValue:'--'}}</span>
         </div>
         <div class="information_props_wrap" v-show="!flValidator">
@@ -208,7 +208,6 @@
 
           return {
               rateValue: '',
-              transactionTimer: null,
               devicesWidth: window.innerWidth,
               transactionsDetailWrap: 'personal_computer_transactions_detail',
               activeBtn:0,
@@ -385,16 +384,11 @@
           this.showLoading = false;
           this.showNoData = false;
           this.count = txList.Count;
-          clearInterval(this.transactionTimer);
           if(txList.Data){
-            this.transactionTimer = setInterval(function () {
-              let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-              that.items = Tools.formatTxList(txList.Data,txTabName,currentServerTime)
-            },1000);
+            this.items = Tools.formatTxList(txList.Data,txTabName)
           }else {
-            let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-            that.items = Tools.formatTxList(null,txTabName,currentServerTime);
-            that.showNoData = true;
+            this.items = Tools.formatTxList(null,txTabName);
+            this.showNoData = true;
           }
         })
       },

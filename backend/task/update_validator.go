@@ -14,7 +14,7 @@ func (task UpdateValidator) Name() string {
 	return "update_validator"
 }
 func (task UpdateValidator) Start() {
-	utils.RunTimer(10, utils.Sec, func() {
+	utils.RunTimer(30, utils.Sec, func() {
 		var validators []document.Validator
 		var query = orm.NewQuery()
 		defer query.Release()

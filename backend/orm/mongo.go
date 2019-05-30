@@ -82,6 +82,7 @@ func (query *Query) GetDb() *mgo.Database {
 
 func (query *Query) Exec() error {
 	q := query.buildQuery()
+
 	vType := reflect.ValueOf(query.result)
 	switch vType.Elem().Kind() {
 	case reflect.Slice:
@@ -143,7 +144,14 @@ func (query *Query) SetCondition(condition bson.M) *Query {
 	return query
 }
 func (query *Query) SetSort(sort ...string) *Query {
-	query.sort = sort
+
+	strArr := []string{}
+	for _, v := range sort {
+		if v != "" {
+			strArr = append(strArr, v)
+		}
+	}
+	query.sort = strArr
 	return query
 }
 func (query *Query) SetPage(page int) *Query {
@@ -178,6 +186,7 @@ func (query *Query) buildQuery() *mgo.Query {
 	if query.page != 0 {
 		q = q.Skip((query.page - 1) * query.size)
 	}
+
 	if query.sort != nil && len(query.sort) > 0 {
 		q = q.Sort(query.sort...)
 	}

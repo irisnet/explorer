@@ -1,0 +1,651 @@
+---
+swagger: "2.0"
+info:
+  version: 0.9.3
+  description: A REST interface for irishub state queries.
+  title: explorer for the irishub
+
+consumes:
+  - application/json
+produces:
+  - application/json
+
+schemes:
+  - http
+  - https
+
+tags:
+  - name: Block
+    description: query blocks
+  - name: Governance
+    description: query proposal
+  - name: Account
+    description:
+paths:
+  /api/block/validatorset/{height}:
+    get:
+      tags:
+        - Block
+      parameters:
+        - name: height
+          in: path
+          description: Block height
+          type: integer
+          format: int64
+          default: 1
+        - name: page
+          in: query
+          type: integer
+          format: int
+          default: 1
+          required: false
+        - name: size
+          in: query
+          type: integer
+          format: int
+          default: 10
+          required: false
+      responses:
+        200:
+          description: get a validatorset by block height
+          schema:
+            $ref: "#/definitions/ValidatorSet"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/block/blockinfo/{height}:
+    get:
+      tags:
+        - Block
+      parameters:
+        - name: height
+          in: path
+          description: Block height
+          type: integer
+          format: int64
+          default: 1
+      responses:
+        200:
+          description:
+          schema:
+            $ref: "#/definitions/BlockInfo"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/account/{address}:
+    get:
+      summary:
+      tags:
+        - Account
+      parameters:
+        - in: path
+          name: address
+          description:  Bech32 AccAddress of Delegator or Bech32 ValAddress
+          required: true
+          type: string
+      responses:
+        200:
+          description:
+          schema:
+            $ref: "#/definitions/AccountVo"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/blocks:
+    get:
+      tags:
+        - Block
+      parameters:
+        - name: page
+          in: query
+          type: integer
+          format: int
+          default: 1
+          required: false
+        - name: size
+          in: query
+          type: integer
+          format: int
+          default: 100
+          required: false
+      responses:
+        200:
+          description: query recent blocks
+          schema:
+            $ref: "#/definitions/Blocks"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/blocks/recent:
+    get:
+      summary: query the recent blocks
+      tags:
+        - Block
+      responses:
+        200:
+          type: array
+          items:
+            $ref: "#/definitions/RecentBlockInfoVo"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/gov/proposal/{pid}:
+    get:
+      summary: query a proposal
+      tags:
+        - Governance
+      parameters:
+        - in: path
+          name: pid
+          description: query a proposal by id
+          required: true
+          type: integer
+          format: int
+      responses:
+        200:
+          description:
+          schema:
+            $ref: "#/definitions/ProposalInfoVo"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/gov/proposals:
+    get:
+      tags:
+        - Governance
+      parameters:
+        - in: query
+          name: page
+          type: integer
+          format: int
+          default: 1
+        - in: query
+          name: size
+          type: integer
+          format: int
+          default: 20
+      responses:
+        200:
+          description: T
+          schema:
+            $ref: "#/definitions/GovProposals"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+
+definitions:
+  Blocks:
+    type: object
+    required:
+      - Count
+      - Data
+    properties:
+      Count:
+        type: integer
+        format: int
+      Data:
+        type: array
+        items:
+          $ref: "#/definitions/BlockInfoVo"
+  RecentBlockInfoVo:
+    type: object
+    required:
+      - height
+      - time
+      - num_txs
+    properties:
+      height:
+        type: integer
+        format: int64
+      time:
+        type: string
+      num_txs:
+        type: integer
+        format: int64
+  BlockInfoVo:
+    type: object
+    required:
+      - height
+      - hash
+      - time
+      - num_txs
+      - validators
+      - last_commit
+      - total_txs
+      - last_block_hash
+    properties:
+      height:
+        type: integer
+        format: int64
+      hash:
+        type: string
+      time:
+        type: string
+      num_txs:
+        type: integer
+        format: int64
+      validators:
+        $ref: "#/definitions/ValInfo"
+      last_commit:
+        type: array
+        items:
+          type: string
+      total_txs:
+        type: integer
+        format: int64
+      last_block_hash:
+        type: string
+  ValInfo:
+    type: object
+    required:
+      - address
+      - voting_power
+    properties:
+      address:
+        type: string
+      voting_power:
+        type: integer
+        format: int64
+  Block:
+    type: object
+    properties:
+      block_info:
+        $ref: "#/definitions/BlockInfo"
+      validator_set:
+        $ref: "#/definitions/ValidatorSet"
+      tx_page:
+        $ref: "#/definitions/TxPage"
+      proposals_page:
+        type: array
+        items:
+          $ref: "#/definitions/ProposalPage"
+  BlockInfo:
+    type: object
+    properties:
+      block_height:
+        type: string
+      timestamp:
+        type: string
+      block_hash:
+        type: string
+      transactions:
+        type: string
+      propopser:
+        type: string
+      mint_coin:
+        $ref: "#/definitions/Coin"
+      last_block:
+        type: integer
+        format: int64
+      last_block_hash:
+        type: string
+      precommit_validators:
+        type: string
+      voting_power:
+        type: string
+      latest_height:
+        type: string
+  ProposalInfoVo:
+     type: object
+     required:
+       - proposal
+       - votes
+       - result
+     properties:
+       proposal:
+         $ref: "#/definitions/GovProposal"
+       votes:
+         type: array
+         items:
+          $ref: "#/definitions/Vote"
+       result:
+          $ref: "#/definitions/VoteResult"
+  GovProposals:
+    type: object
+    required:
+      - Count
+      - Data
+    properties:
+      Count:
+       type: integer
+       format: int
+      Data:
+        type: array
+        items:
+          $ref: "#/definitions/GovProposal"
+  GovProposal:
+    type: object
+    required:
+      - title
+      - proposal_id
+      - type
+      - status
+      - proposer
+      - submit_time
+      - description
+      - deposit_end_time
+      - voting_end_time
+      - tx_hash
+      - total_deposit
+      - voting_start_time
+    properties:
+      title:
+        type: string
+      proposal_id:
+        type: integer
+        format: uint64
+      type:
+        type: string
+      status:
+        type: string
+      proposer:
+        type: string
+      submit_time:
+        type: string
+      description:
+        type: string
+      deposit_end_time:
+        type: string
+      voting_end_time:
+        type: string
+      tx_hash:
+        type: string
+      parameters:
+        type: array
+        items:
+          $ref: "#/definitions/Param"
+      voting_start_time:
+        type: string
+      total_deposit:
+        $ref: "#/definitions/Coins"
+      version:
+        type: integer
+        format: uint64
+      software:
+        type: string
+      switch_height:
+        type: integer
+        format: uint64
+      threshold:
+        type: string
+  Param:
+    type: object
+    properties:
+      subspace:
+        type: string
+      key:
+        type: string
+      value:
+        type: string
+  Proposal:
+    type: object
+    properties:
+      title:
+        type: string
+      proposal_id:
+        type: integer
+        format: uint64
+      type:
+        type: string
+      status:
+        type: string
+      proposer:
+        type: string
+      submit_time:
+        type: string
+      voting_start_time:
+        type: string
+      total_deposit:
+        $ref: "#/definitions/Coins"
+      votes_validators:
+        $ref: "#/definitions/VotesValidators"
+  Vote:
+    type: object
+    required:
+      - voter
+      - option
+      - time
+    properties:
+      voter:
+        type: string
+      option:
+        type: string
+      time:
+        type: string
+  VoteResult:
+     type: object
+     required:
+       - Yes
+       - No
+       - NoWithVeto
+       - Abstain
+     properties:
+       Yes:
+         type: integer
+         format: int
+       No:
+         type: integer
+         format: int
+       NoWithVeto:
+         type: integer
+         format: int
+       Abstain:
+         type: integer
+         fromat: int
+  VotesValidators:
+    type: object
+    properties:
+      vote_len:
+        type: integer
+        format: int
+      validator_len:
+        type: integer
+        format: int
+  Tx:
+    type: object
+    properties:
+      hash:
+        type: string
+      from:
+        type: string
+      to:
+        type: to
+      amount:
+        $ref: "#/definitions/Coin"
+      actual_fee:
+        $ref: "#/definitions/ActualFee"
+      tx_initiator:
+        type: string
+      type:
+        type: string
+      status:
+        type: string
+      timestamp:
+        type: string
+  TokenFlow:
+    type: object
+    properties:
+      block_height:
+        type: integer
+        format: int64
+      block_hash:
+        type: string
+      tx_hash:
+        type: string
+      from:
+        type: string
+      to:
+        type: string
+      tx_initiator:
+        type: string
+      tx_type:
+        type: string
+      flow_type:
+        type: string
+      status:
+        type: string
+      timestamp:
+        type: string
+      amount:
+        $ref: "#/definitions/Coin"
+      actual_fee:
+        $ref: "#/definitions/ActualFee"
+  TxPage:
+    type: object
+    properties:
+      total:
+        type: integer
+        format: int64
+      items:
+        type: array
+        items:
+          $ref: "#/definitions/Tx"
+    example:
+      total: 4
+      items:
+
+  TxGovPage:
+    type: object
+    properties:
+      total:
+        type: integer
+        format: int64
+      items:
+        type: array
+        items:
+          $ref: "#/definitions/TxGov"
+    example:
+      total: 4
+      items:
+  TxGov:
+    type: object
+    properties:
+      hash:
+        type: string
+      fee:
+        $ref: "#/definitions/Fee"
+      tx_initiator:
+        type: string
+      tx_type:
+        type: string
+      status:
+        type: string
+      proposal_id:
+        type: integer
+        format: uint64
+      proposal_type:
+        type: string
+      proposal_title:
+        type: string
+  Fee:
+    type: object
+    properties:
+      amount:
+        $ref: "#/definitions/Coins"
+      gas:
+        type: integer
+        format: int64
+  ActualFee:
+    type: object
+    properties:
+      denom:
+        type: string
+      amount:
+        type: integer
+        format: float64
+  Coins:
+    type: array
+    items:
+      $ref: "#/definitions/Coin"
+  Coin:
+    type: object
+    properties:
+      denom:
+        type: string
+      amount:
+        type: integer
+        format: float64
+  ValidatorSet:
+    type: object
+    properties:
+      total:
+        type: integer
+      items:
+        type: array
+        items:
+          $ref: "#/definitions/Validator"
+    example:
+      total: 4
+      items:
+        [
+          {
+            "moniker": "irishub-node-2",
+            "operator_address": "fva1xtstdchjyzkddaptgyug62g23cta7eyzq49svq",
+            "consensus": "fcp1zcjduepqevwqk73gun8pp59wz6raddnsg2fczvs237cefl9ve7f94feh6lzsdr4qrf",
+            "proposer_priority": "-100",
+            "voting_power": "100",
+          },
+          {
+            "moniker": "irishub-node-1",
+            "operator_address": "fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx",
+            "consensus": "fcp1zcjduepqcjgmderfahnlyrse563r2hcc3d4vjpafw03axzn3e87kfuqznjcsur8xrq",
+            "proposer_priority": "-100",
+            "voting_power": "100",
+          },
+          {
+            "moniker": "irishub-node-3",
+            "operator_address": "fva1amca8h9msuee5j8pg54q3sc9n9p2ss060wvhd5",
+            "consensus": "fcp1zcjduepq3hy0q3ltgktya5gzvjfmkrhkeqzqau9t927ne8wdts36en490q7s8lxjq2",
+            "proposer_priority": "-100",
+            "voting_power": "100",
+          },
+          {
+            "moniker": "irishub-node-0",
+            "operator_address": "fva1d7rxfhyhqzgudv5nmne548t3xrk4tvazpg94cu",
+            "consensus": "fcp1zcjduepqujegylnmyuymekm7sk70g5up0xq6p5r8zaj5rpjey7tqxxp0z3zqjns5cy",
+            "proposer_priority": "300",
+            "voting_power": "100",
+          },
+        ]
+  Validator:
+    type: object
+    properties:
+      moniker:
+        type: string
+      operator_address:
+        type: string
+      consensus:
+        type: string
+      proposer_priority:
+        type: string
+      voting_power:
+        type: string
+      is_proposer:
+        type: boolean
+  AccountVo:
+    type: object
+    properties:
+      amount:
+        $ref: "#/definitions/Coins"
+      withdrawAddress:
+        type: string
+      address:
+        type: string
+      deposits:
+        $ref: "#/definitions/Coin"
+      isProfiler:
+        type: boolean
+  error:
+    type: object
+    properties:
+      code:
+        type: string
+      msg:
+        type: string

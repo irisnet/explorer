@@ -1,8 +1,10 @@
 package document
 
 import (
-	"gopkg.in/mgo.v2/bson"
+	"fmt"
 	"time"
+
+	"gopkg.in/mgo.v2/bson"
 )
 
 const (
@@ -15,6 +17,7 @@ const (
 	Tx_Field_Hash                 = "tx_hash"
 	Tx_Field_From                 = "from"
 	Tx_Field_To                   = "to"
+	Tx_Field_Signers              = "signers"
 	Tx_Field_Amount               = "amount"
 	Tx_Field_Type                 = "type"
 	Tx_Field_Fee                  = "fee"
@@ -31,7 +34,13 @@ const (
 	Tx_Field_StakeEditValidator   = "stake_edit_validator"
 )
 
+type Signer struct {
+	AddrHex    string `bson:"addr_hex"`
+	AddrBech32 string `bson:"addr_bech32"`
+}
+
 type CommonTx struct {
+	Signers    []Signer          `bson:"signers"`
 	Time       time.Time         `bson:"time"`
 	Height     int64             `bson:"height"`
 	TxHash     string            `bson:"tx_hash"`
@@ -52,6 +61,17 @@ type CommonTx struct {
 
 	StakeCreateValidator StakeCreateValidator `bson:"stake_create_validator"`
 	StakeEditValidator   StakeEditValidator   `bson:"stake_edit_validator"`
+}
+
+func (tx CommonTx) PrintHashTypeFromToAmount() string {
+
+	return fmt.Sprintf(`
+	hash:   %v
+	type:   %v
+	from:   %v
+	to:     %v
+	amount: %v
+		`, tx.TxHash, tx.Type, tx.From, tx.To, tx.Amount)
 }
 
 // Description

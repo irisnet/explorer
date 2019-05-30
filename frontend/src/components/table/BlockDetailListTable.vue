@@ -1,72 +1,28 @@
 <template>
-  <div :class="showNoData?'show_no_data':''" style="min-width: 12rem;">
-    <b-table :fields='listFields' :items='items' striped nodelabel class="block_style">
-      <template slot='TxHash' slot-scope='data'>
-        <span class="skip_route">
-          <router-link :to="`/tx?txHash=${data.item.TxHash}`">{{data.item['TxHash'] ? `${String(data.item.TxHash).substr(0,16)}...` : ''}}{{data.item.proposal_id}}</router-link>
-        </span>
-      </template>
-      <template slot='Block' slot-scope='data'>
-        <span class="skip_route">
-          <router-link :to="`/block/${data.item.Block}`">{{data.item.Block}}</router-link>
-        </span>
-      </template>
-      <template slot='Title' slot-scope='data'>
-        <span class="skip_route">
-          <router-link :to="`/ProposalsDetail/${data.item.ProposalId}`">{{data.item.Title.length > 10 ?`${data.item.Title.substring(0,10)}...` : `${data.item.Title}`}}</router-link>
-        </span>
-      </template>
-      <template slot='From' slot-scope='data'>
-        <div class="name_address" v-show="data.item.From && data.item.From !== '--'">
-            <span class="remove_default_style" :class="data.item.From === $route.params.param?'no_skip':''">
-              <router-link :to="data.item.From === $route.params.param ? '' : `/address/1/${data.item.From}`" class="link_style">{{formatAddress(data.item.From)}}</router-link>
-            </span>
-          <span class="address">{{data.item.From ? data.item.From : ''}}</span>
-        </div>
-      </template>
-      <template slot='To' slot-scope='data'>
-        <div class="name_address" v-show="data.item.To && data.item.To !== '--'">
-            <span class="remove_default_style" :class="data.item.To === $route.params.param?'no_skip':''">
-              <router-link :to="data.item.To === $route.params.param ? '' : `/address/1/${data.item.To}`" class="link_style">{{formatAddress(data.item.To)}}</router-link>
-            </span>
-          <span class="address">{{data.item.To ? data.item.To : ''}}</span>
-        </div>
-        <span class="no_skip" v-show="data.item.To == '--'">
-          --
-        </span>
-      </template>
-      <template slot='consensus' slot-scope='data'>
-        <div class="name_address" v-show="data.item.consensus && data.item.consensus !== '--'">
-            <span class="remove_default_style" :class="data.item.consensus === $route.params.param?'no_skip':''">
-              <router-link :to="data.item.consensus === $route.params.param ? '' : `/address/1/${data.item.consensus}`" class="link_style">{{formatAddress(data.item.consensus)}}</router-link>
-            </span>
-          <span class="address">{{data.item.consensus ? data.item.consensus : ''}}</span>
-        </div>
-        <span class="no_skip" v-show="data.item.consensus == '--'">
-          --
-        </span>
-      </template>
-      <template slot='Tx_Initiator' slot-scope='data'>
-        <div class="name_address" v-show="data.item.Tx_Initiator && data.item.Tx_Initiator !== '--'">
-            <span class="remove_default_style" :class="data.item.Tx_Initiator === $route.params.param?'no_skip':''">
-              <router-link :to="data.item.Tx_Initiator === $route.params.param ? '' : `/address/1/${data.item.Tx_Initiator}`" class="link_style">{{formatAddress(data.item.Tx_Initiator)}}</router-link>
-            </span>
-          <span class="address">{{data.item.To ? data.item.To : ''}}</span>
-        </div>
-        <span class="no_skip" v-show="data.item.To == '--'">
-          --
-        </span>
-      </template>
-      <template slot='ProposalId' slot-scope='data'>
-        <div>
-          <span>
-            <router-link :to="`/ProposalsDetail/${data.item.ProposalId}`" style="color:#3598db !important;">{{data.item.ProposalId}}</router-link>
+  <div :class="showNoData?'show_no_data':''" style="min-width: 12rem;" class="validator_table">
+    <b-table :fields='listFields' :items='items' striped nodelabel :class="flIsValidatorTable ? 'validator_set_table_style' : ''">
+      <template slot='Tx_Hash' slot-scope='data'>
+          <span class="skip_route" style="display: flex">
+            <div class="hash_container">
+              <span>
+                <router-link :to="`/tx?txHash=${data.item.Tx_Hash}`">{{data.item.Tx_Hash ? `${formatTxHash(String(data.item.Tx_Hash))}` : ''}}</router-link>
+              </span>
+              <span class="hash_content">{{data.item.Tx_Hash}}</span>
+            </div>
           </span>
-        </div>
       </template>
-      <template slot='Owner' slot-scope='data'>
-        <span class="skip_route">
-          <router-link :to="`/address/1/${data.item.Owner}`">{{data.item.Owner?`${formatAddress(data.item.Owner)}`:''}}</router-link>
+      <template slot='Consensus' slot-scope='data'>
+        <div>{{data.item.Consensus}}</div>
+      </template>
+      <template slot='Tx_Signer' slot-scope='data'>
+        <div class="name_address" v-show="data.item.Tx_Signer && data.item.Tx_Signer !== '--'">
+            <span class="remove_default_style" :class="data.item.Tx_Signer === $route.params.param?'no_skip':''">
+              <router-link :to="data.item.Tx_Signer === $route.params.param ? '' : `/address/1/${data.item.Tx_Signer}`" class="link_style">{{formatAddress(data.item.Tx_Signer)}}</router-link>
+            </span>
+          <span class="address">{{data.item.Tx_Signer ? data.item.Tx_Signer : ''}}</span>
+        </div>
+        <span class="no_skip" v-show="data.item.Tx_Initiator == '--'">
+          --
         </span>
       </template>
       <template slot='OperatorAddress' slot-scope='data'>
@@ -80,45 +36,96 @@
           --
         </span>
       </template>
-      <template slot='Consensus' slot-scope='data'>
-      <div class="name_address" v-show="data.item.Consensus && data.item.Consensus !== '--'">
-            <span class="remove_default_style" :class="data.item.Consensus === $route.params.param?'no_skip':''">
-              <router-link :to="data.item.Consensus === $route.params.param ? '' : `/address/1/${data.item.Consensus}`" class="link_style">{{formatAddress(data.item.Consensus)}}</router-link>
-            </span>
-        <span class="address">{{data.item.Consensus ? data.item.Consensus : ''}}</span>
-      </div>
-      <span class="no_skip" v-show="data.item.Consensus == '--'">
-          --
+      <template slot='moniker' slot-scope='data'>
+        <div class="moniker_conent">
+          <div class="proposer_img_content">
+            <img :style="{visibility:data.item.flProposer ? 'visible' : 'hidden'}" src="../../assets/proposer_img.png">
+          </div>
+          <span class="skip_route">
+          <router-link :to="`/address/1/${data.item.OperatorAddress}`">{{data.item.moniker? data.item.moniker :''}}</router-link>
         </span>
-    </template>
-      <template slot='Proposer' slot-scope='data'>
-        <div class="name_address" v-show="data.item.Proposer && data.item.Proposer !== '--'">
-            <span class="remove_default_style" :class="data.item.Proposer === $route.params.param?'no_skip':''">
-              <router-link :to="data.item.Proposer === $route.params.param ? '' : `/address/1/${data.item.Proposer}`" class="link_style">{{formatAddress(data.item.Proposer)}}</router-link>
-            </span>
-          <span class="address">{{data.item.Proposer ? data.item.Proposer : ''}}</span>
         </div>
-        <span class="no_skip" v-show="data.item.Proposer == '--'">
+      </template>
+      <template slot='OperatorAddr' slot-scope='data'>
+        <span class="skip_route" style="display: flex" v-if="data.item.OperatorAddr !== '--'">
+          <div class="name_address">
+            <span class="remove_default_style">
+              <router-link :to="`/address/1/${data.item.OperatorAddr}`" class="link_style justify">{{formatAddress(data.item.OperatorAddr)}}</router-link>
+            </span>
+            <span class="address">{{data.item.OperatorAddr}}</span>
+          </div>
+        </span>
+        <span class="no_skip" v-show="data.item.OperatorAddr === '--'">--</span>
+      </template>
+      <template slot='index' slot-scope='data'>
+        <span class="sequence_number_content">
+          {{data.index + 1}}
+        </span>
+      </template>
+      <template slot='Proposal_ID' slot-scope='data'>
+          <span class="skip_route" v-if="data.item.Proposal_ID && data.item.Proposal_ID !== '--'">
+            <router-link :to="`/ProposalsDetail/${data.item.Proposal_ID}`">{{data.item.Proposal_ID}}</router-link>
+          </span>
+        <span v-if="data.item.Proposal_ID && data.item.Proposal_ID === '--'">--</span>
+      </template>
+      <template slot='Proposal_Title' slot-scope='data'>
+          <span class="skip_route" v-if="data.item.Proposal_ID !== '--' && data.item.Proposal_Title && data.item.Proposal_Title !== '--' ">
+            <router-link :to="`/ProposalsDetail/${data.item.Proposal_ID}`">{{data.item.Proposal_Title}}</router-link>
+          </span>
+        <span v-if="data.item.Proposal_ID === '--' && data.item.Proposal_Title && data.item.Proposal_Title !== '--'">{{data.item.Proposal_Title}}</span>
+        <span v-if="data.item.Proposal_Title && data.item.Proposal_Title === '--'">--</span>
+      </template>
+      <template slot='Block' slot-scope='data'>
+        <span class="skip_route">
+          <router-link :to="`/block/${data.item.Block}`">{{data.item.Block}}</router-link>
+        </span>
+      </template>
+      <template slot='From' slot-scope='data'>
+        <span class="skip_route" style="display: flex" v-if="data.item.From !== '--'">
+          <div class="name_address">
+            <span class="remove_default_style">
+              <router-link :to="`/address/1/${data.item.From}`" class="link_style justify">{{formatAddress(data.item.From)}}</router-link>
+            </span>
+            <span class="address">{{data.item.From}}</span>
+          </div>
+        </span>
+        <span class="no_skip" v-show="data.item.From === '--'">--</span>
+      </template>
+      <template slot='To' slot-scope='data'>
+        <span class="skip_route" style="display: flex" v-if="data.item.To !== '--'">
+          <div class="name_address">
+            <span class="remove_default_style">
+              <router-link :to="`/address/1/${data.item.To}`" class="link_style">{{formatAddress(data.item.To)}}</router-link>
+            </span>
+            <span class="address">{{data.item.To}}</span>
+          </div>
+        </span>
+        <span class="no_skip" v-show="data.item.To === '--'">
           --
         </span>
       </template>
-      <template slot='radio' slot-scope='data'>
-        <div class="radio_container">
-          <div class="radio_content" v-if="data.item.yesRadio && data.item.abstainRadio && data.item.noRadio && data.item.noWithVetoRadio">
-            <div class="test_content" v-if="data.item.yesRadio !== NaN" :style="{'width':`${data.item.yesRadio !== NaN ? data.item.yesRadio : 0}%`,'background': '#3598DB',}">
-              <span class="radio_toast">Yes: {{data.item.yesRadio}}%</span>
-            </div>
-            <div class="test_content" v-if="data.item.abstainRadio !== NaN" :style="{'width':`${data.item.abstainRadio !== NaN ? data.item.abstainRadio : 0}%`,'background': '#73D1FF',}">
-              <span class="radio_toast">Abstain: {{100 - data.item.noRadio - data.item.noWithVetoRadio - data.item.yesRadio}}%</span>
-            </div>
-            <div class="test_content" v-if="data.item.noRadio !== NaN" :style="{'width':`${data.item.noRadio !== NaN ? data.item.noRadio : 0}%`,'background': '#F9CA18',}">
-              <span class="radio_toast">No: {{data.item.noRadio}}%</span>
-            </div>
-            <div class="test_content" v-if="data.item.noWithVetoRadio !== NaN" :style="{'width':`${data.item.noWithVetoRadio !== NaN ? data.item.noWithVetoRadio : 0}%`,'background': '#F27777',}">
-              <span class="radio_toast">NoWithVeto: {{data.item.noWithVetoRadio}}%</span>
-            </div>
+      <template slot='Owner' slot-scope='data'>
+        <span class="skip_route">
+          <router-link :to="`/address/1/${data.item.Owner}`">{{data.item.Owner?`${String(data.item.Owner).substr(0,16)}...`:''}}</router-link>
+        </span>
+      </template>
+      <template slot='Moniker' slot-scope='data'>
+        <span v-show="data.item.Moniker && data.item.Moniker !== '--' ">
+            <router-link :to="`/address/1/${data.item.OperatorAddr}`" class="skip_route">
+              <pre class="pre_global_style moniker_link_style">{{data.item.Moniker}}</pre>
+            </router-link>
+        </span>
+        <span v-show="data.item.Moniker && data.item.Moniker === '--' ">--</span>
+      </template>
+      <template slot='Tx_Signer' slot-scope='data'>
+        <span class="skip_route" style="display: flex" v-if="data.item.Tx_Signer">
+          <div class="name_address">
+            <span class="remove_default_style">
+              <router-link :to="`/address/1/${data.item.Tx_Signer}`" class="link_style justify">{{formatAddress(data.item.Tx_Signer)}}</router-link>
+            </span>
+            <span class="address">{{data.item.Tx_Signer}}</span>
           </div>
-        </div>
+        </span>
       </template>
     </b-table>
   </div>
@@ -141,53 +148,163 @@
           },
           data () {
               return {
-                listFields: null,
-                txFields:['TxHash','From','To','Amount','Fee','Tx_Initiator','Tx_Type','Tags','Status','Timestamp'],
-                governanceFields:{
-                  radio:{
-                    label:'',
+                  listFields: null,
+                  transferFields:{
+                  'Tx_Hash':{
+                    label:'Tx_Hash'
                   },
-                  Title:{
-                    label:'Title',
+                  'From':{
+                    label:'From'
                   },
-                  'ProposalId':{
-                    label:'Proposal ID',
+                  'Amount':{
+                    label:'Amount'
                   },
-                  'Type':{
-                    label:'Type',
+                  'To':{
+                    label:'To'
                   },
-                  'Status':{
-                    label:'Status',
+                  'Tx_Type':{
+                    label:'Tx_Type'
                   },
-                  'Proposer':{
-                    label:'Proposer',
+                  'Tx_Fee':{
+                    label:'Tx_Fee'
                   },
-                  'Submit Time':{
-                    label:'Submit Time',
+                  'Tx_Signer':{
+                    label:'Tx_Signer'
                   },
-                  'Voting Start Time':{
-                    label:'Voting Start Time',
+                  'Tx_Status':{
+                    label:'Tx_Status'
                   },
-                  'Total Deposits':{
-                    label:'Total Deposits',
+                },
+                  declarationFields:{
+                  'Tx_Hash':{
+                    label:'Tx_Hash'
                   },
-                }
+                  'Moniker':{
+                    label:'Moniker'
+                  },
+                  'OperatorAddr':{
+                    label:'Operator_Address'
+                  },
+                  'Amount':{
+                    label:'Self_Bonded'
+                  },
+                  'Tx_Type':{
+                    label:'Tx_Type'
+                  },
+                  'Tx_Fee':{
+                    label:'Tx_Fee'
+                  },
+                  'Tx_Signer':{
+                    label:'Tx_Signer'
+                  },
+                  'Tx_Status':{
+                    label:'Tx_Status'
+                  },
+                },
+                  stakeFields:{
+                  'Tx_Hash':{
+                    label:'Tx_Hash'
+                  },
+                  'From':{
+                    label:'From'
+                  },
+                  'Amount':{
+                    label:'Amount'
+                  },
+                  'To':{
+                    label:'To'
+                  },
+                  'Tx_Type':{
+                    label:'Tx_Type'
+                  },
+                  'Tx_Fee':{
+                    label:'Tx_Fee'
+                  },
+                  'Tx_Signer':{
+                    label:'Tx_Signer'
+                  },
+                  'Tx_Status':{
+                    label:'Tx_Status'
+                  },
+                },
+                  govFields:{
+                  'Tx_Hash':{
+                    label:'Tx_Hash'
+                  },
+                  'Proposal_Type':{
+                    label:'Proposal_Type'
+                  },
+                  'Proposal_ID':{
+                    label:'Proposal_ID'
+                  },
+                  'Proposal_Title':{
+                    label:'Proposal_Title'
+                  },
+                  'Amount':{
+                    label:'Amount'
+                  },
+                  'Tx_Type':{
+                    label:'Tx_Type'
+                  },
+                  'Tx_Fee':{
+                    label:'Tx_Fee'
+                  },
+                  'Tx_Signer':{
+                    label:'Tx_Signer'
+                  },
+                  'Tx_Status':{
+                    label:'Tx_Status'
+                  },
+                },
+                  validatorFields:{
+                      index:{
+                          label:'#'
+                      },
+                      'moniker':{
+                          label:'Moniker'
+                      },
+                      'OperatorAddress':{
+                          label:'Operator Address'
+                      },
+                      'Consensus':{
+                          label:'Consensus Address'
+                      },
+                      'ProposerPriority':{
+                          label:'Proposer Priority'
+                      },
+                      'VotingPower':{
+                          label:'Voting Power'
+                      }
+                  },
+                  flIsValidatorTable: false,
               }
           },
           mounted(){
           },
           methods:{
               formatAddress(address){
+                if(address){
                   return Tools.formatValidatorAddress(address)
+                }
+              },
+              formatTxHash(TxHash){
+                if(TxHash){
+                  return Tools.formatTxHash(TxHash)
+                }
               },
               formatListName(items){
-                  items.forEach( item => {
-                      if(item.listName === 'tx'){
-                          this.listFields = this.txFields;
-                      }else if(item.listName === 'gov') {
-                          this.listFields = this.governanceFields;
+                  items.forEach( (tx) => {
+                      if(tx.listName === 'transfer'){
+                          this.listFields = this.transferFields
+                      }else if(tx.listName === 'declarations') {
+                          this.listFields = this.declarationFields
+                      }else  if(tx.listName === 'stakes'){
+                          this.listFields = this.stakeFields
+                      }else if(tx.listName === 'gov'){
+                          this.listFields = this.govFields
                       }else {
-                          this.listFields = [];
+                          this.listFields = this.validatorFields;
+                          this.flIsValidatorTable = true
                       }
                   })
               }
@@ -196,29 +313,19 @@
 </script>
 
 <style lang="scss">
-  /*@import '../style/mixin.scss';*/
   @import '../../style/mixin.scss';
-
-  //重置bootstrap-vue的表格样式
-    table{
+  .validator_table table{
       td{
-        max-width:2.2rem !important;
+        max-width:none !important;
         overflow-wrap: break-word !important;
         word-wrap: break-word !important;
       }
   }
-  .page-item{
-    &:first-child, &:last-child{
-      .page-link{
-        @include borderRadius(0.025rem);
-      }
-    }
+  .validator_table .validator_set_table_style thead tr th:nth-child(2){
+    padding-left: 0.26rem !important;
   }
-  .count_show{
-    visibility: visible;
-  }
-  .count_hidden{
-    visibility: hidden;
+  .validator_table{
+    min-width: 12.8rem;
   }
   .show_no_data{
     .table{
@@ -231,58 +338,27 @@
       }
     }
   }
-  .radio_container{
-    min-width: 2rem;
-    display: flex;
-    align-items: center;
-    width: 100%;
-    background: rgba(241, 242, 247, 1);
-    .radio_content{
-      display: flex;
-      width: 100%;
-      height: 0.2rem;
-      align-items:center;
-      background: rgba(241, 242, 247, 1);
-    }
+  .table tbody tr{
+    height: 0.3rem !important;
   }
-  .test_content{
-    height: 0.18rem;
-    position: relative;
-    .radio_toast{
-      display: none;
-      width: 1.3rem;
-      background: #000;
-      position: absolute;
-      bottom: 0.25rem;
-      height: 0.2rem;
-      color: #fff;
-      border-radius: 0.03rem;
-      text-align: center;
-      line-height: 0.2rem;
-      font-size: 0.14rem;
-      &::after{
-        content: '';
-        display: block;
-        width: 0.06rem;
-        height:0.06rem;
-        position: relative;
-        left: 0.03rem;
-        bottom: 0.04rem;
-        transform: rotate(45deg);
-        background: rgba(0,0,0,1);
-        z-index: -1;
+  .page-item{
+    &:first-child, &:last-child{
+      .page-link{
+        @include borderRadius(0.025rem);
       }
     }
   }
-  .test_content:hover{
-    height: 0.2rem;
-    transform: scale(1.1,1.1);
-    z-index: 10;
-    .radio_toast{
-      display: block;
+  .moniker_conent{
+    display: flex;
+    .proposer_img_content{
+      width: 0.13rem;
+      margin-right: 0.06rem;
+      img{
+        width: 100%;
+      }
     }
   }
-  .table tbody tr{
-    height: 0.3rem !important;
+  .sequence_number_content{
+    padding-left: 0.1rem;
   }
 </style>
