@@ -513,6 +513,26 @@ func (service *TxService) buildData(txs []document.CommonTx) []interface{} {
 
 	for _, tx := range txs {
 		txResp := txService.buildTx(tx, &blackList, &candidateAddrMap, &govTxMsgHashMap, &govProposalIdMap)
+
+		if stakeTx, ok := txResp.(model.StakeTx); ok {
+			switch stakeTx.Type {
+			case types.TxTypeWithdrawDelegatorReward:
+				stakeTx.From = tx.Tags["source-validator"]
+				stakeTx.To = tx.Tags["withdraw-address"]
+				txResp = stakeTx
+			case types.TxTypeWithdrawDelegatorRewardsAll, types.TxTypeWithdrawValidatorRewardsAll:
+				stakeTx.To = tx.Tags["withdraw-address"]
+				sourceTotal := 0
+				for k, _ := range tx.Tags {
+					if strings.HasPrefix(k, "withdraw-reward-from-validator-") {
+						sourceTotal++
+					}
+				}
+				stakeTx.From = strconv.Itoa(sourceTotal)
+				txResp = stakeTx
+			}
+		}
+
 		txList = append(txList, txResp)
 	}
 
@@ -592,32 +612,13 @@ func (service *TxService) buildTx(tx document.CommonTx, blackListP *map[string]d
 		}
 		return dtx
 	case types.Stake:
-		stakeTx := model.StakeTx{
+		return model.StakeTx{
 			TransTx: model.TransTx{
 				BaseTx: buildBaseTx(tx),
 				Amount: tx.Amount,
+				From:   tx.From,
+				To:     tx.To,
 			},
-		}
-
-		switch stakeTx.Type {
-		case types.TxTypeWithdrawDelegatorReward:
-			stakeTx.From = tx.Tags["source-validator"]
-			stakeTx.To = tx.Tags["withdraw-address"]
-			return stakeTx
-		case types.TxTypeWithdrawDelegatorRewardsAll, types.TxTypeWithdrawValidatorRewardsAll:
-			stakeTx.To = tx.Tags["withdraw-address"]
-			sourceTotal := 0
-			for k, _ := range tx.Tags {
-				if strings.HasPrefix(k, "withdraw-reward-from-validator-") {
-					sourceTotal++
-				}
-			}
-			stakeTx.From = strconv.Itoa(sourceTotal)
-			return stakeTx
-		default:
-			stakeTx.From = tx.From
-			stakeTx.To = tx.To
-			return stakeTx
 		}
 
 	case types.Gov:
