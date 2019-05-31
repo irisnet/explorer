@@ -400,13 +400,13 @@
           if(result){
             if (result.amount && result.amount instanceof Array && result.amount[0].denom === Constants.Denom.IRISATTO){
               result.amount[0].amount = Tools.formatNumber(result.amount[0].amount);
-              Amount = result.amount.map(listItem => `${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',')
+              Amount = result.amount.map(listItem => `${Tools.formatPriceToFixed(listItem.amount)} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',')
             }else if(result.amount && result.amount instanceof Array && result.amount[0].denom === Constants.Denom.IRIS){
-              Amount = result.amount.map(listItem => `${listItem.amount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',')
+              Amount = result.amount.map(listItem => `${Tools.formatPriceToFixed(listItem.amount)} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',')
             }else if(result.amount && Object.keys(result.amount).includes('amount') && Object.keys(result.amount).includes('denom') && result.amount.denom === Constants.Denom.IRISATTO){
-              Amount = `${Tools.formatNumber(result.amount)} ${result.denom.toUpperCase()}`
+              Amount = `${Tools.formatPriceToFixed(Tools.formatNumber(result.amount))} ${result.denom.toUpperCase()}`
             }else if(result.amount && Object.keys(result.amount).includes('amount') && Object.keys(result.amount).includes('denom') && result.amount.denom === Constants.Denom.IRIS){
-              Amount = `${result.amount}${result.denom.toUpperCase()}`
+              Amount = `${Tools.formatPriceToFixed(result.amount)} ${result.denom.toUpperCase()}`
             }else {
               Amount = ''
             }
@@ -414,7 +414,7 @@
           this.flShowProfileLogo = result.isProfiler;
           if(result.deposits){
             let deposits = Tools.formatToken(result.deposits);
-            this.depositsValue = result.deposits.amount && result.deposits.amount !== 0 && result.deposits.amount !== '' ?`${deposits.amount} ${deposits.denom}`  : '';
+            this.depositsValue = result.deposits.amount && result.deposits.amount !== 0 && result.deposits.amount !== '' ?`${Tools.formatPriceToFixed(deposits.amount)} ${deposits.denom}`  : '';
           }
           this.withdrawAddress = result.withdrawAddress ? result.withdrawAddress : '--';
           this.balanceValue = Amount;
