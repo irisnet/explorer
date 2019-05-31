@@ -1,8 +1,10 @@
 package document
 
 import (
-	"gopkg.in/mgo.v2/bson"
 	"time"
+
+	"github.com/irisnet/explorer/backend/utils"
+	"gopkg.in/mgo.v2/bson"
 )
 
 const (
@@ -22,17 +24,17 @@ const (
 )
 
 type Proposal struct {
-	ProposalId      uint64    `bson:"proposal_id"`
-	Title           string    `bson:"title"`
-	Type            string    `bson:"type"`
-	Description     string    `bson:"description"`
-	Status          string    `bson:"status"`
-	SubmitTime      time.Time `bson:"submit_time"`
-	DepositEndTime  time.Time `bson:"deposit_end_time"`
-	VotingStartTime time.Time `bson:"voting_start_time"`
-	VotingEndTime   time.Time `bson:"voting_end_time"`
-	TotalDeposit    Coins     `bson:"total_deposit"`
-	Votes           []PVote   `bson:"votes"`
+	ProposalId      uint64      `bson:"proposal_id"`
+	Title           string      `bson:"title"`
+	Type            string      `bson:"type"`
+	Description     string      `bson:"description"`
+	Status          string      `bson:"status"`
+	SubmitTime      time.Time   `bson:"submit_time"`
+	DepositEndTime  time.Time   `bson:"deposit_end_time"`
+	VotingStartTime time.Time   `bson:"voting_start_time"`
+	VotingEndTime   time.Time   `bson:"voting_end_time"`
+	TotalDeposit    utils.Coins `bson:"total_deposit"`
+	Votes           []PVote     `bson:"votes"`
 }
 
 type PVote struct {

@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	"github.com/irisnet/explorer/backend/orm/document"
+	"github.com/irisnet/explorer/backend/utils"
 )
 
 type BlockInfoVo struct {
@@ -44,16 +44,16 @@ type Block struct {
 }
 
 type BlockInfo struct {
-	BlockHeight           string        `json:"block_height"`
-	Timestamp             time.Time     `json:"timestamp"`
-	BlockHash             string        `json:"block_hash"`
-	Transactions          string        `json:"transactions"`
-	PropopserMoniker      string        `json:"propopser_moniker"`
-	PropoperAddr          string        `json:"propopser_addr"`
-	PrecommitValidatorNum interface{}   `json:"precommit_validator_num"`
-	TotalValidatorNum     int           `json:"total_validator_num"`
-	PrecommitVotingPower  interface{}   `json:"precommit_voting_power"`
-	TotalVotingPower      int           `json:"total_voting_power"`
-	LatestHeight          string        `json:"latest_height"`
-	MintCoin              document.Coin `json:"mint_coin"`
+	BlockHeight           string      `json:"block_height"`
+	Timestamp             time.Time   `json:"timestamp"`
+	BlockHash             string      `json:"block_hash"`
+	Transactions          string      `json:"transactions"`
+	PropopserMoniker      string      `json:"propopser_moniker"`
+	PropoperAddr          string      `json:"propopser_addr"`
+	PrecommitValidatorNum interface{} `json:"precommit_validator_num"`
+	TotalValidatorNum     int         `json:"total_validator_num"`
+	PrecommitVotingPower  interface{} `json:"precommit_voting_power"`
+	TotalVotingPower      int         `json:"total_voting_power"`
+	LatestHeight          string      `json:"latest_height"`
+	MintCoin              utils.Coin  `json:"mint_coin"`
 }

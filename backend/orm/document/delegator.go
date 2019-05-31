@@ -1,6 +1,7 @@
 package document
 
 import (
+	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -27,10 +28,10 @@ type Delegator struct {
 
 // UnbondingDelegation reflects a delegation's passive unbonding queue.
 type UnbondingDelegation struct {
-	CreationHeight int64 `bson:"creation_height"` // height which the unbonding took place
-	MinTime        int64 `bson:"min_time"`        // unix time for unbonding completion
-	InitialBalance Coins `bson:"initial_balance"` // atoms initially scheduled to receive at completion
-	Balance        Coins `bson:"balance"`         // atoms to receive at completion
+	CreationHeight int64       `bson:"creation_height"` // height which the unbonding took place
+	MinTime        int64       `bson:"min_time"`        // unix time for unbonding completion
+	InitialBalance utils.Coins `bson:"initial_balance"` // atoms initially scheduled to receive at completion
+	Balance        utils.Coins `bson:"balance"`         // atoms to receive at completion
 }
 
 func (d Delegator) Name() string {

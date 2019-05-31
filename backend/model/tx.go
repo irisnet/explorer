@@ -4,16 +4,16 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/irisnet/explorer/backend/orm/document"
+	"github.com/irisnet/explorer/backend/utils"
 )
 
 type MsgSubmitProposal struct {
-	Title          string         `json:"title"`          //  Title of the proposal
-	Description    string         `json:"description"`    //  Description of the proposal
-	ProposalType   string         `json:"proposalType"`   //
-	Proposer       string         `json:"proposer"`       //  Address of the proposer
-	InitialDeposit document.Coins `json:"initialDeposit"` //  Initial deposit paid by sender. Must be strictly positive.
-	Params         []Param        `json:"params"`
+	Title          string      `json:"title"`          //  Title of the proposal
+	Description    string      `json:"description"`    //  Description of the proposal
+	ProposalType   string      `json:"proposalType"`   //
+	Proposer       string      `json:"proposer"`       //  Address of the proposer
+	InitialDeposit utils.Coins `json:"initialDeposit"` //  Initial deposit paid by sender. Must be strictly positive.
+	Params         []Param     `json:"params"`
 }
 
 type MsgSubmitSoftwareUpgradeProposal struct {
@@ -31,9 +31,9 @@ type Param struct {
 }
 
 type MsgDeposit struct {
-	ProposalID uint64         `json:"proposal_id"` // ID of the proposal
-	Depositer  string         `json:"depositer"`   // Address of the depositer
-	Amount     document.Coins `json:"amount"`      // Coins to add to the proposal's deposit
+	ProposalID uint64      `json:"proposal_id"` // ID of the proposal
+	Depositer  string      `json:"depositer"`   // Address of the depositer
+	Amount     utils.Coins `json:"amount"`      // Coins to add to the proposal's deposit
 }
 
 type MsgVote struct {
@@ -54,7 +54,7 @@ type TxStatisticsVo struct {
 	StakeCnt       int
 	DeclarationCnt int
 	GovCnt         int
-	Data           []document.CommonTx
+	Data           []utils.CommonTx
 }
 
 type TxNumGroupByDayVo struct {
@@ -73,26 +73,26 @@ type ProposalPage struct {
 }
 
 type ProposalInfo struct {
-	Hash          string             `json:"hash"`
-	ActualFee     document.ActualFee `json:"actual_fee"`
-	Signer        string             `json:"Signer"`
-	TxType        string             `json:"tx_type"`
-	Status        string             `json:"status"`
-	ProposalId    uint64             `json:"proposal_id"`
-	ProposalType  string             `json:"proposal_type"`
-	ProposalTitle string             `json:"proposal_title"`
+	Hash          string          `json:"hash"`
+	ActualFee     utils.ActualFee `json:"actual_fee"`
+	Signer        string          `json:"Signer"`
+	TxType        string          `json:"tx_type"`
+	Status        string          `json:"status"`
+	ProposalId    uint64          `json:"proposal_id"`
+	ProposalType  string          `json:"proposal_type"`
+	ProposalTitle string          `json:"proposal_title"`
 }
 
 type Tx struct {
-	Hash      string             `json:"hash"`
-	From      string             `json:"from"`
-	To        string             `json:"to"`
-	Amount    document.Coins     `json:"amount"`
-	ActualFee document.ActualFee `json:"actual_fee"`
-	Signer    string             `json:"Signer"`
-	Type      string             `json:"type"`
-	Status    string             `json:"status"`
-	Timestamp time.Time          `json:"timestamp"`
+	Hash      string          `json:"hash"`
+	From      string          `json:"from"`
+	To        string          `json:"to"`
+	Amount    utils.Coins     `json:"amount"`
+	ActualFee utils.ActualFee `json:"actual_fee"`
+	Signer    string          `json:"Signer"`
+	Type      string          `json:"type"`
+	Status    string          `json:"status"`
+	Timestamp time.Time       `json:"timestamp"`
 }
 
 func (t Tx) PrintHashFromToAmount() string {
@@ -111,7 +111,7 @@ type BaseTx struct {
 	Hash        string
 	BlockHeight int64
 	Type        string
-	Fee         document.ActualFee
+	Fee         utils.ActualFee
 	Status      string
 	GasLimit    int64
 	GasUsed     int64
@@ -124,7 +124,7 @@ type TransTx struct {
 	BaseTx
 	From   string
 	To     string
-	Amount document.Coins
+	Amount utils.Coins
 }
 
 type StakeTx struct {
@@ -143,13 +143,13 @@ Amount: %v
 
 type DeclarationTx struct {
 	BaseTx
-	Amount       document.Coins `json:"Amount"`
-	OperatorAddr string         `json:"OperatorAddr"`
+	Amount       utils.Coins `json:"Amount"`
+	OperatorAddr string      `json:"OperatorAddr"`
 	Owner        string
 	Moniker      string
 	Pubkey       string
 	Identity     string
-	SelfBond     document.Coins
+	SelfBond     utils.Coins
 	Website      string
 	Details      string
 }
@@ -159,20 +159,15 @@ type GovTx struct {
 	From         string
 	ProposalId   uint64
 	Description  string
-	Amount       document.Coins
+	Amount       utils.Coins
 	Option       string
 	Title        string
 	ProposalType string
 }
 
 type RecentTx struct {
-	Fee    Coin      `json:"actual_fee"`
-	Time   time.Time `json:"time"`
-	TxHash string    `json:"tx_hash"`
-	Type   string    `json:"type"`
-}
-
-type Coin struct {
-	Amount float64 `json:"amount"`
-	Denom  string  `json:"denom"`
+	Fee    utils.Coin `json:"actual_fee"`
+	Time   time.Time  `json:"time"`
+	TxHash string     `json:"tx_hash"`
+	Type   string     `json:"type"`
 }

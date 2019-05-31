@@ -8,6 +8,7 @@ import (
 	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
+	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -26,7 +27,7 @@ func (service *ProposalService) QueryProposalsByHeight(height int64) []model.Pro
 	var query = orm.NewQuery()
 	defer query.Release()
 
-	var data []document.CommonTx
+	var data []utils.CommonTx
 
 	var selector = bson.M{"proposal_id": 1, "type": 1, "from": 1}
 
@@ -97,7 +98,7 @@ func (service *ProposalService) Query(id int) (resp model.ProposalInfoVo) {
 		TotalDeposit:    data.TotalDeposit,
 	}
 
-	var tx document.CommonTx
+	var tx utils.CommonTx
 	query.Reset().SetCollection(document.CollectionNmCommonTx).
 		SetCondition(bson.M{document.Tx_Field_Type: types.TxTypeSubmitProposal, document.Proposal_Field_ProposalId: id}).
 		SetResult(&tx)

@@ -22,13 +22,13 @@ func (service *AccountService) Query(address string) (result model.AccountVo) {
 	prefix, _, _ := utils.DecodeAndConvert(address)
 	if prefix == conf.Get().Hub.Prefix.ValAddr {
 		self, delegated := delegatorService.QueryDelegation(address)
-		result.Amount = document.Coins{self}
+		result.Amount = utils.Coins{self}
 		result.Deposits = delegated
 
 	} else {
 		res, err := lcd.Account(address)
 		if err == nil {
-			var amount document.Coins
+			var amount utils.Coins
 			for _, coinStr := range res.Coins {
 				coin := utils.ParseCoin(coinStr)
 				amount = append(amount, coin)
@@ -70,7 +70,7 @@ func (service *AccountService) QueryRichList() interface{} {
 		accList = append(accList, model.AccountInfo{
 			Rank:    index + 1,
 			Address: acc.Address,
-			Balance: document.Coins{
+			Balance: utils.Coins{
 				acc.Total,
 			},
 			Percent:  rate,

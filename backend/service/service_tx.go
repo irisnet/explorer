@@ -27,7 +27,7 @@ func (service *TxService) GetModule() Module {
 func (service *TxService) QueryTxList(query bson.M, page, pageSize int) model.PageVo {
 
 	logger.Info("QueryStakeList start", service.GetTraceLog())
-	var data []document.CommonTx
+	var data []utils.CommonTx
 
 	total, err := pageQuery(document.CollectionNmCommonTx, nil, query, desc(document.Tx_Field_Time), page, pageSize, &data)
 
@@ -123,7 +123,7 @@ func (service *TxService) QueryTxList(query bson.M, page, pageSize int) model.Pa
 
 func (service *TxService) QueryList(query bson.M, page, pageSize int) (pageInfo model.PageVo) {
 	logger.Debug("QueryList start", service.GetTraceLog())
-	var data []document.CommonTx
+	var data []utils.CommonTx
 
 	if cnt, err := pageQuery(document.CollectionNmCommonTx, nil,
 		query, desc(document.Tx_Field_Time), page, pageSize, &data); err == nil {
@@ -138,7 +138,7 @@ func (service *TxService) QueryList(query bson.M, page, pageSize int) (pageInfo 
 func (service *TxService) QueryRecentTx() []model.RecentTx {
 	logger.Debug("QueryRecentTx start", service.GetTraceLog())
 	var selector = bson.M{"time": 1, "tx_hash": 1, "actual_fee": 1, "type": 1}
-	var txs []document.CommonTx
+	var txs []utils.CommonTx
 
 	err := queryAll(document.CollectionNmCommonTx, selector, nil, desc(document.Tx_Field_Time), 10, &txs)
 	if err != nil {
@@ -147,7 +147,7 @@ func (service *TxService) QueryRecentTx() []model.RecentTx {
 	var txList []model.RecentTx
 	for _, tx := range txs {
 		var recentTx = model.RecentTx{
-			Fee: model.Coin{
+			Fee: utils.Coin{
 				Amount: tx.ActualFee.Amount,
 				Denom:  tx.ActualFee.Denom,
 			},
@@ -166,7 +166,7 @@ func (service *TxService) Query(hash string) interface{} {
 	dbm := getDb()
 	defer dbm.Session.Close()
 
-	var result document.CommonTx
+	var result utils.CommonTx
 	query := bson.M{}
 	query[document.Tx_Field_Hash] = hash
 	err := dbm.C(document.CollectionNmCommonTx).Find(query).Sort(desc(document.Tx_Field_Time)).One(&result)
@@ -221,7 +221,7 @@ func (service *TxService) Query(hash string) interface{} {
 }
 
 func (service *TxService) QueryByAcc(address string, page, size int) (result model.PageVo) {
-	var data []document.CommonTx
+	var data []utils.CommonTx
 	query := bson.M{}
 	query["$or"] = []bson.M{{"from": address}, {"to": address}, {"signers": bson.M{"$elemMatch": bson.M{"addr_bech32": address}}}}
 	var typeArr []string
@@ -477,7 +477,7 @@ func (service *TxService) GetTxAttachedFields(candidateAddrMap *map[string]docum
 	}
 }
 
-func (service *TxService) buildData(txs []document.CommonTx) []interface{} {
+func (service *TxService) buildData(txs []utils.CommonTx) []interface{} {
 	var txList []interface{}
 
 	if len(txs) == 0 {
@@ -539,7 +539,7 @@ func (service *TxService) buildData(txs []document.CommonTx) []interface{} {
 	return txList
 }
 
-func (service *TxService) buildTx(tx document.CommonTx, blackListP *map[string]document.BlackList,
+func (service *TxService) buildTx(tx utils.CommonTx, blackListP *map[string]document.BlackList,
 	candidateAddrMapP *map[string]document.Candidate, govTxMsgHashMapP *map[string]document.TxMsg, govProposalIdMapP *map[uint64]document.Proposal) interface{} {
 
 	switch types.Convert(tx.Type) {
@@ -677,7 +677,7 @@ func (service *TxService) buildTx(tx document.CommonTx, blackListP *map[string]d
 	return nil
 }
 
-func buildBaseTx(tx document.CommonTx) model.BaseTx {
+func buildBaseTx(tx utils.CommonTx) model.BaseTx {
 	res := model.BaseTx{
 		Hash:        tx.TxHash,
 		BlockHeight: tx.Height,
