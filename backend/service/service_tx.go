@@ -517,7 +517,7 @@ func (service *TxService) buildData(txs []document.CommonTx) []interface{} {
 		if stakeTx, ok := txResp.(model.StakeTx); ok {
 			switch stakeTx.Type {
 			case types.TxTypeWithdrawDelegatorReward:
-				stakeTx.From = tx.Tags["source-validator"]
+				stakeTx.From = tx.To
 				stakeTx.To = tx.Tags["withdraw-address"]
 				txResp = stakeTx
 			case types.TxTypeWithdrawDelegatorRewardsAll, types.TxTypeWithdrawValidatorRewardsAll:
