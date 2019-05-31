@@ -3,7 +3,7 @@ package document
 import "gopkg.in/mgo.v2/bson"
 
 const (
-	CollectionNmBlackList = "val_black_list"
+	CollectionNmBlackList = "ex_val_black_list"
 
 	BlackListFieldValAddr = "val_addr"
 )
