@@ -16,7 +16,7 @@
         </div>
       </div>
       <div class="pagination total_num" style='margin:0.2rem 0;'>
-        <span class="blocks_list_page_wrap_hash_var">{{count}} total</span>
+        <span class="blocks_list_page_wrap_hash_var">{{count}} Total</span>
         <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
         </b-pagination>
       </div>
@@ -139,10 +139,10 @@
                 moniker: Tools.formatString(item.description.moniker,15,'...'),
                 operatorAddress: item.operator_address,
                 commission: `${(item.commission.rate * 100).toFixed(2)} %`,
-                bondedToken: `${Number(item.tokens).toFixed(2)} ${Constant.CHAINNAME.toLocaleUpperCase()}`,
+                bondedToken: `${Tools.formatPriceToFixed(Number(item.tokens),2)} ${Constant.CHAINNAME.toLocaleUpperCase()}`,
                 uptime: `${(item.uptime * 100).toFixed(2)}%`,
                 votingPower: `${(item.voting_rate * 100).toFixed(4)}%`,
-                selfBond: `${Number(item.self_bond.match(/\d*(\.\d{0,4})?/)[0])} ${Constant.CHAINNAME.toLocaleUpperCase()}`,
+                selfBond: `${Tools.formatPriceToFixed(Number(item.self_bond.match(/\d*(\.\d{0,4})?/)[0]))} ${Constant.CHAINNAME.toLocaleUpperCase()}`,
                 delegatorNum: item.delegator_num,
                 bondHeight: item.bond_height,
                 unbondingHeight: item.unbonding_height && Number(item.unbonding_height) > 0 ? item.unbonding_height : '--',

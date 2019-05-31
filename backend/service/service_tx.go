@@ -3,6 +3,8 @@ package service
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/irisnet/explorer/backend/logger"
@@ -343,11 +345,11 @@ func (service *TxService) ParseCoinFlowFromAndTo(txType, from, to string) (strin
 	case types.TxTypeBeginRedelegate:
 		return from, to
 	case types.TxTypeWithdrawDelegatorReward:
-		return to, ""
+		return from, to
 	case types.TxTypeWithdrawDelegatorRewardsAll:
-		return "", ""
+		return from, to
 	case types.TxTypeWithdrawValidatorRewardsAll:
-		return "", ""
+		return from, to
 	case types.TxTypeStakeBeginUnbonding:
 		return to, from
 	default:
@@ -511,6 +513,26 @@ func (service *TxService) buildData(txs []document.CommonTx) []interface{} {
 
 	for _, tx := range txs {
 		txResp := txService.buildTx(tx, &blackList, &candidateAddrMap, &govTxMsgHashMap, &govProposalIdMap)
+
+		if stakeTx, ok := txResp.(model.StakeTx); ok {
+			switch stakeTx.Type {
+			case types.TxTypeWithdrawDelegatorReward:
+				stakeTx.From = tx.To
+				stakeTx.To = tx.Tags["withdraw-address"]
+				txResp = stakeTx
+			case types.TxTypeWithdrawDelegatorRewardsAll, types.TxTypeWithdrawValidatorRewardsAll:
+				stakeTx.To = tx.Tags["withdraw-address"]
+				sourceTotal := 0
+				for k, _ := range tx.Tags {
+					if strings.HasPrefix(k, "withdraw-reward-from-validator-") {
+						sourceTotal++
+					}
+				}
+				stakeTx.From = strconv.Itoa(sourceTotal)
+				txResp = stakeTx
+			}
+		}
+
 		txList = append(txList, txResp)
 	}
 
@@ -593,11 +615,12 @@ func (service *TxService) buildTx(tx document.CommonTx, blackListP *map[string]d
 		return model.StakeTx{
 			TransTx: model.TransTx{
 				BaseTx: buildBaseTx(tx),
+				Amount: tx.Amount,
 				From:   tx.From,
 				To:     tx.To,
-				Amount: tx.Amount,
 			},
 		}
+
 	case types.Gov:
 		govTx := model.GovTx{
 			BaseTx:     buildBaseTx(tx),
