@@ -26,12 +26,19 @@
           </div>
         </span>
         </template>
+        <template slot='bondedToken' slot-scope='data'>
+        <span>{{formatToken(data.item.bondedToken)}}</span>
+        </template>
+        <template slot='selfBond' slot-scope='data'>
+          <span>{{formatSelfBond(data.item.selfBond)}}</span>
+        </template>
       </b-table>
     </div>
 </template>
 
 <script>
     import Tools from '../../util/Tools';
+    import Constant from "../../constant/Constant"
     export default {
         name: "ValidatorListTable",
         watch: {
@@ -166,6 +173,12 @@
         methods: {
             formatAddress(address){
                 return Tools.formatValidatorAddress(address)
+            },
+            formatToken(token){
+              return `${Tools.formatPriceToFixed(token,2)} ${Constant.CHAINNAME.toLocaleUpperCase()}`
+            },
+            formatSelfBond(selfBondToken){
+              return `${Tools.formatPriceToFixed(selfBondToken,4)} ${Constant.CHAINNAME.toLocaleUpperCase()}`
             },
             setValidatorFields(validatorList){
                 validatorList.forEach(item => {
