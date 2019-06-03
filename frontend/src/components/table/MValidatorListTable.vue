@@ -158,17 +158,14 @@ export default {
         },
         {
           title: 'Unbonding_Height',
-          key: 'bondHeight',
+          key: 'unbondingHeight',
           sortable: true,
-          sortMethod: this.sortMethodNumber('bondHeight'),
+          sortMethod: this.sortMethodNumber('unbondingHeight'),
           className: 'text_right'
         },
         {
           title: 'Unbonding_Time',
-          key: 'bondHeight',
-          sortable: true,
-          sortMethod: this.sortMethodNumber('bondHeight'),
-          className: 'text_right'
+          key: 'unbondingTime'
         }
       ],
       candidateValidatorFields: [
@@ -212,25 +209,22 @@ export default {
           className: 'text_right'
         },
         {
-          title: 'Bond Height',
+          title: 'Bond_Height',
           key: 'bondHeight',
           sortable: true,
           sortMethod: this.sortMethodNumber('bondHeight'),
           className: 'text_right'
         },
         {
-          title: 'Unbonding Height',
-          key: 'bondHeight',
+          title: 'Unbonding_Height',
+          key: 'unbondingHeight',
           sortable: true,
-          sortMethod: this.sortMethodNumber('bondHeight'),
+          sortMethod: this.sortMethodNumber('unbondingHeight'),
           className: 'text_right'
         },
         {
-          title: 'Unbonding Time',
-          key: 'bondHeight',
-          sortable: true,
-          sortMethod: this.sortMethodNumber('bondHeight'),
-          className: 'text_right'
+          title: 'Unbonding_Time',
+          key: 'unbondingTime'
         }
       ]
     }
