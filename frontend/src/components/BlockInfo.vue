@@ -248,7 +248,7 @@
                         this.blockHashValue = result.block_hash;
                         this.proposerValue = result.propopser_moniker ? result.propopser_moniker : '--';
                         this.proposerAddress = result.propopser_addr;
-                        this.inflationValue = result.mint_coin.denom !== '' ? `${Tools.convertScientificNotation2Number(Tools.formatNumber(result.mint_coin.amount))} ${Tools.formatDenom(result.mint_coin.denom)}` : '--';
+                        this.inflationValue = result.mint_coin.denom !== '' ? `${Tools.formatPriceToFixed(Tools.convertScientificNotation2Number(Tools.formatNumber(result.mint_coin.amount)))} ${Tools.formatDenom(result.mint_coin.denom)}` : '--';
                         this.precommitValidatorsValue = result.validator_num !== 0 ? result.validator_num : '--';
                         this.getMaxBlock(result.latest_height)
                     } else {

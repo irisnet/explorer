@@ -81,7 +81,10 @@
         </span>
       </template>
       <template slot='From' slot-scope='data'>
-        <span class="skip_route" style="display: flex" v-if="data.item.From !== '--'">
+         <span v-if="(/^[1-9]\d*$/).test(data.item.From)" class="skip_route">
+           <router-link :to="`/tx?txHash=${data.item.Tx_Hash}`">{{data.item.From}} Validators</router-link>
+        </span>
+        <span class="skip_route" style="display: flex" v-if="!(/^[0-9]\d*$/).test(data.item.From) && data.item.From !== '--'">
           <div class="name_address">
             <span class="remove_default_style">
               <router-link :to="`/address/1/${data.item.From}`" class="link_style justify">{{formatAddress(data.item.From)}}</router-link>
@@ -89,7 +92,7 @@
             <span class="address">{{data.item.From}}</span>
           </div>
         </span>
-        <span class="no_skip" v-show="data.item.From === '--'">--</span>
+        <span class="no_skip" v-show="(/^[0]\d*$/).test(data.item.From) || data.item.From === '--'">--</span>
       </template>
       <template slot='To' slot-scope='data'>
         <span class="skip_route" style="display: flex" v-if="data.item.To !== '--'">

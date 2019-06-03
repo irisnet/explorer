@@ -270,7 +270,7 @@
               this.status = data.Status ? Tools.firstWordUpperCase(data.Status): '--';
               if(data.Amount && data.Amount.length !==0){
                 this.amountValue = data.Amount.map(item=>{
-                  item.amount = Tools.convertScientificNotation2Number(Tools.formatNumber(item.amount));
+                  item.amount =Tools.formatPriceToFixed(Tools.convertScientificNotation2Number(Tools.formatNumber(item.amount)));
                   if(!item.denom){
                     return `${item.amount} SHARES`;
                   }else{
@@ -278,7 +278,7 @@
                   }
                 }).join(',') ;
               }else if(data.Amount && Object.keys(data.Amount).includes('amount') && Object.keys(data.Amount).includes('denom')){
-                data.Amount =  Tools.convertScientificNotation2Number(Tools.formatNumber(data.Amount.amount));
+                data.Amount =  Tools.formatPriceToFixed(Tools.convertScientificNotation2Number(Tools.formatNumber(data.Amount.amount)));
                 this.amountValue = `${data.Amount.amount} ${Tools.formatDenom(data.Amount.denom).toUpperCase()}`
               }else {
                 this.amountValue = "--"
@@ -296,7 +296,7 @@
                 this.website = data.Website ? data.Website : '--';
                 this.details = data.Details ? data.Details : '--';
                 if(data.SelfBond && data.SelfBond.length !== 0){
-                  this.selfBond = `${Tools.convertScientificNotation2Number(Tools.formatNumber(data.SelfBond[0].amount))} ${Tools.formatDenom(data.SelfBond[0].denom).toUpperCase()}`;
+                  this.selfBond = `${Tools.formatPriceToFixed(Tools.convertScientificNotation2Number(Tools.formatNumber(data.SelfBond[0].amount)))} ${Tools.formatDenom(data.SelfBond[0].denom).toUpperCase()}`;
                 }else {
                   this.selfBond = "--"
                 }
