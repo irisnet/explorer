@@ -10,7 +10,11 @@
     <div :class="blocksListPageWrap" :style="{'margin-top':`${blocksListPageWrap === 'personal_computer_blocks_list_page_wrap' ? '0.61rem' : '0'}`}">
       <div style="overflow-x: auto;-webkit-overflow-scrolling:touch;">
         <spin-component :showLoading="showLoading"/>
-        <validator-list-table :items="items" :minWidth="tableMinWidth" :showNoData="showNoData"></validator-list-table>
+        <!-- <validator-list-table :items="items" :minWidth="tableMinWidth" :showNoData="showNoData"></validator-list-table> -->
+        <m-validator-list-table ref="mtable"
+                                  :items="items"
+                                  :minWidth="tableMinWidth"
+                                  :showNoData="showNoData"></m-validator-list-table>
         <div v-show="showNoData" class="no_data_show">
           No Data
         </div>
@@ -30,10 +34,13 @@
   import Service from "../util/axios"
   import SpinComponent from './commonComponents/SpinComponent';
   import ValidatorListTable from "./table/ValidatorListTable";
+  import MValidatorListTable from "./table/MValidatorListTable";
+
   export default {
     components:{
       ValidatorListTable,
       SpinComponent,
+      MValidatorListTable
     },
     watch: {
       currentPage(currentPage) {
@@ -69,7 +76,7 @@
         showNoData:false,//是否显示列表的无数据
         showLoading:false,
         innerWidth : window.innerWidth,
-        tableMinWidth:'',
+        tableMinWidth: 0,
         listTitleName:"",
         validatorTabIndex: localStorage.getItem('validatorTabIndex') ? localStorage.getItem('validatorTabIndex') : 0,
         validatorStatusTitleList:[
@@ -154,24 +161,27 @@
             this.showNoData = false;
           }else {
             this.showNoData = true;
-            this.items = [{
-              validatorStatus: status,
-              moniker: "",
-              operatorAddress: "",
-              commission: "",
-              bondedToken: "",
-              votingPower: "",
-              uptime: "",
-              selfBond: "",
-              delegatorNum:"",
-              bondHeight: "",
-              identity: "",
-            }]
+            this.items = [];
+            // this.items = [{
+            //   validatorStatus: status,
+            //   moniker: "",
+            //   operatorAddress: "",
+            //   commission: "",
+            //   bondedToken: "",
+            //   votingPower: "",
+            //   uptime: "",
+            //   selfBond: "",
+            //   delegatorNum:"",
+            //   bondHeight: "",
+            //   identity: "",
+            // }]
           }
           this.showLoading = false;
+          this.$refs.mtable && this.$refs.mtable.setValidatorField(status);
         }).catch(e =>{
           this.showLoading = false;
           this.showNoData = true;
+          this.$refs.mtable && this.$refs.mtable.setValidatorField(status);
           console.log(e)
         });
       },
