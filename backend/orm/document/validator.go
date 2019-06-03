@@ -1,8 +1,10 @@
 package document
 
 import (
-	"gopkg.in/mgo.v2/bson"
 	"time"
+
+	"github.com/irisnet/explorer/backend/orm"
+	"gopkg.in/mgo.v2/bson"
 )
 
 const (
@@ -34,6 +36,22 @@ type Validator struct {
 	VotingPower     int64         `bson:"voting_power" json:"voting_power"`
 }
 
+func (v Validator) GetValidatorList() ([]Validator, error) {
+	var validatorsDocArr []Validator
+	var selector = bson.M{"description.moniker": 1, "operator_address": 1, "consensus_pubkey": 1, "proposer_addr": 1}
+	err := queryAll(CollectionNmValidator, selector, nil, "", 0, &validatorsDocArr)
+
+	return validatorsDocArr, err
+}
+
+func (v Validator) GetValidatorByProposerAddr(addr string) (Validator, error) {
+
+	var selector = bson.M{"description.moniker": 1, "operator_address": 1}
+	err := queryOne(CollectionNmValidator, selector, bson.M{"proposer_addr": addr}, &v)
+
+	return v, err
+}
+
 type Description struct {
 	Moniker  string `bson:"moniker" json:"moniker"`
 	Identity string `bson:"identity" json:"identity"`
@@ -53,4 +71,16 @@ func (v Validator) Name() string {
 
 func (v Validator) PkKvPair() map[string]interface{} {
 	return bson.M{"operator_address": v.OperatorAddress}
+}
+
+func (_ Validator) GetAllValidator() ([]Validator, error) {
+	var validators []Validator
+	var query = orm.NewQuery()
+	defer query.Release()
+	query.SetCollection(CollectionNmValidator).
+		SetResult(&validators)
+
+	err := query.Exec()
+
+	return validators, err
 }

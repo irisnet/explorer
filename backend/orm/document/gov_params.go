@@ -1,7 +1,9 @@
 package document
 
 import (
+	"github.com/irisnet/explorer/backend/orm"
 	"gopkg.in/mgo.v2/bson"
+	"gopkg.in/mgo.v2/txn"
 )
 
 const (
@@ -41,4 +43,15 @@ func (g GovParams) Name() string {
 
 func (g GovParams) PkKvPair() map[string]interface{} {
 	return bson.M{GovParamsFieldModule: g.Module, GovParamsFieldKey: g.Key}
+}
+
+func (_ GovParams) QueryAll() ([]GovParams, error) {
+
+	var params []GovParams
+	err := queryAll(CollectionNmGovParams, nil, nil, desc(GovParamsFieldModule), 0, &params)
+	return params, err
+}
+
+func (_ GovParams) Batch(txs []txn.Op) error {
+	return orm.Batch(txs)
 }

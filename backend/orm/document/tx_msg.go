@@ -36,3 +36,28 @@ func (m TxMsg) Name() string {
 func (m TxMsg) PkKvPair() map[string]interface{} {
 	return bson.M{TxMsg_Field_Hash: m.Hash}
 }
+
+func (_ TxMsg) QueryTxMsgListByHashList(hashList []string) ([]TxMsg, error) {
+
+	selector := bson.M{
+		TxMsg_Field_Hash:    1,
+		TxMsg_Field_Content: 1,
+		TxMsg_Field_Type:    1,
+	}
+	condition := bson.M{
+		TxMsg_Field_Hash: bson.M{"$in": hashList},
+	}
+
+	txMsgs := make([]TxMsg, 0, len(hashList))
+
+	err := queryAll(CollectionNmTxMsg, selector, condition, "", 0, &txMsgs)
+
+	return txMsgs, err
+}
+
+func (_ TxMsg) QueryTxMsgByHash(hash string) (TxMsg, error) {
+	dbm := getDb()
+	var res TxMsg
+	err := dbm.C(CollectionNmTxMsg).Find(bson.M{TxMsg_Field_Hash: hash}).One(&res)
+	return res, err
+}

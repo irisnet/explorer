@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/irisnet/explorer/backend/utils"
+	"gopkg.in/mgo.v2/bson"
 )
 
 type MsgSubmitProposal struct {
@@ -54,7 +55,7 @@ type TxStatisticsVo struct {
 	StakeCnt       int
 	DeclarationCnt int
 	GovCnt         int
-	Data           []utils.CommonTx
+	Data           []CommonTx
 }
 
 type TxNumGroupByDayVo struct {
@@ -170,4 +171,72 @@ type RecentTx struct {
 	Time   time.Time  `json:"time"`
 	TxHash string     `json:"tx_hash"`
 	Type   string     `json:"type"`
+}
+
+type Signer struct {
+	AddrHex    string `bson:"addr_hex"`
+	AddrBech32 string `bson:"addr_bech32"`
+}
+
+type CommonTx struct {
+	Time       time.Time         `bson:"time"`
+	Height     int64             `bson:"height"`
+	TxHash     string            `bson:"tx_hash"`
+	From       string            `bson:"from"`
+	To         string            `bson:"to"`
+	Amount     utils.Coins       `bson:"amount"`
+	Type       string            `bson:"type"`
+	Fee        utils.Fee         `bson:"fee"`
+	Memo       string            `bson:"memo"`
+	Status     string            `bson:"status"`
+	Code       uint32            `bson:"code"`
+	Log        string            `bson:"log"`
+	GasUsed    int64             `bson:"gas_used"`
+	GasPrice   float64           `bson:"gas_price"`
+	ActualFee  utils.ActualFee   `bson:"actual_fee"`
+	ProposalId uint64            `bson:"proposal_id"`
+	Tags       map[string]string `bson:"tags"`
+
+	StakeCreateValidator StakeCreateValidator `bson:"stake_create_validator"`
+	StakeEditValidator   StakeEditValidator   `bson:"stake_edit_validator"`
+	Msg                  Msg                  `bson:"-"`
+	Signers              []Signer             `bson:"signers"`
+}
+
+type Msg interface {
+	Type() string
+	String() string
+}
+
+type StakeCreateValidator struct {
+	PubKey      string         `bson:"pub_key"`
+	Description ValDescription `bson:"description"`
+}
+
+type StakeEditValidator struct {
+	Description ValDescription `bson:"description"`
+}
+
+// Description
+type ValDescription struct {
+	Moniker  string `bson:"moniker"`
+	Identity string `bson:"identity"`
+	Website  string `bson:"website"`
+	Details  string `bson:"details"`
+}
+
+func (tx CommonTx) PrintHashTypeFromToAmount() string {
+
+	return fmt.Sprintf(`
+	hash:   %v
+	type:   %v
+	from:   %v
+	to:     %v
+	amount: %v
+		`, tx.TxHash, tx.Type, tx.From, tx.To, tx.Amount)
+}
+
+type CountVo struct {
+	Id    bson.ObjectId `bson:"_id,omitempty"`
+	Count float64
 }

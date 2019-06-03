@@ -2,6 +2,7 @@ package document
 
 import (
 	"github.com/irisnet/explorer/backend/utils"
+	"github.com/irisnet/irishub-sync/logger"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -40,4 +41,35 @@ func (d Delegator) Name() string {
 
 func (d Delegator) PkKvPair() map[string]interface{} {
 	return bson.M{Delegator_Field_Addres: d.Address, Delegator_Field_ValidatorAddr: d.ValidatorAddr}
+}
+
+func (_ Delegator) GetValidatorTokenAndSelfBond(addr string) (string, string, error) {
+
+	validator := Validator{}
+	selector := bson.M{
+		"tokens":    1,
+		"self_bond": 1}
+	err := queryOne(CollectionNmValidator, selector, bson.M{ValidatorFieldOperatorAddress: addr}, &validator)
+	if err != nil {
+		logger.Error("validator not found", logger.Any("err", err.Error()))
+		return "", "", err
+	}
+	return validator.Tokens, validator.SelfBond, err
+}
+
+func (_ Delegator) GetDepositValidator(valAddrArr []string) ([]Validator, error) {
+	validators := []Validator{}
+	selector := bson.M{
+		ValidatorFieldOperatorAddress: 1,
+		"tokens":                      1,
+		"delegator_shares":            1}
+	condition := bson.M{
+		ValidatorFieldOperatorAddress: bson.M{"$in": valAddrArr},
+	}
+	err := queryAll(CollectionNmValidator, selector, condition, "", 0, &validators)
+	if err != nil {
+		logger.Error("validator not found", logger.Any("err", err.Error()))
+		return nil, err
+	}
+	return validators, nil
 }

@@ -3,16 +3,16 @@ package service
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/irisnet/explorer/backend/lcd"
-	"github.com/irisnet/explorer/backend/orm"
-	"github.com/irisnet/explorer/backend/orm/document"
-	"github.com/irisnet/explorer/backend/utils"
-	"gopkg.in/mgo.v2/bson"
-	"gopkg.in/mgo.v2/txn"
 	"os"
 	"strconv"
 	"testing"
 	"time"
+
+	"github.com/irisnet/explorer/backend/lcd"
+	"github.com/irisnet/explorer/backend/orm/document"
+	"github.com/irisnet/explorer/backend/utils"
+	"gopkg.in/mgo.v2/bson"
+	"gopkg.in/mgo.v2/txn"
 )
 
 var genesis GenesisDoc
@@ -127,7 +127,10 @@ func TestInitAccountFromGenesisFile(t *testing.T) {
 			},
 		})
 	}
-	if err := orm.Batch(ops); err != nil {
+
+	err := document.Account{}.Batch(ops)
+
+	if err != nil {
 		fmt.Println(err)
 	}
 }

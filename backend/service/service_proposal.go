@@ -5,11 +5,8 @@ import (
 
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
-	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
-	"github.com/irisnet/explorer/backend/utils"
-	"gopkg.in/mgo.v2/bson"
 )
 
 type ProposalService struct {
@@ -24,19 +21,10 @@ func (service *ProposalService) QueryProposalsByHeight(height int64) []model.Pro
 
 	resp := []model.ProposalInfoVo{}
 
-	var query = orm.NewQuery()
-	defer query.Release()
-
-	var data []utils.CommonTx
-
-	var selector = bson.M{"proposal_id": 1, "type": 1, "from": 1}
-
-	query.SetCollection(document.CollectionNmCommonTx).
-		SetSelector(selector).
-		SetCondition(bson.M{document.Tx_Field_Height: height, document.Tx_Field_Type: "SubmitProposal"}).
-		SetResult(&data)
-	if err := query.Exec(); err != nil {
+	data, err := document.Proposal{}.QuerySubmitProposalByHeight(height)
+	if err != nil {
 		logger.Error("query proposal err", logger.String("error", err.Error()), service.GetTraceLog())
+		return resp
 	}
 
 	for _, v := range data {
@@ -47,41 +35,37 @@ func (service *ProposalService) QueryProposalsByHeight(height int64) []model.Pro
 }
 
 func (service *ProposalService) QueryList(page, size int) (resp model.PageVo) {
-	var data []document.Proposal
-	sort := desc(document.Proposal_Field_SubmitTime)
-	if cnt, err := pageQuery(document.CollectionNmProposal, nil, nil, sort, page, size, &data); err == nil {
-		var proposals []model.Proposal
-		for _, propo := range data {
-			mP := model.Proposal{
-				Title:           propo.Title,
-				ProposalId:      propo.ProposalId,
-				Type:            propo.Type,
-				Description:     propo.Description,
-				Status:          propo.Status,
-				SubmitTime:      propo.SubmitTime.UTC(),
-				DepositEndTime:  propo.DepositEndTime.UTC(),
-				VotingStartTime: propo.VotingStartTime.UTC(),
-				VotingEndTime:   propo.VotingEndTime.UTC(),
-				TotalDeposit:    propo.TotalDeposit,
-			}
-			proposals = append(proposals, mP)
-		}
-		resp.Data = proposals
-		resp.Count = cnt
+	total, data, err := document.Proposal{}.QueryByPage(page, size)
+	if err != nil {
+		logger.Error("query proposal by page", logger.String("err", err.Error()))
+		panic(types.CodeNotFound)
 	}
+
+	var proposals []model.Proposal
+	for _, propo := range data {
+		mP := model.Proposal{
+			Title:           propo.Title,
+			ProposalId:      propo.ProposalId,
+			Type:            propo.Type,
+			Description:     propo.Description,
+			Status:          propo.Status,
+			SubmitTime:      propo.SubmitTime.UTC(),
+			DepositEndTime:  propo.DepositEndTime.UTC(),
+			VotingStartTime: propo.VotingStartTime.UTC(),
+			VotingEndTime:   propo.VotingEndTime.UTC(),
+			TotalDeposit:    propo.TotalDeposit,
+		}
+		proposals = append(proposals, mP)
+	}
+	resp.Data = proposals
+	resp.Count = total
 	return resp
 }
 
 func (service *ProposalService) Query(id int) (resp model.ProposalInfoVo) {
-	var query = orm.NewQuery()
-	defer query.Release()
 
-	var data document.Proposal
-	query.SetCollection(document.CollectionNmProposal).
-		SetCondition(bson.M{document.Proposal_Field_ProposalId: id}).
-		SetResult(&data)
-
-	if err := query.Exec(); err != nil {
+	data, err := document.Proposal{}.QueryProposalById(id)
+	if err != nil {
 		panic(types.CodeNotFound)
 	}
 
@@ -98,21 +82,19 @@ func (service *ProposalService) Query(id int) (resp model.ProposalInfoVo) {
 		TotalDeposit:    data.TotalDeposit,
 	}
 
-	var tx utils.CommonTx
-	query.Reset().SetCollection(document.CollectionNmCommonTx).
-		SetCondition(bson.M{document.Tx_Field_Type: types.TxTypeSubmitProposal, document.Proposal_Field_ProposalId: id}).
-		SetResult(&tx)
-	if err := query.Exec(); err == nil {
-		proposal.Proposer = tx.From
-		proposal.TxHash = tx.TxHash
+	from, to, err := document.Proposal{}.QueryTxFromToByTypeAndProposalId(id)
+
+	if err != nil {
+		logger.Error("query tx by proposal type and id ", logger.String("err", err.Error()))
 	}
+	proposal.Proposer = from
+	proposal.TxHash = to
 
 	if proposal.Type == "ParameterChange" || proposal.Type == "SoftwareUpgrade" {
-		var txMsg document.TxMsg
-		query.Reset().SetCollection(document.CollectionNmTxMsg).
-			SetCondition(bson.M{document.TxMsg_Field_Hash: proposal.TxHash}).
-			SetResult(&txMsg)
-		if err := query.Exec(); err == nil {
+		txMsg, err := document.TxMsg{}.QueryTxMsgByHash(proposal.TxHash)
+		if err != nil {
+			logger.Error("query tx msg by hash ", logger.String("err", err.Error()))
+		} else {
 			var msg model.MsgSubmitSoftwareUpgradeProposal
 			if err := json.Unmarshal([]byte(txMsg.Content), &msg); err == nil {
 				proposal.Parameters = msg.Params
@@ -150,20 +132,4 @@ func (service *ProposalService) Query(id int) (resp model.ProposalInfoVo) {
 	resp.Votes = votes
 	resp.Result = result
 	return
-}
-
-func (service *ProposalService) QueryTypeAndTitleByIds(ids []uint64) ([]document.Proposal, error) {
-
-	proposalDocArr := []document.Proposal{}
-	selector := bson.M{
-		document.Proposal_Field_ProposalId: 1,
-		document.Proposal_Field_Title:      1,
-		document.Proposal_Field_Type:       1,
-	}
-	condition := bson.M{
-		document.Proposal_Field_ProposalId: bson.M{"$in": ids},
-	}
-	err := queryAll(document.CollectionNmProposal, selector, condition, "", 0, &proposalDocArr)
-
-	return proposalDocArr, err
 }

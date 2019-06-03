@@ -1,6 +1,9 @@
 package document
 
-import "gopkg.in/mgo.v2/bson"
+import (
+	"github.com/irisnet/explorer/backend/orm"
+	"gopkg.in/mgo.v2/bson"
+)
 
 const (
 	CollectionNmBlackList = "ex_val_black_list"
@@ -22,4 +25,18 @@ func (d BlackList) Name() string {
 
 func (d BlackList) PkKvPair() map[string]interface{} {
 	return bson.M{BlackListFieldValAddr: d.OperatorAddr}
+}
+
+func (b BlackList) QueryBlackList() map[string]BlackList {
+
+	database := orm.NewQuery().GetDb()
+	var blackListStore = database.C(CollectionNmBlackList)
+	var blackList []BlackList
+	var blackListMap = make(map[string]BlackList)
+	if err := blackListStore.Find(nil).All(&blackList); err == nil {
+		for _, v := range blackList {
+			blackListMap[v.OperatorAddr] = v
+		}
+	}
+	return blackListMap
 }

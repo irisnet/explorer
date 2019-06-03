@@ -1,6 +1,7 @@
 package document
 
 import (
+	"github.com/irisnet/explorer/backend/orm"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -26,4 +27,14 @@ func (a Config) Name() string {
 
 func (a Config) PkKvPair() map[string]interface{} {
 	return bson.M{Account_Field_EnvNm: a.EnvNm}
+}
+
+func (_ Config) GetConfig() ([]Config, error) {
+
+	var configs []Config
+	var query = orm.NewQuery().
+		SetCollection(CollectionNmConfig).
+		SetResult(&configs)
+	err := query.Exec()
+	return configs, err
 }

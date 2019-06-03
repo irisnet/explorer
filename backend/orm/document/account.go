@@ -1,8 +1,10 @@
 package document
 
 import (
+	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
+	"gopkg.in/mgo.v2/txn"
 )
 
 const (
@@ -29,10 +31,28 @@ type Account struct {
 	UnbondingDelegationUpdateAt     int64      `bson:"unbonding_delegation_update_at"`
 }
 
+func (a Account) GetAccountList() ([]Account, error) {
+	var result []Account
+
+	var query = orm.NewQuery()
+	defer query.Release()
+
+	query.SetCollection(CollectionNmAccount).
+		SetSort(desc("total.amount"), AccountFieldTotalUpdateAt, AccountFieldAccountNumber).
+		SetSize(100).
+		SetResult(&result)
+	err := query.Exec()
+	return result, err
+}
+
 func (a Account) Name() string {
 	return CollectionNmAccount
 }
 
 func (a Account) PkKvPair() map[string]interface{} {
 	return bson.M{AccountFieldAddress: a.Address}
+}
+
+func (a Account) Batch(txs []txn.Op) error {
+	return orm.Batch(txs)
 }

@@ -3,17 +3,14 @@ package service
 import (
 	"strconv"
 	"sync"
-	"time"
 
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
-	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
-	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/txn"
 )
@@ -29,51 +26,24 @@ func (service *CandidateService) GetModule() Module {
 func (service *CandidateService) GetValidators(typ, origin string, page, size int) interface{} {
 	if origin == "browser" {
 		var result []lcd.ValidatorVo
-		var query = orm.NewQuery()
-		defer query.Release()
-		var blackList = service.QueryBlackList(query.GetDb())
-		var validators []document.Validator
-		condition := bson.M{}
-		switch typ {
-		case types.RoleValidator:
-			condition[document.ValidatorFieldJailed] = false
-			condition[document.ValidatorFieldStatus] = types.Bonded
-			break
-		case types.RoleCandidate:
-			condition[document.ValidatorFieldJailed] = false
-			condition[document.Candidate_Field_Status] = bson.M{
-				"$in": []int{types.Unbonded, types.Unbonding},
-			}
-			break
-		case types.RoleJailed:
-			condition[document.ValidatorFieldJailed] = true
-			break
-		default:
-		}
+		var blackList = service.QueryBlackList()
 
-		query.SetCollection(document.CollectionNmValidator).
-			SetCondition(condition).
-			SetSort(desc(document.ValidatorFieldVotingPower)).
-			SetPage(page).
-			SetSize(size).
-			SetResult(&validators)
+		total, validatorList, err := document.Candidate{}.GetValidatorListByPage(typ, page, size)
 
-		count, err := query.ExecPage()
-
-		if err != nil || count <= 0 {
+		if err != nil || total <= 0 {
 			panic(types.CodeNotFound)
 		}
 
 		var totalVotingPower = getTotalVotingPower()
-		for i, v := range validators {
+		for i, v := range validatorList {
 			if desc, ok := blackList[v.OperatorAddress]; ok {
-				validators[i].Description.Moniker = desc.Moniker
-				validators[i].Description.Identity = desc.Identity
-				validators[i].Description.Website = desc.Website
-				validators[i].Description.Details = desc.Details
+				validatorList[i].Description.Moniker = desc.Moniker
+				validatorList[i].Description.Identity = desc.Identity
+				validatorList[i].Description.Website = desc.Website
+				validatorList[i].Description.Details = desc.Details
 			}
 			var validator lcd.ValidatorVo
-			if err := utils.Copy(validators[i], &validator); err != nil {
+			if err := utils.Copy(validatorList[i], &validator); err != nil {
 				panic(types.CodeSysFailed)
 			}
 			validator.VotingRate = float32(v.VotingPower) / float32(totalVotingPower)
@@ -82,9 +52,10 @@ func (service *CandidateService) GetValidators(typ, origin string, page, size in
 
 		return model.PageVo{
 			Data:  result,
-			Count: count,
+			Count: total,
 		}
 	}
+
 	return service.queryValForRainbow(typ, page, size)
 }
 
@@ -93,9 +64,8 @@ func (service *CandidateService) GetValidator(address string) lcd.ValidatorVo {
 	if err != nil {
 		panic(types.CodeNotFound)
 	}
-	var query = orm.NewQuery()
-	defer query.Release()
-	var blackList = service.QueryBlackList(query.GetDb())
+
+	var blackList = service.QueryBlackList()
 	if desc, ok := blackList[validator.OperatorAddress]; ok {
 		validator.Description.Moniker = desc.Moniker
 		validator.Description.Identity = desc.Identity
@@ -106,22 +76,12 @@ func (service *CandidateService) GetValidator(address string) lcd.ValidatorVo {
 }
 
 func (service *CandidateService) QueryValidatorByConAddr(address string) document.Candidate {
-	var query = orm.NewQuery()
-	defer query.Release()
 
-	var result document.Candidate
-	condition := bson.M{}
-	condition[document.Candidate_Field_PubKeyAddr] = address
-
-	query.SetCollection(document.CollectionNmStakeRoleCandidate).
-		SetResult(&result).
-		SetCondition(condition).
-		SetSize(1)
-
-	if err := query.Exec(); err != nil {
+	candadate, err := document.Candidate{}.QueryValidatorByConsensusAddr(address)
+	if err != nil {
 		logger.Error("not found validator by conAddr", logger.String("conAddr", address))
 	}
-	return result
+	return candadate
 }
 
 func (service *CandidateService) QueryCandidate(address string) model.CandidatesInfoVo {
@@ -132,14 +92,11 @@ func (service *CandidateService) QueryCandidate(address string) model.Candidates
 		panic(types.CodeNotFound)
 	}
 
-	var query = orm.NewQuery()
-	defer query.Release()
-
 	var moniker = validator.Description.Moniker
 	var identity = validator.Description.Identity
 	var website = validator.Description.Website
 	var details = validator.Description.Details
-	var blackList = service.QueryBlackList(query.GetDb())
+	var blackList = service.QueryBlackList()
 	if desc, ok := blackList[validator.OperatorAddress]; ok {
 		moniker = desc.Moniker
 		identity = desc.Identity
@@ -165,64 +122,32 @@ func (service *CandidateService) QueryCandidate(address string) model.Candidates
 		Rate: validator.Commission.Rate,
 	}
 
-	condition := bson.M{}
-	condition[document.Candidate_Field_Jailed] = false
-	condition[document.Candidate_Field_Status] = types.TypeValStatusBonded
-
-	var count model.CountVo
-	query.Reset().
-		SetResult(&count).
-		SetCollection(document.CollectionNmStakeRoleCandidate)
-	query.PipeQuery([]bson.M{
-		{"$match": condition},
-		{"$group": bson.M{
-			"_id":   document.Candidate_Field_VotingPower,
-			"count": bson.M{"$sum": "$tokens"},
-		}},
-	})
-	power := strconv.FormatFloat(count.Count, 'f', 10, 64)
 	result := model.CandidatesInfoVo{
-		PowerAll:  getVotingPowerFromToken(power),
 		Validator: val,
 	}
+	count, err := document.Candidate{}.QueryPowerWithBonded()
+
+	if err != nil {
+		logger.Error("query candidate power with bonded ", logger.String("err", err.Error()))
+		return result
+	}
+
+	result.PowerAll = getVotingPowerFromToken(strconv.FormatFloat(count, 'f', 10, 64))
 	return result
 }
 
 func (service *CandidateService) QueryCandidatesTopN() model.ValDetailVo {
-	var candidates []document.Candidate
-	var query = orm.NewQuery()
-	defer query.Release()
 
-	condition := bson.M{}
-	condition[document.Candidate_Field_Jailed] = false
-	condition[document.Candidate_Field_Status] = types.TypeValStatusBonded
+	candidateList, power, upTimeMap, err := document.Candidate{}.GetCandidatesTopN()
 
-	query.SetCollection(document.CollectionNmStakeRoleCandidate).
-		SetCondition(condition).
-		SetSort(desc(document.Candidate_Field_VotingPower)).SetSize(10).
-		SetResult(&candidates)
-	if err := query.Exec(); err != nil {
+	if err != nil {
 		panic(types.CodeNotFound)
 	}
 
-	var allPower model.CountVo
-	query.SetResult(&allPower)
-	query.PipeQuery(
-		[]bson.M{
-			{"$match": condition},
-			{"$group": bson.M{
-				"_id":   document.Candidate_Field_VotingPower,
-				"count": bson.M{"$sum": "$tokens"},
-			}},
-		},
-	)
-
-	power := strconv.FormatFloat(allPower.Count, 'f', 10, 64)
-
 	var validators []model.Validator
-	var upTimeMap = getValUpTime(query)
-	for _, candidate := range candidates {
-		validator := service.convert(query.GetDb(), candidate)
+
+	for _, candidate := range candidateList {
+		validator := service.convert(candidate)
 		validator.Uptime = upTimeMap[candidate.PubKeyAddr]
 		validators = append(validators, validator)
 	}
@@ -233,106 +158,53 @@ func (service *CandidateService) QueryCandidatesTopN() model.ValDetailVo {
 	return resp
 }
 
-func (service *CandidateService) QueryCandidateUptime(address, category string) (result []model.UptimeChangeVo) {
-	db := getDb()
-	c := db.C(document.CollectionNmStakeRoleCandidate)
-	u := db.C(document.CollectionNmUptimeChange)
-	defer db.Session.Close()
-	var candidate document.Candidate
-	err := c.Find(bson.M{document.Candidate_Field_Address: address}).One(&candidate)
-	address = candidate.PubKeyAddr
+func (service *CandidateService) QueryCandidateUptime(address, category string) []model.UptimeChangeVo {
+
+	address, err := document.Candidate{}.GetCandidatePubKeyAddrByAddr(address)
+
 	if err != nil || address == "" {
 		panic(types.CodeNotFound)
 	}
 
 	switch category {
 	case "hour":
-		var upChanges []model.UptimeChangeVo
-		now := time.Now()
-		endTime := time.Date(now.Year(), now.Month(), now.Day(), now.Hour(), 0, 0, 0, now.Location())
-		d, _ := time.ParseDuration("-24h")
-		startTime := endTime.Add(d)
-		startStr := startTime.UTC().Format("2006-01-02 15")
-		endStr := endTime.UTC().Format("2006-01-02 15")
-		u.Find(bson.M{"address": address, "time": bson.M{"$gte": startStr, "$lt": endStr}}).All(&upChanges)
-		upChangeMap := make(map[string]float64)
-		for _, upChange := range upChanges {
-			upChangeMap[upChange.Time] = upChange.Uptime
+		resultAsDoc, err := document.Candidate{}.QueryCandidateUptimeWithHour(address)
+		if err != nil {
+			panic(types.CodeNotFound)
 		}
-		d1, _ := time.ParseDuration("1h")
-		for startTime.Before(endTime) {
-			startStr := startTime.UTC().Format("2006-01-02 15")
-			var uptime = float64(-1)
-			if _, ok := upChangeMap[startStr]; ok {
-				uptime = upChangeMap[startStr]
-			}
-			result = append(result, model.UptimeChangeVo{Address: address, Uptime: uptime, Time: startStr})
-			startTime = startTime.Add(d1)
-		}
-		break
-	case "week", "month":
-		var upChanges []model.ValUpTimeVo
-		agoStr := "-336h"
-		if category == "month" {
-			agoStr = "-720h"
-		}
-		now := time.Now()
-		endTime := now
-		d, _ := time.ParseDuration(agoStr)
-		startTime := endTime.Add(d)
-		startStr := startTime.Format("2006-01-02 15")
-		endStr := endTime.Format("2006-01-02 15")
-		pipe := u.Pipe(
-			[]bson.M{
-				{"$match": bson.M{
-					"address": address,
-					"time":    bson.M{"$gte": startStr, "$lt": endStr},
-				}},
-				{"$project": bson.M{
-					"day":    bson.M{"$substr": []interface{}{"$time", 0, 10}},
-					"uptime": "$uptime",
-				}},
-				{"$group": bson.M{
-					"_id":    "$day",
-					"uptime": bson.M{"$avg": "$uptime"},
-				}},
-				{"$sort": bson.M{
-					"_id": 1,
-				}},
-			},
-		)
-		err = pipe.All(&upChanges)
+		result := make([]model.UptimeChangeVo, 0, len(resultAsDoc))
 
-		upChangeMap := make(map[string]float64)
-		for _, upChange := range upChanges {
-			upChangeMap[upChange.Time] = upChange.Uptime
+		for _, v := range resultAsDoc {
+			result = append(result, model.UptimeChangeVo{
+				Address: v.Address,
+				Time:    v.Time,
+				Uptime:  v.Uptime,
+			})
 		}
-		d1, _ := time.ParseDuration("24h")
-		for startTime.Before(endTime) {
-			startStr := startTime.UTC().Format("2006-01-02")
-			var uptime = float64(-1)
-			if _, ok := upChangeMap[startStr]; ok {
-				uptime = upChangeMap[startStr]
-			}
-			result = append(result, model.UptimeChangeVo{Address: address, Uptime: uptime, Time: startStr})
-			startTime = startTime.Add(d1)
+
+		return result
+	case "week", "month":
+
+		resultAsDoc, err := document.Candidate{}.QueryCandidateUptimeByWeekOrMonth(address, category)
+		if err != nil {
+			panic(types.CodeNotFound)
 		}
+		result := make([]model.UptimeChangeVo, 0, len(resultAsDoc))
+
+		for _, v := range resultAsDoc {
+			result = append(result, model.UptimeChangeVo{
+				Address: v.Address,
+				Time:    v.Time,
+				Uptime:  v.Uptime,
+			})
+		}
+		return result
 	}
-	return result
+	return nil
 }
 
-func (service *CandidateService) QueryCandidatePower(address, category string) (result []model.ValVotingPowerChangeVo) {
-	db := getDb()
-	c := db.C(document.CollectionNmStakeRoleCandidate)
-	p := db.C(document.CollectionNmPowerChange)
-	defer db.Session.Close()
-	var candidate document.Candidate
-	err := c.Find(bson.M{document.Candidate_Field_Address: address}).One(&candidate)
-	address = candidate.PubKeyAddr
-	if err != nil || address == "" {
-		panic(types.CodeNotFound)
-	}
-	var powers []model.ValVotingPowerChangeVo
+func (service *CandidateService) QueryCandidatePower(address, category string) []model.ValVotingPowerChangeVo {
+
 	var agoStr string
 	switch category {
 	case "week":
@@ -345,61 +217,52 @@ func (service *CandidateService) QueryCandidatePower(address, category string) (
 		agoStr = "-1440h"
 		break
 	}
-	now := time.Now()
-	endTime := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
-	d, _ := time.ParseDuration(agoStr)
-	startTime := endTime.Add(d)
-	p.Find(bson.M{"address": address, "time": bson.M{"$gte": startTime, "$lt": endTime}}).All(&powers)
 
-	var power model.ValVotingPowerChangeVo
-	p.Find(bson.M{"address": address, "time": bson.M{"$lt": startTime}}).Sort("-time").One(&power)
-	if power.Address != "" {
-		power.Time = startTime
-		result = []model.ValVotingPowerChangeVo{power}
-	} else {
-		result = []model.ValVotingPowerChangeVo{{Address: address, Time: startTime}}
+	candidatePowerArr, err := document.Candidate{}.QueryCandidatePower(address, agoStr)
+
+	if err != nil {
+		panic(types.CodeNotFound)
 	}
-	result = append(result, powers...)
-	result = append(result, model.ValVotingPowerChangeVo{Address: address, Time: endTime, Power: result[len(result)-1].Power})
+
+	result := make([]model.ValVotingPowerChangeVo, 0, len(candidatePowerArr))
+
+	for _, v := range candidatePowerArr {
+
+		result = append(result, model.ValVotingPowerChangeVo{
+			Height:  v.Height,
+			Address: v.Address,
+			Power:   v.Power,
+			Time:    v.Time,
+			Change:  v.Change,
+		})
+	}
+
 	return result
 }
 
 func (service *CandidateService) QueryCandidateStatus(address string) (resp model.ValStatus) {
 
-	var query = orm.NewQuery()
-	defer query.Release()
+	preCommitCount, uptime, err := document.Candidate{}.QueryCandidateStatus(address)
 
-	var candidate document.Candidate
-	query.SetCollection(document.CollectionNmStakeRoleCandidate).
-		SetCondition(bson.M{document.Candidate_Field_Address: address}).
-		SetResult(&candidate)
-	if err := query.Exec(); err != nil {
+	if err != nil {
+		logger.Error("query candidate status", logger.String("err", err.Error()))
 		panic(types.CodeNotFound)
 	}
 
-	var upTimeMap = getValUpTime(query)
-	query.Reset().SetCollection(document.CollectionNmBlock).
-		SetCondition(bson.M{"block.last_commit.precommits": bson.M{"$elemMatch": bson.M{"validator_address": candidate.PubKeyAddr}}})
-
-	var preCommitCount int
-	if cnt, err := query.Count(); err == nil {
-		preCommitCount = cnt
-	}
-
 	resp = model.ValStatus{
-		Uptime:         upTimeMap[candidate.PubKeyAddr],
+		Uptime:         uptime,
 		PrecommitCount: float64(preCommitCount),
 	}
 
 	return resp
 }
 
-func (service *CandidateService) convert(database *mgo.Database, candidate document.Candidate) model.Validator {
+func (service *CandidateService) convert(candidate document.Candidate) model.Validator {
 	var moniker = candidate.Description.Moniker
 	var identity = candidate.Description.Identity
 	var website = candidate.Description.Website
 	var details = candidate.Description.Details
-	var blackList = service.QueryBlackList(database)
+	var blackList = service.QueryBlackList()
 	if desc, ok := blackList[candidate.Address]; ok {
 		moniker = desc.Moniker
 		identity = desc.Identity
@@ -457,33 +320,10 @@ func BondStatusToString(b int) string {
 	}
 }
 
-func getValUpTime(query *orm.Query) map[string]int {
-	var result []document.Block
-	var upTimeMap = make(map[string]int)
-	var selector = bson.M{"block.last_commit.precommits.validator_address": 1}
-	query.Reset().
-		SetCollection(document.CollectionNmBlock).
-		SetSelector(selector).
-		SetSize(100).
-		SetSort(desc(document.Block_Field_Height)).
-		SetResult(&result)
-
-	if err := query.Exec(); err != nil {
-		logger.Error("getValUpTime error", logger.String("err", err.Error()))
-	}
-	for _, block := range result {
-		for _, pre := range block.Block.LastCommit.Precommits {
-			upTimeMap[pre.ValidatorAddress]++
-		}
-	}
-	return upTimeMap
-}
-
 func (service *CandidateService) queryValForRainbow(typ string, page, size int) interface{} {
 	var validators = lcd.Validators(page, size)
-	var query = orm.NewQuery()
-	defer query.Release()
-	var blackList = service.QueryBlackList(query.GetDb())
+
+	var blackList = service.QueryBlackList()
 	for i, v := range validators {
 		if desc, ok := blackList[v.OperatorAddress]; ok {
 			validators[i].Description.Moniker = desc.Moniker
@@ -535,7 +375,7 @@ func (service *CandidateService) UpdateValidators(vs []document.Validator) error
 			})
 		}
 	}
-	return orm.Batch(txs)
+	return document.Candidate{}.Batch(txs)
 }
 
 func buildValidators() []document.Validator {

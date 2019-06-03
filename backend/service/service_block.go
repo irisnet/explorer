@@ -9,7 +9,6 @@ import (
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
-	"gopkg.in/mgo.v2/bson"
 )
 
 type BlockService struct {
@@ -31,17 +30,15 @@ func (service *BlockService) GetValidatorSet(height int64, page, size int) model
 		panic(types.CodeNotFound)
 	}
 
-	var validatorsDoc []document.Validator
-	var selector = bson.M{"description.moniker": 1, "operator_address": 1, "consensus_pubkey": 1, "proposer_addr": 1}
+	validatorArr, err := document.Validator{}.GetValidatorList()
 
-	err := queryAll(document.CollectionNmValidator, selector, nil, "", 0, &validatorsDoc)
 	if err != nil {
 		logger.Error("get validator set err", logger.String("error", err.Error()), service.GetTraceLog())
 		panic(types.CodeNotFound)
 	}
 
 	var proposal string
-	for _, v := range validatorsDoc {
+	for _, v := range validatorArr {
 		if v.ProposerAddr == b.BlockMeta.Header.ProposerAddress {
 			proposal = v.OperatorAddress
 		}
@@ -54,7 +51,7 @@ func (service *BlockService) GetValidatorSet(height int64, page, size int) model
 			tmp.Consensus = v.Address
 			tmp.VotingPower = v.VotingPower
 			tmp.ProposerPriority = v.ProposerPriority
-			for _, validator := range validatorsDoc {
+			for _, validator := range validatorArr {
 				if validator.ConsensusPubkey == v.PubKey {
 					tmp.OperatorAddress = validator.OperatorAddress
 					tmp.Moniker = validator.Description.Moniker
@@ -79,10 +76,8 @@ func (service *BlockService) QueryBlockInfo(height int64) model.BlockInfo {
 		panic(types.CodeNotFound)
 	}
 
-	var selector = bson.M{"description.moniker": 1, "operator_address": 1}
-	var validatorDoc document.Validator
 	proposerHexAddr := currentBlock.BlockMeta.Header.ProposerAddress
-	err := queryOne(document.CollectionNmValidator, selector, bson.M{"proposer_addr": proposerHexAddr}, &validatorDoc)
+	validatorDoc, err := document.Validator{}.GetValidatorByProposerAddr(proposerHexAddr)
 
 	if err != nil {
 		logger.Error("query validator collection  err", logger.String("error", err.Error()), service.GetTraceLog())
@@ -144,34 +139,28 @@ func (service *BlockService) QueryList(page, size int) model.PageVo {
 	var result []model.BlockInfoVo
 	var pageInfo model.PageVo
 
-	var selector = bson.M{"height": 1, "time": 1, "num_txs": 1, "hash": 1, "validators.address": 1, "validators.voting_power": 1, "block.last_commit.precommits.validator_address": 1, "meta.header.total_txs": 1}
+	total, blockList, err := document.Block{}.GetBlockListByPage(page, size)
 
-	var blocks []document.Block
-
-	sort := desc(document.Block_Field_Height)
-	var cnt, err = pageQuery(document.CollectionNmBlock, selector, bson.M{"height": bson.M{"$gt": 0}}, sort, page, size, &blocks)
 	if err != nil {
 		panic(types.CodeNotFound)
 	}
-	for _, block := range blocks {
+	for _, block := range blockList {
 		result = append(result, buildBlock(block))
 	}
 	pageInfo.Data = result
-	pageInfo.Count = cnt
+	pageInfo.Count = total
 	return pageInfo
 }
 
 func (service *BlockService) QueryRecent() []model.BlockInfoVo {
 	var result []model.BlockInfoVo
-	var blocks []document.Block
-	var selector = bson.M{"height": 1, "time": 1, "num_txs": 1}
 
-	sort := desc(document.Block_Field_Height)
-	err := queryAll(document.CollectionNmBlock, selector, nil, sort, 10, &blocks)
+	blockList, err := document.Block{}.GetRecentBlockList()
+
 	if err != nil {
 		panic(types.CodeNotFound)
 	}
-	for _, block := range blocks {
+	for _, block := range blockList {
 		result = append(result, model.BlockInfoVo{
 			Time:   block.Time,
 			Height: block.Height,
