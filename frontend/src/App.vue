@@ -138,11 +138,13 @@
         this.vh = window.innerHeight;
         this.vw = window.innerWidth;
         if (window.innerWidth > 960) {
+          this.$store.commit('isMobile',false);
           this.footerClass = 'person_computer_wrap';
           this.footerClassName = 'person_computer_footer';
           this.footerLeftVar = 'person_computer_footer_left';
           this.footerRightVar = 'person_computer_footer_right';
         } else {
+          this.$store.commit('isMobile',true);
           this.footerClass = 'mobile_wrap_footer';
           this.footerClassName = 'mobile_footer';
           this.footerLeftVar = 'mobile_footer_left';

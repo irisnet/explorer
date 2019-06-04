@@ -7,7 +7,7 @@
     </div>
     <div class="parameters_list_container">
       <div class="parameter_list_content">
-        <h5 class="parameter_list_title_content">Governance Params In IRISnet</h5>
+        <!-- <h5 class="parameter_list_title_content">Governance Params In IRISnet</h5>
         <div class="parameters_list_table_wrap">
           <div class="parameters_list_table_content">
             <spin-component :showLoading="showLoading"></spin-component>
@@ -16,6 +16,30 @@
               No Data
             </div>
           </div>
+        </div> -->
+        <div v-show="!showNoData">
+          <h5 class="parameter_list_title_content">All Governance Params In IRISnet</h5>
+          <div class="parameter_note">
+            <div class="current">
+              <i></i>
+              <span>Current Value</span>
+            </div>
+            <div class="genesis">
+              <i></i>
+              <span>Genesis Value</span>
+            </div>
+          </div>
+        </div>
+        <div class="parameters_list_cards_content">
+          <spin-component :showLoading="showLoading"></spin-component>
+          <div :class="[$store.state.isMobile ? 'mobile_cards_layout' : 'pc_cards_layout']">
+            <div v-for="(v, i) in parametersList" :key="i">
+              <m-parameters-card :data="v"></m-parameters-card>
+            </div>
+          </div>
+        </div>
+        <div v-show="showNoData" class="no_data_show">
+          No Data
         </div>
       </div>
     </div>
@@ -27,9 +51,10 @@
     import SpinComponent from './commonComponents/SpinComponent';
     import Service from '../util/axios';
     import Tools from "../util/Tools"
+    import MParametersCard from './commonComponents/MParametersCard';
     export default {
         name: "Parameters",
-        components: {SpinComponent, VParameters},
+        components: {SpinComponent, VParameters, MParametersCard},
         data() {
             return {
               parametersList:[],
@@ -44,95 +69,94 @@
         methods:{
             getParametersList(){
               this.showLoading = true;
+              this.showNoData = false;
               let parametersListUrl = `/api/gov/params`;
               Service.http(parametersListUrl).then((res) => {
                 this.showLoading = false;
-
                 if(res){
-                  this.parametersList = res.map( item => {
+                  let arr = res.map( item => {
                     this.handleParameterItem(item);
-                    return {
-                      key: `${item.module}/${item.key}`,
-                      'Description/Usage' : item.description,
-                      'Genesis Value' : item.value,
-                      'Range' : item.range,
-                      'Type' : item.type,
-                      'Note' : item.note
-                    }
-                  })
+                    return item;
+                  });
+                  this.parametersList = arr;
                 }else {
-                  this.parametersList = [{
-                    key:'',
-                    'Description/Usage' : '',
-                    'Genesis Value' :'',
-                    'Range' : '',
-                    'Type' : '',
-                    'Note' : ''
-                  }];
+                  this.parametersList = [];
                   this.showNoData = true;
                 }
               }).catch(e => {
                 this.showLoading = false;
-
-                this.parametersList = [{
-                  key:'',
-                  'Description/Usage' : '',
-                  'Genesis Value' :'',
-                  'Range' : '',
-                  'Type' : '',
-                  'Note' : ''
-                }];
+                this.parametersList = [];
                 this.showNoData = true;
                 console.error(e)
               })
-
+            },
+            formatPer(value, min, max) {
+              min = Number(min) || 0;
+              max = Number(max) || 0;
+              value = Number(value);
+              if (value >= min && max > min && max >= value) {
+                let per = ((Number(value) -  min) / (max -  min)) * 100;
+                per = Math.max(per, 0);
+                per = Math.min(per, 100);
+                return per;
+              } else if(value > max){
+                return 100;
+              } else {
+                return 0;
+              }
             },
             handleParameterItem(parameterItem){
+              let arr = parameterItem.range.split(',');
+              parameterItem.min = arr[0];
+              parameterItem.max = arr[1];
+              parameterItem.current_per = this.formatPer(parameterItem.current_value, arr[0], arr[1]);
+              parameterItem.genesis_per = this.formatPer(parameterItem.genesis_value, arr[0], arr[1]);
+              parameterItem.current = parameterItem.current_value;
+              parameterItem.genesis = parameterItem.genesis_value;
+              //百分比
+              let perDataArr = ['inflation', 'base_proposer_reward', 'bonus_proposer_reward',
+              'min_signed_per_window', 'community_tax', 'slash_fraction_double_sign', 
+              'slash_fraction_downtime', 'slash_fraction_censorship'];
+              //days
+              let dayDataArr = ['double_sign_jail_duration', 'unbonding_time', 'downtime_jail_duration', 
+              'censorship_jail_duration'];
               if(parameterItem.key === "max_validators"){
-              }else if(parameterItem.key === "unbonding_time"){
-                parameterItem.value = this.formatUnbondingTime(parameterItem.value);
-                parameterItem.range.minimum.data = this.formatUnbondingTime(parameterItem.range.minimum.data)
-                parameterItem.range.maximum.data = this.formatUnbondingTime(parameterItem.range.maximum.data)
-              }else if(parameterItem.key === "inflation"){
-                parameterItem.value = `${Number(parameterItem.value)*100}%`;
-                parameterItem.range.minimum.data = `${Number(parameterItem.range.minimum.data)*100}%`;
-                parameterItem.range.maximum.data = `${Number(parameterItem.range.maximum.data)*100}%`
-              }else if(parameterItem.key === "base_proposer_reward"){
-                parameterItem.value = `${Number(parameterItem.value)*100}%`;
-                parameterItem.range.minimum.data = `${Number(parameterItem.range.minimum.data)*100}%`;
-                parameterItem.range.maximum.data = `${Number(parameterItem.range.maximum.data)*100}%`
-              }else if(parameterItem.key === "bonus_proposer_reward"){
-                parameterItem.value = `${Number(parameterItem.value)*100}%`;
-                parameterItem.range.minimum.data = `${Number(parameterItem.range.minimum.data)*100}%`;
-                parameterItem.range.maximum.data = `${Number(parameterItem.range.maximum.data)*100}%`
-              }else if(parameterItem.key === "community_tax"){
-                parameterItem.value = `${Number(parameterItem.value)*100}%`;
-                parameterItem.range.minimum.data = `${Number(parameterItem.range.minimum.data)*100}%`;
-                parameterItem.range.maximum.data = `${Number(parameterItem.range.maximum.data)*100}%`
+              }else if(dayDataArr.indexOf(parameterItem.key) > -1){
+                let max = parameterItem.max || Math.max(Number(parameterItem.current_value), Number(parameterItem.genesis_value));
+                parameterItem.current_per = this.formatPer(parameterItem.current_value, arr[0], max);
+                parameterItem.genesis_per = this.formatPer(parameterItem.genesis_value, arr[0], max);
+                parameterItem.min = this.formatUnbondingTime(parameterItem.min) || '0';
+                parameterItem.max = this.formatUnbondingTime(parameterItem.max) || '+∞';
+                parameterItem.current = this.formatUnbondingTime(parameterItem.current);
+                parameterItem.genesis = this.formatUnbondingTime(parameterItem.genesis);
+              }else if(perDataArr.indexOf(parameterItem.key) > -1){
+                parameterItem.min = Number(arr[0]) === 0 ? arr[0] : `${arr[0]*100}%`;
+                parameterItem.max = Number(arr[1]) === 0 ? arr[1] : `${arr[1]*100}%`;
+                parameterItem.current = `${parameterItem.current_value*100}%`;
+                parameterItem.genesis = `${parameterItem.genesis_value*100}%`;
               }else if(parameterItem.key === "gas_price_threshold"){
-                parameterItem.value = `${Tools.formatNumber(parameterItem.value)} IRIS`;
-                parameterItem.range.maximum.data = `${Tools.formatNumber(parameterItem.range.maximum.data)} IRIS`
+                let maxL = arr[1].length - 1;
+                parameterItem.max = `${Number(arr[1]) / (10 ** maxL)}*10^${maxL}`;
+                parameterItem.current = Tools.formatPrice(parameterItem.current_value).split('.')[0];
+                parameterItem.genesis = Tools.formatPrice(parameterItem.genesis_value).split('.')[0];
               }else if(parameterItem.key === "tx_size"){
-                parameterItem.value = `${parameterItem.value} Byte`;
-                parameterItem.range.minimum.data = `${parameterItem.range.minimum.data} Byte`;
-                parameterItem.range.maximum.data = `${parameterItem.range.maximum.data} Byte`
               }
             },
             formatUnbondingTime(time) {
                 let nsToMSRatio = 1000000, dToHRatio = 24, HToMRatio = 60;
                 let dateTime = Tools.formatDuring(Number(time) / nsToMSRatio), d, h, m;
                 if (dateTime.days >= 1) {
-                    d = `${Math.floor(dateTime.days)}d`
+                    d = `${Math.floor(dateTime.days)}days`
                 } else {
                     d = ''
                 }
                 if (dateTime.hours >= 1 && dateTime.hours < dToHRatio) {
-                    h = `${Math.floor(dateTime.hours)}h`
+                    h = `${Math.floor(dateTime.hours)}hours`
                 } else {
                     h = ''
                 }
                 if (dateTime.minutes >= 1 && dateTime.minutes < HToMRatio) {
-                    m = `${Math.floor(dateTime.minutes)}m`
+                    m = `${Math.floor(dateTime.minutes)}minutes`
                 } else {
                     m = ''
                 }
@@ -172,15 +196,78 @@
       .parameter_list_title_content{
         font-size: 0.18rem;
         height: 0.7rem;
-        display: flex;
+        display: inline-block;
         align-items: center;
         padding-left: 0.2rem;
-        line-height: 0.25rem;
+        line-height: 0.7rem;
+        font-weight: 400;
+        margin-right: 0.2rem;
       }
       .parameters_list_table_wrap{
         overflow-x: auto;
         .parameters_list_table_content{
           min-width: 11.5rem;
+        }
+      }
+      .parameters_list_cards_content {
+        overflow-x: auto;
+        .pc_cards_layout {
+          display: flex;
+          flex-wrap: wrap;
+          min-width: 12.8rem;
+          & > div {
+            margin-bottom: 0.2rem;
+            margin-right: 0.2rem;
+            &:nth-of-type(3n) {
+              margin-right: 0;
+            }
+          }
+        }
+        @mixin mobile_cards_layout {
+          display: flex;
+          justify-content: space-between;
+          flex-wrap: wrap;
+          & > div {
+            width: 100%;
+            padding: 0.1rem;
+            margin-right: 0!important;
+            & > div.m_parameters_container {
+              width: 100%;
+            }
+          }
+        }
+        .mobile_cards_layout {
+          @include mobile_cards_layout;
+        }
+        //使用rem设置max-width不生效
+        @media screen and (max-width: 910px) {
+          .pc_cards_layout {
+            @include mobile_cards_layout;
+          }
+        }
+      }
+      .parameter_note {
+        display: inline-block;
+        font-size: 0.12rem;
+        margin-left: 0.2rem;
+        & > div {
+          display: inline-block;
+          i {
+            width: 0.11rem;
+            height: 0.11rem;
+            display: inline-block;
+            background-color: #3698DB;
+          }
+          span {
+            margin-left: 0.06rem;
+            color: #A2A2AE;
+          }
+        }
+        div.genesis {
+          margin-left: 0.3rem;
+          i {
+            background-color: #FFB779;
+          }
         }
       }
     }
