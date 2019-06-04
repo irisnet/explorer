@@ -2,9 +2,10 @@ package task
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/utils"
-	"time"
 )
 
 var engine = Engine{
@@ -15,6 +16,7 @@ func init() {
 	engine.AppendTask(UpTimeChangeTask{})
 	engine.AppendTask(TxNumGroupByDayTask{})
 	engine.AppendTask(UpdateValidator{})
+	engine.AppendTask(UpdateGovParams{})
 }
 
 type TimerTask interface {
