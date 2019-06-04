@@ -211,7 +211,9 @@ func (gov GovParamsService) GetDbInitGovModuleParamList(genesisMap, currentMap m
 
 func (gov GovParamsService) UpdateCurrentValueByKey(kv map[string]interface{}) error {
 
-	bulk := getDb().C(document.CollectionNmGovParams).Bulk()
+	collection := getDb().C(document.CollectionNmGovParams)
+	defer collection.Database.Session.Close()
+	bulk := collection.Bulk()
 
 	for k, v := range kv {
 		vStr := ""

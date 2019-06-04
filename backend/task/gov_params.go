@@ -13,7 +13,7 @@ func (task UpdateGovParams) Name() string {
 	return "update_gov_params"
 }
 func (task UpdateGovParams) Start() {
-	utils.RunTimer(5, utils.Sec, func() {
+	utils.RunTimer(60, utils.Sec, func() {
 		curModuleKv, err := lcd.GetAllGovModuleParam()
 		if err != nil {
 			logger.Error("UpdateGovParams task failed", logger.String("taskName", task.Name()), logger.String("errmsg", err.Error()))
