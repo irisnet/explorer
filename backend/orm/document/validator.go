@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	CollectionNmValidator = "validator"
+	CollectionNmValidator = "ex_validator"
 
 	ValidatorFieldVotingPower     = "voting_power"
 	ValidatorFieldJailed          = "jailed"
