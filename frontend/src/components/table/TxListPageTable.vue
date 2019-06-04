@@ -289,6 +289,7 @@
     display: flex;
     flex-direction: column;
     position: relative;
+    font-family: Consolas;
     .hash_content{
       display: none;
       position: absolute;
