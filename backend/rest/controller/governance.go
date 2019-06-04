@@ -67,6 +67,5 @@ func registerQueryGovParams(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryGovParams, "GET", func(request model.IrisReq) interface{} {
 		return gov.GovParamsService.QueryAll()
 	})
-
 	return nil
 }

@@ -18,14 +18,11 @@ db.createCollection("ex_gov_params");
 
 // create index
 db.ex_power_change.createIndex({"height": 1, "address": 1}, {"unique": true});
-
 db.ex_tx_num_stat.createIndex({"date": -1}, {"unique": true});
-
 db.ex_config.createIndex({"env_nm": 1}, {"unique": true});
-
 db.ex_val_black_list.createIndex({"operator_addr": 1}, {"unique": true});
-
 db.ex_validator.createIndex({"operator_address": 1}, {"unique": true});
+db.ex_gov_params.createIndex({"key":1},{"unique": true})
 
 
 // init data
@@ -40,4 +37,3 @@ db.ex_val_black_list.insert({
     "website": "",
     "details": ""
 });
-
