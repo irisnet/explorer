@@ -2,7 +2,7 @@
   <div class="parameters_page_container">
     <div class="parameters_page_title_container">
       <div class="parameters_title_content">
-        <span class="parameters_title">Parameters</span>
+        <span class="parameters_title">Governable Parameters in IRISnet</span>
       </div>
     </div>
     <div class="parameters_list_container">
@@ -17,7 +17,7 @@
             </div>
           </div>
         </div> -->
-        <div v-show="!showNoData">
+        <!-- <div v-show="!showNoData">
           <h5 class="parameter_list_title_content">All Governance Params In IRISnet</h5>
           <div class="parameter_note">
             <div class="current">
@@ -29,12 +29,27 @@
               <span>Genesis Value</span>
             </div>
           </div>
-        </div>
+        </div> -->
         <div class="parameters_list_cards_content">
           <spin-component :showLoading="showLoading"></spin-component>
-          <div :class="[$store.state.isMobile ? 'mobile_cards_layout' : 'pc_cards_layout']">
-            <div v-for="(v, i) in parametersList" :key="i">
-              <m-parameters-card :data="v"></m-parameters-card>
+          <div>
+            <div :class="[$store.state.isMobile ? 'mobile_cards_layout' : 'pc_cards_layout']" v-for="(value, index) in parametersList" :key="index">
+              <div class="card_title" v-show="value && value.length > 0">
+                <span>{{index}}</span>
+                <div class="parameter_note">
+                  <div class="current">
+                    <i></i>
+                    <span>Current Value</span>
+                  </div>
+                  <div class="genesis">
+                    <i></i>
+                    <span>Genesis Value</span>
+                  </div>
+                </div>
+              </div>
+              <p class="cards" v-for="(v, i) in value" :key="i">
+                <m-parameters-card :class="index" :data="v"></m-parameters-card>
+              </p>
             </div>
           </div>
         </div>
@@ -57,7 +72,7 @@
         components: {SpinComponent, VParameters, MParametersCard},
         data() {
             return {
-              parametersList:[],
+              parametersList:{},
               proposalsListPageWrap: '',
               showLoading:false,
               showNoData: false,
@@ -70,6 +85,7 @@
             getParametersList(){
               this.showLoading = true;
               this.showNoData = false;
+              this.parametersList = {};
               let parametersListUrl = `/api/gov/params`;
               Service.http(parametersListUrl).then((res) => {
                 this.showLoading = false;
@@ -78,14 +94,22 @@
                     this.handleParameterItem(item);
                     return item;
                   });
-                  this.parametersList = arr;
+                  let o = {
+                    Stake: null,
+                    Slashing: null,
+                    General: null
+                  }
+                  o.Stake = arr.filter(v => v.module === 'stake' || v.module === 'distr') || null;
+                  o.Slashing = arr.filter(v => v.module === 'slashing') || null;
+                  o.General = arr.filter(v => (v.module !== 'stake' && v.module !== 'slashing' && v.module !== 'distr')) || null;
+                  this.parametersList = o;
                 }else {
-                  this.parametersList = [];
+                  this.parametersList = {};
                   this.showNoData = true;
                 }
               }).catch(e => {
                 this.showLoading = false;
-                this.parametersList = [];
+                this.parametersList = {};
                 this.showNoData = true;
                 console.error(e)
               })
@@ -130,33 +154,35 @@
                 parameterItem.current = this.formatUnbondingTime(parameterItem.current);
                 parameterItem.genesis = this.formatUnbondingTime(parameterItem.genesis);
               }else if(perDataArr.indexOf(parameterItem.key) > -1){
-                parameterItem.min = Number(arr[0]) === 0 ? arr[0] : `${arr[0]*100}%`;
-                parameterItem.max = Number(arr[1]) === 0 ? arr[1] : `${arr[1]*100}%`;
-                parameterItem.current = `${parameterItem.current_value*100}%`;
-                parameterItem.genesis = `${parameterItem.genesis_value*100}%`;
+                parameterItem.max = Number(arr[1]) === 0 ? arr[1] : `${arr[1]*100} %`;
+                parameterItem.current = `${parameterItem.current_value*100} %`;
+                parameterItem.genesis = `${parameterItem.genesis_value*100} %`;
               }else if(parameterItem.key === "gas_price_threshold"){
                 let maxL = arr[1].length - 1;
                 parameterItem.max = `${Number(arr[1]) / (10 ** maxL)}*10^${maxL}`;
                 parameterItem.current = Tools.formatPrice(parameterItem.current_value).split('.')[0];
                 parameterItem.genesis = Tools.formatPrice(parameterItem.genesis_value).split('.')[0];
               }else if(parameterItem.key === "tx_size"){
+                parameterItem.max = Number(arr[1]) === 0 ? arr[1] : `${arr[1]} Bytes`;
+                parameterItem.current = `${parameterItem.current_value} Bytes`;
+                parameterItem.genesis = `${parameterItem.genesis_value} Bytes`;
               }
             },
             formatUnbondingTime(time) {
                 let nsToMSRatio = 1000000, dToHRatio = 24, HToMRatio = 60;
                 let dateTime = Tools.formatDuring(Number(time) / nsToMSRatio), d, h, m;
                 if (dateTime.days >= 1) {
-                    d = `${Math.floor(dateTime.days)}days`
+                    d = `${Math.floor(dateTime.days)} days`
                 } else {
                     d = ''
                 }
                 if (dateTime.hours >= 1 && dateTime.hours < dToHRatio) {
-                    h = `${Math.floor(dateTime.hours)}hours`
+                    h = `${Math.floor(dateTime.hours)} hours`
                 } else {
                     h = ''
                 }
                 if (dateTime.minutes >= 1 && dateTime.minutes < HToMRatio) {
-                    m = `${Math.floor(dateTime.minutes)}minutes`
+                    m = `${Math.floor(dateTime.minutes)} minutes`
                 } else {
                     m = ''
                 }
@@ -211,25 +237,32 @@
       }
       .parameters_list_cards_content {
         overflow-x: auto;
+        margin-top: 0.23rem;
         .pc_cards_layout {
           display: flex;
           flex-wrap: wrap;
           min-width: 12.8rem;
-          & > div {
-            margin-bottom: 0.2rem;
+          & > p {
+            margin-bottom: 0.2rem!important;
             margin-right: 0.2rem;
             &:nth-of-type(3n) {
               margin-right: 0;
             }
           }
         }
+        div.card_title {
+          width: 100%;
+          margin-top: 0.1rem;
+          margin-left: 0.2rem;
+          margin-bottom: 0.2rem;
+        }
         @mixin mobile_cards_layout {
           display: flex;
           justify-content: space-between;
           flex-wrap: wrap;
-          & > div {
+          & > p {
             width: 100%;
-            padding: 0.1rem;
+            padding: 0 0.1rem 0.1rem;
             margin-right: 0!important;
             & > div.m_parameters_container {
               width: 100%;
@@ -256,7 +289,7 @@
             width: 0.11rem;
             height: 0.11rem;
             display: inline-block;
-            background-color: #3698DB;
+            background-color: #FFB779;
           }
           span {
             margin-left: 0.06rem;
@@ -266,7 +299,7 @@
         div.genesis {
           margin-left: 0.3rem;
           i {
-            background-color: #FFB779;
+            background-color: #3698DB;
           }
         }
       }

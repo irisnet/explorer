@@ -2,7 +2,7 @@
   <div class="m_parameters_container">
     <div class="top">
       <span class="title">
-        {{data.module}}/{{data.key}}
+        {{data.key}}
       </span>
       <span class="desc" v-show="data.description">（{{data.description}}）</span>
     </div>
@@ -47,6 +47,27 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.General {
+  .content {
+    .progress {
+      background-color: #E7F5FF!important;
+    }
+  }
+}
+.Stake {
+  .content {
+    .progress {
+      background-color: #E8EFFF!important;
+    }
+  }
+}
+.Slashing {
+  .content {
+    .progress {
+      background-color: #FFF1DB!important;
+    }
+  }
+}
 .m_parameters_container {
   width: 413px;
   height: 164px;
@@ -106,13 +127,14 @@ export default {
         height: 100%;
         position: absolute;
         line-height: 0.2rem;
+        white-space: nowrap;
         text-align: center;
         transform: translateX(-50%);
         left: 50%;
       }
       .current {
-        color: #3698DB;
-        background-color: #3698DB;
+        color: #FFB779;
+        background-color: #FFB779;
         position: absolute;
         div.arrow {
           width: 8px;
@@ -128,7 +150,7 @@ export default {
             width: 0;
             height: 0;
             border: 3px solid transparent;
-            border-top-color: #3698DB;
+            border-top-color: #FFB779;
           }
         }
         span {
@@ -138,8 +160,8 @@ export default {
         }
       }
       .genesis {
-        color: #FFB779;
-        background-color: #FFB779;
+        color: #3698DB;
+        background-color: #3698DB;
         position: absolute;
         div.arrow {
           width: 8px;
@@ -155,7 +177,7 @@ export default {
             width: 0;
             height: 0;
             border: 3px solid transparent;
-            border-bottom-color: #FFB779;
+            border-bottom-color: #3698DB;
           }
         }
         span {
