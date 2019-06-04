@@ -236,7 +236,7 @@ func (service *CandidateService) QueryCandidatesTopN() model.ValDetailVo {
 func (service *CandidateService) QueryCandidateUptime(address, category string) (result []model.UptimeChangeVo) {
 	db := getDb()
 	c := db.C(document.CollectionNmStakeRoleCandidate)
-	u := db.C("uptime_change")
+	u := db.C(document.CollectionNmUptimeChange)
 	defer db.Session.Close()
 	var candidate document.Candidate
 	err := c.Find(bson.M{document.Candidate_Field_Address: address}).One(&candidate)
@@ -324,7 +324,7 @@ func (service *CandidateService) QueryCandidateUptime(address, category string) 
 func (service *CandidateService) QueryCandidatePower(address, category string) (result []model.ValVotingPowerChangeVo) {
 	db := getDb()
 	c := db.C(document.CollectionNmStakeRoleCandidate)
-	p := db.C("power_change")
+	p := db.C(document.CollectionNmPowerChange)
 	defer db.Session.Close()
 	var candidate document.Candidate
 	err := c.Find(bson.M{document.Candidate_Field_Address: address}).One(&candidate)

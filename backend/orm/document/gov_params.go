@@ -5,7 +5,7 @@ import (
 )
 
 const (
-	CollectionNmGovParams = "gov_params"
+	CollectionNmGovParams = "ex_gov_params"
 	GovParamsFieldModule  = "module"
 	GovParamsFieldKey     = "key"
 
