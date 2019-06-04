@@ -4,7 +4,12 @@
       <span class="title">
         {{data.key}}
       </span>
-      <span class="desc" v-show="data.description">（{{data.description}}）</span>
+      <span :class="['desc', descTipShow ?'desc_hover' : '']" ref="desc" v-show="data.description">
+        <div class="desc_content" style="width: 100%;">
+          <span class="desc_content_span">（{{data.description}}）</span>
+        </div>
+        <div v-if="descTipShow" class="tooltip_span">（{{data.description}}）</div>
+      </span>
     </div>
     <div class="content">
       <span class="min">{{data.min}}</span>
@@ -34,13 +39,19 @@ export default {
   },
   data() {
     return {
-      equal: false
+      equal: false,
+      descTipShow: false
     }
   },
   mounted() {
     if ((typeof this.data.current_per === 'number') && (typeof this.data.genesis_per === 'number')) {
       let w = this.$refs.progress.offsetWidth;
       this.equal = Math.abs((this.data.current_per - this.data.genesis_per) * w) < 1;
+      this.$nextTick(() => {
+        let desc_content_w = this.$refs.desc.querySelector('.desc_content_span').getBoundingClientRect().width;
+        let w = this.$refs.desc.getBoundingClientRect().width;
+        this.descTipShow = desc_content_w > w;
+      });
     }
   }
 }
@@ -54,7 +65,7 @@ export default {
     }
   }
 }
-.Stake {
+.Staking {
   .content {
     .progress {
       background-color: #E8EFFF!important;
@@ -81,9 +92,58 @@ export default {
     font-size: 0.14rem;
     color: #22252A;
     padding: 0.2rem;
+    white-space: nowrap;
+    display: flex;
+    position: relative;
     .desc {
       font-size: 0.12rem;
       color: #A2A2AE;
+      display: block;
+      width: 1px;
+      flex: 1;
+      position: relative;
+      &:hover .tooltip_span{
+        display: block;
+      }
+      .desc_content {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .tooltip_span {
+        width: 100%;
+        max-width: 100%;
+        display: none;
+        position: absolute;
+        z-index: 1000;
+        bottom: calc(100% + 4px);
+        left: 50%;
+        transform: translateX(-50%);
+        margin-top: -10px auto 0;
+        padding: 5px 15px;
+        color: #ffffff;
+        background-color: #000000;
+        line-height: 35px;
+        border-radius: 0.04rem;
+        word-wrap: break-word;
+        white-space: normal;
+        line-height: 1.7;
+        &::after {
+          width: 0;
+          height: 0;
+          border: 0.04rem solid transparent;
+          content: "";
+          display: block;
+          position: absolute;
+          border-top-color: #000000;
+          left: 50%;
+          margin-left: -4px;
+          bottom: -8px;
+        }
+      }
+    }
+    .desc_hover {
+      cursor: pointer;
     }
   }
   .content {

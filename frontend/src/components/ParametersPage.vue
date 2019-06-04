@@ -95,11 +95,11 @@
                     return item;
                   });
                   let o = {
-                    Stake: null,
+                    Staking: null,
                     Slashing: null,
                     General: null
                   }
-                  o.Stake = arr.filter(v => v.module === 'stake' || v.module === 'distr') || null;
+                  o.Staking = arr.filter(v => v.module === 'stake' || v.module === 'distr') || null;
                   o.Slashing = arr.filter(v => v.module === 'slashing') || null;
                   o.General = arr.filter(v => (v.module !== 'stake' && v.module !== 'slashing' && v.module !== 'distr')) || null;
                   this.parametersList = o;
