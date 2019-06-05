@@ -5,22 +5,23 @@ import (
 )
 
 const (
-	CollectionNmGovParams = "ex_gov_params"
-	GovParamsFieldModule  = "module"
-	GovParamsFieldKey     = "key"
-
-	EQ  Sign = "eq"
-	NEQ Sign = "neq"
+	CollectionNmGovParams           = "ex_gov_params"
+	GovParamsFieldModule            = "module"
+	GovParamsFieldKey               = "key"
+	GovParamsFieldCurrentValue      = "current_value"
+	EQ                         Sign = "eq"
+	NEQ                        Sign = "neq"
 )
 
 type GovParams struct {
-	Module      string `bson:"module" json:"module"`
-	Key         string `bson:"key" json:"key"`
-	Value       string `bson:"value" json:"value"`
-	Type        string `bson:"type" json:"type"`
-	Range       Range  `bson:"range" json:"range"`
-	Description string `bson:"description" json:"description"`
-	Note        string `bson:"note" json:"note"`
+	Module       string `bson:"module" json:"module"`
+	Key          string `bson:"key" json:"key"`
+	Type         string `bson:"type" json:"type"`
+	Range        string `bson:"range" json:"range"`
+	GenesisValue string `bson:"genesis_value" json:"genesis_value"`
+	CurrentValue string `bson:"current_value" json:"current_value"`
+	Description  string `bson:"description" json:"description"`
+	Note         string `bson:"note" json:"note"`
 }
 
 type Range struct {
