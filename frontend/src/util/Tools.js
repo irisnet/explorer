@@ -347,7 +347,7 @@ export default class Tools{
    * return String
    */
   static formatTxHash(txHash){
-    return `${txHash.substring(0,4)}...${txHash.substring(txHash.length - 4)}`
+    return `${txHash.substring(0,3)}...${txHash.substring(txHash.length - 3)}`
   }
   static formatTxList(list,txType){
     if(list !== null){
