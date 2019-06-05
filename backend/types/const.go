@@ -20,9 +20,10 @@ const (
 	UrlRegisterQueryBlockInfo         = "/block/blockinfo/{height}"
 
 	//Governance
-	UrlRegisterQueryProposals = "/gov/proposals"
-	UrlRegisterQueryProposal  = "/gov/proposal/{pid}"
-	UrlRegisterQueryGovParams = "/gov/params"
+	UrlRegisterQueryProposals              = "/gov/proposals"
+	UrlRegisterQueryDepositVotingProposals = "/gov/depositvotingproposals"
+	UrlRegisterQueryProposal               = "/gov/proposal/{pid}"
+	UrlRegisterQueryGovParams              = "/gov/params"
 
 	//SearchBox
 	UrlRegisterQueryText    = "/search/{text}"
