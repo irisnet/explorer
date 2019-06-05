@@ -305,7 +305,7 @@ table.m_table {
       position: absolute;
       z-index: 1000;
       bottom: calc(100% + 4px);
-      left: 50%;
+      left: 33%;
       transform: translateX(-50%);
       margin-top: -10px auto 0;
       padding: 0 15px;

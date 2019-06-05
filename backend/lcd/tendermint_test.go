@@ -23,6 +23,18 @@ func TestGenesis(t *testing.T) {
 	}
 }
 
+func TestGetGenesisGovModuleParamMap(t *testing.T) {
+
+	moduleParamMap, err := GetGenesisGovModuleParamMap()
+	if err != nil {
+		t.Error(err)
+	}
+
+	for k, v := range moduleParamMap {
+		t.Logf("k: %v   v %v   %T \n\n\n", k, v, v)
+	}
+}
+
 func TestBlock(t *testing.T) {
 	height := int64(1034)
 	res := Block(height)
