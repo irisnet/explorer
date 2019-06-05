@@ -319,7 +319,7 @@
           position: relative;
           top: 0.03rem;
           z-index: 1;
-          left: 0.21rem;
+          left: 0.16rem;
         }
       }
     }
