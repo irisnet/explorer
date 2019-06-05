@@ -3,6 +3,7 @@ package service
 import (
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"strings"
 
 	"github.com/irisnet/explorer/backend/conf"
@@ -499,7 +500,7 @@ func (_ ProposalService) GetDepositProposalInitAmount(idArr []uint64) (map[uint6
 	condition := bson.M{document.Tx_Field_Type: "SubmitProposal", document.Tx_Field_Status: "success", document.Tx_Field_ProposalId: bson.M{"$in": idArr}}
 	var txs []document.CommonTx
 
-	err := queryAll(document.CollectionNmCommonTx, selector, condition, desc(document.Tx_Field_Time), 10, &txs)
+	err := queryAll(document.CollectionNmCommonTx, selector, condition, desc(document.Tx_Field_Time), 0, &txs)
 	if err != nil {
 		return nil, err
 	}
@@ -517,4 +518,181 @@ func (_ ProposalService) GetDepositProposalInitAmount(idArr []uint64) (map[uint6
 	}
 
 	return res, nil
+}
+
+func (s *ProposalService) GetVoteTxs(proposalId int64, page, size int) model.GetVoteTxResponse {
+	var (
+		txs        []document.CommonTx
+		txHashs    []string
+		txMsgs     []document.TxMsg
+		valAddrs   []string
+		validators []document.Validator
+		res        model.GetVoteTxResponse
+	)
+	accAddrValAddrMap := make(map[string]string)
+
+	// query vote txs by given proposal id
+	selector := bson.M{
+		document.Tx_Field_Height: 1,
+		document.Tx_Field_Time:   1,
+		document.Tx_Field_Hash:   1,
+		document.Tx_Field_From:   1,
+	}
+	condition := bson.M{
+		document.Tx_Field_Status:     types.TxTypeStatus,
+		document.Tx_Field_ProposalId: proposalId,
+		document.Tx_Field_Type:       types.TxTypeVote,
+	}
+	sort := fmt.Sprintf("-%v", document.Tx_Field_Height)
+
+	if num, err := pageQuery(document.CollectionNmCommonTx, selector, condition, sort, page, size, &txs); err != nil {
+		panic(types.CodeNotFound)
+	} else {
+		for _, v := range txs {
+			txHashs = append(txHashs, v.TxHash)
+			valAddr := utils.Convert(conf.Get().Hub.Prefix.ValAddr, v.From)
+			if valAddr != "" {
+				valAddrs = append(valAddrs, valAddr)
+				accAddrValAddrMap[v.From] = valAddr
+			}
+		}
+
+		// query tx msg by tx hash
+		if len(txHashs) > 0 {
+			selector := bson.M{
+				document.TxMsg_Field_Hash:    1,
+				document.TxMsg_Field_Content: 1,
+			}
+			condition := bson.M{
+				document.TxMsg_Field_Hash: bson.M{
+					"$in": txHashs,
+				},
+			}
+			err := queryAll(document.CollectionNmTxMsg, selector, condition, "", 0, &txMsgs)
+			if err != nil {
+				logger.Error("query tx msg fail", logger.String("err", err.Error()))
+			}
+		}
+
+		// query validator info
+		if len(valAddrs) > 0 {
+			selector = bson.M{
+				document.ValidatorFieldOperatorAddress: 1,
+				document.ValidatorFieldDescription:     1,
+			}
+			condition = bson.M{
+				document.ValidatorFieldOperatorAddress: bson.M{
+					"$in": valAddrs,
+				},
+			}
+			err = queryAll(document.CollectionNmValidator, selector, condition, "", 0, &validators)
+			if err != nil {
+				logger.Error("query validator fail", logger.String("err", err.Error()))
+			}
+		}
+
+		voteTxs := s.buildVoteTxs(txs, txMsgs, validators, accAddrValAddrMap)
+		res.Total = num
+		res.Items = voteTxs
+	}
+
+	return res
+}
+
+func (s *ProposalService) GetDepositTxs(proposalId int64, page, size int) model.TxPage {
+	var (
+		txs []document.CommonTx
+		res model.TxPage
+	)
+	selector := bson.M{
+		document.Tx_Field_Hash:   1,
+		document.Tx_Field_From:   1,
+		document.Tx_Field_Amount: 1,
+		document.Tx_Field_Type:   1,
+		document.Tx_Field_Time:   1,
+	}
+	condition := bson.M{
+		document.Tx_Field_Status:     types.TxTypeStatus,
+		document.Tx_Field_ProposalId: proposalId,
+		document.Tx_Field_Type: bson.M{
+			"$in": []string{types.TxTypeSubmitProposal, types.TxTypeDeposit},
+		},
+	}
+	sort := fmt.Sprintf("-%v", document.Tx_Field_Height)
+	if num, err := pageQuery(document.CollectionNmCommonTx, selector, condition, sort, page, size, &txs); err != nil {
+		logger.Error("query tx fail", logger.String("err", err.Error()))
+		panic(types.CodeNotFound)
+	} else {
+		items := s.buildTx(txs)
+
+		res.Total = num
+		res.Items = items
+	}
+
+	return res
+}
+
+func (s *ProposalService) buildTx(txs []document.CommonTx) []model.Tx {
+	var (
+		res []model.Tx
+	)
+	if len(txs) == 0 {
+		return res
+	}
+	for _, v := range txs {
+		tx := model.Tx{
+			Hash:      v.TxHash,
+			From:      v.From,
+			Amount:    v.Amount,
+			Type:      v.Type,
+			Timestamp: v.Time,
+		}
+
+		res = append(res, tx)
+	}
+
+	return res
+}
+
+func (s *ProposalService) buildVoteTxs(txs []document.CommonTx, msgs []document.TxMsg,
+	validators []document.Validator, accAddrValAddrMap map[string]string) []model.VoteTx {
+	var (
+		voteTxs []model.VoteTx
+		msgVote model.MsgVote
+	)
+	if len(txs) == 0 {
+		return voteTxs
+	}
+	for _, tx := range txs {
+		voteTx := model.VoteTx{
+			Voter:     tx.From,
+			TxHash:    tx.TxHash,
+			Timestamp: tx.Time,
+		}
+
+		for _, msg := range msgs {
+			if tx.TxHash == msg.Hash {
+				// marshal json
+				if err := json.Unmarshal([]byte(msg.Content), &msgVote); err != nil {
+					logger.Error("unmarshal json fail", logger.String("err", err.Error()))
+					continue
+				} else {
+					voteTx.Option = msgVote.Option
+				}
+				break
+			}
+		}
+
+		for _, v := range validators {
+			if accAddrValAddrMap[tx.From] == v.OperatorAddress {
+				voteTx.Voter = v.OperatorAddress
+				voteTx.Moniker = v.Description.Moniker
+				break
+			}
+		}
+
+		voteTxs = append(voteTxs, voteTx)
+	}
+
+	return voteTxs
 }

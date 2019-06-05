@@ -88,3 +88,16 @@ type (
 		Time         time.Time `json:"time"`
 	}
 )
+
+type GetVoteTxResponse struct {
+	Total int      `json:"total"`
+	Items []VoteTx `json:"items"`
+}
+
+type VoteTx struct {
+	Voter     string    `json:"voter"`
+	Moniker   string    `json:"moniker"`
+	Option    string    `json:"option"`
+	TxHash    string    `json:"tx_hash"`
+	Timestamp time.Time `json:"timestamp"`
+}
