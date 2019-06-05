@@ -2,7 +2,7 @@
   <div class="parameters_page_container">
     <div class="parameters_page_title_container">
       <div class="parameters_title_content">
-        <span class="parameters_title">Governable Parameters in IRISnet</span>
+        <span class="parameters_title">Governable Parameters of IRISnet</span>
       </div>
     </div>
     <div class="parameters_list_container">
@@ -99,9 +99,10 @@
                     Slashing: null,
                     General: null
                   }
-                  o.Staking = arr.filter(v => v.module === 'stake' || v.module === 'distr') || null;
+                  o.Staking = arr.filter(v => v.module === 'mint' || v.module === 'stake' || v.module === 'distr') || null;
                   o.Slashing = arr.filter(v => v.module === 'slashing') || null;
-                  o.General = arr.filter(v => (v.module !== 'stake' && v.module !== 'slashing' && v.module !== 'distr')) || null;
+                  o.General = arr.filter(v => (v.module !== 'stake' && v.module !== 'slashing' && v.module !== 'distr' && v.module !== 'mint')) || null;
+                  o.Staking = [...o.Staking.filter(v => v.module === 'mint'), ...o.Staking.filter(v => v.module === 'stake'), ...o.Staking.filter(v => v.module === 'distr')];
                   this.parametersList = o;
                 }else {
                   this.parametersList = {};

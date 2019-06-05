@@ -6,15 +6,57 @@
       </p>
     </div>
 
+    <div class="graph_container">
+      <div style="margin-right: 0.2rem;">
+        <m-proposals-echart></m-proposals-echart>
+      </div>
+      <m-proposals-card></m-proposals-card>
+    </div>
+
     <div :class="proposalsListPageWrap">
       <div class="pagination total_num">
-        <span class="proposals_list_page_wrap_hash_var" :class="count ? 'count_show' : 'count_hidden' ">{{count}} total</span>
-        <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
-        </b-pagination>
+        <div style="height: 100%; display: flex; align-items: center;">
+          <span class="proposals_list_page_wrap_hash_var" :class="count ? 'count_show' : 'count_hidden' ">{{count}} Proposals</span>
+          <div class="icon_list">
+            <div>
+              <img src="../assets/critical.png" />
+              <span>Critical</span>
+            </div>
+            <div>
+              <img src="../assets/important.png" />
+              <span>Important</span>
+            </div>
+            <div>
+              <img src="../assets/deposit_period.png" />
+              <span>Normal</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="icon_list">
+            <div>
+              <i></i>
+              <span>Critical</span>
+            </div>
+            <div>
+              <i style="background-color: #FFCF65;"></i>
+              <span>Important</span>
+            </div>
+            <div>
+              <i style="background-color: #CCDCFF;"></i>
+              <span>Normal</span>
+            </div>
+            <div>
+              <i style="background-color: #FE8A8A;"></i>
+              <span>Normal</span>
+            </div>
+          </div>
+        </div>
       </div>
       <div style="position:relative;overflow-x: auto;-webkit-overflow-scrolling:touch;">
         <spin-component :showLoading="showLoading"/>
-        <blocks-list-table :items="items" :type="'Proposals'" :showNoData="showNoData" :minWidth="tableMinWidth"></blocks-list-table>
+        <m-proposals-list-table :items="items"></m-proposals-list-table>
+        <!-- <blocks-list-table :items="items" :type="'Proposals'" :showNoData="showNoData" :minWidth="tableMinWidth"></blocks-list-table> -->
         <div v-show="showNoData" class="no_data_show">
           No Data
         </div>
@@ -34,10 +76,17 @@
   import SpinComponent from './commonComponents/SpinComponent';
   import Service from "../util/axios";
   import Constant from "../constant/Constant"
+  import MProposalsCard from './commonComponents/MProposalsCard';
+  import MProposalsEchart from './commonComponents/MProposalsEchart';
+  import MProposalsListTable from './table/MProposalsListTable';
+
   export default {
     components:{
       BlocksListTable,
       SpinComponent,
+      MProposalsCard,
+      MProposalsEchart,
+      MProposalsListTable
     },
     watch: {
       currentPage(currentPage) {
@@ -133,7 +182,7 @@
             },1000);
 
           }else {
-            this.items = [{"Title":"","Proposal ID":"","Type":"","Status":"","Submit Time":"",}];
+            this.items = [];
             this.showNoData = true;
           }
           this.showLoading = false;
@@ -157,8 +206,34 @@
       justify-content: flex-end;
       @include borderRadius(0.025rem);
       height:0.3rem;
-    li{
-      height:0.3rem !important;
+      .icon_list {
+        display: flex;
+        div {
+          font-size: 14px;
+          color: #22252A;
+          i {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+            display: inline-block;
+            margin-left: 50px;
+            background-color: #45B4FF;
+            vertical-align: middle;
+          }
+          img {
+            width: 14px;
+            height: 14px;
+            margin-left: 50px;
+            vertical-align: middle;
+          }
+          span {
+            margin-left: 10px;
+            vertical-align: middle;
+          }
+        }
+      }
+      li{
+        height:0.3rem !important;
       a{
         box-shadow: none;
       }
@@ -335,5 +410,9 @@
   }
   .count_hidden{
     visibility: hidden;
+  }
+  .graph_container {
+    display: flex;
+    margin-top: 0.3rem;
   }
 </style>
