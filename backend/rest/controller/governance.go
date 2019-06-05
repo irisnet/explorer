@@ -15,6 +15,7 @@ func RegisterProposal(r *mux.Router) error {
 		registerQueryProposals,
 		registerQueryProposal,
 		registerQueryGovParams,
+		registerQueryProposalTxs,
 	}
 
 	for _, fn := range funs {
@@ -66,6 +67,28 @@ func registerQueryProposal(r *mux.Router) error {
 func registerQueryGovParams(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryGovParams, "GET", func(request model.IrisReq) interface{} {
 		return gov.GovParamsService.QueryAll()
+	})
+	return nil
+}
+
+func registerQueryProposalTxs(r *mux.Router) error {
+	doApi(r, types.UrlRegisterQueryProposalTxs, "GET", func(request model.IrisReq) interface{} {
+		id, err := strconv.ParseInt(Var(request, "id"), 10, 64)
+		if err != nil {
+			panic(types.CodeInValidParam)
+		}
+		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
+		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 10))
+
+		role := Var(request, "role")
+		switch role {
+		case "voter":
+			return gov.GetVoteTxs(id, page, size)
+		case "depositor":
+			return gov.GetDepositTxs(id, page, size)
+		default:
+			panic(types.CodeInValidParam)
+		}
 	})
 	return nil
 }
