@@ -86,21 +86,23 @@ func (service *ProposalService) QueryDepositAndVotingProposalList() []model.Prop
 	voterAddrArr := make([]string, 0, len(data))
 
 	for _, v := range data {
-		heightArr = append(heightArr, v.VotingStartHeight)
 
 		if v.Status == document.ProposalStatusDeposit {
 			depositProposalIdArr = append(depositProposalIdArr, v.ProposalId)
 		}
 
-		for _, addr := range v.Votes {
-			tag := false
-			for _, vAddr := range voterAddrArr {
-				if addr.Voter == vAddr {
-					tag = true
+		if v.Status == document.ProposalStatusVoting {
+			heightArr = append(heightArr, v.VotingStartHeight)
+			for _, addr := range v.Votes {
+				tag := false
+				for _, vAddr := range voterAddrArr {
+					if addr.Voter == vAddr {
+						tag = true
+					}
 				}
-			}
-			if !tag {
-				voterAddrArr = append(voterAddrArr, addr.Voter)
+				if !tag {
+					voterAddrArr = append(voterAddrArr, addr.Voter)
+				}
 			}
 		}
 	}
@@ -222,16 +224,16 @@ func (service *ProposalService) QueryList(page, size int) (resp model.PageVo) {
 		for _, v := range data {
 			if v.Status == document.ProposalStatusVoting {
 				heightArr = append(heightArr, v.VotingStartHeight)
-			}
-			for _, addr := range v.Votes {
-				tag := false
-				for _, vAddr := range voterAddrArr {
-					if addr.Voter == vAddr {
-						tag = true
+				for _, addr := range v.Votes {
+					tag := false
+					for _, vAddr := range voterAddrArr {
+						if addr.Voter == vAddr {
+							tag = true
+						}
 					}
-				}
-				if !tag {
-					voterAddrArr = append(voterAddrArr, addr.Voter)
+					if !tag {
+						voterAddrArr = append(voterAddrArr, addr.Voter)
+					}
 				}
 			}
 		}
