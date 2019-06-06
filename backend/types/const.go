@@ -21,10 +21,11 @@ const (
 
 	//Governance
 	UrlRegisterQueryProposals              = "/gov/proposals"
-	UrlRegisterQueryDepositVotingProposals = "/gov/depositvotingproposals"
-	UrlRegisterQueryProposal               = "/gov/proposal/{pid}"
+	UrlRegisterQueryDepositVotingProposals = "/gov/deposit_voting_proposals"
+	UrlRegisterQueryProposal               = "/gov/proposals/{pid}"
 	UrlRegisterQueryGovParams              = "/gov/params"
-	UrlRegisterQueryProposalTxs            = "/gov/proposal/{id}/txs/{role}"
+	UrlRegisterQueryProposalsVoterTxs      = "/gov/proposals/{id}/voter_txs"
+	UrlRegisterQueryProposalsDepositorTxs  = "/gov/proposals/{id}/depositor_txs"
 
 	//SearchBox
 	UrlRegisterQueryText    = "/search/{text}"
