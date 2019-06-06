@@ -84,10 +84,10 @@ func (service *ProposalService) QueryDepositAndVotingProposalList() []model.Prop
 
 	heightArr := make([]int64, 0, len(data))
 	depositProposalIdArr := []uint64{}
-	voterAddrArr := make([]string, 0, len(data))
+
+	unique_set := make(map[string]bool)
 
 	for _, v := range data {
-
 		if v.Status == document.ProposalStatusDeposit {
 			depositProposalIdArr = append(depositProposalIdArr, v.ProposalId)
 		}
@@ -95,17 +95,14 @@ func (service *ProposalService) QueryDepositAndVotingProposalList() []model.Prop
 		if v.Status == document.ProposalStatusVoting {
 			heightArr = append(heightArr, v.VotingStartHeight)
 			for _, addr := range v.Votes {
-				tag := false
-				for _, vAddr := range voterAddrArr {
-					if addr.Voter == vAddr {
-						tag = true
-					}
-				}
-				if !tag {
-					voterAddrArr = append(voterAddrArr, addr.Voter)
-				}
+				unique_set[addr.Voter] = true
 			}
 		}
+	}
+
+	voterAddrArr := make([]string, 0, len(unique_set))
+	for x := range unique_set {
+		voterAddrArr = append(voterAddrArr, x)
 	}
 
 	powerForHeigtMap, err := service.GetlVotingPowerForHeightArr(heightArr)
@@ -349,15 +346,8 @@ func (service *ProposalService) Query(id int) (resp model.ProposalInfoVo) {
 
 	resp.Proposal = proposal
 
-	var votes []model.Vote
 	var result model.VoteResult
 	for _, v := range data.Votes {
-		vote := model.Vote{
-			Voter:  v.Voter,
-			Option: v.Option,
-			Time:   v.Time,
-		}
-		votes = append(votes, vote)
 
 		switch v.Option {
 		case "Yes":
@@ -370,7 +360,7 @@ func (service *ProposalService) Query(id int) (resp model.ProposalInfoVo) {
 			result.NoWithVeto++
 		}
 	}
-	resp.Votes = votes
+
 	resp.Result = result
 	return
 }
