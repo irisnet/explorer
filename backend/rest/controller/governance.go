@@ -15,6 +15,7 @@ func RegisterProposal(r *mux.Router) error {
 		registerQueryProposals,
 		registerQueryProposal,
 		registerQueryGovParams,
+		registerQueryDepositAndVotingProposals,
 		registerQueryProposalTxs,
 	}
 
@@ -43,6 +44,17 @@ func registerQueryProposals(r *mux.Router) error {
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 10))
 
 		result := gov.QueryList(page, size)
+		return result
+	})
+
+	return nil
+}
+
+func registerQueryDepositAndVotingProposals(r *mux.Router) error {
+
+	doApi(r, types.UrlRegisterQueryDepositVotingProposals, "GET", func(request model.IrisReq) interface{} {
+
+		result := gov.QueryDepositAndVotingProposalList()
 		return result
 	})
 
