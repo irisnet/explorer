@@ -35,33 +35,18 @@
     </b-table>
 
     <b-table :fields='fields' :items='items' striped v-if="type === 'ProposalsDetail'" nodelabel  class="proposal_detail_list">
-      <template slot='Voter' slot-scope='data'>
-        <div class="skip_route_gray">
-          {{data.item['Voter']}}
-        </div>
-      </template>
       <template slot='Amount' slot-scope='data'>
         <div class="skip_route_gray" style="width: 200px;">
           {{formatAmount(data.item['Amount'])}} IRIS
         </div>
       </template>
       <template slot='Voter' slot-scope='data'>
-        <span v-if="(/^[1-9]\d*$/).test(data.item.Voter)" class="skip_route">
-        <router-link :to="`/tx?txHash=${data.item.Tx_Hash}`">{{data.item.From}} Validators</router-link>
-        </span>
-        <span class="skip_route" style="display: flex" v-if="!(/^[0-9]\d*$/).test(data.item.Voter) && data.item.Voter !== '--'">
+        <div class="skip_route">
           <div class="name_address">
             <span class="remove_default_style">
-              <router-link :to="`/address/1/${data.item.Voter}`" class="link_style justify">{{formatAddress(data.item.Voter)}}</router-link>
+              <router-link :to="`/address/1/${data.item.Voter.split(' ')[0]}`" class="link_style justify">{{data.item.Voter.split(' ')[1]}}</router-link>
             </span>
-            <span class="address proposals_address_content">{{data.item.Voter}}</span>
           </div>
-        </span>
-        <span class="no_skip" v-show="(/^[0]\d*$/).test(data.item.Voter) || data.item.Voter === '--'">--</span>
-      </template>
-      <template slot='Type' slot-scope='data'>
-        <div class="skip_route_gray" style="width: 200px;">
-          {{data.item['Type']}}
         </div>
       </template>
       <template slot='Depositor' slot-scope='data'>

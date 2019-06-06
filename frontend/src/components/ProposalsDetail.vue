@@ -104,7 +104,7 @@
         </div>
       </div>
     </div>
-    <div :class="proposalsDetailWrap">
+    <div :class="[proposalsDetailWrap, $store.state.isMobile ? 'mobile_proposals_table_container' : '']">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;">
         <div class="proposals_table_title_div" style="margin-top: 0;">Voters</div>
         <div class="voting_options">
@@ -126,8 +126,7 @@
           No Data
         </div>
       </div>
-      <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-        <span class="proposals_detail_list_total">{{itemTotal}} Total</span>
+      <div class="table_pagination">
         <b-pagination v-model="currentPage" :total-rows="itemTotal" :per-page="perPage"></b-pagination>
       </div>
     </div>
@@ -140,8 +139,7 @@
           No Data
         </div>
       </div>
-      <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-        <span class="proposals_detail_list_total">{{depositorItemsTotal}} Total</span>
+      <div class="table_pagination">
         <b-pagination v-model="depositorCurrentPage" :total-rows="depositorItemsTotal" :per-page="perPage"></b-pagination>
       </div>
     </div>
@@ -251,26 +249,23 @@
         }
       },
       getVoter() {
-        let url = `/api/gov/proposal/${this.$route.params.proposal_id}/txs/voter?page=${this.currentPage}&size=${this.perPage}`;
+        let url = `/api/gov/proposals/${this.$route.params.proposal_id}/voter_txs?page=${this.currentPage}&size=${this.perPage}`;
         this.showNoData = false;
         this.items = [];
         Service.http(url).then((data) => {
           if(data.items && data.items.length > 0){
             this.itemTotal = data.total;
             let that = this;
-            clearInterval(this.votingTimer);
-            this.votingTimer = setInterval(function () {
-              let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-              that.items = data.items.map(item =>{
-                let votingListItemTime = Tools.formatAge(currentServerTime,item.timestamp,Constant.SUFFIX,Constant.PREFIX);
-                return {
-                  Voter: item.voter,
-                  Vote_Option: item.option,
-                  Tx_Hash: item.tx_hash,
-                  Time: votingListItemTime
-                }
-              })
-            },1000);
+            let currentServerTime = new Date().getTime() + that.diffMilliseconds;
+            that.items = data.items.map(item =>{
+              let votingListItemTime = (new Date(item.timestamp).getTime()) > 0 ? Tools.format2UTC(item.timestamp) : '--';
+              return {
+                Voter: item.voter + ' ' + item.moniker,
+                Vote_Option: item.option,
+                Tx_Hash: item.tx_hash,
+                Time: votingListItemTime
+              }
+            });
           }else {
             this.items = [{
               Voter: "",
@@ -291,27 +286,24 @@
         })
       },
       getDepositor() {
-        let url = `/api/gov/proposal/${this.$route.params.proposal_id}/txs/depositor?page=${this.depositorCurrentPage}&size=${this.perPage}`;
+        let url = `/api/gov/proposals/${this.$route.params.proposal_id}/depositor_txs?page=${this.depositorCurrentPage}&size=${this.perPage}`;
         this.depositorShowNoData = false;
         this.depositorItems = [];
         Service.http(url).then((data) => {
           if(data.items && data.items.length > 0){
             this.depositorItemsTotal = data.total;
             let that = this;
-            clearInterval(this.depositorTimer);
-            this.depositorTimer = setInterval(function () {
-              let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-              that.depositorItems = data.items.map(item =>{
-                let votingListItemTime = Tools.formatAge(currentServerTime,item.timestamp,Constant.SUFFIX,Constant.PREFIX);
-                return {
-                  Depositor: item.from,
-                  Amount: item.amount[0].amount,
-                  Type: item.type,
-                  Tx_Hash: item.hash,
-                  Time: votingListItemTime
-                }
-              })
-            },1000);
+            let currentServerTime = new Date().getTime() + that.diffMilliseconds;
+            that.depositorItems = data.items.map(item =>{
+              let votingListItemTime = (new Date(item.timestamp).getTime()) > 0 ? Tools.format2UTC(item.timestamp) : '--';
+              return {
+                Depositor: item.from,
+                Amount: item.amount[0].amount,
+                Type: item.type,
+                Tx_Hash: item.hash,
+                Time: votingListItemTime
+              }
+            });
           }else {
             this.depositorItems = [{
               Depositor: '',
@@ -335,7 +327,7 @@
       },
       getProposalsInformation() {
         this.showLoading = true;
-        let url = `/api/gov/proposal/${this.$route.params.proposal_id}`;
+        let url = `/api/gov/proposals/${this.$route.params.proposal_id}`;
         Service.http(url).then((data) => {
           this.showLoading = false;
           if(data){
@@ -509,13 +501,16 @@
     margin-bottom: 0.2rem;
     width: 100%;
     overflow-x: auto;
+    .table_wrap {
+      min-width: 9.6rem;
+    }
     .no_data_show {
       @include flex;
         justify-content: center;
         border-top: 0.01rem solid #eee;
         border-bottom: 0.01rem solid #eee;
         font-size: 0.14rem;
-        height: 3rem;
+        height: 1rem;
         align-items: center;
       }
     }
@@ -667,6 +662,7 @@
   .voting_options{
     display: flex;
     color: #a2a2ae;
+    margin-bottom: 10px;
     & > span{
       font-size: 0.14rem;
       color: #A2A2AE;
@@ -718,8 +714,22 @@
     vertical-align: middle;
     margin-right: 4px;
   }
-  .proposals_detail_list_total {
-    font-size: 0.18rem;
-    color: #a2a2ae;
+  .mobile_proposals_table_container {
+    & > div {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start !important;
+      .proposals_table_title_div {
+        width: 100%;
+      }
+    }
+    .table_pagination {
+      justify-content: flex-end!important;
+    }
+  }
+  .table_pagination {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
   }
 </style>

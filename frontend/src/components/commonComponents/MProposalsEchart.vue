@@ -224,8 +224,10 @@ export default {
       display: flex;
       justify-content: center;
       .propsals_echart {
-        width: 3.2rem;
-        height: 3.2rem;
+        width: calc(100% - 20px);
+        max-width: 3.2rem;
+        height: calc(100% - 20px);
+        max-height: 3.2rem;
         align-self: center;
         .propsals_echart_center {
           width: 0.8rem;

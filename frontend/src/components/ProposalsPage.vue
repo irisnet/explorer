@@ -5,46 +5,49 @@
         <span class="proposals_list_title">Proposals</span>
       </p>
     </div>
-    <div class="graph_container" :class="[$store.state.isMobile ? 'mobile_graph_container' : '']" 
-      v-if="$store.state.isMobile || (votingPeriodDatas.length === 1 && depositPeriodDatas.length === 1) ">
-      <div v-for="v in votingPeriodDatas" :key="v.proposal_id"
-        :class="[votingPeriodDatas.length === 1 && depositPeriodDatas.length === 0 ? 'one_votingPeriodDatas' : '',
-        votingPeriodDatas.length > 1 ? 'two_votingPeriodDatas' : '']">
-        <m-proposals-echart :data="v" v-if="v"></m-proposals-echart>
+    <div class="graph_containers">
+      <div class="graph_container" :class="[$store.state.isMobile ? 'mobile_graph_container' : '']" 
+        v-if="$store.state.isMobile || (votingPeriodDatas.length === 1 && depositPeriodDatas.length === 1) ">
+        <div v-for="v in votingPeriodDatas" :key="v.proposal_id"
+          :class="[votingPeriodDatas.length === 1 && depositPeriodDatas.length === 0 ? 'one_votingPeriodDatas' : '',
+          votingPeriodDatas.length > 1 ? 'two_votingPeriodDatas' : '']">
+          <m-proposals-echart :data="v" v-if="v"></m-proposals-echart>
+        </div>
+        <div v-for="v in depositPeriodDatas" :key="v.proposal_id" 
+          :class="[depositPeriodDatas.length === 1 && votingPeriodDatas.length === 0 ? 'one_depositPeriodDatas' : '',
+          depositPeriodDatas.length > 1 ? 'two_depositPeriodDatas' : '']">
+          <m-proposals-card :data="v" v-if="v"></m-proposals-card>
+        </div>
       </div>
-      <div v-for="v in depositPeriodDatas" :key="v.proposal_id" 
-        :class="[depositPeriodDatas.length === 1 && votingPeriodDatas.length === 0 ? 'one_depositPeriodDatas' : '',
-        depositPeriodDatas.length > 1 ? 'two_depositPeriodDatas' : '']">
-        <m-proposals-card :data="v" v-if="v"></m-proposals-card>
-      </div>
-    </div>
 
-    <div class="graph_container graph_container_one"
-      v-if="!$store.state.isMobile && ((votingPeriodDatas.length === 1 && depositPeriodDatas.length === 0) || depositPeriodDatas.length === 1 && votingPeriodDatas.length === 0)">
-      <div v-for="v in votingPeriodDatas" :key="v.proposal_id">
-        <m-proposals-echart :data="v" v-if="v"></m-proposals-echart>
-      </div>
-      <div v-for="v in depositPeriodDatas" :key="v.proposal_id">
-        <m-proposals-card :data="v" v-if="v"></m-proposals-card>
-      </div>
-    </div>
-
-    <div class="graph_container graph_container_warp"
-      v-if="!$store.state.isMobile && (depositPeriodDatas.length > 1 || votingPeriodDatas.length > 1)">
-      <div>
+      <div class="graph_container graph_container_one"
+        v-if="!$store.state.isMobile && ((votingPeriodDatas.length === 1 && depositPeriodDatas.length === 0) || depositPeriodDatas.length === 1 && votingPeriodDatas.length === 0)">
         <div v-for="v in votingPeriodDatas" :key="v.proposal_id">
           <m-proposals-echart :data="v" v-if="v"></m-proposals-echart>
         </div>
-      </div>
-      <div>
         <div v-for="v in depositPeriodDatas" :key="v.proposal_id">
           <m-proposals-card :data="v" v-if="v"></m-proposals-card>
         </div>
       </div>
+
+      <div class="graph_container graph_container_warp"
+        v-if="!$store.state.isMobile && (depositPeriodDatas.length > 1 || votingPeriodDatas.length > 1)">
+        <div>
+          <div v-for="v in votingPeriodDatas" :key="v.proposal_id">
+            <m-proposals-echart :data="v" v-if="v"></m-proposals-echart>
+          </div>
+        </div>
+        <div>
+          <div v-for="v in depositPeriodDatas" :key="v.proposal_id">
+            <m-proposals-card :data="v" v-if="v"></m-proposals-card>
+          </div>
+        </div>
+      </div>
     </div>
+   
 
     <div :class="proposalsListPageWrap">
-      <div class="pagination total_num">
+      <div class="pagination total_num" :class="[$store.state.isMobile ? 'mobile_graph_pagination_container' : '']">
         <div style="height: 100%; display: flex; align-items: center;">
           <span class="proposals_list_page_wrap_hash_var" :class="count ? 'count_show' : 'count_hidden' ">{{count}} Proposals</span>
           <div class="icon_list">
@@ -62,10 +65,10 @@
             </div>
           </div>
         </div>
-        <div>
+        <div class="mobile_graph_pagination_last_node">
           <div class="icon_list">
             <div>
-              <i></i>
+              <i style="margin-left: 0;"></i>
               <span>Yes</span>
             </div>
             <div>
@@ -350,7 +353,7 @@
         return typeof n === 'number'
       },
       getGrahpData() {
-        let url=`/api/gov/depositvotingproposals`;
+        let url=`/api/gov/deposit_voting_proposals`;
         Service.http(url).then((data)=>{
           if (data && Array.isArray(data) && data.length > 0) {
             this.formatGrahpData(data);
@@ -425,12 +428,13 @@
       @include flex;
       justify-content: flex-end;
       @include borderRadius(0.025rem);
-      height:0.3rem;
       .icon_list {
         display: flex;
         div {
           font-size: 14px;
           color: #22252A;
+          display: flex;
+          align-items: center;
           i {
             width: 12px;
             height: 12px;
@@ -466,8 +470,11 @@
   .total_num{
     @include flex;
       justify-content: space-between;
-      height:0.7rem;
       align-items: center;
+      flex-wrap: wrap;
+      & > div {
+        padding: 4px 0;
+      }
     }
   .no_data_show{
     @include flex;
@@ -479,7 +486,6 @@
       align-items: center;
     }
   .b-table {
-  //min-width: 8rem;
     a {
       text-decoration: none;
     }
@@ -604,8 +610,7 @@
     color: #a2a2ae;
     }
     .for_proposals{
-      display:inline-block;
-    //margin-left:0.1rem;
+        display:inline-block;
       }
     }
   }
@@ -631,12 +636,15 @@
   .count_hidden{
     visibility: hidden;
   }
+  .graph_containers {
+    width: 100%;
+    overflow-x: auto;
+  }
   .graph_container {
     display: flex;
-    margin-top: 0.3rem;
-    min-width: 12.8rem;
-    max-width: 12.8rem;
+    width: 12.8rem;
     flex-wrap: wrap;
+    margin: 0.3rem auto;
     & > div {
       margin-right: 0.2rem;
       margin-top: 0.2rem;
@@ -684,10 +692,43 @@
       flex: 1;
       display: flex;
       & > div {
-        width:100%!important;
-        margin-left: 0.2rem!important;
-        margin-right: 0.2rem!important;
+        width:calc(100% - 0.2rem)!important;
+        margin: auto;
       }
+    }
+    .propsals_echart_container {
+      flex-direction: column;
+    }
+  }
+  .mobile_graph_pagination_container {
+    padding-left: 0!important;
+    & > div {
+      flex-wrap: wrap;
+      width: 100%;
+      .proposals_list_page_wrap_hash_var {
+        white-space: nowrap;
+        display: block !important;
+        width: 100%;
+      }
+      padding: 10px 0!important;
+      .icon_list {
+        div {
+          img, i {
+            width: 14px !important;
+            height: 14px !important;
+            margin-left: 10px!important;
+          }
+          &:first-child {
+            img, i {
+              margin-left: 0px!important;
+            }
+          }
+        }
+      }
+    }
+    .mobile_graph_pagination_last_node {
+      display: flex;
+      padding: 0 0 10px 0!important;
     }
   }
 </style>
