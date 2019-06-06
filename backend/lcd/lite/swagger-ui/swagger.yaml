@@ -1,7 +1,7 @@
 ---
 swagger: "2.0"
 info:
-  version: 0.9.3
+  version: 0.9.7
   description: A REST interface for irishub state queries.
   title: explorer for the irishub
 
@@ -134,7 +134,7 @@ paths:
           description: generic error response
           schema:
             $ref: "#/definitions/error"
-  /api/gov/proposal/{pid}:
+  /api/gov/proposals/{pid}:
     get:
       summary: query a proposal
       tags:
@@ -179,7 +179,7 @@ paths:
           description: generic error response
           schema:
             $ref: "#/definitions/error"
-  /api/gov/depositvotingproposals:
+  /api/gov/deposit_voting_proposals:
     get:
       summary: query the deposit and voting proposals.
       tags:
@@ -207,7 +207,7 @@ paths:
           description: generic error response
           schema:
             $ref: "#/definitions/error"
-  /api/gov/proposal/{id}/txs/voter:
+  /api/gov/proposals/{id}/voter_txs:
     get:
       summary:
       tags:
@@ -219,6 +219,16 @@ paths:
           type: integer
           format: int64
           required: true
+        - in: query
+          name: page
+          type: integer
+          format: int
+          default: 1
+        - in: query
+          name: size
+          type: integer
+          format: int
+          default: 10
       responses:
         200:
           description:
@@ -228,7 +238,7 @@ paths:
           description: generic error response
           schema:
             $ref: "#/definitions/error"
-  /api/gov/proposal/{id}/txs/depositor:
+  /api/gov/proposals/{id}/depositor_txs:
     get:
       summary:
       tags:
@@ -240,6 +250,16 @@ paths:
           type: integer
           format: int64
           required: true
+        - in: query
+          name: page
+          type: integer
+          format: int
+          default: 1
+        - in: query
+          name: size
+          type: integer
+          format: int
+          default: 10
       responses:
         200:
           description:
@@ -709,7 +729,6 @@ definitions:
     example:
       total: 4
       items:
-
   TxGovPage:
     type: object
     properties:
