@@ -124,6 +124,8 @@
                 per = Math.max(per, 0);
                 per = Math.min(per, 100);
                 return per;
+              } else if(value <= min){
+                return 0;
               } else if(value > max){
                 return 100;
               } else {
@@ -160,7 +162,7 @@
                 parameterItem.genesis = `${parameterItem.genesis_value*100} %`;
               }else if(parameterItem.key === "gas_price_threshold"){
                 let maxL = arr[1].length - 1;
-                parameterItem.max = `${Number(arr[1]) / (10 ** maxL)}*10^${maxL}`;
+                parameterItem.max = `${Number(arr[1]) / (10 ** maxL)}*10^${maxL} iris-atto`;
                 parameterItem.current = Tools.formatPrice(parameterItem.current_value).split('.')[0];
                 parameterItem.genesis = Tools.formatPrice(parameterItem.genesis_value).split('.')[0];
               }else if(parameterItem.key === "tx_size"){

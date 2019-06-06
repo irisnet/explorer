@@ -159,16 +159,16 @@ export default {
       flex: 1 0 0.8rem;
     }
     .min {
-      padding-right: 0.1rem;
+      padding-right: 0.05rem;
       @include min_max;
       text-align: right;
     }
     .max {
-      padding-left: 0.1rem;
+      padding-left: 0.05rem;
       @include min_max;
     }
     .progress {
-      width: 2.4rem;
+      width: 2.2rem;
       height: 0.2rem;
       background-color: #F0F7FD;
       border-radius: 0.16rem;

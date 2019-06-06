@@ -2,29 +2,29 @@
   <div class="propsals_card_container">
     <div class="top">
       <span class="title">ID:</span>
-      <span class="value">10</span>
+      <span class="value">{{data.proposal_id}}</span>
       <span class="title" style="margin-left: 40px;">Title:</span>
-      <span class="value">Title:</span>
+      <span class="value">{{data.title}}</span>
     </div>
     <div class="content">
-      <span class="start">o</span>
+      <span class="start">0</span>
       <div class="progress">
-        <div class="current">
+        <div class="current" :style="{width: `${data.total_deposit_number_per}`}">
           <div class="current_value">
-            <span class="current_value_span">1000</span>
+            <span class="current_value_span">{{data.total_deposit_format}}</span>
             <span>CurrentDeposit</span>
           </div>
         </div>
-        <div class="intital">
+        <div class="intital" :style="{left: `${data.intial_deposit_number_per}`}">
           <div class="intital_value">
             <span>IntitalDeposit</span>  
-            <span class="intital_value_span">10000</span>
+            <span class="intital_value_span">{{data.intial_deposit_format}}</span>
           </div>
         </div>
       </div>
       <span class="end">
         <span>MinDeposit</span>
-        <span class="end_value">100000</span>
+        <span class="end_value">{{data.min_deposit_format}}</span>
       </span>
     </div>
   </div>
@@ -32,16 +32,23 @@
 
 <script>
 export default {
-  name: 'MProposalsCard'
+  name: 'MProposalsCard',
+  props: {
+    data: {
+      type: Object,
+      default: function() {return {}}
+    }
+  }
 }
 </script>
 
 <style lang="scss" scoped>
   .propsals_card_container {
     width: 6.3rem;
-    height: 2.7rem;
+    height: 4.6rem;
     border-radius: 1px;
     border: 1px solid #D7D9E0;
+    position: relative;
     .top {
       padding: 0.3rem;
       font-size: 12px;
@@ -54,8 +61,12 @@ export default {
       }
     }
     .content {
+      width: 100%;
+      height: 100%;
+      position: absolute;
       display: flex;
-      margin-top: 0.6rem;
+      top: 0;
+      align-items: center;
       span.start {
         text-align: right;
         margin-left: 30px;
@@ -77,9 +88,9 @@ export default {
         border-radius: 0.17rem;
         position: relative;
         overflow: visible;
+        white-space: nowrap;
         flex: 1;
         .current {
-          width: 2.64rem;
           height: 0.2rem;
           background: #3598DB;
           border-radius: 0.17rem;
@@ -114,9 +125,9 @@ export default {
           width: 2px;
           height: 100%;
           background: #D7D9E0;
-          left: 100px;
           overflow: visible;
           .intital_value {
+            text-align: center;
             position: absolute;
             top: 100%;
             font-size: 12px;

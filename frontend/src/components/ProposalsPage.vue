@@ -5,12 +5,42 @@
         <span class="proposals_list_title">Proposals</span>
       </p>
     </div>
-
-    <div class="graph_container">
-      <div style="margin-right: 0.2rem;">
-        <m-proposals-echart></m-proposals-echart>
+    <div class="graph_container" :class="[$store.state.isMobile ? 'mobile_graph_container' : '']" 
+      v-if="$store.state.isMobile || (votingPeriodDatas.length === 1 && depositPeriodDatas.length === 1) ">
+      <div v-for="v in votingPeriodDatas" :key="v.proposal_id"
+        :class="[votingPeriodDatas.length === 1 && depositPeriodDatas.length === 0 ? 'one_votingPeriodDatas' : '',
+        votingPeriodDatas.length > 1 ? 'two_votingPeriodDatas' : '']">
+        <m-proposals-echart :data="v" v-if="v"></m-proposals-echart>
       </div>
-      <m-proposals-card></m-proposals-card>
+      <div v-for="v in depositPeriodDatas" :key="v.proposal_id" 
+        :class="[depositPeriodDatas.length === 1 && votingPeriodDatas.length === 0 ? 'one_depositPeriodDatas' : '',
+        depositPeriodDatas.length > 1 ? 'two_depositPeriodDatas' : '']">
+        <m-proposals-card :data="v" v-if="v"></m-proposals-card>
+      </div>
+    </div>
+
+    <div class="graph_container graph_container_one"
+      v-if="!$store.state.isMobile && ((votingPeriodDatas.length === 1 && depositPeriodDatas.length === 0) || depositPeriodDatas.length === 1 && votingPeriodDatas.length === 0)">
+      <div v-for="v in votingPeriodDatas" :key="v.proposal_id">
+        <m-proposals-echart :data="v" v-if="v"></m-proposals-echart>
+      </div>
+      <div v-for="v in depositPeriodDatas" :key="v.proposal_id">
+        <m-proposals-card :data="v" v-if="v"></m-proposals-card>
+      </div>
+    </div>
+
+    <div class="graph_container graph_container_warp"
+      v-if="!$store.state.isMobile && (depositPeriodDatas.length > 1 || votingPeriodDatas.length > 1)">
+      <div>
+        <div v-for="v in votingPeriodDatas" :key="v.proposal_id">
+          <m-proposals-echart :data="v" v-if="v"></m-proposals-echart>
+        </div>
+      </div>
+      <div>
+        <div v-for="v in depositPeriodDatas" :key="v.proposal_id">
+          <m-proposals-card :data="v" v-if="v"></m-proposals-card>
+        </div>
+      </div>
     </div>
 
     <div :class="proposalsListPageWrap">
@@ -27,7 +57,7 @@
               <span>Important</span>
             </div>
             <div>
-              <img src="../assets/deposit_period.png" />
+              <img src="../assets/normal.png" />
               <span>Normal</span>
             </div>
           </div>
@@ -36,25 +66,24 @@
           <div class="icon_list">
             <div>
               <i></i>
-              <span>Critical</span>
-            </div>
-            <div>
-              <i style="background-color: #FFCF65;"></i>
-              <span>Important</span>
+              <span>Yes</span>
             </div>
             <div>
               <i style="background-color: #CCDCFF;"></i>
-              <span>Normal</span>
+              <span>Abstain</span>
+            </div>
+            <div>
+              <i style="background-color: #FFCF65;"></i>
+              <span>No</span>
             </div>
             <div>
               <i style="background-color: #FE8A8A;"></i>
-              <span>Normal</span>
+              <span>NoWithVeto</span>
             </div>
           </div>
         </div>
       </div>
-      <div style="position:relative;overflow-x: auto;-webkit-overflow-scrolling:touch;">
-        <spin-component :showLoading="showLoading"/>
+      <div style="position:relative;overflow-x: auto; overflow-y: hidden;-webkit-overflow-scrolling:touch;">
         <m-proposals-list-table :items="items"></m-proposals-list-table>
         <!-- <blocks-list-table :items="items" :type="'Proposals'" :showNoData="showNoData" :minWidth="tableMinWidth"></blocks-list-table> -->
         <div v-show="showNoData" class="no_data_show">
@@ -66,7 +95,7 @@
         </b-pagination>
       </div>
     </div>
-
+    <spin-component :showLoading="showLoading"/>
   </div>
 </template>
 
@@ -97,7 +126,6 @@
         }).then(()=>{
           Tools.scrollToTop()
         })
-
       },
       $route() {
         this.items = [];
@@ -121,6 +149,8 @@
         innerWidth : window.innerWidth,
         tableMinWidth:"",
         proposalListTimer: null,
+        votingPeriodDatas: [],
+        depositPeriodDatas: []
       }
     },
     beforeMount() {
@@ -133,6 +163,7 @@
     },
 
     mounted() {
+      this.getGrahpData();
       this.getDataList(1, 30);
       window.addEventListener('resize',this.onresize);
     },
@@ -154,6 +185,179 @@
           this.tableMinWidth = 8.8;
         }
       },
+      formatGrahpChildren(arr, color) {
+        let opacity = 1000;
+        return arr.map(v => {
+          let obj =  {
+            value: v.voting_power,
+            info: v,
+            nodeClick: false,
+            itemStyle: {
+              color: `rgba(${color},${opacity / 1000})`,
+              borderColor: '#CCDCFF',
+              borderWidth: 0
+            }
+          }
+          opacity = opacity - 90;
+          return obj;
+        });
+      },
+      formatNumber(str) {
+        if (!str) {
+          return '';
+        }
+        let r = /\.(\d{5})/g;
+        let arr = str.match(r);
+        if (arr && arr[0]) {
+          let n = Math.round(Number(arr[0].replace('.', '')) / 10);
+          n = n / 100;
+          return n;
+        } else {
+          return '';
+        }
+      },
+      formatGrahpData(data) {
+        let votingPeriodDatas = data.filter(v => v.status === 'VotingPeriod');
+        let depositPeriodDatas = data.filter(v => v.status === 'DepositPeriod');
+        this.votingPeriodDatas = votingPeriodDatas.map(item => {
+          let o = {};
+          o.proposal_id = item.proposal_id;
+          o.title = item.title;
+          o.participation = item.level && item.level.gov_param && item.level.gov_param.participation && this.formatNumber(item.level.gov_param.participation);
+          o.threshold = item.level && item.level.gov_param && item.level.gov_param.threshold && this.formatNumber(item.level.gov_param.threshold);
+          let all = item.voting_power_for_height;
+          let yesArr = item.votes.filter(v => v.option === 'Yes');
+          let yes = yesArr.reduce((init, v) => {return v.voting_power + init}, 0);
+          let noArr = item.votes.filter(v => v.option === 'No');
+          let no = noArr.reduce((init, v) => {return v.voting_power + init}, 0);
+          let abstainArr = item.votes.filter(v => v.option === 'Abstain');
+          let abstain = abstainArr.reduce((init, v) => {return v.voting_power + init}, 0);
+          let noWithVetoArr = item.votes.filter(v => v.option === 'NoWithVeto');
+          let noWithVeto = noWithVetoArr.reduce((init, v) => {return v.voting_power + init}, 0);
+          let votes = yes + no + abstain + noWithVeto;
+          let data = [
+            {
+              name: 'Participant',
+              value: votes,
+              itemStyle: {
+                color: '#3598DB',
+                borderColor: '#CCDCFF',
+                borderWidth: 0
+              },
+              children: [
+                {
+                  name: 'Yes',
+                  value: yes,
+                  itemStyle: {
+                    color: '#45B4FF',
+                    borderColor: '#CCDCFF',
+                    borderWidth: 0
+                  },
+                  children: this.formatGrahpChildren(yesArr, '69,180,255')
+                },
+                {
+                  name: 'Abstain',
+                  value: abstain,
+                  itemStyle: {
+                    color: '#CCDCFF',
+                    borderColor: '#CCDCFF',
+                    borderWidth: 0
+                  },
+                  children: this.formatGrahpChildren(abstainArr, '204,220,255')
+                },
+                {
+                  name: 'No',
+                  value: no,
+                  itemStyle: {
+                    color: '#FFCF65',
+                    borderColor: '#CCDCFF',
+                    borderWidth: 0
+                  },
+                  children: this.formatGrahpChildren(noArr, '255,207,101')
+                },
+                {
+                  name: 'NoWithVeto',
+                  value: noWithVeto,
+                  itemStyle: {
+                    color: '#FE8A8A',
+                    borderColor: '#CCDCFF',
+                    borderWidth: 0
+                  },
+                  children: this.formatGrahpChildren(noWithVetoArr, '254,138,138')
+                }
+              ]
+            },
+            {
+              name: 'Nonparticipant',
+              value: all - votes,
+              nodeClick: false,
+              itemStyle: {
+                color: '#E5E9FB',
+                borderColor: '#E5E9FB',
+                borderWidth: 0
+              },
+              children: [
+                {
+                  name: '',
+                  value: all - votes,
+                  nodeClick: false,
+                  itemStyle: {
+                    color: '#E5E9FB',
+                    borderColor: '#CCDCFF',
+                    borderWidth: 0
+                  },
+                  children: [
+                    {
+                      name: '',
+                      value: all - votes,
+                      nodeClick: false,
+                      itemStyle: {
+                        color: '#E5E9FB',
+                        borderColor: '#CCDCFF',
+                        borderWidth: 0
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ];
+          o.data = data;
+          return o;
+        });
+        
+        depositPeriodDatas.forEach(v => {
+          if (v.level && v.level.gov_param && v.level.gov_param.min_deposit && v.level.gov_param.min_deposit.amount) {
+            v.min_deposit_number = Number(v.level.gov_param.min_deposit.amount);
+            v.min_deposit_format = `${Tools.formatAmount(v.level.gov_param.min_deposit.amount)} IRIS`;
+          }
+          if (v.intial_deposit && v.intial_deposit.amount) {
+            v.intial_deposit_number = Number(v.intial_deposit.amount);
+            v.intial_deposit_format = `${Tools.formatAmount(v.intial_deposit.amount)} IRIS`;
+          }
+          if (v.total_deposit && v.total_deposit.amount) {
+            v.total_deposit_number = Number(v.total_deposit.amount);
+            v.total_deposit_format = `${Tools.formatAmount(v.total_deposit.amount)} IRIS`;
+          }
+          v.intial_deposit_number_per = this.isNumber(v.intial_deposit_number) && this.isNumber(v.min_deposit_number) ?
+          (v.intial_deposit_number / v.min_deposit_number) * 100 + '%' : 0;
+          v.total_deposit_number_per = this.isNumber(v.total_deposit_number) && this.isNumber(v.min_deposit_number) ?
+          (v.total_deposit_number / v.min_deposit_number) * 100 + '%' : 0;
+        });
+        this.depositPeriodDatas = depositPeriodDatas;
+      },
+      isNumber(n) {
+        return typeof n === 'number'
+      },
+      getGrahpData() {
+        let url=`/api/gov/depositvotingproposals`;
+        Service.http(url).then((data)=>{
+          if (data && Array.isArray(data) && data.length > 0) {
+            this.formatGrahpData(data);
+          }
+        }).catch(err => {
+        });
+      },
       getDataList(currentPage, pageSize) {
         this.showLoading = true;
         let url=`/api/gov/proposals?page=${currentPage}&size=${pageSize}`;
@@ -163,24 +367,40 @@
             this.count = proposalList.Count;
             let that = this;
             clearInterval(this.proposalListTimer);
-            this.proposalListTimer = setInterval(function () {
+            // this.proposalListTimer = setInterval(function () {
               that.items = proposalList.Data.map(item =>{
                 let proposalId = item.proposal_id === 0 ? "--" : item.proposal_id;
                 let type = item.type;
                 let status  = item.status;
                 let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-                let submitTime = Tools.formatAge(currentServerTime,item.submit_time.split("+")[0],Constant.SUFFIX,Constant.PREFIX);
+                let submitTime = (new Date(item.submit_time).getTime()) > 0 ? Tools.format2UTC(item.submit_time) : '--';
+                let depositEndTime = (new Date(item.deposit_end_time).getTime()) > 0 ? Tools.format2UTC(item.deposit_end_time) : '--';
+                let votingEndTime = (new Date(item.voting_end_time).getTime()) > 0 ? Tools.format2UTC(item.voting_end_time) : '--';
                 let title = Tools.formatString(item.title,20,"...");
+                let final_votes = Object.keys(item.final_votes).length > 0 ? item.final_votes : null;
+                let finalTotalVotes = 0;
+                for (let k in item.final_votes) {
+                  finalTotalVotes += Number(item.final_votes[k]);
+                }
+                if(final_votes) {
+                  for (let k in final_votes) {
+                    final_votes[k] = (Number(final_votes[k]) / finalTotalVotes) * 100;
+                  }
+                }
                 return {
-                  Title : title,
-                  'Proposal ID' : proposalId,
-                  Type : type,
-                  Status : status,
-                  SubmitTime : submitTime,
+                  title : title,
+                  id : proposalId,
+                  type : type,
+                  status : status,
+                  submitTime : submitTime,
+                  depositEndTime: depositEndTime,
+                  votingEndTime: votingEndTime,
+                  finalTotalVotes: finalTotalVotes,
+                  finalVotes: final_votes,
+                  level: item.level && item.level.name
                 }
               })
-            },1000);
-
+            // },1000);
           }else {
             this.items = [];
             this.showNoData = true;
@@ -414,5 +634,60 @@
   .graph_container {
     display: flex;
     margin-top: 0.3rem;
+    min-width: 12.8rem;
+    max-width: 12.8rem;
+    flex-wrap: wrap;
+    & > div {
+      margin-right: 0.2rem;
+      margin-top: 0.2rem;
+      &:nth-of-type(2n) {
+        margin-right: 0rem;
+      }
+    }
+  }
+  .graph_container_warp {
+    display: block;
+    & > div {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      margin-right: 0rem!important;
+      & > div {
+        margin-right: 0.2rem;
+        margin-top: 0.2rem;
+        &:nth-of-type(2n) {
+          margin-right: 0rem;
+        }
+      }
+      &:nth-of-type(2) {
+        margin-top: 0rem!important;
+      }
+    }
+  }
+  .graph_container_one {
+    width: 100%;
+    & > div {
+      width: 100%;
+      margin-right: 0rem!important;
+      & > div {
+        width: 100%;
+      }
+    }
+  }
+  .mobile_graph_container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    & > div {
+      margin-left: 0rem!important;
+      margin-right: 0rem!important;
+      flex: 1;
+      display: flex;
+      & > div {
+        width:100%!important;
+        margin-left: 0.2rem!important;
+        margin-right: 0.2rem!important;
+      }
+    }
   }
 </style>
