@@ -174,13 +174,126 @@ paths:
         200:
           description: T
           schema:
-            $ref: "#/definitions/GovProposals"
+            $ref: "#/definitions/GovProposalsNewStyle"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/gov/depositvotingproposals:
+    get:
+      summary: query the deposit and voting proposals.
+      tags:
+        - Governance
+      responses:
+        200:
+          type: array
+          items:
+            $ref: "#/definitions/GovProposalNewStyle"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/gov/params:
+    get:
+      summary: query the Governance params.
+      tags:
+        - Governance
+      responses:
+        200:
+          type: array
+          items:
+            $ref: "#/definitions/GovParams"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/gov/proposal/{id}/txs/voter:
+    get:
+      summary:
+      tags:
+        - Governance
+      parameters:
+        - name: id
+          in: path
+          description: proposal id
+          type: integer
+          format: int64
+          required: true
+      responses:
+        200:
+          description:
+          schema:
+            $ref: "#/definitions/GetVoteTxResponse"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/gov/proposal/{id}/txs/depositor:
+    get:
+      summary:
+      tags:
+        - Governance
+      parameters:
+        - name: id
+          in: path
+          description: proposal id
+          type: integer
+          format: int64
+          required: true
+      responses:
+        200:
+          description:
+          schema:
+            $ref: "#/definitions/TxPage"
         default:
           description: generic error response
           schema:
             $ref: "#/definitions/error"
 
+
 definitions:
+  GetVoteTxResponse:
+    type: object
+    properties:
+      total:
+        type: integer
+        format: int
+      items:
+         type: array
+         items:
+           $ref: "#/definitions/VoteTx"
+  VoteTx:
+    type: object
+    properties:
+      voter:
+        type: string
+      moniker:
+        type: string
+      option:
+        type: string
+      tx_hash:
+        type: string
+      timestamp:
+        type: string
+  GovParams:
+    type: object
+    properties:
+      module:
+        type: string
+      key:
+        type: string
+      type:
+        type: string
+      range:
+        type: string
+      genesis_value:
+        type: string
+      current_value:
+        type: string
+      description:
+        type: string
+      note:
+        type: string
   Blocks:
     type: object
     required:
@@ -307,6 +420,19 @@ definitions:
           $ref: "#/definitions/Vote"
        result:
           $ref: "#/definitions/VoteResult"
+  GovProposalsNewStyle:
+    type: object
+    required:
+      - Count
+      - Data
+    properties:
+      Count:
+       type: integer
+       format: int
+      Data:
+        type: array
+        items:
+          $ref: "#/definitions/GovProposalNewStyle"
   GovProposals:
     type: object
     required:
@@ -374,6 +500,79 @@ definitions:
         type: integer
         format: uint64
       threshold:
+        type: string
+  GovProposalNewStyle:
+    type: object
+    required:
+    properties:
+      title:
+        type: string
+      proposal_id:
+        type: integer
+        format: uint64
+      type:
+        type: string
+      status:
+        type: string
+      intial_deposit:
+        $ref: "#/definitions/Coin"
+      total_deposit:
+        $ref: "#/definitions/Coin"
+      submit_time:
+        type: string
+      deposit_end_time:
+        type: string
+      voting_end_time:
+        type: string
+      voting_power_for_height:
+        type: int64
+      level:
+        $ref: "#/definitions/Level"
+      votes:
+        type: array
+        items:
+          $ref: "#/definitions/VoteWithVoterInfo"
+      final_votes:
+        $ref: "#/definitions/FinalVotes"
+  LevelGovParam:
+    type: object
+    properties:
+      participation:
+        type: string
+      threshold:
+        type: string
+      min_deposit:
+        $ref: "#/definitions/Coin"
+  Level:
+    type: object
+    properties:
+      name:
+        type string
+      gov_param:
+        $ref: "#/definitions/LevelGovParam"
+  VoteWithVoterInfo:
+    type: object
+    properties:
+      voter:
+        type: string
+      voter_moniker:
+        type: string
+      option:
+        type: string
+      voting_power:
+        type: string
+      time:
+        type: string
+  FinalVotes:
+    type: object
+    properties:
+      yes:
+        type: string
+      no:
+        type: string
+      no_with_veto:
+        type: string
+      abstain:
         type: string
   Param:
     type: object
@@ -461,13 +660,13 @@ definitions:
         $ref: "#/definitions/Coin"
       actual_fee:
         $ref: "#/definitions/ActualFee"
-      tx_initiator:
-        type: string
       type:
         type: string
       status:
         type: string
       timestamp:
+        type: string
+      Signer:
         type: string
   TokenFlow:
     type: object
