@@ -23,7 +23,7 @@ type votingPowerForHeight struct {
 }
 
 type AddrAsMultiType struct {
-	AA              string
+	Moniker         string
 	Va              string
 	ConsensusPubKey string
 	ConsensusHex    string
@@ -113,12 +113,6 @@ func (service *ProposalService) QueryDepositAndVotingProposalList() []model.Prop
 		logger.Error("query voting power for height", logger.String("err", err.Error()), logger.Any("heightArr", heightArr))
 	}
 
-	addrMonikerMap, err := service.GetMonikerByAddr(voterAddrArr)
-
-	if err != nil {
-		logger.Error("query voter moniker", logger.String("err", err.Error()), logger.Any("addr list", voterAddrArr))
-	}
-
 	addrAsMultiTypeMap, err := service.GetValidatorPublicKeyMonikerFromProposalVoter(voterAddrArr)
 	if err != nil {
 		logger.Error("query GetValidatorPublicKeyMonikerFromProposalVoter", logger.String("err", err.Error()), logger.Any("voterAddrArr", voterAddrArr))
@@ -140,7 +134,7 @@ func (service *ProposalService) QueryDepositAndVotingProposalList() []model.Prop
 				Option:       v.Option,
 				Time:         v.Time,
 				VotingPower:  powerForHeigtMap[propo.VotingStartHeight].voterPower[addrAsMultiTypeMap[v.Voter].ConsensusHex],
-				VoterMoniker: addrMonikerMap[v.Voter],
+				VoterMoniker: addrAsMultiTypeMap[v.Voter].Moniker,
 			}
 			tmpVoteArr = append(tmpVoteArr, tmpVote)
 		}
@@ -220,23 +214,20 @@ func (service *ProposalService) QueryList(page, size int) (resp model.PageVo) {
 	if cnt, err := pageQuery(document.CollectionNmProposal, selector, nil, sort, page, size, &data); err == nil {
 		proposals := make([]model.ProposalNewStyle, 0, len(data))
 		heightArr := make([]int64, 0, len(data))
-		voterAddrArr := make([]string, 0, len(data))
+		unique_set := make(map[string]bool)
 
 		for _, v := range data {
 			if v.Status == document.ProposalStatusVoting {
 				heightArr = append(heightArr, v.VotingStartHeight)
 				for _, addr := range v.Votes {
-					tag := false
-					for _, vAddr := range voterAddrArr {
-						if addr.Voter == vAddr {
-							tag = true
-						}
-					}
-					if !tag {
-						voterAddrArr = append(voterAddrArr, addr.Voter)
-					}
+					unique_set[addr.Voter] = true
 				}
 			}
+		}
+
+		voterAddrArr := make([]string, 0, len(unique_set))
+		for x := range unique_set {
+			voterAddrArr = append(voterAddrArr, x)
 		}
 
 		powerForHeigtMap, err := service.GetlVotingPowerForHeightArr(heightArr)
@@ -402,6 +393,9 @@ func (service *ProposalService) QueryTypeAndTitleByIds(ids []uint64) ([]document
 
 func (_ ProposalService) GetValidatorPublicKeyMonikerFromProposalVoter(addrArrAsAa []string) (map[string]AddrAsMultiType, error) {
 
+	if len(addrArrAsAa) == 0 {
+		return nil, nil
+	}
 	AddrAsMultiTypeMap := map[string]AddrAsMultiType{}
 
 	addrArrAsVa := make([]string, 0, len(addrArrAsAa))
@@ -410,7 +404,6 @@ func (_ ProposalService) GetValidatorPublicKeyMonikerFromProposalVoter(addrArrAs
 		va := utils.Convert(conf.Get().Hub.Prefix.ValAddr, v)
 		addrArrAsVa = append(addrArrAsVa, va)
 		AddrAsMultiTypeMap[v] = AddrAsMultiType{
-			AA: v,
 			Va: va,
 		}
 	}
@@ -418,13 +411,12 @@ func (_ ProposalService) GetValidatorPublicKeyMonikerFromProposalVoter(addrArrAs
 	var validatorsDoc []document.Validator
 	var selector = bson.M{"description.moniker": 1, "operator_address": 1, "consensus_pubkey": 1}
 
-	err := queryAll(document.CollectionNmValidator, selector, nil, "", 0, &validatorsDoc)
+	err := queryAll(document.CollectionNmValidator, selector, bson.M{"operator_address": bson.M{"$in": addrArrAsVa}}, "", 0, &validatorsDoc)
 	if err != nil {
 		return nil, err
 	}
 
 	for _, validator := range validatorsDoc {
-
 		for k, v := range AddrAsMultiTypeMap {
 			if v.Va == validator.OperatorAddress {
 				v.ConsensusPubKey = validator.ConsensusPubkey
@@ -434,6 +426,7 @@ func (_ ProposalService) GetValidatorPublicKeyMonikerFromProposalVoter(addrArrAs
 					continue
 				}
 				v.ConsensusHex = strings.ToUpper(hex.EncodeToString(bytes))
+				v.Moniker = validator.Description.Moniker
 				AddrAsMultiTypeMap[k] = v
 			}
 		}
@@ -443,6 +436,10 @@ func (_ ProposalService) GetValidatorPublicKeyMonikerFromProposalVoter(addrArrAs
 }
 
 func (pro ProposalService) GetlVotingPowerForHeightArr(hArr []int64) (map[int64]votingPowerForHeight, error) {
+
+	if len(hArr) == 0 {
+		return nil, nil
+	}
 
 	var selector = bson.M{document.Block_Field_Height: 1, document.Block_Field_Validators: 1}
 
@@ -472,29 +469,11 @@ func (pro ProposalService) GetlVotingPowerForHeightArr(hArr []int64) (map[int64]
 	return res, nil
 }
 
-func (_ ProposalService) GetMonikerByAddr(addrArr []string) (map[string]string, error) {
-
-	var validatorsDoc []document.Validator
-	var selector = bson.M{"description.moniker": 1, "operator_address": 1}
-
-	err := queryAll(document.CollectionNmValidator, selector, nil, "", 0, &validatorsDoc)
-	if err != nil {
-		return nil, err
-	}
-
-	res := map[string]string{}
-	for _, addr := range addrArr {
-		for _, validator := range validatorsDoc {
-			if utils.Convert(conf.Get().Hub.Prefix.ValAddr, addr) == validator.OperatorAddress {
-				res[addr] = validator.Description.Moniker
-			}
-		}
-	}
-
-	return res, nil
-}
-
 func (_ ProposalService) GetDepositProposalInitAmount(idArr []uint64) (map[uint64]model.Coin, error) {
+
+	if len(idArr) == 0 {
+		return nil, nil
+	}
 
 	selector := bson.M{document.Tx_Field_Amount: 1, document.Tx_Field_ProposalId: 1}
 	condition := bson.M{document.Tx_Field_Type: "SubmitProposal", document.Tx_Field_Status: "success", document.Tx_Field_ProposalId: bson.M{"$in": idArr}}
