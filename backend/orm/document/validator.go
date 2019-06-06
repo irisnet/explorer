@@ -12,6 +12,7 @@ const (
 	ValidatorFieldJailed          = "jailed"
 	ValidatorFieldStatus          = "status"
 	ValidatorFieldOperatorAddress = "operator_address"
+	ValidatorFieldDescription     = "description"
 )
 
 type Validator struct {

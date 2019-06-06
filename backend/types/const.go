@@ -20,9 +20,11 @@ const (
 	UrlRegisterQueryBlockInfo         = "/block/blockinfo/{height}"
 
 	//Governance
-	UrlRegisterQueryProposals = "/gov/proposals"
-	UrlRegisterQueryProposal  = "/gov/proposal/{pid}"
-	UrlRegisterQueryGovParams = "/gov/params"
+	UrlRegisterQueryProposals              = "/gov/proposals"
+	UrlRegisterQueryDepositVotingProposals = "/gov/depositvotingproposals"
+	UrlRegisterQueryProposal               = "/gov/proposal/{pid}"
+	UrlRegisterQueryGovParams              = "/gov/params"
+	UrlRegisterQueryProposalTxs            = "/gov/proposal/{id}/txs/{role}"
 
 	//SearchBox
 	UrlRegisterQueryText    = "/search/{text}"
@@ -82,6 +84,8 @@ var (
 	TypeValStatusUnbonded  = "Unbonded"
 	TypeValStatusUnbonding = "Unbonding"
 	TypeValStatusBonded    = "Bonded"
+
+	TxTypeStatus = "success"
 
 	Unbonded  = 0x00
 	Unbonding = 0x01
