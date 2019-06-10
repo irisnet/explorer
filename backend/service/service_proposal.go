@@ -66,7 +66,7 @@ func (service *ProposalService) QueryProposalsByHeight(height int64) []model.Pro
 func (service *ProposalService) QueryDepositAndVotingProposalList() []model.ProposalNewStyle {
 
 	var data []document.Proposal
-	sort := desc(document.Proposal_Field_SubmitTime)
+	sort := document.Proposal_Field_VotingEndTime
 	selector := bson.M{
 		document.Proposal_Field_ProposalId:        1,
 		document.Proposal_Field_Title:             1,
