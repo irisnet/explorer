@@ -7,7 +7,7 @@
     </div>
     <div class="graph_containers">
       <div class="graph_container" :class="[$store.state.isMobile ? 'mobile_graph_container' : '']" 
-        v-if="$store.state.isMobile || (votingPeriodDatas.length === 1 && depositPeriodDatas.length === 1)">
+        v-if="($store.state.isMobile && (votingPeriodDatas.length > 0 && depositPeriodDatas.length > 0))|| (votingPeriodDatas.length === 1 && depositPeriodDatas.length === 1)">
         <div v-for="v in votingPeriodDatas" :key="v.proposal_id"
           :class="[votingPeriodDatas.length === 1 && depositPeriodDatas.length === 0 ? 'one_votingPeriodDatas' : '',
           votingPeriodDatas.length > 1 ? 'two_votingPeriodDatas' : '']">
@@ -48,11 +48,11 @@
 
     <div :class="proposalsListPageWrap">
       <div class="pagination total_num" :class="[$store.state.isMobile ? 'mobile_graph_pagination_container' : '']">
-        <div style="height: 100%; display: flex; align-items: center;">
+        <div style="height: 70px; display: flex; align-items: center;">
           <span class="proposals_list_page_wrap_hash_var" :class="count ? 'count_show' : 'count_hidden' ">{{count}} Proposals</span>
           <div class="icon_list">
             <div>
-              <img src="../assets/critical.png" />
+              <img src="../assets/critical.png" style="margin-left: 0;" />
               <span>Critical</span>
             </div>
             <div>
@@ -163,7 +163,6 @@
         this.proposalsListPageWrap = 'mobile_proposals_list_page_wrap';
       }
     },
-
     mounted() {
       this.getGrahpData();
       this.getDataList(1, 30);
@@ -383,7 +382,6 @@
               let proposalId = item.proposal_id === 0 ? "--" : item.proposal_id;
               let type = item.type;
               let status  = item.status;
-              let currentServerTime = new Date().getTime() + that.diffMilliseconds;
               let submitTime = (new Date(item.submit_time).getTime()) > 0 ? Tools.format2UTC(item.submit_time) : '--';
               let depositEndTime = (new Date(item.deposit_end_time).getTime()) > 0 ? Tools.format2UTC(item.deposit_end_time) : '--';
               let votingEndTime = (new Date(item.voting_end_time).getTime()) > 0 ? Tools.format2UTC(item.voting_end_time) : '--';
@@ -417,7 +415,9 @@
           }
           this.showLoading = false;
         }).catch(e => {
-          console.log(e)
+          this.items = [];
+          this.showNoData = true;
+          this.showLoading = false;
         })
       }
     }
@@ -476,13 +476,13 @@
   }
   .total_num{
     @include flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      & > div {
-        padding: 4px 0;
-      }
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    & > div {
+      padding: 4px 0;
     }
+  }
   .no_data_show{
     @include flex;
       justify-content: center;
@@ -638,10 +638,11 @@
     }
   }
   .count_show{
-    visibility: visible;
+    display: block;
+    margin-right: 50px;
   }
   .count_hidden{
-    visibility: hidden;
+    display: none !important;
   }
   .graph_containers {
     width: 100%;
@@ -710,12 +711,15 @@
   }
   .mobile_graph_pagination_container {
     padding-left: 0!important;
+    & > div:nth-child(1) {
+      height: 100%!important;
+    }
     & > div {
       flex-wrap: wrap;
       width: 100%;
       .proposals_list_page_wrap_hash_var {
         white-space: nowrap;
-        display: block !important;
+        display: block;
         width: 100%;
       }
       padding: 10px 0!important;
