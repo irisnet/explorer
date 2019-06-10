@@ -99,6 +99,11 @@ type Coin struct {
 	Amount float64 `json:"amount"`
 }
 
+func (c Coin) String() string {
+	return fmt.Sprintf(
+		`Denom: %v Amount: %v`, c.Denom, c.Amount)
+}
+
 func (c Coin) Add(a Coin) Coin {
 	if c.Denom == a.Denom {
 		return Coin{

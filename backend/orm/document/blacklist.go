@@ -1,6 +1,8 @@
 package document
 
 import (
+	"fmt"
+
 	"github.com/irisnet/explorer/backend/orm"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -17,6 +19,17 @@ type BlackList struct {
 	Identity     string `bson:"identity"`
 	Website      string `bson:"website"`
 	Details      string `bson:"details"`
+}
+
+func (b BlackList) String() string {
+	return fmt.Sprintf(`
+
+	OperatorAddr : %v
+	Moniker      : %v
+	Identity     : %v
+	Website      : %v
+	Details      : %v
+`, b.OperatorAddr, b.Moniker, b.Identity, b.Website, b.Details)
 }
 
 func (d BlackList) Name() string {

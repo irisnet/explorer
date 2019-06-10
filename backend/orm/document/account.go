@@ -1,6 +1,8 @@
 package document
 
 import (
+	"fmt"
+
 	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
@@ -29,6 +31,27 @@ type Account struct {
 	UnbondingDelegation             utils.Coin `bson:"unbonding_delegation"`
 	UnbondingDelegationUpdateHeight int64      `bson:"unbonding_delegation_update_height"`
 	UnbondingDelegationUpdateAt     int64      `bson:"unbonding_delegation_update_at"`
+}
+
+func (a Account) String() string {
+	return fmt.Sprintf(
+		`
+Address                         :%v
+AccountNumber                   :%v
+Total                           :%v
+TotalUpdateHeight               :%v
+TotalUpdateAt                   :%v
+CoinIris                        :%v
+CoinIrisUpdateHeight            :%v
+CoinIrisUpdateAt                :%v
+Delegation                      :%v
+DelegationUpdateHeight          :%v
+DelegationUpdateAt              :%v
+UnbondingDelegation             :%v
+UnbondingDelegationUpdateHeight :%v
+UnbondingDelegationUpdateAt     :%v
+`, a.Address, a.AccountNumber, a.Total, a.TotalUpdateHeight, a.TotalUpdateAt, a.CoinIris, a.CoinIrisUpdateHeight, a.CoinIrisUpdateAt, a.Delegation, a.DelegationUpdateAt, a.DelegationUpdateAt,
+		a.UnbondingDelegation, a.UnbondingDelegationUpdateHeight, a.UnbondingDelegationUpdateAt)
 }
 
 func (a Account) GetAccountList() ([]Account, error) {

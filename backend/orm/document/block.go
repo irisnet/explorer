@@ -68,7 +68,7 @@ func (_ Block) GetRecentBlockList() ([]Block, error) {
 	return blocks, err
 }
 
-func (_ Block) QueryOneBlockWithHeightAsc() (Block, error) {
+func (_ Block) QueryOneBlockOrderByHeightAsc() (Block, error) {
 
 	db := orm.GetDatabase()
 	defer db.Session.Close()
@@ -79,7 +79,7 @@ func (_ Block) QueryOneBlockWithHeightAsc() (Block, error) {
 	return firstBlock, err
 }
 
-func (_ Block) QueryOneBlockWithHeightDesc() (Block, error) {
+func (_ Block) QueryOneBlockOrderByHeightDesc() (Block, error) {
 
 	db := orm.GetDatabase()
 	defer db.Session.Close()
