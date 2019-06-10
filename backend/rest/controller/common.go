@@ -56,9 +56,11 @@ func registerQueryEnvConfig(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryConfig, "GET", func(request model.IrisReq) interface{} {
 		var envConf = struct {
 			CurEnv  interface{} `json:"cur_env"`
+			ChainId string      `json:"chain_id"`
 			Configs interface{} `json:"configs"`
 		}{
 			CurEnv:  conf.Get().Server.CurEnv,
+			ChainId: conf.Get().Hub.ChainId,
 			Configs: common.GetConfig(),
 		}
 		return envConf

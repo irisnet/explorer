@@ -11,10 +11,13 @@
             <div class="network_select_option" @click.stop="toggleSelectOption()">
               <div class="select_content">
                 <div class="current_select_content">{{currentSelected}} <i class="iconfont icon-arrowdown"></i></div>
-                <div class="select_option_content" v-if="$store.state.flShowSelectOption">
-                  <div class="common_option" v-if="flShowMainnet" @click="toMainnet(mainnetHref)">{{lang.home.mainnet}}</div>
-                  <div class="common_option" v-if="flShowTestnet" @click="toTestnet(testnetHref)">{{lang.home.testnet}}</div>
-                  <div class="common_option" @click="toNyanCats(nyanCatsHref)">{{lang.home.catsNet}}</div>
+                <div class="select_option_content" v-show="$store.state.flShowSelectOption">
+                  <div class="common_option"
+                       v-for="item in netWorkArray"
+                       v-show="item.netWorkSelectOption.trim() !== currentSelected.trim()"
+                       @click="windowOpenUrl(item.host)">
+                     {{item.netWorkSelectOption}}
+                  </div>
                 </div>
               </div>
             </div>
@@ -172,11 +175,10 @@
           </div>
         </span>
         <div class="select_option" v-show="flShowNetworkSelect">
-          <span class="feature_btn_mobile feature_nav"><a :href="mainnetHref" target="_blank">Mainnet</a></span>
-          <span class="feature_btn_mobile feature_nav"><a :href="testnetHref" target="_blank">FUXI Testnet</a></span>
-          <span class="feature_btn_mobile feature_nav"><a :href="nyanCatsHref" target="_blank">NYAN_CATS Testnet</a></span>
+          <span class="feature_btn_mobile feature_nav" v-for="item in netWorkArray">
+            <a :href="item.host" target="_blank">{{item.netWorkSelectOption}}</a>
+          </span>
         </div>
-
       </div>
     </div>
   </div>
@@ -232,8 +234,6 @@
         flShowChainId: false,
         flShowValidatorsUpOrDown: false,
         flShowNetworkUpOrDown: false,
-        flShowMainnet:false,
-        flShowTestnet:false,
         currentSelected:'',
         absoluteTop:'',
         lang: lang,
@@ -243,6 +243,7 @@
         nyanCatsHref:'',
         upImg: require("../assets/caret-bottom.png"),
         downImg: require("../assets/caret-bottom.png"),
+        netWorkArray: [],
     }
     },
     beforeMount() {
@@ -482,13 +483,13 @@
       getConfig(){
         Service.http('/api/config').then(res => {
           this.toggleTestnetLogo(res);
-          this.explorerLink(res);
-          this.setCurrentSelectOption(res.cur_env);
+          this.setCurrentSelectOption(res.cur_env,res.chain_id,res.configs);
           this.setEnvConfig(res);
+          this.handleConfigs(res.configs);
           this.flShowHeaderNetwork = true;
+          this.chainId = `${res.chain_id.toUpperCase()} ${res.cur_env.toUpperCase()}`;
           res.configs.forEach( item => {
             if(res.cur_env === item.env_nm){
-              this.chainId = `${item.chain_id.toUpperCase()} ${item.env_nm.toUpperCase()}`;
               if(item.show_faucet && item.show_faucet === 1){
                 this.flShowFaucet = true;
                 sessionStorage.setItem("Show_faucet",JSON.stringify(1))
@@ -498,6 +499,18 @@
               }
             }
           })
+        });
+      },
+      handleConfigs(configs){
+         this.netWorkArray = configs.map(item => {
+          if(item.env_nm === constant.ENVCONFIG.MAINNET && item.chain_id === constant.CHAINID.MAINNET){
+              item.chain_id = '';
+          }
+          item.netWorkSelectOption = `${item.chain_id.toLocaleUpperCase()} ${Tools.firstWordUpperCase(item.env_nm)}`
+          return item
+        });
+        this.netWorkArray = this.netWorkArray.filter(item => {
+          return item.env_nm !== constant.ENVCONFIG.DEV && item.env_nm !== constant.ENVCONFIG.QA && item.env_nm !== constant.ENVCONFIG.STAGE
         });
       },
       setEnvConfig(currentEnv){
@@ -513,38 +526,19 @@
           this.flShowChainId = true;
         }
       },
-      explorerLink(envLink){
-        envLink.configs.forEach( item => {
-          if(item.env_nm === constant.ENVCONFIG.MAINNET){
-            this.mainnetHref = item.host
-          }else if(item.env_nm === constant.ENVCONFIG.TESTNET){
-            this.testnetHref = item.host
-          }else if(item.env_nm  === "NYAN_CATS"){
-           this.nyanCatsHref = item.host
-          }
-        });
-      },
-      setCurrentSelectOption(currentEnv){
-        if(currentEnv === constant.ENVCONFIG.MAINNET){
+      setCurrentSelectOption(currentEnv,currentChainId,configs){
+        if(currentEnv === constant.ENVCONFIG.MAINNET && currentChainId === constant.CHAINID.MAINNET){
           this.currentSelected = lang.home.mainnet;
-          this.flShowTestnet = true;
-        }else if(currentEnv === constant.ENVCONFIG.TESTNET){
-          this.currentSelected = lang.home.testnet;
-          this.flShowMainnet = true;
+        }else if(currentEnv !== constant.ENVCONFIG.DEV && currentEnv !== constant.ENVCONFIG.QA && currentEnv !== constant.ENVCONFIG.STAGE){
+          this.currentSelected = `${currentChainId.toLocaleUpperCase()} ${Tools.firstWordUpperCase(currentEnv)}`;
+        }else if(currentEnv === constant.ENVCONFIG.DEV || currentEnv === constant.ENVCONFIG.QA || currentEnv === constant.ENVCONFIG.STAGE){
+          this.currentSelected = lang.home.mainnet;
         }else {
-          this.flShowMainnet = false;
-          this.flShowTestnet = true;
-          this.currentSelected = lang.home.mainnet;
+          this.currentSelected = `${currentChainId.toLocaleUpperCase()} ${Tools.firstWordUpperCase(currentEnv)}`;
         }
       },
-      toMainnet(MainnetHref){
-        window.open(MainnetHref)
-      },
-      toTestnet(testnetHref){
-        window.open(testnetHref)
-      },
-      toNyanCats(nyanCatsHref){
-        window.open(nyanCatsHref)
+      windowOpenUrl(url){
+        window.open(url)
       },
       toggleSelectOption(){
         this.$store.commit('flShowSelectOption',!this.$store.state.flShowSelectOption)

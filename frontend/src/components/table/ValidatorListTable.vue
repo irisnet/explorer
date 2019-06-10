@@ -124,9 +124,6 @@
                 label:'Unbonding Height',
                 sortable:true,
               },
-              'unbondingTime':{
-                label:'Unbonding Time',
-              },
             },
             candidateValidatorFields: {
               moniker:{
@@ -161,9 +158,7 @@
                 label:'Unbonding Height',
                 sortable:true,
               },
-              'unbondingTime':{
-                label:'Unbonding Time',
-              },
+
             },
           }
         },
