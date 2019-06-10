@@ -156,7 +156,7 @@
               },
               'unbondingHeight':{
                 label:'Unbonding Height',
-                sortable:true,
+                sortable:true
               }
             }
           }

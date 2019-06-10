@@ -66,7 +66,6 @@ func (service *ProposalService) QueryProposalsByHeight(height int64) []model.Pro
 func (service *ProposalService) QueryDepositAndVotingProposalList() []model.ProposalNewStyle {
 
 	var data []document.Proposal
-	sort := desc(document.Proposal_Field_SubmitTime)
 	selector := bson.M{
 		document.Proposal_Field_ProposalId:        1,
 		document.Proposal_Field_Title:             1,
@@ -77,7 +76,19 @@ func (service *ProposalService) QueryDepositAndVotingProposalList() []model.Prop
 		document.Proposal_Field_TotalDeposit:      1,
 	}
 
-	if err := queryAll(document.CollectionNmProposal, selector, bson.M{"status": bson.M{"$in": []string{document.ProposalStatusDeposit, document.ProposalStatusVoting}}}, sort, 0, &data); err != nil {
+	condition := bson.M{"status": bson.M{"$in": []string{document.ProposalStatusDeposit, document.ProposalStatusVoting}}}
+
+	var query = orm.NewQuery()
+	defer query.Release()
+	query.SetCollection(document.CollectionNmProposal).
+		SetCondition(condition).
+		SetSelector(selector).
+		SetSort(document.Proposal_Field_VotingEndTime, document.Proposal_Field_DepositEndTime).
+		SetSize(0).
+		SetResult(&data)
+
+	err := query.Exec()
+	if err != nil {
 		logger.Error("query proposal collection", logger.String("err", err.Error()))
 		return nil
 	}
@@ -194,7 +205,7 @@ func (service *ProposalService) QueryDepositAndVotingProposalList() []model.Prop
 
 func (service *ProposalService) QueryList(page, size int) (resp model.PageVo) {
 	var data []document.Proposal
-	sort := desc(document.Proposal_Field_SubmitTime)
+	sort := desc(document.Proposal_Field_ProposalId)
 	selector := bson.M{
 		document.Proposal_Field_ProposalId:        1,
 		document.Proposal_Field_Title:             1,
