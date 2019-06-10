@@ -112,7 +112,7 @@ export default {
       }
       .tooltip_span {
         width: 100%;
-        max-width: 100%;
+        max-width: calc(100% + 40px);
         display: none;
         position: absolute;
         z-index: 1000;
@@ -153,28 +153,28 @@ export default {
     position: relative;
     padding-bottom: 0.2rem;
     @mixin min_max {
-      width: 100px;
+      width: 80px;
       color: #A2A2AE;
       word-break: break-all;
+      flex: 1 0 0.8rem;
     }
     .min {
-      padding-right: 0.1rem;
+      padding-right: 0.05rem;
       @include min_max;
       text-align: right;
     }
     .max {
-      padding-left: 0.1rem;
+      padding-left: 0.05rem;
       @include min_max;
     }
     .progress {
-      width: 2.4rem;
+      width: 2.2rem;
       height: 0.2rem;
       background-color: #F0F7FD;
       border-radius: 0.16rem;
       position: relative;
       overflow: visible;
       font-size: 0.12rem;
-      flex: 1 0 2.4rem;
       & > div {
         height: 100%;
         width: 0.04rem;
@@ -196,6 +196,7 @@ export default {
         color: #FFB779;
         background-color: #FFB779;
         position: absolute;
+        margin-left: -2px;
         div.arrow {
           width: 8px;
           height: 8px;
@@ -223,6 +224,7 @@ export default {
         color: #3698DB;
         background-color: #3698DB;
         position: absolute;
+        margin-left: -2px;
         div.arrow {
           width: 8px;
           height: 8px;

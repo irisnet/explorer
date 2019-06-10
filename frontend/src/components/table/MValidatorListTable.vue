@@ -1,8 +1,6 @@
 <template>
-  <div :style="{'min-width': minWidth + 'rem'}"
-       ref="tableContainer">
-    <m-table ref="mTable"
-             v-table-head-fixed
+  <div :style="{'min-width': minWidth + 'rem'}">
+    <m-table v-table-head-fixed
              :columns="validatorFields"
              :data="items"
              :sort-by.sync="sortBy"
@@ -50,7 +48,6 @@ export default {
   },
   data () {
     return {
-      resizeTime: null,
       validatorFields: [],
       sortBy: 'votingPower',
       sortDesc: true,
@@ -165,7 +162,8 @@ export default {
         },
         {
           title: 'Unbonding_Time',
-          key: 'unbondingTime'
+          key: 'unbondingTime',
+          className: 'text_right'
         }
       ],
       candidateValidatorFields: [
@@ -224,7 +222,8 @@ export default {
         },
         {
           title: 'Unbonding_Time',
-          key: 'unbondingTime'
+          key: 'unbondingTime',
+          className: 'text_right'
         }
       ]
     }
@@ -268,15 +267,6 @@ export default {
     position: fixed;
     margin-top: -0.45rem;
     background-color: #ffffff;
-    table {
-      thead {
-        tr {
-          th:nth-of-type(1) {
-            padding-left: 0.2rem;
-          }
-        }
-      }
-    }
   }
   .m-table-body {
     margin-top: 0.45rem;

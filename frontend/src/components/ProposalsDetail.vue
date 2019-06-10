@@ -2,13 +2,13 @@
   <div class="proposals_detail_wrap">
     <div class="proposals_title_wrap">
       <p :class="proposalsDetailWrap" style="margin-bottom:0;">
-        <span class="proposals_detail_title">Proposals</span>
+        <span class="proposals_detail_title">Proposal</span>
         <span class="proposals_detail_wrap_hash_var">{{`#${proposalsId}`}}</span>
       </p>
     </div>
 
     <div :class="proposalsDetailWrap">
-      <p class="proposals_information_content_title">Proposals Information</p>
+      <p class="proposals_information_content_title">Proposal Information</p>
       <div class="proposals_detail_information_wrap">
         <div class="information_props_wrap">
           <span class="information_props">Title :</span>
@@ -32,7 +32,13 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Status :</span>
-          <span class="information_value">{{status}}</span>
+          <span class="information_value">
+            <img class="status_icon" v-if="status === 'Passed'" src="../assets/pass.png" />
+            <img class="status_icon" v-if="status === 'Rejected'" src="../assets/rejected.png" />
+            <img class="status_icon" v-if="status === 'VotingPeriod'" src="../assets/voting_period.png" />
+            <img class="status_icon" v-if="status === 'DepositPeriod'" src="../assets/deposit_period.png" />
+            {{status}}
+          </span>
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Submit Time :</span>
@@ -92,26 +98,27 @@
         <div class="parameter_container" v-show="type === 'ParameterChange'">
           <div class="information_props_wrap">
             <span class="information_props">Parameter Details :</span>
-            <textarea :rows="textareaRows" readonly spellcheck="false" class="parameter_detail_content">{{parameterValue}}
+            <textarea :rows="textareaRows" v-model="parameterValue" readonly spellcheck="false" class="parameter_detail_content">
             </textarea>
           </div>
         </div>
       </div>
     </div>
-    <div :class="proposalsDetailWrap">
-      <p class="proposals_information_content_title" style='border-bottom:none !important;'>Vote Details</p>
-      <div class="vote-details-content">
-        <div class="vote_content_container">
-          <div class="total_num">
-            <span>{{count}} Total</span>
-          </div>
-          <div class="voting_options">
-            <span>Yes : {{voteDetailsYes}}</span>|<span>No : {{voteDetailsNo}}</span>|<span>NoWithVeto : {{voteDetailsNoWithVeto}}</span>|<span>Abstain : {{voteDetailsAbstain}}</span>
-          </div>
+    <div :class="[proposalsDetailWrap, $store.state.isMobile ? 'mobile_proposals_table_container' : '']">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;">
+        <div class="proposals_table_title_div" style="margin-top: 0;">Voters</div>
+        <div class="voting_options">
+          <span>Yes:
+            <span>{{voteDetailsYes}}</span>
+          </span>|<span>No:
+            <span>{{voteDetailsNo}}</span>
+          </span>|<span>NoWithVeto:
+            <span>{{voteDetailsNoWithVeto}}</span>
+          </span>|<span>Abstain:
+            <span>{{voteDetailsAbstain}}</span>
+          </span>
         </div>
       </div>
-    </div>
-    <div :class="proposalsDetailWrap">
       <div class="proposals_detail_table_wrap">
         <spin-component :showLoading="showLoading"/>
         <blocks-list-table :items="items" :type="'ProposalsDetail'" :showNoData="showNoData" :min-width="tableMinWidth"></blocks-list-table>
@@ -119,9 +126,23 @@
           No Data
         </div>
       </div>
+      <div class="table_pagination">
+        <b-pagination v-model="currentPage" :total-rows="itemTotal" :per-page="perPage"></b-pagination>
+      </div>
     </div>
-
-
+    <div :class="proposalsDetailWrap">
+      <div class="proposals_table_title_div" style="margin-top: 0;">Depositors</div>
+      <div class="proposals_detail_table_wrap">
+        <spin-component :showLoading="showLoading"/>
+        <blocks-list-table :items="depositorItems" :type="'ProposalsDetail'" :showNoData="depositorShowNoData" :min-width="tableMinWidth"></blocks-list-table>
+        <div v-show="depositorShowNoData" class="no_data_show">
+          No Data
+        </div>
+      </div>
+      <div class="table_pagination">
+        <b-pagination v-model="depositorCurrentPage" :total-rows="depositorItemsTotal" :per-page="perPage"></b-pagination>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -136,19 +157,15 @@
       BlocksListTable,
       SpinComponent
     },
-    watch: {
-      $route() {
-        this.getProposalsInformation();
-      }
-    },
     data() {
       return {
         devicesWidth: window.innerWidth,
         proposalsDetailWrap: 'personal_computer_transactions_detail',
         items: [],
+        depositorItems: [],
         showLoading:false,
         showNoData: false,
-        count: "",
+        depositorShowNoData: false,
         proposalsId: "",
         title: "",
         type: "",
@@ -174,12 +191,18 @@
         votingEndAge: '',
         votingTimer: null,
         proposalTimer: null,
+        depositorTimer: null,
         software: ' ',
         version: ' ',
         switchHeight: ' ',
         threshold: ' ',
         textareaRows: '2',
-        parameterValue: ''
+        parameterValue: '',
+        currentPage: 1,
+        depositorCurrentPage: 1,
+        itemTotal: 0,
+        depositorItemsTotal: 0,
+        perPage: 10
       }
     },
     beforeMount() {
@@ -193,6 +216,14 @@
     mounted() {
       this.getProposalsInformation();
       this.computeMinWidth();
+    },
+    watch: {
+      currentPage(newVal) {
+        this.getVoter();
+      },
+      depositorCurrentPage(newVal) {
+        this.getDepositor();
+      }
     },
     methods: {
       computeMinWidth(){
@@ -217,13 +248,89 @@
           return Tools.formatAge(currentServerTime,time,Constant.SUFFIX);
         }
       },
+      getVoter() {
+        let url = `/api/gov/proposals/${this.$route.params.proposal_id}/voter_txs?page=${this.currentPage}&size=${this.perPage}`;
+        this.showNoData = false;
+        this.items = [];
+        Service.http(url).then((data) => {
+          if(data.items && data.items.length > 0){
+            this.itemTotal = data.total;
+            let that = this;
+            let currentServerTime = new Date().getTime() + that.diffMilliseconds;
+            that.items = data.items.map(item =>{
+              let votingListItemTime = (new Date(item.timestamp).getTime()) > 0 ? Tools.format2UTC(item.timestamp) : '--';
+              return {
+                Voter: item.voter + ' ' + item.moniker,
+                Vote_Option: item.option,
+                Tx_Hash: item.tx_hash,
+                Time: votingListItemTime
+              }
+            });
+          }else {
+            this.items = [{
+              Voter: "",
+              Vote_Option: "",
+              Tx_Hash: "",
+              Time: ""
+            }];
+            this.showNoData = true;
+          }
+        }).catch((e) => {
+          this.items = [{
+            Voter: "",
+            Vote_Option: "",
+            Tx_Hash: "",
+            Time: ""
+          }];
+          this.showNoData = true;
+        })
+      },
+      getDepositor() {
+        let url = `/api/gov/proposals/${this.$route.params.proposal_id}/depositor_txs?page=${this.depositorCurrentPage}&size=${this.perPage}`;
+        this.depositorShowNoData = false;
+        this.depositorItems = [];
+        Service.http(url).then((data) => {
+          if(data.items && data.items.length > 0){
+            this.depositorItemsTotal = data.total;
+            let that = this;
+            let currentServerTime = new Date().getTime() + that.diffMilliseconds;
+            that.depositorItems = data.items.map(item =>{
+              let votingListItemTime = (new Date(item.timestamp).getTime()) > 0 ? Tools.format2UTC(item.timestamp) : '--';
+              return {
+                Depositor: item.from,
+                Amount: item.amount[0].amount,
+                Type: item.type,
+                Tx_Hash: item.hash,
+                Time: votingListItemTime
+              }
+            });
+          }else {
+            this.depositorItems = [{
+              Depositor: '',
+              Amount: '',
+              Type: '',
+              TxHash: '',
+              Time: ''
+            }];
+            this.depositorShowNoData = true;
+          }
+        }).catch((e) => {
+          this.depositorItems = [{
+            Depositor: '',
+            Amount: '',
+            Type: '',
+            TxHash: '',
+            Time: ''
+          }];
+          this.depositorShowNoData = true;
+        });
+      },
       getProposalsInformation() {
         this.showLoading = true;
-        let url = `/api/gov/proposal/${this.$route.params.proposal_id}`;
+        let url = `/api/gov/proposals/${this.$route.params.proposal_id}`;
         Service.http(url).then((data) => {
           this.showLoading = false;
           if(data){
-            this.showNoData = false;
             if(data.proposal.proposal_id === 0){
               this.proposalsId = '--';
               this.title = '--';
@@ -242,7 +349,6 @@
               this.voteDetailsAbstain = '--';
               this.voteDetailsAbstain = '--';
               this.totalDeposit = '--';
-              this.count = 0;
             }else {
               let that = this;
               clearInterval(this.proposalTimer);
@@ -276,11 +382,6 @@
               }else {
                 this.totalDeposit = "";
               }
-              if(data.proposal.status === "DepositPeriod"){
-                this.count = "--"
-              }else {
-                this.count = 0;
-              }
               if(data.proposal.type === 'ParameterChange'){
                 for (let index = 0; index < data.proposal.parameters.length; index++){
                   this.parameterValue+= `${data.proposal.parameters[index].subspace}/${data.proposal.parameters[index].key} = ${data.proposal.parameters[index].value}\n`
@@ -288,49 +389,20 @@
                 let defaultTextareaRows = 2;
                 this.textareaRows = data.proposal.parameters.length + defaultTextareaRows;
               }
-              if(data.votes){
-                this.count = data.votes.length;
-                let that = this;
-                clearInterval(this.votingTimer);
-                this.votingTimer = setInterval(function () {
-                  let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-                  that.items = data.votes.map(item =>{
-                    let votingListItemTime = Tools.formatAge(currentServerTime,item.time,Constant.SUFFIX,Constant.PREFIX);
-                    return {
-                      Voter: item.voter,
-                      "Vote Option": item.option,
-                      VoteTime: votingListItemTime
-                    }
-                  })
-                },1000);
-              }else {
-                this.showNoData = true
-                this.items = [{
-                  Voter: "",
-                  "Vote Option": "",
-                  "Vote Time": ""
-                }];
-              }
             }
           }else {
-              this.showNoData = false;
-              this.items = [{
-                Voter: "",
-                "Vote Option": "",
-                "Vote Time": ""
-              }];
-              this.showNoData = true
-            }
+          }
         }).catch(e => {
-          this.showNoData = false;
-          console.log(e)
-        })
-
+        });
       },
       jumpRoute(path) {
         this.$router.push(path);
       }
-
+    },
+    mounted() {
+      this.getProposalsInformation();
+      this.getVoter();
+      this.getDepositor();
     }
   }
 </script>
@@ -354,6 +426,7 @@
     @include flex;
     flex-direction: column;
     .proposals_detail_information_wrap{
+      border:1px solid rgba(215,217,224,1) !important;
       .parameter_container{
         .information_props_wrap{
           .parameter_detail_content{
@@ -376,17 +449,19 @@
       color: #000000;
       margin-bottom: 0;
       @include fontWeight;
-      border-bottom:1px solid #d6d9e0 !important;
     }
     @include pcCenter;
       .proposals_detail_information_wrap {
-        margin-top: 0.21rem;
-        margin-left: 0.2rem;
+        padding-top: 0.2rem;
+        padding-left: 0.2rem;
+        padding-bottom: 0.2rem;
+        border:1px solid rgba(215,217,224,1) !important;
       .information_props_wrap {
         @include flex;
         margin-bottom:0.08rem;
     .information_props {
       min-width: 1.5rem;
+      color: #22252A;
     }
     .flag_item_left {
       display: inline-block;
@@ -426,13 +501,16 @@
     margin-bottom: 0.2rem;
     width: 100%;
     overflow-x: auto;
+    .table_wrap {
+      min-width: 9.6rem;
+    }
     .no_data_show {
       @include flex;
         justify-content: center;
         border-top: 0.01rem solid #eee;
         border-bottom: 0.01rem solid #eee;
         font-size: 0.14rem;
-        height: 3rem;
+        height: 1rem;
         align-items: center;
       }
     }
@@ -487,7 +565,7 @@
       }
     }
     .proposals_detail_information_wrap {
-
+       border:1px solid rgba(215,217,224,1) !important;
       .information_props_wrap {
         @include flex;
           flex-direction: column;
@@ -584,11 +662,15 @@
   .voting_options{
     display: flex;
     color: #a2a2ae;
-    span{
+    margin-bottom: 10px;
+    & > span{
       font-size: 0.14rem;
-      color: #000;
+      color: #A2A2AE;
       @include fontWeight;
       padding: 0 0.18rem;
+      & > span {
+        color: #22252A;
+      }
     }
   }
   .information_show_trim{
@@ -619,6 +701,35 @@
     background: #EEE !important;
   }
   .information_pre{
-      color: #a2a2ae;
+    color: #a2a2ae;
+  }
+  .proposals_table_title_div {
+    font-size:18px;
+    margin: 30px 20px 10px;
+  }
+  .status_icon {
+    width: 14px;
+    height: 14px;
+    margin: 8px 0;
+    vertical-align: middle;
+    margin-right: 4px;
+  }
+  .mobile_proposals_table_container {
+    & > div {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start !important;
+      .proposals_table_title_div {
+        width: 100%;
+      }
+    }
+    .table_pagination {
+      justify-content: flex-end!important;
+    }
+  }
+  .table_pagination {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
   }
 </style>
