@@ -3,17 +3,21 @@ let resizeFn, resizeTime;
 
 const changeScroll = (e) => {
   let element = document.querySelector('.m-table-header');
-  if (e.target.scrollLeft > 0) {
-    element.style.left = -e.target.scrollLeft + 'px';
-  } else {
-    element.style.left = 'auto';
+  if (element) {
+    if (e.target.scrollLeft > 0) {
+      element.style.left = -e.target.scrollLeft + 'px';
+    } else {
+      element.style.left = 'auto';
+    }
   }
 }
 
 const windowRisize = (node) => {
   let element = document.querySelector('.m-table-body');
-  if (node.offsetWidth === element.offsetWidth) {
-    document.querySelector('.m-table-header').style.left = 'auto';
+  if (element && node) {
+    if (node.offsetWidth === element.offsetWidth) {
+      document.querySelector('.m-table-header').style.left = 'auto';
+    }
   }
 }
 

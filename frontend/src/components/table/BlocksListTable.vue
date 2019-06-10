@@ -35,10 +35,48 @@
     </b-table>
 
     <b-table :fields='fields' :items='items' striped v-if="type === 'ProposalsDetail'" nodelabel  class="proposal_detail_list">
+      <template slot='Amount' slot-scope='data'>
+        <div class="skip_route_gray" style="width: 200px;">
+          {{formatAmount(data.item['Amount'])}} IRIS
+        </div>
+      </template>
       <template slot='Voter' slot-scope='data'>
-        <span class="skip_route_gray">
-          {{data.item['Voter']}}
+        <div class="skip_route">
+          <div class="name_address">
+            <span class="remove_default_style">
+              <router-link :to="`/address/1/${data.item.Voter.split(' ')[0]}`" class="link_style justify">{{data.item.Voter.split(' ')[1]}}</router-link>
+            </span>
+          </div>
+        </div>
+      </template>
+      <template slot='Depositor' slot-scope='data'>
+        <span v-if="(/^[1-9]\d*$/).test(data.item.Depositor)" class="skip_route">
+          <router-link :to="`/tx?txHash=${data.item.Tx_Hash}`">{{data.item.From}} Validators</router-link>
         </span>
+        <span class="skip_route" style="display: flex" v-if="!(/^[0-9]\d*$/).test(data.item.Depositor) && data.item.Depositor !== '--'">
+          <div class="name_address">
+            <span class="remove_default_style">
+              <router-link :to="`/address/1/${data.item.Depositor}`" class="link_style justify">{{formatAddress(data.item.Depositor)}}</router-link>
+            </span>
+            <span class="address proposals_address_content">{{data.item.Depositor}}</span>
+          </div>
+        </span>
+        <span class="no_skip" v-show="(/^[0]\d*$/).test(data.item.Depositor) || data.item.Depositor === '--'">--</span>
+      </template>
+      <template slot='Type' slot-scope='data'>
+        <div class="skip_route_gray" style="width: 240px;">
+          {{data.item['Type']}}
+        </div>
+      </template>
+      <template slot='Tx_Hash' slot-scope='data'>
+        <div class="skip_route" style="display: flex; width: 240px;">
+          <div class="hash_container">
+            <span>
+              <router-link :to="`/tx?txHash=${data.item.Tx_Hash}`">{{data.item.Tx_Hash ? `${formatTxHash(String(data.item.Tx_Hash))}` : ''}}</router-link>
+            </span>
+            <span class="hash_content proposals_hash_content">{{data.item.Tx_Hash}}</span>
+          </div>
+        </div>
       </template>
       <template slot='VoteTime' slot-scope='data'>
         <span v-show="data.item.VoteTime">{{data.item.VoteTime}}</span>
@@ -263,6 +301,9 @@
     },
     props: ['items', 'type','showNoData','minWidth','status'],
     methods: {
+      formatAmount(amount){
+        return Tools.formatAmount(amount)
+      },
       formatAddress(address){
         return Tools.formatValidatorAddress(address)
       },
@@ -485,5 +526,19 @@
   }
   .link_style{
     color: #3598db !important;
+  }
+  .proposals_hash_content {
+    transform: translateX(-50%);
+    left: 50% !important;
+    &::after {
+      left: 50% !important;
+      transform: translateX(-50%);
+    }
+  }
+  .proposals_address_content {
+    left: 0!important;
+    &::after {
+      left: 7px !important;
+    }
   }
 </style>

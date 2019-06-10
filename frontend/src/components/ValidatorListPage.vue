@@ -3,12 +3,12 @@
     <div class="blocks_list_title_wrap" :class="blocksListPageWrap === 'personal_computer_blocks_list_page_wrap' ? 'fixed_style' :''">
       <div :class="blocksListPageWrap" style="margin-bottom:0;">
         <div class="validators_status_tab">
-          <span class="validators_status_title" v-for="(item,index) in validatorStatusTitleList" :class="item.isActive ? 'active_title' : '' " @click="selectValidatorStatus(index)">{{item.title}}</span>
+          <span class="validators_status_title" v-for="(item,index) in validatorStatusTitleList" :key="index" :class="item.isActive ? 'active_title' : '' " @click="selectValidatorStatus(index)">{{item.title}}</span>
         </div>
       </div>
     </div>
     <div :class="blocksListPageWrap" :style="{'margin-top':`${blocksListPageWrap === 'personal_computer_blocks_list_page_wrap' ? '0.61rem' : '0'}`}">
-      <div style="overflow-x: auto;-webkit-overflow-scrolling:touch;">
+      <div style="overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling:touch;">
         <spin-component :showLoading="showLoading"/>
         <!-- <validator-list-table :items="items" :minWidth="tableMinWidth" :showNoData="showNoData"></validator-list-table> -->
         <m-validator-list-table ref="mtable"
@@ -162,19 +162,6 @@
           }else {
             this.showNoData = true;
             this.items = [];
-            // this.items = [{
-            //   validatorStatus: status,
-            //   moniker: "",
-            //   operatorAddress: "",
-            //   commission: "",
-            //   bondedToken: "",
-            //   votingPower: "",
-            //   uptime: "",
-            //   selfBond: "",
-            //   delegatorNum:"",
-            //   bondHeight: "",
-            //   identity: "",
-            // }]
           }
           this.showLoading = false;
           this.$refs.mtable && this.$refs.mtable.setValidatorField(status);

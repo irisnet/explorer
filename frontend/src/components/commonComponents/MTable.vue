@@ -17,7 +17,7 @@
           <tr>
             <th :class="[v.className, v.sortable ? 'sorting' : '']"
                 @click="sortDataByClick(v)"
-                v-for="(v, i) in columns"
+                v-for="(v, i) in columns" :width="v.width || colWidth[i]"
                 :key="i">{{v.title}}
               <i class="sort"
                  :class="{'desc': (v.key === sortAsBy || v.slot === sortAsBy) && sortAsDesc, 
@@ -126,7 +126,7 @@ export default {
           return;
         }
         let arr = [];
-        e.childNodes.forEach(v => {
+        [].slice.call(e.childNodes).forEach(v => {
           arr.push(v.offsetWidth);
         });
         this.colWidth = arr;
