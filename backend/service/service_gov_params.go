@@ -225,15 +225,17 @@ func (gov GovParamsService) UpdateCurrentValueByKey(kv map[string]interface{}) e
 		}
 		sel := bson.M{document.GovParamsFieldKey: k}
 		update := bson.M{"$set": bson.M{document.GovParamsFieldCurrentValue: vStr}}
-		bulk.Update(sel, update, true)
+
+		bulk.Update(sel, update)
+
 	}
 
-	upsertRes, err := bulk.Run()
+	updateRes, err := bulk.Run()
 
 	if err != nil {
 		return err
 	}
-	logger.Info("batch upsert reesult", logger.Any("bulk res", *upsertRes))
+	logger.Info("batch upsert reesult", logger.Any("bulk res", *updateRes))
 
 	return nil
 }
