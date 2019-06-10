@@ -123,7 +123,7 @@
               'unbondingHeight':{
                 label:'Unbonding Height',
                 sortable:true,
-              },
+              }
             },
             candidateValidatorFields: {
               moniker:{
@@ -156,10 +156,9 @@
               },
               'unbondingHeight':{
                 label:'Unbonding Height',
-                sortable:true,
-              },
-
-            },
+                sortable:true
+              }
+            }
           }
         },
         mounted(){
@@ -236,21 +235,21 @@
         max-width: 2.2rem !important;
         overflow-wrap: break-word !important;
         word-wrap: break-word !important;
-      .skip_route {
-      a{
-        color: #3598db!important;
-        cursor: pointer;
+        .skip_route {
+          a{
+            color: #3598db!important;
+            cursor: pointer;
+          }
+        }
+        .no_skip{
+          color:#A2A2AE;
+          cursor:default;
+          .link_style{
+            color:#a2a2ae !important;
+          }
+        }
       }
     }
-    .no_skip{
-      color:#A2A2AE;
-      cursor:default;
-    .link_style{
-      color:#a2a2ae !important;
-    }
-  }
-  }
-  }
 
   .page-link{
     padding:0.05rem 0.075rem !important;

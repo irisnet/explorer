@@ -134,6 +134,9 @@
             },
             handleParameterItem(parameterItem){
               let arr = parameterItem.range.split(',');
+              if (arr.length !== 2) {
+                return;
+              };
               parameterItem.min = arr[0];
               parameterItem.max = arr[1];
               parameterItem.current_per = this.formatPer(parameterItem.current_value, arr[0], arr[1]);

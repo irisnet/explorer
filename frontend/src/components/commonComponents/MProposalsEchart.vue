@@ -3,26 +3,37 @@
     <div class="text">
       <div class="top">
         <span class="title">ID:</span>
-        <span class="value">{{data.proposal_id}}</span>
+        <span class="value">
+          <router-link :to="`/ProposalsDetail/${data.proposal_id}`"
+                      class="link_style">{{data.proposal_id}}</router-link>
+        </span>
         <span class="title" style="margin-left: 40px;">Title:</span>
-        <span class="value">{{data.title}}</span>
-      </div>
-      <div class="content">
-        <div class="content_div">
-          <div>
-            <img src="../../assets/pass.png"/>
-            <span>Participation > {{data.participation}} %</span>
-          </div>
-          <div style="margin-top: 16px;">
-            <img src="../../assets/no_pass.png"/>
-            <span>Pass Threshold > {{data.threshold}} %</span>
-          </div>
+        <div class="title_value_content">
+          <span class="value title_value" ref="titleValue">
+            <router-link :to="`/ProposalsDetail/${data.proposal_id}`"
+                        class="link_style">{{data.title}}</router-link>
+          </span>
+          <div v-if="titleValueTipShow" class="tooltip_span">{{data.title}}</div>
         </div>
       </div>
-    </div>
-    <div class="propsals_echart_content">
-      <div class="propsals_echart" ref="propsalsEchart">
-        <div class="propsals_echart_center"></div>
+      <div :class="['content', $store.state.isMobile ? 'mobile_content' : '']">
+        <div class="content_div">
+          <div>
+            <img v-if="data.participation > 50" src="../../assets/pass.png"/>
+            <img v-if="data.participation <= 50" src="../../assets/no_pass.png"/>
+            <span>Participation > 50 %</span>
+          </div>
+          <div style="margin-top: 16px;">
+            <img v-if="data.threshold > 50" src="../../assets/pass.png"/>
+            <img v-if="data.threshold <= 50" src="../../assets/no_pass.png"/>
+            <span>Pass Threshold > 50 %</span>
+          </div>
+        </div>
+        <div class="propsals_echart_content">
+          <div class="propsals_echart" ref="propsalsEchart">
+            <div class="propsals_echart_center"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -35,6 +46,7 @@ export default {
   name: 'MProposalsEchart',
   data() {
     return {
+      titleValueTipShow: false,
       chart: null,
       level: 4,
       levelName: '',
@@ -81,7 +93,10 @@ export default {
           data: data,
           radius: ['0%', '100%'],
           label: {
-            rotate: '0'
+            rotate: '0',
+            textBorderColor: '#22252A',
+            textBorderWidth: 1,
+            fontWeight: 600
           },
           sort: null,
           startAngle: 145,
@@ -96,7 +111,7 @@ export default {
             if (v.data.info) {
               return `${v.marker}voter: ${info.voter_moniker}<br><span style="margin-left: 15px;">voting_power: ${info.voting_power}</span>`;
             } else {
-              return `${v.marker}${v.name}: ${v.value}`;
+              return `${v.marker}${v.data.tipName || v.name}: ${v.value}`;
             }
           }
         }
@@ -163,6 +178,11 @@ export default {
     this.chart = echarts.init(this.$refs.propsalsEchart);
     this.bundClick();
     this.configuration(this.data.data, this.levels);
+    this.$nextTick(() => {
+      let title_value_a_w = this.$refs.titleValue.querySelector('a').getBoundingClientRect().width;
+      let w = this.$refs.titleValue.getBoundingClientRect().width;
+      this.titleValueTipShow = title_value_a_w > w;
+    });
   },
   destroyed() {
     this.unBundClick();
@@ -177,14 +197,18 @@ export default {
     border-radius: 1px;
     border: 1px solid #D7D9E0;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     .text {
-      width: 200px;
+      width: 100%;
+      height: 100%;
       position: relative;
+      display: flex;
+      flex-direction: column;
       .top {
         padding: 0.3rem;
         font-size: 12px;
         white-space: nowrap;
+        display: flex;
         .title {
           color: #A2A2AE;
           white-space: nowrap;
@@ -194,10 +218,34 @@ export default {
           color: #3598DB;
           white-space: nowrap;
         }
+        .title_value_content {
+          width: 1px;
+          flex: 1;
+          display: flex;
+          position: relative;
+          cursor: pointer;
+          .title_value {
+            width: 1px;
+            flex: 1;
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+          &:hover .tooltip_span{
+            display: block;
+          }
+        }
+      }
+      .mobile_content {
+        flex-direction: column;
+        .propsals_echart_content {
+          align-items: center;
+        }
       }
       .content {
         width: 100%;
         margin: auto;
+        flex: 1;
         top: 0;
         display: flex;
         div.content_div {
@@ -234,6 +282,36 @@ export default {
           height: 0.8rem;
         }
       }
+    }
+  }
+  .tooltip_span {
+    width: 100%;
+    max-width: calc(100% + 40px);
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    bottom: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 15px;
+    color: #ffffff;
+    background-color: #000000;
+    line-height: 35px;
+    border-radius: 0.04rem;
+    word-wrap: break-word;
+    white-space: normal;
+    line-height: 1.7;
+    &::after {
+      width: 0;
+      height: 0;
+      border: 0.04rem solid transparent;
+      content: "";
+      display: block;
+      position: absolute;
+      border-top-color: #000000;
+      left: 50%;
+      margin-left: -4px;
+      bottom: -8px;
     }
   }
 </style>
