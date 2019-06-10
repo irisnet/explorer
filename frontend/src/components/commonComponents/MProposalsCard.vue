@@ -2,9 +2,18 @@
   <div class="propsals_card_container">
     <div class="top">
       <span class="title">ID:</span>
-      <span class="value">{{data.proposal_id}}</span>
+      <span class="value">
+        <router-link :to="`/ProposalsDetail/${data.proposal_id}`"
+                      class="link_style">{{data.proposal_id}}</router-link>
+      </span>
       <span class="title" style="margin-left: 40px;">Title:</span>
-      <span class="value">{{data.title}}</span>
+      <div class="title_value_content">
+        <span class="value title_value" ref="titleValue">
+          <router-link :to="`/ProposalsDetail/${data.proposal_id}`"
+                      class="link_style">{{data.title}}</router-link>
+        </span>
+        <div v-if="titleValueTipShow" class="tooltip_span">{{data.title}}</div>
+      </div>
     </div>
     <div class="content">
       <span class="start">0</span>
@@ -17,7 +26,7 @@
         </div>
         <div class="intital" :style="{left: `${data.intial_deposit_number_per}`}">
           <div class="intital_value">
-            <span>IntitalDeposit</span>  
+            <span>IntitalDeposit</span>
             <span class="intital_value_span">{{data.intial_deposit_format}}</span>
           </div>
         </div>
@@ -38,6 +47,18 @@ export default {
       type: Object,
       default: function() {return {}}
     }
+  },
+  data() {
+    return {
+      titleValueTipShow: false
+    }
+  },
+  mounted() {
+    this.$nextTick(() => {
+      let title_value_a_w = this.$refs.titleValue.querySelector('a').getBoundingClientRect().width;
+      let w = this.$refs.titleValue.getBoundingClientRect().width;
+      this.titleValueTipShow = title_value_a_w > w;
+    });
   }
 }
 </script>
@@ -52,12 +73,32 @@ export default {
     .top {
       padding: 0.3rem;
       font-size: 12px;
+      display: flex;
+      position: relative;
+      z-index: 1;
       .title {
         color: #A2A2AE;
       }
       .value {
         margin-left: 6px;
         color: #3598DB;
+      }
+      .title_value_content {
+        width: 1px;
+        flex: 1;
+        display: flex;
+        position: relative;
+        cursor: pointer;
+        .title_value {
+          width: 1px;
+          flex: 1;
+          display: block;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        &:hover .tooltip_span{
+          display: block;
+        }
       }
     }
     .content {
@@ -137,9 +178,49 @@ export default {
               display: block;
               color: #A2A2AE;
             }
+            &::before {
+              display: block;
+              content: '';
+              width: 0;
+              height: 0;
+              border: 4.5px solid transparent;
+              border-bottom-color: #3598DB;
+              margin: auto;
+              transform: translateX(1px) translateY(-50%);
+            }
           }
         }
       }
+    }
+  }
+  .tooltip_span {
+    width: 100%;
+    max-width: calc(100% + 40px);
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    bottom: calc(100% + 4px);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 15px;
+    color: #ffffff;
+    background-color: #000000;
+    line-height: 35px;
+    border-radius: 0.04rem;
+    word-wrap: break-word;
+    white-space: normal;
+    line-height: 1.7;
+    &::after {
+      width: 0;
+      height: 0;
+      border: 0.04rem solid transparent;
+      content: "";
+      display: block;
+      position: absolute;
+      border-top-color: #000000;
+      left: 50%;
+      margin-left: -4px;
+      bottom: -8px;
     }
   }
 </style>

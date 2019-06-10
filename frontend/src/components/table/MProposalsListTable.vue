@@ -26,25 +26,27 @@
       </template>
       <template slot-scope="{ row }"
                 slot="votes">
-        <div class="votes_per_content" v-if="row.finalVotes">
-          <div class="votes_per" :style="{backgroundColor: '#45B4FF', width: `${row.finalVotes.yes}%`}">
-            <div class="tooltip_span">
-              Yes: {{row.finalVotes.yes}}%
+        <div class="votes_per_content">
+          <div v-if="row.finalVotes">
+            <div class="votes_per" :style="{backgroundColor: '#45B4FF', width: `${row.finalVotes.yes}%`}">
+              <div class="tooltip_span">
+                Yes: {{row.finalVotes.yes}} %
+              </div>
             </div>
-          </div>
-          <div class="votes_per" :style="{backgroundColor: '#CCDCFF', width: `${row.finalVotes.abstain}%`}">
-            <div class="tooltip_span">
-              Abstain: {{row.finalVotes.abstain}}%
+            <div class="votes_per" :style="{backgroundColor: '#CCDCFF', width: `${row.finalVotes.abstain}%`}">
+              <div class="tooltip_span">
+                Abstain: {{row.finalVotes.abstain}} %
+              </div>
             </div>
-          </div>
-          <div class="votes_per" :style="{backgroundColor: '#FFCF65', width: `${row.finalVotes.no}%`}">
-            <div class="tooltip_span">
-            No: {{row.finalVotes.no}}%
+            <div class="votes_per" :style="{backgroundColor: '#FFCF65', width: `${row.finalVotes.no}%`}">
+              <div class="tooltip_span">
+                No: {{row.finalVotes.no}} %
+              </div>
             </div>
-          </div>
-          <div class="votes_per" :style="{backgroundColor: '#FE8A8A', width: `${row.finalVotes.no_with_veto}%`}">
-            <div class="tooltip_span">
-              NoWithVeto: {{row.finalVotes.no_with_veto}}%
+            <div class="votes_per" :style="{backgroundColor: '#FE8A8A', width: `${row.finalVotes.no_with_veto}%`}">
+              <div class="tooltip_span">
+                NoWithVeto: {{row.finalVotes.no_with_veto}} %
+              </div>
             </div>
           </div>
         </div>
@@ -165,41 +167,45 @@ export default {
   .votes_per_content {
     width: 102px;
     height: 10px;
-    display: flex;
-    .votes_per {
-      height: 100%;
-      cursor: pointer;
-      position: relative;
-      &:hover .tooltip_span {
-        display: block;
-      }
-      .tooltip_span {
-        display: none;
-        position: absolute;
-        z-index: 1000;
-        bottom: calc(100% + 4px);
-        left: 50%;
-        transform: translateX(-50%);
-        margin-top: -10px auto 0;
-        padding: 5px 15px;
-        color: #ffffff;
-        background-color: #000000;
-        line-height: 35px;
-        border-radius: 0.04rem;
-        word-wrap: break-word;
-        white-space: nowrap;
-        line-height: 1.7;
-        &::after {
-          width: 0;
-          height: 0;
-          border: 0.04rem solid transparent;
-          content: "";
+    & > div {
+      width: 102px;
+      height: 10px;
+      display: flex;
+      .votes_per {
+        height: 100%;
+        cursor: pointer;
+        position: relative;
+        &:hover .tooltip_span {
           display: block;
+        }
+        .tooltip_span {
+          display: none;
           position: absolute;
-          border-top-color: #000000;
+          z-index: 1000;
+          bottom: calc(100% + 4px);
           left: 50%;
-          margin-left: -4px;
-          bottom: -8px;
+          transform: translateX(-50%);
+          margin-top: -10px auto 0;
+          padding: 5px 15px;
+          color: #ffffff;
+          background-color: #000000;
+          line-height: 35px;
+          border-radius: 0.04rem;
+          word-wrap: break-word;
+          white-space: nowrap;
+          line-height: 1.7;
+          &::after {
+            width: 0;
+            height: 0;
+            border: 0.04rem solid transparent;
+            content: "";
+            display: block;
+            position: absolute;
+            border-top-color: #000000;
+            left: 50%;
+            margin-left: -4px;
+            bottom: -8px;
+          }
         }
       }
     }
