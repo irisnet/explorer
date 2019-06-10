@@ -23,7 +23,6 @@ db.ex_config.createIndex({"env_nm": 1, "chain_id": 1}, {"unique": true, "backgro
 db.ex_val_black_list.createIndex({"operator_addr": 1}, {"unique": true});
 db.ex_validator.createIndex({"operator_address": 1}, {"unique": true});
 db.ex_gov_params.createIndex({"key": 1}, {"unique": true});
-db.tx_common.createIndex({"proposal_id": 1}, {"background": true});
 
 // init data
 db.ex_config.insert({"env_nm":"mainnet","host":"https://www.irisplorer.io","chain_id":"irishub","show_faucet":0});
