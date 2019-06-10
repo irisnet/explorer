@@ -44,3 +44,60 @@ type VoteResult struct {
 	NoWithVeto int
 	Abstain    int
 }
+
+type FinalVotes struct {
+	Yes        string `json:"yes,omitempty"`
+	No         string `json:"no,omitempty"`
+	NoWithVeto string `json:"no_with_veto,omitempty"`
+	Abstain    string `json:"abstain,omitempty"`
+}
+
+type (
+	ProposalNewStyle struct {
+		ProposalId           uint64              `json:"proposal_id"`
+		Title                string              `json:"title"`
+		Type                 string              `json:"type"`
+		Status               string              `json:"status"`
+		Level                Level               `json:"level,omitempty"`
+		InitialDeposit       Coin                `json:"intial_deposit,omitempty"`
+		TotalDeposit         Coin                `json:"total_deposit,omitempty"`
+		Votes                []VoteWithVoterInfo `json:"votes"`
+		VotingPowerForHeight int64               `json:"voting_power_for_height"`
+		SubmitTime           time.Time           `json:"submit_time,omitempty"`
+		DepositEndTime       time.Time           `json:"deposit_end_time,omitempty"`
+		VotingEndTime        time.Time           `json:"voting_end_time,omitempty"`
+		FinalVotes           FinalVotes          `json:"final_votes"`
+	}
+
+	Level struct {
+		Name     string   `json:"name"`
+		GovParam GovParam `json:"gov_param,omitempty"`
+	}
+
+	GovParam struct {
+		Participation string `json:"participation,omitempty"`
+		Threshold     string `json:"threshold,omitempty"`
+		MinDeposit    Coin   `json:"min_deposit,omitempty"`
+	}
+
+	VoteWithVoterInfo struct {
+		Voter        string    `json:"voter"`
+		VoterMoniker string    `json:"voter_moniker,omitempty"`
+		Option       string    `json:"option"`
+		VotingPower  int64     `json:"voting_power"`
+		Time         time.Time `json:"time"`
+	}
+)
+
+type GetVoteTxResponse struct {
+	Total int      `json:"total"`
+	Items []VoteTx `json:"items"`
+}
+
+type VoteTx struct {
+	Voter     string    `json:"voter"`
+	Moniker   string    `json:"moniker"`
+	Option    string    `json:"option"`
+	TxHash    string    `json:"tx_hash"`
+	Timestamp time.Time `json:"timestamp"`
+}
