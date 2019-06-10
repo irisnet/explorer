@@ -32,7 +32,7 @@
         </div> -->
         <div class="parameters_list_cards_content">
           <spin-component :showLoading="showLoading"></spin-component>
-          <div>
+          <div style="margin-top: 0.23rem;" v-show="!showNoData">
             <div :class="[$store.state.isMobile ? 'mobile_cards_layout' : 'pc_cards_layout']" v-for="(value, index) in parametersList" :key="index">
               <div class="card_title" v-show="value && value.length > 0">
                 <span>{{index}}</span>
@@ -243,7 +243,6 @@
       }
       .parameters_list_cards_content {
         overflow-x: auto;
-        margin-top: 0.23rem;
         .pc_cards_layout {
           display: flex;
           flex-wrap: wrap;
