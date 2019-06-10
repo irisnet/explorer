@@ -633,7 +633,7 @@
         height:1rem;
         align-items: center;
     }
-    @media screen and (max-width:960px) {
+    @media screen and (max-width:910px) {
         .block_detail_information_container{
             .block_information_content{
                 .current_block_information_content{

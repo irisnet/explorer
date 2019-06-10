@@ -109,7 +109,7 @@
     mounted() {
       this.showHeaderAndFooterByVersionPath();
       window.addEventListener('resize', this.onresize);
-      if (window.innerWidth > 960) {
+      if (window.innerWidth > 910) {
         this.$store.commit('isMobile',false);
         this.footerClass = 'person_computer_wrap';
         this.footerClassName = 'person_computer_footer';
@@ -137,7 +137,7 @@
         this.innerWidth = window.innerWidth;
         this.vh = window.innerHeight;
         this.vw = window.innerWidth;
-        if (window.innerWidth > 960) {
+        if (window.innerWidth > 910) {
           this.$store.commit('isMobile',false);
           this.footerClass = 'person_computer_wrap';
           this.footerClassName = 'person_computer_footer';
