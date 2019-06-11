@@ -19,14 +19,14 @@
       <div :class="['content', $store.state.isMobile ? 'mobile_content' : '']">
         <div class="content_div">
           <div>
-            <img v-if="data.participation > 50" src="../../assets/pass.png"/>
-            <img v-if="data.participation <= 50" src="../../assets/no_pass.png"/>
-            <span>Participation > 50 %</span>
+            <img v-if="data.participation > data.participation_num" src="../../assets/pass.png"/>
+            <img v-if="data.participation <= data.participation_num" src="../../assets/no_pass.png"/>
+            <span>Participation > {{data.participation_num}} %</span>
           </div>
           <div style="margin-top: 16px;">
-            <img v-if="data.threshold > 50" src="../../assets/pass.png"/>
-            <img v-if="data.threshold <= 50" src="../../assets/no_pass.png"/>
-            <span>Pass Threshold > 50 %</span>
+            <img v-if="data.threshold > data.threshold_num" src="../../assets/pass.png"/>
+            <img v-if="data.threshold <= data.threshold_num" src="../../assets/no_pass.png"/>
+            <span>Pass Threshold > {{data.threshold_num}} %</span>
           </div>
         </div>
         <div class="propsals_echart_content">
@@ -260,8 +260,10 @@ export default {
               height: 0.14rem;
             }
             span {
-              margin-left: 8px;
               vertical-align: middle;
+            }
+            span:nth-child(2) {
+              margin-left: 8px;
             }
           }
         }

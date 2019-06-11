@@ -6,16 +6,12 @@
       </p>
     </div>
     <div class="graph_containers">
-      <div class="graph_container" :class="[$store.state.isMobile ? 'mobile_graph_container' : '']" 
+      <div class="graph_container" :class="[$store.state.isMobile ? 'mobile_graph_container' : '']"
         v-if="($store.state.isMobile && (votingPeriodDatas.length > 0 || depositPeriodDatas.length > 0)) || (votingPeriodDatas.length === 1 && depositPeriodDatas.length === 1)">
-        <div v-for="v in votingPeriodDatas" :key="v.proposal_id"
-          :class="[votingPeriodDatas.length === 1 && depositPeriodDatas.length === 0 ? 'one_votingPeriodDatas' : '',
-          votingPeriodDatas.length > 1 ? 'two_votingPeriodDatas' : '']">
+        <div v-for="v in votingPeriodDatas" :key="v.proposal_id">
           <m-proposals-echart :data="v" v-if="v"></m-proposals-echart>
         </div>
-        <div v-for="v in depositPeriodDatas" :key="v.proposal_id" 
-          :class="[depositPeriodDatas.length === 1 && votingPeriodDatas.length === 0 ? 'one_depositPeriodDatas' : '',
-          depositPeriodDatas.length > 1 ? 'two_depositPeriodDatas' : '']">
+        <div v-for="v in depositPeriodDatas" :key="v.proposal_id">
           <m-proposals-card :data="v" v-if="v"></m-proposals-card>
         </div>
       </div>
@@ -239,6 +235,8 @@
           let noWithVetoArr = item.votes.filter(v => v.option === 'NoWithVeto');
           let noWithVeto = noWithVetoArr.reduce((init, v) => {return v.voting_power + init}, 0);
           let votes = yes + no + abstain + noWithVeto;
+          o.participation_num = item.level && item.level.gov_param && item.level.gov_param.participation && this.formatNumber(item.level.gov_param.participation);
+          o.threshold_num = item.level && item.level.gov_param && item.level.gov_param.threshold && this.formatNumber(item.level.gov_param.threshold);
           o.participation = all ? (votes / all) * 100 : 0;
           o.threshold = votes ? (yes / votes) * 100 : 0;
           let data = [
@@ -500,6 +498,8 @@
   .proposals_list_title_wrap {
     width: 100%;
     border-bottom: 1px solid #d6d9e0 !important;
+    position: relative;
+    z-index: 0;
     @include flex;
     @include pcContainer;
     height:0.62rem;
@@ -646,7 +646,9 @@
   }
   .graph_containers {
     width: 100%;
-    overflow-x: auto;
+    overflow: visible;
+    position: relative;
+    z-index: 1;
   }
   .graph_container {
     display: flex;
@@ -681,7 +683,7 @@
     }
   }
   .graph_container_one {
-    width: 100%;
+    width: calc(100% - 0.2rem);
     max-width: 12.8rem;
     & > div {
       width: 100%;
@@ -695,13 +697,17 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    & > div:nth-child(1) {
+      margin-top: 0!important;
+    }
     & > div {
-      margin-left: 0rem!important;
-      margin-right: 0rem!important;
+      margin-left: 0.1rem!important;
+      margin-right: 0.1rem!important;
+      margin-top: 20!important;
       flex: 1;
       display: flex;
-      & > div.propsals_echart_container {
-        width:calc(100% - 0.2rem)!important;
+      & > div {
+        width: 100%!important;
         margin: auto;
       }
     }
