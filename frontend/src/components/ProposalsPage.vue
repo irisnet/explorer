@@ -197,7 +197,7 @@
             itemStyle: {
               color: `hsla(${colorArr[0]},${saturation}%,${lightness}%, 1)`,
               borderColor: '#ECEFFF',
-              borderWidth: 0.5
+              borderWidth: arr.length > 1 ? 0.5: 0
             }
           }
           saturation = saturation - saturationStep;
