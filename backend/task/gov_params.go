@@ -17,6 +17,7 @@ func (task UpdateGovParams) Start() {
 		curModuleKv, err := lcd.GetAllGovModuleParam()
 		if err != nil {
 			logger.Error("UpdateGovParams task failed", logger.String("taskName", task.Name()), logger.String("errmsg", err.Error()))
+			return
 		}
 
 		err = service.GovParamsService{}.UpdateCurrentValueByKey(curModuleKv)
