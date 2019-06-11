@@ -8,7 +8,7 @@
     <div class="graph_containers">
       <div class="graph_container" :class="[$store.state.isMobile ? 'mobile_graph_container' : '']"
         v-if="($store.state.isMobile && (votingPeriodDatas.length > 0 || depositPeriodDatas.length > 0)) 
-        || ((votingPeriodDatas.length === 1 && depositPeriodDatas.length > 0) || (depositPeriodDatas.length === 1 && votingPeriodDatas.length > 0) )">
+        || ((votingPeriodDatas.length <= 1 || depositPeriodDatas.length <= 1) && (votingPeriodDatas.length + depositPeriodDatas.length) >= 2)">
         <div v-for="v in votingPeriodDatas" :key="v.proposal_id">
           <m-proposals-echart :data="v" v-if="v"></m-proposals-echart>
         </div>
@@ -18,7 +18,7 @@
       </div>
 
       <div class="graph_container graph_container_one"
-        v-if="!$store.state.isMobile && ((votingPeriodDatas.length === 1 && depositPeriodDatas.length === 0) || depositPeriodDatas.length === 1 && votingPeriodDatas.length === 0)">
+        v-if="!$store.state.isMobile && ((votingPeriodDatas.length === 1 && depositPeriodDatas.length === 0) || (depositPeriodDatas.length === 1 && votingPeriodDatas.length === 0))">
         <div v-for="v in votingPeriodDatas" :key="v.proposal_id">
           <m-proposals-echart :data="v" v-if="v"></m-proposals-echart>
         </div>
@@ -706,7 +706,7 @@
     & > div {
       margin-left: 0.1rem!important;
       margin-right: 0.1rem!important;
-      margin-top: 20!important;
+      margin-top: 0.2rem!important;
       flex: 1;
       display: flex;
       & > div {
