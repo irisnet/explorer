@@ -7,7 +7,7 @@
     </div>
     <div class="graph_containers">
       <div class="graph_container" :class="[$store.state.isMobile ? 'mobile_graph_container' : '']" 
-        v-if="($store.state.isMobile && (votingPeriodDatas.length > 0 && depositPeriodDatas.length > 0))|| (votingPeriodDatas.length === 1 && depositPeriodDatas.length === 1)">
+        v-if="($store.state.isMobile && (votingPeriodDatas.length > 0 || depositPeriodDatas.length > 0)) || (votingPeriodDatas.length === 1 && depositPeriodDatas.length === 1)">
         <div v-for="v in votingPeriodDatas" :key="v.proposal_id"
           :class="[votingPeriodDatas.length === 1 && depositPeriodDatas.length === 0 ? 'one_votingPeriodDatas' : '',
           votingPeriodDatas.length > 1 ? 'two_votingPeriodDatas' : '']">
