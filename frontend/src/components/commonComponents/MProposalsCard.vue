@@ -66,7 +66,7 @@ export default {
 <style lang="scss" scoped>
   .propsals_card_container {
     width: 6.3rem;
-    height: 4.6rem;
+    height: 100%;
     border-radius: 1px;
     border: 1px solid #D7D9E0;
     position: relative;
