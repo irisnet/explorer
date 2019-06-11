@@ -106,6 +106,7 @@ export default {
         display: block;
       }
       .desc_content {
+        line-height: 21px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;

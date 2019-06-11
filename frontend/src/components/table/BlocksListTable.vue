@@ -464,6 +464,9 @@
     }
   }
   .proposal_detail_list tr{
+    th {
+      white-space: nowrap!important;
+    }
     th:nth-child(1){
       width: 50% !important;
     }
@@ -474,6 +477,9 @@
   //使用rem设置max-width不生效
   @media screen and (max-width: 910px) {
     .proposal_detail_list tr{
+      th {
+        white-space: nowrap!important;
+      }
       th:nth-child(1){
         width: 50% !important;
       }

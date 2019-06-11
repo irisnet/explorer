@@ -82,6 +82,7 @@ export default {
       .value {
         margin-left: 6px;
         color: #3598DB;
+        white-space: nowrap;
       }
       .title_value_content {
         width: 1px;
