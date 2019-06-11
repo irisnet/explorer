@@ -32,7 +32,7 @@
         </div> -->
         <div class="parameters_list_cards_content">
           <spin-component :showLoading="showLoading"></spin-component>
-          <div>
+          <div style="margin-top: 0.23rem;" v-show="!showNoData">
             <div :class="[$store.state.isMobile ? 'mobile_cards_layout' : 'pc_cards_layout']" v-for="(value, index) in parametersList" :key="index">
               <div class="card_title" v-show="value && value.length > 0">
                 <span>{{index}}</span>
@@ -134,6 +134,9 @@
             },
             handleParameterItem(parameterItem){
               let arr = parameterItem.range.split(',');
+              if (arr.length !== 2) {
+                return;
+              };
               parameterItem.min = arr[0];
               parameterItem.max = arr[1];
               parameterItem.current_per = this.formatPer(parameterItem.current_value, arr[0], arr[1]);
@@ -240,7 +243,6 @@
       }
       .parameters_list_cards_content {
         overflow-x: auto;
-        margin-top: 0.23rem;
         .pc_cards_layout {
           display: flex;
           flex-wrap: wrap;

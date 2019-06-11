@@ -151,8 +151,8 @@
                 votingPower: `${(item.voting_rate * 100).toFixed(4)}%`,
                 selfBond: `${Tools.formatPriceToFixed(Number(item.self_bond.match(/\d*(\.\d{0,4})?/)[0]))} ${Constant.CHAINNAME.toLocaleUpperCase()}`,
                 delegatorNum: item.delegator_num,
-                bondHeight: item.bond_height,
-                unbondingHeight: item.unbonding_height && Number(item.unbonding_height) > 0 ? item.unbonding_height : '--',
+                bondHeight: Number(item.bond_height),
+                unbondingHeight: item.unbonding_height && Number(item.unbonding_height) > 0 ? Number(item.unbonding_height) : '--',
                 unbondingTime: (new Date(item.unbonding_time).getTime()) > 0 ? Tools.format2UTC(item.unbonding_time) : '--',
                 identity: item.description.identity,
               }

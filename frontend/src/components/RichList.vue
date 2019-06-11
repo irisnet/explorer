@@ -179,7 +179,7 @@
     height: 3rem;
     align-items: center;
   }
-  @media (min-width: 960px){
+  @media (min-width: 910px){
     .top_list_title_wrap{
       padding: 0.15rem 0;
       display: flex;

@@ -159,11 +159,6 @@ export default {
           sortable: true,
           sortMethod: this.sortMethodNumber('unbondingHeight'),
           className: 'text_right'
-        },
-        {
-          title: 'Unbonding_Time',
-          key: 'unbondingTime',
-          className: 'text_right'
         }
       ],
       candidateValidatorFields: [
@@ -218,11 +213,6 @@ export default {
           key: 'unbondingHeight',
           sortable: true,
           sortMethod: this.sortMethodNumber('unbondingHeight'),
-          className: 'text_right'
-        },
-        {
-          title: 'Unbonding_Time',
-          key: 'unbondingTime',
           className: 'text_right'
         }
       ]

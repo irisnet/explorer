@@ -7,7 +7,7 @@
     </div>
     <div class="graph_containers">
       <div class="graph_container" :class="[$store.state.isMobile ? 'mobile_graph_container' : '']" 
-        v-if="$store.state.isMobile || (votingPeriodDatas.length === 1 && depositPeriodDatas.length === 1) ">
+        v-if="($store.state.isMobile && (votingPeriodDatas.length > 0 || depositPeriodDatas.length > 0)) || (votingPeriodDatas.length === 1 && depositPeriodDatas.length === 1)">
         <div v-for="v in votingPeriodDatas" :key="v.proposal_id"
           :class="[votingPeriodDatas.length === 1 && depositPeriodDatas.length === 0 ? 'one_votingPeriodDatas' : '',
           votingPeriodDatas.length > 1 ? 'two_votingPeriodDatas' : '']">
@@ -48,11 +48,11 @@
 
     <div :class="proposalsListPageWrap">
       <div class="pagination total_num" :class="[$store.state.isMobile ? 'mobile_graph_pagination_container' : '']">
-        <div style="height: 100%; display: flex; align-items: center;">
+        <div style="height: 70px; display: flex; align-items: center;">
           <span class="proposals_list_page_wrap_hash_var" :class="count ? 'count_show' : 'count_hidden' ">{{count}} Proposals</span>
           <div class="icon_list">
             <div>
-              <img src="../assets/critical.png" />
+              <img src="../assets/critical.png" style="margin-left: 0;" />
               <span>Critical</span>
             </div>
             <div>
@@ -151,7 +151,6 @@
         showLoading:false,
         innerWidth : window.innerWidth,
         tableMinWidth:"",
-        proposalListTimer: null,
         votingPeriodDatas: [],
         depositPeriodDatas: []
       }
@@ -164,7 +163,6 @@
         this.proposalsListPageWrap = 'mobile_proposals_list_page_wrap';
       }
     },
-
     mounted() {
       this.getGrahpData();
       this.getDataList(1, 30);
@@ -189,19 +187,24 @@
         }
       },
       formatGrahpChildren(arr, color) {
-        let opacity = 1000;
+        let colorArr = color.split(',');
+        let saturation = Number(colorArr[1].replace('%', ''));
+        let lightness = Number(colorArr[2].replace('%', ''));
+        let saturationStep = Math.floor((500 / arr.length)) / 100 || 0.1;
+        let lightnessStep = Math.floor((500 / arr.length)) / 30 || 0.1;
         return arr.map(v => {
           let obj =  {
             value: v.voting_power,
             info: v,
             nodeClick: false,
             itemStyle: {
-              color: `rgba(${color},${opacity / 1000})`,
-              borderColor: '#CCDCFF',
-              borderWidth: 0
+              color: `hsla(${colorArr[0]},${saturation}%,${lightness}%, 1)`,
+              borderColor: '#ECEFFF',
+              borderWidth: 0.5
             }
           }
-          opacity = opacity - 90;
+          saturation = saturation - saturationStep;
+          lightness = lightness + lightnessStep;
           return obj;
         });
       },
@@ -226,8 +229,6 @@
           let o = {};
           o.proposal_id = item.proposal_id;
           o.title = item.title;
-          o.participation = item.level && item.level.gov_param && item.level.gov_param.participation && this.formatNumber(item.level.gov_param.participation);
-          o.threshold = item.level && item.level.gov_param && item.level.gov_param.threshold && this.formatNumber(item.level.gov_param.threshold);
           let all = item.voting_power_for_height;
           let yesArr = item.votes.filter(v => v.option === 'Yes');
           let yes = yesArr.reduce((init, v) => {return v.voting_power + init}, 0);
@@ -238,13 +239,15 @@
           let noWithVetoArr = item.votes.filter(v => v.option === 'NoWithVeto');
           let noWithVeto = noWithVetoArr.reduce((init, v) => {return v.voting_power + init}, 0);
           let votes = yes + no + abstain + noWithVeto;
+          o.participation = all ? (votes / all) * 100 : 0;
+          o.threshold = votes ? (yes / votes) * 100 : 0;
           let data = [
             {
               name: 'Participant',
               value: votes,
               itemStyle: {
                 color: '#3598DB',
-                borderColor: '#CCDCFF',
+                borderColor: '#ECEFFF',
                 borderWidth: 0
               },
               children: [
@@ -253,40 +256,40 @@
                   value: yes,
                   itemStyle: {
                     color: '#45B4FF',
-                    borderColor: '#CCDCFF',
+                    borderColor: '#ECEFFF',
                     borderWidth: 0
                   },
-                  children: this.formatGrahpChildren(yesArr, '69,180,255')
+                  children: this.formatGrahpChildren(yesArr, '204,100%,35%')
                 },
                 {
                   name: 'Abstain',
                   value: abstain,
                   itemStyle: {
                     color: '#CCDCFF',
-                    borderColor: '#CCDCFF',
+                    borderColor: '#ECEFFF',
                     borderWidth: 0
                   },
-                  children: this.formatGrahpChildren(abstainArr, '204,220,255')
+                  children: this.formatGrahpChildren(abstainArr, '221,44%,58%')
                 },
                 {
                   name: 'No',
                   value: no,
                   itemStyle: {
                     color: '#FFCF65',
-                    borderColor: '#CCDCFF',
+                    borderColor: '#ECEFFF',
                     borderWidth: 0
                   },
-                  children: this.formatGrahpChildren(noArr, '255,207,101')
+                  children: this.formatGrahpChildren(noArr, '36,100%,48%')
                 },
                 {
                   name: 'NoWithVeto',
                   value: noWithVeto,
                   itemStyle: {
                     color: '#FE8A8A',
-                    borderColor: '#CCDCFF',
+                    borderColor: '#ECEFFF',
                     borderWidth: 0
                   },
-                  children: this.formatGrahpChildren(noWithVetoArr, '254,138,138')
+                  children: this.formatGrahpChildren(noWithVetoArr, '21,100%,50%')
                 }
               ]
             },
@@ -296,27 +299,34 @@
               nodeClick: false,
               itemStyle: {
                 color: '#E5E9FB',
-                borderColor: '#E5E9FB',
+                borderColor: '#ECEFFF',
                 borderWidth: 0
+              },
+              label: {
+                color: '#51A9FF',
+                textBorderWidth: 0,
+                fontWeight: 600
               },
               children: [
                 {
                   name: '',
+                  tipName: 'Nonparticipant',
                   value: all - votes,
                   nodeClick: false,
                   itemStyle: {
                     color: '#E5E9FB',
-                    borderColor: '#CCDCFF',
+                    borderColor: '#ECEFFF',
                     borderWidth: 0
                   },
                   children: [
                     {
                       name: '',
+                      tipName: 'Nonparticipant',
                       value: all - votes,
                       nodeClick: false,
                       itemStyle: {
                         color: '#E5E9FB',
-                        borderColor: '#CCDCFF',
+                        borderColor: '#ECEFFF',
                         borderWidth: 0
                       }
                     }
@@ -368,49 +378,46 @@
           if(proposalList.Data){
             this.showNoData = false;
             this.count = proposalList.Count;
-            let that = this;
-            clearInterval(this.proposalListTimer);
-            // this.proposalListTimer = setInterval(function () {
-              that.items = proposalList.Data.map(item =>{
-                let proposalId = item.proposal_id === 0 ? "--" : item.proposal_id;
-                let type = item.type;
-                let status  = item.status;
-                let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-                let submitTime = (new Date(item.submit_time).getTime()) > 0 ? Tools.format2UTC(item.submit_time) : '--';
-                let depositEndTime = (new Date(item.deposit_end_time).getTime()) > 0 ? Tools.format2UTC(item.deposit_end_time) : '--';
-                let votingEndTime = (new Date(item.voting_end_time).getTime()) > 0 ? Tools.format2UTC(item.voting_end_time) : '--';
-                let title = Tools.formatString(item.title,20,"...");
-                let final_votes = Object.keys(item.final_votes).length > 0 ? item.final_votes : null;
-                let finalTotalVotes = 0;
-                for (let k in item.final_votes) {
-                  finalTotalVotes += Number(item.final_votes[k]);
+            this.items = proposalList.Data.map(item =>{
+              let proposalId = item.proposal_id === 0 ? "--" : item.proposal_id;
+              let type = item.type;
+              let status  = item.status;
+              let submitTime = (new Date(item.submit_time).getTime()) > 0 ? Tools.format2UTC(item.submit_time) : '--';
+              let depositEndTime = (new Date(item.deposit_end_time).getTime()) > 0 ? Tools.format2UTC(item.deposit_end_time) : '--';
+              let votingEndTime = (new Date(item.voting_end_time).getTime()) > 0 ? Tools.format2UTC(item.voting_end_time) : '--';
+              let title = Tools.formatString(item.title,20,"...");
+              let final_votes = Object.keys(item.final_votes).length > 0 ? item.final_votes : null;
+              let finalTotalVotes = 0;
+              for (let k in item.final_votes) {
+                finalTotalVotes += Number(item.final_votes[k]);
+              }
+              if(final_votes) {
+                for (let k in final_votes) {
+                  final_votes[k] = (Number(final_votes[k]) / finalTotalVotes) * 100;
                 }
-                if(final_votes) {
-                  for (let k in final_votes) {
-                    final_votes[k] = (Number(final_votes[k]) / finalTotalVotes) * 100;
-                  }
-                }
-                return {
-                  title : title,
-                  id : proposalId,
-                  type : type,
-                  status : status,
-                  submitTime : submitTime,
-                  depositEndTime: depositEndTime,
-                  votingEndTime: votingEndTime,
-                  finalTotalVotes: finalTotalVotes,
-                  finalVotes: final_votes,
-                  level: item.level && item.level.name
-                }
-              })
-            // },1000);
+              }
+              return {
+                title : title,
+                id : proposalId,
+                type : type,
+                status : status,
+                submitTime : submitTime,
+                depositEndTime: depositEndTime,
+                votingEndTime: votingEndTime,
+                finalTotalVotes: finalTotalVotes,
+                finalVotes: final_votes,
+                level: item.level && item.level.name
+              }
+            });
           }else {
             this.items = [];
             this.showNoData = true;
           }
           this.showLoading = false;
         }).catch(e => {
-          console.log(e)
+          this.items = [];
+          this.showNoData = true;
+          this.showLoading = false;
         })
       }
     }
@@ -469,13 +476,13 @@
   }
   .total_num{
     @include flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      & > div {
-        padding: 4px 0;
-      }
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    & > div {
+      padding: 4px 0;
     }
+  }
   .no_data_show{
     @include flex;
       justify-content: center;
@@ -631,10 +638,11 @@
     }
   }
   .count_show{
-    visibility: visible;
+    display: block;
+    margin-right: 50px;
   }
   .count_hidden{
-    visibility: hidden;
+    display: none !important;
   }
   .graph_containers {
     width: 100%;
@@ -674,6 +682,7 @@
   }
   .graph_container_one {
     width: 100%;
+    max-width: 12.8rem;
     & > div {
       width: 100%;
       margin-right: 0rem!important;
@@ -691,7 +700,7 @@
       margin-right: 0rem!important;
       flex: 1;
       display: flex;
-      & > div {
+      & > div.propsals_echart_container {
         width:calc(100% - 0.2rem)!important;
         margin: auto;
       }
@@ -702,12 +711,15 @@
   }
   .mobile_graph_pagination_container {
     padding-left: 0!important;
+    & > div:nth-child(1) {
+      height: 100%!important;
+    }
     & > div {
       flex-wrap: wrap;
       width: 100%;
       .proposals_list_page_wrap_hash_var {
         white-space: nowrap;
-        display: block !important;
+        display: block;
         width: 100%;
       }
       padding: 10px 0!important;

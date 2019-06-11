@@ -49,6 +49,11 @@
           </div>
         </div>
       </template>
+      <template slot='Vote_Option' slot-scope='data'>
+        <div style="width: 100px;">
+          {{data.item['Vote_Option']}}
+        </div>
+      </template>
       <template slot='Depositor' slot-scope='data'>
         <span v-if="(/^[1-9]\d*$/).test(data.item.Depositor)" class="skip_route">
           <router-link :to="`/tx?txHash=${data.item.Tx_Hash}`">{{data.item.From}} Validators</router-link>
