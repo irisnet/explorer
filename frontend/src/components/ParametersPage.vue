@@ -164,10 +164,14 @@
                 parameterItem.current = `${parameterItem.current_value*100} %`;
                 parameterItem.genesis = `${parameterItem.genesis_value*100} %`;
               }else if(parameterItem.key === "gas_price_threshold"){
-                let maxL = arr[1].length - 1;
-                parameterItem.max = `${Number(arr[1]) / (10 ** maxL)}*10^${maxL} iris-atto`;
-                parameterItem.current = Tools.formatPrice(parameterItem.current_value).split('.')[0];
-                parameterItem.genesis = Tools.formatPrice(parameterItem.genesis_value).split('.')[0];
+                let maxL = String(arr[1]).length - 1;
+                parameterItem.max = `${Number(arr[1]) / (10 ** maxL)}*10^${maxL - 9} Nano`;
+                let current_value_arr = String(Number(parameterItem.current_value) / (10 ** 9)).split('.');
+                let genesis_value_arr = String(Number(parameterItem.genesis_value) / (10 ** 9)).split('.');
+                let current_value_arr_0 = Tools.formatPrice(current_value_arr[0]).split('.')[0];
+                let genesis_value_arr_0 = Tools.formatPrice(genesis_value_arr[0]).split('.')[0];
+                parameterItem.current = current_value_arr[1] ? `${current_value_arr_0}.${current_value_arr[1]}` : current_value_arr_0;
+                parameterItem.genesis = genesis_value_arr[1] ? `${genesis_value_arr_0}.${genesis_value_arr[1]}` : genesis_value_arr_0;
               }else if(parameterItem.key === "tx_size"){
                 parameterItem.max = Number(arr[1]) === 0 ? arr[1] : `${arr[1]} Bytes`;
                 parameterItem.current = `${parameterItem.current_value} Bytes`;
