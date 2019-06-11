@@ -160,6 +160,7 @@
                 parameterItem.current = this.formatUnbondingTime(parameterItem.current);
                 parameterItem.genesis = this.formatUnbondingTime(parameterItem.genesis);
               }else if(perDataArr.indexOf(parameterItem.key) > -1){
+                parameterItem.min = Number(arr[0]) === 0 ? arr[0] : `${arr[0]*100}`;
                 parameterItem.max = Number(arr[1]) === 0 ? arr[1] : `${arr[1]*100} %`;
                 parameterItem.current = `${parameterItem.current_value*100} %`;
                 parameterItem.genesis = `${parameterItem.genesis_value*100} %`;
