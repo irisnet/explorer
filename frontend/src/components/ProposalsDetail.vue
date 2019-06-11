@@ -232,15 +232,13 @@
         }
       },
       flShowProposalTime(proposalTimeName,status){
-       if(status === 'Rejected' || status === 'Passed' || status === 'VotingPeriod'){
+        if(status === 'Rejected' || status === 'Passed' || status === 'VotingPeriod'){
          return true
-       }else{
-         switch (proposalTimeName){
-           case proposalTimeName === 'depositEndTime' && status === 'DepositPeriod' : return true ;
-           case proposalTimeName === 'votingStartTime' && status === 'VotingPeriod' : return true ;
-           case proposalTimeName === 'votingEndTime' && status === 'VotingPeriod' : return true ;
+         }else{
+            if(proposalTimeName === 'depositEndTime' && status === 'DepositPeriod') return true;
+            if(proposalTimeName === 'votingStartTime' && status === 'VotingPeriod') return true;
+            if(proposalTimeName === 'votingEndTime' && status === 'VotingPeriod') return true;
          }
-       }
       },
       formatProposalTime(time){
         let currentServerTime  = new Date().getTime() + this.diffMilliseconds;
