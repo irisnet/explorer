@@ -28,7 +28,7 @@
       </div>
 
       <div class="graph_container graph_container_warp"
-        v-if="!$store.state.isMobile && (depositPeriodDatas.length > 1 || votingPeriodDatas.length > 1)">
+        v-if="!$store.state.isMobile && (depositPeriodDatas.length > 1 && votingPeriodDatas.length > 1)">
         <div>
           <div v-for="v in votingPeriodDatas" :key="v.proposal_id">
             <m-proposals-echart :data="v" v-if="v"></m-proposals-echart>
