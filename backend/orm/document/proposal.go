@@ -1,6 +1,7 @@
 package document
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/irisnet/explorer/backend/orm"
@@ -40,10 +41,30 @@ type Proposal struct {
 	Votes           []PVote     `bson:"votes"`
 }
 
+func (p Proposal) String() string {
+	return fmt.Sprintf(`
+		ProposalId      :%v
+		Title           :%v
+		Type            :%v
+		Description     :%v
+		Status          :%v
+		SubmitTime      :%v
+		DepositEndTime  :%v
+		VotingStartTime :%v
+		VotingEndTime   :%v
+		TotalDeposit    :%v
+		Votes           :%v
+		`, p.ProposalId, p.Title, p.Type, p.Description, p.Status, p.SubmitTime, p.DepositEndTime, p.VotingStartTime, p.VotingEndTime, p.TotalDeposit, p.Votes)
+}
+
 type PVote struct {
 	Voter  string    `json:"voter"`
 	Option string    `json:"option"`
 	Time   time.Time `json:"time"`
+}
+
+func (p PVote) String() string {
+	return fmt.Sprintf(`Voter: %v  option: %v  time: %v`, p.Voter, p.Option, p.Time)
 }
 
 func (m Proposal) Name() string {

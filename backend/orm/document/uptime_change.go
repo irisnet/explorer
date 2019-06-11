@@ -1,6 +1,10 @@
 package document
 
-import "github.com/irisnet/explorer/backend/orm"
+import (
+	"fmt"
+
+	"github.com/irisnet/explorer/backend/orm"
+)
 
 const CollectionNmUptimeChange = "ex_uptime_change"
 
@@ -8,6 +12,14 @@ type UptimeChange struct {
 	Address string
 	Time    string
 	Uptime  float64
+}
+
+func (uptime UptimeChange) String() string {
+	return fmt.Sprintf(`
+		Address :%v
+		Time    :%v
+		Uptime  :%v
+		`, uptime.Address, uptime.Time, uptime.Uptime)
 }
 
 func (_ UptimeChange) QueryOne() (UptimeChange, error) {

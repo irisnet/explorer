@@ -1,6 +1,8 @@
 package document
 
 import (
+	"fmt"
+
 	"github.com/irisnet/explorer/backend/orm"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -19,6 +21,15 @@ type Config struct {
 	Host       string `bson:"host" json:"host,omitempty"`
 	ChainId    string `bson:"chain_id" json:"chain_id,omitempty"`
 	ShowFaucet int    `bson:"show_faucet" json:"show_faucet,omitempty"`
+}
+
+func (c Config) String() string {
+	return fmt.Sprintf(`
+		EnvNm      :%v
+		Host       :%v
+		ChainId    :%v
+		ShowFaucet :%v
+		`, c.EnvNm, c.Host, c.ChainId, c.ShowFaucet)
 }
 
 func (a Config) Name() string {

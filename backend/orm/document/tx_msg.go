@@ -19,14 +19,13 @@ type TxMsg struct {
 	Content string `bson:"content"`
 }
 
-func (tm TxMsg) String() string {
+func (txMsg TxMsg) String() string {
+
 	return fmt.Sprintf(`
-
-Hash:    %v
-Type:    %v
-Content: %v
-
-	  `, tm.Hash, tm.Type, tm.Content)
+		Hash    :%v
+		Type    :%v
+		Content :%v
+		`, txMsg.Hash, txMsg.Type, txMsg.Content)
 }
 
 func (m TxMsg) Name() string {

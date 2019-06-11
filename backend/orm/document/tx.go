@@ -1,6 +1,7 @@
 package document
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/irisnet/explorer/backend/orm"
@@ -69,28 +70,55 @@ type ActualFee struct {
 }
 
 type CommonTx struct {
-	Time       time.Time         `bson:"time"`
-	Height     int64             `bson:"height"`
-	TxHash     string            `bson:"tx_hash"`
-	From       string            `bson:"from"`
-	To         string            `bson:"to"`
-	Amount     Coins             `bson:"amount"`
-	Type       string            `bson:"type"`
-	Fee        Fee               `bson:"fee"`
-	Memo       string            `bson:"memo"`
-	Status     string            `bson:"status"`
-	Code       uint32            `bson:"code"`
-	Log        string            `bson:"log"`
-	GasUsed    int64             `bson:"gas_used"`
-	GasPrice   float64           `bson:"gas_price"`
-	ActualFee  ActualFee         `bson:"actual_fee"`
-	ProposalId uint64            `bson:"proposal_id"`
-	Tags       map[string]string `bson:"tags"`
-
+	Time                 time.Time            `bson:"time"`
+	Height               int64                `bson:"height"`
+	TxHash               string               `bson:"tx_hash"`
+	From                 string               `bson:"from"`
+	To                   string               `bson:"to"`
+	Amount               Coins                `bson:"amount"`
+	Type                 string               `bson:"type"`
+	Fee                  Fee                  `bson:"fee"`
+	Memo                 string               `bson:"memo"`
+	Status               string               `bson:"status"`
+	Code                 uint32               `bson:"code"`
+	Log                  string               `bson:"log"`
+	GasUsed              int64                `bson:"gas_used"`
+	GasPrice             float64              `bson:"gas_price"`
+	ActualFee            ActualFee            `bson:"actual_fee"`
+	ProposalId           uint64               `bson:"proposal_id"`
+	Tags                 map[string]string    `bson:"tags"`
 	StakeCreateValidator StakeCreateValidator `bson:"stake_create_validator"`
 	StakeEditValidator   StakeEditValidator   `bson:"stake_edit_validator"`
 	Msg                  Msg                  `bson:"-"`
 	Signers              []Signer             `bson:"signers"`
+}
+
+func (tx CommonTx) String() string {
+	return fmt.Sprintf(`
+		Time                 :%v
+		Height               :%v
+		TxHash               :%v
+		From                 :%v
+		To                   :%v
+		Amount               :%v
+		Type                 :%v
+		Fee                  :%v
+		Memo                 :%v
+		Status               :%v
+		Code                 :%v
+		Log                  :%v
+		GasUsed              :%v
+		GasPrice             :%v
+		ActualFee            :%v
+		ProposalId           :%v
+		Tags                 :%v
+		StakeCreateValidator :%v
+		StakeEditValidator   :%v
+		Msg                  :%v
+		Signers              :%v
+		`, tx.Time, tx.Height, tx.TxHash, tx.From, tx.To, tx.Amount, tx.Type, tx.Fee, tx.Memo, tx.Status, tx.Code, tx.Log, tx.GasUsed,
+		tx.GasPrice, tx.ActualFee, tx.ProposalId, tx.Tags, tx.StakeCreateValidator, tx.StakeEditValidator, tx.Msg, tx.Signers)
+
 }
 
 type Msg interface {
@@ -165,6 +193,14 @@ func (_ CommonTx) QueryTxByHash(hash string) (CommonTx, error) {
 type Counter []struct {
 	Type  string `bson:"_id,omitempty"`
 	Count int
+}
+
+func (cArr Counter) String() string {
+	res := ""
+	for k, v := range cArr {
+		res += fmt.Sprintf("idx: %v Type  :%v  \t	Count :%v \n", k, v.Type, v.Count)
+	}
+	return res
 }
 
 func (_ CommonTx) CountByType(query bson.M) (Counter, error) {

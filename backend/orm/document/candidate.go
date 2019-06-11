@@ -1,6 +1,7 @@
 package document
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 
@@ -68,6 +69,23 @@ type (
 		Count float64
 	}
 )
+
+func (d Candidate) String() string {
+	return fmt.Sprintf(`
+		Address         :%v
+		PubKey          :%v
+		PubKeyAddr      :%v
+		Jailed          :%v
+		Tokens          :%v
+		OriginalTokens  :%v
+		DelegatorShares :%v
+		VotingPower     :%v
+		Description     :%v
+		BondHeight      :%v
+		Status          :%v
+		Rank            :%v
+		`, d.Address, d.PubKey, d.PubKeyAddr, d.Jailed, d.Tokens, d.OriginalTokens, d.DelegatorShares, d.VotingPower, d.Description, d.BondHeight, d.Status, d.Rank)
+}
 
 func (d Candidate) Name() string {
 	return CollectionNmStakeRoleCandidate

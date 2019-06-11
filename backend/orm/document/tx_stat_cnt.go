@@ -1,6 +1,7 @@
 package document
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/irisnet/explorer/backend/orm"
@@ -90,4 +91,11 @@ func (_ TxNumStat) InsertList(list []TxNumStat) error {
 type TxNumGroup struct {
 	Date string `bson:"_id"`
 	Num  int64  `bson:"count"`
+}
+
+func (group TxNumStat) String() string {
+	return fmt.Sprintf(`
+		Date :%v
+		Num  :%v
+		`, group.Date, group.Num)
 }

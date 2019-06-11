@@ -1,6 +1,7 @@
 package document
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/irisnet/explorer/backend/orm"
@@ -36,6 +37,29 @@ type Validator struct {
 	VotingPower     int64         `bson:"voting_power" json:"voting_power"`
 }
 
+func (v Validator) String() string {
+
+	return fmt.Sprintf(`
+		ID              :%v
+		OperatorAddress :%v
+		ConsensusPubkey :%v
+		Jailed          :%v
+		Status          :%v
+		Tokens          :%v
+		DelegatorShares :%v
+		Description     :%v
+		BondHeight      :%v
+		UnbondingHeight :%v
+		UnbondingTime   :%v
+		Commission      :%v
+		Uptime          :%v
+		SelfBond        :%v
+		DelegatorNum    :%v
+		ProposerAddr    :%v
+		VotingPower     :%v
+		`, v.ID, v.OperatorAddress, v.ConsensusPubkey, v.Jailed, v.Status, v.Tokens, v.DelegatorShares, v.Description, v.BondHeight, v.UnbondingHeight, v.UnbondingTime, v.Commission, v.Uptime, v.SelfBond, v.DelegatorNum, v.ProposerAddr, v.VotingPower)
+}
+
 func (v Validator) GetValidatorList() ([]Validator, error) {
 	var validatorsDocArr []Validator
 	var selector = bson.M{"description.moniker": 1, "operator_address": 1, "consensus_pubkey": 1, "proposer_addr": 1}
@@ -58,11 +82,20 @@ type Description struct {
 	Website  string `bson:"website" json:"website"`
 	Details  string `bson:"details" json:"details"`
 }
+
+func (d Description) String() string {
+	return fmt.Sprintf(`Moniker  :%v  Identity :%v Website  :%v Details  :%v`, d.Moniker, d.Identity, d.Website, d.Details)
+}
+
 type Commission struct {
 	Rate          string    `bson:"rate" json:"rate"`
 	MaxRate       string    `bson:"max_rate" json:"max_rate"`
 	MaxChangeRate string    `bson:"max_change_rate" json:"max_change_rate"`
 	UpdateTime    time.Time `bson:"update_time" json:"update_time"`
+}
+
+func (c Commission) String() string {
+	return fmt.Sprintf(`Rate: %v  		MaxRate: %v 		MaxChangeRate: %v 		UpdateTime: %v   `, c.Rate, c.MaxRate, c.MaxChangeRate, c.UpdateTime)
 }
 
 func (v Validator) Name() string {
