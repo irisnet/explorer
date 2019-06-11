@@ -7,7 +7,8 @@
     </div>
     <div class="graph_containers">
       <div class="graph_container" :class="[$store.state.isMobile ? 'mobile_graph_container' : '']"
-        v-if="($store.state.isMobile && (votingPeriodDatas.length > 0 || depositPeriodDatas.length > 0)) || (votingPeriodDatas.length === 1 && depositPeriodDatas.length === 1)">
+        v-if="($store.state.isMobile && (votingPeriodDatas.length > 0 || depositPeriodDatas.length > 0)) 
+        || ((votingPeriodDatas.length === 1 && depositPeriodDatas.length > 0) || (depositPeriodDatas.length === 1 && votingPeriodDatas.length > 0) )">
         <div v-for="v in votingPeriodDatas" :key="v.proposal_id">
           <m-proposals-echart :data="v" v-if="v"></m-proposals-echart>
         </div>
@@ -646,9 +647,11 @@
   }
   .graph_containers {
     width: 100%;
-    overflow: visible;
     position: relative;
     z-index: 1;
+    padding-top: 10rem;
+    margin-top: -10rem;
+    overflow-x: auto;
   }
   .graph_container {
     display: flex;
