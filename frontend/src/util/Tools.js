@@ -205,6 +205,16 @@ export default class Tools{
   static formatFeeToFixedNumber(num){
     return  Tools.toFixedformatNumber(Tools.formatNumber(num) ,4) + "...";
   }
+  static formatDecimalNumberToFixedNumber(num){
+    if(typeof num === 'number' && !Object.is(num, NaN)) {
+      if (num < 0.01) {
+        return num.toFixed(4);
+      } else {
+        return num.toFixed(2);
+      }
+    }
+    return num;
+  }
   /**
    * 格式化年月日
    * param string;
@@ -347,7 +357,7 @@ export default class Tools{
    * return String
    */
   static formatTxHash(txHash){
-    return `${txHash.substring(0,4)}...${txHash.substring(txHash.length - 4)}`
+    return `${txHash.substring(0,3)}...${txHash.substring(txHash.length - 3)}`
   }
   static formatTxList(list,txType){
     if(list !== null){

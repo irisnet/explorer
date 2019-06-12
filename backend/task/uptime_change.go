@@ -39,9 +39,9 @@ func (task UpTimeChangeTask) Start() {
 		var lastBlock document.Block
 
 		db := orm.GetDatabase()
-		b := db.C("block")
-		u := db.C("uptime_change")
-		p := db.C("power_change")
+		b := db.C(document.CollectionNmBlock)
+		u := db.C(document.CollectionNmUptimeChange)
+		p := db.C(document.CollectionNmPowerChange)
 
 		defer db.Session.Close()
 

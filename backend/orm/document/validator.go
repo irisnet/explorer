@@ -6,12 +6,13 @@ import (
 )
 
 const (
-	CollectionNmValidator = "validator"
+	CollectionNmValidator = "ex_validator"
 
 	ValidatorFieldVotingPower     = "voting_power"
 	ValidatorFieldJailed          = "jailed"
 	ValidatorFieldStatus          = "status"
 	ValidatorFieldOperatorAddress = "operator_address"
+	ValidatorFieldDescription     = "description"
 )
 
 type Validator struct {

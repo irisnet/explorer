@@ -58,7 +58,7 @@
         </ul>
       </div>
       <div :class="module_item_wrap">
-        <div class="home_module_item home_module_item_pie" style="overflow-x: hidden;">
+        <div class="home_module_item home_module_item_pie">
           <echarts-pie :information="information"></echarts-pie>
         </div>
         <div class="home_module_item home_module_item_pie">

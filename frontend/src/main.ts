@@ -6,6 +6,13 @@ import store from './store'
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+/*引入自定义组件*/
+import directives from './directives';
+Vue.use(directives);
+/*引入自定义组件*/
+import MTable from './components/commonComponents/MTable.vue';
+Vue.component('MTable', MTable);
+
 import axios from "axios"
 const  codec  = require("irisnet-crypto/util/codec.js") ;
 const  crypto = require("irisnet-crypto");

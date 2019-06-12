@@ -3,14 +3,18 @@
     <div class="blocks_list_title_wrap" :class="blocksListPageWrap === 'personal_computer_blocks_list_page_wrap' ? 'fixed_style' :''">
       <div :class="blocksListPageWrap" style="margin-bottom:0;">
         <div class="validators_status_tab">
-          <span class="validators_status_title" v-for="(item,index) in validatorStatusTitleList" :class="item.isActive ? 'active_title' : '' " @click="selectValidatorStatus(index)">{{item.title}}</span>
+          <span class="validators_status_title" v-for="(item,index) in validatorStatusTitleList" :key="index" :class="item.isActive ? 'active_title' : '' " @click="selectValidatorStatus(index)">{{item.title}}</span>
         </div>
       </div>
     </div>
     <div :class="blocksListPageWrap" :style="{'margin-top':`${blocksListPageWrap === 'personal_computer_blocks_list_page_wrap' ? '0.61rem' : '0'}`}">
-      <div style="overflow-x: auto;-webkit-overflow-scrolling:touch;">
+      <div style="overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling:touch;">
         <spin-component :showLoading="showLoading"/>
-        <validator-list-table :items="items" :minWidth="tableMinWidth" :showNoData="showNoData"></validator-list-table>
+        <!-- <validator-list-table :items="items" :minWidth="tableMinWidth" :showNoData="showNoData"></validator-list-table> -->
+        <m-validator-list-table ref="mtable"
+                                  :items="items"
+                                  :minWidth="tableMinWidth"
+                                  :showNoData="showNoData"></m-validator-list-table>
         <div v-show="showNoData" class="no_data_show">
           No Data
         </div>
@@ -30,10 +34,13 @@
   import Service from "../util/axios"
   import SpinComponent from './commonComponents/SpinComponent';
   import ValidatorListTable from "./table/ValidatorListTable";
+  import MValidatorListTable from "./table/MValidatorListTable";
+
   export default {
     components:{
       ValidatorListTable,
       SpinComponent,
+      MValidatorListTable
     },
     watch: {
       currentPage(currentPage) {
@@ -69,7 +76,7 @@
         showNoData:false,//是否显示列表的无数据
         showLoading:false,
         innerWidth : window.innerWidth,
-        tableMinWidth:'',
+        tableMinWidth: 0,
         listTitleName:"",
         validatorTabIndex: localStorage.getItem('validatorTabIndex') ? localStorage.getItem('validatorTabIndex') : 0,
         validatorStatusTitleList:[
@@ -139,10 +146,10 @@
                 moniker: Tools.formatString(item.description.moniker,15,'...'),
                 operatorAddress: item.operator_address,
                 commission: `${(item.commission.rate * 100).toFixed(2)} %`,
-                bondedToken: Number(item.tokens),
+                bondedToken: `${Tools.formatPriceToFixed(Number(item.tokens),2)} ${Constant.CHAINNAME.toLocaleUpperCase()}`,
                 uptime: `${(item.uptime * 100).toFixed(2)}%`,
                 votingPower: `${(item.voting_rate * 100).toFixed(4)}%`,
-                selfBond: Number(item.self_bond.match(/\d*(\.\d{0,4})?/)[0]),
+                selfBond: `${Tools.formatPriceToFixed(Number(item.self_bond.match(/\d*(\.\d{0,4})?/)[0]))} ${Constant.CHAINNAME.toLocaleUpperCase()}`,
                 delegatorNum: item.delegator_num,
                 bondHeight: Number(item.bond_height),
                 unbondingHeight: item.unbonding_height && Number(item.unbonding_height) > 0 ? Number(item.unbonding_height) : '--',
@@ -154,24 +161,14 @@
             this.showNoData = false;
           }else {
             this.showNoData = true;
-            this.items = [{
-              validatorStatus: status,
-              moniker: "",
-              operatorAddress: "",
-              commission: "",
-              bondedToken: "",
-              votingPower: "",
-              uptime: "",
-              selfBond: "",
-              delegatorNum:"",
-              bondHeight: "",
-              identity: "",
-            }]
+            this.items = [];
           }
           this.showLoading = false;
+          this.$refs.mtable && this.$refs.mtable.setValidatorField(status);
         }).catch(e =>{
           this.showLoading = false;
           this.showNoData = true;
+          this.$refs.mtable && this.$refs.mtable.setValidatorField(status);
           console.log(e)
         });
       },
