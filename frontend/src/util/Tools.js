@@ -208,9 +208,9 @@ export default class Tools{
   static formatDecimalNumberToFixedNumber(num){
     if(typeof num === 'number' && !Object.is(num, NaN)) {
       if (num < 0.01) {
-        return Number(num.toFixed(4));
+        return num.toFixed(4);
       } else {
-        return Number(num.toFixed(2));
+        return num.toFixed(2);
       }
     }
     return num;
