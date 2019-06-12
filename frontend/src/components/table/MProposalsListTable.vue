@@ -30,22 +30,22 @@
           <div v-if="row.finalVotes">
             <div class="votes_per" :style="{backgroundColor: '#45B4FF', width: `${row.finalVotes.yes}%`}">
               <div class="tooltip_span">
-                Yes: {{row.finalVotes.yes}} %
+                Yes: {{formatNum(row.finalVotes.yes)}} %
               </div>
             </div>
             <div class="votes_per" :style="{backgroundColor: '#CCDCFF', width: `${row.finalVotes.abstain}%`}">
               <div class="tooltip_span">
-                Abstain: {{row.finalVotes.abstain}} %
+                Abstain: {{formatNum(row.finalVotes.abstain)}} %
               </div>
             </div>
             <div class="votes_per" :style="{backgroundColor: '#FFCF65', width: `${row.finalVotes.no}%`}">
               <div class="tooltip_span">
-                No: {{row.finalVotes.no}} %
+                No: {{formatNum(row.finalVotes.no)}} %
               </div>
             </div>
             <div class="votes_per" :style="{backgroundColor: '#FE8A8A', width: `${row.finalVotes.no_with_veto}%`}">
               <div class="tooltip_span">
-                NoWithVeto: {{row.finalVotes.no_with_veto}} %
+                NoWithVeto: {{formatNum(row.finalVotes.no_with_veto)}} %
               </div>
             </div>
           </div>
@@ -104,39 +104,24 @@ export default {
         {
           title: 'Submit_Time',
           key: 'submitTime',
-          // sortable: true,
-          sortMethod: this.sortMethodSplit('bondedToken'),
           className: 'text_right'
         },
         {
           title: 'Deposit_Endtime',
           key: 'depositEndTime',
-          // sortable: true,
-          sortMethod: this.sortMethodPer('votingPower'),
           className: 'text_right'
         },
         {
           title: 'Voting_Endtime',
           key: 'votingEndTime',
-          // sortable: true,
-          sortMethod: this.sortMethodPer('uptime'),
           className: 'text_right'
         }
       ]
     }
   },
   methods: {
-    sortMethodPer (key) {
-      return (a, b) => Number(a[key].split('%')[0]) - Number(b[key].split('%')[0]);
-    },
-    sortMethodNumber (key) {
-      return (a, b) => Number(a[key]) - Number(b[key]);
-    },
-    sortMethodSplit (key) {
-      return (a, b) => Number(a[key].replace(/\,/g, '').split(' ')[0]) - Number(b[key].replace(/\,/g, '').split(' ')[0]);
-    },
-    formatAddress (address) {
-      return Tools.formatValidatorAddress(address);
+    formatNum(num) {
+      return Tools.formatDecimalNumberToFixedNumber(num);
     }
   }
 }
