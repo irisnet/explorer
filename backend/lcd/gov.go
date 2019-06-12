@@ -80,7 +80,7 @@ func GetSlashingKeyWithRangeMap() map[string]RangeDescription {
 	result := map[string]RangeDescription{}
 
 	result[GovModuleSlashingSlashFractionCensorship] = RangeDescription{Range: "0,0.1", Description: "slash fraction censorship"}
-	result[GovModuleSlashingMaxEvidenceAge] = RangeDescription{Range: "0,34560", Description: "max evidence age"}
+	result[GovModuleSlashingMaxEvidenceAge] = RangeDescription{Range: "34560,", Description: "max evidence age"}
 	result[GovModuleSlashingSignedBlocksWindow] = RangeDescription{Range: "100,140000", Description: "signed blocks window"}
 	result[GovModuleSlashingDoubleSignJailDuration] = RangeDescription{Range: "0,1209600000000000", Description: "double sign jail duration"}
 	result[GovModuleSlashingMinSignedPerWindow] = RangeDescription{Range: "0.5,0.9", Description: "min signed per window"}
