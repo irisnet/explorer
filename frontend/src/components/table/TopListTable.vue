@@ -63,7 +63,7 @@
     .address{
       display: none;
       position: absolute;
-      left: -1.37rem;
+      left: -1.29rem;
       top: -0.38rem;
       color: #3598db;
       background: rgba(0,0,0,0.8);

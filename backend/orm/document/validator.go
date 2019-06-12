@@ -15,6 +15,7 @@ const (
 	ValidatorFieldJailed          = "jailed"
 	ValidatorFieldStatus          = "status"
 	ValidatorFieldOperatorAddress = "operator_address"
+	ValidatorFieldDescription     = "description"
 )
 
 type Validator struct {
@@ -115,5 +116,13 @@ func (_ Validator) GetAllValidator() ([]Validator, error) {
 
 	err := query.Exec()
 
+	return validators, err
+}
+
+func (v Validator) QueryValidatorMonikerOpAddrConsensusPubkey(addrArrAsVa []string) ([]Validator, error) {
+	var validators []Validator
+	var selector = bson.M{"description.moniker": 1, "operator_address": 1, "consensus_pubkey": 1}
+
+	err := queryAll(CollectionNmValidator, selector, bson.M{"operator_address": bson.M{"$in": addrArrAsVa}}, "", 0, &validators)
 	return validators, err
 }

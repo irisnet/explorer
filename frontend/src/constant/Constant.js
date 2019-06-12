@@ -43,6 +43,10 @@ PARAMETER.EQUAL = 'eq';
 PARAMETER.UNEQUAL = 'neq';
 
 const CHAINNAME = 'iris';
+const CHAINID = {};
+CHAINID.MAINNET = 'irishub';
+CHAINID.FUXI = 'fuxi';
+CHAINID.NYANCAT = 'nyancat';
 export default {
   PREFIX,
   SUFFIX,
@@ -51,5 +55,6 @@ export default {
   Denom,
   ENVCONFIG,
   CHAINNAME,
-  PARAMETER
+  PARAMETER,
+  CHAINID
 };

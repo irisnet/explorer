@@ -493,10 +493,11 @@
             margin-bottom: 0.2rem;
             border-bottom: 0.01rem solid #fff!important;
             overflow-x: auto;
+            overflow-y: hidden;
             .list_tab_container{
                 @include flex;
                 height: 0.38rem;
-                min-width: 4rem;
+                min-width: 6rem;
                 max-width: 12.8rem;
                 padding-left: 0!important;
                 margin-left: 0!important;

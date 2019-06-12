@@ -6,7 +6,6 @@ import (
 
 	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/types"
-	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -14,47 +13,65 @@ import (
 const (
 	CollectionNmProposal = "proposal"
 
-	Proposal_Field_ProposalId      = "proposal_id"
-	Proposal_Field_Title           = "title"
-	Proposal_Field_Type            = "type"
-	Proposal_Field_Description     = "description"
-	Proposal_Field_Status          = "status"
-	Proposal_Field_SubmitTime      = "submit_time"
-	Proposal_Field_DepositEndTime  = "deposit_end_time"
-	Proposal_Field_VotingStartTime = "voting_start_time"
-	Proposal_Field_VotingEndTime   = "voting_end_time"
-	Proposal_Field_TotalDeposit    = "total_deposit"
-	Proposal_Field_Votes           = "votes"
+	Proposal_Field_ProposalId        = "proposal_id"
+	Proposal_Field_Title             = "title"
+	Proposal_Field_Type              = "type"
+	Proposal_Field_Description       = "description"
+	Proposal_Field_Status            = "status"
+	Proposal_Field_SubmitTime        = "submit_time"
+	Proposal_Field_DepositEndTime    = "deposit_end_time"
+	Proposal_Field_VotingStartTime   = "voting_start_time"
+	Proposal_Field_VotingEndTime     = "voting_end_time"
+	Proposal_Field_TotalDeposit      = "total_deposit"
+	Proposal_Field_Votes             = "votes"
+	Proposal_Field_VotingStartHeight = "voting_start_height"
+	Proposal_Field_Final_Votes       = "tally_result"
+
+	ProposalStatusDeposit  = "DepositPeriod"
+	ProposalStatusVoting   = "VotingPeriod"
+	ProposalStatusPassed   = "Passed"
+	ProposalStatusRejected = "Rejected"
 )
 
+type FinalVoteAsPower struct {
+	Yes        string `bson:"yes"`
+	No         string `bson:"no"`
+	NoWithVeto string `bson:"nowithveto"`
+	Abstain    string `bson:"abstain"`
+}
+
 type Proposal struct {
-	ProposalId      uint64      `bson:"proposal_id"`
-	Title           string      `bson:"title"`
-	Type            string      `bson:"type"`
-	Description     string      `bson:"description"`
-	Status          string      `bson:"status"`
-	SubmitTime      time.Time   `bson:"submit_time"`
-	DepositEndTime  time.Time   `bson:"deposit_end_time"`
-	VotingStartTime time.Time   `bson:"voting_start_time"`
-	VotingEndTime   time.Time   `bson:"voting_end_time"`
-	TotalDeposit    utils.Coins `bson:"total_deposit"`
-	Votes           []PVote     `bson:"votes"`
+	ProposalId        uint64           `bson:"proposal_id"`
+	Title             string           `bson:"title"`
+	Type              string           `bson:"type"`
+	Description       string           `bson:"description"`
+	Status            string           `bson:"status"`
+	SubmitTime        time.Time        `bson:"submit_time"`
+	DepositEndTime    time.Time        `bson:"deposit_end_time"`
+	VotingStartTime   time.Time        `bson:"voting_start_time"`
+	VotingEndTime     time.Time        `bson:"voting_end_time"`
+	TotalDeposit      Coins            `bson:"total_deposit"`
+	Votes             []PVote          `bson:"votes"`
+	VotingStartHeight int64            `bson:"voting_start_height"`
+	FinalVotes        FinalVoteAsPower `bson:"tally_result"`
 }
 
 func (p Proposal) String() string {
 	return fmt.Sprintf(`
-		ProposalId      :%v
-		Title           :%v
-		Type            :%v
-		Description     :%v
-		Status          :%v
-		SubmitTime      :%v
-		DepositEndTime  :%v
-		VotingStartTime :%v
-		VotingEndTime   :%v
-		TotalDeposit    :%v
-		Votes           :%v
-		`, p.ProposalId, p.Title, p.Type, p.Description, p.Status, p.SubmitTime, p.DepositEndTime, p.VotingStartTime, p.VotingEndTime, p.TotalDeposit, p.Votes)
+		ProposalId        :%v
+		Title             :%v
+		Type              :%v
+		Description       :%v
+		Status            :%v
+		SubmitTime        :%v
+		DepositEndTime    :%v
+		VotingStartTime   :%v
+		VotingEndTime     :%v
+		TotalDeposit      :%v
+		Votes             :%v
+		VotingStartHeight :%v
+		FinalVotes        :%v
+		`, p.ProposalId, p.Title, p.Type, p.Description, p.Status, p.SubmitTime, p.DepositEndTime, p.VotingStartTime, p.VotingEndTime, p.TotalDeposit, p.Votes, p.VotingStartHeight, p.FinalVotes)
 }
 
 type PVote struct {
@@ -150,4 +167,26 @@ func (_ Proposal) QueryTxFromToByTypeAndProposalId(id int) (string, string, erro
 		SetResult(&tx)
 	err := query.Exec()
 	return tx.From, tx.TxHash, err
+}
+
+func (_ Proposal) QueryProposalByPage(page, size int) (int, []Proposal, error) {
+
+	var data []Proposal
+	sort := desc(Proposal_Field_ProposalId)
+	selector := bson.M{
+		Proposal_Field_ProposalId:        1,
+		Proposal_Field_Title:             1,
+		Proposal_Field_Type:              1,
+		Proposal_Field_Status:            1,
+		Proposal_Field_SubmitTime:        1,
+		Proposal_Field_DepositEndTime:    1,
+		Proposal_Field_VotingEndTime:     1,
+		Proposal_Field_Votes:             1,
+		Proposal_Field_VotingStartHeight: 1,
+		Proposal_Field_Final_Votes:       1,
+	}
+
+	cnt, err := pageQuery(document.CollectionNmProposal, selector, nil, sort, page, size, &data)
+
+	return cnt, data, err
 }

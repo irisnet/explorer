@@ -248,7 +248,7 @@
                         this.blockHashValue = result.block_hash;
                         this.proposerValue = result.propopser_moniker ? result.propopser_moniker : '--';
                         this.proposerAddress = result.propopser_addr;
-                        this.inflationValue = result.mint_coin.denom !== '' ? `${Tools.convertScientificNotation2Number(Tools.formatNumber(result.mint_coin.amount))} ${Tools.formatDenom(result.mint_coin.denom)}` : '--';
+                        this.inflationValue = result.mint_coin.denom !== '' ? `${Tools.formatPriceToFixed(Tools.convertScientificNotation2Number(Tools.formatNumber(result.mint_coin.amount)))} ${Tools.formatDenom(result.mint_coin.denom)}` : '--';
                         this.precommitValidatorsValue = result.validator_num !== 0 ? result.validator_num : '--';
                         this.getMaxBlock(result.latest_height)
                     } else {
@@ -633,7 +633,7 @@
         height:1rem;
         align-items: center;
     }
-    @media screen and (max-width:960px) {
+    @media screen and (max-width:910px) {
         .block_detail_information_container{
             .block_information_content{
                 .current_block_information_content{

@@ -149,6 +149,9 @@ export default class Tools{
       return str.substring(0,i+1);
     }
   }
+  static formatPriceToFixed(value,fixedValue){
+    return new BigNumber(value).toFormat(fixedValue)
+  }
   /**
    * 格式化数字的类型是string的数字并在小数点后面超过多少位以后加 ...
    * param string;
@@ -172,15 +175,15 @@ export default class Tools{
       return Tools.toFixedformatNumber(num ,val);
     }else{
       if(/^\+?[1-9][0-9]*$/.test(num)){
-        return num + " "
+        return Tools.formatPriceToFixed(num) + " "
       }else {
         if(num){
           num = Tools.convertScientificNotation2Number(num);
           let str = String(num).split(".")[1];
           if(str.length > 2){
-            return Tools.toFixedformatNumber(Number(num) ,2)+ "...";
+            return Tools.formatPriceToFixed(num ,2)+ "...";
           }else {
-            return num
+            return Tools.formatPriceToFixed(num)
           }
         }
       }
@@ -201,6 +204,16 @@ export default class Tools{
   }
   static formatFeeToFixedNumber(num){
     return  Tools.toFixedformatNumber(Tools.formatNumber(num) ,4) + "...";
+  }
+  static formatDecimalNumberToFixedNumber(num){
+    if(typeof num === 'number' && !Object.is(num, NaN)) {
+      if (num < 0.01) {
+        return num.toFixed(4);
+      } else {
+        return num.toFixed(2);
+      }
+    }
+    return num;
   }
   /**
    * 格式化年月日
@@ -344,7 +357,7 @@ export default class Tools{
    * return String
    */
   static formatTxHash(txHash){
-    return `${txHash.substring(0,4)}...${txHash.substring(txHash.length - 4)}`
+    return `${txHash.substring(0,3)}...${txHash.substring(txHash.length - 3)}`
   }
   static formatTxList(list,txType){
     if(list !== null){
@@ -363,9 +376,9 @@ export default class Tools{
               }
             }else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
               if(!item.Amount.denom){
-                Amount = `${item.Amount.amount} SHARES`;
+                Amount = `${Tools.formatPriceToFixed(item.Amount.amount)} SHARES`;
               }else {
-                Amount = `${item.Amount.amount}  ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
+                Amount = `${Tools.formatPriceToFixed(item.Amount.amount)}  ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
               }
             }
           }

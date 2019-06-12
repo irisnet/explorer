@@ -266,3 +266,59 @@ func (_ CommonTx) GetTxCountByDuration(startTime, endTime string) (int, error) {
 
 	return txStore.Find(query).Count()
 }
+
+func (_ CommonTx) QueryProposalTxListById(idArr []uint64) ([]document.CommonTx, error) {
+
+	selector := bson.M{Tx_Field_Amount: 1, Tx_Field_ProposalId: 1}
+	condition := bson.M{Tx_Field_Type: "SubmitProposal", Tx_Field_Status: "success", Tx_Field_ProposalId: bson.M{"$in": idArr}}
+	var txs []document.CommonTx
+
+	err := queryAll(CollectionNmCommonTx, selector, condition, desc(Tx_Field_Time), 0, &txs)
+
+	return txs, err
+}
+
+func (_ CommonTx) QueryProposalTxById(proposalId int64, page, size int) (int, []CommonTx, error) {
+
+	txs := []CommonTx{}
+
+	selector := bson.M{
+		Tx_Field_Height: 1,
+		Tx_Field_Time:   1,
+		Tx_Field_Hash:   1,
+		Tx_Field_From:   1,
+	}
+	condition := bson.M{
+		Tx_Field_Status:     types.TxTypeStatus,
+		Tx_Field_ProposalId: proposalId,
+		Tx_Field_Type:       types.TxTypeVote,
+	}
+	sort := fmt.Sprintf("-%v", Tx_Field_Height)
+
+	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, &txs)
+
+	return num, txs, err
+}
+
+func (_ CommonTx) QueryProposalTxByIdWithSubmitOrDepositType(proposalId int64, page, size int) (int, []CommonTx, error) {
+
+	txs := []CommonTx{}
+	selector := bson.M{
+		Tx_Field_Hash:   1,
+		Tx_Field_From:   1,
+		Tx_Field_Amount: 1,
+		Tx_Field_Type:   1,
+		Tx_Field_Time:   1,
+	}
+	condition := bson.M{
+		Tx_Field_Status:     types.TxTypeStatus,
+		Tx_Field_ProposalId: proposalId,
+		Tx_Field_Type: bson.M{
+			"$in": []string{types.TxTypeSubmitProposal, types.TxTypeDeposit},
+		},
+	}
+	sort := fmt.Sprintf("-%v", Tx_Field_Height)
+	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, &txs)
+
+	return num, txs, err
+}

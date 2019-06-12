@@ -24,7 +24,7 @@ func TestQueryBlockInfo(t *testing.T) {
 
 }
 
-func TestQueryList(t *testing.T) {
+func TestBlockQueryList(t *testing.T) {
 
 	blockPage := new(BlockService).QueryList(0, 100)
 	t.Logf("total: %v \n", blockPage.Count)

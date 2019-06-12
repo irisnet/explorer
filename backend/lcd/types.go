@@ -21,6 +21,7 @@ const (
 	UrlValidatorSetLatest     = "%s/validatorsets/latest"
 	UrlStakePool              = "%s/stake/pool"
 	UrlBlocksResult           = "%s/block-results/%d"
+	UrlGovParam               = "%s/gov/params/%s"
 )
 
 type AccountVo struct {

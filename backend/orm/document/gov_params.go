@@ -1,28 +1,32 @@
 package document
 
 import (
+	"fmt"
+
 	"github.com/irisnet/explorer/backend/orm"
+	"github.com/irisnet/irishub-sync/logger"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/txn"
 )
 
 const (
-	CollectionNmGovParams = "ex_gov_params"
-	GovParamsFieldModule  = "module"
-	GovParamsFieldKey     = "key"
-
-	EQ  Sign = "eq"
-	NEQ Sign = "neq"
+	CollectionNmGovParams           = "ex_gov_params"
+	GovParamsFieldModule            = "module"
+	GovParamsFieldKey               = "key"
+	GovParamsFieldCurrentValue      = "current_value"
+	EQ                         Sign = "eq"
+	NEQ                        Sign = "neq"
 )
 
 type GovParams struct {
-	Module      string `bson:"module" json:"module"`
-	Key         string `bson:"key" json:"key"`
-	Value       string `bson:"value" json:"value"`
-	Type        string `bson:"type" json:"type"`
-	Range       Range  `bson:"range" json:"range"`
-	Description string `bson:"description" json:"description"`
-	Note        string `bson:"note" json:"note"`
+	Module       string `bson:"module" json:"module"`
+	Key          string `bson:"key" json:"key"`
+	Type         string `bson:"type" json:"type"`
+	Range        string `bson:"range" json:"range"`
+	GenesisValue string `bson:"genesis_value" json:"genesis_value"`
+	CurrentValue string `bson:"current_value" json:"current_value"`
+	Description  string `bson:"description" json:"description"`
+	Note         string `bson:"note" json:"note"`
 }
 
 type Range struct {
@@ -54,4 +58,35 @@ func (_ GovParams) QueryAll() ([]GovParams, error) {
 
 func (_ GovParams) Batch(txs []txn.Op) error {
 	return orm.Batch(txs)
+}
+
+func (_ GovParams) UpdateCurrentModuleParamValue(kv map[string]interface{}) error {
+	collection := getDb().C(CollectionNmGovParams)
+	defer collection.Database.Session.Close()
+	bulk := collection.Bulk()
+
+	for k, v := range kv {
+		vStr := ""
+		switch vType := v.(type) {
+		case string:
+			vStr = vType
+		default:
+			vStr = fmt.Sprintf("%v", vType)
+		}
+		sel := bson.M{GovParamsFieldKey: k}
+		update := bson.M{"$set": bson.M{GovParamsFieldCurrentValue: vStr}}
+
+		bulk.Update(sel, update)
+
+	}
+
+	updateRes, err := bulk.Run()
+
+	if err != nil {
+		return err
+	}
+	logger.Info("batch upsert reesult", logger.Any("bulk res", *updateRes))
+
+	return nil
+
 }

@@ -26,12 +26,19 @@
           </div>
         </span>
         </template>
+        <template slot='bondedToken' slot-scope='data'>
+        <span>{{formatToken(data.item.bondedToken)}}</span>
+        </template>
+        <template slot='selfBond' slot-scope='data'>
+          <span>{{formatSelfBond(data.item.selfBond)}}</span>
+        </template>
       </b-table>
     </div>
 </template>
 
 <script>
     import Tools from '../../util/Tools';
+    import Constant from "../../constant/Constant"
     export default {
         name: "ValidatorListTable",
         watch: {
@@ -116,10 +123,7 @@
               'unbondingHeight':{
                 label:'Unbonding Height',
                 sortable:true,
-              },
-              'unbondingTime':{
-                label:'Unbonding Time',
-              },
+              }
             },
             candidateValidatorFields: {
               moniker:{
@@ -152,12 +156,9 @@
               },
               'unbondingHeight':{
                 label:'Unbonding Height',
-                sortable:true,
-              },
-              'unbondingTime':{
-                label:'Unbonding Time',
-              },
-            },
+                sortable:true
+              }
+            }
           }
         },
         mounted(){
@@ -166,6 +167,12 @@
         methods: {
             formatAddress(address){
                 return Tools.formatValidatorAddress(address)
+            },
+            formatToken(token){
+              return `${Tools.formatPriceToFixed(token,2)} ${Constant.CHAINNAME.toLocaleUpperCase()}`
+            },
+            formatSelfBond(selfBondToken){
+              return `${Tools.formatPriceToFixed(selfBondToken,4)} ${Constant.CHAINNAME.toLocaleUpperCase()}`
             },
             setValidatorFields(validatorList){
                 validatorList.forEach(item => {
@@ -191,7 +198,7 @@
   .address{
     display: none;
     position: absolute;
-    left: -1.37rem;
+    left: -1.29rem;
     top: -0.38rem;
     color: #3598db;
     background: rgba(0,0,0,0.8);
@@ -228,21 +235,21 @@
         max-width: 2.2rem !important;
         overflow-wrap: break-word !important;
         word-wrap: break-word !important;
-      .skip_route {
-      a{
-        color: #3598db!important;
-        cursor: pointer;
+        .skip_route {
+          a{
+            color: #3598db!important;
+            cursor: pointer;
+          }
+        }
+        .no_skip{
+          color:#A2A2AE;
+          cursor:default;
+          .link_style{
+            color:#a2a2ae !important;
+          }
+        }
       }
     }
-    .no_skip{
-      color:#A2A2AE;
-      cursor:default;
-    .link_style{
-      color:#a2a2ae !important;
-    }
-  }
-  }
-  }
 
   .page-link{
     padding:0.05rem 0.075rem !important;

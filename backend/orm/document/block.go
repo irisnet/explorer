@@ -99,6 +99,16 @@ func (_ Block) QueryBlocksByDurationWithHeightAsc(startTime, endTime time.Time) 
 	return blocks, err
 }
 
+func (_ Block) QueryValidatorsByHeightList(hArr []int64) ([]Block, error) {
+
+	var selector = bson.M{Block_Field_Height: 1, Block_Field_Validators: 1}
+
+	sort := desc(Block_Field_Height)
+	var blocks []Block
+	err := queryAll(CollectionNmBlock, selector, bson.M{"height": bson.M{"$in": hArr}}, sort, 0, &blocks)
+	return blocks, err
+}
+
 type BlockMeta struct {
 	BlockID BlockID `bson:"block_id"`
 	Header  Header  `bson:"header"`

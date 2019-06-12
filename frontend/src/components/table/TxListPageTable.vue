@@ -33,7 +33,7 @@
         <span v-if="(/^[1-9]\d*$/).test(data.item.From)" class="skip_route">
            <router-link :to="`/tx?txHash=${data.item.Tx_Hash}`">{{data.item.From}} Validators</router-link>
         </span>
-        <span class="skip_route" style="display: flex" v-if="!(/^[1-9]\d*$/).test(data.item.From) && data.item.From !== '--'">
+        <span class="skip_route" style="display: flex" v-if="!(/^[0-9]\d*$/).test(data.item.From) && data.item.From !== '--'">
           <div class="name_address">
             <span class="remove_default_style">
               <router-link :to="`/address/1/${data.item.From}`" class="link_style justify">{{formatAddress(data.item.From)}}</router-link>
@@ -41,7 +41,7 @@
             <span class="address">{{data.item.From}}</span>
           </div>
         </span>
-            <span class="no_skip" v-show="!(/^[1-9]\d*$/).test(data.item.From) && data.item.From === '--'">--</span>
+            <span class="no_skip" v-show="(/^[0]\d*$/).test(data.item.From) || data.item.From === '--'">--</span>
         </template>
         <template slot='OperatorAddr' slot-scope='data'>
         <span class="skip_route" style="display: flex" v-if="data.item.OperatorAddr !== '--'">
@@ -289,6 +289,7 @@
     display: flex;
     flex-direction: column;
     position: relative;
+    font-family: Consolas;
     .hash_content{
       display: none;
       position: absolute;
@@ -318,7 +319,7 @@
           position: relative;
           top: 0.03rem;
           z-index: 1;
-          left: 0.21rem;
+          left: 0.16rem;
         }
       }
     }

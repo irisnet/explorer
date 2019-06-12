@@ -29,3 +29,8 @@ type IrisReq struct {
 	TraceId string
 	Start   time.Time
 }
+
+type Coin struct {
+	Denom  string  `json:"denom"`
+	Amount float64 `json:"amount"`
+}
