@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"time"
 )
 
@@ -13,6 +14,13 @@ type ValDetailVo struct {
 type ValStatus struct {
 	Uptime         int     `json:"up_time"`
 	PrecommitCount float64 `json:"precommit_cnt"`
+}
+
+func (vStatus ValStatus) String() string {
+	return fmt.Sprintf(`
+		Uptime         :%v
+		PrecommitCount :%v
+		`, vStatus.Uptime, vStatus.PrecommitCount)
 }
 
 type ValProfile struct {
@@ -39,6 +47,22 @@ type Validator struct {
 	ValStatus
 }
 
+func (v Validator) String() string {
+	return fmt.Sprintf(
+		`
+		Address        :%v
+		Owner          :%v
+		PubKey         :%v
+		Jailed         :%v
+		VotingPower    :%v
+		Description    :%v
+		BondHeight     :%v
+		Status         :%v
+		OriginalTokens :%v
+		Rate           :%v
+		`, v.Address, v.Owner, v.PubKey, v.Jailed, v.VotingPower, v.Description, v.BondHeight, v.Status, v.OriginalTokens, v.Rate)
+}
+
 type Description struct {
 	Moniker  string `json:"moniker,omitempty"`
 	Identity string `json:"identity,omitempty"`
@@ -46,9 +70,26 @@ type Description struct {
 	Details  string `json:"details,omitempty"`
 }
 
+func (d Description) String() string {
+	return fmt.Sprintf(`
+		Moniker  :%v
+		Identity :%v
+		Website  :%v
+		Details  :%v
+		`, d.Moniker, d.Identity, d.Website, d.Details)
+}
+
 type CandidatesInfoVo struct {
 	PowerAll  int64 `json:"power_all"`
 	Validator `json:"validator"`
+}
+
+func (c CandidatesInfoVo) String() string {
+
+	return fmt.Sprintf(`
+		PowerAll  : %v
+    Validator : %v
+		`, c.PowerAll, c.Validator)
 }
 
 type ChainStatusVo struct {

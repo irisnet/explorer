@@ -9,7 +9,6 @@ import (
 
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
-	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
@@ -24,19 +23,100 @@ func (service *TxService) GetModule() Module {
 	return Tx
 }
 
+func (t *TxService) CopyTxFromDoc(tx document.CommonTx) model.CommonTx {
+
+	txList := t.CopyTxListFromDoc([]document.CommonTx{tx})
+
+	if len(txList) == 1 {
+		return txList[0]
+	}
+
+	return model.CommonTx{}
+}
+
+func (_ *TxService) CopyTxListFromDoc(data []document.CommonTx) []model.CommonTx {
+
+	commonTxUtils := make([]model.CommonTx, 0, len(data))
+
+	for _, v := range data {
+		tmpSignerArr := make([]model.Signer, 0, len(v.Signers))
+		for _, v := range v.Signers {
+			tmpSignerArr = append(tmpSignerArr, model.Signer{AddrHex: v.AddrHex, AddrBech32: v.AddrBech32})
+		}
+
+		tmpCoinArr := make([]utils.Coin, 0, len(v.Amount))
+		for _, v := range v.Amount {
+			tmpCoinArr = append(tmpCoinArr, utils.Coin{Denom: v.Denom, Amount: v.Amount})
+		}
+
+		tmpFee := utils.Fee{}
+		tmpFee.Gas = v.Fee.Gas
+		tmpFee.Amount = make([]utils.Coin, 0, len(v.Fee.Amount))
+
+		for _, v := range v.Fee.Amount {
+			tmpFee.Amount = append(tmpFee.Amount, utils.Coin{Denom: v.Denom, Amount: v.Amount})
+		}
+
+		tmpTx := model.CommonTx{
+			Time:       v.Time,
+			Height:     v.Height,
+			TxHash:     v.TxHash,
+			From:       v.From,
+			To:         v.To,
+			Type:       v.Type,
+			Memo:       v.Memo,
+			Status:     v.Status,
+			Code:       v.Code,
+			Log:        v.Log,
+			GasUsed:    v.GasUsed,
+			GasPrice:   v.GasPrice,
+			ProposalId: v.ProposalId,
+			Tags:       v.Tags,
+			Signers:    tmpSignerArr,
+			Amount:     tmpCoinArr,
+			Fee:        tmpFee,
+			ActualFee: utils.ActualFee{
+				Denom:  v.ActualFee.Denom,
+				Amount: v.ActualFee.Amount,
+			},
+			Msg: v.Msg,
+			StakeCreateValidator: model.StakeCreateValidator{
+				PubKey: v.StakeCreateValidator.PubKey,
+				Description: model.ValDescription{
+					Moniker:  v.StakeCreateValidator.Description.Moniker,
+					Identity: v.StakeCreateValidator.Description.Identity,
+					Website:  v.StakeCreateValidator.Description.Website,
+					Details:  v.StakeCreateValidator.Description.Details,
+				},
+			},
+			StakeEditValidator: model.StakeEditValidator{
+				Description: model.ValDescription{
+					Moniker:  v.StakeEditValidator.Description.Moniker,
+					Identity: v.StakeEditValidator.Description.Identity,
+					Website:  v.StakeEditValidator.Description.Website,
+					Details:  v.StakeEditValidator.Description.Details,
+				},
+			},
+		}
+
+		commonTxUtils = append(commonTxUtils, tmpTx)
+	}
+
+	return commonTxUtils
+}
+
 func (service *TxService) QueryTxList(query bson.M, page, pageSize int) model.PageVo {
 
-	logger.Info("QueryStakeList start", service.GetTraceLog())
-	var data []document.CommonTx
-
-	total, err := pageQuery(document.CollectionNmCommonTx, nil, query, desc(document.Tx_Field_Time), page, pageSize, &data)
+	total, data, err := document.CommonTx{}.QueryByPage(query, page, pageSize)
 
 	if err != nil {
 		logger.Error("query stake list ", logger.String("err", err.Error()))
 		return model.PageVo{}
 	}
 
-	items := service.buildData(data)
+	commonTxUtils := service.CopyTxListFromDoc(data)
+
+	items := service.buildData(commonTxUtils)
 
 	forwardTxHashs := make([]string, 0, len(items))
 
@@ -68,18 +148,8 @@ func (service *TxService) QueryTxList(query bson.M, page, pageSize int) model.Pa
 		}
 	}
 
-	selector := bson.M{
-		document.TxMsg_Field_Hash:    1,
-		document.TxMsg_Field_Content: 1,
-		document.TxMsg_Field_Type:    1,
-	}
-	condition := bson.M{
-		document.TxMsg_Field_Hash: bson.M{"$in": forwardTxHashs},
-	}
-
-	txMsgs := make([]document.TxMsg, 0, len(forwardTxHashs))
-
-	if err := queryAll(document.CollectionNmTxMsg, selector, condition, "", 0, &txMsgs); err != nil {
+	txMsgs, err := document.TxMsg{}.QueryTxMsgListByHashList(forwardTxHashs)
+	if err != nil {
 		logger.Error("query tx msg", logger.String("err", err.Error()))
 		panic(types.CodeNotFound)
 	}
@@ -123,31 +193,37 @@ func (service *TxService) QueryTxList(query bson.M, page, pageSize int) model.Pa
 
 func (service *TxService) QueryList(query bson.M, page, pageSize int) (pageInfo model.PageVo) {
 	logger.Debug("QueryList start", service.GetTraceLog())
-	var data []document.CommonTx
 
-	if cnt, err := pageQuery(document.CollectionNmCommonTx, nil,
-		query, desc(document.Tx_Field_Time), page, pageSize, &data); err == nil {
+	total, txList, err := document.CommonTx{}.QueryByPage(query, page, pageSize)
 
-		pageInfo.Data = service.buildData(data)
-		pageInfo.Count = cnt
+	if err != nil {
+		logger.Error("query tx list by page", logger.String("err", err.Error()))
+		return
 	}
+
+	data := service.CopyTxListFromDoc(txList)
+	pageInfo.Data = service.buildData(data)
+	pageInfo.Count = total
+
 	logger.Debug("QueryList end", service.GetTraceLog())
 	return pageInfo
 }
 
 func (service *TxService) QueryRecentTx() []model.RecentTx {
 	logger.Debug("QueryRecentTx start", service.GetTraceLog())
-	var selector = bson.M{"time": 1, "tx_hash": 1, "actual_fee": 1, "type": 1}
-	var txs []document.CommonTx
 
-	err := queryAll(document.CollectionNmCommonTx, selector, nil, desc(document.Tx_Field_Time), 10, &txs)
+	txListAsDoc, err := document.CommonTx{}.QueryHashActualFeeType()
+
 	if err != nil {
 		panic(err)
 	}
+
+	txs := service.CopyTxListFromDoc(txListAsDoc)
+
 	var txList []model.RecentTx
 	for _, tx := range txs {
 		var recentTx = model.RecentTx{
-			Fee: model.Coin{
+			Fee: utils.Coin{
 				Amount: tx.ActualFee.Amount,
 				Denom:  tx.ActualFee.Denom,
 			},
@@ -163,13 +239,9 @@ func (service *TxService) QueryRecentTx() []model.RecentTx {
 
 func (service *TxService) Query(hash string) interface{} {
 	logger.Debug("Query start", service.GetTraceLog())
-	dbm := getDb()
-	defer dbm.Session.Close()
 
-	var result document.CommonTx
-	query := bson.M{}
-	query[document.Tx_Field_Hash] = hash
-	err := dbm.C(document.CollectionNmCommonTx).Find(query).Sort(desc(document.Tx_Field_Time)).One(&result)
+	txAsDoc, err := document.CommonTx{}.QueryTxByHash(hash)
+
 	if err != nil {
 		panic(types.CodeNotFound)
 	}
@@ -179,21 +251,21 @@ func (service *TxService) Query(hash string) interface{} {
 	govTxMsgHashMap := map[string]document.TxMsg{}
 	govProposalIdMap := map[uint64]document.Proposal{}
 
-	switch types.Convert(result.Type) {
+	switch types.Convert(txAsDoc.Type) {
 	case types.Declaration:
-		blackList = service.QueryBlackList(dbm)
-		candidateAddrMap[result.From] = document.Candidate{}
+		blackList = service.QueryBlackList()
+		candidateAddrMap[txAsDoc.From] = document.Candidate{}
 		service.GetTxAttachedFields(&candidateAddrMap, &govTxMsgHashMap, &govProposalIdMap)
 	case types.Gov:
-		govTxMsgHashMap[result.TxHash] = document.TxMsg{}
-		if result.Type == types.TxTypeVote || result.Type == types.TxTypeDeposit {
-			govProposalIdMap[result.ProposalId] = document.Proposal{}
+		govTxMsgHashMap[txAsDoc.TxHash] = document.TxMsg{}
+		if txAsDoc.Type == types.TxTypeVote || txAsDoc.Type == types.TxTypeDeposit {
+			govProposalIdMap[txAsDoc.ProposalId] = document.Proposal{}
 		}
 		service.GetTxAttachedFields(&candidateAddrMap, &govTxMsgHashMap, &govProposalIdMap)
 
 	}
 
-	tx := service.buildTx(result, &blackList, &candidateAddrMap, &govTxMsgHashMap, &govProposalIdMap)
+	tx := service.buildTx(service.CopyTxFromDoc(txAsDoc), &blackList, &candidateAddrMap, &govTxMsgHashMap, &govProposalIdMap)
 
 	switch tx.(type) {
 	case model.GovTx:
@@ -202,8 +274,8 @@ func (service *TxService) Query(hash string) interface{} {
 	case model.StakeTx:
 		stakeTx := tx.(model.StakeTx)
 		if stakeTx.Type == types.TxTypeBeginRedelegate {
-			var res document.TxMsg
-			err := dbm.C(document.CollectionNmTxMsg).Find(bson.M{document.TxMsg_Field_Hash: stakeTx.Hash}).One(&res)
+			res, err := document.TxMsg{}.QueryTxMsgByHash(stakeTx.Hash)
+
 			if err != nil {
 				break
 			}
@@ -221,57 +293,30 @@ func (service *TxService) Query(hash string) interface{} {
 }
 
 func (service *TxService) QueryByAcc(address string, page, size int) (result model.PageVo) {
-	var data []document.CommonTx
-	query := bson.M{}
-	query["$or"] = []bson.M{{"from": address}, {"to": address}, {"signers": bson.M{"$elemMatch": bson.M{"addr_bech32": address}}}}
-	var typeArr []string
-	typeArr = append(typeArr, types.BankList...)
-	typeArr = append(typeArr, types.DeclarationList...)
-	typeArr = append(typeArr, types.StakeList...)
-	typeArr = append(typeArr, types.GovernanceList...)
-	query[document.Tx_Field_Type] = bson.M{
-		"$in": typeArr,
+
+	total, txList, err := document.CommonTx{}.QueryByAddr(address, page, size)
+
+	if err != nil {
+		logger.Error("query tx list by address", logger.String("err", err.Error()))
 	}
-	cnt, err := pageQuery(document.CollectionNmCommonTx, nil, query, desc(document.Tx_Field_Time), page, size, &data)
+
 	if err == nil {
-		result.Count = cnt
-		result.Data = data
+		result.Count = total
+		result.Data = service.CopyTxListFromDoc(txList)
 	}
 	return
 }
 
 func (service *TxService) CountByType(query bson.M) model.TxStatisticsVo {
 	logger.Debug("CountByType start", service.GetTraceLog())
-	var typeArr []string
-	typeArr = append(typeArr, types.BankList...)
-	typeArr = append(typeArr, types.DeclarationList...)
-	typeArr = append(typeArr, types.StakeList...)
-	typeArr = append(typeArr, types.GovernanceList...)
-	query[document.Tx_Field_Type] = bson.M{
-		"$in": typeArr,
-	}
-
-	var counter []struct {
-		Type  string `bson:"_id,omitempty"`
-		Count int
-	}
-
-	c := getDb().C(document.CollectionNmCommonTx)
-	defer c.Database.Session.Close()
-
-	pipe := c.Pipe(
-		[]bson.M{
-			{"$match": query},
-			{"$group": bson.M{
-				"_id":   "$type",
-				"count": bson.M{"$sum": 1},
-			}},
-		},
-	)
-
-	pipe.All(&counter)
 
 	var result model.TxStatisticsVo
+	counter, err := document.CommonTx{}.CountByType(query)
+	if err != nil {
+		logger.Error("tx count by Type ", logger.String("err", err.Error()), logger.Any("query", query))
+		return result
+	}
+
 	for _, cnt := range counter {
 		switch types.Convert(cnt.Type) {
 		case types.Trans:
@@ -296,30 +341,19 @@ func (service *TxService) QueryTxNumGroupByDay() []model.TxNumGroupByDayVo {
 
 	fromDate := utils.FmtTime(utils.TruncateTime(start, utils.Day), utils.DateFmtYYYYMMDD)
 	endDate := utils.FmtTime(utils.TruncateTime(now, utils.Day), utils.DateFmtYYYYMMDD)
-
-	query := bson.M{}
-	query["date"] = bson.M{"$gte": fromDate, "$lt": endDate}
-
-	var selector = bson.M{"date": 1, "num": 1}
-	var txNumStatList []document.TxNumStat
-
-	q := orm.NewQuery()
-	q.SetCollection(document.CollectionTxNumStat)
-	q.SetCondition(query)
-	q.SetSelector(selector).SetSort("date")
-	q.SetResult(&txNumStatList)
-
-	defer q.Release()
-
 	var result []model.TxNumGroupByDayVo
 
-	if err := q.Exec(); err == nil {
-		for _, t := range txNumStatList {
-			result = append(result, model.TxNumGroupByDayVo{
-				Date: t.Date,
-				Num:  t.Num,
-			})
-		}
+	txNumStatList, err := document.CommonTx{}.GetTxlistByDuration(fromDate, endDate)
+	if err != nil {
+		logger.Error("get tx list by duration", logger.String("err", err.Error()))
+		return result
+	}
+
+	for _, t := range txNumStatList {
+		result = append(result, model.TxNumGroupByDayVo{
+			Date: t.Date,
+			Num:  t.Num,
+		})
 	}
 
 	logger.Debug("QueryTxNumGroupByDay end", service.GetTraceLog())
@@ -355,26 +389,6 @@ func (service *TxService) ParseCoinFlowFromAndTo(txType, from, to string) (strin
 	default:
 		return from, to
 	}
-}
-
-func (service *TxService) QueryTxMsgByHashArr(hashArr []string) []document.TxMsg {
-
-	selector := bson.M{
-		document.TxMsg_Field_Hash:    1,
-		document.TxMsg_Field_Content: 1,
-		document.TxMsg_Field_Type:    1,
-	}
-	condition := bson.M{
-		document.TxMsg_Field_Hash: bson.M{"$in": hashArr},
-	}
-
-	txMsgs := []document.TxMsg{}
-	if err := queryAll(document.CollectionNmTxMsg, selector, condition, "", 0, &txMsgs); err != nil {
-		logger.Error("query tx msg", logger.String("err", err.Error()))
-		panic(types.CodeNotFound)
-	}
-
-	return txMsgs
 }
 
 func (service *TxService) getForwardAddr(txType, content string) (string, error) {
@@ -418,13 +432,13 @@ func (service *TxService) GetTxAttachedFields(candidateAddrMap *map[string]docum
 
 	candidateArr := []document.Candidate{}
 
+	var err error
 	if len(candidateAddrs) > 0 {
-		canCondition := bson.M{
-			document.Candidate_Field_Address: bson.M{"$in": candidateAddrs},
-		}
 
-		if err := queryAll(document.CollectionNmStakeRoleCandidate, nil, canCondition, "", 0, &candidateArr); err != nil {
-			logger.Error(fmt.Sprintf("query collection(%v) with dondition: %v err: %v", document.CollectionNmStakeRoleCandidate, canCondition, err.Error()))
+		candidateArr, err = document.Candidate{}.QueryCandidateListByAddrList(candidateAddrs)
+
+		if err != nil {
+			logger.Error(fmt.Sprintf("query  candidator collection with condition: %v err: %v", candidateAddrs, err.Error()))
 		}
 
 		for k, _ := range *candidateAddrMap {
@@ -439,11 +453,10 @@ func (service *TxService) GetTxAttachedFields(candidateAddrMap *map[string]docum
 
 	govTxMsgArr := []document.TxMsg{}
 	if len(govHashArr) > 0 {
-		txMsgCondition := bson.M{
-			document.TxMsg_Field_Hash: bson.M{"$in": govHashArr},
-		}
-		if err := queryAll(document.CollectionNmTxMsg, nil, txMsgCondition, "", 0, &govTxMsgArr); err != nil {
-			logger.Error(fmt.Sprintf("query collection(%v) with dondition: %v err: %v", document.CollectionNmStakeRoleCandidate, txMsgCondition, err.Error()))
+		govTxMsgArr, err = document.TxMsg{}.QueryTxMsgListByHashList(govHashArr)
+
+		if err != nil {
+			logger.Error(fmt.Sprintf("query collection with dondition: %v err: %v", govHashArr, err.Error()))
 		}
 
 		for k, _ := range *govTxMsgHashMap {
@@ -459,13 +472,7 @@ func (service *TxService) GetTxAttachedFields(candidateAddrMap *map[string]docum
 	proposalArr := []document.Proposal{}
 
 	if len(govProposalIdArr) > 0 {
-		depositVoteCondition := bson.M{
-			document.Proposal_Field_ProposalId: bson.M{"$in": govProposalIdArr},
-		}
-
-		if err := queryAll(document.CollectionNmProposal, nil, depositVoteCondition, "", 0, &proposalArr); err != nil {
-			logger.Error(fmt.Sprintf("query collection(%v) with dondition: %v err: %v", document.CollectionNmStakeRoleCandidate, depositVoteCondition, err.Error()))
-		}
+		proposalArr, err = document.Proposal{}.QueryByIdList(govProposalIdArr)
 		for k, _ := range *govProposalIdMap {
 			for _, v := range proposalArr {
 				if k == v.ProposalId {
@@ -477,15 +484,12 @@ func (service *TxService) GetTxAttachedFields(candidateAddrMap *map[string]docum
 	}
 }
 
-func (service *TxService) buildData(txs []document.CommonTx) []interface{} {
+func (service *TxService) buildData(txs []model.CommonTx) []interface{} {
 	var txList []interface{}
 
 	if len(txs) == 0 {
 		return txList
 	}
-
-	db := getDb()
-	defer db.Session.Close()
 
 	blackList := map[string]document.BlackList{}
 	candidateAddrMap := map[string]document.Candidate{}
@@ -497,7 +501,7 @@ func (service *TxService) buildData(txs []document.CommonTx) []interface{} {
 		switch types.Convert(v.Type) {
 		case types.Declaration:
 			if onlyOnce {
-				blackList = service.QueryBlackList(db)
+				blackList = service.QueryBlackList()
 				onlyOnce = false
 			}
 			candidateAddrMap[v.From] = document.Candidate{}
@@ -539,7 +543,7 @@ func (service *TxService) buildData(txs []document.CommonTx) []interface{} {
 	return txList
 }
 
-func (service *TxService) buildTx(tx document.CommonTx, blackListP *map[string]document.BlackList,
+func (service *TxService) buildTx(tx model.CommonTx, blackListP *map[string]document.BlackList,
 	candidateAddrMapP *map[string]document.Candidate, govTxMsgHashMapP *map[string]document.TxMsg, govProposalIdMapP *map[uint64]document.Proposal) interface{} {
 
 	switch types.Convert(tx.Type) {
@@ -677,7 +681,7 @@ func (service *TxService) buildTx(tx document.CommonTx, blackListP *map[string]d
 	return nil
 }
 
-func buildBaseTx(tx document.CommonTx) model.BaseTx {
+func buildBaseTx(tx model.CommonTx) model.BaseTx {
 	res := model.BaseTx{
 		Hash:        tx.TxHash,
 		BlockHeight: tx.Height,

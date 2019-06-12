@@ -115,7 +115,10 @@ func init() {
 	if v, ok := govParamMap[CriticalMinDepositKey].([]interface{}); ok {
 		if len(v) > 0 {
 			first := v[0].(map[string]interface{})
-			CriticalMinDeposit = utils.ParseCoin(fmt.Sprintf("%v%v", first["amount"], first["denom"]))
+
+			coinAsUtils := utils.ParseCoin(fmt.Sprintf("%v%v", first["amount"], first["denom"]))
+			CriticalMinDeposit.Amount = coinAsUtils.Amount
+			CriticalMinDeposit.Denom = coinAsUtils.Denom
 		}
 	}
 	if v, ok := govParamMap[CriticalParticipationKey].(string); ok {
@@ -129,7 +132,9 @@ func init() {
 	if v, ok := govParamMap[ImportantMinDepositKey].([]interface{}); ok {
 		if len(v) > 0 {
 			first := v[0].(map[string]interface{})
-			ImportantMinDeposit = utils.ParseCoin(fmt.Sprintf("%v%v", first["amount"], first["denom"]))
+			coinAsUtils := utils.ParseCoin(fmt.Sprintf("%v%v", first["amount"], first["denom"]))
+			ImportantMinDeposit.Amount = coinAsUtils.Amount
+			ImportantMinDeposit.Denom = coinAsUtils.Denom
 		}
 	}
 
@@ -144,7 +149,9 @@ func init() {
 	if v, ok := govParamMap[NormalMinDepositKey].([]interface{}); ok {
 		if len(v) > 0 {
 			first := v[0].(map[string]interface{})
-			NormalMinDeposit = utils.ParseCoin(fmt.Sprintf("%v%v", first["amount"], first["denom"]))
+			coinAsUtils := utils.ParseCoin(fmt.Sprintf("%v%v", first["amount"], first["denom"]))
+			NormalMinDeposit.Amount = coinAsUtils.Amount
+			NormalMinDeposit.Denom = coinAsUtils.Denom
 		}
 	}
 

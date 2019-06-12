@@ -5,7 +5,6 @@ import (
 
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
-	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
 	"gopkg.in/mgo.v2/bson"
@@ -21,8 +20,8 @@ func (service *GovParamsService) GetModule() Module {
 }
 
 func (service *GovParamsService) QueryAll() []document.GovParams {
-	var params []document.GovParams
-	err := queryAll(document.CollectionNmGovParams, nil, nil, desc(document.GovParamsFieldModule), 0, &params)
+	params, err := document.GovParams{}.QueryAll()
+
 	if err != nil {
 		panic(types.CodeNotFound)
 	}
@@ -209,37 +208,6 @@ func (gov GovParamsService) GetDbInitGovModuleParamList(genesisMap, currentMap m
 	return append(slashingList, mintList...), nil
 }
 
-func (gov GovParamsService) UpdateCurrentValueByKey(kv map[string]interface{}) error {
-
-	collection := getDb().C(document.CollectionNmGovParams)
-	defer collection.Database.Session.Close()
-	bulk := collection.Bulk()
-
-	for k, v := range kv {
-		vStr := ""
-		switch vType := v.(type) {
-		case string:
-			vStr = vType
-		default:
-			vStr = fmt.Sprintf("%v", vType)
-		}
-		sel := bson.M{document.GovParamsFieldKey: k}
-		update := bson.M{"$set": bson.M{document.GovParamsFieldCurrentValue: vStr}}
-
-		bulk.Update(sel, update)
-
-	}
-
-	updateRes, err := bulk.Run()
-
-	if err != nil {
-		return err
-	}
-	logger.Info("batch upsert reesult", logger.Any("bulk res", *updateRes))
-
-	return nil
-}
-
 func init() {
 	var initParams = func() {
 		var ops []txn.Op
@@ -255,7 +223,9 @@ func init() {
 			})
 		}
 
-		if err := orm.Batch(ops); err != nil {
+		err := document.GovParams{}.Batch(ops)
+
+		if err != nil {
 			logger.Error("init gov_params data error", logger.String("err", err.Error()))
 		}
 	}

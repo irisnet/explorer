@@ -1,8 +1,11 @@
 package document
 
 import (
-	"gopkg.in/mgo.v2/bson"
 	"time"
+
+	"github.com/irisnet/explorer/backend/orm"
+	"github.com/irisnet/irishub-sync/store/document"
+	"gopkg.in/mgo.v2/bson"
 )
 
 const (
@@ -26,6 +29,84 @@ type Block struct {
 	Block      BlockContent  `bson:"block"`
 	Validators []TmValidator `bson:"validators"`
 	Result     BlockResults  `bson:"results"`
+}
+
+func (_ Block) QueryBlockHeightTimeHashByHeight(height int64) (Block, error) {
+
+	var block Block
+	var selector = bson.M{"height": 1, "time": 1, "hash": 1}
+	var query = orm.NewQuery().
+		SetCollection(document.CollectionNmBlock).
+		SetSelector(selector).
+		SetCondition(bson.M{document.Block_Field_Height: height}).
+		SetResult(&block)
+
+	defer query.Release()
+
+	err := query.Exec()
+	return block, err
+}
+
+func (_ Block) GetBlockListByPage(offset, size int) (int, []Block, error) {
+
+	var selector = bson.M{"height": 1, "time": 1, "num_txs": 1, "hash": 1, "validators.address": 1, "validators.voting_power": 1, "block.last_commit.precommits.validator_address": 1, "meta.header.total_txs": 1}
+
+	var blocks []Block
+
+	sort := desc(document.Block_Field_Height)
+	var cnt, err = pageQuery(document.CollectionNmBlock, selector, bson.M{"height": bson.M{"$gt": 0}}, sort, offset, size, &blocks)
+
+	return cnt, blocks, err
+}
+
+func (_ Block) GetRecentBlockList() ([]Block, error) {
+	var blocks []Block
+	var selector = bson.M{"height": 1, "time": 1, "num_txs": 1}
+
+	sort := desc(document.Block_Field_Height)
+	err := queryAll(document.CollectionNmBlock, selector, nil, sort, 10, &blocks)
+	return blocks, err
+}
+
+func (_ Block) QueryOneBlockOrderByHeightAsc() (Block, error) {
+
+	db := orm.GetDatabase()
+	defer db.Session.Close()
+
+	var firstBlock Block
+
+	err := db.C(CollectionNmBlock).Find(nil).Sort("height").One(&firstBlock)
+	return firstBlock, err
+}
+
+func (_ Block) QueryOneBlockOrderByHeightDesc() (Block, error) {
+
+	db := orm.GetDatabase()
+	defer db.Session.Close()
+
+	var firstBlock Block
+
+	err := db.C(CollectionNmBlock).Find(nil).Sort("-height").One(&firstBlock)
+	return firstBlock, err
+}
+
+func (_ Block) QueryBlocksByDurationWithHeightAsc(startTime, endTime time.Time) ([]Block, error) {
+	db := orm.GetDatabase()
+	defer db.Session.Close()
+
+	blocks := []Block{}
+	err := db.C(CollectionNmBlock).Find(bson.M{"time": bson.M{"$gte": startTime, "$lt": endTime}}).Sort("height").All(&blocks)
+	return blocks, err
+}
+
+func (_ Block) QueryValidatorsByHeightList(hArr []int64) ([]Block, error) {
+
+	var selector = bson.M{Block_Field_Height: 1, Block_Field_Validators: 1}
+
+	sort := desc(Block_Field_Height)
+	var blocks []Block
+	err := queryAll(CollectionNmBlock, selector, bson.M{"height": bson.M{"$in": hArr}}, sort, 0, &blocks)
+	return blocks, err
 }
 
 type BlockMeta struct {

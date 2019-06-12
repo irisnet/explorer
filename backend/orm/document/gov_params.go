@@ -1,7 +1,12 @@
 package document
 
 import (
+	"fmt"
+
+	"github.com/irisnet/explorer/backend/orm"
+	"github.com/irisnet/irishub-sync/logger"
 	"gopkg.in/mgo.v2/bson"
+	"gopkg.in/mgo.v2/txn"
 )
 
 const (
@@ -42,4 +47,46 @@ func (g GovParams) Name() string {
 
 func (g GovParams) PkKvPair() map[string]interface{} {
 	return bson.M{GovParamsFieldModule: g.Module, GovParamsFieldKey: g.Key}
+}
+
+func (_ GovParams) QueryAll() ([]GovParams, error) {
+
+	var params []GovParams
+	err := queryAll(CollectionNmGovParams, nil, nil, desc(GovParamsFieldModule), 0, &params)
+	return params, err
+}
+
+func (_ GovParams) Batch(txs []txn.Op) error {
+	return orm.Batch(txs)
+}
+
+func (_ GovParams) UpdateCurrentModuleParamValue(kv map[string]interface{}) error {
+	collection := getDb().C(CollectionNmGovParams)
+	defer collection.Database.Session.Close()
+	bulk := collection.Bulk()
+
+	for k, v := range kv {
+		vStr := ""
+		switch vType := v.(type) {
+		case string:
+			vStr = vType
+		default:
+			vStr = fmt.Sprintf("%v", vType)
+		}
+		sel := bson.M{GovParamsFieldKey: k}
+		update := bson.M{"$set": bson.M{GovParamsFieldCurrentValue: vStr}}
+
+		bulk.Update(sel, update)
+
+	}
+
+	updateRes, err := bulk.Run()
+
+	if err != nil {
+		return err
+	}
+	logger.Info("batch upsert reesult", logger.Any("bulk res", *updateRes))
+
+	return nil
+
 }
