@@ -400,12 +400,27 @@
               let depositEndTime = (new Date(item.deposit_end_time).getTime()) > 0 ? Tools.format2UTC(item.deposit_end_time) : '--';
               let votingEndTime = (new Date(item.voting_end_time).getTime()) > 0 ? Tools.format2UTC(item.voting_end_time) : '--';
               let title = Tools.formatString(item.title,20,"...");
-              let final_votes = Object.keys(item.final_votes).length > 0 ? item.final_votes : null;
+              let final_votes = {};
               let finalTotalVotes = 0;
-              for (let k in item.final_votes) {
-                finalTotalVotes += Number(item.final_votes[k]);
-              }
-              if(final_votes) {
+              if (status === 'VotingPeriod') {
+                let yesArr = item.votes.filter(v => v.option === 'Yes');
+                let yes = yesArr.reduce((init, v) => {return v.voting_power + init}, 0);
+                let noArr = item.votes.filter(v => v.option === 'No');
+                let no = noArr.reduce((init, v) => {return v.voting_power + init}, 0);
+                let abstainArr = item.votes.filter(v => v.option === 'Abstain');
+                let abstain = abstainArr.reduce((init, v) => {return v.voting_power + init}, 0);
+                let noWithVetoArr = item.votes.filter(v => v.option === 'NoWithVeto');
+                let no_with_veto = noWithVetoArr.reduce((init, v) => {return v.voting_power + init}, 0);
+                finalTotalVotes = yes + no + abstain + no_with_veto;
+                final_votes.yes = (yes / finalTotalVotes) * 100;
+                final_votes.no = (no / finalTotalVotes) * 100;
+                final_votes.abstain = (abstain / finalTotalVotes) * 100;
+                final_votes.no_with_veto = (no_with_veto / finalTotalVotes) * 100;
+              } else {
+                final_votes = Object.keys(item.final_votes).length > 0 ? item.final_votes : final_votes;
+                for (let k in item.final_votes) {
+                  finalTotalVotes += Number(item.final_votes[k]);
+                }
                 for (let k in final_votes) {
                   final_votes[k] = (Number(final_votes[k]) / finalTotalVotes) * 100;
                 }

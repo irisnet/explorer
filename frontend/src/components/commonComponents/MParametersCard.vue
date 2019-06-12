@@ -154,10 +154,10 @@ export default {
     position: relative;
     padding-bottom: 0.2rem;
     @mixin min_max {
-      width: 80px;
+      width: 0.9rem;
       color: #A2A2AE;
       word-break: break-all;
-      flex: 1 0 0.8rem;
+      flex: 1 0 0.9rem;
     }
     .min {
       padding-right: 0.05rem;
