@@ -58,9 +58,23 @@ type TxStatisticsVo struct {
 	Data           []CommonTx
 }
 
+func (s TxStatisticsVo) String() string {
+	return fmt.Sprintf(`
+		TransCnt       :%v
+		StakeCnt       :%v
+		DeclarationCnt :%v
+		GovCnt         :%v
+		Data           :%v
+		`, s.TransCnt, s.StakeCnt, s.DeclarationCnt, s.GovCnt, s.Data)
+}
+
 type TxNumGroupByDayVo struct {
 	Date string `json:"date"`
 	Num  int64  `json:"num"`
+}
+
+func (txCount TxNumGroupByDayVo) String() string {
+	return fmt.Sprintf("Date: %v Num: %v \n", txCount.Date, txCount.Num)
 }
 
 type TxPage struct {
@@ -173,34 +187,74 @@ type RecentTx struct {
 	Type   string     `json:"type"`
 }
 
+func (tx RecentTx) String() string {
+	return fmt.Sprintf(`
+		Fee    :%v
+		Time   :%v
+		TxHash :%v
+		Type   :%v
+		`, tx.Fee, tx.Time, tx.TxHash, tx.Type)
+}
+
 type Signer struct {
 	AddrHex    string `bson:"addr_hex"`
 	AddrBech32 string `bson:"addr_bech32"`
 }
 
-type CommonTx struct {
-	Time       time.Time         `bson:"time"`
-	Height     int64             `bson:"height"`
-	TxHash     string            `bson:"tx_hash"`
-	From       string            `bson:"from"`
-	To         string            `bson:"to"`
-	Amount     utils.Coins       `bson:"amount"`
-	Type       string            `bson:"type"`
-	Fee        utils.Fee         `bson:"fee"`
-	Memo       string            `bson:"memo"`
-	Status     string            `bson:"status"`
-	Code       uint32            `bson:"code"`
-	Log        string            `bson:"log"`
-	GasUsed    int64             `bson:"gas_used"`
-	GasPrice   float64           `bson:"gas_price"`
-	ActualFee  utils.ActualFee   `bson:"actual_fee"`
-	ProposalId uint64            `bson:"proposal_id"`
-	Tags       map[string]string `bson:"tags"`
+func (s Signer) String() string {
+	return fmt.Sprintf("AddrHex: %v   AddrBech32: %v \n", s.AddrHex, s.AddrBech32)
+}
 
+type CommonTx struct {
+	Time                 time.Time            `bson:"time"`
+	Height               int64                `bson:"height"`
+	TxHash               string               `bson:"tx_hash"`
+	From                 string               `bson:"from"`
+	To                   string               `bson:"to"`
+	Amount               utils.Coins          `bson:"amount"`
+	Type                 string               `bson:"type"`
+	Fee                  utils.Fee            `bson:"fee"`
+	Memo                 string               `bson:"memo"`
+	Status               string               `bson:"status"`
+	Code                 uint32               `bson:"code"`
+	Log                  string               `bson:"log"`
+	GasUsed              int64                `bson:"gas_used"`
+	GasPrice             float64              `bson:"gas_price"`
+	ActualFee            utils.ActualFee      `bson:"actual_fee"`
+	ProposalId           uint64               `bson:"proposal_id"`
+	Tags                 map[string]string    `bson:"tags"`
 	StakeCreateValidator StakeCreateValidator `bson:"stake_create_validator"`
 	StakeEditValidator   StakeEditValidator   `bson:"stake_edit_validator"`
 	Msg                  Msg                  `bson:"-"`
 	Signers              []Signer             `bson:"signers"`
+}
+
+func (tx CommonTx) String() string {
+	return fmt.Sprintf(`
+		Time                 :%v
+		Height               :%v
+		TxHash               :%v
+		From                 :%v
+		To                   :%v
+		Amount               :%v
+		Type                 :%v
+		Fee                  :%v
+		Memo                 :%v
+		Status               :%v
+		Code                 :%v
+		Log                  :%v
+		GasUsed              :%v
+		GasPrice             :%v
+		ActualFee            :%v
+		ProposalId           :%v
+		Tags                 :%v
+		StakeCreateValidator :%v
+		StakeEditValidator   :%v
+		Msg                  :%v
+		Signers              :%v
+		`, tx.Time, tx.Height, tx.TxHash, tx.From, tx.To, tx.Amount, tx.Type, tx.Fee, tx.Memo, tx.Status, tx.Code, tx.Log,
+		tx.GasUsed, tx.GasPrice, tx.ActualFee, tx.ProposalId, tx.Tags, tx.StakeCreateValidator, tx.StakeEditValidator, tx.Msg, tx.Signers)
+
 }
 
 type Msg interface {

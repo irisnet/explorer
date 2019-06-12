@@ -438,7 +438,7 @@ func (service *TxService) GetTxAttachedFields(candidateAddrMap *map[string]docum
 		candidateArr, err = document.Candidate{}.QueryCandidateListByAddrList(candidateAddrs)
 
 		if err != nil {
-			logger.Error(fmt.Sprintf("query collection(%v) with dondition: %v err: %v", err.Error()))
+			logger.Error(fmt.Sprintf("query  candidator collection with condition: %v err: %v", candidateAddrs, err.Error()))
 		}
 
 		for k, _ := range *candidateAddrMap {
@@ -456,7 +456,7 @@ func (service *TxService) GetTxAttachedFields(candidateAddrMap *map[string]docum
 		govTxMsgArr, err = document.TxMsg{}.QueryTxMsgListByHashList(govHashArr)
 
 		if err != nil {
-			logger.Error(fmt.Sprintf("query collection(%v) with dondition: %v err: %v", err.Error()))
+			logger.Error(fmt.Sprintf("query collection with dondition: %v err: %v", govHashArr, err.Error()))
 		}
 
 		for k, _ := range *govTxMsgHashMap {

@@ -50,7 +50,7 @@ func (task UpTimeChangeTask) Start() {
 		var startTime time.Time
 		d, _ := time.ParseDuration("1h") //1 hour later
 		if uptimeChange.Time == "" {
-			firstBlock, err = document.Block{}.QueryOneBlockWithHeightAsc()
+			firstBlock, err = document.Block{}.QueryOneBlockOrderByHeightAsc()
 			if err != nil {
 				logger.Error("query one blcok ", logger.String("err", err.Error()))
 			}
@@ -61,7 +61,7 @@ func (task UpTimeChangeTask) Start() {
 			startTime = startTime.Add(d)
 		}
 
-		lastBlock, err = document.Block{}.QueryOneBlockWithHeightDesc()
+		lastBlock, err = document.Block{}.QueryOneBlockOrderByHeightDesc()
 		if err != nil {
 			logger.Error("can't find any block")
 			return
