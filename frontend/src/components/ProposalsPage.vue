@@ -6,9 +6,7 @@
       </p>
     </div>
     <div class="graph_containers">
-      <div class="graph_container" :class="[$store.state.isMobile ? 'mobile_graph_container' : '']"
-        v-if="($store.state.isMobile && (votingPeriodDatas.length > 0 || depositPeriodDatas.length > 0)) 
-        || ((votingPeriodDatas.length <= 1 || depositPeriodDatas.length <= 1) && (votingPeriodDatas.length + depositPeriodDatas.length) >= 2)">
+      <div class="graph_container mobile_graph_container" v-if="$store.state.isMobile && (depositPeriodDatas.length > 0 || votingPeriodDatas.length > 0)">
         <div v-for="v in votingPeriodDatas" :key="v.proposal_id">
           <m-proposals-echart :data="v" v-if="v"></m-proposals-echart>
         </div>
@@ -17,8 +15,8 @@
         </div>
       </div>
 
-      <div class="graph_container graph_container_one"
-        v-if="!$store.state.isMobile && ((votingPeriodDatas.length === 1 && depositPeriodDatas.length === 0) || (depositPeriodDatas.length === 1 && votingPeriodDatas.length === 0))">
+      <div class="graph_container votingPeriodDatas_one"
+        v-if="!$store.state.isMobile && (votingPeriodDatas.length === 1 && (depositPeriodDatas.length === 0 || depositPeriodDatas.length > 1))">
         <div v-for="v in votingPeriodDatas" :key="v.proposal_id">
           <m-proposals-echart :data="v" v-if="v"></m-proposals-echart>
         </div>
@@ -27,8 +25,25 @@
         </div>
       </div>
 
-      <div class="graph_container graph_container_warp"
-        v-if="!$store.state.isMobile && (depositPeriodDatas.length > 1 && votingPeriodDatas.length > 1)">
+      <div class="graph_container depositPeriodDatas_one"
+        v-if="!$store.state.isMobile && (votingPeriodDatas.length === 0 && depositPeriodDatas.length === 1)">
+        <div v-for="v in depositPeriodDatas" :key="v.proposal_id">
+          <m-proposals-card :data="v" v-if="v"></m-proposals-card>
+        </div>
+      </div>
+
+      <div class="graph_container votingPeriodDatas_one_depositPeriodDatas_one"
+        v-if="!$store.state.isMobile && (votingPeriodDatas.length === 1 && depositPeriodDatas.length === 1)">
+        <div v-for="v in votingPeriodDatas" :key="v.proposal_id">
+          <m-proposals-echart :data="v" v-if="v"></m-proposals-echart>
+        </div>
+        <div v-for="v in depositPeriodDatas" :key="v.proposal_id">
+          <m-proposals-card :data="v" v-if="v"></m-proposals-card>
+        </div>
+      </div>
+
+      <div class="graph_container votingPeriodDatas_depositPeriodDatas"
+        v-if="!$store.state.isMobile && votingPeriodDatas.length !== 1 && (depositPeriodDatas.length > 1 || votingPeriodDatas.length > 1)">
         <div>
           <div v-for="v in votingPeriodDatas" :key="v.proposal_id">
             <m-proposals-echart :data="v" v-if="v"></m-proposals-echart>
@@ -385,12 +400,27 @@
               let depositEndTime = (new Date(item.deposit_end_time).getTime()) > 0 ? Tools.format2UTC(item.deposit_end_time) : '--';
               let votingEndTime = (new Date(item.voting_end_time).getTime()) > 0 ? Tools.format2UTC(item.voting_end_time) : '--';
               let title = Tools.formatString(item.title,20,"...");
-              let final_votes = Object.keys(item.final_votes).length > 0 ? item.final_votes : null;
+              let final_votes = {};
               let finalTotalVotes = 0;
-              for (let k in item.final_votes) {
-                finalTotalVotes += Number(item.final_votes[k]);
-              }
-              if(final_votes) {
+              if (status === 'VotingPeriod') {
+                let yesArr = item.votes.filter(v => v.option === 'Yes');
+                let yes = yesArr.reduce((init, v) => {return v.voting_power + init}, 0);
+                let noArr = item.votes.filter(v => v.option === 'No');
+                let no = noArr.reduce((init, v) => {return v.voting_power + init}, 0);
+                let abstainArr = item.votes.filter(v => v.option === 'Abstain');
+                let abstain = abstainArr.reduce((init, v) => {return v.voting_power + init}, 0);
+                let noWithVetoArr = item.votes.filter(v => v.option === 'NoWithVeto');
+                let no_with_veto = noWithVetoArr.reduce((init, v) => {return v.voting_power + init}, 0);
+                finalTotalVotes = yes + no + abstain + no_with_veto;
+                final_votes.yes = (yes / finalTotalVotes) * 100;
+                final_votes.no = (no / finalTotalVotes) * 100;
+                final_votes.abstain = (abstain / finalTotalVotes) * 100;
+                final_votes.no_with_veto = (no_with_veto / finalTotalVotes) * 100;
+              } else {
+                final_votes = Object.keys(item.final_votes).length > 0 ? item.final_votes : final_votes;
+                for (let k in item.final_votes) {
+                  finalTotalVotes += Number(item.final_votes[k]);
+                }
                 for (let k in final_votes) {
                   final_votes[k] = (Number(final_votes[k]) / finalTotalVotes) * 100;
                 }
@@ -657,42 +687,56 @@
     display: flex;
     width: 12.8rem;
     flex-wrap: wrap;
-    margin: 0.3rem auto;
+    margin: 0.3rem auto 0.1rem;
+  }
+  .votingPeriodDatas_one {
+    justify-content: space-between;
     & > div {
-      margin-right: 0.2rem;
-      margin-top: 0.2rem;
-      &:nth-of-type(2n) {
-        margin-right: 0rem;
+      margin-top: 0.2rem !important;
+      width: calc(50% - 0.1rem);
+      .propsals_card_container {
+        height: 2.3rem;
+      }
+    }
+    & > div:nth-child(1) {
+      width: 100%;
+      margin-top: 0rem !important;
+      .propsals_echart_container {
+        width: 100%;
       }
     }
   }
-  .graph_container_warp {
-    display: block;
-    & > div {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      margin-right: 0rem!important;
-      & > div {
-        margin-right: 0.2rem;
-        margin-top: 0.2rem;
-        &:nth-of-type(2n) {
-          margin-right: 0rem;
-        }
-      }
-      &:nth-of-type(2) {
-        margin-top: 0rem!important;
-      }
-    }
-  }
-  .graph_container_one {
-    width: calc(100% - 0.2rem);
-    max-width: 12.8rem;
+  .depositPeriodDatas_one {
+    height: 2.3rem;
     & > div {
       width: 100%;
-      margin-right: 0rem!important;
+      display: flex;
       & > div {
-        width: 100%;
+        flex: 1;
+      }
+    }
+  }
+  .votingPeriodDatas_one_depositPeriodDatas_one {
+    justify-content: space-between;
+    & > div {
+      width: calc(50% - 0.1rem);
+    }
+  }
+  .votingPeriodDatas_depositPeriodDatas {
+    flex-direction: column;
+    display: flex;
+    margin-top: 0.1rem;
+    & > div {
+      flex-direction: row;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      & > div {
+        width: calc(50% - 0.1rem);
+        margin-top: 0.2rem;
+        .propsals_card_container {
+          height: 2.3rem;
+        }
       }
     }
   }
@@ -706,12 +750,15 @@
     & > div {
       margin-left: 0.1rem!important;
       margin-right: 0.1rem!important;
-      margin-top: 0.2rem!important;
+      margin-top: 0.1rem!important;
       flex: 1;
       display: flex;
       & > div {
         width: 100%!important;
         margin: auto;
+      }
+      & > div.propsals_card_container {
+        height: 2.3rem;
       }
     }
     .propsals_echart_container {
@@ -721,7 +768,7 @@
   .mobile_graph_pagination_container {
     padding-left: 0!important;
     & > div:nth-child(1) {
-      height: 100%!important;
+      height: auto!important;
     }
     & > div {
       flex-wrap: wrap;
@@ -752,4 +799,18 @@
       padding: 0 0 10px 0!important;
     }
   }
+</style>
+
+<style lang="scss">
+.votingPeriodDatas_one {
+  & > div:nth-child(1) {
+    .propsals_echart_container {
+      .content {
+        .content_div {
+          position: absolute;
+        }
+      }
+    }
+  }
+}
 </style>
