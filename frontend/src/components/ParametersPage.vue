@@ -150,6 +150,7 @@
               //days
               let dayDataArr = ['double_sign_jail_duration', 'unbonding_time', 'downtime_jail_duration', 
               'censorship_jail_duration'];
+              let blockArr = ['max_evidence_age', 'signed_blocks_window'];
               if(parameterItem.key === "max_validators"){
               }else if(dayDataArr.indexOf(parameterItem.key) > -1){
                 let max = parameterItem.max || Math.max(Number(parameterItem.current_value), Number(parameterItem.genesis_value));
@@ -171,29 +172,33 @@
                 let genesis_value_arr = String(Number(parameterItem.genesis_value) / (10 ** 9)).split('.');
                 let current_value_arr_0 = Tools.formatPrice(current_value_arr[0]).split('.')[0];
                 let genesis_value_arr_0 = Tools.formatPrice(genesis_value_arr[0]).split('.')[0];
-                parameterItem.current = current_value_arr[1] ? `${current_value_arr_0}.${current_value_arr[1]}` : current_value_arr_0;
-                parameterItem.genesis = genesis_value_arr[1] ? `${genesis_value_arr_0}.${genesis_value_arr[1]}` : genesis_value_arr_0;
+                parameterItem.current = current_value_arr[1] ? `${current_value_arr_0}.${current_value_arr[1]} Nano` : `${current_value_arr_0} Nano`;
+                parameterItem.genesis = genesis_value_arr[1] ? `${genesis_value_arr_0}.${genesis_value_arr[1]} Nano` : `${genesis_value_arr_0} Nano`;
               }else if(parameterItem.key === "tx_size"){
                 parameterItem.max = Number(arr[1]) === 0 ? arr[1] : `${arr[1]} Bytes`;
                 parameterItem.current = `${parameterItem.current_value} Bytes`;
                 parameterItem.genesis = `${parameterItem.genesis_value} Bytes`;
+              }else if(blockArr.indexOf(parameterItem.key) > -1) {
+                parameterItem.max = `${parameterItem.max} Blocks`;
+                parameterItem.current = `${parameterItem.current} Blocks`;
+                parameterItem.genesis = `${parameterItem.genesis} Blocks`;
               }
             },
             formatUnbondingTime(time) {
                 let nsToMSRatio = 1000000, dToHRatio = 24, HToMRatio = 60;
                 let dateTime = Tools.formatDuring(Number(time) / nsToMSRatio), d, h, m;
                 if (dateTime.days >= 1) {
-                    d = `${Math.floor(dateTime.days)} days`
+                    d = `${Math.floor(dateTime.days)} Days`
                 } else {
                     d = ''
                 }
                 if (dateTime.hours >= 1 && dateTime.hours < dToHRatio) {
-                    h = `${Math.floor(dateTime.hours)} hours`
+                    h = `${Math.floor(dateTime.hours)} Hours`
                 } else {
                     h = ''
                 }
                 if (dateTime.minutes >= 1 && dateTime.minutes < HToMRatio) {
-                    m = `${Math.floor(dateTime.minutes)} minutes`
+                    m = `${Math.floor(dateTime.minutes)} Minutes`
                 } else {
                     m = ''
                 }
