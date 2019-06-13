@@ -205,6 +205,8 @@
         let saturationStep = Math.floor((500 / arr.length)) / 100 || 0.1;
         let lightnessStep = Math.floor((500 / arr.length)) / 30 || 0.1;
         return arr.map(v => {
+          saturation = saturation - saturationStep;
+          lightness = lightness + lightnessStep;
           let obj =  {
             value: v.voting_power,
             info: v,
@@ -212,11 +214,9 @@
             itemStyle: {
               color: `hsla(${colorArr[0]},${saturation}%,${lightness}%, 1)`,
               borderColor: '#ECEFFF',
-              borderWidth: arr.length > 1 ? 0.5: 0
+              borderWidth: 0
             }
           }
-          saturation = saturation - saturationStep;
-          lightness = lightness + lightnessStep;
           return obj;
         });
       },
@@ -313,7 +313,7 @@
               nodeClick: false,
               itemStyle: {
                 color: '#E5E9FB',
-                borderColor: '#ECEFFF',
+                borderColor: '#E5E9FB',
                 borderWidth: 0
               },
               label: {
@@ -329,7 +329,7 @@
                   nodeClick: false,
                   itemStyle: {
                     color: '#E5E9FB',
-                    borderColor: '#ECEFFF',
+                    borderColor: '#E5E9FB',
                     borderWidth: 0
                   },
                   children: [
@@ -340,7 +340,7 @@
                       nodeClick: false,
                       itemStyle: {
                         color: '#E5E9FB',
-                        borderColor: '#ECEFFF',
+                        borderColor: '#E5E9FB',
                         borderWidth: 0
                       }
                     }
@@ -352,7 +352,6 @@
           o.data = data;
           return o;
         });
-        
         depositPeriodDatas.forEach(v => {
           if (v.level && v.level.gov_param && v.level.gov_param.min_deposit && v.level.gov_param.min_deposit.amount) {
             v.min_deposit_number = Number(v.level.gov_param.min_deposit.amount);
