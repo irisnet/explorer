@@ -149,7 +149,7 @@ export default {
         let x = (e.offsetX - w);
         let y = (e.offsetY - h);
         let l = Math.sqrt(x*x + y*y);
-        let per = w / this.level;
+        let per = Math.min(w, h) / this.level;
         if (this.level === 4) {
           let levels = [];
           if (l > per && l <= per * 2) {
