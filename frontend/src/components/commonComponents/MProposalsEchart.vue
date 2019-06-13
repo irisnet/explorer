@@ -2,12 +2,7 @@
   <div class="propsals_echart_container">
     <div class="text">
       <div class="top">
-        <span class="title">ID:</span>
-        <span class="value">
-          <router-link :to="`/ProposalsDetail/${data.proposal_id}`"
-                      class="link_style">{{data.proposal_id}}</router-link>
-        </span>
-        <span class="title" style="margin-left: 40px;">Title:</span>
+        <span class="title">#{{data.proposal_id}}:</span>
         <div class="title_value_content">
           <span class="value title_value" ref="titleValue">
             <router-link :to="`/ProposalsDetail/${data.proposal_id}`"
@@ -18,7 +13,21 @@
       </div>
       <div :class="['content', $store.state.isMobile ? 'mobile_content' : '']">
         <div class="content_div">
-          <div>
+          <div class="level_div">
+            <span v-if="data.level === 'Important'">
+              <img src="../../assets/important.png" />
+              <span>Important</span>
+            </span>
+            <span v-if="data.level === 'Normal'">
+              <img src="../../assets/normal.png" />
+              <span>Normal</span>
+            </span>
+            <span v-if="data.level === 'Critical'">
+              <img src="../../assets/critical.png" />
+              <span>Critical</span>
+            </span>
+          </div>
+          <div style="margin-top: 16px;">
             <img v-if="data.participation > data.participation_num" src="../../assets/pass.png"/>
             <img v-if="data.participation <= data.participation_num" src="../../assets/no_pass.png"/>
             <span>Participation > {{data.participation_num}} %</span>
@@ -281,6 +290,13 @@ export default {
             }
             span:nth-child(2) {
               margin-left: 8px;
+            }
+          }
+          div.level_div {
+            span {
+              span {
+                margin-left: 8px;
+              }
             }
           }
         }
