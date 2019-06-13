@@ -241,6 +241,7 @@
           let o = {};
           o.proposal_id = item.proposal_id;
           o.title = item.title;
+          o.level = item.level.name;
           let all = item.voting_power_for_height;
           let yesArr = item.votes.filter(v => v.option === 'Yes');
           let yes = yesArr.reduce((init, v) => {return v.voting_power + init}, 0);
