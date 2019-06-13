@@ -76,7 +76,6 @@ export default {
   },
   data () {
     return {
-      resizeTime: null,
       sortBy: '',
       sortDesc: true,
       validatorFields: [

@@ -41,6 +41,7 @@
 
 <script>
 import echarts from 'echarts';
+import Tools from '../../util/Tools';
 
 export default {
   name: 'MProposalsEchart',
@@ -86,6 +87,7 @@ export default {
   },
   methods: {
     configuration(data, levels) {
+      this.forChildrenBorderWidth(data);
       let that = this;
       let option = {
         series: {
@@ -96,7 +98,8 @@ export default {
             rotate: '0',
             textBorderColor: '#22252A',
             textBorderWidth: 1,
-            fontWeight: 600
+            fontWeight: 600,
+            fontFamily: 'Arial'
           },
           sort: null,
           startAngle: 145,
@@ -109,14 +112,28 @@ export default {
             let info = v.data.info;
             that.levelName = v.name;
             if (v.data.info) {
-              return `${v.marker}voter: ${info.voter_moniker}<br><span style="margin-left: 15px;">voting_power: ${info.voting_power}</span>`;
+              return `${v.marker}voter: ${info.voter_moniker}<br><span style="margin-left: 15px;">voting_power: ${info.voting_power} (${v.data.per} %)</span>`;
             } else {
-              return `${v.marker}${v.data.tipName || v.name}: ${v.value}`;
+              return `${v.marker}${v.data.tipName || v.name}: ${v.value} (${v.data.per} %)`;
             }
+          },
+          textStyle: {
+            fontFamily: 'Arial'
           }
         }
       };
       this.chart.setOption(option);
+    },
+    forChildrenBorderWidth(data, all) {
+      all = all || data.reduce((init, v) => v.value + init, 0);
+      if (all > 0) {
+        data.forEach(v => {
+          let per = v.value / all;
+          v.itemStyle.borderWidth = per < 1 ? 0.5 : 0;
+          v.per = Tools.formatDecimalNumberToFixedNumber(per * 100);
+          v.children && this.forChildrenBorderWidth(v.children, all);
+        })
+      }
     },
     bundClickFun(w, h) {
       return (e) => {
