@@ -1,12 +1,7 @@
 <template>
   <div class="propsals_card_container">
     <div class="top">
-      <span class="title">ID:</span>
-      <span class="value">
-        <router-link :to="`/ProposalsDetail/${data.proposal_id}`"
-                      class="link_style">{{data.proposal_id}}</router-link>
-      </span>
-      <span class="title" style="margin-left: 40px;">Title:</span>
+      <span class="title">#{{data.proposal_id}}:</span>
       <div class="title_value_content">
         <span class="value title_value" ref="titleValue">
           <router-link :to="`/ProposalsDetail/${data.proposal_id}`"
