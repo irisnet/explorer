@@ -238,9 +238,6 @@
         absoluteTop:'',
         lang: lang,
         chainId: '',
-        mainnetHref:'',
-        testnetHref:'',
-        nyanCatsHref:'',
         upImg: require("../assets/caret-bottom.png"),
         downImg: require("../assets/caret-bottom.png"),
         netWorkArray: [],
@@ -503,9 +500,6 @@
       },
       handleConfigs(configs){
          this.netWorkArray = configs.map(item => {
-          if(item.env_nm === constant.ENVCONFIG.MAINNET && item.chain_id === constant.CHAINID.MAINNET){
-              item.chain_id = '';
-          }
           item.netWorkSelectOption = `${item.chain_id.toLocaleUpperCase()} ${Tools.firstWordUpperCase(item.env_nm)}`
           return item
         });
@@ -526,9 +520,9 @@
           this.flShowChainId = true;
         }
       },
-      setCurrentSelectOption(currentEnv,currentChainId,configs){
+      setCurrentSelectOption(currentEnv,currentChainId){
         if(currentEnv === constant.ENVCONFIG.MAINNET && currentChainId === constant.CHAINID.MAINNET){
-          this.currentSelected = lang.home.mainnet;
+          this.currentSelected = `${currentChainId.toLocaleUpperCase()} ${Tools.firstWordUpperCase(currentEnv)}`;
         }else if(currentEnv !== constant.ENVCONFIG.DEV && currentEnv !== constant.ENVCONFIG.QA && currentEnv !== constant.ENVCONFIG.STAGE){
           this.currentSelected = `${currentChainId.toLocaleUpperCase()} ${Tools.firstWordUpperCase(currentEnv)}`;
         }else if(currentEnv === constant.ENVCONFIG.DEV || currentEnv === constant.ENVCONFIG.QA || currentEnv === constant.ENVCONFIG.STAGE){
