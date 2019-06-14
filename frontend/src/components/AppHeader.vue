@@ -479,6 +479,8 @@
       },
       getConfig(){
         Service.http('/api/config').then(res => {
+          res.cur_env = 'mainnet';
+          res.chain_id = 'irishub';
           this.toggleTestnetLogo(res);
           this.setCurrentSelectOption(res.cur_env,res.chain_id,res.configs);
           this.setEnvConfig(res);
@@ -521,11 +523,7 @@
         }
       },
       setCurrentSelectOption(currentEnv,currentChainId){
-        if(currentEnv === constant.ENVCONFIG.MAINNET && currentChainId === constant.CHAINID.MAINNET){
-          this.currentSelected = `${currentChainId.toLocaleUpperCase()} ${Tools.firstWordUpperCase(currentEnv)}`;
-        }else if(currentEnv !== constant.ENVCONFIG.DEV && currentEnv !== constant.ENVCONFIG.QA && currentEnv !== constant.ENVCONFIG.STAGE){
-          this.currentSelected = `${currentChainId.toLocaleUpperCase()} ${Tools.firstWordUpperCase(currentEnv)}`;
-        }else if(currentEnv === constant.ENVCONFIG.DEV || currentEnv === constant.ENVCONFIG.QA || currentEnv === constant.ENVCONFIG.STAGE){
+        if(currentEnv === constant.ENVCONFIG.DEV || currentEnv === constant.ENVCONFIG.QA || currentEnv === constant.ENVCONFIG.STAGE){
           this.currentSelected = lang.home.mainnet;
         }else {
           this.currentSelected = `${currentChainId.toLocaleUpperCase()} ${Tools.firstWordUpperCase(currentEnv)}`;
