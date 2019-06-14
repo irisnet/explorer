@@ -356,6 +356,10 @@
                 that.votingStartAge = that.formatProposalTime(that.flShowProposalTime('votingStartTime',data.proposal.status) ? data.proposal.voting_start_time : '');
                 that.votingEndAge = that.formatProposalTime(that.flShowProposalTime('votingEndTime',data.proposal.status) ? data.proposal.voting_end_time : '' );
               },1000);
+              this.submitAge = this.formatProposalTime(data.proposal.submit_time ? data.proposal.submit_time : '');
+              this.depositEndAge = this.formatProposalTime(this.flShowProposalTime('depositEndTime',data.proposal.status) ? data.proposal.deposit_end_time : '');
+              this.votingStartAge = this.formatProposalTime(this.flShowProposalTime('votingStartTime',data.proposal.status) ? data.proposal.voting_start_time : '');
+              this.votingEndAge = this.formatProposalTime(this.flShowProposalTime('votingEndTime',data.proposal.status) ? data.proposal.voting_end_time : '' );
               this.software = data.proposal.software;
               this.version = data.proposal.version;
               this.switchHeight = data.proposal.switch_height;

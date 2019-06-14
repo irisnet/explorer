@@ -13,7 +13,7 @@
           </div>
           <div class="table_list_content">
             <spin-component :showLoading="flShowLoading"></spin-component>
-            <tx-list-page-table :items="txList" :showNoData="showNoData"></tx-list-page-table>
+            <m-tx-list-page-table :showNoData="showNoData" :items="txList"></m-tx-list-page-table>
             <div v-show="showNoData" class="no_data_show">
               No Data
             </div>
@@ -27,13 +27,13 @@
 </template>
 
 <script>
-	import TxListPageTable from "./table/TxListPageTable";
 	import Service from "../util/axios";
 	import Tools from "../util/Tools";
 	import SpinComponent from './commonComponents/SpinComponent';
+    import MTxListPageTable from "./table/MTxListPageTable";
     export default {
-		  name: "TransactionListPage",
-        components: {SpinComponent, TxListPageTable},
+        name: "TransactionListPage",
+        components: {MTxListPageTable, SpinComponent},
         data() {
             return {
                 totalPageNum: sessionStorage.getItem("txpagenum") ? JSON.parse(sessionStorage.getItem("txpagenum")) : 1,
@@ -94,12 +94,16 @@
     .transaction_list_title_wrap{
       background: #efeff1;
       border-bottom: 0.01rem solid #d6d9e0;
+      width: 100%;
+      position: fixed;
+      z-index: 10;
       .transaction_list_title_content{
         height:0.62rem;
         display: flex;
         align-items: center;
         max-width: 12.8rem;
         margin: 0 auto;
+        background: #efeff1;
         .transaction_list_title{
           font-size: 0.22rem;
           font-weight: 500;
@@ -110,6 +114,7 @@
   }
   .transaction_list_table_container{
     max-width: 12.8rem;
+    padding-top: 0.63rem;
     margin: 0 auto;
     .transaction_list_table_content{
       .pagination_nav_content{
@@ -117,6 +122,11 @@
         justify-content: space-between;
         height: 0.7rem;
         align-items: center;
+        max-width: 12.8rem;
+        width: 100%;
+        position: fixed;
+        background: #fff;
+        z-index: 10;
         span{
           color: #a2a2ae;
           padding-left: 0.2rem;
@@ -126,6 +136,7 @@
       .table_list_content{
         width: 100%;
         overflow-x: auto;
+        padding-top: 0.7rem;
         .no_data_show{
           display: flex;
           justify-content: center;
