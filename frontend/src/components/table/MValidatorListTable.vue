@@ -263,7 +263,7 @@ export default {
   }
 }
 .operator_address_style{
-  font-family: Consolas;
+  font-family: "Consolas","Arial",-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 @media screen and (max-width: 910px) {
   .m-table-header {

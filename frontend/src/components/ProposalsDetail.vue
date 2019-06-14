@@ -64,8 +64,8 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Description :</span>
-          <span class="information_value information_show_trim">
-            <pre class="information_pre">{{description}}</pre>
+          <span class="information_value">
+            <pre class="information_pre information_show_trim">{{description}}</pre>
           </span>
         </div>
 
@@ -370,6 +370,9 @@
               this.depositEndTime = that.flShowProposalTime('depositEndTime',data.proposal.status) ? Tools.format2UTC(data.proposal.deposit_end_time) : '--';
               this.votingStartTime = that.flShowProposalTime('votingStartTime',data.proposal.status) ? Tools.format2UTC(data.proposal.voting_start_time) : '--';
               this.votingEndTime = that.flShowProposalTime('votingEndTime',data.proposal.status) ? Tools.format2UTC(data.proposal.voting_end_time) : '--';
+              data.proposal.description = '\n' +
+                'Now that the mainnet has been running for three months, it’s time to raise the difficulty level a little bit! More details can be found here: https://forum.irisnet.org/t/parameter-changes-raising-the-difficulty-level-a-little-bit-for-validators/127'
+
               this.description = data.proposal.description ? data.proposal.description : " -- ";
               this.voteDetailsYes = data.proposal.status === "DepositPeriod" ? "--" : data.result.Yes;
               this.voteDetailsNo = data.proposal.status === "DepositPeriod" ? "--" : data.result.No;
