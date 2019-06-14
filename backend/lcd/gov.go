@@ -65,8 +65,8 @@ func GetStakeKeyWithRangeMap() map[string]RangeDescription {
 func GetDistrKeyWithRangeMap() map[string]RangeDescription {
 	result := map[string]RangeDescription{}
 	result[GovModuleDistrCommunityTax] = RangeDescription{Range: "0,0.2", Description: "community tax"}
-	result[GovModuleDistrBonusProposerReward] = RangeDescription{Range: "0,0.02", Description: "maximum additional ratio bonus ratio"}
-	result[GovModuleDistrBaseProposerReward] = RangeDescription{Range: "0,0.08", Description: "base ratio of the block reward"}
+	result[GovModuleDistrBonusProposerReward] = RangeDescription{Range: "0,0.08", Description: "maximum additional ratio bonus ratio"}
+	result[GovModuleDistrBaseProposerReward] = RangeDescription{Range: "0,0.02", Description: "base ratio of the block reward"}
 	return result
 }
 
