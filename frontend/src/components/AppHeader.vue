@@ -479,8 +479,6 @@
       },
       getConfig(){
         Service.http('/api/config').then(res => {
-          res.cur_env = 'mainnet';
-          res.chain_id = 'irishub';
           this.toggleTestnetLogo(res);
           this.setCurrentSelectOption(res.cur_env,res.chain_id,res.configs);
           this.setEnvConfig(res);
