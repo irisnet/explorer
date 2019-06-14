@@ -199,24 +199,23 @@
         }
       },
       formatGrahpChildren(arr, color) {
-        let colorArr = color.split(',');
-        let saturation = Number(colorArr[1].replace('%', ''));
-        let lightness = Number(colorArr[2].replace('%', ''));
-        let saturationStep = Math.floor((500 / arr.length)) / 100 || 0.1;
-        let lightnessStep = Math.floor((500 / arr.length)) / 30 || 0.1;
-        return arr.map(v => {
+        let hStep = ((color.h[1] - color.h[0]) / 100);
+        let sStep = ((color.s[1] - color.s[0]) / 100);
+        let lStep = ((color.l[1] - color.l[0]) / 100);
+        return arr.map((v, i) => {
+          let h = color.h[0] + hStep * i;
+          let s = color.s[0] + sStep * i;
+          let l = color.l[0] + lStep * i;
           let obj =  {
             value: v.voting_power,
             info: v,
             nodeClick: false,
             itemStyle: {
-              color: `hsla(${colorArr[0]},${saturation}%,${lightness}%, 1)`,
+              color: `hsla(${h},${s}%,${l}%, 1)`,
               borderColor: '#ECEFFF',
-              borderWidth: arr.length > 1 ? 0.5: 0
+              borderWidth: 0
             }
           }
-          saturation = saturation - saturationStep;
-          lightness = lightness + lightnessStep;
           return obj;
         });
       },
@@ -241,6 +240,8 @@
           let o = {};
           o.proposal_id = item.proposal_id;
           o.title = item.title;
+          o.level = item.level && item.level.name;
+          o.type = item.type;
           let all = item.voting_power_for_height;
           let yesArr = item.votes.filter(v => v.option === 'Yes');
           let yes = yesArr.reduce((init, v) => {return v.voting_power + init}, 0);
@@ -251,10 +252,12 @@
           let noWithVetoArr = item.votes.filter(v => v.option === 'NoWithVeto');
           let noWithVeto = noWithVetoArr.reduce((init, v) => {return v.voting_power + init}, 0);
           let votes = yes + no + abstain + noWithVeto;
-          o.participation_num = item.level && item.level.gov_param && item.level.gov_param.participation && this.formatNumber(item.level.gov_param.participation);
-          o.threshold_num = item.level && item.level.gov_param && item.level.gov_param.threshold && this.formatNumber(item.level.gov_param.threshold);
+          o.participationNum = item.level && item.level.gov_param && item.level.gov_param.participation && this.formatNumber(item.level.gov_param.participation);
+          o.passThresholdNum = item.level && item.level.gov_param && item.level.gov_param.pass_threshold && this.formatNumber(item.level.gov_param.pass_threshold);
+          o.vetoThresholdNum = item.level && item.level.gov_param && item.level.gov_param.veto_threshold && this.formatNumber(item.level.gov_param.veto_threshold);
           o.participation = all ? (votes / all) * 100 : 0;
-          o.threshold = votes ? (yes / votes) * 100 : 0;
+          o.passThreshold = votes ? (yes / votes) * 100 : 0;
+          o.vetoThreshold = votes ? (noWithVeto / votes) * 100 : 0;
           let data = [
             {
               name: 'Participant',
@@ -273,7 +276,7 @@
                     borderColor: '#ECEFFF',
                     borderWidth: 0
                   },
-                  children: this.formatGrahpChildren(yesArr, '204,100%,35%')
+                  children: this.formatGrahpChildren(yesArr, {h: [205, 204], s: [100, 100], l: [79, 35]})
                 },
                 {
                   name: 'Abstain',
@@ -283,7 +286,7 @@
                     borderColor: '#ECEFFF',
                     borderWidth: 0
                   },
-                  children: this.formatGrahpChildren(abstainArr, '221,44%,58%')
+                  children: this.formatGrahpChildren(abstainArr, {h: [222, 221], s: [100, 44], l: [86, 58]})
                 },
                 {
                   name: 'No',
@@ -293,7 +296,7 @@
                     borderColor: '#ECEFFF',
                     borderWidth: 0
                   },
-                  children: this.formatGrahpChildren(noArr, '36,100%,48%')
+                  children: this.formatGrahpChildren(noArr, {h: [36, 36], s: [100, 100], l: [77, 48]})
                 },
                 {
                   name: 'NoWithVeto',
@@ -303,7 +306,7 @@
                     borderColor: '#ECEFFF',
                     borderWidth: 0
                   },
-                  children: this.formatGrahpChildren(noWithVetoArr, '21,100%,50%')
+                  children: this.formatGrahpChildren(noWithVetoArr, {h: [21, 21], s: [100, 100], l: [79, 50]})
                 }
               ]
             },
@@ -313,7 +316,7 @@
               nodeClick: false,
               itemStyle: {
                 color: '#E5E9FB',
-                borderColor: '#ECEFFF',
+                borderColor: '#E5E9FB',
                 borderWidth: 0
               },
               label: {
@@ -329,7 +332,7 @@
                   nodeClick: false,
                   itemStyle: {
                     color: '#E5E9FB',
-                    borderColor: '#ECEFFF',
+                    borderColor: '#E5E9FB',
                     borderWidth: 0
                   },
                   children: [
@@ -340,7 +343,7 @@
                       nodeClick: false,
                       itemStyle: {
                         color: '#E5E9FB',
-                        borderColor: '#ECEFFF',
+                        borderColor: '#E5E9FB',
                         borderWidth: 0
                       }
                     }
@@ -352,7 +355,6 @@
           o.data = data;
           return o;
         });
-        
         depositPeriodDatas.forEach(v => {
           if (v.level && v.level.gov_param && v.level.gov_param.min_deposit && v.level.gov_param.min_deposit.amount) {
             v.min_deposit_number = Number(v.level.gov_param.min_deposit.amount);
@@ -370,6 +372,7 @@
           (v.intial_deposit_number / v.min_deposit_number) * 100 + '%' : 0;
           v.total_deposit_number_per = this.isNumber(v.total_deposit_number) && this.isNumber(v.min_deposit_number) ?
           (v.total_deposit_number / v.min_deposit_number) * 100 + '%' : 0;
+          v.level = v.level && v.level.name;
         });
         this.depositPeriodDatas = depositPeriodDatas;
       },
@@ -695,7 +698,7 @@
       margin-top: 0.2rem !important;
       width: calc(50% - 0.1rem);
       .propsals_card_container {
-        height: 2.3rem;
+        height: 2.2rem;
       }
     }
     & > div:nth-child(1) {
@@ -707,7 +710,7 @@
     }
   }
   .depositPeriodDatas_one {
-    height: 2.3rem;
+    height: 2.2rem;
     & > div {
       width: 100%;
       display: flex;
@@ -735,7 +738,7 @@
         width: calc(50% - 0.1rem);
         margin-top: 0.2rem;
         .propsals_card_container {
-          height: 2.3rem;
+          height: 2.2rem;
         }
       }
     }
@@ -753,16 +756,18 @@
       margin-top: 0.1rem!important;
       flex: 1;
       display: flex;
+      width: calc(100% - 0.2rem);
       & > div {
         width: 100%!important;
         margin: auto;
       }
       & > div.propsals_card_container {
-        height: 2.3rem;
+        height: 2.2rem;
       }
     }
     .propsals_echart_container {
       flex-direction: column;
+      height: 6rem;
     }
   }
   .mobile_graph_pagination_container {

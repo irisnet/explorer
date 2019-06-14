@@ -183,13 +183,14 @@ func (service *ProposalService) QueryDepositAndVotingProposalList() []model.Prop
 		}
 
 		if propo.Status == document.ProposalStatusVoting {
+			passThreshold, vetoThreshold, participation, err := lcd.GetPassVetoThresholdAndParticipationMinDeposit(propo.Type)
 
-			threshold, participation, err := lcd.GetThresholdAndParticipationMinDeposit(propo.Type)
 			if err != nil {
 				logger.Error("GetThresholdAndParticipationMinDeposit", logger.String("err", err.Error()), logger.String("param", propo.Type))
 			}
 			l.GovParam = model.GovParam{
-				Threshold:     threshold,
+				PassThreshold: passThreshold,
+				VetoThreshold: vetoThreshold,
 				Participation: participation,
 			}
 		}

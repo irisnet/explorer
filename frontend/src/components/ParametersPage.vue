@@ -179,7 +179,8 @@
                 parameterItem.current = `${parameterItem.current_value} Bytes`;
                 parameterItem.genesis = `${parameterItem.genesis_value} Bytes`;
               }else if(blockArr.indexOf(parameterItem.key) > -1) {
-                parameterItem.max = `${parameterItem.max} Blocks`;
+                parameterItem.min = parameterItem.max ? parameterItem.min : `${parameterItem.min} Blocks`;
+                parameterItem.max = parameterItem.max ? `${parameterItem.max} Blocks` : '+∞';
                 parameterItem.current = `${parameterItem.current} Blocks`;
                 parameterItem.genesis = `${parameterItem.genesis} Blocks`;
               }
@@ -256,7 +257,7 @@
         .pc_cards_layout {
           display: flex;
           flex-wrap: wrap;
-          min-width: 12.8rem;
+          min-width: 1280px;
           & > p {
             margin-bottom: 0.2rem!important;
             margin-right: 0.2rem;
