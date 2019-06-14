@@ -411,6 +411,7 @@
 
 <style scoped lang="scss">
   @import '../style/mixin.scss';
+
 .proposals_detail_wrap {
   @include flex;
   @include pcContainer;
@@ -514,6 +515,7 @@
           align-items: center;
         }
       }
+
       .proposals_detail_title {
         height: 0.61rem;
         line-height: 0.61rem;
@@ -530,6 +532,7 @@
         color: #a2a2ae;
       }
     }
+
   .mobile_transactions_detail_wrap {
     width: 100%;
     @include flex;
