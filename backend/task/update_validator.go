@@ -22,8 +22,9 @@ func (task UpdateValidator) Start() {
 			return
 		}
 
-		candidateService := service.Get(service.Candidate).(*service.CandidateService)
-		err = candidateService.UpdateValidators(validators)
+		validatorService := service.Get(service.Validator).(*service.ValidatorService)
+		err = validatorService.UpdateValidators(validators)
+
 		if err != nil {
 			logger.Error("UpdateValidators task failed", logger.String("taskName", task.Name()), logger.String("errmsg", err.Error()))
 		}

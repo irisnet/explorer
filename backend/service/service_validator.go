@@ -15,21 +15,20 @@ import (
 	"gopkg.in/mgo.v2/txn"
 )
 
-type CandidateService struct {
+type ValidatorService struct {
 	BaseService
 }
 
-func (service *CandidateService) GetModule() Module {
-	return Candidate
+func (service *ValidatorService) GetModule() Module {
+	return Validator
 }
 
-func (service *CandidateService) GetValidators(typ, origin string, page, size int) interface{} {
+func (service *ValidatorService) GetValidators(typ, origin string, page, size int) interface{} {
 	if origin == "browser" {
 		var result []lcd.ValidatorVo
 		var blackList = service.QueryBlackList()
 
-		total, validatorList, err := document.Candidate{}.GetValidatorListByPage(typ, page, size)
-
+		total, validatorList, err := document.Validator{}.GetValidatorListByPage(typ, page, size)
 		if err != nil || total <= 0 {
 			panic(types.CodeNotFound)
 		}
@@ -59,7 +58,7 @@ func (service *CandidateService) GetValidators(typ, origin string, page, size in
 	return service.queryValForRainbow(typ, page, size)
 }
 
-func (service *CandidateService) GetValidator(address string) lcd.ValidatorVo {
+func (service *ValidatorService) GetValidator(address string) lcd.ValidatorVo {
 	var validator, err = lcd.Validator(address)
 	if err != nil {
 		panic(types.CodeNotFound)
@@ -75,17 +74,35 @@ func (service *CandidateService) GetValidator(address string) lcd.ValidatorVo {
 	return validator
 }
 
-func (service *CandidateService) QueryValidatorByConAddr(address string) document.Candidate {
+func (service *ValidatorService) QueryCandidatesTopN() model.ValDetailVo {
 
-	candadate, err := document.Candidate{}.QueryValidatorByConsensusAddr(address)
+	validatorsList, power, upTimeMap, err := document.Validator{}.GetCandidatesTopN()
+
 	if err != nil {
-		logger.Error("not found validator by conAddr", logger.String("conAddr", address))
+		panic(types.CodeNotFound)
 	}
-	return candadate
+
+	var validators []model.Validator
+
+	for _, v := range validatorsList {
+		if err != nil {
+			logger.Error("hex DecodeString", logger.String("err", err.Error()))
+			continue
+		}
+
+		validator := service.convert(v)
+		validator.Uptime = upTimeMap[utils.GenHexAddrFromPubKey(v.ConsensusPubkey)]
+		validators = append(validators, validator)
+	}
+	resp := model.ValDetailVo{
+		PowerAll:   power,
+		Validators: validators,
+	}
+
+	return resp
 }
 
-func (service *CandidateService) QueryCandidate(address string) model.CandidatesInfoVo {
-	//var candidate document.Candidate
+func (service *ValidatorService) QueryCandidate(address string) model.CandidatesInfoVo {
 
 	validator, err := lcd.Validator(address)
 	if err != nil {
@@ -105,14 +122,13 @@ func (service *CandidateService) QueryCandidate(address string) model.Candidates
 	}
 	var tokenDec, _ = types.NewDecFromStr(validator.Tokens)
 	var val = model.Validator{
-		Address:        validator.OperatorAddress,
-		PubKey:         validator.ConsensusPubkey,
-		Owner:          utils.Convert(conf.Get().Hub.Prefix.AccAddr, validator.OperatorAddress),
-		Jailed:         validator.Jailed,
-		Status:         BondStatusToString(validator.Status),
-		BondHeight:     utils.ParseIntWithDefault(validator.BondHeight, 0),
-		OriginalTokens: utils.RoundToString(validator.Tokens, 0),
-		VotingPower:    tokenDec.RoundInt64(),
+		Address:     validator.OperatorAddress,
+		PubKey:      validator.ConsensusPubkey,
+		Owner:       utils.Convert(conf.Get().Hub.Prefix.AccAddr, validator.OperatorAddress),
+		Jailed:      validator.Jailed,
+		Status:      BondStatusToString(validator.Status),
+		BondHeight:  utils.ParseIntWithDefault(validator.BondHeight, 0),
+		VotingPower: tokenDec.RoundInt64(),
 		Description: model.Description{
 			Moniker:  moniker,
 			Identity: identity,
@@ -125,7 +141,8 @@ func (service *CandidateService) QueryCandidate(address string) model.Candidates
 	result := model.CandidatesInfoVo{
 		Validator: val,
 	}
-	count, err := document.Candidate{}.QueryPowerWithBonded()
+
+	count, err := document.Validator{}.QueryPowerWithBonded()
 
 	if err != nil {
 		logger.Error("query candidate power with bonded ", logger.String("err", err.Error()))
@@ -136,31 +153,9 @@ func (service *CandidateService) QueryCandidate(address string) model.Candidates
 	return result
 }
 
-func (service *CandidateService) QueryCandidatesTopN() model.ValDetailVo {
+func (service *ValidatorService) QueryCandidateUptime(address, category string) []model.UptimeChangeVo {
 
-	candidateList, power, upTimeMap, err := document.Candidate{}.GetCandidatesTopN()
-
-	if err != nil {
-		panic(types.CodeNotFound)
-	}
-
-	var validators []model.Validator
-
-	for _, candidate := range candidateList {
-		validator := service.convert(candidate)
-		validator.Uptime = upTimeMap[candidate.PubKeyAddr]
-		validators = append(validators, validator)
-	}
-	resp := model.ValDetailVo{
-		PowerAll:   getVotingPowerFromToken(power),
-		Validators: validators,
-	}
-	return resp
-}
-
-func (service *CandidateService) QueryCandidateUptime(address, category string) []model.UptimeChangeVo {
-
-	address, err := document.Candidate{}.GetCandidatePubKeyAddrByAddr(address)
+	address, err := document.Validator{}.GetCandidatePubKeyAddrByAddr(address)
 
 	if err != nil || address == "" {
 		panic(types.CodeNotFound)
@@ -168,7 +163,9 @@ func (service *CandidateService) QueryCandidateUptime(address, category string) 
 
 	switch category {
 	case "hour":
-		resultAsDoc, err := document.Candidate{}.QueryCandidateUptimeWithHour(address)
+
+		resultAsDoc, err := document.Validator{}.QueryCandidateUptimeWithHour(address)
+
 		if err != nil {
 			panic(types.CodeNotFound)
 		}
@@ -185,7 +182,8 @@ func (service *CandidateService) QueryCandidateUptime(address, category string) 
 		return result
 	case "week", "month":
 
-		resultAsDoc, err := document.Candidate{}.QueryCandidateUptimeByWeekOrMonth(address, category)
+		resultAsDoc, err := document.Validator{}.QueryCandidateUptimeByWeekOrMonth(address, category)
+
 		if err != nil {
 			panic(types.CodeNotFound)
 		}
@@ -203,7 +201,7 @@ func (service *CandidateService) QueryCandidateUptime(address, category string) 
 	return nil
 }
 
-func (service *CandidateService) QueryCandidatePower(address, category string) []model.ValVotingPowerChangeVo {
+func (service *ValidatorService) QueryCandidatePower(address, category string) []model.ValVotingPowerChangeVo {
 
 	var agoStr string
 	switch category {
@@ -218,16 +216,15 @@ func (service *CandidateService) QueryCandidatePower(address, category string) [
 		break
 	}
 
-	candidatePowerArr, err := document.Candidate{}.QueryCandidatePower(address, agoStr)
+	validatorPowerArr, err := document.Validator{}.QueryCandidatePower(address, agoStr)
 
 	if err != nil {
 		panic(types.CodeNotFound)
 	}
 
-	result := make([]model.ValVotingPowerChangeVo, 0, len(candidatePowerArr))
+	result := make([]model.ValVotingPowerChangeVo, 0, len(validatorPowerArr))
 
-	for _, v := range candidatePowerArr {
-
+	for _, v := range validatorPowerArr {
 		result = append(result, model.ValVotingPowerChangeVo{
 			Height:  v.Height,
 			Address: v.Address,
@@ -240,9 +237,9 @@ func (service *CandidateService) QueryCandidatePower(address, category string) [
 	return result
 }
 
-func (service *CandidateService) QueryCandidateStatus(address string) (resp model.ValStatus) {
+func (service *ValidatorService) QueryCandidateStatus(address string) (resp model.ValStatus) {
 
-	preCommitCount, uptime, err := document.Candidate{}.QueryCandidateStatus(address)
+	preCommitCount, uptime, err := document.Validator{}.QueryCandidateStatus(address)
 
 	if err != nil {
 		logger.Error("query candidate status", logger.String("err", err.Error()))
@@ -257,27 +254,33 @@ func (service *CandidateService) QueryCandidateStatus(address string) (resp mode
 	return resp
 }
 
-func (service *CandidateService) convert(candidate document.Candidate) model.Validator {
-	var moniker = candidate.Description.Moniker
-	var identity = candidate.Description.Identity
-	var website = candidate.Description.Website
-	var details = candidate.Description.Details
+func (service *ValidatorService) convert(validator document.Validator) model.Validator {
+	var moniker = validator.Description.Moniker
+	var identity = validator.Description.Identity
+	var website = validator.Description.Website
+	var details = validator.Description.Details
 	var blackList = service.QueryBlackList()
-	if desc, ok := blackList[candidate.Address]; ok {
+	if desc, ok := blackList[validator.OperatorAddress]; ok {
 		moniker = desc.Moniker
 		identity = desc.Identity
 		website = desc.Website
 		details = desc.Details
 	}
+
+	bondHeightAsInt64, err := strconv.ParseInt(validator.BondHeight, 10, 64)
+
+	if err != nil {
+		logger.Error("convert string to int64", logger.String("err", err.Error()))
+	}
+
 	return model.Validator{
-		Address:        candidate.Address,
-		PubKey:         utils.Convert(conf.Get().Hub.Prefix.ConsPub, candidate.PubKey),
-		Owner:          utils.Convert(conf.Get().Hub.Prefix.AccAddr, candidate.Address),
-		Jailed:         candidate.Jailed,
-		Status:         candidate.Status,
-		BondHeight:     candidate.BondHeight,
-		OriginalTokens: candidate.OriginalTokens,
-		VotingPower:    getVotingPowerFromToken(candidate.OriginalTokens),
+		Address:     validator.OperatorAddress,
+		PubKey:      utils.Convert(conf.Get().Hub.Prefix.ConsPub, validator.ConsensusPubkey),
+		Owner:       utils.Convert(conf.Get().Hub.Prefix.AccAddr, validator.OperatorAddress),
+		Jailed:      validator.Jailed,
+		Status:      strconv.Itoa(validator.Status),
+		BondHeight:  bondHeightAsInt64,
+		VotingPower: validator.VotingPower,
 		Description: model.Description{
 			Moniker:  moniker,
 			Identity: identity,
@@ -285,26 +288,6 @@ func (service *CandidateService) convert(candidate document.Candidate) model.Val
 			Details:  details,
 		},
 	}
-}
-
-func getVotingPowerFromToken(token string) int64 {
-	tokenPrecision := types.NewIntWithDecimal(1, 18)
-	power, err := types.NewDecFromStr(token)
-	if err != nil {
-		logger.Error("invalid token", logger.String("token", token))
-		return 0
-	}
-	return power.QuoInt(tokenPrecision).RoundInt64()
-}
-
-func getTotalVotingPower() int64 {
-	var total = int64(0)
-	var set = lcd.LatestValidatorSet()
-	for _, v := range set.Validators {
-		votingPower := utils.ParseIntWithDefault(v.VotingPower, 0)
-		total += votingPower
-	}
-	return total
 }
 
 func BondStatusToString(b int) string {
@@ -320,7 +303,7 @@ func BondStatusToString(b int) string {
 	}
 }
 
-func (service *CandidateService) queryValForRainbow(typ string, page, size int) interface{} {
+func (service *ValidatorService) queryValForRainbow(typ string, page, size int) interface{} {
 	var validators = lcd.Validators(page, size)
 
 	var blackList = service.QueryBlackList()
@@ -335,7 +318,7 @@ func (service *CandidateService) queryValForRainbow(typ string, page, size int) 
 	return validators
 }
 
-func (service *CandidateService) UpdateValidators(vs []document.Validator) error {
+func (service *ValidatorService) UpdateValidators(vs []document.Validator) error {
 	var vMap = make(map[string]document.Validator)
 	for _, v := range vs {
 		vMap[v.OperatorAddress] = v
@@ -375,7 +358,17 @@ func (service *CandidateService) UpdateValidators(vs []document.Validator) error
 			})
 		}
 	}
-	return document.Candidate{}.Batch(txs)
+	return document.Validator{}.Batch(txs)
+}
+
+func (service *ValidatorService) QueryValidatorByConAddr(address string) document.Validator {
+
+	validator, err := document.Validator{}.QueryValidatorByConsensusAddr(address)
+
+	if err != nil {
+		logger.Error("not found validator by conAddr", logger.String("conAddr", address))
+	}
+	return validator
 }
 
 func buildValidators() []document.Validator {
@@ -472,4 +465,24 @@ func isDiffValidator(src, dst document.Validator) bool {
 		return true
 	}
 	return false
+}
+
+func getVotingPowerFromToken(token string) int64 {
+	tokenPrecision := types.NewIntWithDecimal(1, 18)
+	power, err := types.NewDecFromStr(token)
+	if err != nil {
+		logger.Error("invalid token", logger.String("token", token))
+		return 0
+	}
+	return power.QuoInt(tokenPrecision).RoundInt64()
+}
+
+func getTotalVotingPower() int64 {
+	var total = int64(0)
+	var set = lcd.LatestValidatorSet()
+	for _, v := range set.Validators {
+		votingPower := utils.ParseIntWithDefault(v.VotingPower, 0)
+		total += votingPower
+	}
+	return total
 }

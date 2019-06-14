@@ -376,11 +376,6 @@ func (_ ProposalService) GetValidatorPublicKeyMonikerFromProposalVoter(addrArrAs
 		}
 	}
 
-	// var validatorsDoc []document.Validator
-	// var selector = bson.M{"description.moniker": 1, "operator_address": 1, "consensus_pubkey": 1}
-	//
-	// validatorsDoc, err := queryAll(document.CollectionNmValidator, selector, bson.M{"operator_address": bson.M{"$in": addrArrAsVa}}, "", 0, &validatorsDoc)
-
 	validatorsDoc, err := document.Validator{}.QueryValidatorMonikerOpAddrConsensusPubkey(addrArrAsVa)
 
 	if err != nil {

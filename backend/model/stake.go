@@ -34,16 +34,15 @@ type ValProfile struct {
 }
 
 type Validator struct {
-	Address        string      `json:"address"` // operator
-	Owner          string      `json:"owner"`   // owner, identity key
-	PubKey         string      `json:"pub_key"`
-	Jailed         bool        `json:"jailed"`                // has the validator been revoked from bonded status
-	VotingPower    int64       `json:"voting_power"`          // Voting power if pubKey is a considered a validator
-	Description    Description `json:"description,omitempty"` // Description terms for the candidate
-	BondHeight     int64       `json:"bond_height"`
-	Status         string      `json:"status"`
-	OriginalTokens string      `json:"original_tokens"`
-	Rate           string      `json:"rate"`
+	Address     string      `json:"address"` // operator
+	Owner       string      `json:"owner"`   // owner, identity key
+	PubKey      string      `json:"pub_key"`
+	Jailed      bool        `json:"jailed"`                // has the validator been revoked from bonded status
+	VotingPower int64       `json:"voting_power"`          // Voting power if pubKey is a considered a validator
+	Description Description `json:"description,omitempty"` // Description terms for the candidate
+	BondHeight  int64       `json:"bond_height"`
+	Status      string      `json:"status"`
+	Rate        string      `json:"rate"`
 	ValStatus
 }
 
@@ -58,9 +57,8 @@ func (v Validator) String() string {
 		Description    :%v
 		BondHeight     :%v
 		Status         :%v
-		OriginalTokens :%v
 		Rate           :%v
-		`, v.Address, v.Owner, v.PubKey, v.Jailed, v.VotingPower, v.Description, v.BondHeight, v.Status, v.OriginalTokens, v.Rate)
+		`, v.Address, v.Owner, v.PubKey, v.Jailed, v.VotingPower, v.Description, v.BondHeight, v.Status, v.Rate)
 }
 
 type Description struct {
