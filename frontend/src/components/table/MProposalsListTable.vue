@@ -30,22 +30,30 @@
           <div v-if="row.finalVotes">
             <div class="votes_per" :style="{backgroundColor: '#45B4FF', width: `${row.finalVotes.yes}%`}">
               <div class="tooltip_span">
-                Yes: {{formatNum(row.finalVotes.yes)}} %
+                <div>
+                  Yes: {{formatNum(row.finalVotes.yes)}} %
+                </div>
               </div>
             </div>
             <div class="votes_per" :style="{backgroundColor: '#CCDCFF', width: `${row.finalVotes.abstain}%`}">
               <div class="tooltip_span">
-                Abstain: {{formatNum(row.finalVotes.abstain)}} %
+                <div>
+                  Abstain: {{formatNum(row.finalVotes.abstain)}} %
+                </div>
               </div>
             </div>
             <div class="votes_per" :style="{backgroundColor: '#FFCF65', width: `${row.finalVotes.no}%`}">
               <div class="tooltip_span">
-                No: {{formatNum(row.finalVotes.no)}} %
+                <div>
+                  No: {{formatNum(row.finalVotes.no)}} %
+                </div>
               </div>
             </div>
             <div class="votes_per" :style="{backgroundColor: '#FE8A8A', width: `${row.finalVotes.no_with_veto}%`}">
               <div class="tooltip_span">
-                NoWithVeto: {{formatNum(row.finalVotes.no_with_veto)}} %
+                <div>
+                  NoWithVeto: {{formatNum(row.finalVotes.no_with_veto)}} %
+                </div>
               </div>
             </div>
           </div>
@@ -143,7 +151,6 @@ export default {
   }
   .status_icon {
     width: 14px;
-    height: 14px;
     margin: 8px 0;
     vertical-align: middle;
     margin-right: 10px;
@@ -170,7 +177,6 @@ export default {
           left: 50%;
           transform: translateX(-50%);
           margin-top: -10px auto 0;
-          padding: 5px 15px;
           color: #ffffff;
           background-color: #000000;
           line-height: 35px;
@@ -178,6 +184,9 @@ export default {
           word-wrap: break-word;
           white-space: nowrap;
           line-height: 1.7;
+          div {
+            padding: 5px 15px;
+          }
           &::after {
             width: 0;
             height: 0;
@@ -188,7 +197,6 @@ export default {
             border-top-color: #000000;
             left: 50%;
             margin-left: -4px;
-            bottom: -8px;
           }
         }
       }

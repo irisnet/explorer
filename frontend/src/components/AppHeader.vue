@@ -547,6 +547,10 @@
     z-index: 10001;
     background: rgba(255,255,255,1);
   }
+  .mobile_header_var {
+    position: relative;
+    z-index: 2;
+  }
   .person_computer_header_var, .mobile_header_var {
     @include flex();
     @include pcContainer;

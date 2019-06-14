@@ -257,7 +257,7 @@
         .pc_cards_layout {
           display: flex;
           flex-wrap: wrap;
-          min-width: 12.8rem;
+          min-width: 1280px;
           & > p {
             margin-bottom: 0.2rem!important;
             margin-right: 0.2rem;
