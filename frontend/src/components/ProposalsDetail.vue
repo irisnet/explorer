@@ -296,9 +296,11 @@
             let currentServerTime = new Date().getTime() + that.diffMilliseconds;
             that.depositorItems = data.items.map(item =>{
               let votingListItemTime = (new Date(item.timestamp).getTime()) > 0 ? Tools.format2UTC(item.timestamp) : '--';
+              let amount = item.amount[0] && item.amount[0].amount;
+              let denom = (item.amount[0] && item.amount[0].denom) || '';
               return {
                 Depositor: item.from,
-                Amount: item.amount[0].amount,
+                Amount: amount !== undefined ? `${Tools.formatFeeToFixedNumber(amount)} ${Tools.formatDenom(denom).toUpperCase()}` : '--',
                 Type: item.type,
                 Tx_Hash: item.hash,
                 Time: votingListItemTime
@@ -409,7 +411,6 @@
 
 <style scoped lang="scss">
   @import '../style/mixin.scss';
-
 .proposals_detail_wrap {
   @include flex;
   @include pcContainer;
@@ -513,7 +514,6 @@
           align-items: center;
         }
       }
-
       .proposals_detail_title {
         height: 0.61rem;
         line-height: 0.61rem;
@@ -530,7 +530,6 @@
         color: #a2a2ae;
       }
     }
-
   .mobile_transactions_detail_wrap {
     width: 100%;
     @include flex;
