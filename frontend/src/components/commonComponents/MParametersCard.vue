@@ -61,21 +61,21 @@ export default {
 .General {
   .content {
     .progress {
-      background-color: #E7F5FF!important;
+      background-color: #C8E8FF!important;
     }
   }
 }
 .Staking {
   .content {
     .progress {
-      background-color: #E8EFFF!important;
+      background-color: #CEDDFF!important;
     }
   }
 }
 .Slashing {
   .content {
     .progress {
-      background-color: #FFF1DB!important;
+      background-color: #FFE6BE!important;
     }
   }
 }
@@ -171,7 +171,7 @@ export default {
     .progress {
       width: 2.2rem;
       height: 0.2rem;
-      background-color: #F0F7FD;
+      background-color: #CEDDFF;
       border-radius: 0.16rem;
       position: relative;
       overflow: visible;
