@@ -8,7 +8,7 @@
             <router-link :to="`/ProposalsDetail/${data.proposal_id}`"
                         class="link_style">{{data.title}}</router-link>
           </span>
-          <div v-if="titleValueTipShow" class="tooltip_span">{{data.title}}</div>
+          <div v-if="titleValueTipShow" class="tooltip_span"><div>{{data.title}}</div></div>
         </div>
       </div>
       <div :class="['content', $store.state.isMobile ? 'mobile_content' : '']">
@@ -328,7 +328,7 @@ export default {
     bottom: calc(100% + 4px);
     left: 50%;
     transform: translateX(-50%);
-    padding: 5px 15px;
+    padding: 0px 15px;
     color: #ffffff;
     background-color: #000000;
     line-height: 35px;
@@ -336,6 +336,9 @@ export default {
     word-wrap: break-word;
     white-space: normal;
     line-height: 1.7;
+    div {
+      padding: 5px 0px;
+    }
     &::after {
       width: 0;
       height: 0;
@@ -346,7 +349,6 @@ export default {
       border-top-color: #000000;
       left: 50%;
       margin-left: -4px;
-      bottom: -8px;
     }
   }
 </style>

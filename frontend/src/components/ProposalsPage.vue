@@ -199,20 +199,19 @@
         }
       },
       formatGrahpChildren(arr, color) {
-        let colorArr = color.split(',');
-        let saturation = Number(colorArr[1].replace('%', ''));
-        let lightness = Number(colorArr[2].replace('%', ''));
-        let saturationStep = Math.floor((500 / arr.length)) / 100 || 0.1;
-        let lightnessStep = Math.floor((500 / arr.length)) / 30 || 0.1;
-        return arr.map(v => {
-          saturation = saturation - saturationStep;
-          lightness = lightness + lightnessStep;
+        let hStep = ((color.h[1] - color.h[0]) / 100);
+        let sStep = ((color.s[1] - color.s[0]) / 100);
+        let lStep = ((color.l[1] - color.l[0]) / 100);
+        return arr.map((v, i) => {
+          let h = color.h[0] + hStep * i;
+          let s = color.s[0] + sStep * i;
+          let l = color.l[0] + lStep * i;
           let obj =  {
             value: v.voting_power,
             info: v,
             nodeClick: false,
             itemStyle: {
-              color: `hsla(${colorArr[0]},${saturation}%,${lightness}%, 1)`,
+              color: `hsla(${h},${s}%,${l}%, 1)`,
               borderColor: '#ECEFFF',
               borderWidth: 0
             }
@@ -274,7 +273,7 @@
                     borderColor: '#ECEFFF',
                     borderWidth: 0
                   },
-                  children: this.formatGrahpChildren(yesArr, '204,100%,35%')
+                  children: this.formatGrahpChildren(yesArr, {h: [205, 204], s: [100, 100], l: [79, 35]})
                 },
                 {
                   name: 'Abstain',
@@ -284,7 +283,7 @@
                     borderColor: '#ECEFFF',
                     borderWidth: 0
                   },
-                  children: this.formatGrahpChildren(abstainArr, '221,44%,58%')
+                  children: this.formatGrahpChildren(abstainArr, {h: [222, 221], s: [100, 44], l: [86, 58]})
                 },
                 {
                   name: 'No',
@@ -294,7 +293,7 @@
                     borderColor: '#ECEFFF',
                     borderWidth: 0
                   },
-                  children: this.formatGrahpChildren(noArr, '36,100%,48%')
+                  children: this.formatGrahpChildren(noArr, {h: [36, 36], s: [100, 100], l: [77, 48]})
                 },
                 {
                   name: 'NoWithVeto',
@@ -304,7 +303,7 @@
                     borderColor: '#ECEFFF',
                     borderWidth: 0
                   },
-                  children: this.formatGrahpChildren(noWithVetoArr, '21,100%,50%')
+                  children: this.formatGrahpChildren(noWithVetoArr, {h: [21, 21], s: [100, 100], l: [79, 50]})
                 }
               ]
             },

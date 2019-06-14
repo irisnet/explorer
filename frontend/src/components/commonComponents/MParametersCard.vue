@@ -5,10 +5,10 @@
         {{data.key}}
       </span>
       <span :class="['desc', descTipShow ?'desc_hover' : '']" ref="desc" v-show="data.description">
-        <div class="desc_content" style="width: 100%;">
+        <span class="desc_content">
           <span class="desc_content_span">（{{data.description}}）</span>
-        </div>
-        <div v-if="descTipShow" class="tooltip_span">（{{data.description}}）</div>
+        </span>
+        <div v-if="descTipShow" class="tooltip_span"><div>（{{data.description}}）</div></div>
       </span>
     </div>
     <div class="content">
@@ -98,7 +98,7 @@ export default {
     .desc {
       font-size: 0.12rem;
       color: #A2A2AE;
-      display: block;
+      display: flex;
       width: 1px;
       flex: 1;
       position: relative;
@@ -106,6 +106,8 @@ export default {
         display: block;
       }
       .desc_content {
+        width: 1px;
+        flex: 1;
         line-height: 21px;
         white-space: nowrap;
         overflow: hidden;
@@ -121,7 +123,7 @@ export default {
         left: 50%;
         transform: translateX(-50%);
         margin-top: -10px auto 0;
-        padding: 5px 15px;
+        padding: 0px 15px;
         color: #ffffff;
         background-color: #000000;
         line-height: 35px;
@@ -129,6 +131,9 @@ export default {
         word-wrap: break-word;
         white-space: normal;
         line-height: 1.7;
+        div {
+          padding: 5px 0px;
+        }
         &::after {
           width: 0;
           height: 0;
@@ -139,7 +144,6 @@ export default {
           border-top-color: #000000;
           left: 50%;
           margin-left: -4px;
-          bottom: -8px;
         }
       }
     }
