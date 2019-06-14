@@ -123,16 +123,14 @@ export default {
         left: 50%;
         transform: translateX(-50%);
         margin-top: -10px auto 0;
-        padding: 0px 15px;
         color: #ffffff;
         background-color: #000000;
-        line-height: 35px;
         border-radius: 0.04rem;
         word-wrap: break-word;
         white-space: normal;
         line-height: 1.7;
         div {
-          padding: 5px 0px;
+          padding: 5px 15px;
         }
         &::after {
           width: 0;

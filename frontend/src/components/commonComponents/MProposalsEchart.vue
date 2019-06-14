@@ -1,8 +1,8 @@
 <template>
-  <div class="propsals_echart_container">
+  <div :class="['propsals_echart_container', $store.state.isMobile ? 'mobile_propsals_echart_container' : '']">
     <div class="text">
       <div class="top">
-        <span class="title">#{{data.proposal_id}}:</span>
+        <span class="title">#{{data.proposal_id}}</span>
         <div class="title_value_content">
           <span class="value title_value" ref="titleValue">
             <router-link :to="`/ProposalsDetail/${data.proposal_id}`"
@@ -11,31 +11,44 @@
           <div v-if="titleValueTipShow" class="tooltip_span"><div>{{data.title}}</div></div>
         </div>
       </div>
-      <div :class="['content', $store.state.isMobile ? 'mobile_content' : '']">
+      <div class="content">
         <div class="content_div">
-          <div class="level_div">
-            <span v-if="data.level === 'Important'">
-              <img src="../../assets/important.png" />
-              <span>Important</span>
-            </span>
-            <span v-if="data.level === 'Normal'">
-              <img src="../../assets/normal.png" />
-              <span>Normal</span>
-            </span>
-            <span v-if="data.level === 'Critical'">
-              <img src="../../assets/critical.png" />
-              <span>Critical</span>
-            </span>
+          <div>
+            <img v-if="data.level === 'Important'" src="../../assets/important.png" />
+            <img v-if="data.level === 'Normal'" src="../../assets/normal.png" />
+            <img v-if="data.level === 'Critical'" src="../../assets/critical.png" />
+            <span>{{data.type}}</span>
           </div>
-          <div style="margin-top: 16px;">
-            <img v-if="data.participation > data.participation_num" src="../../assets/pass.png"/>
-            <img v-if="data.participation <= data.participation_num" src="../../assets/no_pass.png"/>
-            <span>Participation > {{data.participation_num}} %</span>
+          <div style="margin-top: 12px;">
+            <img src="../../assets/voting_period.png" />
+            <span>VotingPeriod</span>
           </div>
-          <div style="margin-top: 16px;">
-            <img v-if="data.threshold > data.threshold_num" src="../../assets/pass.png"/>
-            <img v-if="data.threshold <= data.threshold_num" src="../../assets/no_pass.png"/>
-            <span>Pass Threshold > {{data.threshold_num}} %</span>
+          <div class="per_div">
+            <div class="per_title">GovTallyingProcedure</div>
+            <div style="margin-top: 16px;">
+              <p>
+                <img v-if="data.participation >= data.participationNum" src="../../assets/participant.png"/>
+                <img v-if="data.participation < data.participationNum" src="../../assets/no_threshold.png"/>
+                <span>Participation</span>
+              </p>
+              <span style="margin-left: 20px;">{{data.participationNum}} %</span>
+            </div>
+            <div style="margin-top: 16px;">
+              <p>
+                <img v-if="data.passThreshold >= data.passThresholdNum" src="../../assets/pass_threshold.png"/>
+                <img v-if="data.passThreshold < data.passThresholdNum" src="../../assets/no_threshold.png"/>
+                <span>Pass Threshold</span>
+              </p>
+              <span style="margin-left: 20px;">{{data.passThresholdNum}} %</span>
+            </div>
+            <div style="margin-top: 16px;">
+              <p>
+                <img v-if="data.vetoThreshold >= data.vetoThresholdNum" src="../../assets/veto_threshold.png"/>
+                <img v-if="data.vetoThreshold < data.vetoThresholdNum" src="../../assets/no_threshold.png"/>
+                <span>Veto Threshold</span>
+              </p>
+              <span style="margin-left: 20px;">{{data.vetoThresholdNum}} %</span>
+            </div>
           </div>
         </div>
         <div class="propsals_echart_content">
@@ -219,7 +232,7 @@ export default {
 <style lang="scss" scoped>
   .propsals_echart_container {
     width: 6.3rem;
-    height: 4.6rem;
+    height: 4.2rem;
     border-radius: 1px;
     border: 1px solid #D7D9E0;
     display: flex;
@@ -231,8 +244,8 @@ export default {
       display: flex;
       flex-direction: column;
       .top {
-        padding: 0.3rem;
-        font-size: 12px;
+        padding: 0.3rem 0.3rem 0.22rem;
+        font-size: 18px;
         white-space: nowrap;
         display: flex;
         .title {
@@ -262,12 +275,6 @@ export default {
           }
         }
       }
-      .mobile_content {
-        flex-direction: column;
-        .propsals_echart_content {
-          align-items: center;
-        }
-      }
       .content {
         width: 100%;
         margin: auto;
@@ -277,26 +284,25 @@ export default {
         div.content_div {
           margin-left: 0.3rem;
           display: inline-block;
+          div.per_title {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #A2A2AE;
+          }
           & > div {
             font-size: 12px;
             color: #22252A;
             vertical-align: middle;
             img {
               width: 0.14rem;
-              height: 0.14rem;
+              vertical-align: middle;
             }
             span {
               vertical-align: middle;
-            }
-            span:nth-child(2) {
               margin-left: 8px;
             }
-          }
-          div.level_div {
-            span {
-              span {
-                margin-left: 8px;
-              }
+            p {
+              margin-bottom: 6px !important;
             }
           }
         }
@@ -311,7 +317,6 @@ export default {
         max-width: 3.2rem;
         height: calc(100% - 20px);
         max-height: 3.2rem;
-        align-self: center;
         .propsals_echart_center {
           width: 0.8rem;
           height: 0.8rem;
@@ -328,16 +333,15 @@ export default {
     bottom: calc(100% + 4px);
     left: 50%;
     transform: translateX(-50%);
-    padding: 0px 15px;
     color: #ffffff;
     background-color: #000000;
-    line-height: 35px;
     border-radius: 0.04rem;
     word-wrap: break-word;
     white-space: normal;
     line-height: 1.7;
+    font-size: 12px;
     div {
-      padding: 5px 0px;
+      padding: 5px 15px;
     }
     &::after {
       width: 0;
@@ -349,6 +353,45 @@ export default {
       border-top-color: #000000;
       left: 50%;
       margin-left: -4px;
+    }
+  }
+  .mobile_propsals_echart_container {
+    .text {
+      .top {
+        padding: 0.15rem;
+      }
+    }
+    .content {
+      flex-direction: column;
+      div.content_div {
+        margin-left: 0.15rem!important;
+        margin-right: 0.15rem!important;
+        & > div:nth-child(1) {
+          display: inline;
+        }
+        & > div:nth-child(2) {
+          display: inline;
+          margin-top: 0!important;
+          margin-left: 0.38rem;
+        }
+        .per_div {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          .per_title {
+            width: 100%;
+            flex: 1 0 100%;
+            margin-top: 0.15rem!important;
+          }
+        }
+      }
+      .propsals_echart_content {
+        align-items: center;
+        .propsals_echart {
+          height: 100%;
+          width: 100%;
+        }
+      }
     }
   }
 </style>
