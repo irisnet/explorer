@@ -10,7 +10,7 @@
               </div>
               <span class="item_name">{{lang.home.blockHeight}}</span>
             </div>
-            <p class="current_block">{{currentBlockHeight}}</p>
+            <p class="current_block proposer_content"><router-link :to="`/block/${currentBlockHeight}`">{{currentBlockHeight}}</router-link></p>
             <p class="block_time proposer_container">
               <span class="proposer_content"><router-link :to="`/address/1/${proposerAddress}`">{{moniker}}</router-link></span>
             </p>
@@ -53,7 +53,7 @@
               <span class="item_name">{{lang.home.bondedTokens}}</span>
             </div>
             <p class="current_block">{{bondedRatio}}</p>
-            <p class="block_time">{{bondedTokens}}</p>
+            <p class="block_time">{{bondedValue}}</p>
           </li>
         </ul>
       </div>
@@ -102,7 +102,7 @@ import Constant from "../constant/Constant";
                   votingPowerValue: '--',
                   blockHeightValue: '--',
                   timestampValue: '--',
-                  bondedTokens: '--',
+                  bondedValue:'--',
                   bondedRatio:'--',
                   blockTime : '--',
                   information: {},
@@ -354,7 +354,7 @@ import Constant from "../constant/Constant";
           this.transactionValue = this.formatTransactions(res.total_txs);
           this.averageBlockTime = `${Number(res.avg_block_time).toFixed(2)} s`;
           this.votingPowerValue = `${Number(res.voting_ratio * 100).toFixed(2)} %`;
-          this.bondedTokens = this.formatBondedTokens(res.bonded_tokens);
+          this.bondedValue = this.formatBondedTokens(res.bonded_tokens,res.total_supply);
           this.validatorValue = `${res.vote_val_num} / ${res.active_val_num} Validators`;
           this.bondedRatio = `${(res.bonded_ratio * 100).toFixed(2)} %`;
           this.blockTime = Tools.format2UTC(res.block_time);
@@ -373,12 +373,16 @@ import Constant from "../constant/Constant";
         }
         return num
       },
-      formatBondedTokens(bondedTokens){
-        let tokens,million = 1000000;
-        if(bondedTokens > million){
-          tokens = `${(Number(bondedTokens) / million).toFixed(2)} M`
-        } else {
-          tokens = `${Number(bondedTokens).toFixed(2)}`;
+      formatBondedTokens(bondedTokens,totalTokens){
+        let tokens,thousand = 1000,million = 1000000,billion = 1000000000;
+        if(bondedTokens >= billion && totalTokens >= billion){
+          tokens = `${(Number(bondedTokens) / billion).toFixed(2)}B / ${(Number(totalTokens) / billion).toFixed(2)}B`
+        }else if(bondedTokens >= million && totalTokens >= million){
+          tokens = `${(Number(bondedTokens) / million).toFixed(2)}M / ${(Number(totalTokens) / million).toFixed(2)}M`
+        } else if(bondedTokens >= thousand && totalTokens >= thousand) {
+          tokens = `${(Number(bondedTokens) / thousand).toFixed(2)}k / ${(Number(totalTokens) / thousand).toFixed(2)}k`
+        }else {
+          tokens = `${Number(bondedTokens).toFixed(2)} / ${Number(totalTokens).toFixed(2)}`;
         }
         return tokens
       },
