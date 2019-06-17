@@ -294,9 +294,11 @@
             let currentServerTime = new Date().getTime() + that.diffMilliseconds;
             that.depositorItems = data.items.map(item =>{
               let votingListItemTime = (new Date(item.timestamp).getTime()) > 0 ? Tools.format2UTC(item.timestamp) : '--';
+              let amount = item.amount[0] && item.amount[0].amount;
+              let denom = (item.amount[0] && item.amount[0].denom) || '';
               return {
                 Depositor: item.from,
-                Amount: item.amount[0].amount,
+                Amount: amount !== undefined ? `${Tools.formatFeeToFixedNumber(amount)} ${Tools.formatDenom(denom).toUpperCase()}` : '--',
                 Type: item.type,
                 Tx_Hash: item.hash,
                 Time: votingListItemTime

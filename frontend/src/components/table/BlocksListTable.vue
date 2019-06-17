@@ -37,7 +37,7 @@
     <b-table :fields='fields' :items='items' striped v-if="type === 'ProposalsDetail'" nodelabel  class="proposal_detail_list">
       <template slot='Amount' slot-scope='data'>
         <div class="skip_route_gray" style="width: 200px;">
-          {{formatAmount(data.item['Amount'])}} IRIS
+          {{data.item['Amount']}}
         </div>
       </template>
       <template slot='Voter' slot-scope='data'>

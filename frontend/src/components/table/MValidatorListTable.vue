@@ -55,7 +55,6 @@ export default {
         {
           title: 'Moniker',
           slot: 'moniker',
-          width: 190,
           sortable: true
         },
         {
@@ -117,7 +116,6 @@ export default {
         {
           title: 'Moniker',
           slot: 'moniker',
-          width: 190,
           sortable: true
         },
         {
@@ -165,7 +163,6 @@ export default {
         {
           title: 'Moniker',
           slot: 'moniker',
-          width: 190,
           sortable: true
         },
         {
