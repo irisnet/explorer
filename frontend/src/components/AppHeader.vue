@@ -238,9 +238,6 @@
         absoluteTop:'',
         lang: lang,
         chainId: '',
-        mainnetHref:'',
-        testnetHref:'',
-        nyanCatsHref:'',
         upImg: require("../assets/caret-bottom.png"),
         downImg: require("../assets/caret-bottom.png"),
         netWorkArray: [],
@@ -503,9 +500,6 @@
       },
       handleConfigs(configs){
          this.netWorkArray = configs.map(item => {
-          if(item.env_nm === constant.ENVCONFIG.MAINNET && item.chain_id === constant.CHAINID.MAINNET){
-              item.chain_id = '';
-          }
           item.netWorkSelectOption = `${item.chain_id.toLocaleUpperCase()} ${Tools.firstWordUpperCase(item.env_nm)}`
           return item
         });
@@ -526,12 +520,8 @@
           this.flShowChainId = true;
         }
       },
-      setCurrentSelectOption(currentEnv,currentChainId,configs){
-        if(currentEnv === constant.ENVCONFIG.MAINNET && currentChainId === constant.CHAINID.MAINNET){
-          this.currentSelected = lang.home.mainnet;
-        }else if(currentEnv !== constant.ENVCONFIG.DEV && currentEnv !== constant.ENVCONFIG.QA && currentEnv !== constant.ENVCONFIG.STAGE){
-          this.currentSelected = `${currentChainId.toLocaleUpperCase()} ${Tools.firstWordUpperCase(currentEnv)}`;
-        }else if(currentEnv === constant.ENVCONFIG.DEV || currentEnv === constant.ENVCONFIG.QA || currentEnv === constant.ENVCONFIG.STAGE){
+      setCurrentSelectOption(currentEnv,currentChainId){
+        if(currentEnv === constant.ENVCONFIG.DEV || currentEnv === constant.ENVCONFIG.QA || currentEnv === constant.ENVCONFIG.STAGE){
           this.currentSelected = lang.home.mainnet;
         }else {
           this.currentSelected = `${currentChainId.toLocaleUpperCase()} ${Tools.firstWordUpperCase(currentEnv)}`;
@@ -556,6 +546,10 @@
     position: fixed;
     z-index: 10001;
     background: rgba(255,255,255,1);
+  }
+  .mobile_header_var {
+    position: relative;
+    z-index: 2;
   }
   .person_computer_header_var, .mobile_header_var {
     @include flex();

@@ -76,7 +76,8 @@ type (
 
 	GovParam struct {
 		Participation string `json:"participation,omitempty"`
-		Threshold     string `json:"threshold,omitempty"`
+		PassThreshold string `json:"pass_threshold,omitempty"`
+		VetoThreshold string `json:"veto_threshold,omitempty"`
 		MinDeposit    Coin   `json:"min_deposit,omitempty"`
 	}
 

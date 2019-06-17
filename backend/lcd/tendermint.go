@@ -15,14 +15,17 @@ var (
 	CriticalThreshold     string
 	CriticalMinDeposit    document.Coin
 	CriticalParticipation string
+	CriticalVeto          string
 
 	ImportantThreshold     string
 	ImportantMinDeposit    document.Coin
 	ImportantParticipation string
+	ImportantVeto          string
 
 	NormalThreshold     string
 	NormalMinDeposit    document.Coin
 	NormalParticipation string
+	NormalVeto          string
 )
 
 const (
@@ -32,14 +35,17 @@ const (
 	CriticalThresholdKey     = "critical_threshold"
 	CriticalMinDepositKey    = "critical_min_deposit"
 	CriticalParticipationKey = "critical_participation"
+	CriticalVetoKey          = "critical_veto"
 
 	ImportantThresholdKey     = "important_threshold"
 	ImportantParticipationKey = "important_participation"
 	ImportantMinDepositKey    = "important_min_deposit"
+	ImportantVetoKey          = "important_veto"
 
 	NormalMinDepositKey    = "normal_min_deposit"
 	NormalThresholdKey     = "normal_threshold"
 	NormalParticipationKey = "normal_participation"
+	NormalVetoKey          = "normal_veto"
 
 	Critical  = "Critical"
 	Important = "Important"
@@ -83,19 +89,19 @@ func GetMinDepositByProposalType(proposalType string) (document.Coin, error) {
 
 }
 
-func GetThresholdAndParticipationMinDeposit(proposalType string) (string, string, error) {
+func GetPassVetoThresholdAndParticipationMinDeposit(proposalType string) (string, string, string, error) {
 
 	switch proposalType {
 	case ProposalTypeSoftwareUpgrade, ProposalTypeSystemHalt:
-		return CriticalThreshold, CriticalParticipation, nil
+		return CriticalThreshold, CriticalVeto, CriticalParticipation, nil
 
 	case ProposalTypeParameterChange:
-		return ImportantThreshold, ImportantParticipation, nil
+		return ImportantThreshold, ImportantVeto, ImportantParticipation, nil
 	case ProposalTypeTxTaxUsage:
-		return NormalThreshold, NormalParticipation, nil
+		return NormalThreshold, NormalVeto, NormalParticipation, nil
 
 	default:
-		return "", "", errors.New(fmt.Sprintf("expect proposal type: %v %v %v %v ,but actual: %v",
+		return "", "", "", errors.New(fmt.Sprintf("expect proposal type: %v %v %v %v ,but actual: %v",
 			ProposalTypeSoftwareUpgrade, ProposalTypeSystemHalt, ProposalTypeParameterChange, ProposalTypeTxTaxUsage, proposalType))
 	}
 }
@@ -106,6 +112,18 @@ func init() {
 	if err != nil {
 		logger.Error(err.Error())
 		return
+	}
+
+	if v, ok := govParamMap[CriticalVetoKey].(string); ok {
+		CriticalVeto = v
+	}
+
+	if v, ok := govParamMap[ImportantVetoKey].(string); ok {
+		ImportantVeto = v
+	}
+
+	if v, ok := govParamMap[NormalVetoKey].(string); ok {
+		NormalVeto = v
 	}
 
 	if v, ok := govParamMap[CriticalThresholdKey].(string); ok {

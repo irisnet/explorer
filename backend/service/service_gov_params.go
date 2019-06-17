@@ -6,7 +6,6 @@ import (
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
-	"github.com/irisnet/explorer/backend/types"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/txn"
 )
@@ -23,8 +22,9 @@ func (service *GovParamsService) QueryAll() []document.GovParams {
 	params, err := document.GovParams{}.QueryAll()
 
 	if err != nil {
-		panic(types.CodeNotFound)
+		logger.Error("query error", logger.String("err", err.Error()))
 	}
+
 	return params
 }
 
@@ -211,7 +211,12 @@ func (gov GovParamsService) GetDbInitGovModuleParamList(genesisMap, currentMap m
 func init() {
 	var initParams = func() {
 		var ops []txn.Op
-		genGovModuleMap, _ := lcd.GetGenesisGovModuleParamMap()
+		genGovModuleMap, err := lcd.GetGenesisGovModuleParamMap()
+
+		if err != nil {
+			panic(fmt.Sprintf("get module genesis param err: %v \n", err.Error()))
+		}
+
 		currentParamMap, _ := lcd.GetAllGovModuleParam()
 		govParamList, _ := GovParamsService{}.GetDbInitGovModuleParamList(genGovModuleMap, currentParamMap)
 
@@ -223,7 +228,7 @@ func init() {
 			})
 		}
 
-		err := document.GovParams{}.Batch(ops)
+		err = document.GovParams{}.Batch(ops)
 
 		if err != nil {
 			logger.Error("init gov_params data error", logger.String("err", err.Error()))

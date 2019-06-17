@@ -1,18 +1,25 @@
 <template>
-  <div class="propsals_card_container">
+  <div :class="['propsals_card_container', $store.state.isMobile ? 'mobile_propsals_card_container' : '']">
     <div class="top">
-      <span class="title">ID:</span>
-      <span class="value">
-        <router-link :to="`/ProposalsDetail/${data.proposal_id}`"
-                      class="link_style">{{data.proposal_id}}</router-link>
-      </span>
-      <span class="title" style="margin-left: 40px;">Title:</span>
+      <span class="title">#{{data.proposal_id}}</span>
       <div class="title_value_content">
         <span class="value title_value" ref="titleValue">
           <router-link :to="`/ProposalsDetail/${data.proposal_id}`"
                       class="link_style">{{data.title}}</router-link>
         </span>
-        <div v-if="titleValueTipShow" class="tooltip_span">{{data.title}}</div>
+        <div v-if="titleValueTipShow" class="tooltip_span"><div>{{data.title}}</div></div>
+      </div>
+    </div>
+    <div class="text_content">
+      <div>
+        <img v-if="data.level === 'Important'" src="../../assets/important.png" />
+        <img v-if="data.level === 'Normal'" src="../../assets/normal.png" />
+        <img v-if="data.level === 'Critical'" src="../../assets/critical.png" />
+        <span>{{data.type}}</span>
+      </div>
+      <div>
+        <img src="../../assets/deposit_period.png" />
+        <span>DepositPeriod</span>
       </div>
     </div>
     <div class="content">
@@ -20,14 +27,12 @@
       <div class="progress">
         <div class="current" :style="{width: `${data.total_deposit_number_per}`}">
           <div class="current_value">
-            <span class="current_value_span">{{data.total_deposit_format}}</span>
-            <span>CurrentDeposit</span>
+            <span>CurrentDeposit {{data.total_deposit_format}}</span>
           </div>
         </div>
         <div class="intital" :style="{left: `${data.intial_deposit_number_per}`}">
           <div class="intital_value">
-            <span>IntitalDeposit</span>
-            <span class="intital_value_span">{{data.intial_deposit_format}}</span>
+            <span>IntitalDeposit {{data.intial_deposit_format}}</span>
           </div>
         </div>
       </div>
@@ -70,10 +75,13 @@ export default {
     border-radius: 1px;
     border: 1px solid #D7D9E0;
     position: relative;
+    display: flex;
+    flex-direction: column;
     .top {
-      padding: 0.3rem;
+      padding: 0.3rem 0.3rem 0.22rem;
       font-size: 12px;
       display: flex;
+      font-size: 18px;
       position: relative;
       z-index: 1;
       .title {
@@ -102,12 +110,28 @@ export default {
         }
       }
     }
+    .text_content {
+      padding: 0 0.3rem;
+      font-size: 12px;
+      display: flex;
+      div {
+        img {
+          width: 0.14rem;
+          vertical-align: middle;
+        }
+        span {
+          vertical-align: middle;
+          margin-left: 8px;
+        }
+      }
+      & > div:nth-child(2) {
+        margin-left: 0.38rem;
+      }
+    }
     .content {
       width: 100%;
-      height: 100%;
-      position: absolute;
       display: flex;
-      top: 0;
+      flex: 1;
       align-items: center;
       span.start {
         text-align: right;
@@ -117,10 +141,11 @@ export default {
       span.end {
         margin-left: 16px;
         margin-right: 30px;
+        color: #A2A2AE;
         span.end_value {
           display: block;
           font-size: 12px;
-          color: #A2A2AE;
+          color: #22252A;
         }
       }
       .progress {
@@ -146,27 +171,24 @@ export default {
               border: 4.5px solid transparent;
               border-top-color: #FF9942;
               margin-left: 100%;
+              margin-top: -2px;
               transform: translateX(-50%) translateY(-50%);
             }
             span {
               position: absolute;
               top: -100%;
               left: 100%;
-              margin-top: -15px;
+              margin-top: -20px;
               font-size: 12px;
               transform: translateX(-50%);
               color: #FF9942;
-            }
-            span.current_value_span {
-              margin-top: -32px;
             }
           }
         }
         .intital {
           position: absolute;
-          width: 2px;
+          width: 0px;
           height: 100%;
-          background: #D7D9E0;
           overflow: visible;
           .intital_value {
             text-align: center;
@@ -174,10 +196,14 @@ export default {
             top: 100%;
             font-size: 12px;
             transform: translateX(-50%);
-            color: #22252A;
+            color: #3698DB;
             .intital_value_span {
               display: block;
               color: #A2A2AE;
+            }
+            span {
+              display: inline-block;
+              padding-top: 2px;
             }
             &::before {
               display: block;
@@ -187,6 +213,7 @@ export default {
               border: 4.5px solid transparent;
               border-bottom-color: #3598DB;
               margin: auto;
+              margin-top: 2px;
               transform: translateX(1px) translateY(-50%);
             }
           }
@@ -203,14 +230,15 @@ export default {
     bottom: calc(100% + 4px);
     left: 50%;
     transform: translateX(-50%);
-    padding: 5px 15px;
     color: #ffffff;
     background-color: #000000;
-    line-height: 35px;
     border-radius: 0.04rem;
     word-wrap: break-word;
     white-space: normal;
     line-height: 1.7;
+    div {
+      padding: 5px 15px;
+    }
     &::after {
       width: 0;
       height: 0;
@@ -221,7 +249,14 @@ export default {
       border-top-color: #000000;
       left: 50%;
       margin-left: -4px;
-      bottom: -8px;
+    }
+  }
+  .mobile_propsals_card_container {
+    .top {
+      padding: 0.15rem;
+    }
+    .text_content {
+      padding: 0 0.15rem;
     }
   }
 </style>

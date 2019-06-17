@@ -17,7 +17,7 @@
           <tr>
             <th :class="[v.className, v.sortable ? 'sorting' : '']"
                 @click="sortDataByClick(v)"
-                v-for="(v, i) in columns" :width="v.width || colWidth[i]"
+                v-for="(v, i) in columns"
                 :key="i">{{v.title}}
               <i class="sort"
                  :class="{'desc': (v.key === sortAsBy || v.slot === sortAsBy) && sortAsDesc, 
@@ -50,7 +50,7 @@
                 <div :class="{'tooltip_span_container': it.tooltip}">
                   {{v[it.key]}}
                   <span class="tooltip_span"
-                        v-if="it.tooltip">{{v[it.key || it.slot]}}</span>
+                        v-if="it.tooltip">{{it.tooltip === true ? (v[it.key || it.slot]) : it.tooltip}}</span>
                 </div>
               </template>
               <template v-else>
@@ -59,7 +59,7 @@
                         :row="v">
                   </slot>
                   <span class="tooltip_span"
-                        v-if="it.tooltip">{{v[it.key || it.slot]}}</span>
+                        v-if="it.tooltip">{{it.tooltip === true ? (v[it.key || it.slot]) : it.tooltip}}</span>
                 </div>
               </template>
             </td>

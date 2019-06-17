@@ -52,7 +52,19 @@ func (g GovParams) PkKvPair() map[string]interface{} {
 func (_ GovParams) QueryAll() ([]GovParams, error) {
 
 	var params []GovParams
-	err := queryAll(CollectionNmGovParams, nil, nil, desc(GovParamsFieldModule), 0, &params)
+
+	var query = orm.NewQuery()
+	defer query.Release()
+
+	query.SetCollection(CollectionNmGovParams).
+		SetCondition(nil).
+		SetSelector(nil).
+		SetSort(asc(GovParamsFieldModule), asc(GovParamsFieldKey)).
+		SetSize(0).
+		SetResult(&params)
+
+	err := query.Exec()
+
 	return params, err
 }
 

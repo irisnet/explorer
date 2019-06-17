@@ -5,7 +5,7 @@ export default {
     ageTime: 'Avg Block Time',
     votingPower: 'Voting Power',
     bondedTokens: 'Bonded Tokens',
-    mainnet: 'Mainnet',
+    mainnet: 'IRISHUB Mainnet',
     testnet: 'FUXI Testnet',
     catsNet: 'NYAN_CATS Testnet',
     latestBlocks:'Last 100 Blocks'

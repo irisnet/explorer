@@ -50,44 +50,44 @@ type RangeDescription struct {
 
 func GetAuthKeyWithRangeMap() map[string]RangeDescription {
 	result := map[string]RangeDescription{}
-	result[GovModuleAuthGasPriceThreshold] = RangeDescription{Range: "0,1000000000000000000", Description: "the minimum of gas price"}
-	result[GovModuleAuthTxSize] = RangeDescription{Range: "500,1500", Description: "transaction size limit"}
+	result[GovModuleAuthGasPriceThreshold] = RangeDescription{Range: "0,1000000000000000000", Description: "Minimum of gas price"}
+	result[GovModuleAuthTxSize] = RangeDescription{Range: "500,1500", Description: "Transaction size limit"}
 	return result
 }
 
 func GetStakeKeyWithRangeMap() map[string]RangeDescription {
 	result := map[string]RangeDescription{}
-	result[GovModuleStakeUnbondingTime] = RangeDescription{Range: "1209600000000000,", Description: "unbonding time"}
-	result[GovModuleStakeMaxValidators] = RangeDescription{Range: "100,200", Description: "the maximum number of validators"}
+	result[GovModuleStakeUnbondingTime] = RangeDescription{Range: "1209600000000000,", Description: "Wait time for undelegation"}
+	result[GovModuleStakeMaxValidators] = RangeDescription{Range: "100,200", Description: "Maximum number of validators allowed"}
 	return result
 }
 
 func GetDistrKeyWithRangeMap() map[string]RangeDescription {
 	result := map[string]RangeDescription{}
-	result[GovModuleDistrCommunityTax] = RangeDescription{Range: "0,0.2", Description: "community tax"}
-	result[GovModuleDistrBonusProposerReward] = RangeDescription{Range: "0,0.02", Description: "maximum additional ratio bonus ratio"}
-	result[GovModuleDistrBaseProposerReward] = RangeDescription{Range: "0,0.08", Description: "base ratio of the block reward"}
+	result[GovModuleDistrCommunityTax] = RangeDescription{Range: "0,0.2", Description: "Ratio of contributions to community funds"}
+	result[GovModuleDistrBonusProposerReward] = RangeDescription{Range: "0,0.08", Description: "Maximum additional bonus ratio"}
+	result[GovModuleDistrBaseProposerReward] = RangeDescription{Range: "0,0.02", Description: "Standard ratio of the block reward"}
 	return result
 }
 
 func GetMintKeyWithRangeMap() map[string]RangeDescription {
 	result := map[string]RangeDescription{}
-	result[GovModuleMintInflation] = RangeDescription{Range: "0,0.2", Description: "inflation rate"}
+	result[GovModuleMintInflation] = RangeDescription{Range: "0,0.2", Description: "Inflation rate"}
 	return result
 }
 
 func GetSlashingKeyWithRangeMap() map[string]RangeDescription {
 	result := map[string]RangeDescription{}
 
-	result[GovModuleSlashingSlashFractionCensorship] = RangeDescription{Range: "0,0.1", Description: "slash fraction censorship"}
-	result[GovModuleSlashingMaxEvidenceAge] = RangeDescription{Range: "34560,", Description: "max evidence age"}
-	result[GovModuleSlashingSignedBlocksWindow] = RangeDescription{Range: "100,140000", Description: "signed blocks window"}
-	result[GovModuleSlashingDoubleSignJailDuration] = RangeDescription{Range: "0,1209600000000000", Description: "double sign jail duration"}
-	result[GovModuleSlashingMinSignedPerWindow] = RangeDescription{Range: "0.5,0.9", Description: "min signed per window"}
-	result[GovModuleSlashingCensorshipJailDuration] = RangeDescription{Range: "0,1209600000000000", Description: "censorship jail duration"}
-	result[GovModuleSlashingSlashFractionDoubleSign] = RangeDescription{Range: "0,0.1", Description: "slash fraction double sign"}
-	result[GovModuleSlashingSlashFractionDowntime] = RangeDescription{Range: "0,0.1", Description: "slash fraction downtime"}
-	result[GovModuleSlashingDowntimJailDuration] = RangeDescription{Range: "0,604800000000000", Description: "downtime jial duration"}
+	result[GovModuleSlashingSlashFractionCensorship] = RangeDescription{Range: "0,0.1", Description: "Slash ratio of Censorship"}
+	result[GovModuleSlashingMaxEvidenceAge] = RangeDescription{Range: "34560,", Description: "Acceptable earliest time of the evidence"}
+	result[GovModuleSlashingSignedBlocksWindow] = RangeDescription{Range: "100,140000", Description: "Number of blocks for slash statistics window"}
+	result[GovModuleSlashingDoubleSignJailDuration] = RangeDescription{Range: "0,1209600000000000", Description: "Jail duration of DoubleSign"}
+	result[GovModuleSlashingMinSignedPerWindow] = RangeDescription{Range: "0.5,0.9", Description: "Minimum voting ratio in the slash window"}
+	result[GovModuleSlashingCensorshipJailDuration] = RangeDescription{Range: "0,1209600000000000", Description: "Jail duration of Censorship"}
+	result[GovModuleSlashingSlashFractionDoubleSign] = RangeDescription{Range: "0,0.1", Description: "Slash ratio of DoubleSign"}
+	result[GovModuleSlashingSlashFractionDowntime] = RangeDescription{Range: "0,0.1", Description: "Slash ratio of  Downtime"}
+	result[GovModuleSlashingDowntimJailDuration] = RangeDescription{Range: "0,604800000000000", Description: "Jail duration of Downtime"}
 	return result
 }
 func GetGovModuleParam(module string) ([]byte, error) {
