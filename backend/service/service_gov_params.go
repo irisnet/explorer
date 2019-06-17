@@ -28,7 +28,7 @@ func (service *GovParamsService) QueryAll() []document.GovParams {
 	query.SetCollection(document.CollectionNmGovParams).
 		SetCondition(nil).
 		SetSelector(nil).
-		SetSort(desc(document.GovParamsFieldModule), desc(document.GovParamsFieldKey)).
+		SetSort(asc(document.GovParamsFieldModule), asc(document.GovParamsFieldKey)).
 		SetSize(0).
 		SetResult(&params)
 
