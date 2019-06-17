@@ -157,4 +157,23 @@
 
     }
   }
+    @media screen and (max-width: 910px){
+        .transaction_list_page_container{
+            .transaction_list_title_wrap{
+                position: static;
+            }
+        }
+
+        .transaction_list_table_container{
+            padding-top: 0;
+            .transaction_list_table_content{
+                .pagination_nav_content{
+                    position: static;
+                }
+                .table_list_content{
+                    padding-top: 0;
+                }
+            }
+        }
+    }
 </style>
