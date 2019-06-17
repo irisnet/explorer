@@ -18,3 +18,13 @@ func TestUpdateCurrentValueByKey(t *testing.T) {
 	}
 	t.Log("update  ok---------")
 }
+
+func TestQueryAll(t *testing.T) {
+
+	paramList := new(GovParamsService).QueryAll()
+
+	for k, v := range paramList {
+		t.Logf("k: %v  v: %v \n", k, v)
+	}
+
+}

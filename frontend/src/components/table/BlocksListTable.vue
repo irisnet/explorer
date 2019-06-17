@@ -37,7 +37,7 @@
     <b-table :fields='fields' :items='items' striped v-if="type === 'ProposalsDetail'" nodelabel  class="proposal_detail_list">
       <template slot='Amount' slot-scope='data'>
         <div class="skip_route_gray" style="width: 200px;">
-          {{formatAmount(data.item['Amount'])}} IRIS
+          {{data.item['Amount']}}
         </div>
       </template>
       <template slot='Voter' slot-scope='data'>
@@ -341,7 +341,7 @@
     display: flex;
     flex-direction: column;
     position: relative;
-      font-family: Consolas;
+    font-family: "Consolas","Arial",-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     .address{
       display: none;
       position: absolute;
