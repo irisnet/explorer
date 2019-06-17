@@ -4,7 +4,6 @@ import (
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/model"
-	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
@@ -22,13 +21,13 @@ func (service *AccountService) Query(address string) (result model.AccountVo) {
 	prefix, _, _ := utils.DecodeAndConvert(address)
 	if prefix == conf.Get().Hub.Prefix.ValAddr {
 		self, delegated := delegatorService.QueryDelegation(address)
-		result.Amount = document.Coins{self}
+		result.Amount = utils.Coins{self}
 		result.Deposits = delegated
 
 	} else {
 		res, err := lcd.Account(address)
 		if err == nil {
-			var amount document.Coins
+			var amount utils.Coins
 			for _, coinStr := range res.Coins {
 				coin := utils.ParseCoin(coinStr)
 				amount = append(amount, coin)
@@ -45,19 +44,13 @@ func (service *AccountService) Query(address string) (result model.AccountVo) {
 }
 
 func (service *AccountService) QueryRichList() interface{} {
-	var result []document.Account
 
-	var query = orm.NewQuery()
-	defer query.Release()
+	result, err := document.Account{}.GetAccountList()
 
-	query.SetCollection(document.CollectionNmAccount).
-		SetSort(desc("total.amount"), document.AccountFieldTotalUpdateAt, document.AccountFieldAccountNumber).
-		SetSize(100).
-		SetResult(&result)
-
-	if err := query.Exec(); err != nil {
+	if err != nil {
 		panic(types.CodeNotFound)
 	}
+
 	var accList []model.AccountInfo
 	var totalAmt = float64(0)
 
@@ -70,7 +63,7 @@ func (service *AccountService) QueryRichList() interface{} {
 		accList = append(accList, model.AccountInfo{
 			Rank:    index + 1,
 			Address: acc.Address,
-			Balance: document.Coins{
+			Balance: utils.Coins{
 				acc.Total,
 			},
 			Percent:  rate,

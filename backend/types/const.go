@@ -96,6 +96,8 @@ var (
 	RoleCandidate = "candidate"
 	RoleJailed    = "jailed"
 
+	RoleList = []string{RoleValidator, RoleCandidate, RoleJailed}
+
 	BankList        = []string{TxTypeTransfer, TxTypeBurn}
 	DeclarationList = []string{TxTypeStakeCreateValidator, TxTypeStakeEditValidator, TxTypeUnjail}
 	StakeList       = []string{TxTypeStakeDelegate, TxTypeBeginRedelegate, TxTypeSetWithdrawAddress, TxTypeStakeBeginUnbonding, TxTypeWithdrawDelegatorReward, TxTypeWithdrawDelegatorRewardsAll, TxTypeWithdrawValidatorRewardsAll}

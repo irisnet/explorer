@@ -1,6 +1,7 @@
 package lcd
 
 import (
+	"fmt"
 	"time"
 )
 
@@ -51,6 +52,28 @@ type ValidatorVo struct {
 	DelegatorNum    int         `json:"delegator_num"`
 	ProposerAddr    string      `json:"proposer_addr"`
 	VotingRate      float32     `json:"voting_rate"`
+}
+
+func (v ValidatorVo) String() string {
+	return fmt.Sprintf(`
+		OperatorAddress :%v
+		ConsensusPubkey :%v
+		Jailed          :%v
+		Status          :%v
+		Tokens          :%v
+		DelegatorShares :%v
+		Description     :%v
+		BondHeight      :%v
+		UnbondingHeight :%v
+		UnbondingTime   :%v
+		Commission      :%v
+		Uptime          :%v
+		SelfBond        :%v
+		DelegatorNum    :%v
+		ProposerAddr    :%v
+		VotingRate      :%v
+		`, v.OperatorAddress, v.ConsensusPubkey, v.Jailed, v.Status, v.Tokens, v.DelegatorShares, v.Description, v.BondHeight, v.UnbondingHeight, v.UnbondingTime,
+		v.Commission, v.Uptime, v.SelfBond, v.DelegatorNum, v.ProposerAddr, v.VotingRate)
 }
 
 type Description struct {

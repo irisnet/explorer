@@ -3,7 +3,7 @@ package task
 import (
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
-	"github.com/irisnet/explorer/backend/service"
+	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/utils"
 )
 
@@ -20,7 +20,7 @@ func (task UpdateGovParams) Start() {
 			return
 		}
 
-		err = service.GovParamsService{}.UpdateCurrentValueByKey(curModuleKv)
+		err = document.GovParams{}.UpdateCurrentModuleParamValue(curModuleKv)
 		if err != nil {
 			logger.Error("UpdateGovParams task failed", logger.String("taskName", task.Name()), logger.String("errmsg", err.Error()))
 		}

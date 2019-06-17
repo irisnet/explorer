@@ -1,6 +1,10 @@
 package controller
 
 import (
+	"strconv"
+	"sync"
+	"time"
+
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
@@ -8,9 +12,6 @@ import (
 	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
-	"strconv"
-	"sync"
-	"time"
 )
 
 func RegisterHome(r *mux.Router) error {
@@ -66,9 +67,9 @@ func registerNavigationBar(r *mux.Router) error {
 			result.VoteValNum = voteValNum
 			result.ActiveValNum = len(validatorSet.Validators)
 
-			validator := service.Get(service.Candidate).(*service.CandidateService).QueryValidatorByConAddr(proposer)
+			validator := service.Get(service.Validator).(*service.ValidatorService).QueryValidatorByConAddr(proposer)
 			result.Moniker = validator.Description.Moniker
-			result.OperatorAddr = validator.Address
+			result.OperatorAddr = validator.OperatorAddress
 		}
 		funGroup = append(funGroup, queryVoteInfo)
 		group.Add(1)

@@ -2,11 +2,11 @@ package utils
 
 import (
 	"fmt"
-	"github.com/irisnet/explorer/backend/logger"
-	"github.com/irisnet/explorer/backend/orm/document"
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/irisnet/explorer/backend/logger"
 )
 
 const (
@@ -38,7 +38,7 @@ func init() {
 	coinsMap[CoinTypeAtto] = float64(1000000000000000000)
 }
 
-func ParseCoin(coinStr string) (coin document.Coin) {
+func ParseCoin(coinStr string) (coin Coin) {
 	coinStr = strings.TrimSpace(coinStr)
 
 	matches := reCoin.FindStringSubmatch(coinStr)
@@ -53,12 +53,12 @@ func ParseCoin(coinStr string) (coin document.Coin) {
 		logger.Error("Convert str to int failed", logger.Any("amount", amount))
 	}
 
-	return document.Coin{
+	return Coin{
 		Denom:  denom,
 		Amount: amt,
 	}
 }
-func ParseCoins(coinsStr string) (coins document.Coins) {
+func ParseCoins(coinsStr string) (coins Coins) {
 	coinsStr = strings.TrimSpace(coinsStr)
 	if len(coinsStr) == 0 {
 		return
@@ -84,7 +84,7 @@ func Parse(coinsStr string) (string, string) {
 	return matches[2], matches[1]
 }
 
-func CovertCoin(srcCoin document.Coin, denom string) (destCoin document.Coin) {
+func CovertCoin(srcCoin Coin, denom string) (destCoin Coin) {
 	srcPreci := coinsMap[srcCoin.Denom]
 	dstPreci := coinsMap[denom]
 
@@ -92,4 +92,36 @@ func CovertCoin(srcCoin document.Coin, denom string) (destCoin document.Coin) {
 	destCoin.Amount = dstAmt
 	destCoin.Denom = denom
 	return
+}
+
+type Coin struct {
+	Denom  string  `json:"denom"`
+	Amount float64 `json:"amount"`
+}
+
+func (c Coin) String() string {
+	return fmt.Sprintf(
+		`Denom: %v Amount: %v`, c.Denom, c.Amount)
+}
+
+func (c Coin) Add(a Coin) Coin {
+	if c.Denom == a.Denom {
+		return Coin{
+			Denom:  c.Denom,
+			Amount: c.Amount + a.Amount,
+		}
+	}
+	return c
+}
+
+type Coins []Coin
+
+type Fee struct {
+	Amount Coins `json:"amount"`
+	Gas    int64 `json:"gas"`
+}
+
+type ActualFee struct {
+	Denom  string  `json:"denom"`
+	Amount float64 `json:"amount"`
 }
