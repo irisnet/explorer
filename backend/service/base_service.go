@@ -7,19 +7,14 @@ import (
 )
 
 var (
-	accountService = &AccountService{}
-
-	blockService = &BlockService{}
-
-	commonService = &CommonService{}
-
-	proposalService = &ProposalService{}
-
-	stakeService = &CandidateService{}
-
+	accountService   = &AccountService{}
+	blockService     = &BlockService{}
+	commonService    = &CommonService{}
+	proposalService  = &ProposalService{}
 	txService        = &TxService{}
 	delegatorService = &DelegatorService{}
 	govParamsService = &GovParamsService{}
+	validatorService = &ValidatorService{}
 )
 
 const (
@@ -28,10 +23,10 @@ const (
 	Block
 	Common
 	Proposal
-	Candidate
 	Tx
 	Delegator
 	GovParams
+	Validator
 )
 
 type Module int
@@ -46,14 +41,16 @@ func Get(m Module) Service {
 		return commonService
 	case Proposal:
 		return proposalService
-	case Candidate:
-		return stakeService
+	// case Candidate:
+	// 	return stakeService
 	case Tx:
 		return txService
 	case Delegator:
 		return delegatorService
 	case GovParams:
 		return govParamsService
+	case Validator:
+		return validatorService
 	}
 	return nil
 }

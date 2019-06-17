@@ -247,25 +247,26 @@ func (service *TxService) Query(hash string) interface{} {
 	}
 
 	blackList := map[string]document.BlackList{}
-	candidateAddrMap := map[string]document.Candidate{}
+
+	validatorAddrMap := map[string]document.Validator{}
 	govTxMsgHashMap := map[string]document.TxMsg{}
 	govProposalIdMap := map[uint64]document.Proposal{}
 
 	switch types.Convert(txAsDoc.Type) {
 	case types.Declaration:
 		blackList = service.QueryBlackList()
-		candidateAddrMap[txAsDoc.From] = document.Candidate{}
-		service.GetTxAttachedFields(&candidateAddrMap, &govTxMsgHashMap, &govProposalIdMap)
+		validatorAddrMap[txAsDoc.From] = document.Validator{}
+		service.GetTxAttachedFields(&validatorAddrMap, &govTxMsgHashMap, &govProposalIdMap)
 	case types.Gov:
 		govTxMsgHashMap[txAsDoc.TxHash] = document.TxMsg{}
 		if txAsDoc.Type == types.TxTypeVote || txAsDoc.Type == types.TxTypeDeposit {
 			govProposalIdMap[txAsDoc.ProposalId] = document.Proposal{}
 		}
-		service.GetTxAttachedFields(&candidateAddrMap, &govTxMsgHashMap, &govProposalIdMap)
+		service.GetTxAttachedFields(&validatorAddrMap, &govTxMsgHashMap, &govProposalIdMap)
 
 	}
 
-	tx := service.buildTx(service.CopyTxFromDoc(txAsDoc), &blackList, &candidateAddrMap, &govTxMsgHashMap, &govProposalIdMap)
+	tx := service.buildTx(service.CopyTxFromDoc(txAsDoc), &blackList, &validatorAddrMap, &govTxMsgHashMap, &govProposalIdMap)
 
 	switch tx.(type) {
 	case model.GovTx:
@@ -416,7 +417,7 @@ func (service *TxService) isForwardTxByType(t string) bool {
 	return false
 }
 
-func (service *TxService) GetTxAttachedFields(candidateAddrMap *map[string]document.Candidate, govTxMsgHashMap *map[string]document.TxMsg, govProposalIdMap *map[uint64]document.Proposal) {
+func (service *TxService) GetTxAttachedFields(candidateAddrMap *map[string]document.Validator, govTxMsgHashMap *map[string]document.TxMsg, govProposalIdMap *map[uint64]document.Proposal) {
 	candidateAddrs := make([]string, 0, len(*candidateAddrMap))
 	govHashArr := make([]string, 0, len(*govTxMsgHashMap))
 	govProposalIdArr := make([]uint64, 0, len(*govProposalIdMap))
@@ -430,12 +431,12 @@ func (service *TxService) GetTxAttachedFields(candidateAddrMap *map[string]docum
 		govProposalIdArr = append(govProposalIdArr, k)
 	}
 
-	candidateArr := []document.Candidate{}
+	candidateArr := []document.Validator{}
 
 	var err error
 	if len(candidateAddrs) > 0 {
 
-		candidateArr, err = document.Candidate{}.QueryCandidateListByAddrList(candidateAddrs)
+		candidateArr, err = document.Validator{}.QueryValidatorListByAddrList(candidateAddrs)
 
 		if err != nil {
 			logger.Error(fmt.Sprintf("query  candidator collection with condition: %v err: %v", candidateAddrs, err.Error()))
@@ -443,7 +444,7 @@ func (service *TxService) GetTxAttachedFields(candidateAddrMap *map[string]docum
 
 		for k, _ := range *candidateAddrMap {
 			for _, v := range candidateArr {
-				if k == v.Address {
+				if k == v.OperatorAddress {
 					(*candidateAddrMap)[k] = v
 					break
 				}
@@ -492,7 +493,7 @@ func (service *TxService) buildData(txs []model.CommonTx) []interface{} {
 	}
 
 	blackList := map[string]document.BlackList{}
-	candidateAddrMap := map[string]document.Candidate{}
+	candidateAddrMap := map[string]document.Validator{}
 	govTxMsgHashMap := map[string]document.TxMsg{}
 	govProposalIdMap := map[uint64]document.Proposal{}
 
@@ -504,7 +505,7 @@ func (service *TxService) buildData(txs []model.CommonTx) []interface{} {
 				blackList = service.QueryBlackList()
 				onlyOnce = false
 			}
-			candidateAddrMap[v.From] = document.Candidate{}
+			candidateAddrMap[v.From] = document.Validator{}
 		case types.Gov:
 			govTxMsgHashMap[v.TxHash] = document.TxMsg{}
 			if v.Type == types.TxTypeVote || v.Type == types.TxTypeDeposit {
@@ -544,7 +545,7 @@ func (service *TxService) buildData(txs []model.CommonTx) []interface{} {
 }
 
 func (service *TxService) buildTx(tx model.CommonTx, blackListP *map[string]document.BlackList,
-	candidateAddrMapP *map[string]document.Candidate, govTxMsgHashMapP *map[string]document.TxMsg, govProposalIdMapP *map[uint64]document.Proposal) interface{} {
+	candidateAddrMapP *map[string]document.Validator, govTxMsgHashMapP *map[string]document.TxMsg, govProposalIdMapP *map[uint64]document.Proposal) interface{} {
 
 	switch types.Convert(tx.Type) {
 	case types.Trans:
