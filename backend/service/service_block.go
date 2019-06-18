@@ -151,27 +151,25 @@ func (service *BlockService) QueryList(page, size int) []model.BlockForList {
 		panic(types.CodeNotFound)
 	}
 
-	addrArr := make([]string, 0, len(blocks))
+	proposerAsHashAddr := make([]string, 0, len(blocks))
 
 	for _, v := range blocks {
-		for _, validator := range v.Validators {
-			addrArr = append(addrArr, validator.Address)
-		}
+		proposerAsHashAddr = append(proposerAsHashAddr, v.ProposalAddr)
 	}
 
-	addrArr = utils.RemoveDuplicationStrArr(addrArr)
+	proposerAsHashAddr = utils.RemoveDuplicationStrArr(proposerAsHashAddr)
 
-	validators, err := document.Validator{}.QueryValidatorMonikerOpAddrConsensusPubkeyByAddr(addrArr)
+	validators, err := document.Validator{}.QueryValidatorMonikerOpAddrByHashAddr(proposerAsHashAddr)
 
 	if err != nil {
 		logger.Error("QueryValidatorMonikerOpAddrConsensusPubkeyByAddr", logger.String("err", err.Error()))
 	}
 
-	validatorMapByProposerAddr := map[string]document.Validator{}
+	validatorMapByHashAddr := map[string]document.Validator{}
 	blockMapByHeight := map[int64]document.Block{}
 
 	for _, v := range validators {
-		validatorMapByProposerAddr[v.ProposerAddr] = v
+		validatorMapByHashAddr[v.ProposerAddr] = v
 	}
 
 	for _, v := range blocks {
@@ -183,7 +181,7 @@ func (service *BlockService) QueryList(page, size int) []model.BlockForList {
 	for _, block := range blocks {
 
 		var proposerMoniker, proposerValidatorAddr string
-		if v, ok := validatorMapByProposerAddr[block.ProposalAddr]; ok {
+		if v, ok := validatorMapByHashAddr[block.ProposalAddr]; ok {
 			proposerMoniker = v.Description.Moniker
 			proposerValidatorAddr = v.OperatorAddress
 		}
@@ -199,7 +197,6 @@ func (service *BlockService) QueryList(page, size int) []model.BlockForList {
 		if v, ok := blockMapByHeight[block.Height+1]; ok {
 			precomitValidatorNum = len(v.Block.LastCommit.Precommits)
 			for _, preValidator := range v.Block.LastCommit.Precommits {
-
 				for _, validator := range block.Validators {
 					if preValidator.ValidatorAddress == validator.Address {
 						precommitVotingPower += validator.VotingPower

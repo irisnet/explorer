@@ -158,11 +158,11 @@ func (v Validator) QueryValidatorMonikerOpAddrConsensusPubkey(addrArrAsVa []stri
 	return validators, err
 }
 
-func (v Validator) QueryValidatorMonikerOpAddrConsensusPubkeyByAddr(addrArr []string) ([]Validator, error) {
+func (v Validator) QueryValidatorMonikerOpAddrByHashAddr(hashAddr []string) ([]Validator, error) {
 	var validators []Validator
-	var selector = bson.M{"description.moniker": 1, "operator_address": 1, "consensus_pubkey": 1, "proposer_addr": 1}
+	var selector = bson.M{"description.moniker": 1, "operator_address": 1, "proposer_addr": 1}
 
-	err := queryAll(CollectionNmValidator, selector, bson.M{"proposer_addr": bson.M{"$in": addrArr}}, "", 0, &validators)
+	err := queryAll(CollectionNmValidator, selector, bson.M{"proposer_addr": bson.M{"$in": hashAddr}}, "", 0, &validators)
 	return validators, err
 }
 
