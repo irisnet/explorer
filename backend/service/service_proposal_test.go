@@ -16,3 +16,15 @@ func TestProposalService_GetDepositTxs(t *testing.T) {
 	resBytes, _ := json.MarshalIndent(res, "", "\t")
 	t.Log(string(resBytes))
 }
+
+func TestProposalService_QueryDepositAndVotingProposalList(t *testing.T) {
+	res := proposalService.QueryDepositAndVotingProposalList()
+	resBytes, _ := json.MarshalIndent(res, "", "\t")
+	t.Log(string(resBytes))
+}
+
+func TestProposalService_QueryList(t *testing.T) {
+	res := proposalService.QueryList(1, 20)
+	resBytes, _ := json.Marshal(res)
+	t.Log(string(resBytes))
+}

@@ -13,6 +13,10 @@ const (
 	ValidatorFieldStatus          = "status"
 	ValidatorFieldOperatorAddress = "operator_address"
 	ValidatorFieldDescription     = "description"
+
+	ValidatorStatusValUnbonded  = 0
+	ValidatorStatusValUnbonding = 1
+	ValidatorStatusValBonded    = 2
 )
 
 type Validator struct {
