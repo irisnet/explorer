@@ -232,6 +232,7 @@ table.m_table {
           padding: 7.5px;
           vertical-align: middle;
           white-space: nowrap;
+          border-top: 1px solid #dee2e6;
         }
         th.sorting {
           cursor: pointer;
@@ -280,6 +281,10 @@ table.m_table {
       padding: 7.5px;
       box-sizing: border-box;
       color: #a2a2ae;
+      & > div {
+        display: inline-block;
+        vertical-align: middle;
+      }
     }
     border-bottom: 1px solid #dee2e6;
     &:nth-of-type(2n) {
@@ -295,7 +300,7 @@ table.m_table {
   }
   .tooltip_span_container {
     position: relative;
-    display: inline;
+    display: inline-block;
     cursor: pointer;
     &:hover .tooltip_span {
       display: block;
@@ -305,7 +310,7 @@ table.m_table {
       position: absolute;
       z-index: 1000;
       bottom: calc(100% + 4px);
-      left: 33%;
+      left: 50%;
       transform: translateX(-50%);
       margin-top: -10px auto 0;
       padding: 0 15px;

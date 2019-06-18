@@ -33,10 +33,10 @@
         <div class="information_props_wrap">
           <span class="information_props">Status :</span>
           <span class="information_value">
-            <img class="status_icon" v-if="status === 'Passed'" src="../assets/pass.png" />
-            <img class="status_icon" v-if="status === 'Rejected'" src="../assets/rejected.png" />
-            <img class="status_icon" v-if="status === 'VotingPeriod'" src="../assets/voting_period.png" />
-            <img class="status_icon" v-if="status === 'DepositPeriod'" src="../assets/deposit_period.png" />
+            <img class="information_status_icon" v-if="status === 'Passed'" src="../assets/pass.png" />
+            <img class="information_status_icon" v-if="status === 'Rejected'" src="../assets/rejected.png" />
+            <img class="information_status_icon" v-if="status === 'VotingPeriod'" src="../assets/voting_period.png" />
+            <img class="information_status_icon" v-if="status === 'DepositPeriod'" src="../assets/deposit_period.png" />
             {{status}}
           </span>
         </div>
@@ -121,7 +121,8 @@
       </div>
       <div class="proposals_detail_table_wrap">
         <spin-component :showLoading="showLoading"/>
-        <blocks-list-table :items="items" :type="'ProposalsDetail'" :showNoData="showNoData" :min-width="tableMinWidth"></blocks-list-table>
+        <!-- <blocks-list-table :items="items" :type="'ProposalsDetail'" :showNoData="showNoData" :min-width="tableMinWidth"></blocks-list-table> -->
+        <m-proposals-detail-table :items="items" fields="votersFields"></m-proposals-detail-table>
         <div v-show="showNoData" class="no_data_show">
           No Data
         </div>
@@ -134,7 +135,8 @@
       <div class="proposals_table_title_div" style="margin-top: 0;">Depositors</div>
       <div class="proposals_detail_table_wrap">
         <spin-component :showLoading="showLoading"/>
-        <blocks-list-table :items="depositorItems" :type="'ProposalsDetail'" :showNoData="depositorShowNoData" :min-width="tableMinWidth"></blocks-list-table>
+        <!-- <blocks-list-table :items="depositorItems" :type="'ProposalsDetail'" :showNoData="depositorShowNoData" :min-width="tableMinWidth"></blocks-list-table> -->
+        <m-proposals-detail-table :items="depositorItems" fields="depositorsFields"></m-proposals-detail-table>
         <div v-show="depositorShowNoData" class="no_data_show">
           No Data
         </div>
@@ -148,14 +150,17 @@
 
 <script>
   import Tools from '../util/Tools';
-  import Service from "../util/axios"
+  import Service from "../util/axios";
   import BlocksListTable from './table/BlocksListTable.vue';
   import SpinComponent from './commonComponents/SpinComponent';
-  import Constant from "../constant/Constant"
+  import Constant from "../constant/Constant";
+  import MProposalsDetailTable from './table/MProposalsDetailTable.vue';
+
   export default {
     components: {
       BlocksListTable,
-      SpinComponent
+      SpinComponent,
+      MProposalsDetailTable
     },
     data() {
       return {
@@ -189,9 +194,7 @@
         depositEndAge: '',
         votingStartAge:'',
         votingEndAge: '',
-        votingTimer: null,
         proposalTimer: null,
-        depositorTimer: null,
         software: ' ',
         version: ' ',
         switchHeight: ' ',
@@ -232,15 +235,15 @@
         }
       },
       flShowProposalTime(proposalTimeName,status){
-       if(status === 'Rejected' || status === 'Passed' || status === 'VotingPeriod'){
-         return true
-       }else{
-         switch (proposalTimeName){
-           case proposalTimeName === 'depositEndTime' && status === 'DepositPeriod' : return true ;
-           case proposalTimeName === 'votingStartTime' && status === 'VotingPeriod' : return true ;
-           case proposalTimeName === 'votingEndTime' && status === 'VotingPeriod' : return true ;
-         }
-       }
+        if(status === 'Rejected' || status === 'Passed' || status === 'VotingPeriod'){
+          return true
+        }else{
+          switch (proposalTimeName){
+            case proposalTimeName === 'depositEndTime' && status === 'DepositPeriod' : return true ;
+            case proposalTimeName === 'votingStartTime' && status === 'VotingPeriod' : return true ;
+            case proposalTimeName === 'votingEndTime' && status === 'VotingPeriod' : return true ;
+          }
+        }
       },
       formatProposalTime(time){
         let currentServerTime  = new Date().getTime() + this.diffMilliseconds;
@@ -255,33 +258,23 @@
         Service.http(url).then((data) => {
           if(data.items && data.items.length > 0){
             this.itemTotal = data.total;
-            let that = this;
-            let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-            that.items = data.items.map(item =>{
+            let currentServerTime = new Date().getTime() + this.diffMilliseconds;
+            this.items = data.items.map(item =>{
               let votingListItemTime = (new Date(item.timestamp).getTime()) > 0 ? Tools.format2UTC(item.timestamp) : '--';
               return {
-                Voter: item.voter + ' ' + item.moniker,
+                moniker: item.moniker,
+                Voter: item.voter,
                 Vote_Option: item.option,
                 Tx_Hash: item.tx_hash,
                 Time: votingListItemTime
               }
             });
           }else {
-            this.items = [{
-              Voter: "",
-              Vote_Option: "",
-              Tx_Hash: "",
-              Time: ""
-            }];
+            this.items = [];
             this.showNoData = true;
           }
         }).catch((e) => {
-          this.items = [{
-            Voter: "",
-            Vote_Option: "",
-            Tx_Hash: "",
-            Time: ""
-          }];
+          this.items = [];
           this.showNoData = true;
         })
       },
@@ -292,9 +285,8 @@
         Service.http(url).then((data) => {
           if(data.items && data.items.length > 0){
             this.depositorItemsTotal = data.total;
-            let that = this;
-            let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-            that.depositorItems = data.items.map(item =>{
+            let currentServerTime = new Date().getTime() + this.diffMilliseconds;
+            this.depositorItems = data.items.map(item =>{
               let votingListItemTime = (new Date(item.timestamp).getTime()) > 0 ? Tools.format2UTC(item.timestamp) : '--';
               let amount = item.amount[0] && item.amount[0].amount;
               let denom = (item.amount[0] && item.amount[0].denom) || '';
@@ -307,23 +299,11 @@
               }
             });
           }else {
-            this.depositorItems = [{
-              Depositor: '',
-              Amount: '',
-              Type: '',
-              TxHash: '',
-              Time: ''
-            }];
+            this.depositorItems = [];
             this.depositorShowNoData = true;
           }
         }).catch((e) => {
-          this.depositorItems = [{
-            Depositor: '',
-            Amount: '',
-            Type: '',
-            TxHash: '',
-            Time: ''
-          }];
+          this.depositorItems = [];
           this.depositorShowNoData = true;
         });
       },
@@ -410,7 +390,7 @@
 </script>
 
 <style scoped lang="scss">
-  @import '../style/mixin.scss';
+@import '../style/mixin.scss';
 
 .proposals_detail_wrap {
   @include flex;
@@ -501,6 +481,7 @@
       margin-bottom: 0.2rem;
       width: 100%;
       overflow-x: auto;
+      overflow-y: hidden;
       .table_wrap {
         min-width: 9.6rem;
       }
@@ -715,10 +696,9 @@
     font-size:18px;
     margin: 30px 20px 10px;
   }
-  .status_icon {
+  .information_status_icon {
     width: 14px;
     height: 14px;
-    margin: 8px 0;
     vertical-align: middle;
     margin-right: 4px;
   }

@@ -207,7 +207,7 @@ export default class Tools{
   }
   static formatDecimalNumberToFixedNumber(num){
     if(typeof num === 'number' && !Object.is(num, NaN)) {
-      if (num < 0.01) {
+      if (num < 0.01 && num !== 0) {
         return num.toFixed(4);
       } else {
         return num.toFixed(2);
