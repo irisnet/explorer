@@ -224,7 +224,7 @@ func (service *BlockService) QueryList(page, size int) []model.BlockForList {
 		blocksAsModel = append(blocksAsModel, tmp)
 	}
 
-	if page != 1 {
+	if page != 1 && len(blocksAsModel) > 1 {
 		return blocksAsModel[1:]
 	}
 
