@@ -387,7 +387,6 @@
                     display: block;
                     &::after{
                         content: '';
-                        background: #f66;
                         display: block;
                         background: rgba(0,0,0,1);
                         transform: rotate(45deg);

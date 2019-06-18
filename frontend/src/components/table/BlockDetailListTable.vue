@@ -2,14 +2,13 @@
   <div :class="showNoData?'show_no_data':''" style="min-width: 12rem;" class="validator_table">
     <b-table :fields='listFields' :items='items' striped nodelabel :class="flIsValidatorTable ? 'validator_set_table_style' : ''">
       <template slot='Tx_Hash' slot-scope='data'>
-          <span class="skip_route" style="display: flex">
-            <div class="hash_container">
-              <span>
-                <router-link :to="`/tx?txHash=${data.item.Tx_Hash}`">{{data.item.Tx_Hash ? `${formatTxHash(String(data.item.Tx_Hash))}` : ''}}</router-link>
-              </span>
-              <span class="hash_content">{{data.item.Tx_Hash}}</span>
+        <div class="common_hover_parent" v-if="data.item.Tx_Hash">
+          <router-link :to="`/tx?txHash=${data.item.Tx_Hash}`" class="link_style common_font_style">{{formatTxHash(data.item.Tx_Hash)}}
+            <div class="hover_content">
+              {{data.item.Tx_Hash}}
             </div>
-          </span>
+          </router-link>
+        </div>
       </template>
       <template slot='Consensus' slot-scope='data'>
         <div>{{data.item.Consensus}}</div>
