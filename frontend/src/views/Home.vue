@@ -94,7 +94,7 @@ import Constant from "../constant/Constant";
                   devicesWidth: window.innerWidth,
                   pageClassName: 'personal_computer_home_wrap',
                   module_item_wrap: 'module_item_wrap_computer',
-                  currentBlockHeight: '--',
+                  currentBlockHeight: '',
                   validatorValue: '--',
                   transactionValue: '--',
                   averageBlockTime: '--',
