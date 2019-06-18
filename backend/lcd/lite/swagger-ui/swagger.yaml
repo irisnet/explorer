@@ -1,7 +1,7 @@
 ---
 swagger: "2.0"
 info:
-  version: 0.9.7
+  version: 0.9.8
   description: A REST interface for irishub state queries.
   title: explorer for the irishub
 
@@ -74,26 +74,6 @@ paths:
           description: generic error response
           schema:
             $ref: "#/definitions/error"
-  /api/account/{address}:
-    get:
-      summary:
-      tags:
-        - Account
-      parameters:
-        - in: path
-          name: address
-          description:  Bech32 AccAddress of Delegator or Bech32 ValAddress
-          required: true
-          type: string
-      responses:
-        200:
-          description:
-          schema:
-            $ref: "#/definitions/AccountVo"
-        default:
-          description: generic error response
-          schema:
-            $ref: "#/definitions/error"
   /api/blocks:
     get:
       tags:
@@ -113,9 +93,10 @@ paths:
           required: false
       responses:
         200:
-          description: query recent blocks
-          schema:
-            $ref: "#/definitions/Blocks"
+          description: query  blocks list
+          type: array
+          items:
+            $ref: "#/definitions/BlockForList"
         default:
           description: generic error response
           schema:
@@ -130,6 +111,39 @@ paths:
           type: array
           items:
             $ref: "#/definitions/RecentBlockInfoVo"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api//block/latestheight:
+    get:
+      summary: query the latest height from lcd.
+      tags:
+        - Block
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/success"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/account/{address}:
+    get:
+      summary:
+      tags:
+        - Account
+      parameters:
+        - in: path
+          name: address
+          description:  Bech32 AccAddress of Delegator or Bech32 ValAddress
+          required: true
+          type: string
+      responses:
+        200:
+          description:
+          schema:
+            $ref: "#/definitions/AccountVo"
         default:
           description: generic error response
           schema:
@@ -271,7 +285,35 @@ paths:
             $ref: "#/definitions/error"
 
 
+
 definitions:
+  BlockForList:
+    type: object
+    properties:
+      height:
+        type: integer
+        format: int64
+      proposer_moniker:
+        type: string
+      proposer_as_validator_addr:
+        type: string
+      txs_num:
+        type: integer
+        format: int64
+      precommit_validator_num:
+        type: integer
+        format: int
+      validator_num_for_height:
+        type: integer
+        format: int
+      precommit_voting_power:
+        type: integer
+        format: int64
+      voting_power_for_height:
+        type: integer
+        format: int64
+      timestamp:
+        type: string
   GetVoteTxResponse:
     type: object
     properties:
@@ -326,7 +368,7 @@ definitions:
       Data:
         type: array
         items:
-          $ref: "#/definitions/BlockInfoVo"
+          $ref: "#/definitions/BlockForList"
   RecentBlockInfoVo:
     type: object
     required:
@@ -867,3 +909,13 @@ definitions:
         type: string
       msg:
         type: string
+  success:
+    type: object
+    properties:
+      code:
+        type: string
+      msg:
+        type: string
+      data:
+        type: integer
+        format: int64

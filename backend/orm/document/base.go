@@ -45,6 +45,25 @@ func queryOne(collation string, selector, condition bson.M, result interface{}) 
 	return err
 }
 
+func querylistByOffsetAndSize(collection string, selector, condition bson.M, sort string, offset, size int, result interface{}) error {
+
+	var query = orm.NewQuery()
+	defer query.Release()
+	query.SetCollection(collection).
+		SetCondition(condition).
+		SetSelector(selector).
+		SetSort(sort).
+		SetOffset(offset).
+		SetSize(size).
+		SetResult(result)
+
+	err := query.Exec()
+	if err != nil {
+		logger.Error("QuerylistByOffsetAndSize error", logger.Any("sort", sort), logger.Any("offset", offset), logger.Any("size", size), logger.Any("query", condition), logger.String("err", err.Error()))
+	}
+	return err
+}
+
 func pageQuery(collation string, selector, condition bson.M, sort string, page, size int, result interface{}) (int, error) {
 	var query = orm.NewQuery()
 	defer query.Release()

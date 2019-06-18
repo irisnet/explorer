@@ -11,6 +11,7 @@ const (
 	UrlRegisterNavigationBar = "/home/navigation"
 
 	//Block
+	UrlRegisterQueryBlockLatestHeight = "/block/latestheight"
 	UrlRegisterQueryBlock             = "/block/{height}"
 	UrlRegisterQueryRecentBlocks      = "/blocks/recent"
 	UrlRegisterQueryBlocks            = "/blocks"

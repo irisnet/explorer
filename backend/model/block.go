@@ -7,6 +7,33 @@ import (
 	"github.com/irisnet/explorer/backend/utils"
 )
 
+type BlockForList struct {
+	Height                  int64     `json:"height"`
+	ProposerMoniker         string    `json:"proposer_moniker"`
+	ProposerAsValidatorAddr string    `json:"proposer_as_validator_addr"`
+	TxnNum                  int64     `json:"txs_num"`
+	PrecommitValidatorNum   int       `json:"precommit_validator_num"`
+	ValidatorNumForHeight   int       `json:"validator_num_for_height"`
+	PrecommitVotingPower    int64     `json:"precommit_voting_power"`
+	VotingPowerForHeight    int64     `json:"voting_power_for_height"`
+	Timestamp               time.Time `json:"timestamp"`
+}
+
+func (b BlockForList) String() string {
+
+	return fmt.Sprintf(`
+		Height                  :%v
+		ProposerMoniker         :%v
+		ProposerAsValidatorAddr :%v
+		TxnNum                  :%v
+		PrecommitValidatorNum   :%v
+		ValidatorNumForHeight   :%v
+		PrecommitVotingPower    :%v
+		VotingPowerForHeight    :%v
+		Timestamp               :%v
+		`, b.Height, b.ProposerMoniker, b.ProposerAsValidatorAddr, b.TxnNum, b.PrecommitValidatorNum, b.ValidatorNumForHeight, b.PrecommitVotingPower, b.VotingPowerForHeight, b.Timestamp)
+}
+
 type BlockInfoVo struct {
 	Height        int64     `json:"height"`
 	Hash          string    `json:"hash,omitempty"`
