@@ -175,7 +175,7 @@
       }
     },
     updated () {
-      this.headerHeightStyle = `${document.getElementById('header').clientHeight/100}rem`
+      this.headerHeightStyle = `${document.getElementById('header').clientHeight}px`
     }
   }
 </script>
