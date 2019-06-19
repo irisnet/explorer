@@ -9,7 +9,8 @@
       <div class="block_list_content">
         <div class="page_nav_container">
           <span>Current Height
-            <span class="skip_route">
+            <span v-if="currentHeight > 0"
+                  class="skip_route">
               <router-link :to="`/block/${currentHeight}`">{{currentHeight}}</router-link>
             </span>
           </span>
