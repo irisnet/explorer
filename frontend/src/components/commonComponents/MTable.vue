@@ -334,4 +334,23 @@ table.m_table {
     }
   }
 }
+.override_mtable {
+  .m-table-header {
+    position: fixed;
+    margin-top: -0.45rem;
+    background-color: #ffffff;
+  }
+  .m-table-body {
+    margin-top: 0.45rem;
+  }
+}
+@media screen and (max-width: 910px) {
+  .m-table-header {
+    position: static !important;
+    margin-top: 0rem !important;
+  }
+  .m-table-body {
+    margin-top: -0.04rem !important;
+  }
+}
 </style>

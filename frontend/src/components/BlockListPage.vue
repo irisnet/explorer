@@ -1,5 +1,6 @@
 <template>
-  <div class="blocks_list_page_container">
+  <div class="blocks_list_page_container"
+       :class="[$store.state.isMobile ? 'mobile_blocks_list_page_container' : 'blocks_list_page_container_fixed']">
     <div class="block_list_title_container">
       <div class="block_list_title_content">
         <span class="block_list_title">Blocks</span>
@@ -261,6 +262,25 @@ export default {
         align-items: center;
       }
     }
+  }
+}
+.mobile_blocks_list_page_container {
+  .block_list_container {
+    padding: 0 0.1rem;
+  }
+}
+.blocks_list_page_container_fixed {
+  div.block_list_title_container {
+    position: fixed;
+  }
+  .page_nav_container {
+    position: fixed;
+    width: 12.8rem;
+    margin-top: 62px;
+    background-color: #ffffff;
+  }
+  .block_list_table_container {
+    padding-top: 132px;
   }
 }
 </style>
