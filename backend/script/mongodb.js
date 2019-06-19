@@ -22,6 +22,7 @@ db.ex_tx_num_stat.createIndex({"date": -1}, {"unique": true});
 db.ex_config.createIndex({"env_nm": 1, "chain_id": 1}, {"unique": true, "background": true});
 db.ex_val_black_list.createIndex({"operator_addr": 1}, {"unique": true});
 db.ex_validator.createIndex({"operator_address": 1}, {"unique": true});
+db.ex_validator.createIndex({"proposer_addr": 1}, {"unique": true,"background": true});
 db.ex_gov_params.createIndex({"key": 1}, {"unique": true});
 
 // init data
