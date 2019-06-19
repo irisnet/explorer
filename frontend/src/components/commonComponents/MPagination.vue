@@ -1,11 +1,12 @@
 <template>
   <div>
-    <span class="info">{{range[0]}}-{{range[1]}} of {{total}}</span>
+    <span v-show="total > 0"
+          class="info">{{range[0]}}-{{range[1]}} of {{total}}</span>
     <!-- <button @click="toFrist" :class="[currentPage === 1 ? 'no_disable' : '']">«</button> -->
     <button @click="prev"
-            :class="[currentPage === 1 ? 'no_disable' : '']">‹</button>
+            :class="[currentPage === 1 || total === 0 ? 'no_disable' : '']">‹</button>
     <button @click="after"
-            :class="[range[1] === 1 ? 'no_disable' : '']">›</button>
+            :class="[range[1] === 1 || total === 0 ? 'no_disable' : '']">›</button>
     <!-- <button @click="toEnd" :class="[currentPage === totalPages ? 'no_disable' : '']">»</button> -->
   </div>
 </template>
@@ -69,7 +70,7 @@ export default {
       }
     },
     after () {
-      if (this.currentPage < this.totalPages) {
+      if (this.currentPage < this.totalPages && this.range[1] && this.range[1] > 1) {
         this.currentPage = this.currentPage + 1;
       }
     }

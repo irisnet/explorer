@@ -15,23 +15,15 @@
                           :page="currentPageNum"
                           :page-change="pageChange"
                           :range="range"></m-pagination>
-            <!-- <b-pagination-nav :link-gen="linkGen" :number-of-pages="totalPageNum" v-model="currentPageNum" use-router></b-pagination-nav> -->
           </div>
         </div>
         <div class="block_list_table_container">
           <spin-component :showLoading="flShowLoading"></spin-component>
-          <!-- <block-list-page-table :items="items" :showNoData="showNoData"></block-list-page-table> -->
           <m-block-list-page-table :items="items"></m-block-list-page-table>
           <div v-show="showNoData"
                class="no_data_show">No Data</div>
         </div>
         <div class="pagination_footer_container">
-          <m-pagination :page-size="pageSize"
-                        :total="count"
-                        :page="currentPageNum"
-                        :page-change="pageChange"
-                        :range="range"></m-pagination>
-          <!-- <b-pagination-nav :link-gen="linkGen" :number-of-pages="totalPageNum" v-model="currentPageNum" use-router></b-pagination-nav> -->
         </div>
       </div>
     </div>
@@ -58,9 +50,7 @@ export default {
   data () {
     return {
       pageSize: 30,
-      currentPageNum: sessionStorage.getItem("blockListCurrentPageNum")
-        ? Number(sessionStorage.getItem("blockListCurrentPageNum"))
-        : 1,
+      currentPageNum: this.forCurrentPageNum(),
       count: sessionStorage.getItem("blockListTotal")
         ? JSON.parse(sessionStorage.getItem("blockListTotal"))
         : 0,
@@ -68,7 +58,9 @@ export default {
       showNoData: false,
       timer: null,
       flShowLoading: false,
-      range: []
+      range: [],
+      currentPageNumCache: 0,
+      isoMunted: false
     };
   },
   mounted () {
@@ -76,15 +68,29 @@ export default {
     this.getBlockList();
   },
   methods: {
+    forCurrentPageNum () {
+      let currentPageNum = 1;
+      let urlPageSize = this.$route.query.page && Number(this.$route.query.page);
+      currentPageNum = urlPageSize ? urlPageSize : 1;
+      return currentPageNum;
+    },
     pageChange (pageNum) {
       this.currentPageNum = pageNum;
-      sessionStorage.setItem("blockListCurrentPageNum", pageNum);
-      this.getLatestheight();
-      this.getBlockList();
+      if (this.currentPageNumCache === this.currentPageNum) {
+        return;
+      }
+      this.currentPageNumCache = this.currentPageNum;
+      if (this.isoMunted) {
+        let path = '/blocks';
+        history.pushState(null, null, `/#${path}?page=${pageNum}`);
+        this.getLatestheight();
+        this.getBlockList();
+      }
     },
     getLatestheight () {
       Service.commonInterface({ blockListLatestheight: {} }, data => {
         try {
+          this.isoMunted = true;
           this.count = data.data || 0;
           sessionStorage.setItem("blockListTotal", JSON.stringify(this.count));
         } catch (e) { }
