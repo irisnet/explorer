@@ -21,6 +21,8 @@ tags:
     description: query proposal
   - name: Account
     description:
+  - name: Home
+    description: navigation
 paths:
   /api/block/validatorset/{height}:
     get:
@@ -115,7 +117,7 @@ paths:
           description: generic error response
           schema:
             $ref: "#/definitions/error"
-  /api//block/latestheight:
+  /api/block/latestheight:
     get:
       summary: query the latest height from lcd.
       tags:
@@ -283,10 +285,58 @@ paths:
           description: generic error response
           schema:
             $ref: "#/definitions/error"
-
-
+  /api/home/navigation:
+    get:
+      tags:
+        - Home
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/NavigationData"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
 
 definitions:
+  NavigationData:
+    type: object
+    properties:
+      block_height:
+        type: integer
+        format: int64
+      block_time:
+        type: string
+      total_txs:
+        type: integer
+        format: int64
+      tps:
+        type: integer
+        format: float32
+      avg_block_time:
+        type: integer
+        format: float32
+      voting_ratio:
+        type: integer
+        format: float32
+      voting_tokens:
+        type: string
+      vote_val_num:
+        type: integer
+        format: int
+      active_val_num:
+        type: integer
+        format: int
+      bonded_ratio:
+        type: string
+      bonded_tokens:
+        type: string
+      total_supply:
+        type: string
+      moniker:
+        type: string
+      operator_addr:
+        type: string
   BlockForList:
     type: object
     properties:
