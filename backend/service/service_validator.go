@@ -361,7 +361,7 @@ func (service *ValidatorService) UpdateValidators(vs []document.Validator) error
 	return document.Validator{}.Batch(txs)
 }
 
-func (service *ValidatorService) QueryValidatorMonikerAndValidatorAddrByHashAddr(addr string) (string, string, error) {
+func (service *ValidatorService) QueryValidatorMonikerAndValidatorAddrByHashAddr(addr string) (document.Validator, error) {
 
 	return document.Validator{}.QueryMonikerAndValidatorAddrByHashAddr(addr)
 }

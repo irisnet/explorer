@@ -433,14 +433,14 @@ func (_ Validator) QueryCandidateUptimeByWeekOrMonth(addr, category string) ([]U
 	return result, nil
 }
 
-func (_ Validator) QueryMonikerAndValidatorAddrByHashAddr(addr string) (string, string, error) {
+func (_ Validator) QueryMonikerAndValidatorAddrByHashAddr(addr string) (Validator, error) {
 
 	selector := bson.M{ValidatorFieldOperatorAddress: 1, ValidatorFieldDescription: 1}
 	condition := bson.M{ValidatorFieldProposerHashAddr: addr}
 	var val Validator
 	err := queryOne(CollectionNmValidator, selector, condition, &val)
 
-	return val.Description.Moniker, val.OperatorAddress, err
+	return val, err
 }
 
 func (_ Validator) QueryValidatorByConsensusAddr(addr string) (Validator, error) {
