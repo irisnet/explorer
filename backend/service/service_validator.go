@@ -361,6 +361,11 @@ func (service *ValidatorService) UpdateValidators(vs []document.Validator) error
 	return document.Validator{}.Batch(txs)
 }
 
+func (service *ValidatorService) QueryValidatorMonikerAndValidatorAddrByHashAddr(addr string) (document.Validator, error) {
+
+	return document.Validator{}.QueryMonikerAndValidatorAddrByHashAddr(addr)
+}
+
 func (service *ValidatorService) QueryValidatorByConAddr(address string) document.Validator {
 
 	validator, err := document.Validator{}.QueryValidatorByConsensusAddr(address)
