@@ -29,6 +29,11 @@
                class="no_data_show">No Data</div>
         </div>
         <div class="pagination_footer_container">
+          <m-pagination :page-size="pageSize"
+                        :total="currentHeight"
+                        :page="currentPageNum"
+                        :page-change="pageChange"
+                        :range="range"></m-pagination>
         </div>
       </div>
     </div>
