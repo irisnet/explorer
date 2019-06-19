@@ -173,30 +173,28 @@ export default {
           display: none;
           position: absolute;
           z-index: 1000;
-          bottom: calc(100% + 4px);
+          bottom: calc(100% + 6px);
           left: 50%;
           transform: translateX(-50%);
-          margin-top: -10px auto 0;
           color: #ffffff;
           background-color: #000000;
-          line-height: 35px;
           border-radius: 0.04rem;
           word-wrap: break-word;
           white-space: nowrap;
-          line-height: 1.7;
+          line-height: 16px;
           div {
-            padding: 5px 15px;
+            padding: 8px 15px;
           }
           &::after {
             width: 0;
             height: 0;
-            border: 0.04rem solid transparent;
+            border: 0.06rem solid transparent;
             content: "";
             display: block;
             position: absolute;
             border-top-color: #000000;
             left: 50%;
-            margin-left: -4px;
+            margin-left: -6px;
           }
         }
       }

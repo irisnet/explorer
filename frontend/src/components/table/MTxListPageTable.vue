@@ -20,9 +20,6 @@
             <template slot-scope="{ row }" slot="Tx_Hash">
                 <div class="common_hover_parent" v-if="row.Tx_Hash">
                     <router-link :to="`/tx?txHash=${row.Tx_Hash}`" class="link_style common_font_style">{{formatTxHash(row.Tx_Hash)}}
-                        <div class="hover_content">
-                            {{row.Tx_Hash}}
-                        </div>
                     </router-link>
                 </div>
             </template>
@@ -35,7 +32,6 @@
                         <div>
                             <span class="remove_default_style">
                                 <router-link :to="`/address/1/${row.From}`" class="link_style justify common_font_style">{{formatAddress(row.From)}}
-                                    <span class="address_hover_content">{{row.From}}</span>
                                 </router-link>
                             </span>
                         </div>
@@ -49,7 +45,6 @@
                         <div>
                             <span>
                                 <router-link :to="`/address/1/${row.To}`" class="link_style common_font_style">{{formatAddress(row.To)}}
-                                    <span class="address_hover_content">{{row.To}}</span>
                                 </router-link>
                             </span>
                         </div>
@@ -60,18 +55,12 @@
             <template slot-scope="{ row }" slot="Tx_Signer">
                 <div class="common_hover_address_parent" v-if="row.Tx_Signer">
                     <router-link :to="`/address/1/${row.Tx_Signer}`" class="link_style common_font_style">{{formatAddress(row.Tx_Signer)}}
-                        <div class="address_hover_content">
-                            {{row.Tx_Signer}}
-                        </div>
                     </router-link>
                 </div>
             </template>
             <template slot-scope="{ row }" slot="OperatorAddr">
                 <div class="common_hover_address_parent">
                     <router-link :to="`/address/1/${row.OperatorAddr}`" class="link_style common_font_style">{{formatAddress(row.OperatorAddr)}}
-                        <div class="address_hover_content">
-                            {{row.Tx_Signer}}
-                        </div>
                     </router-link>
                 </div>
             </template>
@@ -97,11 +86,13 @@
 			return {
 				fields:null,
 				transferFields: [
-                    {
-                    	title:'Tx_Hash',
-	                    slot: 'Tx_Hash',
-                        width: 100,
-                    },
+          {
+            title:'Tx_Hash',
+            slot: 'Tx_Hash',
+            width: 100,
+            tooltip: true,
+            tooltipClassName: 'tooltip_left'
+          },
 					{
 						title:'Block',
 						slot: 'Block',
@@ -109,7 +100,8 @@
 					},
 					{
 						title:'From',
-						slot: 'From',
+            slot: 'From',
+            tooltip: true
 					},
 					{
 						title:'Amount',
@@ -119,7 +111,8 @@
 					},
 					{
 						title:'To',
-						slot: 'To',
+            slot: 'To',
+            tooltip: true
 					},
 					{
 						title:'Tx_Type',
@@ -134,7 +127,8 @@
 					},
 					{
 						title:'Tx_Signer',
-						slot: 'Tx_Signer',
+            slot: 'Tx_Signer',
+            tooltip: true
 					},
 					{
 						title:'Tx_Status',
@@ -148,11 +142,13 @@
 					},
 				],
 				declarationFields:[
-                    {
-                    	title:'Tx_Hash',
-	                    slot: 'Tx_Hash',
-	                    width: 100,
-                    },
+          {
+            title:'Tx_Hash',
+            slot: 'Tx_Hash',
+            width: 100,
+            tooltip: true,
+            tooltipClassName: 'tooltip_left'
+          },
 					{
 						title:'Block',
 						slot: 'Block',
@@ -165,7 +161,8 @@
 					},
 					{
 						title:'OperatorAddr',
-						slot: 'OperatorAddr',
+            slot: 'OperatorAddr',
+            tooltip: true
 					},
 					{
 						title:'Amount',
@@ -186,7 +183,8 @@
 					},
 					{
 						title:'Tx_Signer',
-						slot: 'Tx_Signer',
+            slot: 'Tx_Signer',
+            tooltip: true
 					},
 					{
 						title:'Tx_Status',
@@ -203,7 +201,9 @@
 					{
 						title:'Tx_Hash',
 						slot: 'Tx_Hash',
-						width: 100,
+            width: 100,
+            tooltip: true,
+            tooltipClassName: 'tooltip_left'
 					},
 					{
 						title:'Block',
@@ -212,7 +212,8 @@
 					},
 					{
 						title:'From',
-						slot: 'From',
+            slot: 'From',
+            tooltip: true
 					},
 					{
 						title:'Amount',
@@ -222,7 +223,8 @@
 					},
 					{
 						title:'To',
-						slot: 'To',
+            slot: 'To',
+            tooltip: true
 					},
 					{
 						title:'Tx_Type',
@@ -237,7 +239,8 @@
 					},
 					{
 						title:'Tx_Signer',
-						slot: 'Tx_Signer',
+            slot: 'Tx_Signer',
+            tooltip: true
 					},
 					{
 						title:'Tx_Status',
@@ -254,7 +257,9 @@
 					{
 						title:'Tx_Hash',
 						slot: 'Tx_Hash',
-						width: 100,
+            width: 100,
+            tooltip: true,
+            tooltipClassName: 'tooltip_left'
 					},
 					{
 						title:'Block',
@@ -294,7 +299,8 @@
 					},
 					{
 						title:'Tx_Signer',
-						slot: 'Tx_Signer',
+            slot: 'Tx_Signer',
+            tooltip: true
 					},
 					{
 						title:'Tx_Status',
@@ -367,82 +373,12 @@
         a{
             display: inline-block;
             position: relative;
-            .hover_content{
-                position: absolute;
-                left: 0;
-                height: 0.4rem;
-                color:#fff;
-                background: #000;
-                border-radius: 0.04rem;
-                display: none;
-                padding: 0.1rem 0.15rem 0.06rem 0.15rem;
-                z-index: 10;
-            }
-            &:hover{
-                .hover_content{
-                    position: absolute;
-                    top: -0.4rem;
-                    height: 0.4rem;
-                    color:#fff;
-                    background: #000;
-                    border-radius: 0.04rem;
-                    display: block;
-                    &::after{
-                        content: '';
-                        display: block;
-                        background: rgba(0,0,0,1);
-                        transform: rotate(45deg);
-                        width: 0;
-                        height: 0;
-                        border: 0.05rem solid transparent;
-                        position: relative;
-                        top: 0.04rem;
-                        z-index: 1;
-                        left: 0.14rem;
-                    }
-                }
-            }
         }
     }
     .common_hover_address_parent{
         a{
             position: relative;
-            .address_hover_content{
-                display: none;
-                position: absolute;
-                height: 0.4rem;
-                bottom: 0.19rem;
-                left: -100%;
-                color: #3598db;
-                background: rgba(0,0,0,0.8);
-                border-radius:0.04rem;
-                z-index: 10;
-            }
-            &:hover{
-                .address_hover_content{
-                    background: rgba(0,0,0,1);
-                    color: #fff;
-                    padding: 0.1rem 0.15rem 0.06rem 0.15rem;
-                    display: block;
-                    border-radius:0.04rem;
-                    font-size: 0.14rem;
-                    &::after{
-                        content: '';
-                        display: block;
-                        background: rgba(0,0,0,1);
-                        transform: rotate(45deg);
-                        width: 0;
-                        height: 0;
-                        border: 0.05rem solid transparent;
-                        position: relative;
-                        top: 0.04rem;
-                        z-index: 1;
-                        left: 1.23rem;
-                    }
-                }
-            }
         }
-
     }
 .common_font_style{
     font-family: Consolas;

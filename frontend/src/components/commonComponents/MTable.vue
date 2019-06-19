@@ -19,7 +19,7 @@
                 @click="sortDataByClick(v)"
                 v-for="(v, i) in columns"
                 :key="i">{{v.title}}
-              <i class="sort"
+              <i class="sort" v-if="v.sortable"
                  :class="{'desc': (v.key === sortAsBy || v.slot === sortAsBy) && sortAsDesc, 
               'asc': (v.key === sortAsBy || v.slot === sortAsBy) && !sortAsDesc}"></i>
             </th>
@@ -51,6 +51,7 @@
                 <div :class="{'tooltip_span_container': it.tooltip}">
                   {{v[it.key]}}
                   <span class="tooltip_span"
+                        :class="it.tooltipClassName"
                         v-if="it.tooltip">{{it.tooltip === true ? (v[it.key || it.slot]) : it.tooltip}}</span>
                 </div>
               </template>
@@ -60,6 +61,7 @@
                         :row="v">
                   </slot>
                   <span class="tooltip_span"
+                        :class="it.tooltipClassName"
                         v-if="it.tooltip">{{it.tooltip === true ? (v[it.key || it.slot]) : it.tooltip}}</span>
                 </div>
               </template>
@@ -314,22 +316,29 @@ table.m_table {
       bottom: calc(100% + 4px);
       left: 50%;
       transform: translateX(-50%);
-      margin-top: -10px auto 0;
-      padding: 0 15px;
+      padding: 8px 15px;
       color: #ffffff;
       background-color: #000000;
-      line-height: 35px;
       border-radius: 0.04rem;
+      line-height: 16px;
       &::after {
         width: 0;
         height: 0;
-        border: 0.04rem solid transparent;
+        border: 0.06rem solid transparent;
         content: "";
         display: block;
         position: absolute;
         border-top-color: #000000;
+        bottom: -12px;
         left: 50%;
-        margin-left: -4px;
+        margin-left: -6px;
+      }
+    }
+    .tooltip_left {
+      left: 0;
+      transform: translateX(0);
+      &::after {
+        left: 30px;
       }
     }
   }
