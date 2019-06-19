@@ -276,11 +276,11 @@ export default {
   .page_nav_container {
     position: fixed;
     width: 12.8rem;
-    margin-top: 62px;
+    margin-top: 0.62rem;
     background-color: #ffffff;
   }
   .block_list_table_container {
-    padding-top: 132px;
+    padding-top: 1.32rem;
   }
 }
 </style>
