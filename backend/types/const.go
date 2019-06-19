@@ -11,6 +11,7 @@ const (
 	UrlRegisterNavigationBar = "/home/navigation"
 
 	//Block
+	UrlRegisterQueryBlockLatestHeight = "/block/latestheight"
 	UrlRegisterQueryBlock             = "/block/{height}"
 	UrlRegisterQueryRecentBlocks      = "/blocks/recent"
 	UrlRegisterQueryBlocks            = "/blocks"
@@ -95,6 +96,8 @@ var (
 	RoleValidator = "validator"
 	RoleCandidate = "candidate"
 	RoleJailed    = "jailed"
+
+	RoleList = []string{RoleValidator, RoleCandidate, RoleJailed}
 
 	BankList        = []string{TxTypeTransfer, TxTypeBurn}
 	DeclarationList = []string{TxTypeStakeCreateValidator, TxTypeStakeEditValidator, TxTypeUnjail}

@@ -270,7 +270,7 @@
               this.status = data.Status ? Tools.firstWordUpperCase(data.Status): '--';
               if(data.Amount && data.Amount.length !==0){
                 this.amountValue = data.Amount.map(item=>{
-                  item.amount =Tools.formatPriceToFixed(Tools.convertScientificNotation2Number(Tools.formatNumber(item.amount)));
+                  item.amount = Tools.formatStringToNumber(item.amount);
                   if(!item.denom){
                     return `${item.amount} SHARES`;
                   }else{
@@ -278,7 +278,7 @@
                   }
                 }).join(',') ;
               }else if(data.Amount && Object.keys(data.Amount).includes('amount') && Object.keys(data.Amount).includes('denom')){
-                data.Amount =  Tools.formatPriceToFixed(Tools.convertScientificNotation2Number(Tools.formatNumber(data.Amount.amount)));
+                data.Amount =  Tools.formatStringToNumber(item.amount);
                 this.amountValue = `${data.Amount.amount} ${Tools.formatDenom(data.Amount.denom).toUpperCase()}`
               }else {
                 this.amountValue = "--"

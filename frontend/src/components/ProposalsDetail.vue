@@ -64,8 +64,8 @@
         </div>
         <div class="information_props_wrap">
           <span class="information_props">Description :</span>
-          <span class="information_value information_show_trim">
-            <pre class="information_pre">{{description}}</pre>
+          <span class="information_value">
+            <pre class="information_pre information_show_trim">{{description}}</pre>
           </span>
         </div>
 
@@ -121,7 +121,6 @@
       </div>
       <div class="proposals_detail_table_wrap">
         <spin-component :showLoading="showLoading"/>
-        <!-- <blocks-list-table :items="items" :type="'ProposalsDetail'" :showNoData="showNoData" :min-width="tableMinWidth"></blocks-list-table> -->
         <m-proposals-detail-table :items="items" fields="votersFields"></m-proposals-detail-table>
         <div v-show="showNoData" class="no_data_show">
           No Data
@@ -135,7 +134,6 @@
       <div class="proposals_table_title_div" style="margin-top: 0;">Depositors</div>
       <div class="proposals_detail_table_wrap">
         <spin-component :showLoading="showLoading"/>
-        <!-- <blocks-list-table :items="depositorItems" :type="'ProposalsDetail'" :showNoData="depositorShowNoData" :min-width="tableMinWidth"></blocks-list-table> -->
         <m-proposals-detail-table :items="depositorItems" fields="depositorsFields"></m-proposals-detail-table>
         <div v-show="depositorShowNoData" class="no_data_show">
           No Data
@@ -236,14 +234,12 @@
       },
       flShowProposalTime(proposalTimeName,status){
         if(status === 'Rejected' || status === 'Passed' || status === 'VotingPeriod'){
-          return true
-        }else{
-          switch (proposalTimeName){
-            case proposalTimeName === 'depositEndTime' && status === 'DepositPeriod' : return true ;
-            case proposalTimeName === 'votingStartTime' && status === 'VotingPeriod' : return true ;
-            case proposalTimeName === 'votingEndTime' && status === 'VotingPeriod' : return true ;
-          }
-        }
+         return true
+         }else{
+            if(proposalTimeName === 'depositEndTime' && status === 'DepositPeriod') return true;
+            if(proposalTimeName === 'votingStartTime' && status === 'VotingPeriod') return true;
+            if(proposalTimeName === 'votingEndTime' && status === 'VotingPeriod') return true;
+         }
       },
       formatProposalTime(time){
         let currentServerTime  = new Date().getTime() + this.diffMilliseconds;
@@ -340,6 +336,10 @@
                 that.votingStartAge = that.formatProposalTime(that.flShowProposalTime('votingStartTime',data.proposal.status) ? data.proposal.voting_start_time : '');
                 that.votingEndAge = that.formatProposalTime(that.flShowProposalTime('votingEndTime',data.proposal.status) ? data.proposal.voting_end_time : '' );
               },1000);
+              this.submitAge = this.formatProposalTime(data.proposal.submit_time ? data.proposal.submit_time : '');
+              this.depositEndAge = this.formatProposalTime(this.flShowProposalTime('depositEndTime',data.proposal.status) ? data.proposal.deposit_end_time : '');
+              this.votingStartAge = this.formatProposalTime(this.flShowProposalTime('votingStartTime',data.proposal.status) ? data.proposal.voting_start_time : '');
+              this.votingEndAge = this.formatProposalTime(this.flShowProposalTime('votingEndTime',data.proposal.status) ? data.proposal.voting_end_time : '' );
               this.software = data.proposal.software;
               this.version = data.proposal.version;
               this.switchHeight = data.proposal.switch_height;

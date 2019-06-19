@@ -2,9 +2,10 @@ package utils
 
 import (
 	"encoding/hex"
-	"github.com/magiconair/properties/assert"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestDecodeAndConvert(t *testing.T) {

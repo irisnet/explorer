@@ -75,7 +75,6 @@ export default class Tools{
   static conversionTimeToUTCByValidatorsLine(originTime){
     return `${originTime.substr(0,4)}/${originTime.substr(5,2)}/${originTime.substr(8,2)} ${originTime.substr(11,8)}`;
   }
-
   static formatNumber(num){
     return new BigNumber(num).div(1000000000000000000).toNumber();
   }
@@ -96,8 +95,12 @@ export default class Tools{
    * param string;
    * return string
    */
-
   static formatStringToNumber(number){
+    if(number.toString().indexOf('e') !== -1 || number.toString().indexOf('E') !== -1){
+      number = new BigNumber(number).toFixed().toString();
+    }else {
+      number = number.toString()
+    }
     let stringLength = number.length;
     let splitSite = 18;
     let stringSplitSiteLength = 19;

@@ -4,7 +4,7 @@
       <span class="home_module_block_title"
             :class="homeModuleBlockTitle"
       >{{moduleName}}</span>
-      <router-link class="view_all_btn" v-if="moduleTitle === 'blocks'" :to="moduleName === 'Blocks' ? `/block/1/0` : `/recent_transactions/2/recent`">
+      <router-link class="view_all_btn" v-if="moduleTitle === 'blocks'" :to="moduleName === 'Blocks' ? `/blocks` : ``">
         <span class="view_all_Content">View All</span>
       </router-link>
     </div>

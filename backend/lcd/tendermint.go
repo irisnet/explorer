@@ -15,14 +15,17 @@ var (
 	CriticalThreshold     string
 	CriticalMinDeposit    document.Coin
 	CriticalParticipation string
+	CriticalVeto          string
 
 	ImportantThreshold     string
 	ImportantMinDeposit    document.Coin
 	ImportantParticipation string
+	ImportantVeto          string
 
 	NormalThreshold     string
 	NormalMinDeposit    document.Coin
 	NormalParticipation string
+	NormalVeto          string
 )
 
 const (
@@ -32,14 +35,17 @@ const (
 	CriticalThresholdKey     = "critical_threshold"
 	CriticalMinDepositKey    = "critical_min_deposit"
 	CriticalParticipationKey = "critical_participation"
+	CriticalVetoKey          = "critical_veto"
 
 	ImportantThresholdKey     = "important_threshold"
 	ImportantParticipationKey = "important_participation"
 	ImportantMinDepositKey    = "important_min_deposit"
+	ImportantVetoKey          = "important_veto"
 
 	NormalMinDepositKey    = "normal_min_deposit"
 	NormalThresholdKey     = "normal_threshold"
 	NormalParticipationKey = "normal_participation"
+	NormalVetoKey          = "normal_veto"
 
 	Critical  = "Critical"
 	Important = "Important"
@@ -83,19 +89,19 @@ func GetMinDepositByProposalType(proposalType string) (document.Coin, error) {
 
 }
 
-func GetThresholdAndParticipationMinDeposit(proposalType string) (string, string, error) {
+func GetPassVetoThresholdAndParticipationMinDeposit(proposalType string) (string, string, string, error) {
 
 	switch proposalType {
 	case ProposalTypeSoftwareUpgrade, ProposalTypeSystemHalt:
-		return CriticalThreshold, CriticalParticipation, nil
+		return CriticalThreshold, CriticalVeto, CriticalParticipation, nil
 
 	case ProposalTypeParameterChange:
-		return ImportantThreshold, ImportantParticipation, nil
+		return ImportantThreshold, ImportantVeto, ImportantParticipation, nil
 	case ProposalTypeTxTaxUsage:
-		return NormalThreshold, NormalParticipation, nil
+		return NormalThreshold, NormalVeto, NormalParticipation, nil
 
 	default:
-		return "", "", errors.New(fmt.Sprintf("expect proposal type: %v %v %v %v ,but actual: %v",
+		return "", "", "", errors.New(fmt.Sprintf("expect proposal type: %v %v %v %v ,but actual: %v",
 			ProposalTypeSoftwareUpgrade, ProposalTypeSystemHalt, ProposalTypeParameterChange, ProposalTypeTxTaxUsage, proposalType))
 	}
 }
@@ -108,6 +114,18 @@ func init() {
 		return
 	}
 
+	if v, ok := govParamMap[CriticalVetoKey].(string); ok {
+		CriticalVeto = v
+	}
+
+	if v, ok := govParamMap[ImportantVetoKey].(string); ok {
+		ImportantVeto = v
+	}
+
+	if v, ok := govParamMap[NormalVetoKey].(string); ok {
+		NormalVeto = v
+	}
+
 	if v, ok := govParamMap[CriticalThresholdKey].(string); ok {
 		CriticalThreshold = v
 	}
@@ -115,7 +133,10 @@ func init() {
 	if v, ok := govParamMap[CriticalMinDepositKey].([]interface{}); ok {
 		if len(v) > 0 {
 			first := v[0].(map[string]interface{})
-			CriticalMinDeposit = utils.ParseCoin(fmt.Sprintf("%v%v", first["amount"], first["denom"]))
+
+			coinAsUtils := utils.ParseCoin(fmt.Sprintf("%v%v", first["amount"], first["denom"]))
+			CriticalMinDeposit.Amount = coinAsUtils.Amount
+			CriticalMinDeposit.Denom = coinAsUtils.Denom
 		}
 	}
 	if v, ok := govParamMap[CriticalParticipationKey].(string); ok {
@@ -129,7 +150,9 @@ func init() {
 	if v, ok := govParamMap[ImportantMinDepositKey].([]interface{}); ok {
 		if len(v) > 0 {
 			first := v[0].(map[string]interface{})
-			ImportantMinDeposit = utils.ParseCoin(fmt.Sprintf("%v%v", first["amount"], first["denom"]))
+			coinAsUtils := utils.ParseCoin(fmt.Sprintf("%v%v", first["amount"], first["denom"]))
+			ImportantMinDeposit.Amount = coinAsUtils.Amount
+			ImportantMinDeposit.Denom = coinAsUtils.Denom
 		}
 	}
 
@@ -144,7 +167,9 @@ func init() {
 	if v, ok := govParamMap[NormalMinDepositKey].([]interface{}); ok {
 		if len(v) > 0 {
 			first := v[0].(map[string]interface{})
-			NormalMinDeposit = utils.ParseCoin(fmt.Sprintf("%v%v", first["amount"], first["denom"]))
+			coinAsUtils := utils.ParseCoin(fmt.Sprintf("%v%v", first["amount"], first["denom"]))
+			NormalMinDeposit.Amount = coinAsUtils.Amount
+			NormalMinDeposit.Denom = coinAsUtils.Denom
 		}
 	}
 

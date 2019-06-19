@@ -90,14 +90,13 @@
 
     <b-table :fields='fields' :items='items' striped v-if="type === 'addressTxList'" nodelabel >
       <template slot='Tx_Hash' slot-scope='data'>
-         <span class="skip_route" style="display: flex">
-            <div class="hash_container">
-              <span>
-                <router-link :to="`/tx?txHash=${data.item.Tx_Hash}`">{{data.item.Tx_Hash ? `${formatTxHash(String(data.item.Tx_Hash))}` : ''}}</router-link>
-              </span>
-              <span class="hash_content">{{data.item.Tx_Hash}}</span>
+        <div class="common_hover_parent" v-if="data.item.Tx_Hash">
+          <router-link :to="`/tx?txHash=${data.item.Tx_Hash}`" class="link_style common_font_style">{{formatTxHash(data.item.Tx_Hash)}}
+            <div class="hover_content">
+              {{data.item.Tx_Hash}}
             </div>
-          </span>
+          </router-link>
+        </div>
       </template>
       <template slot='Age' slot-scope='data'>
         <span v-show="data.item.Age">{{data.item.Age}}</span>
@@ -341,10 +340,12 @@
     display: flex;
     flex-direction: column;
     position: relative;
-      font-family: Consolas;
+    font-family: "Consolas","Arial",-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     .address{
       display: none;
       position: absolute;
+      height: 0.4rem;
+      padding-top: 0.02rem;
       left: -1.29rem;
       top: -0.38rem;
       color: #3598db;
@@ -356,7 +357,7 @@
       .address{
         background: rgba(0,0,0,1);
         color: #fff;
-        padding: 0.06rem 0.15rem 0 0.15rem;
+        padding: 0.1rem 0.15rem 0.06rem 0.15rem;
         display: block;
         border-radius:0.04rem;
         font-size: 0.14rem;
@@ -367,9 +368,9 @@
           transform: rotate(45deg);
           width: 0;
           height: 0;
-          border: 0.04rem solid transparent;
+          border: 0.05rem solid transparent;
           position: relative;
-          top: 0.03rem;
+          top: 0.04rem;
           z-index: 1;
           left: 1.45rem;
         }

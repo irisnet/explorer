@@ -1,6 +1,9 @@
 package document
 
 import (
+	"fmt"
+
+	"github.com/irisnet/explorer/backend/orm"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -20,10 +23,29 @@ type Config struct {
 	ShowFaucet int    `bson:"show_faucet" json:"show_faucet,omitempty"`
 }
 
+func (c Config) String() string {
+	return fmt.Sprintf(`
+		EnvNm      :%v
+		Host       :%v
+		ChainId    :%v
+		ShowFaucet :%v
+		`, c.EnvNm, c.Host, c.ChainId, c.ShowFaucet)
+}
+
 func (a Config) Name() string {
 	return CollectionNmConfig
 }
 
 func (a Config) PkKvPair() map[string]interface{} {
 	return bson.M{Account_Field_EnvNm: a.EnvNm}
+}
+
+func (_ Config) GetConfig() ([]Config, error) {
+
+	var configs []Config
+	var query = orm.NewQuery().
+		SetCollection(CollectionNmConfig).
+		SetResult(&configs)
+	err := query.Exec()
+	return configs, err
 }
