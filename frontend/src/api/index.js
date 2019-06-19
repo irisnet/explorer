@@ -34,7 +34,7 @@ const urlApi = {
   blockInfoTokenFlow: '/api/tx/token/flow?height={height}&page={pageNumber}&size={pageSize}',
   //blockList
   blockList: '/api/blocks?page={pageNumber}&size={pageSize}',
-  blockListLatestheight: '/api/block/latestheight',
+  blockListLatestHeight: '/api/block/latestheight',
   //parameter
   govParams: '/api/gov/params',
   //proposal
@@ -52,9 +52,11 @@ const urlApi = {
   txListGov: '/api/tx/gov/{pageNumber}/{pageSize}',
   //validatorList
   validatorList: '/api/stake/validators?page={pageNumber}&size={pageSize}&type={validatorStatus}&origin=browser',
-  validatorListHeaderImg: 'https://keybase.io/_/service/1.0/user/lookup.json?fields=pictures&key_suffix={keyBase}',
+  validatorListHeaderImg: 'https://keybase.io/_/api/1.0/user/lookup.json?fields=pictures&key_suffix={keyBase}',
   //sysdate
   sysdate: '/api/sysdate',
+  //richList
+  richListAccounts: '/api/accounts'
 };
 
 export default urlApi

@@ -433,7 +433,7 @@
               this.flActiveValidator = false;
               this.flShowValidatorJailed = true;
               this.validatorStatusColor = "#f00";
-              this.votingPowerValue = Tools.formatStringToNumber(validator.original_tokens);
+              this.votingPowerValue = Tools.numberMoveDecimal(validator.original_tokens);
             }else{
               if(validator.status === 'Unbonded' || validator.status === 'Unbonding' ){
                 this.flShowValidatorCandidate = true;
