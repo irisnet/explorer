@@ -10,12 +10,12 @@
         <div class="page_nav_container">
           <span>Current Height
             <span class="skip_route">
-              <router-link :to="`/block/${count}`">{{count}}</router-link>
+              <router-link :to="`/block/${currentHeight}`">{{currentHeight}}</router-link>
             </span>
           </span>
           <div class="pagination_container">
             <m-pagination :page-size="pageSize"
-                          :total="count"
+                          :total="currentHeight"
                           :page="currentPageNum"
                           :page-change="pageChange"
                           :range="range"></m-pagination>
@@ -55,8 +55,8 @@ export default {
     return {
       pageSize: 30,
       currentPageNum: this.forCurrentPageNum(),
-      count: sessionStorage.getItem("blockListTotal")
-        ? JSON.parse(sessionStorage.getItem("blockListTotal"))
+      currentHeight: sessionStorage.getItem("blockListTotal")
+        ? Number(sessionStorage.getItem("blockListTotal"))
         : 0,
       items: [],
       showNoData: false,
@@ -103,8 +103,8 @@ export default {
       Service.commonInterface({ blockListLatestheight: {} }, data => {
         try {
           this.isoMunted = true;
-          this.count = data.data || 0;
-          sessionStorage.setItem("blockListTotal", JSON.stringify(this.count));
+          this.currentHeight = data.data || 0;
+          sessionStorage.setItem("blockListTotal", this.currentHeight);
         } catch (e) { }
       });
     },
