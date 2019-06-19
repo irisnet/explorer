@@ -1,7 +1,7 @@
 import Service from '../util/axios'
 import urlApi from "../api"
 const Server = {
-  /**
+    /**
     * params
     * {
     *     apiUrlObjectKey:{
