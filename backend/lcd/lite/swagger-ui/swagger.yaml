@@ -297,8 +297,37 @@ paths:
           description: generic error response
           schema:
             $ref: "#/definitions/error"
+  /api/accounts:
+    get:
+      tags:
+        - Account
+      responses:
+        200:
+          type: array
+          items:
+            $ref: "#/definitions/AccountInfo"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
 
 definitions:
+  AccountInfo:
+    type: object
+    properties:
+      rank:
+        type: integer
+        format: int
+      address:
+        type: string
+      percent:
+        type: integer
+        format: float64
+      update_at:
+        type: integer
+        format: int64
+      balance:
+        $ref: "#/definitions/Coins"
   NavigationData:
     type: object
     properties:
