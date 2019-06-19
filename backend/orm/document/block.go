@@ -1,6 +1,7 @@
 package document
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/irisnet/explorer/backend/orm"
@@ -11,24 +12,40 @@ import (
 const (
 	CollectionNmBlock = "block"
 
-	Block_Field_Height     = "height"
-	Block_Field_Hash       = "hash"
-	Block_Field_Time       = "time"
-	Block_Field_NumTxs     = "num_txs"
-	Block_Field_Meta       = "meta"
-	Block_Field_Block      = "block"
-	Block_Field_Validators = "validators"
+	Block_Field_Height          = "height"
+	Block_Field_Hash            = "hash"
+	Block_Field_Time            = "time"
+	Block_Field_NumTxs          = "num_txs"
+	Block_Field_Meta            = "meta"
+	Block_Field_Block           = "block"
+	Block_Field_Validators      = "validators"
+	Block_Field_ProposalAddress = "proposal_address"
 )
 
 type Block struct {
-	Height     int64         `bson:"height"`
-	Hash       string        `bson:"hash"`
-	Time       time.Time     `bson:"time"`
-	NumTxs     int64         `bson:"num_txs"`
-	Meta       BlockMeta     `bson:"meta"`
-	Block      BlockContent  `bson:"block"`
-	Validators []TmValidator `bson:"validators"`
-	Result     BlockResults  `bson:"results"`
+	Height       int64         `bson:"height"`
+	Hash         string        `bson:"hash"`
+	Time         time.Time     `bson:"time"`
+	NumTxs       int64         `bson:"num_txs"`
+	Meta         BlockMeta     `bson:"meta"`
+	Block        BlockContent  `bson:"block"`
+	Validators   []TmValidator `bson:"validators"`
+	Result       BlockResults  `bson:"results"`
+	ProposalAddr string        `bson:"proposal_address"`
+}
+
+func (b Block) String() string {
+	return fmt.Sprintf(`
+		Height      :%v
+		Hash        :%v
+		Time        :%v
+		NumTxs      :%v
+		Meta        :%v
+		Block       :%v
+		Validators  :%v
+		Result      :%v
+		ProposalAddr:%v
+		`, b.Height, b.Hash, b.Time, b.NumTxs, b.Meta, b.Block, b.Validators, b.Result, b.ProposalAddr)
 }
 
 func (_ Block) QueryBlockHeightTimeHashByHeight(height int64) (Block, error) {
@@ -45,6 +62,19 @@ func (_ Block) QueryBlockHeightTimeHashByHeight(height int64) (Block, error) {
 
 	err := query.Exec()
 	return block, err
+}
+
+func (_ Block) GetBlockListByOffsetAndSize(offset, size int) ([]Block, error) {
+
+	var selector = bson.M{"height": 1, "time": 1, "num_txs": 1, "hash": 1, "validators.pub_key": 1, "validators.address": 1,
+		"validators.voting_power": 1, "block.last_commit.precommits.validator_address": 1, "meta.header.total_txs": 1, "proposal_address": 1}
+	var blocks []Block
+
+	sort := desc(document.Block_Field_Height)
+
+	err := querylistByOffsetAndSize(document.CollectionNmBlock, selector, nil, sort, offset, size, &blocks)
+
+	return blocks, err
 }
 
 func (_ Block) GetBlockListByPage(offset, size int) (int, []Block, error) {

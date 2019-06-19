@@ -135,21 +135,97 @@ func (service *BlockService) QueryBlockInfo(height int64) model.BlockInfo {
 	return result
 }
 
-func (service *BlockService) QueryList(page, size int) model.PageVo {
-	var result []model.BlockInfoVo
-	var pageInfo model.PageVo
+func (service *BlockService) QueryList(page, size int) []model.BlockForList {
 
-	total, blockList, err := document.Block{}.GetBlockListByPage(page, size)
+	offset := 0
+
+	if page > 1 {
+		offset = (page-1)*size - 1
+		size = size + 1
+	}
+
+	blocks, err := document.Block{}.GetBlockListByOffsetAndSize(offset, size)
 
 	if err != nil {
+		logger.Error("GetBlockListByOffsetAndSize", logger.String("err", err.Error()))
 		panic(types.CodeNotFound)
 	}
-	for _, block := range blockList {
-		result = append(result, buildBlock(block))
+
+	proposerAsHashAddr := make([]string, 0, len(blocks))
+
+	for _, v := range blocks {
+		proposerAsHashAddr = append(proposerAsHashAddr, v.ProposalAddr)
 	}
-	pageInfo.Data = result
-	pageInfo.Count = total
-	return pageInfo
+
+	proposerAsHashAddr = utils.RemoveDuplicationStrArr(proposerAsHashAddr)
+
+	validators, err := document.Validator{}.QueryValidatorMonikerOpAddrByHashAddr(proposerAsHashAddr)
+
+	if err != nil {
+		logger.Error("QueryValidatorMonikerOpAddrConsensusPubkeyByAddr", logger.String("err", err.Error()))
+	}
+
+	validatorMapByHashAddr := map[string]document.Validator{}
+	blockMapByHeight := map[int64]document.Block{}
+
+	for _, v := range validators {
+		validatorMapByHashAddr[v.ProposerAddr] = v
+	}
+
+	for _, v := range blocks {
+		blockMapByHeight[v.Height] = v
+	}
+
+	blocksAsModel := make([]model.BlockForList, 0, len(blocks))
+
+	for _, block := range blocks {
+
+		var proposerMoniker, proposerValidatorAddr string
+		if v, ok := validatorMapByHashAddr[block.ProposalAddr]; ok {
+			proposerMoniker = v.Description.Moniker
+			proposerValidatorAddr = v.OperatorAddress
+		}
+
+		votingPower := int64(0)
+		precommitVotingPower := int64(0)
+		precomitValidatorNum := 0
+
+		for _, v := range block.Validators {
+			votingPower += v.VotingPower
+		}
+
+		if v, ok := blockMapByHeight[block.Height+1]; ok {
+			precomitValidatorNum = len(v.Block.LastCommit.Precommits)
+			for _, preValidator := range v.Block.LastCommit.Precommits {
+				for _, validator := range block.Validators {
+					if preValidator.ValidatorAddress == validator.Address {
+						precommitVotingPower += validator.VotingPower
+						continue
+					}
+				}
+			}
+		}
+
+		tmp := model.BlockForList{
+			Height:                  block.Height,
+			ProposerMoniker:         proposerMoniker,
+			ProposerAsValidatorAddr: proposerValidatorAddr,
+			TxnNum:                  block.NumTxs,
+			PrecommitValidatorNum:   precomitValidatorNum,
+			ValidatorNumForHeight:   len(block.Validators),
+			PrecommitVotingPower:    precommitVotingPower,
+			VotingPowerForHeight:    votingPower,
+			Timestamp:               block.Time,
+		}
+
+		blocksAsModel = append(blocksAsModel, tmp)
+	}
+
+	if page != 1 && len(blocksAsModel) > 1 {
+		return blocksAsModel[1:]
+	}
+
+	return blocksAsModel
 }
 
 func (service *BlockService) QueryRecent() []model.BlockInfoVo {
