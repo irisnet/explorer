@@ -1,7 +1,7 @@
 <template>
   <div :style="{opacity: show ? 1 : 0}">
     <div class="m-table-header">
-      <table class="m_table"
+      <table :class="['m_table', data.length > 0 ? 'm-table-header-table-fixed' : '']"
              cellspacing="0"
              cellpadding="0"
              border="0"
@@ -45,7 +45,8 @@
               :key="i">
             <td v-for="(it, j) in columns"
                 :width="it.width"
-                :key="j" :class="it.className">
+                :key="j"
+                :class="it.className">
               <template v-if="it.key">
                 <div :class="{'tooltip_span_container': it.tooltip}">
                   {{v[it.key]}}
@@ -219,8 +220,10 @@ table.m_table {
 .m-table-header {
   position: relative;
   z-index: 2;
-  height: 50px;
   width: 12.8rem;
+  .m-table-header-table-fixed {
+    table-layout: fixed;
+  }
   table {
     font-size: 14px;
     color: rgb(0, 0, 0);
@@ -286,7 +289,6 @@ table.m_table {
         vertical-align: middle;
       }
     }
-    border-bottom: 1px solid #dee2e6;
     &:nth-of-type(2n) {
       td {
         background-color: #f6f6f6;

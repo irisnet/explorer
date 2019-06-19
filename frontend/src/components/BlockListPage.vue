@@ -8,7 +8,11 @@
     <div class="block_list_container">
       <div class="block_list_content">
         <div class="page_nav_container">
-          <span>Current Height {{count}}</span>
+          <span>Current Height
+            <span class="skip_route">
+              <router-link :to="`/block/${count}`">{{count}}</router-link>
+            </span>
+          </span>
           <div class="pagination_container">
             <m-pagination :page-size="pageSize"
                           :total="count"
@@ -213,6 +217,12 @@ export default {
         justify-content: space-between;
         height: 0.7rem;
         align-items: center;
+        .skip_route {
+          a {
+            color: #3598db !important;
+            cursor: pointer;
+          }
+        }
         span {
           color: #a2a2ae;
           font-size: 0.18rem;
