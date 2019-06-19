@@ -33,7 +33,8 @@ const urlApi = {
   blockInfoValidatorSet: '/api/stake/validatorset?height={height}&page={pageNumber}&size={pageSize}',
   blockInfoTokenFlow: '/api/tx/token/flow?height={height}&page={pageNumber}&size={pageSize}',
   //blockList
-  blockList: '/api/blocks/{pageNumber}/{pageSize}',
+  blockList: '/api/blocks?page={pageNumber}&size={pageSize}',
+  blockListLatestheight: '/api/block/latestheight',
   //parameter
   govParams: '/api/gov/params',
   //proposal

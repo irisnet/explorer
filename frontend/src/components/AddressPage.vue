@@ -118,7 +118,7 @@
               <echarts-validators-line :informationValidatorsLine="informationValidatorsLine" ></echarts-validators-line>
             </div>
             <div class="line_tab_content">
-              <div v-for="(item,index) in tabVotingPower" @click="getValidatorHistory(item.title,index)"
+              <div v-for="(item,index) in tabVotingPower" :key="index" @click="getValidatorHistory(item.title,index)"
                    :class="item.active ? 'border-none' : 'border-block' " >{{item.title}}</div>
             </div>
           </div>
@@ -128,7 +128,7 @@
               <echarts-validators-uptime-line :informationUptimeLine="informationUptimeLine" ></echarts-validators-uptime-line>
             </div>
             <div class="line_tab_content">
-              <div v-for="(item,index) in tabUptime" @click="getValidatorUptimeHistory(item.title,index)"
+              <div v-for="(item,index) in tabUptime" :key="index" @click="getValidatorUptimeHistory(item.title,index)"
                    :class="item.active ? 'border-none' : 'border-block' ">{{item.title}}</div>
             </div>
           </div>
@@ -140,7 +140,7 @@
         <ul class="list_tab_container">
           <li class="list_tab_item"
               :class="item.active ? 'activeStyle' : 'unactiveStyle'" v-for="(item,index) in txTab"
-              @click="tabTxList(index,item.txTabName,1,20)">{{item.txTabName}} ({{item.txTotal}})
+                :key="index" @click="tabTxList(index,item.txTabName,1,20)">{{item.txTabName}} ({{item.txTotal}})
           </li>
         </ul>
       </div>
