@@ -34,7 +34,7 @@ const urlApi = {
   blockInfoTokenFlow: '/api/tx/token/flow?height={height}&page={pageNumber}&size={pageSize}',
   //blockList
   blockList: '/api/blocks?page={pageNumber}&size={pageSize}',
-  blockListLatestHeight: '/api/block/latestheight',
+  blockListLatestheight: '/api/block/latestheight',
   //parameter
   govParams: '/api/gov/params',
   //proposal

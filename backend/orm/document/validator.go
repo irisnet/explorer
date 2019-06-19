@@ -15,15 +15,16 @@ import (
 const (
 	CollectionNmValidator = "ex_validator"
 
-	ValidatorFieldVotingPower     = "voting_power"
-	ValidatorFieldJailed          = "jailed"
-	ValidatorFieldStatus          = "status"
-	ValidatorFieldOperatorAddress = "operator_address"
-	ValidatorFieldDescription     = "description"
-	ValidatorFieldConsensusAddr   = "consensus_pubkey"
-	ValidatorStatusValUnbonded    = 0
-	ValidatorStatusValUnbonding   = 1
-	ValidatorStatusValBonded      = 2
+	ValidatorFieldVotingPower      = "voting_power"
+	ValidatorFieldJailed           = "jailed"
+	ValidatorFieldStatus           = "status"
+	ValidatorFieldOperatorAddress  = "operator_address"
+	ValidatorFieldDescription      = "description"
+	ValidatorFieldConsensusAddr    = "consensus_pubkey"
+	ValidatorFieldProposerHashAddr = "proposer_addr"
+	ValidatorStatusValUnbonded     = 0
+	ValidatorStatusValUnbonding    = 1
+	ValidatorStatusValBonded       = 2
 )
 
 type (
@@ -430,6 +431,16 @@ func (_ Validator) QueryCandidateUptimeByWeekOrMonth(addr, category string) ([]U
 	}
 
 	return result, nil
+}
+
+func (_ Validator) QueryMonikerAndValidatorAddrByHashAddr(addr string) (Validator, error) {
+
+	selector := bson.M{ValidatorFieldOperatorAddress: 1, ValidatorFieldDescription: 1}
+	condition := bson.M{ValidatorFieldProposerHashAddr: addr}
+	var val Validator
+	err := queryOne(CollectionNmValidator, selector, condition, &val)
+
+	return val, err
 }
 
 func (_ Validator) QueryValidatorByConsensusAddr(addr string) (Validator, error) {
