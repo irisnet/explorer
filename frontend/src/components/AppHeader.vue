@@ -498,6 +498,9 @@
               }
             }
           })
+        }).catch( (e) =>{
+          console.error(e);
+          this.explorerLogo = require("../assets/logo.png")
         });
       },
       handleConfigs(configs){
