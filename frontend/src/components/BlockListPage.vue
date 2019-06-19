@@ -8,7 +8,7 @@
     <div class="block_list_container">
       <div class="block_list_content">
         <div class="page_nav_container">
-          <span>Current Height
+          <span>Current Height:
             <span v-if="currentHeight > 0"
                   class="skip_route">
               <router-link :to="`/block/${currentHeight}`">{{currentHeight}}</router-link>
@@ -219,6 +219,7 @@ export default {
         height: 0.7rem;
         align-items: center;
         .skip_route {
+          margin-left: 0.09rem;
           a {
             color: #3598db !important;
             cursor: pointer;
