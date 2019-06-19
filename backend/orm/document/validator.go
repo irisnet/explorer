@@ -21,6 +21,9 @@ const (
 	ValidatorFieldOperatorAddress = "operator_address"
 	ValidatorFieldDescription     = "description"
 	ValidatorFieldConsensusAddr   = "consensus_pubkey"
+	ValidatorStatusValUnbonded    = 0
+	ValidatorStatusValUnbonding   = 1
+	ValidatorStatusValBonded      = 2
 )
 
 type (

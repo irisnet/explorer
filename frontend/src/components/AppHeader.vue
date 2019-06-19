@@ -5,7 +5,7 @@
       <div class="header_top">
         <div class="header_left">
           <div class="imageWrap" @click="featureButtonClick('/home')">
-            <img src="../assets/logo.png"/>
+            <img :src="explorerLogo"/>
           </div>
           <div class="network_select_container" v-show="flShowHeaderNetwork">
             <div class="network_select_option" @click.stop="toggleSelectOption()">
@@ -103,7 +103,7 @@
           <img src="../assets/menu.png">
         </div>
         <div class="image_wrap_mobile" @click="featureButtonClick('/home',true)">
-          <img src="../assets/logo.png"/>
+          <img :src="explorerLogo"/>
         </div>
       </div>
       <div class="search_input_mobile">
@@ -241,6 +241,7 @@
         upImg: require("../assets/caret-bottom.png"),
         downImg: require("../assets/caret-bottom.png"),
         netWorkArray: [],
+        explorerLogo: ''
     }
     },
     beforeMount() {
@@ -481,6 +482,7 @@
         Service.http('/api/config').then(res => {
           this.toggleTestnetLogo(res);
           this.setCurrentSelectOption(res.cur_env,res.chain_id,res.configs);
+          this.setNetWorkLogo(res.cur_env,res.chain_id);
           this.setEnvConfig(res);
           this.handleConfigs(res.configs);
           this.flShowHeaderNetwork = true;
@@ -525,6 +527,17 @@
           this.currentSelected = lang.home.mainnet;
         }else {
           this.currentSelected = `${currentChainId.toLocaleUpperCase()} ${Tools.firstWordUpperCase(currentEnv)}`;
+        }
+      },
+      setNetWorkLogo(currentEnv,currentChainId){
+        if(currentEnv === constant.ENVCONFIG.MAINNET &&  currentChainId === constant.CHAINID.MAINNET){
+          this.explorerLogo = require("../assets/logo.png")
+        }else if(currentEnv === constant.ENVCONFIG.TESTNET && currentChainId === constant.CHAINID.FUXI){
+          this.explorerLogo = require("../assets/fuxi_testnet_logo.png")
+        }else if(currentEnv === constant.ENVCONFIG.TESTNET && currentChainId === constant.CHAINID.NYANCAT){
+          this.explorerLogo = require("../assets/nyancat_testnet.png")
+        }else {
+          this.explorerLogo = require("../assets/logo.png")
         }
       },
       windowOpenUrl(url){
