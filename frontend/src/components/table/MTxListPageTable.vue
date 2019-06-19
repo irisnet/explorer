@@ -1,6 +1,6 @@
 <template>
     <div>
-        <m-table v-table-head-fixed :class="showNoData ? 'show_no_data' : ''" class="tx_container_table" :columns="fields" :data="items">
+        <m-table v-table-head-fixed :class="showNoData ? 'show_no_data' : ''" class="tx_container_table override_mtable" :columns="fields" :data="items">
             <template slot-scope="{ row }" slot="Block">
                     <router-link :to="`/block/${row.Block}`" class="link_style">{{row.Block}}</router-link>
             </template>
@@ -346,8 +346,10 @@
 
 <style lang="scss">
     .show_no_data{
-        .m-table-body{
-            display: none;
+        .m-table-body {
+            .m_table tbody{
+                display: none;
+            }
         }
     }
     table{
@@ -387,7 +389,6 @@
                     display: block;
                     &::after{
                         content: '';
-                        background: #f66;
                         display: block;
                         background: rgba(0,0,0,1);
                         transform: rotate(45deg);

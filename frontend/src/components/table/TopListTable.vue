@@ -56,29 +56,6 @@
 </script>
 
 <style  lang="scss">
-  .name_address{
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    .address{
-      display: none;
-      position: absolute;
-      left: -1.29rem;
-      top: -0.38rem;
-      color: #3598db;
-      background: rgba(0,0,0,0.8);
-      border-radius:0.04rem;
-      z-index: 10;
-    }
-    .percentage_item{
-      &:nth-of-type(even){
-        background-color: #f6f6f6 !important;
-      }
-      &:nth-of-type(odd){
-        background-color: #fff !important;
-      }
-    }
-  }
   .show_no_data{
     .table{
       tbody{
