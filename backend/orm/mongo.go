@@ -47,6 +47,7 @@ type Query struct {
 	condition  bson.M
 	sort       []string
 	page       int
+	offset     int
 	size       int
 	selector   interface{}
 }
@@ -139,10 +140,17 @@ func (query *Query) SetPage(page int) *Query {
 	query.page = page
 	return query
 }
+
+func (query *Query) SetOffset(offset int) *Query {
+	query.offset = offset
+	return query
+}
+
 func (query *Query) SetSize(size int) *Query {
 	query.size = size
 	return query
 }
+
 func (query *Query) SetSelector(selector interface{}) *Query {
 	query.selector = selector
 	return query
@@ -166,6 +174,10 @@ func (query *Query) buildQuery() *mgo.Query {
 	}
 	if query.page != 0 {
 		q = q.Skip((query.page - 1) * query.size)
+	}
+
+	if query.offset != 0 {
+		q = q.Skip(query.offset)
 	}
 
 	if query.sort != nil && len(query.sort) > 0 {

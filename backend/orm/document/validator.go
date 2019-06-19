@@ -21,6 +21,9 @@ const (
 	ValidatorFieldOperatorAddress = "operator_address"
 	ValidatorFieldDescription     = "description"
 	ValidatorFieldConsensusAddr   = "consensus_pubkey"
+	ValidatorStatusValUnbonded    = 0
+	ValidatorStatusValUnbonding   = 1
+	ValidatorStatusValBonded      = 2
 )
 
 type (
@@ -155,6 +158,14 @@ func (v Validator) QueryValidatorMonikerOpAddrConsensusPubkey(addrArrAsVa []stri
 	var selector = bson.M{"description.moniker": 1, "operator_address": 1, "consensus_pubkey": 1}
 
 	err := queryAll(CollectionNmValidator, selector, bson.M{"operator_address": bson.M{"$in": addrArrAsVa}}, "", 0, &validators)
+	return validators, err
+}
+
+func (v Validator) QueryValidatorMonikerOpAddrByHashAddr(hashAddr []string) ([]Validator, error) {
+	var validators []Validator
+	var selector = bson.M{"description.moniker": 1, "operator_address": 1, "proposer_addr": 1}
+
+	err := queryAll(CollectionNmValidator, selector, bson.M{"proposer_addr": bson.M{"$in": hashAddr}}, "", 0, &validators)
 	return validators, err
 }
 

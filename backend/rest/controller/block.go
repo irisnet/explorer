@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/types"
@@ -17,6 +18,7 @@ func RegisterBlock(r *mux.Router) error {
 		registerQueryRecentBlocks,
 		registerQueryValidatorSet,
 		registerQueryBlockInfoByBlock,
+		registerQueryBlockLatestHeight,
 	}
 
 	for _, fn := range funs {
@@ -33,6 +35,20 @@ type Block struct {
 
 var block = Block{
 	service.Get(service.Block).(*service.BlockService),
+}
+
+func registerQueryBlockLatestHeight(r *mux.Router) error {
+
+	doApi(r, types.UrlRegisterQueryBlockLatestHeight, "GET", func(request model.IrisReq) interface{} {
+		var block = lcd.BlockLatest()
+		var height, ok = utils.ParseInt(block.BlockMeta.Header.Height)
+		if !ok {
+			panic(types.CodeNotFound)
+		}
+		return height
+	})
+
+	return nil
 }
 
 func registerQueryBlocks(r *mux.Router) error {
