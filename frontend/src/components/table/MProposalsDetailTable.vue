@@ -22,7 +22,6 @@
         <span class="skip_route" v-if="!(/^[0-9]\d*$/).test(row.Depositor) && row.Depositor !== '--'">
           <div class="name_address">
             <router-link :to="`/address/1/${row.Depositor}`" class="link_style justify">{{formatAddress(row.Depositor)}}</router-link>
-            <span class="tooltip_span">{{row.Depositor}}</span>
           </div>
         </span>
         <span class="no_skip" v-show="(/^[0]\d*$/).test(row.Depositor) || row.Depositor === '--'">--</span>
@@ -71,7 +70,9 @@ export default {
       depositorsFields: [
         {
           title: 'Depositor',
-          slot: 'Depositor'
+          slot: 'Depositor',
+          tooltip: true,
+          tooltipClassName: 'tooltip_left'
         },
         {
           title: 'Amount',
@@ -116,35 +117,10 @@ export default {
   color: #3598db!important;
 }
 .name_address {
-  &:hover .tooltip_span {
-    display: block;
-  }
   .remove_default_style {
     line-height: 16px;
     a {
       line-height: 16px;
-    }
-  }
-  .tooltip_span {
-    display: none;
-    position: absolute;
-    z-index: 1000;
-    bottom: calc(100% + 4px);
-    margin-top: -10px auto 0;
-    padding: 0 15px;
-    color: #ffffff;
-    background-color: #000000;
-    line-height: 35px;
-    border-radius: 0.04rem;
-    &::after {
-      width: 0;
-      height: 0;
-      border: 0.04rem solid transparent;
-      content: "";
-      display: block;
-      position: absolute;
-      border-top-color: #000000;
-      left: 20px;
     }
   }
 }

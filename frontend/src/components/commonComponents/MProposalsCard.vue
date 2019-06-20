@@ -235,20 +235,20 @@ export default {
     border-radius: 0.04rem;
     word-wrap: break-word;
     white-space: normal;
-    line-height: 1.7;
+    line-height: 16px;
     div {
-      padding: 5px 15px;
+      padding: 8px 15px;
     }
     &::after {
       width: 0;
       height: 0;
-      border: 0.04rem solid transparent;
+      border: 0.06rem solid transparent;
       content: "";
       display: block;
       position: absolute;
       border-top-color: #000000;
       left: 50%;
-      margin-left: -4px;
+      margin-left: -6px;
     }
   }
   .mobile_propsals_card_container {
