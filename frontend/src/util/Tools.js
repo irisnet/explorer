@@ -2,6 +2,7 @@
  * 工具类
  */
 import BigNumber from 'bignumber.js';
+import moveDecimal  from "move-decimal-point"
 import Constant from "../constant/Constant"
 export default class Tools{
   /**
@@ -92,9 +93,17 @@ export default class Tools{
   }
   /**
    * 格式化数字类型是string的数字并让小数点左移18位
-   * param string;
+   * param string or number;
    * return string
    */
+  static numberMoveDecimal(number){
+    let leftLength = -18;
+    if(number.toString().indexOf('e') !== -1 || number.toString().indexOf('E') !== -1){
+      return moveDecimal(new BigNumber(number).toFixed().toString() + ".",leftLength)
+    }else {
+      return moveDecimal(number.toString() + ".",leftLength)
+    }
+  }
   static formatStringToNumber(number){
     if(number.toString().indexOf('e') !== -1 || number.toString().indexOf('E') !== -1){
       number = new BigNumber(number).toFixed().toString();
