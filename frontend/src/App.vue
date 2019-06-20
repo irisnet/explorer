@@ -1,7 +1,7 @@
 <template>
   <div id="app" @click.stop="closeSelectOption">
     <app-header v-show="flShowHeader"></app-header>
-    <div id="router_wrap" :style="{'padding-top': $store.state.isMobile ? '' :`${headerHeightStyle}`}">
+    <div id="router_wrap" :class="$store.state.flShowIpt ? 'input_style' : ''" :style="{'padding-top': $store.state.isMobile ? '' :`${headerHeightStyle}`}">
       <div class="qr_code"
            @click="hideQRCode"
            :style="`width:${vw}px;height:${vh}px`" v-show="weChatQRShow">
@@ -19,7 +19,7 @@
           <h2>Join QQ group</h2>
         </div>
       </div>
-      <router-view class="router_view" :style="`min-height:${vh/100-2.72}rem;`" :key="key"/>
+      <router-view class="router_view" :style="`min-height:${vh/100-1.7}rem;`" :key="key"/>
       <footer :class="footerClass" v-show="flShowFooter" id="footer">
         <div :class="footerClassName" style="height:100%;">
           <div class="footer_left" :class="footerLeftVar">
@@ -369,7 +369,9 @@
         }
       }
     }
-
+    .input_style{
+      padding-top: 1.21rem !important;
+    }
   }
   pre{
     font-family: Arial !important;
