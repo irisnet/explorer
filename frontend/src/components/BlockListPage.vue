@@ -279,7 +279,7 @@ export default {
   }
   .page_nav_container {
     position: fixed;
-    width: 12.8rem;
+    width: 100%;
     margin-top: 0.62rem;
     background-color: #ffffff;
   }
