@@ -365,10 +365,6 @@
             }
         }
     }
-
-    .m-table-body tr{
-        border: none !important;
-    }
     .common_hover_parent{
         a{
             display: inline-block;

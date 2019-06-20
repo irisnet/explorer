@@ -291,6 +291,7 @@ table.m_table {
 .m-table-body {
   margin-top: -5px;
   tr {
+    border-bottom: 1px solid #dee2e6;
     td {
       padding: 7.5px;
       box-sizing: border-box;
@@ -329,7 +330,7 @@ table.m_table {
       background-color: #000000;
       border-radius: 0.04rem;
       line-height: 16px;
-      div{
+      div {
         padding: 8px 15px;
       }
       &::after {

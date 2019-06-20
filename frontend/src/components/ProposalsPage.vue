@@ -100,7 +100,6 @@
       </div>
       <div style="position:relative;overflow-x: auto; overflow-y: hidden;-webkit-overflow-scrolling:touch;">
         <m-proposals-list-table :items="items"></m-proposals-list-table>
-        <!-- <blocks-list-table :items="items" :type="'Proposals'" :showNoData="showNoData" :minWidth="tableMinWidth"></blocks-list-table> -->
         <div v-show="showNoData" class="no_data_show">
           No Data
         </div>
@@ -116,7 +115,6 @@
 
 <script>
   import Tools from '../util/Tools';
-  import BlocksListTable from './table/BlocksListTable.vue';
   import SpinComponent from './commonComponents/SpinComponent';
   import Service from "../util/axios";
   import Constant from "../constant/Constant"
@@ -126,7 +124,6 @@
 
   export default {
     components:{
-      BlocksListTable,
       SpinComponent,
       MProposalsCard,
       MProposalsEchart,
