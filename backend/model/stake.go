@@ -98,9 +98,9 @@ type ChainStatusVo struct {
 }
 
 type UptimeChangeVo struct {
-	Address string
-	Time    string
-	Uptime  float64
+	Address string  `json:"address"`
+	Time    string  `json:"time"`
+	Uptime  float64 `json:"uptime"`
 }
 
 type ValUpTimeVo struct {
@@ -116,9 +116,9 @@ type ValVotingPowerChangeInfo struct {
 }
 
 type ValVotingPowerChangeVo struct {
-	Height  int64
-	Address string
-	Power   int64
-	Time    time.Time
-	Change  string
+	Height  int64     `json:"height"`
+	Address string    `json:"address"`
+	Power   int64     `json:"power"`
+	Time    time.Time `json:"time"`
+	Change  string    `json:"change"`
 }

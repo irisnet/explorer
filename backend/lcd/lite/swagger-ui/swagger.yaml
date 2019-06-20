@@ -25,6 +25,7 @@ tags:
     description:
   - name: SearchBox
   - name: Stake
+  - name: Tx
 
 paths:
   /api/home/navigation:
@@ -361,6 +362,7 @@ paths:
             $ref: "#/definitions/error"
   /api/stake/validators:
     get:
+      summary:  type validator、candidate、jailed       origin browser
       tags:
         - Stake
       parameters:
@@ -389,7 +391,7 @@ paths:
           description: query validator list.
           type: array
           items:
-            $ref: "#/definitions/ValidatorForList"
+            $ref: "#/definitions/LcdValidator"
         default:
           description: generic error response
           schema:
@@ -414,8 +416,421 @@ paths:
           description: generic error response
           schema:
             $ref: "#/definitions/error"
+  /api/stake/candidatesTop:
+    get:
+      tags:
+        - Stake
+      responses:
+        200:
+          type: array
+          items:
+            $ref: "#/definitions/ValidatorAsModel"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/stake/candidate/{address}:
+    get:
+      summary:
+      tags:
+        - Stake
+      parameters:
+        - in: path
+          name: address
+          description: query validator by Address from lcd.
+          required: true
+          type: string
+      responses:
+        200:
+          description:
+          schema:
+            $ref: "#/definitions/CandidatesInfoVo"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/stake/candidate/{address}/uptime/{category}:
+    get:
+      summary:  category -> hour,week,month
+      tags:
+        - Stake
+      parameters:
+        - in: path
+          name: address
+          required: true
+          type: string
+        - in: path
+          name: category
+          required: true
+          type: string
+      responses:
+        200:
+          type: array
+          items:
+            $ref: "#/definitions/UptimeChangeVo"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/stake/candidate/{address}/power/{category}:
+    get:
+      summary:  category ->  week,month,months
+      tags:
+        - Stake
+      parameters:
+        - in: path
+          name: address
+          required: true
+          type: string
+        - in: path
+          name: category
+          required: true
+          type: string
+      responses:
+        200:
+          type: array
+          items:
+            $ref: "#/definitions/ValVotingPowerChangeVo"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/stake/candidate/{address}/status:
+    get:
+      tags:
+        - Stake
+      parameters:
+        - in: path
+          name: address
+          required: true
+          type: string
+      responses:
+        200:
+          type: array
+          items:
+            $ref: "#/definitions/ValStatus"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/tx/{type}/{page}/{size}:
+    get:
+      summary:  type-> trans  stake  declaration gov
+      tags:
+        - Tx
+      parameters:
+        - name: page
+          in: path
+          type: integer
+          format: int
+          default: 1
+          required: false
+        - name: size
+          in: path
+          type: integer
+          format: int
+          default: 100
+          required: false
+        - in: path
+          name: type
+          required: true
+          type: string
+      responses:
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/txs/recent:
+    get:
+      summary: query the recent txs
+      tags:
+        - Tx
+      responses:
+        200:
+          type: array
+          items:
+            $ref: "#/definitions/RecentTx"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/txs/statistics:
+    get:
+      tags:
+        - Tx
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/TxStatisticsVo"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/txsByAddress/{address}/{page}/{size}:
+    get:
+      tags:
+        - Tx
+      parameters:
+        - name: page
+          in: path
+          type: integer
+          format: int
+          default: 1
+          required: false
+        - name: size
+          in: path
+          type: integer
+          format: int
+          default: 100
+          required: false
+        - in: path
+          name: address
+          required: true
+          type: string
+      responses:
+        200:
+          type: array
+          items:
+            $ref: "#/definitions/CommonTx"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/txsByDay:
+    get:
+      tags:
+        - Tx
+      responses:
+        200:
+          type: array
+          items:
+            $ref: "#/definitions/TxNumGroupByDayVo"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/tx/{hash}:
+    get:
+      summary:
+      tags:
+        - Tx
+      parameters:
+        - in: path
+          name: hash
+          description: query tx by hash.
+          required: true
+          type: string
+      responses:
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
 
 definitions:
+  TxNumGroupByDayVo:
+    type: object
+    properties:
+      Date:
+        type: string
+      Num:
+        type: integer
+        format: int64
+  CommonTx:
+    type: object
+    properties:
+      Time:
+        type: string
+      Height:
+        type: integer
+        format: int64
+      TxHash:
+        type: string
+      From:
+        type: string
+      To:
+        type: string
+      Amount:
+        $ref: "#/definitions/Coins"
+      Type:
+        type: string
+      Fee:
+        $ref: "#/definitions/Fee"
+      Memo:
+        type: string
+      Status:
+        type: string
+      Code:
+        type: integer
+        format: uint32
+      Log:
+        type: string
+      GasUsed:
+        type: integer
+        format: int64
+      GasPrice:
+        type: integer
+        format: float64
+      Tags:
+        type: object
+      StakeCreateValidator:
+        $ref: "#/definitions/StakeCreateValidator"
+      StakeEditValidator:
+        $ref: "#/definitions/StakeEditValidator"
+      Signers:
+          type: array
+          items:
+            $ref: "#/definitions/Signer"
+  Signer:
+    type: obejct
+    properties:
+      AddrHex:
+        type: string
+      AddrBech32:
+        type: string
+  StakeEditValidator:
+    type: obejct
+    properties:
+      Description:
+        $ref: "#/definitions/ValDescription"
+  ValDescription:
+    type: object
+    properties:
+      Moniker:
+        type: string
+      Identity:
+        type: string
+      Website:
+        type: string
+      Details:
+        type: string
+  StakeCreateValidator:
+    type: object
+    properties:
+      PubKey:
+        type: string
+      Description:
+        $ref: "#/definitions/ValDescription"
+  TxStatisticsVo:
+    type: object
+    properties:
+      trans_cnt:
+        type: integer
+        format: int
+      stake_cnt:
+        type: integer
+        format: int
+      declaration_cnt:
+        type: integer
+        format: int
+      gov_cnt:
+        type: integer
+        format: int
+  RecentTx:
+    type: object
+    properties:
+      actual_fee:
+        $ref: "#/definitions/Coins"
+      time:
+        type: string
+      tx_hash:
+        type: string
+      type:
+        type: string
+  ValStatus:
+    type: object
+    properties:
+      up_time:
+        type: integer
+        format: int
+      precommit_cnt:
+        type: integer
+        format: float64
+  ValVotingPowerChangeVo:
+    type: object
+    properties:
+      height:
+        type: integer
+        format: int64
+      address:
+        type: string
+      power:
+        type: integer
+        format: int64
+      time:
+        type: string
+      change:
+        type: string
+  UptimeChangeVo:
+    type: object
+    properties:
+      address:
+        type: string
+      time:
+        type: string
+      uptime:
+        type: integer
+        format: float64
+  CandidatesInfoVo:
+    type: object
+    properties:
+      power_all:
+        type: integer
+        format: int64
+      address:
+        type: string
+      owner:
+        type: string
+      pub_key:
+        type: string
+      jailed:
+        type: boolean
+      voting_power:
+        type: integer
+        format: int64
+      description:
+        $ref: "#/definitions/Description"
+      bond_height:
+        type: integer
+        format: int64
+      status:
+        type: string
+      rate:
+        type: string
+      up_time:
+        type: integer
+        format: int
+      precommit_cnt:
+        type: integer
+        format: float64
+  ValidatorAsModel:
+    type: object
+    properties:
+      address:
+        type: string
+      owner:
+        type: string
+      pub_key:
+        type: string
+      jailed:
+        type: boolean
+      voting_power:
+        type: integer
+        format: int64
+      description:
+        $ref: "#/definitions/Description"
+      bond_height:
+        type: integer
+        format: int64
+      status:
+        type: string
+      rate:
+        type: string
+      up_time:
+        type: integer
+        format: int
+      precommit_cnt:
+        type: integer
+        format: float64
   Commission:
     type: obejct
     properties:
@@ -427,7 +842,6 @@ definitions:
         type: string
       update_time:
         type: string
-
   LcdValidator:
     type: object
     properties:

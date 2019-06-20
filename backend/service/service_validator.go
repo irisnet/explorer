@@ -58,7 +58,7 @@ func (service *ValidatorService) GetValidators(typ, origin string, page, size in
 	return service.queryValForRainbow(typ, page, size)
 }
 
-func (service *ValidatorService) GetValidator(address string) lcd.ValidatorVo {
+func (service *ValidatorService) GetValidatorFromLcd(address string) lcd.ValidatorVo {
 	var validator, err = lcd.Validator(address)
 	if err != nil {
 		panic(types.CodeNotFound)
@@ -102,7 +102,7 @@ func (service *ValidatorService) QueryCandidatesTopN() model.ValDetailVo {
 	return resp
 }
 
-func (service *ValidatorService) QueryCandidate(address string) model.CandidatesInfoVo {
+func (service *ValidatorService) QueryValidator(address string) model.CandidatesInfoVo {
 
 	validator, err := lcd.Validator(address)
 	if err != nil {
@@ -149,7 +149,7 @@ func (service *ValidatorService) QueryCandidate(address string) model.Candidates
 		return result
 	}
 
-	result.PowerAll = getVotingPowerFromToken(strconv.FormatFloat(count, 'f', 10, 64))
+	result.PowerAll = count
 	return result
 }
 
