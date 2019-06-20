@@ -540,6 +540,110 @@ paths:
           description: generic error response
           schema:
             $ref: "#/definitions/error"
+  /api/tx/trans/{page}/{size}:
+    get:
+      tags:
+        - Tx
+      parameters:
+        - name: page
+          in: path
+          type: integer
+          format: int
+          default: 1
+          required: false
+        - name: size
+          in: path
+          type: integer
+          format: int
+          default: 100
+          required: false
+      responses:
+        200:
+          type: array
+          items:
+            $ref: "#/definitions/TransTx"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/tx/stake/{page}/{size}:
+    get:
+      tags:
+        - Tx
+      parameters:
+        - name: page
+          in: path
+          type: integer
+          format: int
+          default: 1
+          required: false
+        - name: size
+          in: path
+          type: integer
+          format: int
+          default: 100
+          required: false
+      responses:
+        200:
+          type: array
+          items:
+            $ref: "#/definitions/StakeTx"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/tx/declaration/{page}/{size}:
+    get:
+      tags:
+        - Tx
+      parameters:
+        - name: page
+          in: path
+          type: integer
+          format: int
+          default: 1
+          required: false
+        - name: size
+          in: path
+          type: integer
+          format: int
+          default: 100
+          required: false
+      responses:
+        200:
+          type: array
+          items:
+            $ref: "#/definitions/DeclarationTx"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/tx/gov/{page}/{size}:
+    get:
+      tags:
+        - Tx
+      parameters:
+        - name: page
+          in: path
+          type: integer
+          format: int
+          default: 1
+          required: false
+        - name: size
+          in: path
+          type: integer
+          format: int
+          default: 100
+          required: false
+      responses:
+        200:
+          type: array
+          items:
+            $ref: "#/definitions/GovTx"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
   /api/txs/recent:
     get:
       summary: query the recent txs
@@ -627,6 +731,191 @@ paths:
             $ref: "#/definitions/error"
 
 definitions:
+
+  GovTx:
+    type: object
+    properties:
+      From:
+        type: string
+      ProposalId:
+        type: integer
+        format: uint64
+      Description:
+        type: string
+      Amount:
+        $ref: "#/definitions/Coins"
+      Option:
+        type: string
+      Title:
+        type: string
+      ProposalType:
+        type: string
+      Signer:
+        type: string
+      Hash:
+        type: string
+      BlockHeight:
+        type: integer
+        format: int64
+      Type:
+        type: string
+      Fee:
+        $ref: "#/definitions/ActualFee"
+      Status:
+        type: string
+      GasLimit:
+        type: integer
+        format: int64
+      GasUsed:
+        type: integer
+        format: int64
+      GasPrice:
+        type: integer
+        format: float64
+      Memo:
+        type: string
+      Timestamp:
+        type: string
+  StakeTx:
+    type: object
+    properties:
+      Source:
+        type: string
+      Signer:
+        type: string
+      Hash:
+        type: string
+      BlockHeight:
+        type: integer
+        format: int64
+      Type:
+        type: string
+      Fee:
+        $ref: "#/definitions/ActualFee"
+      Status:
+        type: string
+      GasLimit:
+        type: integer
+        format: int64
+      GasUsed:
+        type: integer
+        format: int64
+      GasPrice:
+        type: integer
+        format: float64
+      Memo:
+        type: string
+      Timestamp:
+        type: string
+  DeclarationTx:
+    type: object
+    properties:
+      Amount:
+        $ref: "#/definitions/Coins"
+      OperatorAddr:
+        type: string
+      Owner:
+        type: string
+      Moniker:
+        type: string
+      Pubkey:
+        type: string
+      Identity:
+        type: string
+      SelfBond:
+          $ref: "#/definitions/Coins"
+      Website:
+        type: string
+      Details:
+        type: string
+      Signer:
+        type: string
+      Hash:
+        type: string
+      BlockHeight:
+        type: integer
+        format: int64
+      Type:
+        type: string
+      Fee:
+        $ref: "#/definitions/ActualFee"
+      Status:
+        type: string
+      GasLimit:
+        type: integer
+        format: int64
+      GasUsed:
+        type: integer
+        format: int64
+      GasPrice:
+        type: integer
+        format: float64
+      Memo:
+        type: string
+      Timestamp:
+        type: string
+  TransTx:
+    type: object
+    properties:
+      From:
+        type: string
+      To:
+        type: string
+      Signer:
+        type: string
+      Hash:
+        type: string
+      BlockHeight:
+        type: integer
+        format: int64
+      Type:
+        type: string
+      Fee:
+        $ref: "#/definitions/ActualFee"
+      Status:
+        type: string
+      GasLimit:
+        type: integer
+        format: int64
+      GasUsed:
+        type: integer
+        format: int64
+      GasPrice:
+        type: integer
+        format: float64
+      Memo:
+        type: string
+      Timestamp:
+        type: string
+  BaseTx:
+    type: object
+    properties:
+      Signer:
+        type: string
+      Hash:
+        type: string
+      BlockHeight:
+        type: integer
+        format: int64
+      Type:
+        type: string
+      Fee:
+        $ref: "#/definitions/ActualFee"
+      Status:
+        type: string
+      GasLimit:
+        type: integer
+        format: int64
+      GasUsed:
+        type: integer
+        format: int64
+      GasPrice:
+        type: integer
+        format: float64
+      Memo:
+        type: string
+      Timestamp:
+        type: string
   TxNumGroupByDayVo:
     type: object
     properties:
