@@ -24,6 +24,7 @@ tags:
   - name: Account
     description:
   - name: SearchBox
+  - name: Stake
 
 paths:
   /api/home/navigation:
@@ -358,7 +359,103 @@ paths:
           description: generic error response
           schema:
             $ref: "#/definitions/error"
+  /api/stake/validators:
+    get:
+      tags:
+        - Stake
+      parameters:
+        - name: page
+          in: query
+          type: integer
+          format: int
+          default: 1
+          required: false
+        - name: size
+          in: query
+          type: integer
+          format: int
+          default: 100
+          required: false
+        - name: type
+          in: query
+          type: string
+          required: true
+        - name: origin
+          in: query
+          type: string
+          required: true
+      responses:
+        200:
+          description: query validator list.
+          type: array
+          items:
+            $ref: "#/definitions/ValidatorForList"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
 definitions:
+  Commission:
+    type: obejct
+    properties:
+      rate:
+        type: string
+      max_rate:
+        type: string
+      max_change_rate:
+        type: string
+      update_time:
+        type: string
+  ValidatorForList:
+    type: object
+    properties:
+      operator_address:
+        type: string
+      consensus_pubkey:
+        type: string
+      jailed:
+        type: boolean
+      status:
+        type: integer
+        format: int
+      tokens:
+        type: string
+      delegator_shares:
+        type: string
+      description:
+        $ref: "#/definitions/Description"
+      bond_height:
+        type: string
+      unbonding_height:
+        type: string
+      unbonding_time:
+        type: string
+      commission:
+        $ref: "#/definitions/Commission"
+      uptime:
+        type: integer
+        format: float32
+      self_bond:
+        type: string
+      delegator_num:
+        type: integer
+        format: int
+      proposer_addr:
+        type: string
+      voting_power:
+        type: integer
+        format: int64
+  Description:
+    type: object
+    properties:
+      moniker:
+        type: string
+      identity:
+        type: string
+      website:
+        type: string
+      details:
+        type: string
   EnvConfig:
     type: object
     properties:
