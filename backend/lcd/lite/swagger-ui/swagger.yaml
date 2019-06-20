@@ -345,8 +345,43 @@ paths:
           description: generic error response
           schema:
             $ref: "#/definitions/error"
-
+  /api/config:
+    get:
+      summary: query the backend env config.
+      tags:
+        - SearchBox
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/EnvConfig"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
 definitions:
+  EnvConfig:
+    type: object
+    properties:
+      cur_env:
+        type: string
+      chain_id:
+        type: string
+      configs:
+         type: array
+         items:
+           $ref: "#/definitions/Config"
+  Config:
+    type: object
+    properties:
+      env_nm:
+        type: string
+      host:
+        type: string
+      chain_id:
+        type: string
+      show_faucet:
+        type: integer
+        format: int
   BlockAndProposal:
     type: object
     properties:
