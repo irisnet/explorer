@@ -1,6 +1,6 @@
 <template>
   <div>
-    <m-table :columns="columns"
+    <m-table v-table-head-fixed :columns="columns"
              :data="items">
       <template slot='height' slot-scope='{ row }'>
         <span class="skip_route">

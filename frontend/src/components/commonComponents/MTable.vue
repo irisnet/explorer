@@ -1,7 +1,7 @@
 <template>
   <div :style="{opacity: show ? 1 : 0}">
     <div class="m-table-header">
-      <table class="m_table"
+      <table :class="['m_table', data.length > 0 ? 'm-table-header-table-fixed' : '']"
              cellspacing="0"
              cellpadding="0"
              border="0"
@@ -20,6 +20,7 @@
                 v-for="(v, i) in columns"
                 :key="i">{{v.title}}
               <i class="sort"
+                 v-if="v.sortable"
                  :class="{'desc': (v.key === sortAsBy || v.slot === sortAsBy) && sortAsDesc, 
               'asc': (v.key === sortAsBy || v.slot === sortAsBy) && !sortAsDesc}"></i>
             </th>
@@ -45,12 +46,18 @@
               :key="i">
             <td v-for="(it, j) in columns"
                 :width="it.width"
-                :key="j" :class="it.className">
+                :key="j"
+                :class="it.className">
               <template v-if="it.key">
                 <div :class="{'tooltip_span_container': it.tooltip}">
                   {{v[it.key]}}
-                  <span class="tooltip_span"
-                        v-if="it.tooltip">{{it.tooltip === true ? (v[it.key || it.slot]) : it.tooltip}}</span>
+                  <div class="tooltip_span"
+                       :class="it.tooltipClassName"
+                       v-if="it.tooltip">
+                    <div>
+                      {{it.tooltip === true ? (v[it.key || it.slot]) : it.tooltip}}
+                    </div>
+                  </div>
                 </div>
               </template>
               <template v-else>
@@ -58,8 +65,13 @@
                   <slot :name="it.slot"
                         :row="v">
                   </slot>
-                  <span class="tooltip_span"
-                        v-if="it.tooltip">{{it.tooltip === true ? (v[it.key || it.slot]) : it.tooltip}}</span>
+                  <div class="tooltip_span"
+                       :class="it.tooltipClassName"
+                       v-if="it.tooltip">
+                    <div>
+                      {{it.tooltip === true ? (v[it.key || it.slot]) : it.tooltip}}
+                    </div>
+                  </div>
                 </div>
               </template>
             </td>
@@ -219,8 +231,10 @@ table.m_table {
 .m-table-header {
   position: relative;
   z-index: 2;
-  height: 50px;
   width: 12.8rem;
+  .m-table-header-table-fixed {
+    table-layout: fixed;
+  }
   table {
     font-size: 14px;
     color: rgb(0, 0, 0);
@@ -277,6 +291,7 @@ table.m_table {
 .m-table-body {
   margin-top: -5px;
   tr {
+    border-bottom: 1px solid #dee2e6;
     td {
       padding: 7.5px;
       box-sizing: border-box;
@@ -286,7 +301,6 @@ table.m_table {
         vertical-align: middle;
       }
     }
-    border-bottom: 1px solid #dee2e6;
     &:nth-of-type(2n) {
       td {
         background-color: #f6f6f6;
@@ -312,24 +326,51 @@ table.m_table {
       bottom: calc(100% + 4px);
       left: 50%;
       transform: translateX(-50%);
-      margin-top: -10px auto 0;
-      padding: 0 15px;
       color: #ffffff;
       background-color: #000000;
-      line-height: 35px;
       border-radius: 0.04rem;
+      line-height: 16px;
+      div {
+        padding: 8px 15px;
+      }
       &::after {
         width: 0;
         height: 0;
-        border: 0.04rem solid transparent;
+        border: 0.06rem solid transparent;
         content: "";
         display: block;
         position: absolute;
         border-top-color: #000000;
         left: 50%;
-        margin-left: -4px;
+        margin-left: -6px;
       }
     }
+    .tooltip_left {
+      left: 0;
+      transform: translateX(0);
+      &::after {
+        left: 30px;
+      }
+    }
+  }
+}
+.override_mtable {
+  .m-table-header {
+    position: fixed;
+    margin-top: -0.45rem;
+    background-color: #ffffff;
+  }
+  .m-table-body {
+    margin-top: 0.45rem;
+  }
+}
+@media screen and (max-width: 910px) {
+  .m-table-header {
+    position: static !important;
+    margin-top: 0rem !important;
+  }
+  .m-table-body {
+    margin-top: -0.04rem !important;
   }
 }
 </style>

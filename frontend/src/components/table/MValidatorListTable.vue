@@ -249,26 +249,7 @@ export default {
 </script>
 
 <style lang="scss">
-.override_mtable {
-  .m-table-header {
-    position: fixed;
-    margin-top: -0.45rem;
-    background-color: #ffffff;
-  }
-  .m-table-body {
-    margin-top: 0.45rem;
-  }
-}
 .operator_address_style{
   font-family: "Consolas","Arial",-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-}
-@media screen and (max-width: 910px) {
-  .m-table-header {
-    position: static !important;
-    margin-top: 0rem !important;
-  }
-  .m-table-body {
-    margin-top: -0.04rem !important;
-  }
 }
 </style>

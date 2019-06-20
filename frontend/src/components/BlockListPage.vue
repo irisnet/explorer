@@ -1,5 +1,6 @@
 <template>
-  <div class="blocks_list_page_container">
+  <div class="blocks_list_page_container"
+       :class="[$store.state.isMobile ? 'mobile_blocks_list_page_container' : 'blocks_list_page_container_fixed']">
     <div class="block_list_title_container">
       <div class="block_list_title_content">
         <span class="block_list_title">Blocks</span>
@@ -8,10 +9,15 @@
     <div class="block_list_container">
       <div class="block_list_content">
         <div class="page_nav_container">
-          <span>Current Height {{count}}</span>
+          <span>Current Height:
+            <span v-if="currentHeight > 0"
+                  class="skip_route">
+              <router-link :to="`/block/${currentHeight}`">{{currentHeight}}</router-link>
+            </span>
+          </span>
           <div class="pagination_container">
             <m-pagination :page-size="pageSize"
-                          :total="count"
+                          :total="currentHeight"
                           :page="currentPageNum"
                           :page-change="pageChange"
                           :range="range"></m-pagination>
@@ -24,6 +30,11 @@
                class="no_data_show">No Data</div>
         </div>
         <div class="pagination_footer_container">
+          <m-pagination :page-size="pageSize"
+                        :total="currentHeight"
+                        :page="currentPageNum"
+                        :page-change="pageChange"
+                        :range="range"></m-pagination>
         </div>
       </div>
     </div>
@@ -51,8 +62,8 @@ export default {
     return {
       pageSize: 30,
       currentPageNum: this.forCurrentPageNum(),
-      count: sessionStorage.getItem("blockListTotal")
-        ? JSON.parse(sessionStorage.getItem("blockListTotal"))
+      currentHeight: sessionStorage.getItem("blockListTotal")
+        ? Number(sessionStorage.getItem("blockListTotal"))
         : 0,
       items: [],
       showNoData: false,
@@ -99,8 +110,8 @@ export default {
       Service.commonInterface({ blockListLatestheight: {} }, data => {
         try {
           this.isoMunted = true;
-          this.count = data.data || 0;
-          sessionStorage.setItem("blockListTotal", JSON.stringify(this.count));
+          this.currentHeight = data.data || 0;
+          sessionStorage.setItem("blockListTotal", this.currentHeight);
         } catch (e) { }
       });
     },
@@ -213,6 +224,13 @@ export default {
         justify-content: space-between;
         height: 0.7rem;
         align-items: center;
+        .skip_route {
+          margin-left: 0.09rem;
+          a {
+            color: #3598db !important;
+            cursor: pointer;
+          }
+        }
         span {
           color: #a2a2ae;
           font-size: 0.18rem;
@@ -244,6 +262,25 @@ export default {
         align-items: center;
       }
     }
+  }
+}
+.mobile_blocks_list_page_container {
+  .block_list_container {
+    padding: 0 0.1rem;
+  }
+}
+.blocks_list_page_container_fixed {
+  div.block_list_title_container {
+    position: fixed;
+  }
+  .page_nav_container {
+    position: fixed;
+    width: 12.8rem;
+    margin-top: 0.62rem;
+    background-color: #ffffff;
+  }
+  .block_list_table_container {
+    padding-top: 1.32rem;
   }
 }
 </style>

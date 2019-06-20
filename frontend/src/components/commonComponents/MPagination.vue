@@ -76,6 +76,9 @@ export default {
     }
   },
   watch: {
+    page (newVal) {
+      this.currentPage = newVal;
+    },
     currentPage (newVal) {
       this.pageChange(newVal);
     }
