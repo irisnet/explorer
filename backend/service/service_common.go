@@ -18,8 +18,8 @@ func (service *CommonService) GetModule() Module {
 	return Common
 }
 
-func (service CommonService) QueryText(text string) []model.ResultVo {
-	var result []model.ResultVo
+func (service CommonService) QueryText(text string) model.ResultVo {
+	var result model.ResultVo
 	i, isUint := utils.ParseInt(text)
 
 	if !isUint {
@@ -32,15 +32,13 @@ func (service CommonService) QueryText(text string) []model.ResultVo {
 		if err != nil {
 			logger.Error("queryBlockHeightTimehashByHeight", logger.String("err", err.Error()))
 		}
-		vo := model.ResultVo{
-			Type: "block",
-			Data: model.SimpleBlockVo{
-				Height:    block.Height,
-				Timestamp: block.Time,
-				Hash:      block.Hash,
-			},
+
+		blockAsModel := model.SimpleBlockVo{
+			Height:    block.Height,
+			Timestamp: block.Time,
+			Hash:      block.Hash,
 		}
-		result = append(result, vo)
+		result.Block = blockAsModel
 	}
 
 	//查询proposal信息
@@ -50,17 +48,15 @@ func (service CommonService) QueryText(text string) []model.ResultVo {
 		logger.Error("Query proposal By Id", logger.String("err", err.Error()))
 	}
 
-	vo := model.ResultVo{
-		Type: "proposal",
-		Data: model.SimpleProposalVo{
-			ProposalId: proposal.ProposalId,
-			Title:      proposal.Title,
-			Type:       proposal.Type,
-			Status:     proposal.Status,
-			SubmitTime: proposal.SubmitTime,
-		},
+	vo := model.SimpleProposalVo{
+		ProposalId: proposal.ProposalId,
+		Title:      proposal.Title,
+		Type:       proposal.Type,
+		Status:     proposal.Status,
+		SubmitTime: proposal.SubmitTime,
 	}
-	result = append(result, vo)
+
+	result.Proposal = vo
 
 	return result
 }

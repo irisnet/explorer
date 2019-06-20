@@ -15,15 +15,62 @@ schemes:
   - https
 
 tags:
+  - name: Home
+    description: navigation
   - name: Block
     description: query blocks
   - name: Governance
     description: query proposal
   - name: Account
     description:
-  - name: Home
-    description: navigation
+  - name: SearchBox
+
 paths:
+  /api/home/navigation:
+    get:
+      tags:
+        - Home
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/NavigationData"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/account/{address}:
+    get:
+      summary:
+      tags:
+        - Account
+      parameters:
+        - in: path
+          name: address
+          description:  Bech32 AccAddress of Delegator or Bech32 ValAddress
+          required: true
+          type: string
+      responses:
+        200:
+          description:
+          schema:
+            $ref: "#/definitions/AccountVo"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/accounts:
+    get:
+      tags:
+        - Account
+      responses:
+        200:
+          type: array
+          items:
+            $ref: "#/definitions/AccountInfo"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
   /api/block/validatorset/{height}:
     get:
       tags:
@@ -126,26 +173,6 @@ paths:
         200:
           schema:
             $ref: "#/definitions/success"
-        default:
-          description: generic error response
-          schema:
-            $ref: "#/definitions/error"
-  /api/account/{address}:
-    get:
-      summary:
-      tags:
-        - Account
-      parameters:
-        - in: path
-          name: address
-          description:  Bech32 AccAddress of Delegator or Bech32 ValAddress
-          required: true
-          type: string
-      responses:
-        200:
-          description:
-          schema:
-            $ref: "#/definitions/AccountVo"
         default:
           description: generic error response
           schema:
@@ -285,33 +312,59 @@ paths:
           description: generic error response
           schema:
             $ref: "#/definitions/error"
-  /api/home/navigation:
+  /api/search/{text}:
     get:
+      summary:
       tags:
-        - Home
+        - SearchBox
+      parameters:
+        - in: path
+          name: text
+          description:  search block and proposal by integer id.
+          required: true
+          type: string
       responses:
         200:
+          description:
           schema:
-            $ref: "#/definitions/NavigationData"
-        default:
-          description: generic error response
-          schema:
-            $ref: "#/definitions/error"
-  /api/accounts:
-    get:
-      tags:
-        - Account
-      responses:
-        200:
-          type: array
-          items:
-            $ref: "#/definitions/AccountInfo"
+            $ref: "#/definitions/BlockAndProposal"
         default:
           description: generic error response
           schema:
             $ref: "#/definitions/error"
 
 definitions:
+  BlockAndProposal:
+    type: object
+    properties:
+      block:
+        $ref: "#/definitions/SimpleBlockVo"
+      proposal:
+        $ref: "#/definitions/SimpleProposalVo"
+  SimpleBlockVo:
+    type: object
+    properties:
+      height:
+        type: integer
+        format: int64
+      timestamp:
+        type: string
+      hash:
+        type: string
+  SimpleProposalVo:
+    type: object
+    properties:
+      proposal_id:
+        type: integer
+        format: uint64
+      title:
+        type: string
+      type:
+        type: string
+      status:
+        type: string
+      submit_time:
+        type: string
   AccountInfo:
     type: object
     properties:
