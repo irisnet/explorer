@@ -332,6 +332,19 @@ paths:
           description: generic error response
           schema:
             $ref: "#/definitions/error"
+  /api/sysdate:
+    get:
+      summary: query the backend timestamp
+      tags:
+        - SearchBox
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/success"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
 
 definitions:
   BlockAndProposal:
