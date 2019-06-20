@@ -232,6 +232,7 @@ table.m_table {
   position: relative;
   z-index: 2;
   width: 12.8rem;
+  background-color: #ffffff;
   .m-table-header-table-fixed {
     table-layout: fixed;
   }
@@ -289,9 +290,13 @@ table.m_table {
   }
 }
 .m-table-body {
-  margin-top: -5px;
+  margin-top: -0.03rem;
+  tbody {
+    tr {
+      border-bottom: 1px solid #dee2e6;
+    }
+  }
   tr {
-    border-bottom: 1px solid #dee2e6;
     td {
       padding: 7.5px;
       box-sizing: border-box;
@@ -324,7 +329,7 @@ table.m_table {
       position: absolute;
       z-index: 1000;
       bottom: calc(100% + 4px);
-      left: 50%;
+      left: 25px;
       transform: translateX(-50%);
       color: #ffffff;
       background-color: #000000;
@@ -370,7 +375,7 @@ table.m_table {
     margin-top: 0rem !important;
   }
   .m-table-body {
-    margin-top: -0.04rem !important;
+    margin-top: -0.03rem !important;
   }
 }
 </style>

@@ -15,7 +15,8 @@
               <router-link :to="`/block/${currentHeight}`">{{currentHeight}}</router-link>
             </span>
           </span>
-          <div class="pagination_container">
+          <div v-if="!$store.state.isMobile"
+               class="pagination_container">
             <m-pagination :page-size="pageSize"
                           :total="currentHeight"
                           :page="currentPageNum"
@@ -267,6 +268,9 @@ export default {
 .mobile_blocks_list_page_container {
   .block_list_container {
     padding: 0 0.1rem;
+    .page_nav_container {
+      height: 0.5rem !important;
+    }
   }
 }
 .blocks_list_page_container_fixed {

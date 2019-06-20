@@ -204,10 +204,10 @@
         let url = `/api/txs/statistics?height=${this.$route.params.height}`;
         Service.http(url).then((data) => {
           if(data){
-            this.txTab[0].BlockTxStatistics = data.TransCnt;
-            this.txTab[1].BlockTxStatistics = data.StakeCnt;
-            this.txTab[2].BlockTxStatistics = data.DeclarationCnt;
-            this.txTab[3].BlockTxStatistics = data.GovCnt;
+            this.txTab[0].BlockTxStatistics = data.trans_cnt;
+            this.txTab[1].BlockTxStatistics = data.stake_cnt;
+            this.txTab[2].BlockTxStatistics = data.declaration_cnt;
+            this.txTab[3].BlockTxStatistics = data.gov_cnt;
           }
         }).catch((e) => {
           console.log(e)
