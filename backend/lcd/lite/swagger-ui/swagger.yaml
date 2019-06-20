@@ -394,6 +394,27 @@ paths:
           description: generic error response
           schema:
             $ref: "#/definitions/error"
+  /api/stake/validators/{address}:
+    get:
+      summary:
+      tags:
+        - Stake
+      parameters:
+        - in: path
+          name: address
+          description: query validator by Address from lcd.
+          required: true
+          type: string
+      responses:
+        200:
+          description:
+          schema:
+            $ref: "#/definitions/LcdValidator"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+
 definitions:
   Commission:
     type: obejct
@@ -406,6 +427,46 @@ definitions:
         type: string
       update_time:
         type: string
+
+  LcdValidator:
+    type: object
+    properties:
+      operator_address:
+        type: string
+      consensus_pubkey:
+        type: string
+      jailed:
+        type: boolean
+      status:
+        type: integer
+        format: int
+      tokens:
+        type: string
+      delegator_shares:
+        type: string
+      description:
+        $ref: "#/definitions/Description"
+      bond_height:
+        type: string
+      unbonding_height:
+        type: string
+      unbonding_time:
+        type: string
+      commission:
+        $ref: "#/definitions/Commission"
+      uptime:
+        type: integer
+        format: float32
+      self_bond:
+        type: string
+      delegator_num:
+        type: integer
+        format: int
+      proposer_addr:
+        type: string
+      voting_rate:
+        type: integer
+        format: float32
   ValidatorForList:
     type: object
     properties:
