@@ -19,7 +19,8 @@
                 @click="sortDataByClick(v)"
                 v-for="(v, i) in columns"
                 :key="i">{{v.title}}
-              <i class="sort" v-if="v.sortable"
+              <i class="sort"
+                 v-if="v.sortable"
                  :class="{'desc': (v.key === sortAsBy || v.slot === sortAsBy) && sortAsDesc, 
               'asc': (v.key === sortAsBy || v.slot === sortAsBy) && !sortAsDesc}"></i>
             </th>
@@ -50,9 +51,13 @@
               <template v-if="it.key">
                 <div :class="{'tooltip_span_container': it.tooltip}">
                   {{v[it.key]}}
-                  <span class="tooltip_span"
-                        :class="it.tooltipClassName"
-                        v-if="it.tooltip">{{it.tooltip === true ? (v[it.key || it.slot]) : it.tooltip}}</span>
+                  <div class="tooltip_span"
+                       :class="it.tooltipClassName"
+                       v-if="it.tooltip">
+                    <div>
+                      {{it.tooltip === true ? (v[it.key || it.slot]) : it.tooltip}}
+                    </div>
+                  </div>
                 </div>
               </template>
               <template v-else>
@@ -60,9 +65,13 @@
                   <slot :name="it.slot"
                         :row="v">
                   </slot>
-                  <span class="tooltip_span"
-                        :class="it.tooltipClassName"
-                        v-if="it.tooltip">{{it.tooltip === true ? (v[it.key || it.slot]) : it.tooltip}}</span>
+                  <div class="tooltip_span"
+                       :class="it.tooltipClassName"
+                       v-if="it.tooltip">
+                    <div>
+                      {{it.tooltip === true ? (v[it.key || it.slot]) : it.tooltip}}
+                    </div>
+                  </div>
                 </div>
               </template>
             </td>
@@ -316,11 +325,13 @@ table.m_table {
       bottom: calc(100% + 4px);
       left: 50%;
       transform: translateX(-50%);
-      padding: 8px 15px;
       color: #ffffff;
       background-color: #000000;
       border-radius: 0.04rem;
       line-height: 16px;
+      div{
+        padding: 8px 15px;
+      }
       &::after {
         width: 0;
         height: 0;
@@ -329,7 +340,6 @@ table.m_table {
         display: block;
         position: absolute;
         border-top-color: #000000;
-        bottom: -12px;
         left: 50%;
         margin-left: -6px;
       }
