@@ -376,6 +376,9 @@ export default {
   },
   mounted () {
     Tools.scrollToTop();
+    if(sessionStorage.getItem('currentEnv') !== Constants.ENVCONFIG.MAINNET){
+      this.$Crypto.getCrypto(Constants.CHAINNAME, Constants.ENVCONFIG.TESTNET);
+    }
     if (this.$route.params.param.substring(0, 3) === this.$Crypto.config.iris.bech32.valAddr) {
       this.tabTxList(this.tabTxListIndex, this.txTabName, this.currentPage, this.pageSize);
       this.getAddressInformation(this.$route.params.param);
@@ -482,24 +485,14 @@ export default {
             this.flActiveValidator = false;
             this.flShowValidatorJailed = true;
             this.validatorStatusColor = "#f00";
-            this.votingPowerValue = Tools.formatStringToNumber(validator.original_tokens);
           } else {
-            if (validator.status === 'Unbonded' || validator.status === 'Unbonding') {
+            if(validator.status === 'Unbonded' || validator.status === 'Unbonding' ){
               this.flShowValidatorCandidate = true;
               this.validatorStatusColor = "#45B035";
               this.flActiveValidator = false;
-              this.flShowValidatorJailed = true;
-              this.validatorStatusColor = "#f00";
-              this.votingPowerValue = Tools.numberMoveDecimal(validator.original_tokens);
-            }else{
-              if(validator.status === 'Unbonded' || validator.status === 'Unbonding' ){
-                this.flShowValidatorCandidate = true;
-                this.validatorStatusColor = "#45B035";
-                this.flActiveValidator = false;
-              }else if(validator.status === "Bonded"){
-                this.bondHeightValue = validator.bond_height;
-                this.votingPowerValue = validator.voting_power;
-              }
+            }else if(validator.status === "Bonded"){
+              this.bondHeightValue = validator.bond_height;
+              this.votingPowerValue = validator.voting_power;
             }
           }
           this.rateValue = validator.rate ? `${Tools.formatRate(validator.rate.toString())}%` : '--';
