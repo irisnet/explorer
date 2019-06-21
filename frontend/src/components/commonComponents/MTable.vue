@@ -329,7 +329,7 @@ table.m_table {
       position: absolute;
       z-index: 1000;
       bottom: calc(100% + 4px);
-      left: 25px;
+      left: 50%;
       transform: translateX(-50%);
       color: #ffffff;
       background-color: #000000;

@@ -104,7 +104,7 @@
           No Data
         </div>
       </div>
-      <div class="pagination" style='margin:0.2rem 0;'>
+      <div class="pagination" style='margin:0.2rem 0 0.4rem;'>
         <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
         </b-pagination>
       </div>
