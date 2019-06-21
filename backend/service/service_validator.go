@@ -161,6 +161,8 @@ func (service *ValidatorService) QueryCandidateUptime(address, category string) 
 		panic(types.CodeNotFound)
 	}
 
+	address = utils.GenHexAddrFromPubKey(address)
+
 	switch category {
 	case "hour":
 

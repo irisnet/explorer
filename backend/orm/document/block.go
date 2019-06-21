@@ -100,13 +100,15 @@ func (_ Block) GetRecentBlockList() ([]Block, error) {
 
 func (_ Block) QueryOneBlockOrderByHeightAsc() (Block, error) {
 
-	db := orm.GetDatabase()
-	defer db.Session.Close()
+	var blocks []Block
 
-	var firstBlock Block
+	err := queryAll(CollectionNmBlock, nil, nil, asc(Block_Field_Height), 1, &blocks)
 
-	err := db.C(CollectionNmBlock).Find(nil).Sort("height").One(&firstBlock)
-	return firstBlock, err
+	if len(blocks) == 1 {
+		return blocks[0], err
+	}
+
+	return Block{}, err
 }
 
 func (_ Block) QueryOneBlockOrderByHeightDesc() (Block, error) {

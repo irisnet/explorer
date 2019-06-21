@@ -279,6 +279,7 @@ func (_ Validator) QueryCandidateUptimeWithHour(addr string) ([]UptimeChangeVo, 
 	startTime := endTime.Add(d)
 	startStr := startTime.UTC().Format("2006-01-02 15")
 	endStr := endTime.UTC().Format("2006-01-02 15")
+
 	err := u.Find(bson.M{"address": addr, "time": bson.M{"$gte": startStr, "$lt": endStr}}).All(&upChanges)
 	if err != nil {
 		return nil, err

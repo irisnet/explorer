@@ -103,6 +103,14 @@ type UptimeChangeVo struct {
 	Uptime  float64 `json:"uptime"`
 }
 
+func (uptime UptimeChangeVo) String() string {
+	return fmt.Sprintf(`
+		Address :%v
+		Time    :%v
+		Uptime  :%v
+		`, uptime.Address, uptime.Time, uptime.Uptime)
+}
+
 type ValUpTimeVo struct {
 	Time   string `bson:"_id,omitempty"`
 	Uptime float64
