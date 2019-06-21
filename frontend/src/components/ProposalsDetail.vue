@@ -43,18 +43,6 @@
         <div class="information_props_wrap">
           <span class="information_props">Status :</span>
           <span class="information_value">
-            <img class="information_status_icon"
-                 v-if="status === 'Passed'"
-                 src="../assets/pass.png" />
-            <img class="information_status_icon"
-                 v-if="status === 'Rejected'"
-                 src="../assets/rejected.png" />
-            <img class="information_status_icon"
-                 v-if="status === 'VotingPeriod'"
-                 src="../assets/voting_period.png" />
-            <img class="information_status_icon"
-                 v-if="status === 'DepositPeriod'"
-                 src="../assets/deposit_period.png" />
             {{status}}
           </span>
         </div>
@@ -747,12 +735,6 @@ pre {
 .proposals_table_title_div {
   font-size: 18px;
   margin: 30px 20px 10px;
-}
-.information_status_icon {
-  width: 14px;
-  height: 14px;
-  vertical-align: middle;
-  margin-right: 4px;
 }
 .mobile_proposals_table_container {
   & > div {
