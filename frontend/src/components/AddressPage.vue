@@ -565,7 +565,6 @@ export default {
               item.power = ""
             }
             let obj = [];
-            console.log(item.time,'??????')
             obj[0] = Tools.conversionTimeToUTCByValidatorsLine(item.time);
             obj[1] = item.power;
             seriesData.push(obj);
