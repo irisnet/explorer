@@ -61,6 +61,20 @@ func TestConvertConsensusPublicKey(t *testing.T) {
 
 }
 
+func TestQueryCandidateUptime(t *testing.T) {
+
+	unitsOfTime := []string{"hour", "week", "month"}
+
+	for _, unit := range unitsOfTime {
+
+		uptimeHistory := new(ValidatorService).QueryCandidateUptime("fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx", unit)
+
+		for k, v := range uptimeHistory {
+			t.Logf("unit: %v k: %v  v: %v  \n", unit, k, v)
+		}
+	}
+}
+
 // func TestGetValidators(t *testing.T) {
 //
 // 	validatorList := new(ValidatorService).GetValidators("", "", 0, 100)
@@ -97,19 +111,7 @@ func TestConvertConsensusPublicKey(t *testing.T) {
 // 	t.Logf("validator: %v \n", val)
 // }
 //
-// func TestQueryCandidateUptime(t *testing.T) {
-//
-// 	unitsOfTime := []string{"hour", "week", "month"}
-//
-// 	for _, unit := range unitsOfTime {
-//
-// 		uptimeHistory := new(ValidatorService).QueryCandidateUptime("fva1d7rxfhyhqzgudv5nmne548t3xrk4tvazpg94cu", unit)
-//
-// 		for k, v := range uptimeHistory {
-// 			t.Logf("unit: %v k: %v  v: %v  \n", unit, k, v)
-// 		}
-// 	}
-// }
+
 //
 // func TestQueryCandidatePower(t *testing.T) {
 // 	unitsOfTime := []string{"months", "week", "month"}

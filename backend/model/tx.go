@@ -51,11 +51,10 @@ type MsgBeginRedelegate struct {
 }
 
 type TxStatisticsVo struct {
-	TransCnt       int
-	StakeCnt       int
-	DeclarationCnt int
-	GovCnt         int
-	Data           []CommonTx
+	TransCnt       int `json:"trans_cnt"`
+	StakeCnt       int `json:"stake_cnt"`
+	DeclarationCnt int `json:"declaration_cnt"`
+	GovCnt         int `json:"gov_cnt"`
 }
 
 func (s TxStatisticsVo) String() string {
@@ -64,8 +63,7 @@ func (s TxStatisticsVo) String() string {
 		StakeCnt       :%v
 		DeclarationCnt :%v
 		GovCnt         :%v
-		Data           :%v
-		`, s.TransCnt, s.StakeCnt, s.DeclarationCnt, s.GovCnt, s.Data)
+		`, s.TransCnt, s.StakeCnt, s.DeclarationCnt, s.GovCnt)
 }
 
 type TxNumGroupByDayVo struct {

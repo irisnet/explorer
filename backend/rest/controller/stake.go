@@ -11,7 +11,7 @@ import (
 
 func RegisterStake(r *mux.Router) error {
 	funs := []func(*mux.Router) error{
-		registerQueryCandidate,
+		registerQueryValidator,
 		registerQueryCandidateStatus,
 		registerQueryCandidatesTop,
 		registerQueryCandidateUptime,
@@ -52,7 +52,7 @@ func registerGetValidator(r *mux.Router) error {
 	doApi(r, types.UrlRegisterGetValidator, "GET", func(request model.IrisReq) interface{} {
 		stake.SetTid(request.TraceId)
 		address := Var(request, "address")
-		result := stake.GetValidator(address)
+		result := stake.GetValidatorFromLcd(address)
 		return result
 	})
 	return nil
@@ -66,11 +66,11 @@ func registerQueryCandidatesTop(r *mux.Router) error {
 
 	return nil
 }
-func registerQueryCandidate(r *mux.Router) error {
+func registerQueryValidator(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryCandidate, "GET", func(request model.IrisReq) interface{} {
 		stake.SetTid(request.TraceId)
 		address := Var(request, "address")
-		result := stake.QueryCandidate(address)
+		result := stake.QueryValidator(address)
 		return result
 	})
 
