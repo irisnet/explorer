@@ -167,7 +167,7 @@
 					{
 						title:'Self_Bonded',
 						slot: 'Self_Bonded',
-						key: 'Self_Bonded',
+						key: 'Amount',
 						className: 'text_right',
 					},
 					{
