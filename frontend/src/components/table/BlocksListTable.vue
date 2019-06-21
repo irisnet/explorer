@@ -415,7 +415,7 @@ export default {
     position: absolute;
     padding: 0rem 0.15rem;
     top: -0.36rem;
-    left: 50%;
+    left: 25px;
     transform: translateX(-50%);
     color: #fff;
     background: rgba(0, 0, 0, 1);

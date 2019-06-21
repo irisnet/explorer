@@ -125,17 +125,18 @@
           Service.http(searchUrl).then((searchResult) =>{
             that.flshowResult = false;
               if(searchResult){
-                searchResult.forEach((item) => {
-                  if(item.Type == "block"){
-                    that.blockHeight = item.Data.Height;
-                    that.blockTime = Tools.format2UTC(item.Data.Timestamp);
-                    that.blockHash = item.Data.Hash;
-                  }else if(item.Type == "proposal"){
-                    that.proposalId = item.Data.ProposalId;
-                    that.proposalTitle = item.Data.Title;
-                    that.proposalType = item.Data.Type;
-                    that.proposalStatus = item.Data.Status;
-                    that.proposalTime = Tools.format2UTC(item.Data.SubmitTime)
+                Object.entries(searchResult).forEach((item) => {
+                  let [type, value] = item;
+                  if(type == "block"){
+                    that.blockHeight = value.height;
+                    that.blockTime = Tools.format2UTC(value.timestamp);
+                    that.blockHash = value.hash;
+                  }else if(type == "proposal"){
+                    that.proposalId = value.proposal_id;
+                    that.proposalTitle = value.title;
+                    that.proposalType = value.type;
+                    that.proposalStatus = value.status;
+                    that.proposalTime = Tools.format2UTC(value.submit_time)
                   }
                 })
               }else {
