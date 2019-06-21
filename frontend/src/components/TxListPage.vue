@@ -166,9 +166,14 @@
 
         .transaction_list_table_container{
             padding-top: 0;
+            padding-left: 0.1rem;
+            padding-right: 0.1rem;
             .transaction_list_table_content{
                 .pagination_nav_content{
                     position: static;
+                    & > span:nth-child(1) {
+                      padding-left: 0.1rem;
+                    }
                 }
                 .table_list_content{
                     padding-top: 0;

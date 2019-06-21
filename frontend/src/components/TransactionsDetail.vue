@@ -405,7 +405,7 @@
             }
             @include pcCenter;
             .transactions_detail_information_wrap{
-                padding:0.16rem 0rem;
+                padding:0.16rem 0rem 0.4rem;
                 .information_props_wrap{
                     @include flex;
                     margin-bottom: 0.08rem;

@@ -221,7 +221,6 @@ export default {
       voteDetailsAbstain: "",
       proposer: "",
       submitHash: "",
-      tableMinWidth: "",
       depositEndTime: "",
       votingStartTime: "",
       votingEndTime: "",
@@ -245,15 +244,9 @@ export default {
   },
   beforeMount () {
     Tools.scrollToTop();
-    if (Tools.currentDeviceIsPersonComputer()) {
-      this.proposalsDetailWrap = 'personal_computer_transactions_detail_wrap';
-    } else {
-      this.proposalsDetailWrap = 'mobile_transactions_detail_wrap';
-    }
-  },
-  mounted () {
-    this.getProposalsInformation();
-    this.computeMinWidth();
+    this.$nextTick(() => {
+      this.computedProposalsDetailWrap();
+    });
   },
   watch: {
     currentPage (newVal) {
@@ -261,12 +254,17 @@ export default {
     },
     depositorCurrentPage (newVal) {
       this.getDepositor();
+    },
+    '$store.state.isMobile'(newVal) {
+      this.computedProposalsDetailWrap();
     }
   },
   methods: {
-    computeMinWidth () {
-      if (this.$route.params.proposal_id) {
-        this.tableMinWidth = 7.5;
+    computedProposalsDetailWrap() {
+      if (!this.$store.state.isMobile) {
+        this.proposalsDetailWrap = 'personal_computer_transactions_detail_wrap';
+      } else {
+        this.proposalsDetailWrap = 'mobile_transactions_detail_wrap';
       }
     },
     flShowProposalTime (proposalTimeName, status) {
@@ -436,6 +434,10 @@ export default {
   .proposals_title_wrap {
     width: 100%;
     border-bottom: 1px solid #d6d9e0;
+    display: flex;
+    justify-content: center;
+    height: 0.62rem;
+    background-color: #efeff1;
     @include flex;
     @include pcContainer;
     .personal_computer_transactions_detail_wrap {
@@ -558,8 +560,17 @@ export default {
     @include flex;
     flex-direction: column;
     padding: 0 0.1rem;
+    &:nth-child(1) {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
     .proposals_detail_wrap_hash_var {
+      font-size: 0.18rem;
       color: #a2a2ae;
+    }
+    .proposals_table_title_div {
+      margin-left: 0.08rem !important;
     }
     .proposals_information_content_title {
       height: 0.5rem !important;
@@ -567,14 +578,14 @@ export default {
       font-size: 0.18rem !important;
       color: #000000;
       margin-bottom: 0;
+      padding-left: 0rem;
       @include fontWeight;
-      border-bottom: 1px solid #d6d9e0 !important;
     }
     .proposals_detail_table_wrap {
       width: 100%;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.2rem;
       .no_data_show {
         @include flex;
         width: 100%;
@@ -748,9 +759,6 @@ pre {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start !important;
-    .proposals_table_title_div {
-      width: 100%;
-    }
   }
   .table_wrap {
     width: 100%;
@@ -758,18 +766,10 @@ pre {
   .table_pagination {
     justify-content: flex-end !important;
   }
-  .proposals_table_title_div {
-    margin-left: 0.08rem !important;
-  }
   .voting_options {
     & > span {
       padding: 0 0.08rem;
     }
-  }
-}
-.mobile_transactions_detail_wrap {
-  .proposals_table_title_div {
-    margin-left: 0.08rem !important;
   }
 }
 .table_pagination {
@@ -778,7 +778,7 @@ pre {
 }
 .proposal_table {
   &:nth-last-child(2n) {
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.2rem;
   }
   &:nth-last-child(1) {
     margin-bottom: 0.4rem;

@@ -144,8 +144,7 @@
             this.navigationTimer = setInterval(function() {
                 that.getNavigation();
             },5000);
-            window.addEventListener('resize',this.onresize);
-            if (window.innerWidth > 910) {
+            if (!this.$store.state.isMobile) {
                 this.pageClassName = 'personal_computer_home_wrap';
                 this.module_item_wrap = 'module_item_wrap_computer';
                 if(document.getElementsByClassName('fixed_item_height').length > 0){
@@ -161,10 +160,15 @@
             window.removeEventListener('resize',this.onWindowResize);
             clearInterval(this.timer)
         },
+        watch: {
+          '$store.state.isMobile'(newVal, oldVal) {
+            this.onresize(newVal);
+          }
+        },
         methods: {
-            onresize () {
+            onresize (isMobile) {
                 this.innerWidth = window.innerWidth;
-                if(window.innerWidth > 910){
+                if(!isMobile){
                     this.pageClassName = 'personal_computer_home_wrap';
                     this.module_item_wrap = 'module_item_wrap_computer';
                     if(document.getElementsByClassName('fixed_item_height').length > 0) {
@@ -531,6 +535,7 @@
                         min-height: 1.24rem;
                         border-radius: 0.01rem;
                         margin-top: 0.1rem;
+                        margin-right: 0;
                         box-sizing: border-box;
                         padding: 0.14rem;
                         width: 100%;
@@ -543,7 +548,7 @@
                 flex-direction: column;
                 align-items: center;
                 .home_module_item {
-                    width: 98%;
+                    width: 100%;
                     margin-bottom: 0.4rem;
                     border: 0.01rem solid #d6d9e0;
                 }
