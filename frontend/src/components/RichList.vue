@@ -142,7 +142,7 @@
     position: relative;
     top: -0.01rem;
     width: 100%;
-    margin-bottom: 0.2rem;
+    margin-bottom: 0.4rem;
     .top_list_content{
       max-width: 12.5rem;
       width: 100%;
@@ -183,15 +183,21 @@
     .top_list_title_wrap{
       padding: 0.15rem 0;
       display: flex;
-      justify-content: space-between
+      justify-content: space-between;
     }
   }
-  @media (max-width: 959px){
+  @media (max-width: 910px){
+    .top_list_container {
+      padding: 0 0.1rem;
+    }
     .top_list_title_wrap{
       padding: 0.15rem 0;
       display: flex;
       flex-direction:column;
       align-items:flex-start;
+      h5 {
+        margin-left: -0.1rem;
+      }
       .top_list_assets_content{
         padding: 0.1rem 0.3rem 0 0.2rem !important;
       }
