@@ -116,7 +116,7 @@
     import Tools from '../util/Tools';
     import BlocksListTable from './table/BlockDetailListTable';
     import SpinComponent from './commonComponents/SpinComponent';
-    import Service from "../util/axios";
+    import Service from "../service";
     import Constant from "../constant/Constant"
     export default {
         components: {
@@ -236,44 +236,45 @@
             },
 
             getBlockInformation() {
-                let url = `/api/block/blockinfo/${this.$route.params.height}`;
-                Service.http(url).then((result) => {
-                    if (result) {
-                    	this.getTxListByTxCount(result.transactions);
-                        this.transactionsValue = result.transactions;
-                        this.heightValue = result.block_height;
-                        this.validatorValue = `${result.precommit_validator_num !== null ? result.precommit_validator_num : '--'} / ${result.total_validator_num ? result.total_validator_num : '--'}`;
-                        this.votingPowerValue = result.precommit_voting_power !== null ? `${((result.precommit_voting_power / result.total_voting_power) *100).toFixed(4)} %` : '--';
-                        this.timestampValue = Tools.format2UTC(result.timestamp);
-                        this.blockHashValue = result.block_hash;
-                        this.proposerValue = result.propopser_moniker ? result.propopser_moniker : '--';
-                        this.proposerAddress = result.propopser_addr;
-                        this.inflationValue = result.mint_coin.denom !== '' ? `${Tools.formatPriceToFixed(Tools.convertScientificNotation2Number(Tools.formatNumber(result.mint_coin.amount)))} ${Tools.formatDenom(result.mint_coin.denom)}` : '--';
-                        this.precommitValidatorsValue = result.validator_num !== 0 ? result.validator_num : '--';
-                        this.getMaxBlock(result.latest_height)
-                    } else {
-	                    this.validatorValue= '--';
-                        this.proposerAddress = '--';
-                        this.inflationValue = '--';
-                        this.heightValue = '';
-                        this.timestampValue = '';
-                        this.blockHashValue = '--';
-                        this.transactionsValue = '--';
-                        this.precommitValidatorsValue = '--';
-                        this.votingPowerValue = '--';
-                    }
-                }).catch(err => {
-                    console.error(err);
-	                this.validatorValue= '--';
-	                this.proposerAddress = '--';
-	                this.inflationValue = '--';
-	                this.heightValue = '';
-	                this.timestampValue = '';
-	                this.blockHashValue = '--';
-	                this.transactionsValue = '--';
-	                this.precommitValidatorsValue = '--';
-	                this.votingPowerValue = '--';
-                })
+            	Service.commonInterface({blockInfoHeight:{height: this.$route.params.height}}, (result) => {
+            		try {
+			            if (result) {
+				            this.getTxListByTxCount(result.transactions);
+				            this.transactionsValue = result.transactions;
+				            this.heightValue = result.block_height;
+				            this.validatorValue = `${result.precommit_validator_num !== null ? result.precommit_validator_num : '--'} / ${result.total_validator_num ? result.total_validator_num : '--'}`;
+				            this.votingPowerValue = result.precommit_voting_power !== null ? `${((result.precommit_voting_power / result.total_voting_power) *100).toFixed(4)} %` : '--';
+				            this.timestampValue = Tools.format2UTC(result.timestamp);
+				            this.blockHashValue = result.block_hash;
+				            this.proposerValue = result.propopser_moniker ? result.propopser_moniker : '--';
+				            this.proposerAddress = result.propopser_addr;
+				            this.inflationValue = result.mint_coin.denom !== '' ? `${Tools.formatPriceToFixed(Tools.convertScientificNotation2Number(Tools.formatNumber(result.mint_coin.amount)))} ${Tools.formatDenom(result.mint_coin.denom)}` : '--';
+				            this.precommitValidatorsValue = result.validator_num !== 0 ? result.validator_num : '--';
+				            this.getMaxBlock(result.latest_height)
+			            } else {
+				            this.validatorValue= '--';
+				            this.proposerAddress = '--';
+				            this.inflationValue = '--';
+				            this.heightValue = '';
+				            this.timestampValue = '';
+				            this.blockHashValue = '--';
+				            this.transactionsValue = '--';
+				            this.precommitValidatorsValue = '--';
+				            this.votingPowerValue = '--';
+			            }
+		            }catch (e) {
+			            console.error(e);
+			            this.validatorValue= '--';
+			            this.proposerAddress = '--';
+			            this.inflationValue = '--';
+			            this.heightValue = '';
+			            this.timestampValue = '';
+			            this.blockHashValue = '--';
+			            this.transactionsValue = '--';
+			            this.precommitValidatorsValue = '--';
+			            this.votingPowerValue = '--';
+		            }
+                });
             },
 	        getTxListByTxCount(txCount){
             	if(txCount > 0){
@@ -284,49 +285,74 @@
                 }
             },
             getGovList(currentPage,pageSize,blockHeight){
-	            let url = `/api/tx/gov/${currentPage}/${pageSize}?height=${blockHeight}`;
-	            Service.http(url).then((proposal) => {
-                    this.handleGovernance(proposal)
-	            }).catch(err => {
-	            	console.error(err);
-		            this.handleGovernance(null)
+	            Service.commonInterface({blockInfoGov:{
+			            currentPage: currentPage,
+			            pageSize: pageSize,
+			            blockHeight: blockHeight,
+                    }}, (proposal) => {
+	            	try {
+			            this.handleGovernance(proposal)
+		            }catch (e) {
+			            console.error(e);
+			            this.handleGovernance(null)
+		            }
                 })
             },
             getValidatorSetList(currentPage,pageSize,blockHeight){
-                let url = `/api/block/validatorset/${blockHeight}?page=${currentPage}&size=${pageSize}`;
-                Service.http(url).then((validatorSetList) => {
-                    this.handleValidatorSetList(validatorSetList)
-                }).catch(err => {
-	                console.error(err);
-	                this.handleValidatorSetList(null)
-                })
+                Service.commonInterface({blockInfoValidatorSet:{
+		                blockHeight: blockHeight,
+		                currentPage: currentPage,
+		                pageSize: pageSize,
+                    }},(validatorSetList) => {
+                	try {
+		                this.handleValidatorSetList(validatorSetList)
+	                }catch (e) {
+		                console.error(e);
+		                this.handleValidatorSetList(null)
+	                }
+                });
             },
             getTransferList(currentPage,pageSize,blockHeight){
-                let url = `/api/tx/trans/${currentPage}/${pageSize}?height=${blockHeight}`;
-                Service.http(url).then((txList) => {
-                    this.handleTransferList(txList)
-                }).catch(err => {
-	                console.error(err);
-	                this.handleTransferList(null)
-                })
+            	Service.commonInterface({blockInfoTransfer:{
+			            currentPage:currentPage,
+			            pageSize: pageSize,
+			            blockHeight: blockHeight,
+                    }},(txList) => {
+            		try {
+			            this.handleTransferList(txList)
+		            }catch (e) {
+			            console.error(e);
+			            this.handleTransferList(null)
+		            }
+                });
             },
 	        getStakeList(currentPage,pageSize,blockHeight){
-		        let url = `/api/tx/stake/${currentPage}/${pageSize}?height=${blockHeight}`;
-		        Service.http(url).then((txList) => {
-			        this.handleStakeList(txList)
-		        }).catch(err => {
-			        console.error(err);
-			        this.handleStakeList(null)
-		        })
+            	Service.commonInterface({blockInfoStake:{
+			            currentPage: currentPage,
+			            pageSize: pageSize,
+			            blockHeight: blockHeight,
+                    }}, (txList) => {
+            		try {
+			            this.handleStakeList(txList)
+		            }catch (e) {
+			            console.error(e);
+			            this.handleStakeList(null)
+		            }
+                })
             },
 	        getDeclarationList(currentPage,pageSize,blockHeight){
-		        let url = `/api/tx/declaration/${currentPage}/${pageSize}?height=${blockHeight}`;
-		        Service.http(url).then((txList) => {
-			        this.handleDeclarationList(txList)
-		        }).catch(err => {
-			        console.error(err);
-			        this.handleDeclarationList(null)
-		        })
+            	Service.commonInterface({blockInfoDeclaration: {
+			            currentPage: currentPage,
+			            pageSize: pageSize,
+			            blockHeight: blockHeight,
+                    }}, (txList) => {
+            		try {
+			            this.handleDeclarationList(txList)
+		            }catch (e) {
+			            console.error(e);
+			            this.handleDeclarationList(null)
+		            }
+                });
             },
 
             handleTransferList(txList) {

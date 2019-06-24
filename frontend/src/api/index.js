@@ -29,9 +29,12 @@ const urlApi = {
   headerSearchValue: '/api/search/{searchValue}',
   headerConfig: '/api/config',
   //blockInfo
-  blockInfoHeight: '/api/block/{height}',
-  blockInfoValidatorSet: '/api/stake/validatorset?height={height}&page={pageNumber}&size={pageSize}',
-  blockInfoTokenFlow: '/api/tx/token/flow?height={height}&page={pageNumber}&size={pageSize}',
+  blockInfoHeight: '/api/block/blockinfo/{height}',
+  blockInfoGov: '/api/tx/gov/{currentPage}/{pageSize}?height={blockHeight}',
+  blockInfoValidatorSet: '/api/block/validatorset/{blockHeight}?page={currentPage}&size={pageSize}',
+  blockInfoTransfer: '/api/tx/trans/{currentPage}/{pageSize}?height={blockHeight}',
+  blockInfoStake: '/api/tx/stake/{currentPage}/{pageSize}?height={blockHeight}',
+  blockInfoDeclaration: '/api/tx/declaration/{currentPage}/{pageSize}?height={blockHeight}',
   //blockList
   blockList: '/api/blocks?page={pageNumber}&size={pageSize}',
   blockListLatestheight: '/api/block/latestheight',
