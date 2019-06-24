@@ -28,7 +28,7 @@
 <script>
     import SpinComponent from './commonComponents/SpinComponent';
     import TopListTable from "./table/TopListTable";
-    import Server from '../util/axios';
+    import Server from '../service';
     import Tools from '../util/Tools'
     export default {
         name: "TopList",
@@ -52,42 +52,43 @@
         },
         methods:{
             getTopList(){
-                let url= `/api/accounts`;
                 this.showLoading = true;
-                Server.http(url).then(res => {
-                    this.showLoading = false;
-                    if(res) {
-                      this.latestTime = this.getUpDatedTime(res);
-                      this.showLoading = false;
-                        this.topList = res.map(item => {
-                            return {
-                              rank: item.rank,
-                              Address: item.address,
-                              Balance: `${Tools.formatPrice(Tools.convertScientificNotation3Number(Tools.formatNumber(item.balance[0].amount)))}`,
-                              Percentage: this.formatPercentage(item.percent)
-                               }
-                           })
-                    }else {
-                        this.showLoading = false;
-                        this.showNoData = true;
-                        this.topList = [{
-                            '#':'',
-                            Address: '',
-                            Balance: '',
-                            Percentage: ''
-                        }];
-                    }
-                }).catch(err => {
-                    this.showLoading = false;
-                    this.showNoData = true;
-                    console.error(err);
-                    this.topList = [{
-                        '#':'',
-                        Address: '',
-                        Balance: '',
-                        Percentage: ''
-                    }];
-                   })
+	            Server.commonInterface({richListAccounts:{}}, (res) => {
+	            	try {
+			            this.showLoading = false;
+			            if(res) {
+				            this.latestTime = this.getUpDatedTime(res);
+				            this.showLoading = false;
+				            this.topList = res.map(item => {
+					            return {
+						            rank: item.rank,
+						            Address: item.address,
+						            Balance: `${Tools.formatPrice(Tools.convertScientificNotation3Number(Tools.formatNumber(item.balance[0].amount)))}`,
+						            Percentage: this.formatPercentage(item.percent)
+					            }
+				            })
+			            }else {
+				            this.showLoading = false;
+				            this.showNoData = true;
+				            this.topList = [{
+					            '#':'',
+					            Address: '',
+					            Balance: '',
+					            Percentage: ''
+				            }];
+			            }
+		            }catch (e) {
+			            this.showLoading = false;
+			            this.showNoData = true;
+			            this.topList = [{
+				            '#':'',
+				            Address: '',
+				            Balance: '',
+				            Percentage: ''
+			            }];
+			            console.error(e);
+		            }
+                })
             },
             formatPercentage(percentage){
                 let minToFixedNumber = 0.0001,maxSubStrLength = 8;
