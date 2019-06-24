@@ -165,8 +165,8 @@
             tooltip: true
 					},
 					{
-						title:'Amount',
-						slot: 'Amount',
+						title:'Self_Bonded',
+						slot: 'Self_Bonded',
 						key: 'Amount',
 						className: 'text_right',
 					},
