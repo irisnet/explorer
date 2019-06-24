@@ -173,7 +173,6 @@
 
 <script>
 	import Tools from '../util/Tools';
-	// import Service from "../util/axios";
 	import Service from "../service";
 	import Constant from "../constant/Constant"
 	export default {
