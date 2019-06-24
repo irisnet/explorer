@@ -4,19 +4,16 @@
             <template slot-scope="{ row }" slot="Block">
                     <router-link :to="`/block/${row.Block}`" class="link_style">{{row.Block}}</router-link>
             </template>
-
             <template slot-scope="{ row }" slot="Proposal_ID">
                 <router-link v-if="row.Proposal_ID !== '--' && row.Proposal_Title && row.Proposal_Title !== '--'" :to="`/ProposalsDetail/${row.Proposal_ID}`" class="link_style">{{row.Proposal_ID}}</router-link>
                 <span v-if="row.Proposal_ID === '--' && row.Proposal_Title && row.Proposal_Title !== '--'">{{row.Proposal_ID}}</span>
                 <span v-if="row.Proposal_Title && row.Proposal_Title === '--'">--</span>
             </template>
-
             <template slot-scope="{ row }" slot="Proposal_Title">
                 <router-link v-if="row.Proposal_ID !== '--' && row.Proposal_Title && row.Proposal_Title !== '--'" :to="`/ProposalsDetail/${row.Proposal_ID}`" class="link_style">{{row.Proposal_Title}}</router-link>
                 <span v-if="row.Proposal_ID === '--' && row.Proposal_Title && row.Proposal_Title !== '--'">{{row.Proposal_Title}}</span>
                 <span v-if="row.Proposal_Title && row.Proposal_Title === '--'">--</span>
             </template>
-
             <template slot-scope="{ row }" slot="Tx_Hash">
                 <div class="common_hover_parent" v-if="row.Tx_Hash">
                     <router-link :to="`/tx?txHash=${row.Tx_Hash}`" class="link_style common_font_style">{{formatTxHash(row.Tx_Hash)}}
@@ -63,6 +60,12 @@
                     <router-link :to="`/address/1/${row.OperatorAddr}`" class="link_style common_font_style">{{formatAddress(row.OperatorAddr)}}
                     </router-link>
                 </div>
+            </template>
+            <template slot-scope="{ row }" slot="Moniker">
+                <div class="common_hover_address_parent">
+                    <router-link v-if="row.Moniker && row.Moniker !== '--'" :to="`/address/1/${row.OperatorAddr}`" class="link_style">{{row.Moniker}}</router-link>
+                </div>
+                <span v-if="row.Moniker && row.Moniker === '--'">--</span>
             </template>
         </m-table>
     </div>
@@ -142,13 +145,13 @@
 					},
 				],
 				declarationFields:[
-          {
-            title:'Tx_Hash',
-            slot: 'Tx_Hash',
-            width: 100,
-            tooltip: true,
-            tooltipClassName: 'tooltip_left'
-          },
+              {
+                title:'Tx_Hash',
+                slot: 'Tx_Hash',
+                width: 100,
+                tooltip: true,
+                tooltipClassName: 'tooltip_left'
+              },
 					{
 						title:'Block',
 						slot: 'Block',
@@ -157,12 +160,11 @@
 					{
 						title:'Moniker',
 						slot: 'Moniker',
-						key: 'Moniker',
 					},
 					{
 						title:'OperatorAddr',
-            slot: 'OperatorAddr',
-            tooltip: true
+                        slot: 'OperatorAddr',
+                        tooltip: true
 					},
 					{
 						title:'Self_Bonded',
