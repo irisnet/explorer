@@ -119,7 +119,7 @@
                     <img src="../assets/menu.png">
                 </div>
                 <div class="image_wrap_mobile"
-                     @click="featureButtonClick('/home',true)">
+                     @click="featureButtonClick('/home',true)" :style="{visibility: flShowLogo ? 'visible' : 'hidden'}">
                     <img :src="explorerLogo" />
                 </div>
             </div>
@@ -277,7 +277,8 @@
 				downImg: require("../assets/caret-bottom.png"),
 				netWorkArray: [],
 				explorerLogo: '',
-				flShowSearchIpt: false
+				flShowSearchIpt: false,
+				flShowLogo: false
 			}
 		},
 		beforeMount () {
@@ -522,6 +523,7 @@
 			getConfig () {
 				Service.commonInterface({headerConfig:{}},(res) => {
 					try {
+						this.flShowLogo = true;
 						this.toggleTestnetLogo(res);
 						this.setCurrentSelectOption(res.cur_env, res.chain_id, res.configs);
 						this.setNetWorkLogo(res.cur_env, res.chain_id);
