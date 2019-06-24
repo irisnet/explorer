@@ -288,4 +288,9 @@ export default {
     padding-top: 1.32rem;
   }
 }
+@media screen and (max-width:910px) {
+  .page_nav_container {
+    padding-left: 0.1rem !important;
+  }
+}
 </style>

@@ -555,7 +555,7 @@
             margin: 0 auto;
             border-radius: 0.01rem;
             .block_information_title_content{
-                height:0.69rem;
+                height:0.7rem;
                 font-size: 0.18rem;
                 display: flex;
                 align-items: center;
@@ -634,8 +634,7 @@
                 }
             }
             .block_validator_set_container{
-                margin-bottom: 0.2rem;
-                padding-bottom: 0.2rem;
+                margin-bottom: 0.4rem;
                 .block_validator_set_title{
                     height: 0.65rem;
                     display: flex;
@@ -661,8 +660,13 @@
     }
     @media screen and (max-width:910px) {
         .block_detail_information_container{
+            padding: 0 0.1rem;
+            .block_information_title_content {
+              height: 0.5rem !important;
+            }
             .block_information_content{
                 .current_block_information_content{
+                  padding: 0.1rem !important;
                     .block_information_item{
                         flex-direction: column;
                         span:nth-of-type(1){
@@ -671,6 +675,10 @@
                     }
                 }
             }
+            
+        }
+        .block_table_container {
+            padding: 0 0.1rem;
         }
     }
 </style>

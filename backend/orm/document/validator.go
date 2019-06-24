@@ -241,16 +241,19 @@ func (_ Validator) GetCandidatePubKeyAddrByAddr(addr string) (string, error) {
 	return validator.ConsensusPubkey, err
 }
 
-func (_ Validator) QueryPowerWithBonded() (float64, error) {
+func (_ Validator) QueryPowerWithBonded() (int64, error) {
 
 	var query = orm.NewQuery()
 	defer query.Release()
 
 	condition := bson.M{}
 	condition[ValidatorFieldJailed] = false
-	condition[ValidatorFieldStatus] = types.TypeValStatusBonded
+	condition[ValidatorFieldStatus] = types.Bonded
 
-	var count CountVo
+	var count struct {
+		Id    bson.ObjectId `bson:"_id,omitempty"`
+		Count int64
+	}
 	query.Reset().
 		SetResult(&count).
 		SetCollection(CollectionNmValidator)
@@ -258,10 +261,9 @@ func (_ Validator) QueryPowerWithBonded() (float64, error) {
 		{"$match": condition},
 		{"$group": bson.M{
 			"_id":   ValidatorFieldVotingPower,
-			"count": bson.M{"$sum": "$tokens"},
+			"count": bson.M{"$sum": "$voting_power"},
 		}},
 	})
-
 	return count.Count, err
 }
 
@@ -277,6 +279,7 @@ func (_ Validator) QueryCandidateUptimeWithHour(addr string) ([]UptimeChangeVo, 
 	startTime := endTime.Add(d)
 	startStr := startTime.UTC().Format("2006-01-02 15")
 	endStr := endTime.UTC().Format("2006-01-02 15")
+
 	err := u.Find(bson.M{"address": addr, "time": bson.M{"$gte": startStr, "$lt": endStr}}).All(&upChanges)
 	if err != nil {
 		return nil, err

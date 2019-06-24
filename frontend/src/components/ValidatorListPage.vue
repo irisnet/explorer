@@ -19,7 +19,7 @@
           No Data
         </div>
       </div>
-      <div class="pagination total_num" style='margin:0.2rem 0;'>
+      <div class="pagination total_num" style='margin-bottom:0.2rem;'>
         <span class="blocks_list_page_wrap_hash_var">{{count}} Total</span>
         <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
         </b-pagination>

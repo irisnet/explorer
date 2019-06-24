@@ -12,11 +12,8 @@ const (
 
 	//Block
 	UrlRegisterQueryBlockLatestHeight = "/block/latestheight"
-	UrlRegisterQueryBlock             = "/block/{height}"
 	UrlRegisterQueryRecentBlocks      = "/blocks/recent"
 	UrlRegisterQueryBlocks            = "/blocks"
-	UrlRegisterQueryBlockTxs          = "/block/txs/{height}"
-	UrlRegisterQueryBlockTxGov        = "/block/txgov/{height}"
 	UrlRegisterQueryBlockValidatorSet = "/block/validatorset/{height}"
 	UrlRegisterQueryBlockInfo         = "/block/blockinfo/{height}"
 

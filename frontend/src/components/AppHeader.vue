@@ -281,7 +281,7 @@
 			}
 		},
 		beforeMount () {
-			if (window.innerWidth > 930) {
+			if (window.innerWidth > 910) {
 				this.devicesShow = 1;
 				this.appHeaderVar = 'person_computer_header_var';
 			} else {
@@ -347,7 +347,7 @@
 			},
 			onresize () {
 				this.innerWidth = window.innerWidth;
-				if (window.innerWidth > 930) {
+				if (window.innerWidth > 910) {
 					this.devicesShow = 1;
 					this.appHeaderVar = 'person_computer_header_var';
 				} else {

@@ -38,3 +38,18 @@ func TestValidatorGetCandidatesTopN(t *testing.T) {
 	}
 
 }
+
+func TestQueryCandidateUptimeWithHour(t *testing.T) {
+
+	//db.getCollection('ex_uptime_change').find({"address":"35609FEA8D3401EFDC143D42FD9D4C95FBFC6A92","time":{"$gte":"2019-05-17 06"}})
+	history, err := Validator{}.QueryCandidateUptimeWithHour("BF87BDA76737C1820D3D4DF5D753A57CC0D6837F")
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	for k, v := range history {
+		t.Logf("k: %v  v: %v \n", k, v)
+	}
+
+}

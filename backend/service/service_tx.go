@@ -528,12 +528,22 @@ func (service *TxService) buildData(txs []model.CommonTx) []interface{} {
 			case types.TxTypeWithdrawDelegatorRewardsAll, types.TxTypeWithdrawValidatorRewardsAll:
 				stakeTx.To = tx.Tags["withdraw-address"]
 				sourceTotal := 0
+				validatorAddr := ""
+
 				for k, _ := range tx.Tags {
 					if strings.HasPrefix(k, "withdraw-reward-from-validator-") {
 						sourceTotal++
+						if sourceTotal == 1 {
+							validatorAddr = strings.Trim(k, "withdraw-reward-from-validator-")
+						}
 					}
 				}
-				stakeTx.From = strconv.Itoa(sourceTotal)
+				if sourceTotal == 1 {
+					stakeTx.From = validatorAddr
+				} else {
+					stakeTx.From = strconv.Itoa(sourceTotal)
+				}
+
 				txResp = stakeTx
 			}
 		}

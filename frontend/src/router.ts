@@ -45,12 +45,6 @@ const router = new Router({
       path: '/txs/:txType', component: TxList
     },
     {
-      path: '/txs/:txType', component: TxList
-    },
-    {
-      path: '/txs/:txType', component: TxList
-    },
-    {
       path: '/validators', component: ValidatorListPage
     },
     {

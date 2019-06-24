@@ -7,32 +7,9 @@
     </div>
     <div class="parameters_list_container">
       <div class="parameter_list_content">
-        <!-- <h5 class="parameter_list_title_content">Governance Params In IRISnet</h5>
-        <div class="parameters_list_table_wrap">
-          <div class="parameters_list_table_content">
-            <spin-component :showLoading="showLoading"></spin-component>
-            <v-parameters :items="parametersList" :showNoData="showNoData"></v-parameters>
-            <div v-show="showNoData" class="no_data_show">
-              No Data
-            </div>
-          </div>
-        </div> -->
-        <!-- <div v-show="!showNoData">
-          <h5 class="parameter_list_title_content">All Governance Params In IRISnet</h5>
-          <div class="parameter_note">
-            <div class="current">
-              <i></i>
-              <span>Current Value</span>
-            </div>
-            <div class="genesis">
-              <i></i>
-              <span>Genesis Value</span>
-            </div>
-          </div>
-        </div> -->
         <div class="parameters_list_cards_content">
           <spin-component :showLoading="showLoading"></spin-component>
-          <div style="margin-top: 0.23rem;" v-show="!showNoData">
+          <div style="margin-top: 0.23rem; overflow-y: hidden;" v-show="!showNoData">
             <div :class="[$store.state.isMobile ? 'mobile_cards_layout' : 'pc_cards_layout']" v-for="(value, index) in parametersList" :key="index">
               <div class="card_title" v-show="value && value.length > 0">
                 <span>{{index}}</span>
@@ -231,7 +208,7 @@
   }
   .parameters_list_container{
     width: 100%;
-    margin-bottom: 0.2rem;
+    margin-bottom: 0.4rem;
     .parameter_list_content{
       max-width: 12.8rem;
       width: 100%;
@@ -265,6 +242,9 @@
               margin-right: 0;
             }
           }
+          &:nth-last-of-type(1) {
+            margin-bottom: -0.2rem;
+          }
         }
         div.card_title {
           width: 100%;
@@ -287,6 +267,13 @@
         }
         .mobile_cards_layout {
           @include mobile_cards_layout;
+          &:nth-last-child(1) {
+            .cards {
+              &:nth-last-child(1) {
+                padding-bottom: 0;
+              }
+            }
+          }
         }
         //使用rem设置max-width不生效
         @media screen and (max-width: 910px) {

@@ -3,20 +3,20 @@ package model
 import "time"
 
 type ResultVo struct {
-	Type string      `json:"Type,omitempty"`
-	Data interface{} `json:"Data,omitempty"`
+	Block    SimpleBlockVo    `json:"block"`
+	Proposal SimpleProposalVo `json:"proposal"`
 }
 
 type SimpleBlockVo struct {
-	Height    int64
-	Timestamp time.Time
-	Hash      string
+	Height    int64     `json:"height"`
+	Timestamp time.Time `json:"timestamp"`
+	Hash      string    `json:"hash"`
 }
 
 type SimpleProposalVo struct {
-	ProposalId uint64
-	Title      string
-	Type       string
-	Status     string
-	SubmitTime time.Time
+	ProposalId uint64    `json:"proposal_id"`
+	Title      string    `json:"title"`
+	Type       string    `json:"type"`
+	Status     string    `json:"status"`
+	SubmitTime time.Time `json:"submit_time"`
 }

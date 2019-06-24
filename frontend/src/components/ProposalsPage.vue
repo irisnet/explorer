@@ -104,7 +104,7 @@
           No Data
         </div>
       </div>
-      <div class="pagination" style='margin:0.2rem 0;'>
+      <div class="pagination" style='margin:0.2rem 0 0.4rem;'>
         <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
         </b-pagination>
       </div>
@@ -639,7 +639,7 @@
     font-size: 0.18rem;
     color: #000000;
     margin-right: 0.2rem;
-    padding-left: 0.2rem;
+    padding-left: 0.1rem;
     @include fontWeight;
   }
   .proposals_list_page_wrap_hash_var {
@@ -771,7 +771,7 @@
     }
   }
   .mobile_graph_pagination_container {
-    padding-left: 0!important;
+    padding-left: 0.1rem !important;
     & > div:nth-child(1) {
       height: auto!important;
     }

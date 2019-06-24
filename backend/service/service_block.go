@@ -146,6 +146,22 @@ func (service *BlockService) QueryList(page, size int) []model.BlockForList {
 
 	blocks, err := document.Block{}.GetBlockListByOffsetAndSize(offset, size)
 
+	if page == 1 && len(blocks) > 1 {
+		nextHeight := blocks[0].Height + 1
+		nextBlock := lcd.Block(nextHeight)
+		nextBlockAsDoc := document.Block{}
+
+		votes := []document.Vote{}
+		for _, v := range nextBlock.Block.LastCommit.Precommits {
+			vote := document.Vote{}
+			vote.ValidatorAddress = v.ValidatorAddress
+			votes = append(votes, vote)
+		}
+		nextBlockAsDoc.Height = nextHeight
+		nextBlockAsDoc.Block.LastCommit.Precommits = votes
+		blocks = append([]document.Block{nextBlockAsDoc}, blocks...)
+	}
+
 	if err != nil {
 		logger.Error("GetBlockListByOffsetAndSize", logger.String("err", err.Error()))
 		panic(types.CodeNotFound)
@@ -221,11 +237,11 @@ func (service *BlockService) QueryList(page, size int) []model.BlockForList {
 		blocksAsModel = append(blocksAsModel, tmp)
 	}
 
-	if page != 1 && len(blocksAsModel) > 1 {
+	if len(blocksAsModel) > 1 {
 		return blocksAsModel[1:]
 	}
 
-	return blocksAsModel
+	return []model.BlockForList{}
 }
 
 func (service *BlockService) QueryRecent() []model.BlockInfoVo {
