@@ -54,7 +54,6 @@ func (task UpTimeChangeTask) Start() {
 			if err != nil {
 				logger.Error("query one blcok ", logger.String("err", err.Error()))
 			}
-
 			startTime = firstBlock.Time
 		} else {
 			startTime, _ = time.ParseInLocation("2006-01-02 15", uptimeChange.Time, time.UTC)
@@ -75,7 +74,7 @@ func (task UpTimeChangeTask) Start() {
 
 		logger.Info("UptimeChangeVo", logger.String("startTime", startTime.UTC().Format("2006-01-02 15")), logger.String("endTime", endTime.UTC().Format("2006-01-02 15")))
 		if !endTime.Before(lastTime) {
-			logger.Info("UptimeChangeVo end", logger.String("startTime", startTime.Format("2006-01-02 15")))
+			logger.Info("UptimeChangeVo end", logger.String("endTime", endTime.String()), logger.String("lastTime", lastTime.String()))
 			return
 		}
 
@@ -93,6 +92,7 @@ func (task UpTimeChangeTask) Start() {
 				logger.Info("UptimeChangeVo end", logger.String("startTime", startTime.Format("2006-01-02 15")))
 				return
 			}
+
 			blocks, err = document.Block{}.QueryBlocksByDurationWithHeightAsc(startTime, endTime)
 			if err != nil {
 				logger.Error("query blocks by duration with height asc", logger.String("errr", err.Error()))
@@ -104,7 +104,6 @@ func (task UpTimeChangeTask) Start() {
 			return
 		}
 
-		//init validatorMap if validatorMap length is 0
 		if len(validatorMap) == 0 && len(blocks) > 0 {
 			for _, validator := range blocks[0].Validators {
 				powerChange := document.PowerChange{
@@ -119,21 +118,44 @@ func (task UpTimeChangeTask) Start() {
 					Time:    blocks[0].Time,
 					Change:  types.Change,
 				}
+
 				if err := powerChange.Insert(); err != nil {
 					logger.Error("power change insert", logger.String("err", err.Error()))
 				}
 			}
+		}
 
-			uptimeMap := make(map[string]int)
-			for _, block := range blocks {
+		uptimeMap := make(map[string]int)
+		for _, block := range blocks {
 
-				// power change handle
-				validatorMapNow := make(map[string]int64)
-				for _, validator := range block.Validators {
-					validatorMapNow[validator.Address] = validator.VotingPower
+			// power change handle
+			validatorMapNow := make(map[string]int64)
+			for _, validator := range block.Validators {
+				validatorMapNow[validator.Address] = validator.VotingPower
 
-					// validator add or update
-					if _, ok := validatorMap[validator.Address]; !ok {
+				// validator add or update
+				if _, ok := validatorMap[validator.Address]; !ok {
+					powerChange := document.PowerChange{
+						Address: validator.Address,
+						Power:   validator.VotingPower,
+						Time:    block.Time,
+						Height:  block.Height,
+						Change:  types.Change,
+					}
+					validatorMap[validator.Address] = model.ValVotingPowerChangeVo{
+						Address: validator.Address,
+						Power:   validator.VotingPower,
+						Time:    block.Time,
+						Height:  block.Height,
+						Change:  types.Change,
+					}
+
+					if err := powerChange.Insert(); err != nil {
+						logger.Error("power change insert", logger.String("err", err.Error()))
+					}
+
+				} else {
+					if validatorMap[validator.Address].Power != validator.VotingPower {
 						powerChange := document.PowerChange{
 							Address: validator.Address,
 							Power:   validator.VotingPower,
@@ -151,72 +173,52 @@ func (task UpTimeChangeTask) Start() {
 						if err := powerChange.Insert(); err != nil {
 							logger.Error("power change insert", logger.String("err", err.Error()))
 						}
-
-					} else {
-						if validatorMap[validator.Address].Power != validator.VotingPower {
-							powerChange := document.PowerChange{
-								Address: validator.Address,
-								Power:   validator.VotingPower,
-								Time:    block.Time,
-								Height:  block.Height,
-								Change:  types.Change,
-							}
-							validatorMap[validator.Address] = model.ValVotingPowerChangeVo{
-								Address: validator.Address,
-								Power:   validator.VotingPower,
-								Time:    block.Time,
-								Height:  block.Height,
-								Change:  types.Change,
-							}
-							if err := powerChange.Insert(); err != nil {
-								logger.Error("power change insert", logger.String("err", err.Error()))
-							}
-						}
 					}
 				}
-
-				// validator slash
-				for k, v := range validatorMap {
-					if v.Address == "" {
-						continue
-					}
-					if _, ok := validatorMapNow[k]; !ok {
-						powerChange := document.PowerChange{
-							Address: v.Address,
-							Power:   v.Power,
-							Time:    block.Time,
-							Height:  block.Height,
-							Change:  types.Slash,
-						}
-
-						delete(validatorMap, k)
-						if err := powerChange.Insert(); err != nil {
-							logger.Error("power change insert", logger.String("err", err.Error()))
-						}
-					}
-				}
-
-				// uptime handle
-				for _, validator := range block.Validators {
-					if _, ok := uptimeMap[validator.Address]; !ok {
-						uptimeMap[validator.Address] = 0
-					}
-				}
-				for _, commit := range block.Block.LastCommit.Precommits {
-					uptimeMap[commit.ValidatorAddress]++
-				}
-
-				doneTime := startTime.UTC().Format("2006-01-02 15")
-				for k, v := range uptimeMap {
-					err := document.UptimeChange{Address: k, Uptime: float64(100*v) / float64(len(blocks)), Time: doneTime}.Insert()
-					if err != nil {
-						logger.Error("uptimeChange insert", logger.String("err", err.Error()))
-					}
-				}
-
-				logger.Info("UptimeChangeVo task end")
 			}
+
+			// validator slash
+			for k, v := range validatorMap {
+				if v.Address == "" {
+					continue
+				}
+				if _, ok := validatorMapNow[k]; !ok {
+					powerChange := document.PowerChange{
+						Address: v.Address,
+						Power:   v.Power,
+						Time:    block.Time,
+						Height:  block.Height,
+						Change:  types.Slash,
+					}
+
+					delete(validatorMap, k)
+					if err := powerChange.Insert(); err != nil {
+						logger.Error("power change insert", logger.String("err", err.Error()))
+					}
+				}
+			}
+
+			// uptime handle
+			for _, validator := range block.Validators {
+				if _, ok := uptimeMap[validator.Address]; !ok {
+					uptimeMap[validator.Address] = 0
+				}
+			}
+			for _, commit := range block.Block.LastCommit.Precommits {
+				uptimeMap[commit.ValidatorAddress]++
+			}
+
+			doneTime := startTime.UTC().Format("2006-01-02 15")
+			for k, v := range uptimeMap {
+				err := document.UptimeChange{Address: k, Uptime: float64(100*v) / float64(len(blocks)), Time: doneTime}.Insert()
+				if err != nil {
+					logger.Error("uptimeChange insert", logger.String("err", err.Error()))
+				}
+			}
+
 		}
+
+		logger.Info("UptimeChangeVo task end")
 	})
 }
 
