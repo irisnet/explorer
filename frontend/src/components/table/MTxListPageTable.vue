@@ -162,7 +162,7 @@
 						slot: 'Moniker',
 					},
 					{
-						title:'OperatorAddr',
+						title:'Operator_Address',
                         slot: 'OperatorAddr',
                         tooltip: true
 					},
