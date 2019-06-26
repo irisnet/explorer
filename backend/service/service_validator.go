@@ -160,10 +160,6 @@ func (service *ValidatorService) GetUnbondingDelegationsFromLcd(valAddr string, 
 
 	lcdUnbondingDelegations := lcd.GetUnbondingDelegationsByValidatorAddr(valAddr)
 
-	if page > 0 {
-		page = page - 1
-	}
-
 	items := make([]model.UnbondingDelegations, 0, size)
 
 	for k, v := range lcdUnbondingDelegations {
@@ -190,10 +186,6 @@ func (service *ValidatorService) GetUnbondingDelegationsFromLcd(valAddr string, 
 func (service *ValidatorService) GetDelegationsFromLcd(valAddr string, page, size int) model.DelegationsPage {
 
 	lcdDelegations := lcd.GetDelegationsByValidatorAddr(valAddr)
-
-	if page > 0 {
-		page = page - 1
-	}
 
 	totalShareAsRat := new(big.Rat)
 	for _, v := range lcdDelegations {

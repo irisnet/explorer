@@ -489,7 +489,7 @@ type ReDelegations struct {
 	DelegatorAddr    string `json:"delegator_addr"`
 	ValidatorSrcAddr string `json:"validator_src_addr"`
 	ValidatorDstAddr string `json:"validator_dst_addr"`
-	CreationHeight   int64  `json:"creation_height"`
+	CreationHeight   string `json:"creation_height"`
 	MinTime          int64  `json:"min_time"`
 	InitialBalance   string `json:"initial_balance"`
 	Balance          string `json:"balance"`
@@ -502,8 +502,8 @@ type UnbondingDelegations struct {
 	ValidatorAddr  string `json:"validator_addr"`
 	InitialBalance string `json:"initial_balance"`
 	Balance        string `json:"balance"`
-	CreationHeight int64  `json:"creation_height"`
-	MinTime        int64  `json:"min_time"`
+	CreationHeight string `json:"creation_height"`
+	MinTime        string `json:"min_time"`
 }
 
 func (un UnbondingDelegations) String() string {

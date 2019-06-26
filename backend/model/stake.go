@@ -45,7 +45,7 @@ type Redelegation struct {
 	Address string `json:"address"`
 	Amount  string `json:"amount"`
 	To      string `json:"to"`
-	Block   int64  `json:"block"`
+	Block   string `json:"block"`
 }
 
 type DelegationsPage struct {
@@ -78,8 +78,8 @@ type UnbondingDelegations struct {
 	Address string `json:"address"`
 	Before  string `json:"before"`
 	After   string `json:"after"`
-	Block   int64  `json:"block"`
-	MinTime int64  `json:"min_time"`
+	Block   string `json:"block"`
+	MinTime string `json:"min_time"`
 }
 
 func (un UnbondingDelegations) String() string {

@@ -5,9 +5,19 @@ import (
 	"testing"
 )
 
+func TestGetRedelegationsByValidatorAddr(t *testing.T) {
+
+	redelegations := GetRedelegationsByValidatorAddr("fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx")
+
+	for k, v := range redelegations {
+		t.Logf("k: %v v: %v \n", k, v)
+	}
+
+}
+
 func TestGetDistributionRewardsByValidatorAcc(t *testing.T) {
 
-	rewards, err := GetDistributionRewardsByValidatorAcc("faa1x292qss22x4rls6ygr7hhnp0et94vwwrchaklp")
+	rewards, err := GetDistributionRewardsByValidatorAcc("fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx")
 	if err != nil {
 		t.Error(err)
 	}
@@ -89,7 +99,7 @@ func TestGetDelegationsByValidatorAddr(t *testing.T) {
 
 func TestGetUnbondingDelegationsByValidatorAddr(t *testing.T) {
 
-	unbondingDelegations := GetUnbondingDelegationsByValidatorAddr("fva1xtstdchjyzkddaptgyug62g23cta7eyzq49svq")
+	unbondingDelegations := GetUnbondingDelegationsByValidatorAddr("fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx")
 	for k, v := range unbondingDelegations {
 		t.Logf("k: %v  v: %v \n", k, v)
 	}
