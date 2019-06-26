@@ -205,6 +205,16 @@ func (service *ValidatorService) QueryCandidateUptime(address, category string) 
 
 func (service *ValidatorService) QueryCandidatePower(address, category string) []model.ValVotingPowerChangeVo {
 
+	var err error
+
+	address, err = document.Validator{}.GetCandidatePubKeyAddrByAddr(address)
+
+	if err != nil || address == "" {
+		panic(types.CodeNotFound)
+	}
+
+	address = utils.GenHexAddrFromPubKey(address)
+
 	var agoStr string
 	switch category {
 	case "week":

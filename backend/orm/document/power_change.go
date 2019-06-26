@@ -1,6 +1,7 @@
 package document
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/irisnet/explorer/backend/orm"
@@ -15,6 +16,17 @@ type PowerChange struct {
 	Power   int64
 	Time    time.Time
 	Change  string
+}
+
+func (power PowerChange) String() string {
+
+	return fmt.Sprintf(`
+		Height  :%v
+		Address :%v
+		Power   :%v
+		Time    :%v
+		Change  :%v
+		`, power.Height, power.Address, power.Power, power.Time, power.Change)
 }
 
 func (p PowerChange) Insert() error {

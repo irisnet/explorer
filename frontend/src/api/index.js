@@ -43,8 +43,11 @@ const urlApi = {
   //parameter
   govParams: '/api/gov/params',
   //proposal
-  proposalDetail: '/api/gov/proposal/{proposalId}',
+  proposalDetail: '/api/gov/proposals/{proposalId}',
+  proposalDetailVoterTx:'/api/gov/proposals/{proposalId}/voter_txs?page={pageNumber}&size={perPageSize}',
+  proposalDetailDepositorTx:'/api/gov/proposals/{proposalId}/depositor_txs?page={pageNumber}&size={perPageSize}',
   //proposalList
+  proposalListVotingAndDeposit:'/api/gov/deposit_voting_proposals',
   proposalList: '/api/gov/proposals?page={pageNumber}&size={pageSize}',
   //searchResult
   searchResult: '/api/search/{searchValue}',

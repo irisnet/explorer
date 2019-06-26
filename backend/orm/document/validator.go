@@ -238,6 +238,7 @@ func (_ Validator) GetCandidatePubKeyAddrByAddr(addr string) (string, error) {
 	defer db.Session.Close()
 	var validator Validator
 	err := c.Find(bson.M{ValidatorFieldOperatorAddress: addr}).One(&validator)
+
 	return validator.ConsensusPubkey, err
 }
 
@@ -307,15 +308,8 @@ func (_ Validator) QueryCandidateUptimeWithHour(addr string) ([]UptimeChangeVo, 
 func (_ Validator) QueryCandidatePower(address, agoStr string) ([]ValVotingPowerChangeVo, error) {
 
 	db := getDb()
-	c := db.C(CollectionNmValidator)
 	p := db.C(CollectionNmPowerChange)
 	defer db.Session.Close()
-	var validator Validator
-	err := c.Find(bson.M{ValidatorFieldOperatorAddress: address}).One(&validator)
-	if err != nil {
-		return nil, err
-	}
-	address = validator.ConsensusPubkey
 
 	var powers []ValVotingPowerChangeVo
 
@@ -329,6 +323,7 @@ func (_ Validator) QueryCandidatePower(address, agoStr string) ([]ValVotingPower
 	p.Find(bson.M{"address": address, "time": bson.M{"$lt": startTime}}).Sort("-time").One(&power)
 
 	result := []ValVotingPowerChangeVo{}
+
 	if power.Address != "" {
 		power.Time = startTime
 		result = []ValVotingPowerChangeVo{power}
@@ -336,7 +331,9 @@ func (_ Validator) QueryCandidatePower(address, agoStr string) ([]ValVotingPower
 		result = []ValVotingPowerChangeVo{{Address: address, Time: startTime}}
 	}
 	result = append(result, powers...)
-	result = append(result, ValVotingPowerChangeVo{Address: address, Time: endTime, Power: result[len(result)-1].Power})
+	if len(result) > 0 {
+		result = append(result, ValVotingPowerChangeVo{Address: address, Time: endTime, Power: result[len(result)-1].Power})
+	}
 	return result, nil
 }
 
