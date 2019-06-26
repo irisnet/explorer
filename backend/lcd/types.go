@@ -6,25 +6,28 @@ import (
 )
 
 const (
-	UrlAccount                        = "%s/bank/accounts/%s"
-	UrlValidator                      = "%s/stake/validators/%s"
-	UrlValidators                     = "%s/stake/validators?page=%d&size=%d"
-	UrlDelegationByVal                = "%s/stake/validators/%s/delegations"
-	UrlDelegationsByDelegator         = "%s/stake/delegators/%s/delegations"
-	UrlDelegationsByValidator         = "%s/stake/validators/%s/delegations"
-	UrlUnbondingDelegationByValidator = "%s/stake/validators/%s/unbonding-delegations"
-	UrlRedelegationsByValidator       = "%s/stake/validators/%s/redelegations"
-	UrlSignInfo                       = "%s/slashing/validators/%s/signing-info"
-	UrlNodeInfo                       = "%s/node-info"
-	UrlGenesis                        = "%s/genesis"
-	UrlWithdrawAddress                = "%s/distribution/%s/withdraw-address"
-	UrlBlockLatest                    = "%s/blocks/latest"
-	UrlBlock                          = "%s/blocks/%d"
-	UrlValidatorSet                   = "%s/validatorsets/%d"
-	UrlValidatorSetLatest             = "%s/validatorsets/latest"
-	UrlStakePool                      = "%s/stake/pool"
-	UrlBlocksResult                   = "%s/block-results/%d"
-	UrlGovParam                       = "%s/gov/params/%s"
+	UrlAccount                                   = "%s/bank/accounts/%s"
+	UrlValidator                                 = "%s/stake/validators/%s"
+	UrlValidators                                = "%s/stake/validators?page=%d&size=%d"
+	UrlDelegationByVal                           = "%s/stake/validators/%s/delegations"
+	UrlDelegationsByDelegator                    = "%s/stake/delegators/%s/delegations"
+	UrlDelegationsByValidator                    = "%s/stake/validators/%s/delegations"
+	UrlUnbondingDelegationByValidator            = "%s/stake/validators/%s/unbonding-delegations"
+	UrlRedelegationsByValidator                  = "%s/stake/validators/%s/redelegations"
+	UrlSignInfo                                  = "%s/slashing/validators/%s/signing-info"
+	UrlNodeInfo                                  = "%s/node-info"
+	UrlGenesis                                   = "%s/genesis"
+	UrlWithdrawAddress                           = "%s/distribution/%s/withdraw-address"
+	UrlBlockLatest                               = "%s/blocks/latest"
+	UrlBlock                                     = "%s/blocks/%d"
+	UrlValidatorSet                              = "%s/validatorsets/%d"
+	UrlValidatorSetLatest                        = "%s/validatorsets/latest"
+	UrlStakePool                                 = "%s/stake/pool"
+	UrlBlocksResult                              = "%s/block-results/%d"
+	UrlGovParam                                  = "%s/gov/params/%s"
+	UrlDistributionRewardsByValidatorAcc         = "%s/distribution/%s/rewards"
+	UrlValidatorsSigningInfoByConsensuPublicKey  = "%s/slashing/validators/%s/signing-info"
+	UrlDistributionWithdrawAddressByValidatorAcc = "%s/distribution/%s/withdraw-address"
 )
 
 type AccountVo struct {
@@ -457,6 +460,29 @@ type DelegationVo struct {
 	ValidatorAddr string `json:"validator_addr"`
 	Shares        string `json:"shares"`
 	Height        string `json:"height"`
+}
+
+type CoinAsStr struct {
+	Denom  string `json:"denom"`
+	Amount string `json:"amount"`
+}
+
+func (c CoinAsStr) String() string {
+	return fmt.Sprintf(
+		`Denom: %v Amount: %v`, c.Denom, c.Amount)
+}
+
+type CoinsAsStr []CoinAsStr
+
+type DistributionRewards struct {
+	Total CoinsAsStr `json:"total"`
+}
+
+type ValidatorSigningInfo struct {
+	StartHeight       string `json:"start_height"`
+	IndexOffset       string `json:"index_offset"`
+	JailedUntil       string `json:"jailed_until"`
+	MissedBlocksCount string `json:"missed_blocks_counter"`
 }
 
 type ReDelegations struct {

@@ -3,7 +3,31 @@ package model
 import (
 	"fmt"
 	"time"
+
+	"github.com/irisnet/explorer/backend/lcd"
 )
+
+type ValidatorForDetail struct {
+	TotalPower        int64          `json:"total_power"`
+	SelfPower         int64          `json:"self_power"`
+	Status            string         `json:"status"`
+	BondedTokens      string         `json:"bonded_tokens"`
+	SelfBonded        string         `json:"self_bonded"`
+	Reward            lcd.CoinsAsStr `json:"reward"`
+	DelegatorShares   string         `json:"delegator_shares"`
+	DelegatorCount    int            `json:"delegator_count"`
+	CommissionRate    string         `json:"commission_rate"`
+	CommissionUpdate  string         `json:"commission_update"`
+	BondHeight        string         `json:"bond_height"`
+	UnbondingHeight   string         `json:"unbond_height"`
+	JailedUntil       string         `json:"jailed_until"`
+	MissedBlocksCount string         `json:"missed_blocks_count"`
+	OperatorAddr      string         `json:"operator_addr"`
+	OwnerAddr         string         `json:"owner_addr"`
+	WithdrawAddr      string         `json:"withdraw_addr"`
+	ConsensusAddr     string         `json:"consensus_addr"`
+	Description       Description    `json:"description"`
+}
 
 type RedelegationPage struct {
 	Total int            `json:"total"`

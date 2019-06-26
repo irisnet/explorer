@@ -30,6 +30,7 @@ type ValidatorDepositTx struct {
 	DepositedAmount utils.Coins `json:"deposited_amount"`
 	Submited        bool        `json:"submited"`
 	TxHash          string      `json:"tx_hash"`
+	Moniker         string      `json:"moniker"`
 }
 
 type Proposal struct {

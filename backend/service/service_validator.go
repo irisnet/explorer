@@ -108,6 +108,20 @@ func (service *ValidatorService) GetDepositedTxByValidatorAddr(validatorAddr str
 		return model.ValidatorDepositTxPage{}
 	}
 
+	addrArr := make([]string, 0, len(txs))
+
+	addrArr = utils.RemoveDuplicationStrArr(addrArr)
+
+	for _, v := range txs {
+		addrArr = append(addrArr, v.From)
+	}
+
+	validatorMonikerMap, err := document.Validator{}.QueryValidatorMonikerByAddrArr(addrArr)
+
+	if err != nil {
+		logger.Error("QueryValidatorMonikerByAddrArr", logger.String("err", err.Error()))
+	}
+
 	items := make([]model.ValidatorDepositTx, 0, size)
 	for _, v := range txs {
 		submited := false
@@ -128,6 +142,7 @@ func (service *ValidatorService) GetDepositedTxByValidatorAddr(validatorAddr str
 		tmp := model.ValidatorDepositTx{
 			ProposalId:      v.ProposalId,
 			Proposer:        v.From,
+			Moniker:         validatorMonikerMap[v.From],
 			DepositedAmount: amount,
 			Submited:        submited,
 			TxHash:          v.TxHash,
@@ -276,20 +291,65 @@ func (service *ValidatorService) GetRedelegationsFromLcd(valAddr string, page, s
 	}
 }
 
-func (service *ValidatorService) GetValidatorFromLcd(address string) lcd.ValidatorVo {
-	var validator, err = lcd.Validator(address)
+func (service *ValidatorService) GetValidatorDetail(validatorAddr string) model.ValidatorForDetail {
+
+	validatorAsDoc, err := document.Validator{}.QueryValidatorDetailByOperatorAddr(validatorAddr)
 	if err != nil {
-		panic(types.CodeNotFound)
+		logger.Error("QueryValidatorDetailByOperatorAddr", logger.String("validator", validatorAddr), logger.String("err", err.Error()))
+		return model.ValidatorForDetail{}
 	}
 
-	var blackList = service.QueryBlackList()
-	if desc, ok := blackList[validator.OperatorAddress]; ok {
-		validator.Description.Moniker = desc.Moniker
-		validator.Description.Identity = desc.Identity
-		validator.Description.Website = desc.Website
-		validator.Description.Details = desc.Details
+	desc := model.Description{
+		Moniker:  validatorAsDoc.Description.Moniker,
+		Identity: validatorAsDoc.Description.Identity,
+		Website:  validatorAsDoc.Description.Website,
+		Details:  validatorAsDoc.Description.Details,
 	}
-	return validator
+
+	withdrawAddr, err := lcd.GetWithdrawAddressByValidatorAcc(utils.Convert(conf.Get().Hub.Prefix.AccAddr, validatorAsDoc.OperatorAddress))
+	if err != nil {
+		logger.Error("GetWithdrawAddressByValidatorAcc", logger.String("validator", validatorAsDoc.OperatorAddress), logger.String("err", err.Error()))
+	}
+
+	jailedUntil, missedBlockCount, err := lcd.GetJailedUntilAndMissedBlocksCountByConsensusPublicKey(validatorAsDoc.ConsensusPubkey)
+
+	if err != nil {
+		logger.Error("GetJailedUntilAndMissedBlocksCountByConsensusPublicKey", logger.String("consensus", validatorAsDoc.ConsensusPubkey), logger.String("err", err.Error()))
+	}
+
+	rewardsCoins, err := lcd.GetDistributionRewardsByValidatorAcc(utils.Convert(conf.Get().Hub.Prefix.AccAddr, validatorAsDoc.OperatorAddress))
+	if err != nil {
+		logger.Error("GetDistributionRewardsByValidatorAcc", logger.String("consensus", validatorAsDoc.ConsensusPubkey), logger.String("err", err.Error()))
+	}
+
+	totalVotingPower, err := document.Validator{}.QueryTotalActiveValidatorVotingPower()
+
+	if err != nil {
+		logger.Error("QueryTotalActiveValidatorVotingPower", logger.String("err", err.Error()))
+	}
+
+	res := model.ValidatorForDetail{
+		TotalPower:        totalVotingPower,
+		SelfPower:         validatorAsDoc.VotingPower,
+		Status:            validatorAsDoc.GetValidatorStatus(),
+		BondedTokens:      validatorAsDoc.Tokens,
+		SelfBonded:        validatorAsDoc.SelfBond,
+		Reward:            rewardsCoins,
+		DelegatorShares:   validatorAsDoc.DelegatorShares,
+		DelegatorCount:    validatorAsDoc.DelegatorNum,
+		CommissionRate:    validatorAsDoc.Commission.Rate,
+		CommissionUpdate:  validatorAsDoc.Commission.UpdateTime.String(),
+		BondHeight:        validatorAsDoc.BondHeight,
+		UnbondingHeight:   validatorAsDoc.UnbondingHeight,
+		JailedUntil:       jailedUntil,
+		MissedBlocksCount: missedBlockCount,
+		OperatorAddr:      validatorAsDoc.OperatorAddress,
+		OwnerAddr:         utils.Convert(conf.Get().Hub.Prefix.AccAddr, validatorAsDoc.OperatorAddress),
+		WithdrawAddr:      withdrawAddr,
+		ConsensusAddr:     validatorAsDoc.ConsensusPubkey,
+		Description:       desc,
+	}
+	return res
 }
 
 func (service *ValidatorService) QueryCandidatesTopN() model.ValDetailVo {

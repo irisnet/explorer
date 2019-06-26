@@ -47,6 +47,11 @@ func registerQueryVoterTxsByValidatorAddr(r *mux.Router) error {
 		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 5))
 		validatorAddr := Var(request, "validatorAddr")
+
+		if page > 0 {
+			page = page - 1
+		}
+
 		return stake.GetVoteTxsByValidatorAddr(validatorAddr, page, size)
 	})
 	return nil
@@ -58,6 +63,10 @@ func registerQueryDepositorTxsByValidatorAddr(r *mux.Router) error {
 		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 5))
 		validatorAddr := Var(request, "validatorAddr")
+		if page > 0 {
+			page = page - 1
+		}
+
 		return stake.GetDepositedTxByValidatorAddr(validatorAddr, page, size)
 	})
 	return nil
@@ -70,6 +79,9 @@ func registerQueryDelegationsByValidator(r *mux.Router) error {
 		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 5))
 		validatorAddr := Var(request, "validatorAddr")
+		if page > 0 {
+			page = page - 1
+		}
 
 		return stake.GetDelegationsFromLcd(validatorAddr, page, size)
 	})
@@ -83,6 +95,9 @@ func registerQueryUnbondingDelegationsByValidator(r *mux.Router) error {
 		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 5))
 		validatorAddr := Var(request, "validatorAddr")
+		if page > 0 {
+			page = page - 1
+		}
 
 		return stake.GetUnbondingDelegationsFromLcd(validatorAddr, page, size)
 	})
@@ -97,6 +112,9 @@ func registerQueryRedelegationsByValidator(r *mux.Router) error {
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 5))
 		validatorAddr := Var(request, "validatorAddr")
 
+		if page > 0 {
+			page = page - 1
+		}
 		return stake.GetRedelegationsFromLcd(validatorAddr, page, size)
 	})
 	return nil
@@ -119,7 +137,7 @@ func registerGetValidator(r *mux.Router) error {
 	doApi(r, types.UrlRegisterGetValidator, "GET", func(request model.IrisReq) interface{} {
 		stake.SetTid(request.TraceId)
 		address := Var(request, "address")
-		result := stake.GetValidatorFromLcd(address)
+		result := stake.GetValidatorDetail(address)
 		return result
 	})
 	return nil

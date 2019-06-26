@@ -5,6 +5,29 @@ import (
 	"testing"
 )
 
+func TestGetDistributionRewardsByValidatorAcc(t *testing.T) {
+
+	rewards, err := GetDistributionRewardsByValidatorAcc("faa1x292qss22x4rls6ygr7hhnp0et94vwwrchaklp")
+	if err != nil {
+		t.Error(err)
+	}
+
+	for k, v := range rewards {
+		t.Logf("k: %v  v: %v \n", k, v)
+	}
+}
+
+func TestGetJailedUntilAndMissedBlocksCountByConsensusPublicKey(t *testing.T) {
+
+	jailedUntil, missedBlockCount, err := GetJailedUntilAndMissedBlocksCountByConsensusPublicKey("fcp1zcjduepqcjgmderfahnlyrse563r2hcc3d4vjpafw03axzn3e87kfuqznjcsur8xrq")
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	t.Logf("jailedUntil: %v  missedBlockCount: %v \n", jailedUntil, missedBlockCount)
+}
+
 func TestValidator(t *testing.T) {
 	address := "fva1k98nqnytl9u5ralns7ca7n8tpmacl8k25ymgyr"
 
