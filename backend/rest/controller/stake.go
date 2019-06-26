@@ -21,6 +21,8 @@ func RegisterStake(r *mux.Router) error {
 		registerQueryDelegationsByValidator,
 		registerQueryUnbondingDelegationsByValidator,
 		registerQueryRedelegationsByValidator,
+		registerQueryVoterTxsByValidatorAddr,
+		registerQueryDepositorTxsByValidatorAddr,
 	}
 
 	for _, fn := range funs {
@@ -37,6 +39,28 @@ type Stake struct {
 
 var stake = Stake{
 	service.Get(service.Validator).(*service.ValidatorService),
+}
+
+func registerQueryVoterTxsByValidatorAddr(r *mux.Router) error {
+	doApi(r, types.UrlRegisterQueryValidatorVoteByValidatorAddr, "GET", func(request model.IrisReq) interface{} {
+		stake.SetTid(request.TraceId)
+		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
+		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 5))
+		validatorAddr := Var(request, "validatorAddr")
+		return stake.GetVoteTxsByValidatorAddr(validatorAddr, page, size)
+	})
+	return nil
+}
+
+func registerQueryDepositorTxsByValidatorAddr(r *mux.Router) error {
+	doApi(r, types.UrlRegisterQueryDepositorTxsByValidatorAddr, "GET", func(request model.IrisReq) interface{} {
+		stake.SetTid(request.TraceId)
+		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
+		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 5))
+		validatorAddr := Var(request, "validatorAddr")
+		return stake.GetDepositedTxByValidatorAddr(validatorAddr, page, size)
+	})
+	return nil
 }
 
 func registerQueryDelegationsByValidator(r *mux.Router) error {

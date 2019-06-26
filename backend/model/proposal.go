@@ -6,6 +6,32 @@ import (
 	"github.com/irisnet/explorer/backend/utils"
 )
 
+type ValidatorVote struct {
+	Title      string `json:"title"`
+	ProposalId uint64 `json:"proposal_id"`
+	Status     string `json:"status"`
+	Voted      string `json:"voted"`
+	TxHash     string `json:"tx_hash"`
+}
+
+type ValidatorVotePage struct {
+	Total int             `json:"total"`
+	Items []ValidatorVote `json:"items"`
+}
+
+type ValidatorDepositTxPage struct {
+	Total int                  `json:"total"`
+	Items []ValidatorDepositTx `json:"items"`
+}
+
+type ValidatorDepositTx struct {
+	ProposalId      uint64      `json:"proposal_id"`
+	Proposer        string      `json:"proposer"`
+	DepositedAmount utils.Coins `json:"deposited_amount"`
+	Submited        bool        `json:"submited"`
+	TxHash          string      `json:"tx_hash"`
+}
+
 type Proposal struct {
 	Title           string      `json:"title"`
 	ProposalId      uint64      `json:"proposal_id"`

@@ -25,8 +25,6 @@ const (
 	UrlRegisterQueryProposalsVoterTxs      = "/gov/proposals/{id}/voter_txs"
 	UrlRegisterQueryProposalsDepositorTxs  = "/gov/proposals/{id}/depositor_txs"
 
-	UrlRegisterQueryProposalsVoterTxsByValidatorAddr     = "/gov/proposals/validators/{validatorAddr}/voter_txs"
-	UrlRegisterQueryProposalsDepositorTxsByValidatorAddr = "/gov/proposals/validators/{validatorAddr}/depositor_txs"
 	//SearchBox
 	UrlRegisterQueryText    = "/search/{text}"
 	UrlRegisterQuerySysDate = "/sysdate"
@@ -50,6 +48,8 @@ const (
 	UrlRegisterQueryValidatorsDelegations         = "/stake/validators/{validatorAddr}/delegations"
 	UrlRegisterQueryValidatorUnbondingDelegations = "/stake/validators/{validatorAddr}/unbonding-delegations"
 	UrlRegisterQueryValidatorRedelegations        = "/stake/validators/{validatorAddr}/redelegations"
+	UrlRegisterQueryValidatorVoteByValidatorAddr  = "/stake/validators/{validatorAddr}/vote"
+	UrlRegisterQueryDepositorTxsByValidatorAddr   = "/stake/validators/{validatorAddr}/depositor_txs"
 
 	//Tx
 	UrlRegisterQueryTxList       = "/tx/{type}/{page}/{size}"

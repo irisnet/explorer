@@ -59,6 +59,88 @@ func (service *ValidatorService) GetValidators(typ, origin string, page, size in
 	return service.queryValForRainbow(typ, page, size)
 }
 
+func (service *ValidatorService) GetVoteTxsByValidatorAddr(validatorAddr string, page, size int) model.ValidatorVotePage {
+
+	validatorAcc := utils.Convert(conf.Get().Hub.Prefix.AccAddr, validatorAddr)
+	total, proposalsAsDoc, err := document.Proposal{}.QueryIdTitleStatusVotedTxhashByValidatorAcc(validatorAcc, page, size)
+
+	if err != nil {
+		logger.Error("QueryIdTitleStatusVotedTxhashByValidatorAcc", logger.String("err", err.Error()))
+		return model.ValidatorVotePage{}
+	}
+
+	items := make([]model.ValidatorVote, 0, size)
+
+	for _, v := range proposalsAsDoc {
+		votedOption, txhash := "", ""
+
+		for _, vote := range v.Votes {
+			if vote.Voter == validatorAcc {
+				votedOption = vote.Option
+				txhash = vote.TxHash
+			}
+		}
+
+		tmp := model.ValidatorVote{
+			Title:      v.Title,
+			ProposalId: v.ProposalId,
+			Status:     v.Status,
+			Voted:      votedOption,
+			TxHash:     txhash,
+		}
+
+		items = append(items, tmp)
+	}
+
+	return model.ValidatorVotePage{
+		Total: total,
+		Items: items,
+	}
+}
+
+func (service *ValidatorService) GetDepositedTxByValidatorAddr(validatorAddr string, page, size int) model.ValidatorDepositTxPage {
+
+	validatorAcc := utils.Convert(conf.Get().Hub.Prefix.AccAddr, validatorAddr)
+	total, txs, err := document.CommonTx{}.QueryDepositedProposalTxByValidatorWithSubmitOrDepositType(validatorAcc, page, size)
+
+	if err != nil {
+		logger.Error("QueryDepositedProposalTxByValidatorWithSubmitOrDepositType", logger.String("err", err.Error()))
+		return model.ValidatorDepositTxPage{}
+	}
+
+	items := make([]model.ValidatorDepositTx, 0, size)
+	for _, v := range txs {
+		submited := false
+		if v.Type == types.TxTypeSubmitProposal {
+			submited = true
+		}
+
+		amount := make(utils.Coins, 0, len(v.Amount))
+
+		for _, coin := range v.Amount {
+			tmp := utils.Coin{
+				Denom:  coin.Denom,
+				Amount: coin.Amount,
+			}
+			amount = append(amount, tmp)
+		}
+
+		tmp := model.ValidatorDepositTx{
+			ProposalId:      v.ProposalId,
+			Proposer:        v.From,
+			DepositedAmount: amount,
+			Submited:        submited,
+			TxHash:          v.TxHash,
+		}
+		items = append(items, tmp)
+	}
+
+	return model.ValidatorDepositTxPage{
+		Total: total,
+		Items: items,
+	}
+}
+
 func (service *ValidatorService) GetUnbondingDelegationsFromLcd(valAddr string, page, size int) model.UnbondingDelegationsPage {
 
 	lcdUnbondingDelegations := lcd.GetUnbondingDelegationsByValidatorAddr(valAddr)

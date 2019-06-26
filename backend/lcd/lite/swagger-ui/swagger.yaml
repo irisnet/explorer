@@ -314,64 +314,6 @@ paths:
           description: generic error response
           schema:
             $ref: "#/definitions/error"
-  /api/gov/proposals/validators/{validatorAddr}/voter_txs:
-    get:
-      summary:
-      tags:
-        - Governance
-      parameters:
-        - name: validatorAddr
-          in: path
-          type: string
-          required: true
-        - in: query
-          name: page
-          type: integer
-          format: int
-          default: 1
-        - in: query
-          name: size
-          type: integer
-          format: int
-          default: 5
-      responses:
-        200:
-          type: array
-          items:
-            $ref: "#/definitions/VotedProposals"
-        default:
-          description: generic error response
-          schema:
-            $ref: "#/definitions/error"
-  /api/gov/proposals/validators/{validatorAddr}/depositor_txs:
-    get:
-      summary:
-      tags:
-        - Governance
-      parameters:
-        - name: validatorAddr
-          in: path
-          type: string
-          required: true
-        - in: query
-          name: page
-          type: integer
-          format: int
-          default: 1
-        - in: query
-          name: size
-          type: integer
-          format: int
-          default: 5
-      responses:
-        200:
-          type: array
-          items:
-            $ref: "#/definitions/DepositedProposals"
-        default:
-          description: generic error response
-          schema:
-            $ref: "#/definitions/error"
   /api/search/{text}:
     get:
       summary:
@@ -560,6 +502,63 @@ paths:
           type: array
           items:
             $ref: "#/definitions/RedelegationsByValidator"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/stake/validators/{validatorAddr}/vote:
+    get:
+      summary:
+      tags:
+        - Stake
+      parameters:
+        - name: validatorAddr
+          in: path
+          type: string
+          required: true
+        - in: query
+          name: page
+          type: integer
+          format: int
+          default: 1
+        - in: query
+          name: size
+          type: integer
+          format: int
+          default: 5
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/ValidatorVotePage"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/stake/validators/{validatorAddr}/depositor_txs:
+    get:
+      summary:
+      tags:
+        - Stake
+      parameters:
+        - name: validatorAddr
+          in: path
+          type: string
+          required: true
+        - in: query
+          name: page
+          type: integer
+          format: int
+          default: 1
+        - in: query
+          name: size
+          type: integer
+          format: int
+          default: 5
+      responses:
+        200:
+          type: array
+          items:
+            $ref: "#/definitions/ValidatorDepositTx"
         default:
           description: generic error response
           schema:
@@ -881,7 +880,7 @@ paths:
 
 
 definitions:
-  DepositedProposals:
+  ValidatorDepositTx:
     type: object
     properties:
       proposal_id:
@@ -895,12 +894,20 @@ definitions:
         type: boolean
       tx_hash:
         type: string
-  VotedProposals:
+  ValidatorVotePage:
+    type: object
+    properties:
+      total:
+        type: integer
+        format: int
+      items:
+        $ref: "#/definitions/ValidatorVote"
+  ValidatorVote:
     type: object
     properties:
       proposal_id:
         type: integer
-        format: int
+        format: int64
       title:
         type: string
       status:
