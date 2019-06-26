@@ -109,12 +109,10 @@ func (service *ValidatorService) GetDepositedTxByValidatorAddr(validatorAddr str
 	}
 
 	addrArr := make([]string, 0, len(txs))
-
-	addrArr = utils.RemoveDuplicationStrArr(addrArr)
-
 	for _, v := range txs {
-		addrArr = append(addrArr, v.From)
+		addrArr = append(addrArr, utils.Convert(conf.Get().Hub.Prefix.ValAddr, v.From))
 	}
+	addrArr = utils.RemoveDuplicationStrArr(addrArr)
 
 	validatorMonikerMap, err := document.Validator{}.QueryValidatorMonikerByAddrArr(addrArr)
 
@@ -142,7 +140,7 @@ func (service *ValidatorService) GetDepositedTxByValidatorAddr(validatorAddr str
 		tmp := model.ValidatorDepositTx{
 			ProposalId:      v.ProposalId,
 			Proposer:        v.From,
-			Moniker:         validatorMonikerMap[v.From],
+			Moniker:         validatorMonikerMap[utils.Convert(conf.Get().Hub.Prefix.ValAddr, v.From)],
 			DepositedAmount: amount,
 			Submited:        submited,
 			TxHash:          v.TxHash,
