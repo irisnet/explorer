@@ -2,6 +2,7 @@ package document
 
 import (
 	"fmt"
+	"math/big"
 	"time"
 
 	"github.com/irisnet/explorer/backend/orm"
@@ -22,6 +23,8 @@ const (
 	ValidatorFieldDescription      = "description"
 	ValidatorFieldConsensusAddr    = "consensus_pubkey"
 	ValidatorFieldProposerHashAddr = "proposer_addr"
+	ValidatorFieldTokens           = "tokens"
+	ValidatorFieldDelegatorShares  = "delegator_shares"
 	ValidatorStatusValUnbonded     = 0
 	ValidatorStatusValUnbonding    = 1
 	ValidatorStatusValBonded       = 2
@@ -458,6 +461,36 @@ func (_ Validator) QueryValidatorByConsensusAddr(addr string) (Validator, error)
 	err := query.Exec()
 
 	return result, err
+}
+
+func (_ Validator) QueryTokensAndShareRatioByValidatorAddrs(addrArrAsVa []string) (map[string]*big.Rat, error) {
+
+	var validators []Validator
+	var selector = bson.M{ValidatorFieldTokens: 1, ValidatorFieldOperatorAddress: 1, ValidatorFieldDelegatorShares: 1}
+
+	err := queryAll(CollectionNmValidator, selector, bson.M{ValidatorFieldOperatorAddress: bson.M{"$in": addrArrAsVa}}, "", 0, &validators)
+
+	if err != nil {
+		return nil, err
+	}
+
+	result := map[string]*big.Rat{}
+
+	for _, v := range validators {
+		tokensAsRat, ok := new(big.Rat).SetString(v.Tokens)
+		if !ok {
+			logger.Error("convert validator token type (string -> big.Rat) err", logger.String("token str", v.Tokens))
+			continue
+		}
+
+		delegatorShareAsRat, ok := new(big.Rat).SetString(v.DelegatorShares)
+		if !ok {
+			logger.Error("convert validator DelegatorShares type (string -> big.Rat) err", logger.String("DelegatorShares str", v.DelegatorShares))
+			continue
+		}
+		result[v.OperatorAddress] = new(big.Rat).Quo(tokensAsRat, delegatorShareAsRat)
+	}
+	return result, nil
 }
 
 func (_ Validator) Batch(txs []txn.Op) error {

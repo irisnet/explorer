@@ -476,7 +476,7 @@ paths:
             $ref: "#/definitions/error"
   /api/stake/validators/{validatorAddr}/delegations:
     get:
-      summary:
+      summary: "from lcd:  %s/stake/validators/%s/delegations"
       tags:
         - Stake
       parameters:
@@ -939,9 +939,13 @@ definitions:
       address:
         type: string
       amount:
+        type: integer
+        format: float64
+      self_shares:
         type: string
-      shares:
-        type: string
+      total_shares:
+        type: integer
+        format: float64
       block:
         type: integer
         format: int64

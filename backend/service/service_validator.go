@@ -98,28 +98,66 @@ func (service *ValidatorService) GetDelegationsFromLcd(valAddr string, page, siz
 		page = page - 1
 	}
 
-	totalShare := new(big.Rat)
+	totalShareAsRat := new(big.Rat)
 	for _, v := range lcdDelegations {
 		sharesAsRat, ok := new(big.Rat).SetString(v.Shares)
 		if !ok {
 			logger.Error("convert delegation shares type (string -> big.Rat) err", logger.String("shares str", v.Shares))
 			continue
 		}
-		totalShare = totalShare.Add(totalShare, sharesAsRat)
+		totalShareAsRat = totalShareAsRat.Add(totalShareAsRat, sharesAsRat)
+	}
+
+	addrArr := make([]string, 0, size)
+	for k, v := range lcdDelegations {
+		if k >= page*size && k < (page+1)*size {
+			addrArr = append(addrArr, v.ValidatorAddr)
+		}
+	}
+
+	tokenShareRatioByValidatorAddr, err := document.Validator{}.QueryTokensAndShareRatioByValidatorAddrs(addrArr)
+	if err != nil {
+		logger.Debug("QueryTokensAndShareRatioByValidatorAddrs", logger.String("err", err.Error()))
 	}
 
 	items := make([]model.Delegation, 0, size)
-
 	for k, v := range lcdDelegations {
 		if k >= page*size && k < (page+1)*size {
+
+			amountAsFloat64 := float64(0)
+			if ratio, ok := tokenShareRatioByValidatorAddr[v.ValidatorAddr]; ok {
+				if shareAsRat, ok := new(big.Rat).SetString(v.Shares); ok {
+					amountAsRat := new(big.Rat).Mul(shareAsRat, ratio)
+
+					exact := false
+					amountAsFloat64, exact = amountAsRat.Float64()
+					if !exact {
+						logger.Info("convert new(big.Rat).Mul(shareAsRat, ratio)  (big.Rat to float64) ",
+							logger.Any("exact", exact),
+							logger.Any("amountAsRat", amountAsRat))
+					}
+				} else {
+					logger.Error("convert validator share  type (string -> big.Rat) err", logger.String("str", v.Shares))
+				}
+			} else {
+				logger.Error("can not fond the validator addr from the validator collection in db", logger.String("validator addr", v.ValidatorAddr))
+			}
+
+			totalShareAsFloat64, exact := totalShareAsRat.Float64()
+
+			if !exact {
+				logger.Info("convert totalShareAsFloat64  (big.Rat to float64) ",
+					logger.Any("exact", exact),
+					logger.Any("totalShareAsFloat64", totalShareAsFloat64))
+			}
 
 			tmp := model.Delegation{
 				Address:     v.DelegatorAddr,
 				Block:       v.Height,
 				SelfShares:  v.Shares,
-				TotalShares: totalShare.String(),
+				TotalShares: totalShareAsFloat64,
+				Amount:      amountAsFloat64,
 			}
-
 			items = append(items, tmp)
 		}
 	}
