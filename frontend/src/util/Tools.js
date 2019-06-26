@@ -509,6 +509,13 @@ export default class Tools{
       }
       return noObjList;
     }
+  }
 
+  static addressRoute(address) {
+    if (address.substring(0, 3) === this.$Crypto.config.iris.bech32.valAddr || address.substring(1, 3) === 'va') {
+      return `/validators/${address}`;
+    } else {
+      return `/address/${address}`;
+    }
   }
 }

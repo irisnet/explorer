@@ -68,7 +68,7 @@
         <div class="skip_route">
           <div class="name_address">
             <span class="remove_default_style">
-              <router-link :to="`/address/1/${data.item.Voter.split(' ')[0]}`"
+              <router-link :to="addressRoute(data.item.Voter.split(' ')[0])"
                            class="link_style justify">{{data.item.Voter.split(' ')[1]}}</router-link>
             </span>
           </div>
@@ -91,7 +91,7 @@
               v-if="!(/^[0-9]\d*$/).test(data.item.Depositor) && data.item.Depositor !== '--'">
           <div class="name_address">
             <span class="remove_default_style">
-              <router-link :to="`/address/1/${data.item.Depositor}`"
+              <router-link :to="addressRoute(data.item.Depositor)"
                            class="link_style justify">{{formatAddress(data.item.Depositor)}}</router-link>
             </span>
             <span class="address proposals_address_content">{{data.item.Depositor}}</span>
@@ -162,7 +162,7 @@
              v-show="!(/^[0-9]\d*$/).test(data.item.From) && data.item.From && data.item.From !== '--'">
           <span class="remove_default_style"
                 :class="data.item.From === $route.params.param?'no_skip':''">
-            <router-link :to="`/address/1/${data.item.From}`"
+            <router-link :to="addressRoute(data.item.From)"
                          class="link_style">{{formatAddress(data.item.From)}}</router-link>
           </span>
           <span class="address">{{data.item.From ? data.item.From : ''}}</span>
@@ -176,7 +176,7 @@
              v-show="data.item.OperatorAddr && data.item.OperatorAddr !== '--'">
           <span class="remove_default_style"
                 :class="data.item.OperatorAddr === $route.params.param?'no_skip':''">
-            <router-link :to="`/address/1/${data.item.OperatorAddr}`"
+            <router-link :to="addressRoute(data.item.OperatorAddr)"
                          class="link_style">{{formatAddress(data.item.OperatorAddr)}}</router-link>
           </span>
           <span class="address">{{data.item.OperatorAddr ? data.item.OperatorAddr : ''}}</span>
@@ -190,7 +190,7 @@
              v-show="data.item.To && data.item.To !== '--'">
           <span class="remove_default_style"
                 :class="data.item.To === $route.params.param?'no_skip':''">
-            <router-link :to="`/address/1/${data.item.To}`"
+            <router-link :to="addressRoute(data.item.To)"
                          class="link_style">{{formatAddress(data.item.To)}}</router-link>
           </span>
           <span class="address">{{data.item.To ? data.item.To : ''}}</span>
@@ -214,7 +214,7 @@
           <div class="name_address">
             <span class="remove_default_style"
                   :class="data.item.Tx_Signer === $route.params.param?'no_skip':''">
-              <router-link :to="`/address/1/${data.item.Tx_Signer}`"
+              <router-link :to="addressRoute(data.item.Tx_Signer)"
                            class="link_style justify">{{formatAddress(data.item.Tx_Signer)}}</router-link>
             </span>
             <span class="address">{{data.item.Tx_Signer}}</span>

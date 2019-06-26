@@ -2,12 +2,12 @@
   <div>
     <span v-show="total > 0"
           class="info">{{range[0]}}-{{range[1]}} of {{total}}</span>
-    <!-- <button @click="toFrist" :class="[currentPage === 1 ? 'no_disable' : '']">«</button> -->
+    <button v-if="showToFristEnd" @click="toFrist" :class="[currentPage === 1 || total === 0 ? 'no_disable' : '']">«</button>
     <button @click="prev"
             :class="[currentPage === 1 || total === 0 ? 'no_disable' : '']">‹</button>
     <button @click="after"
             :class="[range[1] === 1 || total === 0 ? 'no_disable' : '']">›</button>
-    <!-- <button @click="toEnd" :class="[currentPage === totalPages ? 'no_disable' : '']">»</button> -->
+    <button v-if="showToFristEnd" @click="toEnd" :class="[currentPage === totalPages || total === 0 ? 'no_disable' : '']">»</button>
   </div>
 </template>
 
@@ -34,6 +34,10 @@ export default {
     range: {
       type: Array,
       default: function () { return [] }
+    },
+    showToFristEnd: {
+      type: Boolean,
+      default: true
     }
   },
   data () {

@@ -22,6 +22,8 @@ const urlApi = {
   addressStakeCandidateUptimeHour: '/api/stake/candidate/{address}/uptime/hour',
   addressStakeCandidateUptimeWeek: '/api/stake/candidate/{address}/uptime/week',
   addressStakeCandidateUptimeMonth: '/api/stake/candidate/{address}/uptime/month',
+  //validatorDetail
+  validatorDelegations: '/api/stake/validators/{validatorAddr}/delegations',
   //header
   headerTx: '/api/tx/{searchValue}',
   headerSearchAccount: '/api/account/{searchValue}',

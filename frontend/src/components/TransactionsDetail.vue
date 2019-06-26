@@ -26,7 +26,7 @@
                 <div class="information_props_wrap" v-if="flShowProposer">
                     <span class="information_props">Proposer :</span>
                     <span class="information_value link_active_style">
-            <router-link :to="`/address/1/${proposer}`">{{proposer}}</router-link></span>
+            <router-link :to="addressRoute(proposer)">{{proposer}}</router-link></span>
                 </div>
                 <div class="information_props_wrap" v-if="title">
                     <span class="information_props">ProposalTitle :</span>
@@ -47,7 +47,7 @@
                 <div class="information_props_wrap" v-if="depositer">
                     <span class="information_props">Depositer :</span>
                     <span class="information_value link_active_style">
-            <router-link :to="`/address/1/${depositer}`">{{depositer}}</router-link>
+            <router-link :to="addressRoute(depositer)">{{depositer}}</router-link>
           </span>
                 </div>
                 <div class="information_props_wrap" v-if="flShowProposalId">
@@ -60,40 +60,40 @@
                 <div class="information_props_wrap" v-if="flShowVoter">
                     <span class="information_props">Voter :</span>
                     <span class="information_value link_active_style">
-            <router-link :to="`/address/1/${voter}`">{{voter}}</router-link></span>
+            <router-link :to="addressRoute(voter)">{{voter}}</router-link></span>
                 </div>
                 <div class="information_props_wrap" v-if="flShowTypeTransfer || flShowWithdrawAddress">
                     <span class="information_props">From :</span>
                     <span class="information_value link_active_style">
-            <router-link :to="`/address/1/${fromValue}`">{{fromValue}}</router-link>
+            <router-link :to="addressRoute(fromValue)">{{fromValue}}</router-link>
           </span>
                 </div>
                 <div class="information_props_wrap" v-if="flShowWithdrawAddress">
                     <span class="information_props">Withdraw To :</span>
                     <span class="information_value link_active_style">
-            <router-link :to="`/address/1/${withdrawAddress}`">{{withdrawAddress}}</router-link></span>
+            <router-link :to="addressRoute(withdrawAddress)">{{withdrawAddress}}</router-link></span>
                 </div>
                 <div class="information_props_wrap" v-if="flShowDelegatorAddress">
                     <span class="information_props">Delegator Address :</span>
                     <span class="information_value link_active_style">
-            <router-link :to="`/address/1/${delegatorAddress}`">{{delegatorAddress}}</router-link></span>
+            <router-link :to="addressRoute(delegatorAddress)">{{delegatorAddress}}</router-link></span>
                 </div>
                 <div class="information_props_wrap" v-if="flShowValidatorAddress">
                     <span class="information_props">Validator Address :</span>
                     <span class="information_value link_active_style">
-            <router-link :to="`/address/1/${validatorAddress}`">{{validatorAddress}}</router-link>
+            <router-link :to="addressRoute(validatorAddress)">{{validatorAddress}}</router-link>
           </span>
                 </div>
                 <div class="information_props_wrap" v-if="showSource">
                     <span class="information_props">Source :</span>
                     <span class="information_value link_active_style">
-            <router-link :to="`/address/1/${source}`">{{source}}</router-link>
+            <router-link :to="addressRoute(source)">{{source}}</router-link>
           </span>
                 </div>
                 <div class="information_props_wrap" v-if="flShowTypeTransfer">
                     <span class="information_props">To :</span>
                     <span class="information_value link_active_style">
-            <router-link :to="`/address/1/${toValue}`">{{toValue}}</router-link></span>
+            <router-link :to="addressRoute(toValue)">{{toValue}}</router-link></span>
                 </div>
                 <div class="information_props_wrap" v-if="moniker">
                     <span class="information_props">Moniker :</span>
@@ -106,7 +106,7 @@
                 <div class="information_props_wrap" v-if="owner">
                     <span class="information_props">From :</span>
                     <span class="information_value link_active_style">
-            <router-link :to="`/address/1/${owner}`">{{owner}}</router-link></span>
+            <router-link :to="addressRoute(owner)">{{owner}}</router-link></span>
                 </div>
                 <div class="information_props_wrap" v-if="pubkey">
                     <span class="information_props">Pub key :</span>

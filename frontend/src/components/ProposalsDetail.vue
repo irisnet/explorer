@@ -22,7 +22,7 @@
           <span class="information_props">Proposer :</span>
           <span v-show="proposer !== '--'"
                 class="information_value information_show_trim jump_route">
-            <router-link :to="`/address/1/${proposer}`">{{proposer}}</router-link>
+            <router-link :to="addressRoute(proposer)">{{proposer}}</router-link>
           </span>
           <span v-show="proposer == '--'"
                 class="information_value information_show_trim ">{{proposer}}</span>

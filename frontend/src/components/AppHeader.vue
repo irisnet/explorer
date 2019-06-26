@@ -408,7 +408,8 @@
 				Service.commonInterface({headerSearchAccount:{searchValue:this.searchInputValue}}, (delegatorAddress) => {
 					try {
 						if (delegatorAddress) {
-							this.$router.push(`/address/1/${delegatorAddress.address}`);
+              let url = this.addressRoute(delegatorAddress.address);
+							this.$router.push(url);
 							this.clearSearchInputValue();
 						} else {
 							this.toSearchResultPage()
@@ -423,7 +424,8 @@
 				Service.commonInterface({headerSearchCandidate:{searchValue:this.searchInputValue}}, () => {
 					try {
 						if (validatorAddress) {
-							this.$router.push(`/address/1/${validatorAddress.validator.address}`);
+              let url = this.addressRoute(validatorAddress.validator.address);
+							this.$router.push(url);
 							this.clearSearchInputValue();
 						} else {
 							this.toSearchResultPage()

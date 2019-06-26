@@ -46,7 +46,7 @@
           <span class="information_props">Withdraw To :</span>
           <span class="information_value information_show_trim jump_link_style"
                 v-show="withdrawAddress">
-            <router-link :to="`/address/1/${withdrawAddress}`">{{withdrawAddress}}</router-link>
+            <router-link :to="addressRoute(withdrawAddress)">{{withdrawAddress}}</router-link>
           </span>
           <span class="information_value information_show_trim"
                 v-show="!withdrawAddress">--</span>
@@ -74,7 +74,7 @@
           <span class="information_props">Owner :</span>
           <span class="information_value operator_value"
                 v-show="operatorValue">
-            <router-link :to="`/address/1/${operatorValue}`">{{operatorValue}}</router-link>
+            <router-link :to="addressRoute(operatorValue)">{{operatorValue}}</router-link>
           </span>
           <span class="information_value"
                 v-show="!operatorValue">--</span>
@@ -242,11 +242,10 @@ export default {
     },
     $route () {
       Tools.scrollToTop();
-      this.type = this.$route.params.type;
       this.tabTxList(this.tabTxListIndex, this.txTabName, this.currentPage, this.pageSize);
       this.getAddressTxStatistics();
       this.getAddressInformation(this.$route.params.param);
-      this.getTransactionsList(1, 10, this.$route.params.type);
+      this.getTransactionsList();
       this.getProfileInformation();
       this.getCurrentTenureInformation();
       this.getValidatorHistory('14days');
@@ -283,7 +282,6 @@ export default {
       operatorValue: '',
       items: [],
       itemsPre: [],
-      type: this.$route.params.type,
       totalBlocks: 0,
       totalFee: 0,
       TransactionsShowNoData: false,
@@ -382,7 +380,7 @@ export default {
     if (this.$route.params.param.substring(0, 3) === this.$Crypto.config.iris.bech32.valAddr) {
       this.tabTxList(this.tabTxListIndex, this.txTabName, this.currentPage, this.pageSize);
       this.getAddressInformation(this.$route.params.param);
-      this.getTransactionsList(1, 10, this.$route.params.type);
+      this.getTransactionsList();
       this.getProfileInformation();
       this.getCurrentTenureInformation();
       this.getValidatorHistory('14days');
@@ -391,7 +389,7 @@ export default {
     } else {
       this.tabTxList(this.tabTxListIndex, this.txTabName, this.currentPage, this.pageSize);
       this.getAddressInformation(this.$route.params.param);
-      this.getTransactionsList(1, 10, this.$route.params.type);
+      this.getTransactionsList();
       this.getProfileInformation();
       this.getAddressTxStatistics();
     }

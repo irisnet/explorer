@@ -36,7 +36,7 @@
         <span class="skip_route" style="display: flex" v-if="!(/^[0-9]\d*$/).test(data.item.From) && data.item.From !== '--'">
           <div class="name_address">
             <span class="remove_default_style">
-              <router-link :to="`/address/1/${data.item.From}`" class="link_style justify">{{formatAddress(data.item.From)}}</router-link>
+              <router-link :to="addressRoute(data.item.From)" class="link_style justify">{{formatAddress(data.item.From)}}</router-link>
             </span>
             <span class="address">{{data.item.From}}</span>
           </div>
@@ -47,7 +47,7 @@
         <span class="skip_route" style="display: flex" v-if="data.item.OperatorAddr !== '--'">
           <div class="name_address">
             <span class="remove_default_style">
-              <router-link :to="`/address/1/${data.item.OperatorAddr}`" class="link_style justify">{{formatAddress(data.item.OperatorAddr)}}</router-link>
+              <router-link :to="addressRoute(data.item.OperatorAddr)" class="link_style justify">{{formatAddress(data.item.OperatorAddr)}}</router-link>
             </span>
             <span class="address">{{data.item.OperatorAddr}}</span>
           </div>
@@ -58,7 +58,7 @@
         <span class="skip_route" style="display: flex" v-if="data.item.To !== '--'">
           <div class="name_address">
             <span class="remove_default_style">
-              <router-link :to="`/address/1/${data.item.To}`" class="link_style">{{formatAddress(data.item.To)}}</router-link>
+              <router-link :to="addressRoute(data.item.To)" class="link_style">{{formatAddress(data.item.To)}}</router-link>
             </span>
             <span class="address">{{data.item.To}}</span>
           </div>
@@ -69,12 +69,12 @@
         </template>
         <template slot='Owner' slot-scope='data'>
         <span class="skip_route">
-          <router-link :to="`/address/1/${data.item.Owner}`">{{data.item.Owner?`${String(data.item.Owner).substr(0,16)}...`:''}}</router-link>
+          <router-link :to="addressRoute(data.item.Owner)">{{data.item.Owner?`${String(data.item.Owner).substr(0,16)}...`:''}}</router-link>
         </span>
         </template>
         <template slot='Moniker' slot-scope='data'>
         <span v-show="data.item.Moniker && data.item.Moniker !== '--' ">
-            <router-link :to="`/address/1/${data.item.OperatorAddr}`" class="skip_route">
+            <router-link :to="addressRoute(data.item.OperatorAddr)" class="skip_route">
               <pre class="pre_global_style moniker_link_style">{{data.item.Moniker}}</pre>
             </router-link>
         </span>
@@ -84,7 +84,7 @@
         <span class="skip_route" style="display: flex" v-if="data.item.Tx_Signer">
           <div class="name_address">
             <span class="remove_default_style">
-              <router-link :to="`/address/1/${data.item.Tx_Signer}`" class="link_style justify">{{formatAddress(data.item.Tx_Signer)}}</router-link>
+              <router-link :to="addressRoute(data.item.Tx_Signer)" class="link_style justify">{{formatAddress(data.item.Tx_Signer)}}</router-link>
             </span>
             <span class="address">{{data.item.Tx_Signer}}</span>
           </div>

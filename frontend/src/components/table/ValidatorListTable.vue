@@ -11,7 +11,7 @@
           </div>
           <div class="name_address" style="margin-left:0.2rem;">
             <span class="remove_default_style">
-              <router-link :to="`/address/1/${data.item.operatorAddress}`" class="link_style">{{data.item.moniker}}</router-link>
+              <router-link :to="addressRoute(data.item.operatorAddress)" class="link_style">{{data.item.moniker}}</router-link>
             </span>
           </div>
         </span>
@@ -20,7 +20,7 @@
         <span class="skip_route" style="display: flex" v-if="data.item.operatorAddress">
           <div class="name_address">
             <span class="remove_default_style">
-              <router-link :to="`/address/1/${data.item.operatorAddress}`" class="link_style">{{formatAddress(data.item.operatorAddress)}}</router-link>
+              <router-link :to="addressRoute(data.item.operatorAddress)" class="link_style">{{formatAddress(data.item.operatorAddress)}}</router-link>
             </span>
             <span class="address">{{data.item.operatorAddress}}</span>
           </div>
