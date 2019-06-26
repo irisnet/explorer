@@ -1,6 +1,7 @@
 package service
 
 import (
+	"math/big"
 	"strconv"
 	"sync"
 
@@ -56,6 +57,103 @@ func (service *ValidatorService) GetValidators(typ, origin string, page, size in
 	}
 
 	return service.queryValForRainbow(typ, page, size)
+}
+
+func (service *ValidatorService) GetUnbondingDelegationsFromLcd(valAddr string, page, size int) model.UnbondingDelegationsPage {
+
+	lcdUnbondingDelegations := lcd.GetUnbondingDelegationsByValidatorAddr(valAddr)
+
+	if page > 0 {
+		page = page - 1
+	}
+
+	items := make([]model.UnbondingDelegations, 0, size)
+
+	for k, v := range lcdUnbondingDelegations {
+		if k >= page*size && k < (page+1)*size {
+
+			tmp := model.UnbondingDelegations{
+				Address: v.DelegatorAddr,
+				Before:  v.InitialBalance,
+				After:   v.Balance,
+				Block:   v.CreationHeight,
+				MinTime: v.MinTime,
+			}
+
+			items = append(items, tmp)
+		}
+	}
+
+	return model.UnbondingDelegationsPage{
+		Total: len(lcdUnbondingDelegations),
+		Items: items,
+	}
+}
+
+func (service *ValidatorService) GetDelegationsFromLcd(valAddr string, page, size int) model.DelegationsPage {
+
+	lcdDelegations := lcd.GetDelegationsByValidatorAddr(valAddr)
+
+	if page > 0 {
+		page = page - 1
+	}
+
+	totalShare := new(big.Rat)
+	for _, v := range lcdDelegations {
+		sharesAsRat, ok := new(big.Rat).SetString(v.Shares)
+		if !ok {
+			logger.Error("convert delegation shares type (string -> big.Rat) err", logger.String("shares str", v.Shares))
+			continue
+		}
+		totalShare = totalShare.Add(totalShare, sharesAsRat)
+	}
+
+	items := make([]model.Delegation, 0, size)
+
+	for k, v := range lcdDelegations {
+		if k >= page*size && k < (page+1)*size {
+
+			tmp := model.Delegation{
+				Address:     v.DelegatorAddr,
+				Block:       v.Height,
+				SelfShares:  v.Shares,
+				TotalShares: totalShare.String(),
+			}
+
+			items = append(items, tmp)
+		}
+	}
+
+	return model.DelegationsPage{
+		Total: len(lcdDelegations),
+		Items: items,
+	}
+}
+
+func (service *ValidatorService) GetRedelegationsFromLcd(valAddr string, page, size int) model.RedelegationPage {
+
+	lcdReDelegations := lcd.GetRedelegationsByValidatorAddr(valAddr)
+
+	items := make([]model.Redelegation, 0, size)
+
+	for k, v := range lcdReDelegations {
+		if k >= page*size && k < (page+1)*size {
+
+			tmp := model.Redelegation{
+				Address: v.DelegatorAddr,
+				Amount:  v.Balance,
+				To:      v.ValidatorDstAddr,
+				Block:   v.CreationHeight,
+			}
+
+			items = append(items, tmp)
+		}
+	}
+
+	return model.RedelegationPage{
+		Total: len(lcdReDelegations),
+		Items: items,
+	}
 }
 
 func (service *ValidatorService) GetValidatorFromLcd(address string) lcd.ValidatorVo {

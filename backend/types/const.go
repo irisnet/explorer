@@ -25,6 +25,8 @@ const (
 	UrlRegisterQueryProposalsVoterTxs      = "/gov/proposals/{id}/voter_txs"
 	UrlRegisterQueryProposalsDepositorTxs  = "/gov/proposals/{id}/depositor_txs"
 
+	UrlRegisterQueryProposalsVoterTxsByValidatorAddr     = "/gov/proposals/validators/{validatorAddr}/voter_txs"
+	UrlRegisterQueryProposalsDepositorTxsByValidatorAddr = "/gov/proposals/validators/{validatorAddr}/depositor_txs"
 	//SearchBox
 	UrlRegisterQueryText    = "/search/{text}"
 	UrlRegisterQuerySysDate = "/sysdate"
@@ -38,13 +40,16 @@ const (
 	UrlFaucetApplyService   = "%s/apply"
 
 	//Stake
-	UrlRegisterGetValidators        = "/stake/validators"
-	UrlRegisterGetValidator         = "/stake/validators/{address}"
-	UrlRegisterQueryCandidatesTop   = "/stake/candidatesTop"
-	UrlRegisterQueryCandidate       = "/stake/candidate/{address}"
-	UrlRegisterQueryCandidateUptime = "/stake/candidate/{address}/uptime/{category}"
-	UrlRegisterQueryCandidatePower  = "/stake/candidate/{address}/power/{category}"
-	UrlRegisterQueryCandidateStatus = "/stake/candidate/{address}/status"
+	UrlRegisterGetValidators                      = "/stake/validators"
+	UrlRegisterGetValidator                       = "/stake/validators/{address}"
+	UrlRegisterQueryCandidatesTop                 = "/stake/candidatesTop"
+	UrlRegisterQueryCandidate                     = "/stake/candidate/{address}"
+	UrlRegisterQueryCandidateUptime               = "/stake/candidate/{address}/uptime/{category}"
+	UrlRegisterQueryCandidatePower                = "/stake/candidate/{address}/power/{category}"
+	UrlRegisterQueryCandidateStatus               = "/stake/candidate/{address}/status"
+	UrlRegisterQueryValidatorsDelegations         = "/stake/validators/{validatorAddr}/delegations"
+	UrlRegisterQueryValidatorUnbondingDelegations = "/stake/validators/{validatorAddr}/unbonding-delegations"
+	UrlRegisterQueryValidatorRedelegations        = "/stake/validators/{validatorAddr}/redelegations"
 
 	//Tx
 	UrlRegisterQueryTxList       = "/tx/{type}/{page}/{size}"

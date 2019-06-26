@@ -54,3 +54,18 @@ func TestSignInfo(t *testing.T) {
 	resBytes, _ := json.MarshalIndent(res, "", "\t")
 	t.Log(string(resBytes))
 }
+
+func TestGetDelegationsByValidatorAddr(t *testing.T) {
+
+	delegations := GetDelegationsByValidatorAddr("fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx")
+
+	for k, v := range delegations {
+		t.Logf("k: %v  v: %v \n", k, v)
+	}
+}
+
+func TestGetUnbondingDelegationsByValidatorAddr(t *testing.T) {
+
+	GetUnbondingDelegationsByValidatorAddr("fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx")
+
+}

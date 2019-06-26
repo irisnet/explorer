@@ -64,6 +64,55 @@ func GetDelegationsByDelAddr(delAddr string) (delegations []DelegationVo) {
 	return
 }
 
+func GetDelegationsByValidatorAddr(valAddr string) (delegations []DelegationVo) {
+
+	url := fmt.Sprintf(UrlDelegationsByValidator, conf.Get().Hub.LcdUrl, valAddr)
+	resAsBytes, err := utils.Get(url)
+	if err != nil {
+		logger.Error("get delegations by delegator adr from lcd error", logger.String("err", err.Error()), logger.String("URL", url))
+		return
+	}
+
+	if err := json.Unmarshal(resAsBytes, &delegations); err != nil {
+		logger.Error("Unmarshal Delegations error", logger.String("err", err.Error()), logger.String("URL", url))
+	}
+	return
+}
+
+func GetRedelegationsByValidatorAddr(valAddr string) (redelegations []ReDelegations) {
+
+	url := fmt.Sprintf(UrlRedelegationsByValidator, conf.Get().Hub.LcdUrl, valAddr)
+	resAsBytes, err := utils.Get(url)
+	if err != nil {
+		logger.Error("get delegations by delegator adr from lcd error", logger.String("err", err.Error()), logger.String("URL", url))
+		return
+	}
+
+	if err := json.Unmarshal(resAsBytes, &redelegations); err != nil {
+		logger.Error("Unmarshal Delegations error", logger.String("err", err.Error()), logger.String("URL", url))
+	}
+	return
+}
+
+func GetUnbondingDelegationsByValidatorAddr(valAddr string) (unbondingDelegations []UnbondingDelegations) {
+
+	url := fmt.Sprintf(UrlUnbondingDelegationByValidator, conf.Get().Hub.LcdUrl, valAddr)
+	resAsBytes, err := utils.Get(url)
+	if err != nil {
+		logger.Error("get delegations by delegator adr from lcd error", logger.String("err", err.Error()), logger.String("URL", url))
+		return
+	}
+
+	if err := json.Unmarshal(resAsBytes, &unbondingDelegations); err != nil {
+		logger.Error("Unmarshal Delegations error", logger.String("err", err.Error()), logger.String("URL", url))
+	}
+	return
+}
+
+func GetRedelegationsByvalidatorAddr(valAddr string) {
+
+}
+
 func DelegationByValidator(address string) (result []DelegationVo) {
 	url := fmt.Sprintf(UrlDelegationByVal, conf.Get().Hub.LcdUrl, address)
 	resBytes, err := utils.Get(url)

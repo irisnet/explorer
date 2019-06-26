@@ -5,6 +5,87 @@ import (
 	"time"
 )
 
+type RedelegationPage struct {
+	Total int            `json:"total"`
+	Items []Redelegation `json:"items"`
+}
+
+func (re RedelegationPage) String() string {
+	return fmt.Sprintf(`
+Total  : %v
+Items  : %v
+		`, re.Total, re.Items)
+}
+
+type Redelegation struct {
+	Address string `json:"address"`
+	Amount  string `json:"amount"`
+	To      string `json:"to"`
+	Block   int64  `json:"block"`
+}
+
+type DelegationsPage struct {
+	Total int          `json:"total"`
+	Items []Delegation `json:"items"`
+}
+
+func (d DelegationsPage) String() string {
+	return fmt.Sprintf(`
+total: %v
+items:
+%v
+		`, d.Total, d.Items)
+}
+
+type UnbondingDelegationsPage struct {
+	Total int                    `json:"total"`
+	Items []UnbondingDelegations `json:"items"`
+}
+
+func (un UnbondingDelegationsPage) String() string {
+	return fmt.Sprintf(`
+total: %v
+items:
+%v
+		`, un.Total, un.Items)
+}
+
+type UnbondingDelegations struct {
+	Address string `json:"address"`
+	Before  string `json:"before"`
+	After   string `json:"after"`
+	Block   int64  `json:"block"`
+	MinTime int64  `json:"min_time"`
+}
+
+func (un UnbondingDelegations) String() string {
+	return fmt.Sprintf(`
+		Address :%v
+		Before  :%v
+		After   :%v
+		Block   :%v
+		MinTime :%v
+		`, un.Address, un.Before, un.After, un.Block, un.MinTime)
+}
+
+type Delegation struct {
+	Address     string `json:"address"`
+	Amount      string `json:"amount"`
+	SelfShares  string `json:"self_shares"`
+	TotalShares string `json:"total_shares"`
+	Block       string `json:"block"`
+}
+
+func (d Delegation) String() string {
+	return fmt.Sprintf(`
+	 Address     :%v
+ 	 Amount      :%v
+ 	 Shares      :%v
+ 	 Block       :%v
+	 TotalShares :%v
+		`, d.Address, d.Amount, d.SelfShares, d.Block, d.Block)
+}
+
 type ValDetailVo struct {
 	Count      int         `json:"count"`
 	PowerAll   int64       `json:"power_all"`
