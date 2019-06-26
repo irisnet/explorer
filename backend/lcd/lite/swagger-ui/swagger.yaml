@@ -226,7 +226,7 @@ paths:
             $ref: "#/definitions/error"
   /api/gov/deposit_voting_proposals:
     get:
-      summary: query the deposit and voting proposals.
+      summary: "query the deposit and voting proposals;"
       tags:
         - Governance
       responses:
@@ -506,7 +506,7 @@ paths:
             $ref: "#/definitions/error"
   /api/stake/validators/{validatorAddr}/unbonding-delegations:
     get:
-      summary:
+      summary:  "%s/stake/validators/%s/unbonding-delegations"
       tags:
         - Stake
       parameters:

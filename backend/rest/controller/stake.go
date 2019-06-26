@@ -60,7 +60,7 @@ func registerQueryUnbondingDelegationsByValidator(r *mux.Router) error {
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 5))
 		validatorAddr := Var(request, "validatorAddr")
 
-		return stake.GetDelegationsFromLcd(validatorAddr, page, size)
+		return stake.GetUnbondingDelegationsFromLcd(validatorAddr, page, size)
 	})
 	return nil
 }
@@ -73,7 +73,7 @@ func registerQueryRedelegationsByValidator(r *mux.Router) error {
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 5))
 		validatorAddr := Var(request, "validatorAddr")
 
-		return stake.GetDelegationsFromLcd(validatorAddr, page, size)
+		return stake.GetRedelegationsFromLcd(validatorAddr, page, size)
 	})
 	return nil
 

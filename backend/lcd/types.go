@@ -480,6 +480,18 @@ type UnbondingDelegations struct {
 	MinTime        int64  `json:"min_time"`
 }
 
+func (un UnbondingDelegations) String() string {
+	return fmt.Sprintf(`
+		DelegatorAddr  :%v
+		ValidatorAddr  :%v
+		InitialBalance :%v
+		Balance        :%v
+		CreationHeight :%v
+		MinTime        :%v
+		`, un.DelegatorAddr, un.ValidatorAddr, un.InitialBalance, un.Balance, un.CreationHeight, un.MinTime)
+
+}
+
 func (d DelegationVo) String() string {
 	return fmt.Sprintf(`
 		DelegatorAddr :%v
