@@ -1,61 +1,87 @@
 <template>
     <div class="validator_detail_table">
-        <m-table :columns="fields"
-                 :data="items">
-            <template slot="Tx_Hash"
-                      slot-scope="{ row }">
-                <div class="common_hover_parent"
-                     v-if="row.Tx_Hash">
-                    <router-link :to="`/tx?txHash=${row.Tx_Hash}`"
-                                 class="link_style common_font_style">{{formatTxHash(row.Tx_Hash)}}</router-link>
+        <m-table :columns="fields" :data="items" :width="width">
+            <template slot="Tx_Hash" slot-scope="{ row }">
+                <div class="common_hover_parent" v-if="row.Tx_Hash">
+                    <router-link
+                        :to="`/tx?txHash=${row.Tx_Hash}`"
+                        class="link_style common_font_style"
+                    >{{formatTxHash(row.Tx_Hash)}}</router-link>
                 </div>
             </template>
-            <template slot="Block"
-                      slot-scope="{ row }">
+            <template slot="Block" slot-scope="{ row }">
                 <span class="skip_route">
                     <router-link :to="`/block/${row.Block}`">{{row.Block}}</router-link>
                 </span>
             </template>
-            <template slot="From"
-                      slot-scope="{ row }">
-                <span v-if="(/^[1-9]\d*$/).test(row.From)"
-                      class="skip_route">
+            <template slot="From" slot-scope="{ row }">
+                <span v-if="(/^[1-9]\d*$/).test(row.From)" class="skip_route">
                     <router-link :to="`/tx?txHash=${row.Tx_Hash}`">{{row.From}} Validators</router-link>
                 </span>
-                <div class="name_address"
-                     v-show="!(/^[0-9]\d*$/).test(row.From) && row.From && row.From !== '--'">
-                    <span class="remove_default_style"
-                          :class="row.From === $route.params.param?'no_skip':''">
-                        <router-link :to="addressRoute(row.From)"
-                                     class="link_style">{{formatAddress(row.From)}}</router-link>
+                <div
+                    class="name_address"
+                    v-show="!(/^[0-9]\d*$/).test(row.From) && row.From && row.From !== '--'"
+                >
+                    <span
+                        class="remove_default_style"
+                        :class="row.From === $route.params.param?'no_skip':''"
+                    >
+                        <router-link
+                            :to="addressRoute(row.From)"
+                            class="link_style"
+                        >{{formatAddress(row.From)}}</router-link>
                     </span>
                 </div>
-                <span class="no_skip"
-                      v-show="(/^[0]\d*$/).test(row.From) || row.From === '--'">--</span>
+                <span class="no_skip" v-show="(/^[0]\d*$/).test(row.From) || row.From === '--'">--</span>
             </template>
-            <template slot="To"
-                      slot-scope="{ row }">
-                <div class="name_address"
-                     v-show="row.To && row.To !== '--'">
-                    <span class="remove_default_style"
-                          :class="row.To === $route.params.param?'no_skip':''">
-                        <router-link :to="addressRoute(row.To)"
-                                     class="link_style">{{formatAddress(row.To)}}</router-link>
+            <template slot="address" slot-scope="{ row }">
+                <span v-if="(/^[1-9]\d*$/).test(row.address)" class="skip_route">
+                    <router-link :to="`/tx?txHash=${row.address}`">{{row.address}} Validators</router-link>
+                </span>
+                <div
+                    class="name_address"
+                    v-show="!(/^[0-9]\d*$/).test(row.address) && row.address && row.address !== '--'"
+                >
+                    <span
+                        class="remove_default_style"
+                        :class="row.address === $route.params.param?'no_skip':''"
+                    >
+                        <router-link
+                            :to="addressRoute(row.address)"
+                            class="link_style"
+                        >{{formatAddress(row.address)}}</router-link>
                     </span>
                 </div>
-                <span class="no_skip"
-                      v-show="row.To == '--'">--</span>
+                <span
+                    class="no_skip"
+                    v-show="(/^[0]\d*$/).test(row.address) || row.From === '--'"
+                >--</span>
             </template>
-            <template slot="Tx_Signer"
-                      slot-scope="{ row }">
-                <span class="skip_route"
-                      style="display: flex"
-                      v-if="row.Tx_Signer">
+            <template slot="To" slot-scope="{ row }">
+                <div class="name_address" v-show="row.To && row.To !== '--'">
+                    <span
+                        class="remove_default_style"
+                        :class="row.To === $route.params.param?'no_skip':''"
+                    >
+                        <router-link
+                            :to="addressRoute(row.To)"
+                            class="link_style"
+                        >{{formatAddress(row.To)}}</router-link>
+                    </span>
+                </div>
+                <span class="no_skip" v-show="row.To == '--'">--</span>
+            </template>
+            <template slot="Tx_Signer" slot-scope="{ row }">
+                <span class="skip_route" style="display: flex" v-if="row.Tx_Signer">
                     <div class="name_address">
-                        <span class="remove_default_style"
-                              :class="row.Tx_Signer === $route.params.param?'no_skip':''">
-                            <router-link :to="addressRoute(row.Tx_Signer)"
-                                         class="link_style justify">{{formatAddress(row.Tx_Signer)}}</router-link>
+                        <span
+                            class="remove_default_style"
+                            :class="row.Tx_Signer === $route.params.param?'no_skip':''"
+                        >
+                            <router-link
+                                :to="addressRoute(row.Tx_Signer)"
+                                class="link_style justify"
+                            >{{formatAddress(row.Tx_Signer)}}</router-link>
                         </span>
                     </div>
                 </span>
@@ -75,10 +101,14 @@ export default {
         },
         listName: {
             type: String,
-            default: ''
+            default: ""
+        },
+        width: {
+            type: Number,
+            default: 1280
         }
     },
-    data () {
+    data() {
         return {
             fields: [],
             transfer: [
@@ -271,33 +301,37 @@ export default {
             delegations: [
                 {
                     title: "Address",
-                    key: "Address"
+                    slot: "address",
+                    tooltip: true,
+                    tooltipClassName: "tooltip_left"
                 },
                 {
                     title: "Amount",
-                    key: "Amount"
+                    key: "amount"
                 },
                 {
                     title: "Shares",
-                    key: "Shares"
+                    key: "shares"
                 },
                 {
                     title: "Block",
-                    key: "Block"
+                    slot: "block"
                 }
             ],
             unbondingDelegations: [
                 {
                     title: "Address",
-                    key: "Address"
+                    slot: "address",
+                    tooltip: true,
+                    tooltipClassName: "tooltip_left"
                 },
                 {
                     title: "Amount",
-                    key: "Amount"
+                    key: "amount"
                 },
                 {
                     title: "Block",
-                    key: "Block"
+                    slot: "block"
                 },
                 {
                     title: "Timestamp",
@@ -307,11 +341,13 @@ export default {
             redelegations: [
                 {
                     title: "Address",
-                    key: "Address"
+                    slot: "address",
+                    tooltip: true,
+                    tooltipClassName: "tooltip_left"
                 },
                 {
                     title: "Amount",
-                    key: "Amount"
+                    key: "amount"
                 },
                 {
                     title: "To",
@@ -319,66 +355,69 @@ export default {
                 },
                 {
                     title: "Block",
-                    key: "Block"
+                    key: "block"
                 }
             ],
             depositedProposals: [
                 {
                     title: "ID",
-                    key: "ID"
+                    key: "proposal_id"
                 },
                 {
                     title: "Proposer",
-                    key: "Proposer"
+                    slot: "address",
+                    tooltip: true
                 },
                 {
                     title: "Deposit",
-                    key: "Deposit"
+                    key: "depositedAmount"
                 },
                 {
                     title: "Submited",
-                    key: "Submited"
+                    key: "submited"
                 },
                 {
                     title: "Tx_Hash",
-                    key: "Tx_Hash"
+                    slot: "Tx_Hash",
+                    tooltip: true
                 }
             ],
             votedProposals: [
                 {
                     title: "ID",
-                    key: "ID"
+                    key: "proposal_id"
                 },
                 {
                     title: "Title",
-                    key: "Title"
+                    key: "title"
                 },
                 {
                     title: "Status",
-                    key: "Status"
+                    key: "status"
                 },
                 {
                     title: "Voted",
-                    key: "Voted"
+                    key: "voted"
                 },
                 {
                     title: "Tx_Hash",
-                    key: "Tx_Hash"
+                    slot: "Tx_Hash",
+                    tooltip: true
                 }
             ]
         };
     },
     methods: {
-        formatTxHash (TxHash) {
+        formatTxHash(TxHash) {
             if (TxHash) {
                 return Tools.formatTxHash(TxHash);
             }
         },
-        formatAddress (address) {
+        formatAddress(address) {
             return Tools.formatValidatorAddress(address);
         }
     },
-    mounted () {
+    mounted() {
         this.fields = this[this.listName] || [];
     }
 };
@@ -388,9 +427,20 @@ export default {
 .validator_detail_table {
     .m-table-header {
         width: 100%;
+        table.m_table {
+            width: auto;
+        }
     }
     table.m_table {
         min-width: 100%;
+    }
+}
+.delegations_two_container {
+    .m-table-header {
+        width: 6.3rem;
+    }
+    table.m_table {
+        min-width: 6.3rem;
     }
 }
 </style>

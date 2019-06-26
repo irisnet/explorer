@@ -181,7 +181,7 @@ export default {
             line-height: 0.3rem;
         }
     }
-    #echarts_validator_line {
+    #echarts_uptime_line {
         width: 100%;
         height: 2.9rem;
     }

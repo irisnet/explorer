@@ -23,7 +23,11 @@ const urlApi = {
   addressStakeCandidateUptimeWeek: '/api/stake/candidate/{address}/uptime/week',
   addressStakeCandidateUptimeMonth: '/api/stake/candidate/{address}/uptime/month',
   //validatorDetail
-  validatorDelegations: '/api/stake/validators/{validatorAddr}/delegations',
+  validatorDelegations: '/api/stake/validators/{validatorAddr}/delegations?page={currentPage}&size={pageSize}',
+  validatorUnbondingDelegations: '/api/stake/validators/{validatorAddr}/unbonding-delegations?page={currentPage}&size={pageSize}',
+  validatorRedelegations: '/api/stake/validators/{validatorAddr}/redelegations?page={currentPage}&size={pageSize}',
+  validatorVote: '/api/stake/validators/{validatorAddr}/vote?page={currentPage}&size={pageSize}',
+  validatorDepositorTxs: '/api/stake/validators/{validatorAddr}/depositor_txs?page={currentPage}&size={pageSize}',
   //header
   headerTx: '/api/tx/{searchValue}',
   headerSearchAccount: '/api/account/{searchValue}',

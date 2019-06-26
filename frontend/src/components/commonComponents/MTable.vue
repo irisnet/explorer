@@ -83,7 +83,6 @@
 </template>
 
 <script>
-import { setTimeout } from 'timers';
 export default {
   name: 'MTable',
   props: {
@@ -102,6 +101,10 @@ export default {
     sortDesc: {
       type: Boolean,
       default: true
+    },
+    width: {
+      type: Number,
+      default: 1280
     }
   },
   data () {
@@ -124,6 +127,12 @@ export default {
     columns (newVal, oldVal) {
       this.columnsChange = true;
       this.sorted = false;
+    },
+    width() {
+      setTimeout(() => {
+        this.columnsChange = true;
+        this.computedColWidth();
+      });
     }
   },
   methods: {
