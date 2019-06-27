@@ -439,9 +439,8 @@ paths:
           default: 5
       responses:
         200:
-          type: array
-          items:
-            $ref: "#/definitions/DelegationByValidator"
+          schema:
+            $ref: "#/definitions/DelegationByValidatorPage"
         default:
           description: generic error response
           schema:
@@ -469,9 +468,8 @@ paths:
           default: 5
       responses:
         200:
-          type: array
-          items:
-            $ref: "#/definitions/UnbondingDelegationByValidator"
+          schema:
+            $ref: "#/definitions/UnbondingDelegationByValidatorPage"
         default:
           description: generic error response
           schema:
@@ -501,7 +499,7 @@ paths:
         200:
           type: array
           items:
-            $ref: "#/definitions/RedelegationsByValidator"
+            $ref: "#/definitions/RedelegationsByValidatorPage"
         default:
           description: generic error response
           schema:
@@ -558,7 +556,7 @@ paths:
         200:
           type: array
           items:
-            $ref: "#/definitions/ValidatorDepositTx"
+            $ref: "#/definitions/ValidatorDepositTxPage"
         default:
           description: generic error response
           schema:
@@ -880,6 +878,16 @@ paths:
 
 
 definitions:
+  ValidatorDepositTxPage:
+    type: object
+    properties:
+      total:
+        type: integer
+        format: int
+      items:
+        type: array
+        items:
+          $ref: "#/definitions/ValidatorDepositTx"
   ValidatorDepositTx:
     type: object
     properties:
@@ -901,7 +909,9 @@ definitions:
         type: integer
         format: int
       items:
-        $ref: "#/definitions/ValidatorVote"
+        type: array
+        items:
+          $ref: "#/definitions/ValidatorVote"
   ValidatorVote:
     type: object
     properties:
@@ -916,6 +926,17 @@ definitions:
         type: string
       tx_hash:
         type: string
+  RedelegationsByValidatorPage:
+    type: object
+    properties:
+      total:
+        type: integer
+        format: int
+      items:
+        type: array
+        items:
+          $ref: "#/definitions/RedelegationsByValidator"
+
   RedelegationsByValidator:
     type: object
     properties:
@@ -926,20 +947,38 @@ definitions:
       destination:
         type: string
       block:
+        type: string
+  UnbondingDelegationByValidatorPage:
+    type: object
+    properties:
+      total:
         type: integer
-        format: int64
+        format: int
+      items:
+        type: array
+        items:
+          $ref: "#/definitions/UnbondingDelegationByValidator"
   UnbondingDelegationByValidator:
     type: object
     properties:
       address:
         type: string
-      before:
-        type: string
-      after:
+      amount:
         type: string
       block:
+        type: string
+      until:
+        type: string
+  DelegationByValidatorPage:
+    type: object
+    properties:
+      total:
         type: integer
-        format: int64
+        format: int
+      items:
+        type: array
+        items:
+          $ref: "#/definitions/DelegationByValidator"
   DelegationByValidator:
     type: object
     properties:
@@ -951,11 +990,9 @@ definitions:
       self_shares:
         type: string
       total_shares:
-        type: integer
-        format: float64
+        type: string
       block:
-        type: integer
-        format: int64
+        type: string
   ValidatorForDetail:
     type: object
     properties:
@@ -974,7 +1011,7 @@ definitions:
       self_bonded:
         type: string
       rewards:
-        $ref: "#/definitions/Coins"
+        $ref: "#/definitions/CoinsStr"
       delegator_shares:
         type: string
       delegator_count:
@@ -983,6 +1020,10 @@ definitions:
       commission_rate:
         type: string
       commission_update:
+        type: string
+      commission_max_rate:
+        type: string
+      commision_max_change_rate:
         type: string
       bond_height:
         type: string
@@ -2129,6 +2170,18 @@ definitions:
       amount:
         type: integer
         format: float64
+
+  CoinsStr:
+    type: array
+    items:
+      $ref: "#/definitions/CoinStr"
+  CoinStr:
+    type: object
+    properties:
+      denom:
+        type: string
+      amount:
+        type: string
   Coins:
     type: array
     items:
