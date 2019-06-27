@@ -537,7 +537,8 @@ export default {
                 data => {
                     try {
                         if (data) {
-                            console.log(data);
+                            this.validatorProfile["Withdraw Address"] =
+                                data.address;
                         }
                     } catch (e) {}
                 }
@@ -650,8 +651,6 @@ export default {
                             ] = `${Tools.formatDecimalNumberToFixedNumber(
                                 Number(data.commision_max_change_rate) * 100
                             )} %`;
-                            this.validatorProfile["Withdraw Address"] =
-                                data.withdraw_addr;
                             this.validatorProfile["Operator Address"] =
                                 data.operator_addr;
                             this.validatorProfile["Owner Address"] =
@@ -1507,6 +1506,9 @@ export default {
         .second_table_container {
             margin-left: 0;
         }
+    }
+    .information_value {
+        margin-right: 0 !important;
     }
 }
 .personal_computer_transactions_detail_wrap {
