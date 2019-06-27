@@ -61,10 +61,10 @@
                     <span class="information_props">Voter :</span>
                     <span class="information_value link_active_style">
             <router-link :to="`/address/1/${voter}`">{{voter}}</router-link></span>
-                </div>
-                <div class="information_props_wrap" v-if="flShowTypeTransfer || flShowWithdrawAddress">
-                    <span class="information_props">From :</span>
-                    <span class="information_value link_active_style">
+        </div>
+        <div class="information_props_wrap" v-if="flShowTypeTransfer || flShowWithdrawAddress || flShowTypeBurn">
+          <span class="information_props">From :</span>
+          <span class="information_value link_active_style">
             <router-link :to="`/address/1/${fromValue}`">{{fromValue}}</router-link>
           </span>
                 </div>
@@ -107,67 +107,65 @@
                     <span class="information_props">From :</span>
                     <span class="information_value link_active_style">
             <router-link :to="`/address/1/${owner}`">{{owner}}</router-link></span>
-                </div>
-                <div class="information_props_wrap" v-if="pubkey">
-                    <span class="information_props">Pub key :</span>
-                    <span class="information_value">{{pubkey}}</span>
-                </div>
-                <div class="information_props_wrap" v-if="website">
-                    <span class="information_props">Website :</span>
-                    <span class="information_value"><pre class="information_pre">{{website}}</pre></span>
-                </div>
-                <div class="information_props_wrap" v-if="selfBond">
-                    <span class="information_props">Self-Bonded :</span>
-                    <span class="information_value">{{selfBond}}</span>
-                </div>
-                <div class="information_props_wrap" v-if="details">
-                    <span class="information_props">Details :</span>
-                    <span class="information_value"><pre class="information_pre">{{details}}</pre></span>
-                </div>
-                <div class="information_props_wrap" v-if="flShowVoter">
-                    <span class="information_props">Option :</span>
-                    <span class="information_value">{{option}}</span>
-                </div>
-                <div class="information_props_wrap" v-if="flShowTypeTransfer || flShowTypeDeposit">
-                    <span class="information_props">Amount :</span>
-                    <span class="information_value">{{amountValue}}</span>
-                </div>
-                <div class="information_props_wrap" v-if="flShowReceivedRewardsValue">
-                    <span class="information_props">Received Rewards :</span>
-                    <span class="information_value">{{amountValue}}</span>
-                </div>
-                <div class="information_props_wrap">
-                    <span class="information_props">Status :</span>
-                    <span class="information_value">{{status}}</span>
-                </div>
-                <div class="information_props_wrap">
-                    <span class="information_props">Age(Timestamp) :</span>
-                    <span class="information_value" v-show="ageValue">{{ageValue}} ({{timestampValue}})</span>
-                </div>
-                <div class="information_props_wrap">
-                    <span class="information_props">Actual Tx Fee :</span>
-                    <span class="information_value">{{actualTxFee}}</span>
-                </div>
-                <div class="information_props_wrap">
-                    <span class="information_props">Gas Limit :</span>
-                    <span class="information_value">{{gasLimit}}</span>
-                </div>
-                <div class="information_props_wrap">
-                    <span class="information_props">Gas Used by Tx :</span>
-                    <span class="information_value">{{gasUsedByTxn}}</span>
-                </div>
-                <div class="information_props_wrap">
-                    <span class="information_props">Gas Price :</span>
-                    <span class="information_value">{{gasPrice}} <span v-if="gasPrice"></span>Nano</span>
-                </div>
-                <div class="information_props_wrap">
-                    <span class="information_props">Memo :</span>
-                    <span class="information_value"><pre class="information_pre">{{memo}}</pre></span>
-                </div>
-
+        </div>
+        <div class="information_props_wrap" v-if="pubkey">
+            <span class="information_props">Pub key :</span>
+            <span class="information_value">{{pubkey}}</span>
+        </div>
+        <div class="information_props_wrap" v-if="website">
+            <span class="information_props">Website :</span>
+            <span class="information_value"><pre class="information_pre">{{website}}</pre></span>
+        </div>
+        <div class="information_props_wrap" v-if="selfBond">
+            <span class="information_props">Self-Bonded :</span>
+            <span class="information_value">{{selfBond}}</span>
+        </div>
+        <div class="information_props_wrap" v-if="details">
+            <span class="information_props">Details :</span>
+            <span class="information_value"><pre class="information_pre">{{details}}</pre></span>
+        </div>
+        <div class="information_props_wrap" v-if="flShowVoter">
+            <span class="information_props">Option :</span>
+            <span class="information_value">{{option}}</span>
+        </div>
+        <div class="information_props_wrap" v-if="flShowTypeTransfer || flShowTypeDeposit || flShowTypeBurn">
+            <span class="information_props">Amount :</span>
+            <span class="information_value">{{amountValue}}</span>
+        </div>
+        <div class="information_props_wrap" v-if="flShowReceivedRewardsValue">
+            <span class="information_props">Received Rewards :</span>
+            <span class="information_value">{{amountValue}}</span>
+        </div>
+        <div class="information_props_wrap">
+            <span class="information_props">Status :</span>
+            <span class="information_value">{{status}}</span>
+        </div>
+        <div class="information_props_wrap">
+          <span class="information_props">Age(Timestamp) :</span>
+          <span class="information_value" v-show="ageValue">{{ageValue}} ({{timestampValue}})</span>
+        </div>
+        <div class="information_props_wrap">
+          <span class="information_props">Actual Tx Fee :</span>
+          <span class="information_value">{{actualTxFee}}</span>
+        </div>
+        <div class="information_props_wrap">
+          <span class="information_props">Gas Limit :</span>
+          <span class="information_value">{{gasLimit}}</span>
+        </div>
+        <div class="information_props_wrap">
+          <span class="information_props">Gas Used by Tx :</span>
+          <span class="information_value">{{gasUsedByTxn}}</span>
+        </div>
+        <div class="information_props_wrap">
+          <span class="information_props">Gas Price :</span>
+          <span class="information_value">{{gasPrice}} <span v-if="gasPrice"></span>Nano</span>
+        </div>
+        <div class="information_props_wrap">
+          <span class="information_props">Memo :</span>
+          <span class="information_value"><pre class="information_pre">{{memo}}</pre></span>
+        </div>
             </div>
         </div>
-
     </div>
 </template>
 
@@ -176,7 +174,6 @@
 	import Service from "../service";
 	import Constant from "../constant/Constant"
 	export default {
-
 		data() {
 			return {
 				devicesWidth: window.innerWidth,
@@ -225,6 +222,7 @@
 				flShowDelegatorAddress: false,
 				flShowValidatorAddress: false,
 				flShowReceivedRewardsValue: false,
+				flShowTypeBurn: false,
 				ageValue: '',
 				transactionDetailTimer: null,
 			}
@@ -349,6 +347,9 @@
 									this.flShowReceivedRewardsValue = true;
 									this.flShowValidatorAddress = true;
 									this.validatorAddress = data.From ? data.From : "";
+								} else if(data.Type === 'Burn'){
+									this.flShowTypeBurn = true;
+									this.fromValue = data.From;
 								}
 							}
 						}catch (e) {
