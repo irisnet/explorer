@@ -540,7 +540,7 @@ export default {
                             ] = `${Tools.formatPriceToFixed(
                                 Number(data.bonded_tokens),
                                 2
-                            )} IRIS`;
+                            )} ${Constants.Denom.IRIS}`;
                             this.validatorInfo["Unbonding Height"] =
                                 data.unbond_height;
                             this.validatorInfo[
@@ -548,7 +548,7 @@ export default {
                             ] = `${Tools.formatPriceToFixed(
                                 Number(data.self_bonded),
                                 2
-                            )} IRIS`;
+                            )} ${Constants.Denom.IRIS}`;
                             this.validatorInfo["Jailed Until"] = new Date(
                                 data.jailed_until
                             ).getTime()
@@ -562,7 +562,7 @@ export default {
                             ] = `${Tools.formatPriceToFixed(
                                 Number(delegator_tokens),
                                 2
-                            )} IRIS (${Tools.formatDecimalNumberToFixedNumber(
+                            )} ${Constants.Denom.IRIS} (${Tools.formatDecimalNumberToFixedNumber(
                                 (delegator_tokens /
                                     Number(data.bonded_tokens)) *
                                     100
@@ -587,7 +587,7 @@ export default {
                             ] = `${Tools.formatPriceToFixed(
                                 Number(data.delegator_shares),
                                 2
-                            )} IRIS`;
+                            )} ${Constants.Denom.IRIS}`;
                             this.validatorInfo[
                                 "Max Rate"
                             ] = `${Tools.formatDecimalNumberToFixedNumber(
@@ -642,7 +642,7 @@ export default {
                             for (let it of data.items) {
                                 it.amount =
                                     this.formatAmount(it).split(" ")[0] +
-                                    " IRIS";
+                                    " " + Constants.Denom.IRIS;
                                 let selfShares = Number(it.self_shares);
                                 it.shares = `${selfShares} (${Tools.formatDecimalNumberToFixedNumber(
                                     (selfShares / Number(it.total_shares)) * 100
