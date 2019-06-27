@@ -8,25 +8,27 @@ import (
 )
 
 type ValidatorForDetail struct {
-	TotalPower        int64          `json:"total_power"`
-	SelfPower         int64          `json:"self_power"`
-	Status            string         `json:"status"`
-	BondedTokens      string         `json:"bonded_tokens"`
-	SelfBonded        string         `json:"self_bonded"`
-	Reward            lcd.CoinsAsStr `json:"reward"`
-	DelegatorShares   string         `json:"delegator_shares"`
-	DelegatorCount    int            `json:"delegator_count"`
-	CommissionRate    string         `json:"commission_rate"`
-	CommissionUpdate  string         `json:"commission_update"`
-	BondHeight        string         `json:"bond_height"`
-	UnbondingHeight   string         `json:"unbond_height"`
-	JailedUntil       string         `json:"jailed_until"`
-	MissedBlocksCount string         `json:"missed_blocks_count"`
-	OperatorAddr      string         `json:"operator_addr"`
-	OwnerAddr         string         `json:"owner_addr"`
-	WithdrawAddr      string         `json:"withdraw_addr"`
-	ConsensusAddr     string         `json:"consensus_addr"`
-	Description       Description    `json:"description"`
+	TotalPower              int64          `json:"total_power"`
+	SelfPower               int64          `json:"self_power"`
+	Status                  string         `json:"status"`
+	BondedTokens            string         `json:"bonded_tokens"`
+	SelfBonded              string         `json:"self_bonded"`
+	Reward                  lcd.CoinsAsStr `json:"reward"`
+	DelegatorShares         string         `json:"delegator_shares"`
+	DelegatorCount          int            `json:"delegator_count"`
+	CommissionRate          string         `json:"commission_rate"`
+	CommissionUpdate        string         `json:"commission_update"`
+	CommissionMaxRate       string         `json:"commission_max_rate"`
+	CommissionMaxChangeRate string         `json:"commision_max_change_rate"`
+	BondHeight              string         `json:"bond_height"`
+	UnbondingHeight         string         `json:"unbond_height"`
+	JailedUntil             string         `json:"jailed_until"`
+	MissedBlocksCount       string         `json:"missed_blocks_count"`
+	OperatorAddr            string         `json:"operator_addr"`
+	OwnerAddr               string         `json:"owner_addr"`
+	WithdrawAddr            string         `json:"withdraw_addr"`
+	ConsensusAddr           string         `json:"consensus_addr"`
+	Description             Description    `json:"description"`
 }
 
 type RedelegationPage struct {
@@ -76,20 +78,18 @@ items:
 
 type UnbondingDelegations struct {
 	Address string `json:"address"`
-	Before  string `json:"before"`
-	After   string `json:"after"`
+	Amount  string `json:"amount"`
 	Block   string `json:"block"`
-	MinTime string `json:"min_time"`
+	Until   string `json:"until"`
 }
 
 func (un UnbondingDelegations) String() string {
 	return fmt.Sprintf(`
 		Address :%v
-		Before  :%v
-		After   :%v
+		Amount  :%v
 		Block   :%v
-		MinTime :%v
-		`, un.Address, un.Before, un.After, un.Block, un.MinTime)
+		Until   :%v
+		`, un.Address, un.Amount, un.Block, un.Until)
 }
 
 type Delegation struct {

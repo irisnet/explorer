@@ -165,10 +165,9 @@ func (service *ValidatorService) GetUnbondingDelegationsFromLcd(valAddr string, 
 
 			tmp := model.UnbondingDelegations{
 				Address: v.DelegatorAddr,
-				Before:  v.InitialBalance,
-				After:   v.Balance,
+				Amount:  v.Balance,
 				Block:   v.CreationHeight,
-				MinTime: v.MinTime,
+				Until:   v.MinTime,
 			}
 
 			items = append(items, tmp)
@@ -319,25 +318,27 @@ func (service *ValidatorService) GetValidatorDetail(validatorAddr string) model.
 	}
 
 	res := model.ValidatorForDetail{
-		TotalPower:        totalVotingPower,
-		SelfPower:         validatorAsDoc.VotingPower,
-		Status:            validatorAsDoc.GetValidatorStatus(),
-		BondedTokens:      validatorAsDoc.Tokens,
-		SelfBonded:        validatorAsDoc.SelfBond,
-		Reward:            rewardsCoins,
-		DelegatorShares:   validatorAsDoc.DelegatorShares,
-		DelegatorCount:    validatorAsDoc.DelegatorNum,
-		CommissionRate:    validatorAsDoc.Commission.Rate,
-		CommissionUpdate:  validatorAsDoc.Commission.UpdateTime.String(),
-		BondHeight:        validatorAsDoc.BondHeight,
-		UnbondingHeight:   validatorAsDoc.UnbondingHeight,
-		JailedUntil:       jailedUntil,
-		MissedBlocksCount: missedBlockCount,
-		OperatorAddr:      validatorAsDoc.OperatorAddress,
-		OwnerAddr:         utils.Convert(conf.Get().Hub.Prefix.AccAddr, validatorAsDoc.OperatorAddress),
-		WithdrawAddr:      withdrawAddr,
-		ConsensusAddr:     validatorAsDoc.ConsensusPubkey,
-		Description:       desc,
+		TotalPower:              totalVotingPower,
+		SelfPower:               validatorAsDoc.VotingPower,
+		Status:                  validatorAsDoc.GetValidatorStatus(),
+		BondedTokens:            validatorAsDoc.Tokens,
+		SelfBonded:              validatorAsDoc.SelfBond,
+		Reward:                  rewardsCoins,
+		DelegatorShares:         validatorAsDoc.DelegatorShares,
+		DelegatorCount:          validatorAsDoc.DelegatorNum,
+		CommissionRate:          validatorAsDoc.Commission.Rate,
+		CommissionUpdate:        validatorAsDoc.Commission.UpdateTime.String(),
+		CommissionMaxRate:       validatorAsDoc.Commission.MaxRate,
+		CommissionMaxChangeRate: validatorAsDoc.Commission.MaxChangeRate,
+		BondHeight:              validatorAsDoc.BondHeight,
+		UnbondingHeight:         validatorAsDoc.UnbondingHeight,
+		JailedUntil:             jailedUntil,
+		MissedBlocksCount:       missedBlockCount,
+		OperatorAddr:            validatorAsDoc.OperatorAddress,
+		OwnerAddr:               utils.Convert(conf.Get().Hub.Prefix.AccAddr, validatorAsDoc.OperatorAddress),
+		WithdrawAddr:            withdrawAddr,
+		ConsensusAddr:           validatorAsDoc.ConsensusPubkey,
+		Description:             desc,
 	}
 	return res
 }
