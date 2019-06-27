@@ -29,8 +29,9 @@
                         <router-link
                             :to="addressRoute(row.From)"
                             class="link_style"
-                        >{{formatAddress(row.From)}}</router-link>
+                        >{{row.fromMoniker || formatAddress(row.From)}}</router-link>
                     </span>
+                    <span v-if="!row.fromMoniker" class="address">{{row.From}}</span>
                 </div>
                 <span class="no_skip" v-show="(/^[0]\d*$/).test(row.From) || row.From === '--'">--</span>
             </template>
@@ -77,7 +78,7 @@
                 </div>
                 <span
                     class="no_skip"
-                    v-show="(/^[0]\d*$/).test(row.address) || row.From === '--'"
+                    v-show="(/^[0]\d*$/).test(row.address) || row.address === '--'"
                 >--</span>
             </template>
             <template slot="proposer" slot-scope="{ row }">
@@ -98,7 +99,13 @@
                 </div>
             </template>
             <template slot="To" slot-scope="{ row }">
-                <div class="name_address" v-show="row.To && row.To !== '--'">
+                <span v-if="(/^[1-9]\d*$/).test(row.To)" class="skip_route">
+                    <router-link :to="`/tx?txHash=${row.Tx_Hash}`">{{row.To}} Validators</router-link>
+                </span>
+                <div
+                    class="name_address"
+                    v-show="!(/^[0-9]\d*$/).test(row.To) && row.To && row.To !== '--'"
+                >
                     <span
                         class="remove_default_style"
                         :class="row.To === $route.params.param?'no_skip':''"
@@ -106,10 +113,11 @@
                         <router-link
                             :to="addressRoute(row.To)"
                             class="link_style"
-                        >{{formatAddress(row.To)}}</router-link>
+                        >{{row.toMoniker || formatAddress(row.To)}}</router-link>
                     </span>
+                    <span v-if="!row.toMoniker" class="address">{{row.To}}</span>
                 </div>
-                <span class="no_skip" v-show="row.To == '--'">--</span>
+                <span class="no_skip" v-show="(/^[0]\d*$/).test(row.To) || row.To === '--'">--</span>
             </template>
             <template slot="Tx_Signer" slot-scope="{ row }">
                 <span class="skip_route" style="display: flex" v-if="row.Tx_Signer">
@@ -146,6 +154,12 @@
                     :to="`/ProposalsDetail/${row.Proposal_ID}`"
                     class="link_style"
                 >{{row.Proposal_ID}}</router-link>
+            </template>
+            <template slot-scope="{ row }" slot="proposal_id">
+                <router-link
+                    :to="`/ProposalsDetail/${row.proposal_id}`"
+                    class="link_style"
+                >{{row.proposal_id}}</router-link>
             </template>
         </m-table>
     </div>
@@ -185,8 +199,7 @@ export default {
                 },
                 {
                     title: "From",
-                    slot: "From",
-                    tooltip: true
+                    slot: "From"
                 },
                 {
                     title: "Amount",
@@ -194,8 +207,7 @@ export default {
                 },
                 {
                     title: "To",
-                    slot: "To",
-                    tooltip: true
+                    slot: "To"
                 },
                 {
                     title: "Tx_Type",
@@ -232,8 +244,7 @@ export default {
                 },
                 {
                     title: "From",
-                    slot: "From",
-                    tooltip: true
+                    slot: "From"
                 },
                 {
                     title: "Amount",
@@ -241,8 +252,7 @@ export default {
                 },
                 {
                     title: "To",
-                    slot: "To",
-                    tooltip: true
+                    slot: "To"
                 },
                 {
                     title: "Tx_Type",
@@ -414,8 +424,7 @@ export default {
                 },
                 {
                     title: "To",
-                    slot: "To",
-                    tooltip: true
+                    slot: "To"
                 },
                 {
                     title: "Block",
@@ -425,7 +434,7 @@ export default {
             depositedProposals: [
                 {
                     title: "ID",
-                    key: "proposal_id"
+                    slot: "proposal_id"
                 },
                 {
                     title: "Proposer",
@@ -448,7 +457,7 @@ export default {
             votedProposals: [
                 {
                     title: "ID",
-                    key: "proposal_id"
+                    slot: "proposal_id"
                 },
                 {
                     title: "Title",

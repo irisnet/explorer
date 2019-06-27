@@ -430,10 +430,12 @@ export default class Tools{
           }
         }else if(txType === 'stakes'){
           objList = {
-            'From':item.From ? item.From : (item.DelegatorAddr?item.DelegatorAddr:'--'),
+            'From': `${item.From ? item.From : (item.DelegatorAddr?item.DelegatorAddr:'--')}`,
             Amount,
-            'To':item.To ? item.To : (item.ValidatorAddr?item.ValidatorAddr:'--'),
-            'listName':'stakes'
+            'To': `${item.To ? item.To : (item.ValidatorAddr?item.ValidatorAddr:'--')}`,
+            'listName':'stakes',
+            fromMoniker: item.from_moniker,
+            toMoniker: item.to_moniker
           }
         }else if(txType === 'governance'){
           objList = {
