@@ -267,6 +267,23 @@ func (_ CommonTx) GetTxCountByDuration(startTime, endTime string) (int, error) {
 	return txStore.Find(query).Count()
 }
 
+func (_ CommonTx) QueryProposalTxFromById(idArr []uint64) (map[uint64]string, error) {
+
+	selector := bson.M{Tx_Field_From: 1, Tx_Field_ProposalId: 1}
+	condition := bson.M{Tx_Field_Type: "SubmitProposal", Tx_Field_Status: "success", Tx_Field_ProposalId: bson.M{"$in": idArr}}
+	var txs []document.CommonTx
+
+	err := queryAll(CollectionNmCommonTx, selector, condition, desc(Tx_Field_Time), 0, &txs)
+
+	proposerById := map[uint64]string{}
+
+	for _, v := range txs {
+		proposerById[v.ProposalId] = v.From
+	}
+
+	return proposerById, err
+}
+
 func (_ CommonTx) QueryProposalTxListById(idArr []uint64) ([]document.CommonTx, error) {
 
 	selector := bson.M{Tx_Field_Amount: 1, Tx_Field_ProposalId: 1}

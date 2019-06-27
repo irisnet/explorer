@@ -108,12 +108,23 @@ func (service *ValidatorService) GetDepositedTxByValidatorAddr(validatorAddr str
 		return model.ValidatorDepositTxPage{}
 	}
 
-	addrArr := make([]string, 0, len(txs))
+	proposalIds := make([]uint64, 0, len(txs))
 	for _, v := range txs {
-		addrArr = append(addrArr, utils.Convert(conf.Get().Hub.Prefix.ValAddr, v.From))
+		proposalIds = append(proposalIds, v.ProposalId)
 	}
-	addrArr = utils.RemoveDuplicationStrArr(addrArr)
 
+	proposerByIdMap, err := document.CommonTx{}.QueryProposalTxFromById(proposalIds)
+
+	if err != nil {
+		logger.Error("QueryProposalTxFromById", logger.String("err", err.Error()))
+	}
+
+	addrArr := make([]string, 0, len(txs))
+	for _, v := range proposerByIdMap {
+		addrArr = append(addrArr, utils.Convert(conf.Get().Hub.Prefix.ValAddr, v))
+	}
+
+	addrArr = utils.RemoveDuplicationStrArr(addrArr)
 	validatorMonikerMap, err := document.Validator{}.QueryValidatorMonikerByAddrArr(addrArr)
 
 	if err != nil {
@@ -137,10 +148,19 @@ func (service *ValidatorService) GetDepositedTxByValidatorAddr(validatorAddr str
 			amount = append(amount, tmp)
 		}
 
+		moniker := ""
+		proposer := ""
+		if from, ok := proposerByIdMap[v.ProposalId]; ok {
+			proposer = from
+			if m, ok := validatorMonikerMap[utils.Convert(conf.Get().Hub.Prefix.ValAddr, from)]; ok {
+				moniker = m
+			}
+		}
+
 		tmp := model.ValidatorDepositTx{
 			ProposalId:      v.ProposalId,
-			Proposer:        v.From,
-			Moniker:         validatorMonikerMap[utils.Convert(conf.Get().Hub.Prefix.ValAddr, v.From)],
+			Proposer:        proposer,
+			Moniker:         moniker,
 			DepositedAmount: amount,
 			Submited:        submited,
 			TxHash:          v.TxHash,
@@ -194,14 +214,7 @@ func (service *ValidatorService) GetDelegationsFromLcd(valAddr string, page, siz
 		totalShareAsRat = totalShareAsRat.Add(totalShareAsRat, sharesAsRat)
 	}
 
-	addrArr := make([]string, 0, size)
-	for k, v := range lcdDelegations {
-		if k >= page*size && k < (page+1)*size {
-			addrArr = append(addrArr, v.ValidatorAddr)
-		}
-	}
-
-	addrArr = utils.RemoveDuplicationStrArr(addrArr)
+	addrArr := []string{valAddr}
 
 	tokenShareRatioByValidatorAddr, err := document.Validator{}.QueryTokensAndShareRatioByValidatorAddrs(addrArr)
 	if err != nil {
