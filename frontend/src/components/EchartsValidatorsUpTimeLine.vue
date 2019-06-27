@@ -123,6 +123,14 @@ export default {
                 } else {
                     option.yAxis.max = null
                 }
+                // 计算min坐标轴
+                let min = Math.min.apply(null, informationUptimeLine.seriesData);
+                min = Math.floor(min / 10) * 10;
+                let max = option.yAxis.max || Math.max.apply(null, informationUptimeLine.seriesData);
+                min = min == max ? min - 10 : min;
+                min = min < 0 ? 0 : min;
+                option.yAxis.min = min;
+
                 option.xAxis.data = informationUptimeLine.xData;
                 option.series[0].data = informationUptimeLine.seriesData;
                 line.setOption(option)

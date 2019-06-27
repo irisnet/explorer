@@ -642,7 +642,8 @@ export default {
                             for (let it of data.items) {
                                 it.amount =
                                     this.formatAmount(it).split(" ")[0] +
-                                    " " + Constants.Denom.IRIS.toUpperCase();
+                                    " " +
+                                    Constants.Denom.IRIS.toUpperCase();
                                 let selfShares = Number(it.self_shares);
                                 it.shares = `${selfShares} (${Tools.formatDecimalNumberToFixedNumber(
                                     (selfShares / Number(it.total_shares)) * 100
@@ -1552,6 +1553,7 @@ export default {
 }
 .delegations_two_container {
     display: block;
+    white-space: nowrap;
     & > div {
         display: inline-block;
         width: calc(50% - 0.1rem);
