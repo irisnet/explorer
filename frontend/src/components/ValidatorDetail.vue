@@ -549,9 +549,11 @@ export default {
                                 Number(data.self_bonded),
                                 2
                             )} IRIS`;
-                            this.validatorInfo[
-                                "Jailed Until"
-                            ] = Tools.format2UTC(data.jailed_until);
+                            this.validatorInfo["Jailed Until"] = new Date(
+                                data.jailed_until
+                            ).getTime()
+                                ? Tools.format2UTC(data.jailed_until)
+                                : "";
                             let delegator_tokens =
                                 Number(data.bonded_tokens) -
                                 Number(data.self_bonded);
@@ -569,11 +571,17 @@ export default {
                                 data.missed_blocks_count;
                             this.validatorInfo["Delegators"] =
                                 data.delegator_count;
-                            this.validatorInfo[
-                                "Commission Rate"
-                            ] = `${Tools.formatDecimalNumberToFixedNumber(
-                                Number(data.commission_rate) * 100
-                            )} % (${Tools.format2UTC(data.commission_update)})`;
+                            this.validatorInfo["Commission Rate"] =
+                                data.commission_update !==
+                                "0001-01-01 00:00:00 +0000 UTC"
+                                    ? `${Tools.formatDecimalNumberToFixedNumber(
+                                          Number(data.commission_rate) * 100
+                                      )} % (${Tools.format2UTC(
+                                          data.commission_update
+                                      )})`
+                                    : `${Tools.formatDecimalNumberToFixedNumber(
+                                          Number(data.commission_rate) * 100
+                                      )} %`;
                             this.validatorInfo[
                                 "Delegator Shares"
                             ] = `${Tools.formatPriceToFixed(
