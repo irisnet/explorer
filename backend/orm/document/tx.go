@@ -304,10 +304,11 @@ func (_ CommonTx) QueryDepositedProposalTxByValidatorWithSubmitOrDepositType(val
 
 	txs := []CommonTx{}
 	selector := bson.M{
-		Tx_Field_Hash:   1,
-		Tx_Field_From:   1,
-		Tx_Field_Amount: 1,
-		Tx_Field_Type:   1,
+		Tx_Field_Hash:       1,
+		Tx_Field_From:       1,
+		Tx_Field_Amount:     1,
+		Tx_Field_Type:       1,
+		Tx_Field_ProposalId: 1,
 	}
 	condition := bson.M{
 		Tx_Field_Status: types.TxTypeStatus,
