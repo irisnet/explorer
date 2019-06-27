@@ -352,7 +352,7 @@
                 this.validatorAddress = data.From ? data.From : "";
               }else if(data.Type === 'Burn'){
                 this.flShowTypeBurn = true;
-                this.fromValue = data.From;
+                this.fromValue = data.From ? data.From : "";
               }
             }
 
