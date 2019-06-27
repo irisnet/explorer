@@ -16,44 +16,94 @@
         </div>
         <div :class="transactionsDetailWrap">
             <div class="validator_detail_information_wrap">
-                <div
-                    class="information_props_wrap"
-                    v-for="v in Object.entries(validatorInfo)"
-                    :key="v[0]"
-                >
-                    <span class="information_props">{{v[0]}}:</span>
-                    <template v-if="v[1]">
-                        <span class="information_value">{{v[1]}}</span>
-                    </template>
-                    <template v-else>
-                        <span class="information_value">--</span>
-                    </template>
+                <div>
+                    <div
+                        class="information_props_wrap"
+                        v-for="v in Object.entries(validatorInfo).filter((v, i) => i%2 === 0)"
+                        :key="v[0]"
+                    >
+                        <span class="information_props">{{v[0]}}:</span>
+                        <template v-if="v[1]">
+                            <span class="information_value">{{v[1]}}</span>
+                        </template>
+                        <template v-else>
+                            <span class="information_value">--</span>
+                        </template>
+                    </div>
+                </div>
+                <div>
+                    <div
+                        class="information_props_wrap"
+                        v-for="v in Object.entries(validatorInfo).filter((v, i) => i%2 === 1)"
+                        :key="v[0]"
+                    >
+                        <span class="information_props">{{v[0]}}:</span>
+                        <template v-if="v[1]">
+                            <span class="information_value">{{v[1]}}</span>
+                        </template>
+                        <template v-else>
+                            <span class="information_value">--</span>
+                        </template>
+                    </div>
                 </div>
             </div>
         </div>
         <div :class="transactionsDetailWrap" class="address_profile">
             <p class="validator_information_content_title">Validator Profile</p>
             <div class="validator_detail_information_wrap">
-                <div
-                    class="information_props_wrap"
-                    v-for="v in Object.entries(validatorProfile)"
-                    :key="v[0]"
-                >
-                    <span class="information_props">{{v[0]}}:</span>
-                    <template v-if="v[1] && validatorProfileLinks.indexOf(v[0]) > -1">
-                        <span class="information_value skip_route">
-                            <router-link
-                                v-if="v[0] !== 'Website' && v[0] !== 'Identity'"
-                                :to="addressRoute(v[1])"
-                            >{{v[1]}}</router-link>
-                            <span @click="openUrl(v[1])" v-if="v[0] === 'Website'">{{v[1]}}</span>
-                            <span v-if="v[0] === 'Identity'">{{v[1]}}</span>
-                        </span>
-                    </template>
-                    <template v-else>
-                        <span v-if="!v[1]" class="information_value">--</span>
-                        <span v-if="v[1]" class="information_value">{{v[1]}}</span>
-                    </template>
+                <div>
+                    <div
+                        class="information_props_wrap"
+                        v-for="v in Object.entries(validatorProfile).filter((v, i) => i%2 === 0)"
+                        :key="v[0]"
+                    >
+                        <span class="information_props">{{v[0]}}:</span>
+                        <template v-if="v[1] && validatorProfileLinks.indexOf(v[0]) > -1">
+                            <span class="information_value skip_route">
+                                <router-link
+                                    v-if="v[0] !== 'Website' && v[0] !== 'Identity'"
+                                    :to="addressRoute(v[1])"
+                                >{{v[1]}}</router-link>
+                                <span @click="openUrl(v[1])" v-if="v[0] === 'Website'">{{v[1]}}</span>
+                                <a
+                                    href="https://keybase.io/inchain"
+                                    target="_blank"
+                                    v-if="v[0] === 'Identity'"
+                                >{{v[1]}}</a>
+                            </span>
+                        </template>
+                        <template v-else>
+                            <span v-if="!v[1]" class="information_value">--</span>
+                            <span v-if="v[1]" class="information_value">{{v[1]}}</span>
+                        </template>
+                    </div>
+                </div>
+                <div>
+                    <div
+                        class="information_props_wrap"
+                        v-for="v in Object.entries(validatorProfile).filter((v, i) => i%2 === 1)"
+                        :key="v[0]"
+                    >
+                        <span class="information_props">{{v[0]}}:</span>
+                        <template v-if="v[1] && validatorProfileLinks.indexOf(v[0]) > -1">
+                            <span class="information_value skip_route">
+                                <router-link
+                                    v-if="v[0] !== 'Website' && v[0] !== 'Identity'"
+                                    :to="addressRoute(v[1])"
+                                >{{v[1]}}</router-link>
+                                <span @click="openUrl(v[1])" v-if="v[0] === 'Website'">{{v[1]}}</span>
+                                <a
+                                    href="https://keybase.io/inchain"
+                                    target="_blank"
+                                    v-if="v[0] === 'Identity'"
+                                >{{v[1]}}</a>
+                            </span>
+                        </template>
+                        <template v-else>
+                            <span v-if="!v[1]" class="information_value">--</span>
+                            <span v-if="v[1]" class="information_value">{{v[1]}}</span>
+                        </template>
+                    </div>
                 </div>
             </div>
         </div>
@@ -298,7 +348,6 @@ import EchartsLine from "./EchartsLine";
 import EchartsValidatorsLine from "./EchartsValidatorsLine";
 import EchartsValidatorsUptimeLine from "./EchartsValidatorsUpTimeLine";
 import SpinComponent from "./commonComponents/SpinComponent";
-import Services from "../util/axios";
 import Service from "../service";
 import Constants from "../constant/Constant";
 import MValidatorDetailTable from "./table/MValidatorDetailTable";
@@ -311,39 +360,13 @@ export default {
     },
     data() {
         return {
-            rateValue: "",
             transactionsDetailWrap: "personal_computer_transactions_detail",
-            currentPage: 1,
             pageSize: 5,
-            firstPercent: "",
             address: this.$route.params.param,
-            balanceValue: "",
-            depositsValue: "",
-            transactionsValue: "",
-            nameValue: "",
-            websiteValue: "",
-            commissionRateValue: "",
-            announcementValue: "",
-            bondHeightValue: "",
-            votingPowerValue: "",
-            precommitedBlocksValue: "",
-            returnsValue: "",
-            operatorValue: "",
-            TransactionsShowNoData: false,
-            PrecommitBlocksshowNoData: false,
-            transactionsCount: 0,
-            flValidator: false,
             showLoading: false,
             informationValidatorsLine: {},
             informationUptimeLine: {},
-            txTabName: "Transfers",
-            currentTxTabName: "",
-            withdrawAddress: "",
-            flShowValidatorJailed: false,
-            flShowValidatorCandidate: false,
             flActiveValidator: true,
-            flShowProfileLogo: false,
-            validatorStatusColor: "#3598db",
             tabVotingPower: [
                 {
                     title: "14days",
@@ -476,6 +499,8 @@ export default {
             );
         }
         this.getValidatorsInfo();
+        this.getValidatorWithdrawAddr();
+        this.getValidatorRewards();
         this.getDelegations();
         this.getUnbondingDelegations();
         this.getRedelegations();
@@ -487,19 +512,6 @@ export default {
         this.getGovernance();
         this.getValidatorHistory("14days");
         this.getValidatorUptimeHistory("24hours");
-        // if (
-        //     this.$route.params.param.substring(0, 3) ===
-        //     this.$Crypto.config.iris.bech32.valAddr
-        // ) {
-        // this.getAddressInformation(this.$route.params.param);
-        // this.getTransactionsList();
-        // this.getProfileInformation();
-        // this.getCurrentTenureInformation();
-        // } else {
-        // this.getAddressInformation(this.$route.params.param);
-        // this.getTransactionsList();
-        // this.getProfileInformation();
-        // }
     },
     methods: {
         isMobileFunc(isMobile) {
@@ -514,6 +526,42 @@ export default {
             return page => {
                 this[key](page);
             };
+        },
+        getValidatorWithdrawAddr() {
+            Service.commonInterface(
+                {
+                    validatorWithdrawAddr: {
+                        validatorAddr: this.$route.params.param
+                    }
+                },
+                data => {
+                    try {
+                        if (data) {
+                            console.log(data);
+                        }
+                    } catch (e) {}
+                }
+            );
+        },
+        getValidatorRewards() {
+            Service.commonInterface(
+                {
+                    validatorRewards: {
+                        validatorAddr: this.$route.params.param
+                    }
+                },
+                data => {
+                    try {
+                        if (data) {
+                            if (Array.isArray(data) && data[0]) {
+                                this.validatorInfo[
+                                    "Rewards"
+                                ] = this.formatAmount(data);
+                            }
+                        }
+                    } catch (e) {}
+                }
+            );
         },
         getValidatorsInfo() {
             Service.commonInterface(
@@ -593,9 +641,6 @@ export default {
                             ] = `${Tools.formatDecimalNumberToFixedNumber(
                                 Number(data.commission_max_rate) * 100
                             )} %`;
-                            this.validatorInfo["Rewards"] = this.formatAmount(
-                                data.reward
-                            );
                             this.validatorInfo[
                                 "Max Change Rate"
                             ] = `${Tools.formatDecimalNumberToFixedNumber(
@@ -612,7 +657,6 @@ export default {
                             if (data.description) {
                                 this.validatorProfile["Website"] =
                                     data.description.website;
-
                                 this.validatorProfile["Identity"] =
                                     data.description.identity;
 
@@ -852,6 +896,9 @@ export default {
                             if (Array.isArray(data.Data)) {
                                 for (let it of data.Data) {
                                     it.Tx_Hash = it.Hash;
+                                    it.Self_Bonded = this.formatAmount(
+                                        it.SelfBond
+                                    );
                                 }
                                 this.txTableList.declarations.items = Tools.formatTxList(
                                     data.Data,
@@ -928,179 +975,6 @@ export default {
             }
             return amount;
         },
-        getAddressInformation(address) {
-            this.address = address;
-            let url = `/api/account/${this.$route.params.param}`;
-            Services.http(url)
-                .then(result => {
-                    let Amount = "--";
-                    if (result) {
-                        if (
-                            result.amount &&
-                            result.amount instanceof Array &&
-                            result.amount[0].denom === Constants.Denom.IRISATTO
-                        ) {
-                            result.amount[0].amount = Tools.formatNumber(
-                                result.amount[0].amount
-                            );
-                            Amount = result.amount
-                                .map(
-                                    listItem =>
-                                        `${Tools.formatPriceToFixed(
-                                            listItem.amount
-                                        )} ${Tools.formatDenom(
-                                            listItem.denom
-                                        ).toUpperCase()}`
-                                )
-                                .join(",");
-                        } else if (
-                            result.amount &&
-                            result.amount instanceof Array &&
-                            result.amount[0].denom === Constants.Denom.IRIS
-                        ) {
-                            Amount = result.amount
-                                .map(
-                                    listItem =>
-                                        `${Tools.formatPriceToFixed(
-                                            listItem.amount
-                                        )} ${Tools.formatDenom(
-                                            listItem.denom
-                                        ).toUpperCase()}`
-                                )
-                                .join(",");
-                        } else if (
-                            result.amount &&
-                            Object.keys(result.amount).includes("amount") &&
-                            Object.keys(result.amount).includes("denom") &&
-                            result.amount.denom === Constants.Denom.IRISATTO
-                        ) {
-                            Amount = `${Tools.formatPriceToFixed(
-                                Tools.formatNumber(result.amount)
-                            )} ${result.denom.toUpperCase()}`;
-                        } else if (
-                            result.amount &&
-                            Object.keys(result.amount).includes("amount") &&
-                            Object.keys(result.amount).includes("denom") &&
-                            result.amount.denom === Constants.Denom.IRIS
-                        ) {
-                            Amount = `${Tools.formatPriceToFixed(
-                                result.amount
-                            )} ${result.denom.toUpperCase()}`;
-                        } else {
-                            Amount = "";
-                        }
-                    }
-                    this.flShowProfileLogo = result && result.isProfiler;
-                    if (result && result.deposits) {
-                        let deposits = Tools.formatToken(result.deposits);
-                        this.depositsValue =
-                            result.deposits.amount &&
-                            result.deposits.amount !== 0 &&
-                            result.deposits.amount !== ""
-                                ? `${Tools.formatPriceToFixed(
-                                      deposits.amount
-                                  )} ${deposits.denom}`
-                                : "";
-                    }
-                    this.withdrawAddress =
-                        result && result.withdrawAddress
-                            ? result.withdrawAddress
-                            : "";
-                    this.balanceValue = Amount;
-                })
-                .catch(e => {});
-        },
-        getProfileInformation() {
-            let url = `/api/stake/candidate/${this.$route.params.param}`;
-            Services.http(url)
-                .then(result => {
-                    if (result) {
-                        let validator = result.validator;
-                        this.flValidator = true;
-                        if (validator.jailed === true) {
-                            this.flActiveValidator = false;
-                            this.flShowValidatorJailed = true;
-                            this.validatorStatusColor = "#f00";
-                        } else {
-                            if (
-                                validator.status === "Unbonded" ||
-                                validator.status === "Unbonding"
-                            ) {
-                                this.flShowValidatorCandidate = true;
-                                this.validatorStatusColor = "#45B035";
-                                this.flActiveValidator = false;
-                            } else if (validator.status === "Bonded") {
-                                this.bondHeightValue = validator.bond_height;
-                                this.votingPowerValue = validator.voting_power;
-                            }
-                        }
-                        this.rateValue = validator.rate
-                            ? `${Tools.formatRate(validator.rate.toString())}%`
-                            : "";
-                        this.validatorProfile["Identity"] =
-                            validator.description &&
-                            validator.description.identity
-                                ? validator.description.identity
-                                : "";
-                        this.nameValue =
-                            validator.description &&
-                            validator.description.moniker
-                                ? validator.description.moniker
-                                : "";
-                        this.validatorProfile[
-                            "Consensus Pubkey"
-                        ] = validator.pub_key ? validator.pub_key : "";
-                        this.validatorProfile["Website"] =
-                            validator.description &&
-                            validator.description.website
-                                ? validator.description.website
-                                : "";
-                        this.validatorProfile["Details"] =
-                            validator.description &&
-                            validator.description.details
-                                ? validator.description.details
-                                : "";
-                        this.commissionRateValue = "";
-                        this.announcementValue = "";
-                        this.validatorProfile["Owner Address"] =
-                            validator.owner;
-                    } else {
-                        this.flValidator = false;
-                        this.flActiveValidator = false;
-                    }
-                })
-                .catch(err => {
-                    this.flActiveValidator = false;
-                });
-        },
-        getCurrentTenureInformation() {
-            let url = `/api/stake/candidate/${this.$route.params.param}/status`;
-            Services.http(url)
-                .then(data => {
-                    if (data) {
-                        this.precommitedBlocksValue = data.precommit_cnt
-                            ? data.precommit_cnt
-                            : "";
-                        this.returnsValue = "";
-                        this.firstPercent = data.up_time
-                            ? `${data.up_time}%`
-                            : "";
-                    }
-                })
-                .catch(err => {});
-        },
-        getTransactionsList() {
-            let url = `/api/txsByAddress/${this.$route.params.param}/1/30`;
-            Services.http(url)
-                .then(data => {
-                    if (data) {
-                        this.transactionsCount = data.Count;
-                        this.transactionsValue = data.Count;
-                        this.TransactionsShowNoData = true;
-                    }
-                })
-                .catch(e => {});
-        },
         getValidatorHistory(tabTime, index) {
             if (index !== undefined) {
                 for (var i = 0; i < this.tabVotingPower.length; i++) {
@@ -1108,47 +982,55 @@ export default {
                     this.tabVotingPower[index].active = true;
                 }
             }
-            let url;
+            let url, params;
             if (tabTime == "14days") {
-                url = `/api/stake/candidate/${
-                    this.$route.params.param
-                }/power/week`;
-            } else if (tabTime == "30days") {
-                url = `/api/stake/candidate/${
-                    this.$route.params.param
-                }/power/month`;
-            } else if (tabTime == "60days") {
-                url = `/api/stake/candidate/${
-                    this.$route.params.param
-                }/power/months`;
-            }
-            Services.http(url).then(validatorVotingPowerList => {
-                if (validatorVotingPowerList) {
-                    let seriesData = [],
-                        noDatayAxisDefaultMaxByValidators;
-                    let maxPowerValue = 0;
-                    validatorVotingPowerList.forEach(item => {
-                        if (item.power > maxPowerValue) {
-                            maxPowerValue = item.power;
-                        }
-                        if (item.power == 0) {
-                            item.power = "";
-                        }
-                        let obj = [];
-                        obj[0] = Tools.conversionTimeToUTCByValidatorsLine(
-                            item.time
-                        );
-                        obj[1] = item.power;
-                        seriesData.push(obj);
-                    });
-                    if (maxPowerValue < 100) {
-                        noDatayAxisDefaultMaxByValidators = "100";
+                params = {
+                    addressStakeCandidateWeek: {
+                        address: this.$route.params.param
                     }
-                    this.informationValidatorsLine = {
-                        seriesData,
-                        noDatayAxisDefaultMaxByValidators
-                    };
-                }
+                };
+            } else if (tabTime == "30days") {
+                params = {
+                    addressStakeCandidateMonth: {
+                        address: this.$route.params.param
+                    }
+                };
+            } else if (tabTime == "60days") {
+                params = {
+                    addressStakeCandidateMonths: {
+                        address: this.$route.params.param
+                    }
+                };
+            }
+            Service.commonInterface(params, validatorVotingPowerList => {
+                try {
+                    if (validatorVotingPowerList) {
+                        let seriesData = [],
+                            noDatayAxisDefaultMaxByValidators;
+                        let maxPowerValue = 0;
+                        validatorVotingPowerList.forEach(item => {
+                            if (item.power > maxPowerValue) {
+                                maxPowerValue = item.power;
+                            }
+                            if (item.power == 0) {
+                                item.power = "";
+                            }
+                            let obj = [];
+                            obj[0] = Tools.conversionTimeToUTCByValidatorsLine(
+                                item.time
+                            );
+                            obj[1] = item.power;
+                            seriesData.push(obj);
+                        });
+                        if (maxPowerValue < 100) {
+                            noDatayAxisDefaultMaxByValidators = "100";
+                        }
+                        this.informationValidatorsLine = {
+                            seriesData,
+                            noDatayAxisDefaultMaxByValidators
+                        };
+                    }
+                } catch (e) {}
             });
         },
         getValidatorUptimeHistory(tabTime, index) {
@@ -1158,22 +1040,29 @@ export default {
                     this.tabUptime[index].active = true;
                 }
             }
-            let url;
+
+            let url, params;
             if (tabTime == "24hours") {
-                url = `/api/stake/candidate/${
-                    this.$route.params.param
-                }/uptime/hour `;
+                params = {
+                    addressStakeCandidateUptimeHour: {
+                        address: this.$route.params.param
+                    }
+                };
             } else if (tabTime == "14days") {
-                url = `/api/stake/candidate/${
-                    this.$route.params.param
-                }/uptime/week `;
+                params = {
+                    addressStakeCandidateUptimeWeek: {
+                        address: this.$route.params.param
+                    }
+                };
             } else if (tabTime == "30days") {
-                url = `/api/stake/candidate/${
-                    this.$route.params.param
-                }/uptime/month `;
+                params = {
+                    addressStakeCandidateUptimeMonth: {
+                        address: this.$route.params.param
+                    }
+                };
             }
-            Services.http(url)
-                .then(data => {
+            Service.commonInterface(params, data => {
+                try {
                     if (data) {
                         data.forEach(item => {
                             let notValidatorTag = -1;
@@ -1428,8 +1317,8 @@ export default {
                             noDatayAxisDefaultMax
                         };
                     }
-                })
-                .catch(e => {});
+                } catch (e) {}
+            });
         },
         openUrl(url) {
             if (url) {
@@ -1492,29 +1381,31 @@ export default {
     padding: 0.2rem 0.2rem 0.06rem;
     display: flex;
     flex-wrap: wrap;
-    .information_props_wrap {
+    & > div {
         width: 50%;
-        font-size: 14px;
-        line-height: 20px;
-        margin-bottom: 12px;
-        flex: 0 0 50%;
-        display: flex;
-        justify-content: space-between;
-        .information_props {
-            color: #22252a;
-        }
-        .information_value {
-            color: #a2a2ae;
-            width: calc(100% - 1.7rem);
-            margin-right: 0.2rem;
-            word-break: break-all;
-            word-wrap: break-word;
-        }
-        .skip_route {
-            a,
-            span {
-                cursor: pointer;
-                color: #3598db !important;
+        .information_props_wrap {
+            font-size: 14px;
+            line-height: 20px;
+            margin-bottom: 12px;
+            flex: 0 0 50%;
+            display: flex;
+            justify-content: space-between;
+            .information_props {
+                color: #22252a;
+            }
+            .information_value {
+                color: #a2a2ae;
+                width: calc(100% - 1.7rem);
+                margin-right: 0.2rem;
+                word-break: break-all;
+                word-wrap: break-word;
+            }
+            .skip_route {
+                a,
+                span {
+                    cursor: pointer;
+                    color: #3598db !important;
+                }
             }
         }
     }
@@ -1592,8 +1483,10 @@ export default {
     }
 }
 .mobile_transactions_detail_wrap {
-    .information_props_wrap {
-        flex: 0 0 100%;
+    .validator_detail_information_wrap {
+        & > div {
+            flex: 0 0 100%;
+        }
     }
     & > .second_table_container:nth-child(2n) {
         margin-left: 0px;

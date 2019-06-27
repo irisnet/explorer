@@ -29,6 +29,8 @@ const urlApi = {
   validatorVote: '/api/stake/validators/{validatorAddr}/vote?page={currentPage}&size={pageSize}',
   validatorDepositorTxs: '/api/stake/validators/{validatorAddr}/depositor_txs?page={currentPage}&size={pageSize}',
   validatorsInfo: '/api/stake/validators/{address}',
+  validatorWithdrawAddr: '/api/stake/validators/{validatorAddr}/withdraw-addr',
+  validatorRewards: '/api/stake/validators/{validatorAddr}/rewards',
   //header
   headerTx: '/api/tx/{searchValue}',
   headerSearchAccount: '/api/account/{searchValue}',

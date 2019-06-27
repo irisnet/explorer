@@ -34,6 +34,29 @@
                 </div>
                 <span class="no_skip" v-show="(/^[0]\d*$/).test(row.From) || row.From === '--'">--</span>
             </template>
+            <template slot="OperatorAddr" slot-scope="{ row }">
+                <span v-if="(/^[1-9]\d*$/).test(row.OperatorAddr)" class="skip_route">
+                    <router-link :to="`/tx?txHash=${row.Tx_Hash}`">{{row.OperatorAddr}} Validators</router-link>
+                </span>
+                <div
+                    class="name_address"
+                    v-show="!(/^[0-9]\d*$/).test(row.OperatorAddr) && row.OperatorAddr && row.OperatorAddr !== '--'"
+                >
+                    <span
+                        class="remove_default_style"
+                        :class="row.OperatorAddr === $route.params.param?'no_skip':''"
+                    >
+                        <router-link
+                            :to="addressRoute(row.OperatorAddr)"
+                            class="link_style"
+                        >{{formatAddress(row.OperatorAddr)}}</router-link>
+                    </span>
+                </div>
+                <span
+                    class="no_skip"
+                    v-show="(/^[0]\d*$/).test(row.OperatorAddr) || row.OperatorAddr === '--'"
+                >--</span>
+            </template>
             <template slot="address" slot-scope="{ row }">
                 <span v-if="(/^[1-9]\d*$/).test(row.address)" class="skip_route">
                     <router-link :to="`/tx?txHash=${row.address}`">{{row.address}} Validators</router-link>
@@ -102,6 +125,27 @@
                         </span>
                     </div>
                 </span>
+            </template>
+            <template slot="Moniker" slot-scope="{ row }">
+                <span class="skip_route" style="display: flex" v-if="row.Moniker">
+                    <div class="name_address">
+                        <span
+                            class="remove_default_style"
+                            :class="row.OperatorAddr === $route.params.param?'no_skip':''"
+                        >
+                            <router-link
+                                :to="addressRoute(row.OperatorAddr)"
+                                class="link_style justify"
+                            >{{row.Moniker}}</router-link>
+                        </span>
+                    </div>
+                </span>
+            </template>
+            <template slot-scope="{ row }" slot="Proposal_ID">
+                <router-link
+                    :to="`/ProposalsDetail/${row.Proposal_ID}`"
+                    class="link_style"
+                >{{row.Proposal_ID}}</router-link>
             </template>
         </m-table>
     </div>
@@ -239,11 +283,12 @@ export default {
                 },
                 {
                     title: "Operator_Address",
-                    key: "Operator_Address"
+                    slot: "OperatorAddr",
+                    tooltip: true
                 },
                 {
                     title: "Self_Bonded",
-                    slot: "Self_Bonded"
+                    key: "Self_Bonded"
                 },
                 {
                     title: "Tx_Type",
@@ -280,15 +325,15 @@ export default {
                 },
                 {
                     title: "Proposal_Type",
-                    slot: "Proposal_Type"
+                    key: "Proposal_Type"
                 },
                 {
                     title: "Proposal_ID",
-                    key: "Proposal_ID"
+                    slot: "Proposal_ID"
                 },
                 {
                     title: "Proposal_Title",
-                    slot: "Proposal_Title"
+                    key: "Proposal_Title"
                 },
                 {
                     title: "Amount",
@@ -304,7 +349,8 @@ export default {
                 },
                 {
                     title: "Tx_Signer",
-                    key: "Tx_Signer"
+                    slot: "Tx_Signer",
+                    tooltip: true
                 },
                 {
                     title: "Tx_Status",

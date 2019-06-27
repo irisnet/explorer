@@ -425,7 +425,8 @@ export default class Tools{
             'Moniker': item.Moniker ? Tools.formatString(Moniker,15,"...") : "--",
             Amount,
             'OperatorAddr': item.OperatorAddr ? item.OperatorAddr : '--',
-            'listName':'declarations'
+            'listName':'declarations',
+            'Self_Bonded': item.Self_Bonded
           }
         }else if(txType === 'stakes'){
           objList = {

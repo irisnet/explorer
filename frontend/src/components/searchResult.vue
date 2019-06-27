@@ -136,7 +136,7 @@
 									that.proposalTitle = value.title;
 									that.proposalType = value.type;
 									that.proposalStatus = value.status;
-									that.proposalTime = Tools.format2UTC(value.submit_time)
+									that.proposalTime = value.submit_time && Tools.format2UTC(value.submit_time)
 								}
 							})
 						}else {
