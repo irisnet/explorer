@@ -201,6 +201,8 @@ func (service *ValidatorService) GetDelegationsFromLcd(valAddr string, page, siz
 		}
 	}
 
+	addrArr = utils.RemoveDuplicationStrArr(addrArr)
+
 	tokenShareRatioByValidatorAddr, err := document.Validator{}.QueryTokensAndShareRatioByValidatorAddrs(addrArr)
 	if err != nil {
 		logger.Debug("QueryTokensAndShareRatioByValidatorAddrs", logger.String("err", err.Error()))
