@@ -640,7 +640,9 @@ export default {
                     try {
                         if (Array.isArray(data.items)) {
                             for (let it of data.items) {
-                                it.amount = this.formatAmount(it).split(' ')[0] + ' IRIS';
+                                it.amount =
+                                    this.formatAmount(it).split(" ")[0] +
+                                    " IRIS";
                                 let selfShares = Number(it.self_shares);
                                 it.shares = `${selfShares} (${Tools.formatDecimalNumberToFixedNumber(
                                     (selfShares / Number(it.total_shares)) * 100

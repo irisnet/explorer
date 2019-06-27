@@ -57,6 +57,23 @@
                     v-show="(/^[0]\d*$/).test(row.address) || row.From === '--'"
                 >--</span>
             </template>
+            <template slot="proposer" slot-scope="{ row }">
+                <div
+                    class="name_address"
+                    v-show="!(/^[0-9]\d*$/).test(row.proposer) && row.address && row.proposer !== '--'"
+                >
+                    <span
+                        class="remove_default_style"
+                        :class="row.proposer === $route.params.param?'no_skip':''"
+                    >
+                        <router-link
+                            :to="addressRoute(row.proposer)"
+                            class="link_style"
+                        >{{row.moniker || formatAddress(row.proposer)}}</router-link>
+                    </span>
+                    <span v-if="!row.moniker" class="address">{{row.proposer}}</span>
+                </div>
+            </template>
             <template slot="To" slot-scope="{ row }">
                 <div class="name_address" v-show="row.To && row.To !== '--'">
                     <span
@@ -366,8 +383,7 @@ export default {
                 },
                 {
                     title: "Proposer",
-                    slot: "address",
-                    tooltip: true
+                    slot: "proposer"
                 },
                 {
                     title: "Deposit",
