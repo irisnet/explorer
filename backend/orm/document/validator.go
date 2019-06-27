@@ -36,11 +36,12 @@ func (v Validator) GetValidatorStatus() string {
 		return "Active"
 	}
 
-	if v.Status != types.Bonded && v.Jailed == true {
+	if v.Status != types.Bonded && v.Jailed == false {
 		return "Candidate"
 	}
 
 	return "Jailed"
+
 }
 
 type (
