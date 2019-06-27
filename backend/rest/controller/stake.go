@@ -23,6 +23,8 @@ func RegisterStake(r *mux.Router) error {
 		registerQueryRedelegationsByValidator,
 		registerQueryVoterTxsByValidatorAddr,
 		registerQueryDepositorTxsByValidatorAddr,
+		registerQueryWithdrawAddrByValidatorAddr,
+		registerQueryRewardsByValidatorAddr,
 	}
 
 	for _, fn := range funs {
@@ -39,6 +41,28 @@ type Stake struct {
 
 var stake = Stake{
 	service.Get(service.Validator).(*service.ValidatorService),
+}
+
+func registerQueryWithdrawAddrByValidatorAddr(r *mux.Router) error {
+
+	doApi(r, types.UrlRegisterQueryWithdrawAddrByValidatorAddr, "GET", func(request model.IrisReq) interface{} {
+		stake.SetTid(request.TraceId)
+		validatorAddr := Var(request, "validatorAddr")
+
+		return stake.GetWithdrawAddrByValidatorAddr(validatorAddr)
+	})
+	return nil
+}
+
+func registerQueryRewardsByValidatorAddr(r *mux.Router) error {
+
+	doApi(r, types.UrlRegisterQueryRewardsByValidatorAddr, "GET", func(request model.IrisReq) interface{} {
+		stake.SetTid(request.TraceId)
+		validatorAddr := Var(request, "validatorAddr")
+		return stake.GetDistributionRewardsByValidatorAddr(validatorAddr)
+	})
+	return nil
+
 }
 
 func registerQueryVoterTxsByValidatorAddr(r *mux.Router) error {

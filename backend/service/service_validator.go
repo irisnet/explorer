@@ -280,6 +280,28 @@ func (service *ValidatorService) GetRedelegationsFromLcd(valAddr string, page, s
 	}
 }
 
+func (service *ValidatorService) GetWithdrawAddrByValidatorAddr(valAddr string) model.WithdrawAddr {
+
+	withdrawAddr, err := lcd.GetWithdrawAddressByValidatorAcc(utils.Convert(conf.Get().Hub.Prefix.AccAddr, valAddr))
+	if err != nil {
+		logger.Error("GetWithdrawAddressByValidatorAcc", logger.String("validator", valAddr), logger.String("err", err.Error()))
+	}
+
+	return model.WithdrawAddr{
+		Address: withdrawAddr,
+	}
+}
+
+func (service *ValidatorService) GetDistributionRewardsByValidatorAddr(valAddr string) utils.CoinsAsStr {
+
+	rewardsCoins, err := lcd.GetDistributionRewardsByValidatorAcc(utils.Convert(conf.Get().Hub.Prefix.AccAddr, valAddr))
+	if err != nil {
+		logger.Error("GetDistributionRewardsByValidatorAcc", logger.String("validator", valAddr), logger.String("err", err.Error()))
+	}
+
+	return rewardsCoins
+}
+
 func (service *ValidatorService) GetValidatorDetail(validatorAddr string) model.ValidatorForDetail {
 
 	validatorAsDoc, err := document.Validator{}.QueryValidatorDetailByOperatorAddr(validatorAddr)
@@ -295,20 +317,10 @@ func (service *ValidatorService) GetValidatorDetail(validatorAddr string) model.
 		Details:  validatorAsDoc.Description.Details,
 	}
 
-	withdrawAddr, err := lcd.GetWithdrawAddressByValidatorAcc(utils.Convert(conf.Get().Hub.Prefix.AccAddr, validatorAsDoc.OperatorAddress))
-	if err != nil {
-		logger.Error("GetWithdrawAddressByValidatorAcc", logger.String("validator", validatorAsDoc.OperatorAddress), logger.String("err", err.Error()))
-	}
-
 	jailedUntil, missedBlockCount, err := lcd.GetJailedUntilAndMissedBlocksCountByConsensusPublicKey(validatorAsDoc.ConsensusPubkey)
 
 	if err != nil {
 		logger.Error("GetJailedUntilAndMissedBlocksCountByConsensusPublicKey", logger.String("consensus", validatorAsDoc.ConsensusPubkey), logger.String("err", err.Error()))
-	}
-
-	rewardsCoins, err := lcd.GetDistributionRewardsByValidatorAcc(utils.Convert(conf.Get().Hub.Prefix.AccAddr, validatorAsDoc.OperatorAddress))
-	if err != nil {
-		logger.Error("GetDistributionRewardsByValidatorAcc", logger.String("consensus", validatorAsDoc.ConsensusPubkey), logger.String("err", err.Error()))
 	}
 
 	totalVotingPower, err := document.Validator{}.QueryTotalActiveValidatorVotingPower()
@@ -323,7 +335,6 @@ func (service *ValidatorService) GetValidatorDetail(validatorAddr string) model.
 		Status:                  validatorAsDoc.GetValidatorStatus(),
 		BondedTokens:            validatorAsDoc.Tokens,
 		SelfBonded:              validatorAsDoc.SelfBond,
-		Reward:                  rewardsCoins,
 		DelegatorShares:         validatorAsDoc.DelegatorShares,
 		DelegatorCount:          validatorAsDoc.DelegatorNum,
 		CommissionRate:          validatorAsDoc.Commission.Rate,
@@ -336,7 +347,6 @@ func (service *ValidatorService) GetValidatorDetail(validatorAddr string) model.
 		MissedBlocksCount:       missedBlockCount,
 		OperatorAddr:            validatorAsDoc.OperatorAddress,
 		OwnerAddr:               utils.Convert(conf.Get().Hub.Prefix.AccAddr, validatorAsDoc.OperatorAddress),
-		WithdrawAddr:            withdrawAddr,
 		ConsensusAddr:           validatorAsDoc.ConsensusPubkey,
 		Description:             desc,
 	}

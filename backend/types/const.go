@@ -50,6 +50,8 @@ const (
 	UrlRegisterQueryValidatorRedelegations        = "/stake/validators/{validatorAddr}/redelegations"
 	UrlRegisterQueryValidatorVoteByValidatorAddr  = "/stake/validators/{validatorAddr}/vote"
 	UrlRegisterQueryDepositorTxsByValidatorAddr   = "/stake/validators/{validatorAddr}/depositor_txs"
+	UrlRegisterQueryWithdrawAddrByValidatorAddr   = "/stake/validators/{validatorAddr}/withdraw-addr"
+	UrlRegisterQueryRewardsByValidatorAddr        = "/stake/validators/{validatorAddr}/rewards"
 
 	//Tx
 	UrlRegisterQueryTxList       = "/tx/{type}/{page}/{size}"

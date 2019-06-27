@@ -94,6 +94,18 @@ func CovertCoin(srcCoin Coin, denom string) (destCoin Coin) {
 	return
 }
 
+type CoinAsStr struct {
+	Denom  string `json:"denom"`
+	Amount string `json:"amount"`
+}
+
+func (c CoinAsStr) String() string {
+	return fmt.Sprintf(
+		`Denom: %v Amount: %v`, c.Denom, c.Amount)
+}
+
+type CoinsAsStr []CoinAsStr
+
 type Coin struct {
 	Denom  string  `json:"denom"`
 	Amount float64 `json:"amount"`

@@ -96,7 +96,7 @@ func GetWithdrawAddressByValidatorAcc(validatorAcc string) (string, error) {
 	return withdrawAddr, nil
 }
 
-func GetDistributionRewardsByValidatorAcc(validatorAcc string) (CoinsAsStr, error) {
+func GetDistributionRewardsByValidatorAcc(validatorAcc string) (utils.CoinsAsStr, error) {
 
 	url := fmt.Sprintf(UrlDistributionRewardsByValidatorAcc, conf.Get().Hub.LcdUrl, validatorAcc)
 	resAsBytes, err := utils.Get(url)

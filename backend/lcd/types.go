@@ -3,6 +3,8 @@ package lcd
 import (
 	"fmt"
 	"time"
+
+	"github.com/irisnet/explorer/backend/utils"
 )
 
 const (
@@ -462,20 +464,8 @@ type DelegationVo struct {
 	Height        string `json:"height"`
 }
 
-type CoinAsStr struct {
-	Denom  string `json:"denom"`
-	Amount string `json:"amount"`
-}
-
-func (c CoinAsStr) String() string {
-	return fmt.Sprintf(
-		`Denom: %v Amount: %v`, c.Denom, c.Amount)
-}
-
-type CoinsAsStr []CoinAsStr
-
 type DistributionRewards struct {
-	Total CoinsAsStr `json:"total"`
+	Total utils.CoinsAsStr `json:"total"`
 }
 
 type ValidatorSigningInfo struct {
