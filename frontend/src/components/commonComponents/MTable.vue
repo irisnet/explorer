@@ -121,6 +121,7 @@ export default {
     data (newVal, oldVal) {
       this.$nextTick(() => {
         this.sortData();
+        this.columnsChange = true;
         this.computedColWidth();
       });
     },
