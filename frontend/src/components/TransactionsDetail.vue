@@ -62,7 +62,7 @@
           <span class="information_value link_active_style">
             <router-link :to="`/address/1/${voter}`">{{voter}}</router-link></span>
         </div>
-        <div class="information_props_wrap" v-if="flShowTypeTransfer || flShowWithdrawAddress">
+        <div class="information_props_wrap" v-if="flShowTypeTransfer || flShowWithdrawAddress || flShowTypeBurn">
           <span class="information_props">From :</span>
           <span class="information_value link_active_style">
             <router-link :to="`/address/1/${fromValue}`">{{fromValue}}</router-link>
@@ -128,7 +128,7 @@
           <span class="information_props">Option :</span>
           <span class="information_value">{{option}}</span>
         </div>
-        <div class="information_props_wrap" v-if="flShowTypeTransfer || flShowTypeDeposit">
+        <div class="information_props_wrap" v-if="flShowTypeTransfer || flShowTypeDeposit || flShowTypeBurn">
           <span class="information_props">Amount :</span>
           <span class="information_value">{{amountValue}}</span>
         </div>
@@ -225,6 +225,7 @@
         flShowDelegatorAddress: false,
         flShowValidatorAddress: false,
         flShowReceivedRewardsValue: false,
+        flShowTypeBurn: false,
         ageValue: '',
         transactionDetailTimer: null,
       }
@@ -349,6 +350,9 @@
                 this.flShowReceivedRewardsValue = true;
                 this.flShowValidatorAddress = true;
                 this.validatorAddress = data.From ? data.From : "";
+              }else if(data.Type === 'Burn'){
+                this.flShowTypeBurn = true;
+                this.fromValue = data.From;
               }
             }
 
