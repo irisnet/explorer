@@ -668,7 +668,13 @@ export default {
                     try {
                         if (Array.isArray(data.items)) {
                             for (let it of data.items) {
-                                it.amount = this.formatAmount(it);
+                                let u = it.amount.match(/[a-zA-Z]+/g, "")[0];
+                                it.amount = u
+                                    ? `${it.amount.replace(
+                                          u,
+                                          ""
+                                      )} ${u.toUpperCase()}`
+                                    : it.amount;
                                 it.Timestamp = Tools.format2UTC(it.until);
                                 it.Block = it.block;
                             }
