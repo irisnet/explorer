@@ -422,10 +422,10 @@
                 });
 			},
 			searchValidator () {
-				Service.commonInterface({headerSearchCandidate:{searchValue:this.searchInputValue}}, () => {
+				Service.commonInterface({headerSearchCandidate:{searchValue:this.searchInputValue}}, (validatorAddress) => {
 					try {
 						if (validatorAddress) {
-              let url = this.addressRoute(validatorAddress.validator.address);
+                            let url = this.addressRoute(validatorAddress.validator.address);
 							this.$router.push(url);
 							this.clearSearchInputValue();
 						} else {
