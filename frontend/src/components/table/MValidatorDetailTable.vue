@@ -11,7 +11,7 @@
             </template>
             <template slot="Block" slot-scope="{ row }">
                 <span class="skip_route">
-                    <router-link :to="`/block/${row.Block}`">{{row.Block}}</router-link>
+                    <router-link :to="`/block/${row.Block || row.block}`">{{row.Block || row.block}}</router-link>
                 </span>
             </template>
             <template slot="From" slot-scope="{ row }">
@@ -315,7 +315,7 @@ export default {
                 },
                 {
                     title: "Block",
-                    slot: "block"
+                    slot: "Block"
                 }
             ],
             unbondingDelegations: [
@@ -331,7 +331,7 @@ export default {
                 },
                 {
                     title: "Block",
-                    slot: "block"
+                    slot: "Block"
                 },
                 {
                     title: "Timestamp",
@@ -351,11 +351,12 @@ export default {
                 },
                 {
                     title: "To",
-                    key: "To"
+                    slot: "To",
+                    tooltip: true
                 },
                 {
                     title: "Block",
-                    key: "block"
+                    slot: "Block"
                 }
             ],
             depositedProposals: [
@@ -389,7 +390,8 @@ export default {
                 },
                 {
                     title: "Title",
-                    key: "title"
+                    key: "title",
+                    className: "text_overflow"
                 },
                 {
                     title: "Status",
@@ -424,23 +426,25 @@ export default {
 </script>
 
 <style lang="scss">
-.validator_detail_table {
-    .m-table-header {
-        width: 100%;
+.personal_computer_transactions_detail_wrap {
+    .validator_detail_table {
+        .m-table-header {
+            width: 100%;
+            table.m_table {
+                width: auto;
+            }
+        }
         table.m_table {
-            width: auto;
+            min-width: 100%;
         }
     }
-    table.m_table {
-        min-width: 100%;
-    }
-}
-.delegations_two_container {
-    .m-table-header {
-        width: 6.3rem;
-    }
-    table.m_table {
-        min-width: 6.3rem;
+    .delegations_two_container {
+        .m-table-header {
+            width: 6.3rem;
+        }
+        table.m_table {
+            min-width: 6.3rem;
+        }
     }
 }
 </style>

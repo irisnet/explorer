@@ -1,8 +1,18 @@
 <template>
     <div class="transactions_detail_wrap">
         <div :class="[transactionsDetailWrap, 'validator_title']">
-            <span class="title">HashQuark</span>
-            <div class="status_btn">Active</div>
+            <span class="title">{{validatorName}}</span>
+            <div class="status_btn" v-if="validatorStatus === 'Active'">Active</div>
+            <div
+                class="status_btn"
+                style="background-color: #3DA87E;"
+                v-if="validatorStatus === 'Candidate'"
+            >Candidates</div>
+            <div
+                class="status_btn"
+                style="background-color: #FA7373;"
+                v-if="validatorStatus === 'Jailed'"
+            >Jailed</div>
         </div>
         <div :class="transactionsDetailWrap">
             <div class="validator_detail_information_wrap">
@@ -12,7 +22,12 @@
                     :key="v[0]"
                 >
                     <span class="information_props">{{v[0]}}:</span>
-                    <span class="information_value">{{v[1]}}</span>
+                    <template v-if="v[1]">
+                        <span class="information_value">{{v[1]}}</span>
+                    </template>
+                    <template v-else>
+                        <span class="information_value">--</span>
+                    </template>
                 </div>
             </div>
         </div>
@@ -91,39 +106,49 @@
                 </div>
             </div>
         </div>
-        <div
-            :class="[transactionsDetailWrap, txTableList.delegations.total && txTableList.unbondingDelegations.total ? 'delegations_two_container': '']"
-            class="delegations_container"
-        >
-            <div v-if="txTableList.delegations.total > 0">
-                <p class="validator_information_content_title">Delegations</p>
-                <m-validator-detail-table
-                    :items="txTableList.delegations.items"
-                    listName="delegations"
-                    :width="txTableList.delegations.total && txTableList.unbondingDelegations.total ? 630 : 1280"
-                ></m-validator-detail-table>
-                <m-pagination
-                    v-if="txTableList.delegations.total > pageSize"
-                    :page-size="pageSize"
-                    :total="txTableList.delegations.total"
-                    :page-change="pageChange('getDelegations')"
-                ></m-pagination>
-            </div>
-            <div v-if="txTableList.unbondingDelegations.total > 0">
-                <p class="validator_information_content_title">Unbonding Delegations</p>
-                <m-validator-detail-table
-                    :items="txTableList.unbondingDelegations.items"
-                    listName="unbondingDelegations"
-                    :width="txTableList.delegations.total && txTableList.unbondingDelegations.total ? 630 : 1280"
-                ></m-validator-detail-table>
-                <m-pagination
-                    v-if="txTableList.unbondingDelegations.total > pageSize"
-                    :page-size="pageSize"
-                    :total="txTableList.unbondingDelegations.total"
-                    :page-change="pageChange('getUnbondingDelegations')"
-                ></m-pagination>
+        <div :class="transactionsDetailWrap">
+            <div
+                :class="[!$store.state.isMobile && txTableList.delegations.total && txTableList.unbondingDelegations.total ? 'delegations_two_container': '']"
+                class="delegations_container"
+            >
+                <div v-if="txTableList.delegations.total > 0">
+                    <p class="validator_information_content_title">Delegations</p>
+                    <div class="delegations_table_container">
+                        <m-validator-detail-table
+                            :items="txTableList.delegations.items"
+                            listName="delegations"
+                            :width="txTableList.delegations.total && txTableList.unbondingDelegations.total ? 630 : 1280"
+                        ></m-validator-detail-table>
+                    </div>
+                    <m-pagination
+                        v-if="txTableList.delegations.total > pageSize"
+                        :page-size="pageSize"
+                        :total="txTableList.delegations.total"
+                        :page-change="pageChange('getDelegations')"
+                    ></m-pagination>
+                </div>
+                <div
+                    v-if="txTableList.unbondingDelegations.total > 0"
+                    class="second_table_container"
+                >
+                    <p class="validator_information_content_title">Unbonding Delegations</p>
+                    <div class="delegations_table_container">
+                        <m-validator-detail-table
+                            :items="txTableList.unbondingDelegations.items"
+                            listName="unbondingDelegations"
+                            :width="txTableList.delegations.total && txTableList.unbondingDelegations.total ? 630 : 1280"
+                        ></m-validator-detail-table>
+                    </div>
+                    <m-pagination
+                        v-if="txTableList.unbondingDelegations.total > pageSize"
+                        :page-size="pageSize"
+                        :total="txTableList.unbondingDelegations.total"
+                        :page-change="pageChange('getUnbondingDelegations')"
+                    ></m-pagination>
+                </div>
             </div>
         </div>
+
         <div
             :class="transactionsDetailWrap"
             class="validator_table_container"
@@ -145,39 +170,46 @@
                 :page-change="pageChange('getRedelegations')"
             ></m-pagination>
         </div>
-        <div
-            :class="[transactionsDetailWrap, txTableList.depositedProposals.total && txTableList.votedProposals.total ? 'delegations_two_container': '']"
-            class="delegations_container"
-        >
-            <div v-if="txTableList.depositedProposals.total > 0">
-                <p class="validator_information_content_title">Deposited Proposals</p>
-                <m-validator-detail-table
-                    :items="txTableList.depositedProposals.items"
-                    listName="depositedProposals"
-                    :width="txTableList.depositedProposals.total && txTableList.votedProposals.total ? 630 : 1280"
-                ></m-validator-detail-table>
-                <m-pagination
-                    v-if="txTableList.depositedProposals.total > pageSize"
-                    :page-size="pageSize"
-                    :total="txTableList.depositedProposals.total"
-                    :page-change="pageChange('getDepositedProposals')"
-                ></m-pagination>
-            </div>
-            <div v-if="txTableList.votedProposals.total > 0">
-                <p class="validator_information_content_title">Voted Proposals</p>
-                <m-validator-detail-table
-                    :items="txTableList.votedProposals.items"
-                    listName="votedProposals"
-                    :width="txTableList.depositedProposals.total && txTableList.votedProposals.total ? 630 : 1280"
-                ></m-validator-detail-table>
-                <m-pagination
-                    v-if="txTableList.votedProposals.total > pageSize"
-                    :page-size="pageSize"
-                    :total="txTableList.votedProposals.total"
-                    :page-change="pageChange('getVotedProposals')"
-                ></m-pagination>
+        <div :class="transactionsDetailWrap">
+            <div
+                :class="[!$store.state.isMobile && txTableList.depositedProposals.total && txTableList.votedProposals.total ? 'delegations_two_container': '']"
+                class="delegations_container"
+            >
+                <div v-if="txTableList.depositedProposals.total > 0">
+                    <p class="validator_information_content_title">Deposited Proposals</p>
+                    <div class="delegations_table_container">
+                        <m-validator-detail-table
+                            :items="txTableList.depositedProposals.items"
+                            listName="depositedProposals"
+                            :width="txTableList.depositedProposals.total && txTableList.votedProposals.total ? 630 : 1280"
+                        ></m-validator-detail-table>
+                    </div>
+                    <m-pagination
+                        v-if="txTableList.depositedProposals.total > pageSize"
+                        :page-size="pageSize"
+                        :total="txTableList.depositedProposals.total"
+                        :page-change="pageChange('getDepositedProposals')"
+                    ></m-pagination>
+                </div>
+                <div v-if="txTableList.votedProposals.total > 0" class="second_table_container">
+                    <p class="validator_information_content_title">Voted Proposals</p>
+                    <div class="delegations_table_container">
+                        <m-validator-detail-table
+                            :items="txTableList.votedProposals.items"
+                            listName="votedProposals"
+                            :width="txTableList.depositedProposals.total && txTableList.votedProposals.total ? 630 : 1280"
+                        ></m-validator-detail-table>
+                    </div>
+                    <m-pagination
+                        v-if="txTableList.votedProposals.total > pageSize"
+                        :page-size="pageSize"
+                        :total="txTableList.votedProposals.total"
+                        :page-change="pageChange('getVotedProposals')"
+                    ></m-pagination>
+                </div>
             </div>
         </div>
+
         <div
             :class="transactionsDetailWrap"
             class="validator_table_container"
@@ -341,22 +373,23 @@ export default {
                 }
             ],
             validatorInfo: {
-                "Voting Power": "11",
-                "Bond Height": "22",
-                "Bonded Tokens": "33",
-                "Unbonding Height": "44",
-                "Jailed Until": "55",
-                "Delegator Bonded": "66",
-                "Missed Blocks": "33",
-                Delegators: "1",
-                "Commission Rate": "33",
-                "Delegator Shares": "22",
-                "Max Rate": "11",
-                Rewards: "22",
-                "Max Change Rate": "11"
+                "Voting Power": "",
+                "Bond Height": "",
+                "Bonded Tokens": "",
+                "Unbonding Height": "",
+                "Self Bonded": "",
+                "Jailed Until": "",
+                "Delegator Bonded": "",
+                "Missed Blocks": "",
+                Delegators: "",
+                "Commission Rate": "",
+                "Delegator Shares": "",
+                "Max Rate": "",
+                Rewards: "",
+                "Max Change Rate": ""
             },
             validatorProfile: {
-                "Validator Profile": "",
+                "Operator Address": "",
                 Website: "",
                 "Owner Address": "",
                 Identity: "",
@@ -416,7 +449,9 @@ export default {
                     currentPage: 1,
                     total: 0
                 }
-            }
+            },
+            validatorName: "",
+            validatorStatus: ""
         };
     },
     components: {
@@ -440,31 +475,31 @@ export default {
                 Constants.ENVCONFIG.TESTNET
             );
         }
+        this.getValidatorsInfo();
         this.getDelegations();
         this.getUnbondingDelegations();
         this.getRedelegations();
         this.getDepositedProposals();
         this.getVotedProposals();
 
-        this.getTransfers();
         this.getStakes();
         this.getDeclarations();
         this.getGovernance();
-        if (
-            this.$route.params.param.substring(0, 3) ===
-            this.$Crypto.config.iris.bech32.valAddr
-        ) {
-            this.getAddressInformation(this.$route.params.param);
-            this.getTransactionsList();
-            this.getProfileInformation();
-            this.getCurrentTenureInformation();
-            this.getValidatorHistory("14days");
-            this.getValidatorUptimeHistory("24hours");
-        } else {
-            this.getAddressInformation(this.$route.params.param);
-            this.getTransactionsList();
-            this.getProfileInformation();
-        }
+        this.getValidatorHistory("14days");
+        this.getValidatorUptimeHistory("24hours");
+        // if (
+        //     this.$route.params.param.substring(0, 3) ===
+        //     this.$Crypto.config.iris.bech32.valAddr
+        // ) {
+        // this.getAddressInformation(this.$route.params.param);
+        // this.getTransactionsList();
+        // this.getProfileInformation();
+        // this.getCurrentTenureInformation();
+        // } else {
+        // this.getAddressInformation(this.$route.params.param);
+        // this.getTransactionsList();
+        // this.getProfileInformation();
+        // }
     },
     methods: {
         isMobileFunc(isMobile) {
@@ -479,6 +514,110 @@ export default {
             return page => {
                 this[key](page);
             };
+        },
+        getValidatorsInfo() {
+            Service.commonInterface(
+                {
+                    validatorsInfo: {
+                        address: this.$route.params.param
+                    }
+                },
+                data => {
+                    try {
+                        if (data) {
+                            this.validatorStatus = data.status;
+                            this.validatorInfo["Voting Power"] =
+                                data.status === "Active"
+                                    ? `${Tools.formatDecimalNumberToFixedNumber(
+                                          (data.self_power / data.total_power) *
+                                              100
+                                      )} %`
+                                    : data.status;
+                            this.validatorInfo["Bond Height"] =
+                                data.bond_height;
+                            this.validatorInfo[
+                                "Bonded Tokens"
+                            ] = `${Tools.formatPriceToFixed(
+                                Number(data.bonded_tokens),
+                                2
+                            )} IRIS`;
+                            this.validatorInfo["Unbonding Height"] =
+                                data.unbond_height;
+                            this.validatorInfo[
+                                "Self Bonded"
+                            ] = `${Tools.formatPriceToFixed(
+                                Number(data.self_bonded),
+                                2
+                            )} IRIS`;
+                            this.validatorInfo[
+                                "Jailed Until"
+                            ] = Tools.format2UTC(data.jailed_until);
+                            let delegator_tokens =
+                                Number(data.bonded_tokens) -
+                                Number(data.self_bonded);
+                            this.validatorInfo[
+                                "Delegator Bonded"
+                            ] = `${Tools.formatPriceToFixed(
+                                Number(delegator_tokens),
+                                2
+                            )} IRIS (${Tools.formatDecimalNumberToFixedNumber(
+                                (delegator_tokens /
+                                    Number(data.bonded_tokens)) *
+                                    100
+                            )} %)`;
+                            this.validatorInfo["Missed Blocks"] =
+                                data.missed_blocks_count;
+                            this.validatorInfo["Delegators"] =
+                                data.delegator_count;
+                            this.validatorInfo[
+                                "Commission Rate"
+                            ] = `${Tools.formatDecimalNumberToFixedNumber(
+                                Number(data.commission_rate) * 100
+                            )} % (${Tools.format2UTC(data.commission_update)})`;
+                            this.validatorInfo[
+                                "Delegator Shares"
+                            ] = `${Tools.formatPriceToFixed(
+                                Number(data.delegator_shares),
+                                2
+                            )} IRIS`;
+                            this.validatorInfo[
+                                "Max Rate"
+                            ] = `${Tools.formatDecimalNumberToFixedNumber(
+                                Number(data.commission_max_rate) * 100
+                            )} %`;
+                            this.validatorInfo["Rewards"] = this.formatAmount(
+                                data.reward
+                            );
+                            this.validatorInfo[
+                                "Max Change Rate"
+                            ] = `${Tools.formatDecimalNumberToFixedNumber(
+                                Number(data.commision_max_change_rate) * 100
+                            )} %`;
+                            this.validatorProfile["Withdraw Address"] =
+                                data.withdraw_addr;
+                            this.validatorProfile["Operator Address"] =
+                                data.operator_addr;
+                            this.validatorProfile["Owner Address"] =
+                                data.owner_addr;
+                            this.validatorProfile["Consensus Pubkey"] =
+                                data.consensus_addr;
+                            if (data.description) {
+                                this.validatorProfile["Website"] =
+                                    data.description.website;
+
+                                this.validatorProfile["Identity"] =
+                                    data.description.identity;
+
+                                this.validatorProfile["Details"] =
+                                    data.description.details;
+                                this.validatorName =
+                                    data.description.moniker ||
+                                    this.$route.params.param;
+                            }
+                        }
+                    } catch (e) {}
+                }
+            );
         },
         getDelegations(page) {
             Service.commonInterface(
@@ -496,7 +635,7 @@ export default {
                                 it.amount = this.formatAmount(it);
                                 let selfShares = Number(it.self_shares);
                                 it.shares = `${selfShares} (${Tools.formatDecimalNumberToFixedNumber(
-                                    (selfShares / Number(total_shares)) * 100
+                                    (selfShares / Number(it.total_shares)) * 100
                                 )}%)`;
                             }
                             this.txTableList.delegations.items = data.items;
@@ -522,13 +661,16 @@ export default {
                         if (Array.isArray(data.items)) {
                             for (let it of data.items) {
                                 it.amount = this.formatAmount(it);
-                                it.Timestamp = Tools.format2UTC(it.Timestamp);
+                                it.Timestamp = Tools.format2UTC(it.until);
+                                it.Block = it.block;
                             }
-                            this.txTableList.unbondingDelegations.items = data.items;
+                            this.txTableList.unbondingDelegations.items =
+                                data.items;
                         } else {
                             this.txTableList.unbondingDelegations.items = [];
                         }
-                        this.txTableList.unbondingDelegations.total = data.total || 0;
+                        this.txTableList.unbondingDelegations.total =
+                            data.total || 0;
                     } catch (e) {}
                 }
             );
@@ -544,12 +686,22 @@ export default {
                 },
                 data => {
                     try {
-                        if (data) {
-                            this.txTableList.redelegations.items =
-                                data.items || [];
-                            this.txTableList.redelegations.total =
-                                data.total || 0;
+                        if (Array.isArray(data.items)) {
+                            for (let it of data.items) {
+                                let u = it.amount.match(/[a-zA-Z]+/g, "")[0];
+                                it.amount = u
+                                    ? `${it.amount.replace(
+                                          u,
+                                          ""
+                                      )} ${u.toUpperCase()}`
+                                    : it.amount;
+                                it.To = it.to;
+                            }
+                            this.txTableList.redelegations.items = data.items;
+                        } else {
+                            this.txTableList.redelegations.items = [];
                         }
+                        this.txTableList.redelegations.total = data.total || 0;
                     } catch (e) {}
                 }
             );
@@ -1285,6 +1437,7 @@ export default {
     display: flex;
     align-items: center;
     margin-top: 0.3rem;
+    flex-direction: row !important;
     .title {
         font-size: 22px;
         color: #22252a;
@@ -1371,7 +1524,8 @@ export default {
         flex: 1;
         display: flex;
         flex-direction: column;
-        .validator_detail_table + div {
+        .delegations_table_container + div {
+            float: right;
             align-self: flex-end;
             margin-top: 0.2rem;
         }
@@ -1381,9 +1535,11 @@ export default {
     }
 }
 .delegations_two_container {
+    display: block;
     & > div {
-        flex: 0 1 50%;
-        width: 50%;
+        display: inline-block;
+        width: calc(50% - 0.1rem);
+        vertical-align: top;
     }
 }
 .line_tab_content_new {
@@ -1415,6 +1571,45 @@ export default {
         background-color: #3598db;
         border-color: #3598db;
         color: #ffffff;
+    }
+}
+.mobile_transactions_detail_wrap {
+    .information_props_wrap {
+        flex: 0 0 100%;
+    }
+    & > .second_table_container:nth-child(2n) {
+        margin-left: 0px;
+    }
+    .delegations_container {
+        flex-flow: column;
+        & > div {
+            width: 100%;
+        }
+        .delegations_table_container {
+            width: 100%;
+            overflow-x: auto;
+        }
+        .second_table_container {
+            margin-left: 0;
+        }
+    }
+}
+.personal_computer_transactions_detail_wrap {
+    .delegations_container {
+        overflow: hidden;
+        .delegations_table_container {
+            overflow-x: auto;
+        }
+    }
+}
+@media screen and (min-width: 1280px) {
+    .personal_computer_transactions_detail_wrap {
+        .delegations_container {
+            overflow: visible !important;
+            .delegations_table_container {
+                overflow: visible !important;
+            }
+        }
     }
 }
 </style>

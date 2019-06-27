@@ -368,6 +368,14 @@ table.m_table {
     }
   }
 }
+.text_overflow { //表格文字太多，超范围隐藏class
+  & > div {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
 .override_mtable {
   .m-table-header {
     position: fixed;

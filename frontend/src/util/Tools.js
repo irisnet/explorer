@@ -361,7 +361,10 @@ export default class Tools{
    * return String
    */
   static formatValidatorAddress(address){
-    return `${address.substring(0,3)}...${address.substring(address.length - 8)}`
+    if (address) {
+        return `${address.substring(0,3)}...${address.substring(address.length - 8)}`
+    }
+    return '';
   }
   /**
    * format txHash
@@ -512,10 +515,13 @@ export default class Tools{
   }
 
   static addressRoute(address) {
-    if (address.substring(0, 3) === this.$Crypto.config.iris.bech32.valAddr || address.substring(1, 3) === 'va') {
-      return `/validators/${address}`;
-    } else {
-      return `/address/${address}`;
+    if(address) {
+        if (address.substring(0, 3) === this.$Crypto.config.iris.bech32.valAddr || address.substring(1, 3) === 'va') {
+            return `/validators/${address}`;
+        } else {
+            return `/address/${address}`;
+        }
     }
+    return '';
   }
 }
