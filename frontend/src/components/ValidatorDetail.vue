@@ -596,7 +596,11 @@ export default {
                             ] = `${Tools.formatPriceToFixed(
                                 Number(data.self_bonded),
                                 2
-                            )} ${Constants.Denom.IRIS.toUpperCase()}`;
+                            )} ${Constants.Denom.IRIS.toUpperCase()} (${Tools.formatDecimalNumberToFixedNumber(
+                                (data.self_bonded /
+                                    Number(data.bonded_tokens)) *
+                                    100
+                            )} %)`;
                             this.validatorInfo["Jailed Until"] = new Date(
                                 data.jailed_until
                             ).getTime()
