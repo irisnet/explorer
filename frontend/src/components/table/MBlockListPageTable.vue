@@ -9,7 +9,7 @@
       </template>
       <template slot='proposer' slot-scope='{ row }'>
         <span class="skip_route">
-          <router-link v-if="row.moniker" :to="`/address/1/${row.proposerAddr}`">{{row.moniker}}</router-link>
+          <router-link v-if="row.moniker" :to="addressRoute(row.proposerAddr)">{{row.moniker}}</router-link>
           <span v-if="!row.moniker">--</span>
         </span>
       </template>

@@ -5,6 +5,111 @@ import (
 	"time"
 )
 
+type ValidatorForDetail struct {
+	TotalPower              int64       `json:"total_power"`
+	SelfPower               int64       `json:"self_power"`
+	Status                  string      `json:"status"`
+	BondedTokens            string      `json:"bonded_tokens"`
+	SelfBonded              string      `json:"self_bonded"`
+	DelegatorShares         string      `json:"delegator_shares"`
+	DelegatorCount          int         `json:"delegator_count"`
+	CommissionRate          string      `json:"commission_rate"`
+	CommissionUpdate        string      `json:"commission_update"`
+	CommissionMaxRate       string      `json:"commission_max_rate"`
+	CommissionMaxChangeRate string      `json:"commision_max_change_rate"`
+	BondHeight              string      `json:"bond_height"`
+	UnbondingHeight         string      `json:"unbond_height"`
+	JailedUntil             string      `json:"jailed_until"`
+	MissedBlocksCount       string      `json:"missed_blocks_count"`
+	OperatorAddr            string      `json:"operator_addr"`
+	OwnerAddr               string      `json:"owner_addr"`
+	ConsensusAddr           string      `json:"consensus_addr"`
+	Description             Description `json:"description"`
+}
+
+type WithdrawAddr struct {
+	Address string `json:"address"`
+}
+
+type RedelegationPage struct {
+	Total int            `json:"total"`
+	Items []Redelegation `json:"items"`
+}
+
+func (re RedelegationPage) String() string {
+	return fmt.Sprintf(`
+Total  : %v
+Items  : %v
+		`, re.Total, re.Items)
+}
+
+type Redelegation struct {
+	Address string `json:"address"`
+	Amount  string `json:"amount"`
+	To      string `json:"to"`
+	Block   string `json:"block"`
+}
+
+type DelegationsPage struct {
+	Total int          `json:"total"`
+	Items []Delegation `json:"items"`
+}
+
+func (d DelegationsPage) String() string {
+	return fmt.Sprintf(`
+total: %v
+items:
+%v
+		`, d.Total, d.Items)
+}
+
+type UnbondingDelegationsPage struct {
+	Total int                    `json:"total"`
+	Items []UnbondingDelegations `json:"items"`
+}
+
+func (un UnbondingDelegationsPage) String() string {
+	return fmt.Sprintf(`
+total: %v
+items:
+%v
+		`, un.Total, un.Items)
+}
+
+type UnbondingDelegations struct {
+	Address string `json:"address"`
+	Amount  string `json:"amount"`
+	Block   string `json:"block"`
+	Until   string `json:"until"`
+}
+
+func (un UnbondingDelegations) String() string {
+	return fmt.Sprintf(`
+		Address :%v
+		Amount  :%v
+		Block   :%v
+		Until   :%v
+		`, un.Address, un.Amount, un.Block, un.Until)
+}
+
+type Delegation struct {
+	Address     string  `json:"address"`
+	Amount      float64 `json:"amount"`
+	SelfShares  string  `json:"self_shares"`
+	TotalShares float64 `json:"total_shares"`
+	Block       string  `json:"block"`
+}
+
+func (d Delegation) String() string {
+	return fmt.Sprintf(`
+	 Address     :%v
+ 	 Amount      :%v
+ 	 Shares      :%v
+ 	 Block       :%v
+	 TotalShares :%v
+		`, d.Address, d.Amount, d.SelfShares, d.Block, d.Block)
+}
+
 type ValDetailVo struct {
 	Count      int         `json:"count"`
 	PowerAll   int64       `json:"power_all"`

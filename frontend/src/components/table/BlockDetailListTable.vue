@@ -29,7 +29,7 @@
              v-show="data.item.Tx_Signer && data.item.Tx_Signer !== '--'">
           <span class="remove_default_style"
                 :class="data.item.Tx_Signer === $route.params.param?'no_skip':''">
-            <router-link :to="data.item.Tx_Signer === $route.params.param ? '' : `/address/1/${data.item.Tx_Signer}`"
+            <router-link :to="data.item.Tx_Signer === $route.params.param ? '' : addressRoute(data.item.Tx_Signer)"
                          class="link_style">{{formatAddress(data.item.Tx_Signer)}}</router-link>
           </span>
           <span class="address">{{data.item.Tx_Signer ? data.item.Tx_Signer : ''}}</span>
@@ -45,7 +45,7 @@
              v-show="data.item.OperatorAddress && data.item.OperatorAddress !== '--'">
           <span class="remove_default_style"
                 :class="data.item.OperatorAddress === $route.params.param?'no_skip':''">
-            <router-link :to="data.item.OperatorAddress === $route.params.param ? '' : `/address/1/${data.item.OperatorAddress}`"
+            <router-link :to="data.item.OperatorAddress === $route.params.param ? '' : addressRoute(data.item.OperatorAddress)"
                          class="link_style">{{formatAddress(data.item.OperatorAddress)}}</router-link>
           </span>
           <span class="address">{{data.item.OperatorAddress ? data.item.OperatorAddress : ''}}</span>
@@ -63,7 +63,7 @@
                  src="../../assets/proposer_img.png">
           </div>
           <span class="skip_route">
-            <router-link :to="`/address/1/${data.item.OperatorAddress}`">{{data.item.moniker? data.item.moniker :''}}</router-link>
+            <router-link :to="addressRoute(data.item.OperatorAddress)">{{data.item.moniker? data.item.moniker :''}}</router-link>
           </span>
         </div>
       </template>
@@ -74,7 +74,7 @@
               v-if="data.item.OperatorAddr !== '--'">
           <div class="name_address">
             <span class="remove_default_style">
-              <router-link :to="`/address/1/${data.item.OperatorAddr}`"
+              <router-link :to="addressRoute(data.item.OperatorAddr)"
                            class="link_style justify">{{formatAddress(data.item.OperatorAddr)}}</router-link>
             </span>
             <span class="address">{{data.item.OperatorAddr}}</span>
@@ -123,7 +123,7 @@
               v-if="!(/^[0-9]\d*$/).test(data.item.From) && data.item.From !== '--'">
           <div class="name_address">
             <span class="remove_default_style">
-              <router-link :to="`/address/1/${data.item.From}`"
+              <router-link :to="addressRoute(data.item.From)"
                            class="link_style justify">{{formatAddress(data.item.From)}}</router-link>
             </span>
             <span class="address">{{data.item.From}}</span>
@@ -139,7 +139,7 @@
               v-if="data.item.To !== '--'">
           <div class="name_address">
             <span class="remove_default_style">
-              <router-link :to="`/address/1/${data.item.To}`"
+              <router-link :to="addressRoute(data.item.To)"
                            class="link_style">{{formatAddress(data.item.To)}}</router-link>
             </span>
             <span class="address">{{data.item.To}}</span>
@@ -153,13 +153,13 @@
       <template slot='Owner'
                 slot-scope='data'>
         <span class="skip_route">
-          <router-link :to="`/address/1/${data.item.Owner}`">{{data.item.Owner?`${String(data.item.Owner).substr(0,16)}...`:''}}</router-link>
+          <router-link :to="addressRoute(data.item.Owner)">{{data.item.Owner?`${String(data.item.Owner).substr(0,16)}...`:''}}</router-link>
         </span>
       </template>
       <template slot='Moniker'
                 slot-scope='data'>
         <span v-show="data.item.Moniker && data.item.Moniker !== '--' ">
-          <router-link :to="`/address/1/${data.item.OperatorAddr}`"
+          <router-link :to="addressRoute(data.item.OperatorAddr)"
                        class="skip_route">
             <pre class="pre_global_style moniker_link_style">{{data.item.Moniker}}</pre>
           </router-link>
@@ -173,7 +173,7 @@
               v-if="data.item.Tx_Signer">
           <div class="name_address">
             <span class="remove_default_style">
-              <router-link :to="`/address/1/${data.item.Tx_Signer}`"
+              <router-link :to="addressRoute(data.item.Tx_Signer)"
                            class="link_style justify">{{formatAddress(data.item.Tx_Signer)}}</router-link>
             </span>
             <span class="address">{{data.item.Tx_Signer}}</span>

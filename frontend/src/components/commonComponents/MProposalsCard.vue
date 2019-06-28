@@ -68,6 +68,7 @@ export default {
       this.titleValueTipShow = title_value_a_w > w;
       let contentLeft = this.$refs.content.getBoundingClientRect().left;
       this.startMarginLeft = Math.ceil(Math.max(contentLeft - this.$refs.totalDeposit.getBoundingClientRect().left, contentLeft - this.$refs.intialDeposit.getBoundingClientRect().left));
+      this.startMarginLeft = Math.max(0, this.startMarginLeft);
     });
   }
 }

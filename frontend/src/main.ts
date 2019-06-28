@@ -38,7 +38,9 @@ axios.get(`/api/sysdate`).then(data => {
 
 
 });
-sessionStorage.setItem("Show_faucet",JSON.stringify(0))
+sessionStorage.setItem("Show_faucet",JSON.stringify(0));
+import Tools from './util/Tools';
+Vue.prototype.addressRoute = Tools.addressRoute;
 new Vue({
   router,
   store,

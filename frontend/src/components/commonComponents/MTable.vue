@@ -83,7 +83,6 @@
 </template>
 
 <script>
-import { setTimeout } from 'timers';
 export default {
   name: 'MTable',
   props: {
@@ -102,6 +101,10 @@ export default {
     sortDesc: {
       type: Boolean,
       default: true
+    },
+    width: {
+      type: Number,
+      default: 1280
     }
   },
   data () {
@@ -118,12 +121,19 @@ export default {
     data (newVal, oldVal) {
       this.$nextTick(() => {
         this.sortData();
+        this.columnsChange = true;
         this.computedColWidth();
       });
     },
     columns (newVal, oldVal) {
       this.columnsChange = true;
       this.sorted = false;
+    },
+    width() {
+      setTimeout(() => {
+        this.columnsChange = true;
+        this.computedColWidth();
+      });
     }
   },
   methods: {
@@ -357,6 +367,14 @@ table.m_table {
         left: 30px;
       }
     }
+  }
+}
+.text_overflow { //表格文字太多，超范围隐藏class
+  & > div {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 .override_mtable {

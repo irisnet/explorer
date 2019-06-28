@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm/document"
@@ -142,6 +143,45 @@ func (service *TxService) QueryTxList(query bson.M, page, pageSize int) model.Pa
 				continue
 			}
 		}
+
+		valAddrArr := make([]string, 0, len(items))
+		for i := 0; i < len(items); i++ {
+			if stakeTx, ok := items[i].(model.StakeTx); ok {
+				if service.IsValidatorAddrPrefix(stakeTx.From) {
+					valAddrArr = append(valAddrArr, stakeTx.From)
+				}
+
+				if service.IsValidatorAddrPrefix(stakeTx.To) {
+					valAddrArr = append(valAddrArr, stakeTx.To)
+				}
+			}
+		}
+
+		valAddrArr = utils.RemoveDuplicationStrArr(valAddrArr)
+
+		monikerByAddrMap, err := document.Validator{}.QueryValidatorMonikerByAddrArr(valAddrArr)
+
+		if err != nil {
+			logger.Error("document.Validator{}.QueryValidatorMonikerByAddrArr(valAddrArr)", logger.String("err", err.Error()), logger.Any("params", valAddrArr))
+		}
+
+		for i := 0; i < len(items); i++ {
+			if stakeTx, ok := items[i].(model.StakeTx); ok {
+				if service.IsValidatorAddrPrefix(stakeTx.From) {
+					if fromMoniker, ok := monikerByAddrMap[stakeTx.From]; ok {
+						stakeTx.FromMoniker = fromMoniker
+					}
+				}
+
+				if service.IsValidatorAddrPrefix(stakeTx.To) {
+					if toMoniker, ok := monikerByAddrMap[stakeTx.To]; ok {
+						stakeTx.ToMoniker = toMoniker
+					}
+				}
+				items[i] = stakeTx
+			}
+		}
+
 		return model.PageVo{
 			Data:  items,
 			Count: total,
@@ -183,12 +223,54 @@ func (service *TxService) QueryTxList(query bson.M, page, pageSize int) model.Pa
 			items[i] = TransTx
 			continue
 		}
-
 	}
+
+	valAddrArr := make([]string, 0, len(items))
+	for i := 0; i < len(items); i++ {
+		if stakeTx, ok := items[i].(model.StakeTx); ok {
+			if service.IsValidatorAddrPrefix(stakeTx.From) {
+				valAddrArr = append(valAddrArr, stakeTx.From)
+			}
+
+			if service.IsValidatorAddrPrefix(stakeTx.To) {
+				valAddrArr = append(valAddrArr, stakeTx.To)
+			}
+		}
+	}
+
+	valAddrArr = utils.RemoveDuplicationStrArr(valAddrArr)
+
+	monikerByAddrMap, err := document.Validator{}.QueryValidatorMonikerByAddrArr(valAddrArr)
+
+	if err != nil {
+		logger.Error("document.Validator{}.QueryValidatorMonikerByAddrArr(valAddrArr)", logger.String("err", err.Error()), logger.Any("params", valAddrArr))
+	}
+
+	for i := 0; i < len(items); i++ {
+		if stakeTx, ok := items[i].(model.StakeTx); ok {
+			if service.IsValidatorAddrPrefix(stakeTx.From) {
+				if fromMoniker, ok := monikerByAddrMap[stakeTx.From]; ok {
+					stakeTx.FromMoniker = fromMoniker
+				}
+			}
+
+			if service.IsValidatorAddrPrefix(stakeTx.To) {
+				if toMoniker, ok := monikerByAddrMap[stakeTx.To]; ok {
+					stakeTx.ToMoniker = toMoniker
+				}
+			}
+			items[i] = stakeTx
+		}
+	}
+
 	return model.PageVo{
 		Data:  items,
 		Count: total,
 	}
+}
+
+func (service *TxService) IsValidatorAddrPrefix(addr string) bool {
+	return strings.HasPrefix(addr, conf.Get().Hub.Prefix.ValAddr)
 }
 
 func (service *TxService) QueryList(query bson.M, page, pageSize int) (pageInfo model.PageVo) {
