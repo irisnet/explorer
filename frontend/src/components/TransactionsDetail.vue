@@ -128,7 +128,7 @@
                     <span class="information_props">Option :</span>
                     <span class="information_value">{{option}}</span>
                 </div>
-                <div class="information_props_wrap" v-if="flShowTypeTransfer || flShowTypeDeposit">
+                <div class="information_props_wrap" v-if="flShowTypeTransfer || flShowTypeDeposit || flShowTypeBurn">
                     <span class="information_props">Amount :</span>
                     <span class="information_value">{{amountValue}}</span>
                 </div>
