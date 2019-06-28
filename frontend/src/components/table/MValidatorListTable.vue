@@ -12,14 +12,14 @@
                style="width: 0.3rem;height: 0.3rem;border-radius: 0.3rem;overflow: hidden;"
                :src="row.url ? row.url : ''" />
           <router-link style="margin-left: 0.2rem;"
-                       :to="`/address/1/${row.operatorAddress}`"
+                       :to="addressRoute(row.operatorAddress)"
                        class="link_style">{{row.moniker}}</router-link>
         </div>
       </template>
       <template slot-scope="{ row }"
                 slot="operatorAddress">
         <span class="remove_default_style">
-          <router-link :to="`/address/1/${row.operatorAddress}`"
+          <router-link :to="addressRoute(row.operatorAddress)"
                        class="link_style operator_address_style">{{formatAddress(row.operatorAddress)}}</router-link>
         </span>
       </template>

@@ -21,7 +21,7 @@
                     </div>
                     <div class="block_information_item">
                         <span>Proposer:</span>
-                        <span v-if="proposerAddress !== ''&& proposerAddress !== '--'"><router-link class="common_link_style" :to="`/address/1/${proposerAddress}`">{{proposerValue}}</router-link></span>
+                        <span v-if="proposerAddress !== ''&& proposerAddress !== '--'"><router-link class="common_link_style" :to="addressRoute(proposerAddress)">{{proposerValue}}</router-link></span>
                         <span v-if="proposerAddress === '' && proposerValue">{{proposerValue}}</span>
                         <span v-if="proposerAddress === '--'">--</span>
                     </div>

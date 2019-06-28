@@ -361,7 +361,10 @@ export default class Tools{
    * return String
    */
   static formatValidatorAddress(address){
-    return `${address.substring(0,3)}...${address.substring(address.length - 8)}`
+    if (address) {
+        return `${address.substring(0,3)}...${address.substring(address.length - 8)}`
+    }
+    return '';
   }
   /**
    * format txHash
@@ -422,14 +425,17 @@ export default class Tools{
             'Moniker': item.Moniker ? Tools.formatString(Moniker,15,"...") : "--",
             Amount,
             'OperatorAddr': item.OperatorAddr ? item.OperatorAddr : '--',
-            'listName':'declarations'
+            'listName':'declarations',
+            'Self_Bonded': item.Self_Bonded
           }
         }else if(txType === 'stakes'){
           objList = {
-            'From':item.From ? item.From : (item.DelegatorAddr?item.DelegatorAddr:'--'),
+            'From': `${item.From ? item.From : (item.DelegatorAddr?item.DelegatorAddr:'--')}`,
             Amount,
-            'To':item.To ? item.To : (item.ValidatorAddr?item.ValidatorAddr:'--'),
-            'listName':'stakes'
+            'To': `${item.To ? item.To : (item.ValidatorAddr?item.ValidatorAddr:'--')}`,
+            'listName':'stakes',
+            fromMoniker: item.from_moniker,
+            toMoniker: item.to_moniker
           }
         }else if(txType === 'governance'){
           objList = {
@@ -509,6 +515,16 @@ export default class Tools{
       }
       return noObjList;
     }
+  }
 
+  static addressRoute(address) {
+    if(address) {
+        if (address.substring(0, 3) === this.$Crypto.config.iris.bech32.valAddr || address.substring(1, 3) === 'va') {
+            return `/validators/${address}`;
+        } else {
+            return `/address/${address}`;
+        }
+    }
+    return '';
   }
 }

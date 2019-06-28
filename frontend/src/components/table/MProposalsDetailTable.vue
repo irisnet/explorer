@@ -7,7 +7,7 @@
         <div class="skip_route">
           <div class="name_address">
             <span class="remove_default_style">
-              <router-link :to="`/address/1/${row.Voter}`" class="link_style justify">{{row.moniker}}</router-link>
+              <router-link :to="addressRoute(row.Voter)" class="link_style justify">{{row.moniker}}</router-link>
             </span>
           </div>
         </div>
@@ -21,7 +21,7 @@
         </span>
         <span class="skip_route" v-if="!(/^[0-9]\d*$/).test(row.Depositor) && row.Depositor !== '--'">
           <div class="name_address">
-            <router-link :to="`/address/1/${row.Depositor}`" class="link_style justify">{{formatAddress(row.Depositor)}}</router-link>
+            <router-link :to="addressRoute(row.Depositor)" class="link_style justify">{{formatAddress(row.Depositor)}}</router-link>
           </div>
         </span>
         <span class="no_skip" v-show="(/^[0]\d*$/).test(row.Depositor) || row.Depositor === '--'">--</span>

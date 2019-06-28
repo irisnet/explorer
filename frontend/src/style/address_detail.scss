@@ -398,12 +398,10 @@
                     flex: 1;
                     border: 0.01rem solid #e4e4e4;
                     .line_left_container{
-                        max-width: 6.2rem;
-                        height: 2.76rem;
+                        height: 3.5rem;
                     }
                     .line_right_container{
-                        max-width: 6.2rem;
-                        height: 2.76rem;
+                        height: 3.5rem;
                     }
                 }
 
@@ -431,7 +429,7 @@
         }
     }
     .content_right{
-        margin-left: 0.4rem;
+        margin-left: 0.2rem;
     }
     .border-none{
         color: #000!important;
@@ -460,15 +458,11 @@
                 border: 0.01rem solid #e4e4e4;
 
                 .line_left_container {
-                    width: 98%;
-                    max-width: 98%!important;
-                    height: 2.76rem;
+                    height: 3.5rem;
                 }
 
                 .line_right_container {
-                    width: 98%;
-                    max-width: 98%;
-                    height: 2.76rem;
+                    height: 3.5rem;
                 }
 
             }

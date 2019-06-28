@@ -28,39 +28,44 @@
                     <span v-if="(/^[1-9]\d*$/).test(row.From)" class="skip_route common_font_style">
                         <router-link :to="`/tx?txHash=${row.Tx_Hash}`">{{row.From}} Validators</router-link>
                     </span>
-                    <div v-if="!(/^[0-9]\d*$/).test(row.From) && row.From !== '--'">
+                    <div class="name_address" v-if="!(/^[0-9]\d*$/).test(row.From) && row.From !== '--'">
                         <div>
                             <span class="remove_default_style">
-                                <router-link :to="`/address/1/${row.From}`" class="link_style justify common_font_style">{{formatAddress(row.From)}}
+                                <router-link :to="addressRoute(row.From)" class="link_style justify common_font_style">{{row.fromMoniker || formatAddress(row.From)}}
                                 </router-link>
                             </span>
                         </div>
+                        <span v-if="!row.fromMoniker" class="address">{{row.From}}</span>
                     </div>
                     <span class="no_skip" v-show="(/^[0]\d*$/).test(row.From) || row.From === '--'">--</span>
                 </div>
             </template>
             <template slot-scope="{ row }" slot="To">
                 <div class="common_hover_address_parent">
-                    <div class="skip_route" style="display: flex" v-if="row.To !== '--'">
+                    <span v-if="(/^[1-9]\d*$/).test(row.To)" class="skip_route common_font_style">
+                        <router-link :to="`/tx?txHash=${row.Tx_Hash}`">{{row.To}} Validators</router-link>
+                    </span>
+                    <div class="name_address" v-if="!(/^[0-9]\d*$/).test(row.To) && row.To !== '--'">
                         <div>
-                            <span>
-                                <router-link :to="`/address/1/${row.To}`" class="link_style common_font_style">{{formatAddress(row.To)}}
+                            <span class="remove_default_style">
+                                <router-link :to="addressRoute(row.To)" class="link_style justify common_font_style">{{row.toMoniker || formatAddress(row.To)}}
                                 </router-link>
                             </span>
                         </div>
+                        <span v-if="!row.toMoniker" class="address">{{row.To}}</span>
                     </div>
-                    <span class="no_skip" v-show="row.To === '--'">--</span>
+                    <span class="no_skip" v-show="(/^[0]\d*$/).test(row.To) || row.To === '--'">--</span>
                 </div>
             </template>
             <template slot-scope="{ row }" slot="Tx_Signer">
                 <div class="common_hover_address_parent" v-if="row.Tx_Signer">
-                    <router-link :to="`/address/1/${row.Tx_Signer}`" class="link_style common_font_style">{{formatAddress(row.Tx_Signer)}}
+                    <router-link :to="addressRoute(row.Tx_Signer)" class="link_style common_font_style">{{formatAddress(row.Tx_Signer)}}
                     </router-link>
                 </div>
             </template>
             <template slot-scope="{ row }" slot="OperatorAddr">
                 <div class="common_hover_address_parent">
-                    <router-link :to="`/address/1/${row.OperatorAddr}`" class="link_style common_font_style">{{formatAddress(row.OperatorAddr)}}
+                    <router-link :to="addressRoute(row.OperatorAddr)" class="link_style common_font_style">{{formatAddress(row.OperatorAddr)}}
                     </router-link>
                 </div>
             </template>
@@ -100,8 +105,7 @@
 					},
 					{
 						title:'From',
-            slot: 'From',
-            tooltip: true
+            slot: 'From'
 					},
 					{
 						title:'Amount',
@@ -111,8 +115,7 @@
 					},
 					{
 						title:'To',
-            slot: 'To',
-            tooltip: true
+            slot: 'To'
 					},
 					{
 						title:'Tx_Type',
@@ -212,8 +215,7 @@
 					},
 					{
 						title:'From',
-            slot: 'From',
-            tooltip: true
+            slot: 'From'
 					},
 					{
 						title:'Amount',
@@ -223,8 +225,7 @@
 					},
 					{
 						title:'To',
-            slot: 'To',
-            tooltip: true
+            slot: 'To'
 					},
 					{
 						title:'Tx_Type',

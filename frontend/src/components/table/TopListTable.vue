@@ -8,7 +8,7 @@
           <span class="skip_route" style="display: flex" v-if="data.item.Address">
           <div class="name_address">
             <span class="remove_default_style">
-              <router-link :to="`/address/1/${data.item.Address}`" class="link_style">{{data.item.Address}}</router-link>
+              <router-link :to="addressRoute(data.item.Address)" class="link_style">{{data.item.Address}}</router-link>
             </span>
           </div>
         </span>
