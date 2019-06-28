@@ -441,18 +441,18 @@
 				Service.commonInterface({headerSearchValue:{searchValue:this.searchInputValue}},(searchResult) => {
 					try {
 						if (searchResult) {
-							let searchResBlock = Object.keys(searchResult.block).length,
-                                searchResProposal = Object.keys(searchResult.proposal).length,
+							let searchResBlockLength = Object.keys(searchResult.block).length,
+                                searchResProposalLength = Object.keys(searchResult.proposal).length,
                                 searchResultLength = 0;
-                            if(searchResBlock !== searchResultLength && searchResProposal !== searchResultLength ){
+                            if(searchResBlockLength !== searchResultLength && searchResProposalLength !== searchResultLength ){
 	                            this.toSearchResultPage();
-                            }else if(searchResBlock !== searchResultLength && searchResProposal === searchResultLength){
+                            }else if(searchResBlockLength !== searchResultLength && searchResProposalLength === searchResultLength){
 	                            this.$router.push(`/block/${searchResult.block.height}`);
 	                            this.clearSearchInputValue();
-                            }else if(searchResBlock === searchResultLength && searchResProposal !== searchResultLength){
+                            }else if(searchResBlockLength === searchResultLength && searchResProposalLength !== searchResultLength){
 	                            this.$router.push(`/ProposalsDetail/${searchResult.proposal.proposal_id}`);
 	                            this.clearSearchInputValue();
-                            }else if(searchResBlock === searchResultLength && searchResProposal === searchResultLength){
+                            }else if(searchResBlockLength === searchResultLength && searchResProposalLength === searchResultLength){
 	                            this.toSearchResultPage();
                             }
 						} else {
