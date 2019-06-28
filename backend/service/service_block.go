@@ -153,9 +153,11 @@ func (service *BlockService) QueryList(page, size int) []model.BlockForList {
 
 		votes := []document.Vote{}
 		for _, v := range nextBlock.Block.LastCommit.Precommits {
-			vote := document.Vote{}
-			vote.ValidatorAddress = v.ValidatorAddress
-			votes = append(votes, vote)
+			if len(v.ValidatorAddress) > 0 {
+				vote := document.Vote{}
+				vote.ValidatorAddress = v.ValidatorAddress
+				votes = append(votes, vote)
+			}
 		}
 		nextBlockAsDoc.Height = nextHeight
 		nextBlockAsDoc.Block.LastCommit.Precommits = votes
