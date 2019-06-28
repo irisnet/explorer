@@ -18,8 +18,8 @@ type ValidatorForDetail struct {
 	CommissionMaxRate       string      `json:"commission_max_rate"`
 	CommissionMaxChangeRate string      `json:"commision_max_change_rate"`
 	BondHeight              string      `json:"bond_height"`
-	UnbondingHeight         string      `json:"unbond_height,omitempty"`
-	JailedUntil             string      `json:"jailed_until,omitempty"`
+	UnbondingHeight         string      `json:"unbond_height"`
+	JailedUntil             string      `json:"jailed_until"`
 	MissedBlocksCount       string      `json:"missed_blocks_count"`
 	OperatorAddr            string      `json:"operator_addr"`
 	OwnerAddr               string      `json:"owner_addr"`

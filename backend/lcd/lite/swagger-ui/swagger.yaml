@@ -1037,6 +1037,26 @@ definitions:
         type: string
   ValidatorForDetail:
     type: object
+    required:
+      - description
+      - total_power
+      - self_power
+      - status
+      - bonded_tokens
+      - self_bonded
+      - delegator_shares
+      - delegator_count
+      - commission_rate
+      - commission_update
+      - commission_max_rate
+      - commision_max_change_rate
+      - bond_height
+      - missed_blocks_count
+      - operator_addr
+      - owner_addr
+      - consensus_addr
+      - unbonding_height
+      - jailed_until
     properties:
       description:
         $ref: "#/definitions/Description"
