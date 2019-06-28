@@ -1,5 +1,5 @@
 <template>
-  <div :style="{opacity: show ? 1 : 0}">
+  <div :style="{opacity: show ? 1 : 0}" ref="tableContainer">
     <div class="m-table-header">
       <table :class="['m_table', data.length > 0 ? 'm-table-header-table-fixed' : '']"
              cellspacing="0"
@@ -49,7 +49,7 @@
                 :key="j"
                 :class="it.className">
               <template v-if="it.key">
-                <div :class="{'tooltip_span_container': it.tooltip}">
+                <div :class="{'tooltip_span_container': it.tooltip}" v-table-tooltip="{show: it.tooltip, container: $refs.tableContainer}">
                   {{v[it.key]}}
                   <div class="tooltip_span"
                        :class="it.tooltipClassName"
@@ -57,11 +57,12 @@
                     <div>
                       {{it.tooltip === true ? (v[it.key || it.slot]) : it.tooltip}}
                     </div>
+                    <i></i>
                   </div>
                 </div>
               </template>
               <template v-else>
-                <div :class="{'tooltip_span_container': it.tooltip}">
+                <div :class="{'tooltip_span_container': it.tooltip}" v-table-tooltip="{show: it.tooltip, container: $refs.tableContainer}">
                   <slot :name="it.slot"
                         :row="v">
                   </slot>
@@ -69,8 +70,9 @@
                        :class="it.tooltipClassName"
                        v-if="it.tooltip">
                     <div>
-                      {{it.tooltip === true ? (v[it.key || it.slot]) : it.tooltip}}
+                        {{it.tooltip === true ? (v[it.key || it.slot]) : it.tooltip}}
                     </div>
+                    <i></i>
                   </div>
                 </div>
               </template>
@@ -333,6 +335,7 @@ table.m_table {
     cursor: pointer;
     &:hover .tooltip_span {
       display: block;
+      opacity: 0;
     }
     .tooltip_span {
       display: none;
@@ -348,7 +351,7 @@ table.m_table {
       div {
         padding: 8px 15px;
       }
-      &::after {
+      & > i {
         width: 0;
         height: 0;
         border: 0.06rem solid transparent;
@@ -361,11 +364,16 @@ table.m_table {
       }
     }
     .tooltip_left {
-      left: 0;
-      transform: translateX(0);
-      &::after {
-        left: 30px;
-      }
+    //   left: 0;
+    //   transform: translateX(0);
+    //   &::after {
+    //     left: 30px;
+    //   }
+    }
+    .tooltip_span_word_warp {
+      word-break: break-all;
+      word-wrap: break-word;
+      white-space: normal;
     }
   }
 }

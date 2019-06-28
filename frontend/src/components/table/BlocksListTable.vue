@@ -163,7 +163,7 @@
           <span class="remove_default_style"
                 :class="data.item.From === $route.params.param?'no_skip':''">
             <router-link :to="addressRoute(data.item.From)"
-                         class="link_style">{{data.item.fromMoniker || formatAddress(data.item.From)}}</router-link>
+                         class="link_style">{{formatMoniker(data.item.fromMoniker) || formatAddress(data.item.From)}}</router-link>
           </span>
           <span v-if="!data.item.fromMoniker" class="address">{{data.item.From ? data.item.From : ''}}</span>
         </div>
@@ -191,7 +191,7 @@
           <span class="remove_default_style"
                 :class="data.item.To === $route.params.param?'no_skip':''">
             <router-link :to="addressRoute(data.item.To)"
-                         class="link_style">{{data.item.toMoniker || formatAddress(data.item.To)}}</router-link>
+                         class="link_style">{{formatMoniker(data.item.toMoniker) || formatAddress(data.item.To)}}</router-link>
           </span>
           <span v-if="!data.item.toMoniker" class="address">{{data.item.To ? data.item.To : ''}}</span>
         </div>
@@ -383,6 +383,12 @@ export default {
       if (TxHash) {
         return Tools.formatTxHash(TxHash)
       }
+    },
+    formatMoniker (moniker) {
+        if (!moniker) {
+            return '';
+        }
+        return Tools.formatString(moniker,15,"...");
     },
     setTxFields (items) {
       items.forEach((tx) => {

@@ -29,7 +29,7 @@
                         <router-link
                             :to="addressRoute(row.From)"
                             class="link_style"
-                        >{{row.fromMoniker || formatAddress(row.From)}}</router-link>
+                        >{{formatMoniker(row.fromMoniker) || formatAddress(row.From)}}</router-link>
                     </span>
                     <span v-if="!row.fromMoniker" class="address">{{row.From}}</span>
                 </div>
@@ -93,7 +93,7 @@
                         <router-link
                             :to="addressRoute(row.proposer)"
                             class="link_style"
-                        >{{row.moniker || formatAddress(row.proposer)}}</router-link>
+                        >{{formatMoniker(row.moniker) || formatAddress(row.proposer)}}</router-link>
                     </span>
                     <span v-if="!row.moniker" class="address">{{row.proposer}}</span>
                 </div>
@@ -113,7 +113,7 @@
                         <router-link
                             :to="addressRoute(row.To)"
                             class="link_style"
-                        >{{row.toMoniker || formatAddress(row.To)}}</router-link>
+                        >{{formatMoniker(row.toMoniker) || formatAddress(row.To)}}</router-link>
                     </span>
                     <span v-if="!row.toMoniker" class="address">{{row.To}}</span>
                 </div>
@@ -144,7 +144,7 @@
                             <router-link
                                 :to="addressRoute(row.OperatorAddr)"
                                 class="link_style justify"
-                            >{{row.Moniker}}</router-link>
+                            >{{formatMoniker(row.Moniker)}}</router-link>
                         </span>
                     </div>
                 </span>
@@ -190,8 +190,7 @@ export default {
                 {
                     title: "Tx_Hash",
                     slot: "Tx_Hash",
-                    tooltip: true,
-                    tooltipClassName: "tooltip_left"
+                    tooltip: true
                 },
                 {
                     title: "Block",
@@ -235,8 +234,7 @@ export default {
                 {
                     title: "Tx_Hash",
                     slot: "Tx_Hash",
-                    tooltip: true,
-                    tooltipClassName: "tooltip_left"
+                    tooltip: true
                 },
                 {
                     title: "Block",
@@ -280,8 +278,7 @@ export default {
                 {
                     title: "Tx_Hash",
                     slot: "Tx_Hash",
-                    tooltip: true,
-                    tooltipClassName: "tooltip_left"
+                    tooltip: true
                 },
                 {
                     title: "Block",
@@ -326,8 +323,7 @@ export default {
                 {
                     title: "Tx_Hash",
                     slot: "Tx_Hash",
-                    tooltip: true,
-                    tooltipClassName: "tooltip_left"
+                    tooltip: true
                 },
                 {
                     title: "Block",
@@ -375,8 +371,7 @@ export default {
                 {
                     title: "Address",
                     slot: "address",
-                    tooltip: true,
-                    tooltipClassName: "tooltip_left"
+                    tooltip: true
                 },
                 {
                     title: "Amount",
@@ -395,8 +390,7 @@ export default {
                 {
                     title: "Address",
                     slot: "address",
-                    tooltip: true,
-                    tooltipClassName: "tooltip_left"
+                    tooltip: true
                 },
                 {
                     title: "Amount",
@@ -415,8 +409,7 @@ export default {
                 {
                     title: "Address",
                     slot: "address",
-                    tooltip: true,
-                    tooltipClassName: "tooltip_left"
+                    tooltip: true
                 },
                 {
                     title: "Amount",
@@ -488,6 +481,12 @@ export default {
         },
         formatAddress(address) {
             return Tools.formatValidatorAddress(address);
+        },
+        formatMoniker(moniker) {
+            if (!moniker) {
+                return "";
+            }
+            return Tools.formatString(moniker, 15, "...");
         }
     },
     mounted() {
@@ -516,6 +515,11 @@ export default {
         table.m_table {
             min-width: 6.3rem;
         }
+    }
+}
+.mobile_transactions_detail_wrap {
+    .validator_detail_table {
+        width: 12.8rem;
     }
 }
 </style>

@@ -30,7 +30,7 @@ const urlApi = {
   validatorDepositorTxs: '/api/stake/validators/{validatorAddr}/depositor_txs?page={currentPage}&size={pageSize}',
   validatorsInfo: '/api/stake/validators/{address}',
   validatorWithdrawAddr: '/api/stake/validators/{validatorAddr}/withdraw-addr',
-  validatorRewards: '/api/stake/validators/{validatorAddr}/rewards',
+  validatorCommissionRewards: '/api/stake/validators/{validatorAddr}/commission-rewards',
   //header
   headerTx: '/api/tx/{searchValue}',
   headerSearchAccount: '/api/account/{searchValue}',
