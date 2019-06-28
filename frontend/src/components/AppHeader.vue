@@ -441,15 +441,18 @@
 				Service.commonInterface({headerSearchValue:{searchValue:this.searchInputValue}},(searchResult) => {
 					try {
 						if (searchResult) {
-                            if(JSON.stringify(searchResult.block) !== "{}" && JSON.stringify(searchResult.proposal) !== "{}"){
+							let searchResBlock = Object.keys(searchResult.block).length,
+                                searchResProposal = Object.keys(searchResult.proposal).length,
+                                searchResultLength = 0;
+                            if(searchResBlock !== searchResultLength && searchResProposal !== searchResultLength ){
 	                            this.toSearchResultPage();
-                            }else if(JSON.stringify(searchResult.block) !== "{}" && JSON.stringify(searchResult.proposal) === "{}"){
+                            }else if(searchResBlock !== searchResultLength && searchResProposal === searchResultLength){
 	                            this.$router.push(`/block/${searchResult.block.height}`);
 	                            this.clearSearchInputValue();
-                            }else if(JSON.stringify(searchResult.block) === "{}" && JSON.stringify(searchResult.proposal) !== "{}"){
+                            }else if(searchResBlock === searchResultLength && searchResProposal !== searchResultLength){
 	                            this.$router.push(`/ProposalsDetail/${searchResult.proposal.proposal_id}`);
 	                            this.clearSearchInputValue();
-                            }else if(JSON.stringify(searchResult.block) === "{}" && JSON.stringify(searchResult.proposal) === "{}"){
+                            }else if(searchResBlock === searchResultLength && searchResProposal === searchResultLength){
 	                            this.toSearchResultPage();
                             }
 						} else {
