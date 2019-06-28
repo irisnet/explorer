@@ -68,7 +68,7 @@
             </template>
             <template slot-scope="{ row }" slot="Moniker">
                 <div class="common_hover_address_parent">
-                    <router-link v-if="row.Moniker && row.Moniker !== '--'" :to="`/address/1/${row.OperatorAddr}`" class="link_style">{{row.Moniker}}</router-link>
+                    <router-link v-if="row.Moniker && row.Moniker !== '--'" :to="addressRoute(row.OperatorAddr)" class="link_style">{{row.Moniker}}</router-link>
                 </div>
                 <span v-if="row.Moniker && row.Moniker === '--'">--</span>
             </template>
