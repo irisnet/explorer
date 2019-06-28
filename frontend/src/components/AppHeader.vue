@@ -441,21 +441,17 @@
 				Service.commonInterface({headerSearchValue:{searchValue:this.searchInputValue}},(searchResult) => {
 					try {
 						if (searchResult) {
-							let keys = Object.keys(searchResult);
-							//searchResult：[ {Type：block，Data:{}} ，{Type：proposal,Data:{}} ]
-							let searchResultIsBlockOrProposalId = 1;
-							let searchBlockAndProposalInResult = 2;
-							if (keys.length === searchResultIsBlockOrProposalId) {
-								if (keys[0] === 'block' && searchResult.block.height !== 0) {
-									this.$router.push(`/block/${searchResult.block.height}`);
-									this.clearSearchInputValue();
-								} else if (keys[0] === "proposal" && searchResult.proposal.proposal_id !== 0) {
-									this.$router.push(`/ProposalsDetail/${searchResult.proposal.proposal_id}`);
-									this.clearSearchInputValue();
-								}
-							} else if (keys.length === searchBlockAndProposalInResult) {
-								this.toSearchResultPage();
-							}
+                            if(JSON.stringify(searchResult.block) !== "{}" && JSON.stringify(searchResult.proposal) !== "{}"){
+	                            this.toSearchResultPage();
+                            }else if(JSON.stringify(searchResult.block) !== "{}" && JSON.stringify(searchResult.proposal) === "{}"){
+	                            this.$router.push(`/block/${searchResult.block.height}`);
+	                            this.clearSearchInputValue();
+                            }else if(JSON.stringify(searchResult.block) === "{}" && JSON.stringify(searchResult.proposal) !== "{}"){
+	                            this.$router.push(`/ProposalsDetail/${searchResult.proposal.proposal_id}`);
+	                            this.clearSearchInputValue();
+                            }else if(JSON.stringify(searchResult.block) === "{}" && JSON.stringify(searchResult.proposal) === "{}"){
+	                            this.toSearchResultPage();
+                            }
 						} else {
 							this.toSearchResultPage();
 						}
@@ -768,6 +764,7 @@
                                 .network_list_title_content {
                                     box-sizing: border-box;
                                     padding: 0 0.2rem;
+                                    min-width: 1.8rem;
                                     &:hover {
                                         background: #0f7bc4;
                                     }
