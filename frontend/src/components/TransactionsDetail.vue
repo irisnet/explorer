@@ -106,7 +106,7 @@
                 <div class="information_props_wrap" v-if="owner">
                     <span class="information_props">From :</span>
                     <span class="information_value link_active_style">
-            <router-link :to="`/address/1/${owner}`">{{owner}}</router-link></span>
+            <router-link :to="addressRoute(owner)">{{owner}}</router-link></span>
         </div>
         <div class="information_props_wrap" v-if="pubkey">
             <span class="information_props">Pub key :</span>

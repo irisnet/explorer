@@ -39,5 +39,6 @@ func (u UptimeChange) Insert() error {
 	db := orm.GetDatabase()
 	uCollection := db.C(CollectionNmUptimeChange)
 	defer db.Session.Close()
+
 	return uCollection.Insert(&u)
 }

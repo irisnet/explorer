@@ -142,7 +142,9 @@ type TransTx struct {
 
 type StakeTx struct {
 	TransTx
-	Source string
+	Source      string
+	FromMoniker string `json:"from_moniker"`
+	ToMoniker   string `json:"to_moniker"`
 }
 
 func (s StakeTx) PrintHashFromToAmount() string {

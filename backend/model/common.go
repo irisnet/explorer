@@ -1,22 +1,20 @@
 package model
 
-import "time"
-
 type ResultVo struct {
-	Block    SimpleBlockVo    `json:"block"`
-	Proposal SimpleProposalVo `json:"proposal"`
+	Block    SimpleBlockVo    `json:"block,omitempty"`
+	Proposal SimpleProposalVo `json:"proposal,omitempty"`
 }
 
 type SimpleBlockVo struct {
-	Height    int64     `json:"height"`
-	Timestamp time.Time `json:"timestamp"`
-	Hash      string    `json:"hash"`
+	Height    int64  `json:"height,omitempty"`
+	Timestamp string `json:"timestamp,omitempty"`
+	Hash      string `json:"hash,omitempty"`
 }
 
 type SimpleProposalVo struct {
-	ProposalId uint64    `json:"proposal_id"`
-	Title      string    `json:"title"`
-	Type       string    `json:"type"`
-	Status     string    `json:"status"`
-	SubmitTime time.Time `json:"submit_time"`
+	ProposalId uint64 `json:"proposal_id,omitempty"`
+	Title      string `json:"title,omitempty"`
+	Type       string `json:"type,omitempty"`
+	Status     string `json:"status,omitempty"`
+	SubmitTime string `json:"submit_time,omitempty"`
 }

@@ -12,7 +12,7 @@
                         </div>
                         <p class="current_block proposer_content"><router-link :to="`/block/${currentBlockHeight}`">{{currentBlockHeight}}</router-link></p>
                         <p class="block_time proposer_container">
-                            <span class="proposer_content"><router-link :to="`/address/1/${proposerAddress}`">{{moniker}}</router-link></span>
+                            <span class="proposer_content"><router-link :to="addressRoute(proposerAddress)">{{moniker}}</router-link></span>
                         </p>
                     </li>
                     <li class="item_status">
