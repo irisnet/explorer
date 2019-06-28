@@ -164,7 +164,6 @@
                     <span class="information_props">Memo :</span>
                     <span class="information_value"><pre class="information_pre">{{memo}}</pre></span>
                 </div>
-
             </div>
         </div>
     </div>
