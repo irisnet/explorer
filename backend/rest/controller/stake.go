@@ -56,7 +56,7 @@ func registerQueryWithdrawAddrByValidatorAddr(r *mux.Router) error {
 
 func registerQueryRewardsByValidatorAddr(r *mux.Router) error {
 
-	doApi(r, types.UrlRegisterQueryRewardsByValidatorAddr, "GET", func(request model.IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryCommissionRewardsByValidatorAddr, "GET", func(request model.IrisReq) interface{} {
 		stake.SetTid(request.TraceId)
 		validatorAddr := Var(request, "validatorAddr")
 		return stake.GetDistributionRewardsByValidatorAddr(validatorAddr)
