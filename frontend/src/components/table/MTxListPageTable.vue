@@ -31,7 +31,7 @@
                     <div class="name_address" v-if="!(/^[0-9]\d*$/).test(row.From) && row.From !== '--'">
                         <div>
                             <span class="remove_default_style">
-                                <router-link :to="addressRoute(row.From)" class="link_style justify common_font_style">{{row.fromMoniker || formatAddress(row.From)}}
+                                <router-link :to="addressRoute(row.From)" class="link_style justify common_font_style">{{formatMoniker(row.fromMoniker) || formatAddress(row.From)}}
                                 </router-link>
                             </span>
                         </div>
@@ -48,7 +48,7 @@
                     <div class="name_address" v-if="!(/^[0-9]\d*$/).test(row.To) && row.To !== '--'">
                         <div>
                             <span class="remove_default_style">
-                                <router-link :to="addressRoute(row.To)" class="link_style justify common_font_style">{{row.toMoniker || formatAddress(row.To)}}
+                                <router-link :to="addressRoute(row.To)" class="link_style justify common_font_style">{{formatMoniker(row.toMoniker) || formatAddress(row.To)}}
                                 </router-link>
                             </span>
                         </div>
@@ -339,7 +339,13 @@
 				        this.fields = []
 			        }
 		        })
-	        }
+            },
+            formatMoniker (moniker) {
+                if (!moniker) {
+                    return '';
+                }
+                return Tools.formatString(moniker,15,"...");
+            }
         },
 		watch:{
 			showNoData(showNoData){

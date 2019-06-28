@@ -7,7 +7,7 @@
                 class="status_btn"
                 style="background-color: #3DA87E;"
                 v-if="validatorStatus === 'Candidate'"
-            >Candidates</div>
+            >Candidate</div>
             <div
                 class="status_btn"
                 style="background-color: #FA7373;"
@@ -408,7 +408,7 @@ export default {
                 "Commission Rate": "",
                 "Delegator Shares": "",
                 "Max Rate": "",
-                Rewards: "",
+                "Commission Rewards": "",
                 "Max Change Rate": ""
             },
             validatorProfile: {
@@ -547,7 +547,7 @@ export default {
         getValidatorRewards() {
             Service.commonInterface(
                 {
-                    validatorRewards: {
+                    validatorCommissionRewards: {
                         validatorAddr: this.$route.params.param
                     }
                 },
@@ -556,8 +556,8 @@ export default {
                         if (data) {
                             if (Array.isArray(data) && data[0]) {
                                 this.validatorInfo[
-                                    "Rewards"
-                                ] = this.formatAmount(data);
+                                    "Commission Rewards"
+                                ] = this.formatAmount(data[0]);
                             }
                         }
                     } catch (e) {}
@@ -577,27 +577,29 @@ export default {
                             this.validatorStatus = data.status;
                             this.validatorInfo["Voting Power"] =
                                 data.status === "Active"
-                                    ? `${Tools.formatDecimalNumberToFixedNumber(
+                                    ? `${
+                                          data.self_power
+                                      } (${this.formatPerNumber(
                                           (data.self_power / data.total_power) *
                                               100
-                                      )} %`
+                                      )} %)`
                                     : data.status;
                             this.validatorInfo["Bond Height"] =
                                 data.bond_height;
                             this.validatorInfo[
                                 "Bonded Tokens"
                             ] = `${Tools.formatPriceToFixed(
-                                Number(data.bonded_tokens),
-                                2
+                                Number(data.bonded_tokens)
                             )} ${Constants.Denom.IRIS.toUpperCase()}`;
                             this.validatorInfo["Unbonding Height"] =
                                 data.unbond_height;
+                            data.unbond_height === "" &&
+                                delete this.validatorInfo["Unbonding Height"];
                             this.validatorInfo[
                                 "Self Bonded"
                             ] = `${Tools.formatPriceToFixed(
-                                Number(data.self_bonded),
-                                2
-                            )} ${Constants.Denom.IRIS.toUpperCase()} (${Tools.formatDecimalNumberToFixedNumber(
+                                Number(data.self_bonded)
+                            )} ${Constants.Denom.IRIS.toUpperCase()} (${this.formatPerNumber(
                                 (data.self_bonded /
                                     Number(data.bonded_tokens)) *
                                     100
@@ -607,15 +609,16 @@ export default {
                             ).getTime()
                                 ? Tools.format2UTC(data.jailed_until)
                                 : "";
+                            data.jailed_until === "" &&
+                                delete this.validatorInfo["Jailed Until"];
                             let delegator_tokens =
                                 Number(data.bonded_tokens) -
                                 Number(data.self_bonded);
                             this.validatorInfo[
                                 "Delegator Bonded"
                             ] = `${Tools.formatPriceToFixed(
-                                Number(delegator_tokens),
-                                2
-                            )} ${Constants.Denom.IRIS.toUpperCase()} (${Tools.formatDecimalNumberToFixedNumber(
+                                Number(delegator_tokens)
+                            )} ${Constants.Denom.IRIS.toUpperCase()} (${this.formatPerNumber(
                                 (delegator_tokens /
                                     Number(data.bonded_tokens)) *
                                     100
@@ -627,28 +630,27 @@ export default {
                             this.validatorInfo["Commission Rate"] =
                                 data.commission_update !==
                                 "0001-01-01 00:00:00 +0000 UTC"
-                                    ? `${Tools.formatDecimalNumberToFixedNumber(
+                                    ? `${this.formatPerNumber(
                                           Number(data.commission_rate) * 100
                                       )} % (${Tools.format2UTC(
                                           data.commission_update
                                       )})`
-                                    : `${Tools.formatDecimalNumberToFixedNumber(
+                                    : `${this.formatPerNumber(
                                           Number(data.commission_rate) * 100
                                       )} %`;
                             this.validatorInfo[
                                 "Delegator Shares"
                             ] = `${Tools.formatPriceToFixed(
-                                Number(data.delegator_shares),
-                                2
+                                Number(data.delegator_shares)
                             )} ${Constants.Denom.IRIS.toUpperCase()}`;
                             this.validatorInfo[
                                 "Max Rate"
-                            ] = `${Tools.formatDecimalNumberToFixedNumber(
+                            ] = `${this.formatPerNumber(
                                 Number(data.commission_max_rate) * 100
                             )} %`;
                             this.validatorInfo[
                                 "Max Change Rate"
-                            ] = `${Tools.formatDecimalNumberToFixedNumber(
+                            ] = `${this.formatPerNumber(
                                 Number(data.commision_max_change_rate) * 100
                             )} %`;
                             this.validatorProfile["Operator Address"] =
@@ -692,7 +694,7 @@ export default {
                                     " " +
                                     Constants.Denom.IRIS.toUpperCase();
                                 let selfShares = Number(it.self_shares);
-                                it.shares = `${selfShares} (${Tools.formatDecimalNumberToFixedNumber(
+                                it.shares = `${selfShares} (${this.formatPerNumber(
                                     (selfShares / Number(it.total_shares)) * 100
                                 )}%)`;
                             }
@@ -945,6 +947,18 @@ export default {
                     } catch (e) {}
                 }
             );
+        },
+        formatPerNumber(num) {
+            if (typeof num === "number" && !Object.is(num, NaN)) {
+                let afterPoint = String(num).split(".")[1];
+                let afterPointLong = (afterPoint && afterPoint.length) || 0;
+                if (afterPointLong > 2 && num !== 0) {
+                    return num.toFixed(4);
+                } else {
+                    return num.toFixed(2);
+                }
+            }
+            return num;
         },
         formatAmount(item) {
             let amount = "--";
@@ -1324,6 +1338,7 @@ export default {
             });
         },
         openUrl(url) {
+            url = url.trim();
             if (url) {
                 if (!/(http|https):\/\/([\w.]+\/?)\S*/.test(url)) {
                     url = `http://${url}`;
@@ -1515,7 +1530,9 @@ export default {
     .delegations_container {
         overflow: hidden;
         .delegations_table_container {
-            overflow-x: auto;
+            .validator_detail_table {
+                overflow-x: auto;
+            }
         }
     }
 }
@@ -1524,7 +1541,9 @@ export default {
         .delegations_container {
             overflow: visible !important;
             .delegations_table_container {
-                overflow: visible !important;
+                .validator_detail_table {
+                    overflow: visible !important;
+                }
             }
         }
     }
