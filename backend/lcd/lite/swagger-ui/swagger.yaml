@@ -447,7 +447,7 @@ paths:
             $ref: "#/definitions/error"
   /api/stake/validators/{validatorAddr}/unbonding-delegations:
     get:
-      summary:  "%s/stake/validators/%s/unbonding-delegations"
+      summary:  "from lcd:   %s/stake/validators/%s/unbonding-delegations"
       tags:
         - Stake
       parameters:
@@ -476,7 +476,7 @@ paths:
             $ref: "#/definitions/error"
   /api/stake/validators/{validatorAddr}/redelegations:
     get:
-      summary:
+      summary: "from lcd: %s/stake/validators/%s/redelegations"
       tags:
         - Stake
       parameters:
@@ -497,8 +497,7 @@ paths:
           default: 5
       responses:
         200:
-          type: array
-          items:
+          schema:
             $ref: "#/definitions/RedelegationsByValidatorPage"
         default:
           description: generic error response
@@ -557,6 +556,42 @@ paths:
           type: array
           items:
             $ref: "#/definitions/ValidatorDepositTxPage"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/stake/validators/{validatorAddr}/withdraw-addr:
+    get:
+      summary:  "from lcd:  %s/distribution/%s/withdraw-address"
+      tags:
+        - Stake
+      parameters:
+        - name: validatorAddr
+          in: path
+          type: string
+          required: true
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/WithdrawAddrByValidator"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/stake/validators/{validatorAddr}/rewards:
+    get:
+      summary:  "from lcd:   %s/distribution/%s/rewards"
+      tags:
+        - Stake
+      parameters:
+        - name: validatorAddr
+          in: path
+          type: string
+          required: true
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/CoinsStr"
         default:
           description: generic error response
           schema:
@@ -878,6 +913,11 @@ paths:
 
 
 definitions:
+  WithdrawAddrByValidator:
+    type: object
+    properties:
+      address:
+        type: string
   ValidatorDepositTxPage:
     type: object
     properties:
@@ -901,6 +941,8 @@ definitions:
       submited:
         type: boolean
       tx_hash:
+        type: string
+      moniker:
         type: string
   ValidatorVotePage:
     type: object
@@ -1010,8 +1052,6 @@ definitions:
         type: string
       self_bonded:
         type: string
-      rewards:
-        $ref: "#/definitions/CoinsStr"
       delegator_shares:
         type: string
       delegator_count:
@@ -1036,8 +1076,6 @@ definitions:
       operator_addr:
         type: string
       owner_addr:
-        type: string
-      withdraw_addr:
         type: string
       consensus_addr:
         type: string
@@ -1554,6 +1592,9 @@ definitions:
         format: int
   BlockAndProposal:
     type: object
+    required:
+      - block
+      - proposal
     properties:
       block:
         $ref: "#/definitions/SimpleBlockVo"
