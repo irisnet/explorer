@@ -578,7 +578,7 @@ paths:
           description: generic error response
           schema:
             $ref: "#/definitions/error"
-  /api/stake/validators/{validatorAddr}/rewards:
+  /api/stake/validators/{validatorAddr}/commission-rewards:
     get:
       summary:  "from lcd:   %s/distribution/%s/rewards"
       tags:

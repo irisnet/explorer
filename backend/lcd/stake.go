@@ -112,7 +112,7 @@ func GetDistributionRewardsByValidatorAcc(validatorAcc string) (utils.CoinsAsStr
 		return nil, err
 	}
 
-	return rewards.Total, nil
+	return rewards.Commission, nil
 }
 
 func GetJailedUntilAndMissedBlocksCountByConsensusPublicKey(publicKey string) (string, string, error) {

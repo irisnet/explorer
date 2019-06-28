@@ -465,7 +465,8 @@ type DelegationVo struct {
 }
 
 type DistributionRewards struct {
-	Total utils.CoinsAsStr `json:"total"`
+	Total      utils.CoinsAsStr `json:"total"`
+	Commission utils.CoinsAsStr `json:"commission"`
 }
 
 type ValidatorSigningInfo struct {
