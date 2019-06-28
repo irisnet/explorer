@@ -2,6 +2,7 @@ package document
 
 import (
 	"fmt"
+	"math/big"
 	"time"
 
 	"github.com/irisnet/explorer/backend/orm"
@@ -22,10 +23,26 @@ const (
 	ValidatorFieldDescription      = "description"
 	ValidatorFieldConsensusAddr    = "consensus_pubkey"
 	ValidatorFieldProposerHashAddr = "proposer_addr"
+	ValidatorFieldTokens           = "tokens"
+	ValidatorFieldDelegatorShares  = "delegator_shares"
 	ValidatorStatusValUnbonded     = 0
 	ValidatorStatusValUnbonding    = 1
 	ValidatorStatusValBonded       = 2
 )
+
+func (v Validator) GetValidatorStatus() string {
+
+	if v.Jailed == false && v.Status == types.Bonded {
+		return "Active"
+	}
+
+	if v.Status != types.Bonded && v.Jailed == false {
+		return "Candidate"
+	}
+
+	return "Jailed"
+
+}
 
 type (
 	UptimeChangeVo struct {
@@ -362,6 +379,29 @@ func (_ Validator) QueryCandidateStatus(addr string) (int, int, error) {
 	return preCommitCount, upTimeMap[validator.OperatorAddress], nil
 }
 
+func (_ Validator) QueryValidatorMonikerByAddrArr(addrs []string) (map[string]string, error) {
+	validatorArr := []Validator{}
+
+	valCondition := bson.M{
+		ValidatorFieldOperatorAddress: bson.M{"$in": addrs},
+	}
+
+	selector := bson.M{ValidatorFieldDescription: 1, ValidatorFieldOperatorAddress: 1}
+
+	if err := queryAll(CollectionNmValidator, selector, valCondition, "", 0, &validatorArr); err != nil {
+		return nil, err
+	}
+
+	res := map[string]string{}
+
+	for _, v := range validatorArr {
+		res[v.OperatorAddress] = v.Description.Moniker
+	}
+
+	return res, nil
+
+}
+
 func (_ Validator) QueryValidatorListByAddrList(addrs []string) ([]Validator, error) {
 	validatorArr := []Validator{}
 
@@ -458,6 +498,68 @@ func (_ Validator) QueryValidatorByConsensusAddr(addr string) (Validator, error)
 	err := query.Exec()
 
 	return result, err
+}
+
+func (_ Validator) QueryTokensAndShareRatioByValidatorAddrs(addrArrAsVa []string) (map[string]*big.Rat, error) {
+
+	var validators []Validator
+	var selector = bson.M{ValidatorFieldTokens: 1, ValidatorFieldOperatorAddress: 1, ValidatorFieldDelegatorShares: 1}
+
+	err := queryAll(CollectionNmValidator, selector, bson.M{ValidatorFieldOperatorAddress: bson.M{"$in": addrArrAsVa}}, "", 0, &validators)
+
+	if err != nil {
+		return nil, err
+	}
+
+	result := map[string]*big.Rat{}
+
+	for _, v := range validators {
+		tokensAsRat, ok := new(big.Rat).SetString(v.Tokens)
+		if !ok {
+			logger.Error("convert validator token type (string -> big.Rat) err", logger.String("token str", v.Tokens))
+			continue
+		}
+
+		delegatorShareAsRat, ok := new(big.Rat).SetString(v.DelegatorShares)
+		if !ok {
+			logger.Error("convert validator DelegatorShares type (string -> big.Rat) err", logger.String("DelegatorShares str", v.DelegatorShares))
+			continue
+		}
+		result[v.OperatorAddress] = new(big.Rat).Quo(tokensAsRat, delegatorShareAsRat)
+	}
+	return result, nil
+}
+
+func (_ Validator) QueryValidatorDetailByOperatorAddr(opAddr string) (Validator, error) {
+
+	validator := Validator{}
+
+	valCondition := bson.M{
+		ValidatorFieldOperatorAddress: opAddr,
+	}
+
+	err := queryOne(CollectionNmValidator, nil, valCondition, &validator)
+
+	return validator, err
+}
+
+func (_ Validator) QueryTotalActiveValidatorVotingPower() (int64, error) {
+
+	validators := []Validator{}
+	condition := bson.M{ValidatorFieldJailed: false, ValidatorFieldStatus: types.Bonded}
+	var selector = bson.M{ValidatorFieldVotingPower: 1}
+
+	err := queryAll(CollectionNmValidator, selector, condition, "", 0, &validators)
+
+	if err != nil {
+		return 0, err
+	}
+
+	totalVotingPower := int64(0)
+	for _, v := range validators {
+		totalVotingPower += v.VotingPower
+	}
+	return totalVotingPower, nil
 }
 
 func (_ Validator) Batch(txs []txn.Op) error {

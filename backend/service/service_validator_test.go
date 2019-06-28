@@ -11,6 +11,12 @@ import (
 	"github.com/irisnet/irishub-sync/logger"
 )
 
+func TestGetDelegationsFromLcd(t *testing.T) {
+
+	delegationPage := new(ValidatorService).GetDelegationsFromLcd("fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx", 1, 5)
+	t.Logf(" %v \n", delegationPage)
+}
+
 func TestQueryValidatorTopN(t *testing.T) {
 
 	validatorPage := new(ValidatorService).QueryCandidatesTopN()
