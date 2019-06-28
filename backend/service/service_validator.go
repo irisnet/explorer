@@ -357,14 +357,18 @@ func (service *ValidatorService) GetValidatorDetail(validatorAddr string) model.
 		CommissionMaxRate:       validatorAsDoc.Commission.MaxRate,
 		CommissionMaxChangeRate: validatorAsDoc.Commission.MaxChangeRate,
 		BondHeight:              validatorAsDoc.BondHeight,
-		UnbondingHeight:         validatorAsDoc.UnbondingHeight,
-		JailedUntil:             jailedUntil,
 		MissedBlocksCount:       missedBlockCount,
 		OperatorAddr:            validatorAsDoc.OperatorAddress,
 		OwnerAddr:               utils.Convert(conf.Get().Hub.Prefix.AccAddr, validatorAsDoc.OperatorAddress),
 		ConsensusAddr:           validatorAsDoc.ConsensusPubkey,
 		Description:             desc,
 	}
+
+	if validatorAsDoc.Jailed {
+		res.UnbondingHeight = validatorAsDoc.UnbondingHeight
+		res.JailedUntil = jailedUntil
+	}
+
 	return res
 }
 
