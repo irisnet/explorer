@@ -1131,6 +1131,7 @@
                                     padding: 0 0.08rem;
                                 }
                                 .transaction_list_content {
+                                    padding: 0;
                                     .transaction_content {
                                         padding: 0 0.08rem;
                                     }
@@ -1143,6 +1144,7 @@
                                     }
                                 }
                                 .statics_list_content {
+                                    padding: 0;
                                     .statics_content {
                                         padding: 0 0.08rem;
                                     }
@@ -1155,6 +1157,7 @@
                                     }
                                 }
                                 .governance_list_content {
+                                    padding: 0;
                                     .governance_content {
                                         padding: 0 0.08rem;
                                     }
