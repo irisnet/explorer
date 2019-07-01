@@ -120,9 +120,12 @@ func (service *ProposalService) QueryDepositAndVotingProposalList() []model.Prop
 		logger.Error("query GetDepositProposalInitAmount", logger.String("err", err.Error()), logger.Any("depositProposalIdArr", depositProposalIdArr))
 	}
 
+	totalVotingPower, err := service.GetSystemVotingPower()
+	if err != nil {
+		logger.Error("get systemVotingPower fail", logger.String("err", err.Error()))
+	}
 	proposals := make([]model.ProposalNewStyle, 0, len(data))
 	for _, propo := range data {
-		var totalVotingPower int64
 		tmpVoteArr := make([]model.VoteWithVoterInfo, 0, len(propo.Votes))
 
 		for _, v := range propo.Votes {
@@ -132,7 +135,6 @@ func (service *ProposalService) QueryDepositAndVotingProposalList() []model.Prop
 			// only bonded validator will calculate voting power
 			if voterInfo.Status == document.ValidatorStatusValBonded {
 				voterVotingPower = voterInfo.VotingPower
-				totalVotingPower += voterInfo.VotingPower
 			}
 
 			tmpVote := model.VoteWithVoterInfo{
@@ -240,8 +242,12 @@ func (service *ProposalService) QueryList(page, size int) (resp model.PageVo) {
 			logger.Error("query GetValidatorPublicKeyMonikerFromProposalVoter", logger.String("err", err.Error()))
 		}
 
+		totalVotingPower, err := service.GetSystemVotingPower()
+		if err != nil {
+			logger.Error("get systemVotingPower fail", logger.String("err", err.Error()))
+		}
+
 		for _, propo := range data {
-			var totalVotingPower int64
 			tmpVoteArr := make([]model.VoteWithVoterInfo, 0, len(propo.Votes))
 			finalVotes := model.FinalVotes{}
 
@@ -263,7 +269,6 @@ func (service *ProposalService) QueryList(page, size int) (resp model.PageVo) {
 					// only bonded validator will calculate voting power
 					if voterInfo.Status == document.ValidatorStatusValBonded {
 						voterVotingPower = voterInfo.VotingPower
-						totalVotingPower += voterInfo.VotingPower
 					}
 
 					tmpVote := model.VoteWithVoterInfo{
@@ -473,6 +478,28 @@ func (_ ProposalService) GetDepositProposalInitAmount(idArr []uint64) (map[uint6
 	}
 
 	return res, nil
+}
+
+// get systemVotingPower by get sum of validator votingPower which status is bonded
+func (_ ProposalService) GetSystemVotingPower() (int64, error) {
+	var (
+		validators       []document.Validator
+		totalVotingPower int64
+	)
+	selector := bson.M{
+		document.ValidatorFieldVotingPower: "1",
+	}
+	condition := bson.M{
+		document.ValidatorFieldStatus: document.ValidatorStatusValBonded,
+	}
+
+	if err := queryAll(document.CollectionNmValidator, selector, condition, "", 0, &validators); err == nil {
+		for _, v := range validators {
+			totalVotingPower += v.VotingPower
+		}
+	}
+
+	return totalVotingPower, nil
 }
 
 func (s *ProposalService) GetVoteTxs(proposalId int64, page, size int) model.GetVoteTxResponse {
