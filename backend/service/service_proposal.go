@@ -9,11 +9,9 @@ import (
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
-	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
-	"gopkg.in/mgo.v2/bson"
 )
 
 type AddrAsMultiType struct {
@@ -51,30 +49,13 @@ func (service *ProposalService) QueryProposalsByHeight(height int64) []model.Pro
 }
 
 func (service *ProposalService) QueryDepositAndVotingProposalList() []model.ProposalNewStyle {
+	var (
+		proposalDocument document.Proposal
+	)
+	status := []string{document.ProposalStatusDeposit, document.ProposalStatusVoting}
+	sorts := []string{document.Proposal_Field_VotingEndTime, document.Proposal_Field_DepositEndTime}
 
-	var data []document.Proposal
-	selector := bson.M{
-		document.Proposal_Field_ProposalId:        1,
-		document.Proposal_Field_Title:             1,
-		document.Proposal_Field_Type:              1,
-		document.Proposal_Field_Status:            1,
-		document.Proposal_Field_Votes:             1,
-		document.Proposal_Field_VotingStartHeight: 1,
-		document.Proposal_Field_TotalDeposit:      1,
-	}
-
-	condition := bson.M{"status": bson.M{"$in": []string{document.ProposalStatusDeposit, document.ProposalStatusVoting}}}
-
-	var query = orm.NewQuery()
-	defer query.Release()
-	query.SetCollection(document.CollectionNmProposal).
-		SetCondition(condition).
-		SetSelector(selector).
-		SetSort(document.Proposal_Field_VotingEndTime, document.Proposal_Field_DepositEndTime).
-		SetSize(0).
-		SetResult(&data)
-
-	err := query.Exec()
+	data, err := proposalDocument.GetProposalsByStatus(status, sorts)
 	if err != nil {
 		logger.Error("query proposal collection", logger.String("err", err.Error()))
 		return nil
@@ -110,9 +91,12 @@ func (service *ProposalService) QueryDepositAndVotingProposalList() []model.Prop
 		logger.Error("query GetDepositProposalInitAmount", logger.String("err", err.Error()), logger.Any("depositProposalIdArr", depositProposalIdArr))
 	}
 
+	totalVotingPower, err := service.GetSystemVotingPower()
+	if err != nil {
+		logger.Error("get systemVotingPower fail", logger.String("err", err.Error()))
+	}
 	proposals := make([]model.ProposalNewStyle, 0, len(data))
 	for _, propo := range data {
-		var totalVotingPower int64
 		tmpVoteArr := make([]model.VoteWithVoterInfo, 0, len(propo.Votes))
 
 		for _, v := range propo.Votes {
@@ -122,7 +106,6 @@ func (service *ProposalService) QueryDepositAndVotingProposalList() []model.Prop
 			// only bonded validator will calculate voting power
 			if voterInfo.Status == document.ValidatorStatusValBonded {
 				voterVotingPower = voterInfo.VotingPower
-				totalVotingPower += voterInfo.VotingPower
 			}
 
 			tmpVote := model.VoteWithVoterInfo{
@@ -221,8 +204,12 @@ func (service *ProposalService) QueryList(page, size int) (resp model.PageVo) {
 		logger.Error("query GetValidatorPublicKeyMonikerFromProposalVoter", logger.String("err", err.Error()))
 	}
 
+	totalVotingPower, err := service.GetSystemVotingPower()
+	if err != nil {
+		logger.Error("get systemVotingPower fail", logger.String("err", err.Error()))
+	}
+
 	for _, propo := range data {
-		var totalVotingPower int64
 		tmpVoteArr := make([]model.VoteWithVoterInfo, 0, len(propo.Votes))
 		finalVotes := model.FinalVotes{}
 
@@ -244,7 +231,6 @@ func (service *ProposalService) QueryList(page, size int) (resp model.PageVo) {
 				// only bonded validator will calculate voting power
 				if voterInfo.Status == document.ValidatorStatusValBonded {
 					voterVotingPower = voterInfo.VotingPower
-					totalVotingPower += voterInfo.VotingPower
 				}
 
 				tmpVote := model.VoteWithVoterInfo{
@@ -428,6 +414,22 @@ func (_ ProposalService) GetDepositProposalInitAmount(idArr []uint64) (map[uint6
 	}
 
 	return res, nil
+}
+
+// get systemVotingPower by get sum of validator votingPower which status is bonded
+func (_ ProposalService) GetSystemVotingPower() (int64, error) {
+	var (
+		validatorDocument document.Validator
+		totalVotingPower  int64
+	)
+
+	if validators, err := validatorDocument.GetBondedValidators(); err == nil {
+		for _, v := range validators {
+			totalVotingPower += v.VotingPower
+		}
+	}
+
+	return totalVotingPower, nil
 }
 
 func (s *ProposalService) GetVoteTxs(proposalId int64, page, size int) model.GetVoteTxResponse {

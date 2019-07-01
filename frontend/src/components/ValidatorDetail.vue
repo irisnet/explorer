@@ -555,7 +555,7 @@ export default {
                             if (Array.isArray(data) && data[0]) {
                                 this.validatorInfo[
                                     "Commission Rewards"
-                                ] = this.formatAmount(data[0]);
+                                ] = this.$options.filters.amountFromat(data[0]);
                             }
                         }
                     } catch (e) {}
@@ -586,18 +586,20 @@ export default {
                                 data.bond_height;
                             this.validatorInfo[
                                 "Bonded Tokens"
-                            ] = `${Tools.formatPriceToFixed(
-                                Number(data.bonded_tokens)
-                            )} ${Constants.Denom.IRIS.toUpperCase()}`;
+                            ] = `${this.$options.filters.amountFromat(
+                                data.bonded_tokens,
+                                Constants.Denom.IRIS.toUpperCase()
+                            )}`;
                             this.validatorInfo["Unbonding Height"] =
                                 data.unbond_height;
                             data.unbond_height === "" &&
                                 delete this.validatorInfo["Unbonding Height"];
                             this.validatorInfo[
                                 "Self Bonded"
-                            ] = `${Tools.formatPriceToFixed(
-                                Number(data.self_bonded)
-                            )} ${Constants.Denom.IRIS.toUpperCase()} (${this.formatPerNumber(
+                            ] = `${this.$options.filters.amountFromat(
+                                data.self_bonded,
+                                Constants.Denom.IRIS.toUpperCase()
+                            )} (${this.formatPerNumber(
                                 (data.self_bonded /
                                     Number(data.bonded_tokens)) *
                                     100
@@ -614,9 +616,10 @@ export default {
                                 Number(data.self_bonded);
                             this.validatorInfo[
                                 "Delegator Bonded"
-                            ] = `${Tools.formatPriceToFixed(
-                                Number(delegator_tokens)
-                            )} ${Constants.Denom.IRIS.toUpperCase()} (${this.formatPerNumber(
+                            ] = `${this.$options.filters.amountFromat(
+                                delegator_tokens,
+                                Constants.Denom.IRIS.toUpperCase()
+                            )} (${this.formatPerNumber(
                                 (delegator_tokens /
                                     Number(data.bonded_tokens)) *
                                     100
@@ -638,9 +641,10 @@ export default {
                                       )} %`;
                             this.validatorInfo[
                                 "Delegator Shares"
-                            ] = `${Tools.formatPriceToFixed(
-                                Number(data.delegator_shares)
-                            )} ${Constants.Denom.IRIS.toUpperCase()}`;
+                            ] = `${this.$options.filters.amountFromat(
+                                data.delegator_shares,
+                                Constants.Denom.IRIS.toUpperCase()
+                            )}`;
                             this.validatorInfo[
                                 "Max Rate"
                             ] = `${this.formatPerNumber(
@@ -701,10 +705,10 @@ export default {
                     try {
                         if (Array.isArray(data.items)) {
                             for (let it of data.items) {
-                                it.amount =
-                                    this.formatAmount(it).split(" ")[0] +
-                                    " " +
-                                    Constants.Denom.IRIS.toUpperCase();
+                                it.amount = this.$options.filters.amountFromat(
+                                    it.amount,
+                                    Constants.Denom.IRIS.toUpperCase()
+                                );
                                 let selfShares = Number(it.self_shares);
                                 it.shares = `${selfShares} (${this.formatPerNumber(
                                     (selfShares / Number(it.total_shares)) * 100
@@ -800,8 +804,7 @@ export default {
                                 it.Tx_Hash = it.tx_hash;
                                 it.submited = it.submited ? "Yes" : "No";
                                 it.address = it.proposer;
-
-                                it.depositedAmount = this.formatAmount(
+                                it.depositedAmount = this.$options.filters.amountFromat(
                                     it.deposited_amount
                                 );
                             }
@@ -913,7 +916,7 @@ export default {
                             if (Array.isArray(data.Data)) {
                                 for (let it of data.Data) {
                                     it.Tx_Hash = it.Hash;
-                                    it.Self_Bonded = this.formatAmount(
+                                    it.Self_Bonded = this.$options.filters.amountFromat(
                                         it.SelfBond
                                     );
                                 }
@@ -971,45 +974,6 @@ export default {
                 }
             }
             return num;
-        },
-        formatAmount(item) {
-            let amount = "--";
-            if (item) {
-                if (item instanceof Array) {
-                    if (item.length > 0) {
-                        amount = Tools.formatAmount(item[0].amount);
-                        if (!item[0].denom) {
-                            amount = item
-                                .map(
-                                    listItem =>
-                                        `${listItem.formatAmount} SHARES`
-                                )
-                                .join(",");
-                        } else {
-                            amount = `${amount} ${Tools.formatDenom(
-                                item[0].denom
-                            ) || item[0].denom}`;
-                        }
-                    }
-                } else if (item.amount) {
-                    if (!item.denom) {
-                        amount = `${Tools.formatPriceToFixed(
-                            item.amount
-                        )} SHARES`;
-                    } else {
-                        if (`${item.denom}`.toLowerCase() === "iris-atto") {
-                            amount = `${Tools.formatPriceToFixed(
-                                Tools.numberMoveDecimal(item.amount)
-                            )} ${Tools.formatDenom(item.denom).toUpperCase()}`;
-                        } else {
-                            amount = `${Tools.formatPriceToFixed(
-                                item.amount
-                            )}  ${Tools.formatDenom(item.denom).toUpperCase()}`;
-                        }
-                    }
-                }
-            }
-            return amount;
         },
         getValidatorHistory(tabTime, index) {
             if (index !== undefined) {
