@@ -262,6 +262,7 @@
             {
               name: 'Participant',
               value: votes,
+              perData: Tools.formatDecimalNumberToFixedNumber(votes / all * 100),
               itemStyle: {
                 color: '#3598DB',
                 borderColor: '#ECEFFF',
@@ -271,6 +272,7 @@
                 {
                   name: 'Yes',
                   value: yes,
+                  perData: Tools.formatDecimalNumberToFixedNumber(yes / all * 100),
                   itemStyle: {
                     color: '#45B4FF',
                     borderColor: '#ECEFFF',
@@ -281,6 +283,7 @@
                 {
                   name: 'Abstain',
                   value: abstain,
+                  perData: Tools.formatDecimalNumberToFixedNumber(abstain / all * 100),
                   itemStyle: {
                     color: '#CCDCFF',
                     borderColor: '#ECEFFF',
@@ -291,6 +294,7 @@
                 {
                   name: 'No',
                   value: no,
+                  perData: Tools.formatDecimalNumberToFixedNumber(no / all * 100),
                   itemStyle: {
                     color: '#FFCF65',
                     borderColor: '#ECEFFF',
@@ -301,6 +305,7 @@
                 {
                   name: 'NoWithVeto',
                   value: noWithVeto,
+                  perData: Tools.formatDecimalNumberToFixedNumber(noWithVeto / all * 100),
                   itemStyle: {
                     color: '#FE8A8A',
                     borderColor: '#ECEFFF',
@@ -313,6 +318,7 @@
             {
               name: 'Nonparticipant',
               value: all - votes,
+              perData: Tools.formatDecimalNumberToFixedNumber((all - votes) / all * 100),
               nodeClick: false,
               itemStyle: {
                 color: '#E5E9FB',
