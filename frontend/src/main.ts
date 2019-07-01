@@ -6,9 +6,12 @@ import store from './store'
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
-/*引入自定义组件*/
+/*引入自定义修饰器*/
 import directives from './directives';
 Vue.use(directives);
+/*引入自定义过滤器*/
+import filters from './filters';
+Vue.use(filters);
 /*引入自定义组件*/
 import MTable from './components/commonComponents/MTable.vue';
 Vue.component('MTable', MTable);
