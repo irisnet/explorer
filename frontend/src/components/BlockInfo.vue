@@ -10,9 +10,6 @@
             </div>
         </div>
         <div class="block_detail_information_container">
-            <div class="block_information_title_content">
-                <span>Block Information</span>
-            </div>
             <div class="block_information_content">
                 <div class="current_block_information_content">
                     <div class="block_information_item">
@@ -500,16 +497,14 @@
 <style scoped lang="scss">
     .block_detail_container{
         .block_detail_content{
-            background: rgba(239, 239, 241, 1);
             .block_detail_title_content{
-                height: 0.62rem;
+                height: 0.65rem;
                 display: flex;
                 align-items: center;
                 max-width: 12.8rem;
                 margin: 0 auto;
                 padding-left: 0.2rem;
                 .block_height_content{
-                    padding-left: 0.2rem;
                     .information_value{
                         font-size: 0.22rem;
                         color: #22252a;

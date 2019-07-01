@@ -1,15 +1,10 @@
 <template>
     <div class="parameters_page_container">
-        <div class="parameters_page_title_container">
-            <div class="parameters_title_content">
-                <span class="parameters_title">Governable Parameters of IRISnet</span>
-            </div>
-        </div>
         <div class="parameters_list_container">
             <div class="parameter_list_content">
                 <div class="parameters_list_cards_content">
                     <spin-component :showLoading="showLoading"></spin-component>
-                    <div style="margin-top: 0.23rem; overflow-y: hidden;" v-show="!showNoData">
+                    <div style="margin-top: 0.2rem; overflow-y: hidden;" v-show="!showNoData">
                         <div :class="[$store.state.isMobile ? 'mobile_cards_layout' : 'pc_cards_layout']" v-for="(value, index) in parametersList" :key="index">
                             <div class="card_title" v-show="value && value.length > 0">
                                 <span>{{index}}</span>
@@ -66,20 +61,20 @@
 				Service.commonInterface({govParams:{}},(res) => {
 					try {
 						this.showLoading = false;
-						if(res){
+						if(Array.isArray(res)){
 							let arr = res.map( item => {
 								this.handleParameterItem(item);
 								return item;
 							});
 							let o = {
-								Staking: null,
-								Slashing: null,
-								General: null
+								'Parameters-Staking': null,
+								'Parameters-Slashing': null,
+								'Parameters-General': null
 							}
-							o.Staking = arr.filter(v => v.module === 'mint' || v.module === 'stake' || v.module === 'distr') || null;
-							o.Slashing = arr.filter(v => v.module === 'slashing') || null;
-							o.General = arr.filter(v => (v.module !== 'stake' && v.module !== 'slashing' && v.module !== 'distr' && v.module !== 'mint')) || null;
-							o.Staking = [...o.Staking.filter(v => v.module === 'mint'), ...o.Staking.filter(v => v.module === 'stake'), ...o.Staking.filter(v => v.module === 'distr')];
+							o['Parameters-Staking'] = arr.filter(v => v.module === 'mint' || v.module === 'stake' || v.module === 'distr') || null;
+							o['Parameters-Slashing'] = arr.filter(v => v.module === 'slashing') || null;
+							o['Parameters-General'] = arr.filter(v => (v.module !== 'stake' && v.module !== 'slashing' && v.module !== 'distr' && v.module !== 'mint')) || null;
+							o['Parameters-Staking'] = [...o['Parameters-Staking'].filter(v => v.module === 'mint'), ...o['Parameters-Staking'].filter(v => v.module === 'stake'), ...o['Parameters-Staking'].filter(v => v.module === 'distr')];
 							this.parametersList = o;
 						}else {
 							this.parametersList = {};
@@ -190,23 +185,6 @@
 <style scoped lang="scss">
     @import "../style/mixin.scss";
     .parameters_page_container{
-        .parameters_page_title_container{
-            background: rgba(239, 239, 241, 1);
-            border-bottom: 0.01rem solid rgba(215, 217, 224, 1);
-            .parameters_title_content{
-                max-width: 12.8rem;
-                margin: 0 auto;
-                .parameters_title{
-                    height: 0.6rem;
-                    display: flex;
-                    align-items: center;
-                    font-size: 0.22rem;
-                    color: rgba(34, 37, 42, 1);
-                    line-height: 0.26rem;
-                    padding-left: 0.2rem;
-                }
-            }
-        }
         .parameters_list_container{
             width: 100%;
             margin-bottom: 0.4rem;
@@ -249,6 +227,7 @@
                     }
                     div.card_title {
                         width: 100%;
+                        height: 0.25rem;
                         margin-top: 0.1rem;
                         margin-left: 0.2rem;
                         margin-bottom: 0.2rem;

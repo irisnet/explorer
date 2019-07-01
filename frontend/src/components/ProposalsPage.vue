@@ -1,10 +1,10 @@
 <template>
   <div class="proposals_list_page_wrap">
-    <div class="proposals_list_title_wrap">
+    <!-- <div class="proposals_list_title_wrap">
       <p :class="proposalsListPageWrap" style="margin-bottom:0;">
         <span class="proposals_list_title">Proposals</span>
       </p>
-    </div>
+    </div> -->
     <div class="graph_containers">
       <div class="graph_container mobile_graph_container" v-if="$store.state.isMobile && (depositPeriodDatas.length > 0 || votingPeriodDatas.length > 0)">
         <div v-for="v in votingPeriodDatas" :key="v.proposal_id">
@@ -551,7 +551,6 @@
   }
     .personal_computer_proposals_list_page_wrap {
       @include flex;
-      padding-bottom: 0.2rem;
     }
     .mobile_proposals_list_page_wrap {
       @include flex;
@@ -565,7 +564,6 @@
     }
   }
   .personal_computer_proposals_list_page_wrap {
-    padding-bottom: 0.2rem;
     width: 100%!important;
     .transaction_information_content_title {
       height: 0.4rem;
