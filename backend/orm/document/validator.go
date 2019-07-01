@@ -155,7 +155,13 @@ func (_ Validator) GetAllValidator() ([]Validator, error) {
 
 func (v Validator) QueryValidatorMonikerOpAddrConsensusPubkey(addrArrAsVa []string) ([]Validator, error) {
 	var validators []Validator
-	var selector = bson.M{"description.moniker": 1, "operator_address": 1, "consensus_pubkey": 1}
+	var selector = bson.M{
+		"description.moniker": 1,
+		"operator_address":    1,
+		"consensus_pubkey":    1,
+		"status":              1,
+		"voting_power":        1,
+	}
 
 	err := queryAll(CollectionNmValidator, selector, bson.M{"operator_address": bson.M{"$in": addrArrAsVa}}, "", 0, &validators)
 	return validators, err
