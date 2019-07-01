@@ -1,5 +1,6 @@
 import Tools from "../util/Tools";
 import moveDecimal  from "move-decimal-point";
+import BigNumber from 'bignumber.js';
 
 const afterPointLengthReg = /(\.[0-9]*[1-9])[0]*$/g;
 
@@ -33,6 +34,7 @@ function amountFromatFunc (value, denomArg, fixedValue, ratio) {
             }
         } else if (prototypeToString(value) ===  "[object Object]") {
             if (value.amount) {
+                value.amount = new BigNumber(value.amount).toFixed();
                 if (ratio) {//比率转换
                     value.amount = moveDecimal(String(value.amount) + ".",-ratio);
                 }
@@ -57,6 +59,7 @@ function amountFromatFunc (value, denomArg, fixedValue, ratio) {
             }
         } else if (prototypeToString(value) === "[object Number]" ||  prototypeToString(value) === "[object String]") {
             if (value) {
+                value = new BigNumber(value).toFixed();
                 if (ratio) {//比率转换
                     value = moveDecimal(String(value) + ".",-ratio);
                 }
