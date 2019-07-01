@@ -974,8 +974,9 @@ export default {
                                 )
                                 .join(",");
                         } else {
-                            amount =
-                                `${amount} ${(Tools.formatDenom(item[0].denom) || item[0].denom)}`;
+                            amount = `${amount} ${Tools.formatDenom(
+                                item[0].denom
+                            ) || item[0].denom}`;
                         }
                     }
                 } else if (item.amount) {
@@ -984,15 +985,15 @@ export default {
                             item.amount
                         )} SHARES`;
                     } else {
-                        if (`${item.denom}`.toLowerCase() === 'iris-atto') {
-                            item.amount = `${item.amount}`.padStart(19, 0);
-                            item.amount = item.amount.replace(/\d{18}$/g, (v) => {
-                                return `.${v}`
-                            });
+                        if (`${item.denom}`.toLowerCase() === "iris-atto") {
+                            amount = `${Tools.formatPriceToFixed(
+                                Tools.numberMoveDecimal(item.amount)
+                            )} ${Tools.formatDenom(item.denom).toUpperCase()}`;
+                        } else {
+                            amount = `${Tools.formatPriceToFixed(
+                                item.amount
+                            )}  ${Tools.formatDenom(item.denom).toUpperCase()}`;
                         }
-                        amount = `${Tools.formatPriceToFixed(
-                            item.amount
-                        )}  ${Tools.formatDenom(item.denom).toUpperCase()}`;
                     }
                 }
             }
