@@ -975,7 +975,7 @@ export default {
                                 .join(",");
                         } else {
                             amount =
-                                amount + " " + (Tools.formatDenom(item[0].denom) || item[0].denom);
+                                `${amount} ${(Tools.formatDenom(item[0].denom) || item[0].denom)}`;
                         }
                     }
                 } else if (item.amount) {
