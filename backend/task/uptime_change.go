@@ -1,6 +1,7 @@
 package task
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/irisnet/explorer/backend/logger"
@@ -44,50 +45,53 @@ func (task UpTimeChangeTask) Start() {
 		uptimeChange.Uptime = uptimeChangeAsDoc.Uptime
 
 		if err != nil {
-			logger.Error("uptime change query one ", logger.String("err", err.Error()))
+			logger.Error("UptimeChangeVo uptime change query one ", logger.String("err", err.Error()))
 		}
 
 		var startTime time.Time
-		d, _ := time.ParseDuration("1h") //1 hour later
+		oneHour, _ := time.ParseDuration("1h") //1 hour later
 		if uptimeChange.Time == "" {
 			firstBlock, err = document.Block{}.QueryOneBlockOrderByHeightAsc()
 			if err != nil {
-				logger.Error("query one blcok ", logger.String("err", err.Error()))
+				logger.Error("UptimeChangeVo  query one blcok ", logger.String("err", err.Error()))
 			}
 			startTime = firstBlock.Time
 		} else {
 			startTime, _ = time.ParseInLocation("2006-01-02 15", uptimeChange.Time, time.UTC)
-			startTime = startTime.Add(d)
+			startTime = startTime.Add(oneHour)
 		}
 
 		lastBlock, err = document.Block{}.QueryOneBlockOrderByHeightDesc()
 		if err != nil {
-			logger.Error("can't find any block")
+			logger.Error("UptimeChangeVo  can't find any block")
 			return
 		}
 
 		lastTime := lastBlock.Time
-		endTime := startTime.Add(d)
+		endTime := startTime.Add(oneHour)
 
 		startTime = time.Date(startTime.Year(), startTime.Month(), startTime.Day(), startTime.Hour(), 0, 0, 0, startTime.Location())
 		endTime = time.Date(endTime.Year(), endTime.Month(), endTime.Day(), endTime.Hour(), 0, 0, 0, endTime.Location())
 
-		logger.Info("UptimeChangeVo", logger.String("startTime", startTime.UTC().Format("2006-01-02 15")), logger.String("endTime", endTime.UTC().Format("2006-01-02 15")))
+		logger.Info("UptimeChangeVo  ", logger.String("startTime", startTime.UTC().Format("2006-01-02 15")), logger.String("endTime", endTime.UTC().Format("2006-01-02 15")), logger.String("latestBlockTime", lastTime.UTC().Format("2006-01-02 15")),
+			logger.String("endTime.Before(lastTime)", fmt.Sprintf("%v", endTime.Before(lastTime))))
 		if !endTime.Before(lastTime) {
-			logger.Info("UptimeChangeVo end", logger.String("endTime", endTime.String()), logger.String("lastTime", lastTime.String()))
+			logger.Info("UptimeChangeVo end", logger.String("endTime", endTime.UTC().String()), logger.String("lastTime", lastTime.UTC().String()))
 			return
 		}
 
 		blocks, err = document.Block{}.QueryBlocksByDurationWithHeightAsc(startTime, endTime)
 
 		if err != nil {
-			logger.Error("query blocks by duration with height asc", logger.String("errr", err.Error()))
+			logger.Error("UptimeChangeVo  query blocks by duration with height asc", logger.String("errr", err.Error()))
 		}
 
 		for len(blocks) == 0 {
+
 			//往前推进一个小时
-			startTime = startTime.Add(d)
-			endTime = endTime.Add(d)
+			startTime = startTime.Add(oneHour)
+			endTime = endTime.Add(oneHour)
+
 			if !endTime.Before(lastTime) {
 				logger.Info("UptimeChangeVo end", logger.String("startTime", startTime.Format("2006-01-02 15")))
 				return
@@ -126,6 +130,7 @@ func (task UpTimeChangeTask) Start() {
 		}
 
 		uptimeMap := make(map[string]int)
+
 		for _, block := range blocks {
 
 			// power change handle
@@ -204,18 +209,20 @@ func (task UpTimeChangeTask) Start() {
 					uptimeMap[validator.Address] = 0
 				}
 			}
+
 			for _, commit := range block.Block.LastCommit.Precommits {
 				uptimeMap[commit.ValidatorAddress]++
 			}
 
-			doneTime := startTime.UTC().Format("2006-01-02 15")
-			for k, v := range uptimeMap {
-				err := document.UptimeChange{Address: k, Uptime: float64(100*v) / float64(len(blocks)), Time: doneTime}.Insert()
-				if err != nil {
-					logger.Error("uptimeChange insert", logger.String("err", err.Error()))
-				}
-			}
+		}
+		doneTime := startTime.UTC().Format("2006-01-02 15")
 
+		for k, v := range uptimeMap {
+			logger.Info(fmt.Sprintf("UptimeChangeVo  uptime: %v  address: %v   time: %v   uptime percent: %v \n", v, k, doneTime, float64(100*v)/float64(len(blocks))))
+			err := document.UptimeChange{Address: k, Uptime: float64(100*v) / float64(len(blocks)), Time: doneTime}.Insert()
+			if err != nil {
+				logger.Error("uptimeChange insert", logger.String("err", err.Error()))
+			}
 		}
 
 		logger.Info("UptimeChangeVo task end")
