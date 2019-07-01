@@ -683,7 +683,7 @@ export default {
         	let url = `https://keybase.io/_/api/1.0/user/lookup.json?fields=basics&key_suffix=${identity}`;
         	if(identity){
 		        axios.http(url).then(res => {
-			        if(res.them[0].basics.username){
+			        if(res.them && res.them[0].basics.username){
 				        this.keyBaseName = `https://keybase.io/${res.them[0].basics.username}`
 			        }else {
 				        let i = this.validatorProfileLinks.indexOf('Identity');
