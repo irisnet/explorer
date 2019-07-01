@@ -1,13 +1,14 @@
 import Tools from "../util/Tools";
 import moveDecimal  from "move-decimal-point";
 
+const afterPointLengthReg = /(\.[0-9]*[1-9])[0]*$/g;
+
 function prototypeToString (value) {
     return Object.prototype.toString.call(value);
 }
 
 function afterPointLength(value) {
-    let r = /(\.[0-9]*[1-9])[0]*$/g;
-    let arr = r.exec(String(value));
+    let arr = afterPointLengthReg.exec(String(value));
     if (arr && arr[1]) {
         return arr[1].length - 1;
     }
