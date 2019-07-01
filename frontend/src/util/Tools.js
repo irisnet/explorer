@@ -552,7 +552,6 @@ export default class Tools{
 			amountRadixNumber = Tools.amountRadix(amountDenom);
 		}
 		if(amountDenom){
-			console.log(new BigNumber(moveDecimal(amountNumber,(Number(amountRadixNumber)* -1))).toFormat(),"数据是什么")
 			return `${new BigNumber(moveDecimal(amountNumber,(Number(amountRadixNumber)* -1))).toFormat()} ${Constant.RADIXDENOM.IRIS.toLocaleUpperCase()}`
 		}else {
 			return `${new BigNumber(moveDecimal(amountNumber,(Number(amountRadixNumber) * -1))).toFormat()} SHARES`
