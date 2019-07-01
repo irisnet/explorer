@@ -217,3 +217,38 @@ func (_ Proposal) QueryIdTitleStatusVotedTxhashByValidatorAcc(validatorAcc strin
 
 	return cnt, data, err
 }
+
+func (_ Proposal) GetProposalsByStatus(status, sorts []string) ([]Proposal, error) {
+	var (
+		proposals []Proposal
+		query     = orm.NewQuery()
+	)
+	defer query.Release()
+
+	selector := bson.M{
+		Proposal_Field_ProposalId:        1,
+		Proposal_Field_Title:             1,
+		Proposal_Field_Type:              1,
+		Proposal_Field_Status:            1,
+		Proposal_Field_Votes:             1,
+		Proposal_Field_VotingStartHeight: 1,
+		Proposal_Field_TotalDeposit:      1,
+	}
+
+	condition := bson.M{
+		"status": bson.M{
+			"$in": status,
+		},
+	}
+
+	query.SetCollection(document.CollectionNmProposal).
+		SetCondition(condition).
+		SetSelector(selector).
+		SetSort(sorts...).
+		SetSize(0).
+		SetResult(&proposals)
+
+	err := query.Exec()
+
+	return proposals, err
+}
