@@ -258,6 +258,7 @@
           o.participation = all ? (votes / all) * 100 : 0;
           o.passThreshold = votes ? (yes / votes) * 100 : 0;
           o.vetoThreshold = votes ? (noWithVeto / votes) * 100 : 0;
+          let nonparticipantPer = Tools.formatDecimalNumberToFixedNumber((all - votes) / all * 100);
           let data = [
             {
               name: 'Participant',
@@ -318,7 +319,7 @@
             {
               name: 'Nonparticipant',
               value: all - votes,
-              perData: Tools.formatDecimalNumberToFixedNumber((all - votes) / all * 100),
+              perData: nonparticipantPer,
               nodeClick: false,
               itemStyle: {
                 color: '#E5E9FB',
@@ -335,6 +336,7 @@
                   name: '',
                   tipName: 'Nonparticipant',
                   value: all - votes,
+                  perData: nonparticipantPer,
                   nodeClick: false,
                   itemStyle: {
                     color: '#E5E9FB',
@@ -346,6 +348,7 @@
                       name: '',
                       tipName: 'Nonparticipant',
                       value: all - votes,
+                      perData: nonparticipantPer,
                       nodeClick: false,
                       itemStyle: {
                         color: '#E5E9FB',
