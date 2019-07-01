@@ -136,6 +136,9 @@ export default {
             if (v.data.info) {
               return `${v.marker}voter: ${info.voter_moniker}<br><span style="margin-left: 15px;">voting_power: ${info.voting_power} (${v.data.per} %)</span>`;
             } else {
+              if (v.dataIndex === 1 || !v.name) {
+                return `${v.marker}${v.data.tipName || v.name}: ${v.value} (${v.data.perData} %)`;
+              }
               return `${v.marker}${v.data.tipName || v.name}: ${v.value} (${v.data.per} %)`;
             }
           },
