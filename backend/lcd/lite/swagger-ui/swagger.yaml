@@ -226,7 +226,7 @@ paths:
             $ref: "#/definitions/error"
   /api/gov/deposit_voting_proposals:
     get:
-      summary: query the deposit and voting proposals.
+      summary: "query the deposit and voting proposals;"
       tags:
         - Governance
       responses:
@@ -404,14 +404,194 @@ paths:
       parameters:
         - in: path
           name: address
-          description: query validator by Address from lcd.
+          description: query validator by Address from db.
           required: true
           type: string
       responses:
         200:
           description:
           schema:
-            $ref: "#/definitions/LcdValidator"
+            $ref: "#/definitions/ValidatorForDetail"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/stake/validators/{validatorAddr}/delegations:
+    get:
+      summary: "from lcd:  %s/stake/validators/%s/delegations"
+      tags:
+        - Stake
+      parameters:
+        - in: path
+          name: validatorAddr
+          description: query delegations by validator address.
+          required: true
+          type: string
+        - in: query
+          name: page
+          type: integer
+          format: int
+          default: 1
+        - in: query
+          name: size
+          type: integer
+          format: int
+          default: 5
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/DelegationByValidatorPage"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/stake/validators/{validatorAddr}/unbonding-delegations:
+    get:
+      summary:  "from lcd:   %s/stake/validators/%s/unbonding-delegations"
+      tags:
+        - Stake
+      parameters:
+        - in: path
+          name: validatorAddr
+          description: query unbonding delegation by validator addr.
+          required: true
+          type: string
+        - in: query
+          name: page
+          type: integer
+          format: int
+          default: 1
+        - in: query
+          name: size
+          type: integer
+          format: int
+          default: 5
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/UnbondingDelegationByValidatorPage"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/stake/validators/{validatorAddr}/redelegations:
+    get:
+      summary: "from lcd: %s/stake/validators/%s/redelegations"
+      tags:
+        - Stake
+      parameters:
+        - in: path
+          name: validatorAddr
+          description: query redelegations by validator address.
+          required: true
+          type: string
+        - in: query
+          name: page
+          type: integer
+          format: int
+          default: 1
+        - in: query
+          name: size
+          type: integer
+          format: int
+          default: 5
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/RedelegationsByValidatorPage"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/stake/validators/{validatorAddr}/vote:
+    get:
+      summary:
+      tags:
+        - Stake
+      parameters:
+        - name: validatorAddr
+          in: path
+          type: string
+          required: true
+        - in: query
+          name: page
+          type: integer
+          format: int
+          default: 1
+        - in: query
+          name: size
+          type: integer
+          format: int
+          default: 5
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/ValidatorVotePage"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/stake/validators/{validatorAddr}/depositor_txs:
+    get:
+      summary:
+      tags:
+        - Stake
+      parameters:
+        - name: validatorAddr
+          in: path
+          type: string
+          required: true
+        - in: query
+          name: page
+          type: integer
+          format: int
+          default: 1
+        - in: query
+          name: size
+          type: integer
+          format: int
+          default: 5
+      responses:
+        200:
+          type: array
+          items:
+            $ref: "#/definitions/ValidatorDepositTxPage"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/stake/validators/{validatorAddr}/withdraw-addr:
+    get:
+      summary:  "from lcd:  %s/distribution/%s/withdraw-address"
+      tags:
+        - Stake
+      parameters:
+        - name: validatorAddr
+          in: path
+          type: string
+          required: true
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/WithdrawAddrByValidator"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/stake/validators/{validatorAddr}/commission-rewards:
+    get:
+      summary:  "from lcd:   %s/distribution/%s/rewards"
+      tags:
+        - Stake
+      parameters:
+        - name: validatorAddr
+          in: path
+          type: string
+          required: true
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/CoinsStr"
         default:
           description: generic error response
           schema:
@@ -730,8 +910,234 @@ paths:
           schema:
             $ref: "#/definitions/error"
 
-definitions:
 
+
+definitions:
+  WithdrawAddrByValidator:
+    type: object
+    properties:
+      address:
+        type: string
+  ValidatorDepositTxPage:
+    type: object
+    properties:
+      total:
+        type: integer
+        format: int
+      items:
+        type: array
+        items:
+          $ref: "#/definitions/ValidatorDepositTx"
+  ValidatorDepositTx:
+    type: object
+    properties:
+      proposal_id:
+        type: integer
+        format: int
+      proposer:
+         type: string
+      amount:
+        $ref: "#/definitions/Coins"
+      submited:
+        type: boolean
+      tx_hash:
+        type: string
+      moniker:
+        type: string
+  ValidatorVotePage:
+    type: object
+    properties:
+      total:
+        type: integer
+        format: int
+      items:
+        type: array
+        items:
+          $ref: "#/definitions/ValidatorVote"
+  ValidatorVote:
+    type: object
+    properties:
+      proposal_id:
+        type: integer
+        format: int64
+      title:
+        type: string
+      status:
+        type: string
+      voted:
+        type: string
+      tx_hash:
+        type: string
+  RedelegationsByValidatorPage:
+    type: object
+    properties:
+      total:
+        type: integer
+        format: int
+      items:
+        type: array
+        items:
+          $ref: "#/definitions/RedelegationsByValidator"
+
+  RedelegationsByValidator:
+    type: object
+    properties:
+      address:
+        type: string
+      amount:
+        type: string
+      destination:
+        type: string
+      block:
+        type: string
+  UnbondingDelegationByValidatorPage:
+    type: object
+    properties:
+      total:
+        type: integer
+        format: int
+      items:
+        type: array
+        items:
+          $ref: "#/definitions/UnbondingDelegationByValidator"
+  UnbondingDelegationByValidator:
+    type: object
+    properties:
+      address:
+        type: string
+      amount:
+        type: string
+      block:
+        type: string
+      until:
+        type: string
+  DelegationByValidatorPage:
+    type: object
+    properties:
+      total:
+        type: integer
+        format: int
+      items:
+        type: array
+        items:
+          $ref: "#/definitions/DelegationByValidator"
+  DelegationByValidator:
+    type: object
+    properties:
+      address:
+        type: string
+      amount:
+        type: integer
+        format: float64
+      self_shares:
+        type: string
+      total_shares:
+        type: string
+      block:
+        type: string
+  ValidatorForDetail:
+    type: object
+    required:
+      - description
+      - total_power
+      - self_power
+      - status
+      - bonded_tokens
+      - self_bonded
+      - delegator_shares
+      - delegator_count
+      - commission_rate
+      - commission_update
+      - commission_max_rate
+      - commision_max_change_rate
+      - bond_height
+      - missed_blocks_count
+      - operator_addr
+      - owner_addr
+      - consensus_addr
+      - unbonding_height
+      - jailed_until
+    properties:
+      description:
+        $ref: "#/definitions/Description"
+      total_power:
+        type: integer
+        format: int64
+      self_power:
+        type: integer
+        format: int64
+      status:
+        type: string
+      bonded_tokens:
+        type: string
+      self_bonded:
+        type: string
+      delegator_shares:
+        type: string
+      delegator_count:
+        type: integer
+        format: int32
+      commission_rate:
+        type: string
+      commission_update:
+        type: string
+      commission_max_rate:
+        type: string
+      commision_max_change_rate:
+        type: string
+      bond_height:
+        type: string
+      unbonding_height:
+        type: string
+      jailed_until:
+        type: string
+      missed_blocks_count:
+        type: string
+      operator_addr:
+        type: string
+      owner_addr:
+        type: string
+      consensus_addr:
+        type: string
+  LcdValidator:
+    type: object
+    properties:
+      operator_address:
+        type: string
+      consensus_pubkey:
+        type: string
+      jailed:
+        type: boolean
+      status:
+        type: integer
+        format: int
+      tokens:
+        type: string
+      delegator_shares:
+        type: string
+      description:
+        $ref: "#/definitions/Description"
+      bond_height:
+        type: string
+      unbonding_height:
+        type: string
+      unbonding_time:
+        type: string
+      commission:
+        $ref: "#/definitions/Commission"
+      uptime:
+        type: integer
+        format: float32
+      self_bond:
+        type: string
+      delegator_num:
+        type: integer
+        format: int
+      proposer_addr:
+        type: string
+      voting_rate:
+        type: integer
+        format: float32
   GovTx:
     type: object
     properties:
@@ -1131,45 +1537,6 @@ definitions:
         type: string
       update_time:
         type: string
-  LcdValidator:
-    type: object
-    properties:
-      operator_address:
-        type: string
-      consensus_pubkey:
-        type: string
-      jailed:
-        type: boolean
-      status:
-        type: integer
-        format: int
-      tokens:
-        type: string
-      delegator_shares:
-        type: string
-      description:
-        $ref: "#/definitions/Description"
-      bond_height:
-        type: string
-      unbonding_height:
-        type: string
-      unbonding_time:
-        type: string
-      commission:
-        $ref: "#/definitions/Commission"
-      uptime:
-        type: integer
-        format: float32
-      self_bond:
-        type: string
-      delegator_num:
-        type: integer
-        format: int
-      proposer_addr:
-        type: string
-      voting_rate:
-        type: integer
-        format: float32
   ValidatorForList:
     type: object
     properties:
@@ -1245,6 +1612,9 @@ definitions:
         format: int
   BlockAndProposal:
     type: object
+    required:
+      - block
+      - proposal
     properties:
       block:
         $ref: "#/definitions/SimpleBlockVo"
@@ -1861,6 +2231,18 @@ definitions:
       amount:
         type: integer
         format: float64
+
+  CoinsStr:
+    type: array
+    items:
+      $ref: "#/definitions/CoinStr"
+  CoinStr:
+    type: object
+    properties:
+      denom:
+        type: string
+      amount:
+        type: string
   Coins:
     type: array
     items:

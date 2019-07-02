@@ -2,18 +2,18 @@ import Tools from "../util/Tools";
 import moveDecimal  from "move-decimal-point";
 import BigNumber from 'bignumber.js';
 
-const afterPointLengthReg = /(\.[0-9]*[1-9])[0]*$/g;
 
 function prototypeToString (value) {
     return Object.prototype.toString.call(value);
 }
 
 function afterPointLength(value) {
-    let arr = afterPointLengthReg.exec(String(value));
+
+	let afterPointLengthReg = /(\.[0-9]*[1-9])([0]*)$/g;
+	let arr = afterPointLengthReg.exec(String(value));
     if (arr && arr[1]) {
         return arr[1].length - 1;
     }
-    return 0;
 }
 
 function amountFromatFunc (value, denomArg, fixedValue, ratio) {

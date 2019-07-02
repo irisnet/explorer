@@ -38,13 +38,20 @@ const (
 	UrlFaucetApplyService   = "%s/apply"
 
 	//Stake
-	UrlRegisterGetValidators        = "/stake/validators"
-	UrlRegisterGetValidator         = "/stake/validators/{address}"
-	UrlRegisterQueryCandidatesTop   = "/stake/candidatesTop"
-	UrlRegisterQueryCandidate       = "/stake/candidate/{address}"
-	UrlRegisterQueryCandidateUptime = "/stake/candidate/{address}/uptime/{category}"
-	UrlRegisterQueryCandidatePower  = "/stake/candidate/{address}/power/{category}"
-	UrlRegisterQueryCandidateStatus = "/stake/candidate/{address}/status"
+	UrlRegisterGetValidators                         = "/stake/validators"
+	UrlRegisterGetValidator                          = "/stake/validators/{address}"
+	UrlRegisterQueryCandidatesTop                    = "/stake/candidatesTop"
+	UrlRegisterQueryCandidate                        = "/stake/candidate/{address}"
+	UrlRegisterQueryCandidateUptime                  = "/stake/candidate/{address}/uptime/{category}"
+	UrlRegisterQueryCandidatePower                   = "/stake/candidate/{address}/power/{category}"
+	UrlRegisterQueryCandidateStatus                  = "/stake/candidate/{address}/status"
+	UrlRegisterQueryValidatorsDelegations            = "/stake/validators/{validatorAddr}/delegations"
+	UrlRegisterQueryValidatorUnbondingDelegations    = "/stake/validators/{validatorAddr}/unbonding-delegations"
+	UrlRegisterQueryValidatorRedelegations           = "/stake/validators/{validatorAddr}/redelegations"
+	UrlRegisterQueryValidatorVoteByValidatorAddr     = "/stake/validators/{validatorAddr}/vote"
+	UrlRegisterQueryDepositorTxsByValidatorAddr      = "/stake/validators/{validatorAddr}/depositor_txs"
+	UrlRegisterQueryWithdrawAddrByValidatorAddr      = "/stake/validators/{validatorAddr}/withdraw-addr"
+	UrlRegisterQueryCommissionRewardsByValidatorAddr = "/stake/validators/{validatorAddr}/commission-rewards"
 
 	//Tx
 	UrlRegisterQueryTxList       = "/tx/{type}/{page}/{size}"

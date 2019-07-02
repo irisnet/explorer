@@ -62,7 +62,7 @@
                     <span class="information_value link_active_style">
             <router-link :to="addressRoute(voter)">{{voter}}</router-link></span>
                 </div>
-                <div class="information_props_wrap" v-if="flShowTypeTransfer || flShowWithdrawAddress">
+                <div class="information_props_wrap" v-if="flShowTypeTransfer || flShowWithdrawAddress || flShowTypeBurn">
                     <span class="information_props">From :</span>
                     <span class="information_value link_active_style">
             <router-link :to="addressRoute(fromValue)">{{fromValue}}</router-link>
@@ -128,7 +128,7 @@
                     <span class="information_props">Option :</span>
                     <span class="information_value">{{option}}</span>
                 </div>
-                <div class="information_props_wrap" v-if="flShowTypeTransfer || flShowTypeDeposit">
+                <div class="information_props_wrap" v-if="flShowTypeTransfer || flShowTypeDeposit || flShowTypeBurn">
                     <span class="information_props">Amount :</span>
                     <span class="information_value">{{amountValue}}</span>
                 </div>
@@ -164,10 +164,8 @@
                     <span class="information_props">Memo :</span>
                     <span class="information_value"><pre class="information_pre">{{memo}}</pre></span>
                 </div>
-
             </div>
         </div>
-
     </div>
 </template>
 
@@ -176,7 +174,6 @@
 	import Service from "../service";
 	import Constant from "../constant/Constant"
 	export default {
-
 		data() {
 			return {
 				devicesWidth: window.innerWidth,
@@ -225,6 +222,7 @@
 				flShowDelegatorAddress: false,
 				flShowValidatorAddress: false,
 				flShowReceivedRewardsValue: false,
+				flShowTypeBurn: false,
 				ageValue: '',
 				transactionDetailTimer: null,
 			}
@@ -356,6 +354,9 @@
 									this.flShowReceivedRewardsValue = true;
 									this.flShowValidatorAddress = true;
 									this.validatorAddress = data.From ? data.From : "";
+								} else if(data.Type === 'Burn'){
+									this.flShowTypeBurn = true;
+									this.fromValue = data.From;
 								}
 							}
 						}catch (e) {
@@ -424,6 +425,7 @@
                     }
                     .information_value{
                         color: #a2a2ae;
+                        flex:1;
                     }
                 }
             }

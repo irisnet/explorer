@@ -49,6 +49,7 @@ function mouseenterEvent (el, containerDiv) {
         let elRectLeft = elRect.left - containerRect.left;
         let elRectRight = containerRect.right - elRect.right;
         tooltipSpan.style.opacity = '0';
+        console.log(containerDiv,right);
         if (all < 0) {
             let maxWidth = Math.min(tooltipSpanRect.width, containerRect.width);
             tooltipSpan.classList.add('tooltip_span_word_warp');

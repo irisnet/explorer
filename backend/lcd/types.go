@@ -3,25 +3,33 @@ package lcd
 import (
 	"fmt"
 	"time"
+
+	"github.com/irisnet/explorer/backend/utils"
 )
 
 const (
-	UrlAccount                = "%s/bank/accounts/%s"
-	UrlValidator              = "%s/stake/validators/%s"
-	UrlValidators             = "%s/stake/validators?page=%d&size=%d"
-	UrlDelegationByVal        = "%s/stake/validators/%s/delegations"
-	UrlDelegationsByDelegator = "%s/stake/delegators/%s/delegations"
-	UrlSignInfo               = "%s/slashing/validators/%s/signing-info"
-	UrlNodeInfo               = "%s/node-info"
-	UrlGenesis                = "%s/genesis"
-	UrlWithdrawAddress        = "%s/distribution/%s/withdraw-address"
-	UrlBlockLatest            = "%s/blocks/latest"
-	UrlBlock                  = "%s/blocks/%d"
-	UrlValidatorSet           = "%s/validatorsets/%d"
-	UrlValidatorSetLatest     = "%s/validatorsets/latest"
-	UrlStakePool              = "%s/stake/pool"
-	UrlBlocksResult           = "%s/block-results/%d"
-	UrlGovParam               = "%s/gov/params/%s"
+	UrlAccount                                   = "%s/bank/accounts/%s"
+	UrlValidator                                 = "%s/stake/validators/%s"
+	UrlValidators                                = "%s/stake/validators?page=%d&size=%d"
+	UrlDelegationByVal                           = "%s/stake/validators/%s/delegations"
+	UrlDelegationsByDelegator                    = "%s/stake/delegators/%s/delegations"
+	UrlDelegationsByValidator                    = "%s/stake/validators/%s/delegations"
+	UrlUnbondingDelegationByValidator            = "%s/stake/validators/%s/unbonding-delegations"
+	UrlRedelegationsByValidator                  = "%s/stake/validators/%s/redelegations"
+	UrlSignInfo                                  = "%s/slashing/validators/%s/signing-info"
+	UrlNodeInfo                                  = "%s/node-info"
+	UrlGenesis                                   = "%s/genesis"
+	UrlWithdrawAddress                           = "%s/distribution/%s/withdraw-address"
+	UrlBlockLatest                               = "%s/blocks/latest"
+	UrlBlock                                     = "%s/blocks/%d"
+	UrlValidatorSet                              = "%s/validatorsets/%d"
+	UrlValidatorSetLatest                        = "%s/validatorsets/latest"
+	UrlStakePool                                 = "%s/stake/pool"
+	UrlBlocksResult                              = "%s/block-results/%d"
+	UrlGovParam                                  = "%s/gov/params/%s"
+	UrlDistributionRewardsByValidatorAcc         = "%s/distribution/%s/rewards"
+	UrlValidatorsSigningInfoByConsensuPublicKey  = "%s/slashing/validators/%s/signing-info"
+	UrlDistributionWithdrawAddressByValidatorAcc = "%s/distribution/%s/withdraw-address"
 )
 
 type AccountVo struct {
@@ -454,6 +462,60 @@ type DelegationVo struct {
 	ValidatorAddr string `json:"validator_addr"`
 	Shares        string `json:"shares"`
 	Height        string `json:"height"`
+}
+
+type DistributionRewards struct {
+	Total      utils.CoinsAsStr `json:"total"`
+	Commission utils.CoinsAsStr `json:"commission"`
+}
+
+type ValidatorSigningInfo struct {
+	StartHeight       string `json:"start_height"`
+	IndexOffset       string `json:"index_offset"`
+	JailedUntil       string `json:"jailed_until"`
+	MissedBlocksCount string `json:"missed_blocks_counter"`
+}
+
+type ReDelegations struct {
+	DelegatorAddr    string `json:"delegator_addr"`
+	ValidatorSrcAddr string `json:"validator_src_addr"`
+	ValidatorDstAddr string `json:"validator_dst_addr"`
+	CreationHeight   string `json:"creation_height"`
+	MinTime          int64  `json:"min_time"`
+	InitialBalance   string `json:"initial_balance"`
+	Balance          string `json:"balance"`
+	SharesSrc        string `json:"shares_src"`
+	SharesDst        string `json:"shares_dst"`
+}
+
+type UnbondingDelegations struct {
+	DelegatorAddr  string `json:"delegator_addr"`
+	ValidatorAddr  string `json:"validator_addr"`
+	InitialBalance string `json:"initial_balance"`
+	Balance        string `json:"balance"`
+	CreationHeight string `json:"creation_height"`
+	MinTime        string `json:"min_time"`
+}
+
+func (un UnbondingDelegations) String() string {
+	return fmt.Sprintf(`
+		DelegatorAddr  :%v
+		ValidatorAddr  :%v
+		InitialBalance :%v
+		Balance        :%v
+		CreationHeight :%v
+		MinTime        :%v
+		`, un.DelegatorAddr, un.ValidatorAddr, un.InitialBalance, un.Balance, un.CreationHeight, un.MinTime)
+
+}
+
+func (d DelegationVo) String() string {
+	return fmt.Sprintf(`
+		DelegatorAddr :%v
+		ValidatorAddr :%v
+		Shares        :%v
+		Height        :%v
+		`, d.DelegatorAddr, d.ValidatorAddr, d.Shares, d.Height)
 }
 
 type SignInfoVo struct {

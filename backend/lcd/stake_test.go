@@ -5,6 +5,39 @@ import (
 	"testing"
 )
 
+func TestGetRedelegationsByValidatorAddr(t *testing.T) {
+
+	redelegations := GetRedelegationsByValidatorAddr("fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx")
+
+	for k, v := range redelegations {
+		t.Logf("k: %v v: %v \n", k, v)
+	}
+
+}
+
+func TestGetDistributionRewardsByValidatorAcc(t *testing.T) {
+
+	rewards, err := GetDistributionRewardsByValidatorAcc("fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx")
+	if err != nil {
+		t.Error(err)
+	}
+
+	for k, v := range rewards {
+		t.Logf("k: %v  v: %v \n", k, v)
+	}
+}
+
+func TestGetJailedUntilAndMissedBlocksCountByConsensusPublicKey(t *testing.T) {
+
+	jailedUntil, missedBlockCount, err := GetJailedUntilAndMissedBlocksCountByConsensusPublicKey("fcp1zcjduepqcjgmderfahnlyrse563r2hcc3d4vjpafw03axzn3e87kfuqznjcsur8xrq")
+
+	if err != nil {
+		t.Error(err)
+	}
+
+	t.Logf("jailedUntil: %v  missedBlockCount: %v \n", jailedUntil, missedBlockCount)
+}
+
 func TestValidator(t *testing.T) {
 	address := "fva1k98nqnytl9u5ralns7ca7n8tpmacl8k25ymgyr"
 
@@ -53,4 +86,21 @@ func TestSignInfo(t *testing.T) {
 	res := SignInfo(pubKey)
 	resBytes, _ := json.MarshalIndent(res, "", "\t")
 	t.Log(string(resBytes))
+}
+
+func TestGetDelegationsByValidatorAddr(t *testing.T) {
+
+	delegations := GetDelegationsByValidatorAddr("fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx")
+
+	for k, v := range delegations {
+		t.Logf("k: %v  v: %v \n", k, v)
+	}
+}
+
+func TestGetUnbondingDelegationsByValidatorAddr(t *testing.T) {
+
+	unbondingDelegations := GetUnbondingDelegationsByValidatorAddr("fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx")
+	for k, v := range unbondingDelegations {
+		t.Logf("k: %v  v: %v \n", k, v)
+	}
 }

@@ -24,6 +24,9 @@ const (
 	Proposal_Field_VotingEndTime     = "voting_end_time"
 	Proposal_Field_TotalDeposit      = "total_deposit"
 	Proposal_Field_Votes             = "votes"
+	Proposal_Field_Votes_voter       = "votes.voter"
+	Proposal_Field_Votes_Option      = "votes.option"
+	Proposal_Field_Votes_TxHash      = "votes.txhash"
 	Proposal_Field_VotingStartHeight = "voting_start_height"
 	Proposal_Field_Final_Votes       = "tally_result"
 
@@ -78,6 +81,7 @@ type PVote struct {
 	Voter  string    `json:"voter"`
 	Option string    `json:"option"`
 	Time   time.Time `json:"time"`
+	TxHash string    `json:"txhash"`
 }
 
 func (p PVote) String() string {
@@ -189,4 +193,62 @@ func (_ Proposal) QueryProposalByPage(page, size int) (int, []Proposal, error) {
 	cnt, err := pageQuery(document.CollectionNmProposal, selector, nil, sort, page, size, &data)
 
 	return cnt, data, err
+}
+
+func (_ Proposal) QueryIdTitleStatusVotedTxhashByValidatorAcc(validatorAcc string, page, size int) (int, []Proposal, error) {
+
+	var data []Proposal
+
+	sort := desc(Proposal_Field_ProposalId)
+	selector := bson.M{
+		Proposal_Field_ProposalId: 1,
+		Proposal_Field_Title:      1,
+		Proposal_Field_Status:     1,
+		Proposal_Field_Votes:      1,
+	}
+
+	condition := bson.M{Proposal_Field_Votes_voter: validatorAcc}
+
+	cnt, err := pageQuery(document.CollectionNmProposal, selector, condition, sort, page, size, &data)
+
+	if err != nil {
+		return 0, nil, err
+	}
+
+	return cnt, data, err
+}
+
+func (_ Proposal) GetProposalsByStatus(status, sorts []string) ([]Proposal, error) {
+	var (
+		proposals []Proposal
+		query     = orm.NewQuery()
+	)
+	defer query.Release()
+
+	selector := bson.M{
+		Proposal_Field_ProposalId:        1,
+		Proposal_Field_Title:             1,
+		Proposal_Field_Type:              1,
+		Proposal_Field_Status:            1,
+		Proposal_Field_Votes:             1,
+		Proposal_Field_VotingStartHeight: 1,
+		Proposal_Field_TotalDeposit:      1,
+	}
+
+	condition := bson.M{
+		"status": bson.M{
+			"$in": status,
+		},
+	}
+
+	query.SetCollection(document.CollectionNmProposal).
+		SetCondition(condition).
+		SetSelector(selector).
+		SetSort(sorts...).
+		SetSize(0).
+		SetResult(&proposals)
+
+	err := query.Exec()
+
+	return proposals, err
 }
