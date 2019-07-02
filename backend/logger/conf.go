@@ -17,7 +17,7 @@ var (
 		Filename:          os.ExpandEnv("$HOME/explorer/explorer.log"),
 		MaxSize:           20,
 		MaxAge:            7,
-		Compress:          true,
+		Compress:          false,
 		EnableAtomicLevel: true,
 	}
 )
