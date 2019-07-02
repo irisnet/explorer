@@ -369,6 +369,11 @@ func (service *ValidatorService) GetValidatorDetail(validatorAddr string) model.
 		res.JailedUntil = jailedUntil
 	}
 
+	if validatorAsDoc.IsCandidatorWithStatus() {
+		res.UnbondingHeight = validatorAsDoc.UnbondingHeight
+		res.JailedUntil = jailedUntil
+	}
+
 	return res
 }
 

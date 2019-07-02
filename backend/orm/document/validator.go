@@ -44,6 +44,16 @@ func (v Validator) GetValidatorStatus() string {
 
 }
 
+func (v Validator) IsCandidatorWithStatus() bool {
+
+	if v.Status != types.Bonded && v.Jailed == false {
+		return true
+	}
+
+	return false
+
+}
+
 type (
 	UptimeChangeVo struct {
 		Address string
