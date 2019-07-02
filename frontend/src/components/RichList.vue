@@ -247,6 +247,8 @@ export default {
             overflow-x: auto;
             .top_list_table_content {
                 width: 12.5rem;
+                border-left: 1px solid #dee2e6;
+                border-right: 1px solid #dee2e6;
             }
         }
     }

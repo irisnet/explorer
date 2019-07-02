@@ -67,14 +67,14 @@
 								return item;
 							});
 							let o = {
-								'Parameters-Staking': null,
-								'Parameters-Slashing': null,
-								'Parameters-General': null
+								Staking: null,
+								Slashing: null,
+								General: null
 							}
-							o['Parameters-Staking'] = arr.filter(v => v.module === 'mint' || v.module === 'stake' || v.module === 'distr') || null;
-							o['Parameters-Slashing'] = arr.filter(v => v.module === 'slashing') || null;
-							o['Parameters-General'] = arr.filter(v => (v.module !== 'stake' && v.module !== 'slashing' && v.module !== 'distr' && v.module !== 'mint')) || null;
-							o['Parameters-Staking'] = [...o['Parameters-Staking'].filter(v => v.module === 'mint'), ...o['Parameters-Staking'].filter(v => v.module === 'stake'), ...o['Parameters-Staking'].filter(v => v.module === 'distr')];
+							o.Staking = arr.filter(v => v.module === 'mint' || v.module === 'stake' || v.module === 'distr') || null;
+							o.Slashing = arr.filter(v => v.module === 'slashing') || null;
+							o.General = arr.filter(v => (v.module !== 'stake' && v.module !== 'slashing' && v.module !== 'distr' && v.module !== 'mint')) || null;
+							o.Staking = [...o.Staking.filter(v => v.module === 'mint'), ...o.Staking.filter(v => v.module === 'stake'), ...o.Staking.filter(v => v.module === 'distr')];
 							this.parametersList = o;
 						}else {
 							this.parametersList = {};

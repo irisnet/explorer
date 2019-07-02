@@ -672,6 +672,9 @@
             }
             
         }
+        .block_validator_set_title {
+            padding-left: 0.1rem !important;
+        }
         .block_table_container {
             padding: 0 0.1rem;
         }

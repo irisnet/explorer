@@ -20,12 +20,14 @@
         </div> -->
 
         <div :class="transactionsDetailWrap">
-            <p class="transaction_information_content_title" style="height: 0.7rem; line-height: 0.7rem;">Address Information</p>
-            <div class="transactions_detail_information_wrap" style="border: 0.01rem solid #d7d9e0;">
+            <p class="transaction_information_content_title">Address Information</p>
+            <div class="transactions_detail_information_wrap">
                 <div class="information_props_wrap">
                     <span class="information_props">Address :</span>
-                    <span class="information_value">
-                        {{address?address:'--'}}
+                    <span class="information_value information_adress_value">
+                        <span>
+                            {{address?address:'--'}}
+                        </span>
                         <i v-if="flValidator"
                         :style="{background:validatorStatusColor}">v</i>
                         <img v-show="flShowProfileLogo"
@@ -216,7 +218,8 @@
                     <blocks-list-table :items="items"
                                        :type="'addressTxList'"
                                        :showNoData="showNoData"
-                                       class="address_tx_list_table"></blocks-list-table>
+                                       class="address_tx_list_table"
+                                       style="border-left: 1px solid #dee2e6; border-right: 1px solid #dee2e6;"></blocks-list-table>
                     <div v-show="showNoData"
                          class="no_data_show">
                         No Data

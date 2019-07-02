@@ -1,13 +1,13 @@
 <template>
     <div class="transactions_detail_wrap">
-        <div class="transactions_title_wrap">
+        <!-- <div class="transactions_title_wrap">
             <p :class="transactionsDetailWrap" style="margin-bottom:0;">
                 <span class="transactions_detail_title">Transaction</span>
                 <span class="transactions_detail_wrap_hash_var">{{hashValue}}</span>
             </p>
-        </div>
+        </div> -->
         <div :class="transactionsDetailWrap">
-            <p class="transaction_information_content_title">Transaction Information</p>
+            <p class="transaction_information_content_title" style="height: 0.7rem; line-height: 0.7rem;">Transaction Information</p>
             <div class="transactions_detail_information_wrap">
                 <div class="information_props_wrap">
                     <span class="information_props">TxHash :</span>
@@ -233,19 +233,26 @@
 			$route(){
 				this.getTransactionInfo();
 				Tools.scrollToTop();
-			}
+            },
+            "$store.state.isMobile"(newVal) {
+                this.isMobileFunc(newVal);
+            }
 		},
 		beforeMount() {
-			if (Tools.currentDeviceIsPersonComputer()) {
-				this.transactionsDetailWrap = 'personal_computer_transactions_detail_wrap';
-			} else {
-				this.transactionsDetailWrap = 'mobile_transactions_detail_wrap';
-			}
+            this.isMobileFunc(this.$store.state.isMobile);
 		},
 		mounted() {
 			this.getTransactionInfo()
 		},
 		methods: {
+            isMobileFunc(isMobile) {
+                if (isMobile) {
+                    this.transactionsDetailWrap = "mobile_transactions_detail_wrap";
+                } else {
+                    this.transactionsDetailWrap =
+                        "personal_computer_transactions_detail_wrap";
+                }
+            },
 			getTransactionInfo(){
 				if(this.$route.query.txHash){
 					Service.commonInterface({txDetail:{txHash:this.$route.query.txHash}}, (data) => {
@@ -399,15 +406,19 @@
                 font-size:0.18rem;
                 color:#000000;
                 @include fontWeight;
+                margin-left: 0.2rem;
                 margin-bottom:0;
                 font-family:ArialMT;
             }
             @include pcCenter;
             .transactions_detail_information_wrap{
-                padding:0.16rem 0rem 0.4rem;
+                padding: 0.2rem 0.2rem 0.08rem;
+                border: 1px solid #d7d9e0;
+                margin-bottom: 0.4rem;
                 .information_props_wrap{
                     @include flex;
-                    margin-bottom: 0.08rem;
+                    line-height: 0.2rem;
+                    margin-bottom: 0.12rem;
                     .information_props{
                         width:1.5rem;
                     }
@@ -442,21 +453,22 @@
                 line-height: 0.5rem;
                 font-size: 0.18rem;
                 color: #000000;
+                margin-left: 0.1rem;
                 margin-bottom:0;
                 @include fontWeight;
             }
             .transactions_detail_information_wrap{
-                padding:0.16rem 0rem;
+                padding: 0.1rem;
+                border: 1px solid #d7d9e0;
+                margin-bottom: 0.4rem;
                 .information_props_wrap{
                     @include flex;
                     flex-direction:column;
-                    margin-bottom:0.05rem;
+                    margin-bottom: 0;
                     .information_value{
                         overflow-x:auto;
                         -webkit-overflow-scrolling:touch;
                         overflow-y:hidden;
-                    }
-                    .information_value{
                         color: #a2a2ae;
                     }
                 }

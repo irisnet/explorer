@@ -1472,12 +1472,26 @@ export default {
     }
 }
 .mobile_transactions_detail_wrap {
+    .validator_information_content_title {
+        padding-left: 0.1rem;
+    }
     .title {
         padding-left: 0.1rem;
     }
     .validator_detail_information_wrap {
+        padding: 0.1rem;
         & > div {
             flex: 0 0 100%;
+        }
+        .information_props_wrap {
+            margin-bottom: 0;
+            flex-wrap: wrap;
+            .information_props {
+                width: 100%;
+            }
+            .information_value {
+                width: 100%;
+            }
         }
     }
     & > .second_table_container:nth-child(2n) {

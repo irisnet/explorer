@@ -14,7 +14,6 @@
                     </span>
                     <div v-if="!$store.state.isMobile" class="pagination_container">
                         <m-pagination
-                            :showToFristEnd="false"
                             :ascending="false"
                             :page-size="pageSize"
                             :total="currentHeight"
@@ -31,7 +30,6 @@
                 </div>
                 <div class="pagination_footer_container">
                     <m-pagination
-                        :showToFristEnd="false"
                         :ascending="false"
                         :page-size="pageSize"
                         :total="currentHeight"
