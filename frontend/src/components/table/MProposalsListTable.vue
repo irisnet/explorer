@@ -10,6 +10,12 @@
                       class="link_style">{{row.id}}</router-link>
       </template>
       <template slot-scope="{ row }"
+                slot="title">
+        <router-link v-if="row.id !== '--'" :to="`/ProposalsDetail/${row.id}`"
+                     class="link_style">{{row.title}}</router-link>
+        <span v-if="row.id === '--'">{{row.title}}</span>
+      </template>
+      <template slot-scope="{ row }"
                 slot="status">
         <img class="status_icon" v-if="row.status === 'Passed'" src="../../assets/pass.png" />
         <img class="status_icon" v-if="row.status === 'Rejected'" src="../../assets/rejected.png" />
@@ -94,7 +100,7 @@ export default {
         },
         {
           title: 'Title',
-          key: 'title'
+          slot: 'title',
         },
         {
           title: 'Type',
