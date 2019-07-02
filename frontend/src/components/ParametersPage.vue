@@ -66,8 +66,8 @@
 				Service.commonInterface({govParams:{}},(res) => {
 					try {
 						this.showLoading = false;
-						if(res){
-							let arr = res.map( item => {
+						if (res) {
+							let arr = res.map(item => {
 								this.handleParameterItem(item);
 								return item;
 							});
@@ -81,15 +81,15 @@
 							o.General = arr.filter(v => (v.module !== 'stake' && v.module !== 'slashing' && v.module !== 'distr' && v.module !== 'mint')) || null;
 							o.Staking = [...o.Staking.filter(v => v.module === 'mint'), ...o.Staking.filter(v => v.module === 'stake'), ...o.Staking.filter(v => v.module === 'distr')];
 							this.parametersList = o;
-						}else {
+						} else {
 							this.parametersList = {};
 							this.showNoData = true;
 						}
-					}catch (e) {
-						this.showLoading = false;
-						this.parametersList = {};
-						this.showNoData = true;
-						console.error(e)
+					} catch (e) {
+                        this.showLoading = false;
+                        this.parametersList = {};
+                        this.showNoData = true;
+                        console.error(e)
 					}
 				})
 			},
@@ -153,31 +153,31 @@
 					parameterItem.current = current_value_arr[1] ? `${current_value_arr_0}.${current_value_arr[1]} Nano` : `${current_value_arr_0} Nano`;
 					parameterItem.genesis = genesis_value_arr[1] ? `${genesis_value_arr_0}.${genesis_value_arr[1]} Nano` : `${genesis_value_arr_0} Nano`;
 				}else if(parameterItem.key === "tx_size"){
-					parameterItem.max = Number(arr[1]) === 0 ? arr[1] : `${arr[1]} Bytes`;
-					parameterItem.current = `${parameterItem.current_value} Bytes`;
-					parameterItem.genesis = `${parameterItem.genesis_value} Bytes`;
+					parameterItem.max = Number(arr[1]) === 0 ? arr[1] : arr[1] > 1 ? `${arr[1]} Bytes` : `${arr[1]} Byte`;
+					parameterItem.current = parameterItem.current_value > 1 ? `${parameterItem.current_value} Bytes` : `${parameterItem.current_value} Byte`;
+					parameterItem.genesis = parameterItem.genesis_value > 1 ? `${parameterItem.genesis_value} Bytes` : `${parameterItem.genesis_value} Byte`;
 				}else if(blockArr.indexOf(parameterItem.key) > -1) {
-					parameterItem.min = parameterItem.max ? parameterItem.min : `${parameterItem.min} Blocks`;
-					parameterItem.max = parameterItem.max ? `${parameterItem.max} Blocks` : '+∞';
-					parameterItem.current = `${parameterItem.current} Blocks`;
-					parameterItem.genesis = `${parameterItem.genesis} Blocks`;
+					parameterItem.min = parameterItem.max ? parameterItem.min : parameterItem.min > 1 ? `${parameterItem.min} Blocks` : `${parameterItem.min} Block`;
+					parameterItem.max = parameterItem.max ? parameterItem.max > 1 ? `${parameterItem.max} Blocks` : `${parameterItem.max} Block` : '+∞';
+					parameterItem.current = parameterItem.current > 1 ? `${parameterItem.current} Blocks` : `${parameterItem.current} Block`;
+					parameterItem.genesis = parameterItem.genesis > 1 ? `${parameterItem.genesis} Blocks` : `${parameterItem.genesis} Block`;
 				}
 			},
 			formatUnbondingTime(time) {
 				let nsToMSRatio = 1000000, dToHRatio = 24, HToMRatio = 60;
 				let dateTime = Tools.formatDuring(Number(time) / nsToMSRatio), d, h, m;
 				if (dateTime.days >= 1) {
-					d = `${Math.floor(dateTime.days)} Days`
+					d = Math.floor(dateTime.days) > 1 ? `${Math.floor(dateTime.days)} Days` : `${Math.floor(dateTime.days)} Day`
 				} else {
 					d = ''
 				}
 				if (dateTime.hours >= 1 && dateTime.hours < dToHRatio) {
-					h = `${Math.floor(dateTime.hours)} Hours`
+					h = Math.floor(dateTime.hours) > 1 ? `${Math.floor(dateTime.hours)} Hours` : `${Math.floor(dateTime.hours)} Hour`
 				} else {
 					h = ''
 				}
 				if (dateTime.minutes >= 1 && dateTime.minutes < HToMRatio) {
-					m = `${Math.floor(dateTime.minutes)} Minutes`
+					m = Math.floor(dateTime.minutes) > 1 ? `${Math.floor(dateTime.minutes)} Minutes` : `${Math.floor(dateTime.minutes)} Minute`
 				} else {
 					m = ''
 				}
