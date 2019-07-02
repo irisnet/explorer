@@ -103,7 +103,7 @@
                 </div>
             </div>
         </div>
-        <div class="line_container_wrap" v-show="flActiveValidator">
+        <!-- <div class="line_container_wrap" v-show="flActiveValidator">
             <div class="line_container" :class="transactionsDetailWrap">
                 <p class="validator_information_content_title">History</p>
                 <div class="line_content">
@@ -151,7 +151,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
         <div :class="transactionsDetailWrap">
             <div
                 :class="[!$store.state.isMobile && txTableList.delegations.total && txTableList.unbondingDelegations.total ? 'delegations_two_container': '']"
@@ -508,8 +508,8 @@ export default {
         this.getStakes();
         this.getDeclarations();
         this.getGovernance();
-        this.getValidatorHistory("14days");
-        this.getValidatorUptimeHistory("24hours");
+        // this.getValidatorHistory("14days");
+        // this.getValidatorUptimeHistory("24hours");
     },
     methods: {
         isMobileFunc(isMobile) {

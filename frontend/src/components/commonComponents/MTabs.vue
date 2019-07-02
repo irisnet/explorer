@@ -5,7 +5,6 @@
                 v-for="(v, i) in data"
                 :key="i"
                 :class="{'active': v.isActive}"
-                :style="{...tabStyle, ...v.style}"
                 @click="choseTab(v, i)"
             >{{v.title}}</div>
         </div>
@@ -19,10 +18,6 @@ export default {
         data: {
             type: Array,
             default: []
-        },
-        tabStyle: {
-            type: Object,
-            default: null
         },
         chose: {
             type: Function,

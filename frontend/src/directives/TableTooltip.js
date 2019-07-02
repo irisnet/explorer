@@ -2,7 +2,7 @@ let mouseenterEventFunc = () => {};
 let mouseleaveEventFunc = () => {};
 
 function bindHoverEvent (el, bind) {
-    let containerDiv = bind.value.container.parentNode;
+    let containerDiv = bind.value.container.parentNode.parentNode;
     mouseenterEventFunc = mouseenterEvent(el, containerDiv);
     mouseleaveEventFunc = mouseleaveEvent(el, containerDiv);
     if (el.addEventListener) {
