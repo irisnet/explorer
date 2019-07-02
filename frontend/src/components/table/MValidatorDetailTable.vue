@@ -295,7 +295,7 @@ export default {
                 },
                 {
                     title: "Self_Bonded",
-                    key: "Self_Bonded"
+                    key: "Amount"
                 },
                 {
                     title: "Tx_Type",
