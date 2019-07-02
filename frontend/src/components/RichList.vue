@@ -2,11 +2,13 @@
     <div class="top_list_page">
         <div class="top_list_title_container">
             <div class="top_list_title_content">
-                <span class="top_list_title">Top 100 Addresses by IRIS</span>
-                <div class="tooltip_icon">
-                    <span>?</span>
-                    <div class="tooltip_span">
-                        <div>The assets include the delegated tokens, unbonding tokens and remaining tokens on the address</div>
+                <div class="top_list_title_content_div">
+                    <span class="top_list_title">Top 100 Addresses by IRIS</span>
+                    <div class="tooltip_icon">
+                        <span>?</span>
+                        <div class="tooltip_span">
+                            <div>The assets include the delegated tokens, unbonding tokens and remaining tokens on the address</div>
+                        </div>
                     </div>
                 </div>
                 <div class="top_list_time_content">
@@ -160,66 +162,71 @@ export default {
             margin: 0 auto;
             display: flex;
             align-items: center;
-            .top_list_title {
-                height: 0.7rem;
+            & > div.top_list_title_content_div {
                 display: flex;
                 align-items: center;
-                font-size: 0.22rem;
-                color: rgba(34, 37, 42, 1);
-                line-height: 0.26rem;
-                padding-left: 0.4rem;
-            }
-            .tooltip_icon {
-                width: 0.16rem;
-                height: 0.16rem;
-                margin-left: 0.1rem;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                border: 1px solid #3598db;
-                border-radius: 50%;
-                font-size: 0.1rem;
-                color: #3598db;
-                position: relative;
-                cursor: pointer;
-                &:hover .tooltip_span {
-                    display: block;
+                .top_list_title {
+                    height: 0.7rem;
+                    display: flex;
+                    align-items: center;
+                    font-size: 0.18rem;
+                    color: rgba(34, 37, 42, 1);
+                    line-height: 0.26rem;
+                    padding-left: 0.4rem;
                 }
-                .tooltip_span {
-                    width: 2.4rem;
-                    display: none;
-                    position: fixed;
-                    z-index: 100000;
-                    margin-top: -20px;
-                    transform: translateY(-50%);
-                    color: #ffffff;
-                    background-color: #000000;
-                    border-radius: 0.04rem;
-                    word-wrap: break-word;
-                    white-space: normal;
-                    line-height: 16px;
-                    div {
-                        padding: 8px 15px;
-                    }
-                    &::after {
-                        width: 0;
-                        height: 0;
-                        border: 0.06rem solid transparent;
-                        content: "";
+                .tooltip_icon {
+                    width: 0.16rem;
+                    height: 0.16rem;
+                    margin-left: 0.1rem;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    border: 1px solid #3598db;
+                    border-radius: 50%;
+                    font-size: 0.1rem;
+                    color: #3598db;
+                    position: relative;
+                    cursor: pointer;
+                    &:hover .tooltip_span {
                         display: block;
-                        position: absolute;
-                        border-top-color: #000000;
-                        left: 50%;
-                        margin-left: -6px;
+                    }
+                    .tooltip_span {
+                        width: 2.4rem;
+                        display: none;
+                        position: fixed;
+                        z-index: 100000;
+                        margin-top: -20px;
+                        transform: translateY(-50%);
+                        color: #ffffff;
+                        background-color: #000000;
+                        border-radius: 0.04rem;
+                        word-wrap: break-word;
+                        white-space: normal;
+                        line-height: 16px;
+                        div {
+                            padding: 8px 15px;
+                        }
+                        &::after {
+                            width: 0;
+                            height: 0;
+                            border: 0.06rem solid transparent;
+                            content: "";
+                            display: block;
+                            position: absolute;
+                            border-top-color: #000000;
+                            left: 50%;
+                            margin-left: -6px;
+                        }
                     }
                 }
             }
+
             .top_list_time_content {
                 padding-left: 0.2rem;
                 padding-right: 0.2rem;
                 opacity: 0.6;
                 color: #000;
-                font-size: 0.12rem;
+                font-size: 0.14rem;
                 flex: 1;
                 display: flex;
                 justify-content: flex-end;
@@ -256,6 +263,17 @@ export default {
 @media (max-width: 910px) {
     .top_list_container {
         padding: 0 0.1rem;
+    }
+    .top_list_title_content {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        .top_list_title {
+            padding-left: 0.2rem !important;
+            height: 0.45rem !important;
+        }
+        .top_list_time_content {
+            line-height: 0.25rem;
+        }
     }
 }
 </style>

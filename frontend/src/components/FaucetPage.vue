@@ -2,7 +2,7 @@
     <div type="light" class="facet_wrap" :style="showTitle?'':'padding-top:0.38rem;'">
         <div class="faucet text-center" :style="innerWidth<=500?'padding-top:0;':''">
             <div
-                :class="faucet-title"
+                class="faucet-title"
                 :style="{marginTop: $store.state.isMobile ? '0.6rem' : '0'}"
             >Faucet</div>
             <div class="coin">

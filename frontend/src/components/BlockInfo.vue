@@ -498,7 +498,7 @@
     .block_detail_container{
         .block_detail_content{
             .block_detail_title_content{
-                height: 0.65rem;
+                height: 0.7rem;
                 display: flex;
                 align-items: center;
                 max-width: 12.8rem;

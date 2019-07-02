@@ -4,7 +4,7 @@
             <div class="parameter_list_content">
                 <div class="parameters_list_cards_content">
                     <spin-component :showLoading="showLoading"></spin-component>
-                    <div style="margin-top: 0.2rem; overflow-y: hidden;" v-show="!showNoData">
+                    <div style="overflow-y: hidden;" v-show="!showNoData">
                         <div :class="[$store.state.isMobile ? 'mobile_cards_layout' : 'pc_cards_layout']" v-for="(value, index) in parametersList" :key="index">
                             <div class="card_title" v-show="value && value.length > 0">
                                 <span>{{index}}</span>
@@ -224,13 +224,20 @@
                         &:nth-last-of-type(1) {
                             margin-bottom: -0.2rem;
                         }
+                        &:nth-of-type(2) {
+                            margin-top: -0.2rem;
+                        }
+                        &:nth-of-type(3) {
+                            margin-top: -0.2rem;
+                        }
                     }
                     div.card_title {
                         width: 100%;
-                        height: 0.25rem;
-                        margin-top: 0.1rem;
+                        height: 0.7rem;
                         margin-left: 0.2rem;
-                        margin-bottom: 0.2rem;
+                        display: flex;
+                        align-items: center;
+                        font-size: 18px;
                     }
                     @mixin mobile_cards_layout {
                         display: flex;
@@ -253,6 +260,12 @@
                                     padding-bottom: 0;
                                 }
                             }
+                        }
+                        &:nth-of-type(2) {
+                            margin-top: -0.1rem;
+                        }
+                        &:nth-of-type(3) {
+                            margin-top: -0.1rem;
                         }
                     }
                     //使用rem设置max-width不生效

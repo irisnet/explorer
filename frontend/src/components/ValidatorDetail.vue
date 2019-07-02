@@ -1327,11 +1327,11 @@ export default {
 
 <style lang="scss" scoped>
 .validator_title {
-    height: 0.25rem;
+    height: 0.3rem;
     padding-left: 0.2rem;
     display: flex;
     align-items: center;
-    margin-top: 0.3rem;
+    margin-top: 0.2rem;
     flex-direction: row !important;
     .title {
         font-size: 22px;
@@ -1472,6 +1472,9 @@ export default {
     }
 }
 .mobile_transactions_detail_wrap {
+    .title {
+        padding-left: 0.1rem;
+    }
     .validator_detail_information_wrap {
         & > div {
             flex: 0 0 100%;

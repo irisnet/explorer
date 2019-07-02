@@ -41,7 +41,7 @@
     width: 100%;
     @include flex;
     @include pcContainer;
-    height: 0.6rem;
+    height: 0.7rem;
 
     p {
       height: 0.6rem;
@@ -52,12 +52,11 @@
     }
     .personal_computer_blocks_list_page_wrap {
       @include flex;
-      padding-bottom: 0.2rem;
     }
     .validators_status_tab {
       display: flex;
-      height: 0.6rem;
-      line-height: 0.6rem;
+      height: 0.7rem;
+      line-height: 0.7rem;
     }
     .mobile_blocks_list_page_wrap {
       @include flex;
@@ -78,7 +77,6 @@
     background-color: #ffffff;
   }
   .personal_computer_blocks_list_page_wrap {
-    padding-bottom: 0.2rem;
     width: 100% !important;
     min-height: 0 !important;
     .transaction_information_content_title {

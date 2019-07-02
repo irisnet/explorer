@@ -261,9 +261,6 @@ export default {
 .mobile_blocks_list_page_container {
     .block_list_container {
         padding: 0 0.1rem;
-        .page_nav_container {
-            height: 0.5rem !important;
-        }
     }
 }
 .blocks_list_page_container_fixed {

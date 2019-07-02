@@ -2,7 +2,7 @@
     <div class="transaction_list_page_container">
         <div class="transaction_list_title_wrap">
             <div class="transaction_list_title_content">
-                <span class="transaction_list_title">{{count}} Txs ({{listTitleName}})</span>
+                <span class="transaction_list_title">{{count}} {{listTitleName}}</span>
             </div>
         </div>
         <div class="transaction_list_table_container">
@@ -52,16 +52,16 @@
 			getTransactionList(currentPage, pageSize){
 				let that = this, parmas;
 				if(this.$route.params.txType === 'transfers'){
-					this.listTitleName = "Transfers";
+					this.listTitleName = "Transfer Transactions";
 					parmas = {txListTransfer: {pageNumber: currentPage,pageSize: pageSize}};
 				}else if(this.$route.params.txType === 'stakes'){
-					this.listTitleName = "Stakes";
+					this.listTitleName = "Txs (Staking or Distribution)";
 					parmas = {txListStake: {pageNumber: currentPage,pageSize: pageSize}};
 				}else if(this.$route.params.txType === 'declarations'){
-					this.listTitleName = "Declarations";
+					this.listTitleName = "Txs (CreateValidator, EditValidator or Unjail)";
 					parmas = {txListDeclaration: {pageNumber: currentPage,pageSize: pageSize}};
 				}else if(this.$route.params.txType === 'governance'){
-					this.listTitleName = "Governance";
+					this.listTitleName = "Txs (SubmitProposal, Deposit or Vote)";
 					parmas = {txListGov: {pageNumber: currentPage,pageSize: pageSize}};
 				}
 				this.flShowLoading = true;
@@ -101,7 +101,7 @@
                 margin: 0 auto;
                 background-color: #ffffff;
                 .transaction_list_title{
-                    font-size: 0.22rem;
+                    font-size: 0.18rem;
                     font-weight: 500;
                     padding-left: 0.2rem;
                 }

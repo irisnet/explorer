@@ -692,6 +692,9 @@
     width: 12.8rem;
     flex-wrap: wrap;
     margin: 0.3rem auto 0.1rem;
+    &:nth-last-of-type(1) {
+      margin-bottom: 0;
+    }
   }
   .votingPeriodDatas_one {
     justify-content: space-between;

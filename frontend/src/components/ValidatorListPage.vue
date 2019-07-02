@@ -10,7 +10,7 @@
             </div>
         </div>
         
-        <div :class="blocksListPageWrap" :style="{'margin-top':`${blocksListPageWrap === 'personal_computer_blocks_list_page_wrap' ? '0.6rem' : '0'}`}">
+        <div :class="blocksListPageWrap" :style="{'margin-top':`${blocksListPageWrap === 'personal_computer_blocks_list_page_wrap' ? '0.7rem' : '0'}`}">
             <div style="overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling:touch;">
                 <spin-component :showLoading="showLoading"/>
                 <!-- <validator-list-table :items="items" :minWidth="tableMinWidth" :showNoData="showNoData"></validator-list-table> -->
