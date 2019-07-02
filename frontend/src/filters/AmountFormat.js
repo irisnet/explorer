@@ -8,6 +8,7 @@ function prototypeToString (value) {
 }
 
 function afterPointLength(value) {
+
 	let afterPointLengthReg = /(\.[0-9]*[1-9])([0]*)$/g;
 	let arr = afterPointLengthReg.exec(String(value));
     if (arr && arr[1]) {
