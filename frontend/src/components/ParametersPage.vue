@@ -1,15 +1,10 @@
 <template>
     <div class="parameters_page_container">
-        <div class="parameters_page_title_container">
-            <div class="parameters_title_content">
-                <span class="parameters_title">Governable Parameters of IRISnet</span>
-            </div>
-        </div>
         <div class="parameters_list_container">
             <div class="parameter_list_content">
                 <div class="parameters_list_cards_content">
                     <spin-component :showLoading="showLoading"></spin-component>
-                    <div style="margin-top: 0.23rem; overflow-y: hidden;" v-show="!showNoData">
+                    <div style="overflow-y: hidden;" v-show="!showNoData">
                         <div :class="[$store.state.isMobile ? 'mobile_cards_layout' : 'pc_cards_layout']" v-for="(value, index) in parametersList" :key="index">
                             <div class="card_title" v-show="value && value.length > 0">
                                 <span>{{index}}</span>
@@ -66,8 +61,8 @@
 				Service.commonInterface({govParams:{}},(res) => {
 					try {
 						this.showLoading = false;
-						if (res) {
-							let arr = res.map(item => {
+						if(Array.isArray(res)){
+							let arr = res.map( item => {
 								this.handleParameterItem(item);
 								return item;
 							});
@@ -190,23 +185,6 @@
 <style scoped lang="scss">
     @import "../style/mixin.scss";
     .parameters_page_container{
-        .parameters_page_title_container{
-            background: rgba(239, 239, 241, 1);
-            border-bottom: 0.01rem solid rgba(215, 217, 224, 1);
-            .parameters_title_content{
-                max-width: 12.8rem;
-                margin: 0 auto;
-                .parameters_title{
-                    height: 0.6rem;
-                    display: flex;
-                    align-items: center;
-                    font-size: 0.22rem;
-                    color: rgba(34, 37, 42, 1);
-                    line-height: 0.26rem;
-                    padding-left: 0.2rem;
-                }
-            }
-        }
         .parameters_list_container{
             width: 100%;
             margin-bottom: 0.4rem;
@@ -246,12 +224,20 @@
                         &:nth-last-of-type(1) {
                             margin-bottom: -0.2rem;
                         }
+                        &:nth-of-type(2) {
+                            margin-top: -0.2rem;
+                        }
+                        &:nth-of-type(3) {
+                            margin-top: -0.2rem;
+                        }
                     }
                     div.card_title {
                         width: 100%;
-                        margin-top: 0.1rem;
+                        height: 0.7rem;
                         margin-left: 0.2rem;
-                        margin-bottom: 0.2rem;
+                        display: flex;
+                        align-items: center;
+                        font-size: 18px;
                     }
                     @mixin mobile_cards_layout {
                         display: flex;
@@ -274,6 +260,12 @@
                                     padding-bottom: 0;
                                 }
                             }
+                        }
+                        &:nth-of-type(2) {
+                            margin-top: -0.1rem;
+                        }
+                        &:nth-of-type(3) {
+                            margin-top: -0.1rem;
                         }
                     }
                     //使用rem设置max-width不生效

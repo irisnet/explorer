@@ -2,15 +2,11 @@
     <div class="transaction_list_page_container">
         <div class="transaction_list_title_wrap">
             <div class="transaction_list_title_content">
-                <span class="transaction_list_title">{{listTitleName}}</span>
+                <span class="transaction_list_title">{{count}} {{listTitleName}}</span>
             </div>
         </div>
         <div class="transaction_list_table_container">
             <div class="transaction_list_table_content">
-                <div class="pagination_nav_content">
-                    <span>{{count}} Total</span>
-                    <b-pagination-nav :link-gen="linkGen" :number-of-pages="totalPageNum" v-model="currentPageNum" use-router></b-pagination-nav>
-                </div>
                 <div class="table_list_content">
                     <spin-component :showLoading="flShowLoading"></spin-component>
                     <m-tx-list-page-table :showNoData="showNoData" :items="txList"></m-tx-list-page-table>
@@ -56,16 +52,16 @@
 			getTransactionList(currentPage, pageSize){
 				let that = this, parmas;
 				if(this.$route.params.txType === 'transfers'){
-					this.listTitleName = "Transfers";
+					this.listTitleName = "Transfer Transactions";
 					parmas = {txListTransfer: {pageNumber: currentPage,pageSize: pageSize}};
 				}else if(this.$route.params.txType === 'stakes'){
-					this.listTitleName = "Stakes";
+					this.listTitleName = "Txs (Staking or Distribution)";
 					parmas = {txListStake: {pageNumber: currentPage,pageSize: pageSize}};
 				}else if(this.$route.params.txType === 'declarations'){
-					this.listTitleName = "Declarations";
+					this.listTitleName = "Txs (CreateValidator, EditValidator or Unjail)";
 					parmas = {txListDeclaration: {pageNumber: currentPage,pageSize: pageSize}};
 				}else if(this.$route.params.txType === 'governance'){
-					this.listTitleName = "Governance";
+					this.listTitleName = "Txs (SubmitProposal, Deposit or Vote)";
 					parmas = {txListGov: {pageNumber: currentPage,pageSize: pageSize}};
 				}
 				this.flShowLoading = true;
@@ -93,20 +89,19 @@
 <style scoped lang="scss">
     .transaction_list_page_container{
         .transaction_list_title_wrap{
-            background: #efeff1;
-            border-bottom: 0.01rem solid #d6d9e0;
             width: 100%;
             position: fixed;
             z-index: 10;
+            background-color: #ffffff;
             .transaction_list_title_content{
-                height:0.62rem;
+                height:0.7rem;
                 display: flex;
                 align-items: center;
                 max-width: 12.8rem;
                 margin: 0 auto;
-                background: #efeff1;
+                background-color: #ffffff;
                 .transaction_list_title{
-                    font-size: 0.22rem;
+                    font-size: 0.18rem;
                     font-weight: 500;
                     padding-left: 0.2rem;
                 }
@@ -115,29 +110,13 @@
     }
     .transaction_list_table_container{
         max-width: 12.8rem;
-        padding-top: 0.63rem;
+        padding-top: 0.7rem;
         margin: 0 auto;
         .transaction_list_table_content{
-            .pagination_nav_content{
-                display: flex;
-                justify-content: space-between;
-                height: 0.7rem;
-                align-items: center;
-                max-width: 12.8rem;
-                width: 100%;
-                position: fixed;
-                background: #fff;
-                z-index: 10;
-                span{
-                    color: #a2a2ae;
-                    padding-left: 0.2rem;
-                    font-size: 0.18rem;
-                }
-            }
             .table_list_content{
                 width: 100%;
                 overflow-x: auto;
-                padding-top: 0.7rem;
+                padding-top: 0rem;
                 .no_data_show{
                     display: flex;
                     justify-content: center;
@@ -170,12 +149,6 @@
             padding-left: 0.1rem;
             padding-right: 0.1rem;
             .transaction_list_table_content{
-                .pagination_nav_content{
-                    position: static;
-                    & > span:nth-child(1) {
-                        padding-left: 0.1rem;
-                    }
-                }
                 .table_list_content{
                     padding-top: 0;
                 }

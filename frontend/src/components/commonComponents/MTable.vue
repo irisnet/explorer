@@ -253,6 +253,8 @@ table.m_table {
     color: rgb(0, 0, 0);
     thead {
       tr {
+        border-left: 1px solid #dee2e6;
+        border-right: 1px solid #dee2e6;
         th {
           box-sizing: border-box;
           font-weight: 500 !important;
@@ -296,7 +298,7 @@ table.m_table {
           }
         }
         height: 50px;
-        border-bottom: 0.02rem solid #3598db;
+        border-bottom: 0.01rem solid #3598db;
       }
     }
   }
@@ -304,11 +306,11 @@ table.m_table {
 .m-table-body {
   margin-top: -0.03rem;
   tbody {
-    tr {
-      border-bottom: 1px solid #dee2e6;
-    }
+    border-bottom: 1px solid #dee2e6;
   }
   tr {
+    border-left: 1px solid #dee2e6;
+    border-right: 1px solid #dee2e6;
     td {
       padding: 7.5px;
       box-sizing: border-box;

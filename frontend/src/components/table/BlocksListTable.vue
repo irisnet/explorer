@@ -3,7 +3,7 @@
        class="table_wrap"
        :style="`${minWidth?(`min-width:${minWidth}rem`):''}`">
 
-    <b-table :fields='blockFields'
+    <b-table borderless :fields='blockFields'
              :items='items'
              striped
              v-if="type === '1'">
@@ -23,7 +23,7 @@
       </template>
     </b-table>
 
-    <b-table :fields='fields'
+    <b-table borderless :fields='fields'
              :items='items'
              striped
              v-if="type === 'Proposals'"
@@ -50,7 +50,7 @@
       </template>
     </b-table>
 
-    <b-table :fields='fields'
+    <b-table borderless :fields='fields'
              :items='items'
              striped
              v-if="type === 'ProposalsDetail'"
@@ -125,7 +125,7 @@
       </template>
     </b-table>
 
-    <b-table :fields='fields'
+    <b-table borderless :fields='fields'
              :items='items'
              striped
              v-if="type === 'addressTxList'"
@@ -532,7 +532,7 @@ table {
           padding-left: 0.2rem !important;
         }
       }
-      border-bottom: 0.02rem solid #3598db;
+      border-bottom: 0.01rem solid #3598db !important;
     }
   }
   tbody {

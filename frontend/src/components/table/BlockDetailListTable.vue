@@ -1,8 +1,8 @@
 <template>
   <div :class="showNoData?'show_no_data':''"
-       style="min-width: 12rem;"
+       style="min-width: 12rem; border-left: 1px solid #dee2e6; border-right: 1px solid #dee2e6;"
        class="validator_table">
-    <b-table :fields='listFields'
+    <b-table borderless :fields='listFields'
              :items='items'
              striped
              nodelabel

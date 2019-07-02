@@ -22,17 +22,17 @@
 
     .personal_computer_transactions_detail_wrap{
         .transaction_information_content_title{
-            height: 0.5rem;
-            line-height: 0.5rem;
+            height: 0.7rem;
+            line-height: 0.7rem;
             font-size:0.18rem;
             color:#000000;
-            border-bottom:0.01rem solid #efefef;
             padding-left: 0.2rem;
         }
         .transactions_detail_information_wrap{
-            padding: 0.16rem 0 0.16rem 0.2rem;
+            padding: 0.2rem 0.2rem 0.08rem;
             .information_props_wrap{
-                margin-bottom: 0.08rem;
+                line-height: 0.2rem;
+                margin-bottom: 0.12rem;
             }
         }
     }
@@ -49,6 +49,7 @@
     .personal_computer_transactions_detail_wrap {
         @include pcCenter;
         .transactions_detail_information_wrap{
+            border: 0.01rem solid #d7d9e0;
             .information_props_wrap{
                 @include flex;
                 .information_props{
@@ -117,20 +118,21 @@
         flex-direction: column;
         padding: 0 0.1rem;
         .transaction_information_content_title{
-            height:0.4rem;
-            line-height:0.4rem;
+            height:0.7rem;
+            line-height:0.7rem;
             font-size:0.18rem;
             color:#000000;
             @include fontWeight;
             margin-bottom:0;
         }
         .transactions_detail_information_wrap{
-
+            padding: 0.1rem;
+            border: 0.01rem solid #d7d9e0;
             .information_props_wrap{
                 @include flex;
                 flex-direction:column;
                 border-bottom:none !important;
-                margin-bottom:0.05rem;
+                line-height: 0.2rem;
                 .information_value{
                     overflow-x:auto;
                     overflow-y:hidden;
@@ -575,5 +577,32 @@
         a{
             color: #3598db !important;
         }
+    }
+}
+
+.information_adress_value {
+    display: flex;
+    flex-wrap: wrap;
+    i {
+        display: inline-block;
+        height: 20px;
+        width: 14px;
+        color: #ffffff;
+        font-style: normal;
+        text-align: center;
+        border-radius: 2px;
+        margin-right: 0.09rem;
+    }
+    img {
+        height: 20px;
+        border-radius: 2px;
+        margin-right: 0.09rem;
+    }
+    span {
+        padding-left: 0 !important;
+        margin-right: 0.09rem;
+    }
+    span:nth-of-type(1) {
+        margin-right: 0.09rem;
     }
 }

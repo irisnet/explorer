@@ -3,11 +3,14 @@
         <div class="blocks_list_title_wrap" :class="blocksListPageWrap === 'personal_computer_blocks_list_page_wrap' ? 'fixed_style' :''">
             <div :class="blocksListPageWrap" style="margin-bottom:0;">
                 <div class="validators_status_tab">
-                    <span class="validators_status_title" v-for="(item,index) in validatorStatusTitleList" :key="index" :class="item.isActive ? 'active_title' : '' " @click="selectValidatorStatus(index)">{{item.title}}</span>
+                    <div style="height: 0.3rem; margin-top: 0.2rem;">
+                        <m-tabs :data="validatorStatusTitleList" :chose="selectValidatorStatus"></m-tabs>
+                    </div>
                 </div>
             </div>
         </div>
-        <div :class="blocksListPageWrap" :style="{'margin-top':`${blocksListPageWrap === 'personal_computer_blocks_list_page_wrap' ? '0.61rem' : '0'}`}">
+        
+        <div :class="blocksListPageWrap" :style="{'margin-top':`${blocksListPageWrap === 'personal_computer_blocks_list_page_wrap' ? '0.7rem' : '0'}`}">
             <div style="overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling:touch;">
                 <spin-component :showLoading="showLoading"/>
                 <!-- <validator-list-table :items="items" :minWidth="tableMinWidth" :showNoData="showNoData"></validator-list-table> -->
@@ -35,13 +38,15 @@
     import Http from "../util/axios"
 	import SpinComponent from './commonComponents/SpinComponent';
 	import ValidatorListTable from "./table/ValidatorListTable";
-	import MValidatorListTable from "./table/MValidatorListTable";
+    import MValidatorListTable from "./table/MValidatorListTable";
+    import MTabs from "./commonComponents/MTabs";
 
 	export default {
 		components:{
 			ValidatorListTable,
 			SpinComponent,
-			MValidatorListTable
+            MValidatorListTable,
+            MTabs
 		},
 		watch: {
 			currentPage(currentPage) {
@@ -114,6 +119,7 @@
 		},
 		methods: {
 			selectValidatorStatus(index){
+                index = index || 0;
 				this.validatorStatusTitleList.forEach( item => {
 					item.isActive = false
 				});

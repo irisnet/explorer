@@ -1,15 +1,7 @@
 <template>
     <div class="proposals_detail_wrap">
-        <div class="proposals_title_wrap">
-            <p :class="proposalsDetailWrap"
-               style="margin-bottom:0;">
-                <span class="proposals_detail_title">Proposal</span>
-                <span class="proposals_detail_wrap_hash_var">{{`#${proposalsId}`}}</span>
-            </p>
-        </div>
-
         <div :class="proposalsDetailWrap"
-             style="margin-bottom: 0.3rem;">
+                style="margin-bottom: 0.3rem; flex-direction: column; align-items: flex-start;">
             <p class="proposals_information_content_title">Proposal Information</p>
             <div class="proposals_detail_information_wrap">
                 <div class="information_props_wrap">
@@ -315,11 +307,9 @@ export default {
                         this.depositorItemsTotal = data.total;
                         this.depositorItems = data.items.map(item => {
                             let votingListItemTime = (new Date(item.timestamp).getTime()) > 0 ? Tools.format2UTC(item.timestamp) : '--';
-                            let amount = item.amount[0] && item.amount[0].amount;
-                            let denom = (item.amount[0] && item.amount[0].denom) || '';
                             return {
                                 Depositor: item.from,
-                                Amount: amount !== undefined ? `${Tools.formatFeeToFixedNumber(amount)} ${Tools.formatDenom(denom).toUpperCase()}` : '--',
+                                Amount: item.amount && item.amount[0] ? `${this.$options.filters.amountFromat(item.amount[0])}` : '--',
                                 Type: item.type,
                                 Tx_Hash: item.hash,
                                 Time: votingListItemTime
@@ -428,43 +418,12 @@ export default {
     @include flex;
     @include pcContainer;
     font-size: 0.14rem;
-    .proposals_title_wrap {
-        width: 100%;
-        border-bottom: 1px solid #d6d9e0;
-        display: flex;
-        justify-content: center;
-        height: 0.62rem;
-        background-color: #efeff1;
-        @include flex;
-        @include pcContainer;
-        .personal_computer_transactions_detail_wrap {
-            @include flex;
-        }
-        .mobile_transactions_detail_wrap {
-            @include flex;
-            flex-direction: column;
-            .proposals_detail_information_wrap {
-                border: 1px solid rgba(215, 217, 224, 1) !important;
-                .parameter_container {
-                    .information_props_wrap {
-                        .parameter_detail_content {
-                            width: 90%;
-                            margin-right: 20%;
-                            background-color: #fcfcfc !important;
-                            border-color: #d7d9e0;
-                            border-radius: 1px;
-                        }
-                    }
-                }
-            }
-        }
-    }
     .personal_computer_transactions_detail_wrap {
         width: 100% !important;
         .proposals_information_content_title {
             padding-left: 0.2rem !important;
-            height: 0.5rem !important;
-            line-height: 0.5rem !important;
+            height: 0.7rem !important;
+            line-height: 0.7rem !important;
             font-size: 0.18rem !important;
             color: #000000;
             margin-bottom: 0;
@@ -472,11 +431,12 @@ export default {
         }
         @include pcCenter;
         .proposals_detail_information_wrap {
-            padding: 0.2rem;
+            padding: 0.2rem 0.2rem 0.08rem;
             border: 1px solid rgba(215, 217, 224, 1) !important;
             .information_props_wrap {
                 @include flex;
-                margin-bottom: 0.08rem;
+                line-height: 0.2rem;
+                margin-bottom: 0.12rem;
                 .information_props {
                     min-width: 1.5rem;
                     color: #22252a;
@@ -536,22 +496,6 @@ export default {
                 align-items: center;
             }
         }
-
-        .proposals_detail_title {
-            height: 0.61rem;
-            line-height: 0.61rem;
-            font-size: 0.22rem;
-            color: #000000;
-            margin-right: 0.2rem;
-            @include fontWeight;
-            margin-left: 0.2rem;
-        }
-        .proposals_detail_wrap_hash_var {
-            height: 0.61rem;
-            line-height: 0.61rem;
-            font-size: 0.22rem;
-            color: #a2a2ae;
-        }
     }
 
     .mobile_transactions_detail_wrap {
@@ -564,12 +508,8 @@ export default {
             flex-direction: row;
             align-items: center;
         }
-        .proposals_detail_wrap_hash_var {
-            font-size: 0.18rem;
-            color: #a2a2ae;
-        }
         .proposals_table_title_div {
-            margin-left: 0.08rem !important;
+            margin-left: 0.1rem !important;
         }
         .proposals_information_content_title {
             height: 0.5rem !important;
@@ -577,7 +517,7 @@ export default {
             font-size: 0.18rem !important;
             color: #000000;
             margin-bottom: 0;
-            padding-left: 0rem;
+            padding-left: 0.1rem;
             @include fontWeight;
         }
         .proposals_detail_table_wrap {
@@ -600,10 +540,11 @@ export default {
         .proposals_detail_information_wrap {
             border: 1px solid rgba(215, 217, 224, 1) !important;
             padding: 10px;
+            width: 100%;
             .information_props_wrap {
                 @include flex;
                 flex-direction: column;
-                margin-bottom: 0.05rem;
+                line-height: 0.2rem;
                 .information_value {
                     overflow-x: auto;
                     -webkit-overflow-scrolling: touch;
@@ -643,14 +584,6 @@ export default {
                     cursor: pointer;
                 }
             }
-        }
-        .proposals_detail_title {
-            height: 0.3rem;
-            line-height: 0.3rem;
-            font-size: 0.22rem;
-            color: #000000;
-            margin-right: 0.02rem;
-            @include fontWeight;
         }
         .transactions_detail_wrap_hash_var {
             overflow-x: auto;

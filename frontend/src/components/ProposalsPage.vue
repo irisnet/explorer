@@ -1,10 +1,10 @@
 <template>
   <div class="proposals_list_page_wrap">
-    <div class="proposals_list_title_wrap">
+    <!-- <div class="proposals_list_title_wrap">
       <p :class="proposalsListPageWrap" style="margin-bottom:0;">
         <span class="proposals_list_title">Proposals</span>
       </p>
-    </div>
+    </div> -->
     <div class="graph_containers">
       <div class="graph_container mobile_graph_container" v-if="$store.state.isMobile && (depositPeriodDatas.length > 0 || votingPeriodDatas.length > 0)">
         <div v-for="v in votingPeriodDatas" :key="v.proposal_id">
@@ -255,10 +255,12 @@
           o.participation = all ? (votes / all) * 100 : 0;
           o.passThreshold = votes ? (yes / votes) * 100 : 0;
           o.vetoThreshold = votes ? (noWithVeto / votes) * 100 : 0;
+          let nonparticipantPer = Tools.formatDecimalNumberToFixedNumber((all - votes) / all * 100);
           let data = [
             {
               name: 'Participant',
               value: votes,
+               perData: Tools.formatDecimalNumberToFixedNumber(votes / all * 100),
               itemStyle: {
                 color: '#3598DB',
                 borderColor: '#ECEFFF',
@@ -268,6 +270,7 @@
                 {
                   name: 'Yes',
                   value: yes,
+                  perData: Tools.formatDecimalNumberToFixedNumber(yes / all * 100),
                   itemStyle: {
                     color: '#45B4FF',
                     borderColor: '#ECEFFF',
@@ -278,6 +281,7 @@
                 {
                   name: 'Abstain',
                   value: abstain,
+                  perData: Tools.formatDecimalNumberToFixedNumber(abstain / all * 100),
                   itemStyle: {
                     color: '#CCDCFF',
                     borderColor: '#ECEFFF',
@@ -288,6 +292,7 @@
                 {
                   name: 'No',
                   value: no,
+                  perData: Tools.formatDecimalNumberToFixedNumber(no / all * 100),
                   itemStyle: {
                     color: '#FFCF65',
                     borderColor: '#ECEFFF',
@@ -298,6 +303,7 @@
                 {
                   name: 'NoWithVeto',
                   value: noWithVeto,
+                  perData: Tools.formatDecimalNumberToFixedNumber(noWithVeto / all * 100),
                   itemStyle: {
                     color: '#FE8A8A',
                     borderColor: '#ECEFFF',
@@ -310,6 +316,7 @@
             {
               name: 'Nonparticipant',
               value: all - votes,
+              perData: nonparticipantPer,
               nodeClick: false,
               itemStyle: {
                 color: '#E5E9FB',
@@ -326,6 +333,7 @@
                   name: '',
                   tipName: 'Nonparticipant',
                   value: all - votes,
+                  perData: nonparticipantPer,
                   nodeClick: false,
                   itemStyle: {
                     color: '#E5E9FB',
@@ -337,6 +345,7 @@
                       name: '',
                       tipName: 'Nonparticipant',
                       value: all - votes,
+                      perData: nonparticipantPer,
                       nodeClick: false,
                       itemStyle: {
                         color: '#E5E9FB',
@@ -551,7 +560,6 @@
   }
     .personal_computer_proposals_list_page_wrap {
       @include flex;
-      padding-bottom: 0.2rem;
     }
     .mobile_proposals_list_page_wrap {
       @include flex;
@@ -565,7 +573,6 @@
     }
   }
   .personal_computer_proposals_list_page_wrap {
-    padding-bottom: 0.2rem;
     width: 100%!important;
     .transaction_information_content_title {
       height: 0.4rem;
@@ -694,6 +701,9 @@
     width: 12.8rem;
     flex-wrap: wrap;
     margin: 0.3rem auto 0.1rem;
+    &:nth-last-of-type(1) {
+      margin-bottom: 0;
+    }
   }
   .votingPeriodDatas_one {
     justify-content: space-between;

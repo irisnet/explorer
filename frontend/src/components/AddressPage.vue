@@ -1,6 +1,6 @@
 <template>
     <div class="transactions_detail_wrap">
-        <div class="transactions_title_wrap">
+        <!-- <div class="transactions_title_wrap">
             <p :class="transactionsDetailWrap"
                style="margin-bottom:0;">
                 <span class="transactions_detail_title">Address</span>
@@ -17,11 +17,28 @@
                           class="jailed_validator">(This Validator is jailed!)</span>
                 </span>
             </p>
-        </div>
+        </div> -->
 
         <div :class="transactionsDetailWrap">
             <p class="transaction_information_content_title">Address Information</p>
             <div class="transactions_detail_information_wrap">
+                <div class="information_props_wrap">
+                    <span class="information_props">Address :</span>
+                    <span class="information_value information_adress_value">
+                        <span>
+                            {{address?address:'--'}}
+                        </span>
+                        <i v-if="flValidator"
+                        :style="{background:validatorStatusColor}">v</i>
+                        <img v-show="flShowProfileLogo"
+                            class="profile_logo_img"
+                            src="../assets/profiler_logo.png">
+                        <span v-show="flShowValidatorCandidate && flValidator"
+                            class="candidate_validator">(This Validator is a Candidate)</span>
+                        <span v-show="flShowValidatorJailed && flValidator"
+                            class="jailed_validator">(This Validator is jailed!)</span>
+                    </span>
+                </div>
                 <div class="information_props_wrap"
                      v-show="flValidator">
                     <span class="information_props">Self-Bonded :</span>
@@ -201,7 +218,8 @@
                     <blocks-list-table :items="items"
                                        :type="'addressTxList'"
                                        :showNoData="showNoData"
-                                       class="address_tx_list_table"></blocks-list-table>
+                                       class="address_tx_list_table"
+                                       style="border-left: 1px solid #dee2e6; border-right: 1px solid #dee2e6;"></blocks-list-table>
                     <div v-show="showNoData"
                          class="no_data_show">
                         No Data
@@ -252,6 +270,9 @@ export default {
             this.getCurrentTenureInformation();
             this.getValidatorHistory('14days');
             this.getValidatorUptimeHistory('24hours');
+        },
+        "$store.state.isMobile"(newVal) {
+            this.isMobileFunc(newVal);
         }
     },
     data () {
@@ -369,11 +390,7 @@ export default {
         SpinComponent,
     },
     beforeMount () {
-        if (Tools.currentDeviceIsPersonComputer()) {
-            this.transactionsDetailWrap = 'personal_computer_transactions_detail_wrap';
-        } else {
-            this.transactionsDetailWrap = 'mobile_transactions_detail_wrap';
-        }
+        this.isMobileFunc(this.$store.state.isMobile);
     },
     mounted () {
         Tools.scrollToTop();
@@ -398,6 +415,14 @@ export default {
         }
     },
     methods: {
+        isMobileFunc(isMobile) {
+            if (isMobile) {
+                this.transactionsDetailWrap = "mobile_transactions_detail_wrap";
+            } else {
+                this.transactionsDetailWrap =
+                    "personal_computer_transactions_detail_wrap";
+            }
+        },
         getAddressTxStatistics () {
             Service.commonInterface({                address: {
                     address: this.$route.params.param
