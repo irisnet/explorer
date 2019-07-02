@@ -72,10 +72,6 @@ func registerQueryVoterTxsByValidatorAddr(r *mux.Router) error {
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 5))
 		validatorAddr := Var(request, "validatorAddr")
 
-		if page > 0 {
-			page = page - 1
-		}
-
 		return stake.GetVoteTxsByValidatorAddr(validatorAddr, page, size)
 	})
 	return nil
@@ -87,9 +83,6 @@ func registerQueryDepositorTxsByValidatorAddr(r *mux.Router) error {
 		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 5))
 		validatorAddr := Var(request, "validatorAddr")
-		if page > 0 {
-			page = page - 1
-		}
 
 		return stake.GetDepositedTxByValidatorAddr(validatorAddr, page, size)
 	})
