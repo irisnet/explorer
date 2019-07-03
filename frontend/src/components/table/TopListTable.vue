@@ -1,6 +1,6 @@
 <template>
     <div :class="showNoData?'show_no_data':''" :style="`${minWidth?(`min-width:${minWidth}rem`):''}`">
-      <b-table borderless :fields='fields' :items='items' striped class="top_list_table_container">
+      <b-table :borderless="true" :fields='fields' :items='items' striped class="top_list_table_container">
         <template slot="rank" slot-scope="data" style="text-align: center">
           <span style="padding-left: 0.2rem">{{data.item.rank}}</span>
         </template>

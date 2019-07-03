@@ -2,7 +2,7 @@
   <div :class="showNoData?'show_no_data':''"
        style="min-width: 12rem; border-left: 1px solid #dee2e6; border-right: 1px solid #dee2e6;"
        class="validator_table">
-    <b-table borderless :fields='listFields'
+    <b-table :borderless="true" :fields='listFields'
              :items='items'
              striped
              nodelabel

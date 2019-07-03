@@ -32,7 +32,7 @@
         </div>
         <div class="intital" :style="{left: `${data.intial_deposit_number_per}`}">
           <div class="intital_value">
-            <span ref="intialDeposit">IntitalDeposit {{data.intial_deposit_format}}</span>
+            <span ref="intialDeposit">InitialDeposit {{data.intial_deposit_format}}</span>
           </div>
         </div>
       </div>

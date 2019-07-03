@@ -512,8 +512,8 @@ export default {
             margin-left: 0.1rem !important;
         }
         .proposals_information_content_title {
-            height: 0.5rem !important;
-            line-height: 0.5rem !important;
+            height: 0.7rem !important;
+            line-height: 0.7rem !important;
             font-size: 0.18rem !important;
             color: #000000;
             margin-bottom: 0;
