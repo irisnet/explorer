@@ -254,7 +254,7 @@ func (_ CommonTx) GetTxlistByDuration(startTime, endTime string) ([]TxNumStat, e
 	return txNumStatList, err
 }
 
-func (_ CommonTx) GetTxCountByDuration(startTime, endTime string) (int, error) {
+func (_ CommonTx) GetTxCountByDuration(startTime, endTime time.Time) (int, error) {
 
 	db := orm.GetDatabase()
 	defer db.Session.Close()
