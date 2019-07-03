@@ -672,7 +672,7 @@
             }
             
         }
-        .block_validator_set_title {
+        .block_validator_set_title, .block_result_title, .block_proposal_title {
             padding-left: 0.1rem !important;
         }
         .block_table_container {

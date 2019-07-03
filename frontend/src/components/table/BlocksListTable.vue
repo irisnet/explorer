@@ -3,7 +3,7 @@
        class="table_wrap"
        :style="`${minWidth?(`min-width:${minWidth}rem`):''}`">
 
-    <b-table borderless :fields='blockFields'
+    <b-table :borderless="true" :fields='blockFields'
              :items='items'
              striped
              v-if="type === '1'">
@@ -23,7 +23,7 @@
       </template>
     </b-table>
 
-    <b-table borderless :fields='fields'
+    <b-table :borderless="true" :fields='fields'
              :items='items'
              striped
              v-if="type === 'Proposals'"
@@ -50,7 +50,7 @@
       </template>
     </b-table>
 
-    <b-table borderless :fields='fields'
+    <b-table :borderless="true" :fields='fields'
              :items='items'
              striped
              v-if="type === 'ProposalsDetail'"
@@ -125,7 +125,7 @@
       </template>
     </b-table>
 
-    <b-table borderless :fields='fields'
+    <b-table :borderless="true" :fields='fields'
              :items='items'
              striped
              v-if="type === 'addressTxList'"
