@@ -134,7 +134,7 @@ export default {
             let info = v.data.info;
             that.levelName = v.name;
             if (v.data.info) {
-              return `${v.marker}voter: ${info.voter_moniker}<br><span style="margin-left: 15px;">voting_power: ${info.voting_power} (${v.data.per} %)</span>`;
+              return `${v.marker}${info.voter_moniker || info.voter}: ${info.voting_power} (${v.data.per} %)`;
             } else {
               if (v.dataIndex === 1 || !v.name) {
                 return `${v.marker}${v.data.tipName || v.name}: ${v.value} (${v.data.perData} %)`;

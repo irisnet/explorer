@@ -258,7 +258,7 @@
             that.items = data.items.map(item =>{
               let votingListItemTime = (new Date(item.timestamp).getTime()) > 0 ? Tools.format2UTC(item.timestamp) : '--';
               return {
-                Voter: item.voter + ' ' + item.moniker,
+                Voter: item.voter + '\r\n' + item.moniker,
                 Vote_Option: item.option,
                 Tx_Hash: item.tx_hash,
                 Time: votingListItemTime
