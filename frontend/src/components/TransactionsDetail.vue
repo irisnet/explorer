@@ -417,6 +417,7 @@
             }
               .information_value{
                   color: #a2a2ae;
+                  flex: 1;
               }
           }
       }
