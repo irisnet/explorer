@@ -44,7 +44,7 @@
         <div class="skip_route">
           <div class="name_address">
             <span class="remove_default_style">
-              <router-link :to="`/address/1/${data.item.Voter.split(' ')[0]}`" class="link_style justify">{{data.item.Voter.split(' ')[1]}}</router-link>
+              <router-link :to="`/address/1/${data.item.Voter.split('\r\n')[0]}`" class="link_style justify">{{data.item.Voter.split('\r\n')[1]}}</router-link>
             </span>
           </div>
         </div>
