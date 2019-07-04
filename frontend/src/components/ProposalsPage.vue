@@ -56,7 +56,7 @@
         </div>
       </div>
     </div>
-   
+
 
     <div :class="proposalsListPageWrap">
       <div class="pagination total_num" :class="[$store.state.isMobile ? 'mobile_graph_pagination_container' : '']">
