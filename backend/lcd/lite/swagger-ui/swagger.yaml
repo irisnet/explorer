@@ -1,7 +1,7 @@
 ---
 swagger: "2.0"
 info:
-  version: 0.9.7
+  version: 0.9.8
   description: A REST interface for irishub state queries.
   title: explorer for the irishub
 
@@ -15,13 +15,64 @@ schemes:
   - https
 
 tags:
+  - name: Home
+    description: navigation
   - name: Block
     description: query blocks
   - name: Governance
     description: query proposal
   - name: Account
     description:
+  - name: SearchBox
+  - name: Stake
+  - name: Tx
+
 paths:
+  /api/home/navigation:
+    get:
+      tags:
+        - Home
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/NavigationData"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/account/{address}:
+    get:
+      summary:
+      tags:
+        - Account
+      parameters:
+        - in: path
+          name: address
+          description:  Bech32 AccAddress of Delegator or Bech32 ValAddress
+          required: true
+          type: string
+      responses:
+        200:
+          description:
+          schema:
+            $ref: "#/definitions/AccountVo"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/accounts:
+    get:
+      tags:
+        - Account
+      responses:
+        200:
+          type: array
+          items:
+            $ref: "#/definitions/AccountInfo"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
   /api/block/validatorset/{height}:
     get:
       tags:
@@ -74,26 +125,6 @@ paths:
           description: generic error response
           schema:
             $ref: "#/definitions/error"
-  /api/account/{address}:
-    get:
-      summary:
-      tags:
-        - Account
-      parameters:
-        - in: path
-          name: address
-          description:  Bech32 AccAddress of Delegator or Bech32 ValAddress
-          required: true
-          type: string
-      responses:
-        200:
-          description:
-          schema:
-            $ref: "#/definitions/AccountVo"
-        default:
-          description: generic error response
-          schema:
-            $ref: "#/definitions/error"
   /api/blocks:
     get:
       tags:
@@ -113,9 +144,10 @@ paths:
           required: false
       responses:
         200:
-          description: query recent blocks
-          schema:
-            $ref: "#/definitions/Blocks"
+          description: query  blocks list
+          type: array
+          items:
+            $ref: "#/definitions/BlockForList"
         default:
           description: generic error response
           schema:
@@ -130,6 +162,19 @@ paths:
           type: array
           items:
             $ref: "#/definitions/RecentBlockInfoVo"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/block/latestheight:
+    get:
+      summary: query the latest height from lcd.
+      tags:
+        - Block
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/success"
         default:
           description: generic error response
           schema:
@@ -181,7 +226,7 @@ paths:
             $ref: "#/definitions/error"
   /api/gov/deposit_voting_proposals:
     get:
-      summary: query the deposit and voting proposals.
+      summary: "query the deposit and voting proposals;"
       tags:
         - Governance
       responses:
@@ -269,9 +314,1417 @@ paths:
           description: generic error response
           schema:
             $ref: "#/definitions/error"
+  /api/search/{text}:
+    get:
+      summary:
+      tags:
+        - SearchBox
+      parameters:
+        - in: path
+          name: text
+          description:  search block and proposal by integer id.
+          required: true
+          type: string
+      responses:
+        200:
+          description:
+          schema:
+            $ref: "#/definitions/BlockAndProposal"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/sysdate:
+    get:
+      summary: query the backend timestamp
+      tags:
+        - SearchBox
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/success"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/config:
+    get:
+      summary: query the backend env config.
+      tags:
+        - SearchBox
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/EnvConfig"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/stake/validators:
+    get:
+      summary:  type validator、candidate、jailed       origin browser
+      tags:
+        - Stake
+      parameters:
+        - name: page
+          in: query
+          type: integer
+          format: int
+          default: 1
+          required: false
+        - name: size
+          in: query
+          type: integer
+          format: int
+          default: 100
+          required: false
+        - name: type
+          in: query
+          type: string
+          required: true
+        - name: origin
+          in: query
+          type: string
+          required: true
+      responses:
+        200:
+          description: query validator list.
+          type: array
+          items:
+            $ref: "#/definitions/LcdValidator"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/stake/validators/{address}:
+    get:
+      summary:
+      tags:
+        - Stake
+      parameters:
+        - in: path
+          name: address
+          description: query validator by Address from db.
+          required: true
+          type: string
+      responses:
+        200:
+          description:
+          schema:
+            $ref: "#/definitions/ValidatorForDetail"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/stake/validators/{validatorAddr}/delegations:
+    get:
+      summary: "from lcd:  %s/stake/validators/%s/delegations"
+      tags:
+        - Stake
+      parameters:
+        - in: path
+          name: validatorAddr
+          description: query delegations by validator address.
+          required: true
+          type: string
+        - in: query
+          name: page
+          type: integer
+          format: int
+          default: 1
+        - in: query
+          name: size
+          type: integer
+          format: int
+          default: 5
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/DelegationByValidatorPage"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/stake/validators/{validatorAddr}/unbonding-delegations:
+    get:
+      summary:  "from lcd:   %s/stake/validators/%s/unbonding-delegations"
+      tags:
+        - Stake
+      parameters:
+        - in: path
+          name: validatorAddr
+          description: query unbonding delegation by validator addr.
+          required: true
+          type: string
+        - in: query
+          name: page
+          type: integer
+          format: int
+          default: 1
+        - in: query
+          name: size
+          type: integer
+          format: int
+          default: 5
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/UnbondingDelegationByValidatorPage"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/stake/validators/{validatorAddr}/redelegations:
+    get:
+      summary: "from lcd: %s/stake/validators/%s/redelegations"
+      tags:
+        - Stake
+      parameters:
+        - in: path
+          name: validatorAddr
+          description: query redelegations by validator address.
+          required: true
+          type: string
+        - in: query
+          name: page
+          type: integer
+          format: int
+          default: 1
+        - in: query
+          name: size
+          type: integer
+          format: int
+          default: 5
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/RedelegationsByValidatorPage"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/stake/validators/{validatorAddr}/vote:
+    get:
+      summary:
+      tags:
+        - Stake
+      parameters:
+        - name: validatorAddr
+          in: path
+          type: string
+          required: true
+        - in: query
+          name: page
+          type: integer
+          format: int
+          default: 1
+        - in: query
+          name: size
+          type: integer
+          format: int
+          default: 5
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/ValidatorVotePage"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/stake/validators/{validatorAddr}/depositor_txs:
+    get:
+      summary:
+      tags:
+        - Stake
+      parameters:
+        - name: validatorAddr
+          in: path
+          type: string
+          required: true
+        - in: query
+          name: page
+          type: integer
+          format: int
+          default: 1
+        - in: query
+          name: size
+          type: integer
+          format: int
+          default: 5
+      responses:
+        200:
+          type: array
+          items:
+            $ref: "#/definitions/ValidatorDepositTxPage"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/stake/validators/{validatorAddr}/withdraw-addr:
+    get:
+      summary:  "from lcd:  %s/distribution/%s/withdraw-address"
+      tags:
+        - Stake
+      parameters:
+        - name: validatorAddr
+          in: path
+          type: string
+          required: true
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/WithdrawAddrByValidator"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/stake/validators/{validatorAddr}/commission-rewards:
+    get:
+      summary:  "from lcd:   %s/distribution/%s/rewards"
+      tags:
+        - Stake
+      parameters:
+        - name: validatorAddr
+          in: path
+          type: string
+          required: true
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/CoinsStr"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/stake/candidatesTop:
+    get:
+      tags:
+        - Stake
+      responses:
+        200:
+          type: array
+          items:
+            $ref: "#/definitions/ValidatorAsModel"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/stake/candidate/{address}:
+    get:
+      summary:
+      tags:
+        - Stake
+      parameters:
+        - in: path
+          name: address
+          description: query validator by Address from lcd.
+          required: true
+          type: string
+      responses:
+        200:
+          description:
+          schema:
+            $ref: "#/definitions/CandidatesInfoVo"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/stake/candidate/{address}/uptime/{category}:
+    get:
+      summary:  category -> hour,week,month
+      tags:
+        - Stake
+      parameters:
+        - in: path
+          name: address
+          required: true
+          type: string
+        - in: path
+          name: category
+          required: true
+          type: string
+      responses:
+        200:
+          type: array
+          items:
+            $ref: "#/definitions/UptimeChangeVo"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/stake/candidate/{address}/power/{category}:
+    get:
+      summary:  category ->  week,month,months
+      tags:
+        - Stake
+      parameters:
+        - in: path
+          name: address
+          required: true
+          type: string
+        - in: path
+          name: category
+          required: true
+          type: string
+      responses:
+        200:
+          type: array
+          items:
+            $ref: "#/definitions/ValVotingPowerChangeVo"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/stake/candidate/{address}/status:
+    get:
+      tags:
+        - Stake
+      parameters:
+        - in: path
+          name: address
+          required: true
+          type: string
+      responses:
+        200:
+          type: array
+          items:
+            $ref: "#/definitions/ValStatus"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/tx/{type}/{page}/{size}:
+    get:
+      summary:  type-> trans  stake  declaration gov
+      tags:
+        - Tx
+      parameters:
+        - name: page
+          in: path
+          type: integer
+          format: int
+          default: 1
+          required: false
+        - name: size
+          in: path
+          type: integer
+          format: int
+          default: 100
+          required: false
+        - in: path
+          name: type
+          required: true
+          type: string
+      responses:
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/tx/trans/{page}/{size}:
+    get:
+      tags:
+        - Tx
+      parameters:
+        - name: page
+          in: path
+          type: integer
+          format: int
+          default: 1
+          required: false
+        - name: size
+          in: path
+          type: integer
+          format: int
+          default: 100
+          required: false
+      responses:
+        200:
+          type: array
+          items:
+            $ref: "#/definitions/TransTx"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/tx/stake/{page}/{size}:
+    get:
+      tags:
+        - Tx
+      parameters:
+        - name: page
+          in: path
+          type: integer
+          format: int
+          default: 1
+          required: false
+        - name: size
+          in: path
+          type: integer
+          format: int
+          default: 100
+          required: false
+      responses:
+        200:
+          type: array
+          items:
+            $ref: "#/definitions/StakeTx"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/tx/declaration/{page}/{size}:
+    get:
+      tags:
+        - Tx
+      parameters:
+        - name: page
+          in: path
+          type: integer
+          format: int
+          default: 1
+          required: false
+        - name: size
+          in: path
+          type: integer
+          format: int
+          default: 100
+          required: false
+      responses:
+        200:
+          type: array
+          items:
+            $ref: "#/definitions/DeclarationTx"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/tx/gov/{page}/{size}:
+    get:
+      tags:
+        - Tx
+      parameters:
+        - name: page
+          in: path
+          type: integer
+          format: int
+          default: 1
+          required: false
+        - name: size
+          in: path
+          type: integer
+          format: int
+          default: 100
+          required: false
+      responses:
+        200:
+          type: array
+          items:
+            $ref: "#/definitions/GovTx"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/txs/recent:
+    get:
+      summary: query the recent txs
+      tags:
+        - Tx
+      responses:
+        200:
+          type: array
+          items:
+            $ref: "#/definitions/RecentTx"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/txs/statistics:
+    get:
+      tags:
+        - Tx
+      responses:
+        200:
+          schema:
+            $ref: "#/definitions/TxStatisticsVo"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/txsByAddress/{address}/{page}/{size}:
+    get:
+      tags:
+        - Tx
+      parameters:
+        - name: page
+          in: path
+          type: integer
+          format: int
+          default: 1
+          required: false
+        - name: size
+          in: path
+          type: integer
+          format: int
+          default: 100
+          required: false
+        - in: path
+          name: address
+          required: true
+          type: string
+      responses:
+        200:
+          type: array
+          items:
+            $ref: "#/definitions/CommonTx"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/txsByDay:
+    get:
+      tags:
+        - Tx
+      responses:
+        200:
+          type: array
+          items:
+            $ref: "#/definitions/TxNumGroupByDayVo"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+  /api/tx/{hash}:
+    get:
+      summary:
+      tags:
+        - Tx
+      parameters:
+        - in: path
+          name: hash
+          description: query tx by hash.
+          required: true
+          type: string
+      responses:
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+
 
 
 definitions:
+  WithdrawAddrByValidator:
+    type: object
+    properties:
+      address:
+        type: string
+  ValidatorDepositTxPage:
+    type: object
+    properties:
+      total:
+        type: integer
+        format: int
+      items:
+        type: array
+        items:
+          $ref: "#/definitions/ValidatorDepositTx"
+  ValidatorDepositTx:
+    type: object
+    properties:
+      proposal_id:
+        type: integer
+        format: int
+      proposer:
+         type: string
+      amount:
+        $ref: "#/definitions/Coins"
+      submited:
+        type: boolean
+      tx_hash:
+        type: string
+      moniker:
+        type: string
+  ValidatorVotePage:
+    type: object
+    properties:
+      total:
+        type: integer
+        format: int
+      items:
+        type: array
+        items:
+          $ref: "#/definitions/ValidatorVote"
+  ValidatorVote:
+    type: object
+    properties:
+      proposal_id:
+        type: integer
+        format: int64
+      title:
+        type: string
+      status:
+        type: string
+      voted:
+        type: string
+      tx_hash:
+        type: string
+  RedelegationsByValidatorPage:
+    type: object
+    properties:
+      total:
+        type: integer
+        format: int
+      items:
+        type: array
+        items:
+          $ref: "#/definitions/RedelegationsByValidator"
+
+  RedelegationsByValidator:
+    type: object
+    properties:
+      address:
+        type: string
+      amount:
+        type: string
+      destination:
+        type: string
+      block:
+        type: string
+  UnbondingDelegationByValidatorPage:
+    type: object
+    properties:
+      total:
+        type: integer
+        format: int
+      items:
+        type: array
+        items:
+          $ref: "#/definitions/UnbondingDelegationByValidator"
+  UnbondingDelegationByValidator:
+    type: object
+    properties:
+      address:
+        type: string
+      amount:
+        type: string
+      block:
+        type: string
+      until:
+        type: string
+  DelegationByValidatorPage:
+    type: object
+    properties:
+      total:
+        type: integer
+        format: int
+      items:
+        type: array
+        items:
+          $ref: "#/definitions/DelegationByValidator"
+  DelegationByValidator:
+    type: object
+    properties:
+      address:
+        type: string
+      amount:
+        type: integer
+        format: float64
+      self_shares:
+        type: string
+      total_shares:
+        type: string
+      block:
+        type: string
+  ValidatorForDetail:
+    type: object
+    required:
+      - description
+      - total_power
+      - self_power
+      - status
+      - bonded_tokens
+      - self_bonded
+      - delegator_shares
+      - delegator_count
+      - commission_rate
+      - commission_update
+      - commission_max_rate
+      - commision_max_change_rate
+      - bond_height
+      - missed_blocks_count
+      - operator_addr
+      - owner_addr
+      - consensus_addr
+      - unbonding_height
+      - jailed_until
+    properties:
+      description:
+        $ref: "#/definitions/Description"
+      total_power:
+        type: integer
+        format: int64
+      self_power:
+        type: integer
+        format: int64
+      status:
+        type: string
+      bonded_tokens:
+        type: string
+      self_bonded:
+        type: string
+      delegator_shares:
+        type: string
+      delegator_count:
+        type: integer
+        format: int32
+      commission_rate:
+        type: string
+      commission_update:
+        type: string
+      commission_max_rate:
+        type: string
+      commision_max_change_rate:
+        type: string
+      bond_height:
+        type: string
+      unbonding_height:
+        type: string
+      jailed_until:
+        type: string
+      missed_blocks_count:
+        type: string
+      operator_addr:
+        type: string
+      owner_addr:
+        type: string
+      consensus_addr:
+        type: string
+  LcdValidator:
+    type: object
+    properties:
+      operator_address:
+        type: string
+      consensus_pubkey:
+        type: string
+      jailed:
+        type: boolean
+      status:
+        type: integer
+        format: int
+      tokens:
+        type: string
+      delegator_shares:
+        type: string
+      description:
+        $ref: "#/definitions/Description"
+      bond_height:
+        type: string
+      unbonding_height:
+        type: string
+      unbonding_time:
+        type: string
+      commission:
+        $ref: "#/definitions/Commission"
+      uptime:
+        type: integer
+        format: float32
+      self_bond:
+        type: string
+      delegator_num:
+        type: integer
+        format: int
+      proposer_addr:
+        type: string
+      voting_rate:
+        type: integer
+        format: float32
+  GovTx:
+    type: object
+    properties:
+      From:
+        type: string
+      ProposalId:
+        type: integer
+        format: uint64
+      Description:
+        type: string
+      Amount:
+        $ref: "#/definitions/Coins"
+      Option:
+        type: string
+      Title:
+        type: string
+      ProposalType:
+        type: string
+      Signer:
+        type: string
+      Hash:
+        type: string
+      BlockHeight:
+        type: integer
+        format: int64
+      Type:
+        type: string
+      Fee:
+        $ref: "#/definitions/ActualFee"
+      Status:
+        type: string
+      GasLimit:
+        type: integer
+        format: int64
+      GasUsed:
+        type: integer
+        format: int64
+      GasPrice:
+        type: integer
+        format: float64
+      Memo:
+        type: string
+      Timestamp:
+        type: string
+  StakeTx:
+    type: object
+    properties:
+      Source:
+        type: string
+      Signer:
+        type: string
+      Hash:
+        type: string
+      BlockHeight:
+        type: integer
+        format: int64
+      Type:
+        type: string
+      Fee:
+        $ref: "#/definitions/ActualFee"
+      Status:
+        type: string
+      GasLimit:
+        type: integer
+        format: int64
+      GasUsed:
+        type: integer
+        format: int64
+      GasPrice:
+        type: integer
+        format: float64
+      Memo:
+        type: string
+      Timestamp:
+        type: string
+  DeclarationTx:
+    type: object
+    properties:
+      Amount:
+        $ref: "#/definitions/Coins"
+      OperatorAddr:
+        type: string
+      Owner:
+        type: string
+      Moniker:
+        type: string
+      Pubkey:
+        type: string
+      Identity:
+        type: string
+      SelfBond:
+          $ref: "#/definitions/Coins"
+      Website:
+        type: string
+      Details:
+        type: string
+      Signer:
+        type: string
+      Hash:
+        type: string
+      BlockHeight:
+        type: integer
+        format: int64
+      Type:
+        type: string
+      Fee:
+        $ref: "#/definitions/ActualFee"
+      Status:
+        type: string
+      GasLimit:
+        type: integer
+        format: int64
+      GasUsed:
+        type: integer
+        format: int64
+      GasPrice:
+        type: integer
+        format: float64
+      Memo:
+        type: string
+      Timestamp:
+        type: string
+  TransTx:
+    type: object
+    properties:
+      From:
+        type: string
+      To:
+        type: string
+      Signer:
+        type: string
+      Hash:
+        type: string
+      BlockHeight:
+        type: integer
+        format: int64
+      Type:
+        type: string
+      Fee:
+        $ref: "#/definitions/ActualFee"
+      Status:
+        type: string
+      GasLimit:
+        type: integer
+        format: int64
+      GasUsed:
+        type: integer
+        format: int64
+      GasPrice:
+        type: integer
+        format: float64
+      Memo:
+        type: string
+      Timestamp:
+        type: string
+  BaseTx:
+    type: object
+    properties:
+      Signer:
+        type: string
+      Hash:
+        type: string
+      BlockHeight:
+        type: integer
+        format: int64
+      Type:
+        type: string
+      Fee:
+        $ref: "#/definitions/ActualFee"
+      Status:
+        type: string
+      GasLimit:
+        type: integer
+        format: int64
+      GasUsed:
+        type: integer
+        format: int64
+      GasPrice:
+        type: integer
+        format: float64
+      Memo:
+        type: string
+      Timestamp:
+        type: string
+  TxNumGroupByDayVo:
+    type: object
+    properties:
+      Date:
+        type: string
+      Num:
+        type: integer
+        format: int64
+  CommonTx:
+    type: object
+    properties:
+      Time:
+        type: string
+      Height:
+        type: integer
+        format: int64
+      TxHash:
+        type: string
+      From:
+        type: string
+      To:
+        type: string
+      Amount:
+        $ref: "#/definitions/Coins"
+      Type:
+        type: string
+      Fee:
+        $ref: "#/definitions/Fee"
+      Memo:
+        type: string
+      Status:
+        type: string
+      Code:
+        type: integer
+        format: uint32
+      Log:
+        type: string
+      GasUsed:
+        type: integer
+        format: int64
+      GasPrice:
+        type: integer
+        format: float64
+      Tags:
+        type: object
+      StakeCreateValidator:
+        $ref: "#/definitions/StakeCreateValidator"
+      StakeEditValidator:
+        $ref: "#/definitions/StakeEditValidator"
+      Signers:
+          type: array
+          items:
+            $ref: "#/definitions/Signer"
+  Signer:
+    type: obejct
+    properties:
+      AddrHex:
+        type: string
+      AddrBech32:
+        type: string
+  StakeEditValidator:
+    type: obejct
+    properties:
+      Description:
+        $ref: "#/definitions/ValDescription"
+  ValDescription:
+    type: object
+    properties:
+      Moniker:
+        type: string
+      Identity:
+        type: string
+      Website:
+        type: string
+      Details:
+        type: string
+  StakeCreateValidator:
+    type: object
+    properties:
+      PubKey:
+        type: string
+      Description:
+        $ref: "#/definitions/ValDescription"
+  TxStatisticsVo:
+    type: object
+    properties:
+      trans_cnt:
+        type: integer
+        format: int
+      stake_cnt:
+        type: integer
+        format: int
+      declaration_cnt:
+        type: integer
+        format: int
+      gov_cnt:
+        type: integer
+        format: int
+  RecentTx:
+    type: object
+    properties:
+      actual_fee:
+        $ref: "#/definitions/Coins"
+      time:
+        type: string
+      tx_hash:
+        type: string
+      type:
+        type: string
+  ValStatus:
+    type: object
+    properties:
+      up_time:
+        type: integer
+        format: int
+      precommit_cnt:
+        type: integer
+        format: float64
+  ValVotingPowerChangeVo:
+    type: object
+    properties:
+      height:
+        type: integer
+        format: int64
+      address:
+        type: string
+      power:
+        type: integer
+        format: int64
+      time:
+        type: string
+      change:
+        type: string
+  UptimeChangeVo:
+    type: object
+    properties:
+      address:
+        type: string
+      time:
+        type: string
+      uptime:
+        type: integer
+        format: float64
+  CandidatesInfoVo:
+    type: object
+    properties:
+      power_all:
+        type: integer
+        format: int64
+      address:
+        type: string
+      owner:
+        type: string
+      pub_key:
+        type: string
+      jailed:
+        type: boolean
+      voting_power:
+        type: integer
+        format: int64
+      description:
+        $ref: "#/definitions/Description"
+      bond_height:
+        type: integer
+        format: int64
+      status:
+        type: string
+      rate:
+        type: string
+      up_time:
+        type: integer
+        format: int
+      precommit_cnt:
+        type: integer
+        format: float64
+  ValidatorAsModel:
+    type: object
+    properties:
+      address:
+        type: string
+      owner:
+        type: string
+      pub_key:
+        type: string
+      jailed:
+        type: boolean
+      voting_power:
+        type: integer
+        format: int64
+      description:
+        $ref: "#/definitions/Description"
+      bond_height:
+        type: integer
+        format: int64
+      status:
+        type: string
+      rate:
+        type: string
+      up_time:
+        type: integer
+        format: int
+      precommit_cnt:
+        type: integer
+        format: float64
+  Commission:
+    type: obejct
+    properties:
+      rate:
+        type: string
+      max_rate:
+        type: string
+      max_change_rate:
+        type: string
+      update_time:
+        type: string
+  ValidatorForList:
+    type: object
+    properties:
+      operator_address:
+        type: string
+      consensus_pubkey:
+        type: string
+      jailed:
+        type: boolean
+      status:
+        type: integer
+        format: int
+      tokens:
+        type: string
+      delegator_shares:
+        type: string
+      description:
+        $ref: "#/definitions/Description"
+      bond_height:
+        type: string
+      unbonding_height:
+        type: string
+      unbonding_time:
+        type: string
+      commission:
+        $ref: "#/definitions/Commission"
+      uptime:
+        type: integer
+        format: float32
+      self_bond:
+        type: string
+      delegator_num:
+        type: integer
+        format: int
+      proposer_addr:
+        type: string
+      voting_power:
+        type: integer
+        format: int64
+  Description:
+    type: object
+    properties:
+      moniker:
+        type: string
+      identity:
+        type: string
+      website:
+        type: string
+      details:
+        type: string
+  EnvConfig:
+    type: object
+    properties:
+      cur_env:
+        type: string
+      chain_id:
+        type: string
+      configs:
+         type: array
+         items:
+           $ref: "#/definitions/Config"
+  Config:
+    type: object
+    properties:
+      env_nm:
+        type: string
+      host:
+        type: string
+      chain_id:
+        type: string
+      show_faucet:
+        type: integer
+        format: int
+  BlockAndProposal:
+    type: object
+    required:
+      - block
+      - proposal
+    properties:
+      block:
+        $ref: "#/definitions/SimpleBlockVo"
+      proposal:
+        $ref: "#/definitions/SimpleProposalVo"
+  SimpleBlockVo:
+    type: object
+    properties:
+      height:
+        type: integer
+        format: int64
+      timestamp:
+        type: string
+      hash:
+        type: string
+  SimpleProposalVo:
+    type: object
+    properties:
+      proposal_id:
+        type: integer
+        format: uint64
+      title:
+        type: string
+      type:
+        type: string
+      status:
+        type: string
+      submit_time:
+        type: string
+  AccountInfo:
+    type: object
+    properties:
+      rank:
+        type: integer
+        format: int
+      address:
+        type: string
+      percent:
+        type: integer
+        format: float64
+      update_at:
+        type: integer
+        format: int64
+      balance:
+        $ref: "#/definitions/Coins"
+  NavigationData:
+    type: object
+    properties:
+      block_height:
+        type: integer
+        format: int64
+      block_time:
+        type: string
+      total_txs:
+        type: integer
+        format: int64
+      tps:
+        type: integer
+        format: float32
+      avg_block_time:
+        type: integer
+        format: float32
+      voting_ratio:
+        type: integer
+        format: float32
+      voting_tokens:
+        type: string
+      vote_val_num:
+        type: integer
+        format: int
+      active_val_num:
+        type: integer
+        format: int
+      bonded_ratio:
+        type: string
+      bonded_tokens:
+        type: string
+      total_supply:
+        type: string
+      moniker:
+        type: string
+      operator_addr:
+        type: string
+  BlockForList:
+    type: object
+    properties:
+      height:
+        type: integer
+        format: int64
+      proposer_moniker:
+        type: string
+      proposer_as_validator_addr:
+        type: string
+      txs_num:
+        type: integer
+        format: int64
+      precommit_validator_num:
+        type: integer
+        format: int
+      validator_num_for_height:
+        type: integer
+        format: int
+      precommit_voting_power:
+        type: integer
+        format: int64
+      voting_power_for_height:
+        type: integer
+        format: int64
+      timestamp:
+        type: string
   GetVoteTxResponse:
     type: object
     properties:
@@ -326,7 +1779,7 @@ definitions:
       Data:
         type: array
         items:
-          $ref: "#/definitions/BlockInfoVo"
+          $ref: "#/definitions/BlockForList"
   RecentBlockInfoVo:
     type: object
     required:
@@ -778,6 +2231,18 @@ definitions:
       amount:
         type: integer
         format: float64
+
+  CoinsStr:
+    type: array
+    items:
+      $ref: "#/definitions/CoinStr"
+  CoinStr:
+    type: object
+    properties:
+      denom:
+        type: string
+      amount:
+        type: string
   Coins:
     type: array
     items:
@@ -867,3 +2332,13 @@ definitions:
         type: string
       msg:
         type: string
+  success:
+    type: object
+    properties:
+      code:
+        type: string
+      msg:
+        type: string
+      data:
+        type: integer
+        format: int64

@@ -11,11 +11,9 @@ const (
 	UrlRegisterNavigationBar = "/home/navigation"
 
 	//Block
-	UrlRegisterQueryBlock             = "/block/{height}"
+	UrlRegisterQueryBlockLatestHeight = "/block/latestheight"
 	UrlRegisterQueryRecentBlocks      = "/blocks/recent"
 	UrlRegisterQueryBlocks            = "/blocks"
-	UrlRegisterQueryBlockTxs          = "/block/txs/{height}"
-	UrlRegisterQueryBlockTxGov        = "/block/txgov/{height}"
 	UrlRegisterQueryBlockValidatorSet = "/block/validatorset/{height}"
 	UrlRegisterQueryBlockInfo         = "/block/blockinfo/{height}"
 
@@ -40,13 +38,20 @@ const (
 	UrlFaucetApplyService   = "%s/apply"
 
 	//Stake
-	UrlRegisterGetValidators        = "/stake/validators"
-	UrlRegisterGetValidator         = "/stake/validators/{address}"
-	UrlRegisterQueryCandidatesTop   = "/stake/candidatesTop"
-	UrlRegisterQueryCandidate       = "/stake/candidate/{address}"
-	UrlRegisterQueryCandidateUptime = "/stake/candidate/{address}/uptime/{category}"
-	UrlRegisterQueryCandidatePower  = "/stake/candidate/{address}/power/{category}"
-	UrlRegisterQueryCandidateStatus = "/stake/candidate/{address}/status"
+	UrlRegisterGetValidators                         = "/stake/validators"
+	UrlRegisterGetValidator                          = "/stake/validators/{address}"
+	UrlRegisterQueryCandidatesTop                    = "/stake/candidatesTop"
+	UrlRegisterQueryCandidate                        = "/stake/candidate/{address}"
+	UrlRegisterQueryCandidateUptime                  = "/stake/candidate/{address}/uptime/{category}"
+	UrlRegisterQueryCandidatePower                   = "/stake/candidate/{address}/power/{category}"
+	UrlRegisterQueryCandidateStatus                  = "/stake/candidate/{address}/status"
+	UrlRegisterQueryValidatorsDelegations            = "/stake/validators/{validatorAddr}/delegations"
+	UrlRegisterQueryValidatorUnbondingDelegations    = "/stake/validators/{validatorAddr}/unbonding-delegations"
+	UrlRegisterQueryValidatorRedelegations           = "/stake/validators/{validatorAddr}/redelegations"
+	UrlRegisterQueryValidatorVoteByValidatorAddr     = "/stake/validators/{validatorAddr}/vote"
+	UrlRegisterQueryDepositorTxsByValidatorAddr      = "/stake/validators/{validatorAddr}/depositor_txs"
+	UrlRegisterQueryWithdrawAddrByValidatorAddr      = "/stake/validators/{validatorAddr}/withdraw-addr"
+	UrlRegisterQueryCommissionRewardsByValidatorAddr = "/stake/validators/{validatorAddr}/commission-rewards"
 
 	//Tx
 	UrlRegisterQueryTxList       = "/tx/{type}/{page}/{size}"
@@ -95,6 +100,8 @@ var (
 	RoleValidator = "validator"
 	RoleCandidate = "candidate"
 	RoleJailed    = "jailed"
+
+	RoleList = []string{RoleValidator, RoleCandidate, RoleJailed}
 
 	BankList        = []string{TxTypeTransfer, TxTypeBurn}
 	DeclarationList = []string{TxTypeStakeCreateValidator, TxTypeStakeEditValidator, TxTypeUnjail}

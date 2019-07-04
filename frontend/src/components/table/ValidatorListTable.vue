@@ -11,7 +11,7 @@
           </div>
           <div class="name_address" style="margin-left:0.2rem;">
             <span class="remove_default_style">
-              <router-link :to="`/address/1/${data.item.operatorAddress}`" class="link_style">{{data.item.moniker}}</router-link>
+              <router-link :to="addressRoute(data.item.operatorAddress)" class="link_style">{{data.item.moniker}}</router-link>
             </span>
           </div>
         </span>
@@ -20,7 +20,7 @@
         <span class="skip_route" style="display: flex" v-if="data.item.operatorAddress">
           <div class="name_address">
             <span class="remove_default_style">
-              <router-link :to="`/address/1/${data.item.operatorAddress}`" class="link_style">{{formatAddress(data.item.operatorAddress)}}</router-link>
+              <router-link :to="addressRoute(data.item.operatorAddress)" class="link_style">{{formatAddress(data.item.operatorAddress)}}</router-link>
             </span>
             <span class="address">{{data.item.operatorAddress}}</span>
           </div>
@@ -191,44 +191,6 @@
 
 <style lang="scss">
   @import '../../style/mixin.scss';
-  .name_address{
-    display: flex;
-    flex-direction: column;
-    position: relative;
-  .address{
-    display: none;
-    position: absolute;
-    left: -1.29rem;
-    top: -0.38rem;
-    color: #3598db;
-    background: rgba(0,0,0,0.8);
-    border-radius:0.04rem;
-    z-index: 10;
-  }
-    &:hover{
-      .address{
-        background: rgba(0,0,0,1);
-        color: #fff;
-        padding: 0.06rem 0.15rem 0 0.15rem;
-        display: block;
-        border-radius:0.04rem;
-        font-size: 0.14rem;
-      &::after{
-         content: '';
-         display: block;
-         background: rgba(0,0,0,1);
-         transform: rotate(45deg);
-         width: 0;
-         height: 0;
-         border: 0.04rem solid transparent;
-         position: relative;
-         top: 0.03rem;
-         z-index: 1;
-         left: 1.45rem;
-       }
-      }
-    }
-  }
   //重置bootstrap-vue的表格样式
     table {
       td {

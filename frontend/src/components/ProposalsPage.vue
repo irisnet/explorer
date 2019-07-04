@@ -1,10 +1,10 @@
 <template>
   <div class="proposals_list_page_wrap">
-    <div class="proposals_list_title_wrap">
+    <!-- <div class="proposals_list_title_wrap">
       <p :class="proposalsListPageWrap" style="margin-bottom:0;">
         <span class="proposals_list_title">Proposals</span>
       </p>
-    </div>
+    </div> -->
     <div class="graph_containers">
       <div class="graph_container mobile_graph_container" v-if="$store.state.isMobile && (depositPeriodDatas.length > 0 || votingPeriodDatas.length > 0)">
         <div v-for="v in votingPeriodDatas" :key="v.proposal_id">
@@ -56,7 +56,7 @@
         </div>
       </div>
     </div>
-   
+
 
     <div :class="proposalsListPageWrap">
       <div class="pagination total_num" :class="[$store.state.isMobile ? 'mobile_graph_pagination_container' : '']">
@@ -100,12 +100,11 @@
       </div>
       <div style="position:relative;overflow-x: auto; overflow-y: hidden;-webkit-overflow-scrolling:touch;">
         <m-proposals-list-table :items="items"></m-proposals-list-table>
-        <!-- <blocks-list-table :items="items" :type="'Proposals'" :showNoData="showNoData" :minWidth="tableMinWidth"></blocks-list-table> -->
         <div v-show="showNoData" class="no_data_show">
           No Data
         </div>
       </div>
-      <div class="pagination" style='margin:0.2rem 0;'>
+      <div class="pagination" style='margin:0.2rem 0 0.4rem;'>
         <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
         </b-pagination>
       </div>
@@ -116,9 +115,8 @@
 
 <script>
   import Tools from '../util/Tools';
-  import BlocksListTable from './table/BlocksListTable.vue';
   import SpinComponent from './commonComponents/SpinComponent';
-  import Service from "../util/axios";
+  import Service from "../service";
   import Constant from "../constant/Constant"
   import MProposalsCard from './commonComponents/MProposalsCard';
   import MProposalsEchart from './commonComponents/MProposalsEchart';
@@ -126,7 +124,6 @@
 
   export default {
     components:{
-      BlocksListTable,
       SpinComponent,
       MProposalsCard,
       MProposalsEchart,
@@ -263,7 +260,7 @@
             {
               name: 'Participant',
               value: votes,
-              perData: Tools.formatDecimalNumberToFixedNumber(votes / all * 100),
+               perData: Tools.formatDecimalNumberToFixedNumber(votes / all * 100),
               itemStyle: {
                 color: '#3598DB',
                 borderColor: '#ECEFFF',
@@ -365,17 +362,20 @@
           return o;
         });
         depositPeriodDatas.forEach(v => {
-          if (v.level && v.level.gov_param && v.level.gov_param.min_deposit && v.level.gov_param.min_deposit.amount) {
+          if (v.level && v.level.gov_param && v.level.gov_param.min_deposit && (typeof v.level.gov_param.min_deposit.amount === 'number')) {
             v.min_deposit_number = Number(v.level.gov_param.min_deposit.amount);
-            v.min_deposit_format = `${Tools.formatAmount(v.level.gov_param.min_deposit.amount)} IRIS`;
+            let n = v.min_deposit_number === 0 ? v.min_deposit_number : Tools.formatAmount(v.level.gov_param.min_deposit.amount);
+            v.min_deposit_format = `${n} IRIS`;
           }
-          if (v.intial_deposit && v.intial_deposit.amount) {
+          if (v.intial_deposit && (typeof v.intial_deposit.amount === 'number')) {
             v.intial_deposit_number = Number(v.intial_deposit.amount);
-            v.intial_deposit_format = `${Tools.formatAmount(v.intial_deposit.amount)} IRIS`;
+            let n = v.intial_deposit_number === 0 ? v.intial_deposit_number : Tools.formatAmount(v.intial_deposit.amount);
+            v.intial_deposit_format = `${n} IRIS`;
           }
-          if (v.total_deposit && v.total_deposit.amount) {
+          if (v.total_deposit && (typeof v.total_deposit.amount === 'number')) {
             v.total_deposit_number = Number(v.total_deposit.amount);
-            v.total_deposit_format = `${Tools.formatAmount(v.total_deposit.amount)} IRIS`;
+            let n = v.total_deposit_number === 0 ? v.total_deposit_number : Tools.formatAmount(v.total_deposit.amount);
+            v.total_deposit_format = `${n} IRIS`;
           }
           v.intial_deposit_number_per = this.isNumber(v.intial_deposit_number) && this.isNumber(v.min_deposit_number) ?
           (v.intial_deposit_number / v.min_deposit_number) * 100 + '%' : 0;
@@ -389,76 +389,79 @@
         return typeof n === 'number'
       },
       getGrahpData() {
-        let url=`/api/gov/deposit_voting_proposals`;
-        Service.http(url).then((data)=>{
-          if (data && Array.isArray(data) && data.length > 0) {
-            this.formatGrahpData(data);
-          }
-        }).catch(err => {
+        Service.commonInterface({proposalListVotingAndDeposit:{}}, (data) => {
+	        if (data && Array.isArray(data) && data.length > 0) {
+		        this.formatGrahpData(data);
+	        }
         });
       },
       getDataList(currentPage, pageSize) {
         this.showLoading = true;
-        let url=`/api/gov/proposals?page=${currentPage}&size=${pageSize}`;
-        Service.http(url).then((proposalList)=>{
-          if(proposalList.Data){
-            this.showNoData = false;
-            this.count = proposalList.Count;
-            this.items = proposalList.Data.map(item =>{
-              let proposalId = item.proposal_id === 0 ? "--" : item.proposal_id;
-              let type = item.type;
-              let status  = item.status;
-              let submitTime = (new Date(item.submit_time).getTime()) > 0 ? Tools.format2UTC(item.submit_time) : '--';
-              let depositEndTime = (new Date(item.deposit_end_time).getTime()) > 0 ? Tools.format2UTC(item.deposit_end_time) : '--';
-              let votingEndTime = (new Date(item.voting_end_time).getTime()) > 0 ? Tools.format2UTC(item.voting_end_time) : '--';
-              let title = Tools.formatString(item.title,20,"...");
-              let final_votes = {};
-              let finalTotalVotes = 0;
-              if (status === 'VotingPeriod') {
-                let yesArr = item.votes.filter(v => v.option === 'Yes');
-                let yes = yesArr.reduce((init, v) => {return v.voting_power + init}, 0);
-                let noArr = item.votes.filter(v => v.option === 'No');
-                let no = noArr.reduce((init, v) => {return v.voting_power + init}, 0);
-                let abstainArr = item.votes.filter(v => v.option === 'Abstain');
-                let abstain = abstainArr.reduce((init, v) => {return v.voting_power + init}, 0);
-                let noWithVetoArr = item.votes.filter(v => v.option === 'NoWithVeto');
-                let no_with_veto = noWithVetoArr.reduce((init, v) => {return v.voting_power + init}, 0);
-                finalTotalVotes = yes + no + abstain + no_with_veto;
-                final_votes.yes = (yes / finalTotalVotes) * 100;
-                final_votes.no = (no / finalTotalVotes) * 100;
-                final_votes.abstain = (abstain / finalTotalVotes) * 100;
-                final_votes.no_with_veto = (no_with_veto / finalTotalVotes) * 100;
-              } else {
-                final_votes = Object.keys(item.final_votes).length > 0 ? item.final_votes : final_votes;
-                for (let k in item.final_votes) {
-                  finalTotalVotes += Number(item.final_votes[k]);
-                }
-                for (let k in final_votes) {
-                  final_votes[k] = (Number(final_votes[k]) / finalTotalVotes) * 100;
-                }
-              }
-              return {
-                title : title,
-                id : proposalId,
-                type : type,
-                status : status,
-                submitTime : submitTime,
-                depositEndTime: depositEndTime,
-                votingEndTime: votingEndTime,
-                finalTotalVotes: finalTotalVotes,
-                finalVotes: final_votes,
-                level: item.level && item.level.name
-              }
-            });
-          }else {
-            this.items = [];
-            this.showNoData = true;
-          }
-          this.showLoading = false;
-        }).catch(e => {
-          this.items = [];
-          this.showNoData = true;
-          this.showLoading = false;
+        Service.commonInterface({proposalList:{
+		        pageNumber: currentPage,
+		        pageSize: pageSize
+            }}, (proposalList) => {
+            try {
+	            if(proposalList.Data){
+		            this.showNoData = false;
+		            this.count = proposalList.Count;
+		            this.items = proposalList.Data.map(item =>{
+			            let proposalId = item.proposal_id === 0 ? "--" : item.proposal_id;
+			            let type = item.type;
+			            let status  = item.status;
+			            let submitTime = (new Date(item.submit_time).getTime()) > 0 ? Tools.format2UTC(item.submit_time) : '--';
+			            let depositEndTime = (new Date(item.deposit_end_time).getTime()) > 0 ? Tools.format2UTC(item.deposit_end_time) : '--';
+			            let votingEndTime = (new Date(item.voting_end_time).getTime()) > 0 ? Tools.format2UTC(item.voting_end_time) : '--';
+			            let title = Tools.formatString(item.title,20,"...");
+			            let final_votes = {};
+			            let finalTotalVotes = 0;
+			            if (status === 'VotingPeriod') {
+				            let yesArr = item.votes.filter(v => v.option === 'Yes');
+				            let yes = yesArr.reduce((init, v) => {return v.voting_power + init}, 0);
+				            let noArr = item.votes.filter(v => v.option === 'No');
+				            let no = noArr.reduce((init, v) => {return v.voting_power + init}, 0);
+				            let abstainArr = item.votes.filter(v => v.option === 'Abstain');
+				            let abstain = abstainArr.reduce((init, v) => {return v.voting_power + init}, 0);
+				            let noWithVetoArr = item.votes.filter(v => v.option === 'NoWithVeto');
+				            let no_with_veto = noWithVetoArr.reduce((init, v) => {return v.voting_power + init}, 0);
+				            finalTotalVotes = yes + no + abstain + no_with_veto;
+				            final_votes.yes = (yes / finalTotalVotes) * 100;
+				            final_votes.no = (no / finalTotalVotes) * 100;
+				            final_votes.abstain = (abstain / finalTotalVotes) * 100;
+				            final_votes.no_with_veto = (no_with_veto / finalTotalVotes) * 100;
+			            } else {
+				            final_votes = Object.keys(item.final_votes).length > 0 ? item.final_votes : final_votes;
+				            for (let k in item.final_votes) {
+					            finalTotalVotes += Number(item.final_votes[k]);
+				            }
+				            for (let k in final_votes) {
+					            final_votes[k] = (Number(final_votes[k]) / finalTotalVotes) * 100;
+				            }
+			            }
+			            return {
+				            title : title,
+				            id : proposalId,
+				            type : type,
+				            status : status,
+				            submitTime : submitTime,
+				            depositEndTime: depositEndTime,
+				            votingEndTime: votingEndTime,
+				            finalTotalVotes: finalTotalVotes,
+				            finalVotes: final_votes,
+				            level: item.level && item.level.name
+			            }
+		            });
+	            }else {
+		            this.items = [];
+		            this.showNoData = true;
+	            }
+	            this.showLoading = false;
+            }catch (e) {
+            	console.error(e);
+	            this.items = [];
+	            this.showNoData = true;
+	            this.showLoading = false;
+            }
         })
       }
     }
@@ -557,7 +560,6 @@
   }
     .personal_computer_proposals_list_page_wrap {
       @include flex;
-      padding-bottom: 0.2rem;
     }
     .mobile_proposals_list_page_wrap {
       @include flex;
@@ -571,7 +573,6 @@
     }
   }
   .personal_computer_proposals_list_page_wrap {
-    padding-bottom: 0.2rem;
     width: 100%!important;
     .transaction_information_content_title {
       height: 0.4rem;
@@ -648,7 +649,7 @@
     font-size: 0.18rem;
     color: #000000;
     margin-right: 0.2rem;
-    padding-left: 0.2rem;
+    padding-left: 0.1rem;
     @include fontWeight;
   }
   .proposals_list_page_wrap_hash_var {
@@ -700,6 +701,9 @@
     width: 12.8rem;
     flex-wrap: wrap;
     margin: 0.3rem auto 0.1rem;
+    &:nth-last-of-type(1) {
+      margin-bottom: 0;
+    }
   }
   .votingPeriodDatas_one {
     justify-content: space-between;
@@ -780,7 +784,7 @@
     }
   }
   .mobile_graph_pagination_container {
-    padding-left: 0!important;
+    padding-left: 0.1rem !important;
     & > div:nth-child(1) {
       height: auto!important;
     }

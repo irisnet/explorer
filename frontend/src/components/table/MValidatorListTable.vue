@@ -12,14 +12,14 @@
                style="width: 0.3rem;height: 0.3rem;border-radius: 0.3rem;overflow: hidden;"
                :src="row.url ? row.url : ''" />
           <router-link style="margin-left: 0.2rem;"
-                       :to="`/address/1/${row.operatorAddress}`"
+                       :to="addressRoute(row.operatorAddress)"
                        class="link_style">{{row.moniker}}</router-link>
         </div>
       </template>
       <template slot-scope="{ row }"
                 slot="operatorAddress">
         <span class="remove_default_style">
-          <router-link :to="`/address/1/${row.operatorAddress}`"
+          <router-link :to="addressRoute(row.operatorAddress)"
                        class="link_style operator_address_style">{{formatAddress(row.operatorAddress)}}</router-link>
         </span>
       </template>
@@ -249,26 +249,7 @@ export default {
 </script>
 
 <style lang="scss">
-.override_mtable {
-  .m-table-header {
-    position: fixed;
-    margin-top: -0.45rem;
-    background-color: #ffffff;
-  }
-  .m-table-body {
-    margin-top: 0.45rem;
-  }
-}
 .operator_address_style{
   font-family: "Consolas","Arial",-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-}
-@media screen and (max-width: 910px) {
-  .m-table-header {
-    position: static !important;
-    margin-top: 0rem !important;
-  }
-  .m-table-body {
-    margin-top: -0.04rem !important;
-  }
 }
 </style>

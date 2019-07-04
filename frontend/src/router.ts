@@ -5,6 +5,7 @@ import FaucetPage from './components/FaucetPage.vue';
 import TransactionsDetail from './components/TransactionsDetail.vue';
 import BlocksDetail from './components/BlockInfo.vue';
 import AddressPage from './components/AddressPage.vue';
+import ValidatorDetail from './components/ValidatorDetail.vue';
 import PrivacyPolicy from './components/PrivacyPolicy.vue';
 import ProposalsPage from "./components/ProposalsPage.vue";
 import ProposalsDetail from "./components/ProposalsDetail.vue";
@@ -45,12 +46,6 @@ const router = new Router({
       path: '/txs/:txType', component: TxList
     },
     {
-      path: '/txs/:txType', component: TxList
-    },
-    {
-      path: '/txs/:txType', component: TxList
-    },
-    {
       path: '/validators', component: ValidatorListPage
     },
     {
@@ -63,12 +58,16 @@ const router = new Router({
       path: '/ProposalsDetail/:proposal_id', component: ProposalsDetail,
     },
     {
-      path:'/address/:type/:param',
-      component:AddressPage,
+      path: '/address/:param',
+      component: AddressPage,
     },
     {
-      path:'/privacy_policy',
-      component:PrivacyPolicy,
+      path: '/validators/:param',
+      component: ValidatorDetail,
+    },
+    {
+      path: '/privacy_policy',
+      component: PrivacyPolicy,
     },
     {
       path: '/searchResult/:searchContent', component: SearchResult,
@@ -88,14 +87,14 @@ const router = new Router({
   ]
 
 })
-router.beforeEach((to,from,next) =>{
-  if(sessionStorage.getItem('Show_faucet') === '0'){
-    if(to.path === '/faucet'){
+router.beforeEach((to, from, next) => {
+  if (sessionStorage.getItem('Show_faucet') === '0') {
+    if (to.path === '/faucet') {
       next('/')
-    }else {
+    } else {
       next()
     }
-  }else {
+  } else {
     next()
   }
 })

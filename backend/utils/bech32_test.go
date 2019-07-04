@@ -2,9 +2,10 @@ package utils
 
 import (
 	"encoding/hex"
-	"github.com/magiconair/properties/assert"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestDecodeAndConvert(t *testing.T) {
@@ -27,4 +28,22 @@ func TestConvert(t *testing.T) {
 	res := Convert(dst, bech32Str)
 	t.Log(res)
 	assert.Equal(t, res, wanted)
+}
+
+func TestGenHexAddrFromPubKey(t *testing.T) {
+
+	vaList := []string{"fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx", "fva1d7rxfhyhqzgudv5nmne548t3xrk4tvazpg94cu",
+		"fva1xtstdchjyzkddaptgyug62g23cta7eyzq49svq", "faa1x292qss22x4rls6ygr7hhnp0et94vwwrchaklp",
+		"fcp1zcjduepq3dgenw6hha8kh0r4z5emqqv7u2k2w6qevytxwgdqkyugrsqmyykqq0zycl",
+		"fcp1zcjduepqujegylnmyuymekm7sk70g5up0xq6p5r8zaj5rpjey7tqxxp0z3zqjns5cy",
+		"fcp1zcjduepqcjgmderfahnlyrse563r2hcc3d4vjpafw03axzn3e87kfuqznjcsur8xrq",
+		"fcp1zcjduepq3hy0q3ltgktya5gzvjfmkrhkeqzqau9t927ne8wdts36en490q7s8lxjq2",
+		"fcp1zcjduepqgs9ffj72djsf7vytvm8vq3d2gzavytw0pkl5lee0dp4maej97x9swzlt60",
+		"fcp1zcjduepqevwqk73gun8pp59wz6raddnsg2fczvs237cefl9ve7f94feh6lzsdr4qrf"}
+
+	for k, v := range vaList {
+
+		t.Logf("k: %v  v: %v hashAddr: %v \n", k, v, GenHexAddrFromPubKey(v))
+	}
+
 }

@@ -150,7 +150,7 @@
     .echarts_title_wrap_line {
       height: 15%;
       font-size:0.18rem;
-      font-weight:600;
+      font-weight:400;
     }
     #echarts_line {
       width: 100%;

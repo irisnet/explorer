@@ -1,7 +1,7 @@
 <template>
-  <div :style="{opacity: show ? 1 : 0}">
+  <div :style="{opacity: show ? 1 : 0}" ref="tableContainer">
     <div class="m-table-header">
-      <table class="m_table"
+      <table :class="['m_table', data.length > 0 ? 'm-table-header-table-fixed' : '']"
              cellspacing="0"
              cellpadding="0"
              border="0"
@@ -20,6 +20,7 @@
                 v-for="(v, i) in columns"
                 :key="i">{{v.title}}
               <i class="sort"
+                 v-if="v.sortable"
                  :class="{'desc': (v.key === sortAsBy || v.slot === sortAsBy) && sortAsDesc, 
               'asc': (v.key === sortAsBy || v.slot === sortAsBy) && !sortAsDesc}"></i>
             </th>
@@ -45,21 +46,34 @@
               :key="i">
             <td v-for="(it, j) in columns"
                 :width="it.width"
-                :key="j" :class="it.className">
+                :key="j"
+                :class="it.className">
               <template v-if="it.key">
-                <div :class="{'tooltip_span_container': it.tooltip}">
+                <div :class="{'tooltip_span_container': it.tooltip}" v-table-tooltip="{show: it.tooltip, container: $refs.tableContainer}">
                   {{v[it.key]}}
-                  <span class="tooltip_span"
-                        v-if="it.tooltip">{{it.tooltip === true ? (v[it.key || it.slot]) : it.tooltip}}</span>
+                  <div class="tooltip_span"
+                       :class="it.tooltipClassName"
+                       v-if="it.tooltip">
+                    <div>
+                      {{it.tooltip === true ? (v[it.key || it.slot]) : it.tooltip}}
+                    </div>
+                    <i></i>
+                  </div>
                 </div>
               </template>
               <template v-else>
-                <div :class="{'tooltip_span_container': it.tooltip}">
+                <div :class="{'tooltip_span_container': it.tooltip}" v-table-tooltip="{show: it.tooltip, container: $refs.tableContainer}">
                   <slot :name="it.slot"
                         :row="v">
                   </slot>
-                  <span class="tooltip_span"
-                        v-if="it.tooltip">{{it.tooltip === true ? (v[it.key || it.slot]) : it.tooltip}}</span>
+                  <div class="tooltip_span"
+                       :class="it.tooltipClassName"
+                       v-if="it.tooltip">
+                    <div>
+                        {{it.tooltip === true ? (v[it.key || it.slot]) : it.tooltip}}
+                    </div>
+                    <i></i>
+                  </div>
                 </div>
               </template>
             </td>
@@ -71,7 +85,6 @@
 </template>
 
 <script>
-import { setTimeout } from 'timers';
 export default {
   name: 'MTable',
   props: {
@@ -90,6 +103,10 @@ export default {
     sortDesc: {
       type: Boolean,
       default: true
+    },
+    width: {
+      type: Number,
+      default: 1280
     }
   },
   data () {
@@ -106,12 +123,19 @@ export default {
     data (newVal, oldVal) {
       this.$nextTick(() => {
         this.sortData();
+        this.columnsChange = true;
         this.computedColWidth();
       });
     },
     columns (newVal, oldVal) {
       this.columnsChange = true;
       this.sorted = false;
+    },
+    width() {
+      setTimeout(() => {
+        this.columnsChange = true;
+        this.computedColWidth();
+      });
     }
   },
   methods: {
@@ -219,19 +243,25 @@ table.m_table {
 .m-table-header {
   position: relative;
   z-index: 2;
-  height: 50px;
   width: 12.8rem;
+  background-color: #ffffff;
+  .m-table-header-table-fixed {
+    table-layout: fixed;
+  }
   table {
     font-size: 14px;
     color: rgb(0, 0, 0);
     thead {
       tr {
+        border-left: 1px solid #dee2e6;
+        border-right: 1px solid #dee2e6;
         th {
           box-sizing: border-box;
           font-weight: 500 !important;
           padding: 7.5px;
           vertical-align: middle;
           white-space: nowrap;
+          border-top: 1px solid #dee2e6;
         }
         th.sorting {
           cursor: pointer;
@@ -268,20 +298,28 @@ table.m_table {
           }
         }
         height: 50px;
-        border-bottom: 0.02rem solid #3598db;
+        border-bottom: 0.01rem solid #3598db;
       }
     }
   }
 }
 .m-table-body {
-  margin-top: -5px;
+  margin-top: -0.03rem;
+  tbody {
+    border-bottom: 1px solid #dee2e6;
+  }
   tr {
+    border-left: 1px solid #dee2e6;
+    border-right: 1px solid #dee2e6;
     td {
       padding: 7.5px;
       box-sizing: border-box;
       color: #a2a2ae;
+      & > div {
+        display: inline-block;
+        vertical-align: middle;
+      }
     }
-    border-bottom: 1px solid #dee2e6;
     &:nth-of-type(2n) {
       td {
         background-color: #f6f6f6;
@@ -295,36 +333,77 @@ table.m_table {
   }
   .tooltip_span_container {
     position: relative;
-    display: inline;
+    display: inline-block;
     cursor: pointer;
     &:hover .tooltip_span {
       display: block;
+      opacity: 0;
     }
     .tooltip_span {
       display: none;
       position: absolute;
       z-index: 1000;
       bottom: calc(100% + 4px);
-      left: 33%;
+      left: 50%;
       transform: translateX(-50%);
-      margin-top: -10px auto 0;
-      padding: 0 15px;
       color: #ffffff;
       background-color: #000000;
-      line-height: 35px;
       border-radius: 0.04rem;
-      &::after {
+      line-height: 16px;
+      div {
+        padding: 8px 15px;
+      }
+      & > i {
         width: 0;
         height: 0;
-        border: 0.04rem solid transparent;
+        border: 0.06rem solid transparent;
         content: "";
         display: block;
         position: absolute;
         border-top-color: #000000;
         left: 50%;
-        margin-left: -4px;
+        margin-left: -6px;
       }
     }
+    .tooltip_left {
+    //   left: 0;
+    //   transform: translateX(0);
+    //   &::after {
+    //     left: 30px;
+    //   }
+    }
+    .tooltip_span_word_warp {
+      word-break: break-all;
+      word-wrap: break-word;
+      white-space: normal;
+    }
+  }
+}
+.text_overflow { //表格文字太多，超范围隐藏class
+  & > div {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+.override_mtable {
+  .m-table-header {
+    position: fixed;
+    margin-top: -0.45rem;
+    background-color: #ffffff;
+  }
+  .m-table-body {
+    margin-top: 0.45rem;
+  }
+}
+@media screen and (max-width: 910px) {
+  .m-table-header {
+    position: static !important;
+    margin-top: 0rem !important;
+  }
+  .m-table-body {
+    margin-top: -0.03rem !important;
   }
 }
 </style>

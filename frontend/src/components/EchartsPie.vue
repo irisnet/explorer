@@ -77,9 +77,9 @@
           pie.setOption(option);
           pie.on('click',(param)=>{
             if(param.data.name !== 'others'){
-              this.$router.push(`/address/1/${param.data.address}`)
+              let url = this.addressRoute(param.data.address);
+              this.$router.push(url);
             }
-
           })
         }
       },
@@ -137,7 +137,8 @@
           pie.setOption(option);
           pie.on('click',(param)=>{
             if(param.data.name !== 'others'){
-              this.$router.push(`/address/1/${param.data.address}`)
+              let url = this.addressRoute(param.data.address);
+              this.$router.push(url);
             }
 
           })

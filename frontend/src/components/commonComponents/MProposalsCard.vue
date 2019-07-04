@@ -22,23 +22,25 @@
         <span>DepositPeriod</span>
       </div>
     </div>
-    <div class="content">
-      <span class="start">0</span>
+    <div class="content" ref="content">
+      <span class="start" :style="{marginLeft: `${startMarginLeft + 30}px`}">0</span>
       <div class="progress">
         <div class="current" :style="{width: `${data.total_deposit_number_per}`}">
           <div class="current_value">
-            <span>CurrentDeposit {{data.total_deposit_format}}</span>
+            <span ref="totalDeposit">CurrentDeposit {{data.total_deposit_format}}</span>
           </div>
         </div>
         <div class="intital" :style="{left: `${data.intial_deposit_number_per}`}">
           <div class="intital_value">
-            <span>InitialDeposit {{data.intial_deposit_format}}</span>
+            <span ref="intialDeposit">InitialDeposit {{data.intial_deposit_format}}</span>
           </div>
         </div>
       </div>
       <span class="end">
-        <span>MinDeposit</span>
-        <span class="end_value">{{data.min_deposit_format}}</span>
+        <span>
+          {{data.min_deposit_format}}
+          <span class="end_value">(MinDeposit)</span>
+        </span>
       </span>
     </div>
   </div>
@@ -55,7 +57,8 @@ export default {
   },
   data() {
     return {
-      titleValueTipShow: false
+      titleValueTipShow: false,
+      startMarginLeft: 0
     }
   },
   mounted() {
@@ -63,6 +66,9 @@ export default {
       let title_value_a_w = this.$refs.titleValue.querySelector('a').getBoundingClientRect().width;
       let w = this.$refs.titleValue.getBoundingClientRect().width;
       this.titleValueTipShow = title_value_a_w > w;
+      let contentLeft = this.$refs.content.getBoundingClientRect().left;
+      this.startMarginLeft = Math.ceil(Math.max(contentLeft - this.$refs.totalDeposit.getBoundingClientRect().left, contentLeft - this.$refs.intialDeposit.getBoundingClientRect().left));
+      this.startMarginLeft = Math.max(0, this.startMarginLeft);
     });
   }
 }
@@ -141,11 +147,9 @@ export default {
       span.end {
         margin-left: 16px;
         margin-right: 30px;
-        color: #A2A2AE;
+        color: #22252A;
         span.end_value {
-          display: block;
-          font-size: 12px;
-          color: #22252A;
+          color: #A2A2AE;
         }
       }
       .progress {
@@ -235,20 +239,20 @@ export default {
     border-radius: 0.04rem;
     word-wrap: break-word;
     white-space: normal;
-    line-height: 1.7;
+    line-height: 16px;
     div {
-      padding: 5px 15px;
+      padding: 8px 15px;
     }
     &::after {
       width: 0;
       height: 0;
-      border: 0.04rem solid transparent;
+      border: 0.06rem solid transparent;
       content: "";
       display: block;
       position: absolute;
       border-top-color: #000000;
       left: 50%;
-      margin-left: -4px;
+      margin-left: -6px;
     }
   }
   .mobile_propsals_card_container {

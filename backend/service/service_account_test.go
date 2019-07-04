@@ -1,19 +1,49 @@
 package service
 
 import (
+	"testing"
+
+	"github.com/irisnet/explorer/backend/model"
+)
+
+import (
 	"encoding/json"
 	"fmt"
+	"os"
+	"strconv"
+	"time"
+
 	"github.com/irisnet/explorer/backend/lcd"
-	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/txn"
-	"os"
-	"strconv"
-	"testing"
-	"time"
 )
+
+func TestQuery(t *testing.T) {
+
+	addrStr := "faa1k4xyra6qac7dwgngq8t6w8ra2qa9hj95mwth42"
+
+	res := new(AccountService).Query(addrStr)
+	t.Logf("account by addr(%v):  %v \n", addrStr, res)
+
+	valAddStr := "fva1xtstdchjyzkddaptgyug62g23cta7eyzq49svq"
+
+	res = new(AccountService).Query(valAddStr)
+	t.Logf("account by addr(%v):  %v \n", valAddStr, res)
+
+}
+
+func TestQueryRichList(t *testing.T) {
+
+	richList := new(AccountService).QueryRichList()
+
+	if modelVList, ok := richList.([]model.AccountInfo); ok {
+		for k, v := range modelVList {
+			t.Logf("k: %v  v: %v \n", k, v)
+		}
+	}
+}
 
 var genesis GenesisDoc
 var exportHeight = int64(0)
@@ -100,7 +130,8 @@ func TestInitAccountFromGenesisFile(t *testing.T) {
 		if undHeight == 0 {
 			undHeight = exportHeight
 		}
-		totalAmt := coin.Add(delegateAmt).Add(unbondingAmt)
+
+		totalAmt := coin.Add(utils.Coin{Denom: delegateAmt.Denom, Amount: delegateAmt.Amount}).Add(utils.Coin{Denom: unbondingAmt.Denom, Amount: unbondingAmt.Amount})
 
 		ops = append(ops, txn.Op{
 			C:  document.CollectionNmAccount,
@@ -115,11 +146,11 @@ func TestInitAccountFromGenesisFile(t *testing.T) {
 				CoinIrisUpdateHeight: exportHeight,
 				CoinIrisUpdateAt:     genesis.GenesisTime.Unix(),
 
-				Delegation:             delegateAmt,
+				Delegation:             utils.Coin{Denom: delegateAmt.Denom, Amount: delegateAmt.Amount},
 				DelegationUpdateHeight: delegateHeight,
 				DelegationUpdateAt:     genesis.GenesisTime.Unix(),
 
-				UnbondingDelegation:             unbondingAmt,
+				UnbondingDelegation:             utils.Coin{Denom: unbondingAmt.Denom, Amount: unbondingAmt.Amount},
 				UnbondingDelegationUpdateHeight: undHeight,
 				UnbondingDelegationUpdateAt:     genesis.GenesisTime.Unix(),
 
@@ -127,7 +158,10 @@ func TestInitAccountFromGenesisFile(t *testing.T) {
 			},
 		})
 	}
-	if err := orm.Batch(ops); err != nil {
+
+	err := document.Account{}.Batch(ops)
+
+	if err != nil {
 		fmt.Println(err)
 	}
 }

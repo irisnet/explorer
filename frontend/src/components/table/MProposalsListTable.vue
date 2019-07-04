@@ -10,6 +10,12 @@
                       class="link_style">{{row.id}}</router-link>
       </template>
       <template slot-scope="{ row }"
+                slot="title">
+        <router-link v-if="row.id !== '--'" :to="`/ProposalsDetail/${row.id}`"
+                     class="link_style">{{row.title}}</router-link>
+        <span v-if="row.id === '--'">{{row.title}}</span>
+      </template>
+      <template slot-scope="{ row }"
                 slot="status">
         <img class="status_icon" v-if="row.status === 'Passed'" src="../../assets/pass.png" />
         <img class="status_icon" v-if="row.status === 'Rejected'" src="../../assets/rejected.png" />
@@ -94,7 +100,7 @@ export default {
         },
         {
           title: 'Title',
-          key: 'title'
+          slot: 'title',
         },
         {
           title: 'Type',
@@ -173,30 +179,28 @@ export default {
           display: none;
           position: absolute;
           z-index: 1000;
-          bottom: calc(100% + 4px);
+          bottom: calc(100% + 6px);
           left: 50%;
           transform: translateX(-50%);
-          margin-top: -10px auto 0;
           color: #ffffff;
           background-color: #000000;
-          line-height: 35px;
           border-radius: 0.04rem;
           word-wrap: break-word;
           white-space: nowrap;
-          line-height: 1.7;
+          line-height: 16px;
           div {
-            padding: 5px 15px;
+            padding: 8px 15px;
           }
           &::after {
             width: 0;
             height: 0;
-            border: 0.04rem solid transparent;
+            border: 0.06rem solid transparent;
             content: "";
             display: block;
             position: absolute;
             border-top-color: #000000;
             left: 50%;
-            margin-left: -4px;
+            margin-left: -6px;
           }
         }
       }

@@ -16,7 +16,8 @@
             <span class="blocks_module_value" :class="moduleTitle">
               <span class="transactions_tx" v-if="item.TxHash">TX# </span>
              <span style="cursor:pointer;">
-               <router-link :to="item.Height?`/block/${item.Height}`:`/tx?txHash=${item.TxHash}`" style="color: #3598db !important;">{{item.Height?item.Height:`${item.TxHash.substr(0,16)}...`}}</router-link></span>
+               <router-link :to="item.Height?`/block/${item.Height}`:`/tx?txHash=${item.TxHash}`" style="color: #3598db !important;">{{item.Height?item.Height:`${item.TxHash && item.TxHash.substr(0,16)}...`}}</router-link>
+               </span>
               </span>
               <span class="key_value_transfers_age" v-show="moduleName !== 'Blocks'">{{item.age}}</span>
               <span class="key_value_blocks_age" v-show="moduleName == 'Blocks'">{{item.age}}</span>
