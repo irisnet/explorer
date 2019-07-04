@@ -19,6 +19,16 @@ func (service *DelegatorService) GetModule() Module {
 }
 
 func (service *DelegatorService) QueryDelegation(valAddr string) (utils.Coin, utils.Coin) {
+	validator, err := lcd.Validator(valAddr)
+	if err != nil {
+		logger.Error("validator not found", logger.Any("err", err.Error()))
+		return utils.Coin{}, utils.Coin{}
+	}
+	rate, err := utils.QuoByStr(validator.Tokens, validator.DelegatorShares)
+	if err != nil {
+		logger.Error("validator.Tokens / validator.DelegatorShares", logger.String("err", err.Error()))
+		return utils.Coin{}, utils.Coin{}
+	}
 
 	tokens, selfBond, err := document.Delegator{}.GetValidatorTokenAndSelfBond(valAddr)
 
@@ -49,12 +59,13 @@ func (service *DelegatorService) QueryDelegation(valAddr string) (utils.Coin, ut
 			logger.Any("selfBondAsRat", selfBondAsRat))
 	}
 
-	otherBondAsRat := new(big.Rat)
-	otherBondAsFloat64, exact := otherBondAsRat.Sub(tokensAsRat, selfBondAsRat).Mul(otherBondAsRat, new(big.Rat).SetFloat64(math.Pow10(18))).Float64()
+	selfBondTokensAsRat := new(big.Rat).Mul(selfBondAsRat, rate)
+	BondStakeAsRat := new(big.Rat).Sub(tokensAsRat, selfBondTokensAsRat)
+	BondStakeAsFloat64, exact := new(big.Rat).Mul(BondStakeAsRat, new(big.Rat).SetFloat64(math.Pow10(18))).Float64()
 	if !exact {
 		logger.Info("convert otherBondAsRat type (big.Rat to float64) ",
 			logger.Any("exact", exact),
-			logger.Any("otherBondAsRat", otherBondAsRat))
+			logger.Any("BondStakeAsRat", BondStakeAsRat))
 	}
 
 	return utils.Coin{
@@ -62,7 +73,7 @@ func (service *DelegatorService) QueryDelegation(valAddr string) (utils.Coin, ut
 			Amount: selfBondAsFloat64,
 		}, utils.Coin{
 			Denom:  utils.CoinTypeAtto,
-			Amount: otherBondAsFloat64,
+			Amount: BondStakeAsFloat64,
 		}
 }
 
