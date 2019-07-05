@@ -11,6 +11,7 @@ import (
 	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/txn"
+	"github.com/irisnet/explorer/backend/model"
 )
 
 const (
@@ -253,15 +254,25 @@ func (_ Validator) GetCandidatesTopN() ([]Validator, int64, map[string]int, erro
 		SetResult(&validators)
 
 	err := query.Exec()
-
-	totalPower := int64(0)
-	for _, v := range validators {
-		totalPower += v.VotingPower
+	if err != nil {
+		return nil,0,nil,err
 	}
+
+	var allPower model.CountVo
+	query.SetResult(&allPower)
+	query.PipeQuery(
+		[]bson.M{
+			{"$match": condition},
+			{"$group": bson.M{
+				"_id":   ValidatorFieldVotingPower,
+				"count": bson.M{"$sum": "$voting_power"},
+			}},
+		},
+	)
 
 	upTimeMap := getValUpTime(query)
 
-	return validators, totalPower, upTimeMap, err
+	return validators, int64(allPower.Count), upTimeMap, err
 }
 
 func (_ Validator) GetCandidatePubKeyAddrByAddr(addr string) (string, error) {
