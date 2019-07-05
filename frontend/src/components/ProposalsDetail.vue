@@ -308,8 +308,6 @@ export default {
                         this.depositorItems = data.items.map(item => {
                             let votingListItemTime = (new Date(item.timestamp).getTime()) > 0 ? Tools.format2UTC(item.timestamp) : '--';
                             return {
-                                Depositor: item.from,
-                                Depositor_tooltip: item.moniker ? '' : item.from,
                                 moniker: item.moniker,
                                 Amount: item.amount && item.amount[0] ? `${this.$options.filters.amountFromat(item.amount[0])}` : '--',
                                 Type: item.type,
