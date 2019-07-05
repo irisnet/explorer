@@ -98,8 +98,7 @@
             title:'Tx_Hash',
             slot: 'Tx_Hash',
             width: 100,
-            tooltip: true,
-            tooltipClassName: 'tooltip_left'
+            tooltip: true
           },
 					{
 						title:'Block',
@@ -152,8 +151,7 @@
                 title:'Tx_Hash',
                 slot: 'Tx_Hash',
                 width: 100,
-                tooltip: true,
-                tooltipClassName: 'tooltip_left'
+                tooltip: true
               },
 					{
 						title:'Block',
@@ -207,8 +205,7 @@
 						title:'Tx_Hash',
 						slot: 'Tx_Hash',
             width: 100,
-            tooltip: true,
-            tooltipClassName: 'tooltip_left'
+            tooltip: true
 					},
 					{
 						title:'Block',
@@ -261,8 +258,7 @@
 						title:'Tx_Hash',
 						slot: 'Tx_Hash',
             width: 100,
-            tooltip: true,
-            tooltipClassName: 'tooltip_left'
+            tooltip: true
 					},
 					{
 						title:'Block',

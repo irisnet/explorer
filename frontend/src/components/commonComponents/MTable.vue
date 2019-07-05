@@ -49,28 +49,30 @@
                 :key="j"
                 :class="it.className">
               <template v-if="it.key">
-                <div :class="{'tooltip_span_container': it.tooltip}" v-table-tooltip="{show: it.tooltip, container: $refs.tableContainer}">
+                <div :class="{'tooltip_span_container': it.tooltip || v[`${it.key || it.slot}_tooltip`]}" v-table-tooltip="{show: it.tooltip || v[`${it.key || it.slot}_tooltip`], container: $refs.tableContainer}">
                   {{v[it.key]}}
                   <div class="tooltip_span"
                        :class="it.tooltipClassName"
-                       v-if="it.tooltip">
+                       v-if="it.tooltip || v[`${it.key || it.slot}_tooltip`]">
                     <div>
                       {{it.tooltip === true ? (v[it.key || it.slot]) : it.tooltip}}
+                      {{v[`${it.key || it.slot}_tooltip`]}}
                     </div>
                     <i></i>
                   </div>
                 </div>
               </template>
               <template v-else>
-                <div :class="{'tooltip_span_container': it.tooltip}" v-table-tooltip="{show: it.tooltip, container: $refs.tableContainer}">
+                <div :class="{'tooltip_span_container': it.tooltip || v[`${it.key || it.slot}_tooltip`]}" v-table-tooltip="{show: it.tooltip || v[`${it.key || it.slot}_tooltip`], container: $refs.tableContainer}">
                   <slot :name="it.slot"
                         :row="v">
                   </slot>
                   <div class="tooltip_span"
                        :class="it.tooltipClassName"
-                       v-if="it.tooltip">
+                       v-if="it.tooltip || v[`${it.key || it.slot}_tooltip`]">
                     <div>
                         {{it.tooltip === true ? (v[it.key || it.slot]) : it.tooltip}}
+                        {{v[`${it.key || it.slot}_tooltip`]}}
                     </div>
                     <i></i>
                   </div>
@@ -225,15 +227,18 @@ table.m_table {
   width: 100%;
   min-width: 12.8rem;
   .hidden_thead {
-    opacity: 0;
     line-height: 0px;
+    color: transparent;
     border-color: transparent;
-    th {
-      white-space: nowrap;
-      i {
-        width: 10px;
-        height: 1px;
-      }
+    tr {
+			border-top-width: 0;
+			th {
+				white-space: nowrap;
+				i {
+					width: 10px;
+					height: 1px;
+				}
+			}
     }
   }
 }
@@ -337,15 +342,12 @@ table.m_table {
     cursor: pointer;
     &:hover .tooltip_span {
       display: block;
+      position: fixed;
       opacity: 0;
     }
     .tooltip_span {
       display: none;
-      position: absolute;
       z-index: 1000;
-      bottom: calc(100% + 4px);
-      left: 50%;
-      transform: translateX(-50%);
       color: #ffffff;
       background-color: #000000;
       border-radius: 0.04rem;
@@ -361,16 +363,8 @@ table.m_table {
         display: block;
         position: absolute;
         border-top-color: #000000;
-        left: 50%;
         margin-left: -6px;
       }
-    }
-    .tooltip_left {
-    //   left: 0;
-    //   transform: translateX(0);
-    //   &::after {
-    //     left: 30px;
-    //   }
     }
     .tooltip_span_word_warp {
       word-break: break-all;

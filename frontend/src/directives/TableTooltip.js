@@ -27,9 +27,10 @@ function unbindHoverEvent (el) {
 function mouseleaveEvent (el) {
     return () => {
         let tooltipSpan = el.querySelector('.tooltip_span');
-        tooltipSpan.style.opacity = '0';
+        let tooltipSpanI = tooltipSpan.querySelector('i');
         tooltipSpan.classList.remove('tooltip_span_word_warp');
-        tooltipSpan.style.width = `auto`;
+        tooltipSpan.removeAttribute("style");
+        tooltipSpanI.removeAttribute("style");
     }
 }
 
@@ -42,31 +43,34 @@ function mouseenterEvent (el, containerDiv) {
         let tooltipSpanI = tooltipSpan.querySelector('i');
         let tooltipSpanRect = tooltipSpan.getBoundingClientRect();
 
+        tooltipSpan.style.opacity = '0';
+        tooltipSpan.style.left = `${elRect.left - (tooltipSpanRect.width - elRect.width) / 2}px`;
+        tooltipSpan.style.top = `${elRect.top - tooltipSpanRect.height - 4}px`;
+
+        tooltipSpanRect = tooltipSpan.getBoundingClientRect();
         let left = tooltipSpanRect.left - containerRect.left;
         let right = containerRect.right - tooltipSpanRect.right;
-
         let all = left + right;
-        let elRectLeft = elRect.left - containerRect.left;
-        let elRectRight = containerRect.right - elRect.right;
-        tooltipSpan.style.opacity = '0';
+
         if (all < 0) {
             let maxWidth = Math.min(tooltipSpanRect.width, containerRect.width);
             tooltipSpan.classList.add('tooltip_span_word_warp');
             tooltipSpan.style.width = `${maxWidth}px`;
-            let x = elRectLeft + elRect.width / 2;
-            tooltipSpan.style.transform = `translateX(${-x}px)`;
-            tooltipSpanI.style.left = `${x}px`;
-        } else {
-            if(right < 0) {
-                let x = -tooltipSpanRect.width + elRectRight + elRect.width / 2;
-                tooltipSpan.style.transform = `translateX(${x}px)`;
-                tooltipSpanI.style.left = `${-x}px`;
-            } else if (left < 0) {
-                let x = elRectLeft + elRect.width / 2;
-                tooltipSpan.style.transform = `translateX(${-x}px)`;
-                tooltipSpanI.style.left = `${x}px`;
-            }
+            tooltipSpanRect = tooltipSpan.getBoundingClientRect();
+            tooltipSpan.style.top = `${elRect.top - tooltipSpanRect.height - 4}px`;
+
+            left = tooltipSpanRect.left - containerRect.left;
+            right = containerRect.right - tooltipSpanRect.right;
         }
+        if(right < 0) {
+            tooltipSpan.style.transform = `translateX(${right}px)`;
+        } else if (left < 0) {
+            tooltipSpan.style.transform = `translateX(${-left}px)`;
+        }
+        tooltipSpanRect = tooltipSpan.getBoundingClientRect();
+        let iLeft = elRect.left - tooltipSpanRect.left + elRect.width / 2;
+        iLeft = Math.min(iLeft, tooltipSpanRect.width - 8);
+        tooltipSpanI.style.transform = `translateX(${iLeft}px)`;
         tooltipSpan.style.opacity = '1';
     }
 }
