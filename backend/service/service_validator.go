@@ -388,17 +388,13 @@ func (service *ValidatorService) QueryCandidatesTopN() model.ValDetailVo {
 	var validators []model.Validator
 
 	for _, v := range validatorsList {
-		if err != nil {
-			logger.Error("hex DecodeString", logger.String("err", err.Error()))
-			continue
-		}
 
 		validator := service.convert(v)
 		validator.Uptime = upTimeMap[utils.GenHexAddrFromPubKey(v.ConsensusPubkey)]
 		validators = append(validators, validator)
 	}
 	resp := model.ValDetailVo{
-		PowerAll:   power,
+		PowerAll: power,
 		Validators: validators,
 	}
 
