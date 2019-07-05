@@ -529,6 +529,10 @@ func (s *ProposalService) buildTx(txs []document.CommonTx) []model.Tx {
 			Type:      v.Type,
 			Timestamp: v.Time,
 		}
+		validator := lcd.GetValidatorsByDelegator(v.From)
+		if moniker := validator[0].Description.Moniker; len(moniker) > 0 {
+			tx.Moniker = moniker
+		}
 
 		res = append(res, tx)
 	}

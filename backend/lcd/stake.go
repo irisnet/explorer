@@ -64,6 +64,19 @@ func GetDelegationsByDelAddr(delAddr string) (delegations []DelegationVo) {
 	return
 }
 
+func GetValidatorsByDelegator(delAddr string) (validators []ValidatorVo){
+	url := fmt.Sprintf(UrlValidatorsByDelegator, conf.Get().Hub.LcdUrl, delAddr)
+	resAsBytes, err := utils.Get(url)
+	if err != nil {
+		logger.Error("get validators by delegator adr from lcd error", logger.String("err", err.Error()), logger.String("URL", url))
+		return
+	}
+	if err := json.Unmarshal(resAsBytes, &validators); err != nil {
+		logger.Error("Unmarshal Delegations error", logger.String("err", err.Error()), logger.String("URL", url))
+	}
+	return
+}
+
 func GetDelegationsByValidatorAddr(valAddr string) (delegations []DelegationVo) {
 
 	url := fmt.Sprintf(UrlDelegationsByValidator, conf.Get().Hub.LcdUrl, valAddr)

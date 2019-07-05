@@ -13,6 +13,7 @@ const (
 	UrlValidators                                = "%s/stake/validators?page=%d&size=%d"
 	UrlDelegationByVal                           = "%s/stake/validators/%s/delegations"
 	UrlDelegationsByDelegator                    = "%s/stake/delegators/%s/delegations"
+	UrlValidatorsByDelegator                     = "%s/stake/delegators/%s/validators"
 	UrlDelegationsByValidator                    = "%s/stake/validators/%s/delegations"
 	UrlUnbondingDelegationByValidator            = "%s/stake/validators/%s/unbonding-delegations"
 	UrlRedelegationsByValidator                  = "%s/stake/validators/%s/redelegations"
