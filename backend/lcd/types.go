@@ -56,7 +56,7 @@ type ValidatorVo struct {
 	UnbondingTime   time.Time   `json:"unbonding_time"`
 	Commission      Commission  `json:"commission"`
 	Uptime          float32     `json:"uptime"`
-	SelfBond        string      `json:"self_bond"`
+	SelfBond        float64     `json:"self_bond,string"`
 	DelegatorNum    int         `json:"delegator_num"`
 	ProposerAddr    string      `json:"proposer_addr"`
 	VotingRate      float32     `json:"voting_rate"`
