@@ -10,7 +10,8 @@ type ValidatorForDetail struct {
 	SelfPower               int64       `json:"self_power"`
 	Status                  string      `json:"status"`
 	BondedTokens            string      `json:"bonded_tokens"`
-	SelfBonded              string      `json:"self_bonded"`
+	SelfBonded              float64     `json:"self_bonded,string"`
+	BondedStake             float64     `json:"bonded_stake,string"`
 	DelegatorShares         string      `json:"delegator_shares"`
 	DelegatorCount          int         `json:"delegator_count"`
 	CommissionRate          string      `json:"commission_rate"`
@@ -183,8 +184,8 @@ func (d Description) String() string {
 }
 
 type CandidatesInfoVo struct {
-	PowerAll  int64 `json:"power_all"`
-	Validator `json:"validator"`
+	PowerAll int64 `json:"power_all"`
+	Validator      `json:"validator"`
 }
 
 func (c CandidatesInfoVo) String() string {
