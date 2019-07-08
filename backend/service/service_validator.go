@@ -14,7 +14,6 @@ import (
 	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/txn"
-	"math"
 )
 
 type ValidatorService struct {
@@ -498,7 +497,7 @@ func ComputeBondStake(tokens, shares, selfBond string) float64 {
 	}
 	selfBondTokensAsRat := new(big.Rat).Mul(selfBondAsRat, rate)
 	BondStakeAsRat := new(big.Rat).Sub(tokensAsRat, selfBondTokensAsRat)
-	BondStakeAsFloat64, exact := new(big.Rat).Mul(BondStakeAsRat, new(big.Rat).SetFloat64(math.Pow10(18))).Float64()
+	BondStakeAsFloat64, exact := BondStakeAsRat.Float64()
 	if !exact {
 		logger.Info("convert BondStakeAsRat type (big.Rat to float64) ",
 			logger.Any("exact", exact),
