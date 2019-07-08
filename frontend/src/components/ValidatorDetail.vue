@@ -640,8 +640,7 @@ export default {
                             this.validatorInfo[
                                 "Delegator Shares"
                             ] = `${this.$options.filters.amountFromat(
-                                data.delegator_shares,
-                                Constants.Denom.IRIS.toUpperCase()
+                                data.delegator_shares
                             )}`;
                             this.validatorInfo[
                                 "Max Rate"
