@@ -712,7 +712,7 @@
                             }
                             .governance_list_content {
                                 padding: 0;
-                                display: block;
+                                display:  block;
                                 .bottom_arrow {
                                     display: inline-block;
                                     height: 0.6rem;
