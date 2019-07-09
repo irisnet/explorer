@@ -12,7 +12,7 @@
         
         <div :class="blocksListPageWrap" :style="{'margin-top':`${blocksListPageWrap === 'personal_computer_blocks_list_page_wrap' ? '0.7rem' : '0'}`}">
             <div style="overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling:touch;">
-                <spin-component :showLoading="showLoading"/>
+                <!-- <spin-component :showLoading="showLoading"/> -->
                 <!-- <validator-list-table :items="items" :minWidth="tableMinWidth" :showNoData="showNoData"></validator-list-table> -->
                 <m-validator-list-table ref="mtable"
                                         :items="items"
@@ -28,6 +28,7 @@
                 </b-pagination>
             </div>
         </div>
+        <m-tree :items="items"></m-tree>
     </div>
 </template>
 
@@ -40,13 +41,15 @@
 	import ValidatorListTable from "./table/ValidatorListTable";
     import MValidatorListTable from "./table/MValidatorListTable";
     import MTabs from "./commonComponents/MTabs";
+    import MTree from "./commonComponents/MTree";
 
 	export default {
 		components:{
 			ValidatorListTable,
 			SpinComponent,
             MValidatorListTable,
-            MTabs
+            MTabs,
+            MTree
 		},
 		watch: {
 			currentPage(currentPage) {
@@ -191,7 +194,8 @@
 					if(data[i].identity){
 						Http.http(`${url}${data[i].identity}`).then(res =>{
 							if(res && res.them && res.them[0].pictures && res.them[0].pictures.primary && res.them[0].pictures.primary.url){
-								data[i].url = res.them[0].pictures.primary.url;
+                                data[i].url = res.them[0].pictures.primary.url;
+                                data[i].imageUrl = data[i].url;
 							}else {
 								data[i].url = require('../assets/header_img.png');
 							}

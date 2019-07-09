@@ -611,14 +611,13 @@ export default {
                                 : "";
                             data.jailed_until === "" &&
                                 delete this.validatorInfo["Jailed Until"];
-                            let delegator_tokens = `${Number(data.bonded_tokens) - (Number(data.bonded_tokens) / Number(data.delegator_shares)) * Number(data.self_bonded)}`;
                             this.validatorInfo[
                                 "Delegator Bonded"
                             ] = `${this.$options.filters.amountFromat(
-                                delegator_tokens,
+                                data.bonded_stake,
                                 Constants.Denom.IRIS.toUpperCase()
                             )} (${this.formatPerNumber(
-                                (Number(delegator_tokens) /
+                                (Number(data.bonded_stake) /
                                     Number(data.bonded_tokens)) *
                                     100
                             )} %)`;
@@ -640,8 +639,7 @@ export default {
                             this.validatorInfo[
                                 "Delegator Shares"
                             ] = `${this.$options.filters.amountFromat(
-                                data.delegator_shares,
-                                Constants.Denom.IRIS.toUpperCase()
+                                data.delegator_shares
                             )}`;
                             this.validatorInfo[
                                 "Max Rate"
