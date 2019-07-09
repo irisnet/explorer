@@ -9,6 +9,7 @@ import (
 
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/irishub-sync/logger"
+	"encoding/json"
 )
 
 func TestGetDelegationsFromLcd(t *testing.T) {
@@ -81,16 +82,14 @@ func TestQueryCandidateUptime(t *testing.T) {
 	}
 }
 
-// func TestGetValidators(t *testing.T) {
-//
-// 	validatorList := new(ValidatorService).GetValidators("", "", 0, 100)
-//
-// 	if validatorListAsLcd, ok := validatorList.([]lcd.ValidatorVo); ok {
-// 		for k, v := range validatorListAsLcd {
-// 			t.Logf("k: %v    v: %v \n", k, v)
-// 		}
-// 	}
-// }
+func TestGetValidators(t *testing.T) {
+
+	validatorList := new(ValidatorService).GetValidators("jailed", "browser", 0, 100)
+
+	//res := validatorList.([]lcd.ValidatorVo)
+	resBytes, _ := json.Marshal(validatorList)
+	t.Log(string(resBytes))
+}
 //
 // func TestGetValidator(t *testing.T) {
 //

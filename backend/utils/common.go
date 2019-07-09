@@ -111,3 +111,7 @@ func QuoByStr(xStr, yStr string) (*big.Rat, error) {
 func NewRatFromFloat64(f float64) *big.Rat {
 	return new(big.Rat).SetFloat64(f)
 }
+
+func ParseStringFromFloat64(data float64) string {
+	return strconv.FormatFloat(data, 'f', -1, 64)
+}

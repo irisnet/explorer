@@ -44,10 +44,11 @@ func (service *ValidatorService) GetValidators(typ, origin string, page, size in
 			}
 			var validator lcd.ValidatorVo
 			if err := utils.Copy(validatorList[i], &validator); err != nil {
-				panic(types.CodeSysFailed)
+				logger.Error("utils.Copy have error",logger.String("error",err.Error()))
 			}
 			validator.VotingRate = float32(v.VotingPower) / float32(totalVotingPower)
-			validator.SelfBond = ComputeSelfBonded(v.Tokens,v.DelegatorShares,v.SelfBond)
+			selfbond := ComputeSelfBonded(v.Tokens,v.DelegatorShares,v.SelfBond)
+			validator.SelfBond = utils.ParseStringFromFloat64(selfbond)
 			result = append(result, validator)
 		}
 
@@ -462,7 +463,8 @@ func ComputeSelfBonded(tokens, shares, selfBond string) float64 {
 
 	selfBondAsRat, ok := new(big.Rat).SetString(selfBond)
 	if !ok {
-		logger.Error("convert validator selfBond type (string -> big.Rat) err", logger.Any("err", err.Error()), logger.String("self bond str", selfBond))
+		logger.Error("convert validator selfBond type (string -> big.Rat) err",
+			 logger.String("self bond str", selfBond))
 		return 0
 
 	}
@@ -485,13 +487,13 @@ func ComputeBondStake(tokens, shares, selfBond string) float64 {
 
 	tokensAsRat, ok := new(big.Rat).SetString(tokens)
 	if !ok {
-		logger.Error("convert validator tokens type (string -> big.Rat) err", logger.Any("err", err.Error()), logger.String("token str", tokens))
+		logger.Error("convert validator tokens type (string -> big.Rat) err",  logger.String("token str", tokens))
 		return 0
 	}
 
 	selfBondAsRat, ok := new(big.Rat).SetString(selfBond)
 	if !ok {
-		logger.Error("convert validator selfBond type (string -> big.Rat) err", logger.Any("err", err.Error()), logger.String("self bond str", selfBond))
+		logger.Error("convert validator selfBond type (string -> big.Rat) err",  logger.String("self bond str", selfBond))
 		return 0
 
 	}
