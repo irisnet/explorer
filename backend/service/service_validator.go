@@ -487,13 +487,13 @@ func ComputeBondStake(tokens, shares, selfBond string) float64 {
 
 	tokensAsRat, ok := new(big.Rat).SetString(tokens)
 	if !ok {
-		logger.Error("convert validator tokens type (string -> big.Rat) err", logger.Any("err", err.Error()), logger.String("token str", tokens))
+		logger.Error("convert validator tokens type (string -> big.Rat) err",  logger.String("token str", tokens))
 		return 0
 	}
 
 	selfBondAsRat, ok := new(big.Rat).SetString(selfBond)
 	if !ok {
-		logger.Error("convert validator selfBond type (string -> big.Rat) err", logger.Any("err", err.Error()), logger.String("self bond str", selfBond))
+		logger.Error("convert validator selfBond type (string -> big.Rat) err",  logger.String("self bond str", selfBond))
 		return 0
 
 	}
