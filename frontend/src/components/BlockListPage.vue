@@ -216,6 +216,7 @@ export default {
                 justify-content: space-between;
                 height: 0.7rem;
                 align-items: center;
+                z-index: 5;
                 .skip_route {
                     margin-left: 0.09rem;
                     a {
