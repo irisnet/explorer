@@ -6,7 +6,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/model"
-	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 )
@@ -29,13 +28,13 @@ func RegisterBlock(r *mux.Router) error {
 	return nil
 }
 
-type Block struct {
-	*service.BlockService
-}
-
-var block = Block{
-	service.Get(service.Block).(*service.BlockService),
-}
+//type Block struct {
+//	*service.BlockService
+//}
+//
+//var block = Block{
+//	service.Get(service.Block).(*service.BlockService),
+//}
 
 func registerQueryBlockLatestHeight(r *mux.Router) error {
 

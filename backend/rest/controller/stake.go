@@ -3,7 +3,6 @@ package controller
 import (
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/model"
-	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/utils"
 
 	"github.com/irisnet/explorer/backend/types"
@@ -35,13 +34,13 @@ func RegisterStake(r *mux.Router) error {
 	return nil
 }
 
-type Stake struct {
-	*service.ValidatorService
-}
-
-var stake = Stake{
-	service.Get(service.Validator).(*service.ValidatorService),
-}
+//type Stake struct {
+//	*service.ValidatorService
+//}
+//
+//var stake = Stake{
+//	service.Get(service.Validator).(*service.ValidatorService),
+//}
 
 func registerQueryWithdrawAddrByValidatorAddr(r *mux.Router) error {
 

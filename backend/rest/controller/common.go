@@ -26,13 +26,13 @@ func RegisterTextSearch(r *mux.Router) error {
 	return nil
 }
 
-type Common struct {
-	*service.CommonService
-}
-
-var common = Common{
-	service.Get(service.Common).(*service.CommonService),
-}
+//type Common struct {
+//	*service.CommonService
+//}
+//
+//var common = Common{
+//	service.Get(service.Common).(*service.CommonService),
+//}
 
 func registerQueryText(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryText, "GET", func(request model.IrisReq) interface{} {

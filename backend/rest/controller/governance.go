@@ -5,7 +5,6 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/model"
-	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 )
@@ -27,16 +26,16 @@ func RegisterProposal(r *mux.Router) error {
 	}
 	return nil
 }
-
-type Gov struct {
-	*service.ProposalService
-	*service.GovParamsService
-}
-
-var gov = Gov{
-	service.Get(service.Proposal).(*service.ProposalService),
-	service.Get(service.GovParams).(*service.GovParamsService),
-}
+//
+//type Gov struct {
+//	*service.ProposalService
+//	*service.GovParamsService
+//}
+//
+//var gov = Gov{
+//	service.Get(service.Proposal).(*service.ProposalService),
+//	service.Get(service.GovParams).(*service.GovParamsService),
+//}
 
 func registerQueryProposals(r *mux.Router) error {
 
@@ -79,7 +78,7 @@ func registerQueryProposal(r *mux.Router) error {
 
 func registerQueryGovParams(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryGovParams, "GET", func(request model.IrisReq) interface{} {
-		return gov.GovParamsService.QueryAll()
+		return govparams.QueryAll()
 	})
 	return nil
 }
