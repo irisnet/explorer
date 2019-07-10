@@ -60,6 +60,12 @@ const (
 	UrlRegisterQueryTxsByAccount = "/txsByAddress/{address}/{page}/{size}"
 	UrlRegisterQueryTxsByDay     = "/txsByDay"
 	UrlRegisterQueryTx           = "/tx/{hash}"
+	//tokenstats
+	UrlRegisterQueryTokenStats    = "/tokenstats"
+	UrlRegisterTokensAccountTotal = "/tokenstats/account_total"
+	//bondedtokens
+	UrlRegisterBondedTokensValidators = "/bondedtokens/validators"
+
 	//version
 	UrlRegisterQueryApiVersion = "/version"
 
@@ -101,7 +107,7 @@ var (
 	RoleCandidate = "candidate"
 	RoleJailed    = "jailed"
 
-	RoleList = []string{RoleValidator, RoleCandidate, RoleJailed}
+	//RoleList = []string{RoleValidator, RoleCandidate, RoleJailed}
 
 	BankList        = []string{TxTypeTransfer, TxTypeBurn}
 	DeclarationList = []string{TxTypeStakeCreateValidator, TxTypeStakeEditValidator, TxTypeUnjail}
@@ -109,7 +115,7 @@ var (
 	GovernanceList  = []string{TxTypeSubmitProposal, TxTypeDeposit, TxTypeVote}
 
 	ForwardList      = []string{TxTypeBeginRedelegate}
-	TxTypeExcludeGov = append(append(DeclarationList, StakeList...), BankList...)
+	//TxTypeExcludeGov = append(append(DeclarationList, StakeList...), BankList...)
 )
 
 func IsDeclarationType(typ string) bool {
@@ -162,7 +168,7 @@ func IsGovernanceType(typ string) bool {
 type TxType int
 
 const (
-	_ TxType = iota
+	_           TxType = iota
 	Trans
 	Declaration
 	Stake

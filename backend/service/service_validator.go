@@ -58,7 +58,7 @@ func (service *ValidatorService) GetValidators(typ, origin string, page, size in
 		}
 	}
 
-	return service.queryValForRainbow(typ, page, size)
+	return service.queryValForRainbow(page, size)
 }
 
 func (service *ValidatorService) GetVoteTxsByValidatorAddr(validatorAddr string, page, size int) model.ValidatorVotePage {
@@ -670,7 +670,7 @@ func BondStatusToString(b int) string {
 	}
 }
 
-func (service *ValidatorService) queryValForRainbow(typ string, page, size int) interface{} {
+func (service *ValidatorService) queryValForRainbow(page, size int) interface{} {
 	var validators = lcd.Validators(page, size)
 
 	var blackList = service.QueryBlackList()
@@ -839,15 +839,15 @@ func isDiffValidator(src, dst document.Validator) bool {
 	return false
 }
 
-func getVotingPowerFromToken(token string) int64 {
-	tokenPrecision := types.NewIntWithDecimal(1, 18)
-	power, err := types.NewDecFromStr(token)
-	if err != nil {
-		logger.Error("invalid token", logger.String("token", token))
-		return 0
-	}
-	return power.QuoInt(tokenPrecision).RoundInt64()
-}
+//func getVotingPowerFromToken(token string) int64 {
+//	tokenPrecision := types.NewIntWithDecimal(1, 18)
+//	power, err := types.NewDecFromStr(token)
+//	if err != nil {
+//		logger.Error("invalid token", logger.String("token", token))
+//		return 0
+//	}
+//	return power.QuoInt(tokenPrecision).RoundInt64()
+//}
 
 func getTotalVotingPower() int64 {
 	var total = int64(0)
