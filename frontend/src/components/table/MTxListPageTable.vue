@@ -346,7 +346,7 @@
                 if (!moniker) {
                     return '';
                 }
-                return Tools.formatString(moniker,15,"...");
+                return Tools.formatString(moniker,13,"...");
             }
         },
 		watch:{
