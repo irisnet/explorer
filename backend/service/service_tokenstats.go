@@ -76,7 +76,7 @@ func computeSegment(accounts []document.Account, totalAmt float64) map[string]mo
 	accList := make(map[string]model.TokenStatsSegment)
 	for index, acc := range accounts {
 		rate, _ := utils.NewRatFromFloat64(acc.Total.Amount / totalAmt).Float64()
-		accList[fmt.Sprint(index)] = model.TokenStatsSegment{
+		accList[fmt.Sprint(index+1)] = model.TokenStatsSegment{
 			Percent: rate,
 			TotalAmount: &model.CoinVo{
 				Denom:  acc.Total.Denom,
@@ -121,7 +121,7 @@ func computeSegment2(accounts []document.Account, totalAmt float64) map[string]m
 			return result
 		}
 
-		result[fmt.Sprintf("%v-%v", 500, 1000)] = CountNTotalAmount(500, 999, totalAmt, accounts)
+		result[fmt.Sprintf("%v-%v", 501, 1000)] = CountNTotalAmount(500, 999, totalAmt, accounts)
 		result[fmt.Sprintf("%v-%v", 1001, total)] = CountNTotalAmount(1000, total-1, totalAmt, accounts)
 
 	}

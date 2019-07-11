@@ -59,3 +59,69 @@ func TestCountNTotalAmount(t *testing.T) {
 		})
 	}
 }
+
+func TestTokenStatsServicecomputeSegment(t *testing.T) {
+	type args struct {
+		total   float64
+		account []document.Account
+	}
+	tests := []struct {
+		name string
+		args args
+	}{
+		{
+			name: "test CountNTotalAmount",
+			args: args{
+				total: 100,
+				account:[]document.Account{
+					{Total:utils.Coin{Amount:11.45,Denom:"iris-atto"}},
+					{Total:utils.Coin{Amount:11.55,Denom:"iris-atto"}},
+					{Total:utils.Coin{Amount:11.45,Denom:"iris-atto"}},
+					{Total:utils.Coin{Amount:11.55,Denom:"iris-atto"}},
+					{Total:utils.Coin{Amount:11.00,Denom:"iris-atto"}}},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			res := computeSegment(tt.args.account, tt.args.total)
+			resBytes, _ := json.MarshalIndent(res, "", "\t")
+			t.Log(string(resBytes))
+		})
+	}
+}
+
+func TestTokenStatsServicecomputeSegment2(t *testing.T) {
+	type args struct {
+		total   float64
+		account []document.Account
+	}
+	tests := []struct {
+		name string
+		args args
+	}{
+		{
+			name: "test CountNTotalAmount",
+			args: args{
+				total: 100,
+				account:[]document.Account{
+					{Total:utils.Coin{Amount:11.45,Denom:"iris-atto"}},
+					{Total:utils.Coin{Amount:11.55,Denom:"iris-atto"}},
+					{Total:utils.Coin{Amount:11.45,Denom:"iris-atto"}},
+					{Total:utils.Coin{Amount:11.55,Denom:"iris-atto"}},
+					{Total:utils.Coin{Amount:11.55,Denom:"iris-atto"}},
+					{Total:utils.Coin{Amount:10.45,Denom:"iris-atto"}},
+					{Total:utils.Coin{Amount:2.12,Denom:"iris-atto"}},
+					{Total:utils.Coin{Amount:9.88,Denom:"iris-atto"}}},
+
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			res := computeSegment2(tt.args.account,tt.args.total)
+			resBytes, _ := json.MarshalIndent(res, "", "\t")
+			t.Log(string(resBytes))
+		})
+	}
+}
