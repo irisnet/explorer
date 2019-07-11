@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "mem": "^5.1.1",
     "bignumber.js": "^7.2.1",
     "bootstrap-vue": "^2.0.0-rc.11",
     "commander": "^2.16.0",
@@ -17,6 +16,8 @@
     "fs": "^0.0.1-security",
     "irisnet-crypto": "git+https://github.com/irisnet/irisnet-crypto.git#v1.3.1",
     "jquery": "^3.2.1",
+    "lodash.defaultsdeep": "^4.6.1",
+    "mem": "^5.1.1",
     "move-decimal-point": "^0.0.4",
     "typescript": "^3.0.1",
     "vue": "^2.5.16",
