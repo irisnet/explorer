@@ -1,6 +1,6 @@
 <template>
     <div :class="showNoData?'show_no_data':''" :style="`${minWidth?(`min-width:${minWidth}rem`):''}`">
-      <b-table :fields='fields' :items='items' striped class="top_list_table_container">
+      <b-table :borderless="true" :fields='fields' :items='items' striped class="top_list_table_container">
         <template slot="rank" slot-scope="data" style="text-align: center">
           <span style="padding-left: 0.2rem">{{data.item.rank}}</span>
         </template>
@@ -8,7 +8,7 @@
           <span class="skip_route" style="display: flex" v-if="data.item.Address">
           <div class="name_address">
             <span class="remove_default_style">
-              <router-link :to="`/address/1/${data.item.Address}`" class="link_style">{{data.item.Address}}</router-link>
+              <router-link :to="addressRoute(data.item.Address)" class="link_style">{{data.item.Address}}</router-link>
             </span>
           </div>
         </span>
@@ -56,29 +56,6 @@
 </script>
 
 <style  lang="scss">
-  .name_address{
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    .address{
-      display: none;
-      position: absolute;
-      left: -1.05rem;
-      top: -0.38rem;
-      color: #3598db;
-      background: rgba(0,0,0,0.8);
-      border-radius:0.04rem;
-      z-index: 10;
-    }
-    .percentage_item{
-      &:nth-of-type(even){
-        background-color: #f6f6f6 !important;
-      }
-      &:nth-of-type(odd){
-        background-color: #fff !important;
-      }
-    }
-  }
   .show_no_data{
     .table{
       tbody{

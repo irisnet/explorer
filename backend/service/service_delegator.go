@@ -1,13 +1,13 @@
 package service
 
 import (
+	"math"
+	"math/big"
+
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/utils"
-	"gopkg.in/mgo.v2/bson"
-	"math"
-	"math/big"
 )
 
 type DelegatorService struct {
@@ -18,30 +18,38 @@ func (service *DelegatorService) GetModule() Module {
 	return Delegator
 }
 
-func (service *DelegatorService) QueryDelegation(valAddr string) (document.Coin, document.Coin) {
-
-	validator := document.Validator{}
-	selector := bson.M{
-		"tokens":    1,
-		"self_bond": 1}
-	err := queryOne(document.CollectionNmValidator, selector, bson.M{document.ValidatorFieldOperatorAddress: valAddr}, &validator)
+func (service *DelegatorService) QueryDelegation(valAddr string) (utils.Coin, utils.Coin) {
+	validator, err := lcd.Validator(valAddr)
 	if err != nil {
 		logger.Error("validator not found", logger.Any("err", err.Error()))
-		return document.Coin{}, document.Coin{}
+		return utils.Coin{}, utils.Coin{}
+	}
+	rate, err := utils.QuoByStr(validator.Tokens, validator.DelegatorShares)
+	if err != nil {
+		logger.Error("validator.Tokens / validator.DelegatorShares", logger.String("err", err.Error()))
+		return utils.Coin{}, utils.Coin{}
 	}
 
-	logger.Info("query delegation by validator addres", logger.String("validatorAddr", valAddr), logger.String("tokens", validator.Tokens), logger.String("self_bond", validator.SelfBond))
+	tokens, selfBond, err := document.Delegator{}.GetValidatorTokenAndSelfBond(valAddr)
 
-	tokensAsRat, ok := new(big.Rat).SetString(validator.Tokens)
-	if !ok {
-		logger.Error("convert validator tokens type (string -> big.Rat) err", logger.Any("err", err.Error()), logger.String("token str", validator.Tokens))
-		return document.Coin{}, document.Coin{}
+	if err != nil {
+		logger.Error("validator not found", logger.Any("err", err.Error()))
+		return utils.Coin{}, utils.Coin{}
 	}
 
-	selfBondAsRat, ok := new(big.Rat).SetString(validator.SelfBond)
+	logger.Info("query delegation by validator addres", logger.String("validatorAddr", valAddr), logger.String("tokens", tokens), logger.String("self_bond", selfBond))
+
+	tokensAsRat, ok := new(big.Rat).SetString(tokens)
 	if !ok {
-		logger.Error("convert validator selfBond type (string -> big.Rat) err", logger.Any("err", err.Error()), logger.String("self bond str", validator.SelfBond))
-		return document.Coin{}, document.Coin{}
+		logger.Error("convert validator tokens type (string -> big.Rat) err", logger.Any("err", err.Error()), logger.String("token str", tokens))
+		return utils.Coin{}, utils.Coin{}
+	}
+
+	selfBondAsRat, ok := new(big.Rat).SetString(selfBond)
+	if !ok {
+		logger.Error("convert validator selfBond type (string -> big.Rat) err", logger.Any("err", err.Error()), logger.String("self bond str", selfBond))
+		return utils.Coin{}, utils.Coin{}
+
 	}
 
 	selfBondAsFloat64, exact := new(big.Rat).Mul(selfBondAsRat, new(big.Rat).SetFloat64(math.Pow10(18))).Float64()
@@ -51,24 +59,25 @@ func (service *DelegatorService) QueryDelegation(valAddr string) (document.Coin,
 			logger.Any("selfBondAsRat", selfBondAsRat))
 	}
 
-	otherBondAsRat := new(big.Rat)
-	otherBondAsFloat64, exact := otherBondAsRat.Sub(tokensAsRat, selfBondAsRat).Mul(otherBondAsRat, new(big.Rat).SetFloat64(math.Pow10(18))).Float64()
+	selfBondTokensAsRat := new(big.Rat).Mul(selfBondAsRat, rate)
+	BondStakeAsRat := new(big.Rat).Sub(tokensAsRat, selfBondTokensAsRat)
+	BondStakeAsFloat64, exact := new(big.Rat).Mul(BondStakeAsRat, new(big.Rat).SetFloat64(math.Pow10(18))).Float64()
 	if !exact {
 		logger.Info("convert otherBondAsRat type (big.Rat to float64) ",
 			logger.Any("exact", exact),
-			logger.Any("otherBondAsRat", otherBondAsRat))
+			logger.Any("BondStakeAsRat", BondStakeAsRat))
 	}
 
-	return document.Coin{
+	return utils.Coin{
 			Denom:  utils.CoinTypeAtto,
 			Amount: selfBondAsFloat64,
-		}, document.Coin{
+		}, utils.Coin{
 			Denom:  utils.CoinTypeAtto,
-			Amount: otherBondAsFloat64,
+			Amount: BondStakeAsFloat64,
 		}
 }
 
-func (service *DelegatorService) GetDeposits(addressAsAccount string) document.Coin {
+func (service *DelegatorService) GetDeposits(addressAsAccount string) utils.Coin {
 	delegations := lcd.GetDelegationsByDelAddr(addressAsAccount)
 	delegationMap := make(map[string]lcd.DelegationVo, len(delegations))
 	valAddrs := []string{}
@@ -77,18 +86,11 @@ func (service *DelegatorService) GetDeposits(addressAsAccount string) document.C
 		valAddrs = append(valAddrs, d.ValidatorAddr)
 	}
 
-	validators := []document.Validator{}
-	selector := bson.M{
-		document.ValidatorFieldOperatorAddress: 1,
-		"tokens":                               1,
-		"delegator_shares":                     1}
-	condition := bson.M{
-		document.ValidatorFieldOperatorAddress: bson.M{"$in": valAddrs},
-	}
-	err := queryAll(document.CollectionNmValidator, selector, condition, "", 0, &validators)
+	validators, err := document.Delegator{}.GetDepositValidator(valAddrs)
+
 	if err != nil {
 		logger.Error("validator not found", logger.Any("err", err.Error()))
-		return document.Coin{}
+		return utils.Coin{}
 	}
 
 	totalAmtAsRat := new(big.Rat)
@@ -117,7 +119,7 @@ func (service *DelegatorService) GetDeposits(addressAsAccount string) document.C
 			logger.Any("totalAmtAsRat", totalAmtAsRat))
 	}
 
-	return document.Coin{
+	return utils.Coin{
 		Denom:  utils.CoinTypeAtto,
 		Amount: totalAmtAsFloat64,
 	}

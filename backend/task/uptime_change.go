@@ -1,14 +1,14 @@
 package task
 
 import (
+	"fmt"
+	"time"
+
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
-	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
-	"gopkg.in/mgo.v2/bson"
-	"time"
 )
 
 var validatorMap = make(map[string]model.ValVotingPowerChangeVo)
@@ -37,55 +37,70 @@ func (task UpTimeChangeTask) Start() {
 		var blocks []document.Block
 		var firstBlock document.Block
 		var lastBlock document.Block
-
-		db := orm.GetDatabase()
-		b := db.C("block")
-		u := db.C("uptime_change")
-		p := db.C("power_change")
-
-		defer db.Session.Close()
-
-		u.Find(nil).Sort("-time").One(&uptimeChange)
-
 		var err error
+
+		uptimeChangeAsDoc, err := document.UptimeChange{}.QueryOne()
+		uptimeChange.Address = uptimeChangeAsDoc.Address
+		uptimeChange.Time = uptimeChangeAsDoc.Time
+		uptimeChange.Uptime = uptimeChangeAsDoc.Uptime
+
+		if err != nil {
+			logger.Error("UptimeChangeVo uptime change query one ", logger.String("err", err.Error()))
+		}
+
 		var startTime time.Time
-		d, _ := time.ParseDuration("1h") //1 hour later
+		oneHour, _ := time.ParseDuration("1h") //1 hour later
 		if uptimeChange.Time == "" {
-			b.Find(nil).Sort("height").One(&firstBlock)
+			firstBlock, err = document.Block{}.QueryOneBlockOrderByHeightAsc()
+			if err != nil {
+				logger.Error("UptimeChangeVo  query one blcok ", logger.String("err", err.Error()))
+			}
 			startTime = firstBlock.Time
 		} else {
 			startTime, _ = time.ParseInLocation("2006-01-02 15", uptimeChange.Time, time.UTC)
-			startTime = startTime.Add(d)
+			startTime = startTime.Add(oneHour)
 		}
 
-		err = b.Find(nil).Sort("-height").One(&lastBlock)
+		lastBlock, err = document.Block{}.QueryOneBlockOrderByHeightDesc()
 		if err != nil {
-			logger.Error("can't find any block")
+			logger.Error("UptimeChangeVo  can't find any block")
 			return
 		}
 
 		lastTime := lastBlock.Time
-		endTime := startTime.Add(d)
+		endTime := startTime.Add(oneHour)
 
 		startTime = time.Date(startTime.Year(), startTime.Month(), startTime.Day(), startTime.Hour(), 0, 0, 0, startTime.Location())
 		endTime = time.Date(endTime.Year(), endTime.Month(), endTime.Day(), endTime.Hour(), 0, 0, 0, endTime.Location())
 
-		logger.Info("UptimeChangeVo", logger.String("startTime", startTime.UTC().Format("2006-01-02 15")), logger.String("endTime", endTime.UTC().Format("2006-01-02 15")))
+		logger.Info("UptimeChangeVo  ", logger.String("startTime", startTime.UTC().Format("2006-01-02 15")), logger.String("endTime", endTime.UTC().Format("2006-01-02 15")), logger.String("latestBlockTime", lastTime.UTC().Format("2006-01-02 15")),
+			logger.String("endTime.Before(lastTime)", fmt.Sprintf("%v", endTime.Before(lastTime))))
 		if !endTime.Before(lastTime) {
-			logger.Info("UptimeChangeVo end", logger.String("startTime", startTime.Format("2006-01-02 15")))
+			logger.Info("UptimeChangeVo end", logger.String("endTime", endTime.UTC().String()), logger.String("lastTime", lastTime.UTC().String()))
 			return
 		}
 
-		b.Find(bson.M{"time": bson.M{"$gte": startTime, "$lt": endTime}}).Sort("height").All(&blocks)
+		blocks, err = document.Block{}.QueryBlocksByDurationWithHeightAsc(startTime, endTime)
+
+		if err != nil {
+			logger.Error("UptimeChangeVo  query blocks by duration with height asc", logger.String("errr", err.Error()))
+		}
+
 		for len(blocks) == 0 {
+
 			//往前推进一个小时
-			startTime = startTime.Add(d)
-			endTime = endTime.Add(d)
+			startTime = startTime.Add(oneHour)
+			endTime = endTime.Add(oneHour)
+
 			if !endTime.Before(lastTime) {
 				logger.Info("UptimeChangeVo end", logger.String("startTime", startTime.Format("2006-01-02 15")))
 				return
 			}
-			b.Find(bson.M{"time": bson.M{"$gte": startTime, "$lt": endTime}}).Sort("height").All(&blocks)
+
+			blocks, err = document.Block{}.QueryBlocksByDurationWithHeightAsc(startTime, endTime)
+			if err != nil {
+				logger.Error("query blocks by duration with height asc", logger.String("errr", err.Error()))
+			}
 		}
 
 		if err != nil {
@@ -93,21 +108,29 @@ func (task UpTimeChangeTask) Start() {
 			return
 		}
 
-		//init validatorMap if validatorMap length is 0
 		if len(validatorMap) == 0 && len(blocks) > 0 {
 			for _, validator := range blocks[0].Validators {
-				powerChange := model.ValVotingPowerChangeVo{
+				powerChange := document.PowerChange{
 					Address: validator.Address,
 					Power:   validator.VotingPower,
 					Time:    blocks[0].Time,
 					Change:  types.Change,
 				}
-				validatorMap[validator.Address] = powerChange
-				p.Insert(powerChange)
+				validatorMap[validator.Address] = model.ValVotingPowerChangeVo{
+					Address: validator.Address,
+					Power:   validator.VotingPower,
+					Time:    blocks[0].Time,
+					Change:  types.Change,
+				}
+
+				if err := powerChange.Insert(); err != nil {
+					logger.Error("power change insert", logger.String("err", err.Error()))
+				}
 			}
 		}
 
 		uptimeMap := make(map[string]int)
+
 		for _, block := range blocks {
 
 			// power change handle
@@ -117,26 +140,44 @@ func (task UpTimeChangeTask) Start() {
 
 				// validator add or update
 				if _, ok := validatorMap[validator.Address]; !ok {
-					powerChange := model.ValVotingPowerChangeVo{
+					powerChange := document.PowerChange{
 						Address: validator.Address,
 						Power:   validator.VotingPower,
 						Time:    block.Time,
 						Height:  block.Height,
 						Change:  types.Change,
 					}
-					validatorMap[validator.Address] = powerChange
-					p.Insert(&powerChange)
+					validatorMap[validator.Address] = model.ValVotingPowerChangeVo{
+						Address: validator.Address,
+						Power:   validator.VotingPower,
+						Time:    block.Time,
+						Height:  block.Height,
+						Change:  types.Change,
+					}
+
+					if err := powerChange.Insert(); err != nil {
+						logger.Error("power change insert", logger.String("err", err.Error()))
+					}
+
 				} else {
 					if validatorMap[validator.Address].Power != validator.VotingPower {
-						powerChange := model.ValVotingPowerChangeVo{
+						powerChange := document.PowerChange{
 							Address: validator.Address,
 							Power:   validator.VotingPower,
 							Time:    block.Time,
 							Height:  block.Height,
 							Change:  types.Change,
 						}
-						validatorMap[validator.Address] = powerChange
-						p.Insert(&powerChange)
+						validatorMap[validator.Address] = model.ValVotingPowerChangeVo{
+							Address: validator.Address,
+							Power:   validator.VotingPower,
+							Time:    block.Time,
+							Height:  block.Height,
+							Change:  types.Change,
+						}
+						if err := powerChange.Insert(); err != nil {
+							logger.Error("power change insert", logger.String("err", err.Error()))
+						}
 					}
 				}
 			}
@@ -147,15 +188,18 @@ func (task UpTimeChangeTask) Start() {
 					continue
 				}
 				if _, ok := validatorMapNow[k]; !ok {
-					powerChange := model.ValVotingPowerChangeVo{
+					powerChange := document.PowerChange{
 						Address: v.Address,
 						Power:   v.Power,
 						Time:    block.Time,
 						Height:  block.Height,
 						Change:  types.Slash,
 					}
+
 					delete(validatorMap, k)
-					p.Insert(&powerChange)
+					if err := powerChange.Insert(); err != nil {
+						logger.Error("power change insert", logger.String("err", err.Error()))
+					}
 				}
 			}
 
@@ -165,35 +209,33 @@ func (task UpTimeChangeTask) Start() {
 					uptimeMap[validator.Address] = 0
 				}
 			}
+
 			for _, commit := range block.Block.LastCommit.Precommits {
 				uptimeMap[commit.ValidatorAddress]++
 			}
+
+		}
+		doneTime := startTime.UTC().Format("2006-01-02 15")
+
+		for k, v := range uptimeMap {
+			logger.Info(fmt.Sprintf("UptimeChangeVo  uptime: %v  address: %v   time: %v   uptime percent: %v \n", v, k, doneTime, float64(100*v)/float64(len(blocks))))
+			err := document.UptimeChange{Address: k, Uptime: float64(100*v) / float64(len(blocks)), Time: doneTime}.Insert()
+			if err != nil {
+				logger.Error("uptimeChange insert", logger.String("err", err.Error()))
+			}
 		}
 
-		doneTime := startTime.UTC().Format("2006-01-02 15")
-		for k, v := range uptimeMap {
-			uptimeChange := model.UptimeChangeVo{Address: k, Uptime: float64(100*v) / float64(len(blocks)), Time: doneTime}
-			u.Insert(&uptimeChange)
-		}
 		logger.Info("UptimeChangeVo task end")
 	})
 }
 
 func (task UpTimeChangeTask) init() {
-	var powerChanges []model.ValVotingPowerChangeInfo
-	db := orm.GetDatabase()
-	p := db.C("power_change")
-	pipe := p.Pipe(
-		[]bson.M{
-			{"$group": bson.M{
-				"_id":    "$address",
-				"power":  bson.M{"$last": "$power"},
-				"date":   bson.M{"$last": "$date"},
-				"change": bson.M{"$last": "$change"},
-			}},
-		},
-	)
-	pipe.All(&powerChanges)
+
+	powerChanges, err := document.PowerChange{}.QueryPowerChangeList()
+
+	if err != nil {
+		logger.Error("query power change list", logger.String("err", err.Error()))
+	}
 
 	for _, powerChange := range powerChanges {
 		if powerChange.Change != types.Slash {

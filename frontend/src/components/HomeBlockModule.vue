@@ -4,7 +4,7 @@
       <span class="home_module_block_title"
             :class="homeModuleBlockTitle"
       >{{moduleName}}</span>
-      <router-link class="view_all_btn" v-if="moduleTitle === 'blocks'" :to="moduleName === 'Blocks' ? `/block/1/0` : `/recent_transactions/2/recent`">
+      <router-link class="view_all_btn" v-if="moduleTitle === 'blocks'" :to="moduleName === 'Blocks' ? `/blocks` : ``">
         <span class="view_all_Content">View All</span>
       </router-link>
     </div>
@@ -16,7 +16,8 @@
             <span class="blocks_module_value" :class="moduleTitle">
               <span class="transactions_tx" v-if="item.TxHash">TX# </span>
              <span style="cursor:pointer;">
-               <router-link :to="item.Height?`/block/${item.Height}`:`/tx?txHash=${item.TxHash}`" style="color: #3598db !important;">{{item.Height?item.Height:`${item.TxHash.substr(0,16)}...`}}</router-link></span>
+               <router-link :to="item.Height?`/block/${item.Height}`:`/tx?txHash=${item.TxHash}`" style="color: #3598db !important;">{{item.Height?item.Height:`${item.TxHash && item.TxHash.substr(0,16)}...`}}</router-link>
+               </span>
               </span>
               <span class="key_value_transfers_age" v-show="moduleName !== 'Blocks'">{{item.age}}</span>
               <span class="key_value_blocks_age" v-show="moduleName == 'Blocks'">{{item.age}}</span>

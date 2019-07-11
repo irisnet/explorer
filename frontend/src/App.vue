@@ -1,7 +1,7 @@
 <template>
   <div id="app" @click.stop="closeSelectOption">
     <app-header v-show="flShowHeader"></app-header>
-    <div id="router_wrap" :style="{'padding-top': $store.state.isMobile ? '' :`${headerHeightStyle}`}">
+    <div id="router_wrap" :class="$store.state.flShowIpt && !$store.state.isMobile ? 'input_style' : ''" :style="{'padding-top': $store.state.isMobile ? '' :`${headerHeightStyle}`}">
       <div class="qr_code"
            @click="hideQRCode"
            :style="`width:${vw}px;height:${vh}px`" v-show="weChatQRShow">
@@ -19,7 +19,7 @@
           <h2>Join QQ group</h2>
         </div>
       </div>
-      <router-view class="router_view" :style="`min-height:${vh/100-2.72}rem;`" :key="key"/>
+      <router-view class="router_view" :style="`min-height:${vh/100-1.7}rem;`" :key="key"/>
       <footer :class="footerClass" v-show="flShowFooter" id="footer">
         <div :class="footerClassName" style="height:100%;">
           <div class="footer_left" :class="footerLeftVar">
@@ -109,7 +109,7 @@
     mounted() {
       this.showHeaderAndFooterByVersionPath();
       window.addEventListener('resize', this.onresize);
-      if (window.innerWidth > 960) {
+      if (window.innerWidth > 910) {
         this.$store.commit('isMobile',false);
         this.footerClass = 'person_computer_wrap';
         this.footerClassName = 'person_computer_footer';
@@ -137,12 +137,14 @@
         this.innerWidth = window.innerWidth;
         this.vh = window.innerHeight;
         this.vw = window.innerWidth;
-        if (window.innerWidth > 960) {
+        if (window.innerWidth > 910) {
+          this.$store.commit('isMobile',false);
           this.footerClass = 'person_computer_wrap';
           this.footerClassName = 'person_computer_footer';
           this.footerLeftVar = 'person_computer_footer_left';
           this.footerRightVar = 'person_computer_footer_right';
         } else {
+          this.$store.commit('isMobile',true);
           this.footerClass = 'mobile_wrap_footer';
           this.footerClassName = 'mobile_footer';
           this.footerLeftVar = 'mobile_footer_left';
@@ -173,7 +175,7 @@
       }
     },
     updated () {
-      this.headerHeightStyle = `${document.getElementById('header').clientHeight/100}rem`
+      this.headerHeightStyle = `${document.getElementById('header').clientHeight}px`
     }
   }
 </script>
@@ -367,7 +369,9 @@
         }
       }
     }
-
+    .input_style{
+      padding-top: 1.21rem !important;
+    }
   }
   pre{
     font-family: Arial !important;

@@ -1,12 +1,14 @@
 package controller
 
 import (
+	"time"
+
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/model"
+	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/types"
-	"time"
 )
 
 func RegisterTextSearch(r *mux.Router) error {
@@ -55,10 +57,12 @@ func registerQuerySysDate(r *mux.Router) error {
 func registerQueryEnvConfig(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryConfig, "GET", func(request model.IrisReq) interface{} {
 		var envConf = struct {
-			CurEnv  interface{} `json:"cur_env"`
-			Configs interface{} `json:"configs"`
+			CurEnv  string            `json:"cur_env"`
+			ChainId string            `json:"chain_id"`
+			Configs []document.Config `json:"configs"`
 		}{
 			CurEnv:  conf.Get().Server.CurEnv,
+			ChainId: conf.Get().Hub.ChainId,
 			Configs: common.GetConfig(),
 		}
 		return envConf

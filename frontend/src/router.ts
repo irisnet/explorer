@@ -5,6 +5,7 @@ import FaucetPage from './components/FaucetPage.vue';
 import TransactionsDetail from './components/TransactionsDetail.vue';
 import BlocksDetail from './components/BlockInfo.vue';
 import AddressPage from './components/AddressPage.vue';
+import ValidatorDetail from './components/ValidatorDetail.vue';
 import PrivacyPolicy from './components/PrivacyPolicy.vue';
 import ProposalsPage from "./components/ProposalsPage.vue";
 import ProposalsDetail from "./components/ProposalsDetail.vue";
@@ -31,13 +32,6 @@ const router = new Router({
     {
       path: '/faucet',
       component: FaucetPage,
-      beforeEnter (to, from, next) {
-        if (sessionStorage.getItem('Show_faucet') === null){
-          next('/')
-        }else{
-          next()
-        }
-      }
     },
     {
       path: '/gov/proposals', component: ProposalsPage
@@ -46,19 +40,7 @@ const router = new Router({
       path: '/gov/parameters', component: Parameters
     },
     {
-      //BlocksListPage为一个组件，根据type类型不同相应不同页面
-      //1 BlocksList页面
-      //2 Transactions页面
-      //3 Validators页面
-      //4 Candidates页面
       path: '/blocks', component: BlockList
-
-    },
-    {
-      path: '/txs/:txType', component: TxList
-    },
-    {
-      path: '/txs/:txType', component: TxList
     },
     {
       path: '/txs/:txType', component: TxList
@@ -76,12 +58,16 @@ const router = new Router({
       path: '/ProposalsDetail/:proposal_id', component: ProposalsDetail,
     },
     {
-      path:'/address/:type/:param',
-      component:AddressPage,
+      path: '/address/:param',
+      component: AddressPage,
     },
     {
-      path:'/privacy_policy',
-      component:PrivacyPolicy,
+      path: '/validators/:param',
+      component: ValidatorDetail,
+    },
+    {
+      path: '/privacy_policy',
+      component: PrivacyPolicy,
     },
     {
       path: '/searchResult/:searchContent', component: SearchResult,
@@ -101,14 +87,14 @@ const router = new Router({
   ]
 
 })
-router.beforeEach((to,from,next) =>{
-  if(sessionStorage.getItem('Show_faucet') === '0'){
-    if(to.path === '/faucet'){
+router.beforeEach((to, from, next) => {
+  if (sessionStorage.getItem('Show_faucet') === '0') {
+    if (to.path === '/faucet') {
       next('/')
-    }else {
+    } else {
       next()
     }
-  }else {
+  } else {
     next()
   }
 })

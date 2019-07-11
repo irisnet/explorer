@@ -11,7 +11,7 @@
           </div>
           <div class="name_address" style="margin-left:0.2rem;">
             <span class="remove_default_style">
-              <router-link :to="`/address/1/${data.item.operatorAddress}`" class="link_style">{{data.item.moniker}}</router-link>
+              <router-link :to="addressRoute(data.item.operatorAddress)" class="link_style">{{data.item.moniker}}</router-link>
             </span>
           </div>
         </span>
@@ -20,11 +20,17 @@
         <span class="skip_route" style="display: flex" v-if="data.item.operatorAddress">
           <div class="name_address">
             <span class="remove_default_style">
-              <router-link :to="`/address/1/${data.item.operatorAddress}`" class="link_style">{{formatAddress(data.item.operatorAddress)}}</router-link>
+              <router-link :to="addressRoute(data.item.operatorAddress)" class="link_style">{{formatAddress(data.item.operatorAddress)}}</router-link>
             </span>
             <span class="address">{{data.item.operatorAddress}}</span>
           </div>
         </span>
+        </template>
+        <template slot='bondedToken' slot-scope='data'>
+        <span>{{formatToken(data.item.bondedToken)}}</span>
+        </template>
+        <template slot='selfBond' slot-scope='data'>
+          <span>{{formatSelfBond(data.item.selfBond)}}</span>
         </template>
       </b-table>
     </div>
@@ -32,6 +38,7 @@
 
 <script>
     import Tools from '../../util/Tools';
+    import Constant from "../../constant/Constant"
     export default {
         name: "ValidatorListTable",
         watch: {
@@ -116,10 +123,7 @@
               'unbondingHeight':{
                 label:'Unbonding Height',
                 sortable:true,
-              },
-              'unbondingTime':{
-                label:'Unbonding Time',
-              },
+              }
             },
             candidateValidatorFields: {
               moniker:{
@@ -152,12 +156,9 @@
               },
               'unbondingHeight':{
                 label:'Unbonding Height',
-                sortable:true,
-              },
-              'unbondingTime':{
-                label:'Unbonding Time',
-              },
-            },
+                sortable:true
+              }
+            }
           }
         },
         mounted(){
@@ -166,6 +167,12 @@
         methods: {
             formatAddress(address){
                 return Tools.formatValidatorAddress(address)
+            },
+            formatToken(token){
+              return `${Tools.formatPriceToFixed(token,2)} ${Constant.CHAINNAME.toLocaleUpperCase()}`
+            },
+            formatSelfBond(selfBondToken){
+              return `${Tools.formatPriceToFixed(selfBondToken,4)} ${Constant.CHAINNAME.toLocaleUpperCase()}`
             },
             setValidatorFields(validatorList){
                 validatorList.forEach(item => {
@@ -184,65 +191,27 @@
 
 <style lang="scss">
   @import '../../style/mixin.scss';
-  .name_address{
-    display: flex;
-    flex-direction: column;
-    position: relative;
-  .address{
-    display: none;
-    position: absolute;
-    left: -1.05rem;
-    top: -0.38rem;
-    color: #3598db;
-    background: rgba(0,0,0,0.8);
-    border-radius:0.04rem;
-    z-index: 10;
-  }
-    &:hover{
-      .address{
-        background: rgba(0,0,0,1);
-        color: #fff;
-        padding: 0.06rem 0.15rem 0 0.15rem;
-        display: block;
-        border-radius:0.04rem;
-        font-size: 0.14rem;
-      &::after{
-         content: '';
-         display: block;
-         background: rgba(0,0,0,1);
-         transform: rotate(45deg);
-         width: 0;
-         height: 0;
-         border: 0.04rem solid transparent;
-         position: relative;
-         top: 0.03rem;
-         z-index: 1;
-         left: 1.45rem;
-       }
-      }
-    }
-  }
   //重置bootstrap-vue的表格样式
     table {
       td {
         max-width: 2.2rem !important;
         overflow-wrap: break-word !important;
         word-wrap: break-word !important;
-      .skip_route {
-      a{
-        color: #3598db!important;
-        cursor: pointer;
+        .skip_route {
+          a{
+            color: #3598db!important;
+            cursor: pointer;
+          }
+        }
+        .no_skip{
+          color:#A2A2AE;
+          cursor:default;
+          .link_style{
+            color:#a2a2ae !important;
+          }
+        }
       }
     }
-    .no_skip{
-      color:#A2A2AE;
-      cursor:default;
-    .link_style{
-      color:#a2a2ae !important;
-    }
-  }
-  }
-  }
 
   .page-link{
     padding:0.05rem 0.075rem !important;

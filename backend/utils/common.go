@@ -4,11 +4,24 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/irisnet/explorer/backend/logger"
 	"math"
 	"math/big"
 	"strconv"
+
+	"github.com/irisnet/explorer/backend/logger"
 )
+
+func RemoveDuplicationStrArr(list []string) []string {
+	unique_set := make(map[string]bool, len(list))
+	for _, x := range list {
+		unique_set[x] = true
+	}
+	result := make([]string, 0, len(unique_set))
+	for x := range unique_set {
+		result = append(result, x)
+	}
+	return result
+}
 
 func ParseInt(text string) (i int64, b bool) {
 	i, err := strconv.ParseInt(text, 10, 0)
@@ -97,4 +110,8 @@ func QuoByStr(xStr, yStr string) (*big.Rat, error) {
 
 func NewRatFromFloat64(f float64) *big.Rat {
 	return new(big.Rat).SetFloat64(f)
+}
+
+func ParseStringFromFloat64(data float64) string {
+	return strconv.FormatFloat(data, 'f', -1, 64)
 }

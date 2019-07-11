@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
+	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/types"
@@ -16,9 +17,8 @@ func RegisterBlock(r *mux.Router) error {
 		registerQueryBlocks,
 		registerQueryRecentBlocks,
 		registerQueryValidatorSet,
-		registerQueryTxsByBlock,
-		registerQueryTxGovByBlock,
 		registerQueryBlockInfoByBlock,
+		registerQueryBlockLatestHeight,
 	}
 
 	for _, fn := range funs {
@@ -35,6 +35,20 @@ type Block struct {
 
 var block = Block{
 	service.Get(service.Block).(*service.BlockService),
+}
+
+func registerQueryBlockLatestHeight(r *mux.Router) error {
+
+	doApi(r, types.UrlRegisterQueryBlockLatestHeight, "GET", func(request model.IrisReq) interface{} {
+		var block = lcd.BlockLatest()
+		var height, ok = utils.ParseInt(block.BlockMeta.Header.Height)
+		if !ok {
+			panic(types.CodeNotFound)
+		}
+		return height
+	})
+
+	return nil
 }
 
 func registerQueryBlocks(r *mux.Router) error {
@@ -70,34 +84,6 @@ func registerQueryValidatorSet(r *mux.Router) error {
 		result := block.GetValidatorSet(height, page, size)
 
 		return result
-	})
-	return nil
-}
-
-func registerQueryTxsByBlock(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryBlockTxs, "GET", func(request model.IrisReq) interface{} {
-		tx.SetTid(request.TraceId)
-		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), DefaultPageNum))
-		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), DefaultPageSize))
-		height, err := strconv.ParseInt(Var(request, "height"), 10, 0)
-		if err != nil || height < 1 {
-			panic(types.CodeInValidParam)
-		}
-		return block.QueryTxsExcludeTxGovByBlock(height, page, size)
-	})
-	return nil
-}
-
-func registerQueryTxGovByBlock(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryBlockTxGov, "GET", func(request model.IrisReq) interface{} {
-		tx.SetTid(request.TraceId)
-		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), DefaultPageNum))
-		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), DefaultPageSize))
-		height, err := strconv.ParseInt(Var(request, "height"), 10, 0)
-		if err != nil || height < 1 {
-			panic(types.CodeInValidParam)
-		}
-		return block.QueryTxsOnlyTxGovByBlock(height, page, size)
 	})
 	return nil
 }
