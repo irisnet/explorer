@@ -31,8 +31,8 @@ func TestGetTokenStatsSupply(t *testing.T) {
 	t.Log(res)
 }
 
-func TestGetBuredTokens(t *testing.T) {
+func TestGetTokens(t *testing.T) {
 	res := []*Coin{{Denom:"iris-atto",Amount:"925050600000000000000000"},{Denom:"kai-min",Amount:"800"}}
-	coin := GetBuredTokens(res)
+	coin := GetTokens(res)
 	t.Log(coin)
 }

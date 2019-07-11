@@ -32,12 +32,13 @@ func (service *TokenStatsService) QueryTokenStats() (model.TokenStatsVo, error) 
 	}
 
 	initsupply := lcd.GetTokenInitSupply()
-	burnedtokens := lcd.GetBuredTokens(banktokenstats.BurnedTokens)
+	burnedtokens := lcd.GetTokens(banktokenstats.BurnedTokens)
+	bondedtokens := lcd.GetTokens(banktokenstats.BondedTokens)
 
 	tokenStats.TotalsupplyTokens = LoadCoinVoFromLcdCoin(&supply)
 	tokenStats.CirculationTokens = LoadCoinVoFromLcdCoin(&circulation)
 	tokenStats.InitsupplyTokens = LoadCoinVoFromLcdCoin(&initsupply)
-	tokenStats.DelegatedTokens = LoadCoinVoFromLcdCoin(banktokenstats.BondedTokens[0])
+	tokenStats.DelegatedTokens = LoadCoinVoFromLcdCoin(&bondedtokens)
 	tokenStats.BurnedTokens = LoadCoinVoFromLcdCoin(&burnedtokens)
 
 	return tokenStats, nil

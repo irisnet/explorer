@@ -31,7 +31,7 @@ func GetBankTokenStats() (TokenStats, error) {
 	return result, nil
 }
 
-func GetBuredTokens(data []*Coin) Coin {
+func GetTokens(data []*Coin) Coin {
 
 	for _, val := range data {
 		if val.Denom == "iris-atto" {
