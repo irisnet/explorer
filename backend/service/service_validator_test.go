@@ -14,7 +14,7 @@ import (
 
 func TestGetDelegationsFromLcd(t *testing.T) {
 
-	delegationPage := new(ValidatorService).GetDelegationsFromLcd("iva15gyr8x527htlnq7nxm3v9kj82a2pw3jlrj4g9y", 1, 5,true)
+	delegationPage := new(ValidatorService).GetDelegationsFromLcd("fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx", 1, 5,false)
 	t.Logf(" %v \n", delegationPage)
 }
 

@@ -16,21 +16,20 @@ func (service *BondedTokensService) QueryBondedTokensValidator() ([]*model.Bonde
 		return nil, err
 	}
 	result := make([]*model.BondedTokensVo, 0, len(validators))
-	if blackList := service.QueryBlackList(); len(blackList) > 0 {
-		for _, val := range validators {
-			bondedtoken := &model.BondedTokensVo{
-				Moniker:         val.Description.Moniker,
-				Identity:        val.Description.Identity,
-				VotingPower:     val.VotingPower,
-				OperatorAddress: val.OperatorAddress,
-			}
-			if item, ok := blackList[val.OperatorAddress]; ok {
-				bondedtoken.Moniker = item.Moniker
-				bondedtoken.Identity = item.Identity
-			}
-
-			result = append(result, bondedtoken)
+	blackList := service.QueryBlackList()
+	for _, val := range validators {
+		bondedtoken := &model.BondedTokensVo{
+			Moniker:         val.Description.Moniker,
+			Identity:        val.Description.Identity,
+			VotingPower:     val.VotingPower,
+			OperatorAddress: val.OperatorAddress,
 		}
+		if item, ok := blackList[val.OperatorAddress]; ok {
+			bondedtoken.Moniker = item.Moniker
+			bondedtoken.Identity = item.Identity
+		}
+
+		result = append(result, bondedtoken)
 	}
 
 	return result, nil

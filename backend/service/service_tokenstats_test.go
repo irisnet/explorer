@@ -70,7 +70,7 @@ func TestTokenStatsServicecomputeSegment(t *testing.T) {
 		args args
 	}{
 		{
-			name: "test CountNTotalAmount",
+			name: "test computeSegment",
 			args: args{
 				total: 100,
 				account:[]document.Account{
@@ -101,7 +101,7 @@ func TestTokenStatsServicecomputeSegment2(t *testing.T) {
 		args args
 	}{
 		{
-			name: "test CountNTotalAmount",
+			name: "test computeSegment2",
 			args: args{
 				total: 100,
 				account:[]document.Account{
