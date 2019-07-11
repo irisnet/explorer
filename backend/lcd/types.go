@@ -9,6 +9,7 @@ import (
 
 const (
 	UrlAccount                                   = "%s/bank/accounts/%s"
+	UrlBankTokenStats                            = "%s/bank/token-stats"
 	UrlValidator                                 = "%s/stake/validators/%s"
 	UrlValidators                                = "%s/stake/validators?page=%d&size=%d"
 	UrlDelegationByVal                           = "%s/stake/validators/%s/delegations"
@@ -31,11 +32,13 @@ const (
 	UrlDistributionRewardsByValidatorAcc         = "%s/distribution/%s/rewards"
 	UrlValidatorsSigningInfoByConsensuPublicKey  = "%s/slashing/validators/%s/signing-info"
 	UrlDistributionWithdrawAddressByValidatorAcc = "%s/distribution/%s/withdraw-address"
+	UrlTokenStatsSupply                          = "https://rpc.irisnet.org/token-stats/supply"
+	UrlTokenStatsCirculation                     = "https://rpc.irisnet.org/token-stats/circulation"
 )
 
 type AccountVo struct {
-	Address   string   `json:"address"`
-	Coins     []string `json:"coins"`
+	Address string   `json:"address"`
+	Coins   []string `json:"coins"`
 	PublicKey struct {
 		Type  string `json:"type"`
 		Value string `json:"value"`
@@ -57,7 +60,7 @@ type ValidatorVo struct {
 	UnbondingTime   time.Time   `json:"unbonding_time"`
 	Commission      Commission  `json:"commission"`
 	Uptime          float32     `json:"uptime"`
-	SelfBond        string     `json:"self_bond"`
+	SelfBond        string      `json:"self_bond"`
 	DelegatorNum    int         `json:"delegator_num"`
 	ProposerAddr    string      `json:"proposer_addr"`
 	VotingRate      float32     `json:"voting_rate"`
@@ -110,7 +113,7 @@ type NodeInfoVo struct {
 	Version    string `json:"version"`
 	Channels   string `json:"channels"`
 	Moniker    string `json:"moniker"`
-	Other      struct {
+	Other struct {
 		TxIndex    string `json:"tx_index"`
 		RPCAddress string `json:"rpc_address"`
 	} `json:"other"`
@@ -118,10 +121,10 @@ type NodeInfoVo struct {
 type GenesisVo struct {
 	Jsonrpc string `json:"jsonrpc"`
 	ID      string `json:"id"`
-	Result  struct {
+	Result struct {
 		Genesis struct {
-			GenesisTime     time.Time `json:"genesis_time"`
-			ChainID         string    `json:"chain_id"`
+			GenesisTime time.Time `json:"genesis_time"`
+			ChainID     string    `json:"chain_id"`
 			ConsensusParams struct {
 				BlockSize struct {
 					MaxBytes string `json:"max_bytes"`
@@ -134,7 +137,7 @@ type GenesisVo struct {
 					PubKeyTypes []string `json:"pub_key_types"`
 				} `json:"validator"`
 			} `json:"consensus_params"`
-			AppHash  string `json:"app_hash"`
+			AppHash string `json:"app_hash"`
 			AppState struct {
 				Accounts []struct {
 					Address        string   `json:"address"`
@@ -144,7 +147,7 @@ type GenesisVo struct {
 				} `json:"accounts"`
 				Auth struct {
 					CollectedFee interface{} `json:"collected_fee"`
-					Data         struct {
+					Data struct {
 						NativeFeeDenom string `json:"native_fee_denom"`
 					} `json:"data"`
 					Params struct {
@@ -200,7 +203,7 @@ type GenesisVo struct {
 				Gov struct {
 					Params struct {
 						CriticalDepositPeriod string `json:"critical_deposit_period"`
-						CriticalMinDeposit    []struct {
+						CriticalMinDeposit []struct {
 							Denom  string `json:"denom"`
 							Amount string `json:"amount"`
 						} `json:"critical_min_deposit"`
@@ -211,7 +214,7 @@ type GenesisVo struct {
 						CriticalParticipation  string `json:"critical_participation"`
 						CriticalPenalty        string `json:"critical_penalty"`
 						ImportantDepositPeriod string `json:"important_deposit_period"`
-						ImportantMinDeposit    []struct {
+						ImportantMinDeposit []struct {
 							Denom  string `json:"denom"`
 							Amount string `json:"amount"`
 						} `json:"important_min_deposit"`
@@ -222,7 +225,7 @@ type GenesisVo struct {
 						ImportantParticipation string `json:"important_participation"`
 						ImportantPenalty       string `json:"important_penalty"`
 						NormalDepositPeriod    string `json:"normal_deposit_period"`
-						NormalMinDeposit       []struct {
+						NormalMinDeposit []struct {
 							Denom  string `json:"denom"`
 							Amount string `json:"amount"`
 						} `json:"normal_min_deposit"`
@@ -239,7 +242,7 @@ type GenesisVo struct {
 					GenesisVersion struct {
 						UpgradeInfo struct {
 							ProposalID string `json:"ProposalID"`
-							Protocol   struct {
+							Protocol struct {
 								Version   string `json:"version"`
 								Software  string `json:"software"`
 								Height    string `json:"height"`
@@ -293,10 +296,10 @@ type GenesisVo struct {
 					} `json:"trustees"`
 				} `json:"guardian"`
 				Gentxs []struct {
-					Type  string `json:"type"`
+					Type string `json:"type"`
 					Value struct {
 						Msg []struct {
-							Type  string `json:"type"`
+							Type string `json:"type"`
 							Value struct {
 								Description struct {
 									Moniker  string `json:"moniker"`
@@ -311,7 +314,7 @@ type GenesisVo struct {
 								} `json:"Commission"`
 								DelegatorAddress string `json:"delegator_address"`
 								ValidatorAddress string `json:"validator_address"`
-								Pubkey           struct {
+								Pubkey struct {
 									Type  string `json:"type"`
 									Value string `json:"value"`
 								} `json:"pubkey"`
@@ -345,7 +348,7 @@ type GenesisVo struct {
 type BlockVo struct {
 	BlockMeta struct {
 		BlockID struct {
-			Hash  string `json:"hash"`
+			Hash string `json:"hash"`
 			Parts struct {
 				Total string `json:"total"`
 				Hash  string `json:"hash"`
@@ -356,13 +359,13 @@ type BlockVo struct {
 				Block string `json:"block"`
 				App   string `json:"app"`
 			} `json:"version"`
-			ChainID     string    `json:"chain_id"`
-			Height      string    `json:"height"`
-			Time        time.Time `json:"time"`
-			NumTxs      string    `json:"num_txs"`
-			TotalTxs    string    `json:"total_txs"`
+			ChainID  string    `json:"chain_id"`
+			Height   string    `json:"height"`
+			Time     time.Time `json:"time"`
+			NumTxs   string    `json:"num_txs"`
+			TotalTxs string    `json:"total_txs"`
 			LastBlockID struct {
-				Hash  string `json:"hash"`
+				Hash string `json:"hash"`
 				Parts struct {
 					Total string `json:"total"`
 					Hash  string `json:"hash"`
@@ -385,13 +388,13 @@ type BlockVo struct {
 				Block string `json:"block"`
 				App   string `json:"app"`
 			} `json:"version"`
-			ChainID     string    `json:"chain_id"`
-			Height      string    `json:"height"`
-			Time        time.Time `json:"time"`
-			NumTxs      string    `json:"num_txs"`
-			TotalTxs    string    `json:"total_txs"`
+			ChainID  string    `json:"chain_id"`
+			Height   string    `json:"height"`
+			Time     time.Time `json:"time"`
+			NumTxs   string    `json:"num_txs"`
+			TotalTxs string    `json:"total_txs"`
 			LastBlockID struct {
-				Hash  string `json:"hash"`
+				Hash string `json:"hash"`
 				Parts struct {
 					Total string `json:"total"`
 					Hash  string `json:"hash"`
@@ -415,18 +418,18 @@ type BlockVo struct {
 		} `json:"evidence"`
 		LastCommit struct {
 			BlockID struct {
-				Hash  string `json:"hash"`
+				Hash string `json:"hash"`
 				Parts struct {
 					Total string `json:"total"`
 					Hash  string `json:"hash"`
 				} `json:"parts"`
 			} `json:"block_id"`
 			Precommits []struct {
-				Type    int    `json:"type"`
-				Height  string `json:"height"`
-				Round   string `json:"round"`
+				Type   int    `json:"type"`
+				Height string `json:"height"`
+				Round  string `json:"round"`
 				BlockID struct {
-					Hash  string `json:"hash"`
+					Hash string `json:"hash"`
 					Parts struct {
 						Total string `json:"total"`
 						Hash  string `json:"hash"`
@@ -443,7 +446,7 @@ type BlockVo struct {
 
 type ValidatorSetVo struct {
 	BlockHeight string `json:"block_height"`
-	Validators  []struct {
+	Validators []struct {
 		Address          string `json:"address"`
 		PubKey           string `json:"pub_key"`
 		ProposerPriority string `json:"proposer_priority"`
@@ -527,7 +530,7 @@ type SignInfoVo struct {
 }
 
 type BlockResultVo struct {
-	Height  string `json:"height"`
+	Height string `json:"height"`
 	Results struct {
 		DeliverTx []struct {
 			Code      int         `json:"code"`
@@ -536,7 +539,7 @@ type BlockResultVo struct {
 			Info      string      `json:"info"`
 			GasWanted string      `json:"gas_wanted"`
 			GasUsed   string      `json:"gas_used"`
-			Tags      []struct {
+			Tags []struct {
 				Key   string `json:"key"`
 				Value string `json:"value"`
 			} `json:"tags"`
@@ -550,7 +553,7 @@ type BlockResultVo struct {
 				Power string `json:"power"`
 			} `json:"validator_updates"`
 			ConsensusParamUpdates interface{} `json:"consensus_param_updates"`
-			Tags                  []struct {
+			Tags []struct {
 				Key   string `json:"key"`
 				Value string `json:"value"`
 			} `json:"tags"`

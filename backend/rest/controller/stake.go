@@ -94,12 +94,19 @@ func registerQueryDelegationsByValidator(r *mux.Router) error {
 		stake.SetTid(request.TraceId)
 		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 5))
+		needpage := QueryParam(request, "needpage")
 		validatorAddr := Var(request, "validatorAddr")
 		if page > 0 {
 			page = page - 1
 		}
+		var  ispage bool
+		if needpage == "false" {
+			ispage = false
+		}else {
+			ispage = true
+		}
 
-		return stake.GetDelegationsFromLcd(validatorAddr, page, size)
+		return stake.GetDelegationsFromLcd(validatorAddr, page, size, ispage)
 	})
 	return nil
 }
