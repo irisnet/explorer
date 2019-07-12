@@ -79,7 +79,17 @@ func LoadModelFromCommonTx(src document.CommonTx) (dst model.AssetsVo) {
 	dst.TokenId = src.Msgs[0].MsgData.TokenId
 	dst.SymbolAtSource = src.Msgs[0].MsgData.SymbolAtSource
 	dst.Symbol = src.Msgs[0].MsgData.Symbol
-	dst.SymbolMin = fmt.Sprintf("%s-min", src.Msgs[0].MsgData.TokenId)
+	if dst.Type == document.Tx_Asset_TxType_Issue {
+		source := src.Msgs[0].MsgData.UdInfo.Source
+		if source == document.Tx_AssetType_Native {
+			dst.SymbolMin = fmt.Sprintf("%s-min", src.Msgs[0].MsgData.UdInfo.Symbol)
+		} else if source == document.Tx_AssetType_Gateway {
+			dst.SymbolMin = fmt.Sprintf("%s.%s-min", src.Msgs[0].MsgData.UdInfo.Gateway, src.Msgs[0].MsgData.UdInfo.Symbol)
+		}
+
+	} else {
+		dst.SymbolMin = fmt.Sprintf("%s-min", src.Msgs[0].MsgData.TokenId)
+	}
 
 	dst.InitialSupply = src.Msgs[0].MsgData.InitialSupply
 	dst.MaxSupply = src.Msgs[0].MsgData.MaxSupply
