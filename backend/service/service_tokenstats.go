@@ -7,6 +7,7 @@ import (
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/utils"
 	"fmt"
+	"sync"
 )
 
 type TokenStatsService struct {
@@ -15,21 +16,36 @@ type TokenStatsService struct {
 
 func (service *TokenStatsService) QueryTokenStats() (model.TokenStatsVo, error) {
 
-	var tokenStats model.TokenStatsVo
+	var (
+		tokenStats  model.TokenStatsVo
+		supply      lcd.Coin
+		circulation lcd.Coin
+	)
 
 	banktokenstats, err := lcd.GetBankTokenStats()
 	if err != nil {
 		return tokenStats, err
 	}
-	supply, err := lcd.GetTokenStatsSupply()
-	if err != nil {
-		return tokenStats, err
-	}
+	var group sync.WaitGroup
+	group.Add(2)
 
-	circulation, err := lcd.GetTokenStatsCirculation()
-	if err != nil {
-		return tokenStats, err
-	}
+	go func() {
+		defer group.Done()
+		var err error
+		supply, err = lcd.GetTokenStatsSupply()
+		if err != nil {
+			logger.Error("GetTokenStatsSupply have error", logger.String("err", err.Error()))
+		}
+	}()
+	go func() {
+		defer group.Done()
+		var err error
+		circulation, err = lcd.GetTokenStatsCirculation()
+		if err != nil {
+			logger.Error("GetTokenStatsCirculation have error", logger.String("err", err.Error()))
+		}
+	}()
+	group.Wait()
 
 	initsupply := lcd.GetTokenInitSupply()
 	burnedtokens := lcd.GetTokens(banktokenstats.BurnedTokens)
@@ -70,7 +86,7 @@ func (service *TokenStatsService) QueryTokensAccountTotal() (map[string]model.To
 		return computeSegment(accounts, totalAmt), nil
 	}
 
-	return computeSegment2(accounts,totalAmt), nil
+	return computeSegment2(accounts, totalAmt), nil
 }
 
 func computeSegment(accounts []document.Account, totalAmt float64) map[string]model.TokenStatsSegment {

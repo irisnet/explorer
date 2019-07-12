@@ -34,7 +34,7 @@ func GetBankTokenStats() (TokenStats, error) {
 func GetTokens(data []*Coin) Coin {
 
 	for _, val := range data {
-		if val.Denom == "iris-atto" {
+		if val.Denom == utils.CoinTypeAtto {
 			return Coin{Denom: val.Denom, Amount: val.Amount}
 		}
 	}
@@ -49,7 +49,7 @@ func GetTokenStatsCirculation() (Coin, error) {
 	}
 	return Coin{
 		Amount: string(resBytes),
-		Denom:  "IRIS",
+		Denom:  utils.CoinTypeIris,
 	}, nil
 }
 
@@ -61,13 +61,13 @@ func GetTokenStatsSupply() (Coin, error) {
 	}
 	return Coin{
 		Amount: string(resBytes),
-		Denom:  "IRIS",
+		Denom:  utils.CoinTypeIris,
 	}, nil
 }
 
 func GetTokenInitSupply() Coin {
 	return Coin{
 		Amount: conf.IniSupply,
-		Denom:  "IRIS",
+		Denom:  utils.CoinTypeIris,
 	}
 }

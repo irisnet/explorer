@@ -3,6 +3,7 @@ package lcd
 import (
 	"testing"
 	"encoding/json"
+	"github.com/irisnet/explorer/backend/utils"
 )
 
 func  TestGetBankTokenStats(t *testing.T) {
@@ -32,7 +33,7 @@ func TestGetTokenStatsSupply(t *testing.T) {
 }
 
 func TestGetTokens(t *testing.T) {
-	res := []*Coin{{Denom:"iris-atto",Amount:"925050600000000000000000"},{Denom:"kai-min",Amount:"800"}}
+	res := []*Coin{{Denom: utils.CoinTypeAtto, Amount: "925050600000000000000000"}, {Denom: "kai-min", Amount: "800"}}
 	coin := GetTokens(res)
 	t.Log(coin)
 }

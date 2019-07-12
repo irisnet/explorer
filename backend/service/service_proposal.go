@@ -529,8 +529,13 @@ func (s *ProposalService) buildTx(txs []document.CommonTx) []model.Tx {
 			Type:      v.Type,
 			Timestamp: v.Time,
 		}
-		validator := lcd.GetValidatorsByDelegator(v.From)
-		if moniker := validator[0].Description.Moniker; len(moniker) > 0 {
+		valaddr := utils.Convert(conf.Get().Hub.Prefix.ValAddr, v.From)
+		validator, err := lcd.Validator(valaddr)
+		if err != nil {
+			logger.Error("lcd.Validator have error", logger.String("valaddr", valaddr), logger.String("err", err.Error()))
+		}
+
+		if moniker := validator.Description.Moniker; len(moniker) > 0 {
 			tx.Moniker = moniker
 		}
 
