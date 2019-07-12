@@ -11,8 +11,8 @@ const (
 	UrlRegisterNavigationBar = "/home/navigation"
 
 	//Assets
-	UrlRegisterQueryNativeAsset  = "/assets/native"
-	UrlRegisterQueryGatewayAsset = "/assets/gateway"
+	UrlRegisterQueryNativeAsset  = "/assets/native/txs"
+	UrlRegisterQueryGatewayAsset = "/assets/gateway/txs"
 
 	//Block
 	UrlRegisterQueryBlockLatestHeight = "/block/latestheight"

@@ -41,10 +41,10 @@ const (
 	Tx_AssetType_Native  = "native"
 	Tx_AssetType_Gateway = "gateway"
 
-	Tx_Asset_TokenType_Issue         = "IssueToken"
-	Tx_Asset_TokenType_Edit          = "EditToken"
-	Tx_Asset_TokenType_Mint          = "MintToken"
-	Tx_Asset_TokenType_TransferOwner = "TransferTokenOwner"
+	Tx_Asset_TxType_Issue         = "IssueToken"
+	Tx_Asset_TxType_Edit          = "EditToken"
+	Tx_Asset_TxType_Mint          = "MintToken"
+	Tx_Asset_TxType_TransferOwner = "TransferTokenOwner"
 )
 
 type Signer struct {

@@ -10,13 +10,13 @@ type AssetsService struct {
 	BaseService
 }
 
-func (assets *AssetsService) GetNativeAsset(tokentype string, page, size int) (model.AssetsRespond, error) {
+func (assets *AssetsService) GetNativeAsset(txtype string, page, size int) (model.AssetsRespond, error) {
 
-	if !isFieldTokenType(tokentype) {
-		tokentype = ""
+	if !isFieldTokenType(txtype) {
+		txtype = ""
 	}
 
-	total, retassets, err := document.CommonTx{}.QueryTxAsset(document.Tx_AssetType_Native, tokentype, page, size)
+	total, retassets, err := document.CommonTx{}.QueryTxAsset(document.Tx_AssetType_Native, txtype, page, size)
 	if err != nil {
 		logger.Error("GetNativeAsset have error", logger.String("error", err.Error()))
 		return model.AssetsRespond{}, err
@@ -29,18 +29,18 @@ func (assets *AssetsService) GetNativeAsset(tokentype string, page, size int) (m
 
 	return model.AssetsRespond{
 		Total:     total,
-		Assets:    result,
+		Txs:       result,
 		AssetType: document.Tx_AssetType_Native,
 	}, nil
 }
 
-func (assets *AssetsService) GetGatewayAsset(tokentype string, page, size int) (model.AssetsRespond, error) {
+func (assets *AssetsService) GetGatewayAsset(txtype string, page, size int) (model.AssetsRespond, error) {
 
-	if !isFieldTokenType(tokentype) {
-		tokentype = ""
+	if !isFieldTokenType(txtype) {
+		txtype = ""
 	}
 
-	total, retassets, err := document.CommonTx{}.QueryTxAsset(document.Tx_AssetType_Gateway, tokentype, page, size)
+	total, retassets, err := document.CommonTx{}.QueryTxAsset(document.Tx_AssetType_Gateway, txtype, page, size)
 	if err != nil {
 		logger.Error("GetNativeAsset have error", logger.String("error", err.Error()))
 		return model.AssetsRespond{}, err
@@ -52,16 +52,16 @@ func (assets *AssetsService) GetGatewayAsset(tokentype string, page, size int) (
 
 	return model.AssetsRespond{
 		Total:     total,
-		Assets:    result,
+		Txs:       result,
 		AssetType: document.Tx_AssetType_Gateway,
 	}, nil
 }
 
 func isFieldTokenType(tokentype string) bool {
-	return tokentype == document.Tx_Asset_TokenType_Issue ||
-		tokentype == document.Tx_Asset_TokenType_TransferOwner ||
-		tokentype == document.Tx_Asset_TokenType_Edit ||
-		tokentype == document.Tx_Asset_TokenType_Mint
+	return tokentype == document.Tx_Asset_TxType_Mint ||
+		tokentype == document.Tx_Asset_TxType_Issue ||
+		tokentype == document.Tx_Asset_TxType_Edit ||
+		tokentype == document.Tx_Asset_TxType_TransferOwner
 }
 
 func LoadModelFromCommonTx(src document.CommonTx) (dst model.AssetsVo) {

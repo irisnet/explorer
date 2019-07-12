@@ -29,8 +29,8 @@ func registerQueryNativeAsset(r *mux.Router) error {
 		assets.SetTid(request.TraceId)
 		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 5))
-		tokentype := QueryParam(request, "tokentype")
-		res, err := assets.GetNativeAsset(tokentype, page, size)
+		txtype := QueryParam(request, "tx_type")
+		res, err := assets.GetNativeAsset(txtype, page, size)
 		if err != nil {
 			return model.NewResponse("-1", err.Error(), nil)
 		}
@@ -44,8 +44,8 @@ func registerQueryGatewayAsset(r *mux.Router) error {
 		assets.SetTid(request.TraceId)
 		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 5))
-		tokentype := QueryParam(request, "tokentype")
-		res, err := assets.GetGatewayAsset(tokentype, page, size)
+		txtype := QueryParam(request, "tx_type")
+		res, err := assets.GetGatewayAsset(txtype, page, size)
 		if err != nil {
 			return model.NewResponse("-1", err.Error(), nil)
 		}
