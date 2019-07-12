@@ -72,6 +72,16 @@
                 </div>
                 <span v-if="row.Moniker && row.Moniker === '--'">--</span>
             </template>
+            <template slot-scope="{ row }" slot="Amount">
+                <div class="name_address">
+                    <div>
+                            <span>
+                                <span>{{substrAmount(row.Amount)}}</span>
+                            </span>
+                    </div>
+                    <span class="address" v-if="row.Amount.toString().length > 12">{{row.Amount}}</span>
+                </div>
+            </template>
         </m-table>
     </div>
 </template>
@@ -113,7 +123,6 @@
 					{
 						title:'Amount',
 						slot: 'Amount',
-						key: 'Amount',
 						className: 'text_right'
 					},
 					{
@@ -228,7 +237,7 @@
 					{
 						title:'Amount',
 						slot: 'Amount',
-						key: 'Amount',
+                        key:'Amount',
 						className: 'text_right',
 					},
 					{
@@ -292,7 +301,7 @@
 					{
 						title:'Amount',
 						slot: 'Amount',
-						key: 'Amount',
+                        key:'Amount',
 						className: 'text_right',
 					},
 					{
@@ -344,6 +353,13 @@
                     this.fields = this.govFields
                 }
             },
+	        substrAmount(amount){
+	        	if(amount.toString().length > 12){
+			        return Tools.formatString(amount.toString(),12,'...')
+		        }else {
+			        return amount
+                }
+	        },
             formatMoniker (moniker) {
                 if (!moniker) {
                     return '';

@@ -10,15 +10,45 @@
             </template>
             <template slot-scope="{ row }" slot="Block">
                 <router-link :to="`/block/${row.Block}`" class="link_style">{{row.Block}}</router-link>
-                <!--<span>{{row.Block}}</span>-->
             </template>
             <template slot-scope="{ row }" slot="SrcOwner">
                 <router-link :to="`/address/${row.SrcOwner}`" class="link_style">{{formatAddress(row.SrcOwner)}}</router-link>
-                <!--<span>{{row.Block}}</span>-->
             </template>
             <template slot-scope="{ row }" slot="DstOwner">
                 <router-link :to="`/address/${row.DstOwner}`" class="link_style">{{formatAddress(row.DstOwner)}}</router-link>
-                <!--<span>{{row.Block}}</span>-->
+            </template>
+            <template slot-scope="{ row }" slot="MintTo">
+                <router-link :to="`/address/${row.MintTo}`" class="link_style">{{formatAddress(row.MintTo)}}</router-link>
+            </template>
+            <template slot-scope="{ row }" slot="Amount">
+                <div class="name_address">
+                    <div>
+                            <span>
+                                <span>{{substrAmount(row.Amount)}}</span>
+                            </span>
+                    </div>
+                    <span class="address" v-if="row.Amount.toString().length > 12">{{row.Amount}}</span>
+                </div>
+            </template>
+            <template slot-scope="{ row }" slot="InitialSupply">
+                <div class="name_address">
+                    <div>
+                            <span>
+                                <span>{{substrAmount(row.InitialSupply)}}</span>
+                            </span>
+                    </div>
+                    <span class="address" v-if="row.InitialSupply.toString().length > 12">{{row.InitialSupply}}</span>
+                </div>
+            </template>
+            <template slot-scope="{ row }" slot="MaxSupply">
+                <div class="name_address">
+                    <div>
+                            <span>
+                                <span>{{substrAmount(row.MaxSupply)}}</span>
+                            </span>
+                    </div>
+                    <span class="address" v-if="row.MaxSupply.toString().length > 12">{{row.MaxSupply}}</span>
+                </div>
             </template>
         </m-table>
     </div>
@@ -60,13 +90,13 @@
 	                },
 	                {
 		                title:'InitialSupply',
-		                key:'InitialSupply',
+		                // key:'InitialSupply',
 		                slot: 'InitialSupply',
 		                tooltipClassName: 'tooltip_left'
 	                },
 	                {
 		                title:'MaxSupply',
-		                key:'MaxSupply',
+		                // key:'MaxSupply',
 		                slot: 'MaxSupply',
 		                tooltipClassName: 'tooltip_left'
 	                },
@@ -140,7 +170,7 @@
 					},
 					{
 						title:'MaxSupply',
-						key:'MaxSupply',
+						// key:'MaxSupply',
 						slot: 'MaxSupply',
 						tooltipClassName: 'tooltip_left'
 					},
@@ -158,8 +188,8 @@
 					},
 					{
 						title:'SymbolMin',
-						key:'SymbolMin',
-						slot: 'SymbolMin',
+						key:'Symbolmin',
+						slot: 'Symbolmin',
 						tooltipClassName: 'tooltip_left'
 					},
 					{
@@ -213,13 +243,12 @@
 					},
 					{
 						title:'MintTo',
-						key:'MintTo',
 						slot: 'MintTo',
 						tooltipClassName: 'tooltip_left'
 					},
 					{
 						title:'Amount',
-						key:'Amount',
+						// key:'Amount',
 						slot: 'Amount',
 						tooltipClassName: 'tooltip_left'
 					},
@@ -262,11 +291,13 @@
 					},
 					{
 						title:'SrcOwner',
+						tooltip: true,
 						slot: 'SrcOwner',
 						tooltipClassName: 'tooltip_left'
 					},
 					{
 						title:'DstOwner',
+						tooltip: true,
 						slot: 'DstOwner',
 						tooltipClassName: 'tooltip_left'
 					},
@@ -311,6 +342,13 @@
 					return Tools.formatTxHash(TxHash)
 				}
             },
+			substrAmount(amount){
+				if(amount.toString().length > 12){
+					return Tools.formatString(amount.toString(),12,'...')
+				}else {
+					return amount
+				}
+			},
 			formatAddress(address){
 				return Tools.formatValidatorAddress(address)
 			},

@@ -118,11 +118,11 @@
 	            	pageSize:this.pageSize,
                     tokenType:this.issueTokenType
                     }}, (issueToken) => {
-                    sessionStorage.setItem('issueTokenTotalPageNum',issueToken.data.total)
 		            this.flShowLoading = false;
                     try {
                         if(issueToken.data){
-	                       this.issueToken = issueToken.data.txs.map(item => {
+	                        sessionStorage.setItem('issueTokenTotalPageNum',issueToken.data.total)
+	                        this.issueToken = issueToken.data.txs.map(item => {
 		                       return {
 			                       Owner: item.owner,
 			                       Symbol: item.symbol,

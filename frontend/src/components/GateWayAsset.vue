@@ -123,10 +123,10 @@
 				        pageSize:this.pageSize,
 				        tokenType:this.issueTokenType
 			        }}, (issueToken) => {
-			        sessionStorage.setItem('issueTokenTotalPageNum',issueToken.data.total)
 			        this.flShowLoading = false;
 			        try {
 				        if(issueToken.data){
+					        sessionStorage.setItem('issueTokenTotalPageNum',issueToken.data.total)
 					        this.gateWayIssueTokenList = issueToken.data.txs.map(item => {
 						        return {
 							        Owner: item.owner,
@@ -194,7 +194,7 @@
 						        return {
 							        Token: item.token_id,
 							        Owner: item.owner,
-							        MintTo: item.min_to,
+							        MintTo: item.mint_to,
 							        Amount: item.amount,
 							        Block: item.height,
 							        TxHash: item.tx_hash,
