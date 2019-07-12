@@ -24,7 +24,7 @@ type AssetsVo struct {
 	SymbolMin      string    `json:"symbol_min"`
 	Name           string    `json:"name"`
 	MintTo         string    `json:"mint_to"`
-	Amount         Coins     `json:"amount"`
+	Amount         int64     `json:"amount"`
 	SrcOwner       string    `json:"src_owner"`
 	DstOwner       string    `json:"dst_owner"`
 	Height         int64     `json:"height"`

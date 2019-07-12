@@ -4,6 +4,7 @@ import (
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
+	"fmt"
 )
 
 type AssetsService struct {
@@ -71,14 +72,14 @@ func LoadModelFromCommonTx(src document.CommonTx) (dst model.AssetsVo) {
 	dst.TxStatus = src.Status
 	dst.Timestamp = src.Time
 
-	dst.Amount = convertModelCoins(src.Amount)
 	dst.TxFee = convertModelFee(src.Fee)
 
 	dst.Type = src.Msgs[0].Type
+	dst.Amount = src.Msgs[0].MsgData.Amount
 	dst.TokenId = src.Msgs[0].MsgData.TokenId
 	dst.SymbolAtSource = src.Msgs[0].MsgData.SymbolAtSource
 	dst.Symbol = src.Msgs[0].MsgData.Symbol
-	dst.SymbolMin = src.Msgs[0].MsgData.SymbolMinAlias
+	dst.SymbolMin = fmt.Sprintf("%s-min", src.Msgs[0].MsgData.TokenId)
 
 	dst.InitialSupply = src.Msgs[0].MsgData.InitialSupply
 	dst.MaxSupply = src.Msgs[0].MsgData.MaxSupply
