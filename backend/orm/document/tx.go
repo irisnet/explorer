@@ -33,8 +33,18 @@ const (
 	Tx_Field_ActualFee            = "actual_fee"
 	Tx_Field_ProposalId           = "proposal_id"
 	Tx_Field_Tags                 = "tags"
+	Tx_Field_Msgs                 = "msgs"
 	Tx_Field_StakeCreateValidator = "stake_create_validator"
 	Tx_Field_StakeEditValidator   = "stake_edit_validator"
+
+	Tx_Field_Msgs_UdInfo  = "msgs.msg.ud_info.source"
+	Tx_AssetType_Native  = "native"
+	Tx_AssetType_Gateway = "gateway"
+
+	Tx_Asset_TxType_Issue         = "IssueToken"
+	Tx_Asset_TxType_Edit          = "EditToken"
+	Tx_Asset_TxType_Mint          = "MintToken"
+	Tx_Asset_TxType_TransferOwner = "TransferTokenOwner"
 )
 
 type Signer struct {
@@ -90,6 +100,7 @@ type CommonTx struct {
 	StakeCreateValidator StakeCreateValidator `bson:"stake_create_validator"`
 	StakeEditValidator   StakeEditValidator   `bson:"stake_edit_validator"`
 	Msg                  Msg                  `bson:"-"`
+	Msgs                 []MsgItem            `bson:"msgs"`
 	Signers              []Signer             `bson:"signers"`
 }
 
@@ -124,6 +135,38 @@ func (tx CommonTx) String() string {
 type Msg interface {
 	Type() string
 	String() string
+}
+
+type MsgItem struct {
+	Type    string  `json:"type" bson:"type"`
+	MsgData MsgData `json:"msg" bson:"msg"`
+}
+
+type MsgData struct {
+	TokenId        string `json:"token_id" bson:"token_id"`
+	To             string `json:"to" bson:"to"`
+	Family         string `json:"family" bson:"family"`
+	Source         string `json:"source" bson:"source"`
+	Gateway        string `json:"gateway" bson:"gateway"`
+	Symbol         string `json:"symbol" bson:"symbol"`
+	SymbolAtSource string `json:"symbol_at_source" bson:"symbol_at_source"`
+	Name           string `json:"name" bson:"name"`
+	Decimal        int32  `json:"decimal" bson:"decimal"`
+	SymbolMinAlias string `json:"symbol_min_alias" bson:"symbol_min_alias"`
+	InitialSupply  int64  `json:"initial_supply" bson:"initial_supply"`
+	MaxSupply      int64  `json:"max_supply" bson:"max_supply"`
+	Amount         int64  `json:"amount" bson:"amount"`
+	Mintable       bool   `json:"mintable" bson:"mintable"`
+	Owner          string `json:"owner" bson:"owner"`
+	SrcOwner       string `json:"src_owner" bson:"src_owner"`
+	DstOwner       string `json:"dst_owner" bson:"dst_owner"`
+	UdInfo         UdInfo `json:"ud_info" bson:"ud_info"`
+}
+
+type UdInfo struct {
+	Source  string `json:"source" bson:"source"`
+	Gateway string `json:"gateway" bson:"gateway"`
+	Symbol  string `json:"symbol" bson:"symbol"`
 }
 
 type StakeCreateValidator struct {
@@ -360,5 +403,35 @@ func (_ CommonTx) QueryProposalTxByIdWithSubmitOrDepositType(proposalId int64, p
 	sort := fmt.Sprintf("-%v", Tx_Field_Height)
 	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, &txs)
 
+	return num, txs, err
+}
+
+func (_ CommonTx) QueryTxAsset(assetType, tokenType string, page, size int) (int, []CommonTx, error) {
+	txs := []CommonTx{}
+	selector := bson.M{
+		Tx_Field_Hash:   1,
+		Tx_Field_Height: 1,
+		Tx_Field_From:   1,
+		Tx_Field_To:     1,
+		Tx_Field_Amount: 1,
+		Tx_Field_Type:   1,
+		Tx_Field_Status: 1,
+		Tx_Field_Fee:    1,
+		Tx_Field_Tags:   1,
+		Tx_Field_Msgs:   1,
+		Tx_Field_Time:   1,
+	}
+	condition := bson.M{
+		Tx_Field_Msgs_UdInfo: assetType,
+	}
+	if tokenType != "" {
+		condition[Tx_Field_Type] = tokenType
+	} else {
+		condition[Tx_Field_Type] = bson.M{
+			"$in": []string{types.TxTypeIssueToken, types.TxTypeEditToken, types.TxTypeMintToken, types.TxTypeTransferTokenOwner},
+		}
+	}
+	sort := fmt.Sprintf("-%v", Tx_Field_Height)
+	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, &txs)
 	return num, txs, err
 }
