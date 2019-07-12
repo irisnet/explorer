@@ -294,7 +294,7 @@ export default {
                     tooltip: true
                 },
                 {
-                    title: "Self_Bonded",
+                    title: "Self-Bonded",
                     key: "Amount"
                 },
                 {

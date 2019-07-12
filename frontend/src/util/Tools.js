@@ -325,6 +325,8 @@ export default class Tools{
 	static formatDenom(denom){
 		if(denom === "iris-atto" || denom === "iris"){
 			return "IRIS"
+		}else {
+			return denom
 		}
 	}
 	/**
@@ -379,28 +381,46 @@ export default class Tools{
 	static formatTxList(list,txType){
 		if(list !== null){
 			return list.map(item => {
-				let [Amount,Fee] = ['--','--'];
+				let [Amount,Fee,transferAmount,transferFee,tokenId] = ['--','--','--','--'];
 				let commonHeaderObjList,objList,commonFooterObjList;
 				if(item.Amount){
-					if(item.Amount instanceof Array){
-						if(item.Amount.length > 0){
-							item.Amount[0].formatAmount = Tools.formatAmount(item.Amount[0].amount);
-							if(!item.Amount[0].denom){
+					if(item.Amount instanceof Array && item.Amount.length > 0){
+						if(item.Amount[0].denom && item.Amount[0].amount && item.Amount[0].denom === Constant.Denom.IRISATTO){
+							transferAmount = item.Amount[0].formatAmount = item.Amount[0].amount > 0 ? Tools.formatAmount(item.Amount[0].amount) : item.Amount[0].amount;
+							tokenId = item.Amount[0].tokenId = Constant.Denom.IRIS.toLocaleUpperCase();
+							Amount = item.Amount.map(listItem=>`${listItem.formatAmount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
+						}else if(item.Amount[0].denom && item.Amount[0].amount && item.Amount[0].denom !== Constant.Denom.IRISATTO){
+							transferAmount = item.Amount[0].formatAmount = Tools.FormatScientificNotationToNumber(item.Amount[0].amount);
+							tokenId = item.Amount[0].tokenId = item.Amount[0].denom.toLocaleUpperCase();
+						}else {
+							transferAmount = item.Amount[0].formatAmount = item.Amount[0].amount;
+							tokenId = item.Amount[0].tokenId = item.Amount[0].denom.toLocaleUpperCase();
+							if(item.Type === 'BeginUnbonding' || item.Type === 'BeginRedelegate'){
+								item.Amount[0].formatAmount = item.Amount[0].amount > 0 ? Tools.formatAmount(item.Amount[0].amount) : item.Amount[0].amount;
 								Amount = item.Amount.map(listItem => `${listItem.formatAmount} SHARES`).join(',');
-							}else {
-								Amount = item.Amount.map(listItem=>`${listItem.formatAmount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
 							}
 						}
 					}else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
-						if(!item.Amount.denom){
-							Amount = `${Tools.formatPriceToFixed(item.Amount.amount)} SHARES`;
+						if(item.Amount.denom === Constant.Denom.IRISATTO){
+							transferAmount = Tools.formatAmount(item.Amount);
+							tokenId = Constant.Denom.IRIS.toLocaleUpperCase()
+							Amount = `${transferAmount}  ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
+							
+						}else if(!item.Amount.denom){
+							transferAmount = Tools.FormatScientificNotationToNumber(item.Amount);
+							tokenId = ''
 						}else {
-							Amount = `${Tools.formatPriceToFixed(item.Amount.amount)}  ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
+							transferAmount = item.Amount;
+							tokenId = item.denom.toLocaleUpperCase();
+							if(item.Type === 'BeginUnbonding' || item.Type === 'BeginRedelegate'){
+								Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
+							}
 						}
 					}
 				}
 				if(item.Fee.amount && item.Fee.denom){
 					let feeAmount = item.Fee.amount;
+					transferFee = `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(feeAmount)))}`;
 					Fee = `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(feeAmount)),4)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`;
 				}
 				commonHeaderObjList = {
@@ -417,7 +437,9 @@ export default class Tools{
 				if(txType === 'transfers' ){
 					objList = {
 						'From':item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:'--'),
-						Amount,
+						Amount:transferAmount,
+						'transferFee': transferFee,
+						tokenId,
 						'To':item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:'--'),
 						'listName':'transfer'
 					};
@@ -500,20 +522,21 @@ export default class Tools{
 					'listName':'stakes'
 				}];
 			}else if(txType === 'governance'){
-				noObjList = [{
-					'Tx_Hash': '',
-					'Block': '',
-					'Proposal_Type': '',
-					"Proposal_ID": '',
-					'Proposal_Title': '',
-					'Amount': '',
-					'Tx_Type': '',
-					'Tx_Fee': '',
-					'Tx_Signer': '',
-					'Tx_Status': '',
-					'Timestamp':'',
-					'listName':'gov'
-				}];
+				noObjList = [];
+				// noObjList = [{
+				// 	'Tx_Hash': '',
+				// 	'Block': '',
+				// 	'Proposal_Type': '',
+				// 	"Proposal_ID": '',
+				// 	'Proposal_Title': '',
+				// 	'Amount': '',
+				// 	'Tx_Type': '',
+				// 	'Tx_Fee': '',
+				// 	'Tx_Signer': '',
+				// 	'Tx_Status': '',
+				// 	'Timestamp':'',
+				// 	'listName':'gov'
+				// }];
 			}
 			return noObjList;
 		}
@@ -594,6 +617,19 @@ export default class Tools{
 		}else {
 			return defaultValue
 		}
+	}
+	/**
+	 *   科学计数法转成数字
+	 *
+	 * */
+	static FormatScientificNotationToNumber(number){
+		let formattedNumber;
+		if(number.toString().indexOf('e') !== -1 || number.toString().indexOf('E') !== -1){
+			formattedNumber = new BigNumber(number).toFixed().toString();
+		}else {
+			formattedNumber = number
+		}
+		return formattedNumber
 	}
 	
 }

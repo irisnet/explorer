@@ -72,6 +72,16 @@
                 </div>
                 <span v-if="row.Moniker && row.Moniker === '--'">--</span>
             </template>
+            <template slot-scope="{ row }" slot="Amount">
+                <div class="name_address">
+                    <div>
+                            <span>
+                                <span>{{substrAmount(row.Amount)}}</span>
+                            </span>
+                    </div>
+                    <span class="address" v-if="row.Amount.toString().length > 12">{{row.Amount}}</span>
+                </div>
+            </template>
         </m-table>
     </div>
 </template>
@@ -113,7 +123,12 @@
 					{
 						title:'Amount',
 						slot: 'Amount',
-						key: 'Amount',
+						className: 'text_right'
+					},
+					{
+						title:'Token',
+						slot: 'Token',
+						key: 'tokenId',
 						className: 'text_right'
 					},
 					{
@@ -121,23 +136,23 @@
             slot: 'To'
 					},
 					{
-						title:'Tx_Type',
+						title:'TxType',
 						slot: 'Tx_Type',
 						key: 'Tx_Type',
 					},
 					{
-						title:'Tx_Fee',
+						title:'TxFee(IRIS)',
 						slot: 'Tx_Fee',
-						key: 'Tx_Fee',
+						key: 'transferFee',
 						className: 'text_right'
 					},
 					{
-						title:'Tx_Signer',
+						title:'TxSigner',
             slot: 'Tx_Signer',
             tooltip: true
 					},
 					{
-						title:'Tx_Status',
+						title:'TxStatus',
 						slot: 'Tx_Status',
 						key: 'Tx_Status',
 					},
@@ -149,7 +164,7 @@
 				],
 				declarationFields:[
               {
-                title:'Tx_Hash',
+                title:'TxHash',
                 slot: 'Tx_Hash',
                 width: 100,
                 tooltip: true,
@@ -170,31 +185,31 @@
                         tooltip: true
 					},
 					{
-						title:'Self_Bonded',
+						title:'Self-Bonded',
 						slot: 'Self_Bonded',
 						key: 'Amount',
 						className: 'text_right',
 					},
 					{
-						title:'Tx_Type',
+						title:'TxType',
 						slot: 'Tx_Type',
 						key: 'Tx_Type',
 					},
 					{
-						title:'Tx_Fee',
+						title:'TxFee',
 						slot: 'Tx_Fee',
 						key: 'Tx_Fee',
 						className: 'text_right',
 					},
 					{
-						title:'Tx_Signer',
+						title:'TxSigner',
             slot: 'Tx_Signer',
             tooltip: true
 					},
 					{
-						title:'Tx_Status',
-						slot: 'Tx_Status',
-						key: 'Tx_Status',
+						title:'TxStatus',
+						slot: 'TxStatus',
+						key: 'TxStatus',
 					},
 					{
 						title:'Timestamp',
@@ -204,7 +219,7 @@
                 ],
 				stakeFields:[
 					{
-						title:'Tx_Hash',
+						title:'TxHash',
 						slot: 'Tx_Hash',
             width: 100,
             tooltip: true,
@@ -222,7 +237,7 @@
 					{
 						title:'Amount',
 						slot: 'Amount',
-						key: 'Amount',
+                        key:'Amount',
 						className: 'text_right',
 					},
 					{
@@ -230,23 +245,23 @@
             slot: 'To'
 					},
 					{
-						title:'Tx_Type',
+						title:'TxType',
 						slot: 'Tx_Type',
 						key: 'Tx_Type',
 					},
 					{
-						title:'Tx_Fee',
+						title:'TxFee',
 						slot: 'Tx_Fee',
 						key: 'Tx_Fee',
 						className: 'text_right',
 					},
 					{
-						title:'Tx_Signer',
+						title:'TxSigner',
             slot: 'Tx_Signer',
             tooltip: true
 					},
 					{
-						title:'Tx_Status',
+						title:'TxStatus',
 						slot: 'Tx_Status',
 						key: 'Tx_Status',
 					},
@@ -258,7 +273,7 @@
 				],
 				govFields:[
 					{
-						title:'Tx_Hash',
+						title:'TxHash',
 						slot: 'Tx_Hash',
             width: 100,
             tooltip: true,
@@ -286,27 +301,27 @@
 					{
 						title:'Amount',
 						slot: 'Amount',
-						key: 'Amount',
+                        key:'Amount',
 						className: 'text_right',
 					},
 					{
-						title:'Tx_Type',
+						title:'TxType',
 						slot: 'Tx_Type',
 						key: 'Tx_Type',
 					},
 					{
-						title:'Tx_Fee',
+						title:'TxFee',
 						slot: 'Tx_Fee',
                         key: 'Tx_Fee',
 						className: 'text_right',
 					},
 					{
-						title:'Tx_Signer',
+						title:'TxSigner',
             slot: 'Tx_Signer',
             tooltip: true
 					},
 					{
-						title:'Tx_Status',
+						title:'TxStatus',
 						slot: 'Tx_Status',
 						key: 'Tx_Status',
 					},
@@ -327,21 +342,24 @@
 			        return Tools.formatTxHash(TxHash)
 		        }
 	        },
-	        setTxFields(items){
-		        items.forEach( (tx) => {
-			        if(tx.listName === 'transfer'){
-				        this.fields = this.transferFields
-			        }else if(tx.listName === 'declarations') {
-				        this.fields = this.declarationFields
-			        }else  if(tx.listName === 'stakes'){
-				        this.fields = this.stakeFields
-			        }else if(tx.listName === 'gov'){
-				        this.fields = this.govFields
-			        }else {
-				        this.fields = []
-			        }
-		        })
+	        setTxFields(){
+                if(this.$route.params.txType === 'transfers'){
+                    this.fields = this.transferFields
+                }else if(this.$route.params.txType === 'declarations') {
+                    this.fields = this.declarationFields
+                }else  if(this.$route.params.txType === 'stakes'){
+                    this.fields = this.stakeFields
+                }else if(this.$route.params.txType === 'governance'){
+                    this.fields = this.govFields
+                }
             },
+	        substrAmount(amount){
+	        	if(amount.toString().length > 12){
+			        return Tools.formatString(amount.toString(),12,'...')
+		        }else {
+			        return amount
+                }
+	        },
             formatMoniker (moniker) {
                 if (!moniker) {
                     return '';
@@ -353,7 +371,7 @@
 			showNoData(showNoData){
 			},
 			items(items){
-				this.setTxFields(items)
+				this.setTxFields()
 			}
 		},
 	}

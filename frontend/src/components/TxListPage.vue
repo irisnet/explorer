@@ -52,7 +52,7 @@
 			getTransactionList(currentPage, pageSize){
 				let that = this, parmas;
 				if(this.$route.params.txType === 'transfers'){
-					this.listTitleName = "Transfer Transactions";
+					this.listTitleName = "Txs (Transfer or Burn)";
 					parmas = {txListTransfer: {pageNumber: currentPage,pageSize: pageSize}};
 				}else if(this.$route.params.txType === 'stakes'){
 					this.listTitleName = "Txs (Staking or Distribution)";
@@ -73,7 +73,7 @@
 						if(txList.Data){
 							this.txList = Tools.formatTxList(txList.Data,that.$route.params.txType)
 						}else{
-							this.txList = Tools.formatTxList(null,that.$route.params.txType);
+							this.txList = [];
 							this.showNoData = true;
 						}
 						this.flShowLoading = false;
