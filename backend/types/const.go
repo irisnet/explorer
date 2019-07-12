@@ -39,6 +39,7 @@ const (
 
 	//Stake
 	UrlRegisterGetValidators                         = "/stake/validators"
+	UrlRegisterUpdateIcons                           = "/stake/validators/update_icons"
 	UrlRegisterGetValidator                          = "/stake/validators/{address}"
 	UrlRegisterQueryCandidatesTop                    = "/stake/candidatesTop"
 	UrlRegisterQueryCandidate                        = "/stake/candidate/{address}"

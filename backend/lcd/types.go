@@ -33,6 +33,7 @@ const (
 	UrlDistributionWithdrawAddressByValidatorAcc = "%s/distribution/%s/withdraw-address"
 	UrlTokenStatsSupply                          = "https://rpc.irisnet.org/token-stats/supply"
 	UrlTokenStatsCirculation                     = "https://rpc.irisnet.org/token-stats/circulation"
+	UrlLookupIconsByKeySuffix                    = "https://keybase.io/_/api/1.0/user/lookup.json?fields=pictures&key_suffix=%s"
 )
 
 type AccountVo struct {
@@ -63,6 +64,7 @@ type ValidatorVo struct {
 	DelegatorNum    int         `json:"delegator_num"`
 	ProposerAddr    string      `json:"proposer_addr"`
 	VotingRate      float32     `json:"voting_rate"`
+	Icons           string      `json:"icons"`
 }
 
 func (v ValidatorVo) String() string {
@@ -83,8 +85,9 @@ func (v ValidatorVo) String() string {
 		DelegatorNum    :%v
 		ProposerAddr    :%v
 		VotingRate      :%v
+		Icons           :%v
 		`, v.OperatorAddress, v.ConsensusPubkey, v.Jailed, v.Status, v.Tokens, v.DelegatorShares, v.Description, v.BondHeight, v.UnbondingHeight, v.UnbondingTime,
-		v.Commission, v.Uptime, v.SelfBond, v.DelegatorNum, v.ProposerAddr, v.VotingRate)
+		v.Commission, v.Uptime, v.SelfBond, v.DelegatorNum, v.ProposerAddr, v.VotingRate, v.Icons)
 }
 
 type Description struct {

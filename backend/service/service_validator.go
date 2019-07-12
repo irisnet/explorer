@@ -202,7 +202,7 @@ func (service *ValidatorService) GetUnbondingDelegationsFromLcd(valAddr string, 
 	}
 }
 
-func (service *ValidatorService) GetDelegationsFromLcd(valAddr string, page, size int,needpage bool) model.DelegationsPage {
+func (service *ValidatorService) GetDelegationsFromLcd(valAddr string, page, size int, needpage bool) model.DelegationsPage {
 
 	lcdDelegations := lcd.GetDelegationsByValidatorAddr(valAddr)
 
@@ -222,13 +222,12 @@ func (service *ValidatorService) GetDelegationsFromLcd(valAddr string, page, siz
 	if err != nil {
 		logger.Debug("QueryTokensAndShareRatioByValidatorAddrs", logger.String("err", err.Error()))
 	}
-	var  items []model.Delegation
+	var items []model.Delegation
 	if needpage {
-		items = GetDalegationbyPageSize(lcdDelegations,totalShareAsRat,tokenShareRatioByValidatorAddr,page,size)
-	}else{
-		items = GetDalegation(lcdDelegations,totalShareAsRat,tokenShareRatioByValidatorAddr)
+		items = GetDalegationbyPageSize(lcdDelegations, totalShareAsRat, tokenShareRatioByValidatorAddr, page, size)
+	} else {
+		items = GetDalegation(lcdDelegations, totalShareAsRat, tokenShareRatioByValidatorAddr)
 	}
-
 
 	return model.DelegationsPage{
 		Total: len(lcdDelegations),
@@ -240,48 +239,48 @@ func GetDalegation(lcdDelegations []lcd.DelegationVo, totalShareAsRat *big.Rat, 
 	items := make([]model.Delegation, 0, len(lcdDelegations))
 	for _, v := range lcdDelegations {
 
-			amountAsFloat64 := float64(0)
-			if ratio, ok := tokenShareRatio[v.ValidatorAddr]; ok {
-				if shareAsRat, ok := new(big.Rat).SetString(v.Shares); ok {
-					amountAsRat := new(big.Rat).Mul(shareAsRat, ratio)
+		amountAsFloat64 := float64(0)
+		if ratio, ok := tokenShareRatio[v.ValidatorAddr]; ok {
+			if shareAsRat, ok := new(big.Rat).SetString(v.Shares); ok {
+				amountAsRat := new(big.Rat).Mul(shareAsRat, ratio)
 
-					exact := false
-					amountAsFloat64, exact = amountAsRat.Float64()
-					if !exact {
-						logger.Info("convert new(big.Rat).Mul(shareAsRat, ratio)  (big.Rat to float64) ",
-							logger.Any("exact", exact),
-							logger.Any("amountAsRat", amountAsRat))
-					}
-				} else {
-					logger.Error("convert validator share  type (string -> big.Rat) err", logger.String("str", v.Shares))
+				exact := false
+				amountAsFloat64, exact = amountAsRat.Float64()
+				if !exact {
+					logger.Info("convert new(big.Rat).Mul(shareAsRat, ratio)  (big.Rat to float64) ",
+						logger.Any("exact", exact),
+						logger.Any("amountAsRat", amountAsRat))
 				}
 			} else {
-				logger.Error("can not fond the validator addr from the validator collection in db", logger.String("validator addr", v.ValidatorAddr))
+				logger.Error("convert validator share  type (string -> big.Rat) err", logger.String("str", v.Shares))
 			}
+		} else {
+			logger.Error("can not fond the validator addr from the validator collection in db", logger.String("validator addr", v.ValidatorAddr))
+		}
 
-			totalShareAsFloat64, exact := totalShareAsRat.Float64()
+		totalShareAsFloat64, exact := totalShareAsRat.Float64()
 
-			if !exact {
-				logger.Info("convert totalShareAsFloat64  (big.Rat to float64) ",
-					logger.Any("exact", exact),
-					logger.Any("totalShareAsFloat64", totalShareAsFloat64))
-			}
+		if !exact {
+			logger.Info("convert totalShareAsFloat64  (big.Rat to float64) ",
+				logger.Any("exact", exact),
+				logger.Any("totalShareAsFloat64", totalShareAsFloat64))
+		}
 
-			tmp := model.Delegation{
-				Address:     v.DelegatorAddr,
-				Block:       v.Height,
-				SelfShares:  v.Shares,
-				TotalShares: totalShareAsFloat64,
-				Amount:      amountAsFloat64,
-			}
-			items = append(items, tmp)
+		tmp := model.Delegation{
+			Address:     v.DelegatorAddr,
+			Block:       v.Height,
+			SelfShares:  v.Shares,
+			TotalShares: totalShareAsFloat64,
+			Amount:      amountAsFloat64,
+		}
+		items = append(items, tmp)
 
 	}
 	return items
 }
 
 func GetDalegationbyPageSize(lcdDelegations []lcd.DelegationVo, totalShareAsRat *big.Rat,
-	                      tokenShareRatio map[string]*big.Rat, page, size int) []model.Delegation {
+	tokenShareRatio map[string]*big.Rat, page, size int) []model.Delegation {
 	items := make([]model.Delegation, 0, size)
 	for k, v := range lcdDelegations {
 		if k >= page*size && k < (page+1)*size {
@@ -374,6 +373,35 @@ func (service *ValidatorService) GetDistributionRewardsByValidatorAddr(valAddr s
 	return rewardsCoins
 }
 
+func (service *ValidatorService) UpdateValidatorIcons() error {
+
+	validatorsDocArr, err := document.Validator{}.GetAllValidator()
+	if err != nil {
+		return err
+	}
+	var txs []txn.Op
+	for _, validator := range validatorsDocArr {
+		if identity := validator.Description.Identity; identity != "" {
+			urlicons, err := lcd.GetIconsByKey(identity)
+			if err != nil {
+				logger.Error("GetIconsByKey have error", logger.String("error", err.Error()))
+				continue
+			}
+			validator.Icons = urlicons
+			txs = append(txs, txn.Op{
+				C:  document.CollectionNmValidator,
+				Id: validator.ID,
+				Update: bson.M{
+					"$set": validator,
+				},
+			})
+
+		}
+
+	}
+	return document.Validator{}.Batch(txs)
+}
+
 func (service *ValidatorService) GetValidatorDetail(validatorAddr string) model.ValidatorForDetail {
 
 	validatorAsDoc, err := document.Validator{}.QueryValidatorDetailByOperatorAddr(validatorAddr)
@@ -420,6 +448,7 @@ func (service *ValidatorService) GetValidatorDetail(validatorAddr string) model.
 		OwnerAddr:               utils.Convert(conf.Get().Hub.Prefix.AccAddr, validatorAsDoc.OperatorAddress),
 		ConsensusAddr:           validatorAsDoc.ConsensusPubkey,
 		Description:             desc,
+		Icons:                   validatorAsDoc.Icons,
 	}
 
 	if validatorAsDoc.Jailed {
@@ -492,7 +521,8 @@ func (service *ValidatorService) QueryValidator(address string) model.Candidates
 			Website:  website,
 			Details:  details,
 		},
-		Rate: validator.Commission.Rate,
+		Rate:  validator.Commission.Rate,
+		Icons: validator.Icons,
 	}
 
 	result := model.CandidatesInfoVo{

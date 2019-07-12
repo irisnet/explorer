@@ -129,3 +129,21 @@ type VoteTx struct {
 	TxHash    string    `json:"tx_hash"`
 	Timestamp time.Time `json:"timestamp"`
 }
+
+type LookupIcons struct {
+	Status struct {
+		Code int    `json:"code"`
+		Name string `json:"name"`
+	} `json:"status"`
+	Them []Them `json:"them"`
+}
+
+type Them struct {
+	Id string `json:"id"`
+	Pictures struct {
+		Primary struct {
+			Url    string `json:"url"`
+			Source string `json:"source"`
+		} `json:"primary"`
+	} `json:"pictures"`
+}

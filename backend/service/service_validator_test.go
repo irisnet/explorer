@@ -90,6 +90,14 @@ func TestGetValidators(t *testing.T) {
 	resBytes, _ := json.Marshal(validatorList)
 	t.Log(string(resBytes))
 }
+
+func TestValidatorService_UpdateValidatorIcons(t *testing.T) {
+	err := new(ValidatorService).UpdateValidatorIcons()
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
 //
 // func TestGetValidator(t *testing.T) {
 //

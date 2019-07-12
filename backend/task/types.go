@@ -17,6 +17,7 @@ func init() {
 	engine.AppendTask(TxNumGroupByDayTask{})
 	engine.AppendTask(UpdateValidator{})
 	engine.AppendTask(UpdateGovParams{})
+	engine.AppendTask(UpdateValidatorIcons{})
 }
 
 type TimerTask interface {

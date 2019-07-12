@@ -99,6 +99,7 @@ type Validator struct {
 	DelegatorNum    int           `bson:"delegator_num" json:"delegator_num"`
 	ProposerAddr    string        `bson:"proposer_addr" json:"proposer_addr"`
 	VotingPower     int64         `bson:"voting_power" json:"voting_power"`
+	Icons           string        `bson:"icons" json:"icons"`
 }
 
 func (v Validator) String() string {
@@ -121,7 +122,8 @@ func (v Validator) String() string {
 		DelegatorNum    :%v
 		ProposerAddr    :%v
 		VotingPower     :%v
-		`, v.ID, v.OperatorAddress, v.ConsensusPubkey, v.Jailed, v.Status, v.Tokens, v.DelegatorShares, v.Description, v.BondHeight, v.UnbondingHeight, v.UnbondingTime, v.Commission, v.Uptime, v.SelfBond, v.DelegatorNum, v.ProposerAddr, v.VotingPower)
+		Icons           :%v
+		`, v.ID, v.OperatorAddress, v.ConsensusPubkey, v.Jailed, v.Status, v.Tokens, v.DelegatorShares, v.Description, v.BondHeight, v.UnbondingHeight, v.UnbondingTime, v.Commission, v.Uptime, v.SelfBond, v.DelegatorNum, v.ProposerAddr, v.VotingPower, v.Icons)
 }
 
 func (v Validator) GetValidatorList() ([]Validator, error) {
@@ -255,7 +257,7 @@ func (_ Validator) GetCandidatesTopN() ([]Validator, int64, map[string]int, erro
 
 	err := query.Exec()
 	if err != nil {
-		return nil,0,nil,err
+		return nil, 0, nil, err
 	}
 
 	var allPower model.CountVo

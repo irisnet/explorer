@@ -16,6 +16,7 @@ func RegisterStake(r *mux.Router) error {
 		registerQueryCandidateUptime,
 		registerQueryCandidatePower,
 		registerGetValidators,
+		registerUpdateValidatorIcons,
 		registerGetValidator,
 		registerQueryDelegationsByValidator,
 		registerQueryUnbondingDelegationsByValidator,
@@ -156,6 +157,17 @@ func registerGetValidators(r *mux.Router) error {
 	})
 	return nil
 }
+func registerUpdateValidatorIcons(r *mux.Router) error {
+	doApi(r, types.UrlRegisterUpdateIcons, "GET", func(request model.IrisReq) interface{} {
+		stake.SetTid(request.TraceId)
+		if err := stake.UpdateValidatorIcons(); err != nil {
+			return model.NewResponse("-1", err.Error(), nil)
+		}
+		return model.NewResponse("0", "success", nil)
+	})
+	return nil
+}
+
 func registerGetValidator(r *mux.Router) error {
 	doApi(r, types.UrlRegisterGetValidator, "GET", func(request model.IrisReq) interface{} {
 		stake.SetTid(request.TraceId)

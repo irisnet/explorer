@@ -26,6 +26,7 @@ type ValidatorForDetail struct {
 	OwnerAddr               string      `json:"owner_addr"`
 	ConsensusAddr           string      `json:"consensus_addr"`
 	Description             Description `json:"description"`
+	Icons                   string      `json:"icons"`
 }
 
 type WithdrawAddr struct {
@@ -149,6 +150,7 @@ type Validator struct {
 	BondHeight  int64       `json:"bond_height"`
 	Status      string      `json:"status"`
 	Rate        string      `json:"rate"`
+	Icons       string      `json:"icons"`
 	ValStatus
 }
 
