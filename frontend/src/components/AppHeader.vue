@@ -41,6 +41,22 @@
                                     </router-link>
                                 </ul>
                             </li>
+                            <li class="assets_list_content"
+                                :class="activeClassName === '/Assets'?'nav_item_active':''"
+                                @mouseover="nativeAssetMouseOver"
+                                @mouseleave="nativeAssetMouseLeave">
+                                <div class="assets_content"
+                                     style="display: flex">Assets<span class="bottom_arrow"></span></div>
+                                <ul class="assets_list_item_content"
+                                    v-show="showAssetTransaction">
+                                    <router-link :to="`/nativeasset`">
+                                        <li class="assets_list_item">Native Asset</li>
+                                    </router-link>
+                                    <router-link :to="`/gatewayasset`">
+                                        <li class="assets_list_item">Gateway Asset</li>
+                                    </router-link>
+                                </ul>
+                            </li>
                             <li class="statics_list_content"
                                 :class="activeClassName === '/statistics'?'nav_item_active':''"
                                 @mouseover="statisticsMouseOver"
@@ -278,7 +294,8 @@
 				netWorkArray: [],
 				explorerLogo: '',
 				flShowSearchIpt: false,
-				flShowLogo: false
+				flShowLogo: false,
+				showAssetTransaction: false
 			}
 		},
 		beforeMount () {
@@ -378,6 +395,12 @@
 			transactionMouseLeave () {
 				this.showSubTransaction = false;
 			},
+			nativeAssetMouseOver(){
+				this.showAssetTransaction = true;
+            },
+			nativeAssetMouseLeave(){
+				this.showAssetTransaction = false;
+            },
 			governanceMouseOver () {
 				this.flShowGovernanceOption = true
 			},
@@ -510,6 +533,8 @@
 				} else if (path.includes('/proposals')) {
 					this.activeClassName = '/governance';
 				} else if (path.includes('/statistics')) {
+					this.activeClassName = '/Assets';
+				} else if (path.includes('/Assets')) {
 					this.activeClassName = '/statistics';
 				} else {
 					this.activeClassName = '';
@@ -680,6 +705,39 @@
                                     }
                                 }
                             }
+                            .assets_list_content {
+                                z-index: 10000;
+                                display: block;
+                                padding: 0;
+                                min-width: 1.42rem;
+                                .assets_content {
+                                    justify-content: center;
+                                    box-sizing: border-box;
+                                }
+                                .bottom_arrow {
+                                    display: inline-block;
+                                    height: 0.6rem;
+                                    width: 0.11rem;
+                                    background: url("../assets/caret-bottom.png") no-repeat 50% 50%;
+                                }
+                                .assets_list_item_content {
+                                    z-index: 100;
+                                    background: #0f7bc4;
+                                    a {
+                                        .assets_list_item {
+                                            height: 0.34rem;
+                                            line-height: 0.34rem;
+                                            text-align: left;
+                                            color: #c9eafd;
+                                            cursor: pointer;
+                                            &:hover {
+                                                background: #086db1;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
                             .statics_list_content {
                                 padding: 0;
                                 display: block;

@@ -73,7 +73,7 @@
 						if(txList.Data){
 							this.txList = Tools.formatTxList(txList.Data,that.$route.params.txType)
 						}else{
-							this.txList = Tools.formatTxList(null,that.$route.params.txType);
+							this.txList = [];
 							this.showNoData = true;
 						}
 						this.flShowLoading = false;

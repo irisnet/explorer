@@ -148,7 +148,7 @@
                 label:'Operator_Address'
               },
               'Amount':{
-                label:'Self_Bonded'
+                label:'Self-Bonded'
               },
               'Tx_Type':{
                 label:'Tx_Type'

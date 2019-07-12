@@ -114,7 +114,7 @@
       </template>
       <template slot='From'
                 slot-scope='data'>
-        <span v-if="(/^[1-9]\d*$/).test(data.item.From)"
+        <span v-if="(/^[1-9]\d*$/).test(data.item.From) && data.item.tokenId === 'IRIS'"
               class="skip_route">
           <router-link :to="`/tx?txHash=${data.item.Tx_Hash}`">{{data.item.From}} Validators</router-link>
         </span>
@@ -124,9 +124,9 @@
           <div class="name_address">
             <span class="remove_default_style">
               <router-link :to="addressRoute(data.item.From)"
-                           class="link_style justify">{{formatAddress(data.item.From)}}</router-link>
+                           class="link_style justify">{{formatMoniker(data.item.fromMoniker) || formatAddress(data.item.From)}}</router-link>
             </span>
-            <span class="address">{{data.item.From}}</span>
+            <span class="address" v-if="!data.item.fromMoniker">{{data.item.From}}</span>
           </div>
         </span>
         <span class="no_skip"
@@ -140,9 +140,9 @@
           <div class="name_address">
             <span class="remove_default_style">
               <router-link :to="addressRoute(data.item.To)"
-                           class="link_style">{{formatAddress(data.item.To)}}</router-link>
+                           class="link_style">{{formatMoniker(data.item.toMoniker) || formatAddress(data.item.To)}}</router-link>
             </span>
-            <span class="address">{{data.item.To}}</span>
+            <span class="address" v-if="!data.item.toMoniker">{{data.item.To}}</span>
           </div>
         </span>
         <span class="no_skip"
@@ -204,7 +204,7 @@ export default {
       listFields: null,
       transferFields: {
         'Tx_Hash': {
-          label: 'Tx_Hash'
+          label: 'TxHash'
         },
         'From': {
           label: 'From'
@@ -212,25 +212,28 @@ export default {
         'Amount': {
           label: 'Amount'
         },
+        'tokenId':{
+          label: 'Token'
+        },
         'To': {
           label: 'To'
         },
         'Tx_Type': {
-          label: 'Tx_Type'
+          label: 'TxType'
         },
-        'Tx_Fee': {
-          label: 'Tx_Fee'
+        'transferFee': {
+          label: 'TxFee(IRIS)'
         },
         'Tx_Signer': {
-          label: 'Tx_Signer'
+          label: 'TxSigner'
         },
         'Tx_Status': {
-          label: 'Tx_Status'
+          label: 'TxStatus'
         },
       },
       declarationFields: {
         'Tx_Hash': {
-          label: 'Tx_Hash'
+          label: 'TxHash'
         },
         'Moniker': {
           label: 'Moniker'
@@ -239,24 +242,24 @@ export default {
           label: 'Operator_Address'
         },
         'Amount': {
-          label: 'Self_Bonded'
+          label: 'Self-Bonded'
         },
         'Tx_Type': {
-          label: 'Tx_Type'
+          label: 'TxType'
         },
         'Tx_Fee': {
-          label: 'Tx_Fee'
+          label: 'TxFee'
         },
         'Tx_Signer': {
-          label: 'Tx_Signer'
+          label: 'TxSigner'
         },
         'Tx_Status': {
-          label: 'Tx_Status'
+          label: 'TxStatus'
         },
       },
       stakeFields: {
         'Tx_Hash': {
-          label: 'Tx_Hash'
+          label: 'TxHash'
         },
         'From': {
           label: 'From'
@@ -268,21 +271,21 @@ export default {
           label: 'To'
         },
         'Tx_Type': {
-          label: 'Tx_Type'
+          label: 'TxType'
         },
         'Tx_Fee': {
-          label: 'Tx_Fee'
+          label: 'TxFee'
         },
         'Tx_Signer': {
-          label: 'Tx_Signer'
+          label: 'TxSigner'
         },
         'Tx_Status': {
-          label: 'Tx_Status'
+          label: 'TxStatus'
         },
       },
       govFields: {
         'Tx_Hash': {
-          label: 'Tx_Hash'
+          label: 'TxHash'
         },
         'Proposal_Type': {
           label: 'Proposal_Type'
@@ -297,16 +300,16 @@ export default {
           label: 'Amount'
         },
         'Tx_Type': {
-          label: 'Tx_Type'
+          label: 'TxType'
         },
         'Tx_Fee': {
-          label: 'Tx_Fee'
+          label: 'TxFee'
         },
         'Tx_Signer': {
-          label: 'Tx_Signer'
+          label: 'TxSigner'
         },
         'Tx_Status': {
-          label: 'Tx_Status'
+          label: 'TxStatus'
         },
       },
       validatorFields: {
@@ -344,6 +347,12 @@ export default {
       if (TxHash) {
         return Tools.formatTxHash(TxHash)
       }
+    },
+    formatMoniker (moniker) {
+      if (!moniker) {
+        return '';
+      }
+      return Tools.formatString(moniker,13,"...");
     },
     formatListName (items) {
       items.forEach((tx) => {

@@ -17,6 +17,8 @@ import Parameters from "./components/ParametersPage.vue"
 import RichList from "./components/RichList.vue"
 import BlockList from "./components/BlockListPage.vue"
 import TxList from "./components/TxListPage.vue"
+import NativeAssetPage from "./components/NativeAsset.vue"
+import GateWayAssetPage from "./components/GateWayAsset.vue"
 Vue.use(Router);
 
 const router = new Router({
@@ -83,6 +85,12 @@ const router = new Router({
     },
     {
       path: '/statistics/richlist', component: RichList,
+    },
+    {
+      path: '/nativeasset', component: NativeAssetPage,
+    },
+    {
+      path: '/gatewayasset', component: GateWayAssetPage,
     },
   ]
 
