@@ -1,6 +1,6 @@
 <template>
     <div class="gateway_asset_list_page_container">
-        <div class="gateway_asset_list_title_wrap">
+        <div class="gateway_asset_list_title_wrap" :class="$store.state.isMobile ? 'mobile_asset_title' : ''">
             <div class="gateway_asset_list_title_content">
                 <span class="gateway_asset_list_title">{{listTitleName}}</span>
             </div>
@@ -17,7 +17,7 @@
                     </div>
                 </div>
                 <div class="pagination_nav_footer_content">
-                    <b-pagination-nav :link-gen="linkGen" :number-of-pages="gateWayIssueTokenTotalPageNum" v-model="gateWayIssueTokenCurrentPageNum" use-router></b-pagination-nav>
+                    <b-pagination :total-rows="gateWayIssueTokenTotalPageNum" v-model="gateWayIssueTokenCurrentPageNum" :per-page="pageSize"></b-pagination>
                 </div>
             </div>
         </div>
@@ -25,7 +25,7 @@
             <div style="padding: 0.2rem 0">Edit Token</div>
             <div class="gateway_asset_list_table_content">
                 <div class="table_list_content">
-                    <spin-component :showLoading="flShowLoading"></spin-component>
+                    <!--<spin-component :showLoading="flShowLoading"></spin-component>-->
                     <native-asset :showNoData="showNoData" :items="gateWayEditTokenList" name="editToken"></native-asset>
                     <!--<m-tx-list-page-table :showNoData="showNoData" :items="txList"></m-tx-list-page-table>-->
                     <div v-show="showNoData" class="no_data_show">
@@ -33,7 +33,7 @@
                     </div>
                 </div>
                 <div class="pagination_nav_footer_content">
-                    <b-pagination-nav :link-gen="linkGen" :number-of-pages="gateWayEditTokenTotalPageNum" v-model="gateWayEditTokenCurrentPageNum" use-router></b-pagination-nav>
+                    <b-pagination  :total-rows="gateWayEditTokenTotalPageNum" v-model="gateWayEditTokenCurrentPageNum" :per-page="pageSize"></b-pagination>
                 </div>
             </div>
         </div>
@@ -41,7 +41,7 @@
             <div style="padding: 0.2rem 0">Mint Token</div>
             <div class="gateway_asset_list_table_content">
                 <div class="table_list_content">
-                    <spin-component :showLoading="flShowLoading"></spin-component>
+                    <!--<spin-component :showLoading="flShowLoading"></spin-component>-->
                     <native-asset :showNoData="showNoData" :items="gateWayMintTokenList" name="mintToken"></native-asset>
                     <!--<m-tx-list-page-table :showNoData="showNoData" :items="txList"></m-tx-list-page-table>-->
                     <div v-show="showNoData" class="no_data_show">
@@ -49,7 +49,7 @@
                     </div>
                 </div>
                 <div class="pagination_nav_footer_content">
-                    <b-pagination-nav :link-gen="linkGen" :number-of-pages="gateWayMintTokenTotalPageNum" v-model="gateWayMintTokenCurrentPageNum" use-router></b-pagination-nav>
+                    <b-pagination  :total-rows="gateWayMintTokenTotalPageNum" v-model="gateWayMintTokenCurrentPageNum" :per-page="pageSize"></b-pagination>
                 </div>
             </div>
         </div>
@@ -57,7 +57,7 @@
             <div style="padding: 0.2rem 0">Transfer Owner</div>
             <div class="gateway_asset_list_table_content">
                 <div class="table_list_content">
-                    <spin-component :showLoading="flShowLoading"></spin-component>
+                    <!--<spin-component :showLoading="flShowLoading"></spin-component>-->
                     <native-asset :showNoData="showNoData" :items="gateWayTransferOwnerTokenList" name="transferToken"></native-asset>
                     <!--<m-tx-list-page-table :showNoData="showNoData" :items="txList"></m-tx-list-page-table>-->
                     <div v-show="showNoData" class="no_data_show">
@@ -65,7 +65,7 @@
                     </div>
                 </div>
                 <div class="pagination_nav_footer_content">
-                    <b-pagination-nav :link-gen="linkGen" :number-of-pages="gateWayTransferTokenTotalPageNum" v-model="gateWayTransferTokenCurrentPageNum" use-router></b-pagination-nav>
+                    <b-pagination  :total-rows="gateWayTransferTokenTotalPageNum" v-model="gateWayTransferTokenCurrentPageNum" :per-page="pageSize"></b-pagination>
                 </div>
             </div>
         </div>
@@ -87,16 +87,15 @@
 	            gateWayMintTokenList:[],
 	            gateWayTransferOwnerTokenList:[],
 	            // totalPageNum: sessionStorage.getItem("txpagenum") ? JSON.parse(sessionStorage.getItem("txpagenum")) : 1,
-	            currentPageNum: this.$route.query.page ? Number(this.$route.query.page) : 1,
-	            gateWayIssueTokenTotalPageNum: sessionStorage.getItem("issueTokenTotalPageNum") ? JSON.parse(sessionStorage.getItem("issueTokenTotalPageNum")) : 1,
-	            gateWayEditTokenTotalPageNum: sessionStorage.getItem("issueTokenTotalPageNum") ? JSON.parse(sessionStorage.getItem("issueTokenTotalPageNum")) : 1,
-	            gateWayMintTokenTotalPageNum: sessionStorage.getItem("issueTokenTotalPageNum") ? JSON.parse(sessionStorage.getItem("issueTokenTotalPageNum")) : 1,
-	            gateWayTransferTokenTotalPageNum: sessionStorage.getItem("issueTokenTotalPageNum") ? JSON.parse(sessionStorage.getItem("issueTokenTotalPageNum")) : 1,
-	            gateWayIssueTokenCurrentPageNum: this.$route.query.page ? Number(this.$route.query.page) : 1,
-	            gateWayEditTokenCurrentPageNum: this.$route.query.page ? Number(this.$route.query.page) : 1,
-	            gateWayMintTokenCurrentPageNum: this.$route.query.page ? Number(this.$route.query.page) : 1,
-	            gateWayTransferTokenCurrentPageNum: this.$route.query.page ? Number(this.$route.query.page) : 1,
-	            pageSize: 30,
+	            gateWayIssueTokenTotalPageNum: 0,
+	            gateWayEditTokenTotalPageNum: 0,
+	            gateWayMintTokenTotalPageNum: 0,
+	            gateWayTransferTokenTotalPageNum: 0,
+	            gateWayIssueTokenCurrentPageNum: 1,
+	            gateWayEditTokenCurrentPageNum: 1,
+	            gateWayMintTokenCurrentPageNum: 1,
+	            gateWayTransferTokenCurrentPageNum: 1,
+	            pageSize: 10,
 	            showNoData: false,
 	            flShowLoading: false,
 	            listTitleName:'GatewayAsset',
@@ -104,6 +103,24 @@
 	            editTokenLType:'EditToken',
 	            mintTokenType:'MintToken',
 	            transferTokenType:'TransferTokenOwner'
+            }
+        },
+        watch:{
+            gateWayIssueTokenCurrentPageNum(gateWayIssueTokenCurrentPageNum){
+                this.gateWayIssueTokenCurrentPageNum = gateWayIssueTokenCurrentPageNum;
+                this.getIssueToken()
+            },
+            gateWayEditTokenCurrentPageNum(gateWayEditTokenCurrentPageNum){
+                this.gateWayEditTokenCurrentPageNum = gateWayEditTokenCurrentPageNum
+                this.getEditToken()
+            },
+            gateWayMintTokenCurrentPageNum(gateWayMintTokenCurrentPageNum){
+                this.gateWayMintTokenCurrentPageNum = gateWayMintTokenCurrentPageNum
+                this.getMintToken()
+            },
+            gateWayTransferTokenCurrentPageNum(gateWayTransferTokenCurrentPageNum){
+                this.gateWayTransferTokenCurrentPageNum = gateWayTransferTokenCurrentPageNum
+                this.getTransferToken()
             }
         },
         mounted () {
@@ -126,7 +143,8 @@
 			        this.flShowLoading = false;
 			        try {
 				        if(issueToken.data){
-					        sessionStorage.setItem('issueTokenTotalPageNum',issueToken.data.total)
+				            this.gateWayIssueTokenTotalPageNum = issueToken.data.total
+					        sessionStorage.setItem('gateWayIssueTokenTotalPageNum',issueToken.data.total)
 					        this.gateWayIssueTokenList = issueToken.data.txs.map(item => {
 						        return {
 							        Owner: item.owner,
@@ -158,7 +176,7 @@
 			        }}, (editToken) => {
 			        try {
 				        if(editToken.data){
-					        sessionStorage.setItem('issueTokenTotalPageNum',editToken.data.total)
+                            this.gateWayEditTokenTotalPageNum = editToken.data.total
 					        this.gateWayEditTokenList = editToken.data.txs.map( item => {
 						        return {
 							        Token: item.token_id,
@@ -189,7 +207,7 @@
 			        }},(mintToken) => {
 			        try {
 				        if(mintToken.data){
-					        sessionStorage.setItem('issueTokenTotalPageNum',mintToken.data.total)
+                            this.gateWayMintTokenTotalPageNum = mintToken.data.total
 					        this.gateWayMintTokenList = mintToken.data.txs.map( item => {
 						        return {
 							        Token: item.token_id,
@@ -218,7 +236,7 @@
 			        }},(transferToken) => {
 			        try {
 				        if(transferToken.data){
-					        sessionStorage.setItem('issueTokenTotalPageNum',transferToken.data.total)
+                            this.gateWayTransferTokenTotalPageNum = transferToken.data.total
 					        this.gateWayTransferOwnerTokenList = transferToken.data.txs.map( item => {
 						        return {
 							        Token: item.token_id,
@@ -249,6 +267,14 @@
 
 <style scoped lang="scss">
     .gateway_asset_list_page_container{
+        .mobile_asset_title{
+            position: static !important;
+            .gateway_asset_list_title_content{
+                .gateway_asset_list_title{
+                    padding-left: 0.1rem;
+                }
+            }
+        }
         .gateway_asset_list_title_wrap{
         width: 100%;
         position: fixed;

@@ -244,6 +244,7 @@
 					{
 						title:'MintTo',
 						slot: 'MintTo',
+                        tooltip: true,
 						tooltipClassName: 'tooltip_left'
 					},
 					{

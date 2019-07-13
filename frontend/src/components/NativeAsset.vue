@@ -1,6 +1,6 @@
 <template>
     <div class="native_asset_list_page_container">
-        <div class="native_asset_list_title_wrap">
+        <div class="native_asset_list_title_wrap" :class="$store.state.isMobile ? 'mobile_asset_title' : ''">
             <div class="native_asset_list_title_content">
                 <span class="native_asset_list_title">{{listTitleName}}</span>
             </div>
@@ -9,14 +9,14 @@
             <div style="padding: 0.2rem 0">Issue Token</div>
             <div class="native_asset_list_table_content">
                 <div class="table_list_content">
-                    <spin-component :showLoading="flShowLoading"></spin-component>
+                    <spin-component :showLoading="flIssueTokenShowLoading"></spin-component>
                     <native-asset :showNoData="showNoData" :items="issueToken" name="issueToken"></native-asset>
                     <div v-show="showNoData" class="no_data_show">
                         No Data
                     </div>
                 </div>
                 <div class="native_asset_nav_footer_content">
-                    <b-pagination-nav :link-gen="linkGen" :number-of-pages="issueTokenTotalPageNum" v-model="issueTokenCurrentPageNum" use-router></b-pagination-nav>
+                    <b-pagination  :total-rows="issueTokenTotalPageNum" v-model="issueTokenCurrentPageNum" :per-page="pageSize"></b-pagination>
                 </div>
             </div>
         </div>
@@ -24,14 +24,14 @@
             <div style="padding: 0.2rem 0">Edit Token</div>
             <div class="native_asset_list_table_content">
                 <div class="table_list_content">
-                    <spin-component :showLoading="flShowLoading"></spin-component>
+                    <!--<spin-component :showLoading="flEditTokenShowLoading"></spin-component>-->
                     <native-asset :showNoData="showNoData" :items="editToken" name="editToken"></native-asset>
                     <div v-show="showNoData" class="no_data_show">
                         No Data
                     </div>
                 </div>
                 <div class="native_asset_nav_footer_content">
-                    <b-pagination-nav :link-gen="linkGen" :number-of-pages="editTokenTotalPageNum" v-model="editTokenCurrentPageNum" use-router></b-pagination-nav>
+                    <b-pagination :total-rows="editTokenTotalPageNum" v-model="editTokenCurrentPageNum" :per-page="pageSize"></b-pagination>
                 </div>
             </div>
         </div>
@@ -39,14 +39,14 @@
             <div style="padding: 0.2rem 0">Mint Token</div>
             <div class="native_asset_list_table_content">
                 <div class="table_list_content">
-                    <spin-component :showLoading="flShowLoading"></spin-component>
+                    <!--<spin-component :showLoading="flMinTokenShowLoading"></spin-component>-->
                     <native-asset :showNoData="showNoData" :items="mintToken" name="mintToken"></native-asset>
                     <div v-show="showNoData" class="no_data_show">
                         No Data
                     </div>
                 </div>
                 <div class="native_asset_nav_footer_content">
-                    <b-pagination-nav :link-gen="linkGen" :number-of-pages="mintTokenTotalPageNum" v-model="mintTokenCurrentPageNum" use-router></b-pagination-nav>
+                    <b-pagination  :total-rows="mintTokenTotalPageNum" v-model="mintTokenCurrentPageNum" :per-page="pageSize"></b-pagination>
                 </div>
             </div>
         </div>
@@ -54,14 +54,14 @@
             <div style="padding: 0.2rem 0">Transfer Owner</div>
             <div class="native_asset_list_table_content">
                 <div class="table_list_content">
-                    <spin-component :showLoading="flShowLoading"></spin-component>
+                    <!--<spin-component :showLoading="flTransferTokenShowLoading"></spin-component>-->
                     <native-asset :showNoData="showNoData" :items="transferToken" name="transferToken"></native-asset>
                     <div v-show="showNoData" class="no_data_show">
                         No Data
                     </div>
                 </div>
                 <div class="native_asset_nav_footer_content">
-                    <b-pagination-nav :link-gen="linkGen" :number-of-pages="transferTokenTotalPageNum" v-model="transferTokenCurrentPageNum" use-router></b-pagination-nav>
+                    <b-pagination :total-rows="transferTokenTotalPageNum" v-model="transferTokenCurrentPageNum" :per-page="pageSize"></b-pagination>
                 </div>
             </div>
         </div>
@@ -82,23 +82,43 @@
 				editToken:[],
 				mintToken:[],
 				transferToken:[],
-				totalPageNum: 100,
-				issueTokenTotalPageNum: sessionStorage.getItem("issueTokenTotalPageNum") ? JSON.parse(sessionStorage.getItem("issueTokenTotalPageNum")) : 1,
-				editTokenTotalPageNum: sessionStorage.getItem("issueTokenTotalPageNum") ? JSON.parse(sessionStorage.getItem("issueTokenTotalPageNum")) : 1,
-				mintTokenTotalPageNum: sessionStorage.getItem("issueTokenTotalPageNum") ? JSON.parse(sessionStorage.getItem("issueTokenTotalPageNum")) : 1,
-				transferTokenTotalPageNum: sessionStorage.getItem("issueTokenTotalPageNum") ? JSON.parse(sessionStorage.getItem("issueTokenTotalPageNum")) : 1,
-				issueTokenCurrentPageNum: this.$route.query.page ? Number(this.$route.query.page) : 1,
-				editTokenCurrentPageNum: this.$route.query.page ? Number(this.$route.query.page) : 1,
-				mintTokenCurrentPageNum: this.$route.query.page ? Number(this.$route.query.page) : 1,
-				transferTokenCurrentPageNum: this.$route.query.page ? Number(this.$route.query.page) : 1,
-				pageSize: 30,
+				issueTokenTotalPageNum: 0,
+				editTokenTotalPageNum: 0,
+				mintTokenTotalPageNum: 0,
+				transferTokenTotalPageNum: 0,
+				issueTokenCurrentPageNum:  1,
+				editTokenCurrentPageNum:  1,
+				mintTokenCurrentPageNum:  1,
+				transferTokenCurrentPageNum:  1,
+				pageSize: 10,
 				showNoData: false,
-				flShowLoading: false,
+                flIssueTokenShowLoading: false,
+                flEditTokenShowLoading: false,
+                flMinTokenShowLoading: false,
+                flTransferTokenShowLoading: false,
 				listTitleName:'NativeAsset',
 				issueTokenType:'IssueToken',
                 editTokenLType:'EditToken',
                 mintTokenType:'MintToken',
                 transferTokenType:'TransferTokenOwner'
+            }
+        },
+        watch:{
+            issueTokenCurrentPageNum(issueTokenCurrentPageNum){
+                this.issueTokenCurrentPageNum = issueTokenCurrentPageNum;
+                this.getIssueToken()
+            },
+            editTokenCurrentPageNum(editTokenCurrentPageNum){
+                this.editTokenCurrentPageNum = editTokenCurrentPageNum
+                this.getEditToken()
+            },
+            mintTokenCurrentPageNum(mintTokenCurrentPageNum){
+                this.mintTokenCurrentPageNum = mintTokenCurrentPageNum
+                this.getMintToken()
+            },
+            transferTokenCurrentPageNum(transferTokenCurrentPageNum){
+                this.transferTokenCurrentPageNum = transferTokenCurrentPageNum
+                this.getTransferToken()
             }
         },
         mounted(){
@@ -112,16 +132,16 @@
 		        return pageNum === 1 ? '?' : `?page=${pageNum}`
 	        },
             getIssueToken(){
-	        	this.flShowLoading = true;
+	            this.flIssueTokenShowLoading = true;
 	            Service.commonInterface({nativeAsset:{
 	            	pageNumber:this.issueTokenCurrentPageNum,
 	            	pageSize:this.pageSize,
                     tokenType:this.issueTokenType
                     }}, (issueToken) => {
-		            this.flShowLoading = false;
+                    this.flIssueTokenShowLoading = false;
                     try {
                         if(issueToken.data){
-	                        sessionStorage.setItem('issueTokenTotalPageNum',issueToken.data.total)
+                            this.issueTokenTotalPageNum = issueToken.data.total
 	                        this.issueToken = issueToken.data.txs.map(item => {
 		                       return {
 			                       Owner: item.owner,
@@ -153,7 +173,7 @@
                     }}, (editToken) => {
                 	try {
                         if(editToken.data){
-	                        sessionStorage.setItem('issueTokenTotalPageNum',editToken.data.total)
+                            this.editTokenTotalPageNum = editToken.data.total
 	                        this.editToken = editToken.data.txs.map( item => {
                         		return {
                         			Token: item.token_id,
@@ -184,12 +204,12 @@
                     }},(mintToken) => {
 	        		try {
 	        			if(mintToken.data){
-					        sessionStorage.setItem('issueTokenTotalPageNum',mintToken.data.total)
+                            this.mintTokenTotalPageNum = mintToken.data.total
 	        				this.mintToken = mintToken.data.txs.map( item => {
 	        					return {
 							        Token: item.token_id,
 							        Owner: item.owner,
-							        MintTo: item.min_to,
+							        MintTo: item.mint_to,
                                     Amount: item.amount,
 							        Block: item.height,
 							        TxHash: item.tx_hash,
@@ -213,7 +233,7 @@
                     }},(transferToken) => {
 	        		try {
 	        			if(transferToken.data){
-					        sessionStorage.setItem('issueTokenTotalPageNum',transferToken.data.total)
+	        			    this.transferTokenTotalPageNum = transferToken.data.total
 	        				this.transferToken = transferToken.data.txs.map( item => {
 	        					return {
 							        Token: item.token_id,
@@ -244,6 +264,15 @@
 
 <style scoped lang="scss">
     .native_asset_list_page_container{
+        .mobile_asset_title{
+            position: static;
+            .native_asset_list_title_content{
+                .native_asset_list_title{
+                    padding-left: 0.1rem;
+                }
+            }
+
+        }
         .native_asset_list_title_wrap{
             width: 100%;
             position: fixed;

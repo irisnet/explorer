@@ -177,14 +177,35 @@
                 </span>
                 <div class="select_option" v-show="flShowTransactionsSelect">
                     <span class="feature_btn_mobile feature_nav"
-                       @click="featureButtonClick('/txs/transfers')">Transfers</span>
+                          @click="featureButtonClick('/txs/transfers')">Transfers</span>
+                <span class="feature_btn_mobile feature_nav"
+                      @click="featureButtonClick('/txs/declarations')">Declarations</span>
+                <span class="feature_btn_mobile feature_nav"
+                      @click="featureButtonClick('/txs/stakes')">Stakes</span>
+                <span class="feature_btn_mobile feature_nav"
+                      @click="featureButtonClick('/txs/governance')">Governance</span>
+            </div>
+
+
+                <span class="feature_btn_mobile feature_nav select_option_container"
+                      @click="assetsSelect(flShowAssetSelect)">
+                    <span>Assets</span>
+                    <div :class="flShowUpOrDown ? 'upImg_content' : 'downImg_content'">
+                       <img :src="flShowUpOrDown ? upImg : downImg ">
+                    </div>
+                </span>
+                <div class="select_option" v-show="flShowAssetSelect">
                     <span class="feature_btn_mobile feature_nav"
-                       @click="featureButtonClick('/txs/declarations')">Declarations</span>
+                          @click="featureButtonClick('/nativeasset')">Native Asset</span>
                     <span class="feature_btn_mobile feature_nav"
-                       @click="featureButtonClick('/txs/stakes')">Stakes</span>
-                    <span class="feature_btn_mobile feature_nav"
-                       @click="featureButtonClick('/txs/governance')">Governance</span>
+                          @click="featureButtonClick('/gatewayasset')">Declarations</span>
+
                 </div>
+
+
+
+
+
                 <span class="feature_btn_mobile feature_nav select_option_container"
                     @click="topListSelect(flShowTopListSelection)">
                     <span>Statistics</span>
@@ -275,6 +296,7 @@
 				showClear: false,
 				innerWidth: window.innerWidth,
 				flShowTransactionsSelect: false,
+				flShowAssetSelect: false,
 				flShowValidatorsSelect: false,
 				flShowNetworkSelect: false,
 				flShowGovernanceSelect: false,
@@ -328,6 +350,16 @@
 					this.flShowTransactionsSelect = false
 				}
 			},
+            assetsSelect (flShowAssetSelect) {
+                this.flShowAssetSelect = false;
+                if (!flShowAssetSelect) {
+                    this.flShowAssetSelect = true;
+                    this.flShowUpOrDown = true
+                } else {
+                    this.flShowUpOrDown = false;
+                    this.flShowAssetSelect = false
+                }
+            },
 			netWorkSelect (flShowNetworkSelect) {
 				this.flShowNetworkSelect = false;
 				if (!flShowNetworkSelect) {
