@@ -17,18 +17,24 @@ type TokenStatsService struct {
 func (service *TokenStatsService) QueryTokenStats() (model.TokenStatsVo, error) {
 
 	var (
-		tokenStats  model.TokenStatsVo
-		supply      lcd.Coin
-		circulation lcd.Coin
+		tokenStats     model.TokenStatsVo
+		supply         lcd.Coin
+		circulation    lcd.Coin
+		banktokenstats lcd.TokenStats
 	)
 
-	banktokenstats, err := lcd.GetBankTokenStats()
-	if err != nil {
-		return tokenStats, err
-	}
-	var group sync.WaitGroup
-	group.Add(2)
 
+	var group sync.WaitGroup
+	group.Add(3)
+
+	go func() {
+		defer group.Done()
+		var err error
+		banktokenstats, err = lcd.GetBankTokenStats()
+		if err != nil {
+			logger.Error("GetBankTokenStats have error", logger.String("err", err.Error()))
+		}
+	}()
 	go func() {
 		defer group.Done()
 		var err error
