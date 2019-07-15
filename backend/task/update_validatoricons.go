@@ -16,7 +16,9 @@ func (task UpdateValidatorIcons) Start() {
 		err := new(service.ValidatorService).UpdateValidatorIcons()
 		if err != nil {
 			logger.Error("UpdateValidatorIcons task failed", logger.String("taskName", task.Name()), logger.String("errmsg", err.Error()))
+			return
 		}
+		logger.Info("UpdateValidatorIcons task is OK.")
 	})
 
 }

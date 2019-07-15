@@ -23,6 +23,8 @@ func (task UpdateGovParams) Start() {
 		err = document.GovParams{}.UpdateCurrentModuleParamValue(curModuleKv)
 		if err != nil {
 			logger.Error("UpdateGovParams task failed", logger.String("taskName", task.Name()), logger.String("errmsg", err.Error()))
+			return
 		}
+		logger.Info("UpdateValidatorIcons task is OK.")
 	})
 }
