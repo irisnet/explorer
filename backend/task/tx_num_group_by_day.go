@@ -21,7 +21,7 @@ func (task TxNumGroupByDayTask) Start() {
 		today := utils.TruncateTime(time.Now(), utils.Day)
 		yesterday := today.Add(-24 * time.Hour)
 
-		total, err := document.CommonTx{}.GetTxCountByDuration(yesterday.String(), today.String())
+		total, err := document.CommonTx{}.GetTxCountByDuration(yesterday, today)
 		if err != nil {
 			logger.Error("get tx count by duration", logger.String("err", err.Error()))
 			return
@@ -35,7 +35,9 @@ func (task TxNumGroupByDayTask) Start() {
 
 		if err := txNumStat.Insert(); err != nil {
 			logger.Error("txNumStatTask failed", logger.String("err", err.Error()))
+			return
 		}
+		logger.Info("TxNumGroupByDayTask Start One Times",logger.Int("total",total))
 	})
 }
 

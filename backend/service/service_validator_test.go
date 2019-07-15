@@ -9,11 +9,12 @@ import (
 
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/irishub-sync/logger"
+	"encoding/json"
 )
 
 func TestGetDelegationsFromLcd(t *testing.T) {
 
-	delegationPage := new(ValidatorService).GetDelegationsFromLcd("fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx", 1, 5)
+	delegationPage := new(ValidatorService).GetDelegationsFromLcd("fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx", 1, 5,false)
 	t.Logf(" %v \n", delegationPage)
 }
 
@@ -81,16 +82,22 @@ func TestQueryCandidateUptime(t *testing.T) {
 	}
 }
 
-// func TestGetValidators(t *testing.T) {
-//
-// 	validatorList := new(ValidatorService).GetValidators("", "", 0, 100)
-//
-// 	if validatorListAsLcd, ok := validatorList.([]lcd.ValidatorVo); ok {
-// 		for k, v := range validatorListAsLcd {
-// 			t.Logf("k: %v    v: %v \n", k, v)
-// 		}
-// 	}
-// }
+func TestGetValidators(t *testing.T) {
+
+	validatorList := new(ValidatorService).GetValidators("jailed", "browser", 0, 100)
+
+	//res := validatorList.([]lcd.ValidatorVo)
+	resBytes, _ := json.Marshal(validatorList)
+	t.Log(string(resBytes))
+}
+
+func TestValidatorService_UpdateValidatorIcons(t *testing.T) {
+	err := new(ValidatorService).UpdateValidatorIcons()
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
 //
 // func TestGetValidator(t *testing.T) {
 //

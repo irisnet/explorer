@@ -13,10 +13,11 @@ var engine = Engine{
 }
 
 func init() {
-	engine.AppendTask(UpTimeChangeTask{})
+	//engine.AppendTask(UpTimeChangeTask{})
 	engine.AppendTask(TxNumGroupByDayTask{})
 	engine.AppendTask(UpdateValidator{})
 	engine.AppendTask(UpdateGovParams{})
+	engine.AppendTask(UpdateValidatorIcons{})
 }
 
 type TimerTask interface {

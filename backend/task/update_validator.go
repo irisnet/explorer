@@ -27,7 +27,9 @@ func (task UpdateValidator) Start() {
 
 		if err != nil {
 			logger.Error("UpdateValidators task failed", logger.String("taskName", task.Name()), logger.String("errmsg", err.Error()))
+			return
 		}
+		logger.Info("UpdateValidators task is OK.")
 	})
 
 }

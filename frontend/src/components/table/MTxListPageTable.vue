@@ -94,7 +94,8 @@
             title:'Tx_Hash',
             slot: 'Tx_Hash',
             width: 100,
-            tooltip: true
+            tooltip: true,
+            tooltipClassName: 'tooltip_left'
           },
 					{
 						title:'Block',
@@ -147,7 +148,8 @@
                 title:'Tx_Hash',
                 slot: 'Tx_Hash',
                 width: 100,
-                tooltip: true
+                tooltip: true,
+                tooltipClassName: 'tooltip_left'
               },
 					{
 						title:'Block',
@@ -201,7 +203,8 @@
 						title:'Tx_Hash',
 						slot: 'Tx_Hash',
             width: 100,
-            tooltip: true
+            tooltip: true,
+            tooltipClassName: 'tooltip_left'
 					},
 					{
 						title:'Block',
@@ -254,7 +257,8 @@
 						title:'Tx_Hash',
 						slot: 'Tx_Hash',
             width: 100,
-            tooltip: true
+            tooltip: true,
+            tooltipClassName: 'tooltip_left'
 					},
 					{
 						title:'Block',
@@ -334,7 +338,7 @@
                 if (!moniker) {
                     return '';
                 }
-                return Tools.formatString(moniker,15,"...");
+                return Tools.formatString(moniker,13,"...");
             }
         },
 		watch:{

@@ -3,7 +3,6 @@ package controller
 import (
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/model"
-	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/utils"
 
 	"github.com/irisnet/explorer/backend/types"
@@ -17,6 +16,7 @@ func RegisterStake(r *mux.Router) error {
 		registerQueryCandidateUptime,
 		registerQueryCandidatePower,
 		registerGetValidators,
+		registerUpdateValidatorIcons,
 		registerGetValidator,
 		registerQueryDelegationsByValidator,
 		registerQueryUnbondingDelegationsByValidator,
@@ -35,13 +35,13 @@ func RegisterStake(r *mux.Router) error {
 	return nil
 }
 
-type Stake struct {
-	*service.ValidatorService
-}
-
-var stake = Stake{
-	service.Get(service.Validator).(*service.ValidatorService),
-}
+//type Stake struct {
+//	*service.ValidatorService
+//}
+//
+//var stake = Stake{
+//	service.Get(service.Validator).(*service.ValidatorService),
+//}
 
 func registerQueryWithdrawAddrByValidatorAddr(r *mux.Router) error {
 
@@ -72,10 +72,6 @@ func registerQueryVoterTxsByValidatorAddr(r *mux.Router) error {
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 5))
 		validatorAddr := Var(request, "validatorAddr")
 
-		if page > 0 {
-			page = page - 1
-		}
-
 		return stake.GetVoteTxsByValidatorAddr(validatorAddr, page, size)
 	})
 	return nil
@@ -87,9 +83,6 @@ func registerQueryDepositorTxsByValidatorAddr(r *mux.Router) error {
 		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 5))
 		validatorAddr := Var(request, "validatorAddr")
-		if page > 0 {
-			page = page - 1
-		}
 
 		return stake.GetDepositedTxByValidatorAddr(validatorAddr, page, size)
 	})
@@ -102,12 +95,19 @@ func registerQueryDelegationsByValidator(r *mux.Router) error {
 		stake.SetTid(request.TraceId)
 		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 5))
+		needpage := QueryParam(request, "needpage")
 		validatorAddr := Var(request, "validatorAddr")
 		if page > 0 {
 			page = page - 1
 		}
+		var  ispage bool
+		if needpage == "false" {
+			ispage = false
+		}else {
+			ispage = true
+		}
 
-		return stake.GetDelegationsFromLcd(validatorAddr, page, size)
+		return stake.GetDelegationsFromLcd(validatorAddr, page, size, ispage)
 	})
 	return nil
 }
@@ -157,6 +157,17 @@ func registerGetValidators(r *mux.Router) error {
 	})
 	return nil
 }
+func registerUpdateValidatorIcons(r *mux.Router) error {
+	doApi(r, types.UrlRegisterUpdateIcons, "GET", func(request model.IrisReq) interface{} {
+		stake.SetTid(request.TraceId)
+		if err := stake.UpdateValidatorIcons(); err != nil {
+			return model.NewResponse("-1", err.Error(), nil)
+		}
+		return model.NewResponse("0", "success", nil)
+	})
+	return nil
+}
+
 func registerGetValidator(r *mux.Router) error {
 	doApi(r, types.UrlRegisterGetValidator, "GET", func(request model.IrisReq) interface{} {
 		stake.SetTid(request.TraceId)

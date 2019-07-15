@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"gopkg.in/mgo.v2/bson"
+	"github.com/irisnet/explorer/backend/utils"
 )
 
 func TestQueryByAddr(t *testing.T) {
@@ -77,5 +78,17 @@ func TestGetTxlistByDuration(t *testing.T) {
 	for k, v := range txList {
 		t.Logf("k: %v  v: %v \n", k, v)
 	}
+
+}
+
+func TestGetTxCountByDuration(t *testing.T) {
+
+	starttime,_ := time.Parse(utils.DateFmtYYYYMMDDHHmmss,"2019-07-01 00:00:00")
+	endtime,_ := time.Parse(utils.DateFmtYYYYMMDDHHmmss,"2019-07-02 00:00:00")
+	cnt,err := CommonTx{}.GetTxCountByDuration(starttime,endtime)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(cnt)
 
 }

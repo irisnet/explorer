@@ -127,17 +127,19 @@
 						if(searchResult){
 							Object.entries(searchResult).forEach((item) => {
 								let [type, value] = item;
-								if(type === "block"){
+								if(type === "block" && Object.keys(value).length !== 0){
 									that.blockHeight = value.height;
 									that.blockTime = Tools.format2UTC(value.timestamp);
 									that.blockHash = value.hash;
-								}else if(type === "proposal"){
+								}else if(type === "proposal" && Object.keys(value).length !== 0){
 									that.proposalId = value.proposal_id;
 									that.proposalTitle = value.title;
 									that.proposalType = value.type;
 									that.proposalStatus = value.status;
 									that.proposalTime = value.submit_time && Tools.format2UTC(value.submit_time)
-								}
+								}else {
+									this.flshowResult = true;
+                                }
 							})
 						}else {
 							that.flshowResult = true;

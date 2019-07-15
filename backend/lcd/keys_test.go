@@ -15,3 +15,11 @@ func TestAccount(t *testing.T) {
 		t.Log(string(resBytes))
 	}
 }
+
+func TestGetIconsByKey(t *testing.T) {
+	pic, err := GetIconsByKey("8E15046A255C20CC")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(pic)
+}

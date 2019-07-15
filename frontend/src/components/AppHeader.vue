@@ -659,9 +659,8 @@
                                 background: #0f7bc4;
                             }
                             .transaction_list_content {
-                                display: flex;
-                                flex-direction: column;
-                                text-align: center;
+                                z-index: 10000;
+                                display: block;
                                 padding: 0;
                                 .transaction_content {
                                     box-sizing: border-box;
@@ -693,9 +692,8 @@
                             }
                             .statics_list_content {
                                 padding: 0;
-                                display: flex;
-                                flex-direction: column;
-                                text-align: center;
+                                display: block;
+                                z-index: 10000;
                                 .bottom_arrow {
                                     display: inline-block;
                                     height: 0.6rem;
@@ -726,9 +724,8 @@
                             }
                             .governance_list_content {
                                 padding: 0;
-                                display: flex;
-                                flex-direction: column;
-                                text-align: center;
+                                display:  block;
+                                z-index: 10000;
                                 .bottom_arrow {
                                     display: inline-block;
                                     height: 0.6rem;

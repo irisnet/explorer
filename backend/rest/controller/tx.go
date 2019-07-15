@@ -3,7 +3,6 @@ package controller
 import (
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/model"
-	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/types"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -27,13 +26,13 @@ func RegisterTx(r *mux.Router) error {
 	return nil
 }
 
-type Tx struct {
-	*service.TxService
-}
-
-var tx = Tx{
-	service.Get(service.Tx).(*service.TxService),
-}
+//type Tx struct {
+//	*service.TxService
+//}
+//
+//var tx = Tx{
+//	service.Get(service.Tx).(*service.TxService),
+//}
 
 func registerQueryTxList(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryTxList, "GET", func(request model.IrisReq) interface{} {
