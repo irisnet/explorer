@@ -42,18 +42,18 @@ function amountFromatFunc (value, denomArg, fixedValue, ratio) {
                 if (!value.denom) {
                     amount = `${Tools.formatPriceToFixed(
                         value.amount, fixedValue || afterPointLen
-                    )}${fixedValue && fixedValue < afterPointLen ? '...' : ''} ${denomArg || 'SHARES'}`;
+                    )}${fixedValue && fixedValue < afterPointLen ? '' : ''} ${denomArg || 'SHARES'}`;
                 } else {
                     if (`${value.denom}`.toLowerCase() === "iris-atto") {
                         value.amount = Tools.numberMoveDecimal(value.amount);
                         afterPointLen = afterPointLength(value.amount);
                         amount = `${Tools.formatPriceToFixed(
                             value.amount, fixedValue || afterPointLen
-                        )}${fixedValue && fixedValue < afterPointLen ? '...' : ''} ${denomArg || Tools.formatDenom(value.denom).toUpperCase() || ''}`;
+                        )}${fixedValue && fixedValue < afterPointLen ? '' : ''} ${denomArg || Tools.formatDenom(value.denom).toUpperCase() || ''}`;
                     } else {
                         amount = `${Tools.formatPriceToFixed(
                             value.amount, fixedValue || afterPointLen
-                        )}${fixedValue && fixedValue < afterPointLen ? '...' : ''} ${denomArg || Tools.formatDenom(value.denom).toUpperCase() || ''}`;
+                        )}${fixedValue && fixedValue < afterPointLen ? '' : ''} ${denomArg || Tools.formatDenom(value.denom).toUpperCase() || ''}`;
                     }
                 }
             }
@@ -64,7 +64,7 @@ function amountFromatFunc (value, denomArg, fixedValue, ratio) {
                     value = moveDecimal(String(value) + ".",-ratio);
                 }
                 let afterPointLen = afterPointLength(value);
-                amount = `${Tools.formatPriceToFixed(value, fixedValue || afterPointLen)}${fixedValue && fixedValue < afterPointLen ? '...' : ''} ${denomArg || ''}`;
+                amount = `${Tools.formatPriceToFixed(value, fixedValue || afterPointLen)}${fixedValue && fixedValue < afterPointLen ? '' : ''} ${denomArg || ''}`;
             }
         }
     }

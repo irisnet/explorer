@@ -9,7 +9,7 @@
             <div class="transaction_list_table_content">
                 <div class="table_list_content">
                     <spin-component :showLoading="flShowLoading"></spin-component>
-                    <m-tx-list-page-table :showNoData="showNoData" :items="txList"></m-tx-list-page-table>
+                    <m-tx-list-page-table :items="txList"></m-tx-list-page-table>
                     <div v-show="showNoData" class="no_data_show">
                         No Data
                     </div>
@@ -73,7 +73,7 @@
 						if(txList.Data){
 							this.txList = Tools.formatTxList(txList.Data,that.$route.params.txType)
 						}else{
-							this.txList = Tools.formatTxList(null,that.$route.params.txType);
+							this.txList = [];
 							this.showNoData = true;
 						}
 						this.flShowLoading = false;

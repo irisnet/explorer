@@ -71,7 +71,13 @@ const urlApi = {
   //sysdate
   sysdate: '/api/sysdate',
   //richList
-  richListAccounts: '/api/accounts'
+  richListAccounts: '/api/accounts',
+  //bondedtokens
+  bondedtokensValidators: '/api/bondedtokens/validators?type={validatorStatus}',
+  bondedtokensDelegations: '/api/stake/validators/{address}/delegations?needpage=false',
+  //tokenStats
+  tokenStats: '/api/tokenstats',
+  tokenStatsDistribution: '/api/tokenstats/account_total'
 };
 
 export default urlApi

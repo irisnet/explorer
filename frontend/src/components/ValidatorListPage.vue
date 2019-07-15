@@ -28,7 +28,6 @@
                 </b-pagination>
             </div>
         </div>
-        <m-tree :items="items"></m-tree>
     </div>
 </template>
 
@@ -41,15 +40,13 @@
 	import ValidatorListTable from "./table/ValidatorListTable";
     import MValidatorListTable from "./table/MValidatorListTable";
     import MTabs from "./commonComponents/MTabs";
-    import MTree from "./commonComponents/MTree";
 
 	export default {
 		components:{
 			ValidatorListTable,
 			SpinComponent,
             MValidatorListTable,
-            MTabs,
-            MTree
+            MTabs
 		},
 		watch: {
 			currentPage(currentPage) {
@@ -169,10 +166,11 @@
 									bondHeight: Number(item.bond_height),
 									unbondingHeight: item.unbonding_height && Number(item.unbonding_height) > 0 ? Number(item.unbonding_height) : '--',
 									unbondingTime: (new Date(item.unbonding_time).getTime()) > 0 ? Tools.format2UTC(item.unbonding_time) : '--',
-									identity: item.description.identity,
+                                    identity: item.description.identity,
+                                    url: item.icons || require('../assets/header_img.png')
 								}
 							});
-							this.items = this.getValidatorHeaderImg(this.items);
+							// this.items = this.getValidatorHeaderImg(this.items);
 							this.showNoData = false;
 						}else {
 							this.showNoData = true;
@@ -195,7 +193,6 @@
 						Http.http(`${url}${data[i].identity}`).then(res =>{
 							if(res && res.them && res.them[0].pictures && res.them[0].pictures.primary && res.them[0].pictures.primary.url){
                                 data[i].url = res.them[0].pictures.primary.url;
-                                data[i].imageUrl = data[i].url;
 							}else {
 								data[i].url = require('../assets/header_img.png');
 							}

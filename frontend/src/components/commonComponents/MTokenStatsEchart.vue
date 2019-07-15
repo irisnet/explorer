@@ -1,0 +1,170 @@
+<template>
+    <div>
+        <div ref="TokenStatsEchartContainer" class="echart_container"></div>
+    </div>
+</template>
+
+<script>
+import echarts from "echarts";
+export default {
+    name: "MTokenStatsEchart",
+    props: {
+        data: {
+            type: Array,
+            default: function() {
+                return [];
+            }
+        }
+    },
+    data() {
+        return {
+            chart: null,
+            timer: null
+        };
+    },
+    watch: {
+        data(newVal) {
+            this.setOption(newVal);
+        }
+    },
+    methods: {
+        setOption(newVal) {
+            let data = newVal.map(v => {
+                return {
+                    name: this.$store.state.isMobile
+                        ? `No. ${v[0]}: {d|${v[1].totalAmount} (${
+                              v[1].percentValue
+                          })%}`
+                        : `No. ${v[0]}`,
+                    value: v[1].percent,
+                    info: v[1],
+                    nameValue: `No. ${v[0]}`
+                };
+            });
+            let option = {
+                tooltip: {
+                    show: this.$store.state.isMobile,
+                    confine: true,
+                    formatter: function(v) {
+                        return `${v.marker}${v.data.nameValue}:<br/>
+                        ${v.data.info.totalAmount} (${v.data.info.percentValue} %)`;
+                    }
+                },
+                color: [
+                    "#3598DB",
+                    "#FFA85C",
+                    "#C0CEFF",
+                    "#FFCF3A",
+                    "#A69DFF",
+                    "#93ED56",
+                    "#FF837E"
+                ],
+                legend: {
+                    orient: "vertical",
+                    x: "left",
+                    selectedMode: false,
+                    data: data.map(v => {
+                        return {
+                            name: v.name,
+                            textStyle: {
+                                rich: {
+                                    d: {
+                                        color: "#A2A2AE"
+                                    }
+                                }
+                            }
+                        };
+                    })
+                },
+                series: [
+                    {
+                        type: "pie",
+                        radius: ["30%", "60%"],
+                        avoidLabelOverlap: true, //是否启用防止标签重叠策略
+                        minAngle: 5,
+                        label: {
+                            normal: {
+                                show: !this.$store.state.isMobile,
+                                formatter: function(params) {
+                                    let text = `${params.data.info.totalAmount} (${params.data.info.percentValue}%)`;
+                                    let minLen = 40;
+                                    if (text.length > minLen) {
+                                        let len = Math.ceil(
+                                            text.length / minLen
+                                        );
+                                        let s = "";
+                                        for (let i = 0; i < len; i++) {
+                                            s +=
+                                                text.substring(
+                                                    i * minLen,
+                                                    (i + 1) * minLen
+                                                ) + "\n";
+                                        }
+                                        return `{b|${params.name}}\n{per|${s}}`;
+                                    } else {
+                                        return `{b|${params.name}}\n{per|${text}}`;
+                                    }
+                                },
+                                position: "outside",
+                                align: "left",
+                                rich: {
+                                    b: {
+                                        fontSize: 14,
+                                        lineHeight: 22,
+                                        color: "#22252A",
+                                        align: "left"
+                                    },
+                                    per: {
+                                        fontSize: 14,
+                                        lineHeight: 22,
+                                        color: "#A2A2AE",
+                                        align: "left"
+                                    }
+                                }
+                            },
+                            emphasis: {
+                                show: !this.$store.state.isMobile
+                            }
+                        },
+                        labelLine: {
+                            normal: {
+                                show: !this.$store.state.isMobile,
+                                length: 20,
+                                length2: 20,
+                                lineStyle: {
+                                    color: "#979797"
+                                }
+                            },
+                            emphasis: {
+                                show: !this.$store.state.isMobile
+                            }
+                        },
+                        data: data
+                    }
+                ]
+            };
+            this.chart.setOption(option);
+        },
+        windowResizeFunc() {
+            clearTimeout(this.timer);
+            this.timer = setTimeout(() => {
+                this.chart.resize();
+                this.setOption(this.data);
+            }, 500);
+        }
+    },
+    mounted() {
+        this.chart = echarts.init(this.$refs.TokenStatsEchartContainer);
+        window.addEventListener("resize", this.windowResizeFunc);
+    },
+    destroyed() {
+        window.removeEventListener("resize", this.windowResizeFunc);
+    }
+};
+</script>
+
+<style lang="scss" scoped>
+.echart_container {
+    height: 5rem;
+}
+</style>

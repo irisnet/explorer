@@ -323,7 +323,7 @@ export default class Tools{
 	}
 	
 	static formatDenom(denom){
-		if(denom === "iris-atto" || denom === "iris"){
+		if(denom.toLowerCase() === "iris-atto" || denom.toLowerCase() === "iris"){
 			return "IRIS"
 		}
 	}

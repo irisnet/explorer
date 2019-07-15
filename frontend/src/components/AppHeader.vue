@@ -53,6 +53,12 @@
                                     <router-link :to="`/statistics/richlist`">
                                         <li class="static_list_item">Rich List</li>
                                     </router-link>
+                                    <router-link :to="`/statistics/tokenStats`">
+                                        <li class="static_list_item">Tokens Stats</li>
+                                    </router-link>
+                                    <router-link :to="`/statistics/bondedTokens`">
+                                        <li class="static_list_item">Bonded Tokens</li>
+                                    </router-link>
                                 </ul>
                             </li>
                             <li class="governance_list_content"
@@ -178,8 +184,12 @@
                 </span>
                 <div class="select_option"
                      v-show="flShowTopListSelection">
-            <span class="feature_btn_mobile feature_nav"
-                @click="featureButtonClick('/statistics/richlist')">Rich List</span>
+                <span class="feature_btn_mobile feature_nav"
+                    @click="featureButtonClick('/statistics/richlist')">Rich List</span>
+                <span class="feature_btn_mobile feature_nav"
+                    @click="featureButtonClick('/statistics/tokenStats')">Tokens Stats</span>
+                <span class="feature_btn_mobile feature_nav"
+                    @click="featureButtonClick('/statistics/bondedTokens')">Bonded Tokens</span>
                 </div>
                 <span class="feature_btn_mobile feature_nav select_option_container"
                       @click="governanceSelect(flShowGovernanceSelect)">

@@ -130,6 +130,7 @@ export default {
         },
         color: ['rgba(254, 138, 138, 0.6)'],
         tooltip: {
+          confine: true,
           formatter: function(v) {
             let info = v.data.info;
             that.levelName = v.name;
