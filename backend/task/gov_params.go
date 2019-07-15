@@ -25,6 +25,6 @@ func (task UpdateGovParams) Start() {
 			logger.Error("UpdateGovParams task failed", logger.String("taskName", task.Name()), logger.String("errmsg", err.Error()))
 			return
 		}
-		logger.Info("UpdateValidatorIcons task is OK.")
+		logger.Info("UpdateGovParams task is OK.")
 	})
 }
