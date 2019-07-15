@@ -3,15 +3,17 @@ package service
 import (
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm/document"
+	"github.com/irisnet/explorer/backend/utils"
+	"github.com/irisnet/explorer/backend/conf"
 )
 
 type BondedTokensService struct {
 	BaseService
 }
 
-func (service *BondedTokensService) QueryBondedTokensValidator() ([]*model.BondedTokensVo, error) {
+func (service *BondedTokensService) QueryBondedTokensValidator(vtype string) ([]*model.BondedTokensVo, error) {
 
-	validators, err := document.Validator{}.GetAllValidator()
+	_, validators, err := document.Validator{}.GetValidatorListByPage(vtype, 0, 0, false)
 	if err != nil {
 		return nil, err
 	}
@@ -28,6 +30,7 @@ func (service *BondedTokensService) QueryBondedTokensValidator() ([]*model.Bonde
 			bondedtoken.Moniker = item.Moniker
 			bondedtoken.Identity = item.Identity
 		}
+		bondedtoken.OwnerAddress = utils.Convert(conf.Get().Hub.Prefix.AccAddr, val.OperatorAddress)
 
 		result = append(result, bondedtoken)
 	}
