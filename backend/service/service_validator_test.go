@@ -14,7 +14,7 @@ import (
 
 func TestGetDelegationsFromLcd(t *testing.T) {
 
-	delegationPage := new(ValidatorService).GetDelegationsFromLcd("fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx", 1, 5)
+	delegationPage := new(ValidatorService).GetDelegationsFromLcd("fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx", 1, 5,false)
 	t.Logf(" %v \n", delegationPage)
 }
 
@@ -90,6 +90,14 @@ func TestGetValidators(t *testing.T) {
 	resBytes, _ := json.Marshal(validatorList)
 	t.Log(string(resBytes))
 }
+
+func TestValidatorService_UpdateValidatorIcons(t *testing.T) {
+	err := new(ValidatorService).UpdateValidatorIcons()
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
 //
 // func TestGetValidator(t *testing.T) {
 //

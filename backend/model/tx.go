@@ -97,6 +97,7 @@ type ProposalInfo struct {
 }
 
 type Tx struct {
+	Moniker   string          `json:"moniker"`
 	Hash      string          `json:"hash"`
 	From      string          `json:"from"`
 	To        string          `json:"to"`
