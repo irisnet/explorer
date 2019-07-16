@@ -106,7 +106,7 @@
       }
 
     },
-    mounted() {
+    created() {
       this.showHeaderAndFooterByVersionPath();
       window.addEventListener('resize', this.onresize);
       if (window.innerWidth > 910) {
@@ -123,6 +123,14 @@
         this.footerRightVar = 'mobile_footer_right';
       }
       window.addEventListener("scroll",this.handleScroll,true);
+    },
+    mounted() {
+      this.headerHeightStyle = `${document.getElementById('header').clientHeight}px`;
+    },
+    updated() {
+        setTimeout(() => {
+            this.headerHeightStyle = `${document.getElementById('header').clientHeight}px`;
+        });
     },
     beforeDestroy() {
       window.removeEventListener('resize', this.onWindowResize);
@@ -173,9 +181,6 @@
       closeSelectOption(){
         this.$store.commit('flShowSelectOption',false)
       }
-    },
-    updated () {
-      this.headerHeightStyle = `${document.getElementById('header').clientHeight}px`
     }
   }
 </script>
@@ -185,7 +190,7 @@
   html {
     font-size: 625%;
     -webkit-text-size-adjust: none;
-    overflow-y: scroll;
+    overflow-y: auto;
     position: relative;
   }
 
