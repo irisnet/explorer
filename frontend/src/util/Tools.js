@@ -175,7 +175,7 @@ export default class Tools{
 		if(str.indexOf(".") !== -1) {
 			let splitString = str.split(".")[1];
 			if(splitString.length > splitNum){
-				return str.split(".")[0] + '.' +  splitString.substr(0,splitNum) + "..."
+				return str.split(".")[0] + '.' +  splitString.substr(0,splitNum)
 			}else {
 				return str.split(".")[0] + '.' + splitString
 			}
@@ -195,7 +195,7 @@ export default class Tools{
 					num = Tools.convertScientificNotation2Number(num);
 					let str = String(num).split(".")[1];
 					if(str.length > 2){
-						return Tools.formatPriceToFixed(num ,2)+ "...";
+						return Tools.formatPriceToFixed(num ,2);
 					}else {
 						return Tools.formatPriceToFixed(num)
 					}
@@ -217,7 +217,7 @@ export default class Tools{
 		return new BigNumber(num).toFixed(6);
 	}
 	static formatFeeToFixedNumber(num){
-		return  Tools.toFixedformatNumber(Tools.formatNumber(num) ,4) + "...";
+		return  Tools.toFixedformatNumber(Tools.formatNumber(num) ,4);
 	}
 	static formatDecimalNumberToFixedNumber(num){
 		if(typeof num === 'number' && !Object.is(num, NaN)) {

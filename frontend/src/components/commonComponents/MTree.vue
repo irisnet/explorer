@@ -164,14 +164,18 @@ export default {
                                     (selfShares / Number(value.total_shares)) *
                                         100
                                 )}%)`,
-                                block: `Block: ${value.block}`
+                                block: `Block: ${value.block}`,
+                                ownerAddress:
+                                    v.ownerAddress === value.address
+                                        ? v.operatorAddress
+                                        : ""
                             },
                             itemStyle: {
-                                color: `${colorHS}, ${colorL}%)`
+                                color: `${colorHS}, ${colorL}%, 1)`
                             },
                             emphasis: {
                                 itemStyle: {
-                                    color: `${colorHS}, ${colorL + 4}%)`
+                                    color: `${colorHS}, ${colorL + 4}%, 1)`
                                 }
                             },
                             label: {
@@ -244,7 +248,7 @@ export default {
                     },
                     emphasis: {
                         itemStyle: {
-                            color: `${colorHS}, ${colorL + 4}%)`
+                            color: `${colorHS}, ${colorL + 4}%, 1)`
                         }
                     },
                     label: {
@@ -331,8 +335,11 @@ export default {
             }
             if (data && data.data && !data.data.info) {
                 //delegations 跳转到address页面
+                let url = this.addressRoute(
+                    data.data.infoData.ownerAddress || data.name
+                );
                 let routeUrl = this.$router.resolve({
-                    path: `/address/${data.name}`
+                    path: url
                 });
                 window.open(routeUrl.href, "_blank");
             }
