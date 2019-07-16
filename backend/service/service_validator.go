@@ -29,7 +29,7 @@ func (service *ValidatorService) GetValidators(typ, origin string, page, size in
 		var result []lcd.ValidatorVo
 		var blackList = service.QueryBlackList()
 
-		total, validatorList, err := document.Validator{}.GetValidatorListByPage(typ, page, size)
+		total, validatorList, err := document.Validator{}.GetValidatorListByPage(typ, page, size, true)
 		if err != nil || total <= 0 {
 			panic(types.CodeNotFound)
 		}
