@@ -60,11 +60,6 @@ export default {
                 "hsla(216, 91%, 44%, 1)",
                 "hsla(216, 91%, 41%, 1)",
 
-                "hsla(246, 94%, 72%, 1)",
-                "hsla(246, 81%, 67%, 1)",
-                "hsla(246, 69%, 61%, 1)",
-                "hsla(246, 62%, 56%, 1)",
-
                 "hsla(201, 69%, 45%, 1)",
                 "hsla(201, 71%, 42%, 1)",
                 "hsla(201, 74%, 38%, 1)",
@@ -111,15 +106,17 @@ export default {
     methods: {
         formatPerNumber(num) {
             if (typeof num === "number" && !Object.is(num, NaN)) {
-                let afterPoint = String(num).split(".")[1];
-                let afterPointLong = (afterPoint && afterPoint.length) || 0;
-                if (afterPointLong > 2 && num !== 0) {
-                    return num.toFixed(4);
+                if (num < 0.0001) {
+                    return "<0.0001";
                 } else {
-                    return num.toFixed(2);
+                    let s = num + "";
+                    let arr = s.split(".");
+                    let n = arr[1]
+                        ? `${arr[0]}.${arr[1].substring(0, 4)}`
+                        : arr[0];
+                    return n;
                 }
             }
-            return num;
         },
         setData(newVal) {
             let data = [];
@@ -138,7 +135,7 @@ export default {
                     let step = 20 / v.delegations.length;
 
                     arr = v.delegations.map(value => {
-                        let selfShares = Number(value.self_shares);
+                        let selfShares = value.selfSharesFormat;
                         // 判断是否是owner address
                         let labelValue =
                             v.ownerAddress === value.address
@@ -151,20 +148,22 @@ export default {
                             v.ownerAddress === value.address
                                 ? v.moniker || v.operatorAddress
                                 : value.address;
+                        let selfSharesPer =
+                            Number(value.self_shares) /
+                            Number(value.total_shares);
                         let o = {
                             name: name,
-                            value: selfShares,
+                            value:
+                                selfSharesPer < 0.001 ? 0.001 : selfSharesPer,
                             infoData: {
                                 name: `${name}`,
                                 amount: `Amount: ${this.$options.filters.amountFromat(
                                     value.amount,
                                     Constants.Denom.IRIS.toUpperCase()
                                 )}`,
-                                shares: `Self Shares: ${selfShares} (${this.formatPerNumber(
-                                    (selfShares / Number(value.total_shares)) *
-                                        100
+                                shares: `Shares: ${selfShares} (${this.formatPerNumber(
+                                    selfSharesPer * 100
                                 )}%)`,
-                                block: `Block: ${value.block}`,
                                 ownerAddress:
                                     v.ownerAddress === value.address
                                         ? v.operatorAddress
@@ -228,7 +227,7 @@ export default {
                         formatter: function(v) {
                             let info = v && v.data && v.data.infoData;
                             if (info) {
-                                return `${info.name}<br/>${info.amount}<br/>${info.shares}<br/>${info.block}`;
+                                return `${info.name}<br/>${info.amount}<br/>${info.shares}`;
                             }
                         }
                     };
@@ -239,9 +238,10 @@ export default {
                 let labelValue = v.imageUrl
                     ? `{b|} {a|${v.moniker || v.operatorAddress}}`
                     : `{a|${v.moniker || v.operatorAddress}}`;
+                let votingPowerPer = +v.votingPower / v.allVotingPower;
                 let validator = {
                     name: v.moniker || v.operatorAddress,
-                    value: +v.votingPower,
+                    value: votingPowerPer < 0.001 ? 0.001 : votingPowerPer,
                     info: v,
                     itemStyle: {
                         color: color
@@ -299,7 +299,9 @@ export default {
                 confine: true,
                 formatter: function(v) {
                     return `${v.name}<br/> 
-                    voting_power: ${v.value}`;
+                    voting_power: ${v.data &&
+                        v.data.info &&
+                        v.data.info.votingPower}`;
                 }
             };
             this.setOption(data);

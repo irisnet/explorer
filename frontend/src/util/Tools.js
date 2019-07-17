@@ -177,10 +177,10 @@ export default class Tools{
 			if(splitString.length > splitNum){
 				return str.split(".")[0] + '.' +  splitString.substr(0,splitNum)
 			}else {
-				return str.split(".")[0] + '.' + splitString
+				return str.split(".")[0] + '.' + splitString.padEnd(4, "0")
 			}
 		}else {
-			return str
+			return str + '.0000'
 		}
 	}
 	
@@ -304,10 +304,11 @@ export default class Tools{
 	 * 格式化货币价格
 	 */
 	static formatPrice(value) {
-		let integer = value.split('.')[0];
-		let decimals = value.split('.')[1];
+        let arr = value.split('.');
+		let integer = arr[0];
+		let decimals = arr[1];
 		let formattedInteger = integer.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-		return`${formattedInteger}.${decimals}`
+		return decimals ? `${formattedInteger}.${decimals}` : `${formattedInteger}`;
 	}
 	
 	static formatBalance(number, places, symbol, thousand, decimal) {

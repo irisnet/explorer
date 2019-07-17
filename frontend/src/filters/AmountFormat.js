@@ -16,11 +16,18 @@ function afterPointLength(value) {
     }
 }
 
-function amountFromatFunc (value, denomArg, fixedValue, ratio) {
+function subString(value, fixedValue) {
+    let arr = value.split(".");
+    let n = arr[1] ? `${arr[0]}.${arr[1].substring(0, fixedValue)}` : arr[0];
+    return n;
+}
+
+function amountFromatFunc (value, denomArg, fixedValue, noTofixed,ratio) {
     /*
         value 需要转换的数值
         denomArg 自定义单位
         fixedValue 自定义小数点后四舍五入保留位数
+        noTofixed 是否不用 tofixed 方法进行截取数值, 而用字符串截取
         ratio 自定义比率 （10**ratio）次方
     */
     let amount = '';
@@ -40,18 +47,27 @@ function amountFromatFunc (value, denomArg, fixedValue, ratio) {
                 }
                 let afterPointLen = afterPointLength(value.amount);
                 if (!value.denom) {
-                    amount = `${Tools.formatPriceToFixed(
+                    amount = !noTofixed ? `${Tools.formatPriceToFixed(
+                        value.amount, fixedValue || afterPointLen
+                    )} ${denomArg || 'SHARES'}` : 
+                    `${subString(
                         value.amount, fixedValue || afterPointLen
                     )} ${denomArg || 'SHARES'}`;
                 } else {
                     if (`${value.denom}`.toLowerCase() === "iris-atto") {
                         value.amount = Tools.numberMoveDecimal(value.amount);
                         afterPointLen = afterPointLength(value.amount);
-                        amount = `${Tools.formatPriceToFixed(
+                        amount = !noTofixed ? `${Tools.formatPriceToFixed(
+                            value.amount, fixedValue || afterPointLen
+                        )} ${denomArg || Tools.formatDenom(value.denom).toUpperCase() || ''}` : 
+                        `${subString(
                             value.amount, fixedValue || afterPointLen
                         )} ${denomArg || Tools.formatDenom(value.denom).toUpperCase() || ''}`;
                     } else {
-                        amount = `${Tools.formatPriceToFixed(
+                        amount = !noTofixed ? `${Tools.formatPriceToFixed(
+                            value.amount, fixedValue || afterPointLen
+                        )} ${denomArg || Tools.formatDenom(value.denom).toUpperCase() || ''}` :
+                        `${subString(
                             value.amount, fixedValue || afterPointLen
                         )} ${denomArg || Tools.formatDenom(value.denom).toUpperCase() || ''}`;
                     }
@@ -64,7 +80,8 @@ function amountFromatFunc (value, denomArg, fixedValue, ratio) {
                     value = moveDecimal(String(value) + ".",-ratio);
                 }
                 let afterPointLen = afterPointLength(value);
-                amount = `${Tools.formatPriceToFixed(value, fixedValue || afterPointLen)} ${denomArg || ''}`;
+                amount = !noTofixed ? `${Tools.formatPriceToFixed(value, fixedValue || afterPointLen)} ${denomArg || ''}` :
+                `${subString(value, fixedValue || afterPointLen)} ${denomArg || ''}`;
             }
         }
     }

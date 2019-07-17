@@ -22,7 +22,7 @@
                         </ul>
                     </div>
                 </div>
-                <div v-show="!showNoData && !showLoading" class="tree_map_container">
+                <div v-show="!showNoData" class="tree_map_container">
                     <m-tree
                         :items.sync="validatorList"
                         :validatorType="validatorTypeLabel"
@@ -56,8 +56,8 @@ export default {
             showNoData: false, //是否显示列表的无数据
             showLoading: false,
             validatorTypeSeleted: false,
-            validatorType: "",
-            validatorTypeLabel: "All",
+            validatorType: "validator",
+            validatorTypeLabel: "Active",
             validatorTypeList: [
                 {
                     label: "All",
@@ -118,7 +118,7 @@ export default {
             }
         },
         getDelegations(operatorAddress) {
-            // this.showLoading = true;
+            this.showLoading = true;
             Service.commonInterface(
                 {
                     bondedtokensDelegations: {
@@ -130,10 +130,9 @@ export default {
                         let delegations = [];
                         if (Array.isArray(data.items)) {
                             for (let it of data.items) {
-                                // it.amount = this.$options.filters.amountFromat(
-                                //     it.amount,
-                                //     Constant.Denom.IRIS.toUpperCase()
-                                // );
+                                it.selfSharesFormat = Tools.formatPrice(
+                                    Number(it.self_shares) + ""
+                                );
                             }
                             delegations = data.items;
                         } else {
@@ -171,6 +170,12 @@ export default {
                         try {
                             result = result && result.data;
                             if (Array.isArray(result)) {
+                                let allVotingPower = result.reduce(
+                                    (init, v) => {
+                                        return +v.voting_power + init;
+                                    },
+                                    0
+                                );
                                 this.items = result.map(item => {
                                     return {
                                         delegations: null,
@@ -180,7 +185,8 @@ export default {
                                         ownerAddress: item.owner_address,
                                         votingPower: item.voting_power,
                                         identity: item.identity,
-                                        imageUrl: item.icons
+                                        imageUrl: item.icons,
+                                        allVotingPower: allVotingPower
                                     };
                                 });
                                 this.showNoData = false;
