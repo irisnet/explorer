@@ -25,6 +25,7 @@ func (service *BondedTokensService) QueryBondedTokensValidator(vtype string) ([]
 			Identity:        val.Description.Identity,
 			VotingPower:     val.VotingPower,
 			OperatorAddress: val.OperatorAddress,
+			Icons:           val.Icons,
 		}
 		if item, ok := blackList[val.OperatorAddress]; ok {
 			bondedtoken.Moniker = item.Moniker
