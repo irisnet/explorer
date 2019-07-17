@@ -22,7 +22,8 @@ func RegisterBondedTokens(r *mux.Router) error {
 func registerBondedTokensValidators(r *mux.Router) error {
 	doApi(r, types.UrlRegisterBondedTokensValidators, "GET", func(request model.IrisReq) interface{} {
 		bondedtokens.SetTid(request.TraceId)
-		result, err := bondedtokens.QueryBondedTokensValidator()
+		vtype := QueryParam(request, "type")
+		result, err := bondedtokens.QueryBondedTokensValidator(vtype)
 		if err != nil {
 			return model.NewResponse("-1", err.Error(), nil)
 		}
