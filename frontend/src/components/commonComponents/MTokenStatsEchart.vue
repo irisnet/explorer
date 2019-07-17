@@ -87,7 +87,7 @@ export default {
                                 show: !this.$store.state.isMobile,
                                 formatter: function(params) {
                                     let text = `${params.data.info.totalAmount} (${params.data.info.percentValue}%)`;
-                                    let minLen = 40;
+                                    let minLen = 100;
                                     if (text.length > minLen) {
                                         let len = Math.ceil(
                                             text.length / minLen
@@ -100,9 +100,9 @@ export default {
                                                     (i + 1) * minLen
                                                 ) + "\n";
                                         }
-                                        return `{b|${params.name}}\n{per|${s}}`;
+                                        return `\n{b|${params.name}}\n{per|${s}}\n`;
                                     } else {
-                                        return `{b|${params.name}}\n{per|${text}}`;
+                                        return `\n{b|${params.name}}\n{per|${text}}\n`;
                                     }
                                 },
                                 position: "outside",
@@ -110,13 +110,13 @@ export default {
                                 rich: {
                                     b: {
                                         fontSize: 14,
-                                        lineHeight: 22,
+                                        lineHeight: 20,
                                         color: "#22252A",
                                         align: "left"
                                     },
                                     per: {
                                         fontSize: 14,
-                                        lineHeight: 22,
+                                        lineHeight: 20,
                                         color: "#A2A2AE",
                                         align: "left"
                                     }
@@ -129,8 +129,6 @@ export default {
                         labelLine: {
                             normal: {
                                 show: !this.$store.state.isMobile,
-                                length: 20,
-                                length2: 20,
                                 lineStyle: {
                                     color: "#979797"
                                 }

@@ -62,7 +62,8 @@ export default {
                                             this.$options.filters.amountFromat(
                                                 data.totalsupply_tokens,
                                                 undefined,
-                                                4
+                                                4,
+                                                true
                                             ) || "--"
                                     },
                                     {
@@ -71,7 +72,8 @@ export default {
                                             this.$options.filters.amountFromat(
                                                 data.circulation_tokens,
                                                 undefined,
-                                                4
+                                                4,
+                                                true
                                             ) || "--"
                                     },
                                     {
@@ -80,7 +82,8 @@ export default {
                                             this.$options.filters.amountFromat(
                                                 data.initsupply_tokens,
                                                 undefined,
-                                                4
+                                                4,
+                                                true
                                             ) || "--"
                                     },
                                     {
@@ -89,7 +92,8 @@ export default {
                                             this.$options.filters.amountFromat(
                                                 data.burned_tokens,
                                                 undefined,
-                                                4
+                                                4,
+                                                true
                                             ) || "--"
                                     },
                                     {
@@ -98,7 +102,8 @@ export default {
                                             this.$options.filters.amountFromat(
                                                 data.delegated_tokens,
                                                 undefined,
-                                                4
+                                                4,
+                                                true
                                             ) || "--"
                                     }
                                 ];
@@ -117,41 +122,56 @@ export default {
             });
         },
         getTokenStatsDistribution() {
-            return Service.commonInterface(
-                {
-                    tokenStatsDistribution: {}
-                },
-                result => {
-                    try {
-                        result = result && result.data;
-                        if (result) {
-                            let data = Object.entries(result);
+            return new Promise((resolve, reject) => {
+                Service.commonInterface(
+                    {
+                        tokenStatsDistribution: {}
+                    },
+                    result => {
+                        try {
+                            result = result && result.data;
+                            if (result) {
+                                let data = Object.entries(result);
 
-                            for (let v of data) {
-                                v[1].totalAmount = this.$options.filters.amountFromat(
-                                    v[1].total_amount,
-                                    undefined,
-                                    4
-                                );
-                                v[1].percentValue = Tools.formatDecimalNumberToFixedNumber(
-                                    Number(v[1].percent) * 100
-                                );
+                                for (let v of data) {
+                                    v[1].totalAmount = this.$options.filters.amountFromat(
+                                        v[1].total_amount,
+                                        undefined,
+                                        4,
+                                        true
+                                    );
+                                    v[1].percentValue = this.formatDecimalNumberToFixedNumber(
+                                        Number(v[1].percent) * 100
+                                    );
+                                }
+                                data.sort((a, b) => {
+                                    return (
+                                        Number(a[0].split("-")[0]) -
+                                        Number(b[0].split("-")[0])
+                                    );
+                                });
+                                this.pieDatas = data;
+                            } else {
+                                this.pieDatasNoData = true;
                             }
-                            data.sort((a, b) => {
-                                return (
-                                    Number(a[0].split("-")[0]) -
-                                    Number(b[0].split("-")[0])
-                                );
-                            });
-                            this.pieDatas = data;
-                        } else {
+                            resolve();
+                        } catch (err) {
                             this.pieDatasNoData = true;
+                            resolve();
                         }
-                    } catch (err) {
-                        this.pieDatasNoData = true;
                     }
-                }
-            );
+                );
+            });
+        },
+        formatDecimalNumberToFixedNumber(num) {
+            if (Number(num) < 0.0001) {
+                return "<0.0001";
+            } else {
+                let s = num + "";
+                let arr = s.split(".");
+                let n = arr[1] ? `${arr[0]}.${arr[1].substring(0, 4)}` : arr[0];
+                return n;
+            }
         }
     },
     mounted() {
