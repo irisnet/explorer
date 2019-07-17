@@ -252,6 +252,7 @@ func (service *BlockService) QueryRecent() []model.BlockInfoVo {
 	blockList, err := document.Block{}.GetRecentBlockList()
 
 	if err != nil {
+		logger.Error("GetRecentBlockList have error", logger.String("err", err.Error()))
 		panic(types.CodeNotFound)
 	}
 	for _, block := range blockList {

@@ -275,6 +275,7 @@ func (service *ProposalService) Query(id int) (resp model.ProposalInfoVo) {
 
 	data, err := document.Proposal{}.QueryProposalById(id)
 	if err != nil {
+		logger.Error("QueryProposalById have error", logger.String("err", err.Error()))
 		panic(types.CodeNotFound)
 	}
 
@@ -446,6 +447,7 @@ func (s *ProposalService) GetVoteTxs(proposalId int64, page, size int) model.Get
 	num, txList, err := document.CommonTx{}.QueryProposalTxById(proposalId, page, size)
 
 	if err != nil {
+		logger.Error("QueryProposalTxById have error", logger.String("err", err.Error()))
 		panic(types.CodeNotFound)
 	}
 	txs = txList

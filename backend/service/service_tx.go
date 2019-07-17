@@ -325,6 +325,7 @@ func (service *TxService) Query(hash string) interface{} {
 	txAsDoc, err := document.CommonTx{}.QueryTxByHash(hash)
 
 	if err != nil {
+		logger.Error("QueryTxByHash have error", logger.String("err", err.Error()))
 		panic(types.CodeNotFound)
 	}
 
