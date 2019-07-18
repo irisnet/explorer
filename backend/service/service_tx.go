@@ -786,6 +786,7 @@ func buildBaseTx(tx model.CommonTx) model.BaseTx {
 		GasUsed:     tx.GasUsed,
 		GasPrice:    tx.GasPrice,
 		Memo:        tx.Memo,
+		Log:         fetchLogMessage(tx.Log),
 		Timestamp:   tx.Time,
 	}
 
@@ -793,4 +794,15 @@ func buildBaseTx(tx model.CommonTx) model.BaseTx {
 		res.Signer = tx.Signers[0].AddrBech32
 	}
 	return res
+}
+
+func fetchLogMessage(logmsg string) string {
+
+	const TagMsg = "\"message\":\""
+	msg_begin := strings.Index(logmsg, TagMsg)
+	if msg_begin > 0 {
+		data := strings.Split(logmsg, TagMsg)
+		return data[1][:len(data[1])-2]
+	}
+	return ""
 }

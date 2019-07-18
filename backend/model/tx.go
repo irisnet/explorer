@@ -131,6 +131,7 @@ type BaseTx struct {
 	GasUsed     int64
 	GasPrice    float64
 	Memo        string
+	Log         string
 	Timestamp   time.Time
 }
 
