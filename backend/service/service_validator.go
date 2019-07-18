@@ -386,8 +386,10 @@ func (service *ValidatorService) UpdateValidatorIcons() error {
 	for _, validator := range validatorsDocArr {
 		if identity := validator.Description.Identity; identity != "" {
 			urlicons, err := lcd.GetIconsByKey(identity)
-			if err != nil {
-				logger.Error("GetIconsByKey have error", logger.String("error", err.Error()))
+			if err != nil || len(urlicons) == 0 {
+				if err != nil {
+					logger.Error("GetIconsByKey have error", logger.String("error", err.Error()))
+				}
 				continue
 			}
 			validator.Icons = urlicons
@@ -796,6 +798,7 @@ func (service *ValidatorService) UpdateValidators(vs []document.Validator) error
 		if v1, ok := vMap[v.OperatorAddress]; ok {
 			if isDiffValidator(v1, v) {
 				v.ID = v1.ID
+				v.Icons = v1.Icons
 				txs = append(txs, txn.Op{
 					C:  document.CollectionNmValidator,
 					Id: v1.ID,
