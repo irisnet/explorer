@@ -163,10 +163,10 @@
                         <div class="info_icon_div" v-if="gasPrice || gasUsedByTxn || gasWanted || gasLimit" v-table-tooltip="{show: true, container: $refs.valueInformation}">
                             <div class="tooltip_span">
                                 <div>
-                                    <p v-show="gasPrice">Gas Price : {{gasPrice}}</p>
-                                    <p v-show="gasUsedByTxn">Gas Used : {{gasUsedByTxn}}</p>
-                                    <p v-show="gasWanted">Gas Wanted : {{gasWanted}}</p>
-                                    <p v-show="gasLimit">Gas Limit : {{gasLimit}}</p>
+                                    <p>Gas Price : {{gasPrice || '--'}}</p>
+                                    <p>Gas Used : {{gasUsedByTxn || '--'}}</p>
+                                    <p>Gas Wanted : {{gasWanted || '--'}}</p>
+                                    <p>Gas Limit : {{gasLimit || '--'}}</p>
                                 </div>
                                 <i></i>
                             </div>
