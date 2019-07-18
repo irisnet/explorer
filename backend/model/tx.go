@@ -129,6 +129,7 @@ type BaseTx struct {
 	Status      string
 	GasLimit    int64
 	GasUsed     int64
+	GasWanted   int64
 	GasPrice    float64
 	Memo        string
 	Log         string
@@ -221,6 +222,7 @@ type CommonTx struct {
 	Code                 uint32               `bson:"code"`
 	Log                  string               `bson:"log"`
 	GasUsed              int64                `bson:"gas_used"`
+	GasWanted            int64                `bson:"gas_wanted"`
 	GasPrice             float64              `bson:"gas_price"`
 	ActualFee            utils.ActualFee      `bson:"actual_fee"`
 	ProposalId           uint64               `bson:"proposal_id"`
