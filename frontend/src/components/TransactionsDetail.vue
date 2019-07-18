@@ -8,7 +8,7 @@
         </div> -->
         <div :class="transactionsDetailWrap">
             <p class="transaction_information_content_title" style="height: 0.7rem; line-height: 0.7rem;">Transaction Information</p>
-            <div class="transactions_detail_information_wrap">
+            <div class="transactions_detail_information_wrap" ref="valueInformation">
                 <div class="information_props_wrap">
                     <span class="information_props">TxHash :</span>
                     <span class="information_value">{{hashValue}}</span>
@@ -138,7 +138,15 @@
                 </div>
                 <div class="information_props_wrap">
                     <span class="information_props">Status :</span>
-                    <span class="information_value">{{status}}</span>
+                    <span class="information_value information_value_fixed">
+                        <span :class="{'fail_status': status === 'Fail' }">{{status}}</span>
+                        <div class="info_icon_div question_icon_div" v-if="status === 'Fail' && failInfo" v-table-tooltip="{show: true, container: $refs.valueInformation}">
+                            <div class="tooltip_span">
+                                <div>{{failInfo}}</div>
+                                <i></i>
+                            </div>
+                        </div>
+                    </span>
                 </div>
                 <div class="information_props_wrap">
                     <span class="information_props">Age(Timestamp) :</span>
@@ -149,16 +157,21 @@
                     <span class="information_value">{{actualTxFee}}</span>
                 </div>
                 <div class="information_props_wrap">
-                    <span class="information_props">Gas Limit :</span>
-                    <span class="information_value">{{gasLimit}}</span>
-                </div>
-                <div class="information_props_wrap">
-                    <span class="information_props">Gas Used by Tx :</span>
-                    <span class="information_value">{{gasUsedByTxn}}</span>
-                </div>
-                <div class="information_props_wrap">
-                    <span class="information_props">Gas Price :</span>
-                    <span class="information_value">{{gasPrice}} <span v-if="gasPrice"></span>Nano</span>
+                    <span class="information_props">Gas Used :</span>
+                    <span class="information_value information_value_fixed">
+                        <span>{{gasUsedByTxn}}</span>
+                        <div class="info_icon_div" v-if="gasPrice || gasUsedByTxn || gasWanted || gasLimit" v-table-tooltip="{show: true, container: $refs.valueInformation}">
+                            <div class="tooltip_span">
+                                <div>
+                                    <p v-show="gasPrice">Gas Price : {{gasPrice}}</p>
+                                    <p v-show="gasUsedByTxn">Gas Used : {{gasUsedByTxn}}</p>
+                                    <p v-show="gasWanted">Gas Wanted : {{gasWanted}}</p>
+                                    <p v-show="gasLimit">Gas Limit : {{gasLimit}}</p>
+                                </div>
+                                <i></i>
+                            </div>
+                        </div>
+                    </span>
                 </div>
                 <div class="information_props_wrap">
                     <span class="information_props">Memo :</span>
@@ -188,7 +201,8 @@
 				actualTxFee: '',
 				gasLimit:'',
 				gasUsedByTxn:'',
-				gasPrice:'',
+                gasPrice:'',
+                gasWanted: '',
 				memo: "",
 				owner: "",
 				moniker: "",
@@ -208,7 +222,8 @@
 				depositer: "",
 				voter: "",
 				option: "",
-				status: "",
+                status: "",
+                failInfo: "",
 				withdrawAddress: "",
 				delegatorAddress: "",
 				validatorAddress: "",
@@ -240,7 +255,7 @@
             this.isMobileFunc(this.$store.state.isMobile);
 		},
 		mounted() {
-			this.getTransactionInfo()
+            this.getTransactionInfo();
 		},
 		methods: {
             isMobileFunc(isMobile) {
@@ -270,9 +285,11 @@
 								this.typeValue = data.Type === 'coin'?'transfer':data.Type;
 								this.gasPrice = Tools.convertScientificNotation2Number(Tools.formaNumberAboutGasPrice(data.GasPrice));
 								this.gasLimit = data.GasLimit;
-								this.gasUsedByTxn = data.GasUsed;
+                                this.gasUsedByTxn = data.GasUsed;
+                                this.gasWanted = data.GasWanted;
 								this.memo = data.Memo ? data.Memo : '--';
-								this.status = data.Status ? Tools.firstWordUpperCase(data.Status): '--';
+                                this.status = data.Status ? Tools.firstWordUpperCase(data.Status): '--';
+                                this.failInfo = data.Log;
 								if(data.Amount && data.Amount.length !==0){
 									this.amountValue = data.Amount.map(item=>{
 										item.amount = Tools.formatPriceToFixed(Tools.numberMoveDecimal(item.amount));
@@ -499,5 +516,61 @@
         }
         color:#3598db !important;
         cursor:pointer;
+    }
+    .information_value_fixed {
+        display: flex;
+        align-items: center;
+        & > span {
+            margin-right: 0.06rem;
+        }
+        .fail_status {
+            color: #fa8593;
+        }
+        .question_icon_div {
+            background-image: url(../assets/question_icon.png) !important;
+        }
+        .info_icon_div {
+            width: 0.14rem;
+            height: 0.14rem;
+            position: relative;
+            background: url(../assets/info_icon.png) no-repeat top left / 14px 14px;
+            cursor: pointer;
+            &:hover {
+                .tooltip_span {
+                    display: block;
+                    position: fixed;
+                    opacity: 0;
+                }
+            }
+            .tooltip_span {
+                display: none;
+                z-index: 1000;
+                color: #ffffff;
+                background-color: #000000;
+                border-radius: 0.04rem;
+                line-height: 16px;
+                div {
+                    padding: 8px 15px;
+                    & > p {
+                        white-space: nowrap;
+                    }
+                }
+                & > i {
+                    width: 0;
+                    height: 0;
+                    border: 0.06rem solid transparent;
+                    content: "";
+                    display: block;
+                    position: absolute;
+                    border-top-color: #000000;
+                    margin-left: -7px;
+                }
+            }
+            .tooltip_span_word_warp {
+                word-break: break-all;
+                word-wrap: break-word;
+                white-space: normal;
+            }
+        }
     }
 </style>

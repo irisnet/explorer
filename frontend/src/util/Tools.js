@@ -385,7 +385,11 @@ export default class Tools{
 				if(item.Amount){
 					if(item.Amount instanceof Array){
 						if(item.Amount.length > 0){
-							item.Amount[0].formatAmount = Tools.formatAmount(item.Amount[0].amount);
+                            item.Amount[0].formatAmount = Tools.formatAmount(item.Amount[0].amount);
+                            if (item.Amount[0].formatAmount) {
+                                let arr = item.Amount[0].formatAmount.split('.');
+                                item.Amount[0].formatAmount = `${arr[0]}.${arr[1] ? arr[1].padEnd(2, '0').substring(0, 2) : '00'}`
+                            }
 							if(!item.Amount[0].denom){
 								Amount = item.Amount.map(listItem => `${listItem.formatAmount} SHARES`).join(',');
 							}else {
