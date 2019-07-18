@@ -6,4 +6,5 @@ type BondedTokensVo struct {
 	VotingPower     int64  `json:"voting_power,string"`
 	OperatorAddress string `json:"operator_address"`
 	OwnerAddress    string `json:"owner_address"`
+	Icons           string `json:"icons"`
 }

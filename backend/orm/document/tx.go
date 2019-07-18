@@ -83,6 +83,7 @@ type CommonTx struct {
 	Code                 uint32               `bson:"code"`
 	Log                  string               `bson:"log"`
 	GasUsed              int64                `bson:"gas_used"`
+	GasWanted            int64                `bson:"gas_wanted"`
 	GasPrice             float64              `bson:"gas_price"`
 	ActualFee            ActualFee            `bson:"actual_fee"`
 	ProposalId           uint64               `bson:"proposal_id"`

@@ -31,6 +31,9 @@ func (service *ValidatorService) GetValidators(typ, origin string, page, size in
 
 		total, validatorList, err := document.Validator{}.GetValidatorListByPage(typ, page, size, true)
 		if err != nil || total <= 0 {
+			if err != nil {
+				logger.Error("GetValidatorListByPage have error", logger.String("error", err.Error()))
+			}
 			panic(types.CodeNotFound)
 		}
 
@@ -383,8 +386,10 @@ func (service *ValidatorService) UpdateValidatorIcons() error {
 	for _, validator := range validatorsDocArr {
 		if identity := validator.Description.Identity; identity != "" {
 			urlicons, err := lcd.GetIconsByKey(identity)
-			if err != nil {
-				logger.Error("GetIconsByKey have error", logger.String("error", err.Error()))
+			if err != nil || len(urlicons) == 0 {
+				if err != nil {
+					logger.Error("GetIconsByKey have error", logger.String("error", err.Error()))
+				}
 				continue
 			}
 			validator.Icons = urlicons
@@ -469,6 +474,7 @@ func (service *ValidatorService) QueryCandidatesTopN() model.ValDetailVo {
 	validatorsList, power, upTimeMap, err := document.Validator{}.GetCandidatesTopN()
 
 	if err != nil {
+		logger.Error("GetCandidatesTopN have error", logger.String("error", err.Error()))
 		panic(types.CodeNotFound)
 	}
 
@@ -492,6 +498,7 @@ func (service *ValidatorService) QueryValidator(address string) model.Candidates
 
 	validator, err := lcd.Validator(address)
 	if err != nil {
+		logger.Error("lcd.Validator have error", logger.String("error", err.Error()))
 		panic(types.CodeNotFound)
 	}
 
@@ -598,6 +605,9 @@ func (service *ValidatorService) QueryCandidateUptime(address, category string) 
 	address, err := document.Validator{}.GetCandidatePubKeyAddrByAddr(address)
 
 	if err != nil || address == "" {
+		if err != nil {
+			logger.Error("GetCandidatePubKeyAddrByAddr have error", logger.String("error", err.Error()))
+		}
 		panic(types.CodeNotFound)
 	}
 
@@ -609,6 +619,7 @@ func (service *ValidatorService) QueryCandidateUptime(address, category string) 
 		resultAsDoc, err := document.Validator{}.QueryCandidateUptimeWithHour(address)
 
 		if err != nil {
+			logger.Error("QueryCandidateUptimeWithHour have error", logger.String("error", err.Error()))
 			panic(types.CodeNotFound)
 		}
 		result := make([]model.UptimeChangeVo, 0, len(resultAsDoc))
@@ -627,6 +638,7 @@ func (service *ValidatorService) QueryCandidateUptime(address, category string) 
 		resultAsDoc, err := document.Validator{}.QueryCandidateUptimeByWeekOrMonth(address, category)
 
 		if err != nil {
+			logger.Error("QueryCandidateUptimeByWeekOrMonth have error", logger.String("error", err.Error()))
 			panic(types.CodeNotFound)
 		}
 		result := make([]model.UptimeChangeVo, 0, len(resultAsDoc))
@@ -650,6 +662,9 @@ func (service *ValidatorService) QueryCandidatePower(address, category string) [
 	address, err = document.Validator{}.GetCandidatePubKeyAddrByAddr(address)
 
 	if err != nil || address == "" {
+		if err != nil {
+			logger.Error("GetCandidatePubKeyAddrByAddr have error", logger.String("error", err.Error()))
+		}
 		panic(types.CodeNotFound)
 	}
 
@@ -671,6 +686,7 @@ func (service *ValidatorService) QueryCandidatePower(address, category string) [
 	validatorPowerArr, err := document.Validator{}.QueryCandidatePower(address, agoStr)
 
 	if err != nil {
+		logger.Error("QueryCandidatePower have error", logger.String("error", err.Error()))
 		panic(types.CodeNotFound)
 	}
 
@@ -782,6 +798,7 @@ func (service *ValidatorService) UpdateValidators(vs []document.Validator) error
 		if v1, ok := vMap[v.OperatorAddress]; ok {
 			if isDiffValidator(v1, v) {
 				v.ID = v1.ID
+				v.Icons = v1.Icons
 				txs = append(txs, txn.Op{
 					C:  document.CollectionNmValidator,
 					Id: v1.ID,
