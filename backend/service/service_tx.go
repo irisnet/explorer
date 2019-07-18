@@ -70,6 +70,7 @@ func (_ *TxService) CopyTxListFromDoc(data []document.CommonTx) []model.CommonTx
 			Code:       v.Code,
 			Log:        v.Log,
 			GasUsed:    v.GasUsed,
+			GasWanted:  v.GasWanted,
 			GasPrice:   v.GasPrice,
 			ProposalId: v.ProposalId,
 			Tags:       v.Tags,
@@ -325,6 +326,7 @@ func (service *TxService) Query(hash string) interface{} {
 	txAsDoc, err := document.CommonTx{}.QueryTxByHash(hash)
 
 	if err != nil {
+		logger.Error("QueryTxByHash have error", logger.String("err", err.Error()))
 		panic(types.CodeNotFound)
 	}
 
@@ -783,8 +785,10 @@ func buildBaseTx(tx model.CommonTx) model.BaseTx {
 		Status:      tx.Status,
 		GasLimit:    tx.Fee.Gas,
 		GasUsed:     tx.GasUsed,
+		GasWanted:   tx.GasWanted,
 		GasPrice:    tx.GasPrice,
 		Memo:        tx.Memo,
+		Log:         fetchLogMessage(tx.Log),
 		Timestamp:   tx.Time,
 	}
 
@@ -792,4 +796,15 @@ func buildBaseTx(tx model.CommonTx) model.BaseTx {
 		res.Signer = tx.Signers[0].AddrBech32
 	}
 	return res
+}
+
+func fetchLogMessage(logmsg string) string {
+
+	const TagMsg = "\"message\":\""
+	msg_begin := strings.Index(logmsg, TagMsg)
+	if msg_begin > 0 {
+		data := strings.Split(logmsg, TagMsg)
+		return data[1][:len(data[1])-2]
+	}
+	return ""
 }
