@@ -167,7 +167,8 @@ export default {
                                 ownerAddress:
                                     v.ownerAddress === value.address
                                         ? v.operatorAddress
-                                        : ""
+                                        : "",
+                                operatorAddress: value.address
                             },
                             itemStyle: {
                                 color: `${colorHS}, ${colorL}%, 1)`
@@ -313,6 +314,7 @@ export default {
         },
         forSeries(data) {
             this.series[0].data = data;
+            this.series[0].roam = !this.$store.state.isMobile;
         },
         echartsClick(data) {
             let delegations =
@@ -335,13 +337,10 @@ export default {
                     d.delegationsActive = true;
                 }
             }
-            if (data && data.data && !data.data.info) {
+            if (data && data.data && data.data.infoData) {
                 //delegations 跳转到address页面
-                let url = this.addressRoute(
-                    data.data.infoData.ownerAddress || data.name
-                );
                 let routeUrl = this.$router.resolve({
-                    path: url
+                    path: `/address/${data.data.infoData.operatorAddress}`
                 });
                 window.open(routeUrl.href, "_blank");
             }

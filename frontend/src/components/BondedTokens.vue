@@ -185,7 +185,7 @@ export default {
                                         ownerAddress: item.owner_address,
                                         votingPower: item.voting_power,
                                         identity: item.identity,
-                                        imageUrl: item.icons,
+                                        imageUrl: item.icons || require('../assets/header_img.png'),
                                         allVotingPower: allVotingPower
                                     };
                                 });
