@@ -590,7 +590,7 @@
 						this.flShowHeaderNetwork = true;
 						this.chainId = `${res.chain_id.toUpperCase()} ${res.cur_env.toUpperCase()}`;
 						res.configs.forEach(item => {
-							if (res.cur_env === item.env_nm) {
+							if (res.cur_env === item.env_nm && res.chain_id === item.chain_id) {
 								if (item.show_faucet && item.show_faucet === 1) {
 									this.flShowFaucet = true;
 									sessionStorage.setItem("Show_faucet", JSON.stringify(1))
