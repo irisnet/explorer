@@ -247,17 +247,24 @@ func (service *TxService) QueryTxList(query bson.M, page, pageSize int) model.Pa
 		logger.Error("document.Validator{}.QueryValidatorMonikerByAddrArr(valAddrArr)", logger.String("err", err.Error()), logger.Any("params", valAddrArr))
 	}
 
+	blackList := service.QueryBlackList()
 	for i := 0; i < len(items); i++ {
 		if stakeTx, ok := items[i].(model.StakeTx); ok {
 			if service.IsValidatorAddrPrefix(stakeTx.From) {
 				if fromMoniker, ok := monikerByAddrMap[stakeTx.From]; ok {
 					stakeTx.FromMoniker = fromMoniker
 				}
+				if blackone, ok := blackList[stakeTx.From]; ok {
+					stakeTx.FromMoniker = blackone.Moniker
+				}
 			}
 
 			if service.IsValidatorAddrPrefix(stakeTx.To) {
 				if toMoniker, ok := monikerByAddrMap[stakeTx.To]; ok {
 					stakeTx.ToMoniker = toMoniker
+				}
+				if blackone, ok := blackList[stakeTx.To]; ok {
+					stakeTx.ToMoniker = blackone.Moniker
 				}
 			}
 			items[i] = stakeTx
