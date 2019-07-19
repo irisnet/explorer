@@ -37,23 +37,23 @@ export default {
             items: [
                 {
                     label: "Total Supply",
-                    value: ''
+                    value: ""
                 },
                 {
                     label: "Circulation",
-                    value: ''
+                    value: ""
                 },
                 {
                     label: "Initial Supply",
-                    value: ''
+                    value: ""
                 },
                 {
                     label: "Burned",
-                    value: ''
+                    value: ""
                 },
                 {
                     label: "Bonded Tokens",
-                    value: ''
+                    value: ""
                 }
             ],
             pieDatas: [],
@@ -75,53 +75,48 @@ export default {
                                 let obj = [
                                     {
                                         label: "Total Supply",
-                                        value:
-                                            this.$options.filters.amountFromat(
-                                                data.totalsupply_tokens,
-                                                undefined,
-                                                4,
-                                                true
-                                            )
+                                        value: this.$options.filters.amountFromat(
+                                            data.totalsupply_tokens,
+                                            undefined,
+                                            4,
+                                            true
+                                        )
                                     },
                                     {
                                         label: "Circulation",
-                                        value:
-                                            this.$options.filters.amountFromat(
-                                                data.circulation_tokens,
-                                                undefined,
-                                                4,
-                                                true
-                                            )
+                                        value: this.$options.filters.amountFromat(
+                                            data.circulation_tokens,
+                                            undefined,
+                                            4,
+                                            true
+                                        )
                                     },
                                     {
                                         label: "Initial Supply",
-                                        value:
-                                            this.$options.filters.amountFromat(
-                                                data.initsupply_tokens,
-                                                undefined,
-                                                4,
-                                                true
-                                            )
+                                        value: this.$options.filters.amountFromat(
+                                            data.initsupply_tokens,
+                                            undefined,
+                                            4,
+                                            true
+                                        )
                                     },
                                     {
                                         label: "Burned",
-                                        value:
-                                            this.$options.filters.amountFromat(
-                                                data.burned_tokens,
-                                                undefined,
-                                                4,
-                                                true
-                                            )
+                                        value: this.$options.filters.amountFromat(
+                                            data.burned_tokens,
+                                            undefined,
+                                            4,
+                                            true
+                                        )
                                     },
                                     {
                                         label: "Bonded Tokens",
-                                        value:
-                                            this.$options.filters.amountFromat(
-                                                data.delegated_tokens,
-                                                undefined,
-                                                4,
-                                                true
-                                            )
+                                        value: this.$options.filters.amountFromat(
+                                            data.delegated_tokens,
+                                            undefined,
+                                            4,
+                                            true
+                                        )
                                     }
                                 ];
                                 this.items = obj;
@@ -227,7 +222,6 @@ export default {
             .table_contanier {
                 display: flex;
                 flex-wrap: wrap;
-                margin-right: -0.2rem;
                 .information_props_wrap {
                     font-size: 14px;
                     line-height: 20px;
@@ -255,6 +249,9 @@ export default {
                             cursor: pointer;
                             color: #3598db !important;
                         }
+                    }
+                    &:nth-last-of-type(1) {
+                        margin-right: 0;
                     }
                 }
             }
