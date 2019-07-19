@@ -20,20 +20,17 @@
                 <div v-show="pieDatasNoData" class="no_data_show">No Data</div>
             </div>
         </div>
-        <spin-component :showLoading="showLoading" />
     </div>
 </template>
 
 <script>
 import MTokenStatsEchart from "./commonComponents/MTokenStatsEchart";
 import Service from "../service";
-import SpinComponent from "./commonComponents/SpinComponent";
 import Tools from "../util/Tools";
 
 export default {
     components: {
-        MTokenStatsEchart,
-        SpinComponent
+        MTokenStatsEchart
     },
     data() {
         return {
@@ -61,8 +58,7 @@ export default {
             ],
             pieDatas: [],
             itemsNoData: false,
-            pieDatasNoData: false,
-            showLoading: false
+            pieDatasNoData: false
         };
     },
     methods: {
@@ -198,12 +194,10 @@ export default {
     mounted() {
         (async () => {
             try {
-                this.showLoading = true;
                 await Promise.all([
                     this.getTokenStats(),
                     this.getTokenStatsDistribution()
                 ]);
-                this.showLoading = false;
             } catch (err) {}
         })();
     }
