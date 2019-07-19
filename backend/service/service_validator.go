@@ -421,6 +421,13 @@ func (service *ValidatorService) GetValidatorDetail(validatorAddr string) model.
 		Website:  validatorAsDoc.Description.Website,
 		Details:  validatorAsDoc.Description.Details,
 	}
+	blackList := service.QueryBlackList()
+	if blackone, ok := blackList[validatorAddr]; ok {
+		desc.Moniker = blackone.Moniker
+		desc.Identity = blackone.Identity
+		desc.Website = blackone.Website
+		desc.Details = blackone.Details
+	}
 
 	jailedUntil, missedBlockCount, err := lcd.GetJailedUntilAndMissedBlocksCountByConsensusPublicKey(validatorAsDoc.ConsensusPubkey)
 
