@@ -136,6 +136,7 @@ func (service *ValidatorService) GetDepositedTxByValidatorAddr(validatorAddr str
 		logger.Error("QueryValidatorMonikerByAddrArr", logger.String("err", err.Error()))
 	}
 
+	blackList := service.QueryBlackList()
 	items := make([]model.ValidatorDepositTx, 0, size)
 	for _, v := range txs {
 		submited := false
@@ -157,8 +158,12 @@ func (service *ValidatorService) GetDepositedTxByValidatorAddr(validatorAddr str
 		proposer := ""
 		if from, ok := proposerByIdMap[v.ProposalId]; ok {
 			proposer = from
-			if m, ok := validatorMonikerMap[utils.Convert(conf.Get().Hub.Prefix.ValAddr, from)]; ok {
+			valaddr := utils.Convert(conf.Get().Hub.Prefix.ValAddr, from)
+			if m, ok := validatorMonikerMap[valaddr]; ok {
 				moniker = m
+			}
+			if blackone, ok := blackList[valaddr]; ok {
+				moniker = blackone.Moniker
 			}
 		}
 
