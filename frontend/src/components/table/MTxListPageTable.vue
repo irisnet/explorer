@@ -209,7 +209,7 @@
 					{
 						title:'TxStatus',
 						slot: 'TxStatus',
-						key: 'TxStatus',
+						key: 'Tx_Status',
 					},
 					{
 						title:'Timestamp',
