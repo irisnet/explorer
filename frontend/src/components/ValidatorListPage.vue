@@ -139,6 +139,7 @@
 				this.tableMinWidth = 12.8;
 			},
 			getValidatorList(currentPage, pageSize,status){
+                this.showLoading = true;
 				this.pageSize = this.validatorPageSize;
 				let url;
 				url = `/api/stake/validators?page=${currentPage}&size=${pageSize}&type=${status}&origin=browser`;
