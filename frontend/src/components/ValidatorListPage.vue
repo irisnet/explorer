@@ -12,7 +12,6 @@
         
         <div :class="blocksListPageWrap" :style="{'margin-top':`${blocksListPageWrap === 'personal_computer_blocks_list_page_wrap' ? '0.7rem' : '0'}`}">
             <div style="overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling:touch;">
-                <spin-component :showLoading="showLoading"/>
                 <!-- <validator-list-table :items="items" :minWidth="tableMinWidth" :showNoData="showNoData"></validator-list-table> -->
                 <m-validator-list-table ref="mtable"
                                         :items="items"
@@ -28,6 +27,7 @@
                 </b-pagination>
             </div>
         </div>
+        <spin-component :showLoading="showLoading"/>
     </div>
 </template>
 
@@ -139,6 +139,7 @@
 				this.tableMinWidth = 12.8;
 			},
 			getValidatorList(currentPage, pageSize,status){
+                this.showLoading = true;
 				this.pageSize = this.validatorPageSize;
 				let url;
 				url = `/api/stake/validators?page=${currentPage}&size=${pageSize}&type=${status}&origin=browser`;
