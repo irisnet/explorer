@@ -163,7 +163,6 @@
                         <div class="info_icon_div" v-if="gasPrice || gasUsedByTxn || gasWanted || gasLimit" v-table-tooltip="{show: true, container: $refs.valueInformation}">
                             <div class="tooltip_span">
                                 <div>
-                                    <p>Gas Price : {{gasPrice || '--'}}</p>
                                     <p>Gas Used : {{gasUsedByTxn || '--'}}</p>
                                     <p>Gas Wanted : {{gasWanted || '--'}}</p>
                                     <p>Gas Limit : {{gasLimit || '--'}}</p>
@@ -172,6 +171,10 @@
                             </div>
                         </div>
                     </span>
+                </div>
+                <div class="information_props_wrap">
+                    <span class="information_props">Gas Price :</span>
+                    <span class="information_value">{{gasPrice}} <span v-if="gasPrice">Nano</span></span>
                 </div>
                 <div class="information_props_wrap">
                     <span class="information_props">Memo :</span>
@@ -563,7 +566,7 @@
                     display: block;
                     position: absolute;
                     border-top-color: #000000;
-                    margin-left: -7px;
+                    margin-left: -6px;
                 }
             }
             .tooltip_span_word_warp {

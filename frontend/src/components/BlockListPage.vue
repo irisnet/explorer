@@ -148,11 +148,10 @@ export default {
                                     validators: `${item.precommit_validator_num}/${item.validator_num_for_height}`,
                                     votingPower:
                                         item.voting_power_for_height > 0
-                                            ? Tools.formatDecimalNumberToFixedNumber(
-                                                  (item.precommit_voting_power /
+                                            ? Tools.subStrings(String((item.precommit_voting_power /
                                                       item.voting_power_for_height) *
                                                       100
-                                              ) + "%"
+                                              ), 4) + "%"
                                             : "--",
                                     moniker: item.proposer_moniker,
                                     proposerAddr:

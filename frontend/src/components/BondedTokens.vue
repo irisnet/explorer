@@ -159,6 +159,7 @@ export default {
             );
         },
         getValidatorList() {
+            this.showNoData = false;
             return new Promise((resolve, reject) => {
                 Service.commonInterface(
                     {
