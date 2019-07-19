@@ -97,6 +97,7 @@ type ProposalInfo struct {
 }
 
 type Tx struct {
+	Moniker   string          `json:"moniker"`
 	Hash      string          `json:"hash"`
 	From      string          `json:"from"`
 	To        string          `json:"to"`
@@ -128,8 +129,10 @@ type BaseTx struct {
 	Status      string
 	GasLimit    int64
 	GasUsed     int64
+	GasWanted   int64
 	GasPrice    float64
 	Memo        string
+	Log         string
 	Timestamp   time.Time
 }
 
@@ -219,6 +222,7 @@ type CommonTx struct {
 	Code                 uint32               `bson:"code"`
 	Log                  string               `bson:"log"`
 	GasUsed              int64                `bson:"gas_used"`
+	GasWanted            int64                `bson:"gas_wanted"`
 	GasPrice             float64              `bson:"gas_price"`
 	ActualFee            utils.ActualFee      `bson:"actual_fee"`
 	ProposalId           uint64               `bson:"proposal_id"`

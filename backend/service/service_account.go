@@ -7,6 +7,7 @@ import (
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
+	"github.com/irisnet/explorer/backend/logger"
 )
 
 type AccountService struct {
@@ -48,6 +49,7 @@ func (service *AccountService) QueryRichList() interface{} {
 	result, err := document.Account{}.GetAccountList()
 
 	if err != nil {
+		logger.Error("GetAccountList have error", logger.String("err", err.Error()))
 		panic(types.CodeNotFound)
 	}
 

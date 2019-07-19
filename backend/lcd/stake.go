@@ -64,6 +64,7 @@ func GetDelegationsByDelAddr(delAddr string) (delegations []DelegationVo) {
 	return
 }
 
+
 func GetDelegationsByValidatorAddr(valAddr string) (delegations []DelegationVo) {
 
 	url := fmt.Sprintf(UrlDelegationsByValidator, conf.Get().Hub.LcdUrl, valAddr)
@@ -164,9 +165,6 @@ func GetUnbondingDelegationsByValidatorAddr(valAddr string) (unbondingDelegation
 	return
 }
 
-func GetRedelegationsByvalidatorAddr(valAddr string) {
-
-}
 
 func DelegationByValidator(address string) (result []DelegationVo) {
 	url := fmt.Sprintf(UrlDelegationByVal, conf.Get().Hub.LcdUrl, address)

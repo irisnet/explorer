@@ -81,7 +81,8 @@
     text-align: left;
   }
   .top_list_table_container.table thead tr th:nth-child(3){
-    padding-left: 0.94rem !important;
+    text-align: right;
+    padding-right: 1.6rem !important;
   }
   .top_list_table_container.table thead tr th:nth-child(4){
     width: 3rem;

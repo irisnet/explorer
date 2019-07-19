@@ -3,7 +3,6 @@ package controller
 import (
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/model"
-	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/types"
 )
 
@@ -22,13 +21,13 @@ func RegisterAccount(r *mux.Router) error {
 	return nil
 }
 
-type AccountController struct {
-	*service.AccountService
-}
-
-var account = AccountController{
-	service.Get(service.Account).(*service.AccountService),
-}
+//type AccountController struct {
+//	*service.AccountService
+//}
+//
+//var account = AccountController{
+//	service.Get(service.Account).(*service.AccountService),
+//}
 
 func registerQueryAccount(r *mux.Router) error {
 

@@ -15,15 +15,16 @@ const (
 	KeyDbPwd       = "DB_PASSWORD"
 	KeyDbPoolLimit = "DB_POOL_LIMIT"
 
-	KeyServerPort  = "PORT"
-	KeyAddrHubLcd  = "ADDR_NODE_SERVER"
-	KeyAddrHubNode = "ADDR_HUB_RPC"
-	KeyAddrFaucet  = "FAUCET_URL"
-	KeyChainId     = "CHAIN_ID"
-	KeyApiVersion  = "API_VERSION"
-	KeyMaxDrawCnt  = "MAX_DRAW_CNT"
-	KeyShowFaucet  = "SHOW_FAUCET"
-	KeyCurEnv      = "CUR_ENV"
+	KeyServerPort    = "PORT"
+	KeyAddrHubLcd    = "ADDR_NODE_SERVER"
+	KeyAddrHubNode   = "ADDR_HUB_RPC"
+	KeyAddrFaucet    = "FAUCET_URL"
+	KeyChainId       = "CHAIN_ID"
+	KeyApiVersion    = "API_VERSION"
+	KeyMaxDrawCnt    = "MAX_DRAW_CNT"
+	KeyShowFaucet    = "SHOW_FAUCET"
+	KeyCurEnv        = "CUR_ENV"
+	KeyInitialSupply = "INITIAL_SUPPLY"
 
 	KeyPrefixAccAddr  = "PrefixAccAddr"
 	KeyPrefixAccPub   = "PrefixAccPub"
@@ -38,18 +39,20 @@ const (
 	EnvironmentStage   = "stage"
 	EnvironmentProd    = "prod"
 
+	InitialSupply  = "2000000000" //IRIS
 	DefaultEnvironment = EnvironmentDevelop
 )
 
 var (
 	config        Config
 	defaultConfig = map[string]map[string]string{}
+	IniSupply     string
 )
 
 func init() {
 	logger.Info("==================================load config start==================================")
 	loadDefault()
-
+	IniSupply = getEnv(KeyInitialSupply, DefaultEnvironment)
 	addrs := strings.Split(getEnv(KeyDbAddr, DefaultEnvironment), ",")
 	db := dbConf{
 		Addrs:     addrs,
@@ -110,6 +113,7 @@ func loadDefault() {
 		KeyPrefixConsPub:  "fcp",
 		KeyShowFaucet:     "1",
 		KeyCurEnv:         "dev",
+		KeyInitialSupply:  InitialSupply,
 	}
 
 	defaultConfig[EnvironmentLocal] = map[string]string{
@@ -133,6 +137,7 @@ func loadDefault() {
 		KeyPrefixConsPub:  "fcp",
 		KeyShowFaucet:     "1",
 		KeyCurEnv:         "dev",
+		KeyInitialSupply:  InitialSupply,
 	}
 }
 

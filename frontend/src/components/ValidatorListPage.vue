@@ -12,7 +12,6 @@
         
         <div :class="blocksListPageWrap" :style="{'margin-top':`${blocksListPageWrap === 'personal_computer_blocks_list_page_wrap' ? '0.7rem' : '0'}`}">
             <div style="overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling:touch;">
-                <spin-component :showLoading="showLoading"/>
                 <!-- <validator-list-table :items="items" :minWidth="tableMinWidth" :showNoData="showNoData"></validator-list-table> -->
                 <m-validator-list-table ref="mtable"
                                         :items="items"
@@ -28,6 +27,7 @@
                 </b-pagination>
             </div>
         </div>
+        <spin-component :showLoading="showLoading"/>
     </div>
 </template>
 
@@ -139,6 +139,7 @@
 				this.tableMinWidth = 12.8;
 			},
 			getValidatorList(currentPage, pageSize,status){
+                this.showLoading = true;
 				this.pageSize = this.validatorPageSize;
 				let url;
 				url = `/api/stake/validators?page=${currentPage}&size=${pageSize}&type=${status}&origin=browser`;
@@ -161,15 +162,16 @@
 									bondedToken: `${Tools.formatPriceToFixed(Number(item.tokens),2)} ${Constant.CHAINNAME.toLocaleUpperCase()}`,
 									uptime: `${(item.uptime * 100).toFixed(2)}%`,
 									votingPower: `${(item.voting_rate * 100).toFixed(4)}%`,
-									selfBond: `${Tools.formatPriceToFixed(Number(item.self_bond.match(/\d*(\.\d{0,4})?/)[0]))} ${Constant.CHAINNAME.toLocaleUpperCase()}`,
+									selfBond: `${Tools.subStrings(Tools.formatPriceToFixed(Number(item.self_bond.match(/\d*(\.\d{0,4})?/)[0])), 2)} ${Constant.CHAINNAME.toLocaleUpperCase()}`,
 									delegatorNum: item.delegator_num,
 									bondHeight: Number(item.bond_height),
 									unbondingHeight: item.unbonding_height && Number(item.unbonding_height) > 0 ? Number(item.unbonding_height) : '--',
 									unbondingTime: (new Date(item.unbonding_time).getTime()) > 0 ? Tools.format2UTC(item.unbonding_time) : '--',
-									identity: item.description.identity,
+                                    identity: item.description.identity,
+                                    url: item.icons || require('../assets/header_img.png')
 								}
 							});
-							this.items = this.getValidatorHeaderImg(this.items);
+							// this.items = this.getValidatorHeaderImg(this.items);
 							this.showNoData = false;
 						}else {
 							this.showNoData = true;
@@ -191,7 +193,7 @@
 					if(data[i].identity){
 						Http.http(`${url}${data[i].identity}`).then(res =>{
 							if(res && res.them && res.them[0].pictures && res.them[0].pictures.primary && res.them[0].pictures.primary.url){
-								data[i].url = res.them[0].pictures.primary.url;
+                                data[i].url = res.them[0].pictures.primary.url;
 							}else {
 								data[i].url = require('../assets/header_img.png');
 							}

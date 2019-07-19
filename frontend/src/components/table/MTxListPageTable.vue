@@ -1,6 +1,6 @@
 <template>
     <div>
-        <m-table v-table-head-fixed :class="showNoData ? 'show_no_data' : ''" class="tx_container_table override_mtable" :columns="fields" :data="items">
+        <m-table v-table-head-fixed class="tx_container_table override_mtable" :columns="fields" :data="items">
             <template slot-scope="{ row }" slot="Block">
                     <router-link :to="`/block/${row.Block}`" class="link_style">{{row.Block}}</router-link>
             </template>
@@ -84,11 +84,7 @@
 	        items: {
 		        type: Array,
 		        default: []
-	        },
-	        showNoData: {
-		        type: Boolean,
-		        default: true
-	        },
+	        }
         },
         data () {
 			return {
@@ -98,8 +94,7 @@
             title:'Tx_Hash',
             slot: 'Tx_Hash',
             width: 100,
-            tooltip: true,
-            tooltipClassName: 'tooltip_left'
+            tooltip: true
           },
 					{
 						title:'Block',
@@ -152,8 +147,7 @@
                 title:'Tx_Hash',
                 slot: 'Tx_Hash',
                 width: 100,
-                tooltip: true,
-                tooltipClassName: 'tooltip_left'
+                tooltip: true
               },
 					{
 						title:'Block',
@@ -207,8 +201,7 @@
 						title:'Tx_Hash',
 						slot: 'Tx_Hash',
             width: 100,
-            tooltip: true,
-            tooltipClassName: 'tooltip_left'
+            tooltip: true
 					},
 					{
 						title:'Block',
@@ -261,8 +254,7 @@
 						title:'Tx_Hash',
 						slot: 'Tx_Hash',
             width: 100,
-            tooltip: true,
-            tooltipClassName: 'tooltip_left'
+            tooltip: true
 					},
 					{
 						title:'Block',
@@ -327,20 +319,16 @@
 			        return Tools.formatTxHash(TxHash)
 		        }
 	        },
-	        setTxFields(items){
-		        items.forEach( (tx) => {
-			        if(tx.listName === 'transfer'){
-				        this.fields = this.transferFields
-			        }else if(tx.listName === 'declarations') {
-				        this.fields = this.declarationFields
-			        }else  if(tx.listName === 'stakes'){
-				        this.fields = this.stakeFields
-			        }else if(tx.listName === 'gov'){
-				        this.fields = this.govFields
-			        }else {
-				        this.fields = []
-			        }
-		        })
+	        setTxFields(){
+                if(this.$route.params.txType === 'transfers'){
+					this.fields = this.transferFields
+				}else if(this.$route.params.txType === 'stakes'){
+					this.fields = this.stakeFields
+				}else if(this.$route.params.txType === 'declarations'){
+                    this.fields = this.declarationFields
+				}else if(this.$route.params.txType === 'governance'){
+					this.fields = this.govFields
+				}
             },
             formatMoniker (moniker) {
                 if (!moniker) {
@@ -350,23 +338,14 @@
             }
         },
 		watch:{
-			showNoData(showNoData){
-			},
 			items(items){
-				this.setTxFields(items)
+				this.setTxFields();
 			}
-		},
+		}
 	}
 </script>
 
 <style lang="scss">
-    .show_no_data{
-        .m-table-body {
-            .m_table tbody{
-                display: none;
-            }
-        }
-    }
     table{
         thead{
             tr{

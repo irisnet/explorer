@@ -68,6 +68,19 @@ func (a Account) GetAccountList() ([]Account, error) {
 	return result, err
 }
 
+func (a Account) GetAllAccount() ([]Account, error) {
+	var result []Account
+
+	var query = orm.NewQuery()
+	defer query.Release()
+
+	query.SetCollection(CollectionNmAccount).
+		SetSort(desc("total.amount"), AccountFieldTotalUpdateAt, AccountFieldAccountNumber).
+		SetResult(&result)
+	err := query.Exec()
+	return result, err
+}
+
 func (a Account) Name() string {
 	return CollectionNmAccount
 }

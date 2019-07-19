@@ -175,12 +175,12 @@ export default class Tools{
 		if(str.indexOf(".") !== -1) {
 			let splitString = str.split(".")[1];
 			if(splitString.length > splitNum){
-				return str.split(".")[0] + '.' +  splitString.substr(0,splitNum) + "..."
+				return str.split(".")[0] + '.' +  splitString.substr(0,splitNum)
 			}else {
-				return str.split(".")[0] + '.' + splitString
+				return str.split(".")[0] + '.' + splitString.padEnd(4, "0")
 			}
 		}else {
-			return str
+			return str + '.0000'
 		}
 	}
 	
@@ -189,13 +189,13 @@ export default class Tools{
 			return Tools.toFixedformatNumber(num ,val);
 		}else{
 			if(/^\+?[1-9][0-9]*$/.test(num)){
-				return Tools.formatPriceToFixed(num) + " "
+				return Tools.formatPriceToFixed(num)
 			}else {
 				if(num){
 					num = Tools.convertScientificNotation2Number(num);
 					let str = String(num).split(".")[1];
 					if(str.length > 2){
-						return Tools.formatPriceToFixed(num ,2)+ "...";
+						return Tools.formatPriceToFixed(num ,2);
 					}else {
 						return Tools.formatPriceToFixed(num)
 					}
@@ -214,10 +214,10 @@ export default class Tools{
 		return new BigNumber(num).toFixed();
 	}
 	static convertScientificNotation3Number(num){
-		return new BigNumber(num).toFixed(6);
+		return new BigNumber(num).toFixed(2);
 	}
 	static formatFeeToFixedNumber(num){
-		return  Tools.toFixedformatNumber(Tools.formatNumber(num) ,4) + "...";
+		return  Tools.toFixedformatNumber(Tools.formatNumber(num) ,4);
 	}
 	static formatDecimalNumberToFixedNumber(num){
 		if(typeof num === 'number' && !Object.is(num, NaN)) {
@@ -304,10 +304,11 @@ export default class Tools{
 	 * 格式化货币价格
 	 */
 	static formatPrice(value) {
-		let integer = value.split('.')[0];
-		let decimals = value.split('.')[1];
+        let arr = value.split('.');
+		let integer = arr[0];
+		let decimals = arr[1];
 		let formattedInteger = integer.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-		return`${formattedInteger}.${decimals}`
+		return decimals ? `${formattedInteger}.${decimals}` : `${formattedInteger}`;
 	}
 	
 	static formatBalance(number, places, symbol, thousand, decimal) {
@@ -323,7 +324,7 @@ export default class Tools{
 	}
 	
 	static formatDenom(denom){
-		if(denom === "iris-atto" || denom === "iris"){
+		if(denom.toLowerCase() === "iris-atto" || denom.toLowerCase() === "iris"){
 			return "IRIS"
 		}
 	}
@@ -375,7 +376,15 @@ export default class Tools{
 	 */
 	static formatTxHash(txHash){
 		return `${txHash.substring(0,3)}...${txHash.substring(txHash.length - 3)}`
-	}
+    }
+    static subStrings(value, afterPointLength) { //截取指定小数位长度字符串
+        if (value) {
+            let arr = value.split('.');
+            arr[1] = arr[1] || '';
+            value = `${arr[0]}.${arr[1].padEnd(afterPointLength, '0').substring(0, afterPointLength)}`;
+        }
+        return value;
+    }
 	static formatTxList(list,txType){
 		if(list !== null){
 			return list.map(item => {
@@ -384,7 +393,10 @@ export default class Tools{
 				if(item.Amount){
 					if(item.Amount instanceof Array){
 						if(item.Amount.length > 0){
-							item.Amount[0].formatAmount = Tools.formatAmount(item.Amount[0].amount);
+                            item.Amount[0].formatAmount = Tools.formatAmount(item.Amount[0].amount);
+                            if (item.Amount[0].formatAmount) {
+                                item.Amount[0].formatAmount = Tools.subStrings(item.Amount[0].formatAmount, 2);
+                            }
 							if(!item.Amount[0].denom){
 								Amount = item.Amount.map(listItem => `${listItem.formatAmount} SHARES`).join(',');
 							}else {

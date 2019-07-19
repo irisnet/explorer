@@ -35,6 +35,7 @@ func (task TxNumGroupByDayTask) Start() {
 
 		if err := txNumStat.Insert(); err != nil {
 			logger.Error("txNumStatTask failed", logger.String("err", err.Error()))
+			return
 		}
 		logger.Info("TxNumGroupByDayTask Start One Times",logger.Int("total",total))
 	})

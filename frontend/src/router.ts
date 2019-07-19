@@ -16,7 +16,9 @@ import ValidatorListPage from "./components/ValidatorListPage.vue";
 import Parameters from "./components/ParametersPage.vue"
 import RichList from "./components/RichList.vue"
 import BlockList from "./components/BlockListPage.vue"
-import TxList from "./components/TxListPage.vue"
+import TxList from "./components/TxListPage.vue";
+import BondedTokens from "./components/BondedTokens.vue";
+import TokenStats from "./components/TokenStats.vue";
 Vue.use(Router);
 
 const router = new Router({
@@ -84,6 +86,12 @@ const router = new Router({
     {
       path: '/statistics/richlist', component: RichList,
     },
+    {
+      path: '/statistics/tokenStats', component: TokenStats,
+    },
+    {
+      path: '/statistics/bondedTokens', component: BondedTokens,
+    }
   ]
 
 })

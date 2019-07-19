@@ -37,6 +37,12 @@ func TestQueryTxByHash(t *testing.T) {
 	t.Logf("tx: %v\n", tx)
 }
 
+func TestServiceTxfetchLogMessage(t *testing.T) {
+	log := "Msg 0 failed: {\"codespace\":\"sdk\",\"code\":10,\"message\":\"12097471760000000000000iris-atto is less than 100000000000000000000000iris-atto\"}"
+	ret := fetchLogMessage(log)
+	t.Log(ret)
+}
+
 func TestQueryByAcc(t *testing.T) {
 
 	txPage := new(TxService).QueryByAcc("faa1eqvkfthtrr93g4p9qspp54w6dtjtrn279vcmpn", 0, 10)

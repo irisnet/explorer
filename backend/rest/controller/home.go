@@ -9,7 +9,6 @@ import (
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
-	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 )
@@ -67,7 +66,7 @@ func registerNavigationBar(r *mux.Router) error {
 			result.VoteValNum = voteValNum
 			result.ActiveValNum = len(validatorSet.Validators)
 
-			validator, err := service.Get(service.Validator).(*service.ValidatorService).QueryValidatorMonikerAndValidatorAddrByHashAddr(proposer)
+			validator, err := stake.QueryValidatorMonikerAndValidatorAddrByHashAddr(proposer)
 			if err != nil {
 				logger.Error("query validator moniker and addr ", logger.String("err", err.Error()))
 			}

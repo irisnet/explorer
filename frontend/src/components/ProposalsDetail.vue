@@ -307,9 +307,16 @@ export default {
                         this.depositorItemsTotal = data.total;
                         this.depositorItems = data.items.map(item => {
                             let votingListItemTime = (new Date(item.timestamp).getTime()) > 0 ? Tools.format2UTC(item.timestamp) : '--';
+                            let amount = item.amount && item.amount[0] ? `${this.$options.filters.amountFromat(item.amount[0])}` : '';
+                            if (amount) {
+                                let arr = amount.split(' ');
+                                amount = `${Tools.subStrings(arr[0], 2)} ${arr[1]}`;
+                            }
                             return {
                                 Depositor: item.from,
-                                Amount: item.amount && item.amount[0] ? `${this.$options.filters.amountFromat(item.amount[0])}` : '--',
+                                Depositor_tooltip: item.moniker ? '' : item.from,
+                                moniker: item.moniker,
+                                Amount: amount || '--',
                                 Type: item.type,
                                 Tx_Hash: item.hash,
                                 Time: votingListItemTime

@@ -20,13 +20,13 @@
             <div class="top_list_content">
                 <div class="top_list_table_wrap">
                     <div class="top_list_table_content">
-                        <spin-component :show-loading="showLoading"></spin-component>
                         <top-list-table :items="topList" :showNoData="showNoData"></top-list-table>
                         <div v-show="showNoData" class="no_data_show">No Data</div>
                     </div>
                 </div>
             </div>
         </div>
+        <spin-component :show-loading="showLoading"></spin-component>
     </div>
 </template>
 
@@ -134,7 +134,7 @@ export default {
             if (toFixedNumber < minToFixedNumber) {
                 return "< 0.0001";
             } else {
-                return toFixedNumber;
+                return Tools.subStrings(toFixedNumber + '', 4);
             }
         },
         getUpDatedTime(upDatedTime) {

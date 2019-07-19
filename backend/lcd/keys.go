@@ -9,6 +9,8 @@ import (
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
+	"github.com/irisnet/explorer/backend/model"
+	"errors"
 )
 
 type (
@@ -76,4 +78,23 @@ func Faucet(req *http.Request) (bz []byte, err error) {
 func GetToken(req *http.Request) (bz []byte, err error) {
 	uri := fmt.Sprintf(types.UrlFaucetApplyService, conf.Get().Server.FaucetUrl)
 	return utils.Forward(req, uri)
+}
+
+func GetIconsByKey(key string) (string, error) {
+	url := fmt.Sprintf(UrlLookupIconsByKeySuffix, key)
+	resBytes, err := utils.Get(url)
+	if err != nil {
+		return "", err
+	}
+	var picdata model.LookupIcons
+	if err := json.Unmarshal(resBytes, &picdata); err != nil {
+		logger.Error("get icons error", logger.String("err", err.Error()))
+		return "", err
+	}
+
+	if picdata.Status.Code != 0 {
+		return "", errors.New("get icons failed")
+	}
+
+	return picdata.Them[0].Pictures.Primary.Url, nil
 }
