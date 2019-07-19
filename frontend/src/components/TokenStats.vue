@@ -6,10 +6,10 @@
         >
             <div>
                 <div class="page_title">IRIS Token Stats</div>
-                <div class="table_contanier" v-show="items.length">
+                <div class="table_contanier" v-show="!itemsNoData">
                     <div class="information_props_wrap" v-for="v in items" :key="v.label">
                         <span class="information_props">{{v.label}}</span>
-                        <span class="information_value">{{v.value}}</span>
+                        <span class="information_value">{{v.value || '--'}}</span>
                     </div>
                 </div>
                 <div v-show="itemsNoData" class="no_data_show">No Data</div>
@@ -37,7 +37,28 @@ export default {
     },
     data() {
         return {
-            items: [],
+            items: [
+                {
+                    label: "Total Supply",
+                    value: ''
+                },
+                {
+                    label: "Circulation",
+                    value: ''
+                },
+                {
+                    label: "Initial Supply",
+                    value: ''
+                },
+                {
+                    label: "Burned",
+                    value: ''
+                },
+                {
+                    label: "Bonded Tokens",
+                    value: ''
+                }
+            ],
             pieDatas: [],
             itemsNoData: false,
             pieDatasNoData: false,
@@ -64,7 +85,7 @@ export default {
                                                 undefined,
                                                 4,
                                                 true
-                                            ) || "--"
+                                            )
                                     },
                                     {
                                         label: "Circulation",
@@ -74,7 +95,7 @@ export default {
                                                 undefined,
                                                 4,
                                                 true
-                                            ) || "--"
+                                            )
                                     },
                                     {
                                         label: "Initial Supply",
@@ -84,7 +105,7 @@ export default {
                                                 undefined,
                                                 4,
                                                 true
-                                            ) || "--"
+                                            )
                                     },
                                     {
                                         label: "Burned",
@@ -94,7 +115,7 @@ export default {
                                                 undefined,
                                                 4,
                                                 true
-                                            ) || "--"
+                                            )
                                     },
                                     {
                                         label: "Bonded Tokens",
@@ -104,7 +125,7 @@ export default {
                                                 undefined,
                                                 4,
                                                 true
-                                            ) || "--"
+                                            )
                                     }
                                 ];
                                 this.items = obj;

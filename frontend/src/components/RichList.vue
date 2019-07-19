@@ -134,7 +134,7 @@ export default {
             if (toFixedNumber < minToFixedNumber) {
                 return "< 0.0001";
             } else {
-                return toFixedNumber;
+                return Tools.subStrings(toFixedNumber + '', 4);
             }
         },
         getUpDatedTime(upDatedTime) {

@@ -161,7 +161,7 @@
 									bondedToken: `${Tools.formatPriceToFixed(Number(item.tokens),2)} ${Constant.CHAINNAME.toLocaleUpperCase()}`,
 									uptime: `${(item.uptime * 100).toFixed(2)}%`,
 									votingPower: `${(item.voting_rate * 100).toFixed(4)}%`,
-									selfBond: `${Tools.formatPriceToFixed(Number(item.self_bond.match(/\d*(\.\d{0,4})?/)[0]))} ${Constant.CHAINNAME.toLocaleUpperCase()}`,
+									selfBond: `${Tools.subStrings(Tools.formatPriceToFixed(Number(item.self_bond.match(/\d*(\.\d{0,4})?/)[0])), 2)} ${Constant.CHAINNAME.toLocaleUpperCase()}`,
 									delegatorNum: item.delegator_num,
 									bondHeight: Number(item.bond_height),
 									unbondingHeight: item.unbonding_height && Number(item.unbonding_height) > 0 ? Number(item.unbonding_height) : '--',

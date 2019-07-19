@@ -189,7 +189,7 @@ export default class Tools{
 			return Tools.toFixedformatNumber(num ,val);
 		}else{
 			if(/^\+?[1-9][0-9]*$/.test(num)){
-				return Tools.formatPriceToFixed(num) + " "
+				return Tools.formatPriceToFixed(num)
 			}else {
 				if(num){
 					num = Tools.convertScientificNotation2Number(num);
@@ -214,7 +214,7 @@ export default class Tools{
 		return new BigNumber(num).toFixed();
 	}
 	static convertScientificNotation3Number(num){
-		return new BigNumber(num).toFixed(6);
+		return new BigNumber(num).toFixed(2);
 	}
 	static formatFeeToFixedNumber(num){
 		return  Tools.toFixedformatNumber(Tools.formatNumber(num) ,4);
@@ -376,7 +376,15 @@ export default class Tools{
 	 */
 	static formatTxHash(txHash){
 		return `${txHash.substring(0,3)}...${txHash.substring(txHash.length - 3)}`
-	}
+    }
+    static subStrings(value, afterPointLength) { //截取指定小数位长度字符串
+        if (value) {
+            let arr = value.split('.');
+            arr[1] = arr[1] || '';
+            value = `${arr[0]}.${arr[1].padEnd(afterPointLength, '0').substring(0, afterPointLength)}`;
+        }
+        return value;
+    }
 	static formatTxList(list,txType){
 		if(list !== null){
 			return list.map(item => {
@@ -387,8 +395,7 @@ export default class Tools{
 						if(item.Amount.length > 0){
                             item.Amount[0].formatAmount = Tools.formatAmount(item.Amount[0].amount);
                             if (item.Amount[0].formatAmount) {
-                                let arr = item.Amount[0].formatAmount.split('.');
-                                item.Amount[0].formatAmount = `${arr[0]}.${arr[1] ? arr[1].padEnd(2, '0').substring(0, 2) : '00'}`
+                                item.Amount[0].formatAmount = Tools.subStrings(item.Amount[0].formatAmount, 2);
                             }
 							if(!item.Amount[0].denom){
 								Amount = item.Amount.map(listItem => `${listItem.formatAmount} SHARES`).join(',');
