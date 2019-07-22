@@ -5,6 +5,7 @@ import (
 
 	"github.com/irisnet/explorer/backend/model"
 	"gopkg.in/mgo.v2/bson"
+	"encoding/json"
 )
 
 func TestQueryTxList(t *testing.T) {
@@ -12,7 +13,8 @@ func TestQueryTxList(t *testing.T) {
 
 	t.Logf("total: %v \n", txPage.Count)
 
-	t.Logf("items: %v \n", txPage.Data)
+	bytestr, _ := json.Marshal(txPage.Data)
+	t.Logf("items: %v \n", string(bytestr))
 }
 
 func TestTxQueryList(t *testing.T) {
