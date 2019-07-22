@@ -117,7 +117,6 @@ func (service *TxService) QueryTxList(query bson.M, page, pageSize int) model.Pa
 	}
 
 	commonTxUtils := service.CopyTxListFromDoc(data)
-
 	items := service.buildData(commonTxUtils)
 
 	forwardTxHashs := make([]string, 0, len(items))
@@ -619,18 +618,18 @@ func (service *TxService) buildData(txs []model.CommonTx) []interface{} {
 			switch stakeTx.Type {
 			case types.TxTypeWithdrawDelegatorReward:
 				stakeTx.From = tx.To
-				stakeTx.To = tx.Tags["withdraw-address"]
+				stakeTx.To = tx.Tags[types.TxTag_WithDrawAddress]
 				txResp = stakeTx
 			case types.TxTypeWithdrawDelegatorRewardsAll, types.TxTypeWithdrawValidatorRewardsAll:
-				stakeTx.To = tx.Tags["withdraw-address"]
+				stakeTx.To = tx.Tags[types.TxTag_WithDrawAddress]
 				sourceTotal := 0
 				validatorAddr := ""
 
 				for k, _ := range tx.Tags {
-					if strings.HasPrefix(k, "withdraw-reward-from-validator-") {
+					if strings.HasPrefix(k, types.TxTag_WithDrawRewardFromValidator) {
 						sourceTotal++
 						if sourceTotal == 1 {
-							validatorAddr = strings.Trim(k, "withdraw-reward-from-validator-")
+							validatorAddr = string([]byte(k)[len(types.TxTag_WithDrawRewardFromValidator):])
 						}
 					}
 				}
