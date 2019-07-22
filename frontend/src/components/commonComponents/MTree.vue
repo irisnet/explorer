@@ -52,35 +52,7 @@ export default {
             timer: null,
             chart: null,
             breadcrumb: "",
-            colors: [
-                "hsla(216, 94%, 58%, 1)",
-                "hsla(216, 89%, 55%, 1)",
-                "hsla(216, 82%, 51%, 1)",
-                "hsla(216, 84%, 47%, 1)",
-                "hsla(216, 91%, 44%, 1)",
-                "hsla(216, 91%, 41%, 1)",
-
-                "hsla(201, 69%, 45%, 1)",
-                "hsla(201, 71%, 42%, 1)",
-                "hsla(201, 74%, 38%, 1)",
-                "hsla(201, 79%, 35%, 1)",
-                "hsla(201, 87%, 32%, 1)",
-                "hsla(200, 87%, 30%, 1)",
-
-                "hsla(192, 83%, 49%, 1)",
-                "hsla(192, 86%, 44%, 1)",
-                "hsla(192, 89%, 39%, 1)",
-                "hsla(192, 87%, 37%, 1)",
-                "hsla(192, 96%, 33%, 1)",
-                "hsla(192, 95%, 31%, 1)",
-
-                "hsla(181, 67%, 47%, 1)",
-                "hsla(181, 67%, 43%, 1)",
-                "hsla(181, 70%, 35%, 1)",
-                "hsla(182, 69%, 33%, 1)",
-                "hsla(182, 70%, 31%, 1)",
-                "hsla(182, 75%, 27%, 1)"
-            ],
+            colors: ["hsla(204, 91%, 63%, 1)"],
             series: [
                 {
                     name: "validators",
@@ -126,13 +98,13 @@ export default {
                 let color = this.colors[i];
                 let colorArr = color.split(",");
                 let colorHS = `${colorArr[0]},${colorArr[1]}`;
-                let colorL = +color.split(",")[2].replace("%", "");
+                let colorL = +color.split(",")[2].replace("%", "") - 10;
                 if (
                     Array.isArray(v.delegations) &&
                     v.delegations.length > 0 &&
                     v.delegationsActive
                 ) {
-                    let step = 20 / v.delegations.length;
+                    let step = 15 / v.delegations.length;
 
                     arr = v.delegations.map(value => {
                         let selfShares = value.selfSharesFormat;
@@ -140,7 +112,7 @@ export default {
                         let labelValue =
                             v.ownerAddress === value.address
                                 ? v.imageUrl
-                                    ? `{b|} {a|${v.moniker ||
+                                    ? `{b|}{c|●} {a|${v.moniker ||
                                           v.operatorAddress}}`
                                     : `{a|${v.moniker || v.operatorAddress}}`
                                 : value.address;
@@ -151,10 +123,12 @@ export default {
                         let selfSharesPer =
                             Number(value.self_shares) /
                             Number(value.total_shares);
+                        let labelOffset =
+                            v.ownerAddress === value.address ? [14, 0] : [0, 0];
                         let o = {
                             name: name,
                             value:
-                                selfSharesPer < 0.001 ? 0.001 : selfSharesPer,
+                                selfSharesPer < 0.002 ? 0.002 : selfSharesPer,
                             infoData: {
                                 name: `${name}`,
                                 amount: `Amount: ${this.$options.filters.amountFromat(
@@ -183,6 +157,7 @@ export default {
                                     show: true,
                                     formatter: [labelValue].join("\n"),
                                     verticalAlign: "middle",
+                                    offset: labelOffset,
                                     rich: {
                                         a: {
                                             color: "#ffffff"
@@ -194,7 +169,17 @@ export default {
                                             width: 16,
                                             height: 16,
                                             borderRadius: 8,
-                                            lineHeight: 16
+                                            lineHeight: 16,
+                                            padding: [0, -16, 0, -16],
+                                            verticalAlign: "middle"
+                                        },
+                                        c: {
+                                            color: "transparent",
+                                            fontSize: 26,
+                                            textBorderColor: `${colorHS}, ${colorL}%, 1)`,
+                                            textBorderWidth: 4,
+                                            padding: [0, 0, 0, -5],
+                                            verticalAlign: "middle"
                                         }
                                     }
                                 },
@@ -202,6 +187,7 @@ export default {
                                     show: true,
                                     formatter: [labelValue].join("\n"),
                                     verticalAlign: "middle",
+                                    offset: labelOffset,
                                     rich: {
                                         a: {
                                             color: "#ffffff"
@@ -213,7 +199,18 @@ export default {
                                             width: 16,
                                             height: 16,
                                             borderRadius: 8,
-                                            lineHeight: 16
+                                            lineHeight: 16,
+                                            padding: [0, -16, 0, -16],
+                                            verticalAlign: "middle"
+                                        },
+                                        c: {
+                                            color: "transparent",
+                                            fontSize: 26,
+                                            textBorderColor: `${colorHS}, ${colorL +
+                                                4}%, 1)`,
+                                            textBorderWidth: 4,
+                                            padding: [0, 0, 0, -5],
+                                            verticalAlign: "middle"
                                         }
                                     }
                                 }
@@ -237,19 +234,21 @@ export default {
                 }
                 this.breadcrumb = "";
                 let labelValue = v.imageUrl
-                    ? `{b|} {a|${v.moniker || v.operatorAddress}}`
+                    ? `{b|}{c|●} {a|${v.moniker || v.operatorAddress}}`
                     : `{a|${v.moniker || v.operatorAddress}}`;
                 let votingPowerPer = +v.votingPower / v.allVotingPower;
                 let validator = {
                     name: v.moniker || v.operatorAddress,
-                    value: votingPowerPer < 0.001 ? 0.001 : votingPowerPer,
+                    value: votingPowerPer,
                     info: v,
                     itemStyle: {
-                        color: color
+                        color: color,
+                        borderWidth: 0.5
                     },
                     emphasis: {
                         itemStyle: {
-                            color: `${colorHS}, ${colorL + 4}%, 1)`
+                            color: `${colorHS}, ${colorL + 4}%, 1)`,
+                            borderWidth: 0.5
                         }
                     },
                     label: {
@@ -257,6 +256,7 @@ export default {
                             show: true,
                             formatter: [labelValue].join("\n"),
                             verticalAlign: "middle",
+                            offset: [14, 0],
                             rich: {
                                 a: {
                                     color: "#ffffff"
@@ -268,7 +268,17 @@ export default {
                                     width: 16,
                                     height: 16,
                                     borderRadius: 8,
-                                    lineHeight: 16
+                                    lineHeight: 16,
+                                    padding: [0, -16, 0, -16],
+                                    verticalAlign: "middle"
+                                },
+                                c: {
+                                    color: "transparent",
+                                    fontSize: 26,
+                                    textBorderColor: color,
+                                    textBorderWidth: 4,
+                                    padding: [0, 0, 0, -5],
+                                    verticalAlign: "middle"
                                 }
                             }
                         },
@@ -276,6 +286,7 @@ export default {
                             show: true,
                             formatter: [labelValue].join("\n"),
                             verticalAlign: "middle",
+                            offset: [14, 0],
                             rich: {
                                 a: {
                                     color: "#ffffff"
@@ -287,7 +298,18 @@ export default {
                                     width: 16,
                                     height: 16,
                                     borderRadius: 8,
-                                    lineHeight: 16
+                                    lineHeight: 16,
+                                    padding: [0, -16, 0, -16],
+                                    verticalAlign: "middle"
+                                },
+                                c: {
+                                    color: "transparent",
+                                    fontSize: 26,
+                                    textBorderColor: `${colorHS}, ${colorL +
+                                        4}%, 1)`,
+                                    textBorderWidth: 4,
+                                    padding: [0, 0, 0, -5],
+                                    verticalAlign: "middle"
                                 }
                             }
                         }

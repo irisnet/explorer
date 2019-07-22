@@ -181,7 +181,8 @@ export default {
             } else {
                 let s = num + "";
                 let arr = s.split(".");
-                let n = arr[1] ? `${arr[0]}.${arr[1].substring(0, 4)}` : arr[0];
+                arr[1] = arr[1] || "";
+                let n = `${arr[0]}.${arr[1].padEnd(4, "0").substring(0, 4)}`;
                 return n;
             }
         }
