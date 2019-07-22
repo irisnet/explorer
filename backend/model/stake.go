@@ -46,10 +46,11 @@ Items  : %v
 }
 
 type Redelegation struct {
-	Address string `json:"address"`
-	Amount  string `json:"amount"`
-	To      string `json:"to"`
-	Block   string `json:"block"`
+	Address   string `json:"address"`
+	Amount    string `json:"amount"`
+	To        string `json:"to"`
+	ToMoniker string `json:"to_moniker"`
+	Block     string `json:"block"`
 }
 
 type DelegationsPage struct {

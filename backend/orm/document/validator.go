@@ -285,14 +285,18 @@ func (_ Validator) GetCandidatesTopN() ([]Validator, int64, map[string]int, erro
 }
 
 func (_ Validator) GetCandidatePubKeyAddrByAddr(addr string) (string, error) {
+	validator, err := GetValidatorByAddr(addr)
+	return validator.ConsensusPubkey, err
+}
+
+func GetValidatorByAddr(addr string) (Validator, error) {
 	db := getDb()
 	c := db.C(CollectionNmValidator)
-	//u := db.C(CollectionNmUptimeChange)
 	defer db.Session.Close()
 	var validator Validator
 	err := c.Find(bson.M{ValidatorFieldOperatorAddress: addr}).One(&validator)
 
-	return validator.ConsensusPubkey, err
+	return validator, err
 }
 
 func (_ Validator) GetBondedValidators() ([]Validator, error) {

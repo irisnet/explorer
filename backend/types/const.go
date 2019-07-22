@@ -75,6 +75,9 @@ const (
 	Change  = "powerChange"
 	Slash   = "slash"
 	Recover = "recover"
+
+	TxTag_WithDrawRewardFromValidator = "withdraw-reward-from-validator-"
+	TxTag_WithDrawAddress             = "withdraw-address"
 )
 
 var (

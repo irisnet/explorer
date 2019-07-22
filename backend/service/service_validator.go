@@ -336,17 +336,26 @@ func GetDalegationbyPageSize(lcdDelegations []lcd.DelegationVo, totalShareAsRat 
 func (service *ValidatorService) GetRedelegationsFromLcd(valAddr string, page, size int) model.RedelegationPage {
 
 	lcdReDelegations := lcd.GetRedelegationsByValidatorAddr(valAddr)
+	blacklist := service.QueryBlackList()
 
 	items := make([]model.Redelegation, 0, size)
 
 	for k, v := range lcdReDelegations {
 		if k >= page*size && k < (page+1)*size {
 
+			tomoniker := ""
+			if validator, err := document.GetValidatorByAddr(v.ValidatorDstAddr); err == nil {
+				tomoniker = validator.Description.Moniker
+			}
+			if blockone, ok := blacklist[v.ValidatorDstAddr]; ok {
+				tomoniker = blockone.Moniker
+			}
 			tmp := model.Redelegation{
-				Address: v.DelegatorAddr,
-				Amount:  v.Balance,
-				To:      v.ValidatorDstAddr,
-				Block:   v.CreationHeight,
+				Address:   v.DelegatorAddr,
+				Amount:    v.Balance,
+				To:        v.ValidatorDstAddr,
+				ToMoniker: tomoniker,
+				Block:     v.CreationHeight,
 			}
 
 			items = append(items, tmp)
