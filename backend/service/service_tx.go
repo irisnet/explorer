@@ -165,18 +165,24 @@ func (service *TxService) QueryTxList(query bson.M, page, pageSize int) model.Pa
 		if err != nil {
 			logger.Error("document.Validator{}.QueryValidatorMonikerByAddrArr(valAddrArr)", logger.String("err", err.Error()), logger.Any("params", valAddrArr))
 		}
-
+		blacklist := service.QueryBlackList()
 		for i := 0; i < len(items); i++ {
 			if stakeTx, ok := items[i].(model.StakeTx); ok {
 				if service.IsValidatorAddrPrefix(stakeTx.From) {
 					if fromMoniker, ok := monikerByAddrMap[stakeTx.From]; ok {
 						stakeTx.FromMoniker = fromMoniker
 					}
+					if blackone, ok := blacklist[stakeTx.From]; ok {
+						stakeTx.FromMoniker = blackone.Moniker
+					}
 				}
 
 				if service.IsValidatorAddrPrefix(stakeTx.To) {
 					if toMoniker, ok := monikerByAddrMap[stakeTx.To]; ok {
 						stakeTx.ToMoniker = toMoniker
+					}
+					if blackone, ok := blacklist[stakeTx.To]; ok {
+						stakeTx.ToMoniker = blackone.Moniker
 					}
 				}
 				items[i] = stakeTx
@@ -337,7 +343,7 @@ func (service *TxService) Query(hash string) interface{} {
 		panic(types.CodeNotFound)
 	}
 
-	blackList := map[string]document.BlackList{}
+	blackList := service.QueryBlackList()
 
 	validatorAddrMap := map[string]document.Validator{}
 	govTxMsgHashMap := map[string]document.TxMsg{}
@@ -345,7 +351,6 @@ func (service *TxService) Query(hash string) interface{} {
 
 	switch types.Convert(txAsDoc.Type) {
 	case types.Declaration:
-		blackList = service.QueryBlackList()
 		validatorAddrMap[txAsDoc.From] = document.Validator{}
 		service.GetTxAttachedFields(&validatorAddrMap, &govTxMsgHashMap, &govProposalIdMap)
 	case types.Gov:

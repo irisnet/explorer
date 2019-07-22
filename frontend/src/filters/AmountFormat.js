@@ -18,7 +18,8 @@ function afterPointLength(value) {
 
 function subString(value, fixedValue) {
     let arr = value.split(".");
-    let n = arr[1] ? `${arr[0]}.${arr[1].substring(0, fixedValue)}` : arr[0];
+    arr[1] = arr[1] || '';
+    let n = `${arr[0]}.${arr[1].padEnd(fixedValue, "0").substring(0, fixedValue)}`;
     return n;
 }
 

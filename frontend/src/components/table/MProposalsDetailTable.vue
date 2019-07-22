@@ -101,7 +101,6 @@ export default {
                 {
                     title: "Tx Hash",
                     slot: "Tx_Hash",
-                    className: "text_right",
                     tooltip: true
                 },
                 {

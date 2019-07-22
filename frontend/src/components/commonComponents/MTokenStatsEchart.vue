@@ -82,6 +82,13 @@ export default {
                         radius: ["30%", "60%"],
                         avoidLabelOverlap: true, //是否启用防止标签重叠策略
                         minAngle: 5,
+                        center: [
+                            "50%",
+                            this.$store.state.isMobile
+                                ? 250 + data.length * 10
+                                : "50%"
+                        ],
+                        hoverOffset: this.$store.state.isMobile ? 10 : 0,
                         label: {
                             normal: {
                                 show: !this.$store.state.isMobile,
@@ -100,9 +107,9 @@ export default {
                                                     (i + 1) * minLen
                                                 ) + "\n";
                                         }
-                                        return `\n{b|${params.name}}\n{per|${s}}\n`;
+                                        return `\n{b|${params.name}}\n{per|${s}}`;
                                     } else {
-                                        return `\n{b|${params.name}}\n{per|${text}}\n`;
+                                        return `\n{b|${params.name}}\n{per|${text}}`;
                                     }
                                 },
                                 position: "outside",
@@ -129,6 +136,8 @@ export default {
                         labelLine: {
                             normal: {
                                 show: !this.$store.state.isMobile,
+                                length: 30,
+                                length2: 30,
                                 lineStyle: {
                                     color: "#979797"
                                 }

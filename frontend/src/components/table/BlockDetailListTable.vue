@@ -118,35 +118,31 @@
               class="skip_route">
           <router-link :to="`/tx?txHash=${data.item.Tx_Hash}`">{{data.item.From}} Validators</router-link>
         </span>
-        <span class="skip_route"
-              style="display: flex"
-              v-if="!(/^[0-9]\d*$/).test(data.item.From) && data.item.From !== '--'">
-          <div class="name_address">
-            <span class="remove_default_style">
-              <router-link :to="addressRoute(data.item.From)"
-                           class="link_style justify">{{formatAddress(data.item.From)}}</router-link>
-            </span>
-            <span class="address">{{data.item.From}}</span>
-          </div>
-        </span>
+        <div class="name_address"
+             v-show="!(/^[0-9]\d*$/).test(data.item.From) && data.item.From && data.item.From !== '--'">
+          <span class="remove_default_style"
+                :class="data.item.From === $route.params.param?'no_skip':''">
+            <router-link :to="addressRoute(data.item.From)"
+                         class="link_style">{{formatMoniker(data.item.fromMoniker) || formatAddress(data.item.From)}}</router-link>
+          </span>
+          <span v-if="!data.item.fromMoniker" class="address">{{data.item.From ? data.item.From : ''}}</span>
+        </div>
         <span class="no_skip"
               v-show="(/^[0]\d*$/).test(data.item.From) || data.item.From === '--'">--</span>
       </template>
       <template slot='To'
                 slot-scope='data'>
-        <span class="skip_route"
-              style="display: flex"
-              v-if="data.item.To !== '--'">
-          <div class="name_address">
-            <span class="remove_default_style">
-              <router-link :to="addressRoute(data.item.To)"
-                           class="link_style">{{formatAddress(data.item.To)}}</router-link>
-            </span>
-            <span class="address">{{data.item.To}}</span>
-          </div>
-        </span>
+        <div class="name_address"
+             v-show="data.item.To && data.item.To !== '--'">
+          <span class="remove_default_style"
+                :class="data.item.To === $route.params.param?'no_skip':''">
+            <router-link :to="addressRoute(data.item.To)"
+                         class="link_style">{{formatMoniker(data.item.toMoniker) || formatAddress(data.item.To)}}</router-link>
+          </span>
+          <span v-if="!data.item.toMoniker" class="address">{{data.item.To ? data.item.To : ''}}</span>
+        </div>
         <span class="no_skip"
-              v-show="data.item.To === '--'">
+              v-show="data.item.To == '--'">
           --
         </span>
       </template>
@@ -344,6 +340,12 @@ export default {
       if (TxHash) {
         return Tools.formatTxHash(TxHash)
       }
+    },
+    formatMoniker (moniker) {
+        if (!moniker) {
+            return '';
+        }
+        return Tools.formatString(moniker,15,"...");
     },
     formatListName (items) {
       items.forEach((tx) => {
