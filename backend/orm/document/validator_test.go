@@ -53,3 +53,12 @@ func TestQueryCandidateUptimeWithHour(t *testing.T) {
 	}
 
 }
+
+func TestValidator_QueryValidatorMonikerByAddrArr(t *testing.T) {
+	valaddr := []string{"iva1r2pq5y674llvd654tr9lm7s68wnumd0pf04v99"}
+	data, err := Validator{}.QueryValidatorMonikerByAddrArr(valaddr)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(data)
+}

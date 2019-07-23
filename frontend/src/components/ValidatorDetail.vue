@@ -92,7 +92,11 @@
                                     :to="addressRoute(v[1])"
                                 >{{v[1]}}</router-link>
                                 <span @click="openUrl(v[1])" v-if="v[0] === 'Website'">{{v[1]}}</span>
-                                <a :href="keyBaseName" target="_blank" v-if="v[0] === 'Identity'">{{v[1]}}</a>
+                                <a
+                                    :href="keyBaseName"
+                                    target="_blank"
+                                    v-if="v[0] === 'Identity'"
+                                >{{v[1]}}</a>
                             </span>
                         </template>
                         <template v-else>
@@ -151,7 +155,7 @@
                     </div>
                 </div>
             </div>
-        </div> -->
+        </div>-->
         <div :class="transactionsDetailWrap">
             <div
                 :class="[!$store.state.isMobile && txTableList.delegations.total && txTableList.unbondingDelegations.total ? 'delegations_two_container': '']"
@@ -364,7 +368,7 @@ export default {
             informationValidatorsLine: {},
             informationUptimeLine: {},
             flActiveValidator: true,
-	        keyBaseName:'',
+            keyBaseName: "",
             tabVotingPower: [
                 {
                     title: "14days",
@@ -669,23 +673,23 @@ export default {
                                     data.description.moniker ||
                                     this.$route.params.param;
                             }
-	                        this.getKeyBaseName(data.description.identity);
+                            this.getKeyBaseName(data.description.identity);
                         }
                     } catch (e) {}
                 }
             );
         },
-        getKeyBaseName(identity){
-        	let url = `https://keybase.io/_/api/1.0/user/lookup.json?fields=basics&key_suffix=${identity}`;
-        	if(identity){
-		        axios.http(url).then(res => {
-			        if(res.them && res.them[0].basics.username){
-				        this.keyBaseName = `https://keybase.io/${res.them[0].basics.username}`
-			        }else {
-				        let i = this.validatorProfileLinks.indexOf('Identity');
-				        this.validatorProfileLinks.splice(i,1)
-			        }
-		        })
+        getKeyBaseName(identity) {
+            let url = `https://keybase.io/_/api/1.0/user/lookup.json?fields=basics&key_suffix=${identity}`;
+            if (identity) {
+                axios.http(url).then(res => {
+                    if (res.them && res.them[0].basics.username) {
+                        this.keyBaseName = `https://keybase.io/${res.them[0].basics.username}`;
+                    } else {
+                        let i = this.validatorProfileLinks.indexOf("Identity");
+                        this.validatorProfileLinks.splice(i, 1);
+                    }
+                });
             }
         },
         getDelegations(page) {
@@ -774,6 +778,7 @@ export default {
                                       )} ${u.toUpperCase()}`
                                     : it.amount;
                                 it.To = it.to;
+                                it.toMoniker = it.to_moniker;
                             }
                             this.txTableList.redelegations.items = data.items;
                         } else {

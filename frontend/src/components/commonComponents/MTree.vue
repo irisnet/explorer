@@ -112,7 +112,7 @@ export default {
                         let labelValue =
                             v.ownerAddress === value.address
                                 ? v.imageUrl
-                                    ? `{b|}{c|●} {a|${v.moniker ||
+                                    ? `{b|}{c|} {a|${v.moniker ||
                                           v.operatorAddress}}`
                                     : `{a|${v.moniker || v.operatorAddress}}`
                                 : value.address;
@@ -124,7 +124,7 @@ export default {
                             Number(value.self_shares) /
                             Number(value.total_shares);
                         let labelOffset =
-                            v.ownerAddress === value.address ? [14, 0] : [0, 0];
+                            v.ownerAddress === value.address ? [18, 0] : [0, 0];
                         let o = {
                             name: name,
                             value:
@@ -166,19 +166,20 @@ export default {
                                             backgroundColor: {
                                                 image: v.imageUrl
                                             },
-                                            width: 16,
-                                            height: 16,
+                                            width: 12,
+                                            height: 12,
                                             borderRadius: 8,
                                             lineHeight: 16,
-                                            padding: [0, -16, 0, -16],
+                                            padding: [2, -20, 2, -13],
                                             verticalAlign: "middle"
                                         },
                                         c: {
-                                            color: "transparent",
-                                            fontSize: 26,
-                                            textBorderColor: `${colorHS}, ${colorL}%, 1)`,
-                                            textBorderWidth: 4,
-                                            padding: [0, 0, 0, -5],
+                                            backgroundColor: "transparent",
+                                            width: 22,
+                                            height: 22,
+                                            borderRadius: 10,
+                                            borderWidth: 6,
+                                            borderColor: `${colorHS}, ${colorL}%, 1)`,
                                             verticalAlign: "middle"
                                         }
                                     }
@@ -196,20 +197,21 @@ export default {
                                             backgroundColor: {
                                                 image: v.imageUrl
                                             },
-                                            width: 16,
-                                            height: 16,
+                                            width: 12,
+                                            height: 12,
                                             borderRadius: 8,
                                             lineHeight: 16,
-                                            padding: [0, -16, 0, -16],
+                                            padding: [2, -20, 2, -13],
                                             verticalAlign: "middle"
                                         },
                                         c: {
-                                            color: "transparent",
-                                            fontSize: 26,
-                                            textBorderColor: `${colorHS}, ${colorL +
+                                            backgroundColor: "transparent",
+                                            width: 22,
+                                            height: 22,
+                                            borderRadius: 10,
+                                            borderWidth: 6,
+                                            borderColor: `${colorHS}, ${colorL +
                                                 4}%, 1)`,
-                                            textBorderWidth: 4,
-                                            padding: [0, 0, 0, -5],
                                             verticalAlign: "middle"
                                         }
                                     }
@@ -234,7 +236,7 @@ export default {
                 }
                 this.breadcrumb = "";
                 let labelValue = v.imageUrl
-                    ? `{b|}{c|●} {a|${v.moniker || v.operatorAddress}}`
+                    ? `{b|}{c|} {a|${v.moniker || v.operatorAddress}}`
                     : `{a|${v.moniker || v.operatorAddress}}`;
                 let votingPowerPer = +v.votingPower / v.allVotingPower;
                 let validator = {
@@ -256,7 +258,7 @@ export default {
                             show: true,
                             formatter: [labelValue].join("\n"),
                             verticalAlign: "middle",
-                            offset: [14, 0],
+                            offset: [18, 0],
                             rich: {
                                 a: {
                                     color: "#ffffff"
@@ -265,19 +267,20 @@ export default {
                                     backgroundColor: {
                                         image: v.imageUrl
                                     },
-                                    width: 16,
-                                    height: 16,
+                                    width: 12,
+                                    height: 12,
                                     borderRadius: 8,
                                     lineHeight: 16,
-                                    padding: [0, -16, 0, -16],
+                                    padding: [2, -20, 2, -13],
                                     verticalAlign: "middle"
                                 },
                                 c: {
-                                    color: "transparent",
-                                    fontSize: 26,
-                                    textBorderColor: color,
-                                    textBorderWidth: 4,
-                                    padding: [0, 0, 0, -5],
+                                    backgroundColor: "transparent",
+                                    width: 22,
+                                    height: 22,
+                                    borderRadius: 10,
+                                    borderWidth: 6,
+                                    borderColor: color,
                                     verticalAlign: "middle"
                                 }
                             }
@@ -286,7 +289,7 @@ export default {
                             show: true,
                             formatter: [labelValue].join("\n"),
                             verticalAlign: "middle",
-                            offset: [14, 0],
+                            offset: [18, 0],
                             rich: {
                                 a: {
                                     color: "#ffffff"
@@ -295,20 +298,21 @@ export default {
                                     backgroundColor: {
                                         image: v.imageUrl
                                     },
-                                    width: 16,
-                                    height: 16,
+                                    width: 12,
+                                    height: 12,
                                     borderRadius: 8,
                                     lineHeight: 16,
-                                    padding: [0, -16, 0, -16],
+                                    padding: [2, -20, 2, -13],
                                     verticalAlign: "middle"
                                 },
                                 c: {
-                                    color: "transparent",
-                                    fontSize: 26,
-                                    textBorderColor: `${colorHS}, ${colorL +
+                                    backgroundColor: "transparent",
+                                    width: 22,
+                                    height: 22,
+                                    borderRadius: 10,
+                                    borderWidth: 6,
+                                    borderColor: `${colorHS}, ${colorL +
                                         4}%, 1)`,
-                                    textBorderWidth: 4,
-                                    padding: [0, 0, 0, -5],
                                     verticalAlign: "middle"
                                 }
                             }
@@ -418,7 +422,7 @@ export default {
         position: relative;
     }
     .breadcrumb_first {
-        padding-right: 0.04rem;
+        padding-right: 0;
         &::after {
             height: 0;
             width: 0;
@@ -430,11 +434,10 @@ export default {
             border-left-color: #3598da;
             position: absolute;
             top: 0;
-            right: -16px;
         }
     }
     .breadcrumb_last {
-        padding-right: 0.04rem;
+        padding-right: 0;
         max-width: calc(100% - 82px);
         & > div {
             white-space: nowrap;
