@@ -87,7 +87,7 @@ const router = new Router({
       path: '/statistics/richlist', component: RichList,
     },
     {
-      path: '/statistics/tokenStats', component: TokenStats,
+      path: '/statistics/tokenstats', component: TokenStats,
     },
     // {
     //   path: '/statistics/bondedTokens', component: BondedTokens,
