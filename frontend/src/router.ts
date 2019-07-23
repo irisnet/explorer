@@ -89,9 +89,9 @@ const router = new Router({
     {
       path: '/statistics/tokenStats', component: TokenStats,
     },
-    {
-      path: '/statistics/bondedTokens', component: BondedTokens,
-    }
+    // {
+    //   path: '/statistics/bondedTokens', component: BondedTokens,
+    // }
   ]
 
 })

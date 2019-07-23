@@ -56,9 +56,9 @@
                                     <router-link :to="`/statistics/tokenStats`">
                                         <li class="static_list_item">Tokens Stats</li>
                                     </router-link>
-                                    <router-link :to="`/statistics/bondedTokens`">
+                                    <!-- <router-link :to="`/statistics/bondedTokens`">
                                         <li class="static_list_item">Bonded Tokens</li>
-                                    </router-link>
+                                    </router-link> -->
                                 </ul>
                             </li>
                             <li class="governance_list_content"
@@ -188,8 +188,8 @@
                     @click="featureButtonClick('/statistics/richlist')">Rich List</span>
                 <span class="feature_btn_mobile feature_nav"
                     @click="featureButtonClick('/statistics/tokenStats')">Tokens Stats</span>
-                <span class="feature_btn_mobile feature_nav"
-                    @click="featureButtonClick('/statistics/bondedTokens')">Bonded Tokens</span>
+                <!-- <span class="feature_btn_mobile feature_nav"
+                    @click="featureButtonClick('/statistics/bondedTokens')">Bonded Tokens</span> -->
                 </div>
                 <span class="feature_btn_mobile feature_nav select_option_container"
                       @click="governanceSelect(flShowGovernanceSelect)">
