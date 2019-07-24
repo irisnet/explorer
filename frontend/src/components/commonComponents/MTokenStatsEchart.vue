@@ -32,9 +32,9 @@ export default {
             let data = newVal.map(v => {
                 return {
                     name: this.$store.state.isMobile
-                        ? `No. ${v[0]}: {d|${v[1].totalAmount} (${
+                        ? `No. ${v[0]}:{d|${v[1].totalAmount} (${
                               v[1].percentValue
-                          })%}`
+                          }%)}`
                         : `No. ${v[0]}`,
                     value: v[1].percent,
                     info: v[1],
@@ -47,7 +47,7 @@ export default {
                     confine: true,
                     formatter: function(v) {
                         return `${v.marker}${v.data.nameValue}:<br/>
-                        ${v.data.info.totalAmount} (${v.data.info.percentValue} %)`;
+                        ${v.data.info.totalAmount} (${v.data.info.percentValue}%)`;
                     }
                 },
                 color: [
@@ -69,7 +69,8 @@ export default {
                             textStyle: {
                                 rich: {
                                     d: {
-                                        color: "#A2A2AE"
+                                        color: "#A2A2AE",
+                                        padding: [0, 0, 0, 6]
                                     }
                                 }
                             }
