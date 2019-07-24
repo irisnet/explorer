@@ -87,7 +87,7 @@ export default {
                             "50%",
                             this.$store.state.isMobile
                                 ? 250 + data.length * 10
-                                : "50%"
+                                : "55%"
                         ],
                         hoverOffset: this.$store.state.isMobile ? 10 : 0,
                         label: {
