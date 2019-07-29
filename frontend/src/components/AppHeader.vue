@@ -666,6 +666,7 @@
         position: fixed;
         z-index: 10001;
         background: rgba(255, 255, 255, 1);
+        height: 0.6rem;
         .app_header_person_computer {
             width: 100%;
             background: #3598db;
