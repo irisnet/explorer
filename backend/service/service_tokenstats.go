@@ -145,7 +145,7 @@ func computeSegment2(accounts []document.Account, totalAmt float64) map[string]m
 		}
 
 		result[fmt.Sprintf("%v-%v", 501, 1000)] = CountNTotalAmount(500, 999, totalAmt, accounts)
-		result[fmt.Sprintf("%v-%v", 1001, total)] = CountNTotalAmount(1000, total-1, totalAmt, accounts)
+		result[fmt.Sprintf("%v-", 1001)] = CountNTotalAmount(1000, total-1, totalAmt, accounts)
 
 	}
 	return result
