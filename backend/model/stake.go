@@ -6,20 +6,20 @@ import (
 )
 
 type ValidatorForDetail struct {
-	TotalPower              int64       `json:"total_power"`
-	SelfPower               int64       `json:"self_power"`
-	Status                  string      `json:"status"`
-	BondedTokens            string      `json:"bonded_tokens"`
-	SelfBonded              float64     `json:"self_bonded,string"`
-	BondedStake             float64     `json:"bonded_stake,string"`
-	DelegatorShares         string      `json:"delegator_shares"`
-	DelegatorCount          int         `json:"delegator_count"`
-	CommissionRate          string      `json:"commission_rate"`
-	CommissionUpdate        string      `json:"commission_update"`
-	CommissionMaxRate       string      `json:"commission_max_rate"`
-	CommissionMaxChangeRate string      `json:"commision_max_change_rate"`
-	BondHeight              string      `json:"bond_height"`
-	UnbondingHeight         string      `json:"unbond_height"`
+	TotalPower              int64  `json:"total_power"`
+	SelfPower               int64  `json:"self_power"`
+	Status                  string `json:"status"`
+	BondedTokens            string `json:"bonded_tokens"`
+	SelfBonded              string `json:"self_bonded"`
+	BondedStake             string `json:"bonded_stake"`
+	DelegatorShares         string `json:"delegator_shares"`
+	DelegatorCount          int    `json:"delegator_count"`
+	CommissionRate          string `json:"commission_rate"`
+	CommissionUpdate        string `json:"commission_update"`
+	CommissionMaxRate       string `json:"commission_max_rate"`
+	CommissionMaxChangeRate string `json:"commision_max_change_rate"`
+	BondHeight              string `json:"bond_height"`
+	UnbondingHeight         string `json:"unbond_height"`
 	JailedUntil             string      `json:"jailed_until"`
 	MissedBlocksCount       string      `json:"missed_blocks_count"`
 	OperatorAddr            string      `json:"operator_addr"`
