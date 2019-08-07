@@ -64,7 +64,7 @@
                 <div class="information_props_wrap">
                     <span class="information_props">Description :</span>
                     <span class="information_value">
-                        <pre class="information_pre information_show_trim">{{description}}</pre>
+                        <pre class="information_pre information_show_trim" v-html="description"></pre>
                     </span>
                 </div>
 
