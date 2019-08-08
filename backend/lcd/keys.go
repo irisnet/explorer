@@ -96,5 +96,9 @@ func GetIconsByKey(key string) (string, error) {
 		return "", errors.New("get icons failed")
 	}
 
+	if len(picdata.Them) == 0 {
+		return "", nil
+	}
+
 	return picdata.Them[0].Pictures.Primary.Url, nil
 }

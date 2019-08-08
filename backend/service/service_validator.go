@@ -44,6 +44,7 @@ func (service *ValidatorService) GetValidators(typ, origin string, page, size in
 				validatorList[i].Description.Identity = desc.Identity
 				validatorList[i].Description.Website = desc.Website
 				validatorList[i].Description.Details = desc.Details
+				validatorList[i].Icons = ""
 			}
 			var validator lcd.ValidatorVo
 			if err := utils.Copy(validatorList[i], &validator); err != nil {
@@ -51,7 +52,7 @@ func (service *ValidatorService) GetValidators(typ, origin string, page, size in
 			}
 			validator.VotingRate = float32(v.VotingPower) / float32(totalVotingPower)
 			selfbond := ComputeSelfBonded(v.Tokens, v.DelegatorShares, v.SelfBond)
-			validator.SelfBond = utils.ParseStringFromFloat64(selfbond)
+			validator.SelfBond = selfbond
 			result = append(result, validator)
 		}
 
@@ -567,58 +568,48 @@ func (service *ValidatorService) QueryValidator(address string) model.Candidates
 	result.PowerAll = count
 	return result
 }
-func ComputeSelfBonded(tokens, shares, selfBond string) float64 {
+func ComputeSelfBonded(tokens, shares, selfBond string) string {
 	rate, err := utils.QuoByStr(tokens, shares)
 	if err != nil {
 		logger.Error("validator.Tokens / validator.DelegatorShares", logger.String("err", err.Error()))
-		return 0
+		return ""
 	}
 
 	selfBondAsRat, ok := new(big.Rat).SetString(selfBond)
 	if !ok {
 		logger.Error("convert validator selfBond type (string -> big.Rat) err",
 			logger.String("self bond str", selfBond))
-		return 0
+		return ""
 
 	}
 	selfBondTokensAsRat := new(big.Rat).Mul(selfBondAsRat, rate)
-	selfBondedAsFloat64, exact := selfBondTokensAsRat.Float64()
-	if !exact {
-		logger.Info("convert selfBondedAsFloat64 type (big.Rat to float64) ",
-			logger.Any("exact", exact),
-			logger.Any("selfBondedAsFloat64", selfBondTokensAsRat))
-	}
-	return selfBondedAsFloat64
+
+	return selfBondTokensAsRat.FloatString(18)
 }
 
-func ComputeBondStake(tokens, shares, selfBond string) float64 {
+func ComputeBondStake(tokens, shares, selfBond string) string {
 	rate, err := utils.QuoByStr(tokens, shares)
 	if err != nil {
 		logger.Error("validator.Tokens / validator.DelegatorShares", logger.String("err", err.Error()))
-		return 0
+		return ""
 	}
 
 	tokensAsRat, ok := new(big.Rat).SetString(tokens)
 	if !ok {
 		logger.Error("convert validator tokens type (string -> big.Rat) err", logger.String("token str", tokens))
-		return 0
+		return ""
 	}
 
 	selfBondAsRat, ok := new(big.Rat).SetString(selfBond)
 	if !ok {
 		logger.Error("convert validator selfBond type (string -> big.Rat) err", logger.String("self bond str", selfBond))
-		return 0
+		return ""
 
 	}
 	selfBondTokensAsRat := new(big.Rat).Mul(selfBondAsRat, rate)
 	BondStakeAsRat := new(big.Rat).Sub(tokensAsRat, selfBondTokensAsRat)
-	BondStakeAsFloat64, exact := BondStakeAsRat.Float64()
-	if !exact {
-		logger.Info("convert BondStakeAsRat type (big.Rat to float64) ",
-			logger.Any("exact", exact),
-			logger.Any("BondStakeAsRat", BondStakeAsRat))
-	}
-	return BondStakeAsFloat64
+
+	return BondStakeAsRat.FloatString(18)
 }
 
 func (service *ValidatorService) QueryCandidateUptime(address, category string) []model.UptimeChangeVo {
