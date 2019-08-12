@@ -12,4 +12,5 @@ var (
 	tx           service.TxService
 	tokenstats   service.TokenStatsService
 	bondedtokens service.BondedTokensService
+	asset        service.AssetService
 )
