@@ -9,7 +9,6 @@ import (
 	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/txn"
-	"sync"
 )
 
 type AssetService struct {
@@ -23,13 +22,13 @@ func (service *AssetService) GetModule() Module {
 func (service *AssetService) UpdateAssetTokens(vs []document.Asset) error {
 	var vMap = make(map[string]document.Asset)
 	for _, v := range vs {
-		vMap[v.Symbol] = v
+		vMap[v.Id] = v
 	}
 
 	dstAssetTokens := buildAssetTokens()
 	var txs []txn.Op
 	for _, v := range dstAssetTokens {
-		if it, ok := vMap[v.Symbol]; ok {
+		if it, ok := vMap[v.Id]; ok {
 			if isDiffAssetToken(it, v) {
 				v.ID = it.ID
 				txs = append(txs, txn.Op{
@@ -40,7 +39,7 @@ func (service *AssetService) UpdateAssetTokens(vs []document.Asset) error {
 					},
 				})
 			}
-			delete(vMap, v.Symbol)
+			delete(vMap, v.Id)
 		} else {
 			v.ID = bson.NewObjectId()
 			txs = append(txs, txn.Op{
@@ -76,24 +75,17 @@ func buildAssetTokens() []document.Asset {
 		return assetToken, nil
 	}
 
-	var group sync.WaitGroup
-	var mutex sync.Mutex
-	group.Add(len(res))
 	for _, v := range res {
 		var genAssetTokens = func(va lcd.AssetTokens, result *[]document.Asset) {
-			defer group.Done()
 			assetToken, err := buildAssetToken(va)
 			if err != nil {
 				logger.Error("utils.copy assetToken failed")
 				panic(err)
 			}
-			mutex.Lock()
 			*result = append(*result, assetToken)
-			mutex.Unlock()
 		}
-		go genAssetTokens(v, &result)
+		genAssetTokens(v, &result)
 	}
-	group.Wait()
 	return result
 }
 
