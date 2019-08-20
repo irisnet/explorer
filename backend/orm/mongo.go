@@ -94,9 +94,12 @@ func (query *Query) ExecPage() (cnt int, err error) {
 	var c = query.db.C(query.collection)
 	var q = c.Find(query.condition)
 	cnt, err = q.Count()
-	if err != nil || cnt == 0 {
-		return cnt, errors.New(fmt.Sprintf("query error,collection:%s,condition:%+v",
-			query.collection, query.condition))
+	if err != nil {
+		return cnt, errors.New(fmt.Sprintf("query error:%v,collection:%s,condition:%+v",
+			err.Error(),query.collection, query.condition))
+	}
+	if cnt == 0 {
+		return cnt,errors.New("not found")
 	}
 	q = query.buildQuery()
 	return cnt, q.All(query.result)

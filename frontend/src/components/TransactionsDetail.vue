@@ -295,12 +295,15 @@
                                 this.failInfo = data.Log;
 								if(data.Amount && data.Amount.length !==0){
 									this.amountValue = data.Amount.map(item=>{
-										item.amount = Tools.formatPriceToFixed(Tools.numberMoveDecimal(item.amount));
-										if(!item.denom){
-											return `${item.amount} SHARES`;
-										}else{
-											return `${item.amount} ${Tools.formatDenom(item.denom).toUpperCase()}`;
-										}
+										if(item.denom === Constant.Denom.IRISATTO){
+											return item.amount = `${Tools.formatPriceToFixed(Tools.numberMoveDecimal(item.amount))} ${Tools.formatDenom(item.denom).toLocaleUpperCase()}`;
+										}else if (item.denom !== Constant.Denom.IRISATTO && item.denom !== ''){
+											return item.amount = `${Tools.FormatScientificNotationToNumber(item.amount)} ${Tools.formatDenom(item.denom).toUpperCase()}`
+                                        }else {
+											if(data.Type === "BeginUnbonding" || data.Type === "BeginRedelegate"){
+												return item.amount = `${Tools.formatPriceToFixed(Tools.numberMoveDecimal(item.amount))} SHARES`;
+                                            }
+                                        }
 									}).join(',') ;
 								}else if(data.Amount && Object.keys(data.Amount).includes('amount') && Object.keys(data.Amount).includes('denom')){
 									data.Amount =  Tools.formatPriceToFixed(Tools.numberMoveDecimal(item.amount));

@@ -251,20 +251,23 @@ export default {
         'Amount': {
           label: 'Amount'
         },
+        'tokenId':{
+          label: 'Token'
+        },
         'To': {
           label: 'To'
         },
         'Tx_Type': {
-          label: 'Tx_Type'
+          label: 'TxType'
         },
-        'Tx_Fee': {
-          label: 'Tx_Fee'
+        'transferFee': {
+          label: 'TxFee(IRIS)'
         },
         'Tx_Signer': {
-          label: 'Tx_Signer'
+          label: 'TxSigner'
         },
         'Tx_Status': {
-          label: 'Tx_Status'
+          label: 'TxStatus'
         },
         'Timestamp': {
           label: 'Timestamp'
@@ -272,7 +275,7 @@ export default {
       },
       declarationFields: {
         'Tx_Hash': {
-          label: 'Tx_Hash'
+          label: 'TxHash'
         },
         'Block': {
           label: 'Block'
@@ -284,19 +287,19 @@ export default {
           label: 'Operator_Address'
         },
         'Amount': {
-          label: 'Self_Bonded'
+          label: 'Self-Bonded'
         },
         'Tx_Type': {
-          label: 'Tx_Type'
+          label: 'TxType'
         },
         'Tx_Fee': {
-          label: 'Tx_Fee'
+          label: 'TxFee'
         },
         'Tx_Signer': {
-          label: 'Tx_Signer'
+          label: 'TxSigner'
         },
         'Tx_Status': {
-          label: 'Tx_Status'
+          label: 'TxStatus'
         },
         'Timestamp': {
           label: 'Timestamp'
@@ -304,7 +307,7 @@ export default {
       },
       stakeFields: {
         'Tx_Hash': {
-          label: 'Tx_Hash'
+          label: 'TxHash'
         },
         'Block': {
           label: 'Block'
@@ -319,16 +322,16 @@ export default {
           label: 'To'
         },
         'Tx_Type': {
-          label: 'Tx_Type'
+          label: 'TxType'
         },
         'Tx_Fee': {
-          label: 'Tx_Fee'
+          label: 'TxFee'
         },
         'Tx_Signer': {
-          label: 'Tx_Signer'
+          label: 'TxSigner'
         },
         'Tx_Status': {
-          label: 'Tx_Status'
+          label: 'TxStatus'
         },
         'Timestamp': {
           label: 'Timestamp'
@@ -336,7 +339,7 @@ export default {
       },
       govFields: {
         'Tx_Hash': {
-          label: 'Tx_Hash'
+          label: 'TxHash'
         },
         'Block': {
           label: 'Block'
@@ -354,16 +357,16 @@ export default {
           label: 'Amount'
         },
         'Tx_Type': {
-          label: 'Tx_Type'
+          label: 'TxType'
         },
         'Tx_Fee': {
-          label: 'Tx_Fee'
+          label: 'TxFee'
         },
         'Tx_Signer': {
-          label: 'Tx_Signer'
+          label: 'TxSigner'
         },
         'Tx_Status': {
-          label: 'Tx_Status'
+          label: 'TxStatus'
         },
         'Timestamp': {
           label: 'Timestamp'
