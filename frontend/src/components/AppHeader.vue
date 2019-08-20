@@ -41,6 +41,22 @@
                                     </router-link>
                                 </ul>
                             </li>
+                            <li class="assets_list_content"
+                                :class="activeClassName === '/Assets'?'nav_item_active':''"
+                                @mouseover="nativeAssetMouseOver"
+                                @mouseleave="nativeAssetMouseLeave">
+                                <div class="assets_content"
+                                     style="display: flex">Assets<span class="bottom_arrow"></span></div>
+                                <ul class="assets_list_item_content"
+                                    v-show="showAssetTransaction">
+                                    <router-link :to="`/nativeasset`">
+                                        <li class="assets_list_item">Native Asset</li>
+                                    </router-link>
+                                    <router-link :to="`/gatewayasset`">
+                                        <li class="assets_list_item">Gateway Asset</li>
+                                    </router-link>
+                                </ul>
+                            </li>
                             <li class="statics_list_content"
                                 :class="activeClassName === '/statistics'?'nav_item_active':''"
                                 @mouseover="statisticsMouseOver"
@@ -167,14 +183,35 @@
                 </span>
                 <div class="select_option" v-show="flShowTransactionsSelect">
                     <span class="feature_btn_mobile feature_nav"
-                       @click="featureButtonClick('/txs/transfers')">Transfers</span>
+                          @click="featureButtonClick('/txs/transfers')">Transfers</span>
+                <span class="feature_btn_mobile feature_nav"
+                      @click="featureButtonClick('/txs/declarations')">Declarations</span>
+                <span class="feature_btn_mobile feature_nav"
+                      @click="featureButtonClick('/txs/stakes')">Stakes</span>
+                <span class="feature_btn_mobile feature_nav"
+                      @click="featureButtonClick('/txs/governance')">Governance</span>
+            </div>
+
+
+                <span class="feature_btn_mobile feature_nav select_option_container"
+                      @click="assetsSelect(flShowAssetSelect)">
+                    <span>Assets</span>
+                    <div :class="flShowUpOrDown ? 'upImg_content' : 'downImg_content'">
+                       <img :src="flShowUpOrDown ? upImg : downImg ">
+                    </div>
+                </span>
+                <div class="select_option" v-show="flShowAssetSelect">
                     <span class="feature_btn_mobile feature_nav"
-                       @click="featureButtonClick('/txs/declarations')">Declarations</span>
+                          @click="featureButtonClick('/nativeasset')">Native Asset</span>
                     <span class="feature_btn_mobile feature_nav"
-                       @click="featureButtonClick('/txs/stakes')">Stakes</span>
-                    <span class="feature_btn_mobile feature_nav"
-                       @click="featureButtonClick('/txs/governance')">Governance</span>
+                          @click="featureButtonClick('/gatewayasset')">Declarations</span>
+
                 </div>
+
+
+
+
+
                 <span class="feature_btn_mobile feature_nav select_option_container"
                     @click="topListSelect(flShowTopListSelection)">
                     <span>Statistics</span>
@@ -269,6 +306,7 @@
 				showClear: false,
 				innerWidth: window.innerWidth,
 				flShowTransactionsSelect: false,
+				flShowAssetSelect: false,
 				flShowValidatorsSelect: false,
 				flShowNetworkSelect: false,
 				flShowGovernanceSelect: false,
@@ -288,7 +326,8 @@
 				netWorkArray: [],
 				explorerLogo: '',
 				flShowSearchIpt: false,
-				flShowLogo: false
+				flShowLogo: false,
+				showAssetTransaction: false
 			}
 		},
 		beforeMount () {
@@ -321,6 +360,16 @@
 					this.flShowTransactionsSelect = false
 				}
 			},
+            assetsSelect (flShowAssetSelect) {
+                this.flShowAssetSelect = false;
+                if (!flShowAssetSelect) {
+                    this.flShowAssetSelect = true;
+                    this.flShowUpOrDown = true
+                } else {
+                    this.flShowUpOrDown = false;
+                    this.flShowAssetSelect = false
+                }
+            },
 			netWorkSelect (flShowNetworkSelect) {
 				this.flShowNetworkSelect = false;
 				if (!flShowNetworkSelect) {
@@ -388,6 +437,12 @@
 			transactionMouseLeave () {
 				this.showSubTransaction = false;
 			},
+			nativeAssetMouseOver(){
+				this.showAssetTransaction = true;
+            },
+			nativeAssetMouseLeave(){
+				this.showAssetTransaction = false;
+            },
 			governanceMouseOver () {
 				this.flShowGovernanceOption = true
 			},
@@ -520,6 +575,8 @@
 				} else if (path.includes('/proposals')) {
 					this.activeClassName = '/governance';
 				} else if (path.includes('/statistics')) {
+					this.activeClassName = '/Assets';
+				} else if (path.includes('/Assets')) {
 					this.activeClassName = '/statistics';
 				} else {
 					this.activeClassName = '';
@@ -619,6 +676,7 @@
         position: fixed;
         z-index: 10001;
         background: rgba(255, 255, 255, 1);
+        height: 0.6rem;
         .app_header_person_computer {
             width: 100%;
             background: #3598db;
@@ -690,6 +748,39 @@
                                     }
                                 }
                             }
+                            .assets_list_content {
+                                z-index: 10000;
+                                display: block;
+                                padding: 0;
+                                min-width: 1.42rem;
+                                .assets_content {
+                                    justify-content: center;
+                                    box-sizing: border-box;
+                                }
+                                .bottom_arrow {
+                                    display: inline-block;
+                                    height: 0.6rem;
+                                    width: 0.11rem;
+                                    background: url("../assets/caret-bottom.png") no-repeat 50% 50%;
+                                }
+                                .assets_list_item_content {
+                                    z-index: 100;
+                                    background: #0f7bc4;
+                                    a {
+                                        .assets_list_item {
+                                            height: 0.34rem;
+                                            line-height: 0.34rem;
+                                            text-align: left;
+                                            color: #c9eafd;
+                                            cursor: pointer;
+                                            &:hover {
+                                                background: #086db1;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
                             .statics_list_content {
                                 padding: 0;
                                 display: block;

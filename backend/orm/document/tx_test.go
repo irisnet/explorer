@@ -6,6 +6,7 @@ import (
 
 	"gopkg.in/mgo.v2/bson"
 	"github.com/irisnet/explorer/backend/utils"
+	"encoding/json"
 )
 
 func TestQueryByAddr(t *testing.T) {
@@ -91,4 +92,14 @@ func TestGetTxCountByDuration(t *testing.T) {
 	}
 	t.Log(cnt)
 
+}
+
+func TestCommonTx_QueryTxAsset(t *testing.T) {
+	total,ret,err := CommonTx{}.QueryTxAsset("gateway",Tx_Asset_TokenType_Edit,0,10)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	t.Log(total)
+	bytedata, _ := json.Marshal(ret)
+	t.Log(string(bytedata))
 }

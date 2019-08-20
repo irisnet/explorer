@@ -43,6 +43,14 @@
         </span>
             <span class="no_skip" v-show="(/^[0]\d*$/).test(data.item.From) || data.item.From === '--'">--</span>
         </template>
+        <template slot='Amount' slot-scope='data'>
+          <div class="name_address">
+            <span class="remove_default_style">
+              <span>{{substrAmount(data.item.Amount)}}</span>
+            </span>
+            <span class="address">{{data.item.Amount}}</span>
+          </div>
+        </template>
         <template slot='OperatorAddr' slot-scope='data'>
         <span class="skip_route" style="display: flex" v-if="data.item.OperatorAddr !== '--'">
           <div class="name_address">
@@ -148,7 +156,7 @@
                 label:'Operator_Address'
               },
               'Amount':{
-                label:'Self_Bonded'
+                label:'Self-Bonded'
               },
               'Tx_Type':{
                 label:'Tx_Type'
@@ -250,6 +258,9 @@
           if(TxHash){
             return Tools.formatTxHash(TxHash)
           }
+        },
+        substrAmount(amount){
+          return Tools.formatString(amount.toString(),20,'...')
         },
         setTxFields(items){
           items.forEach( (tx) => {

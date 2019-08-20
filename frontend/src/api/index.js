@@ -72,6 +72,10 @@ const urlApi = {
   sysdate: '/api/sysdate',
   //richList
   richListAccounts: '/api/accounts',
+  //nativeAsset
+  nativeAsset: 'api/assets/native/txs?page={pageNumber}&size={pageSize}&tx_type={tokenType}',
+  //gateway
+  gatewayAsset: 'api/assets/gateway/txs?page={pageNumber}&size={pageSize}&tx_type={tokenType}',
   //bondedtokens
   bondedtokensValidators: '/api/bondedtokens/validators?type={validatorStatus}',
   bondedtokensDelegations: '/api/stake/validators/{address}/delegations?needpage=false',
