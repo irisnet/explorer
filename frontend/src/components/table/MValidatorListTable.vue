@@ -91,7 +91,7 @@ export default {
           className: 'text_right'
         },
         {
-          title: 'Self_Bonded',
+          title: 'Self-Bonded',
           key: 'selfBond',
           sortable: true,
           sortMethod: this.sortMethodSplit('selfBond'),
@@ -185,7 +185,7 @@ export default {
           className: 'text_right'
         },
         {
-          title: 'Self_Bonded',
+          title: 'Self-Bonded',
           key: 'selfBond',
           sortable: true,
           sortMethod: this.sortMethodSplit('selfBond'),

@@ -402,7 +402,7 @@ export default {
                 "Bond Height": "",
                 "Bonded Tokens": "",
                 "Unbonding Height": "",
-                "Self Bonded": "",
+                "Self-Bonded": "",
                 "Jailed Until": "",
                 "Delegator Bonded": "",
                 "Missed Blocks": "",
@@ -599,7 +599,7 @@ export default {
                             data.unbond_height === "" &&
                                 delete this.validatorInfo["Unbonding Height"];
                             this.validatorInfo[
-                                "Self Bonded"
+                                "Self-Bonded"
                             ] = `${this.$options.filters.amountFromat(
                                 data.self_bonded,
                                 Constants.Denom.IRIS.toUpperCase()

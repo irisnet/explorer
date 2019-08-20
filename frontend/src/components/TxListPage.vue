@@ -52,7 +52,7 @@
 			getTransactionList(currentPage, pageSize){
 				let that = this, parmas;
 				if(this.$route.params.txType === 'transfers'){
-					this.listTitleName = "Transfer Transactions";
+					this.listTitleName = "Txs (Transfer or Burn)";
 					parmas = {txListTransfer: {pageNumber: currentPage,pageSize: pageSize}};
 				}else if(this.$route.params.txType === 'stakes'){
 					this.listTitleName = "Txs (Staking or Distribution)";
