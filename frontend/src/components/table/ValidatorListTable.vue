@@ -199,7 +199,7 @@
         word-wrap: break-word !important;
         .skip_route {
           a{
-            color: #3598db!important;
+            color: var(--bgColor)!important;
             cursor: pointer;
           }
         }
@@ -216,12 +216,12 @@
   .page-link{
     padding:0.05rem 0.075rem !important;
     height:0.29rem !important;
-    color:#3598db !important;
+    color:var(--bgColor) !important;
   }
   .active{
     .page-link{
-      background-color: #3598db !important;
-      border-color:#3598db !important;
+      background-color: var(--bgColor) !important;
+      border-color:var(--bgColor) !important;
       color:#fff !important;
     }
   }
@@ -245,7 +245,7 @@
              padding-left:0.2rem !important;
            }
           }
-        border-bottom:0.02rem solid #3598db;
+        border-bottom:0.02rem solid var(--bgColor);
       }
     }
     tbody{
@@ -298,7 +298,7 @@
     }
   }
   .proposals-list{
-    color: #3598db;
+    color: var(--bgColor);
     cursor: pointer;
     margin: 0!important;
     padding: 0!important;
@@ -306,7 +306,7 @@
   .remove_default_style{
     margin: 0!important;
     padding: 0!important;
-    color: #3598db;
+    color: var(--bgColor);
   }
   .show_trim td{
     white-space: pre;
@@ -337,7 +337,7 @@
     margin: 0;
   }
   .link_style{
-    color: #3598db !important;
+    color: var(--bgColor) !important;
   }
   //覆盖bootstrap-vue默认排序样式
   .b-table.table > thead > tr > th[aria-sort][aria-sort="descending"]::after, .b-table.table > tfoot > tr > th[aria-sort][aria-sort="descending"]::after{

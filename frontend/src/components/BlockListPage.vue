@@ -219,7 +219,7 @@ export default {
                 .skip_route {
                     margin-left: 0.09rem;
                     a {
-                        color: #3598db !important;
+                        color: var(--bgColor) !important;
                         cursor: pointer;
                     }
                 }

@@ -458,7 +458,7 @@ table {
     word-wrap: break-word !important;
     .skip_route {
       a {
-        color: #3598db !important;
+        color: var(--bgColor) !important;
         cursor: pointer;
       }
     }
@@ -505,12 +505,12 @@ table {
 .page-link {
   padding: 0.05rem 0.075rem !important;
   height: 0.29rem !important;
-  color: #3598db !important;
+  color: var(--bgColor) !important;
 }
 .active {
   .page-link {
-    background-color: #3598db !important;
-    border-color: #3598db !important;
+    background-color: var(--bgColor) !important;
+    border-color: var(--bgColor) !important;
     color: #fff !important;
   }
 }
@@ -535,7 +535,7 @@ table {
           padding-left: 0.2rem !important;
         }
       }
-      border-bottom: 0.01rem solid #3598db !important;
+      border-bottom: 0.01rem solid var(--bgColor) !important;
     }
   }
   tbody {
@@ -594,7 +594,7 @@ table {
   }
 }
 .proposals-list {
-  color: #3598db;
+  color: var(--bgColor);
   cursor: pointer;
   margin: 0 !important;
   padding: 0 !important;
@@ -602,7 +602,7 @@ table {
 .remove_default_style {
   margin: 0 !important;
   padding: 0 !important;
-  color: #3598db;
+  color: var(--bgColor);
 }
 .show_trim td {
   white-space: pre;
@@ -641,7 +641,7 @@ pre {
   margin: 0;
 }
 .link_style {
-  color: #3598db !important;
+  color: var(--bgColor) !important;
 }
 .proposals_hash_content {
   transform: translateX(-50%);

@@ -1,6 +1,6 @@
 <template>
   <div :style="{'min-width': '12.8rem'}">
-    <m-table :columns="validatorFields" class="top_border_table"
+    <m-table v-table-head-fixed :columns="validatorFields" class="top_border_table"
              :data="items"
              :sort-by.sync="sortBy"
              :sort-desc.sync="sortDesc">

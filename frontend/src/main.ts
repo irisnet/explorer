@@ -23,14 +23,12 @@ Vue.use(BootstrapVue);
 Vue.prototype.$Crypto = crypto;
 Vue.prototype.$Codec = codec;
 Vue.config.productionTip = false;
-let faucet_url;
 axios.defaults.timeout = 120000;
 axios.interceptors.request.use(function (config) {
   return config;
 }, function (error) {
   return Promise.reject(error);
 });
-Vue.prototype.faucet_url = faucet_url;
 let currentServerTime = new Date().getTime();
 axios.get(`/api/sysdate`).then(data => {
   if(data.status === 200){

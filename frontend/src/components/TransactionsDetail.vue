@@ -518,9 +518,9 @@
     }
     .link_active_style{
         a{
-            color:#3598db !important;
+            color:var(--bgColor) !important;
         }
-        color:#3598db !important;
+        color:var(--bgColor) !important;
         cursor:pointer;
     }
     .information_value_fixed {

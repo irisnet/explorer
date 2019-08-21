@@ -156,11 +156,16 @@ export default {
 <style scoped lang="scss">
 @import "../style/mixin.scss";
 .top_list_page {
+    width: 100%;
     .top_list_title_container {
+        width: 100%;
+        z-index: 10;
+        position: fixed;
         .top_list_title_content {
             max-width: 12.8rem;
             margin: 0 auto;
             display: flex;
+            background: #fff;
             align-items: center;
             & > div.top_list_title_content_div {
                 display: flex;
@@ -172,7 +177,6 @@ export default {
                     font-size: 0.18rem;
                     color: rgba(34, 37, 42, 1);
                     line-height: 0.26rem;
-                    padding-left: 0.4rem;
                 }
                 .tooltip_icon {
                     width: 0.16rem;
@@ -181,10 +185,10 @@ export default {
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                    border: 1px solid #3598db;
+                    border: 1px solid var(--bgColor);
                     border-radius: 50%;
                     font-size: 0.1rem;
-                    color: #3598db;
+                    color: var(--bgColor);
                     position: relative;
                     cursor: pointer;
                     &:hover .tooltip_span {
@@ -235,20 +239,17 @@ export default {
     }
 }
 .top_list_container {
-    position: relative;
-    top: -0.01rem;
     width: 100%;
+    padding-top: 0.7rem;
     margin-bottom: 0.4rem;
     .top_list_content {
-        max-width: 12.5rem;
+        max-width: 12.8rem;
         width: 100%;
         margin: 0 auto;
         .top_list_table_wrap {
             overflow-x: auto;
             .top_list_table_content {
                 width: 12.5rem;
-                border-left: 1px solid #dee2e6;
-                border-right: 1px solid #dee2e6;
             }
         }
     }
@@ -275,6 +276,13 @@ export default {
         }
         .top_list_time_content {
             line-height: 0.25rem;
+        }
+    }
+}
+@media screen and (max-width: 910px){
+    .top_list_page {
+        .top_list_title_container{
+            position: static;
         }
     }
 }

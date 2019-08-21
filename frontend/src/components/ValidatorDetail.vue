@@ -1374,7 +1374,7 @@ export default {
     line-height: 0.2rem;
     border-radius: 0.1rem;
     color: #ffffff;
-    background-color: #3598db;
+    background-color: var(--bgColor);
 }
 .validator_detail_information_wrap {
     margin-top: 0.2rem;
@@ -1406,7 +1406,7 @@ export default {
                 a,
                 span {
                     cursor: pointer;
-                    color: #3598db !important;
+                    color: var(--bgColor) !important;
                 }
             }
         }
@@ -1479,8 +1479,8 @@ export default {
         }
     }
     .active {
-        background-color: #3598db;
-        border-color: #3598db;
+        background-color: var(--bgColor);
+        border-color: var(--bgColor);
         color: #ffffff;
     }
 }
