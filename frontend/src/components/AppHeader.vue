@@ -63,7 +63,7 @@
                                 <div class="statics_content"
                                      style="display: flex">Statistics<span class="bottom_arrow"></span></div>
                                 <ul class="statics_list_item_content"
-                                    style="color: #000;background: --bgColor"
+                                    style="color: #000;background: var(--bgColor)"
                                     v-show="flShowStatistics">
                                     <router-link :to="`/statistics/richlist`">
                                         <li class="static_list_item">Rich List</li>
@@ -83,7 +83,7 @@
                                 <div class="governance_content"
                                      style="display: flex">Governance<span class="bottom_arrow"></span></div>
                                 <ul class="governance_list_item_content"
-                                    style="color: #000;background: --bgColor"
+                                    style="color: #000;background: var(--bgColor)"
                                     v-show="flShowGovernanceOption">
                                     <router-link :to="`/gov/parameters`">
                                         <li class="governance_list_item">Parameters</li>
@@ -103,7 +103,7 @@
                                 <div class="network_list_title_content"
                                      style="display: flex">{{currentSelected}}<span class="bottom_arrow"></span></div>
                                 <ul class="network_list_item_content"
-                                    style="color: #000;background: --bgColor">
+                                    style="color: #000;background: var(--bgColor)">
                                     <li class="network_list_item"
                                         v-for="item in netWorkArray"
                                         v-show="item.netWorkSelectOption.trim() !== currentSelected.trim()"
