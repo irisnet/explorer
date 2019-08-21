@@ -634,6 +634,8 @@
 			},
 			toggleTestnetLogo (currentEnv) {
 				const root = document.documentElement;
+				root.style.setProperty(skinStyle.skinStyle.TITLECOLORNAME,skinStyle.skinStyle.commonFontBlackColor);
+				root.style.setProperty(skinStyle.skinStyle.CONTENTCOLORNAME,skinStyle.skinStyle.commonFontContentColor);
 				if (currentEnv.cur_env === constant.ENVCONFIG.MAINNET) {
 					this.flShowChainId = false;
 					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.MAINNETBGCOLOR);

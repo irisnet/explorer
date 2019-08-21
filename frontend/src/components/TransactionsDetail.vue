@@ -394,7 +394,7 @@
 <style lang="scss" scoped>
     @import '../style/mixin.scss';
     .information_pre{
-        color: #a2a2ae;
+        color: var(--contentColor);
         white-space: pre-wrap;
     }
     .transactions_detail_wrap {
@@ -447,7 +447,7 @@
                         width:1.5rem;
                     }
                     .information_value{
-                        color: #a2a2ae;
+                        color: var(--contentColor);
                         flex:1;
                     }
                 }
@@ -464,7 +464,7 @@
                 height: 0.4rem;
                 line-height: 0.4rem;
                 font-size: 0.22rem;
-                color: #a2a2ae;
+                color: var(--contentColor);
             }
         }
 
@@ -494,7 +494,7 @@
                         overflow-x:auto;
                         -webkit-overflow-scrolling:touch;
                         overflow-y:hidden;
-                        color: #a2a2ae;
+                        color: var(--contentColor);
                     }
                 }
             }
@@ -512,7 +512,7 @@
                 height: 0.3rem;
                 line-height: 0.3rem;
                 font-size: 0.18rem;
-                color: #a2a2ae;
+                color: var(--contentColor);
             }
         }
     }

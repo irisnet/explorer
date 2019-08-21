@@ -463,10 +463,10 @@ table {
       }
     }
     .no_skip {
-      color: #a2a2ae;
+      color: var(--contentColor);
       cursor: default;
       .link_style {
-        color: #a2a2ae !important;
+        color: var(--contentColor) !important;
       }
     }
   }
@@ -518,7 +518,7 @@ table {
   th,
   td {
     padding: 0.075rem !important;
-    color: #a2a2ae;
+    color: var(--contentColor);
     @include fontWeight;
   }
   margin-bottom: 0 !important;
@@ -628,7 +628,7 @@ table {
 }
 .pre_global_style {
   font-size: 0.14rem;
-  color: #a2a2ae;
+  color: var(--contentColor);
   margin: 0;
 }
 .proposals_detail_table_wrap {

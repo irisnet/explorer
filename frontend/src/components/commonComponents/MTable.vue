@@ -317,7 +317,7 @@ table.m_table {
     td {
       padding: 7.5px;
       box-sizing: border-box;
-      color: #a2a2ae;
+      color: var(--contentColor);
       & > div {
         display: inline-block;
         vertical-align: middle;

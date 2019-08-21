@@ -175,7 +175,7 @@ export default {
                     display: flex;
                     align-items: center;
                     font-size: 0.18rem;
-                    color: rgba(34, 37, 42, 1);
+                    color: var(--titleColor);
                     line-height: 0.26rem;
                 }
                 .tooltip_icon {

@@ -156,7 +156,7 @@
     p, li{
       list-style: inherit!important;
       font-size:0.14rem;
-      color:#a2a2ae;
+      color:var(--contentColor);
     }
   }
 

@@ -1348,7 +1348,7 @@ export default {
     flex-direction: row !important;
     .title {
         font-size: 22px;
-        color: #22252a;
+        color: var(--titleColor);
     }
     .status_btn {
         margin-left: 0.1rem;
@@ -1393,10 +1393,10 @@ export default {
             display: flex;
             justify-content: space-between;
             .information_props {
-                color: #22252a;
+                color: var(--titleColor);
             }
             .information_value {
-                color: #a2a2ae;
+                color: var(--contentColor);
                 width: calc(100% - 1.7rem);
                 margin-right: 0.2rem;
                 word-break: break-all;
@@ -1415,7 +1415,7 @@ export default {
 .validator_information_content_title {
     height: 0.2rem;
     line-height: 0.2rem;
-    color: #22252a;
+    color: var(--titleColor);
     font-size: 18px;
     margin-top: 0.3rem;
     padding-left: 0.2rem;
@@ -1465,7 +1465,7 @@ export default {
         width: 60px;
         box-sizing: border-box;
         border: 1px solid rgba(215, 217, 224, 1);
-        color: #22252a;
+        color: var(--titleColor);
         &:nth-of-type(1) {
             border-right-width: 0;
             border-top-left-radius: 2px;

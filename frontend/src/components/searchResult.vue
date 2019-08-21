@@ -184,7 +184,7 @@
                 .search_result_detail_wrap_hash_var{
 
                     font-size: 0.22rem;
-                    color: #a2a2ae;
+                    color: var(--contentColor);
                 }
             }
             .mobile_search_result_detail_wrap{

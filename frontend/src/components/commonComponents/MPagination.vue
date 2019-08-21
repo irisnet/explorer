@@ -143,7 +143,7 @@ export default {
 
 <style lang="scss" scoped>
 .info {
-    color: #a2a2ae;
+    color: var(--contentColor);
     vertical-align: middle;
     margin-right: 0.1rem;
 }

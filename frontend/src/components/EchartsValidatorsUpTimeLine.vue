@@ -26,7 +26,7 @@ export default {
                         axis: "x",
                         type: "line",
                         lineStyle: {
-                            color: "#a2a2ae",
+                            color: "var(--contentColor)",
                         },
                     },
                     formatter (params) {
@@ -48,7 +48,7 @@ export default {
                     data: [],
                     axisLine: {
                         lineStyle: {
-                            color: '#a2a2ae',
+                            color: 'var(--contentColor)',
                         }
                     },
                     axisLabel: {
@@ -184,7 +184,7 @@ export default {
         display: flex;
         justify-content: space-between;
         & > span {
-            color: #22252a;
+            color: var(--titleColor);
             font-size: 16px;
             line-height: 0.3rem;
         }

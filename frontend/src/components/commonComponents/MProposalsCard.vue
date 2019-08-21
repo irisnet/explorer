@@ -147,7 +147,7 @@ export default {
       span.end {
         margin-left: 16px;
         margin-right: 30px;
-        color: #22252A;
+        color: var(--titleColor);
         span.end_value {
           color: #A2A2AE;
         }
