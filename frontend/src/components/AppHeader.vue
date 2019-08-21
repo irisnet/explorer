@@ -575,9 +575,9 @@
 				} else if (path.includes('/proposals')) {
 					this.activeClassName = '/governance';
 				} else if (path.includes('/statistics')) {
-					this.activeClassName = '/Assets';
-				} else if (path.includes('/Assets')) {
 					this.activeClassName = '/statistics';
+				} else if (path.includes('/nativeasset') || path.includes('/gatewayasset')) {
+					this.activeClassName = '/Assets';
 				} else {
 					this.activeClassName = '';
 				}
