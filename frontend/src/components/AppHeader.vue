@@ -25,7 +25,6 @@
                                 <div class="transaction_content"
                                      style="display: flex">Transactions<span class="bottom_arrow"></span></div>
                                 <ul class="transaction_list_item_content"
-                                    style=""
                                     v-show="showSubTransaction">
                                     <router-link :to="`/txs/transfers`">
                                         <li class="transaction_list_item">Transfers</li>
@@ -64,7 +63,7 @@
                                 <div class="statics_content"
                                      style="display: flex">Statistics<span class="bottom_arrow"></span></div>
                                 <ul class="statics_list_item_content"
-                                    style="color: #000;background: #3598db"
+                                    style="color: #000;background: --bgColor"
                                     v-show="flShowStatistics">
                                     <router-link :to="`/statistics/richlist`">
                                         <li class="static_list_item">Rich List</li>
@@ -84,7 +83,7 @@
                                 <div class="governance_content"
                                      style="display: flex">Governance<span class="bottom_arrow"></span></div>
                                 <ul class="governance_list_item_content"
-                                    style="color: #000;background: #3598db"
+                                    style="color: #000;background: --bgColor"
                                     v-show="flShowGovernanceOption">
                                     <router-link :to="`/gov/parameters`">
                                         <li class="governance_list_item">Parameters</li>
@@ -104,7 +103,7 @@
                                 <div class="network_list_title_content"
                                      style="display: flex">{{currentSelected}}<span class="bottom_arrow"></span></div>
                                 <ul class="network_list_item_content"
-                                    style="color: #000;background: #3598db">
+                                    style="color: #000;background: --bgColor">
                                     <li class="network_list_item"
                                         v-for="item in netWorkArray"
                                         v-show="item.netWorkSelectOption.trim() !== currentSelected.trim()"
@@ -269,7 +268,8 @@
 	import Tools from '../util/Tools';
 	import Service from "../service";
 	import constant from '../constant/Constant';
-	import lang from "../lang/index"
+	import lang from "../lang/index";
+	import skinStyle from '../skinStyle'
 	export default {
 		name: 'app-header',
 		watch: {
@@ -633,11 +633,19 @@
 				}
 			},
 			toggleTestnetLogo (currentEnv) {
+				const root = document.documentElement;
 				if (currentEnv.cur_env === constant.ENVCONFIG.MAINNET) {
 					this.flShowChainId = false;
+					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.MAINNETBGCOLOR);
+					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.MAINNETHOVERCOLOR);
+					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.MAINNETACTIVECOLOR);
 				} else {
 					this.flShowChainId = true;
+					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.TESTNETBGCOLOR);
+					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.TESTNETHOVERCOLOR);
+					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.TESTNETACTIVECOLOR);
 				}
+
 			},
 			setCurrentSelectOption (currentEnv, currentChainId) {
 				if (currentEnv === constant.ENVCONFIG.DEV || currentEnv === constant.ENVCONFIG.QA || currentEnv === constant.ENVCONFIG.STAGE) {
@@ -672,6 +680,9 @@
 </script>
 <style lang="scss">
     @import "../style/mixin.scss";
+    :root{
+        --bgColor: #fff;
+    }
     .person_computer_header_var {
         position: fixed;
         z-index: 10001;
@@ -679,7 +690,7 @@
         height: 0.6rem;
         .app_header_person_computer {
             width: 100%;
-            background: #3598db;
+            background: var(--bgColor);
             .header_top_container {
                 max-width: 12.8rem;
                 width: 100%;
@@ -709,12 +720,12 @@
                                 line-height: 0.6rem;
                                 cursor: pointer;
                                 &:hover {
-                                    background: #0f7bc4;
+                                    background: var(--activeColor);
                                 }
                             }
                             .nav_item_active {
                                 color: #ffffff;
-                                background: #0f7bc4;
+                                background: var(--activeColor);
                             }
                             .transaction_list_content {
                                 z-index: 10000;
@@ -732,7 +743,7 @@
                                 }
                                 .transaction_list_item_content {
                                     z-index: 100;
-                                    background: #0f7bc4;
+                                    background: var(--activeColor);
                                     a {
                                         .transaction_list_item {
                                             height: 0.34rem;
@@ -742,7 +753,7 @@
                                             cursor: pointer;
                                             padding: 0 0.24rem;
                                             &:hover {
-                                                background: #086db1;
+                                                background: var(--hoverColor);
                                             }
                                         }
                                     }
@@ -765,7 +776,7 @@
                                 }
                                 .assets_list_item_content {
                                     z-index: 100;
-                                    background: #0f7bc4;
+                                    background: var(--activeColor);
                                     a {
                                         .assets_list_item {
                                             height: 0.34rem;
@@ -774,13 +785,12 @@
                                             color: #c9eafd;
                                             cursor: pointer;
                                             &:hover {
-                                                background: #086db1;
+                                                background: var(--hoverColor);
                                             }
                                         }
                                     }
                                 }
                             }
-
                             .statics_list_content {
                                 padding: 0;
                                 display: block;
@@ -805,9 +815,9 @@
                                             color: #c9eafd;
                                             cursor: pointer;
                                             padding: 0 0.24rem;
-                                            background: #0f7bc4;
+                                            background: var(--activeColor);
                                             &:hover {
-                                                background: #086db1;
+                                                background: var(--hoverColor);
                                             }
                                         }
                                     }
@@ -837,9 +847,9 @@
                                             color: #c9eafd;
                                             cursor: pointer;
                                             padding: 0 0.25rem;
-                                            background: #0f7bc4;
+                                            background: var(--activeColor);
                                             &:hover {
-                                                background: #086db1;
+                                                background: var(--hoverColor);
                                             }
                                         }
                                     }
@@ -857,7 +867,7 @@
                                 z-index: 100;
                                 cursor: pointer;
                                 &:hover {
-                                    background: #0f7bc4;
+                                    background: var(--hoverColor);
                                     .network_list_item_content {
                                         display: block;
                                     }
@@ -867,7 +877,7 @@
                                     padding: 0 0.2rem;
                                     min-width: 1.8rem;
                                     &:hover {
-                                        background: #0f7bc4;
+                                        background: var(--hoverColor);
                                     }
                                     .bottom_arrow {
                                         display: inline-block;
@@ -886,9 +896,9 @@
                                         color: #c9eafd;
                                         cursor: pointer;
                                         padding: 0 0.2rem;
-                                        background: #0f7bc4;
+                                        background: var(--activeColor);
                                         &:hover {
-                                            background: #086db1;
+                                            background: var(--hoverColor);
                                         }
                                     }
                                 }
@@ -911,7 +921,7 @@
             }
             .search_input_container {
                 width: 100%;
-                background: #278ed4;
+                background: var(--bgColor);
                 z-index: 1;
                 .search_input_wrap {
                     max-width: 12.8rem;
@@ -929,7 +939,7 @@
                         border: none;
                     }
                     span {
-                        color: #3598db;
+                        color: var(--bgColor);
                         padding-right: 0.2rem;
                         background: #fff;
                         height: 0.35rem;
@@ -955,7 +965,7 @@
             @include flex;
             flex-direction: column;
             align-items: center;
-            background: #3598db;
+            background: var(--bgColor);
             .navButton {
                 width: 100% !important;
                 padding: 0 0.2rem;
@@ -965,7 +975,7 @@
                 .common_item_style {
                     &:hover {
                         color: #ffffff;
-                        background: #005a98;
+                        background: var(--hoverColor);
                     }
                 }
                 .nav_item {
@@ -996,7 +1006,7 @@
                         height: 0.36rem;
                         line-height: 0.36rem;
                         font-size: 0.14rem;
-                        background: #005a98;
+                        background: var(--bgColor);
                         color: #c9eafd;
                         width: 1.6rem;
                         text-align: left;
@@ -1023,7 +1033,7 @@
                 }
                 .nav_item_active {
                     color: #ffffff;
-                    background: #005a98;
+                    background: var(--bgColor);
                 }
                 .btn-group,
                 .btn-group-vertical {
@@ -1038,7 +1048,7 @@
             flex-direction: column;
             border-bottom: 0.01rem solid #cccccc;
             position: relative;
-            background: #3598db;
+            background: var(--bgColor);
             .feature_btn {
                 width: 0.25rem;
                 height: 0.25rem;
@@ -1069,11 +1079,11 @@
                         span {
                             &:first-child {
                                 font-size: 0.24rem;
-                                color: #005a98;
+                                color: var(--bgColor);
                             }
                             &:last-child {
                                 font-size: 0.24rem;
-                                color: #3598db;
+                                color: var(--bgColor);
                             }
                         }
                     }
@@ -1105,7 +1115,7 @@
                     padding: 0 0.48rem 0 0.1rem;
                     height: 0.3rem;
                     &:focus {
-                        border: 0.01rem solid #3190e8;
+                        border: 0.01rem solid var(--bgColor);
                         outline: none;
                     }
                 }
@@ -1146,7 +1156,7 @@
                 z-index: 1010;
                 width: 100%;
                 left: 0;
-                background: #3598db;
+                background: var(--bgColor);
                 @include flex();
                 flex-direction: column;
                 position: absolute;
@@ -1167,7 +1177,7 @@
                     height: 0.39rem;
                     line-height: 0.39rem;
                     padding-left: 0.15rem;
-                    background: #3598db;
+                    background: var(--bgColor);
                     color: #fff;
                     font-size: 0.14rem;
                     a {
@@ -1181,7 +1191,7 @@
                     color: #c9eafd;
                     font-size: 0.14rem;
                     background: url("../assets/caret-bottom.png") no-repeat 97% 0.12rem,
-                    #3598db;
+                    var(--bgColor);
                 }
                 .feature_subNav {
                     padding-left: 0.3rem;

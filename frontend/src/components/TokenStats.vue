@@ -248,7 +248,7 @@ export default {
                         a,
                         span {
                             cursor: pointer;
-                            color: #3598db !important;
+                            color: var(--bgColor) !important;
                         }
                     }
                     &:nth-last-of-type(1) {

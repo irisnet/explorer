@@ -181,10 +181,10 @@ export default {
                     display: flex;
                     justify-content: center;
                     align-items: center;
-                    border: 1px solid #3598db;
+                    border: 1px solid var(--bgColor);
                     border-radius: 50%;
                     font-size: 0.1rem;
-                    color: #3598db;
+                    color: var(--bgColor);
                     position: relative;
                     cursor: pointer;
                     &:hover .tooltip_span {

@@ -294,7 +294,7 @@
     }
   }
   .moniker_link_style{
-    color: #3598db !important;
+    color: var(--bgColor) !important;
   }
   .hash_container{
     display: flex;
@@ -306,7 +306,7 @@
       position: absolute;
       left: 0;
       top: -0.38rem;
-      color: #3598db;
+      color: var(--bgColor);
       background: rgba(0,0,0,0.8);
       border-radius:0.04rem;
       z-index: 10;
