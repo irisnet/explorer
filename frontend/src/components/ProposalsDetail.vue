@@ -662,7 +662,7 @@ export default {
 }
 .jump_route {
     a {
-        color: #3598db !important;
+        color: var(--bgColor) !important;
     }
     cursor: pointer;
 }

@@ -354,12 +354,12 @@
               }
               .footer_link_privacy{
                 a{
-                  color: #3598db !important;
+                  color: var(--bgColor) !important;
                 }
               }
               .footer-faq{
                 a{
-                  color: #3598db !important;
+                  color: var(--bgColor) !important;
                 }
               }
             }

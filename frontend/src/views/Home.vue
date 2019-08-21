@@ -560,7 +560,7 @@
         }
         .home_module_item_status {
             padding: 0.1rem;
-            background: #3190e8;
+            background: var(--bgColor);
 
             .current_block {
                 @include fontWeight;
@@ -592,7 +592,7 @@
     .blocks_background_type{
         background: url('../assets/block.png') no-repeat 0 0.02rem;
         text-indent:0.2rem;
-        color:#3598db;
+        color:var(--bgColor);
     }
     .home_module_transaction_title_wrap{
         @include flex;
@@ -637,7 +637,7 @@
     .proposer_content{
         cursor: pointer;
         a{
-            color:#3598db !important;
+            color:var(--bgColor) !important;
         }
     }
 </style>

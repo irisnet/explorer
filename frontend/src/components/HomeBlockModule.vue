@@ -16,7 +16,7 @@
             <span class="blocks_module_value" :class="moduleTitle">
               <span class="transactions_tx" v-if="item.TxHash">TX# </span>
              <span style="cursor:pointer;">
-               <router-link :to="item.Height?`/block/${item.Height}`:`/tx?txHash=${item.TxHash}`" style="color: #3598db !important;">{{item.Height?item.Height:`${item.TxHash && item.TxHash.substr(0,16)}...`}}</router-link>
+               <router-link :to="item.Height?`/block/${item.Height}`:`/tx?txHash=${item.TxHash}`" style="color: var(--bgColor) !important;">{{item.Height?item.Height:`${item.TxHash && item.TxHash.substr(0,16)}...`}}</router-link>
                </span>
               </span>
               <span class="key_value_transfers_age" v-show="moduleName !== 'Blocks'">{{item.age}}</span>
@@ -226,7 +226,7 @@
               text-align: right;
             }
             .blocks_module_value{
-              color:#3598db;
+              color:var(--bgColor);
               @include fontSize;
               display:inline-block;
               .transactions_tx{
@@ -244,7 +244,7 @@
             .blocks{
               background: url('../assets/block.png') no-repeat 0 0.02rem;
               text-indent:0.2rem;
-              color:#3598db;
+              color:var(--bgColor);
             }
             .transactions{
               background: url('../assets/transaction.png') no-repeat 0 0.02rem;

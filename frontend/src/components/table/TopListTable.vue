@@ -15,7 +15,7 @@
         </template>
         <template slot="Percentage" slot-scope="data">
           <div  class="percentage_item" style="width: 100%;display: flex;height: 0.2rem;overflow: hidden">
-            <!--<div :style="{'width':`${data.item.Percentage < 0.6 ? '0.3': data.item.Percentage}%`,'background':'#3598db'}"><span style="visibility: hidden;">{{data.item.Percentage}}</span></div>-->
+            <!--<div :style="{'width':`${data.item.Percentage < 0.6 ? '0.3': data.item.Percentage}%`,'background':'var(--bgColor)'}"><span style="visibility: hidden;">{{data.item.Percentage}}</span></div>-->
             <!--<div style="padding-left: 0.2rem">{{data.item.Percentage}}%</div>-->
             <div>{{data.item.Percentage}}%</div>
           </div>

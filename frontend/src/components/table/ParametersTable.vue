@@ -55,7 +55,7 @@
       word-wrap: break-word !important;
       .skip_route {
         a{
-          color: #3598db!important;
+          color: var(--bgColor)!important;
           cursor: pointer;
         }
       }
@@ -88,7 +88,7 @@
            padding-left:0.2rem !important;
          }
         }
-        border-bottom:0.02rem solid #3598db;
+        border-bottom:0.02rem solid var(--bgColor);
       }
     }
     tbody{
