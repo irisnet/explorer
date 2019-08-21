@@ -98,7 +98,7 @@
           </div>
         </div>
       </div>
-      <div style="position:relative;overflow-x: auto; overflow-y: hidden;-webkit-overflow-scrolling:touch;">
+      <div style="padding-top: 0.7rem;overflow-x: auto;-webkit-overflow-scrolling:touch;">
         <m-proposals-list-table :items="items"></m-proposals-list-table>
         <div v-show="showNoData" class="no_data_show">
           No Data
@@ -523,6 +523,11 @@
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
+    position: fixed;
+    width: 100%;
+    max-width: 12.8rem;
+    z-index: 10;
+    background: #fff;
     & > div {
       padding: 4px 0;
     }
