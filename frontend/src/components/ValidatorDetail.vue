@@ -1,6 +1,9 @@
 <template>
     <div class="transactions_detail_wrap">
         <div :class="[transactionsDetailWrap, 'validator_title']">
+            <div class="validator_img_container">
+                <img :src="validatorImg" alt="">
+            </div>
             <span class="title">{{validatorName}}</span>
             <div class="status_btn" v-if="validatorStatus === 'Active'">Active</div>
             <div
@@ -476,7 +479,8 @@ export default {
                 }
             },
             validatorName: "",
-            validatorStatus: ""
+            validatorStatus: "",
+            validatorImg:''
         };
     },
     components: {
@@ -576,6 +580,11 @@ export default {
                 data => {
                     try {
                         if (data) {
+                        	if(data.icons){
+                        		this.validatorImg = data.icons
+                            }else {
+                        		this.validatorImg = require('../assets/header_img.png')
+                            }
                             this.validatorStatus = data.status;
                             this.validatorInfo["Voting Power"] =
                                 data.status === "Active"
@@ -1363,6 +1372,13 @@ export default {
     }
 }
 .transactions_detail_wrap {
+    .validator_img_container{
+        width: 0.35rem;
+        padding-right: 0.1rem;
+        img{
+            width: 100%;
+        }
+    }
     & > div:nth-last-of-type(1) {
         margin-bottom: 0.4rem;
     }
