@@ -95,7 +95,7 @@ export default {
       }
       .value {
         margin-left: 6px;
-        color: #3598DB;
+        color: var(--bgColor);
         white-space: nowrap;
       }
       .title_value_content {
@@ -163,7 +163,7 @@ export default {
         flex: 1;
         .current {
           height: 0.2rem;
-          background: #3598DB;
+          background: var(--bgColor);
           border-radius: 0.17rem;
           .current_value {
             position: relative;
@@ -215,7 +215,7 @@ export default {
               width: 0;
               height: 0;
               border: 4.5px solid transparent;
-              border-bottom-color: #3598DB;
+              border-bottom-color: var(--bgColor);
               margin: auto;
               margin-top: 2px;
               transform: translateX(1px) translateY(-50%);

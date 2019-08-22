@@ -153,6 +153,7 @@
       .home_module_block_title{
         font-size:0.18rem;
         @include fontWeight;
+        color:var(--moduleColor)
       }
       .blocks_background_img{
         background: url('../assets/blocks.png') no-repeat 0 0.02rem;

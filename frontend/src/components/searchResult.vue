@@ -221,7 +221,7 @@
                 width: 1.58rem;
                 height: 0.36rem;
                 margin: 0 auto;
-                background: #3498DB;
+                background: var(--bgColor);
                 border-radius: 0.05rem;
                 color: #fff;
                 font-size: 0.14rem;

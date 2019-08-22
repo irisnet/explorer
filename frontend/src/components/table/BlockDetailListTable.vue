@@ -222,13 +222,13 @@ export default {
           label: 'TxType'
         },
         'transferFee': {
-          label: 'TxFee(IRIS)'
+          label: 'Fee(IRIS)'
         },
         'Tx_Signer': {
           label: 'TxSigner'
         },
         'Tx_Status': {
-          label: 'TxStatus'
+          label: 'Status'
         },
       },
       declarationFields: {
@@ -248,13 +248,13 @@ export default {
           label: 'TxType'
         },
         'Tx_Fee': {
-          label: 'TxFee'
+          label: 'Fee'
         },
         'Tx_Signer': {
           label: 'TxSigner'
         },
         'Tx_Status': {
-          label: 'TxStatus'
+          label: 'Status'
         },
       },
       stakeFields: {
@@ -274,13 +274,13 @@ export default {
           label: 'TxType'
         },
         'Tx_Fee': {
-          label: 'TxFee'
+          label: 'Fee'
         },
         'Tx_Signer': {
           label: 'TxSigner'
         },
         'Tx_Status': {
-          label: 'TxStatus'
+          label: 'Status'
         },
       },
       govFields: {
@@ -303,13 +303,13 @@ export default {
           label: 'TxType'
         },
         'Tx_Fee': {
-          label: 'TxFee'
+          label: 'Fee'
         },
         'Tx_Signer': {
           label: 'TxSigner'
         },
         'Tx_Status': {
-          label: 'TxStatus'
+          label: 'Status'
         },
       },
       validatorFields: {
@@ -433,7 +433,7 @@ export default {
     color: #fff;
     background: rgba(0, 0, 0, 1);
     border-radius: 0.04rem;
-    z-index: 10;
+    z-index: 1;
     line-height: 32px;
     font-size: 0.14rem;
   }

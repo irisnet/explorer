@@ -137,13 +137,13 @@
 		                tooltipClassName: 'tooltip_left'
 	                },
 	                {
-		                title:'TxFee(IRIS)',
+		                title:'Fee(IRIS)',
 		                key:'TxFee',
 		                slot: 'TxFee(IRIS)',
 		                tooltipClassName: 'tooltip_left'
 	                },
 	                {
-		                title:'TxStatus',
+		                title:'Status',
 		                key:'TxStatus',
 		                slot: 'TxStatus',
 		                tooltipClassName: 'tooltip_left'
@@ -210,13 +210,13 @@
 						tooltipClassName: 'tooltip_left'
 					},
 					{
-						title:'TxFee(IRIS)',
+						title:'Fee(IRIS)',
 						key:'TxFee',
 						slot: 'TxFee(IRIS)',
 						tooltipClassName: 'tooltip_left'
 					},
 					{
-						title:'TxStatus',
+						title:'Status',
 						key:'TxStatus',
 						slot: 'TxStatus',
 						tooltipClassName: 'tooltip_left'
@@ -265,13 +265,13 @@
 						tooltipClassName: 'tooltip_left'
 					},
 					{
-						title:'TxFee(IRIS)',
+						title:'Fee(IRIS)',
 						key:'TxFee',
 						slot: 'TxFee(IRIS)',
 						tooltipClassName: 'tooltip_left'
 					},
 					{
-						title:'TxStatus',
+						title:'Status',
 						key:'TxStatus',
 						slot: 'TxStatus',
 						tooltipClassName: 'tooltip_left'
@@ -314,13 +314,13 @@
 						tooltipClassName: 'tooltip_left'
 					},
 					{
-						title:'TxFee(IRIS)',
+						title:'Fee(IRIS)',
 						key:'TxFee',
 						slot: 'TxFee(IRIS)',
 						tooltipClassName: 'tooltip_left'
 					},
 					{
-						title:'TxStatus',
+						title:'Status',
 						key:'TxStatus',
 						slot: 'TxStatus',
 						tooltipClassName: 'tooltip_left'

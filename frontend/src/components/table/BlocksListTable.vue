@@ -240,8 +240,9 @@ export default {
       fields: null,
       transferFields: {
         'Tx_Hash': {
-          label: 'Tx_Hash'
+          label: 'TxHash'
         },
+
         'Block': {
           label: 'Block'
         },
@@ -261,13 +262,13 @@ export default {
           label: 'TxType'
         },
         'transferFee': {
-          label: 'TxFee(IRIS)'
+          label: 'Fee(IRIS)'
         },
         'Tx_Signer': {
           label: 'TxSigner'
         },
         'Tx_Status': {
-          label: 'TxStatus'
+          label: 'Status'
         },
         'Timestamp': {
           label: 'Timestamp'
@@ -293,13 +294,13 @@ export default {
           label: 'TxType'
         },
         'Tx_Fee': {
-          label: 'TxFee'
+          label: 'Fee'
         },
         'Tx_Signer': {
           label: 'TxSigner'
         },
         'Tx_Status': {
-          label: 'TxStatus'
+          label: 'Status'
         },
         'Timestamp': {
           label: 'Timestamp'
@@ -325,13 +326,13 @@ export default {
           label: 'TxType'
         },
         'Tx_Fee': {
-          label: 'TxFee'
+          label: 'Fee'
         },
         'Tx_Signer': {
           label: 'TxSigner'
         },
         'Tx_Status': {
-          label: 'TxStatus'
+          label: 'Status'
         },
         'Timestamp': {
           label: 'Timestamp'
@@ -360,13 +361,13 @@ export default {
           label: 'TxType'
         },
         'Tx_Fee': {
-          label: 'TxFee'
+          label: 'Fee'
         },
         'Tx_Signer': {
           label: 'TxSigner'
         },
         'Tx_Status': {
-          label: 'TxStatus'
+          label: 'Status'
         },
         'Timestamp': {
           label: 'Timestamp'
@@ -429,7 +430,7 @@ export default {
     color: #fff;
     background: rgba(0, 0, 0, 1);
     border-radius: 0.04rem;
-    z-index: 10;
+    z-index: 1;
     line-height: 32px;
     font-size: 0.14rem;
     &::after {
@@ -480,7 +481,7 @@ table {
     color: #fff;
     background: rgba(0, 0, 0, 1);
     border-radius: 0.04rem;
-    z-index: 10;
+    z-index: 1;
     line-height: 32px;
     font-size: 0.14rem;
   }
