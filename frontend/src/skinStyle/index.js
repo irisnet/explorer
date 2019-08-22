@@ -16,6 +16,12 @@ skinStyle.TESTNETACTIVECOLOR = '#0F7BC4';
 skinStyle.BGCOLORNAME = '--bgColor';
 skinStyle.HOVERCOLORNAME = '--hoverColor';
 skinStyle.ACTIVECOLORNAME = '--activeColor';
+skinStyle.TITLECOLORNAME = '--titleColor';
+skinStyle.CONTENTCOLORNAME = '--contentColor';
+
+//公共样式色值
+skinStyle.commonFontContentColor = '#a2a2ae';
+skinStyle.commonFontBlackColor = '#22252a';
 
 
 export default {

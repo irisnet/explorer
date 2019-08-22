@@ -119,7 +119,7 @@ export default {
                                     b: {
                                         fontSize: 14,
                                         lineHeight: 20,
-                                        color: "#22252A",
+                                        color: "var(--titleColor)",
                                         align: "left"
                                     },
                                     per: {

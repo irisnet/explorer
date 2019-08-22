@@ -483,7 +483,7 @@
         display: flex;
         div {
           font-size: 14px;
-          color: #22252A;
+          color: var(--titleColor);
           display: flex;
           align-items: center;
           i {
@@ -610,7 +610,7 @@
       height:  0.62rem;
       line-height: 0.62rem;
       font-size: 0.18rem;
-      color: #a2a2ae;
+      color: var(--contentColor);
       margin-left: 0.2rem;
     }
     .for_proposals{
@@ -663,7 +663,7 @@
     height: 0.3rem;
     line-height: 0.3rem;
     font-size: 0.18rem;
-    color: #a2a2ae;
+    color: var(--contentColor);
     }
     .for_proposals{
         display:inline-block;

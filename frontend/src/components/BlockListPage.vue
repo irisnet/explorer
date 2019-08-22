@@ -224,7 +224,7 @@ export default {
                     }
                 }
                 span {
-                    color: #a2a2ae;
+                    color: var(--contentColor);
                     font-size: 0.18rem;
                 }
                 .pagination_container {

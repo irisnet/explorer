@@ -160,7 +160,7 @@
         }
       },
       showHeaderAndFooterByVersionPath(){
-        if(this.$route.path === "/version"){
+        if(this.$route.path === "/version" || this.$route.matched[0].path && this.$route.matched[0].path === "*"){
           this.flShowFooter = false;
           this.flShowHeader = false;
         }else {
@@ -348,7 +348,7 @@
                   margin-top: 0.02rem;
                 }
                 &:nth-child(2n) {
-                  color: #a2a2ae;
+                  color: var(--contentColor);
                   margin: 0 0.1rem;
                 }
               }
@@ -364,7 +364,7 @@
               }
             }
             .footer_copyright_wrap {
-              color: #a2a2ae;
+              color: var(--contentColor);
               margin-top: 0.1rem;
               font-size: 0.14rem;
             }

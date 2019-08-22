@@ -21,6 +21,7 @@ import TokenStats from "./components/TokenStats.vue";
 import TxList from "./components/TxListPage.vue"
 import NativeAssetPage from "./components/NativeAsset.vue"
 import GateWayAssetPage from "./components/GateWayAsset.vue"
+import Error from "./components/ErrorPage.vue"
 Vue.use(Router);
 
 const router = new Router({
@@ -100,18 +101,25 @@ const router = new Router({
     {
       path: '/gatewayasset', component: GateWayAssetPage,
     },
+    {
+      path: '/error', component: Error,
+    },
+    {
+      path: "*",
+      component: Error
+    }
   ]
 
 })
 router.beforeEach((to, from, next) => {
-  if (sessionStorage.getItem('Show_faucet') === '0') {
-    if (to.path === '/faucet') {
-      next('/')
+    if (sessionStorage.getItem('Show_faucet') === '0') {
+      if (to.path === '/faucet') {
+        next('/')
+      } else {
+        next()
+      }
     } else {
       next()
     }
-  } else {
-    next()
-  }
 })
 export default router;

@@ -132,7 +132,7 @@
         text-align: center;
         padding-top: 0.16rem;
         @include fontSize;
-        color: #a2a2ae;
+        color: var(--contentColor);
       }
     }
 
@@ -261,7 +261,7 @@
           justify-content:center;
           span{
             @include fontSize;
-            color:#a2a2ae;
+            color:var(--contentColor);
             text-align: right;
           }
         }

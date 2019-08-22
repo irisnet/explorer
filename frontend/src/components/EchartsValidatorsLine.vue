@@ -176,7 +176,7 @@ export default {
         display: flex;
         justify-content: space-between;
         & > span {
-            color: #22252a;
+            color: var(--titleColor);
             font-size: 16px;
             line-height: 0.3rem;
         }
