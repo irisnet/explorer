@@ -5,130 +5,63 @@
          id="header">
         <header class="app_header_person_computer"
                 v-show="devicesShow === 1">
-            <div class="header_top_container">
-                <div class="header_top_content_wrap">
+            <div class="header_navigation_container">
+                <div class="header_navigation_wrap">
                     <div class="header_logo_content">
                         <router-link :to="`/home`"><img :src="explorerLogo"></router-link>
                     </div>
-                    <div class="header_menu_content">
-                        <ul class="header_menu_list_content">
-                            <li :class="activeClassName === '/home'?'nav_item_active':''"
-                                @click="featureButtonClick('/home')">Home</li>
-                            <li :class="activeClassName === '/validators'?'nav_item_active':''"
-                                @click="featureButtonClick('/validators')">Validators</li>
-                            <li :class="activeClassName === '/blocks'?'nav_item_active':''"
-                                @click="featureButtonClick('/blocks')">Blocks</li>
-                            <li class="transaction_list_content"
-                                :class="activeClassName === '/transaction'?'nav_item_active':''"
-                                @mouseover="transactionMouseOver"
-                                @mouseleave="transactionMouseLeave">
-                                <div class="transaction_content"
-                                     style="display: flex">Transactions<span class="bottom_arrow"></span></div>
-                                <ul class="transaction_list_item_content"
-                                    v-show="showSubTransaction">
-                                    <router-link :to="`/txs/transfers`">
-                                        <li class="transaction_list_item">Transfers</li>
-                                    </router-link>
-                                    <router-link :to="`/txs/declarations`">
-                                        <li class="transaction_list_item">Declarations</li>
-                                    </router-link>
-                                    <router-link :to="`/txs/stakes`">
-                                        <li class="transaction_list_item">Stakes</li>
-                                    </router-link>
-                                    <router-link :to="`/txs/governance`">
-                                        <li class="transaction_list_item">Governance</li>
-                                    </router-link>
-                                </ul>
-                            </li>
-                            <li class="assets_list_content"
-                                :class="activeClassName === '/Assets'?'nav_item_active':''"
-                                @mouseover="nativeAssetMouseOver"
-                                @mouseleave="nativeAssetMouseLeave">
-                                <div class="assets_content"
-                                     style="display: flex">Assets<span class="bottom_arrow"></span></div>
-                                <ul class="assets_list_item_content"
-                                    v-show="showAssetTransaction">
-                                    <router-link :to="`/nativeasset`">
-                                        <li class="assets_list_item">Native Asset</li>
-                                    </router-link>
-                                    <router-link :to="`/gatewayasset`">
-                                        <li class="assets_list_item">Gateway Asset</li>
-                                    </router-link>
-                                </ul>
-                            </li>
-                            <li class="statics_list_content"
-                                :class="activeClassName === '/statistics'?'nav_item_active':''"
-                                @mouseover="statisticsMouseOver"
-                                @mouseleave="statisticsMouseLeave">
-                                <div class="statics_content"
-                                     style="display: flex">Statistics<span class="bottom_arrow"></span></div>
-                                <ul class="statics_list_item_content"
-                                    style="color: #000;background: var(--bgColor)"
-                                    v-show="flShowStatistics">
-                                    <router-link :to="`/statistics/richlist`">
-                                        <li class="static_list_item">Rich List</li>
-                                    </router-link>
-                                    <router-link :to="`/statistics/tokenstats`">
-                                        <li class="static_list_item">Tokens Stats</li>
-                                    </router-link>
-                                    <!-- <router-link :to="`/statistics/bondedTokens`">
-                                        <li class="static_list_item">Bonded Tokens</li>
-                                    </router-link> -->
-                                </ul>
-                            </li>
-                            <li class="governance_list_content"
-                                :class="activeClassName === '/governance'?'nav_item_active':''"
-                                @mouseover="governanceMouseOver"
-                                @mouseleave="governanceMouseLeave">
-                                <div class="governance_content"
-                                     style="display: flex">Governance<span class="bottom_arrow"></span></div>
-                                <ul class="governance_list_item_content"
-                                    style="color: #000;background: var(--bgColor)"
-                                    v-show="flShowGovernanceOption">
-                                    <router-link :to="`/gov/parameters`">
-                                        <li class="governance_list_item">Parameters</li>
-                                    </router-link>
-                                    <router-link :to="`/gov/proposals`">
-                                        <li class="governance_list_item">Proposals</li>
-                                    </router-link>
-                                </ul>
-                            </li>
-                            <li v-if="flShowFaucet"
-                                class="nav_item common_item_style faucet_content"
-                                :class="activeClassName === '/faucet'?'nav_item_active':''"
-                                @click="featureButtonClick('/faucet')">Faucet</li>
-                        </ul>
-                        <div class="header_network_content">
-                            <div class="network_list_content">
-                                <div class="network_list_title_content"
-                                     style="display: flex">{{currentSelected}}<span class="bottom_arrow"></span></div>
-                                <ul class="network_list_item_content"
-                                    style="color: #000;background: var(--bgColor)">
-                                    <li class="network_list_item"
-                                        v-for="item in netWorkArray"
-                                        v-show="item.netWorkSelectOption.trim() !== currentSelected.trim()"
-                                        @click="windowOpenUrl(item.host)">{{item.netWorkSelectOption}}</li>
-                                </ul>
-                            </div>
-                            <div class="search_content"
-                                 @click="toggleShowSearchIpt()">
-                                <img src="../assets/search_icon.png"
-                                     alt="">
-                            </div>
+                    <ul class="header_menu_content">
+                        <li class="header_menu_item" @mouseenter="showTwoMenu('blockChain')" @mouseleave="hideTwoMenu('blockChain')">Blockchain</li>
+                        <li class="header_menu_item" @mouseenter="showTwoMenu('staking')" @mouseleave="hideTwoMenu('staking')">Staking</li>
+                        <li class="header_menu_item" @mouseenter="showTwoMenu('transfers')" @mouseleave="hideTwoMenu('transfers')">Transfers</li>
+                        <li class="header_menu_item" @mouseenter="showTwoMenu('assets')" @mouseleave="hideTwoMenu('assets')">Assets</li>
+                        <li class="header_menu_item" @mouseenter="showTwoMenu('gov')" @mouseleave="hideTwoMenu('gov')">Gov</li>
+                        <li class="header_menu_item" @mouseenter="showTwoMenu('stats')" @mouseleave="hideTwoMenu('stats')">Stats</li>
+                        <li class="header_menu_item"><router-link :to="`/faucet`">Faucet</router-link></li>
+                    </ul>
+                    <div class="search_input_container">
+                        <div class="search_input_wrap">
+                            <input type="text"
+                                   class="search_input"
+                                   placeholder="Search by Address / Txhash / Block"
+                                   v-model.trim="searchInputValue"
+                                   @keyup.enter="onInputChange">
+                            <span @click="getData(searchInputValue)" class="iconfont icon-s">Search</span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="search_input_container"
-                 v-show="flShowSearchIpt">
-                <div class="search_input_wrap">
-                    <input type="text"
-                           class="search_input"
-                           placeholder="Search by Address / Txhash / Block"
-                           v-model.trim="searchInputValue"
-                           @keyup.enter="onInputChange">
-                    <span @click="getData(searchInputValue)">Search</span>
-                </div>
+            <div class="header_submenu_container" @mouseenter="showTwoMenu(menuActiveName)" @mouseleave="hideTwoMenu(menuActiveName)" v-show="flShowSubMenu" >
+                <ul class="header_submenu_content">
+                    <li class="header_submenu_item" v-if="flShowChain"><router-link :to="`/home`">Overview</router-link></li>
+                    <li class="header_submenu_item" v-if="flShowChain"><router-link :to="`/blocks`">Blocks</router-link></li>
+                    <!--<li class="header_submenu_item" v-if="flShowChain"><router-link :to="`/txs/transfers`">Transactions</router-link></li>-->
+                    <li class="header_submenu_item no_border_style" v-if="flShowChain"><router-link :to="`/validators`">Validators</router-link></li>
+     <!--               <li class="header_submenu_item" v-if="flShowChain">Assets</li>
+                    <li class="header_submenu_item" v-if="flShowChain">Gateways</li>-->
+                    <li class="header_submenu_item" v-if="flShowStaking"><router-link :to="`/validators`">Validators</router-link></li>
+                    <li class="header_submenu_item" v-if="flShowStaking"><router-link :to="`/txs/declarations`">Validations</router-link></li>
+                    <li class="header_submenu_item no_border_style" v-if="flShowStaking"><router-link :to="`/txs/stakes`">Delegations</router-link></li>
+                  <!--  <li class="header_submenu_item" v-if="flShowStaking">Validator Txs</li>-->
+                    <!--<li class="header_submenu_item" v-if="flShowStaking"> <router-link :to="`/txs/stakes`">Delegation Txs</router-link></li>
+                    <li class="header_submenu_item" v-if="flShowStaking">Reward Txs</li>-->
+                    <li class="header_submenu_item no_border_style" v-if="flShowTransfers"> <router-link :to="`/txs/transfers`">IRIS Transfers Txs</router-link></li>
+                    <!--<li class="header_submenu_item" v-if="flShowTransfers">Asset Transfers Txs</li>-->
+                    <!--<li class="header_submenu_item" v-if="flShowTransfers">Inter-chain Txs</li>-->
+                    <!--<li class="header_submenu_item" v-if="flShowTransfers">IRIS Burn Txs</li>-->
+                    <li class="header_submenu_item" v-if="flShowAssets"><router-link :to="`/nativeasset`">Native Asset Txs</router-link></li>
+                    <!--<li class="header_submenu_item" v-if="flShowAssets">Issuers Txs</li>-->
+                    <li class="header_submenu_item no_border_style" v-if="flShowAssets"><router-link :to="`/gatewayasset`">Gateway Asset Txs</router-link></li>
+                    <!--<li class="header_submenu_item" v-if="flShowAssets">Gateways Txs</li>-->
+                    <!--<li class="header_submenu_item" v-if="flShowAssets">Assets Transfers</li>-->
+                    <li class="header_submenu_item" v-if="flShowGov"><router-link :to="`/gov/parameters`">Parameters</router-link></li>
+                    <li class="header_submenu_item" v-if="flShowGov"><router-link :to="`/gov/proposals`">Proposals</router-link></li>
+                    <li class="header_submenu_item no_border_style" v-if="flShowGov"><router-link :to="`/txs/governance`">Gov Txs</router-link></li>
+                    <!--<li class="header_submenu_item" v-if="flShowGov">Vote Tx</li>-->
+                    <li class="header_submenu_item" v-if="flShowStats"><router-link :to="`/statistics/richlist`">IRIS Rich List</router-link></li>
+                    <li class="header_submenu_item no_border_style" v-if="flShowStats"><router-link :to="`/statistics/tokenstats`">IRIS Stats</router-link></li>
+                    <!--<li class="header_submenu_item" v-if="flShowStats">Public Address</li>-->
+                </ul>
             </div>
         </header>
         <div class="app_header_mobile"
@@ -204,13 +137,7 @@
                           @click="featureButtonClick('/nativeasset')">Native Asset</span>
                     <span class="feature_btn_mobile feature_nav"
                           @click="featureButtonClick('/gatewayasset')">Declarations</span>
-
                 </div>
-
-
-
-
-
                 <span class="feature_btn_mobile feature_nav select_option_container"
                     @click="topListSelect(flShowTopListSelection)">
                     <span>Statistics</span>
@@ -325,9 +252,16 @@
 				downImg: require("../assets/caret-bottom.png"),
 				netWorkArray: [],
 				explorerLogo: '',
-				flShowSearchIpt: false,
 				flShowLogo: false,
-				showAssetTransaction: false
+				showAssetTransaction: false,
+				flShowSubMenu: false,
+                flShowChain: false,
+                flShowStaking: false,
+                flShowTransfers: false,
+                flShowAssets: false,
+                flShowGov: false,
+                flShowStats: false,
+                menuActiveName: ''
 			}
 		},
 		beforeMount () {
@@ -344,12 +278,65 @@
 			this.listenRouteForChangeActiveButton();
 			window.addEventListener('resize', this.onresize);
 			this.getConfig();
+			if(localStorage.getItem('currentEnv')){
+				this.toggleTestnetLogo({
+					cur_env:localStorage.getItem('currentEnv')
+				});
+            }
+
 		},
 		beforeDestroy () {
 			document.getElementById('router_wrap').removeEventListener('click', this.hideFeature);
 			window.removeEventListener('resize', this.onWindowResize);
 		},
 		methods: {
+			showTwoMenu(v){
+				this.flShowSubMenu = true;
+				this.menuActiveName = v;
+				switch (v) {
+                    case 'blockChain' :
+	                    this.flShowChain = true;
+                    	break;
+                    case 'staking' :
+	                    this.flShowStaking = true;
+                    	break;
+                    case 'transfers' :
+	                    this.flShowTransfers = true;
+                    	break;
+                    case 'assets'	:
+	                    this.flShowAssets = true;
+                    	break;
+                    case 'gov' :
+	                    this.flShowGov = true;
+                    	break;
+                    case 'stats' :
+	                    this.flShowStats = true
+				}
+            },
+			hideTwoMenu(v){
+				this.flShowSubMenu = false;
+				this.menuActiveName = v;
+				switch (v) {
+					case 'blockChain' :
+						this.flShowChain = false;
+						break;
+					case 'staking' :
+						this.flShowStaking = false;
+						break;
+					case 'transfers' :
+						this.flShowTransfers = false;
+						break;
+					case 'assets'	:
+						this.flShowAssets = false;
+						break;
+					case 'gov' :
+						this.flShowGov = false;
+						break;
+					case 'stats' :
+						this.flShowStats = false
+
+				}
+            },
 			transactionsSelect (flShowTransactionsSelect) {
 				this.flShowValidatorsSelect = false;
 				if (!flShowTransactionsSelect) {
@@ -430,30 +417,6 @@
 				if (path !== 'network') {
 					this.$router.push(path);
 				}
-			},
-			transactionMouseOver () {
-				this.showSubTransaction = true;
-			},
-			transactionMouseLeave () {
-				this.showSubTransaction = false;
-			},
-			nativeAssetMouseOver(){
-				this.showAssetTransaction = true;
-            },
-			nativeAssetMouseLeave(){
-				this.showAssetTransaction = false;
-            },
-			governanceMouseOver () {
-				this.flShowGovernanceOption = true
-			},
-			governanceMouseLeave () {
-				this.flShowGovernanceOption = false
-			},
-			statisticsMouseOver () {
-				this.flShowStatistics = true
-			},
-			statisticsMouseLeave () {
-				this.flShowStatistics = false
 			},
 			searchTx () {
 				Service.commonInterface({headerTx:{searchValue: this.searchInputValue}}, (tx) => {
@@ -592,7 +555,9 @@
 				Service.commonInterface({headerConfig:{}},(res) => {
 					try {
 						this.flShowLogo = true;
-						this.toggleTestnetLogo(res);
+						if(!localStorage.getItem('currentEnv')){
+							this.toggleTestnetLogo(res);
+						}
 						this.setCurrentSelectOption(res.cur_env, res.chain_id, res.configs);
 						this.setNetWorkLogo(res.cur_env, res.chain_id);
 						this.setEnvConfig(res);
@@ -636,6 +601,7 @@
 				const root = document.documentElement;
 				root.style.setProperty(skinStyle.skinStyle.TITLECOLORNAME,skinStyle.skinStyle.commonFontBlackColor);
 				root.style.setProperty(skinStyle.skinStyle.CONTENTCOLORNAME,skinStyle.skinStyle.commonFontContentColor);
+				root.style.setProperty(skinStyle.skinStyle.MODULEBLACKCOLOR,skinStyle.skinStyle.commonModuleBlackColor);
 				if (currentEnv.cur_env === constant.ENVCONFIG.MAINNET) {
 					this.flShowChainId = false;
 					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.MAINNETBGCOLOR);
@@ -647,7 +613,7 @@
 					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.TESTNETHOVERCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.TESTNETACTIVECOLOR);
 				}
-
+				localStorage.setItem('currentEnv',currentEnv.cur_env)
 			},
 			setCurrentSelectOption (currentEnv, currentChainId) {
 				if (currentEnv === constant.ENVCONFIG.DEV || currentEnv === constant.ENVCONFIG.QA || currentEnv === constant.ENVCONFIG.STAGE) {
@@ -667,13 +633,6 @@
 					this.explorerLogo = require("../assets/logo.png")
 				}
 			},
-			windowOpenUrl (url) {
-				window.open(url)
-			},
-			toggleShowSearchIpt () {
-				this.flShowSearchIpt = !this.flShowSearchIpt;
-				this.$store.commit('flShowIpt', this.flShowSearchIpt)
-			}
 		},
 		updated () {
 			this.absoluteTop = `${this.$refs.header_content.clientHeight / 100}rem`
@@ -683,271 +642,120 @@
 <style lang="scss">
     @import "../style/mixin.scss";
     :root{
-        --bgColor: #fff;
     }
     .person_computer_header_var {
         position: fixed;
-        z-index: 10001;
+        z-index: 10;
         background: rgba(255, 255, 255, 1);
         height: 0.6rem;
         .app_header_person_computer {
             width: 100%;
             background: var(--bgColor);
-            .header_top_container {
+            .header_navigation_container{
                 max-width: 12.8rem;
-                width: 100%;
                 margin: 0 auto;
+                background: var(--bgColor);
+                box-sizing: border-box;
                 padding: 0 0.2rem;
-                .header_top_content_wrap {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                position: relative;
+                .header_navigation_wrap{
+                    width: 100%;
+                    height:0.6rem;
                     display: flex;
-                    align-items: center;
-                    .header_logo_content {
-                        width: 1rem;
+                    .header_logo_content{
+                        height: 100%;
+                        padding: 0.05rem 0;
                         img {
-                            width: 100%;
+                            height: 100%;
                         }
                     }
-                    .header_menu_content {
-                        flex: 1;
-                        color: #fff;
+                    .header_menu_content{
                         display: flex;
-                        justify-content: space-between;
-                        .header_menu_list_content {
-                            display: flex;
-                            margin-left: 0.4rem;
-                            li {
-                                font-size: 0.14rem;
-                                padding: 0 0.23rem;
-                                height: 0.6rem;
-                                line-height: 0.6rem;
-                                cursor: pointer;
-                                &:hover {
-                                    background: var(--activeColor);
-                                }
+                        max-width: 12.8rem;
+                        .header_menu_item{
+                            padding: 0 0.1rem;
+                            color: #fff;
+                            height: 0.6rem;
+                            line-height: 0.6rem;
+                            font-size: 0.14rem;
+                            a{
+                                color: #fff !important;
                             }
-                            .nav_item_active {
-                                color: #ffffff;
+                            &:hover{
                                 background: var(--activeColor);
                             }
-                            .transaction_list_content {
-                                z-index: 10000;
-                                display: block;
-                                padding: 0;
-                                .transaction_content {
-                                    box-sizing: border-box;
-                                    padding: 0 0.23rem;
-                                }
-                                .bottom_arrow {
-                                    display: inline-block;
-                                    height: 0.6rem;
-                                    width: 0.11rem;
-                                    background: url("../assets/caret-bottom.png") no-repeat 50% 50%;
-                                }
-                                .transaction_list_item_content {
-                                    z-index: 100;
-                                    background: var(--activeColor);
-                                    a {
-                                        .transaction_list_item {
-                                            height: 0.34rem;
-                                            line-height: 0.34rem;
-                                            text-align: left;
-                                            color: #c9eafd;
-                                            cursor: pointer;
-                                            padding: 0 0.24rem;
-                                            &:hover {
-                                                background: var(--hoverColor);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            .assets_list_content {
-                                z-index: 10000;
-                                display: block;
-                                padding: 0;
-                                min-width: 1.42rem;
-                                .assets_content {
-                                    justify-content: center;
-                                    box-sizing: border-box;
-                                }
-                                .bottom_arrow {
-                                    display: inline-block;
-                                    height: 0.6rem;
-                                    width: 0.11rem;
-                                    background: url("../assets/caret-bottom.png") no-repeat 50% 50%;
-                                }
-                                .assets_list_item_content {
-                                    z-index: 100;
-                                    background: var(--activeColor);
-                                    a {
-                                        .assets_list_item {
-                                            height: 0.34rem;
-                                            line-height: 0.34rem;
-                                            text-align: left;
-                                            color: #c9eafd;
-                                            cursor: pointer;
-                                            &:hover {
-                                                background: var(--hoverColor);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            .statics_list_content {
-                                padding: 0;
-                                display: block;
-                                z-index: 10000;
-                                .bottom_arrow {
-                                    display: inline-block;
-                                    height: 0.6rem;
-                                    width: 0.11rem;
-                                    background: url("../assets/caret-bottom.png") no-repeat 50% 50%;
-                                }
-                                .statics_content {
-                                    box-sizing: border-box;
-                                    padding: 0 0.23rem;
-                                }
-                                .statics_list_item_content {
-                                    z-index: 100;
-                                    a {
-                                        .static_list_item {
-                                            height: 0.34rem;
-                                            line-height: 0.34rem;
-                                            text-align: left;
-                                            color: #c9eafd;
-                                            cursor: pointer;
-                                            padding: 0 0.24rem;
-                                            background: var(--activeColor);
-                                            &:hover {
-                                                background: var(--hoverColor);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                            .governance_list_content {
-                                padding: 0;
-                                display:  block;
-                                z-index: 10000;
-                                .bottom_arrow {
-                                    display: inline-block;
-                                    height: 0.6rem;
-                                    width: 0.11rem;
-                                    background: url("../assets/caret-bottom.png") no-repeat 50% 50%;
-                                }
-                                .governance_content {
-                                    box-sizing: border-box;
-                                    padding: 0 0.23rem;
-                                }
-                                .governance_list_item_content {
-                                    z-index: 100;
-                                    a {
-                                        .governance_list_item {
-                                            height: 0.34rem;
-                                            line-height: 0.34rem;
-                                            text-align: left;
-                                            color: #c9eafd;
-                                            cursor: pointer;
-                                            padding: 0 0.25rem;
-                                            background: var(--activeColor);
-                                            &:hover {
-                                                background: var(--hoverColor);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
                         }
-                        .header_network_content {
+                    }
+                    .search_input_container {
+                        max-width: 4.4rem;
+                        width: 100%;
+                        background: var(--bgColor);
+                        z-index: 1;
+                        .search_input_wrap {
+                            max-width: 12.8rem;
+                            width: 100%;
+                            margin: 0 auto;
+                            padding: 0.13rem 0.2rem;
                             display: flex;
                             align-items: center;
-                            .network_list_content {
-                                font-size: 0.14rem;
-                                height: 0.6rem;
-                                margin-right: 0.1rem;
-                                line-height: 0.6rem;
-                                z-index: 100;
-                                cursor: pointer;
-                                &:hover {
-                                    background: var(--hoverColor);
-                                    .network_list_item_content {
-                                        display: block;
-                                    }
-                                }
-                                .network_list_title_content {
-                                    box-sizing: border-box;
-                                    padding: 0 0.2rem;
-                                    min-width: 1.8rem;
-                                    &:hover {
-                                        background: var(--hoverColor);
-                                    }
-                                    .bottom_arrow {
-                                        display: inline-block;
-                                        height: 0.6rem;
-                                        width: 0.11rem;
-                                        background: url("../assets/caret-bottom.png") no-repeat 50%
-                                        50%;
-                                    }
-                                }
-                                .network_list_item_content {
-                                    display: none;
-                                    .network_list_item {
-                                        height: 0.34rem;
-                                        line-height: 0.34rem;
-                                        text-align: left;
-                                        color: #c9eafd;
-                                        cursor: pointer;
-                                        padding: 0 0.2rem;
-                                        background: var(--activeColor);
-                                        &:hover {
-                                            background: var(--hoverColor);
-                                        }
-                                    }
-                                }
-                            }
-                            .search_content {
-                                width: 0.35rem;
+                            input {
+                                text-indent: 0.22rem;
+                                width: 100%;
                                 height: 0.35rem;
-                                border: 0.01rem solid #fff;
                                 border-radius: 0.06rem;
-                                box-sizing: border-box;
-                                padding: 0.04rem 0.08rem 0.08rem 0.08rem;
+                                box-shadow: none;
+                                background: var(--bgColor);
+                                border: 0.01rem solid #fff;
+                            }
+                            input::placeholder{
+                                font-size: 0.14rem;
+                                color: #fff;
+                            }
+                            span {
+                                color: var(--bgColor);
+                                padding-right: 0.2rem;
+                                background: var(--bgColor);
+                                height: 0.35rem;
+                                line-height: 0.35rem;
+                                border-radius: 0 0.06rem 0.06rem 0;
                                 cursor: pointer;
-                                img {
-                                    width: 100%;
-                                }
                             }
                         }
                     }
                 }
             }
-            .search_input_container {
+            .header_submenu_container{
+                background: #fff;
+                color: var(--titleColor);
+                margin: 0 auto;
+                position: absolute;
+                top:0.6rem;
                 width: 100%;
-                background: var(--bgColor);
-                z-index: 1;
-                .search_input_wrap {
-                    max-width: 12.8rem;
-                    width: 100%;
+                box-shadow: 0 0.02rem 0.1rem 0 rgba(3,16,114,0.15);
+                z-index: 11;
+                .header_submenu_content{
+                    max-width: 12.4rem;
                     margin: 0 auto;
-                    padding: 0.13rem 0.2rem;
+                    height: 0.6rem;
                     display: flex;
                     align-items: center;
-                    input {
-                        text-indent: 0.22rem;
-                        width: 100%;
-                        height: 0.35rem;
-                        border-radius: 0.06rem 0 0 0.06rem;
-                        box-shadow: none;
-                        border: none;
+                    padding-left: 1.65rem;
+                    .header_submenu_item{
+                        font-size: 0.14rem;
+                        line-height: 1;
+                        padding: 0 0.15rem;
+                        border-right: 0.01rem solid var(--contentColor);
+                        a{
+                            &:hover{
+                                color:var(--hoverColor) !important;
+                            }
+                        }
                     }
-                    span {
-                        color: var(--bgColor);
-                        padding-right: 0.2rem;
-                        background: #fff;
-                        height: 0.35rem;
-                        line-height: 0.35rem;
-                        border-radius: 0 0.06rem 0.06rem 0;
-                        cursor: pointer;
+                    .no_border_style{
+                        border-right:none;
                     }
                 }
             }
