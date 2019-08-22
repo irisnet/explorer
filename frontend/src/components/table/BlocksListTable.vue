@@ -265,7 +265,7 @@ export default {
           label: 'Fee(IRIS)'
         },
         'Tx_Signer': {
-          label: 'TxSigner'
+          label: 'Signer'
         },
         'Tx_Status': {
           label: 'Status'
@@ -297,7 +297,7 @@ export default {
           label: 'Fee'
         },
         'Tx_Signer': {
-          label: 'TxSigner'
+          label: 'Signer'
         },
         'Tx_Status': {
           label: 'Status'
@@ -329,7 +329,7 @@ export default {
           label: 'Fee'
         },
         'Tx_Signer': {
-          label: 'TxSigner'
+          label: 'Signer'
         },
         'Tx_Status': {
           label: 'Status'
@@ -364,7 +364,7 @@ export default {
           label: 'Fee'
         },
         'Tx_Signer': {
-          label: 'TxSigner'
+          label: 'Signer'
         },
         'Tx_Status': {
           label: 'Status'
@@ -430,7 +430,7 @@ export default {
     color: #fff;
     background: rgba(0, 0, 0, 1);
     border-radius: 0.04rem;
-    z-index: 1;
+    z-index: 10;
     line-height: 32px;
     font-size: 0.14rem;
     &::after {

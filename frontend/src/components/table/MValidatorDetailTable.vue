@@ -217,7 +217,7 @@ export default {
                     key: "Tx_Fee"
                 },
                 {
-                    title: "Tx_Signer",
+                    title: "Signer",
                     slot: "Tx_Signer",
                     tooltip: true
                 },
@@ -261,7 +261,7 @@ export default {
                     key: "Tx_Fee"
                 },
                 {
-                    title: "Tx_Signer",
+                    title: "Signer",
                     slot: "Tx_Signer",
                     tooltip: true
                 },
@@ -306,7 +306,7 @@ export default {
                     key: "Tx_Fee"
                 },
                 {
-                    title: "Tx_Signer",
+                    title: "Signer",
                     slot: "Tx_Signer",
                     tooltip: true
                 },
@@ -354,7 +354,7 @@ export default {
                     slot: "Tx_Fee"
                 },
                 {
-                    title: "Tx_Signer",
+                    title: "Signer",
                     slot: "Tx_Signer",
                     tooltip: true
                 },
