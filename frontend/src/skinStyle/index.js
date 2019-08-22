@@ -8,9 +8,9 @@ skinStyle.MAINNETHOVERCOLOR = '#086db1';
 skinStyle.MAINNETACTIVECOLOR = '#0F7BC4';
 
 //测试网皮肤样式色值
-skinStyle.TESTNETBGCOLOR = '#16A085';
-skinStyle.TESTNETHOVERCOLOR = '#4FC1B0';
-skinStyle.TESTNETACTIVECOLOR = '#1ABC9C';
+skinStyle.TESTNETBGCOLOR = '#3598DB';
+skinStyle.TESTNETHOVERCOLOR = '#086db1';
+skinStyle.TESTNETACTIVECOLOR = '#0F7BC4';
 
 //公共样式色值
 skinStyle.commonFontContentColor = '#a2a2ae';
