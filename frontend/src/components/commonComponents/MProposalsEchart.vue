@@ -258,7 +258,7 @@ export default {
         }
         .value {
           margin-left: 6px;
-          color: #3598DB;
+          color: var(--bgColor);
           white-space: nowrap;
         }
         .title_value_content {

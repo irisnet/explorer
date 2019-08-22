@@ -579,7 +579,7 @@
                             line-height: 0.2rem;
                             overflow-x: auto;
                             .common_link_style{
-                                color: rgba(53, 152, 219, 1) !important;
+                                color: var(--bgColor) !important;
                             }
                         }
                     }

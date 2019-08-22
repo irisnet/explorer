@@ -197,6 +197,7 @@
   body, html {
     width: 100%;
     height: 100%;
+    color: var(--moduleColor);
   }
   body {
     font-size: 16px !important;
@@ -343,7 +344,7 @@
               span {
                 font-size: 0.14rem;
                 &:nth-child(2n-1) {
-                  color: #3698db;
+                  color: var(--bgColor);
                   cursor: pointer;
                   margin-top: 0.02rem;
                 }

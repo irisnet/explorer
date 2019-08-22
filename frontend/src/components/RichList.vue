@@ -159,7 +159,7 @@ export default {
     width: 100%;
     .top_list_title_container {
         width: 100%;
-        z-index: 10;
+        z-index: 1;
         position: fixed;
         .top_list_title_content {
             max-width: 12.8rem;

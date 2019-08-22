@@ -262,7 +262,7 @@
               value: votes,
                perData: Tools.formatDecimalNumberToFixedNumber(votes / all * 100),
               itemStyle: {
-                color: '#3598DB',
+                color: 'var(--bgColor)',
                 borderColor: '#ECEFFF',
                 borderWidth: 0
               },
@@ -526,7 +526,7 @@
     position: fixed;
     width: 100%;
     max-width: 12.8rem;
-    z-index: 10;
+    z-index: 1;
     background: #fff;
     & > div {
       padding: 4px 0;

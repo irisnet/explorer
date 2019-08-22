@@ -278,7 +278,7 @@
         .gateway_asset_list_title_wrap{
         width: 100%;
         position: fixed;
-        z-index: 10;
+        z-index: 1;
         background-color: #ffffff;
             .gateway_asset_list_title_content{
                 height:0.7rem;

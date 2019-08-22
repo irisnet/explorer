@@ -73,7 +73,7 @@ $fc:#fff;
   cursor:pointer;
   color:#c9eafd;
   text-align: center;
-  background: #3598db;
+  background: var(--bgColor);
   @include borderRadius(0.05rem);
   font-size:0.14rem;
 }
