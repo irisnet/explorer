@@ -147,7 +147,7 @@
                     className: 'text_right'
                 },
                 {
-                    title:'TxSigner',
+                    title:'Signer',
                     slot: 'Tx_Signer',
                     tooltip: true
                 },
@@ -202,7 +202,7 @@
 						className: 'text_right',
 					},
 					{
-						title:'TxSigner',
+						title:'Signer',
                         slot: 'Tx_Signer',
                         tooltip: true
 					},
@@ -256,7 +256,7 @@
                     className: 'text_right',
                 },
                 {
-                    title:'TxSigner',
+                    title:'Signer',
                     slot: 'Tx_Signer',
                     tooltip: true
                 },
@@ -316,7 +316,7 @@
 						className: 'text_right',
 					},
 					{
-						title:'TxSigner',
+						title:'Signer',
                         slot: 'Tx_Signer',
                         tooltip: true
 					},

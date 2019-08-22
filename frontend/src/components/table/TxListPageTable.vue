@@ -133,7 +133,7 @@
                 label:'Tx_Fee'
               },
               'Tx_Signer':{
-                label:'Tx_Signer'
+                label:'Signer'
               },
               'Tx_Status':{
                 label:'Status'
@@ -165,7 +165,7 @@
                 label:'Tx_Fee'
               },
               'Tx_Signer':{
-                label:'Tx_Signer'
+                label:'Signer'
               },
               'Tx_Status':{
                 label:'Status'
@@ -197,7 +197,7 @@
                 label:'Tx_Fee'
               },
               'Tx_Signer':{
-                label:'Tx_Signer'
+                label:'Signer'
               },
               'Tx_Status':{
                 label:'Status'
@@ -232,7 +232,7 @@
                 label:'Tx_Fee'
               },
               'Tx_Signer':{
-                label:'Tx_Signer'
+                label:'Signer'
               },
               'Tx_Status':{
                 label:'Status'

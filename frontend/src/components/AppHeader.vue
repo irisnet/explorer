@@ -7,28 +7,46 @@
                 v-show="devicesShow === 1">
             <div class="header_navigation_container">
                 <div class="header_navigation_wrap">
-                    <div class="header_logo_content">
-                        <router-link :to="`/home`"><img :src="explorerLogo"></router-link>
+                    <div class="header_left_content">
+                        <div class="header_logo_content">
+                            <router-link :to="`/home`"><img :src="explorerLogo"></router-link>
+                        </div>
+                        <ul class="header_menu_content">
+                            <li class="header_menu_item" @mouseenter="showTwoMenu('blockChain')" @mouseleave="hideTwoMenu('blockChain')">Blockchain</li>
+                            <li class="header_menu_item" @mouseenter="showTwoMenu('staking')" @mouseleave="hideTwoMenu('staking')">Staking</li>
+                            <li class="header_menu_item" @mouseenter="showTwoMenu('transfers')" @mouseleave="hideTwoMenu('transfers')">Transfers</li>
+                            <li class="header_menu_item" @mouseenter="showTwoMenu('assets')" @mouseleave="hideTwoMenu('assets')">Assets</li>
+                            <li class="header_menu_item" @mouseenter="showTwoMenu('gov')" @mouseleave="hideTwoMenu('gov')">Gov</li>
+                            <li class="header_menu_item" @mouseenter="showTwoMenu('stats')" @mouseleave="hideTwoMenu('stats')">Stats</li>
+                            <li class="header_menu_item"><router-link :to="`/faucet`">Faucet</router-link></li>
+                        </ul>
                     </div>
-                    <ul class="header_menu_content">
-                        <li class="header_menu_item" @mouseenter="showTwoMenu('blockChain')" @mouseleave="hideTwoMenu('blockChain')">Blockchain</li>
-                        <li class="header_menu_item" @mouseenter="showTwoMenu('staking')" @mouseleave="hideTwoMenu('staking')">Staking</li>
-                        <li class="header_menu_item" @mouseenter="showTwoMenu('transfers')" @mouseleave="hideTwoMenu('transfers')">Transfers</li>
-                        <li class="header_menu_item" @mouseenter="showTwoMenu('assets')" @mouseleave="hideTwoMenu('assets')">Assets</li>
-                        <li class="header_menu_item" @mouseenter="showTwoMenu('gov')" @mouseleave="hideTwoMenu('gov')">Gov</li>
-                        <li class="header_menu_item" @mouseenter="showTwoMenu('stats')" @mouseleave="hideTwoMenu('stats')">Stats</li>
-                        <li class="header_menu_item"><router-link :to="`/faucet`">Faucet</router-link></li>
-                    </ul>
-                    <div class="search_input_container">
-                        <div class="search_input_wrap">
-                            <input type="text"
-                                   class="search_input"
-                                   placeholder="Search by Address / Txhash / Block"
-                                   v-model.trim="searchInputValue"
-                                   @keyup.enter="onInputChange">
-                            <span @click="getData(searchInputValue)" class="iconfont icon-s">Search</span>
+
+                    <div class="header_right_content">
+                        <div class="search_input_container">
+                            <div class="search_input_wrap">
+                                <input type="text"
+                                       class="search_input"
+                                       placeholder="Search by Address / Txhash / Block"
+                                       v-model.trim="searchInputValue"
+                                       @keyup.enter="onInputChange">
+                                <span @click="getData(searchInputValue)" class="iconfont iconsousuo"></span>
+                            </div>
+                        </div>
+                        <div class="network_container" @mouseenter="showNetWorkLogo()" @mouseleave="hideNetWorkLogo()">
+                            <span style="color: #fff">
+                                <i style="font-size: 0.2rem;padding-right: 0.02rem;" :class="currentNetworkClass"></i>
+                                <i style="font-size: 0.08rem" class="iconfont iconwangluoqiehuanjiantou"></i>
+                            </span>
+                            <ul class="network_list_container" v-show="flShowNetworkLogo" @mouseenter="showNetWorkLogo()" @mouseleave="hideNetWorkLogo()">
+                                <li class="network_list_item"
+                                    v-for="item in netWorkArray"
+                                    v-show="item.netWorkSelectOption.trim() !== currentSelected.trim()"
+                                    @click="windowOpenUrl(item.host)">{{item.netWorkSelectOption}}</li>
+                            </ul>
                         </div>
                     </div>
+
                 </div>
             </div>
             <div class="header_submenu_container" @mouseenter="showTwoMenu(menuActiveName)" @mouseleave="hideTwoMenu(menuActiveName)" v-show="flShowSubMenu" >
@@ -63,6 +81,7 @@
                     <!--<li class="header_submenu_item" v-if="flShowStats">Public Address</li>-->
                 </ul>
             </div>
+
         </header>
         <div class="app_header_mobile"
              v-show="devicesShow === 0"
@@ -261,7 +280,9 @@
                 flShowAssets: false,
                 flShowGov: false,
                 flShowStats: false,
-                menuActiveName: ''
+                flShowNetworkLogo: false,
+                menuActiveName: '',
+				currentNetworkClass:''
 			}
 		},
 		beforeMount () {
@@ -624,14 +645,27 @@
 			},
 			setNetWorkLogo (currentEnv, currentChainId) {
 				if (currentEnv === constant.ENVCONFIG.MAINNET && currentChainId === constant.CHAINID.MAINNET) {
-					this.explorerLogo = require("../assets/logo.png")
+					this.explorerLogo = require("../assets/logo.png");
+					this.currentNetworkClass = 'iconfont iconiris'
 				} else if (currentEnv === constant.ENVCONFIG.TESTNET && currentChainId === constant.CHAINID.FUXI) {
-					this.explorerLogo = require("../assets/fuxi_testnet_logo.png")
+					this.explorerLogo = require("../assets/fuxi_testnet_logo.png");
+					this.currentNetworkClass = 'iconfont iconiris' //TODO fuxi TestnetLogoClass
 				} else if (currentEnv === constant.ENVCONFIG.TESTNET && currentChainId === constant.CHAINID.NYANCAT) {
-					this.explorerLogo = require("../assets/nyancat_testnet.png")
+					this.explorerLogo = require("../assets/nyancat_testnet.png");
+					this.currentNetworkClass = 'iconfont iconiris' //TODO fuxi nyancatnetLogoClass
 				} else {
+					this.currentNetworkClass = 'iconfont iconiris'; //TODO fuxi othernetLogoClass
 					this.explorerLogo = require("../assets/logo.png")
 				}
+			},
+			showNetWorkLogo(){
+				this.flShowNetworkLogo = true;
+            },
+			hideNetWorkLogo(){
+				this.flShowNetworkLogo = false;
+            },
+			windowOpenUrl (url) {
+				window.open(url)
 			},
 		},
 		updated () {
@@ -665,63 +699,101 @@
                     width: 100%;
                     height:0.6rem;
                     display: flex;
-                    .header_logo_content{
-                        height: 100%;
-                        padding: 0.05rem 0;
-                        img {
-                            height: 100%;
-                        }
-                    }
-                    .header_menu_content{
+                    justify-content: space-between;
+                    .header_left_content{
                         display: flex;
-                        max-width: 12.8rem;
-                        .header_menu_item{
-                            padding: 0 0.1rem;
-                            color: #fff;
-                            height: 0.6rem;
-                            line-height: 0.6rem;
-                            font-size: 0.14rem;
-                            a{
-                                color: #fff !important;
+                        .header_logo_content{
+                            height: 100%;
+                            width: 1.7rem;
+                            padding: 0.05rem 0;
+                            img {
+                                height: 100%;
                             }
-                            &:hover{
-                                background: var(--activeColor);
+                        }
+                        .header_menu_content{
+                            display: flex;
+                            max-width: 12.8rem;
+                            .header_menu_item{
+                                padding: 0 0.1rem;
+                                color: #fff;
+                                height: 0.6rem;
+                                line-height: 0.6rem;
+                                font-size: 0.14rem;
+                                a{
+                                    color: #fff !important;
+                                }
+                                &:hover{
+                                    background: var(--activeColor);
+                                }
                             }
                         }
                     }
-                    .search_input_container {
-                        max-width: 4.4rem;
-                        width: 100%;
-                        background: var(--bgColor);
-                        z-index: 1;
-                        .search_input_wrap {
-                            max-width: 12.8rem;
-                            width: 100%;
-                            margin: 0 auto;
-                            padding: 0.13rem 0.2rem;
-                            display: flex;
-                            align-items: center;
-                            input {
-                                text-indent: 0.22rem;
+                    .header_right_content{
+                        display: flex;
+                        flex: 1;
+                        align-items: center;
+                        .search_input_container {
+                            flex: 1;
+                            background: var(--bgColor);
+                            z-index: 1;
+                            .search_input_wrap {
+                                max-width: 12.8rem;
                                 width: 100%;
-                                height: 0.35rem;
-                                border-radius: 0.06rem;
-                                box-shadow: none;
-                                background: var(--bgColor);
-                                border: 0.01rem solid #fff;
+                                margin: 0 auto;
+                                padding: 0.1rem 0.2rem;
+                                display: flex;
+                                align-items: center;
+                                input {
+                                    text-indent: 0.22rem;
+                                    width: 100%;
+                                    height: 0.35rem;
+                                    border-radius: 0.06rem 0 0 0.06rem;
+                                    box-shadow: none;
+                                    background: var(--bgColor);
+                                    border: 0.01rem solid #fff;
+                                    color: #fff;
+                                    border-right: none;
+                                    text-indent: 0.1rem;
+                                }
+                                input::placeholder{
+                                    font-size: 0.14rem;
+                                    color: #fff;
+                                }
+                                span {
+                                    right: 0.3rem;
+                                    height:0.35rem;
+                                    font-size: 0.2rem;
+                                    padding: 0 0.1rem;
+                                    line-height: 0.33rem;
+                                    color: #fff;
+                                    border-top: 0.01rem solid #fff;
+                                    border-right: 0.01rem solid #fff;
+                                    border-bottom: 0.01rem solid #fff;
+                                    background: var(--bgColor);
+                                    border-radius: 0 0.06rem 0.06rem 0;
+                                    cursor: pointer;
+                                }
                             }
-                            input::placeholder{
-                                font-size: 0.14rem;
-                                color: #fff;
-                            }
-                            span {
-                                color: var(--bgColor);
-                                padding-right: 0.2rem;
-                                background: var(--bgColor);
-                                height: 0.35rem;
-                                line-height: 0.35rem;
-                                border-radius: 0 0.06rem 0.06rem 0;
-                                cursor: pointer;
+                        }
+                        .network_container{
+                            position: relative;
+                            height:0.6rem;
+                            line-height: 0.6rem;
+                            .network_list_container{
+                                background: #fff;
+                                width: auto;
+                                position: absolute;
+                                right: 0;
+                                top: 0.6rem;
+                                z-index: 2;
+                                text-align: right;
+                                padding-top: 0.2rem;
+                                .network_list_item{
+                                    line-height: 1.8;
+                                    white-space: nowrap;
+                                    padding: 0 0.2rem;
+                                    cursor: pointer;
+                                }
                             }
                         }
                     }
@@ -759,6 +831,7 @@
                     }
                 }
             }
+
         }
     }
     .mobile_header_var {
