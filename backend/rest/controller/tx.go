@@ -13,9 +13,10 @@ func RegisterTx(r *mux.Router) error {
 		registerQueryTxsByAccount,
 		registerQueryTxsByDay,
 		//new
-		registerQueryTxList,
+		registerQueryTxListByType,
 		registerQueryTxsCounter,
 		registerQueryRecentTx,
+		registerQueryTxList,
 	}
 
 	for _, fn := range funs {
@@ -36,6 +37,18 @@ func RegisterTx(r *mux.Router) error {
 
 func registerQueryTxList(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryTxList, "GET", func(request model.IrisReq) interface{} {
+		tx.SetTid(request.TraceId)
+		query := bson.M{}
+		page, size := GetPage(request)
+		var result model.PageVo
+		result = tx.QueryList(query, page, size)
+		return result
+	})
+	return nil
+}
+
+func registerQueryTxListByType(r *mux.Router) error {
+	doApi(r, types.UrlRegisterQueryTxListByType, "GET", func(request model.IrisReq) interface{} {
 		tx.SetTid(request.TraceId)
 		query := bson.M{}
 
