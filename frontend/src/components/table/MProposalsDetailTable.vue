@@ -75,7 +75,7 @@ export default {
                     key: "Vote_Option"
                 },
                 {
-                    title: "Tx Hash",
+                    title: "TxHash",
                     slot: "Tx_Hash",
                     tooltip: true
                 },
@@ -99,7 +99,7 @@ export default {
                     key: "Type"
                 },
                 {
-                    title: "Tx Hash",
+                    title: "TxHash",
                     slot: "Tx_Hash",
                     tooltip: true
                 },
@@ -135,7 +135,7 @@ export default {
 
 <style lang="scss" scoped>
 .skip_route {
-    color: #3598db !important;
+    color: var(--bgColor) !important;
 }
 .name_address {
     .remove_default_style {

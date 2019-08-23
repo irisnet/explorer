@@ -328,7 +328,7 @@ export default {
             flShowValidatorCandidate: false,
             flActiveValidator: true,
             flShowProfileLogo: false,
-            validatorStatusColor: "#3598db",
+            validatorStatusColor: "var(--bgColor)",
             tabVotingPower: [
                 {
                     "title": "14days",

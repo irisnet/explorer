@@ -284,7 +284,7 @@ export default {
                     font-size: 12px;
                     line-height: 0.26rem;
                     text-indent: 0.08rem;
-                    color: #22252a;
+                    color: var(--titleColor);
                     position: relative;
                     z-index: 1;
                     cursor: pointer;

@@ -143,7 +143,7 @@ export default {
 
 <style lang="scss" scoped>
 .info {
-    color: #a2a2ae;
+    color: var(--contentColor);
     vertical-align: middle;
     margin-right: 0.1rem;
 }
@@ -152,7 +152,7 @@ button {
     border: 1px solid #dee2e6;
     border-right-width: 0;
     padding: 5px 7.5px;
-    color: #3598db;
+    color: var(--bgColor);
     line-height: 17px;
     background-color: #ffffff;
     cursor: pointer;

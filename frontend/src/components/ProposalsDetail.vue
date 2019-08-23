@@ -5,6 +5,12 @@
             <p class="proposals_information_content_title">Proposal Information</p>
             <div class="proposals_detail_information_wrap">
                 <div class="information_props_wrap">
+                    <span class="information_props">Proposal ID :</span>
+                    <span class="information_value information_show_trim">
+                        <span class="information_pre">{{proposalsId}}</span>
+                    </span>
+                </div>
+                <div class="information_props_wrap">
                     <span class="information_props">Title :</span>
                     <span class="information_value information_show_trim">
                         <span class="information_pre">{{title}}</span>
@@ -64,7 +70,7 @@
                 <div class="information_props_wrap">
                     <span class="information_props">Description :</span>
                     <span class="information_value">
-                        <pre class="information_pre information_show_trim">{{description}}</pre>
+                        <pre class="information_pre information_show_trim" v-html="description"></pre>
                     </span>
                 </div>
 
@@ -446,7 +452,7 @@ export default {
                 margin-bottom: 0.12rem;
                 .information_props {
                     min-width: 1.5rem;
-                    color: #22252a;
+                    color: var(--titleColor);
                 }
                 .flag_item_left {
                     display: inline-block;
@@ -598,7 +604,7 @@ export default {
             height: 0.3rem;
             line-height: 0.3rem;
             font-size: 0.22rem;
-            color: #a2a2ae;
+            color: var(--contentColor);
         }
         .vote-details-content {
             width: 100%;
@@ -617,10 +623,10 @@ export default {
     }
 }
 .information_show_trim {
-    color: #a2a2ae;
+    color: var(--contentColor);
 }
 .information_value {
-    color: #a2a2ae;
+    color: var(--contentColor);
     word-break: break-all;
 }
 .vote-details-content {
@@ -632,22 +638,22 @@ export default {
 }
 .total_num {
     font-size: 0.14rem;
-    color: #a2a2ae;
+    color: var(--contentColor);
     margin-left: 0.2rem;
 }
 .voting_options {
     display: flex;
-    color: #a2a2ae;
+    color: var(--contentColor);
     margin-bottom: 10px;
     flex-wrap: wrap;
     & > span {
         font-size: 0.14rem;
-        color: #a2a2ae;
+        color: var(--contentColor);
         @include fontWeight;
         padding: 0 0.18rem;
         white-space: nowrap;
         & > span {
-            color: #22252a;
+            color: var(--titleColor);
         }
     }
 }
@@ -656,7 +662,7 @@ export default {
 }
 .jump_route {
     a {
-        color: #3598db !important;
+        color: var(--bgColor) !important;
     }
     cursor: pointer;
 }
@@ -681,7 +687,7 @@ pre {
     border-radius: 1px;
 }
 .information_pre {
-    color: #a2a2ae;
+    color: var(--contentColor);
     word-wrap: break-word;
     word-break: break-all;
 }

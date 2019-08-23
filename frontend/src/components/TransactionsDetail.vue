@@ -295,12 +295,15 @@
                                 this.failInfo = data.Log;
 								if(data.Amount && data.Amount.length !==0){
 									this.amountValue = data.Amount.map(item=>{
-										item.amount = Tools.formatPriceToFixed(Tools.numberMoveDecimal(item.amount));
-										if(!item.denom){
-											return `${item.amount} SHARES`;
-										}else{
-											return `${item.amount} ${Tools.formatDenom(item.denom).toUpperCase()}`;
-										}
+										if(item.denom === Constant.Denom.IRISATTO){
+											return item.amount = `${Tools.formatPriceToFixed(Tools.numberMoveDecimal(item.amount))} ${Tools.formatDenom(item.denom).toLocaleUpperCase()}`;
+										}else if (item.denom !== Constant.Denom.IRISATTO && item.denom !== ''){
+											return item.amount = `${Tools.FormatScientificNotationToNumber(item.amount)} ${Tools.formatDenom(item.denom).toUpperCase()}`
+                                        }else {
+											if(data.Type === "BeginUnbonding" || data.Type === "BeginRedelegate"){
+												return item.amount = `${Tools.formatPriceToFixed(Tools.numberMoveDecimal(item.amount))} SHARES`;
+                                            }
+                                        }
 									}).join(',') ;
 								}else if(data.Amount && Object.keys(data.Amount).includes('amount') && Object.keys(data.Amount).includes('denom')){
 									data.Amount =  Tools.formatPriceToFixed(Tools.numberMoveDecimal(item.amount));
@@ -391,7 +394,7 @@
 <style lang="scss" scoped>
     @import '../style/mixin.scss';
     .information_pre{
-        color: #a2a2ae;
+        color: var(--contentColor);
         white-space: pre-wrap;
     }
     .transactions_detail_wrap {
@@ -444,7 +447,7 @@
                         width:1.5rem;
                     }
                     .information_value{
-                        color: #a2a2ae;
+                        color: var(--contentColor);
                         flex:1;
                     }
                 }
@@ -461,7 +464,7 @@
                 height: 0.4rem;
                 line-height: 0.4rem;
                 font-size: 0.22rem;
-                color: #a2a2ae;
+                color: var(--contentColor);
             }
         }
 
@@ -491,7 +494,7 @@
                         overflow-x:auto;
                         -webkit-overflow-scrolling:touch;
                         overflow-y:hidden;
-                        color: #a2a2ae;
+                        color: var(--contentColor);
                     }
                 }
             }
@@ -509,15 +512,15 @@
                 height: 0.3rem;
                 line-height: 0.3rem;
                 font-size: 0.18rem;
-                color: #a2a2ae;
+                color: var(--contentColor);
             }
         }
     }
     .link_active_style{
         a{
-            color:#3598db !important;
+            color:var(--bgColor) !important;
         }
-        color:#3598db !important;
+        color:var(--bgColor) !important;
         cursor:pointer;
     }
     .information_value_fixed {

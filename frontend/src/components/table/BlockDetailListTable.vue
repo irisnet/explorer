@@ -114,35 +114,39 @@
       </template>
       <template slot='From'
                 slot-scope='data'>
-        <span v-if="(/^[1-9]\d*$/).test(data.item.From)"
+        <span v-if="(/^[1-9]\d*$/).test(data.item.From) && data.item.tokenId === 'IRIS'"
               class="skip_route">
           <router-link :to="`/tx?txHash=${data.item.Tx_Hash}`">{{data.item.From}} Validators</router-link>
         </span>
-        <div class="name_address"
-             v-show="!(/^[0-9]\d*$/).test(data.item.From) && data.item.From && data.item.From !== '--'">
-          <span class="remove_default_style"
-                :class="data.item.From === $route.params.param?'no_skip':''">
-            <router-link :to="addressRoute(data.item.From)"
-                         class="link_style">{{formatMoniker(data.item.fromMoniker) || formatAddress(data.item.From)}}</router-link>
-          </span>
-          <span v-if="!data.item.fromMoniker" class="address">{{data.item.From ? data.item.From : ''}}</span>
-        </div>
+        <span class="skip_route"
+              style="display: flex"
+              v-if="!(/^[0-9]\d*$/).test(data.item.From) && data.item.From !== '--'">
+          <div class="name_address">
+            <span class="remove_default_style">
+              <router-link :to="addressRoute(data.item.From)"
+                           class="link_style justify">{{formatMoniker(data.item.fromMoniker) || formatAddress(data.item.From)}}</router-link>
+            </span>
+            <span class="address" v-if="!data.item.fromMoniker">{{data.item.From}}</span>
+          </div>
+        </span>
         <span class="no_skip"
               v-show="(/^[0]\d*$/).test(data.item.From) || data.item.From === '--'">--</span>
       </template>
       <template slot='To'
                 slot-scope='data'>
-        <div class="name_address"
-             v-show="data.item.To && data.item.To !== '--'">
-          <span class="remove_default_style"
-                :class="data.item.To === $route.params.param?'no_skip':''">
-            <router-link :to="addressRoute(data.item.To)"
-                         class="link_style">{{formatMoniker(data.item.toMoniker) || formatAddress(data.item.To)}}</router-link>
-          </span>
-          <span v-if="!data.item.toMoniker" class="address">{{data.item.To ? data.item.To : ''}}</span>
-        </div>
+        <span class="skip_route"
+              style="display: flex"
+              v-if="data.item.To !== '--'">
+          <div class="name_address">
+            <span class="remove_default_style">
+              <router-link :to="addressRoute(data.item.To)"
+                           class="link_style">{{formatMoniker(data.item.toMoniker) || formatAddress(data.item.To)}}</router-link>
+            </span>
+            <span class="address" v-if="!data.item.toMoniker">{{data.item.To}}</span>
+          </div>
+        </span>
         <span class="no_skip"
-              v-show="data.item.To == '--'">
+              v-show="data.item.To === '--'">
           --
         </span>
       </template>
@@ -200,7 +204,7 @@ export default {
       listFields: null,
       transferFields: {
         'Tx_Hash': {
-          label: 'Tx_Hash'
+          label: 'TxHash'
         },
         'From': {
           label: 'From'
@@ -208,25 +212,28 @@ export default {
         'Amount': {
           label: 'Amount'
         },
+        'tokenId':{
+          label: 'Token'
+        },
         'To': {
           label: 'To'
         },
         'Tx_Type': {
-          label: 'Tx_Type'
+          label: 'TxType'
         },
-        'Tx_Fee': {
-          label: 'Tx_Fee'
+        'transferFee': {
+          label: 'Fee(IRIS)'
         },
         'Tx_Signer': {
-          label: 'Tx_Signer'
+          label: 'Signer'
         },
         'Tx_Status': {
-          label: 'Tx_Status'
+          label: 'Status'
         },
       },
       declarationFields: {
         'Tx_Hash': {
-          label: 'Tx_Hash'
+          label: 'TxHash'
         },
         'Moniker': {
           label: 'Moniker'
@@ -235,24 +242,24 @@ export default {
           label: 'Operator_Address'
         },
         'Amount': {
-          label: 'Self_Bonded'
+          label: 'Self-Bonded'
         },
         'Tx_Type': {
-          label: 'Tx_Type'
+          label: 'TxType'
         },
         'Tx_Fee': {
-          label: 'Tx_Fee'
+          label: 'Fee'
         },
         'Tx_Signer': {
-          label: 'Tx_Signer'
+          label: 'Signer'
         },
         'Tx_Status': {
-          label: 'Tx_Status'
+          label: 'Status'
         },
       },
       stakeFields: {
         'Tx_Hash': {
-          label: 'Tx_Hash'
+          label: 'TxHash'
         },
         'From': {
           label: 'From'
@@ -264,21 +271,21 @@ export default {
           label: 'To'
         },
         'Tx_Type': {
-          label: 'Tx_Type'
+          label: 'TxType'
         },
         'Tx_Fee': {
-          label: 'Tx_Fee'
+          label: 'Fee'
         },
         'Tx_Signer': {
-          label: 'Tx_Signer'
+          label: 'Signer'
         },
         'Tx_Status': {
-          label: 'Tx_Status'
+          label: 'Status'
         },
       },
       govFields: {
         'Tx_Hash': {
-          label: 'Tx_Hash'
+          label: 'TxHash'
         },
         'Proposal_Type': {
           label: 'Proposal_Type'
@@ -293,16 +300,16 @@ export default {
           label: 'Amount'
         },
         'Tx_Type': {
-          label: 'Tx_Type'
+          label: 'TxType'
         },
         'Tx_Fee': {
-          label: 'Tx_Fee'
+          label: 'Fee'
         },
         'Tx_Signer': {
-          label: 'Tx_Signer'
+          label: 'Signer'
         },
         'Tx_Status': {
-          label: 'Tx_Status'
+          label: 'Status'
         },
       },
       validatorFields: {
@@ -342,10 +349,10 @@ export default {
       }
     },
     formatMoniker (moniker) {
-        if (!moniker) {
-            return '';
-        }
-        return Tools.formatString(moniker,15,"...");
+      if (!moniker) {
+        return '';
+      }
+      return Tools.formatString(moniker,13,"...");
     },
     formatListName (items) {
       items.forEach((tx) => {
@@ -426,7 +433,7 @@ export default {
     color: #fff;
     background: rgba(0, 0, 0, 1);
     border-radius: 0.04rem;
-    z-index: 10;
+    z-index: 1;
     line-height: 32px;
     font-size: 0.14rem;
   }

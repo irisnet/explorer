@@ -43,6 +43,14 @@
         </span>
             <span class="no_skip" v-show="(/^[0]\d*$/).test(data.item.From) || data.item.From === '--'">--</span>
         </template>
+        <template slot='Amount' slot-scope='data'>
+          <div class="name_address">
+            <span class="remove_default_style">
+              <span>{{substrAmount(data.item.Amount)}}</span>
+            </span>
+            <span class="address">{{data.item.Amount}}</span>
+          </div>
+        </template>
         <template slot='OperatorAddr' slot-scope='data'>
         <span class="skip_route" style="display: flex" v-if="data.item.OperatorAddr !== '--'">
           <div class="name_address">
@@ -104,7 +112,7 @@
             fields:null,
             transferFields:{
               'Tx_Hash':{
-                label:'Tx_Hash'
+                label:'TxHash'
               },
               'Block':{
                 label:'Block'
@@ -125,10 +133,10 @@
                 label:'Tx_Fee'
               },
               'Tx_Signer':{
-                label:'Tx_Signer'
+                label:'Signer'
               },
               'Tx_Status':{
-                label:'Tx_Status'
+                label:'Status'
               },
               'Timestamp':{
                 label:'Timestamp'
@@ -136,7 +144,7 @@
             },
             declarationFields:{
               'Tx_Hash':{
-                label:'Tx_Hash'
+                label:'TxHash'
               },
               'Block':{
                 label:'Block'
@@ -148,7 +156,7 @@
                 label:'Operator_Address'
               },
               'Amount':{
-                label:'Self_Bonded'
+                label:'Self-Bonded'
               },
               'Tx_Type':{
                 label:'Tx_Type'
@@ -157,10 +165,10 @@
                 label:'Tx_Fee'
               },
               'Tx_Signer':{
-                label:'Tx_Signer'
+                label:'Signer'
               },
               'Tx_Status':{
-                label:'Tx_Status'
+                label:'Status'
               },
               'Timestamp':{
                 label:'Timestamp'
@@ -168,7 +176,7 @@
             },
             stakeFields:{
               'Tx_Hash':{
-                label:'Tx_Hash'
+                label:'TxHash'
               },
               'Block':{
                 label:'Block'
@@ -189,10 +197,10 @@
                 label:'Tx_Fee'
               },
               'Tx_Signer':{
-                label:'Tx_Signer'
+                label:'Signer'
               },
               'Tx_Status':{
-                label:'Tx_Status'
+                label:'Status'
               },
               'Timestamp':{
                 label:'Timestamp'
@@ -200,7 +208,7 @@
             },
             govFields:{
               'Tx_Hash':{
-                label:'Tx_Hash'
+                label:'TxHash'
               },
               'Block':{
                 label:'Block'
@@ -224,10 +232,10 @@
                 label:'Tx_Fee'
               },
               'Tx_Signer':{
-                label:'Tx_Signer'
+                label:'Signer'
               },
               'Tx_Status':{
-                label:'Tx_Status'
+                label:'Status'
               },
               'Timestamp':{
                 label:'Timestamp'
@@ -250,6 +258,9 @@
           if(TxHash){
             return Tools.formatTxHash(TxHash)
           }
+        },
+        substrAmount(amount){
+          return Tools.formatString(amount.toString(),20,'...')
         },
         setTxFields(items){
           items.forEach( (tx) => {
@@ -283,7 +294,7 @@
     }
   }
   .moniker_link_style{
-    color: #3598db !important;
+    color: var(--bgColor) !important;
   }
   .hash_container{
     display: flex;
@@ -295,7 +306,7 @@
       position: absolute;
       left: 0;
       top: -0.38rem;
-      color: #3598db;
+      color: var(--bgColor);
       background: rgba(0,0,0,0.8);
       border-radius:0.04rem;
       z-index: 10;

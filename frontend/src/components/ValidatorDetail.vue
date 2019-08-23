@@ -1,6 +1,9 @@
 <template>
     <div class="transactions_detail_wrap">
         <div :class="[transactionsDetailWrap, 'validator_title']">
+            <div class="validator_img_container">
+                <img :src="validatorImg" alt="">
+            </div>
             <span class="title">{{validatorName}}</span>
             <div class="status_btn" v-if="validatorStatus === 'Active'">Active</div>
             <div
@@ -402,7 +405,7 @@ export default {
                 "Bond Height": "",
                 "Bonded Tokens": "",
                 "Unbonding Height": "",
-                "Self Bonded": "",
+                "Self-Bonded": "",
                 "Jailed Until": "",
                 "Delegator Bonded": "",
                 "Missed Blocks": "",
@@ -476,7 +479,8 @@ export default {
                 }
             },
             validatorName: "",
-            validatorStatus: ""
+            validatorStatus: "",
+            validatorImg:''
         };
     },
     components: {
@@ -576,6 +580,11 @@ export default {
                 data => {
                     try {
                         if (data) {
+                        	if(data.icons){
+                        		this.validatorImg = data.icons
+                            }else {
+                        		this.validatorImg = require('../assets/header_img.png')
+                            }
                             this.validatorStatus = data.status;
                             this.validatorInfo["Voting Power"] =
                                 data.status === "Active"
@@ -599,7 +608,7 @@ export default {
                             data.unbond_height === "" &&
                                 delete this.validatorInfo["Unbonding Height"];
                             this.validatorInfo[
-                                "Self Bonded"
+                                "Self-Bonded"
                             ] = `${this.$options.filters.amountFromat(
                                 data.self_bonded,
                                 Constants.Denom.IRIS.toUpperCase()
@@ -1348,7 +1357,7 @@ export default {
     flex-direction: row !important;
     .title {
         font-size: 22px;
-        color: #22252a;
+        color: var(--titleColor);
     }
     .status_btn {
         margin-left: 0.1rem;
@@ -1363,6 +1372,13 @@ export default {
     }
 }
 .transactions_detail_wrap {
+    .validator_img_container{
+        width: 0.35rem;
+        padding-right: 0.1rem;
+        img{
+            width: 100%;
+        }
+    }
     & > div:nth-last-of-type(1) {
         margin-bottom: 0.4rem;
     }
@@ -1374,7 +1390,7 @@ export default {
     line-height: 0.2rem;
     border-radius: 0.1rem;
     color: #ffffff;
-    background-color: #3598db;
+    background-color: var(--bgColor);
 }
 .validator_detail_information_wrap {
     margin-top: 0.2rem;
@@ -1393,10 +1409,10 @@ export default {
             display: flex;
             justify-content: space-between;
             .information_props {
-                color: #22252a;
+                color: var(--titleColor);
             }
             .information_value {
-                color: #a2a2ae;
+                color: var(--contentColor);
                 width: calc(100% - 1.7rem);
                 margin-right: 0.2rem;
                 word-break: break-all;
@@ -1406,7 +1422,7 @@ export default {
                 a,
                 span {
                     cursor: pointer;
-                    color: #3598db !important;
+                    color: var(--bgColor) !important;
                 }
             }
         }
@@ -1415,7 +1431,7 @@ export default {
 .validator_information_content_title {
     height: 0.2rem;
     line-height: 0.2rem;
-    color: #22252a;
+    color: var(--titleColor);
     font-size: 18px;
     margin-top: 0.3rem;
     padding-left: 0.2rem;
@@ -1465,7 +1481,7 @@ export default {
         width: 60px;
         box-sizing: border-box;
         border: 1px solid rgba(215, 217, 224, 1);
-        color: #22252a;
+        color: var(--titleColor);
         &:nth-of-type(1) {
             border-right-width: 0;
             border-top-left-radius: 2px;
@@ -1479,8 +1495,8 @@ export default {
         }
     }
     .active {
-        background-color: #3598db;
-        border-color: #3598db;
+        background-color: var(--bgColor);
+        border-color: var(--bgColor);
         color: #ffffff;
     }
 }

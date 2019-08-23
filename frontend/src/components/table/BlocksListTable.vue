@@ -240,8 +240,9 @@ export default {
       fields: null,
       transferFields: {
         'Tx_Hash': {
-          label: 'Tx_Hash'
+          label: 'TxHash'
         },
+
         'Block': {
           label: 'Block'
         },
@@ -251,20 +252,23 @@ export default {
         'Amount': {
           label: 'Amount'
         },
+        'tokenId':{
+          label: 'Token'
+        },
         'To': {
           label: 'To'
         },
         'Tx_Type': {
-          label: 'Tx_Type'
+          label: 'TxType'
         },
-        'Tx_Fee': {
-          label: 'Tx_Fee'
+        'transferFee': {
+          label: 'Fee(IRIS)'
         },
         'Tx_Signer': {
-          label: 'Tx_Signer'
+          label: 'Signer'
         },
         'Tx_Status': {
-          label: 'Tx_Status'
+          label: 'Status'
         },
         'Timestamp': {
           label: 'Timestamp'
@@ -272,7 +276,7 @@ export default {
       },
       declarationFields: {
         'Tx_Hash': {
-          label: 'Tx_Hash'
+          label: 'TxHash'
         },
         'Block': {
           label: 'Block'
@@ -284,19 +288,19 @@ export default {
           label: 'Operator_Address'
         },
         'Amount': {
-          label: 'Self_Bonded'
+          label: 'Self-Bonded'
         },
         'Tx_Type': {
-          label: 'Tx_Type'
+          label: 'TxType'
         },
         'Tx_Fee': {
-          label: 'Tx_Fee'
+          label: 'Fee'
         },
         'Tx_Signer': {
-          label: 'Tx_Signer'
+          label: 'Signer'
         },
         'Tx_Status': {
-          label: 'Tx_Status'
+          label: 'Status'
         },
         'Timestamp': {
           label: 'Timestamp'
@@ -304,7 +308,7 @@ export default {
       },
       stakeFields: {
         'Tx_Hash': {
-          label: 'Tx_Hash'
+          label: 'TxHash'
         },
         'Block': {
           label: 'Block'
@@ -319,16 +323,16 @@ export default {
           label: 'To'
         },
         'Tx_Type': {
-          label: 'Tx_Type'
+          label: 'TxType'
         },
         'Tx_Fee': {
-          label: 'Tx_Fee'
+          label: 'Fee'
         },
         'Tx_Signer': {
-          label: 'Tx_Signer'
+          label: 'Signer'
         },
         'Tx_Status': {
-          label: 'Tx_Status'
+          label: 'Status'
         },
         'Timestamp': {
           label: 'Timestamp'
@@ -336,7 +340,7 @@ export default {
       },
       govFields: {
         'Tx_Hash': {
-          label: 'Tx_Hash'
+          label: 'TxHash'
         },
         'Block': {
           label: 'Block'
@@ -354,16 +358,16 @@ export default {
           label: 'Amount'
         },
         'Tx_Type': {
-          label: 'Tx_Type'
+          label: 'TxType'
         },
         'Tx_Fee': {
-          label: 'Tx_Fee'
+          label: 'Fee'
         },
         'Tx_Signer': {
-          label: 'Tx_Signer'
+          label: 'Signer'
         },
         'Tx_Status': {
-          label: 'Tx_Status'
+          label: 'Status'
         },
         'Timestamp': {
           label: 'Timestamp'
@@ -455,15 +459,15 @@ table {
     word-wrap: break-word !important;
     .skip_route {
       a {
-        color: #3598db !important;
+        color: var(--bgColor) !important;
         cursor: pointer;
       }
     }
     .no_skip {
-      color: #a2a2ae;
+      color: var(--contentColor);
       cursor: default;
       .link_style {
-        color: #a2a2ae !important;
+        color: var(--contentColor) !important;
       }
     }
   }
@@ -477,7 +481,7 @@ table {
     color: #fff;
     background: rgba(0, 0, 0, 1);
     border-radius: 0.04rem;
-    z-index: 10;
+    z-index: 1;
     line-height: 32px;
     font-size: 0.14rem;
   }
@@ -502,12 +506,12 @@ table {
 .page-link {
   padding: 0.05rem 0.075rem !important;
   height: 0.29rem !important;
-  color: #3598db !important;
+  color: var(--bgColor) !important;
 }
 .active {
   .page-link {
-    background-color: #3598db !important;
-    border-color: #3598db !important;
+    background-color: var(--bgColor) !important;
+    border-color: var(--bgColor) !important;
     color: #fff !important;
   }
 }
@@ -515,7 +519,7 @@ table {
   th,
   td {
     padding: 0.075rem !important;
-    color: #a2a2ae;
+    color: var(--contentColor);
     @include fontWeight;
   }
   margin-bottom: 0 !important;
@@ -532,7 +536,7 @@ table {
           padding-left: 0.2rem !important;
         }
       }
-      border-bottom: 0.01rem solid #3598db !important;
+      border-bottom: 0.01rem solid var(--bgColor) !important;
     }
   }
   tbody {
@@ -591,7 +595,7 @@ table {
   }
 }
 .proposals-list {
-  color: #3598db;
+  color: var(--bgColor);
   cursor: pointer;
   margin: 0 !important;
   padding: 0 !important;
@@ -599,7 +603,7 @@ table {
 .remove_default_style {
   margin: 0 !important;
   padding: 0 !important;
-  color: #3598db;
+  color: var(--bgColor);
 }
 .show_trim td {
   white-space: pre;
@@ -625,7 +629,7 @@ table {
 }
 .pre_global_style {
   font-size: 0.14rem;
-  color: #a2a2ae;
+  color: var(--contentColor);
   margin: 0;
 }
 .proposals_detail_table_wrap {
@@ -638,7 +642,7 @@ pre {
   margin: 0;
 }
 .link_style {
-  color: #3598db !important;
+  color: var(--bgColor) !important;
 }
 .proposals_hash_content {
   transform: translateX(-50%);

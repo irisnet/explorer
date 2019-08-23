@@ -98,7 +98,7 @@
           </div>
         </div>
       </div>
-      <div style="position:relative;overflow-x: auto; overflow-y: hidden;-webkit-overflow-scrolling:touch;">
+      <div style="padding-top: 0.7rem;overflow-x: auto;-webkit-overflow-scrolling:touch;">
         <m-proposals-list-table :items="items"></m-proposals-list-table>
         <div v-show="showNoData" class="no_data_show">
           No Data
@@ -262,7 +262,7 @@
               value: votes,
                perData: Tools.formatDecimalNumberToFixedNumber(votes / all * 100),
               itemStyle: {
-                color: '#3598DB',
+                color: 'var(--bgColor)',
                 borderColor: '#ECEFFF',
                 borderWidth: 0
               },
@@ -483,7 +483,7 @@
         display: flex;
         div {
           font-size: 14px;
-          color: #22252A;
+          color: var(--titleColor);
           display: flex;
           align-items: center;
           i {
@@ -523,6 +523,11 @@
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
+    position: fixed;
+    width: 100%;
+    max-width: 12.8rem;
+    z-index: 1;
+    background: #fff;
     & > div {
       padding: 4px 0;
     }
@@ -605,7 +610,7 @@
       height:  0.62rem;
       line-height: 0.62rem;
       font-size: 0.18rem;
-      color: #a2a2ae;
+      color: var(--contentColor);
       margin-left: 0.2rem;
     }
     .for_proposals{
@@ -658,7 +663,7 @@
     height: 0.3rem;
     line-height: 0.3rem;
     font-size: 0.18rem;
-    color: #a2a2ae;
+    color: var(--contentColor);
     }
     .for_proposals{
         display:inline-block;

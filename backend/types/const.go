@@ -10,6 +10,10 @@ const (
 	//home
 	UrlRegisterNavigationBar = "/home/navigation"
 
+	//Assets
+	UrlRegisterQueryNativeAsset  = "/assets/native/txs"
+	UrlRegisterQueryGatewayAsset = "/assets/gateway/txs"
+
 	//Block
 	UrlRegisterQueryBlockLatestHeight = "/block/latestheight"
 	UrlRegisterQueryRecentBlocks      = "/blocks/recent"
@@ -103,6 +107,11 @@ var (
 	TypeValStatusBonded    = "Bonded"
 
 	TxTypeStatus = "success"
+
+	TxTypeIssueToken         = "IssueToken"
+	TxTypeEditToken          = "EditToken"
+	TxTypeMintToken          = "MintToken"
+	TxTypeTransferTokenOwner = "TransferTokenOwner"
 
 	Unbonded  = 0x00
 	Unbonding = 0x01

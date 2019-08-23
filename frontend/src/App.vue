@@ -160,7 +160,7 @@
         }
       },
       showHeaderAndFooterByVersionPath(){
-        if(this.$route.path === "/version"){
+        if(this.$route.path === "/version" || this.$route.matched[0].path && this.$route.matched[0].path === "*"){
           this.flShowFooter = false;
           this.flShowHeader = false;
         }else {
@@ -197,6 +197,7 @@
   body, html {
     width: 100%;
     height: 100%;
+    color: var(--moduleColor);
   }
   body {
     font-size: 16px !important;
@@ -343,28 +344,28 @@
               span {
                 font-size: 0.14rem;
                 &:nth-child(2n-1) {
-                  color: #3698db;
+                  color: var(--bgColor);
                   cursor: pointer;
                   margin-top: 0.02rem;
                 }
                 &:nth-child(2n) {
-                  color: #a2a2ae;
+                  color: var(--contentColor);
                   margin: 0 0.1rem;
                 }
               }
               .footer_link_privacy{
                 a{
-                  color: #3598db !important;
+                  color: var(--bgColor) !important;
                 }
               }
               .footer-faq{
                 a{
-                  color: #3598db !important;
+                  color: var(--bgColor) !important;
                 }
               }
             }
             .footer_copyright_wrap {
-              color: #a2a2ae;
+              color: var(--contentColor);
               margin-top: 0.1rem;
               font-size: 0.14rem;
             }

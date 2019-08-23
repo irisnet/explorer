@@ -44,6 +44,7 @@ func (service *ValidatorService) GetValidators(typ, origin string, page, size in
 				validatorList[i].Description.Identity = desc.Identity
 				validatorList[i].Description.Website = desc.Website
 				validatorList[i].Description.Details = desc.Details
+				validatorList[i].Icons = ""
 			}
 			var validator lcd.ValidatorVo
 			if err := utils.Copy(validatorList[i], &validator); err != nil {

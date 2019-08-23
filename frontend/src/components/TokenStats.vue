@@ -234,11 +234,11 @@ export default {
                     border-radius: 1px;
                     padding: 0.2rem;
                     .information_props {
-                        color: #a2a2ae;
+                        color: var(--contentColor);
                         font-size: 0.14rem;
                     }
                     .information_value {
-                        color: #22252a;
+                        color: var(--titleColor);
                         font-size: 0.16rem;
                         margin-top: 0.12rem;
                         word-break: break-all;
@@ -248,7 +248,7 @@ export default {
                         a,
                         span {
                             cursor: pointer;
-                            color: #3598db !important;
+                            color: var(--bgColor) !important;
                         }
                     }
                     &:nth-last-of-type(1) {

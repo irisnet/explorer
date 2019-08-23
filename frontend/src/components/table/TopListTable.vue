@@ -1,26 +1,26 @@
 <template>
-    <div :class="showNoData?'show_no_data':''" :style="`${minWidth?(`min-width:${minWidth}rem`):''}`">
-      <b-table :borderless="true" :fields='fields' :items='items' striped class="top_list_table_container">
-        <template slot="rank" slot-scope="data" style="text-align: center">
-          <span style="padding-left: 0.2rem">{{data.item.rank}}</span>
+    <div :class="showNoData?'show_no_data':''" :style="{'min-width': minWidth + 'rem'}">
+      <m-table :columns='fields' :data='items'  class="top_list_table_container" v-table-head-fixed>
+        <template slot-scope="{ row }" slot="rank" style="text-align: center">
+          <span style="padding-left: 0.2rem">{{row.rank}}</span>
         </template>
-        <template slot="Address" slot-scope="data" style="text-align: center">
-          <span class="skip_route" style="display: flex" v-if="data.item.Address">
+        <template slot-scope="{ row }" slot="Address" style="text-align: center">
+          <span class="skip_route" style="display: flex" v-if="row.Address">
           <div class="name_address">
             <span class="remove_default_style">
-              <router-link :to="addressRoute(data.item.Address)" class="link_style">{{data.item.Address}}</router-link>
+              <router-link :to="addressRoute(row.Address)" class="link_style">{{row.Address}}</router-link>
             </span>
           </div>
         </span>
         </template>
-        <template slot="Percentage" slot-scope="data">
+        <template slot-scope="{ row }" slot="Percentage">
           <div  class="percentage_item" style="width: 100%;display: flex;height: 0.2rem;overflow: hidden">
-            <!--<div :style="{'width':`${data.item.Percentage < 0.6 ? '0.3': data.item.Percentage}%`,'background':'#3598db'}"><span style="visibility: hidden;">{{data.item.Percentage}}</span></div>-->
+            <!--<div :style="{'width':`${data.item.Percentage < 0.6 ? '0.3': data.item.Percentage}%`,'background':'var(--bgColor)'}"><span style="visibility: hidden;">{{data.item.Percentage}}</span></div>-->
             <!--<div style="padding-left: 0.2rem">{{data.item.Percentage}}%</div>-->
-            <div>{{data.item.Percentage}}%</div>
+            <div>{{row.Percentage}}%</div>
           </div>
         </template>
-      </b-table>
+      </m-table>
     </div>
 </template>
 
@@ -28,23 +28,41 @@
   import Tools from '../../util/Tools'
     export default {
         name: "TopListTable",
-        props:['items','showNoData','minWidth',],
+        props:{
+          items: {
+            type: Array,
+            default: []
+          },
+          showNoData: {
+            type: Boolean,
+            default: true
+          },
+          minWidth: {
+            type: Number,
+            default: 12.8
+          }
+        },
         data () {
             return {
-              fields: {
-                rank:{
-                  label:'#',
+              fields: [
+                {
+                  title: '#',
+                  slot: 'rank',
                 },
-                Address:{
-                  label:'Address',
+                {
+                  title: 'Address',
+                  slot: 'Address',
                 },
-                Balance:{
-                  label:'Amount (IRIS)',
+                {
+                  title: 'Amount (IRIS)',
+                  key: 'Balance',
+                  className: 'text_right'
                 },
-                Percentage:{
-                  label:'Percentage',
-                }
-              }
+                {
+                  title: 'Percentage',
+                  slot: 'Percentage',
+                },
+              ]
             }
         },
         methods:{
@@ -70,40 +88,14 @@
   .top_list_table_container.table thead tr th{
     font-size: 0.14rem;
   }
-
-  .top_list_table_container.table thead tr th:nth-child(1){
-    width: 1.5rem;
-    text-align: left;
-    padding-left: 0.28rem !important;
-  }
-  .top_list_table_container.table thead tr th:nth-child(2){
-    width: 4rem;
-    text-align: left;
-  }
-  .top_list_table_container.table thead tr th:nth-child(3){
-    text-align: right;
-    padding-right: 1.6rem !important;
-  }
-  .top_list_table_container.table thead tr th:nth-child(4){
-    width: 3rem;
-  }
-  .top_list_table_container.table tbody tr td:nth-child(1){
-    text-align: left;
-  }
-  .top_list_table_container.table tbody tr td:nth-child(2){
-    width: 4rem;
-    .skip_route{
-     display: flex;
-     justify-content: flex-start;
-   }
-  }
-  .top_list_table_container.table tbody tr td:nth-child(3){
-    text-align: right;
-    padding-right: 1.6rem !important;
-  }
-  .top_list_table_container.table tbody tr td:nth-child(4){
-    text-align: right;
-    width: 3rem;
-    margin-left: 0.5rem;
+  .top_list_table_container{
+    table thead tr:nth-of-type(1){
+      th:nth-of-type(1){
+        padding-left: 0.28rem;
+      }
+    }
+    .text_right{
+      padding-right: 1.5rem !important;
+    }
   }
 </style>
