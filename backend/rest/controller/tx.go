@@ -47,7 +47,7 @@ func registerQueryTxList(r *mux.Router) error {
 			istotal = true
 		}
 		var result model.PageVo
-		result = tx.QueryList(nil, page, size, istotal)
+		result = tx.QueryBaseList(nil, page, size, istotal)
 		return result
 	})
 	return nil
