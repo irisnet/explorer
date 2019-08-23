@@ -49,7 +49,7 @@ const router = new Router({
       path: '/blocks', component: BlockList
     },
     {
-      path: '/txs/:txType', component: TxList
+      path: '/txs/:txType', component: TxList,
     },
     {
       path: '/validators', component: ValidatorListPage
@@ -88,19 +88,19 @@ const router = new Router({
       path: '/help', component: Help,
     },
     {
-      path: '/statistics/richlist', component: RichList,
+      path: '/stats/irisrichlist', component: RichList,
     },
     {
-      path: '/statistics/tokenstats', component: TokenStats,
+      path: '/stats/irisstats', component: TokenStats,
     },
     // {
     //   path: '/statistics/bondedTokens', component: BondedTokens,
     // }
     {
-      path: '/nativeasset', component: NativeAssetPage,
+      path: '/assets/ntvassetstxs', component: NativeAssetPage,
     },
     {
-      path: '/gatewayasset', component: GateWayAssetPage,
+      path: '/assets/gtwassetstxs', component: GateWayAssetPage,
     },
     {
       path: '/error', component: Error,

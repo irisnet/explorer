@@ -1,8 +1,10 @@
 <template>
     <div>
         <div class="error_container">
-            <span class="error_content_text">404</span>
-            <p>Page not found</p>
+            <span class="error_content_text">
+                <img src="../assets/error_page.png">
+            </span>
+            <p class="error_page_hint">page not found</p>
             <button class="error_content_btn" @click="goHome()">HOME</button>
         </div>
     </div>
@@ -34,9 +36,21 @@
         flex-direction: column;
         align-items: center;
         .error_content_text{
-            font-size: 2rem;
+            display: inline-block;
+            width: 70%;
+            img{
+                width: 100%;
+                font-size: 4rem;
+                color: #E5ECFF;
+            }
         }
+        .error_page_hint{
+            margin-top: 0.2rem;
+            color: var(--contentColor);
+        }
+
         .error_content_btn{
+            margin-top: 0.5rem;
             max-width: 1.5rem;
             padding: 0.1rem 0.2rem;
             background: var(--bgColor);
