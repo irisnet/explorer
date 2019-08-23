@@ -11,13 +11,13 @@ type AssetsService struct {
 	BaseService
 }
 
-func (assets *AssetsService) GetNativeAsset(txtype string, page, size int) (model.AssetsRespond, error) {
+func (assets *AssetsService) GetNativeAsset(txtype string, page, size int, istotal bool) (model.AssetsRespond, error) {
 
 	if !isFieldTokenType(txtype) {
 		txtype = ""
 	}
 
-	total, retassets, err := document.CommonTx{}.QueryTxAsset(document.Tx_AssetType_Native, txtype, page, size)
+	total, retassets, err := document.CommonTx{}.QueryTxAsset(document.Tx_AssetType_Native, txtype, page, size, istotal)
 	if err != nil {
 		logger.Error("GetNativeAsset have error", logger.String("error", err.Error()))
 		return model.AssetsRespond{}, err
@@ -35,13 +35,13 @@ func (assets *AssetsService) GetNativeAsset(txtype string, page, size int) (mode
 	}, nil
 }
 
-func (assets *AssetsService) GetGatewayAsset(txtype string, page, size int) (model.AssetsRespond, error) {
+func (assets *AssetsService) GetGatewayAsset(txtype string, page, size int, istotal bool) (model.AssetsRespond, error) {
 
 	if !isFieldTokenType(txtype) {
 		txtype = ""
 	}
 
-	total, retassets, err := document.CommonTx{}.QueryTxAsset(document.Tx_AssetType_Gateway, txtype, page, size)
+	total, retassets, err := document.CommonTx{}.QueryTxAsset(document.Tx_AssetType_Gateway, txtype, page, size, istotal)
 	if err != nil {
 		logger.Error("GetNativeAsset have error", logger.String("error", err.Error()))
 		return model.AssetsRespond{}, err

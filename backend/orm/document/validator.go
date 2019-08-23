@@ -206,7 +206,7 @@ func (v Validator) QueryValidatorMonikerOpAddrByHashAddr(hashAddr []string) ([]V
 	return validators, err
 }
 
-func (_ Validator) GetValidatorListByPage(typ string, page, size int, ispage bool) (int, []Validator, error) {
+func (_ Validator) GetValidatorListByPage(typ string, page, size int, ispage, total bool) (int, []Validator, error) {
 
 	var query = orm.NewQuery()
 	defer query.Release()
@@ -243,7 +243,7 @@ func (_ Validator) GetValidatorListByPage(typ string, page, size int, ispage boo
 			SetResult(&validators)
 	}
 
-	count, err := query.ExecPage()
+	count, err := query.ExecPage(total)
 
 	return count, validators, err
 }

@@ -24,12 +24,12 @@ func (service *ValidatorService) GetModule() Module {
 	return Validator
 }
 
-func (service *ValidatorService) GetValidators(typ, origin string, page, size int) interface{} {
+func (service *ValidatorService) GetValidators(typ, origin string, page, size int, istotal bool) interface{} {
 	if origin == "browser" {
 		var result []lcd.ValidatorVo
 		var blackList = service.QueryBlackList()
 
-		total, validatorList, err := document.Validator{}.GetValidatorListByPage(typ, page, size, true)
+		total, validatorList, err := document.Validator{}.GetValidatorListByPage(typ, page, size, true, istotal)
 		if err != nil || total <= 0 {
 			if err != nil {
 				logger.Error("GetValidatorListByPage have error", logger.String("error", err.Error()))
@@ -65,10 +65,10 @@ func (service *ValidatorService) GetValidators(typ, origin string, page, size in
 	return service.queryValForRainbow(page, size)
 }
 
-func (service *ValidatorService) GetVoteTxsByValidatorAddr(validatorAddr string, page, size int) model.ValidatorVotePage {
+func (service *ValidatorService) GetVoteTxsByValidatorAddr(validatorAddr string, page, size int, istotal bool) model.ValidatorVotePage {
 
 	validatorAcc := utils.Convert(conf.Get().Hub.Prefix.AccAddr, validatorAddr)
-	total, proposalsAsDoc, err := document.Proposal{}.QueryIdTitleStatusVotedTxhashByValidatorAcc(validatorAcc, page, size)
+	total, proposalsAsDoc, err := document.Proposal{}.QueryIdTitleStatusVotedTxhashByValidatorAcc(validatorAcc, page, size, istotal)
 
 	if err != nil {
 		logger.Error("QueryIdTitleStatusVotedTxhashByValidatorAcc", logger.String("err", err.Error()))
@@ -104,10 +104,10 @@ func (service *ValidatorService) GetVoteTxsByValidatorAddr(validatorAddr string,
 	}
 }
 
-func (service *ValidatorService) GetDepositedTxByValidatorAddr(validatorAddr string, page, size int) model.ValidatorDepositTxPage {
+func (service *ValidatorService) GetDepositedTxByValidatorAddr(validatorAddr string, page, size int, istotal bool) model.ValidatorDepositTxPage {
 
 	validatorAcc := utils.Convert(conf.Get().Hub.Prefix.AccAddr, validatorAddr)
-	total, txs, err := document.CommonTx{}.QueryDepositedProposalTxByValidatorWithSubmitOrDepositType(validatorAcc, page, size)
+	total, txs, err := document.CommonTx{}.QueryDepositedProposalTxByValidatorWithSubmitOrDepositType(validatorAcc, page, size, istotal)
 
 	if err != nil {
 		logger.Error("QueryDepositedProposalTxByValidatorWithSubmitOrDepositType", logger.String("err", err.Error()))
@@ -211,7 +211,7 @@ func (service *ValidatorService) GetUnbondingDelegationsFromLcd(valAddr string, 
 	}
 }
 
-func (service *ValidatorService) GetDelegationsFromLcd(valAddr string, page, size int, needpage bool) model.DelegationsPage {
+func (service *ValidatorService) GetDelegationsFromLcd(valAddr string, page, size int, needpage bool, istotal bool) model.DelegationsPage {
 
 	lcdDelegations := lcd.GetDelegationsByValidatorAddr(valAddr)
 

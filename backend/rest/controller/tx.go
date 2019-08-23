@@ -5,6 +5,7 @@ import (
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
 	"gopkg.in/mgo.v2/bson"
+	"github.com/irisnet/explorer/backend/utils"
 )
 
 func RegisterTx(r *mux.Router) error {
@@ -38,10 +39,15 @@ func RegisterTx(r *mux.Router) error {
 func registerQueryTxList(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryTxList, "GET", func(request model.IrisReq) interface{} {
 		tx.SetTid(request.TraceId)
-		query := bson.M{}
-		page, size := GetPage(request)
+		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
+		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 5))
+		total := QueryParam(request, "total")
+		istotal := false
+		if total == "true" {
+			istotal = true
+		}
 		var result model.PageVo
-		result = tx.QueryList(query, page, size)
+		result = tx.QueryList(nil, page, size, istotal)
 		return result
 	})
 	return nil
@@ -51,6 +57,11 @@ func registerQueryTxListByType(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryTxListByType, "GET", func(request model.IrisReq) interface{} {
 		tx.SetTid(request.TraceId)
 		query := bson.M{}
+		total := GetString(request, "total")
+		istotal := true
+		if total == "false" {
+			istotal = false
+		}
 
 		address := GetString(request, "address")
 
@@ -72,24 +83,24 @@ func registerQueryTxListByType(r *mux.Router) error {
 			query["type"] = bson.M{
 				"$in": types.BankList,
 			}
-			return tx.QueryTxList(query, page, size)
+			return tx.QueryTxList(query, page, size, istotal)
 		case types.Declaration:
 			query["type"] = bson.M{
 				"$in": types.DeclarationList,
 			}
-			return tx.QueryTxList(query, page, size)
+			return tx.QueryTxList(query, page, size, istotal)
 		case types.Stake:
 			query["type"] = bson.M{
 				"$in": types.StakeList,
 			}
-			return tx.QueryTxList(query, page, size)
+			return tx.QueryTxList(query, page, size, istotal)
 		case types.Gov:
 			query["type"] = bson.M{
 				"$in": types.GovernanceList,
 			}
 			break
 		}
-		result = tx.QueryList(query, page, size)
+		result = tx.QueryList(query, page, size, istotal)
 		return result
 	})
 	return nil
@@ -135,7 +146,12 @@ func registerQueryTxsByAccount(r *mux.Router) error {
 		tx.SetTid(request.TraceId)
 		address := Var(request, "address")
 		page, size := GetPage(request)
-		result := tx.QueryByAcc(address, page, size)
+		total := QueryParam(request, "total")
+		istotal := true
+		if total == "false" {
+			istotal = false
+		}
+		result := tx.QueryByAcc(address, page, size, istotal)
 
 		return result
 	})
