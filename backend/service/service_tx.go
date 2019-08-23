@@ -304,6 +304,30 @@ func (service *TxService) QueryList(query bson.M, page, pageSize int, istotal bo
 	return pageInfo
 }
 
+func (service *TxService) QueryBaseList(query bson.M, page, pageSize int, istotal bool) (pageInfo model.PageVo) {
+	logger.Debug("QueryBaseList start", service.GetTraceLog())
+
+	total, txList, err := document.CommonTx{}.QueryByPage(query, page, pageSize, istotal)
+
+	if err != nil {
+		logger.Error("query tx list by page", logger.String("err", err.Error()))
+		return
+	}
+
+	data := service.CopyTxListFromDoc(txList)
+	var baseData []model.BaseTx
+	for _, tx := range data {
+		txResp := buildBaseTx(tx)
+		baseData = append(baseData, txResp)
+	}
+
+	pageInfo.Data = baseData
+	pageInfo.Count = total
+
+	logger.Debug("QueryBaseList end", service.GetTraceLog())
+	return pageInfo
+}
+
 func (service *TxService) QueryRecentTx() []model.RecentTx {
 	logger.Debug("QueryRecentTx start", service.GetTraceLog())
 
