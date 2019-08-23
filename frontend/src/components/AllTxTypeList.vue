@@ -101,13 +101,13 @@
 	            })
             }
         },
-		// watch: {
-		// 	$route(newVal) {
-		// 		// 有时候 mounted 方法不起作用，为此添加该 watch
-		// 		this.currentPageNum = Number(this.$route.query.page || 1);
-		// 		this.getAllTxTypeList();
-		// 	}
-		// },
+		watch: {
+			$route(newVal) {
+				// 有时候 mounted 方法不起作用，为此添加该 watch
+				this.currentPageNum = Number(this.$route.query.page || 1);
+				this.getAllTxTypeList();
+			}
+		},
 	}
 </script>
 

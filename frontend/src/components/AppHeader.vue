@@ -793,6 +793,10 @@
                                     white-space: nowrap;
                                     padding: 0 0.2rem;
                                     cursor: pointer;
+                                    font-size: 0.14rem;
+                                    &:hover{
+                                        color:var(--bgColor)
+                                    }
                                 }
                             }
                         }
