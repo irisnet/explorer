@@ -160,10 +160,5 @@
             padding-right: 0.1rem;
         }
     }
-    .pagination_content{
-        .info{
-            display: none !important;
-        }
-    }
 
 </style>
