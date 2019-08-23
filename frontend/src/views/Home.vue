@@ -22,7 +22,7 @@
                             </div>
                             <span class="item_name">{{lang.home.transactions}}</span>
                         </div>
-                        <p class="current_block">{{transactionValue}}</p>
+                        <p class="current_block transaction_link"><router-link :to="`/txs`">{{transactionValue}}</router-link></p>
                         <p class="block_time">{{blockTime}}</p>
                     </li>
                     <li class="item_status">
@@ -477,6 +477,11 @@
                         font-size: 0.2rem;
                         line-height: 0.23rem;
                         color: var(--titleColor);
+                    }
+                    .transaction_link{
+                        a{
+                            color: var(--bgColor) !important;
+                        }
                     }
                     .block_time{
                         color: rgba(162, 162, 174, 1);

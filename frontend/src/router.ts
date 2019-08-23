@@ -22,6 +22,7 @@ import TxList from "./components/TxListPage.vue"
 import NativeAssetPage from "./components/NativeAsset.vue"
 import GateWayAssetPage from "./components/GateWayAsset.vue"
 import Error from "./components/ErrorPage.vue"
+import AllTxTypeList from "./components/AllTxTypeList.vue"
 Vue.use(Router);
 
 const router = new Router({
@@ -103,6 +104,9 @@ const router = new Router({
     },
     {
       path: '/error', component: Error,
+    },
+    {
+      path: '/txs', component: AllTxTypeList,
     },
     {
       path: "*",
