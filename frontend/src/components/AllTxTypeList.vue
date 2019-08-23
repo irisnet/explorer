@@ -8,6 +8,7 @@
                             :page-size="pageSize"
                             :total="countNum"
                             :page="currentPageNum"
+                            :showInfo="false"
                             :page-change="pageChange"
                     ></m-pagination>
                 </div>
@@ -23,6 +24,7 @@
                         :page-size="pageSize"
                         :total="countNum"
                         :page="currentPageNum"
+                        :showInfo="false"
                         :page-change="pageChange"
                 ></m-pagination>
             </div>
@@ -81,7 +83,7 @@
 		            try {
 			            if(res){
 				            this.countNum = res.Count;
-				            sessionStorage.setItem('txsTotal',res.Count)
+				            sessionStorage.setItem('txsTotal',res.Count);
 				            this.allTxTypeList = res.Data.map( item => {
 					            return {
 						            txHash:item.Hash,
@@ -158,4 +160,10 @@
             padding-right: 0.1rem;
         }
     }
+    .pagination_content{
+        .info{
+            display: none !important;
+        }
+    }
+
 </style>
