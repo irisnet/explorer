@@ -9,7 +9,7 @@ import (
 )
 
 func TestQueryTxList(t *testing.T) {
-	txPage := new(TxService).QueryTxList(nil, 0, 100)
+	txPage := new(TxService).QueryTxList(nil, 0, 100, true)
 
 	t.Logf("total: %v \n", txPage.Count)
 
@@ -19,7 +19,7 @@ func TestQueryTxList(t *testing.T) {
 
 func TestTxQueryList(t *testing.T) {
 
-	txPage := new(TxService).QueryList(nil, 0, 100)
+	txPage := new(TxService).QueryList(nil, 0, 100, true)
 	t.Logf("total: %v \n", txPage.Count)
 	t.Logf("items: %v \n", txPage.Data)
 }
@@ -47,7 +47,7 @@ func TestServiceTxfetchLogMessage(t *testing.T) {
 
 func TestQueryByAcc(t *testing.T) {
 
-	txPage := new(TxService).QueryByAcc("faa1eqvkfthtrr93g4p9qspp54w6dtjtrn279vcmpn", 0, 10)
+	txPage := new(TxService).QueryByAcc("faa1eqvkfthtrr93g4p9qspp54w6dtjtrn279vcmpn", 0, 10, true)
 
 	t.Logf("total: %v \n", txPage.Count)
 	if modelV, ok := txPage.Data.([]model.CommonTx); ok {

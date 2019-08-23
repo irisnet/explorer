@@ -43,7 +43,12 @@ func registerQueryProposals(r *mux.Router) error {
 		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 10))
 
-		result := gov.QueryList(page, size)
+		total := QueryParam(request, "total")
+		istotal := true
+		if total == "false" {
+			istotal = false
+		}
+		result := gov.QueryList(page, size, istotal)
 		return result
 	})
 
@@ -91,8 +96,13 @@ func registerQueryProposalVoterTxs(r *mux.Router) error {
 		}
 		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 10))
+		total := QueryParam(request, "total")
+		istotal := true
+		if total == "false" {
+			istotal = false
+		}
 
-		return gov.GetVoteTxs(id, page, size)
+		return gov.GetVoteTxs(id, page, size, istotal)
 	})
 	return nil
 }
@@ -106,7 +116,12 @@ func registerQueryProposalDepositorTxs(r *mux.Router) error {
 		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 10))
 
-		return gov.GetDepositTxs(id, page, size)
+		total := QueryParam(request, "total")
+		istotal := true
+		if total == "false" {
+			istotal = false
+		}
+		return gov.GetDepositTxs(id, page, size, istotal)
 	})
 	return nil
 }

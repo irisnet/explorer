@@ -10,7 +10,7 @@ import (
 
 func  TestAssetsService_GetGatewayAsset(t *testing.T) {
 
-	ret,err := (&AssetsService{}).GetGatewayAsset(document.Tx_Asset_TokenType_Issue,0,10)
+	ret, err := (&AssetsService{}).GetGatewayAsset(document.Tx_Asset_TxType_Issue, 0, 10, true)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -19,7 +19,7 @@ func  TestAssetsService_GetGatewayAsset(t *testing.T) {
 }
 
 func  TestAssetsService_GetNativeAsset(t *testing.T) {
-	ret,err := (&AssetsService{}).GetNativeAsset(document.Tx_Asset_TokenType_Edit,0,10)
+	ret, err := (&AssetsService{}).GetNativeAsset(document.Tx_Asset_TxType_Edit, 0, 10, true)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -43,7 +43,7 @@ func TestLoadModelFromCommonTx(t *testing.T) {
 		Time:time.Now(),
 		Status:"success",
 		Msgs:[]document.MsgItem{
-			{Type:document.Tx_Asset_TokenType_Issue,
+			{Type: document.Tx_Asset_TxType_Issue,
 	         MsgData:document.MsgData{
 	         	TokenId:"",
 	         	SymbolMinAlias:"",
@@ -69,7 +69,7 @@ func TestLoadModelFromCommonTx(t *testing.T) {
 	t.Log(string(byteret))
 }
 func TestAssetsServiceisFieldTokenType(t *testing.T) {
-	if isFieldTokenType(document.Tx_Asset_TokenType_Edit) {
+	if isFieldTokenType(document.Tx_Asset_TxType_Edit) {
 		t.Log("ok")
 	}else{
 		t.Failed()

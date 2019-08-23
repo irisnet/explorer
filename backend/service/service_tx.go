@@ -107,9 +107,9 @@ func (_ *TxService) CopyTxListFromDoc(data []document.CommonTx) []model.CommonTx
 	return commonTxUtils
 }
 
-func (service *TxService) QueryTxList(query bson.M, page, pageSize int) model.PageVo {
+func (service *TxService) QueryTxList(query bson.M, page, pageSize int, istotal bool) model.PageVo {
 
-	total, data, err := document.CommonTx{}.QueryByPage(query, page, pageSize)
+	total, data, err := document.CommonTx{}.QueryByPage(query, page, pageSize, istotal)
 
 	if err != nil {
 		logger.Error("query stake list ", logger.String("err", err.Error()))
@@ -286,10 +286,10 @@ func (service *TxService) IsValidatorAddrPrefix(addr string) bool {
 	return strings.HasPrefix(addr, conf.Get().Hub.Prefix.ValAddr)
 }
 
-func (service *TxService) QueryList(query bson.M, page, pageSize int) (pageInfo model.PageVo) {
+func (service *TxService) QueryList(query bson.M, page, pageSize int, istotal bool) (pageInfo model.PageVo) {
 	logger.Debug("QueryList start", service.GetTraceLog())
 
-	total, txList, err := document.CommonTx{}.QueryByPage(query, page, pageSize)
+	total, txList, err := document.CommonTx{}.QueryByPage(query, page, pageSize, istotal)
 
 	if err != nil {
 		logger.Error("query tx list by page", logger.String("err", err.Error()))
@@ -388,9 +388,9 @@ func (service *TxService) Query(hash string) interface{} {
 	return tx
 }
 
-func (service *TxService) QueryByAcc(address string, page, size int) (result model.PageVo) {
+func (service *TxService) QueryByAcc(address string, page, size int, istotal bool) (result model.PageVo) {
 
-	total, txList, err := document.CommonTx{}.QueryByAddr(address, page, size)
+	total, txList, err := document.CommonTx{}.QueryByAddr(address, page, size, istotal)
 
 	if err != nil {
 		logger.Error("query tx list by address", logger.String("err", err.Error()))
@@ -783,6 +783,9 @@ func (service *TxService) buildTx(tx model.CommonTx, blackListP *map[string]docu
 
 		}
 		return govTx
+
+	case types.Asset:
+		return tx
 	}
 	return nil
 }

@@ -71,8 +71,13 @@ func registerQueryVoterTxsByValidatorAddr(r *mux.Router) error {
 		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 5))
 		validatorAddr := Var(request, "validatorAddr")
+		total := QueryParam(request, "total")
+		istotal := true
+		if total == "false" {
+			istotal = false
+		}
 
-		return stake.GetVoteTxsByValidatorAddr(validatorAddr, page, size)
+		return stake.GetVoteTxsByValidatorAddr(validatorAddr, page, size, istotal)
 	})
 	return nil
 }
@@ -83,8 +88,13 @@ func registerQueryDepositorTxsByValidatorAddr(r *mux.Router) error {
 		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 5))
 		validatorAddr := Var(request, "validatorAddr")
+		total := QueryParam(request, "total")
+		istotal := true
+		if total == "false" {
+			istotal = false
+		}
 
-		return stake.GetDepositedTxByValidatorAddr(validatorAddr, page, size)
+		return stake.GetDepositedTxByValidatorAddr(validatorAddr, page, size, istotal)
 	})
 	return nil
 }
@@ -106,8 +116,13 @@ func registerQueryDelegationsByValidator(r *mux.Router) error {
 		}else {
 			ispage = true
 		}
+		total := QueryParam(request, "total")
+		istotal := true
+		if total == "false" {
+			istotal = false
+		}
 
-		return stake.GetDelegationsFromLcd(validatorAddr, page, size, ispage)
+		return stake.GetDelegationsFromLcd(validatorAddr, page, size, ispage, istotal)
 	})
 	return nil
 }
@@ -152,7 +167,12 @@ func registerGetValidators(r *mux.Router) error {
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 100))
 		typ := QueryParam(request, "type")
 		origin := QueryParam(request, "origin")
-		result := stake.GetValidators(typ, origin, page, size)
+		total := QueryParam(request, "total")
+		istotal := true
+		if total == "false" {
+			istotal = false
+		}
+		result := stake.GetValidators(typ, origin, page, size, istotal)
 		return result
 	})
 	return nil

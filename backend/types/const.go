@@ -1,5 +1,9 @@
 package types
 
+import (
+	"github.com/irisnet/explorer/backend/logger"
+)
+
 const (
 	UrlRoot = "/api"
 
@@ -59,8 +63,8 @@ const (
 	UrlRegisterQueryCommissionRewardsByValidatorAddr = "/stake/validators/{validatorAddr}/commission-rewards"
 
 	//Tx
-	UrlRegisterQueryTxList       = "/tx/{page}/{size}"
-	UrlRegisterQueryTxListByType = "/tx/{type}/{page}/{size}"
+	UrlRegisterQueryTxList       = "/txs"
+	UrlRegisterQueryTxListByType = "/txs/{type}/{page}/{size}"
 	UrlRegisterQueryRecentTx     = "/txs/recent"
 	UrlRegisterQueryTxsCounter   = "/txs/statistics"
 	UrlRegisterQueryTxsByAccount = "/txsByAddress/{address}/{page}/{size}"
@@ -127,8 +131,9 @@ var (
 	DeclarationList = []string{TxTypeStakeCreateValidator, TxTypeStakeEditValidator, TxTypeUnjail}
 	StakeList       = []string{TxTypeStakeDelegate, TxTypeBeginRedelegate, TxTypeSetWithdrawAddress, TxTypeStakeBeginUnbonding, TxTypeWithdrawDelegatorReward, TxTypeWithdrawDelegatorRewardsAll, TxTypeWithdrawValidatorRewardsAll}
 	GovernanceList  = []string{TxTypeSubmitProposal, TxTypeDeposit, TxTypeVote}
+	AssetList       = []string{TxTypeIssueToken, TxTypeMintToken, TxTypeEditToken, TxTypeTransferTokenOwner}
 
-	ForwardList      = []string{TxTypeBeginRedelegate}
+	ForwardList = []string{TxTypeBeginRedelegate}
 	//TxTypeExcludeGov = append(append(DeclarationList, StakeList...), BankList...)
 )
 
@@ -179,6 +184,18 @@ func IsGovernanceType(typ string) bool {
 	return false
 }
 
+func IsAssetType(typ string) bool {
+	if len(typ) == 0 {
+		return false
+	}
+	for _, t := range AssetList {
+		if t == typ {
+			return true
+		}
+	}
+	return false
+}
+
 type TxType int
 
 const (
@@ -187,6 +204,7 @@ const (
 	Declaration
 	Stake
 	Gov
+	Asset
 )
 
 func Convert(typ string) TxType {
@@ -198,7 +216,10 @@ func Convert(typ string) TxType {
 		return Declaration
 	} else if IsGovernanceType(typ) {
 		return Gov
+	} else if IsAssetType(typ) {
+		return Asset
 	}
+	logger.Error("Convert UnSupportTx Type", logger.String("txtype", typ))
 	panic(CodeUnSupportTx)
 }
 func TxTypeFromString(typ string) TxType {
@@ -211,5 +232,6 @@ func TxTypeFromString(typ string) TxType {
 	} else if typ == "gov" {
 		return Gov
 	}
+	logger.Error("TxTypeFromString UnSupportTx Type", logger.String("txtype", typ))
 	panic(CodeUnSupportTx)
 }

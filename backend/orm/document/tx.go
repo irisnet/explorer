@@ -187,7 +187,7 @@ type ValDescription struct {
 	Details  string `bson:"details"`
 }
 
-func (_ CommonTx) QueryByAddr(addr string, pageNum, pageSize int) (int, []CommonTx, error) {
+func (_ CommonTx) QueryByAddr(addr string, pageNum, pageSize int, istotal bool) (int, []CommonTx, error) {
 	var data []CommonTx
 	query := bson.M{}
 	query["$or"] = []bson.M{{"from": addr}, {"to": addr}, {"signers": bson.M{"$elemMatch": bson.M{"addr_bech32": addr}}}}
@@ -200,15 +200,15 @@ func (_ CommonTx) QueryByAddr(addr string, pageNum, pageSize int) (int, []Common
 		"$in": typeArr,
 	}
 
-	total, err := pageQuery(CollectionNmCommonTx, nil, query, desc(Tx_Field_Time), pageNum, pageSize, &data)
+	total, err := pageQuery(CollectionNmCommonTx, nil, query, desc(Tx_Field_Time), pageNum, pageSize, istotal, &data)
 
 	return total, data, err
 }
 
-func (_ CommonTx) QueryByPage(query bson.M, pageNum, pageSize int) (int, []CommonTx, error) {
+func (_ CommonTx) QueryByPage(query bson.M, pageNum, pageSize int, istotal bool) (int, []CommonTx, error) {
 	var data []CommonTx
 
-	total, err := pageQuery(CollectionNmCommonTx, nil, query, desc(Tx_Field_Time), pageNum, pageSize, &data)
+	total, err := pageQuery(CollectionNmCommonTx, nil, query, desc(Tx_Field_Time), pageNum, pageSize, istotal, &data)
 
 	return total, data, err
 }
@@ -339,7 +339,7 @@ func (_ CommonTx) QueryProposalTxListById(idArr []uint64) ([]document.CommonTx, 
 	return txs, err
 }
 
-func (_ CommonTx) QueryProposalTxById(proposalId int64, page, size int) (int, []CommonTx, error) {
+func (_ CommonTx) QueryProposalTxById(proposalId int64, page, size int, total bool) (int, []CommonTx, error) {
 
 	txs := []CommonTx{}
 
@@ -356,12 +356,12 @@ func (_ CommonTx) QueryProposalTxById(proposalId int64, page, size int) (int, []
 	}
 	sort := fmt.Sprintf("-%v", Tx_Field_Height)
 
-	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, &txs)
+	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, total, &txs)
 
 	return num, txs, err
 }
 
-func (_ CommonTx) QueryDepositedProposalTxByValidatorWithSubmitOrDepositType(validatorAddrAcc string, page, size int) (int, []CommonTx, error) {
+func (_ CommonTx) QueryDepositedProposalTxByValidatorWithSubmitOrDepositType(validatorAddrAcc string, page, size int, total bool) (int, []CommonTx, error) {
 
 	txs := []CommonTx{}
 	selector := bson.M{
@@ -379,12 +379,12 @@ func (_ CommonTx) QueryDepositedProposalTxByValidatorWithSubmitOrDepositType(val
 		},
 	}
 	sort := fmt.Sprintf("-%v", Tx_Field_Height)
-	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, &txs)
+	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, total, &txs)
 
 	return num, txs, err
 }
 
-func (_ CommonTx) QueryProposalTxByIdWithSubmitOrDepositType(proposalId int64, page, size int) (int, []CommonTx, error) {
+func (_ CommonTx) QueryProposalTxByIdWithSubmitOrDepositType(proposalId int64, page, size int, total bool) (int, []CommonTx, error) {
 
 	txs := []CommonTx{}
 	selector := bson.M{
@@ -402,12 +402,12 @@ func (_ CommonTx) QueryProposalTxByIdWithSubmitOrDepositType(proposalId int64, p
 		},
 	}
 	sort := fmt.Sprintf("-%v", Tx_Field_Height)
-	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, &txs)
+	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, total, &txs)
 
 	return num, txs, err
 }
 
-func (_ CommonTx) QueryTxAsset(assetType, tokenType string, page, size int) (int, []CommonTx, error) {
+func (_ CommonTx) QueryTxAsset(assetType, tokenType string, page, size int, total bool) (int, []CommonTx, error) {
 	txs := []CommonTx{}
 	selector := bson.M{
 		Tx_Field_Hash:   1,
@@ -433,6 +433,6 @@ func (_ CommonTx) QueryTxAsset(assetType, tokenType string, page, size int) (int
 		}
 	}
 	sort := fmt.Sprintf("-%v", Tx_Field_Height)
-	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, &txs)
+	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, total, &txs)
 	return num, txs, err
 }

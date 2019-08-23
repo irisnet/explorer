@@ -175,9 +175,9 @@ func (service *ProposalService) QueryDepositAndVotingProposalList() []model.Prop
 	return proposals
 }
 
-func (service *ProposalService) QueryList(page, size int) (resp model.PageVo) {
+func (service *ProposalService) QueryList(page, size int, istotal bool) (resp model.PageVo) {
 
-	cnt, data, err := document.Proposal{}.QueryProposalByPage(page, size)
+	cnt, data, err := document.Proposal{}.QueryProposalByPage(page, size, istotal)
 	if err != nil {
 		logger.Error("query proposal by page ", logger.String("err", err.Error()))
 		return
@@ -433,7 +433,7 @@ func (_ ProposalService) GetSystemVotingPower() (int64, error) {
 	return totalVotingPower, nil
 }
 
-func (s *ProposalService) GetVoteTxs(proposalId int64, page, size int) model.GetVoteTxResponse {
+func (s *ProposalService) GetVoteTxs(proposalId int64, page, size int, istotal bool) model.GetVoteTxResponse {
 	var (
 		txs        []document.CommonTx
 		txHashs    []string
@@ -444,7 +444,7 @@ func (s *ProposalService) GetVoteTxs(proposalId int64, page, size int) model.Get
 	)
 	accAddrValAddrMap := make(map[string]string)
 
-	num, txList, err := document.CommonTx{}.QueryProposalTxById(proposalId, page, size)
+	num, txList, err := document.CommonTx{}.QueryProposalTxById(proposalId, page, size, istotal)
 
 	if err != nil {
 		logger.Error("QueryProposalTxById have error", logger.String("err", err.Error()))
@@ -491,10 +491,10 @@ func (s *ProposalService) GetVoteTxs(proposalId int64, page, size int) model.Get
 	return res
 }
 
-func (s *ProposalService) GetDepositTxs(proposalId int64, page, size int) model.TxPage {
+func (s *ProposalService) GetDepositTxs(proposalId int64, page, size int, istotal bool) model.TxPage {
 	var res model.TxPage
 
-	num, txs, err := document.CommonTx{}.QueryProposalTxByIdWithSubmitOrDepositType(proposalId, page, size)
+	num, txs, err := document.CommonTx{}.QueryProposalTxByIdWithSubmitOrDepositType(proposalId, page, size, istotal)
 
 	if err != nil {
 		panic(err)
