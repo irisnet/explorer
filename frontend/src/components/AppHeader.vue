@@ -58,8 +58,8 @@
      <!--               <li class="header_submenu_item" v-if="flShowChain">Assets</li>
                     <li class="header_submenu_item" v-if="flShowChain">Gateways</li>-->
                     <li class="header_submenu_item" v-if="flShowStaking"><router-link :to="`/validators`">Validators</router-link></li>
-                    <li class="header_submenu_item" v-if="flShowStaking"><router-link :to="`/txs/declarations`">Validations</router-link></li>
-                    <li class="header_submenu_item no_border_style" v-if="flShowStaking"><router-link :to="`/txs/stakes`">Delegations</router-link></li>
+                    <li class="header_submenu_item" v-if="flShowStaking"><router-link :to="`/txs/validations`">Validations</router-link></li>
+                    <li class="header_submenu_item no_border_style" v-if="flShowStaking"><router-link :to="`/txs/delegations`">Delegations</router-link></li>
                   <!--  <li class="header_submenu_item" v-if="flShowStaking">Validator Txs</li>-->
                     <!--<li class="header_submenu_item" v-if="flShowStaking"> <router-link :to="`/txs/stakes`">Delegation Txs</router-link></li>
                     <li class="header_submenu_item" v-if="flShowStaking">Reward Txs</li>-->
@@ -67,17 +67,17 @@
                     <!--<li class="header_submenu_item" v-if="flShowTransfers">Asset Transfers Txs</li>-->
                     <!--<li class="header_submenu_item" v-if="flShowTransfers">Inter-chain Txs</li>-->
                     <!--<li class="header_submenu_item" v-if="flShowTransfers">IRIS Burn Txs</li>-->
-                    <li class="header_submenu_item" v-if="flShowAssets"><router-link :to="`/nativeasset`">Native Asset Txs</router-link></li>
+                    <li class="header_submenu_item" v-if="flShowAssets"><router-link :to="`/assets/ntvassetstxs`">Native Asset Txs</router-link></li>
                     <!--<li class="header_submenu_item" v-if="flShowAssets">Issuers Txs</li>-->
-                    <li class="header_submenu_item no_border_style" v-if="flShowAssets"><router-link :to="`/gatewayasset`">Gateway Asset Txs</router-link></li>
+                    <li class="header_submenu_item no_border_style" v-if="flShowAssets"><router-link :to="`/assets/gtwassetstxs`">Gateway Asset Txs</router-link></li>
                     <!--<li class="header_submenu_item" v-if="flShowAssets">Gateways Txs</li>-->
                     <!--<li class="header_submenu_item" v-if="flShowAssets">Assets Transfers</li>-->
                     <li class="header_submenu_item" v-if="flShowGov"><router-link :to="`/gov/parameters`">Parameters</router-link></li>
                     <li class="header_submenu_item" v-if="flShowGov"><router-link :to="`/gov/proposals`">Proposals</router-link></li>
                     <li class="header_submenu_item no_border_style" v-if="flShowGov"><router-link :to="`/txs/governance`">Gov Txs</router-link></li>
                     <!--<li class="header_submenu_item" v-if="flShowGov">Vote Tx</li>-->
-                    <li class="header_submenu_item" v-if="flShowStats"><router-link :to="`/statistics/richlist`">IRIS Rich List</router-link></li>
-                    <li class="header_submenu_item no_border_style" v-if="flShowStats"><router-link :to="`/statistics/tokenstats`">IRIS Stats</router-link></li>
+                    <li class="header_submenu_item" v-if="flShowStats"><router-link :to="`/stats/irisrichlist`">IRIS Rich List</router-link></li>
+                    <li class="header_submenu_item no_border_style" v-if="flShowStats"><router-link :to="`/stats/irisstats`">IRIS Stats</router-link></li>
                     <!--<li class="header_submenu_item" v-if="flShowStats">Public Address</li>-->
                 </ul>
             </div>
@@ -136,9 +136,9 @@
                     <span class="feature_btn_mobile feature_nav"
                           @click="featureButtonClick('/txs/transfers')">Transfers</span>
                 <span class="feature_btn_mobile feature_nav"
-                      @click="featureButtonClick('/txs/declarations')">Declarations</span>
+                      @click="featureButtonClick('/txs/validations')">Declarations</span>
                 <span class="feature_btn_mobile feature_nav"
-                      @click="featureButtonClick('/txs/stakes')">Stakes</span>
+                      @click="featureButtonClick('/txs/delegations')">Stakes</span>
                 <span class="feature_btn_mobile feature_nav"
                       @click="featureButtonClick('/txs/governance')">Governance</span>
             </div>
@@ -153,9 +153,9 @@
                 </span>
                 <div class="select_option" v-show="flShowAssetSelect">
                     <span class="feature_btn_mobile feature_nav"
-                          @click="featureButtonClick('/nativeasset')">Native Asset</span>
+                          @click="featureButtonClick('/assets/ntvassetstxs')">Native Asset</span>
                     <span class="feature_btn_mobile feature_nav"
-                          @click="featureButtonClick('/gatewayasset')">Declarations</span>
+                          @click="featureButtonClick('/assets/gtwassetstxs')">Declarations</span>
                 </div>
                 <span class="feature_btn_mobile feature_nav select_option_container"
                     @click="topListSelect(flShowTopListSelection)">
@@ -167,9 +167,9 @@
                 <div class="select_option"
                      v-show="flShowTopListSelection">
                 <span class="feature_btn_mobile feature_nav"
-                    @click="featureButtonClick('/statistics/richlist')">Rich List</span>
+                    @click="featureButtonClick('/stats/irisrichlist')">Rich List</span>
                 <span class="feature_btn_mobile feature_nav"
-                    @click="featureButtonClick('/statistics/tokenstats')">Tokens Stats</span>
+                    @click="featureButtonClick('/stats/irisstats')">Tokens Stats</span>
                 <!-- <span class="feature_btn_mobile feature_nav"
                     @click="featureButtonClick('/statistics/bondedTokens')">Bonded Tokens</span> -->
                 </div>
@@ -560,7 +560,7 @@
 					this.activeClassName = '/governance';
 				} else if (path.includes('/statistics')) {
 					this.activeClassName = '/statistics';
-				} else if (path.includes('/nativeasset') || path.includes('/gatewayasset')) {
+				} else if (path.includes('/assets/ntvassetstxs') || path.includes('/assets/gtwassetstxs')) {
 					this.activeClassName = '/Assets';
 				} else {
 					this.activeClassName = '';

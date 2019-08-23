@@ -54,10 +54,10 @@
 				if(this.$route.params.txType === 'transfers'){
 					this.listTitleName = "Txs (Transfer or Burn)";
 					parmas = {txListTransfer: {pageNumber: currentPage,pageSize: pageSize}};
-				}else if(this.$route.params.txType === 'stakes'){
+				}else if(this.$route.params.txType === 'delegations'){
 					this.listTitleName = "Txs (Staking or Distribution)";
 					parmas = {txListStake: {pageNumber: currentPage,pageSize: pageSize}};
-				}else if(this.$route.params.txType === 'declarations'){
+				}else if(this.$route.params.txType === 'validations'){
 					this.listTitleName = "Txs (CreateValidator, EditValidator or Unjail)";
 					parmas = {txListDeclaration: {pageNumber: currentPage,pageSize: pageSize}};
 				}else if(this.$route.params.txType === 'governance'){

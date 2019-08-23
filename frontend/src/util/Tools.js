@@ -452,7 +452,7 @@ export default class Tools{
 						'To':item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:'--'),
 						'listName':'transfer'
 					};
-				}else if(txType === 'declarations'){
+				}else if(txType === 'validations'){
 					let Moniker = item.Moniker;
 					objList = {
 						'Moniker': item.Moniker ? Tools.formatString(Moniker,15,"...") : "--",
@@ -461,7 +461,7 @@ export default class Tools{
 						'listName':'declarations',
 						'Self_Bonded': item.Self_Bonded
 					}
-				}else if(txType === 'stakes'){
+				}else if(txType === 'delegations'){
 					objList = {
 						'From': `${item.From ? item.From : (item.DelegatorAddr?item.DelegatorAddr:'--')}`,
 						Amount,

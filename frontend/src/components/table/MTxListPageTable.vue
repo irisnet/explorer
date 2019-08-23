@@ -345,9 +345,9 @@
 	        setTxFields(){
                 if(this.$route.params.txType === 'transfers'){
                     this.fields = this.transferFields
-                }else if(this.$route.params.txType === 'declarations') {
+                }else if(this.$route.params.txType === 'validations') {
                     this.fields = this.declarationFields
-                }else  if(this.$route.params.txType === 'stakes'){
+                }else  if(this.$route.params.txType === 'delegations'){
                     this.fields = this.stakeFields
                 }else if(this.$route.params.txType === 'governance'){
                     this.fields = this.govFields
