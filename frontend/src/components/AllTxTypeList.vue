@@ -90,7 +90,7 @@
 						            fee: this.formatFee(item.Fee),
 						            signer: item.Signer,
 						            status: item.Status,
-						            timestamp: Tools.formatDateYearToDate(item.Timestamp)
+						            timestamp: Tools.format2UTC(item.Timestamp)
 					            }
 				            })
 
