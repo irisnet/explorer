@@ -8,6 +8,7 @@
                             :page-size="pageSize"
                             :total="countNum"
                             :page="currentPageNum"
+                            :showInfo="false"
                             :page-change="pageChange"
                     ></m-pagination>
                 </div>
@@ -23,6 +24,7 @@
                         :page-size="pageSize"
                         :total="countNum"
                         :page="currentPageNum"
+                        :showInfo="false"
                         :page-change="pageChange"
                 ></m-pagination>
             </div>
@@ -81,7 +83,7 @@
 		            try {
 			            if(res){
 				            this.countNum = res.Count;
-				            sessionStorage.setItem('txsTotal',res.Count)
+				            sessionStorage.setItem('txsTotal',res.Count);
 				            this.allTxTypeList = res.Data.map( item => {
 					            return {
 						            txHash:item.Hash,
@@ -90,7 +92,7 @@
 						            fee: this.formatFee(item.Fee),
 						            signer: item.Signer,
 						            status: item.Status,
-						            timestamp: Tools.formatDateYearToDate(item.Timestamp)
+						            timestamp: Tools.format2UTC(item.Timestamp)
 					            }
 				            })
 
@@ -158,4 +160,5 @@
             padding-right: 0.1rem;
         }
     }
+
 </style>

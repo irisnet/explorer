@@ -205,6 +205,11 @@ export default {
         arr[i] = arr[minIndex];
         arr[minIndex] = temp;
       }
+      for(let n=0; n < arr.length;n++){
+        if(arr[n].index){
+          arr[n].index = n + 1;
+        }
+      }
       return arr;
     }
   },
