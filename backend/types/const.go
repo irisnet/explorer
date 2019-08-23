@@ -1,6 +1,8 @@
 package types
 
-import "fmt"
+import (
+	"github.com/irisnet/explorer/backend/logger"
+)
 
 const (
 	UrlRoot = "/api"
@@ -217,7 +219,7 @@ func Convert(typ string) TxType {
 	} else if IsAssetType(typ) {
 		return Asset
 	}
-	fmt.Println("Convert======>>:", typ)
+	logger.Error("Convert UnSupportTx Type", logger.String("txtype", typ))
 	panic(CodeUnSupportTx)
 }
 func TxTypeFromString(typ string) TxType {
@@ -230,5 +232,6 @@ func TxTypeFromString(typ string) TxType {
 	} else if typ == "gov" {
 		return Gov
 	}
+	logger.Error("TxTypeFromString UnSupportTx Type", logger.String("txtype", typ))
 	panic(CodeUnSupportTx)
 }
