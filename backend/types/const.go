@@ -59,7 +59,8 @@ const (
 	UrlRegisterQueryCommissionRewardsByValidatorAddr = "/stake/validators/{validatorAddr}/commission-rewards"
 
 	//Tx
-	UrlRegisterQueryTxList       = "/tx/{type}/{page}/{size}"
+	UrlRegisterQueryTxList       = "/tx/{page}/{size}"
+	UrlRegisterQueryTxListByType = "/tx/{type}/{page}/{size}"
 	UrlRegisterQueryRecentTx     = "/txs/recent"
 	UrlRegisterQueryTxsCounter   = "/txs/statistics"
 	UrlRegisterQueryTxsByAccount = "/txsByAddress/{address}/{page}/{size}"
