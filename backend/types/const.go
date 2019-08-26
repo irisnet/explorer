@@ -75,7 +75,8 @@ const (
 	UrlRegisterTokensAccountTotal = "/tokenstats/account_total"
 	//bondedtokens
 	UrlRegisterBondedTokensValidators = "/bondedtokens/validators"
-
+	//assetTokens
+	UrlRegisterAssetTokens        = "/asset/tokens"
 	//version
 	UrlRegisterQueryApiVersion = "/version"
 
