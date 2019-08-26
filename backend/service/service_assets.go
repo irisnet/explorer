@@ -77,7 +77,7 @@ func LoadModelFromCommonTx(src document.CommonTx) (dst model.AssetsVo) {
 	dst.Type = src.Msgs[0].Type
 	dst.Amount = src.Msgs[0].MsgData.Amount
 	dst.TokenId = src.Msgs[0].MsgData.TokenId
-	dst.SymbolAtSource = src.Msgs[0].MsgData.SymbolAtSource
+	dst.CanonicalSymbol = src.Msgs[0].MsgData.CanonicalSymbol
 	dst.Symbol = src.Msgs[0].MsgData.Symbol
 	if dst.Type == document.Tx_Asset_TxType_Issue {
 		source := src.Msgs[0].MsgData.UdInfo.Source
