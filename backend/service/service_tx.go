@@ -58,6 +58,44 @@ func (_ *TxService) CopyTxListFromDoc(data []document.CommonTx) []model.CommonTx
 			tmpFee.Amount = append(tmpFee.Amount, utils.Coin{Denom: v.Denom, Amount: v.Amount})
 		}
 
+		tmpMsgsArr := make([]model.MsgItem, 0, len(v.Msgs))
+		for _, v := range v.Msgs {
+			tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
+				Type: v.Type,
+				MsgData: model.MsgData{
+					TokenId:        v.MsgData.TokenId,
+					To:             v.MsgData.To,
+					Family:         v.MsgData.Family,
+					Source:         v.MsgData.Source,
+					Gateway:        v.MsgData.Gateway,
+					Symbol:         v.MsgData.Symbol,
+					SymbolAtSource: v.MsgData.SymbolAtSource,
+					Name:           v.MsgData.Name,
+					Decimal:        v.MsgData.Decimal,
+					SymbolMinAlias: v.MsgData.SymbolMinAlias,
+					InitialSupply:  v.MsgData.InitialSupply,
+					MaxSupply:      v.MsgData.MaxSupply,
+					Amount:         v.MsgData.Amount,
+					Mintable:       v.MsgData.Mintable,
+					Owner:          v.MsgData.Owner,
+					Moniker:        v.MsgData.Moniker,
+					SrcOwner:       v.MsgData.SrcOwner,
+					DstOwner:       v.MsgData.DstOwner,
+					UdInfo: model.UdInfo{
+						Source:  v.MsgData.UdInfo.Source,
+						Gateway: v.MsgData.UdInfo.Gateway,
+						Symbol:  v.MsgData.UdInfo.Symbol,
+					},
+					Consumer:      v.MsgData.Consumer,
+					BlockInterval: v.MsgData.BlockInterval,
+					MemoRegexp:    v.MsgData.MemoRegexp,
+					Identity:      v.MsgData.Identity,
+					Details:       v.MsgData.Details,
+					Website:       v.MsgData.Website,
+				},
+			})
+		}
+
 		tmpTx := model.CommonTx{
 			Time:       v.Time,
 			Height:     v.Height,
@@ -99,6 +137,7 @@ func (_ *TxService) CopyTxListFromDoc(data []document.CommonTx) []model.CommonTx
 					Details:  v.StakeEditValidator.Description.Details,
 				},
 			},
+			Msgs: tmpMsgsArr,
 		}
 
 		commonTxUtils = append(commonTxUtils, tmpTx)
@@ -654,6 +693,15 @@ func (service *TxService) buildTx(tx model.CommonTx, blackListP *map[string]docu
 
 	switch types.Convert(tx.Type) {
 	case types.Trans:
+		if tx.Type == types.TxTypeSetMemoRegexp {
+			return model.AssetTx{
+				BaseTx: buildBaseTx(tx),
+				From:   tx.From,
+				To:     tx.To,
+				Amount: tx.Amount,
+				Msgs:   tx.Msgs,
+			}
+		}
 		return model.TransTx{
 			BaseTx: buildBaseTx(tx),
 			From:   tx.From,
@@ -748,6 +796,7 @@ func (service *TxService) buildTx(tx model.CommonTx, blackListP *map[string]docu
 				govTx.Title = msg.Title
 				govTx.Description = msg.Description
 				govTx.ProposalType = msg.ProposalType
+				govTx.Tags = tx.Tags
 			}
 		} else if govTx.Type == types.TxTypeDeposit {
 
@@ -783,6 +832,23 @@ func (service *TxService) buildTx(tx model.CommonTx, blackListP *map[string]docu
 
 		}
 		return govTx
+	case types.Asset:
+		return model.AssetTx{
+			BaseTx: buildBaseTx(tx),
+			From:   tx.From,
+			To:     tx.To,
+			Amount: tx.Amount,
+			Msgs:   tx.Msgs,
+		}
+	case types.Rand:
+		return model.AssetTx{
+			BaseTx: buildBaseTx(tx),
+			From:   tx.From,
+			To:     tx.To,
+			Amount: tx.Amount,
+			Tags:   tx.Tags,
+			Msgs:   tx.Msgs,
+		}
 	}
 	return nil
 }

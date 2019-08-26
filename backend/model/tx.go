@@ -181,6 +181,7 @@ type GovTx struct {
 	Option       string
 	Title        string
 	ProposalType string
+	Tags         map[string]string
 }
 
 type RecentTx struct {
@@ -188,6 +189,15 @@ type RecentTx struct {
 	Time   time.Time  `json:"time"`
 	TxHash string     `json:"tx_hash"`
 	Type   string     `json:"type"`
+}
+
+type AssetTx struct {
+	BaseTx
+	From   string
+	To     string
+	Amount utils.Coins
+	Tags   map[string]string
+	Msgs   []MsgItem
 }
 
 func (tx RecentTx) String() string {
@@ -206,6 +216,45 @@ type Signer struct {
 
 func (s Signer) String() string {
 	return fmt.Sprintf("AddrHex: %v   AddrBech32: %v \n", s.AddrHex, s.AddrBech32)
+}
+
+type MsgItem struct {
+	Type    string  `bson:"type"`
+	MsgData MsgData `bson:"msg"`
+}
+
+type MsgData struct {
+	TokenId        string `bson:"token_id"`
+	To             string `bson:"to"`
+	Family         string `bson:"family"`
+	Source         string `bson:"source"`
+	Gateway        string `bson:"gateway"`
+	Symbol         string `bson:"symbol"`
+	SymbolAtSource string `bson:"symbol_at_source"`
+	Name           string `bson:"name"`
+	Decimal        int32  `bson:"decimal"`
+	SymbolMinAlias string `bson:"symbol_min_alias"`
+	InitialSupply  int64  `bson:"initial_supply"`
+	MaxSupply      int64  `bson:"max_supply"`
+	Amount         int64  `bson:"amount"`
+	Mintable       bool   `bson:"mintable"`
+	Owner          string `bson:"owner"`
+	Moniker        string `bson:"moniker"`
+	SrcOwner       string `bson:"src_owner"`
+	DstOwner       string `bson:"dst_owner"`
+	UdInfo         UdInfo `bson:"ud_info"`
+	Consumer       string `bson:"consumer"`
+	BlockInterval  int64  `bson:"block-interval"`
+	MemoRegexp     string `bson:"memo_regexp"`
+	Identity       string `bson:"identity"`
+	Details        string `bson:"details"`
+	Website        string `bson:"website"`
+}
+
+type UdInfo struct {
+	Source  string `bson:"source"`
+	Gateway string `bson:"gateway"`
+	Symbol  string `bson:"symbol"`
 }
 
 type CommonTx struct {
@@ -230,6 +279,7 @@ type CommonTx struct {
 	StakeCreateValidator StakeCreateValidator `bson:"stake_create_validator"`
 	StakeEditValidator   StakeEditValidator   `bson:"stake_edit_validator"`
 	Msg                  Msg                  `bson:"-"`
+	Msgs                 []MsgItem            `bson:"msgs"`
 	Signers              []Signer             `bson:"signers"`
 }
 
@@ -255,9 +305,10 @@ func (tx CommonTx) String() string {
 		StakeCreateValidator :%v
 		StakeEditValidator   :%v
 		Msg                  :%v
+		Msgs                 :%v
 		Signers              :%v
 		`, tx.Time, tx.Height, tx.TxHash, tx.From, tx.To, tx.Amount, tx.Type, tx.Fee, tx.Memo, tx.Status, tx.Code, tx.Log,
-		tx.GasUsed, tx.GasPrice, tx.ActualFee, tx.ProposalId, tx.Tags, tx.StakeCreateValidator, tx.StakeEditValidator, tx.Msg, tx.Signers)
+		tx.GasUsed, tx.GasPrice, tx.ActualFee, tx.ProposalId, tx.Tags, tx.StakeCreateValidator, tx.StakeEditValidator, tx.Msg, tx.Msgs, tx.Signers)
 
 }
 

@@ -37,7 +37,7 @@ const (
 	Tx_Field_StakeCreateValidator = "stake_create_validator"
 	Tx_Field_StakeEditValidator   = "stake_edit_validator"
 
-	Tx_Field_Msgs_UdInfo  = "msgs.msg.ud_info.source"
+	Tx_Field_Msgs_UdInfo = "msgs.msg.ud_info.source"
 	Tx_AssetType_Native  = "native"
 	Tx_AssetType_Gateway = "gateway"
 
@@ -159,9 +159,16 @@ type MsgData struct {
 	Amount         int64  `json:"amount" bson:"amount"`
 	Mintable       bool   `json:"mintable" bson:"mintable"`
 	Owner          string `json:"owner" bson:"owner"`
+	Moniker        string `json:"moniker" bson:"moniker"`
 	SrcOwner       string `json:"src_owner" bson:"src_owner"`
 	DstOwner       string `json:"dst_owner" bson:"dst_owner"`
 	UdInfo         UdInfo `json:"ud_info" bson:"ud_info"`
+	Consumer       string `json:"consumer" bson:"consumer"`
+	BlockInterval  int64  `json:"block-interval" bson:"block-interval"`
+	MemoRegexp     string `json:"memo_regexp" bson:"memo_regexp"`
+	Identity       string `json:"identity" bson:"identity"`
+	Details        string `json:"details" bson:"details"`
+	Website        string `json:"website" bson:"website"`
 }
 
 type UdInfo struct {
