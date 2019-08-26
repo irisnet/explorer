@@ -86,11 +86,11 @@
               areaStyle: {
                 normal: {
                   color: new echarts.graphic.LinearGradient(//设置渐变颜色
-                    0, 0, 0, 1,
+                    0, 0, 0, 0.7,
                     [
-                      {offset: 0, color: '#3498db'},
-                      {offset: 0.5, color: '#91ccef'},
-                      {offset: 1, color: '#dcf6ff'}
+                      {offset: 0, color: '#4E61E7'},
+                      {offset: 0.5, color: '#AFB8FD'},
+                      {offset: 1, color: '#E9EBFC'}
                     ]
                   )
                 }
@@ -98,8 +98,8 @@
               smooth:false,//曲线平滑
               itemStyle:{
                 normal:{
-                  color:'#3598db',
-                  borderColor:'#3598db',  //拐点边框颜色
+                  color:'#4E61E7',
+                  borderColor:'#4E61E7',  //拐点边框颜色
                 }
               },
             }

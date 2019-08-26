@@ -141,7 +141,7 @@
                     key: 'Tx_Type',
                 },
                 {
-                    title:'Fee(IRIS)',
+                    title:'Fee',
                     slot: 'Tx_Fee',
                     key: 'transferFee',
                     className: 'text_right'
@@ -180,7 +180,7 @@
 						slot: 'Moniker',
 					},
 					{
-						title:'Operator_Address',
+						title:'Operator',
                         slot: 'OperatorAddr',
                         tooltip: true
 					},

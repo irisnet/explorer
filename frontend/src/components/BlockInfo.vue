@@ -3,9 +3,9 @@
         <div class="block_detail_content">
             <div class="block_detail_title_content">
                 <span class="block_height_content">
-                    <i :class="active?'flag_item_left':'flag_item_left_disabled'" @click="skipNext(-1)"></i>
+                    <i :class="active?'flag_item_left':'flag_item_left_disabled'" class="iconfont iconshangyigequkuai" @click="skipNext(-1)"></i>
                         <span class="information_value" style="flex:none;">{{heightValue}}</span>
-                    <i :class="activeNext?'flag_item_right':'flag_item_right_disabled'" @click="skipNext(1)"></i>
+                    <i :class="activeNext?'flag_item_right':'flag_item_right_disabled'" class="iconfont iconxiayigequkuai" @click="skipNext(1)"></i>
                 </span>
             </div>
         </div>
@@ -512,33 +512,29 @@
                     }
                     .flag_item_left {
                         display: inline-block;
-                        width: 0.2rem;
-                        height: 0.17rem;
-                        background: url('../assets/left.png') no-repeat 0 1px;
+                        font-size: 0.2rem;
                         margin-right: 0.05rem;
                         cursor: pointer;
+                        color:var(--bgColor) !important;
                     }
                     .flag_item_left_disabled {
                         display: inline-block;
-                        width: 0.2rem;
-                        height: 0.17rem;
+                        font-size: 0.2rem;
                         margin-right: 0.05rem;
                         cursor: pointer;
-                        background: url('../assets/left_disabled.png') no-repeat 0 1px;
+                        color: #a2a2ae;
                     }
                     .flag_item_right {
                         display: inline-block;
-                        width: 0.2rem;
-                        height: 0.17rem;
-                        background: url('../assets/right.png') no-repeat 0 0;
+                        font-size: 0.2rem;
                         margin-left: 0.05rem;
+                        color:var(--bgColor);
                         cursor: pointer;
                     }
                     .flag_item_right_disabled {
                         display: inline-block;
-                        width: 0.2rem;
-                        height: 0.17rem;
-                        background: url('../assets/right_disabled.png') no-repeat 0 0;
+                        font-size: 0.2rem;
+                        color: #a2a2ae;
                         margin-left: 0.05rem;
                         cursor: pointer;
                     }

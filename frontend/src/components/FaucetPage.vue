@@ -282,7 +282,7 @@ export default {
         /*box-shadow: 0 0 0 transparent;*/
         @include borderRadius(0.04rem);
         padding: 0.09rem 0.19rem !important;
-        background: #3498db;
+        background: var(--bgColor);
         @include fontSize;
         color: #fff;
         &:disabled {

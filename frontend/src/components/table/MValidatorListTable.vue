@@ -63,12 +63,12 @@ export default {
           sortable: true
         },
         {
-          title: 'Operator_Address',
+          title: 'Operator',
           slot: 'operatorAddress',
           tooltip: true
         },
         {
-          title: 'Commission_Rate',
+          title: 'Commission',
           key: 'commission',
           sortable: true,
           sortMethod: this.sortMethodPer('commission'),
@@ -124,12 +124,12 @@ export default {
           sortable: true
         },
         {
-          title: 'Operator_Address',
+          title: 'Operator',
           slot: 'operatorAddress',
           tooltip: true
         },
         {
-          title: 'Commission_Rate',
+          title: 'Commission',
           key: 'commission',
           sortable: true,
           sortMethod: this.sortMethodPer('commission'),
@@ -171,12 +171,12 @@ export default {
           sortable: true
         },
         {
-          title: 'Operator_Address',
+          title: 'Operator',
           slot: 'operatorAddress',
           tooltip: true
         },
         {
-          title: 'Commission_Rate',
+          title: 'Commission',
           key: 'commission',
           sortable: true,
           sortMethod: this.sortMethodPer('commission'),

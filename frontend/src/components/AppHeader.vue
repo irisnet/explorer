@@ -647,7 +647,7 @@
 					this.explorerLogo = require("../assets/nyancat_testnet.png");
 					this.currentNetworkClass = 'iconfont iconcaihongmao'
 				} else {
-					this.currentNetworkClass = 'iconfont iconiris'; 
+					this.currentNetworkClass = 'iconfont iconiris';
 					this.explorerLogo = require("../assets/logo.png")
 				}
 			},
@@ -700,6 +700,7 @@
                             width: 1.7rem;
                             padding: 0.05rem 0;
                             img {
+                                max-width: 1.6rem;
                                 height: 100%;
                             }
                         }
@@ -832,7 +833,6 @@
                                 padding: 0.1rem  0.15rem 0.1rem 0;
                                 margin-left: 0.15rem;
                                 width: 100%;
-                                border-bottom: 0.01rem solid #d7d9e0;
                                 background: #fff;
                                 a{
                                     &:hover{
