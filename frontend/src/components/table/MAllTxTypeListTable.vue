@@ -41,6 +41,7 @@
 					{
 						title: 'TxHash',
 						slot: 'txHash',
+						tooltip: true,
 					},
 					{
 						title: 'Block',
@@ -49,7 +50,7 @@
 					{
 						title: 'Type',
 						slot: 'type',
-						key:"type"
+						key:"type",
 					},
 					{
 						title: 'Fee',
@@ -58,6 +59,7 @@
 					{
 						title: 'Signer',
 						slot: 'signer',
+						tooltip: true,
 					},
 					{
 						title: 'Status',

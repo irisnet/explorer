@@ -679,7 +679,7 @@
     }
     .person_computer_header_var {
         position: fixed;
-        z-index: 10;
+        z-index: 1;
         background: rgba(255, 255, 255, 1);
         height: 0.6rem;
         .app_header_person_computer {
@@ -740,11 +740,10 @@
                                 max-width: 12.8rem;
                                 width: 100%;
                                 margin: 0 auto;
-                                padding: 0.1rem 0.2rem;
+                                padding: 0.1rem 0 0.1rem 0.2rem;
                                 display: flex;
                                 align-items: center;
                                 input {
-                                    text-indent: 0.22rem;
                                     width: 100%;
                                     height: 0.35rem;
                                     border-radius: 0.06rem 0 0 0.06rem;
@@ -752,6 +751,7 @@
                                     background: var(--bgColor);
                                     border: 0.01rem solid #fff;
                                     color: #fff;
+                                    font-size: 0.14rem;
                                     border-right: none;
                                     text-indent: 0.1rem;
                                 }
@@ -779,6 +779,7 @@
                             position: relative;
                             height:0.6rem;
                             line-height: 0.6rem;
+                            padding-left: 0.2rem;
                             .network_list_container{
                                 background: #fff;
                                 width: auto;

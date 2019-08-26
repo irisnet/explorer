@@ -198,7 +198,7 @@ export default {
                         width: 2.4rem;
                         display: none;
                         position: fixed;
-                        z-index: 100000;
+                        z-index: 5;
                         margin-top: -20px;
                         transform: translateY(-50%);
                         color: #ffffff;
