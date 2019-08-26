@@ -382,7 +382,8 @@
               display: flex;
               justify-content: center;
              .irisnet_link_content{
-               width: 60%;
+               width: 40%;
+               padding: 0.1rem 0;
                display: flex;
                align-items: center;
                .irisnet_logo_img{
@@ -400,7 +401,7 @@
               }
             }
             .footer_right_content{
-              padding-bottom: 0.2rem;
+              padding: 0.2rem 0;
               .resources_content{
                 text-align: center;
               }

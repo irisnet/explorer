@@ -100,7 +100,7 @@
                 flEditTokenShowLoading: false,
                 flMinTokenShowLoading: false,
                 flTransferTokenShowLoading: false,
-				listTitleName:'NativeAsset',
+				listTitleName:'Native Asset Txs',
 				issueTokenType:'IssueToken',
                 editTokenLType:'EditToken',
                 mintTokenType:'MintToken',
@@ -287,7 +287,7 @@
         .native_asset_list_title_wrap{
             width: 100%;
             position: fixed;
-            z-index: 1;
+            z-index: 10;
             background-color: #ffffff;
             .native_asset_list_title_content{
                 height:0.7rem;

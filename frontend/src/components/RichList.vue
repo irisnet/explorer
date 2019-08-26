@@ -159,7 +159,7 @@ export default {
     width: 100%;
     .top_list_title_container {
         width: 100%;
-        z-index: 1;
+        z-index: 2;
         position: fixed;
         .top_list_title_content {
             max-width: 12.8rem;
@@ -199,7 +199,8 @@ export default {
                         display: none;
                         position: fixed;
                         z-index: 5;
-                        margin-top: -20px;
+                        margin-top: 30px;
+                        left: 2.55rem;
                         transform: translateY(-50%);
                         color: #ffffff;
                         background-color: #000000;
@@ -218,8 +219,9 @@ export default {
                             display: block;
                             position: absolute;
                             border-top-color: #000000;
-                            left: 50%;
-                            margin-left: -6px;
+                            transform: rotate(90deg);
+                            top: 45%;
+                            margin-left: -0.12rem;
                         }
                     }
                 }

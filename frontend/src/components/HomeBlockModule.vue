@@ -5,7 +5,7 @@
             :class="homeModuleBlockTitle"
       >{{moduleName}}</span>
       <router-link class="view_all_btn" :to="moduleName === 'Blocks' ? `/blocks` : `/txs`">
-        <span class="view_all_Content">View All<i class="iconfont iconwangluoqiehuanjiantou"></i></span>
+        <span class="view_all_Content">View All</span>
       </router-link>
     </div>
     <div class="home_module_block_content">
