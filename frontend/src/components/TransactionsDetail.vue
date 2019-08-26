@@ -452,51 +452,51 @@ export default {
                     v: ""
                 },
                 Family: {
-                    k: "Family",
+                    k: "family",
                     v: ""
                 },
                 Source: {
-                    k: "Source",
+                    k: "source",
                     v: ""
                 },
                 Gateway: {
-                    k: "Gateway",
+                    k: "gateway",
                     v: ""
                 },
                 Symbol: {
-                    k: "Symbol",
+                    k: "symbol",
                     v: ""
                 },
                 SymbolAtSource: {
-                    k: "SymbolAtSource",
+                    k: "canonical_symbol",
                     v: ""
                 },
                 Name: {
-                    k: "Name",
+                    k: "name",
                     v: ""
                 },
                 Decimal: {
-                    k: "Decimal",
+                    k: "decimal",
                     v: ""
                 },
                 SymbolMinAlias: {
-                    k: "SymbolMinAlias",
+                    k: "min_unit_alias",
                     v: ""
                 },
                 InitialSupply: {
-                    k: "InitialSupply",
+                    k: "initial_supply",
                     v: ""
                 },
                 MaxSupply: {
-                    k: "MaxSupply",
+                    k: "max_supply",
                     v: ""
                 },
                 Mintable: {
-                    k: "Mintable",
+                    k: "mintable",
                     v: ""
                 },
                 Owner: {
-                    k: "Owner",
+                    k: "owner",
                     v: ""
                 }
             },
@@ -506,31 +506,31 @@ export default {
                     v: ""
                 },
                 TokenId: {
-                    k: "TokenId",
+                    k: "token_id",
                     v: ""
                 },
                 SymbolAtSource: {
-                    k: "SymbolAtSource",
+                    k: "canonical_symbol",
                     v: ""
                 },
                 Name: {
-                    k: "Name",
+                    k: "name",
                     v: ""
                 },
                 SymbolMinAlias: {
-                    k: "SymbolMinAlias",
+                    k: "min_unit_alias",
                     v: ""
                 },
                 MaxSupply: {
-                    k: "MaxSupply",
+                    k: "max_supply",
                     v: ""
                 },
                 Mintable: {
-                    k: "Mintable",
+                    k: "mintable",
                     v: ""
                 },
                 Owner: {
-                    k: "Owner",
+                    k: "owner",
                     v: ""
                 }
             },
@@ -540,19 +540,19 @@ export default {
                     v: ""
                 },
                 TokenId: {
-                    k: "TokenId",
+                    k: "token_id",
                     v: ""
                 },
                 Owner: {
-                    k: "Owner",
+                    k: "owner",
                     v: ""
                 },
                 Amount: {
-                    k: "Amount",
+                    k: "amount",
                     v: ""
                 },
                 To: {
-                    k: "To",
+                    k: "to",
                     v: ""
                 }
             },
@@ -562,15 +562,15 @@ export default {
                     v: ""
                 },
                 TokenId: {
-                    k: "TokenId",
+                    k: "token_id",
                     v: ""
                 },
                 "Original Owner": {
-                    k: "SrcOwner",
+                    k: "src_owner",
                     v: ""
                 },
                 "New Owner": {
-                    k: "DstOwner",
+                    k: "dst_owner",
                     v: ""
                 }
             },
@@ -580,23 +580,23 @@ export default {
                     v: ""
                 },
                 Owner: {
-                    k: "Owner",
+                    k: "owner",
                     v: ""
                 },
                 Moniker: {
-                    k: "Moniker",
+                    k: "moniker",
                     v: ""
                 },
                 Identity: {
-                    k: "Identity",
+                    k: "identity",
                     v: ""
                 },
                 Details: {
-                    k: "Details",
+                    k: "details",
                     v: ""
                 },
                 Website: {
-                    k: "Website",
+                    k: "website",
                     v: ""
                 }
             },
@@ -606,15 +606,15 @@ export default {
                     v: ""
                 },
                 "Original Owner": {
-                    k: "Owner",
+                    k: "owner",
                     v: ""
                 },
                 Moniker: {
-                    k: "Moniker",
+                    k: "moniker",
                     v: ""
                 },
                 "New Owner": {
-                    k: "To",
+                    k: "to",
                     v: ""
                 }
             },
@@ -624,7 +624,7 @@ export default {
                     v: ""
                 },
                 "Block Interval": {
-                    k: "BlockInterval",
+                    k: "block-interval",
                     v: ""
                 },
                 "Request ID": {
@@ -642,11 +642,11 @@ export default {
                     v: ""
                 },
                 Owner: {
-                    k: "Owner",
+                    k: "owner",
                     v: ""
                 },
                 MemoRegexp: {
-                    k: "MemoRegexp",
+                    k: "memo_regexp",
                     v: ""
                 }
             }
@@ -757,8 +757,8 @@ export default {
                 return;
             }
             let msgs = data.Msgs.map(v => {
-                v.MsgData.Type = v.Type;
-                return v.MsgData;
+                v.msg.Type = v.Type;
+                return v.msg;
             });
             let arr = [];
             for (let it of msgs) {

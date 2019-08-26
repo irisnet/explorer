@@ -53,8 +53,8 @@ type Signer struct {
 }
 
 type Coin struct {
-	Denom  string  `json:"denom"`
-	Amount float64 `json:"amount"`
+	Denom  string  `bson:"denom"`
+	Amount float64 `bson:"amount"`
 }
 
 func (c Coin) Add(a Coin) Coin {
@@ -70,13 +70,13 @@ func (c Coin) Add(a Coin) Coin {
 type Coins []Coin
 
 type Fee struct {
-	Amount Coins `json:"amount"`
-	Gas    int64 `json:"gas"`
+	Amount Coins `bson:"amount"`
+	Gas    int64 `bson:"gas"`
 }
 
 type ActualFee struct {
-	Denom  string  `json:"denom"`
-	Amount float64 `json:"amount"`
+	Denom  string  `bson:"denom"`
+	Amount float64 `bson:"amount"`
 }
 
 type CommonTx struct {
@@ -106,30 +106,7 @@ type CommonTx struct {
 }
 
 func (tx CommonTx) String() string {
-	return fmt.Sprintf(`
-		Time                 :%v
-		Height               :%v
-		TxHash               :%v
-		From                 :%v
-		To                   :%v
-		Amount               :%v
-		Type                 :%v
-		Fee                  :%v
-		Memo                 :%v
-		Status               :%v
-		Code                 :%v
-		Log                  :%v
-		GasUsed              :%v
-		GasPrice             :%v
-		ActualFee            :%v
-		ProposalId           :%v
-		Tags                 :%v
-		StakeCreateValidator :%v
-		StakeEditValidator   :%v
-		Msg                  :%v
-		Signers              :%v
-		`, tx.Time, tx.Height, tx.TxHash, tx.From, tx.To, tx.Amount, tx.Type, tx.Fee, tx.Memo, tx.Status, tx.Code, tx.Log, tx.GasUsed,
-		tx.GasPrice, tx.ActualFee, tx.ProposalId, tx.Tags, tx.StakeCreateValidator, tx.StakeEditValidator, tx.Msg, tx.Signers)
+	return ""
 
 }
 
@@ -139,43 +116,42 @@ type Msg interface {
 }
 
 type MsgItem struct {
-	Type    string  `json:"type" bson:"type"`
-	MsgData MsgData `json:"msg" bson:"msg"`
+	Type    string  `bson:"type"`
+	MsgData MsgData `bson:"msg"`
 }
 
 type MsgData struct {
-	TokenId         string `json:"token_id" bson:"token_id"`
-	To              string `json:"to" bson:"to"`
-	Family          string `json:"family" bson:"family"`
-	Source          string `json:"source" bson:"source"`
-	Gateway         string `json:"gateway" bson:"gateway"`
-	Symbol          string `json:"symbol" bson:"symbol"`
-	SymbolAtSource  string `json:"symbol_at_source" bson:"symbol_at_source"`
-	Name            string `json:"name" bson:"name"`
-	Decimal         int32  `json:"decimal" bson:"decimal"`
-	SymbolMinAlias  string `json:"symbol_min_alias" bson:"symbol_min_alias"`
-	InitialSupply   int64  `json:"initial_supply" bson:"initial_supply"`
-	MaxSupply       int64  `json:"max_supply" bson:"max_supply"`
-	Amount          int64  `json:"amount" bson:"amount"`
-	Mintable        bool   `json:"mintable" bson:"mintable"`
-	Owner           string `json:"owner" bson:"owner"`
-	Moniker         string `json:"moniker" bson:"moniker"`
-	SrcOwner        string `json:"src_owner" bson:"src_owner"`
-	DstOwner        string `json:"dst_owner" bson:"dst_owner"`
-	UdInfo          UdInfo `json:"ud_info" bson:"ud_info"`
-	Consumer        string `json:"consumer" bson:"consumer"`
-	BlockInterval   int64  `json:"block-interval" bson:"block-interval"`
-	MemoRegexp      string `json:"memo_regexp" bson:"memo_regexp"`
-	Identity        string `json:"identity" bson:"identity"`
-	Details         string `json:"details" bson:"details"`
-	Website         string `json:"website" bson:"website"`
-	CanonicalSymbol string `json:"canonical_symbol" bson:"canonical_symbol"`
+	TokenId         string `bson:"token_id"`
+	To              string `bson:"to"`
+	Family          string `bson:"family"`
+	Source          string `bson:"source"`
+	Gateway         string `bson:"gateway"`
+	Symbol          string `bson:"symbol"`
+	Name            string `bson:"name"`
+	Decimal         int32  `bson:"decimal"`
+	InitialSupply   int64  `bson:"initial_supply"`
+	MaxSupply       int64  `bson:"max_supply"`
+	Amount          int64  `bson:"amount"`
+	Mintable        bool   `bson:"mintable"`
+	Owner           string `bson:"owner"`
+	Moniker         string `bson:"moniker"`
+	SrcOwner        string `bson:"src_owner"`
+	DstOwner        string `bson:"dst_owner"`
+	UdInfo          UdInfo `bson:"ud_info"`
+	Consumer        string `bson:"consumer"`
+	BlockInterval   int64  `bson:"block-interval"`
+	MemoRegexp      string `bson:"memo_regexp"`
+	Identity        string `bson:"identity"`
+	Details         string `bson:"details"`
+	Website         string `bson:"website"`
+	CanonicalSymbol string `bson:"canonical_symbol"`
+	MinUnitAlias    string `bson:"min_unit_alias"`
 }
 
 type UdInfo struct {
-	Source  string `json:"source" bson:"source"`
-	Gateway string `json:"gateway" bson:"gateway"`
-	Symbol  string `json:"symbol" bson:"symbol"`
+	Source  string `bson:"source"`
+	Gateway string `bson:"gateway"`
+	Symbol  string `bson:"symbol"`
 }
 
 type StakeCreateValidator struct {

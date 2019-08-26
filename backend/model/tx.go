@@ -218,8 +218,8 @@ func (tx RecentTx) String() string {
 }
 
 type Signer struct {
-	AddrHex    string `bson:"addr_hex"`
-	AddrBech32 string `bson:"addr_bech32"`
+	AddrHex    string `json:"addr_hex"`
+	AddrBech32 string `json:"addr_bech32"`
 }
 
 func (s Signer) String() string {
@@ -227,68 +227,40 @@ func (s Signer) String() string {
 }
 
 type MsgItem struct {
-	Type    string  `bson:"type"`
-	MsgData MsgData `bson:"msg"`
-}
-
-type MsgData struct {
-	TokenId        string `bson:"token_id"`
-	To             string `bson:"to"`
-	Family         string `bson:"family"`
-	Source         string `bson:"source"`
-	Gateway        string `bson:"gateway"`
-	Symbol         string `bson:"symbol"`
-	SymbolAtSource string `bson:"symbol_at_source"`
-	Name           string `bson:"name"`
-	Decimal        int32  `bson:"decimal"`
-	SymbolMinAlias string `bson:"symbol_min_alias"`
-	InitialSupply  int64  `bson:"initial_supply"`
-	MaxSupply      int64  `bson:"max_supply"`
-	Amount         int64  `bson:"amount"`
-	Mintable       bool   `bson:"mintable"`
-	Owner          string `bson:"owner"`
-	Moniker        string `bson:"moniker"`
-	SrcOwner       string `bson:"src_owner"`
-	DstOwner       string `bson:"dst_owner"`
-	UdInfo         UdInfo `bson:"ud_info"`
-	Consumer       string `bson:"consumer"`
-	BlockInterval  int64  `bson:"block-interval"`
-	MemoRegexp     string `bson:"memo_regexp"`
-	Identity       string `bson:"identity"`
-	Details        string `bson:"details"`
-	Website        string `bson:"website"`
+	Type    string      `json:"type"`
+	MsgData interface{} `json:"msg"`
 }
 
 type UdInfo struct {
-	Source  string `bson:"source"`
-	Gateway string `bson:"gateway"`
-	Symbol  string `bson:"symbol"`
+	Source  string `json:"source"`
+	Gateway string `json:"gateway"`
+	Symbol  string `json:"symbol"`
 }
 
 type CommonTx struct {
-	Time                 time.Time            `bson:"time"`
-	Height               int64                `bson:"height"`
-	TxHash               string               `bson:"tx_hash"`
-	From                 string               `bson:"from"`
-	To                   string               `bson:"to"`
-	Amount               utils.Coins          `bson:"amount"`
-	Type                 string               `bson:"type"`
-	Fee                  utils.Fee            `bson:"fee"`
-	Memo                 string               `bson:"memo"`
-	Status               string               `bson:"status"`
-	Code                 uint32               `bson:"code"`
-	Log                  string               `bson:"log"`
-	GasUsed              int64                `bson:"gas_used"`
-	GasWanted            int64                `bson:"gas_wanted"`
-	GasPrice             float64              `bson:"gas_price"`
-	ActualFee            utils.ActualFee      `bson:"actual_fee"`
-	ProposalId           uint64               `bson:"proposal_id"`
-	Tags                 map[string]string    `bson:"tags"`
-	StakeCreateValidator StakeCreateValidator `bson:"stake_create_validator"`
-	StakeEditValidator   StakeEditValidator   `bson:"stake_edit_validator"`
-	Msg                  Msg                  `bson:"-"`
-	Msgs                 []MsgItem            `bson:"msgs"`
-	Signers              []Signer             `bson:"signers"`
+	Time                 time.Time            `json:"time"`
+	Height               int64                `json:"height"`
+	TxHash               string               `json:"tx_hash"`
+	From                 string               `json:"from"`
+	To                   string               `json:"to"`
+	Amount               utils.Coins          `json:"amount"`
+	Type                 string               `json:"type"`
+	Fee                  utils.Fee            `json:"fee"`
+	Memo                 string               `json:"memo"`
+	Status               string               `json:"status"`
+	Code                 uint32               `json:"code"`
+	Log                  string               `json:"log"`
+	GasUsed              int64                `json:"gas_used"`
+	GasWanted            int64                `json:"gas_wanted"`
+	GasPrice             float64              `json:"gas_price"`
+	ActualFee            utils.ActualFee      `json:"actual_fee"`
+	ProposalId           uint64               `json:"proposal_id"`
+	Tags                 map[string]string    `json:"tags"`
+	StakeCreateValidator StakeCreateValidator `json:"stake_create_validator"`
+	StakeEditValidator   StakeEditValidator   `json:"stake_edit_validator"`
+	Msg                  Msg                  `json:"-"`
+	Msgs                 []MsgItem            `json:"msgs"`
+	Signers              []Signer             `json:"signers"`
 }
 
 func (tx CommonTx) String() string {
@@ -326,20 +298,20 @@ type Msg interface {
 }
 
 type StakeCreateValidator struct {
-	PubKey      string         `bson:"pub_key"`
-	Description ValDescription `bson:"description"`
+	PubKey      string         `json:"pub_key"`
+	Description ValDescription `json:"description"`
 }
 
 type StakeEditValidator struct {
-	Description ValDescription `bson:"description"`
+	Description ValDescription `json:"description"`
 }
 
 // Description
 type ValDescription struct {
-	Moniker  string `bson:"moniker"`
-	Identity string `bson:"identity"`
-	Website  string `bson:"website"`
-	Details  string `bson:"details"`
+	Moniker  string `json:"moniker"`
+	Identity string `json:"identity"`
+	Website  string `json:"website"`
+	Details  string `json:"details"`
 }
 
 func (tx CommonTx) PrintHashTypeFromToAmount() string {
@@ -354,6 +326,6 @@ func (tx CommonTx) PrintHashTypeFromToAmount() string {
 }
 
 type CountVo struct {
-	Id    bson.ObjectId `bson:"_id,omitempty"`
+	Id    bson.ObjectId `json:"_id,omitempty"`
 	Count float64
 }
