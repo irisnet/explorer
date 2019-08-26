@@ -100,7 +100,7 @@
                 flEditTokenShowLoading: false,
                 flMinTokenShowLoading: false,
                 flTransferTokenShowLoading: false,
-				listTitleName:'NativeAsset',
+				listTitleName:'Native Asset Txs',
 				issueTokenType:'IssueToken',
                 editTokenLType:'EditToken',
                 mintTokenType:'MintToken',

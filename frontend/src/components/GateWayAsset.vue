@@ -103,7 +103,7 @@
 	            pageSize: 10,
 	            showNoData: false,
 	            flShowLoading: false,
-	            listTitleName:'GatewayAsset',
+	            listTitleName:'Gateway Asset Txs',
 	            issueTokenType:'IssueToken',
 	            editTokenLType:'EditToken',
 	            mintTokenType:'MintToken',

@@ -2,7 +2,7 @@
   <div :class="echartsComponentWrapLine">
     <div class="echarts_title_wrap_line">
       <span class="echarts_title">14 day Transaction History</span>
-      <span class="view_all_content"><router-link :to="`/txs`">View All<i class="iconfont iconwangluoqiehuanjiantou"></i></router-link></span>
+      <span class="view_all_content"><router-link :to="`/txs`">View All</router-link></span>
     </div>
     <div id="echarts_line">
 

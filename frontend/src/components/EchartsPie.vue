@@ -3,7 +3,7 @@
     <div class="echarts_title_wrap">
       <span class="validators_title">Validators Top10</span>
       <router-link class="validators_top" :to="`/validators`">
-        <span>View All<i class="iconfont iconwangluoqiehuanjiantou"></i></span>
+        <span>View All</span>
       </router-link>
     </div>
     <div id="echarts_pie">
