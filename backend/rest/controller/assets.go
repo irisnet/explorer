@@ -10,19 +10,6 @@ import (
 
 var assets service.AssetsService
 
-func RegisterAssets(r *mux.Router) error {
-	funs := []func(*mux.Router) error{
-		registerQueryNativeAsset,
-		registerQueryGatewayAsset,
-	}
-
-	for _, fn := range funs {
-		if err := fn(r); err != nil {
-			return err
-		}
-	}
-	return nil
-}
 
 func registerQueryNativeAsset(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryNativeAsset, "GET", func(request model.IrisReq) interface{} {
