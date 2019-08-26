@@ -128,17 +128,24 @@
                                 class="information_value link_active_style"
                             >{{v.v}}</span>
                         </template>
+                        <template v-else-if="k === 'Software'">
+                            <span
+                                v-show="v.v && v.v.startsWith('http')"
+                                class="information_value link_active_style"
+                            >
+                                <a :href="v.v" target="_blank">{{v.v}}</a>
+                            </span>
+                            <span
+                                v-show="v.v && !v.v.startsWith('http')"
+                                class="information_value"
+                            >{{v.v}}</span>
+                        </template>
                         <template v-else>
                             <span class="information_value">{{v.v}}</span>
                         </template>
                     </template>
                     <template v-else>
-                        <template v-if="k === 'Submit Time'">
-                            <span class="information_value">{{ageValue}} ({{info.Timestamp}})</span>
-                        </template>
-                        <template v-else>
-                            <span class="information_value">--</span>
-                        </template>
+                        <span class="information_value">--</span>
                     </template>
                 </div>
             </div>
@@ -350,24 +357,16 @@ export default {
                     k: "Title",
                     v: ""
                 },
+                "Initial Deposit": {
+                    k: "Initial Deposit",
+                    v: ""
+                },
                 Description: {
                     k: "Description",
                     v: ""
                 },
                 "Proposal Type": {
                     k: "ProposalType",
-                    v: ""
-                },
-                "Proposal Detail": {
-                    k: "param",
-                    v: ""
-                },
-                "Initial Deposit": {
-                    k: "Initial Deposit",
-                    v: ""
-                },
-                "Submit Time": {
-                    k: "Submit Time",
                     v: ""
                 }
                 // "Deposit Endtime": {
@@ -386,6 +385,30 @@ export default {
                 //     k: "Voting Endtime",
                 //     v: ""
                 // }
+            },
+            Parameter: {
+                Parameter: {
+                    k: "param",
+                    v: ""
+                }
+            },
+            SoftwareUpgrade: {
+                Software: {
+                    k: "Software",
+                    v: ""
+                },
+                Version: {
+                    k: "Version",
+                    v: ""
+                },
+                "Switch Height": {
+                    k: "SwitchHeight",
+                    v: ""
+                },
+                Treshold: {
+                    k: "Treshold",
+                    v: ""
+                }
             },
             type_7: {
                 TxType: {
@@ -832,6 +855,16 @@ export default {
                                     data = Object.assign(data, data.Tags);
                                 }
                                 let message = this[this.txTypeSign];
+                                if (
+                                    this.typeValue === "SubmitProposal" &&
+                                    this[data.ProposalType]
+                                ) {
+                                    message = Object.assign(
+                                        message,
+                                        this[data.ProposalType]
+                                    );
+                                }
+
                                 for (let i in message) {
                                     let fieidValue = "";
                                     if (i === "Amount") {
@@ -867,6 +900,12 @@ export default {
                                         } else {
                                             fieidValue = "";
                                         }
+                                    } else if (
+                                        i === "Treshold" &&
+                                        data[message[i].k] !== ""
+                                    ) {
+                                        fieidValue = `${data[message[i].k] *
+                                            100} %`;
                                     } else {
                                         fieidValue = data[message[i].k];
                                     }

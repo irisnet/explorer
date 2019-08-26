@@ -821,6 +821,10 @@ func (service *TxService) buildTx(tx model.CommonTx, blackListP *map[string]docu
 				govTx.Description = msg.Description
 				govTx.ProposalType = msg.ProposalType
 				govTx.Tags = tx.Tags
+				govTx.Software = msg.Software
+				govTx.Version = msg.Version
+				govTx.SwitchHeight = msg.SwitchHeight
+				govTx.Treshold = msg.Treshold
 			}
 		} else if govTx.Type == types.TxTypeDeposit {
 

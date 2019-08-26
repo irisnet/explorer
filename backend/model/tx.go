@@ -15,6 +15,10 @@ type MsgSubmitProposal struct {
 	Proposer       string      `json:"proposer"`       //  Address of the proposer
 	InitialDeposit utils.Coins `json:"initialDeposit"` //  Initial deposit paid by sender. Must be strictly positive.
 	Params         []Param     `json:"params"`
+	Software       string      `json:"software"`
+	Version        int64       `json:"version"`
+	SwitchHeight   int64       `json:"switch_height"`
+	Treshold       string      `json:"threshold"`
 }
 
 type MsgSubmitSoftwareUpgradeProposal struct {
@@ -182,6 +186,10 @@ type GovTx struct {
 	Title        string
 	ProposalType string
 	Tags         map[string]string
+	Software     string
+	Version      int64
+	SwitchHeight int64
+	Treshold     string
 }
 
 type RecentTx struct {
