@@ -117,42 +117,13 @@ type Msg interface {
 
 type MsgItem struct {
 	Type    string  `bson:"type"`
-	MsgData MsgData `bson:"msg"`
+	MsgData MsgContent `bson:"msg"`
 }
 
-type MsgData struct {
-	TokenId         string `bson:"token_id"`
-	To              string `bson:"to"`
-	Family          string `bson:"family"`
-	Source          string `bson:"source"`
-	Gateway         string `bson:"gateway"`
-	Symbol          string `bson:"symbol"`
-	Name            string `bson:"name"`
-	Decimal         int32  `bson:"decimal"`
-	InitialSupply   int64  `bson:"initial_supply"`
-	MaxSupply       int64  `bson:"max_supply"`
-	Amount          int64  `bson:"amount"`
-	Mintable        bool   `bson:"mintable"`
-	Owner           string `bson:"owner"`
-	Moniker         string `bson:"moniker"`
-	SrcOwner        string `bson:"src_owner"`
-	DstOwner        string `bson:"dst_owner"`
-	UdInfo          UdInfo `bson:"ud_info"`
-	Consumer        string `bson:"consumer"`
-	BlockInterval   int64  `bson:"block-interval"`
-	MemoRegexp      string `bson:"memo_regexp"`
-	Identity        string `bson:"identity"`
-	Details         string `bson:"details"`
-	Website         string `bson:"website"`
-	CanonicalSymbol string `bson:"canonical_symbol"`
-	MinUnitAlias    string `bson:"min_unit_alias"`
+type MsgContent interface {
+	Nil()
 }
 
-type UdInfo struct {
-	Source  string `bson:"source"`
-	Gateway string `bson:"gateway"`
-	Symbol  string `bson:"symbol"`
-}
 
 type StakeCreateValidator struct {
 	PubKey      string         `bson:"pub_key"`

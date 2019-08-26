@@ -1,12 +1,14 @@
 package msg
 
-import "github.com/irisnet/irishub-sync/store"
+import (
+	"github.com/irisnet/explorer/backend/utils"
+)
 
 type TxMsgSubmitProposal struct {
 	Title          string      `json:"title"`          //  Title of the proposal
 	Description    string      `json:"description"`    //  Description of the proposal
 	Proposer       string      `json:"proposer"`       //  Address of the proposer
-	InitialDeposit store.Coins `json:"initialDeposit"` //  Initial deposit paid by sender. Must be strictly positive.
+	InitialDeposit utils.Coins `json:"initialDeposit"` //  Initial deposit paid by sender. Must be strictly positive.
 	ProposalType   string      `json:"proposalType"`   //  Initial deposit paid by sender. Must be strictly positive.
 }
 

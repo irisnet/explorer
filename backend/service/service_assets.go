@@ -5,6 +5,8 @@ import (
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm/document"
+	dmsg "github.com/irisnet/explorer/backend/orm/document/msg"
+	"github.com/irisnet/explorer/backend/types"
 )
 
 type AssetsService struct {
@@ -75,35 +77,68 @@ func LoadModelFromCommonTx(src document.CommonTx) (dst model.AssetsVo) {
 	dst.TxFee = convertModelFee(src.Fee)
 
 	dst.Type = src.Msgs[0].Type
-	dst.Amount = src.Msgs[0].MsgData.Amount
-	dst.TokenId = src.Msgs[0].MsgData.TokenId
-	dst.CanonicalSymbol = src.Msgs[0].MsgData.CanonicalSymbol
-	dst.Symbol = src.Msgs[0].MsgData.Symbol
-	if dst.Type == document.Tx_Asset_TxType_Issue {
-		source := src.Msgs[0].MsgData.UdInfo.Source
+	switch dst.Type {
+	case types.TxTypeIssueToken:
+		msgData := src.Msgs[0].MsgData.(dmsg.TxMsgIssueToken)
+		dst.Gateway = msgData.Gateway
+		dst.Symbol = msgData.Symbol
+		dst.CanonicalSymbol = msgData.CanonicalSymbol
+		dst.Name = msgData.Name
+		dst.Decimal = msgData.Decimal
+		dst.InitialSupply = msgData.InitialSupply
+		dst.MaxSupply = msgData.MaxSupply
+		dst.Mintable = msgData.Mintable
+		dst.Owner = msgData.Owner
+		source := msgData.UdInfo.Source
 		if source == document.Tx_AssetType_Native {
-			dst.SymbolMin = fmt.Sprintf("%s-min", src.Msgs[0].MsgData.UdInfo.Symbol)
+			dst.SymbolMin = fmt.Sprintf("%s-min", msgData.UdInfo.Symbol)
 		} else if source == document.Tx_AssetType_Gateway {
-			dst.SymbolMin = fmt.Sprintf("%s.%s-min", src.Msgs[0].MsgData.UdInfo.Gateway, src.Msgs[0].MsgData.UdInfo.Symbol)
+			dst.SymbolMin = fmt.Sprintf("%s.%s-min", msgData.UdInfo.Gateway, msgData.UdInfo.Symbol)
 		}
 
-	} else {
-		dst.SymbolMin = fmt.Sprintf("%s-min", src.Msgs[0].MsgData.TokenId)
+	case types.TxTypeEditToken:
+		msgData := src.Msgs[0].MsgData.(dmsg.TxMsgEditToken)
+		dst.TokenId = msgData.TokenId
+		dst.Owner = msgData.Owner
+		dst.CanonicalSymbol = msgData.CanonicalSymbol
+		dst.MaxSupply = msgData.MaxSupply
+		dst.Mintable = msgData.Mintable
+		dst.Name = msgData.Name
+		dst.SymbolMin = msgData.TokenId
+
+	case types.TxTypeMintToken:
+		msgData := src.Msgs[0].MsgData.(dmsg.TxMsgMintToken)
+		dst.TokenId = msgData.TokenId
+		dst.Owner = msgData.Owner
+		dst.Amount = msgData.Amount
+		dst.SymbolMin = msgData.TokenId
+		dst.MintTo = msgData.To
+
+	case types.TxTypeTransferTokenOwner:
+		msgData := src.Msgs[0].MsgData.(dmsg.TxMsgTransferTokenOwner)
+		dst.SrcOwner = msgData.SrcOwner
+		dst.DstOwner = msgData.DstOwner
+		dst.TokenId = msgData.TokenId
+		dst.SymbolMin = msgData.TokenId
+
+	case types.TxTypeCreateGateway:
+		msgData := src.Msgs[0].MsgData.(dmsg.TxMsgCreateGateway)
+		dst.Owner = msgData.Owner
+
+	case types.TxTypeEditGateway:
+		msgData := src.Msgs[0].MsgData.(dmsg.TxMsgEditGateway)
+		dst.Owner = msgData.Owner
+
+	case types.TxTypeTransferGatewayOwner:
+		msgData := src.Msgs[0].MsgData.(dmsg.TxMsgTransferGatewayOwner)
+		dst.Owner = msgData.Owner
+		dst.MintTo = msgData.To
+
+	case types.TxTypeSetMemoRegexp:
+		msgData := src.Msgs[0].MsgData.(dmsg.TxMsgSetMemoRegexp)
+		dst.Owner = msgData.Owner
+
 	}
-
-	dst.InitialSupply = src.Msgs[0].MsgData.InitialSupply
-	dst.MaxSupply = src.Msgs[0].MsgData.MaxSupply
-
-	dst.Name = src.Msgs[0].MsgData.Name
-	dst.Decimal = src.Msgs[0].MsgData.Decimal
-
-	dst.DstOwner = src.Msgs[0].MsgData.DstOwner
-	dst.SrcOwner = src.Msgs[0].MsgData.SrcOwner
-	dst.Owner = src.Msgs[0].MsgData.Owner
-
-	dst.Gateway = src.Msgs[0].MsgData.Gateway
-	dst.MintTo = src.Msgs[0].MsgData.To
-	dst.Mintable = src.Msgs[0].MsgData.Mintable
 
 	return
 }

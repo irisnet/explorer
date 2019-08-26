@@ -12,6 +12,7 @@ import (
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm/document"
+	dmsg "github.com/irisnet/explorer/backend/orm/document/msg"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
@@ -59,141 +60,147 @@ func (_ *TxService) CopyTxListFromDoc(data []document.CommonTx) []model.CommonTx
 			tmpFee.Amount = append(tmpFee.Amount, utils.Coin{Denom: v.Denom, Amount: v.Amount})
 		}
 		tmpMsgsArr := make([]model.MsgItem, 0, len(v.Msgs))
-		switch v.Type {
-		case types.TxTypeIssueToken:
-			for _, v := range v.Msgs {
+
+		for _, m := range v.Msgs {
+			switch m.Type {
+			case types.TxTypeIssueToken:
+				msgData := m.MsgData.(dmsg.TxMsgIssueToken)
 				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
 					Type: v.Type,
 					MsgData: msg.TxMsgIssueToken{
-						Family:          v.MsgData.Family,
-						Source:          v.MsgData.Source,
-						Gateway:         v.MsgData.Gateway,
-						Symbol:          v.MsgData.Symbol,
-						CanonicalSymbol: v.MsgData.CanonicalSymbol,
-						Name:            v.MsgData.Name,
-						Decimal:         v.MsgData.Decimal,
-						MinUnitAlias:    v.MsgData.MinUnitAlias,
-						InitialSupply:   v.MsgData.InitialSupply,
-						MaxSupply:       v.MsgData.MaxSupply,
-						Mintable:        v.MsgData.Mintable,
-						Owner:           v.MsgData.Owner,
+						Family:          msgData.Family,
+						Source:          msgData.Source,
+						Gateway:         msgData.Gateway,
+						Symbol:          msgData.Symbol,
+						CanonicalSymbol: msgData.CanonicalSymbol,
+						Name:            msgData.Name,
+						Decimal:         msgData.Decimal,
+						MinUnitAlias:    msgData.MinUnitAlias,
+						InitialSupply:   msgData.InitialSupply,
+						MaxSupply:       msgData.MaxSupply,
+						Mintable:        msgData.Mintable,
+						Owner:           msgData.Owner,
 						UdInfo: msg.AssetTokenUdInfo{
-							Source:  v.MsgData.UdInfo.Source,
-							Gateway: v.MsgData.UdInfo.Gateway,
-							Symbol:  v.MsgData.UdInfo.Symbol,
+							Source:  msgData.UdInfo.Source,
+							Gateway: msgData.UdInfo.Gateway,
+							Symbol:  msgData.UdInfo.Symbol,
 						},
 					},
 				})
-			}
-		case types.TxTypeEditToken:
-			for _, v := range v.Msgs {
+
+			case types.TxTypeEditToken:
+				msgData := m.MsgData.(dmsg.TxMsgEditToken)
 				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
 					Type: v.Type,
 					MsgData: msg.TxMsgEditToken{
-						TokenId:         v.MsgData.TokenId,
-						Owner:           v.MsgData.Owner,
-						CanonicalSymbol: v.MsgData.CanonicalSymbol,
-						MinUnitAlias:    v.MsgData.MinUnitAlias,
-						MaxSupply:       v.MsgData.MaxSupply,
-						Mintable:        v.MsgData.Mintable,
-						Name:            v.MsgData.Name,
+						TokenId:         msgData.TokenId,
+						Owner:           msgData.Owner,
+						CanonicalSymbol: msgData.CanonicalSymbol,
+						MinUnitAlias:    msgData.MinUnitAlias,
+						MaxSupply:       msgData.MaxSupply,
+						Mintable:        msgData.Mintable,
+						Name:            msgData.Name,
 						UdInfo: msg.AssetTokenUdInfo{
-							Source:  v.MsgData.UdInfo.Source,
-							Gateway: v.MsgData.UdInfo.Gateway,
-							Symbol:  v.MsgData.UdInfo.Symbol,
+							Source:  msgData.UdInfo.Source,
+							Gateway: msgData.UdInfo.Gateway,
+							Symbol:  msgData.UdInfo.Symbol,
 						},
 					},
 				})
-			}
-		case types.TxTypeMintToken:
-			for _, v := range v.Msgs {
+
+			case types.TxTypeMintToken:
+				msgData := m.MsgData.(dmsg.TxMsgMintToken)
 				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
 					Type: v.Type,
 					MsgData: msg.TxMsgMintToken{
-						TokenId: v.MsgData.TokenId,
-						Owner:   v.MsgData.Owner,
-						To:      v.MsgData.To,
-						Amount:  v.MsgData.Amount,
+						TokenId: msgData.TokenId,
+						Owner:   msgData.Owner,
+						To:      msgData.To,
+						Amount:  msgData.Amount,
 						UdInfo: msg.AssetTokenUdInfo{
-							Source:  v.MsgData.UdInfo.Source,
-							Gateway: v.MsgData.UdInfo.Gateway,
-							Symbol:  v.MsgData.UdInfo.Symbol,
+							Source:  msgData.UdInfo.Source,
+							Gateway: msgData.UdInfo.Gateway,
+							Symbol:  msgData.UdInfo.Symbol,
 						},
 					},
 				})
-			}
-		case types.TxTypeTransferTokenOwner:
-			for _, v := range v.Msgs {
+
+			case types.TxTypeTransferTokenOwner:
+				msgData := m.MsgData.(dmsg.TxMsgTransferTokenOwner)
 				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
 					Type: v.Type,
 					MsgData: msg.TxMsgTransferTokenOwner{
-						SrcOwner: v.MsgData.SrcOwner,
-						DstOwner: v.MsgData.DstOwner,
-						TokenId:  v.MsgData.TokenId,
+						SrcOwner: msgData.SrcOwner,
+						DstOwner: msgData.DstOwner,
+						TokenId:  msgData.TokenId,
 						UdInfo: msg.AssetTokenUdInfo{
-							Source:  v.MsgData.UdInfo.Source,
-							Gateway: v.MsgData.UdInfo.Gateway,
-							Symbol:  v.MsgData.UdInfo.Symbol,
+							Source:  msgData.UdInfo.Source,
+							Gateway: msgData.UdInfo.Gateway,
+							Symbol:  msgData.UdInfo.Symbol,
 						},
 					},
 				})
-			}
-		case types.TxTypeCreateGateway:
-			for _, v := range v.Msgs {
+
+			case types.TxTypeCreateGateway:
+				msgData := m.MsgData.(dmsg.TxMsgCreateGateway)
 				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
 					Type: v.Type,
 					MsgData: msg.TxMsgCreateGateway{
-						Owner:    v.MsgData.Owner,
-						Moniker:  v.MsgData.Moniker,
-						Identity: v.MsgData.Identity,
-						Details:  v.MsgData.Details,
-						Website:  v.MsgData.Website,
+						Owner:    msgData.Owner,
+						Moniker:  msgData.Moniker,
+						Identity: msgData.Identity,
+						Details:  msgData.Details,
+						Website:  msgData.Website,
 					},
 				})
-			}
-		case types.TxTypeEditGateway:
-			for _, v := range v.Msgs {
+
+			case types.TxTypeEditGateway:
+				msgData := m.MsgData.(dmsg.TxMsgEditGateway)
 				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
 					Type: v.Type,
 					MsgData: msg.TxMsgEditGateway{
-						Owner:    v.MsgData.Owner,
-						Moniker:  v.MsgData.Moniker,
-						Identity: v.MsgData.Identity,
-						Details:  v.MsgData.Details,
-						Website:  v.MsgData.Website,
+						Owner:    msgData.Owner,
+						Moniker:  msgData.Moniker,
+						Identity: msgData.Identity,
+						Details:  msgData.Details,
+						Website:  msgData.Website,
 					},
 				})
-			}
-		case types.TxTypeTransferGatewayOwner:
-			for _, v := range v.Msgs {
+
+			case types.TxTypeTransferGatewayOwner:
+				msgData := m.MsgData.(dmsg.TxMsgTransferGatewayOwner)
 				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
 					Type: v.Type,
 					MsgData: msg.TxMsgTransferGatewayOwner{
-						Owner:   v.MsgData.Owner,
-						Moniker: v.MsgData.Moniker,
-						To:      v.MsgData.To,
+						Owner:   msgData.Owner,
+						Moniker: msgData.Moniker,
+						To:      msgData.To,
 					},
 				})
-			}
-		case types.TxTypeSetMemoRegexp:
-			for _, v := range v.Msgs {
+
+			case types.TxTypeSetMemoRegexp:
+				msgData := m.MsgData.(dmsg.TxMsgSetMemoRegexp)
+
 				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
 					Type: v.Type,
 					MsgData: msg.TxMsgSetMemoRegexp{
-						Owner:      v.MsgData.Owner,
-						MemoRegexp: v.MsgData.MemoRegexp,
+						Owner:      msgData.Owner,
+						MemoRegexp: msgData.MemoRegexp,
 					},
 				})
-			}
-		case types.TxTypeRequestRand:
-			for _, v := range v.Msgs {
+
+			case types.TxTypeRequestRand:
+				fmt.Println(m.MsgData, "=================")
+				msgData := m.MsgData.(dmsg.TxMsgRequestRand)
+				fmt.Println("================")
 				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
 					Type: v.Type,
 					MsgData: msg.TxMsgRequestRand{
-						Consumer:      v.MsgData.Consumer,
-						BlockInterval: v.MsgData.BlockInterval,
+						Consumer:      msgData.Consumer,
+						BlockInterval: msgData.BlockInterval,
 					},
 				})
+
 			}
 		}
 
