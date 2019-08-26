@@ -642,12 +642,12 @@
 					this.currentNetworkClass = 'iconfont iconiris'
 				} else if (currentEnv === constant.ENVCONFIG.TESTNET && currentChainId === constant.CHAINID.FUXI) {
 					this.explorerLogo = require("../assets/fuxi_testnet_logo.png");
-					this.currentNetworkClass = 'iconfont iconfuxi' //TODO fuxi TestnetLogoClass
+					this.currentNetworkClass = 'iconfont iconfuxi'
 				} else if (currentEnv === constant.ENVCONFIG.TESTNET && currentChainId === constant.CHAINID.NYANCAT) {
 					this.explorerLogo = require("../assets/nyancat_testnet.png");
-					this.currentNetworkClass = 'iconfont iconcaihongmao' //TODO fuxi nyancatnetLogoClass
+					this.currentNetworkClass = 'iconfont iconcaihongmao'
 				} else {
-					this.currentNetworkClass = 'iconfont iconiris'; //TODO fuxi othernetLogoClass
+					this.currentNetworkClass = 'iconfont iconiris'; 
 					this.explorerLogo = require("../assets/logo.png")
 				}
 			},
