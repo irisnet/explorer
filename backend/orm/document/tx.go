@@ -37,7 +37,7 @@ const (
 	Tx_Field_StakeCreateValidator = "stake_create_validator"
 	Tx_Field_StakeEditValidator   = "stake_edit_validator"
 
-	Tx_Field_Msgs_UdInfo  = "msgs.msg.ud_info.source"
+	Tx_Field_Msgs_UdInfo = "msgs.msg.ud_info.source"
 	Tx_AssetType_Native  = "native"
 	Tx_AssetType_Gateway = "gateway"
 
@@ -144,24 +144,24 @@ type MsgItem struct {
 }
 
 type MsgData struct {
-	TokenId        string `json:"token_id" bson:"token_id"`
-	To             string `json:"to" bson:"to"`
-	Family         string `json:"family" bson:"family"`
-	Source         string `json:"source" bson:"source"`
-	Gateway        string `json:"gateway" bson:"gateway"`
-	Symbol         string `json:"symbol" bson:"symbol"`
-	SymbolAtSource string `json:"symbol_at_source" bson:"symbol_at_source"`
-	Name           string `json:"name" bson:"name"`
-	Decimal        int32  `json:"decimal" bson:"decimal"`
-	SymbolMinAlias string `json:"symbol_min_alias" bson:"symbol_min_alias"`
-	InitialSupply  int64  `json:"initial_supply" bson:"initial_supply"`
-	MaxSupply      int64  `json:"max_supply" bson:"max_supply"`
-	Amount         int64  `json:"amount" bson:"amount"`
-	Mintable       bool   `json:"mintable" bson:"mintable"`
-	Owner          string `json:"owner" bson:"owner"`
-	SrcOwner       string `json:"src_owner" bson:"src_owner"`
-	DstOwner       string `json:"dst_owner" bson:"dst_owner"`
-	UdInfo         UdInfo `json:"ud_info" bson:"ud_info"`
+	TokenId         string `json:"token_id" bson:"token_id"`
+	To              string `json:"to" bson:"to"`
+	Family          string `json:"family" bson:"family"`
+	Source          string `json:"source" bson:"source"`
+	Gateway         string `json:"gateway" bson:"gateway"`
+	Symbol          string `json:"symbol" bson:"symbol"`
+	CanonicalSymbol string `json:"canonical_symbol" bson:"canonical_symbol"`
+	Name            string `json:"name" bson:"name"`
+	Decimal         int32  `json:"decimal" bson:"decimal"`
+	MinUnitAlias    string `json:"min_unit_alias" bson:"min_unit_alias"`
+	InitialSupply   int64  `json:"initial_supply" bson:"initial_supply"`
+	MaxSupply       int64  `json:"max_supply" bson:"max_supply"`
+	Amount          int64  `json:"amount" bson:"amount"`
+	Mintable        bool   `json:"mintable" bson:"mintable"`
+	Owner           string `json:"owner" bson:"owner"`
+	SrcOwner        string `json:"src_owner" bson:"src_owner"`
+	DstOwner        string `json:"dst_owner" bson:"dst_owner"`
+	UdInfo          UdInfo `json:"ud_info" bson:"ud_info"`
 }
 
 type UdInfo struct {
