@@ -3,7 +3,7 @@
     <div class="home_module_block_title_wrap">
       <span class="home_module_block_title"
             :class="homeModuleBlockTitle"
-      >{{moduleName}}</span>
+      ><i :class="this.moduleName === 'Blocks' ? 'iconfont iconBlockHeight': 'iconfont iconshishijiaoyijilu\n'"></i>{{moduleName}}</span>
       <router-link class="view_all_btn" :to="moduleName === 'Blocks' ? `/blocks` : `/txs`">
         <span class="view_all_Content">View All</span>
       </router-link>
@@ -153,15 +153,13 @@
       .home_module_block_title{
         font-size:0.18rem;
         @include fontWeight;
-        color:var(--moduleColor)
-      }
-      .blocks_background_img{
-        background: url('../assets/blocks.png') no-repeat 0 0.02rem;
-        text-indent:0.35rem;
-      }
-      .transactions_background_img{
-        background: url('../assets/transactions.png') no-repeat 0 0.02rem;
-        text-indent:0.3rem;
+        text-align: left;
+        color:var(--moduleColor);
+        i{
+          padding-right: 0.1rem;
+          font-size: 0.2rem;
+          color: var(--contentColor);
+        }
       }
       .view_all_btn{
       }
@@ -242,13 +240,10 @@
               }
             }
             .blocks{
-              background: url('../assets/block.png') no-repeat 0 0.02rem;
-              text-indent:0.2rem;
               color:var(--bgColor);
             }
             .transactions{
-              background: url('../assets/transaction.png') no-repeat 0 0.02rem;
-              text-indent:0.2rem;
+
             }
           }
 
