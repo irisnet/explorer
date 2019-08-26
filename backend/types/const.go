@@ -29,9 +29,10 @@ const (
 	UrlRegisterQueryProposals              = "/gov/proposals"
 	UrlRegisterQueryDepositVotingProposals = "/gov/deposit_voting_proposals"
 	UrlRegisterQueryProposal               = "/gov/proposals/{pid}"
-	UrlRegisterQueryGovParams              = "/gov/params"
 	UrlRegisterQueryProposalsVoterTxs      = "/gov/proposals/{id}/voter_txs"
 	UrlRegisterQueryProposalsDepositorTxs  = "/gov/proposals/{id}/depositor_txs"
+
+	UrlRegisterQueryParams = "/params"
 
 	//SearchBox
 	UrlRegisterQueryText    = "/search/{text}"
