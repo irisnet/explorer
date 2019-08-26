@@ -125,31 +125,31 @@ func (t Tx) PrintHashFromToAmount() string {
 }
 
 type BaseTx struct {
-	Signer      string `json:"Signer,omitempty"`
-	Hash        string
-	BlockHeight int64
-	Type        string
-	Fee         utils.ActualFee
-	Status      string
-	GasLimit    int64
-	GasUsed     int64
-	GasWanted   int64
-	GasPrice    float64
-	Memo        string
-	Log         string
-	Timestamp   time.Time
+	Signer      string          `json:"signer,omitempty"`
+	Hash        string          `json:"hash"`
+	BlockHeight int64           `json:"block_height"`
+	Type        string          `json:"type"`
+	Fee         utils.ActualFee `json:"fee"`
+	Status      string          `json:"status"`
+	GasLimit    int64           `json:"gas_limit"`
+	GasUsed     int64           `json:"gas_used"`
+	GasWanted   int64           `json:"gas_wanted"`
+	GasPrice    float64         `json:"gas_price"`
+	Memo        string          `json:"memo"`
+	Log         string          `json:"log"`
+	Timestamp   time.Time       `json:"timestamp"`
 }
 
 type TransTx struct {
 	BaseTx
-	From   string
-	To     string
-	Amount utils.Coins
+	From   string      `json:"from"`
+	To     string      `json:"to"`
+	Amount utils.Coins `json:"amount"`
 }
 
 type StakeTx struct {
 	TransTx
-	Source      string
+	Source      string `json:"source"`
 	FromMoniker string `json:"from_moniker"`
 	ToMoniker   string `json:"to_moniker"`
 }
@@ -165,31 +165,31 @@ Amount: %v
 
 type DeclarationTx struct {
 	BaseTx
-	Amount       utils.Coins `json:"Amount"`
-	OperatorAddr string      `json:"OperatorAddr"`
-	Owner        string
-	Moniker      string
-	Pubkey       string
-	Identity     string
-	SelfBond     utils.Coins
-	Website      string
-	Details      string
+	Amount       utils.Coins `json:"amount"`
+	OperatorAddr string      `json:"operator_addr"`
+	Owner        string      `json:"owner"`
+	Moniker      string      `json:"moniker"`
+	Pubkey       string      `json:"pubkey"`
+	Identity     string      `json:"identity"`
+	SelfBond     utils.Coins `json:"self_bond"`
+	Website      string      `json:"website"`
+	Details      string      `json:"details"`
 }
 
 type GovTx struct {
 	BaseTx
-	From         string
-	ProposalId   uint64
-	Description  string
-	Amount       utils.Coins
-	Option       string
-	Title        string
-	ProposalType string
-	Tags         map[string]string
-	Software     string
-	Version      int64
-	SwitchHeight int64
-	Treshold     string
+	From         string            `json:"from"`
+	ProposalId   uint64            `json:"proposal_id"`
+	Description  string            `json:"description"`
+	Amount       utils.Coins       `json:"amount"`
+	Option       string            `json:"option"`
+	Title        string            `json:"title"`
+	ProposalType string            `json:"proposal_type"`
+	Tags         map[string]string `json:"tags"`
+	Software     string            `json:"software"`
+	Version      int64             `json:"version"`
+	SwitchHeight int64             `json:"switch_height"`
+	Treshold     string            `json:"treshold"`
 }
 
 type RecentTx struct {
@@ -201,11 +201,11 @@ type RecentTx struct {
 
 type AssetTx struct {
 	BaseTx
-	From   string
-	To     string
-	Amount utils.Coins
-	Tags   map[string]string
-	Msgs   []MsgItem
+	From   string            `json:"from"`
+	To     string            `json:"to"`
+	Amount utils.Coins       `json:"amount"`
+	Tags   map[string]string `json:"tags"`
+	Msgs   []MsgItem         `json:"msgs"`
 }
 
 func (tx RecentTx) String() string {

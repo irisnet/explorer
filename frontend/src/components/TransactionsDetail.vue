@@ -224,20 +224,20 @@ export default {
             txTypeSign: "",
             type_1: {
                 TxType: {
-                    k: "Type",
+                    k: "type",
                     v: ""
                 },
                 From: {
-                    k: "From",
+                    k: "from",
                     v: "",
                     f: "from_moniker"
                 },
                 Amount: {
-                    k: "Amount",
+                    k: "amount",
                     v: ""
                 },
                 To: {
-                    k: "To",
+                    k: "to",
                     v: "",
                     f: "to_moniker"
                 },
@@ -254,33 +254,33 @@ export default {
             },
             type_2: {
                 TxType: {
-                    k: "Type",
+                    k: "type",
                     v: ""
                 },
                 From: {
-                    k: "From",
+                    k: "from",
                     v: ""
                 },
                 Amount: {
-                    k: "Amount",
+                    k: "amount",
                     v: ""
                 }
             },
             type_3: {
                 TxType: {
-                    k: "Type",
+                    k: "type",
                     v: ""
                 },
                 "Operator Address": {
-                    k: "OperatorAddr",
+                    k: "operator_addr",
                     v: ""
                 },
                 Moniker: {
-                    k: "Moniker",
+                    k: "moniker",
                     v: ""
                 },
                 Identity: {
-                    k: "Identity",
+                    k: "identity",
                     v: ""
                 },
                 "Self-Bonded": {
@@ -292,7 +292,7 @@ export default {
                 //     v: ""
                 // },
                 "Owner Address": {
-                    k: "Owner",
+                    k: "owner",
                     v: ""
                 },
                 // "Withdraw Address": {
@@ -300,61 +300,61 @@ export default {
                 //     v: ""
                 // },
                 "Consensus Pubkey": {
-                    k: "Pubkey",
+                    k: "pubkey",
                     v: ""
                 },
                 Website: {
-                    k: "Website",
+                    k: "website",
                     v: ""
                 },
                 Details: {
-                    k: "Details",
+                    k: "details",
                     v: ""
                 }
             },
             type_4: {
                 TxType: {
-                    k: "Type",
+                    k: "type",
                     v: ""
                 },
                 "Original Address": {
-                    k: "From",
+                    k: "from",
                     v: ""
                 },
                 "New Address": {
-                    k: "To",
+                    k: "to",
                     v: ""
                 }
             },
             type_5: {
                 TxType: {
-                    k: "Type",
+                    k: "type",
                     v: ""
                 },
                 "Operator Address": {
-                    k: "OperatorAddr",
+                    k: "operator_addr",
                     v: ""
                 },
                 Moniker: {
-                    k: "Moniker",
+                    k: "moniker",
                     v: ""
                 },
                 "Consensus Pubkey": {
-                    k: "Pubkey",
+                    k: "pubkey",
                     v: ""
                 }
             },
             type_6: {
                 TxType: {
-                    k: "Type",
+                    k: "type",
                     v: ""
                 },
                 Proposer: {
-                    k: "From",
+                    k: "from",
                     v: ""
                 },
                 Title: {
-                    k: "Title",
+                    k: "title",
                     v: ""
                 },
                 "Initial Deposit": {
@@ -362,11 +362,11 @@ export default {
                     v: ""
                 },
                 Description: {
-                    k: "Description",
+                    k: "description",
                     v: ""
                 },
                 "Proposal Type": {
-                    k: "ProposalType",
+                    k: "proposal_type",
                     v: ""
                 }
                 // "Deposit Endtime": {
@@ -394,61 +394,61 @@ export default {
             },
             SoftwareUpgrade: {
                 Software: {
-                    k: "Software",
+                    k: "software",
                     v: ""
                 },
                 Version: {
-                    k: "Version",
+                    k: "version",
                     v: ""
                 },
                 "Switch Height": {
-                    k: "SwitchHeight",
+                    k: "switch_height",
                     v: ""
                 },
                 Treshold: {
-                    k: "Treshold",
+                    k: "treshold",
                     v: ""
                 }
             },
             type_7: {
                 TxType: {
-                    k: "Type",
+                    k: "type",
                     v: ""
                 },
                 Depositor: {
-                    k: "From",
+                    k: "from",
                     v: ""
                 },
                 "Proposal ID": {
-                    k: "ProposalId",
+                    k: "proposal_id",
                     v: ""
                 },
                 Deposit: {
-                    k: "Deposit",
+                    k: "",
                     v: ""
                 }
             },
             type_8: {
                 TxType: {
-                    k: "Type",
+                    k: "type",
                     v: ""
                 },
                 Voter: {
-                    k: "From",
+                    k: "from",
                     v: ""
                 },
                 "Proposal ID": {
-                    k: "ProposalId",
+                    k: "proposal_id",
                     v: ""
                 },
                 Option: {
-                    k: "Option",
+                    k: "option",
                     v: ""
                 }
             },
             type_9: {
                 TxType: {
-                    k: "Type",
+                    k: "type",
                     v: ""
                 },
                 Family: {
@@ -502,7 +502,7 @@ export default {
             },
             type_10: {
                 TxType: {
-                    k: "Type",
+                    k: "type",
                     v: ""
                 },
                 TokenId: {
@@ -536,7 +536,7 @@ export default {
             },
             type_11: {
                 TxType: {
-                    k: "Type",
+                    k: "type",
                     v: ""
                 },
                 TokenId: {
@@ -558,7 +558,7 @@ export default {
             },
             type_12: {
                 TxType: {
-                    k: "Type",
+                    k: "type",
                     v: ""
                 },
                 TokenId: {
@@ -576,7 +576,7 @@ export default {
             },
             type_13: {
                 TxType: {
-                    k: "Type",
+                    k: "type",
                     v: ""
                 },
                 Owner: {
@@ -602,7 +602,7 @@ export default {
             },
             type_14: {
                 TxType: {
-                    k: "Type",
+                    k: "type",
                     v: ""
                 },
                 "Original Owner": {
@@ -620,7 +620,7 @@ export default {
             },
             type_15: {
                 TxType: {
-                    k: "Type",
+                    k: "type",
                     v: ""
                 },
                 "Block Interval": {
@@ -638,7 +638,7 @@ export default {
             },
             type_16: {
                 TxType: {
-                    k: "Type",
+                    k: "type",
                     v: ""
                 },
                 Owner: {
@@ -700,42 +700,44 @@ export default {
         },
         forAmount(data) {
             let amountValue = "";
-            if (data.Amount && data.Amount.length !== 0) {
-                amountValue = data.Amount.map(item => {
-                    if (item.denom === Constant.Denom.IRISATTO) {
-                        return (item.amount = `${Tools.formatPriceToFixed(
-                            Tools.numberMoveDecimal(item.amount)
-                        )} ${Tools.formatDenom(
-                            item.denom
-                        ).toLocaleUpperCase()}`);
-                    } else if (
-                        item.denom !== Constant.Denom.IRISATTO &&
-                        item.denom !== ""
-                    ) {
-                        return (item.amount = `${Tools.FormatScientificNotationToNumber(
-                            item.amount
-                        )} ${Tools.formatDenom(item.denom).toUpperCase()}`);
-                    } else {
-                        if (
-                            data.Type === "BeginUnbonding" ||
-                            data.Type === "BeginRedelegate"
-                        ) {
+            if (data.amount && data.amount.length !== 0) {
+                amountValue = data.amount
+                    .map(item => {
+                        if (item.denom === Constant.Denom.IRISATTO) {
                             return (item.amount = `${Tools.formatPriceToFixed(
                                 Tools.numberMoveDecimal(item.amount)
-                            )} SHARES`);
+                            )} ${Tools.formatDenom(
+                                item.denom
+                            ).toLocaleUpperCase()}`);
+                        } else if (
+                            item.denom !== Constant.Denom.IRISATTO &&
+                            item.denom !== ""
+                        ) {
+                            return (item.amount = `${Tools.FormatScientificNotationToNumber(
+                                item.amount
+                            )} ${Tools.formatDenom(item.denom).toUpperCase()}`);
+                        } else {
+                            if (
+                                data.type === "BeginUnbonding" ||
+                                data.type === "BeginRedelegate"
+                            ) {
+                                return (item.amount = `${Tools.formatPriceToFixed(
+                                    Tools.numberMoveDecimal(item.amount)
+                                )} SHARES`);
+                            }
                         }
-                    }
-                }).join(",");
+                    })
+                    .join(",");
             } else if (
-                data.Amount &&
-                Object.keys(data.Amount).includes("amount") &&
-                Object.keys(data.Amount).includes("denom")
+                data.amount &&
+                Object.keys(data.amount).includes("amount") &&
+                Object.keys(data.amount).includes("denom")
             ) {
-                data.Amount = Tools.formatPriceToFixed(
+                data.amount = Tools.formatPriceToFixed(
                     Tools.numberMoveDecimal(item.amount)
                 );
-                amountValue = `${data.Amount.amount} ${Tools.formatDenom(
-                    data.Amount.denom
+                amountValue = `${data.amount.amount} ${Tools.formatDenom(
+                    data.amount.denom
                 ).toUpperCase()}`;
             } else {
                 amountValue = "";
@@ -753,11 +755,11 @@ export default {
             }
         },
         forAssetType(data) {
-            if (!Array.isArray(data.Msgs)) {
+            if (!Array.isArray(data.msgs)) {
                 return;
             }
-            let msgs = data.Msgs.map(v => {
-                v.msg.Type = v.Type;
+            let msgs = data.msgs.map(v => {
+                v.msg.type = v.type;
                 return v.msg;
             });
             let arr = [];
@@ -775,6 +777,9 @@ export default {
                         this.getKeyBaseName(it[o[i].k], o[i]);
                     }
                     o[i].v = fieidValue || o[i].v;
+                    if (i === "Mintable") {
+                        o[i].v = fieidValue;
+                    }
                 }
                 arr.push(o);
             }
@@ -789,21 +794,21 @@ export default {
                             if (data) {
                                 // Transaction Information
                                 let that = this;
-                                this.info.TxHash = data.Hash;
-                                this.info.Block = data.BlockHeight;
-                                this.info.Status = data.Status
-                                    ? Tools.firstWordUpperCase(data.Status)
-                                    : "";
-                                this.failInfo = data.Log;
-                                this.ageValue = Tools.formatAge(
-                                    currentServerTime,
-                                    data.Timestamp,
-                                    Constant.SUFFIX
-                                );
-                                clearInterval(this.transactionDetailTimer);
                                 let currentServerTime =
                                     new Date().getTime() +
                                     that.diffMilliseconds;
+                                this.info.TxHash = data.hash;
+                                this.info.Block = data.block_height;
+                                this.info.Status = data.status
+                                    ? Tools.firstWordUpperCase(data.status)
+                                    : "";
+                                this.failInfo = data.log;
+                                this.ageValue = Tools.formatAge(
+                                    currentServerTime,
+                                    data.timestamp,
+                                    Constant.SUFFIX
+                                );
+                                clearInterval(this.transactionDetailTimer);
                                 this.transactionDetailTimer = setInterval(
                                     function() {
                                         currentServerTime =
@@ -811,35 +816,35 @@ export default {
                                             that.diffMilliseconds;
                                         that.ageValue = Tools.formatAge(
                                             currentServerTime,
-                                            data.Timestamp,
+                                            data.timestamp,
                                             Constant.SUFFIX
                                         );
                                     },
                                     1000
                                 );
                                 this.info.Timestamp = Tools.format2UTC(
-                                    data.Timestamp
+                                    data.timestamp
                                 );
                                 this.info.Fee = `${Tools.convertScientificNotation2Number(
-                                    Tools.formatNumber(data.Fee.amount)
+                                    Tools.formatNumber(data.fee.amount)
                                 )} ${Tools.formatDenom(
-                                    data.Fee.denom
+                                    data.fee.denom
                                 ).toUpperCase()}`;
-                                this.gasLimit = data.GasLimit;
-                                this.info.GasUsed = data.GasUsed;
-                                this.gasWanted = data.GasWanted;
+                                this.gasLimit = data.gas_limit;
+                                this.info.GasUsed = data.gas_used;
+                                this.gasWanted = data.gas_wanted;
                                 this.gasPrice = Tools.convertScientificNotation2Number(
                                     Tools.formaNumberAboutGasPrice(
-                                        data.GasPrice
+                                        data.gas_price
                                     )
                                 );
-                                this.info.Signer = data.Signer || "";
-                                this.info.Memo = data.Memo || "";
+                                this.info.Signer = data.signer || "";
+                                this.info.Memo = data.memo || "";
                                 // Transaction Message
                                 this.typeValue =
-                                    data.Type === "coin"
+                                    data.type === "coin"
                                         ? "Transfer"
-                                        : data.Type;
+                                        : data.type;
                                 for (let [k, it] of Object.entries(
                                     this.txTypeArr
                                 )) {
@@ -852,16 +857,16 @@ export default {
                                     this.typeValue === "RequestRand" ||
                                     this.typeValue === "SubmitProposal"
                                 ) {
-                                    data = Object.assign(data, data.Tags);
+                                    data = Object.assign(data, data.tags);
                                 }
                                 let message = this[this.txTypeSign];
                                 if (
                                     this.typeValue === "SubmitProposal" &&
-                                    this[data.ProposalType]
+                                    this[data.proposal_type]
                                 ) {
                                     message = Object.assign(
                                         message,
-                                        this[data.ProposalType]
+                                        this[data.proposal_type]
                                     );
                                 }
 
@@ -871,17 +876,17 @@ export default {
                                         fieidValue = this.forAmount(data);
                                     } else if (i === "Self-Bonded") {
                                         if (
-                                            data.SelfBond &&
-                                            data.SelfBond.length !== 0
+                                            data.self_bond &&
+                                            data.self_bond.length !== 0
                                         ) {
                                             fieidValue = `${Tools.formatPriceToFixed(
                                                 Tools.convertScientificNotation2Number(
                                                     Tools.formatNumber(
-                                                        data.SelfBond[0].amount
+                                                        data.self_bond[0].amount
                                                     )
                                                 )
                                             )} ${Tools.formatDenom(
-                                                data.SelfBond[0].denom
+                                                data.self_bond[0].denom
                                             ).toUpperCase()}`;
                                         } else {
                                             fieidValue = "";
@@ -891,11 +896,11 @@ export default {
                                         i === "Deposit"
                                     ) {
                                         if (
-                                            data.Amount &&
-                                            data.Amount.length !== 0
+                                            data.amount &&
+                                            data.amount.length !== 0
                                         ) {
                                             fieidValue = this.$options.filters.amountFromat(
-                                                data.Amount
+                                                data.amount
                                             );
                                         } else {
                                             fieidValue = "";
