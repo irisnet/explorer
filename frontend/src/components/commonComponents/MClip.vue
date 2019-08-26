@@ -1,6 +1,6 @@
 <template>
     <div class="copy_container">
-        <img @click="handleCopy(text,$event)" src="../../assets/copy_icon.png" alt="复制" />
+        <img @click="handleCopy(text,$event)" src="../../assets/copy_icon.png" alt="copy" />
         <div class="tips" ref="tip">
             {{tipText}}
             <i></i>
@@ -21,7 +21,7 @@ export default {
     data() {
         return {
             timer: null,
-            tipText: "复制成功",
+            tipText: "Copy Success",
             resizeTimer: null
         };
     },
@@ -35,11 +35,11 @@ export default {
             );
         },
         successHandle() {
-            this.tipText = "复制成功";
+            this.tipText = "Copy Success";
             this.showTip();
         },
         errorHandle() {
-            this.tipText = "复制失败";
+            this.tipText = "Copy failed";
             this.showTip();
         },
         showTip() {
