@@ -240,8 +240,9 @@ export default {
       fields: null,
       transferFields: {
         'Tx_Hash': {
-          label: 'Tx_Hash'
+          label: 'TxHash'
         },
+
         'Block': {
           label: 'Block'
         },
@@ -261,13 +262,13 @@ export default {
           label: 'TxType'
         },
         'transferFee': {
-          label: 'TxFee(IRIS)'
+          label: 'Fee(IRIS)'
         },
         'Tx_Signer': {
-          label: 'TxSigner'
+          label: 'Signer'
         },
         'Tx_Status': {
-          label: 'TxStatus'
+          label: 'Status'
         },
         'Timestamp': {
           label: 'Timestamp'
@@ -293,13 +294,13 @@ export default {
           label: 'TxType'
         },
         'Tx_Fee': {
-          label: 'TxFee'
+          label: 'Fee'
         },
         'Tx_Signer': {
-          label: 'TxSigner'
+          label: 'Signer'
         },
         'Tx_Status': {
-          label: 'TxStatus'
+          label: 'Status'
         },
         'Timestamp': {
           label: 'Timestamp'
@@ -325,13 +326,13 @@ export default {
           label: 'TxType'
         },
         'Tx_Fee': {
-          label: 'TxFee'
+          label: 'Fee'
         },
         'Tx_Signer': {
-          label: 'TxSigner'
+          label: 'Signer'
         },
         'Tx_Status': {
-          label: 'TxStatus'
+          label: 'Status'
         },
         'Timestamp': {
           label: 'Timestamp'
@@ -360,13 +361,13 @@ export default {
           label: 'TxType'
         },
         'Tx_Fee': {
-          label: 'TxFee'
+          label: 'Fee'
         },
         'Tx_Signer': {
-          label: 'TxSigner'
+          label: 'Signer'
         },
         'Tx_Status': {
-          label: 'TxStatus'
+          label: 'Status'
         },
         'Timestamp': {
           label: 'Timestamp'
@@ -463,10 +464,10 @@ table {
       }
     }
     .no_skip {
-      color: #a2a2ae;
+      color: var(--contentColor);
       cursor: default;
       .link_style {
-        color: #a2a2ae !important;
+        color: var(--contentColor) !important;
       }
     }
   }
@@ -480,7 +481,7 @@ table {
     color: #fff;
     background: rgba(0, 0, 0, 1);
     border-radius: 0.04rem;
-    z-index: 10;
+    z-index: 1;
     line-height: 32px;
     font-size: 0.14rem;
   }
@@ -518,7 +519,7 @@ table {
   th,
   td {
     padding: 0.075rem !important;
-    color: #a2a2ae;
+    color: var(--contentColor);
     @include fontWeight;
   }
   margin-bottom: 0 !important;
@@ -628,7 +629,7 @@ table {
 }
 .pre_global_style {
   font-size: 0.14rem;
-  color: #a2a2ae;
+  color: var(--contentColor);
   margin: 0;
 }
 .proposals_detail_table_wrap {

@@ -159,7 +159,7 @@ export default {
     width: 100%;
     .top_list_title_container {
         width: 100%;
-        z-index: 10;
+        z-index: 1;
         position: fixed;
         .top_list_title_content {
             max-width: 12.8rem;
@@ -175,7 +175,7 @@ export default {
                     display: flex;
                     align-items: center;
                     font-size: 0.18rem;
-                    color: rgba(34, 37, 42, 1);
+                    color: var(--titleColor);
                     line-height: 0.26rem;
                 }
                 .tooltip_icon {
@@ -198,7 +198,7 @@ export default {
                         width: 2.4rem;
                         display: none;
                         position: fixed;
-                        z-index: 100000;
+                        z-index: 5;
                         margin-top: -20px;
                         transform: translateY(-50%);
                         color: #ffffff;

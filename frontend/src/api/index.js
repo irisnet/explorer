@@ -8,10 +8,10 @@ const urlApi = {
   navigation: '/api/home/navigation',
   //address
   address: '/api/txs/statistics?address={address}',
-  addressTxTrans: '/api/tx/trans/{pageNumber}/{pageSize}?address={address}',
-  addressTxStake: '/api/tx/stake/{pageNumber}/{pageSize}?address={address}',
-  addressTxDeclaration: '/api/tx/declaration/{pageNumber}/{pageSize}?address={address}',
-  addressTxGov: '/api/tx/gov/{pageNumber}/{pageSize}?address={address}',
+  addressTxTrans: '/api/txs/trans/{pageNumber}/{pageSize}?address={address}',
+  addressTxStake: '/api/txs/stake/{pageNumber}/{pageSize}?address={address}',
+  addressTxDeclaration: '/api/txs/declaration/{pageNumber}/{pageSize}?address={address}',
+  addressTxGov: '/api/txs/gov/{pageNumber}/{pageSize}?address={address}',
   addressAccount: '/api/account/{address}',
   addressStakeCandidate: '/api/stake/candidate/{address}',
   addressStakeCandidateStatus: '/api/stake/candidate/{address}/status',
@@ -39,11 +39,11 @@ const urlApi = {
   headerConfig: '/api/config',
   //blockInfo
   blockInfoHeight: '/api/block/blockinfo/{height}',
-  blockInfoGov: '/api/tx/gov/{currentPage}/{pageSize}?height={blockHeight}',
+  blockInfoGov: '/api/txs/gov/{currentPage}/{pageSize}?height={blockHeight}',
   blockInfoValidatorSet: '/api/block/validatorset/{blockHeight}?page={currentPage}&size={pageSize}',
-  blockInfoTransfer: '/api/tx/trans/{currentPage}/{pageSize}?height={blockHeight}',
-  blockInfoStake: '/api/tx/stake/{currentPage}/{pageSize}?height={blockHeight}',
-  blockInfoDeclaration: '/api/tx/declaration/{currentPage}/{pageSize}?height={blockHeight}',
+  blockInfoTransfer: '/api/txs/trans/{currentPage}/{pageSize}?height={blockHeight}',
+  blockInfoStake: '/api/txs/stake/{currentPage}/{pageSize}?height={blockHeight}',
+  blockInfoDeclaration: '/api/txs/declaration/{currentPage}/{pageSize}?height={blockHeight}',
   //blockList
   blockList: '/api/blocks?page={pageNumber}&size={pageSize}',
   blockListLatestheight: '/api/block/latestheight',
@@ -61,10 +61,10 @@ const urlApi = {
   //txDetail
   txDetail: '/api/tx/{txHash}',
   //txList
-  txListTransfer: '/api/tx/trans/{pageNumber}/{pageSize}',
-  txListStake: '/api/tx/stake/{pageNumber}/{pageSize}',
-  txListDeclaration: '/api/tx/declaration/{pageNumber}/{pageSize}',
-  txListGov: '/api/tx/gov/{pageNumber}/{pageSize}',
+  txListTransfer: '/api/txs/trans/{pageNumber}/{pageSize}',
+  txListStake: '/api/txs/stake/{pageNumber}/{pageSize}',
+  txListDeclaration: '/api/txs/declaration/{pageNumber}/{pageSize}',
+  txListGov: '/api/txs/gov/{pageNumber}/{pageSize}',
   //validatorList
   validatorList: '/api/stake/validators?page={pageNumber}&size={pageSize}&type={validatorStatus}&origin=browser',
   validatorListHeaderImg: 'https://keybase.io/_/api/1.0/user/lookup.json?fields=pictures&key_suffix={keyBase}',
@@ -81,7 +81,9 @@ const urlApi = {
   bondedtokensDelegations: '/api/stake/validators/{address}/delegations?needpage=false',
   //tokenStats
   tokenStats: '/api/tokenstats',
-  tokenStatsDistribution: '/api/tokenstats/account_total'
+  tokenStatsDistribution: '/api/tokenstats/account_total',
+  //txs
+  allTypeList:'/api/txs?page={pageNumber}&size={pageSize}&total=true'
 };
 
 export default urlApi

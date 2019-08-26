@@ -112,7 +112,7 @@
             fields:null,
             transferFields:{
               'Tx_Hash':{
-                label:'Tx_Hash'
+                label:'TxHash'
               },
               'Block':{
                 label:'Block'
@@ -133,10 +133,10 @@
                 label:'Tx_Fee'
               },
               'Tx_Signer':{
-                label:'Tx_Signer'
+                label:'Signer'
               },
               'Tx_Status':{
-                label:'Tx_Status'
+                label:'Status'
               },
               'Timestamp':{
                 label:'Timestamp'
@@ -144,7 +144,7 @@
             },
             declarationFields:{
               'Tx_Hash':{
-                label:'Tx_Hash'
+                label:'TxHash'
               },
               'Block':{
                 label:'Block'
@@ -165,10 +165,10 @@
                 label:'Tx_Fee'
               },
               'Tx_Signer':{
-                label:'Tx_Signer'
+                label:'Signer'
               },
               'Tx_Status':{
-                label:'Tx_Status'
+                label:'Status'
               },
               'Timestamp':{
                 label:'Timestamp'
@@ -176,7 +176,7 @@
             },
             stakeFields:{
               'Tx_Hash':{
-                label:'Tx_Hash'
+                label:'TxHash'
               },
               'Block':{
                 label:'Block'
@@ -197,10 +197,10 @@
                 label:'Tx_Fee'
               },
               'Tx_Signer':{
-                label:'Tx_Signer'
+                label:'Signer'
               },
               'Tx_Status':{
-                label:'Tx_Status'
+                label:'Status'
               },
               'Timestamp':{
                 label:'Timestamp'
@@ -208,7 +208,7 @@
             },
             govFields:{
               'Tx_Hash':{
-                label:'Tx_Hash'
+                label:'TxHash'
               },
               'Block':{
                 label:'Block'
@@ -232,10 +232,10 @@
                 label:'Tx_Fee'
               },
               'Tx_Signer':{
-                label:'Tx_Signer'
+                label:'Signer'
               },
               'Tx_Status':{
-                label:'Tx_Status'
+                label:'Status'
               },
               'Timestamp':{
                 label:'Timestamp'

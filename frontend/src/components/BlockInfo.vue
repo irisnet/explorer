@@ -507,7 +507,7 @@
                 .block_height_content{
                     .information_value{
                         font-size: 0.22rem;
-                        color: #22252a;
+                        color: var(--titleColor);
                         margin: 0 0.07rem;
                     }
                     .flag_item_left {
@@ -565,7 +565,7 @@
                     .block_information_item{
                         display: flex;
                         span:nth-of-type(1){
-                            color: rgba(34, 37, 42, 1);
+                            color: var(--titleColor);
                             font-size: 0.14rem;
                             line-height: 0.2rem;
                             width: 1.5rem;
@@ -579,13 +579,13 @@
                             line-height: 0.2rem;
                             overflow-x: auto;
                             .common_link_style{
-                                color: rgba(53, 152, 219, 1) !important;
+                                color: var(--bgColor) !important;
                             }
                         }
                     }
                     .block_information_item:last-child{
                         span:nth-of-type(1){
-                            color: rgba(34, 37, 42, 1);
+                            color: var(--titleColor);
                             font-size: 0.14rem;
                             line-height: 0.2rem;
                             width: 1.5rem;
@@ -670,7 +670,7 @@
                     }
                 }
             }
-            
+
         }
         .block_validator_set_title, .block_result_title, .block_proposal_title {
             padding-left: 0.1rem !important;

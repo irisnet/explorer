@@ -77,14 +77,14 @@ func (_ Block) GetBlockListByOffsetAndSize(offset, size int) ([]Block, error) {
 	return blocks, err
 }
 
-func (_ Block) GetBlockListByPage(offset, size int) (int, []Block, error) {
+func (_ Block) GetBlockListByPage(offset, size int, total bool) (int, []Block, error) {
 
 	var selector = bson.M{"height": 1, "time": 1, "num_txs": 1, "hash": 1, "validators.address": 1, "validators.voting_power": 1, "block.last_commit.precommits.validator_address": 1, "meta.header.total_txs": 1}
 
 	var blocks []Block
 
 	sort := desc(document.Block_Field_Height)
-	var cnt, err = pageQuery(document.CollectionNmBlock, selector, bson.M{"height": bson.M{"$gt": 0}}, sort, offset, size, &blocks)
+	var cnt, err = pageQuery(document.CollectionNmBlock, selector, bson.M{"height": bson.M{"$gt": 0}}, sort, offset, size, total, &blocks)
 
 	return cnt, blocks, err
 }

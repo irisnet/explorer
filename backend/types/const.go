@@ -1,5 +1,9 @@
 package types
 
+import (
+	"github.com/irisnet/explorer/backend/logger"
+)
+
 const (
 	UrlRoot = "/api"
 
@@ -59,7 +63,8 @@ const (
 	UrlRegisterQueryCommissionRewardsByValidatorAddr = "/stake/validators/{validatorAddr}/commission-rewards"
 
 	//Tx
-	UrlRegisterQueryTxList       = "/tx/{type}/{page}/{size}"
+	UrlRegisterQueryTxList       = "/txs"
+	UrlRegisterQueryTxListByType = "/txs/{type}/{page}/{size}"
 	UrlRegisterQueryRecentTx     = "/txs/recent"
 	UrlRegisterQueryTxsCounter   = "/txs/statistics"
 	UrlRegisterQueryTxsByAccount = "/txsByAddress/{address}/{page}/{size}"
@@ -238,6 +243,7 @@ func Convert(typ string) TxType {
 	} else if IsRandType(typ) {
 		return Rand
 	}
+	logger.Error("Convert UnSupportTx Type", logger.String("txtype", typ))
 	panic(CodeUnSupportTx)
 }
 func TxTypeFromString(typ string) TxType {
@@ -250,5 +256,6 @@ func TxTypeFromString(typ string) TxType {
 	} else if typ == "gov" {
 		return Gov
 	}
+	logger.Error("TxTypeFromString UnSupportTx Type", logger.String("txtype", typ))
 	panic(CodeUnSupportTx)
 }

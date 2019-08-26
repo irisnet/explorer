@@ -1,7 +1,8 @@
 <template>
   <div :class="echartsComponentWrapLine">
     <div class="echarts_title_wrap_line">
-      14 day Transaction History
+      <span class="echarts_title">14 day Transaction History</span>
+      <span class="view_all_content"><router-link :to="`/txs`">View All<i class="iconfont iconwangluoqiehuanjiantou"></i></router-link></span>
     </div>
     <div id="echarts_line">
 
@@ -150,8 +151,29 @@
 
     .echarts_title_wrap_line {
       height: 15%;
-      font-size:0.18rem;
       font-weight:400;
+      display: flex;
+      justify-content: space-between;
+      color:var(--bgColor);
+     .echarts_title{
+       font-size:0.18rem;
+       color:#000 !important;
+     }
+      .view_all_content{
+        a{
+          font-size: 0.14rem;
+          border-bottom: 0.01rem solid var(--bgColor);
+          height: 0.2rem;
+          line-height: 0.2rem;
+          color: var(--bgColor)!important;
+          i{
+            display: inline-block;
+            font-size: 0.14rem;
+            transform: rotate(-90deg);
+          }
+        }
+
+      }
     }
     #echarts_line {
       width: 100%;

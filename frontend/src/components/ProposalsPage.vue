@@ -262,7 +262,7 @@
               value: votes,
                perData: Tools.formatDecimalNumberToFixedNumber(votes / all * 100),
               itemStyle: {
-                color: '#3598DB',
+                color: 'var(--bgColor)',
                 borderColor: '#ECEFFF',
                 borderWidth: 0
               },
@@ -483,7 +483,7 @@
         display: flex;
         div {
           font-size: 14px;
-          color: #22252A;
+          color: var(--titleColor);
           display: flex;
           align-items: center;
           i {
@@ -526,7 +526,7 @@
     position: fixed;
     width: 100%;
     max-width: 12.8rem;
-    z-index: 10;
+    z-index: 1;
     background: #fff;
     & > div {
       padding: 4px 0;
@@ -610,7 +610,7 @@
       height:  0.62rem;
       line-height: 0.62rem;
       font-size: 0.18rem;
-      color: #a2a2ae;
+      color: var(--contentColor);
       margin-left: 0.2rem;
     }
     .for_proposals{
@@ -663,7 +663,7 @@
     height: 0.3rem;
     line-height: 0.3rem;
     font-size: 0.18rem;
-    color: #a2a2ae;
+    color: var(--contentColor);
     }
     .for_proposals{
         display:inline-block;

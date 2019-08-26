@@ -90,15 +90,17 @@ func (query *Query) PipeQuery(pipeline interface{}) error {
 	}
 }
 
-func (query *Query) ExecPage() (cnt int, err error) {
+func (query *Query) ExecPage(total bool) (cnt int, err error) {
 	var c = query.db.C(query.collection)
 	var q = c.Find(query.condition)
-	cnt, err = q.Count()
-	if err != nil {
-		return cnt, errors.New(fmt.Sprintf("query error:%v,collection:%s,condition:%+v",
-			err.Error(),query.collection, query.condition))
+	if total {
+		cnt, err = q.Count()
+		if err != nil {
+			return cnt, errors.New(fmt.Sprintf("query error:%v,collection:%s,condition:%+v",
+				err.Error(), query.collection, query.condition))
+		}
 	}
-	if cnt == 0 {
+	if cnt == 0 && total {
 		return cnt,errors.New("not found")
 	}
 	q = query.buildQuery()

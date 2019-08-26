@@ -21,35 +21,41 @@
       </div>
       <router-view class="router_view" :style="`min-height:${vh/100-1.7}rem;`" :key="key"/>
       <footer :class="footerClass" v-show="flShowFooter" id="footer">
-        <div :class="footerClassName" style="height:100%;">
-          <div class="footer_left" :class="footerLeftVar">
-            <a target="_blank" href='https://github.com/irisnet' class="github"></a>
-            <a target="_blank" href='https://t.me/irisnetwork' class="airplane"></a>
-            <a target="_blank" href='https://twitter.com/irisnetwork' class="twitter"></a>
-            <a target="_blank" href='https://medium.com/irisnet-blog' class="facebook"></a>
-            <span class="we_chat" @click="showQRCode"></span>
-            <span class="qq" @click="showqqQRCode"></span>
-          </div>
-          <div class="footer_center">
-            <a href="https://www.irisnet.org/" target="_blank">
-              <img src="./assets/irisnet.png">
-            </a>
-          </div>
-          <div class="footer_right" :class="footerRightVar">
-            <div class="footer_link_wrap">
-              <a href="https://www.irisnetwork.cn/testnets" target="_blank">
-                <span class="footer_link_contact">Use Testnet</span>
+          <div class="person_computer_footer">
+            <div class="footer_logo_content">
+              <a class="irisnet_link_content" href="https://www.irisnet.org/" target="_blank">
+                <img class="irisnet_logo_img" src="./assets/IRISnet-Rebrand-Capital-Black.png"/>
               </a>
-              <span class="footer_link_join">|</span>
-              <span class="footer_link_privacy"><router-link :to="`/privacy_policy`">Privacy Policy</router-link></span>
-              <span class="footer_link_join">|</span>
-              <span class="footer-faq"><router-link :to="`/help`">FAQ</router-link></span>
             </div>
-            <p class="footer_copyright_wrap">
-              ©️ IRISplorer 2019 all rights reserved
-            </p>
+            <div class="community_container">
+              <h4 class="community_title">
+                Community
+              </h4>
+              <div class="community_list_content">
+                <a target="_blank" href='https://github.com/irisnet'><i class="iconfont icongithub"></i></a>
+                <a target="_blank" href='https://t.me/irisnetwork'><i class="iconfont icontelegram"></i></a>
+                <a target="_blank" href='https://twitter.com/irisnetwork'><i class="iconfont icontuite"></i></a>
+                <a target="_blank" href='https://medium.com/irisnet-blog'><i class="iconfont iconmedium"></i></a>
+                <span class="we_chat" @click="showQRCode"><i class="iconfont iconweixin"></i></span>
+                <span class="qq" @click="showqqQRCode"><i class="iconfont iconQQ"></i></span>
+              </div>
+            </div>
+            <div class="footer_right_content">
+              <h3 class="resources_content">Resources</h3>
+              <div class="footer_link_wrap">
+                <a href="https://www.irisnetwork.cn/testnets" target="_blank">
+                  <span class="footer_link_contact">Use Testnet</span>
+                </a>
+                <span class="footer_link_join">|</span>
+                <span class="footer_link_privacy"><router-link :to="`/privacy_policy`">Privacy Policy</router-link></span>
+                <span class="footer_link_join">|</span>
+                <span class="footer-faq"><router-link :to="`/help`">FAQ</router-link></span>
+              </div>
+            </div>
           </div>
-        </div>
+        <p class="footer_copyright_wrap">
+          ©️ IRISplorer 2019 all rights reserved
+        </p>
       </footer>
       <backToTop :scrollHeight="scrollHeight"></backToTop>
     </div>
@@ -160,7 +166,7 @@
         }
       },
       showHeaderAndFooterByVersionPath(){
-        if(this.$route.path === "/version"){
+        if(this.$route.path === "/version" || this.$route.matched[0].path && this.$route.matched[0].path === "*"){
           this.flShowFooter = false;
           this.flShowHeader = false;
         }else {
@@ -197,6 +203,7 @@
   body, html {
     width: 100%;
     height: 100%;
+    color: var(--moduleColor);
   }
   body {
     font-size: 16px !important;
@@ -257,120 +264,101 @@
         }
       }
       footer {
-        background: #363a3d;
-        @include flex();
-        @include pcContainer;
-        padding: 0.3rem 0 0.2rem 0;
+        background: var(--bgColor);
+        flex-direction:column;
+        display: flex;
+        height: 1.9rem;
         .person_computer_footer { //分别对pc和移动端兼容
-          @include pcCenter;
-          flex-direction: row;
-          justify-content: space-between;
-          .footer_left {
-            flex-direction: row;
-          }
-          .footer_right {
-            .footer_copyright_wrap {
-              text-align: end;
-            }
-          }
-
-        }
-        .mobile_footer {
-          flex-direction: column;
-          .footer_left {
-            flex-direction: row;
-            justify-content: center;
-          }
-          .footer_center {
-            text-align: center;
-            margin-bottom: 0.2rem;
-          }
-          .footer_right {
-            .footer_link_wrap {
+          max-width: 12.8rem;
+          width: 100%;
+          height: 100%;
+          margin: 0 auto;
+          display: flex;
+          .footer_logo_content{
+            flex: 1;
+            height: 100%;
+            .irisnet_link_content{
+              display: flex;
               align-items: center;
-              justify-content: center;
-
-            }
-            .footer_copyright_wrap {
-              text-align: center;
-            }
-          }
-        }
-
-        .person_computer_footer, .mobile_footer { //底部公用的样式
-          @include flex;
-          .footer_left {
-            @include flex;
-            margin-bottom: 0.2rem;
-            span, a {
-              width: 0.4rem;
-              height: 0.4rem;
-              @include borderRadius(0.3rem);
-              margin-right: 0.1rem;
-              cursor: pointer;
-              &:last-child {
-                margin-right: 0;
+              padding-left: 0.2rem;
+              height: 100%;
+              .irisnet_logo_img{
+                height: 43%;
               }
             }
-            a {
-              text-decoration: none;
-            }
-            .github {
-              @include linkBtn('./assets/github.png', './assets/github_h.png');
-            }
-            .airplane {
-              @include linkBtn('./assets/airplane.png', './assets/airplane_h.png');
-            }
-            .twitter {
-              @include linkBtn('./assets/twitter.png', './assets/twitter_h.png');
-            }
-            .facebook {
-              @include linkBtn('./assets/facebook.png', './assets/facebook_h.png');
-            }
-            .we_chat {
-              @include linkBtn('./assets/we_chat.png', './assets/we_chat_h.png');
-            }
-            .qq {
-              @include linkBtn('./assets/qq.png', './assets/qq_h.png');
-            }
-
           }
-          .footer_right {
-            @include flex;
+          .community_container{
+            flex: 1;
+            display: flex;
             flex-direction: column;
-            .footer_link_wrap {
-              @include flex;
-              span {
-                font-size: 0.14rem;
-                &:nth-child(2n-1) {
-                  color: #3698db;
-                  cursor: pointer;
-                  margin-top: 0.02rem;
-                }
-                &:nth-child(2n) {
+            justify-content: center;
+            .community_title{
+              font-size: 0.16rem;
+              color: #fff;
+              padding-bottom: 0.1rem;
+            }
+            .community_list_content{
+              display: flex;
+              a{
+                margin-right: 0.25rem;
+                i{
+                  font-size: 0.25rem;
                   color: #a2a2ae;
-                  margin: 0 0.1rem;
+                  &:hover{
+                    color: #fff;
+                  }
                 }
+              }
+              span{
+                margin-right: 0.25rem;
+                cursor: pointer;
+                i{
+                  font-size: 0.25rem;
+                  color: #a2a2ae;
+                  &:hover{
+                    color: #fff;
+                  }
+                }
+              }
+            }
+          }
+          .footer_right_content{
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            .resources_content{
+              font-size: 0.16rem;
+              color: #fff;
+              margin-bottom: 0.1rem;
+            }
+            .footer_link_wrap{
+              color: #a2a2ae;
+              a{
+                padding: 0 0.2rem;
+                color: #a2a2ae !important;
+                &:hover{
+                  color: #fff !important;
+                }
+              }
+              a:first-child{
+                padding-left: 0;
               }
               .footer_link_privacy{
-                a{
-                  color: var(--bgColor) !important;
-                }
+                padding-left: 0.2rem;
               }
               .footer-faq{
-                a{
-                  color: var(--bgColor) !important;
-                }
+                padding-left: 0.2rem;
               }
-            }
-            .footer_copyright_wrap {
-              color: #a2a2ae;
-              margin-top: 0.1rem;
-              font-size: 0.14rem;
-            }
 
+            }
           }
-
+        }
+        .footer_copyright_wrap {
+          border-top: 0.01rem  solid #a2a2ae;
+          padding: 0.15rem 0;
+          text-align: center;
+          color: rgba(255,255,255,0.5);
         }
       }
     }
@@ -381,5 +369,49 @@
   pre{
     font-family: Arial !important;
     font-size: 0.14rem !important;
+  }
+  @media screen and (max-width: 910px) {
+    #app{
+      #router_wrap{
+        footer {
+          height: auto;
+          .person_computer_footer{
+            flex-direction: column;
+            .footer_logo_content{
+              width: 100%;
+              display: flex;
+              justify-content: center;
+             .irisnet_link_content{
+               width: 60%;
+               display: flex;
+               align-items: center;
+               .irisnet_logo_img{
+                 width: 100%;
+               }
+             }
+            }
+            .community_container{
+              justify-content: center;
+              .community_title{
+                text-align: center;
+              }
+              .community_list_content{
+                justify-content: center;
+              }
+            }
+            .footer_right_content{
+              padding-bottom: 0.2rem;
+              .resources_content{
+                text-align: center;
+              }
+              .footer_link_wrap{
+                text-align: center;
+              }
+            }
+          }
+          .footer_copyright_wrap{}
+        }
+      }
+    }
   }
 </style>

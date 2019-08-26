@@ -105,7 +105,7 @@
 				fields:null,
 				transferFields: [
                 {
-                    title:'Tx_Hash',
+                    title:'TxHash',
                     slot: 'Tx_Hash',
                     width: 100,
                     tooltip: true,
@@ -141,18 +141,18 @@
                     key: 'Tx_Type',
                 },
                 {
-                    title:'TxFee(IRIS)',
+                    title:'Fee(IRIS)',
                     slot: 'Tx_Fee',
                     key: 'transferFee',
                     className: 'text_right'
                 },
                 {
-                    title:'TxSigner',
+                    title:'Signer',
                     slot: 'Tx_Signer',
                     tooltip: true
                 },
                 {
-                    title:'TxStatus',
+                    title:'Status',
                     slot: 'Tx_Status',
                     key: 'Tx_Status',
                 },
@@ -196,18 +196,18 @@
 						key: 'Tx_Type',
 					},
 					{
-						title:'TxFee',
+						title:'Fee',
 						slot: 'Tx_Fee',
 						key: 'Tx_Fee',
 						className: 'text_right',
 					},
 					{
-						title:'TxSigner',
+						title:'Signer',
                         slot: 'Tx_Signer',
                         tooltip: true
 					},
 					{
-						title:'TxStatus',
+						title:'Status',
 						slot: 'TxStatus',
 						key: 'Tx_Status',
 					},
@@ -250,18 +250,18 @@
                     key: 'Tx_Type',
                 },
                 {
-                    title:'TxFee',
+                    title:'Fee',
                     slot: 'Tx_Fee',
                     key: 'Tx_Fee',
                     className: 'text_right',
                 },
                 {
-                    title:'TxSigner',
+                    title:'Signer',
                     slot: 'Tx_Signer',
                     tooltip: true
                 },
                 {
-                    title:'TxStatus',
+                    title:'Status',
                     slot: 'Tx_Status',
                     key: 'Tx_Status',
                 },
@@ -310,18 +310,18 @@
 						key: 'Tx_Type',
 					},
 					{
-						title:'TxFee',
+						title:'Fee',
 						slot: 'Tx_Fee',
                         key: 'Tx_Fee',
 						className: 'text_right',
 					},
 					{
-						title:'TxSigner',
+						title:'Signer',
                         slot: 'Tx_Signer',
                         tooltip: true
 					},
 					{
-						title:'TxStatus',
+						title:'Status',
 						slot: 'Tx_Status',
 						key: 'Tx_Status',
 					},
@@ -345,9 +345,9 @@
 	        setTxFields(){
                 if(this.$route.params.txType === 'transfers'){
                     this.fields = this.transferFields
-                }else if(this.$route.params.txType === 'declarations') {
+                }else if(this.$route.params.txType === 'validations') {
                     this.fields = this.declarationFields
-                }else  if(this.$route.params.txType === 'stakes'){
+                }else  if(this.$route.params.txType === 'delegations'){
                     this.fields = this.stakeFields
                 }else if(this.$route.params.txType === 'governance'){
                     this.fields = this.govFields

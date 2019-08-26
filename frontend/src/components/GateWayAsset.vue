@@ -69,6 +69,11 @@
                 </div>
             </div>
         </div>
+        <div v-show="gateWayIssueTokenList.length === 0 && gateWayEditTokenList.length === 0
+                    && gateWayMintTokenList.length === 0 && gateWayTransferOwnerTokenList.length === 0">
+            <img class="no_data_img" src="../assets/no_data.svg">
+
+        </div>
     </div>
 </template>
 
@@ -267,6 +272,13 @@
 
 <style scoped lang="scss">
     .gateway_asset_list_page_container{
+        position: relative;
+        .no_data_img{
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%,-50%);
+        }
         .mobile_asset_title{
             position: static !important;
             .gateway_asset_list_title_content{
@@ -278,7 +290,7 @@
         .gateway_asset_list_title_wrap{
         width: 100%;
         position: fixed;
-        z-index: 10;
+        z-index: 1;
         background-color: #ffffff;
             .gateway_asset_list_title_content{
                 height:0.7rem;

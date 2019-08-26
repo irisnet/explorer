@@ -207,7 +207,7 @@
           color:#A2A2AE;
           cursor:default;
           .link_style{
-            color:#a2a2ae !important;
+            color:var(--contentColor) !important;
           }
         }
       }
@@ -329,7 +329,7 @@
   }
   .pre_global_style{
     font-size: 0.14rem;
-    color: #a2a2ae;
+    color: var(--contentColor);
     margin: 0;
   }
   pre{

@@ -65,6 +65,10 @@
                 </div>
             </div>
         </div>
+        <div v-show="issueToken.length === 0 && editToken.length === 0
+        && mintToken.length === 0 && transferToken.length === 0">
+            <img class="no_data_img" src="../assets/no_data.svg">
+        </div>
     </div>
 </template>
 
@@ -264,6 +268,13 @@
 
 <style scoped lang="scss">
     .native_asset_list_page_container{
+        position: relative;
+        .no_data_img{
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%,-50%);
+        }
         .mobile_asset_title{
             position: static;
             .native_asset_list_title_content{
@@ -276,7 +287,7 @@
         .native_asset_list_title_wrap{
             width: 100%;
             position: fixed;
-            z-index: 10;
+            z-index: 1;
             background-color: #ffffff;
             .native_asset_list_title_content{
                 height:0.7rem;

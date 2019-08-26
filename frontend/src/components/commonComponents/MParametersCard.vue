@@ -90,7 +90,7 @@ export default {
   padding-bottom: 0.2rem;
   .top {
     font-size: 0.14rem;
-    color: #22252A;
+    color: var(--titleColor);
     padding: 0.2rem;
     white-space: nowrap;
     display: flex;

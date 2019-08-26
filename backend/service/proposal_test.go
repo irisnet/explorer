@@ -33,7 +33,7 @@ func TestQueryDepositAndVotingProposalList(t *testing.T) {
 
 func TestQueryList(t *testing.T) {
 
-	proposalPage := new(ProposalService).QueryList(0, 10)
+	proposalPage := new(ProposalService).QueryList(0, 10, true)
 
 	t.Logf("total: %v \n", proposalPage.Count)
 

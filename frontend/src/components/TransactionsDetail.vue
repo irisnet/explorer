@@ -812,7 +812,6 @@ export default {
                                 );
                                 this.info.Signer = data.Signer || "";
                                 this.info.Memo = data.Memo || "";
-
                                 // Transaction Message
                                 this.typeValue =
                                     data.Type === "coin"
@@ -872,7 +871,6 @@ export default {
                                         fieidValue = data[message[i].k];
                                     }
                                     message[i].v = fieidValue;
-
                                     if (i === "Identity") {
                                         this.getKeyBaseName(
                                             data[message[i].k],

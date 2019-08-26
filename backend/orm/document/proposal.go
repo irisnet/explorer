@@ -96,11 +96,11 @@ func (m Proposal) PkKvPair() map[string]interface{} {
 	return bson.M{Proposal_Field_ProposalId: m.ProposalId}
 }
 
-func (_ Proposal) QueryByPage(page, size int) (int, []Proposal, error) {
+func (_ Proposal) QueryByPage(page, size int, total bool) (int, []Proposal, error) {
 
 	var data []Proposal
 	sort := desc(Proposal_Field_SubmitTime)
-	cnt, err := pageQuery(CollectionNmProposal, nil, nil, sort, page, size, &data)
+	cnt, err := pageQuery(CollectionNmProposal, nil, nil, sort, page, size, total, &data)
 	return cnt, data, err
 }
 
@@ -173,7 +173,7 @@ func (_ Proposal) QueryTxFromToByTypeAndProposalId(id int) (string, string, erro
 	return tx.From, tx.TxHash, err
 }
 
-func (_ Proposal) QueryProposalByPage(page, size int) (int, []Proposal, error) {
+func (_ Proposal) QueryProposalByPage(page, size int, total bool) (int, []Proposal, error) {
 
 	var data []Proposal
 	sort := desc(Proposal_Field_ProposalId)
@@ -190,12 +190,12 @@ func (_ Proposal) QueryProposalByPage(page, size int) (int, []Proposal, error) {
 		Proposal_Field_Final_Votes:       1,
 	}
 
-	cnt, err := pageQuery(document.CollectionNmProposal, selector, nil, sort, page, size, &data)
+	cnt, err := pageQuery(document.CollectionNmProposal, selector, nil, sort, page, size, total, &data)
 
 	return cnt, data, err
 }
 
-func (_ Proposal) QueryIdTitleStatusVotedTxhashByValidatorAcc(validatorAcc string, page, size int) (int, []Proposal, error) {
+func (_ Proposal) QueryIdTitleStatusVotedTxhashByValidatorAcc(validatorAcc string, page, size int, total bool) (int, []Proposal, error) {
 
 	var data []Proposal
 
@@ -209,7 +209,7 @@ func (_ Proposal) QueryIdTitleStatusVotedTxhashByValidatorAcc(validatorAcc strin
 
 	condition := bson.M{Proposal_Field_Votes_voter: validatorAcc}
 
-	cnt, err := pageQuery(document.CollectionNmProposal, selector, condition, sort, page, size, &data)
+	cnt, err := pageQuery(document.CollectionNmProposal, selector, condition, sort, page, size, total, &data)
 
 	if err != nil {
 		return 0, nil, err

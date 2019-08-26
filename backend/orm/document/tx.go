@@ -144,31 +144,32 @@ type MsgItem struct {
 }
 
 type MsgData struct {
-	TokenId        string `json:"token_id" bson:"token_id"`
-	To             string `json:"to" bson:"to"`
-	Family         string `json:"family" bson:"family"`
-	Source         string `json:"source" bson:"source"`
-	Gateway        string `json:"gateway" bson:"gateway"`
-	Symbol         string `json:"symbol" bson:"symbol"`
-	SymbolAtSource string `json:"symbol_at_source" bson:"symbol_at_source"`
-	Name           string `json:"name" bson:"name"`
-	Decimal        int32  `json:"decimal" bson:"decimal"`
-	SymbolMinAlias string `json:"symbol_min_alias" bson:"symbol_min_alias"`
-	InitialSupply  int64  `json:"initial_supply" bson:"initial_supply"`
-	MaxSupply      int64  `json:"max_supply" bson:"max_supply"`
-	Amount         int64  `json:"amount" bson:"amount"`
-	Mintable       bool   `json:"mintable" bson:"mintable"`
-	Owner          string `json:"owner" bson:"owner"`
-	Moniker        string `json:"moniker" bson:"moniker"`
-	SrcOwner       string `json:"src_owner" bson:"src_owner"`
-	DstOwner       string `json:"dst_owner" bson:"dst_owner"`
-	UdInfo         UdInfo `json:"ud_info" bson:"ud_info"`
-	Consumer       string `json:"consumer" bson:"consumer"`
-	BlockInterval  int64  `json:"block-interval" bson:"block-interval"`
-	MemoRegexp     string `json:"memo_regexp" bson:"memo_regexp"`
-	Identity       string `json:"identity" bson:"identity"`
-	Details        string `json:"details" bson:"details"`
-	Website        string `json:"website" bson:"website"`
+	TokenId         string `json:"token_id" bson:"token_id"`
+	To              string `json:"to" bson:"to"`
+	Family          string `json:"family" bson:"family"`
+	Source          string `json:"source" bson:"source"`
+	Gateway         string `json:"gateway" bson:"gateway"`
+	Symbol          string `json:"symbol" bson:"symbol"`
+	SymbolAtSource  string `json:"symbol_at_source" bson:"symbol_at_source"`
+	Name            string `json:"name" bson:"name"`
+	Decimal         int32  `json:"decimal" bson:"decimal"`
+	SymbolMinAlias  string `json:"symbol_min_alias" bson:"symbol_min_alias"`
+	InitialSupply   int64  `json:"initial_supply" bson:"initial_supply"`
+	MaxSupply       int64  `json:"max_supply" bson:"max_supply"`
+	Amount          int64  `json:"amount" bson:"amount"`
+	Mintable        bool   `json:"mintable" bson:"mintable"`
+	Owner           string `json:"owner" bson:"owner"`
+	Moniker         string `json:"moniker" bson:"moniker"`
+	SrcOwner        string `json:"src_owner" bson:"src_owner"`
+	DstOwner        string `json:"dst_owner" bson:"dst_owner"`
+	UdInfo          UdInfo `json:"ud_info" bson:"ud_info"`
+	Consumer        string `json:"consumer" bson:"consumer"`
+	BlockInterval   int64  `json:"block-interval" bson:"block-interval"`
+	MemoRegexp      string `json:"memo_regexp" bson:"memo_regexp"`
+	Identity        string `json:"identity" bson:"identity"`
+	Details         string `json:"details" bson:"details"`
+	Website         string `json:"website" bson:"website"`
+	CanonicalSymbol string `json:"canonical_symbol" bson:"canonical_symbol"`
 }
 
 type UdInfo struct {
@@ -194,7 +195,7 @@ type ValDescription struct {
 	Details  string `bson:"details"`
 }
 
-func (_ CommonTx) QueryByAddr(addr string, pageNum, pageSize int) (int, []CommonTx, error) {
+func (_ CommonTx) QueryByAddr(addr string, pageNum, pageSize int, istotal bool) (int, []CommonTx, error) {
 	var data []CommonTx
 	query := bson.M{}
 	query["$or"] = []bson.M{{"from": addr}, {"to": addr}, {"signers": bson.M{"$elemMatch": bson.M{"addr_bech32": addr}}}}
@@ -207,15 +208,15 @@ func (_ CommonTx) QueryByAddr(addr string, pageNum, pageSize int) (int, []Common
 		"$in": typeArr,
 	}
 
-	total, err := pageQuery(CollectionNmCommonTx, nil, query, desc(Tx_Field_Time), pageNum, pageSize, &data)
+	total, err := pageQuery(CollectionNmCommonTx, nil, query, desc(Tx_Field_Time), pageNum, pageSize, istotal, &data)
 
 	return total, data, err
 }
 
-func (_ CommonTx) QueryByPage(query bson.M, pageNum, pageSize int) (int, []CommonTx, error) {
+func (_ CommonTx) QueryByPage(query bson.M, pageNum, pageSize int, istotal bool) (int, []CommonTx, error) {
 	var data []CommonTx
 
-	total, err := pageQuery(CollectionNmCommonTx, nil, query, desc(Tx_Field_Time), pageNum, pageSize, &data)
+	total, err := pageQuery(CollectionNmCommonTx, nil, query, desc(Tx_Field_Time), pageNum, pageSize, istotal, &data)
 
 	return total, data, err
 }
@@ -346,7 +347,7 @@ func (_ CommonTx) QueryProposalTxListById(idArr []uint64) ([]document.CommonTx, 
 	return txs, err
 }
 
-func (_ CommonTx) QueryProposalTxById(proposalId int64, page, size int) (int, []CommonTx, error) {
+func (_ CommonTx) QueryProposalTxById(proposalId int64, page, size int, total bool) (int, []CommonTx, error) {
 
 	txs := []CommonTx{}
 
@@ -363,12 +364,12 @@ func (_ CommonTx) QueryProposalTxById(proposalId int64, page, size int) (int, []
 	}
 	sort := fmt.Sprintf("-%v", Tx_Field_Height)
 
-	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, &txs)
+	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, total, &txs)
 
 	return num, txs, err
 }
 
-func (_ CommonTx) QueryDepositedProposalTxByValidatorWithSubmitOrDepositType(validatorAddrAcc string, page, size int) (int, []CommonTx, error) {
+func (_ CommonTx) QueryDepositedProposalTxByValidatorWithSubmitOrDepositType(validatorAddrAcc string, page, size int, total bool) (int, []CommonTx, error) {
 
 	txs := []CommonTx{}
 	selector := bson.M{
@@ -386,12 +387,12 @@ func (_ CommonTx) QueryDepositedProposalTxByValidatorWithSubmitOrDepositType(val
 		},
 	}
 	sort := fmt.Sprintf("-%v", Tx_Field_Height)
-	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, &txs)
+	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, total, &txs)
 
 	return num, txs, err
 }
 
-func (_ CommonTx) QueryProposalTxByIdWithSubmitOrDepositType(proposalId int64, page, size int) (int, []CommonTx, error) {
+func (_ CommonTx) QueryProposalTxByIdWithSubmitOrDepositType(proposalId int64, page, size int, total bool) (int, []CommonTx, error) {
 
 	txs := []CommonTx{}
 	selector := bson.M{
@@ -409,12 +410,12 @@ func (_ CommonTx) QueryProposalTxByIdWithSubmitOrDepositType(proposalId int64, p
 		},
 	}
 	sort := fmt.Sprintf("-%v", Tx_Field_Height)
-	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, &txs)
+	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, total, &txs)
 
 	return num, txs, err
 }
 
-func (_ CommonTx) QueryTxAsset(assetType, tokenType string, page, size int) (int, []CommonTx, error) {
+func (_ CommonTx) QueryTxAsset(assetType, tokenType string, page, size int, total bool) (int, []CommonTx, error) {
 	txs := []CommonTx{}
 	selector := bson.M{
 		Tx_Field_Hash:   1,
@@ -440,6 +441,6 @@ func (_ CommonTx) QueryTxAsset(assetType, tokenType string, page, size int) (int
 		}
 	}
 	sort := fmt.Sprintf("-%v", Tx_Field_Height)
-	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, &txs)
+	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, total, &txs)
 	return num, txs, err
 }

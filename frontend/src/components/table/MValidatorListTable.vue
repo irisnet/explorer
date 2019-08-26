@@ -2,7 +2,7 @@
   <div :style="{'min-width': minWidth + 'rem'}">
     <m-table v-table-head-fixed
              :columns="validatorFields"
-             :data="items"
+             :data="validatorData"
              :sort-by.sync="sortBy"
              :sort-desc.sync="sortDesc">
       <template slot-scope="{ row }"
@@ -51,7 +51,12 @@ export default {
       validatorFields: [],
       sortBy: 'votingPower',
       sortDesc: true,
+      validatorData:[],
       activeValidatorFields: [
+        {
+          title: '#',
+          key: 'index',
+        },
         {
           title: 'Moniker',
           slot: 'moniker',
@@ -240,6 +245,16 @@ export default {
           this.validatorFields = this.jailedValidatorFields;
           break;
       }
+    }
+  },
+  watch:{
+    items(items){
+      if(items){
+        this.items.map((item,i)=>{
+          return item.index = i + 1
+        })
+      }
+      this.validatorData = this.items;
     }
   },
   mounted () {

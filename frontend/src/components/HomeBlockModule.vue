@@ -4,8 +4,8 @@
       <span class="home_module_block_title"
             :class="homeModuleBlockTitle"
       >{{moduleName}}</span>
-      <router-link class="view_all_btn" v-if="moduleTitle === 'blocks'" :to="moduleName === 'Blocks' ? `/blocks` : ``">
-        <span class="view_all_Content">View All</span>
+      <router-link class="view_all_btn" :to="moduleName === 'Blocks' ? `/blocks` : `/txs`">
+        <span class="view_all_Content">View All<i class="iconfont iconwangluoqiehuanjiantou"></i></span>
       </router-link>
     </div>
     <div class="home_module_block_content">
@@ -132,7 +132,7 @@
         text-align: center;
         padding-top: 0.16rem;
         @include fontSize;
-        color: #a2a2ae;
+        color: var(--contentColor);
       }
     }
 
@@ -153,6 +153,7 @@
       .home_module_block_title{
         font-size:0.18rem;
         @include fontWeight;
+        color:var(--moduleColor)
       }
       .blocks_background_img{
         background: url('../assets/blocks.png') no-repeat 0 0.02rem;
@@ -163,7 +164,6 @@
         text-indent:0.3rem;
       }
       .view_all_btn{
-        @include viewBtn;
       }
     }
     #echarts_pie{
@@ -261,7 +261,7 @@
           justify-content:center;
           span{
             @include fontSize;
-            color:#a2a2ae;
+            color:var(--contentColor);
             text-align: right;
           }
         }
@@ -290,6 +290,14 @@
     }
   }
   .view_all_Content{
-    color: #fff;
+    color: var(--bgColor);
+    font-size: 0.14rem;
+    border-bottom: 0.01rem solid var(--bgColor);
+    i{
+      display: inline-block;
+      transform: rotate(-90deg);
+      font-size: 0.14rem;
+      padding-top: 0.02rem;
+    }
   }
 </style>

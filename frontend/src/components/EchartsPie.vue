@@ -3,7 +3,7 @@
     <div class="echarts_title_wrap">
       <span class="validators_title">Validators Top10</span>
       <router-link class="validators_top" :to="`/validators`">
-        <span>View All</span>
+        <span>View All<i class="iconfont iconwangluoqiehuanjiantou"></i></span>
       </router-link>
     </div>
     <div id="echarts_pie">
@@ -198,9 +198,16 @@
       }
       .validators_top{
         span{
-          color:#c9eafd;
+          color:var(--bgColor);
+          border-bottom: 0.01rem solid var(--bgColor);
+          font-size: 0.14rem;
+          i{
+            display: inline-block;
+            padding-left: 0.02rem;
+            font-size: 0.14rem;
+            transform: rotate(-90deg);
+          }
         }
-        @include viewBtn;
       }
     }
     #echarts_pie{
