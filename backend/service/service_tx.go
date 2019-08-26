@@ -3,7 +3,6 @@ package service
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/irisnet/explorer/backend/model/msg"
 	"strconv"
 	"strings"
 	"time"
@@ -11,6 +10,7 @@ import (
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
+	"github.com/irisnet/explorer/backend/model/msgvo"
 	"github.com/irisnet/explorer/backend/orm/document"
 	dmsg "github.com/irisnet/explorer/backend/orm/document/msg"
 	"github.com/irisnet/explorer/backend/types"
@@ -24,234 +24,6 @@ type TxService struct {
 
 func (service *TxService) GetModule() Module {
 	return Tx
-}
-
-func (t *TxService) CopyTxFromDoc(tx document.CommonTx) model.CommonTx {
-
-	txList := t.CopyTxListFromDoc([]document.CommonTx{tx})
-
-	if len(txList) == 1 {
-		return txList[0]
-	}
-
-	return model.CommonTx{}
-}
-
-func (_ *TxService) CopyTxListFromDoc(data []document.CommonTx) []model.CommonTx {
-
-	commonTxUtils := make([]model.CommonTx, 0, len(data))
-
-	for _, v := range data {
-		tmpSignerArr := make([]model.Signer, 0, len(v.Signers))
-		for _, v := range v.Signers {
-			tmpSignerArr = append(tmpSignerArr, model.Signer{AddrHex: v.AddrHex, AddrBech32: v.AddrBech32})
-		}
-
-		tmpCoinArr := make([]utils.Coin, 0, len(v.Amount))
-		for _, v := range v.Amount {
-			tmpCoinArr = append(tmpCoinArr, utils.Coin{Denom: v.Denom, Amount: v.Amount})
-		}
-
-		tmpFee := utils.Fee{}
-		tmpFee.Gas = v.Fee.Gas
-		tmpFee.Amount = make([]utils.Coin, 0, len(v.Fee.Amount))
-
-		for _, v := range v.Fee.Amount {
-			tmpFee.Amount = append(tmpFee.Amount, utils.Coin{Denom: v.Denom, Amount: v.Amount})
-		}
-		tmpMsgsArr := make([]model.MsgItem, 0, len(v.Msgs))
-
-		for _, m := range v.Msgs {
-			switch m.Type {
-			case types.TxTypeIssueToken:
-				msgData := m.MsgData.(dmsg.TxMsgIssueToken)
-				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
-					Type: v.Type,
-					MsgData: msg.TxMsgIssueToken{
-						Family:          msgData.Family,
-						Source:          msgData.Source,
-						Gateway:         msgData.Gateway,
-						Symbol:          msgData.Symbol,
-						CanonicalSymbol: msgData.CanonicalSymbol,
-						Name:            msgData.Name,
-						Decimal:         msgData.Decimal,
-						MinUnitAlias:    msgData.MinUnitAlias,
-						InitialSupply:   msgData.InitialSupply,
-						MaxSupply:       msgData.MaxSupply,
-						Mintable:        msgData.Mintable,
-						Owner:           msgData.Owner,
-						UdInfo: msg.AssetTokenUdInfo{
-							Source:  msgData.UdInfo.Source,
-							Gateway: msgData.UdInfo.Gateway,
-							Symbol:  msgData.UdInfo.Symbol,
-						},
-					},
-				})
-
-			case types.TxTypeEditToken:
-				msgData := m.MsgData.(dmsg.TxMsgEditToken)
-				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
-					Type: v.Type,
-					MsgData: msg.TxMsgEditToken{
-						TokenId:         msgData.TokenId,
-						Owner:           msgData.Owner,
-						CanonicalSymbol: msgData.CanonicalSymbol,
-						MinUnitAlias:    msgData.MinUnitAlias,
-						MaxSupply:       msgData.MaxSupply,
-						Mintable:        msgData.Mintable,
-						Name:            msgData.Name,
-						UdInfo: msg.AssetTokenUdInfo{
-							Source:  msgData.UdInfo.Source,
-							Gateway: msgData.UdInfo.Gateway,
-							Symbol:  msgData.UdInfo.Symbol,
-						},
-					},
-				})
-
-			case types.TxTypeMintToken:
-				msgData := m.MsgData.(dmsg.TxMsgMintToken)
-				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
-					Type: v.Type,
-					MsgData: msg.TxMsgMintToken{
-						TokenId: msgData.TokenId,
-						Owner:   msgData.Owner,
-						To:      msgData.To,
-						Amount:  msgData.Amount,
-						UdInfo: msg.AssetTokenUdInfo{
-							Source:  msgData.UdInfo.Source,
-							Gateway: msgData.UdInfo.Gateway,
-							Symbol:  msgData.UdInfo.Symbol,
-						},
-					},
-				})
-
-			case types.TxTypeTransferTokenOwner:
-				msgData := m.MsgData.(dmsg.TxMsgTransferTokenOwner)
-				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
-					Type: v.Type,
-					MsgData: msg.TxMsgTransferTokenOwner{
-						SrcOwner: msgData.SrcOwner,
-						DstOwner: msgData.DstOwner,
-						TokenId:  msgData.TokenId,
-						UdInfo: msg.AssetTokenUdInfo{
-							Source:  msgData.UdInfo.Source,
-							Gateway: msgData.UdInfo.Gateway,
-							Symbol:  msgData.UdInfo.Symbol,
-						},
-					},
-				})
-
-			case types.TxTypeCreateGateway:
-				msgData := m.MsgData.(dmsg.TxMsgCreateGateway)
-				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
-					Type: v.Type,
-					MsgData: msg.TxMsgCreateGateway{
-						Owner:    msgData.Owner,
-						Moniker:  msgData.Moniker,
-						Identity: msgData.Identity,
-						Details:  msgData.Details,
-						Website:  msgData.Website,
-					},
-				})
-
-			case types.TxTypeEditGateway:
-				msgData := m.MsgData.(dmsg.TxMsgEditGateway)
-				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
-					Type: v.Type,
-					MsgData: msg.TxMsgEditGateway{
-						Owner:    msgData.Owner,
-						Moniker:  msgData.Moniker,
-						Identity: msgData.Identity,
-						Details:  msgData.Details,
-						Website:  msgData.Website,
-					},
-				})
-
-			case types.TxTypeTransferGatewayOwner:
-				msgData := m.MsgData.(dmsg.TxMsgTransferGatewayOwner)
-				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
-					Type: v.Type,
-					MsgData: msg.TxMsgTransferGatewayOwner{
-						Owner:   msgData.Owner,
-						Moniker: msgData.Moniker,
-						To:      msgData.To,
-					},
-				})
-
-			case types.TxTypeSetMemoRegexp:
-				msgData := m.MsgData.(dmsg.TxMsgSetMemoRegexp)
-
-				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
-					Type: v.Type,
-					MsgData: msg.TxMsgSetMemoRegexp{
-						Owner:      msgData.Owner,
-						MemoRegexp: msgData.MemoRegexp,
-					},
-				})
-
-			case types.TxTypeRequestRand:
-				fmt.Println(m.MsgData, "=================")
-				msgData := m.MsgData.(dmsg.TxMsgRequestRand)
-				fmt.Println("================")
-				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
-					Type: v.Type,
-					MsgData: msg.TxMsgRequestRand{
-						Consumer:      msgData.Consumer,
-						BlockInterval: msgData.BlockInterval,
-					},
-				})
-
-			}
-		}
-
-		tmpTx := model.CommonTx{
-			Time:       v.Time,
-			Height:     v.Height,
-			TxHash:     v.TxHash,
-			From:       v.From,
-			To:         v.To,
-			Type:       v.Type,
-			Memo:       v.Memo,
-			Status:     v.Status,
-			Code:       v.Code,
-			Log:        v.Log,
-			GasUsed:    v.GasUsed,
-			GasWanted:  v.GasWanted,
-			GasPrice:   v.GasPrice,
-			ProposalId: v.ProposalId,
-			Tags:       v.Tags,
-			Signers:    tmpSignerArr,
-			Amount:     tmpCoinArr,
-			Fee:        tmpFee,
-			ActualFee: utils.ActualFee{
-				Denom:  v.ActualFee.Denom,
-				Amount: v.ActualFee.Amount,
-			},
-			Msg: v.Msg,
-			StakeCreateValidator: model.StakeCreateValidator{
-				PubKey: v.StakeCreateValidator.PubKey,
-				Description: model.ValDescription{
-					Moniker:  v.StakeCreateValidator.Description.Moniker,
-					Identity: v.StakeCreateValidator.Description.Identity,
-					Website:  v.StakeCreateValidator.Description.Website,
-					Details:  v.StakeCreateValidator.Description.Details,
-				},
-			},
-			StakeEditValidator: model.StakeEditValidator{
-				Description: model.ValDescription{
-					Moniker:  v.StakeEditValidator.Description.Moniker,
-					Identity: v.StakeEditValidator.Description.Identity,
-					Website:  v.StakeEditValidator.Description.Website,
-					Details:  v.StakeEditValidator.Description.Details,
-				},
-			},
-			Msgs: tmpMsgsArr,
-		}
-
-		commonTxUtils = append(commonTxUtils, tmpTx)
-	}
-
-	return commonTxUtils
 }
 
 func (service *TxService) QueryTxList(query bson.M, page, pageSize int, istotal bool) model.PageVo {
@@ -572,6 +344,169 @@ func (service *TxService) QueryByAcc(address string, page, size int, istotal boo
 		result.Data = service.CopyTxListFromDoc(txList)
 	}
 	return
+}
+
+func (t *TxService) CopyTxFromDoc(tx document.CommonTx) model.CommonTx {
+
+	txList := t.CopyTxListFromDoc([]document.CommonTx{tx})
+
+	if len(txList) == 1 {
+		return txList[0]
+	}
+
+	return model.CommonTx{}
+}
+
+func (_ *TxService) CopyTxListFromDoc(data []document.CommonTx) []model.CommonTx {
+
+	commonTxUtils := make([]model.CommonTx, 0, len(data))
+
+	for _, v := range data {
+		tmpSignerArr := make([]model.Signer, 0, len(v.Signers))
+		for _, v := range v.Signers {
+			tmpSignerArr = append(tmpSignerArr, model.Signer{AddrHex: v.AddrHex, AddrBech32: v.AddrBech32})
+		}
+
+		tmpCoinArr := make([]utils.Coin, 0, len(v.Amount))
+		for _, v := range v.Amount {
+			tmpCoinArr = append(tmpCoinArr, utils.Coin{Denom: v.Denom, Amount: v.Amount})
+		}
+
+		tmpFee := utils.Fee{}
+		tmpFee.Gas = v.Fee.Gas
+		tmpFee.Amount = make([]utils.Coin, 0, len(v.Fee.Amount))
+
+		for _, v := range v.Fee.Amount {
+			tmpFee.Amount = append(tmpFee.Amount, utils.Coin{Denom: v.Denom, Amount: v.Amount})
+		}
+		tmpMsgsArr := make([]model.MsgItem, 0, len(v.Msgs))
+
+		// build tx msgVO
+		for _, m := range v.Msgs {
+			switch m.Type {
+			case types.TxTypeIssueToken:
+				msgData := m.MsgData.(dmsg.TxMsgIssueToken)
+				msgVO := msgvo.TxMsgIssueToken{}.BuildIssueTokenMsgVOFromDoc(msgData)
+				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
+					Type:    v.Type,
+					MsgData: msgVO,
+				})
+				break
+			case types.TxTypeEditToken:
+				msgData := m.MsgData.(dmsg.TxMsgEditToken)
+				msgVO := msgvo.TxMsgEditToken{}.BuildEditTokenMsgVOFromDoc(msgData)
+				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
+					Type:    v.Type,
+					MsgData: msgVO,
+				})
+				break
+			case types.TxTypeMintToken:
+				msgData := m.MsgData.(dmsg.TxMsgMintToken)
+				msgVO := msgvo.TxMsgMintToken{}.BuildMintTokenMsgVOFromDoc(msgData)
+				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
+					Type:    v.Type,
+					MsgData: msgVO,
+				})
+				break
+			case types.TxTypeTransferTokenOwner:
+				msgData := m.MsgData.(dmsg.TxMsgTransferTokenOwner)
+				msgVO := msgvo.TxMsgTransferTokenOwner{}.BuildTransferTokenOwnerMsgVOFromDoc(msgData)
+				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
+					Type:    v.Type,
+					MsgData: msgVO,
+				})
+				break
+			case types.TxTypeCreateGateway:
+				msgData := m.MsgData.(dmsg.TxMsgCreateGateway)
+				msgVO := msgvo.TxMsgCreateGateway{}.BuildCreateGatewayMsgVOFromDoc(msgData)
+				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
+					Type:    v.Type,
+					MsgData: msgVO,
+				})
+				break
+			case types.TxTypeEditGateway:
+				msgData := m.MsgData.(dmsg.TxMsgEditGateway)
+				msgVO := msgvo.TxMsgEditGateway{}.BuildEditGatewayMsgVOFromDoc(msgData)
+				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
+					Type:    v.Type,
+					MsgData: msgVO,
+				})
+				break
+			case types.TxTypeTransferGatewayOwner:
+				msgData := m.MsgData.(dmsg.TxMsgTransferGatewayOwner)
+				msgVO := msgvo.TxMsgTransferGatewayOwner{}.BuildTransferGatewayOwnerMsgVOFromDoc(msgData)
+				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
+					Type:    v.Type,
+					MsgData: msgVO,
+				})
+				break
+			case types.TxTypeSetMemoRegexp:
+				msgData := m.MsgData.(dmsg.TxMsgSetMemoRegexp)
+				msgVO := msgvo.TxMsgSetMemoRegexp{}.BuildSetMemoRegexpMsgVOFromDoc(msgData)
+				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
+					Type:    v.Type,
+					MsgData: msgVO,
+				})
+				break
+			case types.TxTypeRequestRand:
+				msgData := m.MsgData.(dmsg.TxMsgRequestRand)
+				msgVO := msgvo.TxMsgRequestRand{}.BuildRequestRandMsgVOFromDoc(msgData)
+				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
+					Type:    v.Type,
+					MsgData: msgVO,
+				})
+				break
+			}
+		}
+
+		tmpTx := model.CommonTx{
+			Time:       v.Time,
+			Height:     v.Height,
+			TxHash:     v.TxHash,
+			From:       v.From,
+			To:         v.To,
+			Type:       v.Type,
+			Memo:       v.Memo,
+			Status:     v.Status,
+			Code:       v.Code,
+			Log:        v.Log,
+			GasUsed:    v.GasUsed,
+			GasWanted:  v.GasWanted,
+			GasPrice:   v.GasPrice,
+			ProposalId: v.ProposalId,
+			Tags:       v.Tags,
+			Signers:    tmpSignerArr,
+			Amount:     tmpCoinArr,
+			Fee:        tmpFee,
+			ActualFee: utils.ActualFee{
+				Denom:  v.ActualFee.Denom,
+				Amount: v.ActualFee.Amount,
+			},
+			Msg: v.Msg,
+			StakeCreateValidator: model.StakeCreateValidator{
+				PubKey: v.StakeCreateValidator.PubKey,
+				Description: model.ValDescription{
+					Moniker:  v.StakeCreateValidator.Description.Moniker,
+					Identity: v.StakeCreateValidator.Description.Identity,
+					Website:  v.StakeCreateValidator.Description.Website,
+					Details:  v.StakeCreateValidator.Description.Details,
+				},
+			},
+			StakeEditValidator: model.StakeEditValidator{
+				Description: model.ValDescription{
+					Moniker:  v.StakeEditValidator.Description.Moniker,
+					Identity: v.StakeEditValidator.Description.Identity,
+					Website:  v.StakeEditValidator.Description.Website,
+					Details:  v.StakeEditValidator.Description.Details,
+				},
+			},
+			Msgs: tmpMsgsArr,
+		}
+
+		commonTxUtils = append(commonTxUtils, tmpTx)
+	}
+
+	return commonTxUtils
 }
 
 func (service *TxService) CountByType(query bson.M) model.TxStatisticsVo {

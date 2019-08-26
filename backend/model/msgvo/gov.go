@@ -1,4 +1,4 @@
-package msg
+package msgvo
 
 import (
 	"github.com/irisnet/explorer/backend/utils"

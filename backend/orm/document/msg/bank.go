@@ -5,7 +5,5 @@ type TxMsgSetMemoRegexp struct {
 	MemoRegexp string `bson:"memo_regexp"`
 }
 
-
-func (msg *TxMsgSetMemoRegexp) Nil() {
+func (msg TxMsgSetMemoRegexp) Nil() {
 }
-

@@ -20,9 +20,8 @@ type TxMsgSubmitTokenAdditionProposal struct {
 	InitialSupply   uint64 `bson:"initial_supply"`
 }
 
-func (msg *TxMsgSubmitProposal) Nil() {
+func (msg TxMsgSubmitProposal) Nil() {
 }
 
-func (msg *TxMsgSubmitTokenAdditionProposal) Nil() {
+func (msg TxMsgSubmitTokenAdditionProposal) Nil() {
 }
-

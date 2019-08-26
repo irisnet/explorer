@@ -72,23 +72,23 @@ type (
 	}
 )
 
-func (msg *TxMsgIssueToken) Nil() {
+func (msg TxMsgIssueToken) Nil() {
 }
 
-func (msg *TxMsgEditToken) Nil() {
+func (msg TxMsgEditToken) Nil() {
 }
 
-func (msg *TxMsgMintToken) Nil() {
+func (msg TxMsgMintToken) Nil() {
 }
 
-func (msg *TxMsgTransferTokenOwner) Nil() {
+func (msg TxMsgTransferTokenOwner) Nil() {
 }
 
-func (msg *TxMsgCreateGateway) Nil() {
+func (msg TxMsgCreateGateway) Nil() {
 }
 
-func (msg *TxMsgEditGateway) Nil() {
+func (msg TxMsgEditGateway) Nil() {
 }
 
-func (msg *TxMsgTransferGatewayOwner) Nil() {
+func (msg TxMsgTransferGatewayOwner) Nil() {
 }

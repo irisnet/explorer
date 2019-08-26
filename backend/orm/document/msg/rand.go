@@ -5,5 +5,5 @@ type TxMsgRequestRand struct {
 	BlockInterval int64  `bson:"block-interval"` // block interval after which the requested random number will be generated
 }
 
-func (msg *TxMsgRequestRand) Nil() {
+func (msg TxMsgRequestRand) Nil() {
 }
