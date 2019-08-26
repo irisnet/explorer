@@ -9,6 +9,8 @@ import (
 func RegisterAsset(r *mux.Router) error {
 	funs := []func(*mux.Router) error{
 		registerAssetTokens,
+		registerQueryNativeAsset,
+		registerQueryGatewayAsset,
 	}
 
 	for _, fn := range funs {
