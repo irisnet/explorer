@@ -637,8 +637,6 @@
 				}
 			},
 			setNetWorkLogo (currentEnv, currentChainId) {
-				currentEnv = 'testnet';
-				currentChainId = 'fuxi';
 				if (currentEnv === constant.ENVCONFIG.MAINNET && currentChainId === constant.CHAINID.MAINNET) {
 					this.explorerLogo = require("../assets/logo.png");
 					this.currentNetworkClass = 'iconfont iconiris'
