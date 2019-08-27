@@ -49,22 +49,6 @@
 			linkGen(pageNum) {
                 return pageNum === 1 ? '?' : `?page=${pageNum}`
             },
-            formatDatas(data) {
-                for (let it of data) {
-                    for(let i in it) {
-                        if(i) {
-                            it[this.forGreatHump(i)] = it[i];
-                        }
-                    }
-                }
-            },
-            forGreatHump(word) {
-                let re = /\b([a-z]{1})|\_([a-z]{1})/g
-                let k = word.replace(re, (w) => {
-                    return w.replace("_", "").toUpperCase()
-                })
-                return k
-            },
 			getTransactionList(currentPage, pageSize){
 				let that = this, parmas;
 				if(this.$route.params.txType === 'transfers'){
@@ -87,7 +71,6 @@
 						this.totalPageNum =  Math.ceil((txList.Count/this.pageSize) === 0 ? 1 : (txList.Count/this.pageSize));
 						sessionStorage.setItem('txpagenum',JSON.stringify(this.totalPageNum));
 						if(txList.Data){
-                            this.formatDatas(txList.Data);
 							this.txList = Tools.formatTxList(txList.Data,that.$route.params.txType)
 						}else{
 							this.txList = [];

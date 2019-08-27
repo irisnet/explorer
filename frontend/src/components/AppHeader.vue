@@ -436,7 +436,7 @@
 				Service.commonInterface({headerTx:{searchValue: this.searchInputValue}}, (tx) => {
 					try {
 						if (tx) {
-							this.$router.push(`/tx?txHash=${tx.Hash}`);
+							this.$router.push(`/tx?txHash=${tx.hash}`);
 							this.clearSearchInputValue();
 						} else {
 							this.toSearchResultPage();

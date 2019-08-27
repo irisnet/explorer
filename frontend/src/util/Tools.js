@@ -392,91 +392,91 @@ export default class Tools{
 			return list.map(item => {
 				let [Amount,Fee,transferAmount,transferFee,tokenId] = ['--','--','--','--'];
 				let commonHeaderObjList,objList,commonFooterObjList;
-				if(item.Amount){
-					if(item.Amount instanceof Array && item.Amount.length > 0){
-						if(item.Amount[0].denom && item.Amount[0].amount && item.Amount[0].denom === Constant.Denom.IRISATTO){
-							transferAmount = item.Amount[0].formatAmount = item.Amount[0].amount > 0 ? Tools.formatAmount(item.Amount[0].amount) : item.Amount[0].amount;
-							tokenId = item.Amount[0].tokenId = Constant.Denom.IRIS.toLocaleUpperCase();
-							Amount = item.Amount.map(listItem=>`${listItem.formatAmount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
-						}else if(item.Amount[0].denom && item.Amount[0].amount && item.Amount[0].denom !== Constant.Denom.IRISATTO){
-							transferAmount = item.Amount[0].formatAmount = Tools.FormatScientificNotationToNumber(item.Amount[0].amount);
-							tokenId = item.Amount[0].tokenId = item.Amount[0].denom.toLocaleUpperCase();
+				if(item.amount){
+					if(item.amount instanceof Array && item.amount.length > 0){
+						if(item.amount[0].denom && item.amount[0].amount && item.amount[0].denom === Constant.Denom.IRISATTO){
+							transferAmount = item.amount[0].formatAmount = item.amount[0].amount > 0 ? Tools.formatAmount(item.amount[0].amount) : item.amount[0].amount;
+							tokenId = item.amount[0].tokenId = Constant.Denom.IRIS.toLocaleUpperCase();
+							Amount = item.amount.map(listItem=>`${listItem.formatAmount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
+						}else if(item.amount[0].denom && item.amount[0].amount && item.amount[0].denom !== Constant.Denom.IRISATTO){
+							transferAmount = item.amount[0].formatAmount = Tools.FormatScientificNotationToNumber(item.amount[0].amount);
+							tokenId = item.amount[0].tokenId = item.amount[0].denom.toLocaleUpperCase();
 						}else {
-							transferAmount = item.Amount[0].formatAmount = item.Amount[0].amount;
-							tokenId = item.Amount[0].tokenId = item.Amount[0].denom.toLocaleUpperCase();
+							transferAmount = item.amount[0].formatAmount = item.amount[0].amount;
+							tokenId = item.amount[0].tokenId = item.amount[0].denom.toLocaleUpperCase();
 							if(item.Type === 'BeginUnbonding' || item.Type === 'BeginRedelegate'){
-								item.Amount[0].formatAmount = item.Amount[0].amount > 0 ? Tools.formatAmount(item.Amount[0].amount) : item.Amount[0].amount;
-								Amount = item.Amount.map(listItem => `${listItem.formatAmount} SHARES`).join(',');
+								item.amount[0].formatAmount = item.amount[0].amount > 0 ? Tools.formatAmount(item.amount[0].amount) : item.amount[0].amount;
+								Amount = item.amount.map(listItem => `${listItem.formatAmount} SHARES`).join(',');
 							}
 						}
-					}else if(item.Amount && Object.keys(item.Amount).includes('amount') && Object.keys(item.Amount).includes('denom')){
-						if(item.Amount.denom === Constant.Denom.IRISATTO){
-							transferAmount = Tools.formatAmount(item.Amount);
+					}else if(item.amount && Object.keys(item.amount).includes('amount') && Object.keys(item.amount).includes('denom')){
+						if(item.amount.denom === Constant.Denom.IRISATTO){
+							transferAmount = Tools.formatAmount(item.amount);
 							tokenId = Constant.Denom.IRIS.toLocaleUpperCase()
-							Amount = `${transferAmount}  ${Tools.formatDenom(item.Amount.denom).toUpperCase()}`;
+							Amount = `${transferAmount}  ${Tools.formatDenom(item.amount.denom).toUpperCase()}`;
 							
-						}else if(!item.Amount.denom){
-							transferAmount = Tools.FormatScientificNotationToNumber(item.Amount);
+						}else if(!item.amount.denom){
+							transferAmount = Tools.FormatScientificNotationToNumber(item.amount);
 							tokenId = ''
 						}else {
-							transferAmount = item.Amount;
+							transferAmount = item.amount;
 							tokenId = item.denom.toLocaleUpperCase();
 							if(item.Type === 'BeginUnbonding' || item.Type === 'BeginRedelegate'){
-								Amount = item.Amount.map(listItem => `${listItem.amount} SHARES`).join(',');
+								Amount = item.amount.map(listItem => `${listItem.amount} SHARES`).join(',');
 							}
 						}
 					}
 				}
-				if(item.Fee.amount && item.Fee.denom){
-					let feeAmount = item.Fee.amount;
+				if(item.fee.amount && item.fee.denom){
+					let feeAmount = item.fee.amount;
 					transferFee = `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(feeAmount)))}`;
-					Fee = `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(feeAmount)),4)} ${Tools.formatDenom(item.Fee.denom).toUpperCase()}`;
+					Fee = `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(feeAmount)),4)} ${Tools.formatDenom(item.fee.denom).toUpperCase()}`;
 				}
 				commonHeaderObjList = {
-					'Tx_Hash' : item.Hash,
-					'Block' : item.BlockHeight
+					'Tx_Hash' : item.hash,
+					'Block' : item.block_height
 				};
 				commonFooterObjList = {
-					'Tx_Type': item.Type,
+					'Tx_Type': item.type,
 					'Tx_Fee': Fee,
-					'Tx_Signer': item.Signer ? item.Signer : '',
-					'Tx_Status': Tools.firstWordUpperCase(item.Status),
-					'Timestamp': Tools.format2UTC(item.Timestamp),
+					'Tx_Signer': item.signer ? item.signer : '',
+					'Tx_Status': Tools.firstWordUpperCase(item.status),
+					'Timestamp': Tools.format2UTC(item.timestamp),
 				};
 				if(txType === 'transfers' ){
 					objList = {
-						'From':item.From?item.From:(item.DelegatorAddr?item.DelegatorAddr:'--'),
+						'From':item.from?item.from:(item.DelegatorAddr?item.delegatorAddr:'--'),
 						Amount:transferAmount,
 						'transferFee': transferFee,
 						tokenId,
-						'To':item.To?item.To:(item.ValidatorAddr?item.ValidatorAddr:'--'),
+						'To':item.to?item.to:(item.validatorAddr?item.validatorAddr:'--'),
 						'listName':'transfer'
 					};
 				}else if(txType === 'validations'){
-					let Moniker = item.Moniker;
+					let Moniker = item.moniker;
 					objList = {
-						'Moniker': item.Moniker ? Tools.formatString(Moniker,15,"...") : "--",
+						'Moniker': item.moniker ? Tools.formatString(Moniker,15,"...") : "--",
 						Amount,
-						'OperatorAddr': item.OperatorAddr ? item.OperatorAddr : '--',
+						'OperatorAddr': item.operator_addr ? item.operator_addr : '--',
 						'listName':'declarations',
-						'Self_Bonded': item.Self_Bonded
+						'Self_Bonded': item.self_bonded
 					}
 				}else if(txType === 'delegations'){
 					objList = {
-						'From': `${item.From ? item.From : (item.DelegatorAddr?item.DelegatorAddr:'--')}`,
+						'From': `${item.from ? item.from : (item.DelegatorAddr?item.delegatorAddr:'--')}`,
 						Amount,
-						'To': `${item.To ? item.To : (item.ValidatorAddr?item.ValidatorAddr:'--')}`,
+						'To': `${item.to ? item.to : (item.validatorAddr?item.validatorAddr:'--')}`,
 						'listName':'stakes',
 						fromMoniker: item.from_moniker,
 						toMoniker: item.to_moniker
 					}
 				}else if(txType === 'governance'){
 					objList = {
-						'Proposal_Type': item.ProposalType ? item.ProposalType : '--',
-						"Proposal_ID": item.ProposalId === 0 ? "--" : item.ProposalId,
-						'Proposal_Title': item.Title ?  Tools.formatString(item.Title,15,"...") : '--',
+						'Proposal_Type': item.proposalType ? item.proposalType : '--',
+						"Proposal_ID": item.proposalId === 0 ? "--" : item.proposalId,
+						'Proposal_Title': item.title ?  Tools.formatString(item.title,15,"...") : '--',
 						Amount,
-						'Tx_Type': item.Type,
+						'Tx_Type': item.type,
 						'Tx_Fee': '',
 						'listName':'gov'
 					}

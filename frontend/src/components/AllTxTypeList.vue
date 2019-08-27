@@ -86,13 +86,13 @@
 				            sessionStorage.setItem('txsTotal',res.Count);
 				            this.allTxTypeList = res.Data.map( item => {
 					            return {
-						            txHash:item.Hash,
-						            block: item.BlockHeight,
-						            type: item.Type,
-						            fee: this.formatFee(item.Fee),
-						            signer: item.Signer,
-						            status: item.Status,
-						            timestamp: Tools.format2UTC(item.Timestamp)
+						            txHash:item.hash,
+						            block: item.block_height,
+						            type: item.type,
+						            fee: this.formatFee(item.fee),
+						            signer: item.signer,
+						            status: item.status,
+						            timestamp: Tools.format2UTC(item.timestamp)
 					            }
 				            })
 

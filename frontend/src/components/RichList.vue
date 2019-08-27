@@ -198,11 +198,11 @@ export default {
                     }
                     .tooltip_span {
                         width: 2.4rem;
-                        display: none;
-                        position: fixed;
+                        display: block;
+                        position: absolute;
                         z-index: 5;
                         margin-top: 30px;
-                        left: 2.55rem;
+                        left: 0.25rem;
                         transform: translateY(-50%);
                         color: #ffffff;
                         background-color: #000000;
@@ -282,12 +282,48 @@ export default {
             line-height: 0.25rem;
         }
     }
-}
-@media screen and (max-width: 910px){
     .top_list_page {
         .top_list_title_container{
             position: static;
+            .top_list_title_content{
+                & > div.top_list_title_content_div{
+                    .tooltip_icon{
+                        .tooltip_span{
+                            width: 2.4rem;
+                            display: none;
+                            position: fixed;
+                            z-index: 100000;
+                            left: auto;
+                            margin-top: -20px;
+                            transform: translateY(-50%);
+                            color: #ffffff;
+                            background-color: #000000;
+                            border-radius: 0.04rem;
+                            word-wrap: break-word;
+                            white-space: normal;
+                            line-height: 16px;
+                            div {
+                                padding: 8px 15px;
+                            }
+                            &::after {
+                                width: 0;
+                                height: 0;
+                                border: 0.06rem solid transparent;
+                                content: "";
+                                display: block;
+                                position: absolute;
+                                border-top-color: #000000;
+                                transform: rotate(0deg);
+                                top:auto;
+                                left:53%;
+                                bottom:-0.1rem;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
+
 </style>

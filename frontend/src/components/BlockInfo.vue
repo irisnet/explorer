@@ -59,7 +59,7 @@
                 </div>
             </div>
             <div class="block_result_container" v-show="flBlockStakeModule">
-                <div class="block_result_title">Stakes</div>
+                <div class="block_result_title">Delegations</div>
                 <div class="block_result_table_content">
                     <blocks-list-table :items="stakeList"
                                        :showNoData="flBlockStakeNoData" :min-width="tableMinWidth"></blocks-list-table>
@@ -70,7 +70,7 @@
                 </div>
             </div>
             <div class="block_result_container" v-show="flBlockDeclarationModule">
-                <div class="block_result_title">Declarations</div>
+                <div class="block_result_title">Validations</div>
                 <div class="block_result_table_content">
                     <blocks-list-table :items="declarationList"
                                        :showNoData="flBlockDeclarationNoData" :min-width="tableMinWidth"></blocks-list-table>
@@ -379,9 +379,9 @@
 			        }else {
 				        this.flShowStakeListPagination = false
 			        }
-			        this.stakeList = Tools.formatTxList(txList.Data,'stakes')
+			        this.stakeList = Tools.formatTxList(txList.Data,'delegations')
 		        }else {
-			        this.stakeList = Tools.formatTxList(null,'stakes');
+			        this.stakeList = Tools.formatTxList(null,'delegations');
 			        this.flBlockStakeNoData = true;
 			        this.flBlockStakeModule = false;
 		        }
@@ -396,9 +396,9 @@
 			        }else {
 				        this.flShowDeclarationPagination = false
 			        }
-			        this.declarationList = Tools.formatTxList(txList.Data,'declarations')
+			        this.declarationList = Tools.formatTxList(txList.Data,'validations')
 		        }else {
-			        this.declarationList = Tools.formatTxList(null,'declarations');
+			        this.declarationList = Tools.formatTxList(null,'validations');
 			        this.flBlockDeclarationNoData = true;
 			        this.flBlockDeclarationModule = false;
 		        }
