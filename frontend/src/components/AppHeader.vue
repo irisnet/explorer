@@ -797,6 +797,9 @@
                                         color:var(--bgColor)
                                     }
                                 }
+                                .network_list_item:last-child{
+                                    padding-bottom: 0.1rem;
+                                }
                             }
                         }
                     }
