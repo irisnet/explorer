@@ -116,14 +116,37 @@ type Msg interface {
 }
 
 type MsgItem struct {
-	Type    string  `bson:"type"`
-	MsgData MsgContent `bson:"msg"`
+	Type    string     `bson:"type"`
+	MsgData interface{} `bson:"msg"`
 }
 
-type MsgContent interface {
-	Nil()
-}
 
+//type MsgData struct {
+//	TokenId         string `json:"token_id" bson:"token_id"`
+//	To              string `json:"to" bson:"to"`
+//	Family          string `json:"family" bson:"family"`
+//	Source          string `json:"source" bson:"source"`
+//	Gateway         string `json:"gateway" bson:"gateway"`
+//	Symbol          string `json:"symbol" bson:"symbol"`
+//	CanonicalSymbol string `json:"canonical_symbol" bson:"canonical_symbol"`
+//	Name            string `json:"name" bson:"name"`
+//	Decimal         int32  `json:"decimal" bson:"decimal"`
+//	MinUnitAlias    string `json:"min_unit_alias" bson:"min_unit_alias"`
+//	InitialSupply   int64  `json:"initial_supply" bson:"initial_supply"`
+//	MaxSupply       int64  `json:"max_supply" bson:"max_supply"`
+//	Amount          int64  `json:"amount" bson:"amount"`
+//	Mintable        bool   `json:"mintable" bson:"mintable"`
+//	Owner           string `json:"owner" bson:"owner"`
+//	SrcOwner        string `json:"src_owner" bson:"src_owner"`
+//	DstOwner        string `json:"dst_owner" bson:"dst_owner"`
+//	UdInfo          UdInfo `json:"ud_info" bson:"ud_info"`
+//}
+//
+//type UdInfo struct {
+//	Source  string `json:"source" bson:"source"`
+//	Gateway string `json:"gateway" bson:"gateway"`
+//	Symbol  string `json:"symbol" bson:"symbol"`
+//}
 
 type StakeCreateValidator struct {
 	PubKey      string         `bson:"pub_key"`

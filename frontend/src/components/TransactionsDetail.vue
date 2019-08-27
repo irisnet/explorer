@@ -83,6 +83,7 @@
             <p
                 class="transaction_information_content_title"
                 style="height: 0.7rem; line-height: 0.7rem;"
+                v-show="txTypeSignData.length > 0"
             >Transaction Message</p>
             <div
                 class="transactions_detail_information_wrap"
@@ -624,7 +625,7 @@ export default {
                     v: ""
                 },
                 "Block Interval": {
-                    k: "block-interval",
+                    k: "block_interval",
                     v: ""
                 },
                 "Request ID": {
@@ -655,6 +656,9 @@ export default {
     computed: {
         txTypeSignData() {
             let data = this[this.txTypeSign];
+            if (!data) {
+                return [];
+            }
             if (Array.isArray(data)) {
                 return data;
             } else {
@@ -776,10 +780,10 @@ export default {
                     if (i === "Identity") {
                         this.getKeyBaseName(it[o[i].k], o[i]);
                     }
-                    o[i].v = fieidValue || o[i].v;
-                    if (i === "Mintable") {
-                        o[i].v = fieidValue;
-                    }
+                    o[i].v =
+                        fieidValue === "" || fieidValue === undefined
+                            ? o[i].v
+                            : fieidValue;
                 }
                 arr.push(o);
             }

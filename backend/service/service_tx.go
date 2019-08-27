@@ -3,6 +3,7 @@ package service
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/irisnet/explorer/backend/model/msgvo"
 	"strconv"
 	"strings"
 	"time"
@@ -10,9 +11,7 @@ import (
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/model"
-	"github.com/irisnet/explorer/backend/model/msgvo"
 	"github.com/irisnet/explorer/backend/orm/document"
-	dmsg "github.com/irisnet/explorer/backend/orm/document/msg"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
@@ -358,7 +357,6 @@ func (t *TxService) CopyTxFromDoc(tx document.CommonTx) model.CommonTx {
 }
 
 func (_ *TxService) CopyTxListFromDoc(data []document.CommonTx) []model.CommonTx {
-
 	commonTxUtils := make([]model.CommonTx, 0, len(data))
 
 	for _, v := range data {
@@ -383,80 +381,86 @@ func (_ *TxService) CopyTxListFromDoc(data []document.CommonTx) []model.CommonTx
 
 		// build tx msgVO
 		for _, m := range v.Msgs {
+			var msgDataVO interface{}
 			switch m.Type {
 			case types.TxTypeIssueToken:
-				msgData := m.MsgData.(dmsg.TxMsgIssueToken)
-				msgVO := msgvo.TxMsgIssueToken{}.BuildIssueTokenMsgVOFromDoc(msgData)
-				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
-					Type:    v.Type,
-					MsgData: msgVO,
-				})
+				msgVO := msgvo.TxMsgIssueToken{}
+				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
+					logger.Error("BuildTxMsgIssueTokenByUnmarshalJson", logger.String("err", err.Error()))
+				} else {
+					msgDataVO = msgVO
+				}
 				break
 			case types.TxTypeEditToken:
-				msgData := m.MsgData.(dmsg.TxMsgEditToken)
-				msgVO := msgvo.TxMsgEditToken{}.BuildEditTokenMsgVOFromDoc(msgData)
-				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
-					Type:    v.Type,
-					MsgData: msgVO,
-				})
+				msgVO := msgvo.TxMsgEditToken{}
+				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
+					logger.Error("BuildTxMsgEditTokenByUnmarshalJson", logger.String("err", err.Error()))
+				} else {
+					msgDataVO = msgVO
+				}
 				break
 			case types.TxTypeMintToken:
-				msgData := m.MsgData.(dmsg.TxMsgMintToken)
-				msgVO := msgvo.TxMsgMintToken{}.BuildMintTokenMsgVOFromDoc(msgData)
-				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
-					Type:    v.Type,
-					MsgData: msgVO,
-				})
+				msgVO := msgvo.TxMsgMintToken{}
+				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
+					logger.Error("BuildTxMsgMintTokenByUnmarshalJson", logger.String("err", err.Error()))
+				} else {
+					msgDataVO = msgVO
+				}
 				break
 			case types.TxTypeTransferTokenOwner:
-				msgData := m.MsgData.(dmsg.TxMsgTransferTokenOwner)
-				msgVO := msgvo.TxMsgTransferTokenOwner{}.BuildTransferTokenOwnerMsgVOFromDoc(msgData)
-				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
-					Type:    v.Type,
-					MsgData: msgVO,
-				})
+				msgVO := msgvo.TxMsgTransferTokenOwner{}
+				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
+					logger.Error("BuildTxMsgTransferTokenOwnerByUnmarshalJson", logger.String("err", err.Error()))
+				} else {
+					msgDataVO = msgVO
+				}
 				break
 			case types.TxTypeCreateGateway:
-				msgData := m.MsgData.(dmsg.TxMsgCreateGateway)
-				msgVO := msgvo.TxMsgCreateGateway{}.BuildCreateGatewayMsgVOFromDoc(msgData)
-				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
-					Type:    v.Type,
-					MsgData: msgVO,
-				})
+				msgVO := msgvo.TxMsgCreateGateway{}
+				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
+					logger.Error("BuildTxMsgCreateGatewayByUnmarshalJson", logger.String("err", err.Error()))
+				} else {
+					msgDataVO = msgVO
+				}
 				break
 			case types.TxTypeEditGateway:
-				msgData := m.MsgData.(dmsg.TxMsgEditGateway)
-				msgVO := msgvo.TxMsgEditGateway{}.BuildEditGatewayMsgVOFromDoc(msgData)
-				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
-					Type:    v.Type,
-					MsgData: msgVO,
-				})
+				msgVO := msgvo.TxMsgEditGateway{}
+				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
+					logger.Error("BuildTxMsgEditGatewayByUnmarshalJson", logger.String("err", err.Error()))
+				} else {
+					msgDataVO = msgVO
+				}
 				break
 			case types.TxTypeTransferGatewayOwner:
-				msgData := m.MsgData.(dmsg.TxMsgTransferGatewayOwner)
-				msgVO := msgvo.TxMsgTransferGatewayOwner{}.BuildTransferGatewayOwnerMsgVOFromDoc(msgData)
-				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
-					Type:    v.Type,
-					MsgData: msgVO,
-				})
+				msgVO := msgvo.TxMsgTransferGatewayOwner{}
+				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
+					logger.Error("BuildTxMsgTransferGatewayOwnerByUnmarshalJson", logger.String("err", err.Error()))
+				} else {
+					msgDataVO = msgVO
+				}
 				break
 			case types.TxTypeSetMemoRegexp:
-				msgData := m.MsgData.(dmsg.TxMsgSetMemoRegexp)
-				msgVO := msgvo.TxMsgSetMemoRegexp{}.BuildSetMemoRegexpMsgVOFromDoc(msgData)
-				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
-					Type:    v.Type,
-					MsgData: msgVO,
-				})
+				msgVO := msgvo.TxMsgSetMemoRegexp{}
+				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
+					logger.Error("BuildTxMsgSetMemoRegexpByUnmarshalJson", logger.String("err", err.Error()))
+				} else {
+					msgDataVO = msgVO
+				}
 				break
 			case types.TxTypeRequestRand:
-				msgData := m.MsgData.(dmsg.TxMsgRequestRand)
-				msgVO := msgvo.TxMsgRequestRand{}.BuildRequestRandMsgVOFromDoc(msgData)
-				tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
-					Type:    v.Type,
-					MsgData: msgVO,
-				})
+				msgVO := msgvo.TxMsgRequestRand{}
+				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
+					logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
+				} else {
+					msgDataVO = msgVO
+				}
 				break
 			}
+
+			tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
+				Type:    v.Type,
+				MsgData: msgDataVO,
+			})
 		}
 
 		tmpTx := model.CommonTx{

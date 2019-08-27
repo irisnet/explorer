@@ -1,6 +1,8 @@
 package msgvo
 
-import "github.com/irisnet/explorer/backend/orm/document/msg"
+import (
+	"encoding/json"
+)
 
 type (
 	TxMsgIssueToken struct {
@@ -74,97 +76,30 @@ type (
 	}
 )
 
-func (vo *TxMsgIssueToken) BuildIssueTokenMsgVOFromDoc(msgData msg.TxMsgIssueToken) TxMsgIssueToken {
-	return TxMsgIssueToken{
-		Family:          msgData.Family,
-		Source:          msgData.Source,
-		Gateway:         msgData.Gateway,
-		Symbol:          msgData.Symbol,
-		CanonicalSymbol: msgData.CanonicalSymbol,
-		Name:            msgData.Name,
-		Decimal:         msgData.Decimal,
-		MinUnitAlias:    msgData.MinUnitAlias,
-		InitialSupply:   msgData.InitialSupply,
-		MaxSupply:       msgData.MaxSupply,
-		Mintable:        msgData.Mintable,
-		Owner:           msgData.Owner,
-		UdInfo: AssetTokenUdInfo{
-			Source:  msgData.UdInfo.Source,
-			Gateway: msgData.UdInfo.Gateway,
-			Symbol:  msgData.UdInfo.Symbol,
-		},
-	}
+func (vo *TxMsgIssueToken) BuildMsgByUnmarshalJson(data []byte) error {
+	return json.Unmarshal(data, vo)
 }
 
-func (vo *TxMsgEditToken) BuildEditTokenMsgVOFromDoc(msgData msg.TxMsgEditToken) TxMsgEditToken {
-	return TxMsgEditToken{
-		TokenId:         msgData.TokenId,
-		Owner:           msgData.Owner,
-		CanonicalSymbol: msgData.CanonicalSymbol,
-		MinUnitAlias:    msgData.MinUnitAlias,
-		MaxSupply:       msgData.MaxSupply,
-		Mintable:        msgData.Mintable,
-		Name:            msgData.Name,
-		UdInfo: AssetTokenUdInfo{
-			Source:  msgData.UdInfo.Source,
-			Gateway: msgData.UdInfo.Gateway,
-			Symbol:  msgData.UdInfo.Symbol,
-		},
-	}
+func (vo *TxMsgEditToken) BuildMsgByUnmarshalJson(data []byte) error {
+	return json.Unmarshal(data, vo)
 }
 
-func (vo *TxMsgMintToken) BuildMintTokenMsgVOFromDoc(msgData msg.TxMsgMintToken) TxMsgMintToken {
-	return TxMsgMintToken{
-		TokenId: msgData.TokenId,
-		Owner:   msgData.Owner,
-		To:      msgData.To,
-		Amount:  msgData.Amount,
-		UdInfo: AssetTokenUdInfo{
-			Source:  msgData.UdInfo.Source,
-			Gateway: msgData.UdInfo.Gateway,
-			Symbol:  msgData.UdInfo.Symbol,
-		},
-	}
+func (vo *TxMsgMintToken) BuildMsgByUnmarshalJson(data []byte) error {
+	return json.Unmarshal(data, vo)
 }
 
-func (vo *TxMsgTransferTokenOwner) BuildTransferTokenOwnerMsgVOFromDoc(
-	msgData msg.TxMsgTransferTokenOwner) TxMsgTransferTokenOwner {
-	return TxMsgTransferTokenOwner{
-		SrcOwner: msgData.SrcOwner,
-		DstOwner: msgData.DstOwner,
-		TokenId:  msgData.TokenId,
-		UdInfo: AssetTokenUdInfo{
-			Source:  msgData.UdInfo.Source,
-			Gateway: msgData.UdInfo.Gateway,
-			Symbol:  msgData.UdInfo.Symbol,
-		},
-	}
+func (vo *TxMsgTransferTokenOwner) BuildMsgByUnmarshalJson(data []byte) error {
+	return json.Unmarshal(data, vo)
 }
 
-func (vo *TxMsgCreateGateway) BuildCreateGatewayMsgVOFromDoc(msgData msg.TxMsgCreateGateway) TxMsgCreateGateway {
-	return TxMsgCreateGateway{
-		Owner:    msgData.Owner,
-		Moniker:  msgData.Moniker,
-		Identity: msgData.Identity,
-		Details:  msgData.Details,
-		Website:  msgData.Website,
-	}
+func (vo *TxMsgCreateGateway) BuildMsgByUnmarshalJson(data []byte) error {
+	return json.Unmarshal(data, vo)
 }
 
-func (vo *TxMsgEditGateway) BuildEditGatewayMsgVOFromDoc(msgData msg.TxMsgEditGateway) TxMsgEditGateway {
-	return TxMsgEditGateway{
-		Owner:    msgData.Owner,
-		Moniker:  msgData.Moniker,
-		Identity: msgData.Identity,
-		Details:  msgData.Details,
-		Website:  msgData.Website,
-	}
+func (vo *TxMsgEditGateway) BuildMsgByUnmarshalJson(data []byte) error {
+	return json.Unmarshal(data, vo)
 }
 
-func (vo *TxMsgTransferGatewayOwner) BuildTransferGatewayOwnerMsgVOFromDoc(msgData msg.TxMsgTransferGatewayOwner) TxMsgTransferGatewayOwner {
-	return TxMsgTransferGatewayOwner{
-		Owner:   msgData.Owner,
-		Moniker: msgData.Moniker,
-		To:      msgData.To,
-	}
+func (vo *TxMsgTransferGatewayOwner) BuildMsgByUnmarshalJson(data []byte) error {
+	return json.Unmarshal(data, vo)
 }

@@ -14,7 +14,7 @@ import (
 
 func TestGetDelegationsFromLcd(t *testing.T) {
 
-	delegationPage := new(ValidatorService).GetDelegationsFromLcd("fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx", 1, 5,false)
+	delegationPage := new(ValidatorService).GetDelegationsFromLcd("fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx", 1, 5,false, true)
 	t.Logf(" %v \n", delegationPage)
 }
 
@@ -84,7 +84,7 @@ func TestQueryCandidateUptime(t *testing.T) {
 
 func TestGetValidators(t *testing.T) {
 
-	validatorList := new(ValidatorService).GetValidators("jailed", "browser", 0, 100)
+	validatorList := new(ValidatorService).GetValidators("jailed", "browser", 0, 100, true)
 
 	//res := validatorList.([]lcd.ValidatorVo)
 	resBytes, _ := json.Marshal(validatorList)

@@ -21,7 +21,7 @@ export default {
     data() {
         return {
             timer: null,
-            tipText: "Copy Success",
+            tipText: "Copied",
             resizeTimer: null
         };
     },
@@ -35,11 +35,11 @@ export default {
             );
         },
         successHandle() {
-            this.tipText = "Copy Success";
+            this.tipText = "Copied";
             this.showTip();
         },
         errorHandle() {
-            this.tipText = "Copy failed";
+            this.tipText = "failed";
             this.showTip();
         },
         showTip() {
