@@ -264,7 +264,7 @@
 							value: votes,
 							perData: Tools.formatDecimalNumberToFixedNumber(votes / all * 100),
 							itemStyle: {
-								color: 'var(--bgColor)',
+								color: '#3598DB',
 								borderColor: '#ECEFFF',
 								borderWidth: 0
 							},

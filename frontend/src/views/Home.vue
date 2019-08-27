@@ -188,7 +188,7 @@
                 Service.commonInterface({candidatesTop:{}},(data) => {
                 	try {
 		                if(data){
-			                let colors = ['#4E61E7', '#586BF1', '#6577F6', '#7181F7', '#7B8AFA', '#8997FC', '#94A1FF', '#9AA5FC', '#A5AFFF', '#AFB8FD', '#E9EBFC',];
+			                let colors = ['#3498db', '#47a2df', '#59ade3', '#6cb7e7', '#7fc2eb', '#91ccef', '#a4d7f3', '#b7e1f7', '#c9ecfb', '#dcf6ff', '#f0f9ff',];
 			                let [seriesData, legendData] = [[], []];
 			                if (data.validators instanceof Array) {
 				                let totalCount = 0;
