@@ -445,11 +445,11 @@ export default class Tools{
 				};
 				if(txType === 'transfers' ){
 					objList = {
-						'From':item.from?item.from:(item.DelegatorAddr?item.delegatorAddr:'--'),
+						'From':item.from?item.from:(item.delegator_addr?item.delegator_addr:'--'),
 						Amount:transferAmount,
 						'transferFee': transferFee,
 						tokenId,
-						'To':item.to?item.to:(item.validatorAddr?item.validatorAddr:'--'),
+						'To':item.to?item.to:(item.validator_addr?item.validator_addr:'--'),
 						'listName':'transfer'
 					};
 				}else if(txType === 'validations'){
@@ -463,17 +463,17 @@ export default class Tools{
 					}
 				}else if(txType === 'delegations'){
 					objList = {
-						'From': `${item.from ? item.from : (item.DelegatorAddr?item.delegatorAddr:'--')}`,
+						'From': `${item.from ? item.from : (item.delegator_addr?item.delegator_addr:'--')}`,
 						Amount,
-						'To': `${item.to ? item.to : (item.validatorAddr?item.validatorAddr:'--')}`,
+						'To': `${item.to ? item.to : (item.validator_addr?item.validator_addr:'--')}`,
 						'listName':'stakes',
 						fromMoniker: item.from_moniker,
 						toMoniker: item.to_moniker
 					}
 				}else if(txType === 'governance'){
 					objList = {
-						'Proposal_Type': item.proposalType ? item.proposalType : '--',
-						"Proposal_ID": item.proposalId === 0 ? "--" : item.proposalId,
+						'Proposal_Type': item.proposal_type ? item.proposal_type : '--',
+						"Proposal_ID": item.proposal_id === 0 ? "--" : item.proposal_id,
 						'Proposal_Title': item.title ?  Tools.formatString(item.title,15,"...") : '--',
 						Amount,
 						'Tx_Type': item.type,
