@@ -900,7 +900,7 @@ export default {
                                 }
                                 this.txTableList.stakes.items = Tools.formatTxList(
                                     data.Data,
-                                    "stakes"
+                                    "delegations"
                                 );
                             } else {
                                 this.txTableList.stakes.items = [];
@@ -932,7 +932,7 @@ export default {
                                 }
                                 this.txTableList.declarations.items = Tools.formatTxList(
                                     data.Data,
-                                    "declarations"
+                                    "validations"
                                 );
                             } else {
                                 this.txTableList.declarations.items = [];

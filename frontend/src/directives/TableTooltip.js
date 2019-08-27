@@ -1,7 +1,7 @@
-let mouseenterEventFunc = () => {};
-let mouseleaveEventFunc = () => {};
+let mouseenterEventFunc = () => { };
+let mouseleaveEventFunc = () => { };
 
-function bindHoverEvent (el, bind) {
+function bindHoverEvent(el, bind) {
     let containerDiv = bind.value.container.parentNode.parentNode;
     mouseenterEventFunc = mouseenterEvent(el, containerDiv);
     mouseleaveEventFunc = mouseleaveEvent(el, containerDiv);
@@ -14,7 +14,7 @@ function bindHoverEvent (el, bind) {
     }
 }
 
-function unbindHoverEvent (el) {
+function unbindHoverEvent(el) {
     if (el.removeEventListener) {
         el.removeEventListener('mouseenter', mouseenterEventFunc, false);
         el.removeEventListener('mouseleave', mouseleaveEventFunc, false);
@@ -24,9 +24,10 @@ function unbindHoverEvent (el) {
     }
 }
 
-function mouseleaveEvent (el) {
+function mouseleaveEvent(el) {
     return () => {
         let tooltipSpan = el.querySelector('.tooltip_span');
+        if (!tooltipSpan) { return }
         let tooltipSpanI = tooltipSpan.querySelector('i');
         tooltipSpan.classList.remove('tooltip_span_word_warp');
         tooltipSpan.removeAttribute("style");
@@ -34,12 +35,13 @@ function mouseleaveEvent (el) {
     }
 }
 
-function mouseenterEvent (el, containerDiv) {
+function mouseenterEvent(el, containerDiv) {
     return () => {
         let containerRect = containerDiv.getBoundingClientRect();
         let elRect = el.getBoundingClientRect();
 
         let tooltipSpan = el.querySelector('.tooltip_span');
+        if (!tooltipSpan) { return }
         let tooltipSpanI = tooltipSpan.querySelector('i');
         let tooltipSpanRect = tooltipSpan.getBoundingClientRect();
 
@@ -68,7 +70,7 @@ function mouseenterEvent (el, containerDiv) {
             left = tooltipSpanRect.left - containerRect.left;
             right = containerRect.right - tooltipSpanRect.right;
         }
-        if(right < 0) {
+        if (right < 0) {
             tooltipSpan.style.transform = `translateX(${right}px)`;
         } else if (left < 0) {
             tooltipSpan.style.transform = `translateX(${-left}px)`;
@@ -84,12 +86,12 @@ function mouseenterEvent (el, containerDiv) {
 export default {
     name: "table-tooltip",
     hook: {
-        inserted: function(el, bind) {
+        inserted: function (el, bind) {
             if (bind.value.show) {
                 bindHoverEvent(el, bind);
             }
         },
-        unbind: function(el, bind) {
+        unbind: function (el, bind) {
             if (bind.value.show) {
                 unbindHoverEvent(el);
             }

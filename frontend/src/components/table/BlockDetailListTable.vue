@@ -355,7 +355,7 @@ export default {
       return Tools.formatString(moniker,13,"...");
     },
     formatListName (items) {
-      items.forEach((tx) => {
+      Array.isArray(items) && items.forEach((tx) => {
         if (tx.listName === 'transfer') {
           this.listFields = this.transferFields
         } else if (tx.listName === 'declarations') {
