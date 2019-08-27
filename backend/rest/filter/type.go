@@ -1,8 +1,8 @@
 package filter
 
 import (
-	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
+	"github.com/irisnet/explorer/backend/vo"
 	"strings"
 )
 
@@ -17,7 +17,7 @@ var globalCondition = Condition{path: GlobalFilterPath}
 var filterChain = make(FChain, 0)
 
 type Filter interface {
-	Do(request *model.IrisReq, data interface{}) (interface{}, types.BizCode)
+	Do(request *vo.IrisReq, data interface{}) (interface{}, types.BizCode)
 	Match() []Condition
 	Type() Type
 }
@@ -38,7 +38,7 @@ func Register(filter Filter) {
 	filterChain = append(filterChain, filter)
 }
 
-func DoFilters(req *model.IrisReq, data interface{}, typ Type) (interface{}, types.BizCode) {
+func DoFilters(req *vo.IrisReq, data interface{}, typ Type) (interface{}, types.BizCode) {
 	var reqUrl = strings.TrimPrefix(req.RequestURI, types.UrlRoot)
 	for _, f := range filterChain {
 		if typ != f.Type() {

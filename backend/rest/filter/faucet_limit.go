@@ -5,8 +5,8 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
-	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
+	"github.com/irisnet/explorer/backend/vo"
 	"time"
 )
 
@@ -43,7 +43,7 @@ func (FaucetLimitPreFilter) Type() Type {
 	return Pre
 }
 
-func (FaucetLimitPreFilter) Do(request *model.IrisReq, data interface{}) (interface{}, types.BizCode) {
+func (FaucetLimitPreFilter) Do(request *vo.IrisReq, data interface{}) (interface{}, types.BizCode) {
 	traceId := logger.String("traceId", request.TraceId)
 	logger.Info("FaucetLimitPreFilter", traceId)
 
@@ -72,7 +72,7 @@ func (FaucetLimitPostFilter) Type() Type {
 	return Post
 }
 
-func (FaucetLimitPostFilter) Do(request *model.IrisReq, data interface{}) (interface{}, types.BizCode) {
+func (FaucetLimitPostFilter) Do(request *vo.IrisReq, data interface{}) (interface{}, types.BizCode) {
 	traceId := logger.String("traceId", request.TraceId)
 	logger.Info("FaucetLimitPostFilter", traceId)
 	d := data.([]byte)

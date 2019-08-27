@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"encoding/json"
-	"github.com/irisnet/explorer/backend/model"
+	"github.com/irisnet/explorer/backend/vo"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -18,13 +18,6 @@ func TestQueryTxList(t *testing.T) {
 	t.Logf("items: %v \n", string(bytestr))
 }
 
-func TestTxQueryList(t *testing.T) {
-
-	txPage := new(TxService).QueryList(nil, 0, 100, true)
-	t.Logf("total: %v \n", txPage.Count)
-	t.Logf("items: %v \n", txPage.Data)
-}
-
 func TestQueryRecentTx(t *testing.T) {
 
 	txList := new(TxService).QueryRecentTx()
@@ -35,7 +28,7 @@ func TestQueryRecentTx(t *testing.T) {
 }
 
 func TestQueryTxByHash(t *testing.T) {
-	tx := new(TxService).Query("89D8527FC5CB56B79E02EBDFFCA47A1FAB246A8CEBBB6F455B1D44D5F8A39396")
+	tx := new(TxService).Query("958E662565030AD007DB44699D13E4D53997A394A10AD3E81DAC4C5BF0242372")
 	t.Logf("tx: %v\n", string(utils.MarshalJsonIgnoreErr(tx)))
 }
 
@@ -50,7 +43,7 @@ func TestQueryByAcc(t *testing.T) {
 	txPage := new(TxService).QueryByAcc("faa1eqvkfthtrr93g4p9qspp54w6dtjtrn279vcmpn", 0, 10, true)
 
 	t.Logf("total: %v \n", txPage.Count)
-	if modelV, ok := txPage.Data.([]model.CommonTx); ok {
+	if modelV, ok := txPage.Data.([]vo.CommonTx); ok {
 		for k, v := range modelV {
 			t.Logf("idx: %v  v: %v \n", k, v)
 		}

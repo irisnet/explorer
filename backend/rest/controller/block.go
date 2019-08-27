@@ -5,9 +5,9 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/lcd"
-	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
+	"github.com/irisnet/explorer/backend/vo"
 )
 
 // mux.Router registrars
@@ -38,7 +38,7 @@ func RegisterBlock(r *mux.Router) error {
 
 func registerQueryBlockLatestHeight(r *mux.Router) error {
 
-	doApi(r, types.UrlRegisterQueryBlockLatestHeight, "GET", func(request model.IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryBlockLatestHeight, "GET", func(request vo.IrisReq) interface{} {
 		var block = lcd.BlockLatest()
 		var height, ok = utils.ParseInt(block.BlockMeta.Header.Height)
 		if !ok {
@@ -51,7 +51,7 @@ func registerQueryBlockLatestHeight(r *mux.Router) error {
 }
 
 func registerQueryBlocks(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryBlocks, "GET", func(request model.IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryBlocks, "GET", func(request vo.IrisReq) interface{} {
 		block.SetTid(request.TraceId)
 		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 100))
@@ -63,7 +63,7 @@ func registerQueryBlocks(r *mux.Router) error {
 }
 
 func registerQueryRecentBlocks(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryRecentBlocks, "GET", func(request model.IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryRecentBlocks, "GET", func(request vo.IrisReq) interface{} {
 		return block.QueryRecent()
 	})
 
@@ -71,7 +71,7 @@ func registerQueryRecentBlocks(r *mux.Router) error {
 }
 
 func registerQueryValidatorSet(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryBlockValidatorSet, "GET", func(request model.IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryBlockValidatorSet, "GET", func(request vo.IrisReq) interface{} {
 		block.SetTid(request.TraceId)
 		height, err := strconv.ParseInt(Var(request, "height"), 10, 0)
 		if err != nil || height < 1 {
@@ -88,7 +88,7 @@ func registerQueryValidatorSet(r *mux.Router) error {
 }
 
 func registerQueryBlockInfoByBlock(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryBlockInfo, "GET", func(request model.IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryBlockInfo, "GET", func(request vo.IrisReq) interface{} {
 		tx.SetTid(request.TraceId)
 		height, err := strconv.ParseInt(Var(request, "height"), 10, 0)
 		if err != nil || height < 1 {

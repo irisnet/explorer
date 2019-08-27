@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/irisnet/explorer/backend/model"
+	"github.com/irisnet/explorer/backend/vo"
 )
 
 func TestQueryProposalsByHeight(t *testing.T) {
@@ -22,7 +22,7 @@ func TestProposalQueryList(t *testing.T) {
 
 	t.Logf("total: %v \n", proposalPage.Count)
 
-	if modelV, ok := proposalPage.Data.([]model.Proposal); ok {
+	if modelV, ok := proposalPage.Data.([]vo.Proposal); ok {
 		for k, v := range modelV {
 			t.Logf("k: %v   v: %v \n", k, v)
 		}

@@ -1,4 +1,4 @@
-package model
+package vo
 
 type TokenStatsVo struct {
 	DelegatedTokens   *CoinVo `json:"delegated_tokens"`
@@ -9,11 +9,11 @@ type TokenStatsVo struct {
 }
 
 type CoinVo struct {
-	Denom  string  `json:"denom"`
-	Amount string  `json:"amount"`
+	Denom  string `json:"denom"`
+	Amount string `json:"amount"`
 }
 
 type TokenStatsSegment struct {
-	TotalAmount  *CoinVo   `json:"total_amount"`
-	Percent      float64   `json:"percent"`
+	TotalAmount *CoinVo `json:"total_amount"`
+	Percent     float64 `json:"percent"`
 }

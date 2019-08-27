@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/irisnet/explorer/backend/logger"
-	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/types"
+	"github.com/irisnet/explorer/backend/vo"
 	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/txn"
@@ -267,7 +267,7 @@ func (_ Validator) GetCandidatesTopN() ([]Validator, int64, map[string]int, erro
 		return nil, 0, nil, err
 	}
 
-	var allPower model.CountVo
+	var allPower vo.CountVo
 	query.SetResult(&allPower)
 	query.PipeQuery(
 		[]bson.M{

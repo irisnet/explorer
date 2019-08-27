@@ -1,12 +1,12 @@
 package service
 
 import (
-	"github.com/irisnet/explorer/backend/model"
-	"github.com/irisnet/explorer/backend/lcd"
-	"github.com/irisnet/explorer/backend/orm/document"
-	"github.com/irisnet/explorer/backend/logger"
-	"github.com/irisnet/explorer/backend/utils"
 	"fmt"
+	"github.com/irisnet/explorer/backend/lcd"
+	"github.com/irisnet/explorer/backend/logger"
+	"github.com/irisnet/explorer/backend/orm/document"
+	"github.com/irisnet/explorer/backend/utils"
+	"github.com/irisnet/explorer/backend/vo"
 	"sync"
 )
 
@@ -14,15 +14,14 @@ type TokenStatsService struct {
 	BaseService
 }
 
-func (service *TokenStatsService) QueryTokenStats() (model.TokenStatsVo, error) {
+func (service *TokenStatsService) QueryTokenStats() (vo.TokenStatsVo, error) {
 
 	var (
-		tokenStats     model.TokenStatsVo
+		tokenStats     vo.TokenStatsVo
 		supply         lcd.Coin
 		circulation    lcd.Coin
 		banktokenstats lcd.TokenStats
 	)
-
 
 	var group sync.WaitGroup
 	group.Add(3)
@@ -66,14 +65,14 @@ func (service *TokenStatsService) QueryTokenStats() (model.TokenStatsVo, error) 
 	return tokenStats, nil
 }
 
-func LoadCoinVoFromLcdCoin(coin *lcd.Coin) *model.CoinVo {
-	return &model.CoinVo{
+func LoadCoinVoFromLcdCoin(coin *lcd.Coin) *vo.CoinVo {
+	return &vo.CoinVo{
 		Denom:  coin.Denom,
 		Amount: coin.Amount,
 	}
 }
 
-func (service *TokenStatsService) QueryTokensAccountTotal() (map[string]model.TokenStatsSegment, error) {
+func (service *TokenStatsService) QueryTokensAccountTotal() (map[string]vo.TokenStatsSegment, error) {
 
 	accounts, err := document.Account{}.GetAllAccount()
 	if err != nil {
@@ -95,13 +94,13 @@ func (service *TokenStatsService) QueryTokensAccountTotal() (map[string]model.To
 	return computeSegment2(accounts, totalAmt), nil
 }
 
-func computeSegment(accounts []document.Account, totalAmt float64) map[string]model.TokenStatsSegment {
-	accList := make(map[string]model.TokenStatsSegment)
+func computeSegment(accounts []document.Account, totalAmt float64) map[string]vo.TokenStatsSegment {
+	accList := make(map[string]vo.TokenStatsSegment)
 	for index, acc := range accounts {
 		rate, _ := utils.NewRatFromFloat64(acc.Total.Amount / totalAmt).Float64()
-		accList[fmt.Sprint(index+1)] = model.TokenStatsSegment{
+		accList[fmt.Sprint(index+1)] = vo.TokenStatsSegment{
 			Percent: rate,
-			TotalAmount: &model.CoinVo{
+			TotalAmount: &vo.CoinVo{
 				Denom:  acc.Total.Denom,
 				Amount: utils.ParseStringFromFloat64(acc.Total.Amount),
 			},
@@ -110,8 +109,8 @@ func computeSegment(accounts []document.Account, totalAmt float64) map[string]mo
 	return accList
 }
 
-func computeSegment2(accounts []document.Account, totalAmt float64) map[string]model.TokenStatsSegment {
-	result := make(map[string]model.TokenStatsSegment)
+func computeSegment2(accounts []document.Account, totalAmt float64) map[string]vo.TokenStatsSegment {
+	result := make(map[string]vo.TokenStatsSegment)
 	total := len(accounts)
 	if total > 5 {
 		result[fmt.Sprintf("%v-%v", 1, 5)] = CountNTotalAmount(0, 4, totalAmt, accounts)
@@ -151,14 +150,14 @@ func computeSegment2(accounts []document.Account, totalAmt float64) map[string]m
 	return result
 }
 
-func CountNTotalAmount(start_index, end_index int, totalamt float64, account []document.Account) (result model.TokenStatsSegment) {
+func CountNTotalAmount(start_index, end_index int, totalamt float64, account []document.Account) (result vo.TokenStatsSegment) {
 
 	var vaTotalAmt float64
 	if totalamt <= 0 {
 		return
 	}
 
-	retdata := &model.CoinVo{
+	retdata := &vo.CoinVo{
 		Denom: account[start_index].Total.Denom,
 	}
 
