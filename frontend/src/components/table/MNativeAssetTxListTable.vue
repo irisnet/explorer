@@ -12,7 +12,7 @@
                 <router-link :to="`/block/${row.Block}`" class="link_style">{{row.Block}}</router-link>
             </template>
             <template slot-scope="{ row }" slot="TxHash">
-                <router-link :to="`/block/${row.TxHash}`" class="link_style">{{formatTxHash(row.TxHash)}}</router-link>
+                <router-link :to="`/tx?txHash=${row.TxHash}`" class="link_style">{{formatTxHash(row.TxHash)}}</router-link>
             </template>
             <template slot-scope="{ row }" slot="SrcOwner">
                 <router-link :to="`/address/${row.SrcOwner}`" class="link_style">{{formatAddress(row.SrcOwner)}}</router-link>
