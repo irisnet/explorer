@@ -1142,7 +1142,9 @@
                             padding: 0.05rem 0.15rem;
                             font-size: 0.14rem;
                             background: var(--hoverColor);
-                            color:#fff ;
+                            a{
+                                color:#fff !important;
+                            }
                         }
                     }
                 }
