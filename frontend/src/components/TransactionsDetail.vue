@@ -210,7 +210,7 @@ export default {
                 type_3: ["CreateValidator", "EditValidator"],
                 type_4: ["SetWithdrawAddress"],
                 type_5: ["Unjail"],
-                type_6: ["SubmitProposal"], //有问题
+                type_6: ["SubmitProposal"],
                 type_7: ["Deposit"],
                 type_8: ["Vote"],
                 type_9: ["IssueToken"],
