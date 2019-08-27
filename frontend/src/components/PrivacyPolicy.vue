@@ -140,7 +140,7 @@
       padding:0.15rem;
     }
     a{
-      color: #3498db!important;
+      color: var(--bgColor)!important;
     }
 
     h4{

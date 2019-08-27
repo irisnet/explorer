@@ -1,6 +1,6 @@
 <template>
   <div :style="{'min-width': '12.8rem'}">
-    <m-table v-table-head-fixed :columns="validatorFields" class="top_border_table"
+    <m-table v-if="!showFixedHeader" v-table-head-fixed :columns="validatorFields" class="top_border_table"
              :data="items"
              :sort-by.sync="sortBy"
              :sort-desc.sync="sortDesc">
@@ -66,6 +66,72 @@
         </div>
       </template>
     </m-table>
+    <m-table v-if="showFixedHeader" :columns="validatorFields" class="top_border_table"
+             :data="items"
+             :sort-by.sync="sortBy"
+             :sort-desc.sync="sortDesc">
+      <template slot-scope="{ row }"
+                slot="id">
+        <router-link :to="`/ProposalsDetail/${row.id}`"
+                     class="link_style">{{row.id}}</router-link>
+      </template>
+      <template slot-scope="{ row }"
+                slot="title">
+        <router-link v-if="row.id !== '--'" :to="`/ProposalsDetail/${row.id}`"
+                     class="link_style">{{row.title}}</router-link>
+        <span v-if="row.id === '--'">{{row.title}}</span>
+      </template>
+      <template slot-scope="{ row }"
+                slot="status">
+        <img class="status_icon" v-if="row.status === 'Passed'" src="../../assets/pass.png" />
+        <img class="status_icon" v-if="row.status === 'Rejected'" src="../../assets/rejected.png" />
+        <img class="status_icon" v-if="row.status === 'VotingPeriod'" src="../../assets/voting_period.png" />
+        <img class="status_icon" v-if="row.status === 'DepositPeriod'" src="../../assets/deposit_period.png" />
+        <span>{{row.status}}</span>
+      </template>
+      <template slot-scope="{ row }"
+                slot="type">
+        <img class="status_icon" v-if="row.level === 'Important'" src="../../assets/important.png" />
+        <img class="status_icon" v-if="row.level === 'Normal'" src="../../assets/normal.png" />
+        <img class="status_icon" v-if="row.level === 'Critical'" src="../../assets/critical.png" />
+        <span>{{row.type}}</span>
+      </template>
+      <template slot-scope="{ row }"
+                slot="votes">
+        <div class="votes_per_content">
+          <div v-if="row.finalVotes">
+            <div class="votes_per" :style="{backgroundColor: '#45B4FF', width: `${row.finalVotes.yes}%`}">
+              <div class="tooltip_span">
+                <div>
+                  Yes: {{formatNum(row.finalVotes.yes)}} %
+                </div>
+              </div>
+            </div>
+            <div class="votes_per" :style="{backgroundColor: '#CCDCFF', width: `${row.finalVotes.abstain}%`}">
+              <div class="tooltip_span">
+                <div>
+                  Abstain: {{formatNum(row.finalVotes.abstain)}} %
+                </div>
+              </div>
+            </div>
+            <div class="votes_per" :style="{backgroundColor: '#FFCF65', width: `${row.finalVotes.no}%`}">
+              <div class="tooltip_span">
+                <div>
+                  No: {{formatNum(row.finalVotes.no)}} %
+                </div>
+              </div>
+            </div>
+            <div class="votes_per" :style="{backgroundColor: '#FE8A8A', width: `${row.finalVotes.no_with_veto}%`}">
+              <div class="tooltip_span">
+                <div>
+                  NoWithVeto: {{formatNum(row.finalVotes.no_with_veto)}} %
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+    </m-table>
   </div>
 </template>
 
@@ -81,11 +147,14 @@ export default {
     },
     showNoData: {
       type: Boolean,
-      default: true
+      default: true,
     },
     minWidth: {
       type: Number,
       default: 12.8
+    },
+    showFixedHeader:{
+      type: Boolean,
     }
   },
   data () {

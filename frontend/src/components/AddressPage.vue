@@ -222,7 +222,7 @@
                                        style="border-left: 1px solid #dee2e6; border-right: 1px solid #dee2e6;"></blocks-list-table>
                     <div v-show="showNoData"
                          class="no_data_show">
-                        No Data
+                        <img src="../assets/no_data.svg" alt="">
                     </div>
                 </div>
             </div>

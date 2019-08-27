@@ -289,7 +289,7 @@ export default {
                     slot: "Moniker"
                 },
                 {
-                    title: "Operator_Address",
+                    title: "Operator",
                     slot: "OperatorAddr",
                     tooltip: true
                 },

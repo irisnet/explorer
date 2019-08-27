@@ -303,7 +303,7 @@
                 margin-right: 0.25rem;
                 i{
                   font-size: 0.25rem;
-                  color: #a2a2ae;
+                  color: rgba(255,255,255,0.5);
                   &:hover{
                     color: #fff;
                   }
@@ -314,7 +314,7 @@
                 cursor: pointer;
                 i{
                   font-size: 0.25rem;
-                  color: #a2a2ae;
+                  color: rgba(255,255,255,0.5);
                   &:hover{
                     color: #fff;
                   }
@@ -333,10 +333,10 @@
               margin-bottom: 0.1rem;
             }
             .footer_link_wrap{
-              color: #a2a2ae;
+              color: rgba(255,255,255,0.5);
               a{
                 padding: 0 0.2rem;
-                color: #a2a2ae !important;
+                color: rgba(255,255,255,0.5) !important;
                 &:hover{
                   color: #fff !important;
                 }
@@ -355,7 +355,7 @@
           }
         }
         .footer_copyright_wrap {
-          border-top: 0.01rem  solid #a2a2ae;
+          border-top: 0.01rem  solid rgba(255,255,255,0.2);
           padding: 0.15rem 0;
           text-align: center;
           color: rgba(255,255,255,0.5);
@@ -382,7 +382,8 @@
               display: flex;
               justify-content: center;
              .irisnet_link_content{
-               width: 60%;
+               width: 40%;
+               padding: 0.1rem 0;
                display: flex;
                align-items: center;
                .irisnet_logo_img{
@@ -400,7 +401,7 @@
               }
             }
             .footer_right_content{
-              padding-bottom: 0.2rem;
+              padding: 0.2rem 0;
               .resources_content{
                 text-align: center;
               }
