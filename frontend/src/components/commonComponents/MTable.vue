@@ -258,7 +258,7 @@ table.m_table {
   }
   table {
     font-size: 14px;
-    color: rgb(0, 0, 0);
+    color: var(--contentColor);
     thead {
       tr {
         border-left: 1px solid #dee2e6;
@@ -322,7 +322,7 @@ table.m_table {
     td {
       padding: 7.5px;
       box-sizing: border-box;
-      color: var(--contentColor);
+      color: var(--titleColor);
       & > div {
         display: inline-block;
         vertical-align: middle;

@@ -11,7 +11,7 @@
                     <spin-component :showLoading="flShowLoading"></spin-component>
                     <m-tx-list-page-table :items="txList"></m-tx-list-page-table>
                     <div v-show="showNoData" class="no_data_show">
-                        No Data
+                        <img src="../assets/no_data.svg" alt="">
                     </div>
                 </div>
                 <div class="pagination_nav_footer_content">

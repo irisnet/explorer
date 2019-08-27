@@ -21,7 +21,9 @@
                 <div class="top_list_table_wrap">
                     <div class="top_list_table_content">
                         <top-list-table :items="topList" :showNoData="showNoData"></top-list-table>
-                        <div v-show="showNoData" class="no_data_show">No Data</div>
+                        <div v-show="showNoData" class="no_data_show">
+                            <img src="../assets/no_data.svg" alt="">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -175,7 +177,7 @@ export default {
                     display: flex;
                     align-items: center;
                     font-size: 0.18rem;
-                    color: var(--titleColor);
+                    color: var(--contentColor);
                     line-height: 0.26rem;
                 }
                 .tooltip_icon {

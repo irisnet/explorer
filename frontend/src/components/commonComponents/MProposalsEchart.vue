@@ -118,7 +118,7 @@ export default {
           radius: ['0%', '100%'],
           label: {
             rotate: '0',
-            textBorderColor: 'var(--titleColor)',
+            textBorderColor: 'var(--contentColor)',
             textBorderWidth: 1,
             fontWeight: 600,
             fontFamily: 'Arial'
@@ -253,7 +253,7 @@ export default {
         white-space: nowrap;
         display: flex;
         .title {
-          color: #A2A2AE;
+          color: var(--contentColor);
           white-space: nowrap;
         }
         .value {
@@ -291,11 +291,11 @@ export default {
           div.per_title {
             margin-top: 30px;
             font-size: 14px;
-            color: #A2A2AE;
+            color: var(--contentColor);
           }
           & > div {
             font-size: 12px;
-            color: var(--titleColor);
+            color: var(--contentColor);
             vertical-align: middle;
             img {
               width: 0.14rem;

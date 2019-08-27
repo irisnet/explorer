@@ -12,7 +12,7 @@
                     <spin-component :showLoading="flIssueTokenShowLoading"></spin-component>
                     <native-asset :showNoData="showNoData" :items="issueToken" name="issueToken"></native-asset>
                     <div v-show="showNoData" class="no_data_show">
-                        No Data
+                        <img src="../assets/no_data.svg" alt="">
                     </div>
                 </div>
                 <div class="native_asset_nav_footer_content">
@@ -27,7 +27,7 @@
                     <!--<spin-component :showLoading="flEditTokenShowLoading"></spin-component>-->
                     <native-asset :showNoData="showNoData" :items="editToken" name="editToken"></native-asset>
                     <div v-show="showNoData" class="no_data_show">
-                        No Data
+                        <img src="../assets/no_data.svg" alt="">
                     </div>
                 </div>
                 <div class="native_asset_nav_footer_content">
@@ -42,7 +42,7 @@
                     <!--<spin-component :showLoading="flMinTokenShowLoading"></spin-component>-->
                     <native-asset :showNoData="showNoData" :items="mintToken" name="mintToken"></native-asset>
                     <div v-show="showNoData" class="no_data_show">
-                        No Data
+                        <img src="../assets/no_data.svg" alt="">
                     </div>
                 </div>
                 <div class="native_asset_nav_footer_content">
@@ -57,7 +57,7 @@
                     <!--<spin-component :showLoading="flTransferTokenShowLoading"></spin-component>-->
                     <native-asset :showNoData="showNoData" :items="transferToken" name="transferToken"></native-asset>
                     <div v-show="showNoData" class="no_data_show">
-                        No Data
+                        <img src="../assets/no_data.svg" alt="">
                     </div>
                 </div>
                 <div class="native_asset_nav_footer_content">

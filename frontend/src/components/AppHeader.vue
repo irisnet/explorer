@@ -804,7 +804,7 @@
             }
                 .header_submenu_container{
                     background: transparent;
-                    color: var(--titleColor);
+                    color: var(--contentColor);
                     margin: 0 auto;
                     position: absolute;
                     top:0.6rem;

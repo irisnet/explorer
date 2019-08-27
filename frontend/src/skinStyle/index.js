@@ -13,8 +13,8 @@ skinStyle.TESTNETHOVERCOLOR = '#4E61E7';
 skinStyle.TESTNETACTIVECOLOR = '#3A4DD6';
 
 //公共样式色值
-skinStyle.commonFontContentColor = '#a2a2ae';
-skinStyle.commonFontBlackColor = '#22252a';
+skinStyle.commonFontContentColor = '#787C99';
+skinStyle.commonFontBlackColor = '#171D44';
 skinStyle.commonModuleBlackColor = '#212529';
 
 //皮肤样式色值名字(名字必须是以 -- 开头)

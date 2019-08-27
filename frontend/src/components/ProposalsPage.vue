@@ -101,7 +101,7 @@
             <div style="overflow-x: auto;-webkit-overflow-scrolling:touch;" :style="{'padding-top':flTableFixed ? '' : '0.7rem'}">
                 <m-proposals-list-table :items="items" :showFixedHeader="flTableFixed"></m-proposals-list-table>
                 <div v-show="showNoData" class="no_data_show">
-                    No Data
+                    <img src="../assets/no_data.svg" alt="">
                 </div>
             </div>
             <div class="pagination" style='margin:0.2rem 0 0.4rem;'>
@@ -487,7 +487,7 @@
                 display: flex;
                 div {
                     font-size: 14px;
-                    color: var(--titleColor);
+                    color: var(--contentColor);
                     display: flex;
                     align-items: center;
                     i {

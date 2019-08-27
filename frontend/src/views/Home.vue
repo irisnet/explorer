@@ -473,14 +473,14 @@
                         .item_name{
                             margin-left: 0.08rem;
                             font-size: 0.14rem;
-                            color: rgba(162, 162, 174, 1);
+                            color: var(--contentColor);
                         }
                     }
                     .current_block{
                         padding-top: 0.2rem;
                         font-size: 0.2rem;
                         line-height: 0.23rem;
-                        color: var(--titleColor);
+                        color: var(--contentColor);
                     }
                     .transaction_link{
                         a{
@@ -488,7 +488,7 @@
                         }
                     }
                     .block_time{
-                        color: rgba(162, 162, 174, 1);
+                        color: var(--contentColor);
                         font-size: 0.14rem;
                         padding-top: 0.1rem;
                     }

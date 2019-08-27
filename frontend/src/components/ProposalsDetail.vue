@@ -139,7 +139,7 @@
                                           fields="votersFields"></m-proposals-detail-table>
                 <div v-show="showNoData"
                      class="no_data_show">
-                    No Data
+                    <img src="../assets/no_data.svg" alt="">
                 </div>
             </div>
             <div class="table_pagination">
@@ -158,7 +158,7 @@
                                           fields="depositorsFields"></m-proposals-detail-table>
                 <div v-show="depositorShowNoData"
                      class="no_data_show">
-                    No Data
+                    <img src="../assets/no_data.svg" alt="">
                 </div>
             </div>
             <div class="table_pagination">
@@ -452,7 +452,7 @@ export default {
                 margin-bottom: 0.12rem;
                 .information_props {
                     min-width: 1.5rem;
-                    color: var(--titleColor);
+                    color: var(--contentColor);
                 }
                 .flag_item_left {
                     display: inline-block;
@@ -653,7 +653,7 @@ export default {
         padding: 0 0.18rem;
         white-space: nowrap;
         & > span {
-            color: var(--titleColor);
+            color: var(--contentColor);
         }
     }
 }

@@ -29,7 +29,7 @@
               axis:"x",
               type:"line",
               lineStyle:{
-                color:"#a2a2ae",
+                color:"var(--contentColor)",
               },
             },
             formatter(params){
@@ -44,7 +44,7 @@
             data: [],
             axisLine: {
               lineStyle: {
-                color: '#a2a2ae'
+                color: 'var(--contentColor)'
               }
             },
             axisLabel:{
@@ -60,7 +60,7 @@
             type: 'value',
             axisLine: {
               lineStyle: {
-                color: '#a2a2ae'
+                color: 'var(--contentColor)'
               }
             },
             min:0,

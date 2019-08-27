@@ -12,12 +12,14 @@
                         <span class="information_value">{{v.value || '--'}}</span>
                     </div>
                 </div>
-                <div v-show="itemsNoData" class="no_data_show">No Data</div>
+                <div v-show="itemsNoData" class="no_data_show"><img src="../assets/no_data.svg" alt=""></div>
                 <div class="page_title">IRIS Token Distribution</div>
                 <div class="echarts_container" v-show="!pieDatasNoData">
                     <m-token-stats-echart :data="pieDatas"></m-token-stats-echart>
                 </div>
-                <div v-show="pieDatasNoData" class="no_data_show">No Data</div>
+                <div v-show="pieDatasNoData" class="no_data_show">
+                    <img src="../assets/no_data.svg" alt="">
+                </div>
             </div>
         </div>
     </div>

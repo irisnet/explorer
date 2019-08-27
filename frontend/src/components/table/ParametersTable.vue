@@ -60,7 +60,7 @@
         }
       }
       .no_skip{
-        color:#A2A2AE;
+        color:var(--contentColor);
         cursor:default;
         .link_style{
           color:var(--contentColor) !important;
@@ -71,7 +71,7 @@
   .table{
     th, td{
       padding:0.075rem !important;
-      color:#A2A2AE;
+      color:var(--contentColor);
     @include fontWeight;
     }
     margin-bottom:0 !important;
