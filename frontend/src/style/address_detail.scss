@@ -55,7 +55,7 @@
                 .information_props{
                     min-width:1.5rem;
                     font-size:0.14rem;
-                    color:#000000;
+                   color:var(--contentColor)
                 }
                 .operator_value{
                     cursor: pointer;
@@ -66,10 +66,10 @@
                 }
                 .information_value{
                     word-break: break-all;
-                    color: #a2a2ae;
+                    color: var(--titleColor);
                     font-size:0.14rem;
                     .information_pre{
-                        color: #a2a2ae;
+                        color: var(--titleColor);
                     }
                 }
                 .link_style{
@@ -92,7 +92,7 @@
             height: 0.4rem;
             line-height: 0.4rem;
             font-size: 0.22rem;
-            color: #a2a2ae;
+            color: var(--titleColor);
             i{
                 font-style:normal;
                 padding: 0 0.07rem;
@@ -138,9 +138,9 @@
                     overflow-x:auto;
                     overflow-y:hidden;
                     -webkit-overflow-scrolling:touch;
-                    color: #a2a2ae;
+                    color: var(--titleColor);
                     .information_pre{
-                        color: #a2a2ae;
+                        color: var(--titleColor);
                     }
                 }
                 .link_style{
@@ -176,7 +176,7 @@
             height: 0.3rem;
             line-height: 0.3rem;
             font-size: 0.18rem;
-            color: #a2a2ae;
+            color: var(--titleColor);
             display: flex;
             i{
                 font-style:normal;
@@ -336,7 +336,7 @@
                 height:0.62rem;
                 align-items: center;
                 span:nth-child(1){
-                    color: #a2a2ae;
+                    color: var(--titleColor);
                     font-size: 0.14rem;
                 }
                 span:nth-child(2){
@@ -351,7 +351,7 @@
                 align-items: center;
                 span{
                     font-size:0.14rem;
-                    color:#a2a2ae;
+                    color:var(--titleColor);
                     &:nth-child(3){
                         display:inline-block;
                         margin-left:0.1rem;
@@ -442,7 +442,7 @@
         }
     }
     .border-block{
-        color: #a2a2ae!important;
+        color: var(--titleColor)!important;
         border-top: 0.01rem solid #e4e4e4 !important;
         &:hover{
             cursor: pointer;

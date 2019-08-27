@@ -49,39 +49,42 @@
 
                 </div>
             </div>
-            <div class="header_submenu_container" @mouseenter="showTwoMenu(menuActiveName)" @mouseleave="hideTwoMenu(menuActiveName)" v-show="flShowSubMenu" >
-                <ul class="header_submenu_content">
-                    <li class="header_submenu_item" v-if="flShowChain"><router-link :to="`/home`">Overview</router-link></li>
-                    <li class="header_submenu_item" v-if="flShowChain"><router-link :to="`/blocks`">Blocks</router-link></li>
-                    <!--<li class="header_submenu_item" v-if="flShowChain"><router-link :to="`/txs/transfers`">Transactions</router-link></li>-->
-                    <li class="header_submenu_item no_border_style" v-if="flShowChain"><router-link :to="`/validators`">Validators</router-link></li>
-     <!--               <li class="header_submenu_item" v-if="flShowChain">Assets</li>
-                    <li class="header_submenu_item" v-if="flShowChain">Gateways</li>-->
-                    <li class="header_submenu_item" v-if="flShowStaking"><router-link :to="`/validators`">Validators</router-link></li>
-                    <li class="header_submenu_item" v-if="flShowStaking"><router-link :to="`/txs/validations`">Validations</router-link></li>
-                    <li class="header_submenu_item no_border_style" v-if="flShowStaking"><router-link :to="`/txs/delegations`">Delegations</router-link></li>
-                  <!--  <li class="header_submenu_item" v-if="flShowStaking">Validator Txs</li>-->
-                    <!--<li class="header_submenu_item" v-if="flShowStaking"> <router-link :to="`/txs/stakes`">Delegation Txs</router-link></li>
-                    <li class="header_submenu_item" v-if="flShowStaking">Reward Txs</li>-->
-                    <li class="header_submenu_item no_border_style" v-if="flShowTransfers"> <router-link :to="`/txs/transfers`">IRIS Transfers Txs</router-link></li>
-                    <!--<li class="header_submenu_item" v-if="flShowTransfers">Asset Transfers Txs</li>-->
-                    <!--<li class="header_submenu_item" v-if="flShowTransfers">Inter-chain Txs</li>-->
-                    <!--<li class="header_submenu_item" v-if="flShowTransfers">IRIS Burn Txs</li>-->
-                    <li class="header_submenu_item" v-if="flShowAssets"><router-link :to="`/assets/ntvassetstxs`">Native Asset Txs</router-link></li>
-                    <!--<li class="header_submenu_item" v-if="flShowAssets">Issuers Txs</li>-->
-                    <li class="header_submenu_item no_border_style" v-if="flShowAssets"><router-link :to="`/assets/gtwassetstxs`">Gateway Asset Txs</router-link></li>
-                    <!--<li class="header_submenu_item" v-if="flShowAssets">Gateways Txs</li>-->
-                    <!--<li class="header_submenu_item" v-if="flShowAssets">Assets Transfers</li>-->
-                    <li class="header_submenu_item" v-if="flShowGov"><router-link :to="`/gov/parameters`">Parameters</router-link></li>
-                    <li class="header_submenu_item" v-if="flShowGov"><router-link :to="`/gov/proposals`">Proposals</router-link></li>
-                    <li class="header_submenu_item no_border_style" v-if="flShowGov"><router-link :to="`/txs/governance`">Gov Txs</router-link></li>
-                    <!--<li class="header_submenu_item" v-if="flShowGov">Vote Tx</li>-->
-                    <li class="header_submenu_item" v-if="flShowStats"><router-link :to="`/stats/irisrichlist`">IRIS Rich List</router-link></li>
-                    <li class="header_submenu_item no_border_style" v-if="flShowStats"><router-link :to="`/stats/irisstats`">IRIS Stats</router-link></li>
-                    <!--<li class="header_submenu_item" v-if="flShowStats">Public Address</li>-->
-                </ul>
-            </div>
-
+            <transition name="fade">
+                <div class="header_submenu_container" @mouseenter="showTwoMenu(menuActiveName)" @mouseleave="hideTwoMenu(menuActiveName)" v-show="flShowSubMenu" >
+                    <div class="header_submenu_content_wrap">
+                        <ul class="header_submenu_content"  :style="{'left':offSetLeft,width:contentWidth}">
+                            <li class="header_submenu_item" v-if="flShowChain"><router-link :to="`/home`">Overview</router-link></li>
+                            <li class="header_submenu_item" v-if="flShowChain"><router-link :to="`/blocks`">Blocks</router-link></li>
+                            <li class="header_submenu_item" v-if="flShowChain"><router-link :to="`/txs`">Transactions</router-link></li>
+                            <li class="header_submenu_item no_border_style" v-if="flShowChain"><router-link :to="`/validators`">Validators</router-link></li>
+                            <!--               <li class="header_submenu_item" v-if="flShowChain">Assets</li>
+                                           <li class="header_submenu_item" v-if="flShowChain">Gateways</li>-->
+                            <li class="header_submenu_item" v-if="flShowStaking"><router-link :to="`/validators`">Validators</router-link></li>
+                            <li class="header_submenu_item" v-if="flShowStaking"><router-link :to="`/txs/validations`">Validations</router-link></li>
+                            <li class="header_submenu_item no_border_style" v-if="flShowStaking"><router-link :to="`/txs/delegations`">Delegations</router-link></li>
+                            <!--  <li class="header_submenu_item" v-if="flShowStaking">Validator Txs</li>-->
+                            <!--<li class="header_submenu_item" v-if="flShowStaking"> <router-link :to="`/txs/stakes`">Delegation Txs</router-link></li>
+                            <li class="header_submenu_item" v-if="flShowStaking">Reward Txs</li>-->
+                            <li class="header_submenu_item no_border_style" v-if="flShowTransfers"> <router-link :to="`/txs/transfers`">IRIS Transfers Txs</router-link></li>
+                            <!--<li class="header_submenu_item" v-if="flShowTransfers">Asset Transfers Txs</li>-->
+                            <!--<li class="header_submenu_item" v-if="flShowTransfers">Inter-chain Txs</li>-->
+                            <!--<li class="header_submenu_item" v-if="flShowTransfers">IRIS Burn Txs</li>-->
+                            <li class="header_submenu_item" v-if="flShowAssets"><router-link :to="`/assets/ntvassetstxs`">Native Asset Txs</router-link></li>
+                            <!--<li class="header_submenu_item" v-if="flShowAssets">Issuers Txs</li>-->
+                            <li class="header_submenu_item no_border_style" v-if="flShowAssets"><router-link :to="`/assets/gtwassetstxs`">Gateway Asset Txs</router-link></li>
+                            <!--<li class="header_submenu_item" v-if="flShowAssets">Gateways Txs</li>-->
+                            <!--<li class="header_submenu_item" v-if="flShowAssets">Assets Transfers</li>-->
+                            <li class="header_submenu_item" v-if="flShowGov"><router-link :to="`/gov/parameters`">Parameters</router-link></li>
+                            <li class="header_submenu_item" v-if="flShowGov"><router-link :to="`/gov/proposals`">Proposals</router-link></li>
+                            <li class="header_submenu_item no_border_style" v-if="flShowGov"><router-link :to="`/txs/governance`">Gov Txs</router-link></li>
+                            <!--<li class="header_submenu_item" v-if="flShowGov">Vote Tx</li>-->
+                            <li class="header_submenu_item" v-if="flShowStats"><router-link :to="`/stats/irisrichlist`">IRIS Rich List</router-link></li>
+                            <li class="header_submenu_item no_border_style" v-if="flShowStats"><router-link :to="`/stats/irisstats`">IRIS Stats</router-link></li>
+                            <!--<li class="header_submenu_item" v-if="flShowStats">Public Address</li>-->
+                        </ul>
+                    </div>
+                </div>
+            </transition>
         </header>
         <div class="app_header_mobile"
              v-show="devicesShow === 0"
@@ -94,6 +97,7 @@
                 <div class="image_wrap_mobile"
                      @click="featureButtonClick('/home',true)" :style="{visibility: flShowLogo ? 'visible' : 'hidden'}">
                     <img :src="explorerLogo" />
+                    <i :class="currentNetworkClass"></i>
                 </div>
             </div>
             <div class="search_input_mobile">
@@ -110,101 +114,94 @@
                        v-show="showClear"></i>
                 </div>
             </div>
-            <div class="mobile_chain_id_content"
-                 v-if="flShowChainId">
-                <span class="mobile_chain_content">{{chainId}}</span>
-            </div>
             <div class="use_feature_mobile"
                  :style="{'top':absoluteTop}"
                  v-show="featureShow">
-        <span class="feature_btn_mobile feature_nav"
-            @click="featureButtonClick('/home')">Home</span>
-                <span class="feature_btn_mobile feature_nav select_option_container"
-                    @click="featureButtonClick('/validators')">
-                    <span>Validators</span>
-                </span>
-                <span class="feature_btn_mobile feature_nav"
-                    @click="featureButtonClick('/blocks')">Blocks</span>
-                <span class="feature_btn_mobile feature_nav select_option_container"
-                    @click="transactionsSelect(flShowTransactionsSelect)">
-                    <span>Transactions</span>
-                    <div :class="flShowUpOrDown ? 'upImg_content' : 'downImg_content'">
-                       <img :src="flShowUpOrDown ? upImg : downImg ">
+                <div class="mobile_menu_container" @click="flShowBlockchain('blockChain')">
+                    <div class="mobile_menu_item_content">
+                        <span>Blockchain</span>
+                        <i class="iconfont iconwangluoqiehuanjiantou" :class="flShowBlockchainMenu ? 'up_style' : 'down_style'"> </i>
                     </div>
-                </span>
-                <div class="select_option" v-show="flShowTransactionsSelect">
-                    <span class="feature_btn_mobile feature_nav"
-                          @click="featureButtonClick('/txs/transfers')">Transfers</span>
-                <span class="feature_btn_mobile feature_nav"
-                      @click="featureButtonClick('/txs/validations')">Declarations</span>
-                <span class="feature_btn_mobile feature_nav"
-                      @click="featureButtonClick('/txs/delegations')">Stakes</span>
-                <span class="feature_btn_mobile feature_nav"
-                      @click="featureButtonClick('/txs/governance')">Governance</span>
-            </div>
+                    <ul class="blockchain_list_content" v-show="flShowBlockchainMenu">
+                        <li class="blockchain_list_item" @click="featureButtonClick(`/home`)">Overview</li>
+                        <li class="blockchain_list_item" @click="featureButtonClick(`/blocks`)">Blocks</li>
+                        <li class="blockchain_list_item" @click="featureButtonClick(`/validators`)">Validators</li>
+                    </ul>
+                </div>
+
+                <div class="mobile_menu_container" @click="flShowBlockchain('staking')">
+                    <div class="mobile_menu_item_content">
+                        <span>Staking</span>
+                        <i class="iconfont iconwangluoqiehuanjiantou" :class="flShowStakingMenu ? 'up_style' : 'down_style'"> </i>
+                    </div>
+                    <ul class="blockchain_list_content" v-show="flShowStakingMenu">
+                        <li class="blockchain_list_item" @click="featureButtonClick(`/validators`)">Validators</li>
+                        <li class="blockchain_list_item" @click="featureButtonClick(`/txs/validations`)">Validations</li>
+                        <li class="blockchain_list_item" @click="featureButtonClick(`/txs/delegations`)">Delegations</li>
+                    </ul>
+                </div>
+
+                <div class="mobile_menu_container" @click="flShowBlockchain('transfers')">
+                    <div class="mobile_menu_item_content">
+                        <span>Transfers</span>
+                        <i class="iconfont iconwangluoqiehuanjiantou" :class="flShowTransfersMenu ? 'up_style' : 'down_style'"> </i>
+                    </div>
+                    <ul class="blockchain_list_content" v-show="flShowTransfersMenu">
+                        <li class="blockchain_list_item" @click="featureButtonClick(`/txs/transfers`)">IRIS Transfers Txs</li>
+                    </ul>
+                </div>
+
+                <div class="mobile_menu_container" @click="flShowBlockchain('assets')">
+                    <div class="mobile_menu_item_content">
+                        <span>Assets</span>
+                        <i class="iconfont iconwangluoqiehuanjiantou" :class="flShowAssetsMenu ? 'up_style' : 'down_style'"> </i>
+                    </div>
+                    <ul class="blockchain_list_content" v-show="flShowAssetsMenu">
+                        <li class="blockchain_list_item" @click="featureButtonClick(`/assets/ntvassetstxs`)">Native Asset Txs</li>
+                        <li class="blockchain_list_item" @click="featureButtonClick(`/assets/gtwassetstxs`)">Gateway Asset Txs</li>
+                    </ul>
+                </div>
+
+                <div class="mobile_menu_container" @click="flShowBlockchain('gov')">
+                    <div class="mobile_menu_item_content">
+                        <span>Gov</span>
+                        <i class="iconfont iconwangluoqiehuanjiantou" :class="flShowGovMenu ? 'up_style' : 'down_style'"> </i>
+                    </div>
+                    <ul class="blockchain_list_content" v-show="flShowGovMenu">
+                        <li class="blockchain_list_item" @click="featureButtonClick(`/gov/parameters`)">Parameters</li>
+                        <li class="blockchain_list_item" @click="featureButtonClick(`/gov/proposals`)">Proposals</li>
+                        <li class="blockchain_list_item" @click="featureButtonClick(`/txs/governance`)">Gov Txs</li>
+                    </ul>
+                </div>
 
 
-                <span class="feature_btn_mobile feature_nav select_option_container"
-                      @click="assetsSelect(flShowAssetSelect)">
-                    <span>Assets</span>
-                    <div :class="flShowUpOrDown ? 'upImg_content' : 'downImg_content'">
-                       <img :src="flShowUpOrDown ? upImg : downImg ">
+                <div class="mobile_menu_container" @click="flShowBlockchain('stats')">
+                    <div class="mobile_menu_item_content">
+                        <span>Stats</span>
+                        <i class="iconfont iconwangluoqiehuanjiantou" :class="flShowStatsMenu ? 'up_style' : 'down_style'"> </i>
                     </div>
-                </span>
-                <div class="select_option" v-show="flShowAssetSelect">
-                    <span class="feature_btn_mobile feature_nav"
-                          @click="featureButtonClick('/assets/ntvassetstxs')">Native Asset</span>
-                    <span class="feature_btn_mobile feature_nav"
-                          @click="featureButtonClick('/assets/gtwassetstxs')">Declarations</span>
+                    <ul class="blockchain_list_content" v-show="flShowStatsMenu">
+                        <li class="blockchain_list_item" @click="featureButtonClick(`/stats/irisrichlist`)">IRIS Rich List</li>
+                        <li class="blockchain_list_item" @click="featureButtonClick(`/stats/irisstats`)">IRIS Stats</li>
+                    </ul>
                 </div>
-                <span class="feature_btn_mobile feature_nav select_option_container"
-                    @click="topListSelect(flShowTopListSelection)">
-                    <span>Statistics</span>
-                    <div :class="flShowUpOrDown ? 'upImg_content' : 'downImg_content'">
-                       <img :src="flShowUpOrDown ? upImg : downImg ">
-                    </div>
-                </span>
-                <div class="select_option"
-                     v-show="flShowTopListSelection">
-                <span class="feature_btn_mobile feature_nav"
-                    @click="featureButtonClick('/stats/irisrichlist')">Rich List</span>
-                <span class="feature_btn_mobile feature_nav"
-                    @click="featureButtonClick('/stats/irisstats')">Tokens Stats</span>
-                <!-- <span class="feature_btn_mobile feature_nav"
-                    @click="featureButtonClick('/statistics/bondedTokens')">Bonded Tokens</span> -->
-                </div>
-                <span class="feature_btn_mobile feature_nav select_option_container"
-                      @click="governanceSelect(flShowGovernanceSelect)">
-            <span>Governance</span>
-            <div :class="flShowUpOrDown ? 'upImg_content' : 'downImg_content'">
-               <img :src="flShowUpOrDown ? upImg : downImg ">
-            </div>
-            </span>
-                <div class="select_option"
-                     v-show="flShowGovernanceSelect">
-            <span class="feature_btn_mobile feature_nav"
-                @click="featureButtonClick('/gov/parameters')">Parameters</span>
-                    <span class="feature_btn_mobile feature_nav"
-                          @click="featureButtonClick('/gov/proposals')">Proposals</span>
 
+                <div class="mobile_menu_container" v-if="flShowFaucet">
+                    <div class="mobile_menu_item_content">
+                        <span @click="featureButtonClick(`/faucet`)">Faucet</span>
+                    </div>
                 </div>
-                <span v-if="flShowFaucet"
-                      class="feature_btn_mobile feature_nav mobile_faucet_content"
-                      @click="featureButtonClick('/faucet')">Faucet</span>
-                <span class="feature_btn_mobile feature_nav select_option_container"
-                      @click="netWorkSelect(flShowNetworkSelect)">
-            <span>Network</span>
-            <div :class="flShowNetworkUpOrDown ? 'upImg_content' : 'downImg_content'">
-                <img :src="flShowNetworkUpOrDown ? upImg : downImg ">
-            </div>
-            </span>
-                <div class="select_option"
-                     v-show="flShowNetworkSelect">
-            <span class="feature_btn_mobile feature_nav"
-                v-for="item in netWorkArray">
-            <a :href="item.host"
-               target="_blank">{{item.netWorkSelectOption}}</a>
-            </span>
+
+                <div class="mobile_menu_container" @click="flShowBlockchain('network')">
+                    <div class="mobile_menu_item_content">
+                        <span>Network</span>
+                        <i class="iconfont iconwangluoqiehuanjiantou" :class="flShowNetWorkMenu ? 'up_style' : 'down_style'"> </i>
+                    </div>
+                    <ul class="blockchain_list_content" v-show="flShowNetWorkMenu">
+                        <li class="blockchain_list_item"  v-for="item in netWorkArray">
+                            <a :href="item.host">{{item.netWorkSelectOption}}</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -281,8 +278,17 @@
                 flShowGov: false,
                 flShowStats: false,
                 flShowNetworkLogo: false,
+				flShowBlockchainMenu:false,
+				flShowStakingMenu:false,
+				flShowTransfersMenu:false,
+				flShowAssetsMenu:false,
+				flShowGovMenu:false,
+				flShowStatsMenu:false,
+				flShowNetWorkMenu:false,
                 menuActiveName: '',
-				currentNetworkClass:''
+				currentNetworkClass:'',
+				offSetLeft:'1.6rem',
+                contentWidth:''
 			}
 		},
 		beforeMount () {
@@ -304,33 +310,70 @@
 					cur_env:localStorage.getItem('currentEnv')
 				});
             }
-
 		},
 		beforeDestroy () {
 			document.getElementById('router_wrap').removeEventListener('click', this.hideFeature);
 			window.removeEventListener('resize', this.onWindowResize);
 		},
 		methods: {
+			flShowBlockchain(v){
+				switch (v) {
+					case 'blockChain' :
+						this.flShowBlockchainMenu = !this.flShowBlockchainMenu;
+						break;
+					case 'staking' :
+						this.flShowStakingMenu = !this.flShowStakingMenu;
+						break;
+					case 'transfers' :
+						this.flShowTransfersMenu = !this.flShowTransfersMenu;
+						break;
+					case 'assets'	:
+						this.flShowAssetsMenu = !this.flShowAssetsMenu;
+						break;
+					case 'gov' :
+						this.flShowGovMenu = !this.flShowGovMenu;
+						break;
+					case 'stats' :
+						this.flShowStatsMenu = !this.flShowStatsMenu;
+						this.flShowStats = true;
+						break;
+					case 'network' :
+						this.flShowNetWorkMenu = !this.flShowNetWorkMenu;
+						this.flShowStats = true
+				}
+            },
 			showTwoMenu(v){
 				this.flShowSubMenu = true;
 				this.menuActiveName = v;
 				switch (v) {
                     case 'blockChain' :
+	                    this.offSetLeft = `1.7rem`;
+	                    this.contentWidth = '1.15rem';
 	                    this.flShowChain = true;
                     	break;
                     case 'staking' :
+                    	this.offSetLeft = `2.58rem`;
 	                    this.flShowStaking = true;
+	                    this.contentWidth = '1.05rem';
                     	break;
                     case 'transfers' :
+	                    this.offSetLeft = `3.24rem`;
+	                    this.contentWidth = '1.47rem';
 	                    this.flShowTransfers = true;
                     	break;
                     case 'assets'	:
+	                    this.offSetLeft = `4.03rem`;
+	                    this.contentWidth = '1.5rem';
 	                    this.flShowAssets = true;
                     	break;
                     case 'gov' :
+	                    this.offSetLeft = `4.65rem`;
+	                    this.contentWidth = '1.03rem';
 	                    this.flShowGov = true;
                     	break;
                     case 'stats' :
+	                    this.offSetLeft = `5.11rem`;
+	                    this.contentWidth = '1.15rem';
 	                    this.flShowStats = true
 				}
             },
@@ -358,56 +401,6 @@
 
 				}
             },
-			transactionsSelect (flShowTransactionsSelect) {
-				this.flShowValidatorsSelect = false;
-				if (!flShowTransactionsSelect) {
-					this.flShowTransactionsSelect = true;
-					this.flShowUpOrDown = true
-				} else {
-					this.flShowUpOrDown = false;
-					this.flShowTransactionsSelect = false
-				}
-			},
-            assetsSelect (flShowAssetSelect) {
-                this.flShowAssetSelect = false;
-                if (!flShowAssetSelect) {
-                    this.flShowAssetSelect = true;
-                    this.flShowUpOrDown = true
-                } else {
-                    this.flShowUpOrDown = false;
-                    this.flShowAssetSelect = false
-                }
-            },
-			netWorkSelect (flShowNetworkSelect) {
-				this.flShowNetworkSelect = false;
-				if (!flShowNetworkSelect) {
-					this.flShowNetworkSelect = true;
-					this.flShowNetworkUpOrDown = true
-				} else {
-					this.flShowNetworkSelect = false;
-					this.flShowNetworkUpOrDown = false
-				}
-			},
-			governanceSelect (flShowNetworkSelect) {
-				this.flShowGovernanceSelect = false;
-				if (!flShowNetworkSelect) {
-					this.flShowGovernanceSelect = true;
-					this.flShowNetworkUpOrDown = true
-				} else {
-					this.flShowGovernanceSelect = false;
-					this.flShowNetworkUpOrDown = false
-				}
-			},
-			topListSelect (flShowTopListSelection) {
-				this.flShowTopListSelection = false;
-				if (!flShowTopListSelection) {
-					this.flShowTopListSelection = true;
-					this.flShowNetworkUpOrDown = true
-				} else {
-					this.flShowTopListSelection = false;
-					this.flShowNetworkUpOrDown = false
-				}
-			},
 			hideFeature () {
 				if (this.featureShow) {
 					this.featureShow = false;
@@ -443,7 +436,7 @@
 				Service.commonInterface({headerTx:{searchValue: this.searchInputValue}}, (tx) => {
 					try {
 						if (tx) {
-							this.$router.push(`/tx?txHash=${tx.Hash}`);
+							this.$router.push(`/tx?txHash=${tx.hash}`);
 							this.clearSearchInputValue();
 						} else {
 							this.toSearchResultPage();
@@ -649,12 +642,12 @@
 					this.currentNetworkClass = 'iconfont iconiris'
 				} else if (currentEnv === constant.ENVCONFIG.TESTNET && currentChainId === constant.CHAINID.FUXI) {
 					this.explorerLogo = require("../assets/fuxi_testnet_logo.png");
-					this.currentNetworkClass = 'iconfont iconiris' //TODO fuxi TestnetLogoClass
+					this.currentNetworkClass = 'iconfont iconfuxi'
 				} else if (currentEnv === constant.ENVCONFIG.TESTNET && currentChainId === constant.CHAINID.NYANCAT) {
 					this.explorerLogo = require("../assets/nyancat_testnet.png");
-					this.currentNetworkClass = 'iconfont iconiris' //TODO fuxi nyancatnetLogoClass
+					this.currentNetworkClass = 'iconfont iconcaihongmao'
 				} else {
-					this.currentNetworkClass = 'iconfont iconiris'; //TODO fuxi othernetLogoClass
+					this.currentNetworkClass = 'iconfont iconiris';
 					this.explorerLogo = require("../assets/logo.png")
 				}
 			},
@@ -679,7 +672,7 @@
     }
     .person_computer_header_var {
         position: fixed;
-        z-index: 1;
+        z-index: 11;
         background: rgba(255, 255, 255, 1);
         height: 0.6rem;
         .app_header_person_computer {
@@ -704,8 +697,8 @@
                         display: flex;
                         .header_logo_content{
                             height: 100%;
-                            width: 1.7rem;
-                            padding: 0.05rem 0;
+                            width: 1.5rem;
+                            padding: 0.1rem 0;
                             img {
                                 height: 100%;
                             }
@@ -725,6 +718,10 @@
                                 &:hover{
                                     background: var(--activeColor);
                                 }
+                            }
+                            .nav_item_active {
+                                color: #ffffff;
+                                background: var(--hoverColor);
                             }
                         }
                     }
@@ -782,13 +779,14 @@
                             padding-left: 0.2rem;
                             .network_list_container{
                                 background: #fff;
+                                box-shadow: 0 0.02rem 0.1rem 0 rgba(3,16,114,0.15);
                                 width: auto;
                                 position: absolute;
                                 right: 0;
                                 top: 0.6rem;
                                 z-index: 2;
                                 text-align: right;
-                                padding-top: 0.2rem;
+                                padding-top: 0.1rem;
                                 .network_list_item{
                                     line-height: 1.8;
                                     white-space: nowrap;
@@ -799,44 +797,58 @@
                                         color:var(--bgColor)
                                     }
                                 }
+                                .network_list_item:last-child{
+                                    padding-bottom: 0.1rem;
+                                }
                             }
                         }
                     }
                 }
             }
-            .header_submenu_container{
-                background: #fff;
-                color: var(--titleColor);
-                margin: 0 auto;
-                position: absolute;
-                top:0.6rem;
-                width: 100%;
-                box-shadow: 0 0.02rem 0.1rem 0 rgba(3,16,114,0.15);
-                z-index: 11;
-                .header_submenu_content{
-                    max-width: 12.4rem;
+                .header_submenu_container{
+                    background: transparent;
+                    color: var(--contentColor);
                     margin: 0 auto;
-                    height: 0.6rem;
-                    display: flex;
-                    align-items: center;
-                    padding-left: 1.65rem;
-                    .header_submenu_item{
-                        font-size: 0.14rem;
-                        line-height: 1;
-                        padding: 0 0.15rem;
-                        border-right: 0.01rem solid var(--contentColor);
-                        a{
-                            &:hover{
-                                color:var(--hoverColor) !important;
-                            }
+                    position: absolute;
+                    top:0.6rem;
+                    width: 100%;
+                    //box-shadow: 0 0.02rem 0.1rem 0 rgba(3,16,114,0.15);
+                    z-index: 11;
+                    animation: flShowMenu;
+                    .header_submenu_content_wrap{
+                        max-width: 12.8rem;
+                        margin: 0 auto;
+                        width: 100%;
+                        position: relative;
+                        .header_submenu_content{
+                            display: flex;
+                            align-items: flex-start;
+                            position: absolute;
+                            justify-content: flex-start;
+                            flex-direction: column;
+                            background: #fff;
+                            box-shadow: 0 0.02rem 0.05rem 0.02rem rgba(0,0,0,0.15);
+                            overflow:hidden;
+                            .header_submenu_item{
+                                box-sizing: border-box;
+                                font-size: 0.14rem;
+                                line-height: 1;
+                                padding: 0.1rem  0.15rem 0.1rem 0;
+                                margin-left: 0.15rem;
+                                width: 100%;
+                                background: #fff;
+                                a{
+                                    &:hover{
+                                        color:var(--hoverColor) !important;
+                                    }
+                                }
                         }
-                    }
-                    .no_border_style{
-                        border-right:none;
+                            .no_border_style{
+                            border-bottom:none;
+                        }
                     }
                 }
             }
-
         }
     }
     .mobile_header_var {
@@ -919,10 +931,7 @@
                         padding-left: 0.35rem;
                     }
                 }
-                .nav_item_active {
-                    color: #ffffff;
-                    background: var(--bgColor);
-                }
+
                 .btn-group,
                 .btn-group-vertical {
                     vertical-align: baseline;
@@ -945,7 +954,6 @@
                 img {
                     width: 100%;
                 }
-                /*background: url('../assets/menu.png') no-repeat;*/
             }
             .image_wrap_mobile {
                 @include flex;
@@ -955,6 +963,11 @@
                 img {
                     width: 100%;
                     height: 100%;
+                }
+                i{
+                    padding-left: 0.1rem;
+                    font-size: 0.25rem;
+                    color: #fff;
                 }
                 .logo_title_wrap {
                     margin-left: 0.16rem;
@@ -1058,6 +1071,37 @@
                         background: #005a98;
                         color: #fff;
                         font-size: 0.14rem;
+                    }
+                }
+                .mobile_menu_container{
+                    display: flex;
+                    flex-direction: column;
+                    .mobile_menu_item_content{
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        box-sizing: border-box;
+                        color: #fff;
+                        padding: 0.05rem 0.15rem;
+                        i{
+                            font-size: 0.08rem;
+                        }
+                        .up_style{
+                            transform: rotate(180deg);
+                        }
+                        .down_style{
+                            transform: rotate(0deg);
+                        }
+                    }
+                    .blockchain_list_content{
+                        display: flex;
+                        flex-direction:column;
+                        .blockchain_list_item{
+                            padding: 0.05rem 0.15rem;
+                            font-size: 0.14rem;
+                            background: var(--hoverColor);
+                            color:#fff ;
+                        }
                     }
                 }
 
@@ -1171,5 +1215,11 @@
                 }
             }
         }
+    }
+    .fade-enter-active, .fade-leave-active {
+        transition: all 0.2s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+    }
+    .fade-enter, .fade-leave-to{
+        opacity: 0;
     }
 </style>

@@ -153,7 +153,7 @@
                 label:'Moniker'
               },
               'OperatorAddr':{
-                label:'Operator_Address'
+                label:'Operator'
               },
               'Amount':{
                 label:'Self-Bonded'

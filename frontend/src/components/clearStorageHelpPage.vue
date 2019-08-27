@@ -281,7 +281,7 @@
     text-align: center;
     line-height: 0.3rem;
     border-radius: 0.15rem;
-    background: #3498db;
+    background: var(--bgColor);
     color: #fff;
   }
   .step_content{

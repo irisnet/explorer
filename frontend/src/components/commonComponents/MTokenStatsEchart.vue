@@ -69,7 +69,7 @@ export default {
                             textStyle: {
                                 rich: {
                                     d: {
-                                        color: "#A2A2AE",
+                                        color: "var(--contentColor)",
                                         padding: [0, 0, 0, 6]
                                     }
                                 }
@@ -119,13 +119,13 @@ export default {
                                     b: {
                                         fontSize: 14,
                                         lineHeight: 20,
-                                        color: "var(--titleColor)",
+                                        color: "var(--contentColor)",
                                         align: "left"
                                     },
                                     per: {
                                         fontSize: 14,
                                         lineHeight: 20,
-                                        color: "#A2A2AE",
+                                        color: "var(--contentColor)",
                                         align: "left"
                                     }
                                 }

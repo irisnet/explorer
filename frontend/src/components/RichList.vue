@@ -21,7 +21,9 @@
                 <div class="top_list_table_wrap">
                     <div class="top_list_table_content">
                         <top-list-table :items="topList" :showNoData="showNoData"></top-list-table>
-                        <div v-show="showNoData" class="no_data_show">No Data</div>
+                        <div v-show="showNoData" class="no_data_show">
+                            <img src="../assets/no_data.svg" alt="">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -159,7 +161,7 @@ export default {
     width: 100%;
     .top_list_title_container {
         width: 100%;
-        z-index: 1;
+        z-index: 2;
         position: fixed;
         .top_list_title_content {
             max-width: 12.8rem;
@@ -175,7 +177,7 @@ export default {
                     display: flex;
                     align-items: center;
                     font-size: 0.18rem;
-                    color: var(--titleColor);
+                    color: var(--contentColor);
                     line-height: 0.26rem;
                 }
                 .tooltip_icon {
@@ -197,9 +199,10 @@ export default {
                     .tooltip_span {
                         width: 2.4rem;
                         display: none;
-                        position: fixed;
+                        position: absolute;
                         z-index: 5;
-                        margin-top: -20px;
+                        margin-top: 30px;
+                        left: 0.25rem;
                         transform: translateY(-50%);
                         color: #ffffff;
                         background-color: #000000;
@@ -218,8 +221,9 @@ export default {
                             display: block;
                             position: absolute;
                             border-top-color: #000000;
-                            left: 50%;
-                            margin-left: -6px;
+                            transform: rotate(90deg);
+                            top: 45%;
+                            margin-left: -0.12rem;
                         }
                     }
                 }
@@ -278,12 +282,48 @@ export default {
             line-height: 0.25rem;
         }
     }
-}
-@media screen and (max-width: 910px){
     .top_list_page {
         .top_list_title_container{
             position: static;
+            .top_list_title_content{
+                & > div.top_list_title_content_div{
+                    .tooltip_icon{
+                        .tooltip_span{
+                            width: 2.4rem;
+                            display: none;
+                            position: fixed;
+                            z-index: 100000;
+                            left: auto;
+                            margin-top: -20px;
+                            transform: translateY(-50%);
+                            color: #ffffff;
+                            background-color: #000000;
+                            border-radius: 0.04rem;
+                            word-wrap: break-word;
+                            white-space: normal;
+                            line-height: 16px;
+                            div {
+                                padding: 8px 15px;
+                            }
+                            &::after {
+                                width: 0;
+                                height: 0;
+                                border: 0.06rem solid transparent;
+                                content: "";
+                                display: block;
+                                position: absolute;
+                                border-top-color: #000000;
+                                transform: rotate(0deg);
+                                top:auto;
+                                left:53%;
+                                bottom:-0.1rem;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
+
 </style>

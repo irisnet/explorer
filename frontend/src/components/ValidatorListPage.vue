@@ -9,7 +9,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div :class="blocksListPageWrap" :style="{'margin-top':`${blocksListPageWrap === 'personal_computer_blocks_list_page_wrap' ? '0.7rem' : '0'}`}">
             <div style="overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling:touch;">
                 <!-- <validator-list-table :items="items" :minWidth="tableMinWidth" :showNoData="showNoData"></validator-list-table> -->
@@ -18,7 +18,7 @@
                                         :minWidth="tableMinWidth"
                                         :showNoData="showNoData"></m-validator-list-table>
                 <div v-show="showNoData" class="no_data_show">
-                    No Data
+                    <img src="../assets/no_data.svg" alt="">
                 </div>
             </div>
             <div class="pagination total_num" style='margin-bottom:0.2rem;'>

@@ -222,7 +222,7 @@ export default {
           label: 'TxType'
         },
         'transferFee': {
-          label: 'Fee(IRIS)'
+          label: 'Fee'
         },
         'Tx_Signer': {
           label: 'Signer'
@@ -239,7 +239,7 @@ export default {
           label: 'Moniker'
         },
         'OperatorAddr': {
-          label: 'Operator_Address'
+          label: 'Operator'
         },
         'Amount': {
           label: 'Self-Bonded'
@@ -355,7 +355,7 @@ export default {
       return Tools.formatString(moniker,13,"...");
     },
     formatListName (items) {
-      items.forEach((tx) => {
+      Array.isArray(items) && items.forEach((tx) => {
         if (tx.listName === 'transfer') {
           this.listFields = this.transferFields
         } else if (tx.listName === 'declarations') {

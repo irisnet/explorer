@@ -13,7 +13,7 @@
                     <native-asset :showNoData="showNoData" :items="gateWayIssueTokenList" name="issueToken"></native-asset>
                     <!--<m-tx-list-page-table :showNoData="showNoData" :items="txList"></m-tx-list-page-table>-->
                     <div v-show="showNoData" class="no_data_show">
-                        No Data
+                        <img src="../assets/no_data.svg" alt="">
                     </div>
                 </div>
                 <div class="pagination_nav_footer_content">
@@ -29,7 +29,7 @@
                     <native-asset :showNoData="showNoData" :items="gateWayEditTokenList" name="editToken"></native-asset>
                     <!--<m-tx-list-page-table :showNoData="showNoData" :items="txList"></m-tx-list-page-table>-->
                     <div v-show="showNoData" class="no_data_show">
-                        No Data
+                        <img src="../assets/no_data.svg" alt="">
                     </div>
                 </div>
                 <div class="pagination_nav_footer_content">
@@ -45,7 +45,7 @@
                     <native-asset :showNoData="showNoData" :items="gateWayMintTokenList" name="mintToken"></native-asset>
                     <!--<m-tx-list-page-table :showNoData="showNoData" :items="txList"></m-tx-list-page-table>-->
                     <div v-show="showNoData" class="no_data_show">
-                        No Data
+                        <img src="../assets/no_data.svg" alt="">
                     </div>
                 </div>
                 <div class="pagination_nav_footer_content">
@@ -61,7 +61,7 @@
                     <native-asset :showNoData="showNoData" :items="gateWayTransferOwnerTokenList" name="transferToken"></native-asset>
                     <!--<m-tx-list-page-table :showNoData="showNoData" :items="txList"></m-tx-list-page-table>-->
                     <div v-show="showNoData" class="no_data_show">
-                        No Data
+                        <img src="../assets/no_data.svg" alt="">
                     </div>
                 </div>
                 <div class="pagination_nav_footer_content">
@@ -103,7 +103,7 @@
 	            pageSize: 10,
 	            showNoData: false,
 	            flShowLoading: false,
-	            listTitleName:'GatewayAsset',
+	            listTitleName:'Gateway Asset Txs',
 	            issueTokenType:'IssueToken',
 	            editTokenLType:'EditToken',
 	            mintTokenType:'MintToken',
@@ -290,7 +290,7 @@
         .gateway_asset_list_title_wrap{
         width: 100%;
         position: fixed;
-        z-index: 1;
+        z-index: 10;
         background-color: #ffffff;
             .gateway_asset_list_title_content{
                 height:0.7rem;

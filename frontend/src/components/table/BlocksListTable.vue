@@ -262,7 +262,7 @@ export default {
           label: 'TxType'
         },
         'transferFee': {
-          label: 'Fee(IRIS)'
+          label: 'Fee'
         },
         'Tx_Signer': {
           label: 'Signer'
@@ -285,7 +285,7 @@ export default {
           label: 'Moniker'
         },
         'OperatorAddr': {
-          label: 'Operator_Address'
+          label: 'Operator'
         },
         'Amount': {
           label: 'Self-Bonded'

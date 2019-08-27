@@ -2,7 +2,7 @@
   <div :class="echartsComponentWrapLine">
     <div class="echarts_title_wrap_line">
       <span class="echarts_title">14 day Transaction History</span>
-      <span class="view_all_content"><router-link :to="`/txs`">View All<i class="iconfont iconwangluoqiehuanjiantou"></i></router-link></span>
+      <span class="view_all_content"><router-link :to="`/txs`">View All</router-link></span>
     </div>
     <div id="echarts_line">
 
@@ -29,7 +29,7 @@
               axis:"x",
               type:"line",
               lineStyle:{
-                color:"#a2a2ae",
+                color:"var(--contentColor)",
               },
             },
             formatter(params){
@@ -44,7 +44,7 @@
             data: [],
             axisLine: {
               lineStyle: {
-                color: '#a2a2ae'
+                color: 'var(--contentColor)'
               }
             },
             axisLabel:{
@@ -88,7 +88,7 @@
                   color: new echarts.graphic.LinearGradient(//设置渐变颜色
                     0, 0, 0, 1,
                     [
-                      {offset: 0, color: '#3498db'},
+                      {offset: 0, color: '#3598db'},
                       {offset: 0.5, color: '#91ccef'},
                       {offset: 1, color: '#dcf6ff'}
                     ]

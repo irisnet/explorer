@@ -3,9 +3,9 @@
         <div class="block_detail_content">
             <div class="block_detail_title_content">
                 <span class="block_height_content">
-                    <i :class="active?'flag_item_left':'flag_item_left_disabled'" @click="skipNext(-1)"></i>
+                    <i :class="active?'flag_item_left':'flag_item_left_disabled'" class="iconfont iconshangyigequkuai" @click="skipNext(-1)"></i>
                         <span class="information_value" style="flex:none;">{{heightValue}}</span>
-                    <i :class="activeNext?'flag_item_right':'flag_item_right_disabled'" @click="skipNext(1)"></i>
+                    <i :class="activeNext?'flag_item_right':'flag_item_right_disabled'" class="iconfont iconxiayigequkuai" @click="skipNext(1)"></i>
                 </span>
             </div>
         </div>
@@ -59,7 +59,7 @@
                 </div>
             </div>
             <div class="block_result_container" v-show="flBlockStakeModule">
-                <div class="block_result_title">Stakes</div>
+                <div class="block_result_title">Delegations</div>
                 <div class="block_result_table_content">
                     <blocks-list-table :items="stakeList"
                                        :showNoData="flBlockStakeNoData" :min-width="tableMinWidth"></blocks-list-table>
@@ -70,7 +70,7 @@
                 </div>
             </div>
             <div class="block_result_container" v-show="flBlockDeclarationModule">
-                <div class="block_result_title">Declarations</div>
+                <div class="block_result_title">Validations</div>
                 <div class="block_result_table_content">
                     <blocks-list-table :items="declarationList"
                                        :showNoData="flBlockDeclarationNoData" :min-width="tableMinWidth"></blocks-list-table>
@@ -97,7 +97,7 @@
                     <blocks-list-table :items="validatorSetList"
                                        :showNoData="flValidatorNoData" :min-width="tableMinWidth"></blocks-list-table>
                     <div v-show="flValidatorNoData" class="no_data_show">
-                        No Data
+                        <img src="../assets/no_data.svg" alt="">
                     </div>
                 </div>
                 <div class="pagination" style='margin-top:0.2rem;margin-bottom: 0.2rem;' v-if="flShowValidatorListSetPagination">
@@ -379,9 +379,9 @@
 			        }else {
 				        this.flShowStakeListPagination = false
 			        }
-			        this.stakeList = Tools.formatTxList(txList.Data,'stakes')
+			        this.stakeList = Tools.formatTxList(txList.Data,'delegations')
 		        }else {
-			        this.stakeList = Tools.formatTxList(null,'stakes');
+			        this.stakeList = Tools.formatTxList(null,'delegations');
 			        this.flBlockStakeNoData = true;
 			        this.flBlockStakeModule = false;
 		        }
@@ -396,9 +396,9 @@
 			        }else {
 				        this.flShowDeclarationPagination = false
 			        }
-			        this.declarationList = Tools.formatTxList(txList.Data,'declarations')
+			        this.declarationList = Tools.formatTxList(txList.Data,'validations')
 		        }else {
-			        this.declarationList = Tools.formatTxList(null,'declarations');
+			        this.declarationList = Tools.formatTxList(null,'validations');
 			        this.flBlockDeclarationNoData = true;
 			        this.flBlockDeclarationModule = false;
 		        }
@@ -507,38 +507,34 @@
                 .block_height_content{
                     .information_value{
                         font-size: 0.22rem;
-                        color: var(--titleColor);
+                        color: var(--contentColor);
                         margin: 0 0.07rem;
                     }
                     .flag_item_left {
                         display: inline-block;
-                        width: 0.2rem;
-                        height: 0.17rem;
-                        background: url('../assets/left.png') no-repeat 0 1px;
+                        font-size: 0.2rem;
                         margin-right: 0.05rem;
                         cursor: pointer;
+                        color:var(--bgColor) !important;
                     }
                     .flag_item_left_disabled {
                         display: inline-block;
-                        width: 0.2rem;
-                        height: 0.17rem;
+                        font-size: 0.2rem;
                         margin-right: 0.05rem;
                         cursor: pointer;
-                        background: url('../assets/left_disabled.png') no-repeat 0 1px;
+                        color: var(--contentColor);
                     }
                     .flag_item_right {
                         display: inline-block;
-                        width: 0.2rem;
-                        height: 0.17rem;
-                        background: url('../assets/right.png') no-repeat 0 0;
+                        font-size: 0.2rem;
                         margin-left: 0.05rem;
+                        color:var(--bgColor);
                         cursor: pointer;
                     }
                     .flag_item_right_disabled {
                         display: inline-block;
-                        width: 0.2rem;
-                        height: 0.17rem;
-                        background: url('../assets/right_disabled.png') no-repeat 0 0;
+                        font-size: 0.2rem;
+                        color: var(--contentColor);
                         margin-left: 0.05rem;
                         cursor: pointer;
                     }
@@ -565,7 +561,7 @@
                     .block_information_item{
                         display: flex;
                         span:nth-of-type(1){
-                            color: var(--titleColor);
+                            color: var(--contentColor);
                             font-size: 0.14rem;
                             line-height: 0.2rem;
                             width: 1.5rem;
@@ -574,7 +570,7 @@
                         }
                         span:nth-of-type(2){
                             flex: 1;
-                            color: rgba(162, 162, 174, 1);
+                            color: var(--contentColor);
                             font-size: 0.14rem;
                             line-height: 0.2rem;
                             overflow-x: auto;
@@ -585,7 +581,7 @@
                     }
                     .block_information_item:last-child{
                         span:nth-of-type(1){
-                            color: var(--titleColor);
+                            color: var(--contentColor);
                             font-size: 0.14rem;
                             line-height: 0.2rem;
                             width: 1.5rem;

@@ -11,7 +11,7 @@
                     <spin-component :showLoading="flShowLoading"></spin-component>
                     <m-tx-list-page-table :items="txList"></m-tx-list-page-table>
                     <div v-show="showNoData" class="no_data_show">
-                        No Data
+                        <img src="../assets/no_data.svg" alt="">
                     </div>
                 </div>
                 <div class="pagination_nav_footer_content">
@@ -43,12 +43,12 @@
 			}
 		},
 		created(){
-			this.getTransactionList(this.currentPageNum,this.pageSize)
+            this.getTransactionList(this.currentPageNum,this.pageSize)
 		},
 		methods: {
 			linkGen(pageNum) {
-				return pageNum === 1 ? '?' : `?page=${pageNum}`
-			},
+                return pageNum === 1 ? '?' : `?page=${pageNum}`
+            },
 			getTransactionList(currentPage, pageSize){
 				let that = this, parmas;
 				if(this.$route.params.txType === 'transfers'){
