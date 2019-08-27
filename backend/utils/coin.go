@@ -22,7 +22,7 @@ const (
 var (
 	coinsMap = make(map[string]float64)
 
-	reDnm  = `[A-Za-z\-]{2,15}`
+	reDnm  = `[A-Za-z]{1,}\S*`
 	reAmt  = `[0-9]+[.]?[0-9]*`
 	reSpc  = `[[:space:]]*`
 	reCoin = regexp.MustCompile(fmt.Sprintf(`^(%s)%s(%s)$`, reAmt, reSpc, reDnm))
