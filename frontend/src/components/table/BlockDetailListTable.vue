@@ -381,6 +381,7 @@ export default {
     max-width: none !important;
     overflow-wrap: break-word !important;
     word-wrap: break-word !important;
+    color:var(--titleColor)
   }
 }
 .validator_table .validator_set_table_style thead tr th:nth-child(2) {

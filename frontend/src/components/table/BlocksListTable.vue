@@ -398,9 +398,9 @@ export default {
       items.forEach((tx) => {
         if (tx.listName === 'transfer') {
           this.fields = this.transferFields
-        } else if (tx.listName === 'declarations') {
+        } else if (tx.listName === 'validations') {
           this.fields = this.declarationFields
-        } else if (tx.listName === 'stakes') {
+        } else if (tx.listName === 'delegations') {
           this.fields = this.stakeFields
         } else if (tx.listName === 'gov') {
           this.fields = this.govFields
@@ -519,7 +519,7 @@ table {
   th,
   td {
     padding: 0.075rem !important;
-    color: var(--contentColor);
+    color: var(--titleColor);
     @include fontWeight;
   }
   margin-bottom: 0 !important;
@@ -529,7 +529,7 @@ table {
     }
     tr {
       th {
-        color: #000000;
+        color: var(--contentColor)!important;
         height: 0.5rem;
         vertical-align: middle;
         &:first-child {

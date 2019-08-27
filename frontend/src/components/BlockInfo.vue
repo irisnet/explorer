@@ -570,7 +570,7 @@
                         }
                         span:nth-of-type(2){
                             flex: 1;
-                            color: var(--contentColor);
+                            color: var(--titleColor);
                             font-size: 0.14rem;
                             line-height: 0.2rem;
                             overflow-x: auto;

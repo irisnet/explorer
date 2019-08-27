@@ -289,7 +289,7 @@
             class="validator_table_container"
             v-if="txTableList.stakes.total > 0"
         >
-            <p class="validator_information_content_title">Stakes</p>
+            <p class="validator_information_content_title">Delegation Txs</p>
             <div class="blocks_list_table_container">
                 <div class="address_tx_list_table">
                     <m-validator-detail-table :items="txTableList.stakes.items" listName="stakes"></m-validator-detail-table>
@@ -307,7 +307,7 @@
             class="validator_table_container"
             v-if="txTableList.declarations.total > 0"
         >
-            <p class="validator_information_content_title">Declarations</p>
+            <p class="validator_information_content_title">Validation Txs</p>
             <div class="blocks_list_table_container">
                 <div class="address_tx_list_table">
                     <m-validator-detail-table

@@ -1003,9 +1003,10 @@ export default {
                 margin-bottom: 0.12rem;
                 .information_props {
                     width: 1.5rem;
+                    color:var(--contentColor)
                 }
                 .information_value {
-                    color: #a2a2ae;
+                    color: var(--titleColor);
                     flex: 1;
                 }
             }
@@ -1053,7 +1054,7 @@ export default {
                     overflow-x: auto;
                     -webkit-overflow-scrolling: touch;
                     overflow-y: hidden;
-                    color: #a2a2ae;
+                    color: var(--titleColor);
                 }
             }
             &:nth-last-of-type(1) {
