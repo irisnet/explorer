@@ -1,8 +1,8 @@
 package document
 
 import (
+	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/utils"
-	"github.com/irisnet/irishub-sync/logger"
 	"gopkg.in/mgo.v2/bson"
 )
 

@@ -15,6 +15,10 @@ type MsgSubmitProposal struct {
 	Proposer       string      `json:"proposer"`       //  Address of the proposer
 	InitialDeposit utils.Coins `json:"initialDeposit"` //  Initial deposit paid by sender. Must be strictly positive.
 	Params         []Param     `json:"params"`
+	Software       string      `json:"software"`
+	Version        int64       `json:"version"`
+	SwitchHeight   int64       `json:"switch_height"`
+	Treshold       string      `json:"threshold"`
 }
 
 type MsgSubmitSoftwareUpgradeProposal struct {
@@ -121,31 +125,31 @@ func (t Tx) PrintHashFromToAmount() string {
 }
 
 type BaseTx struct {
-	Signer      string `json:"Signer,omitempty"`
-	Hash        string
-	BlockHeight int64
-	Type        string
-	Fee         utils.ActualFee
-	Status      string
-	GasLimit    int64
-	GasUsed     int64
-	GasWanted   int64
-	GasPrice    float64
-	Memo        string
-	Log         string
-	Timestamp   time.Time
+	Signer      string          `json:"signer,omitempty"`
+	Hash        string          `json:"hash"`
+	BlockHeight int64           `json:"block_height"`
+	Type        string          `json:"type"`
+	Fee         utils.ActualFee `json:"fee"`
+	Status      string          `json:"status"`
+	GasLimit    int64           `json:"gas_limit"`
+	GasUsed     int64           `json:"gas_used"`
+	GasWanted   int64           `json:"gas_wanted"`
+	GasPrice    float64         `json:"gas_price"`
+	Memo        string          `json:"memo"`
+	Log         string          `json:"log"`
+	Timestamp   time.Time       `json:"timestamp"`
 }
 
 type TransTx struct {
 	BaseTx
-	From   string
-	To     string
-	Amount utils.Coins
+	From   string      `json:"from"`
+	To     string      `json:"to"`
+	Amount utils.Coins `json:"amount"`
 }
 
 type StakeTx struct {
 	TransTx
-	Source      string
+	Source      string `json:"source"`
 	FromMoniker string `json:"from_moniker"`
 	ToMoniker   string `json:"to_moniker"`
 }
@@ -161,26 +165,31 @@ Amount: %v
 
 type DeclarationTx struct {
 	BaseTx
-	Amount       utils.Coins `json:"Amount"`
-	OperatorAddr string      `json:"OperatorAddr"`
-	Owner        string
-	Moniker      string
-	Pubkey       string
-	Identity     string
-	SelfBond     utils.Coins
-	Website      string
-	Details      string
+	Amount       utils.Coins `json:"amount"`
+	OperatorAddr string      `json:"operator_addr"`
+	Owner        string      `json:"owner"`
+	Moniker      string      `json:"moniker"`
+	Pubkey       string      `json:"pubkey"`
+	Identity     string      `json:"identity"`
+	SelfBond     utils.Coins `json:"self_bond"`
+	Website      string      `json:"website"`
+	Details      string      `json:"details"`
 }
 
 type GovTx struct {
 	BaseTx
-	From         string
-	ProposalId   uint64
-	Description  string
-	Amount       utils.Coins
-	Option       string
-	Title        string
-	ProposalType string
+	From         string            `json:"from"`
+	ProposalId   uint64            `json:"proposal_id"`
+	Description  string            `json:"description"`
+	Amount       utils.Coins       `json:"amount"`
+	Option       string            `json:"option"`
+	Title        string            `json:"title"`
+	ProposalType string            `json:"proposal_type"`
+	Tags         map[string]string `json:"tags"`
+	Software     string            `json:"software"`
+	Version      int64             `json:"version"`
+	SwitchHeight int64             `json:"switch_height"`
+	Treshold     string            `json:"treshold"`
 }
 
 type RecentTx struct {
@@ -188,6 +197,15 @@ type RecentTx struct {
 	Time   time.Time  `json:"time"`
 	TxHash string     `json:"tx_hash"`
 	Type   string     `json:"type"`
+}
+
+type AssetTx struct {
+	BaseTx
+	From   string            `json:"from"`
+	To     string            `json:"to"`
+	Amount utils.Coins       `json:"amount"`
+	Tags   map[string]string `json:"tags"`
+	Msgs   []MsgItem         `json:"msgs"`
 }
 
 func (tx RecentTx) String() string {
@@ -200,37 +218,49 @@ func (tx RecentTx) String() string {
 }
 
 type Signer struct {
-	AddrHex    string `bson:"addr_hex"`
-	AddrBech32 string `bson:"addr_bech32"`
+	AddrHex    string `json:"addr_hex"`
+	AddrBech32 string `json:"addr_bech32"`
 }
 
 func (s Signer) String() string {
 	return fmt.Sprintf("AddrHex: %v   AddrBech32: %v \n", s.AddrHex, s.AddrBech32)
 }
 
+type MsgItem struct {
+	Type    string      `json:"type"`
+	MsgData interface{} `json:"msg"`
+}
+
+type UdInfo struct {
+	Source  string `json:"source"`
+	Gateway string `json:"gateway"`
+	Symbol  string `json:"symbol"`
+}
+
 type CommonTx struct {
-	Time                 time.Time            `bson:"time"`
-	Height               int64                `bson:"height"`
-	TxHash               string               `bson:"tx_hash"`
-	From                 string               `bson:"from"`
-	To                   string               `bson:"to"`
-	Amount               utils.Coins          `bson:"amount"`
-	Type                 string               `bson:"type"`
-	Fee                  utils.Fee            `bson:"fee"`
-	Memo                 string               `bson:"memo"`
-	Status               string               `bson:"status"`
-	Code                 uint32               `bson:"code"`
-	Log                  string               `bson:"log"`
-	GasUsed              int64                `bson:"gas_used"`
-	GasWanted            int64                `bson:"gas_wanted"`
-	GasPrice             float64              `bson:"gas_price"`
-	ActualFee            utils.ActualFee      `bson:"actual_fee"`
-	ProposalId           uint64               `bson:"proposal_id"`
-	Tags                 map[string]string    `bson:"tags"`
-	StakeCreateValidator StakeCreateValidator `bson:"stake_create_validator"`
-	StakeEditValidator   StakeEditValidator   `bson:"stake_edit_validator"`
-	Msg                  Msg                  `bson:"-"`
-	Signers              []Signer             `bson:"signers"`
+	Time                 time.Time            `json:"time"`
+	Height               int64                `json:"height"`
+	TxHash               string               `json:"tx_hash"`
+	From                 string               `json:"from"`
+	To                   string               `json:"to"`
+	Amount               utils.Coins          `json:"amount"`
+	Type                 string               `json:"type"`
+	Fee                  utils.Fee            `json:"fee"`
+	Memo                 string               `json:"memo"`
+	Status               string               `json:"status"`
+	Code                 uint32               `json:"code"`
+	Log                  string               `json:"log"`
+	GasUsed              int64                `json:"gas_used"`
+	GasWanted            int64                `json:"gas_wanted"`
+	GasPrice             float64              `json:"gas_price"`
+	ActualFee            utils.ActualFee      `json:"actual_fee"`
+	ProposalId           uint64               `json:"proposal_id"`
+	Tags                 map[string]string    `json:"tags"`
+	StakeCreateValidator StakeCreateValidator `json:"stake_create_validator"`
+	StakeEditValidator   StakeEditValidator   `json:"stake_edit_validator"`
+	Msg                  Msg                  `json:"-"`
+	Msgs                 []MsgItem            `json:"msgs"`
+	Signers              []Signer             `json:"signers"`
 }
 
 func (tx CommonTx) String() string {
@@ -255,9 +285,10 @@ func (tx CommonTx) String() string {
 		StakeCreateValidator :%v
 		StakeEditValidator   :%v
 		Msg                  :%v
+		Msgs                 :%v
 		Signers              :%v
 		`, tx.Time, tx.Height, tx.TxHash, tx.From, tx.To, tx.Amount, tx.Type, tx.Fee, tx.Memo, tx.Status, tx.Code, tx.Log,
-		tx.GasUsed, tx.GasPrice, tx.ActualFee, tx.ProposalId, tx.Tags, tx.StakeCreateValidator, tx.StakeEditValidator, tx.Msg, tx.Signers)
+		tx.GasUsed, tx.GasPrice, tx.ActualFee, tx.ProposalId, tx.Tags, tx.StakeCreateValidator, tx.StakeEditValidator, tx.Msg, tx.Msgs, tx.Signers)
 
 }
 
@@ -267,20 +298,20 @@ type Msg interface {
 }
 
 type StakeCreateValidator struct {
-	PubKey      string         `bson:"pub_key"`
-	Description ValDescription `bson:"description"`
+	PubKey      string         `json:"pub_key"`
+	Description ValDescription `json:"description"`
 }
 
 type StakeEditValidator struct {
-	Description ValDescription `bson:"description"`
+	Description ValDescription `json:"description"`
 }
 
 // Description
 type ValDescription struct {
-	Moniker  string `bson:"moniker"`
-	Identity string `bson:"identity"`
-	Website  string `bson:"website"`
-	Details  string `bson:"details"`
+	Moniker  string `json:"moniker"`
+	Identity string `json:"identity"`
+	Website  string `json:"website"`
+	Details  string `json:"details"`
 }
 
 func (tx CommonTx) PrintHashTypeFromToAmount() string {
@@ -295,6 +326,6 @@ func (tx CommonTx) PrintHashTypeFromToAmount() string {
 }
 
 type CountVo struct {
-	Id    bson.ObjectId `bson:"_id,omitempty"`
+	Id    bson.ObjectId `json:"_id,omitempty"`
 	Count float64
 }

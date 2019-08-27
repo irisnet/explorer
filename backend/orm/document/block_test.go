@@ -31,7 +31,7 @@ func TestQueryBlockHeightTimeHashByHeight(t *testing.T) {
 
 func TestGetBlockListByPage(t *testing.T) {
 
-	total, blockPage, err := Block{}.GetBlockListByPage(100, 10)
+	total, blockPage, err := Block{}.GetBlockListByPage(100, 10, true)
 	if err != nil {
 		t.Error(err)
 	}

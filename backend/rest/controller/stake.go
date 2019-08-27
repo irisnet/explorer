@@ -13,8 +13,6 @@ func RegisterStake(r *mux.Router) error {
 		registerQueryValidator,
 		registerQueryCandidateStatus,
 		registerQueryCandidatesTop,
-		registerQueryCandidateUptime,
-		registerQueryCandidatePower,
 		registerGetValidators,
 		registerUpdateValidatorIcons,
 		registerGetValidator,
@@ -110,10 +108,10 @@ func registerQueryDelegationsByValidator(r *mux.Router) error {
 		if page > 0 {
 			page = page - 1
 		}
-		var  ispage bool
+		var ispage bool
 		if needpage == "false" {
 			ispage = false
-		}else {
+		} else {
 			ispage = true
 		}
 		total := QueryParam(request, "total")
@@ -216,29 +214,7 @@ func registerQueryValidator(r *mux.Router) error {
 
 	return nil
 }
-func registerQueryCandidateUptime(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryCandidateUptime, "GET", func(request model.IrisReq) interface{} {
-		stake.SetTid(request.TraceId)
-		address := Var(request, "address")
-		category := Var(request, "category")
 
-		result := stake.QueryCandidateUptime(address, category)
-		return result
-	})
-
-	return nil
-}
-func registerQueryCandidatePower(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryCandidatePower, "GET", func(request model.IrisReq) interface{} {
-		stake.SetTid(request.TraceId)
-		address := Var(request, "address")
-		category := Var(request, "category")
-
-		result := stake.QueryCandidatePower(address, category)
-		return result
-	})
-	return nil
-}
 func registerQueryCandidateStatus(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryCandidateStatus, "GET", func(request model.IrisReq) interface{} {
 		stake.SetTid(request.TraceId)

@@ -18,7 +18,7 @@ func TestQueryProposalsByHeight(t *testing.T) {
 
 func TestProposalQueryList(t *testing.T) {
 
-	proposalPage := new(ProposalService).QueryList(0, 100)
+	proposalPage := new(ProposalService).QueryList(0, 100, true)
 
 	t.Logf("total: %v \n", proposalPage.Count)
 
@@ -37,13 +37,13 @@ func TestProposalQuery(t *testing.T) {
 }
 
 func TestProposalService_GetVoteTxs(t *testing.T) {
-	res := proposalService.GetVoteTxs(1, 1, 10)
+	res := proposalService.GetVoteTxs(1, 1, 10, true)
 	resBytes, _ := json.MarshalIndent(res, "", "\t")
 	t.Log(string(resBytes))
 }
 
 func TestProposalService_GetDepositTxs(t *testing.T) {
-	res := proposalService.GetDepositTxs(1, 1, 10)
+	res := proposalService.GetDepositTxs(1, 1, 10, true)
 	resBytes, _ := json.MarshalIndent(res, "", "\t")
 	t.Log(string(resBytes))
 
@@ -56,7 +56,7 @@ func TestProposalService_QueryDepositAndVotingProposalList(t *testing.T) {
 }
 
 func TestProposalService_QueryList(t *testing.T) {
-	res := proposalService.QueryList(1, 20)
+	res := proposalService.QueryList(1, 20, true)
 	resBytes, _ := json.Marshal(res)
 	t.Log(string(resBytes))
 }
