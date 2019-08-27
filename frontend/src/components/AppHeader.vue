@@ -12,12 +12,24 @@
                             <router-link :to="`/home`"><img :src="explorerLogo"></router-link>
                         </div>
                         <ul class="header_menu_content">
-                            <li class="header_menu_item" @mouseenter="showTwoMenu('blockChain')" @mouseleave="hideTwoMenu('blockChain')">Blockchain</li>
-                            <li class="header_menu_item" @mouseenter="showTwoMenu('staking')" @mouseleave="hideTwoMenu('staking')">Staking</li>
-                            <li class="header_menu_item" @mouseenter="showTwoMenu('transfers')" @mouseleave="hideTwoMenu('transfers')">Transfers</li>
-                            <li class="header_menu_item" @mouseenter="showTwoMenu('assets')" @mouseleave="hideTwoMenu('assets')">Assets</li>
-                            <li class="header_menu_item" @mouseenter="showTwoMenu('gov')" @mouseleave="hideTwoMenu('gov')">Gov</li>
-                            <li class="header_menu_item" @mouseenter="showTwoMenu('stats')" @mouseleave="hideTwoMenu('stats')">Stats</li>
+                            <li class="header_menu_item"
+                                :class="activeBlockChain ? 'nav_item_active' : ''"
+                                @mouseenter="showTwoMenu('blockChain')" @mouseleave="hideTwoMenu('blockChain')">Blockchain</li>
+                            <li class="header_menu_item"
+                                :class="activeStaking ? 'nav_item_active' : ''"
+                                @mouseenter="showTwoMenu('staking')" @mouseleave="hideTwoMenu('staking')">Staking</li>
+                            <li class="header_menu_item"
+                                :class="activeTransfers ? 'nav_item_active' : ''"
+                                @mouseenter="showTwoMenu('transfers')" @mouseleave="hideTwoMenu('transfers')">Transfer</li>
+                            <li class="header_menu_item"
+                                :class="activeAssets ? 'nav_item_active' : ''"
+                                @mouseenter="showTwoMenu('assets')" @mouseleave="hideTwoMenu('assets')">Asset</li>
+                            <li class="header_menu_item"
+                                :class="activeGov ? 'nav_item_active' : ''"
+                                @mouseenter="showTwoMenu('gov')" @mouseleave="hideTwoMenu('gov')">Gov</li>
+                            <li class="header_menu_item"
+                                :class="activeStats ? 'nav_item_active' : ''"
+                                @mouseenter="showTwoMenu('stats')" @mouseleave="hideTwoMenu('stats')">Stats</li>
                             <li class="header_menu_item"><router-link :to="`/faucet`">Faucet</router-link></li>
                         </ul>
                     </div>
@@ -56,12 +68,12 @@
                             <li class="header_submenu_item" v-if="flShowChain"><router-link :to="`/home`">Overview</router-link></li>
                             <li class="header_submenu_item" v-if="flShowChain"><router-link :to="`/blocks`">Blocks</router-link></li>
                             <li class="header_submenu_item" v-if="flShowChain"><router-link :to="`/txs`">Transactions</router-link></li>
-                            <li class="header_submenu_item no_border_style" v-if="flShowChain"><router-link :to="`/validators`">Validators</router-link></li>
+                            <!--<li class="header_submenu_item no_border_style" v-if="flShowChain"><router-link :to="`/validators`">Validators</router-link></li>-->
                             <!--               <li class="header_submenu_item" v-if="flShowChain">Assets</li>
                                            <li class="header_submenu_item" v-if="flShowChain">Gateways</li>-->
                             <li class="header_submenu_item" v-if="flShowStaking"><router-link :to="`/validators`">Validators</router-link></li>
-                            <li class="header_submenu_item" v-if="flShowStaking"><router-link :to="`/txs/validations`">Validations</router-link></li>
-                            <li class="header_submenu_item no_border_style" v-if="flShowStaking"><router-link :to="`/txs/delegations`">Delegations</router-link></li>
+                            <li class="header_submenu_item" v-if="flShowStaking"><router-link :to="`/txs/validations`">Validation Txs</router-link></li>
+                            <li class="header_submenu_item no_border_style" v-if="flShowStaking"><router-link :to="`/txs/delegations`">Delegation Txs</router-link></li>
                             <!--  <li class="header_submenu_item" v-if="flShowStaking">Validator Txs</li>-->
                             <!--<li class="header_submenu_item" v-if="flShowStaking"> <router-link :to="`/txs/stakes`">Delegation Txs</router-link></li>
                             <li class="header_submenu_item" v-if="flShowStaking">Reward Txs</li>-->
@@ -218,6 +230,7 @@
 		watch: {
 			$route () {
 				this.searchInputValue = "";
+				this.flShowSubMenu = false;
 				this.listenRouteForChangeActiveButton();
 				this.showHeader = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
 			},
@@ -285,6 +298,13 @@
 				flShowGovMenu:false,
 				flShowStatsMenu:false,
 				flShowNetWorkMenu:false,
+				activeBlockChain:false,
+				activeStaking:false,
+				activeTransfers:false,
+				activeAssets:false,
+				activeGov:false,
+				activeStats:false,
+                hoverBlockChainTag:false,
                 menuActiveName: '',
 				currentNetworkClass:'',
 				offSetLeft:'1.6rem',
@@ -310,6 +330,7 @@
 					cur_env:localStorage.getItem('currentEnv')
 				});
             }
+			this.listenRouteForChangeActiveButton();
 		},
 		beforeDestroy () {
 			document.getElementById('router_wrap').removeEventListener('click', this.hideFeature);
@@ -345,36 +366,45 @@
 			showTwoMenu(v){
 				this.flShowSubMenu = true;
 				this.menuActiveName = v;
+				this.hideActiveStyle();
 				switch (v) {
                     case 'blockChain' :
 	                    this.offSetLeft = `1.7rem`;
 	                    this.contentWidth = '1.15rem';
 	                    this.flShowChain = true;
+	                    this.hoverBlockChainTag = false;
+	                    this.activeBlockChain  = true;
                     	break;
                     case 'staking' :
                     	this.offSetLeft = `2.58rem`;
 	                    this.flShowStaking = true;
-	                    this.contentWidth = '1.05rem';
+	                    this.contentWidth = '1.25rem';
+	                    this.hoverBlockChainTag = true;
+	                    this.activeStaking  = true;
                     	break;
                     case 'transfers' :
 	                    this.offSetLeft = `3.24rem`;
 	                    this.contentWidth = '1.47rem';
 	                    this.flShowTransfers = true;
+	                    this.activeTransfers  = true;
                     	break;
                     case 'assets'	:
-	                    this.offSetLeft = `4.03rem`;
-	                    this.contentWidth = '1.5rem';
+	                    this.offSetLeft = `3.97rem`;
+	                    this.contentWidth = '1.55rem';
 	                    this.flShowAssets = true;
+	                    this.activeAssets = true;
                     	break;
                     case 'gov' :
-	                    this.offSetLeft = `4.65rem`;
+	                    this.offSetLeft = `4.51rem`;
 	                    this.contentWidth = '1.03rem';
 	                    this.flShowGov = true;
+	                    this.activeGov = true;
                     	break;
                     case 'stats' :
-	                    this.offSetLeft = `5.11rem`;
+	                    this.offSetLeft = `4.97rem`;
 	                    this.contentWidth = '1.15rem';
-	                    this.flShowStats = true
+	                    this.flShowStats = true;
+	                    this.activeStats  = true
 				}
             },
 			hideTwoMenu(v){
@@ -397,7 +427,7 @@
 						this.flShowGov = false;
 						break;
 					case 'stats' :
-						this.flShowStats = false
+						this.flShowStats = false;
 
 				}
             },
@@ -534,30 +564,40 @@
 			clearSearchInputValue () {
 				this.searchInputValue = "";
 			},
+			hideActiveStyle(){
+				this.activeStaking  = false;
+				this.activeTransfers  = false;
+				this.activeBlockChain  = false;
+				this.activeAssets  = false;
+				this.activeGov  = false;
+				this.activeStats  = false;
+				this.activeClassName  = false;
+            },
 			listenRouteForChangeActiveButton () {
 				//刷新的时候路由不变，active按钮不变
-				let path = window.location.href;
-				if (path.includes('txs') || path.includes('tx?')) {
-					this.activeClassName = '/transaction';
-				} else if (path.includes('/validators')) {
-					this.activeClassName = '/validators';
-				} else if (path.includes('/blocks')) {
-					this.activeClassName = '/blocks';
-				} else if (path.includes('/home')) {
-					this.activeClassName = '/home';
-				} else if (path.includes('/faucet')) {
+                this.hideActiveStyle();
+                console.log(this.$route.fullPath,"?????")
+				if (this.$route.fullPath === '/txs/validations' || this.$route.fullPath === '/txs/delegations') {
+					this.activeStaking  = true
+				}else if(this.$route.fullPath === '/txs/transfers'){
+					this.activeTransfers  = true
+                }else if(this.$route.fullPath === '/home' || this.$route.fullPath === '/blocks' || this.$route.fullPath === '/txs' ){
+					this.activeBlockChain  = true
+                }else if (this.$route.fullPath === '/assets/ntvassetstxs' || this.$route.fullPath === '/assets/gtwassetstxs'){
+					this.activeAssets  = true
+                }else if(this.$route.fullPath === '/gov/parameters' || this.$route.fullPath === '/gov/proposals' || this.$route.fullPath === '/txs/governance'){
+					this.activeGov = true
+                }else if(this.$route.fullPath === '/stats/irisrichlist' || this.$route.fullPath === '/stats/irisstats'){
+					this.activeStats= true
+                }else if(this.$route.fullPath === '/faucet'){
 					this.activeClassName = '/faucet';
-				} else if (path.includes('/parameters')) {
-					this.activeClassName = '/governance';
-				} else if (path.includes('/proposals')) {
-					this.activeClassName = '/governance';
-				} else if (path.includes('/statistics')) {
-					this.activeClassName = '/statistics';
-				} else if (path.includes('/assets/ntvassetstxs') || path.includes('/assets/gtwassetstxs')) {
-					this.activeClassName = '/Assets';
-				} else {
-					this.activeClassName = '';
-				}
+				}else if(this.$route.fullPath === '/validators') {
+					if(this.hoverBlockChainTag){
+						this.activeStaking  = true
+                    }else {
+						this.activeBlockChain  = true
+                    }
+                }
 			},
 			clearSearchContent () {
 				this.searchInputValue = '';
@@ -721,7 +761,7 @@
                             }
                             .nav_item_active {
                                 color: #ffffff;
-                                background: var(--hoverColor);
+                                background: var(--activeColor);
                             }
                         }
                     }
@@ -833,10 +873,12 @@
                                 box-sizing: border-box;
                                 font-size: 0.14rem;
                                 line-height: 1;
-                                padding: 0.1rem  0.15rem 0.1rem 0;
-                                margin-left: 0.15rem;
+                                padding: 0.1rem  0.15rem 0.1rem 0.15rem;
                                 width: 100%;
                                 background: #fff;
+                                &:hover{
+                                    background: #F6F7FF;
+                                }
                                 a{
                                     &:hover{
                                         color:var(--hoverColor) !important;

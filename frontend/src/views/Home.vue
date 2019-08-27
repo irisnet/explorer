@@ -480,7 +480,7 @@
                         padding-top: 0.2rem;
                         font-size: 0.2rem;
                         line-height: 0.23rem;
-                        color: var(--contentColor);
+                        color: var(--titleColor);
                     }
                     .transaction_link{
                         a{

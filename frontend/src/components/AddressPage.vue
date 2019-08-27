@@ -450,11 +450,16 @@ export default {
                 this.txTab[index].active = true;
             }
             let that = this, params;
+            if(txTabName === 'stakes'){
+	            txTabName = 'delegations'
+            }else if(txTabName === 'declarations'){
+	            txTabName = 'validations'
+            }
             if (txTabName === 'transfers') {
                 params = { addressTxTrans: { pageNumber: currentPage, pageSize: pageSize, address: this.$route.params.param } }
-            } else if (txTabName === 'stakes') {
+            } else if (txTabName === 'delegations') {
                 params = { addressTxStake: { pageNumber: currentPage, pageSize: pageSize, address: this.$route.params.param } }
-            } else if (txTabName === 'declarations') {
+            } else if (txTabName === 'validations') {
                 params = { addressTxDeclaration: { pageNumber: currentPage, pageSize: pageSize, address: this.$route.params.param } }
             } else if (txTabName === 'governance') {
                 params = { addressTxGov: { pageNumber: currentPage, pageSize: pageSize, address: this.$route.params.param } }

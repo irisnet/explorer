@@ -458,22 +458,22 @@ export default class Tools{
 						'Moniker': item.moniker ? Tools.formatString(Moniker,15,"...") : "--",
 						Amount,
 						'OperatorAddr': item.operator_addr ? item.operator_addr : '--',
-						'listName':'declarations',
+						'listName':'validations',
 						'Self_Bonded': item.self_bonded
 					}
 				}else if(txType === 'delegations'){
 					objList = {
-						'From': `${item.from ? item.from : (item.DelegatorAddr?item.delegatorAddr:'--')}`,
+						'From': `${item.from ? item.from : (item.delegator_addr?item.delegator_addr:'--')}`,
 						Amount,
-						'To': `${item.to ? item.to : (item.validatorAddr?item.validatorAddr:'--')}`,
-						'listName':'stakes',
+						'To': `${item.to ? item.to : (item.validator_addr?item.validator_addr:'--')}`,
+						'listName':'delegations',
 						fromMoniker: item.from_moniker,
 						toMoniker: item.to_moniker
 					}
 				}else if(txType === 'governance'){
 					objList = {
-						'Proposal_Type': item.proposalType ? item.proposalType : '--',
-						"Proposal_ID": item.proposalId === 0 ? "--" : item.proposalId,
+						'Proposal_Type': item.proposal_type ? item.proposal_type : '--',
+						"Proposal_ID": item.proposal_id === 0 ? "--" : item.proposal_id,
 						'Proposal_Title': item.title ?  Tools.formatString(item.title,15,"...") : '--',
 						Amount,
 						'Tx_Type': item.type,
