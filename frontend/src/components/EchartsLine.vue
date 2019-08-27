@@ -95,7 +95,8 @@
                   )
                 }
               },
-              smooth:false,//曲线平滑
+              smooth:true,//曲线平滑
+              smoothMonotone: 'x',
               itemStyle:{
                 normal:{
                   color:'#4E61E7',

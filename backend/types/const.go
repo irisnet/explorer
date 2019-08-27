@@ -76,7 +76,7 @@ const (
 	//bondedtokens
 	UrlRegisterBondedTokensValidators = "/bondedtokens/validators"
 	//assetTokens
-	UrlRegisterAssetTokens        = "/asset/tokens"
+	UrlRegisterAssetTokens = "/asset/tokens"
 	//version
 	UrlRegisterQueryApiVersion = "/version"
 
@@ -91,8 +91,10 @@ const (
 )
 
 var (
-	TxTypeTransfer                    = "Transfer"
-	TxTypeBurn                        = "Burn"
+	TxTypeTransfer      = "Transfer"
+	TxTypeBurn          = "Burn"
+	TxTypeSetMemoRegexp = "SetMemoRegexp"
+
 	TxTypeStakeCreateValidator        = "CreateValidator"
 	TxTypeStakeEditValidator          = "EditValidator"
 	TxTypeStakeDelegate               = "Delegate"
@@ -107,16 +109,21 @@ var (
 	TxTypeDeposit                     = "Deposit"
 	TxTypeVote                        = "Vote"
 
+	TxTypeIssueToken           = "IssueToken"
+	TxTypeEditToken            = "EditToken"
+	TxTypeMintToken            = "MintToken"
+	TxTypeTransferTokenOwner   = "TransferTokenOwner"
+	TxTypeCreateGateway        = "CreateGateway"
+	TxTypeEditGateway          = "EditGateway"
+	TxTypeTransferGatewayOwner = "TransferGatewayOwner"
+
+	TxTypeRequestRand = "RequestRand"
+
 	TypeValStatusUnbonded  = "Unbonded"
 	TypeValStatusUnbonding = "Unbonding"
 	TypeValStatusBonded    = "Bonded"
 
 	TxTypeStatus = "success"
-
-	TxTypeIssueToken         = "IssueToken"
-	TxTypeEditToken          = "EditToken"
-	TxTypeMintToken          = "MintToken"
-	TxTypeTransferTokenOwner = "TransferTokenOwner"
 
 	Unbonded  = 0x00
 	Unbonding = 0x01
@@ -128,14 +135,15 @@ var (
 
 	//RoleList = []string{RoleValidator, RoleCandidate, RoleJailed}
 
-	BankList        = []string{TxTypeTransfer, TxTypeBurn}
+	BankList        = []string{TxTypeTransfer, TxTypeBurn, TxTypeSetMemoRegexp}
 	DeclarationList = []string{TxTypeStakeCreateValidator, TxTypeStakeEditValidator, TxTypeUnjail}
 	StakeList       = []string{TxTypeStakeDelegate, TxTypeBeginRedelegate, TxTypeSetWithdrawAddress, TxTypeStakeBeginUnbonding, TxTypeWithdrawDelegatorReward, TxTypeWithdrawDelegatorRewardsAll, TxTypeWithdrawValidatorRewardsAll}
 	GovernanceList  = []string{TxTypeSubmitProposal, TxTypeDeposit, TxTypeVote}
-	AssetList       = []string{TxTypeIssueToken, TxTypeMintToken, TxTypeEditToken, TxTypeTransferTokenOwner}
 
 	ForwardList = []string{TxTypeBeginRedelegate}
 	//TxTypeExcludeGov = append(append(DeclarationList, StakeList...), BankList...)
+	AssetList = []string{TxTypeIssueToken, TxTypeEditToken, TxTypeMintToken, TxTypeTransferTokenOwner, TxTypeCreateGateway, TxTypeEditGateway, TxTypeTransferGatewayOwner}
+	RandList  = []string{TxTypeRequestRand}
 )
 
 func IsDeclarationType(typ string) bool {
@@ -197,15 +205,28 @@ func IsAssetType(typ string) bool {
 	return false
 }
 
+func IsRandType(typ string) bool {
+	if len(typ) == 0 {
+		return false
+	}
+	for _, t := range RandList {
+		if t == typ {
+			return true
+		}
+	}
+	return false
+}
+
 type TxType int
 
 const (
-	_           TxType = iota
+	_ TxType = iota
 	Trans
 	Declaration
 	Stake
 	Gov
 	Asset
+	Rand
 )
 
 func Convert(typ string) TxType {
@@ -219,6 +240,8 @@ func Convert(typ string) TxType {
 		return Gov
 	} else if IsAssetType(typ) {
 		return Asset
+	} else if IsRandType(typ) {
+		return Rand
 	}
 	logger.Error("Convert UnSupportTx Type", logger.String("txtype", typ))
 	panic(CodeUnSupportTx)

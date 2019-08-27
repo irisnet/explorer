@@ -115,3 +115,12 @@ func NewRatFromFloat64(f float64) *big.Rat {
 func ParseStringFromFloat64(data float64) string {
 	return strconv.FormatFloat(data, 'f', -1, 64)
 }
+
+func MarshalJsonIgnoreErr(v interface{}) []byte {
+	jsonBytes, err := json.Marshal(v)
+	if err != nil {
+		logger.Error("marshal json fail", logger.String("err", err.Error()), logger.Any("v", v))
+	}
+
+	return jsonBytes
+}

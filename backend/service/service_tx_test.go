@@ -1,11 +1,12 @@
 package service
 
 import (
+	"github.com/irisnet/explorer/backend/utils"
 	"testing"
 
+	"encoding/json"
 	"github.com/irisnet/explorer/backend/model"
 	"gopkg.in/mgo.v2/bson"
-	"encoding/json"
 )
 
 func TestQueryTxList(t *testing.T) {
@@ -34,9 +35,8 @@ func TestQueryRecentTx(t *testing.T) {
 }
 
 func TestQueryTxByHash(t *testing.T) {
-
-	tx := new(TxService).Query("C8C9090F3504A39403F243F1B83F75734E328A4742BC904BC1CBAD471D4FF66F")
-	t.Logf("tx: %v\n", tx)
+	tx := new(TxService).Query("89D8527FC5CB56B79E02EBDFFCA47A1FAB246A8CEBBB6F455B1D44D5F8A39396")
+	t.Logf("tx: %v\n", string(utils.MarshalJsonIgnoreErr(tx)))
 }
 
 func TestServiceTxfetchLogMessage(t *testing.T) {

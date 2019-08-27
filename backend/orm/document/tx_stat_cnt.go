@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/irisnet/explorer/backend/orm"
-	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -50,7 +49,7 @@ func (_ TxNumStat) QueryByDuration(startTime, endTime time.Time) ([]TxNumGroup, 
 
 	db := orm.GetDatabase()
 	defer db.Session.Close()
-	txStore := db.C(document.CollectionNmCommonTx)
+	txStore := db.C(CollectionNmCommonTx)
 
 	pipe := txStore.Pipe(
 		[]bson.M{

@@ -4,8 +4,8 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
-	"gopkg.in/mgo.v2/bson"
 	"github.com/irisnet/explorer/backend/utils"
+	"gopkg.in/mgo.v2/bson"
 )
 
 func RegisterTx(r *mux.Router) error {

@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/irisnet/explorer/backend/orm"
-	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -53,9 +52,9 @@ func (_ Block) QueryBlockHeightTimeHashByHeight(height int64) (Block, error) {
 	var block Block
 	var selector = bson.M{"height": 1, "time": 1, "hash": 1}
 	var query = orm.NewQuery().
-		SetCollection(document.CollectionNmBlock).
+		SetCollection(CollectionNmBlock).
 		SetSelector(selector).
-		SetCondition(bson.M{document.Block_Field_Height: height}).
+		SetCondition(bson.M{Block_Field_Height: height}).
 		SetResult(&block)
 
 	defer query.Release()
@@ -70,9 +69,9 @@ func (_ Block) GetBlockListByOffsetAndSize(offset, size int) ([]Block, error) {
 		"validators.voting_power": 1, "block.last_commit.precommits.validator_address": 1, "meta.header.total_txs": 1, "proposal_address": 1}
 	var blocks []Block
 
-	sort := desc(document.Block_Field_Height)
+	sort := desc(Block_Field_Height)
 
-	err := querylistByOffsetAndSize(document.CollectionNmBlock, selector, nil, sort, offset, size, &blocks)
+	err := querylistByOffsetAndSize(CollectionNmBlock, selector, nil, sort, offset, size, &blocks)
 
 	return blocks, err
 }
@@ -83,8 +82,8 @@ func (_ Block) GetBlockListByPage(offset, size int, total bool) (int, []Block, e
 
 	var blocks []Block
 
-	sort := desc(document.Block_Field_Height)
-	var cnt, err = pageQuery(document.CollectionNmBlock, selector, bson.M{"height": bson.M{"$gt": 0}}, sort, offset, size, total, &blocks)
+	sort := desc(Block_Field_Height)
+	var cnt, err = pageQuery(CollectionNmBlock, selector, bson.M{"height": bson.M{"$gt": 0}}, sort, offset, size, total, &blocks)
 
 	return cnt, blocks, err
 }
@@ -93,8 +92,8 @@ func (_ Block) GetRecentBlockList() ([]Block, error) {
 	var blocks []Block
 	var selector = bson.M{"height": 1, "time": 1, "num_txs": 1}
 
-	sort := desc(document.Block_Field_Height)
-	err := queryAll(document.CollectionNmBlock, selector, nil, sort, 10, &blocks)
+	sort := desc(Block_Field_Height)
+	err := queryAll(CollectionNmBlock, selector, nil, sort, 10, &blocks)
 	return blocks, err
 }
 

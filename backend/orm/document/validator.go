@@ -5,13 +5,13 @@ import (
 	"math/big"
 	"time"
 
+	"github.com/irisnet/explorer/backend/logger"
+	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/types"
-	"github.com/irisnet/irishub-sync/logger"
 	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/txn"
-	"github.com/irisnet/explorer/backend/model"
 )
 
 const (
@@ -342,75 +342,6 @@ func (_ Validator) QueryPowerWithBonded() (int64, error) {
 	return count.Count, err
 }
 
-func (_ Validator) QueryCandidateUptimeWithHour(addr string) ([]UptimeChangeVo, error) {
-
-	db := getDb()
-	u := db.C(CollectionNmUptimeChange)
-
-	var upChanges []UptimeChangeVo
-	now := time.Now()
-	endTime := time.Date(now.Year(), now.Month(), now.Day(), now.Hour(), 0, 0, 0, now.Location())
-	d, _ := time.ParseDuration("-24h")
-	startTime := endTime.Add(d)
-	startStr := startTime.UTC().Format("2006-01-02 15")
-	endStr := endTime.UTC().Format("2006-01-02 15")
-
-	err := u.Find(bson.M{"address": addr, "time": bson.M{"$gte": startStr, "$lt": endStr}}).All(&upChanges)
-	if err != nil {
-		return nil, err
-	}
-
-	upChangeMap := make(map[string]float64)
-	for _, upChange := range upChanges {
-		upChangeMap[upChange.Time] = upChange.Uptime
-	}
-	d1, _ := time.ParseDuration("1h")
-	result := []UptimeChangeVo{}
-	for startTime.Before(endTime) {
-		startStr := startTime.UTC().Format("2006-01-02 15")
-		var uptime = float64(-1)
-		if _, ok := upChangeMap[startStr]; ok {
-			uptime = upChangeMap[startStr]
-		}
-		result = append(result, UptimeChangeVo{Address: addr, Uptime: uptime, Time: startStr})
-		startTime = startTime.Add(d1)
-	}
-
-	return result, nil
-}
-
-func (_ Validator) QueryCandidatePower(address, agoStr string) ([]ValVotingPowerChangeVo, error) {
-
-	db := getDb()
-	p := db.C(CollectionNmPowerChange)
-	defer db.Session.Close()
-
-	var powers []ValVotingPowerChangeVo
-
-	now := time.Now()
-	endTime := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
-	d, _ := time.ParseDuration(agoStr)
-	startTime := endTime.Add(d)
-	p.Find(bson.M{"address": address, "time": bson.M{"$gte": startTime, "$lt": endTime}}).All(&powers)
-
-	var power ValVotingPowerChangeVo
-	p.Find(bson.M{"address": address, "time": bson.M{"$lt": startTime}}).Sort("-time").One(&power)
-
-	result := []ValVotingPowerChangeVo{}
-
-	if power.Address != "" {
-		power.Time = startTime
-		result = []ValVotingPowerChangeVo{power}
-	} else {
-		result = []ValVotingPowerChangeVo{{Address: address, Time: startTime}}
-	}
-	result = append(result, powers...)
-	if len(result) > 0 {
-		result = append(result, ValVotingPowerChangeVo{Address: address, Time: endTime, Power: result[len(result)-1].Power})
-	}
-	return result, nil
-}
-
 func (_ Validator) QueryCandidateStatus(addr string) (int, int, error) {
 
 	var query = orm.NewQuery()
@@ -471,64 +402,64 @@ func (_ Validator) QueryValidatorListByAddrList(addrs []string) ([]Validator, er
 	return validatorArr, err
 }
 
-func (_ Validator) QueryCandidateUptimeByWeekOrMonth(addr, category string) ([]UptimeChangeVo, error) {
-
-	db := getDb()
-	u := db.C(CollectionNmUptimeChange)
-
-	var upChanges []ValUpTimeVo
-	agoStr := "-336h"
-	if category == "month" {
-		agoStr = "-720h"
-	}
-	now := time.Now()
-	endTime := now
-	d, _ := time.ParseDuration(agoStr)
-	startTime := endTime.Add(d)
-	startStr := startTime.Format("2006-01-02 15")
-	endStr := endTime.Format("2006-01-02 15")
-	pipe := u.Pipe(
-		[]bson.M{
-			{"$match": bson.M{
-				"address": addr,
-				"time":    bson.M{"$gte": startStr, "$lt": endStr},
-			}},
-			{"$project": bson.M{
-				"day":    bson.M{"$substr": []interface{}{"$time", 0, 10}},
-				"uptime": "$uptime",
-			}},
-			{"$group": bson.M{
-				"_id":    "$day",
-				"uptime": bson.M{"$avg": "$uptime"},
-			}},
-			{"$sort": bson.M{
-				"_id": 1,
-			}},
-		},
-	)
-	err := pipe.All(&upChanges)
-	if err != nil {
-		return nil, err
-	}
-
-	upChangeMap := make(map[string]float64)
-	for _, upChange := range upChanges {
-		upChangeMap[upChange.Time] = upChange.Uptime
-	}
-	d1, _ := time.ParseDuration("24h")
-	result := []UptimeChangeVo{}
-	for startTime.Before(endTime) {
-		startStr := startTime.UTC().Format("2006-01-02")
-		var uptime = float64(-1)
-		if _, ok := upChangeMap[startStr]; ok {
-			uptime = upChangeMap[startStr]
-		}
-		result = append(result, UptimeChangeVo{Address: addr, Uptime: uptime, Time: startStr})
-		startTime = startTime.Add(d1)
-	}
-
-	return result, nil
-}
+//func (_ Validator) QueryCandidateUptimeByWeekOrMonth(addr, category string) ([]UptimeChangeVo, error) {
+//
+//	db := getDb()
+//	u := db.C(CollectionNmUptimeChange)
+//
+//	var upChanges []ValUpTimeVo
+//	agoStr := "-336h"
+//	if category == "month" {
+//		agoStr = "-720h"
+//	}
+//	now := time.Now()
+//	endTime := now
+//	d, _ := time.ParseDuration(agoStr)
+//	startTime := endTime.Add(d)
+//	startStr := startTime.Format("2006-01-02 15")
+//	endStr := endTime.Format("2006-01-02 15")
+//	pipe := u.Pipe(
+//		[]bson.M{
+//			{"$match": bson.M{
+//				"address": addr,
+//				"time":    bson.M{"$gte": startStr, "$lt": endStr},
+//			}},
+//			{"$project": bson.M{
+//				"day":    bson.M{"$substr": []interface{}{"$time", 0, 10}},
+//				"uptime": "$uptime",
+//			}},
+//			{"$group": bson.M{
+//				"_id":    "$day",
+//				"uptime": bson.M{"$avg": "$uptime"},
+//			}},
+//			{"$sort": bson.M{
+//				"_id": 1,
+//			}},
+//		},
+//	)
+//	err := pipe.All(&upChanges)
+//	if err != nil {
+//		return nil, err
+//	}
+//
+//	upChangeMap := make(map[string]float64)
+//	for _, upChange := range upChanges {
+//		upChangeMap[upChange.Time] = upChange.Uptime
+//	}
+//	d1, _ := time.ParseDuration("24h")
+//	result := []UptimeChangeVo{}
+//	for startTime.Before(endTime) {
+//		startStr := startTime.UTC().Format("2006-01-02")
+//		var uptime = float64(-1)
+//		if _, ok := upChangeMap[startStr]; ok {
+//			uptime = upChangeMap[startStr]
+//		}
+//		result = append(result, UptimeChangeVo{Address: addr, Uptime: uptime, Time: startStr})
+//		startTime = startTime.Add(d1)
+//	}
+//
+//	return result, nil
+//}
 
 func (_ Validator) QueryMonikerAndValidatorAddrByHashAddr(addr string) (Validator, error) {
 

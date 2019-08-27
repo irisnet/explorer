@@ -2,14 +2,28 @@ package controller
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/service"
+	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 )
 
 var assets service.AssetsService
 
+func RegisterAssets(r *mux.Router) error {
+	funs := []func(*mux.Router) error{
+		registerQueryNativeAsset,
+		registerQueryGatewayAsset,
+		registerAssetTokens,
+	}
+
+	for _, fn := range funs {
+		if err := fn(r); err != nil {
+			return err
+		}
+	}
+	return nil
+}
 
 func registerQueryNativeAsset(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryNativeAsset, "GET", func(request model.IrisReq) interface{} {
@@ -47,6 +61,15 @@ func registerQueryGatewayAsset(r *mux.Router) error {
 			return model.NewResponse("-1", err.Error(), nil)
 		}
 		return model.NewResponse(types.CodeSuccess.Code, types.CodeSuccess.Msg, res)
+	})
+	return nil
+}
+
+func registerAssetTokens(r *mux.Router) error {
+	doApi(r, types.UrlRegisterAssetTokens, "GET", func(request model.IrisReq) interface{} {
+		assets.SetTid(request.TraceId)
+		result := assets.QueryAssetToken()
+		return result
 	})
 	return nil
 }

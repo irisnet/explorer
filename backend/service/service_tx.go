@@ -3,6 +3,7 @@ package service
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/irisnet/explorer/backend/model/msgvo"
 	"strconv"
 	"strings"
 	"time"
@@ -22,89 +23,6 @@ type TxService struct {
 
 func (service *TxService) GetModule() Module {
 	return Tx
-}
-
-func (t *TxService) CopyTxFromDoc(tx document.CommonTx) model.CommonTx {
-
-	txList := t.CopyTxListFromDoc([]document.CommonTx{tx})
-
-	if len(txList) == 1 {
-		return txList[0]
-	}
-
-	return model.CommonTx{}
-}
-
-func (_ *TxService) CopyTxListFromDoc(data []document.CommonTx) []model.CommonTx {
-
-	commonTxUtils := make([]model.CommonTx, 0, len(data))
-
-	for _, v := range data {
-		tmpSignerArr := make([]model.Signer, 0, len(v.Signers))
-		for _, v := range v.Signers {
-			tmpSignerArr = append(tmpSignerArr, model.Signer{AddrHex: v.AddrHex, AddrBech32: v.AddrBech32})
-		}
-
-		tmpCoinArr := make([]utils.Coin, 0, len(v.Amount))
-		for _, v := range v.Amount {
-			tmpCoinArr = append(tmpCoinArr, utils.Coin{Denom: v.Denom, Amount: v.Amount})
-		}
-
-		tmpFee := utils.Fee{}
-		tmpFee.Gas = v.Fee.Gas
-		tmpFee.Amount = make([]utils.Coin, 0, len(v.Fee.Amount))
-
-		for _, v := range v.Fee.Amount {
-			tmpFee.Amount = append(tmpFee.Amount, utils.Coin{Denom: v.Denom, Amount: v.Amount})
-		}
-
-		tmpTx := model.CommonTx{
-			Time:       v.Time,
-			Height:     v.Height,
-			TxHash:     v.TxHash,
-			From:       v.From,
-			To:         v.To,
-			Type:       v.Type,
-			Memo:       v.Memo,
-			Status:     v.Status,
-			Code:       v.Code,
-			Log:        v.Log,
-			GasUsed:    v.GasUsed,
-			GasWanted:  v.GasWanted,
-			GasPrice:   v.GasPrice,
-			ProposalId: v.ProposalId,
-			Tags:       v.Tags,
-			Signers:    tmpSignerArr,
-			Amount:     tmpCoinArr,
-			Fee:        tmpFee,
-			ActualFee: utils.ActualFee{
-				Denom:  v.ActualFee.Denom,
-				Amount: v.ActualFee.Amount,
-			},
-			Msg: v.Msg,
-			StakeCreateValidator: model.StakeCreateValidator{
-				PubKey: v.StakeCreateValidator.PubKey,
-				Description: model.ValDescription{
-					Moniker:  v.StakeCreateValidator.Description.Moniker,
-					Identity: v.StakeCreateValidator.Description.Identity,
-					Website:  v.StakeCreateValidator.Description.Website,
-					Details:  v.StakeCreateValidator.Description.Details,
-				},
-			},
-			StakeEditValidator: model.StakeEditValidator{
-				Description: model.ValDescription{
-					Moniker:  v.StakeEditValidator.Description.Moniker,
-					Identity: v.StakeEditValidator.Description.Identity,
-					Website:  v.StakeEditValidator.Description.Website,
-					Details:  v.StakeEditValidator.Description.Details,
-				},
-			},
-		}
-
-		commonTxUtils = append(commonTxUtils, tmpTx)
-	}
-
-	return commonTxUtils
 }
 
 func (service *TxService) QueryTxList(query bson.M, page, pageSize int, istotal bool) model.PageVo {
@@ -427,6 +345,174 @@ func (service *TxService) QueryByAcc(address string, page, size int, istotal boo
 	return
 }
 
+func (t *TxService) CopyTxFromDoc(tx document.CommonTx) model.CommonTx {
+
+	txList := t.CopyTxListFromDoc([]document.CommonTx{tx})
+
+	if len(txList) == 1 {
+		return txList[0]
+	}
+
+	return model.CommonTx{}
+}
+
+func (_ *TxService) CopyTxListFromDoc(data []document.CommonTx) []model.CommonTx {
+	commonTxUtils := make([]model.CommonTx, 0, len(data))
+
+	for _, v := range data {
+		tmpSignerArr := make([]model.Signer, 0, len(v.Signers))
+		for _, v := range v.Signers {
+			tmpSignerArr = append(tmpSignerArr, model.Signer{AddrHex: v.AddrHex, AddrBech32: v.AddrBech32})
+		}
+
+		tmpCoinArr := make([]utils.Coin, 0, len(v.Amount))
+		for _, v := range v.Amount {
+			tmpCoinArr = append(tmpCoinArr, utils.Coin{Denom: v.Denom, Amount: v.Amount})
+		}
+
+		tmpFee := utils.Fee{}
+		tmpFee.Gas = v.Fee.Gas
+		tmpFee.Amount = make([]utils.Coin, 0, len(v.Fee.Amount))
+
+		for _, v := range v.Fee.Amount {
+			tmpFee.Amount = append(tmpFee.Amount, utils.Coin{Denom: v.Denom, Amount: v.Amount})
+		}
+		tmpMsgsArr := make([]model.MsgItem, 0, len(v.Msgs))
+
+		// build tx msgVO
+		for _, m := range v.Msgs {
+			var msgDataVO interface{}
+			switch m.Type {
+			case types.TxTypeIssueToken:
+				msgVO := msgvo.TxMsgIssueToken{}
+				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
+					logger.Error("BuildTxMsgIssueTokenByUnmarshalJson", logger.String("err", err.Error()))
+				} else {
+					msgDataVO = msgVO
+				}
+				break
+			case types.TxTypeEditToken:
+				msgVO := msgvo.TxMsgEditToken{}
+				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
+					logger.Error("BuildTxMsgEditTokenByUnmarshalJson", logger.String("err", err.Error()))
+				} else {
+					msgDataVO = msgVO
+				}
+				break
+			case types.TxTypeMintToken:
+				msgVO := msgvo.TxMsgMintToken{}
+				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
+					logger.Error("BuildTxMsgMintTokenByUnmarshalJson", logger.String("err", err.Error()))
+				} else {
+					msgDataVO = msgVO
+				}
+				break
+			case types.TxTypeTransferTokenOwner:
+				msgVO := msgvo.TxMsgTransferTokenOwner{}
+				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
+					logger.Error("BuildTxMsgTransferTokenOwnerByUnmarshalJson", logger.String("err", err.Error()))
+				} else {
+					msgDataVO = msgVO
+				}
+				break
+			case types.TxTypeCreateGateway:
+				msgVO := msgvo.TxMsgCreateGateway{}
+				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
+					logger.Error("BuildTxMsgCreateGatewayByUnmarshalJson", logger.String("err", err.Error()))
+				} else {
+					msgDataVO = msgVO
+				}
+				break
+			case types.TxTypeEditGateway:
+				msgVO := msgvo.TxMsgEditGateway{}
+				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
+					logger.Error("BuildTxMsgEditGatewayByUnmarshalJson", logger.String("err", err.Error()))
+				} else {
+					msgDataVO = msgVO
+				}
+				break
+			case types.TxTypeTransferGatewayOwner:
+				msgVO := msgvo.TxMsgTransferGatewayOwner{}
+				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
+					logger.Error("BuildTxMsgTransferGatewayOwnerByUnmarshalJson", logger.String("err", err.Error()))
+				} else {
+					msgDataVO = msgVO
+				}
+				break
+			case types.TxTypeSetMemoRegexp:
+				msgVO := msgvo.TxMsgSetMemoRegexp{}
+				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
+					logger.Error("BuildTxMsgSetMemoRegexpByUnmarshalJson", logger.String("err", err.Error()))
+				} else {
+					msgDataVO = msgVO
+				}
+				break
+			case types.TxTypeRequestRand:
+				msgVO := msgvo.TxMsgRequestRand{}
+				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
+					logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
+				} else {
+					msgDataVO = msgVO
+				}
+				break
+			}
+
+			tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
+				Type:    v.Type,
+				MsgData: msgDataVO,
+			})
+		}
+
+		tmpTx := model.CommonTx{
+			Time:       v.Time,
+			Height:     v.Height,
+			TxHash:     v.TxHash,
+			From:       v.From,
+			To:         v.To,
+			Type:       v.Type,
+			Memo:       v.Memo,
+			Status:     v.Status,
+			Code:       v.Code,
+			Log:        v.Log,
+			GasUsed:    v.GasUsed,
+			GasWanted:  v.GasWanted,
+			GasPrice:   v.GasPrice,
+			ProposalId: v.ProposalId,
+			Tags:       v.Tags,
+			Signers:    tmpSignerArr,
+			Amount:     tmpCoinArr,
+			Fee:        tmpFee,
+			ActualFee: utils.ActualFee{
+				Denom:  v.ActualFee.Denom,
+				Amount: v.ActualFee.Amount,
+			},
+			Msg: v.Msg,
+			StakeCreateValidator: model.StakeCreateValidator{
+				PubKey: v.StakeCreateValidator.PubKey,
+				Description: model.ValDescription{
+					Moniker:  v.StakeCreateValidator.Description.Moniker,
+					Identity: v.StakeCreateValidator.Description.Identity,
+					Website:  v.StakeCreateValidator.Description.Website,
+					Details:  v.StakeCreateValidator.Description.Details,
+				},
+			},
+			StakeEditValidator: model.StakeEditValidator{
+				Description: model.ValDescription{
+					Moniker:  v.StakeEditValidator.Description.Moniker,
+					Identity: v.StakeEditValidator.Description.Identity,
+					Website:  v.StakeEditValidator.Description.Website,
+					Details:  v.StakeEditValidator.Description.Details,
+				},
+			},
+			Msgs: tmpMsgsArr,
+		}
+
+		commonTxUtils = append(commonTxUtils, tmpTx)
+	}
+
+	return commonTxUtils
+}
+
 func (service *TxService) CountByType(query bson.M) model.TxStatisticsVo {
 	logger.Debug("CountByType start", service.GetTraceLog())
 
@@ -678,6 +764,15 @@ func (service *TxService) buildTx(tx model.CommonTx, blackListP *map[string]docu
 
 	switch types.Convert(tx.Type) {
 	case types.Trans:
+		if tx.Type == types.TxTypeSetMemoRegexp {
+			return model.AssetTx{
+				BaseTx: buildBaseTx(tx),
+				From:   tx.From,
+				To:     tx.To,
+				Amount: tx.Amount,
+				Msgs:   tx.Msgs,
+			}
+		}
 		return model.TransTx{
 			BaseTx: buildBaseTx(tx),
 			From:   tx.From,
@@ -772,6 +867,11 @@ func (service *TxService) buildTx(tx model.CommonTx, blackListP *map[string]docu
 				govTx.Title = msg.Title
 				govTx.Description = msg.Description
 				govTx.ProposalType = msg.ProposalType
+				govTx.Tags = tx.Tags
+				govTx.Software = msg.Software
+				govTx.Version = msg.Version
+				govTx.SwitchHeight = msg.SwitchHeight
+				govTx.Treshold = msg.Treshold
 			}
 		} else if govTx.Type == types.TxTypeDeposit {
 
@@ -807,9 +907,23 @@ func (service *TxService) buildTx(tx model.CommonTx, blackListP *map[string]docu
 
 		}
 		return govTx
-
 	case types.Asset:
-		return tx
+		return model.AssetTx{
+			BaseTx: buildBaseTx(tx),
+			From:   tx.From,
+			To:     tx.To,
+			Amount: tx.Amount,
+			Msgs:   tx.Msgs,
+		}
+	case types.Rand:
+		return model.AssetTx{
+			BaseTx: buildBaseTx(tx),
+			From:   tx.From,
+			To:     tx.To,
+			Amount: tx.Amount,
+			Tags:   tx.Tags,
+			Msgs:   tx.Msgs,
+		}
 	}
 	return nil
 }

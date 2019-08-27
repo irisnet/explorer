@@ -22,7 +22,7 @@ func (task UpdateAssetTokens) Start() {
 			return
 		}
 
-		assetService := service.Get(service.Asset).(*service.AssetService)
+		assetService := service.Get(service.Asset).(*service.AssetsService)
 		if err := assetService.UpdateAssetTokens(assetTokens); err != nil {
 			logger.Error("UpdateAssetTokens task failed", logger.String("taskName", task.Name()), logger.String("errmsg", err.Error()))
 			return
