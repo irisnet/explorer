@@ -26,7 +26,7 @@
                     </div>
                 </div>
                 <div v-show="showNoData" class="no_data_show">
-                    No Data
+                    <img src="../assets/no_data.svg" alt="">
                 </div>
             </div>
         </div>
@@ -289,7 +289,7 @@
                         }
                         span {
                             margin-left: 0.06rem;
-                            color: #A2A2AE;
+                            color: var(--contentColor);
                         }
                     }
                     div.genesis {

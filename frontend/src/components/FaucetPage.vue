@@ -8,12 +8,8 @@
             <div class="coin">
                 <img src="../assets/coin.png" />
             </div>
-            <p
-                style="font-size:0.14rem;color:#A2A2AE;padding:0 0.1rem;"
-            >Get IRIS from this faucet for the latest IRISnet Testnet.</p>
-            <p
-                style="font-size:0.14rem;color:#A2A2AE;padding:0 0.1rem;"
-            >This faucet will send 10 IRIS to any valid testnet address.</p>
+            <p class="hint_content">Get IRIS from this faucet for the latest IRISnet Testnet.</p>
+            <p class="hint_content">This faucet will send 10 IRIS to any valid testnet address.</p>
             <p
                 class="Balance_number"
                 :class="errStyle ? 'err_red' : 'err_black ' "
@@ -248,6 +244,11 @@ export default {
         justify-content: center;
         margin-bottom: 10px;
         margin-top: 0.35rem;
+    }
+    .hint_content{
+        font-size:0.14rem;
+        color:var(--contentColor);
+        padding:0 0.1rem;
     }
     .faucet-title {
         font-size: 22px;

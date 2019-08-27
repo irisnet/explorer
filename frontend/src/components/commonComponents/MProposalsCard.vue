@@ -91,7 +91,7 @@ export default {
       position: relative;
       z-index: 1;
       .title {
-        color: #A2A2AE;
+        color: var(--contentColor);
       }
       .value {
         margin-left: 6px;
@@ -147,9 +147,9 @@ export default {
       span.end {
         margin-left: 16px;
         margin-right: 30px;
-        color: var(--titleColor);
+        color: var(--contentColor);
         span.end_value {
-          color: #A2A2AE;
+          color: var(--contentColor);
         }
       }
       .progress {
@@ -203,7 +203,7 @@ export default {
             color: #3698DB;
             .intital_value_span {
               display: block;
-              color: #A2A2AE;
+              color: var(--contentColor);
             }
             span {
               display: inline-block;

@@ -1357,6 +1357,7 @@ export default {
     flex-direction: row !important;
     .title {
         font-size: 22px;
+        font-weight: bold;
         color: var(--titleColor);
     }
     .status_btn {
@@ -1409,10 +1410,10 @@ export default {
             display: flex;
             justify-content: space-between;
             .information_props {
-                color: var(--titleColor);
+                color: var(--contentColor);
             }
             .information_value {
-                color: var(--contentColor);
+                color: var(--titleColor);
                 width: calc(100% - 1.7rem);
                 margin-right: 0.2rem;
                 word-break: break-all;
@@ -1481,7 +1482,7 @@ export default {
         width: 60px;
         box-sizing: border-box;
         border: 1px solid rgba(215, 217, 224, 1);
-        color: var(--titleColor);
+        color: var(--contentColor);
         &:nth-of-type(1) {
             border-right-width: 0;
             border-top-left-radius: 2px;

@@ -37,7 +37,7 @@
         <div class="none_data_img_container" v-if="information.length === 0">
           <div class="nodata_img_content">
             <div>
-              <img src="../assets/nodata.png">
+              <img src="../assets/no_data.svg">
             </div>
             <span v-show="moduleTitle !== 'blocks'">No Transaction</span>
             <span v-show="moduleTitle === 'blocks'">No Block</span>
@@ -195,17 +195,17 @@
             justify-content: space-between;
             @include fontSize;
             .blocks_module_Amount{
-              color:#A2A2AE;
+              color:var(--contentColor);
               display:inline-block;
             }
             .blocks_module_type{
               @include fontSize;
-              color:#A2A2AE;
+              color:var(--contentColor);
               display:inline-block;
             }
             .blocks_module_props{
               @include fontSize;
-              color:#000000;
+              color:var(--contentColor);
             }
           }
           .key_value_wrap{
@@ -214,13 +214,13 @@
             .key_value_transfers_age{
               display: inline-block;
               @include fontSize;
-              color: #A2A2AE;
+              color: var(--contentColor);
               text-align: right;
             }
             .key_value_blocks_age{
               display: inline-block;
               @include fontSize;
-              color: #A2A2AE;
+              color: var(--contentColor);
               text-align: right;
             }
             .blocks_module_value{

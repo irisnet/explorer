@@ -61,7 +61,7 @@ export default {
                         axis: "x",
                         type: "line",
                         lineStyle: {
-                            color: "#a2a2ae",
+                            color: "var(--contentColor)",
                         },
                     },
                 },
@@ -79,7 +79,7 @@ export default {
                     type: 'time',
                     axisLine: {
                         lineStyle: {
-                            color: '#a2a2ae'
+                            color: 'var(--contentColor)'
                         }
                     },
 
@@ -92,7 +92,7 @@ export default {
                     type: 'value',
                     axisLine: {
                         lineStyle: {
-                            color: '#a2a2ae'
+                            color: 'var(--contentColor)'
                         }
                     },
                     axisLabel: {
@@ -176,7 +176,7 @@ export default {
         display: flex;
         justify-content: space-between;
         & > span {
-            color: var(--titleColor);
+            color: var(--contentColor);
             font-size: 16px;
             line-height: 0.3rem;
         }

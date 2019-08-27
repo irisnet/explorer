@@ -12,7 +12,7 @@
                 <div class="block_content_container">
                     <p  class="block_height_container">
                         <span>Height:</span>
-                        <span><router-link :to="`/block/${blockHeight}`" style="color: var(--bgColor) !important;">{{blockHeight}}</router-link></span>
+                        <span><router-link :to="`/block/${blockHeight}`">{{blockHeight}}</router-link></span>
                     </p>
                     <p class="block_time_container">
                         <span>Timestamp</span>
@@ -214,7 +214,7 @@
             }
             .try_info{
                 font-size: 0.14rem;
-                color: #A2A2AE;
+                color: var(--contentColor);
                 margin-bottom: 0.44rem !important;
             }
             .back_home_btn{
@@ -254,6 +254,9 @@
                 text-align: left;
                 color: var(--bgColor);
                 cursor: pointer;
+                a{
+                    color: var(--bgColor)!important;
+                }
             }
         }
         .block_time_container{
@@ -268,7 +271,7 @@
             }
             span:nth-child(2){
                 text-align: left;
-                color: #A2A2AE;
+                color: var(--contentColor);
             }
         }
         .block_hash_container{
@@ -282,7 +285,7 @@
             }
             span:nth-child(2){
                 text-align: left;
-                color: #A2A2AE;
+                color: var(--contentColor);
             }
         }
     }
@@ -315,7 +318,7 @@
             }
             span:nth-child(2){
                 text-align: left;
-                color: #A2A2AE;
+                color: var(--contentColor);
             }
         }
         .proposal_type_container{
@@ -331,7 +334,7 @@
             }
             span:nth-child(2){
                 text-align: left;
-                color: #A2A2AE;
+                color: var(--contentColor);
             }
         }
         .proposal_status_container{
@@ -347,7 +350,7 @@
             }
             span:nth-child(2){
                 text-align: left;
-                color: #A2A2AE;
+                color: var(--contentColor);
             }
         }
         .proposal_time_container{
@@ -363,7 +366,7 @@
             }
             span:nth-child(2){
                 text-align: left;
-                color: #A2A2AE;
+                color: var(--contentColor);
             }
         }
     }

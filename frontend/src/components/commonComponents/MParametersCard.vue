@@ -90,14 +90,14 @@ export default {
   padding-bottom: 0.2rem;
   .top {
     font-size: 0.14rem;
-    color: var(--titleColor);
+    color: var(--contentColor);
     padding: 0.2rem;
     white-space: nowrap;
     display: flex;
     position: relative;
     .desc {
       font-size: 0.12rem;
-      color: #A2A2AE;
+      color: var(--contentColor);
       display: flex;
       width: 1px;
       flex: 1;
@@ -156,7 +156,7 @@ export default {
     padding-bottom: 0.2rem;
     @mixin min_max {
       width: 0.9rem;
-      color: #A2A2AE;
+      color: var(--contentColor);
       word-break: break-all;
       flex: 1 0 0.9rem;
     }
