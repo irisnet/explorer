@@ -1,7 +1,7 @@
 <template>
   <div class="echarts_component_wrap" :style="`min-width:${minWidth}rem;`">
     <div class="echarts_title_wrap">
-      <span class="validators_title">Validators Top10</span>
+      <span class="validators_title"><i class="iconfont iconVotingPower"></i>Validators Top10</span>
       <router-link class="validators_top" :to="`/validators`">
         <span>View All</span>
       </router-link>
@@ -192,9 +192,11 @@
 
       .validators_title{
         font-size:0.18rem;
-        text-indent:0.35rem;
-        @include fontWeight;
-        background: url('../assets/people.svg') no-repeat 0 -0.02rem;
+        i{
+          font-size: 0.2rem;
+          padding-right: 0.1rem;
+          color: var(--bgColor);
+        }
       }
       .validators_top{
         span{

@@ -675,7 +675,7 @@ pre {
     font-family: Arial !important;
 }
 .information_link {
-    color: #3498db !important;
+    color: var(--bgColor) !important;
 }
 .parameter_detail_content {
     box-sizing: border-box;
