@@ -9,7 +9,6 @@ import (
 	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/vo"
-	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/txn"
 )
@@ -555,14 +554,14 @@ func (_ Validator) Batch(txs []txn.Op) error {
 }
 
 func getValUpTime(query *orm.Query) map[string]int {
-	var result []document.Block
+	var result []Block
 	var upTimeMap = make(map[string]int)
 	var selector = bson.M{"block.last_commit.precommits.validator_address": 1}
 	query.Reset().
-		SetCollection(document.CollectionNmBlock).
+		SetCollection(CollectionNmBlock).
 		SetSelector(selector).
 		SetSize(100).
-		SetSort(desc(document.Block_Field_Height)).
+		SetSort(desc(Block_Field_Height)).
 		SetResult(&result)
 
 	if err := query.Exec(); err != nil {

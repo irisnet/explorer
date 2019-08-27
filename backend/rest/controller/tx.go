@@ -100,7 +100,7 @@ func registerQueryTxListByType(r *mux.Router) error {
 			}
 			break
 		}
-		result = tx.queryList(query, page, size, istotal)
+		result = tx.QueryTxList(query, page, size, istotal)
 		return result
 	})
 	return nil
