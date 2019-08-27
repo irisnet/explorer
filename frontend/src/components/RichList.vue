@@ -198,7 +198,7 @@ export default {
                     }
                     .tooltip_span {
                         width: 2.4rem;
-                        display: block;
+                        display: none;
                         position: absolute;
                         z-index: 5;
                         margin-top: 30px;
