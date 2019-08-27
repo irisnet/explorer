@@ -8,9 +8,9 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
-	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
+	"github.com/irisnet/explorer/backend/vo"
 )
 
 func RegisterHome(r *mux.Router) error {
@@ -27,7 +27,7 @@ func RegisterHome(r *mux.Router) error {
 }
 
 func registerNavigationBar(r *mux.Router) error {
-	doApi(r, types.UrlRegisterNavigationBar, "GET", func(request model.IrisReq) interface{} {
+	doApi(r, types.UrlRegisterNavigationBar, "GET", func(request vo.IrisReq) interface{} {
 		var block = lcd.BlockLatest()
 		var height, ok = utils.ParseInt(block.BlockMeta.Header.Height)
 		if !ok {

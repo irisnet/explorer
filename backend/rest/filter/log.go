@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/logger"
-	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
+	"github.com/irisnet/explorer/backend/vo"
 	"time"
 )
 
@@ -13,7 +13,7 @@ import (
 type LogPreFilter struct {
 }
 
-func (LogPreFilter) Do(request *model.IrisReq, data interface{}) (interface{}, types.BizCode) {
+func (LogPreFilter) Do(request *vo.IrisReq, data interface{}) (interface{}, types.BizCode) {
 	start := time.Now()
 	request.TraceId = fmt.Sprintf("%d", start.UnixNano())
 	request.Start = start
@@ -45,7 +45,7 @@ func (LogPreFilter) Type() Type {
 type LogPostFilter struct {
 }
 
-func (LogPostFilter) Do(request *model.IrisReq, data interface{}) (interface{}, types.BizCode) {
+func (LogPostFilter) Do(request *vo.IrisReq, data interface{}) (interface{}, types.BizCode) {
 	traceId := logger.String("traceId", request.TraceId)
 	costSecond := time.Now().Unix() - request.Start.Unix()
 	cost := logger.Int64("cost", costSecond)

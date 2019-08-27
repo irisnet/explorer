@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"net/http"
 
+	"errors"
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
-	"github.com/irisnet/explorer/backend/model"
-	"errors"
+	"github.com/irisnet/explorer/backend/vo"
 )
 
 type (
@@ -86,7 +86,7 @@ func GetIconsByKey(key string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	var picdata model.LookupIcons
+	var picdata vo.LookupIcons
 	if err := json.Unmarshal(resBytes, &picdata); err != nil {
 		logger.Error("get icons error", logger.String("err", err.Error()))
 		return "", err

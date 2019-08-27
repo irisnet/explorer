@@ -5,9 +5,9 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/conf"
-	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
+	"github.com/irisnet/explorer/backend/vo"
 )
 
 func RegisterTextSearch(r *mux.Router) error {
@@ -34,7 +34,7 @@ func RegisterTextSearch(r *mux.Router) error {
 //}
 
 func registerQueryText(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryText, "GET", func(request model.IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryText, "GET", func(request vo.IrisReq) interface{} {
 		common.SetTid(request.TraceId)
 		text := Var(request, "text")
 
@@ -46,7 +46,7 @@ func registerQueryText(r *mux.Router) error {
 }
 
 func registerQuerySysDate(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQuerySysDate, "GET", func(request model.IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQuerySysDate, "GET", func(request vo.IrisReq) interface{} {
 		return time.Now().Unix()
 	})
 
@@ -54,7 +54,7 @@ func registerQuerySysDate(r *mux.Router) error {
 }
 
 func registerQueryEnvConfig(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryConfig, "GET", func(request model.IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryConfig, "GET", func(request vo.IrisReq) interface{} {
 		var envConf = struct {
 			CurEnv  string            `json:"cur_env"`
 			ChainId string            `json:"chain_id"`

@@ -4,9 +4,9 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
+	"github.com/irisnet/explorer/backend/vo"
 )
 
 func RegisterProposal(r *mux.Router) error {
@@ -26,6 +26,7 @@ func RegisterProposal(r *mux.Router) error {
 	}
 	return nil
 }
+
 //
 //type Gov struct {
 //	*service.ProposalService
@@ -39,7 +40,7 @@ func RegisterProposal(r *mux.Router) error {
 
 func registerQueryProposals(r *mux.Router) error {
 
-	doApi(r, types.UrlRegisterQueryProposals, "GET", func(request model.IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryProposals, "GET", func(request vo.IrisReq) interface{} {
 		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 10))
 
@@ -57,7 +58,7 @@ func registerQueryProposals(r *mux.Router) error {
 
 func registerQueryDepositAndVotingProposals(r *mux.Router) error {
 
-	doApi(r, types.UrlRegisterQueryDepositVotingProposals, "GET", func(request model.IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryDepositVotingProposals, "GET", func(request vo.IrisReq) interface{} {
 
 		result := gov.QueryDepositAndVotingProposalList()
 		return result
@@ -68,7 +69,7 @@ func registerQueryDepositAndVotingProposals(r *mux.Router) error {
 
 func registerQueryProposal(r *mux.Router) error {
 
-	doApi(r, types.UrlRegisterQueryProposal, "GET", func(request model.IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryProposal, "GET", func(request vo.IrisReq) interface{} {
 		pid, err := strconv.Atoi(Var(request, "pid"))
 		if err != nil {
 			panic(types.CodeInValidParam)
@@ -82,14 +83,14 @@ func registerQueryProposal(r *mux.Router) error {
 }
 
 func registerQueryGovParams(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryGovParams, "GET", func(request model.IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryGovParams, "GET", func(request vo.IrisReq) interface{} {
 		return govparams.QueryAll()
 	})
 	return nil
 }
 
 func registerQueryProposalVoterTxs(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryProposalsVoterTxs, "GET", func(request model.IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryProposalsVoterTxs, "GET", func(request vo.IrisReq) interface{} {
 		id, err := strconv.ParseInt(Var(request, "id"), 10, 64)
 		if err != nil {
 			panic(types.CodeInValidParam)
@@ -108,7 +109,7 @@ func registerQueryProposalVoterTxs(r *mux.Router) error {
 }
 
 func registerQueryProposalDepositorTxs(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryProposalsDepositorTxs, "GET", func(request model.IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryProposalsDepositorTxs, "GET", func(request vo.IrisReq) interface{} {
 		id, err := strconv.ParseInt(Var(request, "id"), 10, 64)
 		if err != nil {
 			panic(types.CodeInValidParam)

@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/irisnet/explorer/backend/model"
+	"github.com/irisnet/explorer/backend/vo"
 )
 
 func TestGetValidatorPublicKeyMonikerFromProposalVoter(t *testing.T) {
@@ -37,7 +37,7 @@ func TestQueryList(t *testing.T) {
 
 	t.Logf("total: %v \n", proposalPage.Count)
 
-	if pV, ok := proposalPage.Data.([]model.ProposalNewStyle); ok {
+	if pV, ok := proposalPage.Data.([]vo.ProposalNewStyle); ok {
 		for k, v := range pV {
 			t.Logf("k: %v  v: %v \n", k, v)
 		}

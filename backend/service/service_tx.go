@@ -3,18 +3,18 @@ package service
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/irisnet/explorer/backend/model/msgvo"
-	"strconv"
 	"strings"
 	"time"
 
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
-	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
+	"github.com/irisnet/explorer/backend/vo"
+	"github.com/irisnet/explorer/backend/vo/msgvo"
 	"gopkg.in/mgo.v2/bson"
+	"strconv"
 )
 
 type TxService struct {
@@ -25,204 +25,68 @@ func (service *TxService) GetModule() Module {
 	return Tx
 }
 
-func (service *TxService) QueryTxList(query bson.M, page, pageSize int, istotal bool) model.PageVo {
+// get tx list
+func (service *TxService) QueryTxList(query bson.M, page, pageSize int, istotal bool) vo.PageVo {
 
 	total, data, err := document.CommonTx{}.QueryByPage(query, page, pageSize, istotal)
 
 	if err != nil {
 		logger.Error("query stake list ", logger.String("err", err.Error()))
-		return model.PageVo{}
+		return vo.PageVo{}
 	}
 
-	commonTxUtils := service.CopyTxListFromDoc(data)
-	items := service.buildData(commonTxUtils)
+	commonTxUtils := buildTxVOsFromDoc(data)
+	items := service.buildTxVOs(commonTxUtils)
 
 	forwardTxHashs := make([]string, 0, len(items))
 
 	for _, v := range items {
-		if stakeTx, ok := v.(model.StakeTx); ok {
+		if stakeTx, ok := v.(vo.StakeTx); ok {
 			if service.isForwardTxByType(stakeTx.Type) {
 				forwardTxHashs = append(forwardTxHashs, stakeTx.Hash)
 			}
 		}
 	}
 
-	if len(forwardTxHashs) == 0 {
-		for i := 0; i < len(items); i++ {
-			if stakeTx, ok := items[i].(model.StakeTx); ok {
-				stakeTx.From, stakeTx.To = service.ParseCoinFlowFromAndTo(stakeTx.Type, stakeTx.From, stakeTx.To)
-				items[i] = stakeTx
-				continue
-			}
-
-			if TransTx, ok := items[i].(model.TransTx); ok {
-				TransTx.From, TransTx.To = service.ParseCoinFlowFromAndTo(TransTx.Type, TransTx.From, TransTx.To)
-				items[i] = TransTx
-				continue
-			}
-		}
-
-		valAddrArr := make([]string, 0, len(items))
-		for i := 0; i < len(items); i++ {
-			if stakeTx, ok := items[i].(model.StakeTx); ok {
-				if service.IsValidatorAddrPrefix(stakeTx.From) {
-					valAddrArr = append(valAddrArr, stakeTx.From)
-				}
-
-				if service.IsValidatorAddrPrefix(stakeTx.To) {
-					valAddrArr = append(valAddrArr, stakeTx.To)
-				}
-			}
-		}
-
-		valAddrArr = utils.RemoveDuplicationStrArr(valAddrArr)
-
-		monikerByAddrMap, err := document.Validator{}.QueryValidatorMonikerByAddrArr(valAddrArr)
-
+	if len(forwardTxHashs) != 0 {
+		txMsgs, err := document.TxMsg{}.QueryTxMsgListByHashList(forwardTxHashs)
 		if err != nil {
-			logger.Error("document.Validator{}.QueryValidatorMonikerByAddrArr(valAddrArr)", logger.String("err", err.Error()), logger.Any("params", valAddrArr))
+			logger.Error("query tx msg", logger.String("err", err.Error()))
+			panic(types.CodeNotFound)
 		}
-		blacklist := service.QueryBlackList()
-		for i := 0; i < len(items); i++ {
-			if stakeTx, ok := items[i].(model.StakeTx); ok {
-				if service.IsValidatorAddrPrefix(stakeTx.From) {
-					if fromMoniker, ok := monikerByAddrMap[stakeTx.From]; ok {
-						stakeTx.FromMoniker = fromMoniker
-					}
-					if blackone, ok := blacklist[stakeTx.From]; ok {
-						stakeTx.FromMoniker = blackone.Moniker
-					}
-				}
 
-				if service.IsValidatorAddrPrefix(stakeTx.To) {
-					if toMoniker, ok := monikerByAddrMap[stakeTx.To]; ok {
-						stakeTx.ToMoniker = toMoniker
-					}
-					if blackone, ok := blacklist[stakeTx.To]; ok {
-						stakeTx.ToMoniker = blackone.Moniker
+		for _, vMsg := range txMsgs {
+			for k, stakeTx := range items {
+
+				if vTx, ok := stakeTx.(vo.StakeTx); ok {
+					if vMsg.Hash == vTx.Hash {
+						forwardAddr, err := service.getForwardAddr(vMsg.Type, vMsg.Content)
+						if err != nil {
+							logger.Error("get forward addr ", logger.String("err", err.Error()))
+							continue
+						}
+						vTx.From = forwardAddr
+						items[k] = vTx
 					}
 				}
-				items[i] = stakeTx
-			}
-		}
-
-		return model.PageVo{
-			Data:  items,
-			Count: total,
-		}
-	}
-
-	txMsgs, err := document.TxMsg{}.QueryTxMsgListByHashList(forwardTxHashs)
-	if err != nil {
-		logger.Error("query tx msg", logger.String("err", err.Error()))
-		panic(types.CodeNotFound)
-	}
-
-	for _, vMsg := range txMsgs {
-		for k, stakeTx := range items {
-
-			if vTx, ok := stakeTx.(model.StakeTx); ok {
-				if vMsg.Hash == vTx.Hash {
-					forwardAddr, err := service.getForwardAddr(vMsg.Type, vMsg.Content)
-					if err != nil {
-						logger.Error("get forward addr ", logger.String("err", err.Error()))
-						continue
-					}
-					vTx.From = forwardAddr
-					items[k] = vTx
-				}
 			}
 		}
 	}
 
-	for i := 0; i < len(items); i++ {
-		if stakeTx, ok := items[i].(model.StakeTx); ok {
-			stakeTx.From, stakeTx.To = service.ParseCoinFlowFromAndTo(stakeTx.Type, stakeTx.From, stakeTx.To)
-			items[i] = stakeTx
-			continue
-		}
+	// get tx from and to base amount coin flow direction
+	items = parseFromAndToByAmountCoinFlow(items)
 
-		if TransTx, ok := items[i].(model.TransTx); ok {
-			TransTx.From, TransTx.To = service.ParseCoinFlowFromAndTo(TransTx.Type, TransTx.From, TransTx.To)
-			items[i] = TransTx
-			continue
-		}
-	}
+	// get validator moniker by address
+	items = service.getValidatorMonikerByAddress(items)
 
-	valAddrArr := make([]string, 0, len(items))
-	for i := 0; i < len(items); i++ {
-		if stakeTx, ok := items[i].(model.StakeTx); ok {
-			if service.IsValidatorAddrPrefix(stakeTx.From) {
-				valAddrArr = append(valAddrArr, stakeTx.From)
-			}
-
-			if service.IsValidatorAddrPrefix(stakeTx.To) {
-				valAddrArr = append(valAddrArr, stakeTx.To)
-			}
-		}
-	}
-
-	valAddrArr = utils.RemoveDuplicationStrArr(valAddrArr)
-
-	monikerByAddrMap, err := document.Validator{}.QueryValidatorMonikerByAddrArr(valAddrArr)
-
-	if err != nil {
-		logger.Error("document.Validator{}.QueryValidatorMonikerByAddrArr(valAddrArr)", logger.String("err", err.Error()), logger.Any("params", valAddrArr))
-	}
-
-	blackList := service.QueryBlackList()
-	for i := 0; i < len(items); i++ {
-		if stakeTx, ok := items[i].(model.StakeTx); ok {
-			if service.IsValidatorAddrPrefix(stakeTx.From) {
-				if fromMoniker, ok := monikerByAddrMap[stakeTx.From]; ok {
-					stakeTx.FromMoniker = fromMoniker
-				}
-				if blackone, ok := blackList[stakeTx.From]; ok {
-					stakeTx.FromMoniker = blackone.Moniker
-				}
-			}
-
-			if service.IsValidatorAddrPrefix(stakeTx.To) {
-				if toMoniker, ok := monikerByAddrMap[stakeTx.To]; ok {
-					stakeTx.ToMoniker = toMoniker
-				}
-				if blackone, ok := blackList[stakeTx.To]; ok {
-					stakeTx.ToMoniker = blackone.Moniker
-				}
-			}
-			items[i] = stakeTx
-		}
-	}
-
-	return model.PageVo{
+	return vo.PageVo{
 		Data:  items,
 		Count: total,
 	}
 }
 
-func (service *TxService) IsValidatorAddrPrefix(addr string) bool {
-	return strings.HasPrefix(addr, conf.Get().Hub.Prefix.ValAddr)
-}
-
-func (service *TxService) QueryList(query bson.M, page, pageSize int, istotal bool) (pageInfo model.PageVo) {
-	logger.Debug("QueryList start", service.GetTraceLog())
-
-	total, txList, err := document.CommonTx{}.QueryByPage(query, page, pageSize, istotal)
-
-	if err != nil {
-		logger.Error("query tx list by page", logger.String("err", err.Error()))
-		return
-	}
-
-	data := service.CopyTxListFromDoc(txList)
-	pageInfo.Data = service.buildData(data)
-	pageInfo.Count = total
-
-	logger.Debug("QueryList end", service.GetTraceLog())
-	return pageInfo
-}
-
-func (service *TxService) QueryBaseList(query bson.M, page, pageSize int, istotal bool) (pageInfo model.PageVo) {
+// get base tx list in home page
+func (service *TxService) QueryBaseList(query bson.M, page, pageSize int, istotal bool) (pageInfo vo.PageVo) {
 	logger.Debug("QueryBaseList start", service.GetTraceLog())
 
 	total, txList, err := document.CommonTx{}.QueryByPage(query, page, pageSize, istotal)
@@ -232,8 +96,8 @@ func (service *TxService) QueryBaseList(query bson.M, page, pageSize int, istota
 		return
 	}
 
-	data := service.CopyTxListFromDoc(txList)
-	var baseData []model.BaseTx
+	data := buildTxVOsFromDoc(txList)
+	var baseData []vo.BaseTx
 	for _, tx := range data {
 		txResp := buildBaseTx(tx)
 		baseData = append(baseData, txResp)
@@ -246,7 +110,8 @@ func (service *TxService) QueryBaseList(query bson.M, page, pageSize int, istota
 	return pageInfo
 }
 
-func (service *TxService) QueryRecentTx() []model.RecentTx {
+// get recent txs
+func (service *TxService) QueryRecentTx() []vo.RecentTx {
 	logger.Debug("QueryRecentTx start", service.GetTraceLog())
 
 	txListAsDoc, err := document.CommonTx{}.QueryHashActualFeeType()
@@ -255,11 +120,11 @@ func (service *TxService) QueryRecentTx() []model.RecentTx {
 		panic(err)
 	}
 
-	txs := service.CopyTxListFromDoc(txListAsDoc)
+	txs := buildTxVOsFromDoc(txListAsDoc)
 
-	var txList []model.RecentTx
+	var txList []vo.RecentTx
 	for _, tx := range txs {
-		var recentTx = model.RecentTx{
+		var recentTx = vo.RecentTx{
 			Fee: utils.Coin{
 				Amount: tx.ActualFee.Amount,
 				Denom:  tx.ActualFee.Denom,
@@ -274,63 +139,60 @@ func (service *TxService) QueryRecentTx() []model.RecentTx {
 	return txList
 }
 
+// query tx detail by hash
 func (service *TxService) Query(hash string) interface{} {
 	logger.Debug("Query start", service.GetTraceLog())
+	var (
+		forwardTxHashes []string
+	)
 
 	txAsDoc, err := document.CommonTx{}.QueryTxByHash(hash)
-
 	if err != nil {
 		logger.Error("QueryTxByHash have error", logger.String("err", err.Error()))
 		panic(types.CodeNotFound)
 	}
 
-	blackList := service.QueryBlackList()
+	txVOs := service.buildTxVOs([]vo.CommonTx{buildTxVOFromDoc(txAsDoc)})
 
-	validatorAddrMap := map[string]document.Validator{}
-	govTxMsgHashMap := map[string]document.TxMsg{}
-	govProposalIdMap := map[uint64]document.Proposal{}
-
-	switch types.Convert(txAsDoc.Type) {
-	case types.Declaration:
-		validatorAddrMap[txAsDoc.From] = document.Validator{}
-		service.GetTxAttachedFields(&validatorAddrMap, &govTxMsgHashMap, &govProposalIdMap)
-	case types.Gov:
-		govTxMsgHashMap[txAsDoc.TxHash] = document.TxMsg{}
-		if txAsDoc.Type == types.TxTypeVote || txAsDoc.Type == types.TxTypeDeposit {
-			govProposalIdMap[txAsDoc.ProposalId] = document.Proposal{}
-		}
-		service.GetTxAttachedFields(&validatorAddrMap, &govTxMsgHashMap, &govProposalIdMap)
-
-	}
-
-	tx := service.buildTx(service.CopyTxFromDoc(txAsDoc), &blackList, &validatorAddrMap, &govTxMsgHashMap, &govProposalIdMap)
-
-	switch tx.(type) {
-	case model.GovTx:
-		govTx := tx.(model.GovTx)
-		return govTx
-	case model.StakeTx:
-		stakeTx := tx.(model.StakeTx)
-		if stakeTx.Type == types.TxTypeBeginRedelegate {
-			res, err := document.TxMsg{}.QueryTxMsgByHash(stakeTx.Hash)
-
-			if err != nil {
-				break
-			}
-			var msg model.MsgBeginRedelegate
-			if err = json.Unmarshal([]byte(res.Content), &msg); err == nil {
-				stakeTx.From = msg.DelegatorAddr
-				stakeTx.To = msg.ValidatorDstAddr
-				stakeTx.Source = msg.ValidatorSrcAddr
+	for _, v := range txVOs {
+		if stakeTx, ok := v.(vo.StakeTx); ok {
+			if service.isForwardTxByType(stakeTx.Type) {
+				forwardTxHashes = append(forwardTxHashes, stakeTx.Hash)
 			}
 		}
-		return stakeTx
 	}
-	logger.Debug("QueryList end", service.GetTraceLog())
-	return tx
+	if len(forwardTxHashes) != 0 {
+		txMsgs, err := document.TxMsg{}.QueryTxMsgListByHashList(forwardTxHashes)
+		if err != nil {
+			logger.Error("query tx msg", logger.String("err", err.Error()))
+			panic(types.CodeNotFound)
+		}
+
+		for _, vMsg := range txMsgs {
+			for k, stakeTx := range txVOs {
+				if vTx, ok := stakeTx.(vo.StakeTx); ok {
+					if vMsg.Hash == vTx.Hash {
+						forwardAddr, err := service.getForwardAddr(vMsg.Type, vMsg.Content)
+						if err != nil {
+							logger.Error("get forward addr ", logger.String("err", err.Error()))
+							continue
+						}
+						vTx.From = forwardAddr
+						txVOs[k] = vTx
+					}
+				}
+			}
+		}
+	}
+
+	items := parseFromAndToByAmountCoinFlow(txVOs)
+	items = service.getValidatorMonikerByAddress(items)
+
+	logger.Debug("getTxsByFilter end", service.GetTraceLog())
+	return items[0]
 }
 
-func (service *TxService) QueryByAcc(address string, page, size int, istotal bool) (result model.PageVo) {
+func (service *TxService) QueryByAcc(address string, page, size int, istotal bool) (result vo.PageVo) {
 
 	total, txList, err := document.CommonTx{}.QueryByAddr(address, page, size, istotal)
 
@@ -340,29 +202,81 @@ func (service *TxService) QueryByAcc(address string, page, size int, istotal boo
 
 	if err == nil {
 		result.Count = total
-		result.Data = service.CopyTxListFromDoc(txList)
+		result.Data = buildTxVOsFromDoc(txList)
 	}
 	return
 }
 
-func (t *TxService) CopyTxFromDoc(tx document.CommonTx) model.CommonTx {
+func (service *TxService) CountByType(query bson.M) vo.TxStatisticsVo {
+	logger.Debug("CountByType start", service.GetTraceLog())
 
-	txList := t.CopyTxListFromDoc([]document.CommonTx{tx})
+	var result vo.TxStatisticsVo
+	counter, err := document.CommonTx{}.CountByType(query)
+	if err != nil {
+		logger.Error("tx count by Type ", logger.String("err", err.Error()), logger.Any("query", query))
+		return result
+	}
+
+	for _, cnt := range counter {
+		switch types.Convert(cnt.Type) {
+		case types.Trans:
+			result.TransCnt = result.TransCnt + cnt.Count
+		case types.Declaration:
+			result.DeclarationCnt = result.DeclarationCnt + cnt.Count
+		case types.Stake:
+			result.StakeCnt = result.StakeCnt + cnt.Count
+		case types.Gov:
+			result.GovCnt = result.GovCnt + cnt.Count
+		}
+	}
+	logger.Debug("CountByType end", service.GetTraceLog())
+	return result
+}
+
+func (service *TxService) QueryTxNumGroupByDay() []vo.TxNumGroupByDayVo {
+	logger.Debug("QueryTxNumGroupByDay start", service.GetTraceLog())
+
+	now := time.Now()
+	start := now.Add(-336 * time.Hour)
+
+	fromDate := utils.FmtTime(utils.TruncateTime(start, utils.Day), utils.DateFmtYYYYMMDD)
+	endDate := utils.FmtTime(utils.TruncateTime(now, utils.Day), utils.DateFmtYYYYMMDD)
+	var result []vo.TxNumGroupByDayVo
+
+	txNumStatList, err := document.CommonTx{}.GetTxlistByDuration(fromDate, endDate)
+	if err != nil {
+		logger.Error("get tx list by duration", logger.String("err", err.Error()))
+		return result
+	}
+
+	for _, t := range txNumStatList {
+		result = append(result, vo.TxNumGroupByDayVo{
+			Date: t.Date,
+			Num:  t.Num,
+		})
+	}
+
+	logger.Debug("QueryTxNumGroupByDay end", service.GetTraceLog())
+	return result
+}
+
+func buildTxVOFromDoc(tx document.CommonTx) vo.CommonTx {
+	txList := buildTxVOsFromDoc([]document.CommonTx{tx})
 
 	if len(txList) == 1 {
 		return txList[0]
 	}
 
-	return model.CommonTx{}
+	return vo.CommonTx{}
 }
 
-func (_ *TxService) CopyTxListFromDoc(data []document.CommonTx) []model.CommonTx {
-	commonTxUtils := make([]model.CommonTx, 0, len(data))
+func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
+	commonTxUtils := make([]vo.CommonTx, 0, len(data))
 
 	for _, v := range data {
-		tmpSignerArr := make([]model.Signer, 0, len(v.Signers))
+		tmpSignerArr := make([]vo.Signer, 0, len(v.Signers))
 		for _, v := range v.Signers {
-			tmpSignerArr = append(tmpSignerArr, model.Signer{AddrHex: v.AddrHex, AddrBech32: v.AddrBech32})
+			tmpSignerArr = append(tmpSignerArr, vo.Signer{AddrHex: v.AddrHex, AddrBech32: v.AddrBech32})
 		}
 
 		tmpCoinArr := make([]utils.Coin, 0, len(v.Amount))
@@ -377,7 +291,7 @@ func (_ *TxService) CopyTxListFromDoc(data []document.CommonTx) []model.CommonTx
 		for _, v := range v.Fee.Amount {
 			tmpFee.Amount = append(tmpFee.Amount, utils.Coin{Denom: v.Denom, Amount: v.Amount})
 		}
-		tmpMsgsArr := make([]model.MsgItem, 0, len(v.Msgs))
+		tmpMsgsArr := make([]vo.MsgItem, 0, len(v.Msgs))
 
 		// build tx msgVO
 		for _, m := range v.Msgs {
@@ -457,13 +371,13 @@ func (_ *TxService) CopyTxListFromDoc(data []document.CommonTx) []model.CommonTx
 				break
 			}
 
-			tmpMsgsArr = append(tmpMsgsArr, model.MsgItem{
+			tmpMsgsArr = append(tmpMsgsArr, vo.MsgItem{
 				Type:    v.Type,
 				MsgData: msgDataVO,
 			})
 		}
 
-		tmpTx := model.CommonTx{
+		tmpTx := vo.CommonTx{
 			Time:       v.Time,
 			Height:     v.Height,
 			TxHash:     v.TxHash,
@@ -487,17 +401,17 @@ func (_ *TxService) CopyTxListFromDoc(data []document.CommonTx) []model.CommonTx
 				Amount: v.ActualFee.Amount,
 			},
 			Msg: v.Msg,
-			StakeCreateValidator: model.StakeCreateValidator{
+			StakeCreateValidator: vo.StakeCreateValidator{
 				PubKey: v.StakeCreateValidator.PubKey,
-				Description: model.ValDescription{
+				Description: vo.ValDescription{
 					Moniker:  v.StakeCreateValidator.Description.Moniker,
 					Identity: v.StakeCreateValidator.Description.Identity,
 					Website:  v.StakeCreateValidator.Description.Website,
 					Details:  v.StakeCreateValidator.Description.Details,
 				},
 			},
-			StakeEditValidator: model.StakeEditValidator{
-				Description: model.ValDescription{
+			StakeEditValidator: vo.StakeEditValidator{
+				Description: vo.ValDescription{
 					Moniker:  v.StakeEditValidator.Description.Moniker,
 					Identity: v.StakeEditValidator.Description.Identity,
 					Website:  v.StakeEditValidator.Description.Website,
@@ -513,60 +427,7 @@ func (_ *TxService) CopyTxListFromDoc(data []document.CommonTx) []model.CommonTx
 	return commonTxUtils
 }
 
-func (service *TxService) CountByType(query bson.M) model.TxStatisticsVo {
-	logger.Debug("CountByType start", service.GetTraceLog())
-
-	var result model.TxStatisticsVo
-	counter, err := document.CommonTx{}.CountByType(query)
-	if err != nil {
-		logger.Error("tx count by Type ", logger.String("err", err.Error()), logger.Any("query", query))
-		return result
-	}
-
-	for _, cnt := range counter {
-		switch types.Convert(cnt.Type) {
-		case types.Trans:
-			result.TransCnt = result.TransCnt + cnt.Count
-		case types.Declaration:
-			result.DeclarationCnt = result.DeclarationCnt + cnt.Count
-		case types.Stake:
-			result.StakeCnt = result.StakeCnt + cnt.Count
-		case types.Gov:
-			result.GovCnt = result.GovCnt + cnt.Count
-		}
-	}
-	logger.Debug("CountByType end", service.GetTraceLog())
-	return result
-}
-
-func (service *TxService) QueryTxNumGroupByDay() []model.TxNumGroupByDayVo {
-	logger.Debug("QueryTxNumGroupByDay start", service.GetTraceLog())
-
-	now := time.Now()
-	start := now.Add(-336 * time.Hour)
-
-	fromDate := utils.FmtTime(utils.TruncateTime(start, utils.Day), utils.DateFmtYYYYMMDD)
-	endDate := utils.FmtTime(utils.TruncateTime(now, utils.Day), utils.DateFmtYYYYMMDD)
-	var result []model.TxNumGroupByDayVo
-
-	txNumStatList, err := document.CommonTx{}.GetTxlistByDuration(fromDate, endDate)
-	if err != nil {
-		logger.Error("get tx list by duration", logger.String("err", err.Error()))
-		return result
-	}
-
-	for _, t := range txNumStatList {
-		result = append(result, model.TxNumGroupByDayVo{
-			Date: t.Date,
-			Num:  t.Num,
-		})
-	}
-
-	logger.Debug("QueryTxNumGroupByDay end", service.GetTraceLog())
-	return result
-}
-
-func (service *TxService) ParseCoinFlowFromAndTo(txType, from, to string) (string, string) {
+func parseCoinFlowFromAndTo(txType, from, to string) (string, string) {
 	switch txType {
 	case types.TxTypeTransfer:
 		return from, to
@@ -622,7 +483,151 @@ func (service *TxService) isForwardTxByType(t string) bool {
 	return false
 }
 
-func (service *TxService) GetTxAttachedFields(candidateAddrMap *map[string]document.Validator, govTxMsgHashMap *map[string]document.TxMsg, govProposalIdMap *map[uint64]document.Proposal) {
+func parseFromAndToByAmountCoinFlow(items []interface{}) []interface{} {
+	for i := 0; i < len(items); i++ {
+		if stakeTx, ok := items[i].(vo.StakeTx); ok {
+			stakeTx.From, stakeTx.To = parseCoinFlowFromAndTo(stakeTx.Type, stakeTx.From, stakeTx.To)
+			items[i] = stakeTx
+			continue
+		}
+
+		if TransTx, ok := items[i].(vo.TransTx); ok {
+			TransTx.From, TransTx.To = parseCoinFlowFromAndTo(TransTx.Type, TransTx.From, TransTx.To)
+			items[i] = TransTx
+			continue
+		}
+	}
+
+	return items
+}
+
+// get validator moniker by address which in stake tx
+func (service *TxService) getValidatorMonikerByAddress(items []interface{}) []interface{} {
+	// get validator addresses
+	valAddrArr := make([]string, 0, len(items))
+	for i := 0; i < len(items); i++ {
+		if stakeTx, ok := items[i].(vo.StakeTx); ok {
+			if isValidatorAddrPrefix(stakeTx.From) {
+				valAddrArr = append(valAddrArr, stakeTx.From)
+			}
+
+			if isValidatorAddrPrefix(stakeTx.To) {
+				valAddrArr = append(valAddrArr, stakeTx.To)
+			}
+		}
+	}
+	valAddrArr = utils.RemoveDuplicationStrArr(valAddrArr)
+
+	// query moniker by addresses
+	monikerByAddrMap, err := document.Validator{}.QueryValidatorMonikerByAddrArr(valAddrArr)
+	if err != nil {
+		logger.Error("document.Validator{}.QueryValidatorMonikerByAddrArr(valAddrArr)", logger.String("err", err.Error()), logger.Any("params", valAddrArr))
+	}
+
+	// set moniker value
+	blacklist := service.QueryBlackList()
+	for i := 0; i < len(items); i++ {
+		if stakeTx, ok := items[i].(vo.StakeTx); ok {
+			if isValidatorAddrPrefix(stakeTx.From) {
+				if fromMoniker, ok := monikerByAddrMap[stakeTx.From]; ok {
+					stakeTx.FromMoniker = fromMoniker
+				}
+				if blackone, ok := blacklist[stakeTx.From]; ok {
+					stakeTx.FromMoniker = blackone.Moniker
+				}
+			}
+
+			if isValidatorAddrPrefix(stakeTx.To) {
+				if toMoniker, ok := monikerByAddrMap[stakeTx.To]; ok {
+					stakeTx.ToMoniker = toMoniker
+				}
+				if blackone, ok := blacklist[stakeTx.To]; ok {
+					stakeTx.ToMoniker = blackone.Moniker
+				}
+			}
+			items[i] = stakeTx
+		}
+	}
+
+	return items
+}
+
+func isValidatorAddrPrefix(addr string) bool {
+	return strings.HasPrefix(addr, conf.Get().Hub.Prefix.ValAddr)
+}
+
+func (service *TxService) buildTxVOs(txs []vo.CommonTx) []interface{} {
+	var txList []interface{}
+
+	if len(txs) == 0 {
+		return txList
+	}
+
+	blackList := map[string]document.BlackList{}
+	candidateAddrMap := map[string]document.Validator{}
+	govTxMsgHashMap := map[string]document.TxMsg{}
+	govProposalIdMap := map[uint64]document.Proposal{}
+
+	onlyOnce := true
+	for _, v := range txs {
+		switch types.Convert(v.Type) {
+		case types.Declaration:
+			if onlyOnce {
+				blackList = service.QueryBlackList()
+				onlyOnce = false
+			}
+			candidateAddrMap[v.From] = document.Validator{}
+		case types.Gov:
+			govTxMsgHashMap[v.TxHash] = document.TxMsg{}
+			if v.Type == types.TxTypeVote || v.Type == types.TxTypeDeposit {
+				govProposalIdMap[v.ProposalId] = document.Proposal{}
+			}
+		}
+	}
+
+	service.getTxAttachedFields(&candidateAddrMap, &govTxMsgHashMap, &govProposalIdMap)
+
+	for _, tx := range txs {
+		txResp := txService.buildTxVO(tx, &blackList, &candidateAddrMap, &govTxMsgHashMap, &govProposalIdMap)
+
+		if stakeTx, ok := txResp.(vo.StakeTx); ok {
+			switch stakeTx.Type {
+			case types.TxTypeWithdrawDelegatorReward:
+				stakeTx.From = tx.To
+				stakeTx.To = tx.Tags[types.TxTag_WithDrawAddress]
+				txResp = stakeTx
+			case types.TxTypeWithdrawDelegatorRewardsAll, types.TxTypeWithdrawValidatorRewardsAll:
+				stakeTx.To = tx.Tags[types.TxTag_WithDrawAddress]
+				sourceTotal := 0
+				validatorAddr := ""
+
+				for k, _ := range tx.Tags {
+					if strings.HasPrefix(k, types.TxTag_WithDrawRewardFromValidator) {
+						sourceTotal++
+						if sourceTotal == 1 {
+							validatorAddr = string([]byte(k)[len(types.TxTag_WithDrawRewardFromValidator):])
+						}
+					}
+				}
+				if sourceTotal == 1 {
+					stakeTx.From = validatorAddr
+				} else {
+					stakeTx.From = strconv.Itoa(sourceTotal)
+				}
+
+				txResp = stakeTx
+			}
+		}
+
+		txList = append(txList, txResp)
+	}
+
+	return txList
+}
+
+func (service *TxService) getTxAttachedFields(candidateAddrMap *map[string]document.Validator,
+	govTxMsgHashMap *map[string]document.TxMsg,
+	govProposalIdMap *map[uint64]document.Proposal) {
 	candidateAddrs := make([]string, 0, len(*candidateAddrMap))
 	govHashArr := make([]string, 0, len(*govTxMsgHashMap))
 	govProposalIdArr := make([]uint64, 0, len(*govProposalIdMap))
@@ -690,82 +695,14 @@ func (service *TxService) GetTxAttachedFields(candidateAddrMap *map[string]docum
 	}
 }
 
-func (service *TxService) buildData(txs []model.CommonTx) []interface{} {
-	var txList []interface{}
-
-	if len(txs) == 0 {
-		return txList
-	}
-
-	blackList := map[string]document.BlackList{}
-	candidateAddrMap := map[string]document.Validator{}
-	govTxMsgHashMap := map[string]document.TxMsg{}
-	govProposalIdMap := map[uint64]document.Proposal{}
-
-	onlyOnce := true
-	for _, v := range txs {
-		switch types.Convert(v.Type) {
-		case types.Declaration:
-			if onlyOnce {
-				blackList = service.QueryBlackList()
-				onlyOnce = false
-			}
-			candidateAddrMap[v.From] = document.Validator{}
-		case types.Gov:
-			govTxMsgHashMap[v.TxHash] = document.TxMsg{}
-			if v.Type == types.TxTypeVote || v.Type == types.TxTypeDeposit {
-				govProposalIdMap[v.ProposalId] = document.Proposal{}
-			}
-		}
-	}
-
-	service.GetTxAttachedFields(&candidateAddrMap, &govTxMsgHashMap, &govProposalIdMap)
-
-	for _, tx := range txs {
-		txResp := txService.buildTx(tx, &blackList, &candidateAddrMap, &govTxMsgHashMap, &govProposalIdMap)
-
-		if stakeTx, ok := txResp.(model.StakeTx); ok {
-			switch stakeTx.Type {
-			case types.TxTypeWithdrawDelegatorReward:
-				stakeTx.From = tx.To
-				stakeTx.To = tx.Tags[types.TxTag_WithDrawAddress]
-				txResp = stakeTx
-			case types.TxTypeWithdrawDelegatorRewardsAll, types.TxTypeWithdrawValidatorRewardsAll:
-				stakeTx.To = tx.Tags[types.TxTag_WithDrawAddress]
-				sourceTotal := 0
-				validatorAddr := ""
-
-				for k, _ := range tx.Tags {
-					if strings.HasPrefix(k, types.TxTag_WithDrawRewardFromValidator) {
-						sourceTotal++
-						if sourceTotal == 1 {
-							validatorAddr = string([]byte(k)[len(types.TxTag_WithDrawRewardFromValidator):])
-						}
-					}
-				}
-				if sourceTotal == 1 {
-					stakeTx.From = validatorAddr
-				} else {
-					stakeTx.From = strconv.Itoa(sourceTotal)
-				}
-
-				txResp = stakeTx
-			}
-		}
-
-		txList = append(txList, txResp)
-	}
-
-	return txList
-}
-
-func (service *TxService) buildTx(tx model.CommonTx, blackListP *map[string]document.BlackList,
-	candidateAddrMapP *map[string]document.Validator, govTxMsgHashMapP *map[string]document.TxMsg, govProposalIdMapP *map[uint64]document.Proposal) interface{} {
+func (service *TxService) buildTxVO(tx vo.CommonTx, blackListP *map[string]document.BlackList,
+	candidateAddrMapP *map[string]document.Validator, govTxMsgHashMapP *map[string]document.TxMsg,
+	govProposalIdMapP *map[uint64]document.Proposal) interface{} {
 
 	switch types.Convert(tx.Type) {
 	case types.Trans:
 		if tx.Type == types.TxTypeSetMemoRegexp {
-			return model.AssetTx{
+			return vo.AssetTx{
 				BaseTx: buildBaseTx(tx),
 				From:   tx.From,
 				To:     tx.To,
@@ -773,14 +710,14 @@ func (service *TxService) buildTx(tx model.CommonTx, blackListP *map[string]docu
 				Msgs:   tx.Msgs,
 			}
 		}
-		return model.TransTx{
+		return vo.TransTx{
 			BaseTx: buildBaseTx(tx),
 			From:   tx.From,
 			To:     tx.To,
 			Amount: tx.Amount,
 		}
 	case types.Declaration:
-		dtx := model.DeclarationTx{
+		dtx := vo.DeclarationTx{
 			BaseTx:   buildBaseTx(tx),
 			SelfBond: tx.Amount,
 			Owner:    tx.From,
@@ -841,8 +778,8 @@ func (service *TxService) buildTx(tx model.CommonTx, blackListP *map[string]docu
 		}
 		return dtx
 	case types.Stake:
-		return model.StakeTx{
-			TransTx: model.TransTx{
+		return vo.StakeTx{
+			TransTx: vo.TransTx{
 				BaseTx: buildBaseTx(tx),
 				Amount: tx.Amount,
 				From:   tx.From,
@@ -851,7 +788,7 @@ func (service *TxService) buildTx(tx model.CommonTx, blackListP *map[string]docu
 		}
 
 	case types.Gov:
-		govTx := model.GovTx{
+		govTx := vo.GovTx{
 			BaseTx:     buildBaseTx(tx),
 			Amount:     tx.Amount,
 			From:       tx.From,
@@ -860,7 +797,7 @@ func (service *TxService) buildTx(tx model.CommonTx, blackListP *map[string]docu
 
 		if govTx.Type == types.TxTypeSubmitProposal {
 			if v, ok := (*govTxMsgHashMapP)[govTx.Hash]; ok {
-				var msg model.MsgSubmitProposal
+				var msg vo.MsgSubmitProposal
 				if err := json.Unmarshal([]byte(v.Content), &msg); err != nil {
 					logger.Error("unmarshal gov tx msg ", logger.String("tx hash", govTx.Hash), logger.String("content", v.Content), logger.Any("err", err.Error()))
 				}
@@ -876,7 +813,7 @@ func (service *TxService) buildTx(tx model.CommonTx, blackListP *map[string]docu
 		} else if govTx.Type == types.TxTypeDeposit {
 
 			if v, ok := (*govTxMsgHashMapP)[govTx.Hash]; ok {
-				var msg model.MsgDeposit
+				var msg vo.MsgDeposit
 				if err := json.Unmarshal([]byte(v.Content), &msg); err != nil {
 					logger.Error("unmarshal gov tx msg ", logger.String("tx hash", govTx.Hash), logger.String("content", v.Content), logger.Any("err", err.Error()))
 				}
@@ -892,7 +829,7 @@ func (service *TxService) buildTx(tx model.CommonTx, blackListP *map[string]docu
 		} else if govTx.Type == types.TxTypeVote {
 
 			if v, ok := (*govTxMsgHashMapP)[govTx.Hash]; ok {
-				var msg model.MsgVote
+				var msg vo.MsgVote
 				if err := json.Unmarshal([]byte(v.Content), &msg); err != nil {
 					logger.Error("unmarshal gov tx msg ", logger.String("tx hash", govTx.Hash), logger.String("content", v.Content), logger.Any("err", err.Error()))
 				}
@@ -908,7 +845,7 @@ func (service *TxService) buildTx(tx model.CommonTx, blackListP *map[string]docu
 		}
 		return govTx
 	case types.Asset:
-		return model.AssetTx{
+		return vo.AssetTx{
 			BaseTx: buildBaseTx(tx),
 			From:   tx.From,
 			To:     tx.To,
@@ -916,7 +853,7 @@ func (service *TxService) buildTx(tx model.CommonTx, blackListP *map[string]docu
 			Msgs:   tx.Msgs,
 		}
 	case types.Rand:
-		return model.AssetTx{
+		return vo.AssetTx{
 			BaseTx: buildBaseTx(tx),
 			From:   tx.From,
 			To:     tx.To,
@@ -928,8 +865,8 @@ func (service *TxService) buildTx(tx model.CommonTx, blackListP *map[string]docu
 	return nil
 }
 
-func buildBaseTx(tx model.CommonTx) model.BaseTx {
-	res := model.BaseTx{
+func buildBaseTx(tx vo.CommonTx) vo.BaseTx {
+	res := vo.BaseTx{
 		Hash:        tx.TxHash,
 		BlockHeight: tx.Height,
 		Type:        tx.Type,

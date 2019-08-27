@@ -3,11 +3,11 @@ package service
 import (
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/lcd"
-	"github.com/irisnet/explorer/backend/model"
+	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
-	"github.com/irisnet/explorer/backend/logger"
+	"github.com/irisnet/explorer/backend/vo"
 )
 
 type AccountService struct {
@@ -18,7 +18,7 @@ func (service *AccountService) GetModule() Module {
 	return Account
 }
 
-func (service *AccountService) Query(address string) (result model.AccountVo) {
+func (service *AccountService) Query(address string) (result vo.AccountVo) {
 	prefix, _, _ := utils.DecodeAndConvert(address)
 	if prefix == conf.Get().Hub.Prefix.ValAddr {
 		self, delegated := delegatorService.QueryDelegation(address)
@@ -53,7 +53,7 @@ func (service *AccountService) QueryRichList() interface{} {
 		panic(types.CodeNotFound)
 	}
 
-	var accList []model.AccountInfo
+	var accList []vo.AccountInfo
 	var totalAmt = float64(0)
 
 	for _, acc := range result {
@@ -62,7 +62,7 @@ func (service *AccountService) QueryRichList() interface{} {
 
 	for index, acc := range result {
 		rate, _ := utils.NewRatFromFloat64(acc.Total.Amount / totalAmt).Float64()
-		accList = append(accList, model.AccountInfo{
+		accList = append(accList, vo.AccountInfo{
 			Rank:    index + 1,
 			Address: acc.Address,
 			Balance: utils.Coins{

@@ -8,10 +8,10 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/logger"
-	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/rest/filter"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
+	"github.com/irisnet/explorer/backend/vo"
 )
 
 const (
@@ -21,9 +21,9 @@ const (
 )
 
 // user business action
-type Action func(request model.IrisReq) interface{}
+type Action func(request vo.IrisReq) interface{}
 
-func GetString(request model.IrisReq, key string) (result string) {
+func GetString(request vo.IrisReq, key string) (result string) {
 	request.ParseForm()
 	if len(request.Form[key]) > 0 {
 		result = request.Form[key][0]
@@ -31,7 +31,7 @@ func GetString(request model.IrisReq, key string) (result string) {
 	return
 }
 
-func GetInt(request model.IrisReq, key string) (result int) {
+func GetInt(request vo.IrisReq, key string) (result int) {
 	value := GetString(request, key)
 	if len(value) == 0 {
 		return
@@ -43,7 +43,7 @@ func GetInt(request model.IrisReq, key string) (result int) {
 	return
 }
 
-func QueryParam(request model.IrisReq, key string) (result string) {
+func QueryParam(request vo.IrisReq, key string) (result string) {
 	queryForm, err := url.ParseQuery(request.URL.RawQuery)
 	if err == nil && len(queryForm[key]) > 0 {
 		return queryForm[key][0]
@@ -51,13 +51,13 @@ func QueryParam(request model.IrisReq, key string) (result string) {
 	return
 }
 
-func Var(request model.IrisReq, key string) (result string) {
+func Var(request vo.IrisReq, key string) (result string) {
 	args := mux.Vars(request.Request)
 	result = args[key]
 	return
 }
 
-func GetPage(r model.IrisReq) (int, int) {
+func GetPage(r vo.IrisReq) (int, int) {
 	page := Var(r, "page")
 	size := Var(r, "size")
 	iPage := 1
@@ -72,7 +72,7 @@ func GetPage(r model.IrisReq) (int, int) {
 }
 
 // execute user's business code
-func doAction(request model.IrisReq, action Action) interface{} {
+func doAction(request vo.IrisReq, action Action) interface{} {
 	//do business action
 	logger.Debug("doAction exec", logger.String("traceId", request.TraceId))
 	result := action(request)
@@ -81,7 +81,7 @@ func doAction(request model.IrisReq, action Action) interface{} {
 }
 
 // deal with exception for business action
-func doException(request model.IrisReq, writer http.ResponseWriter) {
+func doException(request vo.IrisReq, writer http.ResponseWriter) {
 	if r := recover(); r != nil {
 		trace := logger.String("traceId", request.TraceId)
 		errMsg := logger.Any("errMsg", r)
@@ -114,7 +114,7 @@ func doResponse(writer http.ResponseWriter, data interface{}) {
 	case []byte:
 		bz = data.([]byte)
 	case int64:
-		var resp = model.Response{
+		var resp = vo.Response{
 			Code: types.CodeSuccess.Code,
 			Msg:  types.CodeSuccess.Msg,
 			Data: data.(int64),
@@ -136,7 +136,7 @@ func doResponse(writer http.ResponseWriter, data interface{}) {
 func doApi(r *mux.Router, url, method string, action Action) {
 	//wrap business code
 	wrapperAction := func(writer http.ResponseWriter, request *http.Request) {
-		req := model.IrisReq{
+		req := vo.IrisReq{
 			Request: request,
 		}
 		defer doException(req, writer)

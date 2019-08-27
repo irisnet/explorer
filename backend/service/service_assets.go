@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
-	"github.com/irisnet/explorer/backend/model"
-	"github.com/irisnet/explorer/backend/model/msgvo"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
+	"github.com/irisnet/explorer/backend/vo"
+	"github.com/irisnet/explorer/backend/vo/msgvo"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/txn"
 )
@@ -21,7 +21,7 @@ func (asset AssetsService) GetModule() Module {
 	return Asset
 }
 
-func (assets *AssetsService) GetNativeAsset(txtype string, page, size int, istotal bool) (model.AssetsRespond, error) {
+func (assets *AssetsService) GetNativeAsset(txtype string, page, size int, istotal bool) (vo.AssetsRespond, error) {
 
 	if !isFieldTokenType(txtype) {
 		txtype = ""
@@ -30,22 +30,22 @@ func (assets *AssetsService) GetNativeAsset(txtype string, page, size int, istot
 	total, retassets, err := document.CommonTx{}.QueryTxAsset(document.Tx_AssetType_Native, txtype, page, size, istotal)
 	if err != nil {
 		logger.Error("GetNativeAsset have error", logger.String("error", err.Error()))
-		return model.AssetsRespond{}, err
+		return vo.AssetsRespond{}, err
 	}
 
-	result := make([]model.AssetsVo, 0, len(retassets))
+	result := make([]vo.AssetsVo, 0, len(retassets))
 	for _, asset := range retassets {
 		result = append(result, LoadModelFromCommonTx(asset))
 	}
 
-	return model.AssetsRespond{
+	return vo.AssetsRespond{
 		Total:     total,
 		Txs:       result,
 		AssetType: document.Tx_AssetType_Native,
 	}, nil
 }
 
-func (assets *AssetsService) GetGatewayAsset(txtype string, page, size int, istotal bool) (model.AssetsRespond, error) {
+func (assets *AssetsService) GetGatewayAsset(txtype string, page, size int, istotal bool) (vo.AssetsRespond, error) {
 
 	if !isFieldTokenType(txtype) {
 		txtype = ""
@@ -54,14 +54,14 @@ func (assets *AssetsService) GetGatewayAsset(txtype string, page, size int, isto
 	total, retassets, err := document.CommonTx{}.QueryTxAsset(document.Tx_AssetType_Gateway, txtype, page, size, istotal)
 	if err != nil {
 		logger.Error("GetNativeAsset have error", logger.String("error", err.Error()))
-		return model.AssetsRespond{}, err
+		return vo.AssetsRespond{}, err
 	}
-	result := make([]model.AssetsVo, 0, len(retassets))
+	result := make([]vo.AssetsVo, 0, len(retassets))
 	for _, asset := range retassets {
 		result = append(result, LoadModelFromCommonTx(asset))
 	}
 
-	return model.AssetsRespond{
+	return vo.AssetsRespond{
 		Total:     total,
 		Txs:       result,
 		AssetType: document.Tx_AssetType_Gateway,
@@ -75,7 +75,7 @@ func isFieldTokenType(tokentype string) bool {
 		tokentype == document.Tx_Asset_TxType_TransferOwner
 }
 
-func LoadModelFromCommonTx(src document.CommonTx) (dst model.AssetsVo) {
+func LoadModelFromCommonTx(src document.CommonTx) (dst vo.AssetsVo) {
 
 	dst.Height = src.Height
 	dst.TxHash = src.TxHash
@@ -183,13 +183,13 @@ func LoadModelFromCommonTx(src document.CommonTx) (dst model.AssetsVo) {
 	return
 }
 
-func convertModelCoin(coin document.Coin) model.Coin {
-	return model.Coin{
+func convertModelCoin(coin document.Coin) vo.Coin {
+	return vo.Coin{
 		Denom:  coin.Denom,
 		Amount: coin.Amount,
 	}
 }
-func convertModelCoins(coins document.Coins) (dst model.Coins) {
+func convertModelCoins(coins document.Coins) (dst vo.Coins) {
 
 	for _, coin := range coins {
 		dst = append(dst, convertModelCoin(coin))
@@ -197,8 +197,8 @@ func convertModelCoins(coins document.Coins) (dst model.Coins) {
 	return
 }
 
-func convertModelFee(fee document.Fee) model.Fee {
-	return model.Fee{
+func convertModelFee(fee document.Fee) vo.Fee {
+	return vo.Fee{
 		Gas:    fee.Gas,
 		Amount: convertModelCoins(fee.Amount),
 	}
@@ -293,17 +293,17 @@ func isDiffAssetToken(src, dst document.Asset) bool {
 	return false
 }
 
-func (service *AssetsService) QueryAssetToken() []model.AssetTokens {
+func (service *AssetsService) QueryAssetToken() []vo.AssetTokens {
 	res, err := document.Asset{}.GetAllAssets()
 	if err != nil {
 		logger.Error("GetAllAssets", logger.String("err", err.Error()))
 		panic(types.CodeNotFound)
 	}
 
-	assetTokens := make([]model.AssetTokens, 0, len(res))
+	assetTokens := make([]vo.AssetTokens, 0, len(res))
 
 	for _, v := range res {
-		tmp := model.AssetTokens{
+		tmp := vo.AssetTokens{
 			Symbol:  v.Symbol,
 			Decimal: v.Decimal,
 		}
@@ -312,5 +312,5 @@ func (service *AssetsService) QueryAssetToken() []model.AssetTokens {
 	if len(assetTokens) > 1 {
 		return assetTokens
 	}
-	return []model.AssetTokens{}
+	return []vo.AssetTokens{}
 }
