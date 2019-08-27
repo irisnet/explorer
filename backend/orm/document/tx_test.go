@@ -48,13 +48,13 @@ func TestQueryHashActualFeeType(t *testing.T) {
 }
 
 func TestQueryTxByHash(t *testing.T) {
-	tx, err := CommonTx{}.QueryTxByHash("11E414CD9DAEEA1CF8BA11B862C643D801EBB2E3BCE704A9AE8EFA47EFA8BD0F")
+	tx, err := CommonTx{}.QueryTxByHash("89D8527FC5CB56B79E02EBDFFCA47A1FAB246A8CEBBB6F455B1D44D5F8A39396")
 
 	if err != nil {
 		t.Error(err)
 	}
 
-	t.Logf("tx: %+v \n", tx)
+	t.Logf("tx: %+v \n", string(utils.MarshalJsonIgnoreErr(tx)))
 
 }
 
@@ -83,9 +83,9 @@ func TestGetTxlistByDuration(t *testing.T) {
 
 func TestGetTxCountByDuration(t *testing.T) {
 
-	starttime,_ := time.Parse(utils.DateFmtYYYYMMDDHHmmss,"2019-07-01 00:00:00")
-	endtime,_ := time.Parse(utils.DateFmtYYYYMMDDHHmmss,"2019-07-02 00:00:00")
-	cnt,err := CommonTx{}.GetTxCountByDuration(starttime,endtime)
+	starttime, _ := time.Parse(utils.DateFmtYYYYMMDDHHmmss, "2019-07-01 00:00:00")
+	endtime, _ := time.Parse(utils.DateFmtYYYYMMDDHHmmss, "2019-07-02 00:00:00")
+	cnt, err := CommonTx{}.GetTxCountByDuration(starttime, endtime)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -94,7 +94,7 @@ func TestGetTxCountByDuration(t *testing.T) {
 }
 
 func TestCommonTx_QueryTxAsset(t *testing.T) {
-	total,ret,err := CommonTx{}.QueryTxAsset("gateway","",0,10, true)
+	total, ret, err := CommonTx{}.QueryTxAsset("gateway", "", 0, 10, true)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
