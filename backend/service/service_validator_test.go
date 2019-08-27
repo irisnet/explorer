@@ -7,14 +7,14 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/irisnet/explorer/backend/utils"
-	"github.com/irisnet/irishub-sync/logger"
 	"encoding/json"
+	"github.com/irisnet/explorer/backend/logger"
+	"github.com/irisnet/explorer/backend/utils"
 )
 
 func TestGetDelegationsFromLcd(t *testing.T) {
 
-	delegationPage := new(ValidatorService).GetDelegationsFromLcd("fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx", 1, 5,false, true)
+	delegationPage := new(ValidatorService).GetDelegationsFromLcd("fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx", 1, 5, false, true)
 	t.Logf(" %v \n", delegationPage)
 }
 

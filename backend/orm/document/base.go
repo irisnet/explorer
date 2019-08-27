@@ -3,8 +3,8 @@ package document
 import (
 	"fmt"
 
+	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm"
-	"github.com/irisnet/irishub-sync/logger"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )

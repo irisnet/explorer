@@ -6,7 +6,6 @@ import (
 
 	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/types"
-	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -110,52 +109,23 @@ func (tx CommonTx) String() string {
 
 }
 
-type Msg interface {
-	Type() string
-	String() string
-}
-
-type MsgItem struct {
-	Type    string     `bson:"type"`
-	MsgData interface{} `bson:"msg"`
-}
-
-
-//type MsgData struct {
-//	TokenId         string `json:"token_id" bson:"token_id"`
-//	To              string `json:"to" bson:"to"`
-//	Family          string `json:"family" bson:"family"`
-//	Source          string `json:"source" bson:"source"`
-//	Gateway         string `json:"gateway" bson:"gateway"`
-//	Symbol          string `json:"symbol" bson:"symbol"`
-//	CanonicalSymbol string `json:"canonical_symbol" bson:"canonical_symbol"`
-//	Name            string `json:"name" bson:"name"`
-//	Decimal         int32  `json:"decimal" bson:"decimal"`
-//	MinUnitAlias    string `json:"min_unit_alias" bson:"min_unit_alias"`
-//	InitialSupply   int64  `json:"initial_supply" bson:"initial_supply"`
-//	MaxSupply       int64  `json:"max_supply" bson:"max_supply"`
-//	Amount          int64  `json:"amount" bson:"amount"`
-//	Mintable        bool   `json:"mintable" bson:"mintable"`
-//	Owner           string `json:"owner" bson:"owner"`
-//	SrcOwner        string `json:"src_owner" bson:"src_owner"`
-//	DstOwner        string `json:"dst_owner" bson:"dst_owner"`
-//	UdInfo          UdInfo `json:"ud_info" bson:"ud_info"`
-//}
-//
-//type UdInfo struct {
-//	Source  string `json:"source" bson:"source"`
-//	Gateway string `json:"gateway" bson:"gateway"`
-//	Symbol  string `json:"symbol" bson:"symbol"`
-//}
-
-type StakeCreateValidator struct {
-	PubKey      string         `bson:"pub_key"`
-	Description ValDescription `bson:"description"`
-}
-
-type StakeEditValidator struct {
-	Description ValDescription `bson:"description"`
-}
+type (
+	Msg interface {
+		Type() string
+		String() string
+	}
+	MsgItem struct {
+		Type    string      `bson:"type"`
+		MsgData interface{} `bson:"msg"`
+	}
+	StakeCreateValidator struct {
+		PubKey      string         `bson:"pub_key"`
+		Description ValDescription `bson:"description"`
+	}
+	StakeEditValidator struct {
+		Description ValDescription `bson:"description"`
+	}
+)
 
 // Description
 type ValDescription struct {
@@ -174,7 +144,7 @@ func (_ CommonTx) QueryByAddr(addr string, pageNum, pageSize int, istotal bool) 
 	typeArr = append(typeArr, types.DeclarationList...)
 	typeArr = append(typeArr, types.StakeList...)
 	typeArr = append(typeArr, types.GovernanceList...)
-	query[document.Tx_Field_Type] = bson.M{
+	query[Tx_Field_Type] = bson.M{
 		"$in": typeArr,
 	}
 
@@ -206,7 +176,7 @@ func (_ CommonTx) QueryTxByHash(hash string) (CommonTx, error) {
 
 	var result CommonTx
 	query := bson.M{}
-	query[document.Tx_Field_Hash] = hash
+	query[Tx_Field_Hash] = hash
 	err := dbm.C(CollectionNmCommonTx).Find(query).Sort(desc(Tx_Field_Time)).One(&result)
 
 	return result, err
@@ -238,7 +208,7 @@ func (_ CommonTx) CountByType(query bson.M) (Counter, error) {
 
 	counter := Counter{}
 
-	c := getDb().C(document.CollectionNmCommonTx)
+	c := getDb().C(CollectionNmCommonTx)
 	defer c.Database.Session.Close()
 
 	pipe := c.Pipe(
@@ -281,7 +251,7 @@ func (_ CommonTx) GetTxCountByDuration(startTime, endTime time.Time) (int, error
 	db := orm.GetDatabase()
 	defer db.Session.Close()
 
-	txStore := db.C(document.CollectionNmCommonTx)
+	txStore := db.C(CollectionNmCommonTx)
 
 	query := bson.M{}
 	query["time"] = bson.M{"$gte": startTime, "$lt": endTime}
@@ -293,7 +263,7 @@ func (_ CommonTx) QueryProposalTxFromById(idArr []uint64) (map[uint64]string, er
 
 	selector := bson.M{Tx_Field_From: 1, Tx_Field_ProposalId: 1}
 	condition := bson.M{Tx_Field_Type: "SubmitProposal", Tx_Field_Status: "success", Tx_Field_ProposalId: bson.M{"$in": idArr}}
-	var txs []document.CommonTx
+	var txs []CommonTx
 
 	err := queryAll(CollectionNmCommonTx, selector, condition, desc(Tx_Field_Time), 0, &txs)
 
@@ -306,11 +276,11 @@ func (_ CommonTx) QueryProposalTxFromById(idArr []uint64) (map[uint64]string, er
 	return proposerById, err
 }
 
-func (_ CommonTx) QueryProposalTxListById(idArr []uint64) ([]document.CommonTx, error) {
+func (_ CommonTx) QueryProposalTxListById(idArr []uint64) ([]CommonTx, error) {
 
 	selector := bson.M{Tx_Field_Amount: 1, Tx_Field_ProposalId: 1}
 	condition := bson.M{Tx_Field_Type: "SubmitProposal", Tx_Field_Status: "success", Tx_Field_ProposalId: bson.M{"$in": idArr}}
-	var txs []document.CommonTx
+	var txs []CommonTx
 
 	err := queryAll(CollectionNmCommonTx, selector, condition, desc(Tx_Field_Time), 0, &txs)
 
