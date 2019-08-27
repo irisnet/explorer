@@ -3,14 +3,14 @@ const skinStyle = {
 };
 
 //主网皮肤样式色值
-skinStyle.MAINNETBGCOLOR = '#4E61E7';
-skinStyle.MAINNETHOVERCOLOR = '#4E61E7';
-skinStyle.MAINNETACTIVECOLOR = '#3A4DD6';
+skinStyle.MAINNETBGCOLOR = '#3598DB';
+skinStyle.MAINNETHOVERCOLOR = '#086db1';
+skinStyle.MAINNETACTIVECOLOR = '#0F7BC4';
 
 //测试网皮肤样式色值
-skinStyle.TESTNETBGCOLOR = '#4E61E7';
-skinStyle.TESTNETHOVERCOLOR = '#4E61E7';
-skinStyle.TESTNETACTIVECOLOR = '#3A4DD6';
+skinStyle.TESTNETBGCOLOR = '#3598DB';
+skinStyle.TESTNETHOVERCOLOR = '#086db1';
+skinStyle.TESTNETACTIVECOLOR = '#0F7BC4';
 
 //公共样式色值
 skinStyle.commonFontContentColor = '#787C99';

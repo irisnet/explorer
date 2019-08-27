@@ -347,32 +347,32 @@
 				this.menuActiveName = v;
 				switch (v) {
                     case 'blockChain' :
-	                    this.offSetLeft = `1.9rem`;
+	                    this.offSetLeft = `1.7rem`;
 	                    this.contentWidth = '1.15rem';
 	                    this.flShowChain = true;
                     	break;
                     case 'staking' :
-                    	this.offSetLeft = `2.78rem`;
+                    	this.offSetLeft = `2.58rem`;
 	                    this.flShowStaking = true;
 	                    this.contentWidth = '1.05rem';
                     	break;
                     case 'transfers' :
-	                    this.offSetLeft = `3.44rem`;
+	                    this.offSetLeft = `3.24rem`;
 	                    this.contentWidth = '1.47rem';
 	                    this.flShowTransfers = true;
                     	break;
                     case 'assets'	:
-	                    this.offSetLeft = `4.23rem`;
+	                    this.offSetLeft = `4.03rem`;
 	                    this.contentWidth = '1.5rem';
 	                    this.flShowAssets = true;
                     	break;
                     case 'gov' :
-	                    this.offSetLeft = `4.85rem`;
+	                    this.offSetLeft = `4.65rem`;
 	                    this.contentWidth = '1.03rem';
 	                    this.flShowGov = true;
                     	break;
                     case 'stats' :
-	                    this.offSetLeft = `5.31rem`;
+	                    this.offSetLeft = `5.11rem`;
 	                    this.contentWidth = '1.15rem';
 	                    this.flShowStats = true
 				}
@@ -697,10 +697,9 @@
                         display: flex;
                         .header_logo_content{
                             height: 100%;
-                            width: 1.7rem;
-                            padding: 0.05rem 0;
+                            width: 1.5rem;
+                            padding: 0.1rem 0;
                             img {
-                                max-width: 1.6rem;
                                 height: 100%;
                             }
                         }
@@ -780,13 +779,14 @@
                             padding-left: 0.2rem;
                             .network_list_container{
                                 background: #fff;
+                                box-shadow: 0 0.02rem 0.1rem 0 rgba(3,16,114,0.15);
                                 width: auto;
                                 position: absolute;
                                 right: 0;
                                 top: 0.6rem;
                                 z-index: 2;
                                 text-align: right;
-                                padding-top: 0.2rem;
+                                padding-top: 0.1rem;
                                 .network_list_item{
                                     line-height: 1.8;
                                     white-space: nowrap;
@@ -796,6 +796,9 @@
                                     &:hover{
                                         color:var(--bgColor)
                                     }
+                                }
+                                .network_list_item:last-child{
+                                    padding-bottom: 0.1rem;
                                 }
                             }
                         }
