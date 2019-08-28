@@ -411,6 +411,11 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 					Website:  v.StakeCreateValidator.Description.Website,
 					Details:  v.StakeCreateValidator.Description.Details,
 				},
+				Commission: vo.CommissionMsg{
+					Rate:          v.StakeCreateValidator.Commission.Rate,
+					MaxChangeRate: v.StakeCreateValidator.Commission.MaxChangeRate,
+					MaxRate:       v.StakeCreateValidator.Commission.MaxRate,
+				},
 			},
 			StakeEditValidator: vo.StakeEditValidator{
 				Description: vo.ValDescription{
