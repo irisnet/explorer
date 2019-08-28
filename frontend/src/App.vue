@@ -19,7 +19,7 @@
           <h2>Join QQ group</h2>
         </div>
       </div>
-      <router-view class="router_view" :style="`min-height:${vh/100-1.7}rem;`" :key="key"/>
+      <router-view class="router_view" :style="`min-height:${vh/100-2.5}rem;`" :key="key"/>
       <footer :class="footerClass" v-show="flShowFooter" id="footer">
           <div class="person_computer_footer">
             <div class="footer_logo_content">
@@ -271,7 +271,7 @@
         .person_computer_footer { //分别对pc和移动端兼容
           max-width: 12.8rem;
           width: 100%;
-          height: 100%;
+          height: 1.35rem;
           margin: 0 auto;
           display: flex;
           .footer_logo_content{
@@ -355,6 +355,7 @@
           }
         }
         .footer_copyright_wrap {
+          background: var(--bgColor);
           border-top: 0.01rem  solid rgba(255,255,255,0.2);
           padding: 0.15rem 0;
           text-align: center;
