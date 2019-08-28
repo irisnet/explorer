@@ -1013,8 +1013,8 @@ export default {
                                         i === "Treshold" ||
                                         i === "Commission Rate" ||
                                         i === "Max Change Rate" ||
-                                        (i === "Max Rate" &&
-                                            data[message[i].k] !== "")
+                                        i === "Max Rate" &&
+                                            data[message[i].k] !== ""
                                     ) {
                                         fieidValue = `${data[message[i].k] *
                                             100} %`;
