@@ -104,7 +104,7 @@
                     <template v-if="v.v !== '' && v.v !== undefined">
                         <template v-if="addrFields.includes(k)">
                             <template v-if="Array.isArray(v.v)">
-                                <div>
+                                <div v-show="v.v.length">
                                     <p
                                         v-for="it in v.v"
                                         :key="it"
@@ -113,6 +113,7 @@
                                         <router-link :to="addressRoute(it)">{{it}}</router-link>
                                     </p>
                                 </div>
+                                <p class="information_value" v-show="!v.v.length">--</p>
                             </template>
                             <template v-else>
                                 <span class="information_value link_active_style">
