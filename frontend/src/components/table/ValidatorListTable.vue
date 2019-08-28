@@ -238,7 +238,7 @@
       }
       tr{
         th{
-          color:#000000;
+          color:var(--contentColor);
           height:0.5rem;
           vertical-align:middle;
           &:first-child{

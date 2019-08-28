@@ -33,7 +33,7 @@ export default {
     return {
       columns: [
         {
-          title: 'Block_Height',
+          title: 'Block',
           slot: 'height'
         },
         {

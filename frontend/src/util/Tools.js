@@ -458,7 +458,7 @@ export default class Tools{
 						'Moniker': item.moniker ? Tools.formatString(Moniker,15,"...") : "--",
 						Amount,
 						'OperatorAddr': item.operator_addr ? item.operator_addr : '--',
-						'listName':'declarations',
+						'listName':'validations',
 						'Self_Bonded': item.self_bonded
 					}
 				}else if(txType === 'delegations'){
@@ -466,7 +466,7 @@ export default class Tools{
 						'From': `${item.from ? item.from : (item.delegator_addr?item.delegator_addr:'--')}`,
 						Amount,
 						'To': `${item.to ? item.to : (item.validator_addr?item.validator_addr:'--')}`,
-						'listName':'stakes',
+						'listName':'delegations',
 						fromMoniker: item.from_moniker,
 						toMoniker: item.to_moniker
 					}
