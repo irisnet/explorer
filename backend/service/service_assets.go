@@ -82,7 +82,7 @@ func LoadModelFromCommonTx(src document.CommonTx) (dst vo.AssetsVo) {
 	dst.TxStatus = src.Status
 	dst.Timestamp = src.Time
 
-	dst.TxFee = convertModelFee(src.Fee)
+	dst.TxFee = convertModelActualFee(src.ActualFee)
 
 	dst.Type = src.Msgs[0].Type
 	switch dst.Type {
@@ -131,7 +131,7 @@ func LoadModelFromCommonTx(src document.CommonTx) (dst vo.AssetsVo) {
 			dst.Owner = msgData.Owner
 			dst.Amount = msgData.Amount
 			dst.SymbolMin = msgData.TokenId
-			dst.MintTo = msgData.To
+			dst.MintTo = checkMintToAddress(msgData.Owner, msgData.To)
 		}
 
 	case types.TxTypeTransferTokenOwner:
@@ -183,6 +183,13 @@ func LoadModelFromCommonTx(src document.CommonTx) (dst vo.AssetsVo) {
 	return
 }
 
+func checkMintToAddress(owner, address string) string {
+	if len(owner) != len(address) {
+		return owner
+	}
+	return address
+}
+
 func convertModelCoin(coin document.Coin) vo.Coin {
 	return vo.Coin{
 		Denom:  coin.Denom,
@@ -201,6 +208,13 @@ func convertModelFee(fee document.Fee) vo.Fee {
 	return vo.Fee{
 		Gas:    fee.Gas,
 		Amount: convertModelCoins(fee.Amount),
+	}
+}
+
+func convertModelActualFee(actfee document.ActualFee) vo.ActualFee {
+	return vo.ActualFee{
+		Amount: actfee.Amount,
+		Denom:  actfee.Denom,
 	}
 }
 
