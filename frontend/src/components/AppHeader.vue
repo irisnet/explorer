@@ -647,7 +647,7 @@
 					if(item.env_nm === constant.ENVCONFIG.MAINNET && item.chain_id === constant.CHAINID.MAINNET){
 						item.icon = 'iconfont iconiris'
                     }else if(item.env_nm === constant.ENVCONFIG.TESTNET && item.chain_id === constant.CHAINID.FUXI){
-						item.icon = 'iconfont iconfuxi'
+						item.icon = 'iconfont iconfuxi1'
                     }else if(item.env_nm === constant.ENVCONFIG.TESTNET && item.chain_id !== constant.CHAINID.FUXI){
 						item.icon = 'iconfont iconcaihongmao'
                     }
@@ -858,6 +858,9 @@
                                     font-size: 0.14rem;
                                     display: flex;
                                     justify-content: space-between;
+                                    &:hover{
+                                        background: #F6F7FF;
+                                    }
                                     i{
                                         font-size: 0.18rem;
                                         color: var(--bgColor);
