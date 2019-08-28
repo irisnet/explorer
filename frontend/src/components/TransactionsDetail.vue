@@ -103,11 +103,25 @@
                     <span class="information_props">{{k}} :</span>
                     <template v-if="v.v !== '' && v.v !== undefined">
                         <template v-if="addrFields.includes(k)">
-                            <span class="information_value link_active_style">
-                                <router-link
-                                    :to="addressRoute(v.v)"
-                                >{{v.f ? (item[v.f].v || v.v) : v.v}}</router-link>
-                            </span>
+                            <template v-if="Array.isArray(v.v)">
+                                <div v-show="v.v.length">
+                                    <p
+                                        v-for="it in v.v"
+                                        :key="it"
+                                        class="information_value link_active_style"
+                                    >
+                                        <router-link :to="addressRoute(it)">{{it}}</router-link>
+                                    </p>
+                                </div>
+                                <p class="information_value" v-show="!v.v.length">--</p>
+                            </template>
+                            <template v-else>
+                                <span class="information_value link_active_style">
+                                    <router-link
+                                        :to="addressRoute(v.v)"
+                                    >{{v.f ? (item[v.f].v || v.v) : v.v}}</router-link>
+                                </span>
+                            </template>
                         </template>
                         <template v-else-if="k === 'Proposal ID'">
                             <span class="information_value link_active_style">
@@ -197,13 +211,13 @@ export default {
                 Memo: ""
             },
             txTypeArr: {
+                type_0: ["WithdrawDelegatorRewardsAll"],
                 type_1: [
                     "Transfer",
                     "Delegate",
                     "BeginRedelegate",
                     "BeginUnbonding",
                     "WithdrawDelegatorReward",
-                    "WithdrawDelegatorRewardsAll",
                     "WithdrawValidatorRewardsAll"
                 ],
                 type_2: ["Burn"],
@@ -223,6 +237,36 @@ export default {
                 type_16: ["SetMemoRegexp"]
             },
             txTypeSign: "",
+            type_0: {
+                TxType: {
+                    k: "type",
+                    v: ""
+                },
+                From: {
+                    k: "from",
+                    v: [],
+                    f: "from_moniker"
+                },
+                Amount: {
+                    k: "amount",
+                    v: ""
+                },
+                To: {
+                    k: "to",
+                    v: "",
+                    f: "to_moniker"
+                },
+                from_moniker: {
+                    hide: true,
+                    k: "from_moniker",
+                    v: ""
+                },
+                to_moniker: {
+                    hide: true,
+                    k: "to_moniker",
+                    v: ""
+                }
+            },
             type_1: {
                 TxType: {
                     k: "type",
@@ -282,7 +326,8 @@ export default {
                 },
                 Identity: {
                     k: "identity",
-                    v: ""
+                    v: "",
+                    identityUrl: ""
                 },
                 "Self-Bonded": {
                     k: "",
@@ -590,7 +635,8 @@ export default {
                 },
                 Identity: {
                     k: "identity",
-                    v: ""
+                    v: "",
+                    identityUrl: ""
                 },
                 Details: {
                     k: "details",
@@ -915,6 +961,14 @@ export default {
                                     ) {
                                         fieidValue = `${data[message[i].k] *
                                             100} %`;
+                                    } else if (
+                                        this.typeValue ===
+                                            "WithdrawDelegatorRewardsAll" &&
+                                        i === "From"
+                                    ) {
+                                        fieidValue = data[message[i].k].split(
+                                            ","
+                                        );
                                     } else {
                                         fieidValue = data[message[i].k];
                                     }

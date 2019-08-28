@@ -445,11 +445,11 @@ export default class Tools{
 				};
 				if(txType === 'transfers' ){
 					objList = {
-						'From':item.from?item.from:(item.DelegatorAddr?item.delegatorAddr:'--'),
+						'From':item.from?item.from:(item.delegator_addr?item.delegator_addr:'--'),
 						Amount:transferAmount,
 						'transferFee': transferFee,
 						tokenId,
-						'To':item.to?item.to:(item.validatorAddr?item.validatorAddr:'--'),
+						'To':item.to?item.to:(item.validator_addr?item.validator_addr:'--'),
 						'listName':'transfer'
 					};
 				}else if(txType === 'validations'){

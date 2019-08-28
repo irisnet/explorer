@@ -1,8 +1,10 @@
 package service
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
@@ -14,7 +16,6 @@ import (
 	"github.com/irisnet/explorer/backend/vo"
 	"github.com/irisnet/explorer/backend/vo/msgvo"
 	"gopkg.in/mgo.v2/bson"
-	"strconv"
 )
 
 type TxService struct {
@@ -36,7 +37,7 @@ func (service *TxService) QueryTxList(query bson.M, page, pageSize int, istotal 
 	}
 
 	commonTxUtils := buildTxVOsFromDoc(data)
-	items := service.buildTxVOs(commonTxUtils)
+	items := service.buildTxVOs(commonTxUtils, false)
 
 	forwardTxHashs := make([]string, 0, len(items))
 
@@ -152,7 +153,7 @@ func (service *TxService) Query(hash string) interface{} {
 		panic(types.CodeNotFound)
 	}
 
-	txVOs := service.buildTxVOs([]vo.CommonTx{buildTxVOFromDoc(txAsDoc)})
+	txVOs := service.buildTxVOs([]vo.CommonTx{buildTxVOFromDoc(txAsDoc)}, true)
 
 	for _, v := range txVOs {
 		if stakeTx, ok := v.(vo.StakeTx); ok {
@@ -556,7 +557,7 @@ func isValidatorAddrPrefix(addr string) bool {
 	return strings.HasPrefix(addr, conf.Get().Hub.Prefix.ValAddr)
 }
 
-func (service *TxService) buildTxVOs(txs []vo.CommonTx) []interface{} {
+func (service *TxService) buildTxVOs(txs []vo.CommonTx, isDetail bool) []interface{} {
 	var txList []interface{}
 
 	if len(txs) == 0 {
@@ -599,20 +600,42 @@ func (service *TxService) buildTxVOs(txs []vo.CommonTx) []interface{} {
 			case types.TxTypeWithdrawDelegatorRewardsAll, types.TxTypeWithdrawValidatorRewardsAll:
 				stakeTx.To = tx.Tags[types.TxTag_WithDrawAddress]
 				sourceTotal := 0
-				validatorAddr := ""
+				//validatorAddr := ""
+				if isDetail {
+					var validatorAddr bytes.Buffer
+					for k, _ := range tx.Tags {
+						if strings.HasPrefix(k, types.TxTag_WithDrawRewardFromValidator) {
+							sourceTotal++
 
-				for k, _ := range tx.Tags {
-					if strings.HasPrefix(k, types.TxTag_WithDrawRewardFromValidator) {
-						sourceTotal++
-						if sourceTotal == 1 {
-							validatorAddr = string([]byte(k)[len(types.TxTag_WithDrawRewardFromValidator):])
+							if sourceTotal > 1 {
+								_, err := validatorAddr.WriteString(",")
+								if err != nil {
+									logger.Error("ValidatorAddr WriteString", logger.String("err", err.Error()))
+								}
+							}
+							_, err := validatorAddr.WriteString(string([]byte(k)[len(types.TxTag_WithDrawRewardFromValidator):]))
+							if err != nil {
+								logger.Error("ValidatorAddr WriteString", logger.String("err", err.Error()))
+							}
 						}
 					}
-				}
-				if sourceTotal == 1 {
-					stakeTx.From = validatorAddr
+					stakeTx.From = validatorAddr.String()
 				} else {
-					stakeTx.From = strconv.Itoa(sourceTotal)
+					validatorAddr := ""
+
+					for k, _ := range tx.Tags {
+						if strings.HasPrefix(k, types.TxTag_WithDrawRewardFromValidator) {
+							sourceTotal++
+							if sourceTotal == 1 {
+								validatorAddr = string([]byte(k)[len(types.TxTag_WithDrawRewardFromValidator):])
+							}
+						}
+					}
+					if sourceTotal == 1 {
+						stakeTx.From = validatorAddr
+					} else {
+						stakeTx.From = strconv.Itoa(sourceTotal)
+					}
 				}
 
 				txResp = stakeTx
