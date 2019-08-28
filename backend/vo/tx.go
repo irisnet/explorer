@@ -310,7 +310,8 @@ type CommissionMsg struct {
 }
 
 type StakeEditValidator struct {
-	Description ValDescription `json:"description"`
+	Description    ValDescription `json:"description"`
+	CommissionRate string         `json:"commission_rate"`
 }
 
 // Description
