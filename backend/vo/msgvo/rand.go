@@ -4,7 +4,7 @@ import "encoding/json"
 
 type TxMsgRequestRand struct {
 	Consumer      string `json:"consumer"`       // request address
-	BlockInterval int64  `json:"block_interval"` // block interval after which the requested random number will be generated
+	BlockInterval int64  `json:"block-interval"` // block interval after which the requested random number will be generated
 }
 
 func (vo *TxMsgRequestRand) BuildMsgByUnmarshalJson(data []byte) error {

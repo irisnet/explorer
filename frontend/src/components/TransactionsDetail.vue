@@ -123,6 +123,11 @@
                                 </span>
                             </template>
                         </template>
+                        <template v-else-if="k === 'Moniker' && v.f === 'owner' && item[v.f].v">
+                            <span class="information_value link_active_style">
+                                <router-link :to="addressRoute(item[v.f].v)">{{v.v}}</router-link>
+                            </span>
+                        </template>
                         <template v-else-if="k === 'Proposal ID'">
                             <span class="information_value link_active_style">
                                 <router-link :to="`/ProposalsDetail/${v.v}`">{{v.v}}</router-link>
@@ -221,7 +226,8 @@ export default {
                     "WithdrawValidatorRewardsAll"
                 ],
                 type_2: ["Burn"],
-                type_3: ["CreateValidator", "EditValidator"],
+                type_3: ["CreateValidator"],
+                type_17: ["EditValidator"],
                 type_4: ["SetWithdrawAddress"],
                 type_5: ["Unjail"],
                 type_6: ["SubmitProposal"],
@@ -333,21 +339,40 @@ export default {
                     k: "",
                     v: ""
                 },
-                // "Commission Rate": {
-                //     k: "Commission Rate",
-                //     v: ""
-                // },
                 "Owner Address": {
                     k: "owner",
                     v: ""
                 },
-                // "Withdraw Address": {
-                //     k: "Withdraw Address",
-                //     v: ""
-                // },
                 "Consensus Pubkey": {
                     k: "pubkey",
                     v: ""
+                },
+                Website: {
+                    k: "website",
+                    v: ""
+                },
+                Details: {
+                    k: "details",
+                    v: ""
+                }
+            },
+            type_17: {
+                TxType: {
+                    k: "type",
+                    v: ""
+                },
+                "Operator Address": {
+                    k: "operator_addr",
+                    v: ""
+                },
+                Moniker: {
+                    k: "moniker",
+                    v: ""
+                },
+                Identity: {
+                    k: "identity",
+                    v: "",
+                    identityUrl: ""
                 },
                 Website: {
                     k: "website",
@@ -383,10 +408,12 @@ export default {
                 },
                 Moniker: {
                     k: "moniker",
-                    v: ""
+                    v: "",
+                    f: "owner"
                 },
-                "Consensus Pubkey": {
-                    k: "pubkey",
+                owner: {
+                    hide: true,
+                    k: "owner",
                     v: ""
                 }
             },
@@ -513,7 +540,7 @@ export default {
                     k: "symbol",
                     v: ""
                 },
-                SymbolAtSource: {
+                "Canonical Symbol": {
                     k: "canonical_symbol",
                     v: ""
                 },
@@ -555,7 +582,7 @@ export default {
                     k: "token_id",
                     v: ""
                 },
-                SymbolAtSource: {
+                "Canonical Symbol": {
                     k: "canonical_symbol",
                     v: ""
                 },
@@ -671,7 +698,7 @@ export default {
                     v: ""
                 },
                 "Block Interval": {
-                    k: "block_interval",
+                    k: "block-interval",
                     v: ""
                 },
                 "Request ID": {
