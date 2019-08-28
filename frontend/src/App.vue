@@ -264,7 +264,8 @@
         }
       }
       footer {
-        background: var(--bgColor);
+        /*background: var(--bgColor);*/
+        background: #363a3d;
         flex-direction:column;
         display: flex;
         height: 1.9rem;
@@ -355,7 +356,8 @@
           }
         }
         .footer_copyright_wrap {
-          background: var(--bgColor);
+          /*background: var(--bgColor);*/
+          background: #363a3d;
           border-top: 0.01rem  solid rgba(255,255,255,0.2);
           padding: 0.15rem 0;
           text-align: center;

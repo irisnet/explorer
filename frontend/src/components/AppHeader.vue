@@ -809,7 +809,7 @@
                                     border-radius: 0.06rem 0 0 0.06rem;
                                     box-shadow: none;
                                     background: var(--bgColor);
-                                    border: 0.01rem solid #fff;
+                                    border: 0.01rem solid rgba(255,255,255,0.5);
                                     color: #fff;
                                     font-size: 0.14rem;
                                     border-right: none;
@@ -825,10 +825,10 @@
                                     font-size: 0.2rem;
                                     padding: 0 0.1rem;
                                     line-height: 0.33rem;
-                                    color: #fff;
-                                    border-top: 0.01rem solid #fff;
-                                    border-right: 0.01rem solid #fff;
-                                    border-bottom: 0.01rem solid #fff;
+                                    color: rgba(255,255,255,0.5);
+                                    border-top: 0.01rem solid rgba(255,255,255,0.5);
+                                    border-right: 0.01rem solid rgba(255,255,255,0.5);
+                                    border-bottom: 0.01rem solid rgba(255,255,255,0.5);
                                     background: var(--bgColor);
                                     border-radius: 0 0.06rem 0.06rem 0;
                                     cursor: pointer;
