@@ -424,6 +424,7 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 					Website:  v.StakeEditValidator.Description.Website,
 					Details:  v.StakeEditValidator.Description.Details,
 				},
+				CommissionRate: v.StakeEditValidator.CommissionRate,
 			},
 			Msgs: tmpMsgsArr,
 		}
