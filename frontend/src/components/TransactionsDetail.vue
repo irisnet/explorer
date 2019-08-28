@@ -817,7 +817,7 @@ export default {
                 let o = JSON.parse(JSON.stringify(this[this.txTypeSign]));
                 for (let i in o) {
                     let fieidValue = it[o[i].k];
-                    if (i === "Amount") {
+                    if (this.typeValue !== "MintToken" && i === "Amount") {
                         fieidValue = `${this.$options.filters.amountFromat(
                             it[o[i].k],
                             Constants.Denom.IRIS.toUpperCase()
@@ -1057,7 +1057,7 @@ export default {
                 margin-bottom: 0.12rem;
                 .information_props {
                     width: 1.5rem;
-                    color:var(--contentColor)
+                    color: var(--contentColor);
                 }
                 .information_value {
                     color: var(--titleColor);
