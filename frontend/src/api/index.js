@@ -48,7 +48,7 @@ const urlApi = {
   blockList: '/api/blocks?page={pageNumber}&size={pageSize}',
   blockListLatestheight: '/api/block/latestheight',
   //parameter
-  govParams: '/api/gov/params',
+  govParams: '/api/params',
   //proposal
   proposalDetail: '/api/gov/proposals/{proposalId}',
   proposalDetailVoterTx:'/api/gov/proposals/{proposalId}/voter_txs?page={pageNumber}&size={perPageSize}',

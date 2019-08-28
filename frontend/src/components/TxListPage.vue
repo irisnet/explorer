@@ -132,7 +132,6 @@
                 justify-content: flex-end;
                 height: 0.7rem;
                 align-items: center;
-                margin-bottom: 0.2rem;
             }
 
         }

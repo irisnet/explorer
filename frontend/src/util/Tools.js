@@ -366,8 +366,10 @@ export default class Tools{
 	 * return String
 	 */
 	static formatValidatorAddress(address){
-		if (address) {
+		if (address && address.length > 11) {
 			return `${address.substring(0,3)}...${address.substring(address.length - 8)}`
+		}else if(address && address.length < 11){
+			return address
 		}
 		return '';
 	}

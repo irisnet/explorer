@@ -63,7 +63,7 @@
                 sortable:true,
               },
               operatorAddress:{
-                label:'Operator Address',
+                label:'Operator',
                 sortable:false,
               },
               commission:{
@@ -101,7 +101,7 @@
                 sortable:true,
               },
               operatorAddress:{
-                label:'Operator Address',
+                label:'Operator',
                 sortable:false,
               },
               commission:{
@@ -131,7 +131,7 @@
                 sortable:true,
               },
               operatorAddress:{
-                label:'Operator Address',
+                label:'Operator',
                 sortable:false,
               },
               commission:{
