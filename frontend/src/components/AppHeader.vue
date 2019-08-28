@@ -436,7 +436,7 @@
 						break;
 					case 'stats' :
 						this.flShowStats = false;
-                    
+
 				}
             },
 			hideFeature () {
@@ -1165,7 +1165,7 @@
                         }
                     }
                 }
-                
+
                 .feature_btn_mobile {
                     height: 0.39rem;
                     line-height: 0.39rem;
