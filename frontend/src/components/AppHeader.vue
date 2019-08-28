@@ -576,7 +576,6 @@
 			listenRouteForChangeActiveButton () {
 				//刷新的时候路由不变，active按钮不变
                 this.hideActiveStyle();
-                console.log(this.$route.fullPath,"?????")
 				if (this.$route.fullPath === '/txs/validations' || this.$route.fullPath === '/txs/delegations') {
 					this.activeStaking  = true
 				}else if(this.$route.fullPath === '/txs/transfers'){
