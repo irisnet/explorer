@@ -131,7 +131,7 @@ func LoadModelFromCommonTx(src document.CommonTx) (dst vo.AssetsVo) {
 			dst.Owner = msgData.Owner
 			dst.Amount = msgData.Amount
 			dst.SymbolMin = msgData.TokenId
-			dst.MintTo = msgData.To
+			dst.MintTo = checkMintToAddress(msgData.Owner, msgData.To)
 		}
 
 	case types.TxTypeTransferTokenOwner:
@@ -181,6 +181,13 @@ func LoadModelFromCommonTx(src document.CommonTx) (dst vo.AssetsVo) {
 	}
 
 	return
+}
+
+func checkMintToAddress(owner, address string) string {
+	if len(owner) != len(address) {
+		return owner
+	}
+	return address
 }
 
 func convertModelCoin(coin document.Coin) vo.Coin {
