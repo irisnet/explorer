@@ -804,7 +804,7 @@ export default {
                 });
             }
         },
-        forAssetType(data) {
+        forMsgType(data) {
             if (!Array.isArray(data.msgs)) {
                 return;
             }
@@ -992,7 +992,7 @@ export default {
                                     this.typeValue === "RequestRand" ||
                                     this.typeValue === "SetMemoRegexp"
                                 ) {
-                                    this.forAssetType(data);
+                                    this.forMsgType(data);
                                 }
                             }
                         } catch (e) {
