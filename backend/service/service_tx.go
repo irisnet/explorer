@@ -75,7 +75,7 @@ func (service *TxService) QueryTxList(query bson.M, page, pageSize int, istotal 
 	}
 
 	// get tx from and to base amount coin flow direction
-	items = parseFromAndToByAmountCoinFlow(items)
+	items = parseFromAndToByAmountCoinFlow(items, false)
 
 	// get validator moniker by address
 	items = service.getValidatorMonikerByAddress(items)
@@ -186,7 +186,7 @@ func (service *TxService) Query(hash string) interface{} {
 		}
 	}
 
-	items := parseFromAndToByAmountCoinFlow(txVOs)
+	items := parseFromAndToByAmountCoinFlow(txVOs, true)
 	items = service.getValidatorMonikerByAddress(items)
 
 	logger.Debug("getTxsByFilter end", service.GetTraceLog())
@@ -429,7 +429,7 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 	return commonTxUtils
 }
 
-func parseCoinFlowFromAndTo(txType, from, to string) (string, string) {
+func parseCoinFlowFromAndToForTxList(txType, from, to string) (string, string) {
 	switch txType {
 	case types.TxTypeTransfer:
 		return from, to
@@ -443,6 +443,37 @@ func parseCoinFlowFromAndTo(txType, from, to string) (string, string) {
 		return "", ""
 	case types.TxTypeSetWithdrawAddress:
 		return "", ""
+	case types.TxTypeStakeCreateValidator:
+		return from, to
+	case types.TxTypeBeginRedelegate:
+		return from, to
+	case types.TxTypeWithdrawDelegatorReward:
+		return from, to
+	case types.TxTypeWithdrawDelegatorRewardsAll:
+		return from, to
+	case types.TxTypeWithdrawValidatorRewardsAll:
+		return from, to
+	case types.TxTypeStakeBeginUnbonding:
+		return to, from
+	default:
+		return from, to
+	}
+}
+
+func parseCoinFlowFromAndToForTxDetail(txType, from, to string) (string, string) {
+	switch txType {
+	case types.TxTypeTransfer:
+		return from, to
+	case types.TxTypeBurn:
+		return from, ""
+	case types.TxTypeStakeEditValidator:
+		return "", ""
+	case types.TxTypeStakeDelegate:
+		return from, to
+	case types.TxTypeUnjail:
+		return "", ""
+	case types.TxTypeSetWithdrawAddress:
+		return from, to
 	case types.TxTypeStakeCreateValidator:
 		return from, to
 	case types.TxTypeBeginRedelegate:
@@ -485,16 +516,25 @@ func (service *TxService) isForwardTxByType(t string) bool {
 	return false
 }
 
-func parseFromAndToByAmountCoinFlow(items []interface{}) []interface{} {
+func parseFromAndToByAmountCoinFlow(items []interface{}, forTxDetail bool) []interface{} {
 	for i := 0; i < len(items); i++ {
 		if stakeTx, ok := items[i].(vo.StakeTx); ok {
-			stakeTx.From, stakeTx.To = parseCoinFlowFromAndTo(stakeTx.Type, stakeTx.From, stakeTx.To)
+			if forTxDetail {
+				stakeTx.From, stakeTx.To = parseCoinFlowFromAndToForTxDetail(stakeTx.Type, stakeTx.From, stakeTx.To)
+			} else {
+				stakeTx.From, stakeTx.To = parseCoinFlowFromAndToForTxList(stakeTx.Type, stakeTx.From, stakeTx.To)
+			}
 			items[i] = stakeTx
 			continue
 		}
 
 		if TransTx, ok := items[i].(vo.TransTx); ok {
-			TransTx.From, TransTx.To = parseCoinFlowFromAndTo(TransTx.Type, TransTx.From, TransTx.To)
+			if forTxDetail {
+				TransTx.From, TransTx.To = parseCoinFlowFromAndToForTxDetail(TransTx.Type, TransTx.From, TransTx.To)
+			} else {
+				TransTx.From, TransTx.To = parseCoinFlowFromAndToForTxList(TransTx.Type, TransTx.From, TransTx.To)
+			}
+
 			items[i] = TransTx
 			continue
 		}
