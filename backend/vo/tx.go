@@ -165,15 +165,16 @@ Amount: %v
 
 type DeclarationTx struct {
 	BaseTx
-	Amount       utils.Coins `json:"amount"`
-	OperatorAddr string      `json:"operator_addr"`
-	Owner        string      `json:"owner"`
-	Moniker      string      `json:"moniker"`
-	Pubkey       string      `json:"pubkey"`
-	Identity     string      `json:"identity"`
-	SelfBond     utils.Coins `json:"self_bond"`
-	Website      string      `json:"website"`
-	Details      string      `json:"details"`
+	Amount       utils.Coins   `json:"amount"`
+	OperatorAddr string        `json:"operator_addr"`
+	Owner        string        `json:"owner"`
+	Moniker      string        `json:"moniker"`
+	Pubkey       string        `json:"pubkey"`
+	Identity     string        `json:"identity"`
+	SelfBond     utils.Coins   `json:"self_bond"`
+	Website      string        `json:"website"`
+	Details      string        `json:"details"`
+	Commission   CommissionMsg `json:"commission"`
 }
 
 type GovTx struct {

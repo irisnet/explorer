@@ -811,6 +811,11 @@ func (service *TxService) buildTxVO(tx vo.CommonTx, blackListP *map[string]docum
 			dtx.Details = details
 			dtx.Website = website
 			dtx.Identity = identity
+			dtx.Commission = vo.CommissionMsg{
+				Rate:          tx.StakeCreateValidator.Commission.Rate,
+				MaxRate:       tx.StakeCreateValidator.Commission.MaxRate,
+				MaxChangeRate: tx.StakeCreateValidator.Commission.MaxChangeRate,
+			}
 		} else if tx.Type == types.TxTypeStakeEditValidator {
 			dtx.OperatorAddr = tx.From
 			var moniker = tx.StakeEditValidator.Description.Moniker
@@ -827,6 +832,9 @@ func (service *TxService) buildTxVO(tx vo.CommonTx, blackListP *map[string]docum
 			dtx.Details = details
 			dtx.Website = website
 			dtx.Identity = identity
+			dtx.Commission = vo.CommissionMsg{
+				Rate: tx.StakeEditValidator.CommissionRate,
+			}
 		} else if tx.Type == types.TxTypeUnjail {
 			dtx.OperatorAddr = tx.From
 			can := (*candidateAddrMapP)[dtx.Owner]
