@@ -30,7 +30,7 @@ type AssetsVo struct {
 	DstOwner        string    `json:"dst_owner"`
 	Height          int64     `json:"height"`
 	TxHash          string    `json:"tx_hash"`
-	TxFee           Fee       `json:"tx_fee"`
+	TxFee           ActualFee `json:"tx_fee"`
 	TxStatus        string    `json:"tx_status"`
 	Timestamp       time.Time `json:"timestamp"`
 }
@@ -40,6 +40,11 @@ type Coins []Coin
 type Fee struct {
 	Amount Coins `json:"amount"`
 	Gas    int64 `json:"gas"`
+}
+
+type ActualFee struct {
+	Denom  string  `json:"denom"`
+	Amount float64 `json:"amount"`
 }
 
 type AssetTokens struct {

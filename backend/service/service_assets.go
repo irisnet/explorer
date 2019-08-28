@@ -82,7 +82,7 @@ func LoadModelFromCommonTx(src document.CommonTx) (dst vo.AssetsVo) {
 	dst.TxStatus = src.Status
 	dst.Timestamp = src.Time
 
-	dst.TxFee = convertModelFee(src.Fee)
+	dst.TxFee = convertModelActualFee(src.ActualFee)
 
 	dst.Type = src.Msgs[0].Type
 	switch dst.Type {
@@ -201,6 +201,13 @@ func convertModelFee(fee document.Fee) vo.Fee {
 	return vo.Fee{
 		Gas:    fee.Gas,
 		Amount: convertModelCoins(fee.Amount),
+	}
+}
+
+func convertModelActualFee(actfee document.ActualFee) vo.ActualFee {
+	return vo.ActualFee{
+		Amount: actfee.Amount,
+		Denom:  actfee.Denom,
 	}
 }
 
