@@ -139,7 +139,7 @@
                     <ul class="blockchain_list_content" v-show="flShowBlockchainMenu">
                         <li class="blockchain_list_item" @click="featureButtonClick(`/home`)">Overview</li>
                         <li class="blockchain_list_item" @click="featureButtonClick(`/blocks`)">Blocks</li>
-                        <li class="blockchain_list_item" @click="featureButtonClick(`/validators`)">Validators</li>
+                        <li class="blockchain_list_item" @click="featureButtonClick(`/txs`)">Transactions</li>
                     </ul>
                 </div>
 
@@ -213,7 +213,7 @@
                     </div>
                     <ul class="blockchain_list_content" v-show="flShowNetWorkMenu">
                         <li class="blockchain_list_item"  v-for="item in netWorkArray">
-                            <a :href="item.host">{{item.netWorkSelectOption}}</a>
+                            <a :href="item.host">{{item.netWorkSelectOption}}</a> <i :class="item.icon"></i>
                         </li>
                     </ul>
                 </div>
@@ -1173,6 +1173,8 @@
                             font-size: 0.14rem;
                             background: var(--hoverColor);
                             color:#fff;
+                            display: flex;
+                            justify-content: space-between;
                             a{
                                 color:#fff !important;
                             }

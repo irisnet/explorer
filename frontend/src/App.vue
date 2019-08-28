@@ -378,6 +378,7 @@
           height: auto;
           .person_computer_footer{
             flex-direction: column;
+            height: auto;
             .footer_logo_content{
               width: 100%;
               display: flex;
