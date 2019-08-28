@@ -300,6 +300,13 @@ type Msg interface {
 type StakeCreateValidator struct {
 	PubKey      string         `json:"pub_key"`
 	Description ValDescription `json:"description"`
+	Commission  CommissionMsg  `json:"commission"`
+}
+
+type CommissionMsg struct {
+	Rate          string `json:"rate"`            // the commission rate charged to delegators
+	MaxRate       string `json:"max_rate"`        // maximum commission rate which validator can ever charge
+	MaxChangeRate string `json:"max_change_rate"` // maximum daily increase of the validator commission
 }
 
 type StakeEditValidator struct {

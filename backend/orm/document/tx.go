@@ -121,6 +121,12 @@ type (
 	StakeCreateValidator struct {
 		PubKey      string         `bson:"pub_key"`
 		Description ValDescription `bson:"description"`
+		Commission  CommissionMsg  `bson:"commission"`
+	}
+	CommissionMsg struct {
+		Rate          string `bson:"rate"`            // the commission rate charged to delegators
+		MaxRate       string `bson:"max_rate"`        // maximum commission rate which validator can ever charge
+		MaxChangeRate string `bson:"max_change_rate"` // maximum daily increase of the validator commission
 	}
 	StakeEditValidator struct {
 		Description ValDescription `bson:"description"`
