@@ -436,6 +436,7 @@
 						break;
 					case 'stats' :
 						this.flShowStats = false;
+                    
 				}
             },
 			hideFeature () {
@@ -755,6 +756,7 @@
                                     max-width: 1.5rem;
                                 }
                             }
+
                         }
                         .header_menu_content{
                             display: flex;
@@ -987,6 +989,7 @@
                         padding-left: 0.35rem;
                     }
                 }
+
                 .btn-group,
                 .btn-group-vertical {
                     vertical-align: baseline;
@@ -1162,6 +1165,7 @@
                         }
                     }
                 }
+                
                 .feature_btn_mobile {
                     height: 0.39rem;
                     line-height: 0.39rem;
