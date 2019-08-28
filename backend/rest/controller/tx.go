@@ -41,13 +41,18 @@ func registerQueryTxList(r *mux.Router) error {
 		tx.SetTid(request.TraceId)
 		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 5))
+		height := int(utils.ParseIntWithDefault(QueryParam(request, "height"), 0))
 		total := QueryParam(request, "total")
 		istotal := false
 		if total == "true" {
 			istotal = true
 		}
+		query := bson.M{}
+		if height > 0 {
+			query["height"] = height
+		}
 		var result vo.PageVo
-		result = tx.QueryBaseList(nil, page, size, istotal)
+		result = tx.QueryBaseList(query, page, size, istotal)
 		return result
 	})
 	return nil
