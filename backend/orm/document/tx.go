@@ -358,17 +358,17 @@ func (_ CommonTx) QueryProposalTxByIdWithSubmitOrDepositType(proposalId int64, p
 func (_ CommonTx) QueryTxAsset(assetType, tokenType string, page, size int, total bool) (int, []CommonTx, error) {
 	txs := []CommonTx{}
 	selector := bson.M{
-		Tx_Field_Hash:   1,
-		Tx_Field_Height: 1,
-		Tx_Field_From:   1,
-		Tx_Field_To:     1,
-		Tx_Field_Amount: 1,
-		Tx_Field_Type:   1,
-		Tx_Field_Status: 1,
-		Tx_Field_Fee:    1,
-		Tx_Field_Tags:   1,
-		Tx_Field_Msgs:   1,
-		Tx_Field_Time:   1,
+		Tx_Field_Hash:      1,
+		Tx_Field_Height:    1,
+		Tx_Field_From:      1,
+		Tx_Field_To:        1,
+		Tx_Field_Amount:    1,
+		Tx_Field_Type:      1,
+		Tx_Field_Status:    1,
+		Tx_Field_ActualFee: 1,
+		Tx_Field_Tags:      1,
+		Tx_Field_Msgs:      1,
+		Tx_Field_Time:      1,
 	}
 	condition := bson.M{
 		Tx_Field_Msgs_UdInfo: assetType,
