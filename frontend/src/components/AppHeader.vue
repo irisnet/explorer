@@ -5,98 +5,116 @@
          id="header">
         <header class="app_header_person_computer"
                 v-show="devicesShow === 1">
-            <div class="header_navigation_container">
-                <div class="header_navigation_wrap">
-                    <div class="header_left_content">
-                        <div class="header_logo_content">
-                            <router-link :to="`/home`"><img :src="explorerLogo"></router-link>
-                        </div>
-                        <ul class="header_menu_content">
-                            <li class="header_menu_item"
-                                :class="activeBlockChain ? 'nav_item_active' : ''"
-                                @mouseenter="showTwoMenu('blockChain')" @mouseleave="hideTwoMenu('blockChain')">Blockchain</li>
-                            <li class="header_menu_item"
-                                :class="activeStaking ? 'nav_item_active' : ''"
-                                @mouseenter="showTwoMenu('staking')" @mouseleave="hideTwoMenu('staking')">Staking</li>
-                            <li class="header_menu_item"
-                                :class="activeTransfers ? 'nav_item_active' : ''"
-                                @mouseenter="showTwoMenu('transfers')" @mouseleave="hideTwoMenu('transfers')">Transfer</li>
-                            <li class="header_menu_item"
-                                :class="activeAssets ? 'nav_item_active' : ''"
-                                @mouseenter="showTwoMenu('assets')" @mouseleave="hideTwoMenu('assets')">Asset</li>
-                            <li class="header_menu_item"
-                                :class="activeGov ? 'nav_item_active' : ''"
-                                @mouseenter="showTwoMenu('gov')" @mouseleave="hideTwoMenu('gov')">Gov</li>
-                            <li class="header_menu_item"
-                                :class="activeStats ? 'nav_item_active' : ''"
-                                @mouseenter="showTwoMenu('stats')" @mouseleave="hideTwoMenu('stats')">Stats</li>
-                            <li class="header_menu_item"><router-link :to="`/faucet`">Faucet</router-link></li>
-                        </ul>
+            <div class="header_top_container">
+                <div class="header_top_content_wrap">
+                    <div class="header_logo_content">
+                        <router-link :to="`/home`"><img :src="explorerLogo"></router-link>
                     </div>
-
-                    <div class="header_right_content">
-                        <div class="search_input_container">
-                            <div class="search_input_wrap">
-                                <input type="text"
-                                       class="search_input"
-                                       placeholder="Search by Address / Txhash / Block"
-                                       v-model.trim="searchInputValue"
-                                       @keyup.enter="onInputChange">
-                                <span @click="getData(searchInputValue)" class="iconfont iconsousuo"></span>
+                    <div class="header_menu_content">
+                        <ul class="header_menu_list_content">
+                            <li :class="activeClassName === '/home'?'nav_item_active':''"
+                                @click="featureButtonClick('/home')">Home</li>
+                            <li :class="activeClassName === '/validators'?'nav_item_active':''"
+                                @click="featureButtonClick('/validators')">Validators</li>
+                            <li :class="activeClassName === '/blocks'?'nav_item_active':''"
+                                @click="featureButtonClick('/blocks')">Blocks</li>
+                            <li class="transaction_list_content"
+                                :class="activeClassName === '/transaction'?'nav_item_active':''"
+                                @mouseover="transactionMouseOver"
+                                @mouseleave="transactionMouseLeave">
+                                <div class="transaction_content"
+                                     style="display: flex">Transactions<span class="bottom_arrow"></span></div>
+                                <ul class="transaction_list_item_content"
+                                    style=""
+                                    v-show="showSubTransaction">
+                                    <router-link :to="`/txs/transfers`">
+                                        <li class="transaction_list_item">Transfers</li>
+                                    </router-link>
+                                    <router-link :to="`/txs/declarations`">
+                                        <li class="transaction_list_item">Declarations</li>
+                                    </router-link>
+                                    <router-link :to="`/txs/stakes`">
+                                        <li class="transaction_list_item">Stakes</li>
+                                    </router-link>
+                                    <router-link :to="`/txs/governance`">
+                                        <li class="transaction_list_item">Governance</li>
+                                    </router-link>
+                                </ul>
+                            </li>
+                            <li class="statics_list_content"
+                                :class="activeClassName === '/statistics'?'nav_item_active':''"
+                                @mouseover="statisticsMouseOver"
+                                @mouseleave="statisticsMouseLeave">
+                                <div class="statics_content"
+                                     style="display: flex">Statistics<span class="bottom_arrow"></span></div>
+                                <ul class="statics_list_item_content"
+                                    style="color: #000;background: #3598db"
+                                    v-show="flShowStatistics">
+                                    <router-link :to="`/statistics/richlist`">
+                                        <li class="static_list_item">Rich List</li>
+                                    </router-link>
+                                    <router-link :to="`/statistics/tokenstats`">
+                                        <li class="static_list_item">Tokens Stats</li>
+                                    </router-link>
+                                    <!-- <router-link :to="`/statistics/bondedTokens`">
+                                        <li class="static_list_item">Bonded Tokens</li>
+                                    </router-link> -->
+                                </ul>
+                            </li>
+                            <li class="governance_list_content"
+                                :class="activeClassName === '/governance'?'nav_item_active':''"
+                                @mouseover="governanceMouseOver"
+                                @mouseleave="governanceMouseLeave">
+                                <div class="governance_content"
+                                     style="display: flex">Governance<span class="bottom_arrow"></span></div>
+                                <ul class="governance_list_item_content"
+                                    style="color: #000;background: #3598db"
+                                    v-show="flShowGovernanceOption">
+                                    <router-link :to="`/gov/parameters`">
+                                        <li class="governance_list_item">Parameters</li>
+                                    </router-link>
+                                    <router-link :to="`/gov/proposals`">
+                                        <li class="governance_list_item">Proposals</li>
+                                    </router-link>
+                                </ul>
+                            </li>
+                            <li v-if="flShowFaucet"
+                                class="nav_item common_item_style faucet_content"
+                                :class="activeClassName === '/faucet'?'nav_item_active':''"
+                                @click="featureButtonClick('/faucet')">Faucet</li>
+                        </ul>
+                        <div class="header_network_content">
+                            <div class="network_list_content">
+                                <div class="network_list_title_content"
+                                     style="display: flex">{{currentSelected}}<span class="bottom_arrow"></span></div>
+                                <ul class="network_list_item_content"
+                                    style="color: #000;background: #3598db">
+                                    <li class="network_list_item"
+                                        v-for="item in netWorkArray"
+                                        v-show="item.netWorkSelectOption.trim() !== currentSelected.trim()"
+                                        @click="windowOpenUrl(item.host)">{{item.netWorkSelectOption}}</li>
+                                </ul>
+                            </div>
+                            <div class="search_content"
+                                 @click="toggleShowSearchIpt()">
+                                <img src="../assets/search_icon.png"
+                                     alt="">
                             </div>
                         </div>
-                        <div class="network_container" @mouseenter="showNetWorkLogo()" @mouseleave="hideNetWorkLogo()">
-                            <span style="color: #fff">
-                                <i style="font-size: 0.2rem;padding-right: 0.02rem;" :class="currentNetworkClass"></i>
-                                <i style="font-size: 0.08rem" class="iconfont iconwangluoqiehuanjiantou"></i>
-                            </span>
-                            <ul class="network_list_container" v-show="flShowNetworkLogo" @mouseenter="showNetWorkLogo()" @mouseleave="hideNetWorkLogo()">
-                                <li class="network_list_item"
-                                    v-for="item in netWorkArray"
-                                    v-show="item.netWorkSelectOption.trim() !== currentSelected.trim()"
-                                    @click="windowOpenUrl(item.host)">{{item.netWorkSelectOption}}</li>
-                            </ul>
-                        </div>
                     </div>
-
                 </div>
             </div>
-            <transition name="fade">
-                <div class="header_submenu_container" @mouseenter="showTwoMenu(menuActiveName)" @mouseleave="hideTwoMenu(menuActiveName)" v-show="flShowSubMenu" >
-                    <div class="header_submenu_content_wrap">
-                        <ul class="header_submenu_content"  :style="{'left':offSetLeft,width:contentWidth}">
-                            <li class="header_submenu_item" v-if="flShowChain"><router-link :to="`/home`">Overview</router-link></li>
-                            <li class="header_submenu_item" v-if="flShowChain"><router-link :to="`/blocks`">Blocks</router-link></li>
-                            <li class="header_submenu_item" v-if="flShowChain"><router-link :to="`/txs`">Transactions</router-link></li>
-                            <!--<li class="header_submenu_item no_border_style" v-if="flShowChain"><router-link :to="`/validators`">Validators</router-link></li>-->
-                            <!--               <li class="header_submenu_item" v-if="flShowChain">Assets</li>
-                                           <li class="header_submenu_item" v-if="flShowChain">Gateways</li>-->
-                            <li class="header_submenu_item" v-if="flShowStaking"><router-link :to="`/validators`">Validators</router-link></li>
-                            <li class="header_submenu_item" v-if="flShowStaking"><router-link :to="`/txs/validations`">Validation Txs</router-link></li>
-                            <li class="header_submenu_item no_border_style" v-if="flShowStaking"><router-link :to="`/txs/delegations`">Delegation Txs</router-link></li>
-                            <!--  <li class="header_submenu_item" v-if="flShowStaking">Validator Txs</li>-->
-                            <!--<li class="header_submenu_item" v-if="flShowStaking"> <router-link :to="`/txs/stakes`">Delegation Txs</router-link></li>
-                            <li class="header_submenu_item" v-if="flShowStaking">Reward Txs</li>-->
-                            <li class="header_submenu_item no_border_style" v-if="flShowTransfers"> <router-link :to="`/txs/transfers`">IRIS Transfers Txs</router-link></li>
-                            <!--<li class="header_submenu_item" v-if="flShowTransfers">Asset Transfers Txs</li>-->
-                            <!--<li class="header_submenu_item" v-if="flShowTransfers">Inter-chain Txs</li>-->
-                            <!--<li class="header_submenu_item" v-if="flShowTransfers">IRIS Burn Txs</li>-->
-                            <li class="header_submenu_item" v-if="flShowAssets"><router-link :to="`/assets/ntvassetstxs`">Native Asset Txs</router-link></li>
-                            <!--<li class="header_submenu_item" v-if="flShowAssets">Issuers Txs</li>-->
-                            <li class="header_submenu_item no_border_style" v-if="flShowAssets"><router-link :to="`/assets/gtwassetstxs`">Gateway Asset Txs</router-link></li>
-                            <!--<li class="header_submenu_item" v-if="flShowAssets">Gateways Txs</li>-->
-                            <!--<li class="header_submenu_item" v-if="flShowAssets">Assets Transfers</li>-->
-                            <li class="header_submenu_item" v-if="flShowGov"><router-link :to="`/gov/parameters`">Parameters</router-link></li>
-                            <li class="header_submenu_item" v-if="flShowGov"><router-link :to="`/gov/proposals`">Proposals</router-link></li>
-                            <li class="header_submenu_item no_border_style" v-if="flShowGov"><router-link :to="`/txs/governance`">Gov Txs</router-link></li>
-                            <!--<li class="header_submenu_item" v-if="flShowGov">Vote Tx</li>-->
-                            <li class="header_submenu_item" v-if="flShowStats"><router-link :to="`/stats/irisrichlist`">IRIS Rich List</router-link></li>
-                            <li class="header_submenu_item no_border_style" v-if="flShowStats"><router-link :to="`/stats/irisstats`">IRIS Stats</router-link></li>
-                            <!--<li class="header_submenu_item" v-if="flShowStats">Public Address</li>-->
-                        </ul>
-                    </div>
+            <div class="search_input_container"
+                 v-show="flShowSearchIpt">
+                <div class="search_input_wrap">
+                    <input type="text"
+                           class="search_input"
+                           placeholder="Search by Address / Txhash / Block"
+                           v-model.trim="searchInputValue"
+                           @keyup.enter="onInputChange">
+                    <span @click="getData(searchInputValue)">Search</span>
                 </div>
-            </transition>
+            </div>
         </header>
         <div class="app_header_mobile"
              v-show="devicesShow === 0"
@@ -109,7 +127,6 @@
                 <div class="image_wrap_mobile"
                      @click="featureButtonClick('/home',true)" :style="{visibility: flShowLogo ? 'visible' : 'hidden'}">
                     <img :src="explorerLogo" />
-                    <i :class="currentNetworkClass"></i>
                 </div>
             </div>
             <div class="search_input_mobile">
@@ -126,94 +143,86 @@
                        v-show="showClear"></i>
                 </div>
             </div>
+            <div class="mobile_chain_id_content"
+                 v-if="flShowChainId">
+                <span class="mobile_chain_content">{{chainId}}</span>
+            </div>
             <div class="use_feature_mobile"
                  :style="{'top':absoluteTop}"
                  v-show="featureShow">
-                <div class="mobile_menu_container" @click="flShowBlockchain('blockChain')">
-                    <div class="mobile_menu_item_content">
-                        <span>Blockchain</span>
-                        <i class="iconfont iconwangluoqiehuanjiantou" :class="flShowBlockchainMenu ? 'up_style' : 'down_style'"> </i>
+        <span class="feature_btn_mobile feature_nav"
+            @click="featureButtonClick('/home')">Home</span>
+                <span class="feature_btn_mobile feature_nav select_option_container"
+                    @click="featureButtonClick('/validators')">
+                    <span>Validators</span>
+                </span>
+                <span class="feature_btn_mobile feature_nav"
+                    @click="featureButtonClick('/blocks')">Blocks</span>
+                <span class="feature_btn_mobile feature_nav select_option_container"
+                    @click="transactionsSelect(flShowTransactionsSelect)">
+                    <span>Transactions</span>
+                    <div :class="flShowUpOrDown ? 'upImg_content' : 'downImg_content'">
+                       <img :src="flShowUpOrDown ? upImg : downImg ">
                     </div>
-                    <ul class="blockchain_list_content" v-show="flShowBlockchainMenu">
-                        <li class="blockchain_list_item" @click="featureButtonClick(`/home`)">Overview</li>
-                        <li class="blockchain_list_item" @click="featureButtonClick(`/blocks`)">Blocks</li>
-                        <li class="blockchain_list_item" @click="featureButtonClick(`/validators`)">Validators</li>
-                    </ul>
+                </span>
+                <div class="select_option" v-show="flShowTransactionsSelect">
+                    <span class="feature_btn_mobile feature_nav"
+                       @click="featureButtonClick('/txs/transfers')">Transfers</span>
+                    <span class="feature_btn_mobile feature_nav"
+                       @click="featureButtonClick('/txs/declarations')">Declarations</span>
+                    <span class="feature_btn_mobile feature_nav"
+                       @click="featureButtonClick('/txs/stakes')">Stakes</span>
+                    <span class="feature_btn_mobile feature_nav"
+                       @click="featureButtonClick('/txs/governance')">Governance</span>
                 </div>
-
-                <div class="mobile_menu_container" @click="flShowBlockchain('staking')">
-                    <div class="mobile_menu_item_content">
-                        <span>Staking</span>
-                        <i class="iconfont iconwangluoqiehuanjiantou" :class="flShowStakingMenu ? 'up_style' : 'down_style'"> </i>
+                <span class="feature_btn_mobile feature_nav select_option_container"
+                    @click="topListSelect(flShowTopListSelection)">
+                    <span>Statistics</span>
+                    <div :class="flShowUpOrDown ? 'upImg_content' : 'downImg_content'">
+                       <img :src="flShowUpOrDown ? upImg : downImg ">
                     </div>
-                    <ul class="blockchain_list_content" v-show="flShowStakingMenu">
-                        <li class="blockchain_list_item" @click="featureButtonClick(`/validators`)">Validators</li>
-                        <li class="blockchain_list_item" @click="featureButtonClick(`/txs/validations`)">Validations</li>
-                        <li class="blockchain_list_item" @click="featureButtonClick(`/txs/delegations`)">Delegations</li>
-                    </ul>
+                </span>
+                <div class="select_option"
+                     v-show="flShowTopListSelection">
+                <span class="feature_btn_mobile feature_nav"
+                    @click="featureButtonClick('/statistics/richlist')">Rich List</span>
+                <span class="feature_btn_mobile feature_nav"
+                    @click="featureButtonClick('/statistics/tokenstats')">Tokens Stats</span>
+                <!-- <span class="feature_btn_mobile feature_nav"
+                    @click="featureButtonClick('/statistics/bondedTokens')">Bonded Tokens</span> -->
                 </div>
+                <span class="feature_btn_mobile feature_nav select_option_container"
+                      @click="governanceSelect(flShowGovernanceSelect)">
+            <span>Governance</span>
+            <div :class="flShowUpOrDown ? 'upImg_content' : 'downImg_content'">
+               <img :src="flShowUpOrDown ? upImg : downImg ">
+            </div>
+            </span>
+                <div class="select_option"
+                     v-show="flShowGovernanceSelect">
+            <span class="feature_btn_mobile feature_nav"
+                @click="featureButtonClick('/gov/parameters')">Parameters</span>
+                    <span class="feature_btn_mobile feature_nav"
+                          @click="featureButtonClick('/gov/proposals')">Proposals</span>
 
-                <div class="mobile_menu_container" @click="flShowBlockchain('transfers')">
-                    <div class="mobile_menu_item_content">
-                        <span>Transfers</span>
-                        <i class="iconfont iconwangluoqiehuanjiantou" :class="flShowTransfersMenu ? 'up_style' : 'down_style'"> </i>
-                    </div>
-                    <ul class="blockchain_list_content" v-show="flShowTransfersMenu">
-                        <li class="blockchain_list_item" @click="featureButtonClick(`/txs/transfers`)">IRIS Transfers Txs</li>
-                    </ul>
                 </div>
-
-                <div class="mobile_menu_container" @click="flShowBlockchain('assets')">
-                    <div class="mobile_menu_item_content">
-                        <span>Assets</span>
-                        <i class="iconfont iconwangluoqiehuanjiantou" :class="flShowAssetsMenu ? 'up_style' : 'down_style'"> </i>
-                    </div>
-                    <ul class="blockchain_list_content" v-show="flShowAssetsMenu">
-                        <li class="blockchain_list_item" @click="featureButtonClick(`/assets/ntvassetstxs`)">Native Asset Txs</li>
-                        <li class="blockchain_list_item" @click="featureButtonClick(`/assets/gtwassetstxs`)">Gateway Asset Txs</li>
-                    </ul>
-                </div>
-
-                <div class="mobile_menu_container" @click="flShowBlockchain('gov')">
-                    <div class="mobile_menu_item_content">
-                        <span>Gov</span>
-                        <i class="iconfont iconwangluoqiehuanjiantou" :class="flShowGovMenu ? 'up_style' : 'down_style'"> </i>
-                    </div>
-                    <ul class="blockchain_list_content" v-show="flShowGovMenu">
-                        <li class="blockchain_list_item" @click="featureButtonClick(`/gov/parameters`)">Parameters</li>
-                        <li class="blockchain_list_item" @click="featureButtonClick(`/gov/proposals`)">Proposals</li>
-                        <li class="blockchain_list_item" @click="featureButtonClick(`/txs/governance`)">Gov Txs</li>
-                    </ul>
-                </div>
-
-
-                <div class="mobile_menu_container" @click="flShowBlockchain('stats')">
-                    <div class="mobile_menu_item_content">
-                        <span>Stats</span>
-                        <i class="iconfont iconwangluoqiehuanjiantou" :class="flShowStatsMenu ? 'up_style' : 'down_style'"> </i>
-                    </div>
-                    <ul class="blockchain_list_content" v-show="flShowStatsMenu">
-                        <li class="blockchain_list_item" @click="featureButtonClick(`/stats/irisrichlist`)">IRIS Rich List</li>
-                        <li class="blockchain_list_item" @click="featureButtonClick(`/stats/irisstats`)">IRIS Stats</li>
-                    </ul>
-                </div>
-
-                <div class="mobile_menu_container" v-if="flShowFaucet">
-                    <div class="mobile_menu_item_content">
-                        <span @click="featureButtonClick(`/faucet`)">Faucet</span>
-                    </div>
-                </div>
-
-                <div class="mobile_menu_container" @click="flShowBlockchain('network')">
-                    <div class="mobile_menu_item_content">
-                        <span>Network</span>
-                        <i class="iconfont iconwangluoqiehuanjiantou" :class="flShowNetWorkMenu ? 'up_style' : 'down_style'"> </i>
-                    </div>
-                    <ul class="blockchain_list_content" v-show="flShowNetWorkMenu">
-                        <li class="blockchain_list_item"  v-for="item in netWorkArray">
-                            <a :href="item.host">{{item.netWorkSelectOption}}</a>
-                        </li>
-                    </ul>
+                <span v-if="flShowFaucet"
+                      class="feature_btn_mobile feature_nav mobile_faucet_content"
+                      @click="featureButtonClick('/faucet')">Faucet</span>
+                <span class="feature_btn_mobile feature_nav select_option_container"
+                      @click="netWorkSelect(flShowNetworkSelect)">
+            <span>Network</span>
+            <div :class="flShowNetworkUpOrDown ? 'upImg_content' : 'downImg_content'">
+                <img :src="flShowNetworkUpOrDown ? upImg : downImg ">
+            </div>
+            </span>
+                <div class="select_option"
+                     v-show="flShowNetworkSelect">
+            <span class="feature_btn_mobile feature_nav"
+                v-for="item in netWorkArray">
+            <a :href="item.host"
+               target="_blank">{{item.netWorkSelectOption}}</a>
+            </span>
                 </div>
             </div>
         </div>
@@ -223,14 +232,12 @@
 	import Tools from '../util/Tools';
 	import Service from "../service";
 	import constant from '../constant/Constant';
-	import lang from "../lang/index";
-	import skinStyle from '../skinStyle'
+	import lang from "../lang/index"
 	export default {
 		name: 'app-header',
 		watch: {
 			$route () {
 				this.searchInputValue = "";
-				this.flShowSubMenu = false;
 				this.listenRouteForChangeActiveButton();
 				this.showHeader = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
 			},
@@ -262,7 +269,6 @@
 				showClear: false,
 				innerWidth: window.innerWidth,
 				flShowTransactionsSelect: false,
-				flShowAssetSelect: false,
 				flShowValidatorsSelect: false,
 				flShowNetworkSelect: false,
 				flShowGovernanceSelect: false,
@@ -281,34 +287,8 @@
 				downImg: require("../assets/caret-bottom.png"),
 				netWorkArray: [],
 				explorerLogo: '',
-				flShowLogo: false,
-				showAssetTransaction: false,
-				flShowSubMenu: false,
-                flShowChain: false,
-                flShowStaking: false,
-                flShowTransfers: false,
-                flShowAssets: false,
-                flShowGov: false,
-                flShowStats: false,
-                flShowNetworkLogo: false,
-				flShowBlockchainMenu:false,
-				flShowStakingMenu:false,
-				flShowTransfersMenu:false,
-				flShowAssetsMenu:false,
-				flShowGovMenu:false,
-				flShowStatsMenu:false,
-				flShowNetWorkMenu:false,
-				activeBlockChain:false,
-				activeStaking:false,
-				activeTransfers:false,
-				activeAssets:false,
-				activeGov:false,
-				activeStats:false,
-                hoverBlockChainTag:false,
-                menuActiveName: '',
-				currentNetworkClass:'',
-				offSetLeft:'1.6rem',
-                contentWidth:''
+				flShowSearchIpt: false,
+				flShowLogo: false
 			}
 		},
 		beforeMount () {
@@ -325,112 +305,52 @@
 			this.listenRouteForChangeActiveButton();
 			window.addEventListener('resize', this.onresize);
 			this.getConfig();
-			if(localStorage.getItem('currentEnv')){
-				this.toggleTestnetLogo({
-					cur_env:localStorage.getItem('currentEnv')
-				});
-            }
-			this.listenRouteForChangeActiveButton();
 		},
 		beforeDestroy () {
 			document.getElementById('router_wrap').removeEventListener('click', this.hideFeature);
 			window.removeEventListener('resize', this.onWindowResize);
 		},
 		methods: {
-			flShowBlockchain(v){
-				switch (v) {
-					case 'blockChain' :
-						this.flShowBlockchainMenu = !this.flShowBlockchainMenu;
-						break;
-					case 'staking' :
-						this.flShowStakingMenu = !this.flShowStakingMenu;
-						break;
-					case 'transfers' :
-						this.flShowTransfersMenu = !this.flShowTransfersMenu;
-						break;
-					case 'assets'	:
-						this.flShowAssetsMenu = !this.flShowAssetsMenu;
-						break;
-					case 'gov' :
-						this.flShowGovMenu = !this.flShowGovMenu;
-						break;
-					case 'stats' :
-						this.flShowStatsMenu = !this.flShowStatsMenu;
-						this.flShowStats = true;
-						break;
-					case 'network' :
-						this.flShowNetWorkMenu = !this.flShowNetWorkMenu;
-						this.flShowStats = true
+			transactionsSelect (flShowTransactionsSelect) {
+				this.flShowValidatorsSelect = false;
+				if (!flShowTransactionsSelect) {
+					this.flShowTransactionsSelect = true;
+					this.flShowUpOrDown = true
+				} else {
+					this.flShowUpOrDown = false;
+					this.flShowTransactionsSelect = false
 				}
-            },
-			showTwoMenu(v){
-				this.flShowSubMenu = true;
-				this.menuActiveName = v;
-				this.hideActiveStyle();
-				switch (v) {
-                    case 'blockChain' :
-	                    this.offSetLeft = `1.7rem`;
-	                    this.contentWidth = '1.15rem';
-	                    this.flShowChain = true;
-	                    this.hoverBlockChainTag = false;
-	                    this.activeBlockChain  = true;
-                    	break;
-                    case 'staking' :
-                    	this.offSetLeft = `2.58rem`;
-	                    this.flShowStaking = true;
-	                    this.contentWidth = '1.25rem';
-	                    this.hoverBlockChainTag = true;
-	                    this.activeStaking  = true;
-                    	break;
-                    case 'transfers' :
-	                    this.offSetLeft = `3.24rem`;
-	                    this.contentWidth = '1.47rem';
-	                    this.flShowTransfers = true;
-	                    this.activeTransfers  = true;
-                    	break;
-                    case 'assets'	:
-	                    this.offSetLeft = `3.97rem`;
-	                    this.contentWidth = '1.55rem';
-	                    this.flShowAssets = true;
-	                    this.activeAssets = true;
-                    	break;
-                    case 'gov' :
-	                    this.offSetLeft = `4.51rem`;
-	                    this.contentWidth = '1.03rem';
-	                    this.flShowGov = true;
-	                    this.activeGov = true;
-                    	break;
-                    case 'stats' :
-	                    this.offSetLeft = `4.97rem`;
-	                    this.contentWidth = '1.15rem';
-	                    this.flShowStats = true;
-	                    this.activeStats  = true
+			},
+			netWorkSelect (flShowNetworkSelect) {
+				this.flShowNetworkSelect = false;
+				if (!flShowNetworkSelect) {
+					this.flShowNetworkSelect = true;
+					this.flShowNetworkUpOrDown = true
+				} else {
+					this.flShowNetworkSelect = false;
+					this.flShowNetworkUpOrDown = false
 				}
-            },
-			hideTwoMenu(v){
-				this.flShowSubMenu = false;
-				this.menuActiveName = v;
-				switch (v) {
-					case 'blockChain' :
-						this.flShowChain = false;
-						break;
-					case 'staking' :
-						this.flShowStaking = false;
-						break;
-					case 'transfers' :
-						this.flShowTransfers = false;
-						break;
-					case 'assets'	:
-						this.flShowAssets = false;
-						break;
-					case 'gov' :
-						this.flShowGov = false;
-						break;
-					case 'stats' :
-						this.flShowStats = false;
-
+			},
+			governanceSelect (flShowNetworkSelect) {
+				this.flShowGovernanceSelect = false;
+				if (!flShowNetworkSelect) {
+					this.flShowGovernanceSelect = true;
+					this.flShowNetworkUpOrDown = true
+				} else {
+					this.flShowGovernanceSelect = false;
+					this.flShowNetworkUpOrDown = false
 				}
-            },
+			},
+			topListSelect (flShowTopListSelection) {
+				this.flShowTopListSelection = false;
+				if (!flShowTopListSelection) {
+					this.flShowTopListSelection = true;
+					this.flShowNetworkUpOrDown = true
+				} else {
+					this.flShowTopListSelection = false;
+					this.flShowNetworkUpOrDown = false
+				}
+			},
 			hideFeature () {
 				if (this.featureShow) {
 					this.featureShow = false;
@@ -462,11 +382,29 @@
 					this.$router.push(path);
 				}
 			},
+			transactionMouseOver () {
+				this.showSubTransaction = true;
+			},
+			transactionMouseLeave () {
+				this.showSubTransaction = false;
+			},
+			governanceMouseOver () {
+				this.flShowGovernanceOption = true
+			},
+			governanceMouseLeave () {
+				this.flShowGovernanceOption = false
+			},
+			statisticsMouseOver () {
+				this.flShowStatistics = true
+			},
+			statisticsMouseLeave () {
+				this.flShowStatistics = false
+			},
 			searchTx () {
 				Service.commonInterface({headerTx:{searchValue: this.searchInputValue}}, (tx) => {
 					try {
 						if (tx) {
-							this.$router.push(`/tx?txHash=${tx.hash}`);
+							this.$router.push(`/tx?txHash=${tx.Hash}`);
 							this.clearSearchInputValue();
 						} else {
 							this.toSearchResultPage();
@@ -564,39 +502,28 @@
 			clearSearchInputValue () {
 				this.searchInputValue = "";
 			},
-			hideActiveStyle(){
-				this.activeStaking  = false;
-				this.activeTransfers  = false;
-				this.activeBlockChain  = false;
-				this.activeAssets  = false;
-				this.activeGov  = false;
-				this.activeStats  = false;
-				this.activeClassName  = false;
-            },
 			listenRouteForChangeActiveButton () {
 				//刷新的时候路由不变，active按钮不变
-                this.hideActiveStyle();
-				if (this.$route.fullPath === '/txs/validations' || this.$route.fullPath === '/txs/delegations') {
-					this.activeStaking  = true
-				}else if(this.$route.fullPath === '/txs/transfers'){
-					this.activeTransfers  = true
-                }else if(this.$route.fullPath === '/home' || this.$route.fullPath === '/blocks' || this.$route.fullPath === '/txs' ){
-					this.activeBlockChain  = true
-                }else if (this.$route.fullPath === '/assets/ntvassetstxs' || this.$route.fullPath === '/assets/gtwassetstxs'){
-					this.activeAssets  = true
-                }else if(this.$route.fullPath === '/gov/parameters' || this.$route.fullPath === '/gov/proposals' || this.$route.fullPath === '/txs/governance'){
-					this.activeGov = true
-                }else if(this.$route.fullPath === '/stats/irisrichlist' || this.$route.fullPath === '/stats/irisstats'){
-					this.activeStats= true
-                }else if(this.$route.fullPath === '/faucet'){
+				let path = window.location.href;
+				if (path.includes('txs') || path.includes('tx?')) {
+					this.activeClassName = '/transaction';
+				} else if (path.includes('/validators')) {
+					this.activeClassName = '/validators';
+				} else if (path.includes('/blocks')) {
+					this.activeClassName = '/blocks';
+				} else if (path.includes('/home')) {
+					this.activeClassName = '/home';
+				} else if (path.includes('/faucet')) {
 					this.activeClassName = '/faucet';
-				}else if(this.$route.fullPath === '/validators') {
-					if(this.hoverBlockChainTag){
-						this.activeStaking  = true
-                    }else {
-						this.activeBlockChain  = true
-                    }
-                }
+				} else if (path.includes('/parameters')) {
+					this.activeClassName = '/governance';
+				} else if (path.includes('/proposals')) {
+					this.activeClassName = '/governance';
+				} else if (path.includes('/statistics')) {
+					this.activeClassName = '/statistics';
+				} else {
+					this.activeClassName = '';
+				}
 			},
 			clearSearchContent () {
 				this.searchInputValue = '';
@@ -608,9 +535,7 @@
 				Service.commonInterface({headerConfig:{}},(res) => {
 					try {
 						this.flShowLogo = true;
-						if(!localStorage.getItem('currentEnv')){
-							this.toggleTestnetLogo(res);
-						}
+						this.toggleTestnetLogo(res);
 						this.setCurrentSelectOption(res.cur_env, res.chain_id, res.configs);
 						this.setNetWorkLogo(res.cur_env, res.chain_id);
 						this.setEnvConfig(res);
@@ -651,22 +576,11 @@
 				}
 			},
 			toggleTestnetLogo (currentEnv) {
-				const root = document.documentElement;
-				root.style.setProperty(skinStyle.skinStyle.TITLECOLORNAME,skinStyle.skinStyle.commonFontBlackColor);
-				root.style.setProperty(skinStyle.skinStyle.CONTENTCOLORNAME,skinStyle.skinStyle.commonFontContentColor);
-				root.style.setProperty(skinStyle.skinStyle.MODULEBLACKCOLOR,skinStyle.skinStyle.commonModuleBlackColor);
 				if (currentEnv.cur_env === constant.ENVCONFIG.MAINNET) {
 					this.flShowChainId = false;
-					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.MAINNETBGCOLOR);
-					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.MAINNETHOVERCOLOR);
-					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.MAINNETACTIVECOLOR);
 				} else {
 					this.flShowChainId = true;
-					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.TESTNETBGCOLOR);
-					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.TESTNETHOVERCOLOR);
-					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.TESTNETACTIVECOLOR);
 				}
-				localStorage.setItem('currentEnv',currentEnv.cur_env)
 			},
 			setCurrentSelectOption (currentEnv, currentChainId) {
 				if (currentEnv === constant.ENVCONFIG.DEV || currentEnv === constant.ENVCONFIG.QA || currentEnv === constant.ENVCONFIG.STAGE) {
@@ -677,28 +591,22 @@
 			},
 			setNetWorkLogo (currentEnv, currentChainId) {
 				if (currentEnv === constant.ENVCONFIG.MAINNET && currentChainId === constant.CHAINID.MAINNET) {
-					this.explorerLogo = require("../assets/logo.png");
-					this.currentNetworkClass = 'iconfont iconiris'
+					this.explorerLogo = require("../assets/logo.png")
 				} else if (currentEnv === constant.ENVCONFIG.TESTNET && currentChainId === constant.CHAINID.FUXI) {
-					this.explorerLogo = require("../assets/fuxi_testnet_logo.png");
-					this.currentNetworkClass = 'iconfont iconfuxi'
+					this.explorerLogo = require("../assets/fuxi_testnet_logo.png")
 				} else if (currentEnv === constant.ENVCONFIG.TESTNET && currentChainId === constant.CHAINID.NYANCAT) {
-					this.explorerLogo = require("../assets/nyancat_testnet.png");
-					this.currentNetworkClass = 'iconfont iconcaihongmao'
+					this.explorerLogo = require("../assets/nyancat_testnet.png")
 				} else {
-					this.currentNetworkClass = 'iconfont iconiris';
 					this.explorerLogo = require("../assets/logo.png")
 				}
 			},
-			showNetWorkLogo(){
-				this.flShowNetworkLogo = true;
-            },
-			hideNetWorkLogo(){
-				this.flShowNetworkLogo = false;
-            },
 			windowOpenUrl (url) {
 				window.open(url)
 			},
+			toggleShowSearchIpt () {
+				this.flShowSearchIpt = !this.flShowSearchIpt;
+				this.$store.commit('flShowIpt', this.flShowSearchIpt)
+			}
 		},
 		updated () {
 			this.absoluteTop = `${this.$refs.header_content.clientHeight / 100}rem`
@@ -707,186 +615,236 @@
 </script>
 <style lang="scss">
     @import "../style/mixin.scss";
-    :root{
-    }
     .person_computer_header_var {
         position: fixed;
-        z-index: 11;
+        z-index: 10001;
         background: rgba(255, 255, 255, 1);
-        height: 0.6rem;
         .app_header_person_computer {
             width: 100%;
-            background: var(--bgColor);
-            .header_navigation_container{
+            background: #3598db;
+            .header_top_container {
                 max-width: 12.8rem;
+                width: 100%;
                 margin: 0 auto;
-                background: var(--bgColor);
-                box-sizing: border-box;
                 padding: 0 0.2rem;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                position: relative;
-                .header_navigation_wrap{
-                    width: 100%;
-                    height:0.6rem;
+                .header_top_content_wrap {
                     display: flex;
-                    justify-content: space-between;
-                    .header_left_content{
-                        display: flex;
-                        .header_logo_content{
-                            height: 100%;
-                            width: 1.5rem;
-                            padding: 0.1rem 0;
-                            img {
-                                height: 100%;
-                            }
+                    align-items: center;
+                    .header_logo_content {
+                        width: 1rem;
+                        img {
+                            width: 100%;
                         }
-                        .header_menu_content{
+                    }
+                    .header_menu_content {
+                        flex: 1;
+                        color: #fff;
+                        display: flex;
+                        justify-content: space-between;
+                        .header_menu_list_content {
                             display: flex;
-                            max-width: 12.8rem;
-                            .header_menu_item{
-                                padding: 0 0.1rem;
-                                color: #fff;
+                            margin-left: 0.4rem;
+                            li {
+                                font-size: 0.14rem;
+                                padding: 0 0.23rem;
                                 height: 0.6rem;
                                 line-height: 0.6rem;
-                                font-size: 0.14rem;
-                                a{
-                                    color: #fff !important;
-                                }
-                                &:hover{
-                                    background: var(--activeColor);
+                                cursor: pointer;
+                                &:hover {
+                                    background: #0f7bc4;
                                 }
                             }
                             .nav_item_active {
                                 color: #ffffff;
-                                background: var(--activeColor);
+                                background: #0f7bc4;
                             }
-                        }
-                    }
-                    .header_right_content{
-                        display: flex;
-                        flex: 1;
-                        align-items: center;
-                        .search_input_container {
-                            flex: 1;
-                            background: var(--bgColor);
-                            z-index: 1;
-                            .search_input_wrap {
-                                max-width: 12.8rem;
-                                width: 100%;
-                                margin: 0 auto;
-                                padding: 0.1rem 0 0.1rem 0.2rem;
-                                display: flex;
-                                align-items: center;
-                                input {
-                                    width: 100%;
-                                    height: 0.35rem;
-                                    border-radius: 0.06rem 0 0 0.06rem;
-                                    box-shadow: none;
-                                    background: var(--bgColor);
-                                    border: 0.01rem solid #fff;
-                                    color: #fff;
-                                    font-size: 0.14rem;
-                                    border-right: none;
-                                    text-indent: 0.1rem;
+                            .transaction_list_content {
+                                z-index: 10000;
+                                display: block;
+                                padding: 0;
+                                .transaction_content {
+                                    box-sizing: border-box;
+                                    padding: 0 0.23rem;
                                 }
-                                input::placeholder{
-                                    font-size: 0.14rem;
-                                    color: #fff;
+                                .bottom_arrow {
+                                    display: inline-block;
+                                    height: 0.6rem;
+                                    width: 0.11rem;
+                                    background: url("../assets/caret-bottom.png") no-repeat 50% 50%;
                                 }
-                                span {
-                                    right: 0.3rem;
-                                    height:0.35rem;
-                                    font-size: 0.2rem;
-                                    padding: 0 0.1rem;
-                                    line-height: 0.33rem;
-                                    color: #fff;
-                                    border-top: 0.01rem solid #fff;
-                                    border-right: 0.01rem solid #fff;
-                                    border-bottom: 0.01rem solid #fff;
-                                    background: var(--bgColor);
-                                    border-radius: 0 0.06rem 0.06rem 0;
-                                    cursor: pointer;
-                                }
-                            }
-                        }
-                        .network_container{
-                            position: relative;
-                            height:0.6rem;
-                            line-height: 0.6rem;
-                            padding-left: 0.2rem;
-                            .network_list_container{
-                                background: #fff;
-                                box-shadow: 0 0.02rem 0.1rem 0 rgba(3,16,114,0.15);
-                                width: auto;
-                                position: absolute;
-                                right: 0;
-                                top: 0.6rem;
-                                z-index: 2;
-                                text-align: right;
-                                padding-top: 0.1rem;
-                                .network_list_item{
-                                    line-height: 1.8;
-                                    white-space: nowrap;
-                                    padding: 0 0.2rem;
-                                    cursor: pointer;
-                                    font-size: 0.14rem;
-                                    &:hover{
-                                        color:var(--bgColor)
+                                .transaction_list_item_content {
+                                    z-index: 100;
+                                    background: #0f7bc4;
+                                    a {
+                                        .transaction_list_item {
+                                            height: 0.34rem;
+                                            line-height: 0.34rem;
+                                            text-align: left;
+                                            color: #c9eafd;
+                                            cursor: pointer;
+                                            padding: 0 0.24rem;
+                                            &:hover {
+                                                background: #086db1;
+                                            }
+                                        }
                                     }
                                 }
-                                .network_list_item:last-child{
-                                    padding-bottom: 0.1rem;
+                            }
+                            .statics_list_content {
+                                padding: 0;
+                                display: block;
+                                z-index: 10000;
+                                .bottom_arrow {
+                                    display: inline-block;
+                                    height: 0.6rem;
+                                    width: 0.11rem;
+                                    background: url("../assets/caret-bottom.png") no-repeat 50% 50%;
+                                }
+                                .statics_content {
+                                    box-sizing: border-box;
+                                    padding: 0 0.23rem;
+                                }
+                                .statics_list_item_content {
+                                    z-index: 100;
+                                    a {
+                                        .static_list_item {
+                                            height: 0.34rem;
+                                            line-height: 0.34rem;
+                                            text-align: left;
+                                            color: #c9eafd;
+                                            cursor: pointer;
+                                            padding: 0 0.24rem;
+                                            background: #0f7bc4;
+                                            &:hover {
+                                                background: #086db1;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            .governance_list_content {
+                                padding: 0;
+                                display:  block;
+                                z-index: 10000;
+                                .bottom_arrow {
+                                    display: inline-block;
+                                    height: 0.6rem;
+                                    width: 0.11rem;
+                                    background: url("../assets/caret-bottom.png") no-repeat 50% 50%;
+                                }
+                                .governance_content {
+                                    box-sizing: border-box;
+                                    padding: 0 0.23rem;
+                                }
+                                .governance_list_item_content {
+                                    z-index: 100;
+                                    a {
+                                        .governance_list_item {
+                                            height: 0.34rem;
+                                            line-height: 0.34rem;
+                                            text-align: left;
+                                            color: #c9eafd;
+                                            cursor: pointer;
+                                            padding: 0 0.25rem;
+                                            background: #0f7bc4;
+                                            &:hover {
+                                                background: #086db1;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        .header_network_content {
+                            display: flex;
+                            align-items: center;
+                            .network_list_content {
+                                font-size: 0.14rem;
+                                height: 0.6rem;
+                                margin-right: 0.1rem;
+                                line-height: 0.6rem;
+                                z-index: 100;
+                                cursor: pointer;
+                                &:hover {
+                                    background: #0f7bc4;
+                                    .network_list_item_content {
+                                        display: block;
+                                    }
+                                }
+                                .network_list_title_content {
+                                    box-sizing: border-box;
+                                    padding: 0 0.2rem;
+                                    min-width: 1.8rem;
+                                    &:hover {
+                                        background: #0f7bc4;
+                                    }
+                                    .bottom_arrow {
+                                        display: inline-block;
+                                        height: 0.6rem;
+                                        width: 0.11rem;
+                                        background: url("../assets/caret-bottom.png") no-repeat 50%
+                                        50%;
+                                    }
+                                }
+                                .network_list_item_content {
+                                    display: none;
+                                    .network_list_item {
+                                        height: 0.34rem;
+                                        line-height: 0.34rem;
+                                        text-align: left;
+                                        color: #c9eafd;
+                                        cursor: pointer;
+                                        padding: 0 0.2rem;
+                                        background: #0f7bc4;
+                                        &:hover {
+                                            background: #086db1;
+                                        }
+                                    }
+                                }
+                            }
+                            .search_content {
+                                width: 0.35rem;
+                                height: 0.35rem;
+                                border: 0.01rem solid #fff;
+                                border-radius: 0.06rem;
+                                box-sizing: border-box;
+                                padding: 0.04rem 0.08rem 0.08rem 0.08rem;
+                                cursor: pointer;
+                                img {
+                                    width: 100%;
                                 }
                             }
                         }
                     }
                 }
             }
-                .header_submenu_container{
-                    background: transparent;
-                    color: var(--contentColor);
-                    margin: 0 auto;
-                    position: absolute;
-                    top:0.6rem;
+            .search_input_container {
+                width: 100%;
+                background: #278ed4;
+                z-index: 1;
+                .search_input_wrap {
+                    max-width: 12.8rem;
                     width: 100%;
-                    //box-shadow: 0 0.02rem 0.1rem 0 rgba(3,16,114,0.15);
-                    z-index: 11;
-                    animation: flShowMenu;
-                    .header_submenu_content_wrap{
-                        max-width: 12.8rem;
-                        margin: 0 auto;
+                    margin: 0 auto;
+                    padding: 0.13rem 0.2rem;
+                    display: flex;
+                    align-items: center;
+                    input {
+                        text-indent: 0.22rem;
                         width: 100%;
-                        position: relative;
-                        .header_submenu_content{
-                            display: flex;
-                            align-items: flex-start;
-                            position: absolute;
-                            justify-content: flex-start;
-                            flex-direction: column;
-                            background: #fff;
-                            box-shadow: 0 0.02rem 0.05rem 0.02rem rgba(0,0,0,0.15);
-                            overflow:hidden;
-                            .header_submenu_item{
-                                box-sizing: border-box;
-                                font-size: 0.14rem;
-                                line-height: 1;
-                                padding: 0.1rem  0.15rem 0.1rem 0.15rem;
-                                width: 100%;
-                                background: #fff;
-                                &:hover{
-                                    background: #F6F7FF;
-                                }
-                                a{
-                                    &:hover{
-                                        color:var(--hoverColor) !important;
-                                    }
-                                }
-                        }
-                            .no_border_style{
-                            border-bottom:none;
-                        }
+                        height: 0.35rem;
+                        border-radius: 0.06rem 0 0 0.06rem;
+                        box-shadow: none;
+                        border: none;
+                    }
+                    span {
+                        color: #3598db;
+                        padding-right: 0.2rem;
+                        background: #fff;
+                        height: 0.35rem;
+                        line-height: 0.35rem;
+                        border-radius: 0 0.06rem 0.06rem 0;
+                        cursor: pointer;
                     }
                 }
             }
@@ -906,7 +864,7 @@
             @include flex;
             flex-direction: column;
             align-items: center;
-            background: var(--bgColor);
+            background: #3598db;
             .navButton {
                 width: 100% !important;
                 padding: 0 0.2rem;
@@ -916,7 +874,7 @@
                 .common_item_style {
                     &:hover {
                         color: #ffffff;
-                        background: var(--hoverColor);
+                        background: #005a98;
                     }
                 }
                 .nav_item {
@@ -947,7 +905,7 @@
                         height: 0.36rem;
                         line-height: 0.36rem;
                         font-size: 0.14rem;
-                        background: var(--bgColor);
+                        background: #005a98;
                         color: #c9eafd;
                         width: 1.6rem;
                         text-align: left;
@@ -972,7 +930,10 @@
                         padding-left: 0.35rem;
                     }
                 }
-
+                .nav_item_active {
+                    color: #ffffff;
+                    background: #005a98;
+                }
                 .btn-group,
                 .btn-group-vertical {
                     vertical-align: baseline;
@@ -986,7 +947,7 @@
             flex-direction: column;
             border-bottom: 0.01rem solid #cccccc;
             position: relative;
-            background: var(--bgColor);
+            background: #3598db;
             .feature_btn {
                 width: 0.25rem;
                 height: 0.25rem;
@@ -995,6 +956,7 @@
                 img {
                     width: 100%;
                 }
+                /*background: url('../assets/menu.png') no-repeat;*/
             }
             .image_wrap_mobile {
                 @include flex;
@@ -1004,11 +966,6 @@
                 img {
                     width: 100%;
                     height: 100%;
-                }
-                i{
-                    padding-left: 0.1rem;
-                    font-size: 0.25rem;
-                    color: #fff;
                 }
                 .logo_title_wrap {
                     margin-left: 0.16rem;
@@ -1021,11 +978,11 @@
                         span {
                             &:first-child {
                                 font-size: 0.24rem;
-                                color: var(--bgColor);
+                                color: #005a98;
                             }
                             &:last-child {
                                 font-size: 0.24rem;
-                                color: var(--bgColor);
+                                color: #3598db;
                             }
                         }
                     }
@@ -1057,7 +1014,7 @@
                     padding: 0 0.48rem 0 0.1rem;
                     height: 0.3rem;
                     &:focus {
-                        border: 0.01rem solid var(--bgColor);
+                        border: 0.01rem solid #3190e8;
                         outline: none;
                     }
                 }
@@ -1098,7 +1055,7 @@
                 z-index: 1010;
                 width: 100%;
                 left: 0;
-                background: var(--bgColor);
+                background: #3598db;
                 @include flex();
                 flex-direction: column;
                 position: absolute;
@@ -1114,45 +1071,11 @@
                         font-size: 0.14rem;
                     }
                 }
-                .mobile_menu_container{
-                    display: flex;
-                    flex-direction: column;
-                    .mobile_menu_item_content{
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                        box-sizing: border-box;
-                        color: #fff;
-                        padding: 0.05rem 0.15rem;
-                        i{
-                            font-size: 0.08rem;
-                        }
-                        .up_style{
-                            transform: rotate(180deg);
-                        }
-                        .down_style{
-                            transform: rotate(0deg);
-                        }
-                    }
-                    .blockchain_list_content{
-                        display: flex;
-                        flex-direction:column;
-                        .blockchain_list_item{
-                            padding: 0.05rem 0.15rem;
-                            font-size: 0.14rem;
-                            background: var(--hoverColor);
-                            a{
-                                color:#fff !important;
-                            }
-                        }
-                    }
-                }
-
                 .feature_btn_mobile {
                     height: 0.39rem;
                     line-height: 0.39rem;
                     padding-left: 0.15rem;
-                    background: var(--bgColor);
+                    background: #3598db;
                     color: #fff;
                     font-size: 0.14rem;
                     a {
@@ -1166,7 +1089,7 @@
                     color: #c9eafd;
                     font-size: 0.14rem;
                     background: url("../assets/caret-bottom.png") no-repeat 97% 0.12rem,
-                    var(--bgColor);
+                    #3598db;
                 }
                 .feature_subNav {
                     padding-left: 0.3rem;
@@ -1258,11 +1181,5 @@
                 }
             }
         }
-    }
-    .fade-enter-active, .fade-leave-active {
-        transition: all 0.2s cubic-bezier(1.0, 0.5, 0.8, 1.0);
-    }
-    .fade-enter, .fade-leave-to{
-        opacity: 0;
     }
 </style>
