@@ -5,7 +5,7 @@
                 <span class="native_asset_list_title">{{listTitleName}}</span>
             </div>
         </div>
-        <div class="native_asset_list_table_container" v-show="issueToken.length !== 0">
+        <div class="native_asset_list_table_container" v-if="issueToken.length !== 0">
             <div style="padding: 0.2rem 0">Issue Token</div>
             <div class="native_asset_list_table_content">
                 <div class="table_list_content">
@@ -20,7 +20,7 @@
                 </div>
             </div>
         </div>
-        <div class="native_asset_list_table_container" v-show="editToken.length !== 0">
+        <div class="native_asset_list_table_container" v-if="editToken.length !== 0">
             <div style="padding: 0.2rem 0">Edit Token</div>
             <div class="native_asset_list_table_content">
                 <div class="table_list_content">
@@ -35,7 +35,7 @@
                 </div>
             </div>
         </div>
-        <div class="native_asset_list_table_container" v-show="mintToken.length !== 0">
+        <div class="native_asset_list_table_container" v-if="mintToken.length !== 0">
             <div style="padding: 0.2rem 0">Mint Token</div>
             <div class="native_asset_list_table_content">
                 <div class="table_list_content">
@@ -50,7 +50,7 @@
                 </div>
             </div>
         </div>
-        <div class="native_asset_list_table_container" v-show="transferToken.length !== 0">
+        <div class="native_asset_list_table_container" v-if="transferToken.length !== 0">
             <div style="padding: 0.2rem 0">Transfer Owner</div>
             <div class="native_asset_list_table_content">
                 <div class="table_list_content">

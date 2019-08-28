@@ -5,7 +5,7 @@
                 <span class="gateway_asset_list_title">{{listTitleName}}</span>
             </div>
         </div>
-        <div class="gateway_asset_list_table_container" v-show="gateWayIssueTokenList.length !== 0">
+        <div class="gateway_asset_list_table_container" v-if="gateWayIssueTokenList.length !== 0">
             <div style="padding: 0.2rem 0">Issue Token</div>
             <div class="gateway_asset_list_table_content">
                 <div class="table_list_content">
@@ -21,7 +21,7 @@
                 </div>
             </div>
         </div>
-        <div class="gateway_asset_list_table_container" v-show="gateWayEditTokenList.length !== 0">
+        <div class="gateway_asset_list_table_container" v-if="gateWayEditTokenList.length !== 0">
             <div style="padding: 0.2rem 0">Edit Token</div>
             <div class="gateway_asset_list_table_content">
                 <div class="table_list_content">
@@ -37,7 +37,7 @@
                 </div>
             </div>
         </div>
-        <div class="gateway_asset_list_table_container" v-show="gateWayMintTokenList.length !== 0">
+        <div class="gateway_asset_list_table_container" v-if="gateWayMintTokenList.length !== 0">
             <div style="padding: 0.2rem 0">Mint Token</div>
             <div class="gateway_asset_list_table_content">
                 <div class="table_list_content">
@@ -53,7 +53,7 @@
                 </div>
             </div>
         </div>
-        <div class="gateway_asset_list_table_container" v-show="gateWayTransferOwnerTokenList.length !== 0">
+        <div class="gateway_asset_list_table_container" v-if="gateWayTransferOwnerTokenList.length !== 0">
             <div style="padding: 0.2rem 0">Transfer Owner</div>
             <div class="gateway_asset_list_table_content">
                 <div class="table_list_content">

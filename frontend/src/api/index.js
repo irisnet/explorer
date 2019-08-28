@@ -83,7 +83,8 @@ const urlApi = {
   tokenStats: '/api/tokenstats',
   tokenStatsDistribution: '/api/tokenstats/account_total',
   //txs
-  allTypeList:'/api/txs?page={pageNumber}&size={pageSize}&total=true'
+  allTypeList:'/api/txs?page={pageNumber}&size={pageSize}&total=true',
+  allTypeListQuireHeight:'/api/txs?page={pageNumber}&size={pageSize}&height={height}&total=true'
 };
 
 export default urlApi
