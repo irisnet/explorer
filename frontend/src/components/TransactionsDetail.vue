@@ -155,6 +155,24 @@
                                 class="information_value"
                             >{{v.v}}</span>
                         </template>
+                        <template v-else-if="k === 'Commission Rate'">
+                            <span class="information_value information_value_fixed">
+                                <span>{{v.v || '--'}}</span>
+                                <div
+                                    class="info_icon_div"
+                                    v-if="typeValue === 'CreateValidator' && (item['Max Rate'].v || item['Max Change Rate'].v)"
+                                    v-table-tooltip="{show: true, container: $refs.valueInformation}"
+                                >
+                                    <div class="tooltip_span">
+                                        <div>
+                                            <p>Max Rate : {{item['Max Rate'].v || '--'}}</p>
+                                            <p>Max Change Rate : {{item['Max Change Rate'].v || '--'}}</p>
+                                        </div>
+                                        <i></i>
+                                    </div>
+                                </div>
+                            </span>
+                        </template>
                         <template v-else>
                             <span class="information_value">{{v.v}}</span>
                         </template>
@@ -342,6 +360,20 @@ export default {
                     k: "pubkey",
                     v: ""
                 },
+                "Commission Rate": {
+                    k: "rate",
+                    v: ""
+                },
+                "Max Rate": {
+                    hide: true,
+                    k: "max_rate",
+                    v: ""
+                },
+                "Max Change Rate": {
+                    hide: true,
+                    k: "max_change_rate",
+                    v: ""
+                },
                 Website: {
                     k: "website",
                     v: ""
@@ -368,6 +400,10 @@ export default {
                     k: "identity",
                     v: "",
                     identityUrl: ""
+                },
+                "Commission Rate": {
+                    k: "rate",
+                    v: ""
                 },
                 Website: {
                     k: "website",
@@ -921,6 +957,12 @@ export default {
                                 ) {
                                     data = Object.assign(data, data.tags);
                                 }
+                                if (
+                                    this.typeValue === "CreateValidator" ||
+                                    this.typeValue === "EditValidator"
+                                ) {
+                                    data = Object.assign(data, data.commission);
+                                }
                                 let message = this[this.txTypeSign];
                                 if (
                                     this.typeValue === "SubmitProposal" &&
@@ -968,8 +1010,11 @@ export default {
                                             fieidValue = "";
                                         }
                                     } else if (
-                                        i === "Treshold" &&
-                                        data[message[i].k] !== ""
+                                        i === "Treshold" ||
+                                        i === "Commission Rate" ||
+                                        i === "Max Change Rate" ||
+                                        i === "Max Rate" &&
+                                            data[message[i].k] !== ""
                                     ) {
                                         fieidValue = `${data[message[i].k] *
                                             100} %`;
