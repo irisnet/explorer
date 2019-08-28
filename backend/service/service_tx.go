@@ -321,6 +321,7 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 				} else {
 					msgDataVO = msgVO
 				}
+				msgVO.To = checkMintToAddress(msgVO.Owner, msgVO.To)
 				break
 			case types.TxTypeTransferTokenOwner:
 				msgVO := msgvo.TxMsgTransferTokenOwner{}

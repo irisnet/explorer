@@ -30,10 +30,7 @@
                             <li class="header_menu_item"
                                 :class="activeStats ? 'nav_item_active' : ''"
                                 @mouseenter="showTwoMenu('stats')" @mouseleave="hideTwoMenu('stats')">Stats</li>
-                            <li v-show="flShowFaucet" class="header_menu_item"
-                                :class="activeFaucet ? 'nav_item_active' : ''"
-                                @mouseenter="showTwoMenu('faucet')" @mouseleave="hideTwoMenu('faucet')"
-                            ><router-link :to="`/faucet`">Faucet</router-link></li>
+                            <li class="header_menu_item"><router-link :to="`/faucet`">Faucet</router-link></li>
                         </ul>
                     </div>
 
@@ -307,7 +304,6 @@
 				activeAssets:false,
 				activeGov:false,
 				activeStats:false,
-				activeFaucet:false,
                 hoverBlockChainTag:false,
                 menuActiveName: '',
 				currentNetworkClass:'',
@@ -364,11 +360,7 @@
 						break;
 					case 'network' :
 						this.flShowNetWorkMenu = !this.flShowNetWorkMenu;
-						this.flShowStats = true;
-						break;
-					case 'faucet' :
-						this.activeFaucet = true;
-						break;
+						this.flShowStats = true
 				}
             },
 			showTwoMenu(v){
@@ -384,20 +376,20 @@
 	                    this.activeBlockChain  = true;
                     	break;
                     case 'staking' :
-                    	this.offSetLeft = `2.575rem`;
+                    	this.offSetLeft = `2.58rem`;
 	                    this.flShowStaking = true;
 	                    this.contentWidth = '1.25rem';
 	                    this.hoverBlockChainTag = true;
 	                    this.activeStaking  = true;
                     	break;
                     case 'transfers' :
-	                    this.offSetLeft = `3.245rem`;
+	                    this.offSetLeft = `3.24rem`;
 	                    this.contentWidth = '1.47rem';
 	                    this.flShowTransfers = true;
 	                    this.activeTransfers  = true;
                     	break;
                     case 'assets'	:
-	                    this.offSetLeft = `3.96rem`;
+	                    this.offSetLeft = `3.97rem`;
 	                    this.contentWidth = '1.55rem';
 	                    this.flShowAssets = true;
 	                    this.activeAssets = true;
@@ -409,7 +401,7 @@
 	                    this.activeGov = true;
                     	break;
                     case 'stats' :
-	                    this.offSetLeft = `4.965rem`;
+	                    this.offSetLeft = `4.97rem`;
 	                    this.contentWidth = '1.15rem';
 	                    this.flShowStats = true;
 	                    this.activeStats  = true
@@ -597,7 +589,7 @@
                 }else if(this.$route.fullPath === '/stats/irisrichlist' || this.$route.fullPath === '/stats/irisstats'){
 					this.activeStats= true
                 }else if(this.$route.fullPath === '/faucet'){
-					this.activeFaucet = '/faucet';
+					this.activeClassName = '/faucet';
 				}else if(this.$route.fullPath === '/validators') {
 					if(this.hoverBlockChainTag){
 						this.activeStaking  = true
@@ -746,17 +738,9 @@
                             height: 100%;
                             width: 1.5rem;
                             padding: 0.1rem 0;
-                            a{
-                                display: inline-block;
-                                width: 100%;
-                                padding-right: 0.1rem;
-                                img {
-                                    height: 100%;
-                                    width: 100%;
-                                    max-width: 1.5rem;
-                                }
+                            img {
+                                height: 100%;
                             }
-
                         }
                         .header_menu_content{
                             display: flex;
@@ -767,7 +751,6 @@
                                 height: 0.6rem;
                                 line-height: 0.6rem;
                                 font-size: 0.14rem;
-                                cursor: pointer;
                                 a{
                                     color: #fff !important;
                                 }
@@ -810,7 +793,7 @@
                                 }
                                 input::placeholder{
                                     font-size: 0.14rem;
-                                    color:rgba(255,255,255,0.5);
+                                    color: #fff;
                                 }
                                 span {
                                     right: 0.3rem;
@@ -1158,7 +1141,6 @@
                             padding: 0.05rem 0.15rem;
                             font-size: 0.14rem;
                             background: var(--hoverColor);
-                            color:#fff;
                             a{
                                 color:#fff !important;
                             }
