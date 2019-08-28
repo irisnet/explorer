@@ -153,9 +153,6 @@
                                    InitialSupply: item.initial_supply,
                                    MaxSupply: item.max_supply,
                                    Mintable: item.mintable,
-                                   Decimal: item.decimal,
-                                   SymbolMin: item.symbol_min,
-                                   Name: item.name,
                                    Block: item.height,
                                    TxHash: item.tx_hash,
                                    TxFee: this.formatFee(item.tx_fee),
@@ -184,9 +181,6 @@
                                     Owner: item.owner,
                                     MaxSupply: item.max_supply,
                                     Mintable: item.mintable,
-                                    Decimal: item.decimal,
-                                    Symbolmin: item.symbol_min,
-			                        Name: item.name,
 			                        Block: item.height,
 			                        TxHash: item.tx_hash,
 			                        TxFee: this.formatFee(item.tx_fee),
@@ -259,7 +253,7 @@
             },
             formatFee(fee){
 	        	if(fee){
-	        		return `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(fee.amount[0].amount)),4)} ${Tools.formatDenom(fee.amount[0].denom).toUpperCase()}`;
+	        		return `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(fee.amount)),4)} ${Tools.formatDenom(fee.denom).toUpperCase()}`;
                 }
             }
         }

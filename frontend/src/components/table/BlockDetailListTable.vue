@@ -320,7 +320,7 @@ export default {
           label: 'Moniker'
         },
         'OperatorAddress': {
-          label: 'Operator Address'
+          label: 'Operator'
         },
         'Consensus': {
           label: 'Consensus Address'

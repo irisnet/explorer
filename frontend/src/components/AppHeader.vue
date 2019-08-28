@@ -9,7 +9,7 @@
                 <div class="header_navigation_wrap">
                     <div class="header_left_content">
                         <div class="header_logo_content">
-                            <router-link :to="`/home`"><img :src="explorerLogo"></router-link>
+                            <router-link :to="`/home`"><img src="../assets/logo.png"></router-link>
                         </div>
                         <ul class="header_menu_content">
                             <li class="header_menu_item"
@@ -50,14 +50,13 @@
                         </div>
                         <div class="network_container" @mouseenter="showNetWorkLogo()" @mouseleave="hideNetWorkLogo()">
                             <span style="color: #fff">
-                                <i style="font-size: 0.2rem;padding-right: 0.02rem;" :class="currentNetworkClass"></i>
+                                <i style="font-size: 0.24rem;padding-right: 0.02rem;" :class="currentNetworkClass"></i>
                                 <i style="font-size: 0.08rem" class="iconfont iconwangluoqiehuanjiantou"></i>
                             </span>
                             <ul class="network_list_container" v-show="flShowNetworkLogo" @mouseenter="showNetWorkLogo()" @mouseleave="hideNetWorkLogo()">
                                 <li class="network_list_item"
                                     v-for="item in netWorkArray"
-                                    v-show="item.netWorkSelectOption.trim() !== currentSelected.trim()"
-                                    @click="windowOpenUrl(item.host)">{{item.netWorkSelectOption}}</li>
+                                    @click="windowOpenUrl(item.host)"><i :class="item.icon"></i>{{item.netWorkSelectOption}}</li>
                             </ul>
                         </div>
                     </div>
@@ -68,33 +67,33 @@
                 <div class="header_submenu_container" @mouseenter="showTwoMenu(menuActiveName)" @mouseleave="hideTwoMenu(menuActiveName)" v-show="flShowSubMenu" >
                     <div class="header_submenu_content_wrap">
                         <ul class="header_submenu_content"  :style="{'left':offSetLeft,width:contentWidth}">
-                            <li class="header_submenu_item" v-if="flShowChain"><router-link :to="`/home`">Overview</router-link></li>
-                            <li class="header_submenu_item" v-if="flShowChain"><router-link :to="`/blocks`">Blocks</router-link></li>
-                            <li class="header_submenu_item" v-if="flShowChain"><router-link :to="`/txs`">Transactions</router-link></li>
+                            <li class="header_submenu_item" v-show="flShowChain"><router-link :to="`/home`">Overview</router-link></li>
+                            <li class="header_submenu_item" v-show="flShowChain"><router-link :to="`/blocks`">Blocks</router-link></li>
+                            <li class="header_submenu_item" v-show="flShowChain"><router-link :to="`/txs`">Transactions</router-link></li>
                             <!--<li class="header_submenu_item no_border_style" v-if="flShowChain"><router-link :to="`/validators`">Validators</router-link></li>-->
                             <!--               <li class="header_submenu_item" v-if="flShowChain">Assets</li>
                                            <li class="header_submenu_item" v-if="flShowChain">Gateways</li>-->
-                            <li class="header_submenu_item" v-if="flShowStaking"><router-link :to="`/validators`">Validators</router-link></li>
-                            <li class="header_submenu_item" v-if="flShowStaking"><router-link :to="`/txs/validations`">Validation Txs</router-link></li>
+                            <li class="header_submenu_item" v-show="flShowStaking"><router-link :to="`/validators`">Validators</router-link></li>
+                            <li class="header_submenu_item" v-show="flShowStaking"><router-link :to="`/txs/validations`">Validation Txs</router-link></li>
                             <li class="header_submenu_item no_border_style" v-if="flShowStaking"><router-link :to="`/txs/delegations`">Delegation Txs</router-link></li>
                             <!--  <li class="header_submenu_item" v-if="flShowStaking">Validator Txs</li>-->
                             <!--<li class="header_submenu_item" v-if="flShowStaking"> <router-link :to="`/txs/stakes`">Delegation Txs</router-link></li>
                             <li class="header_submenu_item" v-if="flShowStaking">Reward Txs</li>-->
-                            <li class="header_submenu_item no_border_style" v-if="flShowTransfers"> <router-link :to="`/txs/transfers`">IRIS Transfers Txs</router-link></li>
+                            <li class="header_submenu_item no_border_style" v-show="flShowTransfers"> <router-link :to="`/txs/transfers`">IRIS Transfers Txs</router-link></li>
                             <!--<li class="header_submenu_item" v-if="flShowTransfers">Asset Transfers Txs</li>-->
                             <!--<li class="header_submenu_item" v-if="flShowTransfers">Inter-chain Txs</li>-->
                             <!--<li class="header_submenu_item" v-if="flShowTransfers">IRIS Burn Txs</li>-->
-                            <li class="header_submenu_item" v-if="flShowAssets"><router-link :to="`/assets/ntvassetstxs`">Native Asset Txs</router-link></li>
+                            <li class="header_submenu_item" v-show="flShowAssets"><router-link :to="`/assets/ntvassetstxs`">Native Asset Txs</router-link></li>
                             <!--<li class="header_submenu_item" v-if="flShowAssets">Issuers Txs</li>-->
-                            <li class="header_submenu_item no_border_style" v-if="flShowAssets"><router-link :to="`/assets/gtwassetstxs`">Gateway Asset Txs</router-link></li>
+                            <li class="header_submenu_item no_border_style" v-show="flShowAssets"><router-link :to="`/assets/gtwassetstxs`">Gateway Asset Txs</router-link></li>
                             <!--<li class="header_submenu_item" v-if="flShowAssets">Gateways Txs</li>-->
                             <!--<li class="header_submenu_item" v-if="flShowAssets">Assets Transfers</li>-->
-                            <li class="header_submenu_item" v-if="flShowGov"><router-link :to="`/gov/parameters`">Parameters</router-link></li>
-                            <li class="header_submenu_item" v-if="flShowGov"><router-link :to="`/gov/proposals`">Proposals</router-link></li>
-                            <li class="header_submenu_item no_border_style" v-if="flShowGov"><router-link :to="`/txs/governance`">Gov Txs</router-link></li>
+                            <li class="header_submenu_item" v-show="flShowGov"><router-link :to="`/gov/parameters`">Parameters</router-link></li>
+                            <li class="header_submenu_item" v-show="flShowGov"><router-link :to="`/gov/proposals`">Proposals</router-link></li>
+                            <li class="header_submenu_item no_border_style" v-show="flShowGov"><router-link :to="`/txs/governance`">Gov Txs</router-link></li>
                             <!--<li class="header_submenu_item" v-if="flShowGov">Vote Tx</li>-->
-                            <li class="header_submenu_item" v-if="flShowStats"><router-link :to="`/stats/irisrichlist`">IRIS Rich List</router-link></li>
-                            <li class="header_submenu_item no_border_style" v-if="flShowStats"><router-link :to="`/stats/irisstats`">IRIS Stats</router-link></li>
+                            <li class="header_submenu_item" v-show="flShowStats"><router-link :to="`/stats/irisrichlist`">IRIS Rich List</router-link></li>
+                            <li class="header_submenu_item no_border_style" v-show="flShowStats"><router-link :to="`/stats/irisstats`">IRIS Stats</router-link></li>
                             <!--<li class="header_submenu_item" v-if="flShowStats">Public Address</li>-->
                         </ul>
                     </div>
@@ -580,6 +579,7 @@
 				this.activeGov  = false;
 				this.activeStats  = false;
 				this.activeClassName  = false;
+				this.activeFaucet = false;
             },
 			listenRouteForChangeActiveButton () {
 				//刷新的时候路由不变，active按钮不变
@@ -644,6 +644,13 @@
 			},
 			handleConfigs (configs) {
 				this.netWorkArray = configs.map(item => {
+					if(item.env_nm === constant.ENVCONFIG.MAINNET && item.chain_id === constant.CHAINID.MAINNET){
+						item.icon = 'iconfont iconiris'
+                    }else if(item.env_nm === constant.ENVCONFIG.TESTNET && item.chain_id === constant.CHAINID.FUXI){
+						item.icon = 'iconfont iconfuxi'
+                    }else if(item.env_nm === constant.ENVCONFIG.TESTNET && item.chain_id !== constant.CHAINID.FUXI){
+						item.icon = 'iconfont iconcaihongmao'
+                    }
 					item.netWorkSelectOption = `${item.chain_id.toLocaleUpperCase()} ${Tools.firstWordUpperCase(item.env_nm)}`
 					return item
 				});
@@ -688,10 +695,10 @@
 					this.explorerLogo = require("../assets/logo.png");
 					this.currentNetworkClass = 'iconfont iconiris'
 				} else if (currentEnv === constant.ENVCONFIG.TESTNET && currentChainId === constant.CHAINID.FUXI) {
-					this.explorerLogo = require("../assets/fuxi_testnet_logo.png");
+					this.explorerLogo = require("../assets/logo.png");
 					this.currentNetworkClass = 'iconfont iconfuxi'
 				} else if (currentEnv === constant.ENVCONFIG.TESTNET && currentChainId === constant.CHAINID.NYANCAT) {
-					this.explorerLogo = require("../assets/nyancat_testnet.png");
+					this.explorerLogo = require("../assets/logo.png");
 					this.currentNetworkClass = 'iconfont iconcaihongmao'
 				} else {
 					this.currentNetworkClass = 'iconfont iconiris';
@@ -842,19 +849,23 @@
                                 top: 0.6rem;
                                 z-index: 2;
                                 text-align: right;
-                                padding-top: 0.1rem;
                                 .network_list_item{
-                                    line-height: 1.8;
+                                    height: 0.4rem;
+                                    line-height: 0.4rem;
                                     white-space: nowrap;
                                     padding: 0 0.2rem;
                                     cursor: pointer;
                                     font-size: 0.14rem;
-                                    &:hover{
-                                        color:var(--bgColor)
+                                    display: flex;
+                                    justify-content: space-between;
+                                    i{
+                                        font-size: 0.18rem;
+                                        color: var(--bgColor);
+                                        padding-right: 0.2rem;
                                     }
                                 }
                                 .network_list_item:last-child{
-                                    padding-bottom: 0.1rem;
+                                    padding-bottom: 0.05rem;
                                 }
                             }
                         }

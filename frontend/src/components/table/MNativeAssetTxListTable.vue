@@ -110,24 +110,6 @@
 		                tooltipClassName: 'tooltip_left'
 	                },
 	                {
-		                title:'Decimal',
-		                key:'Decimal',
-		                slot: 'Decimal',
-		                tooltipClassName: 'tooltip_left'
-	                },
-	                {
-		                title:'SymbolMin',
-		                key:'SymbolMin',
-		                slot: 'SymbolMin',
-		                tooltipClassName: 'tooltip_left'
-	                },
-	                {
-		                title:'Name',
-		                key:'Name',
-		                slot: 'Name',
-		                tooltipClassName: 'tooltip_left'
-	                },
-	                {
 		                title:'Block',
 		                slot: 'Block',
 		                width: 100,
@@ -181,24 +163,6 @@
 						title:'Mintable',
 						key:'Mintable',
 						slot: 'Mintable',
-						tooltipClassName: 'tooltip_left'
-					},
-					{
-						title:'Decimal',
-						key:'Decimal',
-						slot: 'Decimal',
-						tooltipClassName: 'tooltip_left'
-					},
-					{
-						title:'SymbolMin',
-						key:'Symbolmin',
-						slot: 'Symbolmin',
-						tooltipClassName: 'tooltip_left'
-					},
-					{
-						title:'Name',
-						key:'Name',
-						slot: 'Name',
 						tooltipClassName: 'tooltip_left'
 					},
 					{
