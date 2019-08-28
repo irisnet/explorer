@@ -123,11 +123,6 @@
                                 </span>
                             </template>
                         </template>
-                        <template v-else-if="k === 'Moniker' && v.f === 'owner' && item[v.f].v">
-                            <span class="information_value link_active_style">
-                                <router-link :to="addressRoute(item[v.f].v)">{{v.v}}</router-link>
-                            </span>
-                        </template>
                         <template v-else-if="k === 'Proposal ID'">
                             <span class="information_value link_active_style">
                                 <router-link :to="`/ProposalsDetail/${v.v}`">{{v.v}}</router-link>
@@ -404,16 +399,6 @@ export default {
                 },
                 "Operator Address": {
                     k: "operator_addr",
-                    v: ""
-                },
-                Moniker: {
-                    k: "moniker",
-                    v: "",
-                    f: "owner"
-                },
-                owner: {
-                    hide: true,
-                    k: "owner",
                     v: ""
                 }
             },
