@@ -467,7 +467,7 @@ table {
       color: var(--contentColor);
       cursor: default;
       .link_style {
-        color: var(--contentColor) !important;
+        color: var(--titleColor) !important;
       }
     }
   }
@@ -631,6 +631,18 @@ table {
   font-size: 0.14rem;
   color: var(--contentColor);
   margin: 0;
+}
+.address_tx_list_table{
+  table{
+    td{
+      color: var(--titleColor)!important;
+       .no_skip{
+         .link_style{
+          color: var(--titleColor) !important;
+         }
+       }
+    }
+  }
 }
 .proposals_detail_table_wrap {
   tbody tr td:last-child {
