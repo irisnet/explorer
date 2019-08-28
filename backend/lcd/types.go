@@ -27,7 +27,7 @@ const (
 	UrlValidatorSetLatest                        = "%s/validatorsets/latest"
 	UrlStakePool                                 = "%s/stake/pool"
 	UrlBlocksResult                              = "%s/block-results/%d"
-	UrlGovParam                                  = "%s/gov/params/%s"
+	UrlGovParam                                  = "%s/params?module=%s"
 	UrlDistributionRewardsByValidatorAcc         = "%s/distribution/%s/rewards"
 	UrlValidatorsSigningInfoByConsensuPublicKey  = "%s/slashing/validators/%s/signing-info"
 	UrlDistributionWithdrawAddressByValidatorAcc = "%s/distribution/%s/withdraw-address"
