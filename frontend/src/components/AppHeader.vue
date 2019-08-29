@@ -74,8 +74,8 @@
                             <!--               <li class="header_submenu_item" v-if="flShowChain">Assets</li>
                                            <li class="header_submenu_item" v-if="flShowChain">Gateways</li>-->
                             <li class="header_submenu_item" v-show="flShowStaking"><router-link :to="`/validators`">Validators</router-link></li>
+                            <li class="header_submenu_item" v-if="flShowStaking"><router-link :to="`/txs/delegations`">Delegation Txs</router-link></li>
                             <li class="header_submenu_item" v-show="flShowStaking"><router-link :to="`/txs/validations`">Validation Txs</router-link></li>
-                            <li class="header_submenu_item no_border_style" v-if="flShowStaking"><router-link :to="`/txs/delegations`">Delegation Txs</router-link></li>
                             <!--  <li class="header_submenu_item" v-if="flShowStaking">Validator Txs</li>-->
                             <!--<li class="header_submenu_item" v-if="flShowStaking"> <router-link :to="`/txs/stakes`">Delegation Txs</router-link></li>
                             <li class="header_submenu_item" v-if="flShowStaking">Reward Txs</li>-->
