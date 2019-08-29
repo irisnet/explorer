@@ -150,8 +150,8 @@
                     </div>
                     <ul class="blockchain_list_content" v-show="flShowStakingMenu">
                         <li class="blockchain_list_item" @click="featureButtonClick(`/validators`)">Validators</li>
-                        <li class="blockchain_list_item" @click="featureButtonClick(`/txs/validations`)">Validations</li>
-                        <li class="blockchain_list_item" @click="featureButtonClick(`/txs/delegations`)">Delegations</li>
+                        <li class="blockchain_list_item" @click="featureButtonClick(`/txs/delegations`)">Delegation Txs</li>
+                        <li class="blockchain_list_item" @click="featureButtonClick(`/txs/validations`)">Validation Txs</li>
                     </ul>
                 </div>
 
