@@ -60,7 +60,7 @@
         }
       }
       .no_skip{
-        color:var(--contentColor);
+        color:var(--titleColor);
         cursor:default;
         .link_style{
           color:var(--contentColor) !important;

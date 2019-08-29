@@ -392,7 +392,7 @@ export default class Tools{
 	static formatTxList(list,txType){
 		if(list !== null){
 			return list.map(item => {
-				let [Amount,Fee,transferAmount,transferFee,tokenId] = ['--','--','--','--'];
+				let [Amount,Fee,transferAmount,transferFee,tokenId] = ['--','--','--','--','--'];
 				let commonHeaderObjList,objList,commonFooterObjList;
 				if(item.amount){
 					if(item.amount instanceof Array && item.amount.length > 0){
@@ -414,7 +414,7 @@ export default class Tools{
 					}else if(item.amount && Object.keys(item.amount).includes('amount') && Object.keys(item.amount).includes('denom')){
 						if(item.amount.denom === Constant.Denom.IRISATTO){
 							transferAmount = Tools.formatAmount(item.amount);
-							tokenId = Constant.Denom.IRIS.toLocaleUpperCase()
+							tokenId = Constant.Denom.IRIS.toLocaleUpperCase();
 							Amount = `${transferAmount}  ${Tools.formatDenom(item.amount.denom).toUpperCase()}`;
 							
 						}else if(!item.amount.denom){
