@@ -406,7 +406,7 @@ export default class Tools{
 						}else {
 							transferAmount = item.amount[0].formatAmount = item.amount[0].amount;
 							tokenId = item.amount[0].tokenId = item.amount[0].denom.toLocaleUpperCase();
-							if(item.Type === 'BeginUnbonding' || item.Type === 'BeginRedelegate'){
+							if(item.type === 'BeginUnbonding' || item.type === 'BeginRedelegate'){
 								item.amount[0].formatAmount = item.amount[0].amount > 0 ? Tools.formatAmount(item.amount[0].amount) : item.amount[0].amount;
 								Amount = item.amount.map(listItem => `${listItem.formatAmount} SHARES`).join(',');
 							}
@@ -423,7 +423,7 @@ export default class Tools{
 						}else {
 							transferAmount = item.amount;
 							tokenId = item.denom.toLocaleUpperCase();
-							if(item.Type === 'BeginUnbonding' || item.Type === 'BeginRedelegate'){
+							if(item.type === 'BeginUnbonding' || item.type === 'BeginRedelegate'){
 								Amount = item.amount.map(listItem => `${listItem.amount} SHARES`).join(',');
 							}
 						}
