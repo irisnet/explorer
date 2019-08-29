@@ -324,6 +324,10 @@
 	}
 </script>
 
-<style lang="scss" scoped>
-
+<style lang="scss" >
+.tx_container_table{
+    .m-table-header{
+        overflow: hidden;
+    }
+}
 </style>
