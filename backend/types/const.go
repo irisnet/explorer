@@ -1,5 +1,9 @@
 package types
 
+import (
+	"github.com/irisnet/explorer/backend/logger"
+)
+
 const (
 	UrlRoot = "/api"
 
@@ -9,6 +13,10 @@ const (
 
 	//home
 	UrlRegisterNavigationBar = "/home/navigation"
+
+	//Assets
+	UrlRegisterQueryNativeAsset  = "/assets/native/txs"
+	UrlRegisterQueryGatewayAsset = "/assets/gateway/txs"
 
 	//Block
 	UrlRegisterQueryBlockLatestHeight = "/block/latestheight"
@@ -21,9 +29,10 @@ const (
 	UrlRegisterQueryProposals              = "/gov/proposals"
 	UrlRegisterQueryDepositVotingProposals = "/gov/deposit_voting_proposals"
 	UrlRegisterQueryProposal               = "/gov/proposals/{pid}"
-	UrlRegisterQueryGovParams              = "/gov/params"
 	UrlRegisterQueryProposalsVoterTxs      = "/gov/proposals/{id}/voter_txs"
 	UrlRegisterQueryProposalsDepositorTxs  = "/gov/proposals/{id}/depositor_txs"
+
+	UrlRegisterQueryParams = "/params"
 
 	//SearchBox
 	UrlRegisterQueryText    = "/search/{text}"
@@ -55,7 +64,8 @@ const (
 	UrlRegisterQueryCommissionRewardsByValidatorAddr = "/stake/validators/{validatorAddr}/commission-rewards"
 
 	//Tx
-	UrlRegisterQueryTxList       = "/tx/{type}/{page}/{size}"
+	UrlRegisterQueryTxList       = "/txs"
+	UrlRegisterQueryTxListByType = "/txs/{type}/{page}/{size}"
 	UrlRegisterQueryRecentTx     = "/txs/recent"
 	UrlRegisterQueryTxsCounter   = "/txs/statistics"
 	UrlRegisterQueryTxsByAccount = "/txsByAddress/{address}/{page}/{size}"
@@ -66,7 +76,8 @@ const (
 	UrlRegisterTokensAccountTotal = "/tokenstats/account_total"
 	//bondedtokens
 	UrlRegisterBondedTokensValidators = "/bondedtokens/validators"
-
+	//assetTokens
+	UrlRegisterAssetTokens = "/asset/tokens"
 	//version
 	UrlRegisterQueryApiVersion = "/version"
 
@@ -81,8 +92,10 @@ const (
 )
 
 var (
-	TxTypeTransfer                    = "Transfer"
-	TxTypeBurn                        = "Burn"
+	TxTypeTransfer      = "Transfer"
+	TxTypeBurn          = "Burn"
+	TxTypeSetMemoRegexp = "SetMemoRegexp"
+
 	TxTypeStakeCreateValidator        = "CreateValidator"
 	TxTypeStakeEditValidator          = "EditValidator"
 	TxTypeStakeDelegate               = "Delegate"
@@ -96,6 +109,16 @@ var (
 	TxTypeSubmitProposal              = "SubmitProposal"
 	TxTypeDeposit                     = "Deposit"
 	TxTypeVote                        = "Vote"
+
+	TxTypeIssueToken           = "IssueToken"
+	TxTypeEditToken            = "EditToken"
+	TxTypeMintToken            = "MintToken"
+	TxTypeTransferTokenOwner   = "TransferTokenOwner"
+	TxTypeCreateGateway        = "CreateGateway"
+	TxTypeEditGateway          = "EditGateway"
+	TxTypeTransferGatewayOwner = "TransferGatewayOwner"
+
+	TxTypeRequestRand = "RequestRand"
 
 	TypeValStatusUnbonded  = "Unbonded"
 	TypeValStatusUnbonding = "Unbonding"
@@ -113,13 +136,15 @@ var (
 
 	//RoleList = []string{RoleValidator, RoleCandidate, RoleJailed}
 
-	BankList        = []string{TxTypeTransfer, TxTypeBurn}
+	BankList        = []string{TxTypeTransfer, TxTypeBurn, TxTypeSetMemoRegexp}
 	DeclarationList = []string{TxTypeStakeCreateValidator, TxTypeStakeEditValidator, TxTypeUnjail}
 	StakeList       = []string{TxTypeStakeDelegate, TxTypeBeginRedelegate, TxTypeSetWithdrawAddress, TxTypeStakeBeginUnbonding, TxTypeWithdrawDelegatorReward, TxTypeWithdrawDelegatorRewardsAll, TxTypeWithdrawValidatorRewardsAll}
 	GovernanceList  = []string{TxTypeSubmitProposal, TxTypeDeposit, TxTypeVote}
 
-	ForwardList      = []string{TxTypeBeginRedelegate}
+	ForwardList = []string{TxTypeBeginRedelegate}
 	//TxTypeExcludeGov = append(append(DeclarationList, StakeList...), BankList...)
+	AssetList = []string{TxTypeIssueToken, TxTypeEditToken, TxTypeMintToken, TxTypeTransferTokenOwner, TxTypeCreateGateway, TxTypeEditGateway, TxTypeTransferGatewayOwner}
+	RandList  = []string{TxTypeRequestRand}
 )
 
 func IsDeclarationType(typ string) bool {
@@ -169,14 +194,40 @@ func IsGovernanceType(typ string) bool {
 	return false
 }
 
+func IsAssetType(typ string) bool {
+	if len(typ) == 0 {
+		return false
+	}
+	for _, t := range AssetList {
+		if t == typ {
+			return true
+		}
+	}
+	return false
+}
+
+func IsRandType(typ string) bool {
+	if len(typ) == 0 {
+		return false
+	}
+	for _, t := range RandList {
+		if t == typ {
+			return true
+		}
+	}
+	return false
+}
+
 type TxType int
 
 const (
-	_           TxType = iota
+	_ TxType = iota
 	Trans
 	Declaration
 	Stake
 	Gov
+	Asset
+	Rand
 )
 
 func Convert(typ string) TxType {
@@ -188,7 +239,12 @@ func Convert(typ string) TxType {
 		return Declaration
 	} else if IsGovernanceType(typ) {
 		return Gov
+	} else if IsAssetType(typ) {
+		return Asset
+	} else if IsRandType(typ) {
+		return Rand
 	}
+	logger.Error("Convert UnSupportTx Type", logger.String("txtype", typ))
 	panic(CodeUnSupportTx)
 }
 func TxTypeFromString(typ string) TxType {
@@ -201,5 +257,6 @@ func TxTypeFromString(typ string) TxType {
 	} else if typ == "gov" {
 		return Gov
 	}
+	logger.Error("TxTypeFromString UnSupportTx Type", logger.String("txtype", typ))
 	panic(CodeUnSupportTx)
 }

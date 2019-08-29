@@ -9,8 +9,8 @@
         <colgroup>
           <col v-for="(v, i) in colWidth"
                :key="i"
-               :style="{width: (columns[i] && columns[i].width) ? columns[i].width+ 'px' : v + 'px', 
-          minWidth: columns[i] && columns[i].minWidth + 'px', 
+               :style="{width: (columns[i] && columns[i].width) ? columns[i].width+ 'px' : v + 'px',
+          minWidth: columns[i] && columns[i].minWidth + 'px',
           maxWidth: columns[i] && columns[i].maxWidth + 'px'}" />
         </colgroup>
         <thead>
@@ -21,7 +21,7 @@
                 :key="i">{{v.title}}
               <i class="sort"
                  v-if="v.sortable"
-                 :class="{'desc': (v.key === sortAsBy || v.slot === sortAsBy) && sortAsDesc, 
+                 :class="{'desc': (v.key === sortAsBy || v.slot === sortAsBy) && sortAsDesc,
               'asc': (v.key === sortAsBy || v.slot === sortAsBy) && !sortAsDesc}"></i>
             </th>
           </tr>
@@ -205,6 +205,11 @@ export default {
         arr[i] = arr[minIndex];
         arr[minIndex] = temp;
       }
+      for(let n=0; n < arr.length;n++){
+        if(arr[n].index){
+          arr[n].index = n + 1;
+        }
+      }
       return arr;
     }
   },
@@ -253,7 +258,7 @@ table.m_table {
   }
   table {
     font-size: 14px;
-    color: rgb(0, 0, 0);
+    color: var(--contentColor);
     thead {
       tr {
         border-left: 1px solid #dee2e6;
@@ -291,17 +296,17 @@ table.m_table {
           }
           .desc {
             &::after {
-              border-top-color: #3598db;
+              border-top-color: var(--bgColor);
             }
           }
           .asc {
             &::before {
-              border-bottom-color: #3598db;
+              border-bottom-color: var(--bgColor);
             }
           }
         }
         height: 50px;
-        border-bottom: 0.01rem solid #3598db;
+        border-bottom: 0.01rem solid var(--bgColor);
       }
     }
   }
@@ -317,7 +322,7 @@ table.m_table {
     td {
       padding: 7.5px;
       box-sizing: border-box;
-      color: #a2a2ae;
+      color: var(--titleColor);
       & > div {
         display: inline-block;
         vertical-align: middle;

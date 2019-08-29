@@ -1,4 +1,4 @@
-package model
+package vo
 
 type BondedTokensVo struct {
 	Moniker         string `json:"moniker"`

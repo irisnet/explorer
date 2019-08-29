@@ -69,7 +69,7 @@ export default {
                             textStyle: {
                                 rich: {
                                     d: {
-                                        color: "#A2A2AE",
+                                        color: "var(--contentColor)",
                                         padding: [0, 0, 0, 6]
                                     }
                                 }
@@ -87,7 +87,7 @@ export default {
                             "50%",
                             this.$store.state.isMobile
                                 ? 250 + data.length * 10
-                                : "50%"
+                                : "55%"
                         ],
                         hoverOffset: this.$store.state.isMobile ? 10 : 0,
                         label: {
@@ -119,13 +119,13 @@ export default {
                                     b: {
                                         fontSize: 14,
                                         lineHeight: 20,
-                                        color: "#22252A",
+                                        color: "var(--contentColor)",
                                         align: "left"
                                     },
                                     per: {
                                         fontSize: 14,
                                         lineHeight: 20,
-                                        color: "#A2A2AE",
+                                        color: "var(--contentColor)",
                                         align: "left"
                                     }
                                 }

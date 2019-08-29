@@ -12,12 +12,14 @@
                         <span class="information_value">{{v.value || '--'}}</span>
                     </div>
                 </div>
-                <div v-show="itemsNoData" class="no_data_show">No Data</div>
+                <div v-show="itemsNoData" class="no_data_show"><img src="../assets/no_data.svg" alt=""></div>
                 <div class="page_title">IRIS Token Distribution</div>
                 <div class="echarts_container" v-show="!pieDatasNoData">
                     <m-token-stats-echart :data="pieDatas"></m-token-stats-echart>
                 </div>
-                <div v-show="pieDatasNoData" class="no_data_show">No Data</div>
+                <div v-show="pieDatasNoData" class="no_data_show">
+                    <img src="../assets/no_data.svg" alt="">
+                </div>
             </div>
         </div>
     </div>
@@ -234,11 +236,11 @@ export default {
                     border-radius: 1px;
                     padding: 0.2rem;
                     .information_props {
-                        color: #a2a2ae;
+                        color: var(--contentColor);
                         font-size: 0.14rem;
                     }
                     .information_value {
-                        color: #22252a;
+                        color: var(--titleColor);
                         font-size: 0.16rem;
                         margin-top: 0.12rem;
                         word-break: break-all;
@@ -248,7 +250,7 @@ export default {
                         a,
                         span {
                             cursor: pointer;
-                            color: #3598db !important;
+                            color: var(--bgColor) !important;
                         }
                     }
                     &:nth-last-of-type(1) {

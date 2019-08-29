@@ -12,7 +12,7 @@
                 <div class="block_content_container">
                     <p  class="block_height_container">
                         <span>Height:</span>
-                        <span><router-link :to="`/block/${blockHeight}`" style="color: #3598db !important;">{{blockHeight}}</router-link></span>
+                        <span><router-link :to="`/block/${blockHeight}`">{{blockHeight}}</router-link></span>
                     </p>
                     <p class="block_time_container">
                         <span>Timestamp</span>
@@ -29,7 +29,7 @@
                 <div class="proposal_content_container">
                     <p class="proposal_id_container">
                         <span>Proposal id :</span>
-                        <span><router-link :to="`/ProposalsDetail/${proposalId}`" style="color: #3598db !important;">{{proposalId}}</router-link></span>
+                        <span><router-link :to="`/ProposalsDetail/${proposalId}`" style="color: var(--bgColor) !important;">{{proposalId}}</router-link></span>
                     </p>
                     <p class="proposal_title_container">
                         <span>Title :</span>
@@ -184,7 +184,7 @@
                 .search_result_detail_wrap_hash_var{
 
                     font-size: 0.22rem;
-                    color: #a2a2ae;
+                    color: var(--contentColor);
                 }
             }
             .mobile_search_result_detail_wrap{
@@ -214,14 +214,14 @@
             }
             .try_info{
                 font-size: 0.14rem;
-                color: #A2A2AE;
+                color: var(--contentColor);
                 margin-bottom: 0.44rem !important;
             }
             .back_home_btn{
                 width: 1.58rem;
                 height: 0.36rem;
                 margin: 0 auto;
-                background: #3498DB;
+                background: var(--bgColor);
                 border-radius: 0.05rem;
                 color: #fff;
                 font-size: 0.14rem;
@@ -252,8 +252,11 @@
             }
             span:nth-child(2){
                 text-align: left;
-                color: #3598db;
+                color: var(--bgColor);
                 cursor: pointer;
+                a{
+                    color: var(--bgColor)!important;
+                }
             }
         }
         .block_time_container{
@@ -268,7 +271,7 @@
             }
             span:nth-child(2){
                 text-align: left;
-                color: #A2A2AE;
+                color: var(--contentColor);
             }
         }
         .block_hash_container{
@@ -282,7 +285,7 @@
             }
             span:nth-child(2){
                 text-align: left;
-                color: #A2A2AE;
+                color: var(--contentColor);
             }
         }
     }
@@ -298,7 +301,7 @@
                 @include fontSize;
             }
             span:nth-child(2){
-                color: #3598db;
+                color: var(--bgColor);
                 cursor: pointer;
             }
         }
@@ -315,7 +318,7 @@
             }
             span:nth-child(2){
                 text-align: left;
-                color: #A2A2AE;
+                color: var(--contentColor);
             }
         }
         .proposal_type_container{
@@ -331,7 +334,7 @@
             }
             span:nth-child(2){
                 text-align: left;
-                color: #A2A2AE;
+                color: var(--contentColor);
             }
         }
         .proposal_status_container{
@@ -347,7 +350,7 @@
             }
             span:nth-child(2){
                 text-align: left;
-                color: #A2A2AE;
+                color: var(--contentColor);
             }
         }
         .proposal_time_container{
@@ -363,7 +366,7 @@
             }
             span:nth-child(2){
                 text-align: left;
-                color: #A2A2AE;
+                color: var(--contentColor);
             }
         }
     }

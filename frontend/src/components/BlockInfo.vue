@@ -3,9 +3,9 @@
         <div class="block_detail_content">
             <div class="block_detail_title_content">
                 <span class="block_height_content">
-                    <i :class="active?'flag_item_left':'flag_item_left_disabled'" @click="skipNext(-1)"></i>
+                    <i :class="active?'flag_item_left':'flag_item_left_disabled'" class="iconfont iconshangyigequkuai" @click="skipNext(-1)"></i>
                         <span class="information_value" style="flex:none;">{{heightValue}}</span>
-                    <i :class="activeNext?'flag_item_right':'flag_item_right_disabled'" @click="skipNext(1)"></i>
+                    <i :class="activeNext?'flag_item_right':'flag_item_right_disabled'" class="iconfont iconxiayigequkuai" @click="skipNext(1)"></i>
                 </span>
             </div>
         </div>
@@ -48,56 +48,23 @@
         </div>
         <div class="block_table_container">
             <div class="block_result_container" v-show="flBlockTransferModule">
-                <div class="block_result_title">Transfers</div>
+                <div class="block_result_title">Transactions</div>
                 <div class="block_result_table_content">
-                    <blocks-list-table :items="items"
-                                       :showNoData="flBlockTransferNoData" :min-width="tableMinWidth"></blocks-list-table>
+                    <m-all-tx-type-list-table :flTableFixed='true' :items="allTxTypeList"></m-all-tx-type-list-table>
                 </div>
                 <div class="pagination" style='margin-top:0.2rem;' v-if="flShowTransferPagination">
                     <b-pagination size="md" :total-rows="transferListCount" v-model="transferListCurrentPage" :per-page="pageSize">
                     </b-pagination>
                 </div>
             </div>
-            <div class="block_result_container" v-show="flBlockStakeModule">
-                <div class="block_result_title">Stakes</div>
-                <div class="block_result_table_content">
-                    <blocks-list-table :items="stakeList"
-                                       :showNoData="flBlockStakeNoData" :min-width="tableMinWidth"></blocks-list-table>
-                </div>
-                <div class="pagination" style='margin-top:0.2rem;' v-if="flShowStakeListPagination">
-                    <b-pagination size="md" :total-rows="stakeListCount" v-model="stakeListCurrentPage" :per-page="pageSize">
-                    </b-pagination>
-                </div>
-            </div>
-            <div class="block_result_container" v-show="flBlockDeclarationModule">
-                <div class="block_result_title">Declarations</div>
-                <div class="block_result_table_content">
-                    <blocks-list-table :items="declarationList"
-                                       :showNoData="flBlockDeclarationNoData" :min-width="tableMinWidth"></blocks-list-table>
-                </div>
-                <div class="pagination" style='margin-top:0.2rem;' v-if="flShowDeclarationPagination">
-                    <b-pagination size="md" :total-rows="declarationListCount" v-model="declarationListCurrentPage" :per-page="pageSize">
-                    </b-pagination>
-                </div>
-            </div>
-            <div class="block_proposal_container" v-show="flGovernanceModule">
-                <div class="block_proposal_title">Governance</div>
-                <div class="block_proposal_content" style="overflow-x: auto;">
-                    <blocks-list-table :items="governanceList"
-                                       :showNoData="flGovernanceNoData" :min-width="tableMinWidth"></blocks-list-table>
-                </div>
-                <div class="pagination" style='margin-top:0.2rem;' v-if="flShowGovernanceListPagination">
-                    <b-pagination size="md" :total-rows="governanceListCount" v-model="governanceListCurrentPage" :per-page="pageSize">
-                    </b-pagination>
-                </div>
-            </div>
+
             <div class="block_validator_set_container">
                 <div class="block_validator_set_title">Validator Set</div>
                 <div class="block_validator_set_content" style="overflow-x: auto;">
                     <blocks-list-table :items="validatorSetList"
                                        :showNoData="flValidatorNoData" :min-width="tableMinWidth"></blocks-list-table>
                     <div v-show="flValidatorNoData" class="no_data_show">
-                        No Data
+                        <img src="../assets/no_data.svg" alt="">
                     </div>
                 </div>
                 <div class="pagination" style='margin-top:0.2rem;margin-bottom: 0.2rem;' v-if="flShowValidatorListSetPagination">
@@ -115,8 +82,10 @@
     import SpinComponent from './commonComponents/SpinComponent';
     import Service from "../service";
     import Constant from "../constant/Constant"
+    import MAllTxTypeListTable from "./table/MAllTxTypeListTable";
     export default {
         components: {
+	        MAllTxTypeListTable,
             BlocksListTable,
             SpinComponent,
         },
@@ -124,18 +93,9 @@
             transferListCurrentPage(transferListCurrentPage){
                 this.getTransferList(transferListCurrentPage,this.pageSize,this.$route.params.height)
             },
-	        stakeListCurrentPage(stakeListCurrentPage){
-		        this.getStakeList(stakeListCurrentPage,this.pageSize,this.$route.params.height)
-	        },
-	        declarationListCurrentPage(declarationListCurrentPage){
-		        this.getDeclarationList(declarationListCurrentPage,this.pageSize,this.$route.params.height)
-	        },
             validatorSetListCurrentPage(validatorSetListCurrentPage){
                 this.getValidatorSetList(validatorSetListCurrentPage,this.pageSize,this.$route.params.height)
             },
-	        governanceListCurrentPage(governanceListCurrentPage){
-		        this.getGovList(governanceListCurrentPage,this.pageSize,this.$route.params.height)
-	        },
             $route() {
                 this.getBlockInformation();
                 this.computeMinWidth();
@@ -202,7 +162,8 @@
                 validatorValue: null,
 	            inflationValue: null,
 	            flBlockTransferModule:false,
-	            flGovernanceModule: false
+	            flGovernanceModule: false,
+	            allTxTypeList:[]
             }
         },
         beforeMount() {
@@ -276,24 +237,7 @@
 	        getTxListByTxCount(txCount){
             	if(txCount > 0){
 		            this.getTransferList(this.transferListCurrentPage,this.pageSize,this.$route.params.height);
-		            this.getStakeList(this.transferListCurrentPage,this.pageSize,this.$route.params.height);
-		            this.getDeclarationList(this.transferListCurrentPage,this.pageSize,this.$route.params.height);
-		            this.getGovList(this.governanceListCurrentPage,this.pageSize,this.$route.params.height);
                 }
-            },
-            getGovList(currentPage,pageSize,blockHeight){
-	            Service.commonInterface({blockInfoGov:{
-			            currentPage: currentPage,
-			            pageSize: pageSize,
-			            blockHeight: blockHeight,
-                    }}, (proposal) => {
-	            	try {
-			            this.handleGovernance(proposal)
-		            }catch (e) {
-			            console.error(e);
-			            this.handleGovernance(null)
-		            }
-                })
             },
             getValidatorSetList(currentPage,pageSize,blockHeight){
                 Service.commonInterface({blockInfoValidatorSet:{
@@ -310,10 +254,10 @@
                 });
             },
             getTransferList(currentPage,pageSize,blockHeight){
-            	Service.commonInterface({blockInfoTransfer:{
-			            currentPage:currentPage,
+            	Service.commonInterface({allTypeListQuireHeight:{
+			            pageNumber:currentPage,
 			            pageSize: pageSize,
-			            blockHeight: blockHeight,
+			            height: blockHeight,
                     }},(txList) => {
             		try {
 			            this.handleTransferList(txList)
@@ -323,35 +267,6 @@
 		            }
                 });
             },
-	        getStakeList(currentPage,pageSize,blockHeight){
-            	Service.commonInterface({blockInfoStake:{
-			            currentPage: currentPage,
-			            pageSize: pageSize,
-			            blockHeight: blockHeight,
-                    }}, (txList) => {
-            		try {
-			            this.handleStakeList(txList)
-		            }catch (e) {
-			            console.error(e);
-			            this.handleStakeList(null)
-		            }
-                })
-            },
-	        getDeclarationList(currentPage,pageSize,blockHeight){
-            	Service.commonInterface({blockInfoDeclaration: {
-			            currentPage: currentPage,
-			            pageSize: pageSize,
-			            blockHeight: blockHeight,
-                    }}, (txList) => {
-            		try {
-			            this.handleDeclarationList(txList)
-		            }catch (e) {
-			            console.error(e);
-			            this.handleDeclarationList(null)
-		            }
-                });
-            },
-
             handleTransferList(txList) {
                 if(txList.Data){
 	                this.flBlockTransferNoData = false;
@@ -362,64 +277,27 @@
                     }else {
                         this.flShowTransferPagination = false
                     }
-	                this.items = Tools.formatTxList(txList.Data,'transfers')
+	                this.allTxTypeList = txList.Data.map( item => {
+		                return {
+			                txHash:item.hash,
+			                block: item.block_height,
+			                type: item.type,
+			                fee: this.formatFee(item.fee),
+			                signer: item.signer,
+			                status: item.status,
+			                timestamp: Tools.format2UTC(item.timestamp)
+		                }
+	                })
                 }else {
-	                this.items = Tools.formatTxList(null,'transfers');
                     this.flBlockTransferNoData = true;
 	                this.flBlockTransferModule = false;
                 }
             },
-	        handleStakeList(txList){
-		        if(txList.Data){
-			        this.flBlockStakeNoData = false;
-			        this.flBlockStakeModule = true;
-			        this.stakeListCount  = txList.Count;
-			        if(txList.Count > this.pageSize){
-				        this.flShowStakeListPagination = true
-			        }else {
-				        this.flShowStakeListPagination = false
-			        }
-			        this.stakeList = Tools.formatTxList(txList.Data,'stakes')
-		        }else {
-			        this.stakeList = Tools.formatTxList(null,'stakes');
-			        this.flBlockStakeNoData = true;
-			        this.flBlockStakeModule = false;
+	        formatFee(Fee){
+		        if(Fee.amount && Fee.denom){
+			        return `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(Fee.amount)),4)} ${Tools.formatDenom(Fee.denom).toUpperCase()}`;
 		        }
-            },
-	        handleDeclarationList(txList){
-		        if(txList.Data){
-			        this.flBlockDeclarationNoData = false;
-			        this.flBlockDeclarationModule = true;
-			        this.declarationListCount  = txList.Count;
-			        if(txList.Count > this.pageSize){
-				        this.flShowDeclarationPagination = true
-			        }else {
-				        this.flShowDeclarationPagination = false
-			        }
-			        this.declarationList = Tools.formatTxList(txList.Data,'declarations')
-		        }else {
-			        this.declarationList = Tools.formatTxList(null,'declarations');
-			        this.flBlockDeclarationNoData = true;
-			        this.flBlockDeclarationModule = false;
-		        }
-            },
-            handleGovernance(proposals){
-	            if(proposals.Data){
-	                this.flGovernanceNoData = false;
-	                this.flGovernanceModule = true;
-                    this.governanceListCount = proposals.Count;
-                    if(proposals.Count > this.pageSize){
-                        this.flShowGovernanceListPagination = true
-                    }else {
-                        this.flShowGovernanceListPagination = false
-                    }
-		            this.governanceList = Tools.formatTxList(proposals.Data,'governance')
-                }else {
-		            this.governanceList = Tools.formatTxList(null,'governance');
-                    this.flGovernanceNoData = true;
-		            this.flGovernanceModule = false
-                }
-            },
+	        },
             handleValidatorSetList(validatorList){
                 if(validatorList && validatorList.items && validatorList.items.length !== 0){
 	                this.flValidatorNoData = false;
@@ -507,38 +385,34 @@
                 .block_height_content{
                     .information_value{
                         font-size: 0.22rem;
-                        color: #22252a;
+                        color: var(--contentColor);
                         margin: 0 0.07rem;
                     }
                     .flag_item_left {
                         display: inline-block;
-                        width: 0.2rem;
-                        height: 0.17rem;
-                        background: url('../assets/left.png') no-repeat 0 1px;
+                        font-size: 0.2rem;
                         margin-right: 0.05rem;
                         cursor: pointer;
+                        color:var(--bgColor) !important;
                     }
                     .flag_item_left_disabled {
                         display: inline-block;
-                        width: 0.2rem;
-                        height: 0.17rem;
+                        font-size: 0.2rem;
                         margin-right: 0.05rem;
                         cursor: pointer;
-                        background: url('../assets/left_disabled.png') no-repeat 0 1px;
+                        color: var(--contentColor);
                     }
                     .flag_item_right {
                         display: inline-block;
-                        width: 0.2rem;
-                        height: 0.17rem;
-                        background: url('../assets/right.png') no-repeat 0 0;
+                        font-size: 0.2rem;
                         margin-left: 0.05rem;
+                        color:var(--bgColor);
                         cursor: pointer;
                     }
                     .flag_item_right_disabled {
                         display: inline-block;
-                        width: 0.2rem;
-                        height: 0.17rem;
-                        background: url('../assets/right_disabled.png') no-repeat 0 0;
+                        font-size: 0.2rem;
+                        color: var(--contentColor);
                         margin-left: 0.05rem;
                         cursor: pointer;
                     }
@@ -565,7 +439,7 @@
                     .block_information_item{
                         display: flex;
                         span:nth-of-type(1){
-                            color: rgba(34, 37, 42, 1);
+                            color: var(--contentColor);
                             font-size: 0.14rem;
                             line-height: 0.2rem;
                             width: 1.5rem;
@@ -574,18 +448,18 @@
                         }
                         span:nth-of-type(2){
                             flex: 1;
-                            color: rgba(162, 162, 174, 1);
+                            color: var(--titleColor);
                             font-size: 0.14rem;
                             line-height: 0.2rem;
                             overflow-x: auto;
                             .common_link_style{
-                                color: rgba(53, 152, 219, 1) !important;
+                                color: var(--bgColor) !important;
                             }
                         }
                     }
                     .block_information_item:last-child{
                         span:nth-of-type(1){
-                            color: rgba(34, 37, 42, 1);
+                            color: var(--contentColor);
                             font-size: 0.14rem;
                             line-height: 0.2rem;
                             width: 1.5rem;
@@ -670,7 +544,7 @@
                     }
                 }
             }
-            
+
         }
         .block_validator_set_title, .block_result_title, .block_proposal_title {
             padding-left: 0.1rem !important;

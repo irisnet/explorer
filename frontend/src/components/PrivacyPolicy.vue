@@ -140,7 +140,7 @@
       padding:0.15rem;
     }
     a{
-      color: #3498db!important;
+      color: var(--bgColor)!important;
     }
 
     h4{
@@ -156,7 +156,7 @@
     p, li{
       list-style: inherit!important;
       font-size:0.14rem;
-      color:#a2a2ae;
+      color:var(--contentColor);
     }
   }
 

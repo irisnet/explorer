@@ -6,7 +6,7 @@ import (
 
 func TestQueryByPage(t *testing.T) {
 
-	total, proposalList, err := Proposal{}.QueryByPage(0, 100)
+	total, proposalList, err := Proposal{}.QueryByPage(0, 100, false)
 	if err != nil {
 		t.Error(err)
 	}

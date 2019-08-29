@@ -222,7 +222,7 @@
                                        style="border-left: 1px solid #dee2e6; border-right: 1px solid #dee2e6;"></blocks-list-table>
                     <div v-show="showNoData"
                          class="no_data_show">
-                        No Data
+                        <img src="../assets/no_data.svg" alt="">
                     </div>
                 </div>
             </div>
@@ -328,7 +328,7 @@ export default {
             flShowValidatorCandidate: false,
             flActiveValidator: true,
             flShowProfileLogo: false,
-            validatorStatusColor: "#3598db",
+            validatorStatusColor: "var(--bgColor)",
             tabVotingPower: [
                 {
                     "title": "14days",
@@ -450,11 +450,16 @@ export default {
                 this.txTab[index].active = true;
             }
             let that = this, params;
+            if(txTabName === 'stakes'){
+	            txTabName = 'delegations'
+            }else if(txTabName === 'declarations'){
+	            txTabName = 'validations'
+            }
             if (txTabName === 'transfers') {
                 params = { addressTxTrans: { pageNumber: currentPage, pageSize: pageSize, address: this.$route.params.param } }
-            } else if (txTabName === 'stakes') {
+            } else if (txTabName === 'delegations') {
                 params = { addressTxStake: { pageNumber: currentPage, pageSize: pageSize, address: this.$route.params.param } }
-            } else if (txTabName === 'declarations') {
+            } else if (txTabName === 'validations') {
                 params = { addressTxDeclaration: { pageNumber: currentPage, pageSize: pageSize, address: this.$route.params.param } }
             } else if (txTabName === 'governance') {
                 params = { addressTxGov: { pageNumber: currentPage, pageSize: pageSize, address: this.$route.params.param } }

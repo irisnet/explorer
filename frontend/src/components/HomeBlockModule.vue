@@ -3,8 +3,8 @@
     <div class="home_module_block_title_wrap">
       <span class="home_module_block_title"
             :class="homeModuleBlockTitle"
-      >{{moduleName}}</span>
-      <router-link class="view_all_btn" v-if="moduleTitle === 'blocks'" :to="moduleName === 'Blocks' ? `/blocks` : ``">
+      ><i :class="this.moduleName === 'Blocks' ? 'iconfont iconBlockHeight': 'iconfont iconshishijiaoyijilu\n'"></i>{{moduleName}}</span>
+      <router-link class="view_all_btn" :to="moduleName === 'Blocks' ? `/blocks` : `/txs`">
         <span class="view_all_Content">View All</span>
       </router-link>
     </div>
@@ -16,7 +16,7 @@
             <span class="blocks_module_value" :class="moduleTitle">
               <span class="transactions_tx" v-if="item.TxHash">TX# </span>
              <span style="cursor:pointer;">
-               <router-link :to="item.Height?`/block/${item.Height}`:`/tx?txHash=${item.TxHash}`" style="color: #3598db !important;">{{item.Height?item.Height:`${item.TxHash && item.TxHash.substr(0,16)}...`}}</router-link>
+               <router-link :to="item.Height?`/block/${item.Height}`:`/tx?txHash=${item.TxHash}`" style="color: var(--bgColor) !important;">{{item.Height?item.Height:`${item.TxHash && item.TxHash.substr(0,16)}...`}}</router-link>
                </span>
               </span>
               <span class="key_value_transfers_age" v-show="moduleName !== 'Blocks'">{{item.age}}</span>
@@ -37,7 +37,7 @@
         <div class="none_data_img_container" v-if="information.length === 0">
           <div class="nodata_img_content">
             <div>
-              <img src="../assets/nodata.png">
+              <img src="../assets/no_data.svg">
             </div>
             <span v-show="moduleTitle !== 'blocks'">No Transaction</span>
             <span v-show="moduleTitle === 'blocks'">No Block</span>
@@ -132,7 +132,7 @@
         text-align: center;
         padding-top: 0.16rem;
         @include fontSize;
-        color: #a2a2ae;
+        color: var(--contentColor);
       }
     }
 
@@ -153,17 +153,15 @@
       .home_module_block_title{
         font-size:0.18rem;
         @include fontWeight;
-      }
-      .blocks_background_img{
-        background: url('../assets/blocks.png') no-repeat 0 0.02rem;
-        text-indent:0.35rem;
-      }
-      .transactions_background_img{
-        background: url('../assets/transactions.png') no-repeat 0 0.02rem;
-        text-indent:0.3rem;
+        text-align: left;
+        color:var(--moduleColor);
+        i{
+          padding-right: 0.1rem;
+          font-size: 0.2rem;
+          color: var(--contentColor);
+        }
       }
       .view_all_btn{
-        @include viewBtn;
       }
     }
     #echarts_pie{
@@ -197,17 +195,17 @@
             justify-content: space-between;
             @include fontSize;
             .blocks_module_Amount{
-              color:#A2A2AE;
+              color:var(--contentColor);
               display:inline-block;
             }
             .blocks_module_type{
               @include fontSize;
-              color:#A2A2AE;
+              color:var(--contentColor);
               display:inline-block;
             }
             .blocks_module_props{
               @include fontSize;
-              color:#000000;
+              color:var(--contentColor);
             }
           }
           .key_value_wrap{
@@ -216,17 +214,17 @@
             .key_value_transfers_age{
               display: inline-block;
               @include fontSize;
-              color: #A2A2AE;
+              color: var(--contentColor);
               text-align: right;
             }
             .key_value_blocks_age{
               display: inline-block;
               @include fontSize;
-              color: #A2A2AE;
+              color: var(--contentColor);
               text-align: right;
             }
             .blocks_module_value{
-              color:#3598db;
+              color:var(--bgColor);
               @include fontSize;
               display:inline-block;
               .transactions_tx{
@@ -242,13 +240,10 @@
               }
             }
             .blocks{
-              background: url('../assets/block.png') no-repeat 0 0.02rem;
-              text-indent:0.2rem;
-              color:#3598db;
+              color:var(--bgColor);
             }
             .transactions{
-              background: url('../assets/transaction.png') no-repeat 0 0.02rem;
-              text-indent:0.2rem;
+
             }
           }
 
@@ -261,7 +256,7 @@
           justify-content:center;
           span{
             @include fontSize;
-            color:#a2a2ae;
+            color:var(--contentColor);
             text-align: right;
           }
         }
@@ -290,6 +285,14 @@
     }
   }
   .view_all_Content{
-    color: #fff;
+    color: var(--bgColor);
+    font-size: 0.14rem;
+    border-bottom: 0.01rem solid var(--bgColor);
+    i{
+      display: inline-block;
+      transform: rotate(-90deg);
+      font-size: 0.14rem;
+      padding-top: 0.02rem;
+    }
   }
 </style>

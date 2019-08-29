@@ -6,7 +6,6 @@ import (
 
 	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/types"
-	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -96,11 +95,11 @@ func (m Proposal) PkKvPair() map[string]interface{} {
 	return bson.M{Proposal_Field_ProposalId: m.ProposalId}
 }
 
-func (_ Proposal) QueryByPage(page, size int) (int, []Proposal, error) {
+func (_ Proposal) QueryByPage(page, size int, total bool) (int, []Proposal, error) {
 
 	var data []Proposal
 	sort := desc(Proposal_Field_SubmitTime)
-	cnt, err := pageQuery(CollectionNmProposal, nil, nil, sort, page, size, &data)
+	cnt, err := pageQuery(CollectionNmProposal, nil, nil, sort, page, size, total, &data)
 	return cnt, data, err
 }
 
@@ -109,7 +108,7 @@ func (_ Proposal) QueryByIdList(idList []uint64) ([]Proposal, error) {
 	proposalArr := []Proposal{}
 
 	depositVoteCondition := bson.M{
-		document.Proposal_Field_ProposalId: bson.M{"$in": idList},
+		Proposal_Field_ProposalId: bson.M{"$in": idList},
 	}
 
 	err := queryAll(CollectionNmProposal, nil, depositVoteCondition, "", 0, &proposalArr)
@@ -124,7 +123,7 @@ func (_ Proposal) QueryById(id int64) (Proposal, error) {
 
 	var query = orm.NewQuery()
 	query.Reset().
-		SetCollection(document.CollectionNmProposal).
+		SetCollection(CollectionNmProposal).
 		SetSelector(selector).
 		SetCondition(condition).
 		SetResult(&proposal)
@@ -173,7 +172,7 @@ func (_ Proposal) QueryTxFromToByTypeAndProposalId(id int) (string, string, erro
 	return tx.From, tx.TxHash, err
 }
 
-func (_ Proposal) QueryProposalByPage(page, size int) (int, []Proposal, error) {
+func (_ Proposal) QueryProposalByPage(page, size int, total bool) (int, []Proposal, error) {
 
 	var data []Proposal
 	sort := desc(Proposal_Field_ProposalId)
@@ -190,12 +189,12 @@ func (_ Proposal) QueryProposalByPage(page, size int) (int, []Proposal, error) {
 		Proposal_Field_Final_Votes:       1,
 	}
 
-	cnt, err := pageQuery(document.CollectionNmProposal, selector, nil, sort, page, size, &data)
+	cnt, err := pageQuery(CollectionNmProposal, selector, nil, sort, page, size, total, &data)
 
 	return cnt, data, err
 }
 
-func (_ Proposal) QueryIdTitleStatusVotedTxhashByValidatorAcc(validatorAcc string, page, size int) (int, []Proposal, error) {
+func (_ Proposal) QueryIdTitleStatusVotedTxhashByValidatorAcc(validatorAcc string, page, size int, total bool) (int, []Proposal, error) {
 
 	var data []Proposal
 
@@ -209,7 +208,7 @@ func (_ Proposal) QueryIdTitleStatusVotedTxhashByValidatorAcc(validatorAcc strin
 
 	condition := bson.M{Proposal_Field_Votes_voter: validatorAcc}
 
-	cnt, err := pageQuery(document.CollectionNmProposal, selector, condition, sort, page, size, &data)
+	cnt, err := pageQuery(CollectionNmProposal, selector, condition, sort, page, size, total, &data)
 
 	if err != nil {
 		return 0, nil, err
@@ -241,7 +240,7 @@ func (_ Proposal) GetProposalsByStatus(status, sorts []string) ([]Proposal, erro
 		},
 	}
 
-	query.SetCollection(document.CollectionNmProposal).
+	query.SetCollection(CollectionNmProposal).
 		SetCondition(condition).
 		SetSelector(selector).
 		SetSort(sorts...).

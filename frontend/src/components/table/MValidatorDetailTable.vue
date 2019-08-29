@@ -188,7 +188,7 @@ export default {
             fields: [],
             transfer: [
                 {
-                    title: "Tx_Hash",
+                    title: "TxHash",
                     slot: "Tx_Hash",
                     tooltip: true
                 },
@@ -217,12 +217,12 @@ export default {
                     key: "Tx_Fee"
                 },
                 {
-                    title: "Tx_Signer",
+                    title: "Signer",
                     slot: "Tx_Signer",
                     tooltip: true
                 },
                 {
-                    title: "Tx_Status",
+                    title: "Status",
                     key: "Tx_Status"
                 },
                 {
@@ -232,7 +232,7 @@ export default {
             ],
             stakes: [
                 {
-                    title: "Tx_Hash",
+                    title: "TxHash",
                     slot: "Tx_Hash",
                     tooltip: true
                 },
@@ -261,12 +261,12 @@ export default {
                     key: "Tx_Fee"
                 },
                 {
-                    title: "Tx_Signer",
+                    title: "Signer",
                     slot: "Tx_Signer",
                     tooltip: true
                 },
                 {
-                    title: "Tx_Status",
+                    title: "Status",
                     key: "Tx_Status"
                 },
                 {
@@ -276,7 +276,7 @@ export default {
             ],
             declarations: [
                 {
-                    title: "Tx_Hash",
+                    title: "TxHash",
                     slot: "Tx_Hash",
                     tooltip: true
                 },
@@ -289,12 +289,12 @@ export default {
                     slot: "Moniker"
                 },
                 {
-                    title: "Operator_Address",
+                    title: "Operator",
                     slot: "OperatorAddr",
                     tooltip: true
                 },
                 {
-                    title: "Self_Bonded",
+                    title: "Self-Bonded",
                     key: "Amount"
                 },
                 {
@@ -306,12 +306,12 @@ export default {
                     key: "Tx_Fee"
                 },
                 {
-                    title: "Tx_Signer",
+                    title: "Signer",
                     slot: "Tx_Signer",
                     tooltip: true
                 },
                 {
-                    title: "Tx_Status",
+                    title: "Status",
                     key: "Tx_Status"
                 },
                 {
@@ -321,7 +321,7 @@ export default {
             ],
             gov: [
                 {
-                    title: "Tx_Hash",
+                    title: "TxHash",
                     slot: "Tx_Hash",
                     tooltip: true
                 },
@@ -354,12 +354,12 @@ export default {
                     slot: "Tx_Fee"
                 },
                 {
-                    title: "Tx_Signer",
+                    title: "Signer",
                     slot: "Tx_Signer",
                     tooltip: true
                 },
                 {
-                    title: "Tx_Status",
+                    title: "Status",
                     key: "Tx_Status"
                 },
                 {
@@ -442,7 +442,7 @@ export default {
                     key: "submited"
                 },
                 {
-                    title: "Tx_Hash",
+                    title: "TxHash",
                     slot: "Tx_Hash",
                     tooltip: true
                 }
@@ -466,7 +466,7 @@ export default {
                     key: "voted"
                 },
                 {
-                    title: "Tx_Hash",
+                    title: "TxHash",
                     slot: "Tx_Hash",
                     tooltip: true
                 }

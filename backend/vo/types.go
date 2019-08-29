@@ -1,4 +1,4 @@
-package model
+package vo
 
 import (
 	"net/http"

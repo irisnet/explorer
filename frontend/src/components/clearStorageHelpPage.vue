@@ -281,7 +281,7 @@
     text-align: center;
     line-height: 0.3rem;
     border-radius: 0.15rem;
-    background: #3498db;
+    background: var(--bgColor);
     color: #fff;
   }
   .step_content{
@@ -290,7 +290,7 @@
     margin-left: 0.18rem;
     line-height: 0.3rem;
     font-size: 0.14rem;
-    color: #a2a2ae;
+    color: var(--contentColor);
   }
   .step_img{
     padding: 0.2rem 0  0.6rem 0.33rem;

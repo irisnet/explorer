@@ -1,4 +1,4 @@
-package model
+package vo
 
 import (
 	"time"
@@ -139,7 +139,7 @@ type LookupIcons struct {
 }
 
 type Them struct {
-	Id string `json:"id"`
+	Id       string `json:"id"`
 	Pictures struct {
 		Primary struct {
 			Url    string `json:"url"`

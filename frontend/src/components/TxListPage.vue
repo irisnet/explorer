@@ -11,7 +11,7 @@
                     <spin-component :showLoading="flShowLoading"></spin-component>
                     <m-tx-list-page-table :items="txList"></m-tx-list-page-table>
                     <div v-show="showNoData" class="no_data_show">
-                        No Data
+                        <img src="../assets/no_data.svg" alt="">
                     </div>
                 </div>
                 <div class="pagination_nav_footer_content">
@@ -43,21 +43,21 @@
 			}
 		},
 		created(){
-			this.getTransactionList(this.currentPageNum,this.pageSize)
+            this.getTransactionList(this.currentPageNum,this.pageSize)
 		},
 		methods: {
 			linkGen(pageNum) {
-				return pageNum === 1 ? '?' : `?page=${pageNum}`
-			},
+                return pageNum === 1 ? '?' : `?page=${pageNum}`
+            },
 			getTransactionList(currentPage, pageSize){
 				let that = this, parmas;
 				if(this.$route.params.txType === 'transfers'){
-					this.listTitleName = "Transfer Transactions";
+					this.listTitleName = "Txs (Transfer or Burn)";
 					parmas = {txListTransfer: {pageNumber: currentPage,pageSize: pageSize}};
-				}else if(this.$route.params.txType === 'stakes'){
+				}else if(this.$route.params.txType === 'delegations'){
 					this.listTitleName = "Txs (Staking or Distribution)";
 					parmas = {txListStake: {pageNumber: currentPage,pageSize: pageSize}};
-				}else if(this.$route.params.txType === 'declarations'){
+				}else if(this.$route.params.txType === 'validations'){
 					this.listTitleName = "Txs (CreateValidator, EditValidator or Unjail)";
 					parmas = {txListDeclaration: {pageNumber: currentPage,pageSize: pageSize}};
 				}else if(this.$route.params.txType === 'governance'){
@@ -91,7 +91,7 @@
         .transaction_list_title_wrap{
             width: 100%;
             position: fixed;
-            z-index: 10;
+            z-index: 1;
             background-color: #ffffff;
             .transaction_list_title_content{
                 height:0.7rem;
@@ -132,7 +132,6 @@
                 justify-content: flex-end;
                 height: 0.7rem;
                 align-items: center;
-                margin-bottom: 0.2rem;
             }
 
         }

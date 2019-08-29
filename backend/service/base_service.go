@@ -15,6 +15,7 @@ var (
 	delegatorService = &DelegatorService{}
 	govParamsService = &GovParamsService{}
 	validatorService = &ValidatorService{}
+	assetsService    = &AssetsService{}
 )
 
 const (
@@ -27,6 +28,7 @@ const (
 	Delegator
 	GovParams
 	Validator
+	Asset
 )
 
 type Module int
@@ -51,6 +53,8 @@ func Get(m Module) Service {
 		return govParamsService
 	case Validator:
 		return validatorService
+	case Asset:
+		return assetsService
 	}
 	return nil
 }

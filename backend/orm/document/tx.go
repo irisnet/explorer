@@ -6,7 +6,6 @@ import (
 
 	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/types"
-	"github.com/irisnet/irishub-sync/store/document"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -33,8 +32,18 @@ const (
 	Tx_Field_ActualFee            = "actual_fee"
 	Tx_Field_ProposalId           = "proposal_id"
 	Tx_Field_Tags                 = "tags"
+	Tx_Field_Msgs                 = "msgs"
 	Tx_Field_StakeCreateValidator = "stake_create_validator"
 	Tx_Field_StakeEditValidator   = "stake_edit_validator"
+
+	Tx_Field_Msgs_UdInfo = "msgs.msg.ud_info.source"
+	Tx_AssetType_Native  = "native"
+	Tx_AssetType_Gateway = "gateway"
+
+	Tx_Asset_TxType_Issue         = "IssueToken"
+	Tx_Asset_TxType_Edit          = "EditToken"
+	Tx_Asset_TxType_Mint          = "MintToken"
+	Tx_Asset_TxType_TransferOwner = "TransferTokenOwner"
 )
 
 type Signer struct {
@@ -43,8 +52,8 @@ type Signer struct {
 }
 
 type Coin struct {
-	Denom  string  `json:"denom"`
-	Amount float64 `json:"amount"`
+	Denom  string  `bson:"denom"`
+	Amount float64 `bson:"amount"`
 }
 
 func (c Coin) Add(a Coin) Coin {
@@ -60,13 +69,13 @@ func (c Coin) Add(a Coin) Coin {
 type Coins []Coin
 
 type Fee struct {
-	Amount Coins `json:"amount"`
-	Gas    int64 `json:"gas"`
+	Amount Coins `bson:"amount"`
+	Gas    int64 `bson:"gas"`
 }
 
 type ActualFee struct {
-	Denom  string  `json:"denom"`
-	Amount float64 `json:"amount"`
+	Denom  string  `bson:"denom"`
+	Amount float64 `bson:"amount"`
 }
 
 type CommonTx struct {
@@ -91,50 +100,39 @@ type CommonTx struct {
 	StakeCreateValidator StakeCreateValidator `bson:"stake_create_validator"`
 	StakeEditValidator   StakeEditValidator   `bson:"stake_edit_validator"`
 	Msg                  Msg                  `bson:"-"`
+	Msgs                 []MsgItem            `bson:"msgs"`
 	Signers              []Signer             `bson:"signers"`
 }
 
 func (tx CommonTx) String() string {
-	return fmt.Sprintf(`
-		Time                 :%v
-		Height               :%v
-		TxHash               :%v
-		From                 :%v
-		To                   :%v
-		Amount               :%v
-		Type                 :%v
-		Fee                  :%v
-		Memo                 :%v
-		Status               :%v
-		Code                 :%v
-		Log                  :%v
-		GasUsed              :%v
-		GasPrice             :%v
-		ActualFee            :%v
-		ProposalId           :%v
-		Tags                 :%v
-		StakeCreateValidator :%v
-		StakeEditValidator   :%v
-		Msg                  :%v
-		Signers              :%v
-		`, tx.Time, tx.Height, tx.TxHash, tx.From, tx.To, tx.Amount, tx.Type, tx.Fee, tx.Memo, tx.Status, tx.Code, tx.Log, tx.GasUsed,
-		tx.GasPrice, tx.ActualFee, tx.ProposalId, tx.Tags, tx.StakeCreateValidator, tx.StakeEditValidator, tx.Msg, tx.Signers)
+	return ""
 
 }
 
-type Msg interface {
-	Type() string
-	String() string
-}
-
-type StakeCreateValidator struct {
-	PubKey      string         `bson:"pub_key"`
-	Description ValDescription `bson:"description"`
-}
-
-type StakeEditValidator struct {
-	Description ValDescription `bson:"description"`
-}
+type (
+	Msg interface {
+		Type() string
+		String() string
+	}
+	MsgItem struct {
+		Type    string      `bson:"type"`
+		MsgData interface{} `bson:"msg"`
+	}
+	StakeCreateValidator struct {
+		PubKey      string         `bson:"pub_key"`
+		Description ValDescription `bson:"description"`
+		Commission  CommissionMsg  `bson:"commission"`
+	}
+	CommissionMsg struct {
+		Rate          string `bson:"rate"`            // the commission rate charged to delegators
+		MaxRate       string `bson:"max_rate"`        // maximum commission rate which validator can ever charge
+		MaxChangeRate string `bson:"max_change_rate"` // maximum daily increase of the validator commission
+	}
+	StakeEditValidator struct {
+		CommissionRate string         `bson:"commission_rate"`
+		Description    ValDescription `bson:"description"`
+	}
+)
 
 // Description
 type ValDescription struct {
@@ -144,7 +142,7 @@ type ValDescription struct {
 	Details  string `bson:"details"`
 }
 
-func (_ CommonTx) QueryByAddr(addr string, pageNum, pageSize int) (int, []CommonTx, error) {
+func (_ CommonTx) QueryByAddr(addr string, pageNum, pageSize int, istotal bool) (int, []CommonTx, error) {
 	var data []CommonTx
 	query := bson.M{}
 	query["$or"] = []bson.M{{"from": addr}, {"to": addr}, {"signers": bson.M{"$elemMatch": bson.M{"addr_bech32": addr}}}}
@@ -153,19 +151,19 @@ func (_ CommonTx) QueryByAddr(addr string, pageNum, pageSize int) (int, []Common
 	typeArr = append(typeArr, types.DeclarationList...)
 	typeArr = append(typeArr, types.StakeList...)
 	typeArr = append(typeArr, types.GovernanceList...)
-	query[document.Tx_Field_Type] = bson.M{
+	query[Tx_Field_Type] = bson.M{
 		"$in": typeArr,
 	}
 
-	total, err := pageQuery(CollectionNmCommonTx, nil, query, desc(Tx_Field_Time), pageNum, pageSize, &data)
+	total, err := pageQuery(CollectionNmCommonTx, nil, query, desc(Tx_Field_Time), pageNum, pageSize, istotal, &data)
 
 	return total, data, err
 }
 
-func (_ CommonTx) QueryByPage(query bson.M, pageNum, pageSize int) (int, []CommonTx, error) {
+func (_ CommonTx) QueryByPage(query bson.M, pageNum, pageSize int, istotal bool) (int, []CommonTx, error) {
 	var data []CommonTx
 
-	total, err := pageQuery(CollectionNmCommonTx, nil, query, desc(Tx_Field_Time), pageNum, pageSize, &data)
+	total, err := pageQuery(CollectionNmCommonTx, nil, query, desc(Tx_Field_Time), pageNum, pageSize, istotal, &data)
 
 	return total, data, err
 }
@@ -185,7 +183,7 @@ func (_ CommonTx) QueryTxByHash(hash string) (CommonTx, error) {
 
 	var result CommonTx
 	query := bson.M{}
-	query[document.Tx_Field_Hash] = hash
+	query[Tx_Field_Hash] = hash
 	err := dbm.C(CollectionNmCommonTx).Find(query).Sort(desc(Tx_Field_Time)).One(&result)
 
 	return result, err
@@ -217,7 +215,7 @@ func (_ CommonTx) CountByType(query bson.M) (Counter, error) {
 
 	counter := Counter{}
 
-	c := getDb().C(document.CollectionNmCommonTx)
+	c := getDb().C(CollectionNmCommonTx)
 	defer c.Database.Session.Close()
 
 	pipe := c.Pipe(
@@ -260,7 +258,7 @@ func (_ CommonTx) GetTxCountByDuration(startTime, endTime time.Time) (int, error
 	db := orm.GetDatabase()
 	defer db.Session.Close()
 
-	txStore := db.C(document.CollectionNmCommonTx)
+	txStore := db.C(CollectionNmCommonTx)
 
 	query := bson.M{}
 	query["time"] = bson.M{"$gte": startTime, "$lt": endTime}
@@ -272,7 +270,7 @@ func (_ CommonTx) QueryProposalTxFromById(idArr []uint64) (map[uint64]string, er
 
 	selector := bson.M{Tx_Field_From: 1, Tx_Field_ProposalId: 1}
 	condition := bson.M{Tx_Field_Type: "SubmitProposal", Tx_Field_Status: "success", Tx_Field_ProposalId: bson.M{"$in": idArr}}
-	var txs []document.CommonTx
+	var txs []CommonTx
 
 	err := queryAll(CollectionNmCommonTx, selector, condition, desc(Tx_Field_Time), 0, &txs)
 
@@ -285,18 +283,18 @@ func (_ CommonTx) QueryProposalTxFromById(idArr []uint64) (map[uint64]string, er
 	return proposerById, err
 }
 
-func (_ CommonTx) QueryProposalTxListById(idArr []uint64) ([]document.CommonTx, error) {
+func (_ CommonTx) QueryProposalTxListById(idArr []uint64) ([]CommonTx, error) {
 
 	selector := bson.M{Tx_Field_Amount: 1, Tx_Field_ProposalId: 1}
 	condition := bson.M{Tx_Field_Type: "SubmitProposal", Tx_Field_Status: "success", Tx_Field_ProposalId: bson.M{"$in": idArr}}
-	var txs []document.CommonTx
+	var txs []CommonTx
 
 	err := queryAll(CollectionNmCommonTx, selector, condition, desc(Tx_Field_Time), 0, &txs)
 
 	return txs, err
 }
 
-func (_ CommonTx) QueryProposalTxById(proposalId int64, page, size int) (int, []CommonTx, error) {
+func (_ CommonTx) QueryProposalTxById(proposalId int64, page, size int, total bool) (int, []CommonTx, error) {
 
 	txs := []CommonTx{}
 
@@ -313,12 +311,12 @@ func (_ CommonTx) QueryProposalTxById(proposalId int64, page, size int) (int, []
 	}
 	sort := fmt.Sprintf("-%v", Tx_Field_Height)
 
-	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, &txs)
+	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, total, &txs)
 
 	return num, txs, err
 }
 
-func (_ CommonTx) QueryDepositedProposalTxByValidatorWithSubmitOrDepositType(validatorAddrAcc string, page, size int) (int, []CommonTx, error) {
+func (_ CommonTx) QueryDepositedProposalTxByValidatorWithSubmitOrDepositType(validatorAddrAcc string, page, size int, total bool) (int, []CommonTx, error) {
 
 	txs := []CommonTx{}
 	selector := bson.M{
@@ -336,12 +334,12 @@ func (_ CommonTx) QueryDepositedProposalTxByValidatorWithSubmitOrDepositType(val
 		},
 	}
 	sort := fmt.Sprintf("-%v", Tx_Field_Height)
-	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, &txs)
+	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, total, &txs)
 
 	return num, txs, err
 }
 
-func (_ CommonTx) QueryProposalTxByIdWithSubmitOrDepositType(proposalId int64, page, size int) (int, []CommonTx, error) {
+func (_ CommonTx) QueryProposalTxByIdWithSubmitOrDepositType(proposalId int64, page, size int, total bool) (int, []CommonTx, error) {
 
 	txs := []CommonTx{}
 	selector := bson.M{
@@ -359,7 +357,37 @@ func (_ CommonTx) QueryProposalTxByIdWithSubmitOrDepositType(proposalId int64, p
 		},
 	}
 	sort := fmt.Sprintf("-%v", Tx_Field_Height)
-	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, &txs)
+	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, total, &txs)
 
+	return num, txs, err
+}
+
+func (_ CommonTx) QueryTxAsset(assetType, tokenType string, page, size int, total bool) (int, []CommonTx, error) {
+	txs := []CommonTx{}
+	selector := bson.M{
+		Tx_Field_Hash:      1,
+		Tx_Field_Height:    1,
+		Tx_Field_From:      1,
+		Tx_Field_To:        1,
+		Tx_Field_Amount:    1,
+		Tx_Field_Type:      1,
+		Tx_Field_Status:    1,
+		Tx_Field_ActualFee: 1,
+		Tx_Field_Tags:      1,
+		Tx_Field_Msgs:      1,
+		Tx_Field_Time:      1,
+	}
+	condition := bson.M{
+		Tx_Field_Msgs_UdInfo: assetType,
+	}
+	if tokenType != "" {
+		condition[Tx_Field_Type] = tokenType
+	} else {
+		condition[Tx_Field_Type] = bson.M{
+			"$in": []string{types.TxTypeIssueToken, types.TxTypeEditToken, types.TxTypeMintToken, types.TxTypeTransferTokenOwner},
+		}
+	}
+	sort := fmt.Sprintf("-%v", Tx_Field_Height)
+	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, total, &txs)
 	return num, txs, err
 }

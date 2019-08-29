@@ -16,9 +16,13 @@ import ValidatorListPage from "./components/ValidatorListPage.vue";
 import Parameters from "./components/ParametersPage.vue"
 import RichList from "./components/RichList.vue"
 import BlockList from "./components/BlockListPage.vue"
-import TxList from "./components/TxListPage.vue";
 import BondedTokens from "./components/BondedTokens.vue";
 import TokenStats from "./components/TokenStats.vue";
+import TxList from "./components/TxListPage.vue"
+import NativeAssetPage from "./components/NativeAsset.vue"
+import GateWayAssetPage from "./components/GateWayAsset.vue"
+import Error from "./components/ErrorPage.vue"
+import AllTxTypeList from "./components/AllTxTypeList.vue"
 Vue.use(Router);
 
 const router = new Router({
@@ -45,7 +49,7 @@ const router = new Router({
       path: '/blocks', component: BlockList
     },
     {
-      path: '/txs/:txType', component: TxList
+      path: '/txs/:txType', component: TxList,
     },
     {
       path: '/validators', component: ValidatorListPage
@@ -84,26 +88,42 @@ const router = new Router({
       path: '/help', component: Help,
     },
     {
-      path: '/statistics/richlist', component: RichList,
+      path: '/stats/irisrichlist', component: RichList,
     },
     {
-      path: '/statistics/tokenstats', component: TokenStats,
+      path: '/stats/irisstats', component: TokenStats,
     },
     // {
     //   path: '/statistics/bondedTokens', component: BondedTokens,
     // }
+    {
+      path: '/assets/ntvassetstxs', component: NativeAssetPage,
+    },
+    {
+      path: '/assets/gtwassetstxs', component: GateWayAssetPage,
+    },
+    {
+      path: '/error', component: Error,
+    },
+    {
+      path: '/txs', component: AllTxTypeList,
+    },
+    {
+      path: "*",
+      component: Error
+    }
   ]
 
 })
 router.beforeEach((to, from, next) => {
-  if (sessionStorage.getItem('Show_faucet') === '0') {
-    if (to.path === '/faucet') {
-      next('/')
+    if (sessionStorage.getItem('Show_faucet') === '0') {
+      if (to.path === '/faucet') {
+        next('/')
+      } else {
+        next()
+      }
     } else {
       next()
     }
-  } else {
-    next()
-  }
 })
 export default router;

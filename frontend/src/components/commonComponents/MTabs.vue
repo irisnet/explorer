@@ -64,8 +64,8 @@ export default {
         }
     }
     .active {
-        background-color: #3598db;
-        border-color: #3598db;
+        background-color: var(--bgColor);
+        border-color: var(--bgColor);
         color: #ffffff;
     }
 }

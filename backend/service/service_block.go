@@ -5,10 +5,10 @@ import (
 
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
-	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
+	"github.com/irisnet/explorer/backend/vo"
 )
 
 type BlockService struct {
@@ -19,7 +19,7 @@ func (service *BlockService) GetModule() Module {
 	return Block
 }
 
-func (service *BlockService) GetValidatorSet(height int64, page, size int) model.ValidatorSet {
+func (service *BlockService) GetValidatorSet(height int64, page, size int) vo.ValidatorSet {
 	lcdValidators := lcd.ValidatorSet(height)
 	if page > 0 {
 		page = page - 1
@@ -44,10 +44,10 @@ func (service *BlockService) GetValidatorSet(height int64, page, size int) model
 		}
 	}
 
-	items := []model.BlockValidator{}
+	items := []vo.BlockValidator{}
 	for k, v := range lcdValidators.Validators {
 		if k >= page*size && k < (page+1)*size {
-			var tmp model.BlockValidator
+			var tmp vo.BlockValidator
 			tmp.Consensus = v.Address
 			tmp.VotingPower = v.VotingPower
 			tmp.ProposerPriority = v.ProposerPriority
@@ -62,14 +62,14 @@ func (service *BlockService) GetValidatorSet(height int64, page, size int) model
 		}
 	}
 
-	return model.ValidatorSet{
+	return vo.ValidatorSet{
 		Items: items,
 		Total: len(lcdValidators.Validators),
 	}
 }
 
-func (service *BlockService) QueryBlockInfo(height int64) model.BlockInfo {
-	var result model.BlockInfo
+func (service *BlockService) QueryBlockInfo(height int64) vo.BlockInfo {
+	var result vo.BlockInfo
 
 	currentBlock := lcd.Block(height)
 	if currentBlock.Block.Header.Height == "" {
@@ -135,7 +135,7 @@ func (service *BlockService) QueryBlockInfo(height int64) model.BlockInfo {
 	return result
 }
 
-func (service *BlockService) QueryList(page, size int) []model.BlockForList {
+func (service *BlockService) QueryList(page, size int) []vo.BlockForList {
 
 	offset := 0
 
@@ -194,7 +194,7 @@ func (service *BlockService) QueryList(page, size int) []model.BlockForList {
 		blockMapByHeight[v.Height] = v
 	}
 
-	blocksAsModel := make([]model.BlockForList, 0, len(blocks))
+	blocksAsModel := make([]vo.BlockForList, 0, len(blocks))
 
 	for _, block := range blocks {
 
@@ -224,7 +224,7 @@ func (service *BlockService) QueryList(page, size int) []model.BlockForList {
 			}
 		}
 
-		tmp := model.BlockForList{
+		tmp := vo.BlockForList{
 			Height:                  block.Height,
 			ProposerMoniker:         proposerMoniker,
 			ProposerAsValidatorAddr: proposerValidatorAddr,
@@ -243,11 +243,11 @@ func (service *BlockService) QueryList(page, size int) []model.BlockForList {
 		return blocksAsModel[1:]
 	}
 
-	return []model.BlockForList{}
+	return []vo.BlockForList{}
 }
 
-func (service *BlockService) QueryRecent() []model.BlockInfoVo {
-	var result []model.BlockInfoVo
+func (service *BlockService) QueryRecent() []vo.BlockInfoVo {
+	var result []vo.BlockInfoVo
 
 	blockList, err := document.Block{}.GetRecentBlockList()
 
@@ -256,7 +256,7 @@ func (service *BlockService) QueryRecent() []model.BlockInfoVo {
 		panic(types.CodeNotFound)
 	}
 	for _, block := range blockList {
-		result = append(result, model.BlockInfoVo{
+		result = append(result, vo.BlockInfoVo{
 			Time:   block.Time,
 			Height: block.Height,
 			NumTxs: block.NumTxs,
@@ -265,14 +265,14 @@ func (service *BlockService) QueryRecent() []model.BlockInfoVo {
 	return result
 }
 
-func buildBlock(block document.Block) (result model.BlockInfoVo) {
+func buildBlock(block document.Block) (result vo.BlockInfoVo) {
 	result.Height = block.Height
 	result.Hash = block.Hash
 	result.Time = block.Time
 	result.NumTxs = block.NumTxs
-	var validators []model.ValInfo
+	var validators []vo.ValInfo
 	for _, v := range block.Validators {
-		validators = append(validators, model.ValInfo{
+		validators = append(validators, vo.ValInfo{
 			Address:     v.Address,
 			VotingPower: v.VotingPower,
 		})

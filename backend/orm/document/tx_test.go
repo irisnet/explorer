@@ -4,12 +4,13 @@ import (
 	"testing"
 	"time"
 
-	"gopkg.in/mgo.v2/bson"
+	"encoding/json"
 	"github.com/irisnet/explorer/backend/utils"
+	"gopkg.in/mgo.v2/bson"
 )
 
 func TestQueryByAddr(t *testing.T) {
-	total, txList, err := CommonTx{}.QueryByAddr("faa1eqvkfthtrr93g4p9qspp54w6dtjtrn279vcmpn", 0, 100)
+	total, txList, err := CommonTx{}.QueryByAddr("faa1eqvkfthtrr93g4p9qspp54w6dtjtrn279vcmpn", 0, 100, true)
 	if err != nil {
 		t.Error(err)
 	}
@@ -22,7 +23,7 @@ func TestQueryByAddr(t *testing.T) {
 }
 
 func TestQueryTxByPage(t *testing.T) {
-	total, txList, err := CommonTx{}.QueryByPage(nil, 0, 20)
+	total, txList, err := CommonTx{}.QueryByPage(nil, 0, 20, true)
 
 	if err != nil {
 		t.Error(err)
@@ -47,14 +48,13 @@ func TestQueryHashActualFeeType(t *testing.T) {
 }
 
 func TestQueryTxByHash(t *testing.T) {
-
-	tx, err := CommonTx{}.QueryTxByHash("D128AA72A3FF465A6292FED7C69507C5224655C86DA1EA67AE316479D07A1191")
+	tx, err := CommonTx{}.QueryTxByHash("89D8527FC5CB56B79E02EBDFFCA47A1FAB246A8CEBBB6F455B1D44D5F8A39396")
 
 	if err != nil {
 		t.Error(err)
 	}
 
-	t.Logf("tx: %v \n", tx)
+	t.Logf("tx: %+v \n", string(utils.MarshalJsonIgnoreErr(tx)))
 
 }
 
@@ -83,12 +83,22 @@ func TestGetTxlistByDuration(t *testing.T) {
 
 func TestGetTxCountByDuration(t *testing.T) {
 
-	starttime,_ := time.Parse(utils.DateFmtYYYYMMDDHHmmss,"2019-07-01 00:00:00")
-	endtime,_ := time.Parse(utils.DateFmtYYYYMMDDHHmmss,"2019-07-02 00:00:00")
-	cnt,err := CommonTx{}.GetTxCountByDuration(starttime,endtime)
+	starttime, _ := time.Parse(utils.DateFmtYYYYMMDDHHmmss, "2019-07-01 00:00:00")
+	endtime, _ := time.Parse(utils.DateFmtYYYYMMDDHHmmss, "2019-07-02 00:00:00")
+	cnt, err := CommonTx{}.GetTxCountByDuration(starttime, endtime)
 	if err != nil {
 		t.Fatal(err)
 	}
 	t.Log(cnt)
 
+}
+
+func TestCommonTx_QueryTxAsset(t *testing.T) {
+	total, ret, err := CommonTx{}.QueryTxAsset("gateway", "", 0, 10, true)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	t.Log(total)
+	bytedata, _ := json.Marshal(ret)
+	t.Log(string(bytedata))
 }

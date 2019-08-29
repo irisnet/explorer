@@ -1,6 +1,6 @@
 <template>
     <div>
-        <span v-show="total > 0" class="info">{{currentRange[0]}}-{{currentRange[1]}} of {{total}}</span>
+        <span v-show="total > 0 && showInfo" class="info">{{currentRange[0]}}-{{currentRange[1]}} of {{total}}</span>
         <button
             v-if="showToFristEnd"
             @click="toFrist"
@@ -44,6 +44,10 @@ export default {
         },
         showToFristEnd: {
             type: Boolean,
+            default: true
+        },
+	    showInfo:{
+        	type: Boolean,
             default: true
         },
         ascending: {
@@ -135,7 +139,7 @@ export default {
         }
     },
     mounted() {
-        this.currentPage = this.page;
+	    this.currentPage = this.page;
         this.forRange();
     }
 };
@@ -143,7 +147,7 @@ export default {
 
 <style lang="scss" scoped>
 .info {
-    color: #a2a2ae;
+    color: var(--contentColor);
     vertical-align: middle;
     margin-right: 0.1rem;
 }
@@ -152,7 +156,7 @@ button {
     border: 1px solid #dee2e6;
     border-right-width: 0;
     padding: 5px 7.5px;
-    color: #3598db;
+    color: var(--bgColor);
     line-height: 17px;
     background-color: #ffffff;
     cursor: pointer;

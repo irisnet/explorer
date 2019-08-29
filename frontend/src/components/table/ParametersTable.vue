@@ -55,15 +55,15 @@
       word-wrap: break-word !important;
       .skip_route {
         a{
-          color: #3598db!important;
+          color: var(--bgColor)!important;
           cursor: pointer;
         }
       }
       .no_skip{
-        color:#A2A2AE;
+        color:var(--titleColor);
         cursor:default;
         .link_style{
-          color:#a2a2ae !important;
+          color:var(--contentColor) !important;
         }
       }
     }
@@ -71,7 +71,7 @@
   .table{
     th, td{
       padding:0.075rem !important;
-      color:#A2A2AE;
+      color:var(--contentColor);
     @include fontWeight;
     }
     margin-bottom:0 !important;
@@ -88,7 +88,7 @@
            padding-left:0.2rem !important;
          }
         }
-        border-bottom:0.02rem solid #3598db;
+        border-bottom:0.02rem solid var(--bgColor);
       }
     }
     tbody{

@@ -3,7 +3,7 @@ package service
 import (
 	"testing"
 
-	"github.com/irisnet/explorer/backend/model"
+	"github.com/irisnet/explorer/backend/vo"
 )
 
 import (
@@ -38,7 +38,7 @@ func TestQueryRichList(t *testing.T) {
 
 	richList := new(AccountService).QueryRichList()
 
-	if modelVList, ok := richList.([]model.AccountInfo); ok {
+	if modelVList, ok := richList.([]vo.AccountInfo); ok {
 		for k, v := range modelVList {
 			t.Logf("k: %v  v: %v \n", k, v)
 		}

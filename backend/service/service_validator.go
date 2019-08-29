@@ -8,10 +8,10 @@ import (
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
-	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
+	"github.com/irisnet/explorer/backend/vo"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/txn"
 )
@@ -24,12 +24,12 @@ func (service *ValidatorService) GetModule() Module {
 	return Validator
 }
 
-func (service *ValidatorService) GetValidators(typ, origin string, page, size int) interface{} {
+func (service *ValidatorService) GetValidators(typ, origin string, page, size int, istotal bool) interface{} {
 	if origin == "browser" {
 		var result []lcd.ValidatorVo
 		var blackList = service.QueryBlackList()
 
-		total, validatorList, err := document.Validator{}.GetValidatorListByPage(typ, page, size, true)
+		total, validatorList, err := document.Validator{}.GetValidatorListByPage(typ, page, size, true, istotal)
 		if err != nil || total <= 0 {
 			if err != nil {
 				logger.Error("GetValidatorListByPage have error", logger.String("error", err.Error()))
@@ -52,11 +52,11 @@ func (service *ValidatorService) GetValidators(typ, origin string, page, size in
 			}
 			validator.VotingRate = float32(v.VotingPower) / float32(totalVotingPower)
 			selfbond := ComputeSelfBonded(v.Tokens, v.DelegatorShares, v.SelfBond)
-			validator.SelfBond = utils.ParseStringFromFloat64(selfbond)
+			validator.SelfBond = selfbond
 			result = append(result, validator)
 		}
 
-		return model.PageVo{
+		return vo.PageVo{
 			Data:  result,
 			Count: total,
 		}
@@ -65,17 +65,17 @@ func (service *ValidatorService) GetValidators(typ, origin string, page, size in
 	return service.queryValForRainbow(page, size)
 }
 
-func (service *ValidatorService) GetVoteTxsByValidatorAddr(validatorAddr string, page, size int) model.ValidatorVotePage {
+func (service *ValidatorService) GetVoteTxsByValidatorAddr(validatorAddr string, page, size int, istotal bool) vo.ValidatorVotePage {
 
 	validatorAcc := utils.Convert(conf.Get().Hub.Prefix.AccAddr, validatorAddr)
-	total, proposalsAsDoc, err := document.Proposal{}.QueryIdTitleStatusVotedTxhashByValidatorAcc(validatorAcc, page, size)
+	total, proposalsAsDoc, err := document.Proposal{}.QueryIdTitleStatusVotedTxhashByValidatorAcc(validatorAcc, page, size, istotal)
 
 	if err != nil {
 		logger.Error("QueryIdTitleStatusVotedTxhashByValidatorAcc", logger.String("err", err.Error()))
-		return model.ValidatorVotePage{}
+		return vo.ValidatorVotePage{}
 	}
 
-	items := make([]model.ValidatorVote, 0, size)
+	items := make([]vo.ValidatorVote, 0, size)
 
 	for _, v := range proposalsAsDoc {
 		votedOption, txhash := "", ""
@@ -87,7 +87,7 @@ func (service *ValidatorService) GetVoteTxsByValidatorAddr(validatorAddr string,
 			}
 		}
 
-		tmp := model.ValidatorVote{
+		tmp := vo.ValidatorVote{
 			Title:      v.Title,
 			ProposalId: v.ProposalId,
 			Status:     v.Status,
@@ -98,20 +98,20 @@ func (service *ValidatorService) GetVoteTxsByValidatorAddr(validatorAddr string,
 		items = append(items, tmp)
 	}
 
-	return model.ValidatorVotePage{
+	return vo.ValidatorVotePage{
 		Total: total,
 		Items: items,
 	}
 }
 
-func (service *ValidatorService) GetDepositedTxByValidatorAddr(validatorAddr string, page, size int) model.ValidatorDepositTxPage {
+func (service *ValidatorService) GetDepositedTxByValidatorAddr(validatorAddr string, page, size int, istotal bool) vo.ValidatorDepositTxPage {
 
 	validatorAcc := utils.Convert(conf.Get().Hub.Prefix.AccAddr, validatorAddr)
-	total, txs, err := document.CommonTx{}.QueryDepositedProposalTxByValidatorWithSubmitOrDepositType(validatorAcc, page, size)
+	total, txs, err := document.CommonTx{}.QueryDepositedProposalTxByValidatorWithSubmitOrDepositType(validatorAcc, page, size, istotal)
 
 	if err != nil {
 		logger.Error("QueryDepositedProposalTxByValidatorWithSubmitOrDepositType", logger.String("err", err.Error()))
-		return model.ValidatorDepositTxPage{}
+		return vo.ValidatorDepositTxPage{}
 	}
 
 	proposalIds := make([]uint64, 0, len(txs))
@@ -138,7 +138,7 @@ func (service *ValidatorService) GetDepositedTxByValidatorAddr(validatorAddr str
 	}
 
 	blackList := service.QueryBlackList()
-	items := make([]model.ValidatorDepositTx, 0, size)
+	items := make([]vo.ValidatorDepositTx, 0, size)
 	for _, v := range txs {
 		submited := false
 		if v.Type == types.TxTypeSubmitProposal {
@@ -168,7 +168,7 @@ func (service *ValidatorService) GetDepositedTxByValidatorAddr(validatorAddr str
 			}
 		}
 
-		tmp := model.ValidatorDepositTx{
+		tmp := vo.ValidatorDepositTx{
 			ProposalId:      v.ProposalId,
 			Proposer:        proposer,
 			Moniker:         moniker,
@@ -179,22 +179,22 @@ func (service *ValidatorService) GetDepositedTxByValidatorAddr(validatorAddr str
 		items = append(items, tmp)
 	}
 
-	return model.ValidatorDepositTxPage{
+	return vo.ValidatorDepositTxPage{
 		Total: total,
 		Items: items,
 	}
 }
 
-func (service *ValidatorService) GetUnbondingDelegationsFromLcd(valAddr string, page, size int) model.UnbondingDelegationsPage {
+func (service *ValidatorService) GetUnbondingDelegationsFromLcd(valAddr string, page, size int) vo.UnbondingDelegationsPage {
 
 	lcdUnbondingDelegations := lcd.GetUnbondingDelegationsByValidatorAddr(valAddr)
 
-	items := make([]model.UnbondingDelegations, 0, size)
+	items := make([]vo.UnbondingDelegations, 0, size)
 
 	for k, v := range lcdUnbondingDelegations {
 		if k >= page*size && k < (page+1)*size {
 
-			tmp := model.UnbondingDelegations{
+			tmp := vo.UnbondingDelegations{
 				Address: v.DelegatorAddr,
 				Amount:  v.Balance,
 				Block:   v.CreationHeight,
@@ -205,13 +205,13 @@ func (service *ValidatorService) GetUnbondingDelegationsFromLcd(valAddr string, 
 		}
 	}
 
-	return model.UnbondingDelegationsPage{
+	return vo.UnbondingDelegationsPage{
 		Total: len(lcdUnbondingDelegations),
 		Items: items,
 	}
 }
 
-func (service *ValidatorService) GetDelegationsFromLcd(valAddr string, page, size int, needpage bool) model.DelegationsPage {
+func (service *ValidatorService) GetDelegationsFromLcd(valAddr string, page, size int, needpage bool, istotal bool) vo.DelegationsPage {
 
 	lcdDelegations := lcd.GetDelegationsByValidatorAddr(valAddr)
 
@@ -231,21 +231,21 @@ func (service *ValidatorService) GetDelegationsFromLcd(valAddr string, page, siz
 	if err != nil {
 		logger.Debug("QueryTokensAndShareRatioByValidatorAddrs", logger.String("err", err.Error()))
 	}
-	var items []model.Delegation
+	var items []vo.Delegation
 	if needpage {
 		items = GetDalegationbyPageSize(lcdDelegations, totalShareAsRat, tokenShareRatioByValidatorAddr, page, size)
 	} else {
 		items = GetDalegation(lcdDelegations, totalShareAsRat, tokenShareRatioByValidatorAddr)
 	}
 
-	return model.DelegationsPage{
+	return vo.DelegationsPage{
 		Total: len(lcdDelegations),
 		Items: items,
 	}
 }
 
-func GetDalegation(lcdDelegations []lcd.DelegationVo, totalShareAsRat *big.Rat, tokenShareRatio map[string]*big.Rat) []model.Delegation {
-	items := make([]model.Delegation, 0, len(lcdDelegations))
+func GetDalegation(lcdDelegations []lcd.DelegationVo, totalShareAsRat *big.Rat, tokenShareRatio map[string]*big.Rat) []vo.Delegation {
+	items := make([]vo.Delegation, 0, len(lcdDelegations))
 	for _, v := range lcdDelegations {
 
 		amountAsFloat64 := float64(0)
@@ -275,7 +275,7 @@ func GetDalegation(lcdDelegations []lcd.DelegationVo, totalShareAsRat *big.Rat, 
 				logger.Any("totalShareAsFloat64", totalShareAsFloat64))
 		}
 
-		tmp := model.Delegation{
+		tmp := vo.Delegation{
 			Address:     v.DelegatorAddr,
 			Block:       v.Height,
 			SelfShares:  v.Shares,
@@ -289,8 +289,8 @@ func GetDalegation(lcdDelegations []lcd.DelegationVo, totalShareAsRat *big.Rat, 
 }
 
 func GetDalegationbyPageSize(lcdDelegations []lcd.DelegationVo, totalShareAsRat *big.Rat,
-	tokenShareRatio map[string]*big.Rat, page, size int) []model.Delegation {
-	items := make([]model.Delegation, 0, size)
+	tokenShareRatio map[string]*big.Rat, page, size int) []vo.Delegation {
+	items := make([]vo.Delegation, 0, size)
 	for k, v := range lcdDelegations {
 		if k >= page*size && k < (page+1)*size {
 
@@ -321,7 +321,7 @@ func GetDalegationbyPageSize(lcdDelegations []lcd.DelegationVo, totalShareAsRat 
 					logger.Any("totalShareAsFloat64", totalShareAsFloat64))
 			}
 
-			tmp := model.Delegation{
+			tmp := vo.Delegation{
 				Address:     v.DelegatorAddr,
 				Block:       v.Height,
 				SelfShares:  v.Shares,
@@ -334,12 +334,12 @@ func GetDalegationbyPageSize(lcdDelegations []lcd.DelegationVo, totalShareAsRat 
 	return items
 }
 
-func (service *ValidatorService) GetRedelegationsFromLcd(valAddr string, page, size int) model.RedelegationPage {
+func (service *ValidatorService) GetRedelegationsFromLcd(valAddr string, page, size int) vo.RedelegationPage {
 
 	lcdReDelegations := lcd.GetRedelegationsByValidatorAddr(valAddr)
 	blacklist := service.QueryBlackList()
 
-	items := make([]model.Redelegation, 0, size)
+	items := make([]vo.Redelegation, 0, size)
 
 	for k, v := range lcdReDelegations {
 		if k >= page*size && k < (page+1)*size {
@@ -351,7 +351,7 @@ func (service *ValidatorService) GetRedelegationsFromLcd(valAddr string, page, s
 			if blockone, ok := blacklist[v.ValidatorDstAddr]; ok {
 				tomoniker = blockone.Moniker
 			}
-			tmp := model.Redelegation{
+			tmp := vo.Redelegation{
 				Address:   v.DelegatorAddr,
 				Amount:    v.Balance,
 				To:        v.ValidatorDstAddr,
@@ -363,20 +363,20 @@ func (service *ValidatorService) GetRedelegationsFromLcd(valAddr string, page, s
 		}
 	}
 
-	return model.RedelegationPage{
+	return vo.RedelegationPage{
 		Total: len(lcdReDelegations),
 		Items: items,
 	}
 }
 
-func (service *ValidatorService) GetWithdrawAddrByValidatorAddr(valAddr string) model.WithdrawAddr {
+func (service *ValidatorService) GetWithdrawAddrByValidatorAddr(valAddr string) vo.WithdrawAddr {
 
 	withdrawAddr, err := lcd.GetWithdrawAddressByValidatorAcc(utils.Convert(conf.Get().Hub.Prefix.AccAddr, valAddr))
 	if err != nil {
 		logger.Error("GetWithdrawAddressByValidatorAcc", logger.String("validator", valAddr), logger.String("err", err.Error()))
 	}
 
-	return model.WithdrawAddr{
+	return vo.WithdrawAddr{
 		Address: withdrawAddr,
 	}
 }
@@ -422,15 +422,15 @@ func (service *ValidatorService) UpdateValidatorIcons() error {
 	return document.Validator{}.Batch(txs)
 }
 
-func (service *ValidatorService) GetValidatorDetail(validatorAddr string) model.ValidatorForDetail {
+func (service *ValidatorService) GetValidatorDetail(validatorAddr string) vo.ValidatorForDetail {
 
 	validatorAsDoc, err := document.Validator{}.QueryValidatorDetailByOperatorAddr(validatorAddr)
 	if err != nil {
 		logger.Error("QueryValidatorDetailByOperatorAddr", logger.String("validator", validatorAddr), logger.String("err", err.Error()))
-		return model.ValidatorForDetail{}
+		return vo.ValidatorForDetail{}
 	}
 
-	desc := model.Description{
+	desc := vo.Description{
 		Moniker:  validatorAsDoc.Description.Moniker,
 		Identity: validatorAsDoc.Description.Identity,
 		Website:  validatorAsDoc.Description.Website,
@@ -456,7 +456,7 @@ func (service *ValidatorService) GetValidatorDetail(validatorAddr string) model.
 		logger.Error("QueryTotalActiveValidatorVotingPower", logger.String("err", err.Error()))
 	}
 
-	res := model.ValidatorForDetail{
+	res := vo.ValidatorForDetail{
 		TotalPower:              totalVotingPower,
 		SelfPower:               validatorAsDoc.VotingPower,
 		Status:                  validatorAsDoc.GetValidatorStatus(),
@@ -491,7 +491,7 @@ func (service *ValidatorService) GetValidatorDetail(validatorAddr string) model.
 	return res
 }
 
-func (service *ValidatorService) QueryCandidatesTopN() model.ValDetailVo {
+func (service *ValidatorService) QueryCandidatesTopN() vo.ValDetailVo {
 
 	validatorsList, power, upTimeMap, err := document.Validator{}.GetCandidatesTopN()
 
@@ -500,7 +500,7 @@ func (service *ValidatorService) QueryCandidatesTopN() model.ValDetailVo {
 		panic(types.CodeNotFound)
 	}
 
-	var validators []model.Validator
+	var validators []vo.Validator
 
 	for _, v := range validatorsList {
 
@@ -508,7 +508,7 @@ func (service *ValidatorService) QueryCandidatesTopN() model.ValDetailVo {
 		validator.Uptime = upTimeMap[utils.GenHexAddrFromPubKey(v.ConsensusPubkey)]
 		validators = append(validators, validator)
 	}
-	resp := model.ValDetailVo{
+	resp := vo.ValDetailVo{
 		PowerAll:   power,
 		Validators: validators,
 	}
@@ -516,7 +516,7 @@ func (service *ValidatorService) QueryCandidatesTopN() model.ValDetailVo {
 	return resp
 }
 
-func (service *ValidatorService) QueryValidator(address string) model.CandidatesInfoVo {
+func (service *ValidatorService) QueryValidator(address string) vo.CandidatesInfoVo {
 
 	validator, err := lcd.Validator(address)
 	if err != nil {
@@ -536,7 +536,7 @@ func (service *ValidatorService) QueryValidator(address string) model.Candidates
 		details = desc.Details
 	}
 	var tokenDec, _ = types.NewDecFromStr(validator.Tokens)
-	var val = model.Validator{
+	var val = vo.Validator{
 		Address:     validator.OperatorAddress,
 		PubKey:      validator.ConsensusPubkey,
 		Owner:       utils.Convert(conf.Get().Hub.Prefix.AccAddr, validator.OperatorAddress),
@@ -544,7 +544,7 @@ func (service *ValidatorService) QueryValidator(address string) model.Candidates
 		Status:      BondStatusToString(validator.Status),
 		BondHeight:  utils.ParseIntWithDefault(validator.BondHeight, 0),
 		VotingPower: tokenDec.RoundInt64(),
-		Description: model.Description{
+		Description: vo.Description{
 			Moniker:  moniker,
 			Identity: identity,
 			Website:  website,
@@ -554,7 +554,7 @@ func (service *ValidatorService) QueryValidator(address string) model.Candidates
 		Icons: validator.Icons,
 	}
 
-	result := model.CandidatesInfoVo{
+	result := vo.CandidatesInfoVo{
 		Validator: val,
 	}
 
@@ -568,166 +568,51 @@ func (service *ValidatorService) QueryValidator(address string) model.Candidates
 	result.PowerAll = count
 	return result
 }
-func ComputeSelfBonded(tokens, shares, selfBond string) float64 {
+func ComputeSelfBonded(tokens, shares, selfBond string) string {
 	rate, err := utils.QuoByStr(tokens, shares)
 	if err != nil {
 		logger.Error("validator.Tokens / validator.DelegatorShares", logger.String("err", err.Error()))
-		return 0
+		return ""
 	}
 
 	selfBondAsRat, ok := new(big.Rat).SetString(selfBond)
 	if !ok {
 		logger.Error("convert validator selfBond type (string -> big.Rat) err",
 			logger.String("self bond str", selfBond))
-		return 0
+		return ""
 
 	}
 	selfBondTokensAsRat := new(big.Rat).Mul(selfBondAsRat, rate)
-	selfBondedAsFloat64, exact := selfBondTokensAsRat.Float64()
-	if !exact {
-		logger.Info("convert selfBondedAsFloat64 type (big.Rat to float64) ",
-			logger.Any("exact", exact),
-			logger.Any("selfBondedAsFloat64", selfBondTokensAsRat))
-	}
-	return selfBondedAsFloat64
+
+	return selfBondTokensAsRat.FloatString(18)
 }
 
-func ComputeBondStake(tokens, shares, selfBond string) float64 {
+func ComputeBondStake(tokens, shares, selfBond string) string {
 	rate, err := utils.QuoByStr(tokens, shares)
 	if err != nil {
 		logger.Error("validator.Tokens / validator.DelegatorShares", logger.String("err", err.Error()))
-		return 0
+		return ""
 	}
 
 	tokensAsRat, ok := new(big.Rat).SetString(tokens)
 	if !ok {
 		logger.Error("convert validator tokens type (string -> big.Rat) err", logger.String("token str", tokens))
-		return 0
+		return ""
 	}
 
 	selfBondAsRat, ok := new(big.Rat).SetString(selfBond)
 	if !ok {
 		logger.Error("convert validator selfBond type (string -> big.Rat) err", logger.String("self bond str", selfBond))
-		return 0
+		return ""
 
 	}
 	selfBondTokensAsRat := new(big.Rat).Mul(selfBondAsRat, rate)
 	BondStakeAsRat := new(big.Rat).Sub(tokensAsRat, selfBondTokensAsRat)
-	BondStakeAsFloat64, exact := BondStakeAsRat.Float64()
-	if !exact {
-		logger.Info("convert BondStakeAsRat type (big.Rat to float64) ",
-			logger.Any("exact", exact),
-			logger.Any("BondStakeAsRat", BondStakeAsRat))
-	}
-	return BondStakeAsFloat64
+
+	return BondStakeAsRat.FloatString(18)
 }
 
-func (service *ValidatorService) QueryCandidateUptime(address, category string) []model.UptimeChangeVo {
-
-	address, err := document.Validator{}.GetCandidatePubKeyAddrByAddr(address)
-
-	if err != nil || address == "" {
-		if err != nil {
-			logger.Error("GetCandidatePubKeyAddrByAddr have error", logger.String("error", err.Error()))
-		}
-		panic(types.CodeNotFound)
-	}
-
-	address = utils.GenHexAddrFromPubKey(address)
-
-	switch category {
-	case "hour":
-
-		resultAsDoc, err := document.Validator{}.QueryCandidateUptimeWithHour(address)
-
-		if err != nil {
-			logger.Error("QueryCandidateUptimeWithHour have error", logger.String("error", err.Error()))
-			panic(types.CodeNotFound)
-		}
-		result := make([]model.UptimeChangeVo, 0, len(resultAsDoc))
-
-		for _, v := range resultAsDoc {
-			result = append(result, model.UptimeChangeVo{
-				Address: v.Address,
-				Time:    v.Time,
-				Uptime:  v.Uptime,
-			})
-		}
-
-		return result
-	case "week", "month":
-
-		resultAsDoc, err := document.Validator{}.QueryCandidateUptimeByWeekOrMonth(address, category)
-
-		if err != nil {
-			logger.Error("QueryCandidateUptimeByWeekOrMonth have error", logger.String("error", err.Error()))
-			panic(types.CodeNotFound)
-		}
-		result := make([]model.UptimeChangeVo, 0, len(resultAsDoc))
-
-		for _, v := range resultAsDoc {
-			result = append(result, model.UptimeChangeVo{
-				Address: v.Address,
-				Time:    v.Time,
-				Uptime:  v.Uptime,
-			})
-		}
-		return result
-	}
-	return nil
-}
-
-func (service *ValidatorService) QueryCandidatePower(address, category string) []model.ValVotingPowerChangeVo {
-
-	var err error
-
-	address, err = document.Validator{}.GetCandidatePubKeyAddrByAddr(address)
-
-	if err != nil || address == "" {
-		if err != nil {
-			logger.Error("GetCandidatePubKeyAddrByAddr have error", logger.String("error", err.Error()))
-		}
-		panic(types.CodeNotFound)
-	}
-
-	address = utils.GenHexAddrFromPubKey(address)
-
-	var agoStr string
-	switch category {
-	case "week":
-		agoStr = "-336h"
-		break
-	case "month":
-		agoStr = "-720h"
-		break
-	case "months":
-		agoStr = "-1440h"
-		break
-	}
-
-	validatorPowerArr, err := document.Validator{}.QueryCandidatePower(address, agoStr)
-
-	if err != nil {
-		logger.Error("QueryCandidatePower have error", logger.String("error", err.Error()))
-		panic(types.CodeNotFound)
-	}
-
-	result := make([]model.ValVotingPowerChangeVo, 0, len(validatorPowerArr))
-
-	for _, v := range validatorPowerArr {
-		result = append(result, model.ValVotingPowerChangeVo{
-			Height:  v.Height,
-			Address: v.Address,
-			Power:   v.Power,
-			Time:    v.Time,
-			Change:  v.Change,
-		})
-	}
-
-	return result
-}
-
-func (service *ValidatorService) QueryCandidateStatus(address string) (resp model.ValStatus) {
+func (service *ValidatorService) QueryCandidateStatus(address string) (resp vo.ValStatus) {
 
 	preCommitCount, uptime, err := document.Validator{}.QueryCandidateStatus(address)
 
@@ -736,7 +621,7 @@ func (service *ValidatorService) QueryCandidateStatus(address string) (resp mode
 		panic(types.CodeNotFound)
 	}
 
-	resp = model.ValStatus{
+	resp = vo.ValStatus{
 		Uptime:         uptime,
 		PrecommitCount: float64(preCommitCount),
 	}
@@ -744,7 +629,7 @@ func (service *ValidatorService) QueryCandidateStatus(address string) (resp mode
 	return resp
 }
 
-func (service *ValidatorService) convert(validator document.Validator) model.Validator {
+func (service *ValidatorService) convert(validator document.Validator) vo.Validator {
 	var moniker = validator.Description.Moniker
 	var identity = validator.Description.Identity
 	var website = validator.Description.Website
@@ -763,7 +648,7 @@ func (service *ValidatorService) convert(validator document.Validator) model.Val
 		logger.Error("convert string to int64", logger.String("err", err.Error()))
 	}
 
-	return model.Validator{
+	return vo.Validator{
 		Address:     validator.OperatorAddress,
 		PubKey:      utils.Convert(conf.Get().Hub.Prefix.ConsPub, validator.ConsensusPubkey),
 		Owner:       utils.Convert(conf.Get().Hub.Prefix.AccAddr, validator.OperatorAddress),
@@ -771,7 +656,7 @@ func (service *ValidatorService) convert(validator document.Validator) model.Val
 		Status:      strconv.Itoa(validator.Status),
 		BondHeight:  bondHeightAsInt64,
 		VotingPower: validator.VotingPower,
-		Description: model.Description{
+		Description: vo.Description{
 			Moniker:  moniker,
 			Identity: identity,
 			Website:  website,

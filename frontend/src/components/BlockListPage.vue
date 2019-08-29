@@ -26,7 +26,9 @@
                 <div class="block_list_table_container">
                     <spin-component :showLoading="flShowLoading"></spin-component>
                     <m-block-list-page-table :items="items"></m-block-list-page-table>
-                    <div v-show="showNoData" class="no_data_show">No Data</div>
+                    <div v-show="showNoData" class="no_data_show">
+                        <img src="../assets/no_data.svg">
+                    </div>
                 </div>
                 <div class="pagination_footer_container">
                     <m-pagination
@@ -219,12 +221,12 @@ export default {
                 .skip_route {
                     margin-left: 0.09rem;
                     a {
-                        color: #3598db !important;
+                        color: var(--bgColor) !important;
                         cursor: pointer;
                     }
                 }
                 span {
-                    color: #a2a2ae;
+                    color: var(--contentColor);
                     font-size: 0.18rem;
                 }
                 .pagination_container {

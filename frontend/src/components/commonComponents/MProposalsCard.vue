@@ -91,11 +91,11 @@ export default {
       position: relative;
       z-index: 1;
       .title {
-        color: #A2A2AE;
+        color: var(--contentColor);
       }
       .value {
         margin-left: 6px;
-        color: #3598DB;
+        color: var(--bgColor);
         white-space: nowrap;
       }
       .title_value_content {
@@ -147,9 +147,9 @@ export default {
       span.end {
         margin-left: 16px;
         margin-right: 30px;
-        color: #22252A;
+        color: var(--contentColor);
         span.end_value {
-          color: #A2A2AE;
+          color: var(--contentColor);
         }
       }
       .progress {
@@ -163,7 +163,7 @@ export default {
         flex: 1;
         .current {
           height: 0.2rem;
-          background: #3598DB;
+          background: var(--bgColor);
           border-radius: 0.17rem;
           .current_value {
             position: relative;
@@ -203,7 +203,7 @@ export default {
             color: #3698DB;
             .intital_value_span {
               display: block;
-              color: #A2A2AE;
+              color: var(--contentColor);
             }
             span {
               display: inline-block;
@@ -215,7 +215,7 @@ export default {
               width: 0;
               height: 0;
               border: 4.5px solid transparent;
-              border-bottom-color: #3598DB;
+              border-bottom-color: var(--bgColor);
               margin: auto;
               margin-top: 2px;
               transform: translateX(1px) translateY(-50%);

@@ -26,7 +26,7 @@
                     </div>
                 </div>
                 <div v-show="showNoData" class="no_data_show">
-                    No Data
+                    <img src="../assets/no_data.svg" alt="">
                 </div>
             </div>
         </div>
@@ -39,6 +39,7 @@
 	import Service from '../service';
 	import Tools from "../util/Tools"
 	import MParametersCard from './commonComponents/MParametersCard';
+	import BigNumber from "bignumber.js"
 	export default {
 		name: "Parameters",
 		components: {SpinComponent, VParameters, MParametersCard},
@@ -134,10 +135,10 @@
 					parameterItem.current = this.formatUnbondingTime(parameterItem.current);
 					parameterItem.genesis = this.formatUnbondingTime(parameterItem.genesis);
 				}else if(perDataArr.indexOf(parameterItem.key) > -1){
-					parameterItem.min = Number(arr[0]) === 0 ? arr[0] : `${arr[0]*100}`;
-					parameterItem.max = Number(arr[1]) === 0 ? arr[1] : `${arr[1]*100} %`;
-					parameterItem.current = `${parameterItem.current_value*100} %`;
-					parameterItem.genesis = `${parameterItem.genesis_value*100} %`;
+					parameterItem.min = Number(arr[0]) === 0 ? arr[0] : `${new BigNumber(arr[0]).multipliedBy(100)}`;
+					parameterItem.max = Number(arr[1]) === 0 ? arr[1] : `${new BigNumber(arr[1]).multipliedBy(100)} %`;
+					parameterItem.current = `${parameterItem.current_value ? new BigNumber(parameterItem.current_value).multipliedBy(100) : parameterItem.current_value * 100} %`;
+					parameterItem.genesis = `${parameterItem.genesis_value ? new BigNumber(parameterItem.genesis_value).multipliedBy(100) : parameterItem.genesis_value*100} %`;
 				}else if(parameterItem.key === "gas_price_threshold"){
 					let maxL = String(arr[1]).length - 1;
 					parameterItem.max = `${Number(arr[1]) / (10 ** maxL)}*10^${maxL - 9} Nano`;
@@ -289,7 +290,7 @@
                         }
                         span {
                             margin-left: 0.06rem;
-                            color: #A2A2AE;
+                            color: var(--contentColor);
                         }
                     }
                     div.genesis {

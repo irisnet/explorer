@@ -3,7 +3,7 @@ package controller
 import (
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/types"
-	"github.com/irisnet/explorer/backend/model"
+	"github.com/irisnet/explorer/backend/vo"
 )
 
 func RegisterBondedTokens(r *mux.Router) error {
@@ -20,14 +20,14 @@ func RegisterBondedTokens(r *mux.Router) error {
 }
 
 func registerBondedTokensValidators(r *mux.Router) error {
-	doApi(r, types.UrlRegisterBondedTokensValidators, "GET", func(request model.IrisReq) interface{} {
+	doApi(r, types.UrlRegisterBondedTokensValidators, "GET", func(request vo.IrisReq) interface{} {
 		bondedtokens.SetTid(request.TraceId)
 		vtype := QueryParam(request, "type")
 		result, err := bondedtokens.QueryBondedTokensValidator(vtype)
 		if err != nil {
-			return model.NewResponse("-1", err.Error(), nil)
+			return vo.NewResponse("-1", err.Error(), nil)
 		}
-		return model.NewResponse(types.CodeSuccess.Code, types.CodeSuccess.Msg, result)
+		return vo.NewResponse(types.CodeSuccess.Code, types.CodeSuccess.Msg, result)
 	})
 
 	return nil

@@ -6,7 +6,7 @@
                     <li class="item_status">
                         <div class="img_container">
                             <div class="img_content">
-                                <img src="../assets/block_height.png" alt="">
+                                <i class="iconfont iconBlockHeight"></i>
                             </div>
                             <span class="item_name">{{lang.home.blockHeight}}</span>
                         </div>
@@ -18,17 +18,17 @@
                     <li class="item_status">
                         <div class="img_container">
                             <div class="img_content">
-                                <img src="../assets/home_transactions.png" alt="">
+                                <i class="iconfont iconTransactions"></i>
                             </div>
                             <span class="item_name">{{lang.home.transactions}}</span>
                         </div>
-                        <p class="current_block">{{transactionValue}}</p>
+                        <p class="current_block transaction_link"><router-link :to="`/txs`">{{transactionValue}}</router-link></p>
                         <p class="block_time">{{blockTime}}</p>
                     </li>
                     <li class="item_status">
                         <div class="img_container">
                             <div class="img_content">
-                                <img src="../assets/age_block_time.png" alt="">
+                                <i class="iconfont iconAvgBlockTime"></i>
                             </div>
                             <span class="item_name">{{lang.home.ageTime}}</span>
                         </div>
@@ -38,7 +38,7 @@
                     <li class="item_status">
                         <div class="img_container">
                             <div class="img_content">
-                                <img src="../assets/voting_power.png" alt="">
+                                <i class="iconfont iconVotingPower"></i>
                             </div>
                             <span  class="item_name">{{lang.home.votingPower }}</span>
                         </div>
@@ -48,7 +48,7 @@
                     <li class="item_status">
                         <div class="img_container">
                             <div class="img_content">
-                                <img src="../assets/network_bonded.png" alt="">
+                                <i class="iconfont iconBondedTokens"></i>
                             </div>
                             <span class="item_name">{{lang.home.bondedTokens}}</span>
                         </div>
@@ -440,7 +440,7 @@
                     }
                     .information_module_key {
                         font-size: 0.14rem;
-                        color: #a2a2ae;
+                        color: var(--contentColor);
                     }
                 }
             }
@@ -462,6 +462,10 @@
                             display: flex;
                             align-items: center;
                             width: 0.15rem;
+                            i{
+                                font-size: 0.16rem;
+                                color: var(--bgColor)
+                            }
                             img{
                                 width: 100%;
                             }
@@ -469,17 +473,22 @@
                         .item_name{
                             margin-left: 0.08rem;
                             font-size: 0.14rem;
-                            color: rgba(162, 162, 174, 1);
+                            color: var(--contentColor);
                         }
                     }
                     .current_block{
                         padding-top: 0.2rem;
                         font-size: 0.2rem;
                         line-height: 0.23rem;
-                        color: rgba(34, 37, 42, 1);
+                        color: var(--titleColor);
+                    }
+                    .transaction_link{
+                        a{
+                            color: var(--bgColor) !important;
+                        }
                     }
                     .block_time{
-                        color: rgba(162, 162, 174, 1);
+                        color: var(--contentColor);
                         font-size: 0.14rem;
                         padding-top: 0.1rem;
                     }
@@ -560,7 +569,7 @@
         }
         .home_module_item_status {
             padding: 0.1rem;
-            background: #3190e8;
+            background: var(--bgColor);
 
             .current_block {
                 @include fontWeight;
@@ -592,7 +601,7 @@
     .blocks_background_type{
         background: url('../assets/block.png') no-repeat 0 0.02rem;
         text-indent:0.2rem;
-        color:#3598db;
+        color:var(--bgColor);
     }
     .home_module_transaction_title_wrap{
         @include flex;
@@ -637,7 +646,7 @@
     .proposer_content{
         cursor: pointer;
         a{
-            color:#3598db !important;
+            color:var(--bgColor) !important;
         }
     }
 </style>

@@ -81,7 +81,7 @@ export default {
             borderWidth: 0,
             color: '#51A9FF'
           }
-        }, 
+        },
         {
           r0: '25%',
           r: '50%',
@@ -118,7 +118,7 @@ export default {
           radius: ['0%', '100%'],
           label: {
             rotate: '0',
-            textBorderColor: '#22252A',
+            textBorderColor: 'var(--contentColor)',
             textBorderWidth: 1,
             fontWeight: 600,
             fontFamily: 'Arial'
@@ -253,12 +253,12 @@ export default {
         white-space: nowrap;
         display: flex;
         .title {
-          color: #A2A2AE;
+          color: var(--contentColor);
           white-space: nowrap;
         }
         .value {
           margin-left: 6px;
-          color: #3598DB;
+          color: var(--bgColor);
           white-space: nowrap;
         }
         .title_value_content {
@@ -291,11 +291,11 @@ export default {
           div.per_title {
             margin-top: 30px;
             font-size: 14px;
-            color: #A2A2AE;
+            color: var(--contentColor);
           }
           & > div {
             font-size: 12px;
-            color: #22252A;
+            color: var(--contentColor);
             vertical-align: middle;
             img {
               width: 0.14rem;

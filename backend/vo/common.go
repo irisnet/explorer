@@ -1,4 +1,4 @@
-package model
+package vo
 
 type ResultVo struct {
 	Block    SimpleBlockVo    `json:"block,omitempty"`

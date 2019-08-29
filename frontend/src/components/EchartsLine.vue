@@ -1,7 +1,8 @@
 <template>
   <div :class="echartsComponentWrapLine">
     <div class="echarts_title_wrap_line">
-      14 day Transaction History
+      <span class="echarts_title">14 day Transaction History</span>
+      <span class="view_all_content"><router-link :to="`/txs`">View All</router-link></span>
     </div>
     <div id="echarts_line">
 
@@ -28,7 +29,7 @@
               axis:"x",
               type:"line",
               lineStyle:{
-                color:"#a2a2ae",
+                color:"var(--contentColor)",
               },
             },
             formatter(params){
@@ -43,7 +44,7 @@
             data: [],
             axisLine: {
               lineStyle: {
-                color: '#a2a2ae'
+                color: 'var(--contentColor)'
               }
             },
             axisLabel:{
@@ -87,14 +88,15 @@
                   color: new echarts.graphic.LinearGradient(//设置渐变颜色
                     0, 0, 0, 1,
                     [
-                      {offset: 0, color: '#3498db'},
+                      {offset: 0, color: '#3598db'},
                       {offset: 0.5, color: '#91ccef'},
                       {offset: 1, color: '#dcf6ff'}
                     ]
                   )
                 }
               },
-              smooth:false,//曲线平滑
+              smooth:true,//曲线平滑
+              smoothMonotone: 'x',
               itemStyle:{
                 normal:{
                   color:'#3598db',
@@ -149,8 +151,29 @@
 
     .echarts_title_wrap_line {
       height: 15%;
-      font-size:0.18rem;
       font-weight:400;
+      display: flex;
+      justify-content: space-between;
+      color:var(--bgColor);
+     .echarts_title{
+       font-size:0.18rem;
+       color:#000 !important;
+     }
+      .view_all_content{
+        a{
+          font-size: 0.14rem;
+          border-bottom: 0.01rem solid var(--bgColor);
+          height: 0.2rem;
+          line-height: 0.2rem;
+          color: var(--bgColor)!important;
+          i{
+            display: inline-block;
+            font-size: 0.14rem;
+            transform: rotate(-90deg);
+          }
+        }
+
+      }
     }
     #echarts_line {
       width: 100%;

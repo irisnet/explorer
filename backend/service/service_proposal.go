@@ -8,10 +8,10 @@ import (
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
-	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
+	"github.com/irisnet/explorer/backend/vo"
 )
 
 type AddrAsMultiType struct {
@@ -31,9 +31,9 @@ func (service *ProposalService) GetModule() Module {
 	return Proposal
 }
 
-func (service *ProposalService) QueryProposalsByHeight(height int64) []model.ProposalInfoVo {
+func (service *ProposalService) QueryProposalsByHeight(height int64) []vo.ProposalInfoVo {
 
-	resp := []model.ProposalInfoVo{}
+	resp := []vo.ProposalInfoVo{}
 
 	data, err := document.Proposal{}.QuerySubmitProposalByHeight(height)
 	if err != nil {
@@ -48,7 +48,7 @@ func (service *ProposalService) QueryProposalsByHeight(height int64) []model.Pro
 	return resp
 }
 
-func (service *ProposalService) QueryDepositAndVotingProposalList() []model.ProposalNewStyle {
+func (service *ProposalService) QueryDepositAndVotingProposalList() []vo.ProposalNewStyle {
 	var (
 		proposalDocument document.Proposal
 	)
@@ -95,9 +95,9 @@ func (service *ProposalService) QueryDepositAndVotingProposalList() []model.Prop
 	if err != nil {
 		logger.Error("get systemVotingPower fail", logger.String("err", err.Error()))
 	}
-	proposals := make([]model.ProposalNewStyle, 0, len(data))
+	proposals := make([]vo.ProposalNewStyle, 0, len(data))
 	for _, propo := range data {
-		tmpVoteArr := make([]model.VoteWithVoterInfo, 0, len(propo.Votes))
+		tmpVoteArr := make([]vo.VoteWithVoterInfo, 0, len(propo.Votes))
 
 		for _, v := range propo.Votes {
 			var voterVotingPower int64
@@ -108,7 +108,7 @@ func (service *ProposalService) QueryDepositAndVotingProposalList() []model.Prop
 				voterVotingPower = voterInfo.VotingPower
 			}
 
-			tmpVote := model.VoteWithVoterInfo{
+			tmpVote := vo.VoteWithVoterInfo{
 				Voter:        v.Voter,
 				Option:       v.Option,
 				Time:         v.Time,
@@ -118,7 +118,7 @@ func (service *ProposalService) QueryDepositAndVotingProposalList() []model.Prop
 			tmpVoteArr = append(tmpVoteArr, tmpVote)
 		}
 
-		tmp := model.ProposalNewStyle{
+		tmp := vo.ProposalNewStyle{
 			ProposalId:       propo.ProposalId,
 			Title:            propo.Title,
 			Type:             propo.Type,
@@ -127,7 +127,7 @@ func (service *ProposalService) QueryDepositAndVotingProposalList() []model.Prop
 			TotalVotingPower: totalVotingPower,
 		}
 
-		l := model.Level{}
+		l := vo.Level{}
 		name, err := lcd.GetProposalLevelByType(propo.Type)
 		if err != nil {
 			logger.Error("get proposal level by type", logger.String("err", err.Error()), logger.String("param", propo.Type))
@@ -138,8 +138,8 @@ func (service *ProposalService) QueryDepositAndVotingProposalList() []model.Prop
 			if err != nil {
 				logger.Error("get min deposit", logger.String("err", err.Error()), logger.String("param", propo.Type))
 			}
-			l.GovParam = model.GovParam{
-				MinDeposit: model.Coin{
+			l.GovParam = vo.GovParam{
+				MinDeposit: vo.Coin{
 					Amount: coinAsDoc.Amount,
 					Denom:  coinAsDoc.Denom,
 				},
@@ -159,7 +159,7 @@ func (service *ProposalService) QueryDepositAndVotingProposalList() []model.Prop
 			if err != nil {
 				logger.Error("GetThresholdAndParticipationMinDeposit", logger.String("err", err.Error()), logger.String("param", propo.Type))
 			}
-			l.GovParam = model.GovParam{
+			l.GovParam = vo.GovParam{
 				PassThreshold: passThreshold,
 				VetoThreshold: vetoThreshold,
 				Participation: participation,
@@ -175,15 +175,15 @@ func (service *ProposalService) QueryDepositAndVotingProposalList() []model.Prop
 	return proposals
 }
 
-func (service *ProposalService) QueryList(page, size int) (resp model.PageVo) {
+func (service *ProposalService) QueryList(page, size int, istotal bool) (resp vo.PageVo) {
 
-	cnt, data, err := document.Proposal{}.QueryProposalByPage(page, size)
+	cnt, data, err := document.Proposal{}.QueryProposalByPage(page, size, istotal)
 	if err != nil {
 		logger.Error("query proposal by page ", logger.String("err", err.Error()))
 		return
 	}
 
-	proposals := make([]model.ProposalNewStyle, 0, len(data))
+	proposals := make([]vo.ProposalNewStyle, 0, len(data))
 	unique_set := make(map[string]bool)
 
 	for _, v := range data {
@@ -210,11 +210,11 @@ func (service *ProposalService) QueryList(page, size int) (resp model.PageVo) {
 	}
 
 	for _, propo := range data {
-		tmpVoteArr := make([]model.VoteWithVoterInfo, 0, len(propo.Votes))
-		finalVotes := model.FinalVotes{}
+		tmpVoteArr := make([]vo.VoteWithVoterInfo, 0, len(propo.Votes))
+		finalVotes := vo.FinalVotes{}
 
 		if propo.Status == document.ProposalStatusPassed || propo.Status == document.ProposalStatusRejected {
-			finalVotes = model.FinalVotes{
+			finalVotes = vo.FinalVotes{
 				Yes:        propo.FinalVotes.Yes,
 				No:         propo.FinalVotes.No,
 				NoWithVeto: propo.FinalVotes.NoWithVeto,
@@ -233,7 +233,7 @@ func (service *ProposalService) QueryList(page, size int) (resp model.PageVo) {
 					voterVotingPower = voterInfo.VotingPower
 				}
 
-				tmpVote := model.VoteWithVoterInfo{
+				tmpVote := vo.VoteWithVoterInfo{
 					Voter:       v.Voter,
 					Option:      v.Option,
 					Time:        v.Time,
@@ -243,14 +243,14 @@ func (service *ProposalService) QueryList(page, size int) (resp model.PageVo) {
 			}
 		}
 
-		var l model.Level
+		var l vo.Level
 		name, err := lcd.GetProposalLevelByType(propo.Type)
 		if err != nil {
 			logger.Error("get proposal level by type", logger.String("err", err.Error()), logger.String("param", propo.Type))
 		}
 		l.Name = name
 
-		tmp := model.ProposalNewStyle{
+		tmp := vo.ProposalNewStyle{
 			ProposalId:       propo.ProposalId,
 			Title:            propo.Title,
 			Type:             propo.Type,
@@ -271,7 +271,7 @@ func (service *ProposalService) QueryList(page, size int) (resp model.PageVo) {
 	return resp
 }
 
-func (service *ProposalService) Query(id int) (resp model.ProposalInfoVo) {
+func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 
 	data, err := document.Proposal{}.QueryProposalById(id)
 	if err != nil {
@@ -289,7 +289,7 @@ func (service *ProposalService) Query(id int) (resp model.ProposalInfoVo) {
 		coinsAsUtils = append(coinsAsUtils, tmp)
 	}
 
-	proposal := model.Proposal{
+	proposal := vo.Proposal{
 		Title:           data.Title,
 		ProposalId:      data.ProposalId,
 		Type:            data.Type,
@@ -315,7 +315,7 @@ func (service *ProposalService) Query(id int) (resp model.ProposalInfoVo) {
 		if err != nil {
 			logger.Error("query tx msg by hash ", logger.String("err", err.Error()))
 		} else {
-			var msg model.MsgSubmitSoftwareUpgradeProposal
+			var msg vo.MsgSubmitSoftwareUpgradeProposal
 			if err := json.Unmarshal([]byte(txMsg.Content), &msg); err == nil {
 				proposal.Parameters = msg.Params
 				proposal.Version = msg.Version
@@ -328,7 +328,7 @@ func (service *ProposalService) Query(id int) (resp model.ProposalInfoVo) {
 
 	resp.Proposal = proposal
 
-	var result model.VoteResult
+	var result vo.VoteResult
 	for _, v := range data.Votes {
 
 		switch v.Option {
@@ -391,7 +391,7 @@ func (_ ProposalService) GetValidatorPublicKeyMonikerFromProposalVoter(addrArrAs
 	return AddrAsMultiTypeMap, nil
 }
 
-func (_ ProposalService) GetDepositProposalInitAmount(idArr []uint64) (map[uint64]model.Coin, error) {
+func (_ ProposalService) GetDepositProposalInitAmount(idArr []uint64) (map[uint64]vo.Coin, error) {
 
 	if len(idArr) == 0 {
 		return nil, nil
@@ -402,10 +402,10 @@ func (_ ProposalService) GetDepositProposalInitAmount(idArr []uint64) (map[uint6
 		return nil, err
 	}
 
-	res := map[uint64]model.Coin{}
+	res := map[uint64]vo.Coin{}
 
 	for _, tx := range txs {
-		tmp := model.Coin{}
+		tmp := vo.Coin{}
 		if len(tx.Amount) > 0 {
 			tmp.Amount = tx.Amount[0].Amount
 			tmp.Denom = tx.Amount[0].Denom
@@ -433,18 +433,18 @@ func (_ ProposalService) GetSystemVotingPower() (int64, error) {
 	return totalVotingPower, nil
 }
 
-func (s *ProposalService) GetVoteTxs(proposalId int64, page, size int) model.GetVoteTxResponse {
+func (s *ProposalService) GetVoteTxs(proposalId int64, page, size int, istotal bool) vo.GetVoteTxResponse {
 	var (
 		txs        []document.CommonTx
 		txHashs    []string
 		txMsgs     []document.TxMsg
 		valAddrs   []string
 		validators []document.Validator
-		res        model.GetVoteTxResponse
+		res        vo.GetVoteTxResponse
 	)
 	accAddrValAddrMap := make(map[string]string)
 
-	num, txList, err := document.CommonTx{}.QueryProposalTxById(proposalId, page, size)
+	num, txList, err := document.CommonTx{}.QueryProposalTxById(proposalId, page, size, istotal)
 
 	if err != nil {
 		logger.Error("QueryProposalTxById have error", logger.String("err", err.Error()))
@@ -491,10 +491,10 @@ func (s *ProposalService) GetVoteTxs(proposalId int64, page, size int) model.Get
 	return res
 }
 
-func (s *ProposalService) GetDepositTxs(proposalId int64, page, size int) model.TxPage {
-	var res model.TxPage
+func (s *ProposalService) GetDepositTxs(proposalId int64, page, size int, istotal bool) vo.TxPage {
+	var res vo.TxPage
 
-	num, txs, err := document.CommonTx{}.QueryProposalTxByIdWithSubmitOrDepositType(proposalId, page, size)
+	num, txs, err := document.CommonTx{}.QueryProposalTxByIdWithSubmitOrDepositType(proposalId, page, size, istotal)
 
 	if err != nil {
 		panic(err)
@@ -506,9 +506,9 @@ func (s *ProposalService) GetDepositTxs(proposalId int64, page, size int) model.
 	return res
 }
 
-func (s *ProposalService) buildTx(txs []document.CommonTx) []model.Tx {
+func (s *ProposalService) buildTx(txs []document.CommonTx) []vo.Tx {
 	var (
-		res []model.Tx
+		res []vo.Tx
 	)
 	if len(txs) == 0 {
 		return res
@@ -524,7 +524,7 @@ func (s *ProposalService) buildTx(txs []document.CommonTx) []model.Tx {
 			coinsAsUtils = append(coinsAsUtils, coinAsUtils)
 		}
 
-		tx := model.Tx{
+		tx := vo.Tx{
 			Hash:      v.TxHash,
 			From:      v.From,
 			Amount:    coinsAsUtils,
@@ -548,16 +548,16 @@ func (s *ProposalService) buildTx(txs []document.CommonTx) []model.Tx {
 }
 
 func (s *ProposalService) buildVoteTxs(txs []document.CommonTx, msgs []document.TxMsg,
-	validators []document.Validator, accAddrValAddrMap map[string]string) []model.VoteTx {
+	validators []document.Validator, accAddrValAddrMap map[string]string) []vo.VoteTx {
 	var (
-		voteTxs []model.VoteTx
-		msgVote model.MsgVote
+		voteTxs []vo.VoteTx
+		msgVote vo.MsgVote
 	)
 	if len(txs) == 0 {
 		return voteTxs
 	}
 	for _, tx := range txs {
-		voteTx := model.VoteTx{
+		voteTx := vo.VoteTx{
 			Voter:     tx.From,
 			TxHash:    tx.TxHash,
 			Timestamp: tx.Time,

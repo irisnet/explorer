@@ -2,8 +2,8 @@ package controller
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
+	"github.com/irisnet/explorer/backend/vo"
 )
 
 // mux.Router registrars
@@ -31,7 +31,7 @@ func RegisterAccount(r *mux.Router) error {
 
 func registerQueryAccount(r *mux.Router) error {
 
-	doApi(r, types.UrlRegisterQueryAccount, "GET", func(request model.IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryAccount, "GET", func(request vo.IrisReq) interface{} {
 		address := Var(request, "address")
 		account.SetTid(request.TraceId)
 		result := account.Query(address)
@@ -42,7 +42,7 @@ func registerQueryAccount(r *mux.Router) error {
 }
 
 func registerQueryAccountList(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryAccounts, "GET", func(request model.IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryAccounts, "GET", func(request vo.IrisReq) interface{} {
 		return account.QueryRichList()
 	})
 	return nil

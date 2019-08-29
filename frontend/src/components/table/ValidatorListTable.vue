@@ -63,7 +63,7 @@
                 sortable:true,
               },
               operatorAddress:{
-                label:'Operator Address',
+                label:'Operator',
                 sortable:false,
               },
               commission:{
@@ -101,7 +101,7 @@
                 sortable:true,
               },
               operatorAddress:{
-                label:'Operator Address',
+                label:'Operator',
                 sortable:false,
               },
               commission:{
@@ -131,7 +131,7 @@
                 sortable:true,
               },
               operatorAddress:{
-                label:'Operator Address',
+                label:'Operator',
                 sortable:false,
               },
               commission:{
@@ -199,15 +199,15 @@
         word-wrap: break-word !important;
         .skip_route {
           a{
-            color: #3598db!important;
+            color: var(--bgColor)!important;
             cursor: pointer;
           }
         }
         .no_skip{
-          color:#A2A2AE;
+          color:var(--titleColor);
           cursor:default;
           .link_style{
-            color:#a2a2ae !important;
+            color:var(--contentColor) !important;
           }
         }
       }
@@ -216,19 +216,19 @@
   .page-link{
     padding:0.05rem 0.075rem !important;
     height:0.29rem !important;
-    color:#3598db !important;
+    color:var(--bgColor) !important;
   }
   .active{
     .page-link{
-      background-color: #3598db !important;
-      border-color:#3598db !important;
+      background-color: var(--bgColor) !important;
+      border-color:var(--bgColor) !important;
       color:#fff !important;
     }
   }
   .table{
     th, td{
       padding:0.075rem !important;
-      color:#A2A2AE;
+      color:var(--contentColor);
     @include fontWeight;
     }
     margin-bottom:0 !important;
@@ -238,14 +238,14 @@
       }
       tr{
         th{
-          color:#000000;
+          color:var(--contentColor);
           height:0.5rem;
           vertical-align:middle;
           &:first-child{
              padding-left:0.2rem !important;
            }
           }
-        border-bottom:0.02rem solid #3598db;
+        border-bottom:0.02rem solid var(--bgColor);
       }
     }
     tbody{
@@ -298,7 +298,7 @@
     }
   }
   .proposals-list{
-    color: #3598db;
+    color: var(--bgColor);
     cursor: pointer;
     margin: 0!important;
     padding: 0!important;
@@ -306,7 +306,7 @@
   .remove_default_style{
     margin: 0!important;
     padding: 0!important;
-    color: #3598db;
+    color: var(--bgColor);
   }
   .show_trim td{
     white-space: pre;
@@ -329,7 +329,7 @@
   }
   .pre_global_style{
     font-size: 0.14rem;
-    color: #a2a2ae;
+    color: var(--contentColor);
     margin: 0;
   }
   pre{
@@ -337,7 +337,7 @@
     margin: 0;
   }
   .link_style{
-    color: #3598db !important;
+    color: var(--bgColor) !important;
   }
   //覆盖bootstrap-vue默认排序样式
   .b-table.table > thead > tr > th[aria-sort][aria-sort="descending"]::after, .b-table.table > tfoot > tr > th[aria-sort][aria-sort="descending"]::after{

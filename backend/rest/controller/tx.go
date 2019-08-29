@@ -2,8 +2,9 @@ package controller
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
+	"github.com/irisnet/explorer/backend/utils"
+	"github.com/irisnet/explorer/backend/vo"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -13,9 +14,10 @@ func RegisterTx(r *mux.Router) error {
 		registerQueryTxsByAccount,
 		registerQueryTxsByDay,
 		//new
-		registerQueryTxList,
+		registerQueryTxListByType,
 		registerQueryTxsCounter,
 		registerQueryRecentTx,
+		registerQueryTxList,
 	}
 
 	for _, fn := range funs {
@@ -35,9 +37,36 @@ func RegisterTx(r *mux.Router) error {
 //}
 
 func registerQueryTxList(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryTxList, "GET", func(request model.IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryTxList, "GET", func(request vo.IrisReq) interface{} {
+		tx.SetTid(request.TraceId)
+		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
+		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 5))
+		height := int(utils.ParseIntWithDefault(QueryParam(request, "height"), 0))
+		total := QueryParam(request, "total")
+		istotal := false
+		if total == "true" {
+			istotal = true
+		}
+		query := bson.M{}
+		if height > 0 {
+			query["height"] = height
+		}
+		var result vo.PageVo
+		result = tx.QueryBaseList(query, page, size, istotal)
+		return result
+	})
+	return nil
+}
+
+func registerQueryTxListByType(r *mux.Router) error {
+	doApi(r, types.UrlRegisterQueryTxListByType, "GET", func(request vo.IrisReq) interface{} {
 		tx.SetTid(request.TraceId)
 		query := bson.M{}
+		total := GetString(request, "total")
+		istotal := true
+		if total == "false" {
+			istotal = false
+		}
 
 		address := GetString(request, "address")
 
@@ -53,37 +82,37 @@ func registerQueryTxList(r *mux.Router) error {
 		txType := Var(request, "type")
 		page, size := GetPage(request)
 
-		var result model.PageVo
+		var result vo.PageVo
 		switch types.TxTypeFromString(txType) {
 		case types.Trans:
 			query["type"] = bson.M{
 				"$in": types.BankList,
 			}
-			return tx.QueryTxList(query, page, size)
+			return tx.QueryTxList(query, page, size, istotal)
 		case types.Declaration:
 			query["type"] = bson.M{
 				"$in": types.DeclarationList,
 			}
-			return tx.QueryTxList(query, page, size)
+			return tx.QueryTxList(query, page, size, istotal)
 		case types.Stake:
 			query["type"] = bson.M{
 				"$in": types.StakeList,
 			}
-			return tx.QueryTxList(query, page, size)
+			return tx.QueryTxList(query, page, size, istotal)
 		case types.Gov:
 			query["type"] = bson.M{
 				"$in": types.GovernanceList,
 			}
 			break
 		}
-		result = tx.QueryList(query, page, size)
+		result = tx.QueryTxList(query, page, size, istotal)
 		return result
 	})
 	return nil
 }
 
 func registerQueryTx(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryTx, "GET", func(request model.IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryTx, "GET", func(request vo.IrisReq) interface{} {
 		tx.SetTid(request.TraceId)
 		hash := Var(request, "hash")
 
@@ -95,7 +124,7 @@ func registerQueryTx(r *mux.Router) error {
 }
 
 func registerQueryTxsCounter(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryTxsCounter, "GET", func(request model.IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryTxsCounter, "GET", func(request vo.IrisReq) interface{} {
 		tx.SetTid(request.TraceId)
 		query := bson.M{}
 		request.ParseForm()
@@ -118,11 +147,16 @@ func registerQueryTxsCounter(r *mux.Router) error {
 }
 
 func registerQueryTxsByAccount(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryTxsByAccount, "GET", func(request model.IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryTxsByAccount, "GET", func(request vo.IrisReq) interface{} {
 		tx.SetTid(request.TraceId)
 		address := Var(request, "address")
 		page, size := GetPage(request)
-		result := tx.QueryByAcc(address, page, size)
+		total := QueryParam(request, "total")
+		istotal := true
+		if total == "false" {
+			istotal = false
+		}
+		result := tx.QueryByAcc(address, page, size, istotal)
 
 		return result
 	})
@@ -131,7 +165,7 @@ func registerQueryTxsByAccount(r *mux.Router) error {
 }
 
 func registerQueryTxsByDay(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryTxsByDay, "GET", func(request model.IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryTxsByDay, "GET", func(request vo.IrisReq) interface{} {
 		tx.SetTid(request.TraceId)
 		result := tx.QueryTxNumGroupByDay()
 		return result
@@ -140,7 +174,7 @@ func registerQueryTxsByDay(r *mux.Router) error {
 }
 
 func registerQueryRecentTx(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryRecentTx, "GET", func(request model.IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryRecentTx, "GET", func(request vo.IrisReq) interface{} {
 		tx.SetTid(request.TraceId)
 		result := tx.QueryRecentTx()
 		return result

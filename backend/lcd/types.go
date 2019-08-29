@@ -27,13 +27,14 @@ const (
 	UrlValidatorSetLatest                        = "%s/validatorsets/latest"
 	UrlStakePool                                 = "%s/stake/pool"
 	UrlBlocksResult                              = "%s/block-results/%d"
-	UrlGovParam                                  = "%s/gov/params/%s"
+	UrlGovParam                                  = "%s/params?module=%s"
 	UrlDistributionRewardsByValidatorAcc         = "%s/distribution/%s/rewards"
 	UrlValidatorsSigningInfoByConsensuPublicKey  = "%s/slashing/validators/%s/signing-info"
 	UrlDistributionWithdrawAddressByValidatorAcc = "%s/distribution/%s/withdraw-address"
 	UrlTokenStatsSupply                          = "https://rpc.irisnet.org/token-stats/supply"
 	UrlTokenStatsCirculation                     = "https://rpc.irisnet.org/token-stats/circulation"
 	UrlLookupIconsByKeySuffix                    = "https://keybase.io/_/api/1.0/user/lookup.json?fields=pictures&key_suffix=%s"
+	UrlAssetTokens                               = "%s/asset/tokens"
 )
 
 type AccountVo struct {
@@ -567,4 +568,22 @@ type BlockResultVo struct {
 			} `json:"tags"`
 		} `json:"begin_block"`
 	} `json:"results"`
+}
+
+type AssetTokens struct {
+	BaseToken struct{
+		Id              string `json:"id"`
+		Family          string `json:"family"`
+		Source          string `json:"source"`
+		Gateway         string `json:"gateway"`
+		Symbol          string `json:"symbol"`
+		Name            string `json:"name"`
+		Decimal         int    `json:"decimal"`
+		CanonicalSymbol string `json:"canonical_symbol"`
+		MinUnitAlias    string `json:"min_unit_alias"`
+		InitialSupply   string `json:"initial_supply"`
+		MaxSupply       string `json:"max_supply"`
+		Mintable        bool   `json:"mintable"`
+		Owner           string `json:"owner"`
+	} `json:"base_token"`
 }

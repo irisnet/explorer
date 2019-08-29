@@ -29,7 +29,9 @@
                         :click-func="treeMapFunc"
                     ></m-tree>
                 </div>
-                <div v-show="showNoData" class="no_data_show">No Data</div>
+                <div v-show="showNoData" class="no_data_show">
+                    <img src="../assets/no_data.svg" alt="">
+                </div>
             </div>
         </div>
         <spin-component :showLoading="showLoading" />
@@ -284,7 +286,7 @@ export default {
                     font-size: 12px;
                     line-height: 0.26rem;
                     text-indent: 0.08rem;
-                    color: #22252a;
+                    color: var(--contentColor);
                     position: relative;
                     z-index: 1;
                     cursor: pointer;

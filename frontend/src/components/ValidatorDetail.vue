@@ -1,6 +1,9 @@
 <template>
     <div class="transactions_detail_wrap">
         <div :class="[transactionsDetailWrap, 'validator_title']">
+            <div class="validator_img_container">
+                <img :src="validatorImg" alt="">
+            </div>
             <span class="title">{{validatorName}}</span>
             <div class="status_btn" v-if="validatorStatus === 'Active'">Active</div>
             <div
@@ -286,7 +289,7 @@
             class="validator_table_container"
             v-if="txTableList.stakes.total > 0"
         >
-            <p class="validator_information_content_title">Stakes</p>
+            <p class="validator_information_content_title">Delegation Txs</p>
             <div class="blocks_list_table_container">
                 <div class="address_tx_list_table">
                     <m-validator-detail-table :items="txTableList.stakes.items" listName="stakes"></m-validator-detail-table>
@@ -304,7 +307,7 @@
             class="validator_table_container"
             v-if="txTableList.declarations.total > 0"
         >
-            <p class="validator_information_content_title">Declarations</p>
+            <p class="validator_information_content_title">Validation Txs</p>
             <div class="blocks_list_table_container">
                 <div class="address_tx_list_table">
                     <m-validator-detail-table
@@ -402,7 +405,7 @@ export default {
                 "Bond Height": "",
                 "Bonded Tokens": "",
                 "Unbonding Height": "",
-                "Self Bonded": "",
+                "Self-Bonded": "",
                 "Jailed Until": "",
                 "Delegator Bonded": "",
                 "Missed Blocks": "",
@@ -476,7 +479,8 @@ export default {
                 }
             },
             validatorName: "",
-            validatorStatus: ""
+            validatorStatus: "",
+            validatorImg:''
         };
     },
     components: {
@@ -576,6 +580,11 @@ export default {
                 data => {
                     try {
                         if (data) {
+                        	if(data.icons){
+                        		this.validatorImg = data.icons
+                            }else {
+                        		this.validatorImg = require('../assets/header_img.png')
+                            }
                             this.validatorStatus = data.status;
                             this.validatorInfo["Voting Power"] =
                                 data.status === "Active"
@@ -599,7 +608,7 @@ export default {
                             data.unbond_height === "" &&
                                 delete this.validatorInfo["Unbonding Height"];
                             this.validatorInfo[
-                                "Self Bonded"
+                                "Self-Bonded"
                             ] = `${this.$options.filters.amountFromat(
                                 data.self_bonded,
                                 Constants.Denom.IRIS.toUpperCase()
@@ -891,7 +900,7 @@ export default {
                                 }
                                 this.txTableList.stakes.items = Tools.formatTxList(
                                     data.Data,
-                                    "stakes"
+                                    "delegations"
                                 );
                             } else {
                                 this.txTableList.stakes.items = [];
@@ -923,7 +932,7 @@ export default {
                                 }
                                 this.txTableList.declarations.items = Tools.formatTxList(
                                     data.Data,
-                                    "declarations"
+                                    "validations"
                                 );
                             } else {
                                 this.txTableList.declarations.items = [];
@@ -1348,7 +1357,8 @@ export default {
     flex-direction: row !important;
     .title {
         font-size: 22px;
-        color: #22252a;
+        font-weight: bold;
+        color: var(--titleColor);
     }
     .status_btn {
         margin-left: 0.1rem;
@@ -1363,6 +1373,13 @@ export default {
     }
 }
 .transactions_detail_wrap {
+    .validator_img_container{
+        width: 0.35rem;
+        padding-right: 0.1rem;
+        img{
+            width: 100%;
+        }
+    }
     & > div:nth-last-of-type(1) {
         margin-bottom: 0.4rem;
     }
@@ -1374,7 +1391,7 @@ export default {
     line-height: 0.2rem;
     border-radius: 0.1rem;
     color: #ffffff;
-    background-color: #3598db;
+    background-color: var(--bgColor);
 }
 .validator_detail_information_wrap {
     margin-top: 0.2rem;
@@ -1393,10 +1410,10 @@ export default {
             display: flex;
             justify-content: space-between;
             .information_props {
-                color: #22252a;
+                color: var(--contentColor);
             }
             .information_value {
-                color: #a2a2ae;
+                color: var(--titleColor);
                 width: calc(100% - 1.7rem);
                 margin-right: 0.2rem;
                 word-break: break-all;
@@ -1406,7 +1423,7 @@ export default {
                 a,
                 span {
                     cursor: pointer;
-                    color: #3598db !important;
+                    color: var(--bgColor) !important;
                 }
             }
         }
@@ -1415,7 +1432,7 @@ export default {
 .validator_information_content_title {
     height: 0.2rem;
     line-height: 0.2rem;
-    color: #22252a;
+    color: var(--titleColor);
     font-size: 18px;
     margin-top: 0.3rem;
     padding-left: 0.2rem;
@@ -1465,7 +1482,7 @@ export default {
         width: 60px;
         box-sizing: border-box;
         border: 1px solid rgba(215, 217, 224, 1);
-        color: #22252a;
+        color: var(--contentColor);
         &:nth-of-type(1) {
             border-right-width: 0;
             border-top-left-radius: 2px;
@@ -1479,8 +1496,8 @@ export default {
         }
     }
     .active {
-        background-color: #3598db;
-        border-color: #3598db;
+        background-color: var(--bgColor);
+        border-color: var(--bgColor);
         color: #ffffff;
     }
 }

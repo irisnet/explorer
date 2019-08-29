@@ -4,8 +4,8 @@ import (
 	"errors"
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/lcd"
-	"github.com/irisnet/explorer/backend/model"
 	"github.com/irisnet/explorer/backend/types"
+	"github.com/irisnet/explorer/backend/vo"
 )
 
 func RegisterNodes(r *mux.Router) error {
@@ -23,7 +23,7 @@ func RegisterNodes(r *mux.Router) error {
 }
 
 func RegisterQueryFaucet(r *mux.Router) error {
-	doApi(r, types.UrlRegisterQueryFaucet, "GET", func(request model.IrisReq) interface{} {
+	doApi(r, types.UrlRegisterQueryFaucet, "GET", func(request vo.IrisReq) interface{} {
 		res, err := lcd.Faucet(request.Request)
 		if err != nil {
 			panic(err)
@@ -34,7 +34,7 @@ func RegisterQueryFaucet(r *mux.Router) error {
 }
 
 func RegisterApply(r *mux.Router) error {
-	doApi(r, types.UrlRegisterApply, "POST", func(request model.IrisReq) interface{} {
+	doApi(r, types.UrlRegisterApply, "POST", func(request vo.IrisReq) interface{} {
 		res, err := lcd.GetToken(request.Request)
 		if err != nil {
 			panic(errors.New("draw iris fail " + err.Error()))

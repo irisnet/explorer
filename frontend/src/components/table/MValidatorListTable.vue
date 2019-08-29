@@ -2,7 +2,7 @@
   <div :style="{'min-width': minWidth + 'rem'}">
     <m-table v-table-head-fixed
              :columns="validatorFields"
-             :data="items"
+             :data="validatorData"
              :sort-by.sync="sortBy"
              :sort-desc.sync="sortDesc">
       <template slot-scope="{ row }"
@@ -51,19 +51,24 @@ export default {
       validatorFields: [],
       sortBy: 'votingPower',
       sortDesc: true,
+      validatorData:[],
       activeValidatorFields: [
+        {
+          title: '#',
+          key: 'index',
+        },
         {
           title: 'Moniker',
           slot: 'moniker',
           sortable: true
         },
         {
-          title: 'Operator_Address',
+          title: 'Operator',
           slot: 'operatorAddress',
           tooltip: true
         },
         {
-          title: 'Commission_Rate',
+          title: 'Commission',
           key: 'commission',
           sortable: true,
           sortMethod: this.sortMethodPer('commission'),
@@ -91,7 +96,7 @@ export default {
           className: 'text_right'
         },
         {
-          title: 'Self_Bonded',
+          title: 'Self-Bonded',
           key: 'selfBond',
           sortable: true,
           sortMethod: this.sortMethodSplit('selfBond'),
@@ -119,12 +124,12 @@ export default {
           sortable: true
         },
         {
-          title: 'Operator_Address',
+          title: 'Operator',
           slot: 'operatorAddress',
           tooltip: true
         },
         {
-          title: 'Commission_Rate',
+          title: 'Commission',
           key: 'commission',
           sortable: true,
           sortMethod: this.sortMethodPer('commission'),
@@ -166,12 +171,12 @@ export default {
           sortable: true
         },
         {
-          title: 'Operator_Address',
+          title: 'Operator',
           slot: 'operatorAddress',
           tooltip: true
         },
         {
-          title: 'Commission_Rate',
+          title: 'Commission',
           key: 'commission',
           sortable: true,
           sortMethod: this.sortMethodPer('commission'),
@@ -185,7 +190,7 @@ export default {
           className: 'text_right'
         },
         {
-          title: 'Self_Bonded',
+          title: 'Self-Bonded',
           key: 'selfBond',
           sortable: true,
           sortMethod: this.sortMethodSplit('selfBond'),
@@ -240,6 +245,16 @@ export default {
           this.validatorFields = this.jailedValidatorFields;
           break;
       }
+    }
+  },
+  watch:{
+    items(items){
+      if(items){
+        this.items.map((item,i)=>{
+          return item.index = i + 1
+        })
+      }
+      this.validatorData = this.items;
     }
   },
   mounted () {

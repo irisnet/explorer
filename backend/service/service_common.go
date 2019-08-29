@@ -2,11 +2,11 @@ package service
 
 import (
 	"github.com/irisnet/explorer/backend/lcd"
-	"github.com/irisnet/explorer/backend/model"
+	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
-	"github.com/irisnet/irishub-sync/logger"
+	"github.com/irisnet/explorer/backend/vo"
 )
 
 type CommonService struct {
@@ -18,8 +18,8 @@ func (service *CommonService) GetModule() Module {
 	return Common
 }
 
-func (service CommonService) QueryText(text string) model.ResultVo {
-	result := model.ResultVo{}
+func (service CommonService) QueryText(text string) vo.ResultVo {
+	result := vo.ResultVo{}
 	i, isUint := utils.ParseInt(text)
 
 	if !isUint {
@@ -33,7 +33,7 @@ func (service CommonService) QueryText(text string) model.ResultVo {
 			logger.Error("queryBlockHeightTimehashByHeight", logger.String("err", err.Error()))
 		} else {
 
-			blockAsModel := model.SimpleBlockVo{
+			blockAsModel := vo.SimpleBlockVo{
 				Height:    block.Height,
 				Timestamp: block.Time.String(),
 				Hash:      block.Hash,
@@ -48,7 +48,7 @@ func (service CommonService) QueryText(text string) model.ResultVo {
 	if err != nil {
 		logger.Error("Query proposal By Id", logger.String("err", err.Error()))
 	} else {
-		vo := model.SimpleProposalVo{
+		vo := vo.SimpleProposalVo{
 			ProposalId: proposal.ProposalId,
 			Title:      proposal.Title,
 			Type:       proposal.Type,
