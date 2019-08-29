@@ -973,7 +973,6 @@ export default {
                                         this[data.proposal_type]
                                     );
                                 }
-
                                 for (let i in message) {
                                     let fieidValue = "";
                                     if (i === "Amount") {
@@ -1010,17 +1009,15 @@ export default {
                                             fieidValue = "";
                                         }
                                     } else if (
-                                        i === "Treshold" ||
+                                        (i === "Treshold" ||
                                         i === "Commission Rate" ||
                                         i === "Max Change Rate" ||
-                                        i === "Max Rate" &&
+                                        i === "Max Rate") &&
                                             data[message[i].k] !== ""
                                     ) {
                                         fieidValue = `${data[message[i].k] *
                                             100} %`;
                                     } else if (
-                                        this.typeValue ===
-                                            "WithdrawDelegatorRewardsAll" &&
                                         i === "From"
                                     ) {
                                         fieidValue = data[message[i].k].split(
