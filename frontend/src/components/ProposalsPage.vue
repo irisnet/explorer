@@ -380,16 +380,21 @@
 						v.total_deposit_format = `${n} IRIS`;
 					}
 					v.intial_deposit_number_per = this.isNumber(v.intial_deposit_number) && this.isNumber(v.min_deposit_number) ?
-						(v.intial_deposit_number / v.min_deposit_number) * 100 + '%' : 0;
+            (this.forLimitNumer(v.intial_deposit_number / v.min_deposit_number)) * 100 + '%' : 0;
 					v.total_deposit_number_per = this.isNumber(v.total_deposit_number) && this.isNumber(v.min_deposit_number) ?
-						(v.total_deposit_number / v.min_deposit_number) * 100 + '%' : 0;
+						(this.forLimitNumer(v.total_deposit_number / v.min_deposit_number))* 100 + '%' : 0;
 					v.level = v.level && v.level.name;
 				});
 				this.depositPeriodDatas = depositPeriodDatas;
 			},
 			isNumber(n) {
 				return typeof n === 'number'
-			},
+      },
+      forLimitNumer(number) {
+        if (typeof number === "number") {
+          return Math.max(Math.min(number, 1), 0)
+        }
+      },
 			getGrahpData() {
 				Service.commonInterface({proposalListVotingAndDeposit:{}}, (data) => {
 					if (data && Array.isArray(data) && data.length > 0) {

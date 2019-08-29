@@ -138,7 +138,7 @@
 					parameterItem.min = Number(arr[0]) === 0 ? arr[0] : `${new BigNumber(arr[0]).multipliedBy(100)}`;
 					parameterItem.max = Number(arr[1]) === 0 ? arr[1] : `${new BigNumber(arr[1]).multipliedBy(100)} %`;
 					parameterItem.current = `${parameterItem.current_value ? new BigNumber(parameterItem.current_value).multipliedBy(100) : parameterItem.current_value * 100} %`;
-					parameterItem.genesis = `${parameterItem.genesis_value ? new BigNumber(parameterItem.current_value).multipliedBy(100) : parameterItem.genesis_value*100} %`;
+					parameterItem.genesis = `${parameterItem.genesis_value ? new BigNumber(parameterItem.genesis_value).multipliedBy(100) : parameterItem.genesis_value*100} %`;
 				}else if(parameterItem.key === "gas_price_threshold"){
 					let maxL = String(arr[1]).length - 1;
 					parameterItem.max = `${Number(arr[1]) / (10 ** maxL)}*10^${maxL - 9} Nano`;

@@ -69,7 +69,7 @@
 						slot: 'block',
 					},
 					{
-						title: 'Type',
+						title: 'TxType',
 						slot: 'type',
 						key:"type",
 					},

@@ -177,10 +177,10 @@ export default class Tools{
 			if(splitString.length > splitNum){
 				return str.split(".")[0] + '.' +  splitString.substr(0,splitNum)
 			}else {
-				return str.split(".")[0] + '.' + splitString.padEnd(4, "0")
+				return str.split(".")[0] + '.' + splitString.padEnd(2, "0")
 			}
 		}else {
-			return str + '.0000'
+			return str + '.00'
 		}
 	}
 	
@@ -392,12 +392,12 @@ export default class Tools{
 	static formatTxList(list,txType){
 		if(list !== null){
 			return list.map(item => {
-				let [Amount,Fee,transferAmount,transferFee,tokenId] = ['--','--','--','--'];
+				let [Amount,Fee,transferAmount,transferFee,tokenId] = ['--','--','--','--','--'];
 				let commonHeaderObjList,objList,commonFooterObjList;
 				if(item.amount){
 					if(item.amount instanceof Array && item.amount.length > 0){
 						if(item.amount[0].denom && item.amount[0].amount && item.amount[0].denom === Constant.Denom.IRISATTO){
-							transferAmount = item.amount[0].formatAmount = item.amount[0].amount > 0 ? Tools.formatAmount(item.amount[0].amount) : item.amount[0].amount;
+							transferAmount = item.amount[0].formatAmount = item.amount[0].amount > 0 ? Tools.formatStringToFixedNumber(String(Tools.numberMoveDecimal(item.amount[0].amount)),2) : item.amount[0].amount;
 							tokenId = item.amount[0].tokenId = Constant.Denom.IRIS.toLocaleUpperCase();
 							Amount = item.amount.map(listItem=>`${listItem.formatAmount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
 						}else if(item.amount[0].denom && item.amount[0].amount && item.amount[0].denom !== Constant.Denom.IRISATTO){
@@ -406,15 +406,15 @@ export default class Tools{
 						}else {
 							transferAmount = item.amount[0].formatAmount = item.amount[0].amount;
 							tokenId = item.amount[0].tokenId = item.amount[0].denom.toLocaleUpperCase();
-							if(item.Type === 'BeginUnbonding' || item.Type === 'BeginRedelegate'){
-								item.amount[0].formatAmount = item.amount[0].amount > 0 ? Tools.formatAmount(item.amount[0].amount) : item.amount[0].amount;
+							if(item.type === 'BeginUnbonding' || item.type === 'BeginRedelegate'){
+								item.amount[0].formatAmount = item.amount[0].amount > 0 ? Tools.formatStringToFixedNumber(String(Tools.numberMoveDecimal(item.amount[0].amount)),2): item.amount[0].amount;
 								Amount = item.amount.map(listItem => `${listItem.formatAmount} SHARES`).join(',');
 							}
 						}
 					}else if(item.amount && Object.keys(item.amount).includes('amount') && Object.keys(item.amount).includes('denom')){
 						if(item.amount.denom === Constant.Denom.IRISATTO){
-							transferAmount = Tools.formatAmount(item.amount);
-							tokenId = Constant.Denom.IRIS.toLocaleUpperCase()
+							transferAmount = Tools.formatStringToFixedNumber(String(Tools.numberMoveDecimal(item.amount)),2);
+							tokenId = Constant.Denom.IRIS.toLocaleUpperCase();
 							Amount = `${transferAmount}  ${Tools.formatDenom(item.amount.denom).toUpperCase()}`;
 							
 						}else if(!item.amount.denom){
@@ -423,7 +423,7 @@ export default class Tools{
 						}else {
 							transferAmount = item.amount;
 							tokenId = item.denom.toLocaleUpperCase();
-							if(item.Type === 'BeginUnbonding' || item.Type === 'BeginRedelegate'){
+							if(item.type === 'BeginUnbonding' || item.type === 'BeginRedelegate'){
 								Amount = item.amount.map(listItem => `${listItem.amount} SHARES`).join(',');
 							}
 						}

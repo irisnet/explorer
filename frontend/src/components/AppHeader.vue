@@ -20,7 +20,8 @@
                                 @mouseenter="showTwoMenu('staking')" @mouseleave="hideTwoMenu('staking')">Staking</li>
                             <li class="header_menu_item"
                                 :class="activeTransfers ? 'nav_item_active' : ''"
-                                @mouseenter="showTwoMenu('transfers')" @mouseleave="hideTwoMenu('transfers')">Transfer</li>
+                                @mouseenter="showTwoMenu('transfers')" @mouseleave="hideTwoMenu('transfers')">
+                                <router-link :to="`/txs/transfers`">Transfer</router-link></li>
                             <li class="header_menu_item"
                                 :class="activeAssets ? 'nav_item_active' : ''"
                                 @mouseenter="showTwoMenu('assets')" @mouseleave="hideTwoMenu('assets')">Asset</li>
@@ -74,12 +75,12 @@
                             <!--               <li class="header_submenu_item" v-if="flShowChain">Assets</li>
                                            <li class="header_submenu_item" v-if="flShowChain">Gateways</li>-->
                             <li class="header_submenu_item" v-show="flShowStaking"><router-link :to="`/validators`">Validators</router-link></li>
+                            <li class="header_submenu_item" v-if="flShowStaking"><router-link :to="`/txs/delegations`">Delegation Txs</router-link></li>
                             <li class="header_submenu_item" v-show="flShowStaking"><router-link :to="`/txs/validations`">Validation Txs</router-link></li>
-                            <li class="header_submenu_item no_border_style" v-if="flShowStaking"><router-link :to="`/txs/delegations`">Delegation Txs</router-link></li>
                             <!--  <li class="header_submenu_item" v-if="flShowStaking">Validator Txs</li>-->
                             <!--<li class="header_submenu_item" v-if="flShowStaking"> <router-link :to="`/txs/stakes`">Delegation Txs</router-link></li>
                             <li class="header_submenu_item" v-if="flShowStaking">Reward Txs</li>-->
-                            <li class="header_submenu_item no_border_style" v-show="flShowTransfers"> <router-link :to="`/txs/transfers`">IRIS Transfers Txs</router-link></li>
+                            <!--<li class="header_submenu_item no_border_style" v-show="flShowTransfers"> <router-link :to="`/txs/transfers`">IRIS Transfers Txs</router-link></li>-->
                             <!--<li class="header_submenu_item" v-if="flShowTransfers">Asset Transfers Txs</li>-->
                             <!--<li class="header_submenu_item" v-if="flShowTransfers">Inter-chain Txs</li>-->
                             <!--<li class="header_submenu_item" v-if="flShowTransfers">IRIS Burn Txs</li>-->
@@ -150,19 +151,19 @@
                     </div>
                     <ul class="blockchain_list_content" v-show="flShowStakingMenu">
                         <li class="blockchain_list_item" @click="featureButtonClick(`/validators`)">Validators</li>
-                        <li class="blockchain_list_item" @click="featureButtonClick(`/txs/validations`)">Validations</li>
-                        <li class="blockchain_list_item" @click="featureButtonClick(`/txs/delegations`)">Delegations</li>
+                        <li class="blockchain_list_item" @click="featureButtonClick(`/txs/delegations`)">Delegation Txs</li>
+                        <li class="blockchain_list_item" @click="featureButtonClick(`/txs/validations`)">Validation Txs</li>
                     </ul>
                 </div>
 
                 <div class="mobile_menu_container" @click="flShowBlockchain('transfers')">
                     <div class="mobile_menu_item_content">
-                        <span>Transfers</span>
-                        <i class="iconfont iconwangluoqiehuanjiantou" :class="flShowTransfersMenu ? 'up_style' : 'down_style'"> </i>
+                        <span  @click="featureButtonClick(`/txs/transfers`)">Transfers</span>
+                        <!--<i class="iconfont iconwangluoqiehuanjiantou" :class="flShowTransfersMenu ? 'up_style' : 'down_style'"> </i>-->
                     </div>
-                    <ul class="blockchain_list_content" v-show="flShowTransfersMenu">
-                        <li class="blockchain_list_item" @click="featureButtonClick(`/txs/transfers`)">IRIS Transfers Txs</li>
-                    </ul>
+                    <!--<ul class="blockchain_list_content" v-show="flShowTransfersMenu">-->
+                        <!--<li class="blockchain_list_item" @click="featureButtonClick(`/txs/transfers`)">IRIS Transfers Txs</li>-->
+                    <!--</ul>-->
                 </div>
 
                 <div class="mobile_menu_container" @click="flShowBlockchain('assets')">
@@ -863,7 +864,7 @@
                                     }
                                     i{
                                         font-size: 0.18rem;
-                                        color: var(--bgColor);
+                                        color: var(--titleColor);
                                         padding-right: 0.2rem;
                                     }
                                 }
