@@ -397,7 +397,7 @@ export default class Tools{
 				if(item.amount){
 					if(item.amount instanceof Array && item.amount.length > 0){
 						if(item.amount[0].denom && item.amount[0].amount && item.amount[0].denom === Constant.Denom.IRISATTO){
-							transferAmount = item.amount[0].formatAmount = item.amount[0].amount > 0 ? Tools.formatAmount(item.amount[0].amount) : item.amount[0].amount;
+							transferAmount = item.amount[0].formatAmount = item.amount[0].amount > 0 ? Tools.numberMoveDecimal(item.amount[0].amount) : item.amount[0].amount;
 							tokenId = item.amount[0].tokenId = Constant.Denom.IRIS.toLocaleUpperCase();
 							Amount = item.amount.map(listItem=>`${listItem.formatAmount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
 						}else if(item.amount[0].denom && item.amount[0].amount && item.amount[0].denom !== Constant.Denom.IRISATTO){
@@ -407,13 +407,13 @@ export default class Tools{
 							transferAmount = item.amount[0].formatAmount = item.amount[0].amount;
 							tokenId = item.amount[0].tokenId = item.amount[0].denom.toLocaleUpperCase();
 							if(item.type === 'BeginUnbonding' || item.type === 'BeginRedelegate'){
-								item.amount[0].formatAmount = item.amount[0].amount > 0 ? Tools.formatAmount(item.amount[0].amount) : item.amount[0].amount;
+								item.amount[0].formatAmount = item.amount[0].amount > 0 ? Tools.numberMoveDecimal(item.amount[0].amount) : item.amount[0].amount;
 								Amount = item.amount.map(listItem => `${listItem.formatAmount} SHARES`).join(',');
 							}
 						}
 					}else if(item.amount && Object.keys(item.amount).includes('amount') && Object.keys(item.amount).includes('denom')){
 						if(item.amount.denom === Constant.Denom.IRISATTO){
-							transferAmount = Tools.formatAmount(item.amount);
+							transferAmount = Tools.numberMoveDecimal(item.amount);
 							tokenId = Constant.Denom.IRIS.toLocaleUpperCase();
 							Amount = `${transferAmount}  ${Tools.formatDenom(item.amount.denom).toUpperCase()}`;
 							
