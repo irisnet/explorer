@@ -201,7 +201,7 @@ export default {
                         display: none;
                         position: absolute;
                         z-index: 5;
-                        margin-top: 30px;
+                        top:0.07rem;
                         left: 0.25rem;
                         transform: translateY(-50%);
                         color: #ffffff;

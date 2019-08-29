@@ -209,11 +209,11 @@ export default {
                     slot: "To"
                 },
                 {
-                    title: "Tx_Type",
+                    title: "TxType",
                     key: "Tx_Type"
                 },
                 {
-                    title: "Tx_Fee",
+                    title: "Fee",
                     key: "Tx_Fee"
                 },
                 {
@@ -253,11 +253,11 @@ export default {
                     slot: "To"
                 },
                 {
-                    title: "Tx_Type",
+                    title: "TxType",
                     key: "Tx_Type"
                 },
                 {
-                    title: "Tx_Fee",
+                    title: "Fee",
                     key: "Tx_Fee"
                 },
                 {
@@ -298,11 +298,11 @@ export default {
                     key: "Amount"
                 },
                 {
-                    title: "Tx_Type",
+                    title: "TxType",
                     key: "Tx_Type"
                 },
                 {
-                    title: "Tx_Fee",
+                    title: "Fee",
                     key: "Tx_Fee"
                 },
                 {
