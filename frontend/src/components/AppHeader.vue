@@ -863,7 +863,7 @@
                                     }
                                     i{
                                         font-size: 0.18rem;
-                                        color: var(--bgColor);
+                                        color: var(--titleColor);
                                         padding-right: 0.2rem;
                                     }
                                 }
