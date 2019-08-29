@@ -108,7 +108,7 @@ func GetPassVetoThresholdAndParticipationMinDeposit(proposalType string) (string
 
 func init() {
 
-	govParamMap, err := GetGenesisAppStateGovParam()
+	govParamMap, err := GetGovModuleParamMap(GovModule)
 	if err != nil {
 		logger.Error(err.Error())
 		return
