@@ -502,6 +502,9 @@ export default {
                     this.flShowProfileLogo = result && result.isProfiler;
                     if (result && result.deposits) {
                         let deposits = Tools.formatToken(result.deposits);
+	                    if(String(Tools.FormatScientificNotationToNumber(deposits.amount)).length > 18){
+		                    deposits.amount =`${String(Tools.FormatScientificNotationToNumber(deposits.amount)).split('.')[0]}.${String(Tools.FormatScientificNotationToNumber(deposits.amount)).split('.')[1].substring(0,18)}`
+	                    }
                         this.depositsValue = result.deposits.amount && result.deposits.amount !== 0 && result.deposits.amount !== '' ? `${Tools.formatPriceToFixed(deposits.amount)} ${deposits.denom}` : '';
                     }
                     this.withdrawAddress = (result && result.withdrawAddress) ? result.withdrawAddress : '--';
