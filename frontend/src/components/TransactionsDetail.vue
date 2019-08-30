@@ -229,14 +229,13 @@ export default {
                 Memo: ""
             },
             txTypeArr: {
-                type_0: ["WithdrawDelegatorRewardsAll"],
+                type_0: ["WithdrawDelegatorRewardsAll", "WithdrawValidatorRewardsAll"],
                 type_1: [
                     "Transfer",
                     "Delegate",
                     "BeginRedelegate",
                     "BeginUnbonding",
-                    "WithdrawDelegatorReward",
-                    "WithdrawValidatorRewardsAll"
+                    "WithdrawDelegatorReward"
                 ],
                 type_2: ["Burn"],
                 type_3: ["CreateValidator"],
@@ -1018,11 +1017,14 @@ export default {
                                         fieidValue = `${data[message[i].k] *
                                             100} %`;
                                     } else if (
+                                        (this.typeValue === "WithdrawDelegatorRewardsAll" ||
+                                        this.typeValue === "WithdrawValidatorRewardsAll") &&
                                         i === "From"
                                     ) {
-                                        fieidValue = data[message[i].k].split(
+                                        let arr = data[message[i].k].split(
                                             ","
                                         );
+                                        fieidValue = arr.length === 1 ? arr[0] : arr;
                                     } else {
                                         fieidValue = data[message[i].k];
                                     }
