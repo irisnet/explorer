@@ -714,13 +714,16 @@ export default {
                     try {
                         if (Array.isArray(data.items)) {
                             for (let it of data.items) {
+                            	if(String(Tools.FormatScientificNotationToNumber(it.amount)).length > 18){
+			                       it.amount =`${String(Tools.FormatScientificNotationToNumber(it.amount)).split('.')[0]}.${String(Tools.FormatScientificNotationToNumber(it.amount)).split('.')[1].substring(0,18)}`
+                                }
                                 it.amount = this.$options.filters.amountFromat(
                                     it.amount,
                                     Constants.Denom.IRIS.toUpperCase()
                                 );
-                                let selfShares = Number(it.self_shares);
+                                let selfShares = Tools.formatPriceToFixed(it.self_shares,4);
                                 it.shares = `${selfShares} (${this.formatPerNumber(
-                                    (selfShares / Number(it.total_shares)) * 100
+                                    (Number(it.self_shares) / Number(it.total_shares)) * 100
                                 )}%)`;
                             }
                             this.txTableList.delegations.items = data.items;
@@ -728,7 +731,9 @@ export default {
                             this.txTableList.delegations.items = [];
                         }
                         this.txTableList.delegations.total = data.total || 0;
-                    } catch (e) {}
+                    } catch (e) {
+                    	console.error(e)
+                    }
                 }
             );
         },
