@@ -138,9 +138,12 @@
                             <span v-show="v.v && !v.identityUrl" class="information_value">{{v.v}}</span>
                         </template>
                         <template v-else-if="k === 'Website'">
-                            <span
+                            <span v-show="v.v !== '[do-not-modify]'"
                                 @click="openUrl(v.v)"
                                 class="information_value link_active_style"
+                            >{{v.v}}</span>
+                            <span v-show="v.v === '[do-not-modify]'"
+                                class="information_value"
                             >{{v.v}}</span>
                         </template>
                         <template v-else-if="k === 'Software'">
@@ -229,14 +232,13 @@ export default {
                 Memo: ""
             },
             txTypeArr: {
-                type_0: ["WithdrawDelegatorRewardsAll"],
+                type_0: ["WithdrawDelegatorRewardsAll", "WithdrawValidatorRewardsAll"],
                 type_1: [
                     "Transfer",
                     "Delegate",
                     "BeginRedelegate",
                     "BeginUnbonding",
-                    "WithdrawDelegatorReward",
-                    "WithdrawValidatorRewardsAll"
+                    "WithdrawDelegatorReward"
                 ],
                 type_2: ["Burn"],
                 type_3: ["CreateValidator"],
@@ -1018,11 +1020,14 @@ export default {
                                         fieidValue = `${data[message[i].k] *
                                             100} %`;
                                     } else if (
+                                        (this.typeValue === "WithdrawDelegatorRewardsAll" ||
+                                        this.typeValue === "WithdrawValidatorRewardsAll") &&
                                         i === "From"
                                     ) {
-                                        fieidValue = data[message[i].k].split(
+                                        let arr = data[message[i].k].split(
                                             ","
                                         );
+                                        fieidValue = arr.length === 1 ? arr[0] : arr;
                                     } else {
                                         fieidValue = data[message[i].k];
                                     }
