@@ -138,9 +138,12 @@
                             <span v-show="v.v && !v.identityUrl" class="information_value">{{v.v}}</span>
                         </template>
                         <template v-else-if="k === 'Website'">
-                            <span
+                            <span v-show="v.v !== '[do-not-modify]'"
                                 @click="openUrl(v.v)"
                                 class="information_value link_active_style"
+                            >{{v.v}}</span>
+                            <span v-show="v.v === '[do-not-modify]'"
+                                class="information_value"
                             >{{v.v}}</span>
                         </template>
                         <template v-else-if="k === 'Software'">
