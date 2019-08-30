@@ -248,18 +248,19 @@ func GetDalegation(lcdDelegations []lcd.DelegationVo, totalShareAsRat *big.Rat, 
 	items := make([]vo.Delegation, 0, len(lcdDelegations))
 	for _, v := range lcdDelegations {
 
-		amountAsFloat64 := float64(0)
+		//amountAsFloat64 := float64(0)
+		var amountAsFloat64 string
 		if ratio, ok := tokenShareRatio[v.ValidatorAddr]; ok {
 			if shareAsRat, ok := new(big.Rat).SetString(v.Shares); ok {
 				amountAsRat := new(big.Rat).Mul(shareAsRat, ratio)
-
-				exact := false
-				amountAsFloat64, exact = amountAsRat.Float64()
-				if !exact {
-					logger.Info("convert new(big.Rat).Mul(shareAsRat, ratio)  (big.Rat to float64) ",
-						logger.Any("exact", exact),
-						logger.Any("amountAsRat", amountAsRat))
-				}
+				amountAsFloat64 = amountAsRat.FloatString(18)
+				//exact := false
+				//amountAsFloat64, exact = amountAsRat.Float64()
+				//if !exact {
+				//	logger.Info("convert new(big.Rat).Mul(shareAsRat, ratio)  (big.Rat to float64) ",
+				//		logger.Any("exact", exact),
+				//		logger.Any("amountAsRat", amountAsRat))
+				//}
 			} else {
 				logger.Error("convert validator share  type (string -> big.Rat) err", logger.String("str", v.Shares))
 			}
@@ -294,18 +295,19 @@ func GetDalegationbyPageSize(lcdDelegations []lcd.DelegationVo, totalShareAsRat 
 	for k, v := range lcdDelegations {
 		if k >= page*size && k < (page+1)*size {
 
-			amountAsFloat64 := float64(0)
+			//amountAsFloat64 := float64(0)
+			var amountAsFloat64 string
 			if ratio, ok := tokenShareRatio[v.ValidatorAddr]; ok {
 				if shareAsRat, ok := new(big.Rat).SetString(v.Shares); ok {
 					amountAsRat := new(big.Rat).Mul(shareAsRat, ratio)
-
-					exact := false
-					amountAsFloat64, exact = amountAsRat.Float64()
-					if !exact {
-						logger.Info("convert new(big.Rat).Mul(shareAsRat, ratio)  (big.Rat to float64) ",
-							logger.Any("exact", exact),
-							logger.Any("amountAsRat", amountAsRat))
-					}
+					amountAsFloat64 = amountAsRat.FloatString(18)
+					//exact := false
+					//amountAsFloat64, exact = amountAsRat.Float64()
+					//if !exact {
+					//	logger.Info("convert new(big.Rat).Mul(shareAsRat, ratio)  (big.Rat to float64) ",
+					//		logger.Any("exact", exact),
+					//		logger.Any("amountAsRat", amountAsRat))
+					//}
 				} else {
 					logger.Error("convert validator share  type (string -> big.Rat) err", logger.String("str", v.Shares))
 				}
