@@ -31,7 +31,7 @@ func TestProposalQueryList(t *testing.T) {
 
 func TestProposalQuery(t *testing.T) {
 
-	proposal := new(ProposalService).Query(15)
+	proposal := new(ProposalService).Query(2)
 
 	t.Logf("proposal: %v \n", proposal)
 }

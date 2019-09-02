@@ -22,3 +22,18 @@ func GetAssetTokens() (result []AssetTokens) {
 	}
 	return result
 }
+
+func GetAssetGateways() (result []AssetGateways) {
+	url := fmt.Sprintf(UrlAssetGateways, conf.Get().Hub.LcdUrl)
+	resBytes, err := utils.Get(url)
+	if err != nil {
+		logger.Error("get AssetTokens error", logger.String("err", err.Error()))
+		return result
+	}
+
+	if err := json.Unmarshal(resBytes, &result); err != nil {
+		logger.Error("Unmarshal AssetTokens error", logger.String("err", err.Error()))
+		return result
+	}
+	return result
+}
