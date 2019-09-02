@@ -291,7 +291,16 @@ func buildAssetTokens() []document.Asset {
 				logger.Error("utils.copy assetToken failed")
 				panic(err)
 			}
-			if totalsupply, ok := asset_totalsupplyMap[assetToken.Symbol+"-min"]; ok {
+			denome := assetToken.Symbol + "-min"
+			if assetToken.Symbol == "iris" {
+				denome = "iris-atto"
+			} else {
+				if len(assetToken.Gateway) > 0 {
+					denome = assetToken.Gateway + "." + denome
+				}
+			}
+
+			if totalsupply, ok := asset_totalsupplyMap[denome]; ok {
 				assetToken.TotalSupply = totalsupply
 			}
 			*result = append(*result, assetToken)
