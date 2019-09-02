@@ -351,3 +351,18 @@ func (service *AssetsService) QueryAssetToken() []vo.AssetTokens {
 	}
 	return []vo.AssetTokens{}
 }
+
+func (service *AssetsService) QueryAssetGateways(addr string) (vo.AssetGateways, error) {
+	v, err := document.AssetGateways{}.GetGatewayInfoByOwner(addr)
+	if err != nil {
+		logger.Error("QueryAssetGateways", logger.String("err", err.Error()))
+		return vo.AssetGateways{}, err
+	}
+	return vo.AssetGateways{
+		Owner:    v.Owner,
+		Identity: v.Identity,
+		Website:  v.Website,
+		Details:  v.Details,
+		Moniker:  v.Moniker,
+	}, nil
+}

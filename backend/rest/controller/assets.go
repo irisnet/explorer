@@ -6,6 +6,7 @@ import (
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/vo"
+	"fmt"
 )
 
 var assets service.AssetsService
@@ -15,6 +16,7 @@ func RegisterAssets(r *mux.Router) error {
 		registerQueryNativeAsset,
 		registerQueryGatewayAsset,
 		registerAssetTokens,
+		registerAssetGateways,
 	}
 
 	for _, fn := range funs {
@@ -70,6 +72,20 @@ func registerAssetTokens(r *mux.Router) error {
 		assets.SetTid(request.TraceId)
 		result := assets.QueryAssetToken()
 		return result
+	})
+	return nil
+}
+
+func registerAssetGateways(r *mux.Router) error {
+	doApi(r, types.UrlRegisterAssetGateways, "GET", func(request vo.IrisReq) interface{} {
+		assets.SetTid(request.TraceId)
+		address := QueryParam(request, "address")
+		fmt.Println(address)
+		result, err := assets.QueryAssetGateways(address)
+		if err != nil {
+			return vo.NewResponse("-1", err.Error(), nil)
+		}
+		return vo.NewResponse(types.CodeSuccess.Code, types.CodeSuccess.Msg, result)
 	})
 	return nil
 }

@@ -4,10 +4,12 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"github.com/irisnet/explorer/backend/orm"
 	"gopkg.in/mgo.v2/txn"
+	"github.com/irisnet/explorer/backend/logger"
 )
 
 const (
-	CollectionNmAssetGatways = "ex_asset_gateways"
+	CollectionNmAssetGatways   = "ex_asset_gateways"
+	ValidatorFieldOwnerAddress = "owner"
 )
 
 type AssetGateways struct {
@@ -28,6 +30,15 @@ func (_ AssetGateways) GetAllAssetGateways() ([]AssetGateways, error) {
 	err := qeury.Exec()
 
 	return assets, err
+}
+
+func (_ AssetGateways) GetGatewayInfoByOwner(owneraddr string) (gateway AssetGateways, err error) {
+	err = queryOne(CollectionNmAssetGatways, nil, bson.M{ValidatorFieldOwnerAddress: owneraddr}, &gateway)
+	if err != nil {
+		logger.Error("validator not found", logger.Any("err", err.Error()))
+		return
+	}
+	return
 }
 
 func (_ AssetGateways) Batch(txs []txn.Op) error {

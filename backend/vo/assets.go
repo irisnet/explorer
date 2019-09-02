@@ -52,6 +52,14 @@ type AssetTokens struct {
 	Decimal int    `json:"decimal"`
 }
 
+type AssetGateways struct {
+	Owner    string `json:"owner"`
+	Moniker  string `json:"moniker"`
+	Identity string `json:"identity"`
+	Details  string `json:"details"`
+	Website  string `json:"website"`
+}
+
 func (b AssetTokens) String() string {
 
 	return fmt.Sprintf(`
