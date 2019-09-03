@@ -330,28 +330,6 @@ func isDiffAssetToken(src, dst document.Asset) bool {
 	return false
 }
 
-func (service *AssetsService) QueryAssetToken() []vo.AssetTokens {
-	res, err := document.Asset{}.GetAllAssets()
-	if err != nil {
-		logger.Error("GetAllAssets", logger.String("err", err.Error()))
-		panic(types.CodeNotFound)
-	}
-
-	assetTokens := make([]vo.AssetTokens, 0, len(res))
-
-	for _, v := range res {
-		tmp := vo.AssetTokens{
-			Symbol:  v.Symbol,
-			Decimal: v.Decimal,
-		}
-		assetTokens = append(assetTokens, tmp)
-	}
-	if len(assetTokens) > 1 {
-		return assetTokens
-	}
-	return []vo.AssetTokens{}
-}
-
 func (service *AssetsService) QueryAssetGateways(addr string) ([]vo.AssetGateways, error) {
 	res, err := document.AssetGateways{}.GetGatewayInfoByOwner(addr)
 	if err != nil {
@@ -373,17 +351,18 @@ func (service *AssetsService) QueryAssetGateways(addr string) ([]vo.AssetGateway
 	return assetGateways, nil
 }
 
-func (service *AssetsService) QueryAssetInfos(addr, assettype string) ([]vo.AssetInfos, error) {
-	res, err := document.Asset{}.GetAssetByAddr(addr, assettype)
+func (service *AssetsService) QueryAssetToken(tokenid, source string) ([]vo.AssetTokens, error) {
+	res, err := document.Asset{}.GetAssetToken(tokenid, source)
 	if err != nil {
 		logger.Error("GetAssetByAddr", logger.String("err", err.Error()))
-		return []vo.AssetInfos{}, err
+		return []vo.AssetTokens{}, err
 	}
 
-	assetinfos := make([]vo.AssetInfos, 0, len(res))
+	assetinfos := make([]vo.AssetTokens, 0, len(res))
 
 	for _, v := range res {
-		tmp := vo.AssetInfos{
+		tmp := vo.AssetTokens{
+			TokenId:         v.TokenId,
 			Owner:           v.Owner,
 			TotalSupply:     v.TotalSupply,
 			InitialSupply:   v.InitialSupply,
@@ -393,6 +372,7 @@ func (service *AssetsService) QueryAssetInfos(addr, assettype string) ([]vo.Asse
 			Name:            v.Name,
 			CanonicalSymbol: v.CanonicalSymbol,
 			Decimal:         v.Decimal,
+			Symbol:          v.Symbol,
 		}
 		assetinfos = append(assetinfos, tmp)
 	}

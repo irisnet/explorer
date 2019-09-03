@@ -76,7 +76,9 @@ func TestAssetsServiceisFieldTokenType(t *testing.T) {
 }
 
 func TestAssetService_QueryAssetToken(t *testing.T) {
-	res := new(AssetsService).QueryAssetToken()
+	addr := "faa1tx93d0al7w2f4k2f46zs2pkh9dunfcsahghkrv"
+	source := "gateway"
+	res, _ := new(AssetsService).QueryAssetToken(addr, source)
 
 	for k, v := range res {
 		t.Logf("k: %v \nv: %v\n", k, v)

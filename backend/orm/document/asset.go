@@ -8,11 +8,11 @@ import (
 )
 
 const (
-	CollectionNmAsset      = "ex_asset_tokens"
-	AssetFieldOwnerAddress = "owner"
-	AssetFieldSource       = "source"
-	AssetFieldFamily       = "family"
-	FungibleFamily         = "fungible"
+	CollectionNmAsset = "ex_asset_tokens"
+	AssetFieldTokenId = "token_id"
+	AssetFieldSource  = "source"
+	AssetFieldFamily  = "family"
+	FungibleFamily    = "fungible"
 )
 
 type Asset struct {
@@ -44,14 +44,14 @@ func (_ Asset) GetAllAssets() ([]Asset, error) {
 	return assets, err
 }
 
-func (_ Asset) GetAssetByAddr(address, assettype string) ([]Asset, error) {
+func (_ Asset) GetAssetToken(tokenid, source string) ([]Asset, error) {
 	var assets []Asset
 	cond := bson.M{}
-	if address != "" {
-		cond[AssetFieldOwnerAddress] = address
+	if tokenid != "" {
+		cond[AssetFieldTokenId] = tokenid
 	}
-	if assettype != "" {
-		cond[AssetFieldSource] = assettype
+	if source != "" {
+		cond[AssetFieldSource] = source
 	}
 	cond[AssetFieldFamily] = FungibleFamily
 	err := queryOne(CollectionNmAsset, nil, cond, &assets)
