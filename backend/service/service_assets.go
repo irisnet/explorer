@@ -352,8 +352,8 @@ func (service *AssetsService) QueryAssetToken() []vo.AssetTokens {
 	return []vo.AssetTokens{}
 }
 
-func (service *AssetsService) QueryAssetGateways(addr string) ([]vo.AssetGateways, error) {
-	res, err := document.AssetGateways{}.GetGatewayInfoByOwner(addr)
+func (service *AssetsService) QueryAssetGateways(moniker string) ([]vo.AssetGateways, error) {
+	res, err := document.AssetGateways{}.GetGatewayInfo(moniker)
 	if err != nil {
 		logger.Error("QueryAssetGateways", logger.String("err", err.Error()))
 		return []vo.AssetGateways{}, err

@@ -6,7 +6,6 @@ import (
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/vo"
-	"fmt"
 )
 
 var assets service.AssetsService
@@ -79,9 +78,8 @@ func registerAssetTokens(r *mux.Router) error {
 func registerAssetGateways(r *mux.Router) error {
 	doApi(r, types.UrlRegisterAssetGateways, "GET", func(request vo.IrisReq) interface{} {
 		assets.SetTid(request.TraceId)
-		address := QueryParam(request, "address")
-		fmt.Println(address)
-		result, err := assets.QueryAssetGateways(address)
+		moniker := QueryParam(request, "moniker")
+		result, err := assets.QueryAssetGateways(moniker)
 		if err != nil {
 			return vo.NewResponse("-1", err.Error(), nil)
 		}
