@@ -359,6 +359,7 @@ func (service *AssetsService) QueryAssetTokens(source string) ([]vo.AssetTokens,
 		tmp := vo.AssetTokens{
 			TokenId:         v.TokenId,
 			Owner:           v.Owner,
+			Gateway:         v.Gateway,
 			TotalSupply:     v.TotalSupply,
 			InitialSupply:   v.InitialSupply,
 			MaxSupply:       v.MaxSupply,
@@ -385,6 +386,7 @@ func (service *AssetsService) QueryAssetTokenDetail(tokenid string) (vo.AssetTok
 	return vo.AssetTokens{
 		TokenId:         res.TokenId,
 		Owner:           res.Owner,
+		Gateway:         res.Gateway,
 		TotalSupply:     res.TotalSupply,
 		InitialSupply:   res.InitialSupply,
 		MaxSupply:       res.MaxSupply,
