@@ -15,6 +15,8 @@ func RegisterAssets(r *mux.Router) error {
 		registerQueryNativeAsset,
 		registerQueryGatewayAsset,
 		registerAssetTokens,
+		registerAssetGatewayInfo,
+		registerAssetTokenInfo,
 	}
 
 	for _, fn := range funs {
@@ -68,8 +70,40 @@ func registerQueryGatewayAsset(r *mux.Router) error {
 func registerAssetTokens(r *mux.Router) error {
 	doApi(r, types.UrlRegisterAssetTokens, "GET", func(request vo.IrisReq) interface{} {
 		assets.SetTid(request.TraceId)
-		result := assets.QueryAssetToken()
-		return result
+		//tokenid := QueryParam(request, "tokenid")
+		source := QueryParam(request, "source")
+		result, err := assets.QueryAssetTokens(source)
+		if err != nil {
+			return vo.NewResponse("-1", err.Error(), nil)
+		}
+		return vo.NewResponse(types.CodeSuccess.Code, types.CodeSuccess.Msg, result)
 	})
 	return nil
 }
+
+func registerAssetTokenInfo(r *mux.Router) error {
+	doApi(r, types.UrlRegisterAssetTokenInfo, "GET", func(request vo.IrisReq) interface{} {
+		assets.SetTid(request.TraceId)
+		tokenid := Var(request, "token_id")
+		result, err := assets.QueryAssetTokenDetail(tokenid)
+		if err != nil {
+			return vo.NewResponse("-1", err.Error(), nil)
+		}
+		return vo.NewResponse(types.CodeSuccess.Code, types.CodeSuccess.Msg, result)
+	})
+	return nil
+}
+
+func registerAssetGatewayInfo(r *mux.Router) error {
+	doApi(r, types.UrlRegisterAssetGatewayInfo, "GET", func(request vo.IrisReq) interface{} {
+		assets.SetTid(request.TraceId)
+		moniker := Var(request, "moniker")
+		result, err := assets.QueryAssetGatewayDetail(moniker)
+		if err != nil {
+			return vo.NewResponse("-1", err.Error(), nil)
+		}
+		return vo.NewResponse(types.CodeSuccess.Code, types.CodeSuccess.Msg, result)
+	})
+	return nil
+}
+

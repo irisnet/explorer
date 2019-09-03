@@ -330,24 +330,69 @@ func isDiffAssetToken(src, dst document.Asset) bool {
 	return false
 }
 
-func (service *AssetsService) QueryAssetToken() []vo.AssetTokens {
-	res, err := document.Asset{}.GetAllAssets()
+func (service *AssetsService) QueryAssetGatewayDetail(moniker string) (vo.AssetGateways, error) {
+	res, err := document.AssetGateways{}.GetGatewayInfo(moniker)
 	if err != nil {
-		logger.Error("GetAllAssets", logger.String("err", err.Error()))
-		panic(types.CodeNotFound)
+		logger.Error("QueryAssetGateways", logger.String("err", err.Error()))
+		return vo.AssetGateways{}, err
 	}
 
-	assetTokens := make([]vo.AssetTokens, 0, len(res))
+	return vo.AssetGateways{
+		Owner:    res.Owner,
+		Identity: res.Identity,
+		Website:  res.Website,
+		Details:  res.Details,
+		Moniker:  res.Moniker,
+	}, nil
+}
+
+func (service *AssetsService) QueryAssetTokens(source string) ([]vo.AssetTokens, error) {
+	res, err := document.Asset{}.GetAssetTokens(source)
+	if err != nil {
+		logger.Error("GetAssetByAddr", logger.String("err", err.Error()))
+		return []vo.AssetTokens{}, err
+	}
+
+	assetinfos := make([]vo.AssetTokens, 0, len(res))
 
 	for _, v := range res {
 		tmp := vo.AssetTokens{
-			Symbol:  v.Symbol,
-			Decimal: v.Decimal,
+			TokenId:         v.TokenId,
+			Owner:           v.Owner,
+			TotalSupply:     v.TotalSupply,
+			InitialSupply:   v.InitialSupply,
+			MaxSupply:       v.MaxSupply,
+			MinUnitAlias:    v.MinUnitAlias,
+			Mintable:        v.Mintable,
+			Name:            v.Name,
+			CanonicalSymbol: v.CanonicalSymbol,
+			Decimal:         v.Decimal,
+			Symbol:          v.Symbol,
 		}
-		assetTokens = append(assetTokens, tmp)
+		assetinfos = append(assetinfos, tmp)
 	}
-	if len(assetTokens) > 1 {
-		return assetTokens
+
+	return assetinfos, nil
+}
+
+func (service *AssetsService) QueryAssetTokenDetail(tokenid string) (vo.AssetTokens, error) {
+
+	res, err := document.Asset{}.GetAssetTokenDetail(tokenid)
+	if err != nil {
+		logger.Error("GetAssetByAddr", logger.String("err", err.Error()))
+		return vo.AssetTokens{}, err
 	}
-	return []vo.AssetTokens{}
+	return vo.AssetTokens{
+		TokenId:         res.TokenId,
+		Owner:           res.Owner,
+		TotalSupply:     res.TotalSupply,
+		InitialSupply:   res.InitialSupply,
+		MaxSupply:       res.MaxSupply,
+		MinUnitAlias:    res.MinUnitAlias,
+		Mintable:        res.Mintable,
+		Name:            res.Name,
+		CanonicalSymbol: res.CanonicalSymbol,
+		Decimal:         res.Decimal,
+		Symbol:          res.Symbol,
+	}, nil
 }
