@@ -60,6 +60,18 @@ type AssetGateways struct {
 	Website  string `json:"website"`
 }
 
+type AssetInfos struct {
+	Owner           string `json:"owner"`
+	TotalSupply     string `json:"total_supply"`
+	InitialSupply   string `json:"initial_supply"`
+	MaxSupply       string `json:"max_supply"`
+	Mintable        bool   `json:"mintable,string"`
+	Decimal         int    `json:"decimal,string"`
+	CanonicalSymbol string `json:"canonical_symbol"`
+	Name            string `json:"name"`
+	MinUnitAlias    string `json:"min_unit_alias"`
+}
+
 func (b AssetTokens) String() string {
 
 	return fmt.Sprintf(`

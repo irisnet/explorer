@@ -80,6 +80,8 @@ const (
 	UrlRegisterAssetTokens = "/asset/tokens"
 	//assetGateways
 	UrlRegisterAssetGateways = "/asset/gateways"
+	//assetInfo
+	UrlRegisterAssetInfos = "/asset/assetinfos"
 	//version
 	UrlRegisterQueryApiVersion = "/version"
 

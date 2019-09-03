@@ -366,3 +366,30 @@ func (service *AssetsService) QueryAssetGateways(addr string) (vo.AssetGateways,
 		Moniker:  v.Moniker,
 	}, nil
 }
+
+func (service *AssetsService) QueryAssetInfos(addr, assettype string) ([]vo.AssetInfos, error) {
+	res, err := document.Asset{}.GetAssetByAddr(addr, assettype)
+	if err != nil {
+		logger.Error("GetAssetByAddr", logger.String("err", err.Error()))
+		return []vo.AssetInfos{}, err
+	}
+
+	assetinfos := make([]vo.AssetInfos, 0, len(res))
+
+	for _, v := range res {
+		tmp := vo.AssetInfos{
+			Owner:           v.Owner,
+			TotalSupply:     v.TotalSupply,
+			InitialSupply:   v.InitialSupply,
+			MaxSupply:       v.MaxSupply,
+			MinUnitAlias:    v.MinUnitAlias,
+			Mintable:        v.Mintable,
+			Name:            v.Name,
+			CanonicalSymbol: v.CanonicalSymbol,
+			Decimal:         v.Decimal,
+		}
+		assetinfos = append(assetinfos, tmp)
+	}
+
+	return assetinfos, nil
+}

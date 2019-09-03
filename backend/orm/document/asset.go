@@ -4,10 +4,15 @@ import (
 	"github.com/irisnet/explorer/backend/orm"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/txn"
+	"github.com/irisnet/explorer/backend/logger"
 )
 
 const (
-	CollectionNmAsset = "ex_asset_tokens"
+	CollectionNmAsset      = "ex_asset_tokens"
+	AssetFieldOwnerAddress = "owner"
+	AssetFieldSource       = "source"
+	AssetFieldFamily       = "family"
+	FungibleFamily         = "fungible"
 )
 
 type Asset struct {
@@ -37,6 +42,18 @@ func (_ Asset) GetAllAssets() ([]Asset, error) {
 	err := qeury.Exec()
 
 	return assets, err
+}
+
+func (_ Asset) GetAssetByAddr(address, assettype string) ([]Asset, error) {
+	var assets []Asset
+	cond := bson.M{AssetFieldOwnerAddress: address, AssetFieldSource: assettype}
+	cond[AssetFieldFamily] = FungibleFamily
+	err := queryOne(CollectionNmAsset, nil, cond, &assets)
+	if err != nil {
+		logger.Error("validator not found", logger.Any("err", err.Error()))
+		return assets, err
+	}
+	return assets, nil
 }
 
 func (_ Asset) Batch(txs []txn.Op) error {
