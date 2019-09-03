@@ -75,14 +75,21 @@ func TestAssetsServiceisFieldTokenType(t *testing.T) {
 
 }
 
-func TestAssetService_QueryAssetToken(t *testing.T) {
-	addr := "faa1tx93d0al7w2f4k2f46zs2pkh9dunfcsahghkrv"
+func TestAssetService_QueryAssetTokens(t *testing.T) {
 	source := "gateway"
-	res, _ := new(AssetsService).QueryAssetToken(addr, source)
+	res, _ := new(AssetsService).QueryAssetTokens(source)
 
 	for k, v := range res {
 		t.Logf("k: %v \nv: %v\n", k, v)
 	}
+}
+
+func TestAssetsService_QueryAssetTokenDetail(t *testing.T) {
+	tokenid := "shark.fly"
+	res, _ := new(AssetsService).QueryAssetTokenDetail(tokenid)
+
+	bytesmsg, _ := json.Marshal(res)
+	t.Log(string(bytesmsg))
 }
 
 func TestAssetService_UpdateAssetTokens(t *testing.T) {
