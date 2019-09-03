@@ -36,9 +36,20 @@
         },
         methods:{
 			getNativeAssetList(){
-				Service.commonInterface({}, (res)=> {
+				Service.commonInterface({nativeAssetList:{}}, (res)=> {
 					try {
-
+						if(res){
+							this.nativeAssetList = res.data.map( item => {
+								return {
+									Symbol: item.symbol,
+									Owner: item.owner,
+									TotalSupply: item.total_supply,
+									InitialSupply: item.initial_supply,
+									MaxSupply: item.max_supply,
+									Mintable: Tools.firstWordUpperCase(item.mintable)
+                                }
+                            })
+                        }
 					}catch (e) {
                         console.error(e)
 					}
