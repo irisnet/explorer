@@ -34,7 +34,7 @@
 	            nativeAssetList:[
                     {
                     	title:'Symbol',
-                        key:'Symbal',
+                        key:'Symbol',
                     },
 	                {
 		                title:'Owner',

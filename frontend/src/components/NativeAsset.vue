@@ -132,9 +132,6 @@
 			this.getTransferToken()
         },
         methods:{
-	        linkGen(pageNum) {
-		        return pageNum === 1 ? '?' : `?page=${pageNum}`
-	        },
             getIssueToken(){
 	            this.flIssueTokenShowLoading = true;
 	            Service.commonInterface({nativeAsset:{

@@ -153,7 +153,8 @@
 						        return {
 							        Owner: item.owner,
 							        Symbol: item.symbol,
-                                    Gateway: item.gateway,
+							        InitialSupply: item.initial_supply,
+							        Gateway: item.gateway,
 							        Mintable: Tools.firstWordUpperCase(item.mintable),
 							        Block: item.height,
 							        TxHash: item.tx_hash,

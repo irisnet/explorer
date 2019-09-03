@@ -84,7 +84,13 @@ const urlApi = {
   tokenStatsDistribution: '/api/tokenstats/account_total',
   //txs
   allTypeList:'/api/txs?page={pageNumber}&size={pageSize}&total=true',
-  allTypeListQuireHeight:'/api/txs?page={pageNumber}&size={pageSize}&height={height}&total=true'
+  allTypeListQuireHeight:'/api/txs?page={pageNumber}&size={pageSize}&height={height}&total=true',
+  //assetInfo
+  assetTokenInfo:'/api/asset/tokens/{tokenId}',
+  gatewayTokenInfo:'/api/asset/gateway/{moniker}',
+  //assetList
+  nativeAssetList:'/api/asset/tokens?source=native',
+  gatewayAssetList:'/api/asset/tokens?source=gateway'
 };
 
 export default urlApi

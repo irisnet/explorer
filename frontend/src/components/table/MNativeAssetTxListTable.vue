@@ -33,24 +33,10 @@
                     <span class="address" v-if="row.Amount.toString().length > 12">{{row.Amount}}</span>
                 </div>
             </template>
-            <template slot-scope="{ row }" slot="InitialSupply">
+            <template slot-scope="{ row }" slot="InitialSupply" v-if="row.InitialSupply">
                 <div class="name_address">
-                    <div>
-                            <span>
-                                <span>{{substrAmount(row.InitialSupply)}}</span>
-                            </span>
-                    </div>
+                    <span>{{substrAmount(row.InitialSupply)}}</span>
                     <span class="address" v-if="row.InitialSupply.toString().length > 12">{{row.InitialSupply}}</span>
-                </div>
-            </template>
-            <template slot-scope="{ row }" slot="MaxSupply">
-                <div class="name_address">
-                    <div>
-                            <span>
-                                <span>{{substrAmount(row.MaxSupply)}}</span>
-                            </span>
-                    </div>
-                    <span class="address" v-if="row.MaxSupply.toString().length > 12">{{row.MaxSupply}}</span>
                 </div>
             </template>
             <template slot-scope="{ row }" slot="Gateway">
@@ -83,6 +69,58 @@
         data(){
 			return {
 				fields:null,
+				assetTransferTxs:[
+                    {
+                    	title: 'TxHash',
+                        slot: 'TxHash',
+	                    tooltip: true,
+                    },
+					{
+						title: 'Block',
+						slot: 'Block',
+						width: 100,
+						tooltipClassName: 'tooltip_left'
+					},
+					{
+						title: 'From',
+						slot: 'From',
+					},
+					{
+						title: 'Amount',
+						key: 'Amount',
+						tooltipClassName: 'tooltip_left',
+					},
+					{
+						title: 'Token',
+						key: 'Token',
+						tooltipClassName: 'tooltip_left',
+					},
+					{
+						title: 'To',
+						slot: 'To',
+					},
+					{
+						title: 'TxType',
+						key: 'TxType',
+					},
+					{
+						title: 'Fee',
+						key: 'Fee',
+					},
+					{
+						title: 'Signer',
+						slot: 'Signer',
+					},
+					{
+						title: 'Status',
+						key: 'Status',
+					},
+					{
+						title: 'Timestamp',
+						key: 'Timestamp',
+					},
+
+                ],
 				gateWayIssueToken: [
                     {
 	                    title:'Owner',
@@ -360,7 +398,7 @@
 				}
             },
 			substrAmount(amount){
-				if(amount.toString().length > 12){
+				if(amount && amount.toString().length > 12){
 					return Tools.formatString(amount.toString(),12,'...')
 				}else {
 					return amount
