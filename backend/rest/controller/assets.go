@@ -34,11 +34,12 @@ func registerQueryNativeAsset(r *mux.Router) error {
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 5))
 		total := QueryParam(request, "total")
 		txtype := QueryParam(request, "tx_type")
+		symbol := QueryParam(request, "symbol")
 		istotal := true
 		if total == "false" {
 			istotal = false
 		}
-		res, err := assets.GetNativeAsset(txtype, page, size, istotal)
+		res, err := assets.GetNativeAsset(symbol, txtype, page, size, istotal)
 		if err != nil {
 			return vo.NewResponse("-1", err.Error(), nil)
 		}
@@ -53,12 +54,13 @@ func registerQueryGatewayAsset(r *mux.Router) error {
 		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 5))
 		txtype := QueryParam(request, "tx_type")
+		symbol := QueryParam(request, "symbol")
 		total := QueryParam(request, "total")
 		istotal := true
 		if total == "false" {
 			istotal = false
 		}
-		res, err := assets.GetGatewayAsset(txtype, page, size, istotal)
+		res, err := assets.GetGatewayAsset(symbol, txtype, page, size, istotal)
 		if err != nil {
 			return vo.NewResponse("-1", err.Error(), nil)
 		}

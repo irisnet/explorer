@@ -800,10 +800,31 @@ func buildValidators() []document.Validator {
 
 func computeUptime(valPub string, height int64) float32 {
 	result := lcd.SignInfo(valPub)
-	missedBlocksCounter := utils.ParseIntWithDefault(result.MissedBlocksCounter, 0)
+	govSlashingParamMap, err := lcd.GetGovSlashingParam()
+	if err != nil {
+		logger.Error("GetGovSlashingParam have failed", logger.String("err", err.Error()))
+	}
 	startHeight := utils.ParseIntWithDefault(result.StartHeight, 0)
-	tmp := float32(missedBlocksCounter) / float32(height-startHeight+1)
+
+	var stats_blocks_window int64
+	signed_blocks_window, ok := utils.ParseInt(govSlashingParamMap["signed_blocks_window"].(string))
+	if !ok {
+		stats_blocks_window = height - startHeight + 1
+	} else {
+		stats_blocks_window = Min(signed_blocks_window, height-startHeight+1)
+	}
+
+	missedBlocksCounter := utils.ParseIntWithDefault(result.MissedBlocksCounter, 0)
+
+	tmp := float32(missedBlocksCounter) / float32(stats_blocks_window)
 	return 1 - tmp
+}
+
+func Min(a, b int64) int64 {
+	if a > b {
+		return b
+	}
+	return a
 }
 
 func queryDelegationInfo(operatorAddress string, consensusPubkey string) (string, string, int) {
