@@ -6,11 +6,11 @@
             </div>
         </div>
         <div class="gateway_asset_list_table_container" v-if="gateWayIssueTokenList.length !== 0">
-            <div style="padding: 0.2rem 0">Issue Token</div>
+            <div style="padding: 0.2rem 0">Issue Token Txs</div>
             <div class="gateway_asset_list_table_content">
                 <div class="table_list_content">
                     <spin-component :showLoading="flShowLoading"></spin-component>
-                    <native-asset :showNoData="showNoData" :items="gateWayIssueTokenList" name="issueToken"></native-asset>
+                    <native-asset :showNoData="showNoData" :items="gateWayIssueTokenList" name="gateWayIssueToken"></native-asset>
                     <!--<m-tx-list-page-table :showNoData="showNoData" :items="txList"></m-tx-list-page-table>-->
                     <div v-show="showNoData" class="no_data_show">
                         <img src="../assets/no_data.svg" alt="">
@@ -22,7 +22,7 @@
             </div>
         </div>
         <div class="gateway_asset_list_table_container" v-if="gateWayEditTokenList.length !== 0">
-            <div style="padding: 0.2rem 0">Edit Token</div>
+            <div style="padding: 0.2rem 0">Edit Token Txs</div>
             <div class="gateway_asset_list_table_content">
                 <div class="table_list_content">
                     <!--<spin-component :showLoading="flShowLoading"></spin-component>-->
@@ -38,7 +38,7 @@
             </div>
         </div>
         <div class="gateway_asset_list_table_container" v-if="gateWayMintTokenList.length !== 0">
-            <div style="padding: 0.2rem 0">Mint Token</div>
+            <div style="padding: 0.2rem 0">Mint Token Txs</div>
             <div class="gateway_asset_list_table_content">
                 <div class="table_list_content">
                     <!--<spin-component :showLoading="flShowLoading"></spin-component>-->
@@ -54,7 +54,7 @@
             </div>
         </div>
         <div class="gateway_asset_list_table_container" v-if="gateWayTransferOwnerTokenList.length !== 0">
-            <div style="padding: 0.2rem 0">Transfer Owner</div>
+            <div style="padding: 0.2rem 0">Transfer Owner Txs</div>
             <div class="gateway_asset_list_table_content">
                 <div class="table_list_content">
                     <!--<spin-component :showLoading="flShowLoading"></spin-component>-->
@@ -72,7 +72,6 @@
         <div v-show="gateWayIssueTokenList.length === 0 && gateWayEditTokenList.length === 0
                     && gateWayMintTokenList.length === 0 && gateWayTransferOwnerTokenList.length === 0">
             <img class="no_data_img" src="../assets/no_data.svg">
-
         </div>
     </div>
 </template>
@@ -154,13 +153,12 @@
 						        return {
 							        Owner: item.owner,
 							        Symbol: item.symbol,
-							        InitialSupply: item.initial_supply,
-							        Mintable: item.mintable,
-							        MaxSupply: item.max_supply,
+                                    Gateway: item.gateway,
+							        Mintable: Tools.firstWordUpperCase(item.mintable),
 							        Block: item.height,
 							        TxHash: item.tx_hash,
 							        TxFee: this.formatFee(item.tx_fee),
-							        TxStatus: item.tx_status,
+							        TxStatus: Tools.firstWordUpperCase(item.tx_status),
 							        Timestamp: Tools.format2UTC(item.timestamp),
 						        }
 					        })
@@ -183,12 +181,10 @@
 						        return {
 							        Token: item.token_id,
 							        Owner: item.owner,
-							        MaxSupply: item.max_supply,
-							        Mintable: item.mintable,
 							        Block: item.height,
 							        TxHash: item.tx_hash,
 							        TxFee: this.formatFee(item.tx_fee),
-							        TxStatus: item.tx_status,
+							        TxStatus: Tools.firstWordUpperCase(item.tx_status),
 							        Timestamp: Tools.format2UTC(item.timestamp),
 						        }
 					        })
@@ -216,7 +212,7 @@
 							        Block: item.height,
 							        TxHash: item.tx_hash,
 							        TxFee: this.formatFee(item.tx_fee),
-							        TxStatus: item.tx_status,
+							        TxStatus: Tools.firstWordUpperCase(item.tx_status),
 							        Timestamp: Tools.format2UTC(item.timestamp),
 						        }
 					        })
@@ -244,7 +240,7 @@
 							        Block: item.height,
 							        TxHash: item.tx_hash,
 							        TxFee: this.formatFee(item.tx_fee),
-							        TxStatus: item.tx_status,
+							        TxStatus: Tools.firstWordUpperCase(item.tx_status),
 							        Timestamp: Tools.format2UTC(item.timestamp),
 						        }
 					        })

@@ -53,6 +53,11 @@
                     <span class="address" v-if="row.MaxSupply.toString().length > 12">{{row.MaxSupply}}</span>
                 </div>
             </template>
+            <template slot-scope="{ row }" slot="Gateway">
+                <div class="Gateway">
+                    <span>{{row.Gateway}}</span>
+                </div>
+            </template>
         </m-table>
     </div>
 </template>
@@ -78,13 +83,18 @@
         data(){
 			return {
 				fields:null,
-                issueToken: [
+				gateWayIssueToken: [
                     {
 	                    title:'Owner',
 	                    slot: 'Owner',
 	                    tooltip: true,
 	                    tooltipClassName: 'tooltip_left'
                     },
+	                {
+		                title:'Gateway',
+		                slot: 'Gateway',
+		                tooltipClassName: 'tooltip_left'
+	                },
 	                {
 		                title:'Symbol',
 		                key:'Symbol',
@@ -95,12 +105,6 @@
 		                title:'InitialSupply',
 		                // key:'InitialSupply',
 		                slot: 'InitialSupply',
-		                tooltipClassName: 'tooltip_left'
-	                },
-	                {
-		                title:'MaxSupply',
-		                // key:'MaxSupply',
-		                slot: 'MaxSupply',
 		                tooltipClassName: 'tooltip_left'
 	                },
 	                {
@@ -140,6 +144,63 @@
 		                tooltipClassName: 'tooltip_left'
 	                }
                 ],
+				nativeIssueToken: [
+					{
+						title:'Owner',
+						slot: 'Owner',
+						tooltip: true,
+						tooltipClassName: 'tooltip_left'
+					},
+
+					{
+						title:'Symbol',
+						key:'Symbol',
+						slot: 'Symbol',
+						tooltipClassName: 'tooltip_left'
+					},
+					{
+						title:'InitialSupply',
+						// key:'InitialSupply',
+						slot: 'InitialSupply',
+						tooltipClassName: 'tooltip_left'
+					},
+					{
+						title:'Mintable',
+						key:'Mintable',
+						slot: 'Mintable',
+						tooltipClassName: 'tooltip_left'
+					},
+					{
+						title:'Block',
+						slot: 'Block',
+						width: 100,
+						tooltipClassName: 'tooltip_left'
+					},
+					{
+						title:'TxHash',
+						slot: 'TxHash',
+						tooltip: true,
+						tooltipClassName: 'tooltip_left'
+					},
+					{
+						title:'Fee',
+						key:'TxFee',
+						slot: 'TxFee(IRIS)',
+						tooltipClassName: 'tooltip_left'
+					},
+					{
+						title:'Status',
+						key:'TxStatus',
+						slot: 'TxStatus',
+						tooltipClassName: 'tooltip_left'
+					},
+					{
+						title:'Timestamp',
+						key:'Timestamp',
+						slot: 'Timestamp',
+						tooltipClassName: 'tooltip_left'
+					}
+				],
 				editToken: [
 					{
 						title:'Token',
@@ -151,18 +212,6 @@
 						title:'Owner',
 						slot: 'Owner',
 						tooltip: true,
-						tooltipClassName: 'tooltip_left'
-					},
-					{
-						title:'MaxSupply',
-						// key:'MaxSupply',
-						slot: 'MaxSupply',
-						tooltipClassName: 'tooltip_left'
-					},
-					{
-						title:'Mintable',
-						key:'Mintable',
-						slot: 'Mintable',
 						tooltipClassName: 'tooltip_left'
 					},
 					{
