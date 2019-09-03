@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	CollectionNmAssetGatways   = "ex_asset_gateways"
-	ValidatorFieldOwnerAddress = "owner"
+	CollectionNmAssetGatways = "ex_asset_gateways"
+	GatewayFieldOwnerAddress = "owner"
 )
 
 type AssetGateways struct {
@@ -33,7 +33,7 @@ func (_ AssetGateways) GetAllAssetGateways() ([]AssetGateways, error) {
 }
 
 func (_ AssetGateways) GetGatewayInfoByOwner(owneraddr string) (gateway AssetGateways, err error) {
-	err = queryOne(CollectionNmAssetGatways, nil, bson.M{ValidatorFieldOwnerAddress: owneraddr}, &gateway)
+	err = queryOne(CollectionNmAssetGatways, nil, bson.M{GatewayFieldOwnerAddress: owneraddr}, &gateway)
 	if err != nil {
 		logger.Error("validator not found", logger.Any("err", err.Error()))
 		return
