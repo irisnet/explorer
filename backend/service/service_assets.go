@@ -179,8 +179,17 @@ func LoadModelFromCommonTx(src document.CommonTx) (dst vo.AssetsVo) {
 		}
 
 	}
+	dst = converModelTokenId(dst)
 
 	return
+}
+
+func converModelTokenId(dst vo.AssetsVo) vo.AssetsVo {
+	dst.TokenId = dst.Symbol
+	if dst.Gateway != "" {
+		dst.TokenId = dst.Gateway + "." + dst.Symbol
+	}
+	return dst
 }
 
 func checkMintToAddress(owner, address string) string {
