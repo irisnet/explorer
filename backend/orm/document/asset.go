@@ -44,22 +44,33 @@ func (_ Asset) GetAllAssets() ([]Asset, error) {
 	return assets, err
 }
 
-func (_ Asset) GetAssetToken(tokenid, source string) ([]Asset, error) {
+func (_ Asset) GetAssetTokens(source string) ([]Asset, error) {
 	var assets []Asset
 	cond := bson.M{}
-	if tokenid != "" {
-		cond[AssetFieldTokenId] = tokenid
-	}
 	if source != "" {
 		cond[AssetFieldSource] = source
 	}
 	cond[AssetFieldFamily] = FungibleFamily
-	err := queryOne(CollectionNmAsset, nil, cond, &assets)
+	err := queryAll(CollectionNmAsset, nil, cond, "", 0, &assets)
 	if err != nil {
 		logger.Error("validator not found", logger.Any("err", err.Error()))
 		return assets, err
 	}
 	return assets, nil
+}
+
+func (_ Asset) GetAssetTokenDetail(tokenid string) (Asset, error) {
+	var asset Asset
+	cond := bson.M{}
+	if tokenid != "" {
+		cond[AssetFieldTokenId] = tokenid
+	}
+	err := queryOne(CollectionNmAsset, nil, cond, &asset)
+	if err != nil {
+		logger.Error("validator not found", logger.Any("err", err.Error()))
+		return asset, err
+	}
+	return asset, nil
 }
 
 func (_ Asset) Batch(txs []txn.Op) error {

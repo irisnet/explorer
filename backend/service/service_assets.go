@@ -346,8 +346,8 @@ func (service *AssetsService) QueryAssetGateways(moniker string) (vo.AssetGatewa
 	}, nil
 }
 
-func (service *AssetsService) QueryAssetToken(tokenid, source string) ([]vo.AssetTokens, error) {
-	res, err := document.Asset{}.GetAssetToken(tokenid, source)
+func (service *AssetsService) QueryAssetTokens(source string) ([]vo.AssetTokens, error) {
+	res, err := document.Asset{}.GetAssetTokens(source)
 	if err != nil {
 		logger.Error("GetAssetByAddr", logger.String("err", err.Error()))
 		return []vo.AssetTokens{}, err
@@ -373,4 +373,26 @@ func (service *AssetsService) QueryAssetToken(tokenid, source string) ([]vo.Asse
 	}
 
 	return assetinfos, nil
+}
+
+func (service *AssetsService) QueryAssetTokenDetail(tokenid string) (vo.AssetTokens, error) {
+
+	res, err := document.Asset{}.GetAssetTokenDetail(tokenid)
+	if err != nil {
+		logger.Error("GetAssetByAddr", logger.String("err", err.Error()))
+		return vo.AssetTokens{}, err
+	}
+	return vo.AssetTokens{
+		TokenId:         res.TokenId,
+		Owner:           res.Owner,
+		TotalSupply:     res.TotalSupply,
+		InitialSupply:   res.InitialSupply,
+		MaxSupply:       res.MaxSupply,
+		MinUnitAlias:    res.MinUnitAlias,
+		Mintable:        res.Mintable,
+		Name:            res.Name,
+		CanonicalSymbol: res.CanonicalSymbol,
+		Decimal:         res.Decimal,
+		Symbol:          res.Symbol,
+	}, nil
 }
