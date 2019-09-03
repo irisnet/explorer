@@ -84,10 +84,10 @@
                             <!--<li class="header_submenu_item" v-if="flShowTransfers">Asset Transfers Txs</li>-->
                             <!--<li class="header_submenu_item" v-if="flShowTransfers">Inter-chain Txs</li>-->
                             <!--<li class="header_submenu_item" v-if="flShowTransfers">IRIS Burn Txs</li>-->
+                            <li class="header_submenu_item" v-if="flShowAssets"><router-link :to="`/assets/ntvassets`">Native Asset </router-link></li>
                             <li class="header_submenu_item" v-show="flShowAssets"><router-link :to="`/assets/ntvassetstxs`">Native Asset Txs</router-link></li>
-                            <!--<li class="header_submenu_item" v-if="flShowAssets">Issuers Txs</li>-->
+                            <li class="header_submenu_item" v-if="flShowAssets"><router-link :to="`/assets/gtwassets`">Gateway Asset</router-link></li>
                             <li class="header_submenu_item no_border_style" v-show="flShowAssets"><router-link :to="`/assets/gtwassetstxs`">Gateway Asset Txs</router-link></li>
-                            <!--<li class="header_submenu_item" v-if="flShowAssets">Gateways Txs</li>-->
                             <!--<li class="header_submenu_item" v-if="flShowAssets">Assets Transfers</li>-->
                             <li class="header_submenu_item" v-show="flShowGov"><router-link :to="`/gov/parameters`">Parameters</router-link></li>
                             <li class="header_submenu_item" v-show="flShowGov"><router-link :to="`/gov/proposals`">Proposals</router-link></li>
@@ -172,7 +172,9 @@
                         <i class="iconfont iconwangluoqiehuanjiantou" :class="flShowAssetsMenu ? 'up_style' : 'down_style'"> </i>
                     </div>
                     <ul class="blockchain_list_content" v-show="flShowAssetsMenu">
+                        <li class="blockchain_list_item" @click="featureButtonClick(`/assets/ntvassets`)">Native Asset</li>
                         <li class="blockchain_list_item" @click="featureButtonClick(`/assets/ntvassetstxs`)">Native Asset Txs</li>
+                        <li class="blockchain_list_item" @click="featureButtonClick(`/assets/gtwassets`)">Gateway Asset</li>
                         <li class="blockchain_list_item" @click="featureButtonClick(`/assets/gtwassetstxs`)">Gateway Asset Txs</li>
                     </ul>
                 </div>
