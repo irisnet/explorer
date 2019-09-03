@@ -46,7 +46,13 @@ func (_ Asset) GetAllAssets() ([]Asset, error) {
 
 func (_ Asset) GetAssetByAddr(address, assettype string) ([]Asset, error) {
 	var assets []Asset
-	cond := bson.M{AssetFieldOwnerAddress: address, AssetFieldSource: assettype}
+	cond := bson.M{}
+	if address != "" {
+		cond[AssetFieldOwnerAddress] = address
+	}
+	if assettype != "" {
+		cond[AssetFieldSource] = assettype
+	}
 	cond[AssetFieldFamily] = FungibleFamily
 	err := queryOne(CollectionNmAsset, nil, cond, &assets)
 	if err != nil {
