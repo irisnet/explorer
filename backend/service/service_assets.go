@@ -330,25 +330,20 @@ func isDiffAssetToken(src, dst document.Asset) bool {
 	return false
 }
 
-func (service *AssetsService) QueryAssetGateways(addr string) ([]vo.AssetGateways, error) {
-	res, err := document.AssetGateways{}.GetGatewayInfo(addr)
+func (service *AssetsService) QueryAssetGateways(moniker string) (vo.AssetGateways, error) {
+	res, err := document.AssetGateways{}.GetGatewayInfo(moniker)
 	if err != nil {
 		logger.Error("QueryAssetGateways", logger.String("err", err.Error()))
-		return []vo.AssetGateways{}, err
+		return vo.AssetGateways{}, err
 	}
-	assetGateways := make([]vo.AssetGateways, 0, len(res))
 
-	for _, v := range res {
-		tmp := vo.AssetGateways{
-			Owner:    v.Owner,
-			Identity: v.Identity,
-			Website:  v.Website,
-			Details:  v.Details,
-			Moniker:  v.Moniker,
-		}
-		assetGateways = append(assetGateways, tmp)
-	}
-	return assetGateways, nil
+	return vo.AssetGateways{
+		Owner:    res.Owner,
+		Identity: res.Identity,
+		Website:  res.Website,
+		Details:  res.Details,
+		Moniker:  res.Moniker,
+	}, nil
 }
 
 func (service *AssetsService) QueryAssetToken(tokenid, source string) ([]vo.AssetTokens, error) {

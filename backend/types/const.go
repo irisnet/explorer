@@ -78,8 +78,8 @@ const (
 	UrlRegisterBondedTokensValidators = "/bondedtokens/validators"
 	//assetTokens
 	UrlRegisterAssetTokens = "/asset/tokens"
-	//assetGateways
-	UrlRegisterAssetGateways = "/asset/gateways"
+	//assetGateway
+	UrlRegisterAssetGateway = "/asset/gateway/{moniker}"
 	//version
 	UrlRegisterQueryApiVersion = "/version"
 

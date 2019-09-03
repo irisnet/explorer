@@ -81,9 +81,9 @@ func registerAssetTokens(r *mux.Router) error {
 }
 
 func registerAssetGateways(r *mux.Router) error {
-	doApi(r, types.UrlRegisterAssetGateways, "GET", func(request vo.IrisReq) interface{} {
+	doApi(r, types.UrlRegisterAssetGateway, "GET", func(request vo.IrisReq) interface{} {
 		assets.SetTid(request.TraceId)
-		moniker := QueryParam(request, "moniker")
+		moniker := Var(request, "moniker")
 		result, err := assets.QueryAssetGateways(moniker)
 		if err != nil {
 			return vo.NewResponse("-1", err.Error(), nil)

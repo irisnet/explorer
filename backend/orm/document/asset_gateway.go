@@ -32,12 +32,12 @@ func (_ AssetGateways) GetAllAssetGateways() ([]AssetGateways, error) {
 	return assets, err
 }
 
-func (_ AssetGateways) GetGatewayInfo(moniker string) (gateway []AssetGateways, err error) {
+func (_ AssetGateways) GetGatewayInfo(moniker string) (gateway AssetGateways, err error) {
 	cond := bson.M{}
 	if moniker != "" {
 		cond[GatewayFieldMoniker] = moniker
 	}
-	err = queryAll(CollectionNmAssetGatways, nil, cond, "", 0, &gateway)
+	err = queryOne(CollectionNmAssetGatways, nil, cond, &gateway)
 	if err != nil {
 		logger.Error("validator not found", logger.Any("err", err.Error()))
 		return
