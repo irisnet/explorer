@@ -293,7 +293,7 @@ func buildAssetTokens() []document.Asset {
 			}
 			denome := assetToken.Symbol + "-min"
 			if assetToken.Symbol == "iris" {
-				denome = "iris-atto"
+				return
 			} else {
 				if len(assetToken.Gateway) > 0 {
 					denome = assetToken.Gateway + "." + denome
