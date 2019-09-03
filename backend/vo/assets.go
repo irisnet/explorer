@@ -67,6 +67,7 @@ type AssetTokens struct {
 	CanonicalSymbol string         `json:"canonical_symbol"`
 	Name            string         `json:"name"`
 	MinUnitAlias    string         `json:"min_unit_alias"`
-	AssetGateway    *AssetGateways `json:"asset_gateway,omitempty"`
+	Source          string         `json:"source"`
+	AssetGateway    *AssetGateways `json:"asset_gateway"`
 }
 

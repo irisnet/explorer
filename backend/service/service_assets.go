@@ -369,6 +369,7 @@ func (service *AssetsService) QueryAssetTokens(source string) ([]vo.AssetTokens,
 			CanonicalSymbol: v.CanonicalSymbol,
 			Decimal:         v.Decimal,
 			Symbol:          v.Symbol,
+			Source:          v.Source,
 		}
 		assetinfos = append(assetinfos, tmp)
 	}
@@ -396,8 +397,9 @@ func (service *AssetsService) QueryAssetTokenDetail(tokenid string) (vo.AssetTok
 		CanonicalSymbol: res.CanonicalSymbol,
 		Decimal:         res.Decimal,
 		Symbol:          res.Symbol,
+		Source:          res.Source,
 	}
-	if res.Gateway != "" {
+	if res.Source == document.Tx_AssetType_Gateway {
 		gatewaydata, err := document.AssetGateways{}.GetGatewayInfo(res.Gateway)
 		if err != nil {
 			logger.Warn("GetGatewayInfo have error", logger.String("err", err.Error()))
