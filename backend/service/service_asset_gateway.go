@@ -24,7 +24,7 @@ func (service *AssetsService) UpdateAssetGateway(vs []document.AssetGateways) er
 				v.ID = it.ID
 				txs = append(txs, txn.Op{
 					C:  document.CollectionNmAssetGatways,
-					Id: it.Moniker,
+					Id: v.ID,
 					Update: bson.M{
 						"$set": v,
 					},
