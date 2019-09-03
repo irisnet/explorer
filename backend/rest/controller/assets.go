@@ -55,12 +55,13 @@ func registerQueryGatewayAsset(r *mux.Router) error {
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 5))
 		txtype := QueryParam(request, "tx_type")
 		symbol := QueryParam(request, "symbol")
+		gateway := QueryParam(request, "gateway")
 		total := QueryParam(request, "total")
 		istotal := true
 		if total == "false" {
 			istotal = false
 		}
-		res, err := assets.GetGatewayAsset(symbol, txtype, page, size, istotal)
+		res, err := assets.GetGatewayAsset(symbol, gateway, txtype, page, size, istotal)
 		if err != nil {
 			return vo.NewResponse("-1", err.Error(), nil)
 		}
