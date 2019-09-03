@@ -352,19 +352,25 @@ func (service *AssetsService) QueryAssetToken() []vo.AssetTokens {
 	return []vo.AssetTokens{}
 }
 
-func (service *AssetsService) QueryAssetGateways(addr string) (vo.AssetGateways, error) {
-	v, err := document.AssetGateways{}.GetGatewayInfoByOwner(addr)
+func (service *AssetsService) QueryAssetGateways(addr string) ([]vo.AssetGateways, error) {
+	res, err := document.AssetGateways{}.GetGatewayInfoByOwner(addr)
 	if err != nil {
 		logger.Error("QueryAssetGateways", logger.String("err", err.Error()))
-		return vo.AssetGateways{}, err
+		return []vo.AssetGateways{}, err
 	}
-	return vo.AssetGateways{
-		Owner:    v.Owner,
-		Identity: v.Identity,
-		Website:  v.Website,
-		Details:  v.Details,
-		Moniker:  v.Moniker,
-	}, nil
+	assetGateways := make([]vo.AssetGateways, 0, len(res))
+
+	for _, v := range res {
+		tmp := vo.AssetGateways{
+			Owner:    v.Owner,
+			Identity: v.Identity,
+			Website:  v.Website,
+			Details:  v.Details,
+			Moniker:  v.Moniker,
+		}
+		assetGateways = append(assetGateways, tmp)
+	}
+	return assetGateways, nil
 }
 
 func (service *AssetsService) QueryAssetInfos(addr, assettype string) ([]vo.AssetInfos, error) {

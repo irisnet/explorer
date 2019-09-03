@@ -32,8 +32,12 @@ func (_ AssetGateways) GetAllAssetGateways() ([]AssetGateways, error) {
 	return assets, err
 }
 
-func (_ AssetGateways) GetGatewayInfoByOwner(owneraddr string) (gateway AssetGateways, err error) {
-	err = queryOne(CollectionNmAssetGatways, nil, bson.M{GatewayFieldOwnerAddress: owneraddr}, &gateway)
+func (_ AssetGateways) GetGatewayInfoByOwner(owneraddr string) (gateway []AssetGateways, err error) {
+	cond := bson.M{}
+	if owneraddr != "" {
+		cond[GatewayFieldOwnerAddress] = owneraddr
+	}
+	err = queryAll(CollectionNmAssetGatways, nil, cond, "", 0, &gateway)
 	if err != nil {
 		logger.Error("validator not found", logger.Any("err", err.Error()))
 		return
