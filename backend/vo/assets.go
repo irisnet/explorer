@@ -57,6 +57,7 @@ type AssetGateways struct {
 type AssetTokens struct {
 	TokenId         string `json:"token_id"`
 	Owner           string `json:"owner"`
+	Gateway         string `json:"gateway"`
 	TotalSupply     string `json:"total_supply"`
 	InitialSupply   string `json:"initial_supply"`
 	MaxSupply       string `json:"max_supply"`
