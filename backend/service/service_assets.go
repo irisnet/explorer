@@ -331,7 +331,7 @@ func isDiffAssetToken(src, dst document.Asset) bool {
 }
 
 func (service *AssetsService) QueryAssetGateways(addr string) ([]vo.AssetGateways, error) {
-	res, err := document.AssetGateways{}.GetGatewayInfoByOwner(addr)
+	res, err := document.AssetGateways{}.GetGatewayInfo(addr)
 	if err != nil {
 		logger.Error("QueryAssetGateways", logger.String("err", err.Error()))
 		return []vo.AssetGateways{}, err
