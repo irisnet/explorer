@@ -111,9 +111,9 @@ const router = new Router({
     {
       path: '/assets/gtwassets', component: GateWayAssetList,
     },
-    {
-      path: '/asset/:assetType/:tokenName/:tokenId', component: AssetInfo,
-    },
+   /* {
+      path: '/asset/:assetType/:tokenName', component: AssetInfo,
+    },*/
     {
       path: '/asset/:assetType', component: AssetInfo,
     },

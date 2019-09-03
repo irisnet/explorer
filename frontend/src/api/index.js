@@ -87,10 +87,12 @@ const urlApi = {
   allTypeListQuireHeight:'/api/txs?page={pageNumber}&size={pageSize}&height={height}&total=true',
   //assetInfo
   assetTokenInfo:'/api/asset/tokens/{tokenId}',
-  gatewayTokenInfo:'/api/asset/gateway/{moniker}',
+  gatewayTokenInfo:'/api/asset/gateways/{moniker}',
+  nativeAssetTxBySymbol: 'api/assets/native/txs?page={pageNumber}&size={pageSize}&tx_type={tokenType}&symbol={symbol}',
+  gatewayAssetTxBySymbol: 'api/assets/native/txs?page={pageNumber}&size={pageSize}&tx_type={tokenType}&symbol={symbol}&gateway={gateway}',
   //assetList
   nativeAssetList:'/api/asset/tokens?source=native',
-  gatewayAssetList:'/api/asset/tokens?source=gateway'
+  gatewayAssetList:'/api/asset/tokens?source=gateway',
 };
 
 export default urlApi

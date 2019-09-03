@@ -9,11 +9,11 @@
             <div class="asset_info_list_content">
                 <div class="asset_info_kflower_contennt">
                     <div class="asset_info_kflower_title">
-                        <span class="kflower_title">KFLOWER</span>
-                        <span class="native_blue_style">NATIVE</span>
-                        <span class="native_fungible_style">FUNGIBLE</span>
+                        <span class="kflower_title">{{tokenID}}</span>
+                        <span class="native_blue_style" :class="assetType === 'NATIVE' ? 'blue_style' : 'yellow_style'">{{assetType}}</span>
+                        <span class="native_fungible_style">{{family}}</span>
                     </div>
-                    <div class="kflower_content">
+                    <div class="kflower_content" v-if="leftInfoContentArray.length > 0">
                         <ul class="kflower_left_content">
                             <li class="kflower_list_item" v-for="item in leftInfoContentArray">
                                 <span class="kflower_item_name">{{item.key}}</span>
@@ -27,6 +27,18 @@
                             <li class="kflower_list_item"  v-for="item in rightInfoContentArray">
                                 <span class="kflower_item_name">{{item.key}}</span>
                                 <span class="kflower_item_value">{{item.value}}</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="gateway_content" v-show="flShowGatewayInfo">
+                        <h3 class="gateway_title">Gateway Info</h3>
+                        <ul class="gateway_left_content">
+                            <li class="gateway_list_item" v-for="i in gatewayLeftContentArray">
+                                <span class="gateway_item_name">{{i.key}}</span>
+                                <span class="gateway_item_value">
+                                    <router-link v-if="i.address" :to="addressRoute(i.address)">{{i.address}}</router-link>
+                                    <span v-if="i.value" :class="i.key === 'Website:' && i.value !=='--' ? 'link_style' : '' " @click="openUrl(i.key,i.value)">{{i.value}}</span>
+                                </span>
                             </li>
                         </ul>
                     </div>
@@ -92,7 +104,13 @@
         data () {
 			return {
 				showNoData:false,
-                headerTitle: "NativeAssetInfo",
+                headerTitle: '',
+				tokenID: '',
+                assetType: '',
+				source: '',
+				family:'',
+				symbol: '',
+				gateway:'',
                 issueTokenList: [],
                 editTokenList: [],
                 mintTokenList: [],
@@ -100,43 +118,79 @@
 				assetTransferList: [],
                 leftInfoContentArray:[
                     {
+                    	id:'owner',
                     	key:'Owner:',
-                        address:'faa1x292qss22x4rls6ygr7hhnp0et94vwwrchaklp'
+                        address:''
                     },
 	                {
+		                id:'total_supply',
 		                key:'Total Supply:',
-		                value:'2000'
+		                value:''
 	                },
 	                {
+		                id:'initial_supply',
 		                key:'Initial Supply:',
-		                value:'2000'
+		                value:''
 	                },
 	                {
+		                id:'max_supply',
 		                key:'Max Supply:',
-		                value:'2000'
+		                value:''
 	                },
 	                {
+		                id:'mintable',
 		                key:'Mintable:',
-		                value:'2000'
+		                value:''
 	                }
                 ],
                 rightInfoContentArray:[
 	                {
+	                	id:'name',
 		                key:'Name:',
-		                value:'KBoyflower Token'
+		                value:''
 	                },
 	                {
+	                	id:'canonical_symbol',
 		                key:'Canonical Symbol:',
-		                value:'2000'
+		                value:''
 	                },
 	                {
+		                id:'decimal',
 		                key:'Decimal:',
-		                value:'2000'
+		                value:''
 	                },
 	                {
+		                id:'min_unit_alias',
 		                key:'Min Unit Alias:',
-		                value:'2000'
+		                value:''
 	                }
+                ],
+                gatewayLeftContentArray:[
+                    {
+                    	id: 'owner',
+                        key: 'Owner:',
+                        address: ''
+                    },
+	                {
+		                id:'moniker',
+		                key:'Moniker:',
+                        value: ''
+	                },
+	                {
+		                id:'identity',
+		                key:'Identity:',
+		                value: ''
+	                },
+	                {
+		                id:'website',
+		                key:'Website:',
+		                value: ''
+	                },
+	                {
+		                id:'details',
+		                key:'Details:',
+		                value: ''
+	                },
                 ],
 				nativeOrGatewayToken: 'nativeIssueToken',//nativeIssueToken or gateWayIssueToken
 				issueTokenTotalPageNum: 0,
@@ -151,7 +205,8 @@
 				issueTokenType:'IssueToken',
 				editTokenLType:'EditToken',
 				mintTokenType:'MintToken',
-				transferTokenType:'TransferTokenOwner'
+				transferTokenType:'TransferTokenOwner',
+                flShowGatewayInfo:false
             }
         },
 		watch:{
@@ -173,33 +228,114 @@
 			}
 		},
         mounted(){
-            this.getIssueToken();
-            this.getEditToken();
-            this.getMintToken();
-            this.getMintToken();
+
             this.getAssetInfo();
         },
         methods:{
 	        getAssetInfo () {
-	            Server.commonInterface( {}, (info) => {
+	        	let param;
+	        	console.log(this.$route.params.assetType,"???")
+	        	if(this.$route.params.assetType){
+                    param = {
+	                    assetTokenInfo:{
+		                    tokenId : this.$route.params.assetType
+                        }
+                    }
+                }else if(this.$route.params.assetType && this.$route.params.tokenName){
+			        param = {
+				        gatewayTokenInfo:{
+					        moniker : this.$route.params.tokenName
+				        }
+			        }
+                }
+	            Server.commonInterface( param, (info) => {
 	            	try {
-                        if(info){
-
+                        if(info.data){
+                        	this.gateway = info.data.gateway;
+	                        this.symbol = info.data.symbol;
+	                        this.source = info.data.source;
+	                        this.family = info.data.family.toLocaleUpperCase();
+	                        this.leftInfoContentArray.forEach( item => {
+	                        	if('address' in item ){
+	                        		item.address = info.data[item.id]
+                                }else {
+	                        		if(item.id === 'total_supply' || item.id === 'initial_supply' || item.id === 'max_supply'){
+				                        item.value = info.data[item.id] ? this.formatNumber(info.data[item.id]) : '--'
+                                    }else {
+				                        item.value = info.data[item.id] ? info.data[item.id] : '--'
+			                        }
+                                }
+                            });
+	                        this.getCommonRightContent(info);
+                            this.getGatewayInfo(info);
+                            this.getIssueToken();
+                            this.getEditToken();
+                            this.getMintToken();
+                            this.getMintToken();
                         }
 		            }catch (e) {
                         console.error(e)
 		            }
                 })
             },
+	        getCommonRightContent(info){
+		        if(info.data.source === 'native'){
+			        this.flShowGatewayInfo = false;
+			        this.assetType = info.data.source.toLocaleUpperCase()
+			        this.headerTitle = 'NativeAssetInfo';
+			        this.tokenID = info.data.token_id;
+			        this.rightInfoContentArray.forEach( item => {
+				        item.value = info.data[item.id] ? info.data[item.id] : '--'
+			        })
+                }
+
+            },
+	        getGatewayInfo(info){
+	        	if(info.data.source === 'gateway'){
+	        		this.flShowGatewayInfo = true;
+			        this.headerTitle = 'GatewayAssetInfo';
+			        this.assetType = info.data.source.toLocaleUpperCase()
+			        this.gatewayLeftContentArray.forEach( item => {
+			        	if(item.id !== 'owner'){
+					        item.value = info.data.asset_gateway[item.id] ? info.data.asset_gateway[item.id] : '--'
+                        }else {
+					        item.address = info.data[item.id] ? info.data[item.id] : '--'
+                        }
+
+			        })
+                }
+
+            },
+            handleParam(pageNumber,pageSize,tokenType,symbol,gateway){
+	            let param;
+	            if(this.source === 'gateway'){
+		            param = {
+		            	nativeAssetTxBySymbol:{
+                            pageNumber:pageNumber,
+                            pageSize:pageSize,
+                            tokenType:tokenType,
+                            symbol:symbol,
+                            gateway:gateway
+                        }
+		            }
+                }else if(this.source === 'native'){
+		            param = {
+		            	nativeAssetTxBySymbol:{
+				            pageNumber:pageNumber,
+				            pageSize:pageSize,
+				            tokenType:tokenType,
+				            symbol:symbol,
+                        }
+		            }
+	            }
+	            return param
+            },
 			getIssueToken () {
-                Server.commonInterface( {nativeAsset:{
-		                pageNumber:this.issueTokenCurrentPageNum,
-		                pageSize:this.pageSize,
-		                tokenType:this.issueTokenType
-	                }},(issueTxs) => {
+                Server.commonInterface(this.handleParam(
+	                this.issueTokenCurrentPageNum,this.pageSize,this.issueTokenType,this.symbol,this.gateway
+                ) ,(issueTxs) => {
                 	try {
 		                if(issueTxs.data){
-		                	console.log(issueTxs.data,">?>>>>>")
 			                this.issueTokenTotalPageNum = issueTxs.data.total;
 			                this.issueTokenList = issueTxs.data.txs.map(item => {
 				                return {
@@ -221,14 +357,12 @@
                 })
             },
             getEditToken () {
-				Server.commonInterface( {nativeAsset: {
-						pageNumber: this.editTokenCurrentPageNum,
-						pageSize: this.pageSize,
-						tokenType: this.editTokenLType,
-					}},(editTxs) => {
+				Server.commonInterface( this.handleParam(
+					this.editTokenCurrentPageNum,this.pageSize,this.editTokenLType,this.symbol,this.gateway
+                ),(editTxs) => {
 					try {
 						if(editTxs.data){
-							this.editTokenTotalPageNum = editTxs.data.total
+							this.editTokenTotalPageNum = editTxs.data.total;
 							this.editTokenList = editTxs.data.txs.map( item => {
 								return {
 									Token: item.token_id,
@@ -247,14 +381,12 @@
                 })
             },
             getMintToken () {
-				Server.commonInterface( {nativeAsset:{
-						pageNumber: this.mintTokenCurrentPageNum,
-						pageSize: this.pageSize,
-						tokenType: this.mintTokenType
-					}}, (mintTxs) => {
+				Server.commonInterface( this.handleParam(
+					this.mintTokenCurrentPageNum,this.pageSize,this.mintTokenType,this.symbol,this.gateway
+                ), (mintTxs) => {
 					try {
 						if(mintTxs.data){
-							this.mintTokenTotalPageNum = mintTxs.data.total
+							this.mintTokenTotalPageNum = mintTxs.data.total;
 							this.mintTokenList = mintTxs.data.txs.map( item => {
 								return {
 									Token: item.token_id,
@@ -275,14 +407,12 @@
                 })
             },
             getTransferToken () {
-				Server.commonInterface( {nativeAsset:{
-						pageNumber: this.transferTokenCurrentPageNum,
-						pageSize: this.pageSize,
-						tokenType: this.transferTokenType
-					}}, (transferTxs) => {
+				Server.commonInterface( this.handleParam(
+					this.transferTokenCurrentPageNum,this.pageSize,this.transferTokenType,this.symbol,this.gateway
+                ), (transferTxs) => {
 				    try {
 					    if(transferTxs.data){
-						    this.transferTokenTotalPageNum = transferTxs.data.total
+						    this.transferTokenTotalPageNum = transferTxs.data.total;
 						    this.transferTokenList = transferTxs.data.txs.map( item => {
 							    return {
 								    Token: item.token_id,
@@ -305,6 +435,25 @@
 		        if(fee){
 			        return `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(fee.amount)),4)} ${Tools.formatDenom(fee.denom).toUpperCase()}`;
 		        }
+	        },
+	        formatNumber(value){
+		        let million = 1000000;
+		        if(value > million){
+			        return `${value/million} M`
+		        }else {
+			        return value
+		        }
+	        },
+	        openUrl(isUrl,url) {
+	        	if(isUrl === 'Website:'){
+			        url = url.trim();
+			        if (url) {
+				        if (!/(http|https):\/\/([\w.]+\/?)\S*/.test(url)) {
+					        url = `http://${url}`;
+				        }
+				        window.open(url);
+			        }
+                }
 	        }
         }
 	}
@@ -343,10 +492,16 @@
                         .native_blue_style{
                             font-size: 0.14rem;
                             padding: 0.03rem 0.14rem;
-                            background: #0580d3;
                             border-radius: 0.1rem;
                             color: #fff;
                             margin-left: 0.1rem;
+
+                        }
+                        .blue_style{
+                            background: #0580d3;
+                        }
+                        .yellow_style{
+                            background: #FF9500;
                         }
                         .native_fungible_style{
                             font-size: 0.14rem;
@@ -396,8 +551,45 @@
                                 }
                                 .kflower_item_value{
                                     flex: 1;
+                                    word-break: break-all;
                                     font-size: 0.14rem;
                                     color: var(--titleColor);
+                                }
+                            }
+                        }
+                    }
+                    .gateway_content{
+                        .gateway_title{
+                            font-size: 0.18rem;
+                            color: var(--titleCorlor);
+                            margin-left: 0.2rem;
+                            height: 0.6rem;
+                            line-height: 0.6rem;
+                        }
+                        .gateway_left_content{
+                            box-sizing: border-box;
+                            padding: 0.2rem;
+                            border: 0.01rem solid #e7e9eb;
+                            .gateway_list_item{
+                                display: flex;
+                                margin-bottom: 0.12rem;
+                                .gateway_item_name{
+                                    width: 1.3rem;
+                                    font-size: 0.14rem;
+                                    color: var(--contentColor);
+                                }
+                                .gateway_item_value{
+                                    color: var(--titleColor);
+                                    font-size: 0.14rem;
+                                    flex: 1;
+                                    word-break: break-all;
+                                    a{
+                                        color: var(--bgColor) !important;
+                                    }
+                                    .link_style{
+                                        cursor: pointer;
+                                        color: var(--bgColor)
+                                    }
                                 }
                             }
                         }
