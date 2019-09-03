@@ -13,24 +13,24 @@ func (service *AssetsService) UpdateAssetGateway(vs []document.AssetGateways) er
 
 	var vMap = make(map[string]document.AssetGateways)
 	for _, v := range vs {
-		vMap[v.Identity] = v
+		vMap[v.Moniker] = v
 	}
 
 	dstAssetTokens := buildAssetGateway()
 	var txs []txn.Op
 	for _, v := range dstAssetTokens {
-		if it, ok := vMap[v.Identity]; ok {
+		if it, ok := vMap[v.Moniker]; ok {
 			if isDiffAssetGateway(it, v) {
 				v.ID = it.ID
 				txs = append(txs, txn.Op{
 					C:  document.CollectionNmAssetGatways,
-					Id: it.Identity,
+					Id: v.ID,
 					Update: bson.M{
 						"$set": v,
 					},
 				})
 			}
-			delete(vMap, v.Identity)
+			delete(vMap, v.Moniker)
 		} else {
 			v.ID = bson.NewObjectId()
 			txs = append(txs, txn.Op{
