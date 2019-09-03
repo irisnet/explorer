@@ -55,17 +55,18 @@ type AssetGateways struct {
 }
 
 type AssetTokens struct {
-	TokenId         string `json:"token_id"`
-	Owner           string `json:"owner"`
-	Gateway         string `json:"gateway"`
-	TotalSupply     string `json:"total_supply"`
-	InitialSupply   string `json:"initial_supply"`
-	MaxSupply       string `json:"max_supply"`
-	Mintable        bool   `json:"mintable,string"`
-	Decimal         int    `json:"decimal,string"`
-	Symbol          string `json:"symbol"`
-	CanonicalSymbol string `json:"canonical_symbol"`
-	Name            string `json:"name"`
-	MinUnitAlias    string `json:"min_unit_alias"`
+	TokenId         string         `json:"token_id"`
+	Owner           string         `json:"owner"`
+	Gateway         string         `json:"gateway"`
+	TotalSupply     string         `json:"total_supply"`
+	InitialSupply   string         `json:"initial_supply"`
+	MaxSupply       string         `json:"max_supply"`
+	Mintable        bool           `json:"mintable,string"`
+	Decimal         int            `json:"decimal,string"`
+	Symbol          string         `json:"symbol"`
+	CanonicalSymbol string         `json:"canonical_symbol"`
+	Name            string         `json:"name"`
+	MinUnitAlias    string         `json:"min_unit_alias"`
+	AssetGateway    *AssetGateways `json:"asset_gateway,omitempty"`
 }
 

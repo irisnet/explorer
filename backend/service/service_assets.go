@@ -383,7 +383,7 @@ func (service *AssetsService) QueryAssetTokenDetail(tokenid string) (vo.AssetTok
 		logger.Error("GetAssetByAddr", logger.String("err", err.Error()))
 		return vo.AssetTokens{}, err
 	}
-	return vo.AssetTokens{
+	ret := vo.AssetTokens{
 		TokenId:         res.TokenId,
 		Owner:           res.Owner,
 		Gateway:         res.Gateway,
@@ -396,5 +396,21 @@ func (service *AssetsService) QueryAssetTokenDetail(tokenid string) (vo.AssetTok
 		CanonicalSymbol: res.CanonicalSymbol,
 		Decimal:         res.Decimal,
 		Symbol:          res.Symbol,
-	}, nil
+	}
+	if res.Gateway != "" {
+		gatewaydata, err := document.AssetGateways{}.GetGatewayInfo(res.Gateway)
+		if err != nil {
+			logger.Warn("GetGatewayInfo have error", logger.String("err", err.Error()))
+		}
+		ret.AssetGateway = &vo.AssetGateways{
+			Owner:    gatewaydata.Owner,
+			Identity: gatewaydata.Identity,
+			Website:  gatewaydata.Website,
+			Details:  gatewaydata.Details,
+			Moniker:  gatewaydata.Moniker,
+		}
+
+	}
+
+	return ret, nil
 }
