@@ -21,13 +21,13 @@ func (asset AssetsService) GetModule() Module {
 	return Asset
 }
 
-func (assets *AssetsService) GetNativeAsset(txtype string, page, size int, istotal bool) (vo.AssetsRespond, error) {
+func (assets *AssetsService) GetNativeAsset(symbol, txtype string, page, size int, istotal bool) (vo.AssetsRespond, error) {
 
 	if !isFieldTokenType(txtype) {
 		txtype = ""
 	}
 
-	total, retassets, err := document.CommonTx{}.QueryTxAsset(document.Tx_AssetType_Native, txtype, page, size, istotal)
+	total, retassets, err := document.CommonTx{}.QueryTxAsset(document.Tx_AssetType_Native, txtype, symbol, page, size, istotal)
 	if err != nil {
 		logger.Error("GetNativeAsset have error", logger.String("error", err.Error()))
 		return vo.AssetsRespond{}, err
@@ -45,13 +45,13 @@ func (assets *AssetsService) GetNativeAsset(txtype string, page, size int, istot
 	}, nil
 }
 
-func (assets *AssetsService) GetGatewayAsset(txtype string, page, size int, istotal bool) (vo.AssetsRespond, error) {
+func (assets *AssetsService) GetGatewayAsset(symbol, txtype string, page, size int, istotal bool) (vo.AssetsRespond, error) {
 
 	if !isFieldTokenType(txtype) {
 		txtype = ""
 	}
 
-	total, retassets, err := document.CommonTx{}.QueryTxAsset(document.Tx_AssetType_Gateway, txtype, page, size, istotal)
+	total, retassets, err := document.CommonTx{}.QueryTxAsset(document.Tx_AssetType_Gateway, txtype, symbol, page, size, istotal)
 	if err != nil {
 		logger.Error("GetNativeAsset have error", logger.String("error", err.Error()))
 		return vo.AssetsRespond{}, err
