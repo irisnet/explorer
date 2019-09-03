@@ -12,6 +12,7 @@ type TokenStats struct {
 	LooseTokens  []*Coin `json:"loose_tokens"`
 	BurnedTokens []*Coin `json:"burned_tokens"`
 	BondedTokens []*Coin `json:"bonded_tokens"`
+	TotalSupply  []*Coin `json:"total_supply"`
 }
 
 func GetBankTokenStats() (TokenStats, error) {

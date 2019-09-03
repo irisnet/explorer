@@ -12,7 +12,7 @@ const (
 
 type Asset struct {
 	ID              bson.ObjectId `bson:"_id"`
-	Id              string        `bson:"id" json:"id"`
+	TokenId         string        `bson:"token_id" json:"id"`
 	Family          string        `bson:"family" json:"family"`
 	Source          string        `bson:"source" json:"source"`
 	Gateway         string        `bson:"gateway" json:"gateway"`
@@ -23,6 +23,7 @@ type Asset struct {
 	MinUnitAlias    string        `bson:"min_unit_alias" json:"min_unit_alias"`
 	InitialSupply   string        `bson:"initial_supply" json:"initial_supply"`
 	MaxSupply       string        `bson:"max_supply" json:"max_supply"`
+	TotalSupply     string        `bson:"total_supply" json:"total_supply"`
 	Mintable        bool          `bson:"mintable" json:"mintable"`
 	Owner           string        `bson:"owner" json:"owner"`
 }

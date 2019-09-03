@@ -221,13 +221,13 @@ func convertModelActualFee(actfee document.ActualFee) vo.ActualFee {
 func (service *AssetsService) UpdateAssetTokens(vs []document.Asset) error {
 	var vMap = make(map[string]document.Asset)
 	for _, v := range vs {
-		vMap[v.Id] = v
+		vMap[v.TokenId] = v
 	}
 
 	dstAssetTokens := buildAssetTokens()
 	var txs []txn.Op
 	for _, v := range dstAssetTokens {
-		if it, ok := vMap[v.Id]; ok {
+		if it, ok := vMap[v.TokenId]; ok {
 			if isDiffAssetToken(it, v) {
 				v.ID = it.ID
 				txs = append(txs, txn.Op{
@@ -238,7 +238,7 @@ func (service *AssetsService) UpdateAssetTokens(vs []document.Asset) error {
 					},
 				})
 			}
-			delete(vMap, v.Id)
+			delete(vMap, v.TokenId)
 		} else {
 			v.ID = bson.NewObjectId()
 			txs = append(txs, txn.Op{
@@ -274,12 +274,34 @@ func buildAssetTokens() []document.Asset {
 		return assetToken, nil
 	}
 
+	tokenstats, err := lcd.GetBankTokenStats()
+	if err != nil {
+		logger.Error("buildAssetTokens GetBankTokenStats failed")
+		return nil
+	}
+	asset_totalsupplyMap := make(map[string]string, len(tokenstats.TotalSupply))
+	for _, val := range tokenstats.TotalSupply {
+		asset_totalsupplyMap[val.Denom] = val.Amount
+	}
+
 	for _, v := range res {
 		var genAssetTokens = func(va lcd.AssetTokens, result *[]document.Asset) {
 			assetToken, err := buildAssetToken(va)
 			if err != nil {
 				logger.Error("utils.copy assetToken failed")
 				panic(err)
+			}
+			denome := assetToken.Symbol + "-min"
+			if assetToken.Symbol == "iris" {
+				return
+			} else {
+				if len(assetToken.Gateway) > 0 {
+					denome = assetToken.Gateway + "." + denome
+				}
+			}
+
+			if totalsupply, ok := asset_totalsupplyMap[denome]; ok {
+				assetToken.TotalSupply = totalsupply
 			}
 			*result = append(*result, assetToken)
 		}
@@ -289,7 +311,7 @@ func buildAssetTokens() []document.Asset {
 }
 
 func isDiffAssetToken(src, dst document.Asset) bool {
-	if src.Id != dst.Id ||
+	if src.TokenId != dst.TokenId ||
 		src.Family != dst.Family ||
 		src.Source != dst.Source ||
 		src.Gateway != dst.Gateway ||
@@ -300,6 +322,7 @@ func isDiffAssetToken(src, dst document.Asset) bool {
 		src.MinUnitAlias != dst.MinUnitAlias ||
 		src.InitialSupply != dst.InitialSupply ||
 		src.MaxSupply != dst.MaxSupply ||
+		src.TotalSupply != dst.TotalSupply ||
 		src.Mintable != dst.Mintable ||
 		src.Owner != dst.Owner {
 		return true
