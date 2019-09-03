@@ -330,7 +330,7 @@ func isDiffAssetToken(src, dst document.Asset) bool {
 	return false
 }
 
-func (service *AssetsService) QueryAssetGateways(moniker string) (vo.AssetGateways, error) {
+func (service *AssetsService) QueryAssetGatewayDetail(moniker string) (vo.AssetGateways, error) {
 	res, err := document.AssetGateways{}.GetGatewayInfo(moniker)
 	if err != nil {
 		logger.Error("QueryAssetGateways", logger.String("err", err.Error()))

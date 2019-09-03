@@ -15,7 +15,7 @@ func RegisterAssets(r *mux.Router) error {
 		registerQueryNativeAsset,
 		registerQueryGatewayAsset,
 		registerAssetTokens,
-		registerAssetGateways,
+		registerAssetGatewayInfo,
 		registerAssetTokenInfo,
 	}
 
@@ -94,11 +94,11 @@ func registerAssetTokenInfo(r *mux.Router) error {
 	return nil
 }
 
-func registerAssetGateways(r *mux.Router) error {
-	doApi(r, types.UrlRegisterAssetGateway, "GET", func(request vo.IrisReq) interface{} {
+func registerAssetGatewayInfo(r *mux.Router) error {
+	doApi(r, types.UrlRegisterAssetGatewayInfo, "GET", func(request vo.IrisReq) interface{} {
 		assets.SetTid(request.TraceId)
 		moniker := Var(request, "moniker")
-		result, err := assets.QueryAssetGateways(moniker)
+		result, err := assets.QueryAssetGatewayDetail(moniker)
 		if err != nil {
 			return vo.NewResponse("-1", err.Error(), nil)
 		}
