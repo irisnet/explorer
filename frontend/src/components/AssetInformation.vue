@@ -309,7 +309,7 @@
             },
 	        getGatewayInfo(info){
 	        	if(info.data.source === 'gateway'){
-	        		this.iconImg = info.data.icons ? info.data.icons : '';
+	        		this.iconImg = info.data.asset_gateway.icons ? info.data.asset_gateway.icons : '';
 			        this.moniker = info.data.asset_gateway.moniker;
 			        this.transferOwnerTxsTitle= 'Transfer Gateway Owner Txs';
 	        		this.flShowGatewayInfo = true;
@@ -649,6 +649,11 @@
                             margin-left: 0.2rem;
                             height: 0.6rem;
                             line-height: 0.6rem;
+                            img{
+                                width: 0.25rem;
+                                height:0.25rem;
+                                margin-right: 0.1rem;
+                            }
                         }
                         .gateway_left_content{
                             box-sizing: border-box;
