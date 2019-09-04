@@ -1,7 +1,6 @@
 package vo
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -47,15 +46,28 @@ type ActualFee struct {
 	Amount float64 `json:"amount"`
 }
 
-type AssetTokens struct {
-	Symbol  string `json:"symbol"`
-	Decimal int    `json:"decimal"`
+type AssetGateways struct {
+	Owner    string `json:"owner"`
+	Moniker  string `json:"moniker"`
+	Identity string `json:"identity"`
+	Details  string `json:"details"`
+	Website  string `json:"website"`
 }
 
-func (b AssetTokens) String() string {
-
-	return fmt.Sprintf(`
-		Symbol          :%v
-		Decimal         :%v
-		`, b.Symbol, b.Decimal)
+type AssetTokens struct {
+	TokenId         string         `json:"token_id"`
+	Owner           string         `json:"owner"`
+	Gateway         string         `json:"gateway"`
+	Family          string         `json:"family"`
+	TotalSupply     string         `json:"total_supply"`
+	InitialSupply   string         `json:"initial_supply"`
+	MaxSupply       string         `json:"max_supply"`
+	Mintable        bool           `json:"mintable,string"`
+	Decimal         int            `json:"decimal,string"`
+	Symbol          string         `json:"symbol"`
+	CanonicalSymbol string         `json:"canonical_symbol"`
+	Name            string         `json:"name"`
+	MinUnitAlias    string         `json:"min_unit_alias"`
+	Source          string         `json:"source"`
+	AssetGateway    *AssetGateways `json:"asset_gateway"`
 }
