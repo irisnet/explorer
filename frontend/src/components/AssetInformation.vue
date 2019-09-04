@@ -1,10 +1,5 @@
 <template>
     <div class="asset_info_container">
-        <div class="asset_info_container">
-            <div class="asset_info_wrap">
-                <h1 class="asset_title">{{headerTitle}}</h1>
-            </div>
-        </div>
         <div class="asset_info_list_container">
             <div class="asset_info_list_content">
                 <div class="asset_info_kflower_contennt">
@@ -177,16 +172,16 @@
 	                }
                 ],
                 gatewayLeftContentArray:[
+	                {
+		                id:'moniker',
+		                key:'Moniker:',
+		                value: ''
+	                },
                     {
                     	id: 'owner',
                         key: 'Owner:',
                         address: ''
                     },
-	                {
-		                id:'moniker',
-		                key:'Moniker:',
-                        value: ''
-	                },
 	                {
 		                id:'identity',
 		                key:'Identity:',
@@ -358,18 +353,35 @@
 		                if(issueTxs.data){
 			                this.issueTokenTotalPageNum = issueTxs.data.total;
 			                this.issueTokenList = issueTxs.data.txs.map(item => {
-				                return {
-					                Owner: item.owner,
-					                Symbol: item.symbol,
-					                InitialSupply: item.initial_supply,
-					                Mintable: Tools.firstWordUpperCase(item.mintable),
-					                Block: item.height,
-					                TxHash: item.tx_hash,
-					                TxFee: this.formatFee(item.tx_fee),
-					                TxStatus: Tools.firstWordUpperCase(item.tx_status),
-					                Timestamp: Tools.format2UTC(item.timestamp),
-                                    flShowLink: false,
-				                }
+			                	if(item.gateway){
+					                return {
+						                Owner: item.owner,
+                                        Gateway: item.gateway,
+						                Symbol: item.symbol,
+						                InitialSupply: item.initial_supply,
+						                Mintable: Tools.firstWordUpperCase(item.mintable),
+						                Block: item.height,
+						                TxHash: item.tx_hash,
+						                TxFee: this.formatFee(item.tx_fee),
+						                TxStatus: Tools.firstWordUpperCase(item.tx_status),
+						                Timestamp: Tools.format2UTC(item.timestamp),
+						                flShowLink: false,
+					                }
+                                }else {
+					                return {
+						                Owner: item.owner,
+						                Symbol: item.symbol,
+						                InitialSupply: item.initial_supply,
+						                Mintable: Tools.firstWordUpperCase(item.mintable),
+						                Block: item.height,
+						                TxHash: item.tx_hash,
+						                TxFee: this.formatFee(item.tx_fee),
+						                TxStatus: Tools.firstWordUpperCase(item.tx_status),
+						                Timestamp: Tools.format2UTC(item.timestamp),
+						                flShowLink: false,
+					                }
+                                }
+
 			                })
 		                }
 	                }catch (e) {
@@ -523,6 +535,7 @@
                 align-items: center;
                 .asset_title{
                     margin: 0;
+                    font-size: 0.22rem;
                 }
             }
         }
@@ -533,11 +546,12 @@
                 max-width: 12.8rem;
                 margin: 0 auto;
                 .asset_info_kflower_contennt{
+                    margin-top: 0.2rem;
                     .asset_info_kflower_title{
                         margin: 0;
                         padding-left: 0.2rem;
                         .kflower_title{
-                            font-size: 0.18rem;
+                            font-size: 0.22rem;
                             color:var(--titleColor);
                         }
                         .native_blue_style{

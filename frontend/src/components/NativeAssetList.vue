@@ -3,7 +3,7 @@
         <div class="native_asset_list_header_content">
             <div class="native_asset_list_header_wrap">
                 <h2 class="native_header_title_content">
-                    NativeAssets
+                    Native Assets
                 </h2>
             </div>
         </div>
