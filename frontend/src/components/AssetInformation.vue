@@ -79,12 +79,21 @@
                         </div>
                     </div>
                     <div class="asset_list_token_content" v-if="transferTokenList.length > 0">
-                        <h3 class="asset_list_token_title">{{transferOwnerTxsTitle}}</h3>
+                        <h3 class="asset_list_token_title">Transfer Owner Txs</h3>
                         <div class="asset_list_table_content">
                             <native-asset :showNoData="showNoData" :items="transferTokenList" name="transferToken"></native-asset>
                         </div>
                         <div class="native_asset_nav_footer_content">
                             <b-pagination :total-rows="transferTokenTotalPageNum" v-model="transferTokenCurrentPageNum" :per-page="pageSize"></b-pagination>
+                        </div>
+                    </div>
+                    <div class="asset_list_token_content" v-if="transferGatewayOwnerList.length > 0">
+                        <h3 class="asset_list_token_title">Transfer Gateway Owner Txs </h3>
+                        <div class="asset_list_table_content">
+                            <native-asset :showNoData="showNoData" :items="transferGatewayOwnerList" name="transferGatewayOwnerTxs"></native-asset>
+                        </div>
+                        <div class="native_asset_nav_footer_content">
+                            <b-pagination :total-rows="transferGatewayTokenTotalPageNum" v-model="transferGatewayTokenCurrentPageNum" :per-page="pageSize"></b-pagination>
                         </div>
                     </div>
                 </div>
@@ -116,6 +125,7 @@
                 editTokenList: [],
                 mintTokenList: [],
                 transferTokenList: [],
+                transferGatewayOwnerList: [],
 				assetTransferList: [],
                 leftInfoContentArray:[
                     {
@@ -198,16 +208,20 @@
 				editTokenTotalPageNum: 0,
 				mintTokenTotalPageNum: 0,
 				transferTokenTotalPageNum: 0,
+				transferGatewayTokenTotalPageNum: 0,
 				issueTokenCurrentPageNum: 1,
 				editTokenCurrentPageNum: 1,
 				mintTokenCurrentPageNum: 1,
 				transferTokenCurrentPageNum: 1,
+				transferGatewayTokenCurrentPageNum: 1,
 				pageSize: 10,
-				issueTokenType:'IssueToken',
-				editTokenLType:'EditToken',
-				mintTokenType:'MintToken',
-				transferTokenType:'TransferTokenOwner',
-                flShowGatewayInfo:false
+				issueTokenType: 'IssueToken',
+				editTokenLType: 'EditToken',
+				mintTokenType: 'MintToken',
+				transferTokenType: 'TransferTokenOwner',
+                transferGatewayOwnerTxs: "TransferGatewayOwner",
+                moniker: "",
+                flShowGatewayInfo: false
             }
         },
 		watch:{
@@ -271,7 +285,11 @@
                             this.getIssueToken();
                             this.getEditToken();
                             this.getMintToken();
-                            this.getTransferToken();
+                            if(info.data.source === 'gateway'){
+                            	this.getTransferGatewayOwnerTxs()
+                            }else {
+	                            this.getTransferToken();
+                            }
                         }
 		            }catch (e) {
                         console.error(e)
@@ -290,6 +308,7 @@
             },
 	        getGatewayInfo(info){
 	        	if(info.data.source === 'gateway'){
+			        this.moniker = info.data.asset_gateway.moniker;
 			        this.transferOwnerTxsTitle= 'Transfer Gateway Owner Txs';
 	        		this.flShowGatewayInfo = true;
 			        this.headerTitle = 'GatewayAssetInfo';
@@ -316,7 +335,8 @@
                             symbol:symbol,
                             gateway:gateway
                         }
-		            }
+		            };
+
                 }else if(this.source === 'native'){
 		            param = {
 		            	nativeAssetTxBySymbol:{
@@ -328,6 +348,7 @@
 		            }
 	            }
 	            return param
+
             },
 			getIssueToken () {
                 Server.commonInterface(this.handleParam(
@@ -429,6 +450,36 @@
 				    }catch (e) {
                         console.error(e)
 				    }
+                })
+            },
+            getTransferGatewayOwnerTxs(){
+                Server.commonInterface({transferGatewayOwnerTxs:{
+		                pageNumber: this.pageNumber,
+		                pageSize: this.pageSize,
+		                tokenType: this.transferGatewayOwnerTxs,
+		                moniker: this.moniker
+                    }}, (res) => {
+                	try {
+                        if(res) {
+	                        if(res.data){
+		                        this.transferGatewayTokenTotalPageNum = res.data.total;
+		                        this.transferGatewayOwnerList = res.data.txs.map( item => {
+			                        return {
+				                        Gateway: item.gateway,
+				                        SrcOwner: item.src_owner,
+				                        DstOwner: item.dst_owner,
+				                        Block: item.height,
+				                        TxHash: item.tx_hash,
+				                        TxFee: this.formatFee(item.tx_fee),
+				                        TxStatus: Tools.firstWordUpperCase(item.tx_status),
+				                        Timestamp: Tools.format2UTC(item.timestamp),
+			                        }
+		                        })
+	                        }
+                        }
+	                }catch (e) {
+                        console.error(e)
+	                }
                 })
             },
 	        formatFee(fee){

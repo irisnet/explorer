@@ -95,7 +95,6 @@
         },
 		mounted(){
 			this.fields = this[this.name] || [];
-			console.log(this.name,"/////////////////")
 
 		},
 	}
