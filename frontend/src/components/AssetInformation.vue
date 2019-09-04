@@ -306,7 +306,7 @@
 	            let param;
 	            if(this.source === 'gateway'){
 		            param = {
-		            	nativeAssetTxBySymbol:{
+			            gatewayAssetTxBySymbol:{
                             pageNumber:pageNumber,
                             pageSize:pageSize,
                             tokenType:tokenType,
@@ -344,6 +344,7 @@
 					                TxFee: this.formatFee(item.tx_fee),
 					                TxStatus: Tools.firstWordUpperCase(item.tx_status),
 					                Timestamp: Tools.format2UTC(item.timestamp),
+                                    flShowLink: false,
 				                }
 			                })
 		                }

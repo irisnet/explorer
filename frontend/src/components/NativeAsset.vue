@@ -154,6 +154,8 @@
                                    TxFee: this.formatFee(item.tx_fee),
                                    TxStatus: Tools.firstWordUpperCase(item.tx_status),
                                    Timestamp: Tools.format2UTC(item.timestamp),
+			                       TokenID: item.token_id,
+			                       flShowLink: true,
                                }
                             })
                         }

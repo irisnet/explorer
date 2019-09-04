@@ -48,7 +48,8 @@
 				                    InitialSupply: this.formatNumber(item.initial_supply),
 				                    MaxSupply: this.formatNumber(item.max_supply),
 				                    Mintable: Tools.firstWordUpperCase(item.mintable),
-                                    TokenID: item.token_id
+                                    TokenID: item.token_id,
+				                    flShowLink: true,
                                 }
                             })
                         }

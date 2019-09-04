@@ -89,7 +89,7 @@ const urlApi = {
   assetTokenInfo:'/api/asset/tokens/{tokenId}',
   gatewayTokenInfo:'/api/asset/gateways/{moniker}',
   nativeAssetTxBySymbol: 'api/assets/native/txs?page={pageNumber}&size={pageSize}&tx_type={tokenType}&symbol={symbol}',
-  gatewayAssetTxBySymbol: 'api/assets/native/txs?page={pageNumber}&size={pageSize}&tx_type={tokenType}&symbol={symbol}&gateway={gateway}',
+  gatewayAssetTxBySymbol: 'api/assets/gateway/txs?page={pageNumber}&size={pageSize}&tx_type={tokenType}&symbol={symbol}&gateway={gateway}',
   //assetList
   nativeAssetList:'/api/asset/tokens?source=native',
   gatewayAssetList:'/api/asset/tokens?source=gateway',
