@@ -380,7 +380,7 @@
 					                return {
 						                Owner: item.owner,
 						                Symbol: item.symbol,
-						                InitialSupply: item.initial_supply,
+						                InitialSupply: this.formatNumber(item.initial_supply),
 						                Mintable: Tools.firstWordUpperCase(item.mintable),
 						                Block: item.height,
 						                TxHash: item.tx_hash,
@@ -434,7 +434,7 @@
 									Token: item.token_id,
 									Owner: item.owner,
 									MintTo: item.mint_to,
-									Amount: item.amount,
+									Amount: this.formatNumber(item.amount),
 									Block: item.height,
 									TxHash: item.tx_hash,
 									TxFee: this.formatFee(item.tx_fee),
