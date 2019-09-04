@@ -234,7 +234,6 @@
         methods:{
 	        getAssetInfo () {
 	        	let param;
-	        	console.log(this.$route.params.assetType,"???")
 	        	if(this.$route.params.assetType){
                     param = {
 	                    assetTokenInfo:{
