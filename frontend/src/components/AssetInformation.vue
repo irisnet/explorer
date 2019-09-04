@@ -95,8 +95,10 @@
                         </div>
                     </div>
                 </div>
-
             </div>
+        </div>
+        <div v-show="flShowNoDataImg">
+            <img class="no_data_img" src="../assets/no_data.svg">
         </div>
     </div>
 </template>
@@ -222,7 +224,8 @@
                 transferGatewayOwnerTxs: "TransferGatewayOwner",
                 moniker: "",
                 flShowGatewayInfo: false,
-                iconImg:''
+                iconImg:'',
+				flShowNoDataImg: false
             }
         },
 		watch:{
@@ -291,6 +294,8 @@
                             }else {
 	                            this.getTransferToken();
                             }
+                        }else {
+                        	this.flShowNoDataImg = true
                         }
 		            }catch (e) {
                         console.error(e)
@@ -380,7 +385,7 @@
 					                return {
 						                Owner: item.owner,
 						                Symbol: item.symbol,
-						                InitialSupply: item.initial_supply,
+						                InitialSupply: this.formatNumber(item.initial_supply),
 						                Mintable: Tools.firstWordUpperCase(item.mintable),
 						                Block: item.height,
 						                TxHash: item.tx_hash,
@@ -434,7 +439,7 @@
 									Token: item.token_id,
 									Owner: item.owner,
 									MintTo: item.mint_to,
-									Amount: item.amount,
+									Amount: this.formatNumber(item.amount),
 									Block: item.height,
 									TxHash: item.tx_hash,
 									TxFee: this.formatFee(item.tx_fee),
