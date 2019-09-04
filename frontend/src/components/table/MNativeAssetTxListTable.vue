@@ -44,6 +44,10 @@
                     <span>{{row.Gateway}}</span>
                 </div>
             </template>
+            <template slot-scope="{ row }" slot="Symbol">
+                <router-link v-if="row.flShowLink" :to="`/asset/${row.TokenID}`" class="link_style">{{row.Symbol}}</router-link>
+                <span v-if="!row.flShowLink">{{row.Symbol}}</span>
+            </template>
         </m-table>
     </div>
 </template>
@@ -135,7 +139,6 @@
 	                },
 	                {
 		                title:'Symbol',
-		                key:'Symbol',
 		                slot: 'Symbol',
 		                tooltipClassName: 'tooltip_left'
 	                },
@@ -192,7 +195,6 @@
 
 					{
 						title:'Symbol',
-						key:'Symbol',
 						slot: 'Symbol',
 						tooltipClassName: 'tooltip_left'
 					},
