@@ -8,7 +8,7 @@ import (
 
 func TestAssetsService_GetGatewayAsset(t *testing.T) {
 
-	ret, err := (&AssetsService{}).GetGatewayAsset(document.Tx_Asset_TxType_Issue, 0, 10, true)
+	ret, err := (&AssetsService{}).GetGatewayAsset(document.Tx_Asset_TxType_Issue, "", "", 0, 10, true)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -17,7 +17,7 @@ func TestAssetsService_GetGatewayAsset(t *testing.T) {
 }
 
 func TestAssetsService_GetNativeAsset(t *testing.T) {
-	ret, err := (&AssetsService{}).GetNativeAsset(document.Tx_Asset_TxType_Edit, 0, 10, true)
+	ret, err := (&AssetsService{}).GetNativeAsset(document.Tx_Asset_TxType_Edit, "", 0, 10, true)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -99,4 +99,11 @@ func TestAssetService_UpdateAssetTokens(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+}
+
+func TestAssetsService_convertModelToM(t *testing.T) {
+	supply := "1000000000000000000"
+	data := convertModelToM(supply, 2)
+	t.Log(supply)
+	t.Log(data)
 }
