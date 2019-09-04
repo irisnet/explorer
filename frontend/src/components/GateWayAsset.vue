@@ -58,7 +58,7 @@
             <div class="gateway_asset_list_table_content">
                 <div class="table_list_content">
                     <!--<spin-component :showLoading="flShowLoading"></spin-component>-->
-                    <native-asset :showNoData="showNoData" :items="gateWayTransferOwnerTokenList" name="transferToken"></native-asset>
+                    <native-asset :showNoData="showNoData" :items="gateWayTransferOwnerTokenList" name="transferGatewayOwnerTxs"></native-asset>
                     <!--<m-tx-list-page-table :showNoData="showNoData" :items="txList"></m-tx-list-page-table>-->
                     <div v-show="showNoData" class="no_data_show">
                         <img src="../assets/no_data.svg" alt="">
@@ -106,7 +106,7 @@
 	            issueTokenType:'IssueToken',
 	            editTokenLType:'EditToken',
 	            mintTokenType:'MintToken',
-	            transferTokenType:'TransferTokenOwner'
+	            transferTokenType:'TransferGatewayOwner'
             }
         },
         watch:{
@@ -241,7 +241,7 @@
                             this.gateWayTransferTokenTotalPageNum = transferToken.data.total
 					        this.gateWayTransferOwnerTokenList = transferToken.data.txs.map( item => {
 						        return {
-							        Token: item.token_id,
+							        Gateway: item.gateway,
 							        SrcOwner: item.src_owner,
 							        DstOwner: item.dst_owner,
 							        Block: item.height,

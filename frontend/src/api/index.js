@@ -90,6 +90,7 @@ const urlApi = {
   gatewayTokenInfo:'/api/asset/gateways/{moniker}',
   nativeAssetTxBySymbol: 'api/assets/native/txs?page={pageNumber}&size={pageSize}&tx_type={tokenType}&symbol={symbol}',
   gatewayAssetTxBySymbol: 'api/assets/gateway/txs?page={pageNumber}&size={pageSize}&tx_type={tokenType}&symbol={symbol}&gateway={gateway}',
+  transferGatewayOwnerTxs: '/api/assets/gateway/txs?page={pageNumber}&size={pageSize}&tx_type={tokenType}&moniker={moniker}',
   //assetList
   nativeAssetList:'/api/asset/tokens?source=native',
   gatewayAssetList:'/api/asset/tokens?source=gateway',
