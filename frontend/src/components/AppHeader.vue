@@ -860,7 +860,6 @@
                                     cursor: pointer;
                                     font-size: 0.14rem;
                                     display: flex;
-                                    justify-content: space-between;
                                     &:hover{
                                         background: #F6F7FF;
                                     }
@@ -1177,6 +1176,7 @@
                             background: var(--hoverColor);
                             color:#fff;
                             display: flex;
+                            justify-content: space-between;
                             a{
                                 color:#fff !important;
                             }
