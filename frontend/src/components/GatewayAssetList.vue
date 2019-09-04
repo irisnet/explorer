@@ -41,12 +41,14 @@
                     	if(res){
                     		this.gatewayAssetList = res.data.map(item => {
                     			return {
+				                    Gateway: item.gateway,
 				                    Symbol: item.symbol,
 				                    Owner: item.owner,
-				                    TotalSupply: item.total_supply,
-				                    InitialSupply: item.initial_supply,
-				                    MaxSupply: item.max_supply,
-				                    Mintable: Tools.firstWordUpperCase(item.mintable)
+				                    TotalSupply: this.formatNumber(item.total_supply),
+				                    InitialSupply: this.formatNumber(item.initial_supply),
+				                    MaxSupply: this.formatNumber(item.max_supply),
+				                    Mintable: Tools.firstWordUpperCase(item.mintable),
+                                    TokenID: item.token_id
                                 }
                             })
                         }
@@ -54,7 +56,15 @@
                         console.error(e)
                     }
                 })
-            }
+            },
+	        formatNumber(value){
+		        let million = 1000000;
+		        if(value > million){
+			        return `${value/million} M`
+		        }else {
+			        return value
+		        }
+	        }
         }
 	}
 </script>
