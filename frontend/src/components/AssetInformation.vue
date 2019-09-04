@@ -95,8 +95,10 @@
                         </div>
                     </div>
                 </div>
-
             </div>
+        </div>
+        <div v-show="flShowNoDataImg">
+            <img class="no_data_img" src="../assets/no_data.svg">
         </div>
     </div>
 </template>
@@ -222,7 +224,8 @@
                 transferGatewayOwnerTxs: "TransferGatewayOwner",
                 moniker: "",
                 flShowGatewayInfo: false,
-                iconImg:''
+                iconImg:'',
+				flShowNoDataImg: false
             }
         },
 		watch:{
@@ -291,6 +294,8 @@
                             }else {
 	                            this.getTransferToken();
                             }
+                        }else {
+                        	this.flShowNoDataImg = true
                         }
 		            }catch (e) {
                         console.error(e)
