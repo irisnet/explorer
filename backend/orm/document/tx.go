@@ -391,10 +391,7 @@ func (_ CommonTx) QueryTxAsset(assetType, tokenType, symbol, gateway string, pag
 		}
 	}
 	if symbol != "" {
-		condition["$or"] = []bson.M{
-			{Tx_Field_Msgs_Symbol: symbol},
-			{Tx_Field_Msgs_UdInfo_Symbol: symbol},
-		}
+		condition[Tx_Field_Msgs_UdInfo_Symbol] = symbol
 	}
 	if gateway != "" {
 		condition[Tx_Field_Msgs_Gateway] = gateway
