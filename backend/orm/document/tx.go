@@ -36,11 +36,12 @@ const (
 	Tx_Field_StakeCreateValidator = "stake_create_validator"
 	Tx_Field_StakeEditValidator   = "stake_edit_validator"
 
-	Tx_Field_Msgs_UdInfo  = "msgs.msg.ud_info.source"
-	Tx_Field_Msgs_Symbol  = "msgs.msg.symbol"
-	Tx_Field_Msgs_Gateway = "msgs.msg.gateway"
-	Tx_AssetType_Native   = "native"
-	Tx_AssetType_Gateway  = "gateway"
+	Tx_Field_Msgs_UdInfo        = "msgs.msg.ud_info.source"
+	Tx_Field_Msgs_Symbol        = "msgs.msg.symbol"
+	Tx_Field_Msgs_UdInfo_Symbol = "msgs.msg.ud_info.symbol"
+	Tx_Field_Msgs_Gateway       = "msgs.msg.gateway"
+	Tx_AssetType_Native         = "native"
+	Tx_AssetType_Gateway        = "gateway"
 
 	Tx_Asset_TxType_Issue         = "IssueToken"
 	Tx_Asset_TxType_Edit          = "EditToken"
@@ -390,7 +391,10 @@ func (_ CommonTx) QueryTxAsset(assetType, tokenType, symbol, gateway string, pag
 		}
 	}
 	if symbol != "" {
-		condition[Tx_Field_Msgs_Symbol] = symbol
+		condition["$or"] = []bson.M{
+			{Tx_Field_Msgs_Symbol: symbol},
+			{Tx_Field_Msgs_UdInfo_Symbol: symbol},
+		}
 	}
 	if gateway != "" {
 		condition[Tx_Field_Msgs_Gateway] = gateway
