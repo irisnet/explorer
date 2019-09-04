@@ -153,7 +153,7 @@
 						        return {
 							        Owner: item.owner,
 							        Symbol: item.symbol,
-							        InitialSupply: item.initial_supply,
+							        InitialSupply: this.formatNumber(item.initial_supply),
 							        Gateway: item.gateway,
 							        Mintable: Tools.firstWordUpperCase(item.mintable),
 							        Block: item.height,
@@ -259,6 +259,14 @@
 				        console.error(e)
 			        }
 		        })
+	        },
+	        formatNumber(value){
+		        let million = 1000000;
+		        if(value > million){
+			        return `${value/million}M`
+		        }else {
+			        return value
+		        }
 	        },
 	        formatFee(fee){
 		        if(fee){
