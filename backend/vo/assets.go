@@ -52,6 +52,7 @@ type AssetGateways struct {
 	Identity string `json:"identity"`
 	Details  string `json:"details"`
 	Website  string `json:"website"`
+	Icons    string `json:"icons"`
 }
 
 type AssetTokens struct {

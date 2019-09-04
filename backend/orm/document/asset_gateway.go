@@ -19,6 +19,7 @@ type AssetGateways struct {
 	Identity string        `bson:"identity" json:"identity"`
 	Details  string        `bson:"details" json:"details"`
 	Website  string        `bson:"website" json:"website"`
+	Icons    string        `bson:"icons" json:"icons"`
 }
 
 func (_ AssetGateways) GetAllAssetGateways() ([]AssetGateways, error) {
