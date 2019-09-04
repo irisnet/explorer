@@ -26,13 +26,16 @@
                         </ul>
                     </div>
                     <div class="gateway_content" v-show="flShowGatewayInfo">
-                        <h3 class="gateway_title">Gateway Info</h3>
+                        <h3 class="gateway_title">
+                            <img v-show="iconImg" :src="iconImg">Gateway Info</h3>
                         <ul class="gateway_left_content">
                             <li class="gateway_list_item" v-for="i in gatewayLeftContentArray">
                                 <span class="gateway_item_name">{{i.key}}</span>
                                 <span class="gateway_item_value">
                                     <router-link v-if="i.address" :to="addressRoute(i.address)">{{i.address}}</router-link>
-                                    <span v-if="i.value" :class="i.key === 'Website:' && i.value !=='--' ? 'link_style' : '' " @click="openUrl(i.key,i.value)">{{i.value}}</span>
+                                    <a v-if="i.key ==='Identity:' && i.value !== '--'" :href="i.href" target="_blank">{{i.value}}</a>
+                                    <span v-if="i.key ==='Identity:' && i.value === '--'">--</span>
+                                    <span v-if="i.value && i.key !=='Identity:'" :class="i.key === 'Website:' && i.value !=='--' ? 'link_style' : '' " @click="openUrl(i.key,i.value)">{{i.value}}</span>
                                 </span>
                             </li>
                         </ul>
@@ -99,6 +102,7 @@
 </template>
 
 <script>
+    import axios from 'axios'
     import Server from "../service"
     import Tools from "../util/Tools"
 	import NativeAsset from "./table/MNativeAssetTxListTable"
@@ -185,7 +189,8 @@
 	                {
 		                id:'identity',
 		                key:'Identity:',
-		                value: ''
+                        value: '',
+                        href: ''
 	                },
 	                {
 		                id:'website',
@@ -216,7 +221,8 @@
 				transferTokenType: 'TransferTokenOwner',
                 transferGatewayOwnerTxs: "TransferGatewayOwner",
                 moniker: "",
-                flShowGatewayInfo: false
+                flShowGatewayInfo: false,
+                iconImg:''
             }
         },
 		watch:{
@@ -303,18 +309,21 @@
             },
 	        getGatewayInfo(info){
 	        	if(info.data.source === 'gateway'){
+	        		this.iconImg = info.data.icons ? info.data.icons : '';
 			        this.moniker = info.data.asset_gateway.moniker;
 			        this.transferOwnerTxsTitle= 'Transfer Gateway Owner Txs';
 	        		this.flShowGatewayInfo = true;
 			        this.headerTitle = 'GatewayAssetInfo';
 			        this.assetType = info.data.source.toLocaleUpperCase();
 			        this.gatewayLeftContentArray.forEach( item => {
-			        	if(item.id !== 'owner'){
-					        item.value = info.data.asset_gateway[item.id] ? info.data.asset_gateway[item.id] : '--'
-                        }else {
+			        	if(item.id === 'owner'){
 					        item.address = info.data[item.id] ? info.data[item.id] : '--'
-                        }
-
+                        }else if(item.id === 'identity'){
+					        item.href = info.data.asset_gateway[item.id] ? this.getKeyBaseName(info.data.asset_gateway[item.id]) : '--';
+                            item.value =  info.data.asset_gateway[item.id] ? info.data.asset_gateway[item.id] : '--'
+                        } else {
+					        item.value = info.data.asset_gateway[item.id] ? info.data.asset_gateway[item.id] : '--'
+				        }
 			        })
                 }
 
@@ -507,6 +516,16 @@
 			        return value
 		        }
 	        },
+	        getKeyBaseName(identity) {
+		        let url = `https://keybase.io/_/api/1.0/user/lookup.json?fields=basics&key_suffix=${identity}`,that = this;
+		        if (identity) {
+			        axios.get(url).then(res => {
+				        if (res.data.them && res.data.them[0].basics.username) {
+					        that.gatewayLeftContentArray[2].href = `https://keybase.io/${res.data.them[0].basics.username}`;
+				        }
+			        });
+		        }
+	        },
 	        openUrl(isUrl,url) {
 	        	if(isUrl === 'Website:'){
 			        url = url.trim();
@@ -558,22 +577,22 @@
                             font-size: 0.14rem;
                             padding: 0.03rem 0.14rem;
                             border-radius: 0.1rem;
-                            color: #fff;
                             margin-left: 0.1rem;
+                            background: #E2F3FF;
 
                         }
                         .blue_style{
-                            background: #0580d3;
+                            color: #0580D3;
                         }
                         .yellow_style{
-                            background: #FF9500;
+                            color: #FF9500;
                         }
                         .native_fungible_style{
                             font-size: 0.14rem;
                             padding: 0.03rem 0.14rem;
-                            background: #00C276;
+                            background: #E2F3FF;
                             border-radius: 0.1rem;
-                            color: #fff;
+                            color: #00C321;
                             margin-left: 0.1rem;
                         }
                     }
@@ -650,6 +669,7 @@
                                     word-break: break-all;
                                     a{
                                         color: var(--bgColor) !important;
+                                        cursor: pointer;
                                     }
                                     .link_style{
                                         cursor: pointer;
