@@ -48,6 +48,10 @@
                 <router-link v-if="row.flShowLink" :to="`/asset/${row.TokenID}`" class="link_style">{{row.Symbol}}</router-link>
                 <span v-if="!row.flShowLink">{{row.Symbol}}</span>
             </template>
+            <template slot-scope="{ row }" slot="Token">
+                <router-link v-if="row.flShowLink" :to="`/asset/${row.TokenID}`" class="link_style">{{row.Token}}</router-link>
+                <span v-if="!row.flShowLink">{{row.Symbol}}</span>
+            </template>
         </m-table>
     </div>
 </template>
@@ -96,7 +100,7 @@
 					},
 					{
 						title: 'Token',
-						key: 'Token',
+						slot: 'Token',
 						tooltipClassName: 'tooltip_left',
 					},
 					{
@@ -244,7 +248,6 @@
 				editToken: [
 					{
 						title:'Token',
-						key:'Token',
 						slot: 'Token',
 						tooltipClassName: 'tooltip_left'
 					},
@@ -287,7 +290,6 @@
 				mintToken: [
 					{
 						title:'Token',
-						key:'Token',
 						slot: 'Token',
 						tooltipClassName: 'tooltip_left'
 					},
@@ -342,7 +344,6 @@
 				transferToken: [
 					{
 						title:'Token',
-						key:'Token',
 						slot: 'Token',
 						tooltipClassName: 'tooltip_left'
 					},
