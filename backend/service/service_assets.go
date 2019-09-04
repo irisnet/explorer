@@ -372,6 +372,7 @@ func (service *AssetsService) QueryAssetGatewayDetail(moniker string) (vo.AssetG
 		Website:  res.Website,
 		Details:  res.Details,
 		Moniker:  res.Moniker,
+		Icons:    res.Icons,
 	}, nil
 }
 
@@ -441,6 +442,7 @@ func (service *AssetsService) QueryAssetTokenDetail(tokenid string) (vo.AssetTok
 			Website:  gatewaydata.Website,
 			Details:  gatewaydata.Details,
 			Moniker:  gatewaydata.Moniker,
+			Icons:    gatewaydata.Icons,
 		}
 
 	}

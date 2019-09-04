@@ -28,6 +28,7 @@ db.ex_validator.createIndex({"proposer_addr": 1}, {"unique": true,"background": 
 db.ex_validator.createIndex({"jailed": -1, "status": -1, "voting_power": -1}, {"background": true});
 db.ex_gov_params.createIndex({"key": 1}, {"unique": true});
 db.ex_asset_tokens.createIndex({"token_id": 1}, {"unique": true, "background": true});
+db.ex_asset_tokens.createIndex({"source": 1}, {"background": true});
 db.ex_asset_gateways.createIndex({"moniker": 1}, {"unique": true, "background": true});
 
 // init data

@@ -74,6 +74,16 @@ func buildAssetGateway() []document.AssetGateways {
 				logger.Error("utils.copy assetGateways failed")
 				panic(err)
 			}
+			if identity := v.Identity; identity != "" {
+				urlicons, err := lcd.GetIconsByKey(identity)
+				if err != nil || len(urlicons) == 0 {
+					if err != nil {
+						logger.Error("GetIconsByKey have error", logger.String("error", err.Error()))
+					}
+				} else {
+					assetGateways.Icons = urlicons
+				}
+			}
 			*result = append(*result, assetGateways)
 		}
 		genAssetTokens(v, &result)
