@@ -3,7 +3,7 @@
         <div class="native_asset_list_header_content">
             <div class="native_asset_list_header_wrap">
                 <h2 class="native_header_title_content">
-                    NativeAssets
+                    Native Assets
                 </h2>
             </div>
         </div>
@@ -43,10 +43,12 @@
 								return {
 									Symbol: item.symbol,
 									Owner: item.owner,
-									TotalSupply: item.total_supply,
-									InitialSupply: item.initial_supply,
-									MaxSupply: item.max_supply,
-									Mintable: Tools.firstWordUpperCase(item.mintable)
+									TotalSupply: this.formatNumber(item.total_supply),
+									InitialSupply: this.formatNumber(item.initial_supply),
+									MaxSupply: this.formatNumber(item.max_supply),
+									Mintable: Tools.firstWordUpperCase(item.mintable),
+									TokenID: item.token_id,
+									flShowLink: true,
                                 }
                             })
                         }
@@ -54,6 +56,14 @@
                         console.error(e)
 					}
                 })
+            },
+            formatNumber(value){
+				let million = 1000000;
+				if(value > million){
+					return `${value/million}M`
+                }else {
+					return value
+                }
             }
         }
 	}

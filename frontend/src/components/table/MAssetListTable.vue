@@ -4,8 +4,12 @@
             <template slot-scope="{ row }" slot="Owner">
                 <router-link :to="`/address/${row.Owner}`" class="link_style">{{row.Owner}}</router-link>
             </template>
-            <template slot-scope="{ row }" slot="Owner">
+ <!--           <template slot-scope="{ row }" slot="Owner">
                 <router-link :to="`/address/${row.Owner}`" class="link_style">{{row.Owner}}</router-link>
+            </template>-->
+            <template slot-scope="{ row }" slot="Symbol">
+                <router-link :to="`/asset/${row.TokenID}`" class="link_style">{{row.Symbol}}</router-link>
+                <!--<router-link v-if="row.Gateway" :to="`/asset/${row.Gateway}/${row.Symbol}`" class="link_style">{{row.Symbol}}</router-link>-->
             </template>
         </m-table>
     </div>
@@ -34,7 +38,7 @@
 	            nativeAssetList:[
                     {
                     	title:'Symbol',
-                        key:'Symbol',
+	                    slot:'Symbol',
                     },
 	                {
 		                title:'Owner',
@@ -60,19 +64,19 @@
 	            gatewayAssetList:[
 		            {
 			            title:'Gateway',
-			            slot:'Gateway',
+			            key:'Gateway',
 		            },
 		            {
-			            title:'Symbal',
-			            slot:'Symbal',
+			            title:'Symbol',
+			            slot:'Symbol',
 		            },
 		            {
 			            title:'Owner',
-			            key:'Owner',
+			            slot:'Owner',
 		            },
 		            {
-			            title:'CurrentSupply',
-			            key:'CurrentSupply',
+			            title:'TotalSupply',
+			            key:'TotalSupply',
 		            },
 		            {
 			            title:'InitialSupply',
@@ -91,12 +95,13 @@
         },
 		mounted(){
 			this.fields = this[this.name] || [];
-			console.log(this.name,"/////////////////")
 
 		},
 	}
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
+.link_style{
+    color: var(--bgColor) !important;
+}
 </style>

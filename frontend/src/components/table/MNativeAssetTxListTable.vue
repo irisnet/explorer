@@ -44,6 +44,14 @@
                     <span>{{row.Gateway}}</span>
                 </div>
             </template>
+            <template slot-scope="{ row }" slot="Symbol">
+                <router-link v-if="row.flShowLink" :to="`/asset/${row.TokenID}`" class="link_style">{{row.Symbol}}</router-link>
+                <span v-if="!row.flShowLink">{{row.Symbol}}</span>
+            </template>
+            <template slot-scope="{ row }" slot="Token">
+                <router-link v-if="row.flShowLink" :to="`/asset/${row.TokenID}`" class="link_style">{{row.Token}}</router-link>
+                <span v-if="!row.flShowLink">{{row.Token}}</span>
+            </template>
         </m-table>
     </div>
 </template>
@@ -92,7 +100,7 @@
 					},
 					{
 						title: 'Token',
-						key: 'Token',
+						slot: 'Token',
 						tooltipClassName: 'tooltip_left',
 					},
 					{
@@ -135,7 +143,6 @@
 	                },
 	                {
 		                title:'Symbol',
-		                key:'Symbol',
 		                slot: 'Symbol',
 		                tooltipClassName: 'tooltip_left'
 	                },
@@ -192,7 +199,6 @@
 
 					{
 						title:'Symbol',
-						key:'Symbol',
 						slot: 'Symbol',
 						tooltipClassName: 'tooltip_left'
 					},
@@ -242,7 +248,6 @@
 				editToken: [
 					{
 						title:'Token',
-						key:'Token',
 						slot: 'Token',
 						tooltipClassName: 'tooltip_left'
 					},
@@ -285,7 +290,6 @@
 				mintToken: [
 					{
 						title:'Token',
-						key:'Token',
 						slot: 'Token',
 						tooltipClassName: 'tooltip_left'
 					},
@@ -340,9 +344,55 @@
 				transferToken: [
 					{
 						title:'Token',
-						key:'Token',
 						slot: 'Token',
 						tooltipClassName: 'tooltip_left'
+					},
+					{
+						title:'SrcOwner',
+						tooltip: true,
+						slot: 'SrcOwner',
+						tooltipClassName: 'tooltip_left'
+					},
+					{
+						title:'DstOwner',
+						tooltip: true,
+						slot: 'DstOwner',
+						tooltipClassName: 'tooltip_left'
+					},
+					{
+						title:'Block',
+						slot: 'Block',
+						tooltipClassName: 'tooltip_left'
+					},
+					{
+						title:'TxHash',
+						slot: 'TxHash',
+						tooltip: true,
+						tooltipClassName: 'tooltip_left'
+					},
+					{
+						title:'Fee',
+						key:'TxFee',
+						slot: 'TxFee(IRIS)',
+						tooltipClassName: 'tooltip_left'
+					},
+					{
+						title:'Status',
+						key:'TxStatus',
+						slot: 'TxStatus',
+						tooltipClassName: 'tooltip_left'
+					},
+					{
+						title:'Timestamp',
+						key:'Timestamp',
+						slot: 'Timestamp',
+						tooltipClassName: 'tooltip_left'
+					},
+				],
+				transferGatewayOwnerTxs: [
+					{
+						title:'Gateway',
+						key: 'Gateway',
 					},
 					{
 						title:'SrcOwner',

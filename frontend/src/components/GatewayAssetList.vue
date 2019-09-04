@@ -3,7 +3,7 @@
         <div class="gateway_asset_list_header_content">
             <div class="gateway_asset_list_header_wrap">
                 <h2 class="gateway_header_title_content">
-                    GatewayAssets
+                    Gateway Assets
                 </h2>
             </div>
         </div>
@@ -41,12 +41,15 @@
                     	if(res){
                     		this.gatewayAssetList = res.data.map(item => {
                     			return {
+				                    Gateway: item.gateway,
 				                    Symbol: item.symbol,
 				                    Owner: item.owner,
-				                    TotalSupply: item.total_supply,
-				                    InitialSupply: item.initial_supply,
-				                    MaxSupply: item.max_supply,
-				                    Mintable: Tools.firstWordUpperCase(item.mintable)
+				                    TotalSupply: this.formatNumber(item.total_supply),
+				                    InitialSupply: this.formatNumber(item.initial_supply),
+				                    MaxSupply: this.formatNumber(item.max_supply),
+				                    Mintable: Tools.firstWordUpperCase(item.mintable),
+                                    TokenID: item.token_id,
+				                    flShowLink: true,
                                 }
                             })
                         }
@@ -54,7 +57,15 @@
                         console.error(e)
                     }
                 })
-            }
+            },
+	        formatNumber(value){
+		        let million = 1000000;
+		        if(value > million){
+			        return `${value/million}M`
+		        }else {
+			        return value
+		        }
+	        }
         }
 	}
 </script>

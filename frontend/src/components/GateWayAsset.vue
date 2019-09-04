@@ -54,11 +54,11 @@
             </div>
         </div>
         <div class="gateway_asset_list_table_container" v-if="gateWayTransferOwnerTokenList.length !== 0">
-            <div style="padding: 0.2rem 0">Transfer Owner Txs</div>
+            <div style="padding: 0.2rem 0">Transfer Gateway Owner Txs</div>
             <div class="gateway_asset_list_table_content">
                 <div class="table_list_content">
                     <!--<spin-component :showLoading="flShowLoading"></spin-component>-->
-                    <native-asset :showNoData="showNoData" :items="gateWayTransferOwnerTokenList" name="transferToken"></native-asset>
+                    <native-asset :showNoData="showNoData" :items="gateWayTransferOwnerTokenList" name="transferGatewayOwnerTxs"></native-asset>
                     <!--<m-tx-list-page-table :showNoData="showNoData" :items="txList"></m-tx-list-page-table>-->
                     <div v-show="showNoData" class="no_data_show">
                         <img src="../assets/no_data.svg" alt="">
@@ -106,7 +106,7 @@
 	            issueTokenType:'IssueToken',
 	            editTokenLType:'EditToken',
 	            mintTokenType:'MintToken',
-	            transferTokenType:'TransferTokenOwner'
+	            transferTokenType:'TransferGatewayOwner'
             }
         },
         watch:{
@@ -153,7 +153,7 @@
 						        return {
 							        Owner: item.owner,
 							        Symbol: item.symbol,
-							        InitialSupply: item.initial_supply,
+							        InitialSupply: this.formatNumber(item.initial_supply),
 							        Gateway: item.gateway,
 							        Mintable: Tools.firstWordUpperCase(item.mintable),
 							        Block: item.height,
@@ -161,6 +161,8 @@
 							        TxFee: this.formatFee(item.tx_fee),
 							        TxStatus: Tools.firstWordUpperCase(item.tx_status),
 							        Timestamp: Tools.format2UTC(item.timestamp),
+							        TokenID: item.token_id,
+							        flShowLink: true,
 						        }
 					        })
 				        }
@@ -187,6 +189,8 @@
 							        TxFee: this.formatFee(item.tx_fee),
 							        TxStatus: Tools.firstWordUpperCase(item.tx_status),
 							        Timestamp: Tools.format2UTC(item.timestamp),
+							        TokenID: item.token_id,
+							        flShowLink: true,
 						        }
 					        })
 				        }
@@ -215,6 +219,8 @@
 							        TxFee: this.formatFee(item.tx_fee),
 							        TxStatus: Tools.firstWordUpperCase(item.tx_status),
 							        Timestamp: Tools.format2UTC(item.timestamp),
+							        TokenID: item.token_id,
+							        flShowLink: true,
 						        }
 					        })
 				        }
@@ -235,7 +241,7 @@
                             this.gateWayTransferTokenTotalPageNum = transferToken.data.total
 					        this.gateWayTransferOwnerTokenList = transferToken.data.txs.map( item => {
 						        return {
-							        Token: item.token_id,
+							        Gateway: item.gateway,
 							        SrcOwner: item.src_owner,
 							        DstOwner: item.dst_owner,
 							        Block: item.height,
@@ -243,6 +249,8 @@
 							        TxFee: this.formatFee(item.tx_fee),
 							        TxStatus: Tools.firstWordUpperCase(item.tx_status),
 							        Timestamp: Tools.format2UTC(item.timestamp),
+							        TokenID: item.token_id,
+							        flShowLink: true,
 						        }
 					        })
 				        }
@@ -251,6 +259,14 @@
 				        console.error(e)
 			        }
 		        })
+	        },
+	        formatNumber(value){
+		        let million = 1000000;
+		        if(value > million){
+			        return `${value/million}M`
+		        }else {
+			        return value
+		        }
 	        },
 	        formatFee(fee){
 		        if(fee){
