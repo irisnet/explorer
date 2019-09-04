@@ -106,6 +106,7 @@ func LoadModelFromCommonTx(src document.CommonTx) (dst vo.AssetsVo) {
 			} else if source == document.Tx_AssetType_Gateway {
 				dst.SymbolMin = fmt.Sprintf("%s.%s-min", msgData.UdInfo.Gateway, msgData.UdInfo.Symbol)
 			}
+			dst = converModelTokenId(dst)
 		}
 
 	case types.TxTypeEditToken:
@@ -179,7 +180,6 @@ func LoadModelFromCommonTx(src document.CommonTx) (dst vo.AssetsVo) {
 		}
 
 	}
-	dst = converModelTokenId(dst)
 
 	return
 }
