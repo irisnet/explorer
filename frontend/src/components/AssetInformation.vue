@@ -278,22 +278,19 @@
                 })
             },
 	        getCommonRightContent(info){
-		        if(info.data.source === 'native'){
-			        this.flShowGatewayInfo = false;
-			        this.assetType = info.data.source.toLocaleUpperCase()
-			        this.headerTitle = 'NativeAssetInfo';
-			        this.tokenID = info.data.token_id;
-			        this.rightInfoContentArray.forEach( item => {
-				        item.value = info.data[item.id] ? info.data[item.id] : '--'
-			        })
-                }
-
+                this.flShowGatewayInfo = false;
+                this.assetType = info.data.source.toLocaleUpperCase()
+                this.headerTitle = 'NativeAssetInfo';
+                this.tokenID = info.data.token_id;
+                this.rightInfoContentArray.forEach( item => {
+                    item.value = info.data[item.id] ? info.data[item.id] : '--'
+                })
             },
 	        getGatewayInfo(info){
 	        	if(info.data.source === 'gateway'){
 	        		this.flShowGatewayInfo = true;
 			        this.headerTitle = 'GatewayAssetInfo';
-			        this.assetType = info.data.source.toLocaleUpperCase()
+			        this.assetType = info.data.source.toLocaleUpperCase();
 			        this.gatewayLeftContentArray.forEach( item => {
 			        	if(item.id !== 'owner'){
 					        item.value = info.data.asset_gateway[item.id] ? info.data.asset_gateway[item.id] : '--'
