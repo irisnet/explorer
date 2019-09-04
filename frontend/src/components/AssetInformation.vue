@@ -672,6 +672,14 @@
                                 }
                             }
                         }
+                        .gateway_content{
+                            .gateway_left_content{
+                                .gateway_list_item{
+                                    flex-direction: column;
+                                    margin-bottom: 0;
+                                }
+                            }
+                        }
                         .asset_list_token_content{
                             .asset_list_token_title{
                                 margin-left: 0.1rem;

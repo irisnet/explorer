@@ -654,7 +654,7 @@
                     }else if(item.env_nm === constant.ENVCONFIG.TESTNET && item.chain_id !== constant.CHAINID.FUXI){
 						item.icon = 'iconfont iconcaihongmao'
                     }
-					item.netWorkSelectOption = `${item.chain_id.toLocaleUpperCase()} ${Tools.firstWordUpperCase(item.env_nm)}`
+					item.netWorkSelectOption = `${Tools.firstWordUpperCase(item.env_nm)} ${item.chain_id.toLocaleUpperCase()}`
 					return item
 				});
 				this.netWorkArray = this.netWorkArray.filter(item => {
@@ -1177,7 +1177,6 @@
                             background: var(--hoverColor);
                             color:#fff;
                             display: flex;
-                            justify-content: space-between;
                             a{
                                 color:#fff !important;
                             }
