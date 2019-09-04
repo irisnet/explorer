@@ -79,7 +79,7 @@
                         </div>
                     </div>
                     <div class="asset_list_token_content" v-if="transferTokenList.length > 0">
-                        <h3 class="asset_list_token_title">Transfer Owner Txs</h3>
+                        <h3 class="asset_list_token_title">{{transferOwnerTxsTitle}}</h3>
                         <div class="asset_list_table_content">
                             <native-asset :showNoData="showNoData" :items="transferTokenList" name="transferToken"></native-asset>
                         </div>
@@ -111,6 +111,7 @@
 				family:'',
 				symbol: '',
 				gateway:'',
+                transferOwnerTxsTitle:'',
                 issueTokenList: [],
                 editTokenList: [],
                 mintTokenList: [],
@@ -270,7 +271,7 @@
                             this.getIssueToken();
                             this.getEditToken();
                             this.getMintToken();
-                            this.getMintToken();
+                            this.getTransferToken();
                         }
 		            }catch (e) {
                         console.error(e)
@@ -278,6 +279,7 @@
                 })
             },
 	        getCommonRightContent(info){
+	        	this.transferOwnerTxsTitle= 'Transfer Owner Txs';
                 this.flShowGatewayInfo = false;
                 this.assetType = info.data.source.toLocaleUpperCase()
                 this.headerTitle = 'NativeAssetInfo';
@@ -288,6 +290,7 @@
             },
 	        getGatewayInfo(info){
 	        	if(info.data.source === 'gateway'){
+			        this.transferOwnerTxsTitle= 'Transfer Gateway Owner Txs';
 	        		this.flShowGatewayInfo = true;
 			        this.headerTitle = 'GatewayAssetInfo';
 			        this.assetType = info.data.source.toLocaleUpperCase();

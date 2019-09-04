@@ -54,7 +54,7 @@
             </div>
         </div>
         <div class="gateway_asset_list_table_container" v-if="gateWayTransferOwnerTokenList.length !== 0">
-            <div style="padding: 0.2rem 0">Transfer Owner Txs</div>
+            <div style="padding: 0.2rem 0">Transfer Gateway Owner Txs</div>
             <div class="gateway_asset_list_table_content">
                 <div class="table_list_content">
                     <!--<spin-component :showLoading="flShowLoading"></spin-component>-->
@@ -189,6 +189,8 @@
 							        TxFee: this.formatFee(item.tx_fee),
 							        TxStatus: Tools.firstWordUpperCase(item.tx_status),
 							        Timestamp: Tools.format2UTC(item.timestamp),
+							        TokenID: item.token_id,
+							        flShowLink: true,
 						        }
 					        })
 				        }
@@ -217,6 +219,8 @@
 							        TxFee: this.formatFee(item.tx_fee),
 							        TxStatus: Tools.firstWordUpperCase(item.tx_status),
 							        Timestamp: Tools.format2UTC(item.timestamp),
+							        TokenID: item.token_id,
+							        flShowLink: true,
 						        }
 					        })
 				        }
@@ -245,6 +249,8 @@
 							        TxFee: this.formatFee(item.tx_fee),
 							        TxStatus: Tools.firstWordUpperCase(item.tx_status),
 							        Timestamp: Tools.format2UTC(item.timestamp),
+							        TokenID: item.token_id,
+							        flShowLink: true,
 						        }
 					        })
 				        }
