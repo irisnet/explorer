@@ -3,7 +3,7 @@
         <div class="gateway_asset_list_header_content">
             <div class="gateway_asset_list_header_wrap">
                 <h2 class="gateway_header_title_content">
-                    GatewayAssets
+                    Gateway Assets
                 </h2>
             </div>
         </div>
@@ -61,7 +61,7 @@
 	        formatNumber(value){
 		        let million = 1000000;
 		        if(value > million){
-			        return `${value/million} M`
+			        return `${value/million}M`
 		        }else {
 			        return value
 		        }

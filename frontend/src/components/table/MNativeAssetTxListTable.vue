@@ -49,8 +49,8 @@
                 <span v-if="!row.flShowLink">{{row.Symbol}}</span>
             </template>
             <template slot-scope="{ row }" slot="Token">
-                <router-link v-if="!row.flShowLink" :to="`/asset/${row.TokenID}`" class="link_style">{{row.Token}}</router-link>
-                <span v-if="row.flShowLink">{{row.Token}}</span>
+                <router-link v-if="row.flShowLink" :to="`/asset/${row.TokenID}`" class="link_style">{{row.Token}}</router-link>
+                <span v-if="!row.flShowLink">{{row.Token}}</span>
             </template>
         </m-table>
     </div>

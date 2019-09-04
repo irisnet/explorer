@@ -183,6 +183,7 @@
 			                        TxStatus:Tools.firstWordUpperCase(item.tx_status),
 			                        Timestamp: Tools.format2UTC(item.timestamp),
 			                        TokenID: item.token_id,
+			                        flShowLink: true,
                                 }
                             })
                         }
@@ -212,6 +213,7 @@
 							        TxStatus: Tools.firstWordUpperCase(item.tx_status),
 							        Timestamp: Tools.format2UTC(item.timestamp),
 							        TokenID: item.token_id,
+							        flShowLink: true,
                                 }
                             })
                         }
@@ -241,6 +243,7 @@
 							        TxStatus: Tools.firstWordUpperCase(item.tx_status),
 							        Timestamp: Tools.format2UTC(item.timestamp),
 							        TokenID: item.token_id,
+							        flShowLink: true,
                                 }
                             })
                         }

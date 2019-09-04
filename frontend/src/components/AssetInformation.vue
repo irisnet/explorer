@@ -1,10 +1,5 @@
 <template>
     <div class="asset_info_container">
-        <div class="asset_info_container">
-            <div class="asset_info_wrap">
-                <h1 class="asset_title">{{headerTitle}}</h1>
-            </div>
-        </div>
         <div class="asset_info_list_container">
             <div class="asset_info_list_content">
                 <div class="asset_info_kflower_contennt">
@@ -31,13 +26,16 @@
                         </ul>
                     </div>
                     <div class="gateway_content" v-show="flShowGatewayInfo">
-                        <h3 class="gateway_title">Gateway Info</h3>
+                        <h3 class="gateway_title">
+                            <img v-show="iconImg" :src="iconImg">Gateway Info</h3>
                         <ul class="gateway_left_content">
                             <li class="gateway_list_item" v-for="i in gatewayLeftContentArray">
                                 <span class="gateway_item_name">{{i.key}}</span>
                                 <span class="gateway_item_value">
                                     <router-link v-if="i.address" :to="addressRoute(i.address)">{{i.address}}</router-link>
-                                    <span v-if="i.value" :class="i.key === 'Website:' && i.value !=='--' ? 'link_style' : '' " @click="openUrl(i.key,i.value)">{{i.value}}</span>
+                                    <a v-if="i.key ==='Identity:' && i.value !== '--'" :href="i.href" target="_blank">{{i.value}}</a>
+                                    <span v-if="i.key ==='Identity:' && i.value === '--'">--</span>
+                                    <span v-if="i.value && i.key !=='Identity:'" :class="i.key === 'Website:' && i.value !=='--' ? 'link_style' : '' " @click="openUrl(i.key,i.value)">{{i.value}}</span>
                                 </span>
                             </li>
                         </ul>
@@ -104,6 +102,7 @@
 </template>
 
 <script>
+    import axios from 'axios'
     import Server from "../service"
     import Tools from "../util/Tools"
 	import NativeAsset from "./table/MNativeAssetTxListTable"
@@ -177,20 +176,21 @@
 	                }
                 ],
                 gatewayLeftContentArray:[
+	                {
+		                id:'moniker',
+		                key:'Moniker:',
+		                value: ''
+	                },
                     {
                     	id: 'owner',
                         key: 'Owner:',
                         address: ''
                     },
 	                {
-		                id:'moniker',
-		                key:'Moniker:',
-                        value: ''
-	                },
-	                {
 		                id:'identity',
 		                key:'Identity:',
-		                value: ''
+                        value: '',
+                        href: ''
 	                },
 	                {
 		                id:'website',
@@ -221,7 +221,8 @@
 				transferTokenType: 'TransferTokenOwner',
                 transferGatewayOwnerTxs: "TransferGatewayOwner",
                 moniker: "",
-                flShowGatewayInfo: false
+                flShowGatewayInfo: false,
+                iconImg:''
             }
         },
 		watch:{
@@ -308,18 +309,21 @@
             },
 	        getGatewayInfo(info){
 	        	if(info.data.source === 'gateway'){
+	        		this.iconImg = info.data.asset_gateway.icons ? info.data.asset_gateway.icons : '';
 			        this.moniker = info.data.asset_gateway.moniker;
 			        this.transferOwnerTxsTitle= 'Transfer Gateway Owner Txs';
 	        		this.flShowGatewayInfo = true;
 			        this.headerTitle = 'GatewayAssetInfo';
 			        this.assetType = info.data.source.toLocaleUpperCase();
 			        this.gatewayLeftContentArray.forEach( item => {
-			        	if(item.id !== 'owner'){
-					        item.value = info.data.asset_gateway[item.id] ? info.data.asset_gateway[item.id] : '--'
-                        }else {
+			        	if(item.id === 'owner'){
 					        item.address = info.data[item.id] ? info.data[item.id] : '--'
-                        }
-
+                        }else if(item.id === 'identity'){
+					        item.href = info.data.asset_gateway[item.id] ? this.getKeyBaseName(info.data.asset_gateway[item.id]) : '--';
+                            item.value =  info.data.asset_gateway[item.id] ? info.data.asset_gateway[item.id] : '--'
+                        } else {
+					        item.value = info.data.asset_gateway[item.id] ? info.data.asset_gateway[item.id] : '--'
+				        }
 			        })
                 }
 
@@ -358,18 +362,35 @@
 		                if(issueTxs.data){
 			                this.issueTokenTotalPageNum = issueTxs.data.total;
 			                this.issueTokenList = issueTxs.data.txs.map(item => {
-				                return {
-					                Owner: item.owner,
-					                Symbol: item.symbol,
-					                InitialSupply: item.initial_supply,
-					                Mintable: Tools.firstWordUpperCase(item.mintable),
-					                Block: item.height,
-					                TxHash: item.tx_hash,
-					                TxFee: this.formatFee(item.tx_fee),
-					                TxStatus: Tools.firstWordUpperCase(item.tx_status),
-					                Timestamp: Tools.format2UTC(item.timestamp),
-                                    flShowLink: false,
-				                }
+			                	if(item.gateway){
+					                return {
+						                Owner: item.owner,
+                                        Gateway: item.gateway,
+						                Symbol: item.symbol,
+						                InitialSupply: item.initial_supply,
+						                Mintable: Tools.firstWordUpperCase(item.mintable),
+						                Block: item.height,
+						                TxHash: item.tx_hash,
+						                TxFee: this.formatFee(item.tx_fee),
+						                TxStatus: Tools.firstWordUpperCase(item.tx_status),
+						                Timestamp: Tools.format2UTC(item.timestamp),
+						                flShowLink: false,
+					                }
+                                }else {
+					                return {
+						                Owner: item.owner,
+						                Symbol: item.symbol,
+						                InitialSupply: item.initial_supply,
+						                Mintable: Tools.firstWordUpperCase(item.mintable),
+						                Block: item.height,
+						                TxHash: item.tx_hash,
+						                TxFee: this.formatFee(item.tx_fee),
+						                TxStatus: Tools.firstWordUpperCase(item.tx_status),
+						                Timestamp: Tools.format2UTC(item.timestamp),
+						                flShowLink: false,
+					                }
+                                }
+
 			                })
 		                }
 	                }catch (e) {
@@ -490,9 +511,19 @@
 	        formatNumber(value){
 		        let million = 1000000;
 		        if(value > million){
-			        return `${value/million} M`
+			        return `${value/million}M`
 		        }else {
 			        return value
+		        }
+	        },
+	        getKeyBaseName(identity) {
+		        let url = `https://keybase.io/_/api/1.0/user/lookup.json?fields=basics&key_suffix=${identity}`,that = this;
+		        if (identity) {
+			        axios.get(url).then(res => {
+				        if (res.data.them && res.data.them[0].basics.username) {
+					        that.gatewayLeftContentArray[2].href = `https://keybase.io/${res.data.them[0].basics.username}`;
+				        }
+			        });
 		        }
 	        },
 	        openUrl(isUrl,url) {
@@ -523,6 +554,7 @@
                 align-items: center;
                 .asset_title{
                     margin: 0;
+                    font-size: 0.22rem;
                 }
             }
         }
@@ -533,33 +565,34 @@
                 max-width: 12.8rem;
                 margin: 0 auto;
                 .asset_info_kflower_contennt{
+                    margin-top: 0.2rem;
                     .asset_info_kflower_title{
                         margin: 0;
                         padding-left: 0.2rem;
                         .kflower_title{
-                            font-size: 0.18rem;
+                            font-size: 0.22rem;
                             color:var(--titleColor);
                         }
                         .native_blue_style{
                             font-size: 0.14rem;
                             padding: 0.03rem 0.14rem;
                             border-radius: 0.1rem;
-                            color: #fff;
                             margin-left: 0.1rem;
+                            background: #E2F3FF;
 
                         }
                         .blue_style{
-                            background: #0580d3;
+                            color: #0580D3;
                         }
                         .yellow_style{
-                            background: #FF9500;
+                            color: #FF9500;
                         }
                         .native_fungible_style{
                             font-size: 0.14rem;
                             padding: 0.03rem 0.14rem;
-                            background: #00C276;
+                            background: #E2F3FF;
                             border-radius: 0.1rem;
-                            color: #fff;
+                            color: #00C321;
                             margin-left: 0.1rem;
                         }
                     }
@@ -616,6 +649,11 @@
                             margin-left: 0.2rem;
                             height: 0.6rem;
                             line-height: 0.6rem;
+                            img{
+                                width: 0.25rem;
+                                height:0.25rem;
+                                margin-right: 0.1rem;
+                            }
                         }
                         .gateway_left_content{
                             box-sizing: border-box;
@@ -636,6 +674,7 @@
                                     word-break: break-all;
                                     a{
                                         color: var(--bgColor) !important;
+                                        cursor: pointer;
                                     }
                                     .link_style{
                                         cursor: pointer;
