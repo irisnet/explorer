@@ -94,7 +94,17 @@ func TestGetTxCountByDuration(t *testing.T) {
 }
 
 func TestCommonTx_QueryTxAsset(t *testing.T) {
-	total, ret, err := CommonTx{}.QueryTxAsset("gateway", "", 0, 10, true)
+	total, ret, err := CommonTx{}.QueryTxAsset("gateway", "", "", "", 0, 10, true)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	t.Log(total)
+	bytedata, _ := json.Marshal(ret)
+	t.Log(string(bytedata))
+}
+
+func TestCommonTx_QueryTxTransferGatewayOwner(t *testing.T) {
+	total, ret, err := CommonTx{}.QueryTxTransferGatewayOwner("shark", 0, 10, true)
 	if err != nil {
 		t.Fatal(err.Error())
 	}

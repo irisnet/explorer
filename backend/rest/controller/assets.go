@@ -6,6 +6,7 @@ import (
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/vo"
+	"github.com/irisnet/explorer/backend/orm/document"
 )
 
 var assets service.AssetsService
@@ -61,7 +62,14 @@ func registerQueryGatewayAsset(r *mux.Router) error {
 		if total == "false" {
 			istotal = false
 		}
-		res, err := assets.GetGatewayAsset(symbol, gateway, txtype, page, size, istotal)
+		var res vo.AssetsRespond
+		var err error
+		if txtype == document.Tx_Asset_TxType_TransferGatewayOwner {
+			moniker := QueryParam(request, "moniker")
+			res, err = assets.GetTransferGatewayOwner(moniker, page, size, istotal)
+		} else {
+			res, err = assets.GetGatewayAsset(symbol, gateway, txtype, page, size, istotal)
+		}
 		if err != nil {
 			return vo.NewResponse("-1", err.Error(), nil)
 		}

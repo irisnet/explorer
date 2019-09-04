@@ -53,7 +53,7 @@ func (assets *AssetsService) GetGatewayAsset(symbol, gateway, txtype string, pag
 
 	total, retassets, err := document.CommonTx{}.QueryTxAsset(document.Tx_AssetType_Gateway, txtype, symbol, gateway, page, size, istotal)
 	if err != nil {
-		logger.Error("GetNativeAsset have error", logger.String("error", err.Error()))
+		logger.Error("GetGatewayAsset have error", logger.String("error", err.Error()))
 		return vo.AssetsRespond{}, err
 	}
 	result := make([]vo.AssetsVo, 0, len(retassets))
@@ -68,11 +68,30 @@ func (assets *AssetsService) GetGatewayAsset(symbol, gateway, txtype string, pag
 	}, nil
 }
 
+func (assets *AssetsService) GetTransferGatewayOwner(moniker string, page, size int, istotal bool) (vo.AssetsRespond, error) {
+
+	total, retassets, err := document.CommonTx{}.QueryTxTransferGatewayOwner(moniker, page, size, istotal)
+	if err != nil {
+		logger.Error("GetTransferGatewayOwner have error", logger.String("error", err.Error()))
+		return vo.AssetsRespond{}, err
+	}
+	result := make([]vo.AssetsVo, 0, len(retassets))
+	for _, asset := range retassets {
+		result = append(result, LoadModelFromCommonTx(asset))
+	}
+
+	return vo.AssetsRespond{
+		Total: total,
+		Txs:   result,
+	}, nil
+}
+
 func isFieldTokenType(tokentype string) bool {
 	return tokentype == document.Tx_Asset_TxType_Mint ||
 		tokentype == document.Tx_Asset_TxType_Issue ||
 		tokentype == document.Tx_Asset_TxType_Edit ||
-		tokentype == document.Tx_Asset_TxType_TransferOwner
+		tokentype == document.Tx_Asset_TxType_TransferOwner ||
+		tokentype == document.Tx_Asset_TxType_TransferGatewayOwner
 }
 
 func LoadModelFromCommonTx(src document.CommonTx) (dst vo.AssetsVo) {
@@ -167,8 +186,9 @@ func LoadModelFromCommonTx(src document.CommonTx) (dst vo.AssetsVo) {
 		if err := msgData.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(src.Msgs[0].MsgData)); err != nil {
 			logger.Error("LoadModelFromCommonTx have error", logger.String("err", err.Error()))
 		} else {
-			dst.Owner = msgData.Owner
-			dst.MintTo = msgData.To
+			dst.SrcOwner = msgData.Owner
+			dst.DstOwner = msgData.To
+			dst.Gateway = msgData.Moniker
 		}
 
 	case types.TxTypeSetMemoRegexp:
