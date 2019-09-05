@@ -882,7 +882,7 @@ func (service *TxService) buildTxVO(tx vo.CommonTx, blackListP *map[string]docum
 				govTx.Title = msg.Title
 				govTx.Description = msg.Description
 				govTx.ProposalType = msg.ProposalType
-				govTx.Tags = tx.Tags
+				govTx.Tags = checkTags(tx.Tags, msg)
 				govTx.Software = msg.Software
 				govTx.Version = msg.Version
 				govTx.SwitchHeight = msg.SwitchHeight
@@ -941,6 +941,14 @@ func (service *TxService) buildTxVO(tx vo.CommonTx, blackListP *map[string]docum
 		}
 	}
 	return nil
+}
+
+func checkTags(tags map[string]string, msg vo.MsgSubmitProposal) map[string]string {
+	if _, ok := tags["param"]; !ok {
+		bytesData, _ := json.Marshal(msg.Params)
+		tags["param"] = string(bytesData)
+	}
+	return tags
 }
 
 func buildBaseTx(tx vo.CommonTx) vo.BaseTx {
