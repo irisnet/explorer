@@ -1,6 +1,6 @@
 <template>
     <div class="asset_info_container">
-        <div class="asset_info_list_container">
+        <div class="asset_info_list_container" v-show="flShowInformation">
             <div class="asset_info_list_content">
                 <div class="asset_info_kflower_contennt">
                     <div class="asset_info_kflower_title">
@@ -225,7 +225,8 @@
                 moniker: "",
                 flShowGatewayInfo: false,
                 iconImg:'',
-				flShowNoDataImg: false
+				flShowNoDataImg: false,
+                flShowInformation:false,
             }
         },
 		watch:{
@@ -269,6 +270,7 @@
 	            Server.commonInterface( param, (info) => {
 	            	try {
                         if(info.data){
+                        	this.flShowInformation = true;
                         	this.gateway = info.data.gateway;
 	                        this.symbol = info.data.symbol;
 	                        this.source = info.data.source;
@@ -295,7 +297,8 @@
 	                            this.getTransferToken();
                             }
                         }else {
-                        	this.flShowNoDataImg = true
+                        	this.flShowNoDataImg = true;
+	                        this.flShowInformation = false;
                         }
 		            }catch (e) {
                         console.error(e)
@@ -549,6 +552,13 @@
 <style lang="scss">
     .asset_info_container{
         width: 100%;
+        position: relative;
+        .no_data_img{
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%,-50%);
+        }
         .asset_info_container{
             max-width: 12.8rem;
             margin: 0 auto;

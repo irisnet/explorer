@@ -14,11 +14,11 @@
     <div class="content">
       <span class="min">{{data.min}}</span>
       <div class="progress" ref="progress">
-        <div class="genesis" v-show="data.genesis !== ''" :style="{left: `${data.genesis_per}%`}">
+        <div class="genesis" v-show="data.genesis !== ''" :style="{left: `${data.genesis_per}% ,height: equal ? '50%' : '50%'}`}">
           <div class="arrow"></div>
           <span class="genesis_value">{{data.genesis}}</span>
         </div>
-        <div class="current" v-show="data.current !== ''" :style="{left: `${data.current_per}%`, height: equal ? '50%' : '100%'}">
+        <div class="current" v-show="data.current !== ''" :style="{left: `${data.current_per}%`, height: equal ? '50%' : '50%'}">
           <div class="arrow"></div>
           <span class="current_value">{{data.current}}</span>
         </div>
@@ -95,6 +95,9 @@ export default {
     white-space: nowrap;
     display: flex;
     position: relative;
+    .title{
+      color: var(--titleColor)
+    }
     .desc {
       font-size: 0.12rem;
       color: var(--contentColor);
@@ -178,7 +181,6 @@ export default {
       overflow: visible;
       font-size: 0.12rem;
       & > div {
-        height: 100%;
         width: 0.04rem;
         position: relative;
         font-weight: 400;
@@ -227,13 +229,15 @@ export default {
         background-color: #3698DB;
         position: absolute;
         margin-left: -2px;
+        height: 50%;
+        bottom:0;
         div.arrow {
           width: 8px;
           height: 8px;
           display: flex;
           justify-content: center;
           align-items: center;
-          margin-top: 0.16rem;
+          margin-top: 0.06rem;
           margin-left: -2px;
           &::after {
             display: block;
