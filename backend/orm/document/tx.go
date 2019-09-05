@@ -392,10 +392,16 @@ func (_ CommonTx) QueryTxAsset(assetType, tokenType, symbol, gateway string, pag
 		}
 	}
 	if symbol != "" {
-		condition[Tx_Field_Msgs_UdInfo_Symbol] = symbol
+		condition[Tx_Field_Msgs_UdInfo_Symbol] = bson.M{
+			"$regex":   symbol,
+			"$options": "$i",
+		}
 	}
 	if gateway != "" {
-		condition[Tx_Field_Msgs_UdInfo_Gateway] = gateway
+		condition[Tx_Field_Msgs_UdInfo_Gateway] = bson.M{
+			"$regex":   gateway,
+			"$options": "$i",
+		}
 	}
 	sort := fmt.Sprintf("-%v", Tx_Field_Height)
 	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, total, &txs)
