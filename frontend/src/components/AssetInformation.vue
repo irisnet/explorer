@@ -804,8 +804,11 @@
                         .asset_info_kflower_title{
                             padding-left: 0.1rem;
                             flex-direction: column;
-                            .native_blue_style{
-                                margin-left: 0;
+                            align-items: flex-start;
+                            div{
+                                .native_blue_style{
+                                    margin-left: 0;
+                                }
                             }
                         }
                         .kflower_content{
