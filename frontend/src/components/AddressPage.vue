@@ -489,10 +489,11 @@ export default {
                         if (result.amount && result.amount instanceof Array) {
 	                        result.amount.forEach( (item,index) => {
                                 if(item.denom === Constants.Denom.IRISATTO){
-	                                result.amount[index].amount = Tools.formatNumber(result.amount[index].amount);
+                                    result.amount[index].amount = Tools.formatNumber(result.amount[index].amount);
+	                                Amount = `${Tools.formatPriceToFixed(result.amount[index].amount)} ${Tools.formatDenom(result.amount[index].denom).toUpperCase()}`
                                 }
                             });
-                            Amount = result.amount.map(listItem => `${Tools.formatPriceToFixed(listItem.amount)} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',')
+                            // Amount = result.amount.map(listItem => `${Tools.formatPriceToFixed(listItem.amount)} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',')
                         } else if (result.amount && result.amount instanceof Array && result.amount[0].denom === Constants.Denom.IRIS) {
                             Amount = result.amount.map(listItem => `${Tools.formatPriceToFixed(listItem.amount)} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',')
                         } else if (result.amount && Object.keys(result.amount).includes('amount') && Object.keys(result.amount).includes('denom') && result.amount.denom === Constants.Denom.IRISATTO) {
