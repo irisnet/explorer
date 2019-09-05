@@ -100,10 +100,3 @@ func TestAssetService_UpdateAssetTokens(t *testing.T) {
 		t.Fatal(err)
 	}
 }
-
-func TestAssetsService_convertModelToM(t *testing.T) {
-	supply := "1000000000000000000"
-	data := convertModelToM(supply, 2)
-	t.Log(supply)
-	t.Log(data)
-}

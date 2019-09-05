@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/irisnet/explorer/backend/logger"
+	"math"
 )
 
 const (
@@ -92,6 +93,17 @@ func CovertCoin(srcCoin Coin, denom string) (destCoin Coin) {
 	destCoin.Amount = dstAmt
 	destCoin.Denom = denom
 	return
+}
+
+func CovertAssetUnit(supplynum string, decimal int) string {
+	decimalValue := math.Pow10(decimal)
+	msupply, err := QuoByStr(supplynum, ParseStringFromFloat64(decimalValue))
+	if err != nil {
+		logger.Error("supplynum / decimal", logger.String("err", err.Error()))
+		return supplynum
+	}
+
+	return msupply.FloatString(decimal)
 }
 
 type CoinAsStr struct {
