@@ -619,32 +619,36 @@
                         margin: 0;
                         padding-left: 0.2rem;
                         display: flex;
+                        align-items: center;
                         .kflower_title{
                             font-size: 0.22rem;
                             color:var(--titleColor);
                         }
-                        .native_blue_style{
-                            font-size: 0.14rem;
-                            padding: 0.03rem 0.14rem;
-                            border-radius: 0.1rem;
-                            margin-left: 0.1rem;
-                            background: #E2F3FF;
+                        div{
+                            .native_blue_style{
+                                font-size: 0.14rem;
+                                padding: 0.03rem 0.14rem;
+                                border-radius: 0.1rem;
+                                margin-left: 0.1rem;
+                                background: #E2F3FF;
 
+                            }
+                            .blue_style{
+                                color: #0580D3;
+                            }
+                            .yellow_style{
+                                color: #FF9500;
+                            }
+                            .native_fungible_style{
+                                font-size: 0.14rem;
+                                padding: 0.03rem 0.14rem;
+                                background: #E2F3FF;
+                                border-radius: 0.1rem;
+                                color: #00C321;
+                                margin-left: 0.1rem;
+                            }
                         }
-                        .blue_style{
-                            color: #0580D3;
-                        }
-                        .yellow_style{
-                            color: #FF9500;
-                        }
-                        .native_fungible_style{
-                            font-size: 0.14rem;
-                            padding: 0.03rem 0.14rem;
-                            background: #E2F3FF;
-                            border-radius: 0.1rem;
-                            color: #00C321;
-                            margin-left: 0.1rem;
-                        }
+
                     }
                     .kflower_content{
                         box-sizing: border-box;
