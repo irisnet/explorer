@@ -319,9 +319,9 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
 					logger.Error("BuildTxMsgMintTokenByUnmarshalJson", logger.String("err", err.Error()))
 				} else {
+					msgVO.To = checkMintToAddress(msgVO.Owner, msgVO.To)
 					msgDataVO = msgVO
 				}
-				msgVO.To = checkMintToAddress(msgVO.Owner, msgVO.To)
 				break
 			case types.TxTypeTransferTokenOwner:
 				msgVO := msgvo.TxMsgTransferTokenOwner{}
