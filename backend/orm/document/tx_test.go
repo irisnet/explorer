@@ -94,7 +94,7 @@ func TestGetTxCountByDuration(t *testing.T) {
 }
 
 func TestCommonTx_QueryTxAsset(t *testing.T) {
-	total, ret, err := CommonTx{}.QueryTxAsset("gateway", "EditToken", "hgwsymbo", "hgateway", 0, 10, true)
+	total, ret, err := CommonTx{}.QueryTxAsset("native", "MintToken", "h002", "", 0, 10, true)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
