@@ -14,7 +14,7 @@
     <div class="content">
       <span class="min">{{data.min}}</span>
       <div class="progress" ref="progress">
-        <div class="genesis" v-show="data.genesis !== ''" :style="{left: `${data.genesis_per}% ,height: equal ? '50%' : '50%'}`}">
+        <div class="genesis" v-show="data.genesis !== ''" :style="{left: `${data.genesis_per}% `}">
           <div class="arrow"></div>
           <span class="genesis_value">{{data.genesis}}</span>
         </div>
