@@ -5,8 +5,10 @@
                 <div class="asset_info_kflower_contennt">
                     <div class="asset_info_kflower_title">
                         <span class="kflower_title">{{tokenID}}</span>
-                        <span class="native_blue_style" :class="assetType === 'NATIVE' ? 'blue_style' : 'yellow_style'">{{assetType}}</span>
-                        <span class="native_fungible_style">{{family}}</span>
+                        <div>
+                            <span class="native_blue_style" :class="assetType === 'NATIVE' ? 'blue_style' : 'yellow_style'">{{assetType}}</span>
+                            <span class="native_fungible_style">{{family}}</span>
+                        </div>
                     </div>
                     <div class="kflower_content" v-if="leftInfoContentArray.length > 0">
                         <ul class="kflower_left_content">
@@ -616,6 +618,7 @@
                     .asset_info_kflower_title{
                         margin: 0;
                         padding-left: 0.2rem;
+                        display: flex;
                         .kflower_title{
                             font-size: 0.22rem;
                             color:var(--titleColor);
@@ -796,6 +799,10 @@
                         padding:  0 0.1rem;
                         .asset_info_kflower_title{
                             padding-left: 0.1rem;
+                            flex-direction: column;
+                            .native_blue_style{
+                                margin-left: 0;
+                            }
                         }
                         .kflower_content{
                             flex-direction: column;
