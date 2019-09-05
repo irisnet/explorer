@@ -66,7 +66,7 @@
             </div>
         </div>
         <div v-show="issueToken.length === 0 && editToken.length === 0
-        && mintToken.length === 0 && transferToken.length === 0">
+        && mintToken.length === 0 && transferToken.length === 0 && flShowContent">
             <img class="no_data_img" src="../assets/no_data.svg">
         </div>
     </div>
@@ -96,6 +96,7 @@
 				transferTokenCurrentPageNum:  1,
 				pageSize: 10,
 				showNoData: false,
+				flShowContent: false,
                 flIssueTokenShowLoading: false,
                 flEditTokenShowLoading: false,
                 flMinTokenShowLoading: false,
@@ -134,6 +135,7 @@
         methods:{
             getIssueToken(){
 	            this.flIssueTokenShowLoading = true;
+	            this.flShowContent = false;
 	            Service.commonInterface({nativeAsset:{
 	            	pageNumber:this.issueTokenCurrentPageNum,
 	            	pageSize:this.pageSize,
@@ -158,13 +160,17 @@
 			                       flShowLink: true,
                                }
                             })
+                        }else {
+	                        this.flShowContent = true;
                         }
                     }catch (e) {
+	                    this.flShowContent = true;
                         console.error(e)
                     }
                 })
             },
 	        getEditToken(){
+		        this.flShowContent = false;
                 Service.commonInterface({nativeAsset: {
                 	pageNumber: this.editTokenCurrentPageNum,
                     pageSize: this.pageSize,
@@ -186,13 +192,17 @@
 			                        flShowLink: true,
                                 }
                             })
+                        }else {
+	                        this.flShowContent = true;
                         }
 	                }catch (e) {
+		                this.flShowContent = true;
                         console.error(e)
 	                }
                 })
             },
 	        getMintToken(){
+		        this.flShowContent = false;
 	        	Service.commonInterface({nativeAsset:{
 	        		pageNumber: this.mintTokenCurrentPageNum,
                     pageSize: this.pageSize,
@@ -216,14 +226,18 @@
 							        flShowLink: true,
                                 }
                             })
+                        }else {
+					        this.flShowContent = true;
                         }
 
 			        }catch(e){
-	        			console.error(e)
+	        			console.error(e);
+				        this.flShowContent = true;
                     }
                 })
             },
 	        getTransferToken(){
+		        this.flShowContent = false;
 	        	Service.commonInterface({nativeAsset:{
 	        		pageNumber: this.transferTokenCurrentPageNum,
                     pageSize: this.pageSize,
@@ -231,7 +245,7 @@
                     }},(transferToken) => {
 	        		try {
 	        			if(transferToken.data){
-	        			    this.transferTokenTotalPageNum = transferToken.data.total
+	        			    this.transferTokenTotalPageNum = transferToken.data.total;
 	        				this.transferToken = transferToken.data.txs.map( item => {
 	        					return {
 							        Token: item.token_id,
@@ -246,9 +260,12 @@
 							        flShowLink: true,
                                 }
                             })
+                        }else {
+					        this.flShowContent = true;
                         }
 
 			        }catch (e) {
+				        this.flShowContent = true;
                         console.error(e)
 			        }
                 })

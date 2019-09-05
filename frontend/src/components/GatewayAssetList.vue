@@ -12,23 +12,26 @@
                 <m-asset-list-table :showNoData="showNoData" :items="gatewayAssetList" name="gatewayAssetList"></m-asset-list-table>
             </div>
         </div>
-        <div v-show="gatewayAssetList.length === 0">
+        <div v-show="gatewayAssetList.length === 0 && !showLoading">
             <img class="no_data_img" src="../assets/no_data.svg">
         </div>
+        <spin-component :show-loading="showLoading"></spin-component>
     </div>
 </template>
 
 <script>
+	import SpinComponent from "./commonComponents/SpinComponent";
 	import Service from "../service"
 	import Tools from "../util/Tools"
 	import MAssetListTable from "./table/MAssetListTable";
 	export default {
 		name: "GatewayAssetList",
-		components: {MAssetListTable},
+		components: {SpinComponent, MAssetListTable},
         data () {
 			return {
 				gatewayAssetList:[],
-				showNoData:false
+				showNoData:false,
+				showLoading: false
             }
         },
         mounted(){
@@ -36,9 +39,11 @@
         },
         methods:{
 			getGatewayAssetList(){
+				this.showLoading = true;
 				Service.commonInterface({gatewayAssetList:{}},(res) => {
                     try {
                     	if(res){
+		                    this.showLoading = false;
                     		this.gatewayAssetList = res.data.map(item => {
                     			return {
 				                    Gateway: item.gateway,
@@ -52,8 +57,11 @@
 				                    flShowLink: true,
                                 }
                             })
+                        }else {
+		                    this.showLoading = false;
                         }
                     }catch (e) {
+	                    this.showLoading = false;
                         console.error(e)
                     }
                 })
