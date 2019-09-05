@@ -7,6 +7,7 @@ import (
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/vo"
 	"github.com/irisnet/explorer/backend/orm/document"
+	"strings"
 )
 
 var assets service.AssetsService
@@ -96,7 +97,7 @@ func registerAssetTokenInfo(r *mux.Router) error {
 	doApi(r, types.UrlRegisterAssetTokenInfo, "GET", func(request vo.IrisReq) interface{} {
 		assets.SetTid(request.TraceId)
 		tokenid := Var(request, "token_id")
-		result, err := assets.QueryAssetTokenDetail(tokenid)
+		result, err := assets.QueryAssetTokenDetail(strings.ToLower(tokenid))
 		if err != nil {
 			return vo.NewResponse("-1", err.Error(), nil)
 		}
