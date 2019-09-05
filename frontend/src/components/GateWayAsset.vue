@@ -6,11 +6,11 @@
             </div>
         </div>
         <div class="gateway_asset_list_table_container" v-if="gateWayIssueTokenList.length !== 0">
-            <div style="padding: 0.2rem 0">Issue Token</div>
+            <div style="padding: 0.2rem 0">Issue Token Txs</div>
             <div class="gateway_asset_list_table_content">
                 <div class="table_list_content">
                     <spin-component :showLoading="flShowLoading"></spin-component>
-                    <native-asset :showNoData="showNoData" :items="gateWayIssueTokenList" name="issueToken"></native-asset>
+                    <native-asset :showNoData="showNoData" :items="gateWayIssueTokenList" name="gateWayIssueToken"></native-asset>
                     <!--<m-tx-list-page-table :showNoData="showNoData" :items="txList"></m-tx-list-page-table>-->
                     <div v-show="showNoData" class="no_data_show">
                         <img src="../assets/no_data.svg" alt="">
@@ -22,7 +22,7 @@
             </div>
         </div>
         <div class="gateway_asset_list_table_container" v-if="gateWayEditTokenList.length !== 0">
-            <div style="padding: 0.2rem 0">Edit Token</div>
+            <div style="padding: 0.2rem 0">Edit Token Txs</div>
             <div class="gateway_asset_list_table_content">
                 <div class="table_list_content">
                     <!--<spin-component :showLoading="flShowLoading"></spin-component>-->
@@ -38,7 +38,7 @@
             </div>
         </div>
         <div class="gateway_asset_list_table_container" v-if="gateWayMintTokenList.length !== 0">
-            <div style="padding: 0.2rem 0">Mint Token</div>
+            <div style="padding: 0.2rem 0">Mint Token Txs</div>
             <div class="gateway_asset_list_table_content">
                 <div class="table_list_content">
                     <!--<spin-component :showLoading="flShowLoading"></spin-component>-->
@@ -54,11 +54,11 @@
             </div>
         </div>
         <div class="gateway_asset_list_table_container" v-if="gateWayTransferOwnerTokenList.length !== 0">
-            <div style="padding: 0.2rem 0">Transfer Owner</div>
+            <div style="padding: 0.2rem 0">Transfer Gateway Owner Txs</div>
             <div class="gateway_asset_list_table_content">
                 <div class="table_list_content">
                     <!--<spin-component :showLoading="flShowLoading"></spin-component>-->
-                    <native-asset :showNoData="showNoData" :items="gateWayTransferOwnerTokenList" name="transferToken"></native-asset>
+                    <native-asset :showNoData="showNoData" :items="gateWayTransferOwnerTokenList" name="transferGatewayOwnerTxs"></native-asset>
                     <!--<m-tx-list-page-table :showNoData="showNoData" :items="txList"></m-tx-list-page-table>-->
                     <div v-show="showNoData" class="no_data_show">
                         <img src="../assets/no_data.svg" alt="">
@@ -70,9 +70,8 @@
             </div>
         </div>
         <div v-show="gateWayIssueTokenList.length === 0 && gateWayEditTokenList.length === 0
-                    && gateWayMintTokenList.length === 0 && gateWayTransferOwnerTokenList.length === 0">
+                    && gateWayMintTokenList.length === 0 && gateWayTransferOwnerTokenList.length === 0 && flShowContent">
             <img class="no_data_img" src="../assets/no_data.svg">
-
         </div>
     </div>
 </template>
@@ -103,11 +102,12 @@
 	            pageSize: 10,
 	            showNoData: false,
 	            flShowLoading: false,
+	            flShowContent: false,
 	            listTitleName:'Gateway Asset Txs',
 	            issueTokenType:'IssueToken',
 	            editTokenLType:'EditToken',
 	            mintTokenType:'MintToken',
-	            transferTokenType:'TransferTokenOwner'
+	            transferTokenType:'TransferGatewayOwner'
             }
         },
         watch:{
@@ -140,6 +140,7 @@
 	        },
 	        getIssueToken(){
 		        this.flShowLoading = true;
+		        this.flShowContent =  false;
 		        Service.commonInterface({gatewayAsset:{
 				        pageNumber:this.gateWayIssueTokenCurrentPageNum,
 				        pageSize:this.pageSize,
@@ -154,23 +155,29 @@
 						        return {
 							        Owner: item.owner,
 							        Symbol: item.symbol,
-							        InitialSupply: item.initial_supply,
-							        Mintable: item.mintable,
-							        MaxSupply: item.max_supply,
+							        InitialSupply: this.formatNumber(item.initial_supply),
+							        Gateway: item.gateway,
+							        Mintable: Tools.firstWordUpperCase(item.mintable),
 							        Block: item.height,
 							        TxHash: item.tx_hash,
 							        TxFee: this.formatFee(item.tx_fee),
-							        TxStatus: item.tx_status,
+							        TxStatus: Tools.firstWordUpperCase(item.tx_status),
 							        Timestamp: Tools.format2UTC(item.timestamp),
+							        TokenID: item.token_id,
+							        flShowLink: true,
 						        }
 					        })
-				        }
+				        }else {
+					        this.flShowContent =  true;
+                        }
 			        }catch (e) {
+				        this.flShowContent =  true;
 				        console.error(e)
 			        }
 		        })
 	        },
 	        getEditToken(){
+		        this.flShowContent =  false;
 		        Service.commonInterface({gatewayAsset: {
 				        pageNumber: this.gateWayEditTokenCurrentPageNum,
 				        pageSize: this.pageSize,
@@ -183,22 +190,26 @@
 						        return {
 							        Token: item.token_id,
 							        Owner: item.owner,
-							        MaxSupply: item.max_supply,
-							        Mintable: item.mintable,
 							        Block: item.height,
 							        TxHash: item.tx_hash,
 							        TxFee: this.formatFee(item.tx_fee),
-							        TxStatus: item.tx_status,
+							        TxStatus: Tools.firstWordUpperCase(item.tx_status),
 							        Timestamp: Tools.format2UTC(item.timestamp),
+							        TokenID: item.token_id,
+							        flShowLink: true,
 						        }
 					        })
-				        }
+				        }else {
+					        this.flShowContent =  true;
+                        }
 			        }catch (e) {
+				        this.flShowContent =  true;
 				        console.error(e)
 			        }
 		        })
 	        },
 	        getMintToken(){
+		        this.flShowContent =  false;
 		        Service.commonInterface({gatewayAsset:{
 				        pageNumber: this.gateWayMintTokenCurrentPageNum,
 				        pageSize: this.pageSize,
@@ -216,18 +227,24 @@
 							        Block: item.height,
 							        TxHash: item.tx_hash,
 							        TxFee: this.formatFee(item.tx_fee),
-							        TxStatus: item.tx_status,
+							        TxStatus: Tools.firstWordUpperCase(item.tx_status),
 							        Timestamp: Tools.format2UTC(item.timestamp),
+							        TokenID: item.token_id,
+							        flShowLink: true,
 						        }
 					        })
-				        }
+				        }else {
+					        this.flShowContent =  true;
+                        }
 
 			        }catch(e){
+				        this.flShowContent =  true;
 				        console.error(e)
 			        }
 		        })
 	        },
 	        getTransferToken(){
+		        this.flShowContent =  false;
 		        Service.commonInterface({gatewayAsset:{
 				        pageNumber: this.gateWayTransferTokenCurrentPageNum,
 				        pageSize: this.pageSize,
@@ -238,22 +255,35 @@
                             this.gateWayTransferTokenTotalPageNum = transferToken.data.total
 					        this.gateWayTransferOwnerTokenList = transferToken.data.txs.map( item => {
 						        return {
-							        Token: item.token_id,
+							        Gateway: item.gateway,
 							        SrcOwner: item.src_owner,
 							        DstOwner: item.dst_owner,
 							        Block: item.height,
 							        TxHash: item.tx_hash,
 							        TxFee: this.formatFee(item.tx_fee),
-							        TxStatus: item.tx_status,
+							        TxStatus: Tools.firstWordUpperCase(item.tx_status),
 							        Timestamp: Tools.format2UTC(item.timestamp),
+							        TokenID: item.token_id,
+							        flShowLink: true,
 						        }
 					        })
-				        }
+				        }else {
+					        this.flShowContent =  true;
+                        }
 
 			        }catch (e) {
+				        this.flShowContent =  true;
 				        console.error(e)
 			        }
 		        })
+	        },
+	        formatNumber(value){
+		        let million = 1000000;
+		        if(value > million){
+			        return `${value/million}M`
+		        }else {
+			        return value
+		        }
 	        },
 	        formatFee(fee){
 		        if(fee){

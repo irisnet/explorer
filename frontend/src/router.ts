@@ -23,6 +23,9 @@ import NativeAssetPage from "./components/NativeAsset.vue"
 import GateWayAssetPage from "./components/GateWayAsset.vue"
 import Error from "./components/ErrorPage.vue"
 import AllTxTypeList from "./components/AllTxTypeList.vue"
+import NativeAssetList from "./components/NativeAssetList.vue"
+import GateWayAssetList from "./components/GatewayAssetList.vue"
+import AssetInfo from "./components/AssetInformation.vue"
 Vue.use(Router);
 
 const router = new Router({
@@ -101,6 +104,18 @@ const router = new Router({
     },
     {
       path: '/assets/gtwassetstxs', component: GateWayAssetPage,
+    },
+    {
+      path: '/assets/ntvassets', component: NativeAssetList,
+    },
+    {
+      path: '/assets/gtwassets', component: GateWayAssetList,
+    },
+   /* {
+      path: '/asset/:assetType/:tokenName', component: AssetInfo,
+    },*/
+    {
+      path: '/asset/:assetType', component: AssetInfo,
     },
     {
       path: '/error', component: Error,

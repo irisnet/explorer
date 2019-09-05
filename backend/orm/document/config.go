@@ -45,6 +45,7 @@ func (_ Config) GetConfig() ([]Config, error) {
 	var configs []Config
 	var query = orm.NewQuery().
 		SetCollection(CollectionNmConfig).
+		SetSort("+env_nm").
 		SetResult(&configs)
 	err := query.Exec()
 	return configs, err

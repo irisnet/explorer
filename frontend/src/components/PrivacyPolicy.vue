@@ -116,11 +116,9 @@
       @include flex;
       flex-direction:column;
       align-items:center;
-      border-bottom:1px solid #eee;
       width:100%;
       padding-left:0.2rem;
-      background: #efeff1;
-      border-bottom:1px solid #d6d9e0;
+      background: #fff;
       h2{
         font-size:0.22rem;
         margin-bottom:0;

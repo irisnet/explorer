@@ -6,11 +6,11 @@
             </div>
         </div>
         <div class="native_asset_list_table_container" v-if="issueToken.length !== 0">
-            <div style="padding: 0.2rem 0">Issue Token</div>
+            <div style="padding: 0.2rem 0">Issue Token Txs</div>
             <div class="native_asset_list_table_content">
                 <div class="table_list_content">
                     <spin-component :showLoading="flIssueTokenShowLoading"></spin-component>
-                    <native-asset :showNoData="showNoData" :items="issueToken" name="issueToken"></native-asset>
+                    <native-asset :showNoData="showNoData" :items="issueToken" name="nativeIssueToken"></native-asset>
                     <div v-show="showNoData" class="no_data_show">
                         <img src="../assets/no_data.svg" alt="">
                     </div>
@@ -21,7 +21,7 @@
             </div>
         </div>
         <div class="native_asset_list_table_container" v-if="editToken.length !== 0">
-            <div style="padding: 0.2rem 0">Edit Token</div>
+            <div style="padding: 0.2rem 0">Edit Token Txs</div>
             <div class="native_asset_list_table_content">
                 <div class="table_list_content">
                     <!--<spin-component :showLoading="flEditTokenShowLoading"></spin-component>-->
@@ -36,7 +36,7 @@
             </div>
         </div>
         <div class="native_asset_list_table_container" v-if="mintToken.length !== 0">
-            <div style="padding: 0.2rem 0">Mint Token</div>
+            <div style="padding: 0.2rem 0">Mint Token Txs</div>
             <div class="native_asset_list_table_content">
                 <div class="table_list_content">
                     <!--<spin-component :showLoading="flMinTokenShowLoading"></spin-component>-->
@@ -51,7 +51,7 @@
             </div>
         </div>
         <div class="native_asset_list_table_container" v-if="transferToken.length !== 0">
-            <div style="padding: 0.2rem 0">Transfer Owner</div>
+            <div style="padding: 0.2rem 0">Transfer Owner Txs</div>
             <div class="native_asset_list_table_content">
                 <div class="table_list_content">
                     <!--<spin-component :showLoading="flTransferTokenShowLoading"></spin-component>-->
@@ -66,7 +66,7 @@
             </div>
         </div>
         <div v-show="issueToken.length === 0 && editToken.length === 0
-        && mintToken.length === 0 && transferToken.length === 0">
+        && mintToken.length === 0 && transferToken.length === 0 && flShowContent">
             <img class="no_data_img" src="../assets/no_data.svg">
         </div>
     </div>
@@ -96,6 +96,7 @@
 				transferTokenCurrentPageNum:  1,
 				pageSize: 10,
 				showNoData: false,
+				flShowContent: false,
                 flIssueTokenShowLoading: false,
                 flEditTokenShowLoading: false,
                 flMinTokenShowLoading: false,
@@ -132,11 +133,9 @@
 			this.getTransferToken()
         },
         methods:{
-	        linkGen(pageNum) {
-		        return pageNum === 1 ? '?' : `?page=${pageNum}`
-	        },
             getIssueToken(){
 	            this.flIssueTokenShowLoading = true;
+	            this.flShowContent = false;
 	            Service.commonInterface({nativeAsset:{
 	            	pageNumber:this.issueTokenCurrentPageNum,
 	            	pageSize:this.pageSize,
@@ -150,23 +149,28 @@
 		                       return {
 			                       Owner: item.owner,
 			                       Symbol: item.symbol,
-                                   InitialSupply: item.initial_supply,
-                                   MaxSupply: item.max_supply,
-                                   Mintable: item.mintable,
+                                   InitialSupply: this.formatNumber(item.initial_supply),
+                                   Mintable: Tools.firstWordUpperCase(item.mintable),
                                    Block: item.height,
                                    TxHash: item.tx_hash,
                                    TxFee: this.formatFee(item.tx_fee),
-                                   TxStatus: item.tx_status,
+                                   TxStatus: Tools.firstWordUpperCase(item.tx_status),
                                    Timestamp: Tools.format2UTC(item.timestamp),
+			                       TokenID: item.token_id,
+			                       flShowLink: true,
                                }
                             })
+                        }else {
+	                        this.flShowContent = true;
                         }
                     }catch (e) {
+	                    this.flShowContent = true;
                         console.error(e)
                     }
                 })
             },
 	        getEditToken(){
+		        this.flShowContent = false;
                 Service.commonInterface({nativeAsset: {
                 	pageNumber: this.editTokenCurrentPageNum,
                     pageSize: this.pageSize,
@@ -179,22 +183,26 @@
                         		return {
                         			Token: item.token_id,
                                     Owner: item.owner,
-                                    MaxSupply: item.max_supply,
-                                    Mintable: item.mintable,
 			                        Block: item.height,
 			                        TxHash: item.tx_hash,
 			                        TxFee: this.formatFee(item.tx_fee),
-			                        TxStatus: item.tx_status,
+			                        TxStatus:Tools.firstWordUpperCase(item.tx_status),
 			                        Timestamp: Tools.format2UTC(item.timestamp),
+			                        TokenID: item.token_id,
+			                        flShowLink: true,
                                 }
                             })
+                        }else {
+	                        this.flShowContent = true;
                         }
 	                }catch (e) {
+		                this.flShowContent = true;
                         console.error(e)
 	                }
                 })
             },
 	        getMintToken(){
+		        this.flShowContent = false;
 	        	Service.commonInterface({nativeAsset:{
 	        		pageNumber: this.mintTokenCurrentPageNum,
                     pageSize: this.pageSize,
@@ -208,22 +216,28 @@
 							        Token: item.token_id,
 							        Owner: item.owner,
 							        MintTo: item.mint_to,
-                                    Amount: item.amount,
+                                    Amount: this.formatNumber(item.amount),
 							        Block: item.height,
 							        TxHash: item.tx_hash,
 							        TxFee: this.formatFee(item.tx_fee),
-							        TxStatus: item.tx_status,
+							        TxStatus: Tools.firstWordUpperCase(item.tx_status),
 							        Timestamp: Tools.format2UTC(item.timestamp),
+							        TokenID: item.token_id,
+							        flShowLink: true,
                                 }
                             })
+                        }else {
+					        this.flShowContent = true;
                         }
 
 			        }catch(e){
-	        			console.error(e)
+	        			console.error(e);
+				        this.flShowContent = true;
                     }
                 })
             },
 	        getTransferToken(){
+		        this.flShowContent = false;
 	        	Service.commonInterface({nativeAsset:{
 	        		pageNumber: this.transferTokenCurrentPageNum,
                     pageSize: this.pageSize,
@@ -231,7 +245,7 @@
                     }},(transferToken) => {
 	        		try {
 	        			if(transferToken.data){
-	        			    this.transferTokenTotalPageNum = transferToken.data.total
+	        			    this.transferTokenTotalPageNum = transferToken.data.total;
 	        				this.transferToken = transferToken.data.txs.map( item => {
 	        					return {
 							        Token: item.token_id,
@@ -240,17 +254,30 @@
 							        Block: item.height,
 							        TxHash: item.tx_hash,
 							        TxFee: this.formatFee(item.tx_fee),
-							        TxStatus: item.tx_status,
+							        TxStatus: Tools.firstWordUpperCase(item.tx_status),
 							        Timestamp: Tools.format2UTC(item.timestamp),
+							        TokenID: item.token_id,
+							        flShowLink: true,
                                 }
                             })
+                        }else {
+					        this.flShowContent = true;
                         }
 
 			        }catch (e) {
+				        this.flShowContent = true;
                         console.error(e)
 			        }
                 })
             },
+	        formatNumber(value){
+		        let million = 1000000;
+		        if(value > million){
+			        return `${value/million}M`
+		        }else {
+			        return value
+		        }
+	        },
             formatFee(fee){
 	        	if(fee){
 	        		return `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(fee.amount)),4)} ${Tools.formatDenom(fee.denom).toUpperCase()}`;

@@ -16,6 +16,7 @@ db.createCollection("ex_val_black_list");
 db.createCollection("ex_validator");
 db.createCollection("ex_gov_params");
 db.createCollection("ex_asset_tokens");
+db.createCollection("ex_asset_gateways");
 
 // create index
 db.ex_power_change.createIndex({"height": 1, "address": 1}, {"unique": true});
@@ -26,7 +27,9 @@ db.ex_validator.createIndex({"operator_address": 1}, {"unique": true});
 db.ex_validator.createIndex({"proposer_addr": 1}, {"unique": true,"background": true});
 db.ex_validator.createIndex({"jailed": -1, "status": -1, "voting_power": -1}, {"background": true});
 db.ex_gov_params.createIndex({"key": 1}, {"unique": true});
-db.ex_asset_tokens.createIndex({"id": 1}, {"unique": true, "background": true});
+db.ex_asset_tokens.createIndex({"token_id": 1}, {"unique": true, "background": true});
+db.ex_asset_tokens.createIndex({"source": 1}, {"background": true});
+db.ex_asset_gateways.createIndex({"moniker": 1}, {"unique": true, "background": true});
 
 // init data
 db.ex_config.insert({"env_nm":"mainnet","host":"https://www.irisplorer.io","chain_id":"irishub","show_faucet":0});

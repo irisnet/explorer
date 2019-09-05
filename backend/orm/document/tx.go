@@ -36,14 +36,18 @@ const (
 	Tx_Field_StakeCreateValidator = "stake_create_validator"
 	Tx_Field_StakeEditValidator   = "stake_edit_validator"
 
-	Tx_Field_Msgs_UdInfo = "msgs.msg.ud_info.source"
-	Tx_AssetType_Native  = "native"
-	Tx_AssetType_Gateway = "gateway"
+	Tx_Field_Msgs_UdInfo         = "msgs.msg.ud_info.source"
+	Tx_Field_Msgs_Moniker        = "msgs.msg.moniker"
+	Tx_Field_Msgs_UdInfo_Symbol  = "msgs.msg.ud_info.symbol"
+	Tx_Field_Msgs_UdInfo_Gateway = "msgs.msg.ud_info.gateway"
+	Tx_AssetType_Native          = "native"
+	Tx_AssetType_Gateway         = "gateway"
 
-	Tx_Asset_TxType_Issue         = "IssueToken"
-	Tx_Asset_TxType_Edit          = "EditToken"
-	Tx_Asset_TxType_Mint          = "MintToken"
-	Tx_Asset_TxType_TransferOwner = "TransferTokenOwner"
+	Tx_Asset_TxType_Issue                = "IssueToken"
+	Tx_Asset_TxType_Edit                 = "EditToken"
+	Tx_Asset_TxType_Mint                 = "MintToken"
+	Tx_Asset_TxType_TransferOwner        = "TransferTokenOwner"
+	Tx_Asset_TxType_TransferGatewayOwner = "TransferGatewayOwner"
 )
 
 type Signer struct {
@@ -362,7 +366,7 @@ func (_ CommonTx) QueryProposalTxByIdWithSubmitOrDepositType(proposalId int64, p
 	return num, txs, err
 }
 
-func (_ CommonTx) QueryTxAsset(assetType, tokenType string, page, size int, total bool) (int, []CommonTx, error) {
+func (_ CommonTx) QueryTxAsset(assetType, tokenType, symbol, gateway string, page, size int, total bool) (int, []CommonTx, error) {
 	txs := []CommonTx{}
 	selector := bson.M{
 		Tx_Field_Hash:      1,
@@ -387,6 +391,46 @@ func (_ CommonTx) QueryTxAsset(assetType, tokenType string, page, size int, tota
 			"$in": []string{types.TxTypeIssueToken, types.TxTypeEditToken, types.TxTypeMintToken, types.TxTypeTransferTokenOwner},
 		}
 	}
+	if symbol != "" {
+		condition[Tx_Field_Msgs_UdInfo_Symbol] = bson.M{
+			"$regex":   symbol,
+			"$options": "$i",
+		}
+	}
+	if gateway != "" {
+		condition[Tx_Field_Msgs_UdInfo_Gateway] = bson.M{
+			"$regex":   gateway,
+			"$options": "$i",
+		}
+	}
+	sort := fmt.Sprintf("-%v", Tx_Field_Height)
+	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, total, &txs)
+	return num, txs, err
+}
+
+func (_ CommonTx) QueryTxTransferGatewayOwner(moniker string, page, size int, total bool) (int, []CommonTx, error) {
+	txs := []CommonTx{}
+	selector := bson.M{
+		Tx_Field_Hash:      1,
+		Tx_Field_Height:    1,
+		Tx_Field_From:      1,
+		Tx_Field_To:        1,
+		Tx_Field_Amount:    1,
+		Tx_Field_Type:      1,
+		Tx_Field_Status:    1,
+		Tx_Field_ActualFee: 1,
+		Tx_Field_Tags:      1,
+		Tx_Field_Msgs:      1,
+		Tx_Field_Time:      1,
+	}
+
+	condition := bson.M{
+		Tx_Field_Type: Tx_Asset_TxType_TransferGatewayOwner,
+	}
+	if moniker != "" {
+		condition[Tx_Field_Msgs_Moniker] = moniker
+	}
+
 	sort := fmt.Sprintf("-%v", Tx_Field_Height)
 	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, total, &txs)
 	return num, txs, err

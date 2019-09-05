@@ -84,10 +84,10 @@
                             <!--<li class="header_submenu_item" v-if="flShowTransfers">Asset Transfers Txs</li>-->
                             <!--<li class="header_submenu_item" v-if="flShowTransfers">Inter-chain Txs</li>-->
                             <!--<li class="header_submenu_item" v-if="flShowTransfers">IRIS Burn Txs</li>-->
+                            <li class="header_submenu_item" v-show="flShowAssets"><router-link :to="`/assets/ntvassets`">Native Asset </router-link></li>
                             <li class="header_submenu_item" v-show="flShowAssets"><router-link :to="`/assets/ntvassetstxs`">Native Asset Txs</router-link></li>
-                            <!--<li class="header_submenu_item" v-if="flShowAssets">Issuers Txs</li>-->
-                            <li class="header_submenu_item no_border_style" v-show="flShowAssets"><router-link :to="`/assets/gtwassetstxs`">Gateway Asset Txs</router-link></li>
-                            <!--<li class="header_submenu_item" v-if="flShowAssets">Gateways Txs</li>-->
+                            <li class="header_submenu_item" v-show="flShowAssets && flShowGatewayMenu"><router-link :to="`/assets/gtwassets`">Gateway Asset</router-link></li>
+                            <li class="header_submenu_item no_border_style" v-show="flShowAssets && flShowGatewayMenu"><router-link :to="`/assets/gtwassetstxs`">Gateway Asset Txs</router-link></li>
                             <!--<li class="header_submenu_item" v-if="flShowAssets">Assets Transfers</li>-->
                             <li class="header_submenu_item" v-show="flShowGov"><router-link :to="`/gov/parameters`">Parameters</router-link></li>
                             <li class="header_submenu_item" v-show="flShowGov"><router-link :to="`/gov/proposals`">Proposals</router-link></li>
@@ -172,8 +172,10 @@
                         <i class="iconfont iconwangluoqiehuanjiantou" :class="flShowAssetsMenu ? 'up_style' : 'down_style'"> </i>
                     </div>
                     <ul class="blockchain_list_content" v-show="flShowAssetsMenu">
+                        <li class="blockchain_list_item" @click="featureButtonClick(`/assets/ntvassets`)">Native Asset</li>
                         <li class="blockchain_list_item" @click="featureButtonClick(`/assets/ntvassetstxs`)">Native Asset Txs</li>
-                        <li class="blockchain_list_item" @click="featureButtonClick(`/assets/gtwassetstxs`)">Gateway Asset Txs</li>
+                        <li class="blockchain_list_item" v-if="flShowGatewayMenu" @click="featureButtonClick(`/assets/gtwassets`)">Gateway Asset</li>
+                        <li class="blockchain_list_item" v-if="flShowGatewayMenu" @click="featureButtonClick(`/assets/gtwassetstxs`)">Gateway Asset Txs</li>
                     </ul>
                 </div>
 
@@ -312,7 +314,8 @@
                 menuActiveName: '',
 				currentNetworkClass:'',
 				offSetLeft:'1.6rem',
-                contentWidth:''
+                contentWidth:'',
+                flShowGatewayMenu:false
 			}
 		},
 		beforeMount () {
@@ -652,7 +655,7 @@
                     }else if(item.env_nm === constant.ENVCONFIG.TESTNET && item.chain_id !== constant.CHAINID.FUXI){
 						item.icon = 'iconfont iconcaihongmao'
                     }
-					item.netWorkSelectOption = `${item.chain_id.toLocaleUpperCase()} ${Tools.firstWordUpperCase(item.env_nm)}`
+					item.netWorkSelectOption = `${Tools.firstWordUpperCase(item.env_nm)} ${item.chain_id.toLocaleUpperCase()}`
 					return item
 				});
 				this.netWorkArray = this.netWorkArray.filter(item => {
@@ -693,15 +696,19 @@
 			},
 			setNetWorkLogo (currentEnv, currentChainId) {
 				if (currentEnv === constant.ENVCONFIG.MAINNET && currentChainId === constant.CHAINID.MAINNET) {
+					this.flShowGatewayMenu = false;
 					this.explorerLogo = require("../assets/logo.png");
 					this.currentNetworkClass = 'iconfont iconiris'
 				} else if (currentEnv === constant.ENVCONFIG.TESTNET && currentChainId === constant.CHAINID.FUXI) {
+					this.flShowGatewayMenu = true;
 					this.explorerLogo = require("../assets/logo.png");
 					this.currentNetworkClass = 'iconfont iconfuxi'
 				} else if (currentEnv === constant.ENVCONFIG.TESTNET && currentChainId === constant.CHAINID.NYANCAT) {
+					this.flShowGatewayMenu = true;
 					this.explorerLogo = require("../assets/logo.png");
 					this.currentNetworkClass = 'iconfont iconcaihongmao'
 				} else {
+					this.flShowGatewayMenu = true;
 					this.currentNetworkClass = 'iconfont iconiris';
 					this.explorerLogo = require("../assets/logo.png")
 				}
@@ -858,7 +865,6 @@
                                     cursor: pointer;
                                     font-size: 0.14rem;
                                     display: flex;
-                                    justify-content: space-between;
                                     &:hover{
                                         background: #F6F7FF;
                                     }
