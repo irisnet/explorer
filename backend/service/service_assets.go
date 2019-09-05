@@ -11,7 +11,6 @@ import (
 	"github.com/irisnet/explorer/backend/vo/msgvo"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/txn"
-	"math"
 )
 
 type AssetsService struct {
@@ -392,9 +391,9 @@ func (service *AssetsService) QueryAssetTokens(source string) ([]vo.AssetTokens,
 			Owner:           v.Owner,
 			Gateway:         v.Gateway,
 			Family:          v.Family,
-			TotalSupply:     convertModelToM(v.TotalSupply, v.Decimal),
-			InitialSupply:   convertModelToM(v.InitialSupply, v.Decimal),
-			MaxSupply:       convertModelToM(v.MaxSupply, v.Decimal),
+			TotalSupply:     utils.CovertAssetUnit(v.TotalSupply, v.Decimal),
+			InitialSupply:   utils.CovertAssetUnit(v.InitialSupply, v.Decimal),
+			MaxSupply:       utils.CovertAssetUnit(v.MaxSupply, v.Decimal),
 			MinUnitAlias:    v.MinUnitAlias,
 			Mintable:        v.Mintable,
 			Name:            v.Name,
@@ -421,9 +420,9 @@ func (service *AssetsService) QueryAssetTokenDetail(tokenid string) (vo.AssetTok
 		Owner:           res.Owner,
 		Gateway:         res.Gateway,
 		Family:          res.Family,
-		TotalSupply:     convertModelToM(res.TotalSupply, res.Decimal),
-		InitialSupply:   convertModelToM(res.InitialSupply, res.Decimal),
-		MaxSupply:       convertModelToM(res.MaxSupply, res.Decimal),
+		TotalSupply:     utils.CovertAssetUnit(res.TotalSupply, res.Decimal),
+		InitialSupply:   utils.CovertAssetUnit(res.InitialSupply, res.Decimal),
+		MaxSupply:       utils.CovertAssetUnit(res.MaxSupply, res.Decimal),
 		MinUnitAlias:    res.MinUnitAlias,
 		Mintable:        res.Mintable,
 		Name:            res.Name,
@@ -451,13 +450,3 @@ func (service *AssetsService) QueryAssetTokenDetail(tokenid string) (vo.AssetTok
 	return ret, nil
 }
 
-func convertModelToM(supplynum string, decimal int) string {
-	decimalValue := math.Pow10(decimal)
-	msupply, err := utils.QuoByStr(supplynum, utils.ParseStringFromFloat64(decimalValue))
-	if err != nil {
-		logger.Error("supplynum / decimal", logger.String("err", err.Error()))
-		return supplynum
-	}
-
-	return msupply.FloatString(decimal)
-}
