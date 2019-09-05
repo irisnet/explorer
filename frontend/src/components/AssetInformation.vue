@@ -1,6 +1,6 @@
 <template>
     <div class="asset_info_container">
-        <div class="asset_info_list_container">
+        <div class="asset_info_list_container" v-show="flShowInformation">
             <div class="asset_info_list_content">
                 <div class="asset_info_kflower_contennt">
                     <div class="asset_info_kflower_title">
@@ -18,8 +18,14 @@
                                 </span>
                             </li>
                         </ul>
-                        <ul class="kflower_right_content">
+                        <ul class="kflower_right_content" v-show="!flShowGatewayInfo">
                             <li class="kflower_list_item"  v-for="item in rightInfoContentArray">
+                                <span class="kflower_item_name">{{item.key}}</span>
+                                <span class="kflower_item_value">{{item.value}}</span>
+                            </li>
+                        </ul>
+                        <ul class="kflower_right_content" v-show="flShowGatewayInfo">
+                            <li class="kflower_list_item"  v-for="item in gatewayRightInfoContentArray">
                                 <span class="kflower_item_name">{{item.key}}</span>
                                 <span class="kflower_item_value">{{item.value}}</span>
                             </li>
@@ -162,11 +168,6 @@
 		                value:''
 	                },
 	                {
-	                	id:'canonical_symbol',
-		                key:'Canonical Symbol:',
-		                value:''
-	                },
-	                {
 		                id:'decimal',
 		                key:'Decimal:',
 		                value:''
@@ -177,6 +178,28 @@
 		                value:''
 	                }
                 ],
+				gatewayRightInfoContentArray:[
+					{
+						id:'name',
+						key:'Name:',
+						value:''
+					},
+					{
+                        id:'canonical_symbol',
+                        key:'Canonical Symbol:',
+                        value:''
+                    },
+					{
+						id:'decimal',
+						key:'Decimal:',
+						value:''
+					},
+					{
+						id:'min_unit_alias',
+						key:'Min Unit Alias:',
+						value:''
+					}
+				],
                 gatewayLeftContentArray:[
 	                {
 		                id:'moniker',
@@ -225,7 +248,8 @@
                 moniker: "",
                 flShowGatewayInfo: false,
                 iconImg:'',
-				flShowNoDataImg: false
+				flShowNoDataImg: false,
+                flShowInformation:false,
             }
         },
 		watch:{
@@ -269,6 +293,7 @@
 	            Server.commonInterface( param, (info) => {
 	            	try {
                         if(info.data){
+                        	this.flShowInformation = true;
                         	this.gateway = info.data.gateway;
 	                        this.symbol = info.data.symbol;
 	                        this.source = info.data.source;
@@ -279,7 +304,9 @@
                                 }else {
 	                        		if(item.id === 'total_supply' || item.id === 'initial_supply' || item.id === 'max_supply'){
 				                        item.value = info.data[item.id] ? this.formatNumber(info.data[item.id]) : '--'
-                                    }else {
+                                    }else if(item.id === 'mintable'){
+				                        item.value = info.data[item.id] ? Tools.firstWordUpperCase(info.data[item.id]) : '--'
+                                    } else {
 				                        item.value = info.data[item.id] ? info.data[item.id] : '--'
 			                        }
                                 }
@@ -295,7 +322,8 @@
 	                            this.getTransferToken();
                             }
                         }else {
-                        	this.flShowNoDataImg = true
+                        	this.flShowNoDataImg = true;
+	                        this.flShowInformation = false;
                         }
 		            }catch (e) {
                         console.error(e)
@@ -308,9 +336,16 @@
                 this.assetType = info.data.source.toLocaleUpperCase()
                 this.headerTitle = 'NativeAssetInfo';
                 this.tokenID = info.data.token_id;
-                this.rightInfoContentArray.forEach( item => {
-                    item.value = info.data[item.id] ? info.data[item.id] : '--'
-                })
+                if(info.data.source === 'native'){
+	                this.rightInfoContentArray.forEach( item => {
+		                item.value = info.data[item.id] ? info.data[item.id] : '--'
+	                })
+                }else if(info.data.source === 'gateway') {
+	                this.gatewayRightInfoContentArray.forEach( item => {
+		                item.value = info.data[item.id] ? info.data[item.id] : '--'
+	                })
+                }
+
             },
 	        getGatewayInfo(info){
 	        	if(info.data.source === 'gateway'){
@@ -549,6 +584,13 @@
 <style lang="scss">
     .asset_info_container{
         width: 100%;
+        position: relative;
+        .no_data_img{
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%,-50%);
+        }
         .asset_info_container{
             max-width: 12.8rem;
             margin: 0 auto;
