@@ -99,7 +99,7 @@ func loadDefault() {
 		KeyDbPwd:          "irispassword",
 		KeyDbPoolLimit:    "4096",
 		KeyServerPort:     "8080",
-		KeyAddrHubLcd:     "http://192.168.150.31:32717",
+		KeyAddrHubLcd:     "http://irisnet-lcd.dev.rainbow.one",
 		KeyAddrHubNode:    "http://192.168.150.31:32657",
 		KeyAddrFaucet:     "http://192.168.150.7:30200",
 		KeyChainId:        "rainbow-dev",

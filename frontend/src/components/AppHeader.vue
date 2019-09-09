@@ -20,7 +20,8 @@
                                 @mouseenter="showTwoMenu('staking')" @mouseleave="hideTwoMenu('staking')">Staking</li>
                             <li class="header_menu_item"
                                 :class="activeTransfers ? 'nav_item_active' : ''"
-                                @mouseenter="showTwoMenu('transfers')" @mouseleave="hideTwoMenu('transfers')">Transfer</li>
+                                @mouseenter="showTwoMenu('transfers')" @mouseleave="hideTwoMenu('transfers')">
+                                <router-link :to="`/txs/transfers`">Transfer</router-link></li>
                             <li class="header_menu_item"
                                 :class="activeAssets ? 'nav_item_active' : ''"
                                 @mouseenter="showTwoMenu('assets')" @mouseleave="hideTwoMenu('assets')">Asset</li>
@@ -74,19 +75,19 @@
                             <!--               <li class="header_submenu_item" v-if="flShowChain">Assets</li>
                                            <li class="header_submenu_item" v-if="flShowChain">Gateways</li>-->
                             <li class="header_submenu_item" v-show="flShowStaking"><router-link :to="`/validators`">Validators</router-link></li>
+                            <li class="header_submenu_item" v-if="flShowStaking"><router-link :to="`/txs/delegations`">Delegation Txs</router-link></li>
                             <li class="header_submenu_item" v-show="flShowStaking"><router-link :to="`/txs/validations`">Validation Txs</router-link></li>
-                            <li class="header_submenu_item no_border_style" v-if="flShowStaking"><router-link :to="`/txs/delegations`">Delegation Txs</router-link></li>
                             <!--  <li class="header_submenu_item" v-if="flShowStaking">Validator Txs</li>-->
                             <!--<li class="header_submenu_item" v-if="flShowStaking"> <router-link :to="`/txs/stakes`">Delegation Txs</router-link></li>
                             <li class="header_submenu_item" v-if="flShowStaking">Reward Txs</li>-->
-                            <li class="header_submenu_item no_border_style" v-show="flShowTransfers"> <router-link :to="`/txs/transfers`">IRIS Transfers Txs</router-link></li>
+                            <!--<li class="header_submenu_item no_border_style" v-show="flShowTransfers"> <router-link :to="`/txs/transfers`">IRIS Transfers Txs</router-link></li>-->
                             <!--<li class="header_submenu_item" v-if="flShowTransfers">Asset Transfers Txs</li>-->
                             <!--<li class="header_submenu_item" v-if="flShowTransfers">Inter-chain Txs</li>-->
                             <!--<li class="header_submenu_item" v-if="flShowTransfers">IRIS Burn Txs</li>-->
+                            <li class="header_submenu_item" v-show="flShowAssets"><router-link :to="`/assets/ntvassets`">Native Asset </router-link></li>
                             <li class="header_submenu_item" v-show="flShowAssets"><router-link :to="`/assets/ntvassetstxs`">Native Asset Txs</router-link></li>
-                            <!--<li class="header_submenu_item" v-if="flShowAssets">Issuers Txs</li>-->
-                            <li class="header_submenu_item no_border_style" v-show="flShowAssets"><router-link :to="`/assets/gtwassetstxs`">Gateway Asset Txs</router-link></li>
-                            <!--<li class="header_submenu_item" v-if="flShowAssets">Gateways Txs</li>-->
+                            <li class="header_submenu_item" v-show="flShowAssets && flShowGatewayMenu"><router-link :to="`/assets/gtwassets`">Gateway Asset</router-link></li>
+                            <li class="header_submenu_item no_border_style" v-show="flShowAssets && flShowGatewayMenu"><router-link :to="`/assets/gtwassetstxs`">Gateway Asset Txs</router-link></li>
                             <!--<li class="header_submenu_item" v-if="flShowAssets">Assets Transfers</li>-->
                             <li class="header_submenu_item" v-show="flShowGov"><router-link :to="`/gov/parameters`">Parameters</router-link></li>
                             <li class="header_submenu_item" v-show="flShowGov"><router-link :to="`/gov/proposals`">Proposals</router-link></li>
@@ -150,19 +151,19 @@
                     </div>
                     <ul class="blockchain_list_content" v-show="flShowStakingMenu">
                         <li class="blockchain_list_item" @click="featureButtonClick(`/validators`)">Validators</li>
-                        <li class="blockchain_list_item" @click="featureButtonClick(`/txs/validations`)">Validations</li>
-                        <li class="blockchain_list_item" @click="featureButtonClick(`/txs/delegations`)">Delegations</li>
+                        <li class="blockchain_list_item" @click="featureButtonClick(`/txs/delegations`)">Delegation Txs</li>
+                        <li class="blockchain_list_item" @click="featureButtonClick(`/txs/validations`)">Validation Txs</li>
                     </ul>
                 </div>
 
                 <div class="mobile_menu_container" @click="flShowBlockchain('transfers')">
                     <div class="mobile_menu_item_content">
-                        <span>Transfers</span>
-                        <i class="iconfont iconwangluoqiehuanjiantou" :class="flShowTransfersMenu ? 'up_style' : 'down_style'"> </i>
+                        <span  @click="featureButtonClick(`/txs/transfers`)">Transfers</span>
+                        <!--<i class="iconfont iconwangluoqiehuanjiantou" :class="flShowTransfersMenu ? 'up_style' : 'down_style'"> </i>-->
                     </div>
-                    <ul class="blockchain_list_content" v-show="flShowTransfersMenu">
-                        <li class="blockchain_list_item" @click="featureButtonClick(`/txs/transfers`)">IRIS Transfers Txs</li>
-                    </ul>
+                    <!--<ul class="blockchain_list_content" v-show="flShowTransfersMenu">-->
+                        <!--<li class="blockchain_list_item" @click="featureButtonClick(`/txs/transfers`)">IRIS Transfers Txs</li>-->
+                    <!--</ul>-->
                 </div>
 
                 <div class="mobile_menu_container" @click="flShowBlockchain('assets')">
@@ -171,8 +172,10 @@
                         <i class="iconfont iconwangluoqiehuanjiantou" :class="flShowAssetsMenu ? 'up_style' : 'down_style'"> </i>
                     </div>
                     <ul class="blockchain_list_content" v-show="flShowAssetsMenu">
+                        <li class="blockchain_list_item" @click="featureButtonClick(`/assets/ntvassets`)">Native Asset</li>
                         <li class="blockchain_list_item" @click="featureButtonClick(`/assets/ntvassetstxs`)">Native Asset Txs</li>
-                        <li class="blockchain_list_item" @click="featureButtonClick(`/assets/gtwassetstxs`)">Gateway Asset Txs</li>
+                        <li class="blockchain_list_item" v-if="flShowGatewayMenu" @click="featureButtonClick(`/assets/gtwassets`)">Gateway Asset</li>
+                        <li class="blockchain_list_item" v-if="flShowGatewayMenu" @click="featureButtonClick(`/assets/gtwassetstxs`)">Gateway Asset Txs</li>
                     </ul>
                 </div>
 
@@ -311,7 +314,8 @@
                 menuActiveName: '',
 				currentNetworkClass:'',
 				offSetLeft:'1.6rem',
-                contentWidth:''
+                contentWidth:'',
+                flShowGatewayMenu:false
 			}
 		},
 		beforeMount () {
@@ -651,7 +655,7 @@
                     }else if(item.env_nm === constant.ENVCONFIG.TESTNET && item.chain_id !== constant.CHAINID.FUXI){
 						item.icon = 'iconfont iconcaihongmao'
                     }
-					item.netWorkSelectOption = `${item.chain_id.toLocaleUpperCase()} ${Tools.firstWordUpperCase(item.env_nm)}`
+					item.netWorkSelectOption = `${Tools.firstWordUpperCase(item.env_nm)} ${item.chain_id.toLocaleUpperCase()}`
 					return item
 				});
 				this.netWorkArray = this.netWorkArray.filter(item => {
@@ -692,15 +696,19 @@
 			},
 			setNetWorkLogo (currentEnv, currentChainId) {
 				if (currentEnv === constant.ENVCONFIG.MAINNET && currentChainId === constant.CHAINID.MAINNET) {
+					this.flShowGatewayMenu = false;
 					this.explorerLogo = require("../assets/logo.png");
 					this.currentNetworkClass = 'iconfont iconiris'
 				} else if (currentEnv === constant.ENVCONFIG.TESTNET && currentChainId === constant.CHAINID.FUXI) {
+					this.flShowGatewayMenu = true;
 					this.explorerLogo = require("../assets/logo.png");
 					this.currentNetworkClass = 'iconfont iconfuxi'
 				} else if (currentEnv === constant.ENVCONFIG.TESTNET && currentChainId === constant.CHAINID.NYANCAT) {
+					this.flShowGatewayMenu = true;
 					this.explorerLogo = require("../assets/logo.png");
 					this.currentNetworkClass = 'iconfont iconcaihongmao'
 				} else {
+					this.flShowGatewayMenu = true;
 					this.currentNetworkClass = 'iconfont iconiris';
 					this.explorerLogo = require("../assets/logo.png")
 				}
@@ -809,7 +817,7 @@
                                     border-radius: 0.06rem 0 0 0.06rem;
                                     box-shadow: none;
                                     background: var(--bgColor);
-                                    border: 0.01rem solid #fff;
+                                    border: 0.01rem solid rgba(255,255,255,0.5);
                                     color: #fff;
                                     font-size: 0.14rem;
                                     border-right: none;
@@ -825,10 +833,10 @@
                                     font-size: 0.2rem;
                                     padding: 0 0.1rem;
                                     line-height: 0.33rem;
-                                    color: #fff;
-                                    border-top: 0.01rem solid #fff;
-                                    border-right: 0.01rem solid #fff;
-                                    border-bottom: 0.01rem solid #fff;
+                                    color: rgba(255,255,255,0.5);
+                                    border-top: 0.01rem solid rgba(255,255,255,0.5);
+                                    border-right: 0.01rem solid rgba(255,255,255,0.5);
+                                    border-bottom: 0.01rem solid rgba(255,255,255,0.5);
                                     background: var(--bgColor);
                                     border-radius: 0 0.06rem 0.06rem 0;
                                     cursor: pointer;
@@ -857,13 +865,12 @@
                                     cursor: pointer;
                                     font-size: 0.14rem;
                                     display: flex;
-                                    justify-content: space-between;
                                     &:hover{
                                         background: #F6F7FF;
                                     }
                                     i{
                                         font-size: 0.18rem;
-                                        color: var(--bgColor);
+                                        color: var(--titleColor);
                                         padding-right: 0.2rem;
                                     }
                                 }

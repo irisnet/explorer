@@ -486,9 +486,14 @@ export default {
                 try {
                     let Amount = '--';
                     if (result) {
-                        if (result.amount && result.amount instanceof Array && result.amount[0].denom === Constants.Denom.IRISATTO) {
-                            result.amount[0].amount = Tools.formatNumber(result.amount[0].amount);
-                            Amount = result.amount.map(listItem => `${Tools.formatPriceToFixed(listItem.amount)} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',')
+                        if (result.amount && result.amount instanceof Array) {
+	                        result.amount.forEach( (item,index) => {
+                                if(item.denom === Constants.Denom.IRISATTO){
+                                    result.amount[index].amount = Tools.formatNumber(result.amount[index].amount);
+	                                Amount = `${Tools.formatPriceToFixed(result.amount[index].amount)} ${Tools.formatDenom(result.amount[index].denom).toUpperCase()}`
+                                }
+                            });
+                            // Amount = result.amount.map(listItem => `${Tools.formatPriceToFixed(listItem.amount)} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',')
                         } else if (result.amount && result.amount instanceof Array && result.amount[0].denom === Constants.Denom.IRIS) {
                             Amount = result.amount.map(listItem => `${Tools.formatPriceToFixed(listItem.amount)} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',')
                         } else if (result.amount && Object.keys(result.amount).includes('amount') && Object.keys(result.amount).includes('denom') && result.amount.denom === Constants.Denom.IRISATTO) {
@@ -502,6 +507,9 @@ export default {
                     this.flShowProfileLogo = result && result.isProfiler;
                     if (result && result.deposits) {
                         let deposits = Tools.formatToken(result.deposits);
+	                    if(String(Tools.FormatScientificNotationToNumber(deposits.amount)).length > 18){
+		                    deposits.amount =`${String(Tools.FormatScientificNotationToNumber(deposits.amount)).split('.')[0]}.${String(Tools.FormatScientificNotationToNumber(deposits.amount)).split('.')[1].substring(0,18)}`
+	                    }
                         this.depositsValue = result.deposits.amount && result.deposits.amount !== 0 && result.deposits.amount !== '' ? `${Tools.formatPriceToFixed(deposits.amount)} ${deposits.denom}` : '';
                     }
                     this.withdrawAddress = (result && result.withdrawAddress) ? result.withdrawAddress : '--';

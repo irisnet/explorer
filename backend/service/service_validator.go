@@ -248,18 +248,19 @@ func GetDalegation(lcdDelegations []lcd.DelegationVo, totalShareAsRat *big.Rat, 
 	items := make([]vo.Delegation, 0, len(lcdDelegations))
 	for _, v := range lcdDelegations {
 
-		amountAsFloat64 := float64(0)
+		//amountAsFloat64 := float64(0)
+		var amountAsFloat64 string
 		if ratio, ok := tokenShareRatio[v.ValidatorAddr]; ok {
 			if shareAsRat, ok := new(big.Rat).SetString(v.Shares); ok {
 				amountAsRat := new(big.Rat).Mul(shareAsRat, ratio)
-
-				exact := false
-				amountAsFloat64, exact = amountAsRat.Float64()
-				if !exact {
-					logger.Info("convert new(big.Rat).Mul(shareAsRat, ratio)  (big.Rat to float64) ",
-						logger.Any("exact", exact),
-						logger.Any("amountAsRat", amountAsRat))
-				}
+				amountAsFloat64 = amountAsRat.FloatString(18)
+				//exact := false
+				//amountAsFloat64, exact = amountAsRat.Float64()
+				//if !exact {
+				//	logger.Info("convert new(big.Rat).Mul(shareAsRat, ratio)  (big.Rat to float64) ",
+				//		logger.Any("exact", exact),
+				//		logger.Any("amountAsRat", amountAsRat))
+				//}
 			} else {
 				logger.Error("convert validator share  type (string -> big.Rat) err", logger.String("str", v.Shares))
 			}
@@ -294,18 +295,19 @@ func GetDalegationbyPageSize(lcdDelegations []lcd.DelegationVo, totalShareAsRat 
 	for k, v := range lcdDelegations {
 		if k >= page*size && k < (page+1)*size {
 
-			amountAsFloat64 := float64(0)
+			//amountAsFloat64 := float64(0)
+			var amountAsFloat64 string
 			if ratio, ok := tokenShareRatio[v.ValidatorAddr]; ok {
 				if shareAsRat, ok := new(big.Rat).SetString(v.Shares); ok {
 					amountAsRat := new(big.Rat).Mul(shareAsRat, ratio)
-
-					exact := false
-					amountAsFloat64, exact = amountAsRat.Float64()
-					if !exact {
-						logger.Info("convert new(big.Rat).Mul(shareAsRat, ratio)  (big.Rat to float64) ",
-							logger.Any("exact", exact),
-							logger.Any("amountAsRat", amountAsRat))
-					}
+					amountAsFloat64 = amountAsRat.FloatString(18)
+					//exact := false
+					//amountAsFloat64, exact = amountAsRat.Float64()
+					//if !exact {
+					//	logger.Info("convert new(big.Rat).Mul(shareAsRat, ratio)  (big.Rat to float64) ",
+					//		logger.Any("exact", exact),
+					//		logger.Any("amountAsRat", amountAsRat))
+					//}
 				} else {
 					logger.Error("convert validator share  type (string -> big.Rat) err", logger.String("str", v.Shares))
 				}
@@ -798,10 +800,31 @@ func buildValidators() []document.Validator {
 
 func computeUptime(valPub string, height int64) float32 {
 	result := lcd.SignInfo(valPub)
-	missedBlocksCounter := utils.ParseIntWithDefault(result.MissedBlocksCounter, 0)
+	govSlashingParamMap, err := lcd.GetGovSlashingParam()
+	if err != nil {
+		logger.Error("GetGovSlashingParam have failed", logger.String("err", err.Error()))
+	}
 	startHeight := utils.ParseIntWithDefault(result.StartHeight, 0)
-	tmp := float32(missedBlocksCounter) / float32(height-startHeight+1)
+
+	var stats_blocks_window int64
+	signed_blocks_window, ok := utils.ParseInt(govSlashingParamMap["signed_blocks_window"].(string))
+	if !ok {
+		stats_blocks_window = height - startHeight + 1
+	} else {
+		stats_blocks_window = Min(signed_blocks_window, height-startHeight+1)
+	}
+
+	missedBlocksCounter := utils.ParseIntWithDefault(result.MissedBlocksCounter, 0)
+
+	tmp := float32(missedBlocksCounter) / float32(stats_blocks_window)
 	return 1 - tmp
+}
+
+func Min(a, b int64) int64 {
+	if a > b {
+		return b
+	}
+	return a
 }
 
 func queryDelegationInfo(operatorAddress string, consensusPubkey string) (string, string, int) {

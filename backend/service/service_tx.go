@@ -319,9 +319,9 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
 					logger.Error("BuildTxMsgMintTokenByUnmarshalJson", logger.String("err", err.Error()))
 				} else {
+					msgVO.To = checkMintToAddress(msgVO.Owner, msgVO.To)
 					msgDataVO = msgVO
 				}
-				msgVO.To = checkMintToAddress(msgVO.Owner, msgVO.To)
 				break
 			case types.TxTypeTransferTokenOwner:
 				msgVO := msgvo.TxMsgTransferTokenOwner{}
@@ -411,6 +411,11 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 					Website:  v.StakeCreateValidator.Description.Website,
 					Details:  v.StakeCreateValidator.Description.Details,
 				},
+				Commission: vo.CommissionMsg{
+					Rate:          v.StakeCreateValidator.Commission.Rate,
+					MaxChangeRate: v.StakeCreateValidator.Commission.MaxChangeRate,
+					MaxRate:       v.StakeCreateValidator.Commission.MaxRate,
+				},
 			},
 			StakeEditValidator: vo.StakeEditValidator{
 				Description: vo.ValDescription{
@@ -419,6 +424,7 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 					Website:  v.StakeEditValidator.Description.Website,
 					Details:  v.StakeEditValidator.Description.Details,
 				},
+				CommissionRate: v.StakeEditValidator.CommissionRate,
 			},
 			Msgs: tmpMsgsArr,
 		}
@@ -805,6 +811,11 @@ func (service *TxService) buildTxVO(tx vo.CommonTx, blackListP *map[string]docum
 			dtx.Details = details
 			dtx.Website = website
 			dtx.Identity = identity
+			dtx.Commission = vo.CommissionMsg{
+				Rate:          tx.StakeCreateValidator.Commission.Rate,
+				MaxRate:       tx.StakeCreateValidator.Commission.MaxRate,
+				MaxChangeRate: tx.StakeCreateValidator.Commission.MaxChangeRate,
+			}
 		} else if tx.Type == types.TxTypeStakeEditValidator {
 			dtx.OperatorAddr = tx.From
 			var moniker = tx.StakeEditValidator.Description.Moniker
@@ -821,6 +832,9 @@ func (service *TxService) buildTxVO(tx vo.CommonTx, blackListP *map[string]docum
 			dtx.Details = details
 			dtx.Website = website
 			dtx.Identity = identity
+			dtx.Commission = vo.CommissionMsg{
+				Rate: tx.StakeEditValidator.CommissionRate,
+			}
 		} else if tx.Type == types.TxTypeUnjail {
 			dtx.OperatorAddr = tx.From
 			can := (*candidateAddrMapP)[dtx.Owner]

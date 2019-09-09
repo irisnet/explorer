@@ -14,7 +14,7 @@ func (task UpdateAssetTokens) Name() string {
 }
 
 func (task UpdateAssetTokens) Start() {
-	utils.RunTimer(1, utils.Hour, func() {
+	utils.RunTimer(30, utils.Sec, func() {
 
 		assetTokens, err := document.Asset{}.GetAllAssets()
 		if err != nil {

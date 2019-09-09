@@ -33,25 +33,24 @@
                     <span class="address" v-if="row.Amount.toString().length > 12">{{row.Amount}}</span>
                 </div>
             </template>
-            <template slot-scope="{ row }" slot="InitialSupply">
+            <template slot-scope="{ row }" slot="InitialSupply" v-if="row.InitialSupply">
                 <div class="name_address">
-                    <div>
-                            <span>
-                                <span>{{substrAmount(row.InitialSupply)}}</span>
-                            </span>
-                    </div>
+                    <span>{{substrAmount(row.InitialSupply)}}</span>
                     <span class="address" v-if="row.InitialSupply.toString().length > 12">{{row.InitialSupply}}</span>
                 </div>
             </template>
-            <template slot-scope="{ row }" slot="MaxSupply">
-                <div class="name_address">
-                    <div>
-                            <span>
-                                <span>{{substrAmount(row.MaxSupply)}}</span>
-                            </span>
-                    </div>
-                    <span class="address" v-if="row.MaxSupply.toString().length > 12">{{row.MaxSupply}}</span>
+            <template slot-scope="{ row }" slot="Gateway">
+                <div class="Gateway">
+                    <span>{{row.Gateway}}</span>
                 </div>
+            </template>
+            <template slot-scope="{ row }" slot="Symbol">
+                <router-link v-if="row.flShowLink" :to="`/asset/${row.TokenID}`" class="link_style">{{row.Symbol}}</router-link>
+                <span v-if="!row.flShowLink">{{row.Symbol}}</span>
+            </template>
+            <template slot-scope="{ row }" slot="Token">
+                <router-link v-if="row.flShowLink" :to="`/asset/${row.TokenID}`" class="link_style">{{row.Token}}</router-link>
+                <span v-if="!row.flShowLink">{{row.Token}}</span>
             </template>
         </m-table>
     </div>
@@ -78,7 +77,59 @@
         data(){
 			return {
 				fields:null,
-                issueToken: [
+				assetTransferTxs:[
+                    {
+                    	title: 'TxHash',
+                        slot: 'TxHash',
+	                    tooltip: true,
+                    },
+					{
+						title: 'Block',
+						slot: 'Block',
+						width: 100,
+						tooltipClassName: 'tooltip_left'
+					},
+					{
+						title: 'From',
+						slot: 'From',
+					},
+					{
+						title: 'Amount',
+						key: 'Amount',
+						tooltipClassName: 'tooltip_left',
+					},
+					{
+						title: 'Token',
+						slot: 'Token',
+						tooltipClassName: 'tooltip_left',
+					},
+					{
+						title: 'To',
+						slot: 'To',
+					},
+					{
+						title: 'TxType',
+						key: 'TxType',
+					},
+					{
+						title: 'Fee',
+						key: 'Fee',
+					},
+					{
+						title: 'Signer',
+						slot: 'Signer',
+					},
+					{
+						title: 'Status',
+						key: 'Status',
+					},
+					{
+						title: 'Timestamp',
+						key: 'Timestamp',
+					},
+
+                ],
+				gateWayIssueToken: [
                     {
 	                    title:'Owner',
 	                    slot: 'Owner',
@@ -86,8 +137,12 @@
 	                    tooltipClassName: 'tooltip_left'
                     },
 	                {
+		                title:'Gateway',
+		                slot: 'Gateway',
+		                tooltipClassName: 'tooltip_left'
+	                },
+	                {
 		                title:'Symbol',
-		                key:'Symbol',
 		                slot: 'Symbol',
 		                tooltipClassName: 'tooltip_left'
 	                },
@@ -95,12 +150,6 @@
 		                title:'InitialSupply',
 		                // key:'InitialSupply',
 		                slot: 'InitialSupply',
-		                tooltipClassName: 'tooltip_left'
-	                },
-	                {
-		                title:'MaxSupply',
-		                // key:'MaxSupply',
-		                slot: 'MaxSupply',
 		                tooltipClassName: 'tooltip_left'
 	                },
 	                {
@@ -140,10 +189,65 @@
 		                tooltipClassName: 'tooltip_left'
 	                }
                 ],
+				nativeIssueToken: [
+					{
+						title:'Owner',
+						slot: 'Owner',
+						tooltip: true,
+						tooltipClassName: 'tooltip_left'
+					},
+
+					{
+						title:'Symbol',
+						slot: 'Symbol',
+						tooltipClassName: 'tooltip_left'
+					},
+					{
+						title:'InitialSupply',
+						// key:'InitialSupply',
+						slot: 'InitialSupply',
+						tooltipClassName: 'tooltip_left'
+					},
+					{
+						title:'Mintable',
+						key:'Mintable',
+						slot: 'Mintable',
+						tooltipClassName: 'tooltip_left'
+					},
+					{
+						title:'Block',
+						slot: 'Block',
+						width: 100,
+						tooltipClassName: 'tooltip_left'
+					},
+					{
+						title:'TxHash',
+						slot: 'TxHash',
+						tooltip: true,
+						tooltipClassName: 'tooltip_left'
+					},
+					{
+						title:'Fee',
+						key:'TxFee',
+						slot: 'TxFee(IRIS)',
+						tooltipClassName: 'tooltip_left'
+					},
+					{
+						title:'Status',
+						key:'TxStatus',
+						slot: 'TxStatus',
+						tooltipClassName: 'tooltip_left'
+					},
+					{
+						title:'Timestamp',
+						key:'Timestamp',
+						slot: 'Timestamp',
+						tooltipClassName: 'tooltip_left'
+					}
+				],
 				editToken: [
 					{
 						title:'Token',
-						key:'Token',
 						slot: 'Token',
 						tooltipClassName: 'tooltip_left'
 					},
@@ -151,18 +255,6 @@
 						title:'Owner',
 						slot: 'Owner',
 						tooltip: true,
-						tooltipClassName: 'tooltip_left'
-					},
-					{
-						title:'MaxSupply',
-						// key:'MaxSupply',
-						slot: 'MaxSupply',
-						tooltipClassName: 'tooltip_left'
-					},
-					{
-						title:'Mintable',
-						key:'Mintable',
-						slot: 'Mintable',
 						tooltipClassName: 'tooltip_left'
 					},
 					{
@@ -198,7 +290,6 @@
 				mintToken: [
 					{
 						title:'Token',
-						key:'Token',
 						slot: 'Token',
 						tooltipClassName: 'tooltip_left'
 					},
@@ -253,9 +344,55 @@
 				transferToken: [
 					{
 						title:'Token',
-						key:'Token',
 						slot: 'Token',
 						tooltipClassName: 'tooltip_left'
+					},
+					{
+						title:'SrcOwner',
+						tooltip: true,
+						slot: 'SrcOwner',
+						tooltipClassName: 'tooltip_left'
+					},
+					{
+						title:'DstOwner',
+						tooltip: true,
+						slot: 'DstOwner',
+						tooltipClassName: 'tooltip_left'
+					},
+					{
+						title:'Block',
+						slot: 'Block',
+						tooltipClassName: 'tooltip_left'
+					},
+					{
+						title:'TxHash',
+						slot: 'TxHash',
+						tooltip: true,
+						tooltipClassName: 'tooltip_left'
+					},
+					{
+						title:'Fee',
+						key:'TxFee',
+						slot: 'TxFee(IRIS)',
+						tooltipClassName: 'tooltip_left'
+					},
+					{
+						title:'Status',
+						key:'TxStatus',
+						slot: 'TxStatus',
+						tooltipClassName: 'tooltip_left'
+					},
+					{
+						title:'Timestamp',
+						key:'Timestamp',
+						slot: 'Timestamp',
+						tooltipClassName: 'tooltip_left'
+					},
+				],
+				transferGatewayOwnerTxs: [
+					{
+						title:'Gateway',
+						key: 'Gateway',
 					},
 					{
 						title:'SrcOwner',
@@ -311,7 +448,7 @@
 				}
             },
 			substrAmount(amount){
-				if(amount.toString().length > 12){
+				if(amount && amount.toString().length > 12){
 					return Tools.formatString(amount.toString(),12,'...')
 				}else {
 					return amount
@@ -324,6 +461,10 @@
 	}
 </script>
 
-<style lang="scss" scoped>
-
+<style lang="scss" >
+.tx_container_table{
+    .m-table-header{
+        overflow: hidden;
+    }
+}
 </style>

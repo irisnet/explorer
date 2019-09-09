@@ -97,7 +97,7 @@ func (un UnbondingDelegations) String() string {
 
 type Delegation struct {
 	Address     string  `json:"address"`
-	Amount      float64 `json:"amount"`
+	Amount      string  `json:"amount"`
 	SelfShares  string  `json:"self_shares"`
 	TotalShares float64 `json:"total_shares"`
 	Block       string  `json:"block"`

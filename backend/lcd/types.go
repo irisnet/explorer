@@ -27,7 +27,7 @@ const (
 	UrlValidatorSetLatest                        = "%s/validatorsets/latest"
 	UrlStakePool                                 = "%s/stake/pool"
 	UrlBlocksResult                              = "%s/block-results/%d"
-	UrlGovParam                                  = "%s/gov/params/%s"
+	UrlGovParam                                  = "%s/params?module=%s"
 	UrlDistributionRewardsByValidatorAcc         = "%s/distribution/%s/rewards"
 	UrlValidatorsSigningInfoByConsensuPublicKey  = "%s/slashing/validators/%s/signing-info"
 	UrlDistributionWithdrawAddressByValidatorAcc = "%s/distribution/%s/withdraw-address"
@@ -35,6 +35,7 @@ const (
 	UrlTokenStatsCirculation                     = "https://rpc.irisnet.org/token-stats/circulation"
 	UrlLookupIconsByKeySuffix                    = "https://keybase.io/_/api/1.0/user/lookup.json?fields=pictures&key_suffix=%s"
 	UrlAssetTokens                               = "%s/asset/tokens"
+	UrlAssetGateways                             = "%s/asset/gateways"
 )
 
 type AccountVo struct {
@@ -586,4 +587,12 @@ type AssetTokens struct {
 		Mintable        bool   `json:"mintable"`
 		Owner           string `json:"owner"`
 	} `json:"base_token"`
+}
+
+type AssetGateways struct {
+	Owner    string `json:"owner"`
+	Moniker  string `json:"moniker"`
+	Identity string `json:"identity"`
+	Details  string `json:"details"`
+	Website  string `json:"website"`
 }

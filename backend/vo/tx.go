@@ -165,15 +165,16 @@ Amount: %v
 
 type DeclarationTx struct {
 	BaseTx
-	Amount       utils.Coins `json:"amount"`
-	OperatorAddr string      `json:"operator_addr"`
-	Owner        string      `json:"owner"`
-	Moniker      string      `json:"moniker"`
-	Pubkey       string      `json:"pubkey"`
-	Identity     string      `json:"identity"`
-	SelfBond     utils.Coins `json:"self_bond"`
-	Website      string      `json:"website"`
-	Details      string      `json:"details"`
+	Amount       utils.Coins   `json:"amount"`
+	OperatorAddr string        `json:"operator_addr"`
+	Owner        string        `json:"owner"`
+	Moniker      string        `json:"moniker"`
+	Pubkey       string        `json:"pubkey"`
+	Identity     string        `json:"identity"`
+	SelfBond     utils.Coins   `json:"self_bond"`
+	Website      string        `json:"website"`
+	Details      string        `json:"details"`
+	Commission   CommissionMsg `json:"commission"`
 }
 
 type GovTx struct {
@@ -300,10 +301,18 @@ type Msg interface {
 type StakeCreateValidator struct {
 	PubKey      string         `json:"pub_key"`
 	Description ValDescription `json:"description"`
+	Commission  CommissionMsg  `json:"commission"`
+}
+
+type CommissionMsg struct {
+	Rate          string `json:"rate"`            // the commission rate charged to delegators
+	MaxRate       string `json:"max_rate"`        // maximum commission rate which validator can ever charge
+	MaxChangeRate string `json:"max_change_rate"` // maximum daily increase of the validator commission
 }
 
 type StakeEditValidator struct {
-	Description ValDescription `json:"description"`
+	Description    ValDescription `json:"description"`
+	CommissionRate string         `json:"commission_rate"`
 }
 
 // Description
