@@ -2,8 +2,47 @@
     <div>
         <div class="all_type_list_title_container">
             <div class="all_type_list_title_wrap">
-                <h1 class="all_type_list_title">Transactions</h1>
-                <div class="pagination_content">
+                <div class="all_type_list_filter_content">
+                    <h1 class="all_type_list_title">Transactions</h1>
+                    <div class="filter_content">
+                        <div class="tx_type_content">
+                            <div class="tx_type_mobile_content">
+                                <i-select :model.sync="value" v-model="value" :on-change="filterTxByTxType(value)">
+                                    <i-option v-for="item in txTypeOption"
+                                              :value="item.value"
+                                    >{{item.label}}</i-option>
+                                </i-select>
+                                <i-select :model.sync="statusValue" v-model="statusValue" :on-change="filterTxByStatus(statusValue)">
+                                    <i-option v-for="item in status"
+                                              :value="item.value"
+                                    >{{item.label}}</i-option>
+                                </i-select>
+                            </div>
+                            <div class="tx_type_mobile_content">
+                                <Date-picker type="date"
+                                             v-model="startTime"
+                                             :value.sync="startTime"
+                                             :clearable = false
+                                             @on-change='getStartTime'
+                                             placeholder="Select Date"
+                                ></Date-picker>
+                                <span class="joint_mark">~</span>
+                                <Date-picker type="date"
+                                             v-model="endTime"
+                                             :value.sync="endTime"
+                                             :clearable = false
+                                             @on-change="getEndTime"
+                                             placeholder="Select Date"
+                                ></Date-picker>
+                            </div>
+                            <div class="tx_type_mobile_content">
+                                <div class="reset_btn" @click="resetFilterCondition"><i class="iconfont iconzhongzhi"></i></div>
+                                <div class="search_btn" @click="getTxListByFilterCondition">Search</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pagination_content mobile_style">
                     <m-pagination
                             :page-size="pageSize"
                             :total="countNum"
@@ -18,7 +57,11 @@
         <div class="all_type_list_table_container">
             <div class="all_type_list_table_wrap">
                 <m-all-tx-type-list-table :items="allTxTypeList"></m-all-tx-type-list-table>
+                <div class="no_data_img_content" v-if="allTxTypeList.length === 0">
+                    <img src="../assets/no_data.svg" >
+                </div>
             </div>
+
             <div class="pagination_content">
                 <m-pagination
                         :page-size="pageSize"
@@ -48,12 +91,94 @@
 				countNum: sessionStorage.getItem("txsTotal") ? Number(sessionStorage.getItem("txsTotal")) : 0,
 				currentPageNum: this.forCurrentPageNum(),
 				currentPageNumCache: 0,
+                txTypeOption:[
+
+                ],
+                status:[
+	                {
+		                value:'allStatus',
+		                label:'All Status'
+	                },
+                	{
+                		value:'success',
+                        label:'Success'
+                    },
+                    {
+                    	value:'fail',
+                        label:'Fail'
+                    }
+                ],
+                statusValue:'allStatus',
+				value: 'allTxType',
+                firstEntry:false,
+				startTime: '',
+                endTime: '',
+                filterStartTime: '',
+                filterEndTime: '',
+                TxType: '',
+                txStatus: '',
             }
         },
         created(){
-	        this.getAllTxTypeList();
+	        this.getTxListByFilterCondition();
+	        this.getAllTxType();
         },
         methods:{
+			filterTxByTxType(e){
+				if (e === 'allTxType') {
+					this.TxType = ''
+                }else {
+					this.TxType = e
+                }
+            },
+	        getStartTime(time){
+				this.filterStartTime = this.formatTime(time)
+            },
+	        getEndTime(time){
+		        this.filterEndTime = this.formatTime(time)
+            },
+            formatTime(time){
+	            let utcTime = Tools.conversionTimeToUTCByValidatorsLine(new Date(time).toISOString());
+	            let oneDaySeconds = 24 * 60 *60;
+	            return Number(new Date(utcTime).getTime()/1000) + Number(oneDaySeconds)
+            },
+	        filterTxByStatus(e){
+				if(e === 'allStatus'){
+					this.txStatus = ''
+                }else {
+					this.txStatus = e
+				}
+            },
+            getAllTxType(){
+			    Service.commonInterface({allTxType:{
+			    	    type: 'all'
+                    }},(res) => {
+			    	try {
+                        if(res){
+	                        this.txTypeOption = res.map(item => {
+	                        	return {
+			                        value : Tools.firstWordUpperCase(item),
+                                    label : item
+                                }
+                            });
+	                        let allTxType = {
+	                        	value:'allTxType',
+		                        label:'All TXType',
+                                slot:'allTXType'
+                            };
+	                        this.txTypeOption.unshift(allTxType)
+                        }
+				    }catch (e) {
+                        console.error(e)
+				    }
+                })
+            },
+	        resetFilterCondition(){
+		        this.value = 'allTxType';
+		        this.statusValue = 'allStatus';
+		        this.startTime = '';
+                this.endTime = '';
+            },
 	        forCurrentPageNum() {
 		        let currentPageNum = 1;
 		        let urlPageSize = this.$route.query.page && Number(this.$route.query.page);
@@ -75,27 +200,62 @@
 		            return `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(Fee.amount)),4)} ${Tools.formatDenom(Fee.denom).toUpperCase()}`;
 	            }
             },
+	        getTxListByFilterCondition(){
+                let param = {};
+                param.getTxListByFilterCondition = {};
+		        param.getTxListByFilterCondition.pageNumber = this.currentPageNum;
+		        param.getTxListByFilterCondition.pageSize = this.pageSize;
+		        param.getTxListByFilterCondition.txType = this.TxType;
+		        param.getTxListByFilterCondition.status = this.txStatus;
+		        param.getTxListByFilterCondition.beginTime = this.filterStartTime;
+		        param.getTxListByFilterCondition.endTime = this.filterEndTime;
+                Service.commonInterface(param, (res) => {
+                	try {
+                		if(res && res.Data) {
+			                this.countNum = res.Count;
+			                sessionStorage.setItem('txsTotal',res.Count);
+			                this.allTxTypeList = res.Data.map( item => {
+				                return {
+					                txHash:item.hash,
+					                block: item.block_height,
+					                type: item.type,
+					                fee: this.formatFee(item.fee),
+					                signer: item.signer,
+					                status: item.status,
+					                timestamp: Tools.format2UTC(item.timestamp)
+				                }
+			                })
+                        }else {
+			                this.allTxTypeList = []
+
+                        }
+                    }catch (e) {
+                		console.error(e)
+	                }
+                })
+            },
             getAllTxTypeList(){
+	        	let that = this;
 	            Service.commonInterface({allTypeList:{
 			            pageNumber:this.currentPageNum,
 			            pageSize: this.pageSize,
 		            }},(res) => {
 		            try {
 			            if(res){
-				            this.countNum = res.Count;
+			            	this.firstEntry = true;
+				            that.countNum = res.Count;
 				            sessionStorage.setItem('txsTotal',res.Count);
-				            this.allTxTypeList = res.Data.map( item => {
+ 				            that.allTxTypeList = res.Data.map( item => {
 					            return {
 						            txHash:item.hash,
 						            block: item.block_height,
 						            type: item.type,
-						            fee: this.formatFee(item.fee),
+						            fee: that.formatFee(item.fee),
 						            signer: item.signer,
 						            status: item.status,
 						            timestamp: Tools.format2UTC(item.timestamp)
 					            }
 				            })
-
 			            }
 		            }catch (e) {
 			            console.error(e)
@@ -108,7 +268,10 @@
 				// 有时候 mounted 方法不起作用，为此添加该 watch
 				this.currentPageNum = Number(this.$route.query.page || 1);
 				this.getAllTxTypeList();
-			}
+			},
+			startTime(startTime){
+				console.log(startTime,"开始的时间")
+            }
 		},
 	}
 </script>
@@ -117,7 +280,7 @@
     .all_type_list_title_container{
         width: 100%;
         position: fixed;
-        z-index: 1;
+        z-index: 3;
         background: #fff;
         .all_type_list_title_wrap{
             max-width: 12.8rem;
@@ -126,11 +289,61 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            .all_type_list_title{
-                height: 0.7rem;
-                margin: 0;
-                line-height: 0.7rem;
-                font-size: 0.18rem;
+            .all_type_list_filter_content{
+                display: flex;
+                align-items: center;
+                .all_type_list_title{
+                    height: 0.7rem;
+                    margin: 0;
+                    line-height: 0.7rem;
+                    font-size: 0.18rem;
+                }
+                .filter_content{
+                    margin-left: 0.1rem;
+                    .tx_type_content{
+                        display: flex;
+                        align-items: center;
+                        .tx_type_mobile_content{
+                            display: flex;
+                            align-items: center;
+                            .ivu-select{
+                                margin-right: 0.1rem;
+                                width: 1.3rem;
+                                .ivu-select-item{
+                                    text-indent: 0.1rem;
+                                    font-size: 0.14rem;
+                                    line-height: 0.18rem;
+                                }
+                            }
+                            .joint_mark{
+                                margin: 0 0.1rem;
+                            }
+                            .ivu-date-picker{
+                                width: 1.3rem;
+                            }
+                            .reset_btn{
+                                background: var(--bgColor);
+                                color: #fff;
+                                border-radius: 0.04rem;
+                                margin-left: 0.1rem;
+                                i{
+                                    padding: 0.08rem;
+                                    font-size: 0.14rem;
+                                    line-height: 1;
+                                    display: inline-block;
+                                }
+                            }
+                            .search_btn{
+                                background: var(--bgColor);
+                                margin-left: 0.1rem;
+                                color: #fff;
+                                border-radius: 0.04rem;
+                                padding: 0.05rem 0.18rem;
+                                font-size: 0.14rem;
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -140,6 +353,15 @@
             max-width: 12.8rem;
             margin: 0 auto;
             overflow-x: auto;
+            .no_data_img_content{
+                display: flex;
+                justify-content: center;
+                border-top: 0.01rem solid #eee;
+                border-bottom: 0.01rem solid #eee;
+                font-size: 0.14rem;
+                height: 2.8rem;
+                align-items: center;
+            }
         }
         .pagination_content{
             max-width: 12.8rem;
@@ -147,10 +369,51 @@
             text-align: right;
         }
     }
+    .el-select-dropdown__item{
+        padding-left: 0.15rem;
+    }
     @media screen and (max-width: 910px){
         .all_type_list_title_container{
             position: static;
             padding-left: 0.1rem;
+            .all_type_list_title_wrap{
+                .all_type_list_filter_content{
+                    flex-direction: column;
+                    align-items: flex-start;
+                    width: 100%;
+                    .filter_content{
+                        width: 100%;
+                        margin-left: 0;
+                        display: flex;
+                        .tx_type_content{
+                            width: 100%;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: flex-start;
+                            .tx_type_mobile_content{
+                                width: 3.45rem;
+                                display: flex;
+                                justify-content: space-between;
+                                margin-bottom: 0.1rem;
+                                .ivu-select{
+                                    margin-right: 0;
+                                    width: 1.6rem;
+                                }
+                                .ivu-date-picker{
+                                    width: 1.6rem;
+                                }
+                                .reset_btn{
+                                    margin-left: 0;
+                                }
+                                .search_btn{
+                                    flex: 1;
+                                    text-align: center;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
         .all_type_list_table_container{
             padding-top: 0;
@@ -159,6 +422,8 @@
         .pagination_content{
             padding-right: 0.1rem;
         }
+        .mobile_style{
+            display: none;
+        }
     }
-
 </style>
