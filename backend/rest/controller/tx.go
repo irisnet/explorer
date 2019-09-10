@@ -60,7 +60,6 @@ func registerQueryTxList(r *mux.Router) error {
 		if txType != "" {
 			query["type"] = txType
 		}
-
 		if status != "" {
 			query["status"] = status
 		}
@@ -114,6 +113,23 @@ func registerQueryTxListByType(r *mux.Router) error {
 		page, size := GetPage(request)
 
 		var result vo.PageVo
+		if status != "" {
+			query["status"] = status
+		}
+		if beginTime != 0 && endTime != 0 {
+			query["time"] = bson.M{
+				"$gte": time.Unix(beginTime, 0),
+				"$lt":  time.Unix(endTime, 0),
+			}
+		} else if beginTime != 0 {
+			query["time"] = bson.M{
+				"$gte": time.Unix(beginTime, 0),
+			}
+		} else if endTime != 0 {
+			query["time"] = bson.M{
+				"$lt": time.Unix(endTime, 0),
+			}
+		}
 		if txTyp != "" {
 			query["type"] = txTyp
 		} else {
@@ -138,24 +154,6 @@ func registerQueryTxListByType(r *mux.Router) error {
 					"$in": types.GovernanceList,
 				}
 				break
-			}
-		}
-
-		if status != "" {
-			query["status"] = status
-		}
-		if beginTime != 0 && endTime != 0 {
-			query["time"] = bson.M{
-				"$gte": time.Unix(beginTime, 0),
-				"$lt":  time.Unix(endTime, 0),
-			}
-		} else if beginTime != 0 {
-			query["time"] = bson.M{
-				"$gte": time.Unix(beginTime, 0),
-			}
-		} else if endTime != 0 {
-			query["time"] = bson.M{
-				"$lt": time.Unix(endTime, 0),
 			}
 		}
 
