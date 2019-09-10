@@ -409,6 +409,7 @@ export default {
                 "Jailed Until": "",
                 "Delegator Bonded": "",
                 "Missed Blocks": "",
+                "Uptime": "",
                 Delegators: "",
                 "Commission Rate": "",
                 "Delegator Shares": "",
@@ -636,6 +637,8 @@ export default {
                             )} %)`;
                             this.validatorInfo["Missed Blocks"] =
                                 data.missed_blocks_count;
+                            this.validatorInfo["Uptime"] =
+                              Tools.FormatUptime(data.uptime);
                             this.validatorInfo["Delegators"] =
                                 data.delegator_count;
                             this.validatorInfo["Commission Rate"] =
