@@ -21,7 +21,7 @@
           </div>
           <div style="margin-top: 12px;">
             <img src="../../assets/voting_period.png" />
-            <span>VotingPeriod</span>
+            <span>DepositPeriod</span>
           </div>
           <div class="per_div">
             <div class="per_title">GovTallyingProcedure</div>
