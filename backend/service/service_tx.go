@@ -274,17 +274,17 @@ func (service *TxService) QueryTxType(txType string) []string {
 		return res
 	}
 	switch txType {
-	case "Trans":
+	case "trans":
 		return types.BankList
-	case "Declaration":
+	case "declaration":
 		return types.DeclarationList
-	case "Stake":
+	case "stake":
 		return types.StakeList
-	case "Gov":
+	case "gov":
 		return types.GovernanceList
-	case "Asset":
+	case "asset":
 		return types.AssetList
-	case "Rand":
+	case "rand":
 		return types.RandList
 	}
 	return nil
