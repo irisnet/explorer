@@ -478,6 +478,7 @@ func (service *ValidatorService) GetValidatorDetail(validatorAddr string) vo.Val
 		ConsensusAddr:           validatorAsDoc.ConsensusPubkey,
 		Description:             desc,
 		Icons:                   validatorAsDoc.Icons,
+		Uptime:                  validatorAsDoc.Uptime,
 	}
 
 	if validatorAsDoc.Jailed {

@@ -160,7 +160,7 @@
 									operatorAddress: item.operator_address,
 									commission: `${(item.commission.rate * 100).toFixed(2)} %`,
 									bondedToken: `${Tools.formatPriceToFixed(Number(item.tokens),2)} ${Constant.CHAINNAME.toLocaleUpperCase()}`,
-									uptime: `${(item.uptime * 100).toFixed(2)}%`,
+									uptime: Tools.FormatUptime(item.uptime),
 									votingPower: `${(item.voting_rate * 100).toFixed(4)}%`,
 									selfBond: `${Tools.subStrings(Tools.formatPriceToFixed(Number(item.self_bond.match(/\d*(\.\d{0,4})?/)[0])), 2)} ${Constant.CHAINNAME.toLocaleUpperCase()}`,
 									delegatorNum: item.delegator_num,

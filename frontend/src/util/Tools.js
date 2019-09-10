@@ -641,6 +641,10 @@ export default class Tools{
 			formattedNumber = number
 		}
 		return formattedNumber
-	}
-	
+  }
+  
+  // 转化uptime的方法
+  static FormatUptime(number) {
+    return `${(number * 100).toFixed(4)}%`
+  }
 }
