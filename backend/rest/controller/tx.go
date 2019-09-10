@@ -89,7 +89,7 @@ func registerQueryTxListByType(r *mux.Router) error {
 		tx.SetTid(request.TraceId)
 		query := bson.M{}
 		total := GetString(request, "total")
-		txTyp := QueryParam(request, "txType")
+		txType := QueryParam(request, "txType")
 		status := QueryParam(request, "status")
 		beginTime := int64(utils.ParseIntWithDefault(QueryParam(request, "beginTime"), 0))
 		endTime := int64(utils.ParseIntWithDefault(QueryParam(request, "endTime"), 0))
@@ -109,7 +109,7 @@ func registerQueryTxListByType(r *mux.Router) error {
 			query["height"] = height
 		}
 
-		txType := Var(request, "type")
+		txTypeGroup := Var(request, "type")
 		page, size := GetPage(request)
 
 		var result vo.PageVo
@@ -130,10 +130,10 @@ func registerQueryTxListByType(r *mux.Router) error {
 				"$lt": time.Unix(endTime, 0),
 			}
 		}
-		if txTyp != "" {
-			query["type"] = txTyp
+		if txType != "" {
+			query["type"] = txType
 		} else {
-			switch types.TxTypeFromString(txType) {
+			switch types.TxTypeFromString(txTypeGroup) {
 			case types.Trans:
 				query["type"] = bson.M{
 					"$in": types.BankList,
@@ -237,7 +237,7 @@ func registerQueryRecentTx(r *mux.Router) error {
 func registerQueryTxType(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryTxType, "GET", func(request vo.IrisReq) interface{} {
 		tx.SetTid(request.TraceId)
-		txType := QueryParam(request, "type")
+		txType := Var(request, "type")
 		result := tx.QueryTxType(txType)
 		return result
 	})

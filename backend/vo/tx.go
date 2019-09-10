@@ -138,7 +138,7 @@ type BaseTx struct {
 	Memo        string            `json:"memo"`
 	Log         string            `json:"log"`
 	Timestamp   time.Time         `json:"timestamp"`
-	Tags        map[string]string `json:"tags,omitempty"`
+	Tags        map[string]string `json:"tags"`
 }
 
 type TransTx struct {

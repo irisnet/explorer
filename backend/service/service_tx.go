@@ -262,7 +262,7 @@ func (service *TxService) QueryTxNumGroupByDay() []vo.TxNumGroupByDayVo {
 }
 
 func (service *TxService) QueryTxType(txType string) []string {
-	if txType == "" {
+	if txType == "all" {
 		length := len(types.BankList) + len(types.DeclarationList) + len(types.StakeList) + len(types.GovernanceList) + len(types.AssetList) + len(types.RandList)
 		typeList := make([]string, 0, length)
 		res := append(typeList, types.BankList...)
