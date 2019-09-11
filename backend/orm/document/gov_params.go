@@ -1,6 +1,7 @@
 package document
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/irisnet/explorer/backend/logger"
@@ -19,14 +20,24 @@ const (
 )
 
 type GovParams struct {
-	Module       string `bson:"module" json:"module"`
-	Key          string `bson:"key" json:"key"`
-	Type         string `bson:"type" json:"type"`
-	Range        string `bson:"range" json:"range"`
-	GenesisValue string `bson:"genesis_value" json:"genesis_value"`
-	CurrentValue string `bson:"current_value" json:"current_value"`
-	Description  string `bson:"description" json:"description"`
-	Note         string `bson:"note" json:"note"`
+	Module       string      `bson:"module" json:"module"`
+	Key          string      `bson:"key" json:"key"`
+	Type         string      `bson:"type" json:"type"`
+	Range        string      `bson:"range" json:"range"`
+	InitialValue string      `bson:"initial_value" json:"initial_value"`
+	GenesisValue string      `bson:"genesis_value" json:"genesis_value"`
+	CurrentValue interface{} `bson:"current_value" json:"current_value"`
+	Description  string      `bson:"description" json:"description"`
+	Note         string      `bson:"note" json:"note"`
+}
+
+type AmountCurrentValue struct {
+	Amount string `bson:"amount" json:"amount"`
+	Denom  string `bson:"denom" json:"denom"`
+}
+
+func (v *AmountCurrentValue) BuildAmountCurrentValueByUnmarshalJson(data []byte) error {
+	return json.Unmarshal(data, v)
 }
 
 type Range struct {
