@@ -91,13 +91,13 @@ func (_ GovParams) UpdateCurrentModuleParamValue(kv map[string]interface{}) erro
 
 	for k, v := range kv {
 		vStr := ""
-		currentValueMap := AmountCurrentValue{}
 		update := bson.M{}
 		switch vType := v.(type) {
 		case string:
 			vStr = vType
 			update["$set"] = bson.M{GovParamsFieldCurrentValue: vStr}
 		case map[string]interface{}:
+			currentValueMap := AmountCurrentValue{}
 			if err := currentValueMap.BuildAmountCurrentValueByUnmarshalJson(utils.MarshalJsonIgnoreErr(vType)); err != nil {
 				logger.Error("BuildAmountCurrentValueByUnmarshalJson have error", logger.String("err", err.Error()))
 			}
