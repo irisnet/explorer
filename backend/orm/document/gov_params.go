@@ -3,6 +3,7 @@ package document
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/irisnet/explorer/backend/utils"
 
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm"
@@ -90,14 +91,22 @@ func (_ GovParams) UpdateCurrentModuleParamValue(kv map[string]interface{}) erro
 
 	for k, v := range kv {
 		vStr := ""
+		currentValueMap := AmountCurrentValue{}
+		update := bson.M{}
 		switch vType := v.(type) {
 		case string:
 			vStr = vType
+			update["$set"] = bson.M{GovParamsFieldCurrentValue: vStr}
+		case map[string]interface{}:
+			if err := currentValueMap.BuildAmountCurrentValueByUnmarshalJson(utils.MarshalJsonIgnoreErr(vType)); err != nil {
+				logger.Error("BuildAmountCurrentValueByUnmarshalJson have error", logger.String("err", err.Error()))
+			}
+			update["$set"] = bson.M{GovParamsFieldCurrentValue: currentValueMap}
 		default:
 			vStr = fmt.Sprintf("%v", vType)
+			update["$set"] = bson.M{GovParamsFieldCurrentValue: vStr}
 		}
 		sel := bson.M{GovParamsFieldKey: k}
-		update := bson.M{"$set": bson.M{GovParamsFieldCurrentValue: vStr}}
 
 		bulk.Update(sel, update)
 
