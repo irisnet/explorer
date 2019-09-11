@@ -2,10 +2,10 @@ package service
 
 import (
 	"fmt"
-
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
+	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/txn"
 )
@@ -173,6 +173,40 @@ func (_ GovParamsService) GetGovSlashingParamList(genesisMap, currentMap map[str
 	return result, nil
 }
 
+func (_ GovParamsService) GetGovAssetParamList(currentMap map[string]interface{}) ([]document.GovParams, error) {
+	assetKeyRangeMap := lcd.GetAssetKeyWithRangeMap()
+	result := make([]document.GovParams, 0, len(assetKeyRangeMap))
+	for k, v := range assetKeyRangeMap {
+		currentValueStr := ""
+		currentValueMap := document.AmountCurrentValue{}
+		switch curV := currentMap[k].(type) {
+		case string:
+			currentValueStr = curV
+		case map[string]interface{}:
+			if err := currentValueMap.BuildAmountCurrentValueByUnmarshalJson(utils.MarshalJsonIgnoreErr(curV)); err != nil {
+				logger.Error("BuildAmountCurrentValueByUnmarshalJson have error", logger.String("err", err.Error()))
+			}
+		}
+
+		tmp := document.GovParams{
+			Module:       lcd.GovModuleAsset,
+			Key:          k,
+			Range:        v.Range,
+			Description:  v.Description,
+			InitialValue: v.InitialValue,
+		}
+
+		if currentValueStr != "" {
+			tmp.CurrentValue = currentValueStr
+
+		} else if currentValueMap.Amount != "" || currentValueMap.Amount != "" {
+			tmp.CurrentValue = currentValueMap
+		}
+		result = append(result, tmp)
+	}
+	return result, nil
+}
+
 func (gov GovParamsService) GetDbInitGovModuleParamList(genesisMap, currentMap map[string]interface{}) ([]document.GovParams, error) {
 
 	authList, err := gov.GetGovAuthParamList(genesisMap, currentMap)
@@ -205,7 +239,15 @@ func (gov GovParamsService) GetDbInitGovModuleParamList(genesisMap, currentMap m
 	if err != nil {
 		return nil, err
 	}
-	return append(slashingList, mintList...), nil
+
+	slashingList = append(slashingList, mintList...)
+
+	assetList, err := gov.GetGovAssetParamList(currentMap)
+	if err != nil {
+		return nil, err
+	}
+
+	return append(assetList, slashingList...), nil
 }
 
 func init() {

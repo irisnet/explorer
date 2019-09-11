@@ -79,6 +79,13 @@ export default {
     }
   }
 }
+.Asset {
+  .content {
+    .progress {
+      background-color: #D9D9FF!important;
+    }
+  }
+}
 .m_parameters_container {
   width: 413px;
   height: 164px;
