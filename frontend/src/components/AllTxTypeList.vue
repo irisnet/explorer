@@ -185,7 +185,6 @@
                                 }
                             });
 	                        this.txTypeOption = this.txTypeOption.concat(txType);
-                            console.log(this.txTypeOption,"????")
                         }
 				    }catch (e) {
                         console.error(e)
