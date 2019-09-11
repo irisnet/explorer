@@ -1,7 +1,7 @@
 <template>
   <div :class="echartsComponentWrapLine">
     <div class="echarts_title_wrap_line">
-      <span class="echarts_title">14 day Transaction History</span>
+      <span class="echarts_title"><i class="iconfont iconTransactionHistory"></i>14 day Transaction History</span>
       <span class="view_all_content"><router-link :to="`/txs`">View All</router-link></span>
     </div>
     <div id="echarts_line">
@@ -148,7 +148,6 @@
     width: 100%;
     height: 100%;
     padding:0.12rem 0.2rem 0 0.2rem;
-
     .echarts_title_wrap_line {
       height: 15%;
       font-weight:400;
@@ -158,6 +157,10 @@
      .echarts_title{
        font-size:0.18rem;
        color:#000 !important;
+       i{
+         color: #C8D1DA;
+         padding-right: 0.1rem;
+       }
      }
       .view_all_content{
         a{

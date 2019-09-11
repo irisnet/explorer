@@ -2,7 +2,7 @@
     <div class="transaction_list_page_container">
         <div class="transaction_list_title_wrap">
             <div class="transaction_list_title_content">
-                <span class="transaction_list_title">{{count}} {{listTitleName}}</span>
+                <span class="transaction_list_title">{{count}} Txs</span>
                 <div class="filter_container">
                     <div class="filter_tx_type_statue_content">
                         <i-select :model.sync="value" v-model="value" :on-change="filterTxByTxType(value)">
@@ -68,7 +68,13 @@
 				totalPageNum: sessionStorage.getItem("txpagenum") ? JSON.parse(sessionStorage.getItem("txpagenum")) : 1,
 				currentPageNum: this.$route.query.page ? Number(this.$route.query.page) : 1,
 				txList: [],
-				txTypeListArray:[],
+				txTypeListArray:[
+					{
+						value:'allTxType',
+						label:'All TXType',
+						slot:'allTXType'
+					}
+                ],
 				listTitleName: "",
 				count: 0,
 				pageSize: 30,
@@ -168,18 +174,14 @@
 	            switch (this.$route.params.txType) {
 		            case 'delegations' :
 			            this.type = 'stake';
-			            this.listTitleName = "Txs (Staking or Distribution)";
 			            break;
 		            case 'validations':
 			            this.type = 'declaration';
-			            this.listTitleName = "Txs (CreateValidator, EditValidator or Unjail)";
 			            break;
 		            case 'transfers':
-			            this.listTitleName = "Txs (Transfer or Burn)";
 			            this.type = 'trans';
 			            break;
 		            case 'governance':
-			            this.listTitleName = "Txs (SubmitProposal, Deposit or Vote)";
 			            this.type = 'gov';
 	            }
 	            this.getAllTxType();
@@ -190,18 +192,14 @@
 					}},(res) => {
 					try {
 						if(res){
-							this.txTypeListArray = res.map(item => {
+							let typeArray;
+							typeArray = res.map(item => {
 								return {
 									value : item,
 									label : item
 								}
 							});
-							let allTxType = {
-								value:'allTxType',
-								label:'All TXType',
-								slot:'allTXType'
-							};
-							this.txTypeListArray.unshift(allTxType)
+							this.txTypeListArray = this.txTypeListArray.concat(typeArray)
 						}
 					}catch (e) {
 						console.error(e)
@@ -280,7 +278,7 @@
                                 text-indent: 0.1rem;
                                 font-size: 0.14rem;
                                 line-height: 0.18rem;
-                                padding-right: 0.1rem;
+                                padding: 0.07rem 0.1rem 0.07rem 0;
                             }
                         }
                     }

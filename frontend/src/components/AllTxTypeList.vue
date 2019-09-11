@@ -92,7 +92,11 @@
 				currentPageNum: this.forCurrentPageNum(),
 				currentPageNumCache: 0,
                 txTypeOption:[
-
+	                {
+		                value:'allTxType',
+		                label:'All TXType',
+		                slot:'allTXType'
+	                }
                 ],
                 status:[
 	                {
@@ -173,18 +177,15 @@
                     }},(res) => {
 			    	try {
                         if(res){
-	                        this.txTypeOption = res.map(item => {
+                        	let txType;
+	                        txType = res.map(item => {
 	                        	return {
 			                        value : item,
                                     label : item
                                 }
                             });
-	                        let allTxType = {
-	                        	value:'allTxType',
-		                        label:'All TXType',
-                                slot:'allTXType'
-                            };
-	                        this.txTypeOption.unshift(allTxType)
+	                        this.txTypeOption = this.txTypeOption.concat(txType);
+                            console.log(this.txTypeOption,"????")
                         }
 				    }catch (e) {
                         console.error(e)
@@ -335,7 +336,7 @@
                                     text-indent: 0.1rem;
                                     font-size: 0.14rem;
                                     line-height: 0.18rem;
-                                    padding: 0 0.1rem 0 0;
+                                    padding: 0.07rem 0.1rem 0.07rem 0;
                                 }
                             }
                             .joint_mark{

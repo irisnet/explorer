@@ -24,7 +24,7 @@
                         class="information_props_wrap"
                         v-for="v in Object.entries(validatorInfo).filter((v, i) => i%2 === 0)"
                         :key="v[0]"
-                    >
+                        v-if="flShowVotPower(v[1])">
                         <span class="information_props">{{v[0]}}:</span>
                         <template v-if="v[1]">
                             <span class="information_value">{{v[1]}}</span>
@@ -402,20 +402,20 @@ export default {
             ],
             validatorInfo: {
                 "Voting Power": "",
-                "Bond Height": "",
-                "Bonded Tokens": "",
-                "Unbonding Height": "",
-                "Self-Bonded": "",
+	            "Uptime": "",
+	            "Bonded Tokens": "",
+	            "Commission Rate": "",
+	            "Self-Bonded": "",
+	            "Max Rate": "",
+	            "Delegator Bonded": "",
+	            "Max Change Rate": "",
+	            Delegators: "",
+	            "Bond Height": "",
+	            "Total Shares": "",
+	            "Missed Blocks": "",
+	            "Unbonding Height": "",
+	            "Commission Rewards": "",
                 "Jailed Until": "",
-                "Delegator Bonded": "",
-                "Missed Blocks": "",
-                "Uptime": "",
-                Delegators: "",
-                "Commission Rate": "",
-                "Delegator Shares": "",
-                "Max Rate": "",
-                "Commission Rewards": "",
-                "Max Change Rate": ""
             },
             validatorProfile: {
                 "Operator Address": "",
@@ -481,7 +481,8 @@ export default {
             },
             validatorName: "",
             validatorStatus: "",
-            validatorImg:''
+            validatorImg:'',
+            irisTokenFixedNumber:6,
         };
     },
     components: {
@@ -521,6 +522,13 @@ export default {
         // this.getValidatorUptimeHistory("24hours");
     },
     methods: {
+	    flShowVotPower(status){
+	    	if(status === 'Candidate' || status === 'Jailed'){
+	    		return false
+            }else {
+	    		return true
+            }
+        },
         isMobileFunc(isMobile) {
             if (isMobile) {
                 this.transactionsDetailWrap = "mobile_transactions_detail_wrap";
@@ -564,7 +572,7 @@ export default {
                             if (Array.isArray(data) && data[0]) {
                                 this.validatorInfo[
                                     "Commission Rewards"
-                                ] = this.$options.filters.amountFromat(data[0]);
+                                ] = this.$options.filters.amountFromat(data[0],"",this.irisTokenFixedNumber);
                             }
                         }
                     } catch (e) {}
@@ -602,7 +610,8 @@ export default {
                                 "Bonded Tokens"
                             ] = `${this.$options.filters.amountFromat(
                                 data.bonded_tokens,
-                                Constants.Denom.IRIS.toUpperCase()
+                                Constants.Denom.IRIS.toUpperCase(),
+                                this.irisTokenFixedNumber
                             )}`;
                             this.validatorInfo["Unbonding Height"] =
                                 data.unbond_height;
@@ -612,7 +621,8 @@ export default {
                                 "Self-Bonded"
                             ] = `${this.$options.filters.amountFromat(
                                 data.self_bonded,
-                                Constants.Denom.IRIS.toUpperCase()
+                                Constants.Denom.IRIS.toUpperCase(),
+	                            this.irisTokenFixedNumber
                             )} (${this.formatPerNumber(
                                 (data.self_bonded /
                                     Number(data.bonded_tokens)) *
@@ -629,7 +639,8 @@ export default {
                                 "Delegator Bonded"
                             ] = `${this.$options.filters.amountFromat(
                                 data.bonded_stake,
-                                Constants.Denom.IRIS.toUpperCase()
+                                Constants.Denom.IRIS.toUpperCase(),
+	                            this.irisTokenFixedNumber
                             )} (${this.formatPerNumber(
                                 (Number(data.bonded_stake) /
                                     Number(data.bonded_tokens)) *
@@ -648,14 +659,16 @@ export default {
                                           Number(data.commission_rate) * 100
                                       )} % (${Tools.format2UTC(
                                           data.commission_update
-                                      )})`
+                                      ).substr(0,10)} Updated)`
                                     : `${this.formatPerNumber(
                                           Number(data.commission_rate) * 100
                                       )} %`;
                             this.validatorInfo[
-                                "Delegator Shares"
+                                "Total Shares"
                             ] = `${this.$options.filters.amountFromat(
-                                data.delegator_shares
+                                data.delegator_shares,
+	                            "",
+	                            this.irisTokenFixedNumber
                             )}`;
                             this.validatorInfo[
                                 "Max Rate"
