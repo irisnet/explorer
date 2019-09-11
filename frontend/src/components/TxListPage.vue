@@ -133,10 +133,14 @@
 				}
 			},
 			getStartTime(time){
-				this.filterStartTime = this.formatTime(time)
+				this.filterStartTime = this.formatStartTime(time)
 			},
 			getEndTime(time){
 				this.filterEndTime = this.formatTime(time)
+			},
+			formatStartTime(time){
+				let utcTime = Tools.conversionTimeToUTCByValidatorsLine(new Date(time).toISOString());
+				return Number(new Date(utcTime).getTime()/1000)
 			},
 			formatTime(time){
 				let utcTime = Tools.conversionTimeToUTCByValidatorsLine(new Date(time).toISOString());

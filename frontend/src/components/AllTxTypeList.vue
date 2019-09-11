@@ -146,7 +146,7 @@
 		        });
 	        },
 	        getStartTime(time){
-				this.filterStartTime = this.formatTime(time)
+				this.filterStartTime = this.formatStartTime(time)
             },
 	        getEndTime(time){
 		        this.filterEndTime = this.formatTime(time)
@@ -155,6 +155,10 @@
 	            let utcTime = Tools.conversionTimeToUTCByValidatorsLine(new Date(time).toISOString());
 	            let oneDaySeconds = 24 * 60 *60;
 	            return Number(new Date(utcTime).getTime()/1000) + Number(oneDaySeconds)
+            },
+	        formatStartTime(time){
+		        let utcTime = Tools.conversionTimeToUTCByValidatorsLine(new Date(time).toISOString());
+		        return Number(new Date(utcTime).getTime()/1000)
             },
 	        filterTxByStatus(e){
 				if(e === 'allStatus'){
