@@ -36,8 +36,8 @@
                                 ></Date-picker>
                             </div>
                             <div class="tx_type_mobile_content">
+                                <div class="search_btn" @click="getFilterTxs">Search</div>
                                 <div class="reset_btn" @click="resetFilterCondition"><i class="iconfont iconzhongzhi"></i></div>
-                                <div class="search_btn" @click="getTxListByFilterCondition">Search</div>
                             </div>
                         </div>
                     </div>
@@ -124,6 +124,12 @@
 	        this.getAllTxType();
         },
         methods:{
+	        getFilterTxs(){
+		        this.currentPageNum = 1;
+		        this.resetUrl();
+		        sessionStorage.setItem('txpagenum',1);
+		        this.getTxListByFilterCondition();
+	        },
 			filterTxByTxType(e){
 				if (e === 'allTxType') {
 					this.TxType = ''
@@ -131,6 +137,14 @@
 					this.TxType = e
                 }
             },
+	        resetUrl(){
+		        this.$router.push({
+			        path: this.$route.path,
+			        query:{
+				        page:1
+			        }
+		        });
+	        },
 	        getStartTime(time){
 				this.filterStartTime = this.formatTime(time)
             },
@@ -157,7 +171,7 @@
                         if(res){
 	                        this.txTypeOption = res.map(item => {
 	                        	return {
-			                        value : Tools.firstWordUpperCase(item),
+			                        value : item,
                                     label : item
                                 }
                             });
@@ -178,6 +192,13 @@
 		        this.statusValue = 'allStatus';
 		        this.startTime = '';
                 this.endTime = '';
+		        this.filterStartTime= '';
+		        this.filterEndTime = '';
+		        this.TxType = '';
+		        this.txStatus = '';
+		        this.currentPageNum = 1;
+                this.resetUrl();
+                this.getTxListByFilterCondition()
             },
 	        forCurrentPageNum() {
 		        let currentPageNum = 1;
@@ -269,9 +290,6 @@
 				this.currentPageNum = Number(this.$route.query.page || 1);
 				this.getAllTxTypeList();
 			},
-			startTime(startTime){
-				console.log(startTime,"开始的时间")
-            }
 		},
 	}
 </script>
@@ -313,6 +331,7 @@
                                     text-indent: 0.1rem;
                                     font-size: 0.14rem;
                                     line-height: 0.18rem;
+                                    padding: 0 0.1rem 0 0;
                                 }
                             }
                             .joint_mark{
@@ -326,6 +345,7 @@
                                 color: #fff;
                                 border-radius: 0.04rem;
                                 margin-left: 0.1rem;
+                                cursor: pointer;
                                 i{
                                     padding: 0.08rem;
                                     font-size: 0.14rem;
@@ -334,6 +354,7 @@
                                 }
                             }
                             .search_btn{
+                                cursor: pointer;
                                 background: var(--bgColor);
                                 margin-left: 0.1rem;
                                 color: #fff;
@@ -407,6 +428,8 @@
                                 }
                                 .search_btn{
                                     flex: 1;
+                                    margin-left: 0;
+                                    margin-right: 0.1rem;
                                     text-align: center;
                                 }
                             }

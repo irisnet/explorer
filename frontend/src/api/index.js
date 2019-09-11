@@ -87,6 +87,7 @@ const urlApi = {
   allTxType:'/api/tx_types/{type}',
   getTxListByFilterCondition:'/api/txs?page={pageNumber}&size={pageSize}&total=true&txType={txType}&status={status}&beginTime={beginTime}&endTime={endTime}',
   allTypeListQuireHeight:'/api/txs?page={pageNumber}&size={pageSize}&height={height}&total=true',
+  getTxListByTypeAndTxType:'/api/txs/{type}/{pageNumber}/{pageSize}?txType={txType}&status={status}&beginTime={beginTime}&endTime={endTime}',
   //assetInfo
   assetTokenInfo:'/api/asset/tokens/{tokenId}',
   gatewayTokenInfo:'/api/asset/gateways/{moniker}',
