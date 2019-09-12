@@ -398,6 +398,9 @@ export default {
                     &:nth-of-type(3) {
                         margin-top: -0.2rem;
                     }
+                    &:nth-of-type(4) {
+                        margin-top: -0.2rem;
+                    }
                 }
                 div.card_title {
                     width: 100%;
@@ -433,6 +436,9 @@ export default {
                         margin-top: -0.1rem;
                     }
                     &:nth-of-type(3) {
+                        margin-top: -0.1rem;
+                    }
+                    &:nth-of-type(4) {
                         margin-top: -0.1rem;
                     }
                 }

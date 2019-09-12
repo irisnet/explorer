@@ -80,6 +80,19 @@ func (_ GovParams) QueryAll() ([]GovParams, error) {
 	return params, err
 }
 
+func (_ GovParams) QueryOne(key string) (GovParams, error) {
+
+	dbm := getDb()
+	defer dbm.Session.Close()
+
+	var result GovParams
+	query := bson.M{}
+	query["key"] = key
+	err := dbm.C(CollectionNmGovParams).Find(query).One(&result)
+
+	return result, err
+}
+
 func (_ GovParams) Batch(txs []txn.Op) error {
 	return orm.Batch(txs)
 }
