@@ -142,12 +142,14 @@
                 }
             },
 	        resetUrl(){
-		        this.$router.push({
-			        path: this.$route.path,
-			        query:{
-				        page:1
-			        }
-		        });
+	        	if(this.$route.query.page){
+			        this.$router.push({
+				        path: this.$route.path,
+				        query:{
+					        page:1
+				        }
+			        });
+                }
 	        },
 	        getStartTime(time){
 				this.filterStartTime = this.formatStartTime(time)

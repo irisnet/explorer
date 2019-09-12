@@ -117,6 +117,7 @@
 				this.getTxListByFilterCondition();
             },
             resetUrl(){
+				if(this.$route.query.page)
 	            this.$router.push({
 		            path: this.$route.path,
 		            query:{
