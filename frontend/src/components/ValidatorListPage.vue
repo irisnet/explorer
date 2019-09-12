@@ -23,8 +23,7 @@
             </div>
             <div class="pagination total_num" style='margin-bottom:0.2rem;'>
                 <span class="blocks_list_page_wrap_hash_var">{{count}} Total</span>
-                <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
-                </b-pagination>
+                <m-pagination :page-size="pageSize" :total="count"></m-pagination>
             </div>
         </div>
         <spin-component :showLoading="showLoading"/>
@@ -40,9 +39,11 @@
 	import ValidatorListTable from "./table/ValidatorListTable";
     import MValidatorListTable from "./table/MValidatorListTable";
     import MTabs from "./commonComponents/MTabs";
+	import MPagination from "./commonComponents/MPagination";
 
 	export default {
 		components:{
+			MPagination,
 			ValidatorListTable,
 			SpinComponent,
             MValidatorListTable,

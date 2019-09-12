@@ -27,7 +27,11 @@
                         v-if="flShowVotPower(v[1])">
                         <span class="information_props">{{v[0]}}:</span>
                         <template v-if="v[1]">
-                            <span class="information_value">{{v[1]}}</span>
+                            <span class="information_value" v-if="!v[1] instanceof Array">{{v[1]}}</span>
+                            <span class="information_value" v-if="v[1] instanceof Array">{{v[1][0]}}
+                             <i class="tip_content">{{v[1][1]}}</i>
+                            </span>
+                            <span class="information_value" v-else>{{v[1]}}</span>
                         </template>
                         <template v-else>
                             <span class="information_value">--</span>
@@ -483,6 +487,7 @@ export default {
             validatorStatus: "",
             validatorImg:'',
             irisTokenFixedNumber:6,
+            irisTokenMaxFixedNumber:18,
         };
     },
     components: {
@@ -569,10 +574,11 @@ export default {
                 data => {
                     try {
                         if (data) {
+                        	console.log(data[0])
                             if (Array.isArray(data) && data[0]) {
                                 this.validatorInfo[
                                     "Commission Rewards"
-                                ] = this.$options.filters.amountFromat(data[0],"",this.irisTokenFixedNumber);
+                                ] = [this.$options.filters.amountFromat(data[0],"",this.irisTokenFixedNumber),`${data[0].amount}${Tools.formatDenom(data[0].denom)}`];
                             }
                         }
                     } catch (e) {}
@@ -608,26 +614,34 @@ export default {
                                 data.bond_height;
                             this.validatorInfo[
                                 "Bonded Tokens"
-                            ] = `${this.$options.filters.amountFromat(
-                                data.bonded_tokens,
-                                Constants.Denom.IRIS.toUpperCase(),
-                                this.irisTokenFixedNumber
-                            )}`;
+                            ] = [`${this.$options.filters.amountFromat(
+	                            data.bonded_tokens,
+	                            Constants.Denom.IRIS.toUpperCase(),
+	                            this.irisTokenFixedNumber
+                            )}`,`${this.$options.filters.amountFromat(
+	                            data.bonded_tokens,
+	                            Constants.Denom.IRIS.toUpperCase(),
+                                this.irisTokenMaxFixedNumber
+                            )}`];
                             this.validatorInfo["Unbonding Height"] =
                                 data.unbond_height;
                             data.unbond_height === "" &&
                                 delete this.validatorInfo["Unbonding Height"];
                             this.validatorInfo[
                                 "Self-Bonded"
-                            ] = `${this.$options.filters.amountFromat(
-                                data.self_bonded,
-                                Constants.Denom.IRIS.toUpperCase(),
+                            ] = [`${this.$options.filters.amountFromat(
+	                            data.self_bonded,
+	                            Constants.Denom.IRIS.toUpperCase(),
 	                            this.irisTokenFixedNumber
                             )} (${this.formatPerNumber(
-                                (data.self_bonded /
-                                    Number(data.bonded_tokens)) *
-                                    100
-                            )} %)`;
+	                            (data.self_bonded /
+		                            Number(data.bonded_tokens)) *
+	                            100
+                            )} %)`,`${this.$options.filters.amountFromat(
+	                            data.self_bonded,
+	                            Constants.Denom.IRIS.toUpperCase(),
+	                            this.irisTokenMaxFixedNumber
+                            )}`]
                             this.validatorInfo["Jailed Until"] = new Date(
                                 data.jailed_until
                             ).getTime()
@@ -637,15 +651,19 @@ export default {
                                 delete this.validatorInfo["Jailed Until"];
                             this.validatorInfo[
                                 "Delegator Bonded"
-                            ] = `${this.$options.filters.amountFromat(
-                                data.bonded_stake,
-                                Constants.Denom.IRIS.toUpperCase(),
+                            ] = [`${this.$options.filters.amountFromat(
+	                            data.bonded_stake,
+	                            Constants.Denom.IRIS.toUpperCase(),
 	                            this.irisTokenFixedNumber
                             )} (${this.formatPerNumber(
-                                (Number(data.bonded_stake) /
-                                    Number(data.bonded_tokens)) *
-                                    100
-                            )} %)`;
+	                            (Number(data.bonded_stake) /
+		                            Number(data.bonded_tokens)) *
+	                            100
+                            )} %)`,`${this.$options.filters.amountFromat(
+	                            data.bonded_stake,
+	                            Constants.Denom.IRIS.toUpperCase(),
+	                            this.irisTokenMaxFixedNumber
+                            )}`] ;
                             this.validatorInfo["Missed Blocks"] =
                                 `${data.missed_blocks_count} in ${data.stats_blocks_window} blocks`;
                             this.validatorInfo["Uptime"] =
@@ -665,11 +683,15 @@ export default {
                                       )} %`;
                             this.validatorInfo[
                                 "Total Shares"
-                            ] = `${this.$options.filters.amountFromat(
-                                data.delegator_shares,
+                            ] = [ `${this.$options.filters.amountFromat(
+	                            data.delegator_shares,
 	                            "",
 	                            this.irisTokenFixedNumber
-                            )}`;
+                            )}`, `${this.$options.filters.amountFromat(
+	                            data.delegator_shares,
+	                            "",
+	                            this.irisTokenMaxFixedNumber
+                            )}`];
                             this.validatorInfo[
                                 "Max Rate"
                             ] = `${this.formatPerNumber(
@@ -1439,6 +1461,35 @@ export default {
                 margin-right: 0.2rem;
                 word-break: break-all;
                 word-wrap: break-word;
+                position: relative;
+                &:hover{
+                    .tip_content{
+                        display: block;
+                    }
+                }
+                .tip_content{
+                    display: none;
+                    position: absolute;
+                    top: -0.3rem;
+                    left: -0.2rem;
+                    padding: 0.05rem 0.2rem;
+                    background: #000;
+                    color: #fff;
+                    border-radius: 0.04rem;
+                    font-style: normal;
+                    &::after {
+                        width: 0;
+                        height: 0;
+                        border: 0.06rem solid transparent;
+                        content: "";
+                        display: block;
+                        position: absolute;
+                        border-top-color: #000000;
+                        left: 0.24rem;
+                        bottom: -0.1rem;
+                        margin-left: -6px;
+                    }
+                }
             }
             .skip_route {
                 a,
