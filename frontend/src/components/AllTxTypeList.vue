@@ -392,8 +392,9 @@
         }
         .pagination_content{
             max-width: 12.8rem;
+            display: flex;
             margin: 0.2rem auto 0.2rem auto;
-            text-align: right;
+            justify-content:flex-end;
         }
     }
     .el-select-dropdown__item{
