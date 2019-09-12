@@ -64,7 +64,6 @@ func GetDelegationsByDelAddr(delAddr string) (delegations []DelegationVo) {
 	return
 }
 
-
 func GetDelegationsByValidatorAddr(valAddr string) (delegations []DelegationVo) {
 
 	url := fmt.Sprintf(UrlDelegationsByValidator, conf.Get().Hub.LcdUrl, valAddr)
@@ -116,23 +115,23 @@ func GetDistributionRewardsByValidatorAcc(validatorAcc string) (utils.CoinsAsStr
 	return rewards.Commission, nil
 }
 
-func GetJailedUntilAndMissedBlocksCountByConsensusPublicKey(publicKey string) (string, string, error) {
+func GetJailedUntilAndMissedBlocksCountByConsensusPublicKey(publicKey string) (string, string, string, error) {
 
 	url := fmt.Sprintf(UrlValidatorsSigningInfoByConsensuPublicKey, conf.Get().Hub.LcdUrl, publicKey)
 	resAsBytes, err := utils.Get(url)
 	if err != nil {
 		logger.Error("get delegations by delegator adr from lcd error", logger.String("err", err.Error()), logger.String("URL", url))
-		return "", "", err
+		return "", "", "", err
 	}
 
 	var valSign ValidatorSigningInfo
 
 	err = json.Unmarshal(resAsBytes, &valSign)
 	if err != nil {
-		return "", "", err
+		return "", "", "", err
 	}
 
-	return valSign.JailedUntil, valSign.MissedBlocksCount, nil
+	return valSign.JailedUntil, valSign.MissedBlocksCount, valSign.StartHeight, nil
 }
 
 func GetRedelegationsByValidatorAddr(valAddr string) (redelegations []ReDelegations) {
@@ -164,7 +163,6 @@ func GetUnbondingDelegationsByValidatorAddr(valAddr string) (unbondingDelegation
 	}
 	return
 }
-
 
 func DelegationByValidator(address string) (result []DelegationVo) {
 	url := fmt.Sprintf(UrlDelegationByVal, conf.Get().Hub.LcdUrl, address)
