@@ -20,7 +20,7 @@ import select from 'iview/src/components/select'
 import datePicker from 'iview/src/components/date-picker'
 import locale from 'iview/src/locale/lang/en-US'
 import 'iview/dist/styles/iview.css'
-Vue.use(iView,select,datePicker,locale);
+Vue.use(iView,{locale},select,datePicker);
 Vue.component('MTable', MTable);
 
 import axios from "axios"

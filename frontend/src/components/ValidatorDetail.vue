@@ -647,7 +647,7 @@ export default {
                                     100
                             )} %)`;
                             this.validatorInfo["Missed Blocks"] =
-                                data.missed_blocks_count;
+                                `${data.missed_blocks_count} in ${data.stats_blocks_window} blocks`;
                             this.validatorInfo["Uptime"] =
                               Tools.FormatUptime(data.uptime);
                             this.validatorInfo["Delegators"] =
