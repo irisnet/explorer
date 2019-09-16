@@ -48,7 +48,9 @@
                     </div>
                 </div>
                 <div class="pagination_nav_footer_content">
-                    <m-pagination :total="count" :page="currentPageNum" :page-size="pageSize" :page-change="pageChange"></m-pagination>
+                    <keep-alive>
+                        <m-pagination :total="count" :page="currentPageNum" :page-size="pageSize" :page-change="pageChange"></m-pagination>
+                    </keep-alive>
                 </div>
             </div>
         </div>
