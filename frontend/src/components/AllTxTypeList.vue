@@ -47,7 +47,6 @@
                             :page-size="pageSize"
                             :total="countNum"
                             :page="currentPageNum"
-                            :showInfo="false"
                             :page-change="pageChange"
                     ></m-pagination>
                 </div>
@@ -56,6 +55,7 @@
 
         <div class="all_type_list_table_container">
             <div class="all_type_list_table_wrap">
+
                 <m-all-tx-type-list-table :items="allTxTypeList"></m-all-tx-type-list-table>
                 <div class="no_data_img_content" v-if="allTxTypeList.length === 0">
                     <img src="../assets/no_data.svg" >
@@ -63,13 +63,14 @@
             </div>
 
             <div class="pagination_content">
-                <m-pagination
-                        :page-size="pageSize"
-                        :total="countNum"
-                        :page="currentPageNum"
-                        :showInfo="false"
-                        :page-change="pageChange"
-                ></m-pagination>
+                <keep-alive>
+                    <m-pagination
+                            :page-size="pageSize"
+                            :total="countNum"
+                            :page="currentPageNum"
+                            :page-change="pageChange"
+                    ></m-pagination>
+                </keep-alive>
             </div>
         </div>
 
@@ -124,7 +125,7 @@
             }
         },
         created(){
-	        this.getTxListByFilterCondition();
+            this.getTxListByFilterCondition();
 	        this.getAllTxType();
         },
         methods:{
@@ -142,12 +143,14 @@
                 }
             },
 	        resetUrl(){
-		        this.$router.push({
-			        path: this.$route.path,
-			        query:{
-				        page:1
-			        }
-		        });
+	        	if(this.$route.query.page){
+			        this.$router.push({
+				        path: this.$route.path,
+				        query:{
+					        page:1
+				        }
+			        });
+                }
 	        },
 	        getStartTime(time){
 				this.filterStartTime = this.formatStartTime(time)
@@ -218,7 +221,7 @@
 		        this.currentPageNumCache = this.currentPageNum;
 			        let path = "/txs";
 			        history.pushState(null, null, `/#${path}?page=${pageNum}`);
-			        this.getAllTxTypeList();
+			        this.getTxListByFilterCondition();
 	        },
             formatFee(Fee){
 	            if(Fee.amount && Fee.denom){
@@ -236,8 +239,8 @@
 		        param.getTxListByFilterCondition.endTime = this.filterEndTime;
                 Service.commonInterface(param, (res) => {
                 	try {
-                		if(res && res.Data) {
-			                this.countNum = res.Count;
+		                this.countNum = res.Count;
+		                if(res && res.Data) {
 			                sessionStorage.setItem('txsTotal',res.Count);
 			                this.allTxTypeList = res.Data.map( item => {
 				                return {
@@ -259,40 +262,12 @@
 	                }
                 })
             },
-            getAllTxTypeList(){
-	        	let that = this;
-	            Service.commonInterface({allTypeList:{
-			            pageNumber:this.currentPageNum,
-			            pageSize: this.pageSize,
-		            }},(res) => {
-		            try {
-			            if(res){
-			            	this.firstEntry = true;
-				            that.countNum = res.Count;
-				            sessionStorage.setItem('txsTotal',res.Count);
- 				            that.allTxTypeList = res.Data.map( item => {
-					            return {
-						            txHash:item.hash,
-						            block: item.block_height,
-						            type: item.type,
-						            fee: that.formatFee(item.fee),
-						            signer: item.signer,
-						            status: item.status,
-						            timestamp: Tools.format2UTC(item.timestamp)
-					            }
-				            })
-			            }
-		            }catch (e) {
-			            console.error(e)
-		            }
-	            })
-            }
         },
 		watch: {
 			$route(newVal) {
 				// 有时候 mounted 方法不起作用，为此添加该 watch
 				this.currentPageNum = Number(this.$route.query.page || 1);
-				this.getAllTxTypeList();
+				this.getTxListByFilterCondition();
 			},
 		},
 	}
@@ -390,8 +365,9 @@
         }
         .pagination_content{
             max-width: 12.8rem;
+            display: flex;
             margin: 0.2rem auto 0.2rem auto;
-            text-align: right;
+            justify-content:flex-end;
         }
     }
     .el-select-dropdown__item{

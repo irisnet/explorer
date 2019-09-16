@@ -57,9 +57,7 @@
           ©️ IRISplorer 2019 all rights reserved
         </p>
       </footer>
-      <backToTop :scrollHeight="scrollHeight"></backToTop>
     </div>
-
   </div>
 </template>
 <script>

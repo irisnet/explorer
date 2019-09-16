@@ -43,12 +43,14 @@
                 <div class="table_list_content">
                     <spin-component :showLoading="flShowLoading"></spin-component>
                     <m-tx-list-page-table :items="txList"></m-tx-list-page-table>
-                    <div v-if="showNoData" class="no_data_show">
+                    <div v-if="txList.length === 0" class="no_data_show">
                         <img src="../assets/no_data.svg" alt="">
                     </div>
                 </div>
                 <div class="pagination_nav_footer_content">
-                    <b-pagination-nav :link-gen="linkGen" :number-of-pages="totalPageNum" v-model="currentPageNum" use-router></b-pagination-nav>
+                    <keep-alive>
+                        <m-pagination :total="count" :page="currentPageNum" :page-size="pageSize" :page-change="pageChange"></m-pagination>
+                    </keep-alive>
                 </div>
             </div>
         </div>
@@ -60,13 +62,14 @@
 	import Tools from "../util/Tools";
 	import SpinComponent from './commonComponents/SpinComponent';
 	import MTxListPageTable from "./table/MTxListPageTable";
+	import MPagination from "./commonComponents/MPagination";
 	export default {
 		name: "TransactionListPage",
-		components: {MTxListPageTable, SpinComponent},
+		components: {MPagination, MTxListPageTable, SpinComponent},
 		data() {
 			return {
 				totalPageNum: sessionStorage.getItem("txpagenum") ? JSON.parse(sessionStorage.getItem("txpagenum")) : 1,
-				currentPageNum: this.$route.query.page ? Number(this.$route.query.page) : 1,
+				currentPageNum: this.forCurrentPageNum(),
 				txList: [],
 				txTypeListArray:[
 					{
@@ -76,7 +79,7 @@
 					}
                 ],
 				listTitleName: "",
-				count: 0,
+				count: sessionStorage.getItem("txTotal") ? Number(sessionStorage.getItem("txTotal")) : 0,
 				pageSize: 30,
 				showNoData: false,
 				flShowLoading: false,
@@ -110,6 +113,22 @@
 			this.getTxListByFilterCondition();
 		},
 		methods: {
+			forCurrentPageNum() {
+				let currentPageNum = 1;
+				let urlPageSize = this.$route.query.page && Number(this.$route.query.page);
+				currentPageNum = urlPageSize ? urlPageSize : 1;
+				return currentPageNum;
+			},
+			pageChange(pageNum) {
+				this.currentPageNum = pageNum;
+				if (this.currentPageNumCache === this.currentPageNum) {
+					return;
+				}
+				this.currentPageNumCache = this.currentPageNum;
+				let path = "/txs/transfers";
+				history.pushState(null, null, `/#${path}?page=${pageNum}`);
+				this.getTxListByFilterCondition();
+			},
 			getFilterTxs(){
 				this.currentPageNum = 1;
 				this.resetUrl();
@@ -117,6 +136,7 @@
 				this.getTxListByFilterCondition();
             },
             resetUrl(){
+				if(this.$route.query.page)
 	            this.$router.push({
 		            path: this.$route.path,
 		            query:{
@@ -222,6 +242,7 @@
 					try {
 						if(txList && txList.Data){
 							this.count = txList.Count;
+							sessionStorage.setItem('txTotal',txList.Count);
 							this.totalPageNum =  Math.ceil((txList.Count/this.pageSize) === 0 ? 1 : (txList.Count/this.pageSize));
 							sessionStorage.setItem('txpagenum',JSON.stringify(this.totalPageNum));
 							if(txList.Data){
