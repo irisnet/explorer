@@ -3,9 +3,9 @@ package document
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/irisnet/explorer/backend/utils"
-
+	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm"
+	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/txn"
 )
