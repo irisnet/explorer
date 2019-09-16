@@ -1,13 +1,14 @@
 package document
 
 import (
+	"encoding/json"
 	"testing"
 )
 
 func TestQueryBlackList(t *testing.T) {
 
 	blackListMap := BlackList{}.QueryBlackList()
-	for k, v := range blackListMap {
-		t.Logf("k: %v \nv: %v\n", k, v)
-	}
+
+	bytes, _ := json.Marshal(blackListMap)
+	t.Log(string(bytes))
 }

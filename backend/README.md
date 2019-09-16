@@ -28,6 +28,13 @@ Blockchain explorer for the IRIS Hub
     API_VERSION      : explorer api version
     MAX_DRAW_CNT     : Maximum number of collections
     CUR_ENV          : current environment(dev/qa/testnet/mainnet)
+    CronTimeAssetGateways: time interval of update asset gateways
+    CronTimeAssetTokens: time interval of update asset tokens
+    CronTimeGovParams: time interval of update gov params
+    CronTimeTxNumByDay: time interval of update tx num by day
+    CronTimeValidators: time interval of update validators
+    CronTimeValidatorIcons: time interval of update validator icons
+    
     
     //irishub v0.11.0 add
     PrefixAccAddr    : faa
