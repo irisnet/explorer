@@ -68,6 +68,7 @@ func registerApi(r *mux.Router) {
 		controller.RegisterTokenStats,
 		controller.RegisterBondedTokens,
 		controller.RegisterAssets,
+		controller.RegisterCronTask,
 	}
 
 	for _, routeRegistrar := range routeRegistrars {
