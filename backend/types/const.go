@@ -52,8 +52,6 @@ const (
 	UrlRegisterGetValidator                          = "/stake/validators/{address}"
 	UrlRegisterQueryCandidatesTop                    = "/stake/candidatesTop"
 	UrlRegisterQueryCandidate                        = "/stake/candidate/{address}"
-	UrlRegisterQueryCandidateUptime                  = "/stake/candidate/{address}/uptime/{category}"
-	UrlRegisterQueryCandidatePower                   = "/stake/candidate/{address}/power/{category}"
 	UrlRegisterQueryCandidateStatus                  = "/stake/candidate/{address}/status"
 	UrlRegisterQueryValidatorsDelegations            = "/stake/validators/{validatorAddr}/delegations"
 	UrlRegisterQueryValidatorUnbondingDelegations    = "/stake/validators/{validatorAddr}/unbonding-delegations"
@@ -85,6 +83,15 @@ const (
 	UrlRegisterAssetGatewayInfo = "/asset/gateways/{moniker}"
 	//version
 	UrlRegisterQueryApiVersion = "/version"
+
+	// cron task
+	UrlRegisterDoCronTaskAssetGateways   = "/task/asset_gateways"
+	UrlRegisterDoCronTaskAssetTokens     = "/task/asset_tokens"
+	UrlRegisterDoCronTaskGovParams       = "/task/gov_params"
+	UrlRegisterDoCronTaskTxNumByDay      = "/task/tx_num_by_day"
+	UrlRegisterDoCronTaskValidators      = "/task/validators"
+	UrlRegisterDoCronTaskValidatorIcons  = "/task/validator_icons"
+	UrlRegisterTaskUpdateBlackValidators = "/task/black_validators"
 
 	Format = "2006/01/02T15:04:05Z07:00"
 

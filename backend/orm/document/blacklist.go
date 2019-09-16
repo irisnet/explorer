@@ -3,7 +3,6 @@ package document
 import (
 	"fmt"
 
-	"github.com/irisnet/explorer/backend/orm"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -41,12 +40,19 @@ func (d BlackList) PkKvPair() map[string]interface{} {
 }
 
 func (b BlackList) QueryBlackList() map[string]BlackList {
-
-	database := orm.NewQuery().GetDb()
-	var blackListStore = database.C(CollectionNmBlackList)
-	var blackList []BlackList
+	var (
+		blackList []BlackList
+	)
 	var blackListMap = make(map[string]BlackList)
-	if err := blackListStore.Find(nil).All(&blackList); err == nil {
+
+	projection := bson.M{
+		"operator_addr": 1,
+		"moniker":       1,
+		"identity":      1,
+		"website":       1,
+		"details":       1,
+	}
+	if err := queryAll(CollectionNmBlackList, projection, nil, "", 100, &blackList); err == nil {
 		for _, v := range blackList {
 			blackListMap[v.OperatorAddr] = v
 		}
