@@ -3,7 +3,6 @@ package document
 import (
 	"fmt"
 
-	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/txn"
@@ -92,13 +91,11 @@ func (_ GovParams) UpdateCurrentModuleParamValue(kv map[string]interface{}) erro
 
 	}
 
-	updateRes, err := bulk.Run()
+	_, err := bulk.Run()
 
 	if err != nil {
 		return err
 	}
-	logger.Info("batch upsert reesult", logger.Any("bulk res", *updateRes))
-
 	return nil
 
 }

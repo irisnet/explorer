@@ -24,6 +24,7 @@ func init() {
 type TimerTask interface {
 	Start()
 	Name() string
+	DoTask() error
 }
 
 type Engine struct {

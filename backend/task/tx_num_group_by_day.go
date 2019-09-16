@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/utils"
@@ -16,29 +17,35 @@ func (task TxNumGroupByDayTask) Name() string {
 }
 func (task TxNumGroupByDayTask) Start() {
 	task.init()
-	utils.RunTimer(1, utils.Day, func() {
-
-		today := utils.TruncateTime(time.Now(), utils.Day)
-		yesterday := today.Add(-24 * time.Hour)
-
-		total, err := document.CommonTx{}.GetTxCountByDuration(yesterday, today)
-		if err != nil {
-			logger.Error("get tx count by duration", logger.String("err", err.Error()))
-			return
+	utils.RunTimer(conf.Get().Server.CronTimeTxNumByDay, utils.Sec, func() {
+		if err := task.DoTask(); err != nil {
+			logger.Error(fmt.Sprintf("%s fail", task.Name()), logger.String("err", err.Error()))
+		} else {
+			logger.Info(fmt.Sprintf("%s success", task.Name()))
 		}
-
-		txNumStat := document.TxNumStat{
-			Date:       utils.FmtTime(yesterday, utils.DateFmtYYYYMMDD),
-			Num:        int64(total),
-			CreateTime: time.Now(),
-		}
-
-		if err := txNumStat.Insert(); err != nil {
-			logger.Error("txNumStatTask failed", logger.String("err", err.Error()))
-			return
-		}
-		logger.Info("TxNumGroupByDayTask Start One Times",logger.Int("total",total))
 	})
+}
+
+func (task TxNumGroupByDayTask) DoTask() error {
+	today := utils.TruncateTime(time.Now(), utils.Day)
+	yesterday := today.Add(-24 * time.Hour)
+
+	total, err := document.CommonTx{}.GetTxCountByDuration(yesterday, today)
+	if err != nil {
+		return err
+	}
+
+	txNumStat := document.TxNumStat{
+		Date:       utils.FmtTime(yesterday, utils.DateFmtYYYYMMDD),
+		Num:        int64(total),
+		CreateTime: time.Now(),
+	}
+
+	if err := txNumStat.Insert(); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // init ex_tx_num_stat document

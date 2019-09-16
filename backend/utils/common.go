@@ -8,6 +8,8 @@ import (
 	"math/big"
 	"strconv"
 
+	"crypto/md5"
+	"encoding/hex"
 	"github.com/irisnet/explorer/backend/logger"
 )
 
@@ -123,4 +125,10 @@ func MarshalJsonIgnoreErr(v interface{}) []byte {
 	}
 
 	return jsonBytes
+}
+
+func Md5Encryption(data []byte) string {
+	md5Ctx := md5.New()
+	md5Ctx.Write(data)
+	return hex.EncodeToString(md5Ctx.Sum(nil))
 }
