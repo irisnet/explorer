@@ -298,15 +298,6 @@ func (_ CommonTx) QueryProposalTxListById(idArr []uint64) ([]CommonTx, error) {
 	return txs, err
 }
 
-func (_ CommonTx) QueryProposalInitAmountTxById(id int) (CommonTx, error) {
-	selector := bson.M{Tx_Field_Amount: 1, Tx_Field_ProposalId: 1}
-	condition := bson.M{Tx_Field_Type: "SubmitProposal", Tx_Field_Status: "success", Tx_Field_ProposalId: id}
-	var txs CommonTx
-
-	err := queryOne(CollectionNmCommonTx, selector, condition, &txs)
-	return txs, err
-}
-
 func (_ CommonTx) QueryProposalTxById(proposalId int64, page, size int, total bool) (int, []CommonTx, error) {
 
 	txs := []CommonTx{}

@@ -31,8 +31,6 @@ const (
 	UrlRegisterQueryProposal               = "/gov/proposals/{pid}"
 	UrlRegisterQueryProposalsVoterTxs      = "/gov/proposals/{id}/voter_txs"
 	UrlRegisterQueryProposalsDepositorTxs  = "/gov/proposals/{id}/depositor_txs"
-	UrlRegisterQueryProposalDeposit        = "/gov/proposal_deposit/{id}"
-	UrlRegisterQueryProposalVoting         = "/gov/proposal_voting/{id}"
 
 	UrlRegisterQueryParams = "/params"
 
