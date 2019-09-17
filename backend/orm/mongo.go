@@ -22,7 +22,7 @@ func init() {
 		Username:  conf.Get().Db.UserName,
 		Password:  conf.Get().Db.Password,
 		Direct:    false,
-		Timeout:   time.Second * 10,
+		Timeout:   time.Second * 20,
 		PoolLimit: conf.Get().Db.PoolLimit,
 	}
 
@@ -101,7 +101,7 @@ func (query *Query) ExecPage(total bool) (cnt int, err error) {
 		}
 	}
 	if cnt == 0 && total {
-		return cnt,errors.New("not found")
+		return cnt, errors.New("not found")
 	}
 	q = query.buildQuery()
 	return cnt, q.All(query.result)

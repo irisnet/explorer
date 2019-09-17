@@ -98,11 +98,9 @@ func getBlackValidators() {
 
 func (b *BaseService) QueryBlackList() map[string]document.BlackList {
 	if BlackValidatorsHash != BlackValidatorsHashHasNotInit {
-		logger.Info("return result cached in memory")
 		return BlackValidatorsMap
 	} else {
 		b.ReloadBlackValidators()
-		logger.Info("return result by query database")
 		return BlackValidatorsMap
 	}
 }
