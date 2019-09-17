@@ -295,6 +295,7 @@
               font-size: 0.16rem;
               color: #fff;
               padding-bottom: 0.1rem;
+              margin: 0;
             }
             .community_list_content{
               display: flex;
