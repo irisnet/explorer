@@ -70,6 +70,11 @@ func RoundString(x string) (int64, error) {
 	return int64(math.Floor(f + 0.5)), err
 }
 
+func ParseStringToFloat(x string) (float64, error) {
+	f, err := strconv.ParseFloat(x, 0)
+	return f, err
+}
+
 func RoundToString(decimal string, bit int) (i string) {
 	f, err := strconv.ParseFloat(decimal, bit)
 	if err != nil {

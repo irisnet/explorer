@@ -3,6 +3,7 @@ package service
 import (
 	"encoding/hex"
 	"encoding/json"
+	"strconv"
 	"strings"
 
 	"github.com/irisnet/explorer/backend/conf"
@@ -124,7 +125,7 @@ func formatProposalStatusVotingData(service *ProposalService, proposalStatusVoti
 
 		curValidators := make(map[string]*vo.ValidatorGovInfo, len(propo.Votes))
 		curDelegators := make(map[string]*vo.DelegatorGovInfo, len(propo.Votes))
-		var totalVotedPower int64
+		var totalVotedPower float64
 
 		for _, v := range propo.Votes {
 			totalVotedPower = getDelegationsByVoter(curValidators, curDelegators, v, allBondedValidators) + totalVotedPower
@@ -133,7 +134,7 @@ func formatProposalStatusVotingData(service *ProposalService, proposalStatusVoti
 		totalVotedPower = computedValidatorsPower(curValidators, curDelegators, totalVotedPower)
 
 		for _, v := range curDelegators {
-			var voterVotingPower int64
+			var voterVotingPower float64
 			voterInfo := addrAsMultiTypeMap[v.Address]
 
 			// only bonded validator will calculate voting power
@@ -187,8 +188,8 @@ func formatProposalStatusVotingData(service *ProposalService, proposalStatusVoti
 	return proposals
 }
 
-func getDelegationsByVoter(curValidators map[string]*vo.ValidatorGovInfo, curDelegators map[string]*vo.DelegatorGovInfo, vote document.PVote, allBondedValidators []document.Validator) int64 {
-	var totalVotedPower int64
+func getDelegationsByVoter(curValidators map[string]*vo.ValidatorGovInfo, curDelegators map[string]*vo.DelegatorGovInfo, vote document.PVote, allBondedValidators []document.Validator) float64 {
+	var totalVotedPower float64
 	curDelegators[vote.Voter] = &vo.DelegatorGovInfo{
 		Option:      vote.Option,
 		Address:     vote.Voter,
@@ -203,8 +204,8 @@ func getDelegationsByVoter(curValidators map[string]*vo.ValidatorGovInfo, curDel
 			curDelegator.IsValidator = true
 			curDelegator.ValAddr = valAddr
 		}
-		var votingPower int64
-		delegationShares, err := utils.RoundString(delegation.Shares)
+		var votingPower float64
+		delegationShares, err := utils.ParseStringToFloat(delegation.Shares)
 		if err != nil {
 			logger.Error("ParseInt delegationShares have error")
 		} else {
@@ -216,8 +217,8 @@ func getDelegationsByVoter(curValidators map[string]*vo.ValidatorGovInfo, curDel
 		if _, ok := curValidators[delegation.ValidatorAddr]; !ok {
 			for _, v := range allBondedValidators {
 				if v.OperatorAddress == delegation.ValidatorAddr {
-					delegatorShares, _ := utils.RoundString(v.DelegatorShares)
-					tokens, _ := utils.RoundString(v.Tokens)
+					delegatorShares, _ := utils.ParseStringToFloat(v.DelegatorShares)
+					tokens, _ := utils.ParseStringToFloat(v.Tokens)
 					curValidators[delegation.ValidatorAddr] = &vo.ValidatorGovInfo{
 						Address:   delegation.ValidatorAddr,
 						DelShares: delegatorShares,
@@ -233,12 +234,12 @@ func getDelegationsByVoter(curValidators map[string]*vo.ValidatorGovInfo, curDel
 	return totalVotedPower
 }
 
-func computedVotingPower(delegationShares int64, allBondedValidators []document.Validator, valAddr string) int64 {
+func computedVotingPower(delegationShares float64, allBondedValidators []document.Validator, valAddr string) float64 {
 	for _, v := range allBondedValidators {
 		if v.OperatorAddress == valAddr {
-			tokens, err := utils.RoundString(v.Tokens)
+			tokens, err := utils.ParseStringToFloat(v.Tokens)
 			if err == nil {
-				delegatorShares, err := utils.RoundString(v.DelegatorShares)
+				delegatorShares, err := utils.ParseStringToFloat(v.DelegatorShares)
 				if err == nil {
 					votingPower := (tokens / delegatorShares) * delegationShares
 					return votingPower
@@ -249,14 +250,14 @@ func computedVotingPower(delegationShares int64, allBondedValidators []document.
 	return 0
 }
 
-func computedValidatorsPower(curValidators map[string]*vo.ValidatorGovInfo, curDelegators map[string]*vo.DelegatorGovInfo, total int64) int64 {
+func computedValidatorsPower(curValidators map[string]*vo.ValidatorGovInfo, curDelegators map[string]*vo.DelegatorGovInfo, total float64) float64 {
 	totalVotedPower := total
 	for _, curDelegator := range curDelegators {
 		if curDelegator.IsValidator {
 			valAddr := curDelegator.ValAddr
 			for _, curValidator := range curValidators {
 				if curValidator.Address == valAddr {
-					var votingPower int64
+					var votingPower float64
 					delShares := curValidator.DelShares
 					if delShares != 0 {
 						tokens := curValidator.Tokens
@@ -387,11 +388,13 @@ func (service *ProposalService) QueryList(page, size int, istotal bool) (resp vo
 					voterVotingPower = voterInfo.VotingPower
 				}
 
+				votingPower, _ := strconv.ParseFloat(strconv.FormatInt(voterVotingPower, 10), 0)
+
 				tmpVote := vo.VoteWithVoterInfo{
 					Voter:       v.Voter,
 					Option:      v.Option,
 					Time:        v.Time,
-					VotingPower: voterVotingPower,
+					VotingPower: votingPower,
 				}
 				tmpVoteArr = append(tmpVoteArr, tmpVote)
 			}

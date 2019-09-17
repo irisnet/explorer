@@ -19,6 +19,12 @@ func TestParseInt(t *testing.T) {
 	assert.False(t, ok)
 }
 
+func TestParseStringToFloat(t *testing.T) {
+	a, _ := ParseStringToFloat("10")
+	b, _ := ParseStringToFloat("4")
+	fmt.Println(a / b)
+}
+
 func TestRunTimer(t *testing.T) {
 	RunTimer(1, Sec, func() {
 		fmt.Printf("test RunTimer:%s\n", time.Now().String())

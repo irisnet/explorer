@@ -90,7 +90,7 @@ type (
 		TotalDeposit     Coin                `json:"total_deposit,omitempty"`
 		Votes            []VoteWithVoterInfo `json:"votes"`
 		TotalVotingPower int64               `json:"voting_power_for_height"`
-		TotalVotedPower  int64               `json:"voted_power_for_height"`
+		TotalVotedPower  float64             `json:"voted_power_for_height"`
 		SubmitTime       time.Time           `json:"submit_time,omitempty"`
 		DepositEndTime   time.Time           `json:"deposit_end_time,omitempty"`
 		VotingEndTime    time.Time           `json:"voting_end_time,omitempty"`
@@ -113,7 +113,7 @@ type (
 		Voter        string    `json:"voter"`
 		VoterMoniker string    `json:"voter_moniker,omitempty"`
 		Option       string    `json:"option"`
-		VotingPower  int64     `json:"voting_power"`
+		VotingPower  float64   `json:"voting_power"`
 		Time         time.Time `json:"time"`
 	}
 
@@ -121,18 +121,18 @@ type (
 		Address        string    `json:"address"`
 		Option         string    `json:"option"`
 		Moniker        string    `json:"moniker"`
-		DelVotingPower int64     `json:"del_voting_power"`
-		ValVotingPower int64     `json:"val_voting_power"`
+		DelVotingPower float64   `json:"del_voting_power"`
+		ValVotingPower float64   `json:"val_voting_power"`
 		IsValidator    bool      `json:"is_validator"`
 		ValAddr        string    `json:"val_addr"`
 		Time           time.Time `json:"time"`
 	}
 
 	ValidatorGovInfo struct {
-		Address            string `json:"address"`
-		Tokens             int64  `json:"token"`
-		DelShares          int64  `json:"del_shares"`
-		DelDeductionShares int64  `json:"del_deduction_shares"`
+		Address            string  `json:"address"`
+		Tokens             float64 `json:"token"`
+		DelShares          float64 `json:"del_shares"`
+		DelDeductionShares float64 `json:"del_deduction_shares"`
 	}
 )
 
