@@ -69,6 +69,7 @@ const (
 	UrlRegisterQueryTxsByAccount = "/txsByAddress/{address}/{page}/{size}"
 	UrlRegisterQueryTxsByDay     = "/txsByDay"
 	UrlRegisterQueryTx           = "/tx/{hash}"
+	UrlRegisterQueryTxType       = "/tx_types/{type}"
 	//tokenstats
 	UrlRegisterQueryTokenStats    = "/tokenstats"
 	UrlRegisterTokensAccountTotal = "/tokenstats/account_total"

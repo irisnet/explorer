@@ -112,8 +112,26 @@ type (
 		Voter        string    `json:"voter"`
 		VoterMoniker string    `json:"voter_moniker,omitempty"`
 		Option       string    `json:"option"`
-		VotingPower  int64     `json:"voting_power"`
+		VotingPower  float64   `json:"voting_power"`
 		Time         time.Time `json:"time"`
+	}
+
+	DelegatorGovInfo struct {
+		Address        string    `json:"address"`
+		Option         string    `json:"option"`
+		Moniker        string    `json:"moniker"`
+		DelVotingPower float64   `json:"del_voting_power"`
+		ValVotingPower float64   `json:"val_voting_power"`
+		IsValidator    bool      `json:"is_validator"`
+		ValAddr        string    `json:"val_addr"`
+		Time           time.Time `json:"time"`
+	}
+
+	ValidatorGovInfo struct {
+		Address            string  `json:"address"`
+		Tokens             float64 `json:"token"`
+		DelShares          float64 `json:"del_shares"`
+		DelDeductionShares float64 `json:"del_deduction_shares"`
 	}
 )
 

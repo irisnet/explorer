@@ -103,7 +103,7 @@
         }
         .native_asset_list_content{
             max-width: 12.8rem;
-            margin: 0 auto;
+            margin: 0 auto 0.4rem auto;
             display: flex;
             flex-direction: column;
             align-items: center;

@@ -315,6 +315,26 @@ func (_ Validator) GetBondedValidators() ([]Validator, error) {
 	return validators, err
 }
 
+func (_ Validator) GetBondedValidatorsSharesTokens() ([]Validator, error) {
+	var (
+		validators []Validator
+	)
+
+	selector := bson.M{
+		ValidatorFieldVotingPower:     "1",
+		ValidatorFieldOperatorAddress: "",
+		ValidatorFieldDelegatorShares: "",
+		ValidatorFieldTokens:          "",
+	}
+	condition := bson.M{
+		ValidatorFieldStatus: ValidatorStatusValBonded,
+	}
+
+	err := queryAll(CollectionNmValidator, selector, condition, "", 0, &validators)
+
+	return validators, err
+}
+
 func (_ Validator) QueryPowerWithBonded() (int64, error) {
 
 	var query = orm.NewQuery()

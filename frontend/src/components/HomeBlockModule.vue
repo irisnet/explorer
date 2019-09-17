@@ -144,10 +144,10 @@
     flex-direction:column;
     .home_module_block_title_wrap{
       @include flex;
-      padding:0.2rem;
+      padding:0.2rem 0;
+      margin: 0 0.2rem;
       height:0.64rem;
       justify-content: space-between;
-      background: #efeff1;
       border-bottom:1px solid #e4e4e4;
       align-items: center;
       .home_module_block_title{
@@ -158,7 +158,7 @@
         i{
           padding-right: 0.1rem;
           font-size: 0.2rem;
-          color: var(--contentColor);
+          color: #C8D1DA;
         }
       }
       .view_all_btn{
@@ -176,7 +176,7 @@
         @include flex;
         justify-content:space-between;
         border-bottom:1px solid #eee;
-        padding:0 0.2rem;
+        margin:0 0.2rem;
         height: 0.59rem;
         &:last-child{
           border-bottom:none;

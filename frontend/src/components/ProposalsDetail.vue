@@ -626,7 +626,7 @@ export default {
     color: var(--contentColor);
 }
 .information_value {
-    color: var(--contentColor);
+    color: var(--titleColor);
     word-break: break-all;
 }
 .vote-details-content {
@@ -687,7 +687,7 @@ pre {
     border-radius: 1px;
 }
 .information_pre {
-    color: var(--contentColor);
+    color: var(--titleColor);
     word-wrap: break-word;
     word-break: break-all;
 }

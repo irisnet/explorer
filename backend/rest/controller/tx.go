@@ -6,6 +6,7 @@ import (
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/vo"
 	"gopkg.in/mgo.v2/bson"
+	"time"
 )
 
 func RegisterTx(r *mux.Router) error {
@@ -18,6 +19,7 @@ func RegisterTx(r *mux.Router) error {
 		registerQueryTxsCounter,
 		registerQueryRecentTx,
 		registerQueryTxList,
+		registerQueryTxType,
 	}
 
 	for _, fn := range funs {
@@ -43,6 +45,10 @@ func registerQueryTxList(r *mux.Router) error {
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 5))
 		height := int(utils.ParseIntWithDefault(QueryParam(request, "height"), 0))
 		total := QueryParam(request, "total")
+		txType := QueryParam(request, "txType")
+		status := QueryParam(request, "status")
+		beginTime := int64(utils.ParseIntWithDefault(QueryParam(request, "beginTime"), 0))
+		endTime := int64(utils.ParseIntWithDefault(QueryParam(request, "endTime"), 0))
 		istotal := false
 		if total == "true" {
 			istotal = true
@@ -50,6 +56,26 @@ func registerQueryTxList(r *mux.Router) error {
 		query := bson.M{}
 		if height > 0 {
 			query["height"] = height
+		}
+		if txType != "" {
+			query["type"] = txType
+		}
+		if status != "" {
+			query["status"] = status
+		}
+		if beginTime != 0 && endTime != 0 {
+			query["time"] = bson.M{
+				"$gte": time.Unix(beginTime, 0),
+				"$lt":  time.Unix(endTime, 0),
+			}
+		} else if beginTime != 0 {
+			query["time"] = bson.M{
+				"$gte": time.Unix(beginTime, 0),
+			}
+		} else if endTime != 0 {
+			query["time"] = bson.M{
+				"$lt": time.Unix(endTime, 0),
+			}
 		}
 		var result vo.PageVo
 		result = tx.QueryBaseList(query, page, size, istotal)
@@ -63,6 +89,10 @@ func registerQueryTxListByType(r *mux.Router) error {
 		tx.SetTid(request.TraceId)
 		query := bson.M{}
 		total := GetString(request, "total")
+		txType := QueryParam(request, "txType")
+		status := QueryParam(request, "status")
+		beginTime := int64(utils.ParseIntWithDefault(QueryParam(request, "beginTime"), 0))
+		endTime := int64(utils.ParseIntWithDefault(QueryParam(request, "endTime"), 0))
 		istotal := true
 		if total == "false" {
 			istotal = false
@@ -79,32 +109,54 @@ func registerQueryTxListByType(r *mux.Router) error {
 			query["height"] = height
 		}
 
-		txType := Var(request, "type")
+		txTypeGroup := Var(request, "type")
 		page, size := GetPage(request)
 
 		var result vo.PageVo
-		switch types.TxTypeFromString(txType) {
-		case types.Trans:
-			query["type"] = bson.M{
-				"$in": types.BankList,
-			}
-			return tx.QueryTxList(query, page, size, istotal)
-		case types.Declaration:
-			query["type"] = bson.M{
-				"$in": types.DeclarationList,
-			}
-			return tx.QueryTxList(query, page, size, istotal)
-		case types.Stake:
-			query["type"] = bson.M{
-				"$in": types.StakeList,
-			}
-			return tx.QueryTxList(query, page, size, istotal)
-		case types.Gov:
-			query["type"] = bson.M{
-				"$in": types.GovernanceList,
-			}
-			break
+		if status != "" {
+			query["status"] = status
 		}
+		if beginTime != 0 && endTime != 0 {
+			query["time"] = bson.M{
+				"$gte": time.Unix(beginTime, 0),
+				"$lt":  time.Unix(endTime, 0),
+			}
+		} else if beginTime != 0 {
+			query["time"] = bson.M{
+				"$gte": time.Unix(beginTime, 0),
+			}
+		} else if endTime != 0 {
+			query["time"] = bson.M{
+				"$lt": time.Unix(endTime, 0),
+			}
+		}
+		if txType != "" {
+			query["type"] = txType
+		} else {
+			switch types.TxTypeFromString(txTypeGroup) {
+			case types.Trans:
+				query["type"] = bson.M{
+					"$in": types.BankList,
+				}
+				return tx.QueryTxList(query, page, size, istotal)
+			case types.Declaration:
+				query["type"] = bson.M{
+					"$in": types.DeclarationList,
+				}
+				return tx.QueryTxList(query, page, size, istotal)
+			case types.Stake:
+				query["type"] = bson.M{
+					"$in": types.StakeList,
+				}
+				return tx.QueryTxList(query, page, size, istotal)
+			case types.Gov:
+				query["type"] = bson.M{
+					"$in": types.GovernanceList,
+				}
+				break
+			}
+		}
+
 		result = tx.QueryTxList(query, page, size, istotal)
 		return result
 	})
@@ -177,6 +229,16 @@ func registerQueryRecentTx(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryRecentTx, "GET", func(request vo.IrisReq) interface{} {
 		tx.SetTid(request.TraceId)
 		result := tx.QueryRecentTx()
+		return result
+	})
+	return nil
+}
+
+func registerQueryTxType(r *mux.Router) error {
+	doApi(r, types.UrlRegisterQueryTxType, "GET", func(request vo.IrisReq) interface{} {
+		tx.SetTid(request.TraceId)
+		txType := Var(request, "type")
+		result := tx.QueryTxType(txType)
 		return result
 	})
 	return nil

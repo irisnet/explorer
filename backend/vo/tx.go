@@ -125,19 +125,20 @@ func (t Tx) PrintHashFromToAmount() string {
 }
 
 type BaseTx struct {
-	Signer      string          `json:"signer,omitempty"`
-	Hash        string          `json:"hash"`
-	BlockHeight int64           `json:"block_height"`
-	Type        string          `json:"type"`
-	Fee         utils.ActualFee `json:"fee"`
-	Status      string          `json:"status"`
-	GasLimit    int64           `json:"gas_limit"`
-	GasUsed     int64           `json:"gas_used"`
-	GasWanted   int64           `json:"gas_wanted"`
-	GasPrice    float64         `json:"gas_price"`
-	Memo        string          `json:"memo"`
-	Log         string          `json:"log"`
-	Timestamp   time.Time       `json:"timestamp"`
+	Signer      string            `json:"signer,omitempty"`
+	Hash        string            `json:"hash"`
+	BlockHeight int64             `json:"block_height"`
+	Type        string            `json:"type"`
+	Fee         utils.ActualFee   `json:"fee"`
+	Status      string            `json:"status"`
+	GasLimit    int64             `json:"gas_limit"`
+	GasUsed     int64             `json:"gas_used"`
+	GasWanted   int64             `json:"gas_wanted"`
+	GasPrice    float64           `json:"gas_price"`
+	Memo        string            `json:"memo"`
+	Log         string            `json:"log"`
+	Timestamp   time.Time         `json:"timestamp"`
+	Tags        map[string]string `json:"tags"`
 }
 
 type TransTx struct {
