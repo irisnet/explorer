@@ -90,7 +90,6 @@ type (
 		TotalDeposit     Coin                `json:"total_deposit,omitempty"`
 		Votes            []VoteWithVoterInfo `json:"votes"`
 		TotalVotingPower int64               `json:"voting_power_for_height"`
-		TotalVotedPower  float64             `json:"voted_power_for_height"`
 		SubmitTime       time.Time           `json:"submit_time,omitempty"`
 		DepositEndTime   time.Time           `json:"deposit_end_time,omitempty"`
 		VotingEndTime    time.Time           `json:"voting_end_time,omitempty"`
