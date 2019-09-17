@@ -3,7 +3,6 @@ package service
 import (
 	"encoding/hex"
 	"encoding/json"
-	"strconv"
 	"strings"
 
 	"github.com/irisnet/explorer/backend/conf"
@@ -103,6 +102,9 @@ func formatProposalStatusVotingData(service *ProposalService, proposalStatusVoti
 
 	unique_set := make(map[string]bool)
 	allBondedValidators, err := document.Validator{}.GetBondedValidatorsSharesTokens()
+	if err != nil {
+		logger.Error("query allBondedValidators", logger.String("err", err.Error()))
+	}
 
 	for _, v := range proposalStatusVotingData {
 		for _, addr := range v.Votes {
@@ -349,19 +351,17 @@ func (service *ProposalService) QueryList(page, size int, istotal bool) (resp vo
 		}
 	}
 
-	voterAddrArr := make([]string, 0, len(unique_set))
-	for x := range unique_set {
-		voterAddrArr = append(voterAddrArr, x)
-	}
-
-	addrAsMultiTypeMap, err := service.GetValidatorPublicKeyMonikerFromProposalVoter(voterAddrArr)
-	if err != nil {
-		logger.Error("query GetValidatorPublicKeyMonikerFromProposalVoter", logger.String("err", err.Error()))
-	}
-
 	totalVotingPower, err := service.GetSystemVotingPower()
 	if err != nil {
 		logger.Error("get systemVotingPower fail", logger.String("err", err.Error()))
+	}
+
+	var allBondedValidators []document.Validator
+	if len(unique_set) > 0 {
+		allBondedValidators, err = document.Validator{}.GetBondedValidatorsSharesTokens()
+		if err != nil {
+			logger.Error("query allBondedValidators", logger.String("err", err.Error()))
+		}
 	}
 
 	for _, propo := range data {
@@ -378,23 +378,28 @@ func (service *ProposalService) QueryList(page, size int, istotal bool) (resp vo
 		}
 
 		if propo.Status == document.ProposalStatusVoting {
+			curValidators := make(map[string]*vo.ValidatorGovInfo, len(propo.Votes))
+			curDelegators := make(map[string]*vo.DelegatorGovInfo, len(propo.Votes))
 
 			for _, v := range propo.Votes {
-				var voterVotingPower int64
-				voterInfo := addrAsMultiTypeMap[v.Voter]
+				getDelegationsByVoter(curValidators, curDelegators, v, allBondedValidators)
+			}
 
+			computedValidatorsPower(curValidators, curDelegators, 0)
+
+			for _, v := range curDelegators {
+				var voterVotingPower float64
 				// only bonded validator will calculate voting power
-				if voterInfo.Status == document.ValidatorStatusValBonded {
-					voterVotingPower = voterInfo.VotingPower
-				}
-
-				votingPower, _ := strconv.ParseFloat(strconv.FormatInt(voterVotingPower, 10), 0)
+				//if voterInfo.Status == document.ValidatorStatusValBonded {
+				//	voterVotingPower = voterInfo.VotingPower
+				//}
+				voterVotingPower = v.DelVotingPower + v.ValVotingPower
 
 				tmpVote := vo.VoteWithVoterInfo{
-					Voter:       v.Voter,
+					Voter:       v.Address,
 					Option:      v.Option,
 					Time:        v.Time,
-					VotingPower: votingPower,
+					VotingPower: voterVotingPower,
 				}
 				tmpVoteArr = append(tmpVoteArr, tmpVote)
 			}
