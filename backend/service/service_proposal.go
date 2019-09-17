@@ -158,51 +158,38 @@ func (service *ProposalService) QueryVoting(id int) vo.ProposalNewStyle {
 	}
 
 	tmpVoteArr := make([]vo.VoteWithVoterInfo, 0, len(data.Votes))
-	finalVotes := vo.FinalVotes{}
 
-	if data.Status == document.ProposalStatusPassed || data.Status == document.ProposalStatusRejected {
-		finalVotes = vo.FinalVotes{
-			Yes:        data.FinalVotes.Yes,
-			No:         data.FinalVotes.No,
-			NoWithVeto: data.FinalVotes.NoWithVeto,
-			Abstain:    data.FinalVotes.Abstain,
+	allBondedValidators, err := document.Validator{}.GetBondedValidatorsSharesTokens()
+	if err != nil {
+		logger.Error("query allBondedValidators", logger.String("err", err.Error()))
+	}
+	curValidators := make(map[string]*vo.ValidatorGovInfo, len(allBondedValidators))
+
+	for _, v := range allBondedValidators {
+		delegatorShares, _ := utils.ParseStringToFloat(v.DelegatorShares)
+		tokens, _ := utils.ParseStringToFloat(v.Tokens)
+		curValidators[v.OperatorAddress] = &vo.ValidatorGovInfo{
+			Address:   v.OperatorAddress,
+			DelShares: delegatorShares,
+			Tokens:    tokens,
 		}
 	}
+	curDelegators := make(map[string]*vo.DelegatorGovInfo, len(data.Votes))
 
-	if data.Status == document.ProposalStatusVoting {
-		allBondedValidators, err := document.Validator{}.GetBondedValidatorsSharesTokens()
-		if err != nil {
-			logger.Error("query allBondedValidators", logger.String("err", err.Error()))
-		}
-		curValidators := make(map[string]*vo.ValidatorGovInfo, len(allBondedValidators))
+	for _, v := range data.Votes {
+		getDelegationsByVoter(curValidators, curDelegators, v)
+	}
+	computedValidatorsPower(curValidators, curDelegators)
 
-		for _, v := range allBondedValidators {
-			delegatorShares, _ := utils.ParseStringToFloat(v.DelegatorShares)
-			tokens, _ := utils.ParseStringToFloat(v.Tokens)
-			curValidators[v.OperatorAddress] = &vo.ValidatorGovInfo{
-				Address:   v.OperatorAddress,
-				DelShares: delegatorShares,
-				Tokens:    tokens,
-			}
+	for _, v := range curDelegators {
+		tmpVote := vo.VoteWithVoterInfo{
+			Voter:          v.Address,
+			Option:         v.Option,
+			Time:           v.Time,
+			DelVotingPower: v.DelVotingPower,
+			ValVotingPower: v.ValVotingPower,
 		}
-		curDelegators := make(map[string]*vo.DelegatorGovInfo, len(data.Votes))
-
-		for _, v := range data.Votes {
-			getDelegationsByVoter(curValidators, curDelegators, v)
-		}
-		computedValidatorsPower(curValidators, curDelegators)
-
-		for _, v := range curDelegators {
-			var voterVotingPower float64
-			voterVotingPower = v.DelVotingPower + v.ValVotingPower
-			tmpVote := vo.VoteWithVoterInfo{
-				Voter:       v.Address,
-				Option:      v.Option,
-				Time:        v.Time,
-				VotingPower: voterVotingPower,
-			}
-			tmpVoteArr = append(tmpVoteArr, tmpVote)
-		}
+		tmpVoteArr = append(tmpVoteArr, tmpVote)
 	}
 
 	tmp := vo.ProposalNewStyle{
@@ -215,7 +202,6 @@ func (service *ProposalService) QueryVoting(id int) vo.ProposalNewStyle {
 		VotingEndTime:    data.VotingEndTime,
 		Votes:            tmpVoteArr,
 		TotalVotingPower: systemVotingPower,
-		FinalVotes:       finalVotes,
 	}
 
 	l := vo.Level{}
