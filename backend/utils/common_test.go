@@ -58,3 +58,8 @@ func TestWebsocket(t *testing.T) {
 	}
 
 }
+
+func TestMd5Encryption(t *testing.T) {
+	data := []byte("nil")
+	t.Log(Md5Encryption(data))
+}

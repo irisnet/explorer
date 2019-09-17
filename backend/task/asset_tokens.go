@@ -1,6 +1,8 @@
 package task
 
 import (
+	"fmt"
+	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/service"
@@ -14,19 +16,25 @@ func (task UpdateAssetTokens) Name() string {
 }
 
 func (task UpdateAssetTokens) Start() {
-	utils.RunTimer(30, utils.Sec, func() {
-
-		assetTokens, err := document.Asset{}.GetAllAssets()
-		if err != nil {
-			logger.Error("queryAssets failed", logger.String("taskName", task.Name()), logger.String("errmsg", err.Error()))
-			return
+	utils.RunTimer(conf.Get().Server.CronTimeAssetTokens, utils.Sec, func() {
+		if err := task.DoTask(); err != nil {
+			logger.Error(fmt.Sprintf("%s fail", task.Name()), logger.String("err", err.Error()))
+		} else {
+			logger.Info(fmt.Sprintf("%s success", task.Name()))
 		}
-
-		assetService := service.Get(service.Asset).(*service.AssetsService)
-		if err := assetService.UpdateAssetTokens(assetTokens); err != nil {
-			logger.Error("UpdateAssetTokens task failed", logger.String("taskName", task.Name()), logger.String("errmsg", err.Error()))
-			return
-		}
-		logger.Info("UpdateAssetTokens task is OK.")
 	})
+}
+
+func (task UpdateAssetTokens) DoTask() error {
+	assetTokens, err := document.Asset{}.GetAllAssets()
+	if err != nil {
+		return err
+	}
+
+	assetService := service.Get(service.Asset).(*service.AssetsService)
+	if err := assetService.UpdateAssetTokens(assetTokens); err != nil {
+		return err
+	}
+
+	return nil
 }
