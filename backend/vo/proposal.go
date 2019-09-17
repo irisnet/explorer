@@ -109,11 +109,13 @@ type (
 	}
 
 	VoteWithVoterInfo struct {
-		Voter        string    `json:"voter"`
-		VoterMoniker string    `json:"voter_moniker,omitempty"`
-		Option       string    `json:"option"`
-		VotingPower  float64   `json:"voting_power"`
-		Time         time.Time `json:"time"`
+		Voter          string    `json:"voter"`
+		VoterMoniker   string    `json:"voter_moniker,omitempty"`
+		Option         string    `json:"option"`
+		VotingPower    float64   `json:"voting_power"`
+		Time           time.Time `json:"time"`
+		DelVotingPower float64   `json:"del_voting_power"`
+		ValVotingPower float64   `json:"val_voting_power"`
 	}
 
 	DelegatorGovInfo struct {
