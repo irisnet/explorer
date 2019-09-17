@@ -7,8 +7,7 @@
              striped
              nodelabel
              :class="flIsValidatorTable ? 'validator_set_table_style' : ''">
-      <template slot='Tx_Hash'
-                slot-scope='data'>
+      <template v-slot:cell(Tx_Hash)="data">
         <div class="common_hover_parent"
              v-if="data.item.Tx_Hash">
           <router-link :to="`/tx?txHash=${data.item.Tx_Hash}`"
@@ -19,12 +18,10 @@
           </router-link>
         </div>
       </template>
-      <template slot='Consensus'
-                slot-scope='data'>
+      <template v-slot:cell(Consensus)="data">
         <div>{{data.item.Consensus}}</div>
       </template>
-      <template slot='Tx_Signer'
-                slot-scope='data'>
+      <template v-slot:cell(Tx_Signer)="data">
         <div class="name_address"
              v-show="data.item.Tx_Signer && data.item.Tx_Signer !== '--'">
           <span class="remove_default_style"
@@ -39,8 +36,7 @@
           --
         </span>
       </template>
-      <template slot='OperatorAddress'
-                slot-scope='data'>
+      <template v-slot:cell(OperatorAddress)="data">
         <div class="name_address"
              v-show="data.item.OperatorAddress && data.item.OperatorAddress !== '--'">
           <span class="remove_default_style"
@@ -55,8 +51,7 @@
           --
         </span>
       </template>
-      <template slot='moniker'
-                slot-scope='data'>
+      <template v-slot:cell(moniker)="data">
         <div class="moniker_conent">
           <div class="proposer_img_content">
             <img :style="{visibility:data.item.flProposer ? 'visible' : 'hidden'}"
@@ -67,8 +62,7 @@
           </span>
         </div>
       </template>
-      <template slot='OperatorAddr'
-                slot-scope='data'>
+      <template v-slot:cell(OperatorAddr)="data">
         <span class="skip_route"
               style="display: flex"
               v-if="data.item.OperatorAddr !== '--'">
@@ -83,22 +77,19 @@
         <span class="no_skip"
               v-show="data.item.OperatorAddr === '--'">--</span>
       </template>
-      <template slot='index'
-                slot-scope='data'>
+      <template v-slot:cell(index)="data">
         <span class="sequence_number_content">
           {{data.index + 1}}
         </span>
       </template>
-      <template slot='Proposal_ID'
-                slot-scope='data'>
+      <template v-slot:cell(Proposal_ID)="data">
         <span class="skip_route"
               v-if="data.item.Proposal_ID && data.item.Proposal_ID !== '--'">
           <router-link :to="`/ProposalsDetail/${data.item.Proposal_ID}`">{{data.item.Proposal_ID}}</router-link>
         </span>
         <span v-if="data.item.Proposal_ID && data.item.Proposal_ID === '--'">--</span>
       </template>
-      <template slot='Proposal_Title'
-                slot-scope='data'>
+      <template v-slot:cell(Proposal_Title)="data">
         <span class="skip_route"
               v-if="data.item.Proposal_ID !== '--' && data.item.Proposal_Title && data.item.Proposal_Title !== '--' ">
           <router-link :to="`/ProposalsDetail/${data.item.Proposal_ID}`">{{data.item.Proposal_Title}}</router-link>
@@ -106,14 +97,12 @@
         <span v-if="data.item.Proposal_ID === '--' && data.item.Proposal_Title && data.item.Proposal_Title !== '--'">{{data.item.Proposal_Title}}</span>
         <span v-if="data.item.Proposal_Title && data.item.Proposal_Title === '--'">--</span>
       </template>
-      <template slot='Block'
-                slot-scope='data'>
+      <template v-slot:cell(Block)="data">
         <span class="skip_route">
           <router-link :to="`/block/${data.item.Block}`">{{data.item.Block}}</router-link>
         </span>
       </template>
-      <template slot='From'
-                slot-scope='data'>
+      <template v-slot:cell(From)="data">
         <span v-if="(/^[1-9]\d*$/).test(data.item.From) && data.item.tokenId === 'IRIS'"
               class="skip_route">
           <router-link :to="`/tx?txHash=${data.item.Tx_Hash}`">{{data.item.From}} Validators</router-link>
@@ -132,8 +121,7 @@
         <span class="no_skip"
               v-show="(/^[0]\d*$/).test(data.item.From) || data.item.From === '--'">--</span>
       </template>
-      <template slot='To'
-                slot-scope='data'>
+      <template v-slot:cell(To)="data">
         <span class="skip_route"
               style="display: flex"
               v-if="data.item.To !== '--'">
@@ -150,14 +138,12 @@
           --
         </span>
       </template>
-      <template slot='Owner'
-                slot-scope='data'>
+      <template v-slot:cell(Owner)="data">
         <span class="skip_route">
           <router-link :to="addressRoute(data.item.Owner)">{{data.item.Owner?`${String(data.item.Owner).substr(0,16)}...`:''}}</router-link>
         </span>
       </template>
-      <template slot='Moniker'
-                slot-scope='data'>
+      <template v-slot:cell(Moniker)="data">
         <span v-show="data.item.Moniker && data.item.Moniker !== '--' ">
           <router-link :to="addressRoute(data.item.OperatorAddr)"
                        class="skip_route">
@@ -166,8 +152,7 @@
         </span>
         <span v-show="data.item.Moniker && data.item.Moniker === '--' ">--</span>
       </template>
-      <template slot='Tx_Signer'
-                slot-scope='data'>
+      <template v-slot:cell(Tx_Signer)="data">
         <span class="skip_route"
               style="display: flex"
               v-if="data.item.Tx_Signer">
@@ -202,136 +187,176 @@ export default {
   data () {
     return {
       listFields: null,
-      transferFields: {
-        'Tx_Hash': {
-          label: 'TxHash'
+      transferFields: [
+        {
+          key:'Tx_Hash',
+          label:'TxHash'
         },
-        'From': {
-          label: 'From'
+        {
+          key:'From',
+          label:'From'
         },
-        'Amount': {
-          label: 'Amount'
+        {
+          key:'Amount',
+          label:'Amount'
         },
-        'tokenId':{
-          label: 'Token'
+        {
+          key:'tokenId',
+          label:'Token'
         },
-        'To': {
-          label: 'To'
+        {
+          key:'To',
+          label:'To'
         },
-        'Tx_Type': {
-          label: 'TxType'
+        {
+          key:'Tx_Type',
+          label:'TxType'
         },
-        'transferFee': {
-          label: 'Fee'
+        {
+          key:'transferFee',
+          label:'Fee'
         },
-        'Tx_Signer': {
-          label: 'Signer'
+        {
+          key:'Tx_Signer',
+          label:'Signer'
         },
-        'Tx_Status': {
-          label: 'Status'
+        {
+          key:'Tx_Status',
+          label:'Status'
         },
-      },
-      declarationFields: {
-        'Tx_Hash': {
-          label: 'TxHash'
+      ],
+      declarationFields: [
+        {
+          key:'Tx_Hash',
+          label:'TxHash'
         },
-        'Moniker': {
-          label: 'Moniker'
+        {
+          key:'Moniker',
+          label:'Moniker'
         },
-        'OperatorAddr': {
-          label: 'Operator'
+        {
+          key:'OperatorAddr',
+          label:'Operator'
         },
-        'Amount': {
-          label: 'Self-Bonded'
+        {
+          key:'Amount',
+          label:'Self-Bonded'
         },
-        'Tx_Type': {
-          label: 'TxType'
+        {
+          key:'Tx_Type',
+          label:'TxType'
         },
-        'Tx_Fee': {
-          label: 'Fee'
+        {
+          key:'Tx_Fee',
+          label:'Fee'
         },
-        'Tx_Signer': {
-          label: 'Signer'
+        {
+          key:'Tx_Signer',
+          label:'Signer'
         },
-        'Tx_Status': {
-          label: 'Status'
+        {
+          key:'Tx_Status',
+          label:'Status'
         },
-      },
-      stakeFields: {
-        'Tx_Hash': {
-          label: 'TxHash'
+      ],
+      stakeFields: [
+        {
+          key:'Tx_Hash',
+          label:'TxHash'
         },
-        'From': {
-          label: 'From'
+        {
+          key:'From',
+          label:'From'
         },
-        'Amount': {
-          label: 'Amount'
+        {
+          key:'Amount',
+          label:'Amount'
         },
-        'To': {
-          label: 'To'
+        {
+          key:'To',
+          label:'To'
         },
-        'Tx_Type': {
-          label: 'TxType'
+        {
+          key:'Tx_Type',
+          label:'TxType'
         },
-        'Tx_Fee': {
-          label: 'Fee'
+        {
+          key:'Tx_Fee',
+          label:'Fee'
         },
-        'Tx_Signer': {
-          label: 'Signer'
+        {
+          key:'Tx_Signer',
+          label:'Signer'
         },
-        'Tx_Status': {
-          label: 'Status'
+        {
+          key:'Tx_Status',
+          label:'Status'
         },
-      },
-      govFields: {
-        'Tx_Hash': {
-          label: 'TxHash'
+      ],
+      govFields: [
+        {
+          key:'Tx_Hash',
+          label:'TxHash'
         },
-        'Proposal_Type': {
-          label: 'Proposal_Type'
+        {
+          key:'Proposal_Type',
+          label:'Proposal_Type'
         },
-        'Proposal_ID': {
-          label: 'Proposal_ID'
+        {
+          key:'Proposal_ID',
+          label:'Proposal_ID'
         },
-        'Proposal_Title': {
-          label: 'Proposal_Title'
+        {
+          key:'Proposal_Title',
+          label:'Proposal_Title'
         },
-        'Amount': {
-          label: 'Amount'
+        {
+          key:'Amount',
+          label:'Amount'
         },
-        'Tx_Type': {
-          label: 'TxType'
+        {
+          key:'Tx_Type',
+          label:'TxType'
         },
-        'Tx_Fee': {
-          label: 'Fee'
+        {
+          key:'Tx_Fee',
+          label:'Fee'
         },
-        'Tx_Signer': {
-          label: 'Signer'
+        {
+          key:'Tx_Signer',
+          label:'Signer'
         },
-        'Tx_Status': {
-          label: 'Status'
+        {
+          key:'Tx_Status',
+          label:'Status'
         },
-      },
-      validatorFields: {
-        index: {
-          label: '#'
+      ],
+      validatorFields: [
+        {
+          key:'index',
+          label:'#'
         },
-        'moniker': {
-          label: 'Moniker'
+        {
+          key:'moniker',
+          label:'Moniker'
         },
-        'OperatorAddress': {
-          label: 'Operator'
+        {
+          key:'OperatorAddress',
+          label:'Operator'
         },
-        'Consensus': {
-          label: 'Consensus Address'
+        {
+          key:'Consensus',
+          label:'Consensus Address'
         },
-        'ProposerPriority': {
-          label: 'Proposer Priority'
+        {
+          key:'ProposerPriority',
+          label:'Proposer Priority'
         },
-        'VotingPower': {
-          label: 'Voting Power'
-        }
-      },
+        {
+          key:'VotingPower',
+          label:'Voting Power'
+        },
+      ],
       flIsValidatorTable: false,
     }
   },
