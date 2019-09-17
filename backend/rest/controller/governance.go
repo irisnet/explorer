@@ -17,6 +17,8 @@ func RegisterProposal(r *mux.Router) error {
 		registerQueryDepositAndVotingProposals,
 		registerQueryProposalDepositorTxs,
 		registerQueryProposalVoterTxs,
+		registerQueryProposalDeposit,
+		registerQueryProposalVoting,
 	}
 
 	for _, fn := range funs {
@@ -122,6 +124,32 @@ func registerQueryProposalDepositorTxs(r *mux.Router) error {
 			istotal = false
 		}
 		return gov.GetDepositTxs(id, page, size, istotal)
+	})
+	return nil
+}
+
+func registerQueryProposalDeposit(r *mux.Router) error {
+	doApi(r, types.UrlRegisterQueryProposalDeposit, "GET", func(request vo.IrisReq) interface{} {
+		id, err := strconv.Atoi(Var(request, "id"))
+		if err != nil {
+			panic(types.CodeInValidParam)
+		}
+
+		result := gov.QueryDeposit(id)
+		return result
+	})
+	return nil
+}
+
+func registerQueryProposalVoting(r *mux.Router) error {
+	doApi(r, types.UrlRegisterQueryProposalVoting, "GET", func(request vo.IrisReq) interface{} {
+		id, err := strconv.Atoi(Var(request, "id"))
+		if err != nil {
+			panic(types.CodeInValidParam)
+		}
+
+		result := gov.QueryVoting(id)
+		return result
 	})
 	return nil
 }
