@@ -1,24 +1,5 @@
 <template>
     <div class="transactions_detail_wrap">
-        <!-- <div class="transactions_title_wrap">
-            <p :class="transactionsDetailWrap"
-               style="margin-bottom:0;">
-                <span class="transactions_detail_title">Address</span>
-                <span class="transactions_detail_wrap_hash_var">
-                    {{address}}
-                    <i v-if="flValidator"
-                       :style="{background:validatorStatusColor}">v</i>
-                    <img v-show="flShowProfileLogo"
-                         class="profile_logo_img"
-                         src="../assets/profiler_logo.png">
-                    <span v-show="flShowValidatorCandidate && flValidator"
-                          class="candidate_validator">(This Validator is a Candidate)</span>
-                    <span v-show="flShowValidatorJailed && flValidator"
-                          class="jailed_validator">(This Validator is jailed!)</span>
-                </span>
-            </p>
-        </div> -->
-
         <div :class="transactionsDetailWrap">
             <p class="transaction_information_content_title">Address Information</p>
             <div class="transactions_detail_information_wrap">
@@ -72,122 +53,6 @@
                 <div class="information_props_wrap">
                     <span class="information_props">Transactions :</span>
                     <span class="information_value">{{transactionsValue?transactionsValue:'--'}}</span>
-                </div>
-            </div>
-        </div>
-        <div :class="transactionsDetailWrap"
-             class="address_profile"
-             v-if="flValidator">
-            <p class="transaction_information_content_title">Validator Profile</p>
-            <div class="transactions_detail_information_wrap">
-                <div class="information_props_wrap">
-                    <span class="information_props">Name :</span>
-                    <span class="information_value information_show_trim">{{nameValue?nameValue:'--'}}</span>
-                </div>
-                <div class="information_props_wrap">
-                    <span class="information_props">Pub Key :</span>
-                    <span class="information_value">{{pubKeyValue?pubKeyValue:'--'}}</span>
-                </div>
-                <div class="information_props_wrap">
-                    <span class="information_props">Owner :</span>
-                    <span class="information_value operator_value"
-                          v-show="operatorValue">
-                        <router-link :to="addressRoute(operatorValue)">{{operatorValue}}</router-link>
-                    </span>
-                    <span class="information_value"
-                          v-show="!operatorValue">--</span>
-                </div>
-                <div class="information_props_wrap">
-                    <span class="information_props">Commission Rate :</span>
-                    <span class="information_value">{{rateValue}}</span>
-                </div>
-
-                <div class="information_props_wrap">
-                    <span class="information_props">Website :</span>
-                    <span class="information_value"
-                          :class="websiteValue && websiteValue !== '--' ? 'link_style' : ''">
-                        <pre class="information_pre"
-                             @click="openUrl(websiteValue)">{{websiteValue}}</pre>
-                    </span>
-                </div>
-                <div class="information_props_wrap">
-                    <span class="information_props">Identity :</span>
-                    <span class="information_value">
-                        <pre class="information_pre">{{identity}}</pre></span>
-                </div>
-                <div class="information_props_wrap">
-                    <span class="information_props">Details :</span>
-                    <span class="information_value">
-                        <pre class="information_pre">{{descriptionValue}}</pre></span>
-                </div>
-            </div>
-        </div>
-        <div :class="transactionsDetailWrap"
-             class="current_tenure"
-             v-show="flActiveValidator">
-            <p class="transaction_information_content_title"
-               style="border-bottom:1px solid #eee">Current Tenure</p>
-            <div class="current_tenure_wrap">
-                <div class="transactions_detail_information_wrap">
-                    <div class="information_props_wrap">
-                        <span class="information_props">Bond Height :</span>
-                        <span class="information_value">{{bondHeightValue}}</span>
-                    </div>
-                    <div class="information_props_wrap">
-                        <span class="information_props">Voting Power :</span>
-                        <span class="information_value">{{votingPowerValue}}</span>
-                    </div>
-                    <div class="information_props_wrap">
-                        <span class="information_props">Precommited Blocks :</span>
-                        <span class="information_value">{{precommitedBlocksValue}}</span>
-                    </div>
-                </div>
-                <div class="canvas_voting_power"
-                     v-show="flActiveValidator">
-                    <div class="progress_wrap">
-                        <span>Uptime(in last 100)</span>
-                        <div class="progress_wrap_background">
-                            <div class="progress_value"
-                                 :style="`width:${firstPercent}`">{{firstPercent}}</div>
-                        </div>
-                    </div>
-                    <div class="progress_wrap">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="line_container_wrap"
-             v-show="flActiveValidator">
-            <div class="line_container"
-                 :class="transactionsDetailWrap">
-                <p class="line_history_title">History</p>
-                <div class="line_content">
-                    <div class="line_echarts_content">
-                        <div class="line_left_container"
-                             style="overflow-x: auto;-webkit-overflow-scrolling:touch;">
-                            <echarts-validators-line :informationValidatorsLine="informationValidatorsLine"></echarts-validators-line>
-                        </div>
-                        <div class="line_tab_content">
-                            <div v-for="(item,index) in tabVotingPower"
-                                 :key="index"
-                                 @click="getValidatorHistory(item.title,index)"
-                                 :class="item.active ? 'border-none' : 'border-block' ">{{item.title}}</div>
-                        </div>
-                    </div>
-                    <div class="line_echarts_content "
-                         :class="transactionsDetailWrap === 'personal_computer_transactions_detail_wrap' ?
-           'content_right' : 'model_content_right' ">
-                        <div class="line_right_container"
-                             style="overflow-x: auto;-webkit-overflow-scrolling:touch;">
-                            <echarts-validators-uptime-line :informationUptimeLine="informationUptimeLine"></echarts-validators-uptime-line>
-                        </div>
-                        <div class="line_tab_content">
-                            <div v-for="(item,index) in tabUptime"
-                                 :key="index"
-                                 @click="getValidatorUptimeHistory(item.title,index)"
-                                 :class="item.active ? 'border-none' : 'border-block' ">{{item.title}}</div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -265,11 +130,6 @@ export default {
             this.tabTxList(this.tabTxListIndex, this.txTabName, this.currentPage, this.pageSize);
             this.getAddressTxStatistics();
             this.getAddressInformation(this.$route.params.param);
-            this.getTransactionsList(1, 10, this.$route.params.type);
-            this.getProfileInformation();
-            this.getCurrentTenureInformation();
-            this.getValidatorHistory('14days');
-            this.getValidatorUptimeHistory('24hours');
         },
         "$store.state.isMobile"(newVal) {
             this.isMobileFunc(newVal);
@@ -308,9 +168,7 @@ export default {
             type: this.$route.params.type,
             totalBlocks: 0,
             totalFee: 0,
-            TransactionsShowNoData: false,
             PrecommitBlocksshowNoData: false,
-            transactionsCount: 0,
             flValidator: false,
             showNoData: false,
             showLoading: false,
@@ -400,17 +258,10 @@ export default {
         if (this.$route.params.param.substring(0, 3) === this.$Crypto.config.iris.bech32.valAddr) {
             this.tabTxList(this.tabTxListIndex, this.txTabName, this.currentPage, this.pageSize);
             this.getAddressInformation(this.$route.params.param);
-            this.getTransactionsList(1, 10, this.$route.params.type);
-            this.getProfileInformation();
-            this.getCurrentTenureInformation();
-            this.getValidatorHistory('14days');
-            this.getValidatorUptimeHistory('24hours');
             this.getAddressTxStatistics();
         } else {
             this.tabTxList(this.tabTxListIndex, this.txTabName, this.currentPage, this.pageSize);
             this.getAddressInformation(this.$route.params.param);
-            this.getTransactionsList(1, 10, this.$route.params.type);
-            this.getProfileInformation();
             this.getAddressTxStatistics();
         }
     },
@@ -433,6 +284,12 @@ export default {
                         this.txTab[1].txTotal = data.stake_cnt;
                         this.txTab[2].txTotal = data.declaration_cnt;
                         this.txTab[3].txTotal = data.gov_cnt;
+	                    let totalArrayNumber = this.txTab.map(item => {
+                                return item.txTotal
+                        });
+	                    this.transactionsValue = totalArrayNumber.reduce((a,b)=> {
+	                    	return a + b
+                        });
                     }
                 } catch (e) {
                     console.error(e)
@@ -520,302 +377,6 @@ export default {
                 }
             })
         },
-        getProfileInformation () {
-            Service.commonInterface({                addressStakeCandidate: {
-                    address: this.$route.params.param
-                }            }, (result) => {
-                try {
-                    if (result) {
-                        let validator = result.validator;
-                        this.flValidator = true;
-                        if (validator.jailed === true) {
-                            this.flActiveValidator = false;
-                            this.flShowValidatorJailed = true;
-                            this.validatorStatusColor = "#f00";
-                        } else {
-                            if (validator.status === 'Unbonded' || validator.status === 'Unbonding') {
-                                this.flShowValidatorCandidate = true;
-                                this.validatorStatusColor = "#45B035";
-                                this.flActiveValidator = false;
-                            } else if (validator.status === "Bonded") {
-                                this.bondHeightValue = validator.bond_height;
-                                this.votingPowerValue = validator.voting_power;
-                            }
-                        }
-                        this.rateValue = validator.rate ? `${Tools.formatRate(validator.rate.toString())}%` : '--';
-                        this.identity = validator.description && validator.description.identity ? validator.description.identity : "--";
-                        this.nameValue = validator.description && validator.description.moniker ? validator.description.moniker : '--';
-                        this.pubKeyValue = validator.pub_key ? validator.pub_key : "--";
-                        this.websiteValue = validator.description && validator.description.website ? validator.description.website : '--';
-                        this.descriptionValue = validator.description && validator.description.details ? validator.description.details : "--";
-                        this.commissionRateValue = '';
-                        this.announcementValue = '';
-                        this.operatorValue = validator.owner;
-                    } else {
-                        this.flValidator = false;
-                        this.flActiveValidator = false;
-                    }
-                } catch (e) {
-                    this.flActiveValidator = false;
-                    console.error(e)
-                }
-            })
-        },
-        getCurrentTenureInformation () {
-            Service.commonInterface({ addressStakeCandidateStatus: { address: this.$route.params.param } }, (data) => {
-                try {
-                    if (data) {
-                        this.precommitedBlocksValue = data.precommit_cnt ? data.precommit_cnt : '--';
-                        this.returnsValue = '';
-                        this.firstPercent = data.up_time ? `${data.up_time}%` : "--";
-                    }
-                } catch (e) {
-                    console.error(err)
-                }
-            })
-        },
-        getTransactionsList () {
-            Service.commonInterface({                addressTxByAddress: {
-                    address: this.$route.params.param,
-                    pageNumber: 1,
-                    pageSize: 30,
-                }            }, (data) => {
-                try {
-                    if (data) {
-                        this.transactionsCount = data.Count;
-                        this.transactionsValue = data.Count;
-                        this.TransactionsShowNoData = true;
-                    }
-                } catch (e) {
-                    console.error(e)
-                }
-            })
-        },
-        getValidatorHistory (tabTime, index) {
-            if (index !== undefined) {
-                for (var i = 0; i < this.tabVotingPower.length; i++) {
-                    this.tabVotingPower[i].active = false;
-                    this.tabVotingPower[index].active = true
-                }
-            }
-            let url, params;
-            if (tabTime == "14days") {
-                params = { addressStakeCandidateWeek: { address: this.$route.params.param } };
-            } else if (tabTime == "30days") {
-                params = { addressStakeCandidateMonth: { address: this.$route.params.param } };
-            } else if (tabTime == "60days") {
-                params = { addressStakeCandidateMonths: { address: this.$route.params.param } };
-            }
-            Service.commonInterface(params, (validatorVotingPowerList) => {
-                try {
-                    if (validatorVotingPowerList) {
-                        let seriesData = [], noDatayAxisDefaultMaxByValidators;
-                        let maxPowerValue = 0;
-                        validatorVotingPowerList.forEach(item => {
-                            if (item.power > maxPowerValue) {
-                                maxPowerValue = item.power
-                            }
-                            if (item.power == 0) {
-                                item.power = ""
-                            }
-                            let obj = [];
-                            obj[0] = Tools.conversionTimeToUTCByValidatorsLine(item.time);
-                            obj[1] = item.power;
-                            seriesData.push(obj);
-                        });
-                        if (maxPowerValue < 100) {
-                            noDatayAxisDefaultMaxByValidators = "100"
-                        }
-                        this.informationValidatorsLine = { seriesData, noDatayAxisDefaultMaxByValidators };
-
-                    }
-                } catch (e) {
-                    console.error(e)
-                }
-            })
-        },
-        getValidatorUptimeHistory (tabTime, index) {
-            if (index != undefined) {
-                for (var i = 0; i < this.tabUptime.length; i++) {
-                    this.tabUptime[i].active = false;
-                    this.tabUptime[index].active = true
-                }
-            }
-
-            let url, params;
-            if (tabTime == "24hours") {
-                params = { addressStakeCandidateUptimeHour: { address: this.$route.params.param } };
-            } else if (tabTime == "14days") {
-                params = { addressStakeCandidateUptimeWeek: { address: this.$route.params.param } };
-            } else if (tabTime == "30days") {
-                params = { addressStakeCandidateUptimeMonth: { address: this.$route.params.param } };
-            }
-            Service.commonInterface(params, (data) => {
-                try {
-                    if (data) {
-                        data.forEach(item => {
-                            let notValidatorTag = -1;
-                            if (item.uptime === notValidatorTag) {
-                                item.uptime = ""
-                            }
-                        });
-                        let xData, currayDate;
-                        if (tabTime == "24hours") {
-                            data.forEach(item => {
-                                //兼容火狐
-                                let hourseconds = item.time.replace("-", "/").replace("-", "/") + ":00:00";
-
-                                let changeMilliseconds = new Date(hourseconds).getTime();
-                                //展示需加一小时
-                                changeMilliseconds = changeMilliseconds + 60 * 60 * 1000;
-                                item.time = Tools.formatDateYearAndMinutesAndSeconds(changeMilliseconds).split(":")[0];
-                            });
-                            if (data.length !== 0) {
-                                currayDate = data[0].time;
-                            } else {
-                                currayDate = new Date().toISOString().substr(0, 13).replace("T", " ");
-                            }
-                            if (data.length < 24) {
-                                let complementHourLength = 24 - data.length;
-                                let hourTime = currayDate.split(" ")[1];
-                                let yearAndDayTime = currayDate.split(" ")[0];
-
-                                for (let k = 0; k < complementHourLength; k++) {
-                                    hourTime--;
-                                    //当hourTime的数值为负数的时候，+24格式化成24小时显示
-                                    if (hourTime < 0) {
-                                        hourTime = 24 + hourTime;
-                                    }
-                                    //当小时数为一位的时候补零
-                                    if (String(hourTime).length < 2) {
-                                        hourTime = "0" + hourTime;
-                                    }
-                                    let hoursDate = yearAndDayTime + " " + hourTime;
-                                    data.unshift({ AddressL: data.address, time: hoursDate, uptime: "" })
-                                }
-                            }
-                            data.forEach((item) => {
-                                item.time = item.time.substr(10, 12) + ":00";
-                            });
-                            xData = data.map(item => item.time);
-                        } else {
-                            let currayDate;
-                            if (data.length > 2) {
-                                currayDate = data[0].time;
-                            } else {
-                                currayDate = new Date().toISOString();
-                            }
-                            if (tabTime == "14days") {
-                                let dataDateLength = data.length,
-
-                                    //获取需要补全的天数
-                                    complementdateLength = 14 - dataDateLength,
-                                    //从那天需要补全的日期
-                                    weekDate = new Date(currayDate),
-                                    millisecondstime = weekDate.getTime(),
-                                    //24小时的时间戳（毫秒数）
-                                    dayNumberOfMilliseconds = 60 * 60 * 1000 * 24;
-                                //补全日期的逻辑
-                                for (var lackOfDateNum = 0; lackOfDateNum < complementdateLength; lackOfDateNum++) {
-                                    millisecondstime = millisecondstime - dayNumberOfMilliseconds;
-                                    let complementdate = Tools.formatDateYearToDate(millisecondstime);
-
-                                    data.unshift({ time: complementdate, uptime: "" });
-                                }
-
-                            } else if (tabTime == "30days") {
-
-                                let dataDateLength = data.length,
-                                    complementdateLength = 30 - dataDateLength,
-                                    monthDate = new Date(currayDate),
-                                    millisecondstime = monthDate.getTime(),
-                                    dayNumberOfMilliseconds = 60 * 60 * 1000 * 24;
-                                for (var lackOfDateNum = 0; lackOfDateNum < complementdateLength; lackOfDateNum++) {
-                                    millisecondstime = millisecondstime - dayNumberOfMilliseconds;
-                                    let complementdate = Tools.formatDateYearToDate(millisecondstime);
-
-                                    data.unshift({ time: complementdate, uptime: "" });
-                                }
-                            }
-
-                            xData = data.map(item => `${String(item.time).substr(5, 2)}/${String(item.time).substr(8, 2)}`);
-                        }
-                        let seriesData = data.map(item => item.uptime.toString().split(".")[0]);
-                        let noDatayAxisDefaultMax;
-
-                        for (let seriesDataIndex = 0; seriesDataIndex < seriesData.length; seriesDataIndex++) {
-                            if (seriesData[seriesDataIndex] === "") {
-                                noDatayAxisDefaultMax = "100"
-                            }
-                        }
-                        this.informationUptimeLine = { xData, seriesData, noDatayAxisDefaultMax };
-                    } else {
-                        let xData, currayDate, data = [];
-                        if (tabTime == "24hours") {
-                            currayDate = new Date().toISOString().substr(0, 13).replace("T", " ");
-                            let complementHourLength = 24;
-                            let hourTime = currayDate.split(" ")[1];
-                            let yearAndDayTime = currayDate.split(" ")[0];
-
-                            for (let k = 0; k < complementHourLength; k++) {
-                                hourTime--;
-                                //当hourTime的数值为负数的时候，+24格式化成24小时显示
-                                if (hourTime < 0) {
-                                    hourTime = 24 + hourTime;
-                                }
-                                //当小时数为一位的时候补零
-                                if (String(hourTime).length < 2) {
-                                    hourTime = "0" + hourTime;
-                                }
-                                let hoursDate = yearAndDayTime + " " + hourTime;
-                                data.unshift({ AddressL: data.address, time: hoursDate, uptime: "" })
-                            }
-
-                            data.forEach((item) => {
-                                item.time = item.time.substr(10, 12) + ":00";
-                            });
-                            xData = data.map(item => item.time);
-
-                        } else if (tabTime == "14days") {
-                            currayDate = new Date().toISOString();
-                            //获取需要补全的天数
-                            let complementdateLength = 14,
-                                //从那天需要补全的日期
-                                weekDate = new Date(currayDate),
-                                millisecondstime = weekDate.getTime(),
-                                //24小时的时间戳（毫秒数）
-                                dayNumberOfMilliseconds = 60 * 60 * 1000 * 24;
-                            //补全日期的逻辑
-                            for (let lackOfDateNum = 0; lackOfDateNum < complementdateLength; lackOfDateNum++) {
-                                millisecondstime = millisecondstime - dayNumberOfMilliseconds;
-                                let complementdate = Tools.formatDateYearToDate(millisecondstime);
-
-                                data.unshift({ time: complementdate, uptime: "" });
-                            }
-                            xData = data.map(item => `${String(item.time).substr(5, 2)}/${String(item.time).substr(8, 2)}`);
-                        } else if (tabTime == "30days") {
-                            currayDate = new Date().toISOString();
-                            let complementdateLength = 30,
-                                monthDate = new Date(currayDate),
-                                millisecondstime = monthDate.getTime(),
-                                dayNumberOfMilliseconds = 60 * 60 * 1000 * 24;
-                            for (let lackOfDateNum = 0; lackOfDateNum < complementdateLength; lackOfDateNum++) {
-                                millisecondstime = millisecondstime - dayNumberOfMilliseconds;
-                                let complementdate = Tools.formatDateYearToDate(millisecondstime);
-                                data.unshift({ time: complementdate, uptime: "" });
-                            }
-                            xData = data.map(item => `${String(item.time).substr(5, 2)}/${String(item.time).substr(8, 2)}`);
-                        }
-                        let noDatayAxisDefaultMax = "100";
-                        let seriesData = data.map(item => item.uptime.toString().split(".")[0]);
-                        this.informationUptimeLine = { xData, seriesData, noDatayAxisDefaultMax };
-                    }
-                } catch (e) {
-                    console.error(e)
-                }
-            })
-        },
-
         openUrl (url) {
             if (url && url !== '--') {
                 if (!/(http|https):\/\/([\w.]+\/?)\S*/.test(url)) {
