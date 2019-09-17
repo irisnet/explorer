@@ -59,7 +59,6 @@ func registerQueryProposals(r *mux.Router) error {
 func registerQueryDepositAndVotingProposals(r *mux.Router) error {
 
 	doApi(r, types.UrlRegisterQueryDepositVotingProposals, "GET", func(request vo.IrisReq) interface{} {
-
 		result := gov.QueryDepositAndVotingProposalList()
 		return result
 	})
