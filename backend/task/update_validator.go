@@ -1,6 +1,8 @@
 package task
 
 import (
+	"fmt"
+	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/service"
@@ -13,23 +15,29 @@ func (task UpdateValidator) Name() string {
 	return "update_validator"
 }
 func (task UpdateValidator) Start() {
-	utils.RunTimer(30, utils.Sec, func() {
-
-		validators, err := document.Validator{}.GetAllValidator()
-
-		if err != nil {
-			logger.Error("queryValidators failed", logger.String("taskName", task.Name()), logger.String("errmsg", err.Error()))
-			return
+	utils.RunTimer(conf.Get().Server.CronTimeValidators, utils.Sec, func() {
+		if err := task.DoTask(); err != nil {
+			logger.Error(fmt.Sprintf("%s fail", task.Name()), logger.String("err", err.Error()))
+		} else {
+			logger.Info(fmt.Sprintf("%s success", task.Name()))
 		}
-
-		validatorService := service.Get(service.Validator).(*service.ValidatorService)
-		err = validatorService.UpdateValidators(validators)
-
-		if err != nil {
-			logger.Error("UpdateValidators task failed", logger.String("taskName", task.Name()), logger.String("errmsg", err.Error()))
-			return
-		}
-		logger.Info("UpdateValidators task is OK.")
 	})
 
+}
+
+func (task UpdateValidator) DoTask() error {
+	validators, err := document.Validator{}.GetAllValidator()
+
+	if err != nil {
+		return err
+	}
+
+	validatorService := service.Get(service.Validator).(*service.ValidatorService)
+	err = validatorService.UpdateValidators(validators)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

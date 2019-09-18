@@ -1,24 +1,5 @@
 <template>
     <div class="transactions_detail_wrap">
-        <!-- <div class="transactions_title_wrap">
-            <p :class="transactionsDetailWrap"
-               style="margin-bottom:0;">
-                <span class="transactions_detail_title">Address</span>
-                <span class="transactions_detail_wrap_hash_var">
-                    {{address}}
-                    <i v-if="flValidator"
-                       :style="{background:validatorStatusColor}">v</i>
-                    <img v-show="flShowProfileLogo"
-                         class="profile_logo_img"
-                         src="../assets/profiler_logo.png">
-                    <span v-show="flShowValidatorCandidate && flValidator"
-                          class="candidate_validator">(This Validator is a Candidate)</span>
-                    <span v-show="flShowValidatorJailed && flValidator"
-                          class="jailed_validator">(This Validator is jailed!)</span>
-                </span>
-            </p>
-        </div> -->
-
         <div :class="transactionsDetailWrap">
             <p class="transaction_information_content_title">Address Information</p>
             <div class="transactions_detail_information_wrap">
@@ -149,7 +130,6 @@ export default {
             this.tabTxList(this.tabTxListIndex, this.txTabName, this.currentPage, this.pageSize);
             this.getAddressTxStatistics();
             this.getAddressInformation(this.$route.params.param);
-            this.getTransactionsList(1, 10, this.$route.params.type);
         },
         "$store.state.isMobile"(newVal) {
             this.isMobileFunc(newVal);
@@ -188,9 +168,7 @@ export default {
             type: this.$route.params.type,
             totalBlocks: 0,
             totalFee: 0,
-            TransactionsShowNoData: false,
             PrecommitBlocksshowNoData: false,
-            transactionsCount: 0,
             flValidator: false,
             showNoData: false,
             showLoading: false,
@@ -280,12 +258,10 @@ export default {
         if (this.$route.params.param.substring(0, 3) === this.$Crypto.config.iris.bech32.valAddr) {
             this.tabTxList(this.tabTxListIndex, this.txTabName, this.currentPage, this.pageSize);
             this.getAddressInformation(this.$route.params.param);
-            this.getTransactionsList(1, 10, this.$route.params.type);
             this.getAddressTxStatistics();
         } else {
             this.tabTxList(this.tabTxListIndex, this.txTabName, this.currentPage, this.pageSize);
             this.getAddressInformation(this.$route.params.param);
-            this.getTransactionsList(1, 10, this.$route.params.type);
             this.getAddressTxStatistics();
         }
     },
@@ -308,6 +284,12 @@ export default {
                         this.txTab[1].txTotal = data.stake_cnt;
                         this.txTab[2].txTotal = data.declaration_cnt;
                         this.txTab[3].txTotal = data.gov_cnt;
+	                    let totalArrayNumber = this.txTab.map(item => {
+                                return item.txTotal
+                        });
+	                    this.transactionsValue = totalArrayNumber.reduce((a,b)=> {
+	                    	return a + b
+                        });
                     }
                 } catch (e) {
                     console.error(e)
@@ -390,23 +372,6 @@ export default {
                     this.withdrawAddress = (result && result.withdrawAddress) ? result.withdrawAddress : '--';
                     this.balanceValue = Amount;
 
-                } catch (e) {
-                    console.error(e)
-                }
-            })
-        },
-        getTransactionsList () {
-            Service.commonInterface({                addressTxByAddress: {
-                    address: this.$route.params.param,
-                    pageNumber: 1,
-                    pageSize: 30,
-                }            }, (data) => {
-                try {
-                    if (data) {
-                        this.transactionsCount = data.Count;
-                        this.transactionsValue = data.Count;
-                        this.TransactionsShowNoData = true;
-                    }
                 } catch (e) {
                     console.error(e)
                 }

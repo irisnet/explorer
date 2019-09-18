@@ -166,7 +166,7 @@
         <span class="no_skip"
               v-show="(/^[0]\d*$/).test(data.item.From) || data.item.From === '--'">--</span>
       </template>
-      <template v-slot:cell(Owner)="OperatorAddr">
+      <template v-slot:cell(OperatorAddr)="data">
         <div class="name_address"
              v-show="data.item.OperatorAddr && data.item.OperatorAddr !== '--'">
           <span class="remove_default_style"

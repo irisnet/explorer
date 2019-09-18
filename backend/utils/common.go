@@ -8,6 +8,8 @@ import (
 	"math/big"
 	"strconv"
 
+	"crypto/md5"
+	"encoding/hex"
 	"github.com/irisnet/explorer/backend/logger"
 )
 
@@ -62,12 +64,17 @@ func Round(x float64) int64 {
 	return int64(math.Floor(x + 0.5))
 }
 
-func RoundString(x string) int64 {
+func RoundString(x string) (int64, error) {
 	f, err := strconv.ParseFloat(x, 0)
 	if err != nil {
 		logger.Error("RoundString error", logger.String("str", x))
 	}
-	return int64(math.Floor(f + 0.5))
+	return int64(math.Floor(f + 0.5)), err
+}
+
+func ParseStringToFloat(x string) (float64, error) {
+	f, err := strconv.ParseFloat(x, 0)
+	return f, err
 }
 
 func RoundToString(decimal string, bit int) (i string) {
@@ -123,4 +130,10 @@ func MarshalJsonIgnoreErr(v interface{}) []byte {
 	}
 
 	return jsonBytes
+}
+
+func Md5Encryption(data []byte) string {
+	md5Ctx := md5.New()
+	md5Ctx.Write(data)
+	return hex.EncodeToString(md5Ctx.Sum(nil))
 }

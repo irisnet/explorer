@@ -46,11 +46,18 @@ type Proposal struct {
 	TotalDeposit    utils.Coins `json:"total_deposit"`
 	Proposer        string      `json:"proposer"`
 	TxHash          string      `json:"tx_hash"`
-	Parameters      []Param     `json:"parameters,omitempty"`
-	Version         uint64      `json:"version,omitempty"`
-	Software        string      `json:"software,omitempty"`
-	SwitchHeight    uint64      `json:"switch_height,omitempty"`
-	Threshold       string      `json:"threshold,omitempty"`
+	Parameters      []Param     `json:"parameters"`
+	Version         uint64      `json:"version"`
+	Software        string      `json:"software"`
+	SwitchHeight    uint64      `json:"switch_height"`
+	Threshold       string      `json:"threshold"`
+	Level           string      `json:"level"`
+	YesThreshold    string      `json:"yes_threshold"`
+	VetoThreshold   string      `json:"veto_threshold"`
+	Participation   string      `json:"participation"`
+	Penalty         string      `json:"penalty"`
+	Usage           string      `json:"usage"`
+	BurnPercent     float32     `json:"burn_percent"`
 }
 
 type Vote struct {
@@ -109,11 +116,31 @@ type (
 	}
 
 	VoteWithVoterInfo struct {
-		Voter        string    `json:"voter"`
-		VoterMoniker string    `json:"voter_moniker,omitempty"`
-		Option       string    `json:"option"`
-		VotingPower  int64     `json:"voting_power"`
-		Time         time.Time `json:"time"`
+		Voter          string    `json:"voter"`
+		VoterMoniker   string    `json:"voter_moniker,omitempty"`
+		Option         string    `json:"option"`
+		VotingPower    float64   `json:"voting_power"`
+		Time           time.Time `json:"time"`
+		DelVotingPower float64   `json:"del_voting_power"`
+		ValVotingPower float64   `json:"val_voting_power"`
+	}
+
+	DelegatorGovInfo struct {
+		Address        string    `json:"address"`
+		Option         string    `json:"option"`
+		Moniker        string    `json:"moniker"`
+		DelVotingPower float64   `json:"del_voting_power"`
+		ValVotingPower float64   `json:"val_voting_power"`
+		IsValidator    bool      `json:"is_validator"`
+		ValAddr        string    `json:"val_addr"`
+		Time           time.Time `json:"time"`
+	}
+
+	ValidatorGovInfo struct {
+		Address            string  `json:"address"`
+		Tokens             float64 `json:"token"`
+		DelShares          float64 `json:"del_shares"`
+		DelDeductionShares float64 `json:"del_deduction_shares"`
 	}
 )
 
