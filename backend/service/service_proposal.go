@@ -648,13 +648,13 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 		}
 	}
 
-	from, to, err := document.Proposal{}.QueryTxFromToByTypeAndProposalId(id)
+	from, txHash, err := document.Proposal{}.QueryTxFromToByTypeAndProposalId(id)
 
 	if err != nil {
 		logger.Error("query tx by proposal type and id ", logger.String("err", err.Error()))
 	}
 	proposal.Proposer = from
-	proposal.TxHash = to
+	proposal.TxHash = txHash
 
 	if proposal.Type == "ParameterChange" || proposal.Type == "SoftwareUpgrade" {
 		txMsg, err := document.TxMsg{}.QueryTxMsgByHash(proposal.TxHash)
