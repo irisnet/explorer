@@ -59,23 +59,26 @@ const (
 	// Critical：SoftwareUpgrade, SystemHalt
 	// Important：ParameterChange
 	// Normal：TxTaxUsage
-	ProposalTypeSoftwareUpgrade = "SoftwareUpgrade"
-	ProposalTypeSystemHalt      = "SystemHalt"
-	ProposalTypeParameter       = "Parameter"
-	ProposalTypeTxTaxUsage      = "TxTaxUsage"
+	ProposalTypeSoftwareUpgrade   = "SoftwareUpgrade"
+	ProposalTypeSystemHalt        = "SystemHalt"
+	ProposalTypeParameter         = "Parameter"
+	ProposalTypeTokenAddition     = "TokenAddition"
+	ProposalTypeTxTaxUsage        = "TxTaxUsage"
+	ProposalTypeCommunityTaxUsage = "CommunityTaxUsage"
+	ProposalTypePlainText         = "PlainText"
 )
 
 func GetProposalLevelByType(proposalType string) (string, error) {
 	switch proposalType {
 	case ProposalTypeSoftwareUpgrade, ProposalTypeSystemHalt:
 		return Critical, nil
-	case ProposalTypeParameter:
+	case ProposalTypeParameter, ProposalTypeTokenAddition:
 		return Important, nil
-	case ProposalTypeTxTaxUsage:
+	case ProposalTypeTxTaxUsage, ProposalTypeCommunityTaxUsage, ProposalTypePlainText:
 		return Normal, nil
 	default:
-		return "", errors.New(fmt.Sprintf("expect proposal type: %v %v %v %v ,but actual: %v",
-			ProposalTypeSoftwareUpgrade, ProposalTypeSystemHalt, ProposalTypeParameter, ProposalTypeTxTaxUsage, proposalType))
+		return "", errors.New(fmt.Sprintf("expect proposal type: %v %v %v %v %v %v %v ,but actual: %v",
+			ProposalTypeSoftwareUpgrade, ProposalTypeSystemHalt, ProposalTypeParameter, ProposalTypeTokenAddition, ProposalTypeTxTaxUsage, ProposalTypeCommunityTaxUsage, ProposalTypePlainText, proposalType))
 	}
 }
 
@@ -98,14 +101,14 @@ func GetMinDepositByProposalType(proposalType string) (document.Coin, error) {
 	switch proposalType {
 	case ProposalTypeSoftwareUpgrade, ProposalTypeSystemHalt:
 		return CriticalMinDeposit, nil
-	case ProposalTypeParameter:
+	case ProposalTypeParameter, ProposalTypeTokenAddition:
 		return ImportantMinDeposit, nil
-	case ProposalTypeTxTaxUsage:
+	case ProposalTypeTxTaxUsage, ProposalTypeCommunityTaxUsage, ProposalTypePlainText:
 		return NormalMinDeposit, nil
 
 	default:
-		return document.Coin{}, errors.New(fmt.Sprintf("expect proposal type: %v %v %v %v ,but actual: %v",
-			ProposalTypeSoftwareUpgrade, ProposalTypeSystemHalt, ProposalTypeParameter, ProposalTypeTxTaxUsage, proposalType))
+		return document.Coin{}, errors.New(fmt.Sprintf("expect proposal type:  %v %v %v %v %v %v %v ,but actual: %v",
+			ProposalTypeSoftwareUpgrade, ProposalTypeSystemHalt, ProposalTypeParameter, ProposalTypeTokenAddition, ProposalTypeTxTaxUsage, ProposalTypeCommunityTaxUsage, ProposalTypePlainText, proposalType))
 	}
 
 }
@@ -116,14 +119,14 @@ func GetPassVetoThresholdAndParticipationMinDeposit(proposalType string) (string
 	case ProposalTypeSoftwareUpgrade, ProposalTypeSystemHalt:
 		return CriticalThreshold, CriticalVeto, CriticalParticipation, CriticalPenalty, nil
 
-	case ProposalTypeParameter:
+	case ProposalTypeParameter, ProposalTypeTokenAddition:
 		return ImportantThreshold, ImportantVeto, ImportantParticipation, ImportantPenalty, nil
-	case ProposalTypeTxTaxUsage:
+	case ProposalTypeTxTaxUsage, ProposalTypeCommunityTaxUsage, ProposalTypePlainText:
 		return NormalThreshold, NormalVeto, NormalParticipation, NormalPenalty, nil
 
 	default:
-		return "", "", "", "", errors.New(fmt.Sprintf("expect proposal type: %v %v %v %v ,but actual: %v",
-			ProposalTypeSoftwareUpgrade, ProposalTypeSystemHalt, ProposalTypeParameter, ProposalTypeTxTaxUsage, proposalType))
+		return "", "", "", "", errors.New(fmt.Sprintf("expect proposal type: %v %v %v %v %v %v %v ,but actual: %v",
+			ProposalTypeSoftwareUpgrade, ProposalTypeSystemHalt, ProposalTypeParameter, ProposalTypeTokenAddition, ProposalTypeTxTaxUsage, ProposalTypeCommunityTaxUsage, ProposalTypePlainText, proposalType))
 	}
 }
 

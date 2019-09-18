@@ -641,7 +641,6 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 		isRejectVote := bool(isParticipation && bool((noWithVeto/votedNum) >= vetoThresholdFloat))
 
 		burnPercent, err := lcd.GetProposalBurnPercentByResult(data.Status, isRejectVote)
-
 		if err != nil {
 			logger.Error("GetProposalBurnPercentByResult fail", logger.String("err", err.Error()))
 		} else {
