@@ -124,7 +124,7 @@
             </div>
             <div v-show="votingObj">
                 <keep-alive>
-                    <m-voting-card></m-voting-card>
+                    <!-- <m-voting-card></m-voting-card> -->
                 </keep-alive>
             </div>
         </div>
@@ -190,11 +190,11 @@ import SpinComponent from './commonComponents/SpinComponent';
 import Constant from "../constant/Constant";
 import MProposalsDetailTable from './table/MProposalsDetailTable.vue';
 import MDepositCard from "./commonComponents/MDepositCard";
-import MVotingCard from "./commonComponents/MVotingCard";
+// import MVotingCard from "./commonComponents/MVotingCard";
 
 export default {
     components: {
-	    MVotingCard,
+	    // MVotingCard,
 	    MDepositCard,
         BlocksListTable,
         SpinComponent,
