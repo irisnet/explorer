@@ -51,6 +51,13 @@ type Proposal struct {
 	Software        string      `json:"software,omitempty"`
 	SwitchHeight    uint64      `json:"switch_height,omitempty"`
 	Threshold       string      `json:"threshold,omitempty"`
+	Level           string      `json:"level"`
+	YesThreshold    string      `json:"yes_threshold"`
+	VetoThreshold   string      `json:"veto_threshold"`
+	Participation   string      `json:"participation"`
+	Penalty         string      `json:"penalty"`
+	Usage           string      `json:"usage,omitempty"`
+	BurnPercent     float32     `json:"burn_percent,omitempty"`
 }
 
 type Vote struct {
