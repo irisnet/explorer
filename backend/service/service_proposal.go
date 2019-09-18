@@ -3,6 +3,7 @@ package service
 import (
 	"encoding/hex"
 	"encoding/json"
+	"strconv"
 	"strings"
 
 	"github.com/irisnet/explorer/backend/conf"
@@ -210,7 +211,7 @@ func (service *ProposalService) QueryVoting(id int) vo.ProposalNewStyle {
 		logger.Error("get proposal level by type", logger.String("err", err.Error()), logger.String("param", data.Type))
 	}
 	l.Name = name
-	passThreshold, vetoThreshold, participation, err := lcd.GetPassVetoThresholdAndParticipationMinDeposit(data.Type)
+	passThreshold, vetoThreshold, participation, _, err := lcd.GetPassVetoThresholdAndParticipationMinDeposit(data.Type)
 	if err != nil {
 		logger.Error("GetThresholdAndParticipationMinDeposit", logger.String("err", err.Error()), logger.String("param", data.Type))
 	}
@@ -314,7 +315,7 @@ func formatProposalStatusVotingData(service *ProposalService, proposalStatusVoti
 		}
 		l.Name = name
 
-		passThreshold, vetoThreshold, participation, err := lcd.GetPassVetoThresholdAndParticipationMinDeposit(propo.Type)
+		passThreshold, vetoThreshold, participation, _, err := lcd.GetPassVetoThresholdAndParticipationMinDeposit(propo.Type)
 
 		if err != nil {
 			logger.Error("GetThresholdAndParticipationMinDeposit", logger.String("err", err.Error()), logger.String("param", propo.Type))
@@ -577,6 +578,16 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 		coinsAsUtils = append(coinsAsUtils, tmp)
 	}
 
+	passThreshold, vetoThreshold, participation, penalty, err := lcd.GetPassVetoThresholdAndParticipationMinDeposit(data.Type)
+	if err != nil {
+		logger.Error("GetThresholdAndParticipationMinDeposit", logger.String("err", err.Error()), logger.String("param", data.Type))
+	}
+
+	level, err := lcd.GetProposalLevelByType(data.Type)
+	if err != nil {
+		logger.Error("get proposal level by type", logger.String("err", err.Error()), logger.String("param", data.Type))
+	}
+
 	proposal := vo.Proposal{
 		Title:           data.Title,
 		ProposalId:      data.ProposalId,
@@ -588,15 +599,62 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 		VotingStartTime: data.VotingStartTime.UTC(),
 		VotingEndTime:   data.VotingEndTime.UTC(),
 		TotalDeposit:    coinsAsUtils,
+		YesThreshold:    passThreshold,
+		VetoThreshold:   vetoThreshold,
+		Participation:   participation,
+		Penalty:         penalty,
+		Level:           level,
 	}
 
-	from, to, err := document.Proposal{}.QueryTxFromToByTypeAndProposalId(id)
+	if data.Status == document.ProposalStatusPassed || data.Status == document.ProposalStatusRejected {
+		systemVotingPower, err := service.GetSystemVotingPower()
+		if err != nil {
+			logger.Error("get systemVotingPower fail", logger.String("err", err.Error()))
+		}
+		systemVotingPowerFloat, _ := utils.ParseStringToFloat(strconv.FormatInt(systemVotingPower, 10))
+
+		var votedNum float64
+		var noWithVeto float64
+		if yes, err := utils.ParseStringToFloat(data.FinalVotes.Yes); err == nil {
+			votedNum += yes
+		} else {
+			logger.Error("ParseStringToFloat yes fail", logger.String("err", err.Error()))
+		}
+		if no, err := utils.ParseStringToFloat(data.FinalVotes.No); err == nil {
+			votedNum += no
+		} else {
+			logger.Error("ParseStringToFloat no fail", logger.String("err", err.Error()))
+		}
+		if noWithVeto, err = utils.ParseStringToFloat(data.FinalVotes.NoWithVeto); err == nil {
+			votedNum += noWithVeto
+		} else {
+			logger.Error("ParseStringToFloat noWithVeto fail", logger.String("err", err.Error()))
+		}
+		if abstain, err := utils.ParseStringToFloat(data.FinalVotes.Abstain); err == nil {
+			votedNum += abstain
+		} else {
+			logger.Error("ParseStringToFloat abstain fail", logger.String("err", err.Error()))
+		}
+		participationFloat, _ := utils.ParseStringToFloat(participation)
+		vetoThresholdFloat, _ := utils.ParseStringToFloat(vetoThreshold)
+		isParticipation := bool((votedNum / systemVotingPowerFloat) >= participationFloat)
+		isRejectVote := bool(isParticipation && bool((noWithVeto/votedNum) >= vetoThresholdFloat))
+
+		burnPercent, err := lcd.GetProposalBurnPercentByResult(data.Status, isRejectVote)
+		if err != nil {
+			logger.Error("GetProposalBurnPercentByResult fail", logger.String("err", err.Error()))
+		} else {
+			proposal.BurnPercent = burnPercent
+		}
+	}
+
+	from, txHash, err := document.Proposal{}.QueryTxFromToByTypeAndProposalId(id)
 
 	if err != nil {
 		logger.Error("query tx by proposal type and id ", logger.String("err", err.Error()))
 	}
 	proposal.Proposer = from
-	proposal.TxHash = to
+	proposal.TxHash = txHash
 
 	if proposal.Type == "ParameterChange" || proposal.Type == "SoftwareUpgrade" {
 		txMsg, err := document.TxMsg{}.QueryTxMsgByHash(proposal.TxHash)
@@ -610,6 +668,20 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 				proposal.Software = msg.Software
 				proposal.SwitchHeight = msg.SwitchHeight
 				proposal.Threshold = msg.Threshold
+			}
+		}
+	}
+
+	if proposal.Type == "CommunityTaxUsage" {
+		txMsg, err := document.TxMsg{}.QueryTxMsgByHash(proposal.TxHash)
+		if err != nil {
+			logger.Error("query tx msg by hash ", logger.String("err", err.Error()))
+		} else {
+			var msg map[string]interface{}
+			if err := json.Unmarshal([]byte(txMsg.Content), &msg); err == nil {
+				if v, ok := msg["usage"].(string); ok {
+					proposal.Usage = v
+				}
 			}
 		}
 	}

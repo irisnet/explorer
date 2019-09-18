@@ -46,11 +46,18 @@ type Proposal struct {
 	TotalDeposit    utils.Coins `json:"total_deposit"`
 	Proposer        string      `json:"proposer"`
 	TxHash          string      `json:"tx_hash"`
-	Parameters      []Param     `json:"parameters,omitempty"`
-	Version         uint64      `json:"version,omitempty"`
-	Software        string      `json:"software,omitempty"`
-	SwitchHeight    uint64      `json:"switch_height,omitempty"`
-	Threshold       string      `json:"threshold,omitempty"`
+	Parameters      []Param     `json:"parameters"`
+	Version         uint64      `json:"version"`
+	Software        string      `json:"software"`
+	SwitchHeight    uint64      `json:"switch_height"`
+	Threshold       string      `json:"threshold"`
+	Level           string      `json:"level"`
+	YesThreshold    string      `json:"yes_threshold"`
+	VetoThreshold   string      `json:"veto_threshold"`
+	Participation   string      `json:"participation"`
+	Penalty         string      `json:"penalty"`
+	Usage           string      `json:"usage"`
+	BurnPercent     float32     `json:"burn_percent"`
 }
 
 type Vote struct {
