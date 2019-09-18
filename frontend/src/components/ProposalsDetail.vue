@@ -116,6 +116,18 @@
                 </div>
             </div>
         </div>
+        <div class="card_container">
+            <div v-show="depositorObj">
+                <keep-alive>
+                    <m-deposit-card :depositObj="depositorObj" :burnPercent="burnPercent"></m-deposit-card>
+                </keep-alive>
+            </div>
+            <div v-show="votingObj">
+                <keep-alive>
+                    <m-voting-card></m-voting-card>
+                </keep-alive>
+            </div>
+        </div>
         <div :class="['proposal_table', proposalsDetailWrap, $store.state.isMobile ? 'mobile_proposals_table_container' : '']"
              v-if="!showNoData">
             <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -177,9 +189,13 @@ import BlocksListTable from './table/BlocksListTable.vue';
 import SpinComponent from './commonComponents/SpinComponent';
 import Constant from "../constant/Constant";
 import MProposalsDetailTable from './table/MProposalsDetailTable.vue';
+import MDepositCard from "./commonComponents/MDepositCard";
+import MVotingCard from "./commonComponents/MVotingCard";
 
 export default {
     components: {
+	    MVotingCard,
+	    MDepositCard,
         BlocksListTable,
         SpinComponent,
         MProposalsDetailTable
@@ -226,7 +242,10 @@ export default {
             depositorCurrentPage: 1,
             itemTotal: 0,
             depositorItemsTotal: 0,
-            perPage: 10
+            perPage: 10,
+            depositorObj: null,
+	        votingObj: null,
+	        burnPercent: 0
         }
     },
     beforeMount () {
@@ -401,6 +420,7 @@ export default {
                             } else {
                                 this.totalDeposit = "";
                             }
+                            this.burnPercent = data.proposal.burn_percent;
                             if (data.proposal.type === 'ParameterChange') {
                                 for (let index = 0; index < data.proposal.parameters.length; index++) {
                                     this.parameterValue += `${data.proposal.parameters[index].subspace}/${data.proposal.parameters[index].key} = ${data.proposal.parameters[index].value}\n`
@@ -415,18 +435,43 @@ export default {
                 }
             })
         },
+        getDepositorInfomation(){
+        	Service.commonInterface({proposalDetailDepositor:{
+			        proposalId: this.$route.params.proposal_id
+                }},(res) => {
+                this.depositorObj = res
+            })
+        }
     },
     mounted () {
         this.getProposalsInformation();
         this.getVoter();
         this.getDepositor();
+        this.getDepositorInfomation()
     }
 }
 </script>
 
 <style scoped lang="scss">
 @import "../style/mixin.scss";
-
+.card_container{
+    display: flex;
+    width: 100%;
+    margin: 0 auto;
+    max-width: 12.8rem;
+    div{
+        flex: 1;
+    }
+}
+@media screen and (max-width: 910px){
+    .card_container{
+        display: flex;
+        width: 100%;
+        margin: 0 auto;
+        max-width: 12.8rem;
+        flex-direction: column;
+    }
+}
 .proposals_detail_wrap {
     @include flex;
     @include pcContainer;
