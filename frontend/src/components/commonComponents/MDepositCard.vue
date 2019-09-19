@@ -1,7 +1,7 @@
 <template>
     <div class="deposit_card_content">
         <div class="deposit_title_container">
-            <span><i class="iconfont iconParameterChange"></i>ParameterChange</span>
+            <span><i class="iconfont iconParameterChange"></i>{{proposalType}}</span>
             <span v-show="!flShowPass && !flShowReject"><i class="iconfont iconDepositPeriod"></i>DepositPeriod</span>
             <span v-show="flShowPass" ><i class="iconfont iconPass"></i>Pass</span>
             <span v-show="flShowReject"><i class="iconfont iconVeto"></i>Reject</span>
@@ -54,6 +54,7 @@
         },
         data () {
 			return {
+				proposalType:'',
 				hourLeft: '',
                 minDepositToken:'',
                 minDepositTokenDenom:'',
@@ -110,6 +111,7 @@
         },
         methods:{
 	        formatDepositObj(depositObj){
+	        	this.proposalType = depositObj.type
 	        	this.getAgeHour(depositObj.deposit_end_time);
 		        this.setMinDepositToken(depositObj);
 		        this.setTotalDepositToken(depositObj);
