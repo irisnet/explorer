@@ -64,3 +64,31 @@ func TestQueryTxNumGroupByDay(t *testing.T) {
 		t.Logf("idx: %v  txCountByDay: %v \n", k, v)
 	}
 }
+
+func TestTxService_checkTags(t *testing.T) {
+	tags := map[string]string{
+		"voting-period-start": "41",
+		"action":              "submit_proposal",
+		"proposer":            "faa1x292qss22x4rls6ygr7hhnp0et94vwwrchaklp",
+		"proposal-id":         "41",
+		"param":               "[{\"subspace\":\"stake\",\"key\":\"UnbondingTime\",\"value\":\"123m\"}]",
+	}
+	tags1 := map[string]string{
+		"voting-period-start": "41",
+		"action":              "submit_proposal",
+		"proposer":            "faa1x292qss22x4rls6ygr7hhnp0et94vwwrchaklp",
+		"proposal-id":         "41",
+	}
+	submitprodata := vo.MsgSubmitProposal{
+		Params: []vo.Param{
+			{Subspace: "stake", Key: "UnbondingTime", Value: "12m"},
+		},
+	}
+	data := checkTags(tags, submitprodata)
+	t.Log(tags)
+	t.Log(data)
+	data1 := checkTags(tags1, submitprodata)
+	t.Log(tags1)
+	t.Log(data1)
+
+}
