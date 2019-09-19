@@ -781,7 +781,10 @@ func (service *ValidatorService) QueryValidatorByConAddr(address string) documen
 
 func buildValidators() []document.Validator {
 
-	res := lcd.Validators(1, 200)
+	res := lcd.Validators(1, 100)
+	if res2 := lcd.Validators(2, 100); len(res2) > 0 {
+	    res = append(res, res2...)
+	}
 
 	var result []document.Validator
 	var buildValidator = func(v lcd.ValidatorVo) (document.Validator, error) {
