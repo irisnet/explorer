@@ -2,7 +2,9 @@
     <div class="deposit_card_content">
         <div class="deposit_title_container">
             <span><i class="iconfont iconParameterChange"></i>ParameterChange</span>
-            <span><i class="iconfont iconDepositPeriod"></i>DepositPeriod</span>
+            <span v-show="!flShowPass && !flShowReject"><i class="iconfont iconDepositPeriod"></i>DepositPeriod</span>
+            <span v-show="flShowPass" ><i class="iconfont iconPass"></i>Pass</span>
+            <span v-show="flShowReject"><i class="iconfont iconVeto"></i>Reject</span>
             <span v-show="hourLeft > 1"><i class="iconfont iconHoursLeft"></i>{{hourLeft === 1 ? `${hourLeft} Hour Left` : `${hourLeft} Hours Left` }}</span>
             <span v-show="hourLeft < 1 && hourLeft > 0"><i class="iconfont iconHoursLeft"></i>{{ `${hourLeft} Min Left` }}</span>
         </div>
@@ -45,7 +47,10 @@
             },
 	        burnPercent:{
 		        type: Number
-            }
+            },
+	        status:{
+		        type: String
+	        }
         },
         data () {
 			return {
@@ -62,6 +67,8 @@
 				flTotalGreaterThanMin: false,
                 flShowBurnAll:false,
                 localBurnPercent: '',
+                flShowPass: false,
+                flShowReject:false,
 				minDepositStyleObject:{
 					width: ''
                 },
@@ -92,6 +99,14 @@
             	this.localBurnPercent = burnPercent;
             	this.flShowBurn(burnPercent);
             },
+	        status(status){
+            	if(status === 'Passed'){
+            		this.flShowPass = true
+                }else if(status === 'Rejected'){
+		            this.flShowReject = true
+                }
+            }
+
         },
         methods:{
 	        formatDepositObj(depositObj){
@@ -147,7 +162,6 @@
             },
 	        flShowProgressBar(){
 		        if(Number(this.totalDeposit) === Number(this.minDepositToken)){
-			        this.flShowBlue = true;
 			        this.$set(this.minDepositStyleObject,'width','100%');
 			        this.$set(this.minValueStyleObj,'left','100%');
 			        this.$set(this.initialDepositStyleObj,'left','100%');
@@ -157,7 +171,7 @@
 			        let diffNumber = this.totalDeposit - this.minDepositToken;
 			        let diffContent = ((diffNumber / this.minDepositToken) * 100).toFixed(1);
 			        this.$set(this.minDepositStyleObject,'width',`${(100 - diffContent === 0 ? 50 : 100 - diffContent)}%`);
-			        this.$set(this.minValueStyleObj,'left',`${(100 - diffContent === 0 ? 50 : 100 - diffContent)}%`);
+			        this.$set(this.minValueStyleObj,'left',"100%");
 		        }else if(Number(this.totalDeposit) < Number(this.minDepositToken)){
 			        this.flShowBlue = true;
 			        this.$set(this.minDepositStyleObject,'width',`${((this.totalDeposit / this.minDepositToken)*100).toFixed(1)}%`);
@@ -171,13 +185,14 @@
 			        let diffNumber = this.initialDeposit - this.minDepositToken;
 			        let diffContent = ((diffNumber / this.minDepositToken) * 100).toFixed(1);
 			        this.$set(this.minDepositStyleObject,'width',`${(100 - diffContent === 0 ? 50 : 100 - diffContent)}%`);
-			        this.$set(this.minValueStyleObj,'left',`${(100 - diffContent === 0 ? 50 : 100 - diffContent)}%`);
+			        this.$set(this.minValueStyleObj,'left','100%');
+			        this.$set(this.initialDepositStyleObj,'left','100%');
 		        }else if(Number(this.initialDeposit) < Number(this.minDepositToken)){
 			        this.$set(this.initialDepositStyleObj,'left',`${((this.initialDeposit / this.minDepositToken)*100).toFixed(1)}%`);
 		        }
             },
 	        flShowBurn(burnPercent){
-	        	if(burnPercent === 0){
+		        if(burnPercent === 0){
 
 		        }else if(burnPercent === 0.2){
 	        		this.burnValue = (this.totalDeposit * burnPercent).toFixed(0);
@@ -192,7 +207,7 @@
 			        let diffNumber = this.totalDeposit - this.minDepositToken;
 			        let diffContent = ((diffNumber / this.minDepositToken) * 100).toFixed(1);
 			        this.$set(this.burnStyle0bj,'width',`${(100 - diffContent === 0 ? 50 : 100 - diffContent)}%`);
-			        this.$set(this.burnTipStyle0bj,'left',`${(100 - diffContent === 0 ? 50 : 100 - diffContent)}%`);
+			        this.$set(this.burnTipStyle0bj,'left','100%');
 			        this.flShowDiffStyle = true;
 			        this.flBurnAll = true;
 			        this.flShowBurnAll = true
@@ -226,6 +241,12 @@
             }
             .iconDepositPeriod{
                 color: var(--bgColor);
+            }
+            .iconPass{
+                color: #0580D3;
+            }
+            .iconVeto{
+                color: #FFAAA6;
             }
             .iconHoursLeft{
                 color: #787C99;
@@ -263,6 +284,17 @@
                             right: 30%;
                             width: 100%;
                             white-space: nowrap;
+                            &::after{
+                                width: 0;
+                                height: 0;
+                                border: 0.06rem solid transparent;
+                                content: "";
+                                display: block;
+                                position: absolute;
+                                border-top-color: #FF9942;
+                                left: 24%;
+                                bottom: -0.12rem;
+                            }
                         }
                     }
                     .default_progress_bar_content{
@@ -270,11 +302,11 @@
                         height: 0.12rem;
                         border-radius: 0.06rem;
                         position: absolute;
-                        background: #a2a2ae;
+                        background: #E5E9FB;
                         z-index: 1;
                     }
                     .diff_blue{
-                        background: #79C9FF !important;
+                        background: #0580D3 !important;
                     }
                     .diff_burn_red{
                         background: #FFAAA6 !important;
@@ -294,7 +326,7 @@
                         position: absolute;
                     }
                     .showBlue{
-                        background: #0580D3;
+                        background: #79C9FF;
                         z-index: 1;
                     }
                     .total_deposit_bar_content{
@@ -309,24 +341,25 @@
                     }
                     .max_value_content{
                         position: absolute;
-                        top: 0.25rem;
+                        top: 0.21rem;
                         .max_value_title{
                             position: relative;
                             right: 30%;
                             width: 100%;
                             white-space: nowrap;
                             font-size: 0.12rem;
-                        }
-                        &::after{
-                            width: 0;
-                            height: 0;
-                            border: 0.06rem solid transparent;
-                            content: "";
-                            display: block;
-                            position: absolute;
-                            border-bottom-color: #0580D3;
-                            left: -0.06rem;
-                            top: -50%;
+                            color: #0580D3;
+                            &::after{
+                                width: 0;
+                                height: 0;
+                                border: 0.06rem solid transparent;
+                                content: "";
+                                display: block;
+                                position: absolute;
+                                border-bottom-color: #0580D3;
+                                left: 24%;
+                                top: -0.14rem;
+                            }
                         }
                     }
                     .no_tool_tip_style{

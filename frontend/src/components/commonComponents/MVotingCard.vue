@@ -138,7 +138,7 @@
                     return a + b
                 });
                this.totalVotedNumber =  this.validatorVotedPower + this.delegatorVotedPower;
-               this.delegatorVoted = (this.validatorVotedPower / (this.delegatorVotedPower + this.validatorVotedPower) * 100).toFixed(2);
+               this.delegatorVoted = (this.delegatorVotedPower / (this.delegatorVotedPower + this.validatorVotedPower) * 100).toFixed(2);
                this.totalVoted = (((this.delegatorVotedPower + this.validatorVotedPower) / this.systemVotingPower) *100).toFixed(2);
                this.setStyleFunc();
             },

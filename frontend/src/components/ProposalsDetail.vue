@@ -119,7 +119,7 @@
         <div class="card_container">
             <div v-show="depositorObj">
                 <keep-alive>
-                    <m-deposit-card :depositObj="depositorObj" :burnPercent="burnPercent"></m-deposit-card>
+                    <m-deposit-card :depositObj="depositorObj" :burnPercent="burnPercent" :status="status"></m-deposit-card>
                 </keep-alive>
             </div>
             <div v-show="votingObj">
@@ -411,10 +411,10 @@ export default {
                             this.votingStartTime = that.flShowProposalTime('votingStartTime', data.proposal.status) ? Tools.format2UTC(data.proposal.voting_start_time) : '--';
                             this.votingEndTime = that.flShowProposalTime('votingEndTime', data.proposal.status) ? Tools.format2UTC(data.proposal.voting_end_time) : '--';
                             this.description = data.proposal.description ? data.proposal.description : " -- ";
-                            this.voteDetailsYes = data.proposal.status === "DepositPeriod" ? "--" : data.result.Yes;
-                            this.voteDetailsNo = data.proposal.status === "DepositPeriod" ? "--" : data.result.No;
-                            this.voteDetailsNoWithVeto = data.proposal.status === "DepositPeriod" ? "--" : data.result.NoWithVeto;
-                            this.voteDetailsAbstain = data.proposal.status === "DepositPeriod" ? "--" : data.result.Abstain;
+                            // this.voteDetailsYes = data.proposal.status === "DepositPeriod" ? "--" : data.result.Yes;
+                            // this.voteDetailsNo = data.proposal.status === "DepositPeriod" ? "--" : data.result.No;
+                            // this.voteDetailsNoWithVeto = data.proposal.status === "DepositPeriod" ? "--" : data.result.NoWithVeto;
+                            // this.voteDetailsAbstain = data.proposal.status === "DepositPeriod" ? "--" : data.result.Abstain;
                             if (data.proposal && data.proposal.total_deposit.length !== 0) {
                                 this.totalDeposit = `${Tools.formatPriceToFixed(Tools.convertScientificNotation2Number(Tools.formatNumber(data.proposal.total_deposit[0].amount)))} ${Tools.formatDenom(data.proposal.total_deposit[0].denom).toUpperCase()}`;
                             } else {
@@ -439,14 +439,27 @@ export default {
         	Service.commonInterface({proposalDetailDepositor:{
 			        proposalId: this.$route.params.proposal_id
                 }},(res) => {
-                this.depositorObj = res
+        		try {
+                    if(res){
+	                    this.depositorObj = res
+                    }
+		        }catch (e) {
+                    console.error(e)
+		        }
             })
         },
 	    getVotingBarInformation(){
         	Service.commonInterface({proposalDetailVotingBar:{
 			        proposalId: this.$route.params.proposal_id
                 }},(res) => {
-        		this.votingObj = res;
+        		try {
+			        if(res){
+				        this.votingObj = res;
+			        }
+		        }catch (e) {
+                    console.error(e)
+		        }
+
             })
         }
     },
