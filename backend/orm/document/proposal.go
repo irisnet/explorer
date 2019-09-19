@@ -36,10 +36,11 @@ const (
 )
 
 type FinalVoteAsPower struct {
-	Yes        string `bson:"yes"`
-	No         string `bson:"no"`
-	NoWithVeto string `bson:"nowithveto"`
-	Abstain    string `bson:"abstain"`
+	Yes               string `bson:"yes"`
+	No                string `bson:"no"`
+	NoWithVeto        string `bson:"nowithveto"`
+	Abstain           string `bson:"abstain"`
+	SystemVotingPower string `bson:"system_voting_power"`
 }
 
 type Proposal struct {
