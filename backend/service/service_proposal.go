@@ -924,6 +924,7 @@ func (s *ProposalService) buildVoteTxs(txs []document.CommonTx, msgs map[string]
 			Voter:     tx.From,
 			TxHash:    tx.TxHash,
 			Timestamp: tx.Time,
+			Height:    tx.Height,
 		}
 		if msg, ok := msgs[tx.TxHash]; ok {
 			// marshal json
