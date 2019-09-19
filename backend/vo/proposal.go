@@ -67,16 +67,8 @@ type Vote struct {
 }
 
 type ProposalInfoVo struct {
-	Proposal Proposal   `json:"proposal"`
-	Votes    []Vote     `json:"votes"`
-	Result   VoteResult `json:"result"`
-}
-
-type VoteResult struct {
-	Yes        int
-	No         int
-	NoWithVeto int
-	Abstain    int
+	Proposal Proposal `json:"proposal"`
+	Votes    []Vote   `json:"votes"`
 }
 
 type FinalVotes struct {
@@ -145,8 +137,9 @@ type (
 )
 
 type GetVoteTxResponse struct {
-	Total int      `json:"total"`
-	Items []VoteTx `json:"items"`
+	Total int       `json:"total"`
+	Items []VoteTx  `json:"items"`
+	Stats VoteStats `json:"stats"`
 }
 
 type VoteTx struct {
@@ -173,4 +166,14 @@ type Them struct {
 			Source string `json:"source"`
 		} `json:"primary"`
 	} `json:"pictures"`
+}
+
+type VoteStats struct {
+	All        int64 `json:"all"`
+	Validator  int64 `json:"validator"`
+	Delegator  int64 `json:"delegator"`
+	Yes        int64 `json:"yes"`
+	No         int64 `json:"no"`
+	NoWithVeto int64 `json:"no_with_veto"`
+	Abstain    int64 `json:"abstain"`
 }
