@@ -124,7 +124,7 @@
             </div>
             <div v-show="votingObj">
                 <keep-alive>
-                    <!-- <m-voting-card></m-voting-card> -->
+                    <m-voting-card :votingBarObj="votingObj"></m-voting-card>
                 </keep-alive>
             </div>
         </div>
@@ -435,11 +435,18 @@ export default {
                 }
             })
         },
-        getDepositorInfomation(){
+        getDepositorInformation(){
         	Service.commonInterface({proposalDetailDepositor:{
 			        proposalId: this.$route.params.proposal_id
                 }},(res) => {
                 this.depositorObj = res
+            })
+        },
+	    getVotingBarInformation(){
+        	Service.commonInterface({proposalDetailVotingBar:{
+			        proposalId: this.$route.params.proposal_id
+                }},(res) => {
+        		this.votingObj = res;
             })
         }
     },
@@ -447,7 +454,8 @@ export default {
         this.getProposalsInformation();
         this.getVoter();
         this.getDepositor();
-        this.getDepositorInfomation()
+        this.getDepositorInformation()
+        this.getVotingBarInformation();
     }
 }
 </script>
