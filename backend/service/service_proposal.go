@@ -949,45 +949,31 @@ func (s *ProposalService) buildVoteTxsStats(votes []document.PVote, validators m
 		abstain    int64
 	)
 
+	computedYesNoNoWithVetoAbstain := func(option string) {
+		switch option {
+		case "Yes":
+			yes++
+		case "No":
+			no++
+		case "NoWithVeto":
+			noWithVeto++
+		case "Abstain":
+			abstain++
+		}
+	}
+
 	for _, v := range votes {
 		if voterType == "all" || voterType == "" {
-			switch v.Option {
-			case "Yes":
-				yes++
-			case "No":
-				no++
-			case "NoWithVeto":
-				noWithVeto++
-			case "Abstain":
-				abstain++
-			}
+			computedYesNoNoWithVetoAbstain(v.Option)
 		}
 		if _, ok := validators[v.Voter]; ok {
 			if voterType == "validator" {
-				switch v.Option {
-				case "Yes":
-					yes++
-				case "No":
-					no++
-				case "NoWithVeto":
-					noWithVeto++
-				case "Abstain":
-					abstain++
-				}
+				computedYesNoNoWithVetoAbstain(v.Option)
 			}
 			validator++
 		} else {
 			if voterType == "delegator" {
-				switch v.Option {
-				case "Yes":
-					yes++
-				case "No":
-					no++
-				case "NoWithVeto":
-					noWithVeto++
-				case "Abstain":
-					abstain++
-				}
+				computedYesNoNoWithVetoAbstain(v.Option)
 			}
 		}
 		all++
