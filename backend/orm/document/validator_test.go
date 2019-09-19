@@ -47,3 +47,19 @@ func TestValidator_QueryValidatorMonikerByAddrArr(t *testing.T) {
 	}
 	t.Log(data)
 }
+
+func TestValidator_UpdateByPk(t *testing.T) {
+	validatorModel := Validator{}
+	validators, err := validatorModel.GetAllValidator()
+	if err != nil {
+		t.Fatal(err)
+	}
+	validator := validators[0]
+	validator.Uptime = float32(0.75)
+
+	if err := validatorModel.UpdateByPk(validator); err != nil {
+		t.Fatal(err)
+	} else {
+		t.Log("success")
+	}
+}
