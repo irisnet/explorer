@@ -637,8 +637,8 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 		}
 		participationFloat, _ := utils.ParseStringToFloat(participation)
 		vetoThresholdFloat, _ := utils.ParseStringToFloat(vetoThreshold)
-		isParticipation := bool((votedNum / systemVotingPowerFloat) >= participationFloat)
-		isRejectVote := bool(isParticipation && bool((noWithVeto/votedNum) >= vetoThresholdFloat))
+		isParticipation := bool((votedNum / systemVotingPowerFloat) > participationFloat)
+		isRejectVote := bool(isParticipation && bool((noWithVeto/votedNum) > vetoThresholdFloat))
 
 		burnPercent, err := lcd.GetProposalBurnPercentByResult(data.Status, isRejectVote)
 		if err != nil {
@@ -679,31 +679,16 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 		} else {
 			var msg map[string]interface{}
 			if err := json.Unmarshal([]byte(txMsg.Content), &msg); err == nil {
-				if v, ok := msg["usage"].(string); ok {
-					proposal.Usage = v
+				if _, ok := msg["usage"]; ok {
+					if v, ok := msg["usage"].(string); ok {
+						proposal.Usage = v
+					}
 				}
 			}
 		}
 	}
 
 	resp.Proposal = proposal
-
-	var result vo.VoteResult
-	for _, v := range data.Votes {
-
-		switch v.Option {
-		case "Yes":
-			result.Yes++
-		case "Abstain":
-			result.Abstain++
-		case "No":
-			result.No++
-		case "NoWithVeto":
-			result.NoWithVeto++
-		}
-	}
-
-	resp.Result = result
 	return
 }
 
@@ -793,60 +778,66 @@ func (_ ProposalService) GetSystemVotingPower() (int64, error) {
 	return totalVotingPower, nil
 }
 
-func (s *ProposalService) GetVoteTxs(proposalId int64, page, size int, istotal bool) vo.GetVoteTxResponse {
+func (s *ProposalService) GetVoteTxs(proposalId int64, page, size int, istotal bool, voterType string) vo.GetVoteTxResponse {
 	var (
-		txs        []document.CommonTx
-		txHashs    []string
-		txMsgs     []document.TxMsg
-		valAddrs   []string
-		validators []document.Validator
-		res        vo.GetVoteTxResponse
+		txHashs  []string
+		txMsgs   map[string]document.TxMsg
+		res      vo.GetVoteTxResponse
+		iaaAddrs []string
 	)
-	accAddrValAddrMap := make(map[string]string)
 
-	num, txList, err := document.CommonTx{}.QueryProposalTxById(proposalId, page, size, istotal)
+	var allBondedValidatorIaaAddrs map[string]document.Validator
+	allBondedValidators, err := document.Validator{}.QueryValidatorsMonikerOpAddrConsensusPubkey()
+	if err != nil {
+		logger.Error("query QueryValidatorsMonikerOpAddrConsensusPubkey", logger.String("err", err.Error()))
+	}
+	allBondedValidatorIaaAddrs = make(map[string]document.Validator, len(allBondedValidators))
+	var validatorService = &ValidatorService{}
+	for _, v := range allBondedValidators {
+		iaaAddr := validatorService.GetWithdrawAddrByValidatorAddr(v.OperatorAddress).Address
+		allBondedValidatorIaaAddrs[iaaAddr] = v
+	}
 
+	if voterType == "validator" || voterType == "delegator" {
+		iaaAddrs = make([]string, 0, len(allBondedValidatorIaaAddrs))
+		for k, _ := range allBondedValidatorIaaAddrs {
+			iaaAddrs = append(iaaAddrs, k)
+		}
+	}
+
+	num, txList, err := document.CommonTx{}.QueryProposalTxById(proposalId, page, size, istotal, iaaAddrs, voterType)
 	if err != nil {
 		logger.Error("QueryProposalTxById have error", logger.String("err", err.Error()))
-		panic(types.CodeNotFound)
 	}
-	txs = txList
 
-	for _, v := range txs {
+	for _, v := range txList {
 		txHashs = append(txHashs, v.TxHash)
-		valAddr := utils.Convert(conf.Get().Hub.Prefix.ValAddr, v.From)
-		if valAddr != "" {
-			valAddrs = append(valAddrs, valAddr)
-			accAddrValAddrMap[v.From] = valAddr
-		}
 	}
 
 	// query tx msg by tx hash
 	if len(txHashs) > 0 {
 		txMsgList, err := document.TxMsg{}.QueryTxMsgListByHashList(txHashs)
-
 		if err != nil {
 			logger.Error("query tx msg fail", logger.String("err", err.Error()))
 		} else {
-			txMsgs = txMsgList
+			txMsgs = make(map[string]document.TxMsg, len(txMsgList))
+			for _, v := range txMsgList {
+				txMsgs[v.Hash] = v
+			}
 		}
 	}
 
-	// query validator info
-	if len(valAddrs) > 0 {
-
-		validatorList, err := document.Validator{}.QueryValidatorMonikerOpAddrConsensusPubkey(valAddrs)
-		if err != nil {
-			logger.Error("query validator fail", logger.String("err", err.Error()))
-		} else {
-			validators = validatorList
-		}
-
+	proposal, err := document.Proposal{}.QueryProposalById(int(proposalId))
+	if err != nil {
+		logger.Error("QueryProposalById have error", logger.String("err", err.Error()))
+		panic(types.CodeNotFound)
 	}
 
-	voteTxs := s.buildVoteTxs(txs, txMsgs, validators, accAddrValAddrMap)
+	voteTxs := s.buildVoteTxs(txList, txMsgs, allBondedValidatorIaaAddrs)
+	stats := s.buildVoteTxsStats(proposal.Votes, allBondedValidatorIaaAddrs, voterType)
 	res.Total = num
 	res.Items = voteTxs
+	res.Stats = stats
 
 	return res
 }
@@ -907,45 +898,107 @@ func (s *ProposalService) buildTx(txs []document.CommonTx) []vo.Tx {
 	return res
 }
 
-func (s *ProposalService) buildVoteTxs(txs []document.CommonTx, msgs []document.TxMsg,
-	validators []document.Validator, accAddrValAddrMap map[string]string) []vo.VoteTx {
+func (s *ProposalService) buildVoteTxs(txs []document.CommonTx, msgs map[string]document.TxMsg,
+	validators map[string]document.Validator) []vo.VoteTx {
 	var (
 		voteTxs []vo.VoteTx
 		msgVote vo.MsgVote
 	)
+
 	if len(txs) == 0 {
 		return voteTxs
 	}
+
 	for _, tx := range txs {
 		voteTx := vo.VoteTx{
 			Voter:     tx.From,
 			TxHash:    tx.TxHash,
 			Timestamp: tx.Time,
 		}
-
-		for _, msg := range msgs {
-			if tx.TxHash == msg.Hash {
-				// marshal json
-				if err := json.Unmarshal([]byte(msg.Content), &msgVote); err != nil {
-					logger.Error("unmarshal json fail", logger.String("err", err.Error()))
-					continue
-				} else {
-					voteTx.Option = msgVote.Option
-				}
-				break
+		if msg, ok := msgs[tx.TxHash]; ok {
+			// marshal json
+			if err := json.Unmarshal([]byte(msg.Content), &msgVote); err != nil {
+				logger.Error("unmarshal json fail", logger.String("err", err.Error()))
+			} else {
+				voteTx.Option = msgVote.Option
 			}
 		}
-
-		for _, v := range validators {
-			if accAddrValAddrMap[tx.From] == v.OperatorAddress {
-				voteTx.Voter = v.OperatorAddress
-				voteTx.Moniker = v.Description.Moniker
-				break
-			}
+		if v, ok := validators[tx.From]; ok {
+			voteTx.Voter = v.OperatorAddress
+			voteTx.Moniker = v.Description.Moniker
 		}
-
 		voteTxs = append(voteTxs, voteTx)
 	}
 
 	return voteTxs
+}
+
+func (s *ProposalService) buildVoteTxsStats(votes []document.PVote, validators map[string]document.Validator, voterType string) vo.VoteStats {
+	var (
+		all        int64
+		validator  int64
+		delegator  int64
+		yes        int64
+		no         int64
+		noWithVeto int64
+		abstain    int64
+	)
+
+	for _, v := range votes {
+		if voterType == "all" || voterType == "" {
+			switch v.Option {
+			case "Yes":
+				yes++
+			case "No":
+				no++
+			case "NoWithVeto":
+				noWithVeto++
+			case "Abstain":
+				abstain++
+			}
+		}
+		if _, ok := validators[v.Voter]; ok {
+			if voterType == "validator" {
+				switch v.Option {
+				case "Yes":
+					yes++
+				case "No":
+					no++
+				case "NoWithVeto":
+					noWithVeto++
+				case "Abstain":
+					abstain++
+				}
+			}
+			validator++
+		} else {
+			if voterType == "delegator" {
+				switch v.Option {
+				case "Yes":
+					yes++
+				case "No":
+					no++
+				case "NoWithVeto":
+					noWithVeto++
+				case "Abstain":
+					abstain++
+				}
+			}
+		}
+		all++
+	}
+
+	delegator = all - validator
+
+	stats := vo.VoteStats{
+		All:        all,
+		Validator:  validator,
+		Delegator:  delegator,
+		Yes:        yes,
+		No:         no,
+		NoWithVeto: noWithVeto,
+		Abstain:    abstain,
+	}
+
+	return stats
 }

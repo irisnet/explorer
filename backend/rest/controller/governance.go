@@ -99,12 +99,13 @@ func registerQueryProposalVoterTxs(r *mux.Router) error {
 		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 10))
 		total := QueryParam(request, "total")
+		voterType := QueryParam(request, "voterType")
 		istotal := true
 		if total == "false" {
 			istotal = false
 		}
 
-		return gov.GetVoteTxs(id, page, size, istotal)
+		return gov.GetVoteTxs(id, page, size, istotal, voterType)
 	})
 	return nil
 }
