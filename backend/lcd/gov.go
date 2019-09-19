@@ -16,6 +16,7 @@ const (
 	GovModuleMint     = "mint"
 	GovModuleDistr    = "distr"
 	GovModuleSlashing = "slashing"
+	GovModuleAsset    = "asset"
 	//auth key
 	GovModuleAuthGasPriceThreshold string = "gas_price_threshold"
 	GovModuleAuthTxSize            string = "tx_size"
@@ -39,13 +40,21 @@ const (
 	GovModuleSlashingSlashFractionDoubleSign = "slash_fraction_double_sign"
 	GovModuleSlashingSlashFractionDowntime   = "slash_fraction_downtime"
 	GovModuleSlashingDowntimJailDuration     = "downtime_jail_duration"
+
+	//asset key
+	GovModuleAssetAssetTaxRate         = "asset_tax_rate"
+	GovModuleAssetIssueTokenBaseFee    = "issue_token_base_fee"
+	GovModuleAssetMintTokenFeeRatio    = "mint_token_fee_ratio"
+	GovModuleAssetCreateGatewayBaseFee = "create_gateway_base_fee"
+	GovModuleAssetGatewayAssetFeeRatio = "gateway_asset_fee_ratio"
 )
 
 var GovModuleList = []string{GovModuleAuth, GovModuleStake, GovModuleMint, GovModuleDistr, GovModuleSlashing}
 
 type RangeDescription struct {
-	Range       string
-	Description string
+	Range        string
+	Description  string
+	InitialValue string
 }
 
 func GetAuthKeyWithRangeMap() map[string]RangeDescription {
@@ -90,6 +99,16 @@ func GetSlashingKeyWithRangeMap() map[string]RangeDescription {
 	result[GovModuleSlashingDowntimJailDuration] = RangeDescription{Range: "0,604800000000000", Description: "Jail duration of Downtime"}
 	return result
 }
+
+func GetAssetKeyWithRangeMap() map[string]RangeDescription {
+	result := map[string]RangeDescription{}
+	result[GovModuleAssetAssetTaxRate] = RangeDescription{InitialValue: "0.4", Range: "0,1", Description: "Community Tax rate for issuing or minting assets"}
+	result[GovModuleAssetIssueTokenBaseFee] = RangeDescription{InitialValue: "60000", Range: "0,", Description: "Benchmark fees for issuing Fungible Token"}
+	result[GovModuleAssetMintTokenFeeRatio] = RangeDescription{InitialValue: "0.1", Range: "0,1", Description: "Fungible Token mint rate (relative to the issue fee)"}
+	result[GovModuleAssetCreateGatewayBaseFee] = RangeDescription{InitialValue: "120000", Range: "0,", Description: "Benchmark fees for creating Gateways"}
+	result[GovModuleAssetGatewayAssetFeeRatio] = RangeDescription{InitialValue: "0.1", Range: "0,1", Description: "Rate of issuing gateway tokens (relative to the issue fee of native tokens)"}
+	return result
+}
 func GetGovModuleParam(module string) ([]byte, error) {
 	url := fmt.Sprintf(UrlGovParam, conf.Get().Hub.LcdUrl, module)
 	return utils.Get(url)
@@ -129,6 +148,10 @@ func GetGovSlashingParam() (map[string]interface{}, error) {
 	return GetGovModuleParamMap(GovModuleSlashing)
 }
 
+func GetGovAssetParam() (map[string]interface{}, error) {
+	return GetGovModuleParamMap(GovModuleAsset)
+}
+
 func GetAllGovModuleParam() (map[string]interface{}, error) {
 
 	result := map[string]interface{}{}
@@ -153,6 +176,10 @@ func GetAllGovModuleParam() (map[string]interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
+	assetMap, err := GetGovAssetParam()
+	if err != nil {
+		return nil, err
+	}
 
 	for k, v := range authMap {
 		result[k] = v
@@ -168,6 +195,9 @@ func GetAllGovModuleParam() (map[string]interface{}, error) {
 		result[k] = v
 	}
 	for k, v := range slashingMap {
+		result[k] = v
+	}
+	for k, v := range assetMap {
 		result[k] = v
 	}
 	return result, nil

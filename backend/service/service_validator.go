@@ -444,10 +444,37 @@ func (service *ValidatorService) GetValidatorDetail(validatorAddr string) vo.Val
 		desc.Details = blackone.Details
 	}
 
-	jailedUntil, missedBlockCount, err := lcd.GetJailedUntilAndMissedBlocksCountByConsensusPublicKey(validatorAsDoc.ConsensusPubkey)
+	jailedUntil, missedBlockCount, startHeight, err := lcd.GetJailedUntilAndMissedBlocksCountByConsensusPublicKey(validatorAsDoc.ConsensusPubkey)
 
+	var statsBlocksWindow string
 	if err != nil {
 		logger.Error("GetJailedUntilAndMissedBlocksCountByConsensusPublicKey", logger.String("consensus", validatorAsDoc.ConsensusPubkey), logger.String("err", err.Error()))
+	} else {
+		var startHeight, ok = utils.ParseInt(startHeight)
+		if !ok {
+			logger.Error("Format StartHeight", logger.String("err", err.Error()))
+		} else {
+			var lastBlock = lcd.BlockLatest()
+			var currentHeight, ok = utils.ParseInt(lastBlock.BlockMeta.Header.Height)
+			if !ok {
+				logger.Error("Query CurrentHeight At LastBlock", logger.String("err", err.Error()))
+			} else {
+				signedBlocksWindow, err := document.GovParams{}.QueryOne("signed_blocks_window")
+				if err != nil {
+					logger.Error("Query signed_blocks_window", logger.String("err", err.Error()))
+				} else {
+					signedBlocksWindowCurrentValue, ok := utils.ParseInt(signedBlocksWindow.CurrentValue.(string))
+					if ok {
+						height := currentHeight - startHeight
+						if height < signedBlocksWindowCurrentValue {
+							statsBlocksWindow = strconv.FormatInt(height, 10)
+						} else {
+							statsBlocksWindow = strconv.FormatInt(signedBlocksWindowCurrentValue, 10)
+						}
+					}
+				}
+			}
+		}
 	}
 
 	totalVotingPower, err := document.Validator{}.QueryTotalActiveValidatorVotingPower()
@@ -476,6 +503,8 @@ func (service *ValidatorService) GetValidatorDetail(validatorAddr string) vo.Val
 		ConsensusAddr:           validatorAsDoc.ConsensusPubkey,
 		Description:             desc,
 		Icons:                   validatorAsDoc.Icons,
+		Uptime:                  validatorAsDoc.Uptime,
+		StatsBlocksWindow:       statsBlocksWindow,
 	}
 
 	if validatorAsDoc.Jailed {

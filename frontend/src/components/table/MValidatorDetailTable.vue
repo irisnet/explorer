@@ -401,7 +401,7 @@ export default {
                     slot: "Block"
                 },
                 {
-                    title: "Timestamp",
+                    title: "End Time",
                     key: "Timestamp"
                 }
             ],

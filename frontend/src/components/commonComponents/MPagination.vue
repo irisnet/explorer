@@ -1,12 +1,12 @@
 <template>
-    <div>
-        <span v-show="total > 0 && showInfo" class="info">{{currentRange[0]}}-{{currentRange[1]}} of {{total}}</span>
+    <div class="common_pagination_content">
         <button
             v-if="showToFristEnd"
             @click="toFrist"
             :class="[currentPage === 1 || total === 0 ? 'no_disable' : '']"
         >«</button>
         <button @click="prev" :class="[currentPage === 1 || total === 0 ? 'no_disable' : '']">‹</button>
+        <span class="page_number_content">{{currentPage}}/{{Math.ceil(total/pageSize) === 0 ? 1 : Math.ceil(total/pageSize)}}</span>
         <button @click="after" :class="[forMaxRange() || total === 0 ? 'no_disable' : '']">›</button>
         <button
             v-if="showToFristEnd"
@@ -151,10 +151,17 @@ export default {
     vertical-align: middle;
     margin-right: 0.1rem;
 }
+.common_pagination_content{
+    border: 0.01rem solid #dee2e6;
+}
+.page_number_content{
+    padding: 0.05rem 0.05rem;
+    font-size: 0.14rem;
+    line-height: 1;
+}
 button {
     outline: none;
-    border: 1px solid #dee2e6;
-    border-right-width: 0;
+    border: none;
     padding: 5px 7.5px;
     color: var(--bgColor);
     line-height: 17px;
@@ -170,9 +177,16 @@ button {
 button:nth-child(1) {
     border-top-left-radius: 0.025rem;
     border-bottom-left-radius: 0.025rem;
+    border-right: 0.01rem solid #dee2e6;
+}
+button:nth-of-type(2){
+    border-right: 0.01rem solid #dee2e6;
+}
+button:nth-of-type(3){
+    border-left: 0.01rem solid #dee2e6;
 }
 button:nth-last-child(1) {
-    border-right-width: 1px;
+    border-left: 0.01rem solid #dee2e6;
     border-top-right-radius: 0.025rem;
     border-bottom-right-radius: 0.025rem;
 }

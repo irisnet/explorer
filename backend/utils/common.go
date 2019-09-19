@@ -64,12 +64,17 @@ func Round(x float64) int64 {
 	return int64(math.Floor(x + 0.5))
 }
 
-func RoundString(x string) int64 {
+func RoundString(x string) (int64, error) {
 	f, err := strconv.ParseFloat(x, 0)
 	if err != nil {
 		logger.Error("RoundString error", logger.String("str", x))
 	}
-	return int64(math.Floor(f + 0.5))
+	return int64(math.Floor(f + 0.5)), err
+}
+
+func ParseStringToFloat(x string) (float64, error) {
+	f, err := strconv.ParseFloat(x, 0)
+	return f, err
 }
 
 func RoundToString(decimal string, bit int) (i string) {
