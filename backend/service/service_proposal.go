@@ -152,6 +152,10 @@ func (service *ProposalService) QueryVoting(id int) vo.ProposalNewStyle {
 		panic(types.CodeNotFound)
 	}
 
+	if data.Status == document.ProposalStatusDeposit {
+		panic(types.CodeNotFound)
+	}
+
 	systemVotingPower, err := service.GetSystemVotingPower()
 	if err != nil {
 		logger.Error("get systemVotingPower fail", logger.String("err", err.Error()))
