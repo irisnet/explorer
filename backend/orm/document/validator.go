@@ -322,7 +322,7 @@ func (_ Validator) GetBondedValidators() ([]Validator, error) {
 	)
 
 	selector := bson.M{
-		ValidatorFieldVotingPower: "1",
+		ValidatorFieldTokens: "1",
 	}
 	condition := bson.M{
 		ValidatorFieldStatus: ValidatorStatusValBonded,
