@@ -199,7 +199,7 @@ func (_ GovParamsService) GetGovAssetParamList(currentMap map[string]interface{}
 		if currentValueStr != "" {
 			tmp.CurrentValue = currentValueStr
 
-		} else if currentValueMap.Amount != "" || currentValueMap.Amount != "" {
+		} else if currentValueMap.Amount != "" || currentValueMap.Denom != "" {
 			tmp.CurrentValue = currentValueMap
 		}
 		result = append(result, tmp)

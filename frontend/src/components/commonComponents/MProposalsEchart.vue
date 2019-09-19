@@ -27,24 +27,24 @@
             <div class="per_title">GovTallyingProcedure</div>
             <div style="margin-top: 16px;">
               <p>
-                <img v-if="data.participation >= data.participationNum" src="../../assets/participant.png"/>
-                <img v-if="data.participation < data.participationNum" src="../../assets/no_threshold.png"/>
+                <img v-if="data.participation > data.participationNum" src="../../assets/participant.png"/>
+                <img v-if="data.participation <= data.participationNum" src="../../assets/no_threshold.png"/>
                 <span>Participation</span>
               </p>
               <span style="margin-left: 20px;">{{data.participationNum}} %</span>
             </div>
             <div style="margin-top: 16px;">
               <p>
-                <img v-if="data.passThreshold >= data.passThresholdNum" src="../../assets/pass_threshold.png"/>
-                <img v-if="data.passThreshold < data.passThresholdNum" src="../../assets/no_threshold.png"/>
+                <img v-if="data.passThreshold > data.passThresholdNum" src="../../assets/pass_threshold.png"/>
+                <img v-if="data.passThreshold <= data.passThresholdNum" src="../../assets/no_threshold.png"/>
                 <span>Pass Threshold</span>
               </p>
               <span style="margin-left: 20px;">{{data.passThresholdNum}} %</span>
             </div>
             <div style="margin-top: 16px;">
               <p>
-                <img v-if="data.vetoThreshold >= data.vetoThresholdNum" src="../../assets/veto_threshold.png"/>
-                <img v-if="data.vetoThreshold < data.vetoThresholdNum" src="../../assets/no_threshold.png"/>
+                <img v-if="data.vetoThreshold > data.vetoThresholdNum" src="../../assets/veto_threshold.png"/>
+                <img v-if="data.vetoThreshold <= data.vetoThresholdNum" src="../../assets/no_threshold.png"/>
                 <span>Veto Threshold</span>
               </p>
               <span style="margin-left: 20px;">{{data.vetoThresholdNum}} %</span>
