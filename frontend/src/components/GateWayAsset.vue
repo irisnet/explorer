@@ -70,7 +70,7 @@
             </div>
         </div>
         <div v-show="gateWayIssueTokenList.length === 0 && gateWayEditTokenList.length === 0
-                    && gateWayMintTokenList.length === 0 && gateWayTransferOwnerTokenList.length === 0">
+                    && gateWayMintTokenList.length === 0 && gateWayTransferOwnerTokenList.length === 0 && flShowContent">
             <img class="no_data_img" src="../assets/no_data.svg">
         </div>
     </div>
@@ -102,6 +102,7 @@
 	            pageSize: 10,
 	            showNoData: false,
 	            flShowLoading: false,
+	            flShowContent: false,
 	            listTitleName:'Gateway Asset Txs',
 	            issueTokenType:'IssueToken',
 	            editTokenLType:'EditToken',
@@ -139,6 +140,7 @@
 	        },
 	        getIssueToken(){
 		        this.flShowLoading = true;
+		        this.flShowContent =  false;
 		        Service.commonInterface({gatewayAsset:{
 				        pageNumber:this.gateWayIssueTokenCurrentPageNum,
 				        pageSize:this.pageSize,
@@ -165,13 +167,17 @@
 							        flShowLink: true,
 						        }
 					        })
-				        }
+				        }else {
+					        this.flShowContent =  true;
+                        }
 			        }catch (e) {
+				        this.flShowContent =  true;
 				        console.error(e)
 			        }
 		        })
 	        },
 	        getEditToken(){
+		        this.flShowContent =  false;
 		        Service.commonInterface({gatewayAsset: {
 				        pageNumber: this.gateWayEditTokenCurrentPageNum,
 				        pageSize: this.pageSize,
@@ -193,13 +199,17 @@
 							        flShowLink: true,
 						        }
 					        })
-				        }
+				        }else {
+					        this.flShowContent =  true;
+                        }
 			        }catch (e) {
+				        this.flShowContent =  true;
 				        console.error(e)
 			        }
 		        })
 	        },
 	        getMintToken(){
+		        this.flShowContent =  false;
 		        Service.commonInterface({gatewayAsset:{
 				        pageNumber: this.gateWayMintTokenCurrentPageNum,
 				        pageSize: this.pageSize,
@@ -223,14 +233,18 @@
 							        flShowLink: true,
 						        }
 					        })
-				        }
+				        }else {
+					        this.flShowContent =  true;
+                        }
 
 			        }catch(e){
+				        this.flShowContent =  true;
 				        console.error(e)
 			        }
 		        })
 	        },
 	        getTransferToken(){
+		        this.flShowContent =  false;
 		        Service.commonInterface({gatewayAsset:{
 				        pageNumber: this.gateWayTransferTokenCurrentPageNum,
 				        pageSize: this.pageSize,
@@ -253,9 +267,12 @@
 							        flShowLink: true,
 						        }
 					        })
-				        }
+				        }else {
+					        this.flShowContent =  true;
+                        }
 
 			        }catch (e) {
+				        this.flShowContent =  true;
 				        console.error(e)
 			        }
 		        })

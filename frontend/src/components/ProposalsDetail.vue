@@ -116,6 +116,18 @@
                 </div>
             </div>
         </div>
+        <div class="card_container">
+            <div v-show="depositorObj">
+                <keep-alive>
+                    <m-deposit-card :depositObj="depositorObj" :burnPercent="burnPercent" :status="status"></m-deposit-card>
+                </keep-alive>
+            </div>
+            <div v-show="votingObj">
+                <keep-alive>
+                    <m-voting-card :votingBarObj="votingObj"></m-voting-card>
+                </keep-alive>
+            </div>
+        </div>
         <div :class="['proposal_table', proposalsDetailWrap, $store.state.isMobile ? 'mobile_proposals_table_container' : '']"
              v-if="!showNoData">
             <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -177,9 +189,13 @@ import BlocksListTable from './table/BlocksListTable.vue';
 import SpinComponent from './commonComponents/SpinComponent';
 import Constant from "../constant/Constant";
 import MProposalsDetailTable from './table/MProposalsDetailTable.vue';
+import MDepositCard from "./commonComponents/MDepositCard";
+import MVotingCard from "./commonComponents/MVotingCard";
 
 export default {
     components: {
+	    MVotingCard,
+	    MDepositCard,
         BlocksListTable,
         SpinComponent,
         MProposalsDetailTable
@@ -226,7 +242,10 @@ export default {
             depositorCurrentPage: 1,
             itemTotal: 0,
             depositorItemsTotal: 0,
-            perPage: 10
+            perPage: 10,
+            depositorObj: null,
+	        votingObj: null,
+	        burnPercent: 0
         }
     },
     beforeMount () {
@@ -392,15 +411,16 @@ export default {
                             this.votingStartTime = that.flShowProposalTime('votingStartTime', data.proposal.status) ? Tools.format2UTC(data.proposal.voting_start_time) : '--';
                             this.votingEndTime = that.flShowProposalTime('votingEndTime', data.proposal.status) ? Tools.format2UTC(data.proposal.voting_end_time) : '--';
                             this.description = data.proposal.description ? data.proposal.description : " -- ";
-                            this.voteDetailsYes = data.proposal.status === "DepositPeriod" ? "--" : data.result.Yes;
-                            this.voteDetailsNo = data.proposal.status === "DepositPeriod" ? "--" : data.result.No;
-                            this.voteDetailsNoWithVeto = data.proposal.status === "DepositPeriod" ? "--" : data.result.NoWithVeto;
-                            this.voteDetailsAbstain = data.proposal.status === "DepositPeriod" ? "--" : data.result.Abstain;
+                            // this.voteDetailsYes = data.proposal.status === "DepositPeriod" ? "--" : data.result.Yes;
+                            // this.voteDetailsNo = data.proposal.status === "DepositPeriod" ? "--" : data.result.No;
+                            // this.voteDetailsNoWithVeto = data.proposal.status === "DepositPeriod" ? "--" : data.result.NoWithVeto;
+                            // this.voteDetailsAbstain = data.proposal.status === "DepositPeriod" ? "--" : data.result.Abstain;
                             if (data.proposal && data.proposal.total_deposit.length !== 0) {
                                 this.totalDeposit = `${Tools.formatPriceToFixed(Tools.convertScientificNotation2Number(Tools.formatNumber(data.proposal.total_deposit[0].amount)))} ${Tools.formatDenom(data.proposal.total_deposit[0].denom).toUpperCase()}`;
                             } else {
                                 this.totalDeposit = "";
                             }
+                            this.burnPercent = data.proposal.burn_percent;
                             if (data.proposal.type === 'ParameterChange') {
                                 for (let index = 0; index < data.proposal.parameters.length; index++) {
                                     this.parameterValue += `${data.proposal.parameters[index].subspace}/${data.proposal.parameters[index].key} = ${data.proposal.parameters[index].value}\n`
@@ -415,18 +435,64 @@ export default {
                 }
             })
         },
+        getDepositorInformation(){
+        	Service.commonInterface({proposalDetailDepositor:{
+			        proposalId: this.$route.params.proposal_id
+                }},(res) => {
+        		try {
+                    if(res){
+	                    this.depositorObj = res
+                    }
+		        }catch (e) {
+                    console.error(e)
+		        }
+            })
+        },
+	    getVotingBarInformation(){
+        	Service.commonInterface({proposalDetailVotingBar:{
+			        proposalId: this.$route.params.proposal_id
+                }},(res) => {
+        		try {
+			        if(res){
+				        this.votingObj = res;
+			        }
+		        }catch (e) {
+                    console.error(e)
+		        }
+
+            })
+        }
     },
     mounted () {
         this.getProposalsInformation();
         this.getVoter();
         this.getDepositor();
+        this.getDepositorInformation()
+        this.getVotingBarInformation();
     }
 }
 </script>
 
 <style scoped lang="scss">
 @import "../style/mixin.scss";
-
+.card_container{
+    display: flex;
+    width: 100%;
+    margin: 0 auto;
+    max-width: 12.8rem;
+    div{
+        flex: 1;
+    }
+}
+@media screen and (max-width: 910px){
+    .card_container{
+        display: flex;
+        width: 100%;
+        margin: 0 auto;
+        max-width: 12.8rem;
+        flex-direction: column;
+    }
+}
 .proposals_detail_wrap {
     @include flex;
     @include pcContainer;
@@ -626,7 +692,7 @@ export default {
     color: var(--contentColor);
 }
 .information_value {
-    color: var(--contentColor);
+    color: var(--titleColor);
     word-break: break-all;
 }
 .vote-details-content {
@@ -687,7 +753,7 @@ pre {
     border-radius: 1px;
 }
 .information_pre {
-    color: var(--contentColor);
+    color: var(--titleColor);
     word-wrap: break-word;
     word-break: break-all;
 }

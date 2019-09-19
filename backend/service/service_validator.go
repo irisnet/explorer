@@ -1,10 +1,6 @@
 package service
 
 import (
-	"math/big"
-	"strconv"
-	"sync"
-
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
@@ -14,6 +10,8 @@ import (
 	"github.com/irisnet/explorer/backend/vo"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/txn"
+	"math/big"
+	"strconv"
 )
 
 type ValidatorService struct {
@@ -446,10 +444,37 @@ func (service *ValidatorService) GetValidatorDetail(validatorAddr string) vo.Val
 		desc.Details = blackone.Details
 	}
 
-	jailedUntil, missedBlockCount, err := lcd.GetJailedUntilAndMissedBlocksCountByConsensusPublicKey(validatorAsDoc.ConsensusPubkey)
+	jailedUntil, missedBlockCount, startHeight, err := lcd.GetJailedUntilAndMissedBlocksCountByConsensusPublicKey(validatorAsDoc.ConsensusPubkey)
 
+	var statsBlocksWindow string
 	if err != nil {
 		logger.Error("GetJailedUntilAndMissedBlocksCountByConsensusPublicKey", logger.String("consensus", validatorAsDoc.ConsensusPubkey), logger.String("err", err.Error()))
+	} else {
+		var startHeight, ok = utils.ParseInt(startHeight)
+		if !ok {
+			logger.Error("Format StartHeight", logger.String("err", err.Error()))
+		} else {
+			var lastBlock = lcd.BlockLatest()
+			var currentHeight, ok = utils.ParseInt(lastBlock.BlockMeta.Header.Height)
+			if !ok {
+				logger.Error("Query CurrentHeight At LastBlock", logger.String("err", err.Error()))
+			} else {
+				signedBlocksWindow, err := document.GovParams{}.QueryOne("signed_blocks_window")
+				if err != nil {
+					logger.Error("Query signed_blocks_window", logger.String("err", err.Error()))
+				} else {
+					signedBlocksWindowCurrentValue, ok := utils.ParseInt(signedBlocksWindow.CurrentValue.(string))
+					if ok {
+						height := currentHeight - startHeight
+						if height < signedBlocksWindowCurrentValue {
+							statsBlocksWindow = strconv.FormatInt(height, 10)
+						} else {
+							statsBlocksWindow = strconv.FormatInt(signedBlocksWindowCurrentValue, 10)
+						}
+					}
+				}
+			}
+		}
 	}
 
 	totalVotingPower, err := document.Validator{}.QueryTotalActiveValidatorVotingPower()
@@ -478,6 +503,8 @@ func (service *ValidatorService) GetValidatorDetail(validatorAddr string) vo.Val
 		ConsensusAddr:           validatorAsDoc.ConsensusPubkey,
 		Description:             desc,
 		Icons:                   validatorAsDoc.Icons,
+		Uptime:                  validatorAsDoc.Uptime,
+		StatsBlocksWindow:       statsBlocksWindow,
 	}
 
 	if validatorAsDoc.Jailed {
@@ -739,6 +766,33 @@ func (service *ValidatorService) UpdateValidators(vs []document.Validator) error
 	return document.Validator{}.Batch(txs)
 }
 
+func (service *ValidatorService) UpdateValidatorStaticInfo() error {
+	var validatorModel document.Validator
+	validators, err := validatorModel.GetAllValidator()
+	if err != nil {
+		return err
+	}
+	validatorMap := make(map[string]document.Validator, len(validators))
+	for _, v := range validators {
+		validatorMap[v.OperatorAddress] = v
+	}
+
+	height := utils.ParseIntWithDefault(lcd.BlockLatest().BlockMeta.Header.Height, 0)
+	updatedValidators := buildValidatorStaticInfo(validators, height)
+
+	for _, v := range updatedValidators {
+		if !isEqual(validatorMap[v.OperatorAddress], v) {
+			if err := validatorModel.UpdateByPk(v); err != nil {
+				logger.Error("update validator static data fail", logger.String("err", err.Error()),
+					logger.String("validator", string(utils.MarshalJsonIgnoreErr(v))))
+				continue
+			}
+		}
+	}
+
+	return nil
+}
+
 func (service *ValidatorService) QueryValidatorMonikerAndValidatorAddrByHashAddr(addr string) (document.Validator, error) {
 
 	return document.Validator{}.QueryMonikerAndValidatorAddrByHashAddr(addr)
@@ -756,46 +810,48 @@ func (service *ValidatorService) QueryValidatorByConAddr(address string) documen
 
 func buildValidators() []document.Validator {
 
-	res := lcd.Validators(1, 100)
-	if res2 := lcd.Validators(2, 100); len(res2) > 0 {
-		res = append(res, res2...)
-	}
+	res := lcd.Validators(1, 200)
 
 	var result []document.Validator
-	height := utils.ParseIntWithDefault(lcd.BlockLatest().BlockMeta.Header.Height, 0)
-
 	var buildValidator = func(v lcd.ValidatorVo) (document.Validator, error) {
 		var validator document.Validator
 		if err := utils.Copy(v, &validator); err != nil {
-			logger.Error("utils.copy validator failed")
 			return validator, err
 		}
-		validator.Uptime = computeUptime(v.ConsensusPubkey, height)
-		validator.SelfBond, validator.ProposerAddr, validator.DelegatorNum = queryDelegationInfo(v.OperatorAddress, v.ConsensusPubkey)
 
 		votingPower, err := types.NewDecFromStr(v.Tokens)
 		if err == nil {
 			validator.VotingPower = votingPower.RoundInt64()
 		}
+		validator.ProposerAddr = utils.GenHexAddrFromPubKey(validator.ConsensusPubkey)
 
 		return validator, nil
 	}
-	var group sync.WaitGroup
-	group.Add(len(res))
+
 	for _, v := range res {
-		var genValidator = func(va lcd.ValidatorVo, result *[]document.Validator) {
-			defer group.Done()
-			validator, err := buildValidator(va)
-			if err != nil {
-				logger.Error("utils.copy validator failed")
-				panic(err)
-			}
-			*result = append(*result, validator)
+		if validator, err := buildValidator(v); err == nil {
+			result = append(result, validator)
+		} else {
+			logger.Error("build validator fail", logger.String("err", err.Error()))
 		}
-		go genValidator(v, &result)
 	}
-	group.Wait()
 	return result
+}
+
+// update validator static info
+// include uptime, selfBond, delegatorNum
+func buildValidatorStaticInfo(validators []document.Validator, height int64) []document.Validator {
+	if len(validators) == 0 {
+		return nil
+	}
+
+	for i, v := range validators {
+		v.Uptime = computeUptime(v.ConsensusPubkey, height)
+		v.SelfBond, v.DelegatorNum = queryDelegationInfo(v.OperatorAddress)
+		validators[i] = v
+	}
+
+	return validators
 }
 
 func computeUptime(valPub string, height int64) float32 {
@@ -827,7 +883,7 @@ func Min(a, b int64) int64 {
 	return a
 }
 
-func queryDelegationInfo(operatorAddress string, consensusPubkey string) (string, string, int) {
+func queryDelegationInfo(operatorAddress string) (string, int) {
 	delegations := lcd.DelegationByValidator(operatorAddress)
 	var selfBond string
 	for _, d := range delegations {
@@ -837,9 +893,8 @@ func queryDelegationInfo(operatorAddress string, consensusPubkey string) (string
 			break
 		}
 	}
-	proposerAddr := utils.GenHexAddrFromPubKey(consensusPubkey)
 	delegatorNum := len(delegations)
-	return selfBond, proposerAddr, delegatorNum
+	return selfBond, delegatorNum
 }
 
 func isDiffValidator(src, dst document.Validator) bool {
@@ -852,9 +907,6 @@ func isDiffValidator(src, dst document.Validator) bool {
 		src.BondHeight != dst.BondHeight ||
 		src.UnbondingHeight != dst.UnbondingHeight ||
 		src.UnbondingTime.Second() != dst.UnbondingTime.Second() ||
-		src.Uptime != dst.Uptime ||
-		src.SelfBond != dst.SelfBond ||
-		src.DelegatorNum != dst.DelegatorNum ||
 		src.VotingPower != dst.VotingPower ||
 		src.ProposerAddr != dst.ProposerAddr ||
 		src.Description.Moniker != dst.Description.Moniker ||
@@ -868,6 +920,16 @@ func isDiffValidator(src, dst document.Validator) bool {
 		logger.Info("validator has changed", logger.String("OperatorAddress", src.OperatorAddress))
 		return true
 	}
+	return false
+}
+
+func isEqual(srcValidator, dstValidator document.Validator) bool {
+	srcBytes := utils.MarshalJsonIgnoreErr(srcValidator)
+	dstBytes := utils.MarshalJsonIgnoreErr(dstValidator)
+	if utils.Md5Encryption(srcBytes) == utils.Md5Encryption(dstBytes) {
+		return true
+	}
+
 	return false
 }
 

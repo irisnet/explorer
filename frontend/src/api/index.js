@@ -50,6 +50,8 @@ const urlApi = {
   //parameter
   govParams: '/api/params',
   //proposal
+  proposalDetailDepositor:'/api/gov/proposal_deposit/{proposalId}',
+  proposalDetailVotingBar:'/api/gov/proposal_voting/{proposalId}',
   proposalDetail: '/api/gov/proposals/{proposalId}',
   proposalDetailVoterTx:'/api/gov/proposals/{proposalId}/voter_txs?page={pageNumber}&size={perPageSize}',
   proposalDetailDepositorTx:'/api/gov/proposals/{proposalId}/depositor_txs?page={pageNumber}&size={perPageSize}',
@@ -84,7 +86,10 @@ const urlApi = {
   tokenStatsDistribution: '/api/tokenstats/account_total',
   //txs
   allTypeList:'/api/txs?page={pageNumber}&size={pageSize}&total=true',
+  allTxType:'/api/tx_types/{type}',
+  getTxListByFilterCondition:'/api/txs?page={pageNumber}&size={pageSize}&total=true&txType={txType}&status={status}&beginTime={beginTime}&endTime={endTime}',
   allTypeListQuireHeight:'/api/txs?page={pageNumber}&size={pageSize}&height={height}&total=true',
+  getTxListByTypeAndTxType:'/api/txs/{type}/{pageNumber}/{pageSize}?txType={txType}&status={status}&beginTime={beginTime}&endTime={endTime}',
   //assetInfo
   assetTokenInfo:'/api/asset/tokens/{tokenId}',
   gatewayTokenInfo:'/api/asset/gateways/{moniker}',
@@ -94,6 +99,7 @@ const urlApi = {
   //assetList
   nativeAssetList:'/api/asset/tokens?source=native',
   gatewayAssetList:'/api/asset/tokens?source=gateway',
+  
 };
 
 export default urlApi

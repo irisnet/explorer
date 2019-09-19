@@ -36,12 +36,12 @@ const (
 	Tx_Field_StakeCreateValidator = "stake_create_validator"
 	Tx_Field_StakeEditValidator   = "stake_edit_validator"
 
-	Tx_Field_Msgs_UdInfo        = "msgs.msg.ud_info.source"
-	Tx_Field_Msgs_Moniker       = "msgs.msg.moniker"
-	Tx_Field_Msgs_UdInfo_Symbol = "msgs.msg.ud_info.symbol"
-	Tx_Field_Msgs_Gateway       = "msgs.msg.gateway"
-	Tx_AssetType_Native         = "native"
-	Tx_AssetType_Gateway        = "gateway"
+	Tx_Field_Msgs_UdInfo         = "msgs.msg.ud_info.source"
+	Tx_Field_Msgs_Moniker        = "msgs.msg.moniker"
+	Tx_Field_Msgs_UdInfo_Symbol  = "msgs.msg.ud_info.symbol"
+	Tx_Field_Msgs_UdInfo_Gateway = "msgs.msg.ud_info.gateway"
+	Tx_AssetType_Native          = "native"
+	Tx_AssetType_Gateway         = "gateway"
 
 	Tx_Asset_TxType_Issue                = "IssueToken"
 	Tx_Asset_TxType_Edit                 = "EditToken"
@@ -298,7 +298,16 @@ func (_ CommonTx) QueryProposalTxListById(idArr []uint64) ([]CommonTx, error) {
 	return txs, err
 }
 
-func (_ CommonTx) QueryProposalTxById(proposalId int64, page, size int, total bool) (int, []CommonTx, error) {
+func (_ CommonTx) QueryProposalInitAmountTxById(id int) (CommonTx, error) {
+	selector := bson.M{Tx_Field_Amount: 1, Tx_Field_ProposalId: 1}
+	condition := bson.M{Tx_Field_Type: "SubmitProposal", Tx_Field_Status: "success", Tx_Field_ProposalId: id}
+	var txs CommonTx
+
+	err := queryOne(CollectionNmCommonTx, selector, condition, &txs)
+	return txs, err
+}
+
+func (_ CommonTx) QueryProposalTxById(proposalId int64, page, size int, total bool, iaaAddrs []string, voterType string) (int, []CommonTx, error) {
 
 	txs := []CommonTx{}
 
@@ -312,6 +321,12 @@ func (_ CommonTx) QueryProposalTxById(proposalId int64, page, size int, total bo
 		Tx_Field_Status:     types.TxTypeStatus,
 		Tx_Field_ProposalId: proposalId,
 		Tx_Field_Type:       types.TxTypeVote,
+	}
+	if voterType == "validator" {
+		condition[Tx_Field_From] = bson.M{"$in": iaaAddrs}
+	}
+	if voterType == "delegator" {
+		condition[Tx_Field_From] = bson.M{"$nin": iaaAddrs}
 	}
 	sort := fmt.Sprintf("-%v", Tx_Field_Height)
 
@@ -392,10 +407,16 @@ func (_ CommonTx) QueryTxAsset(assetType, tokenType, symbol, gateway string, pag
 		}
 	}
 	if symbol != "" {
-		condition[Tx_Field_Msgs_UdInfo_Symbol] = symbol
+		condition[Tx_Field_Msgs_UdInfo_Symbol] = bson.M{
+			"$regex":   symbol,
+			"$options": "$i",
+		}
 	}
 	if gateway != "" {
-		condition[Tx_Field_Msgs_Gateway] = gateway
+		condition[Tx_Field_Msgs_UdInfo_Gateway] = bson.M{
+			"$regex":   gateway,
+			"$options": "$i",
+		}
 	}
 	sort := fmt.Sprintf("-%v", Tx_Field_Height)
 	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, total, &txs)

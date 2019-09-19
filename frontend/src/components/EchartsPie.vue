@@ -195,7 +195,7 @@
         i{
           font-size: 0.2rem;
           padding-right: 0.1rem;
-          color: var(--bgColor);
+          color: #C8D1DA;
         }
       }
       .validators_top{

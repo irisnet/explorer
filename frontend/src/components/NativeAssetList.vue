@@ -11,24 +11,27 @@
             <div class="native_asset_list_wrap">
                 <m-asset-list-table :showNoData="showNoData" :items="nativeAssetList" name="nativeAssetList"></m-asset-list-table>
             </div>
-            <div v-show="nativeAssetList.length === 0">
+            <div v-show="nativeAssetList.length === 0 && !showLoading">
                 <img class="no_data_img" src="../assets/no_data.svg">
             </div>
         </div>
+        <spin-component :show-loading="showLoading"></spin-component>
     </div>
 </template>
 
 <script>
+	import SpinComponent from "./commonComponents/SpinComponent";
 	import Service from "../service"
 	import Tools from "../util/Tools"
 	import MAssetListTable from "./table/MAssetListTable";
 	export default {
 		name: "NativeAssetList",
-		components: {MAssetListTable},
+		components: {SpinComponent, MAssetListTable},
         data () {
 			return {
 				showNoData:false,
-				nativeAssetList: []
+				nativeAssetList: [],
+				showLoading: false,
             }
         },
         mounted(){
@@ -36,9 +39,11 @@
         },
         methods:{
 			getNativeAssetList(){
+				this.showLoading = true;
 				Service.commonInterface({nativeAssetList:{}}, (res)=> {
 					try {
 						if(res){
+							this.showLoading = false;
 							this.nativeAssetList = res.data.map( item => {
 								return {
 									Symbol: item.symbol,
@@ -51,8 +56,11 @@
 									flShowLink: true,
                                 }
                             })
+                        }else {
+							this.showLoading = false;
                         }
 					}catch (e) {
+						this.showLoading = false;
                         console.error(e)
 					}
                 })
@@ -95,7 +103,7 @@
         }
         .native_asset_list_content{
             max-width: 12.8rem;
-            margin: 0 auto;
+            margin: 0 auto 0.4rem auto;
             display: flex;
             flex-direction: column;
             align-items: center;

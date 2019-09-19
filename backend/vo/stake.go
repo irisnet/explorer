@@ -27,6 +27,8 @@ type ValidatorForDetail struct {
 	ConsensusAddr           string      `json:"consensus_addr"`
 	Description             Description `json:"description"`
 	Icons                   string      `json:"icons"`
+	Uptime                  float32     `json:"uptime"`
+	StatsBlocksWindow       string      `json:"stats_blocks_window"`
 }
 
 type WithdrawAddr struct {

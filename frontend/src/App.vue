@@ -57,9 +57,7 @@
           ©️ IRISplorer 2019 all rights reserved
         </p>
       </footer>
-      <backToTop :scrollHeight="scrollHeight"></backToTop>
     </div>
-
   </div>
 </template>
 <script>
@@ -297,6 +295,7 @@
               font-size: 0.16rem;
               color: #fff;
               padding-bottom: 0.1rem;
+              margin: 0;
             }
             .community_list_content{
               display: flex;
@@ -418,5 +417,12 @@
         }
       }
     }
+    //解决在移动端，日期选择器会移出到窗口以外
+    .ivu-date-picker:nth-of-type(2){
+      .ivu-select-dropdown{
+        left: 150px !important;
+      }
+    }
   }
+
 </style>

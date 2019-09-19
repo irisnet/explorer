@@ -8,28 +8,24 @@ import (
 	"github.com/irisnet/explorer/backend/utils"
 )
 
-type UpdateValidatorIcons struct{}
-
-func (task UpdateValidatorIcons) Name() string {
-	return "update_validator_icons"
+type ValidatorStaticInfo struct {
 }
 
-func (task UpdateValidatorIcons) Start() {
-	utils.RunTimer(conf.Get().Server.CronTimeValidatorIcons, utils.Sec, func() {
+func (task ValidatorStaticInfo) Name() string {
+	return "update_validator_static_data"
+}
+
+func (task ValidatorStaticInfo) Start() {
+	utils.RunTimer(conf.Get().Server.CronTimeValidatorStaticInfo, utils.Sec, func() {
 		if err := task.DoTask(); err != nil {
 			logger.Error(fmt.Sprintf("%s fail", task.Name()), logger.String("err", err.Error()))
 		} else {
 			logger.Info(fmt.Sprintf("%s success", task.Name()))
 		}
 	})
-
 }
 
-func (task UpdateValidatorIcons) DoTask() error {
-	err := new(service.ValidatorService).UpdateValidatorIcons()
-	if err != nil {
-		return err
-	}
-
-	return nil
+func (task ValidatorStaticInfo) DoTask() error {
+	validatorService := service.ValidatorService{}
+	return validatorService.UpdateValidatorStaticInfo()
 }

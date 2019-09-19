@@ -130,8 +130,7 @@
              striped
              v-if="type === 'addressTxList'"
              nodelabel>
-      <template slot='Tx_Hash'
-                slot-scope='data'>
+      <template v-slot:cell(Tx_Hash)="data">
         <div class="common_hover_parent"
              v-if="data.item.Tx_Hash">
           <router-link :to="`/tx?txHash=${data.item.Tx_Hash}`"
@@ -142,18 +141,15 @@
           </router-link>
         </div>
       </template>
-      <template slot='Age'
-                slot-scope='data'>
+      <template v-slot:cell(Age)="data">
         <span v-show="data.item.Age">{{data.item.Age}}</span>
       </template>
-      <template slot='Block'
-                slot-scope='data'>
+      <template v-slot:cell(Block)="data">
         <span class="skip_route">
           <router-link :to="`/block/${data.item.Block}`">{{data.item.Block}}</router-link>
         </span>
       </template>
-      <template slot='From'
-                slot-scope='data'>
+      <template v-slot:cell(From)="data">
         <span v-if="(/^[1-9]\d*$/).test(data.item.From)"
               class="skip_route">
           <router-link :to="`/tx?txHash=${data.item.Tx_Hash}`">{{data.item.From}} Validators</router-link>
@@ -170,8 +166,7 @@
         <span class="no_skip"
               v-show="(/^[0]\d*$/).test(data.item.From) || data.item.From === '--'">--</span>
       </template>
-      <template slot='OperatorAddr'
-                slot-scope='data'>
+      <template v-slot:cell(OperatorAddr)="data">
         <div class="name_address"
              v-show="data.item.OperatorAddr && data.item.OperatorAddr !== '--'">
           <span class="remove_default_style"
@@ -184,8 +179,7 @@
         <span class="no_skip"
               v-show="data.item.OperatorAddr === '--'">--</span>
       </template>
-      <template slot='To'
-                slot-scope='data'>
+      <template v-slot:cell(To)="data">
         <div class="name_address"
              v-show="data.item.To && data.item.To !== '--'">
           <span class="remove_default_style"
@@ -200,14 +194,12 @@
           --
         </span>
       </template>
-      <template slot='Owner'
-                slot-scope='data'>
+      <template v-slot:cell(Owner)="data">
         <span>
           {{data.item.Owner?`${formatAddress(data.item.Owner)}`:''}}
         </span>
       </template>
-      <template slot='Tx_Signer'
-                slot-scope='data'>
+      <template v-slot:cell(Tx_Signer)="data">
         <span class="skip_route"
               style="display: flex"
               v-if="data.item.Tx_Signer">
@@ -238,141 +230,182 @@ export default {
     return {
       blockFields: ['Height', 'Txn', 'Age', 'Precommit Validators', 'Voting Power'],
       fields: null,
-      transferFields: {
-        'Tx_Hash': {
-          label: 'TxHash'
+      transferFields:[
+        {
+          key: 'Tx_Hash',
+          label:'TxHash',
         },
-
-        'Block': {
+        {
+          key: 'Block',
           label: 'Block'
         },
-        'From': {
+        {
+          key: 'From',
           label: 'From'
         },
-        'Amount': {
+        {
+          key: 'Amount',
           label: 'Amount'
         },
-        'tokenId':{
+        {
+          key: 'tokenId',
           label: 'Token'
         },
-        'To': {
+        {
+          key: 'To',
           label: 'To'
         },
-        'Tx_Type': {
+        {
+          key: 'Tx_Type',
           label: 'TxType'
         },
-        'transferFee': {
+        {
+          key: 'transferFee',
           label: 'Fee'
         },
-        'Tx_Signer': {
+        {
+          key: 'Tx_Signer',
           label: 'Signer'
         },
-        'Tx_Status': {
+        {
+          key: 'Tx_Status',
           label: 'Status'
         },
-        'Timestamp': {
+        {
+          key: 'Timestamp',
           label: 'Timestamp'
         },
-      },
-      declarationFields: {
-        'Tx_Hash': {
-          label: 'TxHash'
+      ],
+      declarationFields: [
+        {
+          key: 'Tx_Hash',
+          label:'TxHash',
         },
-        'Block': {
+        {
+          key: 'Block',
           label: 'Block'
         },
-        'Moniker': {
+        {
+          key: 'Moniker',
           label: 'Moniker'
         },
-        'OperatorAddr': {
+        {
+          key: 'OperatorAddr',
           label: 'Operator'
         },
-        'Amount': {
+        {
+          key: 'Amount',
           label: 'Self-Bonded'
         },
-        'Tx_Type': {
+        {
+          key: 'Tx_Type',
           label: 'TxType'
         },
-        'Tx_Fee': {
+        {
+          key: 'Tx_Fee',
           label: 'Fee'
         },
-        'Tx_Signer': {
+        {
+          key: 'Tx_Signer',
           label: 'Signer'
         },
-        'Tx_Status': {
+        {
+          key: 'Tx_Status',
           label: 'Status'
         },
-        'Timestamp': {
+        {
+          key: 'Timestamp',
           label: 'Timestamp'
         },
-      },
-      stakeFields: {
-        'Tx_Hash': {
-          label: 'TxHash'
+      ],
+      stakeFields: [
+        {
+          key: 'Tx_Hash',
+          label:'TxHash',
         },
-        'Block': {
+        {
+          key: 'Block',
           label: 'Block'
         },
-        'From': {
+        {
+          key: 'From',
           label: 'From'
         },
-        'Amount': {
+        {
+          key: 'Amount',
           label: 'Amount'
         },
-        'To': {
+        {
+          key: 'To',
           label: 'To'
         },
-        'Tx_Type': {
+        {
+          key: 'Tx_Type',
           label: 'TxType'
         },
-        'Tx_Fee': {
+        {
+          key: 'Tx_Fee',
           label: 'Fee'
         },
-        'Tx_Signer': {
+        {
+          key: 'Tx_Signer',
           label: 'Signer'
         },
-        'Tx_Status': {
+        {
+          key: 'Tx_Status',
           label: 'Status'
         },
-        'Timestamp': {
+        {
+          key: 'Timestamp',
           label: 'Timestamp'
         },
-      },
-      govFields: {
-        'Tx_Hash': {
-          label: 'TxHash'
+      ],
+      govFields: [
+        {
+          key: 'Tx_Hash',
+          label:'TxHash',
         },
-        'Block': {
+        {
+          key: 'Block',
           label: 'Block'
         },
-        'Proposal_Type': {
+        {
+          key: 'Proposal_Type',
           label: 'Proposal_Type'
         },
-        'Proposal_ID': {
+        {
+          key: 'Proposal_ID',
           label: 'Proposal_ID'
         },
-        'Proposal_Title': {
+        {
+          key: 'Proposal_Title',
           label: 'Proposal_Title'
         },
-        'Amount': {
+        {
+          key: 'Amount',
           label: 'Amount'
         },
-        'Tx_Type': {
+        {
+          key: 'Tx_Type',
           label: 'TxType'
         },
-        'Tx_Fee': {
+        {
+          key: 'Tx_Fee',
           label: 'Fee'
         },
-        'Tx_Signer': {
+        {
+          key: 'Tx_Signer',
           label: 'Signer'
         },
-        'Tx_Status': {
+        {
+          key: 'Tx_Status',
           label: 'Status'
         },
-        'Timestamp': {
+        {
+          key: 'Timestamp',
           label: 'Timestamp'
         },
-      },
+      ],
     }
   },
   props: ['items', 'type', 'showNoData', 'minWidth', 'status'],
@@ -395,19 +428,21 @@ export default {
         return Tools.formatString(moniker,15,"...");
     },
     setTxFields (items) {
-      items.forEach((tx) => {
-        if (tx.listName === 'transfer') {
-          this.fields = this.transferFields
-        } else if (tx.listName === 'validations') {
-          this.fields = this.declarationFields
-        } else if (tx.listName === 'delegations') {
-          this.fields = this.stakeFields
-        } else if (tx.listName === 'gov') {
-          this.fields = this.govFields
-        } else {
-          this.fields = []
-        }
-      })
+      if(Array.isArray(items)){
+        items.forEach((tx) => {
+          if (tx.listName === 'transfer') {
+            this.fields = this.transferFields
+          } else if (tx.listName === 'validations') {
+            this.fields = this.declarationFields
+          } else if (tx.listName === 'delegations') {
+            this.fields = this.stakeFields
+          } else if (tx.listName === 'gov') {
+            this.fields = this.govFields
+          } else {
+            this.fields = []
+          }
+        })
+      }
     }
   }
 }

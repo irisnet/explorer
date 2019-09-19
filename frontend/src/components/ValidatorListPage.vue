@@ -23,8 +23,7 @@
             </div>
             <div class="pagination total_num" style='margin-bottom:0.2rem;'>
                 <span class="blocks_list_page_wrap_hash_var">{{count}} Total</span>
-                <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
-                </b-pagination>
+                <m-pagination :page-size="pageSize" :total="count"></m-pagination>
             </div>
         </div>
         <spin-component :showLoading="showLoading"/>
@@ -40,9 +39,11 @@
 	import ValidatorListTable from "./table/ValidatorListTable";
     import MValidatorListTable from "./table/MValidatorListTable";
     import MTabs from "./commonComponents/MTabs";
+	import MPagination from "./commonComponents/MPagination";
 
 	export default {
 		components:{
+			MPagination,
 			ValidatorListTable,
 			SpinComponent,
             MValidatorListTable,
@@ -155,12 +156,11 @@
 							this.items = result.map((item) => {
 								return {
 									validatorStatus: status,
-									url:require('../assets/header_img.png'),
 									moniker: Tools.formatString(item.description.moniker,15,'...'),
 									operatorAddress: item.operator_address,
 									commission: `${(item.commission.rate * 100).toFixed(2)} %`,
 									bondedToken: `${Tools.formatPriceToFixed(Number(item.tokens),2)} ${Constant.CHAINNAME.toLocaleUpperCase()}`,
-									uptime: `${(item.uptime * 100).toFixed(2)}%`,
+									uptime: Tools.FormatUptime(item.uptime),
 									votingPower: `${(item.voting_rate * 100).toFixed(4)}%`,
 									selfBond: `${Tools.subStrings(Tools.formatPriceToFixed(Number(item.self_bond.match(/\d*(\.\d{0,4})?/)[0])), 2)} ${Constant.CHAINNAME.toLocaleUpperCase()}`,
 									delegatorNum: item.delegator_num,
@@ -171,7 +171,6 @@
                                     url: item.icons || require('../assets/header_img.png')
 								}
 							});
-							// this.items = this.getValidatorHeaderImg(this.items);
 							this.showNoData = false;
 						}else {
 							this.showNoData = true;
@@ -186,23 +185,6 @@
 						console.error(e)
 					}
 				})
-			},
-			getValidatorHeaderImg(data){
-				let url = 'https://keybase.io/_/api/1.0/user/lookup.json?fields=pictures&key_suffix=';
-				for(let i = 0; i < data.length; i++){
-					if(data[i].identity){
-						Http.http(`${url}${data[i].identity}`).then(res =>{
-							if(res && res.them && res.them[0].pictures && res.them[0].pictures.primary && res.them[0].pictures.primary.url){
-                                data[i].url = res.them[0].pictures.primary.url;
-							}else {
-								data[i].url = require('../assets/header_img.png');
-							}
-						})
-					}else {
-						data[i].url = require('../assets/header_img.png');
-					}
-				}
-				return data
 			},
 			getValidatorStatus(index){
 				let validatorStatus;

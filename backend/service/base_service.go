@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
+	"github.com/irisnet/explorer/backend/utils"
 	"go.uber.org/zap"
 )
 
@@ -16,6 +17,10 @@ var (
 	govParamsService = &GovParamsService{}
 	validatorService = &ValidatorService{}
 	assetsService    = &AssetsService{}
+
+	BlackValidatorsMap            = make(map[string]document.BlackList)
+	BlackValidatorsHash           = utils.Md5Encryption([]byte("nil"))
+	BlackValidatorsHashHasNotInit = utils.Md5Encryption([]byte("nil"))
 )
 
 const (
@@ -43,8 +48,8 @@ func Get(m Module) Service {
 		return commonService
 	case Proposal:
 		return proposalService
-	// case Candidate:
-	// 	return stakeService
+		// case Candidate:
+		// 	return stakeService
 	case Tx:
 		return txService
 	case Delegator:
@@ -79,6 +84,27 @@ func (base *BaseService) GetTraceLog() zap.Field {
 	return logger.String("traceId", base.GetTid())
 }
 
+// store black list data in memory
+// use redis to cache black list data in feature.
+func init() {
+	getBlackValidators()
+}
+
+func getBlackValidators() {
+	blackListMap := document.BlackList{}.QueryBlackList()
+	BlackValidatorsHash = utils.Md5Encryption(utils.MarshalJsonIgnoreErr(blackListMap))
+	BlackValidatorsMap = blackListMap
+}
+
 func (b *BaseService) QueryBlackList() map[string]document.BlackList {
-	return document.BlackList{}.QueryBlackList()
+	if BlackValidatorsHash != BlackValidatorsHashHasNotInit {
+		return BlackValidatorsMap
+	} else {
+		b.ReloadBlackValidators()
+		return BlackValidatorsMap
+	}
+}
+
+func (_ *BaseService) ReloadBlackValidators() {
+	getBlackValidators()
 }

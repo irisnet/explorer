@@ -1,12 +1,14 @@
 <template>
     <div class="asset_info_container">
-        <div class="asset_info_list_container">
+        <div class="asset_info_list_container" v-show="flShowInformation">
             <div class="asset_info_list_content">
                 <div class="asset_info_kflower_contennt">
                     <div class="asset_info_kflower_title">
                         <span class="kflower_title">{{tokenID}}</span>
-                        <span class="native_blue_style" :class="assetType === 'NATIVE' ? 'blue_style' : 'yellow_style'">{{assetType}}</span>
-                        <span class="native_fungible_style">{{family}}</span>
+                        <div>
+                            <span class="native_blue_style" :class="assetType === 'NATIVE' ? 'blue_style' : 'yellow_style'">{{assetType}}</span>
+                            <span class="native_fungible_style">{{family}}</span>
+                        </div>
                     </div>
                     <div class="kflower_content" v-if="leftInfoContentArray.length > 0">
                         <ul class="kflower_left_content">
@@ -18,8 +20,14 @@
                                 </span>
                             </li>
                         </ul>
-                        <ul class="kflower_right_content">
+                        <ul class="kflower_right_content" v-show="!flShowGatewayInfo">
                             <li class="kflower_list_item"  v-for="item in rightInfoContentArray">
+                                <span class="kflower_item_name">{{item.key}}</span>
+                                <span class="kflower_item_value">{{item.value}}</span>
+                            </li>
+                        </ul>
+                        <ul class="kflower_right_content" v-show="flShowGatewayInfo">
+                            <li class="kflower_list_item"  v-for="item in gatewayRightInfoContentArray">
                                 <span class="kflower_item_name">{{item.key}}</span>
                                 <span class="kflower_item_value">{{item.value}}</span>
                             </li>
@@ -95,8 +103,10 @@
                         </div>
                     </div>
                 </div>
-
             </div>
+        </div>
+        <div v-show="flShowNoDataImg">
+            <img class="no_data_img" src="../assets/no_data.svg">
         </div>
     </div>
 </template>
@@ -160,11 +170,6 @@
 		                value:''
 	                },
 	                {
-	                	id:'canonical_symbol',
-		                key:'Canonical Symbol:',
-		                value:''
-	                },
-	                {
 		                id:'decimal',
 		                key:'Decimal:',
 		                value:''
@@ -175,6 +180,28 @@
 		                value:''
 	                }
                 ],
+				gatewayRightInfoContentArray:[
+					{
+						id:'name',
+						key:'Name:',
+						value:''
+					},
+					{
+                        id:'canonical_symbol',
+                        key:'Canonical Symbol:',
+                        value:''
+                    },
+					{
+						id:'decimal',
+						key:'Decimal:',
+						value:''
+					},
+					{
+						id:'min_unit_alias',
+						key:'Min Unit Alias:',
+						value:''
+					}
+				],
                 gatewayLeftContentArray:[
 	                {
 		                id:'moniker',
@@ -222,7 +249,9 @@
                 transferGatewayOwnerTxs: "TransferGatewayOwner",
                 moniker: "",
                 flShowGatewayInfo: false,
-                iconImg:''
+                iconImg:'',
+				flShowNoDataImg: false,
+                flShowInformation:false,
             }
         },
 		watch:{
@@ -266,6 +295,7 @@
 	            Server.commonInterface( param, (info) => {
 	            	try {
                         if(info.data){
+                        	this.flShowInformation = true;
                         	this.gateway = info.data.gateway;
 	                        this.symbol = info.data.symbol;
 	                        this.source = info.data.source;
@@ -276,7 +306,9 @@
                                 }else {
 	                        		if(item.id === 'total_supply' || item.id === 'initial_supply' || item.id === 'max_supply'){
 				                        item.value = info.data[item.id] ? this.formatNumber(info.data[item.id]) : '--'
-                                    }else {
+                                    }else if(item.id === 'mintable'){
+				                        item.value = info.data[item.id] ? Tools.firstWordUpperCase(info.data[item.id]) : '--'
+                                    } else {
 				                        item.value = info.data[item.id] ? info.data[item.id] : '--'
 			                        }
                                 }
@@ -291,6 +323,9 @@
                             }else {
 	                            this.getTransferToken();
                             }
+                        }else {
+                        	this.flShowNoDataImg = true;
+	                        this.flShowInformation = false;
                         }
 		            }catch (e) {
                         console.error(e)
@@ -303,9 +338,16 @@
                 this.assetType = info.data.source.toLocaleUpperCase()
                 this.headerTitle = 'NativeAssetInfo';
                 this.tokenID = info.data.token_id;
-                this.rightInfoContentArray.forEach( item => {
-                    item.value = info.data[item.id] ? info.data[item.id] : '--'
-                })
+                if(info.data.source === 'native'){
+	                this.rightInfoContentArray.forEach( item => {
+		                item.value = info.data[item.id] ? info.data[item.id] : '--'
+	                })
+                }else if(info.data.source === 'gateway') {
+	                this.gatewayRightInfoContentArray.forEach( item => {
+		                item.value = info.data[item.id] ? info.data[item.id] : '--'
+	                })
+                }
+
             },
 	        getGatewayInfo(info){
 	        	if(info.data.source === 'gateway'){
@@ -380,7 +422,7 @@
 					                return {
 						                Owner: item.owner,
 						                Symbol: item.symbol,
-						                InitialSupply: item.initial_supply,
+						                InitialSupply: this.formatNumber(item.initial_supply),
 						                Mintable: Tools.firstWordUpperCase(item.mintable),
 						                Block: item.height,
 						                TxHash: item.tx_hash,
@@ -434,7 +476,7 @@
 									Token: item.token_id,
 									Owner: item.owner,
 									MintTo: item.mint_to,
-									Amount: item.amount,
+									Amount: this.formatNumber(item.amount),
 									Block: item.height,
 									TxHash: item.tx_hash,
 									TxFee: this.formatFee(item.tx_fee),
@@ -544,6 +586,13 @@
 <style lang="scss">
     .asset_info_container{
         width: 100%;
+        position: relative;
+        .no_data_img{
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%,-50%);
+        }
         .asset_info_container{
             max-width: 12.8rem;
             margin: 0 auto;
@@ -569,32 +618,37 @@
                     .asset_info_kflower_title{
                         margin: 0;
                         padding-left: 0.2rem;
+                        display: flex;
+                        align-items: center;
                         .kflower_title{
                             font-size: 0.22rem;
                             color:var(--titleColor);
                         }
-                        .native_blue_style{
-                            font-size: 0.14rem;
-                            padding: 0.03rem 0.14rem;
-                            border-radius: 0.1rem;
-                            margin-left: 0.1rem;
-                            background: #E2F3FF;
+                        div{
+                            .native_blue_style{
+                                font-size: 0.14rem;
+                                padding: 0.03rem 0.14rem;
+                                border-radius: 0.1rem;
+                                margin-left: 0.1rem;
+                                background: #E2F3FF;
 
+                            }
+                            .blue_style{
+                                color: #0580D3;
+                            }
+                            .yellow_style{
+                                color: #FF9500;
+                            }
+                            .native_fungible_style{
+                                font-size: 0.14rem;
+                                padding: 0.03rem 0.14rem;
+                                background: #E2F3FF;
+                                border-radius: 0.1rem;
+                                color: #00C321;
+                                margin-left: 0.1rem;
+                            }
                         }
-                        .blue_style{
-                            color: #0580D3;
-                        }
-                        .yellow_style{
-                            color: #FF9500;
-                        }
-                        .native_fungible_style{
-                            font-size: 0.14rem;
-                            padding: 0.03rem 0.14rem;
-                            background: #E2F3FF;
-                            border-radius: 0.1rem;
-                            color: #00C321;
-                            margin-left: 0.1rem;
-                        }
+
                     }
                     .kflower_content{
                         box-sizing: border-box;
@@ -749,6 +803,13 @@
                         padding:  0 0.1rem;
                         .asset_info_kflower_title{
                             padding-left: 0.1rem;
+                            flex-direction: column;
+                            align-items: flex-start;
+                            div{
+                                .native_blue_style{
+                                    margin-left: 0;
+                                }
+                            }
                         }
                         .kflower_content{
                             flex-direction: column;
