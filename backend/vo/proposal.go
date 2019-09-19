@@ -72,10 +72,11 @@ type ProposalInfoVo struct {
 }
 
 type FinalVotes struct {
-	Yes        string `json:"yes,omitempty"`
-	No         string `json:"no,omitempty"`
-	NoWithVeto string `json:"no_with_veto,omitempty"`
-	Abstain    string `json:"abstain,omitempty"`
+	Yes               string `json:"yes,omitempty"`
+	No                string `json:"no,omitempty"`
+	NoWithVeto        string `json:"no_with_veto,omitempty"`
+	Abstain           string `json:"abstain,omitempty"`
+	SystemVotingPower string `json:"system_voting_power,omitempty"`
 }
 
 type (
