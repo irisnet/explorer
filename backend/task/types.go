@@ -19,6 +19,7 @@ func init() {
 	engine.AppendTask(UpdateValidatorIcons{})
 	engine.AppendTask(UpdateAssetTokens{})
 	engine.AppendTask(UpdateAssetGateways{})
+	engine.AppendTask(ValidatorStaticInfo{})
 }
 
 type TimerTask interface {

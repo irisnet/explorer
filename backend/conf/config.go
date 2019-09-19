@@ -33,12 +33,13 @@ const (
 	KeyPrefixConsAddr = "PrefixConsAddr"
 	KeyPrefixConsPub  = "PrefixConsPub"
 
-	KeyCronTimeAssetGateways  = "CronTimeAssetGateways"
-	KeyCronTimeAssetTokens    = "CronTimeAssetTokens"
-	KeyCronTimeGovParams      = "CronTimeGovParams"
-	KeyCronTimeTxNumByDay     = "CronTimeTxNumByDay"
-	KeyCronTimeValidators     = "CronTimeValidators"
-	KeyCronTimeValidatorIcons = "CronTimeValidatorIcons"
+	KeyCronTimeAssetGateways       = "CronTimeAssetGateways"
+	KeyCronTimeAssetTokens         = "CronTimeAssetTokens"
+	KeyCronTimeGovParams           = "CronTimeGovParams"
+	KeyCronTimeTxNumByDay          = "CronTimeTxNumByDay"
+	KeyCronTimeValidators          = "CronTimeValidators"
+	KeyCronTimeValidatorIcons      = "CronTimeValidatorIcons"
+	KeyCronTimeValidatorStaticInfo = "CronTimeValidatorStaticInfo"
 
 	EnvironmentDevelop = "dev"
 	EnvironmentLocal   = "local"
@@ -71,18 +72,19 @@ func init() {
 	config.Db = db
 
 	server := serverConf{
-		ServerPort:             getEnvInt(KeyServerPort, DefaultEnvironment),
-		FaucetUrl:              getEnv(KeyAddrFaucet, DefaultEnvironment),
-		ApiVersion:             getEnv(KeyApiVersion, DefaultEnvironment),
-		MaxDrawCnt:             getEnvInt(KeyMaxDrawCnt, DefaultEnvironment),
-		ShowFaucet:             getEnv(KeyShowFaucet, DefaultEnvironment),
-		CurEnv:                 getEnv(KeyCurEnv, DefaultEnvironment),
-		CronTimeAssetGateways:  getEnvInt(KeyCronTimeAssetGateways, DefaultEnvironment),
-		CronTimeAssetTokens:    getEnvInt(KeyCronTimeAssetTokens, DefaultEnvironment),
-		CronTimeGovParams:      getEnvInt(KeyCronTimeGovParams, DefaultEnvironment),
-		CronTimeTxNumByDay:     getEnvInt(KeyCronTimeTxNumByDay, DefaultEnvironment),
-		CronTimeValidators:     getEnvInt(KeyCronTimeValidators, DefaultEnvironment),
-		CronTimeValidatorIcons: getEnvInt(KeyCronTimeValidatorIcons, DefaultEnvironment),
+		ServerPort:                  getEnvInt(KeyServerPort, DefaultEnvironment),
+		FaucetUrl:                   getEnv(KeyAddrFaucet, DefaultEnvironment),
+		ApiVersion:                  getEnv(KeyApiVersion, DefaultEnvironment),
+		MaxDrawCnt:                  getEnvInt(KeyMaxDrawCnt, DefaultEnvironment),
+		ShowFaucet:                  getEnv(KeyShowFaucet, DefaultEnvironment),
+		CurEnv:                      getEnv(KeyCurEnv, DefaultEnvironment),
+		CronTimeAssetGateways:       getEnvInt(KeyCronTimeAssetGateways, DefaultEnvironment),
+		CronTimeAssetTokens:         getEnvInt(KeyCronTimeAssetTokens, DefaultEnvironment),
+		CronTimeGovParams:           getEnvInt(KeyCronTimeGovParams, DefaultEnvironment),
+		CronTimeTxNumByDay:          getEnvInt(KeyCronTimeTxNumByDay, DefaultEnvironment),
+		CronTimeValidators:          getEnvInt(KeyCronTimeValidators, DefaultEnvironment),
+		CronTimeValidatorIcons:      getEnvInt(KeyCronTimeValidatorIcons, DefaultEnvironment),
+		CronTimeValidatorStaticInfo: getEnvInt(KeyCronTimeValidatorStaticInfo, DefaultEnvironment),
 	}
 	config.Server = server
 
@@ -106,14 +108,14 @@ func init() {
 
 func loadDefault() {
 	defaultConfig[EnvironmentDevelop] = map[string]string{
-		KeyDbAddr:         "192.168.150.31:27017",
+		KeyDbAddr:         "localhost:27217",
 		KeyDATABASE:       "sync-iris",
 		KeyDbUser:         "iris",
 		KeyDbPwd:          "irispassword",
 		KeyDbPoolLimit:    "4096",
 		KeyServerPort:     "8080",
 		KeyAddrHubLcd:     "http://irisnet-lcd.dev.rainbow.one",
-		KeyAddrHubNode:    "http://192.168.150.31:32657",
+		KeyAddrHubNode:    "http://192.168.150.32:26657",
 		KeyAddrFaucet:     "http://192.168.150.7:30200",
 		KeyChainId:        "rainbow-dev",
 		KeyApiVersion:     "v0.6.5",
@@ -128,12 +130,13 @@ func loadDefault() {
 		KeyCurEnv:         "dev",
 		KeyInitialSupply:  InitialSupply,
 
-		KeyCronTimeAssetGateways:  "60",
-		KeyCronTimeAssetTokens:    "60",
-		KeyCronTimeGovParams:      "3600",
-		KeyCronTimeTxNumByDay:     "43200",
-		KeyCronTimeValidators:     "60",
-		KeyCronTimeValidatorIcons: "43200",
+		KeyCronTimeAssetGateways:       "60",
+		KeyCronTimeAssetTokens:         "60",
+		KeyCronTimeGovParams:           "3600",
+		KeyCronTimeTxNumByDay:          "43200",
+		KeyCronTimeValidators:          "60",
+		KeyCronTimeValidatorIcons:      "43200",
+		KeyCronTimeValidatorStaticInfo: "300",
 	}
 }
 
@@ -156,18 +159,19 @@ type dbConf struct {
 }
 
 type serverConf struct {
-	ServerPort             int
-	FaucetUrl              string
-	ApiVersion             string
-	MaxDrawCnt             int
-	ShowFaucet             string
-	CurEnv                 string
-	CronTimeAssetGateways  int
-	CronTimeAssetTokens    int
-	CronTimeGovParams      int
-	CronTimeTxNumByDay     int
-	CronTimeValidators     int
-	CronTimeValidatorIcons int
+	ServerPort                  int
+	FaucetUrl                   string
+	ApiVersion                  string
+	MaxDrawCnt                  int
+	ShowFaucet                  string
+	CurEnv                      string
+	CronTimeAssetGateways       int
+	CronTimeAssetTokens         int
+	CronTimeGovParams           int
+	CronTimeTxNumByDay          int
+	CronTimeValidators          int
+	CronTimeValidatorStaticInfo int
+	CronTimeValidatorIcons      int
 }
 
 type hubConf struct {
