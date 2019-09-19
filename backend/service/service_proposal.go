@@ -3,7 +3,6 @@ package service
 import (
 	"encoding/hex"
 	"encoding/json"
-	"strconv"
 	"strings"
 
 	"github.com/irisnet/explorer/backend/conf"
@@ -225,7 +224,7 @@ func (service *ProposalService) QueryVoting(id int) vo.ProposalNewStyle {
 	return tmp
 }
 
-func formatProposalStatusVotingData(service *ProposalService, proposalStatusVotingData []document.Proposal, systemVotingPower int64, needMoniker bool) []vo.ProposalNewStyle {
+func formatProposalStatusVotingData(service *ProposalService, proposalStatusVotingData []document.Proposal, systemVotingPower float64, needMoniker bool) []vo.ProposalNewStyle {
 	proposals := make([]vo.ProposalNewStyle, 0, len(proposalStatusVotingData))
 
 	if len(proposalStatusVotingData) < 1 {
@@ -616,7 +615,6 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 		if err != nil {
 			logger.Error("get systemVotingPower fail", logger.String("err", err.Error()))
 		}
-		systemVotingPowerFloat, _ := utils.ParseStringToFloat(strconv.FormatInt(systemVotingPower, 10))
 
 		var votedNum float64
 		var noWithVeto float64
@@ -642,7 +640,7 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 		}
 		participationFloat, _ := utils.ParseStringToFloat(participation)
 		vetoThresholdFloat, _ := utils.ParseStringToFloat(vetoThreshold)
-		isParticipation := bool((votedNum / systemVotingPowerFloat) > participationFloat)
+		isParticipation := bool((votedNum / systemVotingPower) > participationFloat)
 		isRejectVote := bool(isParticipation && bool((noWithVeto/votedNum) > vetoThresholdFloat))
 
 		burnPercent, err := lcd.GetProposalBurnPercentByResult(data.Status, isRejectVote)
@@ -768,15 +766,17 @@ func (_ ProposalService) GetDepositProposalInitAmount(idArr []uint64) (map[uint6
 }
 
 // get systemVotingPower by get sum of validator votingPower which status is bonded
-func (_ ProposalService) GetSystemVotingPower() (int64, error) {
+func (_ ProposalService) GetSystemVotingPower() (float64, error) {
 	var (
 		validatorDocument document.Validator
-		totalVotingPower  int64
+		totalVotingPower  float64
 	)
 
 	if validators, err := validatorDocument.GetBondedValidators(); err == nil {
 		for _, v := range validators {
-			totalVotingPower += v.VotingPower
+			if tokens, err := utils.ParseStringToFloat(v.Tokens); err == nil {
+				totalVotingPower += tokens
+			}
 		}
 	}
 
