@@ -364,8 +364,9 @@ func getDelegationsByVoter(curValidators map[string]*vo.ValidatorGovInfo, curDel
 			votingPower = computedVotingPower(delegationShares, curValidators, delegation.ValidatorAddr)
 		}
 		curDelegator.DelVotingPower = curDelegator.DelVotingPower + votingPower
-		curValidator := curValidators[delegation.ValidatorAddr]
-		curValidator.DelDeductionShares = curValidator.DelDeductionShares + delegationShares
+		if curValidator, ok := curValidators[delegation.ValidatorAddr]; ok {
+			curValidator.DelDeductionShares = curValidator.DelDeductionShares + delegationShares
+		}
 	}
 }
 
