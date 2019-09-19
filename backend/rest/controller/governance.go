@@ -61,7 +61,12 @@ func registerQueryProposals(r *mux.Router) error {
 func registerQueryDepositAndVotingProposals(r *mux.Router) error {
 
 	doApi(r, types.UrlRegisterQueryDepositVotingProposals, "GET", func(request vo.IrisReq) interface{} {
-		result := gov.QueryDepositAndVotingProposalList()
+		need := QueryParam(request, "needMoniker")
+		needMoniker := true
+		if need == "false" {
+			needMoniker = false
+		}
+		result := gov.QueryDepositAndVotingProposalList(needMoniker)
 		return result
 	})
 

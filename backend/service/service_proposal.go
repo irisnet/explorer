@@ -49,7 +49,7 @@ func (service *ProposalService) QueryProposalsByHeight(height int64) []vo.Propos
 	return resp
 }
 
-func (service *ProposalService) QueryDepositAndVotingProposalList() []vo.ProposalNewStyle {
+func (service *ProposalService) QueryDepositAndVotingProposalList(needMoniker bool) []vo.ProposalNewStyle {
 	var (
 		proposalDocument document.Proposal
 	)
@@ -86,7 +86,7 @@ func (service *ProposalService) QueryDepositAndVotingProposalList() []vo.Proposa
 	proposals := make([]vo.ProposalNewStyle, 0, len(data))
 
 	proposalStatusDepositDatas := formatProposalStatusDepositData(service, proposalStatusDepositData)
-	proposalStatusVotingDatas := formatProposalStatusVotingData(service, proposalStatusVotingData, systemVotingPower)
+	proposalStatusVotingDatas := formatProposalStatusVotingData(service, proposalStatusVotingData, systemVotingPower, needMoniker)
 
 	proposals = append(proposals, proposalStatusDepositDatas...)
 	proposals = append(proposals, proposalStatusVotingDatas...)
@@ -225,33 +225,36 @@ func (service *ProposalService) QueryVoting(id int) vo.ProposalNewStyle {
 	return tmp
 }
 
-func formatProposalStatusVotingData(service *ProposalService, proposalStatusVotingData []document.Proposal, systemVotingPower int64) []vo.ProposalNewStyle {
+func formatProposalStatusVotingData(service *ProposalService, proposalStatusVotingData []document.Proposal, systemVotingPower int64, needMoniker bool) []vo.ProposalNewStyle {
 	proposals := make([]vo.ProposalNewStyle, 0, len(proposalStatusVotingData))
 
 	if len(proposalStatusVotingData) < 1 {
 		return proposals
 	}
 
-	unique_set := make(map[string]bool)
 	allBondedValidators, err := document.Validator{}.GetBondedValidatorsSharesTokens()
 	if err != nil {
 		logger.Error("query allBondedValidators", logger.String("err", err.Error()))
 	}
 
-	for _, v := range proposalStatusVotingData {
-		for _, addr := range v.Votes {
-			unique_set[addr.Voter] = true
+	var addrAsMultiTypeMap map[string]AddrAsMultiType
+	if needMoniker {
+		unique_set := make(map[string]bool)
+		for _, v := range proposalStatusVotingData {
+			for _, addr := range v.Votes {
+				unique_set[addr.Voter] = true
+			}
 		}
-	}
 
-	voterAddrArr := make([]string, 0, len(unique_set))
-	for x := range unique_set {
-		voterAddrArr = append(voterAddrArr, x)
-	}
+		voterAddrArr := make([]string, 0, len(unique_set))
+		for x := range unique_set {
+			voterAddrArr = append(voterAddrArr, x)
+		}
 
-	addrAsMultiTypeMap, err := service.GetValidatorPublicKeyMonikerFromProposalVoter(voterAddrArr)
-	if err != nil {
-		logger.Error("query GetValidatorPublicKeyMonikerFromProposalVoter", logger.String("err", err.Error()), logger.Any("voterAddrArr", voterAddrArr))
+		addrAsMultiTypeMap, err = service.GetValidatorPublicKeyMonikerFromProposalVoter(voterAddrArr)
+		if err != nil {
+			logger.Error("query GetValidatorPublicKeyMonikerFromProposalVoter", logger.String("err", err.Error()), logger.Any("voterAddrArr", voterAddrArr))
+		}
 	}
 
 	curValidators := make(map[string]*vo.ValidatorGovInfo, len(allBondedValidators))
@@ -281,20 +284,22 @@ func formatProposalStatusVotingData(service *ProposalService, proposalStatusVoti
 
 		for _, v := range curDelegators {
 			var voterVotingPower float64
-			voterInfo := addrAsMultiTypeMap[v.Address]
 
-			// only bonded validator will calculate voting power
-			//if voterInfo.Status == document.ValidatorStatusValBonded {
-			//	voterVotingPower = voterInfo.VotingPower
-			//}
 			voterVotingPower = v.DelVotingPower + v.ValVotingPower
 
 			tmpVote := vo.VoteWithVoterInfo{
-				Voter:        v.Address,
-				Option:       v.Option,
-				Time:         v.Time,
-				VotingPower:  voterVotingPower,
-				VoterMoniker: voterInfo.Moniker,
+				Voter:          v.Address,
+				Option:         v.Option,
+				Time:           v.Time,
+				VotingPower:    voterVotingPower,
+				DelVotingPower: v.DelVotingPower,
+				ValVotingPower: v.ValVotingPower,
+			}
+
+			if needMoniker {
+				if voterInfo, ok := addrAsMultiTypeMap[v.Address]; ok {
+					tmpVote.VoterMoniker = voterInfo.Moniker
+				}
 			}
 			tmpVoteArr = append(tmpVoteArr, tmpVote)
 		}
