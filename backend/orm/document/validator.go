@@ -322,7 +322,7 @@ func (_ Validator) GetBondedValidators() ([]Validator, error) {
 	)
 
 	selector := bson.M{
-		ValidatorFieldVotingPower: "1",
+		ValidatorFieldTokens: "1",
 	}
 	condition := bson.M{
 		ValidatorFieldStatus: ValidatorStatusValBonded,
@@ -439,65 +439,6 @@ func (_ Validator) QueryValidatorListByAddrList(addrs []string) ([]Validator, er
 	return validatorArr, err
 }
 
-//func (_ Validator) QueryCandidateUptimeByWeekOrMonth(addr, category string) ([]UptimeChangeVo, error) {
-//
-//	db := getDb()
-//	u := db.C(CollectionNmUptimeChange)
-//
-//	var upChanges []ValUpTimeVo
-//	agoStr := "-336h"
-//	if category == "month" {
-//		agoStr = "-720h"
-//	}
-//	now := time.Now()
-//	endTime := now
-//	d, _ := time.ParseDuration(agoStr)
-//	startTime := endTime.Add(d)
-//	startStr := startTime.Format("2006-01-02 15")
-//	endStr := endTime.Format("2006-01-02 15")
-//	pipe := u.Pipe(
-//		[]bson.M{
-//			{"$match": bson.M{
-//				"address": addr,
-//				"time":    bson.M{"$gte": startStr, "$lt": endStr},
-//			}},
-//			{"$project": bson.M{
-//				"day":    bson.M{"$substr": []interface{}{"$time", 0, 10}},
-//				"uptime": "$uptime",
-//			}},
-//			{"$group": bson.M{
-//				"_id":    "$day",
-//				"uptime": bson.M{"$avg": "$uptime"},
-//			}},
-//			{"$sort": bson.M{
-//				"_id": 1,
-//			}},
-//		},
-//	)
-//	err := pipe.All(&upChanges)
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	upChangeMap := make(map[string]float64)
-//	for _, upChange := range upChanges {
-//		upChangeMap[upChange.Time] = upChange.Uptime
-//	}
-//	d1, _ := time.ParseDuration("24h")
-//	result := []UptimeChangeVo{}
-//	for startTime.Before(endTime) {
-//		startStr := startTime.UTC().Format("2006-01-02")
-//		var uptime = float64(-1)
-//		if _, ok := upChangeMap[startStr]; ok {
-//			uptime = upChangeMap[startStr]
-//		}
-//		result = append(result, UptimeChangeVo{Address: addr, Uptime: uptime, Time: startStr})
-//		startTime = startTime.Add(d1)
-//	}
-//
-//	return result, nil
-//}
-
 func (_ Validator) QueryMonikerAndValidatorAddrByHashAddr(addr string) (Validator, error) {
 
 	selector := bson.M{ValidatorFieldOperatorAddress: 1, ValidatorFieldDescription: 1}
@@ -611,4 +552,13 @@ func getValUpTime(query *orm.Query) map[string]int {
 		}
 	}
 	return upTimeMap
+}
+
+// update document by primary key
+func (_ Validator) UpdateByPk(validator Validator) error {
+	db := orm.GetDatabase()
+	defer db.Session.Close()
+
+	c := db.C(CollectionNmValidator)
+	return c.Update(validator.PkKvPair(), validator)
 }

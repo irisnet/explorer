@@ -3,7 +3,6 @@ package service
 import (
 	"encoding/hex"
 	"encoding/json"
-	"strconv"
 	"strings"
 
 	"github.com/irisnet/explorer/backend/conf"
@@ -153,56 +152,73 @@ func (service *ProposalService) QueryVoting(id int) vo.ProposalNewStyle {
 		panic(types.CodeNotFound)
 	}
 
-	systemVotingPower, err := service.GetSystemVotingPower()
-	if err != nil {
-		logger.Error("get systemVotingPower fail", logger.String("err", err.Error()))
+	if data.Status == document.ProposalStatusDeposit {
+		panic(types.CodeNotFound)
 	}
 
-	tmpVoteArr := make([]vo.VoteWithVoterInfo, 0, len(data.Votes))
-
-	allBondedValidators, err := document.Validator{}.GetBondedValidatorsSharesTokens()
-	if err != nil {
-		logger.Error("query allBondedValidators", logger.String("err", err.Error()))
-	}
-	curValidators := make(map[string]*vo.ValidatorGovInfo, len(allBondedValidators))
-
-	for _, v := range allBondedValidators {
-		delegatorShares, _ := utils.ParseStringToFloat(v.DelegatorShares)
-		tokens, _ := utils.ParseStringToFloat(v.Tokens)
-		curValidators[v.OperatorAddress] = &vo.ValidatorGovInfo{
-			Address:   v.OperatorAddress,
-			DelShares: delegatorShares,
-			Tokens:    tokens,
-		}
-	}
-	curDelegators := make(map[string]*vo.DelegatorGovInfo, len(data.Votes))
-
-	for _, v := range data.Votes {
-		getDelegationsByVoter(curValidators, curDelegators, v)
-	}
-	computedValidatorsPower(curValidators, curDelegators)
-
-	for _, v := range curDelegators {
-		tmpVote := vo.VoteWithVoterInfo{
-			Voter:          v.Address,
-			Option:         v.Option,
-			Time:           v.Time,
-			DelVotingPower: v.DelVotingPower,
-			ValVotingPower: v.ValVotingPower,
-		}
-		tmpVoteArr = append(tmpVoteArr, tmpVote)
-	}
+	var systemVotingPower float64
+	var tmpVoteArr []vo.VoteWithVoterInfo
 
 	tmp := vo.ProposalNewStyle{
-		ProposalId:       data.ProposalId,
-		Title:            data.Title,
-		Type:             data.Type,
-		Status:           data.Status,
-		SubmitTime:       data.SubmitTime,
-		DepositEndTime:   data.DepositEndTime.UTC(),
-		VotingEndTime:    data.VotingEndTime,
-		Votes:            tmpVoteArr,
-		TotalVotingPower: systemVotingPower,
+		ProposalId:     data.ProposalId,
+		Title:          data.Title,
+		Type:           data.Type,
+		Status:         data.Status,
+		SubmitTime:     data.SubmitTime,
+		DepositEndTime: data.DepositEndTime.UTC(),
+		VotingEndTime:  data.VotingEndTime,
+	}
+
+	if data.Status == document.ProposalStatusVoting {
+		systemVotingPower, err = service.GetSystemVotingPower()
+		if err != nil {
+			logger.Error("get systemVotingPower fail", logger.String("err", err.Error()))
+		}
+
+		tmpVoteArr = make([]vo.VoteWithVoterInfo, 0, len(data.Votes))
+		allBondedValidators, err := document.Validator{}.GetBondedValidatorsSharesTokens()
+		if err != nil {
+			logger.Error("query allBondedValidators", logger.String("err", err.Error()))
+		}
+		curValidators := make(map[string]*vo.ValidatorGovInfo, len(allBondedValidators))
+
+		for _, v := range allBondedValidators {
+			delegatorShares, _ := utils.ParseStringToFloat(v.DelegatorShares)
+			tokens, _ := utils.ParseStringToFloat(v.Tokens)
+			curValidators[v.OperatorAddress] = &vo.ValidatorGovInfo{
+				Address:   v.OperatorAddress,
+				DelShares: delegatorShares,
+				Tokens:    tokens,
+			}
+		}
+		curDelegators := make(map[string]*vo.DelegatorGovInfo, len(data.Votes))
+
+		for _, v := range data.Votes {
+			getDelegationsByVoter(curValidators, curDelegators, v)
+		}
+		computedValidatorsPower(curValidators, curDelegators)
+
+		for _, v := range curDelegators {
+			tmpVote := vo.VoteWithVoterInfo{
+				Voter:          v.Address,
+				Option:         v.Option,
+				Time:           v.Time,
+				DelVotingPower: v.DelVotingPower,
+				ValVotingPower: v.ValVotingPower,
+			}
+			tmpVoteArr = append(tmpVoteArr, tmpVote)
+		}
+
+		tmp.Votes = tmpVoteArr
+		tmp.TotalVotingPower = systemVotingPower
+	} else if data.Status == document.ProposalStatusPassed || data.Status == document.ProposalStatusRejected {
+		tmp.FinalVotes = vo.FinalVotes{
+			Yes:               data.FinalVotes.Yes,
+			No:                data.FinalVotes.No,
+			NoWithVeto:        data.FinalVotes.NoWithVeto,
+			Abstain:           data.FinalVotes.Abstain,
+			SystemVotingPower: data.FinalVotes.SystemVotingPower,
+		}
 	}
 
 	l := vo.Level{}
@@ -225,7 +241,7 @@ func (service *ProposalService) QueryVoting(id int) vo.ProposalNewStyle {
 	return tmp
 }
 
-func formatProposalStatusVotingData(service *ProposalService, proposalStatusVotingData []document.Proposal, systemVotingPower int64, needMoniker bool) []vo.ProposalNewStyle {
+func formatProposalStatusVotingData(service *ProposalService, proposalStatusVotingData []document.Proposal, systemVotingPower float64, needMoniker bool) []vo.ProposalNewStyle {
 	proposals := make([]vo.ProposalNewStyle, 0, len(proposalStatusVotingData))
 
 	if len(proposalStatusVotingData) < 1 {
@@ -361,8 +377,9 @@ func getDelegationsByVoter(curValidators map[string]*vo.ValidatorGovInfo, curDel
 			votingPower = computedVotingPower(delegationShares, curValidators, delegation.ValidatorAddr)
 		}
 		curDelegator.DelVotingPower = curDelegator.DelVotingPower + votingPower
-		curValidator := curValidators[delegation.ValidatorAddr]
-		curValidator.DelDeductionShares = curValidator.DelDeductionShares + delegationShares
+		if curValidator, ok := curValidators[delegation.ValidatorAddr]; ok {
+			curValidator.DelDeductionShares = curValidator.DelDeductionShares + delegationShares
+		}
 	}
 }
 
@@ -616,7 +633,6 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 		if err != nil {
 			logger.Error("get systemVotingPower fail", logger.String("err", err.Error()))
 		}
-		systemVotingPowerFloat, _ := utils.ParseStringToFloat(strconv.FormatInt(systemVotingPower, 10))
 
 		var votedNum float64
 		var noWithVeto float64
@@ -642,7 +658,7 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 		}
 		participationFloat, _ := utils.ParseStringToFloat(participation)
 		vetoThresholdFloat, _ := utils.ParseStringToFloat(vetoThreshold)
-		isParticipation := bool((votedNum / systemVotingPowerFloat) > participationFloat)
+		isParticipation := bool((votedNum / systemVotingPower) > participationFloat)
 		isRejectVote := bool(isParticipation && bool((noWithVeto/votedNum) > vetoThresholdFloat))
 
 		burnPercent, err := lcd.GetProposalBurnPercentByResult(data.Status, isRejectVote)
@@ -768,15 +784,17 @@ func (_ ProposalService) GetDepositProposalInitAmount(idArr []uint64) (map[uint6
 }
 
 // get systemVotingPower by get sum of validator votingPower which status is bonded
-func (_ ProposalService) GetSystemVotingPower() (int64, error) {
+func (_ ProposalService) GetSystemVotingPower() (float64, error) {
 	var (
 		validatorDocument document.Validator
-		totalVotingPower  int64
+		totalVotingPower  float64
 	)
 
 	if validators, err := validatorDocument.GetBondedValidators(); err == nil {
 		for _, v := range validators {
-			totalVotingPower += v.VotingPower
+			if tokens, err := utils.ParseStringToFloat(v.Tokens); err == nil {
+				totalVotingPower += tokens
+			}
 		}
 	}
 
@@ -919,6 +937,7 @@ func (s *ProposalService) buildVoteTxs(txs []document.CommonTx, msgs map[string]
 			Voter:     tx.From,
 			TxHash:    tx.TxHash,
 			Timestamp: tx.Time,
+			Height:    tx.Height,
 		}
 		if msg, ok := msgs[tx.TxHash]; ok {
 			// marshal json
