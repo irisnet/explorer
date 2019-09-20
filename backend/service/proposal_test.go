@@ -21,15 +21,15 @@ func TestGetValidatorPublicKeyMonikerFromProposalVoter(t *testing.T) {
 
 }
 
-func TestQueryDepositAndVotingProposalList(t *testing.T) {
-
-	proposalList := new(ProposalService).QueryDepositAndVotingProposalList()
-
-	for k, v := range proposalList {
-		t.Logf("k: %v id: %v  proposal vote end time: %v   deposit end time: %v \n", k, v.ProposalId, v.VotingEndTime, v.DepositEndTime)
-	}
-
-}
+//func TestQueryDepositAndVotingProposalList(t *testing.T) {
+//
+//	proposalList := new(ProposalService).QueryDepositAndVotingProposalList()
+//
+//	for k, v := range proposalList {
+//		t.Logf("k: %v id: %v  proposal vote end time: %v   deposit end time: %v \n", k, v.ProposalId, v.VotingEndTime, v.DepositEndTime)
+//	}
+//
+//}
 
 func TestQueryList(t *testing.T) {
 
