@@ -2,20 +2,11 @@
     <div class="proposals_detail_wrap">
         <div :class="proposalsDetailWrap"
                 style="margin-bottom: 0.3rem; flex-direction: column; align-items: flex-start;">
-            <p class="proposals_information_content_title">Proposal Information</p>
+            <p class="proposals_information_content_title">
+                <span>#{{proposalsId}}</span>
+                <span>{{title}}</span>
+            </p>
             <div class="proposals_detail_information_wrap">
-                <div class="information_props_wrap">
-                    <span class="information_props">Proposal ID :</span>
-                    <span class="information_value information_show_trim">
-                        <span class="information_pre">{{proposalsId}}</span>
-                    </span>
-                </div>
-                <div class="information_props_wrap">
-                    <span class="information_props">Title :</span>
-                    <span class="information_value information_show_trim">
-                        <span class="information_pre">{{title}}</span>
-                    </span>
-                </div>
                 <div class="information_props_wrap">
                     <span class="information_props">Proposer :</span>
                     <span v-show="proposer !== '--'"
@@ -36,36 +27,18 @@
                           class="information_value information_show_trim ">{{submitHash}}</span>
                 </div>
                 <div class="information_props_wrap">
-                    <span class="information_props">Type :</span>
-                    <span class="information_value">{{type}}</span>
-                </div>
-                <div class="information_props_wrap">
                     <span class="information_props">Status :</span>
                     <span class="information_value">
                         {{status}}
                     </span>
                 </div>
                 <div class="information_props_wrap">
-                    <span class="information_props">Submit Time :</span>
-                    <span class="information_value">{{submitAge}} <span v-show="submitAge">(</span>{{submitTime}}<span v-show="submitAge">)</span></span>
+                    <span class="information_props">Type :</span>
+                    <span class="information_value">{{type}}</span>
                 </div>
                 <div class="information_props_wrap">
-                    <span class="information_props">Deposit Endtime :</span>
-                    <span class="information_value">{{depositEndAge}} <span v-show="depositEndAge">(</span>{{depositEndTime}}<span v-show="depositEndAge">)</span>
-                    </span>
-                </div>
-                <div class="information_props_wrap">
-                    <span class="information_props">Total Deposit :</span>
-                    <span class="information_value">{{totalDeposit}}</span>
-                </div>
-                <div class="information_props_wrap">
-                    <span class="information_props">Voting Starttime :</span>
-                    <span class="information_value">{{votingStartAge}} <span v-show="votingStartAge">(</span>{{votingStartTime}}<span v-show="votingStartAge">)</span>
-                    </span>
-                </div>
-                <div class="information_props_wrap">
-                    <span class="information_props">Voting Endtime :</span>
-                    <span class="information_value">{{votingEndAge}} <span v-show="votingEndAge">(</span>{{votingEndTime}}<span v-show="votingEndAge">)</span></span>
+                    <span class="information_props">Usage :</span>
+                    <span class="information_value">{{usageValue}}</span>
                 </div>
                 <div class="information_props_wrap">
                     <span class="information_props">Description :</span>
@@ -73,7 +46,6 @@
                         <pre class="information_pre information_show_trim" v-html="description"></pre>
                     </span>
                 </div>
-
                 <div v-show="type === 'SoftwareUpgrade'">
                     <div class="information_props_wrap">
                         <span class="information_props">Software :</span>
@@ -102,17 +74,63 @@
                         </span>
                     </div>
                 </div>
-                <div class="parameter_container"
-                     v-show="type === 'ParameterChange'">
-                    <div class="information_props_wrap">
-                        <span class="information_props">Parameter Details :</span>
-                        <textarea :rows="textareaRows"
-                                  v-model="parameterValue"
-                                  readonly
-                                  spellcheck="false"
-                                  class="parameter_detail_content">
-            </textarea>
-                    </div>
+                <!--<div class="parameter_container"-->
+                     <!--v-show="type === 'ParameterChange'">-->
+                    <!--<div class="information_props_wrap">-->
+                        <!--<span class="information_props">Parameter Details :</span>-->
+                        <!--<textarea :rows="textareaRows"-->
+                                  <!--v-model="parameterValue"-->
+                                  <!--readonly-->
+                                  <!--spellcheck="false"-->
+                                  <!--class="parameter_detail_content">-->
+            <!--</textarea>-->
+                    <!--</div>-->
+                <!--</div>-->
+            </div>
+        </div>
+
+        <div :class="proposalsDetailWrap" style="margin-bottom: 0.3rem; flex-direction: column; align-items: flex-start;">
+            <p class="proposals_information_content_title">
+                <span>Critical</span>
+            </p>
+            <div class="proposals_detail_information_wrap">
+                <div class="information_props_wrap">
+                    <span class="information_props">Submit Time :</span>
+                    <span class="information_value">{{submitAge}} <span v-show="submitAge">(</span>{{submitTime}}<span v-show="submitAge">)</span></span>
+                </div>
+                <div class="information_props_wrap">
+                    <span class="information_props">Deposit Endtime :</span>
+                    <span class="information_value">{{depositEndAge}} <span v-show="depositEndAge">(</span>{{depositEndTime}}<span v-show="depositEndAge">)</span>
+                        </span>
+                </div>
+                <div class="information_props_wrap">
+                    <span class="information_props">Total Deposit :</span>
+                    <span class="information_value">{{totalDeposit}} <span v-show="burnValue">({{burnValue}}% Burned)</span></span>
+                </div>
+                <div class="information_props_wrap">
+                    <span class="information_props">Voting Starttime :</span>
+                    <span class="information_value">{{votingStartAge}} <span v-show="votingStartAge">(</span>{{votingStartTime}}<span v-show="votingStartAge">)</span>
+                        </span>
+                </div>
+                <div class="information_props_wrap">
+                    <span class="information_props">Voting Endtime :</span>
+                    <span class="information_value">{{votingEndAge}} <span v-show="votingEndAge">(</span>{{votingEndTime}}<span v-show="votingEndAge">)</span></span>
+                </div>
+                <div class="information_props_wrap">
+                    <span class="information_props">Participation :</span>
+                    <span class="information_value">{{participationValue}}</span>
+                </div>
+                <div class="information_props_wrap">
+                    <span class="information_props">Yes Threshold :</span>
+                    <span class="information_value">{{yesThresholdValue}}</span>
+                </div>
+                <div class="information_props_wrap">
+                    <span class="information_props">Veto Threshold :</span>
+                    <span class="information_value">{{vetoThresholdValue}}</span>
+                </div>
+                <div class="information_props_wrap">
+                    <span class="information_props">Penalty :</span>
+                    <span class="information_value">{{penaltyValue}}</span>
                 </div>
             </div>
         </div>
@@ -129,7 +147,7 @@
             </div>
         </div>
         <div :class="['proposal_table', proposalsDetailWrap, $store.state.isMobile ? 'mobile_proposals_table_container' : '']"
-             v-if="!showNoData">
+        >
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div class="proposals_table_title_div"
                      style="margin-top: 0;">Voters</div>
@@ -216,6 +234,12 @@ export default {
             showLoading: false,
             showNoData: false,
             depositorShowNoData: false,
+	        participationValue:'',
+	        yesThresholdValue:'',
+	        vetoThresholdValue:'',
+	        penaltyValue:'',
+	        usageValue:'',
+            burnValue: '',
             proposalsId: "",
             title: "",
             type: "",
@@ -303,23 +327,30 @@ export default {
 		            perPageSize: this.perPage,
 		            voterType:item
                 }},(data) => {
-	            if (data.items && data.items.length > 0) {
-		            this.itemTotal = data.total;
-		            this.items = data.items.map(item => {
-			            let votingListItemTime = (new Date(item.timestamp).getTime()) > 0 ? Tools.format2UTC(item.timestamp) : '--';
-			            return {
-				            moniker: item.moniker,
-                            Block:item.height,
-				            Voter: item.voter,
-				            Vote_Option: item.option,
-				            Tx_Hash: item.tx_hash,
-				            Time: votingListItemTime
-			            }
-		            });
-	            } else {
-		            this.items = [];
-		            this.showNoData = true;
+            	try {
+		            this.setStats(data.stats)
+		            if (data.items && data.items.length > 0) {
+			            this.showNoData = false;
+			            this.itemTotal = data.total;
+			            this.items = data.items.map(item => {
+				            let votingListItemTime = (new Date(item.timestamp).getTime()) > 0 ? Tools.format2UTC(item.timestamp) : '--';
+				            return {
+					            moniker: item.moniker,
+					            Block:item.height,
+					            Voter: item.voter,
+					            Vote_Option: item.option,
+					            Tx_Hash: item.tx_hash,
+					            Time: votingListItemTime
+				            }
+			            });
+		            } else {
+			            this.items = [];
+			            this.showNoData = true;
+		            }
+	            }catch (e) {
+                    console.error(e)
 	            }
+
             })
         },
 	    resetActiveStyle(){
@@ -474,7 +505,13 @@ export default {
                             this.votingStartAge = this.formatProposalTime(this.flShowProposalTime('votingStartTime', data.proposal.status) ? data.proposal.voting_start_time : '');
                             this.votingEndAge = this.formatProposalTime(this.flShowProposalTime('votingEndTime', data.proposal.status) ? data.proposal.voting_end_time : '');
                             this.software = data.proposal.software;
-                            this.version = data.proposal.version;
+                            this.participationValue = `${(Number(data.proposal.participation) * 100).toFixed(2)} %`;
+                            this.yesThresholdValue = `${(Number(data.proposal.yes_threshold) * 100).toFixed(2)} %`;
+                            this.vetoThresholdValue = `${(Number(data.proposal.veto_threshold) * 100).toFixed(2)} %`;
+                            this.penaltyValue = `${(Number(data.proposal.penalty) * 100).toFixed(2)} %`;
+	                        this.usageValue = data.proposal.usage ? data.proposal.usage : '--';
+	                        this.burnValue = data.proposal.burn_percent ? (Number(data.proposal.burn_percent) *100).toFixed(2) : '';
+	                        this.version = data.proposal.version;
                             this.switchHeight = data.proposal.switch_height;
                             this.threshold = data.proposal.threshold ? `${Number(data.proposal.threshold) * 100}%` : '';
                             this.proposalsId = data.proposal.proposal_id === 0 ? "--" : data.proposal.proposal_id;
@@ -639,6 +676,7 @@ export default {
             }
             .no_data_show {
                 width: 100%;
+                min-height: 3rem;
                 @include flex;
                 justify-content: center;
                 border-top: 0.01rem solid #eee;
