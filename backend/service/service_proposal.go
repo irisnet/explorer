@@ -815,9 +815,8 @@ func (s *ProposalService) GetVoteTxs(proposalId int64, page, size int, istotal b
 		logger.Error("query QueryValidatorsMonikerOpAddrConsensusPubkey", logger.String("err", err.Error()))
 	}
 	allBondedValidatorIaaAddrs = make(map[string]document.Validator, len(allBondedValidators))
-	var validatorService = &ValidatorService{}
 	for _, v := range allBondedValidators {
-		iaaAddr := validatorService.GetWithdrawAddrByValidatorAddr(v.OperatorAddress).Address
+		iaaAddr := utils.Convert(conf.Get().Hub.Prefix.AccAddr, v.OperatorAddress)
 		allBondedValidatorIaaAddrs[iaaAddr] = v
 	}
 
