@@ -233,6 +233,7 @@ func (_ Proposal) GetProposalsByStatus(status, sorts []string) ([]Proposal, erro
 		Proposal_Field_Votes:             1,
 		Proposal_Field_VotingStartHeight: 1,
 		Proposal_Field_TotalDeposit:      1,
+		Proposal_Field_DepositEndTime:    1,
 	}
 
 	condition := bson.M{
