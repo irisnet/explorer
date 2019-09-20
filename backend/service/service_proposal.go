@@ -435,6 +435,7 @@ func formatProposalStatusDepositData(service *ProposalService, proposalStatusDep
 			Title:      propo.Title,
 			Type:       propo.Type,
 			Status:     propo.Status,
+			DepositEndTime: propo.DepositEndTime,
 		}
 
 		l := vo.Level{}
@@ -820,6 +821,16 @@ func (s *ProposalService) GetVoteTxs(proposalId int64, page, size int, istotal b
 		res vo.GetVoteTxResponse
 	)
 
+	proposal, err := document.Proposal{}.QueryProposalById(int(proposalId))
+	if err != nil {
+		logger.Error("QueryProposalById have error", logger.String("err", err.Error()))
+		panic(types.CodeNotFound)
+	}
+
+	if len(proposal.Votes) == 0 {
+		return res
+	}
+
 	allBondedValidators, err := document.Validator{}.QueryValidatorsMonikerOpAddrConsensusPubkey()
 	if err != nil {
 		logger.Error("query QueryValidatorsMonikerOpAddrConsensusPubkey", logger.String("err", err.Error()))
@@ -828,12 +839,6 @@ func (s *ProposalService) GetVoteTxs(proposalId int64, page, size int, istotal b
 	for _, v := range allBondedValidators {
 		iaaAddr := utils.Convert(conf.Get().Hub.Prefix.AccAddr, v.OperatorAddress)
 		allBondedValidatorIaaAddrs[iaaAddr] = v
-	}
-
-	proposal, err := document.Proposal{}.QueryProposalById(int(proposalId))
-	if err != nil {
-		logger.Error("QueryProposalById have error", logger.String("err", err.Error()))
-		panic(types.CodeNotFound)
 	}
 
 	txMsgs := make(map[string]string, len(proposal.Votes))
