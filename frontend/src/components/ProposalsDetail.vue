@@ -8,15 +8,9 @@
             </p>
             <div class="proposals_detail_information_wrap">
                 <p class="proposals_detail_level">
-                   <i v-if="levelValue === 'Critical'" class="iconfont">
-                       <img src="../assets/critical.png" alt="">
-                   </i>
-                    <i v-if="levelValue === 'Important'" class="iconfont">
-                        <img src="../assets/important.png" alt="">
-                    </i>
-                    <i v-if="levelValue === 'Normal'" class="iconfont">
-                        <img src="../assets/normal.png" alt="">
-                    </i>
+                    <i v-if="levelValue === 'Critical'" style="color:#FF5569;font-size: 0.16rem;" class="iconfont iconCritical"></i>
+                    <i v-if="levelValue === 'Important'" style="color: #FF8000;font-size: 0.16rem;" class="iconfont iconImportant"></i>
+                    <i v-if="levelValue === 'Normal'" style="color:#45B4FF;font-size: 0.16rem;" class="iconfont iconNormal"></i>
                     <span>{{levelValue}}</span>
                 </p>
                 <div class="information_props_wrap">
