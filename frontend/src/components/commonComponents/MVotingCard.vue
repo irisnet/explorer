@@ -48,9 +48,11 @@
         },
         watch:{
 	        votingBarObj(votingBarObj){
-	        	this.formatVotingBarObj(votingBarObj)
+                let copyVotingBarObj = JSON.parse(JSON.stringify(votingBarObj));
+	        	this.formatVotingBarObj(copyVotingBarObj)
             }
         },
+
         data(){
 			return {
                 totalVoted: '',
@@ -156,14 +158,16 @@
 		        }
 	        },
             getTotalVoted(votTx){
-                let totalDelegatorPower = votTx.map( item => {
-                    return ++item.del_voting_power
+	            let totalDelegatorPower =[];
+                votTx.forEach( item => {
+	                totalDelegatorPower.push(item.del_voting_power)
                 });
                 this.delegatorVotedPower = totalDelegatorPower.reduce( (a,b) => {
                     return a + b
                 });
-                let totalValidatorPower = votTx.map( item => {
-                    return ++item.val_voting_power
+	            let totalValidatorPower = [];
+                votTx.forEach( item => {
+	                totalValidatorPower.push(item.val_voting_power)
                 });
                this.validatorVotedPower = totalValidatorPower.reduce( (a,b) => {
                     return a + b
