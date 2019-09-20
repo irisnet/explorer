@@ -495,6 +495,9 @@
                 .home_proposal_item_bar:nth-child(even){
                     margin-right: 0;
                 }
+                .home_proposal_item_bar:last-child{
+                    margin-right: 0;
+                }
             }
             .current_net_status_list{
                 display: flex;
@@ -712,6 +715,9 @@
                         margin-right: 0;
                     }
                     .home_proposal_item_bar:nth-child(even){
+                        margin-right: 0;
+                    }
+                    .home_proposal_item_bar:last-child{
                         margin-right: 0;
                     }
                 }

@@ -7,6 +7,18 @@
                 <span>{{title}}</span>
             </p>
             <div class="proposals_detail_information_wrap">
+                <p class="proposals_detail_level">
+                   <i v-if="levelValue === 'Critical'" class="iconfont">
+                       <img src="../assets/critical.png" alt="">
+                   </i>
+                    <i v-if="levelValue === 'Important'" class="iconfont">
+                        <img src="../assets/important.png" alt="">
+                    </i>
+                    <i v-if="levelValue === 'Normal'" class="iconfont">
+                        <img src="../assets/normal.png" alt="">
+                    </i>
+                    <span>{{levelValue}}</span>
+                </p>
                 <div class="information_props_wrap">
                     <span class="information_props">Proposer :</span>
                     <span v-show="proposer !== '--'"
@@ -74,26 +86,8 @@
                         </span>
                     </div>
                 </div>
-                <!--<div class="parameter_container"-->
-                     <!--v-show="type === 'ParameterChange'">-->
-                    <!--<div class="information_props_wrap">-->
-                        <!--<span class="information_props">Parameter Details :</span>-->
-                        <!--<textarea :rows="textareaRows"-->
-                                  <!--v-model="parameterValue"-->
-                                  <!--readonly-->
-                                  <!--spellcheck="false"-->
-                                  <!--class="parameter_detail_content">-->
-            <!--</textarea>-->
-                    <!--</div>-->
-                <!--</div>-->
             </div>
-        </div>
-
-        <div :class="proposalsDetailWrap" style="margin-bottom: 0.3rem; flex-direction: column; align-items: flex-start;">
-            <p class="proposals_information_content_title">
-                <span>Critical</span>
-            </p>
-            <div class="proposals_detail_information_wrap">
+            <div class="proposals_detail_information_wrap no_border_style">
                 <div class="information_props_wrap">
                     <span class="information_props">Submit Time :</span>
                     <span class="information_value">{{submitAge}} <span v-show="submitAge">(</span>{{submitTime}}<span v-show="submitAge">)</span></span>
@@ -234,6 +228,7 @@ export default {
             showLoading: false,
             showNoData: false,
             depositorShowNoData: false,
+	        levelValue:'',
 	        participationValue:'',
 	        yesThresholdValue:'',
 	        vetoThresholdValue:'',
@@ -517,6 +512,7 @@ export default {
                             this.title = data.proposal.title;
                             this.type = data.proposal.type;
                             this.status = data.proposal.status;
+                            this.levelValue = data.proposal.level;
                             this.proposer = data.proposal.proposer ? data.proposal.proposer : "--";
                             this.submitHash = data.proposal.tx_hash ? data.proposal.tx_hash : "--";
                             this.submitTime = data.proposal.submit_time ? Tools.format2UTC(data.proposal.submit_time) : '--';
@@ -618,9 +614,32 @@ export default {
             @include fontWeight;
         }
         @include pcCenter;
+        .no_border_style{
+            border-top: none !important;
+        }
         .proposals_detail_information_wrap {
             padding: 0.2rem 0.2rem 0.08rem;
-            border: 1px solid rgba(215, 217, 224, 1) !important;
+            border-right: 1px solid rgba(215, 217, 224, 1) ;
+            border-left: 1px solid rgba(215, 217, 224, 1) ;
+            border-top: 1px solid rgba(215, 217, 224, 1) ;
+            border-bottom: 1px solid rgba(215, 217, 224, 1) ;
+            .no_border_style{
+                border-top: none !important;
+            }
+            .proposals_detail_level{
+                padding: 0 0 0.2rem 0;
+                i{
+                    img{
+                        width: 0.16rem;
+                    }
+                }
+                span{
+                    color:#22252A;
+                    font-size: 0.14rem;
+                    line-height: 0.2rem;
+                    margin-left: 0.1rem;
+                }
+            }
             .information_props_wrap {
                 @include flex;
                 line-height: 0.2rem;
