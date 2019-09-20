@@ -162,7 +162,7 @@ func (_ Proposal) QueryProposalById(id int) (Proposal, error) {
 	return data, err
 }
 
-func (_ Proposal) QueryTxFromToByTypeAndProposalId(id int) (string, string, error) {
+func (_ Proposal) QuerySubmitProposalTxByProposalId(id int) (string, string, error) {
 	var query = orm.NewQuery()
 	defer query.Release()
 	var tx CommonTx
