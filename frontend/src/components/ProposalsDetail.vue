@@ -129,7 +129,7 @@
             </div>
         </div>
         <div :class="['proposal_table', proposalsDetailWrap, $store.state.isMobile ? 'mobile_proposals_table_container' : '']"
-             v-if="!showNoData">
+        >
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div class="proposals_table_title_div"
                      style="margin-top: 0;">Voters</div>
@@ -303,23 +303,30 @@ export default {
 		            perPageSize: this.perPage,
 		            voterType:item
                 }},(data) => {
-	            if (data.items && data.items.length > 0) {
-		            this.itemTotal = data.total;
-		            this.items = data.items.map(item => {
-			            let votingListItemTime = (new Date(item.timestamp).getTime()) > 0 ? Tools.format2UTC(item.timestamp) : '--';
-			            return {
-				            moniker: item.moniker,
-                            Block:item.height,
-				            Voter: item.voter,
-				            Vote_Option: item.option,
-				            Tx_Hash: item.tx_hash,
-				            Time: votingListItemTime
-			            }
-		            });
-	            } else {
-		            this.items = [];
-		            this.showNoData = true;
+            	try {
+		            this.setStats(data.stats)
+		            if (data.items && data.items.length > 0) {
+			            this.showNoData = false;
+			            this.itemTotal = data.total;
+			            this.items = data.items.map(item => {
+				            let votingListItemTime = (new Date(item.timestamp).getTime()) > 0 ? Tools.format2UTC(item.timestamp) : '--';
+				            return {
+					            moniker: item.moniker,
+					            Block:item.height,
+					            Voter: item.voter,
+					            Vote_Option: item.option,
+					            Tx_Hash: item.tx_hash,
+					            Time: votingListItemTime
+				            }
+			            });
+		            } else {
+			            this.items = [];
+			            this.showNoData = true;
+		            }
+	            }catch (e) {
+                    console.error(e)
 	            }
+
             })
         },
 	    resetActiveStyle(){
@@ -639,6 +646,7 @@ export default {
             }
             .no_data_show {
                 width: 100%;
+                min-height: 3rem;
                 @include flex;
                 justify-content: center;
                 border-top: 0.01rem solid #eee;
