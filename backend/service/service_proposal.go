@@ -479,15 +479,15 @@ func (service *ProposalService) QueryList(page, size int, istotal bool) (resp vo
 
 	proposals := make([]vo.ProposalNewStyle, 0, len(data))
 
-	isVotingPeriod := false
+	hasVotingPeriodProposal := false
 	for _, v := range data {
 		if v.Status == document.ProposalStatusVoting {
-			isVotingPeriod = true
+			hasVotingPeriodProposal = true
 			break
 		}
 	}
 
-	if isVotingPeriod {
+	if hasVotingPeriodProposal {
 		totalvotingpower, err := service.GetSystemVotingPower()
 		if err != nil {
 			logger.Error("get systemVotingPower fail", logger.String("err", err.Error()))
@@ -501,7 +501,7 @@ func (service *ProposalService) QueryList(page, size int, istotal bool) (resp vo
 	}
 
 	var allBondedValidators []document.Validator
-	if isVotingPeriod {
+	if hasVotingPeriodProposal {
 		allBondedValidators, err = document.Validator{}.GetBondedValidatorsSharesTokens()
 		if err != nil {
 			logger.Error("query allBondedValidators", logger.String("err", err.Error()))
