@@ -485,7 +485,6 @@
                 justify-content: space-between;
                 flex-wrap: wrap;
                 box-sizing: border-box;
-                margin-bottom: 0.3rem;
                 .home_proposal_item_bar{
                     min-width: 5.98rem;
                     flex: 1;
