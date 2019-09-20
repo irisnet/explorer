@@ -1,5 +1,16 @@
 <template>
     <div class="deposit_card_content">
+        <div class="title_container" v-if="showTitle">
+            <div class="title_content">
+                <router-link :to="`/ProposalsDetail/${proposalId}`">
+                    <span class="proposal_id_content">#{{proposalId}}</span>
+                    <span class="proposal_title">{{title}}</span>
+                </router-link>
+            </div>
+            <div class="view_all_content">
+                <span><router-link :to="`/gov/proposals`">View All</router-link></span>
+            </div>
+        </div>
         <div class="deposit_title_container">
             <span><i class="iconfont iconParameterChange"></i>{{proposalType}}</span>
             <span v-show="!flShowPass && !flShowReject"><i class="iconfont iconDepositPeriod"></i>DepositPeriod</span>
@@ -51,11 +62,16 @@
             },
 	        status:{
 		        type: String
-	        }
+	        },
+	        showTitle:{
+		        type: Boolean
+            }
         },
         data () {
 			return {
 				proposalType:'',
+                title:'',
+				proposalId:'',
 				hourLeft: '',
                 minDepositToken:'',
                 minDepositTokenDenom:'',
@@ -114,6 +130,8 @@
         methods:{
 	        formatDepositObj(depositObj){
 	        	if(depositObj){
+	        		this.title = depositObj.title;
+	        		this.proposalId = depositObj.proposal_id;
                     this.proposalType = depositObj.type;
 			        this.getAgeHour(depositObj.deposit_end_time);
 			        this.setMinDepositToken(depositObj);
@@ -246,6 +264,35 @@
         padding: 0.2rem;
         border: 0.01rem solid #d7d9e0;
         margin-bottom: 0.2rem;
+        .title_container{
+            margin-bottom: 0.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            .title_content{
+                line-height: 1;
+                font-size: 0.16rem;
+                .proposal_id_content{
+                    color: #787C99;
+                    margin-right: 0.1rem;
+                }
+                .proposal_title{
+                    color: #0580D3;
+                }
+            }
+            .view_all_content{
+                color: #0580D3;
+                span{
+                    line-height: 1;
+                    border-bottom: 0.01rem solid #0580D3;
+                    a{
+                        font-size: 0.14rem;
+                        color: #0580D3 !important;
+                    }
+                }
+            }
+
+        }
         .deposit_title_container{
             font-size: 0.12rem;
             i{

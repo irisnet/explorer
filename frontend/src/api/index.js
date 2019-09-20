@@ -6,6 +6,7 @@ const urlApi = {
   blocksRecent: '/api/blocks/recent',
   txsRecent: '/api/txs/recent',
   navigation: '/api/home/navigation',
+  homeProposalList:'/api/gov/deposit_voting_proposals?needMoniker=false',
   //address
   address: '/api/txs/statistics?address={address}',
   addressTxTrans: '/api/txs/trans/{pageNumber}/{pageSize}?address={address}',
