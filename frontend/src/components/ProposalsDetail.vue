@@ -4,7 +4,7 @@
                 style="margin-bottom: 0.3rem; flex-direction: column; align-items: flex-start;">
             <p class="proposals_information_content_title">
                 <span>#{{proposalsId}}</span>
-                <span>{{title}}</span>
+                <span class="proposal_title">{{title}}</span>
             </p>
             <div class="proposals_detail_information_wrap">
                 <p class="proposals_detail_level">
@@ -606,6 +606,9 @@ export default {
             color: #000000;
             margin-bottom: 0;
             @include fontWeight;
+            .proposal_title{
+                padding-left: 0.1rem;
+            }
         }
         @include pcCenter;
         .no_border_style{
