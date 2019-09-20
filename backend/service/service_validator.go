@@ -832,10 +832,10 @@ func buildValidators() []document.Validator {
 	}
 
 	for _, v := range res {
-		if validator, err := buildValidator(v); err != nil {
-			logger.Error("build validator fail", logger.String("err", err.Error()))
-		} else {
+		if validator, err := buildValidator(v); err == nil {
 			result = append(result, validator)
+		} else {
+			logger.Error("build validator fail", logger.String("err", err.Error()))
 		}
 	}
 	return result

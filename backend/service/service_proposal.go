@@ -156,56 +156,69 @@ func (service *ProposalService) QueryVoting(id int) vo.ProposalNewStyle {
 		panic(types.CodeNotFound)
 	}
 
-	systemVotingPower, err := service.GetSystemVotingPower()
-	if err != nil {
-		logger.Error("get systemVotingPower fail", logger.String("err", err.Error()))
-	}
-
-	tmpVoteArr := make([]vo.VoteWithVoterInfo, 0, len(data.Votes))
-
-	allBondedValidators, err := document.Validator{}.GetBondedValidatorsSharesTokens()
-	if err != nil {
-		logger.Error("query allBondedValidators", logger.String("err", err.Error()))
-	}
-	curValidators := make(map[string]*vo.ValidatorGovInfo, len(allBondedValidators))
-
-	for _, v := range allBondedValidators {
-		delegatorShares, _ := utils.ParseStringToFloat(v.DelegatorShares)
-		tokens, _ := utils.ParseStringToFloat(v.Tokens)
-		curValidators[v.OperatorAddress] = &vo.ValidatorGovInfo{
-			Address:   v.OperatorAddress,
-			DelShares: delegatorShares,
-			Tokens:    tokens,
-		}
-	}
-	curDelegators := make(map[string]*vo.DelegatorGovInfo, len(data.Votes))
-
-	for _, v := range data.Votes {
-		getDelegationsByVoter(curValidators, curDelegators, v)
-	}
-	computedValidatorsPower(curValidators, curDelegators)
-
-	for _, v := range curDelegators {
-		tmpVote := vo.VoteWithVoterInfo{
-			Voter:          v.Address,
-			Option:         v.Option,
-			Time:           v.Time,
-			DelVotingPower: v.DelVotingPower,
-			ValVotingPower: v.ValVotingPower,
-		}
-		tmpVoteArr = append(tmpVoteArr, tmpVote)
-	}
+	var systemVotingPower float64
+	var tmpVoteArr []vo.VoteWithVoterInfo
 
 	tmp := vo.ProposalNewStyle{
-		ProposalId:       data.ProposalId,
-		Title:            data.Title,
-		Type:             data.Type,
-		Status:           data.Status,
-		SubmitTime:       data.SubmitTime,
-		DepositEndTime:   data.DepositEndTime.UTC(),
-		VotingEndTime:    data.VotingEndTime,
-		Votes:            tmpVoteArr,
-		TotalVotingPower: systemVotingPower,
+		ProposalId:     data.ProposalId,
+		Title:          data.Title,
+		Type:           data.Type,
+		Status:         data.Status,
+		SubmitTime:     data.SubmitTime,
+		DepositEndTime: data.DepositEndTime.UTC(),
+		VotingEndTime:  data.VotingEndTime,
+	}
+
+	if data.Status == document.ProposalStatusVoting {
+		systemVotingPower, err = service.GetSystemVotingPower()
+		if err != nil {
+			logger.Error("get systemVotingPower fail", logger.String("err", err.Error()))
+		}
+
+		tmpVoteArr = make([]vo.VoteWithVoterInfo, 0, len(data.Votes))
+		allBondedValidators, err := document.Validator{}.GetBondedValidatorsSharesTokens()
+		if err != nil {
+			logger.Error("query allBondedValidators", logger.String("err", err.Error()))
+		}
+		curValidators := make(map[string]*vo.ValidatorGovInfo, len(allBondedValidators))
+
+		for _, v := range allBondedValidators {
+			delegatorShares, _ := utils.ParseStringToFloat(v.DelegatorShares)
+			tokens, _ := utils.ParseStringToFloat(v.Tokens)
+			curValidators[v.OperatorAddress] = &vo.ValidatorGovInfo{
+				Address:   v.OperatorAddress,
+				DelShares: delegatorShares,
+				Tokens:    tokens,
+			}
+		}
+		curDelegators := make(map[string]*vo.DelegatorGovInfo, len(data.Votes))
+
+		for _, v := range data.Votes {
+			getDelegationsByVoter(curValidators, curDelegators, v)
+		}
+		computedValidatorsPower(curValidators, curDelegators)
+
+		for _, v := range curDelegators {
+			tmpVote := vo.VoteWithVoterInfo{
+				Voter:          v.Address,
+				Option:         v.Option,
+				Time:           v.Time,
+				DelVotingPower: v.DelVotingPower,
+				ValVotingPower: v.ValVotingPower,
+			}
+			tmpVoteArr = append(tmpVoteArr, tmpVote)
+		}
+
+		tmp.Votes = tmpVoteArr
+		tmp.TotalVotingPower = systemVotingPower
+	} else if data.Status == document.ProposalStatusPassed || data.Status == document.ProposalStatusRejected {
+		tmp.FinalVotes = vo.FinalVotes{
+			Yes:               data.FinalVotes.Yes,
+			No:                data.FinalVotes.No,
+			NoWithVeto:        data.FinalVotes.NoWithVeto,
+			Abstain:           data.FinalVotes.Abstain,
+			SystemVotingPower: data.FinalVotes.SystemVotingPower,
+		}
 	}
 
 	l := vo.Level{}
@@ -364,8 +377,9 @@ func getDelegationsByVoter(curValidators map[string]*vo.ValidatorGovInfo, curDel
 			votingPower = computedVotingPower(delegationShares, curValidators, delegation.ValidatorAddr)
 		}
 		curDelegator.DelVotingPower = curDelegator.DelVotingPower + votingPower
-		curValidator := curValidators[delegation.ValidatorAddr]
-		curValidator.DelDeductionShares = curValidator.DelDeductionShares + delegationShares
+		if curValidator, ok := curValidators[delegation.ValidatorAddr]; ok {
+			curValidator.DelDeductionShares = curValidator.DelDeductionShares + delegationShares
+		}
 	}
 }
 
@@ -923,6 +937,7 @@ func (s *ProposalService) buildVoteTxs(txs []document.CommonTx, msgs map[string]
 			Voter:     tx.From,
 			TxHash:    tx.TxHash,
 			Timestamp: tx.Time,
+			Height:    tx.Height,
 		}
 		if msg, ok := msgs[tx.TxHash]; ok {
 			// marshal json

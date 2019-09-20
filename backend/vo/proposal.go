@@ -72,10 +72,11 @@ type ProposalInfoVo struct {
 }
 
 type FinalVotes struct {
-	Yes        string `json:"yes,omitempty"`
-	No         string `json:"no,omitempty"`
-	NoWithVeto string `json:"no_with_veto,omitempty"`
-	Abstain    string `json:"abstain,omitempty"`
+	Yes               string `json:"yes,omitempty"`
+	No                string `json:"no,omitempty"`
+	NoWithVeto        string `json:"no_with_veto,omitempty"`
+	Abstain           string `json:"abstain,omitempty"`
+	SystemVotingPower string `json:"system_voting_power,omitempty"`
 }
 
 type (
@@ -148,6 +149,7 @@ type VoteTx struct {
 	Option    string    `json:"option"`
 	TxHash    string    `json:"tx_hash"`
 	Timestamp time.Time `json:"timestamp"`
+	Height    int64     `json:"height"`
 }
 
 type LookupIcons struct {
