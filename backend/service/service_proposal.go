@@ -253,6 +253,7 @@ func formatProposalStatusVotingData(service *ProposalService, proposalStatusVoti
 		logger.Error("query allBondedValidators", logger.String("err", err.Error()))
 	}
 
+	// TODO: get validator moniker and publicKey by foreach allBondedValidators, there is no need to query db
 	var addrAsMultiTypeMap map[string]AddrAsMultiType
 	if needMoniker {
 		unique_set := make(map[string]bool)
@@ -487,11 +488,14 @@ func (service *ProposalService) QueryList(page, size int, istotal bool) (resp vo
 		}
 	}
 
+
+	// TODO: calculate systemVotingPower is different base on proposal status is VotingPeriod
 	totalVotingPower, err := service.GetSystemVotingPower()
 	if err != nil {
 		logger.Error("get systemVotingPower fail", logger.String("err", err.Error()))
 	}
 
+	// TODO: allBondedValidators and curValidators is only required when proposal status is VotingPeriod
 	var allBondedValidators []document.Validator
 	if len(unique_set) > 0 {
 		allBondedValidators, err = document.Validator{}.GetBondedValidatorsSharesTokens()
@@ -629,6 +633,7 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 	}
 
 	if data.Status == document.ProposalStatusPassed || data.Status == document.ProposalStatusRejected {
+		// TODO: this method is mistake to getSystemVotingPower when proposal status is passed or rejected
 		systemVotingPower, err := service.GetSystemVotingPower()
 		if err != nil {
 			logger.Error("get systemVotingPower fail", logger.String("err", err.Error()))
@@ -669,6 +674,7 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 		}
 	}
 
+	// TODO: rename this method, rename to `QuerySubmitProposalTxByProposalId`
 	from, txHash, err := document.Proposal{}.QueryTxFromToByTypeAndProposalId(id)
 
 	if err != nil {
