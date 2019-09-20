@@ -69,3 +69,10 @@ func TestProposalService_GetSystemVotingPower(t *testing.T) {
 		t.Log(string(resBytes))
 	}
 }
+
+func TestProposalService_QueryDepositAndVotingProposalList(t *testing.T) {
+	res := proposalService.QueryDepositAndVotingProposalList(true)
+
+	resBytes, _ := json.Marshal(res)
+	t.Log(string(resBytes))
+}
