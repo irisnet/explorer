@@ -65,6 +65,12 @@
                     <echarts-line :informationLine="informationLine"></echarts-line>
                 </div>
             </div>
+            <div class="home_proposal_container">
+                <div class="home_proposal_item_bar" v-for="v in depositorBarArr" :key="v.proposal_id">
+                    <m-deposit-card :depositObj="v" :showTitle="true"></m-deposit-card>
+                </div>
+                <!--<m-home-voting-crad></m-home-voting-crad>-->
+            </div>
             <div :class="module_item_wrap">
                 <div class="home_module_item fixed_item_height">
                     <home-block-module :moduleName="'Blocks'" :information="blocksInformation"></home-block-module>
@@ -86,9 +92,11 @@
     import Service from '../service/index';
     import Constant from "../constant/Constant";
     import lang from "../lang/index"
+    import MHomeVotingCrad from "../components/commonComponents/MHomeVotingCrad";
+    import MDepositCard from "../components/commonComponents/MDepositCard";
     export default {
         name: 'app-header',
-        components: {EchartsPie, EchartsLine, HomeBlockModule},
+        components: {MDepositCard, MHomeVotingCrad, EchartsPie, EchartsLine, HomeBlockModule},
         data() {
             return {
                 devicesWidth: window.innerWidth,
@@ -120,6 +128,8 @@
                 isMobile: false,
                 moniker:'',
                 proposerAddress:"",
+                depositorBarArr: [],
+                votingBarArr: '',
             }
         },
 
@@ -129,6 +139,8 @@
             this.getTransactionList();
             this.getValidatorsList();
             this.getNavigation();
+            this.getPorposakList();
+
         },
         mounted () {
             document.getElementById('router_wrap').addEventListener('click', this.hideFeature);
@@ -166,6 +178,60 @@
           }
         },
         methods: {
+	        getPorposakList(){
+	        	Service.commonInterface({homeProposalList:{
+
+                    }},(res) => {
+
+
+			    /*    deposit_end_time: "0001-01-01T00:00:00Z"
+			        final_votes: {}
+			        intial_deposit: {denom: "", amount: 0}
+			        amount: 0
+			        denom: ""
+			        level: {name: "Important",…}
+			        gov_param: {participation: "0.5000000000", pass_threshold: "0.6700000000", veto_threshold: "0.3300000000",…}
+			        min_deposit: {denom: "", amount: 0}
+			        amount: 0
+			        denom: ""
+			        participation: "0.5000000000"
+			        pass_threshold: "0.6700000000"
+			        veto_threshold: "0.3300000000"
+			        name: "Important"
+			        proposal_id: 34
+			        status: "VotingPeriod"
+			        submit_time: "0001-01-01T00:00:00Z"
+			        title: "testParameter2"
+			        total_deposit: {denom: "", amount: 0}
+			        amount: 0
+			        denom: ""
+			        type: "Parameter"
+			        votes: []
+			        voting_end_time: "0001-01-01T00:00:00Z"
+			        voting_power_for_height: 1239.56115285933*/
+
+	        		console.log(res)
+                    if(Array.isArray(res)){
+                    /*	let filterDepositorBarArr;
+	                    filterDepositorBarArr = res.filter( item => {
+		                    return item.status === "DepositPeriod"
+	                    });
+	                    this.depositorBarArr = filterDepositorBarArr;*/
+                        res.forEach(item => {
+                        	if(item.status === "DepositPeriod"){
+                        		this.depositorBarArr.push(item)
+                            }
+                        })
+
+
+
+	                    this.votingBarArr = res.filter( item => {
+		                    return item.status === 'VotingPeriod'
+	                    })
+	                    console.log(this.depositorBarArr,"????")
+                    }
+                })
+            },
             onresize (isMobile) {
                 this.innerWidth = window.innerWidth;
                 if(!isMobile){
@@ -442,6 +508,21 @@
                         font-size: 0.14rem;
                         color: var(--contentColor);
                     }
+                }
+            }
+            .home_proposal_container{
+                display: flex;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                box-sizing: border-box;
+                .home_proposal_item_bar{
+                    min-width: 5.98rem;
+                    flex: 1;
+                    width: auto;
+                    margin-right: 0.4rem;
+               }
+                .home_proposal_item_bar:nth-child(even){
+                    margin-right: 0;
                 }
             }
             .current_net_status_list{

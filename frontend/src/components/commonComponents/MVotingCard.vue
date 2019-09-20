@@ -8,13 +8,14 @@
         </div>
         <div class="voting_content">
             <div class="voting_left_container">
-                <span class="delegator_voted_content">DelegatorVoted {{delegatorVoted}}%</span>
+                <span class="delegator_voted_content" v-show="flShowTotalVoted">DelegatorVoted {{delegatorVoted}}%</span>
+                <span class="delegator_voted_content" v-show="!flShowTotalVoted">Voted {{delegatorVoted}}%</span>
                 <span class="yes_content">Yes {{yesVotingPowerWidth === 'NaN' ? '0.00' : yesVotingPowerWidth}}%</span>
                 <span class="abstain_content">Abstain {{abstainVotingPowerWidth === 'NaN' ? '0.00' : abstainVotingPowerWidth}}%</span>
             </div>
             <div class="voting_center_container">
                 <div class="voting_progress_bar_content">
-                    <span class="min_value_content" :style="minTotalTipStyleNumber">
+                    <span class="min_value_content" :style="minTotalTipStyleNumber" v-show="flShowTotalVoted">
                         <span class="min_value_title">Total Voted {{totalVoted}} %</span>
                     </span>
                     <div class="default_progress_bar_content" :style="{background:totalVotedGreaterThan ? '#79C9FF' : ''}"></div>
@@ -69,6 +70,7 @@
                 flShowPassThreshold:false,
                 flShowVoteThreshold:false,
                 totalVotedGreaterThan: false,
+                flShowTotalVoted:false,
 				minVotingPowerStyleObj:{
                 	width:""
                 },
@@ -98,13 +100,42 @@
 		        this.voteThreshold = `${(Number(votingBarObj.level.gov_param.veto_threshold) * 100).toFixed(2)}`;
 		        this.getVotingEndTime(votingBarObj.voting_end_time);
 		        if(Array.isArray(votingBarObj.votes) && votingBarObj.votes.length > 0){
+		        	this.flShowTotalVoted = true;
 			        this.getTotalVoted(votingBarObj.votes);
 			        this.getYesVotingPower(votingBarObj.votes);
 			        this.getNoVotingPower(votingBarObj.votes);
 			        this.getVetoVotingPower(votingBarObj.votes);
 			        this.getAbstainVotingPower(votingBarObj.votes);
                 }
+		        if(votingBarObj.final_votes && JSON.stringify(votingBarObj.final_votes) !== "{}"){
+                    this.getFinalVotes(votingBarObj.final_votes);
+                }
             },
+	        getFinalVotes(finalVotes){
+		        this.flShowTotalVoted = false;
+                let optionTotalNumber = Number(finalVotes.yes) + Number(finalVotes.no) + Number(finalVotes.abstain) + Number(finalVotes.no_with_veto);
+		        this.delegatorVoted = ((Number(optionTotalNumber) / Number(finalVotes.system_voting_power)) * 100).toFixed(2);
+		        this.yesVotingPowerWidth = ((Number(finalVotes.yes) / Number(optionTotalNumber)) * 100).toFixed(2);
+		        this.$set(this.yesVotingPowerStyleObj,'width',`${this.yesVotingPowerWidth}%`);
+		        this.abstainVotingPowerWidth = ((Number(finalVotes.abstain) / Number(optionTotalNumber)) * 100).toFixed(2);
+		        this.$set(this.abstainVotingPowerStyleObj,'width',`${this.abstainVotingPowerWidth}%`);
+		        this.vetoVotingPowerWidth = ((Number(finalVotes.no_with_veto) / Number(optionTotalNumber)) * 100).toFixed(2);
+		        this.$set(this.vetoVotingPowerStyleObj,'width',`${this.vetoVotingPowerWidth}%`);
+		        this.noVotingPowerWidth = ((Number(finalVotes.no) / Number(optionTotalNumber)) * 100).toFixed(2);
+		        this.$set(this.noVotingPowerStyleObj,'width',`${this.noVotingPowerWidth}%`);
+		        if(Number(this.yesVotingPowerWidth) > Number(this.participationThreshold)){
+			        this.flShowPassThreshold = true;
+		        }else {
+			        this.flShowPassThreshold = false
+		        }
+		        if(Number(this.vetoVotingPowerWidth) > Number(this.voteThreshold)){
+			        this.flShowVoteThreshold = true;
+		        }else {
+			        this.flShowVoteThreshold = false
+		        }
+		        this.totalVoted = ((optionTotalNumber / finalVotes.system_voting_power) * 100).toFixed(2)
+		        this.setStyleFunc()
+	        },
 	        getVotingEndTime(time){
 		        if(time){
 			        let localTime = new Date().getTimezoneOffset() * 60 * 1000;
