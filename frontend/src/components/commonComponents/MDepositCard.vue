@@ -32,7 +32,7 @@
                     <div class="default_progress_bar_content" v-show="!flBurnAll" :class="flShowDiffStyle ? 'diff_blue' : ''"></div>
                     <div class="default_progress_bar_content" v-show="flBurnAll" :class="flBurnAll ? 'diff_burn_red' : ''"></div>
                     <div class="burned_progress_bar_content" :style="burnStyle0bj" :class="flShowDiffStyle ? 'show_burn_style' : ''"></div>
-                    <div class="min_deposit_bar_content" v-if="flShowBlue && !flShowDiffStyle" :style="minDepositStyleObject" :class="flShowBlue ? 'showBlue' : ''"></div>
+                    <div class="min_deposit_bar_content" v-if="flShowBlue && flShowDiffStyle" :style="minDepositStyleObject" :class="flShowBlue ? 'showBlue' : ''"></div>
                     <div class="min_deposit_bar_content" v-if="flHideBlue && !flShowDiffStyle" :style="minDepositStyleObject" :class="flHideBlue ? 'hideBlue' : ''"></div>
                     <div class="total_deposit_bar_content"></div>
                     <div class="init_content"></div>
@@ -263,7 +263,7 @@
         box-sizing: border-box;
         padding: 0.2rem;
         border: 0.01rem solid #d7d9e0;
-        margin-bottom: 0.2rem;
+        margin-bottom: 0.3rem;
         .title_container{
             margin-bottom: 0.2rem;
             display: flex;
@@ -457,9 +457,7 @@
     }
     @media screen and (max-width: 910px){
         .deposit_card_content{
-            margin: 0 0.1rem 0.2rem 0.1rem;
-
+            margin: 0 0 0.2rem 0;
         }
-
     }
 </style>
