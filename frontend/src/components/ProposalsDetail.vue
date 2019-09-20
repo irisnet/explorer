@@ -133,6 +133,13 @@
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div class="proposals_table_title_div"
                      style="margin-top: 0;">Voters</div>
+                <ul class="filter_content">
+                    <li class="tab_option"
+                        v-for="(item,index) in filterTabArr"
+                        :class="item.isActive ? 'blue_style' : ''"
+                        @click="filterVoteTx(item.key,index)"
+                    >{{item.label}} {{item.value}}</li>
+                </ul>
                 <div class="voting_options">
                     <span>Yes:
                         <span>{{voteDetailsYes}}</span>
@@ -245,7 +252,27 @@ export default {
             perPage: 10,
             depositorObj: null,
 	        votingObj: null,
-	        burnPercent: 0
+	        burnPercent: 0,
+            filterTabArr:[
+                {
+                	label:'All',
+                    key:'all',
+                    value:'',
+                    isActive:true
+                },
+	            {
+		            label:'validator',
+                    key:'validator',
+		            value:'',
+		            isActive:false
+	            },
+	            {
+		            label:'Delegator',
+                    key:'delegator',
+		            value:'',
+		            isActive:false
+	            }
+            ]
         }
     },
     beforeMount () {
@@ -266,6 +293,40 @@ export default {
         }
     },
     methods: {
+	    filterVoteTx(item,index){
+            console.log(item)
+            this.resetActiveStyle()
+		    this.filterTabArr[index].isActive = true
+            Service.commonInterface({proposalDetailVoterTxByFilter:{
+		            proposalId: this.$route.params.proposal_id,
+		            pageNumber: this.currentPage,
+		            perPageSize: this.perPage,
+		            voterType:item
+                }},(data) => {
+	            if (data.items && data.items.length > 0) {
+		            this.itemTotal = data.total;
+		            this.items = data.items.map(item => {
+			            let votingListItemTime = (new Date(item.timestamp).getTime()) > 0 ? Tools.format2UTC(item.timestamp) : '--';
+			            return {
+				            moniker: item.moniker,
+                            Block:item.height,
+				            Voter: item.voter,
+				            Vote_Option: item.option,
+				            Tx_Hash: item.tx_hash,
+				            Time: votingListItemTime
+			            }
+		            });
+	            } else {
+		            this.items = [];
+		            this.showNoData = true;
+	            }
+            })
+        },
+	    resetActiveStyle(){
+	    	this.filterTabArr.map( item => {
+	    		return item.isActive = false
+            })
+        },
         computedProposalsDetailWrap () {
             if (!this.$store.state.isMobile) {
                 this.proposalsDetailWrap = 'personal_computer_transactions_detail_wrap';
@@ -288,6 +349,18 @@ export default {
                 return Tools.formatAge(currentServerTime, time, Constant.SUFFIX);
             }
         },
+	    setStats(stats){
+		    if(stats){
+			    this.voteDetailsYes =  stats.yes;
+			    this.voteDetailsNo = stats.no;
+			    this.voteDetailsNoWithVeto = stats.no_with_veto;
+			    this.voteDetailsAbstain = stats.abstain;
+		    }
+		    this.filterTabArr.map( item => {
+		    	return item.value = stats[item.key]
+            })
+
+        },
         getVoter () {
             this.showNoData = false;
             this.items = [];
@@ -297,6 +370,7 @@ export default {
                     perPageSize: this.perPage,
                 }            }, (data) => {
                 try {
+	                this.setStats(data.stats)
                     if (data.items && data.items.length > 0) {
                         this.itemTotal = data.total;
                         this.items = data.items.map(item => {
@@ -304,6 +378,7 @@ export default {
                             return {
                                 moniker: item.moniker,
                                 Voter: item.voter,
+	                            Block:item.height,
                                 Vote_Option: item.option,
                                 Tx_Hash: item.tx_hash,
                                 Time: votingListItemTime
@@ -313,7 +388,9 @@ export default {
                         this.items = [];
                         this.showNoData = true;
                     }
+
                 } catch (e) {
+                	console.error(e)
                     this.items = [];
                     this.showNoData = true;
                 }
@@ -411,10 +488,6 @@ export default {
                             this.votingStartTime = that.flShowProposalTime('votingStartTime', data.proposal.status) ? Tools.format2UTC(data.proposal.voting_start_time) : '--';
                             this.votingEndTime = that.flShowProposalTime('votingEndTime', data.proposal.status) ? Tools.format2UTC(data.proposal.voting_end_time) : '--';
                             this.description = data.proposal.description ? data.proposal.description : " -- ";
-                            // this.voteDetailsYes = data.proposal.status === "DepositPeriod" ? "--" : data.result.Yes;
-                            // this.voteDetailsNo = data.proposal.status === "DepositPeriod" ? "--" : data.result.No;
-                            // this.voteDetailsNoWithVeto = data.proposal.status === "DepositPeriod" ? "--" : data.result.NoWithVeto;
-                            // this.voteDetailsAbstain = data.proposal.status === "DepositPeriod" ? "--" : data.result.Abstain;
                             if (data.proposal && data.proposal.total_deposit.length !== 0) {
                                 this.totalDeposit = `${Tools.formatPriceToFixed(Tools.convertScientificNotation2Number(Tools.formatNumber(data.proposal.total_deposit[0].amount)))} ${Tools.formatDenom(data.proposal.total_deposit[0].denom).toUpperCase()}`;
                             } else {
@@ -590,6 +663,7 @@ export default {
         .proposals_table_title_div {
             margin-left: 0.1rem !important;
         }
+
         .proposals_information_content_title {
             height: 0.7rem !important;
             line-height: 0.7rem !important;
@@ -706,6 +780,18 @@ export default {
     font-size: 0.14rem;
     color: var(--contentColor);
     margin-left: 0.2rem;
+}
+.filter_content{
+    flex: 1;
+    display: flex;
+    .tab_option{
+        font-size: 0.12rem;
+        margin: 0 0.1rem 0.1rem 0.1rem;
+        cursor: pointer;
+    }
+    .blue_style{
+        color: #0580D3;
+    }
 }
 .voting_options {
     display: flex;
