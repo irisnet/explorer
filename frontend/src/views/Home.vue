@@ -184,28 +184,22 @@
 	        	Service.commonInterface({homeProposalList:{
 
                     }},(res) => {
-
-
-                    if(Array.isArray(res)){
-                    /*	let filterDepositorBarArr;
-	                    filterDepositorBarArr = res.filter( item => {
-		                    return item.status === "DepositPeriod"
-	                    });
-	                    this.depositorBarArr = filterDepositorBarArr;*/
-                        res.forEach(item => {
-                        	if(item.status === "DepositPeriod"){
-                        		this.depositorBarArr.push(item)
-                            }
-                        })
-	                    res.forEach(item => {
-		                    if(item.status === "VotingPeriod"){
-			                    this.votingBarArr.push(item)
-		                    }
-	                    })
-	                   /* this.votingBarArr = res.filter( item => {
-		                    return item.status === 'VotingPeriod'
-	                    })*/
-                    }
+	        		try {
+				        if(Array.isArray(res)){
+					        res.forEach(item => {
+						        if(item.status === "DepositPeriod"){
+							        this.depositorBarArr.push(item)
+						        }
+					        })
+					        res.forEach(item => {
+						        if(item.status === "VotingPeriod"){
+							        this.votingBarArr.push(item)
+						        }
+					        })
+				        }
+			        }catch (e) {
+                        console.error(e)
+			        }
                 })
             },
             onresize (isMobile) {

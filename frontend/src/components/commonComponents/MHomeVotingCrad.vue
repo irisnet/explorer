@@ -123,71 +123,9 @@
         },
         watch:{
 	        votingObj(votingObj){
-		        /*votingObj = [
-                    {
-	                    deposit_end_time: "0001-01-01T00:00:00Z",
-	                    final_votes: {},
-                        intial_deposit: {denom: "", amount: 0},
-	                    level:{
-		                    name: "Normal",
-		                    gov_param:{
-			                    participation: "0.5000000000",
-                                pass_threshold: "0.5000000000",
-                                veto_threshold: "0.3300000000",
-			                    min_deposit:{
-				                    amount:0,
-				                    denom: ""
-                                }
-                            }
-                        },
-                        proposal_id: 47,
-                        status: "VotingPeriod",
-                        submit_time: "0001-01-01T00:00:00Z",
-                        title: "shaoshenghaiziduozhongsh",
-                        total_deposit: {denom: "", amount: 0},
-                        type: "PlainText",
-	                    votes: [
-                            {
-	                            del_voting_power: 3.1415926,
-	                            option: "Yes",
-	                            time: "2019-09-20T08:16:30.156Z",
-	                            val_voting_power: 1000,
-	                            voter: "faa1eqvkfthtrr93g4p9qspp54w6dtjtrn279vcmpn",
-	                            voting_power: 3.1415926,
-                            },
-		                    {
-			                    del_voting_power: 3.1415926,
-			                    option: "No",
-			                    time: "2019-09-20T08:16:30.156Z",
-			                    val_voting_power: 100,
-			                    voter: "faa1eqvkfthtrr93g4p9qspp54w6dtjtrn279vcmpn",
-			                    voting_power: 3.1415926,
-		                    },
-		                    {
-			                    del_voting_power: 3.1415926,
-			                    option: "Abstain",
-			                    time: "2019-09-20T08:16:30.156Z",
-			                    val_voting_power: 200,
-			                    voter: "faa1eqvkfthtrr93g4p9qspp54w6dtjtrn279vcmpn",
-			                    voting_power: 3.1415926,
-		                    },
-		                    {
-			                    del_voting_power: 3.1415926,
-			                    option: "NoWithVeto",
-			                    time: "2019-09-20T08:16:30.156Z",
-			                    val_voting_power: 300,
-			                    voter: "faa1eqvkfthtrr93g4p9qspp54w6dtjtrn279vcmpn",
-			                    voting_power: 3.1415926,
-		                    }
-                        ],
-	                    voting_end_time: "0001-01-01T00:00:00Z",
-	                    voting_power_for_height: 1064.4196366875108,
-                    }
-                ];*/
 	        	this.formatVotingObj(votingObj);
 		        this.getVotingEndTime(votingObj.voting_end_time);
 	        	this.getTotalVoted(votingObj.votTx);
-
             }
         },
         mounted(){
