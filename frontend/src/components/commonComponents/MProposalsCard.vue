@@ -154,7 +154,7 @@ export default {
       }
       .progress {
         width: 4.6rem;
-        height: 0.2rem;
+        height: 0.12rem;
         background: #E5E9FB;
         border-radius: 0.17rem;
         position: relative;
@@ -162,7 +162,7 @@ export default {
         white-space: nowrap;
         flex: 1;
         .current {
-          height: 0.2rem;
+          height: 100%;
           background: var(--bgColor);
           border-radius: 0.17rem;
           .current_value {
