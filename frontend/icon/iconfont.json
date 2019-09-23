@@ -277,6 +277,13 @@
       "font_class": "Important",
       "unicode": "e642",
       "unicode_decimal": 58946
+    },
+    {
+      "icon_id": "11017334",
+      "name": "DepositPeriod-liebiao",
+      "font_class": "DepositPeriod-liebiao",
+      "unicode": "e643",
+      "unicode_decimal": 58947
     }
   ]
 }
