@@ -831,7 +831,10 @@ export default {
             }
         }
         .proposals_detail_information_wrap {
-            border: 1px solid rgba(215, 217, 224, 1) !important;
+            border-right: 1px solid rgba(215, 217, 224, 1) ;
+            border-left: 1px solid rgba(215, 217, 224, 1) ;
+            border-top: 1px solid rgba(215, 217, 224, 1) ;
+            border-bottom: 1px solid rgba(215, 217, 224, 1) ;
             padding: 10px;
             width: 100%;
             .information_props_wrap {
@@ -877,6 +880,9 @@ export default {
                     cursor: pointer;
                 }
             }
+        }
+        .no_border_style{
+            border-top: none;
         }
         .transactions_detail_wrap_hash_var {
             overflow-x: auto;

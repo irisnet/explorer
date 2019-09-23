@@ -481,7 +481,7 @@
     }
     @media screen and (max-width: 910px){
         .voting_card_content{
-            margin: 0 0.1rem;
+            margin: 0 ;
         }
     }
 </style>
