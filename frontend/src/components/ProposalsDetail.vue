@@ -42,10 +42,36 @@
                     <span class="information_props">Type :</span>
                     <span class="information_value">{{type}}</span>
                 </div>
-                <div class="information_props_wrap">
+                <div class="information_props_wrap" v-show="type === '' ">
                     <span class="information_props">Usage :</span>
                     <span class="information_value">{{usageValue}}</span>
                 </div>
+                <!--<div v-show="type === ''">
+                    <div class="information_props_wrap">
+                        <span class="information_props">Symbol :</span>
+                        <span class="information_value">{{SymbolValue}}</span>
+                    </div>
+                    <div class="information_props_wrap">
+                        <span class="information_props">CanonicalSymbol :</span>
+                        <span class="information_value">{{canonicalSymbolValue}}</span>
+                    </div>
+                    <div class="information_props_wrap">
+                        <span class="information_props">Name :</span>
+                        <span class="information_value">{{nameValue}}</span>
+                    </div>
+                    <div class="information_props_wrap">
+                        <span class="information_props">Decimal :</span>
+                        <span class="information_value">{{decimalValue}}</span>
+                    </div>
+                    <div class="information_props_wrap">
+                        <span class="information_props">MinUnitAlias :</span>
+                        <span class="information_value">{{minUnitAliasValue}}</span>
+                    </div>
+                    <div class="information_props_wrap">
+                        <span class="information_props">InitialSupply :</span>
+                        <span class="information_value">{{initialSupplyValue}}</span>
+                    </div>
+                </div>-->
                 <div class="information_props_wrap">
                     <span class="information_props">Description :</span>
                     <span class="information_value">
@@ -79,6 +105,18 @@
                             <span class="information_pre">{{threshold}}</span>
                         </span>
                     </div>
+                    <div class="parameter_container"
+                         v-show="type === 'ParameterChange'">
+                        <div class="information_props_wrap">
+                            <span class="information_props">Parameter Details :</span>
+                            <textarea :rows="textareaRows"
+                                      v-model="parameterValue"
+                                      readonly
+                                      spellcheck="false"
+                                      class="parameter_detail_content">
+                            </textarea>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="proposals_detail_information_wrap no_border_style">
@@ -109,11 +147,11 @@
                     <span class="information_value">{{participationValue}}</span>
                 </div>
                 <div class="information_props_wrap">
-                    <span class="information_props">Yes Threshold :</span>
+                    <span class="information_props">Pass Threshold :</span>
                     <span class="information_value">{{yesThresholdValue}}</span>
                 </div>
                 <div class="information_props_wrap">
-                    <span class="information_props">Veto Threshold :</span>
+                    <span class="information_props">Reject Threshold :</span>
                     <span class="information_value">{{vetoThresholdValue}}</span>
                 </div>
                 <div class="information_props_wrap">
@@ -123,15 +161,17 @@
             </div>
         </div>
         <div class="card_container">
-            <div v-show="depositorObj">
+            <div v-show="depositorObj" class="deposit_card_content_wrap">
                 <keep-alive>
                     <m-deposit-card :depositObj="depositorObj" :burnPercent="burnPercent" :status="status"></m-deposit-card>
                 </keep-alive>
             </div>
-            <div v-show="votingObj">
-                <keep-alive>
-                    <m-voting-card :votingBarObj="votingObj"></m-voting-card>
-                </keep-alive>
+            <div  v-show="votingObj" class="voting_mobile_content" style="overflow-x: auto;width: 100%;margin-left: 0.1rem">
+                <div v-show="votingObj" class="voting_proposal_card_content">
+                    <keep-alive>
+                        <m-voting-card :votingBarObj="votingObj"></m-voting-card>
+                    </keep-alive>
+                </div>
             </div>
         </div>
         <div :class="['proposal_table', proposalsDetailWrap, $store.state.isMobile ? 'mobile_proposals_table_container' : '']"
@@ -494,8 +534,8 @@ export default {
                             this.votingEndAge = this.formatProposalTime(this.flShowProposalTime('votingEndTime', data.proposal.status) ? data.proposal.voting_end_time : '');
                             this.software = data.proposal.software;
                             this.participationValue = `${(Number(data.proposal.participation) * 100).toFixed(2)} %`;
-                            this.yesThresholdValue = `${(Number(data.proposal.yes_threshold) * 100).toFixed(2)} %`;
-                            this.vetoThresholdValue = `${(Number(data.proposal.veto_threshold) * 100).toFixed(2)} %`;
+                            this.yesThresholdValue = `Yes >= ${(Number(data.proposal.yes_threshold) * 100).toFixed(2)} %`;
+                            this.vetoThresholdValue = `Veto >= ${(Number(data.proposal.veto_threshold) * 100).toFixed(2)} %`;
                             this.penaltyValue = `${(Number(data.proposal.penalty) * 100).toFixed(2)} %`;
 	                        this.usageValue = data.proposal.usage ? data.proposal.usage : '--';
 	                        this.burnValue = data.proposal.burn_percent ? (Number(data.proposal.burn_percent) *100).toFixed(2) : '';
@@ -582,6 +622,12 @@ export default {
     div{
         flex: 1;
     }
+    .deposit_card_content_wrap{
+        padding: 0;
+    }
+    .voting_proposal_card_content{
+        min-width: 5rem;
+    }
 }
 @media screen and (max-width: 910px){
     .card_container{
@@ -590,7 +636,14 @@ export default {
         margin: 0 auto;
         max-width: 12.8rem;
         flex-direction: column;
+        .deposit_card_content_wrap{
+            padding: 0 0.1rem;
+        }
+        .voting_mobile_content{
+            margin-left: 0 !important;
+        }
     }
+
 }
 .proposals_detail_wrap {
     @include flex;
@@ -901,6 +954,7 @@ pre {
     margin: 30px 20px 10px;
 }
 .mobile_proposals_table_container {
+    margin-top: 0.2rem;
     & > div {
         display: flex;
         flex-wrap: wrap;

@@ -22,13 +22,13 @@
             <template slot="Tx_Hash" slot-scope="{ row }">
                 <router-link
                     class="skip_route"
-                    :to="`/block/${row.Tx_Hash}`"
+                    :to="`/tx?txHash=${row.Tx_Hash}`"
                 >{{row.Tx_Hash ? `${formatTxHash(String(row.Tx_Hash))}` : ''}}</router-link>
             </template>
             <template slot="Block" slot-scope="{ row }">
                 <router-link
                         class="skip_route"
-                        :to="`/tx?txHash=${row.Block}`"
+                        :to="`/block/${row.Block}`"
                 >{{row.Block}}</router-link>
             </template>
             <template slot="Depositor" slot-scope="{ row }">
