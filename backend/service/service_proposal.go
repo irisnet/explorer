@@ -690,8 +690,8 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 	}
 	proposal.Proposer = from
 	proposal.TxHash = txHash
-
-	if proposal.Type == "ParameterChange" || proposal.Type == "SoftwareUpgrade" {
+	switch proposal.Type {
+	case lcd.ProposalTypeParameter, lcd.ProposalTypeSoftwareUpgrade:
 		txMsg, err := document.TxMsg{}.QueryTxMsgByHash(proposal.TxHash)
 		if err != nil {
 			logger.Error("query tx msg by hash ", logger.String("err", err.Error()))
@@ -705,22 +705,40 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 				proposal.Threshold = msg.Threshold
 			}
 		}
-	}
-
-	if proposal.Type == "CommunityTaxUsage" {
+		resp.Proposal = proposal
+		return
+	case lcd.ProposalTypeCommunityTaxUsage:
 		txMsg, err := document.TxMsg{}.QueryTxMsgByHash(proposal.TxHash)
 		if err != nil {
 			logger.Error("query tx msg by hash ", logger.String("err", err.Error()))
 		} else {
-			var msg map[string]interface{}
+			var msg vo.MsgSubmitCommunityTaxUsageProposal
 			if err := json.Unmarshal([]byte(txMsg.Content), &msg); err == nil {
-				if _, ok := msg["usage"]; ok {
-					if v, ok := msg["usage"].(string); ok {
-						proposal.Usage = v
-					}
-				}
+				proposal.Usage = msg.Usage
+				proposal.DestAddress = msg.DestAddress
+				proposal.Percent = msg.Percent
 			}
 		}
+		resp.Proposal = proposal
+		return
+	case lcd.ProposalTypeTokenAddition:
+		txMsg, err := document.TxMsg{}.QueryTxMsgByHash(proposal.TxHash)
+		if err != nil {
+			logger.Error("query tx msg by hash ", logger.String("err", err.Error()))
+		} else {
+			var msg vo.MsgSubmitTokenAdditionProposal
+			if err := json.Unmarshal([]byte(txMsg.Content), &msg); err == nil {
+				proposal.Symbol = msg.Symbol
+				proposal.CanonicalSymbol = msg.CanonicalSymbol
+				proposal.Name = msg.Name
+				proposal.Decimal = msg.Decimal
+				proposal.MinUnitAlias = msg.MinUnitAlias
+				proposal.InitialSupply = msg.InitialSupply
+			}
+		}
+		resp.Proposal = proposal
+		return
+
 	}
 
 	resp.Proposal = proposal

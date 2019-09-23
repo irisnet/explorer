@@ -47,17 +47,28 @@ type Proposal struct {
 	Proposer        string      `json:"proposer"`
 	TxHash          string      `json:"tx_hash"`
 	Parameters      []Param     `json:"parameters"`
-	Version         uint64      `json:"version"`
-	Software        string      `json:"software"`
-	SwitchHeight    uint64      `json:"switch_height"`
-	Threshold       string      `json:"threshold"`
 	Level           string      `json:"level"`
 	YesThreshold    string      `json:"yes_threshold"`
 	VetoThreshold   string      `json:"veto_threshold"`
 	Participation   string      `json:"participation"`
 	Penalty         string      `json:"penalty"`
-	Usage           string      `json:"usage"`
-	BurnPercent     float32     `json:"burn_percent"`
+
+	Version      uint64 `json:"version"`
+	Software     string `json:"software"`
+	SwitchHeight uint64 `json:"switch_height"`
+	Threshold    string `json:"threshold"`
+
+	Symbol          string `json:"symbol"`
+	CanonicalSymbol string `json:"canonical_symbol"`
+	Name            string `json:"name"`
+	Decimal         uint8  `json:"decimal"`
+	MinUnitAlias    string `json:"min_unit_alias"`
+	InitialSupply   uint64 `json:"initial_supply"`
+
+	Usage       string  `json:"usage"`
+	DestAddress string  `json:"dest_address"`
+	Percent     string  `json:"percent"`
+	BurnPercent float32 `json:"burn_percent"`
 }
 
 type Vote struct {
