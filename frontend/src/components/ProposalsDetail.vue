@@ -11,7 +11,7 @@
                     <i v-if="levelValue === 'Critical'" style="color:#FF5569;font-size: 0.16rem;" class="iconfont iconCritical"></i>
                     <i v-if="levelValue === 'Important'" style="color: #FF8000;font-size: 0.16rem;" class="iconfont iconImportant"></i>
                     <i v-if="levelValue === 'Normal'" style="color:#45B4FF;font-size: 0.16rem;" class="iconfont iconNormal"></i>
-                    <span>{{levelValue}}</span>
+                    <span style="padding-left: 0.1rem">{{levelValue}}</span>
                 </p>
                 <div class="information_props_wrap">
                     <span class="information_props">Proposer :</span>
