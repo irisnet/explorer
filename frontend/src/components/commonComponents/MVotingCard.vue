@@ -1,24 +1,35 @@
 <template>
     <div class="voting_card_content">
+        <div class="title_container" v-if="showTitle">
+            <div class="title_content">
+                <router-link :to="`/ProposalsDetail/${proposalId}`">
+                    <span class="proposal_id_content">#{{proposalId}}</span>
+                    <span class="proposal_title">{{title}}</span>
+                </router-link>
+            </div>
+            <div class="view_all_content">
+                <span><router-link :to="`/gov/proposals`">View All</router-link></span>
+            </div>
+        </div>
         <div class="voting_title_container">
-            <span><i :style="{color:flShowPassThreshold ? '#44C190' : '#D7DCE0'}" class="iconfont iconPass"></i>Pass Threshold {{passThreshold}} %</span>
-            <span><i :style="{color:flShowVoteThreshold ? '#FE8A8A' : '#D7DCE0'}" class="iconfont iconVeto"></i>Vote Threshold {{voteThreshold}}%</span>
+            <span><i :style="{color:flShowPassThreshold ? '#44C190' : '#D7DCE0'}" class="iconfont iconPass"></i>Pass (Yes>={{passThreshold}}%)</span>
+            <span><i :style="{color:flShowVoteThreshold ? '#FE8A8A' : '#D7DCE0'}" class="iconfont iconVeto"></i>Reject (Veto>={{voteThreshold}}%)</span>
             <span v-show="hourLeft > 1"><i class="iconfont iconHoursLeft"></i>{{hourLeft === 1 ? `${hourLeft} Hour Left` : `${hourLeft} Hours Left` }}</span>
             <span v-show="hourLeft < 1 && hourLeft > 0"><i class="iconfont iconHoursLeft"></i>{{ `${hourLeft} Min Left` }}</span>
         </div>
         <div class="voting_content">
             <div class="voting_left_container">
-                <span class="delegator_voted_content" v-show="flShowTotalVoted">DelegatorVoted {{delegatorVoted}}%</span>
-                <span class="delegator_voted_content" v-show="!flShowTotalVoted">Voted {{delegatorVoted}}%</span>
-                <span class="yes_content">Yes {{yesVotingPowerWidth === 'NaN' ? '0.00' : yesVotingPowerWidth}}%</span>
-                <span class="abstain_content">Abstain {{abstainVotingPowerWidth === 'NaN' ? '0.00' : abstainVotingPowerWidth}}%</span>
+                <span class="delegator_voted_content" v-show="flShowTotalVoted">0.00%</span>
+                <span class="delegator_voted_content" v-show="!flShowTotalVoted">0.00%</span>
+                <span class="yes_content">Yes {{yesVotingPowerWidth === 'NaN' ? '0.00' : yesVotingPowerWidth ? yesVotingPowerWidth : '0.00'}}%</span>
+                <span class="abstain_content">Abstain {{abstainVotingPowerWidth === 'NaN' ? '0.00' : abstainVotingPowerWidth ? abstainVotingPowerWidth : '0.00'}}%</span>
             </div>
             <div class="voting_center_container">
                 <div class="voting_progress_bar_content">
                     <span class="min_value_content" :style="minTotalTipStyleNumber" v-show="flShowTotalVoted">
-                        <span class="min_value_title">Total Voted {{totalVoted}} %</span>
+                        <span class="min_value_title">{{delegatorVoted}} % by Delegator</span>
                     </span>
-                    <div class="default_progress_bar_content" :style="{background:totalVotedGreaterThan ? '#79C9FF' : ''}"></div>
+                    <div class="default_progress_bar_content" :style="{background: totalVoted || delegatorVoted ? '#0580D3' : ''}"></div>
                     <div class="min_deposit_bar_content" :style="minVotingPowerStyleObj"></div>
                 </div>
                 <div class="voting_bottom_progress_bar_content" :style="minVotingPowerStyleObj">
@@ -29,9 +40,10 @@
                 </div>
             </div>
             <div class="voting_right_container">
-                <span class="participation_threshold_content">{{participationThreshold}}% Participation Threshold</span>
-                <span class="veto_content">{{vetoVotingPowerWidth === 'NaN' ? '0.00' : vetoVotingPowerWidth}}% Veto</span>
-                <span class="no_content">{{noVotingPowerWidth === 'NaN' ? '0.00' : noVotingPowerWidth}}% No</span>
+                <span class="participation_threshold_content" v-show="flShowTotalVoted">{{totalVoted ? totalVoted : '0.00'}}% Participation</span>
+                <span class="participation_threshold_content" v-show="!flShowTotalVoted">{{delegatorVoted ? delegatorVoted : '0.00'}}% Participation</span>
+                <span class="veto_content">{{vetoVotingPowerWidth === 'NaN' ? '0.00' : vetoVotingPowerWidth ? vetoVotingPowerWidth : '0.00'}}% Veto</span>
+                <span class="no_content">{{noVotingPowerWidth === 'NaN' ? '0.00' : noVotingPowerWidth ? noVotingPowerWidth : '0.00'}}% No</span>
             </div>
         </div>
     </div>
@@ -44,7 +56,10 @@
         props:{
 	        votingBarObj:{
 				type: Object
-            }
+            },
+	        showTitle:{
+		        type: Boolean
+	        }
         },
         watch:{
 	        votingBarObj(votingBarObj){
@@ -56,6 +71,8 @@
         data(){
 			return {
                 totalVoted: '',
+				proposalId:'',
+				title:'',
                 participationThreshold:'',
 				hourLeft: '',
                 validatorVotedPower: '',
@@ -94,14 +111,22 @@
 				}
             }
         },
+		mounted(){
+			let copyVotingBarObj = JSON.parse(JSON.stringify(this.votingBarObj));
+			this.formatVotingBarObj(copyVotingBarObj)
+        },
         methods:{
 	        formatVotingBarObj(votingBarObj){
-		        this.systemVotingPower = votingBarObj.voting_power_for_height;
-		        this.participationThreshold = `${((Number(votingBarObj.level.gov_param.participation)) *100).toFixed(2)}`;
-		        this.passThreshold = `${(Number(votingBarObj.level.gov_param.pass_threshold) * 100).toFixed(2)}`;
-		        this.voteThreshold = `${(Number(votingBarObj.level.gov_param.veto_threshold) * 100).toFixed(2)}`;
-		        this.getVotingEndTime(votingBarObj.voting_end_time);
-		        if(Array.isArray(votingBarObj.votes) && votingBarObj.votes.length > 0){
+	        	if(votingBarObj){
+			        this.title = votingBarObj.title;
+			        this.proposalId = votingBarObj.proposal_id;
+			        this.systemVotingPower = votingBarObj.voting_power_for_height;
+			        this.participationThreshold = `${((Number(votingBarObj.level.gov_param.participation)) *100).toFixed(2)}`;
+			        this.passThreshold = `${(Number(votingBarObj.level.gov_param.pass_threshold) * 100).toFixed(2)}`;
+			        this.voteThreshold = `${(Number(votingBarObj.level.gov_param.veto_threshold) * 100).toFixed(2)}`;
+			        this.getVotingEndTime(votingBarObj.voting_end_time);
+		        }
+		        if(votingBarObj && Array.isArray(votingBarObj.votes) && votingBarObj.votes.length > 0){
 		        	this.flShowTotalVoted = true;
 			        this.getTotalVoted(votingBarObj.votes);
 			        this.getYesVotingPower(votingBarObj.votes);
@@ -109,7 +134,7 @@
 			        this.getVetoVotingPower(votingBarObj.votes);
 			        this.getAbstainVotingPower(votingBarObj.votes);
                 }
-		        if(votingBarObj.final_votes && JSON.stringify(votingBarObj.final_votes) !== "{}"){
+		        if(votingBarObj && votingBarObj.final_votes && JSON.stringify(votingBarObj.final_votes) !== "{}"){
                     this.getFinalVotes(votingBarObj.final_votes);
                 }
             },
@@ -173,7 +198,8 @@
                     return a + b
                 });
                this.totalVotedNumber =  this.validatorVotedPower + this.delegatorVotedPower;
-               this.delegatorVoted = (this.delegatorVotedPower / (this.delegatorVotedPower + this.validatorVotedPower) * 100).toFixed(2);
+               this.delegatorVoted = (Number(this.delegatorVotedPower) / (Number(this.delegatorVotedPower) + Number(this.validatorVotedPower)) * 100).toFixed(2);
+	           this.$set(this.minTotalTipStyleNumber,'left',`${this.delegatorVoted}%`);
                this.totalVoted = (((this.delegatorVotedPower + this.validatorVotedPower) / this.systemVotingPower) *100).toFixed(2);
                this.setStyleFunc();
             },
@@ -248,17 +274,10 @@
 	        },
             setStyleFunc(){
 	        	if(Number(this.totalVoted) > Number(this.participationThreshold)){
-	        		this.flShowPassThreshold = true;
-	        		this.totalVotedGreaterThan = true;
-                    let diff = this.totalVoted - this.participationThreshold;
-			        this.$set(this.minTotalTipStyleNumber,'left',`${(100 - diff)}%`);
-			        this.$set(this.minVotingPowerStyleObj,'width',`${(100 - diff)}%`)
 		        }else if(Number(this.totalVoted) < Number(this.participationThreshold)){
 			        this.flShowPassThreshold = false;
 			        this.totalVotedGreaterThan = false;
                     this.minVotingPowerStyleNumber = ((Number(this.totalVoted) / Number(this.participationThreshold))* 100).toFixed(0);
-                    this.$set(this.minTotalTipStyleNumber,'left',`${((Number(this.totalVoted) / Number(this.participationThreshold))* 100).toFixed(0)}%`);
-			        this.$set(this.minVotingPowerStyleObj,'width',`${((Number(this.totalVoted) / Number(this.participationThreshold))* 100).toFixed(0)}%`)
                 }
             }
         }
@@ -274,8 +293,33 @@
         box-sizing: border-box;
         padding: 0.2rem;
         border: 0.01rem solid #d7d9e0;
-        margin: 0 0 0.2rem 0.1rem;
-        .proposal_title_content{
+        margin: 0 0 0.2rem 0;
+        .title_container{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            .title_content{
+                line-height: 1;
+                font-size: 0.16rem;
+                .proposal_id_content{
+                    color: #787C99;
+                    margin-right: 0.1rem;
+                }
+                .proposal_title{
+                    color: #0580D3;
+                }
+            }
+            .view_all_content{
+                color: #0580D3;
+                span{
+                    line-height: 1;
+                    border-bottom: 0.01rem solid #0580D3;
+                    a{
+                        font-size: 0.14rem;
+                        color: #0580D3 !important;
+                    }
+                }
+            }
 
         }
         .voting_title_container{
@@ -344,6 +388,18 @@
                             width: 100%;
                             white-space: nowrap;
                             font-size: 0.12rem;
+                            margin-bottom: 0.08rem;
+                            &:after{
+                                width: 0;
+                                height: 0;
+                                border: 0.06rem solid transparent;
+                                content: "";
+                                display: block;
+                                position: absolute;
+                                border-top-color: #FF9942;
+                                left: 24%;
+                                bottom: -0.12rem;
+                            }
                         }
                     }
                     .default_progress_bar_content{
@@ -351,8 +407,8 @@
                         height: 0.12rem;
                         border-radius: 0.06rem;
                         position: absolute;
+                        z-index: 7;
                         background: #E5E9FB;
-                        z-index: 1;
                     }
                     .burned_progress_bar_content{
                         width: 30%;

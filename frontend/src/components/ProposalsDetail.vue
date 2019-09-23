@@ -4,9 +4,15 @@
                 style="margin-bottom: 0.3rem; flex-direction: column; align-items: flex-start;">
             <p class="proposals_information_content_title">
                 <span>#{{proposalsId}}</span>
-                <span>{{title}}</span>
+                <span class="proposal_title">{{title}}</span>
             </p>
             <div class="proposals_detail_information_wrap">
+                <p class="proposals_detail_level">
+                    <i v-if="levelValue === 'Critical'" style="color:#FF5569;font-size: 0.16rem;" class="iconfont iconCritical"></i>
+                    <i v-if="levelValue === 'Important'" style="color: #FF8000;font-size: 0.16rem;" class="iconfont iconImportant"></i>
+                    <i v-if="levelValue === 'Normal'" style="color:#45B4FF;font-size: 0.16rem;" class="iconfont iconNormal"></i>
+                    <span>{{levelValue}}</span>
+                </p>
                 <div class="information_props_wrap">
                     <span class="information_props">Proposer :</span>
                     <span v-show="proposer !== '--'"
@@ -36,10 +42,36 @@
                     <span class="information_props">Type :</span>
                     <span class="information_value">{{type}}</span>
                 </div>
-                <div class="information_props_wrap">
+                <div class="information_props_wrap" v-show="type === '' ">
                     <span class="information_props">Usage :</span>
                     <span class="information_value">{{usageValue}}</span>
                 </div>
+                <!--<div v-show="type === ''">
+                    <div class="information_props_wrap">
+                        <span class="information_props">Symbol :</span>
+                        <span class="information_value">{{SymbolValue}}</span>
+                    </div>
+                    <div class="information_props_wrap">
+                        <span class="information_props">CanonicalSymbol :</span>
+                        <span class="information_value">{{canonicalSymbolValue}}</span>
+                    </div>
+                    <div class="information_props_wrap">
+                        <span class="information_props">Name :</span>
+                        <span class="information_value">{{nameValue}}</span>
+                    </div>
+                    <div class="information_props_wrap">
+                        <span class="information_props">Decimal :</span>
+                        <span class="information_value">{{decimalValue}}</span>
+                    </div>
+                    <div class="information_props_wrap">
+                        <span class="information_props">MinUnitAlias :</span>
+                        <span class="information_value">{{minUnitAliasValue}}</span>
+                    </div>
+                    <div class="information_props_wrap">
+                        <span class="information_props">InitialSupply :</span>
+                        <span class="information_value">{{initialSupplyValue}}</span>
+                    </div>
+                </div>-->
                 <div class="information_props_wrap">
                     <span class="information_props">Description :</span>
                     <span class="information_value">
@@ -73,27 +105,21 @@
                             <span class="information_pre">{{threshold}}</span>
                         </span>
                     </div>
+                    <div class="parameter_container"
+                         v-show="type === 'ParameterChange'">
+                        <div class="information_props_wrap">
+                            <span class="information_props">Parameter Details :</span>
+                            <textarea :rows="textareaRows"
+                                      v-model="parameterValue"
+                                      readonly
+                                      spellcheck="false"
+                                      class="parameter_detail_content">
+                            </textarea>
+                        </div>
+                    </div>
                 </div>
-                <!--<div class="parameter_container"-->
-                     <!--v-show="type === 'ParameterChange'">-->
-                    <!--<div class="information_props_wrap">-->
-                        <!--<span class="information_props">Parameter Details :</span>-->
-                        <!--<textarea :rows="textareaRows"-->
-                                  <!--v-model="parameterValue"-->
-                                  <!--readonly-->
-                                  <!--spellcheck="false"-->
-                                  <!--class="parameter_detail_content">-->
-            <!--</textarea>-->
-                    <!--</div>-->
-                <!--</div>-->
             </div>
-        </div>
-
-        <div :class="proposalsDetailWrap" style="margin-bottom: 0.3rem; flex-direction: column; align-items: flex-start;">
-            <p class="proposals_information_content_title">
-                <span>Critical</span>
-            </p>
-            <div class="proposals_detail_information_wrap">
+            <div class="proposals_detail_information_wrap no_border_style">
                 <div class="information_props_wrap">
                     <span class="information_props">Submit Time :</span>
                     <span class="information_value">{{submitAge}} <span v-show="submitAge">(</span>{{submitTime}}<span v-show="submitAge">)</span></span>
@@ -121,11 +147,11 @@
                     <span class="information_value">{{participationValue}}</span>
                 </div>
                 <div class="information_props_wrap">
-                    <span class="information_props">Yes Threshold :</span>
+                    <span class="information_props">Pass Threshold :</span>
                     <span class="information_value">{{yesThresholdValue}}</span>
                 </div>
                 <div class="information_props_wrap">
-                    <span class="information_props">Veto Threshold :</span>
+                    <span class="information_props">Reject Threshold :</span>
                     <span class="information_value">{{vetoThresholdValue}}</span>
                 </div>
                 <div class="information_props_wrap">
@@ -135,15 +161,17 @@
             </div>
         </div>
         <div class="card_container">
-            <div v-show="depositorObj">
+            <div v-show="depositorObj" class="deposit_card_content_wrap">
                 <keep-alive>
                     <m-deposit-card :depositObj="depositorObj" :burnPercent="burnPercent" :status="status"></m-deposit-card>
                 </keep-alive>
             </div>
-            <div v-show="votingObj">
-                <keep-alive>
-                    <m-voting-card :votingBarObj="votingObj"></m-voting-card>
-                </keep-alive>
+            <div  v-show="votingObj" class="voting_mobile_content" style="overflow-x: auto;width: 100%;margin-left: 0.1rem">
+                <div v-show="votingObj" class="voting_proposal_card_content">
+                    <keep-alive>
+                        <m-voting-card :votingBarObj="votingObj"></m-voting-card>
+                    </keep-alive>
+                </div>
             </div>
         </div>
         <div :class="['proposal_table', proposalsDetailWrap, $store.state.isMobile ? 'mobile_proposals_table_container' : '']"
@@ -234,6 +262,7 @@ export default {
             showLoading: false,
             showNoData: false,
             depositorShowNoData: false,
+	        levelValue:'',
 	        participationValue:'',
 	        yesThresholdValue:'',
 	        vetoThresholdValue:'',
@@ -505,8 +534,8 @@ export default {
                             this.votingEndAge = this.formatProposalTime(this.flShowProposalTime('votingEndTime', data.proposal.status) ? data.proposal.voting_end_time : '');
                             this.software = data.proposal.software;
                             this.participationValue = `${(Number(data.proposal.participation) * 100).toFixed(2)} %`;
-                            this.yesThresholdValue = `${(Number(data.proposal.yes_threshold) * 100).toFixed(2)} %`;
-                            this.vetoThresholdValue = `${(Number(data.proposal.veto_threshold) * 100).toFixed(2)} %`;
+                            this.yesThresholdValue = `Yes >= ${(Number(data.proposal.yes_threshold) * 100).toFixed(2)} %`;
+                            this.vetoThresholdValue = `Veto >= ${(Number(data.proposal.veto_threshold) * 100).toFixed(2)} %`;
                             this.penaltyValue = `${(Number(data.proposal.penalty) * 100).toFixed(2)} %`;
 	                        this.usageValue = data.proposal.usage ? data.proposal.usage : '--';
 	                        this.burnValue = data.proposal.burn_percent ? (Number(data.proposal.burn_percent) *100).toFixed(2) : '';
@@ -517,6 +546,7 @@ export default {
                             this.title = data.proposal.title;
                             this.type = data.proposal.type;
                             this.status = data.proposal.status;
+                            this.levelValue = data.proposal.level;
                             this.proposer = data.proposal.proposer ? data.proposal.proposer : "--";
                             this.submitHash = data.proposal.tx_hash ? data.proposal.tx_hash : "--";
                             this.submitTime = data.proposal.submit_time ? Tools.format2UTC(data.proposal.submit_time) : '--';
@@ -592,6 +622,12 @@ export default {
     div{
         flex: 1;
     }
+    .deposit_card_content_wrap{
+        padding: 0;
+    }
+    .voting_proposal_card_content{
+        min-width: 5rem;
+    }
 }
 @media screen and (max-width: 910px){
     .card_container{
@@ -600,7 +636,14 @@ export default {
         margin: 0 auto;
         max-width: 12.8rem;
         flex-direction: column;
+        .deposit_card_content_wrap{
+            padding: 0 0.1rem;
+        }
+        .voting_mobile_content{
+            margin-left: 0 !important;
+        }
     }
+
 }
 .proposals_detail_wrap {
     @include flex;
@@ -616,11 +659,37 @@ export default {
             color: #000000;
             margin-bottom: 0;
             @include fontWeight;
+            .proposal_title{
+                padding-left: 0.1rem;
+            }
         }
         @include pcCenter;
+        .no_border_style{
+            border-top: none !important;
+        }
         .proposals_detail_information_wrap {
             padding: 0.2rem 0.2rem 0.08rem;
-            border: 1px solid rgba(215, 217, 224, 1) !important;
+            border-right: 1px solid rgba(215, 217, 224, 1) ;
+            border-left: 1px solid rgba(215, 217, 224, 1) ;
+            border-top: 1px solid rgba(215, 217, 224, 1) ;
+            border-bottom: 1px solid rgba(215, 217, 224, 1) ;
+            .no_border_style{
+                border-top: none !important;
+            }
+            .proposals_detail_level{
+                padding: 0 0 0.2rem 0;
+                i{
+                    img{
+                        width: 0.16rem;
+                    }
+                }
+                span{
+                    color:#22252A;
+                    font-size: 0.14rem;
+                    line-height: 0.2rem;
+                    margin-left: 0.1rem;
+                }
+            }
             .information_props_wrap {
                 @include flex;
                 line-height: 0.2rem;
@@ -885,6 +954,7 @@ pre {
     margin: 30px 20px 10px;
 }
 .mobile_proposals_table_container {
+    margin-top: 0.2rem;
     & > div {
         display: flex;
         flex-wrap: wrap;

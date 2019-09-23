@@ -70,7 +70,7 @@
                     <m-deposit-card :depositObj="v" :showTitle="true"></m-deposit-card>
                 </div>
                 <div class="home_proposal_item_bar" v-for="item in votingBarArr" :key="item.proposal_id">
-                    <m-home-voting-crad :votingObj="item"></m-home-voting-crad>
+                    <m-voting-card :votingBarObj="item" :showTitle="true"></m-voting-card>
                 </div>
             </div>
             <div :class="module_item_wrap">
@@ -96,9 +96,10 @@
     import lang from "../lang/index"
     import MHomeVotingCrad from "../components/commonComponents/MHomeVotingCrad";
     import MDepositCard from "../components/commonComponents/MDepositCard";
+    import MVotingCard from "../components/commonComponents/MVotingCard";
     export default {
         name: 'app-header',
-        components: {MDepositCard, MHomeVotingCrad, EchartsPie, EchartsLine, HomeBlockModule},
+        components: {MVotingCard, MDepositCard, MHomeVotingCrad, EchartsPie, EchartsLine, HomeBlockModule},
         data() {
             return {
                 devicesWidth: window.innerWidth,
@@ -485,7 +486,6 @@
                 justify-content: space-between;
                 flex-wrap: wrap;
                 box-sizing: border-box;
-                margin-bottom: 0.3rem;
                 .home_proposal_item_bar{
                     min-width: 5.98rem;
                     flex: 1;
@@ -493,6 +493,9 @@
                     margin-right: 0.4rem;
                }
                 .home_proposal_item_bar:nth-child(even){
+                    margin-right: 0;
+                }
+                .home_proposal_item_bar:last-child{
                     margin-right: 0;
                 }
             }
@@ -712,6 +715,9 @@
                         margin-right: 0;
                     }
                     .home_proposal_item_bar:nth-child(even){
+                        margin-right: 0;
+                    }
+                    .home_proposal_item_bar:last-child{
                         margin-right: 0;
                     }
                 }
