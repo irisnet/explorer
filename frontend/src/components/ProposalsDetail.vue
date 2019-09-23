@@ -561,8 +561,8 @@ export default {
                             this.votingEndAge = this.formatProposalTime(this.flShowProposalTime('votingEndTime', data.proposal.status) ? data.proposal.voting_end_time : '');
                             this.software = data.proposal.software;
                             this.participationValue = `${(Number(data.proposal.participation) * 100).toFixed(2)} %`;
-                            this.yesThresholdValue = `Yes >= ${(Number(data.proposal.yes_threshold) * 100).toFixed(2)} %`;
-                            this.vetoThresholdValue = `Veto >= ${(Number(data.proposal.veto_threshold) * 100).toFixed(2)} %`;
+                            this.yesThresholdValue = `${(Number(data.proposal.yes_threshold) * 100).toFixed(2)} % (Yes)`;
+                            this.vetoThresholdValue = `${(Number(data.proposal.veto_threshold) * 100).toFixed(2)} % (Veto)`;
                             this.penaltyValue = `${(Number(data.proposal.penalty) * 100).toFixed(2)} %`;
 	                        this.usageValue = data.proposal.usage ? data.proposal.usage : '--';
 	                        this.burnValue = data.proposal.burn_percent ? (Number(data.proposal.burn_percent) *100).toFixed(2) : '';
