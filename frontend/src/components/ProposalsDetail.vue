@@ -115,19 +115,20 @@
                             <span class="information_pre">{{threshold}}</span>
                         </span>
                     </div>
-                    <div class="parameter_container"
-                         v-show="type === 'ParameterChange'">
-                        <div class="information_props_wrap">
-                            <span class="information_props">Parameter Details :</span>
-                            <textarea :rows="textareaRows"
-                                      v-model="parameterValue"
-                                      readonly
-                                      spellcheck="false"
-                                      class="parameter_detail_content">
+                </div>
+                <div class="parameter_container"
+                     v-show="type === 'Parameter'">
+                    <div class="information_props_wrap">
+                        <span class="information_props">Parameter Details :</span>
+                        <textarea :rows="textareaRows"
+                                  v-model="parameterValue"
+                                  readonly
+                                  spellcheck="false"
+                                  class="parameter_detail_content">
                             </textarea>
-                        </div>
                     </div>
                 </div>
+
             </div>
             <div class="proposals_detail_information_wrap no_border_style">
                 <div class="information_props_wrap">
@@ -594,7 +595,7 @@ export default {
                                 this.totalDeposit = "";
                             }
                             this.burnPercent = data.proposal.burn_percent;
-                            if (data.proposal.type === 'ParameterChange') {
+                            if (data.proposal.type === 'Parameter') {
                                 for (let index = 0; index < data.proposal.parameters.length; index++) {
                                     this.parameterValue += `${data.proposal.parameters[index].subspace}/${data.proposal.parameters[index].key} = ${data.proposal.parameters[index].value}\n`
                                 }
