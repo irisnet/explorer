@@ -730,6 +730,8 @@
                 .home_proposal_container{
                     display: flex;
                     flex-direction: column;
+                    margin-bottom: 0.2rem;
+                    overflow-x: auto;
                     .home_proposal_item_bar{
                         margin-right: 0;
                     }
