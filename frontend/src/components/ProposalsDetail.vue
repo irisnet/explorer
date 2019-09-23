@@ -318,7 +318,6 @@ export default {
     },
     methods: {
 	    filterVoteTx(item,index){
-            console.log(item)
             this.resetActiveStyle()
 		    this.filterTabArr[index].isActive = true
             Service.commonInterface({proposalDetailVoterTxByFilter:{

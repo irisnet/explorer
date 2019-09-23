@@ -574,7 +574,6 @@ export default {
                 data => {
                     try {
                         if (data) {
-                        	console.log(data[0])
                             if (Array.isArray(data) && data[0]) {
                                 this.validatorInfo[
                                     "Commission Rewards"

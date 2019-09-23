@@ -69,7 +69,9 @@
                 <div class="home_proposal_item_bar" v-for="v in depositorBarArr" :key="v.proposal_id">
                     <m-deposit-card :depositObj="v" :showTitle="true"></m-deposit-card>
                 </div>
-                <!--<m-home-voting-crad></m-home-voting-crad>-->
+                <div class="home_proposal_item_bar" v-for="item in votingBarArr" :key="item.proposal_id">
+                    <m-home-voting-crad :votingObj="item"></m-home-voting-crad>
+                </div>
             </div>
             <div :class="module_item_wrap">
                 <div class="home_module_item fixed_item_height">
@@ -129,7 +131,7 @@
                 moniker:'',
                 proposerAddress:"",
                 depositorBarArr: [],
-                votingBarArr: '',
+                votingBarArr: [],
             }
         },
 
@@ -182,54 +184,22 @@
 	        	Service.commonInterface({homeProposalList:{
 
                     }},(res) => {
-
-
-			    /*    deposit_end_time: "0001-01-01T00:00:00Z"
-			        final_votes: {}
-			        intial_deposit: {denom: "", amount: 0}
-			        amount: 0
-			        denom: ""
-			        level: {name: "Important",…}
-			        gov_param: {participation: "0.5000000000", pass_threshold: "0.6700000000", veto_threshold: "0.3300000000",…}
-			        min_deposit: {denom: "", amount: 0}
-			        amount: 0
-			        denom: ""
-			        participation: "0.5000000000"
-			        pass_threshold: "0.6700000000"
-			        veto_threshold: "0.3300000000"
-			        name: "Important"
-			        proposal_id: 34
-			        status: "VotingPeriod"
-			        submit_time: "0001-01-01T00:00:00Z"
-			        title: "testParameter2"
-			        total_deposit: {denom: "", amount: 0}
-			        amount: 0
-			        denom: ""
-			        type: "Parameter"
-			        votes: []
-			        voting_end_time: "0001-01-01T00:00:00Z"
-			        voting_power_for_height: 1239.56115285933*/
-
-	        		console.log(res)
-                    if(Array.isArray(res)){
-                    /*	let filterDepositorBarArr;
-	                    filterDepositorBarArr = res.filter( item => {
-		                    return item.status === "DepositPeriod"
-	                    });
-	                    this.depositorBarArr = filterDepositorBarArr;*/
-                        res.forEach(item => {
-                        	if(item.status === "DepositPeriod"){
-                        		this.depositorBarArr.push(item)
-                            }
-                        })
-
-
-
-	                    this.votingBarArr = res.filter( item => {
-		                    return item.status === 'VotingPeriod'
-	                    })
-	                    console.log(this.depositorBarArr,"????")
-                    }
+	        		try {
+				        if(Array.isArray(res)){
+					        res.forEach(item => {
+						        if(item.status === "DepositPeriod"){
+							        this.depositorBarArr.push(item)
+						        }
+					        })
+					        res.forEach(item => {
+						        if(item.status === "VotingPeriod"){
+							        this.votingBarArr.push(item)
+						        }
+					        })
+				        }
+			        }catch (e) {
+                        console.error(e)
+			        }
                 })
             },
             onresize (isMobile) {
@@ -515,6 +485,7 @@
                 justify-content: space-between;
                 flex-wrap: wrap;
                 box-sizing: border-box;
+                margin-bottom: 0.3rem;
                 .home_proposal_item_bar{
                     min-width: 5.98rem;
                     flex: 1;
@@ -728,6 +699,36 @@
         cursor: pointer;
         a{
             color:var(--bgColor) !important;
+        }
+    }
+
+    @media screen and (min-width: 910px) and (max-width: 1280px){
+        .home_wrap{
+            .personal_computer_home_wrap{
+                .home_proposal_container{
+                    display: flex;
+                    flex-direction: column;
+                    .home_proposal_item_bar{
+                        margin-right: 0;
+                    }
+                    .home_proposal_item_bar:nth-child(even){
+                        margin-right: 0;
+                    }
+                }
+            }
+        }
+    }
+    @media screen and (max-width: 910px){
+        .home_wrap{
+            .mobile_home_wrap{
+                .home_proposal_container{
+                    display: flex;
+                    flex-direction: column;
+                    .home_proposal_item_bar{
+                        margin-right: 0;
+                    }
+                }
+            }
         }
     }
 </style>
