@@ -43,10 +43,15 @@
                         class="information_props_wrap"
                         v-for="v in Object.entries(validatorInfo).filter((v, i) => i%2 === 1)"
                         :key="v[0]"
+                        v-if="flShowVotPower(v[1])"
                     >
                         <span class="information_props">{{v[0]}}:</span>
                         <template v-if="v[1]">
-                            <span class="information_value">{{v[1]}}</span>
+                            <span class="information_value" v-if="!v[1] instanceof Array">{{v[1]}}</span>
+                            <span class="information_value" v-if="v[1] instanceof Array">{{v[1][0]}}
+                             <i v-show="v[1][1]" class="tip_content">{{v[1][1]}}</i>
+                            </span>
+                            <span class="information_value" v-else>{{v[1]}}</span>
                         </template>
                         <template v-else>
                             <span class="information_value">--</span>
