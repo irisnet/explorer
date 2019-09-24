@@ -108,7 +108,9 @@ func (service *ValidatorService) GetDepositedTxByValidatorAddr(validatorAddr str
 	total, txs, err := document.CommonTx{}.QueryDepositedProposalTxByValidatorWithSubmitOrDepositType(validatorAcc, page, size, istotal)
 
 	if err != nil {
-		logger.Error("QueryDepositedProposalTxByValidatorWithSubmitOrDepositType", logger.String("err", err.Error()))
+		if err.Error() != "not found" {
+			logger.Error("QueryDepositedProposalTxByValidatorWithSubmitOrDepositType", logger.String("err", err.Error()))
+		}
 		return vo.ValidatorDepositTxPage{}
 	}
 

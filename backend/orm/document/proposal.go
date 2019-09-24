@@ -241,6 +241,7 @@ func (_ Proposal) GetProposalsByStatus(status, sorts []string) ([]Proposal, erro
 			"$in": status,
 		},
 	}
+	sorts = append(sorts, desc(Proposal_Field_ProposalId))
 
 	query.SetCollection(CollectionNmProposal).
 		SetCondition(condition).
