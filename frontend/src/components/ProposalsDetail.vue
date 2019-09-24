@@ -11,7 +11,7 @@
                     <i v-if="levelValue === 'Critical'" style="color:#FF5569;font-size: 0.16rem;" class="iconfont iconCritical"></i>
                     <i v-if="levelValue === 'Important'" style="color: #FF8000;font-size: 0.16rem;" class="iconfont iconImportant"></i>
                     <i v-if="levelValue === 'Normal'" style="color:#45B4FF;font-size: 0.16rem;" class="iconfont iconNormal"></i>
-                    <span style="padding-left: 0.1rem">{{levelValue}}</span>
+                    <span >{{levelValue}}</span>
                 </p>
                 <div class="information_props_wrap">
                     <span class="information_props">Proposer :</span>
@@ -561,8 +561,8 @@ export default {
                             this.votingEndAge = this.formatProposalTime(this.flShowProposalTime('votingEndTime', data.proposal.status) ? data.proposal.voting_end_time : '');
                             this.software = data.proposal.software;
                             this.participationValue = `${(Number(data.proposal.participation) * 100).toFixed(2)} %`;
-                            this.yesThresholdValue = `Yes >= ${(Number(data.proposal.yes_threshold) * 100).toFixed(2)} %`;
-                            this.vetoThresholdValue = `Veto >= ${(Number(data.proposal.veto_threshold) * 100).toFixed(2)} %`;
+                            this.yesThresholdValue = `${(Number(data.proposal.yes_threshold) * 100).toFixed(2)} % (Yes)`;
+                            this.vetoThresholdValue = `${(Number(data.proposal.veto_threshold) * 100).toFixed(2)} % (Veto)`;
                             this.penaltyValue = `${(Number(data.proposal.penalty) * 100).toFixed(2)} %`;
 	                        this.usageValue = data.proposal.usage ? data.proposal.usage : '--';
 	                        this.burnValue = data.proposal.burn_percent ? (Number(data.proposal.burn_percent) *100).toFixed(2) : '';
@@ -1025,4 +1025,11 @@ pre {
         margin-bottom: 0.4rem;
     }
 }
+    @media screen and (max-width: 910px){
+        .proposals_detail_level{
+            span{
+                padding-left: 0.1rem !important;
+            }
+        }
+    }
 </style>
