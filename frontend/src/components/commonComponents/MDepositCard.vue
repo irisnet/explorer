@@ -14,7 +14,7 @@
         <div class="deposit_title_container">
             <span><i class="iconfont iconParameterChange"></i>{{proposalType}}</span>
             <span v-show="flShowVotingPeriod"><i class="iconfont iconDepositPeriod"></i>Voting Period</span>
-            <span v-show="!flShowPass && !flShowReject && !flShowVotingPeriod"><i class="iconfont iconDepositPeriod-liebiao"></i>DepositPeriod</span>
+            <span v-show="!flShowPass && !flShowReject && !flShowVotingPeriod"><i style="color:#0580d3" class="iconfont iconDepositPeriod-liebiao"></i>DepositPeriod</span>
             <span v-show="flShowPass" ><i class="iconfont iconPass"></i>Passed</span>
             <span v-show="flShowReject"><i class="iconfont iconVeto"></i>Rejected</span>
             <span v-show="hourLeft > 1"><i class="iconfont iconHoursLeft"></i>{{hourLeft === 1 ? `${hourLeft} Hour Left` : `${hourLeft} Hours Left` }}</span>

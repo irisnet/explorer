@@ -65,20 +65,20 @@
                     <echarts-line :informationLine="informationLine"></echarts-line>
                 </div>
             </div>
-            <div class="home_proposal_container">
-                <div class="home_proposal_item_bar" v-for="v in depositorBarArr" :key="v.proposal_id">
-                    <m-deposit-card :depositObj="v" :showTitle="true"></m-deposit-card>
-                </div>
-                <div class="home_proposal_item_bar" v-for="item in votingBarArr" :key="item.proposal_id">
-                    <m-voting-card :votingBarObj="item" :showTitle="true"></m-voting-card>
-                </div>
-            </div>
             <div :class="module_item_wrap">
                 <div class="home_module_item fixed_item_height">
                     <home-block-module :moduleName="'Blocks'" :information="blocksInformation"></home-block-module>
                 </div>
                 <div class="home_module_item fixed_item_height">
                     <home-block-module :moduleName="'Transactions'" :information="transactionInformation"></home-block-module>
+                </div>
+            </div>
+            <div class="home_proposal_container">
+                <div class="home_proposal_item_bar" v-for="v in depositorBarArr" :key="v.proposal_id">
+                    <m-deposit-card :depositObj="v" :showTitle="true"></m-deposit-card>
+                </div>
+                <div class="home_proposal_item_bar" v-for="item in votingBarArr" :key="item.proposal_id">
+                    <m-voting-card :votingBarObj="item" :showTitle="true"></m-voting-card>
                 </div>
             </div>
         </div>
@@ -734,6 +734,7 @@
                     overflow-x: auto;
                     .home_proposal_item_bar{
                         margin-right: 0;
+                        margin-bottom: 0.2rem;
                     }
                 }
             }
