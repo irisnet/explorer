@@ -14,7 +14,7 @@
             </div>
         </div>
         <div class="home_voting_title_container">
-            <span><i :style="{color:flShowGrayStyle ? '#44C190' : '#D7DCE0'}"  class="iconfont iconPass"></i>ParameterChange</span>
+            <span><i :style="{color:flShowParameterChange ? '#44C190' : '#D7DCE0'}"  class="iconfont iconPass"></i>ParameterChange</span>
             <span><i :style="{color:flShowRedStyle ? '#3598db' : '#D7DCE0'}" class="iconfont iconDepositPeriod"></i>DepositPeriod</span>
             <span v-show="hourLeft > 1"><i class="iconfont iconHoursLeft"></i>{{hourLeft === 1 ? `${hourLeft} Hour Left` : `${hourLeft} Hours Left` }}</span>
             <span v-show="hourLeft < 1 && hourLeft > 0"><i class="iconfont iconHoursLeft"></i>{{ `${hourLeft} Min Left` }}</span>
@@ -97,6 +97,7 @@
 				systemVotingPower:'',
 				votedValue: '',
 				flShowGrayStyle: false,
+                flShowParameterChange:false,
                 flShowRedStyle: false,
 				PassThresholdDefaultStyleObj:{
 					width: ""
@@ -186,7 +187,10 @@
 			        return a + b
 		        });
 		        this.totalVotedNumber = this.delegatorVotedPower + this.validatorVotedPower;
-                this.votedValue = (Number(this.totalVotedNumber) / Number(this.systemVotingPower) *100).toFixed(2)
+                this.votedValue = (Number(this.totalVotedNumber) / Number(this.systemVotingPower) *100).toFixed(2);
+                if(Number(this.votedValue) > Number(this.participationValue)){
+                    this.flShowParameterChange = true;
+                }
 	        },
 	        getYesVotingPower(votTx){
 		        let yesVotingPowerArr = [];

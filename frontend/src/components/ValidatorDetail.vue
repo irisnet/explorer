@@ -29,7 +29,7 @@
                         <template v-if="v[1]">
                             <span class="information_value" v-if="!v[1] instanceof Array">{{v[1]}}</span>
                             <span class="information_value" v-if="v[1] instanceof Array">{{v[1][0]}}
-                             <i class="tip_content">{{v[1][1]}}</i>
+                             <i v-show="v[1][1]" class="tip_content">{{v[1][1]}}</i>
                             </span>
                             <span class="information_value" v-else>{{v[1]}}</span>
                         </template>
@@ -527,6 +527,11 @@ export default {
         // this.getValidatorUptimeHistory("24hours");
     },
     methods: {
+	    flShowTip(value){
+	    	if(Number(value) > 0){
+	    		return true
+            }
+        },
 	    flShowVotPower(status){
 	    	if(status === 'Candidate' || status === 'Jailed'){
 	    		return false

@@ -19,9 +19,13 @@
             <img v-if="data.level === 'Critical'" src="../../assets/critical.png" />
             <span>{{data.type}}</span>
           </div>
-          <div style="margin-top: 12px;">
-            <img src="../../assets/voting_period.png" />
+          <div style="margin-top: 12px;display: flex;align-items: center;" v-show="data.status === 'DepositPeriod'">
+            <i class="iconfont iconDepositPeriod-liebiao" style="color: #0580D3"></i>
             <span>DepositPeriod</span>
+          </div>
+          <div style="margin-top: 12px;display: flex;align-items: center;" v-show="data.status === 'VotingPeriod'">
+            <i class="iconfont iconDepositPeriod" style="color: #0580D3"></i>
+            <span>VotingPeriod</span>
           </div>
           <div class="per_div">
             <div class="per_title">GovTallyingProcedure</div>

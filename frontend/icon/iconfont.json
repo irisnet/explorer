@@ -256,6 +256,34 @@
       "font_class": "ParameterChange",
       "unicode": "e63d",
       "unicode_decimal": 58941
+    },
+    {
+      "icon_id": "10990158",
+      "name": "Critical",
+      "font_class": "Critical",
+      "unicode": "e640",
+      "unicode_decimal": 58944
+    },
+    {
+      "icon_id": "10990159",
+      "name": "Normal",
+      "font_class": "Normal",
+      "unicode": "e641",
+      "unicode_decimal": 58945
+    },
+    {
+      "icon_id": "10990160",
+      "name": "Important",
+      "font_class": "Important",
+      "unicode": "e642",
+      "unicode_decimal": 58946
+    },
+    {
+      "icon_id": "11017334",
+      "name": "DepositPeriod-liebiao",
+      "font_class": "DepositPeriod-liebiao",
+      "unicode": "e643",
+      "unicode_decimal": 58947
     }
   ]
 }

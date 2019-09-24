@@ -50,10 +50,10 @@
                     <span class="information_value information_show_trim"
                           v-show="!withdrawAddress">--</span>
                 </div>
-                <div class="information_props_wrap">
+               <!-- <div class="information_props_wrap">
                     <span class="information_props">Transactions :</span>
-                    <span class="information_value">{{transactionsValue?transactionsValue:'--'}}</span>
-                </div>
+                    <span class="information_value">{{transactionsValue?transactionsValue:'&#45;&#45;'}}</span>
+                </div>-->
             </div>
         </div>
         <div class="list_tab_wrap"
@@ -64,7 +64,7 @@
                         :class="item.active ? 'activeStyle' : 'unactiveStyle'"
                         v-for="(item,index) in txTab"
                         :key="index"
-                        @click="tabTxList(index,item.txTabName,1,20)">{{item.txTabName}} ({{item.txTotal}})
+                        @click="tabTxList(index,item.txTabName,1,20)">{{item.txTabName}}
                     </li>
                 </ul>
             </div>
@@ -219,23 +219,19 @@ export default {
                 {
                     "txTabName": "Transfers",
                     "active": true,
-                    txTotal: "",
                 },
                 {
                     "txTabName": "Stakes",
                     "active": false,
-                    txTotal: "",
 
                 },
                 {
                     "txTabName": "Declarations",
                     "active": false,
-                    txTotal: "",
                 },
                 {
                     "txTabName": "Governance",
                     "active": false,
-                    txTotal: ""
                 }
             ]
         }
@@ -258,11 +254,9 @@ export default {
         if (this.$route.params.param.substring(0, 3) === this.$Crypto.config.iris.bech32.valAddr) {
             this.tabTxList(this.tabTxListIndex, this.txTabName, this.currentPage, this.pageSize);
             this.getAddressInformation(this.$route.params.param);
-            this.getAddressTxStatistics();
         } else {
             this.tabTxList(this.tabTxListIndex, this.txTabName, this.currentPage, this.pageSize);
             this.getAddressInformation(this.$route.params.param);
-            this.getAddressTxStatistics();
         }
     },
     methods: {
@@ -274,28 +268,7 @@ export default {
                     "personal_computer_transactions_detail_wrap";
             }
         },
-        getAddressTxStatistics () {
-            Service.commonInterface({                address: {
-                    address: this.$route.params.param
-                }            }, (data) => {
-                try {
-                    if (data) {
-                        this.txTab[0].txTotal = data.trans_cnt;
-                        this.txTab[1].txTotal = data.stake_cnt;
-                        this.txTab[2].txTotal = data.declaration_cnt;
-                        this.txTab[3].txTotal = data.gov_cnt;
-	                    let totalArrayNumber = this.txTab.map(item => {
-                                return item.txTotal
-                        });
-	                    this.transactionsValue = totalArrayNumber.reduce((a,b)=> {
-	                    	return a + b
-                        });
-                    }
-                } catch (e) {
-                    console.error(e)
-                }
-            })
-        },
+
         tabTxList (index, txTabName, currentPage, pageSize) {
             txTabName = Tools.firstWordLowerCase(txTabName)
             this.currentPage = currentPage;

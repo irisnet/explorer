@@ -59,7 +59,7 @@
 
 
         <div :class="proposalsListPageWrap">
-            <div class="pagination total_num" :style="{'position':flTableFixed ? 'static' : 'fixed'}" :class="[$store.state.isMobile ? 'mobile_graph_pagination_container' : '']">
+            <div class="pagination total_num header_fixed_style" :style="{'position':flTableFixed ? 'static' : 'fixed'}" :class="[$store.state.isMobile ? 'mobile_graph_pagination_container' : '']">
                 <div style="height: 70px; display: flex; align-items: center;">
                     <span class="proposals_list_page_wrap_hash_var" :class="count ? 'count_show' : 'count_hidden' ">{{count}} Proposals</span>
                     <div class="icon_list">
@@ -241,6 +241,7 @@
 					o.title = item.title;
 					o.level = item.level && item.level.name;
 					o.type = item.type;
+					o.status = item.status;
 					let all = item.voting_power_for_height;
 					let yesArr = item.votes.filter(v => v.option === 'Yes');
 					let yes = yesArr.reduce((init, v) => {return v.voting_power + init}, 0);
@@ -526,6 +527,9 @@
                     box-shadow:0 0 0 .2rem rgba(255,255,255,.5)
                 }
             }
+        }
+        .header_fixed_style{
+            z-index: 5 !important;
         }
         .total_num{
             @include flex;

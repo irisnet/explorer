@@ -13,9 +13,10 @@
         </div>
         <div class="deposit_title_container">
             <span><i class="iconfont iconParameterChange"></i>{{proposalType}}</span>
-            <span v-show="!flShowPass && !flShowReject"><i class="iconfont iconDepositPeriod"></i>DepositPeriod</span>
-            <span v-show="flShowPass" ><i class="iconfont iconPass"></i>Pass</span>
-            <span v-show="flShowReject"><i class="iconfont iconVeto"></i>Reject</span>
+            <span v-show="flShowVotingPeriod"><i class="iconfont iconDepositPeriod"></i>Voting Period</span>
+            <span v-show="!flShowPass && !flShowReject && !flShowVotingPeriod"><i class="iconfont iconDepositPeriod-liebiao"></i>DepositPeriod</span>
+            <span v-show="flShowPass" ><i class="iconfont iconPass"></i>Passed</span>
+            <span v-show="flShowReject"><i class="iconfont iconVeto"></i>Rejected</span>
             <span v-show="hourLeft > 1"><i class="iconfont iconHoursLeft"></i>{{hourLeft === 1 ? `${hourLeft} Hour Left` : `${hourLeft} Hours Left` }}</span>
             <span v-show="hourLeft < 1 && hourLeft > 0"><i class="iconfont iconHoursLeft"></i>{{ `${hourLeft} Min Left` }}</span>
         </div>
@@ -78,6 +79,7 @@
                 totalDeposit: "",
                 initialDeposit:'',
                 flShowBlue: false,
+                flShowDepositPeriod: false,
                 flHideBlue: false,
 				flShowDiffStyle:false,
                 blueWidth: '',
@@ -88,6 +90,7 @@
                 localBurnPercent: '',
                 flShowPass: false,
                 flShowReject:false,
+				flShowVotingPeriod: false,
 				minDepositStyleObject:{
 					width: ''
                 },
@@ -130,6 +133,9 @@
         methods:{
 	        formatDepositObj(depositObj){
 	        	if(depositObj){
+	        		if(depositObj.status === 'VotingPeriod'){
+	        			this.flShowVotingPeriod = true
+                    }
 	        		this.title = depositObj.title;
 	        		this.proposalId = depositObj.proposal_id;
                     this.proposalType = depositObj.type;
@@ -188,12 +194,14 @@
 	        flShowProgressBar(){
 		        if(Number(this.totalDeposit) === Number(this.minDepositToken)){
 			        this.flHideBlue = true;
+			        this.flShowDepositPeriod = true;
 			        this.$set(this.minDepositStyleObject,'width','100%');
 			        this.$set(this.minValueStyleObj,'left','100%');
 			        this.$set(this.initialDepositStyleObj,'left','100%');
 		        }else if(Number(this.totalDeposit) > Number(this.minDepositToken)){
 			        this.flShowBlue = true;
 			        this.flShowDiffStyle = true;
+			        this.flShowDepositPeriod = true;
 			        // let diffNumber = this.totalDeposit - this.minDepositToken;
 			        // let diffContent = ((diffNumber / this.minDepositToken) * 100).toFixed(1);
 			        // this.$set(this.minDepositStyleObject,'width',`${(100 - diffContent === 0 ? 50 : 100 - diffContent)}%`);
