@@ -387,7 +387,6 @@
                     .filter_container{
                         flex-direction: column;
                         margin-left: 0.1rem;
-                        width: 100%;
                         .filter_tx_type_statue_content{
                             width: 3.45rem;
                             display: flex;
