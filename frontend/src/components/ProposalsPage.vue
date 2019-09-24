@@ -536,6 +536,11 @@
         .header_fixed_style{
             z-index: 5 !important;
         }
+        @media screen and (max-width: 910px){
+            .header_fixed_style{
+                position: static !important;
+            }
+        }
         .total_num{
             @include flex;
             justify-content: space-between;
