@@ -806,13 +806,13 @@ export default {
         }
 
         .proposals_information_content_title {
-            height: 0.7rem !important;
-            line-height: 0.7rem !important;
             font-size: 0.18rem !important;
             color: #000000;
-            margin-bottom: 0;
-            padding-left: 0.1rem;
+            padding: 0.2rem 0 0.2rem 0.1rem;
             @include fontWeight;
+                span:first-child{
+                    padding-right: 0.1rem;
+                }
         }
         .proposals_detail_table_wrap {
             width: 100%;
