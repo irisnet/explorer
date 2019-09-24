@@ -534,7 +534,7 @@
             }
         }
         .header_fixed_style{
-            z-index: 5 !important;
+            z-index: 1 !important;
         }
         @media screen and (max-width: 910px){
             .header_fixed_style{
