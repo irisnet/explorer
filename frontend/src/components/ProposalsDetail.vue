@@ -562,7 +562,7 @@ export default {
                             this.software = data.proposal.software;
                             this.participationValue = `${(Number(data.proposal.participation) * 100).toFixed(2)} %`;
                             this.yesThresholdValue = `${(Number(data.proposal.yes_threshold) * 100).toFixed(2)} % (Yes)`;
-                            this.vetoThresholdValue = `${(Number(data.proposal.veto_threshold) * 100).toFixed(2)} % (Veto)`;
+                            this.vetoThresholdValue = `${(Number(data.proposal.veto_threshold) * 100).toFixed(2)} % (NoWithVeto)`;
                             this.penaltyValue = `${(Number(data.proposal.penalty) * 100).toFixed(2)} %`;
 	                        this.usageValue = data.proposal.usage ? data.proposal.usage : '--';
 	                        this.burnValue = data.proposal.burn_percent ? (Number(data.proposal.burn_percent) *100).toFixed(2) : '';
