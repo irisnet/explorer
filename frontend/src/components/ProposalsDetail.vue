@@ -177,7 +177,7 @@
                     <m-deposit-card :depositObj="depositorObj" :burnPercent="burnPercent" :status="status"></m-deposit-card>
                 </keep-alive>
             </div>
-            <div  v-show="votingObj" class="voting_mobile_content" style="overflow-x: auto;width: 100%;margin-left: 0.1rem">
+            <div  v-show="votingObj" class="voting_mobile_content">
                 <div v-show="votingObj" class="voting_proposal_card_content">
                     <keep-alive>
                         <m-voting-card :votingBarObj="votingObj"></m-voting-card>
@@ -675,7 +675,8 @@ export default {
             padding: 0 0.1rem;
         }
         .voting_mobile_content{
-            margin-left: 0 !important;
+            margin: 0 0.1rem;
+            overflow-x: auto;
         }
     }
 
@@ -806,13 +807,13 @@ export default {
         }
 
         .proposals_information_content_title {
-            height: 0.7rem !important;
-            line-height: 0.7rem !important;
             font-size: 0.18rem !important;
             color: #000000;
-            margin-bottom: 0;
-            padding-left: 0.1rem;
+            padding: 0.2rem 0 0.2rem 0.1rem;
             @include fontWeight;
+                span:first-child{
+                    padding-right: 0.1rem;
+                }
         }
         .proposals_detail_table_wrap {
             width: 100%;

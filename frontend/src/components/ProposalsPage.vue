@@ -98,7 +98,7 @@
                     </div>
                 </div>
             </div>
-            <div style="overflow-x: auto;-webkit-overflow-scrolling:touch;" :style="{'padding-top':flTableFixed ? '' : '0.7rem'}">
+            <div class="mobile_style" style="overflow-x: auto;-webkit-overflow-scrolling:touch;" :style="{'padding-top':flTableFixed ? '' : '0.7rem'}">
                 <m-proposals-list-table :items="items" :showFixedHeader="flTableFixed"></m-proposals-list-table>
                 <div v-show="showNoData" class="no_data_show">
                     <img src="../assets/no_data.svg" alt="">
@@ -534,7 +534,12 @@
             }
         }
         .header_fixed_style{
-            z-index: 5 !important;
+            z-index: 1 !important;
+        }
+        @media screen and (max-width: 910px){
+            .header_fixed_style{
+                position: static !important;
+            }
         }
         .total_num{
             @include flex;
@@ -840,6 +845,11 @@
         .mobile_graph_pagination_last_node {
             display: flex;
             padding: 0 0 10px 0!important;
+        }
+    }
+    @media screen and (max-width: 910px){
+        .mobile_style{
+            padding-top: 0 !important;
         }
     }
 </style>

@@ -12,8 +12,8 @@
             </div>
         </div>
         <div class="voting_title_container">
-            <span><i :style="{color:flShowPassThreshold ? '#44C190' : '#D7DCE0'}" class="iconfont iconPass"></i>Pass (Yes>{{passThreshold}}%)</span>
-            <span><i :style="{color:flShowVoteThreshold ? '#FE8A8A' : '#D7DCE0'}" class="iconfont iconVeto"></i>Reject (NoWithVeto>{{voteThreshold}}%)</span>
+            <span><i :style="{color:flShowPassThreshold ? '#44C190' : '#D7DCE0'}" class="iconfont iconPass"></i>Pass Threshold(Yes>{{passThreshold}}%)</span>
+            <span><i :style="{color:flShowVoteThreshold ? '#FE8A8A' : '#D7DCE0'}" class="iconfont iconVeto"></i>Reject Threshold(NoWithVeto>{{voteThreshold}}%)</span>
             <span v-show="hourLeft > 1"><i class="iconfont iconHoursLeft"></i>{{hourLeft === 1 ? `${hourLeft} Hour Left` : `${hourLeft} Hours Left` }}</span>
             <span v-show="hourLeft < 1 && hourLeft > 0"><i class="iconfont iconHoursLeft"></i>{{ `${hourLeft} Min Left` }}</span>
         </div>

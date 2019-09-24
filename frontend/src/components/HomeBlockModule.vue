@@ -10,7 +10,7 @@
     </div>
     <div class="home_module_block_content">
       <div class="content" >
-        <div class="home_module_block_content_item" :class="item.flShowTranslationalAnimation ? 'animation ' : ''"  v-for="item in information" :style="innerWidth<500?'padding:0.1rem;':''">
+        <div class="home_module_block_content_item" :class="item.flShowTranslationalAnimation ? 'animation ' : ''"  v-for="item in information">
           <div class="blocks_module_left" :class="item.showAnimation === 'show' ? 'fadeIn_animation ' : ''" :style="`${moduleName === 'Blocks'?'flex:1;':''}`">
             <div class="key_value_wrap">
             <span class="blocks_module_value" :class="moduleTitle">
