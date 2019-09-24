@@ -74,11 +74,11 @@
                 </div>
             </div>
             <div class="home_proposal_container">
-                <div class="home_proposal_item_bar" v-for="v in depositorBarArr" :key="v.proposal_id">
-                    <m-deposit-card :depositObj="v" :showTitle="true"></m-deposit-card>
-                </div>
                 <div class="home_proposal_item_bar" v-for="item in votingBarArr" :key="item.proposal_id">
                     <m-voting-card :votingBarObj="item" :showTitle="true"></m-voting-card>
+                </div>
+                <div class="home_proposal_item_bar" v-for="v in depositorBarArr" :key="v.proposal_id">
+                    <m-deposit-card :depositObj="v" :showTitle="true"></m-deposit-card>
                 </div>
             </div>
         </div>
@@ -189,12 +189,18 @@
 				        if(Array.isArray(res)){
 					        res.forEach(item => {
 						        if(item.status === "DepositPeriod"){
-							        this.depositorBarArr.push(item)
+							        this.depositorBarArr.push(item);
+							        this.depositorBarArr = this.depositorBarArr.sort((a,b) => {
+                                        return b.proposal_id - a.proposal_id
+                                    })
 						        }
 					        })
 					        res.forEach(item => {
 						        if(item.status === "VotingPeriod"){
 							        this.votingBarArr.push(item)
+							        this.votingBarArr = this.votingBarArr.sort((a,b) => {
+								        return b.proposal_id - a.proposal_id
+							        })
 						        }
 					        })
 				        }

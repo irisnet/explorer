@@ -364,6 +364,9 @@
 					o.data = data;
 					return o;
 				});
+				this.votingPeriodDatas = this.votingPeriodDatas.sort((a,b) =>{
+					return b.proposal_id - a.proposal_id
+                });
 				depositPeriodDatas.forEach(v => {
 					if (v.level && v.level.gov_param && v.level.gov_param.min_deposit && (typeof v.level.gov_param.min_deposit.amount === 'number')) {
 						v.min_deposit_number = Number(v.level.gov_param.min_deposit.amount);
@@ -386,7 +389,9 @@
 						(this.forLimitNumer(v.total_deposit_number / v.min_deposit_number))* 100 + '%' : 0;
 					v.level = v.level && v.level.name;
 				});
-				this.depositPeriodDatas = depositPeriodDatas;
+				this.depositPeriodDatas = depositPeriodDatas.sort((a,b) => {
+					return b.proposal_id - a.proposal_id
+                });
 			},
 			isNumber(n) {
 				return typeof n === 'number'
