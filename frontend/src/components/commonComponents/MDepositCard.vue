@@ -230,7 +230,7 @@
 		        if(burnPercent === 0){
 
 		        }else if(burnPercent === 0.2){
-	        		this.burnValue = (this.totalDeposit * burnPercent).toFixed(0);
+	        		this.burnValue = (this.totalDeposit * burnPercent).toFixed(2);
 			        this.flShowDiffStyle = true;
 			        let diffNumber = this.totalDeposit - this.minDepositToken;
 			        let diffContent = ((diffNumber / this.minDepositToken) * 100).toFixed(1);

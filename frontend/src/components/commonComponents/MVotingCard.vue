@@ -150,7 +150,7 @@
 		        this.$set(this.vetoVotingPowerStyleObj,'width',`${this.vetoVotingPowerWidth}%`);
 		        this.noVotingPowerWidth = ((Number(finalVotes.no) / Number(optionTotalNumber)) * 100).toFixed(2);
 		        this.$set(this.noVotingPowerStyleObj,'width',`${this.noVotingPowerWidth}%`);
-		        if(Number(this.yesVotingPowerWidth) > Number(this.participationThreshold)){
+		        if(Number(this.yesVotingPowerWidth) > Number(this.passThreshold)){
 			        this.flShowPassThreshold = true;
 		        }else {
 			        this.flShowPassThreshold = false
@@ -217,6 +217,11 @@
 	                });
                 }
 	            this.yesVotingPowerWidth = ((Number(yesVotingPower) / Number(this.totalVotedNumber)) * 100).toFixed(2);
+                if(Number(this.yesVotingPowerWidth) > Number(this.passThreshold)){
+                	this.flShowPassThreshold = true
+                }else {
+	                this.flShowPassThreshold = false
+                }
                 this.$set(this.yesVotingPowerStyleObj,'width',`${this.yesVotingPowerWidth}%`)
             },
 	        getNoVotingPower(votTx){
@@ -275,7 +280,6 @@
             setStyleFunc(){
 	        	if(Number(this.totalVoted) > Number(this.participationThreshold)){
 		        }else if(Number(this.totalVoted) < Number(this.participationThreshold)){
-			        this.flShowPassThreshold = false;
 			        this.totalVotedGreaterThan = false;
                     this.minVotingPowerStyleNumber = ((Number(this.totalVoted) / Number(this.participationThreshold))* 100).toFixed(0);
                 }
