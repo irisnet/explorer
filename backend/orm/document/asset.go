@@ -17,20 +17,20 @@ const (
 
 type AssetToken struct {
 	ID              bson.ObjectId `bson:"_id"`
-	TokenId         string        `bson:"token_id"`
-	Family          string        `bson:"family"`
-	Source          string        `bson:"source"`
-	Gateway         string        `bson:"gateway"`
-	Symbol          string        `bson:"symbol"`
-	Name            string        `bson:"name"`
-	Decimal         int           `bson:"decimal"`
-	CanonicalSymbol string        `bson:"canonical_symbol"`
-	MinUnitAlias    string        `bson:"min_unit_alias"`
-	InitialSupply   string        `bson:"initial_supply"`
-	MaxSupply       string        `bson:"max_supply"`
-	TotalSupply     string        `bson:"total_supply"`
-	Mintable        bool          `bson:"mintable"`
-	Owner           string        `bson:"owner"`
+	TokenId         string        `bson:"token_id" json:"id"`
+	Family          string        `bson:"family" json:"family"`
+	Source          string        `bson:"source" json:"source"`
+	Gateway         string        `bson:"gateway" json:"gateway"`
+	Symbol          string        `bson:"symbol" json:"symbol"`
+	Name            string        `bson:"name" json:"name"`
+	Decimal         int           `bson:"decimal" json:"decimal"`
+	CanonicalSymbol string        `bson:"canonical_symbol" json:"canonical_symbol"`
+	MinUnitAlias    string        `bson:"min_unit_alias" json:"min_unit_alias"`
+	InitialSupply   string        `bson:"initial_supply" json:"initial_supply"`
+	MaxSupply       string        `bson:"max_supply" json:"max_supply"`
+	TotalSupply     string        `bson:"total_supply" json:"total_supply"`
+	Mintable        bool          `bson:"mintable" json:"mintable"`
+	Owner           string        `bson:"owner" json:"owner"`
 }
 
 func (_ AssetToken) GetAllAssets() ([]AssetToken, error) {
