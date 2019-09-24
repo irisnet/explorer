@@ -6,7 +6,6 @@ import (
 )
 
 func TestTask(t *testing.T) {
-	UpTimeChangeTask{}.Start()
 	time.Sleep(1 * time.Hour)
 }
 

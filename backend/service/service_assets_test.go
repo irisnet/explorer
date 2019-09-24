@@ -93,7 +93,7 @@ func TestAssetsService_QueryAssetTokenDetail(t *testing.T) {
 }
 
 func TestAssetService_UpdateAssetTokens(t *testing.T) {
-	dst := []document.Asset{}
+	dst := []document.AssetToken{}
 	err := new(AssetsService).UpdateAssetTokens(dst)
 
 	if err != nil {
