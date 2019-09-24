@@ -26,7 +26,7 @@ func (task UpdateAssetTokens) Start() {
 }
 
 func (task UpdateAssetTokens) DoTask() error {
-	assetTokens, err := document.Asset{}.GetAllAssets()
+	assetTokens, err := document.AssetToken{}.GetAllAssets()
 	if err != nil {
 		return err
 	}

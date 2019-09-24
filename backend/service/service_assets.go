@@ -247,8 +247,8 @@ func convertModelActualFee(actfee document.ActualFee) vo.ActualFee {
 	}
 }
 
-func (service *AssetsService) UpdateAssetTokens(vs []document.Asset) error {
-	var vMap = make(map[string]document.Asset)
+func (service *AssetsService) UpdateAssetTokens(vs []document.AssetToken) error {
+	var vMap = make(map[string]document.AssetToken)
 	for _, v := range vs {
 		vMap[v.TokenId] = v
 	}
@@ -288,14 +288,14 @@ func (service *AssetsService) UpdateAssetTokens(vs []document.Asset) error {
 			})
 		}
 	}
-	return document.Asset{}.Batch(txs)
+	return document.AssetToken{}.Batch(txs)
 }
 
-func buildAssetTokens() []document.Asset {
+func buildAssetTokens() []document.AssetToken {
 	res := lcd.GetAssetTokens()
-	var result []document.Asset
-	var buildAssetToken = func(v lcd.AssetTokens) (document.Asset, error) {
-		var assetToken document.Asset
+	var result []document.AssetToken
+	var buildAssetToken = func(v lcd.AssetTokens) (document.AssetToken, error) {
+		var assetToken document.AssetToken
 		if err := utils.Copy(v.BaseToken, &assetToken); err != nil {
 			logger.Error("utils.copy assetToken failed")
 			return assetToken, err
@@ -313,33 +313,34 @@ func buildAssetTokens() []document.Asset {
 		asset_totalsupplyMap[val.Denom] = val.Amount
 	}
 
-	for _, v := range res {
-		var genAssetTokens = func(va lcd.AssetTokens, result *[]document.Asset) {
-			assetToken, err := buildAssetToken(va)
-			if err != nil {
-				logger.Error("utils.copy assetToken failed")
-				panic(err)
-			}
-			denome := assetToken.Symbol + "-min"
-			if assetToken.Symbol == "iris" {
-				return
-			} else {
-				if len(assetToken.Gateway) > 0 {
-					denome = assetToken.Gateway + "." + denome
-				}
-			}
-
-			if totalsupply, ok := asset_totalsupplyMap[denome]; ok {
-				assetToken.TotalSupply = totalsupply
-			}
-			*result = append(*result, assetToken)
+	var genAssetTokens = func(va lcd.AssetTokens, result *[]document.AssetToken) {
+		assetToken, err := buildAssetToken(va)
+		if err != nil {
+			logger.Error("utils.copy assetToken failed")
+			panic(err)
 		}
+		denome := assetToken.Symbol + "-min"
+		if assetToken.Symbol == "iris" {
+			return
+		} else {
+			if len(assetToken.Gateway) > 0 {
+				denome = assetToken.Gateway + "." + denome
+			}
+		}
+
+		if totalsupply, ok := asset_totalsupplyMap[denome]; ok {
+			assetToken.TotalSupply = totalsupply
+		}
+		*result = append(*result, assetToken)
+	}
+	for _, v := range res {
+
 		genAssetTokens(v, &result)
 	}
 	return result
 }
 
-func isDiffAssetToken(src, dst document.Asset) bool {
+func isDiffAssetToken(src, dst document.AssetToken) bool {
 	if src.TokenId != dst.TokenId ||
 		src.Family != dst.Family ||
 		src.Source != dst.Source ||
@@ -377,7 +378,7 @@ func (service *AssetsService) QueryAssetGatewayDetail(moniker string) (vo.AssetG
 }
 
 func (service *AssetsService) QueryAssetTokens(source string) ([]vo.AssetTokens, error) {
-	res, err := document.Asset{}.GetAssetTokens(source)
+	res, err := document.AssetToken{}.GetAssetTokens(source)
 	if err != nil {
 		logger.Error("GetAssetByAddr", logger.String("err", err.Error()))
 		return []vo.AssetTokens{}, err
@@ -410,7 +411,7 @@ func (service *AssetsService) QueryAssetTokens(source string) ([]vo.AssetTokens,
 
 func (service *AssetsService) QueryAssetTokenDetail(tokenid string) (vo.AssetTokens, error) {
 
-	res, err := document.Asset{}.GetAssetTokenDetail(tokenid)
+	res, err := document.AssetToken{}.GetAssetTokenDetail(tokenid)
 	if err != nil {
 		logger.Error("GetAssetByAddr", logger.String("err", err.Error()))
 		return vo.AssetTokens{}, err
@@ -449,4 +450,3 @@ func (service *AssetsService) QueryAssetTokenDetail(tokenid string) (vo.AssetTok
 
 	return ret, nil
 }
-

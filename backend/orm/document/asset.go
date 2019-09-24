@@ -1,10 +1,10 @@
 package document
 
 import (
+	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/txn"
-	"github.com/irisnet/explorer/backend/logger"
 )
 
 const (
@@ -15,26 +15,26 @@ const (
 	FungibleFamily    = "fungible"
 )
 
-type Asset struct {
+type AssetToken struct {
 	ID              bson.ObjectId `bson:"_id"`
-	TokenId         string        `bson:"token_id" json:"id"`
-	Family          string        `bson:"family" json:"family"`
-	Source          string        `bson:"source" json:"source"`
-	Gateway         string        `bson:"gateway" json:"gateway"`
-	Symbol          string        `bson:"symbol" json:"symbol"`
-	Name            string        `bson:"name" json:"name"`
-	Decimal         int           `bson:"decimal" json:"decimal"`
-	CanonicalSymbol string        `bson:"canonical_symbol" json:"canonical_symbol"`
-	MinUnitAlias    string        `bson:"min_unit_alias" json:"min_unit_alias"`
-	InitialSupply   string        `bson:"initial_supply" json:"initial_supply"`
-	MaxSupply       string        `bson:"max_supply" json:"max_supply"`
-	TotalSupply     string        `bson:"total_supply" json:"total_supply"`
-	Mintable        bool          `bson:"mintable" json:"mintable"`
-	Owner           string        `bson:"owner" json:"owner"`
+	TokenId         string        `bson:"token_id"`
+	Family          string        `bson:"family"`
+	Source          string        `bson:"source"`
+	Gateway         string        `bson:"gateway"`
+	Symbol          string        `bson:"symbol"`
+	Name            string        `bson:"name"`
+	Decimal         int           `bson:"decimal"`
+	CanonicalSymbol string        `bson:"canonical_symbol"`
+	MinUnitAlias    string        `bson:"min_unit_alias"`
+	InitialSupply   string        `bson:"initial_supply"`
+	MaxSupply       string        `bson:"max_supply"`
+	TotalSupply     string        `bson:"total_supply"`
+	Mintable        bool          `bson:"mintable"`
+	Owner           string        `bson:"owner"`
 }
 
-func (_ Asset) GetAllAssets() ([]Asset, error) {
-	var assets []Asset
+func (_ AssetToken) GetAllAssets() ([]AssetToken, error) {
+	var assets []AssetToken
 	var qeury = orm.NewQuery()
 	defer qeury.Release()
 	qeury.SetCollection(CollectionNmAsset).
@@ -44,8 +44,8 @@ func (_ Asset) GetAllAssets() ([]Asset, error) {
 	return assets, err
 }
 
-func (_ Asset) GetAssetTokens(source string) ([]Asset, error) {
-	var assets []Asset
+func (_ AssetToken) GetAssetTokens(source string) ([]AssetToken, error) {
+	var assets []AssetToken
 	cond := bson.M{}
 	if source != "" {
 		cond[AssetFieldSource] = source
@@ -59,8 +59,8 @@ func (_ Asset) GetAssetTokens(source string) ([]Asset, error) {
 	return assets, nil
 }
 
-func (_ Asset) GetAssetTokenDetail(tokenid string) (Asset, error) {
-	var asset Asset
+func (_ AssetToken) GetAssetTokenDetail(tokenid string) (AssetToken, error) {
+	var asset AssetToken
 	cond := bson.M{}
 	if tokenid != "" {
 		cond[AssetFieldTokenId] = tokenid
@@ -73,6 +73,6 @@ func (_ Asset) GetAssetTokenDetail(tokenid string) (Asset, error) {
 	return asset, nil
 }
 
-func (_ Asset) Batch(txs []txn.Op) error {
+func (_ AssetToken) Batch(txs []txn.Op) error {
 	return orm.Batch(txs)
 }

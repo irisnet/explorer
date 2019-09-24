@@ -31,7 +31,7 @@ func init() {
 	if err != nil {
 		logger.Error("start mongo client failed", logger.String("err", err.Error()))
 	}
-	session.SetMode(mgo.Monotonic, true)
+	session.SetMode(mgo.Nearest, true)
 }
 
 var session *mgo.Session
