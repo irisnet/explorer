@@ -1010,7 +1010,14 @@ export default {
                 for (let i in message) {
                   let fieidValue = "";
                   if (i === "Amount") {
-                    fieidValue = this.forAmount(data);
+                    if(data.status === 'success'){
+                      if(data.type === "BeginUnbonding" || data.type === 'BeginRedelegate'){
+                        let  tokenValue = Tools.formatAccountCoinsAmount(data.tags.balance)[0];
+                        fieidValue = `${Tools.numberMoveDecimal(tokenValue)} IRIS`
+                      }else {
+                        fieidValue = this.forAmount(data);
+                      }
+                    }
                   } else if (i === "Self-Bonded") {
                     if (data.self_bond && data.self_bond.length !== 0) {
                       fieidValue = `${Tools.formatPriceToFixed(
@@ -1049,9 +1056,15 @@ export default {
                   } else if (i === "End Time") {
                     fieidValue = Tools.format2UTC(data[message[i].k]);
                   } else if (i === "Shares Src" || i === "Shares Dst") {
-                    fieidValue = this.$options.filters.amountFromat({
-                      amount: data[message[i].k]
-                    });
+                    if(data.type === 'BeginRedelegate' || data.type === 'BeginUnbonding'){
+                      fieidValue = this.$options.filters.amountFromat({
+                        amount: data[message[i].k]
+                      },'','','',18);
+                    }else {
+                      fieidValue = this.$options.filters.amountFromat({
+                        amount: data[message[i].k]
+                      });
+                    }
                   } else {
                     fieidValue = data[message[i].k];
                   }
@@ -1088,7 +1101,7 @@ export default {
 <style lang="scss" scoped>
 @import "../style/mixin.scss";
 .information_pre {
-  color: #a2a2ae;
+  color: #171d44;
   white-space: pre-wrap;
 }
 .transactions_detail_wrap {
