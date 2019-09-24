@@ -195,7 +195,7 @@
                         v-for="(item,index) in filterTabArr"
                         :class="item.isActive ? 'blue_style' : ''"
                         @click="filterVoteTx(item.key,index)"
-                    >{{item.label}} {{item.value}}</li>
+                    ><span>{{item.label}} {{item.value}}</span> <span>|</span></li>
                 </ul>
                 <div class="voting_options">
                     <span>Yes:
@@ -327,19 +327,19 @@ export default {
 	        burnPercent: 0,
             filterTabArr:[
                 {
-                	label:'All',
+                	label:'All: ',
                     key:'all',
                     value:'',
                     isActive:true
                 },
 	            {
-		            label:'validator',
+		            label:'Validator: ',
                     key:'validator',
 		            value:'',
 		            isActive:false
 	            },
 	            {
-		            label:'Delegator',
+		            label:'Delegator: ',
                     key:'delegator',
 		            value:'',
 		            isActive:false
@@ -933,8 +933,16 @@ export default {
     display: flex;
     .tab_option{
         font-size: 0.12rem;
-        margin: 0 0.1rem 0.1rem 0.1rem;
+        margin: 0 0 0.1rem;
         cursor: pointer;
+        span{
+            padding-right: 0.1rem;
+        }
+    }
+    .tab_option:last-child{
+        span:last-child{
+            display: none;
+        }
     }
     .blue_style{
         color: #0580D3;
