@@ -340,9 +340,10 @@ func (_ Validator) GetBondedValidatorsSharesTokens() ([]Validator, error) {
 
 	selector := bson.M{
 		ValidatorFieldVotingPower:     "1",
-		ValidatorFieldOperatorAddress: "",
-		ValidatorFieldDelegatorShares: "",
-		ValidatorFieldTokens:          "",
+		ValidatorFieldOperatorAddress: "1",
+		ValidatorFieldDelegatorShares: "1",
+		ValidatorFieldTokens:          "1",
+		ValidatorFieldDescription:     "1",
 	}
 	condition := bson.M{
 		ValidatorFieldStatus: ValidatorStatusValBonded,
