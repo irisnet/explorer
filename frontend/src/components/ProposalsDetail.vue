@@ -177,7 +177,7 @@
                     <m-deposit-card :depositObj="depositorObj" :burnPercent="burnPercent" :status="status"></m-deposit-card>
                 </keep-alive>
             </div>
-            <div  v-show="votingObj" class="voting_mobile_content" style="overflow-x: auto;width: 100%;margin-left: 0.1rem">
+            <div  v-show="votingObj" class="voting_mobile_content">
                 <div v-show="votingObj" class="voting_proposal_card_content">
                     <keep-alive>
                         <m-voting-card :votingBarObj="votingObj"></m-voting-card>
@@ -675,7 +675,8 @@ export default {
             padding: 0 0.1rem;
         }
         .voting_mobile_content{
-            margin-left: 0 !important;
+            margin: 0 0.1rem;
+            overflow-x: auto;
         }
     }
 
