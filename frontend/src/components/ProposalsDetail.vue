@@ -324,6 +324,7 @@ export default {
             perPage: 10,
             depositorObj: null,
 	        votingObj: null,
+            firstFilter:true,
 	        burnPercent: 0,
             filterTabArr:[
                 {
@@ -344,7 +345,8 @@ export default {
 		            value:'',
 		            isActive:false
 	            }
-            ]
+            ],
+            filterTab:'all',
         }
     },
     beforeMount () {
@@ -355,6 +357,7 @@ export default {
     },
     watch: {
         currentPage (newVal) {
+	        this.currentPage = newVal;
             this.getVoter();
         },
         depositorCurrentPage (newVal) {
@@ -366,39 +369,11 @@ export default {
     },
     methods: {
 	    filterVoteTx(item,index){
-            this.resetActiveStyle()
-		    this.filterTabArr[index].isActive = true
-            Service.commonInterface({proposalDetailVoterTxByFilter:{
-		            proposalId: this.$route.params.proposal_id,
-		            pageNumber: this.currentPage,
-		            perPageSize: this.perPage,
-		            voterType:item
-                }},(data) => {
-            	try {
-		            this.setStats(data.stats)
-		            if (data.items && data.items.length > 0) {
-			            this.showNoData = false;
-			            this.itemTotal = data.total;
-			            this.items = data.items.map(item => {
-				            let votingListItemTime = (new Date(item.timestamp).getTime()) > 0 ? Tools.format2UTC(item.timestamp) : '--';
-				            return {
-					            moniker: item.moniker,
-					            Block:item.height,
-					            Voter: item.voter,
-					            Vote_Option: item.option,
-					            Tx_Hash: item.tx_hash,
-					            Time: votingListItemTime
-				            }
-			            });
-		            } else {
-			            this.items = [];
-			            this.showNoData = true;
-		            }
-	            }catch (e) {
-                    console.error(e)
-	            }
-
-            })
+		    this.currentPage = 1;
+		    this.filterTab = item;
+            this.resetActiveStyle();
+            this.filterTabArr[index].isActive = true;
+            this.getVoter();
         },
 	    resetActiveStyle(){
 	    	this.filterTabArr.map( item => {
@@ -440,39 +415,37 @@ export default {
 
         },
         getVoter () {
-            this.showNoData = false;
-            this.items = [];
-            Service.commonInterface({                proposalDetailVoterTx: {
-                    proposalId: this.$route.params.proposal_id,
-                    pageNumber: this.currentPage,
-                    perPageSize: this.perPage,
-                }            }, (data) => {
-                try {
-	                this.setStats(data.stats)
-                    if (data.items && data.items.length > 0) {
-                        this.itemTotal = data.total;
-                        this.items = data.items.map(item => {
-                            let votingListItemTime = (new Date(item.timestamp).getTime()) > 0 ? Tools.format2UTC(item.timestamp) : '--';
-                            return {
-                                moniker: item.moniker,
-                                Voter: item.voter,
-	                            Block:item.height,
-                                Vote_Option: item.option,
-                                Tx_Hash: item.tx_hash,
-                                Time: votingListItemTime
-                            }
-                        });
-                    } else {
-                        this.items = [];
-                        this.showNoData = true;
-                    }
+	        Service.commonInterface({proposalDetailVoterTxByFilter:{
+			        proposalId: this.$route.params.proposal_id,
+			        pageNumber: this.currentPage,
+			        perPageSize: this.perPage,
+			        voterType:this.filterTab
+		        }},(data) => {
+		        try {
+			        this.setStats(data.stats)
+			        if (data.items && data.items.length > 0) {
+				        this.showNoData = false;
+				        this.itemTotal = data.total;
+				        this.items = data.items.map(item => {
+					        let votingListItemTime = (new Date(item.timestamp).getTime()) > 0 ? Tools.format2UTC(item.timestamp) : '--';
+					        return {
+						        moniker: item.moniker,
+						        Block:item.height,
+						        Voter: item.voter,
+						        Vote_Option: item.option,
+						        Tx_Hash: item.tx_hash,
+						        Time: votingListItemTime
+					        }
+				        });
+			        } else {
+				        this.items = [];
+				        this.showNoData = true;
+			        }
+		        }catch (e) {
+			        console.error(e)
+		        }
 
-                } catch (e) {
-                	console.error(e)
-                    this.items = [];
-                    this.showNoData = true;
-                }
-            })
+	        })
         },
         getDepositor () {
             this.depositorShowNoData = false;
