@@ -345,7 +345,8 @@ export default {
 		            value:'',
 		            isActive:false
 	            }
-            ]
+            ],
+            filterTab:'all',
         }
     },
     beforeMount () {
@@ -356,11 +357,8 @@ export default {
     },
     watch: {
         currentPage (newVal) {
-        	if(this.firstFilter || newVal !== 1){
-		        this.getVoter(newVal);
-	        }else {
-		        this.firstFilter = true;
-            }
+	        this.currentPage = newVal;
+            this.getVoter();
         },
         depositorCurrentPage (newVal) {
             this.getDepositor();
@@ -371,41 +369,11 @@ export default {
     },
     methods: {
 	    filterVoteTx(item,index){
-		    this.firstFilter = false;
-            this.resetActiveStyle();
-		    this.filterTabArr[index].isActive = true;
 		    this.currentPage = 1;
-            Service.commonInterface({proposalDetailVoterTxByFilter:{
-		            proposalId: this.$route.params.proposal_id,
-		            pageNumber: this.currentPage,
-		            perPageSize: this.perPage,
-		            voterType:item
-                }},(data) => {
-            	try {
-		            this.setStats(data.stats)
-		            if (data.items && data.items.length > 0) {
-			            this.showNoData = false;
-			            this.itemTotal = data.total;
-			            this.items = data.items.map(item => {
-				            let votingListItemTime = (new Date(item.timestamp).getTime()) > 0 ? Tools.format2UTC(item.timestamp) : '--';
-				            return {
-					            moniker: item.moniker,
-					            Block:item.height,
-					            Voter: item.voter,
-					            Vote_Option: item.option,
-					            Tx_Hash: item.tx_hash,
-					            Time: votingListItemTime
-				            }
-			            });
-		            } else {
-			            this.items = [];
-			            this.showNoData = true;
-		            }
-	            }catch (e) {
-                    console.error(e)
-	            }
-
-            })
+		    this.filterTab = item;
+            this.resetActiveStyle();
+            this.filterTabArr[index].isActive = true;
+            this.getVoter();
         },
 	    resetActiveStyle(){
 	    	this.filterTabArr.map( item => {
@@ -446,41 +414,38 @@ export default {
             })
 
         },
-        getVoter (currentPage) {
-	        this.firstFilter = true;
-            this.showNoData = false;
-            this.items = [];
-            Service.commonInterface({                proposalDetailVoterTx: {
-                    proposalId: this.$route.params.proposal_id,
-                    pageNumber: currentPage,
-                    perPageSize: this.perPage,
-                }            }, (data) => {
-                try {
-	                this.setStats(data.stats)
-                    if (data.items && data.items.length > 0) {
-                        this.itemTotal = data.total;
-                        this.items = data.items.map(item => {
-                            let votingListItemTime = (new Date(item.timestamp).getTime()) > 0 ? Tools.format2UTC(item.timestamp) : '--';
-                            return {
-                                moniker: item.moniker,
-                                Voter: item.voter,
-	                            Block:item.height,
-                                Vote_Option: item.option,
-                                Tx_Hash: item.tx_hash,
-                                Time: votingListItemTime
-                            }
-                        });
-                    } else {
-                        this.items = [];
-                        this.showNoData = true;
-                    }
+        getVoter () {
+	        Service.commonInterface({proposalDetailVoterTxByFilter:{
+			        proposalId: this.$route.params.proposal_id,
+			        pageNumber: this.currentPage,
+			        perPageSize: this.perPage,
+			        voterType:this.filterTab
+		        }},(data) => {
+		        try {
+			        this.setStats(data.stats)
+			        if (data.items && data.items.length > 0) {
+				        this.showNoData = false;
+				        this.itemTotal = data.total;
+				        this.items = data.items.map(item => {
+					        let votingListItemTime = (new Date(item.timestamp).getTime()) > 0 ? Tools.format2UTC(item.timestamp) : '--';
+					        return {
+						        moniker: item.moniker,
+						        Block:item.height,
+						        Voter: item.voter,
+						        Vote_Option: item.option,
+						        Tx_Hash: item.tx_hash,
+						        Time: votingListItemTime
+					        }
+				        });
+			        } else {
+				        this.items = [];
+				        this.showNoData = true;
+			        }
+		        }catch (e) {
+			        console.error(e)
+		        }
 
-                } catch (e) {
-                	console.error(e)
-                    this.items = [];
-                    this.showNoData = true;
-                }
-            })
+	        })
         },
         getDepositor () {
             this.depositorShowNoData = false;
@@ -647,7 +612,7 @@ export default {
     },
     mounted () {
         this.getProposalsInformation();
-        this.getVoter(this.currentPage);
+        this.getVoter();
         this.getDepositor();
         this.getDepositorInformation()
         this.getVotingBarInformation();
