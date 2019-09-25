@@ -339,7 +339,7 @@
                 color: #787C99;
             }
             span{
-                margin-right: 0.5rem;
+                margin-right: 0.2rem;
                 color: #22252A;
             }
         }
