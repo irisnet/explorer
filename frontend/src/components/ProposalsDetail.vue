@@ -1046,5 +1046,8 @@ pre {
                 padding-left: 0.1rem !important;
             }
         }
+        .information_props{
+            color: #787c99 !important;
+        }
     }
 </style>
