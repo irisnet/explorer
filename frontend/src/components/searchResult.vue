@@ -203,6 +203,17 @@
                 margin: 0 auto;
                 display: flex;
                 align-items: center;
+                .search_result_detail_title{
+                    white-space: nowrap;
+                }
+                .search_result_detail_wrap_hash_var{
+                    white-space: nowrap;
+                    span:last-child{
+                        word-break: break-all;
+                        word-wrap: break-word;
+                        white-space: pre-wrap;
+                    }
+                }
             }
         }
         .result_content_container{
@@ -260,10 +271,11 @@
                 text-align: left;
                 width: 1.3rem;
                 @include fontSize;
+                color: #787c99;
             }
             span:nth-child(2){
                 text-align: left;
-                color: var(--bgColor);
+                color: var(--titleColor);
                 cursor: pointer;
                 a{
                     color: var(--bgColor)!important;
@@ -278,11 +290,11 @@
                 text-align: left;
                 width: 1.3rem;
                 @include fontSize;
-
+                color: #787c99;
             }
             span:nth-child(2){
                 text-align: left;
-                color: var(--contentColor);
+                color: var(--titleColor);
             }
         }
         .block_hash_container{
@@ -293,10 +305,11 @@
                 text-align: left;
                 width: 1.3rem;
                 @include fontSize;
+                color: #787c99;
             }
             span:nth-child(2){
                 text-align: left;
-                color: var(--contentColor);
+                color: var(--titleColor);
             }
         }
     }
@@ -329,7 +342,7 @@
             }
             span:nth-child(2){
                 text-align: left;
-                color: var(--contentColor);
+                color: var(--titleColor);
             }
         }
         .proposal_type_container{
@@ -345,7 +358,7 @@
             }
             span:nth-child(2){
                 text-align: left;
-                color: var(--contentColor);
+                color: var(--titleColor);
             }
         }
         .proposal_status_container{
@@ -361,7 +374,7 @@
             }
             span:nth-child(2){
                 text-align: left;
-                color: var(--contentColor);
+                color: var(--titleColor);
             }
         }
         .proposal_time_container{
@@ -377,7 +390,7 @@
             }
             span:nth-child(2){
                 text-align: left;
-                color: var(--contentColor);
+                color: var(--titleColor);
             }
         }
     }
@@ -400,6 +413,7 @@
         .block_content_container{
             .block_hash_container{
                 .block_hash{
+                    color: var(--titleColor);
                     width: 100%;
                     display: inline-block;
                     overflow-x: auto;
