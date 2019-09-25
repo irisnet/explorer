@@ -417,7 +417,11 @@
                     width: 100%;
                     display: inline-block;
                     overflow-x: auto;
-                    webkit-overflow-scrolling: touch
+                    overflow-y: hidden;
+                    webkit-overflow-scrolling: touch;
+                    &::-webkit-scrollbar {
+                        display: none;
+                    }
                 }
             }
         }
