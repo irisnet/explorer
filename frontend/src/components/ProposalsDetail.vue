@@ -664,6 +664,12 @@ export default {
         min-width: 5rem;
     }
 }
+.card_container{
+    .voting_mobile_content{
+        margin-left: 0.1rem;
+    }
+}
+
 @media screen and (max-width: 910px){
     .card_container{
         display: flex;
@@ -1039,6 +1045,9 @@ pre {
             span{
                 padding-left: 0.1rem !important;
             }
+        }
+        .information_props{
+            color: #787c99 !important;
         }
     }
 </style>
