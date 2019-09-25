@@ -324,6 +324,7 @@ export default {
             perPage: 10,
             depositorObj: null,
 	        votingObj: null,
+            firstFilter:true,
 	        burnPercent: 0,
             filterTabArr:[
                 {
@@ -355,7 +356,11 @@ export default {
     },
     watch: {
         currentPage (newVal) {
-            this.getVoter();
+        	if(this.firstFilter || newVal !== 1){
+		        this.getVoter(newVal);
+	        }else {
+		        this.firstFilter = true;
+            }
         },
         depositorCurrentPage (newVal) {
             this.getDepositor();
@@ -366,8 +371,10 @@ export default {
     },
     methods: {
 	    filterVoteTx(item,index){
-            this.resetActiveStyle()
-		    this.filterTabArr[index].isActive = true
+		    this.firstFilter = false;
+            this.resetActiveStyle();
+		    this.filterTabArr[index].isActive = true;
+		    this.currentPage = 1;
             Service.commonInterface({proposalDetailVoterTxByFilter:{
 		            proposalId: this.$route.params.proposal_id,
 		            pageNumber: this.currentPage,
@@ -439,12 +446,13 @@ export default {
             })
 
         },
-        getVoter () {
+        getVoter (currentPage) {
+	        this.firstFilter = true;
             this.showNoData = false;
             this.items = [];
             Service.commonInterface({                proposalDetailVoterTx: {
                     proposalId: this.$route.params.proposal_id,
-                    pageNumber: this.currentPage,
+                    pageNumber: currentPage,
                     perPageSize: this.perPage,
                 }            }, (data) => {
                 try {
@@ -639,7 +647,7 @@ export default {
     },
     mounted () {
         this.getProposalsInformation();
-        this.getVoter();
+        this.getVoter(this.currentPage);
         this.getDepositor();
         this.getDepositorInformation()
         this.getVotingBarInformation();
