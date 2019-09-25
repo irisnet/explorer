@@ -29,6 +29,23 @@ type MsgSubmitSoftwareUpgradeProposal struct {
 	Threshold    string `json:"threshold"`
 }
 
+type MsgSubmitTokenAdditionProposal struct {
+	MsgSubmitProposal
+	Symbol          string `json:"symbol"`
+	CanonicalSymbol string `json:"canonical_symbol"`
+	Name            string `json:"name"`
+	Decimal         uint8  `json:"decimal"`
+	MinUnitAlias    string `json:"min_unit_alias"`
+	InitialSupply   uint64 `json:"initial_supply"`
+}
+
+type MsgSubmitCommunityTaxUsageProposal struct {
+	MsgSubmitProposal
+	Usage       string `json:"usage"`
+	DestAddress string `json:"dest_address"`
+	Percent     string `json:"percent"`
+}
+
 type Param struct {
 	Subspace string `json:"subspace"`
 	Key      string `json:"key"`
@@ -125,19 +142,20 @@ func (t Tx) PrintHashFromToAmount() string {
 }
 
 type BaseTx struct {
-	Signer      string          `json:"signer,omitempty"`
-	Hash        string          `json:"hash"`
-	BlockHeight int64           `json:"block_height"`
-	Type        string          `json:"type"`
-	Fee         utils.ActualFee `json:"fee"`
-	Status      string          `json:"status"`
-	GasLimit    int64           `json:"gas_limit"`
-	GasUsed     int64           `json:"gas_used"`
-	GasWanted   int64           `json:"gas_wanted"`
-	GasPrice    float64         `json:"gas_price"`
-	Memo        string          `json:"memo"`
-	Log         string          `json:"log"`
-	Timestamp   time.Time       `json:"timestamp"`
+	Signer      string            `json:"signer,omitempty"`
+	Hash        string            `json:"hash"`
+	BlockHeight int64             `json:"block_height"`
+	Type        string            `json:"type"`
+	Fee         utils.ActualFee   `json:"fee"`
+	Status      string            `json:"status"`
+	GasLimit    int64             `json:"gas_limit"`
+	GasUsed     int64             `json:"gas_used"`
+	GasWanted   int64             `json:"gas_wanted"`
+	GasPrice    float64           `json:"gas_price"`
+	Memo        string            `json:"memo"`
+	Log         string            `json:"log"`
+	Timestamp   time.Time         `json:"timestamp"`
+	Tags        map[string]string `json:"tags"`
 }
 
 type TransTx struct {

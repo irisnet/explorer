@@ -1,12 +1,12 @@
 package service
 
 import (
-	"github.com/irisnet/explorer/backend/orm/document"
-	"gopkg.in/mgo.v2/txn"
-	"gopkg.in/mgo.v2/bson"
 	"github.com/irisnet/explorer/backend/lcd"
-	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/logger"
+	"github.com/irisnet/explorer/backend/orm/document"
+	"github.com/irisnet/explorer/backend/utils"
+	"gopkg.in/mgo.v2/bson"
+	"gopkg.in/mgo.v2/txn"
 )
 
 func (service *AssetsService) UpdateAssetGateway(vs []document.AssetGateways) error {
@@ -67,25 +67,25 @@ func buildAssetGateway() []document.AssetGateways {
 		return assetGateways, nil
 	}
 
-	for _, v := range res {
-		var genAssetTokens = func(va lcd.AssetGateways, result *[]document.AssetGateways) {
-			assetGateways, err := buildAssetGateways(va)
-			if err != nil {
-				logger.Error("utils.copy assetGateways failed")
-				panic(err)
-			}
-			if identity := v.Identity; identity != "" {
-				urlicons, err := lcd.GetIconsByKey(identity)
-				if err != nil || len(urlicons) == 0 {
-					if err != nil {
-						logger.Error("GetIconsByKey have error", logger.String("error", err.Error()))
-					}
-				} else {
-					assetGateways.Icons = urlicons
-				}
-			}
-			*result = append(*result, assetGateways)
+	var genAssetTokens = func(va lcd.AssetGateways, result *[]document.AssetGateways) {
+		assetGateways, err := buildAssetGateways(va)
+		if err != nil {
+			logger.Error("utils.copy assetGateways failed")
+			panic(err)
 		}
+		//if identity := va.Identity; identity != "" {
+		//	urlicons, err := lcd.GetIconsByKey(identity)
+		//	if err != nil || len(urlicons) == 0 {
+		//		if err != nil {
+		//			logger.Error("GetIconsByKey have error", logger.String("error", err.Error()))
+		//		}
+		//	} else {
+		//		assetGateways.Icons = urlicons
+		//	}
+		//}
+		*result = append(*result, assetGateways)
+	}
+	for _, v := range res {
 		genAssetTokens(v, &result)
 	}
 

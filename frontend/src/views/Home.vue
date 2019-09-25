@@ -73,6 +73,14 @@
                     <home-block-module :moduleName="'Transactions'" :information="transactionInformation"></home-block-module>
                 </div>
             </div>
+            <div class="home_proposal_container">
+                <div class="home_proposal_item_bar" v-for="item in votingBarArr" :key="item.proposal_id">
+                    <m-voting-card :votingBarObj="item" :showTitle="true"></m-voting-card>
+                </div>
+                <div class="home_proposal_item_bar" v-for="v in depositorBarArr" :key="v.proposal_id">
+                    <m-deposit-card :depositObj="v" :showTitle="true"></m-deposit-card>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -86,9 +94,12 @@
     import Service from '../service/index';
     import Constant from "../constant/Constant";
     import lang from "../lang/index"
+    import MHomeVotingCrad from "../components/commonComponents/MHomeVotingCrad";
+    import MDepositCard from "../components/commonComponents/MDepositCard";
+    import MVotingCard from "../components/commonComponents/MVotingCard";
     export default {
         name: 'app-header',
-        components: {EchartsPie, EchartsLine, HomeBlockModule},
+        components: {MVotingCard, MDepositCard, MHomeVotingCrad, EchartsPie, EchartsLine, HomeBlockModule},
         data() {
             return {
                 devicesWidth: window.innerWidth,
@@ -120,6 +131,8 @@
                 isMobile: false,
                 moniker:'',
                 proposerAddress:"",
+                depositorBarArr: [],
+                votingBarArr: [],
             }
         },
 
@@ -129,6 +142,8 @@
             this.getTransactionList();
             this.getValidatorsList();
             this.getNavigation();
+            this.getPorposakList();
+
         },
         mounted () {
             document.getElementById('router_wrap').addEventListener('click', this.hideFeature);
@@ -166,6 +181,34 @@
           }
         },
         methods: {
+	        getPorposakList(){
+	        	Service.commonInterface({homeProposalList:{
+
+                    }},(res) => {
+	        		try {
+				        if(Array.isArray(res)){
+					        res.forEach(item => {
+						        if(item.status === "DepositPeriod"){
+							        this.depositorBarArr.push(item);
+							        this.depositorBarArr = this.depositorBarArr.sort((a,b) => {
+                                        return b.proposal_id - a.proposal_id
+                                    })
+						        }
+					        })
+					        res.forEach(item => {
+						        if(item.status === "VotingPeriod"){
+							        this.votingBarArr.push(item)
+							        this.votingBarArr = this.votingBarArr.sort((a,b) => {
+								        return b.proposal_id - a.proposal_id
+							        })
+						        }
+					        })
+				        }
+			        }catch (e) {
+                        console.error(e)
+			        }
+                })
+            },
             onresize (isMobile) {
                 this.innerWidth = window.innerWidth;
                 if(!isMobile){
@@ -444,6 +487,24 @@
                     }
                 }
             }
+            .home_proposal_container{
+                display: flex;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                box-sizing: border-box;
+                .home_proposal_item_bar{
+                    min-width: 5.98rem;
+                    flex: 1;
+                    width: auto;
+                    margin-right: 0.4rem;
+               }
+                .home_proposal_item_bar:nth-child(even){
+                    margin-right: 0;
+                }
+                .home_proposal_item_bar:last-child{
+                    margin-right: 0;
+                }
+            }
             .current_net_status_list{
                 display: flex;
                 width: 100%;
@@ -647,6 +708,42 @@
         cursor: pointer;
         a{
             color:var(--bgColor) !important;
+        }
+    }
+
+    @media screen and (min-width: 910px) and (max-width: 1280px){
+        .home_wrap{
+            .personal_computer_home_wrap{
+                .home_proposal_container{
+                    display: flex;
+                    flex-direction: column;
+                    .home_proposal_item_bar{
+                        margin-right: 0;
+                    }
+                    .home_proposal_item_bar:nth-child(even){
+                        margin-right: 0;
+                    }
+                    .home_proposal_item_bar:last-child{
+                        margin-right: 0;
+                    }
+                }
+            }
+        }
+    }
+    @media screen and (max-width: 910px){
+        .home_wrap{
+            .mobile_home_wrap{
+                .home_proposal_container{
+                    display: flex;
+                    flex-direction: column;
+                    margin-bottom: 0.2rem;
+                    overflow-x: auto;
+                    .home_proposal_item_bar{
+                        margin-right: 0;
+                        margin-bottom: 0.2rem;
+                    }
+                }
+            }
         }
     }
 </style>

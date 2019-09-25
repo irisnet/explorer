@@ -17,6 +17,8 @@ func RegisterProposal(r *mux.Router) error {
 		registerQueryDepositAndVotingProposals,
 		registerQueryProposalDepositorTxs,
 		registerQueryProposalVoterTxs,
+		registerQueryProposalDeposit,
+		registerQueryProposalVoting,
 	}
 
 	for _, fn := range funs {
@@ -59,8 +61,12 @@ func registerQueryProposals(r *mux.Router) error {
 func registerQueryDepositAndVotingProposals(r *mux.Router) error {
 
 	doApi(r, types.UrlRegisterQueryDepositVotingProposals, "GET", func(request vo.IrisReq) interface{} {
-
-		result := gov.QueryDepositAndVotingProposalList()
+		need := QueryParam(request, "needMoniker")
+		needMoniker := true
+		if need == "false" {
+			needMoniker = false
+		}
+		result := gov.QueryDepositAndVotingProposalList(needMoniker)
 		return result
 	})
 
@@ -98,12 +104,13 @@ func registerQueryProposalVoterTxs(r *mux.Router) error {
 		page := int(utils.ParseIntWithDefault(QueryParam(request, "page"), 1))
 		size := int(utils.ParseIntWithDefault(QueryParam(request, "size"), 10))
 		total := QueryParam(request, "total")
+		voterType := QueryParam(request, "voterType")
 		istotal := true
 		if total == "false" {
 			istotal = false
 		}
 
-		return gov.GetVoteTxs(id, page, size, istotal)
+		return gov.GetVoteTxs(id, page, size, istotal, voterType)
 	})
 	return nil
 }
@@ -123,6 +130,32 @@ func registerQueryProposalDepositorTxs(r *mux.Router) error {
 			istotal = false
 		}
 		return gov.GetDepositTxs(id, page, size, istotal)
+	})
+	return nil
+}
+
+func registerQueryProposalDeposit(r *mux.Router) error {
+	doApi(r, types.UrlRegisterQueryProposalDeposit, "GET", func(request vo.IrisReq) interface{} {
+		id, err := strconv.Atoi(Var(request, "id"))
+		if err != nil {
+			panic(types.CodeInValidParam)
+		}
+
+		result := gov.QueryDeposit(id)
+		return result
+	})
+	return nil
+}
+
+func registerQueryProposalVoting(r *mux.Router) error {
+	doApi(r, types.UrlRegisterQueryProposalVoting, "GET", func(request vo.IrisReq) interface{} {
+		id, err := strconv.Atoi(Var(request, "id"))
+		if err != nil {
+			panic(types.CodeInValidParam)
+		}
+
+		result := gov.QueryVoting(id)
+		return result
 	})
 	return nil
 }

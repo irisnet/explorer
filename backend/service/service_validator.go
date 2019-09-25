@@ -108,7 +108,9 @@ func (service *ValidatorService) GetDepositedTxByValidatorAddr(validatorAddr str
 	total, txs, err := document.CommonTx{}.QueryDepositedProposalTxByValidatorWithSubmitOrDepositType(validatorAcc, page, size, istotal)
 
 	if err != nil {
-		logger.Error("QueryDepositedProposalTxByValidatorWithSubmitOrDepositType", logger.String("err", err.Error()))
+		if err.Error() != "not found" {
+			logger.Error("QueryDepositedProposalTxByValidatorWithSubmitOrDepositType", logger.String("err", err.Error()))
+		}
 		return vo.ValidatorDepositTxPage{}
 	}
 
@@ -444,10 +446,37 @@ func (service *ValidatorService) GetValidatorDetail(validatorAddr string) vo.Val
 		desc.Details = blackone.Details
 	}
 
-	jailedUntil, missedBlockCount, err := lcd.GetJailedUntilAndMissedBlocksCountByConsensusPublicKey(validatorAsDoc.ConsensusPubkey)
+	jailedUntil, missedBlockCount, startHeight, err := lcd.GetJailedUntilAndMissedBlocksCountByConsensusPublicKey(validatorAsDoc.ConsensusPubkey)
 
+	var statsBlocksWindow string
 	if err != nil {
 		logger.Error("GetJailedUntilAndMissedBlocksCountByConsensusPublicKey", logger.String("consensus", validatorAsDoc.ConsensusPubkey), logger.String("err", err.Error()))
+	} else {
+		var startHeight, ok = utils.ParseInt(startHeight)
+		if !ok {
+			logger.Error("Format StartHeight", logger.String("err", err.Error()))
+		} else {
+			var lastBlock = lcd.BlockLatest()
+			var currentHeight, ok = utils.ParseInt(lastBlock.BlockMeta.Header.Height)
+			if !ok {
+				logger.Error("Query CurrentHeight At LastBlock", logger.String("err", err.Error()))
+			} else {
+				signedBlocksWindow, err := document.GovParams{}.QueryOne("signed_blocks_window")
+				if err != nil {
+					logger.Error("Query signed_blocks_window", logger.String("err", err.Error()))
+				} else {
+					signedBlocksWindowCurrentValue, ok := utils.ParseInt(signedBlocksWindow.CurrentValue.(string))
+					if ok {
+						height := currentHeight - startHeight
+						if height < signedBlocksWindowCurrentValue {
+							statsBlocksWindow = strconv.FormatInt(height, 10)
+						} else {
+							statsBlocksWindow = strconv.FormatInt(signedBlocksWindowCurrentValue, 10)
+						}
+					}
+				}
+			}
+		}
 	}
 
 	totalVotingPower, err := document.Validator{}.QueryTotalActiveValidatorVotingPower()
@@ -476,6 +505,8 @@ func (service *ValidatorService) GetValidatorDetail(validatorAddr string) vo.Val
 		ConsensusAddr:           validatorAsDoc.ConsensusPubkey,
 		Description:             desc,
 		Icons:                   validatorAsDoc.Icons,
+		Uptime:                  validatorAsDoc.Uptime,
+		StatsBlocksWindow:       statsBlocksWindow,
 	}
 
 	if validatorAsDoc.Jailed {
@@ -783,7 +814,7 @@ func buildValidators() []document.Validator {
 
 	res := lcd.Validators(1, 100)
 	if res2 := lcd.Validators(2, 100); len(res2) > 0 {
-	    res = append(res, res2...)
+		res = append(res, res2...)
 	}
 
 	var result []document.Validator

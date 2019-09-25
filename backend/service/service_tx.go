@@ -261,6 +261,35 @@ func (service *TxService) QueryTxNumGroupByDay() []vo.TxNumGroupByDayVo {
 	return result
 }
 
+func (service *TxService) QueryTxType(txType string) []string {
+	if txType == "all" {
+		length := len(types.BankList) + len(types.DeclarationList) + len(types.StakeList) + len(types.GovernanceList) + len(types.AssetList) + len(types.RandList)
+		typeList := make([]string, 0, length)
+		res := append(typeList, types.BankList...)
+		res = append(res, types.DeclarationList...)
+		res = append(res, types.StakeList...)
+		res = append(res, types.GovernanceList...)
+		res = append(res, types.AssetList...)
+		res = append(res, types.RandList...)
+		return res
+	}
+	switch txType {
+	case "trans":
+		return types.BankList
+	case "declaration":
+		return types.DeclarationList
+	case "stake":
+		return types.StakeList
+	case "gov":
+		return types.GovernanceList
+	case "asset":
+		return types.AssetList
+	case "rand":
+		return types.RandList
+	}
+	return nil
+}
+
 func buildTxVOFromDoc(tx document.CommonTx) vo.CommonTx {
 	txList := buildTxVOsFromDoc([]document.CommonTx{tx})
 
@@ -882,7 +911,7 @@ func (service *TxService) buildTxVO(tx vo.CommonTx, blackListP *map[string]docum
 				govTx.Title = msg.Title
 				govTx.Description = msg.Description
 				govTx.ProposalType = msg.ProposalType
-				govTx.Tags = tx.Tags
+				govTx.Tags = checkTags(tx.Tags, msg)
 				govTx.Software = msg.Software
 				govTx.Version = msg.Version
 				govTx.SwitchHeight = msg.SwitchHeight
@@ -943,6 +972,14 @@ func (service *TxService) buildTxVO(tx vo.CommonTx, blackListP *map[string]docum
 	return nil
 }
 
+func checkTags(tags map[string]string, msg vo.MsgSubmitProposal) map[string]string {
+	if _, ok := tags["param"]; !ok {
+		bytesData, _ := json.Marshal(msg.Params)
+		tags["param"] = string(bytesData)
+	}
+	return tags
+}
+
 func buildBaseTx(tx vo.CommonTx) vo.BaseTx {
 	res := vo.BaseTx{
 		Hash:        tx.TxHash,
@@ -958,7 +995,9 @@ func buildBaseTx(tx vo.CommonTx) vo.BaseTx {
 		Log:         fetchLogMessage(tx.Log),
 		Timestamp:   tx.Time,
 	}
-
+	if tx.Type != types.TxTypeWithdrawDelegatorRewardsAll && tx.Type != types.TxTypeWithdrawValidatorRewardsAll {
+		res.Tags = tx.Tags
+	}
 	if len(tx.Signers) > 0 {
 		res.Signer = tx.Signers[0].AddrBech32
 	}

@@ -298,7 +298,16 @@ func (_ CommonTx) QueryProposalTxListById(idArr []uint64) ([]CommonTx, error) {
 	return txs, err
 }
 
-func (_ CommonTx) QueryProposalTxById(proposalId int64, page, size int, total bool) (int, []CommonTx, error) {
+func (_ CommonTx) QueryProposalInitAmountTxById(id int) (CommonTx, error) {
+	selector := bson.M{Tx_Field_Amount: 1, Tx_Field_ProposalId: 1}
+	condition := bson.M{Tx_Field_Type: "SubmitProposal", Tx_Field_Status: "success", Tx_Field_ProposalId: id}
+	var txs CommonTx
+
+	err := queryOne(CollectionNmCommonTx, selector, condition, &txs)
+	return txs, err
+}
+
+func (_ CommonTx) QueryProposalTxById(proposalId int64, page, size int, total bool, iaaAddrs []string) (int, []CommonTx, error) {
 
 	txs := []CommonTx{}
 
@@ -312,6 +321,7 @@ func (_ CommonTx) QueryProposalTxById(proposalId int64, page, size int, total bo
 		Tx_Field_Status:     types.TxTypeStatus,
 		Tx_Field_ProposalId: proposalId,
 		Tx_Field_Type:       types.TxTypeVote,
+		Tx_Field_From:       bson.M{"$in": iaaAddrs},
 	}
 	sort := fmt.Sprintf("-%v", Tx_Field_Height)
 

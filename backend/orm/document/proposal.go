@@ -36,10 +36,11 @@ const (
 )
 
 type FinalVoteAsPower struct {
-	Yes        string `bson:"yes"`
-	No         string `bson:"no"`
-	NoWithVeto string `bson:"nowithveto"`
-	Abstain    string `bson:"abstain"`
+	Yes               string `bson:"yes"`
+	No                string `bson:"no"`
+	NoWithVeto        string `bson:"nowithveto"`
+	Abstain           string `bson:"abstain"`
+	SystemVotingPower string `bson:"system_voting_power"`
 }
 
 type Proposal struct {
@@ -161,7 +162,7 @@ func (_ Proposal) QueryProposalById(id int) (Proposal, error) {
 	return data, err
 }
 
-func (_ Proposal) QueryTxFromToByTypeAndProposalId(id int) (string, string, error) {
+func (_ Proposal) QuerySubmitProposalTxByProposalId(id int) (string, string, error) {
 	var query = orm.NewQuery()
 	defer query.Release()
 	var tx CommonTx
@@ -232,6 +233,7 @@ func (_ Proposal) GetProposalsByStatus(status, sorts []string) ([]Proposal, erro
 		Proposal_Field_Votes:             1,
 		Proposal_Field_VotingStartHeight: 1,
 		Proposal_Field_TotalDeposit:      1,
+		Proposal_Field_DepositEndTime:    1,
 	}
 
 	condition := bson.M{
@@ -239,6 +241,7 @@ func (_ Proposal) GetProposalsByStatus(status, sorts []string) ([]Proposal, erro
 			"$in": status,
 		},
 	}
+	sorts = append(sorts, desc(Proposal_Field_ProposalId))
 
 	query.SetCollection(CollectionNmProposal).
 		SetCondition(condition).

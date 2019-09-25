@@ -6,7 +6,7 @@ import (
 )
 
 func TestAsset_GetAllAssets(t *testing.T) {
-	allAsset, err := document.Asset{}.GetAllAssets()
+	allAsset, err := document.AssetToken{}.GetAllAssets()
 	if err != nil {
 		t.Fatal(err)
 	}

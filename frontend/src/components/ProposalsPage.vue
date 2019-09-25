@@ -59,7 +59,7 @@
 
 
         <div :class="proposalsListPageWrap">
-            <div class="pagination total_num" :style="{'position':flTableFixed ? 'static' : 'fixed'}" :class="[$store.state.isMobile ? 'mobile_graph_pagination_container' : '']">
+            <div class="pagination total_num header_fixed_style" :style="{'position':flTableFixed ? 'static' : 'fixed'}" :class="[$store.state.isMobile ? 'mobile_graph_pagination_container' : '']">
                 <div style="height: 70px; display: flex; align-items: center;">
                     <span class="proposals_list_page_wrap_hash_var" :class="count ? 'count_show' : 'count_hidden' ">{{count}} Proposals</span>
                     <div class="icon_list">
@@ -98,7 +98,7 @@
                     </div>
                 </div>
             </div>
-            <div style="overflow-x: auto;-webkit-overflow-scrolling:touch;" :style="{'padding-top':flTableFixed ? '' : '0.7rem'}">
+            <div class="mobile_style" style="overflow-x: auto;-webkit-overflow-scrolling:touch;" :style="{'padding-top':flTableFixed ? '' : '0.7rem'}">
                 <m-proposals-list-table :items="items" :showFixedHeader="flTableFixed"></m-proposals-list-table>
                 <div v-show="showNoData" class="no_data_show">
                     <img src="../assets/no_data.svg" alt="">
@@ -241,6 +241,7 @@
 					o.title = item.title;
 					o.level = item.level && item.level.name;
 					o.type = item.type;
+					o.status = item.status;
 					let all = item.voting_power_for_height;
 					let yesArr = item.votes.filter(v => v.option === 'Yes');
 					let yes = yesArr.reduce((init, v) => {return v.voting_power + init}, 0);
@@ -363,6 +364,9 @@
 					o.data = data;
 					return o;
 				});
+				this.votingPeriodDatas = this.votingPeriodDatas.sort((a,b) =>{
+					return b.proposal_id - a.proposal_id
+                });
 				depositPeriodDatas.forEach(v => {
 					if (v.level && v.level.gov_param && v.level.gov_param.min_deposit && (typeof v.level.gov_param.min_deposit.amount === 'number')) {
 						v.min_deposit_number = Number(v.level.gov_param.min_deposit.amount);
@@ -385,7 +389,9 @@
 						(this.forLimitNumer(v.total_deposit_number / v.min_deposit_number))* 100 + '%' : 0;
 					v.level = v.level && v.level.name;
 				});
-				this.depositPeriodDatas = depositPeriodDatas;
+				this.depositPeriodDatas = depositPeriodDatas.sort((a,b) => {
+					return b.proposal_id - a.proposal_id
+                });
 			},
 			isNumber(n) {
 				return typeof n === 'number'
@@ -525,6 +531,14 @@
                     -webkit-box-shadow:0 0 0 .2rem rgba(255,255,255,.5);
                     box-shadow:0 0 0 .2rem rgba(255,255,255,.5)
                 }
+            }
+        }
+        .header_fixed_style{
+            z-index: 1 !important;
+        }
+        @media screen and (max-width: 910px){
+            .header_fixed_style{
+                position: static !important;
             }
         }
         .total_num{
@@ -831,6 +845,11 @@
         .mobile_graph_pagination_last_node {
             display: flex;
             padding: 0 0 10px 0!important;
+        }
+    }
+    @media screen and (max-width: 910px){
+        .mobile_style{
+            padding-top: 0 !important;
         }
     }
 </style>

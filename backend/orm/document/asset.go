@@ -1,10 +1,10 @@
 package document
 
 import (
+	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/txn"
-	"github.com/irisnet/explorer/backend/logger"
 )
 
 const (
@@ -15,7 +15,7 @@ const (
 	FungibleFamily    = "fungible"
 )
 
-type Asset struct {
+type AssetToken struct {
 	ID              bson.ObjectId `bson:"_id"`
 	TokenId         string        `bson:"token_id" json:"id"`
 	Family          string        `bson:"family" json:"family"`
@@ -33,8 +33,8 @@ type Asset struct {
 	Owner           string        `bson:"owner" json:"owner"`
 }
 
-func (_ Asset) GetAllAssets() ([]Asset, error) {
-	var assets []Asset
+func (_ AssetToken) GetAllAssets() ([]AssetToken, error) {
+	var assets []AssetToken
 	var qeury = orm.NewQuery()
 	defer qeury.Release()
 	qeury.SetCollection(CollectionNmAsset).
@@ -44,8 +44,8 @@ func (_ Asset) GetAllAssets() ([]Asset, error) {
 	return assets, err
 }
 
-func (_ Asset) GetAssetTokens(source string) ([]Asset, error) {
-	var assets []Asset
+func (_ AssetToken) GetAssetTokens(source string) ([]AssetToken, error) {
+	var assets []AssetToken
 	cond := bson.M{}
 	if source != "" {
 		cond[AssetFieldSource] = source
@@ -59,8 +59,8 @@ func (_ Asset) GetAssetTokens(source string) ([]Asset, error) {
 	return assets, nil
 }
 
-func (_ Asset) GetAssetTokenDetail(tokenid string) (Asset, error) {
-	var asset Asset
+func (_ AssetToken) GetAssetTokenDetail(tokenid string) (AssetToken, error) {
+	var asset AssetToken
 	cond := bson.M{}
 	if tokenid != "" {
 		cond[AssetFieldTokenId] = tokenid
@@ -73,6 +73,6 @@ func (_ Asset) GetAssetTokenDetail(tokenid string) (Asset, error) {
 	return asset, nil
 }
 
-func (_ Asset) Batch(txs []txn.Op) error {
+func (_ AssetToken) Batch(txs []txn.Op) error {
 	return orm.Batch(txs)
 }

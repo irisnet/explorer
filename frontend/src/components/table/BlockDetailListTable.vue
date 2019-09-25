@@ -334,27 +334,27 @@ export default {
       validatorFields: [
         {
           key:'index',
-          label:'#'
+          label: '#'
         },
         {
           key:'moniker',
-          label:'Moniker'
+          label: 'Moniker'
         },
         {
           key:'OperatorAddress',
-          label:'Operator'
+          label: 'Operator'
         },
         {
           key:'Consensus',
-          label:'Consensus Address'
+          label: 'Consensus Address'
         },
         {
           key:'ProposerPriority',
-          label:'Proposer Priority'
+          label: 'Proposer Priority'
         },
         {
           key:'VotingPower',
-          label:'Voting Power'
+          label: 'Voting Power'
         },
       ],
       flIsValidatorTable: false,

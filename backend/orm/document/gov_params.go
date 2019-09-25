@@ -1,9 +1,11 @@
 package document
 
 import (
+	"encoding/json"
 	"fmt"
-
+	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm"
+	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/txn"
 )
@@ -18,14 +20,24 @@ const (
 )
 
 type GovParams struct {
-	Module       string `bson:"module" json:"module"`
-	Key          string `bson:"key" json:"key"`
-	Type         string `bson:"type" json:"type"`
-	Range        string `bson:"range" json:"range"`
-	GenesisValue string `bson:"genesis_value" json:"genesis_value"`
-	CurrentValue string `bson:"current_value" json:"current_value"`
-	Description  string `bson:"description" json:"description"`
-	Note         string `bson:"note" json:"note"`
+	Module       string      `bson:"module" json:"module"`
+	Key          string      `bson:"key" json:"key"`
+	Type         string      `bson:"type" json:"type"`
+	Range        string      `bson:"range" json:"range"`
+	InitialValue string      `bson:"initial_value" json:"initial_value"`
+	GenesisValue string      `bson:"genesis_value" json:"genesis_value"`
+	CurrentValue interface{} `bson:"current_value" json:"current_value"`
+	Description  string      `bson:"description" json:"description"`
+	Note         string      `bson:"note" json:"note"`
+}
+
+type AmountCurrentValue struct {
+	Amount string `bson:"amount" json:"amount"`
+	Denom  string `bson:"denom" json:"denom"`
+}
+
+func (v *AmountCurrentValue) BuildAmountCurrentValueByUnmarshalJson(data []byte) error {
+	return json.Unmarshal(data, v)
 }
 
 type Range struct {
@@ -67,6 +79,19 @@ func (_ GovParams) QueryAll() ([]GovParams, error) {
 	return params, err
 }
 
+func (_ GovParams) QueryOne(key string) (GovParams, error) {
+
+	dbm := getDb()
+	defer dbm.Session.Close()
+
+	var result GovParams
+	query := bson.M{}
+	query["key"] = key
+	err := dbm.C(CollectionNmGovParams).Find(query).One(&result)
+
+	return result, err
+}
+
 func (_ GovParams) Batch(txs []txn.Op) error {
 	return orm.Batch(txs)
 }
@@ -78,14 +103,22 @@ func (_ GovParams) UpdateCurrentModuleParamValue(kv map[string]interface{}) erro
 
 	for k, v := range kv {
 		vStr := ""
+		update := bson.M{}
 		switch vType := v.(type) {
 		case string:
 			vStr = vType
+			update["$set"] = bson.M{GovParamsFieldCurrentValue: vStr}
+		case map[string]interface{}:
+			currentValueMap := AmountCurrentValue{}
+			if err := currentValueMap.BuildAmountCurrentValueByUnmarshalJson(utils.MarshalJsonIgnoreErr(vType)); err != nil {
+				logger.Error("BuildAmountCurrentValueByUnmarshalJson have error", logger.String("err", err.Error()))
+			}
+			update["$set"] = bson.M{GovParamsFieldCurrentValue: currentValueMap}
 		default:
 			vStr = fmt.Sprintf("%v", vType)
+			update["$set"] = bson.M{GovParamsFieldCurrentValue: vStr}
 		}
 		sel := bson.M{GovParamsFieldKey: k}
-		update := bson.M{"$set": bson.M{GovParamsFieldCurrentValue: vStr}}
 
 		bulk.Update(sel, update)
 

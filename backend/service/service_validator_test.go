@@ -91,3 +91,8 @@ func TestValidatorService_UpdateValidatorStaticData(t *testing.T) {
 		t.Log("success")
 	}
 }
+
+func TestBuildValidators(t *testing.T) {
+	res := buildValidators()
+	t.Log(string(utils.MarshalJsonIgnoreErr(res)))
+}

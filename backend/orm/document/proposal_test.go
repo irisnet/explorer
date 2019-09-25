@@ -67,7 +67,7 @@ func TestQueryProposalById(t *testing.T) {
 
 func TestQueryTxFromToByTypeAndProposalId(t *testing.T) {
 
-	from, to, err := Proposal{}.QueryTxFromToByTypeAndProposalId(4)
+	from, to, err := Proposal{}.QuerySubmitProposalTxByProposalId(4)
 
 	if err != nil {
 		t.Error(err)

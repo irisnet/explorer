@@ -46,11 +46,29 @@ type Proposal struct {
 	TotalDeposit    utils.Coins `json:"total_deposit"`
 	Proposer        string      `json:"proposer"`
 	TxHash          string      `json:"tx_hash"`
-	Parameters      []Param     `json:"parameters,omitempty"`
-	Version         uint64      `json:"version,omitempty"`
-	Software        string      `json:"software,omitempty"`
-	SwitchHeight    uint64      `json:"switch_height,omitempty"`
-	Threshold       string      `json:"threshold,omitempty"`
+	Parameters      []Param     `json:"parameters"`
+	Level           string      `json:"level"`
+	YesThreshold    string      `json:"yes_threshold"`
+	VetoThreshold   string      `json:"veto_threshold"`
+	Participation   string      `json:"participation"`
+	Penalty         string      `json:"penalty"`
+
+	Version      uint64 `json:"version"`
+	Software     string `json:"software"`
+	SwitchHeight uint64 `json:"switch_height"`
+	Threshold    string `json:"threshold"`
+
+	Symbol          string `json:"symbol"`
+	CanonicalSymbol string `json:"canonical_symbol"`
+	Name            string `json:"name"`
+	Decimal         uint8  `json:"decimal"`
+	MinUnitAlias    string `json:"min_unit_alias"`
+	InitialSupply   uint64 `json:"initial_supply"`
+
+	Usage       string  `json:"usage"`
+	DestAddress string  `json:"dest_address"`
+	Percent     string  `json:"percent"`
+	BurnPercent float32 `json:"burn_percent"`
 }
 
 type Vote struct {
@@ -60,23 +78,16 @@ type Vote struct {
 }
 
 type ProposalInfoVo struct {
-	Proposal Proposal   `json:"proposal"`
-	Votes    []Vote     `json:"votes"`
-	Result   VoteResult `json:"result"`
-}
-
-type VoteResult struct {
-	Yes        int
-	No         int
-	NoWithVeto int
-	Abstain    int
+	Proposal Proposal `json:"proposal"`
+	Votes    []Vote   `json:"votes"`
 }
 
 type FinalVotes struct {
-	Yes        string `json:"yes,omitempty"`
-	No         string `json:"no,omitempty"`
-	NoWithVeto string `json:"no_with_veto,omitempty"`
-	Abstain    string `json:"abstain,omitempty"`
+	Yes               string `json:"yes,omitempty"`
+	No                string `json:"no,omitempty"`
+	NoWithVeto        string `json:"no_with_veto,omitempty"`
+	Abstain           string `json:"abstain,omitempty"`
+	SystemVotingPower string `json:"system_voting_power,omitempty"`
 }
 
 type (
@@ -89,7 +100,7 @@ type (
 		InitialDeposit   Coin                `json:"intial_deposit,omitempty"`
 		TotalDeposit     Coin                `json:"total_deposit,omitempty"`
 		Votes            []VoteWithVoterInfo `json:"votes"`
-		TotalVotingPower int64               `json:"voting_power_for_height"`
+		TotalVotingPower float64             `json:"voting_power_for_height"`
 		SubmitTime       time.Time           `json:"submit_time,omitempty"`
 		DepositEndTime   time.Time           `json:"deposit_end_time,omitempty"`
 		VotingEndTime    time.Time           `json:"voting_end_time,omitempty"`
@@ -109,17 +120,38 @@ type (
 	}
 
 	VoteWithVoterInfo struct {
-		Voter        string    `json:"voter"`
-		VoterMoniker string    `json:"voter_moniker,omitempty"`
-		Option       string    `json:"option"`
-		VotingPower  int64     `json:"voting_power"`
-		Time         time.Time `json:"time"`
+		Voter          string    `json:"voter"`
+		VoterMoniker   string    `json:"voter_moniker,omitempty"`
+		Option         string    `json:"option"`
+		VotingPower    float64   `json:"voting_power"`
+		Time           time.Time `json:"time"`
+		DelVotingPower float64   `json:"del_voting_power"`
+		ValVotingPower float64   `json:"val_voting_power"`
+	}
+
+	DelegatorGovInfo struct {
+		Address        string    `json:"address"`
+		Option         string    `json:"option"`
+		Moniker        string    `json:"moniker"`
+		DelVotingPower float64   `json:"del_voting_power"`
+		ValVotingPower float64   `json:"val_voting_power"`
+		IsValidator    bool      `json:"is_validator"`
+		ValAddr        string    `json:"val_addr"`
+		Time           time.Time `json:"time"`
+	}
+
+	ValidatorGovInfo struct {
+		Address            string  `json:"address"`
+		Tokens             float64 `json:"token"`
+		DelShares          float64 `json:"del_shares"`
+		DelDeductionShares float64 `json:"del_deduction_shares"`
 	}
 )
 
 type GetVoteTxResponse struct {
-	Total int      `json:"total"`
-	Items []VoteTx `json:"items"`
+	Total int       `json:"total"`
+	Items []VoteTx  `json:"items"`
+	Stats VoteStats `json:"stats"`
 }
 
 type VoteTx struct {
@@ -128,6 +160,7 @@ type VoteTx struct {
 	Option    string    `json:"option"`
 	TxHash    string    `json:"tx_hash"`
 	Timestamp time.Time `json:"timestamp"`
+	Height    int64     `json:"height"`
 }
 
 type LookupIcons struct {
@@ -146,4 +179,14 @@ type Them struct {
 			Source string `json:"source"`
 		} `json:"primary"`
 	} `json:"pictures"`
+}
+
+type VoteStats struct {
+	All        int64 `json:"all"`
+	Validator  int64 `json:"validator"`
+	Delegator  int64 `json:"delegator"`
+	Yes        int64 `json:"yes"`
+	No         int64 `json:"no"`
+	NoWithVeto int64 `json:"no_with_veto"`
+	Abstain    int64 `json:"abstain"`
 }

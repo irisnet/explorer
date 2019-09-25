@@ -31,6 +31,8 @@ const (
 	UrlRegisterQueryProposal               = "/gov/proposals/{pid}"
 	UrlRegisterQueryProposalsVoterTxs      = "/gov/proposals/{id}/voter_txs"
 	UrlRegisterQueryProposalsDepositorTxs  = "/gov/proposals/{id}/depositor_txs"
+	UrlRegisterQueryProposalDeposit        = "/gov/proposal_deposit/{id}"
+	UrlRegisterQueryProposalVoting         = "/gov/proposal_voting/{id}"
 
 	UrlRegisterQueryParams = "/params"
 
@@ -69,6 +71,7 @@ const (
 	UrlRegisterQueryTxsByAccount = "/txsByAddress/{address}/{page}/{size}"
 	UrlRegisterQueryTxsByDay     = "/txsByDay"
 	UrlRegisterQueryTx           = "/tx/{hash}"
+	UrlRegisterQueryTxType       = "/tx_types/{type}"
 	//tokenstats
 	UrlRegisterQueryTokenStats    = "/tokenstats"
 	UrlRegisterTokensAccountTotal = "/tokenstats/account_total"

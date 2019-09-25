@@ -36,11 +36,11 @@ func TestProposalQuery(t *testing.T) {
 	t.Logf("proposal: %v \n", proposal)
 }
 
-func TestProposalService_GetVoteTxs(t *testing.T) {
-	res := proposalService.GetVoteTxs(1, 1, 10, true)
-	resBytes, _ := json.MarshalIndent(res, "", "\t")
-	t.Log(string(resBytes))
-}
+//func TestProposalService_GetVoteTxs(t *testing.T) {
+//	res := proposalService.GetVoteTxs(1, 1, 10, true)
+//	resBytes, _ := json.MarshalIndent(res, "", "\t")
+//	t.Log(string(resBytes))
+//}
 
 func TestProposalService_GetDepositTxs(t *testing.T) {
 	res := proposalService.GetDepositTxs(1, 1, 10, true)
@@ -49,11 +49,11 @@ func TestProposalService_GetDepositTxs(t *testing.T) {
 
 }
 
-func TestProposalService_QueryDepositAndVotingProposalList(t *testing.T) {
-	res := proposalService.QueryDepositAndVotingProposalList()
-	resBytes, _ := json.Marshal(res)
-	t.Log(string(resBytes))
-}
+//func TestProposalService_QueryDepositAndVotingProposalList(t *testing.T) {
+//	res := proposalService.QueryDepositAndVotingProposalList()
+//	resBytes, _ := json.Marshal(res)
+//	t.Log(string(resBytes))
+//}
 
 func TestProposalService_QueryList(t *testing.T) {
 	res := proposalService.QueryList(1, 20, true)
@@ -68,4 +68,11 @@ func TestProposalService_GetSystemVotingPower(t *testing.T) {
 		resBytes, _ := json.Marshal(res)
 		t.Log(string(resBytes))
 	}
+}
+
+func TestProposalService_QueryDepositAndVotingProposalList(t *testing.T) {
+	res := proposalService.QueryDepositAndVotingProposalList(true)
+
+	resBytes, _ := json.Marshal(res)
+	t.Log(string(resBytes))
 }
