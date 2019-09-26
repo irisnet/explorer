@@ -12,10 +12,13 @@
             </div>
         </div>
         <div class="voting_title_container">
-            <span><i :style="{color:flShowPassThreshold ? '#44C190' : '#D7DCE0'}" class="iconfont iconPass"></i>Pass Threshold(Yes>{{passThreshold}}%)</span>
-            <span><i :style="{color:flShowVoteThreshold ? '#FE8A8A' : '#D7DCE0'}" class="iconfont iconVeto"></i>Reject Threshold(NoWithVeto>{{voteThreshold}}%)</span>
-            <span v-show="hourLeft > 1"><i class="iconfont iconHoursLeft"></i>{{hourLeft === 1 ? `${hourLeft} Hour Left` : `${hourLeft} Hours Left` }}</span>
-            <span v-show="hourLeft < 1 && hourLeft > 0"><i class="iconfont iconHoursLeft"></i>{{ `${hourLeft} Min Left` }}</span>
+            <div>
+                <span><i :style="{color:flShowPassThreshold ? '#44C190' : '#D7DCE0'}" class="iconfont iconPass"></i>Pass Threshold(Yes>{{passThreshold}}%)</span>
+                <span><i :style="{color:flShowVoteThreshold ? '#FE8A8A' : '#D7DCE0'}" class="iconfont iconVeto"></i>Reject Threshold(NoWithVeto>{{voteThreshold}}%)</span>
+            </div>
+            <div v-if="flShowHourLeft">
+                <span><i style="color:#5AC8FA;" class="iconfont iconHoursLeft"></i>{{hourLeft}} Left</span>
+            </div>
         </div>
         <div class="voting_content">
             <div class="voting_left_container">
@@ -86,6 +89,7 @@
 				abstainVotingPowerWidth:'',
                 passThreshold:'',
                 voteThreshold:'',
+				flShowHourLeft: false,
                 flShowPassThreshold:false,
                 flShowVoteThreshold:false,
                 totalVotedGreaterThan: false,
@@ -165,20 +169,12 @@
 	        },
 	        getVotingEndTime(time){
 		        if(time){
-			        let localTime = new Date().getTimezoneOffset() * 60 * 1000;
-			        let localUtcTime;
-			        if(localTime < 0){
-				        localUtcTime = Math.floor(new Date().getTime()) + localTime;
+			        let currentServerTime = new Date().getTime() + this.diffMilliseconds;
+			        if(new Date(time).getTime() >  currentServerTime){
+				        this.hourLeft = Tools.formatAge(new Date(time).getTime(),currentServerTime);
+				        this.flShowHourLeft = true;
 			        }else {
-				        localUtcTime = Math.floor(new Date().getTime()) - localTime;
-			        }
-			        let depositEndUTCTime = new Date(Tools.conversionTimeToUTCByValidatorsLine(time)).getTime();
-			        let diffTime = (depositEndUTCTime - localUtcTime) / 1000;
-			        let hourLeft = Math.ceil(diffTime/ 3600);
-			        if(hourLeft < 1){
-				        this.hourLeft = Math.ceil(diffTime/ 60)
-			        }else {
-				        this.hourLeft = hourLeft
+				        this.flShowHourLeft = false;
 			        }
 		        }
 	        },
@@ -328,6 +324,7 @@
         }
         .voting_title_container{
             font-size: 0.12rem;
+            display: flex;
             i{
                 margin-right: 0.1rem;
                 font-size: 0.14rem;
@@ -483,9 +480,15 @@
             }
         }
     }
+    @media screen and (max-width: 1240px){
+        .voting_title_container{
+            flex-direction: column;
+        }
+    }
     @media screen and (max-width: 910px){
         .voting_card_content{
             margin: 0 ;
         }
+
     }
 </style>
