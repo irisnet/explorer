@@ -737,6 +737,10 @@ func (service *ValidatorService) UpdateValidators(vs []document.Validator) error
 			if isDiffValidator(v1, v) {
 				v.ID = v1.ID
 				v.Icons = v1.Icons
+				// set staticInfo, see detail: buildValidatorStaticInfo
+				v.Uptime = v1.Uptime
+				v.SelfBond = v1.SelfBond
+				v.DelegatorNum = v1.DelegatorNum
 				txs = append(txs, txn.Op{
 					C:  document.CollectionNmValidator,
 					Id: v1.ID,
