@@ -469,7 +469,7 @@
         .deposit_card_content{
             margin: 0 0 0.2rem 0;
             .deposit_title_container{
-                flex-direction: column;
+                flex-direction: row;
             }
         }
     }

@@ -30,7 +30,7 @@
             <div class="voting_center_container">
                 <div class="voting_progress_bar_content">
                     <span class="min_value_content" :style="minTotalTipStyleNumber" v-show="flShowTotalVoted">
-                        <span class="min_value_title">{{delegatorVoted}} % by Delegator</span>
+                        <span class="min_value_title">{{delegatorVoted}}% by Delegator</span>
                     </span>
                     <div class="default_progress_bar_content" :style="{background: totalVoted || delegatorVoted ? '#0580D3' : ''}"></div>
                     <div class="min_deposit_bar_content" :style="minVotingPowerStyleObj"></div>
