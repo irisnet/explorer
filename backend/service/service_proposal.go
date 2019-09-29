@@ -436,7 +436,7 @@ func formatProposalStatusDepositData(service *ProposalService, proposalStatusDep
 			Title:          propo.Title,
 			Type:           propo.Type,
 			Status:         propo.Status,
-			DepositEndTime: propo.DepositEndTime.UTC(),
+			DepositEndTime: propo.DepositEndTime,
 		}
 
 		l := vo.Level{}
