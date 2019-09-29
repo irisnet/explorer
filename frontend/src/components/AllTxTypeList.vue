@@ -3,7 +3,7 @@
         <div class="all_type_list_title_container">
             <div class="all_type_list_title_wrap">
                 <div class="all_type_list_filter_content">
-                    <h1 class="all_type_list_title">Transactions</h1>
+                    <h1 class="all_type_list_title">{{countNum}} txs</h1>
                     <div class="filter_content">
                         <div class="tx_type_content">
                             <div class="tx_type_mobile_content">
@@ -294,6 +294,7 @@
                     margin: 0;
                     line-height: 0.7rem;
                     font-size: 0.18rem;
+                    padding-left: 0.2rem;
                 }
                 .filter_content{
                     margin-left: 0.1rem;
