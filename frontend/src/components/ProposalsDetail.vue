@@ -190,12 +190,12 @@
                         <span class="information_value">{{$store.state.currentNoValue && $store.state.currentNoValue !== 'NaN' ? $store.state.currentNoValue : '0.00'}}%</span>
                     </div>
                     <div class="information_props_wrap">
-                        <span class="information_props">Abstain :</span>
-                        <span class="information_value">{{$store.state.currentAbstainValue && $store.state.currentAbstainValue !== 'NaN' ? $store.state.currentAbstainValue : '0.00'}}%</span>
-                    </div>
-                    <div class="information_props_wrap">
                         <span class="information_props">NoWithVeto :</span>
                         <span class="information_value">{{$store.state.currentNoWithVetoValue && $store.state.currentNoWithVetoValue !== 'NaN' ? $store.state.currentNoWithVetoValue : '0.00'}}% (Threshold {{vetoThresholdValue}})</span>
+                    </div>
+                    <div class="information_props_wrap">
+                        <span class="information_props">Abstain :</span>
+                        <span class="information_value">{{$store.state.currentAbstainValue && $store.state.currentAbstainValue !== 'NaN' ? $store.state.currentAbstainValue : '0.00'}}%</span>
                     </div>
 
                 </div>
@@ -232,10 +232,10 @@
                         <span>{{voteDetailsYes}}</span>
                     </span>|<span><i class="no_option_style"></i>No:
                         <span>{{voteDetailsNo}}</span>
-                    </span>|<span><i class="abstain_option_style"></i>Abstain:
-                        <span>{{voteDetailsAbstain}}</span>
                     </span>|<span><i class="no_with_veto_option_style"></i>NoWithVeto:
                         <span>{{voteDetailsNoWithVeto}}</span>
+                    </span>|<span><i class="abstain_option_style"></i>Abstain:
+                        <span>{{voteDetailsAbstain}}</span>
                     </span>
                 </div>
             </div>
