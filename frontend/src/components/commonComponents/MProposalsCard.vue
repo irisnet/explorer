@@ -21,6 +21,9 @@
         <img src="../../assets/deposit_period.png" />
         <span>DepositPeriod</span>
       </div>
+      <div v-if="flShowTime" style="margin-left: 0.38rem;display: flex;align-items: center">
+        <i style="color: rgb(90, 200, 250);padding-right: 0.05rem" class="iconfont iconHoursLeft"></i> {{depositHourLeft}}
+      </div>
     </div>
     <div class="content" ref="content">
       <span class="start" :style="{marginLeft: `${startMarginLeft + 30}px`}">0</span>
@@ -47,6 +50,7 @@
 </template>
 
 <script>
+  import Tools from "../../util/Tools"
 export default {
   name: 'MProposalsCard',
   props: {
@@ -55,13 +59,43 @@ export default {
       default: function() {return {}}
     }
   },
+  watch:{
+    data(data){
+      this.getVotingEndTime(data.deposit_end_time)
+    }
+  },
   data() {
     return {
       titleValueTipShow: false,
-      startMarginLeft: 0
+      startMarginLeft: 0,
+      depositTimer: null,
+      depositHourLeft:'',
+      flShowTime:false
     }
   },
+  methods:{
+    getDepositEndTime(time){
+      if(time){
+        let that = this;
+        let currentServerTime = new Date().getTime() + this.diffMilliseconds;
+        if(new Date(time).getTime() >  currentServerTime){
+          that.flShowTime = true;
+          that.depositHourLeft =  Tools.formatAge(new Date(time).getTime(),currentServerTime);
+        }
+        clearInterval(this.depositTimer);
+        this.depositTimer = setInterval(() => {
+          currentServerTime = new Date().getTime() + this.diffMilliseconds;
+          if(new Date(time).getTime() >  currentServerTime){
+            that.flShowTime = true;
+            that.depositHourLeft =  Tools.formatAge(new Date(time).getTime(),currentServerTime);
+          }else {
+          }
+        },1000);
+      }
+    },
+  },
   mounted() {
+    this.getDepositEndTime(this.data.deposit_end_time)
     this.$nextTick(() => {
       let title_value_a_w = this.$refs.titleValue.querySelector('a').getBoundingClientRect().width;
       let w = this.$refs.titleValue.getBoundingClientRect().width;
@@ -120,6 +154,7 @@ export default {
       padding: 0 0.3rem;
       font-size: 12px;
       display: flex;
+      align-items: center;
       div {
         img {
           width: 0.14rem;

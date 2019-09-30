@@ -194,8 +194,15 @@
 	        	if(time){
 	        		clearInterval(this.hourLeftTimer);
 	        		let that = this;
+			        let currentServerTime = new Date().getTime() + this.diffMilliseconds;
+			        if(new Date(time).getTime() >  currentServerTime){
+				        that.hourLeft = Tools.formatAge(new Date(time).getTime(),currentServerTime);
+				        that.flShowHourLeft = true;
+			        }else {
+				        that.flShowHourLeft = false;
+			        }
 			        this.hourLeftTimer = setInterval(()=>{
-				        let currentServerTime = new Date().getTime() + this.diffMilliseconds;
+				        currentServerTime = new Date().getTime() + this.diffMilliseconds;
 				        if(new Date(time).getTime() >  currentServerTime){
 					        that.hourLeft = Tools.formatAge(new Date(time).getTime(),currentServerTime);
 					        that.flShowHourLeft = true;
