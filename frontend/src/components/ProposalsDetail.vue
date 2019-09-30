@@ -20,7 +20,7 @@
                     <span v-if="status === 'DepositPeriod'">
                         <i style="color:rgb(5, 128, 211);" class="iconfont iconDepositPeriod-liebiao"></i>DepositPeriod
                     </span>
-                    <span v-if="status === 'Passed'" ><i style="color:rgb(5, 128, 211);" class="iconfont iconPass"></i>Passed</span>
+                    <span v-if="status === 'Passed'" ><i style="color:#44C190;" class="iconfont iconPass"></i>Passed</span>
                     <span v-if="status === 'Rejected'"><i style="color:rgb(254, 138, 138);" class="iconfont iconVeto"></i>Rejected</span>
                 </div>
                 <div class="time_content">
@@ -147,7 +147,7 @@
                     <div class="information_props_wrap">
                         <span class="information_props">Deposit Endtime :</span>
                         <span class="information_value">{{depositEndAge}}
-                            <span v-show="flShowDepositHourLeft"></span>{{depositHourLeft}}<span v-show="flShowDepositHourLeft">left </span>
+                            <span v-show="flShowDepositHourLeft"></span>{{depositHourLeft}}<span v-show="flShowDepositHourLeft"> left </span>
                             <span v-show="depositEndAge || flShowDepositHourLeft">(</span>{{depositEndTime}}<span v-show="depositEndAge || flShowDepositHourLeft">)</span>
                         </span>
                     </div>
@@ -381,6 +381,8 @@ export default {
 	        depositHourLeft:'',
 	        flShowVotingHourLeft:false,
 	        flShowDepositHourLeft:false,
+            depositHourTimer:null,
+            votingHourTimer:null,
         }
     },
     beforeMount () {
@@ -399,6 +401,15 @@ export default {
         },
         '$store.state.isMobile' (newVal) {
             this.computedProposalsDetailWrap();
+        },
+	    flShowDepositHourLeft(flShowDepositHourLeft){
+        	if(flShowDepositHourLeft){
+                this.getVoter();
+		        this.getDepositor();
+		        this.getProposalsInformation();
+		        this.getDepositorInformation();
+		        this.getVotingBarInformation();
+            }
         }
     },
     methods: {
@@ -448,6 +459,7 @@ export default {
             })
 
         },
+
         getVoter () {
 	        Service.commonInterface({proposalDetailVoterTxByFilter:{
 			        proposalId: this.$route.params.proposal_id,
@@ -567,9 +579,9 @@ export default {
                             this.votingStartAge = this.formatProposalTime(this.flShowProposalTime('votingStartTime', data.proposal.status) ? data.proposal.voting_start_time : '');
                             this.votingEndAge = this.formatProposalTime(this.flShowProposalTime('votingEndTime', data.proposal.status) ? data.proposal.voting_end_time : '');
                             this.software = data.proposal.software;
-                            this.participationValue = `${(Number(data.proposal.participation) * 100).toFixed(0)}%`;
-                            this.yesThresholdValue = `${(Number(data.proposal.yes_threshold) * 100).toFixed(0)}%`;
-                            this.vetoThresholdValue = `${(Number(data.proposal.veto_threshold) * 100).toFixed(0)}%`;
+                            this.participationValue = `${Tools.formatPercent(data.proposal.participation)}%`;
+                            this.yesThresholdValue = `${Tools.formatPercent(data.proposal.yes_threshold)}%`;
+                            this.vetoThresholdValue = `${Tools.formatPercent(data.proposal.veto_threshold)}%`;
                             this.penaltyValue = `${(Number(data.proposal.penalty) * 100).toFixed(2)}%`;
 	                        this.usageValue = data.proposal.usage ? data.proposal.usage : '--';
 	                        this.burnValue = data.proposal.burn_percent ? (Number(data.proposal.burn_percent) *100).toFixed(2) : '';
@@ -632,24 +644,33 @@ export default {
         },
 	    getVotingEndTime(time){
 		    if(time){
-			    let currentServerTime = new Date().getTime() + this.diffMilliseconds;
-			    if(new Date(time).getTime() >  currentServerTime){
-				    this.votingHourLeft = Tools.formatAge(new Date(time).getTime(),currentServerTime).trim();
-				    this.flShowVotingHourLeft = true;
-			    }else {
-				    this.flShowVotingHourLeft = false;
-			    }
+		    	clearInterval(this.votingHourTimer);
+		    	let that = this;
+			    this.votingHourTimer = setInterval(() => {
+				    let currentServerTime = new Date().getTime() + this.diffMilliseconds;
+				    if(new Date(time).getTime() >  currentServerTime){
+					    that.votingHourLeft = Tools.formatAge(new Date(time).getTime(),currentServerTime).trim();
+					    that.flShowVotingHourLeft = true;
+				    }else {
+					    that.flShowVotingHourLeft = false;
+				    }
+                },1000)
+
 		    }
 	    },
 	    getDepositTime(time){
 		    if(time){
-			    let currentServerTime = new Date().getTime() + this.diffMilliseconds;
-			    if(new Date(time).getTime() >  currentServerTime){
-				    this.depositHourLeft = Tools.formatAge(new Date(time).getTime(),currentServerTime);
-				    this.flShowDepositHourLeft = true;
-			    }else {
-				    this.flShowDepositHourLeft = false;
-			    }
+		    	clearInterval(this.depositHourTimer);
+			    let that = this;
+			    this.depositHourTimer = setInterval(() => {
+				    let currentServerTime = new Date().getTime() + this.diffMilliseconds;
+				    if(new Date(time).getTime() >  currentServerTime){
+					    that.depositHourLeft = Tools.formatAge(new Date(time).getTime(),currentServerTime);
+					    that.flShowDepositHourLeft = true;
+				    }else {
+					    that.flShowDepositHourLeft = false;
+				    }
+                },1000)
 		    }
 	    },
 	    getVotingBarInformation(){

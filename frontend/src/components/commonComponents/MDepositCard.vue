@@ -105,6 +105,7 @@
                 flShowReject:false,
 				flShowVotingPeriod: false,
 				flShowCardHourLeft:false,
+                hourLeftTimer:null,
 				minDepositStyleObject:{
 					width: ''
                 },
@@ -191,15 +192,18 @@
             },
             getAgeHour(time){
 	        	if(time){
-                    let currentServerTime = new Date().getTime() + this.diffMilliseconds;
-                    if(new Date(time).getTime() >  currentServerTime){
-	                    this.hourLeft = Tools.formatAge(new Date(time).getTime(),currentServerTime);
-	                    this.flShowHourLeft = true;
-                    }else {
-	                    this.flShowHourLeft = false;
-                    }
+	        		clearInterval(this.hourLeftTimer);
+	        		let that = this;
+			        this.hourLeftTimer = setInterval(()=>{
+				        let currentServerTime = new Date().getTime() + this.diffMilliseconds;
+				        if(new Date(time).getTime() >  currentServerTime){
+					        that.hourLeft = Tools.formatAge(new Date(time).getTime(),currentServerTime);
+					        that.flShowHourLeft = true;
+				        }else {
+					        that.flShowHourLeft = false;
+				        }
+                    },1000)
                 }
-
             },
 	        flShowProgressBar(){
 		        if(Number(this.totalDeposit) === Number(this.minDepositToken)){
@@ -329,7 +333,7 @@
                 color: var(--bgColor);
             }
             .iconPass{
-                color: #0580D3;
+                color: #44C190;
             }
             .iconVeto{
                 color: #FFAAA6;
