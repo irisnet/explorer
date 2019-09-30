@@ -7,9 +7,29 @@ const store = new Vuex.Store({
     currentEnv:'',
     isMobile:false,
     validatorTabIndex:0,
-    flShowIpt:false
+    flShowIpt:false,
+    currentParticipationValue:"",
+    currentYesValue:'',
+    currentNoWithVetoValue:'',
+    currentAbstainValue: '',
+    currentNoValue: '',
   },
   mutations:{
+    currentNoValue(state,data){
+      state.currentNoValue = data
+    },
+    currentAbstainValue(state,data){
+      state.currentAbstainValue = data
+    },
+    currentNoWithVetoValue(state,data){
+      state.currentNoWithVetoValue = data
+    },
+    currentParticipationValue(state,data){
+      state.currentParticipationValue = data
+    },
+    currentYesValue(state,data){
+      state.currentYesValue = data
+    },
     flShowSelectOption(state,data){
       state.flShowSelectOption = data
     },
