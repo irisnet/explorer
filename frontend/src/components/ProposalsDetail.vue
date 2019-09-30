@@ -402,8 +402,8 @@ export default {
         '$store.state.isMobile' (newVal) {
             this.computedProposalsDetailWrap();
         },
-	    flShowDepositHourLeft(flShowDepositHourLeft){
-        	if(flShowDepositHourLeft){
+	    flShowVotingHourLeft(flShowVotingHourLeft){
+        	if(!flShowVotingHourLeft){
                 this.getVoter();
 		        this.getDepositor();
 		        this.getProposalsInformation();
