@@ -614,12 +614,11 @@ export default {
                                 this.totalDeposit = "";
                             }
                             this.burnPercent = data.proposal.burn_percent;
+	                        this.parameterValue = '';
                             if (data.proposal.type === 'Parameter') {
                                 for (let index = 0; index < data.proposal.parameters.length; index++) {
                                     this.parameterValue += `${data.proposal.parameters[index].subspace}/${data.proposal.parameters[index].key} = ${data.proposal.parameters[index].value}\n`
                                 }
-                                let defaultTextareaRows = 2;
-                                this.textareaRows = data.proposal.parameters.length + defaultTextareaRows;
                             }
                         }
                     }
