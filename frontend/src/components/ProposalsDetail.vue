@@ -1063,7 +1063,7 @@ export default {
         white-space: nowrap;
         display: flex;
         align-items: center;
-        line-height: 0.21rem;
+        line-height: 0.3rem;
         & > span {
             color: var(--contentColor);
         }

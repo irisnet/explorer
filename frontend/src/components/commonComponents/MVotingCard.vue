@@ -169,6 +169,10 @@
 			        this.flShowVoteThreshold = false
 		        }
 		        this.totalVoted = ((optionTotalNumber / finalVotes.system_voting_power) * 100).toFixed(2);
+		        this.$store.commit('currentParticipationValue',this.totalVoted);
+		        this.$store.commit('currentYesValue',this.yesVotingPowerWidth);
+		        this.$store.commit('currentNoValue',this.noVotingPowerWidth);
+		        this.$store.commit('currentNoWithVetoValue',this.vetoVotingPowerWidth);
 		        this.setStyleFunc()
 	        },
 	        getVotingEndTime(time){
