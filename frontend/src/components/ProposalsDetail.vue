@@ -147,7 +147,7 @@
                     <div class="information_props_wrap">
                         <span class="information_props">Deposit Endtime :</span>
                         <span class="information_value">{{depositEndAge}}
-                            <span v-show="flShowDepositHourLeft"></span>{{depositHourLeft}}<span v-show="flShowDepositHourLeft"> left </span>
+                            <span v-show="flShowDepositHourLeft">{{depositHourLeft}} left </span>
                             <span v-show="depositEndAge || flShowDepositHourLeft">(</span>{{depositEndTime}}<span v-show="depositEndAge || flShowDepositHourLeft">)</span>
                         </span>
                     </div>
@@ -163,7 +163,7 @@
                     <div class="information_props_wrap">
                         <span class="information_props">Voting Endtime :</span>
                         <span class="information_value">{{votingEndAge}}
-                            <span v-show="flShowVotingHourLeft"></span>{{votingHourLeft}}<span v-show="flShowVotingHourLeft"> left </span>
+                            <span v-show="flShowVotingHourLeft">{{votingHourLeft}} left </span>
                             <span v-show="votingEndAge || flShowVotingHourLeft">(</span>{{votingEndTime}}<span v-show="votingEndAge || flShowVotingHourLeft">)</span>
                         </span>
                     </div>
