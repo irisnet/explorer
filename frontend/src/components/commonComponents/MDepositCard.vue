@@ -23,7 +23,7 @@
                 <span v-show="flShowPass" ><i class="iconfont iconPass"></i>Passed</span>
                 <span v-show="flShowReject"><i class="iconfont iconVeto"></i>Rejected</span>
             </div>
-           <div v-if="flShowHourLeft && !flShowVotingPeriod">
+           <div v-if="flShowHourLeft && flShowCardHourLeft">
                <span><i style="color:#5AC8FA;" class="iconfont iconHoursLeft"></i>{{hourLeft}} Left</span>
            </div>
             <!--<span v-show="hourLeft > 1"><i class="iconfont iconHoursLeft"></i>{{hourLeft === 1 ? `${hourLeft} Hour Left` : `${hourLeft} Hours Left` }}</span>-->
@@ -104,6 +104,7 @@
                 flShowPass: false,
                 flShowReject:false,
 				flShowVotingPeriod: false,
+				flShowCardHourLeft:false,
 				minDepositStyleObject:{
 					width: ''
                 },
@@ -148,6 +149,11 @@
 	        	if(depositObj){
 	        		if(depositObj.status === 'VotingPeriod'){
 	        			this.flShowVotingPeriod = true
+                    }
+	        		if(depositObj.status === 'DepositPeriod'){
+				        this.flShowCardHourLeft = true
+                    }else {
+				        this.flShowCardHourLeft = false
                     }
 	        		this.title = depositObj.title;
 	        		this.proposalId = depositObj.proposal_id;
