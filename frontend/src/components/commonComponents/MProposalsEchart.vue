@@ -30,7 +30,7 @@
             </div>
             <div class="voting_period_content" style="margin-top: 12px;display: flex;align-items: center;" v-show="flShowTime">
               <i class="iconfont iconHoursLeft" style="color: rgb(90, 200, 250)"></i>
-              <span>{{votingHourLeft}}</span>
+              <span>{{votingHourLeft}} Left</span>
             </div>
           </div>
           <div class="per_div">

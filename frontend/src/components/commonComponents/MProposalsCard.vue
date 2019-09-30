@@ -22,7 +22,7 @@
         <span>DepositPeriod</span>
       </div>
       <div v-if="flShowTime" style="margin-left: 0.38rem;display: flex;align-items: center">
-        <i style="color: rgb(90, 200, 250);padding-right: 0.05rem" class="iconfont iconHoursLeft"></i> {{depositHourLeft}}
+        <i style="color: rgb(90, 200, 250);padding-right: 0.05rem" class="iconfont iconHoursLeft"></i> {{depositHourLeft}} Left
       </div>
     </div>
     <div class="content" ref="content">
