@@ -48,8 +48,8 @@
             <div class="voting_right_container">
                 <span class="participation_threshold_content" v-show="flShowTotalVoted">{{totalVoted ? totalVoted : '0.00'}}% Participation</span>
                 <span class="participation_threshold_content" v-show="!flShowTotalVoted">{{delegatorVoted ? delegatorVoted : '0.00'}}% Participation</span>
-                <span class="abstain_content">{{abstainVotingPowerWidth === 'NaN' ? '0.00' : abstainVotingPowerWidth ? abstainVotingPowerWidth : '0.00'}}% Abstain</span>
                 <span class="veto_content">{{vetoVotingPowerWidth === 'NaN' ? '0.00' : vetoVotingPowerWidth ? vetoVotingPowerWidth : '0.00'}}% NoWithVeto</span>
+                <span class="abstain_content">{{abstainVotingPowerWidth === 'NaN' ? '0.00' : abstainVotingPowerWidth ? abstainVotingPowerWidth : '0.00'}}% Abstain</span>
             </div>
         </div>
     </div>
@@ -169,6 +169,10 @@
 			        this.flShowVoteThreshold = false
 		        }
 		        this.totalVoted = ((optionTotalNumber / finalVotes.system_voting_power) * 100).toFixed(2);
+		        this.$store.commit('currentParticipationValue',this.totalVoted);
+		        this.$store.commit('currentYesValue',this.yesVotingPowerWidth);
+		        this.$store.commit('currentNoValue',this.noVotingPowerWidth);
+		        this.$store.commit('currentNoWithVetoValue',this.vetoVotingPowerWidth);
 		        this.setStyleFunc()
 	        },
 	        getVotingEndTime(time){
@@ -487,14 +491,14 @@
                     color: #171D44;
                     font-size: 0.12rem;
                     line-height: 0.14rem;
-                    margin-top: 0.1rem;
+                    margin-top: 0.26rem;
                 }
                  .abstain_content{
                     font-size: 0.12rem;
                     color: #171D44;
                     line-height: 0.14rem;
-                    margin-top: 0.26rem;
-                }
+                    margin-top: 0.1rem;
+                 }
             }
         }
     }
