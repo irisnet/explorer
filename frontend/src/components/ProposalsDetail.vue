@@ -406,7 +406,6 @@ export default {
         	if(flShowDepositHourLeft){
                 this.getVoter();
 		        this.getDepositor();
-		        this.getProposalsInformation();
 		        this.getDepositorInformation();
 		        this.getVotingBarInformation();
             }
@@ -618,8 +617,6 @@ export default {
                                 for (let index = 0; index < data.proposal.parameters.length; index++) {
                                     this.parameterValue += `${data.proposal.parameters[index].subspace}/${data.proposal.parameters[index].key} = ${data.proposal.parameters[index].value}\n`
                                 }
-                                let defaultTextareaRows = 2;
-                                this.textareaRows = data.proposal.parameters.length + defaultTextareaRows;
                             }
                         }
                     }
