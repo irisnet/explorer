@@ -13,13 +13,17 @@
         </div>
         <div class="deposit_title_container">
             <div class="header_title_content">
-                <span><i class="iconfont iconParameterChange"></i>{{proposalType}}</span>
-                <span v-show="flShowVotingPeriod"><i class="iconfont iconDepositPeriod"></i>Voting Period</span>
+                <span>
+                    <i v-if="levelValue === 'Critical'" style="color:#FF5569;font-size: 0.16rem;" class="iconfont iconCritical"></i>
+                    <i v-if="levelValue === 'Important'" style="color: #FF8000;font-size: 0.16rem;" class="iconfont iconImportant"></i>
+                    <i v-if="levelValue === 'Normal'" style="color:#45B4FF;font-size: 0.16rem;" class="iconfont iconNormal"></i>
+                    {{proposalType}}</span>
+                <span v-show="flShowVotingPeriod"><i class="iconfont iconDepositPeriod"></i>VotingPeriod</span>
                 <span v-show="!flShowPass && !flShowReject && !flShowVotingPeriod"><i style="color:#0580d3" class="iconfont iconDepositPeriod-liebiao"></i>DepositPeriod</span>
                 <span v-show="flShowPass" ><i class="iconfont iconPass"></i>Passed</span>
                 <span v-show="flShowReject"><i class="iconfont iconVeto"></i>Rejected</span>
             </div>
-           <div v-if="flShowHourLeft">
+           <div v-if="flShowHourLeft && !flShowVotingPeriod">
                <span><i style="color:#5AC8FA;" class="iconfont iconHoursLeft"></i>{{hourLeft}} Left</span>
            </div>
             <!--<span v-show="hourLeft > 1"><i class="iconfont iconHoursLeft"></i>{{hourLeft === 1 ? `${hourLeft} Hour Left` : `${hourLeft} Hours Left` }}</span>-->
@@ -71,6 +75,9 @@
 	        },
 	        showTitle:{
 		        type: Boolean
+            },
+	        levelValue:{
+				type:String
             }
         },
         data () {
@@ -327,6 +334,9 @@
             span{
                 margin-right: 0.2rem;
                 color: #22252A;
+                i{
+                    font-size: 0.14rem !important;
+                }
             }
         }
         .deposit_content{
