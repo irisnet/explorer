@@ -406,7 +406,7 @@ export default {
         	if(flShowDepositHourLeft){
                 this.getVoter();
 		        this.getDepositor();
-		        this.getProposalsInformation;
+		        this.getProposalsInformation();
 		        this.getDepositorInformation();
 		        this.getVotingBarInformation();
             }
