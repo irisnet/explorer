@@ -410,7 +410,7 @@ export default {
 		        this.getDepositorInformation();
 		        this.getVotingBarInformation();
             }
-        }
+        },
     },
     methods: {
 	    filterVoteTx(item,index){
@@ -646,8 +646,15 @@ export default {
 		    if(time){
 		    	clearInterval(this.votingHourTimer);
 		    	let that = this;
+			    let currentServerTime = new Date().getTime() + this.diffMilliseconds;
+			    if(new Date(time).getTime() >  currentServerTime){
+				    that.votingHourLeft = Tools.formatAge(new Date(time).getTime(),currentServerTime).trim();
+				    that.flShowVotingHourLeft = true;
+			    }else {
+				    that.flShowVotingHourLeft = false;
+			    }
 			    this.votingHourTimer = setInterval(() => {
-				    let currentServerTime = new Date().getTime() + this.diffMilliseconds;
+				    currentServerTime = new Date().getTime() + this.diffMilliseconds;
 				    if(new Date(time).getTime() >  currentServerTime){
 					    that.votingHourLeft = Tools.formatAge(new Date(time).getTime(),currentServerTime).trim();
 					    that.flShowVotingHourLeft = true;
@@ -693,7 +700,7 @@ export default {
         this.getProposalsInformation();
         this.getVoter();
         this.getDepositor();
-        this.getDepositorInformation()
+        this.getDepositorInformation();
         this.getVotingBarInformation();
     }
 }

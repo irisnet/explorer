@@ -28,9 +28,13 @@
               <i class="iconfont iconDepositPeriod" style="color: #0580D3"></i>
               <span>VotingPeriod</span>
             </div>
+            <div class="voting_period_content" style="margin-top: 12px;display: flex;align-items: center;" v-show="flShowTime">
+              <i class="iconfont iconHoursLeft" style="color: rgb(90, 200, 250)"></i>
+              <span>{{votingHourLeft}}</span>
+            </div>
           </div>
           <div class="per_div">
-            <div class="per_title">GovTallyingProcedure</div>
+            <div class="per_title">Gov Tallying</div>
             <div style="margin-top: 16px;">
               <p>
                 <img v-if="data.participation > data.participationNum" src="../../assets/participant.png"/>
@@ -104,7 +108,10 @@ export default {
           r: '100%'
         }
       ],
-      bundClickEventFun: function() {}
+      bundClickEventFun: function() {},
+      votingTimer:null,
+      votingHourLeft:'',
+      flShowTime:false
     }
   },
   props: {
@@ -114,6 +121,26 @@ export default {
     }
   },
   methods: {
+    getVotingEndTime(time){
+      if(time){
+        let that = this;
+        let currentServerTime = new Date().getTime() + this.diffMilliseconds;
+        if(new Date(time).getTime() >  currentServerTime){
+          that.flShowTime = true;
+          that.votingHourLeft =  Tools.formatAge(new Date(time).getTime(),currentServerTime);
+        }else {
+        }
+        clearInterval(this.votingTimer);
+        this.votingTimer = setInterval(() => {
+          currentServerTime = new Date().getTime() + this.diffMilliseconds;
+          if(new Date(time).getTime() >  currentServerTime){
+            that.flShowTime = true;
+            that.votingHourLeft =  Tools.formatAge(new Date(time).getTime(),currentServerTime);
+          }else {
+          }
+        },1000);
+      }
+    },
     configuration(data, levels) {
       this.forChildrenBorderWidth(data);
       let that = this;
@@ -224,6 +251,7 @@ export default {
     }
   },
   mounted() {
+    this.getVotingEndTime(this.data.votingEndTime);
     this.chart = echarts.init(this.$refs.propsalsEchart);
     this.bundClick();
     this.configuration(this.data.data, this.levels);
