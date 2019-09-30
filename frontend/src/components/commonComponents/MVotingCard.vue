@@ -98,6 +98,7 @@
                 totalVotedGreaterThan: false,
                 flShowTotalVoted:false,
 				flHighlightParticipation:false,
+                votingTimer:null,
 				minVotingPowerStyleObj:{
                 	width:""
                 },
@@ -129,9 +130,9 @@
 			        this.title = votingBarObj.title;
 			        this.proposalId = votingBarObj.proposal_id;
 			        this.systemVotingPower = votingBarObj.voting_power_for_height;
-			        this.participationThreshold = `${((Number(votingBarObj.level.gov_param.participation)) *100).toFixed(2)}`;
-			        this.passThreshold = `${(Number(votingBarObj.level.gov_param.pass_threshold) * 100).toFixed(2)}`;
-			        this.voteThreshold = `${(Number(votingBarObj.level.gov_param.veto_threshold) * 100).toFixed(2)}`;
+			        this.participationThreshold = `${Tools.formatPercent(votingBarObj.level.gov_param.participation)}`;
+			        this.passThreshold = `${Tools.formatPercent(votingBarObj.level.gov_param.pass_threshold)}`;
+			        this.voteThreshold = `${Tools.formatPercent(votingBarObj.level.gov_param.veto_threshold)}`;
 			        this.getVotingEndTime(votingBarObj.voting_end_time);
 		        }
 		        if(votingBarObj && Array.isArray(votingBarObj.votes) && votingBarObj.votes.length > 0){
@@ -173,17 +174,23 @@
 		        this.$store.commit('currentYesValue',this.yesVotingPowerWidth);
 		        this.$store.commit('currentNoValue',this.noVotingPowerWidth);
 		        this.$store.commit('currentNoWithVetoValue',this.vetoVotingPowerWidth);
+		        this.$store.commit('currentAbstainValue',this.abstainVotingPowerWidth);
 		        this.setStyleFunc()
 	        },
 	        getVotingEndTime(time){
 		        if(time){
-			        let currentServerTime = new Date().getTime() + this.diffMilliseconds;
-			        if(new Date(time).getTime() >  currentServerTime){
-				        this.hourLeft = Tools.formatAge(new Date(time).getTime(),currentServerTime);
-				        this.flShowHourLeft = true;
-			        }else {
-				        this.flShowHourLeft = false;
-			        }
+		        	clearInterval(this.votingTimer);
+		        	let that = this;
+			        this.votingTimer = setInterval(() => {
+				        let currentServerTime = new Date().getTime() + this.diffMilliseconds;
+				        if(new Date(time).getTime() >  currentServerTime){
+					        that.hourLeft = Tools.formatAge(new Date(time).getTime(),currentServerTime);
+					        that.flShowHourLeft = true;
+				        }else {
+					        that.flShowHourLeft = false;
+				        }
+                    },1000)
+
 		        }
 	        },
             getTotalVoted(votTx){
