@@ -148,7 +148,7 @@
                         <span class="information_props">Deposit Endtime :</span>
                         <span class="information_value">{{depositEndAge}}
                             <span v-show="flShowDepositHourLeft"></span>{{depositHourLeft}}<span v-show="flShowDepositHourLeft">left </span>
-                            <span v-show="depositEndAge || flShowDepositHourLeft">(</span>{{depositEndTime}}<span v-show="depositEndAge">)</span>
+                            <span v-show="depositEndAge || flShowDepositHourLeft">(</span>{{depositEndTime}}<span v-show="depositEndAge || flShowDepositHourLeft">)</span>
                         </span>
                     </div>
                     <div class="information_props_wrap">
@@ -164,7 +164,7 @@
                         <span class="information_props">Voting Endtime :</span>
                         <span class="information_value">{{votingEndAge}}
                             <span v-show="flShowVotingHourLeft"></span>{{votingHourLeft}}<span v-show="flShowVotingHourLeft"> left </span>
-                            <span v-show="votingEndAge || flShowVotingHourLeft">(</span>{{votingEndTime}}<span v-show="votingEndAge">)</span>
+                            <span v-show="votingEndAge || flShowVotingHourLeft">(</span>{{votingEndTime}}<span v-show="votingEndAge || flShowVotingHourLeft">)</span>
                         </span>
                     </div>
                     <div class="information_props_wrap">
@@ -179,11 +179,11 @@
                     </div>
                     <div class="information_props_wrap">
                         <span class="information_props">Participation :</span>
-                        <span class="information_value">{{participationValue}} (Threshold {{$store.state.currentParticipationValue && $store.state.currentParticipationValue !== 'NaN' ? $store.state.currentParticipationValue : '0.00'}}%)</span>
+                        <span class="information_value">{{$store.state.currentParticipationValue && $store.state.currentParticipationValue !== 'NaN' ? $store.state.currentParticipationValue : '0.00'}}% (Threshold {{participationValue}})</span>
                     </div>
                     <div class="information_props_wrap">
                         <span class="information_props">Yes :</span>
-                        <span class="information_value">{{yesThresholdValue}} (Threshold {{$store.state.currentYesValue && $store.state.currentYesValue !== 'NaN' ? $store.state.currentYesValue : '0.00'}}%)</span>
+                        <span class="information_value">{{$store.state.currentYesValue && $store.state.currentYesValue !== 'NaN' ? $store.state.currentYesValue : '0.00'}}% (Threshold {{yesThresholdValue}})</span>
                     </div>
                     <div class="information_props_wrap">
                         <span class="information_props">No :</span>
@@ -195,7 +195,7 @@
                     </div>
                     <div class="information_props_wrap">
                         <span class="information_props">NoWithVeto :</span>
-                        <span class="information_value">{{vetoThresholdValue}} (Threshold {{$store.state.currentNoWithVetoValue && $store.state.currentNoWithVetoValue !== 'NaN' ? $store.state.currentNoWithVetoValue : '0.00'}}%)</span>
+                        <span class="information_value">{{$store.state.currentNoWithVetoValue && $store.state.currentNoWithVetoValue !== 'NaN' ? $store.state.currentNoWithVetoValue : '0.00'}}% (Threshold {{vetoThresholdValue}})</span>
                     </div>
 
                 </div>
@@ -567,9 +567,9 @@ export default {
                             this.votingStartAge = this.formatProposalTime(this.flShowProposalTime('votingStartTime', data.proposal.status) ? data.proposal.voting_start_time : '');
                             this.votingEndAge = this.formatProposalTime(this.flShowProposalTime('votingEndTime', data.proposal.status) ? data.proposal.voting_end_time : '');
                             this.software = data.proposal.software;
-                            this.participationValue = `${(Number(data.proposal.participation) * 100).toFixed(2)}%`;
-                            this.yesThresholdValue = `${(Number(data.proposal.yes_threshold) * 100).toFixed(2)}%`;
-                            this.vetoThresholdValue = `${(Number(data.proposal.veto_threshold) * 100).toFixed(2)}%`;
+                            this.participationValue = `${(Number(data.proposal.participation) * 100).toFixed(0)}%`;
+                            this.yesThresholdValue = `${(Number(data.proposal.yes_threshold) * 100).toFixed(0)}%`;
+                            this.vetoThresholdValue = `${(Number(data.proposal.veto_threshold) * 100).toFixed(0)}%`;
                             this.penaltyValue = `${(Number(data.proposal.penalty) * 100).toFixed(2)}%`;
 	                        this.usageValue = data.proposal.usage ? data.proposal.usage : '--';
 	                        this.burnValue = data.proposal.burn_percent ? (Number(data.proposal.burn_percent) *100).toFixed(2) : '';
