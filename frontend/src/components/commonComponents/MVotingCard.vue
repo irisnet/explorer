@@ -11,31 +11,37 @@
                 <span><router-link :to="`/gov/proposals`">View All</router-link></span>
             </div>
         </div>
-        <div class="voting_title_container">
-            <span><i :style="{color:flShowPassThreshold ? '#44C190' : '#D7DCE0'}" class="iconfont iconPass"></i>Pass Threshold(Yes>{{passThreshold}}%)</span>
-            <span><i :style="{color:flShowVoteThreshold ? '#FE8A8A' : '#D7DCE0'}" class="iconfont iconVeto"></i>Reject Threshold(NoWithVeto>{{voteThreshold}}%)</span>
-            <span v-show="hourLeft > 1"><i class="iconfont iconHoursLeft"></i>{{hourLeft === 1 ? `${hourLeft} Hour Left` : `${hourLeft} Hours Left` }}</span>
-            <span v-show="hourLeft < 1 && hourLeft > 0"><i class="iconfont iconHoursLeft"></i>{{ `${hourLeft} Min Left` }}</span>
+        <div class="voting_title_container" :class="showTitle ? 'home_style': ''">
+            <div>
+                <span><i :style="{color:flHighlightParticipation ? '#0580D3' : '#D7DCE0'}" class="iconfont iconBondedTokens"></i>Participation {{participationThreshold}}%</span>
+                <span><i :style="{color:flShowPassThreshold ? '#0580D3' : '#D7DCE0'}" class="iconfont iconBondedTokens"></i>Pass Threshold {{passThreshold}}%</span>
+            </div>
+            <div class="voting_card_right_content">
+                <span><i :style="{color:flShowVoteThreshold ? '#FE8A8A' : '#D7DCE0'}" class="iconfont iconBondedTokens"></i>Veto Threshold {{voteThreshold}}%</span>
+                <div v-if="flShowHourLeft">
+                    <span><i style="color:#5AC8FA;" class="iconfont iconHoursLeft"></i>{{hourLeft}} Left</span>
+                </div>
+            </div>
         </div>
         <div class="voting_content">
             <div class="voting_left_container">
                 <span class="delegator_voted_content" v-show="flShowTotalVoted">0.00%</span>
                 <span class="delegator_voted_content" v-show="!flShowTotalVoted">0.00%</span>
                 <span class="yes_content">Yes {{yesVotingPowerWidth === 'NaN' ? '0.00' : yesVotingPowerWidth ? yesVotingPowerWidth : '0.00'}}%</span>
-                <span class="abstain_content">Abstain {{abstainVotingPowerWidth === 'NaN' ? '0.00' : abstainVotingPowerWidth ? abstainVotingPowerWidth : '0.00'}}%</span>
+                <span class="no_content">No {{noVotingPowerWidth === 'NaN' ? '0.00' : noVotingPowerWidth ? noVotingPowerWidth : '0.00'}}%</span>
             </div>
             <div class="voting_center_container">
                 <div class="voting_progress_bar_content">
                     <span class="min_value_content" :style="minTotalTipStyleNumber" v-show="flShowTotalVoted">
-                        <span class="min_value_title">{{delegatorVoted}} % by Delegator</span>
+                        <span class="min_value_title">{{delegatorVoted}}% by Delegator</span>
                     </span>
                     <div class="default_progress_bar_content" :style="{background: totalVoted || delegatorVoted ? '#0580D3' : ''}"></div>
                     <div class="min_deposit_bar_content" :style="minVotingPowerStyleObj"></div>
                 </div>
                 <div class="voting_bottom_progress_bar_content" :style="minVotingPowerStyleObj">
                     <div class="voting_bottom_min_deposit_bar_content" :style="yesVotingPowerStyleObj"></div>
-                    <div class="voting_bottom_default_progress_bar_content" :style="abstainVotingPowerStyleObj"></div>
                     <div class="voting_bottom_total_deposit_bar_content" :style="noVotingPowerStyleObj"></div>
+                    <div class="voting_bottom_default_progress_bar_content" :style="abstainVotingPowerStyleObj"></div>
                     <div class="voting_bottom_burned_progress_bar_content" :style="vetoVotingPowerStyleObj"></div>
                 </div>
             </div>
@@ -43,7 +49,7 @@
                 <span class="participation_threshold_content" v-show="flShowTotalVoted">{{totalVoted ? totalVoted : '0.00'}}% Participation</span>
                 <span class="participation_threshold_content" v-show="!flShowTotalVoted">{{delegatorVoted ? delegatorVoted : '0.00'}}% Participation</span>
                 <span class="veto_content">{{vetoVotingPowerWidth === 'NaN' ? '0.00' : vetoVotingPowerWidth ? vetoVotingPowerWidth : '0.00'}}% NoWithVeto</span>
-                <span class="no_content">{{noVotingPowerWidth === 'NaN' ? '0.00' : noVotingPowerWidth ? noVotingPowerWidth : '0.00'}}% No</span>
+                <span class="abstain_content">{{abstainVotingPowerWidth === 'NaN' ? '0.00' : abstainVotingPowerWidth ? abstainVotingPowerWidth : '0.00'}}% Abstain</span>
             </div>
         </div>
     </div>
@@ -86,10 +92,13 @@
 				abstainVotingPowerWidth:'',
                 passThreshold:'',
                 voteThreshold:'',
+				flShowHourLeft: false,
                 flShowPassThreshold:false,
                 flShowVoteThreshold:false,
                 totalVotedGreaterThan: false,
                 flShowTotalVoted:false,
+				flHighlightParticipation:false,
+                votingTimer:null,
 				minVotingPowerStyleObj:{
                 	width:""
                 },
@@ -121,9 +130,9 @@
 			        this.title = votingBarObj.title;
 			        this.proposalId = votingBarObj.proposal_id;
 			        this.systemVotingPower = votingBarObj.voting_power_for_height;
-			        this.participationThreshold = `${((Number(votingBarObj.level.gov_param.participation)) *100).toFixed(2)}`;
-			        this.passThreshold = `${(Number(votingBarObj.level.gov_param.pass_threshold) * 100).toFixed(2)}`;
-			        this.voteThreshold = `${(Number(votingBarObj.level.gov_param.veto_threshold) * 100).toFixed(2)}`;
+			        this.participationThreshold = `${Tools.formatPercent(votingBarObj.level.gov_param.participation)}`;
+			        this.passThreshold = `${Tools.formatPercent(votingBarObj.level.gov_param.pass_threshold)}`;
+			        this.voteThreshold = `${Tools.formatPercent(votingBarObj.level.gov_param.veto_threshold)}`;
 			        this.getVotingEndTime(votingBarObj.voting_end_time);
 		        }
 		        if(votingBarObj && Array.isArray(votingBarObj.votes) && votingBarObj.votes.length > 0){
@@ -160,26 +169,33 @@
 		        }else {
 			        this.flShowVoteThreshold = false
 		        }
-		        this.totalVoted = ((optionTotalNumber / finalVotes.system_voting_power) * 100).toFixed(2)
+		        this.totalVoted = ((optionTotalNumber / finalVotes.system_voting_power) * 100).toFixed(2);
+		        this.$store.commit('currentParticipationValue',this.totalVoted);
+		        this.$store.commit('currentYesValue',this.yesVotingPowerWidth);
+		        this.$store.commit('currentNoValue',this.noVotingPowerWidth);
+		        this.$store.commit('currentNoWithVetoValue',this.vetoVotingPowerWidth);
+		        this.$store.commit('currentAbstainValue',this.abstainVotingPowerWidth);
 		        this.setStyleFunc()
 	        },
 	        getVotingEndTime(time){
 		        if(time){
-			        let localTime = new Date().getTimezoneOffset() * 60 * 1000;
-			        let localUtcTime;
-			        if(localTime < 0){
-				        localUtcTime = Math.floor(new Date().getTime()) + localTime;
-			        }else {
-				        localUtcTime = Math.floor(new Date().getTime()) - localTime;
+			        let that = this;
+			        let currentServerTime = new Date().getTime() + this.diffMilliseconds;
+			        if(new Date(time).getTime() >  currentServerTime){
+				        that.hourLeft = Tools.formatAge(new Date(time).getTime(),currentServerTime);
+				        that.flShowHourLeft = true;
 			        }
-			        let depositEndUTCTime = new Date(Tools.conversionTimeToUTCByValidatorsLine(time)).getTime();
-			        let diffTime = (depositEndUTCTime - localUtcTime) / 1000;
-			        let hourLeft = Math.ceil(diffTime/ 3600);
-			        if(hourLeft < 1){
-				        this.hourLeft = Math.ceil(diffTime/ 60)
-			        }else {
-				        this.hourLeft = hourLeft
-			        }
+		        	clearInterval(this.votingTimer);
+			        this.votingTimer = setInterval(() => {
+				        currentServerTime = new Date().getTime() + this.diffMilliseconds;
+				        if(new Date(time).getTime() >  currentServerTime){
+					        that.hourLeft = Tools.formatAge(new Date(time).getTime(),currentServerTime);
+					        that.flShowHourLeft = true;
+				        }else {
+					        that.flShowHourLeft = false;
+				        }
+                    },1000)
+
 		        }
 	        },
             getTotalVoted(votTx){
@@ -201,6 +217,7 @@
                this.delegatorVoted = (Number(this.delegatorVotedPower) / (Number(this.delegatorVotedPower) + Number(this.validatorVotedPower)) * 100).toFixed(2);
 	           this.$set(this.minTotalTipStyleNumber,'left',`${this.delegatorVoted}%`);
                this.totalVoted = (((this.delegatorVotedPower + this.validatorVotedPower) / this.systemVotingPower) *100).toFixed(2);
+               this.$store.commit('currentParticipationValue',this.totalVoted)
                this.setStyleFunc();
             },
             getYesVotingPower(votTx){
@@ -222,6 +239,7 @@
                 }else {
 	                this.flShowPassThreshold = false
                 }
+	            this.$store.commit('currentYesValue',this.yesVotingPowerWidth)
                 this.$set(this.yesVotingPowerStyleObj,'width',`${this.yesVotingPowerWidth}%`)
             },
 	        getNoVotingPower(votTx){
@@ -238,6 +256,7 @@
 			        });
 		        }
 		        this.noVotingPowerWidth = ((Number(yesVotingPower) / Number(this.totalVotedNumber)) * 100).toFixed(2);
+		        this.$store.commit('currentNoValue',this.noVotingPowerWidth);
 		        this.$set(this.noVotingPowerStyleObj,'width',`${this.noVotingPowerWidth}%`)
 	        },
 	        getVetoVotingPower(votTx){
@@ -259,6 +278,7 @@
                 }else {
 			        this.flShowVoteThreshold = false
                 }
+		        this.$store.commit('currentNoWithVetoValue',this.vetoVotingPowerWidth);
 		        this.$set(this.vetoVotingPowerStyleObj,'width',`${this.vetoVotingPowerWidth}%`)
 	        },
 	        getAbstainVotingPower(votTx){
@@ -275,11 +295,14 @@
 			        });
 		        }
 		        this.abstainVotingPowerWidth = ((Number(yesVotingPower) / Number(this.totalVotedNumber)) * 100).toFixed(2);
+		        this.$store.commit('currentAbstainValue',this.abstainVotingPowerWidth);
 		        this.$set(this.abstainVotingPowerStyleObj,'width',`${this.abstainVotingPowerWidth}%`)
 	        },
             setStyleFunc(){
 	        	if(Number(this.totalVoted) > Number(this.participationThreshold)){
+	        		this.flHighlightParticipation = true
 		        }else if(Number(this.totalVoted) < Number(this.participationThreshold)){
+			        this.flHighlightParticipation = false;
 			        this.totalVotedGreaterThan = false;
                     this.minVotingPowerStyleNumber = ((Number(this.totalVoted) / Number(this.participationThreshold))* 100).toFixed(0);
                 }
@@ -292,7 +315,7 @@
     .voting_card_content{
         flex: 1;
         justify-content: space-between;
-        height: 2rem;
+        min-height: 2rem;
         background: #fff;
         box-sizing: border-box;
         padding: 0.2rem;
@@ -328,8 +351,9 @@
         }
         .voting_title_container{
             font-size: 0.12rem;
+            display: flex;
             i{
-                margin-right: 0.1rem;
+                margin-right: 0.06rem;
                 font-size: 0.14rem;
             }
             .iconVeto{
@@ -339,12 +363,18 @@
                 color: #787C99;
             }
             span{
-                margin-right: 0.2rem;
+                margin-right: 0.12rem;
                 color: #22252A;
             }
+            .voting_card_right_content{
+                display: flex;
+            }
+        }
+        .home_style{
+            margin-top: 0.1rem;
         }
         .voting_content{
-            margin-top: 0.4rem;
+            margin-top: 0.5rem;
             display: flex;
             .voting_left_container{
                 display: flex;
@@ -361,12 +391,13 @@
                     line-height: 0.14rem;
                     margin-top: 0.26rem;
                 }
-                .abstain_content{
+                .no_content{
                     font-size: 0.12rem;
                     color: #171D44;
                     line-height: 0.14rem;
                     margin-top: 0.1rem;
                 }
+
             }
             .voting_center_container{
                 flex: 1;
@@ -474,12 +505,20 @@
                     line-height: 0.14rem;
                     margin-top: 0.26rem;
                 }
-                .no_content{
+                 .abstain_content{
                     font-size: 0.12rem;
                     color: #171D44;
                     line-height: 0.14rem;
                     margin-top: 0.1rem;
-                }
+                 }
+            }
+        }
+    }
+    @media screen and (max-width: 1280px){
+        .voting_title_container{
+            flex-direction: column;
+            .voting_card_right_content{
+                display: flex;
             }
         }
     }
@@ -487,5 +526,6 @@
         .voting_card_content{
             margin: 0 ;
         }
+
     }
 </style>

@@ -651,4 +651,18 @@ export default class Tools{
   static FormatUptime(number) {
     return `${(number * 100).toFixed(4)}%`
   }
+	/**
+	 * 格式化数字是字符串类型的百分比数字数字
+	 *
+	 */
+	static formatPercent(percent){
+		percent = percent.toString();
+		let formatNumberValue = (Tools.formatContinuousNumberZero(percent) * 100).toString(),number;
+		if(formatNumberValue.indexOf('.') !== -1){
+			number = Number(formatNumberValue).toFixed(2);
+		}else {
+			number = formatNumberValue
+		}
+		return number
+	}
 }

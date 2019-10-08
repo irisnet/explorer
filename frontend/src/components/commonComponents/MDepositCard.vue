@@ -12,13 +12,22 @@
             </div>
         </div>
         <div class="deposit_title_container">
-            <span><i class="iconfont iconParameterChange"></i>{{proposalType}}</span>
-            <span v-show="flShowVotingPeriod"><i class="iconfont iconDepositPeriod"></i>Voting Period</span>
-            <span v-show="!flShowPass && !flShowReject && !flShowVotingPeriod"><i style="color:#0580d3" class="iconfont iconDepositPeriod-liebiao"></i>DepositPeriod</span>
-            <span v-show="flShowPass" ><i class="iconfont iconPass"></i>Passed</span>
-            <span v-show="flShowReject"><i class="iconfont iconVeto"></i>Rejected</span>
-            <span v-show="hourLeft > 1"><i class="iconfont iconHoursLeft"></i>{{hourLeft === 1 ? `${hourLeft} Hour Left` : `${hourLeft} Hours Left` }}</span>
-            <span v-show="hourLeft < 1 && hourLeft > 0"><i class="iconfont iconHoursLeft"></i>{{ `${hourLeft} Min Left` }}</span>
+            <div class="header_title_content">
+                <span>
+                    <i v-if="levelValue === 'Critical'" style="color:#FF5569;font-size: 0.16rem;" class="iconfont iconCritical"></i>
+                    <i v-if="levelValue === 'Important'" style="color: #FF8000;font-size: 0.16rem;" class="iconfont iconImportant"></i>
+                    <i v-if="levelValue === 'Normal'" style="color:#45B4FF;font-size: 0.16rem;" class="iconfont iconNormal"></i>
+                    {{proposalType}}</span>
+                <span v-show="flShowVotingPeriod"><i class="iconfont iconDepositPeriod"></i>VotingPeriod</span>
+                <span v-show="!flShowPass && !flShowReject && !flShowVotingPeriod"><i style="color:#0580d3" class="iconfont iconDepositPeriod-liebiao"></i>DepositPeriod</span>
+                <span v-show="flShowPass" ><i class="iconfont iconPass"></i>Passed</span>
+                <span v-show="flShowReject"><i class="iconfont iconVeto"></i>Rejected</span>
+            </div>
+           <div v-if="flShowHourLeft && flShowCardHourLeft">
+               <span><i style="color:#5AC8FA;" class="iconfont iconHoursLeft"></i>{{hourLeft}} Left</span>
+           </div>
+            <!--<span v-show="hourLeft > 1"><i class="iconfont iconHoursLeft"></i>{{hourLeft === 1 ? `${hourLeft} Hour Left` : `${hourLeft} Hours Left` }}</span>-->
+            <!--<span v-show="hourLeft < 1 && hourLeft > 0"><i class="iconfont iconHoursLeft"></i>{{ `${hourLeft} Min Left` }}</span>-->
         </div>
         <div class="deposit_content">
             <div class="content">
@@ -66,6 +75,9 @@
 	        },
 	        showTitle:{
 		        type: Boolean
+            },
+	        levelValue:{
+				type:String
             }
         },
         data () {
@@ -78,6 +90,7 @@
                 minDepositTokenDenom:'',
                 totalDeposit: "",
                 initialDeposit:'',
+				flShowHourLeft: false,
                 flShowBlue: false,
                 flShowDepositPeriod: false,
                 flHideBlue: false,
@@ -91,6 +104,8 @@
                 flShowPass: false,
                 flShowReject:false,
 				flShowVotingPeriod: false,
+				flShowCardHourLeft:false,
+                hourLeftTimer:null,
 				minDepositStyleObject:{
 					width: ''
                 },
@@ -136,6 +151,11 @@
 	        		if(depositObj.status === 'VotingPeriod'){
 	        			this.flShowVotingPeriod = true
                     }
+	        		if(depositObj.status === 'DepositPeriod'){
+				        this.flShowCardHourLeft = true
+                    }else {
+				        this.flShowCardHourLeft = false
+                    }
 	        		this.title = depositObj.title;
 	        		this.proposalId = depositObj.proposal_id;
                     this.proposalType = depositObj.type;
@@ -172,24 +192,25 @@
             },
             getAgeHour(time){
 	        	if(time){
-	        		let localTime = new Date().getTimezoneOffset() * 60 * 1000;
-			        let localUtcTime;
-	        		if(localTime < 0){
-				        localUtcTime = Math.floor(new Date().getTime()) + localTime;
+	        		clearInterval(this.hourLeftTimer);
+	        		let that = this;
+			        let currentServerTime = new Date().getTime() + this.diffMilliseconds;
+			        if(new Date(time).getTime() >  currentServerTime){
+				        that.hourLeft = Tools.formatAge(new Date(time).getTime(),currentServerTime);
+				        that.flShowHourLeft = true;
 			        }else {
-				        localUtcTime = Math.floor(new Date().getTime()) - localTime;
-                    }
-                    let depositEndUTCTime = new Date(Tools.conversionTimeToUTCByValidatorsLine(time)).getTime();
-			        let diffTime = (depositEndUTCTime - localUtcTime) / 1000;
-	        		let hourLeft = Math.ceil(diffTime/ 3600);
-	        		if(hourLeft < 1){
-				        this.hourLeft = Math.ceil(diffTime/ 60)
-                    }else {
-				        this.hourLeft = hourLeft
-                    }
-
+				        that.flShowHourLeft = false;
+			        }
+			        this.hourLeftTimer = setInterval(()=>{
+				        currentServerTime = new Date().getTime() + this.diffMilliseconds;
+				        if(new Date(time).getTime() >  currentServerTime){
+					        that.hourLeft = Tools.formatAge(new Date(time).getTime(),currentServerTime);
+					        that.flShowHourLeft = true;
+				        }else {
+					        that.flShowHourLeft = false;
+				        }
+                    },1000)
                 }
-
             },
 	        flShowProgressBar(){
 		        if(Number(this.totalDeposit) === Number(this.minDepositToken)){
@@ -303,6 +324,11 @@
         }
         .deposit_title_container{
             font-size: 0.12rem;
+            display: flex;
+            flex-direction: row;
+            .header_title_content{
+                display: flex;
+            }
             i{
                 margin-right: 0.1rem;
                 font-size: 0.14rem;
@@ -314,7 +340,7 @@
                 color: var(--bgColor);
             }
             .iconPass{
-                color: #0580D3;
+                color: #44C190;
             }
             .iconVeto{
                 color: #FFAAA6;
@@ -325,6 +351,9 @@
             span{
                 margin-right: 0.2rem;
                 color: #22252A;
+                i{
+                    font-size: 0.14rem !important;
+                }
             }
         }
         .deposit_content{
@@ -466,6 +495,9 @@
     @media screen and (max-width: 910px){
         .deposit_card_content{
             margin: 0 0 0.2rem 0;
+            .deposit_title_container{
+                flex-direction: row;
+            }
         }
     }
 </style>

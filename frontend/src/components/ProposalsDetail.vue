@@ -6,13 +6,33 @@
                 <span>#{{proposalsId}}</span>
                 <span class="proposal_title">{{title}}</span>
             </p>
-            <div class="proposals_detail_information_wrap">
-                <p class="proposals_detail_level">
+            <div class="level_container">
+                <div class="proposals_detail_level">
                     <i v-if="levelValue === 'Critical'" style="color:#FF5569;font-size: 0.16rem;" class="iconfont iconCritical"></i>
                     <i v-if="levelValue === 'Important'" style="color: #FF8000;font-size: 0.16rem;" class="iconfont iconImportant"></i>
                     <i v-if="levelValue === 'Normal'" style="color:#45B4FF;font-size: 0.16rem;" class="iconfont iconNormal"></i>
-                    <span >{{levelValue}}</span>
-                </p>
+                    <span >{{type}}</span>
+                </div>
+                <div class="step_content">
+                    <span v-if="status === 'VotingPeriod'">
+                        <i style="color:rgb(5, 128, 211);" class="iconfont iconDepositPeriod"></i>VotingPeriod
+                    </span>
+                    <span v-if="status === 'DepositPeriod'">
+                        <i style="color:rgb(5, 128, 211);" class="iconfont iconDepositPeriod-liebiao"></i>DepositPeriod
+                    </span>
+                    <span v-if="status === 'Passed'" ><i style="color:#44C190;" class="iconfont iconPass"></i>Passed</span>
+                    <span v-if="status === 'Rejected'"><i style="color:rgb(254, 138, 138);" class="iconfont iconVeto"></i>Rejected</span>
+                </div>
+                <div class="time_content">
+                    <span v-if="status === 'VotingPeriod' && flShowVotingHourLeft">
+                        <i style="color:#5AC8FA;" class="iconfont iconHoursLeft"></i>{{votingHourLeft}} Left
+                    </span>
+                    <span v-if="status === 'DepositPeriod' && flShowDepositHourLeft">
+                        <i style="color:#5AC8FA;" class="iconfont iconHoursLeft"></i>{{depositHourLeft}} Left
+                    </span>
+                </div>
+            </div>
+            <div class="proposals_detail_information_wrap">
                 <div class="information_props_wrap">
                     <span class="information_props">Proposer :</span>
                     <span v-show="proposer !== '--'"
@@ -31,12 +51,6 @@
                     </span>
                     <span v-show="submitHash == '--'"
                           class="information_value information_show_trim ">{{submitHash}}</span>
-                </div>
-                <div class="information_props_wrap">
-                    <span class="information_props">Status :</span>
-                    <span class="information_value">
-                        {{status}}
-                    </span>
                 </div>
                 <div class="information_props_wrap">
                     <span class="information_props">Type :</span>
@@ -120,61 +134,77 @@
                      v-show="type === 'Parameter'">
                     <div class="information_props_wrap">
                         <span class="information_props">Parameter Details :</span>
-                        <textarea :rows="textareaRows"
-                                  v-model="parameterValue"
-                                  readonly
-                                  spellcheck="false"
-                                  class="parameter_detail_content">
-                            </textarea>
+                        <span v-model="parameterValue" v-html="parameterValue"></span>
                     </div>
                 </div>
-
             </div>
-            <div class="proposals_detail_information_wrap no_border_style">
-                <div class="information_props_wrap">
-                    <span class="information_props">Submit Time :</span>
-                    <span class="information_value">{{submitAge}} <span v-show="submitAge">(</span>{{submitTime}}<span v-show="submitAge">)</span></span>
-                </div>
-                <div class="information_props_wrap">
-                    <span class="information_props">Deposit Endtime :</span>
-                    <span class="information_value">{{depositEndAge}} <span v-show="depositEndAge">(</span>{{depositEndTime}}<span v-show="depositEndAge">)</span>
+            <div class="proposal_detail_content">
+                <div class="proposals_detail_information_wrap">
+                    <div class="information_props_wrap">
+                        <span class="information_props">Submit Time :</span>
+                        <span class="information_value">{{submitAge}} <span v-show="submitAge">(</span>{{submitTime}}<span v-show="submitAge">)</span></span>
+                    </div>
+                    <div class="information_props_wrap">
+                        <span class="information_props">Deposit Endtime :</span>
+                        <span class="information_value">{{depositEndAge}}
+                            <span v-show="flShowDepositHourLeft">{{depositHourLeft}} left </span>
+                            <span v-show="depositEndAge || flShowDepositHourLeft">(</span>{{depositEndTime}}<span v-show="depositEndAge || flShowDepositHourLeft">)</span>
                         </span>
-                </div>
-                <div class="information_props_wrap">
-                    <span class="information_props">Total Deposit :</span>
-                    <span class="information_value">{{totalDeposit}} <span v-show="burnValue">({{burnValue}}% Burned)</span></span>
-                </div>
-                <div class="information_props_wrap">
-                    <span class="information_props">Voting Starttime :</span>
-                    <span class="information_value">{{votingStartAge}} <span v-show="votingStartAge">(</span>{{votingStartTime}}<span v-show="votingStartAge">)</span>
+                    </div>
+                    <div class="information_props_wrap">
+                        <span class="information_props">Total Deposit :</span>
+                        <span class="information_value">{{totalDeposit}} <span v-show="burnValue">({{burnValue}}% Burned)</span></span>
+                    </div>
+                    <div class="information_props_wrap">
+                        <span class="information_props">Voting Starttime :</span>
+                        <span class="information_value">{{votingStartAge}} <span v-show="votingStartAge">(</span>{{votingStartTime}}<span v-show="votingStartAge">)</span>
                         </span>
+                    </div>
+                    <div class="information_props_wrap">
+                        <span class="information_props">Voting Endtime :</span>
+                        <span class="information_value">{{votingEndAge}}
+                            <span v-show="flShowVotingHourLeft">{{votingHourLeft}} left </span>
+                            <span v-show="votingEndAge || flShowVotingHourLeft">(</span>{{votingEndTime}}<span v-show="votingEndAge || flShowVotingHourLeft">)</span>
+                        </span>
+                    </div>
+                    <div class="information_props_wrap">
+                        <span class="information_props">Penalty :</span>
+                        <span class="information_value">{{penaltyValue}}</span>
+                    </div>
                 </div>
-                <div class="information_props_wrap">
-                    <span class="information_props">Voting Endtime :</span>
-                    <span class="information_value">{{votingEndAge}} <span v-show="votingEndAge">(</span>{{votingEndTime}}<span v-show="votingEndAge">)</span></span>
-                </div>
-                <div class="information_props_wrap">
-                    <span class="information_props">Participation :</span>
-                    <span class="information_value">{{participationValue}}</span>
-                </div>
-                <div class="information_props_wrap">
-                    <span class="information_props">Pass Threshold :</span>
-                    <span class="information_value">{{yesThresholdValue}}</span>
-                </div>
-                <div class="information_props_wrap">
-                    <span class="information_props">Reject Threshold :</span>
-                    <span class="information_value">{{vetoThresholdValue}}</span>
-                </div>
-                <div class="information_props_wrap">
-                    <span class="information_props">Penalty :</span>
-                    <span class="information_value">{{penaltyValue}}</span>
+                <div class="proposals_detail_information_wrap">
+                    <div class="information_props_wrap">
+                        <span class="information_props">Status :</span>
+                        <span class="information_value">{{status}}</span>
+                    </div>
+                    <div class="information_props_wrap">
+                        <span class="information_props">Participation :</span>
+                        <span class="information_value">{{$store.state.currentParticipationValue && $store.state.currentParticipationValue !== 'NaN' ? $store.state.currentParticipationValue : '0.00'}}% (Threshold {{participationValue}})</span>
+                    </div>
+                    <div class="information_props_wrap">
+                        <span class="information_props">Yes :</span>
+                        <span class="information_value">{{$store.state.currentYesValue && $store.state.currentYesValue !== 'NaN' ? $store.state.currentYesValue : '0.00'}}% (Threshold {{yesThresholdValue}})</span>
+                    </div>
+                    <div class="information_props_wrap">
+                        <span class="information_props">No :</span>
+                        <span class="information_value">{{$store.state.currentNoValue && $store.state.currentNoValue !== 'NaN' ? $store.state.currentNoValue : '0.00'}}%</span>
+                    </div>
+                    <div class="information_props_wrap">
+                        <span class="information_props">NoWithVeto :</span>
+                        <span class="information_value">{{$store.state.currentNoWithVetoValue && $store.state.currentNoWithVetoValue !== 'NaN' ? $store.state.currentNoWithVetoValue : '0.00'}}% (Threshold {{vetoThresholdValue}})</span>
+                    </div>
+                    <div class="information_props_wrap">
+                        <span class="information_props">Abstain :</span>
+                        <span class="information_value">{{$store.state.currentAbstainValue && $store.state.currentAbstainValue !== 'NaN' ? $store.state.currentAbstainValue : '0.00'}}%</span>
+                    </div>
+
                 </div>
             </div>
         </div>
         <div class="card_container">
             <div v-show="depositorObj" class="deposit_card_content_wrap">
                 <keep-alive>
-                    <m-deposit-card :depositObj="depositorObj" :burnPercent="burnPercent" :status="status"></m-deposit-card>
+                    <m-deposit-card :levelValue="levelValue" :depositObj="depositorObj" :burnPercent="burnPercent" :status="status"></m-deposit-card>
                 </keep-alive>
             </div>
             <div  v-show="votingObj" class="voting_mobile_content">
@@ -198,13 +228,13 @@
                     ><span>{{item.label}} {{item.value}}</span> <span>|</span></li>
                 </ul>
                 <div class="voting_options">
-                    <span>Yes:
+                    <span><i class="yes_option_style"></i>Yes:
                         <span>{{voteDetailsYes}}</span>
-                    </span>|<span>No:
+                    </span>|<span><i class="no_option_style"></i>No:
                         <span>{{voteDetailsNo}}</span>
-                    </span>|<span>NoWithVeto:
+                    </span>|<span><i class="no_with_veto_option_style"></i>NoWithVeto:
                         <span>{{voteDetailsNoWithVeto}}</span>
-                    </span>|<span>Abstain:
+                    </span>|<span><i class="abstain_option_style"></i>Abstain:
                         <span>{{voteDetailsAbstain}}</span>
                     </span>
                 </div>
@@ -347,6 +377,12 @@ export default {
 	            }
             ],
             filterTab:'all',
+	        votingHourLeft:'',
+	        depositHourLeft:'',
+	        flShowVotingHourLeft:false,
+	        flShowDepositHourLeft:false,
+            depositHourTimer:null,
+            votingHourTimer:null,
         }
     },
     beforeMount () {
@@ -365,7 +401,16 @@ export default {
         },
         '$store.state.isMobile' (newVal) {
             this.computedProposalsDetailWrap();
-        }
+        },
+	    flShowVotingHourLeft(flShowVotingHourLeft){
+        	if(!flShowVotingHourLeft){
+                this.getVoter();
+		        this.getDepositor();
+		        this.getProposalsInformation();
+		        this.getDepositorInformation();
+		        this.getVotingBarInformation();
+            }
+        },
     },
     methods: {
 	    filterVoteTx(item,index){
@@ -414,6 +459,7 @@ export default {
             })
 
         },
+
         getVoter () {
 	        Service.commonInterface({proposalDetailVoterTxByFilter:{
 			        proposalId: this.$route.params.proposal_id,
@@ -533,10 +579,10 @@ export default {
                             this.votingStartAge = this.formatProposalTime(this.flShowProposalTime('votingStartTime', data.proposal.status) ? data.proposal.voting_start_time : '');
                             this.votingEndAge = this.formatProposalTime(this.flShowProposalTime('votingEndTime', data.proposal.status) ? data.proposal.voting_end_time : '');
                             this.software = data.proposal.software;
-                            this.participationValue = `${(Number(data.proposal.participation) * 100).toFixed(2)} %`;
-                            this.yesThresholdValue = `${(Number(data.proposal.yes_threshold) * 100).toFixed(2)} % (Yes)`;
-                            this.vetoThresholdValue = `${(Number(data.proposal.veto_threshold) * 100).toFixed(2)} % (NoWithVeto)`;
-                            this.penaltyValue = `${(Number(data.proposal.penalty) * 100).toFixed(2)} %`;
+                            this.participationValue = `${Tools.formatPercent(data.proposal.participation)}%`;
+                            this.yesThresholdValue = `${Tools.formatPercent(data.proposal.yes_threshold)}%`;
+                            this.vetoThresholdValue = `${Tools.formatPercent(data.proposal.veto_threshold)}%`;
+                            this.penaltyValue = `${(Number(data.proposal.penalty) * 100).toFixed(2)}%`;
 	                        this.usageValue = data.proposal.usage ? data.proposal.usage : '--';
 	                        this.burnValue = data.proposal.burn_percent ? (Number(data.proposal.burn_percent) *100).toFixed(2) : '';
 	                        this.version = data.proposal.version;
@@ -568,12 +614,11 @@ export default {
                                 this.totalDeposit = "";
                             }
                             this.burnPercent = data.proposal.burn_percent;
+	                        this.parameterValue = '';
                             if (data.proposal.type === 'Parameter') {
                                 for (let index = 0; index < data.proposal.parameters.length; index++) {
                                     this.parameterValue += `${data.proposal.parameters[index].subspace}/${data.proposal.parameters[index].key} = ${data.proposal.parameters[index].value}\n`
                                 }
-                                let defaultTextareaRows = 2;
-                                this.textareaRows = data.proposal.parameters.length + defaultTextareaRows;
                             }
                         }
                     }
@@ -588,13 +633,52 @@ export default {
                 }},(res) => {
         		try {
                     if(res){
-	                    this.depositorObj = res
+	                    this.depositorObj = res;
+	                    this.getDepositTime(res.deposit_end_time)
                     }
 		        }catch (e) {
                     console.error(e)
 		        }
             })
         },
+	    getVotingEndTime(time){
+		    if(time){
+		    	clearInterval(this.votingHourTimer);
+		    	let that = this;
+			    let currentServerTime = new Date().getTime() + this.diffMilliseconds;
+			    if(new Date(time).getTime() >  currentServerTime){
+				    that.votingHourLeft = Tools.formatAge(new Date(time).getTime(),currentServerTime).trim();
+				    that.flShowVotingHourLeft = true;
+			    }else {
+				    that.flShowVotingHourLeft = false;
+			    }
+			    this.votingHourTimer = setInterval(() => {
+				    currentServerTime = new Date().getTime() + this.diffMilliseconds;
+				    if(new Date(time).getTime() >  currentServerTime){
+					    that.votingHourLeft = Tools.formatAge(new Date(time).getTime(),currentServerTime).trim();
+					    that.flShowVotingHourLeft = true;
+				    }else {
+					    that.flShowVotingHourLeft = false;
+				    }
+                },1000)
+
+		    }
+	    },
+	    getDepositTime(time){
+		    if(time){
+		    	clearInterval(this.depositHourTimer);
+			    let that = this;
+			    this.depositHourTimer = setInterval(() => {
+				    let currentServerTime = new Date().getTime() + this.diffMilliseconds;
+				    if(new Date(time).getTime() >  currentServerTime){
+					    that.depositHourLeft = Tools.formatAge(new Date(time).getTime(),currentServerTime);
+					    that.flShowDepositHourLeft = true;
+				    }else {
+					    that.flShowDepositHourLeft = false;
+				    }
+                },1000)
+		    }
+	    },
 	    getVotingBarInformation(){
         	Service.commonInterface({proposalDetailVotingBar:{
 			        proposalId: this.$route.params.proposal_id
@@ -602,6 +686,7 @@ export default {
         		try {
 			        if(res){
 				        this.votingObj = res;
+				        this.getVotingEndTime(res.voting_end_time);
 			        }
 		        }catch (e) {
                     console.error(e)
@@ -614,7 +699,7 @@ export default {
         this.getProposalsInformation();
         this.getVoter();
         this.getDepositor();
-        this.getDepositorInformation()
+        this.getDepositorInformation();
         this.getVotingBarInformation();
     }
 }
@@ -666,6 +751,17 @@ export default {
     font-size: 0.14rem;
     .personal_computer_transactions_detail_wrap {
         width: 100% !important;
+        .proposal_detail_content{
+            display: flex;
+            margin-top: 0.2rem;
+            .proposals_detail_information_wrap{
+                flex: 1;
+                border: 0.01rem solid #d7d9e0;
+            }
+            .proposals_detail_information_wrap:first-child{
+                margin-right: 0.1rem;
+            }
+        }
         .proposals_information_content_title {
             padding-left: 0.2rem !important;
             height: 0.7rem !important;
@@ -679,18 +775,12 @@ export default {
             }
         }
         @include pcCenter;
-        .no_border_style{
-            border-top: none !important;
-        }
         .proposals_detail_information_wrap {
             padding: 0.2rem 0.2rem 0.08rem;
             border-right: 1px solid rgba(215, 217, 224, 1) ;
             border-left: 1px solid rgba(215, 217, 224, 1) ;
             border-top: 1px solid rgba(215, 217, 224, 1) ;
             border-bottom: 1px solid rgba(215, 217, 224, 1) ;
-            .no_border_style{
-                border-top: none !important;
-            }
             .proposals_detail_level{
                 padding: 0 0 0.2rem 0;
                 i{
@@ -705,6 +795,7 @@ export default {
                     margin-left: 0.1rem;
                 }
             }
+
             .information_props_wrap {
                 @include flex;
                 line-height: 0.2rem;
@@ -748,6 +839,34 @@ export default {
                     cursor: pointer;
                 }
             }
+        }
+        .level_container{
+            display: flex;
+            margin: 0 0 0.1rem 0;
+            .proposals_detail_level{
+                margin: 0 0.4rem 0 0.2rem;
+                i{
+                    padding-right: 0.1rem;
+                }
+            }
+            .step_content{
+                margin-right: 0.4rem;
+                span{
+                    i{
+                        padding-right: 0.1rem;
+                    }
+                }
+
+            }
+            .time_content{
+                margin-right: 0.4rem;
+                span{
+                    i{
+                        padding-right: 0.1rem;
+                    }
+                }
+            }
+
         }
         .proposals_detail_table_wrap {
             margin-bottom: 0.2rem;
@@ -811,6 +930,7 @@ export default {
                 align-items: center;
             }
         }
+
         .proposals_detail_information_wrap {
             border-right: 1px solid rgba(215, 217, 224, 1) ;
             border-left: 1px solid rgba(215, 217, 224, 1) ;
@@ -861,9 +981,6 @@ export default {
                     cursor: pointer;
                 }
             }
-        }
-        .no_border_style{
-            border-top: none;
         }
         .transactions_detail_wrap_hash_var {
             overflow-x: auto;
@@ -933,12 +1050,47 @@ export default {
     color: var(--contentColor);
     margin-bottom: 10px;
     flex-wrap: wrap;
+    .yes_option_style{
+        display: inline-block;
+        width: 0.12rem;
+        height:0.12rem;
+        border-radius: 0.02rem;
+        background: #0580d3;
+        margin-right: 0.1rem;
+    }
+    .no_option_style{
+        display: inline-block;
+        width: 0.12rem;
+        height:0.12rem;
+        border-radius: 0.02rem;
+        background: #FFCF65;
+        margin-right: 0.1rem;
+    }
+    .no_with_veto_option_style{
+        display: inline-block;
+        width: 0.12rem;
+        height:0.12rem;
+        border-radius: 0.02rem;
+        background: #FE8A8A;
+        margin-right: 0.1rem;
+    }
+    .abstain_option_style{
+        display: inline-block;
+        width: 0.12rem;
+        height:0.12rem;
+        border-radius: 0.02rem;
+        background: #CCDCFF;
+        margin-right: 0.1rem;
+    }
     & > span {
         font-size: 0.14rem;
         color: var(--contentColor);
         @include fontWeight;
         padding: 0 0.18rem;
         white-space: nowrap;
+        display: flex;
+        align-items: center;
+        line-height: 0.3rem;
         & > span {
             color: var(--contentColor);
         }
@@ -1021,6 +1173,35 @@ pre {
         }
         .information_props{
             color: #787c99 !important;
+        }
+        .mobile_transactions_detail_wrap{
+            .proposal_detail_content{
+                width: 100%;
+                margin-top: 0.2rem;
+                .proposals_detail_information_wrap:last-child{
+                    margin-top: 0.2rem;
+                }
+            }
+            .level_container{
+                display: flex;
+                margin-bottom: 0.1rem;
+                .step_content{
+                    margin-left: 0.2rem;
+                    span{
+                        i{
+                            padding-right: 0.1rem;
+                        }
+                    }
+                }
+                .time_content{
+                    margin-left: 0.2rem;
+                    span{
+                        i{
+                            padding-right: 0.1rem;
+                        }
+                    }
+                }
+            }
         }
     }
 </style>

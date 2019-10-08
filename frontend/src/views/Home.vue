@@ -78,7 +78,7 @@
                     <m-voting-card :votingBarObj="item" :showTitle="true"></m-voting-card>
                 </div>
                 <div class="home_proposal_item_bar" v-for="v in depositorBarArr" :key="v.proposal_id">
-                    <m-deposit-card :depositObj="v" :showTitle="true"></m-deposit-card>
+                    <m-deposit-card :depositObj="v" :showTitle="true" :levelValue="v.levelValue"></m-deposit-card>
                 </div>
             </div>
         </div>
@@ -133,6 +133,7 @@
                 proposerAddress:"",
                 depositorBarArr: [],
                 votingBarArr: [],
+	            levelValue:'',
             }
         },
 
@@ -189,6 +190,7 @@
 				        if(Array.isArray(res)){
 					        res.forEach(item => {
 						        if(item.status === "DepositPeriod"){
+							        item.levelValue = item.level.name;
 							        this.depositorBarArr.push(item);
 							        this.depositorBarArr = this.depositorBarArr.sort((a,b) => {
                                         return b.proposal_id - a.proposal_id
