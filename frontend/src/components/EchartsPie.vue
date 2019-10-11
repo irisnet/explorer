@@ -185,6 +185,7 @@
     width:100%;
     height:100%;
     padding:0.12rem 0.2rem 0 0.2rem;
+    background: #fff;
     .echarts_title_wrap{
       height:15%;
       @include flex;

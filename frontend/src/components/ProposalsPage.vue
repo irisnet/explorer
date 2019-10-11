@@ -550,7 +550,7 @@
             width: 100%;
             max-width: 12.8rem;
             z-index: 1;
-            background: #fff;
+            background: #F5F7FD;
             & > div {
                 padding: 4px 0;
             }

@@ -1452,6 +1452,7 @@ export default {
     padding: 0.2rem 0.2rem 0.06rem;
     display: flex;
     flex-wrap: wrap;
+    background: #fff;
     & > div {
         width: 50%;
         .information_props_wrap {

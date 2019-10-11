@@ -315,14 +315,14 @@
         width: 100%;
         position: fixed;
         z-index: 10;
-        background-color: #ffffff;
+        background-color: #F5F7FD;
             .gateway_asset_list_title_content{
                 height:0.7rem;
                 display: flex;
                 align-items: center;
                 max-width: 12.8rem;
                 margin: 0 auto;
-                background-color: #ffffff;
+                background-color: #F5F7FD;
                 .gateway_asset_list_title{
                     font-size: 0.18rem;
                     font-weight: 500;

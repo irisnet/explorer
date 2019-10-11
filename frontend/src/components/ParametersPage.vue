@@ -409,6 +409,10 @@ export default {
                     display: flex;
                     align-items: center;
                     font-size: 18px;
+
+                }
+                .cards{
+                    background: #fff;
                 }
                 @mixin mobile_cards_layout {
                     display: flex;

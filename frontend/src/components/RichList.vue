@@ -167,7 +167,7 @@ export default {
             max-width: 12.8rem;
             margin: 0 auto;
             display: flex;
-            background: #fff;
+            background: #F5F7FD;
             align-items: center;
             & > div.top_list_title_content_div {
                 display: flex;
