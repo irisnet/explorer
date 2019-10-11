@@ -278,7 +278,7 @@
         width: 100%;
         position: fixed;
         z-index: 3;
-        background: #fff;
+        background: #F5F7FD;
         .all_type_list_title_wrap{
             max-width: 12.8rem;
             margin: 0 auto;

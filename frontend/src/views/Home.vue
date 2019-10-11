@@ -585,6 +585,7 @@
                     border: 0.01rem solid #d6d9e0;
                     margin-bottom: 0.3rem;
                     height: 3.54rem;
+                    background: #fff;
                     &:nth-child(2n+1){
                         margin-right:0.4rem;
                     }

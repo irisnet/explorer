@@ -235,6 +235,7 @@ export default {
                     border: 1px solid rgba(215, 217, 224, 1);
                     border-radius: 1px;
                     padding: 0.2rem;
+                    background: #fff;
                     .information_props {
                         color: var(--contentColor);
                         font-size: 0.14rem;
@@ -261,6 +262,7 @@ export default {
             .echarts_container {
                 padding: 0.2rem;
                 border: 1px solid #d7d9e0;
+                background: #fff;
             }
             .no_data_show {
                 @include flex;

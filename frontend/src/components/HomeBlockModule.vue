@@ -142,6 +142,7 @@
     height:100%;
     @include flex;
     flex-direction:column;
+    background: #fff;
     .home_module_block_title_wrap{
       @include flex;
       padding:0.2rem 0;

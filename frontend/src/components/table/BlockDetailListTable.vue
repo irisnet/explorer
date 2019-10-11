@@ -412,6 +412,9 @@ export default {
 .validator_table .validator_set_table_style thead tr th:nth-child(2) {
   padding-left: 0.26rem !important;
 }
+.validator_table .validator_set_table_style thead {
+  background: #fff;
+}
 .validator_table {
   min-width: 12.8rem;
 }
