@@ -1,0 +1,106 @@
+{
+    "info": {
+        "contact": {},
+        "license": {}
+    },
+    "paths": {
+        "/account/{address}/rewards": {
+            "get": {
+                "description": "get list of notice",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "account"
+                ],
+                "summary": "list",
+                "parameters": [
+                    {
+                        "enum": [
+                            "unpublished",
+                            "published",
+                            "expired"
+                        ],
+                        "type": "string",
+                        "description": "notice status",
+                        "name": "account",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/vo.AccountRewardsVo"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "utils.CoinAsStr": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "string"
+                },
+                "denom": {
+                    "type": "string"
+                }
+            }
+        },
+        "utils.CoinsAsStr": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "amount": {
+                        "type": "string"
+                    },
+                    "denom": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "vo.AccountRewardsVo": {
+            "type": "object",
+            "properties": {
+                "commission_rewards": {
+                    "type": "object",
+                    "$ref": "#/definitions/utils.CoinsAsStr"
+                },
+                "delagations_rewards": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/vo.DelagationsRewards"
+                    }
+                },
+                "total_rewards": {
+                    "type": "object",
+                    "$ref": "#/definitions/utils.CoinsAsStr"
+                }
+            }
+        },
+        "vo.DelagationsRewards": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "object",
+                    "$ref": "#/definitions/utils.CoinsAsStr"
+                },
+                "moniker": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

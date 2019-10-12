@@ -1,0 +1,69 @@
+definitions:
+  utils.CoinAsStr:
+    properties:
+      amount:
+        type: string
+      denom:
+        type: string
+    type: object
+  utils.CoinsAsStr:
+    items:
+      properties:
+        amount:
+          type: string
+        denom:
+          type: string
+      type: object
+    type: array
+  vo.AccountRewardsVo:
+    properties:
+      commission_rewards:
+        $ref: '#/definitions/utils.CoinsAsStr'
+        type: object
+      delagations_rewards:
+        items:
+          $ref: '#/definitions/vo.DelagationsRewards'
+        type: array
+      total_rewards:
+        $ref: '#/definitions/utils.CoinsAsStr'
+        type: object
+    type: object
+  vo.DelagationsRewards:
+    properties:
+      address:
+        type: string
+      amount:
+        $ref: '#/definitions/utils.CoinsAsStr'
+        type: object
+      moniker:
+        type: string
+    type: object
+info:
+  contact: {}
+  license: {}
+paths:
+  /account/{address}/rewards:
+    get:
+      consumes:
+      - application/json
+      description: get list of notice
+      parameters:
+      - description: notice status
+        enum:
+        - unpublished
+        - published
+        - expired
+        in: query
+        name: account
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.AccountRewardsVo'
+            type: object
+      summary: list
+      tags:
+      - account
