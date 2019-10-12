@@ -33,6 +33,9 @@
   name = "github.com/gorilla/mux"
   version = "1.6.2"
 
+[[constraint]]
+  name = "github.com/swaggo/gin-swagger"
+  branch = "master"
 
 [[constraint]]
   version = "^v1.9.1"

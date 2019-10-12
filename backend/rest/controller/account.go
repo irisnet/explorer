@@ -75,6 +75,14 @@ func registerQueryAccountUnbondingDelegations(r *mux.Router) error {
 	return nil
 }
 
+// @Summary list
+// @Description get list of notice
+// @Tags account
+// @Accept  json
+// @Produce  json
+// @Param   account   query   string false    "notice status" Enums(unpublished, published, expired)
+// @Success 200 {object} vo.AccountRewardsVo	"success"
+// @Router /account/{address}/rewards [get]
 func registerQueryAccountRewards(r *mux.Router) error {
 
 	doApi(r, types.UrlRegisterQueryAccountRewards, "GET", func(request vo.IrisReq) interface{} {

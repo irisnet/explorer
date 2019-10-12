@@ -14,6 +14,8 @@ import (
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/rest/controller"
 	"github.com/irisnet/explorer/backend/rest/filter"
+	"github.com/swaggo/gin-swagger/swaggerFiles"
+	"github.com/swaggo/gin-swagger"
 )
 
 type ApiServer struct {
@@ -92,6 +94,7 @@ func NewAPIMux() *mux.Router {
 	registerFilters()
 	lite.RegisterSwaggerUI(r)
 	r.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir("../frontend/dist/"))))
+	r.PathPrefix("/swagger/*any").Handler(ginSwagger.WrapHandler(swaggerFiles.Handler))
 	return r
 }
 
