@@ -8,19 +8,20 @@ import (
 )
 
 const (
-	UrlAccount                                   = "%s/bank/accounts/%s"
-	UrlBankTokenStats                            = "%s/bank/token-stats"
-	UrlValidator                                 = "%s/stake/validators/%s"
-	UrlValidators                                = "%s/stake/validators?page=%d&size=%d"
-	UrlDelegationByVal                           = "%s/stake/validators/%s/delegations"
-	UrlDelegationsByDelegator                    = "%s/stake/delegators/%s/delegations"
-	UrlDelegationsByValidator                    = "%s/stake/validators/%s/delegations"
-	UrlUnbondingDelegationByValidator            = "%s/stake/validators/%s/unbonding-delegations"
-	UrlRedelegationsByValidator                  = "%s/stake/validators/%s/redelegations"
-	UrlSignInfo                                  = "%s/slashing/validators/%s/signing-info"
-	UrlNodeInfo                                  = "%s/node-info"
-	UrlGenesis                                   = "%s/genesis"
-	UrlWithdrawAddress                           = "%s/distribution/%s/withdraw-address"
+	UrlAccount                        = "%s/bank/accounts/%s"
+	UrlBankTokenStats                 = "%s/bank/token-stats"
+	UrlValidator                      = "%s/stake/validators/%s"
+	UrlValidators                     = "%s/stake/validators?page=%d&size=%d"
+	UrlDelegationByVal                = "%s/stake/validators/%s/delegations"
+	UrlDelegationsByDelegator         = "%s/stake/delegators/%s/delegations"
+	UrlUnbondingDelegationByDelegator = "%s/stake/delegators/%s/unbonding-delegations"
+	UrlDelegationsByValidator         = "%s/stake/validators/%s/delegations"
+	UrlUnbondingDelegationByValidator = "%s/stake/validators/%s/unbonding-delegations"
+	UrlRedelegationsByValidator       = "%s/stake/validators/%s/redelegations"
+	UrlSignInfo                       = "%s/slashing/validators/%s/signing-info"
+	UrlNodeInfo                       = "%s/node-info"
+	UrlGenesis                        = "%s/genesis"
+	UrlWithdrawAddress                = "%s/distribution/%s/withdraw-address"
 	UrlBlockLatest                               = "%s/blocks/latest"
 	UrlBlock                                     = "%s/blocks/%d"
 	UrlValidatorSet                              = "%s/validatorsets/%d"
@@ -473,8 +474,14 @@ type DelegationVo struct {
 }
 
 type DistributionRewards struct {
-	Total      utils.CoinsAsStr `json:"total"`
-	Commission utils.CoinsAsStr `json:"commission"`
+	Total       utils.CoinsAsStr         `json:"total"`
+	Delegations []RewardsFromDelegations `json:"delegations"`
+	Commission  utils.CoinsAsStr         `json:"commission"`
+}
+
+type RewardsFromDelegations struct {
+	Validator string           `json:"validator"`
+	Reward    utils.CoinsAsStr `json:"reward"`
 }
 
 type ValidatorSigningInfo struct {
@@ -572,7 +579,7 @@ type BlockResultVo struct {
 }
 
 type AssetTokens struct {
-	BaseToken struct{
+	BaseToken struct {
 		Id              string `json:"id"`
 		Family          string `json:"family"`
 		Source          string `json:"source"`

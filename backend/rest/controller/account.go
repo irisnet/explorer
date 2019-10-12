@@ -11,6 +11,9 @@ func RegisterAccount(r *mux.Router) error {
 	funs := []func(*mux.Router) error{
 		registerQueryAccount,
 		registerQueryAccountList,
+		registerQueryAccountDelegations,
+		registerQueryAccountUnbondingDelegations,
+		registerQueryAccountRewards,
 	}
 
 	for _, fn := range funs {
@@ -45,5 +48,41 @@ func registerQueryAccountList(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryAccounts, "GET", func(request vo.IrisReq) interface{} {
 		return account.QueryRichList()
 	})
+	return nil
+}
+
+func registerQueryAccountDelegations(r *mux.Router) error {
+
+	doApi(r, types.UrlRegisterQueryAccountDelegations, "GET", func(request vo.IrisReq) interface{} {
+		address := Var(request, "address")
+		account.SetTid(request.TraceId)
+		result := account.QueryDelegations(address)
+		return result
+	})
+
+	return nil
+}
+
+func registerQueryAccountUnbondingDelegations(r *mux.Router) error {
+
+	doApi(r, types.UrlRegisterQueryAccountUnbondingDelegations, "GET", func(request vo.IrisReq) interface{} {
+		address := Var(request, "address")
+		account.SetTid(request.TraceId)
+		result := account.QueryUnbondingDelegations(address)
+		return result
+	})
+
+	return nil
+}
+
+func registerQueryAccountRewards(r *mux.Router) error {
+
+	doApi(r, types.UrlRegisterQueryAccountRewards, "GET", func(request vo.IrisReq) interface{} {
+		address := Var(request, "address")
+		account.SetTid(request.TraceId)
+		result := account.QueryRewards(address)
+		return result
+	})
+
 	return nil
 }

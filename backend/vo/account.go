@@ -46,3 +46,31 @@ func (a AccountInfo) String() string {
 		UpdateAt :%v
 		`, a.Rank, a.Address, a.Balance, a.Percent, a.UpdateAt)
 }
+
+type AccountDelegationsVo struct {
+	Address string     `json:"address"`
+	Moniker string     `json:"moniker"`
+	Amount  utils.Coin `json:"amount"`
+	Shares  string     `json:"shares"`
+	Height  string     `json:"height"`
+}
+
+type AccountUnbondingDelegationsVo struct {
+	Address string     `json:"address"`
+	Moniker string     `json:"moniker"`
+	Amount  utils.Coin `json:"amount"`
+	Height  string     `json:"height"`
+	EndTime string     `json:"end_time"`
+}
+
+type AccountRewardsVo struct {
+	TotalRewards       utils.CoinsAsStr     `json:"total_rewards"`
+	DelagationsRewards []DelagationsRewards `json:"delagations_rewards"`
+	CommissionRewards  utils.CoinsAsStr     `json:"commission_rewards"`
+}
+
+type DelagationsRewards struct {
+	Address string           `json:"address"`
+	Moniker string           `json:"moniker"`
+	Amount  utils.CoinsAsStr `json:"amount"`
+}
