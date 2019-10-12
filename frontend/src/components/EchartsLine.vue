@@ -14,7 +14,7 @@
 
 <script>
   import echarts from 'echarts';
-
+  import Constant from "../constant/Constant"
   let line = null;
   export default {
     name: 'echarts-line',
@@ -87,11 +87,16 @@
                 normal: {
                   color: new echarts.graphic.LinearGradient(//设置渐变颜色
                     0, 0, 0, 1,
-                    [
+                    // this.lineSkinBackgroundStyle
+                    /*[
                       {offset: 0, color: '#3598db'},
                       {offset: 0.5, color: '#91ccef'},
                       {offset: 1, color: '#dcf6ff'}
-                    ]
+                    ]*/
+                            [
+                            {offset: 0, color:'rgba(13, 147, 136, 0.8)'},
+                                    {offset: 1, color: 'rgba(13, 147, 136, 0)'}
+                            ]
                   )
                 }
               },
@@ -99,8 +104,8 @@
               smoothMonotone: 'x',
               itemStyle:{
                 normal:{
-                  color:'#3598db',
-                  borderColor:'#3598db',  //拐点边框颜色
+                  color:this.skinStyle,
+                  borderColor:this.skinStyle,  //拐点边框颜色
                 }
               },
             }
@@ -115,6 +120,12 @@
     },
     data() {
       return {
+        skinStyle:'',
+        lineSkinBackgroundStyle:[
+          {offset: 0, color: '#3598db'},
+          {offset: 0.5, color: '#91ccef'},
+          {offset: 1, color: '#dcf6ff'}
+        ],
         deviceType: window.innerWidth > 500 ? 1 : 0,
         echartsComponentWrapLine:window.innerWidth > 500 ?'echarts_component_wrap_line_personal_computer':'echarts_component_wrap_line_mobile',
         month:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
@@ -128,7 +139,32 @@
     },
     mounted() {
       line = echarts.init(document.getElementById('echarts_line'));
-      window.addEventListener('resize',this.onWindowResize)
+      window.addEventListener('resize',this.onWindowResize);
+      if(this.$store.state.currentSkinStyle ===  `${Constant.ENVCONFIG.MAINNET}${Constant.CHAINID.MAINNET}`){
+        this.skinStyle = '#3264FD';
+        this.lineSkinBackgroundStyle = [
+          {offset: 0, color: 'rgba(50, 100, 253, 0.8)'},
+          {offset: 1, color: 'rgba(50, 100, 253, 0)'}
+        ]
+      }else if(this.$store.state.currentSkinStyle ===  `${Constant.ENVCONFIG.TESTNET}${Constant.CHAINID.FUXI}`){
+        this.skinStyle = '#0C4282';
+        this.lineSkinBackgroundStyle = [
+          {offset: 0, color: 'rgba(12, 66, 130, 0.8)'},
+          {offset: 1, color: 'rgba(12, 66, 130, 0)'}
+        ]
+      }else if(this.$store.state.currentSkinStyle ===  `${Constant.ENVCONFIG.TESTNET}${Constant.CHAINID.NYANCAT}`){
+        this.skinStyle = '#0D9388';
+        this.lineSkinBackgroundStyle = [
+          {offset: 0, color: 'rgba(13, 147, 136, 0.8)'},
+          {offset: 1, color: 'rgba(245, 247, 253, 1)'}
+        ]
+      }else {
+        this.skinStyle = '#0580D3';
+        this.lineSkinBackgroundStyle = [
+          {offset: 0, color: 'rgba(5,128,211, 0.8)'},
+          {offset: 1, color: 'rgba(5,128,211, 0)'}
+        ]
+      }
     },
 
     methods: {
