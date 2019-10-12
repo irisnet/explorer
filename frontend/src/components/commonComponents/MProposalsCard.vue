@@ -119,7 +119,6 @@ export default {
     flex-direction: column;
     .top {
       padding: 0.3rem 0.3rem 0.22rem;
-      font-size: 12px;
       display: flex;
       font-size: 18px;
       position: relative;
