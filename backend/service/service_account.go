@@ -42,7 +42,7 @@ func (service *AccountService) Query(address string) (result vo.AccountVo) {
 		valaddress := utils.Convert(conf.Get().Hub.Prefix.ValAddr, address)
 		validator, err := document.Validator{}.QueryValidatorDetailByOperatorAddr(valaddress)
 		if err == nil {
-			result.Status = strconv.Itoa(validator.Status)
+			result.Status = getValidatorStatus(validator)
 			result.Moniker = validator.Description.Moniker
 			result.OperatorAddress = valaddress
 		}
@@ -53,6 +53,17 @@ func (service *AccountService) Query(address string) (result vo.AccountVo) {
 	result.IsProfiler = isProfiler(address)
 	result.Address = address
 	return result
+}
+
+func getValidatorStatus(validator document.Validator) string {
+	if validator.Jailed == false {
+		if validator.Status == types.Bonded {
+			return "Active"
+		}else{
+			return "Candidate"
+		}
+	}
+	return "Jailed"
 }
 
 func (service *AccountService) QueryRichList() interface{} {
