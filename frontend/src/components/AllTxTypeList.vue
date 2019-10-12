@@ -3,7 +3,7 @@
         <div class="all_type_list_title_container">
             <div class="all_type_list_title_wrap">
                 <div class="all_type_list_filter_content">
-                    <h1 class="all_type_list_title">{{countNum}} txs</h1>
+                    <h1 class="all_type_list_title">{{countNum}} Txs</h1>
                     <div class="filter_content">
                         <div class="tx_type_content">
                             <div class="tx_type_mobile_content">
