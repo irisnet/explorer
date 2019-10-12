@@ -67,8 +67,10 @@ func registerQueryTxList(r *mux.Router) error {
 		if address != "" {
 			if txType != "" {
 				switch txType {
-				case types.TxTypeTransfer:
-					query["$or"] = []bson.M{
+				case types.TxTypeTransfer, types.TxTypeStakeCreateValidator, types.TxTypeStakeDelegate,
+					types.TxTypeStakeBeginUnbonding, types.TxTypeBeginRedelegate, types.TxTypeSetWithdrawAddress,
+					types.TxTypeWithdrawDelegatorReward, types.TxTypeMintToken, types.TxTypeTransferTokenOwner, types.TxTypeTransferGatewayOwner:
+					query["$or"] = []bson.M {
 						{"from": address},
 						{"to": address},
 					}
