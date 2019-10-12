@@ -12,6 +12,9 @@ type AccountVo struct {
 	Address         string      `json:"address"`
 	Deposits        utils.Coin  `json:"deposits"`
 	IsProfiler      bool        `json:"isProfiler"`
+	Moniker         string      `json:"moniker"`
+	Status          string      `json:"status"`
+	OperatorAddress string      `json:"operator_address"`
 }
 
 func (a AccountVo) String() string {
@@ -21,7 +24,10 @@ func (a AccountVo) String() string {
 		Address         :%v
 		Deposits        :%v
 		IsProfiler      :%v
-		`, a.Amount, a.WithdrawAddress, a.Address, a.Deposits, a.IsProfiler)
+		Moniker         :%v
+		Status          :%v
+		OperatorAddress :%v
+		`, a.Amount, a.WithdrawAddress, a.Address, a.Deposits, a.IsProfiler, a.Moniker, a.Status, a.OperatorAddress)
 }
 
 type ValAccVo struct {
