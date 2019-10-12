@@ -3,7 +3,7 @@
         <div class="all_type_list_title_container">
             <div class="all_type_list_title_wrap">
                 <div class="all_type_list_filter_content">
-                    <h1 class="all_type_list_title">Transactions</h1>
+                    <h1 class="all_type_list_title">{{countNum}} txs</h1>
                     <div class="filter_content">
                         <div class="tx_type_content">
                             <div class="tx_type_mobile_content">
@@ -168,12 +168,12 @@
 		        return Number(new Date(utcTime).getTime()/1000)
             },
 	        filterTxByStatus(e){
-				if(e === 'allStatus'){
-					this.txStatus = ''
-                }else {
-					this.txStatus = e
-				}
-            },
+		        if(e === 'allStatus'){
+			        this.txStatus = ''
+		        }else {
+			        this.txStatus = e
+		        }
+	        },
             getAllTxType(){
 			    Service.commonInterface({allTxType:{
 			    	    type: 'all'
@@ -278,7 +278,7 @@
         width: 100%;
         position: fixed;
         z-index: 3;
-        background: #fff;
+        background: #F5F7FD;
         .all_type_list_title_wrap{
             max-width: 12.8rem;
             margin: 0 auto;
@@ -294,6 +294,7 @@
                     margin: 0;
                     line-height: 0.7rem;
                     font-size: 0.18rem;
+                    padding-left: 0.2rem;
                 }
                 .filter_content{
                     margin-left: 0.1rem;
@@ -303,14 +304,24 @@
                         .tx_type_mobile_content{
                             display: flex;
                             align-items: center;
+                            .ivu-select-visible{
+                                /deep/ .ivu-select-selection{
+                                    border-color: var(--bgColor) !important;
+                                }
+
+                            }
                             .ivu-select{
                                 margin-right: 0.1rem;
                                 width: 1.3rem;
+                                /deep/ .ivu-select-selection:hover{
+                                    border-color: var(--bgColor) !important;
+                                }
                                 .ivu-select-item{
                                     text-indent: 0.1rem;
                                     font-size: 0.14rem;
                                     line-height: 0.18rem;
                                     padding: 0.07rem 0.1rem 0.07rem 0;
+                                    color: var(--bgColor);
                                 }
                             }
                             .joint_mark{
@@ -318,6 +329,16 @@
                             }
                             .ivu-date-picker{
                                 width: 1.3rem;
+                                /deep/ .ivu-date-picker-rel{
+                                    .ivu-input-wrapper{
+                                        .ivu-input:hover{
+                                            border-color: var(--bgColor) !important;
+                                        }
+                                        .ivu-input:focus{
+                                             border-color: var(--bgColor) !important;
+                                         }
+                                    }
+                                }
                             }
                             .reset_btn{
                                 background: var(--bgColor);
@@ -399,6 +420,11 @@
                                 .ivu-select{
                                     margin-right: 0;
                                     width: 1.6rem;
+                                }
+                                .ivu-select-visible{
+                                    .ivu-select-selection{
+                                        border-color: var(--bgColor);
+                                    }
                                 }
                                 .ivu-date-picker{
                                     width: 1.6rem;

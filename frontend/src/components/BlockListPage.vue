@@ -271,7 +271,7 @@ export default {
         position: fixed;
         width: 100%;
         max-width: 12.8rem;
-        background-color: #ffffff;
+        background-color: #F5F7FD;
     }
     .block_list_table_container {
         padding-top: 0.7rem;

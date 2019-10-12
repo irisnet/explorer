@@ -158,6 +158,7 @@ export default {
     padding: 0.05rem 0.05rem;
     font-size: 0.14rem;
     line-height: 1;
+    background: #fff;
 }
 button {
     outline: none;

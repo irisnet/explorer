@@ -275,7 +275,6 @@
 				flShowUpOrDown: false,
 				flShowNetwork: false,
 				flShowHeaderNetwork: false,
-				flShowChainId: false,
 				flShowValidatorsUpOrDown: false,
 				flShowNetworkUpOrDown: false,
 				currentSelected: '',
@@ -670,22 +669,30 @@
 				}
 			},
 			toggleTestnetLogo (currentEnv) {
+                this.$store.commit('currentSkinStyle',`${currentEnv.cur_env}${currentEnv.chain_id}`);
 				const root = document.documentElement;
 				root.style.setProperty(skinStyle.skinStyle.TITLECOLORNAME,skinStyle.skinStyle.commonFontBlackColor);
 				root.style.setProperty(skinStyle.skinStyle.CONTENTCOLORNAME,skinStyle.skinStyle.commonFontContentColor);
 				root.style.setProperty(skinStyle.skinStyle.MODULEBLACKCOLOR,skinStyle.skinStyle.commonModuleBlackColor);
-				if (currentEnv.cur_env === constant.ENVCONFIG.MAINNET) {
-					this.flShowChainId = false;
+				if (currentEnv.cur_env === constant.ENVCONFIG.MAINNET && currentEnv.chain_id === constant.CHAINID.MAINNET) {
 					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.MAINNETBGCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.MAINNETHOVERCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.MAINNETACTIVECOLOR);
-				} else {
-					this.flShowChainId = true;
+				} else if(currentEnv.cur_env === constant.ENVCONFIG.TESTNET && currentEnv.chain_id === constant.CHAINID.FUXI) {
 					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.TESTNETBGCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.TESTNETHOVERCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.TESTNETACTIVECOLOR);
-				}
-				localStorage.setItem('currentEnv',currentEnv.cur_env)
+
+				}else if(currentEnv.cur_env === constant.ENVCONFIG.TESTNET && currentEnv.chain_id === constant.CHAINID.NYANCAT){
+					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.NYANCATTESTNETBGCOLOR);
+					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.NYANCATTESTNETHOVERCOLOR);
+					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.NYANCATTESTNETACTIVECOLOR);
+                }else{
+					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.DEFAULTBGCOLOR);
+					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.DEFAULTHOVERCOLOR);
+					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.DEFAULTACTIVECOLOR);
+                }
+				localStorage.setItem('currentEnv',`${currentEnv.cur_env}${currentEnv.chain_id}`)
 			},
 			setCurrentSelectOption (currentEnv, currentChainId) {
 				if (currentEnv === constant.ENVCONFIG.DEV || currentEnv === constant.ENVCONFIG.QA || currentEnv === constant.ENVCONFIG.STAGE) {
@@ -918,7 +925,7 @@
                                 }
                                 a{
                                     &:hover{
-                                        color:var(--hoverColor) !important;
+                                        color:var(--bgColor) !important;
                                     }
                                 }
                         }

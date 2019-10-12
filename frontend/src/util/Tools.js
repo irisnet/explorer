@@ -407,8 +407,12 @@ export default class Tools{
 							transferAmount = item.amount[0].formatAmount = item.amount[0].amount;
 							tokenId = item.amount[0].tokenId = item.amount[0].denom.toLocaleUpperCase();
 							if(item.type === 'BeginUnbonding' || item.type === 'BeginRedelegate'){
-								item.amount[0].formatAmount = item.amount[0].amount > 0 ? Tools.formatStringToFixedNumber(String(Tools.numberMoveDecimal(item.amount[0].amount)),2): item.amount[0].amount;
-								Amount = item.amount.map(listItem => `${listItem.formatAmount} SHARES`).join(',');
+								if(item.status === 'success'){
+									let tokenValue = Tools.formatAccountCoinsAmount(item.tags.balance);
+									let tokenStr = String(Tools.numberMoveDecimal(tokenValue[0],18));
+									item.amount[0].formatAmount =  Tools.formatStringToFixedNumber(tokenStr,2);
+									Amount = item.amount.map(listItem => `${listItem.formatAmount} IRIS`).join(',');
+								}
 							}
 						}
 					}else if(item.amount && Object.keys(item.amount).includes('amount') && Object.keys(item.amount).includes('denom')){
@@ -647,4 +651,18 @@ export default class Tools{
   static FormatUptime(number) {
     return `${(number * 100).toFixed(4)}%`
   }
+	/**
+	 * 格式化数字是字符串类型的百分比数字数字
+	 *
+	 */
+	static formatPercent(percent){
+		percent = percent.toString();
+		let formatNumberValue = (Tools.formatContinuousNumberZero(percent) * 100).toString(),number;
+		if(formatNumberValue.indexOf('.') !== -1){
+			number = Number(formatNumberValue).toFixed(2);
+		}else {
+			number = formatNumberValue
+		}
+		return number
+	}
 }

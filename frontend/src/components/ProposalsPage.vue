@@ -98,7 +98,7 @@
                     </div>
                 </div>
             </div>
-            <div style="overflow-x: auto;-webkit-overflow-scrolling:touch;" :style="{'padding-top':flTableFixed ? '' : '0.7rem'}">
+            <div class="mobile_style" style="overflow-x: auto;-webkit-overflow-scrolling:touch;" :style="{'padding-top':flTableFixed ? '' : '0.7rem'}">
                 <m-proposals-list-table :items="items" :showFixedHeader="flTableFixed"></m-proposals-list-table>
                 <div v-show="showNoData" class="no_data_show">
                     <img src="../assets/no_data.svg" alt="">
@@ -242,6 +242,7 @@
 					o.level = item.level && item.level.name;
 					o.type = item.type;
 					o.status = item.status;
+					o.votingEndTime = item.voting_end_time;
 					let all = item.voting_power_for_height;
 					let yesArr = item.votes.filter(v => v.option === 'Yes');
 					let yes = yesArr.reduce((init, v) => {return v.voting_power + init}, 0);
@@ -364,6 +365,9 @@
 					o.data = data;
 					return o;
 				});
+				this.votingPeriodDatas = this.votingPeriodDatas.sort((a,b) =>{
+					return b.proposal_id - a.proposal_id
+                });
 				depositPeriodDatas.forEach(v => {
 					if (v.level && v.level.gov_param && v.level.gov_param.min_deposit && (typeof v.level.gov_param.min_deposit.amount === 'number')) {
 						v.min_deposit_number = Number(v.level.gov_param.min_deposit.amount);
@@ -386,7 +390,9 @@
 						(this.forLimitNumer(v.total_deposit_number / v.min_deposit_number))* 100 + '%' : 0;
 					v.level = v.level && v.level.name;
 				});
-				this.depositPeriodDatas = depositPeriodDatas;
+				this.depositPeriodDatas = depositPeriodDatas.sort((a,b) => {
+					return b.proposal_id - a.proposal_id
+                });
 			},
 			isNumber(n) {
 				return typeof n === 'number'
@@ -529,7 +535,12 @@
             }
         }
         .header_fixed_style{
-            z-index: 5 !important;
+            z-index: 1 !important;
+        }
+        @media screen and (max-width: 910px){
+            .header_fixed_style{
+                position: static !important;
+            }
         }
         .total_num{
             @include flex;
@@ -539,7 +550,7 @@
             width: 100%;
             max-width: 12.8rem;
             z-index: 1;
-            background: #fff;
+            background: #F5F7FD;
             & > div {
                 padding: 4px 0;
             }
@@ -835,6 +846,11 @@
         .mobile_graph_pagination_last_node {
             display: flex;
             padding: 0 0 10px 0!important;
+        }
+    }
+    @media screen and (max-width: 910px){
+        .mobile_style{
+            padding-top: 0 !important;
         }
     }
 </style>

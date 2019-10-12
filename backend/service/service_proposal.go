@@ -327,6 +327,7 @@ func formatProposalStatusVotingData(proposalStatusVotingData []document.Proposal
 			Status:           propo.Status,
 			Votes:            tmpVoteArr,
 			TotalVotingPower: systemVotingPower,
+			VotingEndTime:    propo.VotingEndTime,
 		}
 
 		l := vo.Level{}
@@ -431,10 +432,10 @@ func formatProposalStatusDepositData(service *ProposalService, proposalStatusDep
 
 	for _, propo := range proposalStatusDepositData {
 		tmp := vo.ProposalNewStyle{
-			ProposalId: propo.ProposalId,
-			Title:      propo.Title,
-			Type:       propo.Type,
-			Status:     propo.Status,
+			ProposalId:     propo.ProposalId,
+			Title:          propo.Title,
+			Type:           propo.Type,
+			Status:         propo.Status,
 			DepositEndTime: propo.DepositEndTime,
 		}
 

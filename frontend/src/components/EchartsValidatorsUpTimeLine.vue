@@ -167,7 +167,9 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import "../style/mixin.scss";
-
+.echarts_component_wrap_line_personal_computer{
+   background: #fff;
+}
 .echarts_component_wrap_line_personal_computer,
 .echarts_component_wrap_line_mobile {
     width: 100%;

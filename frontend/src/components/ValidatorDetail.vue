@@ -766,7 +766,7 @@ export default {
                                 }
                                 it.amount = this.$options.filters.amountFromat(
                                     it.amount,
-                                    Constants.Denom.IRIS.toUpperCase()
+                                    Constants.Denom.IRIS.toUpperCase(),2
                                 );
                                 let selfShares = Tools.formatPriceToFixed(it.self_shares,4);
                                 it.shares = `${selfShares} (${this.formatPerNumber(
@@ -798,12 +798,7 @@ export default {
                         if (Array.isArray(data.items)) {
                             for (let it of data.items) {
                                 let u = it.amount.match(/[a-zA-Z]+/g, "")[0];
-                                it.amount = u
-                                    ? `${it.amount.replace(
-                                          u,
-                                          ""
-                                      )} ${u.toUpperCase()}`
-                                    : it.amount;
+                                it.amount = u ? `${(Number(it.amount.replace(u, "")).toFixed(2)).toString()} ${u.toUpperCase()}` : it.amount;
                                 it.Timestamp = Tools.format2UTC(it.until);
                                 it.Block = it.block;
                             }
@@ -1452,6 +1447,7 @@ export default {
     padding: 0.2rem 0.2rem 0.06rem;
     display: flex;
     flex-wrap: wrap;
+    background: #fff;
     & > div {
         width: 50%;
         .information_props_wrap {

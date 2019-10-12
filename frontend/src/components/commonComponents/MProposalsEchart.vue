@@ -13,22 +13,28 @@
       </div>
       <div class="content">
         <div class="content_div">
-          <div>
-            <img v-if="data.level === 'Important'" src="../../assets/important.png" />
-            <img v-if="data.level === 'Normal'" src="../../assets/normal.png" />
-            <img v-if="data.level === 'Critical'" src="../../assets/critical.png" />
-            <span>{{data.type}}</span>
-          </div>
-          <div style="margin-top: 12px;display: flex;align-items: center;" v-show="data.status === 'DepositPeriod'">
-            <i class="iconfont iconDepositPeriod-liebiao" style="color: #0580D3"></i>
-            <span>DepositPeriod</span>
-          </div>
-          <div style="margin-top: 12px;display: flex;align-items: center;" v-show="data.status === 'VotingPeriod'">
-            <i class="iconfont iconDepositPeriod" style="color: #0580D3"></i>
-            <span>VotingPeriod</span>
+          <div class="content_header_content">
+            <div>
+              <img v-if="data.level === 'Important'" src="../../assets/important.png" />
+              <img v-if="data.level === 'Normal'" src="../../assets/normal.png" />
+              <img v-if="data.level === 'Critical'" src="../../assets/critical.png" />
+              <span>{{data.type}}</span>
+            </div>
+            <div class="deposit_period_content" style="margin-top: 12px;display: flex;align-items: center;" v-show="data.status === 'DepositPeriod'">
+              <i class="iconfont iconDepositPeriod-liebiao" style="color: var(--baColor)"></i>
+              <span>DepositPeriod</span>
+            </div>
+            <div class="voting_period_content" style="margin-top: 12px;display: flex;align-items: center;" v-show="data.status === 'VotingPeriod'">
+              <i class="iconfont iconDepositPeriod" style="color: var(--baColor)"></i>
+              <span>VotingPeriod</span>
+            </div>
+            <div class="voting_period_content" style="margin-top: 12px;display: flex;align-items: center;" v-show="flShowTime">
+              <i class="iconfont iconHoursLeft" style="color: rgb(90, 200, 250)"></i>
+              <span>{{votingHourLeft}} Left</span>
+            </div>
           </div>
           <div class="per_div">
-            <div class="per_title">GovTallyingProcedure</div>
+            <div class="per_title">Gov Tallying</div>
             <div style="margin-top: 16px;">
               <p>
                 <img v-if="data.participation > data.participationNum" src="../../assets/participant.png"/>
@@ -102,7 +108,10 @@ export default {
           r: '100%'
         }
       ],
-      bundClickEventFun: function() {}
+      bundClickEventFun: function() {},
+      votingTimer:null,
+      votingHourLeft:'',
+      flShowTime:false
     }
   },
   props: {
@@ -112,6 +121,26 @@ export default {
     }
   },
   methods: {
+    getVotingEndTime(time){
+      if(time){
+        let that = this;
+        let currentServerTime = new Date().getTime() + this.diffMilliseconds;
+        if(new Date(time).getTime() >  currentServerTime){
+          that.flShowTime = true;
+          that.votingHourLeft =  Tools.formatAge(new Date(time).getTime(),currentServerTime);
+        }else {
+        }
+        clearInterval(this.votingTimer);
+        this.votingTimer = setInterval(() => {
+          currentServerTime = new Date().getTime() + this.diffMilliseconds;
+          if(new Date(time).getTime() >  currentServerTime){
+            that.flShowTime = true;
+            that.votingHourLeft =  Tools.formatAge(new Date(time).getTime(),currentServerTime);
+          }else {
+          }
+        },1000);
+      }
+    },
     configuration(data, levels) {
       this.forChildrenBorderWidth(data);
       let that = this;
@@ -222,6 +251,7 @@ export default {
     }
   },
   mounted() {
+    this.getVotingEndTime(this.data.votingEndTime);
     this.chart = echarts.init(this.$refs.propsalsEchart);
     this.bundClick();
     this.configuration(this.data.data, this.levels);
@@ -292,6 +322,7 @@ export default {
         div.content_div {
           margin-left: 0.3rem;
           display: inline-block;
+
           div.per_title {
             margin-top: 30px;
             font-size: 14px;
@@ -398,6 +429,30 @@ export default {
         .propsals_echart {
           height: 100%;
           width: 100%;
+        }
+      }
+    }
+  }
+  @media screen and (max-width: 910px){
+    .mobile_propsals_echart_container{
+      .text{
+        .content{
+          .content_div{
+            .content_header_content{
+              display: flex;
+              align-items: center;
+              .deposit_period_content{
+                margin-top: 0!important;
+              }
+              .voting_period_content{
+                margin-left: 0.2rem;
+                margin-top: 0!important;
+              }
+            }
+            .per_div{
+              margin-left: 0!important;
+            }
+          }
         }
       }
     }

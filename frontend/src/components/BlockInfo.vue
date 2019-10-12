@@ -436,6 +436,7 @@
                 .current_block_information_content{
                     box-sizing: border-box;
                     padding: 0.2rem;
+                    background: #fff;
                     .block_information_item{
                         display: flex;
                         span:nth-of-type(1){
