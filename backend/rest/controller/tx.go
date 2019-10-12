@@ -65,10 +65,27 @@ func registerQueryTxList(r *mux.Router) error {
 			query["status"] = status
 		}
 		if address != "" {
-			query["$or"] = []bson.M{
-				{"from": address},
-				{"to": address},
+			if txType != "" {
+				switch txType {
+				case types.TxTypeTransfer:
+					query["$or"] = []bson.M{
+						{"from": address},
+						{"to": address},
+					}
+				case types.TxTypeWithdrawDelegatorRewardsAll, types.TxTypeWithdrawDelegatorReward:
+					query["to"] = address
+
+				default:
+					query["from"] = address
+				}
+
+			} else {
+				query["$or"] = []bson.M{
+					{"from": address},
+					{"to": address},
+				}
 			}
+
 		}
 		if beginTime != 0 && endTime != 0 {
 			query["time"] = bson.M{
