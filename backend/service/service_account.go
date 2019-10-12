@@ -22,10 +22,8 @@ func (service *AccountService) GetModule() Module {
 }
 
 func (service *AccountService) Query(address string) (result vo.AccountVo) {
-	var valaddress string
 	prefix, _, _ := utils.DecodeAndConvert(address)
 	if prefix == conf.Get().Hub.Prefix.ValAddr {
-		valaddress = address
 		self, delegated := delegatorService.QueryDelegation(address)
 		result.Amount = utils.Coins{self}
 		result.Deposits = delegated
@@ -40,19 +38,19 @@ func (service *AccountService) Query(address string) (result vo.AccountVo) {
 			}
 			result.Amount = amount
 		}
-		result.Deposits = delegatorService.GetDeposits(address)
-		valaddress = utils.Convert(conf.Get().Hub.Prefix.ValAddr, address)
+		//result.Deposits = delegatorService.GetDeposits(address)
+		valaddress := utils.Convert(conf.Get().Hub.Prefix.ValAddr, address)
 		prefix, _, _ = utils.DecodeAndConvert(valaddress)
-
-	}
-	if prefix == conf.Get().Hub.Prefix.ValAddr {
-		validator, err := document.Validator{}.QueryValidatorDetailByOperatorAddr(valaddress)
-		if err == nil {
-			result.Status = strconv.Itoa(validator.Status)
-			result.Moniker = validator.Description.Moniker
-			result.OperatorAddress = valaddress
+		if prefix == conf.Get().Hub.Prefix.ValAddr {
+			validator, err := document.Validator{}.QueryValidatorDetailByOperatorAddr(valaddress)
+			if err == nil {
+				result.Status = strconv.Itoa(validator.Status)
+				result.Moniker = validator.Description.Moniker
+				result.OperatorAddress = valaddress
+			}
 		}
 	}
+
 
 	result.WithdrawAddress = lcd.QueryWithdrawAddr(address)
 	result.IsProfiler = isProfiler(address)
@@ -103,6 +101,12 @@ func isProfiler(address string) bool {
 
 func (service *AccountService) QueryDelegations(address string) (result []*vo.AccountDelegationsVo) {
 	delegations := lcd.GetDelegationsByDelAddr(address)
+	var  valaddrlist  []string
+	for _,val := range delegations {
+		valaddrlist = append(valaddrlist, val.ValidatorAddr)
+	}
+	validatorMap := getValidators(valaddrlist)
+
 	result = make([]*vo.AccountDelegationsVo, 0, len(delegations))
 	for _, val := range delegations {
 		data := vo.AccountDelegationsVo{
@@ -110,15 +114,29 @@ func (service *AccountService) QueryDelegations(address string) (result []*vo.Ac
 			Shares:  val.Shares,
 			Height:  val.Height,
 		}
-		valdator, err := document.Validator{}.QueryValidatorDetailByOperatorAddr(val.ValidatorAddr)
-		if err == nil {
-			data.Moniker = valdator.Description.Moniker
-			data.Amount = computeVotingPower(valdator, val.Shares)
+		if validatorMap != nil {
+			if valdator,ok := validatorMap[val.ValidatorAddr];ok {
+				data.Moniker = valdator.Description.Moniker
+				data.Amount = computeVotingPower(valdator, val.Shares)
+			}
 		}
 		result = append(result, &data)
 	}
 
 	return result
+}
+
+func getValidators(valaddrlist  []string)(validatorMap map[string]document.Validator) {
+
+	valdators, err := document.Validator{}.QueryValidatorListByAddrList(valaddrlist)
+	if err == nil {
+		validatorMap = make(map[string]document.Validator,len(valdators))
+		for _,val := range valdators {
+			validatorMap[val.OperatorAddress] = val
+		}
+	}
+
+	return validatorMap
 }
 
 func computeVotingPower(validator document.Validator, shares string) utils.Coin {
@@ -146,6 +164,11 @@ func computeVotingPower(validator document.Validator, shares string) utils.Coin 
 func (service *AccountService) QueryUnbondingDelegations(address string) (result []*vo.AccountUnbondingDelegationsVo) {
 
 	unbondingdelegations := lcd.GetUnbondingDelegationsByDelegatorAddr(address)
+	var  valaddrlist  []string
+	for _,val := range unbondingdelegations {
+		valaddrlist = append(valaddrlist, val.ValidatorAddr)
+	}
+	validatorMap := getValidators(valaddrlist)
 
 	for _, val := range unbondingdelegations {
 		data := vo.AccountUnbondingDelegationsVo{
@@ -154,9 +177,10 @@ func (service *AccountService) QueryUnbondingDelegations(address string) (result
 			Height:  val.CreationHeight,
 			Amount:  utils.ParseCoin(val.Balance),
 		}
-		valdator, err := document.Validator{}.QueryValidatorDetailByOperatorAddr(val.ValidatorAddr)
-		if err == nil {
-			data.Moniker = valdator.Description.Moniker
+		if validatorMap != nil {
+			if valdator,ok := validatorMap[val.ValidatorAddr];ok {
+				data.Moniker = valdator.Description.Moniker
+			}
 		}
 
 	}
@@ -173,11 +197,18 @@ func (service *AccountService) QueryRewards(address string) (result vo.AccountRe
 
 	result.CommissionRewards = commissionrewards
 	result.TotalRewards = rewards
+	var  valaddrlist  []string
+	for _,val := range delegationrewards {
+		valaddrlist = append(valaddrlist, val.Validator)
+	}
+	validatorMap := getValidators(valaddrlist)
+
 	for _, val := range delegationrewards {
 		data := vo.DelagationsRewards{Address: val.Validator, Amount: val.Reward}
-		valdator, err := document.Validator{}.QueryValidatorDetailByOperatorAddr(val.Validator)
-		if err == nil {
-			data.Moniker = valdator.Description.Moniker
+		if validatorMap != nil {
+			if valdator,ok := validatorMap[val.Validator];ok {
+				data.Moniker = valdator.Description.Moniker
+			}
 		}
 		result.DelagationsRewards = append(result.DelagationsRewards, data)
 	}

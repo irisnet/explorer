@@ -21,6 +21,7 @@ func TestQuery(t *testing.T) {
 	addrStr := "faa186qhtc62cf6ejlt3erw6zk28mgw8ne7gkx3t55"
 
 	res := new(AccountService).Query(addrStr)
+	t.Logf("account by addr(%v):  %v \n", addrStr, res)
 	bytesmsg, _ := json.Marshal(res)
 	t.Log(string(bytesmsg))
 
