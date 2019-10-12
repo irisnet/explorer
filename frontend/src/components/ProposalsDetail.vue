@@ -1042,7 +1042,7 @@ export default {
         }
     }
     .blue_style{
-        color: var(--baColor);
+        color: var(--bgColor);
     }
 }
 .voting_options {
