@@ -72,8 +72,6 @@ func registerQueryTxList(r *mux.Router) error {
 						{"from": address},
 						{"to": address},
 					}
-				case types.TxTypeWithdrawDelegatorRewardsAll, types.TxTypeWithdrawDelegatorReward, types.TxTypeStakeBeginUnbonding:
-					query["to"] = address
 
 				default:
 					query["from"] = address

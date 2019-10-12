@@ -40,14 +40,11 @@ func (service *AccountService) Query(address string) (result vo.AccountVo) {
 		}
 		//result.Deposits = delegatorService.GetDeposits(address)
 		valaddress := utils.Convert(conf.Get().Hub.Prefix.ValAddr, address)
-		prefix, _, _ = utils.DecodeAndConvert(valaddress)
-		if prefix == conf.Get().Hub.Prefix.ValAddr {
-			validator, err := document.Validator{}.QueryValidatorDetailByOperatorAddr(valaddress)
-			if err == nil {
-				result.Status = strconv.Itoa(validator.Status)
-				result.Moniker = validator.Description.Moniker
-				result.OperatorAddress = valaddress
-			}
+		validator, err := document.Validator{}.QueryValidatorDetailByOperatorAddr(valaddress)
+		if err == nil {
+			result.Status = strconv.Itoa(validator.Status)
+			result.Moniker = validator.Description.Moniker
+			result.OperatorAddress = valaddress
 		}
 	}
 
