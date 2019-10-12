@@ -47,6 +47,7 @@ func registerQueryTxList(r *mux.Router) error {
 		total := QueryParam(request, "total")
 		txType := QueryParam(request, "txType")
 		status := QueryParam(request, "status")
+		address := QueryParam(request, "address")
 		beginTime := int64(utils.ParseIntWithDefault(QueryParam(request, "beginTime"), 0))
 		endTime := int64(utils.ParseIntWithDefault(QueryParam(request, "endTime"), 0))
 		istotal := false
@@ -62,6 +63,12 @@ func registerQueryTxList(r *mux.Router) error {
 		}
 		if status != "" {
 			query["status"] = status
+		}
+		if address != "" {
+			query["$or"] = []bson.M{
+				{"from": address},
+				{"to": address},
+			}
 		}
 		if beginTime != 0 && endTime != 0 {
 			query["time"] = bson.M{

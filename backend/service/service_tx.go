@@ -986,6 +986,7 @@ func buildBaseTx(tx vo.CommonTx) vo.BaseTx {
 		BlockHeight: tx.Height,
 		Type:        tx.Type,
 		Fee:         tx.ActualFee,
+		Amount:      tx.Amount,
 		Status:      tx.Status,
 		GasLimit:    tx.Fee.Gas,
 		GasUsed:     tx.GasUsed,

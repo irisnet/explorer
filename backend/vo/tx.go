@@ -147,6 +147,7 @@ type BaseTx struct {
 	BlockHeight int64             `json:"block_height"`
 	Type        string            `json:"type"`
 	Fee         utils.ActualFee   `json:"fee"`
+	Amount      utils.Coins       `json:"amount"`
 	Status      string            `json:"status"`
 	GasLimit    int64             `json:"gas_limit"`
 	GasUsed     int64             `json:"gas_used"`
