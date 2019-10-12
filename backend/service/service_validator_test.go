@@ -96,3 +96,9 @@ func TestBuildValidators(t *testing.T) {
 	res := buildValidators()
 	t.Log(string(utils.MarshalJsonIgnoreErr(res)))
 }
+
+
+func TestValidatorService_GetValidatorDetail(t *testing.T) {
+	res := validatorService.GetValidatorDetail("fva10jv6pkdtjc39pwpjxnurqend0p09gphlyhzmel")
+	t.Log(string(utils.MarshalJsonIgnoreErr(res)))
+}

@@ -600,6 +600,9 @@ func (service *ValidatorService) QueryValidator(address string) vo.CandidatesInf
 	return result
 }
 func ComputeSelfBonded(tokens, shares, selfBond string) string {
+	if selfBond == "" {
+		return "0"
+	}
 	rate, err := utils.QuoByStr(tokens, shares)
 	if err != nil {
 		logger.Error("validator.Tokens / validator.DelegatorShares", logger.String("err", err.Error()))
@@ -631,6 +634,9 @@ func ComputeBondStake(tokens, shares, selfBond string) string {
 		return ""
 	}
 
+	if selfBond == "" {
+		return tokensAsRat.FloatString(18)
+	}
 	selfBondAsRat, ok := new(big.Rat).SetString(selfBond)
 	if !ok {
 		logger.Error("convert validator selfBond type (string -> big.Rat) err", logger.String("self bond str", selfBond))
