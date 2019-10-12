@@ -53,8 +53,12 @@
                     <m-all-tx-type-list-table :flTableFixed='true' :items="allTxTypeList"></m-all-tx-type-list-table>
                 </div>
                 <div class="pagination" style='margin-top:0.2rem;' v-if="flShowTransferPagination">
-                    <b-pagination size="md" :total-rows="transferListCount" v-model="transferListCurrentPage" :per-page="pageSize">
-                    </b-pagination>
+                    <!--<b-pagination size="md" :total-rows="transferListCount" v-model="transferListCurrentPage" :per-page="pageSize">
+                    </b-pagination>-->
+                    <m-pagination :total="transferListCount"
+                                  :pageSize="pageSize"
+                                  :page="transferListPageNum"
+                                  :page-change="pageChangeTransferList"></m-pagination>
                 </div>
             </div>
 
@@ -68,8 +72,14 @@
                     </div>
                 </div>
                 <div class="pagination" style='margin-top:0.2rem;margin-bottom: 0.2rem;' v-if="flShowValidatorListSetPagination">
-                    <b-pagination size="md" :total-rows="validatorSetListCount" v-model="validatorSetListCurrentPage" :per-page="pageSize">
-                    </b-pagination>
+                <!--    <b-pagination size="md" :total-rows="validatorSetListCount" v-model="validatorSetListCurrentPage" :per-page="pageSize">
+                    </b-pagination>-->
+                    <m-pagination :total="validatorSetListCount"
+                                  :pageSize="pageSize"
+                                  :page="validatorSetPageNum"
+                                  :page-change="pageChangeValidatorSet">
+
+                    </m-pagination>
                 </div>
             </div>
         </div>
@@ -83,8 +93,10 @@
     import Service from "../service";
     import Constant from "../constant/Constant"
     import MAllTxTypeListTable from "./table/MAllTxTypeListTable";
+    import MPagination from "./commonComponents/MPagination";
     export default {
         components: {
+	        MPagination,
 	        MAllTxTypeListTable,
             BlocksListTable,
             SpinComponent,
@@ -115,6 +127,8 @@
         },
         data() {
             return {
+	            transferListPageNum:1,
+	            validatorSetPageNum:1,
                 transactionsDetailWrap: 'personal_computer_transactions_detail',
                 heightValue: '',
                 timestampValue: '',
@@ -187,6 +201,14 @@
             this.computeMinWidth();
         },
         methods: {
+	        pageChangeTransferList(pageNum){
+		        this.transferListPageNum = pageNum;
+		        this.getValidatorSetList()
+	        },
+	        pageChangeValidatorSet(pageNum){
+	        	this.validatorSetPageNum = pageNum;
+	        	this.getValidatorSetList()
+            },
             computeMinWidth(){
                 if(this.$route.params.height){
                     this.tableMinWidth = 8.8;
@@ -236,14 +258,14 @@
             },
 	        getTxListByTxCount(txCount){
             	if(txCount > 0){
-		            this.getTransferList(this.transferListCurrentPage,this.pageSize,this.$route.params.height);
+		            this.getTransferList();
                 }
             },
-            getValidatorSetList(currentPage,pageSize,blockHeight){
+            getValidatorSetList(){
                 Service.commonInterface({blockInfoValidatorSet:{
-		                blockHeight: blockHeight,
-		                currentPage: currentPage,
-		                pageSize: pageSize,
+		                blockHeight: this.$route.params.height,
+		                currentPage: this.validatorSetPageNum,
+		                pageSize: this.pageSize,
                     }},(validatorSetList) => {
                 	try {
 		                this.handleValidatorSetList(validatorSetList)
@@ -253,11 +275,11 @@
 	                }
                 });
             },
-            getTransferList(currentPage,pageSize,blockHeight){
+            getTransferList(){
             	Service.commonInterface({allTypeListQuireHeight:{
-			            pageNumber:currentPage,
-			            pageSize: pageSize,
-			            height: blockHeight,
+			            pageNumber: this.transferListPageNum,
+			            pageSize: this.pageSize,
+			            height: this.$route.params.height,
                     }},(txList) => {
             		try {
 			            this.handleTransferList(txList)
