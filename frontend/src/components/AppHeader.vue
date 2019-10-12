@@ -683,7 +683,7 @@
 					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.TESTNETHOVERCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.TESTNETACTIVECOLOR);
 
-				}else if(currentEnv.cur_env === constant.ENVCONFIG.TESTNET && currentEnv.chain_id !== constant.CHAINID.FUXI){
+				}else if(currentEnv.cur_env === constant.ENVCONFIG.TESTNET && currentEnv.chain_id === constant.CHAINID.NYANCAT){
 					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.NYANCATTESTNETBGCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.NYANCATTESTNETHOVERCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.NYANCATTESTNETACTIVECOLOR);
