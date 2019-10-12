@@ -87,16 +87,7 @@
                 normal: {
                   color: new echarts.graphic.LinearGradient(//设置渐变颜色
                     0, 0, 0, 1,
-                    // this.lineSkinBackgroundStyle
-                    /*[
-                      {offset: 0, color: '#3598db'},
-                      {offset: 0.5, color: '#91ccef'},
-                      {offset: 1, color: '#dcf6ff'}
-                    ]*/
-                            [
-                            {offset: 0, color:'rgba(13, 147, 136, 0.8)'},
-                                    {offset: 1, color: 'rgba(13, 147, 136, 0)'}
-                            ]
+                    this.lineSkinBackgroundStyle
                   )
                 }
               },
