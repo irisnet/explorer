@@ -331,11 +331,11 @@
 			this.listenRouteForChangeActiveButton();
 			window.addEventListener('resize', this.onresize);
 			this.getConfig();
-			if(localStorage.getItem('currentEnv')){
+		/*	if(sessionStorage.getItem('skinCurrentEnv')){
 				this.toggleTestnetLogo({
-					cur_env:localStorage.getItem('currentEnv')
+					cur_env:sessionStorage.getItem('skinCurrentEnv')
 				});
-            }
+            }*/
 			this.listenRouteForChangeActiveButton();
 		},
 		beforeDestroy () {
@@ -619,9 +619,7 @@
 				Service.commonInterface({headerConfig:{}},(res) => {
 					try {
 						this.flShowLogo = true;
-						if(!localStorage.getItem('currentEnv')){
-							this.toggleTestnetLogo(res);
-						}
+						this.toggleTestnetLogo(res);
 						this.setCurrentSelectOption(res.cur_env, res.chain_id, res.configs);
 						this.setNetWorkLogo(res.cur_env, res.chain_id);
 						this.setEnvConfig(res);
@@ -669,6 +667,9 @@
 				}
 			},
 			toggleTestnetLogo (currentEnv) {
+
+				currentEnv.cur_env = 'testnet';
+				currentEnv.chain_id = 'nyancat-4';
                 this.$store.commit('currentSkinStyle',`${currentEnv.cur_env}${currentEnv.chain_id}`);
 				const root = document.documentElement;
 				root.style.setProperty(skinStyle.skinStyle.TITLECOLORNAME,skinStyle.skinStyle.commonFontBlackColor);
@@ -692,7 +693,7 @@
 					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.DEFAULTHOVERCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.DEFAULTACTIVECOLOR);
                 }
-				localStorage.setItem('currentEnv',`${currentEnv.cur_env}${currentEnv.chain_id}`)
+				sessionStorage.setItem('skinCurrentEnv',`${currentEnv.cur_env}${currentEnv.chain_id}`)
 			},
 			setCurrentSelectOption (currentEnv, currentChainId) {
 				if (currentEnv === constant.ENVCONFIG.DEV || currentEnv === constant.ENVCONFIG.QA || currentEnv === constant.ENVCONFIG.STAGE) {
