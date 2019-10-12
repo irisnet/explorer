@@ -1042,7 +1042,7 @@ export default {
         }
     }
     .blue_style{
-        color: #0580D3;
+        color: var(--baColor);
     }
 }
 .voting_options {

@@ -202,7 +202,8 @@ export default {
                 },
                 {
                     title: "Amount",
-                    key: "Amount"
+                    key: "Amount",
+	                className: 'text_right'
                 },
                 {
                     title: "To",
@@ -246,7 +247,8 @@ export default {
                 },
                 {
                     title: "Amount",
-                    key: "Amount"
+                    key: "Amount",
+	                className: 'text_right'
                 },
                 {
                     title: "To",
@@ -343,7 +345,8 @@ export default {
                 },
                 {
                     title: "Amount",
-                    key: "Amount"
+                    key: "Amount",
+	                className: 'text_right'
                 },
                 {
                     title: "Tx_Type",
@@ -375,7 +378,8 @@ export default {
                 },
                 {
                     title: "Amount",
-                    key: "amount"
+                    key: "amount",
+	                className: 'text_right'
                 },
                 {
                     title: "Shares",
@@ -394,7 +398,8 @@ export default {
                 },
                 {
                     title: "Amount",
-                    key: "amount"
+                    key: "amount",
+	                className: 'text_right'
                 },
                 {
                     title: "Block",
@@ -413,7 +418,8 @@ export default {
                 },
                 {
                     title: "Amount",
-                    key: "amount"
+                    key: "amount",
+	                className: 'text_right'
                 },
                 {
                     title: "To",

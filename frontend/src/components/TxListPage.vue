@@ -291,14 +291,24 @@
                     .filter_tx_type_statue_content{
                         display: flex;
                         align-items: center;
+                        .ivu-select-visible{
+                            /deep/ .ivu-select-selection{
+                                border-color: var(--bgColor) !important;
+                            }
+
+                        }
                         .ivu-select{
                             width: 1.3rem;
                             margin-right: 0.1rem;
+                            /deep/ .ivu-select-selection:hover{
+                                border-color: var(--bgColor) !important;
+                            }
                             .ivu-select-item{
                                 text-indent: 0.1rem;
                                 font-size: 0.14rem;
                                 line-height: 0.18rem;
                                 padding: 0.07rem 0.1rem 0.07rem 0;
+                                color: var(--bgColor);
                             }
                         }
                     }
@@ -307,6 +317,16 @@
                         align-items: center;
                         .ivu-date-picker{
                             width: 1.3rem;
+                            /deep/ .ivu-date-picker-rel{
+                                .ivu-input-wrapper{
+                                    .ivu-input:hover{
+                                        border-color: var(--bgColor) !important;
+                                    }
+                                    .ivu-input:focus{
+                                        border-color: var(--bgColor) !important;
+                                    }
+                                }
+                            }
                         }
                         .joint_mark{
                             margin:  0 0.1rem;

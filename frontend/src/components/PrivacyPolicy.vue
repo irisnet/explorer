@@ -118,7 +118,7 @@
       align-items:center;
       width:100%;
       padding-left:0.2rem;
-      background: #fff;
+      background: #F5F7FD;
       h2{
         font-size:0.22rem;
         margin-bottom:0;

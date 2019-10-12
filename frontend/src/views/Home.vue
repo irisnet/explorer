@@ -233,7 +233,16 @@
                 Service.commonInterface({candidatesTop:{}},(data) => {
                 	try {
 		                if(data){
-			                let colors = ['#3498db', '#47a2df', '#59ade3', '#6cb7e7', '#7fc2eb', '#91ccef', '#a4d7f3', '#b7e1f7', '#c9ecfb', '#dcf6ff', '#f0f9ff',];
+			                let colors;
+			                if(this.$store.state.currentSkinStyle ===  `${Constant.ENVCONFIG.MAINNET}${Constant.CHAINID.MAINNET}`){
+				                colors = ['#3264FD', '#4571FA', '#537CFD', '#6287FB', '#7092FD', '#85A3FF', '#92ACFF', '#9CB3FF', '#AABEFF', '#BDCDFF', '#E9EBFC',]
+                            }else if(this.$store.state.currentSkinStyle ===  `${Constant.ENVCONFIG.TESTNET}${Constant.CHAINID.FUXI}`){
+				                colors = ['#0C4282', '#144B8D', '#1B5498', '#235CA1', '#2E65A8', '#386EAE', '#427ABC', '#5087C8', '#5992D5', '#69A1E2', '#E9EBFC',]
+			                }else if(this.$store.state.currentSkinStyle ===  `${Constant.ENVCONFIG.TESTNET}${Constant.CHAINID.NYANCAT}`){
+				                colors = ['#0D9388', '#149A8F', '#1DA196', '#26ABA0', '#32B5AA', '#3FBDB2', '#4EC2B8', '#59C8BE', '#64D1C7', '#70DCD2', '#E9EBFC',]
+			                }else {
+				                colors = ['#3498db', '#47a2df', '#59ade3', '#6cb7e7', '#7fc2eb', '#91ccef', '#a4d7f3', '#b7e1f7', '#c9ecfb', '#dcf6ff', '#f0f9ff',]
+			                }
 			                let [seriesData, legendData] = [[], []];
 			                if (data.validators instanceof Array) {
 				                let totalCount = 0;
