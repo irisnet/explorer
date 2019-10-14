@@ -158,7 +158,7 @@ func computeVotingPower(validator document.Validator, shares string) utils.Coin 
 	}
 }
 
-func (service *AccountService) QueryUnbondingDelegations(address string) (result []*vo.AccountUnbondingDelegationsVo) {
+func (service *AccountService) QueryUnbondingDelegations(address string) (result vo.AccountUnbondingDelegationsRespond) {
 
 	unbondingdelegations := lcd.GetUnbondingDelegationsByDelegatorAddr(address)
 	var  valaddrlist  []string

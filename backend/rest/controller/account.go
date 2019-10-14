@@ -63,6 +63,14 @@ func registerQueryAccountDelegations(r *mux.Router) error {
 	return nil
 }
 
+// @Summary list
+// @Description get unbondingdelegations of account
+// @Tags account
+// @Accept  json
+// @Produce  json
+// @Param   address   path   string false    "account address"
+// @Success 200 {object} vo.AccountUnbondingDelegationsRespond	"success"
+// @Router /api/account/{address}/unbonding_delegations [get]
 func registerQueryAccountUnbondingDelegations(r *mux.Router) error {
 
 	doApi(r, types.UrlRegisterQueryAccountUnbondingDelegations, "GET", func(request vo.IrisReq) interface{} {
@@ -76,13 +84,13 @@ func registerQueryAccountUnbondingDelegations(r *mux.Router) error {
 }
 
 // @Summary list
-// @Description get list of notice
+// @Description get rewards of account
 // @Tags account
 // @Accept  json
 // @Produce  json
-// @Param   account   query   string false    "notice status" Enums(unpublished, published, expired)
+// @Param   address   path   string false    "account address"
 // @Success 200 {object} vo.AccountRewardsVo	"success"
-// @Router /account/{address}/rewards [get]
+// @Router /api/account/{address}/rewards [get]
 func registerQueryAccountRewards(r *mux.Router) error {
 
 	doApi(r, types.UrlRegisterQueryAccountRewards, "GET", func(request vo.IrisReq) interface{} {

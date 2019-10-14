@@ -69,6 +69,9 @@ type AccountUnbondingDelegationsVo struct {
 	EndTime string     `json:"end_time"`
 }
 
+type AccountUnbondingDelegationsRespond []AccountUnbondingDelegationsVo
+
+
 type AccountRewardsVo struct {
 	TotalRewards       utils.CoinsAsStr     `json:"total_rewards"`
 	DelagationsRewards []DelagationsRewards `json:"delagations_rewards"`
