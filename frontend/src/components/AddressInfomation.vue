@@ -539,7 +539,6 @@
 		        }
 	        },
             pageNation(dataArray){
-	            console.log(dataArray,"数据展示")
 	            let index = 0;
 	        	let newArray  = [];
 	        	if(dataArray.length > this.pageSize){
