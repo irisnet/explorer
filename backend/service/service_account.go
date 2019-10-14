@@ -176,7 +176,7 @@ func (service *AccountService) QueryUnbondingDelegations(address string) (result
 		valaddrlist = append(valaddrlist, val.ValidatorAddr)
 	}
 	validatorMap := getValidators(valaddrlist)
-	result = make([]*vo.AccountUnbondingDelegationsVo, 0, len(unbondingdelegations))
+	result = make(vo.AccountUnbondingDelegationsRespond, 0, len(unbondingdelegations))
 
 	for _, val := range unbondingdelegations {
 		data := vo.AccountUnbondingDelegationsVo{
