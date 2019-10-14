@@ -17,7 +17,9 @@
             </div>
             <div class="address_information_delegation_tx_container">
                 <div class="address_information_delegation_tx_content">
-                    <div class="address_information_delegation_title">Delegations</div>
+                    <div class="address_information_delegation_title">Delegations
+                        <span class="address_information_delegation_value" v-show="totalDelegatorValue">{{totalDelegatorValue}}</span>
+                    </div>
                     <div class="address_information_delegation_list_content">
                         <m-address-information-table
                                 :items="delegationsItems"
@@ -38,7 +40,9 @@
                     </div>
                 </div>
                 <div class="address_information_unbonding_delegation_tx_content">
-                    <div class="address_information_unbonding_delegation_title">Unbonding Delegations</div>
+                    <div class="address_information_unbonding_delegation_title">Unbonding Delegations
+                        <span class="address_information_unbonding_delegation_value" v-show="totalUnBondingDelegatorValue">{{totalUnBondingDelegatorValue}}</span>
+                    </div>
                     <div class="address_information_unbonding_delegation_list_content">
                         <m-address-information-table
                                 :items="unBondingDelegationsItems"
@@ -59,7 +63,9 @@
                     </div>
                 </div>
             </div>
-            <div class="address_information_redelegation_header_title">Delegator Rewards</div>
+            <div class="address_information_redelegation_header_title">Delegator Rewards
+                <span class="address_information_redelegation_rewards_value" v-show="totalDelegatorRewardValue">{{totalDelegatorRewardValue}}</span>
+            </div>
             <div class="address_information_redelegation_tx_container">
                 <div class="address_information_delegator_rewards_content">
                     <div class="address_information_detail_option">
@@ -87,19 +93,17 @@
                     </div>
                 </div>
                 <div class="address_information_detail_container">
-                    <div class="address_information_redelegation_title">Validator Rewards</div>
+                    <div class="address_information_redelegation_title">Validator Rewards
+                        <span class="address_information_validator_rewards_value" v-show="totalValidatorRewards">{{totalValidatorRewards}}</span>
+                    </div>
                     <ul class="address_information_detail_content">
                         <li class="address_information_detail_option">
                             <span class="address_information_detail_option_name">Validator Moniker:</span>
                             <span class="address_information_detail_option_value">{{validatorMoniker}}</span>
-                            <span class="address_information_address_status_active" v-if="validatorStatus === 'active'">Active</span>
-                            <span class="address_information_address_status_candidate" v-if="validatorStatus === 'candidate'">Candidate</span>
-                            <span class="address_information_address_status_jailed" v-if="validatorStatus === 'jailed'">Jailed</span>
-                            <span class="address_information_address_status_jailed" v-if="isProfiler">
-                                 <img v-show="flShowProfileLogo"
-                                      class="profile_logo_img"
-                                      src="../assets/profiler_logo.png">
-                            </span>
+                            <span class="address_information_address_status_active" v-if="validatorStatus === 'Active'">Active</span>
+                            <span class="address_information_address_status_candidate" v-if="validatorStatus === 'Candidate'">Candidate</span>
+                            <span class="address_information_address_status_jailed" v-if="validatorStatus === 'Jailed'">Jailed</span>
+                            <span class="address_information_address_status_profiler" v-if="isProfiler">Profiler</span>
                         </li>
                         <li class="address_information_detail_option">
                             <span class="address_information_detail_option_name">Operator Address:</span>
@@ -113,7 +117,7 @@
             </div>
             <div class="address_information_transaction_container">
                 <div class="address_information_transaction_header_content">
-                    <span class="address_information_transaction_title">Transactions</span>
+                    <span class="address_information_transaction_title">{{allTxCountNum}} Txs</span>
                     <div class="address_information_list_filter_content">
                         <div class="filter_content">
                             <div class="tx_type_content">
@@ -164,7 +168,7 @@
                 <div class="pagination_content" v-if="flAllTxNextPage">
                     <keep-alive>
                         <m-pagination
-                                :page-size="pageSize"
+                                :page-size="addressTxPageSize"
                                 :total="allTxCountNum"
                                 :page="allTxCurrentPage"
                                 :page-change="allTxPageChange"
@@ -228,8 +232,14 @@
                 transactionsItems:[],
 				headerAddress:'',
                 totalDelegatorReward: 0,
+                totalDelegatorRewardValue: 0,
                 totalUnBondingDelegator:0,
+                totalUnBondingDelegatorValue:0,
                 totalDelegator:0,
+				totalDelegatorValue:0,
+				totalValidatorRewards:0,
+                allRewardsValue:0,
+                allRewardsAmountValue:0,
                 assetList: [],
 				fixedNumber: 2,
 				delegationCountNum: 0,
@@ -239,6 +249,7 @@
 				unBondingDelegationCurrentPage:1,
 				rewardsDelegationCurrentPage:1,
 				pageSize:5,
+                addressTxPageSize: 10,
                 delegationPageNationArrayData:[],
                 unBondingDelegationPageNationArrayData:[],
 				rewardsDelegationPageNationArrayData:[],
@@ -310,12 +321,11 @@
 				            delegated: this.totalDelegator ? `${Tools.formatStringToFixedNumber(this.totalDelegator.toString(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}`: 0,
 				            unBondingValue: this.totalUnBondingDelegator ? this.totalUnBondingDelegator : 0,
 				            unBonding: this.totalUnBondingDelegator ?`${Tools.formatStringToFixedNumber(this.totalUnBondingDelegator.toString(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}`  : 0,
-				            rewardValue: this.totalDelegatorReward ? this.totalDelegatorReward : 0,
-				            reward: this.totalDelegatorReward ? `${Tools.formatStringToFixedNumber(this.totalDelegatorReward.toString(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}`: 0,
+				            reward: this.allRewardsValue ? this.allRewardsValue : 0,
 				            totalAmount:`${Tools.formatStringToFixedNumber((Number(Tools.formatStringToFixedNumber(Tools.numberMoveDecimal(item.amount.toString(),-18),this.fixedNumber)) +
 					            Number(Tools.formatStringToFixedNumber(this.totalDelegator.toString(),this.fixedNumber)) +
 					            Number(Tools.formatStringToFixedNumber(this.totalUnBondingDelegator.toString(),this.fixedNumber)) +
-					            Number(Tools.formatStringToFixedNumber(this.totalDelegatorReward.toString(),this.fixedNumber))).toString(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}` ,
+					            Number(Tools.formatStringToFixedNumber(this.allRewardsAmountValue.toString(),this.fixedNumber))).toString(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}` ,
 			            }
                     }else {
 
@@ -343,6 +353,7 @@
                             }else {
 					            this.totalDelegator = res[0].amount.amount
                             }
+				            this.totalDelegatorValue = `${Tools.formatStringToFixedNumber(this.totalDelegator.toString(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}`
                         }else {
 				            this.delegationsItems = []
                         }
@@ -372,6 +383,7 @@
                             }else {
 					            this.totalUnBondingDelegator = res[0].amount.amount
                             }
+				            this.totalUnBondingDelegatorValue = `${Tools.formatStringToFixedNumber(this.totalUnBondingDelegator.toString(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}`
                         }
 		            }catch (e) {
 			            console.error(e)
@@ -384,6 +396,8 @@
                     }},(res) => {
 		            try {
 		            	if(res && res.delagations_rewards.length > 0) {
+				            this.totalValidatorRewards = res.commission_rewards ? Tools.formatAmount2(res.commission_rewards,this.fixedNumber) : 0;
+		            		this.allRewardsValue = res.total_rewards ? Tools.formatAmount2(res.total_rewards,this.fixedNumber) : 0;
 				            this.rewardsDelegationPageNationArrayData = this.pageNation(res.delagations_rewards);
 				            if(res.delagations_rewards.length > this.pageSize){
 					            this.flRewardsDelegationNextPage = true
@@ -397,9 +411,10 @@
 						            return Number(item.amount[0].amount) + Number(total)
 					            },0),-18);
                             }else {
-					            this.totalDelegatorReward = Tools.numberMoveDecimal(res.delagations_rewards[0].amount[0].amount)
+					            this.totalDelegatorReward = Tools.numberMoveDecimal(res.delagations_rewards[0].amount[0].amount).toString()
                             }
-
+				            this.allRewardsAmountValue = res.total_rewards ? Tools.formatStringToFixedNumber(Tools.numberMoveDecimal(res.total_rewards[0].amount,-18),this.fixedNumber) : 0;
+				            this.totalDelegatorRewardValue = `${Tools.formatStringToFixedNumber(this.totalDelegatorReward.toString(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}`
 			            }
 		            }catch (e) {
 			            console.error(e)
@@ -430,7 +445,7 @@
 		        let param = {};
 		        param.getTxListByAddress = {};
 		        param.getTxListByAddress.pageNumber = this.allTxCurrentPage;
-		        param.getTxListByAddress.pageSize = this.pageSize;
+		        param.getTxListByAddress.pageSize = this.addressTxPageSize;
 		        param.getTxListByAddress.txType = this.TxType;
 		        param.getTxListByAddress.status = this.txStatus;
 		        param.getTxListByAddress.beginTime = this.filterStartTime;
@@ -441,7 +456,7 @@
 				        if(res && res.Data) {
 					        sessionStorage.setItem('txsTotal',res.Count);
 					        this.allTxCountNum = res.Count;
-					        if(res.Count > this.pageSize){
+					        if(res.Count > this.addressTxPageSize){
 					        	this.flAllTxNextPage = true
                             }else {
 						        this.flAllTxNextPage = false
@@ -671,6 +686,12 @@
                         font-size: 0.18rem;
                         color: #171D44;
                         padding: 0 0 0.12rem 0.2rem;
+                        .address_information_delegation_value{
+                            font-size: 0.14rem;
+                            color: #787C99;
+                            line-height: 0.16rem;
+                            margin-left: 0.15rem;
+                        }
                     }
                     .pagination_content{
                         margin-top: 0.2rem;
@@ -687,6 +708,12 @@
                         font-size: 0.18rem;
                         color: #171D44;
                         padding: 0 0 0.12rem 0.2rem;
+                        .address_information_unbonding_delegation_value{
+                            font-size: 0.14rem;
+                            color: #787C99;
+                            line-height: 0.16rem;
+                            margin-left: 0.15rem;
+                        }
                     }
                     .address_information_unbonding_delegation_list_content{
                         width: 100%;
@@ -703,6 +730,12 @@
                 color: #171D44;
                 line-height: 0.21rem;
                 margin: 0.27rem 0 0 0.2rem;
+                .address_information_redelegation_rewards_value{
+                    font-size: 0.14rem;
+                    color: #787C99;
+                    line-height: 0.16rem;
+                    margin-left: 0.15rem;
+                }
             }
             .address_information_redelegation_tx_container{
                 display: flex;
@@ -713,13 +746,19 @@
                         font-size: 0.18rem;
                         color: #171D44;
                         padding: 0 0 0.06rem 0.2rem;
+                        .address_information_validator_rewards_value{
+                            font-size: 0.14rem;
+                            color: #787C99;
+                            line-height: 0.16rem;
+                            margin-left: 0.15rem;
+                        }
                     }
                     .address_information_detail_content{
                         border: 0.01rem solid #E7E9EB;
                         background: #fff;
                         box-sizing: border-box;
                         padding: 0.2rem;
-                        height: 2.34rem;
+                        min-height: 2.34rem;
                         .address_information_detail_option{
                             .address_information_detail_option_name{
                                 font-size: 0.14rem;
@@ -730,6 +769,7 @@
                             .address_information_detail_option_value{
                                 font-size: 0.14rem;
                                 color: #171D44;
+                                margin-right: 0.1rem;
                                 a{
                                     color: var(--bgColor) !important;
                                 }
@@ -740,6 +780,7 @@
                                 color: #fff;
                                 padding: 0.02rem 0.14rem;
                                 border-radius: 0.22rem;
+                                margin-right: 0.1rem;
                             }
                             .address_information_address_status_candidate{
                                 background: #3DA87E;
@@ -747,9 +788,18 @@
                                 color: #fff;
                                 padding: 0.02rem 0.14rem;
                                 border-radius: 0.22rem;
+                                margin-right: 0.1rem;
                             }
                             .address_information_address_status_jailed{
                                 background: #FA7373;
+                                font-size: 0.12rem;
+                                color: #fff;
+                                padding: 0.02rem 0.14rem;
+                                border-radius: 0.22rem;
+                                margin-right: 0.1rem;
+                            }
+                            .address_information_address_status_profiler{
+                                background: var(--bgColor);
                                 font-size: 0.12rem;
                                 color: #fff;
                                 padding: 0.02rem 0.14rem;

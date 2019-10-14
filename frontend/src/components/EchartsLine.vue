@@ -113,9 +113,7 @@
       return {
         skinStyle:'',
         lineSkinBackgroundStyle:[
-          {offset: 0, color: '#3598db'},
-          {offset: 0.5, color: '#91ccef'},
-          {offset: 1, color: '#dcf6ff'}
+
         ],
         deviceType: window.innerWidth > 500 ? 1 : 0,
         echartsComponentWrapLine:window.innerWidth > 500 ?'echarts_component_wrap_line_personal_computer':'echarts_component_wrap_line_mobile',
@@ -126,6 +124,9 @@
     },
     props: ['informationLine'],
     beforeMount() {
+
+    },
+    created(){
 
     },
     mounted() {
