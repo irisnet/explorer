@@ -92,6 +92,9 @@ type TxNumGroupByDayVo struct {
 	Num  int64  `json:"num"`
 }
 
+type TxNumGroupByDayVoRespond []TxNumGroupByDayVo
+type QueryTxTypeRespond []string
+
 func (txCount TxNumGroupByDayVo) String() string {
 	return fmt.Sprintf("Date: %v Num: %v \n", txCount.Date, txCount.Num)
 }
@@ -219,6 +222,7 @@ type RecentTx struct {
 	Type   string     `json:"type"`
 }
 
+type RecentTxRespond []RecentTx
 type AssetTx struct {
 	BaseTx
 	From   string            `json:"from"`

@@ -5,9 +5,9 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/conf"
-	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/vo"
+	"github.com/irisnet/explorer/backend/orm/document"
 )
 
 func RegisterTextSearch(r *mux.Router) error {
@@ -33,6 +33,14 @@ func RegisterTextSearch(r *mux.Router) error {
 //	service.Get(service.Common).(*service.CommonService),
 //}
 
+// @Summary search text
+// @Description search text
+// @Tags common
+// @Accept  json
+// @Produce  json
+// @Param   text   path   string  true    "text"
+// @Success 200 {object} vo.ResultVo	"success"
+// @Router /api/search/{text} [get]
 func registerQueryText(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryText, "GET", func(request vo.IrisReq) interface{} {
 		common.SetTid(request.TraceId)
@@ -45,6 +53,13 @@ func registerQueryText(r *mux.Router) error {
 	return nil
 }
 
+// @Summary sysdate
+// @Description get sysdate
+// @Tags common
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} int64	"success"
+// @Router /api/sysdate [get]
 func registerQuerySysDate(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQuerySysDate, "GET", func(request vo.IrisReq) interface{} {
 		return time.Now().Unix()
@@ -53,16 +68,30 @@ func registerQuerySysDate(r *mux.Router) error {
 	return nil
 }
 
+// @Summary config
+// @Description get config
+// @Tags common
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} vo.EnvConfig	"success"
+// @Router /api/config [get]
 func registerQueryEnvConfig(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryConfig, "GET", func(request vo.IrisReq) interface{} {
-		var envConf = struct {
-			CurEnv  string            `json:"cur_env"`
-			ChainId string            `json:"chain_id"`
-			Configs []document.Config `json:"configs"`
-		}{
+		getconfig := func(dconfigs []document.Config) (ret []vo.ConfigVo){
+			for _,val := range dconfigs {
+				ret = append(ret,vo.ConfigVo{
+					EnvNm:val.EnvNm,
+					Host:val.Host,
+					ChainId:val.ChainId,
+					ShowFaucet:val.ShowFaucet,
+				})
+			}
+			return ret
+		}
+		var envConf = vo.EnvConfig{
 			CurEnv:  conf.Get().Server.CurEnv,
 			ChainId: conf.Get().Hub.ChainId,
-			Configs: common.GetConfig(),
+			Configs: getconfig(common.GetConfig()),
 		}
 		return envConf
 	})

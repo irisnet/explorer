@@ -40,6 +40,16 @@ func RegisterProposal(r *mux.Router) error {
 //	service.Get(service.GovParams).(*service.GovParamsService),
 //}
 
+// @Summary list
+// @Description get proposals
+// @Tags gov
+// @Accept  json
+// @Produce  json
+// @Param   page    query   int true    "page num" Default(1)
+// @Param   size   query   int true    "page size" Default(10)
+// @Param   total   query   bool false    "total" Enums(true,false)
+// @Success 200 {object} vo.PageVo	"success"
+// @Router /api/gov/proposals [get]
 func registerQueryProposals(r *mux.Router) error {
 
 	doApi(r, types.UrlRegisterQueryProposals, "GET", func(request vo.IrisReq) interface{} {
@@ -58,6 +68,14 @@ func registerQueryProposals(r *mux.Router) error {
 	return nil
 }
 
+// @Summary deposit_voting_proposals
+// @Description get deposit_voting_proposals
+// @Tags gov
+// @Accept  json
+// @Produce  json
+// @Param   needMoniker    query   string true    "needMoniker"
+// @Success 200 {object} vo.ProposalNewStyleResponse    "success"
+// @Router /api/gov/deposit_voting_proposals [get]
 func registerQueryDepositAndVotingProposals(r *mux.Router) error {
 
 	doApi(r, types.UrlRegisterQueryDepositVotingProposals, "GET", func(request vo.IrisReq) interface{} {
@@ -73,6 +91,14 @@ func registerQueryDepositAndVotingProposals(r *mux.Router) error {
 	return nil
 }
 
+// @Summary detail
+// @Description get proposal detail
+// @Tags gov
+// @Accept  json
+// @Produce  json
+// @Param   pid    path   string true    "proposal id"
+// @Success 200 {object} vo.ProposalInfoVo    "success"
+// @Router /api/gov/proposals/{pid} [get]
 func registerQueryProposal(r *mux.Router) error {
 
 	doApi(r, types.UrlRegisterQueryProposal, "GET", func(request vo.IrisReq) interface{} {
@@ -88,6 +114,13 @@ func registerQueryProposal(r *mux.Router) error {
 	return nil
 }
 
+// @Summary params
+// @Description get gov params
+// @Tags gov
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} document.GovParamsList   "success"
+// @Router /api/params [get]
 func registerQueryGovParams(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryParams, "GET", func(request vo.IrisReq) interface{} {
 		return govparams.QueryAll()
@@ -95,6 +128,18 @@ func registerQueryGovParams(r *mux.Router) error {
 	return nil
 }
 
+// @Summary voter_txs
+// @Description get voter txs
+// @Tags gov
+// @Accept  json
+// @Produce  json
+// @Param   page    query   int true    "page num" Default(1)
+// @Param   size   query   int true    "page size" Default(10)
+// @Param   id    path   string true    "proposal id"
+// @Param   voterType   query   string false    "voter type" Enums(validator,delegator)
+// @Param   total   query   bool false    "total" Enums(true,false)
+// @Success 200 {object} vo.GetVoteTxResponse   "success"
+// @Router /api/gov/proposals/{id}/voter_txs [get]
 func registerQueryProposalVoterTxs(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryProposalsVoterTxs, "GET", func(request vo.IrisReq) interface{} {
 		id, err := strconv.ParseInt(Var(request, "id"), 10, 64)
@@ -115,6 +160,17 @@ func registerQueryProposalVoterTxs(r *mux.Router) error {
 	return nil
 }
 
+// @Summary depositor_txs
+// @Description get depositor txs
+// @Tags gov
+// @Accept  json
+// @Produce  json
+// @Param   page    query   int true    "page num" Default(1)
+// @Param   size   query   int true    "page size" Default(10)
+// @Param   id    path   string true    "proposal id"
+// @Param   total   query   bool false    "total" Enums(true,false)
+// @Success 200 {object} vo.TxPage   "success"
+// @Router /api/gov/proposals/{id}/depositor_txs [get]
 func registerQueryProposalDepositorTxs(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryProposalsDepositorTxs, "GET", func(request vo.IrisReq) interface{} {
 		id, err := strconv.ParseInt(Var(request, "id"), 10, 64)
@@ -134,6 +190,14 @@ func registerQueryProposalDepositorTxs(r *mux.Router) error {
 	return nil
 }
 
+// @Summary deposit detail
+// @Description get deposit detail
+// @Tags gov
+// @Accept  json
+// @Produce  json
+// @Param   id    path   string true    "proposal id"
+// @Success 200 {object} vo.ProposalNewStyle   "success"
+// @Router /api/gov/proposal_deposit/{id} [get]
 func registerQueryProposalDeposit(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryProposalDeposit, "GET", func(request vo.IrisReq) interface{} {
 		id, err := strconv.Atoi(Var(request, "id"))
@@ -147,6 +211,14 @@ func registerQueryProposalDeposit(r *mux.Router) error {
 	return nil
 }
 
+// @Summary proposal voting
+// @Description get proposal voting
+// @Tags gov
+// @Accept  json
+// @Produce  json
+// @Param   id    path   string true    "proposal id"
+// @Success 200 {object} vo.ProposalNewStyle   "success"
+// @Router /api/gov/proposal_voting/{id} [get]
 func registerQueryProposalVoting(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryProposalVoting, "GET", func(request vo.IrisReq) interface{} {
 		id, err := strconv.Atoi(Var(request, "id"))

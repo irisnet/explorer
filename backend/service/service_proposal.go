@@ -46,7 +46,7 @@ func (service *ProposalService) QueryProposalsByHeight(height int64) []vo.Propos
 	return resp
 }
 
-func (service *ProposalService) QueryDepositAndVotingProposalList(needMoniker bool) []vo.ProposalNewStyle {
+func (service *ProposalService) QueryDepositAndVotingProposalList(needMoniker bool) vo.ProposalNewStyleResponse {
 	var (
 		proposalDocument document.Proposal
 	)

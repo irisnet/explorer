@@ -19,6 +19,14 @@ func RegisterBondedTokens(r *mux.Router) error {
 	return nil
 }
 
+// @Summary list
+// @Description get bondedtokens validators
+// @Tags bondedtokens
+// @Accept  json
+// @Produce  json
+// @Param   type   query   string  true    "token type"
+// @Success 200 {object} vo.BondedTokensRespond	"success"
+// @Router /api/bondedtokens/validators [get]
 func registerBondedTokensValidators(r *mux.Router) error {
 	doApi(r, types.UrlRegisterBondedTokensValidators, "GET", func(request vo.IrisReq) interface{} {
 		bondedtokens.SetTid(request.TraceId)

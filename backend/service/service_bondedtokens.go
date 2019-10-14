@@ -11,7 +11,7 @@ type BondedTokensService struct {
 	BaseService
 }
 
-func (service *BondedTokensService) QueryBondedTokensValidator(vtype string) ([]*vo.BondedTokensVo, error) {
+func (service *BondedTokensService) QueryBondedTokensValidator(vtype string) (vo.BondedTokensRespond, error) {
 
 	_, validators, err := document.Validator{}.GetValidatorListByPage(vtype, 0, 0, false, false)
 	if err != nil {

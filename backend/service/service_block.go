@@ -135,7 +135,7 @@ func (service *BlockService) QueryBlockInfo(height int64) vo.BlockInfo {
 	return result
 }
 
-func (service *BlockService) QueryList(page, size int) []vo.BlockForList {
+func (service *BlockService) QueryList(page, size int) vo.BlockForListRespond {
 
 	offset := 0
 
@@ -246,7 +246,7 @@ func (service *BlockService) QueryList(page, size int) []vo.BlockForList {
 	return []vo.BlockForList{}
 }
 
-func (service *BlockService) QueryRecent() []vo.BlockInfoVo {
+func (service *BlockService) QueryRecent() vo.BlockInfoVoRespond {
 	var result []vo.BlockInfoVo
 
 	blockList, err := document.Block{}.GetRecentBlockList()

@@ -19,6 +19,8 @@ type BlockForList struct {
 	Timestamp               time.Time `json:"timestamp"`
 }
 
+type BlockForListRespond []BlockForList
+
 func (b BlockForList) String() string {
 
 	return fmt.Sprintf(`
@@ -44,6 +46,8 @@ type BlockInfoVo struct {
 	TotalTxs      int64     `json:"total_txs,omitempty"`
 	LastBlockHash string    `json:"last_block_hash,omitempty"`
 }
+
+type BlockInfoVoRespond []BlockInfoVo
 
 func (b BlockInfoVo) String() string {
 	return fmt.Sprintf(`

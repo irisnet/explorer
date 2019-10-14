@@ -65,7 +65,7 @@ func getValidatorStatus(validator document.Validator) string {
 	return "Jailed"
 }
 
-func (service *AccountService) QueryRichList() interface{} {
+func (service *AccountService) QueryRichList() (vo.AccountsInfoRespond) {
 
 	result, err := document.Account{}.GetAccountList()
 
@@ -106,7 +106,7 @@ func isProfiler(address string) bool {
 	return false
 }
 
-func (service *AccountService) QueryDelegations(address string) (result []*vo.AccountDelegationsVo) {
+func (service *AccountService) QueryDelegations(address string) (result vo.AccountDelegationsRespond) {
 	delegations := lcd.GetDelegationsByDelAddr(address)
 	var  valaddrlist  []string
 	for _,val := range delegations {
@@ -168,7 +168,7 @@ func computeVotingPower(validator document.Validator, shares string) utils.Coin 
 	}
 }
 
-func (service *AccountService) QueryUnbondingDelegations(address string) (result []*vo.AccountUnbondingDelegationsVo) {
+func (service *AccountService) QueryUnbondingDelegations(address string) (result vo.AccountUnbondingDelegationsRespond) {
 
 	unbondingdelegations := lcd.GetUnbondingDelegationsByDelegatorAddr(address)
 	var  valaddrlist  []string
@@ -176,7 +176,7 @@ func (service *AccountService) QueryUnbondingDelegations(address string) (result
 		valaddrlist = append(valaddrlist, val.ValidatorAddr)
 	}
 	validatorMap := getValidators(valaddrlist)
-	result = make([]*vo.AccountUnbondingDelegationsVo, 0, len(unbondingdelegations))
+	result = make(vo.AccountUnbondingDelegationsRespond, 0, len(unbondingdelegations))
 
 	for _, val := range unbondingdelegations {
 		data := vo.AccountUnbondingDelegationsVo{

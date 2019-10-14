@@ -31,6 +31,8 @@ type GovParams struct {
 	Note         string      `bson:"note" json:"note"`
 }
 
+type GovParamsList []GovParams
+
 type AmountCurrentValue struct {
 	Amount string `bson:"amount" json:"amount"`
 	Denom  string `bson:"denom" json:"denom"`

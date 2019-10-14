@@ -112,7 +112,7 @@ func (service *TxService) QueryBaseList(query bson.M, page, pageSize int, istota
 }
 
 // get recent txs
-func (service *TxService) QueryRecentTx() []vo.RecentTx {
+func (service *TxService) QueryRecentTx() vo.RecentTxRespond {
 	logger.Debug("QueryRecentTx start", service.GetTraceLog())
 
 	txListAsDoc, err := document.CommonTx{}.QueryHashActualFeeType()
@@ -234,7 +234,7 @@ func (service *TxService) CountByType(query bson.M) vo.TxStatisticsVo {
 	return result
 }
 
-func (service *TxService) QueryTxNumGroupByDay() []vo.TxNumGroupByDayVo {
+func (service *TxService) QueryTxNumGroupByDay() vo.TxNumGroupByDayVoRespond {
 	logger.Debug("QueryTxNumGroupByDay start", service.GetTraceLog())
 
 	now := time.Now()
@@ -261,7 +261,7 @@ func (service *TxService) QueryTxNumGroupByDay() []vo.TxNumGroupByDayVo {
 	return result
 }
 
-func (service *TxService) QueryTxType(txType string) []string {
+func (service *TxService) QueryTxType(txType string) vo.QueryTxTypeRespond {
 	if txType == "all" {
 		length := len(types.BankList) + len(types.DeclarationList) + len(types.StakeList) + len(types.GovernanceList) + len(types.AssetList) + len(types.RandList)
 		typeList := make([]string, 0, length)
