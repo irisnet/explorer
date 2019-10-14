@@ -10,7 +10,6 @@ import (
 	"github.com/irisnet/explorer/backend/vo"
 	"strconv"
 	"math/big"
-	"github.com/irisnet/irishub-sync/util/constant"
 )
 
 type AccountService struct {
@@ -165,7 +164,7 @@ func computeVotingPower(validator document.Validator, shares string) utils.Coin 
 
 	return utils.Coin{
 		Amount: amount,
-		Denom:  constant.IrisAttoUnit,
+		Denom:  types.IRISUint,
 	}
 }
 
