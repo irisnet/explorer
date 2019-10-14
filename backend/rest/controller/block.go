@@ -62,8 +62,8 @@ func registerQueryBlockLatestHeight(r *mux.Router) error {
 // @Tags block
 // @Accept  json
 // @Produce  json
-// @Param   page    query   int true    "page num"
-// @Param   size   query   int true    "page size"
+// @Param   page    query   int true    "page num" Default(1)
+// @Param   size   query   int true    "page size" Default(10)
 // @Success 200 {object} vo.BlockForListRespond	"success"
 // @Router /api/blocks [get]
 func registerQueryBlocks(r *mux.Router) error {
@@ -98,8 +98,8 @@ func registerQueryRecentBlocks(r *mux.Router) error {
 // @Tags block
 // @Accept  json
 // @Produce  json
-// @Param   page    query   int true    "page num"
-// @Param   size   query   int true    "page size"
+// @Param   page    query   int true    "page num" Default(1)
+// @Param   size   query   int true    "page size" Default(10)
 // @Param   height   path   int true    "block height"
 // @Success 200 {object} vo.ValidatorSet	"success"
 // @Router /api/block/validatorset/{height} [get]

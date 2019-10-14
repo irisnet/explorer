@@ -70,6 +70,7 @@ type ValidatorVo struct {
 	Icons           string      `json:"icons"`
 }
 
+type ValidatorsVoRespond []ValidatorVo
 func (v ValidatorVo) String() string {
 	return fmt.Sprintf(`
 		OperatorAddress :%v

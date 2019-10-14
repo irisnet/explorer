@@ -41,6 +41,14 @@ func RegisterStake(r *mux.Router) error {
 //	service.Get(service.Validator).(*service.ValidatorService),
 //}
 
+// @Summary withdraw-addr
+// @Description get withdraw-addr
+// @Tags stake
+// @Accept  json
+// @Produce  json
+// @Param   validatorAddr    path   string true    "validatorAddr"
+// @Success 200 {object} vo.WithdrawAddr	"success"
+// @Router /api/stake/validators/{validatorAddr}/withdraw-addr [get]
 func registerQueryWithdrawAddrByValidatorAddr(r *mux.Router) error {
 
 	doApi(r, types.UrlRegisterQueryWithdrawAddrByValidatorAddr, "GET", func(request vo.IrisReq) interface{} {
@@ -52,6 +60,14 @@ func registerQueryWithdrawAddrByValidatorAddr(r *mux.Router) error {
 	return nil
 }
 
+// @Summary commission-rewards
+// @Description get commission-rewards
+// @Tags stake
+// @Accept  json
+// @Produce  json
+// @Param   validatorAddr    path   string  true    "validatorAddr"
+// @Success 200 {object} utils.CoinsAsStr	"success"
+// @Router /api/stake/validators/{validatorAddr}/commission-rewards [get]
 func registerQueryRewardsByValidatorAddr(r *mux.Router) error {
 
 	doApi(r, types.UrlRegisterQueryCommissionRewardsByValidatorAddr, "GET", func(request vo.IrisReq) interface{} {
@@ -63,6 +79,17 @@ func registerQueryRewardsByValidatorAddr(r *mux.Router) error {
 
 }
 
+// @Summary vote
+// @Description get vote
+// @Tags stake
+// @Accept  json
+// @Produce  json
+// @Param   page    query   int true    "page num" Default(1)
+// @Param   size   query   int true    "page size" Default(5)
+// @Param   validatorAddr    path   string  true    "validatorAddr"
+// @Param   total   query   bool false    "total" Enums(true,false)
+// @Success 200 {object} vo.ValidatorVotePage	"success"
+// @Router /api/stake/validators/{validatorAddr}/vote [get]
 func registerQueryVoterTxsByValidatorAddr(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryValidatorVoteByValidatorAddr, "GET", func(request vo.IrisReq) interface{} {
 		stake.SetTid(request.TraceId)
@@ -80,6 +107,17 @@ func registerQueryVoterTxsByValidatorAddr(r *mux.Router) error {
 	return nil
 }
 
+// @Summary depositor_txs
+// @Description get depositor txs
+// @Tags stake
+// @Accept  json
+// @Produce  json
+// @Param   page    query   int true    "page num" Default(1)
+// @Param   size   query   int true    "page size" Default(5)
+// @Param   validatorAddr    path   string  true    "validatorAddr"
+// @Param   total   query   bool false    "total" Enums(true,false)
+// @Success 200 {object} vo.ValidatorDepositTxPage	"success"
+// @Router /api/stake/validators/{validatorAddr}/depositor_txs [get]
 func registerQueryDepositorTxsByValidatorAddr(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryDepositorTxsByValidatorAddr, "GET", func(request vo.IrisReq) interface{} {
 		stake.SetTid(request.TraceId)
@@ -97,6 +135,18 @@ func registerQueryDepositorTxsByValidatorAddr(r *mux.Router) error {
 	return nil
 }
 
+// @Summary delegations
+// @Description get delegations
+// @Tags stake
+// @Accept  json
+// @Produce  json
+// @Param   page    query   int true    "page num" Default(1)
+// @Param   size   query   int true    "page size" Default(5)
+// @Param   validatorAddr    path   string  true    "validatorAddr"
+// @Param   needpage   query   bool false    "needpage" Enums(true,false)
+// @Param   total   query   bool false    "total" Enums(true,false)
+// @Success 200 {object} vo.DelegationsPage	"success"
+// @Router /api/stake/validators/{validatorAddr}/delegations [get]
 func registerQueryDelegationsByValidator(r *mux.Router) error {
 
 	doApi(r, types.UrlRegisterQueryValidatorsDelegations, "GET", func(request vo.IrisReq) interface{} {
@@ -125,6 +175,16 @@ func registerQueryDelegationsByValidator(r *mux.Router) error {
 	return nil
 }
 
+// @Summary unbondingdelegations
+// @Description get unbonding delegations
+// @Tags stake
+// @Accept  json
+// @Produce  json
+// @Param   page    query   int true    "page num" Default(1)
+// @Param   size   query   int true    "page size" Default(5)
+// @Param   validatorAddr    path   string  true    "validatorAddr"
+// @Success 200 {object} vo.UnbondingDelegationsPage	"success"
+// @Router /api/stake/validators/{validatorAddr}/unbonding-delegations [get]
 func registerQueryUnbondingDelegationsByValidator(r *mux.Router) error {
 
 	doApi(r, types.UrlRegisterQueryValidatorUnbondingDelegations, "GET", func(request vo.IrisReq) interface{} {
@@ -141,6 +201,16 @@ func registerQueryUnbondingDelegationsByValidator(r *mux.Router) error {
 	return nil
 }
 
+// @Summary redelegations
+// @Description get redelegations
+// @Tags stake
+// @Accept  json
+// @Produce  json
+// @Param   page    query   int true    "page num" Default(1)
+// @Param   size   query   int true    "page size" Default(5)
+// @Param   validatorAddr    path   string  true    "validatorAddr"
+// @Success 200 {object} vo.RedelegationPage	"success"
+// @Router /api/stake/validators/{validatorAddr}/redelegations [get]
 func registerQueryRedelegationsByValidator(r *mux.Router) error {
 
 	doApi(r, types.UrlRegisterQueryValidatorRedelegations, "GET", func(request vo.IrisReq) interface{} {
@@ -158,6 +228,18 @@ func registerQueryRedelegationsByValidator(r *mux.Router) error {
 
 }
 
+// @Summary list
+// @Description get validators
+// @Tags stake
+// @Accept  json
+// @Produce  json
+// @Param   page    query   int true    "page num" Default(1)
+// @Param   size   query   int true    "page size" Default(100)
+// @Param   type   query   string false    "validators status" Enums(validator,candidate,jailed)
+// @Param   origin   query   string false    "origin" Enums(browser,app)
+// @Param   total   query   bool false    "total" Enums(true,false)
+// @Success 200 {object} lcd.ValidatorsVoRespond	"success"
+// @Router /api/stake/validators [get]
 func registerGetValidators(r *mux.Router) error {
 	doApi(r, types.UrlRegisterGetValidators, "GET", func(request vo.IrisReq) interface{} {
 		stake.SetTid(request.TraceId)
@@ -175,6 +257,14 @@ func registerGetValidators(r *mux.Router) error {
 	})
 	return nil
 }
+
+// @Summary update_icons
+// @Description update validator icons
+// @Tags stake
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} nil  "success"
+// @Router /api/stake/validators/update_icons [get]
 func registerUpdateValidatorIcons(r *mux.Router) error {
 	doApi(r, types.UrlRegisterUpdateIcons, "GET", func(request vo.IrisReq) interface{} {
 		stake.SetTid(request.TraceId)
@@ -186,6 +276,14 @@ func registerUpdateValidatorIcons(r *mux.Router) error {
 	return nil
 }
 
+// @Summary validator detail
+// @Description get validator detail
+// @Tags stake
+// @Accept  json
+// @Produce  json
+// @Param   address   path   string  false    "address"
+// @Success 200 {object} vo.ValidatorForDetail  "success"
+// @Router /api/stake/validators/{address} [get]
 func registerGetValidator(r *mux.Router) error {
 	doApi(r, types.UrlRegisterGetValidator, "GET", func(request vo.IrisReq) interface{} {
 		stake.SetTid(request.TraceId)
@@ -195,6 +293,14 @@ func registerGetValidator(r *mux.Router) error {
 	})
 	return nil
 }
+
+// @Summary validator candidatesTop
+// @Description get validator candidatesTop
+// @Tags stake
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} vo.ValDetailVo  "success"
+// @Router /api/stake/candidatesTop [get]
 func registerQueryCandidatesTop(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryCandidatesTop, "GET", func(request vo.IrisReq) interface{} {
 		stake.SetTid(request.TraceId)
@@ -204,6 +310,15 @@ func registerQueryCandidatesTop(r *mux.Router) error {
 
 	return nil
 }
+
+// @Summary candidate detail
+// @Description get validator candidate detail
+// @Tags stake
+// @Accept  json
+// @Produce  json
+// @Param   address   path   string  false    "address"
+// @Success 200 {object} vo.CandidatesInfoVo  "success"
+// @Router /api/stake/candidate/{address} [get]
 func registerQueryValidator(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryCandidate, "GET", func(request vo.IrisReq) interface{} {
 		stake.SetTid(request.TraceId)
@@ -215,6 +330,14 @@ func registerQueryValidator(r *mux.Router) error {
 	return nil
 }
 
+// @Summary validator status
+// @Description get validator status
+// @Tags stake
+// @Accept  json
+// @Produce  json
+// @Param   address   path   string  false    "address"
+// @Success 200 {object} vo.ValStatus  "success"
+// @Router /api/stake/candidate/{address}/status [get]
 func registerQueryCandidateStatus(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryCandidateStatus, "GET", func(request vo.IrisReq) interface{} {
 		stake.SetTid(request.TraceId)

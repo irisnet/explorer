@@ -26,6 +26,13 @@ func RegisterHome(r *mux.Router) error {
 	return nil
 }
 
+// @Summary navigation
+// @Description get navigation
+// @Tags home
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} NavigationData   "success"
+// @Router /api/home/navigation [get]
 func registerNavigationBar(r *mux.Router) error {
 	doApi(r, types.UrlRegisterNavigationBar, "GET", func(request vo.IrisReq) interface{} {
 		var block = lcd.BlockLatest()

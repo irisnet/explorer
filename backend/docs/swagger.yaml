@@ -43,6 +43,108 @@ definitions:
           type: string
       type: object
     type: array
+  lcd.Commission:
+    properties:
+      max_change_rate:
+        type: string
+      max_rate:
+        type: string
+      rate:
+        type: string
+      update_time:
+        type: string
+    type: object
+  lcd.Description:
+    properties:
+      details:
+        type: string
+      identity:
+        type: string
+      moniker:
+        type: string
+      website:
+        type: string
+    type: object
+  lcd.ValidatorVo:
+    properties:
+      bond_height:
+        type: string
+      commission:
+        $ref: '#/definitions/lcd.Commission'
+        type: object
+      consensus_pubkey:
+        type: string
+      delegator_num:
+        type: integer
+      delegator_shares:
+        type: string
+      description:
+        $ref: '#/definitions/lcd.Description'
+        type: object
+      icons:
+        type: string
+      jailed:
+        type: boolean
+      operator_address:
+        type: string
+      proposer_addr:
+        type: string
+      self_bond:
+        type: string
+      status:
+        type: integer
+      tokens:
+        type: string
+      unbonding_height:
+        type: string
+      unbonding_time:
+        type: string
+      uptime:
+        type: number
+      voting_rate:
+        type: number
+    type: object
+  lcd.ValidatorsVoRespond:
+    items:
+      properties:
+        bond_height:
+          type: string
+        commission:
+          $ref: '#/definitions/lcd.Commission'
+          type: object
+        consensus_pubkey:
+          type: string
+        delegator_num:
+          type: integer
+        delegator_shares:
+          type: string
+        description:
+          $ref: '#/definitions/lcd.Description'
+          type: object
+        icons:
+          type: string
+        jailed:
+          type: boolean
+        operator_address:
+          type: string
+        proposer_addr:
+          type: string
+        self_bond:
+          type: string
+        status:
+          type: integer
+        tokens:
+          type: string
+        unbonding_height:
+          type: string
+        unbonding_time:
+          type: string
+        uptime:
+          type: number
+        voting_rate:
+          type: number
+      type: object
+    type: array
   utils.ActualFee:
     properties:
       amount:
@@ -524,6 +626,41 @@ definitions:
       voting_power:
         type: integer
     type: object
+  vo.CandidatesInfoVo:
+    properties:
+      address:
+        description: operator
+        type: string
+      bond_height:
+        type: integer
+      description:
+        $ref: '#/definitions/vo.Description'
+        description: Description terms for the candidate
+        type: object
+      icons:
+        type: string
+      jailed:
+        description: has the validator been revoked from bonded status
+        type: boolean
+      owner:
+        description: owner, identity key
+        type: string
+      power_all:
+        type: integer
+      precommit_cnt:
+        type: number
+      pub_key:
+        type: string
+      rate:
+        type: string
+      status:
+        type: string
+      up_time:
+        type: integer
+      voting_power:
+        description: Voting power if pubKey is a considered a validator
+        type: integer
+    type: object
   vo.Coin:
     properties:
       amount:
@@ -550,6 +687,39 @@ definitions:
         $ref: '#/definitions/utils.CoinsAsStr'
         type: object
       moniker:
+        type: string
+    type: object
+  vo.Delegation:
+    properties:
+      address:
+        type: string
+      amount:
+        type: string
+      block:
+        type: string
+      self_shares:
+        type: string
+      total_shares:
+        type: number
+    type: object
+  vo.DelegationsPage:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/vo.Delegation'
+        type: array
+      total:
+        type: integer
+    type: object
+  vo.Description:
+    properties:
+      details:
+        type: string
+      identity:
+        type: string
+      moniker:
+        type: string
+      website:
         type: string
     type: object
   vo.EnvConfig:
@@ -776,6 +946,28 @@ definitions:
           type: number
       type: object
     type: array
+  vo.Redelegation:
+    properties:
+      address:
+        type: string
+      amount:
+        type: string
+      block:
+        type: string
+      to:
+        type: string
+      to_moniker:
+        type: string
+    type: object
+  vo.RedelegationPage:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/vo.Redelegation'
+        type: array
+      total:
+        type: integer
+    type: object
   vo.ResultVo:
     properties:
       block:
@@ -841,6 +1033,37 @@ definitions:
       total:
         type: integer
     type: object
+  vo.UnbondingDelegations:
+    properties:
+      address:
+        type: string
+      amount:
+        type: string
+      block:
+        type: string
+      until:
+        type: string
+    type: object
+  vo.UnbondingDelegationsPage:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/vo.UnbondingDelegations'
+        type: array
+      total:
+        type: integer
+    type: object
+  vo.ValDetailVo:
+    properties:
+      count:
+        type: integer
+      power_all:
+        type: integer
+      validators:
+        items:
+          $ref: '#/definitions/vo.Validator'
+        type: array
+    type: object
   vo.ValInfo:
     properties:
       address:
@@ -848,11 +1071,148 @@ definitions:
       voting_power:
         type: integer
     type: object
+  vo.ValStatus:
+    properties:
+      precommit_cnt:
+        type: number
+      up_time:
+        type: integer
+    type: object
+  vo.Validator:
+    properties:
+      address:
+        description: operator
+        type: string
+      bond_height:
+        type: integer
+      description:
+        $ref: '#/definitions/vo.Description'
+        description: Description terms for the candidate
+        type: object
+      icons:
+        type: string
+      jailed:
+        description: has the validator been revoked from bonded status
+        type: boolean
+      owner:
+        description: owner, identity key
+        type: string
+      precommit_cnt:
+        type: number
+      pub_key:
+        type: string
+      rate:
+        type: string
+      status:
+        type: string
+      up_time:
+        type: integer
+      voting_power:
+        description: Voting power if pubKey is a considered a validator
+        type: integer
+    type: object
+  vo.ValidatorDepositTx:
+    properties:
+      deposited_amount:
+        $ref: '#/definitions/utils.Coins'
+        type: object
+      moniker:
+        type: string
+      proposal_id:
+        type: integer
+      proposer:
+        type: string
+      submited:
+        type: boolean
+      tx_hash:
+        type: string
+    type: object
+  vo.ValidatorDepositTxPage:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/vo.ValidatorDepositTx'
+        type: array
+      total:
+        type: integer
+    type: object
+  vo.ValidatorForDetail:
+    properties:
+      bond_height:
+        type: string
+      bonded_stake:
+        type: string
+      bonded_tokens:
+        type: string
+      commision_max_change_rate:
+        type: string
+      commission_max_rate:
+        type: string
+      commission_rate:
+        type: string
+      commission_update:
+        type: string
+      consensus_addr:
+        type: string
+      delegator_count:
+        type: integer
+      delegator_shares:
+        type: string
+      description:
+        $ref: '#/definitions/vo.Description'
+        type: object
+      icons:
+        type: string
+      jailed_until:
+        type: string
+      missed_blocks_count:
+        type: string
+      operator_addr:
+        type: string
+      owner_addr:
+        type: string
+      self_bonded:
+        type: string
+      self_power:
+        type: integer
+      stats_blocks_window:
+        type: string
+      status:
+        type: string
+      total_power:
+        type: integer
+      unbond_height:
+        type: string
+      uptime:
+        type: number
+    type: object
   vo.ValidatorSet:
     properties:
       items:
         items:
           $ref: '#/definitions/vo.BlockValidator'
+        type: array
+      total:
+        type: integer
+    type: object
+  vo.ValidatorVote:
+    properties:
+      proposal_id:
+        type: integer
+      status:
+        type: string
+      title:
+        type: string
+      tx_hash:
+        type: string
+      voted:
+        type: string
+    type: object
+  vo.ValidatorVotePage:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/vo.ValidatorVote'
         type: array
       total:
         type: integer
@@ -914,6 +1274,11 @@ definitions:
         type: string
       voting_power:
         type: number
+    type: object
+  vo.WithdrawAddr:
+    properties:
+      address:
+        type: string
     type: object
 info:
   contact: {}
@@ -1218,12 +1583,14 @@ paths:
       - application/json
       description: get  block validatorset
       parameters:
-      - description: page num
+      - default: 1
+        description: page num
         in: query
         name: page
         required: true
         type: integer
-      - description: page size
+      - default: 10
+        description: page size
         in: query
         name: size
         required: true
@@ -1250,12 +1617,14 @@ paths:
       - application/json
       description: get blocks
       parameters:
-      - description: page num
+      - default: 1
+        description: page num
         in: query
         name: page
         required: true
         type: integer
-      - description: page size
+      - default: 10
+        description: page size
         in: query
         name: size
         required: true
@@ -1325,6 +1694,44 @@ paths:
       summary: config
       tags:
       - common
+  /api/faucet/account:
+    get:
+      consumes:
+      - application/json
+      description: get faucet account
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/FaucetRespond'
+            type: object
+      summary: account
+      tags:
+      - faucet
+  /api/faucet/apply/{address}:
+    post:
+      consumes:
+      - application/json
+      description: faucet apply
+      parameters:
+      - description: address
+        in: path
+        name: address
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/FaucetRespond'
+            type: object
+      summary: apply
+      tags:
+      - faucet
   /api/gov/deposit_voting_proposals:
     get:
       consumes:
@@ -1538,6 +1945,22 @@ paths:
       summary: detail
       tags:
       - gov
+  /api/home/navigation:
+    get:
+      consumes:
+      - application/json
+      description: get navigation
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/NavigationData'
+            type: object
+      summary: navigation
+      tags:
+      - home
   /api/params:
     get:
       consumes:
@@ -1576,6 +1999,394 @@ paths:
       summary: search text
       tags:
       - common
+  /api/stake/candidate/{address}:
+    get:
+      consumes:
+      - application/json
+      description: get validator candidate detail
+      parameters:
+      - description: address
+        in: path
+        name: address
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.CandidatesInfoVo'
+            type: object
+      summary: candidate detail
+      tags:
+      - stake
+  /api/stake/candidate/{address}/status:
+    get:
+      consumes:
+      - application/json
+      description: get validator status
+      parameters:
+      - description: address
+        in: path
+        name: address
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.ValStatus'
+            type: object
+      summary: validator status
+      tags:
+      - stake
+  /api/stake/candidatesTop:
+    get:
+      consumes:
+      - application/json
+      description: get validator candidatesTop
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.ValDetailVo'
+            type: object
+      summary: validator candidatesTop
+      tags:
+      - stake
+  /api/stake/validators:
+    get:
+      consumes:
+      - application/json
+      description: get validators
+      parameters:
+      - default: 1
+        description: page num
+        in: query
+        name: page
+        required: true
+        type: integer
+      - default: 100
+        description: page size
+        in: query
+        name: size
+        required: true
+        type: integer
+      - description: validators status
+        enum:
+        - validator
+        - candidate
+        - jailed
+        in: query
+        name: type
+        type: string
+      - description: origin
+        enum:
+        - browser
+        - app
+        in: query
+        name: origin
+        type: string
+      - description: total
+        enum:
+        - true
+        - false
+        in: query
+        name: total
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/lcd.ValidatorsVoRespond'
+            type: object
+      summary: list
+      tags:
+      - stake
+  /api/stake/validators/{address}:
+    get:
+      consumes:
+      - application/json
+      description: get validator detail
+      parameters:
+      - description: address
+        in: path
+        name: address
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.ValidatorForDetail'
+            type: object
+      summary: validator detail
+      tags:
+      - stake
+  /api/stake/validators/{validatorAddr}/commission-rewards:
+    get:
+      consumes:
+      - application/json
+      description: get commission-rewards
+      parameters:
+      - description: validatorAddr
+        in: path
+        name: validatorAddr
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/utils.CoinsAsStr'
+            type: object
+      summary: commission-rewards
+      tags:
+      - stake
+  /api/stake/validators/{validatorAddr}/delegations:
+    get:
+      consumes:
+      - application/json
+      description: get delegations
+      parameters:
+      - default: 1
+        description: page num
+        in: query
+        name: page
+        required: true
+        type: integer
+      - default: 5
+        description: page size
+        in: query
+        name: size
+        required: true
+        type: integer
+      - description: validatorAddr
+        in: path
+        name: validatorAddr
+        required: true
+        type: string
+      - description: needpage
+        enum:
+        - true
+        - false
+        in: query
+        name: needpage
+        type: boolean
+      - description: total
+        enum:
+        - true
+        - false
+        in: query
+        name: total
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.DelegationsPage'
+            type: object
+      summary: delegations
+      tags:
+      - stake
+  /api/stake/validators/{validatorAddr}/depositor_txs:
+    get:
+      consumes:
+      - application/json
+      description: get depositor txs
+      parameters:
+      - default: 1
+        description: page num
+        in: query
+        name: page
+        required: true
+        type: integer
+      - default: 5
+        description: page size
+        in: query
+        name: size
+        required: true
+        type: integer
+      - description: validatorAddr
+        in: path
+        name: validatorAddr
+        required: true
+        type: string
+      - description: total
+        enum:
+        - true
+        - false
+        in: query
+        name: total
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.ValidatorDepositTxPage'
+            type: object
+      summary: depositor_txs
+      tags:
+      - stake
+  /api/stake/validators/{validatorAddr}/redelegations:
+    get:
+      consumes:
+      - application/json
+      description: get redelegations
+      parameters:
+      - default: 1
+        description: page num
+        in: query
+        name: page
+        required: true
+        type: integer
+      - default: 5
+        description: page size
+        in: query
+        name: size
+        required: true
+        type: integer
+      - description: validatorAddr
+        in: path
+        name: validatorAddr
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.RedelegationPage'
+            type: object
+      summary: redelegations
+      tags:
+      - stake
+  /api/stake/validators/{validatorAddr}/unbonding-delegations:
+    get:
+      consumes:
+      - application/json
+      description: get unbonding delegations
+      parameters:
+      - default: 1
+        description: page num
+        in: query
+        name: page
+        required: true
+        type: integer
+      - default: 5
+        description: page size
+        in: query
+        name: size
+        required: true
+        type: integer
+      - description: validatorAddr
+        in: path
+        name: validatorAddr
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.UnbondingDelegationsPage'
+            type: object
+      summary: unbondingdelegations
+      tags:
+      - stake
+  /api/stake/validators/{validatorAddr}/vote:
+    get:
+      consumes:
+      - application/json
+      description: get vote
+      parameters:
+      - default: 1
+        description: page num
+        in: query
+        name: page
+        required: true
+        type: integer
+      - default: 5
+        description: page size
+        in: query
+        name: size
+        required: true
+        type: integer
+      - description: validatorAddr
+        in: path
+        name: validatorAddr
+        required: true
+        type: string
+      - description: total
+        enum:
+        - true
+        - false
+        in: query
+        name: total
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.ValidatorVotePage'
+            type: object
+      summary: vote
+      tags:
+      - stake
+  /api/stake/validators/{validatorAddr}/withdraw-addr:
+    get:
+      consumes:
+      - application/json
+      description: get withdraw-addr
+      parameters:
+      - description: validatorAddr
+        in: path
+        name: validatorAddr
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.WithdrawAddr'
+            type: object
+      summary: withdraw-addr
+      tags:
+      - stake
+  /api/stake/validators/update_icons:
+    get:
+      consumes:
+      - application/json
+      description: update validator icons
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/nil'
+            type: object
+      summary: update_icons
+      tags:
+      - stake
   /api/sysdate:
     get:
       consumes:
