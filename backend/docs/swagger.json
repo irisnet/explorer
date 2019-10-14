@@ -387,6 +387,174 @@
                     }
                 }
             }
+        },
+        "/api/block/blockinfo/{height}": {
+            "get": {
+                "description": "get block info",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "block"
+                ],
+                "summary": "detail",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "block height",
+                        "name": "height",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/vo.BlockInfo"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/block/latestheight": {
+            "get": {
+                "description": "get block latestheight",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "block"
+                ],
+                "summary": "latest",
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/int64"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/block/validatorset/{height}": {
+            "get": {
+                "description": "get  block validatorset",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "block"
+                ],
+                "summary": "block validatorset",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "page num",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "page size",
+                        "name": "size",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "block height",
+                        "name": "height",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/vo.ValidatorSet"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/blocks": {
+            "get": {
+                "description": "get blocks",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "block"
+                ],
+                "summary": "list",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "page num",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "page size",
+                        "name": "size",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/vo.BlockForListRespond"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/blocks/recent": {
+            "get": {
+                "description": "get recent blocks",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "block"
+                ],
+                "summary": "blocks recent",
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/vo.BlockInfoVoRespond"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -854,6 +1022,211 @@
                 }
             }
         },
+        "vo.BlockForList": {
+            "type": "object",
+            "properties": {
+                "height": {
+                    "type": "integer"
+                },
+                "precommit_validator_num": {
+                    "type": "integer"
+                },
+                "precommit_voting_power": {
+                    "type": "integer"
+                },
+                "proposer_as_validator_addr": {
+                    "type": "string"
+                },
+                "proposer_moniker": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "string"
+                },
+                "txs_num": {
+                    "type": "integer"
+                },
+                "validator_num_for_height": {
+                    "type": "integer"
+                },
+                "voting_power_for_height": {
+                    "type": "integer"
+                }
+            }
+        },
+        "vo.BlockForListRespond": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "height": {
+                        "type": "integer"
+                    },
+                    "precommit_validator_num": {
+                        "type": "integer"
+                    },
+                    "precommit_voting_power": {
+                        "type": "integer"
+                    },
+                    "proposer_as_validator_addr": {
+                        "type": "string"
+                    },
+                    "proposer_moniker": {
+                        "type": "string"
+                    },
+                    "timestamp": {
+                        "type": "string"
+                    },
+                    "txs_num": {
+                        "type": "integer"
+                    },
+                    "validator_num_for_height": {
+                        "type": "integer"
+                    },
+                    "voting_power_for_height": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "vo.BlockInfo": {
+            "type": "object",
+            "properties": {
+                "block_hash": {
+                    "type": "string"
+                },
+                "block_height": {
+                    "type": "string"
+                },
+                "latest_height": {
+                    "type": "string"
+                },
+                "mint_coin": {
+                    "type": "object",
+                    "$ref": "#/definitions/utils.Coin"
+                },
+                "precommit_validator_num": {
+                    "type": "object"
+                },
+                "precommit_voting_power": {
+                    "type": "object"
+                },
+                "propopser_addr": {
+                    "type": "string"
+                },
+                "propopser_moniker": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "string"
+                },
+                "total_validator_num": {
+                    "type": "integer"
+                },
+                "total_voting_power": {
+                    "type": "integer"
+                },
+                "transactions": {
+                    "type": "string"
+                }
+            }
+        },
+        "vo.BlockInfoVo": {
+            "type": "object",
+            "properties": {
+                "hash": {
+                    "type": "string"
+                },
+                "height": {
+                    "type": "integer"
+                },
+                "last_block_hash": {
+                    "type": "string"
+                },
+                "last_commit": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "num_txs": {
+                    "type": "integer"
+                },
+                "time": {
+                    "type": "string"
+                },
+                "total_txs": {
+                    "type": "integer"
+                },
+                "validators": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/vo.ValInfo"
+                    }
+                }
+            }
+        },
+        "vo.BlockInfoVoRespond": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "hash": {
+                        "type": "string"
+                    },
+                    "height": {
+                        "type": "integer"
+                    },
+                    "last_block_hash": {
+                        "type": "string"
+                    },
+                    "last_commit": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "num_txs": {
+                        "type": "integer"
+                    },
+                    "time": {
+                        "type": "string"
+                    },
+                    "total_txs": {
+                        "type": "integer"
+                    },
+                    "validators": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/vo.ValInfo"
+                        }
+                    }
+                }
+            }
+        },
+        "vo.BlockValidator": {
+            "type": "object",
+            "properties": {
+                "consensus": {
+                    "type": "string"
+                },
+                "is_proposer": {
+                    "type": "boolean"
+                },
+                "moniker": {
+                    "type": "string"
+                },
+                "operator_address": {
+                    "type": "string"
+                },
+                "proposer_priority": {
+                    "type": "string"
+                },
+                "voting_power": {
+                    "type": "string"
+                }
+            }
+        },
         "vo.DelagationsRewards": {
             "type": "object",
             "properties": {
@@ -866,6 +1239,31 @@
                 },
                 "moniker": {
                     "type": "string"
+                }
+            }
+        },
+        "vo.ValInfo": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "voting_power": {
+                    "type": "integer"
+                }
+            }
+        },
+        "vo.ValidatorSet": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/vo.BlockValidator"
+                    }
+                },
+                "total": {
+                    "type": "integer"
                 }
             }
         }

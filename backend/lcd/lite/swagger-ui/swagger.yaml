@@ -308,6 +308,141 @@ definitions:
       type:
         type: string
     type: object
+  vo.BlockForList:
+    properties:
+      height:
+        type: integer
+      precommit_validator_num:
+        type: integer
+      precommit_voting_power:
+        type: integer
+      proposer_as_validator_addr:
+        type: string
+      proposer_moniker:
+        type: string
+      timestamp:
+        type: string
+      txs_num:
+        type: integer
+      validator_num_for_height:
+        type: integer
+      voting_power_for_height:
+        type: integer
+    type: object
+  vo.BlockForListRespond:
+    items:
+      properties:
+        height:
+          type: integer
+        precommit_validator_num:
+          type: integer
+        precommit_voting_power:
+          type: integer
+        proposer_as_validator_addr:
+          type: string
+        proposer_moniker:
+          type: string
+        timestamp:
+          type: string
+        txs_num:
+          type: integer
+        validator_num_for_height:
+          type: integer
+        voting_power_for_height:
+          type: integer
+      type: object
+    type: array
+  vo.BlockInfo:
+    properties:
+      block_hash:
+        type: string
+      block_height:
+        type: string
+      latest_height:
+        type: string
+      mint_coin:
+        $ref: '#/definitions/utils.Coin'
+        type: object
+      precommit_validator_num:
+        type: object
+      precommit_voting_power:
+        type: object
+      propopser_addr:
+        type: string
+      propopser_moniker:
+        type: string
+      timestamp:
+        type: string
+      total_validator_num:
+        type: integer
+      total_voting_power:
+        type: integer
+      transactions:
+        type: string
+    type: object
+  vo.BlockInfoVo:
+    properties:
+      hash:
+        type: string
+      height:
+        type: integer
+      last_block_hash:
+        type: string
+      last_commit:
+        items:
+          type: string
+        type: array
+      num_txs:
+        type: integer
+      time:
+        type: string
+      total_txs:
+        type: integer
+      validators:
+        items:
+          $ref: '#/definitions/vo.ValInfo'
+        type: array
+    type: object
+  vo.BlockInfoVoRespond:
+    items:
+      properties:
+        hash:
+          type: string
+        height:
+          type: integer
+        last_block_hash:
+          type: string
+        last_commit:
+          items:
+            type: string
+          type: array
+        num_txs:
+          type: integer
+        time:
+          type: string
+        total_txs:
+          type: integer
+        validators:
+          items:
+            $ref: '#/definitions/vo.ValInfo'
+          type: array
+      type: object
+    type: array
+  vo.BlockValidator:
+    properties:
+      consensus:
+        type: string
+      is_proposer:
+        type: boolean
+      moniker:
+        type: string
+      operator_address:
+        type: string
+      proposer_priority:
+        type: string
+      voting_power:
+        type: string
+    type: object
   vo.DelagationsRewards:
     properties:
       address:
@@ -317,6 +452,22 @@ definitions:
         type: object
       moniker:
         type: string
+    type: object
+  vo.ValInfo:
+    properties:
+      address:
+        type: string
+      voting_power:
+        type: integer
+    type: object
+  vo.ValidatorSet:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/vo.BlockValidator'
+        type: array
+      total:
+        type: integer
     type: object
 info:
   contact: {}
@@ -577,4 +728,118 @@ paths:
       summary: native
       tags:
       - assets
+  /api/block/blockinfo/{height}:
+    get:
+      consumes:
+      - application/json
+      description: get block info
+      parameters:
+      - description: block height
+        in: path
+        name: height
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.BlockInfo'
+            type: object
+      summary: detail
+      tags:
+      - block
+  /api/block/latestheight:
+    get:
+      consumes:
+      - application/json
+      description: get block latestheight
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/int64'
+            type: object
+      summary: latest
+      tags:
+      - block
+  /api/block/validatorset/{height}:
+    get:
+      consumes:
+      - application/json
+      description: get  block validatorset
+      parameters:
+      - description: page num
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: page size
+        in: query
+        name: size
+        required: true
+        type: integer
+      - description: block height
+        in: path
+        name: height
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.ValidatorSet'
+            type: object
+      summary: block validatorset
+      tags:
+      - block
+  /api/blocks:
+    get:
+      consumes:
+      - application/json
+      description: get blocks
+      parameters:
+      - description: page num
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: page size
+        in: query
+        name: size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.BlockForListRespond'
+            type: object
+      summary: list
+      tags:
+      - block
+  /api/blocks/recent:
+    get:
+      consumes:
+      - application/json
+      description: get recent blocks
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.BlockInfoVoRespond'
+            type: object
+      summary: blocks recent
+      tags:
+      - block
+
 
