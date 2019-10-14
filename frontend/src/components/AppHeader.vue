@@ -331,11 +331,11 @@
 			this.listenRouteForChangeActiveButton();
 			window.addEventListener('resize', this.onresize);
 			this.getConfig();
-		/*	if(sessionStorage.getItem('skinCurrentEnv')){
+			if(sessionStorage.getItem('skinCurrentEnv')){
 				this.toggleTestnetLogo({
 					cur_env:sessionStorage.getItem('skinCurrentEnv')
 				});
-            }*/
+            }
 			this.listenRouteForChangeActiveButton();
 		},
 		beforeDestroy () {
