@@ -106,6 +106,8 @@ const (
 
 	TxTag_WithDrawRewardFromValidator = "withdraw-reward-from-validator-"
 	TxTag_WithDrawAddress             = "withdraw-address"
+
+	IRISUint   = "iris"
 )
 
 var (
