@@ -26,6 +26,16 @@
 
                         </m-address-information-table>
                     </div>
+                    <div class="pagination_content" v-if="flDelegationNextPage">
+                        <keep-alive>
+                            <m-pagination
+                                    :page-size="pageSize"
+                                    :total="delegationCountNum"
+                                    :page="delegationCurrentPage"
+                                    :page-change="delegationPageChange"
+                            ></m-pagination>
+                        </keep-alive>
+                    </div>
                 </div>
                 <div class="address_information_unbonding_delegation_tx_content">
                     <div class="address_information_unbonding_delegation_title">Unbonding Delegations</div>
@@ -36,6 +46,16 @@
                                 :width="630">
 
                         </m-address-information-table>
+                    </div>
+                    <div class="pagination_content" v-if="flUnBondingDelegationNextPage">
+                        <keep-alive>
+                            <m-pagination
+                                    :page-size="pageSize"
+                                    :total="unBondingDelegationCountNum"
+                                    :page="unBondingDelegationCurrentPage"
+                                    :page-change="unBondingDelegationPageChange"
+                            ></m-pagination>
+                        </keep-alive>
                     </div>
                 </div>
             </div>
@@ -54,6 +74,16 @@
                                 :width="630">
 
                         </m-address-information-table>
+                    </div>
+                    <div class="pagination_content" v-if="flRewardsDelegationNextPage">
+                        <keep-alive>
+                            <m-pagination
+                                    :page-size="pageSize"
+                                    :total="rewardsDelegationCountNum"
+                                    :page="rewardsDelegationCurrentPage"
+                                    :page-change="rewardsDelegationPageChange"
+                            ></m-pagination>
+                        </keep-alive>
                     </div>
                 </div>
                 <div class="address_information_detail_container">
@@ -131,16 +161,16 @@
 
                     </m-address-information-table>
                 </div>
-                <!--<div class="pagination_content">
+                <div class="pagination_content" v-if="flAllTxNextPage">
                     <keep-alive>
                         <m-pagination
                                 :page-size="pageSize"
-                                :total="countNum"
-                                :page="currentPageNum"
-                                :page-change="pageChange"
+                                :total="allTxCountNum"
+                                :page="allTxCurrentPage"
+                                :page-change="allTxPageChange"
                         ></m-pagination>
                     </keep-alive>
-                </div>-->
+                </div>
             </div>
         </div>
     </div>
@@ -151,9 +181,10 @@
 	import Tools from "../util/Tools"
 	import Server from '../service'
 	import Constant from "../constant/Constant";
+	import MPagination from "./commonComponents/MPagination";
 	export default {
 		name: "AddressInfomation",
-		components: {MAddressInformationTable},
+		components: {MPagination, MAddressInformationTable},
 		data(){
 			return {
 				withdrewToAddress: '',
@@ -200,7 +231,23 @@
                 totalUnBondingDelegator:0,
                 totalDelegator:0,
                 assetList: [],
-				fixedNumber: 2
+				fixedNumber: 2,
+				delegationCountNum: 0,
+				unBondingDelegationCountNum:0,
+				rewardsDelegationCountNum:0,
+				delegationCurrentPage:1,
+				unBondingDelegationCurrentPage:1,
+				rewardsDelegationCurrentPage:1,
+				pageSize:5,
+                delegationPageNationArrayData:[],
+                unBondingDelegationPageNationArrayData:[],
+				rewardsDelegationPageNationArrayData:[],
+                flDelegationNextPage:false,
+                flUnBondingDelegationNextPage:false,
+                flRewardsDelegationNextPage:false,
+                flAllTxNextPage: false,
+				allTxCountNum:0,
+				allTxCurrentPage:1,
             }
         },
         watch:{
@@ -281,15 +328,14 @@
                     }},(res) => {
 		            try {
 		            	if(res && res.length > 0){
-				            this.delegationsItems = res.map(item => {
-					            return {
-						            address: item.address,
-						            amount: `${Tools.formatStringToFixedNumber(item.amount.amount.toString(),this.fixedNumber)} ${item.amount.denom.toUpperCase()}`,
-						            shares: (Number(item.shares)).toFixed(2),
-						            block: item.height,
-						            moniker: item.moniker
-					            }
-				            });
+				            this.delegationPageNationArrayData = this.pageNation(res);
+				            if(res.length > this.pageSize){
+					            this.flDelegationNextPage = true;
+                            }else {
+					            this.flDelegationNextPage = false;
+                            }
+				            this.delegationCountNum = res.length;
+				            this.delegationPageChange(this.delegationCurrentPage);
 				            if(res.length > 1){
 					            this.totalDelegator = res.reduce( (total,item) => {
 						            return Number(item.amount.amount) + Number(total)
@@ -311,15 +357,14 @@
                     }},(res) => {
 		            try {
 		            	if(res && res.length > 0){
-		            		this.unBondingDelegationsItems = res.map( item =>{
-		            			return {
-		            				address: item.address,
-                                    amount: `${Tools.formatStringToFixedNumber(item.amount.amount.toString(),this.fixedNumber)} ${item.amount.denom.toUpperCase()}`,
-                                    block: item.height,
-                                    endTime: Tools.format2UTC(item.end_time),
-						            moniker: item.moniker
-                                }
-                            });
+				            this.unBondingDelegationPageNationArrayData = this.pageNation(res);
+				            if(res.length > this.pageSize){
+					            this.flUnBondingDelegationNextPage = true
+				            }else {
+					            this.flUnBondingDelegationNextPage = false
+				            }
+				            this.unBondingDelegationCountNum = res.length;
+                            this.unBondingDelegationPageChange(this.unBondingDelegationCurrentPage);
 		            		if(res.length > 1){
 					            this.totalUnBondingDelegator = res.reduce( (total,item) => {
 						            return Number(item.amount.amount) + Number(total)
@@ -339,13 +384,14 @@
                     }},(res) => {
 		            try {
 		            	if(res && res.delagations_rewards.length > 0) {
-				            this.rewardsItems = res.delagations_rewards.map( item => {
-					            return {
-						            address: item.address,
-                                    amount: Tools.formatAmount2(item.amount,this.fixedNumber),
-						            moniker: item.moniker
-				                }
-				            });
+				            this.rewardsDelegationPageNationArrayData = this.pageNation(res.delagations_rewards);
+				            if(res.delagations_rewards.length > this.pageSize){
+					            this.flRewardsDelegationNextPage = true
+				            }else {
+					            this.flRewardsDelegationNextPage = false
+				            }
+                            this.rewardsDelegationCountNum = res.delagations_rewards.length;
+				            this.rewardsDelegationPageChange(this.rewardsDelegationCurrentPage);
 				            if(res.delagations_rewards.length > 1){
 					            this.totalDelegatorReward = Tools.numberMoveDecimal(res.delagations_rewards.reduce( (total,item) => {
 						            return Number(item.amount[0].amount) + Number(total)
@@ -383,7 +429,7 @@
 	        getTxListByFilterCondition(){
 		        let param = {};
 		        param.getTxListByAddress = {};
-		        param.getTxListByAddress.pageNumber = this.currentPageNum;
+		        param.getTxListByAddress.pageNumber = this.allTxCurrentPage;
 		        param.getTxListByAddress.pageSize = this.pageSize;
 		        param.getTxListByAddress.txType = this.TxType;
 		        param.getTxListByAddress.status = this.txStatus;
@@ -394,6 +440,12 @@
 			        try {
 				        if(res && res.Data) {
 					        sessionStorage.setItem('txsTotal',res.Count);
+					        this.allTxCountNum = res.Count;
+					        if(res.Count > this.pageSize){
+					        	this.flAllTxNextPage = true
+                            }else {
+						        this.flAllTxNextPage = false
+                            }
 					        this.transactionsItems = res.Data.map( item => {
 					        	let Amount;
 						        if(item.type === 'BeginUnbonding' || item.type === 'BeginRedelegate'){
@@ -418,6 +470,8 @@
 						        }
 					        })
 				        }else {
+					        this.allTxCountNum = 0;
+					        this.flAllTxNextPage = false
 					        this.transactionsItems = []
 
 				        }
@@ -484,6 +538,94 @@
 			        return `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(Fee.amount)),4)} ${Tools.formatDenom(Fee.denom).toUpperCase()}`;
 		        }
 	        },
+            pageNation(dataArray){
+	            console.log(dataArray,"数据展示")
+	            let index = 0;
+	        	let newArray  = [];
+	        	if(dataArray.length > this.pageSize){
+			        while(index < dataArray.length) {
+				        newArray .push(dataArray.slice(index, index += this.pageSize));
+			        }
+                }else {
+			        newArray = dataArray
+                }
+	            return newArray
+            },
+	        delegationPageChange(pageNum){
+		        pageNum = pageNum - 1
+	        	if(this.flDelegationNextPage){
+			        this.delegationsItems = this.delegationPageNationArrayData[pageNum].map(item => {
+				        return {
+					        address: item.address,
+					        amount: `${Tools.formatStringToFixedNumber(item.amount.amount.toString(),this.fixedNumber)} ${item.amount.denom.toUpperCase()}`,
+					        shares: (Number(item.shares)).toFixed(2),
+					        block: item.height,
+					        moniker: item.moniker
+				        }
+			        });
+                }else {
+			        this.delegationsItems = this.delegationPageNationArrayData.map(item => {
+				        return {
+					        address: item.address,
+					        amount: `${Tools.formatStringToFixedNumber(item.amount.amount.toString(),this.fixedNumber)} ${item.amount.denom.toUpperCase()}`,
+					        shares: (Number(item.shares)).toFixed(2),
+					        block: item.height,
+					        moniker: item.moniker
+				        }
+			        });
+                }
+
+            },
+	        unBondingDelegationPageChange(pageNum){
+		        pageNum = pageNum - 1;
+		        if(this.flUnBondingDelegationNextPage){
+			        this.unBondingDelegationsItems = this.unBondingDelegationPageNationArrayData[pageNum].map( item =>{
+				        return {
+					        address: item.address,
+					        amount: `${Tools.formatStringToFixedNumber(item.amount.amount.toString(),this.fixedNumber)} ${item.amount.denom.toUpperCase()}`,
+					        block: item.height,
+					        endTime: Tools.format2UTC(item.end_time),
+					        moniker: item.moniker
+				        }
+			        });
+                }else {
+			        this.unBondingDelegationsItems = this.unBondingDelegationPageNationArrayData.map( item =>{
+				        return {
+					        address: item.address,
+					        amount: `${Tools.formatStringToFixedNumber(item.amount.amount.toString(),this.fixedNumber)} ${item.amount.denom.toUpperCase()}`,
+					        block: item.height,
+					        endTime: Tools.format2UTC(item.end_time),
+					        moniker: item.moniker
+				        }
+			        });
+                }
+
+            },
+	        rewardsDelegationPageChange(pageNum){
+		        pageNum = pageNum - 1;
+	        	if(this.flRewardsDelegationNextPage){
+			        this.rewardsItems = this.rewardsDelegationPageNationArrayData[pageNum].map( item => {
+				        return {
+					        address: item.address,
+					        amount: Tools.formatAmount2(item.amount,this.fixedNumber),
+					        moniker: item.moniker
+				        }
+			        });
+                }else {
+			        this.rewardsItems = this.rewardsDelegationPageNationArrayData.map( item => {
+				        return {
+					        address: item.address,
+					        amount: Tools.formatAmount2(item.amount,this.fixedNumber),
+					        moniker: item.moniker
+				        }
+			        });
+                }
+
+            },
+	        allTxPageChange(pageNum){
+	        	this.allTxCurrentPage = pageNum
+	        	this.getTxListByFilterCondition()
+            }
         }
 	}
 </script>
@@ -531,6 +673,11 @@
                         color: #171D44;
                         padding: 0 0 0.12rem 0.2rem;
                     }
+                    .pagination_content{
+                        margin-top: 0.2rem;
+                        display: flex;
+                        justify-content: flex-end;
+                    }
                     .address_information_delegation_list_content{
                         width: 100%;
                     }
@@ -544,6 +691,11 @@
                     }
                     .address_information_unbonding_delegation_list_content{
                         width: 100%;
+                    }
+                    .pagination_content{
+                        margin-top: 0.2rem;
+                        display: flex;
+                        justify-content: flex-end;
                     }
                 }
             }
@@ -627,6 +779,11 @@
                     .address_information_list_content{
                         width: 100%;
                     }
+                    .pagination_content{
+                        margin-top: 0.2rem;
+                        display: flex;
+                        justify-content: flex-end;
+                    }
                 }
                 .address_information_detail_container{
                     flex: 1;
@@ -698,6 +855,11 @@
                 }
                 .address_information_list_content{
                     margin-top: 0.07rem;
+                }
+                .pagination_content{
+                    margin-top: 0.2rem;
+                    display: flex;
+                    justify-content: flex-end;
                 }
             }
         }
