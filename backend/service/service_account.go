@@ -10,7 +10,6 @@ import (
 	"github.com/irisnet/explorer/backend/vo"
 	"strconv"
 	"math/big"
-	"github.com/irisnet/irishub-sync/util/constant"
 )
 
 type AccountService struct {
@@ -42,7 +41,7 @@ func (service *AccountService) Query(address string) (result vo.AccountVo) {
 		valaddress := utils.Convert(conf.Get().Hub.Prefix.ValAddr, address)
 		validator, err := document.Validator{}.QueryValidatorDetailByOperatorAddr(valaddress)
 		if err == nil {
-			result.Status = strconv.Itoa(validator.Status)
+			result.Status = getValidatorStatus(validator)
 			result.Moniker = validator.Description.Moniker
 			result.OperatorAddress = valaddress
 		}
@@ -53,6 +52,17 @@ func (service *AccountService) Query(address string) (result vo.AccountVo) {
 	result.IsProfiler = isProfiler(address)
 	result.Address = address
 	return result
+}
+
+func getValidatorStatus(validator document.Validator) string {
+	if validator.Jailed == false {
+		if validator.Status == types.Bonded {
+			return "Active"
+		}else{
+			return "Candidate"
+		}
+	}
+	return "Jailed"
 }
 
 func (service *AccountService) QueryRichList() interface{} {
@@ -154,7 +164,7 @@ func computeVotingPower(validator document.Validator, shares string) utils.Coin 
 
 	return utils.Coin{
 		Amount: amount,
-		Denom:  constant.IrisAttoUnit,
+		Denom:  types.IRISUint,
 	}
 }
 
@@ -166,6 +176,7 @@ func (service *AccountService) QueryUnbondingDelegations(address string) (result
 		valaddrlist = append(valaddrlist, val.ValidatorAddr)
 	}
 	validatorMap := getValidators(valaddrlist)
+	result = make([]*vo.AccountUnbondingDelegationsVo, 0, len(unbondingdelegations))
 
 	for _, val := range unbondingdelegations {
 		data := vo.AccountUnbondingDelegationsVo{
@@ -179,6 +190,7 @@ func (service *AccountService) QueryUnbondingDelegations(address string) (result
 				data.Moniker = valdator.Description.Moniker
 			}
 		}
+		result = append(result, &data)
 
 	}
 	return result
