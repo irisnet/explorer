@@ -18,7 +18,7 @@ func (service *GovParamsService) GetModule() Module {
 	return GovParams
 }
 
-func (service *GovParamsService) QueryAll() []document.GovParams {
+func (service *GovParamsService) QueryAll() document.GovParamsList {
 	params, err := document.GovParams{}.QueryAll()
 
 	if err != nil {

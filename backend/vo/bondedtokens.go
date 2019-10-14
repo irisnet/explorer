@@ -8,3 +8,5 @@ type BondedTokensVo struct {
 	OwnerAddress    string `json:"owner_address"`
 	Icons           string `json:"icons"`
 }
+
+type BondedTokensRespond []*BondedTokensVo
