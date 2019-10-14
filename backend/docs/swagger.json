@@ -1985,8 +1985,8 @@
                     },
                     {
                         "enum": [
-                            "true",
-                            "false"
+                            "success",
+                            "fail"
                         ],
                         "type": "string",
                         "description": "status",
@@ -2146,8 +2146,8 @@
                     },
                     {
                         "enum": [
-                            "true",
-                            "false"
+                            "success",
+                            "fail"
                         ],
                         "type": "string",
                         "description": "status",

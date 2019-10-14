@@ -2736,8 +2736,8 @@ paths:
         type: string
       - description: status
         enum:
-        - "true"
-        - "false"
+        - success
+        - fail
         in: query
         name: status
         type: string
@@ -2804,8 +2804,8 @@ paths:
         type: string
       - description: status
         enum:
-        - "true"
-        - "false"
+        - success
+        - fail
         in: query
         name: status
         type: string

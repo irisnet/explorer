@@ -47,7 +47,7 @@ func RegisterTx(r *mux.Router) error {
 // @Param   size   query   int true    "page size" Default(5)
 // @Param   height   query   int64 false    "height"
 // @Param   txType   query   string false    "txType"
-// @Param   status   query   string false    "status" Enums(true,false)
+// @Param   status   query   string false    "status" Enums(success,fail)
 // @Param   address   query   string false    "address"
 // @Param   beginTime   query  int64 false    "beginTime"
 // @Param   endTime   query   int64 false    "endTime"
@@ -132,7 +132,7 @@ func registerQueryTxList(r *mux.Router) error {
 // @Param   type   path   string true    "type"
 // @Param   height   query   int64 false    "height"
 // @Param   txType   query   string false    "txType"
-// @Param   status   query   string false    "status" Enums(true,false)
+// @Param   status   query   string false    "status" Enums(success,fail)
 // @Param   address   query   string false    "address"
 // @Param   beginTime   query  int64 false    "beginTime"
 // @Param   endTime   query   int64 false    "endTime"
