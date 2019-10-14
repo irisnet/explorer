@@ -101,6 +101,14 @@ const urlApi = {
   //assetList
   nativeAssetList:'/api/asset/tokens?source=native',
   gatewayAssetList:'/api/asset/tokens?source=gateway',
+  //addressInformation
+  addressInformation:'/api/account/{address}',
+  delegationList:'/api/account/{address}/delegations',
+  unDelegationList:'/api/account/{address}/unbonding_delegations',
+  rewardList:'/api/account/{address}/rewards',
+  addressTxList:'/api/txs?page={pageNumber}&size={pageSize}&total=true&address={address}',
+  addressAllTxType:'/api/tx_types/{type}',
+  getTxListByAddress:'/api/txs?page={pageNumber}&size={pageSize}&total=true&txType={txType}&status={status}&beginTime={beginTime}&endTime={endTime}&address={address}',
   
 };
 

@@ -571,8 +571,9 @@ export default class Tools{
 	 *   formatAmount
 	 *   param Object or array
 	 *   return string
+	 *   fixedNumber: nonzero
 	 * */
-	static formatAmount2(param){
+	static formatAmount2(param,fixedNumber){
 		let amount,amountDenom, amountNumber,amountRadixNumber;
 		if(param instanceof Array){
 			amount = param[0].amount;
@@ -590,9 +591,9 @@ export default class Tools{
 			amountRadixNumber = Tools.amountRadix(amountDenom);
 		}
 		if(amountDenom){
-			return `${new BigNumber(moveDecimal(amountNumber,(Number(amountRadixNumber)* -1))).toFormat()} ${Constant.RADIXDENOM.IRIS.toLocaleUpperCase()}`
+			return `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(amountNumber,(Number(amountRadixNumber)* -1))).toFormat(),fixedNumber)} ${Constant.RADIXDENOM.IRIS.toLocaleUpperCase()}`
 		}else {
-			return `${new BigNumber(moveDecimal(amountNumber,(Number(amountRadixNumber) * -1))).toFormat()} SHARES`
+			return `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(amountNumber,(Number(amountRadixNumber) * -1))).toFormat(),fixedNumber)} SHARES`
 		}
 	}
 	/**
