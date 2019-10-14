@@ -1,4 +1,12 @@
+swagger: "2.0"
 definitions:
+  utils.Coin:
+    properties:
+      amount:
+        type: number
+      denom:
+        type: string
+    type: object
   utils.CoinAsStr:
     properties:
       amount:
@@ -28,6 +36,36 @@ definitions:
         $ref: '#/definitions/utils.CoinsAsStr'
         type: object
     type: object
+  vo.AccountUnbondingDelegationsRespond:
+    items:
+      properties:
+        address:
+          type: string
+        amount:
+          $ref: '#/definitions/utils.Coin'
+          type: object
+        end_time:
+          type: string
+        height:
+          type: string
+        moniker:
+          type: string
+      type: object
+    type: array
+  vo.AccountUnbondingDelegationsVo:
+    properties:
+      address:
+        type: string
+      amount:
+        $ref: '#/definitions/utils.Coin'
+        type: object
+      end_time:
+        type: string
+      height:
+        type: string
+      moniker:
+        type: string
+    type: object
   vo.DelagationsRewards:
     properties:
       address:
@@ -42,19 +80,15 @@ info:
   contact: {}
   license: {}
 paths:
-  /account/{address}/rewards:
+  /api/account/{address}/rewards:
     get:
       consumes:
       - application/json
-      description: get list of notice
+      description: get rewards of account
       parameters:
-      - description: notice status
-        enum:
-        - unpublished
-        - published
-        - expired
-        in: query
-        name: account
+      - description: account address
+        in: path
+        name: address
         type: string
       produces:
       - application/json
@@ -63,6 +97,27 @@ paths:
           description: success
           schema:
             $ref: '#/definitions/vo.AccountRewardsVo'
+            type: object
+      summary: list
+      tags:
+      - account
+  /api/account/{address}/unbonding_delegations:
+    get:
+      consumes:
+      - application/json
+      description: get unbondingdelegations of account
+      parameters:
+      - description: account address
+        in: path
+        name: address
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.AccountUnbondingDelegationsRespond'
             type: object
       summary: list
       tags:

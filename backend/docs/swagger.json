@@ -4,9 +4,9 @@
         "license": {}
     },
     "paths": {
-        "/account/{address}/rewards": {
+        "/api/account/{address}/rewards": {
             "get": {
-                "description": "get list of notice",
+                "description": "get rewards of account",
                 "consumes": [
                     "application/json"
                 ],
@@ -19,15 +19,10 @@
                 "summary": "list",
                 "parameters": [
                     {
-                        "enum": [
-                            "unpublished",
-                            "published",
-                            "expired"
-                        ],
                         "type": "string",
-                        "description": "notice status",
-                        "name": "account",
-                        "in": "query"
+                        "description": "account address",
+                        "name": "address",
+                        "in": "path"
                     }
                 ],
                 "responses": {
@@ -40,9 +35,52 @@
                     }
                 }
             }
+        },
+        "/api/account/{address}/unbonding_delegations": {
+            "get": {
+                "description": "get unbondingdelegations of account",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "account"
+                ],
+                "summary": "list",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "account address",
+                        "name": "address",
+                        "in": "path"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/vo.AccountUnbondingDelegationsRespond"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "utils.Coin": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "denom": {
+                    "type": "string"
+                }
+            }
+        },
         "utils.CoinAsStr": {
             "type": "object",
             "properties": {
@@ -84,6 +122,51 @@
                 "total_rewards": {
                     "type": "object",
                     "$ref": "#/definitions/utils.CoinsAsStr"
+                }
+            }
+        },
+        "vo.AccountUnbondingDelegationsRespond": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "address": {
+                        "type": "string"
+                    },
+                    "amount": {
+                        "type": "object",
+                        "$ref": "#/definitions/utils.Coin"
+                    },
+                    "end_time": {
+                        "type": "string"
+                    },
+                    "height": {
+                        "type": "string"
+                    },
+                    "moniker": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "vo.AccountUnbondingDelegationsVo": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "object",
+                    "$ref": "#/definitions/utils.Coin"
+                },
+                "end_time": {
+                    "type": "string"
+                },
+                "height": {
+                    "type": "string"
+                },
+                "moniker": {
+                    "type": "string"
                 }
             }
         },
