@@ -878,12 +878,17 @@ func computeUptime(valPub string, height int64) float32 {
 	startHeight := utils.ParseIntWithDefault(result.StartHeight, 0)
 
 	var stats_blocks_window int64
-	signed_blocks_window, ok := utils.ParseInt(govSlashingParamMap["signed_blocks_window"].(string))
-	if !ok {
+	if _,ok := govSlashingParamMap["signed_blocks_window"]; ok {
+		signed_blocks_window, ok := utils.ParseInt(govSlashingParamMap["signed_blocks_window"].(string))
+		if !ok {
+			stats_blocks_window = height - startHeight + 1
+		} else {
+			stats_blocks_window = Min(signed_blocks_window, height-startHeight+1)
+		}
+	}else{
 		stats_blocks_window = height - startHeight + 1
-	} else {
-		stats_blocks_window = Min(signed_blocks_window, height-startHeight+1)
 	}
+
 
 	missedBlocksCounter := utils.ParseIntWithDefault(result.MissedBlocksCounter, 0)
 
