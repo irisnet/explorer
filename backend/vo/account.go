@@ -69,6 +69,8 @@ type AccountUnbondingDelegationsVo struct {
 	EndTime string     `json:"end_time"`
 }
 
+type AccountsInfoRespond []AccountInfo
+type AccountDelegationsRespond []*AccountDelegationsVo
 type AccountUnbondingDelegationsRespond []*AccountUnbondingDelegationsVo
 
 

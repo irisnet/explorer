@@ -65,7 +65,7 @@ func getValidatorStatus(validator document.Validator) string {
 	return "Jailed"
 }
 
-func (service *AccountService) QueryRichList() interface{} {
+func (service *AccountService) QueryRichList() (vo.AccountsInfoRespond) {
 
 	result, err := document.Account{}.GetAccountList()
 
@@ -106,7 +106,7 @@ func isProfiler(address string) bool {
 	return false
 }
 
-func (service *AccountService) QueryDelegations(address string) (result []*vo.AccountDelegationsVo) {
+func (service *AccountService) QueryDelegations(address string) (result vo.AccountDelegationsRespond) {
 	delegations := lcd.GetDelegationsByDelAddr(address)
 	var  valaddrlist  []string
 	for _,val := range delegations {

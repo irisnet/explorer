@@ -377,7 +377,7 @@ func (service *AssetsService) QueryAssetGatewayDetail(moniker string) (vo.AssetG
 	}, nil
 }
 
-func (service *AssetsService) QueryAssetTokens(source string) ([]vo.AssetTokens, error) {
+func (service *AssetsService) QueryAssetTokens(source string) (vo.AssetTokensRespond, error) {
 	res, err := document.AssetToken{}.GetAssetTokens(source)
 	if err != nil {
 		logger.Error("GetAssetByAddr", logger.String("err", err.Error()))

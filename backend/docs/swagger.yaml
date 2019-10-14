@@ -13,6 +13,15 @@ definitions:
       denom:
         type: string
     type: object
+  utils.Coins:
+    items:
+      properties:
+        amount:
+          type: number
+        denom:
+          type: string
+      type: object
+    type: array
   utils.CoinsAsStr:
     items:
       properties:
@@ -22,6 +31,51 @@ definitions:
           type: string
       type: object
     type: array
+  vo.AccountDelegationsRespond:
+    items:
+      properties:
+        address:
+          type: string
+        amount:
+          $ref: '#/definitions/utils.Coin'
+          type: object
+        height:
+          type: string
+        moniker:
+          type: string
+        shares:
+          type: string
+      type: object
+    type: array
+  vo.AccountDelegationsVo:
+    properties:
+      address:
+        type: string
+      amount:
+        $ref: '#/definitions/utils.Coin'
+        type: object
+      height:
+        type: string
+      moniker:
+        type: string
+      shares:
+        type: string
+    type: object
+  vo.AccountInfo:
+    properties:
+      address:
+        type: string
+      balance:
+        items:
+          $ref: '#/definitions/utils.Coin'
+        type: array
+      percent:
+        type: number
+      rank:
+        type: integer
+      update_at:
+        type: integer
+    type: object
   vo.AccountRewardsVo:
     properties:
       commission_rewards:
@@ -65,6 +119,193 @@ definitions:
       moniker:
         type: string
     type: object
+  vo.AccountVo:
+    properties:
+      address:
+        type: string
+      amount:
+        $ref: '#/definitions/utils.Coins'
+        type: object
+      deposits:
+        $ref: '#/definitions/utils.Coin'
+        type: object
+      isProfiler:
+        type: boolean
+      moniker:
+        type: string
+      operator_address:
+        type: string
+      status:
+        type: string
+      withdrawAddress:
+        type: string
+    type: object
+  vo.AccountsInfoRespond:
+    items:
+      properties:
+        address:
+          type: string
+        balance:
+          items:
+            $ref: '#/definitions/utils.Coin'
+          type: array
+        percent:
+          type: number
+        rank:
+          type: integer
+        update_at:
+          type: integer
+      type: object
+    type: array
+  vo.ActualFee:
+    properties:
+      amount:
+        type: number
+      denom:
+        type: string
+    type: object
+  vo.AssetGateways:
+    properties:
+      details:
+        type: string
+      icons:
+        type: string
+      identity:
+        type: string
+      moniker:
+        type: string
+      owner:
+        type: string
+      website:
+        type: string
+    type: object
+  vo.AssetTokens:
+    properties:
+      asset_gateway:
+        $ref: '#/definitions/vo.AssetGateways'
+        type: object
+      canonical_symbol:
+        type: string
+      decimal:
+        type: integer
+      family:
+        type: string
+      gateway:
+        type: string
+      initial_supply:
+        type: string
+      max_supply:
+        type: string
+      min_unit_alias:
+        type: string
+      mintable:
+        type: boolean
+      name:
+        type: string
+      owner:
+        type: string
+      source:
+        type: string
+      symbol:
+        type: string
+      token_id:
+        type: string
+      total_supply:
+        type: string
+    type: object
+  vo.AssetTokensRespond:
+    items:
+      properties:
+        asset_gateway:
+          $ref: '#/definitions/vo.AssetGateways'
+          type: object
+        canonical_symbol:
+          type: string
+        decimal:
+          type: integer
+        family:
+          type: string
+        gateway:
+          type: string
+        initial_supply:
+          type: string
+        max_supply:
+          type: string
+        min_unit_alias:
+          type: string
+        mintable:
+          type: boolean
+        name:
+          type: string
+        owner:
+          type: string
+        source:
+          type: string
+        symbol:
+          type: string
+        token_id:
+          type: string
+        total_supply:
+          type: string
+      type: object
+    type: array
+  vo.AssetsRespond:
+    properties:
+      asset_type:
+        type: string
+      total:
+        type: integer
+      txs:
+        items:
+          $ref: '#/definitions/vo.AssetsVo'
+        type: array
+    type: object
+  vo.AssetsVo:
+    properties:
+      amount:
+        type: integer
+      canonical_symbol:
+        type: string
+      decimal:
+        type: integer
+      dst_owner:
+        type: string
+      gateway:
+        type: string
+      height:
+        type: integer
+      initial_supply:
+        type: integer
+      max_supply:
+        type: integer
+      mint_to:
+        type: string
+      mintable:
+        type: boolean
+      name:
+        type: string
+      owner:
+        type: string
+      src_owner:
+        type: string
+      symbol:
+        type: string
+      symbol_min:
+        type: string
+      timestamp:
+        type: string
+      token_id:
+        type: string
+      tx_fee:
+        $ref: '#/definitions/vo.ActualFee'
+        type: object
+      tx_hash:
+        type: string
+      tx_status:
+        type: string
+      type:
+        type: string
+    type: object
   vo.DelagationsRewards:
     properties:
       address:
@@ -79,6 +320,48 @@ info:
   contact: {}
   license: {}
 paths:
+  /api/account/{address}:
+    get:
+      consumes:
+      - application/json
+      description: get detail of account
+      parameters:
+      - description: account address
+        in: path
+        name: address
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.AccountVo'
+            type: object
+      summary: detail
+      tags:
+      - account
+  /api/account/{address}/delegations:
+    get:
+      consumes:
+      - application/json
+      description: get delegations of account
+      parameters:
+      - description: account address
+        in: path
+        name: address
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.AccountDelegationsRespond'
+            type: object
+      summary: list
+      tags:
+      - account
   /api/account/{address}/rewards:
     get:
       consumes:
@@ -121,3 +404,174 @@ paths:
       summary: list
       tags:
       - account
+  /api/accounts:
+    get:
+      consumes:
+      - application/json
+      description: get list of account
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.AccountsInfoRespond'
+            type: object
+      summary: list
+      tags:
+      - account
+  /api/asset/gateways/{moniker}:
+    get:
+      consumes:
+      - application/json
+      description: get gateway assets token detail
+      parameters:
+      - description: moniker
+        in: path
+        name: moniker
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.AssetGateways'
+            type: object
+      summary: detail
+      tags:
+      - assets
+  /api/asset/tokens:
+    get:
+      consumes:
+      - application/json
+      description: get asset tokens
+      parameters:
+      - description: source
+        in: query
+        name: source
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.AssetTokensRespond'
+            type: object
+      summary: list
+      tags:
+      - assets
+  /api/asset/tokens/{token_id}:
+    get:
+      consumes:
+      - application/json
+      description: get assets token detail
+      parameters:
+      - description: token_id
+        in: path
+        name: token_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.AssetTokens'
+            type: object
+      summary: detail
+      tags:
+      - assets
+  /api/assets/gateway/txs:
+    get:
+      consumes:
+      - application/json
+      description: get assets txs
+      parameters:
+      - description: page num
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: page size
+        in: query
+        name: size
+        required: true
+        type: integer
+      - description: txs type
+        in: query
+        name: tx_type
+        type: string
+      - description: asset symbol
+        in: query
+        name: symbol
+        type: string
+      - description: gateway
+        in: query
+        name: gateway
+        type: string
+      - description: moniker
+        in: query
+        name: moniker
+        type: string
+      - description: if used count
+        enum:
+        - "true"
+        - "false"
+        in: query
+        name: total
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.AssetsRespond'
+            type: object
+      summary: gateway
+      tags:
+      - assets
+  /api/assets/native/txs:
+    get:
+      consumes:
+      - application/json
+      description: get assets txs
+      parameters:
+      - description: page num
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: page size
+        in: query
+        name: size
+        required: true
+        type: integer
+      - description: txs type
+        in: query
+        name: tx_type
+        type: string
+      - description: asset symbol
+        in: query
+        name: symbol
+        type: string
+      - description: if used count
+        enum:
+        - "true"
+        - "false"
+        in: query
+        name: total
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.AssetsRespond'
+            type: object
+      summary: native
+      tags:
+      - assets
