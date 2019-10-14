@@ -145,6 +145,13 @@ definitions:
           type: number
       type: object
     type: array
+  types.BizCode:
+    properties:
+      code:
+        type: string
+      msg:
+        type: string
+    type: object
   utils.ActualFee:
     properties:
       amount:
@@ -946,6 +953,35 @@ definitions:
           type: number
       type: object
     type: array
+  vo.QueryTxTypeRespond:
+    items: {}
+    type: array
+  vo.RecentTx:
+    properties:
+      actual_fee:
+        $ref: '#/definitions/utils.Coin'
+        type: object
+      time:
+        type: string
+      tx_hash:
+        type: string
+      type:
+        type: string
+    type: object
+  vo.RecentTxRespond:
+    items:
+      properties:
+        actual_fee:
+          $ref: '#/definitions/utils.Coin'
+          type: object
+        time:
+          type: string
+        tx_hash:
+          type: string
+        type:
+          type: string
+      type: object
+    type: array
   vo.Redelegation:
     properties:
       address:
@@ -967,6 +1003,15 @@ definitions:
         type: array
       total:
         type: integer
+    type: object
+  vo.Response:
+    properties:
+      code:
+        type: string
+      data:
+        type: object
+      msg:
+        type: string
     type: object
   vo.ResultVo:
     properties:
@@ -999,6 +1044,51 @@ definitions:
       type:
         type: string
     type: object
+  vo.StakeTx:
+    properties:
+      amount:
+        $ref: '#/definitions/utils.Coins'
+        type: object
+      block_height:
+        type: integer
+      fee:
+        $ref: '#/definitions/utils.ActualFee'
+        type: object
+      from:
+        type: string
+      from_moniker:
+        type: string
+      gas_limit:
+        type: integer
+      gas_price:
+        type: number
+      gas_used:
+        type: integer
+      gas_wanted:
+        type: integer
+      hash:
+        type: string
+      log:
+        type: string
+      memo:
+        type: string
+      signer:
+        type: string
+      source:
+        type: string
+      status:
+        type: string
+      tags:
+        type: object
+      timestamp:
+        type: string
+      to:
+        type: string
+      to_moniker:
+        type: string
+      type:
+        type: string
+    type: object
   vo.Tx:
     properties:
       Signer:
@@ -1024,6 +1114,22 @@ definitions:
       type:
         type: string
     type: object
+  vo.TxNumGroupByDayVo:
+    properties:
+      date:
+        type: string
+      num:
+        type: integer
+    type: object
+  vo.TxNumGroupByDayVoRespond:
+    items:
+      properties:
+        date:
+          type: string
+        num:
+          type: integer
+      type: object
+    type: array
   vo.TxPage:
     properties:
       items:
@@ -1031,6 +1137,17 @@ definitions:
           $ref: '#/definitions/vo.Tx'
         type: array
       total:
+        type: integer
+    type: object
+  vo.TxStatisticsVo:
+    properties:
+      declaration_cnt:
+        type: integer
+      gov_cnt:
+        type: integer
+      stake_cnt:
+        type: integer
+      trans_cnt:
         type: integer
     type: object
   vo.UnbondingDelegations:
@@ -2382,7 +2499,7 @@ paths:
         "200":
           description: success
           schema:
-            $ref: '#/definitions/nil'
+            $ref: '#/definitions/vo.Response'
             type: object
       summary: update_icons
       tags:
@@ -2403,3 +2520,434 @@ paths:
       summary: sysdate
       tags:
       - common
+  /api/task/asset_gateways:
+    put:
+      consumes:
+      - application/json
+      description: update asset gateways
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/types.BizCode'
+            type: object
+      summary: update asset_gateways
+      tags:
+      - task
+  /api/task/asset_tokens:
+    put:
+      consumes:
+      - application/json
+      description: update asset tokens
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/types.BizCode'
+            type: object
+      summary: update asset_tokens
+      tags:
+      - task
+  /api/task/black_validators:
+    put:
+      consumes:
+      - application/json
+      description: update black validators
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/types.BizCode'
+            type: object
+      summary: update black validators
+      tags:
+      - task
+  /api/task/gov_params:
+    put:
+      consumes:
+      - application/json
+      description: update gov params
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/types.BizCode'
+            type: object
+      summary: update gov_params
+      tags:
+      - task
+  /api/task/tx_num_by_day:
+    put:
+      consumes:
+      - application/json
+      description: update tx_num_by_day
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/types.BizCode'
+            type: object
+      summary: update tx_num_by_day
+      tags:
+      - task
+  /api/task/validator_icons:
+    put:
+      consumes:
+      - application/json
+      description: update validator icons
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/types.BizCode'
+            type: object
+      summary: update validator icons
+      tags:
+      - task
+  /api/task/validators:
+    put:
+      consumes:
+      - application/json
+      description: update validators
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/types.BizCode'
+            type: object
+      summary: update validators
+      tags:
+      - task
+  /api/tokenstats:
+    get:
+      consumes:
+      - application/json
+      description: tokenstats
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.Response'
+            type: object
+      summary: tokenstats
+      tags:
+      - tokenstats
+  /api/tokenstats/account_total:
+    get:
+      consumes:
+      - application/json
+      description: get tokenstats account_total
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.Response'
+            type: object
+      summary: account_total
+      tags:
+      - tokenstats
+  /api/tx/{hash}:
+    get:
+      consumes:
+      - application/json
+      description: get txs detail
+      parameters:
+      - description: txhash
+        in: path
+        name: hash
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.StakeTx'
+            type: object
+      summary: tx detail
+      tags:
+      - txs
+  /api/tx_types/{type}:
+    get:
+      consumes:
+      - application/json
+      description: get tx_types detail
+      parameters:
+      - description: type
+        in: path
+        name: type
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.QueryTxTypeRespond'
+            type: object
+      summary: tx_types detail
+      tags:
+      - txs
+  /api/txs:
+    get:
+      consumes:
+      - application/json
+      description: get txs list
+      parameters:
+      - default: 1
+        description: page num
+        in: query
+        name: page
+        required: true
+        type: integer
+      - default: 5
+        description: page size
+        in: query
+        name: size
+        required: true
+        type: integer
+      - description: height
+        in: query
+        name: height
+        type: integer
+      - description: txType
+        in: query
+        name: txType
+        type: string
+      - description: status
+        enum:
+        - "true"
+        - "false"
+        in: query
+        name: status
+        type: string
+      - description: address
+        in: query
+        name: address
+        type: string
+      - description: beginTime
+        in: query
+        name: beginTime
+        type: integer
+      - description: endTime
+        in: query
+        name: endTime
+        type: integer
+      - description: total
+        enum:
+        - true
+        - false
+        in: query
+        name: total
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.PageVo'
+            type: object
+      summary: list
+      tags:
+      - txs
+  /api/txs/{type}/{page}/{size}:
+    get:
+      consumes:
+      - application/json
+      description: get txs list by type
+      parameters:
+      - default: 1
+        description: page num
+        in: path
+        name: page
+        required: true
+        type: integer
+      - default: 5
+        description: page size
+        in: path
+        name: size
+        required: true
+        type: integer
+      - description: type
+        in: path
+        name: type
+        required: true
+        type: string
+      - description: height
+        in: query
+        name: height
+        type: integer
+      - description: txType
+        in: query
+        name: txType
+        type: string
+      - description: status
+        enum:
+        - "true"
+        - "false"
+        in: query
+        name: status
+        type: string
+      - description: address
+        in: query
+        name: address
+        type: string
+      - description: beginTime
+        in: query
+        name: beginTime
+        type: integer
+      - description: endTime
+        in: query
+        name: endTime
+        type: integer
+      - description: total
+        enum:
+        - true
+        - false
+        in: query
+        name: total
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.PageVo'
+            type: object
+      summary: list by type
+      tags:
+      - txs
+  /api/txs/recent:
+    get:
+      consumes:
+      - application/json
+      description: get txs recent
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.RecentTxRespond'
+            type: object
+      summary: txs recent
+      tags:
+      - txs
+  /api/txs/statistics:
+    get:
+      consumes:
+      - application/json
+      description: get txs counter
+      parameters:
+      - description: address
+        in: query
+        name: address
+        type: string
+      - description: height
+        in: query
+        name: height
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.TxStatisticsVo'
+            type: object
+      summary: txs counter
+      tags:
+      - txs
+  /api/txsByAddress/{address}/{page}/{size}:
+    get:
+      consumes:
+      - application/json
+      description: txsByAddress
+      parameters:
+      - description: address
+        in: path
+        name: address
+        required: true
+        type: string
+      - description: pagenum
+        in: path
+        name: page
+        required: true
+        type: integer
+      - description: pagesize
+        in: path
+        name: size
+        required: true
+        type: integer
+      - description: total
+        enum:
+        - true
+        - false
+        in: query
+        name: total
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.PageVo'
+            type: object
+      summary: txsByAddress
+      tags:
+      - txs
+  /api/txsByDay:
+    get:
+      consumes:
+      - application/json
+      description: get txs ByDay
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.TxNumGroupByDayVoRespond'
+            type: object
+      summary: txsByDay
+      tags:
+      - txs
+  /api/version:
+    get:
+      consumes:
+      - application/json
+      description: version
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/map'
+            type: object
+      summary: version
+      tags:
+      - version

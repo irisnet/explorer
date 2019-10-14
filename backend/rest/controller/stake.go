@@ -263,7 +263,7 @@ func registerGetValidators(r *mux.Router) error {
 // @Tags stake
 // @Accept  json
 // @Produce  json
-// @Success 200 {object} nil  "success"
+// @Success 200 {object} vo.Response  "success"
 // @Router /api/stake/validators/update_icons [get]
 func registerUpdateValidatorIcons(r *mux.Router) error {
 	doApi(r, types.UrlRegisterUpdateIcons, "GET", func(request vo.IrisReq) interface{} {
