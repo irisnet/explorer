@@ -108,6 +108,7 @@ const (
 	TxTag_WithDrawAddress             = "withdraw-address"
 
 	IRISUint   = "iris"
+	IRISAttoUint   = "iris-atto"
 )
 
 var (

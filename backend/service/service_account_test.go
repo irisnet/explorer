@@ -13,12 +13,11 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/txn"
 	"testing"
-	"github.com/irisnet/explorer/backend/vo"
 )
 
 func TestQuery(t *testing.T) {
 
-	addrStr := "faa186qhtc62cf6ejlt3erw6zk28mgw8ne7gkx3t55"
+	addrStr := "faa174qyl02cupyqq77cqqtdl0frda6dl3rpjcrgnp"
 
 	res := new(AccountService).Query(addrStr)
 	t.Logf("account by addr(%v):  %v \n", addrStr, res)
@@ -60,11 +59,11 @@ func TestQueryRichList(t *testing.T) {
 
 	richList := new(AccountService).QueryRichList()
 
-	if modelVList, ok := richList.([]vo.AccountInfo); ok {
-		for k, v := range modelVList {
+	//if modelVList, ok := richList.([]vo.AccountInfo); ok {
+		for k, v := range richList {
 			t.Logf("k: %v  v: %v \n", k, v)
 		}
-	}
+	//}
 }
 
 var genesis GenesisDoc
