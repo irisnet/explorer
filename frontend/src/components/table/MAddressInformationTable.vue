@@ -58,6 +58,9 @@
                 </div>
             </template>
         </m-table>
+        <div class="no_data_img_content" v-if="showNoData">
+            <img src="../../assets/no_data.svg" >
+        </div>
     </div>
 </template>
 
@@ -77,7 +80,11 @@
 			width: {
 				type: Number,
 				default: 1280
-			}
+			},
+			showNoData: {
+				type: Boolean,
+				default: true
+			},
         },
         data (){
 			return {
@@ -220,6 +227,21 @@
 <style lang="scss">
     .address_link{
         color:var(--bgColor) !important;
+    }
+    .address_detail_table{
+
+        .no_data_img_content{
+            display: flex;
+            justify-content: center;
+            border-top: 0.01rem solid #eee;
+            border-bottom: 0.01rem solid #eee;
+            font-size: 0.14rem;
+            height: 1.8rem;
+            align-items: center;
+            img{
+                width: 1.2rem;
+            }
+        }
     }
     .address_information_delegation_list_content{
         .address_detail_table {
