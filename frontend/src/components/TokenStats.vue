@@ -77,48 +77,23 @@ export default {
                                 let obj = [
                                     {
                                         label: "Total Supply",
-                                        value: this.$options.filters.amountFromat(
-                                            data.totalsupply_tokens,
-                                            undefined,
-                                            4,
-                                            true
-                                        )
+                                        value: Tools.formatAmount2(data.totalsupply_tokens,4,)
                                     },
                                     {
                                         label: "Circulation",
-                                        value: this.$options.filters.amountFromat(
-                                            data.circulation_tokens,
-                                            undefined,
-                                            4,
-                                            true
-                                        )
+                                        value: Tools.formatAmount2(data.circulation_tokens,4,)
                                     },
                                     {
                                         label: "Initial Supply",
-                                        value: this.$options.filters.amountFromat(
-                                            data.initsupply_tokens,
-                                            undefined,
-                                            4,
-                                            true
-                                        )
+                                        value: Tools.formatAmount2(data.initsupply_tokens, 4)
                                     },
                                     {
                                         label: "Burned",
-                                        value: this.$options.filters.amountFromat(
-                                            data.burned_tokens,
-                                            undefined,
-                                            4,
-                                            true
-                                        )
+                                        value: Tools.formatAmount2(data.burned_tokens, 4)
                                     },
                                     {
                                         label: "Bonded Tokens",
-                                        value: this.$options.filters.amountFromat(
-                                            data.delegated_tokens,
-                                            undefined,
-                                            4,
-                                            true
-                                        )
+                                        value: Tools.formatAmount2(data.delegated_tokens,4)
                                     }
                                 ];
                                 this.items = obj;
