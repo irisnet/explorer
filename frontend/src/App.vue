@@ -380,47 +380,47 @@
   }
   @media screen and (max-width: 910px) {
     #app{
-      #router_wrap{
-        footer {
+      #footer {
+        height: auto;
+        .person_computer_footer{
+          flex-direction: column;
           height: auto;
-          .person_computer_footer{
-            flex-direction: column;
-            height: auto;
-            .footer_logo_content{
-              width: 100%;
+          .footer_logo_content{
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            flex: 1;
+            height: 100%;
+            .irisnet_link_content{
+              width: 40%;
+              padding: 0.1rem 0;
               display: flex;
-              justify-content: center;
-             .irisnet_link_content{
-               width: 40%;
-               padding: 0.1rem 0;
-               display: flex;
-               align-items: center;
-               .irisnet_logo_img{
-                 width: 100%;
-               }
-             }
-            }
-            .community_container{
-              justify-content: center;
-              .community_title{
-                text-align: center;
-              }
-              .community_list_content{
-                justify-content: center;
-              }
-            }
-            .footer_right_content{
-              padding: 0.2rem 0;
-              .resources_content{
-                text-align: center;
-              }
-              .footer_link_wrap{
-                text-align: center;
+              align-items: center;
+              .irisnet_logo_img{
+                width: 100%;
               }
             }
           }
-          .footer_copyright_wrap{}
+          .community_container{
+            justify-content: center;
+            .community_title{
+              text-align: center;
+            }
+            .community_list_content{
+              justify-content: center;
+            }
+          }
+          .footer_right_content{
+            padding: 0.2rem 0;
+            .resources_content{
+              text-align: center;
+            }
+            .footer_link_wrap{
+              text-align: center;
+            }
+          }
         }
+        .footer_copyright_wrap{}
       }
     }
     //解决在移动端，日期选择器会移出到窗口以外
