@@ -49,7 +49,7 @@ func (service *AccountService) Query(address string) (result vo.AccountVo) {
 
 			for i, val := range amount {
 				denom := strings.Split(val.Denom, "-min")[0]
-				if dem, ok := decimalMap[denom]; ok && dem > 0{
+				if dem, ok := decimalMap[denom]; ok && dem > 0 {
 					amount[i].Denom = denom
 					amount[i].Amount = amount[i].Amount / float64(dem)
 				}
@@ -95,32 +95,29 @@ func (service *AccountService) QueryRichList() (vo.AccountsInfoRespond) {
 
 	var accList []vo.AccountInfo
 	var totalAmt = float64(0)
-	AccountAmtMap := make(map[string]float64,len(result))
+	//AccountAmtMap := make(map[string]float64,len(result))
 
 	for _, acc := range result {
-		AccountAmtMap[acc.Address] = acc.Total.Amount
-		_,_,rewards,err := lcd.GetDistributionRewardsByValidatorAcc(acc.Address)
-		if err == nil && len(rewards) > 0 {
-			if rewards[0].Denom == types.IRISAttoUint {
-				rewardsAmt,_ := strconv.ParseFloat(rewards[0].Amount,64)
-				AccountAmtMap[acc.Address] += rewardsAmt
-				totalAmt += rewardsAmt
-			}
-
-		}
+		//AccountAmtMap[acc.Address] = acc.Total.Amount
+		//_,_,rewards,err := lcd.GetDistributionRewardsByValidatorAcc(acc.Address)
+		//if err == nil && len(rewards) > 0 {
+		//	if rewards[0].Denom == types.IRISAttoUint {
+		//		rewardsAmt,_ := strconv.ParseFloat(rewards[0].Amount,64)
+		//		AccountAmtMap[acc.Address] += rewardsAmt
+		//		totalAmt += rewardsAmt
+		//	}
+		//
+		//}
 		totalAmt += acc.Total.Amount
 	}
 
 	for index, acc := range result {
-		rate, _ := utils.NewRatFromFloat64(AccountAmtMap[acc.Address] / totalAmt).Float64()
+		rate, _ := utils.NewRatFromFloat64(acc.Total.Amount / totalAmt).Float64()
 		accList = append(accList, vo.AccountInfo{
 			Rank:    index + 1,
 			Address: acc.Address,
 			Balance: utils.Coins{
-				utils.Coin{
-					Amount:AccountAmtMap[acc.Address],
-					Denom:acc.Total.Denom,
-				},
+				acc.Total,
 			},
 			Percent:  rate,
 			UpdateAt: acc.TotalUpdateAt,
