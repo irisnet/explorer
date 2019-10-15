@@ -100,7 +100,7 @@
                         </keep-alive>
                     </div>
                 </div>
-                <div class="address_information_detail_container">
+                <div class="address_information_detail_container" :class="OperatorAddress !== '--' ? '' :'hide_style'" :style="{visibility:OperatorAddress && OperatorAddress !== '--' ? 'visible':'hidden'}">
                     <div class="address_information_redelegation_title">Validator Rewards
                         <span class="address_information_validator_rewards_value" v-show="totalValidatorRewards">{{totalValidatorRewards}}</span>
                     </div>
@@ -108,7 +108,10 @@
                         <li class="address_information_detail_option">
                             <span class="address_information_detail_option_name">Validator Moniker:</span>
                             <div class="validator_status_content">
-                                <span class="address_information_detail_option_value">{{validatorMoniker}}</span>
+                                <span class="address_information_detail_option_value">
+                                     <router-link v-show="OperatorAddress !== '--' && validatorMoniker !== '--'" :to="`/validators/${OperatorAddress}`">{{validatorMoniker}}</router-link>
+                                    <span v-show="OperatorAddress === '--' || validatorMoniker === '--'">{{validatorMoniker}}</span>
+                                </span>
                                 <span class="address_information_address_status_active" v-if="validatorStatus === 'Active'">Active</span>
                                 <span class="address_information_address_status_candidate" v-if="validatorStatus === 'Candidate'">Candidate</span>
                                 <span class="address_information_address_status_jailed" v-if="validatorStatus === 'Jailed'">Jailed</span>
@@ -310,6 +313,14 @@
                     }},(res) => {
                 	try {
                         if(res){
+                        	let arrayIndexOneData;
+	                        res.amount.forEach( item => {
+	                        	if(item.denom === 'iris-atto'){
+			                        arrayIndexOneData = item
+                                }
+                            });
+	                        res.amount.unshift(arrayIndexOneData);
+	                        res.amount = Array.from(new Set(res.amount));
 	                        this.validatorMoniker = res.moniker ? res.moniker : '--';
 	                        this.OperatorAddress = res.operator_address ? res.operator_address : '--';
 	                        this.validatorStatus = res.status;
@@ -342,11 +353,11 @@
                     }else {
 			            return {
 				            token: item.denom,
-				            balance: item.amount ? `${item.amount} ${item.denom.toUpperCase()}`: 0,
+				            balance: item.amount ? `${new BigNumber(item.amount).toFormat()} ${item.denom.toUpperCase()}`: 0,
 				            delegated: 0,
 				            unBonding: 0,
 				            reward: 0,
-				            totalAmount: item.amount ? `${item.amount} ${item.denom.toUpperCase()}`: 0
+				            totalAmount: item.amount ? `${new BigNumber(item.amount).toFormat()} ${item.denom.toUpperCase()}`: 0
 			            }
                     }
                 });
@@ -414,7 +425,16 @@
 	            	address: this.$route.params.param
                     }},(res) => {
 		            try {
-		            	if(res && res.delagations_rewards.length > 0) {
+		            	if(res && res.delagations_rewards && res.delagations_rewards.length > 0) {
+				            res.delagations_rewards.map( item => {
+
+				            	if(item.amount.length === 0){
+						            item.amount.push({
+							            amount:0,
+                                        denom:'iris-atto'
+                                    })
+                                }
+                            });
 				            this.totalValidatorRewards = res.commission_rewards ? Tools.formatAmount2(res.commission_rewards,this.fixedNumber) : 0;
 		            		this.allRewardsValue = res.total_rewards ? Tools.formatAmount2(res.total_rewards,this.fixedNumber) : 0;
 				            this.rewardsDelegationPageNationArrayData = this.pageNation(res.delagations_rewards);
@@ -648,7 +668,7 @@
 			        this.rewardsItems = this.rewardsDelegationPageNationArrayData.map( item => {
 				        return {
 					        address: item.address,
-					        amount: Tools.formatAmount2(item.amount,this.fixedNumber),
+					        amount: item.amount && item.amount.length > 0 ? Tools.formatAmount2(item.amount,this.fixedNumber) : 0,
 					        moniker: item.moniker
 				        }
 			        });
@@ -802,6 +822,7 @@
                             display: flex;
                             align-items: center;
                             .address_information_detail_option_name{
+                                width: 1.3rem;
                                 font-size: 0.14rem;
                                 color: #787c99;
                                 line-height: 0.16rem;
@@ -1116,6 +1137,9 @@
                                 }
                             }
                         }
+                    }
+                    .hide_style{
+                        display: none;
                     }
                 }
             }
