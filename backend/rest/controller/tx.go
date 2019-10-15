@@ -7,6 +7,7 @@ import (
 	"github.com/irisnet/explorer/backend/vo"
 	"gopkg.in/mgo.v2/bson"
 	"time"
+	"github.com/irisnet/explorer/backend/conf"
 )
 
 func RegisterTx(r *mux.Router) error {
@@ -84,7 +85,7 @@ func registerQueryTxList(r *mux.Router) error {
 			if txType != "" {
 				switch txType {
 				case types.TxTypeTransfer:
-					query["$or"] = []bson.M {
+					query["$or"] = []bson.M{
 						{"from": address},
 						{"to": address},
 					}
@@ -156,7 +157,14 @@ func registerQueryTxListByType(r *mux.Router) error {
 		address := GetString(request, "address")
 
 		if len(address) > 0 {
-			query["$or"] = []bson.M{{"signers.addr_bech32": address}, {"to": address}}
+			condition := []bson.M{{"to": address}}
+			prefix, _, _ := utils.DecodeAndConvert(address)
+			if prefix == conf.Get().Hub.Prefix.ValAddr {
+				condition = append(condition, bson.M{"from": address})
+			}else{
+				condition = append(condition, bson.M{"signers.addr_bech32": address})
+			}
+			query["$or"] = condition
 		}
 
 		height := GetInt(request, "height")
@@ -255,7 +263,14 @@ func registerQueryTxsCounter(r *mux.Router) error {
 
 		address := GetString(request, "address")
 		if len(address) > 0 {
-			query["$or"] = []bson.M{{"signers.addr_bech32": address}, {"to": address}}
+			condition := []bson.M{{"to": address}}
+			prefix, _, _ := utils.DecodeAndConvert(address)
+			if prefix == conf.Get().Hub.Prefix.ValAddr {
+				condition = append(condition, bson.M{"from": address})
+			}else{
+				condition = append(condition, bson.M{"signers.addr_bech32": address})
+			}
+			query["$or"] = condition
 		}
 
 		height := GetInt(request, "height")
