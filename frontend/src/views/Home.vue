@@ -155,6 +155,9 @@
             let that =this;
             clearInterval(this.timer);
             clearInterval(this.navigationTimer);
+            if(this.$store.state.currentSkinStyle !=='default'){
+	            this.setThemeStyle()
+            }
             this.timer = setInterval(function () {
                 that.getBlocksList();
                 that.getTransactionHistory();
@@ -185,6 +188,7 @@
             '$store.state.isMobile'(newVal, oldVal) {
                 this.onresize(newVal);
             },
+
             '$store.state.currentSkinStyle'(newVal){
                 if(newVal !== 'default '){
 	                this.setThemeStyle()
