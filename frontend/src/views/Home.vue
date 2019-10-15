@@ -134,17 +134,23 @@
                 depositorBarArr: [],
                 votingBarArr: [],
 	            levelValue:'',
+                mainnetThemeStyle:['#3264FD', '#4571FA', '#537CFD', '#6287FB', '#7092FD', '#85A3FF', '#92ACFF', '#9CB3FF', '#AABEFF', '#BDCDFF', '#E9EBFC',],
+                testnetFuXiThemeStyle:['#0C4282', '#144B8D', '#1B5498', '#235CA1', '#2E65A8', '#386EAE', '#427ABC', '#5087C8', '#5992D5', '#69A1E2', '#E9EBFC',],
+                testnetNyancatThemeStyle:['#0D9388', '#149A8F', '#1DA196', '#26ABA0', '#32B5AA', '#3FBDB2', '#4EC2B8', '#59C8BE', '#64D1C7', '#70DCD2', '#E9EBFC',],
+                defaultThemeStyle:['#3498db', '#47a2df', '#59ade3', '#6cb7e7', '#7fc2eb', '#91ccef', '#a4d7f3', '#b7e1f7', '#c9ecfb', '#dcf6ff', '#f0f9ff',],
+                themeStyleArray:'',
+                sessionStorageCurrentEnv:sessionStorage.getItem('skinCurrentEnv')
             }
         },
 
         beforeMount () {
-            this.getBlocksList();
+
+	        this.setThemeStyle();
+	        this.getBlocksList();
             this.getTransactionHistory();
             this.getTransactionList();
-            this.getValidatorsList();
             this.getNavigation();
             this.getPorposakList();
-
         },
         mounted () {
             document.getElementById('router_wrap').addEventListener('click', this.hideFeature);
@@ -171,20 +177,37 @@
                 this.pageClassName = 'mobile_home_wrap';
                 this.module_item_wrap = 'module_item_wrap_mobile';
             }
+
         },
         beforeDestroy () {
             window.removeEventListener('resize',this.onWindowResize);
             clearInterval(this.timer)
         },
         watch: {
-          '$store.state.isMobile'(newVal, oldVal) {
-            this.onresize(newVal);
-          }
+            '$store.state.isMobile'(newVal, oldVal) {
+                this.onresize(newVal);
+            },
+            '$store.state.currentSkinStyle'(newVal){
+                if(newVal !== 'default '){
+	                this.setThemeStyle()
+                }
+            }
         },
         methods: {
+        	setThemeStyle(){
+		        if(this.$store.state.currentSkinStyle ===  `${Constant.ENVCONFIG.MAINNET}${Constant.CHAINID.MAINNET}`){
+			        this.themeStyleArray = this.mainnetThemeStyle;
+		        }else if(this.$store.state.currentSkinStyle ===  `${Constant.ENVCONFIG.TESTNET}${Constant.CHAINID.FUXI}`){
+			        this.themeStyleArray = this.testnetFuXiThemeStyle;
+		        }else if(this.$store.state.currentSkinStyle ===  `${Constant.ENVCONFIG.TESTNET}${Constant.CHAINID.NYANCAT}`){
+			        this.themeStyleArray = this.testnetNyancatThemeStyle;
+		        }else {
+			        this.themeStyleArray = this.defaultThemeStyle;
+		        }
+                this.getValidatorsList();
+	        },
 	        getPorposakList(){
 	        	Service.commonInterface({homeProposalList:{
-
                     }},(res) => {
 	        		try {
 				        if(Array.isArray(res)){
@@ -233,16 +256,6 @@
                 Service.commonInterface({candidatesTop:{}},(data) => {
                 	try {
 		                if(data){
-			                let colors;
-			                if(this.$store.state.currentSkinStyle ===  `${Constant.ENVCONFIG.MAINNET}${Constant.CHAINID.MAINNET}`){
-				                colors = ['#3264FD', '#4571FA', '#537CFD', '#6287FB', '#7092FD', '#85A3FF', '#92ACFF', '#9CB3FF', '#AABEFF', '#BDCDFF', '#E9EBFC',]
-                            }else if(this.$store.state.currentSkinStyle ===  `${Constant.ENVCONFIG.TESTNET}${Constant.CHAINID.FUXI}`){
-				                colors = ['#0C4282', '#144B8D', '#1B5498', '#235CA1', '#2E65A8', '#386EAE', '#427ABC', '#5087C8', '#5992D5', '#69A1E2', '#E9EBFC',]
-			                }else if(this.$store.state.currentSkinStyle ===  `${Constant.ENVCONFIG.TESTNET}${Constant.CHAINID.NYANCAT}`){
-				                colors = ['#0D9388', '#149A8F', '#1DA196', '#26ABA0', '#32B5AA', '#3FBDB2', '#4EC2B8', '#59C8BE', '#64D1C7', '#70DCD2', '#E9EBFC',]
-			                }else {
-				                colors = ['#3498db', '#47a2df', '#59ade3', '#6cb7e7', '#7fc2eb', '#91ccef', '#a4d7f3', '#b7e1f7', '#c9ecfb', '#dcf6ff', '#f0f9ff',]
-			                }
 			                let [seriesData, legendData] = [[], []];
 			                if (data.validators instanceof Array) {
 				                let totalCount = 0;
@@ -255,8 +268,8 @@
 					                seriesData.push({
 						                value: data.validators[i].voting_power,
 						                name: data.validators[i].description && data.validators[i].description.moniker ? `${Tools.formatString(data.validators[i].description.moniker,monikerReserveLength,"...")} (${Tools.formatString(data.validators[i].address,addressReserveLength,"...")})` : (data.validators[i].address ? data.validators[i].address : ''),
-						                itemStyle: {color: colors[i]},
-						                emphasis : {itemStyle:{color: colors[i]}},
+						                itemStyle: {color: this.themeStyleArray[i]},
+						                emphasis : {itemStyle:{color: this.themeStyleArray[i]}},
 						                upTime:`${data.validators[i].up_time}%`,
 						                address:data.validators[i].address,
 						                powerAll,
@@ -268,7 +281,7 @@
 						                value: others,
 						                name:'others',
 						                powerAll,
-						                itemStyle:{color:colors[10]},
+						                itemStyle:{color:this.themeStyleArray[10]},
 					                });
 				                }
 
