@@ -1,5 +1,5 @@
 <template>
-    <div class="address_detail_table" style="background:#fff;height: 2.34rem;">
+    <div class="address_detail_table" style="background:#fff;min-height: 2.34rem;">
         <m-table :columns="fields" :data="items" :width="width">
             <template slot-scope="{ row }"
                       slot="address">
@@ -27,9 +27,34 @@
                        <img style="width: 0.18rem;height:0.18rem;margin-right: 0.1rem" src="../../assets/iris_token_logo.png">
                    </span>
                     <span v-if="row.token !== 'IRIS'">
-                        <i style="margin-right: 0.1rem" class="iconfont iconqitabizhongwuiconshishiyongdemorenicon"></i>
+                        <i style="margin-right: 0.1rem;color:#B6BAD2;font-size: 0.18rem" class="iconfont iconqitabizhongwuiconshishiyongdemorenicon"></i>
                     </span>
                     <span>{{row.token}}</span>
+                </div>
+            </template>
+            <template slot-scope="{ row }" slot="totalAmount">
+                <div>
+                    <span>{{row.totalAmount === 0 ? "--" : row.totalAmount}}</span>
+                </div>
+            </template>
+            <template slot-scope="{ row }" slot="balance">
+                <div>
+                    <span>{{row.balance === 0 ? "--" : row.balance}}</span>
+                </div>
+            </template>
+            <template slot-scope="{ row }" slot="delegated">
+                <div>
+                    <span>{{row.delegated === 0 ? "--" : row.delegated}}</span>
+                </div>
+            </template>
+            <template slot-scope="{ row }" slot="unBonding">
+                <div>
+                    <span>{{row.unBonding === 0 ? "--" : row.unBonding}}</span>
+                </div>
+            </template>
+            <template slot-scope="{ row }" slot="reward">
+                <div>
+                    <span>{{row.reward === 0 ? "--" : row.reward}}</span>
                 </div>
             </template>
         </m-table>
@@ -64,23 +89,23 @@
 					},
 					{
 						title: "Total Amount",
-						key:'totalAmount',
+						slot:'totalAmount',
 					},
 					{
 						title: "Balance",
-						key:'balance',
+						slot:'balance',
 					},
 					{
 						title: "Delegated",
-						key:'delegated',
+						slot:'delegated',
 					},
 					{
 						title: "Unbonding",
-						key:'unBonding',
+						slot:'unBonding',
 					},
 					{
 						title: "Rewards",
-						key:'reward',
+						slot:'reward',
 					},
 				],
 				delegations: [
@@ -165,7 +190,7 @@
                         slot:'signer'
 					},
 					{
-						title: "status",
+						title: "Status",
                         key:'status'
 					},
 

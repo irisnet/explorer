@@ -618,6 +618,8 @@
 			getConfig () {
 				Service.commonInterface({headerConfig:{}},(res) => {
 					try {
+						this.$store.commit('currentSkinStyle',`${res.cur_env}${res.chain_id}`);
+						sessionStorage.setItem('skinCurrentEnv',JSON.stringify({currentEnv:res.cur_env,currentChainID:res.chain_id}))
 						this.flShowLogo = true;
 						this.toggleTestnetLogo(res);
 						this.setCurrentSelectOption(res.cur_env, res.chain_id, res.configs);
@@ -667,10 +669,10 @@
 				}
 			},
 			toggleTestnetLogo (currentEnv) {
-
-				currentEnv.cur_env = 'testnet';
-				currentEnv.chain_id = 'nyancat-4';
-                this.$store.commit('currentSkinStyle',`${currentEnv.cur_env}${currentEnv.chain_id}`);
+				if(sessionStorage.getItem('skinCurrentEnv')){
+					currentEnv.cur_env = JSON.parse(sessionStorage.getItem('skinCurrentEnv')).currentEnv;
+					currentEnv.chain_id = JSON.parse(sessionStorage.getItem('skinCurrentEnv')).currentChainID;
+                }
 				const root = document.documentElement;
 				root.style.setProperty(skinStyle.skinStyle.TITLECOLORNAME,skinStyle.skinStyle.commonFontBlackColor);
 				root.style.setProperty(skinStyle.skinStyle.CONTENTCOLORNAME,skinStyle.skinStyle.commonFontContentColor);
@@ -693,7 +695,6 @@
 					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.DEFAULTHOVERCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.DEFAULTACTIVECOLOR);
                 }
-				sessionStorage.setItem('skinCurrentEnv',`${currentEnv.cur_env}${currentEnv.chain_id}`)
 			},
 			setCurrentSelectOption (currentEnv, currentChainId) {
 				if (currentEnv === constant.ENVCONFIG.DEV || currentEnv === constant.ENVCONFIG.QA || currentEnv === constant.ENVCONFIG.STAGE) {
