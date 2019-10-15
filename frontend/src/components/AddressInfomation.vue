@@ -898,14 +898,24 @@
                                 .tx_type_mobile_content{
                                     display: flex;
                                     align-items: center;
+                                    .ivu-select-visible{
+                                        /deep/ .ivu-select-selection{
+                                            border-color: var(--bgColor) !important;
+                                        }
+
+                                    }
                                     .ivu-select{
                                         margin-right: 0.1rem;
                                         width: 1.3rem;
+                                        /deep/ .ivu-select-selection:hover{
+                                            border-color: var(--bgColor) !important;
+                                        }
                                         .ivu-select-item{
                                             text-indent: 0.1rem;
                                             font-size: 0.14rem;
                                             line-height: 0.18rem;
                                             padding: 0.07rem 0.1rem 0.07rem 0;
+                                            color: var(--bgColor);
                                         }
                                     }
                                     .joint_mark{
@@ -913,6 +923,16 @@
                                     }
                                     .ivu-date-picker{
                                         width: 1.3rem;
+                                        /deep/ .ivu-date-picker-rel{
+                                            .ivu-input-wrapper{
+                                                .ivu-input:hover{
+                                                    border-color: var(--bgColor) !important;
+                                                }
+                                                .ivu-input:focus{
+                                                    border-color: var(--bgColor) !important;
+                                                }
+                                            }
+                                        }
                                     }
                                     .reset_btn{
                                         background: var(--bgColor);
