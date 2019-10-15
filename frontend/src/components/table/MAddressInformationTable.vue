@@ -190,7 +190,7 @@
                         slot:'signer'
 					},
 					{
-						title: "status",
+						title: "Status",
                         key:'status'
 					},
 

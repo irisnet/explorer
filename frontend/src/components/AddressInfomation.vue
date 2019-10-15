@@ -3,7 +3,9 @@
         <div class="address_information_content">
             <div class="address_information_header_container">
                 <div class="address_information_header_content">
-                    <span class="address_information_header">{{headerAddress}}</span>
+                    <span class="address_information_header">{{headerAddress}}
+                       <span class="address_information_address_status_profiler" v-if="isProfiler">Profiler</span>
+                    </span>
                 </div>
             </div>
             <div class="address_information_assets_container">
@@ -110,7 +112,6 @@
                                 <span class="address_information_address_status_active" v-if="validatorStatus === 'Active'">Active</span>
                                 <span class="address_information_address_status_candidate" v-if="validatorStatus === 'Candidate'">Candidate</span>
                                 <span class="address_information_address_status_jailed" v-if="validatorStatus === 'Jailed'">Jailed</span>
-                                <span class="address_information_address_status_profiler" v-if="isProfiler">Profiler</span>
                             </div>
                         </li>
                         <li class="address_information_detail_option">
@@ -196,6 +197,7 @@
 	import Server from '../service'
 	import Constant from "../constant/Constant";
 	import MPagination from "./commonComponents/MPagination";
+	import BigNumber from "bignumber.js"
 	export default {
 		name: "AddressInfomation",
 		components: {MPagination, MAddressInformationTable},
@@ -328,14 +330,14 @@
 				            token: Tools.formatDenom(item.denom),
 				            balance: item.amount ? Tools.formatAmount2(item,this.fixedNumber): 0,
 				            delegatedValue: this.totalDelegator ? this.totalDelegator : 0,
-				            delegated: this.totalDelegator ? `${Tools.formatStringToFixedNumber(this.totalDelegator.toString(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}`: 0,
+				            delegated: this.totalDelegator ? `${new BigNumber(Tools.formatStringToFixedNumber(this.totalDelegator.toString(),this.fixedNumber)).toFormat()} ${Constant.Denom.IRIS.toUpperCase()}`: 0,
 				            unBondingValue: this.totalUnBondingDelegator ? this.totalUnBondingDelegator : 0,
-				            unBonding: this.totalUnBondingDelegator ?`${Tools.formatStringToFixedNumber(this.totalUnBondingDelegator.toString(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}`  : 0,
+				            unBonding: this.totalUnBondingDelegator ?`${new BigNumber(Tools.formatStringToFixedNumber(this.totalUnBondingDelegator.toString(),this.fixedNumber)).toFormat()} ${Constant.Denom.IRIS.toUpperCase()}`  : 0,
 				            reward: this.allRewardsValue ? this.allRewardsValue : 0,
-				            totalAmount:`${Tools.formatStringToFixedNumber((Number(Tools.formatStringToFixedNumber(Tools.numberMoveDecimal(item.amount.toString(),-18),this.fixedNumber)) +
+				            totalAmount:`${new BigNumber(Tools.formatStringToFixedNumber((Number(Tools.formatStringToFixedNumber(Tools.numberMoveDecimal(item.amount.toString(),-18),this.fixedNumber)) +
 					            Number(Tools.formatStringToFixedNumber(this.totalDelegator.toString(),this.fixedNumber)) +
 					            Number(Tools.formatStringToFixedNumber(this.totalUnBondingDelegator.toString(),this.fixedNumber)) +
-					            Number(Tools.formatStringToFixedNumber(this.allRewardsAmountValue.toString(),this.fixedNumber))).toString(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}` ,
+					            Number(Tools.formatStringToFixedNumber(this.allRewardsAmountValue.toString(),this.fixedNumber))).toString(),this.fixedNumber)).toFormat()} ${Constant.Denom.IRIS.toUpperCase()}` ,
 			            }
                     }else {
 			            return {
@@ -679,6 +681,13 @@
                     .address_information_header{
                         padding: 0 0.2rem;
                         color: #171D44;
+                        .address_information_address_status_profiler{
+                            background: var(--bgColor);
+                            font-size: 0.12rem;
+                            color: #fff;
+                            padding: 0.02rem 0.14rem;
+                            border-radius: 0.22rem;
+                        }
                     }
                 }
             }
@@ -829,13 +838,6 @@
                                 padding: 0.02rem 0.14rem;
                                 border-radius: 0.22rem;
                                 margin-right: 0.1rem;
-                            }
-                            .address_information_address_status_profiler{
-                                background: var(--bgColor);
-                                font-size: 0.12rem;
-                                color: #fff;
-                                padding: 0.02rem 0.14rem;
-                                border-radius: 0.22rem;
                             }
                         }
 
@@ -1084,6 +1086,7 @@
                         .address_information_detail_content{
                             .address_information_detail_option{
                                 display: flex;
+                                align-items: flex-start;
                                 flex-direction: column;
                                 .validator_status_content{
                                     display: flex;
