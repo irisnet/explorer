@@ -1,5 +1,5 @@
 <template>
-  <div id="app" @click.stop="closeSelectOption">
+  <div id="app" @click.stop="closeSelectOption" @click="handleClick($event)">
     <app-header v-show="flShowHeader"></app-header>
     <div id="router_wrap" :class="$store.state.flShowIpt && !$store.state.isMobile ? 'input_style' : ''" :style="{'padding-top': $store.state.isMobile ? '' :`${headerHeightStyle}`}">
       <div class="qr_code"
@@ -65,6 +65,7 @@
   import Tools from './util/Tools';
   import testVersion from '../testVersion';
   import BackToTop from "./components/BackToTop";
+  import $ from "jquery"
   export default {
     components: {
       AppHeader,
@@ -101,7 +102,7 @@
         innerWidth: window.innerWidth,
         scrollHeight:0,
         flShowHeader : true,
-        headerHeightStyle:''
+        headerHeightStyle:'',
       }
     },
     beforeMount() {
@@ -144,6 +145,13 @@
         if(e.target.scrollTop > 0){
           this.scrollHeight = e.target.scrollTop
         }
+      },
+      handleClick(e){
+        let $i = $("<i/>").addClass('iconfont iconiris');
+        let x = e.pageX, y = e.pageY;
+        $i.css({ "z-index": 9999999, "top": y - 20, "left": x,"position": "absolute","color": "var(--bgColor)","font-size": "20px"});
+        $("body").append($i);
+        $i.animate({"top": y - 180,"opacity": 0},1500,function () {$i.remove();});
       },
       onresize() {
         this.innerWidth = window.innerWidth;

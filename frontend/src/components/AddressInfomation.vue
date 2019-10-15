@@ -14,6 +14,7 @@
                     <div>
                         <m-address-information-table
                                 :items="assetsItems"
+                                :showNoData="assetsItems.length === 0"
                                 listName="assets">
                         </m-address-information-table>
                     </div>
@@ -28,9 +29,9 @@
                         <div>
                             <m-address-information-table
                                     :items="delegationsItems"
+                                    :showNoData="delegationsItems.length === 0"
                                     listName="delegations"
                                     :width="630">
-
                             </m-address-information-table>
                         </div>
                     </div>
@@ -54,6 +55,7 @@
                             <m-address-information-table
                                     :items="unBondingDelegationsItems"
                                     listName="unBondingDelegations"
+                                    :showNoData="unBondingDelegationsItems.length === 0"
                                     :width="630">
                             </m-address-information-table>
                         </div>
@@ -84,6 +86,7 @@
                         <div>
                             <m-address-information-table
                                     :items="rewardsItems"
+                                    :showNoData="rewardsItems.length === 0"
                                     listName="rewards"
                                     :width="630">
                             </m-address-information-table>
@@ -117,7 +120,7 @@
                                 <span class="address_information_address_status_jailed" v-if="validatorStatus === 'Jailed'">Jailed</span>
                             </div>
                         </li>
-                        <li class="address_information_detail_option">
+                        <li class="address_information_detail_option" style="margin-top: 0.05rem">
                             <span class="address_information_detail_option_name">Operator Address:</span>
                             <span class="address_information_detail_option_value">
                                 <router-link v-show="OperatorAddress !== '--'" :to="`/validators/${OperatorAddress}`">{{OperatorAddress}}</router-link>
@@ -174,6 +177,7 @@
                     <div>
                         <m-address-information-table
                                 :items="transactionsItems"
+                                :showNoData="transactionsItems.length === 0"
                                 listName="transactions">
 
                         </m-address-information-table>
@@ -712,7 +716,6 @@
                 }
             }
             .address_information_assets_container{
-                margin-top: 0.18rem;
                 .address_information_assets_title{
                     padding: 0.12rem 0 0.12rem 0.2rem;
                     font-size: 0.18rem;
