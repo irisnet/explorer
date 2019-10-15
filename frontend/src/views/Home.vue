@@ -456,17 +456,27 @@
                 return num
             },
             formatBondedTokens(bondedTokens,totalTokens){
-                let tokens,thousand = 1000,million = 1000000,billion = 1000000000;
-                if(bondedTokens >= billion && totalTokens >= billion){
-                    tokens = `${(Number(bondedTokens) / billion).toFixed(2)}B / ${(Number(totalTokens) / billion).toFixed(2)}B`
-                }else if(bondedTokens >= million && totalTokens >= million){
-                    tokens = `${(Number(bondedTokens) / million).toFixed(2)}M / ${(Number(totalTokens) / million).toFixed(2)}M`
-                } else if(bondedTokens >= thousand && totalTokens >= thousand) {
-                    tokens = `${(Number(bondedTokens) / thousand).toFixed(2)}k / ${(Number(totalTokens) / thousand).toFixed(2)}k`
+                let tokens,allTokens,thousand = 1000,million = 1000000,billion = 1000000000;
+                if(bondedTokens >= billion){
+	                tokens = `${(Number(bondedTokens) / billion).toFixed(2)}B`
+                }else if(bondedTokens >= million){
+	                tokens = `${(Number(bondedTokens) / million).toFixed(2)}M`
+                }else if(bondedTokens >= thousand){
+	                tokens = `${(Number(bondedTokens) / thousand).toFixed(2)}k`
                 }else {
-                    tokens = `${Number(bondedTokens).toFixed(2)} / ${Number(totalTokens).toFixed(2)}`;
+	                tokens = `${Number(bondedTokens).toFixed(2)}`
                 }
-                return tokens
+
+	            if(totalTokens >= billion){
+		            allTokens = `${(Number(totalTokens) / billion).toFixed(2)}B`
+	            }else if(totalTokens >= million){
+		            allTokens = `${(Number(totalTokens) / million).toFixed(2)}M`
+	            }else if(totalTokens >= thousand){
+		            allTokens = `${(Number(totalTokens) / thousand).toFixed(2)}k`
+	            }else {
+		            allTokens = `${Number(totalTokens).toFixed(2)}`
+	            }
+                return `${tokens} / ${allTokens}`
             },
         },
         destroyed () {
