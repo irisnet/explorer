@@ -144,8 +144,6 @@
         },
 
         beforeMount () {
-
-	        this.setThemeStyle();
 	        this.getBlocksList();
             this.getTransactionHistory();
             this.getTransactionList();
