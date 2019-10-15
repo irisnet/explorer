@@ -790,6 +790,8 @@
                         padding: 0.2rem;
                         min-height: 2.34rem;
                         .address_information_detail_option{
+                            display: flex;
+                            align-items: center;
                             .address_information_detail_option_name{
                                 font-size: 0.14rem;
                                 color: #787c99;
@@ -836,6 +838,7 @@
                                 border-radius: 0.22rem;
                             }
                         }
+
                     }
                 }
                 .address_information_delegator_rewards_content{
