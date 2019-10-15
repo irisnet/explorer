@@ -9,10 +9,12 @@
             <div class="address_information_assets_container">
                 <div class="address_information_assets_title">Assets</div>
                 <div class="address_information_assets_list_content">
-                    <m-address-information-table
-                            :items="assetsItems"
-                            listName="assets">
-                    </m-address-information-table>
+                    <div>
+                        <m-address-information-table
+                                :items="assetsItems"
+                                listName="assets">
+                        </m-address-information-table>
+                    </div>
                 </div>
             </div>
             <div class="address_information_delegation_tx_container">
@@ -21,12 +23,14 @@
                         <span class="address_information_delegation_value" v-show="totalDelegatorValue">{{totalDelegatorValue}}</span>
                     </div>
                     <div class="address_information_delegation_list_content">
-                        <m-address-information-table
-                                :items="delegationsItems"
-                                listName="delegations"
-                                :width="630">
+                        <div>
+                            <m-address-information-table
+                                    :items="delegationsItems"
+                                    listName="delegations"
+                                    :width="630">
 
-                        </m-address-information-table>
+                            </m-address-information-table>
+                        </div>
                     </div>
                     <div class="pagination_content" v-if="flDelegationNextPage">
                         <keep-alive>
@@ -44,12 +48,13 @@
                         <span class="address_information_unbonding_delegation_value" v-show="totalUnBondingDelegatorValue">{{totalUnBondingDelegatorValue}}</span>
                     </div>
                     <div class="address_information_unbonding_delegation_list_content">
-                        <m-address-information-table
-                                :items="unBondingDelegationsItems"
-                                listName="unBondingDelegations"
-                                :width="630">
-
-                        </m-address-information-table>
+                        <div>
+                            <m-address-information-table
+                                    :items="unBondingDelegationsItems"
+                                    listName="unBondingDelegations"
+                                    :width="630">
+                            </m-address-information-table>
+                        </div>
                     </div>
                     <div class="pagination_content" v-if="flUnBondingDelegationNextPage">
                         <keep-alive>
@@ -74,12 +79,13 @@
                             <router-link :to="`/address/${withdrewToAddress}`">{{withdrewToAddress}}</router-link></span>
                     </div>
                     <div class="address_information_list_content">
-                        <m-address-information-table
-                                :items="rewardsItems"
-                                listName="rewards"
-                                :width="630">
-
-                        </m-address-information-table>
+                        <div>
+                            <m-address-information-table
+                                    :items="rewardsItems"
+                                    listName="rewards"
+                                    :width="630">
+                            </m-address-information-table>
+                        </div>
                     </div>
                     <div class="pagination_content" v-if="flRewardsDelegationNextPage">
                         <keep-alive>
@@ -99,11 +105,13 @@
                     <ul class="address_information_detail_content">
                         <li class="address_information_detail_option">
                             <span class="address_information_detail_option_name">Validator Moniker:</span>
-                            <span class="address_information_detail_option_value">{{validatorMoniker}}</span>
-                            <span class="address_information_address_status_active" v-if="validatorStatus === 'Active'">Active</span>
-                            <span class="address_information_address_status_candidate" v-if="validatorStatus === 'Candidate'">Candidate</span>
-                            <span class="address_information_address_status_jailed" v-if="validatorStatus === 'Jailed'">Jailed</span>
-                            <span class="address_information_address_status_profiler" v-if="isProfiler">Profiler</span>
+                            <div class="validator_status_content">
+                                <span class="address_information_detail_option_value">{{validatorMoniker}}</span>
+                                <span class="address_information_address_status_active" v-if="validatorStatus === 'Active'">Active</span>
+                                <span class="address_information_address_status_candidate" v-if="validatorStatus === 'Candidate'">Candidate</span>
+                                <span class="address_information_address_status_jailed" v-if="validatorStatus === 'Jailed'">Jailed</span>
+                                <span class="address_information_address_status_profiler" v-if="isProfiler">Profiler</span>
+                            </div>
                         </li>
                         <li class="address_information_detail_option">
                             <span class="address_information_detail_option_name">Operator Address:</span>
@@ -159,11 +167,13 @@
                     </div>
                 </div>
                 <div class="address_information_list_content">
-                    <m-address-information-table
-                            :items="transactionsItems"
-                            listName="transactions">
+                    <div>
+                        <m-address-information-table
+                                :items="transactionsItems"
+                                listName="transactions">
 
-                    </m-address-information-table>
+                        </m-address-information-table>
+                    </div>
                 </div>
                 <div class="pagination_content" v-if="flAllTxNextPage">
                     <keep-alive>
@@ -287,7 +297,7 @@
         },
         methods:{
 	        getFilterTxs(){
-		        this.currentPageNum = 1;
+		        this.allTxCurrentPage = 1;
 		        this.resetUrl();
 		        sessionStorage.setItem('addressTxPageNum',1);
 		        this.getTxListByFilterCondition();
@@ -328,7 +338,14 @@
 					            Number(Tools.formatStringToFixedNumber(this.allRewardsAmountValue.toString(),this.fixedNumber))).toString(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}` ,
 			            }
                     }else {
-
+			            return {
+				            token: item.denom,
+				            balance: item.amount ? `${item.amount} ${item.denom.toUpperCase()}`: 0,
+				            delegated: 0,
+				            unBonding: 0,
+				            reward: 0,
+				            totalAmount: item.amount ? `${item.amount} ${item.denom.toUpperCase()}`: 0
+			            }
                     }
                 });
             },
@@ -674,11 +691,17 @@
                     color: #171D44;
                     line-height: 0.21rem;
                 }
+                .address_information_assets_list_content{
+                    &>div{
+                        max-width: 12.8rem;
+                        overflow-x: auto;
+                        background: #fff;
+                    }
+                }
             }
             .address_information_delegation_tx_container{
                 margin-top: 0.3rem;
                 display: flex;
-                width: 100%;
                 .address_information_delegation_tx_content{
                     flex: 1;
                     margin-right: 0.2rem;
@@ -700,6 +723,10 @@
                     }
                     .address_information_delegation_list_content{
                         width: 100%;
+                        overflow-x: auto;
+                        &>div{
+                            min-width: 6.3rem;
+                        }
                     }
                 }
                 .address_information_unbonding_delegation_tx_content{
@@ -717,6 +744,10 @@
                     }
                     .address_information_unbonding_delegation_list_content{
                         width: 100%;
+                        overflow-x: auto;
+                        &>div{
+                            min-width: 6.3rem;
+                        }
                     }
                     .pagination_content{
                         margin-top: 0.2rem;
@@ -739,7 +770,6 @@
             }
             .address_information_redelegation_tx_container{
                 display: flex;
-                width: 100%;
                 .address_information_detail_container{
                     flex: 1;
                     .address_information_redelegation_title{
@@ -760,6 +790,8 @@
                         padding: 0.2rem;
                         min-height: 2.34rem;
                         .address_information_detail_option{
+                            display: flex;
+                            align-items: center;
                             .address_information_detail_option_name{
                                 font-size: 0.14rem;
                                 color: #787c99;
@@ -806,6 +838,7 @@
                                 border-radius: 0.22rem;
                             }
                         }
+
                     }
                 }
                 .address_information_delegator_rewards_content{
@@ -827,6 +860,10 @@
                     }
                     .address_information_list_content{
                         width: 100%;
+                        overflow-x: auto;
+                        &>div{
+                            min-width: 6.3rem;
+                        }
                     }
                     .pagination_content{
                         margin-top: 0.2rem;
@@ -904,11 +941,159 @@
                 }
                 .address_information_list_content{
                     margin-top: 0.07rem;
+                    overflow-x: auto;
+                    background: #fff;
+                    &>div{
+                        width: 12.8rem;
+                    }
                 }
                 .pagination_content{
                     margin-top: 0.2rem;
                     display: flex;
                     justify-content: flex-end;
+                }
+            }
+        }
+    }
+    @media screen and (max-width: 910px){
+        .address_information_container{
+            .address_information_content{
+                .address_information_header_container{
+                    .address_information_header_content{
+                        .address_information_header{
+                            word-break: break-all;
+                        }
+                    }
+                }
+                .address_information_transaction_container{
+                    .address_information_transaction_header_content{
+                        flex-direction: column;
+                        align-items: flex-start;
+                        margin-left: 0.1rem;
+                        .address_information_transaction_title{
+                            padding-left: 0;
+                            margin-bottom: 0.1rem;
+                        }
+                        .address_information_list_filter_content{
+                            flex-direction: column;
+                            align-items: flex-start;
+                            width: 100%;
+                            .filter_content{
+                                width: 100%;
+                                margin-left: 0;
+                                display: flex;
+                                .tx_type_content{
+                                    width: 100%;
+                                    display: flex;
+                                    flex-direction: column;
+                                    align-items: flex-start;
+                                    .tx_type_mobile_content{
+                                        width: 3.45rem;
+                                        display: flex;
+                                        justify-content: space-between;
+                                        margin-bottom: 0.1rem;
+                                        .ivu-select{
+                                            margin-right: 0;
+                                            width: 1.6rem;
+                                        }
+                                        .ivu-select-visible{
+                                            .ivu-select-selection{
+                                                border-color: var(--bgColor);
+                                            }
+                                        }
+                                        .ivu-date-picker{
+                                            width: 1.6rem;
+                                        }
+                                        .reset_btn{
+                                            margin-left: 0;
+                                        }
+                                        .search_btn{
+                                            flex: 1;
+                                            margin-left: 0;
+                                            margin-right: 0.1rem;
+                                            text-align: center;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                .address_information_assets_container{
+                    .address_information_assets_list_content{
+                        margin: 0 0.1rem;
+                    }
+                }
+                .address_information_transaction_container{
+                    .address_information_list_content{
+                        margin: 0 0.1rem;
+                    }
+                    .pagination_content{
+                        margin-right: 0.1rem;
+                    }
+                }
+                .address_information_redelegation_header_title{
+                    margin-left: 0.1rem;
+                }
+            }
+
+        }
+    }
+    @media screen and (max-width: 1280px){
+        .address_information_container{
+            .address_information_content{
+                .address_information_delegation_tx_container{
+                    flex-direction: column;
+                    margin: 0 0.1rem;
+                    .address_information_delegation_tx_content{
+                        width: 100%;
+                        .address_information_delegation_title{
+                            padding: 0.2rem 0 0.2rem;
+                        }
+                        .address_information_delegation_list_content{
+                            overflow-x: auto;
+                        }
+                    }
+                    .address_information_unbonding_delegation_tx_content{
+                        .address_information_unbonding_delegation_title{
+                            padding: 0.2rem 0 0.2rem;
+                        }
+                        .address_information_unbonding_delegation_value{
+                            overflow-x: auto;
+                        }
+                    }
+                }
+                .address_information_redelegation_tx_container{
+                    flex-direction: column;
+                    margin: 0 0.1rem;
+                    .address_information_delegator_rewards_content{
+                        margin-right: 0;
+                        .address_information_detail_option{
+                            padding-left: 0;
+                            display: flex;
+                            flex-direction: column;
+                        }
+                        .address_information_list_content{
+                            overflow-x: auto;
+                        }
+                    }
+                    .address_information_detail_container{
+                        .address_information_redelegation_title{
+                            padding: 0.2rem 0;
+                        }
+                        .address_information_detail_content{
+                            .address_information_detail_option{
+                                display: flex;
+                                flex-direction: column;
+                                .validator_status_content{
+                                    display: flex;
+                                    margin: 0.05rem 0;
+                                }
+                                .address_information_detail_option_value{
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
