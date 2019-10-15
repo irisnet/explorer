@@ -297,7 +297,7 @@
         },
         methods:{
 	        getFilterTxs(){
-		        this.currentPageNum = 1;
+		        this.allTxCurrentPage = 1;
 		        this.resetUrl();
 		        sessionStorage.setItem('addressTxPageNum',1);
 		        this.getTxListByFilterCondition();
