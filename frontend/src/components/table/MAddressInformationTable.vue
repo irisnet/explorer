@@ -1,5 +1,5 @@
 <template>
-    <div class="address_detail_table" style="background:#fff;height: 2.34rem;">
+    <div class="address_detail_table" style="background:#fff;min-height: 2.34rem;">
         <m-table :columns="fields" :data="items" :width="width">
             <template slot-scope="{ row }"
                       slot="address">

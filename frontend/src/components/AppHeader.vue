@@ -667,9 +667,6 @@
 				}
 			},
 			toggleTestnetLogo (currentEnv) {
-
-				currentEnv.cur_env = 'testnet';
-				currentEnv.chain_id = 'nyancat-4';
                 this.$store.commit('currentSkinStyle',`${currentEnv.cur_env}${currentEnv.chain_id}`);
 				const root = document.documentElement;
 				root.style.setProperty(skinStyle.skinStyle.TITLECOLORNAME,skinStyle.skinStyle.commonFontBlackColor);
