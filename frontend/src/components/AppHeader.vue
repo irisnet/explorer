@@ -122,7 +122,7 @@
                            v-model.trim="searchInputValue"
                            @keyup.enter="onInputChange"
                            placeholder="Search by Address / Txhash / Block">
-                    <i class="search_icon"
+                    <i class="search_icon iconfont iconsousuo"
                        @click="getData(searchInputValue)"></i>
                     <i class="clear_icon"
                        @click="clearSearchContent"
@@ -1110,11 +1110,10 @@
                 }
                 .search_icon {
                     position: absolute;
-                    top: 0.07rem;
+                    top: 0.05rem;
+                    font-size: 0.15rem;
                     right: 0.15rem;
-                    width: 0.15rem;
-                    height: 0.15rem;
-                    background: url("../assets/search.svg") no-repeat;
+                    color: var(--bgColor);
                     cursor: pointer;
                 }
                 .clear_icon {

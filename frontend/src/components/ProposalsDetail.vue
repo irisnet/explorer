@@ -809,6 +809,7 @@ export default {
             border-left: 1px solid rgba(215, 217, 224, 1) ;
             border-top: 1px solid rgba(215, 217, 224, 1) ;
             border-bottom: 1px solid rgba(215, 217, 224, 1) ;
+            background: #fff;
             .proposals_detail_level{
                 padding: 0 0 0.2rem 0;
                 i{
@@ -901,10 +902,12 @@ export default {
             width: 100%;
             overflow-x: auto;
             overflow-y: hidden;
+            background: #fff;
             .table_wrap {
                 min-width: 9.6rem;
             }
             .no_data_show {
+                background: #fff;
                 width: 100%;
                 min-height: 3rem;
                 @include flex;
@@ -946,7 +949,9 @@ export default {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
             margin-bottom: 0.2rem;
+            background: #fff;
             .no_data_show {
+                background: #fff;
                 @include flex;
                 width: 100%;
                 margin: auto;
@@ -966,6 +971,7 @@ export default {
             border-bottom: 1px solid rgba(215, 217, 224, 1) ;
             padding: 10px;
             width: 100%;
+            background: #fff;
             .information_props_wrap {
                 @include flex;
                 flex-direction: column;
