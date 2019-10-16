@@ -526,12 +526,22 @@
                 }
             }
             .block_validator_set_container{
-                margin-bottom: 0.4rem;
+                padding-bottom: 0.4rem;
                 .block_validator_set_title{
                     height: 0.65rem;
                     display: flex;
                     align-items: center;
                     padding-left: 0.2rem;
+                }
+                .block_validator_set_content{
+                    background: #fff;
+                    .no_data_show{
+                        display: flex;
+                        min-height: 2rem;
+                        img{
+                            width: 1.5rem;
+                        }
+                    }
                 }
                 .pagination{
                     display: flex;

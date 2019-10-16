@@ -229,12 +229,9 @@
         color:var(--bgColor) !important;
     }
     .address_detail_table{
-
         .no_data_img_content{
             display: flex;
             justify-content: center;
-            border-top: 0.01rem solid #eee;
-            border-bottom: 0.01rem solid #eee;
             font-size: 0.14rem;
             height: 1.8rem;
             align-items: center;
