@@ -11,13 +11,13 @@
         </div>
 
         <div :class="blocksListPageWrap" :style="{'margin-top':`${blocksListPageWrap === 'personal_computer_blocks_list_page_wrap' ? '0.7rem' : '0'}`}">
-            <div style="overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling:touch;">
+            <div style="overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling:touch;background: #fff">
                 <!-- <validator-list-table :items="items" :minWidth="tableMinWidth" :showNoData="showNoData"></validator-list-table> -->
                 <m-validator-list-table ref="mtable"
                                         :items="items"
                                         :minWidth="tableMinWidth"
                                         :showNoData="showNoData"></m-validator-list-table>
-                <div v-show="showNoData" class="no_data_show">
+                <div v-show="showNoData" class="no_data_show" style="background: #fff;">
                     <img src="../assets/no_data.svg" alt="">
                 </div>
             </div>
