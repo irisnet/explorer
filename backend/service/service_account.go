@@ -36,7 +36,7 @@ func (service *AccountService) Query(address string) (result vo.AccountVo) {
 			var amount utils.Coins
 			for _, coinStr := range res.Coins {
 				coin := utils.ParseCoin(coinStr)
-				unit = append(unit, strings.Split(coin.Denom, "-min")[0])
+				unit = append(unit, strings.Split(coin.Denom, types.AssetMinDenom)[0])
 				amount = append(amount, coin)
 			}
 
@@ -48,7 +48,7 @@ func (service *AccountService) Query(address string) (result vo.AccountVo) {
 			}
 
 			for i, val := range amount {
-				denom := strings.Split(val.Denom, "-min")[0]
+				denom := strings.Split(val.Denom, types.AssetMinDenom)[0]
 				if dem, ok := decimalMap[denom]; ok && dem > 0 {
 					amount[i].Denom = denom
 					amount[i].Amount = amount[i].Amount / float64(dem)

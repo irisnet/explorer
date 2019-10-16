@@ -6,7 +6,6 @@ import (
 
 	"encoding/json"
 	"github.com/irisnet/explorer/backend/vo"
-	"gopkg.in/mgo.v2/bson"
 )
 
 func TestQueryTxList(t *testing.T) {
@@ -50,11 +49,11 @@ func TestQueryByAcc(t *testing.T) {
 	}
 }
 
-func TestCountByType(t *testing.T) {
-
-	statistic := new(TxService).CountByType(bson.M{})
-	t.Logf("tx statistic by type: %v \n", statistic)
-}
+//func TestCountByType(t *testing.T) {
+//
+//	statistic := new(TxService).CountByType(bson.M{})
+//	t.Logf("tx statistic by type: %v \n", statistic)
+//}
 
 func TestQueryTxNumGroupByDay(t *testing.T) {
 

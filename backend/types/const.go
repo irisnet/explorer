@@ -109,6 +109,7 @@ const (
 
 	IRISUint   = "iris"
 	IRISAttoUint   = "iris-atto"
+	AssetMinDenom = "-min"
 )
 
 var (
