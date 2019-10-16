@@ -96,6 +96,28 @@ func (service *TxService) QueryBaseList(query bson.M, page, pageSize int, istota
 		logger.Error("query tx list by page", logger.String("err", err.Error()))
 		return
 	}
+	var unit []string
+	for _,val := range txList {
+		if val.Amount[0].Denom != types.IRISAttoUint {
+			unit = append(unit, strings.Split(val.Amount[0].Denom, types.AssetMinDenom)[0])
+		}
+	}
+
+	decimalMap := make(map[string]int, len(txList))
+	assetkokens, err := document.AssetToken{}.GetAssetTokenDetailByTokenids(unit)
+	if err == nil {
+		for _, val := range assetkokens {
+			decimalMap[val.TokenId] = val.Decimal
+		}
+	}
+
+	for i, val := range txList {
+		denom := strings.Split(val.Amount[0].Denom, types.AssetMinDenom)[0]
+		if dem, ok := decimalMap[denom]; ok && dem > 0 {
+			txList[i].Amount[0].Denom = denom
+			txList[i].Amount[0].Amount = txList[i].Amount[0].Amount / float64(dem)
+		}
+	}
 
 	data := buildTxVOsFromDoc(txList)
 	var baseData []vo.BaseTx
@@ -208,31 +230,31 @@ func (service *TxService) QueryByAcc(address string, page, size int, istotal boo
 	return
 }
 
-func (service *TxService) CountByType(query bson.M) vo.TxStatisticsVo {
-	logger.Debug("CountByType start", service.GetTraceLog())
-
-	var result vo.TxStatisticsVo
-	counter, err := document.CommonTx{}.CountByType(query)
-	if err != nil {
-		logger.Error("tx count by Type ", logger.String("err", err.Error()), logger.Any("query", query))
-		return result
-	}
-
-	for _, cnt := range counter {
-		switch types.Convert(cnt.Type) {
-		case types.Trans:
-			result.TransCnt = result.TransCnt + cnt.Count
-		case types.Declaration:
-			result.DeclarationCnt = result.DeclarationCnt + cnt.Count
-		case types.Stake:
-			result.StakeCnt = result.StakeCnt + cnt.Count
-		case types.Gov:
-			result.GovCnt = result.GovCnt + cnt.Count
-		}
-	}
-	logger.Debug("CountByType end", service.GetTraceLog())
-	return result
-}
+//func (service *TxService) CountByType(query bson.M) vo.TxStatisticsVo {
+//	logger.Debug("CountByType start", service.GetTraceLog())
+//
+//	var result vo.TxStatisticsVo
+//	counter, err := document.CommonTx{}.CountByType(query)
+//	if err != nil {
+//		logger.Error("tx count by Type ", logger.String("err", err.Error()), logger.Any("query", query))
+//		return result
+//	}
+//
+//	for _, cnt := range counter {
+//		switch types.Convert(cnt.Type) {
+//		case types.Trans:
+//			result.TransCnt = result.TransCnt + cnt.Count
+//		case types.Declaration:
+//			result.DeclarationCnt = result.DeclarationCnt + cnt.Count
+//		case types.Stake:
+//			result.StakeCnt = result.StakeCnt + cnt.Count
+//		case types.Gov:
+//			result.GovCnt = result.GovCnt + cnt.Count
+//		}
+//	}
+//	logger.Debug("CountByType end", service.GetTraceLog())
+//	return result
+//}
 
 func (service *TxService) QueryTxNumGroupByDay() vo.TxNumGroupByDayVoRespond {
 	logger.Debug("QueryTxNumGroupByDay start", service.GetTraceLog())

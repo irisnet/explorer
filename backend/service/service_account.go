@@ -10,6 +10,7 @@ import (
 	"github.com/irisnet/explorer/backend/vo"
 	"strconv"
 	"math/big"
+	"strings"
 )
 
 type AccountService struct {
@@ -30,10 +31,29 @@ func (service *AccountService) Query(address string) (result vo.AccountVo) {
 	} else {
 		res, err := lcd.Account(address)
 		if err == nil {
+			decimalMap := make(map[string]int, len(res.Coins))
+			var unit []string
 			var amount utils.Coins
 			for _, coinStr := range res.Coins {
 				coin := utils.ParseCoin(coinStr)
+				unit = append(unit, strings.Split(coin.Denom, types.AssetMinDenom)[0])
 				amount = append(amount, coin)
+			}
+
+			assetkokens, err := document.AssetToken{}.GetAssetTokenDetailByTokenids(unit)
+			if err == nil {
+				for _, val := range assetkokens {
+					decimalMap[val.TokenId] = val.Decimal
+				}
+			}
+
+			for i, val := range amount {
+				denom := strings.Split(val.Denom, types.AssetMinDenom)[0]
+				if dem, ok := decimalMap[denom]; ok && dem > 0 {
+					amount[i].Denom = denom
+					amount[i].Amount = amount[i].Amount / float64(dem)
+				}
+
 			}
 			result.Amount = amount
 		}
@@ -47,7 +67,6 @@ func (service *AccountService) Query(address string) (result vo.AccountVo) {
 		}
 	}
 
-
 	result.WithdrawAddress = lcd.QueryWithdrawAddr(address)
 	result.IsProfiler = isProfiler(address)
 	result.Address = address
@@ -58,7 +77,7 @@ func getValidatorStatus(validator document.Validator) string {
 	if validator.Jailed == false {
 		if validator.Status == types.Bonded {
 			return "Active"
-		}else{
+		} else {
 			return "Candidate"
 		}
 	}
@@ -76,8 +95,19 @@ func (service *AccountService) QueryRichList() (vo.AccountsInfoRespond) {
 
 	var accList []vo.AccountInfo
 	var totalAmt = float64(0)
+	//AccountAmtMap := make(map[string]float64,len(result))
 
 	for _, acc := range result {
+		//AccountAmtMap[acc.Address] = acc.Total.Amount
+		//_,_,rewards,err := lcd.GetDistributionRewardsByValidatorAcc(acc.Address)
+		//if err == nil && len(rewards) > 0 {
+		//	if rewards[0].Denom == types.IRISAttoUint {
+		//		rewardsAmt,_ := strconv.ParseFloat(rewards[0].Amount,64)
+		//		AccountAmtMap[acc.Address] += rewardsAmt
+		//		totalAmt += rewardsAmt
+		//	}
+		//
+		//}
 		totalAmt += acc.Total.Amount
 	}
 
@@ -108,8 +138,8 @@ func isProfiler(address string) bool {
 
 func (service *AccountService) QueryDelegations(address string) (result vo.AccountDelegationsRespond) {
 	delegations := lcd.GetDelegationsByDelAddr(address)
-	var  valaddrlist  []string
-	for _,val := range delegations {
+	var valaddrlist []string
+	for _, val := range delegations {
 		valaddrlist = append(valaddrlist, val.ValidatorAddr)
 	}
 	validatorMap := getValidators(valaddrlist)
@@ -122,7 +152,7 @@ func (service *AccountService) QueryDelegations(address string) (result vo.Accou
 			Height:  val.Height,
 		}
 		if validatorMap != nil {
-			if valdator,ok := validatorMap[val.ValidatorAddr];ok {
+			if valdator, ok := validatorMap[val.ValidatorAddr]; ok {
 				data.Moniker = valdator.Description.Moniker
 				data.Amount = computeVotingPower(valdator, val.Shares)
 			}
@@ -133,12 +163,12 @@ func (service *AccountService) QueryDelegations(address string) (result vo.Accou
 	return result
 }
 
-func getValidators(valaddrlist  []string)(validatorMap map[string]document.Validator) {
+func getValidators(valaddrlist []string) (validatorMap map[string]document.Validator) {
 
 	valdators, err := document.Validator{}.QueryValidatorListByAddrList(valaddrlist)
 	if err == nil {
-		validatorMap = make(map[string]document.Validator,len(valdators))
-		for _,val := range valdators {
+		validatorMap = make(map[string]document.Validator, len(valdators))
+		for _, val := range valdators {
 			validatorMap[val.OperatorAddress] = val
 		}
 	}
@@ -171,8 +201,8 @@ func computeVotingPower(validator document.Validator, shares string) utils.Coin 
 func (service *AccountService) QueryUnbondingDelegations(address string) (result vo.AccountUnbondingDelegationsRespond) {
 
 	unbondingdelegations := lcd.GetUnbondingDelegationsByDelegatorAddr(address)
-	var  valaddrlist  []string
-	for _,val := range unbondingdelegations {
+	var valaddrlist []string
+	for _, val := range unbondingdelegations {
 		valaddrlist = append(valaddrlist, val.ValidatorAddr)
 	}
 	validatorMap := getValidators(valaddrlist)
@@ -186,7 +216,7 @@ func (service *AccountService) QueryUnbondingDelegations(address string) (result
 			Amount:  utils.ParseCoin(val.Balance),
 		}
 		if validatorMap != nil {
-			if valdator,ok := validatorMap[val.ValidatorAddr];ok {
+			if valdator, ok := validatorMap[val.ValidatorAddr]; ok {
 				data.Moniker = valdator.Description.Moniker
 			}
 		}
@@ -206,8 +236,8 @@ func (service *AccountService) QueryRewards(address string) (result vo.AccountRe
 
 	result.CommissionRewards = commissionrewards
 	result.TotalRewards = rewards
-	var  valaddrlist  []string
-	for _,val := range delegationrewards {
+	var valaddrlist []string
+	for _, val := range delegationrewards {
 		valaddrlist = append(valaddrlist, val.Validator)
 	}
 	validatorMap := getValidators(valaddrlist)
@@ -215,7 +245,7 @@ func (service *AccountService) QueryRewards(address string) (result vo.AccountRe
 	for _, val := range delegationrewards {
 		data := vo.DelagationsRewards{Address: val.Validator, Amount: val.Reward}
 		if validatorMap != nil {
-			if valdator,ok := validatorMap[val.Validator];ok {
+			if valdator, ok := validatorMap[val.Validator]; ok {
 				data.Moniker = valdator.Description.Moniker
 			}
 		}

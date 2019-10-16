@@ -2057,44 +2057,6 @@
                 }
             }
         },
-        "/api/txs/statistics": {
-            "get": {
-                "description": "get txs counter",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "txs"
-                ],
-                "summary": "txs counter",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "address",
-                        "name": "address",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "height",
-                        "name": "height",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "success",
-                        "schema": {
-                            "type": "object",
-                            "$ref": "#/definitions/vo.TxStatisticsVo"
-                        }
-                    }
-                }
-            }
-        },
         "/api/txs/{type}/{page}/{size}": {
             "get": {
                 "description": "get txs list by type",
@@ -4017,23 +3979,6 @@
                     }
                 },
                 "total": {
-                    "type": "integer"
-                }
-            }
-        },
-        "vo.TxStatisticsVo": {
-            "type": "object",
-            "properties": {
-                "declaration_cnt": {
-                    "type": "integer"
-                },
-                "gov_cnt": {
-                    "type": "integer"
-                },
-                "stake_cnt": {
-                    "type": "integer"
-                },
-                "trans_cnt": {
                     "type": "integer"
                 }
             }

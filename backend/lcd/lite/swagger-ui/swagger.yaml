@@ -1141,17 +1141,6 @@ definitions:
       total:
         type: integer
     type: object
-  vo.TxStatisticsVo:
-    properties:
-      declaration_cnt:
-        type: integer
-      gov_cnt:
-        type: integer
-      stake_cnt:
-        type: integer
-      trans_cnt:
-        type: integer
-    type: object
   vo.UnbondingDelegations:
     properties:
       address:
@@ -2855,31 +2844,6 @@ paths:
             $ref: '#/definitions/vo.RecentTxRespond'
             type: object
       summary: txs recent
-      tags:
-      - txs
-  /api/txs/statistics:
-    get:
-      consumes:
-      - application/json
-      description: get txs counter
-      parameters:
-      - description: address
-        in: query
-        name: address
-        type: string
-      - description: height
-        in: query
-        name: height
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: success
-          schema:
-            $ref: '#/definitions/vo.TxStatisticsVo'
-            type: object
-      summary: txs counter
       tags:
       - txs
   /api/txsByAddress/{address}/{page}/{size}:
