@@ -597,6 +597,7 @@
             //饼状图
             .home_module_item_pie {
                 height: 3.5rem;
+                background: #fff;
             }
         }
 
