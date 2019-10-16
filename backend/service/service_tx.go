@@ -208,31 +208,31 @@ func (service *TxService) QueryByAcc(address string, page, size int, istotal boo
 	return
 }
 
-func (service *TxService) CountByType(query bson.M) vo.TxStatisticsVo {
-	logger.Debug("CountByType start", service.GetTraceLog())
-
-	var result vo.TxStatisticsVo
-	counter, err := document.CommonTx{}.CountByType(query)
-	if err != nil {
-		logger.Error("tx count by Type ", logger.String("err", err.Error()), logger.Any("query", query))
-		return result
-	}
-
-	for _, cnt := range counter {
-		switch types.Convert(cnt.Type) {
-		case types.Trans:
-			result.TransCnt = result.TransCnt + cnt.Count
-		case types.Declaration:
-			result.DeclarationCnt = result.DeclarationCnt + cnt.Count
-		case types.Stake:
-			result.StakeCnt = result.StakeCnt + cnt.Count
-		case types.Gov:
-			result.GovCnt = result.GovCnt + cnt.Count
-		}
-	}
-	logger.Debug("CountByType end", service.GetTraceLog())
-	return result
-}
+//func (service *TxService) CountByType(query bson.M) vo.TxStatisticsVo {
+//	logger.Debug("CountByType start", service.GetTraceLog())
+//
+//	var result vo.TxStatisticsVo
+//	counter, err := document.CommonTx{}.CountByType(query)
+//	if err != nil {
+//		logger.Error("tx count by Type ", logger.String("err", err.Error()), logger.Any("query", query))
+//		return result
+//	}
+//
+//	for _, cnt := range counter {
+//		switch types.Convert(cnt.Type) {
+//		case types.Trans:
+//			result.TransCnt = result.TransCnt + cnt.Count
+//		case types.Declaration:
+//			result.DeclarationCnt = result.DeclarationCnt + cnt.Count
+//		case types.Stake:
+//			result.StakeCnt = result.StakeCnt + cnt.Count
+//		case types.Gov:
+//			result.GovCnt = result.GovCnt + cnt.Count
+//		}
+//	}
+//	logger.Debug("CountByType end", service.GetTraceLog())
+//	return result
+//}
 
 func (service *TxService) QueryTxNumGroupByDay() vo.TxNumGroupByDayVoRespond {
 	logger.Debug("QueryTxNumGroupByDay start", service.GetTraceLog())

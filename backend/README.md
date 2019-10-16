@@ -55,3 +55,16 @@ In addition, the command also opens a lightweight client program that provides a
 ```golang
    irisplorer rest-server --mgo-url=localhost:27017 --chain-id=pangu --node=tcp://localhost:46657
 ```
+
+##### 5 update the swagger file
+At first, update the file in the docs dirname with  the command:
+```golang
+  #swag init
+```
+
+Then, copy the swagger.yaml content of docs to the lcd/lit/swagger-ui/swagger.yaml and cover  after the "swagger: \"2.0\"" position.
+that's sure ok,than execute the command:
+```golang
+   #cd ackend/lcd/lite
+   #go generate
+```
