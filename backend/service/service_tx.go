@@ -96,6 +96,28 @@ func (service *TxService) QueryBaseList(query bson.M, page, pageSize int, istota
 		logger.Error("query tx list by page", logger.String("err", err.Error()))
 		return
 	}
+	var unit []string
+	for _,val := range txList {
+		if val.Amount[0].Denom != types.IRISAttoUint {
+			unit = append(unit, strings.Split(val.Amount[0].Denom, types.AssetMinDenom)[0])
+		}
+	}
+
+	decimalMap := make(map[string]int, len(txList))
+	assetkokens, err := document.AssetToken{}.GetAssetTokenDetailByTokenids(unit)
+	if err == nil {
+		for _, val := range assetkokens {
+			decimalMap[val.TokenId] = val.Decimal
+		}
+	}
+
+	for i, val := range txList {
+		denom := strings.Split(val.Amount[0].Denom, types.AssetMinDenom)[0]
+		if dem, ok := decimalMap[denom]; ok && dem > 0 {
+			txList[i].Amount[0].Denom = denom
+			txList[i].Amount[0].Amount = txList[i].Amount[0].Amount / float64(dem)
+		}
+	}
 
 	data := buildTxVOsFromDoc(txList)
 	var baseData []vo.BaseTx
