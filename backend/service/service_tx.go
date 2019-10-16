@@ -98,7 +98,7 @@ func (service *TxService) QueryBaseList(query bson.M, page, pageSize int, istota
 	}
 	var unit []string
 	for _,val := range txList {
-		if val.Amount[0].Denom != types.IRISAttoUint {
+		if len(val.Amount) > 0 && val.Amount[0].Denom != types.IRISAttoUint {
 			unit = append(unit, strings.Split(val.Amount[0].Denom, types.AssetMinDenom)[0])
 		}
 	}
@@ -112,6 +112,9 @@ func (service *TxService) QueryBaseList(query bson.M, page, pageSize int, istota
 	}
 
 	for i, val := range txList {
+		if len(val.Amount) == 0 {
+			continue
+		}
 		denom := strings.Split(val.Amount[0].Denom, types.AssetMinDenom)[0]
 		if dem, ok := decimalMap[denom]; ok && dem > 0 {
 			txList[i].Amount[0].Denom = denom
