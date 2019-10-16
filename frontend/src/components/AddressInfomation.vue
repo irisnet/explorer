@@ -387,7 +387,7 @@
                             }else {
 					            this.totalDelegator = res[0].amount.amount
                             }
-				            this.totalDelegatorValue = `${Tools.formatStringToFixedNumber(this.totalDelegator.toString(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}`
+				            this.totalDelegatorValue = `${new BigNumber(Tools.formatStringToFixedNumber(this.totalDelegator.toString(),this.fixedNumber)).toFormat()} ${Constant.Denom.IRIS.toUpperCase()}`
                         }else {
 				            this.delegationsItems = []
                         }
@@ -417,7 +417,7 @@
                             }else {
 					            this.totalUnBondingDelegator = res[0].amount.amount
                             }
-				            this.totalUnBondingDelegatorValue = `${Tools.formatStringToFixedNumber(this.totalUnBondingDelegator.toString(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}`
+				            this.totalUnBondingDelegatorValue = `${new BigNumber(Tools.formatStringToFixedNumber(this.totalUnBondingDelegator.toString(),this.fixedNumber)).toFormat()} ${Constant.Denom.IRIS.toUpperCase()}`
                         }
 		            }catch (e) {
 			            console.error(e)
@@ -457,7 +457,7 @@
 					            this.totalDelegatorReward = Tools.numberMoveDecimal(res.delagations_rewards[0].amount[0].amount).toString()
                             }
 				            this.allRewardsAmountValue = res.total_rewards ? Tools.formatStringToFixedNumber(Tools.numberMoveDecimal(res.total_rewards[0].amount,-18),this.fixedNumber) : 0;
-				            this.totalDelegatorRewardValue = `${Tools.formatStringToFixedNumber(this.totalDelegatorReward.toString(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}`
+				            this.totalDelegatorRewardValue = `${new BigNumber(Tools.formatStringToFixedNumber(this.totalDelegatorReward.toString(),this.fixedNumber)).toFormat()} ${Constant.Denom.IRIS.toUpperCase()}`
 			            }
 		            }catch (e) {
 			            console.error(e)
