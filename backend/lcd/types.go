@@ -471,7 +471,7 @@ type DelegationVo struct {
 	DelegatorAddr string `json:"delegator_addr"`
 	ValidatorAddr string `json:"validator_addr"`
 	Shares        string `json:"shares"`
-	Height        string `json:"height"`
+	Height        int64 `json:"height,string"`
 }
 
 type DistributionRewards struct {
@@ -509,7 +509,7 @@ type UnbondingDelegations struct {
 	ValidatorAddr  string `json:"validator_addr"`
 	InitialBalance string `json:"initial_balance"`
 	Balance        string `json:"balance"`
-	CreationHeight string `json:"creation_height"`
+	CreationHeight int64 `json:"creation_height,string"`
 	MinTime        string `json:"min_time"`
 }
 

@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"math/big"
 	"strings"
+	"sort"
 )
 
 type AccountService struct {
@@ -159,6 +160,7 @@ func (service *AccountService) QueryDelegations(address string) (result vo.Accou
 		}
 		result = append(result, &data)
 	}
+	sort.Sort(result)
 
 	return result
 }
@@ -223,6 +225,7 @@ func (service *AccountService) QueryUnbondingDelegations(address string) (result
 		result = append(result, &data)
 
 	}
+	sort.Sort(result)
 	return result
 }
 

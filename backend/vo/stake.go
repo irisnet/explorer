@@ -84,7 +84,7 @@ items:
 type UnbondingDelegations struct {
 	Address string `json:"address"`
 	Amount  string `json:"amount"`
-	Block   string `json:"block"`
+	Block   int64 `json:"block,string"`
 	Until   string `json:"until"`
 }
 
@@ -102,7 +102,7 @@ type Delegation struct {
 	Amount      string  `json:"amount"`
 	SelfShares  string  `json:"self_shares"`
 	TotalShares float64 `json:"total_shares"`
-	Block       string  `json:"block"`
+	Block       int64  `json:"block,string"`
 }
 
 func (d Delegation) String() string {
