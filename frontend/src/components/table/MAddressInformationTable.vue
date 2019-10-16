@@ -13,7 +13,8 @@
                 </div>
             </template>
             <template slot-scope="{ row }" slot="block">
-                <router-link :to="`/block/${row.block}`" class="link_style">{{row.block}}</router-link>
+                <router-link v-if="row.block != 0" :to="`/block/${row.block}`" class="link_style">{{row.block}}</router-link>
+                <span v-if="row.block == 0">{{row.block}}</span>
             </template>
             <template slot-scope="{ row }" slot="signer">
                 <div class="common_hover_address_parent" v-if="row.signer">
