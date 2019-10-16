@@ -1194,6 +1194,7 @@ export default {
     .transactions_detail_information_wrap {
       padding: 0.1rem;
       border: 1px solid #d7d9e0;
+      background: #fff;
       .information_props_wrap {
         @include flex;
         flex-direction: column;
