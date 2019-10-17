@@ -1,5 +1,5 @@
 <template>
-  <div id="app" @click.stop="closeSelectOption" @click="handleClick($event)">
+  <div id="app" @click.stop="closeSelectOption">
     <app-header v-show="flShowHeader"></app-header>
     <div id="router_wrap" :class="$store.state.flShowIpt && !$store.state.isMobile ? 'input_style' : ''" :style="{'padding-top': $store.state.isMobile ? '' :`${headerHeightStyle}`}">
       <div class="qr_code"
@@ -147,7 +147,7 @@
           this.scrollHeight = e.target.scrollTop
         }
       },
-      handleClick(e){
+     /* handleClick(e){
         let netIcon = 'iconiris';
         if(this.$store.state.currentSkinStyle !== 'default'){
           if(this.$store.state.currentSkinStyle ===  `${Constant.ENVCONFIG.MAINNET}${Constant.CHAINID.MAINNET}`){
@@ -162,10 +162,10 @@
         let x = e.pageX, y = e.pageY;
         if(window.innerWidth > 910){
           $i.css({ "z-index": 9999999, "top": y - 20, "left": x,"position": "absolute","color": "var(--bgColor)","font-size": "20px"});
-          $("body").append($i);
+          $("#app").append($i);
           $i.animate({"top": y - 180,"opacity": 0},1500,function () {$i.remove();});
         }
-      },
+      },*/
       onresize() {
         this.innerWidth = window.innerWidth;
         this.vh = window.innerHeight;
@@ -239,6 +239,7 @@
   }
 
   #app {
+    position: relative;
     width: 100%;
     display: flex;
     flex-direction: column;
