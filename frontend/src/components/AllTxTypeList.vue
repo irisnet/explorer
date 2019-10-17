@@ -162,7 +162,7 @@
 
 	            // let utcTime = Tools.conversionTimeToUTCByValidatorsLine(new Date(time).toISOString());
 	            let oneDaySeconds = 24 * 60 *60;
-	            return Number(new Date(time).getTime()/1000) + Number(oneDaySeconds)
+	            return Number(new Date(time).getTime() + oneDaySeconds/1000) + Number(oneDaySeconds)
             },
 	        formatStartTime(time){
 		        // let utcTime = Tools.conversionTimeToUTCByValidatorsLine(new Date(time).toISOString());
