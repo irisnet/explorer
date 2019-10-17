@@ -8,6 +8,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"time"
 	"github.com/irisnet/explorer/backend/conf"
+	"github.com/irisnet/explorer/backend/logger"
 )
 
 func RegisterTx(r *mux.Router) error {
@@ -66,6 +67,7 @@ func registerQueryTxList(r *mux.Router) error {
 		address := QueryParam(request, "address")
 		beginTime := int64(utils.ParseIntWithDefault(QueryParam(request, "beginTime"), 0))
 		endTime := int64(utils.ParseIntWithDefault(QueryParam(request, "endTime"), 0))
+		time.LoadLocation("Local") //获取时区
 		istotal := false
 		if total == "true" {
 			istotal = true
@@ -115,6 +117,13 @@ func registerQueryTxList(r *mux.Router) error {
 				"$lt": time.Unix(endTime, 0),
 			}
 		}
+		if beginTime != 0 {
+			logger.Debug("query beginTime",logger.String("beginTime",time.Unix(beginTime, 0).Format(types.Format)))
+		}
+
+		if endTime != 0 {
+			logger.Debug("query endTime",logger.String("endTime",time.Unix(endTime, 0).Format(types.Format)))
+		}
 		var result vo.PageVo
 		result = tx.QueryBaseList(query, page, size, istotal)
 		return result
@@ -148,6 +157,7 @@ func registerQueryTxListByType(r *mux.Router) error {
 		status := QueryParam(request, "status")
 		beginTime := int64(utils.ParseIntWithDefault(QueryParam(request, "beginTime"), 0))
 		endTime := int64(utils.ParseIntWithDefault(QueryParam(request, "endTime"), 0))
+		time.LoadLocation("Local") //获取时区
 		istotal := true
 		if total == "false" {
 			istotal = false
@@ -192,6 +202,14 @@ func registerQueryTxListByType(r *mux.Router) error {
 				"$lt": time.Unix(endTime, 0),
 			}
 		}
+		if beginTime != 0 {
+			logger.Debug("query beginTime",logger.String("beginTime",time.Unix(beginTime, 0).Format(types.Format)))
+		}
+
+		if endTime != 0 {
+			logger.Debug("query endTime",logger.String("endTime",time.Unix(endTime, 0).Format(types.Format)))
+		}
+
 		if txType != "" {
 			query["type"] = txType
 		} else {
