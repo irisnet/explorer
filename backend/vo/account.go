@@ -58,20 +58,38 @@ type AccountDelegationsVo struct {
 	Moniker string     `json:"moniker"`
 	Amount  utils.Coin `json:"amount"`
 	Shares  string     `json:"shares"`
-	Height  string     `json:"height"`
+	Height  int64     `json:"height,string"`
 }
 
 type AccountUnbondingDelegationsVo struct {
 	Address string     `json:"address"`
 	Moniker string     `json:"moniker"`
 	Amount  utils.Coin `json:"amount"`
-	Height  string     `json:"height"`
+	Height  int64     `json:"height,string"`
 	EndTime string     `json:"end_time"`
 }
 
 type AccountsInfoRespond []AccountInfo
 type AccountDelegationsRespond []*AccountDelegationsVo
+func (sort AccountDelegationsRespond) Len() int {
+	return len(sort)
+}
+func (sort AccountDelegationsRespond) Swap(i, j int) {
+	sort[i], sort[j] = sort[j], sort[i]
+}
+func (sort AccountDelegationsRespond) Less(i, j int) bool {
+	return sort[i].Height > sort[j].Height
+}
 type AccountUnbondingDelegationsRespond []*AccountUnbondingDelegationsVo
+func (sort AccountUnbondingDelegationsRespond) Len() int {
+	return len(sort)
+}
+func (sort AccountUnbondingDelegationsRespond) Swap(i, j int) {
+	sort[i], sort[j] = sort[j], sort[i]
+}
+func (sort AccountUnbondingDelegationsRespond) Less(i, j int) bool {
+	return sort[i].Height > sort[j].Height
+}
 
 
 type AccountRewardsVo struct {
