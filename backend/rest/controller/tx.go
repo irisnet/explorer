@@ -67,7 +67,7 @@ func registerQueryTxList(r *mux.Router) error {
 		address := QueryParam(request, "address")
 		beginTime := int64(utils.ParseIntWithDefault(QueryParam(request, "beginTime"), 0))
 		endTime := int64(utils.ParseIntWithDefault(QueryParam(request, "endTime"), 0))
-		time.LoadLocation("Local") //获取时区
+		utc,_ := time.LoadLocation("UTC")
 		istotal := false
 		if total == "true" {
 			istotal = true
@@ -105,24 +105,24 @@ func registerQueryTxList(r *mux.Router) error {
 		}
 		if beginTime != 0 && endTime != 0 {
 			query["time"] = bson.M{
-				"$gte": time.Unix(beginTime, 0),
-				"$lt":  time.Unix(endTime, 0),
+				"$gte": time.Unix(beginTime, 0).In(utc),
+				"$lt":  time.Unix(endTime, 0).In(utc),
 			}
 		} else if beginTime != 0 {
 			query["time"] = bson.M{
-				"$gte": time.Unix(beginTime, 0),
+				"$gte": time.Unix(beginTime, 0).In(utc),
 			}
 		} else if endTime != 0 {
 			query["time"] = bson.M{
-				"$lt": time.Unix(endTime, 0),
+				"$lt": time.Unix(endTime, 0).In(utc),
 			}
 		}
 		if beginTime != 0 {
-			logger.Debug("query beginTime",logger.String("beginTime",time.Unix(beginTime, 0).Format(types.Format)))
+			logger.Debug("query beginTime",logger.String("beginTime",time.Unix(beginTime, 0).In(utc).Format(types.Format)))
 		}
 
 		if endTime != 0 {
-			logger.Debug("query endTime",logger.String("endTime",time.Unix(endTime, 0).Format(types.Format)))
+			logger.Debug("query endTime",logger.String("endTime",time.Unix(endTime, 0).In(utc).Format(types.Format)))
 		}
 		var result vo.PageVo
 		result = tx.QueryBaseList(query, page, size, istotal)
@@ -157,7 +157,7 @@ func registerQueryTxListByType(r *mux.Router) error {
 		status := QueryParam(request, "status")
 		beginTime := int64(utils.ParseIntWithDefault(QueryParam(request, "beginTime"), 0))
 		endTime := int64(utils.ParseIntWithDefault(QueryParam(request, "endTime"), 0))
-		time.LoadLocation("Local") //获取时区
+		utc,_ := time.LoadLocation("UTC")
 		istotal := true
 		if total == "false" {
 			istotal = false
@@ -190,24 +190,24 @@ func registerQueryTxListByType(r *mux.Router) error {
 		}
 		if beginTime != 0 && endTime != 0 {
 			query["time"] = bson.M{
-				"$gte": time.Unix(beginTime, 0),
-				"$lt":  time.Unix(endTime, 0),
+				"$gte": time.Unix(beginTime, 0).In(utc),
+				"$lt":  time.Unix(endTime, 0).In(utc),
 			}
 		} else if beginTime != 0 {
 			query["time"] = bson.M{
-				"$gte": time.Unix(beginTime, 0),
+				"$gte": time.Unix(beginTime, 0).In(utc),
 			}
 		} else if endTime != 0 {
 			query["time"] = bson.M{
-				"$lt": time.Unix(endTime, 0),
+				"$lt": time.Unix(endTime, 0).In(utc),
 			}
 		}
 		if beginTime != 0 {
-			logger.Debug("query beginTime",logger.String("beginTime",time.Unix(beginTime, 0).Format(types.Format)))
+			logger.Debug("query beginTime",logger.String("beginTime",time.Unix(beginTime, 0).In(utc).Format(types.Format)))
 		}
 
 		if endTime != 0 {
-			logger.Debug("query endTime",logger.String("endTime",time.Unix(endTime, 0).Format(types.Format)))
+			logger.Debug("query endTime",logger.String("endTime",time.Unix(endTime, 0).In(utc).Format(types.Format)))
 		}
 
 		if txType != "" {
