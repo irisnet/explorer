@@ -451,5 +451,10 @@
       }
     }
   }
-
+  .ivu-date-picker-focused input{
+    border-color: var(--bgColor) !important;
+  }
+  .ivu-select-selection-focused{
+    border-color: var(--bgColor) !important;
+  }
 </style>
