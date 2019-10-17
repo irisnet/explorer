@@ -66,6 +66,7 @@
   import testVersion from '../testVersion';
   import BackToTop from "./components/BackToTop";
   import $ from "jquery"
+  import Constant from "./constant/Constant"
   export default {
     components: {
       AppHeader,
@@ -147,8 +148,21 @@
         }
       },
       handleClick(e){
-        let $i = $("<i/>").addClass('iconfont iconiris');
+        let netIcon = 'iconiris';
+        if(this.$store.state.currentSkinStyle !== 'default'){
+          if(this.$store.state.currentSkinStyle ===  `${Constant.ENVCONFIG.MAINNET}${Constant.CHAINID.MAINNET}`){
+            netIcon = 'iconiris'
+          }else if(this.$store.state.currentSkinStyle ===  `${Constant.ENVCONFIG.TESTNET}${Constant.CHAINID.FUXI}`){
+            netIcon = 'iconfuxi1'
+          }else if(this.$store.state.currentSkinStyle ===  `${Constant.ENVCONFIG.TESTNET}${Constant.CHAINID.NYANCAT}`){
+            netIcon = 'iconcaihongmao'
+          }
+        }
+        let $i = $("<i/>").addClass(`iconfont ${netIcon}`);
         let x = e.pageX, y = e.pageY;
+        if(y > $(document.body).height()){
+          y = $(document.body).height()
+        }
         $i.css({ "z-index": 9999999, "top": y - 20, "left": x,"position": "absolute","color": "var(--bgColor)","font-size": "20px"});
         $("body").append($i);
         $i.animate({"top": y - 180,"opacity": 0},1500,function () {$i.remove();});
