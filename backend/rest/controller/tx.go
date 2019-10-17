@@ -8,7 +8,6 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"time"
 	"github.com/irisnet/explorer/backend/conf"
-	"github.com/irisnet/explorer/backend/logger"
 )
 
 func RegisterTx(r *mux.Router) error {
