@@ -2,6 +2,7 @@ declare var require: any;
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
+import VueRouter from 'vue-router';
 import store from './store'
 import BootstrapVue from 'bootstrap-vue'
 import '../icon/iconfont.css'
@@ -48,6 +49,12 @@ axios.get(`/api/sysdate`).then(data => {
 });
 sessionStorage.setItem("Show_faucet",JSON.stringify(0));
 import Tools from './util/Tools';
+const routerPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location) {
+  return routerPush.call(this, location).catch(error=> error)
+}
+
+
 Vue.prototype.addressRoute = Tools.addressRoute;
 new Vue({
   router,

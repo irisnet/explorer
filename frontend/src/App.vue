@@ -160,6 +160,9 @@
         }
         let $i = $("<i/>").addClass(`iconfont ${netIcon}`);
         let x = e.pageX, y = e.pageY;
+        if(y > $(document.body).height()){
+          y = $(document.body).height()
+        }
         $i.css({ "z-index": 9999999, "top": y - 20, "left": x,"position": "absolute","color": "var(--bgColor)","font-size": "20px"});
         $("body").append($i);
         $i.animate({"top": y - 180,"opacity": 0},1500,function () {$i.remove();});
