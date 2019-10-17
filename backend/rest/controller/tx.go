@@ -117,13 +117,6 @@ func registerQueryTxList(r *mux.Router) error {
 				"$lt": time.Unix(endTime, 0).In(utc),
 			}
 		}
-		if beginTime != 0 {
-			logger.Debug("query beginTime",logger.String("beginTime",time.Unix(beginTime, 0).In(utc).Format(types.Format)))
-		}
-
-		if endTime != 0 {
-			logger.Debug("query endTime",logger.String("endTime",time.Unix(endTime, 0).In(utc).Format(types.Format)))
-		}
 		var result vo.PageVo
 		result = tx.QueryBaseList(query, page, size, istotal)
 		return result
@@ -201,13 +194,6 @@ func registerQueryTxListByType(r *mux.Router) error {
 			query["time"] = bson.M{
 				"$lt": time.Unix(endTime, 0).In(utc),
 			}
-		}
-		if beginTime != 0 {
-			logger.Debug("query beginTime",logger.String("beginTime",time.Unix(beginTime, 0).In(utc).Format(types.Format)))
-		}
-
-		if endTime != 0 {
-			logger.Debug("query endTime",logger.String("endTime",time.Unix(endTime, 0).In(utc).Format(types.Format)))
 		}
 
 		if txType != "" {
