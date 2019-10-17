@@ -542,7 +542,7 @@
 		        this.filterStartTime = this.formatStartTime(time)
 	        },
 	        getEndTime(time){
-		        this.filterEndTime = this.formatTime(time)
+		        this.filterEndTime = this.formatEndTime(time)
 	        },
 
 	        filterTxByTxType(e){
@@ -582,7 +582,7 @@
 		        this.resetUrl();
 		        this.getTxListByFilterCondition()
 	        },
-	        formatTime(time){
+	        formatEndTime(time){
 		        // let utcTime = Tools.conversionTimeToUTCByValidatorsLine(new Date(time).toISOString());
 		        let oneDaySeconds = 24 * 60 *60;
 		        return Number(new Date(time).getTime() + oneDaySeconds/1000) + Number(oneDaySeconds)
