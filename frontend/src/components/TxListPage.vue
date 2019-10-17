@@ -165,8 +165,8 @@
 				this.filterEndTime = this.formatEndTime(time)
 			},
 			formatStartTime(time){
-				let utcTime = Tools.conversionTimeToUTCByValidatorsLine(new Date(time).toISOString());
-				return Number(new Date(utcTime).getTime()/1000)
+				// let utcTime = Tools.conversionTimeToUTCByValidatorsLine(new Date(time).toISOString());
+				return Number(new Date(time).getTime()/1000)
 			},
 			formatEndTime(time){
 				// let utcTime = Tools.conversionTimeToUTCByValidatorsLine(new Date(time).toISOString());
