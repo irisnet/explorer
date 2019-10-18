@@ -7,6 +7,9 @@ import (
 	"encoding/json"
 	"github.com/irisnet/explorer/backend/vo"
 	"gopkg.in/mgo.v2/bson"
+	"github.com/irisnet/explorer/backend/types"
+	"time"
+	"fmt"
 )
 
 func TestQueryTxList(t *testing.T) {
@@ -94,7 +97,62 @@ func TestTxService_checkTags(t *testing.T) {
 }
 
 func TestTxService_QueryBaseList(t *testing.T) {
-	res := new(TxService).QueryBaseList(bson.M{"from":"faa174qyl02cupyqq77cqqtdl0frda6dl3rpjcrgnp"},1,10,false)
+	page := int(17)
+	size := int(30)
+	height := int(0)
+	txType := ""
+	status := ""
+	address := ""
+	beginTime := int64(1568217600)
+	endTime := int64(0)
+	istotal := true
+	query := bson.M{}
+	if height > 0 {
+		query["height"] = height
+	}
+	if txType != "" {
+		query["type"] = txType
+	}
+	if status != "" {
+		query["status"] = status
+	}
+	if address != "" {
+		if txType != "" {
+			switch txType {
+			case types.TxTypeTransfer:
+				query["$or"] = []bson.M{
+					{"from": address},
+					{"to": address},
+				}
+
+			default:
+				query["signers.addr_bech32"] = address
+			}
+
+		} else {
+			query["$or"] = []bson.M{
+				{"signers.addr_bech32": address},
+				{"to": address},
+			}
+		}
+
+	}
+	if beginTime != 0 && endTime != 0 {
+		query["time"] = bson.M{
+			"$gte": time.Unix(beginTime, 0),
+			"$lt":  time.Unix(endTime, 0),
+		}
+	} else if beginTime != 0 {
+		query["time"] = bson.M{
+			"$gte": time.Unix(beginTime, 0),
+		}
+	} else if endTime != 0 {
+		query["time"] = bson.M{
+			"$lt": time.Unix(endTime, 0),
+		}
+	}
+	fmt.Println(query)
+	res := new(TxService).QueryBaseList(query, page, size, istotal)
 	bytestr, _ := json.Marshal(res)
 	t.Logf("items: %v \n", string(bytestr))
 }

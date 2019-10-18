@@ -65,9 +65,10 @@ func (service CommonService) GetGenesis() lcd.GenesisVo {
 	if len(service.genesis.Result.Genesis.ChainID) == 0 {
 		result, err := lcd.Genesis()
 		if err != nil {
-			panic(err)
+			logger.Error("lcd Genesis have error", logger.String("err", err.Error()))
+		} else {
+			service.genesis = result
 		}
-		service.genesis = result
 	}
 	return service.genesis
 }
