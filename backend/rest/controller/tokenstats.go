@@ -20,6 +20,13 @@ func RegisterTokenStats(r *mux.Router) error {
 	return nil
 }
 
+// @Summary tokenstats
+// @Description tokenstats
+// @Tags tokenstats
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} vo.Response  "success"
+// @Router /api/tokenstats [get]
 func registerQueryTokenStats(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryTokenStats, "GET", func(request vo.IrisReq) interface{} {
 		tokenstats.SetTid(request.TraceId)
@@ -33,6 +40,13 @@ func registerQueryTokenStats(r *mux.Router) error {
 	return nil
 }
 
+// @Summary account_total
+// @Description get tokenstats account_total
+// @Tags tokenstats
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} vo.Response  "success"
+// @Router /api/tokenstats/account_total [get]
 func registerQueryTokensAccountTotal(r *mux.Router) error {
 	doApi(r, types.UrlRegisterTokensAccountTotal, "GET", func(request vo.IrisReq) interface{} {
 		tokenstats.SetTid(request.TraceId)

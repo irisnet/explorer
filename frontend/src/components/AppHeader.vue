@@ -122,7 +122,7 @@
                            v-model.trim="searchInputValue"
                            @keyup.enter="onInputChange"
                            placeholder="Search by Address / Txhash / Block">
-                    <i class="search_icon"
+                    <i class="search_icon iconfont iconsousuo"
                        @click="getData(searchInputValue)"></i>
                     <i class="clear_icon"
                        @click="clearSearchContent"
@@ -275,7 +275,6 @@
 				flShowUpOrDown: false,
 				flShowNetwork: false,
 				flShowHeaderNetwork: false,
-				flShowChainId: false,
 				flShowValidatorsUpOrDown: false,
 				flShowNetworkUpOrDown: false,
 				currentSelected: '',
@@ -332,9 +331,9 @@
 			this.listenRouteForChangeActiveButton();
 			window.addEventListener('resize', this.onresize);
 			this.getConfig();
-			if(localStorage.getItem('currentEnv')){
+			if(sessionStorage.getItem('skinCurrentEnv')){
 				this.toggleTestnetLogo({
-					cur_env:localStorage.getItem('currentEnv')
+					cur_env:sessionStorage.getItem('skinCurrentEnv')
 				});
             }
 			this.listenRouteForChangeActiveButton();
@@ -619,10 +618,10 @@
 			getConfig () {
 				Service.commonInterface({headerConfig:{}},(res) => {
 					try {
+						this.$store.commit('currentSkinStyle',`${res.cur_env}${res.chain_id}`);
+						sessionStorage.setItem('skinCurrentEnv',JSON.stringify({currentEnv:res.cur_env,currentChainID:res.chain_id}))
 						this.flShowLogo = true;
-						if(!localStorage.getItem('currentEnv')){
-							this.toggleTestnetLogo(res);
-						}
+						this.toggleTestnetLogo(res);
 						this.setCurrentSelectOption(res.cur_env, res.chain_id, res.configs);
 						this.setNetWorkLogo(res.cur_env, res.chain_id);
 						this.setEnvConfig(res);
@@ -670,22 +669,32 @@
 				}
 			},
 			toggleTestnetLogo (currentEnv) {
+				if(sessionStorage.getItem('skinCurrentEnv')){
+					currentEnv.cur_env = JSON.parse(sessionStorage.getItem('skinCurrentEnv')).currentEnv;
+					currentEnv.chain_id = JSON.parse(sessionStorage.getItem('skinCurrentEnv')).currentChainID;
+                }
 				const root = document.documentElement;
 				root.style.setProperty(skinStyle.skinStyle.TITLECOLORNAME,skinStyle.skinStyle.commonFontBlackColor);
 				root.style.setProperty(skinStyle.skinStyle.CONTENTCOLORNAME,skinStyle.skinStyle.commonFontContentColor);
 				root.style.setProperty(skinStyle.skinStyle.MODULEBLACKCOLOR,skinStyle.skinStyle.commonModuleBlackColor);
-				if (currentEnv.cur_env === constant.ENVCONFIG.MAINNET) {
-					this.flShowChainId = false;
+				if (currentEnv.cur_env === constant.ENVCONFIG.MAINNET && currentEnv.chain_id === constant.CHAINID.MAINNET) {
 					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.MAINNETBGCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.MAINNETHOVERCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.MAINNETACTIVECOLOR);
-				} else {
-					this.flShowChainId = true;
+				} else if(currentEnv.cur_env === constant.ENVCONFIG.TESTNET && currentEnv.chain_id === constant.CHAINID.FUXI) {
 					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.TESTNETBGCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.TESTNETHOVERCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.TESTNETACTIVECOLOR);
-				}
-				localStorage.setItem('currentEnv',currentEnv.cur_env)
+
+				}else if(currentEnv.cur_env === constant.ENVCONFIG.TESTNET && currentEnv.chain_id === constant.CHAINID.NYANCAT){
+					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.NYANCATTESTNETBGCOLOR);
+					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.NYANCATTESTNETHOVERCOLOR);
+					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.NYANCATTESTNETACTIVECOLOR);
+                }else{
+					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.DEFAULTBGCOLOR);
+					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.DEFAULTHOVERCOLOR);
+					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.DEFAULTACTIVECOLOR);
+                }
 			},
 			setCurrentSelectOption (currentEnv, currentChainId) {
 				if (currentEnv === constant.ENVCONFIG.DEV || currentEnv === constant.ENVCONFIG.QA || currentEnv === constant.ENVCONFIG.STAGE) {
@@ -918,7 +927,7 @@
                                 }
                                 a{
                                     &:hover{
-                                        color:var(--hoverColor) !important;
+                                        color:var(--bgColor) !important;
                                     }
                                 }
                         }
@@ -1101,11 +1110,10 @@
                 }
                 .search_icon {
                     position: absolute;
-                    top: 0.07rem;
+                    top: 0.05rem;
+                    font-size: 0.15rem;
                     right: 0.15rem;
-                    width: 0.15rem;
-                    height: 0.15rem;
-                    background: url("../assets/search.svg") no-repeat;
+                    color: var(--bgColor);
                     cursor: pointer;
                 }
                 .clear_icon {

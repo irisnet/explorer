@@ -4,7 +4,6 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/vo"
@@ -36,20 +35,31 @@ func RegisterBlock(r *mux.Router) error {
 //	service.Get(service.Block).(*service.BlockService),
 //}
 
+// @Summary latest
+// @Description get block latestheight
+// @Tags block
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} vo.LatestHeightRespond	"success"
+// @Router /api/block/latestheight [get]
 func registerQueryBlockLatestHeight(r *mux.Router) error {
 
 	doApi(r, types.UrlRegisterQueryBlockLatestHeight, "GET", func(request vo.IrisReq) interface{} {
-		var block = lcd.BlockLatest()
-		var height, ok = utils.ParseInt(block.BlockMeta.Header.Height)
-		if !ok {
-			panic(types.CodeNotFound)
-		}
-		return height
+		return block.QueryLatestHeight()
 	})
 
 	return nil
 }
 
+// @Summary list
+// @Description get blocks
+// @Tags block
+// @Accept  json
+// @Produce  json
+// @Param   page    query   int true    "page num" Default(1)
+// @Param   size   query   int true    "page size" Default(10)
+// @Success 200 {object} vo.BlockForListRespond	"success"
+// @Router /api/blocks [get]
 func registerQueryBlocks(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryBlocks, "GET", func(request vo.IrisReq) interface{} {
 		block.SetTid(request.TraceId)
@@ -62,6 +72,13 @@ func registerQueryBlocks(r *mux.Router) error {
 	return nil
 }
 
+// @Summary blocks recent
+// @Description get recent blocks
+// @Tags block
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} vo.BlockInfoVoRespond	"success"
+// @Router /api/blocks/recent [get]
 func registerQueryRecentBlocks(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryRecentBlocks, "GET", func(request vo.IrisReq) interface{} {
 		return block.QueryRecent()
@@ -70,6 +87,16 @@ func registerQueryRecentBlocks(r *mux.Router) error {
 	return nil
 }
 
+// @Summary block validatorset
+// @Description get  block validatorset
+// @Tags block
+// @Accept  json
+// @Produce  json
+// @Param   page    query   int true    "page num" Default(1)
+// @Param   size   query   int true    "page size" Default(10)
+// @Param   height   path   int true    "block height"
+// @Success 200 {object} vo.ValidatorSet	"success"
+// @Router /api/block/validatorset/{height} [get]
 func registerQueryValidatorSet(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryBlockValidatorSet, "GET", func(request vo.IrisReq) interface{} {
 		block.SetTid(request.TraceId)
@@ -87,6 +114,14 @@ func registerQueryValidatorSet(r *mux.Router) error {
 	return nil
 }
 
+// @Summary detail
+// @Description get block info
+// @Tags block
+// @Accept  json
+// @Produce  json
+// @Param   height   path   int true    "block height"
+// @Success 200 {object} vo.BlockInfo	"success"
+// @Router /api/block/blockinfo/{height} [get]
 func registerQueryBlockInfoByBlock(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryBlockInfo, "GET", func(request vo.IrisReq) interface{} {
 		tx.SetTid(request.TraceId)

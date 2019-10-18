@@ -148,6 +148,8 @@ type (
 	}
 )
 
+type ProposalNewStyleResponse []ProposalNewStyle
+
 type GetVoteTxResponse struct {
 	Total int       `json:"total"`
 	Items []VoteTx  `json:"items"`

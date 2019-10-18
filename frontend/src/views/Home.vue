@@ -134,23 +134,30 @@
                 depositorBarArr: [],
                 votingBarArr: [],
 	            levelValue:'',
+                mainnetThemeStyle:['#3264FD', '#4571FA', '#537CFD', '#6287FB', '#7092FD', '#85A3FF', '#92ACFF', '#9CB3FF', '#AABEFF', '#BDCDFF', '#E9EBFC',],
+                testnetFuXiThemeStyle:['#0C4282', '#144B8D', '#1B5498', '#235CA1', '#2E65A8', '#386EAE', '#427ABC', '#5087C8', '#5992D5', '#69A1E2', '#E9EBFC',],
+                testnetNyancatThemeStyle:['#0D9388', '#149A8F', '#1DA196', '#26ABA0', '#32B5AA', '#3FBDB2', '#4EC2B8', '#59C8BE', '#64D1C7', '#70DCD2', '#E9EBFC',],
+                defaultThemeStyle:['#3498db', '#47a2df', '#59ade3', '#6cb7e7', '#7fc2eb', '#91ccef', '#a4d7f3', '#b7e1f7', '#c9ecfb', '#dcf6ff', '#f0f9ff',],
+                themeStyleArray:'',
+                sessionStorageCurrentEnv:sessionStorage.getItem('skinCurrentEnv')
             }
         },
 
         beforeMount () {
-            this.getBlocksList();
+	        this.getBlocksList();
             this.getTransactionHistory();
             this.getTransactionList();
-            this.getValidatorsList();
             this.getNavigation();
             this.getPorposakList();
-
         },
         mounted () {
             document.getElementById('router_wrap').addEventListener('click', this.hideFeature);
             let that =this;
             clearInterval(this.timer);
             clearInterval(this.navigationTimer);
+            if(this.$store.state.currentSkinStyle !=='default'){
+	            this.setThemeStyle()
+            }
             this.timer = setInterval(function () {
                 that.getBlocksList();
                 that.getTransactionHistory();
@@ -171,20 +178,38 @@
                 this.pageClassName = 'mobile_home_wrap';
                 this.module_item_wrap = 'module_item_wrap_mobile';
             }
+
         },
         beforeDestroy () {
             window.removeEventListener('resize',this.onWindowResize);
             clearInterval(this.timer)
         },
         watch: {
-          '$store.state.isMobile'(newVal, oldVal) {
-            this.onresize(newVal);
-          }
+            '$store.state.isMobile'(newVal, oldVal) {
+                this.onresize(newVal);
+            },
+
+            '$store.state.currentSkinStyle'(newVal){
+                if(newVal !== 'default '){
+	                this.setThemeStyle()
+                }
+            }
         },
         methods: {
+        	setThemeStyle(){
+		        if(this.$store.state.currentSkinStyle ===  `${Constant.ENVCONFIG.MAINNET}${Constant.CHAINID.MAINNET}`){
+			        this.themeStyleArray = this.mainnetThemeStyle;
+		        }else if(this.$store.state.currentSkinStyle ===  `${Constant.ENVCONFIG.TESTNET}${Constant.CHAINID.FUXI}`){
+			        this.themeStyleArray = this.testnetFuXiThemeStyle;
+		        }else if(this.$store.state.currentSkinStyle ===  `${Constant.ENVCONFIG.TESTNET}${Constant.CHAINID.NYANCAT}`){
+			        this.themeStyleArray = this.testnetNyancatThemeStyle;
+		        }else {
+			        this.themeStyleArray = this.defaultThemeStyle;
+		        }
+                this.getValidatorsList();
+	        },
 	        getPorposakList(){
 	        	Service.commonInterface({homeProposalList:{
-
                     }},(res) => {
 	        		try {
 				        if(Array.isArray(res)){
@@ -233,7 +258,6 @@
                 Service.commonInterface({candidatesTop:{}},(data) => {
                 	try {
 		                if(data){
-			                let colors = ['#3498db', '#47a2df', '#59ade3', '#6cb7e7', '#7fc2eb', '#91ccef', '#a4d7f3', '#b7e1f7', '#c9ecfb', '#dcf6ff', '#f0f9ff',];
 			                let [seriesData, legendData] = [[], []];
 			                if (data.validators instanceof Array) {
 				                let totalCount = 0;
@@ -246,8 +270,8 @@
 					                seriesData.push({
 						                value: data.validators[i].voting_power,
 						                name: data.validators[i].description && data.validators[i].description.moniker ? `${Tools.formatString(data.validators[i].description.moniker,monikerReserveLength,"...")} (${Tools.formatString(data.validators[i].address,addressReserveLength,"...")})` : (data.validators[i].address ? data.validators[i].address : ''),
-						                itemStyle: {color: colors[i]},
-						                emphasis : {itemStyle:{color: colors[i]}},
+						                itemStyle: {color: this.themeStyleArray[i]},
+						                emphasis : {itemStyle:{color: this.themeStyleArray[i]}},
 						                upTime:`${data.validators[i].up_time}%`,
 						                address:data.validators[i].address,
 						                powerAll,
@@ -259,7 +283,7 @@
 						                value: others,
 						                name:'others',
 						                powerAll,
-						                itemStyle:{color:colors[10]},
+						                itemStyle:{color:this.themeStyleArray[10]},
 					                });
 				                }
 
@@ -436,17 +460,27 @@
                 return num
             },
             formatBondedTokens(bondedTokens,totalTokens){
-                let tokens,thousand = 1000,million = 1000000,billion = 1000000000;
-                if(bondedTokens >= billion && totalTokens >= billion){
-                    tokens = `${(Number(bondedTokens) / billion).toFixed(2)}B / ${(Number(totalTokens) / billion).toFixed(2)}B`
-                }else if(bondedTokens >= million && totalTokens >= million){
-                    tokens = `${(Number(bondedTokens) / million).toFixed(2)}M / ${(Number(totalTokens) / million).toFixed(2)}M`
-                } else if(bondedTokens >= thousand && totalTokens >= thousand) {
-                    tokens = `${(Number(bondedTokens) / thousand).toFixed(2)}k / ${(Number(totalTokens) / thousand).toFixed(2)}k`
+                let tokens,allTokens,thousand = 1000,million = 1000000,billion = 1000000000;
+                if(bondedTokens >= billion){
+	                tokens = `${(Number(bondedTokens) / billion).toFixed(2)}B`
+                }else if(bondedTokens >= million){
+	                tokens = `${(Number(bondedTokens) / million).toFixed(2)}M`
+                }else if(bondedTokens >= thousand){
+	                tokens = `${(Number(bondedTokens) / thousand).toFixed(2)}k`
                 }else {
-                    tokens = `${Number(bondedTokens).toFixed(2)} / ${Number(totalTokens).toFixed(2)}`;
+	                tokens = `${Number(bondedTokens).toFixed(2)}`
                 }
-                return tokens
+
+	            if(totalTokens >= billion){
+		            allTokens = `${(Number(totalTokens) / billion).toFixed(2)}B`
+	            }else if(totalTokens >= million){
+		            allTokens = `${(Number(totalTokens) / million).toFixed(2)}M`
+	            }else if(totalTokens >= thousand){
+		            allTokens = `${(Number(totalTokens) / thousand).toFixed(2)}k`
+	            }else {
+		            allTokens = `${Number(totalTokens).toFixed(2)}`
+	            }
+                return `${tokens} / ${allTokens}`
             },
         },
         destroyed () {
@@ -563,6 +597,7 @@
             //饼状图
             .home_module_item_pie {
                 height: 3.5rem;
+                background: #fff;
             }
         }
 
@@ -585,6 +620,7 @@
                     border: 0.01rem solid #d6d9e0;
                     margin-bottom: 0.3rem;
                     height: 3.54rem;
+                    background: #fff;
                     &:nth-child(2n+1){
                         margin-right:0.4rem;
                     }

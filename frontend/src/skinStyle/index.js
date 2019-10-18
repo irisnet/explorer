@@ -1,16 +1,26 @@
 const skinStyle = {
 
 };
+//默认皮肤样式色值
+skinStyle.DEFAULTBGCOLOR = '#0580D3';
+skinStyle.DEFAULTHOVERCOLOR = '#0269AF';
+skinStyle.DEFAULTACTIVECOLOR = '#0269AF';
 
 //主网皮肤样式色值
-skinStyle.MAINNETBGCOLOR = '#0580D3';
-skinStyle.MAINNETHOVERCOLOR = '#0269AF';
-skinStyle.MAINNETACTIVECOLOR = '#0269AF';
+skinStyle.MAINNETBGCOLOR = '#3264FD';
+skinStyle.MAINNETHOVERCOLOR = '#4673FD';
+skinStyle.MAINNETACTIVECOLOR = 'rgba(0,0,0,0.15)';
+skinStyle.MAINNETFONTCOLOR = '#3264FD';
 
 //测试网皮肤样式色值
-skinStyle.TESTNETBGCOLOR = '#0580D3';
-skinStyle.TESTNETHOVERCOLOR = '#0269AF';
-skinStyle.TESTNETACTIVECOLOR = '#0269AF';
+skinStyle.TESTNETBGCOLOR = '#0C4282';
+skinStyle.TESTNETHOVERCOLOR = '#24548E';
+skinStyle.TESTNETACTIVECOLOR = 'rgba(0,0,0,0.15)';
+
+//彩虹猫测试网皮肤样式色值
+skinStyle.NYANCATTESTNETBGCOLOR = '#0D9388';
+skinStyle.NYANCATTESTNETHOVERCOLOR = '#259D93';
+skinStyle.NYANCATTESTNETACTIVECOLOR = 'rgba(0,0,0,0.15)';
 
 //公共样式色值
 skinStyle.commonFontContentColor = '#787C99';

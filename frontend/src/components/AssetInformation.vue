@@ -634,7 +634,7 @@
 
                             }
                             .blue_style{
-                                color: #0580D3;
+                                color: var(--bgColor);
                             }
                             .yellow_style{
                                 color: #FF9500;

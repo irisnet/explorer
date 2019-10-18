@@ -72,3 +72,5 @@ type AssetTokens struct {
 	Source          string         `json:"source"`
 	AssetGateway    *AssetGateways `json:"asset_gateway"`
 }
+
+type AssetTokensRespond []AssetTokens

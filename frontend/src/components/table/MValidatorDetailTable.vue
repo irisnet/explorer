@@ -10,9 +10,10 @@
                 </div>
             </template>
             <template slot="Block" slot-scope="{ row }">
-                <span class="skip_route">
-                    <router-link :to="`/block/${row.Block || row.block}`">{{row.Block || row.block}}</router-link>
-                </span>
+                <router-link v-if="row.Block != 0" :to="`/block/${row.Block}`" class="link_style">{{row.Block}}</router-link>
+                <span v-if="row.Block == 0">{{row.Block}}</span>
+                <router-link v-if="row.block != 0" :to="`/block/${row.block}`" class="link_style">{{row.block}}</router-link>
+                <span v-if="row.block == 0">{{row.block}}</span>
             </template>
             <template slot="From" slot-scope="{ row }">
                 <span v-if="(/^[1-9]\d*$/).test(row.From)" class="skip_route">
@@ -202,7 +203,8 @@ export default {
                 },
                 {
                     title: "Amount",
-                    key: "Amount"
+                    key: "Amount",
+	                className: 'text_right'
                 },
                 {
                     title: "To",
@@ -246,7 +248,8 @@ export default {
                 },
                 {
                     title: "Amount",
-                    key: "Amount"
+                    key: "Amount",
+	                className: 'text_right'
                 },
                 {
                     title: "To",
@@ -343,7 +346,8 @@ export default {
                 },
                 {
                     title: "Amount",
-                    key: "Amount"
+                    key: "Amount",
+	                className: 'text_right'
                 },
                 {
                     title: "Tx_Type",
@@ -375,7 +379,8 @@ export default {
                 },
                 {
                     title: "Amount",
-                    key: "amount"
+                    key: "amount",
+	                className: 'text_right'
                 },
                 {
                     title: "Shares",
@@ -394,7 +399,8 @@ export default {
                 },
                 {
                     title: "Amount",
-                    key: "amount"
+                    key: "amount",
+	                className: 'text_right'
                 },
                 {
                     title: "Block",
@@ -413,7 +419,8 @@ export default {
                 },
                 {
                     title: "Amount",
-                    key: "amount"
+                    key: "amount",
+	                className: 'text_right'
                 },
                 {
                     title: "To",

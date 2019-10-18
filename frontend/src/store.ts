@@ -13,6 +13,7 @@ const store = new Vuex.Store({
     currentNoWithVetoValue:'',
     currentAbstainValue: '',
     currentNoValue: '',
+    currentSkinStyle:'default'
   },
   mutations:{
     currentNoValue(state,data){
@@ -44,6 +45,9 @@ const store = new Vuex.Store({
     },
     flShowIpt(state,data){
       state.flShowIpt = data
+    },
+    currentSkinStyle(state,data){
+      state.currentSkinStyle = data
     }
   }
 })

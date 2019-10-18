@@ -96,23 +96,23 @@ func GetWithdrawAddressByValidatorAcc(validatorAcc string) (string, error) {
 	return withdrawAddr, nil
 }
 
-func GetDistributionRewardsByValidatorAcc(validatorAcc string) (utils.CoinsAsStr, error) {
+func GetDistributionRewardsByValidatorAcc(validatorAcc string) (utils.CoinsAsStr, []RewardsFromDelegations, utils.CoinsAsStr, error) {
 
 	url := fmt.Sprintf(UrlDistributionRewardsByValidatorAcc, conf.Get().Hub.LcdUrl, validatorAcc)
 	resAsBytes, err := utils.Get(url)
 	if err != nil {
 		logger.Error("get delegations by delegator adr from lcd error", logger.String("err", err.Error()), logger.String("URL", url))
-		return nil, err
+		return nil, nil, nil, err
 	}
 
 	var rewards DistributionRewards
 
 	err = json.Unmarshal(resAsBytes, &rewards)
 	if err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 
-	return rewards.Commission, nil
+	return rewards.Commission, rewards.Delegations, rewards.Total, nil
 }
 
 func GetJailedUntilAndMissedBlocksCountByConsensusPublicKey(publicKey string) (string, string, string, error) {
@@ -152,6 +152,21 @@ func GetRedelegationsByValidatorAddr(valAddr string) (redelegations []ReDelegati
 func GetUnbondingDelegationsByValidatorAddr(valAddr string) (unbondingDelegations []UnbondingDelegations) {
 
 	url := fmt.Sprintf(UrlUnbondingDelegationByValidator, conf.Get().Hub.LcdUrl, valAddr)
+	resAsBytes, err := utils.Get(url)
+	if err != nil {
+		logger.Error("get delegations by delegator adr from lcd error", logger.String("err", err.Error()), logger.String("URL", url))
+		return
+	}
+
+	if err := json.Unmarshal(resAsBytes, &unbondingDelegations); err != nil {
+		logger.Error("Unmarshal Delegations error", logger.String("err", err.Error()), logger.String("URL", url))
+	}
+	return
+}
+
+func GetUnbondingDelegationsByDelegatorAddr(delAddr string) (unbondingDelegations []UnbondingDelegations) {
+
+	url := fmt.Sprintf(UrlUnbondingDelegationByDelegator, conf.Get().Hub.LcdUrl, delAddr)
 	resAsBytes, err := utils.Get(url)
 	if err != nil {
 		logger.Error("get delegations by delegator adr from lcd error", logger.String("err", err.Error()), logger.String("URL", url))

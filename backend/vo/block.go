@@ -19,6 +19,8 @@ type BlockForList struct {
 	Timestamp               time.Time `json:"timestamp"`
 }
 
+type BlockForListRespond []BlockForList
+
 func (b BlockForList) String() string {
 
 	return fmt.Sprintf(`
@@ -45,6 +47,8 @@ type BlockInfoVo struct {
 	LastBlockHash string    `json:"last_block_hash,omitempty"`
 }
 
+type BlockInfoVoRespond []BlockInfoVo
+
 func (b BlockInfoVo) String() string {
 	return fmt.Sprintf(`
 		Height        :%v
@@ -56,6 +60,11 @@ func (b BlockInfoVo) String() string {
 		TotalTxs      :%v
 		LastBlockHash :%v
 		`, b.Height, b.Hash, b.Time, b.NumTxs, b.Validators, b.LastCommit, b.TotalTxs, b.LastBlockHash)
+}
+
+type LatestHeightRespond struct {
+	BlockHeightLcd  int64 `json:"block_height_lcd"`
+	BlockHeightDB  int64 `json:"block_height_db"`
 }
 
 type ValInfo struct {

@@ -284,6 +284,27 @@
       "font_class": "DepositPeriod-liebiao",
       "unicode": "e643",
       "unicode_decimal": 58947
+    },
+    {
+      "icon_id": "11124018",
+      "name": "百分比",
+      "font_class": "baifenbi",
+      "unicode": "e644",
+      "unicode_decimal": 58948
+    },
+    {
+      "icon_id": "11254791",
+      "name": "其它币种无icon时使用的默认icon",
+      "font_class": "qitabizhongwuiconshishiyongdemorenicon",
+      "unicode": "e645",
+      "unicode_decimal": 58949
+    },
+    {
+      "icon_id": "11265588",
+      "name": "Profiler",
+      "font_class": "Profiler",
+      "unicode": "e646",
+      "unicode_decimal": 58950
     }
   ]
 }

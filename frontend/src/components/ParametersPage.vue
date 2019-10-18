@@ -409,14 +409,20 @@ export default {
                     display: flex;
                     align-items: center;
                     font-size: 18px;
+
+                }
+                .cards{
+                    background: #fff;
                 }
                 @mixin mobile_cards_layout {
                     display: flex;
                     justify-content: space-between;
                     flex-wrap: wrap;
+                    background: #F5F7FD;
+                    margin: 0 0.1rem;
                     & > p {
                         width: 100%;
-                        padding: 0 0.1rem 0.1rem;
+                        margin-bottom: 0.1rem !important;
                         margin-right: 0 !important;
                         & > div.m_parameters_container {
                             width: 100%;

@@ -13,8 +13,8 @@
         </div>
         <div class="voting_title_container" :class="showTitle ? 'home_style': ''">
             <div>
-                <span><i :style="{color:flHighlightParticipation ? '#0580D3' : '#D7DCE0'}" class="iconfont iconBondedTokens"></i>Participation {{participationThreshold}}%</span>
-                <span><i :style="{color:flShowPassThreshold ? '#0580D3' : '#D7DCE0'}" class="iconfont iconBondedTokens"></i>Pass Threshold {{passThreshold}}%</span>
+                <span><i :style="{color:flHighlightParticipation ? 'var(--bgColor)' : '#D7DCE0'}" class="iconfont iconBondedTokens"></i>Participation {{participationThreshold}}%</span>
+                <span><i :style="{color:flShowPassThreshold ? 'var(--bgColor)' : '#D7DCE0'}" class="iconfont iconBondedTokens"></i>Pass Threshold {{passThreshold}}%</span>
             </div>
             <div class="voting_card_right_content">
                 <span><i :style="{color:flShowVoteThreshold ? '#FE8A8A' : '#D7DCE0'}" class="iconfont iconBondedTokens"></i>Veto Threshold {{voteThreshold}}%</span>
@@ -35,7 +35,7 @@
                     <span class="min_value_content" :style="minTotalTipStyleNumber" v-show="flShowTotalVoted">
                         <span class="min_value_title">{{delegatorVoted}}% by Delegator</span>
                     </span>
-                    <div class="default_progress_bar_content" :style="{background: totalVoted || delegatorVoted ? '#0580D3' : ''}"></div>
+                    <div class="default_progress_bar_content" :style="{background: totalVoted || delegatorVoted ? 'var(--bgColor)' : ''}"></div>
                     <div class="min_deposit_bar_content" :style="minVotingPowerStyleObj"></div>
                 </div>
                 <div class="voting_bottom_progress_bar_content" :style="minVotingPowerStyleObj">
@@ -333,17 +333,17 @@
                     margin-right: 0.1rem;
                 }
                 .proposal_title{
-                    color: #0580D3;
+                    color: var(--bgColor);
                 }
             }
             .view_all_content{
-                color: #0580D3;
+                color: var(--bgColor);
                 span{
                     line-height: 1;
-                    border-bottom: 0.01rem solid #0580D3;
+                    border-bottom: 0.01rem solid var(--bgColor);
                     a{
                         font-size: 0.14rem;
-                        color: #0580D3 !important;
+                        color: var(--bgColor) !important;
                     }
                 }
             }
@@ -454,7 +454,7 @@
                         z-index: 1;
                     }
                     .min_deposit_bar_content{
-                        background: #0580D3;
+                        background: var(--bgColor);
                         height: 0.12rem;
                         border-radius: 0.06rem;
                         position: absolute;
@@ -480,7 +480,7 @@
                         z-index: 1;
                     }
                     .voting_bottom_min_deposit_bar_content{
-                        background: #0580D3;
+                        background: var(--bgColor);
                         height: 0.12rem;
                         z-index: 2;
                     }

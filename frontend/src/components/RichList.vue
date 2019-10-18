@@ -167,7 +167,7 @@ export default {
             max-width: 12.8rem;
             margin: 0 auto;
             display: flex;
-            background: #fff;
+            background: #F5F7FD;
             align-items: center;
             & > div.top_list_title_content_div {
                 display: flex;
@@ -291,7 +291,8 @@ export default {
                         .tooltip_span{
                             width: 2.4rem;
                             display: none;
-                            position: fixed;
+                            position: absolute;
+                            top:-0.2rem;
                             z-index: 100000;
                             left: auto;
                             margin-top: -20px;

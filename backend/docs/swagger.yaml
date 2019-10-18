@@ -1,0 +1,2924 @@
+definitions:
+  document.GovParams:
+    properties:
+      current_value:
+        type: object
+      description:
+        type: string
+      genesis_value:
+        type: string
+      initial_value:
+        type: string
+      key:
+        type: string
+      module:
+        type: string
+      note:
+        type: string
+      range:
+        type: string
+      type:
+        type: string
+    type: object
+  document.GovParamsList:
+    items:
+      properties:
+        current_value:
+          type: object
+        description:
+          type: string
+        genesis_value:
+          type: string
+        initial_value:
+          type: string
+        key:
+          type: string
+        module:
+          type: string
+        note:
+          type: string
+        range:
+          type: string
+        type:
+          type: string
+      type: object
+    type: array
+  lcd.Commission:
+    properties:
+      max_change_rate:
+        type: string
+      max_rate:
+        type: string
+      rate:
+        type: string
+      update_time:
+        type: string
+    type: object
+  lcd.Description:
+    properties:
+      details:
+        type: string
+      identity:
+        type: string
+      moniker:
+        type: string
+      website:
+        type: string
+    type: object
+  lcd.ValidatorVo:
+    properties:
+      bond_height:
+        type: string
+      commission:
+        $ref: '#/definitions/lcd.Commission'
+        type: object
+      consensus_pubkey:
+        type: string
+      delegator_num:
+        type: integer
+      delegator_shares:
+        type: string
+      description:
+        $ref: '#/definitions/lcd.Description'
+        type: object
+      icons:
+        type: string
+      jailed:
+        type: boolean
+      operator_address:
+        type: string
+      proposer_addr:
+        type: string
+      self_bond:
+        type: string
+      status:
+        type: integer
+      tokens:
+        type: string
+      unbonding_height:
+        type: string
+      unbonding_time:
+        type: string
+      uptime:
+        type: number
+      voting_rate:
+        type: number
+    type: object
+  lcd.ValidatorsVoRespond:
+    items:
+      properties:
+        bond_height:
+          type: string
+        commission:
+          $ref: '#/definitions/lcd.Commission'
+          type: object
+        consensus_pubkey:
+          type: string
+        delegator_num:
+          type: integer
+        delegator_shares:
+          type: string
+        description:
+          $ref: '#/definitions/lcd.Description'
+          type: object
+        icons:
+          type: string
+        jailed:
+          type: boolean
+        operator_address:
+          type: string
+        proposer_addr:
+          type: string
+        self_bond:
+          type: string
+        status:
+          type: integer
+        tokens:
+          type: string
+        unbonding_height:
+          type: string
+        unbonding_time:
+          type: string
+        uptime:
+          type: number
+        voting_rate:
+          type: number
+      type: object
+    type: array
+  types.BizCode:
+    properties:
+      code:
+        type: string
+      msg:
+        type: string
+    type: object
+  utils.ActualFee:
+    properties:
+      amount:
+        type: number
+      denom:
+        type: string
+    type: object
+  utils.Coin:
+    properties:
+      amount:
+        type: number
+      denom:
+        type: string
+    type: object
+  utils.CoinAsStr:
+    properties:
+      amount:
+        type: string
+      denom:
+        type: string
+    type: object
+  utils.Coins:
+    items:
+      properties:
+        amount:
+          type: number
+        denom:
+          type: string
+      type: object
+    type: array
+  utils.CoinsAsStr:
+    items:
+      properties:
+        amount:
+          type: string
+        denom:
+          type: string
+      type: object
+    type: array
+  vo.AccountDelegationsRespond:
+    items:
+      properties:
+        address:
+          type: string
+        amount:
+          $ref: '#/definitions/utils.Coin'
+          type: object
+        height:
+          type: integer
+        moniker:
+          type: string
+        shares:
+          type: string
+      type: object
+    type: array
+  vo.AccountDelegationsVo:
+    properties:
+      address:
+        type: string
+      amount:
+        $ref: '#/definitions/utils.Coin'
+        type: object
+      height:
+        type: integer
+      moniker:
+        type: string
+      shares:
+        type: string
+    type: object
+  vo.AccountInfo:
+    properties:
+      address:
+        type: string
+      balance:
+        items:
+          $ref: '#/definitions/utils.Coin'
+        type: array
+      percent:
+        type: number
+      rank:
+        type: integer
+      update_at:
+        type: integer
+    type: object
+  vo.AccountRewardsVo:
+    properties:
+      commission_rewards:
+        $ref: '#/definitions/utils.CoinsAsStr'
+        type: object
+      delagations_rewards:
+        items:
+          $ref: '#/definitions/vo.DelagationsRewards'
+        type: array
+      total_rewards:
+        $ref: '#/definitions/utils.CoinsAsStr'
+        type: object
+    type: object
+  vo.AccountUnbondingDelegationsRespond:
+    items:
+      properties:
+        address:
+          type: string
+        amount:
+          $ref: '#/definitions/utils.Coin'
+          type: object
+        end_time:
+          type: string
+        height:
+          type: integer
+        moniker:
+          type: string
+      type: object
+    type: array
+  vo.AccountUnbondingDelegationsVo:
+    properties:
+      address:
+        type: string
+      amount:
+        $ref: '#/definitions/utils.Coin'
+        type: object
+      end_time:
+        type: string
+      height:
+        type: integer
+      moniker:
+        type: string
+    type: object
+  vo.AccountVo:
+    properties:
+      address:
+        type: string
+      amount:
+        $ref: '#/definitions/utils.Coins'
+        type: object
+      deposits:
+        $ref: '#/definitions/utils.Coin'
+        type: object
+      isProfiler:
+        type: boolean
+      moniker:
+        type: string
+      operator_address:
+        type: string
+      status:
+        type: string
+      withdrawAddress:
+        type: string
+    type: object
+  vo.AccountsInfoRespond:
+    items:
+      properties:
+        address:
+          type: string
+        balance:
+          items:
+            $ref: '#/definitions/utils.Coin'
+          type: array
+        percent:
+          type: number
+        rank:
+          type: integer
+        update_at:
+          type: integer
+      type: object
+    type: array
+  vo.ActualFee:
+    properties:
+      amount:
+        type: number
+      denom:
+        type: string
+    type: object
+  vo.AssetGateways:
+    properties:
+      details:
+        type: string
+      icons:
+        type: string
+      identity:
+        type: string
+      moniker:
+        type: string
+      owner:
+        type: string
+      website:
+        type: string
+    type: object
+  vo.AssetTokens:
+    properties:
+      asset_gateway:
+        $ref: '#/definitions/vo.AssetGateways'
+        type: object
+      canonical_symbol:
+        type: string
+      decimal:
+        type: integer
+      family:
+        type: string
+      gateway:
+        type: string
+      initial_supply:
+        type: string
+      max_supply:
+        type: string
+      min_unit_alias:
+        type: string
+      mintable:
+        type: boolean
+      name:
+        type: string
+      owner:
+        type: string
+      source:
+        type: string
+      symbol:
+        type: string
+      token_id:
+        type: string
+      total_supply:
+        type: string
+    type: object
+  vo.AssetTokensRespond:
+    items:
+      properties:
+        asset_gateway:
+          $ref: '#/definitions/vo.AssetGateways'
+          type: object
+        canonical_symbol:
+          type: string
+        decimal:
+          type: integer
+        family:
+          type: string
+        gateway:
+          type: string
+        initial_supply:
+          type: string
+        max_supply:
+          type: string
+        min_unit_alias:
+          type: string
+        mintable:
+          type: boolean
+        name:
+          type: string
+        owner:
+          type: string
+        source:
+          type: string
+        symbol:
+          type: string
+        token_id:
+          type: string
+        total_supply:
+          type: string
+      type: object
+    type: array
+  vo.AssetsRespond:
+    properties:
+      asset_type:
+        type: string
+      total:
+        type: integer
+      txs:
+        items:
+          $ref: '#/definitions/vo.AssetsVo'
+        type: array
+    type: object
+  vo.AssetsVo:
+    properties:
+      amount:
+        type: integer
+      canonical_symbol:
+        type: string
+      decimal:
+        type: integer
+      dst_owner:
+        type: string
+      gateway:
+        type: string
+      height:
+        type: integer
+      initial_supply:
+        type: integer
+      max_supply:
+        type: integer
+      mint_to:
+        type: string
+      mintable:
+        type: boolean
+      name:
+        type: string
+      owner:
+        type: string
+      src_owner:
+        type: string
+      symbol:
+        type: string
+      symbol_min:
+        type: string
+      timestamp:
+        type: string
+      token_id:
+        type: string
+      tx_fee:
+        $ref: '#/definitions/vo.ActualFee'
+        type: object
+      tx_hash:
+        type: string
+      tx_status:
+        type: string
+      type:
+        type: string
+    type: object
+  vo.BlockForList:
+    properties:
+      height:
+        type: integer
+      precommit_validator_num:
+        type: integer
+      precommit_voting_power:
+        type: integer
+      proposer_as_validator_addr:
+        type: string
+      proposer_moniker:
+        type: string
+      timestamp:
+        type: string
+      txs_num:
+        type: integer
+      validator_num_for_height:
+        type: integer
+      voting_power_for_height:
+        type: integer
+    type: object
+  vo.BlockForListRespond:
+    items:
+      properties:
+        height:
+          type: integer
+        precommit_validator_num:
+          type: integer
+        precommit_voting_power:
+          type: integer
+        proposer_as_validator_addr:
+          type: string
+        proposer_moniker:
+          type: string
+        timestamp:
+          type: string
+        txs_num:
+          type: integer
+        validator_num_for_height:
+          type: integer
+        voting_power_for_height:
+          type: integer
+      type: object
+    type: array
+  vo.BlockInfo:
+    properties:
+      block_hash:
+        type: string
+      block_height:
+        type: string
+      latest_height:
+        type: string
+      mint_coin:
+        $ref: '#/definitions/utils.Coin'
+        type: object
+      precommit_validator_num:
+        type: object
+      precommit_voting_power:
+        type: object
+      propopser_addr:
+        type: string
+      propopser_moniker:
+        type: string
+      timestamp:
+        type: string
+      total_validator_num:
+        type: integer
+      total_voting_power:
+        type: integer
+      transactions:
+        type: string
+    type: object
+  vo.BlockInfoVo:
+    properties:
+      hash:
+        type: string
+      height:
+        type: integer
+      last_block_hash:
+        type: string
+      last_commit:
+        items:
+          type: string
+        type: array
+      num_txs:
+        type: integer
+      time:
+        type: string
+      total_txs:
+        type: integer
+      validators:
+        items:
+          $ref: '#/definitions/vo.ValInfo'
+        type: array
+    type: object
+  vo.BlockInfoVoRespond:
+    items:
+      properties:
+        hash:
+          type: string
+        height:
+          type: integer
+        last_block_hash:
+          type: string
+        last_commit:
+          items:
+            type: string
+          type: array
+        num_txs:
+          type: integer
+        time:
+          type: string
+        total_txs:
+          type: integer
+        validators:
+          items:
+            $ref: '#/definitions/vo.ValInfo'
+          type: array
+      type: object
+    type: array
+  vo.BlockValidator:
+    properties:
+      consensus:
+        type: string
+      is_proposer:
+        type: boolean
+      moniker:
+        type: string
+      operator_address:
+        type: string
+      proposer_priority:
+        type: string
+      voting_power:
+        type: string
+    type: object
+  vo.BondedTokensRespond:
+    items:
+      properties:
+        icons:
+          type: string
+        identity:
+          type: string
+        moniker:
+          type: string
+        operator_address:
+          type: string
+        owner_address:
+          type: string
+        voting_power:
+          type: integer
+      type: object
+    type: array
+  vo.BondedTokensVo:
+    properties:
+      icons:
+        type: string
+      identity:
+        type: string
+      moniker:
+        type: string
+      operator_address:
+        type: string
+      owner_address:
+        type: string
+      voting_power:
+        type: integer
+    type: object
+  vo.CandidatesInfoVo:
+    properties:
+      address:
+        description: operator
+        type: string
+      bond_height:
+        type: integer
+      description:
+        $ref: '#/definitions/vo.Description'
+        description: Description terms for the candidate
+        type: object
+      icons:
+        type: string
+      jailed:
+        description: has the validator been revoked from bonded status
+        type: boolean
+      owner:
+        description: owner, identity key
+        type: string
+      power_all:
+        type: integer
+      precommit_cnt:
+        type: number
+      pub_key:
+        type: string
+      rate:
+        type: string
+      status:
+        type: string
+      up_time:
+        type: integer
+      voting_power:
+        description: Voting power if pubKey is a considered a validator
+        type: integer
+    type: object
+  vo.Coin:
+    properties:
+      amount:
+        type: number
+      denom:
+        type: string
+    type: object
+  vo.ConfigVo:
+    properties:
+      chain_id:
+        type: string
+      env_nm:
+        type: string
+      host:
+        type: string
+      show_faucet:
+        type: integer
+    type: object
+  vo.DelagationsRewards:
+    properties:
+      address:
+        type: string
+      amount:
+        $ref: '#/definitions/utils.CoinsAsStr'
+        type: object
+      moniker:
+        type: string
+    type: object
+  vo.Delegation:
+    properties:
+      address:
+        type: string
+      amount:
+        type: string
+      block:
+        type: integer
+      self_shares:
+        type: string
+      total_shares:
+        type: number
+    type: object
+  vo.DelegationsPage:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/vo.Delegation'
+        type: array
+      total:
+        type: integer
+    type: object
+  vo.Description:
+    properties:
+      details:
+        type: string
+      identity:
+        type: string
+      moniker:
+        type: string
+      website:
+        type: string
+    type: object
+  vo.EnvConfig:
+    properties:
+      chain_id:
+        type: string
+      configs:
+        items:
+          $ref: '#/definitions/vo.ConfigVo'
+        type: array
+      cur_env:
+        type: string
+    type: object
+  vo.FinalVotes:
+    properties:
+      abstain:
+        type: string
+      "no":
+        type: string
+      no_with_veto:
+        type: string
+      system_voting_power:
+        type: string
+      "yes":
+        type: string
+    type: object
+  vo.GetVoteTxResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/vo.VoteTx'
+        type: array
+      stats:
+        $ref: '#/definitions/vo.VoteStats'
+        type: object
+      total:
+        type: integer
+    type: object
+  vo.GovParam:
+    properties:
+      min_deposit:
+        $ref: '#/definitions/vo.Coin'
+        type: object
+      participation:
+        type: string
+      pass_threshold:
+        type: string
+      veto_threshold:
+        type: string
+    type: object
+  vo.LatestHeightRespond:
+    properties:
+      block_height_db:
+        type: integer
+      block_height_lcd:
+        type: integer
+    type: object
+  vo.Level:
+    properties:
+      gov_param:
+        $ref: '#/definitions/vo.GovParam'
+        type: object
+      name:
+        type: string
+    type: object
+  vo.PageVo:
+    properties:
+      count:
+        type: integer
+      data:
+        type: object
+    type: object
+  vo.Param:
+    properties:
+      key:
+        type: string
+      subspace:
+        type: string
+      value:
+        type: string
+    type: object
+  vo.Proposal:
+    properties:
+      burn_percent:
+        type: number
+      canonical_symbol:
+        type: string
+      decimal:
+        type: integer
+      deposit_end_time:
+        type: string
+      description:
+        type: string
+      dest_address:
+        type: string
+      initial_supply:
+        type: integer
+      level:
+        type: string
+      min_unit_alias:
+        type: string
+      name:
+        type: string
+      parameters:
+        items:
+          $ref: '#/definitions/vo.Param'
+        type: array
+      participation:
+        type: string
+      penalty:
+        type: string
+      percent:
+        type: string
+      proposal_id:
+        type: integer
+      proposer:
+        type: string
+      software:
+        type: string
+      status:
+        type: string
+      submit_time:
+        type: string
+      switch_height:
+        type: integer
+      symbol:
+        type: string
+      threshold:
+        type: string
+      title:
+        type: string
+      total_deposit:
+        $ref: '#/definitions/utils.Coins'
+        type: object
+      tx_hash:
+        type: string
+      type:
+        type: string
+      usage:
+        type: string
+      version:
+        type: integer
+      veto_threshold:
+        type: string
+      voting_end_time:
+        type: string
+      voting_start_time:
+        type: string
+      yes_threshold:
+        type: string
+    type: object
+  vo.ProposalInfoVo:
+    properties:
+      proposal:
+        $ref: '#/definitions/vo.Proposal'
+        type: object
+      votes:
+        items:
+          $ref: '#/definitions/vo.Vote'
+        type: array
+    type: object
+  vo.ProposalNewStyle:
+    properties:
+      deposit_end_time:
+        type: string
+      final_votes:
+        $ref: '#/definitions/vo.FinalVotes'
+        type: object
+      intial_deposit:
+        $ref: '#/definitions/vo.Coin'
+        type: object
+      level:
+        $ref: '#/definitions/vo.Level'
+        type: object
+      proposal_id:
+        type: integer
+      status:
+        type: string
+      submit_time:
+        type: string
+      title:
+        type: string
+      total_deposit:
+        $ref: '#/definitions/vo.Coin'
+        type: object
+      type:
+        type: string
+      votes:
+        items:
+          $ref: '#/definitions/vo.VoteWithVoterInfo'
+        type: array
+      voting_end_time:
+        type: string
+      voting_power_for_height:
+        type: number
+    type: object
+  vo.ProposalNewStyleResponse:
+    items:
+      properties:
+        deposit_end_time:
+          type: string
+        final_votes:
+          $ref: '#/definitions/vo.FinalVotes'
+          type: object
+        intial_deposit:
+          $ref: '#/definitions/vo.Coin'
+          type: object
+        level:
+          $ref: '#/definitions/vo.Level'
+          type: object
+        proposal_id:
+          type: integer
+        status:
+          type: string
+        submit_time:
+          type: string
+        title:
+          type: string
+        total_deposit:
+          $ref: '#/definitions/vo.Coin'
+          type: object
+        type:
+          type: string
+        votes:
+          items:
+            $ref: '#/definitions/vo.VoteWithVoterInfo'
+          type: array
+        voting_end_time:
+          type: string
+        voting_power_for_height:
+          type: number
+      type: object
+    type: array
+  vo.QueryTxTypeRespond:
+    items: {}
+    type: array
+  vo.RecentTx:
+    properties:
+      actual_fee:
+        $ref: '#/definitions/utils.Coin'
+        type: object
+      time:
+        type: string
+      tx_hash:
+        type: string
+      type:
+        type: string
+    type: object
+  vo.RecentTxRespond:
+    items:
+      properties:
+        actual_fee:
+          $ref: '#/definitions/utils.Coin'
+          type: object
+        time:
+          type: string
+        tx_hash:
+          type: string
+        type:
+          type: string
+      type: object
+    type: array
+  vo.Redelegation:
+    properties:
+      address:
+        type: string
+      amount:
+        type: string
+      block:
+        type: string
+      to:
+        type: string
+      to_moniker:
+        type: string
+    type: object
+  vo.RedelegationPage:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/vo.Redelegation'
+        type: array
+      total:
+        type: integer
+    type: object
+  vo.Response:
+    properties:
+      code:
+        type: string
+      data:
+        type: object
+      msg:
+        type: string
+    type: object
+  vo.ResultVo:
+    properties:
+      block:
+        $ref: '#/definitions/vo.SimpleBlockVo'
+        type: object
+      proposal:
+        $ref: '#/definitions/vo.SimpleProposalVo'
+        type: object
+    type: object
+  vo.SimpleBlockVo:
+    properties:
+      hash:
+        type: string
+      height:
+        type: integer
+      timestamp:
+        type: string
+    type: object
+  vo.SimpleProposalVo:
+    properties:
+      proposal_id:
+        type: integer
+      status:
+        type: string
+      submit_time:
+        type: string
+      title:
+        type: string
+      type:
+        type: string
+    type: object
+  vo.StakeTx:
+    properties:
+      amount:
+        $ref: '#/definitions/utils.Coins'
+        type: object
+      block_height:
+        type: integer
+      fee:
+        $ref: '#/definitions/utils.ActualFee'
+        type: object
+      from:
+        type: string
+      from_moniker:
+        type: string
+      gas_limit:
+        type: integer
+      gas_price:
+        type: number
+      gas_used:
+        type: integer
+      gas_wanted:
+        type: integer
+      hash:
+        type: string
+      log:
+        type: string
+      memo:
+        type: string
+      signer:
+        type: string
+      source:
+        type: string
+      status:
+        type: string
+      tags:
+        type: object
+      timestamp:
+        type: string
+      to:
+        type: string
+      to_moniker:
+        type: string
+      type:
+        type: string
+    type: object
+  vo.Tx:
+    properties:
+      Signer:
+        type: string
+      actual_fee:
+        $ref: '#/definitions/utils.ActualFee'
+        type: object
+      amount:
+        $ref: '#/definitions/utils.Coins'
+        type: object
+      from:
+        type: string
+      hash:
+        type: string
+      moniker:
+        type: string
+      status:
+        type: string
+      timestamp:
+        type: string
+      to:
+        type: string
+      type:
+        type: string
+    type: object
+  vo.TxNumGroupByDayVo:
+    properties:
+      date:
+        type: string
+      num:
+        type: integer
+    type: object
+  vo.TxNumGroupByDayVoRespond:
+    items:
+      properties:
+        date:
+          type: string
+        num:
+          type: integer
+      type: object
+    type: array
+  vo.TxPage:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/vo.Tx'
+        type: array
+      total:
+        type: integer
+    type: object
+  vo.UnbondingDelegations:
+    properties:
+      address:
+        type: string
+      amount:
+        type: string
+      block:
+        type: integer
+      until:
+        type: string
+    type: object
+  vo.UnbondingDelegationsPage:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/vo.UnbondingDelegations'
+        type: array
+      total:
+        type: integer
+    type: object
+  vo.ValDetailVo:
+    properties:
+      count:
+        type: integer
+      power_all:
+        type: integer
+      validators:
+        items:
+          $ref: '#/definitions/vo.Validator'
+        type: array
+    type: object
+  vo.ValInfo:
+    properties:
+      address:
+        type: string
+      voting_power:
+        type: integer
+    type: object
+  vo.ValStatus:
+    properties:
+      precommit_cnt:
+        type: number
+      up_time:
+        type: integer
+    type: object
+  vo.Validator:
+    properties:
+      address:
+        description: operator
+        type: string
+      bond_height:
+        type: integer
+      description:
+        $ref: '#/definitions/vo.Description'
+        description: Description terms for the candidate
+        type: object
+      icons:
+        type: string
+      jailed:
+        description: has the validator been revoked from bonded status
+        type: boolean
+      owner:
+        description: owner, identity key
+        type: string
+      precommit_cnt:
+        type: number
+      pub_key:
+        type: string
+      rate:
+        type: string
+      status:
+        type: string
+      up_time:
+        type: integer
+      voting_power:
+        description: Voting power if pubKey is a considered a validator
+        type: integer
+    type: object
+  vo.ValidatorDepositTx:
+    properties:
+      deposited_amount:
+        $ref: '#/definitions/utils.Coins'
+        type: object
+      moniker:
+        type: string
+      proposal_id:
+        type: integer
+      proposer:
+        type: string
+      submited:
+        type: boolean
+      tx_hash:
+        type: string
+    type: object
+  vo.ValidatorDepositTxPage:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/vo.ValidatorDepositTx'
+        type: array
+      total:
+        type: integer
+    type: object
+  vo.ValidatorForDetail:
+    properties:
+      bond_height:
+        type: string
+      bonded_stake:
+        type: string
+      bonded_tokens:
+        type: string
+      commision_max_change_rate:
+        type: string
+      commission_max_rate:
+        type: string
+      commission_rate:
+        type: string
+      commission_update:
+        type: string
+      consensus_addr:
+        type: string
+      delegator_count:
+        type: integer
+      delegator_shares:
+        type: string
+      description:
+        $ref: '#/definitions/vo.Description'
+        type: object
+      icons:
+        type: string
+      jailed_until:
+        type: string
+      missed_blocks_count:
+        type: string
+      operator_addr:
+        type: string
+      owner_addr:
+        type: string
+      self_bonded:
+        type: string
+      self_power:
+        type: integer
+      stats_blocks_window:
+        type: string
+      status:
+        type: string
+      total_power:
+        type: integer
+      unbond_height:
+        type: string
+      uptime:
+        type: number
+    type: object
+  vo.ValidatorSet:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/vo.BlockValidator'
+        type: array
+      total:
+        type: integer
+    type: object
+  vo.ValidatorVote:
+    properties:
+      proposal_id:
+        type: integer
+      status:
+        type: string
+      title:
+        type: string
+      tx_hash:
+        type: string
+      voted:
+        type: string
+    type: object
+  vo.ValidatorVotePage:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/vo.ValidatorVote'
+        type: array
+      total:
+        type: integer
+    type: object
+  vo.Vote:
+    properties:
+      option:
+        type: string
+      time:
+        type: string
+      voter:
+        type: string
+    type: object
+  vo.VoteStats:
+    properties:
+      abstain:
+        type: integer
+      all:
+        type: integer
+      delegator:
+        type: integer
+      "no":
+        type: integer
+      no_with_veto:
+        type: integer
+      validator:
+        type: integer
+      "yes":
+        type: integer
+    type: object
+  vo.VoteTx:
+    properties:
+      height:
+        type: integer
+      moniker:
+        type: string
+      option:
+        type: string
+      timestamp:
+        type: string
+      tx_hash:
+        type: string
+      voter:
+        type: string
+    type: object
+  vo.VoteWithVoterInfo:
+    properties:
+      del_voting_power:
+        type: number
+      option:
+        type: string
+      time:
+        type: string
+      val_voting_power:
+        type: number
+      voter:
+        type: string
+      voter_moniker:
+        type: string
+      voting_power:
+        type: number
+    type: object
+  vo.WithdrawAddr:
+    properties:
+      address:
+        type: string
+    type: object
+info:
+  contact: {}
+  license: {}
+paths:
+  /api/account/{address}:
+    get:
+      consumes:
+      - application/json
+      description: get detail of account
+      parameters:
+      - description: account address
+        in: path
+        name: address
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.AccountVo'
+            type: object
+      summary: detail
+      tags:
+      - account
+  /api/account/{address}/delegations:
+    get:
+      consumes:
+      - application/json
+      description: get delegations of account
+      parameters:
+      - description: account address
+        in: path
+        name: address
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.AccountDelegationsRespond'
+            type: object
+      summary: list
+      tags:
+      - account
+  /api/account/{address}/rewards:
+    get:
+      consumes:
+      - application/json
+      description: get rewards of account
+      parameters:
+      - description: account address
+        in: path
+        name: address
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.AccountRewardsVo'
+            type: object
+      summary: list
+      tags:
+      - account
+  /api/account/{address}/unbonding_delegations:
+    get:
+      consumes:
+      - application/json
+      description: get unbondingdelegations of account
+      parameters:
+      - description: account address
+        in: path
+        name: address
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.AccountUnbondingDelegationsRespond'
+            type: object
+      summary: list
+      tags:
+      - account
+  /api/accounts:
+    get:
+      consumes:
+      - application/json
+      description: get list of account
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.AccountsInfoRespond'
+            type: object
+      summary: list
+      tags:
+      - account
+  /api/asset/gateways/{moniker}:
+    get:
+      consumes:
+      - application/json
+      description: get gateway assets token detail
+      parameters:
+      - description: moniker
+        in: path
+        name: moniker
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.AssetGateways'
+            type: object
+      summary: detail
+      tags:
+      - assets
+  /api/asset/tokens:
+    get:
+      consumes:
+      - application/json
+      description: get asset tokens
+      parameters:
+      - description: source
+        in: query
+        name: source
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.AssetTokensRespond'
+            type: object
+      summary: list
+      tags:
+      - assets
+  /api/asset/tokens/{token_id}:
+    get:
+      consumes:
+      - application/json
+      description: get assets token detail
+      parameters:
+      - description: token_id
+        in: path
+        name: token_id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.AssetTokens'
+            type: object
+      summary: detail
+      tags:
+      - assets
+  /api/assets/gateway/txs:
+    get:
+      consumes:
+      - application/json
+      description: get assets txs
+      parameters:
+      - description: page num
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: page size
+        in: query
+        name: size
+        required: true
+        type: integer
+      - description: txs type
+        in: query
+        name: tx_type
+        type: string
+      - description: asset symbol
+        in: query
+        name: symbol
+        type: string
+      - description: gateway
+        in: query
+        name: gateway
+        type: string
+      - description: moniker
+        in: query
+        name: moniker
+        type: string
+      - description: if used count
+        enum:
+        - "true"
+        - "false"
+        in: query
+        name: total
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.AssetsRespond'
+            type: object
+      summary: gateway
+      tags:
+      - assets
+  /api/assets/native/txs:
+    get:
+      consumes:
+      - application/json
+      description: get assets txs
+      parameters:
+      - description: page num
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: page size
+        in: query
+        name: size
+        required: true
+        type: integer
+      - description: txs type
+        in: query
+        name: tx_type
+        type: string
+      - description: asset symbol
+        in: query
+        name: symbol
+        type: string
+      - description: if used count
+        enum:
+        - "true"
+        - "false"
+        in: query
+        name: total
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.AssetsRespond'
+            type: object
+      summary: native
+      tags:
+      - assets
+  /api/block/blockinfo/{height}:
+    get:
+      consumes:
+      - application/json
+      description: get block info
+      parameters:
+      - description: block height
+        in: path
+        name: height
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.BlockInfo'
+            type: object
+      summary: detail
+      tags:
+      - block
+  /api/block/latestheight:
+    get:
+      consumes:
+      - application/json
+      description: get block latestheight
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.LatestHeightRespond'
+            type: object
+      summary: latest
+      tags:
+      - block
+  /api/block/validatorset/{height}:
+    get:
+      consumes:
+      - application/json
+      description: get  block validatorset
+      parameters:
+      - default: 1
+        description: page num
+        in: query
+        name: page
+        required: true
+        type: integer
+      - default: 10
+        description: page size
+        in: query
+        name: size
+        required: true
+        type: integer
+      - description: block height
+        in: path
+        name: height
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.ValidatorSet'
+            type: object
+      summary: block validatorset
+      tags:
+      - block
+  /api/blocks:
+    get:
+      consumes:
+      - application/json
+      description: get blocks
+      parameters:
+      - default: 1
+        description: page num
+        in: query
+        name: page
+        required: true
+        type: integer
+      - default: 10
+        description: page size
+        in: query
+        name: size
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.BlockForListRespond'
+            type: object
+      summary: list
+      tags:
+      - block
+  /api/blocks/recent:
+    get:
+      consumes:
+      - application/json
+      description: get recent blocks
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.BlockInfoVoRespond'
+            type: object
+      summary: blocks recent
+      tags:
+      - block
+  /api/bondedtokens/validators:
+    get:
+      consumes:
+      - application/json
+      description: get bondedtokens validators
+      parameters:
+      - description: token type
+        in: query
+        name: type
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.BondedTokensRespond'
+            type: object
+      summary: list
+      tags:
+      - bondedtokens
+  /api/config:
+    get:
+      consumes:
+      - application/json
+      description: get config
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.EnvConfig'
+            type: object
+      summary: config
+      tags:
+      - common
+  /api/faucet/account:
+    get:
+      consumes:
+      - application/json
+      description: get faucet account
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/FaucetRespond'
+            type: object
+      summary: account
+      tags:
+      - faucet
+  /api/faucet/apply/{address}:
+    post:
+      consumes:
+      - application/json
+      description: faucet apply
+      parameters:
+      - description: address
+        in: path
+        name: address
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/FaucetRespond'
+            type: object
+      summary: apply
+      tags:
+      - faucet
+  /api/gov/deposit_voting_proposals:
+    get:
+      consumes:
+      - application/json
+      description: get deposit_voting_proposals
+      parameters:
+      - description: needMoniker
+        in: query
+        name: needMoniker
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.ProposalNewStyleResponse'
+            type: object
+      summary: deposit_voting_proposals
+      tags:
+      - gov
+  /api/gov/proposal_deposit/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get deposit detail
+      parameters:
+      - description: proposal id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.ProposalNewStyle'
+            type: object
+      summary: deposit detail
+      tags:
+      - gov
+  /api/gov/proposal_voting/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get proposal voting
+      parameters:
+      - description: proposal id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.ProposalNewStyle'
+            type: object
+      summary: proposal voting
+      tags:
+      - gov
+  /api/gov/proposals:
+    get:
+      consumes:
+      - application/json
+      description: get proposals
+      parameters:
+      - default: 1
+        description: page num
+        in: query
+        name: page
+        required: true
+        type: integer
+      - default: 10
+        description: page size
+        in: query
+        name: size
+        required: true
+        type: integer
+      - description: total
+        enum:
+        - true
+        - false
+        in: query
+        name: total
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.PageVo'
+            type: object
+      summary: list
+      tags:
+      - gov
+  /api/gov/proposals/{id}/depositor_txs:
+    get:
+      consumes:
+      - application/json
+      description: get depositor txs
+      parameters:
+      - default: 1
+        description: page num
+        in: query
+        name: page
+        required: true
+        type: integer
+      - default: 10
+        description: page size
+        in: query
+        name: size
+        required: true
+        type: integer
+      - description: proposal id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: total
+        enum:
+        - true
+        - false
+        in: query
+        name: total
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.TxPage'
+            type: object
+      summary: depositor_txs
+      tags:
+      - gov
+  /api/gov/proposals/{id}/voter_txs:
+    get:
+      consumes:
+      - application/json
+      description: get voter txs
+      parameters:
+      - default: 1
+        description: page num
+        in: query
+        name: page
+        required: true
+        type: integer
+      - default: 10
+        description: page size
+        in: query
+        name: size
+        required: true
+        type: integer
+      - description: proposal id
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: voter type
+        enum:
+        - validator
+        - delegator
+        in: query
+        name: voterType
+        type: string
+      - description: total
+        enum:
+        - true
+        - false
+        in: query
+        name: total
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.GetVoteTxResponse'
+            type: object
+      summary: voter_txs
+      tags:
+      - gov
+  /api/gov/proposals/{pid}:
+    get:
+      consumes:
+      - application/json
+      description: get proposal detail
+      parameters:
+      - description: proposal id
+        in: path
+        name: pid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.ProposalInfoVo'
+            type: object
+      summary: detail
+      tags:
+      - gov
+  /api/home/navigation:
+    get:
+      consumes:
+      - application/json
+      description: get navigation
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/NavigationData'
+            type: object
+      summary: navigation
+      tags:
+      - home
+  /api/params:
+    get:
+      consumes:
+      - application/json
+      description: get gov params
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/document.GovParamsList'
+            type: object
+      summary: params
+      tags:
+      - gov
+  /api/search/{text}:
+    get:
+      consumes:
+      - application/json
+      description: search text
+      parameters:
+      - description: text
+        in: path
+        name: text
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.ResultVo'
+            type: object
+      summary: search text
+      tags:
+      - common
+  /api/stake/candidate/{address}:
+    get:
+      consumes:
+      - application/json
+      description: get validator candidate detail
+      parameters:
+      - description: address
+        in: path
+        name: address
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.CandidatesInfoVo'
+            type: object
+      summary: candidate detail
+      tags:
+      - stake
+  /api/stake/candidate/{address}/status:
+    get:
+      consumes:
+      - application/json
+      description: get validator status
+      parameters:
+      - description: address
+        in: path
+        name: address
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.ValStatus'
+            type: object
+      summary: validator status
+      tags:
+      - stake
+  /api/stake/candidatesTop:
+    get:
+      consumes:
+      - application/json
+      description: get validator candidatesTop
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.ValDetailVo'
+            type: object
+      summary: validator candidatesTop
+      tags:
+      - stake
+  /api/stake/validators:
+    get:
+      consumes:
+      - application/json
+      description: get validators
+      parameters:
+      - default: 1
+        description: page num
+        in: query
+        name: page
+        required: true
+        type: integer
+      - default: 100
+        description: page size
+        in: query
+        name: size
+        required: true
+        type: integer
+      - description: validators status
+        enum:
+        - validator
+        - candidate
+        - jailed
+        in: query
+        name: type
+        type: string
+      - description: origin
+        enum:
+        - browser
+        - app
+        in: query
+        name: origin
+        type: string
+      - description: total
+        enum:
+        - true
+        - false
+        in: query
+        name: total
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/lcd.ValidatorsVoRespond'
+            type: object
+      summary: list
+      tags:
+      - stake
+  /api/stake/validators/{address}:
+    get:
+      consumes:
+      - application/json
+      description: get validator detail
+      parameters:
+      - description: address
+        in: path
+        name: address
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.ValidatorForDetail'
+            type: object
+      summary: validator detail
+      tags:
+      - stake
+  /api/stake/validators/{validatorAddr}/commission-rewards:
+    get:
+      consumes:
+      - application/json
+      description: get commission-rewards
+      parameters:
+      - description: validatorAddr
+        in: path
+        name: validatorAddr
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/utils.CoinsAsStr'
+            type: object
+      summary: commission-rewards
+      tags:
+      - stake
+  /api/stake/validators/{validatorAddr}/delegations:
+    get:
+      consumes:
+      - application/json
+      description: get delegations
+      parameters:
+      - default: 1
+        description: page num
+        in: query
+        name: page
+        required: true
+        type: integer
+      - default: 5
+        description: page size
+        in: query
+        name: size
+        required: true
+        type: integer
+      - description: validatorAddr
+        in: path
+        name: validatorAddr
+        required: true
+        type: string
+      - description: needpage
+        enum:
+        - true
+        - false
+        in: query
+        name: needpage
+        type: boolean
+      - description: total
+        enum:
+        - true
+        - false
+        in: query
+        name: total
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.DelegationsPage'
+            type: object
+      summary: delegations
+      tags:
+      - stake
+  /api/stake/validators/{validatorAddr}/depositor_txs:
+    get:
+      consumes:
+      - application/json
+      description: get depositor txs
+      parameters:
+      - default: 1
+        description: page num
+        in: query
+        name: page
+        required: true
+        type: integer
+      - default: 5
+        description: page size
+        in: query
+        name: size
+        required: true
+        type: integer
+      - description: validatorAddr
+        in: path
+        name: validatorAddr
+        required: true
+        type: string
+      - description: total
+        enum:
+        - true
+        - false
+        in: query
+        name: total
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.ValidatorDepositTxPage'
+            type: object
+      summary: depositor_txs
+      tags:
+      - stake
+  /api/stake/validators/{validatorAddr}/redelegations:
+    get:
+      consumes:
+      - application/json
+      description: get redelegations
+      parameters:
+      - default: 1
+        description: page num
+        in: query
+        name: page
+        required: true
+        type: integer
+      - default: 5
+        description: page size
+        in: query
+        name: size
+        required: true
+        type: integer
+      - description: validatorAddr
+        in: path
+        name: validatorAddr
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.RedelegationPage'
+            type: object
+      summary: redelegations
+      tags:
+      - stake
+  /api/stake/validators/{validatorAddr}/unbonding-delegations:
+    get:
+      consumes:
+      - application/json
+      description: get unbonding delegations
+      parameters:
+      - default: 1
+        description: page num
+        in: query
+        name: page
+        required: true
+        type: integer
+      - default: 5
+        description: page size
+        in: query
+        name: size
+        required: true
+        type: integer
+      - description: validatorAddr
+        in: path
+        name: validatorAddr
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.UnbondingDelegationsPage'
+            type: object
+      summary: unbondingdelegations
+      tags:
+      - stake
+  /api/stake/validators/{validatorAddr}/vote:
+    get:
+      consumes:
+      - application/json
+      description: get vote
+      parameters:
+      - default: 1
+        description: page num
+        in: query
+        name: page
+        required: true
+        type: integer
+      - default: 5
+        description: page size
+        in: query
+        name: size
+        required: true
+        type: integer
+      - description: validatorAddr
+        in: path
+        name: validatorAddr
+        required: true
+        type: string
+      - description: total
+        enum:
+        - true
+        - false
+        in: query
+        name: total
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.ValidatorVotePage'
+            type: object
+      summary: vote
+      tags:
+      - stake
+  /api/stake/validators/{validatorAddr}/withdraw-addr:
+    get:
+      consumes:
+      - application/json
+      description: get withdraw-addr
+      parameters:
+      - description: validatorAddr
+        in: path
+        name: validatorAddr
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.WithdrawAddr'
+            type: object
+      summary: withdraw-addr
+      tags:
+      - stake
+  /api/stake/validators/update_icons:
+    get:
+      consumes:
+      - application/json
+      description: update validator icons
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.Response'
+            type: object
+      summary: update_icons
+      tags:
+      - stake
+  /api/sysdate:
+    get:
+      consumes:
+      - application/json
+      description: get sysdate
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/int64'
+            type: object
+      summary: sysdate
+      tags:
+      - common
+  /api/task/asset_gateways:
+    put:
+      consumes:
+      - application/json
+      description: update asset gateways
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/types.BizCode'
+            type: object
+      summary: update asset_gateways
+      tags:
+      - task
+  /api/task/asset_tokens:
+    put:
+      consumes:
+      - application/json
+      description: update asset tokens
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/types.BizCode'
+            type: object
+      summary: update asset_tokens
+      tags:
+      - task
+  /api/task/black_validators:
+    put:
+      consumes:
+      - application/json
+      description: update black validators
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/types.BizCode'
+            type: object
+      summary: update black validators
+      tags:
+      - task
+  /api/task/gov_params:
+    put:
+      consumes:
+      - application/json
+      description: update gov params
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/types.BizCode'
+            type: object
+      summary: update gov_params
+      tags:
+      - task
+  /api/task/tx_num_by_day:
+    put:
+      consumes:
+      - application/json
+      description: update tx_num_by_day
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/types.BizCode'
+            type: object
+      summary: update tx_num_by_day
+      tags:
+      - task
+  /api/task/validator_icons:
+    put:
+      consumes:
+      - application/json
+      description: update validator icons
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/types.BizCode'
+            type: object
+      summary: update validator icons
+      tags:
+      - task
+  /api/task/validators:
+    put:
+      consumes:
+      - application/json
+      description: update validators
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/types.BizCode'
+            type: object
+      summary: update validators
+      tags:
+      - task
+  /api/tokenstats:
+    get:
+      consumes:
+      - application/json
+      description: tokenstats
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.Response'
+            type: object
+      summary: tokenstats
+      tags:
+      - tokenstats
+  /api/tokenstats/account_total:
+    get:
+      consumes:
+      - application/json
+      description: get tokenstats account_total
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.Response'
+            type: object
+      summary: account_total
+      tags:
+      - tokenstats
+  /api/tx/{hash}:
+    get:
+      consumes:
+      - application/json
+      description: get txs detail
+      parameters:
+      - description: txhash
+        in: path
+        name: hash
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.StakeTx'
+            type: object
+      summary: tx detail
+      tags:
+      - txs
+  /api/tx_types/{type}:
+    get:
+      consumes:
+      - application/json
+      description: get tx_types detail
+      parameters:
+      - description: type
+        in: path
+        name: type
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.QueryTxTypeRespond'
+            type: object
+      summary: tx_types detail
+      tags:
+      - txs
+  /api/txs:
+    get:
+      consumes:
+      - application/json
+      description: get txs list
+      parameters:
+      - default: 1
+        description: page num
+        in: query
+        name: page
+        required: true
+        type: integer
+      - default: 5
+        description: page size
+        in: query
+        name: size
+        required: true
+        type: integer
+      - description: height
+        in: query
+        name: height
+        type: integer
+      - description: txType
+        in: query
+        name: txType
+        type: string
+      - description: status
+        enum:
+        - success
+        - fail
+        in: query
+        name: status
+        type: string
+      - description: address
+        in: query
+        name: address
+        type: string
+      - description: beginTime
+        in: query
+        name: beginTime
+        type: integer
+      - description: endTime
+        in: query
+        name: endTime
+        type: integer
+      - description: total
+        enum:
+        - true
+        - false
+        in: query
+        name: total
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.PageVo'
+            type: object
+      summary: list
+      tags:
+      - txs
+  /api/txs/{type}/{page}/{size}:
+    get:
+      consumes:
+      - application/json
+      description: get txs list by type
+      parameters:
+      - default: 1
+        description: page num
+        in: path
+        name: page
+        required: true
+        type: integer
+      - default: 5
+        description: page size
+        in: path
+        name: size
+        required: true
+        type: integer
+      - description: type
+        in: path
+        name: type
+        required: true
+        type: string
+      - description: height
+        in: query
+        name: height
+        type: integer
+      - description: txType
+        in: query
+        name: txType
+        type: string
+      - description: status
+        enum:
+        - success
+        - fail
+        in: query
+        name: status
+        type: string
+      - description: address
+        in: query
+        name: address
+        type: string
+      - description: beginTime
+        in: query
+        name: beginTime
+        type: integer
+      - description: endTime
+        in: query
+        name: endTime
+        type: integer
+      - description: total
+        enum:
+        - true
+        - false
+        in: query
+        name: total
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.PageVo'
+            type: object
+      summary: list by type
+      tags:
+      - txs
+  /api/txs/recent:
+    get:
+      consumes:
+      - application/json
+      description: get txs recent
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.RecentTxRespond'
+            type: object
+      summary: txs recent
+      tags:
+      - txs
+  /api/txsByAddress/{address}/{page}/{size}:
+    get:
+      consumes:
+      - application/json
+      description: txsByAddress
+      parameters:
+      - description: address
+        in: path
+        name: address
+        required: true
+        type: string
+      - description: pagenum
+        in: path
+        name: page
+        required: true
+        type: integer
+      - description: pagesize
+        in: path
+        name: size
+        required: true
+        type: integer
+      - description: total
+        enum:
+        - true
+        - false
+        in: query
+        name: total
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.PageVo'
+            type: object
+      summary: txsByAddress
+      tags:
+      - txs
+  /api/txsByDay:
+    get:
+      consumes:
+      - application/json
+      description: get txs ByDay
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.TxNumGroupByDayVoRespond'
+            type: object
+      summary: txsByDay
+      tags:
+      - txs
+  /api/version:
+    get:
+      consumes:
+      - application/json
+      description: version
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/map'
+            type: object
+      summary: version
+      tags:
+      - version

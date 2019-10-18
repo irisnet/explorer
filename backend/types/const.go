@@ -8,8 +8,11 @@ const (
 	UrlRoot = "/api"
 
 	//Account
-	UrlRegisterQueryAccount  = "/account/{address}"
-	UrlRegisterQueryAccounts = "/accounts"
+	UrlRegisterQueryAccount                     = "/account/{address}"
+	UrlRegisterQueryAccounts                    = "/accounts"
+	UrlRegisterQueryAccountDelegations          = "/account/{address}/delegations"
+	UrlRegisterQueryAccountUnbondingDelegations = "/account/{address}/unbonding_delegations"
+	UrlRegisterQueryAccountRewards              = "/account/{address}/rewards"
 
 	//home
 	UrlRegisterNavigationBar = "/home/navigation"
@@ -103,6 +106,10 @@ const (
 
 	TxTag_WithDrawRewardFromValidator = "withdraw-reward-from-validator-"
 	TxTag_WithDrawAddress             = "withdraw-address"
+
+	IRISUint   = "iris"
+	IRISAttoUint   = "iris-atto"
+	AssetMinDenom = "-min"
 )
 
 var (
@@ -235,7 +242,7 @@ func IsRandType(typ string) bool {
 type TxType int
 
 const (
-	_ TxType = iota
+	_           TxType = iota
 	Trans
 	Declaration
 	Stake

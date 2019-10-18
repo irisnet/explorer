@@ -105,8 +105,9 @@
                 </div>
             </div>
             <div class="pagination" style='margin:0.2rem 0 0.4rem;'>
-                <b-pagination size="md" :total-rows="count" v-model="currentPage" :per-page="pageSize">
-                </b-pagination>
+                <m-pagination :page-size="pageSize" :total="count" :page="currentPageNum"
+                              :page-change="pageChange">
+                </m-pagination>
             </div>
         </div>
         <spin-component :showLoading="showLoading"/>
@@ -121,29 +122,21 @@
 	import MProposalsCard from './commonComponents/MProposalsCard';
 	import MProposalsEchart from './commonComponents/MProposalsEchart';
 	import MProposalsListTable from './table/MProposalsListTable';
-
+	import MPagination from "./commonComponents/MPagination";
 	export default {
 		components:{
 			SpinComponent,
 			MProposalsCard,
 			MProposalsEchart,
-			MProposalsListTable
+			MProposalsListTable,
+			MPagination
 		},
 		watch: {
-			currentPage(currentPage) {
-				this.currentPage = currentPage;
-				new Promise((resolve)=>{
-					this.getDataList(currentPage, 30);
-					resolve();
-				}).then(()=>{
-					Tools.scrollToTop()
-				})
-			},
 			$route() {
 				this.items = [];
 				this.type = this.$route.params.type;
-				this.currentPage = 1;
-				this.getDataList(1, 30);
+				this.currentPageNum = Number(this.$route.query.page || 1);
+				this.getDataList();
 				this.showNoData = false;
 				this.computeMinWidth();
 			}
@@ -152,7 +145,8 @@
 			return {
 				devicesWidth: window.innerWidth,
 				proposalsListPageWrap: 'personal_computer_proposals_list_page',
-				currentPage: 1,
+				currentPageNum: this.forCurrentPageNum(),
+				currentPageNumCache: 0,
 				pageSize: 30,
 				count: 0,
 				items: [],
@@ -174,14 +168,30 @@
 			}
 		},
 		mounted() {
+			this.getDataList();
 			this.getGrahpData();
-			this.getDataList(1, 30);
 			window.addEventListener('resize',this.onresize);
 		},
 		beforeDestroy() {
 			window.removeEventListener('resize',this.onWindowResize);
 		},
 		methods: {
+			forCurrentPageNum() {
+				let currentPageNum = 1;
+				let urlPageSize = this.$route.query.page && Number(this.$route.query.page);
+				currentPageNum = urlPageSize ? urlPageSize : 1;
+				return currentPageNum;
+			},
+			pageChange(pageNum) {
+				this.currentPageNum = pageNum;
+				if (this.currentPageNumCache === this.currentPageNum) {
+					return;
+				}
+				this.currentPageNumCache = this.currentPageNum;
+                let path = "/gov/proposals";
+                history.pushState(null, null, `/#${path}?page=${pageNum}`);
+                this.getDataList()
+			},
 			onresize(){
 				this.innerWidth = window.innerWidth;
 				if(window.innerWidth > 910){
@@ -396,12 +406,12 @@
 			},
 			isNumber(n) {
 				return typeof n === 'number'
-      },
-      forLimitNumer(number) {
-        if (typeof number === "number") {
-          return Math.max(Math.min(number, 1), 0)
-        }
-      },
+            },
+            forLimitNumer(number) {
+                if (typeof number === "number") {
+                  return Math.max(Math.min(number, 1), 0)
+                }
+            },
 			getGrahpData() {
 				Service.commonInterface({proposalListVotingAndDeposit:{}}, (data) => {
 					if (data && Array.isArray(data) && data.length > 0) {
@@ -411,11 +421,11 @@
                     }
 				});
 			},
-			getDataList(currentPage, pageSize) {
+			getDataList() {
 				this.showLoading = true;
 				Service.commonInterface({proposalList:{
-						pageNumber: currentPage,
-						pageSize: pageSize
+						pageNumber: this.currentPageNum,
+						pageSize: this.pageSize
 					}}, (proposalList) => {
 					try {
 						if(proposalList.Data){
@@ -550,7 +560,7 @@
             width: 100%;
             max-width: 12.8rem;
             z-index: 1;
-            background: #fff;
+            background: #F5F7FD;
             & > div {
                 padding: 4px 0;
             }

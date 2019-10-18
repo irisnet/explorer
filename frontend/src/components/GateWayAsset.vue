@@ -17,7 +17,12 @@
                     </div>
                 </div>
                 <div class="pagination_nav_footer_content">
-                    <b-pagination :total-rows="gateWayIssueTokenTotalPageNum" v-model="gateWayIssueTokenCurrentPageNum" :per-page="pageSize"></b-pagination>
+                    <m-pagination
+                            :total="gateWayIssueTokenTotalPageNum"
+                            :page-size="pageSize"
+                            :page="gateWayIssueTokenCurrentPageNum"
+                            :page-change="gateWayIssueTokenPageChange"
+                    ></m-pagination>
                 </div>
             </div>
         </div>
@@ -33,7 +38,12 @@
                     </div>
                 </div>
                 <div class="pagination_nav_footer_content">
-                    <b-pagination  :total-rows="gateWayEditTokenTotalPageNum" v-model="gateWayEditTokenCurrentPageNum" :per-page="pageSize"></b-pagination>
+                    <m-pagination
+                        :total="gateWayEditTokenTotalPageNum"
+                        :page-size="pageSize"
+                        :page="gateWayEditTokenCurrentPageNum"
+                        :page-change="gateWayEditTokenPageChange"
+                    ></m-pagination>
                 </div>
             </div>
         </div>
@@ -49,7 +59,12 @@
                     </div>
                 </div>
                 <div class="pagination_nav_footer_content">
-                    <b-pagination  :total-rows="gateWayMintTokenTotalPageNum" v-model="gateWayMintTokenCurrentPageNum" :per-page="pageSize"></b-pagination>
+                    <m-pagination
+                            :total="gateWayMintTokenTotalPageNum"
+                            :page="gateWayMintTokenCurrentPageNum"
+                            :page-size="pageSize"
+                            :page-change="gateWayMintTokenPageChange"
+                    ></m-pagination>
                 </div>
             </div>
         </div>
@@ -65,7 +80,12 @@
                     </div>
                 </div>
                 <div class="pagination_nav_footer_content">
-                    <b-pagination  :total-rows="gateWayTransferTokenTotalPageNum" v-model="gateWayTransferTokenCurrentPageNum" :per-page="pageSize"></b-pagination>
+                    <m-pagination
+                            :total="gateWayTransferTokenTotalPageNum"
+                            :page="gateWayTransferTokenCurrentPageNum"
+                            :page-size="pageSize"
+                            :page-change="gateWayTransferTokenPageChange"
+                    ></m-pagination>
                 </div>
             </div>
         </div>
@@ -81,9 +101,10 @@
 	import SpinComponent from "./commonComponents/SpinComponent"
 	import Service from "../service"
 	import Tools from "../util/Tools"
+	import MPagination from "./commonComponents/MPagination";
 	export default {
 		name: "GateWayAsset",
-		components: {NativeAsset, SpinComponent},
+		components: {MPagination, NativeAsset, SpinComponent},
         data() {
             return {
 	            gateWayIssueTokenList:[],
@@ -110,24 +131,6 @@
 	            transferTokenType:'TransferGatewayOwner'
             }
         },
-        watch:{
-            gateWayIssueTokenCurrentPageNum(gateWayIssueTokenCurrentPageNum){
-                this.gateWayIssueTokenCurrentPageNum = gateWayIssueTokenCurrentPageNum;
-                this.getIssueToken()
-            },
-            gateWayEditTokenCurrentPageNum(gateWayEditTokenCurrentPageNum){
-                this.gateWayEditTokenCurrentPageNum = gateWayEditTokenCurrentPageNum
-                this.getEditToken()
-            },
-            gateWayMintTokenCurrentPageNum(gateWayMintTokenCurrentPageNum){
-                this.gateWayMintTokenCurrentPageNum = gateWayMintTokenCurrentPageNum
-                this.getMintToken()
-            },
-            gateWayTransferTokenCurrentPageNum(gateWayTransferTokenCurrentPageNum){
-                this.gateWayTransferTokenCurrentPageNum = gateWayTransferTokenCurrentPageNum
-                this.getTransferToken()
-            }
-        },
         mounted () {
 	        this.getIssueToken();
 	        this.getEditToken();
@@ -135,9 +138,22 @@
 	        this.getTransferToken()
         },
         methods:{
-	        linkGen(pageNum) {
-		        return pageNum === 1 ? '?' : `?page=${pageNum}`
-	        },
+	        gateWayIssueTokenPageChange(pageNum){
+		        this.gateWayIssueTokenCurrentPageNum = pageNum;
+		        this.getIssueToken()
+            },
+	        gateWayEditTokenPageChange(pageNum){
+		        this.gateWayEditTokenCurrentPageNum = pageNum;
+		        this.getEditToken()
+            },
+	        gateWayMintTokenPageChange(pageNum){
+		        this.gateWayMintTokenCurrentPageNum = pageNum;
+		        this.getMintToken()
+            },
+	        gateWayTransferTokenPageChange(pageNum){
+		        this.gateWayTransferTokenCurrentPageNum = pageNum;
+		        this.getTransferToken()
+            },
 	        getIssueToken(){
 		        this.flShowLoading = true;
 		        this.flShowContent =  false;
@@ -315,14 +331,14 @@
         width: 100%;
         position: fixed;
         z-index: 10;
-        background-color: #ffffff;
+        background-color: #F5F7FD;
             .gateway_asset_list_title_content{
                 height:0.7rem;
                 display: flex;
                 align-items: center;
                 max-width: 12.8rem;
                 margin: 0 auto;
-                background-color: #ffffff;
+                background-color: #F5F7FD;
                 .gateway_asset_list_title{
                     font-size: 0.18rem;
                     font-weight: 500;

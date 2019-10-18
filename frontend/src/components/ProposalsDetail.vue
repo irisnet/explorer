@@ -32,7 +32,7 @@
                     </span>
                 </div>
             </div>
-            <div class="proposals_detail_information_wrap">
+            <div class="proposals_detail_information_wrap" style="background: #fff">
                 <div class="information_props_wrap">
                     <span class="information_props">Proposer :</span>
                     <span v-show="proposer !== '--'"
@@ -249,9 +249,16 @@
                 </div>
             </div>
             <div class="table_pagination">
-                <b-pagination v-model="currentPage"
+                <!--<b-pagination v-model="currentPage"
                               :total-rows="itemTotal"
-                              :per-page="perPage"></b-pagination>
+                              :per-page="perPage"></b-pagination>-->
+                <keep-alive>
+                    <m-pagination
+                            :pageSize="perPage"
+                            :total="itemTotal"
+                            :page="currentPageNum"
+                            :page-change="pageChange"></m-pagination>
+                </keep-alive>
             </div>
         </div>
         <div :class="['proposal_table', proposalsDetailWrap]"
@@ -268,9 +275,16 @@
                 </div>
             </div>
             <div class="table_pagination">
-                <b-pagination v-model="depositorCurrentPage"
+                <!--<m-pagination v-model="depositorCurrentPage"
                               :total-rows="depositorItemsTotal"
-                              :per-page="perPage"></b-pagination>
+                              :per-page="perPage"></m-pagination>-->
+                <keep-alive>
+                    <m-pagination
+                            :pageSize="perPage"
+                            :total="depositorItemsTotal"
+                            :page="currentDepositorPageNum"
+                            :page-change="pageChangeDepositor"></m-pagination>
+                </keep-alive>
             </div>
         </div>
     </div>
@@ -285,9 +299,11 @@ import Constant from "../constant/Constant";
 import MProposalsDetailTable from './table/MProposalsDetailTable.vue';
 import MDepositCard from "./commonComponents/MDepositCard";
 import MVotingCard from "./commonComponents/MVotingCard";
+import MPagination from "./commonComponents/MPagination";
 
 export default {
     components: {
+	    MPagination,
 	    MVotingCard,
 	    MDepositCard,
         BlocksListTable,
@@ -348,6 +364,8 @@ export default {
             textareaRows: '2',
             parameterValue: '',
             currentPage: 1,
+	        currentPageNum:1,
+	        currentDepositorPageNum:1,
             depositorCurrentPage: 1,
             itemTotal: 0,
             depositorItemsTotal: 0,
@@ -413,6 +431,14 @@ export default {
         },
     },
     methods: {
+	    pageChange(pageNum){
+	    	this.currentPageNum = pageNum;
+	    	this.getVoter()
+        },
+	    pageChangeDepositor(pageNum){
+		    this.currentDepositorPageNum = pageNum;
+		    this.getDepositor()
+	    },
 	    filterVoteTx(item,index){
 		    this.currentPage = 1;
 		    this.filterTab = item;
@@ -463,7 +489,7 @@ export default {
         getVoter () {
 	        Service.commonInterface({proposalDetailVoterTxByFilter:{
 			        proposalId: this.$route.params.proposal_id,
-			        pageNumber: this.currentPage,
+			        pageNumber: this.currentPageNum,
 			        perPageSize: this.perPage,
 			        voterType:this.filterTab
 		        }},(data) => {
@@ -498,7 +524,7 @@ export default {
             this.depositorItems = [];
             Service.commonInterface({                proposalDetailDepositorTx: {
                     proposalId: this.$route.params.proposal_id,
-                    pageNumber: this.depositorCurrentPage,
+                    pageNumber: this.currentDepositorPageNum,
                     perPageSize: this.perPage,
                 }            }, (data) => {
                 try {
@@ -757,9 +783,11 @@ export default {
             .proposals_detail_information_wrap{
                 flex: 1;
                 border: 0.01rem solid #d7d9e0;
+                background: #fff;
             }
             .proposals_detail_information_wrap:first-child{
                 margin-right: 0.1rem;
+                background: #fff;
             }
         }
         .proposals_information_content_title {
@@ -781,6 +809,7 @@ export default {
             border-left: 1px solid rgba(215, 217, 224, 1) ;
             border-top: 1px solid rgba(215, 217, 224, 1) ;
             border-bottom: 1px solid rgba(215, 217, 224, 1) ;
+            background: #fff;
             .proposals_detail_level{
                 padding: 0 0 0.2rem 0;
                 i{
@@ -873,10 +902,12 @@ export default {
             width: 100%;
             overflow-x: auto;
             overflow-y: hidden;
+            background: #fff;
             .table_wrap {
                 min-width: 9.6rem;
             }
             .no_data_show {
+                background: #fff;
                 width: 100%;
                 min-height: 3rem;
                 @include flex;
@@ -918,7 +949,9 @@ export default {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
             margin-bottom: 0.2rem;
+            background: #fff;
             .no_data_show {
+                background: #fff;
                 @include flex;
                 width: 100%;
                 margin: auto;
@@ -938,6 +971,7 @@ export default {
             border-bottom: 1px solid rgba(215, 217, 224, 1) ;
             padding: 10px;
             width: 100%;
+            background: #fff;
             .information_props_wrap {
                 @include flex;
                 flex-direction: column;
@@ -1042,7 +1076,7 @@ export default {
         }
     }
     .blue_style{
-        color: #0580D3;
+        color: var(--bgColor);
     }
 }
 .voting_options {

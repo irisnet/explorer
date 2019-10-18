@@ -73,6 +73,20 @@ func (_ AssetToken) GetAssetTokenDetail(tokenid string) (AssetToken, error) {
 	return asset, nil
 }
 
+func (_ AssetToken) GetAssetTokenDetailByTokenids(tokenid []string) ([]AssetToken, error) {
+	var asset []AssetToken
+	cond := bson.M{}
+	if len(tokenid)> 0 {
+		cond[AssetFieldTokenId] = bson.M{"$in":tokenid}
+	}
+	err := queryOne(CollectionNmAsset, nil, cond, &asset)
+	if err != nil {
+		logger.Error("validator not found", logger.Any("err", err.Error()))
+		return asset, err
+	}
+	return asset, nil
+}
+
 func (_ AssetToken) Batch(txs []txn.Op) error {
 	return orm.Batch(txs)
 }

@@ -1142,6 +1142,7 @@ export default {
     }
     @include pcCenter;
     .transactions_detail_information_wrap {
+      background: #fff;
       padding: 0.2rem 0.2rem 0.08rem;
       border: 1px solid #d7d9e0;
       .information_props_wrap {
@@ -1193,6 +1194,7 @@ export default {
     .transactions_detail_information_wrap {
       padding: 0.1rem;
       border: 1px solid #d7d9e0;
+      background: #fff;
       .information_props_wrap {
         @include flex;
         flex-direction: column;

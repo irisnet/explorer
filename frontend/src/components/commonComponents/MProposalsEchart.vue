@@ -21,11 +21,11 @@
               <span>{{data.type}}</span>
             </div>
             <div class="deposit_period_content" style="margin-top: 12px;display: flex;align-items: center;" v-show="data.status === 'DepositPeriod'">
-              <i class="iconfont iconDepositPeriod-liebiao" style="color: #0580D3"></i>
+              <i class="iconfont iconDepositPeriod-liebiao" style="color: var(--bgColor)"></i>
               <span>DepositPeriod</span>
             </div>
             <div class="voting_period_content" style="margin-top: 12px;display: flex;align-items: center;" v-show="data.status === 'VotingPeriod'">
-              <i class="iconfont iconDepositPeriod" style="color: #0580D3"></i>
+              <i class="iconfont iconDepositPeriod" style="color: var(--bgColor)"></i>
               <span>VotingPeriod</span>
             </div>
             <div class="voting_period_content" style="margin-top: 12px;display: flex;align-items: center;" v-show="flShowTime">

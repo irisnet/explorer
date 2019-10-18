@@ -14,12 +14,54 @@
 
 <script>
   import echarts from 'echarts';
-
+  import Constant from "../constant/Constant"
   let line = null;
   export default {
     name: 'echarts-line',
     watch: {
+      '$store.state.currentSkinStyle'(newVal){
+        if(newVal !== 'default '){
+          this.setThemeStyle();
+          this.setEcartsLine(this.informationLine)
+        }
+      },
       informationLine(informationLine) {
+        if(this.$store.state.currentSkinStyle !== 'default'){
+          this.setThemeStyle();
+          this.setEcartsLine(this.informationLine)
+        }
+      },
+    },
+    data() {
+      return {
+        skinStyle:'',
+        lineSkinBackgroundStyle:[
+
+        ],
+        deviceType: window.innerWidth > 500 ? 1 : 0,
+        echartsComponentWrapLine:window.innerWidth > 500 ?'echarts_component_wrap_line_personal_computer':'echarts_component_wrap_line_mobile',
+        month:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+        monthNum:['01','02','03','04','05','06','07','08','09','10','11','12'],
+
+      }
+    },
+    props: ['informationLine'],
+    beforeMount() {
+
+    },
+    created(){
+
+    },
+    mounted() {
+      line = echarts.init(document.getElementById('echarts_line'));
+      window.addEventListener('resize',this.onWindowResize);
+    },
+
+    methods: {
+      onWindowResize(){
+        line.resize();
+      },
+      setEcartsLine(informationLine){
         //根据设备大小显示饼图的大小
         let radius = this.deviceType === 1 ? '85%' : '65%';
         let option = {
@@ -86,12 +128,8 @@
               areaStyle: {
                 normal: {
                   color: new echarts.graphic.LinearGradient(//设置渐变颜色
-                    0, 0, 0, 1,
-                    [
-                      {offset: 0, color: '#3598db'},
-                      {offset: 0.5, color: '#91ccef'},
-                      {offset: 1, color: '#dcf6ff'}
-                    ]
+                          0, 0, 0, 1,
+                          this.lineSkinBackgroundStyle
                   )
                 }
               },
@@ -99,8 +137,8 @@
               smoothMonotone: 'x',
               itemStyle:{
                 normal:{
-                  color:'#3598db',
-                  borderColor:'#3598db',  //拐点边框颜色
+                  color:this.skinStyle,
+                  borderColor:this.skinStyle,  //拐点边框颜色
                 }
               },
             }
@@ -111,29 +149,33 @@
           option.series[0].data = informationLine.seriesData;
           line.setOption(option)
         }
-      }
-    },
-    data() {
-      return {
-        deviceType: window.innerWidth > 500 ? 1 : 0,
-        echartsComponentWrapLine:window.innerWidth > 500 ?'echarts_component_wrap_line_personal_computer':'echarts_component_wrap_line_mobile',
-        month:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-        monthNum:['01','02','03','04','05','06','07','08','09','10','11','12'],
-
-      }
-    },
-    props: ['informationLine'],
-    beforeMount() {
-
-    },
-    mounted() {
-      line = echarts.init(document.getElementById('echarts_line'));
-      window.addEventListener('resize',this.onWindowResize)
-    },
-
-    methods: {
-      onWindowResize(){
-        line.resize();
+      },
+      setThemeStyle(){
+        if(this.$store.state.currentSkinStyle ===  `${Constant.ENVCONFIG.MAINNET}${Constant.CHAINID.MAINNET}`){
+          this.skinStyle = '#3264FD';
+          this.lineSkinBackgroundStyle = [
+            {offset: 0, color: 'rgba(50, 100, 253, 0.8)'},
+            {offset: 1, color: 'rgba(50, 100, 253, 0)'}
+          ]
+        }else if(this.$store.state.currentSkinStyle ===  `${Constant.ENVCONFIG.TESTNET}${Constant.CHAINID.FUXI}`){
+          this.skinStyle = '#0C4282';
+          this.lineSkinBackgroundStyle = [
+            {offset: 0, color: 'rgba(12, 66, 130, 0.8)'},
+            {offset: 1, color: 'rgba(12, 66, 130, 0)'}
+          ]
+        }else if(this.$store.state.currentSkinStyle ===  `${Constant.ENVCONFIG.TESTNET}${Constant.CHAINID.NYANCAT}`){
+          this.skinStyle = '#0D9388';
+          this.lineSkinBackgroundStyle = [
+            {offset: 0, color: 'rgba(13, 147, 136, 0.8)'},
+            {offset: 1, color: 'rgba(245, 247, 253, 1)'}
+          ]
+        }else {
+          this.skinStyle = '#0580D3';
+          this.lineSkinBackgroundStyle = [
+            {offset: 0, color: 'rgba(5,128,211, 0.8)'},
+            {offset: 1, color: 'rgba(5,128,211, 0)'}
+          ]
+        }
       }
     },
     beforeDestroy(){

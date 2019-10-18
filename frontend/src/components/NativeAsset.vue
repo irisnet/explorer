@@ -16,7 +16,12 @@
                     </div>
                 </div>
                 <div class="native_asset_nav_footer_content">
-                    <b-pagination  :total-rows="issueTokenTotalPageNum" v-model="issueTokenCurrentPageNum" :per-page="pageSize"></b-pagination>
+                    <m-pagination
+                            :total="issueTokenTotalPageNum"
+                            :page-size="pageSize"
+                            :page="issueTokenCurrentPageNum"
+                            :page-change="issueTokenPageChange"
+                    ></m-pagination>
                 </div>
             </div>
         </div>
@@ -31,7 +36,12 @@
                     </div>
                 </div>
                 <div class="native_asset_nav_footer_content">
-                    <b-pagination :total-rows="editTokenTotalPageNum" v-model="editTokenCurrentPageNum" :per-page="pageSize"></b-pagination>
+                    <m-pagination
+                            :total="editTokenTotalPageNum"
+                            :page-size="pageSize"
+                            :page="editTokenCurrentPageNum"
+                            :page-change="editTokenPageChange"
+                    ></m-pagination>
                 </div>
             </div>
         </div>
@@ -46,7 +56,12 @@
                     </div>
                 </div>
                 <div class="native_asset_nav_footer_content">
-                    <b-pagination  :total-rows="mintTokenTotalPageNum" v-model="mintTokenCurrentPageNum" :per-page="pageSize"></b-pagination>
+                    <m-pagination
+                            :total="mintTokenTotalPageNum"
+                            :page-size="pageSize"
+                            :page="mintTokenCurrentPageNum"
+                            :page-change="mintTokenPageChange"
+                    ></m-pagination>
                 </div>
             </div>
         </div>
@@ -61,7 +76,12 @@
                     </div>
                 </div>
                 <div class="native_asset_nav_footer_content">
-                    <b-pagination :total-rows="transferTokenTotalPageNum" v-model="transferTokenCurrentPageNum" :per-page="pageSize"></b-pagination>
+                    <m-pagination
+                            :total="transferTokenTotalPageNum"
+                            :page-size="pageSize"
+                            :page="transferTokenCurrentPageNum"
+                            :page-change="transferTokenPageChange"
+                    ></m-pagination>
                 </div>
             </div>
         </div>
@@ -77,9 +97,10 @@
     import Service from "../service"
     import Tools from "../util/Tools"
     import SpinComponent from "./commonComponents/SpinComponent"
+    import MPagination from "./commonComponents/MPagination";
 	export default {
 		name: "NativeAssetPage",
-		components: {NativeAsset, SpinComponent},
+		components: {MPagination, NativeAsset, SpinComponent},
         data(){
 			return {
 				issueToken:[],
@@ -108,24 +129,6 @@
                 transferTokenType:'TransferTokenOwner'
             }
         },
-        watch:{
-            issueTokenCurrentPageNum(issueTokenCurrentPageNum){
-                this.issueTokenCurrentPageNum = issueTokenCurrentPageNum;
-                this.getIssueToken()
-            },
-            editTokenCurrentPageNum(editTokenCurrentPageNum){
-                this.editTokenCurrentPageNum = editTokenCurrentPageNum
-                this.getEditToken()
-            },
-            mintTokenCurrentPageNum(mintTokenCurrentPageNum){
-                this.mintTokenCurrentPageNum = mintTokenCurrentPageNum
-                this.getMintToken()
-            },
-            transferTokenCurrentPageNum(transferTokenCurrentPageNum){
-                this.transferTokenCurrentPageNum = transferTokenCurrentPageNum
-                this.getTransferToken()
-            }
-        },
         mounted(){
 			this.getIssueToken();
 			this.getEditToken();
@@ -133,6 +136,22 @@
 			this.getTransferToken()
         },
         methods:{
+	        issueTokenPageChange(pageNum){
+		        this.issueTokenCurrentPageNum = pageNum;
+		        this.getIssueToken()
+            },
+	        editTokenPageChange(pageNum){
+		        this.editTokenCurrentPageNum = pageNum;
+		        this.getEditToken()
+            },
+	        mintTokenPageChange(pageNum){
+		        this.mintTokenCurrentPageNum = pageNum;
+		        this.getMintToken()
+            },
+	        transferTokenPageChange(pageNum){
+		        this.transferTokenCurrentPageNum = pageNum
+		        this.getTransferToken()
+            },
             getIssueToken(){
 	            this.flIssueTokenShowLoading = true;
 	            this.flShowContent = false;
@@ -309,14 +328,14 @@
             width: 100%;
             position: fixed;
             z-index: 10;
-            background-color: #ffffff;
+            background-color: #F5F7FD;
             .native_asset_list_title_content{
                 height:0.7rem;
                 display: flex;
                 align-items: center;
                 max-width: 12.8rem;
                 margin: 0 auto;
-                background-color: #ffffff;
+                background-color: #F5F7FD;
                 .native_asset_list_title{
                     font-size: 0.18rem;
                     font-weight: 500;

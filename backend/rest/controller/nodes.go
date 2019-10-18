@@ -22,6 +22,13 @@ func RegisterNodes(r *mux.Router) error {
 	return nil
 }
 
+// @Summary account
+// @Description get faucet account
+// @Tags faucet
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} FaucetRespond   "success"
+// @Router /api/faucet/account [get]
 func RegisterQueryFaucet(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryFaucet, "GET", func(request vo.IrisReq) interface{} {
 		res, err := lcd.Faucet(request.Request)
@@ -33,6 +40,14 @@ func RegisterQueryFaucet(r *mux.Router) error {
 	return nil
 }
 
+// @Summary apply
+// @Description faucet apply
+// @Tags faucet
+// @Accept  json
+// @Produce  json
+// @Param   address   path   string  true    "address"
+// @Success 200 {object} FaucetRespond   "success"
+// @Router /api/faucet/apply/{address} [post]
 func RegisterApply(r *mux.Router) error {
 	doApi(r, types.UrlRegisterApply, "POST", func(request vo.IrisReq) interface{} {
 		res, err := lcd.GetToken(request.Request)
@@ -43,3 +58,5 @@ func RegisterApply(r *mux.Router) error {
 	})
 	return nil
 }
+
+type FaucetRespond []byte

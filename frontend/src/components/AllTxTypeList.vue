@@ -156,24 +156,25 @@
 				this.filterStartTime = this.formatStartTime(time)
             },
 	        getEndTime(time){
-		        this.filterEndTime = this.formatTime(time)
+		        this.filterEndTime = this.formatEndTime(time)
             },
-            formatTime(time){
-	            let utcTime = Tools.conversionTimeToUTCByValidatorsLine(new Date(time).toISOString());
+            formatEndTime(time){
+
+	            // let utcTime = Tools.conversionTimeToUTCByValidatorsLine(new Date(time).toISOString());
 	            let oneDaySeconds = 24 * 60 *60;
-	            return Number(new Date(utcTime).getTime()/1000) + Number(oneDaySeconds)
+	            return Number(new Date(time).getTime()/1000) + Number(oneDaySeconds)
             },
 	        formatStartTime(time){
-		        let utcTime = Tools.conversionTimeToUTCByValidatorsLine(new Date(time).toISOString());
-		        return Number(new Date(utcTime).getTime()/1000)
+		        // let utcTime = Tools.conversionTimeToUTCByValidatorsLine(new Date(time).toISOString());
+		        return Number(new Date(time).getTime()/1000)
             },
 	        filterTxByStatus(e){
-				if(e === 'allStatus'){
-					this.txStatus = ''
-                }else {
-					this.txStatus = e
-				}
-            },
+		        if(e === 'allStatus'){
+			        this.txStatus = ''
+		        }else {
+			        this.txStatus = e
+		        }
+	        },
             getAllTxType(){
 			    Service.commonInterface({allTxType:{
 			    	    type: 'all'
@@ -249,7 +250,7 @@
 					                type: item.type,
 					                fee: this.formatFee(item.fee),
 					                signer: item.signer,
-					                status: item.status,
+					                status: Tools.firstWordUpperCase(item.status),
 					                timestamp: Tools.format2UTC(item.timestamp)
 				                }
 			                })
@@ -278,7 +279,7 @@
         width: 100%;
         position: fixed;
         z-index: 3;
-        background: #fff;
+        background: #F5F7FD;
         .all_type_list_title_wrap{
             max-width: 12.8rem;
             margin: 0 auto;
@@ -304,14 +305,24 @@
                         .tx_type_mobile_content{
                             display: flex;
                             align-items: center;
+                            .ivu-select-visible{
+                                /deep/ .ivu-select-selection{
+                                    border-color: var(--bgColor) !important;
+                                }
+
+                            }
                             .ivu-select{
                                 margin-right: 0.1rem;
                                 width: 1.3rem;
+                                /deep/ .ivu-select-selection:hover{
+                                    border-color: var(--bgColor) !important;
+                                }
                                 .ivu-select-item{
                                     text-indent: 0.1rem;
                                     font-size: 0.14rem;
                                     line-height: 0.18rem;
                                     padding: 0.07rem 0.1rem 0.07rem 0;
+                                    color: var(--bgColor);
                                 }
                             }
                             .joint_mark{
@@ -319,6 +330,16 @@
                             }
                             .ivu-date-picker{
                                 width: 1.3rem;
+                                /deep/ .ivu-date-picker-rel{
+                                    .ivu-input-wrapper{
+                                        .ivu-input:hover{
+                                            border-color: var(--bgColor) !important;
+                                        }
+                                        .ivu-input:focus{
+                                             border-color: var(--bgColor) !important;
+                                         }
+                                    }
+                                }
                             }
                             .reset_btn{
                                 background: var(--bgColor);
@@ -400,6 +421,11 @@
                                 .ivu-select{
                                     margin-right: 0;
                                     width: 1.6rem;
+                                }
+                                .ivu-select-visible{
+                                    .ivu-select-selection{
+                                        border-color: var(--bgColor);
+                                    }
                                 }
                                 .ivu-date-picker{
                                     width: 1.6rem;

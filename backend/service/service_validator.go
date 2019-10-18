@@ -385,7 +385,7 @@ func (service *ValidatorService) GetWithdrawAddrByValidatorAddr(valAddr string) 
 
 func (service *ValidatorService) GetDistributionRewardsByValidatorAddr(valAddr string) utils.CoinsAsStr {
 
-	rewardsCoins, err := lcd.GetDistributionRewardsByValidatorAcc(utils.Convert(conf.Get().Hub.Prefix.AccAddr, valAddr))
+	rewardsCoins, _, _, err := lcd.GetDistributionRewardsByValidatorAcc(utils.Convert(conf.Get().Hub.Prefix.AccAddr, valAddr))
 	if err != nil {
 		logger.Error("GetDistributionRewardsByValidatorAcc", logger.String("validator", valAddr), logger.String("err", err.Error()))
 	}
@@ -600,6 +600,9 @@ func (service *ValidatorService) QueryValidator(address string) vo.CandidatesInf
 	return result
 }
 func ComputeSelfBonded(tokens, shares, selfBond string) string {
+	if selfBond == "" {
+		return "0"
+	}
 	rate, err := utils.QuoByStr(tokens, shares)
 	if err != nil {
 		logger.Error("validator.Tokens / validator.DelegatorShares", logger.String("err", err.Error()))
@@ -631,6 +634,9 @@ func ComputeBondStake(tokens, shares, selfBond string) string {
 		return ""
 	}
 
+	if selfBond == "" {
+		return tokensAsRat.FloatString(18)
+	}
 	selfBondAsRat, ok := new(big.Rat).SetString(selfBond)
 	if !ok {
 		logger.Error("convert validator selfBond type (string -> big.Rat) err", logger.String("self bond str", selfBond))
@@ -872,12 +878,17 @@ func computeUptime(valPub string, height int64) float32 {
 	startHeight := utils.ParseIntWithDefault(result.StartHeight, 0)
 
 	var stats_blocks_window int64
-	signed_blocks_window, ok := utils.ParseInt(govSlashingParamMap["signed_blocks_window"].(string))
-	if !ok {
+	if _,ok := govSlashingParamMap["signed_blocks_window"]; ok {
+		signed_blocks_window, ok := utils.ParseInt(govSlashingParamMap["signed_blocks_window"].(string))
+		if !ok {
+			stats_blocks_window = height - startHeight + 1
+		} else {
+			stats_blocks_window = Min(signed_blocks_window, height-startHeight+1)
+		}
+	}else{
 		stats_blocks_window = height - startHeight + 1
-	} else {
-		stats_blocks_window = Min(signed_blocks_window, height-startHeight+1)
 	}
+
 
 	missedBlocksCounter := utils.ParseIntWithDefault(result.MissedBlocksCounter, 0)
 

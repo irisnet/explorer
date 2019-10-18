@@ -135,7 +135,7 @@ func (service *BlockService) QueryBlockInfo(height int64) vo.BlockInfo {
 	return result
 }
 
-func (service *BlockService) QueryList(page, size int) []vo.BlockForList {
+func (service *BlockService) QueryList(page, size int) vo.BlockForListRespond {
 
 	offset := 0
 
@@ -246,7 +246,7 @@ func (service *BlockService) QueryList(page, size int) []vo.BlockForList {
 	return []vo.BlockForList{}
 }
 
-func (service *BlockService) QueryRecent() []vo.BlockInfoVo {
+func (service *BlockService) QueryRecent() vo.BlockInfoVoRespond {
 	var result []vo.BlockInfoVo
 
 	blockList, err := document.Block{}.GetRecentBlockList()
@@ -286,5 +286,22 @@ func buildBlock(block document.Block) (result vo.BlockInfoVo) {
 	result.LastCommit = lastCommit
 	result.TotalTxs = block.Meta.Header.TotalTxs
 	result.LastBlockHash = block.Block.LastCommit.BlockID.Hash
+	return result
+}
+
+func (service *BlockService) QueryLatestHeight() (result vo.LatestHeightRespond) {
+	var block = lcd.BlockLatest()
+	var height, ok = utils.ParseInt(block.BlockMeta.Header.Height)
+	if !ok {
+		panic(types.CodeNotFound)
+	}
+
+	blockdb,err := document.Block{}.QueryLatestBlockFromDB()
+	if err != nil {
+		logger.Error("QueryLatestBlockFromDB have error",logger.String("err",err.Error()))
+	}
+
+	result.BlockHeightLcd = height
+	result.BlockHeightDB = blockdb.Height
 	return result
 }

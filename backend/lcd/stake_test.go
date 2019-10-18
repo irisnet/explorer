@@ -17,7 +17,7 @@ func TestGetRedelegationsByValidatorAddr(t *testing.T) {
 
 func TestGetDistributionRewardsByValidatorAcc(t *testing.T) {
 
-	rewards, err := GetDistributionRewardsByValidatorAcc("fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx")
+	rewards, _, _, err := GetDistributionRewardsByValidatorAcc("fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx")
 	if err != nil {
 		t.Error(err)
 	}
@@ -29,7 +29,7 @@ func TestGetDistributionRewardsByValidatorAcc(t *testing.T) {
 
 func TestGetJailedUntilAndMissedBlocksCountByConsensusPublicKey(t *testing.T) {
 
-	jailedUntil, missedBlockCount, err := GetJailedUntilAndMissedBlocksCountByConsensusPublicKey("fcp1zcjduepqcjgmderfahnlyrse563r2hcc3d4vjpafw03axzn3e87kfuqznjcsur8xrq")
+	jailedUntil, missedBlockCount, _, err := GetJailedUntilAndMissedBlocksCountByConsensusPublicKey("fcp1zcjduepqcjgmderfahnlyrse563r2hcc3d4vjpafw03axzn3e87kfuqznjcsur8xrq")
 
 	if err != nil {
 		t.Error(err)
@@ -100,6 +100,13 @@ func TestGetDelegationsByValidatorAddr(t *testing.T) {
 func TestGetUnbondingDelegationsByValidatorAddr(t *testing.T) {
 
 	unbondingDelegations := GetUnbondingDelegationsByValidatorAddr("fva1x292qss22x4rls6ygr7hhnp0et94vwwrdxhezx")
+	for k, v := range unbondingDelegations {
+		t.Logf("k: %v  v: %v \n", k, v)
+	}
+}
+
+func TestGetUnbondingDelegationsByDelegatorAddr(t *testing.T) {
+	unbondingDelegations := GetUnbondingDelegationsByDelegatorAddr("faa1eqvkfthtrr93g4p9qspp54w6dtjtrn279vcmpn")
 	for k, v := range unbondingDelegations {
 		t.Logf("k: %v  v: %v \n", k, v)
 	}

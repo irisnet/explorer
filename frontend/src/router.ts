@@ -17,6 +17,7 @@ import Parameters from "./components/ParametersPage.vue"
 import RichList from "./components/RichList.vue"
 import BlockList from "./components/BlockListPage.vue"
 import BondedTokens from "./components/BondedTokens.vue";
+import AddressInformation from "./components/AddressInfomation.vue"
 import TokenStats from "./components/TokenStats.vue";
 import TxList from "./components/TxListPage.vue"
 import NativeAssetPage from "./components/NativeAsset.vue"
@@ -68,7 +69,7 @@ const router = new Router({
     },
     {
       path: '/address/:param',
-      component: AddressPage,
+      component: AddressInformation,
     },
     {
       path: '/validators/:param',

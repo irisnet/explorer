@@ -1,12 +1,6 @@
 package service
 
 import (
-	"testing"
-
-	"github.com/irisnet/explorer/backend/vo"
-)
-
-import (
 	"encoding/json"
 	"fmt"
 	"os"
@@ -18,31 +12,58 @@ import (
 	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/txn"
+	"testing"
 )
 
 func TestQuery(t *testing.T) {
 
-	addrStr := "faa1k4xyra6qac7dwgngq8t6w8ra2qa9hj95mwth42"
+	addrStr := "faa174qyl02cupyqq77cqqtdl0frda6dl3rpjcrgnp"
 
 	res := new(AccountService).Query(addrStr)
 	t.Logf("account by addr(%v):  %v \n", addrStr, res)
+	bytesmsg, _ := json.Marshal(res)
+	t.Log(string(bytesmsg))
 
-	valAddStr := "fva1xtstdchjyzkddaptgyug62g23cta7eyzq49svq"
+	valAddStr := "fva186qhtc62cf6ejlt3erw6zk28mgw8ne7grhmyfn"
 
 	res = new(AccountService).Query(valAddStr)
 	t.Logf("account by addr(%v):  %v \n", valAddStr, res)
 
 }
 
+func TestAccountService_QueryDelegations(t *testing.T) {
+	addrStr := "faa15n5p9g0tnamcey4gkxaw2azjg8px6ahg7phdup"
+
+	res := new(AccountService).QueryDelegations(addrStr)
+	bytesmsg, _ := json.Marshal(res)
+	t.Log(string(bytesmsg))
+}
+
+func TestAccountService_QueryUnbondingDelegations(t *testing.T) {
+	addrStr := "faa15n5p9g0tnamcey4gkxaw2azjg8px6ahg7phdup"
+
+	res := new(AccountService).QueryUnbondingDelegations(addrStr)
+	bytesmsg, _ := json.Marshal(res)
+	t.Log(string(bytesmsg))
+}
+
+func TestAccountService_QueryRewards(t *testing.T) {
+	addrStr := "faa186qhtc62cf6ejlt3erw6zk28mgw8ne7gkx3t55"
+
+	res := new(AccountService).QueryRewards(addrStr)
+	bytesmsg, _ := json.Marshal(res)
+	t.Log(string(bytesmsg))
+}
+
 func TestQueryRichList(t *testing.T) {
 
 	richList := new(AccountService).QueryRichList()
 
-	if modelVList, ok := richList.([]vo.AccountInfo); ok {
-		for k, v := range modelVList {
+	//if modelVList, ok := richList.([]vo.AccountInfo); ok {
+		for k, v := range richList {
 			t.Logf("k: %v  v: %v \n", k, v)
 		}
-	}
+	//}
 }
 
 var genesis GenesisDoc

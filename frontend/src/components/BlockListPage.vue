@@ -16,7 +16,7 @@
                         <m-pagination
                             :ascending="false"
                             :page-size="pageSize"
-                            :total="currentHeight"
+                            :total="currentHeightByDb"
                             :page="currentPageNum"
                             :page-change="pageChange"
                             :range="range"
@@ -34,7 +34,7 @@
                     <m-pagination
                         :ascending="false"
                         :page-size="pageSize"
-                        :total="currentHeight"
+                        :total="currentHeightByDb"
                         :page="currentPageNum"
                         :page-change="pageChange"
                         :range="range"
@@ -75,7 +75,10 @@ export default {
             flShowLoading: false,
             range: [],
             currentPageNumCache: 0,
-            isoMunted: false
+            isoMunted: false,
+	        currentHeightByDb:sessionStorage.getItem("blockListdbTotal")
+		        ? Number(sessionStorage.getItem("blockListdbTotal"))
+		        : 0,
         };
     },
     watch: {
@@ -116,11 +119,16 @@ export default {
             Service.commonInterface({ blockListLatestheight: {} }, data => {
                 try {
                     this.isoMunted = true;
-                    this.currentHeight = data.data || 0;
+                    this.currentHeight = data.block_height_lcd || 0;
+                    this.currentHeightByDb = data.block_height_db || 0;
                     sessionStorage.setItem(
                         "blockListTotal",
                         this.currentHeight
                     );
+	                sessionStorage.setItem(
+		                "blockListdbTotal",
+		                this.currentHeightByDb
+	                );
                 } catch (e) {}
             });
         },
@@ -271,7 +279,7 @@ export default {
         position: fixed;
         width: 100%;
         max-width: 12.8rem;
-        background-color: #ffffff;
+        background-color: #F5F7FD;
     }
     .block_list_table_container {
         padding-top: 0.7rem;

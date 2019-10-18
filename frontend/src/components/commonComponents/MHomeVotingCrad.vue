@@ -304,17 +304,17 @@
                     margin-right: 0.1rem;
                 }
                 .proposal_title{
-                    color: #0580D3;
+                    color: var(--bgColor);
                 }
             }
             .view_all_content{
-                color: #0580D3;
+                color: var(--bgColor);
                 span{
                     line-height: 1;
-                    border-bottom: 0.01rem solid #0580D3;
+                    border-bottom: 0.01rem solid var(--bgColor);
                     a{
                         font-size: 0.14rem;
-                        color: #0580D3 !important;
+                        color: var(--bgColor) !important;
                     }
                 }
             }

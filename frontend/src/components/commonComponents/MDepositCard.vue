@@ -306,17 +306,17 @@
                     margin-right: 0.1rem;
                 }
                 .proposal_title{
-                    color: #0580D3;
+                    color: var(--bgColor);
                 }
             }
             .view_all_content{
-                color: #0580D3;
+                color: var(--bgColor);
                 span{
                     line-height: 1;
-                    border-bottom: 0.01rem solid #0580D3;
+                    border-bottom: 0.01rem solid var(--bgColor);
                     a{
                         font-size: 0.14rem;
-                        color: #0580D3 !important;
+                        color: var(--bgColor) !important;
                     }
                 }
             }
@@ -406,7 +406,7 @@
                         z-index: 1;
                     }
                     .diff_blue{
-                        background: #0580D3 !important;
+                        background: var(--bgColor) !important;
                     }
                     .diff_burn_red{
                         background: #FFAAA6 !important;
@@ -430,11 +430,11 @@
                         z-index: 1;
                     }
                     .hideBlue{
-                        background: #0580D3;
+                        background: var(--bgColor);
                         z-index: 1;
                     }
                     .show_max_blue{
-                        background: #0580D3;
+                        background: var(--bgColor);
                     }
                     .total_deposit_bar_content{
                         height: 0.12rem;
@@ -455,7 +455,7 @@
                             width: 100%;
                             white-space: nowrap;
                             font-size: 0.12rem;
-                            color: #0580D3;
+                            color: var(--bgColor);
                             &::after{
                                 width: 0;
                                 height: 0;
@@ -463,7 +463,7 @@
                                 content: "";
                                 display: block;
                                 position: absolute;
-                                border-bottom-color: #0580D3;
+                                border-bottom-color: var(--bgColor);
                                 left: 24%;
                                 top: -0.14rem;
                             }
