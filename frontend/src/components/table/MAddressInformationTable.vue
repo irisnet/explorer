@@ -18,8 +18,9 @@
             </template>
             <template slot-scope="{ row }" slot="signer">
                 <div class="common_hover_address_parent" v-if="row.signer">
-                    <router-link :to="addressRoute(row.signer)" class="link_style common_font_style">{{formatAddress(row.signer)}}
+                    <router-link v-if="$route.params.param !== row.signer" :to="addressRoute(row.signer)" class="link_style common_font_style">{{formatAddress(row.signer)}}
                     </router-link>
+                    <span v-if="$route.params.param === row.signer">{{formatAddress(row.signer)}}</span>
                 </div>
             </template>
             <template slot-scope="{ row }" slot="token">
@@ -212,6 +213,7 @@
         },
 		mounted() {
 			this.fields = this[this.listName] || [];
+			console.log(this.$route.params.param,"?????")
 		},
         methods:{
 	        formatAddress(address) {
