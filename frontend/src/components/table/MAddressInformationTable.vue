@@ -213,7 +213,6 @@
         },
 		mounted() {
 			this.fields = this[this.listName] || [];
-			console.log(this.$route.params.param,"?????")
 		},
         methods:{
 	        formatAddress(address) {
