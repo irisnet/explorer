@@ -523,7 +523,7 @@
 							        txType: item.type,
 							        fee: this.formatFee(item.fee),
 							        signer: item.signer,
-							        status: item.status,
+							        status: Tools.firstWordUpperCase(item.status),
 							        timestamp: Tools.format2UTC(item.timestamp),
 						        }
 					        })
