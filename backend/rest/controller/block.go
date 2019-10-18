@@ -4,7 +4,6 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/vo"
@@ -41,17 +40,12 @@ func RegisterBlock(r *mux.Router) error {
 // @Tags block
 // @Accept  json
 // @Produce  json
-// @Success 200 {object} int64	"success"
+// @Success 200 {object} vo.LatestHeightRespond	"success"
 // @Router /api/block/latestheight [get]
 func registerQueryBlockLatestHeight(r *mux.Router) error {
 
 	doApi(r, types.UrlRegisterQueryBlockLatestHeight, "GET", func(request vo.IrisReq) interface{} {
-		var block = lcd.BlockLatest()
-		var height, ok = utils.ParseInt(block.BlockMeta.Header.Height)
-		if !ok {
-			panic(types.CodeNotFound)
-		}
-		return height
+		return block.QueryLatestHeight()
 	})
 
 	return nil

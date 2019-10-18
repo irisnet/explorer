@@ -439,7 +439,7 @@
                         "description": "success",
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/int64"
+                            "$ref": "#/definitions/vo.LatestHeightRespond"
                         }
                     }
                 }
@@ -2568,7 +2568,7 @@
                         "$ref": "#/definitions/utils.Coin"
                     },
                     "height": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "moniker": {
                         "type": "string"
@@ -2590,7 +2590,7 @@
                     "$ref": "#/definitions/utils.Coin"
                 },
                 "height": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "moniker": {
                     "type": "string"
@@ -2658,7 +2658,7 @@
                         "type": "string"
                     },
                     "height": {
-                        "type": "string"
+                        "type": "integer"
                     },
                     "moniker": {
                         "type": "string"
@@ -2680,7 +2680,7 @@
                     "type": "string"
                 },
                 "height": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "moniker": {
                     "type": "string"
@@ -3326,7 +3326,7 @@
                     "type": "string"
                 },
                 "block": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "self_shares": {
                     "type": "string"
@@ -3437,6 +3437,17 @@
                 },
                 "veto_threshold": {
                     "type": "string"
+                }
+            }
+        },
+        "vo.LatestHeightRespond": {
+            "type": "object",
+            "properties": {
+                "block_height_db": {
+                    "type": "integer"
+                },
+                "block_height_lcd": {
+                    "type": "integer"
                 }
             }
         },
@@ -3993,7 +4004,7 @@
                     "type": "string"
                 },
                 "block": {
-                    "type": "string"
+                    "type": "integer"
                 },
                 "until": {
                     "type": "string"

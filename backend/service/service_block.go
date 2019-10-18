@@ -288,3 +288,20 @@ func buildBlock(block document.Block) (result vo.BlockInfoVo) {
 	result.LastBlockHash = block.Block.LastCommit.BlockID.Hash
 	return result
 }
+
+func (service *BlockService) QueryLatestHeight() (result vo.LatestHeightRespond) {
+	var block = lcd.BlockLatest()
+	var height, ok = utils.ParseInt(block.BlockMeta.Header.Height)
+	if !ok {
+		panic(types.CodeNotFound)
+	}
+
+	blockdb,err := document.Block{}.QueryLatestBlockFromDB()
+	if err != nil {
+		logger.Error("QueryLatestBlockFromDB have error",logger.String("err",err.Error()))
+	}
+
+	result.BlockHeightLcd = height
+	result.BlockHeightDB = blockdb.Height
+	return result
+}
