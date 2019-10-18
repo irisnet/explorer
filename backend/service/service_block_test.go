@@ -30,3 +30,8 @@ func TestQueryRecent(t *testing.T) {
 		t.Logf("k: %v  v: %v \n", k, v)
 	}
 }
+
+func TestBlockService_QueryLatestHeight(t *testing.T) {
+	block := new(BlockService).QueryLatestHeight()
+	t.Log(block)
+}

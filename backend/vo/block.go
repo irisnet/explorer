@@ -62,6 +62,11 @@ func (b BlockInfoVo) String() string {
 		`, b.Height, b.Hash, b.Time, b.NumTxs, b.Validators, b.LastCommit, b.TotalTxs, b.LastBlockHash)
 }
 
+type LatestHeightRespond struct {
+	BlockHeightLcd  int64 `json:"block_height_lcd"`
+	BlockHeightDB  int64 `json:"block_height_db"`
+}
+
 type ValInfo struct {
 	Address     string `json:"address"`
 	VotingPower int64  `json:"voting_power"`

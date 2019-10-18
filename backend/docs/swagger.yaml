@@ -200,7 +200,7 @@ definitions:
           $ref: '#/definitions/utils.Coin'
           type: object
         height:
-          type: string
+          type: integer
         moniker:
           type: string
         shares:
@@ -215,7 +215,7 @@ definitions:
         $ref: '#/definitions/utils.Coin'
         type: object
       height:
-        type: string
+        type: integer
       moniker:
         type: string
       shares:
@@ -260,7 +260,7 @@ definitions:
         end_time:
           type: string
         height:
-          type: string
+          type: integer
         moniker:
           type: string
       type: object
@@ -275,7 +275,7 @@ definitions:
       end_time:
         type: string
       height:
-        type: string
+        type: integer
       moniker:
         type: string
     type: object
@@ -703,7 +703,7 @@ definitions:
       amount:
         type: string
       block:
-        type: string
+        type: integer
       self_shares:
         type: string
       total_shares:
@@ -776,6 +776,13 @@ definitions:
         type: string
       veto_threshold:
         type: string
+    type: object
+  vo.LatestHeightRespond:
+    properties:
+      block_height_db:
+        type: integer
+      block_height_lcd:
+        type: integer
     type: object
   vo.Level:
     properties:
@@ -1146,7 +1153,7 @@ definitions:
       amount:
         type: string
       block:
-        type: string
+        type: integer
       until:
         type: string
     type: object
@@ -1678,7 +1685,7 @@ paths:
         "200":
           description: success
           schema:
-            $ref: '#/definitions/int64'
+            $ref: '#/definitions/vo.LatestHeightRespond'
             type: object
       summary: latest
       tags:

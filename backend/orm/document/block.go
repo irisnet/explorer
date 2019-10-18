@@ -6,6 +6,7 @@ import (
 
 	"github.com/irisnet/explorer/backend/orm"
 	"gopkg.in/mgo.v2/bson"
+	"github.com/irisnet/explorer/backend/logger"
 )
 
 const (
@@ -105,6 +106,30 @@ func (_ Block) QueryOneBlockOrderByHeightAsc() (Block, error) {
 
 	if len(blocks) == 1 {
 		return blocks[0], err
+	}
+
+	return Block{}, err
+}
+
+func (_ Block) QueryLatestBlockFromDB() (Block, error) {
+
+	var block Block
+	var selector = bson.M{"height": 1}
+
+	sort := desc(Block_Field_Height)
+	var query = orm.NewQuery()
+	defer query.Release()
+	query.SetCollection(CollectionNmBlock).
+		SetCondition(nil).
+		SetSelector(selector).
+		SetSort(sort).
+		SetResult(&block)
+
+	err := query.Exec()
+	if err == nil {
+		return block,nil
+	}else{
+		logger.Error("query db error",logger.String("err",err.Error()))
 	}
 
 	return Block{}, err
