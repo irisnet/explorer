@@ -61,17 +61,17 @@ func (service CommonService) QueryText(text string) vo.ResultVo {
 	return result
 }
 
-func (service CommonService) GetGenesis() lcd.GenesisVo {
-	if len(service.genesis.Result.Genesis.ChainID) == 0 {
-		result, err := lcd.Genesis()
-		if err != nil {
-			logger.Error("lcd Genesis have error", logger.String("err", err.Error()))
-		} else {
-			service.genesis = result
-		}
-	}
-	return service.genesis
-}
+//func (service CommonService) GetGenesis() lcd.GenesisVo {
+//	if len(service.genesis.Result.Genesis.ChainID) == 0 {
+//		result, err := lcd.Genesis()
+//		if err != nil {
+//			logger.Error("lcd Genesis have error", logger.String("err", err.Error()))
+//		} else {
+//			service.genesis = result
+//		}
+//	}
+//	return service.genesis
+//}
 
 func (service CommonService) GetConfig() []document.Config {
 

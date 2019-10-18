@@ -128,11 +128,14 @@ func (service *AccountService) QueryRichList() (vo.AccountsInfoRespond) {
 }
 
 func isProfiler(address string) bool {
-	genesis := commonService.GetGenesis()
-	for _, profiler := range genesis.Result.Genesis.AppState.Guardian.Profilers {
-		if profiler.Address == address {
-			return true
-		}
+	//genesis := commonService.GetGenesis()
+	//for _, profiler := range genesis.Result.Genesis.AppState.Guardian.Profilers {
+	//	if profiler.Address == address {
+	//		return true
+	//	}
+	//}
+	if _, ok := types.ProfilerAddrList[address]; ok {
+		return true
 	}
 	return false
 }
