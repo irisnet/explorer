@@ -3,7 +3,7 @@
         <m-table :columns="fields" :data="items" :width="width">
             <template slot-scope="{ row }"
                       slot="address">
-                <router-link  v-if="row.moniker" class="address_link" :to="`/validators/${row.address}`">{{formatAddress(row.moniker)}}</router-link>
+                <router-link v-if="row.moniker" class="address_link" :to="`/validators/${row.address}`">{{row.moniker}}</router-link>
                 <router-link v-if="!row.moniker" class="address_link" :to="`/validators/${row.address}`">{{formatAddress(row.address)}}</router-link>
             </template>
             <template slot-scope="{ row }" slot="txHash">
@@ -120,7 +120,7 @@
 					{
 						title: "Address",
 						slot:'address',
-
+						tooltip: true
 					},
 					{
 						title: "Amount",
@@ -141,6 +141,7 @@
 					{
 						title: "Address",
                         slot:'address',
+						tooltip: true
 					},
 					{
 						title: "Amount",
