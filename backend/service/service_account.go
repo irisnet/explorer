@@ -12,6 +12,7 @@ import (
 	"math/big"
 	"strings"
 	"sort"
+	"math"
 )
 
 type AccountService struct {
@@ -52,7 +53,7 @@ func (service *AccountService) Query(address string) (result vo.AccountVo) {
 				denom := strings.Split(val.Denom, types.AssetMinDenom)[0]
 				if dem, ok := decimalMap[denom]; ok && dem > 0 {
 					amount[i].Denom = denom
-					amount[i].Amount = amount[i].Amount / float64(dem)
+					amount[i].Amount = amount[i].Amount / float64(math.Pow10(dem))
 				}
 
 			}
