@@ -168,8 +168,8 @@ var (
 	RandList  = []string{TxTypeRequestRand}
 
 	ProfilerAddrList = map[string]string{
-		"iaa1v6c3sa76s3grss3xu64tvn9nd556jlcw6azc85": "Genesis Trustee 1",
-		"iaa1us4dhfyq66hzeu2tu06tvvr90cy33vg3yn2uld": "Genesis Trustee 2",
+		"iaa1v6c3sa76s3grss3xu64tvn9nd556jlcw6azc85": "Genesis Profiler 1",
+		"iaa1us4dhfyq66hzeu2tu06tvvr90cy33vg3yn2uld": "Genesis Profiler 2",
 	}
 )
 
