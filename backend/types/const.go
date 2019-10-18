@@ -166,6 +166,11 @@ var (
 	//TxTypeExcludeGov = append(append(DeclarationList, StakeList...), BankList...)
 	AssetList = []string{TxTypeIssueToken, TxTypeEditToken, TxTypeMintToken, TxTypeTransferTokenOwner, TxTypeCreateGateway, TxTypeEditGateway, TxTypeTransferGatewayOwner}
 	RandList  = []string{TxTypeRequestRand}
+
+	ProfilerAddrList = map[string]string{
+		"iaa1v6c3sa76s3grss3xu64tvn9nd556jlcw6azc85": "Genesis Profiler 1",
+		"iaa1us4dhfyq66hzeu2tu06tvvr90cy33vg3yn2uld": "Genesis Profiler 2",
+	}
 )
 
 func IsDeclarationType(typ string) bool {

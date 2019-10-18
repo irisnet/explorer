@@ -94,7 +94,7 @@ func TestTxService_checkTags(t *testing.T) {
 }
 
 func TestTxService_QueryBaseList(t *testing.T) {
-	res := new(TxService).QueryBaseList(bson.M{"from":"faa174qyl02cupyqq77cqqtdl0frda6dl3rpjcrgnp"},1,10,false)
+	res := new(TxService).QueryBaseList(bson.M{"from": "faa174qyl02cupyqq77cqqtdl0frda6dl3rpjcrgnp"}, 1, 10, false)
 	bytestr, _ := json.Marshal(res)
 	t.Logf("items: %v \n", string(bytestr))
 }

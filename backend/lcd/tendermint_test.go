@@ -14,14 +14,14 @@ func TestNodeInfo(t *testing.T) {
 	}
 }
 
-func TestGenesis(t *testing.T) {
-	if res, err := Genesis(); err != nil {
-		t.Fatal(err)
-	} else {
-		resBytes, _ := json.MarshalIndent(res, "", "\t")
-		t.Log(string(resBytes))
-	}
-}
+//func TestGenesis(t *testing.T) {
+//	if res, err := Genesis(); err != nil {
+//		t.Fatal(err)
+//	} else {
+//		resBytes, _ := json.MarshalIndent(res, "", "\t")
+//		t.Log(string(resBytes))
+//	}
+//}
 
 func TestGetGenesisGovModuleParamMap(t *testing.T) {
 
