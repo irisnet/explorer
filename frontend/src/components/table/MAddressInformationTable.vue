@@ -3,7 +3,7 @@
         <m-table :columns="fields" :data="items" :width="width">
             <template slot-scope="{ row }"
                       slot="address">
-                <router-link  v-if="row.moniker" class="address_link" :to="`/validators/${row.address}`">{{formatAddress(row.moniker)}}</router-link>
+                <router-link v-if="row.moniker" class="address_link" :to="`/validators/${row.address}`">{{row.moniker}}</router-link>
                 <router-link v-if="!row.moniker" class="address_link" :to="`/validators/${row.address}`">{{formatAddress(row.address)}}</router-link>
             </template>
             <template slot-scope="{ row }" slot="txHash">
@@ -18,8 +18,9 @@
             </template>
             <template slot-scope="{ row }" slot="signer">
                 <div class="common_hover_address_parent" v-if="row.signer">
-                    <router-link :to="addressRoute(row.signer)" class="link_style common_font_style">{{formatAddress(row.signer)}}
+                    <router-link v-if="$route.params.param !== row.signer" :to="addressRoute(row.signer)" class="link_style common_font_style">{{formatAddress(row.signer)}}
                     </router-link>
+                    <span v-if="$route.params.param === row.signer">{{formatAddress(row.signer)}}</span>
                 </div>
             </template>
             <template slot-scope="{ row }" slot="token">
@@ -120,7 +121,7 @@
 					{
 						title: "Address",
 						slot:'address',
-
+						tooltip: true
 					},
 					{
 						title: "Amount",
@@ -141,6 +142,7 @@
 					{
 						title: "Address",
                         slot:'address',
+						tooltip: true
 					},
 					{
 						title: "Amount",

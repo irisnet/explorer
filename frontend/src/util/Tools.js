@@ -408,10 +408,12 @@ export default class Tools{
 							tokenId = item.amount[0].tokenId = item.amount[0].denom.toLocaleUpperCase();
 							if(item.type === 'BeginUnbonding' || item.type === 'BeginRedelegate'){
 								if(item.status === 'success'){
-									let tokenValue = Tools.formatAccountCoinsAmount(item.tags.balance);
-									let tokenStr = String(Tools.numberMoveDecimal(tokenValue[0],18));
-									item.amount[0].formatAmount =  Tools.formatStringToFixedNumber(tokenStr,2);
-									Amount = item.amount.map(listItem => `${listItem.formatAmount} IRIS`).join(',');
+									if(item.tags.balance){
+										let tokenValue = Tools.formatAccountCoinsAmount(item.tags.balance);
+										let tokenStr = String(Tools.numberMoveDecimal(tokenValue[0],18));
+										item.amount[0].formatAmount =  Tools.formatStringToFixedNumber(tokenStr,2);
+										Amount = item.amount.map(listItem => `${listItem.formatAmount} IRIS`).join(',');
+									}
 								}
 							}
 						}
