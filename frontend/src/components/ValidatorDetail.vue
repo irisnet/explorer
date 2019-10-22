@@ -772,6 +772,7 @@ export default {
                                 it.shares = `${selfShares} (${this.formatPerNumber(
                                     (Number(it.self_shares) / Number(it.total_shares)) * 100
                                 )}%)`;
+	                            it.Block = it.block;
                             }
                             this.txTableList.delegations.items = data.items;
                         } else {
@@ -835,6 +836,7 @@ export default {
                                     : it.amount;
                                 it.To = it.to;
                                 it.toMoniker = it.to_moniker;
+                                it.Block = it.block;
                             }
                             this.txTableList.redelegations.items = data.items;
                         } else {
