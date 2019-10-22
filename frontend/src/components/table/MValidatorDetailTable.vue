@@ -12,8 +12,6 @@
             <template slot="Block" slot-scope="{ row }">
                 <router-link v-if="row.Block != 0" :to="`/block/${row.Block}`" class="link_style">{{row.Block}}</router-link>
                 <span v-if="row.Block == 0">{{row.Block}}</span>
-                <router-link v-if="row.block != 0" :to="`/block/${row.block}`" class="link_style">{{row.block}}</router-link>
-                <span v-if="row.block == 0">{{row.block}}</span>
             </template>
             <template slot="From" slot-scope="{ row }">
                 <span v-if="(/^[1-9]\d*$/).test(row.From)" class="skip_route">
