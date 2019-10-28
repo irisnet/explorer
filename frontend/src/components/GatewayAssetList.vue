@@ -1,26 +1,27 @@
 <template>
-    <div class="gateway_asset_list_container">
-        <div class="gateway_asset_list_header_content">
-            <div class="gateway_asset_list_header_wrap">
-                <h2 class="gateway_header_title_content">
-                    Gateway Assets
-                </h2>
+    <div>
+        <div class="gateway_asset_list_container">
+            <div class="gateway_asset_list_header_content">
+                <div class="gateway_asset_list_header_wrap">
+                    <h2 class="gateway_header_title_content">
+                        Gateway Assets
+                    </h2>
+                </div>
+            </div>
+            <div class="gateway_asset_list_content">
+                <div class="gateway_asset_list_wrap">
+                    <m-asset-list-table :showNoData="showNoData" :items="gatewayAssetList" name="gatewayAssetList"></m-asset-list-table>
+                </div>
+                <div class="no_data_img_content" v-show="gatewayAssetList.length === 0 && !showLoading">
+                    <img class="no_data_img" src="../assets/no_data.svg">
+                </div>
             </div>
         </div>
-        <div class="gateway_asset_list_content">
-            <div class="gateway_asset_list_wrap">
-                <m-asset-list-table :showNoData="showNoData" :items="gatewayAssetList" name="gatewayAssetList"></m-asset-list-table>
-            </div>
-        </div>
-        <div v-show="gatewayAssetList.length === 0 && !showLoading">
-            <img class="no_data_img" src="../assets/no_data.svg">
-        </div>
-        <spin-component :show-loading="showLoading"></spin-component>
     </div>
 </template>
 
 <script>
-	import SpinComponent from "./commonComponents/SpinComponent";
+	import SpinComponent from "../loadingComponent/SpinComponent";
 	import Service from "../service"
 	import Tools from "../util/Tools"
 	import MAssetListTable from "./table/MAssetListTable";
@@ -31,7 +32,6 @@
 			return {
 				gatewayAssetList:[],
 				showNoData:false,
-				showLoading: false
             }
         },
         mounted(){
@@ -39,11 +39,9 @@
         },
         methods:{
 			getGatewayAssetList(){
-				this.showLoading = true;
 				Service.commonInterface({gatewayAssetList:{}},(res) => {
                     try {
                     	if(res){
-		                    this.showLoading = false;
                     		this.gatewayAssetList = res.data.map(item => {
                     			return {
 				                    Gateway: item.gateway,
@@ -58,10 +56,8 @@
                                 }
                             })
                         }else {
-		                    this.showLoading = false;
                         }
                     }catch (e) {
-	                    this.showLoading = false;
                         console.error(e)
                     }
                 })
@@ -81,13 +77,9 @@
 <style scoped lang="scss">
     .gateway_asset_list_container{
         width: 100%;
-        position: relative;
-        .no_data_img{
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%,-50%);
-        }
+        height: 100%;
+        display: flex;
+        flex-direction: column;
         .gateway_asset_list_header_content{
             width: 100%;
             .gateway_asset_list_header_wrap{
@@ -101,10 +93,17 @@
                     line-height: 0.7rem;
                 }
             }
+            .no_data_img{
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%,-50%);
+            }
         }
         .gateway_asset_list_content{
             max-width: 12.8rem;
             margin: 0 auto;
+            flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;

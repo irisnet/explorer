@@ -6,7 +6,7 @@
 <template>
   <div class="spin-component" v-show="showLoading">
     <div class="spin-content">
-      <img style="with:48px;height: 48px;" src="../../assets/loading.gif">
+      <img style="with:48px;height: 48px;" src="../assets/loading.gif">
       <p>Loading,please wait...</p>
     </div>
   </div>
@@ -43,7 +43,7 @@
       }
     },
     props: ['showLoading'],
-    //父组件传一个变量，从这个时候自组件开始延时1.5s显示loading框，如果在1.5s内返回了数据，就清除延时器
+    //父组件传一个变量，从这个时候自组件开始延时1.5s 显示loading框，如果在1.5s内返回了数据，就清除延时器
     mounted() {
     //   this.func = setTimeout(this.timeoutShowLoading.bind(this), 1000);
 
@@ -57,7 +57,7 @@
 </script>
 
 <style scoped lang="scss">
-  @import '../../style/mixin.scss';
+  @import '../style/mixin';
 
   .spin-component {
     position: absolute;

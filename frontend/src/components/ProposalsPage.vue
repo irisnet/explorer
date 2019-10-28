@@ -110,13 +110,12 @@
                 </m-pagination>
             </div>
         </div>
-        <spin-component :showLoading="showLoading"/>
     </div>
 </template>
 
 <script>
 	import Tools from '../util/Tools';
-	import SpinComponent from './commonComponents/SpinComponent';
+	import SpinComponent from '../loadingComponent/SpinComponent';
 	import Service from "../service";
 	import Constant from "../constant/Constant"
 	import MProposalsCard from './commonComponents/MProposalsCard';
@@ -151,7 +150,6 @@
 				count: 0,
 				items: [],
 				showNoData:false,
-				showLoading:false,
 				innerWidth : window.innerWidth,
 				tableMinWidth:"",
 				votingPeriodDatas: [],
@@ -422,7 +420,6 @@
 				});
 			},
 			getDataList() {
-				this.showLoading = true;
 				Service.commonInterface({proposalList:{
 						pageNumber: this.currentPageNum,
 						pageSize: this.pageSize
@@ -481,12 +478,10 @@
 							this.items = [];
 							this.showNoData = true;
 						}
-						this.showLoading = false;
 					}catch (e) {
 						console.error(e);
 						this.items = [];
 						this.showNoData = true;
-						this.showLoading = false;
 					}
 				})
 			}

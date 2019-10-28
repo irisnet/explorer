@@ -2,7 +2,9 @@
     <div>
         <m-table v-table-head-fixed class="tx_container_table override_mtable" :columns="fields" :data="items">
             <template slot-scope="{ row }" slot="Block">
-                    <router-link :to="`/block/${row.Block}`" class="link_style">{{row.Block}}</router-link>
+                <span  class="skip_route">
+                   <router-link :to="`/block/${row.Block}`" class="link_style">{{row.Block}}</router-link>
+                </span>
             </template>
             <template slot-scope="{ row }" slot="Proposal_ID">
                 <router-link v-if="row.Proposal_ID !== '--' && row.Proposal_Title && row.Proposal_Title !== '--'" :to="`/ProposalsDetail/${row.Proposal_ID}`" class="link_style">{{row.Proposal_ID}}</router-link>
@@ -15,7 +17,7 @@
                 <span v-if="row.Proposal_Title && row.Proposal_Title === '--'">--</span>
             </template>
             <template slot-scope="{ row }" slot="Tx_Hash">
-                <div class="common_hover_parent" v-if="row.Tx_Hash">
+                <div class="skip_route" v-if="row.Tx_Hash">
                     <router-link :to="`/tx?txHash=${row.Tx_Hash}`" class="link_style common_font_style">{{formatTxHash(row.Tx_Hash)}}
                     </router-link>
                 </div>
@@ -27,12 +29,11 @@
                     </span>
                     <div class="name_address" v-if="!(/^[0-9]\d*$/).test(row.From) && row.From !== '--'">
                         <div>
-                            <span class="remove_default_style">
-                                <router-link :to="addressRoute(row.From)" class="link_style justify common_font_style">{{formatMoniker(row.fromMoniker) || formatAddress(row.From)}}
+                            <span class="remove_default_style skip_route">
+                                <router-link :to="addressRoute(row.From)" class="link_style  justify common_font_style">{{formatMoniker(row.fromMoniker) || formatAddress(row.From)}}
                                 </router-link>
                             </span>
                         </div>
-                        <span v-if="!row.fromMoniker" class="address">{{row.From}}</span>
                     </div>
                     <span class="no_skip" v-show="(/^[0]\d*$/).test(row.From) || row.From === '--'">--</span>
                 </div>
@@ -44,30 +45,29 @@
                     </span>
                     <div class="name_address" v-if="!(/^[0-9]\d*$/).test(row.To) && row.To !== '--'">
                         <div>
-                            <span class="remove_default_style">
+                            <span class="remove_default_style skip_route">
                                 <router-link :to="addressRoute(row.To)" class="link_style justify common_font_style">{{formatMoniker(row.toMoniker) || formatAddress(row.To)}}
                                 </router-link>
                             </span>
                         </div>
-                        <span v-if="!row.toMoniker" class="address">{{row.To}}</span>
                     </div>
                     <span class="no_skip" v-show="(/^[0]\d*$/).test(row.To) || row.To === '--'">--</span>
                 </div>
             </template>
             <template slot-scope="{ row }" slot="Tx_Signer">
-                <div class="common_hover_address_parent" v-if="row.Tx_Signer">
+                <div class="common_hover_address_parent skip_route" v-if="row.Tx_Signer">
                     <router-link :to="addressRoute(row.Tx_Signer)" class="link_style common_font_style">{{formatAddress(row.Tx_Signer)}}
                     </router-link>
                 </div>
             </template>
             <template slot-scope="{ row }" slot="OperatorAddr">
-                <div class="common_hover_address_parent">
+                <div class="common_hover_address_parent skip_route">
                     <router-link :to="addressRoute(row.OperatorAddr)" class="link_style common_font_style">{{formatAddress(row.OperatorAddr)}}
                     </router-link>
                 </div>
             </template>
             <template slot-scope="{ row }" slot="Moniker">
-                <div class="common_hover_address_parent">
+                <div class="common_hover_address_parent skip_route">
                     <router-link v-if="row.Moniker && row.Moniker !== '--'" :to="addressRoute(row.OperatorAddr)" class="link_style">{{row.Moniker}}</router-link>
                 </div>
                 <span v-if="row.Moniker && row.Moniker === '--'">--</span>
@@ -396,6 +396,7 @@
         a{
             display: inline-block;
             position: relative;
+            color: var(--bgColor) !important;
         }
     }
     .common_hover_address_parent{
@@ -404,6 +405,6 @@
         }
     }
     .common_font_style{
-    font-family: Consolas;
-}
+        font-family: Consolas,"Ayuthaya";
+    }
 </style>

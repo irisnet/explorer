@@ -228,7 +228,7 @@
 	import Tools from '../util/Tools';
 	import Service from "../service";
 	import constant from '../constant/Constant';
-	import lang from "../lang/index";
+	import lang from "../lang";
 	import skinStyle from '../skinStyle'
 	export default {
 		name: 'app-header',
@@ -327,7 +327,7 @@
 			}
 		},
 		mounted () {
-			document.getElementById('router_wrap').addEventListener('click', this.hideFeature);
+			// document.getElementById('router_wrap').addEventListener('click', this.hideFeature);
 			this.listenRouteForChangeActiveButton();
 			window.addEventListener('resize', this.onresize);
 			this.getConfig();
@@ -618,6 +618,8 @@
 			getConfig () {
 				Service.commonInterface({headerConfig:{}},(res) => {
 					try {
+						res.cur_env = 'testnet';
+						res.chain_id = 'nyancat-4';
 						this.$store.commit('currentSkinStyle',`${res.cur_env}${res.chain_id}`);
 						sessionStorage.setItem('skinCurrentEnv',JSON.stringify({currentEnv:res.cur_env,currentChainID:res.chain_id}))
 						this.flShowLogo = true;

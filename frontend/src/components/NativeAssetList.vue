@@ -15,12 +15,11 @@
                 <img class="no_data_img" src="../assets/no_data.svg">
             </div>
         </div>
-        <spin-component :show-loading="showLoading"></spin-component>
     </div>
 </template>
 
 <script>
-	import SpinComponent from "./commonComponents/SpinComponent";
+	import SpinComponent from "../loadingComponent/SpinComponent";
 	import Service from "../service"
 	import Tools from "../util/Tools"
 	import MAssetListTable from "./table/MAssetListTable";
@@ -31,7 +30,6 @@
 			return {
 				showNoData:false,
 				nativeAssetList: [],
-				showLoading: false,
             }
         },
         mounted(){
@@ -39,11 +37,9 @@
         },
         methods:{
 			getNativeAssetList(){
-				this.showLoading = true;
 				Service.commonInterface({nativeAssetList:{}}, (res)=> {
 					try {
 						if(res){
-							this.showLoading = false;
 							this.nativeAssetList = res.data.map( item => {
 								return {
 									Symbol: item.symbol,
@@ -57,10 +53,8 @@
                                 }
                             })
                         }else {
-							this.showLoading = false;
                         }
 					}catch (e) {
-						this.showLoading = false;
                         console.error(e)
 					}
                 })

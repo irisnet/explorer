@@ -28,12 +28,11 @@
                 </div>
             </div>
         </div>
-        <spin-component :show-loading="showLoading"></spin-component>
     </div>
 </template>
 
 <script>
-import SpinComponent from "./commonComponents/SpinComponent";
+import SpinComponent from "../loadingComponent/SpinComponent";
 import TopListTable from "./table/TopListTable";
 import Server from "../service";
 import Tools from "../util/Tools";
@@ -44,7 +43,6 @@ export default {
         return {
             topList: [],
             showNoData: false,
-            showLoading: false,
             latestTime: "",
             richListTimer: null
         };
@@ -59,13 +57,10 @@ export default {
     },
     methods: {
         getTopList() {
-            this.showLoading = true;
             Server.commonInterface({ richListAccounts: {} }, res => {
                 try {
-                    this.showLoading = false;
                     if (res) {
                         this.latestTime = this.getUpDatedTime(res);
-                        this.showLoading = false;
                         this.topList = res.map(item => {
                             return {
                                 rank: item.rank,
@@ -81,7 +76,6 @@ export default {
                             };
                         });
                     } else {
-                        this.showLoading = false;
                         this.showNoData = true;
                         this.topList = [
                             {
@@ -93,7 +87,6 @@ export default {
                         ];
                     }
                 } catch (e) {
-                    this.showLoading = false;
                     this.showNoData = true;
                     this.topList = [
                         {
@@ -244,8 +237,7 @@ export default {
 }
 .top_list_container {
     width: 100%;
-    padding-top: 0.7rem;
-    margin-bottom: 0.4rem;
+    padding: 0.7rem 0 0.4rem 0;
     .top_list_content {
         max-width: 12.8rem;
         width: 100%;

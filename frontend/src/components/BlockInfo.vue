@@ -64,9 +64,10 @@
 
             <div class="block_validator_set_container">
                 <div class="block_validator_set_title">Validator Set</div>
-                <div class="block_validator_set_content" style="overflow-x: auto;">
-                    <blocks-list-table :items="validatorSetList"
-                                       :showNoData="flValidatorNoData" :min-width="tableMinWidth"></blocks-list-table>
+                <div class="block_validator_set_content">
+<!--                    <blocks-list-table :items="validatorSetList"
+                                       :showNoData="flValidatorNoData" :min-width="tableMinWidth"></blocks-list-table>-->
+                    <m-bloc-k-information-table :items="validatorSetList" :showNoData="flValidatorNoData" :min-width="tableMinWidth"></m-bloc-k-information-table>
                     <div v-show="flValidatorNoData" class="no_data_show">
                         <img src="../assets/no_data.svg" alt="">
                     </div>
@@ -89,13 +90,15 @@
 <script>
     import Tools from '../util/Tools';
     import BlocksListTable from './table/BlockDetailListTable';
-    import SpinComponent from './commonComponents/SpinComponent';
+    import SpinComponent from '../loadingComponent/SpinComponent';
     import Service from "../service";
     import Constant from "../constant/Constant"
     import MAllTxTypeListTable from "./table/MAllTxTypeListTable";
     import MPagination from "./commonComponents/MPagination";
+    import MBlocKInformationTable from "./table/MBlockInformationTable";
     export default {
         components: {
+	        MBlocKInformationTable,
 	        MPagination,
 	        MAllTxTypeListTable,
             BlocksListTable,
@@ -152,7 +155,6 @@
                 active: true,
                 activeNext: true,
                 maxBlock: 0,
-                showLoading:false,
                 pageSize: 10,
                 tableMinWidth:"",
                 proposerValue: "",
@@ -496,6 +498,7 @@
         .block_table_container{
             max-width: 12.8rem;
             margin: 0 auto;
+            padding-bottom: 0.2rem;
             .block_result_container{
                 .block_result_title{
                     height: 0.65rem;
@@ -526,7 +529,7 @@
                 }
             }
             .block_validator_set_container{
-                padding-bottom: 0.4rem;
+                padding-bottom: 0.01rem;
                 .block_validator_set_title{
                     height: 0.65rem;
                     display: flex;
@@ -535,6 +538,8 @@
                 }
                 .block_validator_set_content{
                     background: #fff;
+                    overflow-x: auto;
+                    overflow-y: hidden;
                     .no_data_show{
                         display: flex;
                         min-height: 2rem;

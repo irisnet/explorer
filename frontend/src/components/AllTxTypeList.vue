@@ -8,13 +8,15 @@
                         <div class="tx_type_content">
                             <div class="tx_type_mobile_content">
                                 <i-select :model.sync="value" v-model="value" :on-change="filterTxByTxType(value)">
-                                    <i-option v-for="item in txTypeOption"
+                                    <i-option v-for="(item, index) in txTypeOption"
                                               :value="item.value"
+                                              :key="index"
                                     >{{item.label}}</i-option>
                                 </i-select>
                                 <i-select :model.sync="statusValue" v-model="statusValue" :on-change="filterTxByStatus(statusValue)">
-                                    <i-option v-for="item in status"
+                                    <i-option v-for="(item,index) in status"
                                               :value="item.value"
+                                              :key="index"
                                     >{{item.label}}</i-option>
                                 </i-select>
                             </div>
@@ -370,7 +372,7 @@
         }
     }
     .all_type_list_table_container{
-        padding-top: 0.7rem;
+        padding: 0.7rem 0 0.01rem 0;
         .all_type_list_table_wrap{
             max-width: 12.8rem;
             margin: 0 auto;
@@ -388,7 +390,7 @@
         .pagination_content{
             max-width: 12.8rem;
             display: flex;
-            margin: 0.2rem auto 0.2rem auto;
+            margin: 0.2rem auto 0.4rem auto;
             justify-content:flex-end;
         }
     }
@@ -447,7 +449,7 @@
         }
         .all_type_list_table_container{
             padding-top: 0;
-            padding-left: 0.1rem;
+            margin: 0 0.1rem;
         }
         .pagination_content{
             padding-right: 0.1rem;

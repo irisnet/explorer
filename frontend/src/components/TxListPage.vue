@@ -9,8 +9,9 @@
                             <i-option v-for="item in txTypeListArray" :value="item.value">{{item.label}}</i-option>
                         </i-select>
                         <i-select :model.sync="statusValue" v-model="statusValue" :on-change="filterTxByStatus(statusValue)">
-                            <i-option v-for="item in status"
+                            <i-option v-for="(item,index) in status"
                                       :value="item.value"
+                                      :key="index"
                             >{{item.label}}</i-option>
                         </i-select>
                     </div>
@@ -41,7 +42,6 @@
         <div class="transaction_list_table_container">
             <div class="transaction_list_table_content">
                 <div class="table_list_content">
-                    <spin-component :showLoading="flShowLoading"></spin-component>
                     <m-tx-list-page-table :items="txList"></m-tx-list-page-table>
                     <div v-if="txList.length === 0" class="no_data_show">
                         <img src="../assets/no_data.svg" alt="">
@@ -60,7 +60,7 @@
 <script>
 	import Service from "../service";
 	import Tools from "../util/Tools";
-	import SpinComponent from './commonComponents/SpinComponent';
+	import SpinComponent from '../loadingComponent/SpinComponent';
 	import MTxListPageTable from "./table/MTxListPageTable";
 	import MPagination from "./commonComponents/MPagination";
 	export default {
@@ -364,7 +364,7 @@
     }
     .transaction_list_table_container{
         max-width: 12.8rem;
-        padding-top: 0.7rem;
+        padding: 0.7rem 0 0.2rem 0;
         margin: 0 auto;
         .transaction_list_table_content{
             .table_list_content{

@@ -7,7 +7,7 @@
              :sort-desc.sync="sortDesc">
       <template slot-scope="{ row }"
                 slot="moniker">
-        <div>
+        <div style="display: flex;align-items: center;">
           <img v-if="row.url"
                style="width: 0.3rem;height: 0.3rem;border-radius: 0.3rem;overflow: hidden;"
                :src="row.url ? row.url : ''" />
@@ -265,6 +265,6 @@ export default {
 
 <style lang="scss">
 .operator_address_style{
-  font-family: "Consolas","Arial",-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: "Consolas","Ayuthaya","Menlo","Arial",-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 </style>

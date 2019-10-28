@@ -1,5 +1,5 @@
 export default {
   app:{
-    "version": "_version", "env":"_env", "buildNumber":"_buildNumber",
+    "version": "0.7.0", "env":"dev", "buildNumber":"0",
   }
 }

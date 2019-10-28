@@ -3,7 +3,6 @@
         <div class="parameters_list_container">
             <div class="parameter_list_content">
                 <div class="parameters_list_cards_content">
-                    <spin-component :showLoading="showLoading"></spin-component>
                     <div style="overflow-y: hidden;" v-show="!showNoData">
                         <div
                             :class="[$store.state.isMobile ? 'mobile_cards_layout' : 'pc_cards_layout']"
@@ -39,7 +38,7 @@
 
 <script>
 import VParameters from "./table/ParametersTable";
-import SpinComponent from "./commonComponents/SpinComponent";
+import SpinComponent from "../loadingComponent/SpinComponent";
 import Service from "../service";
 import Tools from "../util/Tools";
 import MParametersCard from "./commonComponents/MParametersCard";
@@ -51,7 +50,6 @@ export default {
         return {
             parametersList: {},
             proposalsListPageWrap: "",
-            showLoading: false,
             showNoData: false
         };
     },
@@ -60,12 +58,10 @@ export default {
     },
     methods: {
         getParametersList() {
-            this.showLoading = true;
             this.showNoData = false;
             this.parametersList = {};
             Service.commonInterface({ govParams: {} }, res => {
                 try {
-                    this.showLoading = false;
                     if (Array.isArray(res)) {
                         let arr = res.map(item => {
                             item.genesis_value =
@@ -109,7 +105,6 @@ export default {
                         this.showNoData = true;
                     }
                 } catch (e) {
-                    this.showLoading = false;
                     this.parametersList = {};
                     this.showNoData = true;
                     console.error(e);
@@ -355,7 +350,7 @@ export default {
 .parameters_page_container {
     .parameters_list_container {
         width: 100%;
-        margin-bottom: 0.4rem;
+        padding-bottom: 0.4rem;
         .parameter_list_content {
             max-width: 12.8rem;
             width: 100%;
