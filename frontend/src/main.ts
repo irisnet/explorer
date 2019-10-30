@@ -1,6 +1,6 @@
 declare var require: any;
 import Vue from 'vue'
-import App from './App1.vue'
+import App from './App.vue'
 import router from './router'
 import VueRouter from 'vue-router';
 import store from './store'
@@ -16,7 +16,7 @@ Vue.use(directives);
 import filters from './filters';
 Vue.use(filters);
 /*引入自定义组件*/
-import MTable from './components/commonComponents/MTable.vue';
+import MTable from './components/commontables/MTable.vue';
 import iView from 'iview';
 import select from 'iview/src/components/select'
 import datePicker from 'iview/src/components/date-picker'
