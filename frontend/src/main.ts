@@ -1,14 +1,11 @@
 declare var require: any;
 import Vue from 'vue'
-import App from './App1.vue'
+import App from './App.vue'
 import router from './router'
 import VueRouter from 'vue-router';
 import store from './store'
-// import BootstrapVue from 'bootstrap-vue'
 import './style/reset.css'
 import '../icon/iconfont.css'
-// import 'bootstrap/dist/css/bootstrap.css'
-// import 'bootstrap-vue/dist/bootstrap-vue.css'
 /*引入自定义修饰器*/
 import directives from './directives';
 Vue.use(directives);
@@ -16,7 +13,7 @@ Vue.use(directives);
 import filters from './filters';
 Vue.use(filters);
 /*引入自定义组件*/
-import MTable from './components/commonComponents/MTable.vue';
+import MTable from './components/commontables/MTable.vue';
 import iView from 'iview';
 import select from 'iview/src/components/select'
 import datePicker from 'iview/src/components/date-picker'
@@ -28,7 +25,6 @@ Vue.component('MTable', MTable);
 import axios from "axios"
 const  codec  = require("irisnet-crypto/util/codec.js") ;
 const  crypto = require("irisnet-crypto");
-// Vue.use(BootstrapVue);
 Vue.prototype.$Crypto = crypto;
 Vue.prototype.$Codec = codec;
 Vue.config.productionTip = false;
