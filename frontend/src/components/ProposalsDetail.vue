@@ -240,7 +240,6 @@
                 </div>
             </div>
             <div class="proposals_detail_table_wrap">
-                <spin-component :showLoading="showLoading" />
                 <m-proposals-detail-table :items="items"
                                           fields="votersFields"></m-proposals-detail-table>
                 <div v-show="showNoData"
@@ -266,7 +265,6 @@
             <div class="proposals_table_title_div"
                  style="margin-top: 0;">Depositors</div>
             <div class="proposals_detail_table_wrap">
-                <spin-component :showLoading="showLoading" />
                 <m-proposals-detail-table :items="depositorItems"
                                           fields="depositorsFields"></m-proposals-detail-table>
                 <div v-show="depositorShowNoData"
@@ -294,7 +292,7 @@
 import Tools from '../util/Tools';
 import Service from "../service";
 import BlocksListTable from './table/BlocksListTable.vue';
-import SpinComponent from './commonComponents/SpinComponent';
+import SpinComponent from '../loadingComponent/SpinComponent';
 import Constant from "../constant/Constant";
 import MProposalsDetailTable from './table/MProposalsDetailTable.vue';
 import MDepositCard from "./commonComponents/MDepositCard";
@@ -324,7 +322,6 @@ export default {
             proposalsDetailWrap: 'personal_computer_transactions_detail',
             items: [],
             depositorItems: [],
-            showLoading: false,
             showNoData: false,
             depositorShowNoData: false,
 	        levelValue:'',
@@ -558,11 +555,9 @@ export default {
             })
         },
         getProposalsInformation () {
-            this.showLoading = true;
             Service.commonInterface({                proposalDetail: {
                     proposalId: this.$route.params.proposal_id
                 }            }, (data) => {
-                this.showLoading = false;
                 try {
                     if (data) {
                         if (data.proposal.proposal_id === 0) {

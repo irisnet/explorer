@@ -143,8 +143,9 @@
                                         >{{item.label}}</i-option>
                                     </i-select>
                                     <i-select :model.sync="statusValue" v-model="statusValue" :on-change="filterTxByStatus(statusValue)">
-                                        <i-option v-for="item in status"
+                                        <i-option v-for="(item,index) in status"
                                                   :value="item.value"
+                                                  :key="index"
                                         >{{item.label}}</i-option>
                                     </i-select>
                                 </div>
@@ -695,7 +696,7 @@
         .address_information_content{
             max-width: 12.8rem;
             margin: 0 auto;
-            padding-bottom: 0.5rem;
+            padding-bottom: 0.4rem;
             .address_information_header_container{
                 width: 100%;
                 .address_information_header_content{
@@ -905,7 +906,7 @@
 
             }
             .address_information_transaction_container{
-                margin: 0.3rem 0 0.5rem 0;
+                margin: 0.3rem 0 0 0;
                 display: flex;
                 flex-direction: column;
                 .address_information_transaction_header_content{

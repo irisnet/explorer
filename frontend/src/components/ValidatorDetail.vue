@@ -268,7 +268,6 @@
         >
             <p class="validator_information_content_title">Governance</p>
             <div class="blocks_list_table_container">
-                <!-- <spin-component :showLoading="showLoading" /> -->
                 <div class="address_tx_list_table">
                     <m-validator-detail-table :items="txTableList.governance.items" listName="gov"></m-validator-detail-table>
                 </div>
@@ -288,7 +287,7 @@ import Tools from "../util/Tools";
 import EchartsLine from "./EchartsLine";
 import EchartsValidatorsLine from "./EchartsValidatorsLine";
 import EchartsValidatorsUptimeLine from "./EchartsValidatorsUpTimeLine";
-import SpinComponent from "./commonComponents/SpinComponent";
+import SpinComponent from "../loadingComponent/SpinComponent";
 import Service from "../service";
 import Constants from "../constant/Constant";
 import MValidatorDetailTable from "./table/MValidatorDetailTable";
@@ -305,7 +304,6 @@ export default {
             transactionsDetailWrap: "personal_computer_transactions_detail",
             pageSize: 5,
             address: this.$route.params.param,
-            showLoading: false,
             informationValidatorsLine: {},
             informationUptimeLine: {},
             flActiveValidator: true,

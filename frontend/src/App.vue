@@ -22,46 +22,12 @@
       <router-view class="router_view" :style="`min-height:${vh/100-2.5}rem;`" :key="key"/>
     </div>
     <footer :class="footerClass" v-show="flShowFooter" id="footer">
-      <div class="person_computer_footer">
-        <div class="footer_logo_content">
-          <a class="irisnet_link_content" href="https://www.irisnet.org/" target="_blank">
-            <img class="irisnet_logo_img" src="./assets/IRISnet-Rebrand-Capital-Black.png"/>
-          </a>
-        </div>
-        <div class="community_container">
-          <h4 class="community_title">
-            Community
-          </h4>
-          <div class="community_list_content">
-            <a target="_blank" href='https://github.com/irisnet'><i class="iconfont icongithub"></i></a>
-            <a target="_blank" href='https://t.me/irisnetwork'><i class="iconfont icontelegram"></i></a>
-            <a target="_blank" href='https://twitter.com/irisnetwork'><i class="iconfont icontuite"></i></a>
-            <a target="_blank" href='https://medium.com/irisnet-blog'><i class="iconfont iconmedium"></i></a>
-            <span class="we_chat" @click="showQRCode"><i class="iconfont iconweixin"></i></span>
-            <span class="qq" @click="showqqQRCode"><i class="iconfont iconQQ"></i></span>
-          </div>
-        </div>
-        <div class="footer_right_content">
-          <h3 class="resources_content">Resources</h3>
-          <div class="footer_link_wrap">
-            <a href="https://www.irisnetwork.cn/testnets" target="_blank">
-              <span class="footer_link_contact">Use Testnet</span>
-            </a>
-            <span class="footer_link_join">|</span>
-            <span class="footer_link_privacy"><router-link :to="`/privacy_policy`">Privacy Policy</router-link></span>
-            <span class="footer_link_join">|</span>
-            <span class="footer-faq"><router-link :to="`/help`">FAQ</router-link></span>
-          </div>
-        </div>
-      </div>
-      <p class="footer_copyright_wrap">
-        ©️ IRISplorer 2019 all rights reserved
-      </p>
+
     </footer>
   </div>
 </template>
 <script>
-  import AppHeader from './components/AppHeader';
+  import AppHeader from './header/AppHeader';
   import Tools from './util/Tools';
   import testVersion from '../testVersion';
   import BackToTop from "./components/BackToTop";

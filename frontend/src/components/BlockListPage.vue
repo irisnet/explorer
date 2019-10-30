@@ -8,7 +8,7 @@
                 <div class="page_nav_container">
                     <span>
                         Current Height:
-                        <span v-if="currentHeight > 0" class="skip_route">
+                        <span v-if="currentHeight > 0" class="skip_route current_height">
                             <router-link :to="`/block/${currentHeight}`">{{currentHeight}}</router-link>
                         </span>
                     </span>
@@ -24,7 +24,6 @@
                     </div>
                 </div>
                 <div class="block_list_table_container">
-                    <spin-component :showLoading="flShowLoading"></spin-component>
                     <m-block-list-page-table :items="items"></m-block-list-page-table>
                     <div v-show="showNoData" class="no_data_show">
                         <img src="../assets/no_data.svg">
@@ -49,7 +48,7 @@
 import Service from "../service";
 import Constant from "../constant/Constant";
 import Tools from "../util/Tools";
-import SpinComponent from "./commonComponents/SpinComponent";
+import SpinComponent from "../loadingComponent/SpinComponent";
 import BlockListPageTable from "./table/BlockListPageTable";
 import MBlockListPageTable from "./table/MBlockListPageTable";
 import MPagination from "./commonComponents/MPagination";
@@ -133,7 +132,7 @@ export default {
             });
         },
         getBlockList() {
-            this.flShowLoading = true;
+        	this.$store.commit('flShowLoading',true);
             this.showNoData = false;
             Service.commonInterface(
                 {
@@ -143,7 +142,7 @@ export default {
                     }
                 },
                 data => {
-                    this.flShowLoading = false;
+	                this.$store.commit('flShowLoading',false);
                     try {
                         if (data) {
                             let that = this;
@@ -218,6 +217,7 @@ export default {
     .block_list_container {
         max-width: 12.8rem;
         margin: 0 auto;
+        padding-bottom: 0.2rem;
         .block_list_content {
             .page_nav_container {
                 padding-left: 0.2rem;
@@ -231,6 +231,12 @@ export default {
                     a {
                         color: var(--bgColor) !important;
                         cursor: pointer;
+                    }
+                }
+                .current_height{
+                    a{
+                        font-size: 0.18rem !important;
+
                     }
                 }
                 span {
@@ -251,7 +257,6 @@ export default {
                 justify-content: flex-end;
                 height: 0.7rem;
                 align-items: center;
-                margin-bottom: 0.2rem;
                 font-size: 0.14rem;
             }
             .no_data_show {
@@ -286,8 +291,25 @@ export default {
     }
 }
 @media screen and (max-width: 910px) {
-    .page_nav_container {
-        padding-left: 0.1rem !important;
+    .blocks_list_page_container_fixed {
+        .page_nav_container {
+            padding-left: 0.1rem !important;
+            position: static;
+        }
+        .block_list_table_container{
+            padding-top: 0;
+            margin: 0 0.1rem;
+        }
+        .page_nav_container{
+            .pagination_container{
+                display: none;
+            }
+        }
+        .pagination_footer_container{
+            .common_pagination_content{
+                margin-right: 0.1rem;
+            }
+        }
     }
 }
 </style>

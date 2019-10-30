@@ -9,7 +9,6 @@
             <div style="padding: 0.2rem 0">Issue Token Txs</div>
             <div class="native_asset_list_table_content">
                 <div class="table_list_content">
-                    <spin-component :showLoading="flIssueTokenShowLoading"></spin-component>
                     <native-asset :showNoData="showNoData" :items="issueToken" name="nativeIssueToken"></native-asset>
                     <div v-show="showNoData" class="no_data_show">
                         <img src="../assets/no_data.svg" alt="">
@@ -29,7 +28,6 @@
             <div style="padding: 0.2rem 0">Edit Token Txs</div>
             <div class="native_asset_list_table_content">
                 <div class="table_list_content">
-                    <!--<spin-component :showLoading="flEditTokenShowLoading"></spin-component>-->
                     <native-asset :showNoData="showNoData" :items="editToken" name="editToken"></native-asset>
                     <div v-show="showNoData" class="no_data_show">
                         <img src="../assets/no_data.svg" alt="">
@@ -49,7 +47,6 @@
             <div style="padding: 0.2rem 0">Mint Token Txs</div>
             <div class="native_asset_list_table_content">
                 <div class="table_list_content">
-                    <!--<spin-component :showLoading="flMinTokenShowLoading"></spin-component>-->
                     <native-asset :showNoData="showNoData" :items="mintToken" name="mintToken"></native-asset>
                     <div v-show="showNoData" class="no_data_show">
                         <img src="../assets/no_data.svg" alt="">
@@ -69,7 +66,6 @@
             <div style="padding: 0.2rem 0">Transfer Owner Txs</div>
             <div class="native_asset_list_table_content">
                 <div class="table_list_content">
-                    <!--<spin-component :showLoading="flTransferTokenShowLoading"></spin-component>-->
                     <native-asset :showNoData="showNoData" :items="transferToken" name="transferToken"></native-asset>
                     <div v-show="showNoData" class="no_data_show">
                         <img src="../assets/no_data.svg" alt="">
@@ -96,7 +92,7 @@
     import NativeAsset from "./table/MNativeAssetTxListTable"
     import Service from "../service"
     import Tools from "../util/Tools"
-    import SpinComponent from "./commonComponents/SpinComponent"
+    import SpinComponent from "../loadingComponent/SpinComponent"
     import MPagination from "./commonComponents/MPagination";
 	export default {
 		name: "NativeAssetPage",

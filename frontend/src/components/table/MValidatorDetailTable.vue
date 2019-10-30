@@ -2,35 +2,28 @@
     <div class="validator_detail_table">
         <m-table :columns="fields" :data="items" :width="width">
             <template slot="Tx_Hash" slot-scope="{ row }">
-                <div class="common_hover_parent" v-if="row.Tx_Hash">
+                <div class="common_hover_parent skip_route" v-if="row.Tx_Hash">
                     <router-link
                         :to="`/tx?txHash=${row.Tx_Hash}`"
+                        style="font-family: monospace"
                         class="link_style common_font_style"
                     >{{formatTxHash(row.Tx_Hash)}}</router-link>
                 </div>
             </template>
             <template slot="Block" slot-scope="{ row }">
-                <router-link v-if="row.Block != 0" :to="`/block/${row.Block}`" class="link_style">{{row.Block}}</router-link>
-                <span v-if="row.Block == 0">{{row.Block}}</span>
+                <div class="skip_route">
+                    <router-link v-if="row.Block != 0" :to="`/block/${row.Block}`" class="link_style">{{row.Block}}</router-link>
+                    <span v-if="row.Block == 0">{{row.Block}}</span>
+                </div>
             </template>
             <template slot="From" slot-scope="{ row }">
                 <span v-if="(/^[1-9]\d*$/).test(row.From)" class="skip_route">
                     <router-link :to="`/tx?txHash=${row.Tx_Hash}`">{{row.From}} Validators</router-link>
                 </span>
-                <div
-                    class="name_address"
-                    v-show="!(/^[0-9]\d*$/).test(row.From) && row.From && row.From !== '--'"
-                >
-                    <span
-                        class="remove_default_style"
-                        :class="row.From === $route.params.param?'no_skip':''"
-                    >
-                        <router-link
-                            :to="addressRoute(row.From)"
-                            class="link_style"
-                        >{{formatMoniker(row.fromMoniker) || formatAddress(row.From)}}</router-link>
+                <div class="name_address" v-show="!(/^[0-9]\d*$/).test(row.From) && row.From && row.From !== '--'">
+                    <span class="remove_default_style skip_route" :class="row.From === $route.params.param ? 'no_skip' : ''">
+                        <router-link :to="addressRoute(row.From)" class="link_style" :style="{'font-family': row.From ? 'Consolas,Ayuthaya ,monaco, monospace': ''}">{{formatMoniker(row.fromMoniker) || formatAddress(row.From)}}</router-link>
                     </span>
-                    <span v-if="!row.fromMoniker" class="address">{{row.From}}</span>
                 </div>
                 <span class="no_skip" v-show="(/^[0]\d*$/).test(row.From) || row.From === '--'">--</span>
             </template>
@@ -43,7 +36,7 @@
                     v-show="!(/^[0-9]\d*$/).test(row.OperatorAddr) && row.OperatorAddr && row.OperatorAddr !== '--'"
                 >
                     <span
-                        class="remove_default_style"
+                        class="remove_default_style skip_route"
                         :class="row.OperatorAddr === $route.params.param?'no_skip':''"
                     >
                         <router-link
@@ -66,12 +59,13 @@
                     v-show="!(/^[0-9]\d*$/).test(row.address) && row.address && row.address !== '--'"
                 >
                     <span
-                        class="remove_default_style"
+                        class="remove_default_style skip_route"
                         :class="row.address === $route.params.param?'no_skip':''"
                     >
                         <router-link
                             :to="addressRoute(row.address)"
                             class="link_style"
+                            style="font-family:Consolas,Ayuthaya ,monaco, monospace"
                         >{{formatAddress(row.address)}}</router-link>
                     </span>
                 </div>
@@ -101,20 +95,10 @@
                 <span v-if="(/^[1-9]\d*$/).test(row.To)" class="skip_route">
                     <router-link :to="`/tx?txHash=${row.Tx_Hash}`">{{row.To}} Validators</router-link>
                 </span>
-                <div
-                    class="name_address"
-                    v-show="!(/^[0-9]\d*$/).test(row.To) && row.To && row.To !== '--'"
-                >
-                    <span
-                        class="remove_default_style"
-                        :class="row.To === $route.params.param?'no_skip':''"
-                    >
-                        <router-link
-                            :to="addressRoute(row.To)"
-                            class="link_style"
-                        >{{formatMoniker(row.toMoniker) || formatAddress(row.To)}}</router-link>
+                <div class="name_address" v-show="!(/^[0-9]\d*$/).test(row.To) && row.To && row.To !== '--'">
+                    <span class="remove_default_style skip_route" :class="row.To === $route.params.param?'no_skip':''">
+                        <router-link class="link_style" :style="{'font-family': row.From ? 'Consolas,Ayuthaya ,monaco, monospace': ''}" :to="addressRoute(row.To)" >{{formatMoniker(row.toMoniker) || formatAddress(row.To)}}</router-link>
                     </span>
-                    <span v-if="!row.toMoniker" class="address">{{row.To}}</span>
                 </div>
                 <span class="no_skip" v-show="(/^[0]\d*$/).test(row.To) || row.To === '--'">--</span>
             </template>
@@ -122,12 +106,13 @@
                 <span class="skip_route" style="display: flex" v-if="row.Tx_Signer">
                     <div class="name_address">
                         <span
-                            class="remove_default_style"
+                            class="remove_default_style skip_route"
                             :class="row.Tx_Signer === $route.params.param?'no_skip':''"
                         >
                             <router-link
                                 :to="addressRoute(row.Tx_Signer)"
                                 class="link_style justify"
+                                style="font-family:Consolas,Ayuthaya ,monaco, monospace"
                             >{{formatAddress(row.Tx_Signer)}}</router-link>
                         </span>
                     </div>
@@ -137,7 +122,7 @@
                 <span class="skip_route" style="display: flex" v-if="row.Moniker">
                     <div class="name_address">
                         <span
-                            class="remove_default_style"
+                            class="remove_default_style skip_route"
                             :class="row.OperatorAddr === $route.params.param?'no_skip':''"
                         >
                             <router-link
@@ -149,16 +134,20 @@
                 </span>
             </template>
             <template slot-scope="{ row }" slot="Proposal_ID">
-                <router-link
-                    :to="`/ProposalsDetail/${row.Proposal_ID}`"
-                    class="link_style"
-                >{{row.Proposal_ID}}</router-link>
+                <span class="skip_route">
+                         <router-link
+                                 :to="`/ProposalsDetail/${row.Proposal_ID}`"
+                                 class="link_style"
+                         >{{row.Proposal_ID}}</router-link>
+                </span>
             </template>
             <template slot-scope="{ row }" slot="proposal_id">
-                <router-link
-                    :to="`/ProposalsDetail/${row.proposal_id}`"
-                    class="link_style"
-                >{{row.proposal_id}}</router-link>
+                <span class="skip_route">
+                    <router-link
+                            :to="`/ProposalsDetail/${row.proposal_id}`"
+                            class="link_style"
+                    >{{row.proposal_id}}</router-link>
+                </span>
             </template>
         </m-table>
     </div>

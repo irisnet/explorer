@@ -66,3 +66,10 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+/*  .skip_route{
+    a{
+      color: var(--bgColor) !important;
+    }
+  }*/
+</style>

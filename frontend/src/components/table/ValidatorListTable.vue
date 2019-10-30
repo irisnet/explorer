@@ -207,7 +207,7 @@
           color:var(--titleColor);
           cursor:default;
           .link_style{
-            color:var(--contentColor) !important;
+            color:var(--titleColor) !important;
           }
         }
       }

@@ -246,7 +246,7 @@ table.m_table {
   }
 }
 .text_right {
-  text-align: right;
+  text-align: right !important;
 }
 .m-table-header {
   position: relative;
@@ -270,6 +270,7 @@ table.m_table {
           vertical-align: middle;
           white-space: nowrap;
           border-top: 1px solid #dee2e6;
+          text-align: left;
         }
         th.sorting {
           cursor: pointer;
@@ -313,6 +314,7 @@ table.m_table {
 }
 .m-table-body {
   margin-top: -0.03rem;
+  font-size: 0.14rem;
   tbody {
     border-bottom: 1px solid #dee2e6;
   }

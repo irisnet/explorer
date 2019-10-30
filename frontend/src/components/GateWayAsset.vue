@@ -9,7 +9,6 @@
             <div style="padding: 0.2rem 0">Issue Token Txs</div>
             <div class="gateway_asset_list_table_content">
                 <div class="table_list_content">
-                    <spin-component :showLoading="flShowLoading"></spin-component>
                     <native-asset :showNoData="showNoData" :items="gateWayIssueTokenList" name="gateWayIssueToken"></native-asset>
                     <!--<m-tx-list-page-table :showNoData="showNoData" :items="txList"></m-tx-list-page-table>-->
                     <div v-show="showNoData" class="no_data_show">
@@ -30,7 +29,6 @@
             <div style="padding: 0.2rem 0">Edit Token Txs</div>
             <div class="gateway_asset_list_table_content">
                 <div class="table_list_content">
-                    <!--<spin-component :showLoading="flShowLoading"></spin-component>-->
                     <native-asset :showNoData="showNoData" :items="gateWayEditTokenList" name="editToken"></native-asset>
                     <!--<m-tx-list-page-table :showNoData="showNoData" :items="txList"></m-tx-list-page-table>-->
                     <div v-show="showNoData" class="no_data_show">
@@ -51,7 +49,6 @@
             <div style="padding: 0.2rem 0">Mint Token Txs</div>
             <div class="gateway_asset_list_table_content">
                 <div class="table_list_content">
-                    <!--<spin-component :showLoading="flShowLoading"></spin-component>-->
                     <native-asset :showNoData="showNoData" :items="gateWayMintTokenList" name="mintToken"></native-asset>
                     <!--<m-tx-list-page-table :showNoData="showNoData" :items="txList"></m-tx-list-page-table>-->
                     <div v-show="showNoData" class="no_data_show">
@@ -72,7 +69,6 @@
             <div style="padding: 0.2rem 0">Transfer Gateway Owner Txs</div>
             <div class="gateway_asset_list_table_content">
                 <div class="table_list_content">
-                    <!--<spin-component :showLoading="flShowLoading"></spin-component>-->
                     <native-asset :showNoData="showNoData" :items="gateWayTransferOwnerTokenList" name="transferGatewayOwnerTxs"></native-asset>
                     <!--<m-tx-list-page-table :showNoData="showNoData" :items="txList"></m-tx-list-page-table>-->
                     <div v-show="showNoData" class="no_data_show">
@@ -98,7 +94,7 @@
 
 <script>
 	import NativeAsset from "./table/MNativeAssetTxListTable"
-	import SpinComponent from "./commonComponents/SpinComponent"
+	import SpinComponent from "../loadingComponent/SpinComponent"
 	import Service from "../service"
 	import Tools from "../util/Tools"
 	import MPagination from "./commonComponents/MPagination";

@@ -10,7 +10,6 @@
   "dependencies": {
     "axios": "^0.18.1",
     "bignumber.js": "^7.2.1",
-    "bootstrap-vue": "^2.0.0-rc.11",
     "clipboard": "^2.0.4",
     "commander": "^2.16.0",
     "echarts": "^4.1.0",

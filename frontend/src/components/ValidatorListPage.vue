@@ -26,7 +26,6 @@
                 <m-pagination :page-size="pageSize" :total="count"></m-pagination>
             </div>
         </div>
-        <spin-component :showLoading="showLoading"/>
     </div>
 </template>
 
@@ -35,7 +34,7 @@
 	import Constant from "../constant/Constant"
 	import Service from "../service"
     import Http from "../util/axios"
-	import SpinComponent from './commonComponents/SpinComponent';
+	import SpinComponent from '../loadingComponent/SpinComponent';
 	import ValidatorListTable from "./table/ValidatorListTable";
     import MValidatorListTable from "./table/MValidatorListTable";
     import MTabs from "./commonComponents/MTabs";
@@ -81,7 +80,6 @@
 				items: [],
 				type: '1',
 				showNoData:false,//是否显示列表的无数据
-				showLoading:false,
 				innerWidth : window.innerWidth,
 				tableMinWidth: 0,
 				listTitleName:"",
@@ -140,7 +138,6 @@
 				this.tableMinWidth = 12.8;
 			},
 			getValidatorList(currentPage, pageSize,status){
-                this.showLoading = true;
 				this.pageSize = this.validatorPageSize;
 				let url;
 				url = `/api/stake/validators?page=${currentPage}&size=${pageSize}&type=${status}&origin=browser`;
@@ -176,10 +173,8 @@
 							this.showNoData = true;
 							this.items = [];
 						}
-						this.showLoading = false;
 						this.$refs.mtable && this.$refs.mtable.setValidatorField(status);
 					}catch (e) {
-						this.showLoading = false;
 						this.showNoData = true;
 						this.$refs.mtable && this.$refs.mtable.setValidatorField(status);
 						console.error(e)
@@ -201,7 +196,6 @@
 				return validatorStatus
 			},
 			getDataList() {
-				this.showLoading = true;
 				this.selectValidatorStatus(Number(this.validatorTabIndex))
 			},
 		},
