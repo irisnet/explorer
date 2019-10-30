@@ -506,13 +506,15 @@
 						        this.flAllTxNextPage = false
                             }
 					        this.transactionsItems = res.Data.map( item => {
-					        	let Amount;
+					        	let Amount = '--';
 						        if(item.type === 'BeginUnbonding' || item.type === 'BeginRedelegate'){
 							        if(item.status === 'success'){
-								        let tokenValue = Tools.formatAccountCoinsAmount(item.tags.balance);
-								        let tokenStr = String(Tools.numberMoveDecimal(tokenValue[0],18));
-								        item.amount[0].formatAmount =  Tools.formatStringToFixedNumber(tokenStr,2);
-								        Amount = item.amount.map(listItem => `${listItem.formatAmount} IRIS`).join(',');
+								        if(item.tags.balance){
+									        let tokenValue = Tools.formatAccountCoinsAmount(item.tags.balance);
+									        let tokenStr = String(Tools.numberMoveDecimal(tokenValue[0],18));
+									        item.amount[0].formatAmount =  Tools.formatStringToFixedNumber(tokenStr,2);
+									        Amount = item.amount.map(listItem => `${listItem.formatAmount} IRIS`).join(',');
+                                        }
 							        }
 						        }else {
 							        Amount = item.amount && item.amount.length > 0 ? Tools.formatAmount2(item.amount,this.fixedNumber) : '--';

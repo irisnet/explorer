@@ -4,11 +4,11 @@ import (
 	"testing"
 )
 
-func TestGetGenesis(t *testing.T) {
-
-	genesis := CommonService{}.GetGenesis()
-	t.Logf("genesis: %v \n", genesis)
-}
+//func TestGetGenesis(t *testing.T) {
+//
+//	genesis := CommonService{}.GetGenesis()
+//	t.Logf("genesis: %v \n", genesis)
+//}
 
 func TestGetConfig(t *testing.T) {
 

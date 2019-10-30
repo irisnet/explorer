@@ -20,6 +20,7 @@
                 <div class="common_hover_address_parent" v-if="row.signer">
                     <router-link :to="addressRoute(row.signer)" style="font-family:Consolas,Menlo Monaco,monospace" class="link_style common_font_style">{{formatAddress(row.signer)}}
                     </router-link>
+                    <span v-if="$route.params.param === row.signer">{{formatAddress(row.signer)}}</span>
                 </div>
             </template>
             <template slot-scope="{ row }" slot="token">
@@ -120,7 +121,7 @@
 					{
 						title: "Address",
 						slot:'address',
-
+						tooltip: true
 					},
 					{
 						title: "Amount",
@@ -141,6 +142,7 @@
 					{
 						title: "Address",
                         slot:'address',
+						tooltip: true
 					},
 					{
 						title: "Amount",

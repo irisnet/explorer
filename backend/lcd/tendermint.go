@@ -229,19 +229,19 @@ func NodeInfo() (result NodeInfoVo, err error) {
 	return result, nil
 }
 
-func Genesis() (result GenesisVo, err error) {
-	url := fmt.Sprintf(UrlGenesis, conf.Get().Hub.NodeUrl)
-	resBytes, err := utils.Get(url)
-	if err != nil {
-		return result, err
-	}
-
-	if err := json.Unmarshal(resBytes, &result); err != nil {
-		logger.Error("get account error", logger.String("err", err.Error()))
-		return result, err
-	}
-	return result, nil
-}
+//func Genesis() (result GenesisVo, err error) {
+//	url := fmt.Sprintf(UrlGenesis, conf.Get().Hub.NodeUrl)
+//	resBytes, err := utils.Get(url)
+//	if err != nil {
+//		return result, err
+//	}
+//
+//	if err := json.Unmarshal(resBytes, &result); err != nil {
+//		logger.Error("get account error", logger.String("err", err.Error()))
+//		return result, err
+//	}
+//	return result, nil
+//}
 
 func GetGenesisAppState() (map[string]interface{}, error) {
 
