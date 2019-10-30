@@ -3,12 +3,12 @@
         <m-table :columns="fields" :data="items" :width="width">
             <template slot-scope="{ row }"
                       slot="address">
-                <router-link v-if="row.moniker" class="address_link" :to="`/validators/${row.address}`">{{formatAddress(row.moniker)}}</router-link>
-                <router-link v-if="!row.moniker" style="font-family:Consolas,Menlo Monaco,monospace" class="address_link" :to="`/validators/${row.address}`">{{formatAddress(row.address)}}</router-link>
+                <router-link v-if="row.moniker" class="address_link" :to="`/validators/${row.address}`">{{row.moniker}}</router-link>
+                <router-link v-if="!row.moniker" class="address_link" :to="`/validators/${row.address}`">{{formatAddress(row.address)}}</router-link>
             </template>
             <template slot-scope="{ row }" slot="txHash">
-                <div class="common_hover_parent" v-if="row.txHash">
-                    <router-link style="font-family: monospace" :to="`/tx?txHash=${row.txHash}`" class="link_style common_font_style">{{formatTxHash(row.txHash)}}
+                <div class="common_hover_parent skip_route" v-if="row.txHash">
+                    <router-link :to="`/tx?txHash=${row.txHash}`" style="font-family: Consolas;" class="link_style common_font_style">{{formatTxHash(row.txHash)}}
                     </router-link>
                 </div>
             </template>
@@ -17,8 +17,8 @@
                 <span v-if="row.block == 0">{{row.block}}</span>
             </template>
             <template slot-scope="{ row }" slot="signer">
-                <div class="common_hover_address_parent" v-if="row.signer">
-                    <router-link :to="addressRoute(row.signer)" style="font-family:Consolas,Menlo Monaco,monospace" class="link_style common_font_style">{{formatAddress(row.signer)}}
+                <div class="common_hover_address_parent " :class="row.isSkipRouter ? '' : 'skip_route'" v-if="row.signer">
+                    <router-link :to="addressRoute(row.signer)" style="font-family: Consolas;" class="common_font_style">{{formatAddress(row.signer)}}
                     </router-link>
                 </div>
             </template>
@@ -120,7 +120,7 @@
 					{
 						title: "Address",
 						slot:'address',
-
+						tooltip: true
 					},
 					{
 						title: "Amount",
@@ -141,6 +141,7 @@
 					{
 						title: "Address",
                         slot:'address',
+						tooltip: true
 					},
 					{
 						title: "Amount",

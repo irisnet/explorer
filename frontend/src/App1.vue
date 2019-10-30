@@ -23,7 +23,23 @@
 
             }
         },
+        beforeMount(){
+	        window.addEventListener('resize', this.onresize);
+	        if (window.innerWidth > 910) {
+		        this.$store.commit('isMobile',false);
+	        } else {
+		        this.$store.commit('isMobile',true);
+	        }
+
+        },
 		computed: {
+			onresize(){
+				if (window.innerWidth > 910) {
+					this.$store.commit('isMobile',false);
+				} else {
+					this.$store.commit('isMobile',true);
+				}
+            },
 			key() {
 				return this.$route.name !== undefined ? this.$route.name + new Date() : this.$route + new Date()
 			}

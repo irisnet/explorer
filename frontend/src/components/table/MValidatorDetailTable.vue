@@ -5,7 +5,6 @@
                 <div class="common_hover_parent skip_route" v-if="row.Tx_Hash">
                     <router-link
                         :to="`/tx?txHash=${row.Tx_Hash}`"
-                        style="font-family: monospace"
                         class="link_style common_font_style"
                     >{{formatTxHash(row.Tx_Hash)}}</router-link>
                 </div>
@@ -65,7 +64,6 @@
                         <router-link
                             :to="addressRoute(row.address)"
                             class="link_style"
-                            style="font-family:Consolas,Ayuthaya ,monaco, monospace"
                         >{{formatAddress(row.address)}}</router-link>
                     </span>
                 </div>
@@ -112,7 +110,6 @@
                             <router-link
                                 :to="addressRoute(row.Tx_Signer)"
                                 class="link_style justify"
-                                style="font-family:Consolas,Ayuthaya ,monaco, monospace"
                             >{{formatAddress(row.Tx_Signer)}}</router-link>
                         </span>
                     </div>

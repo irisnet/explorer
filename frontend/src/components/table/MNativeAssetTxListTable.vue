@@ -6,13 +6,19 @@
                 <span>{{formatTxHash(row.TxHash)}}</span>
             </template>
             <template slot-scope="{ row }" slot="Owner">
-                <router-link :to="`/address/${row.Owner}`" class="link_style">{{formatAddress(row.Owner)}}</router-link>
+                <div class="skip_route">
+                    <router-link :to="`/address/${row.Owner}`" style="font-family: Consolas" class="link_style">{{formatAddress(row.Owner)}}</router-link>
+                </div>
             </template>
             <template slot-scope="{ row }" slot="Block">
-                <router-link :to="`/block/${row.Block}`" class="link_style">{{row.Block}}</router-link>
+                <div class="skip_route">
+                    <router-link :to="`/block/${row.Block}`" class="link_style">{{row.Block}}</router-link>
+                </div>
             </template>
             <template slot-scope="{ row }" slot="TxHash">
-                <router-link :to="`/tx?txHash=${row.TxHash}`" class="link_style">{{formatTxHash(row.TxHash)}}</router-link>
+                <div class="skip_route">
+                    <router-link :to="`/tx?txHash=${row.TxHash}`" style="font-family: Consolas" class="link_style">{{formatTxHash(row.TxHash)}}</router-link>
+                </div>
             </template>
             <template slot-scope="{ row }" slot="SrcOwner">
                 <router-link :to="`/address/${row.SrcOwner}`" class="link_style">{{formatAddress(row.SrcOwner)}}</router-link>
@@ -45,7 +51,9 @@
                 </div>
             </template>
             <template slot-scope="{ row }" slot="Symbol">
-                <router-link v-if="row.flShowLink" :to="`/asset/${row.TokenID}`" class="link_style">{{row.Symbol}}</router-link>
+                <div class="skip_route">
+                    <router-link v-if="row.flShowLink" :to="`/asset/${row.TokenID}`" class="link_style">{{row.Symbol}}</router-link>
+                </div>
                 <span v-if="!row.flShowLink">{{row.Symbol}}</span>
             </template>
             <template slot-scope="{ row }" slot="Token">

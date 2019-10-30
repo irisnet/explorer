@@ -261,7 +261,7 @@ export default {
 }
 @media (max-width: 910px) {
     .top_list_container {
-        padding: 0 0.1rem;
+        padding: 0 0.1rem 0.4rem 0.1rem;
     }
     .top_list_title_content {
         flex-direction: column !important;

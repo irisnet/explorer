@@ -4,7 +4,6 @@
     font-size:0.14rem;
     .transactions_title_wrap {
         background: #efeff1;
-        width: 100%;
         border-bottom: 0.01rem solid #eee;
         @include flex;
         @include pcContainer;
@@ -610,3 +609,4 @@
 .information_props{
     color: #787c99 !important;;
 }
+

@@ -614,7 +614,7 @@
                 max-width: 12.8rem;
                 margin: 0 auto;
                 .asset_info_kflower_contennt{
-                    margin-top: 0.2rem;
+                    padding-top: 0.2rem;
                     .asset_info_kflower_title{
                         margin: 0;
                         padding-left: 0.2rem;

@@ -9,7 +9,9 @@
         </div>
         <div class="native_asset_list_content">
             <div class="native_asset_list_wrap">
-                <m-asset-list-table :showNoData="showNoData" :items="nativeAssetList" name="nativeAssetList"></m-asset-list-table>
+                <div>
+                    <m-asset-list-table :showNoData="showNoData" :items="nativeAssetList" name="nativeAssetList"></m-asset-list-table>
+                </div>
             </div>
             <div v-show="nativeAssetList.length === 0 && !showLoading">
                 <img class="no_data_img" src="../assets/no_data.svg">
@@ -104,7 +106,10 @@
             justify-content: center;
             .native_asset_list_wrap{
                 width: 100%;
-                overflow-x: auto;
+                & > div{
+                    margin: 0 0.1rem;
+                    overflow-x: auto;
+                }
             }
         }
     }

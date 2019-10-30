@@ -1017,6 +1017,8 @@ export default {
                       }else {
                         fieidValue = this.forAmount(data);
                       }
+                    }else {
+                      fieidValue = this.forAmount(data);
                     }
                   } else if (i === "Self-Bonded") {
                     if (data.self_bond && data.self_bond.length !== 0) {

@@ -2,7 +2,9 @@
     <div>
         <m-table v-if="items.length > 0" :class="showNoData ? 'show_no_data' : ''" class="tx_container_table" :columns="fields" :data="items">
             <template slot-scope="{ row }" slot="Owner">
-                <router-link :to="`/address/${row.Owner}`" class="link_style">{{row.Owner}}</router-link>
+                <div class="skip_route">
+                    <router-link :to="`/address/${row.Owner}`" class="link_style">{{row.Owner}}</router-link>
+                </div>
             </template>
  <!--           <template slot-scope="{ row }" slot="Owner">
                 <router-link :to="`/address/${row.Owner}`" class="link_style">{{row.Owner}}</router-link>

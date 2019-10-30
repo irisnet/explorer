@@ -138,8 +138,9 @@
                             <div class="tx_type_content">
                                 <div class="tx_type_mobile_content">
                                     <i-select :model.sync="value" v-model="value" :on-change="filterTxByTxType(value)">
-                                        <i-option v-for="item in txTypeOption"
+                                        <i-option v-for="(item,i) in txTypeOption"
                                                   :value="item.value"
+                                                  :key="i"
                                         >{{item.label}}</i-option>
                                     </i-select>
                                     <i-select :model.sync="statusValue" v-model="statusValue" :on-change="filterTxByStatus(statusValue)">
@@ -506,13 +507,15 @@
 						        this.flAllTxNextPage = false
                             }
 					        this.transactionsItems = res.Data.map( item => {
-					        	let Amount;
+					        	let Amount = '--';
 						        if(item.type === 'BeginUnbonding' || item.type === 'BeginRedelegate'){
 							        if(item.status === 'success'){
-								        let tokenValue = Tools.formatAccountCoinsAmount(item.tags.balance);
-								        let tokenStr = String(Tools.numberMoveDecimal(tokenValue[0],18));
-								        item.amount[0].formatAmount =  Tools.formatStringToFixedNumber(tokenStr,2);
-								        Amount = item.amount.map(listItem => `${listItem.formatAmount} IRIS`).join(',');
+								        if(item.tags.balance){
+									        let tokenValue = Tools.formatAccountCoinsAmount(item.tags.balance);
+									        let tokenStr = String(Tools.numberMoveDecimal(tokenValue[0],18));
+									        item.amount[0].formatAmount =  Tools.formatStringToFixedNumber(tokenStr,2);
+									        Amount = item.amount.map(listItem => `${listItem.formatAmount} IRIS`).join(',');
+                                        }
 							        }
 						        }else {
 							        Amount = item.amount && item.amount.length > 0 ? Tools.formatAmount2(item.amount,this.fixedNumber) : '--';
@@ -526,6 +529,7 @@
 							        signer: item.signer,
 							        status: Tools.firstWordUpperCase(item.status),
 							        timestamp: Tools.format2UTC(item.timestamp),
+                                    isSkipRouter: item.signer === this.$route.params.param
 						        }
 					        })
 				        }else {

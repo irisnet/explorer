@@ -452,7 +452,7 @@ export default {
 .name_address {
   display: inline-block;
   position: relative;
-  font-family: "Consolas","Ayuthaya","Arial", -apple-system, BlinkMacSystemFont,
+  font-family: "Consolas","Arial", -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   .address {

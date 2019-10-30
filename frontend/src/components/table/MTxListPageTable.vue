@@ -405,6 +405,6 @@
         }
     }
     .common_font_style{
-        font-family: Consolas,"Ayuthaya";
+        font-family: Consolas;
     }
 </style>

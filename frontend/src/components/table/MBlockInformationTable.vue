@@ -13,7 +13,7 @@
             </template>
             <template slot-scope="{ row }" slot="OperatorAddress">
                 <div class="common_hover_address_parent skip_route">
-                    <router-link :to="addressRoute(row.OperatorAddress)" style="font-family:Consolas,Menlo Monaco,monospace" class="link_style common_font_style">{{formatAddress(row.OperatorAddress)}}
+                    <router-link :to="addressRoute(row.OperatorAddress)" class="link_style common_font_style">{{formatAddress(row.OperatorAddress)}}
                     </router-link>
                 </div>
             </template>

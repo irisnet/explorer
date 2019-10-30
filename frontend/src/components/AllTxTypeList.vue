@@ -451,9 +451,6 @@
             padding-top: 0;
             margin: 0 0.1rem;
         }
-        .pagination_content{
-            padding-right: 0.1rem;
-        }
         .mobile_style{
             display: none;
         }
