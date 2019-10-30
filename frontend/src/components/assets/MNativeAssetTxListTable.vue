@@ -7,7 +7,7 @@
             </template>
             <template slot-scope="{ row }" slot="Owner">
                 <div class="skip_route">
-                    <router-link :to="`/address/${row.Owner}`" style="font-family: Consolas" class="link_style">{{formatAddress(row.Owner)}}</router-link>
+                    <router-link :to="`/address/${row.Owner}`" style="font-family: Consolas,Courier" class="link_style">{{formatAddress(row.Owner)}}</router-link>
                 </div>
             </template>
             <template slot-scope="{ row }" slot="Block">
@@ -17,7 +17,7 @@
             </template>
             <template slot-scope="{ row }" slot="TxHash">
                 <div class="skip_route">
-                    <router-link :to="`/tx?txHash=${row.TxHash}`" style="font-family: Consolas" class="link_style">{{formatTxHash(row.TxHash)}}</router-link>
+                    <router-link :to="`/tx?txHash=${row.TxHash}`" style="font-family: Consolas,Courier" class="link_style">{{formatTxHash(row.TxHash)}}</router-link>
                 </div>
             </template>
             <template slot-scope="{ row }" slot="SrcOwner">

@@ -3,7 +3,7 @@
         <m-table :columns="fields" :data="items" :width="width">
             <template slot="Tx_Hash" slot-scope="{ row }">
                 <div class="common_hover_parent skip_route"
-                     style="font-family: Consolas"
+                     style="font-family: Consolas,Courier"
                      v-if="row.Tx_Hash">
                     <router-link
                         :to="`/tx?txHash=${row.Tx_Hash}`"
@@ -23,7 +23,7 @@
                 </span>
                 <div class="name_address" v-show="!(/^[0-9]\d*$/).test(row.From) && row.From && row.From !== '--'">
                     <span class="remove_default_style skip_route" :class="row.From === $route.params.param ? 'no_skip' : ''">
-                        <router-link :to="addressRoute(row.From)" class="link_style" :style="{'font-family': row.From ? 'Consolas,Ayuthaya ,monaco, monospace': ''}">{{formatMoniker(row.fromMoniker) || formatAddress(row.From)}}</router-link>
+                        <router-link :to="addressRoute(row.From)" class="link_style" :style="{'font-family': row.From ? 'Consolas,Courier ,monaco, monospace': ''}">{{formatMoniker(row.fromMoniker) || formatAddress(row.From)}}</router-link>
                     </span>
                 </div>
                 <span class="no_skip" v-show="(/^[0]\d*$/).test(row.From) || row.From === '--'">--</span>
@@ -58,7 +58,7 @@
                 <div class="name_address"
                     v-show="!(/^[0-9]\d*$/).test(row.address) && row.address && row.address !== '--'">
                     <span class="remove_default_style skip_route"
-                          style="font-family: Consolas"
+                          style="font-family: Consolas,Courier"
                         :class="row.address === $route.params.param?'no_skip':''">
                         <router-link
                             :to="addressRoute(row.address)"
@@ -90,7 +90,7 @@
                 </span>
                 <div class="name_address" v-show="!(/^[0-9]\d*$/).test(row.To) && row.To && row.To !== '--'">
                     <span class="remove_default_style skip_route" :class="row.To === $route.params.param?'no_skip':''">
-                        <router-link class="link_style" :style="{'font-family': row.From ? 'Consolas,Ayuthaya ,monaco, monospace': ''}" :to="addressRoute(row.To)" >{{formatMoniker(row.toMoniker) || formatAddress(row.To)}}</router-link>
+                        <router-link class="link_style" :style="{'font-family': row.From ? 'Consolas,Courier ,monaco, monospace': ''}" :to="addressRoute(row.To)" >{{formatMoniker(row.toMoniker) || formatAddress(row.To)}}</router-link>
                     </span>
                 </div>
                 <span class="no_skip" v-show="(/^[0]\d*$/).test(row.To) || row.To === '--'">--</span>
@@ -100,7 +100,7 @@
                     <div class="name_address">
                         <span
                             class="remove_default_style skip_route"
-                            style="font-family: Consolas"
+                            style="font-family: Consolas,Courier"
                             :class="row.Tx_Signer === $route.params.param?'no_skip':''"
                         >
                             <router-link

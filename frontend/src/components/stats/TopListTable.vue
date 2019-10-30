@@ -7,7 +7,7 @@
         <template slot-scope="{ row }" slot="Address" style="text-align: center">
           <span class="skip_route" style="display: flex" v-if="row.Address">
           <div class="name_address">
-            <span class="remove_default_style" style="font-family: Consolas;">
+            <span class="remove_default_style" style="font-family: Consolas,Courier;">
               <router-link :to="addressRoute(row.Address)" class="link_style">{{row.Address}}</router-link>
             </span>
           </div>

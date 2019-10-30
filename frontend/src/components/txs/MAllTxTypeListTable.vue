@@ -4,7 +4,7 @@
                  :data="items">
             <template slot-scope="{ row }" slot="txHash">
                 <div class="skip_route" v-if="row.txHash">
-                    <router-link :to="`/tx?txHash=${row.txHash}`" style="font-family: Consolas;" class="link_style common_font_style">{{formatTxHash(row.txHash)}}
+                    <router-link :to="`/tx?txHash=${row.txHash}`" style="font-family: Consolas,Courier;" class="link_style common_font_style">{{formatTxHash(row.txHash)}}
                     </router-link>
                 </div>
             </template>
@@ -15,7 +15,7 @@
             </template>
             <template slot-scope="{ row }" slot="signer">
                 <div class="skip_route" v-if="row.signer">
-                    <router-link :to="addressRoute(row.signer)" style="font-family: Consolas;" class="link_style common_font_style">{{formatAddress(row.signer)}}
+                    <router-link :to="addressRoute(row.signer)" style="font-family: Consolas,Courier;" class="link_style common_font_style">{{formatAddress(row.signer)}}
                     </router-link>
                 </div>
             </template>

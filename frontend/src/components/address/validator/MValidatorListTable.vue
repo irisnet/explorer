@@ -20,7 +20,7 @@
                 slot="operatorAddress">
         <span class="remove_default_style">
           <router-link :to="addressRoute(row.operatorAddress)"
-                       class="link_style operator_address_style">{{formatAddress(row.operatorAddress)}}</router-link>
+                       class="link_style operator_address_style" style="font-family: Consolas,Menlo">{{formatAddress(row.operatorAddress)}}</router-link>
         </span>
       </template>
     </m-table>
@@ -265,6 +265,6 @@ export default {
 
 <style lang="scss">
 .operator_address_style{
-  font-family: "Consolas","Ayuthaya","Menlo","Arial",-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: "Consolas","Courier","Menlo","Arial",-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 </style>
