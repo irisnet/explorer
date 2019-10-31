@@ -3,7 +3,7 @@
         <m-table :columns="fields" :data="items" :width="width">
             <template slot-scope="{ row }"
                       slot="address">
-                <router-link v-if="row.moniker" class="address_link" :to="`/validators/${row.address}`">{{formatAddress(row.moniker)}}</router-link>
+                <router-link v-if="row.moniker" class="address_link" :to="`/validators/${row.address}`">{{formatMoniker(row.moniker)}}</router-link>
                 <router-link v-if="!row.moniker" style="font-family:Consolas,Menlo" class="address_link" :to="`/validators/${row.address}`">{{formatAddress(row.address)}}</router-link>
             </template>
             <template slot-scope="{ row }" slot="txHash">
@@ -17,15 +17,15 @@
                 <span v-if="row.block == 0">{{row.block}}</span>
             </template>
             <template slot-scope="{ row }" slot="signer">
-                <div class="common_hover_address_parent" v-if="row.signer">
-                    <router-link :to="addressRoute(row.signer)" style="font-family:Consolas,Menlo" class="link_style common_font_style">{{formatAddress(row.signer)}}
+                <div class="common_hover_address_parent" v-if="row.signer"  style="font-family:Consolas,Menlo" >
+                    <router-link :to="addressRoute(row.signer)">{{formatAddress(row.signer)}}
                     </router-link>
                 </div>
             </template>
             <template slot-scope="{ row }" slot="token">
-                <div>
-                   <span v-if="row.token === 'IRIS'">
-                       <img style="width: 0.18rem;height:0.18rem;margin-right: 0.1rem" src="../../../assets/iris_token_logo.png">
+                <div style="display: flex;align-items: center">
+                   <span v-if="row.token === 'IRIS'" style="display: flex;align-items: center">
+                       <img style="width: 0.18rem;height:0.18rem;margin-right: 0.1rem;" src="../../../assets/iris_token_logo.png">
                    </span>
                     <span v-if="row.token !== 'IRIS'">
                         <i style="margin-right: 0.1rem;color:#B6BAD2;font-size: 0.18rem" class="iconfont iconqitabizhongwuiconshishiyongdemorenicon"></i>
@@ -222,6 +222,12 @@
 			        return Tools.formatTxHash(TxHash)
 		        }
 	        },
+	        formatMoniker(moniker) {
+		        if (!moniker) {
+			        return "";
+		        }
+		        return Tools.formatString(moniker, 15, "...");
+	        }
         }
 	}
 </script>

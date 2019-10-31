@@ -72,14 +72,18 @@
              :sort-desc.sync="sortDesc">
       <template slot-scope="{ row }"
                 slot="id">
-        <router-link :to="`/ProposalsDetail/${row.id}`"
-                     class="link_style">{{row.id}}</router-link>
+        <div class="skip_route">
+          <router-link :to="`/ProposalsDetail/${row.id}`"
+                       class="link_style">{{row.id}}</router-link>
+        </div>
       </template>
       <template slot-scope="{ row }"
                 slot="title">
-        <router-link v-if="row.id !== '--'" :to="`/ProposalsDetail/${row.id}`"
-                     class="link_style">{{row.title}}</router-link>
-        <span v-if="row.id === '--'">{{row.title}}</span>
+        <div class="skip_route">
+          <router-link v-if="row.id !== '--'" :to="`/ProposalsDetail/${row.id}`"
+                       class="link_style">{{row.title}}</router-link>
+          <span v-if="row.id === '--'">{{row.title}}</span>
+        </div>
       </template>
       <template slot-scope="{ row }"
                 slot="status">
@@ -274,5 +278,8 @@ export default {
         }
       }
     }
+  }
+  .link_style{
+    color: var(--bgColor) !important;
   }
 </style>

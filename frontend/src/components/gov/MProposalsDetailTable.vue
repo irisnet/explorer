@@ -23,6 +23,7 @@
                 <router-link
                     class="skip_route"
                     :to="`/tx?txHash=${row.Tx_Hash}`"
+                    style="font-family: Consolas,Menlo"
                 >{{row.Tx_Hash ? `${formatTxHash(String(row.Tx_Hash))}` : ''}}</router-link>
             </template>
             <template slot="Block" slot-scope="{ row }">
