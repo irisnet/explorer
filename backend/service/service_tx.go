@@ -290,7 +290,7 @@ func (service *TxService) QueryTxNumGroupByDay() vo.TxNumGroupByDayVoRespond {
 
 func (service *TxService) QueryTxType(txType string) vo.QueryTxTypeRespond {
 	if txType == "all" {
-		length := len(types.BankList) + len(types.DeclarationList) + len(types.StakeList) + len(types.GovernanceList) + len(types.AssetList) + len(types.RandList)
+		length := len(types.BankList) + len(types.DeclarationList) + len(types.StakeList) + len(types.GovernanceList) + len(types.AssetList) + len(types.RandList) + len(types.GuardianList)
 		typeList := make([]string, 0, length)
 		res := append(typeList, types.BankList...)
 		res = append(res, types.DeclarationList...)
@@ -298,6 +298,7 @@ func (service *TxService) QueryTxType(txType string) vo.QueryTxTypeRespond {
 		res = append(res, types.GovernanceList...)
 		res = append(res, types.AssetList...)
 		res = append(res, types.RandList...)
+		res = append(res, types.GuardianList...)
 		return res
 	}
 	switch txType {
@@ -313,6 +314,8 @@ func (service *TxService) QueryTxType(txType string) vo.QueryTxTypeRespond {
 		return types.AssetList
 	case "rand":
 		return types.RandList
+	case "guardian":
+		return types.GuardianList
 	}
 	return nil
 }
