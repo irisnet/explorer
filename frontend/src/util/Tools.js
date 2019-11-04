@@ -437,8 +437,8 @@ export default class Tools{
 				}
 				if(item.fee.amount && item.fee.denom){
 					let feeAmount = item.fee.amount;
-					transferFee = `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(feeAmount)))}`;
-					Fee = `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(feeAmount)),4)} ${Tools.formatDenom(item.fee.denom).toUpperCase()}`;
+					transferFee = `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(feeAmount)),6)}`;
+					Fee = `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(feeAmount)),6)} ${Tools.formatDenom(item.fee.denom).toUpperCase()}`;
 				}
 				commonHeaderObjList = {
 					'Tx_Hash' : item.hash,
