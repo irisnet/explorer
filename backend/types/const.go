@@ -107,9 +107,10 @@ const (
 	TxTag_WithDrawRewardFromValidator = "withdraw-reward-from-validator-"
 	TxTag_WithDrawAddress             = "withdraw-address"
 
-	IRISUint   = "iris"
-	IRISAttoUint   = "iris-atto"
+	IRISUint      = "iris"
+	IRISAttoUint  = "iris-atto"
 	AssetMinDenom = "-min"
+	Unknown       = "unknown"
 )
 
 var (
@@ -139,6 +140,11 @@ var (
 	TxTypeEditGateway          = "EditGateway"
 	TxTypeTransferGatewayOwner = "TransferGatewayOwner"
 
+	TxTypeAddProfiler    = "AddProfiler"
+	TxTypeAddTrustee     = "AddTrustee"
+	TxTypeDeleteTrustee  = "DeleteTrustee"
+	TxTypeDeleteProfiler = "DeleteProfiler"
+
 	TxTypeRequestRand = "RequestRand"
 
 	TypeValStatusUnbonded  = "Unbonded"
@@ -161,6 +167,7 @@ var (
 	DeclarationList = []string{TxTypeStakeCreateValidator, TxTypeStakeEditValidator, TxTypeUnjail}
 	StakeList       = []string{TxTypeStakeDelegate, TxTypeBeginRedelegate, TxTypeSetWithdrawAddress, TxTypeStakeBeginUnbonding, TxTypeWithdrawDelegatorReward, TxTypeWithdrawDelegatorRewardsAll, TxTypeWithdrawValidatorRewardsAll}
 	GovernanceList  = []string{TxTypeSubmitProposal, TxTypeDeposit, TxTypeVote}
+	GuardianList    = []string{TxTypeAddProfiler, TxTypeAddTrustee, TxTypeDeleteProfiler, TxTypeDeleteTrustee}
 
 	ForwardList = []string{TxTypeBeginRedelegate}
 	//TxTypeExcludeGov = append(append(DeclarationList, StakeList...), BankList...)
