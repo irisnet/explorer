@@ -1,20 +1,20 @@
 <template>
-    <div>
-        <div class="gateway_asset_list_container">
-            <div class="gateway_asset_list_header_content">
-                <div class="gateway_asset_list_header_wrap">
-                    <h2 class="gateway_header_title_content">
-                        Gateway Assets
-                    </h2>
-                </div>
+    <div class="gateway_asset_list_container">
+        <div class="gateway_asset_list_header_content">
+            <div class="gateway_asset_list_header_wrap">
+                <h2 class="gateway_header_title_content">
+                    Gateway Assets
+                </h2>
             </div>
-            <div class="gateway_asset_list_content">
-                <div class="gateway_asset_list_wrap">
+        </div>
+        <div class="gateway_asset_list_content">
+            <div class="gateway_asset_list_wrap">
+                <div>
                     <m-asset-list-table :showNoData="showNoData" :items="gatewayAssetList" name="gatewayAssetList"></m-asset-list-table>
                 </div>
-                <div class="no_data_img_content" v-show="gatewayAssetList.length === 0 && !showLoading">
-                    <img class="no_data_img" src="../../assets/no_data.svg">
-                </div>
+            </div>
+            <div v-show="gatewayAssetList.length === 0 ">
+                <img class="no_data_img" src="../../assets/no_data.svg">
             </div>
         </div>
     </div>
@@ -76,9 +76,13 @@
 <style scoped lang="scss">
     .gateway_asset_list_container{
         width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
+        position: relative;
+        .no_data_img{
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%,-50%);
+        }
         .gateway_asset_list_header_content{
             width: 100%;
             .gateway_asset_list_header_wrap{
@@ -92,24 +96,30 @@
                     line-height: 0.7rem;
                 }
             }
-            .no_data_img{
-                position: absolute;
-                left: 50%;
-                top: 50%;
-                transform: translate(-50%,-50%);
-            }
         }
         .gateway_asset_list_content{
             max-width: 12.8rem;
-            margin: 0 auto;
-            flex: 1;
+            margin: 0 auto 0.4rem auto;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             .gateway_asset_list_wrap{
                 width: 100%;
-                overflow-x: auto;
+                & > div{
+                    overflow-x: auto;
+                }
+            }
+        }
+    }
+    @media screen and (max-width: 910px){
+        .gateway_asset_list_container{
+            .gateway_asset_list_content{
+                .gateway_asset_list_wrap{
+                    & > div{
+                        margin: 0 0.1rem;
+                    }
+                }
             }
         }
     }
