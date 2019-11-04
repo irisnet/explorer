@@ -7,6 +7,7 @@ import (
 	"github.com/irisnet/explorer/backend/orm"
 	"github.com/irisnet/explorer/backend/types"
 	"gopkg.in/mgo.v2/bson"
+	"github.com/irisnet/explorer/backend/utils"
 )
 
 const (
@@ -158,6 +159,7 @@ func (_ CommonTx) QueryByAddr(addr string, pageNum, pageSize int, istotal bool) 
 	query[Tx_Field_Type] = bson.M{
 		"$in": typeArr,
 	}
+	query = utils.FilterUnknownTxs(query)
 
 	total, err := pageQuery(CollectionNmCommonTx, nil, query, desc(Tx_Field_Time), pageNum, pageSize, istotal, &data)
 
@@ -216,6 +218,7 @@ func (_ CommonTx) CountByType(query bson.M) (Counter, error) {
 	query[Tx_Field_Type] = bson.M{
 		"$in": typeArr,
 	}
+	query = utils.FilterUnknownTxs(query)
 
 	counter := Counter{}
 
@@ -265,6 +268,7 @@ func (_ CommonTx) GetTxCountByDuration(startTime, endTime time.Time) (int, error
 	txStore := db.C(CollectionNmCommonTx)
 
 	query := bson.M{}
+	query = utils.FilterUnknownTxs(query)
 	query["time"] = bson.M{"$gte": startTime, "$lt": endTime}
 
 	return txStore.Find(query).Count()
@@ -275,6 +279,7 @@ func (_ CommonTx) QueryProposalTxFromById(idArr []uint64) (map[uint64]string, er
 	selector := bson.M{Tx_Field_From: 1, Tx_Field_ProposalId: 1}
 	condition := bson.M{Tx_Field_Type: "SubmitProposal", Tx_Field_Status: "success", Tx_Field_ProposalId: bson.M{"$in": idArr}}
 	var txs []CommonTx
+	condition = utils.FilterUnknownTxs(condition)
 
 	err := queryAll(CollectionNmCommonTx, selector, condition, desc(Tx_Field_Time), 0, &txs)
 
@@ -292,6 +297,7 @@ func (_ CommonTx) QueryProposalTxListById(idArr []uint64) ([]CommonTx, error) {
 	selector := bson.M{Tx_Field_Amount: 1, Tx_Field_ProposalId: 1}
 	condition := bson.M{Tx_Field_Type: "SubmitProposal", Tx_Field_Status: "success", Tx_Field_ProposalId: bson.M{"$in": idArr}}
 	var txs []CommonTx
+	condition = utils.FilterUnknownTxs(condition)
 
 	err := queryAll(CollectionNmCommonTx, selector, condition, desc(Tx_Field_Time), 0, &txs)
 
@@ -301,6 +307,7 @@ func (_ CommonTx) QueryProposalTxListById(idArr []uint64) ([]CommonTx, error) {
 func (_ CommonTx) QueryProposalInitAmountTxById(id int) (CommonTx, error) {
 	selector := bson.M{Tx_Field_Amount: 1, Tx_Field_ProposalId: 1}
 	condition := bson.M{Tx_Field_Type: "SubmitProposal", Tx_Field_Status: "success", Tx_Field_ProposalId: id}
+	condition = utils.FilterUnknownTxs(condition)
 	var txs CommonTx
 
 	err := queryOne(CollectionNmCommonTx, selector, condition, &txs)
@@ -323,6 +330,7 @@ func (_ CommonTx) QueryProposalTxById(proposalId int64, page, size int, total bo
 		Tx_Field_Type:       types.TxTypeVote,
 		Tx_Field_From:       bson.M{"$in": iaaAddrs},
 	}
+	condition = utils.FilterUnknownTxs(condition)
 	sort := fmt.Sprintf("-%v", Tx_Field_Height)
 
 	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, total, &txs)
@@ -347,6 +355,7 @@ func (_ CommonTx) QueryDepositedProposalTxByValidatorWithSubmitOrDepositType(val
 			"$in": []string{types.TxTypeSubmitProposal, types.TxTypeDeposit},
 		},
 	}
+	condition = utils.FilterUnknownTxs(condition)
 	sort := fmt.Sprintf("-%v", Tx_Field_Height)
 	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, total, &txs)
 
@@ -370,6 +379,7 @@ func (_ CommonTx) QueryProposalTxByIdWithSubmitOrDepositType(proposalId int64, p
 			"$in": []string{types.TxTypeSubmitProposal, types.TxTypeDeposit},
 		},
 	}
+	condition = utils.FilterUnknownTxs(condition)
 	sort := fmt.Sprintf("-%v", Tx_Field_Height)
 	num, err := pageQuery(CollectionNmCommonTx, selector, condition, sort, page, size, total, &txs)
 
@@ -394,6 +404,7 @@ func (_ CommonTx) QueryTxAsset(assetType, tokenType, symbol, gateway string, pag
 	condition := bson.M{
 		Tx_Field_Msgs_UdInfo: assetType,
 	}
+	condition = utils.FilterUnknownTxs(condition)
 	if tokenType != "" {
 		condition[Tx_Field_Type] = tokenType
 	} else {
@@ -437,6 +448,7 @@ func (_ CommonTx) QueryTxTransferGatewayOwner(moniker string, page, size int, to
 	condition := bson.M{
 		Tx_Field_Type: Tx_Asset_TxType_TransferGatewayOwner,
 	}
+	condition = utils.FilterUnknownTxs(condition)
 	if moniker != "" {
 		condition[Tx_Field_Msgs_Moniker] = moniker
 	}
