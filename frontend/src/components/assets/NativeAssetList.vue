@@ -13,7 +13,7 @@
                     <m-asset-list-table :showNoData="showNoData" :items="nativeAssetList" name="nativeAssetList"></m-asset-list-table>
                 </div>
             </div>
-            <div v-show="nativeAssetList.length === 0 && !showLoading">
+            <div v-show="nativeAssetList.length === 0">
                 <img class="no_data_img" src="../../assets/no_data.svg">
             </div>
         </div>
