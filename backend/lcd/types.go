@@ -474,6 +474,18 @@ type DelegationVo struct {
 	Height        int64 `json:"height,string"`
 }
 
+type ValidatorDelegations []DelegationVo
+
+func (sort ValidatorDelegations) Len() int {
+	return len(sort)
+}
+func (sort ValidatorDelegations) Swap(i, j int) {
+	sort[i], sort[j] = sort[j], sort[i]
+}
+func (sort ValidatorDelegations) Less(i, j int) bool {
+	return sort[i].Height > sort[j].Height
+}
+
 type DistributionRewards struct {
 	Total       utils.CoinsAsStr         `json:"total"`
 	Delegations []RewardsFromDelegations `json:"delegations"`
