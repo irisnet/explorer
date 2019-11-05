@@ -463,7 +463,7 @@ func FilterUnknownTxs(query bson.M) bson.M {
 		query["status"] = status.(string)
 	} else {
 		query["status"] = bson.M{
-			"$nin": []string{types.Unknown},
+			"$in": []string{TxStatusSuccess, TxStatusFail},
 		}
 	}
 	return query
