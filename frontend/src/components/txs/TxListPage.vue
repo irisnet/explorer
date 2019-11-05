@@ -107,7 +107,7 @@
 				TxType:''
 			}
 		},
-		created(){
+		mounted(){
 			this.getType();
 			this.getTxListByFilterCondition();
 		},
@@ -226,7 +226,6 @@
 				})
 			},
 			getTxListByFilterCondition(){
-
 				this.flShowLoading = true;
 				let param = {};
 				param.getTxListByTypeAndTxType = {};
@@ -239,8 +238,8 @@
 				param.getTxListByTypeAndTxType.endTime = this.filterEndTime;
 				Service.commonInterface(param, (txList) => {
 					try {
-						if(txList && txList.Data){
-							this.count = txList.Count;
+                        this.count = txList.Count;
+                        if(txList && txList.Data){
 							sessionStorage.setItem('txTotal',txList.Count);
 							this.totalPageNum =  Math.ceil((txList.Count/this.pageSize) === 0 ? 1 : (txList.Count/this.pageSize));
 							sessionStorage.setItem('txpagenum',JSON.stringify(this.totalPageNum));

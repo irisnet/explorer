@@ -724,7 +724,6 @@ export default class Tools{
 	 * 从amount字段中获取amount
 	* */
 	static formatListByAmount(amount){
-		console.log(amount)
 		let [amountNumber,tokenName] = ['--','--'];
 		if(amount instanceof Array && amount.length > 0) {
 			if (amount[0].denom && amount[0].amount && amount[0].denom === Constant.Denom.IRISATTO) {
@@ -756,13 +755,15 @@ export default class Tools{
 	 * 从tags中的balance获取amount
 	 * */
 	static formatListByTagsBalance(tags){
-		let amountNumber,tokenName;
-		let tokenValue = Tools.formatAccountCoinsAmount(tags.balance);
-		let tokenStr = String(Tools.numberMoveDecimal(tokenValue[0],18));
-		amountNumber =  Tools.formatStringToFixedNumber(tokenStr,2);
-		tokenName = Constant.Denom.IRIS.toLocaleUpperCase()
-		// console.log(amountNumber,tokenName,"share information")
+		let [amountNumber,tokenName] = ['--','--'];
+		if(tags && tags.balance){
+			let tokenValue = Tools.formatAccountCoinsAmount(tags.balance);
+			let tokenStr = String(Tools.numberMoveDecimal(tokenValue[0],18));
+			amountNumber =  Tools.formatStringToFixedNumber(tokenStr,2);
+			tokenName = Constant.Denom.IRIS.toLocaleUpperCase()
+		}
 		return {amountNumber,tokenName}
+		// console.log(amountNumber,tokenName,"share information")
 	
 	}
 }
