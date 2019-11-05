@@ -237,7 +237,9 @@ export default {
 @import "../../style/mixin";
 
 .faucet {
-    background: white;
+    max-width: 12.8rem;
+    margin: 0 auto;
+    text-align: center;
     padding: 0.7rem 0;
     .coin {
         display: flex;
@@ -279,6 +281,7 @@ export default {
         }
     }
     .btn-primary {
+        border:none;
         margin-top: 0.2rem;
         /*box-shadow: 0 0 0 transparent;*/
         @include borderRadius(0.04rem);
@@ -378,7 +381,7 @@ input {
     color: #000 !important;
 }
 #address {
-    @include inputBoxShadow;
+    border: 0.01rem solid #d7d9e0;
 }
 #address:-webkit-autofill {
     background-color: rgb(255, 255, 255) !important;

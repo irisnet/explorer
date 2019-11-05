@@ -709,7 +709,8 @@
                     font-size: 0.22rem;
                     .address_information_header{
                         padding: 0 0.2rem;
-                        color: #171D44;
+                        color: #515a6e;
+                        font-weight: bold;
                         .address_information_address_status_profiler{
                             background: var(--bgColor);
                             font-size: 0.12rem;

@@ -1136,8 +1136,8 @@ export default {
       height: 0.5rem;
       line-height: 0.5rem;
       font-size: 0.18rem;
-      color: #000000;
-      @include fontWeight;
+      color: #515a6e;
+      font-weight: bold;
       margin-left: 0.2rem;
       margin-bottom: 0;
       font-family: ArialMT;

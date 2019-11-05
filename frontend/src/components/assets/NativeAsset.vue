@@ -315,7 +315,7 @@
             .native_asset_list_title_content{
                 .native_asset_list_title{
                     padding-left: 0.1rem;
-                    color: #171d44;
+                    color: #515a6e;
                 }
             }
 
@@ -334,7 +334,7 @@
                 background-color: #F5F7FD;
                 .native_asset_list_title{
                     font-size: 0.18rem;
-                    color: #171d44;
+                    color: #515a6e;
                     font-weight: bold;
                 }
             }

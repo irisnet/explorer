@@ -788,9 +788,9 @@ export default {
             height: 0.7rem !important;
             line-height: 0.7rem !important;
             font-size: 0.18rem !important;
-            color: #000000;
+            color: #515a6e;
+            font-weight: bold;
             margin-bottom: 0;
-            @include fontWeight;
             .proposal_title{
                 padding-left: 0.1rem;
             }
@@ -930,9 +930,9 @@ export default {
 
         .proposals_information_content_title {
             font-size: 0.18rem !important;
-            color: #000000;
+            color: #515a6e;
+            font-weight: bold;
             padding: 0.2rem 0 0.2rem 0.1rem;
-            @include fontWeight;
                 span:first-child{
                     padding-right: 0.1rem;
                 }

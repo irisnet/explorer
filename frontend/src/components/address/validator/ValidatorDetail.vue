@@ -955,7 +955,7 @@ export default {
     .title {
         font-size: 22px;
         font-weight: bold;
-        color: var(--titleColor);
+        color: #515a6e;
     }
     .status_btn {
         margin-left: 0.1rem;

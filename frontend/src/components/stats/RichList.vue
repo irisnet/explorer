@@ -169,7 +169,8 @@ export default {
                     display: flex;
                     align-items: center;
                     font-size: 0.18rem;
-                    color: var(--titleColor);
+                    color: #515a6e;
+                    font-weight: bold;
                     line-height: 0.26rem;
                 }
                 .tooltip_icon {

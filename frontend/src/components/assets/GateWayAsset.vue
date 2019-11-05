@@ -336,7 +336,8 @@
                 background-color: #F5F7FD;
                 .gateway_asset_list_title{
                     font-size: 0.18rem;
-                    font-weight: 500;
+                    font-weight: bold;
+                    color: #515a6e;
                 }
             }
         }

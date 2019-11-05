@@ -196,6 +196,8 @@ export default {
                 line-height: 0.7rem;
                 padding-left: 0.2rem;
                 font-size: 0.18rem;
+                color: #515a6e;
+                font-weight: bold;
             }
             .table_contanier {
                 display: flex;
