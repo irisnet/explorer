@@ -459,12 +459,12 @@ func (_ CommonTx) QueryTxTransferGatewayOwner(moniker string, page, size int, to
 
 func FilterUnknownTxs(query bson.M) bson.M {
 
-	cond := bson.M{
-		"$nin": []string{types.Unknown},
-	}
 	if status, ok := query["status"]; ok {
-		cond["$in"] = []string{status.(string)}
+		query["status"] = status.(string)
+	} else {
+		query["status"] = bson.M{
+			"$nin": []string{types.Unknown},
+		}
 	}
-	query["status"] = cond
 	return query
 }
