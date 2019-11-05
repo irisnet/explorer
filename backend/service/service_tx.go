@@ -29,7 +29,7 @@ func (service *TxService) GetModule() Module {
 // get tx list
 func (service *TxService) QueryTxList(query bson.M, page, pageSize int, istotal bool) vo.PageVo {
 
-	query = FilterUnknownTxs(query)
+	query = document.FilterUnknownTxs(query)
 	total, data, err := document.CommonTx{}.QueryByPage(query, page, pageSize, istotal)
 
 	if err != nil {
@@ -91,7 +91,7 @@ func (service *TxService) QueryTxList(query bson.M, page, pageSize int, istotal 
 func (service *TxService) QueryBaseList(query bson.M, page, pageSize int, istotal bool) (pageInfo vo.PageVo) {
 	logger.Debug("QueryBaseList start", service.GetTraceLog())
 
-	query = FilterUnknownTxs(query)
+	query = document.FilterUnknownTxs(query)
 	total, txList, err := document.CommonTx{}.QueryByPage(query, page, pageSize, istotal)
 
 	if err != nil {
@@ -320,12 +320,6 @@ func (service *TxService) QueryTxType(txType string) vo.QueryTxTypeRespond {
 	return nil
 }
 
-func FilterUnknownTxs(query bson.M) bson.M {
-	query["status"] = bson.M{
-		"$nin": []string{types.Unknown},
-	}
-	return query
-}
 
 
 func buildTxVOFromDoc(tx document.CommonTx) vo.CommonTx {
