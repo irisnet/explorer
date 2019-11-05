@@ -11,8 +11,6 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"github.com/irisnet/explorer/backend/logger"
-	"gopkg.in/mgo.v2/bson"
-	"github.com/irisnet/explorer/backend/types"
 )
 
 func RemoveDuplicationStrArr(list []string) []string {
@@ -138,16 +136,4 @@ func Md5Encryption(data []byte) string {
 	md5Ctx := md5.New()
 	md5Ctx.Write(data)
 	return hex.EncodeToString(md5Ctx.Sum(nil))
-}
-
-func FilterUnknownTxs(query bson.M) bson.M {
-
-	cond := bson.M{
-		"$nin": []string{types.Unknown},
-	}
-	if status, ok := query["status"]; ok {
-		cond["$in"] = []string{status.(string)}
-	}
-	query["status"] = cond
-	return query
 }
