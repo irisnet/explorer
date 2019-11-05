@@ -222,6 +222,10 @@ export default {
                 height: 0.7rem;
                 align-items: center;
                 z-index: 5;
+                span:nth-of-type(1){
+                    color: #515a6e;
+                    font-weight: bold;
+                }
                 .skip_route {
                     margin-left: 0.09rem;
                     a {

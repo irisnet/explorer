@@ -142,59 +142,49 @@
 	                    title:'Owner',
 	                    slot: 'Owner',
 	                    tooltip: true,
-	                    tooltipClassName: 'tooltip_left'
                     },
 	                {
 		                title:'Gateway',
 		                slot: 'Gateway',
-		                tooltipClassName: 'tooltip_left'
 	                },
 	                {
 		                title:'Symbol',
 		                slot: 'Symbol',
-		                tooltipClassName: 'tooltip_left'
 	                },
 	                {
 		                title:'InitialSupply',
 		                // key:'InitialSupply',
 		                slot: 'InitialSupply',
-		                tooltipClassName: 'tooltip_left'
 	                },
 	                {
 		                title:'Mintable',
 		                key:'Mintable',
 		                slot: 'Mintable',
-		                tooltipClassName: 'tooltip_left'
 	                },
 	                {
 		                title:'Block',
 		                slot: 'Block',
 		                width: 100,
-		                tooltipClassName: 'tooltip_left'
 	                },
 	                {
 		                title:'TxHash',
 		                slot: 'TxHash',
 		                tooltip: true,
-		                tooltipClassName: 'tooltip_left'
 	                },
 	                {
 		                title:'Fee',
 		                key:'TxFee',
 		                slot: 'TxFee(IRIS)',
-		                tooltipClassName: 'tooltip_left'
 	                },
 	                {
 		                title:'Status',
 		                key:'TxStatus',
 		                slot: 'TxStatus',
-		                tooltipClassName: 'tooltip_left'
 	                },
 	                {
 		                title:'Timestamp',
 		                key:'Timestamp',
 		                slot: 'Timestamp',
-		                tooltipClassName: 'tooltip_left'
 	                }
                 ],
 				nativeIssueToken: [
@@ -469,7 +459,41 @@
 	}
 </script>
 
-<style lang="scss" >
+<style lang="scss" scoped>
+    .name_address {
+        display: inline-block;
+        position: relative;
+        .address {
+            display: none;
+            position: absolute;
+            padding: 0rem 0.15rem;
+            top: -0.36rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            background: rgba(0, 0, 0, 1);
+            border-radius: 0.04rem;
+            z-index: 10;
+            line-height: 32px;
+            font-size: 0.14rem;
+            &::after {
+                width: 0;
+                height: 0;
+                border: 0.06rem solid transparent;
+                content: "";
+                display: block;
+                position: absolute;
+                border-top-color: #000000;
+                left: 50%;
+                margin-left: -6px;
+            }
+        }
+        &:hover {
+            .address {
+                display: block;
+            }
+        }
+    }
 .tx_container_table{
     .m-table-header{
         overflow: hidden;

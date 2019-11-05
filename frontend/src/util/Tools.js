@@ -31,11 +31,17 @@ export default class Tools{
 			return`${str}`
 		}
 	}
+	/**
+	 * 获取时间差值
+	 * */
 	static getDiffMilliseconds(currentServerTime,time){
 		let dateBegin = new Date(time);
 		let dateDiff = currentServerTime - dateBegin.getTime();
 		return dateDiff
 	}
+	/**
+	 * 根据毫秒数算出相差的天 小时 分钟 秒
+	 * */
 	static formatDuring(ms) {
 		let s = ms/1000;
 		let days = (s / (60 * 60 * 24));
@@ -48,8 +54,6 @@ export default class Tools{
 	}
 	/**
 	 * 判断当前是移动端还是pc端
-	 * param void;
-	 * return boolean
 	 */
 	static currentDeviceIsPersonComputer(){
 		const userAgentInfo = navigator.userAgent;
@@ -65,20 +69,27 @@ export default class Tools{
 	}
 	
 	/**
-	 * 后端返回的数据转换成标准格式
-	 * param string;
-	 * return string
+	 * 后端返回的数据转换成标准格式 (+UTC)
 	 */
 	static format2UTC(originTime){
 		return `${originTime.substr(0,4)}/${originTime.substr(5,2)}/${originTime.substr(8,2)} ${originTime.substr(11,8)}+UTC`;
 	}
-	
+	/**
+	 * 后端返回的数据转换成标准格式 ()
+	 */
 	static conversionTimeToUTCByValidatorsLine(originTime){
 		return `${originTime.substr(0,4)}/${originTime.substr(5,2)}/${originTime.substr(8,2)} ${originTime.substr(11,8)}`;
 	}
+	/**
+	 * 格式化数字（除以10的18次方）
+	 * */
 	static formatNumber(num){
 		return new BigNumber(num).div(1000000000000000000).toNumber();
 	}
+	/**
+	 * 格式化数字并保留两位数(可以废除)
+	 *
+	 * */
 	static formatRate(rate){
 		let toFixedValue = 2;
 		let rateNum = new BigNumber(rate).multipliedBy(100).toNumber();
@@ -88,13 +99,15 @@ export default class Tools{
 			return Tools.toFixedformatNumber(rateNum,toFixedValue)
 		}
 	}
+	/**
+	 * 格式化数字（除以10的18次方）
+	 * */
 	static formaNumberAboutGasPrice(num){
 		return new BigNumber(num).div(1000000000).toNumber();
 	}
 	/**
-	 * 格式化数字类型是string的数字并让小数点左移18位
-	 * param string or number;
-	 * return string
+	 * 格式化数字类型是string的数字并让小数点左移18位 (本质是移动小数点的位置)
+	 *
 	 */
 	static numberMoveDecimal(number){
 		let leftLength = -18;
@@ -105,7 +118,10 @@ export default class Tools{
 		}
 	}
 	
-	
+	/**
+	 * 格式化数字（可废除）
+	 */
+
 	static formatStringToNumber(number){
 		if(number.toString().indexOf('e') !== -1 || number.toString().indexOf('E') !== -1){
 			number = new BigNumber(number).toFixed().toString();
@@ -134,6 +150,10 @@ export default class Tools{
 			return Tools.formatContinuousNumberZero(completeNumberString)
 		}
 	}
+	
+	/**
+	 *处理Token(可废除)
+	 */
 	static formatToken (token) {
 		let coin = {};
 		let amount = '';
@@ -148,8 +168,6 @@ export default class Tools{
 	}
 	/**
 	 * 去除数字的类型是string的尾部连续为 0 的数字
-	 * param string;
-	 * return string
 	 */
 	static formatContinuousNumberZero(str){
 		let i;
@@ -168,8 +186,6 @@ export default class Tools{
 	}
 	/**
 	 * 格式化数字的类型是string的数字并在小数点后面超过多少位以后加 ...
-	 * param string;
-	 * return string
 	 */
 	static formatStringToFixedNumber(str,splitNum){
 		if(str.indexOf(".") !== -1) {
@@ -310,19 +326,6 @@ export default class Tools{
 		let formattedInteger = integer.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 		return decimals ? `${formattedInteger}.${decimals}` : `${formattedInteger}`;
 	}
-	
-	static formatBalance(number, places, symbol, thousand, decimal) {
-		number = number || 0;
-		places = !isNaN(places = Math.abs(places)) ? places : 2;
-		symbol = symbol !== undefined ? symbol : "";
-		thousand = thousand || ",";
-		decimal = decimal || "";
-		var negative = number < 0 ? "-" : "",
-			i = parseInt(number = Math.abs(+number || 0).toFixed(places), 10) + "",
-			j = (j = i.length) > 3 ? j % 3 : 0;
-		return symbol + negative + (j ? i.substr(0, j) + thousand : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousand) + (places ? decimal : "");
-	}
-	
 	static formatDenom(denom){
 		if(denom.toLowerCase() === "iris-atto" || denom.toLowerCase() === "iris"){
 			return "IRIS"
@@ -394,47 +397,11 @@ export default class Tools{
 			return list.map(item => {
 				let [Amount,Fee,transferAmount,transferFee,tokenId] = ['--','--','--','--','--'];
 				let commonHeaderObjList,objList,commonFooterObjList;
-				if(item.amount){
-					if(item.amount instanceof Array && item.amount.length > 0){
-						if(item.amount[0].denom && item.amount[0].amount && item.amount[0].denom === Constant.Denom.IRISATTO){
-							transferAmount = item.amount[0].formatAmount = item.amount[0].amount > 0 ? Tools.formatStringToFixedNumber(String(Tools.numberMoveDecimal(item.amount[0].amount)),2) : item.amount[0].amount;
-							tokenId = item.amount[0].tokenId = Constant.Denom.IRIS.toLocaleUpperCase();
-							Amount = item.amount.map(listItem=>`${listItem.formatAmount} ${Tools.formatDenom(listItem.denom).toUpperCase()}`).join(',');
-						}else if(item.amount[0].denom && item.amount[0].amount && item.amount[0].denom !== Constant.Denom.IRISATTO){
-							transferAmount = item.amount[0].formatAmount = Tools.FormatScientificNotationToNumber(item.amount[0].amount);
-							tokenId = item.amount[0].tokenId = item.amount[0].denom.toLocaleUpperCase();
-						}else {
-							transferAmount = item.amount[0].formatAmount = item.amount[0].amount;
-							tokenId = item.amount[0].tokenId = item.amount[0].denom.toLocaleUpperCase();
-							if(item.type === 'BeginUnbonding' || item.type === 'BeginRedelegate'){
-								if(item.status === 'success'){
-									if(item.tags.balance){
-										let tokenValue = Tools.formatAccountCoinsAmount(item.tags.balance);
-										let tokenStr = String(Tools.numberMoveDecimal(tokenValue[0],18));
-										item.amount[0].formatAmount =  Tools.formatStringToFixedNumber(tokenStr,2);
-										Amount = item.amount.map(listItem => `${listItem.formatAmount} IRIS`).join(',');
-									}
-								}
-							}
-						}
-					}else if(item.amount && Object.keys(item.amount).includes('amount') && Object.keys(item.amount).includes('denom')){
-						if(item.amount.denom === Constant.Denom.IRISATTO){
-							transferAmount = Tools.formatStringToFixedNumber(String(Tools.numberMoveDecimal(item.amount)),2);
-							tokenId = Constant.Denom.IRIS.toLocaleUpperCase();
-							Amount = `${transferAmount}  ${Tools.formatDenom(item.amount.denom).toUpperCase()}`;
-							
-						}else if(!item.amount.denom){
-							transferAmount = Tools.FormatScientificNotationToNumber(item.amount);
-							tokenId = ''
-						}else {
-							transferAmount = item.amount;
-							tokenId = item.denom.toLocaleUpperCase();
-							if(item.type === 'BeginUnbonding' || item.type === 'BeginRedelegate'){
-								Amount = item.amount.map(listItem => `${listItem.amount} SHARES`).join(',');
-							}
-						}
-					}
-				}
+				let formatListAmount;
+				formatListAmount = Tools.formatListAmount(item);
+				Amount = formatListAmount.amountNumber === '--' || formatListAmount.tokenName === '--' ? '--' : `${formatListAmount.amountNumber} ${formatListAmount.tokenName}`;
+				transferAmount = formatListAmount.amountNumber === '--' ? '--' : formatListAmount.amountNumber;
+				tokenId = formatListAmount.tokenName === '--' ? '--' : formatListAmount.tokenName;
 				if(item.fee.amount && item.fee.denom){
 					let feeAmount = item.fee.amount;
 					transferFee = `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(feeAmount)),6)}`;
@@ -667,5 +634,136 @@ export default class Tools{
 			number = formatNumberValue
 		}
 		return number
+	}
+	/**
+	* 交易列表Amount方法重构(data -> 后端返回数据的结构)
+	* */
+	static formatListAmount(data){
+		let amount;
+		if(data && data.type){
+			switch (data.type) {
+				case 'Transfer' :
+					amount = Tools.formatListByAmount(data.amount)
+				break;
+				case 'Burn':
+					amount = Tools.formatListByAmount(data.amount)
+				break;
+				case 'SetMemoRegexp':
+					amount = Tools.formatListByAmount(data.amount)
+					break;
+				case 'CreateValidator':
+					amount = Tools.formatListByAmount(data.amount)
+					break;
+				case 'EditValidator':
+					amount = Tools.formatListByAmount(data.amount)
+					break;
+				case 'Unjail':
+					amount = Tools.formatListByAmount(data.amount)
+					break;
+				case 'Delegate':
+					amount = Tools.formatListByAmount(data.amount)
+					break;
+				case 'BeginRedelegate':
+					amount = Tools.formatListByTagsBalance(data.tags)
+					break;
+				case 'SetWithdrawAddress':
+					amount = Tools.formatListByAmount(data.amount)
+					break;
+				case 'BeginUnbonding':
+					amount = Tools.formatListByTagsBalance(data.tags)
+					break;
+				case 'WithdrawDelegatorReward':
+					amount = Tools.formatListByAmount(data.amount)
+					break;
+				case 'WithdrawDelegatorRewardsAll':
+					amount = Tools.formatListByAmount(data.amount)
+					break;
+				case 'WithdrawValidatorRewardsAll':
+					amount = Tools.formatListByAmount(data.amount)
+					break;
+				case 'SubmitProposal':
+					amount = Tools.formatListByAmount(data.amount)
+					break;
+				case 'Deposit':
+					amount = Tools.formatListByAmount(data.amount)
+					break;
+				case 'Vote':
+					amount = Tools.formatListByAmount(data.amount)
+					break;
+				case 'IssueToken':
+					amount = Tools.formatListByAmount(data.amount)
+					break;
+				case 'EditToken':
+					amount = Tools.formatListByAmount(data.amount)
+					break;
+				case 'MintToken':
+					amount = Tools.formatListByAmount(data.amount)
+					break;
+				case 'TransferTokenOwner':
+					amount = Tools.formatListByAmount(data.amount)
+					break;
+				case 'CreateGateway':
+					amount = Tools.formatListByAmount(data.amount)
+					break;
+				case 'EditGateway':
+					amount = Tools.formatListByAmount(data.amount)
+					break;
+				case 'TransferGatewayOwner':
+					amount = Tools.formatListByAmount(data.amount)
+					break;
+				case 'RequestRand':
+					amount = Tools.formatListByAmount(data.amount)
+			
+			}
+		}
+		return amount
+	
+	}
+	
+	/**
+	 * 从amount字段中获取amount
+	* */
+	static formatListByAmount(amount){
+		let [amountNumber,tokenName] = ['--','--'];
+		if(amount instanceof Array && amount.length > 0) {
+			if (amount[0].denom && amount[0].amount && amount[0].denom === Constant.Denom.IRISATTO) {
+				amountNumber = amount[0].amount > 0 ? Tools.formatStringToFixedNumber(String(Tools.numberMoveDecimal(amount[0].amount)), 2) : amount[0].amount;
+				tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
+			} else if (amount[0].denom && amount[0].amount && amount[0].denom !== Constant.Denom.IRISATTO) {
+				amountNumber =  amount[0].amount;
+				tokenName = amount[0].denom.toLocaleUpperCase();
+			} else {
+				amountNumber = amount[0].amount;
+				tokenName = amount[0].denom.toLocaleUpperCase();
+			}
+		}else if(amount.amount && Object.keys(amount.amount).includes('amount') && Object.keys(amount.amount).includes('denom')){
+			if(amount.denom === Constant.Denom.IRISATTO){
+				amountNumber = Tools.formatStringToFixedNumber(String(Tools.numberMoveDecimal(item.amount)),2);
+				tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
+			}else if(amount.denom !== Constant.Denom.IRISATTO){
+				amountNumber = amount.amount
+				tokenName = amount.denom.toLocaleUpperCase()
+			}else if(!amount.denom){
+				amountNumber = amount.amount
+				tokenName = ''
+			}
+		}
+		// console.log(amountNumber,tokenName,"amount information")
+		return {amountNumber,tokenName}
+	}
+	/**
+	 * 从tags中的balance获取amount
+	 * */
+	static formatListByTagsBalance(tags){
+		let [amountNumber,tokenName] = ['--','--'];
+		if(tags && tags.balance){
+			let tokenValue = Tools.formatAccountCoinsAmount(tags.balance);
+			let tokenStr = String(Tools.numberMoveDecimal(tokenValue[0],18));
+			amountNumber =  Tools.formatStringToFixedNumber(tokenStr,2);
+			tokenName = Constant.Denom.IRIS.toLocaleUpperCase()
+		}
+		return {amountNumber,tokenName}
+		// console.log(amountNumber,tokenName,"share information")
+	
 	}
 }

@@ -602,6 +602,8 @@
                 width:100%;
                 .proposals_list_page_wrap_hash_var{
                     min-width:7rem;
+                    color: #515a6e;
+                    font-weight: bold;
                 }
             }
         }
@@ -611,9 +613,9 @@
                 height: 0.4rem;
                 line-height: 0.4rem;
                 font-size: 0.18rem;
-                color: #000000;
+                color: #515a6e;
                 margin-bottom: 0;
-                @include fontWeight;
+                font-weight: bold;
             }
             @include pcCenter;
             .transactions_detail_information_wrap {
@@ -638,7 +640,8 @@
                 height:  0.62rem;
                 line-height: 0.62rem;
                 font-size: 0.18rem;
-                color: var(--contentColor);
+                color: #515a6e;
+                font-weight: bold;
                 margin-left: 0.2rem;
             }
             .for_proposals{
@@ -691,7 +694,8 @@
                 height: 0.3rem;
                 line-height: 0.3rem;
                 font-size: 0.18rem;
-                color: var(--contentColor);
+                color:#515a6e;
+                font-weight: bold;
             }
             .for_proposals{
                 display:inline-block;

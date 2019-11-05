@@ -403,7 +403,8 @@ export default {
                     display: flex;
                     align-items: center;
                     font-size: 18px;
-
+                    color: #515a6e;
+                    font-weight: bold;
                 }
                 .cards{
                     background: #fff;

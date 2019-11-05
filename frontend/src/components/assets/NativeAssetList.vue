@@ -91,7 +91,7 @@
                     height: 0.7rem;
                     padding-left: 0.2rem;
                     font-size: 0.18rem;
-                    color:var(--titleColor);
+                    color:#515a6e;
                     line-height: 0.7rem;
                 }
             }
