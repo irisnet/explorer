@@ -299,6 +299,8 @@ func (service *TxService) QueryTxType(txType string) vo.QueryTxTypeRespond {
 		res = append(res, types.AssetList...)
 		res = append(res, types.RandList...)
 		res = append(res, types.GuardianList...)
+		res = append(res, types.HTLCList...)
+		res = append(res, types.CoinswapList...)
 		return res
 	}
 	switch txType {
@@ -316,6 +318,10 @@ func (service *TxService) QueryTxType(txType string) vo.QueryTxTypeRespond {
 		return types.RandList
 	case "guardian":
 		return types.GuardianList
+	case "htlc":
+		return types.HTLCList
+	case "coinswap":
+		return types.CoinswapList
 	}
 	return nil
 }

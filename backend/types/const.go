@@ -145,6 +145,14 @@ var (
 	TxTypeDeleteTrustee  = "DeleteTrustee"
 	TxTypeDeleteProfiler = "DeleteProfiler"
 
+	TxTypeCreateHTLC = "CreateHTLC"
+	TxTypeClaimHTLC  = "ClaimHTLC"
+	TxTypeRefundHTLC = "RefundHTLC"
+
+	TxTypeAddLiquidity    = "AddLiquidity"
+	TxTypeRemoveLiquidity = "RemoveLiquidity"
+	TxTypeSwapOrder       = "SwapOrder"
+
 	TxTypeRequestRand = "RequestRand"
 
 	TypeValStatusUnbonded  = "Unbonded"
@@ -168,6 +176,8 @@ var (
 	StakeList       = []string{TxTypeStakeDelegate, TxTypeBeginRedelegate, TxTypeSetWithdrawAddress, TxTypeStakeBeginUnbonding, TxTypeWithdrawDelegatorReward, TxTypeWithdrawDelegatorRewardsAll, TxTypeWithdrawValidatorRewardsAll}
 	GovernanceList  = []string{TxTypeSubmitProposal, TxTypeDeposit, TxTypeVote}
 	GuardianList    = []string{TxTypeAddProfiler, TxTypeAddTrustee, TxTypeDeleteProfiler, TxTypeDeleteTrustee}
+	HTLCList        = []string{TxTypeClaimHTLC, TxTypeCreateHTLC, TxTypeRefundHTLC}
+	CoinswapList    = []string{TxTypeAddLiquidity, TxTypeRemoveLiquidity, TxTypeSwapOrder}
 
 	ForwardList = []string{TxTypeBeginRedelegate}
 	//TxTypeExcludeGov = append(append(DeclarationList, StakeList...), BankList...)
