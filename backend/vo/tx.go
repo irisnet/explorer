@@ -231,6 +231,32 @@ type AssetTx struct {
 	Tags   map[string]string `json:"tags"`
 	Msgs   []MsgItem         `json:"msgs"`
 }
+type GuardianTx struct {
+	BaseTx
+	From   string            `json:"from"`
+	To     string            `json:"to"`
+	Amount utils.Coins       `json:"amount"`
+	Tags   map[string]string `json:"tags"`
+	Msgs   []MsgItem         `json:"msgs"`
+}
+
+type HtlcTx struct {
+	BaseTx
+	From   string            `json:"from"`
+	To     string            `json:"to"`
+	Amount utils.Coins       `json:"amount"`
+	Tags   map[string]string `json:"tags"`
+	Msgs   []MsgItem         `json:"msgs"`
+}
+
+type CoinswapTx struct {
+	BaseTx
+	From   string            `json:"from"`
+	To     string            `json:"to"`
+	Amount utils.Coins       `json:"amount"`
+	Tags   map[string]string `json:"tags"`
+	Msgs   []MsgItem         `json:"msgs"`
+}
 
 func (tx RecentTx) String() string {
 	return fmt.Sprintf(`
