@@ -285,6 +285,18 @@ func IsHTLCType(typ string) bool {
 	return false
 }
 
+func IsGuardianType(typ string) bool {
+	if len(typ) == 0 {
+		return false
+	}
+	for _, t := range GuardianList {
+		if t == typ {
+			return true
+		}
+	}
+	return false
+}
+
 type TxType int
 
 const (
@@ -295,6 +307,7 @@ const (
 	Gov
 	Asset
 	Rand
+	Guardian
 	Htlc
 	Coinswap
 )
@@ -314,8 +327,10 @@ func Convert(typ string) TxType {
 		return Rand
 	} else if IsCoinswapType(typ) {
 		return Coinswap
-	} else if IsHTLCType(typ) {
-		return Htlc
+    } else if IsHTLCType(typ) {
+    	return Htlc
+    } else if IsGuardianType(typ) {
+		return Guardian
 	}
 	logger.Error("Convert UnSupportTx Type", logger.String("txtype", typ))
 	panic(CodeUnSupportTx)
