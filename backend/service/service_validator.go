@@ -12,6 +12,7 @@ import (
 	"gopkg.in/mgo.v2/txn"
 	"math/big"
 	"strconv"
+	"sort"
 )
 
 type ValidatorService struct {
@@ -213,7 +214,8 @@ func (service *ValidatorService) GetUnbondingDelegationsFromLcd(valAddr string, 
 
 func (service *ValidatorService) GetDelegationsFromLcd(valAddr string, page, size int, needpage bool, istotal bool) vo.DelegationsPage {
 
-	lcdDelegations := lcd.GetDelegationsByValidatorAddr(valAddr)
+	var lcdDelegations lcd.ValidatorDelegations
+	lcdDelegations = lcd.GetDelegationsByValidatorAddr(valAddr)
 
 	totalShareAsRat := new(big.Rat)
 	for _, v := range lcdDelegations {
@@ -231,6 +233,7 @@ func (service *ValidatorService) GetDelegationsFromLcd(valAddr string, page, siz
 	if err != nil {
 		logger.Debug("QueryTokensAndShareRatioByValidatorAddrs", logger.String("err", err.Error()))
 	}
+	sort.Sort(lcdDelegations)
 	var items []vo.Delegation
 	if needpage {
 		items = GetDalegationbyPageSize(lcdDelegations, totalShareAsRat, tokenShareRatioByValidatorAddr, page, size)
