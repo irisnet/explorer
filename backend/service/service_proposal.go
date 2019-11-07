@@ -694,19 +694,6 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 	proposal.TxHash = txHash
 	switch proposal.Type {
 	case lcd.ProposalTypeParameter, lcd.ProposalTypeSoftwareUpgrade:
-		//txMsg, err := document.TxMsg{}.QueryTxMsgByHash(proposal.TxHash)
-		//if err != nil {
-		//	logger.Error("query tx msg by hash ", logger.String("err", err.Error()))
-		//} else {
-		//	var msg vo.MsgSubmitSoftwareUpgradeProposal
-		//	if err := json.Unmarshal([]byte(txMsg.Content), &msg); err == nil {
-		//		proposal.Parameters = msg.Params
-		//		proposal.Version = msg.Version
-		//		proposal.Software = msg.Software
-		//		proposal.SwitchHeight = msg.SwitchHeight
-		//		proposal.Threshold = msg.Threshold
-		//	}
-		//}
 		tx, err := document.CommonTx{}.QueryTxByHash(proposal.TxHash)
 		if err != nil {
 			logger.Error("query tx msg by hash ", logger.String("err", err.Error()))
@@ -752,17 +739,6 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 		resp.Proposal = proposal
 		return
 	case lcd.ProposalTypeCommunityTaxUsage:
-		//txMsg, err := document.TxMsg{}.QueryTxMsgByHash(proposal.TxHash)
-		//if err != nil {
-		//	logger.Error("query tx msg by hash ", logger.String("err", err.Error()))
-		//} else {
-		//	var msg vo.MsgSubmitCommunityTaxUsageProposal
-		//	if err := json.Unmarshal([]byte(txMsg.Content), &msg); err == nil {
-		//		proposal.Usage = msg.Usage
-		//		proposal.DestAddress = msg.DestAddress
-		//		proposal.Percent = msg.Percent
-		//	}
-		//}
 		tx, err := document.CommonTx{}.QueryTxByHash(proposal.TxHash)
 		if err != nil {
 			logger.Error("query tx msg by hash ", logger.String("err", err.Error()))
@@ -781,20 +757,6 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 		resp.Proposal = proposal
 		return
 	case lcd.ProposalTypeTokenAddition:
-		//txMsg, err := document.TxMsg{}.QueryTxMsgByHash(proposal.TxHash)
-		//if err != nil {
-		//	logger.Error("query tx msg by hash ", logger.String("err", err.Error()))
-		//} else {
-		//	var msg vo.MsgSubmitTokenAdditionProposal
-		//	if err := json.Unmarshal([]byte(txMsg.Content), &msg); err == nil {
-		//		proposal.Symbol = msg.Symbol
-		//		proposal.CanonicalSymbol = msg.CanonicalSymbol
-		//		proposal.Name = msg.Name
-		//		proposal.Decimal = msg.Decimal
-		//		proposal.MinUnitAlias = msg.MinUnitAlias
-		//		proposal.InitialSupply = msg.InitialSupply
-		//	}
-		//}
 		tx, err := document.CommonTx{}.QueryTxByHash(proposal.TxHash)
 		if err != nil {
 			logger.Error("query tx msg by hash ", logger.String("err", err.Error()))

@@ -40,41 +40,6 @@ func (service *TxService) QueryTxList(query bson.M, page, pageSize int, istotal 
 	commonTxUtils := buildTxVOsFromDoc(data)
 	items := service.buildTxVOs(commonTxUtils, false)
 
-	//forwardTxHashs := make([]string, 0, len(items))
-
-	//for _, v := range items {
-	//	if stakeTx, ok := v.(vo.StakeTx); ok {
-	//		if service.isForwardTxByType(stakeTx.Type) {
-	//			forwardTxHashs = append(forwardTxHashs, stakeTx.Hash)
-	//		}
-	//	}
-	//}
-
-	//if len(forwardTxHashs) != 0 {
-	//txMsgs, err := document.TxMsg{}.QueryTxMsgListByHashList(forwardTxHashs)
-	//if err != nil {
-	//	logger.Error("query tx msg", logger.String("err", err.Error()))
-	//	panic(types.CodeNotFound)
-	//}
-
-	//for _, vMsg := range txMsgs {
-	//	for k, stakeTx := range items {
-	//
-	//		if vTx, ok := stakeTx.(vo.StakeTx); ok {
-	//			if vMsg.Hash == vTx.Hash {
-	//				forwardAddr, err := service.getForwardAddr(vMsg.Type, vMsg.Content)
-	//				if err != nil {
-	//					logger.Error("get forward addr ", logger.String("err", err.Error()))
-	//					continue
-	//				}
-	//				vTx.From = forwardAddr
-	//				items[k] = vTx
-	//			}
-	//		}
-	//	}
-	//}
-	//}
-
 	// get tx from and to base amount coin flow direction
 	items = parseFromAndToByAmountCoinFlow(items, false)
 
@@ -182,36 +147,6 @@ func (service *TxService) Query(hash string) interface{} {
 
 	txVOs := service.buildTxVOs([]vo.CommonTx{buildTxVOFromDoc(txAsDoc)}, true)
 
-	//for _, v := range txVOs {
-	//	if stakeTx, ok := v.(vo.StakeTx); ok {
-	//		if service.isForwardTxByType(stakeTx.Type) {
-	//			forwardTxHashes = append(forwardTxHashes, stakeTx.Hash)
-	//		}
-	//	}
-	//}
-	//if len(forwardTxHashes) != 0 {
-	//	txMsgs, err := document.TxMsg{}.QueryTxMsgListByHashList(forwardTxHashes)
-	//	if err != nil {
-	//		logger.Error("query tx msg", logger.String("err", err.Error()))
-	//		panic(types.CodeNotFound)
-	//	}
-	//
-	//	for _, vMsg := range txMsgs {
-	//		for k, stakeTx := range txVOs {
-	//			if vTx, ok := stakeTx.(vo.StakeTx); ok {
-	//				if vMsg.Hash == vTx.Hash {
-	//					forwardAddr, err := service.getForwardAddr(vMsg.Type, vMsg.Content)
-	//					if err != nil {
-	//						logger.Error("get forward addr ", logger.String("err", err.Error()))
-	//						continue
-	//					}
-	//					vTx.From = forwardAddr
-	//					txVOs[k] = vTx
-	//				}
-	//			}
-	//		}
-	//	}
-	//}
 
 	items := parseFromAndToByAmountCoinFlow(txVOs, true)
 	items = service.getValidatorMonikerByAddress(items)
@@ -560,30 +495,7 @@ func parseCoinFlowFromAndToForTxDetail(txType, from, to string) (string, string)
 	}
 }
 
-//func (service *TxService) getForwardAddr(txType, content string) (string, error) {
-//	m := make(map[string]interface{})
-//	err := json.Unmarshal([]byte(content), &m)
-//	if err != nil {
-//		return "", err
-//	}
-//
-//	switch txType {
-//	case types.TxTypeBeginRedelegate:
-//		if v, ok := m["validator_src_addr"].(string); ok {
-//			return v, nil
-//		}
-//	}
-//	return "", nil
-//}
 
-//func (service *TxService) isForwardTxByType(t string) bool {
-//	for _, v := range types.ForwardList {
-//		if v == t {
-//			return true
-//		}
-//	}
-//	return false
-//}
 
 func parseFromAndToByAmountCoinFlow(items []interface{}, forTxDetail bool) []interface{} {
 	for i := 0; i < len(items); i++ {
@@ -773,17 +685,12 @@ func (service *TxService) buildTxVOs(txs []vo.CommonTx, isDetail bool) []interfa
 }
 
 func (service *TxService) getTxAttachedFields(candidateAddrMap *map[string]document.Validator,
-//govTxMsgHashMap *map[string]document.TxMsg,
 	govProposalIdMap *map[uint64]document.Proposal) {
 	candidateAddrs := make([]string, 0, len(*candidateAddrMap))
-	//govHashArr := make([]string, 0, len(*govTxMsgHashMap))
 	govProposalIdArr := make([]uint64, 0, len(*govProposalIdMap))
 	for k, _ := range *candidateAddrMap {
 		candidateAddrs = append(candidateAddrs, k)
 	}
-	//for k, _ := range *govTxMsgHashMap {
-	//	govHashArr = append(govHashArr, k)
-	//}
 	for k, _ := range *govProposalIdMap {
 		govProposalIdArr = append(govProposalIdArr, k)
 	}
@@ -809,23 +716,6 @@ func (service *TxService) getTxAttachedFields(candidateAddrMap *map[string]docum
 		}
 	}
 
-	//govTxMsgArr := []document.TxMsg{}
-	//if len(govHashArr) > 0 {
-	//	govTxMsgArr, err = document.TxMsg{}.QueryTxMsgListByHashList(govHashArr)
-	//
-	//	if err != nil {
-	//		logger.Error(fmt.Sprintf("query collection with dondition: %v err: %v", govHashArr, err.Error()))
-	//	}
-	//
-	//	for k, _ := range *govTxMsgHashMap {
-	//		for _, v := range govTxMsgArr {
-	//			if k == v.Hash {
-	//				(*govTxMsgHashMap)[k] = v
-	//				break
-	//			}
-	//		}
-	//	}
-	//}
 
 	proposalArr := []document.Proposal{}
 
