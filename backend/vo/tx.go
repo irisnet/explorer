@@ -6,6 +6,7 @@ import (
 
 	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
+	"encoding/json"
 )
 
 type MsgSubmitProposal struct {
@@ -71,6 +72,9 @@ type MsgBeginRedelegate struct {
 	SharesAmount     string `json:"shares_amount"`
 }
 
+func (vo *MsgBeginRedelegate) BuildMsgByUnmarshalJson(data []byte) error {
+	return json.Unmarshal(data, vo)
+}
 type TxStatisticsVo struct {
 	TransCnt       int `json:"trans_cnt"`
 	StakeCnt       int `json:"stake_cnt"`
