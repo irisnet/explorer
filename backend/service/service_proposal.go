@@ -720,7 +720,7 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 						logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
 					} else {
 						var params []vo.Param
-						for _, p := range msg.Params {
+						for _, p := range msg.DocTxMsgSubmitProposal.Params {
 							params = append(params, vo.Param{
 								Subspace: p.Subspace,
 								Key:      p.Key,

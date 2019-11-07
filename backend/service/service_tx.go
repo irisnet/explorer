@@ -372,7 +372,7 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 			}
 
 			tmpMsgsArr = append(tmpMsgsArr, vo.MsgItem{
-				Type:    v.Type,
+				Type:    m.Type,
 				MsgData: msgDataVO,
 			})
 		}
@@ -841,22 +841,8 @@ func (service *TxService) buildTxVO(tx vo.CommonTx, blackListP *map[string]docum
 		}
 
 		if govTx.Type == types.TxTypeSubmitProposal {
-			//if v, ok := (*govTxMsgHashMapP)[govTx.Hash]; ok {
-			//	var msg vo.MsgSubmitProposal
-			//	if err := json.Unmarshal([]byte(v.Content), &msg); err != nil {
-			//		logger.Error("unmarshal gov tx msg ", logger.String("tx hash", govTx.Hash), logger.String("content", v.Content), logger.Any("err", err.Error()))
-			//	}
-			//	govTx.Title = msg.Title
-			//	govTx.Description = msg.Description
-			//	govTx.ProposalType = msg.ProposalType
-			//	govTx.Tags = checkTags(tx.Tags, msg)
-			//	govTx.Software = msg.Software
-			//	govTx.Version = msg.Version
-			//	govTx.SwitchHeight = msg.SwitchHeight
-			//	govTx.Treshold = msg.Treshold
-			//}
+
 			if len(tx.Msgs) > 0 && tx.Msgs[0].MsgData != nil {
-				fmt.Println(tx.Msgs[0].Type)
 				switch tx.Msgs[0].Type {
 				case types.TxTypeSubmitProposal:
 					msg := msgvo.TxMsgSubmitProposal{}
@@ -866,28 +852,31 @@ func (service *TxService) buildTxVO(tx vo.CommonTx, blackListP *map[string]docum
 						govTx.Title = msg.Title
 						govTx.Description = msg.Description
 						govTx.ProposalType = msg.ProposalType
+						govTx.Tags = checkTags(tx.Tags, msg.Params)
 					}
 				case types.TxMsgTypeSubmitSoftwareUpgradeProposal:
 					msg := msgvo.TxMsgSubmitSoftwareUpgradeProposal{}
 					if err := msg.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(tx.Msgs[0].MsgData)); err != nil {
 						logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
 					} else {
-						govTx.Title = msg.Title
-						govTx.Description = msg.Description
-						govTx.ProposalType = msg.ProposalType
+						govTx.Title = msg.DocTxMsgSubmitProposal.Title
+						govTx.Description = msg.DocTxMsgSubmitProposal.Description
+						govTx.ProposalType = msg.DocTxMsgSubmitProposal.ProposalType
 						govTx.Software = msg.Software
 						govTx.Version = msg.Version
 						govTx.SwitchHeight = msg.SwitchHeight
 						govTx.Treshold = msg.Threshold
+						govTx.Tags = checkTags(tx.Tags, msg.DocTxMsgSubmitProposal.Params)
 					}
 				case types.TxMsgTypeSubmitTaxUsageProposal:
 					msg := msgvo.TxMsgSubmitCommunityTaxUsageProposal{}
 					if err := msg.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(tx.Msgs[0].MsgData)); err != nil {
 						logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
 					} else {
-						govTx.Title = msg.Title
-						govTx.Description = msg.Description
-						govTx.ProposalType = msg.ProposalType
+						govTx.Title = msg.DocTxMsgSubmitProposal.Title
+						govTx.Description = msg.DocTxMsgSubmitProposal.Description
+						govTx.ProposalType = msg.DocTxMsgSubmitProposal.ProposalType
+						govTx.Tags = checkTags(tx.Tags, msg.DocTxMsgSubmitProposal.Params)
 					}
 
 				case types.TxMsgTypeSubmitTokenAdditionProposal:
@@ -895,9 +884,10 @@ func (service *TxService) buildTxVO(tx vo.CommonTx, blackListP *map[string]docum
 					if err := msg.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(tx.Msgs[0].MsgData)); err != nil {
 						logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
 					} else {
-						govTx.Title = msg.Title
-						govTx.Description = msg.Description
-						govTx.ProposalType = msg.ProposalType
+						govTx.Title = msg.DocTxMsgSubmitProposal.Title
+						govTx.Description = msg.DocTxMsgSubmitProposal.Description
+						govTx.ProposalType = msg.DocTxMsgSubmitProposal.ProposalType
+						govTx.Tags = checkTags(tx.Tags, msg.DocTxMsgSubmitProposal.Params)
 					}
 
 				}
@@ -905,14 +895,6 @@ func (service *TxService) buildTxVO(tx vo.CommonTx, blackListP *map[string]docum
 			}
 		} else if govTx.Type == types.TxTypeDeposit {
 
-			//if v, ok := (*govTxMsgHashMapP)[govTx.Hash]; ok {
-			//	var msg vo.MsgDeposit
-			//	if err := json.Unmarshal([]byte(v.Content), &msg); err != nil {
-			//		logger.Error("unmarshal gov tx msg ", logger.String("tx hash", govTx.Hash), logger.String("content", v.Content), logger.Any("err", err.Error()))
-			//	}
-			//	govTx.Amount = msg.Amount
-			//}
-			//
 			if len(tx.Msgs) > 0 {
 				msg := msgvo.TxMsgDeposit{}
 				if err := msg.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(tx.Msgs[0].MsgData)); err != nil {
@@ -929,13 +911,6 @@ func (service *TxService) buildTxVO(tx vo.CommonTx, blackListP *map[string]docum
 
 		} else if govTx.Type == types.TxTypeVote {
 
-			//if v, ok := (*govTxMsgHashMapP)[govTx.Hash]; ok {
-			//	var msg vo.MsgVote
-			//	if err := json.Unmarshal([]byte(v.Content), &msg); err != nil {
-			//		logger.Error("unmarshal gov tx msg ", logger.String("tx hash", govTx.Hash), logger.String("content", v.Content), logger.Any("err", err.Error()))
-			//	}
-			//	govTx.Option = msg.Option
-			//}
 			if len(tx.Msgs) > 0 {
 				msg := msgvo.TxMsgVote{}
 				if err := msg.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(tx.Msgs[0].MsgData)); err != nil {
@@ -983,9 +958,9 @@ func (service *TxService) buildTxVO(tx vo.CommonTx, blackListP *map[string]docum
 	return nil
 }
 
-func checkTags(tags map[string]string, msg vo.MsgSubmitProposal) map[string]string {
+func checkTags(tags map[string]string, param msgvo.Params) map[string]string {
 	if _, ok := tags["param"]; !ok {
-		bytesData, _ := json.Marshal(msg.Params)
+		bytesData, _ := json.Marshal(param)
 		tags["param"] = string(bytesData)
 	}
 	return tags

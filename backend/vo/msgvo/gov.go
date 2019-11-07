@@ -27,11 +27,11 @@ func (vo *TxMsgSubmitProposal) BuildMsgByUnmarshalJson(data []byte) error {
 }
 
 type TxMsgSubmitSoftwareUpgradeProposal struct {
-	TxMsgSubmitProposal
-	Version      int64  `json:"version"`
-	Software     string `json:"software"`
-	SwitchHeight int64  `json:"switch_height"`
-	Threshold    string `json:"threshold"`
+	DocTxMsgSubmitProposal TxMsgSubmitProposal `json:"doctxmsgsubmitproposal"`
+	Version                int64               `json:"version"`
+	Software               string              `json:"software"`
+	SwitchHeight           int64               `json:"switch_height"`
+	Threshold              string              `json:"threshold"`
 }
 
 func (vo *TxMsgSubmitSoftwareUpgradeProposal) BuildMsgByUnmarshalJson(data []byte) error {
@@ -39,10 +39,10 @@ func (vo *TxMsgSubmitSoftwareUpgradeProposal) BuildMsgByUnmarshalJson(data []byt
 }
 
 type TxMsgSubmitCommunityTaxUsageProposal struct {
-	TxMsgSubmitProposal
-	Usage       string `json:"usage"`
-	DestAddress string `json:"dest_address"`
-	Percent     string `json:"percent"`
+	DocTxMsgSubmitProposal TxMsgSubmitProposal `json:"doctxmsgsubmitproposal"`
+	Usage                  string              `json:"usage"`
+	DestAddress            string              `json:"dest_address"`
+	Percent                string              `json:"percent"`
 }
 
 func (vo *TxMsgSubmitCommunityTaxUsageProposal) BuildMsgByUnmarshalJson(data []byte) error {
@@ -50,13 +50,13 @@ func (vo *TxMsgSubmitCommunityTaxUsageProposal) BuildMsgByUnmarshalJson(data []b
 }
 
 type TxMsgSubmitTokenAdditionProposal struct {
-	TxMsgSubmitProposal
-	Symbol          string `json:"symbol"`
-	CanonicalSymbol string `json:"canonical_symbol"`
-	Name            string `json:"name"`
-	Decimal         uint8  `json:"decimal"`
-	MinUnitAlias    string `json:"min_unit_alias"`
-	InitialSupply   uint64 `json:"initial_supply"`
+	DocTxMsgSubmitProposal TxMsgSubmitProposal `json:"doctxmsgsubmitproposal"`
+	Symbol                 string              `json:"symbol"`
+	CanonicalSymbol        string              `json:"canonical_symbol"`
+	Name                   string              `json:"name"`
+	Decimal                uint8               `json:"decimal"`
+	MinUnitAlias           string              `json:"min_unit_alias"`
+	InitialSupply          uint64              `json:"initial_supply"`
 }
 
 func (vo *TxMsgSubmitTokenAdditionProposal) BuildMsgByUnmarshalJson(data []byte) error {
