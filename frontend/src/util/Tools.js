@@ -584,12 +584,19 @@ export default class Tools{
 			amount = param.amount;
 			amountDenom = param.denom;
 		}
-		
 		if(amount.toString().indexOf('e') !== -1 || amount.toString().indexOf('E') !== -1){
-			amountNumber = new BigNumber(amount).toFixed().toString() + ".";
+			if(amount.toString().indexOf('.') !== -1){
+				amountNumber = new BigNumber(amount).toFixed().toString();
+			}else {
+				amountNumber = new BigNumber(amount).toFixed().toString() + ".";
+			}
 			amountRadixNumber = Tools.amountRadix(amountDenom);
 		}else {
-			amountNumber = amount.toString() + ".";
+			if(amount.toString().indexOf('.') !== -1){
+				amountNumber = amount.toString();
+			}else {
+				amountNumber = amount.toString() + ".";
+			}
 			amountRadixNumber = Tools.amountRadix(amountDenom);
 		}
 		if(amountDenom){
@@ -627,7 +634,7 @@ export default class Tools{
 				return Constant.RADIXDENOM.IRISFEMTONUMBER.length - diffValue;
 				break;
 			case Constant.RADIXDENOM.IRIS :
-				return Constant.RADIXDENOM.IRISNUMBER.length;
+				return Constant.RADIXDENOM.IRISNUMBER.length - diffValue;
 				break;
 			default:
 				return defaultValue;
