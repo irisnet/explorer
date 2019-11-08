@@ -44,7 +44,7 @@ PARAMETER.UNEQUAL = 'neq';
 
 const CHAINNAME = 'iris';
 const CHAINID = {};
-CHAINID.MAINNET = 'irishub';
+CHAINID.IRISHUB = 'irishub';
 CHAINID.FUXI = 'fuxi';
 CHAINID.NYANCAT = 'nyancat';
 
