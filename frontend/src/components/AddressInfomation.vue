@@ -496,9 +496,9 @@
 		        param.getTxListByAddress.address = this.$route.params.param;
 		        Server.commonInterface(param, (res) => {
 			        try {
-				        if(res && res.Data) {
+                        this.allTxCountNum = res.Count;
+                        if(res && res.Data) {
 					        sessionStorage.setItem('txsTotal',res.Count);
-					        this.allTxCountNum = res.Count;
 					        if(res.Count > this.addressTxPageSize){
 					        	this.flAllTxNextPage = true
                             }else {

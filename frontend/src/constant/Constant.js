@@ -46,7 +46,7 @@ const CHAINNAME = 'iris';
 const CHAINID = {};
 CHAINID.MAINNET = 'irishub';
 CHAINID.FUXI = 'fuxi';
-CHAINID.NYANCAT = 'nyancat-4';
+CHAINID.NYANCAT = 'nyancat';
 
 const RADIXDENOM = {};
 

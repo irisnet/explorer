@@ -619,7 +619,7 @@
 				Service.commonInterface({headerConfig:{}},(res) => {
 					try {
 						this.$store.commit('currentSkinStyle',`${res.cur_env}${res.chain_id}`);
-						sessionStorage.setItem('skinCurrentEnv',JSON.stringify({currentEnv:res.cur_env,currentChainID:res.chain_id}))
+						sessionStorage.setItem('skinEnvInformation',JSON.stringify(res))
 						this.flShowLogo = true;
 						this.toggleTestnetLogo(res);
 						this.setCurrentSelectOption(res.cur_env, res.chain_id, res.configs);
@@ -669,24 +669,32 @@
 				}
 			},
 			toggleTestnetLogo (currentEnv) {
-				if(sessionStorage.getItem('skinCurrentEnv')){
-					currentEnv.cur_env = JSON.parse(sessionStorage.getItem('skinCurrentEnv')).currentEnv;
-					currentEnv.chain_id = JSON.parse(sessionStorage.getItem('skinCurrentEnv')).currentChainID;
+                if(sessionStorage.getItem('skinEnvInformation')){
+                    currentEnv.cur_env = JSON.parse(sessionStorage.getItem('skinCurrentEnv')).currentEnv;
+                    currentEnv.chain_id = JSON.parse(sessionStorage.getItem('skinCurrentEnv')).currentChainID;
+                    currentEnv = JSON.parse(sessionStorage.getItem('skinEnvInformation'))
+                }
+				let network = '';
+                if(currentEnv.configs){
+                    currentEnv.configs.forEach(item => {
+                        if(currentEnv.cur_env === item.env && currentEnv.chain_id === item.chain_id){
+                            network = item.env_nm;
+                        }
+                    })
                 }
 				const root = document.documentElement;
 				root.style.setProperty(skinStyle.skinStyle.TITLECOLORNAME,skinStyle.skinStyle.commonFontBlackColor);
 				root.style.setProperty(skinStyle.skinStyle.CONTENTCOLORNAME,skinStyle.skinStyle.commonFontContentColor);
 				root.style.setProperty(skinStyle.skinStyle.MODULEBLACKCOLOR,skinStyle.skinStyle.commonModuleBlackColor);
-				if (currentEnv.cur_env === constant.ENVCONFIG.MAINNET && currentEnv.chain_id === constant.CHAINID.MAINNET) {
+				if (currentEnv.cur_env === constant.ENVCONFIG.MAINNET && network === constant.CHAINID.MAINNET) {
 					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.MAINNETBGCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.MAINNETHOVERCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.MAINNETACTIVECOLOR);
-				} else if(currentEnv.cur_env === constant.ENVCONFIG.TESTNET && currentEnv.chain_id === constant.CHAINID.FUXI) {
+				} else if(currentEnv.cur_env === constant.ENVCONFIG.TESTNET && network === constant.CHAINID.FUXI) {
 					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.TESTNETBGCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.TESTNETHOVERCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.TESTNETACTIVECOLOR);
-
-				}else if(currentEnv.cur_env === constant.ENVCONFIG.TESTNET && currentEnv.chain_id === constant.CHAINID.NYANCAT){
+				}else if(currentEnv.cur_env === constant.ENVCONFIG.TESTNET && network === constant.CHAINID.NYANCAT){
 					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.NYANCATTESTNETBGCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.NYANCATTESTNETHOVERCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.NYANCATTESTNETACTIVECOLOR);
