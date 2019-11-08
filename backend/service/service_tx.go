@@ -290,6 +290,8 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 		}
 		tmpMsgsArr := make([]vo.MsgItem, 0, len(v.Msgs))
 
+		var createvalidator vo.StakeCreateValidator
+		var editvalidator vo.StakeEditValidator
 		// build tx msgVO
 		for _, m := range v.Msgs {
 			var msgDataVO interface{}
@@ -367,6 +369,41 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 					msgDataVO = msgVO
 				}
 				break
+			case types.TxTypeStakeEditValidator:
+				msgVO := msgvo.TxMsgStakeEdit{}
+				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
+					logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
+				} else {
+					msgDataVO = msgVO
+					editvalidator.Description = vo.ValDescription{
+						Moniker:  msgVO.ValDescription.Moniker,
+						Identity: msgVO.ValDescription.Identity,
+						Website:  msgVO.ValDescription.Website,
+						Details:  msgVO.ValDescription.Details,
+					}
+					editvalidator.CommissionRate = msgVO.CommissionRate
+				}
+				break
+			case types.TxTypeStakeCreateValidator:
+				msgVO := msgvo.TxMsgStakeCreate{}
+				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
+					logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
+				} else {
+					msgDataVO = msgVO
+					createvalidator.Description = vo.ValDescription{
+						Moniker:  msgVO.ValDescription.Moniker,
+						Identity: msgVO.ValDescription.Identity,
+						Website:  msgVO.ValDescription.Website,
+						Details:  msgVO.ValDescription.Details,
+					}
+					createvalidator.Commission = vo.CommissionMsg{
+						Rate:          msgVO.Commission.Rate,
+						MaxChangeRate: msgVO.Commission.MaxChangeRate,
+						MaxRate:       msgVO.Commission.MaxRate,
+					}
+					createvalidator.PubKey = msgVO.PubKey
+				}
+				break
 			default:
 				msgDataVO = m.MsgData
 			}
@@ -400,31 +437,9 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 				Denom:  v.ActualFee.Denom,
 				Amount: v.ActualFee.Amount,
 			},
-			Msg: v.Msg,
-			StakeCreateValidator: vo.StakeCreateValidator{
-				PubKey: v.StakeCreateValidator.PubKey,
-				Description: vo.ValDescription{
-					Moniker:  v.StakeCreateValidator.Description.Moniker,
-					Identity: v.StakeCreateValidator.Description.Identity,
-					Website:  v.StakeCreateValidator.Description.Website,
-					Details:  v.StakeCreateValidator.Description.Details,
-				},
-				Commission: vo.CommissionMsg{
-					Rate:          v.StakeCreateValidator.Commission.Rate,
-					MaxChangeRate: v.StakeCreateValidator.Commission.MaxChangeRate,
-					MaxRate:       v.StakeCreateValidator.Commission.MaxRate,
-				},
-			},
-			StakeEditValidator: vo.StakeEditValidator{
-				Description: vo.ValDescription{
-					Moniker:  v.StakeEditValidator.Description.Moniker,
-					Identity: v.StakeEditValidator.Description.Identity,
-					Website:  v.StakeEditValidator.Description.Website,
-					Details:  v.StakeEditValidator.Description.Details,
-				},
-				CommissionRate: v.StakeEditValidator.CommissionRate,
-			},
-			Msgs: tmpMsgsArr,
+			StakeCreateValidator: createvalidator,
+			StakeEditValidator:   editvalidator,
+			Msgs:                 tmpMsgsArr,
 		}
 
 		commonTxUtils = append(commonTxUtils, tmpTx)
