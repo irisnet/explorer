@@ -508,6 +508,9 @@ func (service *ValidatorService) GetValidatorDetail(validatorAddr string) vo.Val
 		Uptime:                  validatorAsDoc.Uptime,
 		StatsBlocksWindow:       statsBlocksWindow,
 	}
+	if _, ok := blackList[validatorAddr]; ok {
+		res.Icons = ""
+	}
 
 	if validatorAsDoc.Jailed {
 		res.UnbondingHeight = validatorAsDoc.UnbondingHeight
