@@ -20,13 +20,14 @@ type SimpleProposalVo struct {
 }
 
 type EnvConfig struct {
-	CurEnv  string            `json:"cur_env"`
-	ChainId string            `json:"chain_id"`
+	CurEnv  string     `json:"cur_env"`
+	ChainId string     `json:"chain_id"`
 	Configs []ConfigVo `json:"configs"`
 }
 
 type ConfigVo struct {
-	EnvNm      string `json:"env_nm",omitempty`
+	EnvNm      string `json:"env_nm,omitempty"`
+	Env        string `json:"env,omitempty"`
 	Host       string `json:"host,omitempty"`
 	ChainId    string `json:"chain_id,omitempty"`
 	ShowFaucet int    `json:"show_faucet,omitempty"`
