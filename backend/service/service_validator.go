@@ -191,7 +191,12 @@ func (service *ValidatorService) GetUnbondingDelegationsFromLcd(valAddr string, 
 	lcdUnbondingDelegations := lcd.GetUnbondingDelegationsByValidatorAddr(valAddr)
 
 	items := make([]vo.UnbondingDelegations, 0, size)
+	var valaddrlist []string
+	for _, v := range lcdUnbondingDelegations {
+		valaddrlist = append(valaddrlist, v.ValidatorAddr)
+	}
 
+	validatorMap := getValidators(valaddrlist)
 	for k, v := range lcdUnbondingDelegations {
 		if k >= page*size && k < (page+1)*size {
 
@@ -200,6 +205,12 @@ func (service *ValidatorService) GetUnbondingDelegationsFromLcd(valAddr string, 
 				Amount:  v.Balance,
 				Block:   v.CreationHeight,
 				Until:   v.MinTime,
+			}
+			if validatorMap != nil {
+				valaddr := utils.Convert(conf.Get().Hub.Prefix.ValAddr, v.DelegatorAddr)
+				if valdator, ok := validatorMap[valaddr]; ok {
+					tmp.Moniker = valdator.Description.Moniker
+				}
 			}
 
 			items = append(items, tmp)
@@ -216,9 +227,10 @@ func (service *ValidatorService) GetDelegationsFromLcd(valAddr string, page, siz
 
 	var lcdDelegations lcd.ValidatorDelegations
 	lcdDelegations = lcd.GetDelegationsByValidatorAddr(valAddr)
-
+	var valaddrlist []string
 	totalShareAsRat := new(big.Rat)
 	for _, v := range lcdDelegations {
+		valaddrlist = append(valaddrlist, v.ValidatorAddr)
 		sharesAsRat, ok := new(big.Rat).SetString(v.Shares)
 		if !ok {
 			logger.Error("convert delegation shares type (string -> big.Rat) err", logger.String("shares str", v.Shares))
@@ -226,6 +238,7 @@ func (service *ValidatorService) GetDelegationsFromLcd(valAddr string, page, siz
 		}
 		totalShareAsRat = totalShareAsRat.Add(totalShareAsRat, sharesAsRat)
 	}
+	validatorMap := getValidators(valaddrlist)
 
 	addrArr := []string{valAddr}
 
@@ -236,9 +249,9 @@ func (service *ValidatorService) GetDelegationsFromLcd(valAddr string, page, siz
 	sort.Sort(lcdDelegations)
 	var items []vo.Delegation
 	if needpage {
-		items = GetDalegationbyPageSize(lcdDelegations, totalShareAsRat, tokenShareRatioByValidatorAddr, page, size)
+		items = GetDalegationbyPageSize(validatorMap, lcdDelegations, totalShareAsRat, tokenShareRatioByValidatorAddr, page, size)
 	} else {
-		items = GetDalegation(lcdDelegations, totalShareAsRat, tokenShareRatioByValidatorAddr)
+		items = GetDalegation(validatorMap, lcdDelegations, totalShareAsRat, tokenShareRatioByValidatorAddr)
 	}
 
 	return vo.DelegationsPage{
@@ -247,92 +260,151 @@ func (service *ValidatorService) GetDelegationsFromLcd(valAddr string, page, siz
 	}
 }
 
-func GetDalegation(lcdDelegations []lcd.DelegationVo, totalShareAsRat *big.Rat, tokenShareRatio map[string]*big.Rat) []vo.Delegation {
+func GetDalegation(validatorMap map[string]document.Validator, lcdDelegations []lcd.DelegationVo, totalShareAsRat *big.Rat, tokenShareRatio map[string]*big.Rat) []vo.Delegation {
 	items := make([]vo.Delegation, 0, len(lcdDelegations))
 	for _, v := range lcdDelegations {
 
-		//amountAsFloat64 := float64(0)
-		var amountAsFloat64 string
-		if ratio, ok := tokenShareRatio[v.ValidatorAddr]; ok {
-			if shareAsRat, ok := new(big.Rat).SetString(v.Shares); ok {
-				amountAsRat := new(big.Rat).Mul(shareAsRat, ratio)
-				amountAsFloat64 = amountAsRat.FloatString(18)
-				//exact := false
-				//amountAsFloat64, exact = amountAsRat.Float64()
-				//if !exact {
-				//	logger.Info("convert new(big.Rat).Mul(shareAsRat, ratio)  (big.Rat to float64) ",
-				//		logger.Any("exact", exact),
-				//		logger.Any("amountAsRat", amountAsRat))
-				//}
-			} else {
-				logger.Error("convert validator share  type (string -> big.Rat) err", logger.String("str", v.Shares))
-			}
-		} else {
-			logger.Error("can not fond the validator addr from the validator collection in db", logger.String("validator addr", v.ValidatorAddr))
-		}
-
-		totalShareAsFloat64, exact := totalShareAsRat.Float64()
-
-		if !exact {
-			logger.Info("convert totalShareAsFloat64  (big.Rat to float64) ",
-				logger.Any("exact", exact),
-				logger.Any("totalShareAsFloat64", totalShareAsFloat64))
-		}
-
-		tmp := vo.Delegation{
-			Address:     v.DelegatorAddr,
-			Block:       v.Height,
-			SelfShares:  v.Shares,
-			TotalShares: totalShareAsFloat64,
-			Amount:      amountAsFloat64,
-		}
+		////amountAsFloat64 := float64(0)
+		//var amountAsFloat64 string
+		//if ratio, ok := tokenShareRatio[v.ValidatorAddr]; ok {
+		//	if shareAsRat, ok := new(big.Rat).SetString(v.Shares); ok {
+		//		amountAsRat := new(big.Rat).Mul(shareAsRat, ratio)
+		//		amountAsFloat64 = amountAsRat.FloatString(18)
+		//		//exact := false
+		//		//amountAsFloat64, exact = amountAsRat.Float64()
+		//		//if !exact {
+		//		//	logger.Info("convert new(big.Rat).Mul(shareAsRat, ratio)  (big.Rat to float64) ",
+		//		//		logger.Any("exact", exact),
+		//		//		logger.Any("amountAsRat", amountAsRat))
+		//		//}
+		//	} else {
+		//		logger.Error("convert validator share  type (string -> big.Rat) err", logger.String("str", v.Shares))
+		//	}
+		//} else {
+		//	logger.Error("can not fond the validator addr from the validator collection in db", logger.String("validator addr", v.ValidatorAddr))
+		//}
+		//
+		//totalShareAsFloat64, exact := totalShareAsRat.Float64()
+		//
+		//if !exact {
+		//	logger.Info("convert totalShareAsFloat64  (big.Rat to float64) ",
+		//		logger.Any("exact", exact),
+		//		logger.Any("totalShareAsFloat64", totalShareAsFloat64))
+		//}
+		//
+		//tmp := vo.Delegation{
+		//	Address:     v.DelegatorAddr,
+		//	Block:       v.Height,
+		//	SelfShares:  v.Shares,
+		//	TotalShares: totalShareAsFloat64,
+		//	Amount:      amountAsFloat64,
+		//}
+		//if validatorMap != nil {
+		//	if valdator, ok := validatorMap[v.ValidatorAddr]; ok {
+		//		tmp.Moniker = valdator.Description.Moniker
+		//	}
+		//}
+		tmp := getVoDelegation(v, validatorMap, totalShareAsRat, tokenShareRatio)
 		items = append(items, tmp)
 
 	}
 	return items
 }
 
-func GetDalegationbyPageSize(lcdDelegations []lcd.DelegationVo, totalShareAsRat *big.Rat,
+func getVoDelegation(v lcd.DelegationVo, validatorMap map[string]document.Validator, totalShareAsRat *big.Rat,
+	tokenShareRatio map[string]*big.Rat) vo.Delegation {
+	//amountAsFloat64 := float64(0)
+	var amountAsFloat64 string
+	if ratio, ok := tokenShareRatio[v.ValidatorAddr]; ok {
+		if shareAsRat, ok := new(big.Rat).SetString(v.Shares); ok {
+			amountAsRat := new(big.Rat).Mul(shareAsRat, ratio)
+			amountAsFloat64 = amountAsRat.FloatString(18)
+			//exact := false
+			//amountAsFloat64, exact = amountAsRat.Float64()
+			//if !exact {
+			//	logger.Info("convert new(big.Rat).Mul(shareAsRat, ratio)  (big.Rat to float64) ",
+			//		logger.Any("exact", exact),
+			//		logger.Any("amountAsRat", amountAsRat))
+			//}
+		} else {
+			logger.Error("convert validator share  type (string -> big.Rat) err", logger.String("str", v.Shares))
+		}
+	} else {
+		logger.Error("can not fond the validator addr from the validator collection in db", logger.String("validator addr", v.ValidatorAddr))
+	}
+
+	totalShareAsFloat64, exact := totalShareAsRat.Float64()
+
+	if !exact {
+		logger.Info("convert totalShareAsFloat64  (big.Rat to float64) ",
+			logger.Any("exact", exact),
+			logger.Any("totalShareAsFloat64", totalShareAsFloat64))
+	}
+
+	tmp := vo.Delegation{
+		Address:     v.DelegatorAddr,
+		Block:       v.Height,
+		SelfShares:  v.Shares,
+		TotalShares: totalShareAsFloat64,
+		Amount:      amountAsFloat64,
+	}
+	if validatorMap != nil {
+		valaddr := utils.Convert(conf.Get().Hub.Prefix.ValAddr, v.DelegatorAddr)
+		if valdator, ok := validatorMap[valaddr]; ok {
+			tmp.Moniker = valdator.Description.Moniker
+		}
+	}
+
+	return tmp
+}
+
+func GetDalegationbyPageSize(validatorMap map[string]document.Validator, lcdDelegations []lcd.DelegationVo, totalShareAsRat *big.Rat,
 	tokenShareRatio map[string]*big.Rat, page, size int) []vo.Delegation {
 	items := make([]vo.Delegation, 0, size)
 	for k, v := range lcdDelegations {
 		if k >= page*size && k < (page+1)*size {
 
-			//amountAsFloat64 := float64(0)
-			var amountAsFloat64 string
-			if ratio, ok := tokenShareRatio[v.ValidatorAddr]; ok {
-				if shareAsRat, ok := new(big.Rat).SetString(v.Shares); ok {
-					amountAsRat := new(big.Rat).Mul(shareAsRat, ratio)
-					amountAsFloat64 = amountAsRat.FloatString(18)
-					//exact := false
-					//amountAsFloat64, exact = amountAsRat.Float64()
-					//if !exact {
-					//	logger.Info("convert new(big.Rat).Mul(shareAsRat, ratio)  (big.Rat to float64) ",
-					//		logger.Any("exact", exact),
-					//		logger.Any("amountAsRat", amountAsRat))
-					//}
-				} else {
-					logger.Error("convert validator share  type (string -> big.Rat) err", logger.String("str", v.Shares))
-				}
-			} else {
-				logger.Error("can not fond the validator addr from the validator collection in db", logger.String("validator addr", v.ValidatorAddr))
-			}
-
-			totalShareAsFloat64, exact := totalShareAsRat.Float64()
-
-			if !exact {
-				logger.Info("convert totalShareAsFloat64  (big.Rat to float64) ",
-					logger.Any("exact", exact),
-					logger.Any("totalShareAsFloat64", totalShareAsFloat64))
-			}
-
-			tmp := vo.Delegation{
-				Address:     v.DelegatorAddr,
-				Block:       v.Height,
-				SelfShares:  v.Shares,
-				TotalShares: totalShareAsFloat64,
-				Amount:      amountAsFloat64,
-			}
+			////amountAsFloat64 := float64(0)
+			//var amountAsFloat64 string
+			//if ratio, ok := tokenShareRatio[v.ValidatorAddr]; ok {
+			//	if shareAsRat, ok := new(big.Rat).SetString(v.Shares); ok {
+			//		amountAsRat := new(big.Rat).Mul(shareAsRat, ratio)
+			//		amountAsFloat64 = amountAsRat.FloatString(18)
+			//		//exact := false
+			//		//amountAsFloat64, exact = amountAsRat.Float64()
+			//		//if !exact {
+			//		//	logger.Info("convert new(big.Rat).Mul(shareAsRat, ratio)  (big.Rat to float64) ",
+			//		//		logger.Any("exact", exact),
+			//		//		logger.Any("amountAsRat", amountAsRat))
+			//		//}
+			//	} else {
+			//		logger.Error("convert validator share  type (string -> big.Rat) err", logger.String("str", v.Shares))
+			//	}
+			//} else {
+			//	logger.Error("can not fond the validator addr from the validator collection in db", logger.String("validator addr", v.ValidatorAddr))
+			//}
+			//
+			//totalShareAsFloat64, exact := totalShareAsRat.Float64()
+			//
+			//if !exact {
+			//	logger.Info("convert totalShareAsFloat64  (big.Rat to float64) ",
+			//		logger.Any("exact", exact),
+			//		logger.Any("totalShareAsFloat64", totalShareAsFloat64))
+			//}
+			//
+			//tmp := vo.Delegation{
+			//	Address:     v.DelegatorAddr,
+			//	Block:       v.Height,
+			//	SelfShares:  v.Shares,
+			//	TotalShares: totalShareAsFloat64,
+			//	Amount:      amountAsFloat64,
+			//}
+			//if validatorMap != nil {
+			//	if valdator, ok := validatorMap[v.ValidatorAddr]; ok {
+			//		tmp.Moniker = valdator.Description.Moniker
+			//	}
+			//}
+			tmp := getVoDelegation(v, validatorMap, totalShareAsRat, tokenShareRatio)
 			items = append(items, tmp)
 		}
 	}
