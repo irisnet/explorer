@@ -151,7 +151,9 @@
         }
       },
       setThemeStyle(){
-        if(this.$store.state.currentSkinStyle ===  `${Constant.ENVCONFIG.MAINNET}${Constant.CHAINID.MAINNET}`){
+          console.log(this.$store.state.currentSkinStyle,"????")
+          console.log(`${Constant.ENVCONFIG.MAINNET}${Constant.CHAINID.MAINNET}`,"1111")
+        if(this.$store.state.currentSkinStyle ===  `${Constant.ENVCONFIG.MAINNET}${Constant.CHAINID.IRISHUB}`){
           this.skinStyle = '#3264FD';
           this.lineSkinBackgroundStyle = [
             {offset: 0, color: 'rgba(50, 100, 253, 0.8)'},

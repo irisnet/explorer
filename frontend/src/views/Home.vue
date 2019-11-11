@@ -197,7 +197,7 @@
         },
         methods: {
         	setThemeStyle(){
-		        if(this.$store.state.currentSkinStyle ===  `${Constant.ENVCONFIG.MAINNET}${Constant.CHAINID.MAINNET}`){
+		        if(this.$store.state.currentSkinStyle ===  `${Constant.ENVCONFIG.MAINNET}${Constant.CHAINID.IRISHUB}`){
 			        this.themeStyleArray = this.mainnetThemeStyle;
 		        }else if(this.$store.state.currentSkinStyle ===  `${Constant.ENVCONFIG.TESTNET}${Constant.CHAINID.FUXI}`){
 			        this.themeStyleArray = this.testnetFuXiThemeStyle;
