@@ -1,5 +1,6 @@
 import Service from '../util/axios'
 import urlApi from "../api"
+import Store from "../store"
 const Server = {
     /**
     * params
@@ -20,8 +21,20 @@ const Server = {
           url = url.replace(new RegExp(rule,"g"),params[Object.keys(params)[0]][key]);
         }
       }
+        if(Object.keys(params)[0] === 'candidatesTop' ||
+            Object.keys(params)[0] === 'txsByDay' ||
+            Object.keys(params)[0] === 'blocksRecent' ||
+            Object.keys(params)[0] === 'txsRecent' ||
+            Object.keys(params)[0] === 'navigation' ||
+            Object.keys(params)[0] === 'homeProposalList'
+        ){
+        
+        }else {
+            Store.commit('flShowLoading',true)
+        }
       Service.http(url).then( res => {
-        callback(res);
+      Store.commit('flShowLoading',false)
+          callback(res);
       }).catch(err => {
         callback({error:err})
       })

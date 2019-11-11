@@ -1,34 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Home from './views/Home.vue';
-import FaucetPage from './components/FaucetPage.vue';
-import TransactionsDetail from './components/TransactionsDetail.vue';
-import BlocksDetail from './components/BlockInfo.vue';
-import AddressPage from './components/AddressPage.vue';
-import ValidatorDetail from './components/ValidatorDetail.vue';
-import PrivacyPolicy from './components/PrivacyPolicy.vue';
-import ProposalsPage from "./components/ProposalsPage.vue";
-import ProposalsDetail from "./components/ProposalsDetail.vue";
-import SearchResult from "./components/searchResult.vue";
-import Help from "./components/clearStorageHelpPage.vue";
-import Version from "./components/version.vue";
-import ValidatorListPage from "./components/ValidatorListPage.vue";
-import Parameters from "./components/ParametersPage.vue"
-import RichList from "./components/RichList.vue"
-import BlockList from "./components/BlockListPage.vue"
-import BondedTokens from "./components/BondedTokens.vue";
-import AddressInformation from "./components/AddressInfomation.vue"
-import TokenStats from "./components/TokenStats.vue";
-import TxList from "./components/TxListPage.vue"
-import NativeAssetPage from "./components/NativeAsset.vue"
-import GateWayAssetPage from "./components/GateWayAsset.vue"
-import Error from "./components/ErrorPage.vue"
-import AllTxTypeList from "./components/AllTxTypeList.vue"
-import NativeAssetList from "./components/NativeAssetList.vue"
-import GateWayAssetList from "./components/GatewayAssetList.vue"
-import AssetInfo from "./components/AssetInformation.vue"
 Vue.use(Router);
-
+import Home from "./components/home/Home.vue"
 const router = new Router({
   routes: [
     {
@@ -41,92 +14,92 @@ const router = new Router({
     },
     {
       path: '/faucet',
-      component: FaucetPage,
+      component: () => import('@/components/utilpage/FaucetPage.vue'),
     },
     {
-      path: '/gov/proposals', component: ProposalsPage
+      path: '/gov/proposals', component: () => import('@/components/gov/ProposalsPage.vue')
     },
     {
-      path: '/gov/parameters', component: Parameters
+      path: '/gov/parameters', component: () => import('@/components/gov/ParametersPage.vue')
     },
     {
-      path: '/blocks', component: BlockList
+      path: '/blocks', component: () => import('@/components/block/BlockListPage.vue')
     },
     {
-      path: '/txs/:txType', component: TxList,
+      path: '/txs/:txType', component: () => import('@/components/txs/TxListPage.vue'),
     },
     {
-      path: '/validators', component: ValidatorListPage
+      path: '/validators', component: () => import('@/components/address/validator/ValidatorListPage.vue')
     },
     {
-      path: '/tx', component: TransactionsDetail
+      path: '/tx', component: () => import('@/components/txs/TransactionsDetail.vue')
     },
     {
-      path: '/block/:height', component: BlocksDetail,
+      path: '/block/:height', component: () => import('@/components/block/BlockInfo.vue'),
     },
     {
-      path: '/ProposalsDetail/:proposal_id', component: ProposalsDetail,
+      path: '/ProposalsDetail/:proposal_id', component: () => import('@/components/gov/ProposalsDetail.vue')
     },
     {
       path: '/address/:param',
-      component: AddressInformation,
+      component: () => import('@/components/address/delegator/AddressInfomation.vue'),
     },
     {
       path: '/validators/:param',
-      component: ValidatorDetail,
+      component: () => import('@/components/address/validator/ValidatorDetail.vue'),
     },
     {
       path: '/privacy_policy',
-      component: PrivacyPolicy,
+      component: () => import('@/components/utilpage/PrivacyPolicy.vue'),
     },
     {
-      path: '/searchResult/:searchContent', component: SearchResult,
+      path: '/searchResult/:searchContent', component: () => import('@/components/utilpage/searchResult.vue'),
     },
     {
-      path: '/searchResult', component: SearchResult,
+      path: '/searchResult', component: () => import('@/components/utilpage/searchResult.vue'),
     },
     {
-      path: '/version', component: Version,
+      path: '/version', component: () => import('@/components/utilpage/version.vue'),
     },
     {
-      path: '/help', component: Help,
+      path: '/help', component: () => import('@/components/utilpage/clearStorageHelpPage.vue'),
     },
     {
-      path: '/stats/irisrichlist', component: RichList,
+      path: '/stats/irisrichlist', component: () => import('@/components/stats/RichList.vue'),
     },
     {
-      path: '/stats/irisstats', component: TokenStats,
+      path: '/stats/irisstats', component: () => import('@/components/stats/TokenStats.vue'),
     },
     // {
     //   path: '/statistics/bondedTokens', component: BondedTokens,
     // }
     {
-      path: '/assets/ntvassetstxs', component: NativeAssetPage,
+      path: '/assets/ntvassetstxs', component: () => import('@/components/assets/NativeAsset.vue'),
     },
     {
-      path: '/assets/gtwassetstxs', component: GateWayAssetPage,
+      path: '/assets/gtwassetstxs', component: () => import('@/components/assets/GateWayAsset.vue'),
     },
     {
-      path: '/assets/ntvassets', component: NativeAssetList,
+      path: '/assets/ntvassets', component: () => import('@/components/assets/NativeAssetList.vue'),
     },
     {
-      path: '/assets/gtwassets', component: GateWayAssetList,
+      path: '/assets/gtwassets', component: () => import('@/components/assets/GatewayAssetList.vue'),
     },
    /* {
       path: '/asset/:assetType/:tokenName', component: AssetInfo,
     },*/
     {
-      path: '/asset/:assetType', component: AssetInfo,
+      path: '/asset/:assetType', component: () => import('@/components/assets/AssetInformation.vue'),
     },
     {
-      path: '/error', component: Error,
+      path: '/error', component: () => import('@/components/utilpage/ErrorPage.vue'),
     },
     {
-      path: '/txs', component: AllTxTypeList,
+      path: '/txs', component: () => import('@/components/txs/AllTxTypeList.vue'),
     },
     {
       path: "*",
-      component: Error
+      component: () => import('@/components/utilpage/ErrorPage.vue'),
     }
   ]
 

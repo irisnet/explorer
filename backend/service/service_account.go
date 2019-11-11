@@ -13,6 +13,7 @@ import (
 	"strings"
 	"sort"
 	"math"
+	"sync"
 )
 
 type AccountService struct {
@@ -24,6 +25,7 @@ func (service *AccountService) GetModule() Module {
 }
 
 func (service *AccountService) Query(address string) (result vo.AccountVo) {
+	var group sync.WaitGroup
 	prefix, _, _ := utils.DecodeAndConvert(address)
 	if prefix == conf.Get().Hub.Prefix.ValAddr {
 		self, delegated := delegatorService.QueryDelegation(address)
@@ -31,34 +33,39 @@ func (service *AccountService) Query(address string) (result vo.AccountVo) {
 		result.Deposits = delegated
 
 	} else {
-		res, err := lcd.Account(address)
-		if err == nil {
-			decimalMap := make(map[string]int, len(res.Coins))
-			var unit []string
-			var amount utils.Coins
-			for _, coinStr := range res.Coins {
-				coin := utils.ParseCoin(coinStr)
-				unit = append(unit, strings.Split(coin.Denom, types.AssetMinDenom)[0])
-				amount = append(amount, coin)
-			}
-
-			assetkokens, err := document.AssetToken{}.GetAssetTokenDetailByTokenids(unit)
+		group.Add(1)
+		go func() {
+			defer group.Done()
+			res, err := lcd.Account(address)
 			if err == nil {
-				for _, val := range assetkokens {
-					decimalMap[val.TokenId] = val.Decimal
-				}
-			}
-
-			for i, val := range amount {
-				denom := strings.Split(val.Denom, types.AssetMinDenom)[0]
-				if dem, ok := decimalMap[denom]; ok && dem > 0 {
-					amount[i].Denom = denom
-					amount[i].Amount = amount[i].Amount / float64(math.Pow10(dem))
+				decimalMap := make(map[string]int, len(res.Coins))
+				var unit []string
+				var amount utils.Coins
+				for _, coinStr := range res.Coins {
+					coin := utils.ParseCoin(coinStr)
+					unit = append(unit, strings.Split(coin.Denom, types.AssetMinDenom)[0])
+					amount = append(amount, coin)
 				}
 
+				assetkokens, err := document.AssetToken{}.GetAssetTokenDetailByTokenids(unit)
+				if err == nil {
+					for _, val := range assetkokens {
+						decimalMap[val.TokenId] = val.Decimal
+					}
+				}
+
+				for i, val := range amount {
+					denom := strings.Split(val.Denom, types.AssetMinDenom)[0]
+					if dem, ok := decimalMap[denom]; ok && dem > 0 {
+						amount[i].Denom = denom
+						amount[i].Amount = amount[i].Amount / float64(math.Pow10(dem))
+					}
+
+				}
+				result.Amount = amount
 			}
-			result.Amount = amount
-		}
+		}()
+
 		//result.Deposits = delegatorService.GetDeposits(address)
 		valaddress := utils.Convert(conf.Get().Hub.Prefix.ValAddr, address)
 		validator, err := document.Validator{}.QueryValidatorDetailByOperatorAddr(valaddress)
@@ -68,8 +75,16 @@ func (service *AccountService) Query(address string) (result vo.AccountVo) {
 			result.OperatorAddress = valaddress
 		}
 	}
+	group.Add(1)
 
-	result.WithdrawAddress = lcd.QueryWithdrawAddr(address)
+	go func() {
+		defer group.Done()
+		result.WithdrawAddress = lcd.QueryWithdrawAddr(address)
+	}()
+
+	group.Wait()
+
+
 	result.IsProfiler = isProfiler(address)
 	result.Address = address
 	return result

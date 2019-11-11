@@ -29,6 +29,7 @@ func (service *TxService) GetModule() Module {
 // get tx list
 func (service *TxService) QueryTxList(query bson.M, page, pageSize int, istotal bool) vo.PageVo {
 
+	query = document.FilterUnknownTxs(query)
 	total, data, err := document.CommonTx{}.QueryByPage(query, page, pageSize, istotal)
 
 	if err != nil {
@@ -90,6 +91,7 @@ func (service *TxService) QueryTxList(query bson.M, page, pageSize int, istotal 
 func (service *TxService) QueryBaseList(query bson.M, page, pageSize int, istotal bool) (pageInfo vo.PageVo) {
 	logger.Debug("QueryBaseList start", service.GetTraceLog())
 
+	query = document.FilterUnknownTxs(query)
 	total, txList, err := document.CommonTx{}.QueryByPage(query, page, pageSize, istotal)
 
 	if err != nil {
@@ -288,7 +290,7 @@ func (service *TxService) QueryTxNumGroupByDay() vo.TxNumGroupByDayVoRespond {
 
 func (service *TxService) QueryTxType(txType string) vo.QueryTxTypeRespond {
 	if txType == "all" {
-		length := len(types.BankList) + len(types.DeclarationList) + len(types.StakeList) + len(types.GovernanceList) + len(types.AssetList) + len(types.RandList)
+		length := len(types.BankList) + len(types.DeclarationList) + len(types.StakeList) + len(types.GovernanceList) + len(types.AssetList) + len(types.RandList) + len(types.GuardianList)
 		typeList := make([]string, 0, length)
 		res := append(typeList, types.BankList...)
 		res = append(res, types.DeclarationList...)
@@ -296,6 +298,7 @@ func (service *TxService) QueryTxType(txType string) vo.QueryTxTypeRespond {
 		res = append(res, types.GovernanceList...)
 		res = append(res, types.AssetList...)
 		res = append(res, types.RandList...)
+		res = append(res, types.GuardianList...)
 		return res
 	}
 	switch txType {
@@ -311,9 +314,13 @@ func (service *TxService) QueryTxType(txType string) vo.QueryTxTypeRespond {
 		return types.AssetList
 	case "rand":
 		return types.RandList
+	case "guardian":
+		return types.GuardianList
 	}
 	return nil
 }
+
+
 
 func buildTxVOFromDoc(tx document.CommonTx) vo.CommonTx {
 	txList := buildTxVOsFromDoc([]document.CommonTx{tx})
@@ -986,6 +993,15 @@ func (service *TxService) buildTxVO(tx vo.CommonTx, blackListP *map[string]docum
 		}
 	case types.Rand:
 		return vo.AssetTx{
+			BaseTx: buildBaseTx(tx),
+			From:   tx.From,
+			To:     tx.To,
+			Amount: tx.Amount,
+			Tags:   tx.Tags,
+			Msgs:   tx.Msgs,
+		}
+	case types.Guardian:
+		return vo.GuardianTx{
 			BaseTx: buildBaseTx(tx),
 			From:   tx.From,
 			To:     tx.To,
