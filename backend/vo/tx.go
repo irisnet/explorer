@@ -312,7 +312,6 @@ type CommonTx struct {
 	Tags                 map[string]string    `json:"tags"`
 	StakeCreateValidator StakeCreateValidator `json:"stake_create_validator"`
 	StakeEditValidator   StakeEditValidator   `json:"stake_edit_validator"`
-	Msg                  Msg                  `json:"-"`
 	Msgs                 []MsgItem            `json:"msgs"`
 	Signers              []Signer             `json:"signers"`
 }
@@ -338,11 +337,10 @@ func (tx CommonTx) String() string {
 		Tags                 :%v
 		StakeCreateValidator :%v
 		StakeEditValidator   :%v
-		Msg                  :%v
 		Msgs                 :%v
 		Signers              :%v
 		`, tx.Time, tx.Height, tx.TxHash, tx.From, tx.To, tx.Amount, tx.Type, tx.Fee, tx.Memo, tx.Status, tx.Code, tx.Log,
-		tx.GasUsed, tx.GasPrice, tx.ActualFee, tx.ProposalId, tx.Tags, tx.StakeCreateValidator, tx.StakeEditValidator, tx.Msg, tx.Msgs, tx.Signers)
+		tx.GasUsed, tx.GasPrice, tx.ActualFee, tx.ProposalId, tx.Tags, tx.StakeCreateValidator, tx.StakeEditValidator, tx.Msgs, tx.Signers)
 
 }
 
