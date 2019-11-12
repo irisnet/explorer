@@ -124,19 +124,22 @@ var (
 	TxTypeBurn          = "Burn"
 	TxTypeSetMemoRegexp = "SetMemoRegexp"
 
-	TxTypeStakeCreateValidator        = "CreateValidator"
-	TxTypeStakeEditValidator          = "EditValidator"
-	TxTypeStakeDelegate               = "Delegate"
-	TxTypeStakeBeginUnbonding         = "BeginUnbonding"
-	TxTypeBeginRedelegate             = "BeginRedelegate"
-	TxTypeUnjail                      = "Unjail"
-	TxTypeSetWithdrawAddress          = "SetWithdrawAddress"
-	TxTypeWithdrawDelegatorReward     = "WithdrawDelegatorReward"
-	TxTypeWithdrawDelegatorRewardsAll = "WithdrawDelegatorRewardsAll"
-	TxTypeWithdrawValidatorRewardsAll = "WithdrawValidatorRewardsAll"
-	TxTypeSubmitProposal              = "SubmitProposal"
-	TxTypeDeposit                     = "Deposit"
-	TxTypeVote                        = "Vote"
+	TxTypeStakeCreateValidator             = "CreateValidator"
+	TxTypeStakeEditValidator               = "EditValidator"
+	TxTypeStakeDelegate                    = "Delegate"
+	TxTypeStakeBeginUnbonding              = "BeginUnbonding"
+	TxTypeBeginRedelegate                  = "BeginRedelegate"
+	TxTypeUnjail                           = "Unjail"
+	TxTypeSetWithdrawAddress               = "SetWithdrawAddress"
+	TxTypeWithdrawDelegatorReward          = "WithdrawDelegatorReward"
+	TxTypeWithdrawDelegatorRewardsAll      = "WithdrawDelegatorRewardsAll"
+	TxTypeWithdrawValidatorRewardsAll      = "WithdrawValidatorRewardsAll"
+	TxTypeSubmitProposal                   = "SubmitProposal"
+	TxMsgTypeSubmitSoftwareUpgradeProposal = "SubmitSoftwareUpgradeProposal"
+	TxMsgTypeSubmitTaxUsageProposal        = "SubmitTaxUsageProposal"
+	TxMsgTypeSubmitTokenAdditionProposal   = "SubmitTokenAdditionProposal"
+	TxTypeDeposit                          = "Deposit"
+	TxTypeVote                             = "Vote"
 
 	TxTypeIssueToken           = "IssueToken"
 	TxTypeEditToken            = "EditToken"
@@ -185,7 +188,7 @@ var (
 	HTLCList        = []string{TxTypeClaimHTLC, TxTypeCreateHTLC, TxTypeRefundHTLC}
 	CoinswapList    = []string{TxTypeAddLiquidity, TxTypeRemoveLiquidity, TxTypeSwapOrder}
 
-	ForwardList = []string{TxTypeBeginRedelegate}
+	//ForwardList = []string{TxTypeBeginRedelegate}
 	//TxTypeExcludeGov = append(append(DeclarationList, StakeList...), BankList...)
 	AssetList = []string{TxTypeIssueToken, TxTypeEditToken, TxTypeMintToken, TxTypeTransferTokenOwner, TxTypeCreateGateway, TxTypeEditGateway, TxTypeTransferGatewayOwner}
 	RandList  = []string{TxTypeRequestRand}

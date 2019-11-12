@@ -17,7 +17,8 @@ const (
 )
 
 type Config struct {
-	EnvNm      string `bson:"env_nm" json:"env_nm",omitempty`
+	EnvNm      string `bson:"env_nm" json:"env_nm,omitempty"`
+	Env        string `bson:"env" json:"env,omitempty"`
 	Host       string `bson:"host" json:"host,omitempty"`
 	ChainId    string `bson:"chain_id" json:"chain_id,omitempty"`
 	ShowFaucet int    `bson:"show_faucet" json:"show_faucet,omitempty"`
@@ -26,10 +27,11 @@ type Config struct {
 func (c Config) String() string {
 	return fmt.Sprintf(`
 		EnvNm      :%v
+		Env      :%v
 		Host       :%v
 		ChainId    :%v
 		ShowFaucet :%v
-		`, c.EnvNm, c.Host, c.ChainId, c.ShowFaucet)
+		`, c.EnvNm, c.Env, c.Host, c.ChainId, c.ShowFaucet)
 }
 
 func (a Config) Name() string {

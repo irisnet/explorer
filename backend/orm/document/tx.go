@@ -102,9 +102,6 @@ type CommonTx struct {
 	ActualFee            ActualFee            `bson:"actual_fee"`
 	ProposalId           uint64               `bson:"proposal_id"`
 	Tags                 map[string]string    `bson:"tags"`
-	StakeCreateValidator StakeCreateValidator `bson:"stake_create_validator"`
-	StakeEditValidator   StakeEditValidator   `bson:"stake_edit_validator"`
-	Msg                  Msg                  `bson:"-"`
 	Msgs                 []MsgItem            `bson:"msgs"`
 	Signers              []Signer             `bson:"signers"`
 }

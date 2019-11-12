@@ -3434,6 +3434,9 @@ var doc = `{
                 "chain_id": {
                     "type": "string"
                 },
+                "env": {
+                    "type": "string"
+                },
                 "env_nm": {
                     "type": "string"
                 },
