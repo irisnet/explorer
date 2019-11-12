@@ -42,11 +42,13 @@ func (service *HtlcService) QueryHtlcByHashLock(hashlock string) vo.HtlcInfo {
 	}
 
 	if valaddr := utils.GetValaddr(resp.To); valaddr != "" {
-		validatorDoc, err := document.Validator{}.GetValidatorByProposerAddr(valaddr)
-		if err != nil {
-			logger.Error("QueryHtlcByHashLock to get Validator info  have error", logger.String("err", err.Error()))
-		} else {
-			resp.Moniker = validatorDoc.Description.Moniker
+		if moniker, ok := validatorService.monikerMap[valaddr]; ok {
+			resp.MonikerTo = moniker
+		}
+	}
+	if valaddr := utils.GetValaddr(resp.From); valaddr != "" {
+		if moniker, ok := validatorService.monikerMap[valaddr]; ok {
+			resp.MonikerFrom = moniker
 		}
 	}
 

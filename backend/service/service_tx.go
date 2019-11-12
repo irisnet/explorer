@@ -138,6 +138,79 @@ func (service *TxService) QueryBaseList(query bson.M, page, pageSize int, istota
 	return pageInfo
 }
 
+func (service *TxService) QueryHtlcTx(query bson.M, page, pageSize int, istotal bool) (pageInfo vo.PageVo) {
+	query = document.FilterUnknownTxs(query)
+	total, txList, err := document.CommonTx{}.QueryByPage(query, page, pageSize, istotal)
+
+	if err != nil {
+		logger.Error("query tx list by page", logger.String("err", err.Error()))
+		return
+	}
+	var unit []string
+	for _, val := range txList {
+		if len(val.Amount) > 0 && val.Amount[0].Denom != types.IRISAttoUint {
+			unit = append(unit, strings.Split(val.Amount[0].Denom, types.AssetMinDenom)[0])
+		}
+	}
+
+	decimalMap := make(map[string]int, len(txList))
+	assetkokens, err := document.AssetToken{}.GetAssetTokenDetailByTokenids(unit)
+	if err == nil {
+		for _, val := range assetkokens {
+			decimalMap[val.TokenId] = val.Decimal
+		}
+	}
+
+	for i, val := range txList {
+		if len(val.Amount) == 0 {
+			continue
+		}
+		denom := strings.Split(val.Amount[0].Denom, types.AssetMinDenom)[0]
+		if dem, ok := decimalMap[denom]; ok && dem > 0 {
+			txList[i].Amount[0].Denom = denom
+			txList[i].Amount[0].Amount = txList[i].Amount[0].Amount / float64(dem)
+		}
+	}
+
+	data := buildTxVOsFromDoc(txList)
+	var baseData []vo.HtlcTx
+	for _, tx := range data {
+		var monikerTo, monikerFrom string
+		if valaddr := utils.GetValaddr(tx.To); valaddr != "" {
+			if moniker, ok := validatorService.monikerMap[valaddr]; ok {
+				monikerTo = moniker
+			}
+		}
+		if valaddr := utils.GetValaddr(tx.From); valaddr != "" {
+			if moniker, ok := validatorService.monikerMap[valaddr]; ok {
+				monikerFrom = moniker
+			}
+		}
+		expireheight := int64(-1)
+		if tx.Status == types.Success {
+			switch tx.Type {
+			case types.TxTypeCreateHTLC:
+				msgData := tx.Msgs[0].MsgData.(msgvo.TxMsgCreateHTLC)
+				expireheight = tx.Height + int64(msgData.TimeLock)
+			}
+		}
+
+		baseData = append(baseData, vo.HtlcTx{
+			BaseTx:       buildBaseTx(tx),
+			From:         tx.From,
+			To:           tx.To,
+			Amount:       tx.Amount,
+			MonikerTo:    monikerTo,
+			MonikerFrom:  monikerFrom,
+			ExpireHeight: expireheight,
+		})
+	}
+
+	pageInfo.Data = baseData
+	pageInfo.Count = total
+	return pageInfo
+}
+
 // get recent txs
 func (service *TxService) QueryRecentTx() vo.RecentTxRespond {
 	logger.Debug("QueryRecentTx start", service.GetTraceLog())
@@ -1030,23 +1103,26 @@ func (service *TxService) buildTxVO(tx vo.CommonTx, blackListP *map[string]docum
 			Msgs:   tx.Msgs,
 		}
 	case types.Htlc:
-		moniker := ""
+		var monikerto, monikerfrom string
 		if valaddr := utils.GetValaddr(tx.To); valaddr != "" {
-			validatorDoc, err := document.Validator{}.GetValidatorByProposerAddr(valaddr)
-			if err != nil {
-				logger.Error("buildTxVO to get Validator info  have error", logger.String("err", err.Error()))
-			} else {
-				moniker = validatorDoc.Description.Moniker
+			if val, ok := validatorService.monikerMap[valaddr]; ok {
+				monikerto = val
+			}
+		}
+		if valaddr := utils.GetValaddr(tx.To); valaddr != "" {
+			if val, ok := validatorService.monikerMap[valaddr]; ok {
+				monikerfrom = val
 			}
 		}
 		return vo.HtlcTx{
-			BaseTx:  buildBaseTx(tx),
-			From:    tx.From,
-			To:      tx.To,
-			Amount:  tx.Amount,
-			Tags:    tx.Tags,
-			Msgs:    tx.Msgs,
-			Moniker: moniker,
+			BaseTx:      buildBaseTx(tx),
+			From:        tx.From,
+			To:          tx.To,
+			Amount:      tx.Amount,
+			Tags:        tx.Tags,
+			Msgs:        tx.Msgs,
+			MonikerTo:   monikerto,
+			MonikerFrom: monikerfrom,
 		}
 	case types.Coinswap:
 		return vo.CoinswapTx{

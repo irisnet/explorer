@@ -17,6 +17,7 @@ import (
 
 type ValidatorService struct {
 	BaseService
+	monikerMap map[string]string
 }
 
 func (service *ValidatorService) GetModule() Module {
@@ -804,6 +805,26 @@ func (service *ValidatorService) queryValForRainbow(page, size int) interface{} 
 	}
 	return validators
 }
+func (service *ValidatorService) UpdateMonikerMap(vs []document.Validator) {
+	if service.monikerMap == nil {
+		service.monikerMap = make(map[string]string, len(vs))
+	}
+	for _, v := range vs {
+		if moniker, ok := service.monikerMap[v.OperatorAddress]; ok {
+			if v.Description.Moniker != moniker {
+				service.monikerMap[v.OperatorAddress] = v.Description.Moniker
+			}
+		} else {
+			service.monikerMap[v.OperatorAddress] = v.Description.Moniker
+		}
+	}
+}
+
+func (service *ValidatorService) CleanMonikerMap() {
+	for addr := range service.monikerMap {
+		delete(service.monikerMap, addr)
+	}
+}
 
 func (service *ValidatorService) UpdateValidators(vs []document.Validator) error {
 	var vMap = make(map[string]document.Validator)
@@ -813,6 +834,7 @@ func (service *ValidatorService) UpdateValidators(vs []document.Validator) error
 
 	var txs []txn.Op
 	dstValidators := buildValidators()
+	service.UpdateMonikerMap(dstValidators)
 	for _, v := range dstValidators {
 		if v1, ok := vMap[v.OperatorAddress]; ok {
 			if isDiffValidator(v1, v) {

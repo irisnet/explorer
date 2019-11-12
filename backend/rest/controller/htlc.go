@@ -112,7 +112,7 @@ func registerQueryHtlcTx(r *mux.Router) error {
 		//	}
 		//}
 		var result vo.PageVo
-		result = tx.QueryBaseList(query, page, size, istotal)
+		result = tx.QueryHtlcTx(query, page, size, istotal)
 		return result
 	})
 	return nil

@@ -115,6 +115,8 @@ const (
 	IRISAttoUint  = "iris-atto"
 	AssetMinDenom = "-min"
 	Unknown       = "unknown"
+
+	Success = "success"
 )
 
 var (
