@@ -100,7 +100,6 @@
         mounted(){
 		  this.getHtlcInformation();
 		  this.getHtlcTxList();
-		  console.log(this.$route.params.txHash,"???")
         },
         methods:{
             getHtlcInformation(){
@@ -145,7 +144,6 @@
                                       timestamp: Tools.format2UTC(item.timestamp),
                                   }
                                 });
-                                console.log(this.HtlcTxListArray,"数据返回")
                             }
                         }
 

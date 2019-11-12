@@ -99,9 +99,6 @@
                 ]
             }
         },
-        created() {
-		    console.log(this.items,"数据展示666")
-        },
         methods:{
             formatTxHash(TxHash){
                 if(TxHash){
