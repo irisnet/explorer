@@ -89,7 +89,12 @@ func registerQueryTxList(r *mux.Router) error {
 						{"from": address},
 						{"to": address},
 					}
-
+				case types.TxTypeCreateHTLC, types.TxTypeClaimHTLC, types.TxTypeRefundHTLC:
+					query["$or"] = []bson.M{
+						{"signers.addr_bech32": address},
+						{"from": address},
+						{"to": address},
+					}
 				default:
 					query["signers.addr_bech32"] = address
 				}

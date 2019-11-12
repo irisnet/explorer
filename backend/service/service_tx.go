@@ -99,7 +99,7 @@ func (service *TxService) QueryBaseList(query bson.M, page, pageSize int, istota
 		return
 	}
 	var unit []string
-	for _,val := range txList {
+	for _, val := range txList {
 		if len(val.Amount) > 0 && val.Amount[0].Denom != types.IRISAttoUint {
 			unit = append(unit, strings.Split(val.Amount[0].Denom, types.AssetMinDenom)[0])
 		}
@@ -326,8 +326,6 @@ func (service *TxService) QueryTxType(txType string) vo.QueryTxTypeRespond {
 	return nil
 }
 
-
-
 func buildTxVOFromDoc(tx document.CommonTx) vo.CommonTx {
 	txList := buildTxVOsFromDoc([]document.CommonTx{tx})
 
@@ -438,10 +436,35 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 					msgDataVO = msgVO
 				}
 				break
+			case types.TxTypeCreateHTLC:
+				msgVO := msgvo.TxMsgCreateHTLC{}
+				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
+					logger.Error("BuildTxMsgCreateHTLCByUnmarshalJson", logger.String("err", err.Error()))
+				} else {
+					msgDataVO = msgVO
+				}
+				break
+			case types.TxTypeClaimHTLC:
+				msgVO := msgvo.TxMsgClaimHTLC{}
+				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
+					logger.Error("BuildTxMsgClaimHTLCyUnmarshalJson", logger.String("err", err.Error()))
+				} else {
+					msgDataVO = msgVO
+				}
+				break
+			case types.TxTypeRefundHTLC:
+				msgVO := msgvo.TxMsgRefundHTLC{}
+				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
+					logger.Error("BuildTxMsgRefundHTLCByUnmarshalJson", logger.String("err", err.Error()))
+				} else {
+					msgDataVO = msgVO
+				}
+
+				break
 			}
 
 			tmpMsgsArr = append(tmpMsgsArr, vo.MsgItem{
-				Type:    v.Type,
+				Type:    m.Type,
 				MsgData: msgDataVO,
 			})
 		}
@@ -1007,13 +1030,23 @@ func (service *TxService) buildTxVO(tx vo.CommonTx, blackListP *map[string]docum
 			Msgs:   tx.Msgs,
 		}
 	case types.Htlc:
+		moniker := ""
+		if valaddr := utils.GetValaddr(tx.To); valaddr != "" {
+			validatorDoc, err := document.Validator{}.GetValidatorByProposerAddr(valaddr)
+			if err != nil {
+				logger.Error("buildTxVO to get Validator info  have error", logger.String("err", err.Error()))
+			} else {
+				moniker = validatorDoc.Description.Moniker
+			}
+		}
 		return vo.HtlcTx{
-			BaseTx: buildBaseTx(tx),
-			From:   tx.From,
-			To:     tx.To,
-			Amount: tx.Amount,
-			Tags:   tx.Tags,
-			Msgs:   tx.Msgs,
+			BaseTx:  buildBaseTx(tx),
+			From:    tx.From,
+			To:      tx.To,
+			Amount:  tx.Amount,
+			Tags:    tx.Tags,
+			Msgs:    tx.Msgs,
+			Moniker: moniker,
 		}
 	case types.Coinswap:
 		return vo.CoinswapTx{

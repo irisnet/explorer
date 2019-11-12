@@ -40,6 +40,7 @@ const (
 	Tx_Field_Msgs_Moniker        = "msgs.msg.moniker"
 	Tx_Field_Msgs_UdInfo_Symbol  = "msgs.msg.ud_info.symbol"
 	Tx_Field_Msgs_UdInfo_Gateway = "msgs.msg.ud_info.gateway"
+	Tx_Field_Msgs_Hashcode       = "msgs.msg.hash_lock"
 	Tx_AssetType_Native          = "native"
 	Tx_AssetType_Gateway         = "gateway"
 
@@ -189,6 +190,16 @@ func (_ CommonTx) QueryTxByHash(hash string) (CommonTx, error) {
 	var result CommonTx
 	query := bson.M{}
 	query[Tx_Field_Hash] = hash
+	err := dbm.C(CollectionNmCommonTx).Find(query).Sort(desc(Tx_Field_Time)).One(&result)
+
+	return result, err
+}
+
+func (_ CommonTx) QueryHtlcTx(query bson.M) (CommonTx, error) {
+	dbm := getDb()
+	defer dbm.Session.Close()
+
+	var result CommonTx
 	err := dbm.C(CollectionNmCommonTx).Find(query).Sort(desc(Tx_Field_Time)).One(&result)
 
 	return result, err

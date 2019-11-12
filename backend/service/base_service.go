@@ -17,6 +17,7 @@ var (
 	govParamsService = &GovParamsService{}
 	validatorService = &ValidatorService{}
 	assetsService    = &AssetsService{}
+	htlcService      = &HtlcService{}
 
 	BlackValidatorsMap            = make(map[string]document.BlackList)
 	BlackValidatorsHash           = utils.Md5Encryption([]byte("nil"))
@@ -34,6 +35,7 @@ const (
 	GovParams
 	Validator
 	Asset
+	Htlc
 )
 
 type Module int
@@ -60,6 +62,8 @@ func Get(m Module) Service {
 		return validatorService
 	case Asset:
 		return assetsService
+	case Htlc:
+		return htlcService
 	}
 	return nil
 }

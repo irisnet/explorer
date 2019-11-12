@@ -242,11 +242,12 @@ type GuardianTx struct {
 
 type HtlcTx struct {
 	BaseTx
-	From   string            `json:"from"`
-	To     string            `json:"to"`
-	Amount utils.Coins       `json:"amount"`
-	Tags   map[string]string `json:"tags"`
-	Msgs   []MsgItem         `json:"msgs"`
+	From    string            `json:"from"`
+	To      string            `json:"to"`
+	Moniker string            `json:"moniker"`
+	Amount  utils.Coins       `json:"amount"`
+	Tags    map[string]string `json:"tags"`
+	Msgs    []MsgItem         `json:"msgs"`
 }
 
 type CoinswapTx struct {

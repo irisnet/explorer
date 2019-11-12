@@ -40,8 +40,8 @@ const (
 	UrlRegisterQueryParams = "/params"
 
 	//Htlc
-	UrlRegisterQueryHtlc    = "/htlcs/{hash-lock}"
-	UrlRegisterQueryHtlcTxs = "/htlcs/{hash-lock}/txs"
+	UrlRegisterQueryHtlc    = "/htlcs/{hash_lock}"
+	UrlRegisterQueryHtlcTxs = "/htlcs/{hash_lock}/txs"
 
 	//SearchBox
 	UrlRegisterQueryText    = "/search/{text}"
