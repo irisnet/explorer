@@ -3598,7 +3598,10 @@
           "hash_lock": {
             "type": "string"
           },
-          "moniker": {
+          "moniker_from": {
+            "type": "string"
+          },
+          "moniker_to": {
             "type": "string"
           },
           "state": {
