@@ -80,10 +80,11 @@ func registerQueryEnvConfig(r *mux.Router) error {
 		getconfig := func(dconfigs []document.Config) (ret []vo.ConfigVo){
 			for _,val := range dconfigs {
 				ret = append(ret,vo.ConfigVo{
-					EnvNm:val.EnvNm,
-					Host:val.Host,
-					ChainId:val.ChainId,
-					ShowFaucet:val.ShowFaucet,
+					EnvNm:      val.EnvNm,
+					Env:        val.Env,
+					Host:       val.Host,
+					ChainId:    val.ChainId,
+					ShowFaucet: val.ShowFaucet,
 				})
 			}
 			return ret

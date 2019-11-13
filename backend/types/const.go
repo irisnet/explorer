@@ -39,6 +39,10 @@ const (
 
 	UrlRegisterQueryParams = "/params"
 
+	//Htlc
+	UrlRegisterQueryHtlc    = "/htlcs/{hash_lock}"
+	UrlRegisterQueryHtlcTxs = "/htlcs/{hash_lock}/txs"
+
 	//SearchBox
 	UrlRegisterQueryText    = "/search/{text}"
 	UrlRegisterQuerySysDate = "/sysdate"
@@ -111,6 +115,8 @@ const (
 	IRISAttoUint  = "iris-atto"
 	AssetMinDenom = "-min"
 	Unknown       = "unknown"
+
+	Success = "success"
 )
 
 var (
@@ -118,19 +124,22 @@ var (
 	TxTypeBurn          = "Burn"
 	TxTypeSetMemoRegexp = "SetMemoRegexp"
 
-	TxTypeStakeCreateValidator        = "CreateValidator"
-	TxTypeStakeEditValidator          = "EditValidator"
-	TxTypeStakeDelegate               = "Delegate"
-	TxTypeStakeBeginUnbonding         = "BeginUnbonding"
-	TxTypeBeginRedelegate             = "BeginRedelegate"
-	TxTypeUnjail                      = "Unjail"
-	TxTypeSetWithdrawAddress          = "SetWithdrawAddress"
-	TxTypeWithdrawDelegatorReward     = "WithdrawDelegatorReward"
-	TxTypeWithdrawDelegatorRewardsAll = "WithdrawDelegatorRewardsAll"
-	TxTypeWithdrawValidatorRewardsAll = "WithdrawValidatorRewardsAll"
-	TxTypeSubmitProposal              = "SubmitProposal"
-	TxTypeDeposit                     = "Deposit"
-	TxTypeVote                        = "Vote"
+	TxTypeStakeCreateValidator             = "CreateValidator"
+	TxTypeStakeEditValidator               = "EditValidator"
+	TxTypeStakeDelegate                    = "Delegate"
+	TxTypeStakeBeginUnbonding              = "BeginUnbonding"
+	TxTypeBeginRedelegate                  = "BeginRedelegate"
+	TxTypeUnjail                           = "Unjail"
+	TxTypeSetWithdrawAddress               = "SetWithdrawAddress"
+	TxTypeWithdrawDelegatorReward          = "WithdrawDelegatorReward"
+	TxTypeWithdrawDelegatorRewardsAll      = "WithdrawDelegatorRewardsAll"
+	TxTypeWithdrawValidatorRewardsAll      = "WithdrawValidatorRewardsAll"
+	TxTypeSubmitProposal                   = "SubmitProposal"
+	TxMsgTypeSubmitSoftwareUpgradeProposal = "SubmitSoftwareUpgradeProposal"
+	TxMsgTypeSubmitTaxUsageProposal        = "SubmitTaxUsageProposal"
+	TxMsgTypeSubmitTokenAdditionProposal   = "SubmitTokenAdditionProposal"
+	TxTypeDeposit                          = "Deposit"
+	TxTypeVote                             = "Vote"
 
 	TxTypeIssueToken           = "IssueToken"
 	TxTypeEditToken            = "EditToken"
@@ -144,6 +153,14 @@ var (
 	TxTypeAddTrustee     = "AddTrustee"
 	TxTypeDeleteTrustee  = "DeleteTrustee"
 	TxTypeDeleteProfiler = "DeleteProfiler"
+
+	TxTypeCreateHTLC = "CreateHTLC"
+	TxTypeClaimHTLC  = "ClaimHTLC"
+	TxTypeRefundHTLC = "RefundHTLC"
+
+	TxTypeAddLiquidity    = "AddLiquidity"
+	TxTypeRemoveLiquidity = "RemoveLiquidity"
+	TxTypeSwapOrder       = "SwapOrder"
 
 	TxTypeRequestRand = "RequestRand"
 
@@ -168,8 +185,10 @@ var (
 	StakeList       = []string{TxTypeStakeDelegate, TxTypeBeginRedelegate, TxTypeSetWithdrawAddress, TxTypeStakeBeginUnbonding, TxTypeWithdrawDelegatorReward, TxTypeWithdrawDelegatorRewardsAll, TxTypeWithdrawValidatorRewardsAll}
 	GovernanceList  = []string{TxTypeSubmitProposal, TxTypeDeposit, TxTypeVote}
 	GuardianList    = []string{TxTypeAddProfiler, TxTypeAddTrustee, TxTypeDeleteProfiler, TxTypeDeleteTrustee}
+	HTLCList        = []string{TxTypeClaimHTLC, TxTypeCreateHTLC, TxTypeRefundHTLC}
+	CoinswapList    = []string{TxTypeAddLiquidity, TxTypeRemoveLiquidity, TxTypeSwapOrder}
 
-	ForwardList = []string{TxTypeBeginRedelegate}
+	//ForwardList = []string{TxTypeBeginRedelegate}
 	//TxTypeExcludeGov = append(append(DeclarationList, StakeList...), BankList...)
 	AssetList = []string{TxTypeIssueToken, TxTypeEditToken, TxTypeMintToken, TxTypeTransferTokenOwner, TxTypeCreateGateway, TxTypeEditGateway, TxTypeTransferGatewayOwner}
 	RandList  = []string{TxTypeRequestRand}
@@ -251,6 +270,30 @@ func IsRandType(typ string) bool {
 	return false
 }
 
+func IsCoinswapType(typ string) bool {
+	if len(typ) == 0 {
+		return false
+	}
+	for _, t := range CoinswapList {
+		if t == typ {
+			return true
+		}
+	}
+	return false
+}
+
+func IsHTLCType(typ string) bool {
+	if len(typ) == 0 {
+		return false
+	}
+	for _, t := range HTLCList {
+		if t == typ {
+			return true
+		}
+	}
+	return false
+}
+
 func IsGuardianType(typ string) bool {
 	if len(typ) == 0 {
 		return false
@@ -274,6 +317,8 @@ const (
 	Asset
 	Rand
 	Guardian
+	Htlc
+	Coinswap
 )
 
 func Convert(typ string) TxType {
@@ -289,7 +334,11 @@ func Convert(typ string) TxType {
 		return Asset
 	} else if IsRandType(typ) {
 		return Rand
-	} else if IsGuardianType(typ) {
+	} else if IsCoinswapType(typ) {
+		return Coinswap
+    } else if IsHTLCType(typ) {
+    	return Htlc
+    } else if IsGuardianType(typ) {
 		return Guardian
 	}
 	logger.Error("Convert UnSupportTx Type", logger.String("txtype", typ))

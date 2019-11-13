@@ -305,6 +305,34 @@
       "font_class": "Profiler",
       "unicode": "e646",
       "unicode_decimal": 58950
+    },
+    {
+      "icon_id": "11738343",
+      "name": "HTLC Complete",
+      "font_class": "HTLCComplete",
+      "unicode": "e64b",
+      "unicode_decimal": 58955
+    },
+    {
+      "icon_id": "11738344",
+      "name": "HTLC Open",
+      "font_class": "HTLCOpen",
+      "unicode": "e64c",
+      "unicode_decimal": 58956
+    },
+    {
+      "icon_id": "11738345",
+      "name": "HTLC Expired",
+      "font_class": "HTLCExpired",
+      "unicode": "e64d",
+      "unicode_decimal": 58957
+    },
+    {
+      "icon_id": "11738346",
+      "name": "HTLC Refunded",
+      "font_class": "HTLCRefunded",
+      "unicode": "e64e",
+      "unicode_decimal": 58958
     }
   ]
 }

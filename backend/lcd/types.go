@@ -37,6 +37,7 @@ const (
 	UrlLookupIconsByKeySuffix                    = "https://keybase.io/_/api/1.0/user/lookup.json?fields=pictures&key_suffix=%s"
 	UrlAssetTokens                               = "%s/asset/tokens"
 	UrlAssetGateways                             = "%s/asset/gateways"
+	UrlHtlcInfo                                  = "%s/htlc/htlcs/%s"
 )
 
 type AccountVo struct {

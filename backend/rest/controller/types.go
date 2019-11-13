@@ -13,4 +13,5 @@ var (
 	tokenstats   service.TokenStatsService
 	bondedtokens service.BondedTokensService
 	asset        service.AssetsService
+	htlc         service.HtlcService
 )

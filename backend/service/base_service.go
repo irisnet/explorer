@@ -17,10 +17,13 @@ var (
 	govParamsService = &GovParamsService{}
 	validatorService = &ValidatorService{}
 	assetsService    = &AssetsService{}
+	htlcService      = &HtlcService{}
 
-	BlackValidatorsMap            = make(map[string]document.BlackList)
-	BlackValidatorsHash           = utils.Md5Encryption([]byte("nil"))
-	BlackValidatorsHashHasNotInit = utils.Md5Encryption([]byte("nil"))
+	BlackValidatorsMap        = make(map[string]document.BlackList)
+	ValidatorsDescriptionMap  = make(map[string]document.Description)
+	BlackValidatorsHash       = utils.Md5Encryption([]byte("nil"))
+	ValidatorsdescriptionHash = utils.Md5Encryption([]byte("nil"))
+	ValidatorsHashHasNotInit  = utils.Md5Encryption([]byte("nil"))
 )
 
 const (
@@ -34,6 +37,7 @@ const (
 	GovParams
 	Validator
 	Asset
+	Htlc
 )
 
 type Module int
@@ -60,6 +64,8 @@ func Get(m Module) Service {
 		return validatorService
 	case Asset:
 		return assetsService
+	case Htlc:
+		return htlcService
 	}
 	return nil
 }
@@ -88,6 +94,7 @@ func (base *BaseService) GetTraceLog() zap.Field {
 // use redis to cache black list data in feature.
 func init() {
 	getBlackValidators()
+	getValidatorsDescription()
 }
 
 func getBlackValidators() {
@@ -97,7 +104,7 @@ func getBlackValidators() {
 }
 
 func (b *BaseService) QueryBlackList() map[string]document.BlackList {
-	if BlackValidatorsHash != BlackValidatorsHashHasNotInit {
+	if BlackValidatorsHash != ValidatorsHashHasNotInit {
 		return BlackValidatorsMap
 	} else {
 		b.ReloadBlackValidators()
@@ -107,4 +114,22 @@ func (b *BaseService) QueryBlackList() map[string]document.BlackList {
 
 func (_ *BaseService) ReloadBlackValidators() {
 	getBlackValidators()
+}
+
+func getValidatorsDescription() {
+	descriptionMap := document.Validator{}.QueryValidatorDescription()
+	ValidatorsdescriptionHash = utils.Md5Encryption(utils.MarshalJsonIgnoreErr(descriptionMap))
+	ValidatorsDescriptionMap = descriptionMap
+}
+func (b *BaseService) QueryDescriptionList() map[string]document.Description {
+	if ValidatorsdescriptionHash != ValidatorsHashHasNotInit {
+		return ValidatorsDescriptionMap
+	} else {
+		b.ReloadValidatorsDescription()
+		return ValidatorsDescriptionMap
+	}
+}
+
+func (_ *BaseService) ReloadValidatorsDescription() {
+	getValidatorsDescription()
 }
