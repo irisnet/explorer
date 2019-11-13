@@ -405,28 +405,28 @@ func (_ Validator) QueryCandidateStatus(addr string) (int, int, error) {
 	return preCommitCount, upTimeMap[validator.OperatorAddress], nil
 }
 
-func (_ Validator) QueryValidatorMonikerByAddrArr(addrs []string) (map[string]string, error) {
-	validatorArr := []Validator{}
-
-	valCondition := bson.M{
-		ValidatorFieldOperatorAddress: bson.M{"$in": addrs},
-	}
-
-	selector := bson.M{ValidatorFieldDescription: 1, ValidatorFieldOperatorAddress: 1}
-
-	if err := queryAll(CollectionNmValidator, selector, valCondition, "", 0, &validatorArr); err != nil {
-		return nil, err
-	}
-
-	res := map[string]string{}
-
-	for _, v := range validatorArr {
-		res[v.OperatorAddress] = v.Description.Moniker
-	}
-
-	return res, nil
-
-}
+//func (_ Validator) QueryValidatorMonikerByAddrArr(addrs []string) (map[string]string, error) {
+//	validatorArr := []Validator{}
+//
+//	valCondition := bson.M{
+//		ValidatorFieldOperatorAddress: bson.M{"$in": addrs},
+//	}
+//
+//	selector := bson.M{ValidatorFieldDescription: 1, ValidatorFieldOperatorAddress: 1}
+//
+//	if err := queryAll(CollectionNmValidator, selector, valCondition, "", 0, &validatorArr); err != nil {
+//		return nil, err
+//	}
+//
+//	res := map[string]string{}
+//
+//	for _, v := range validatorArr {
+//		res[v.OperatorAddress] = v.Description.Moniker
+//	}
+//
+//	return res, nil
+//
+//}
 
 func (_ Validator) QueryValidatorListByAddrList(addrs []string) ([]Validator, error) {
 	validatorArr := []Validator{}

@@ -126,18 +126,19 @@ func (service *ValidatorService) GetDepositedTxByValidatorAddr(validatorAddr str
 		logger.Error("QueryProposalTxFromById", logger.String("err", err.Error()))
 	}
 
-	addrArr := make([]string, 0, len(txs))
-	for _, v := range proposerByIdMap {
-		addrArr = append(addrArr, utils.Convert(conf.Get().Hub.Prefix.ValAddr, v))
-	}
+	//addrArr := make([]string, 0, len(txs))
+	//for _, v := range proposerByIdMap {
+	//	addrArr = append(addrArr, utils.Convert(conf.Get().Hub.Prefix.ValAddr, v))
+	//}
+	//
+	//addrArr = utils.RemoveDuplicationStrArr(addrArr)
+	//validatorMonikerMap, err := document.Validator{}.QueryValidatorMonikerByAddrArr(addrArr)
 
-	addrArr = utils.RemoveDuplicationStrArr(addrArr)
-	validatorMonikerMap, err := document.Validator{}.QueryValidatorMonikerByAddrArr(addrArr)
+	//if err != nil {
+	//	logger.Error("QueryValidatorMonikerByAddrArr", logger.String("err", err.Error()))
+	//}
 
-	if err != nil {
-		logger.Error("QueryValidatorMonikerByAddrArr", logger.String("err", err.Error()))
-	}
-
+	descriptionMap := service.QueryDescriptionList()
 	blackList := service.QueryBlackList()
 	items := make([]vo.ValidatorDepositTx, 0, size)
 	for _, v := range txs {
@@ -161,8 +162,8 @@ func (service *ValidatorService) GetDepositedTxByValidatorAddr(validatorAddr str
 		if from, ok := proposerByIdMap[v.ProposalId]; ok {
 			proposer = from
 			valaddr := utils.Convert(conf.Get().Hub.Prefix.ValAddr, from)
-			if m, ok := validatorMonikerMap[valaddr]; ok {
-				moniker = m
+			if m, ok := descriptionMap[valaddr]; ok {
+				moniker = m.Moniker
 			}
 			if blackone, ok := blackList[valaddr]; ok {
 				moniker = blackone.Moniker
@@ -196,7 +197,8 @@ func (service *ValidatorService) GetUnbondingDelegationsFromLcd(valAddr string, 
 		valaddrlist = append(valaddrlist, v.ValidatorAddr)
 	}
 
-	validatorMap := getValidators(valaddrlist)
+	descriptionMap := service.QueryDescriptionList()
+	blacklist := service.QueryBlackList()
 	for k, v := range lcdUnbondingDelegations {
 		if k >= page*size && k < (page+1)*size {
 
@@ -206,10 +208,12 @@ func (service *ValidatorService) GetUnbondingDelegationsFromLcd(valAddr string, 
 				Block:   v.CreationHeight,
 				Until:   v.MinTime,
 			}
-			if validatorMap != nil {
-				valaddr := utils.Convert(conf.Get().Hub.Prefix.ValAddr, v.DelegatorAddr)
-				if valdator, ok := validatorMap[valaddr]; ok {
-					tmp.Moniker = valdator.Description.Moniker
+			if valaddr := utils.GetValaddr(v.DelegatorAddr); valaddr != "" {
+				if desc, ok := descriptionMap[valaddr]; ok {
+					tmp.Moniker = desc.Moniker
+				}
+				if blackone, ok := blacklist[valaddr]; ok {
+					tmp.Moniker = blackone.Moniker
 				}
 			}
 
@@ -238,7 +242,6 @@ func (service *ValidatorService) GetDelegationsFromLcd(valAddr string, page, siz
 		}
 		totalShareAsRat = totalShareAsRat.Add(totalShareAsRat, sharesAsRat)
 	}
-	validatorMap := getValidators(valaddrlist)
 
 	addrArr := []string{valAddr}
 
@@ -249,9 +252,9 @@ func (service *ValidatorService) GetDelegationsFromLcd(valAddr string, page, siz
 	sort.Sort(lcdDelegations)
 	var items []vo.Delegation
 	if needpage {
-		items = GetDalegationbyPageSize(validatorMap, lcdDelegations, totalShareAsRat, tokenShareRatioByValidatorAddr, page, size)
+		items = service.GetDalegationbyPageSize(lcdDelegations, totalShareAsRat, tokenShareRatioByValidatorAddr, page, size)
 	} else {
-		items = GetDalegation(validatorMap, lcdDelegations, totalShareAsRat, tokenShareRatioByValidatorAddr)
+		items = service.GetDalegation(lcdDelegations, totalShareAsRat, tokenShareRatioByValidatorAddr)
 	}
 
 	return vo.DelegationsPage{
@@ -260,7 +263,7 @@ func (service *ValidatorService) GetDelegationsFromLcd(valAddr string, page, siz
 	}
 }
 
-func GetDalegation(validatorMap map[string]document.Validator, lcdDelegations []lcd.DelegationVo, totalShareAsRat *big.Rat, tokenShareRatio map[string]*big.Rat) []vo.Delegation {
+func (service *ValidatorService) GetDalegation(lcdDelegations []lcd.DelegationVo, totalShareAsRat *big.Rat, tokenShareRatio map[string]*big.Rat) []vo.Delegation {
 	items := make([]vo.Delegation, 0, len(lcdDelegations))
 	for _, v := range lcdDelegations {
 
@@ -304,14 +307,14 @@ func GetDalegation(validatorMap map[string]document.Validator, lcdDelegations []
 		//		tmp.Moniker = valdator.Description.Moniker
 		//	}
 		//}
-		tmp := getVoDelegation(v, validatorMap, totalShareAsRat, tokenShareRatio)
+		tmp := service.getVoDelegation(v, totalShareAsRat, tokenShareRatio)
 		items = append(items, tmp)
 
 	}
 	return items
 }
 
-func getVoDelegation(v lcd.DelegationVo, validatorMap map[string]document.Validator, totalShareAsRat *big.Rat,
+func (service *ValidatorService) getVoDelegation(v lcd.DelegationVo, totalShareAsRat *big.Rat,
 	tokenShareRatio map[string]*big.Rat) vo.Delegation {
 	//amountAsFloat64 := float64(0)
 	var amountAsFloat64 string
@@ -348,17 +351,21 @@ func getVoDelegation(v lcd.DelegationVo, validatorMap map[string]document.Valida
 		TotalShares: totalShareAsFloat64,
 		Amount:      amountAsFloat64,
 	}
-	if validatorMap != nil {
-		valaddr := utils.Convert(conf.Get().Hub.Prefix.ValAddr, v.DelegatorAddr)
-		if valdator, ok := validatorMap[valaddr]; ok {
-			tmp.Moniker = valdator.Description.Moniker
+	descriptionMap := service.QueryDescriptionList()
+	blacklist := service.QueryBlackList()
+	if valaddr := utils.GetValaddr(v.DelegatorAddr); valaddr != "" {
+		if desc, ok := descriptionMap[valaddr]; ok {
+			tmp.Moniker = desc.Moniker
+		}
+		if blackone, ok := blacklist[valaddr]; ok {
+			tmp.Moniker = blackone.Moniker
 		}
 	}
 
 	return tmp
 }
 
-func GetDalegationbyPageSize(validatorMap map[string]document.Validator, lcdDelegations []lcd.DelegationVo, totalShareAsRat *big.Rat,
+func (service *ValidatorService) GetDalegationbyPageSize(lcdDelegations []lcd.DelegationVo, totalShareAsRat *big.Rat,
 	tokenShareRatio map[string]*big.Rat, page, size int) []vo.Delegation {
 	items := make([]vo.Delegation, 0, size)
 	for k, v := range lcdDelegations {
@@ -404,7 +411,7 @@ func GetDalegationbyPageSize(validatorMap map[string]document.Validator, lcdDele
 			//		tmp.Moniker = valdator.Description.Moniker
 			//	}
 			//}
-			tmp := getVoDelegation(v, validatorMap, totalShareAsRat, tokenShareRatio)
+			tmp := service.getVoDelegation(v, totalShareAsRat, tokenShareRatio)
 			items = append(items, tmp)
 		}
 	}

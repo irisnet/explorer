@@ -8,7 +8,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
@@ -651,45 +650,46 @@ func parseFromAndToByAmountCoinFlow(items []interface{}, forTxDetail bool) []int
 
 // get validator moniker by address which in stake tx
 func (service *TxService) getValidatorMonikerByAddress(items []interface{}) []interface{} {
-	// get validator addresses
-	valAddrArr := make([]string, 0, len(items))
-	for i := 0; i < len(items); i++ {
-		if stakeTx, ok := items[i].(vo.StakeTx); ok {
-			if isValidatorAddrPrefix(stakeTx.From) {
-				valAddrArr = append(valAddrArr, stakeTx.From)
-			}
-
-			if isValidatorAddrPrefix(stakeTx.To) {
-				valAddrArr = append(valAddrArr, stakeTx.To)
-			}
-		}
-	}
-	valAddrArr = utils.RemoveDuplicationStrArr(valAddrArr)
-
-	// query moniker by addresses
-	monikerByAddrMap, err := document.Validator{}.QueryValidatorMonikerByAddrArr(valAddrArr)
-	if err != nil {
-		logger.Error("document.Validator{}.QueryValidatorMonikerByAddrArr(valAddrArr)", logger.String("err", err.Error()), logger.Any("params", valAddrArr))
-	}
+	//// get validator addresses
+	//valAddrArr := make([]string, 0, len(items))
+	//for i := 0; i < len(items); i++ {
+	//	if stakeTx, ok := items[i].(vo.StakeTx); ok {
+	//		if isValidatorAddrPrefix(stakeTx.From) {
+	//			valAddrArr = append(valAddrArr, stakeTx.From)
+	//		}
+	//
+	//		if isValidatorAddrPrefix(stakeTx.To) {
+	//			valAddrArr = append(valAddrArr, stakeTx.To)
+	//		}
+	//	}
+	//}
+	//valAddrArr = utils.RemoveDuplicationStrArr(valAddrArr)
+	//
+	//// query moniker by addresses
+	//monikerByAddrMap, err := document.Validator{}.QueryValidatorMonikerByAddrArr(valAddrArr)
+	//if err != nil {
+	//	logger.Error("document.Validator{}.QueryValidatorMonikerByAddrArr(valAddrArr)", logger.String("err", err.Error()), logger.Any("params", valAddrArr))
+	//}
 
 	// set moniker value
+	descriptionMap := service.QueryDescriptionList()
 	blacklist := service.QueryBlackList()
 	for i := 0; i < len(items); i++ {
 		if stakeTx, ok := items[i].(vo.StakeTx); ok {
-			if isValidatorAddrPrefix(stakeTx.From) {
-				if fromMoniker, ok := monikerByAddrMap[stakeTx.From]; ok {
-					stakeTx.FromMoniker = fromMoniker
+			if valaddr := utils.GetValaddr(stakeTx.From); valaddr != "" {
+				if des, ok := descriptionMap[valaddr]; ok {
+					stakeTx.FromMoniker = des.Moniker
 				}
-				if blackone, ok := blacklist[stakeTx.From]; ok {
+				if blackone, ok := blacklist[valaddr]; ok {
 					stakeTx.FromMoniker = blackone.Moniker
 				}
 			}
 
-			if isValidatorAddrPrefix(stakeTx.To) {
-				if toMoniker, ok := monikerByAddrMap[stakeTx.To]; ok {
-					stakeTx.ToMoniker = toMoniker
+			if valaddr := utils.GetValaddr(stakeTx.To); valaddr != "" {
+				if des, ok := descriptionMap[valaddr]; ok {
+					stakeTx.ToMoniker = des.Moniker
 				}
-				if blackone, ok := blacklist[stakeTx.To]; ok {
+				if blackone, ok := blacklist[valaddr]; ok {
 					stakeTx.ToMoniker = blackone.Moniker
 				}
 			}
@@ -700,9 +700,9 @@ func (service *TxService) getValidatorMonikerByAddress(items []interface{}) []in
 	return items
 }
 
-func isValidatorAddrPrefix(addr string) bool {
-	return strings.HasPrefix(addr, conf.Get().Hub.Prefix.ValAddr)
-}
+//func isValidatorAddrPrefix(addr string) bool {
+//	return strings.HasPrefix(addr, conf.Get().Hub.Prefix.ValAddr)
+//}
 
 func (service *TxService) buildTxVOs(txs []vo.CommonTx, isDetail bool) []interface{} {
 	var txList []interface{}
