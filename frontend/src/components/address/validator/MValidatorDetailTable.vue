@@ -76,12 +76,11 @@
                     v-show="!(/^[0-9]\d*$/).test(row.proposer) && row.address && row.proposer !== '--'">
                     <span
                         class="remove_default_style"
-                        :class="row.proposer === $route.params.param?'no_skip':''">
+                        :class="row.proposer === $route.params.param?'no_skip':'skip_route'">
                         <router-link
                             :to="addressRoute(row.proposer)"
                             class="link_style">{{formatMoniker(row.moniker) || formatAddress(row.proposer)}}</router-link>
                     </span>
-                    <span v-if="!row.moniker" class="address">{{row.proposer}}</span>
                 </div>
             </template>
             <template slot="To" slot-scope="{ row }">
