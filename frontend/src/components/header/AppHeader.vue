@@ -485,6 +485,20 @@
 					}
                 });
 			},
+            searchHashLock(){
+			    Service.commonInterface({headerSearchHtlcs:{searchValue: this.searchInputValue}}, (hashlockInformation) => {
+			        try {
+			            if(hashlockInformation){
+                            this.$router.push(`/htlc/${hashlockInformation.hash_lock}`);
+                        }else {
+                            this.toSearchResultPage();
+                        }
+                    }catch (e) {
+                        console.error(e);
+                        this.toSearchResultPage();
+                    }
+                })
+            },
 			searchDelegator () {
 				Service.commonInterface({headerSearchAccount:{searchValue:this.searchInputValue}}, (delegatorAddress) => {
 					try {
@@ -550,8 +564,10 @@
 					return
 				} else {
 					if (/^[A-F0-9]{64}$/.test(this.searchInputValue)) {
-						this.searchTx()
-					} else if (this.$Codec.Bech32.isBech32(this.$Crypto.config.iris.bech32.accAddr, this.searchInputValue)) {
+						this.searchTx();
+					} else if(/^[a-f0-9]{64}$/.test(this.searchInputValue)){
+                        this.searchHashLock()
+                    } else if (this.$Codec.Bech32.isBech32(this.$Crypto.config.iris.bech32.accAddr, this.searchInputValue)) {
 						this.searchDelegator();
 					} else if (this.$Codec.Bech32.isBech32(this.$Crypto.config.iris.bech32.valAddr, this.searchInputValue)) {
 						this.searchValidator();

@@ -10,20 +10,26 @@
             </div>
             <div class="htlc_information_content_container">
                 <ul class="htlc_information_content_wrap">
-                    <li class="htlc_information_item" v-for="item in htlcInformationArr">
-                        <span class="htlc_information_name">{{Object.keys(item)[0]}}
-                        </span>
+                    <li class="htlc_information_item"
+                        v-for="item in htlcInformationArr">
+                        <span class="htlc_information_name">{{Object.keys(item)[0]}}</span>
                         <div class="img_content">
-                            <span class="htlc_information_value">{{Object.values(item)[0]}}
-                                <m-clip v-if="Object.keys(item)[0] === 'Hash Lock:'" :text="Object.values(item)[0]" style="margin-left: 0.1rem"></m-clip>
+                            <div class="htlc_information_value"
+                                 v-if="Object.keys(item)[0] !== 'From:'
+                                 && Object.keys(item)[0] !== 'To:'
+                                ">{{Object.values(item)[0]}}
                                 <span v-if=" Object.keys(item)[0] === 'State:'">
                                     <img v-show="htlcInformationArr[htlcInformationArr.length -1]['State:'] === 'complete'" src="../../assets/Complete.png">
                                     <img v-show="htlcInformationArr[htlcInformationArr.length -1]['State:'] === 'open'" src="../../assets/Open.png">
                                     <img v-show="htlcInformationArr[htlcInformationArr.length -1]['State:'] === 'expired'" src="../../assets/Expired.png">
                                     <img v-show="htlcInformationArr[htlcInformationArr.length -1]['State:'] === 'refunded'" src="../../assets/Refunded.png">
                                 </span>
-                            </span>
-
+                            </div>
+                            <div class="skip_route" v-if="Object.keys(item)[0] === 'From:'|| Object.keys(item)[0] === 'To:'">
+                                <router-link v-if="Object.keys(item)[0] === 'From:'" :to="addressRoute(Object.values(item)[0])">{{ monikerFrom !== '' ? monikerFrom : Object.values(item)[0]}}</router-link>
+                                <router-link v-if="Object.keys(item)[0] === 'To:'" :to="addressRoute(Object.values(item)[0])">{{ monikerTo !== '' ? monikerTo : Object.values(item)[0]}}</router-link>
+                            </div>
+                            <m-clip v-if="Object.keys(item)[0] === 'Hash Lock:'" :text="Object.values(item)[0]" style="margin-left: 0.1rem"></m-clip>
                         </div>
                     </li>
                 </ul>
@@ -33,8 +39,16 @@
                     <span class="htlc_transaction_title">HTLC Transaction</span>
                 </div>
                 <div class="htlc_information_transfer_table_list_content">
-                    <div>
+                    <div class="htlv_information_transfer_table_list_wrap">
                         <m-htls-transfer-table-list :items="HtlcTxListArray" :showNoData="false"></m-htls-transfer-table-list>
+                    </div>
+                    <div class="pagination_content">
+                        <m-pagination
+                            :page-size="pageSize"
+                            :total="countNum"
+                            :page="pageNumber"
+                            :page-change="pageChange"
+                        ></m-pagination>
                     </div>
                 </div>
             </div>
@@ -48,19 +62,22 @@
 	import Tools from "../../util/Tools"
     import Server from "../../service"
     import MClip from "../commonComponents/MClip";
+    import MPagination from "../commonComponents/MPagination";
     export default {
 		name: "HtlcInformation",
-        components: {MClip, MHtlsTransferTableList},
+        components: {MPagination, MClip, MHtlsTransferTableList},
         data () {
 		    return {
                 HtlcTxListArray: [],
                 pageNumber:1,
                 pageSize:10,
-                count:0,
+                countNum:0,
+                monikerFrom:'',
+                monikerTo:'',
                 htlcInformationArr:[
                     {
                         "Hash Lock:" : '--',
-                        key:'hash_lock'
+                        key:'hash_lock',
                     },
                     {
                         "From:" : '--',
@@ -93,7 +110,7 @@
                     {
                         "State:" : '--',
                         key:'state'
-                    },
+                    }
                 ]
             }
         },
@@ -114,6 +131,8 @@
                         }else {
                             item[Object.keys(item)[0]] = res[item.key]
                         }
+                        this.monikerFrom = res.from_moniker;
+                        this.monikerTo = res.to_moniker
                     });
                 })
             },
@@ -127,8 +146,7 @@
                 },(res) => {
                     try {
                         if(res){
-
-                            this.count = res.Count;
+                            this.countNum = res.Count;
                             if(res.Data){
                                 this.HtlcTxListArray = res.Data.map( item => {
                                   return{
@@ -142,6 +160,8 @@
                                       signer: item.signer,
                                       status: Tools.firstWordUpperCase(item.status),
                                       timestamp: Tools.format2UTC(item.timestamp),
+                                      fromMoniker: item.from_moniker,
+                                      toMoniker: item.to_moniker,
                                   }
                                 });
                             }
@@ -151,6 +171,10 @@
                         console.error(e)
                     }
                 })
+            },
+            pageChange(pageNum){
+                this.pageNumber = pageNum;
+                this.getHtlcTxList()
             }
         }
     }
@@ -188,6 +212,7 @@
                         display: flex;
                         align-items: center;
                         width: 100%;
+                        padding: 0.05rem;
                         .htlc_information_name{
                             color: var(--contentColor);
                             font-size: 0.14rem;
@@ -198,13 +223,10 @@
                             width: 100%;
                             display: flex;
                             .htlc_information_value{
-                                width: 100%;
                                 overflow-x: auto;
                                 color: #171d44;
                                 font-size: 0.14rem;
                                 display: flex;
-                                position: relative;
-
                                 span{
                                     display: flex;
                                     align-items: center;
@@ -227,9 +249,18 @@
                     }
                 }
                 .htlc_information_transfer_table_list_content{
-                    max-width: 12.8rem;
-                    overflow-x: auto;
-                    overflow-y: hidden;
+                    .htlv_information_transfer_table_list_wrap{
+                        max-width: 12.8rem;
+                        overflow-x: auto;
+                        overflow-y: hidden;
+                    }
+                    .pagination_content{
+                        max-width: 12.8rem;
+                        display: flex;
+                        margin: 0.2rem auto 0 auto;
+                        padding-bottom: 0.4rem;
+                        justify-content:flex-end;
+                    }
                 }
             }
         }

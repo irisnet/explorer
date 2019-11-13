@@ -20,13 +20,13 @@
            </template>
            <template slot-scope="{ row }" slot="from">
                <div class="skip_route" v-if="row.from">
-                   <router-link :to="addressRoute(row.from)" style="font-family: Consolas,Menlo ;" class="link_style common_font_style">{{formatAddress(row.from)}}
+                   <router-link :to="addressRoute(row.from)" style="font-family: Consolas,Menlo ;" class="link_style common_font_style">{{row.fromMoniker || formatAddress(row.from)}}
                    </router-link>
                </div>
            </template>
            <template slot-scope="{ row }" slot="to">
                <div class="skip_route" v-if="row.to">
-                   <router-link :to="addressRoute(row.to)" style="font-family: Consolas,Menlo ;" class="link_style common_font_style">{{formatAddress(row.to)}}
+                   <router-link :to="addressRoute(row.to)" style="font-family: Consolas,Menlo ;" class="link_style common_font_style">{{row.toMoniker || formatAddress(row.to)}}
                    </router-link>
                </div>
            </template>
@@ -58,7 +58,8 @@
                 fields:[
                     {
                         title:'TxHash',
-                        slot:'txHash'
+                        slot:'txHash',
+                        tooltip: true
                     },
                     {
                         title:'Block',
@@ -66,7 +67,8 @@
                     },
                     {
                         title:'From',
-                        slot:'from'
+                        slot:'from',
+                        tooltip: true
                     },
                     {
                         title:'Amount',
@@ -74,7 +76,8 @@
                     },
                     {
                         title:'To',
-                        slot:'to'
+                        slot:'to',
+                        tooltip: true
                     },
                     {
                         title:'Type',
@@ -86,7 +89,8 @@
                     },
                     {
                         title:'Signer',
-                        slot:'signer'
+                        slot:'signer',
+                        tooltip: true
                     },
                     {
                         title:'Status',
