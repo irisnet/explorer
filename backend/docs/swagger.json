@@ -1010,6 +1010,126 @@
                 }
             }
         },
+      "/api/htlcs/{hash_lock}": {
+        "get": {
+          "description": "get htlc info",
+          "consumes": [
+            "application/json"
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "tags": [
+            "htlc"
+          ],
+          "summary": "detail",
+          "parameters": [
+            {
+              "type": "string",
+              "description": "hash_lock",
+              "name": "hash_lock",
+              "in": "path",
+              "required": true
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "success",
+              "schema": {
+                "type": "object",
+                "$ref": "#/definitions/vo.HtlcInfo"
+              }
+            }
+          }
+        }
+      },
+      "/api/htlcs/{hash_lock}/txs": {
+        "get": {
+          "description": "get htlc txs list",
+          "consumes": [
+            "application/json"
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "tags": [
+            "htlc"
+          ],
+          "summary": "list",
+          "parameters": [
+            {
+              "type": "integer",
+              "default": 1,
+              "description": "page num",
+              "name": "page",
+              "in": "query",
+              "required": true
+            },
+            {
+              "type": "integer",
+              "default": 5,
+              "description": "page size",
+              "name": "size",
+              "in": "query",
+              "required": true
+            },
+            {
+              "type": "string",
+              "description": "hash_lock",
+              "name": "hash_lock",
+              "in": "path",
+              "required": true
+            },
+            {
+              "type": "integer",
+              "description": "height",
+              "name": "height",
+              "in": "query"
+            },
+            {
+              "type": "string",
+              "description": "txType",
+              "name": "txType",
+              "in": "query"
+            },
+            {
+              "type": "string",
+              "description": "address",
+              "name": "address",
+              "in": "query"
+            },
+            {
+              "enum": [
+                "success",
+                "fail"
+              ],
+              "type": "string",
+              "description": "status",
+              "name": "status",
+              "in": "query"
+            },
+            {
+              "enum": [
+                true,
+                false
+              ],
+              "type": "boolean",
+              "description": "total",
+              "name": "total",
+              "in": "query"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "success",
+              "schema": {
+                "type": "object",
+                "$ref": "#/definitions/vo.PageVo"
+              }
+            }
+          }
+        }
+      },
         "/api/params": {
             "get": {
                 "description": "get gov params",
@@ -3284,6 +3404,17 @@
                 }
             }
         },
+      "vo.CoinVo": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "string"
+          },
+          "denom": {
+            "type": "string"
+                }
+            }
+        },
         "vo.ConfigVo": {
             "type": "object",
             "properties": {
@@ -3331,6 +3462,9 @@
                 "block": {
                     "type": "integer"
                 },
+              "moniker": {
+                "type": "string"
+              },
                 "self_shares": {
                     "type": "string"
                 },
@@ -3440,6 +3574,47 @@
                 },
                 "veto_threshold": {
                     "type": "string"
+                }
+            }
+        },
+      "vo.HtlcInfo": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/vo.CoinVo"
+            }
+          },
+          "cross_chain_receiver": {
+            "type": "string"
+          },
+          "expire_height": {
+            "type": "integer"
+          },
+          "from": {
+            "type": "string"
+          },
+          "from_moniker": {
+            "type": "string"
+          },
+          "hash_lock": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "time_lock": {
+            "type": "integer"
+          },
+          "timestamp": {
+            "type": "integer"
+          },
+          "to": {
+            "type": "string"
+          },
+          "to_moniker": {
+            "type": "string"
                 }
             }
         },
@@ -4009,6 +4184,9 @@
                 "block": {
                     "type": "integer"
                 },
+              "moniker": {
+                "type": "string"
+              },
                 "until": {
                     "type": "string"
                 }

@@ -8,7 +8,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/types"
@@ -64,7 +63,7 @@ func (service *TxService) QueryBaseList(query bson.M, page, pageSize int, istota
 		return
 	}
 	var unit []string
-	for _,val := range txList {
+	for _, val := range txList {
 		if len(val.Amount) > 0 && val.Amount[0].Denom != types.IRISAttoUint {
 			unit = append(unit, strings.Split(val.Amount[0].Denom, types.AssetMinDenom)[0])
 		}
@@ -100,6 +99,87 @@ func (service *TxService) QueryBaseList(query bson.M, page, pageSize int, istota
 	pageInfo.Count = total
 
 	logger.Debug("QueryBaseList end", service.GetTraceLog())
+	return pageInfo
+}
+
+func (service *TxService) QueryHtlcTx(query bson.M, page, pageSize int, istotal bool) (pageInfo vo.PageVo) {
+	query = document.FilterUnknownTxs(query)
+	total, txList, err := document.CommonTx{}.QueryByPage(query, page, pageSize, istotal)
+
+	if err != nil {
+		logger.Error("query tx list by page", logger.String("err", err.Error()))
+		return
+	}
+	var unit []string
+	for _, val := range txList {
+		if len(val.Amount) > 0 && val.Amount[0].Denom != types.IRISAttoUint {
+			unit = append(unit, strings.Split(val.Amount[0].Denom, types.AssetMinDenom)[0])
+		}
+	}
+
+	decimalMap := make(map[string]int, len(txList))
+	assetkokens, err := document.AssetToken{}.GetAssetTokenDetailByTokenids(unit)
+	if err == nil {
+		for _, val := range assetkokens {
+			decimalMap[val.TokenId] = val.Decimal
+		}
+	}
+
+	for i, val := range txList {
+		if len(val.Amount) == 0 {
+			continue
+		}
+		denom := strings.Split(val.Amount[0].Denom, types.AssetMinDenom)[0]
+		if dem, ok := decimalMap[denom]; ok && dem > 0 {
+			txList[i].Amount[0].Denom = denom
+			txList[i].Amount[0].Amount = txList[i].Amount[0].Amount / float64(dem)
+		}
+	}
+
+	data := buildTxVOsFromDoc(txList)
+	var baseData []vo.HtlcTx
+	for _, tx := range data {
+		var monikerTo, monikerFrom string
+		descriptionMap := service.QueryDescriptionList()
+		blackList := service.QueryBlackList()
+		if valaddr := utils.GetValaddr(tx.To); valaddr != "" {
+			if val, ok := descriptionMap[valaddr]; ok {
+				monikerTo = val.Moniker
+			}
+			if one, ok := blackList[valaddr]; ok {
+				monikerTo = one.Moniker
+			}
+		}
+		if valaddr := utils.GetValaddr(tx.From); valaddr != "" {
+			if val, ok := descriptionMap[valaddr]; ok {
+				monikerFrom = val.Moniker
+			}
+			if one, ok := blackList[valaddr]; ok {
+				monikerFrom = one.Moniker
+			}
+		}
+		expireheight := int64(-1)
+		if tx.Status == types.Success {
+			switch tx.Type {
+			case types.TxTypeCreateHTLC:
+				msgData := tx.Msgs[0].MsgData.(msgvo.TxMsgCreateHTLC)
+				expireheight = tx.Height + int64(msgData.TimeLock)
+			}
+		}
+
+		baseData = append(baseData, vo.HtlcTx{
+			BaseTx:       buildBaseTx(tx),
+			From:         tx.From,
+			To:           tx.To,
+			Amount:       tx.Amount,
+			ToMoniker:    monikerTo,
+			FromMoniker:  monikerFrom,
+			ExpireHeight: expireheight,
+		})
+	}
+
+	pageInfo.Data = baseData
+	pageInfo.Count = total
 	return pageInfo
 }
 
@@ -261,8 +341,6 @@ func (service *TxService) QueryTxType(txType string) vo.QueryTxTypeRespond {
 	return nil
 }
 
-
-
 func buildTxVOFromDoc(tx document.CommonTx) vo.CommonTx {
 	txList := buildTxVOsFromDoc([]document.CommonTx{tx})
 
@@ -374,6 +452,31 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 				} else {
 					msgDataVO = msgVO
 				}
+				break
+			case types.TxTypeCreateHTLC:
+				msgVO := msgvo.TxMsgCreateHTLC{}
+				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
+					logger.Error("BuildTxMsgCreateHTLCByUnmarshalJson", logger.String("err", err.Error()))
+				} else {
+					msgDataVO = msgVO
+				}
+				break
+			case types.TxTypeClaimHTLC:
+				msgVO := msgvo.TxMsgClaimHTLC{}
+				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
+					logger.Error("BuildTxMsgClaimHTLCyUnmarshalJson", logger.String("err", err.Error()))
+				} else {
+					msgDataVO = msgVO
+				}
+				break
+			case types.TxTypeRefundHTLC:
+				msgVO := msgvo.TxMsgRefundHTLC{}
+				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
+					logger.Error("BuildTxMsgRefundHTLCByUnmarshalJson", logger.String("err", err.Error()))
+				} else {
+					msgDataVO = msgVO
+				}
+
 				break
 			case types.TxTypeStakeEditValidator:
 				msgVO := msgvo.TxMsgStakeEdit{}
@@ -547,45 +650,46 @@ func parseFromAndToByAmountCoinFlow(items []interface{}, forTxDetail bool) []int
 
 // get validator moniker by address which in stake tx
 func (service *TxService) getValidatorMonikerByAddress(items []interface{}) []interface{} {
-	// get validator addresses
-	valAddrArr := make([]string, 0, len(items))
-	for i := 0; i < len(items); i++ {
-		if stakeTx, ok := items[i].(vo.StakeTx); ok {
-			if isValidatorAddrPrefix(stakeTx.From) {
-				valAddrArr = append(valAddrArr, stakeTx.From)
-			}
-
-			if isValidatorAddrPrefix(stakeTx.To) {
-				valAddrArr = append(valAddrArr, stakeTx.To)
-			}
-		}
-	}
-	valAddrArr = utils.RemoveDuplicationStrArr(valAddrArr)
-
-	// query moniker by addresses
-	monikerByAddrMap, err := document.Validator{}.QueryValidatorMonikerByAddrArr(valAddrArr)
-	if err != nil {
-		logger.Error("document.Validator{}.QueryValidatorMonikerByAddrArr(valAddrArr)", logger.String("err", err.Error()), logger.Any("params", valAddrArr))
-	}
+	//// get validator addresses
+	//valAddrArr := make([]string, 0, len(items))
+	//for i := 0; i < len(items); i++ {
+	//	if stakeTx, ok := items[i].(vo.StakeTx); ok {
+	//		if isValidatorAddrPrefix(stakeTx.From) {
+	//			valAddrArr = append(valAddrArr, stakeTx.From)
+	//		}
+	//
+	//		if isValidatorAddrPrefix(stakeTx.To) {
+	//			valAddrArr = append(valAddrArr, stakeTx.To)
+	//		}
+	//	}
+	//}
+	//valAddrArr = utils.RemoveDuplicationStrArr(valAddrArr)
+	//
+	//// query moniker by addresses
+	//monikerByAddrMap, err := document.Validator{}.QueryValidatorMonikerByAddrArr(valAddrArr)
+	//if err != nil {
+	//	logger.Error("document.Validator{}.QueryValidatorMonikerByAddrArr(valAddrArr)", logger.String("err", err.Error()), logger.Any("params", valAddrArr))
+	//}
 
 	// set moniker value
+	descriptionMap := service.QueryDescriptionList()
 	blacklist := service.QueryBlackList()
 	for i := 0; i < len(items); i++ {
 		if stakeTx, ok := items[i].(vo.StakeTx); ok {
-			if isValidatorAddrPrefix(stakeTx.From) {
-				if fromMoniker, ok := monikerByAddrMap[stakeTx.From]; ok {
-					stakeTx.FromMoniker = fromMoniker
+			if valaddr := utils.GetValaddr(stakeTx.From); valaddr != "" {
+				if des, ok := descriptionMap[valaddr]; ok {
+					stakeTx.FromMoniker = des.Moniker
 				}
-				if blackone, ok := blacklist[stakeTx.From]; ok {
+				if blackone, ok := blacklist[valaddr]; ok {
 					stakeTx.FromMoniker = blackone.Moniker
 				}
 			}
 
-			if isValidatorAddrPrefix(stakeTx.To) {
-				if toMoniker, ok := monikerByAddrMap[stakeTx.To]; ok {
-					stakeTx.ToMoniker = toMoniker
+			if valaddr := utils.GetValaddr(stakeTx.To); valaddr != "" {
+				if des, ok := descriptionMap[valaddr]; ok {
+					stakeTx.ToMoniker = des.Moniker
 				}
-				if blackone, ok := blacklist[stakeTx.To]; ok {
+				if blackone, ok := blacklist[valaddr]; ok {
 					stakeTx.ToMoniker = blackone.Moniker
 				}
 			}
@@ -596,9 +700,9 @@ func (service *TxService) getValidatorMonikerByAddress(items []interface{}) []in
 	return items
 }
 
-func isValidatorAddrPrefix(addr string) bool {
-	return strings.HasPrefix(addr, conf.Get().Hub.Prefix.ValAddr)
-}
+//func isValidatorAddrPrefix(addr string) bool {
+//	return strings.HasPrefix(addr, conf.Get().Hub.Prefix.ValAddr)
+//}
 
 func (service *TxService) buildTxVOs(txs []vo.CommonTx, isDetail bool) []interface{} {
 	var txList []interface{}
@@ -967,13 +1071,33 @@ func (service *TxService) buildTxVO(tx vo.CommonTx, blackListP *map[string]docum
 			Msgs:   tx.Msgs,
 		}
 	case types.Htlc:
+		var monikerto, monikerfrom string
+		descriptionMap := service.QueryDescriptionList()
+		if valaddr := utils.GetValaddr(tx.To); valaddr != "" {
+			if val, ok := descriptionMap[valaddr]; ok {
+				monikerto = val.Moniker
+			}
+			if desc, ok := (*blackListP)[valaddr]; ok {
+				monikerto = desc.Moniker
+			}
+		}
+		if valaddr := utils.GetValaddr(tx.From); valaddr != "" {
+			if val, ok := descriptionMap[valaddr]; ok {
+				monikerfrom = val.Moniker
+			}
+			if desc, ok := (*blackListP)[valaddr]; ok {
+				monikerfrom = desc.Moniker
+			}
+		}
 		return vo.HtlcTx{
-			BaseTx: buildBaseTx(tx),
-			From:   tx.From,
-			To:     tx.To,
-			Amount: tx.Amount,
-			Tags:   tx.Tags,
-			Msgs:   tx.Msgs,
+			BaseTx:      buildBaseTx(tx),
+			From:        tx.From,
+			To:          tx.To,
+			Amount:      tx.Amount,
+			Tags:        tx.Tags,
+			Msgs:        tx.Msgs,
+			ToMoniker:   monikerto,
+			FromMoniker: monikerfrom,
 		}
 	case types.Coinswap:
 		return vo.CoinswapTx{
