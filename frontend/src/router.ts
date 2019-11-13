@@ -98,6 +98,10 @@ const router = new Router({
       path: '/txs', component: () => import('@/components/txs/AllTxTypeList.vue'),
     },
     {
+      path: '/htlc/:txHash', component: () => import('@/components/htlc/HtlcInformation.vue'),
+    },
+
+    {
       path: "*",
       component: () => import('@/components/utilpage/ErrorPage.vue'),
     }

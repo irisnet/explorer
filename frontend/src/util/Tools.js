@@ -21,7 +21,7 @@ export default class Tools{
 		let minutes = Math.floor(minuteLevel / (60 * 1000));
 		let secondLevel = minuteLevel % (60 * 1000) ;
 		let seconds = Math.round(secondLevel / 1000);
-		
+
 		let str = `${dayDiff?`${dayDiff}d`:''} ${hours ? `${hours}h` : ''} ${dayDiff && hours ? '' : (minutes ? `${minutes}m`:'')} ${dayDiff || hours || minutes? '' : (seconds ? `${seconds}s`:'')}`;
 		if(prefix && suffix){
 			return`${prefix} ${str} ${suffix}`
@@ -67,7 +67,7 @@ export default class Tools{
 		}
 		return flag;
 	}
-	
+
 	/**
 	 * 后端返回的数据转换成标准格式 (+UTC)
 	 */
@@ -117,7 +117,7 @@ export default class Tools{
 			return moveDecimal(number.toString() + ".",leftLength)
 		}
 	}
-	
+
 	/**
 	 * 格式化数字（可废除）
 	 */
@@ -150,7 +150,7 @@ export default class Tools{
 			return Tools.formatContinuousNumberZero(completeNumberString)
 		}
 	}
-	
+
 	/**
 	 *处理Token(可废除)
 	 */
@@ -199,7 +199,7 @@ export default class Tools{
 			return str + '.00'
 		}
 	}
-	
+
 	static decimalPlace(num,val){
 		if(val){
 			return Tools.toFixedformatNumber(num ,val);
@@ -218,14 +218,14 @@ export default class Tools{
 				}
 			}
 		}
-		
+
 	}
-	
+
 	static  toFixedformatNumber(num,val){
 		return new BigNumber(num).toFixed(val,1);
-		
+
 	}
-	
+
 	static convertScientificNotation2Number(num){
 		return new BigNumber(num).toFixed();
 	}
@@ -309,7 +309,7 @@ export default class Tools{
 			return string+"";
 		}
 	}
-	
+
 	/**
 	 * 格式化空格
 	 */
@@ -352,7 +352,7 @@ export default class Tools{
 	static scrollToTop(){
 		document.documentElement.scrollTop = 0;
 	}
-	
+
 	static firstWordUpperCase (str){
 		return str.toLowerCase().replace(/(\s|^)[a-z]/g, function(char){
 			return char.toUpperCase();
@@ -525,7 +525,7 @@ export default class Tools{
 			return noObjList;
 		}
 	}
-	
+
 	static addressRoute(address) {
 		if(address) {
 			if (address.substring(0, 3) === this.$Crypto.config.iris.bech32.valAddr || address.substring(1, 3) === 'va') {
@@ -623,7 +623,7 @@ export default class Tools{
 		}
 		return formattedNumber
   }
-  
+
   // 转化uptime的方法
   static FormatUptime(number) {
     return `${(number * 100).toFixed(4)}%`
@@ -720,13 +720,13 @@ export default class Tools{
 					break;
 				case 'RequestRand':
 					amount = Tools.formatListByAmount(data.amount)
-			
+
 			}
 		}
 		return amount
-	
+
 	}
-	
+
 	/**
 	 * 从amount字段中获取amount
 	* */
@@ -771,6 +771,11 @@ export default class Tools{
 		}
 		return {amountNumber,tokenName}
 		// console.log(amountNumber,tokenName,"share information")
-	
+
 	}
+    static formatFee(Fee){
+        if(Fee.amount && Fee.denom){
+            return `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(Fee.amount)),4)} ${Tools.formatDenom(Fee.denom).toUpperCase()}`;
+        }
+    }
 }
