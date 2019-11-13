@@ -141,14 +141,22 @@ func (service *TxService) QueryHtlcTx(query bson.M, page, pageSize int, istotal 
 	var baseData []vo.HtlcTx
 	for _, tx := range data {
 		var monikerTo, monikerFrom string
+		descriptionMap := service.QueryDescriptionList()
+		blackList := service.QueryBlackList()
 		if valaddr := utils.GetValaddr(tx.To); valaddr != "" {
-			if moniker, ok := validatorService.monikerMap[valaddr]; ok {
-				monikerTo = moniker
+			if val, ok := descriptionMap[valaddr]; ok {
+				monikerTo = val.Moniker
+			}
+			if one, ok := blackList[valaddr]; ok {
+				monikerTo = one.Moniker
 			}
 		}
 		if valaddr := utils.GetValaddr(tx.From); valaddr != "" {
-			if moniker, ok := validatorService.monikerMap[valaddr]; ok {
-				monikerFrom = moniker
+			if val, ok := descriptionMap[valaddr]; ok {
+				monikerFrom = val.Moniker
+			}
+			if one, ok := blackList[valaddr]; ok {
+				monikerFrom = one.Moniker
 			}
 		}
 		expireheight := int64(-1)
@@ -165,8 +173,8 @@ func (service *TxService) QueryHtlcTx(query bson.M, page, pageSize int, istotal 
 			From:         tx.From,
 			To:           tx.To,
 			Amount:       tx.Amount,
-			MonikerTo:    monikerTo,
-			MonikerFrom:  monikerFrom,
+			ToMoniker:    monikerTo,
+			FromMoniker:  monikerFrom,
 			ExpireHeight: expireheight,
 		})
 	}
@@ -1064,14 +1072,21 @@ func (service *TxService) buildTxVO(tx vo.CommonTx, blackListP *map[string]docum
 		}
 	case types.Htlc:
 		var monikerto, monikerfrom string
+		descriptionMap := service.QueryDescriptionList()
 		if valaddr := utils.GetValaddr(tx.To); valaddr != "" {
-			if val, ok := validatorService.monikerMap[valaddr]; ok {
-				monikerto = val
+			if val, ok := descriptionMap[valaddr]; ok {
+				monikerto = val.Moniker
+			}
+			if desc, ok := (*blackListP)[valaddr]; ok {
+				monikerto = desc.Moniker
 			}
 		}
-		if valaddr := utils.GetValaddr(tx.To); valaddr != "" {
-			if val, ok := validatorService.monikerMap[valaddr]; ok {
-				monikerfrom = val
+		if valaddr := utils.GetValaddr(tx.From); valaddr != "" {
+			if val, ok := descriptionMap[valaddr]; ok {
+				monikerfrom = val.Moniker
+			}
+			if desc, ok := (*blackListP)[valaddr]; ok {
+				monikerfrom = desc.Moniker
 			}
 		}
 		return vo.HtlcTx{
@@ -1081,8 +1096,8 @@ func (service *TxService) buildTxVO(tx vo.CommonTx, blackListP *map[string]docum
 			Amount:      tx.Amount,
 			Tags:        tx.Tags,
 			Msgs:        tx.Msgs,
-			MonikerTo:   monikerto,
-			MonikerFrom: monikerfrom,
+			ToMoniker:   monikerto,
+			FromMoniker: monikerfrom,
 		}
 	case types.Coinswap:
 		return vo.CoinswapTx{

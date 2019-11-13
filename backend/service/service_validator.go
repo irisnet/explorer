@@ -17,7 +17,6 @@ import (
 
 type ValidatorService struct {
 	BaseService
-	monikerMap map[string]string
 }
 
 func (service *ValidatorService) GetModule() Module {
@@ -808,26 +807,32 @@ func (service *ValidatorService) queryValForRainbow(page, size int) interface{} 
 	}
 	return validators
 }
-func (service *ValidatorService) UpdateMonikerMap(vs []document.Validator) {
-	if service.monikerMap == nil {
-		service.monikerMap = make(map[string]string, len(vs))
+func (service *ValidatorService) UpdateDescription(vs []document.Validator) {
+	if ValidatorsDescriptionMap == nil {
+		return
 	}
+
+	CheckDiffer := func(des0, des1 document.Description) bool {
+		return des0.Moniker != des1.Moniker || des0.Website == des1.Website ||
+			des0.Identity != des1.Identity || des0.Details != des1.Details
+	}
+
 	for _, v := range vs {
-		if moniker, ok := service.monikerMap[v.OperatorAddress]; ok {
-			if v.Description.Moniker != moniker {
-				service.monikerMap[v.OperatorAddress] = v.Description.Moniker
+		if val, ok := ValidatorsDescriptionMap[v.OperatorAddress]; ok {
+			if CheckDiffer(val, v.Description) {
+				ValidatorsDescriptionMap[v.OperatorAddress] = v.Description
 			}
 		} else {
-			service.monikerMap[v.OperatorAddress] = v.Description.Moniker
+			ValidatorsDescriptionMap[v.OperatorAddress] = v.Description
 		}
 	}
 }
 
-func (service *ValidatorService) CleanMonikerMap() {
-	for addr := range service.monikerMap {
-		delete(service.monikerMap, addr)
-	}
-}
+//func (service *ValidatorService) CleanMonikerMap() {
+//	for addr := range ValidatorsDescriptionMap {
+//		delete(ValidatorsDescriptionMap, addr)
+//	}
+//}
 
 func (service *ValidatorService) UpdateValidators(vs []document.Validator) error {
 	var vMap = make(map[string]document.Validator)
@@ -837,7 +842,7 @@ func (service *ValidatorService) UpdateValidators(vs []document.Validator) error
 
 	var txs []txn.Op
 	dstValidators := buildValidators()
-	service.UpdateMonikerMap(dstValidators)
+	service.UpdateDescription(dstValidators)
 	for _, v := range dstValidators {
 		if v1, ok := vMap[v.OperatorAddress]; ok {
 			if isDiffValidator(v1, v) {

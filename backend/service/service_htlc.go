@@ -41,16 +41,6 @@ func (service *HtlcService) QueryHtlcByHashLock(hashlock string) vo.HtlcInfo {
 		document.Tx_Field_Status:        "success",
 	}
 
-	if valaddr := utils.GetValaddr(resp.To); valaddr != "" {
-		if moniker, ok := validatorService.monikerMap[valaddr]; ok {
-			resp.MonikerTo = moniker
-		}
-	}
-	if valaddr := utils.GetValaddr(resp.From); valaddr != "" {
-		if moniker, ok := validatorService.monikerMap[valaddr]; ok {
-			resp.MonikerFrom = moniker
-		}
-	}
 
 	txAsDoc, err := document.CommonTx{}.QueryHtlcTx(query)
 	if err != nil {
@@ -61,6 +51,25 @@ func (service *HtlcService) QueryHtlcByHashLock(hashlock string) vo.HtlcInfo {
 		logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
 	}
 	resp.TimeLock = int64(msgVO.TimeLock)
+	descriptionMap := service.QueryDescriptionList()
+	blackList := service.QueryBlackList()
+
+	if valaddr := utils.GetValaddr(resp.To); valaddr != "" {
+		if val, ok := descriptionMap[valaddr]; ok {
+			resp.ToMoniker = val.Moniker
+		}
+		if item, ok := blackList[valaddr]; ok {
+			resp.ToMoniker = item.Moniker
+		}
+	}
+	if valaddr := utils.GetValaddr(resp.From); valaddr != "" {
+		if val, ok := descriptionMap[valaddr]; ok {
+			resp.FromMoniker = val.Moniker
+		}
+		if item, ok := blackList[valaddr]; ok {
+			resp.FromMoniker = item.Moniker
+		}
+	}
 
 	return resp
 }

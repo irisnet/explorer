@@ -800,11 +800,9 @@ definitions:
         type: integer
       from:
         type: string
+      from_moniker:
+        type: string
       hash_lock:
-        type: string
-      moniker_from:
-        type: string
-      moniker_to:
         type: string
       state:
         type: string
@@ -813,6 +811,8 @@ definitions:
       timestamp:
         type: integer
       to:
+        type: string
+      to_moniker:
         type: string
     type: object
   vo.LatestHeightRespond:

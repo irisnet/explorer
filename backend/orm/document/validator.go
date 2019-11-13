@@ -563,3 +563,23 @@ func (_ Validator) UpdateByPk(validator Validator) error {
 	c := db.C(CollectionNmValidator)
 	return c.Update(validator.PkKvPair(), validator)
 }
+
+func (_ Validator) QueryValidatorDescription() map[string]Description {
+	var (
+		validators []Validator
+	)
+	var validatorDescriptionMap = make(map[string]Description)
+
+	selector := bson.M{
+		ValidatorFieldDescription:     1,
+		ValidatorFieldOperatorAddress: 1,
+	}
+	err := queryAll(CollectionNmValidator, selector, nil, "", 0, &validators)
+	if err == nil {
+		for _, v := range validators {
+			validatorDescriptionMap[v.OperatorAddress] = v.Description
+		}
+	}
+
+	return validatorDescriptionMap
+}

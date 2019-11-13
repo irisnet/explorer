@@ -75,6 +75,7 @@ type MsgBeginRedelegate struct {
 func (vo *MsgBeginRedelegate) BuildMsgByUnmarshalJson(data []byte) error {
 	return json.Unmarshal(data, vo)
 }
+
 type TxStatisticsVo struct {
 	TransCnt       int `json:"trans_cnt"`
 	StakeCnt       int `json:"stake_cnt"`
@@ -248,8 +249,8 @@ type HtlcTx struct {
 	BaseTx
 	From         string            `json:"from"`
 	To           string            `json:"to"`
-	MonikerTo    string            `json:"moniker_to"`
-	MonikerFrom  string            `json:"moniker_from"`
+	FromMoniker  string            `json:"from_moniker"`
+	ToMoniker    string            `json:"to_moniker"`
 	ExpireHeight int64             `json:"expire_height,string"`
 	Amount       utils.Coins       `json:"amount"`
 	Tags         map[string]string `json:"tags"`
