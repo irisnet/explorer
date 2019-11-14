@@ -832,6 +832,13 @@ definitions:
       name:
         type: string
     type: object
+  vo.MsgItem:
+    properties:
+      msg:
+        type: object
+      type:
+        type: string
+    type: object
   vo.PageVo:
     properties:
       count:
@@ -1119,6 +1126,10 @@ definitions:
         type: string
       memo:
         type: string
+      msgs:
+        items:
+          $ref: '#/definitions/vo.MsgItem'
+        type: array
       signer:
         type: string
       source:

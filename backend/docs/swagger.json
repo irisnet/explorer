@@ -3641,6 +3641,17 @@
                 }
             }
         },
+        "vo.MsgItem": {
+            "type": "object",
+            "properties": {
+                "msg": {
+                    "type": "object"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
         "vo.PageVo": {
             "type": "object",
             "properties": {
@@ -4069,6 +4080,12 @@
                 },
                 "memo": {
                     "type": "string"
+                },
+                "msgs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/vo.MsgItem"
+                    }
                 },
                 "signer": {
                     "type": "string"
