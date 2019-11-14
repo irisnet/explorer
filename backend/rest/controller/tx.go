@@ -246,7 +246,7 @@ func registerQueryTx(r *mux.Router) error {
 		tx.SetTid(request.TraceId)
 		hash := Var(request, "hash")
 
-		result := tx.Query(hash)
+		result := tx.QueryTxDetail(hash)
 		return result
 	})
 

@@ -8,6 +8,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"github.com/irisnet/explorer/backend/vo/msgvo"
 	"github.com/irisnet/explorer/backend/utils"
+	"github.com/irisnet/explorer/backend/types"
 )
 
 type HtlcService struct {
@@ -37,6 +38,7 @@ func (service *HtlcService) QueryHtlcByHashLock(hashlock string) vo.HtlcInfo {
 		resp.Amount = append(resp.Amount, LoadCoinVoFromLcdCoin(val))
 	}
 	query := bson.M{
+		document.Tx_Field_Type:          types.TxTypeCreateHTLC,
 		document.Tx_Field_Msgs_Hashcode: hashlock,
 		document.Tx_Field_Status:        "success",
 	}
@@ -51,25 +53,7 @@ func (service *HtlcService) QueryHtlcByHashLock(hashlock string) vo.HtlcInfo {
 		logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
 	}
 	resp.TimeLock = int64(msgVO.TimeLock)
-	descriptionMap := service.QueryDescriptionList()
-	blackList := service.QueryBlackList()
 
-	if valaddr := utils.GetValaddr(resp.To); valaddr != "" {
-		if val, ok := descriptionMap[valaddr]; ok {
-			resp.ToMoniker = val.Moniker
-		}
-		if item, ok := blackList[valaddr]; ok {
-			resp.ToMoniker = item.Moniker
-		}
-	}
-	if valaddr := utils.GetValaddr(resp.From); valaddr != "" {
-		if val, ok := descriptionMap[valaddr]; ok {
-			resp.FromMoniker = val.Moniker
-		}
-		if item, ok := blackList[valaddr]; ok {
-			resp.FromMoniker = item.Moniker
-		}
-	}
-
+	resp.FromMoniker, resp.ToMoniker = service.BuildFTMoniker(resp.From, resp.To)
 	return resp
 }
