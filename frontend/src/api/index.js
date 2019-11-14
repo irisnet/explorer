@@ -38,6 +38,7 @@ const urlApi = {
   headerSearchCandidate: '/api/stake/candidate/{searchValue}',
   headerSearchValue: '/api/search/{searchValue}',
   headerConfig: '/api/config',
+  headerSearchHtlcs: 'api/htlcs/{searchValue}',
   //blockInfo
   blockInfoHeight: '/api/block/blockinfo/{height}',
   blockInfoGov: '/api/txs/gov/{currentPage}/{pageSize}?height={blockHeight}',

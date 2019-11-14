@@ -17,8 +17,8 @@
                 <span v-if="row.block == 0">{{row.block}}</span>
             </template>
             <template slot-scope="{ row }" slot="signer">
-                <div class="common_hover_address_parent" v-if="row.signer"  style="font-family:Consolas,Menlo" >
-                    <router-link :to="addressRoute(row.signer)">{{formatAddress(row.signer)}}
+                <div class="common_hover_address_parent" :class="row.isSkipRouter ? '' : 'skip_route'" v-if="row.signer"  style="font-family:Consolas,Menlo" >
+                    <router-link :style="{cursor: row.isSkipRouter ? 'auto' : 'pointer'}" :to="addressRoute(row.signer)">{{formatAddress(row.signer)}}
                     </router-link>
                 </div>
             </template>
