@@ -459,7 +459,7 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 			case types.TxTypeStakeEditValidator:
 				msgVO := msgvo.TxMsgStakeEdit{}
 				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
-					logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
+					logger.Error("Build TxMsgStakeEdit ByUnmarshalJson", logger.String("err", err.Error()))
 				} else {
 					msgDataVO = msgVO
 					editvalidator.Description = vo.ValDescription{
@@ -474,7 +474,7 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 			case types.TxTypeStakeCreateValidator:
 				msgVO := msgvo.TxMsgStakeCreate{}
 				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
-					logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
+					logger.Error("Build TxMsgStakeCreate ByUnmarshalJson", logger.String("err", err.Error()))
 				} else {
 					msgDataVO = msgVO
 					createvalidator.Description = vo.ValDescription{
@@ -494,7 +494,7 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 			case types.TxTypeUnjail:
 				msgVO := msgvo.TxMsgUnjail{}
 				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
-					logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
+					logger.Error("Build TxMsgUnjail ByUnmarshalJson", logger.String("err", err.Error()))
 				} else {
 					msgDataVO = msgVO
 				}
@@ -502,7 +502,7 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 			case types.TxTypeBeginRedelegate:
 				msgVO := msgvo.TxMsgBeginRedelegate{}
 				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
-					logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
+					logger.Error("Build TxMsgBeginRedelegate ByUnmarshalJson", logger.String("err", err.Error()))
 				} else {
 					msgDataVO = msgVO
 				}
@@ -510,7 +510,7 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 			case types.TxTypeStakeBeginUnbonding:
 				msgVO := msgvo.TxMsgBeginUnbonding{}
 				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
-					logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
+					logger.Error("Build TxMsgBeginUnbonding ByUnmarshalJson", logger.String("err", err.Error()))
 				} else {
 					msgDataVO = msgVO
 				}
@@ -518,7 +518,7 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 			case types.TxTypeStakeDelegate:
 				msgVO := msgvo.TxMsgDelegate{}
 				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
-					logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
+					logger.Error("Build TxMsgDelegate ByUnmarshalJson", logger.String("err", err.Error()))
 				} else {
 					msgDataVO = msgVO
 				}
@@ -526,7 +526,7 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 			case types.TxTypeDeleteProfiler:
 				msgVO := msgvo.TxMsgDeleteProfiler{}
 				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
-					logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
+					logger.Error("Build TxMsgDeleteProfiler ByUnmarshalJson", logger.String("err", err.Error()))
 				} else {
 					msgDataVO = msgVO
 				}
@@ -534,7 +534,7 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 			case types.TxTypeAddProfiler:
 				msgVO := msgvo.TxMsgAddProfiler{}
 				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
-					logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
+					logger.Error("Build TxMsgAddProfiler ByUnmarshalJson", logger.String("err", err.Error()))
 				} else {
 					msgDataVO = msgVO
 				}
@@ -542,7 +542,7 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 			case types.TxTypeDeleteTrustee:
 				msgVO := msgvo.TxMsgDeleteTrustee{}
 				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
-					logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
+					logger.Error("Build TxMsgDeleteTrustee ByUnmarshalJson", logger.String("err", err.Error()))
 				} else {
 					msgDataVO = msgVO
 				}
@@ -550,7 +550,7 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 			case types.TxTypeAddTrustee:
 				msgVO := msgvo.TxMsgAddTrustee{}
 				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
-					logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
+					logger.Error("Build TxMsgAddTrustee ByUnmarshalJson", logger.String("err", err.Error()))
 				} else {
 					msgDataVO = msgVO
 				}
@@ -558,7 +558,7 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 			case types.TxTypeAddLiquidity:
 				msgVO := msgvo.TxMsgAddLiquidity{}
 				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
-					logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
+					logger.Error("Build TxMsgAddLiquidity ByUnmarshalJson", logger.String("err", err.Error()))
 				} else {
 					msgDataVO = msgVO
 				}
@@ -566,7 +566,7 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 			case types.TxTypeRemoveLiquidity:
 				msgVO := msgvo.TxMsgRemoveLiquidity{}
 				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
-					logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
+					logger.Error("Build TxMsgRemsoveLiquidity ByUnmarshalJson", logger.String("err", err.Error()))
 				} else {
 					msgDataVO = msgVO
 				}
@@ -574,7 +574,7 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 			case types.TxTypeSwapOrder:
 				msgVO := msgvo.TxMsgSwapOrder{}
 				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
-					logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
+					logger.Error("Build TxMsgSwapOrder ByUnmarshalJson", logger.String("err", err.Error()))
 				} else {
 					msgDataVO = msgVO
 				}
@@ -583,7 +583,7 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 			case types.TxTypeSetWithdrawAddress:
 				msgVO := msgvo.TxMsgSetWithdrawAddress{}
 				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
-					logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
+					logger.Error("Build TxMsgSetWithdrawAddress ByUnmarshalJson", logger.String("err", err.Error()))
 				} else {
 					msgDataVO = msgVO
 				}
@@ -591,7 +591,7 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 			case types.TxTypeWithdrawDelegatorReward:
 				msgVO := msgvo.TxMsgWithdrawDelegatorReward{}
 				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
-					logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
+					logger.Error("Build TxMsgWithdrawDelegatorReward ByUnmarshalJson", logger.String("err", err.Error()))
 				} else {
 					msgDataVO = msgVO
 				}
@@ -599,7 +599,7 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 			case types.TxTypeWithdrawDelegatorRewardsAll:
 				msgVO := msgvo.TxMsgWithdrawDelegatorRewardsAll{}
 				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
-					logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
+					logger.Error("Build TxMsgWithdrawDelegatorRewardsAll ByUnmarshalJson", logger.String("err", err.Error()))
 				} else {
 					msgDataVO = msgVO
 				}
@@ -607,7 +607,7 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 			case types.TxTypeWithdrawValidatorRewardsAll:
 				msgVO := msgvo.TxMsgWithdrawValidatorRewardsAll{}
 				if err := msgVO.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(m.MsgData)); err != nil {
-					logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
+					logger.Error("Build TxMsgWithdrawValidatorRewardsAll ByUnmarshalJson", logger.String("err", err.Error()))
 				} else {
 					msgDataVO = msgVO
 				}

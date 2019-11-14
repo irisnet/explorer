@@ -4,7 +4,6 @@ import (
 	"github.com/irisnet/explorer/backend/vo"
 	"github.com/irisnet/explorer/backend/utils"
 	"encoding/json"
-	"github.com/irisnet/irishub-sync/store"
 )
 
 type TxMsgStakeCreate struct {
@@ -62,7 +61,7 @@ func (vo *TxMsgBeginUnbonding) BuildMsgByUnmarshalJson(data []byte) error {
 type TxMsgDelegate struct {
 	DelegatorAddr string     `json:"delegator_addr"`
 	ValidatorAddr string     `json:"validator_addr"`
-	Delegation    store.Coin `json:"delegation"`
+	Delegation    utils.Coin `json:"delegation"`
 }
 
 func (vo *TxMsgDelegate) BuildMsgByUnmarshalJson(data []byte) error {

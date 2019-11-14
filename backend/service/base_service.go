@@ -134,7 +134,7 @@ func (_ *BaseService) ReloadValidatorsDescription() {
 	getValidatorsDescription()
 }
 
-func (b *BaseService) BuildFTMoniker(From, To string) (Fmoniker, Tmoniker string) {
+func (_ *BaseService) BuildFTMoniker(From, To string) (Fmoniker, Tmoniker string) {
 	if valaddr := utils.GetValaddr(To); valaddr != "" {
 		if val, ok := ValidatorsDescriptionMap[valaddr]; ok {
 			Tmoniker = val.Moniker
