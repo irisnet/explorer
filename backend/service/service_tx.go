@@ -196,7 +196,6 @@ func (service *TxService) QueryRecentTx() vo.RecentTxRespond {
 func (service *TxService) QueryTxDetail(hash string) interface{} {
 	logger.Debug("Query start", service.GetTraceLog())
 
-
 	txAsDoc, err := document.CommonTx{}.QueryTxByHash(hash)
 	if err != nil {
 		logger.Error("QueryTxByHash have error", logger.String("err", err.Error()))
@@ -1200,9 +1199,11 @@ func (service *TxService) buildTxVO(tx vo.CommonTx, blackListP *map[string]docum
 			Msgs:   tx.Msgs,
 		}
 	case types.Guardian:
+		baseTx := buildBaseTx(tx)
 		return vo.GuardianTxInfo{
-			BaseTx: buildBaseTx(tx),
-			Msgs:   tx.Msgs,
+			BaseTx:     baseTx,
+			IsProfiler: isProfiler(baseTx.Signer),
+			Msgs:       tx.Msgs,
 		}
 	}
 	return nil

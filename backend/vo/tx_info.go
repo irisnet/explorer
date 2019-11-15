@@ -8,7 +8,8 @@ type AssetTxInfo struct {
 }
 type GuardianTxInfo struct {
 	BaseTx
-	Msgs []MsgItem `json:"msgs"`
+	IsProfiler bool      `json:"isProfiler"`
+	Msgs       []MsgItem `json:"msgs"`
 }
 
 type HtlcTxInfo struct {
