@@ -786,12 +786,9 @@ func (service *TxService) buildTxs(txs []vo.CommonTx, isDetail bool) []interface
 			switch v.Type {
 			case types.TxTypeBeginRedelegate:
 				if len(v.Msgs) > 0 {
-					msg := msgvo.TxMsgBeginRedelegate{}
-					if err := msg.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(v.Msgs[0].MsgData)); err != nil {
-						logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
-					} else {
-						v.From = msg.ValidatorSrcAddr
-					}
+					msg := v.Msgs[0].MsgData.(msgvo.TxMsgBeginRedelegate)
+					v.From = msg.ValidatorSrcAddr
+
 				}
 
 			}
@@ -831,12 +828,9 @@ func (service *TxService) buildTxForDetail(tx vo.CommonTx, isDetail bool) interf
 		switch tx.Type {
 		case types.TxTypeBeginRedelegate:
 			if len(tx.Msgs) > 0 {
-				msg := msgvo.TxMsgBeginRedelegate{}
-				if err := msg.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(tx.Msgs[0].MsgData)); err != nil {
-					logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
-				} else {
-					tx.From = msg.ValidatorSrcAddr
-				}
+				msg := tx.Msgs[0].MsgData.(msgvo.TxMsgBeginRedelegate)
+				tx.From = msg.ValidatorSrcAddr
+
 			}
 
 		}
@@ -1269,7 +1263,7 @@ func buildDeclarationMsgs(tx vo.CommonTx, blackListP *map[string]document.BlackL
 			return tmpMsgItem
 		}
 	}
-	return nil
+	return tx.Msgs
 }
 
 func checkTags(tags map[string]string, param msgvo.Params) map[string]string {
