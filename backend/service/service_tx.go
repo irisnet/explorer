@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"strconv"
 	"strings"
 	"time"
 
@@ -887,9 +886,10 @@ func buildStakeTxInfo(tx vo.CommonTx, isDetail bool, txResp interface{}) interfa
 				}
 				if sourceTotal == 1 {
 					stakeTx.From = validatorAddr
-				} else {
-					stakeTx.From = strconv.Itoa(sourceTotal)
 				}
+				//else {
+				//	stakeTx.From = strconv.Itoa(sourceTotal)
+				//}
 			}
 
 			stakeTx.Msgs = tx.Msgs
@@ -977,12 +977,15 @@ func (service *TxService) buildTxForList(tx vo.CommonTx, blackListP *map[string]
 		}
 		return dtx
 	case types.Stake:
+		fromMoniker, toMiniker := service.BuildFTMoniker(tx.From, tx.To)
 		return vo.StakeTx{
 			TransTx: vo.TransTx{
 				BaseTx: buildBaseTx(tx),
 				From:   tx.From,
 				To:     tx.To,
 			},
+			ToMoniker:   toMiniker,
+			FromMoniker: fromMoniker,
 		}
 
 	case types.Gov:
