@@ -33,8 +33,6 @@ const (
 	Tx_Field_ProposalId           = "proposal_id"
 	Tx_Field_Tags                 = "tags"
 	Tx_Field_Msgs                 = "msgs"
-	Tx_Field_StakeCreateValidator = "stake_create_validator"
-	Tx_Field_StakeEditValidator   = "stake_edit_validator"
 
 	Tx_Field_Msgs_UdInfo         = "msgs.msg.ud_info.source"
 	Tx_Field_Msgs_Moniker        = "msgs.msg.moniker"
@@ -147,7 +145,7 @@ type ValDescription struct {
 func (_ CommonTx) QueryByAddr(addr string, pageNum, pageSize int, istotal bool) (int, []CommonTx, error) {
 	var data []CommonTx
 	query := bson.M{}
-	query["$or"] = []bson.M{{"from": addr}, {"to": addr}, {"signers": bson.M{"$elemMatch": bson.M{"addr_bech32": addr}}}}
+	query["$or"] = []bson.M{{"from": addr}, {"to": addr}, {"signers.addr_bech32": addr}}
 	var typeArr []string
 	typeArr = append(typeArr, types.BankList...)
 	typeArr = append(typeArr, types.DeclarationList...)
