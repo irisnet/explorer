@@ -115,7 +115,7 @@ export default {
     .tips {
         opacity: 0;
         position: absolute;
-        padding: 0rem 0.15rem;
+        padding: 0rem 0.1rem;
         top: -0.36rem;
         left: 50%;
         transform: translateX(-50%);
