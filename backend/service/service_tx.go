@@ -765,7 +765,7 @@ func (service *TxService) buildTxs(txs []vo.CommonTx, isDetail bool) []interface
 	}
 
 	blackList := map[string]document.BlackList{}
-	candidateAddrMap := map[string]document.Validator{}
+	//candidateAddrMap := map[string]document.Validator{}
 	govProposalIdMap := map[uint64]document.Proposal{}
 
 	onlyOnce := true
@@ -776,7 +776,7 @@ func (service *TxService) buildTxs(txs []vo.CommonTx, isDetail bool) []interface
 				blackList = service.QueryBlackList()
 				onlyOnce = false
 			}
-			candidateAddrMap[v.From] = document.Validator{}
+			//candidateAddrMap[v.From] = document.Validator{}
 		case types.Gov:
 			//govTxMsgHashMap[v.TxHash] = document.TxMsg{}
 			if v.Type == types.TxTypeVote || v.Type == types.TxTypeDeposit {
@@ -799,7 +799,7 @@ func (service *TxService) buildTxs(txs []vo.CommonTx, isDetail bool) []interface
 		}
 	}
 
-	service.getTxAttachedFields(&candidateAddrMap, &govProposalIdMap)
+	service.getTxAttachedFields(&govProposalIdMap)
 
 	for _, tx := range txs {
 		txResp := txService.buildTxForList(tx, &blackList, &govProposalIdMap)
@@ -811,7 +811,7 @@ func (service *TxService) buildTxs(txs []vo.CommonTx, isDetail bool) []interface
 func (service *TxService) buildTxForDetail(tx vo.CommonTx, isDetail bool) interface{} {
 
 	blackList := map[string]document.BlackList{}
-	candidateAddrMap := map[string]document.Validator{}
+	//candidateAddrMap := map[string]document.Validator{}
 	govProposalIdMap := map[uint64]document.Proposal{}
 
 	onlyOnce := true
@@ -821,7 +821,7 @@ func (service *TxService) buildTxForDetail(tx vo.CommonTx, isDetail bool) interf
 			blackList = service.QueryBlackList()
 			onlyOnce = false
 		}
-		candidateAddrMap[tx.From] = document.Validator{}
+		//candidateAddrMap[tx.From] = document.Validator{}
 	case types.Gov:
 		//govTxMsgHashMap[v.TxHash] = document.TxMsg{}
 		if tx.Type == types.TxTypeVote || tx.Type == types.TxTypeDeposit {
@@ -843,7 +843,7 @@ func (service *TxService) buildTxForDetail(tx vo.CommonTx, isDetail bool) interf
 
 	}
 
-	service.getTxAttachedFields(&candidateAddrMap, &govProposalIdMap)
+	service.getTxAttachedFields(&govProposalIdMap)
 
 	txResp := txService.buildTxVO(tx, &blackList, &govProposalIdMap)
 
@@ -905,42 +905,46 @@ func buildStakeTxInfo(tx vo.CommonTx, isDetail bool, txResp interface{}) interfa
 	return txResp
 }
 
-func (service *TxService) getTxAttachedFields(candidateAddrMap *map[string]document.Validator,
-	govProposalIdMap *map[uint64]document.Proposal) {
-	candidateAddrs := make([]string, 0, len(*candidateAddrMap))
+func (service *TxService) getTxAttachedFields(govProposalIdMap *map[uint64]document.Proposal) {
+	//candidateAddrs := make([]string, 0, len(*candidateAddrMap))
 	govProposalIdArr := make([]uint64, 0, len(*govProposalIdMap))
-	for k, _ := range *candidateAddrMap {
-		candidateAddrs = append(candidateAddrs, k)
-	}
+	//for k, _ := range *candidateAddrMap {
+	//	candidateAddrs = append(candidateAddrs, k)
+	//}
 	for k, _ := range *govProposalIdMap {
 		govProposalIdArr = append(govProposalIdArr, k)
 	}
 
-	candidateArr := []document.Validator{}
+	//candidateArr := []document.Validator{}
+	//
+	//var err error
+	//if len(candidateAddrs) > 0 {
+	//
+	//	candidateArr, err = document.Validator{}.QueryValidatorListByAddrList(candidateAddrs)
+	//
+	//	if err != nil {
+	//		logger.Error(fmt.Sprintf("query  candidator collection with condition: %v err: %v", candidateAddrs, err.Error()))
+	//	}
+	//
+	//	for k, _ := range *candidateAddrMap {
+	//		for _, v := range candidateArr {
+	//			if k == v.OperatorAddress {
+	//				(*candidateAddrMap)[k] = v
+	//				break
+	//			}
+	//		}
+	//	}
+	//}
 
-	var err error
-	if len(candidateAddrs) > 0 {
-
-		candidateArr, err = document.Validator{}.QueryValidatorListByAddrList(candidateAddrs)
-
-		if err != nil {
-			logger.Error(fmt.Sprintf("query  candidator collection with condition: %v err: %v", candidateAddrs, err.Error()))
-		}
-
-		for k, _ := range *candidateAddrMap {
-			for _, v := range candidateArr {
-				if k == v.OperatorAddress {
-					(*candidateAddrMap)[k] = v
-					break
-				}
-			}
-		}
-	}
-
-	proposalArr := []document.Proposal{}
+	//proposalArr := []document.Proposal{}
 
 	if len(govProposalIdArr) > 0 {
-		proposalArr, err = document.Proposal{}.QueryByIdList(govProposalIdArr)
+		proposalArr, err := document.Proposal{}.QueryByIdList(govProposalIdArr)
+		if err != nil {
+			logger.Error(fmt.Sprintf("query  Proposal collection with govProposalId err: %v", err.Error()))
+			return
+		}
+
 		for k, _ := range *govProposalIdMap {
 			for _, v := range proposalArr {
 				if k == v.ProposalId {
