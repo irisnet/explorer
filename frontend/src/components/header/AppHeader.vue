@@ -329,9 +329,9 @@
 			this.listenRouteForChangeActiveButton();
 			window.addEventListener('resize', this.onresize);
 			this.getConfig();
-			if(sessionStorage.getItem('skinCurrentEnv')){
+			if(sessionStorage.getItem('skinEnvInformation')){
 				this.toggleTestnetLogo({
-					cur_env:sessionStorage.getItem('skinCurrentEnv')
+					cur_env:sessionStorage.getItem('skinEnvInformation')
 				});
             }
 			this.listenRouteForChangeActiveButton();
@@ -633,7 +633,7 @@
 				Service.commonInterface({headerConfig:{}},(res) => {
 					try {
 						this.$store.commit('currentSkinStyle',`${res.cur_env}${res.chain_id}`);
-						sessionStorage.setItem('skinCurrentEnv',JSON.stringify({currentEnv:res.cur_env,currentChainID:res.chain_id}))
+						sessionStorage.setItem('skinEnvInformation',JSON.stringify(res))
 						this.flShowLogo = true;
 						this.toggleTestnetLogo(res);
 						this.setCurrentSelectOption(res.cur_env, res.chain_id, res.configs);
@@ -661,7 +661,7 @@
 			},
 			handleConfigs (configs) {
 				this.netWorkArray = configs.map(item => {
-					if(item.env_nm === constant.ENVCONFIG.MAINNET && item.chain_id === constant.CHAINID.MAINNET){
+					if(item.env_nm === constant.ENVCONFIG.MAINNET && item.chain_id === constant.CHAINID.IRISHUB){
 						item.icon = 'iconfont iconiris'
                     }else if(item.env_nm === constant.ENVCONFIG.TESTNET && item.chain_id === constant.CHAINID.FUXI){
 						item.icon = 'iconfont iconfuxi1'
@@ -683,24 +683,32 @@
 				}
 			},
 			toggleTestnetLogo (currentEnv) {
-				if(sessionStorage.getItem('skinCurrentEnv')){
-					currentEnv.cur_env = JSON.parse(sessionStorage.getItem('skinCurrentEnv')).currentEnv;
-					currentEnv.chain_id = JSON.parse(sessionStorage.getItem('skinCurrentEnv')).currentChainID;
+                if(sessionStorage.getItem('skinEnvInformation')){
+                    currentEnv.cur_env = JSON.parse(sessionStorage.getItem('skinEnvInformation')).cur_env;
+                    currentEnv.chain_id = JSON.parse(sessionStorage.getItem('skinEnvInformation')).chain_id;
+                    currentEnv = JSON.parse(sessionStorage.getItem('skinEnvInformation'))
+                }
+				let networkName = '';
+                if(currentEnv.configs){
+                    currentEnv.configs.forEach(item => {
+                        if(currentEnv.cur_env === item.env && currentEnv.chain_id === item.chain_id){
+                            networkName = item.env_nm;
+                        }
+                    })
                 }
 				const root = document.documentElement;
 				root.style.setProperty(skinStyle.skinStyle.TITLECOLORNAME,skinStyle.skinStyle.commonFontBlackColor);
 				root.style.setProperty(skinStyle.skinStyle.CONTENTCOLORNAME,skinStyle.skinStyle.commonFontContentColor);
 				root.style.setProperty(skinStyle.skinStyle.MODULEBLACKCOLOR,skinStyle.skinStyle.commonModuleBlackColor);
-				if (currentEnv.cur_env === constant.ENVCONFIG.MAINNET && currentEnv.chain_id === constant.CHAINID.MAINNET) {
+				if (networkName === constant.CHAINID.IRISHUB) {
 					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.MAINNETBGCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.MAINNETHOVERCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.MAINNETACTIVECOLOR);
-				} else if(currentEnv.cur_env === constant.ENVCONFIG.TESTNET && currentEnv.chain_id === constant.CHAINID.FUXI) {
+				} else if(networkName === constant.CHAINID.FUXI) {
 					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.TESTNETBGCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.TESTNETHOVERCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.TESTNETACTIVECOLOR);
-
-				}else if(currentEnv.cur_env === constant.ENVCONFIG.TESTNET && currentEnv.chain_id === constant.CHAINID.NYANCAT){
+				}else if(networkName === constant.CHAINID.NYANCAT){
 					root.style.setProperty(skinStyle.skinStyle.BGCOLORNAME,skinStyle.skinStyle.NYANCATTESTNETBGCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.HOVERCOLORNAME,skinStyle.skinStyle.NYANCATTESTNETHOVERCOLOR);
 					root.style.setProperty(skinStyle.skinStyle.ACTIVECOLORNAME,skinStyle.skinStyle.NYANCATTESTNETACTIVECOLOR);
@@ -718,7 +726,7 @@
 				}
 			},
 			setNetWorkLogo (currentEnv, currentChainId) {
-				if (currentEnv === constant.ENVCONFIG.MAINNET && currentChainId === constant.CHAINID.MAINNET) {
+				if (currentEnv === constant.ENVCONFIG.MAINNET && currentChainId === constant.CHAINID.IRISHUB) {
 					this.flShowGatewayMenu = false;
 					this.explorerLogo = require("../../assets/logo.png");
 					this.currentNetworkClass = 'iconfont iconiris'

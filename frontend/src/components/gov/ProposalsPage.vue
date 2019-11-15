@@ -422,9 +422,9 @@
 						pageSize: this.pageSize
 					}}, (proposalList) => {
 					try {
+                        this.count = proposalList.Count;
 						if(proposalList.Data){
 							this.showNoData = false;
-							this.count = proposalList.Count;
 							this.items = proposalList.Data.map(item =>{
 								let proposalId = item.proposal_id === 0 ? "--" : item.proposal_id;
 								let type = item.type;
