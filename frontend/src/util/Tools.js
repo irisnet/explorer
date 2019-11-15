@@ -112,9 +112,19 @@ export default class Tools{
 	static numberMoveDecimal(number){
 		let leftLength = -18;
 		if(number.toString().indexOf('e') !== -1 || number.toString().indexOf('E') !== -1){
-			return moveDecimal(new BigNumber(number).toFixed().toString() + ".",leftLength)
+		    if(number.toString().indexOf('e')!== -1) {
+                return moveDecimal(new BigNumber(number).toFixed().toString(),leftLength)
+
+            }else {
+                return moveDecimal(new BigNumber(number).toFixed().toString() + ".",leftLength)
+            }
 		}else {
-			return moveDecimal(number.toString() + ".",leftLength)
+		    if(number.toString().indexOf('e')!== -1){
+                return moveDecimal(number.toString(),leftLength)
+
+            }else {
+                return moveDecimal(number.toString() + ".",leftLength)
+            }
 		}
 	}
 
@@ -649,76 +659,76 @@ export default class Tools{
 		let amount;
 		if(data && data.type){
 			switch (data.type) {
-				case 'Transfer' :
-					amount = Tools.formatListByAmount(data.amount)
-				break;
-				case 'Burn':
-					amount = Tools.formatListByAmount(data.amount)
-				break;
-				case 'SetMemoRegexp':
-					amount = Tools.formatListByAmount(data.amount)
+				case Constant.TxType.TRANSFER :
+					amount = Tools.formatListByAmount(data.amount);
+				    break;
+				case Constant.TxType.BURN:
+					amount = Tools.formatListByAmount(data.amount);
+				    break;
+				case Constant.TxType.SETMEMOREGEXP:
+					amount = Tools.formatListByAmount(data.amount);
 					break;
-				case 'CreateValidator':
-					amount = Tools.formatListByAmount(data.amount)
+				case Constant.TxType.CREATEVALIDATOR:
+					amount = Tools.formatListByAmount(data.amount);
 					break;
-				case 'EditValidator':
-					amount = Tools.formatListByAmount(data.amount)
+				case Constant.TxType.EDITVALIDATOR:
+					amount = Tools.formatListByAmount(data.amount);
 					break;
-				case 'Unjail':
-					amount = Tools.formatListByAmount(data.amount)
+				case Constant.TxType.UNJAIL:
+					amount = Tools.formatListByAmount(data.amount);
 					break;
-				case 'Delegate':
-					amount = Tools.formatListByAmount(data.amount)
+				case Constant.TxType.DELEGATE:
+					amount = Tools.formatListByAmount(data.amount);
 					break;
-				case 'BeginRedelegate':
-					amount = Tools.formatListByTagsBalance(data.tags)
+				case Constant.TxType.BEGINREDELEGATE:
+					amount = Tools.formatListByTagsBalance(data.tags);
 					break;
-				case 'SetWithdrawAddress':
-					amount = Tools.formatListByAmount(data.amount)
+				case Constant.TxType.SETWITHDRAWADDRESS:
+					amount = Tools.formatListByAmount(data.amount);
 					break;
-				case 'BeginUnbonding':
-					amount = Tools.formatListByTagsBalance(data.tags)
+				case Constant.TxType.BEGINUNBONDING:
+					amount = Tools.formatListByTagsBalance(data.tags);
 					break;
-				case 'WithdrawDelegatorReward':
-					amount = Tools.formatListByAmount(data.amount)
+				case Constant.TxType.WITHDRAWDELEGATORREWARD:
+					amount = Tools.formatListByAmount(data.amount);
 					break;
-				case 'WithdrawDelegatorRewardsAll':
-					amount = Tools.formatListByAmount(data.amount)
+				case Constant.TxType.WITHDRAWDELEGATORREWARDSALL:
+					amount = Tools.formatListByAmount(data.amount);
 					break;
-				case 'WithdrawValidatorRewardsAll':
-					amount = Tools.formatListByAmount(data.amount)
+				case Constant.TxType.WITHDRAWVALIDATORREWARDSALL:
+					amount = Tools.formatListByAmount(data.amount);
 					break;
-				case 'SubmitProposal':
-					amount = Tools.formatListByAmount(data.amount)
+				case Constant.TxType.SUBMITPROPOSAL:
+					amount = Tools.formatListByAmount(data.amount);
 					break;
-				case 'Deposit':
-					amount = Tools.formatListByAmount(data.amount)
+				case Constant.TxType.DEPOSIT:
+					amount = Tools.formatListByAmount(data.amount);
 					break;
-				case 'Vote':
-					amount = Tools.formatListByAmount(data.amount)
+				case Constant.TxType.VOTE:
+					amount = Tools.formatListByAmount(data.amount);
 					break;
-				case 'IssueToken':
-					amount = Tools.formatListByAmount(data.amount)
+				case Constant.TxType.ISSUETOKEN:
+					amount = Tools.formatListByAmount(data.amount);
 					break;
-				case 'EditToken':
-					amount = Tools.formatListByAmount(data.amount)
+				case Constant.TxType.EDITTOKEN:
+					amount = Tools.formatListByAmount(data.amount);
 					break;
-				case 'MintToken':
-					amount = Tools.formatListByAmount(data.amount)
+				case Constant.TxType.MINTTOKEN:
+					amount = Tools.formatListByAmount(data.amount);
 					break;
-				case 'TransferTokenOwner':
-					amount = Tools.formatListByAmount(data.amount)
+				case Constant.TxType.TRANSFERTOKENOWNER:
+					amount = Tools.formatListByAmount(data.amount);
 					break;
-				case 'CreateGateway':
-					amount = Tools.formatListByAmount(data.amount)
+				case Constant.TxType.CREATEGATEWAY:
+					amount = Tools.formatListByAmount(data.amount);
 					break;
-				case 'EditGateway':
-					amount = Tools.formatListByAmount(data.amount)
+				case Constant.TxType.EDITGATEWAY:
+					amount = Tools.formatListByAmount(data.amount);
 					break;
-				case 'TransferGatewayOwner':
-					amount = Tools.formatListByAmount(data.amount)
+				case Constant.TxType.TRANSFERGATEWAYOWNER:
+					amount = Tools.formatListByAmount(data.amount);
 					break;
-				case 'RequestRand':
+				case Constant.TxType.REQUESTRAND:
 					amount = Tools.formatListByAmount(data.amount)
 
 			}
@@ -745,7 +755,7 @@ export default class Tools{
 			}
 		}else if(amount.amount && Object.keys(amount.amount).includes('amount') && Object.keys(amount.amount).includes('denom')){
 			if(amount.denom === Constant.Denom.IRISATTO){
-				amountNumber = Tools.formatStringToFixedNumber(String(Tools.numberMoveDecimal(item.amount)),2);
+				amountNumber = Tools.formatStringToFixedNumber(String(Tools.numberMoveDecimal(amount.amount)),2);
 				tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
 			}else if(amount.denom !== Constant.Denom.IRISATTO){
 				amountNumber = amount.amount
@@ -754,28 +764,88 @@ export default class Tools{
 				amountNumber = amount.amount
 				tokenName = ''
 			}
-		}
+		}else if(amount&& Object.keys(amount).includes('amount') && Object.keys(amount).includes('denom')){
+            if(amount.denom === Constant.Denom.IRISATTO){
+                amountNumber = Tools.formatStringToFixedNumber(String(Tools.numberMoveDecimal(amount.amount)),2);
+                tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
+            }else if(amount.denom !== Constant.Denom.IRISATTO){
+                amountNumber = amount.amount
+                tokenName = amount.denom.toLocaleUpperCase()
+            }else if(!amount.denom){
+                amountNumber = amount.amount
+                tokenName = ''
+            }
+        }
 		// console.log(amountNumber,tokenName,"amount information")
 		return {amountNumber,tokenName}
 	}
 	/**
 	 * 从tags中的balance获取amount
 	 * */
-	static formatListByTagsBalance(tags){
+	static formatListByTagsBalance(tags,flSplitNum){
 		let [amountNumber,tokenName] = ['--','--'];
 		if(tags && tags.balance){
 			let tokenValue = Tools.formatAccountCoinsAmount(tags.balance);
 			let tokenStr = String(Tools.numberMoveDecimal(tokenValue[0],18));
-			amountNumber =  Tools.formatStringToFixedNumber(tokenStr,2);
+			if(flSplitNum){
+                amountNumber =  tokenStr
+            }else {
+                amountNumber =  Tools.formatStringToFixedNumber(tokenStr,2);
+            }
 			tokenName = Constant.Denom.IRIS.toLocaleUpperCase()
 		}
 		return {amountNumber,tokenName}
 		// console.log(amountNumber,tokenName,"share information")
 
 	}
+	/**
+     * 格式化fee
+     * */
     static formatFee(Fee){
         if(Fee.amount && Fee.denom){
             return `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(Fee.amount)),4)} ${Tools.formatDenom(Fee.denom).toUpperCase()}`;
         }
+    }
+    /**
+     * 格式化交易详情页的amount
+     * */
+    static formatAmountOfTxDetail(amount){
+        let [amountNumber,tokenName] = ['--','--'];
+        if(amount instanceof Array && amount.length > 0) {
+            if (amount[0].denom && amount[0].amount && amount[0].denom === Constant.Denom.IRISATTO) {
+                amountNumber = amount[0].amount > 0 ? String(Tools.numberMoveDecimal(amount[0].amount)) : amount[0].amount;
+                tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
+            } else if (amount[0].denom && amount[0].amount && amount[0].denom !== Constant.Denom.IRISATTO) {
+                amountNumber =  amount[0].amount;
+                tokenName = amount[0].denom.toLocaleUpperCase();
+            } else {
+                amountNumber = amount[0].amount;
+                tokenName = amount[0].denom.toLocaleUpperCase();
+            }
+        }else if(amount.amount && Object.keys(amount.amount).includes('amount') && Object.keys(amount.amount).includes('denom')){
+            if(amount.denom === Constant.Denom.IRISATTO){
+                amountNumber =String(Tools.numberMoveDecimal(amount.amount));
+                tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
+            }else if(amount.denom !== Constant.Denom.IRISATTO){
+                amountNumber = amount.amount
+                tokenName = amount.denom.toLocaleUpperCase()
+            }else if(!amount.denom){
+                amountNumber = amount.amount
+                tokenName = ''
+            }
+        }else if(amount&& Object.keys(amount).includes('amount') && Object.keys(amount).includes('denom')){
+            if(amount.denom === Constant.Denom.IRISATTO){
+                amountNumber = String(Tools.numberMoveDecimal(amount.amount));
+                tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
+            }else if(amount.denom !== Constant.Denom.IRISATTO){
+                amountNumber = amount.amount
+                tokenName = amount.denom.toLocaleUpperCase()
+            }else if(!amount.denom){
+                amountNumber = amount.amount
+                tokenName = ''
+            }
+        }
+        // console.log(amountNumber,tokenName,"amount information")
+        return {amountNumber,tokenName}
     }
 }
