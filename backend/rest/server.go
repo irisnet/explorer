@@ -47,7 +47,7 @@ func NewApiServer() *ApiServer {
 func (s *ApiServer) Start() error {
 	go func() {
 		logger.Info("pprof will Serve on 6061")
-		if err := http.ListenAndServe("localhost:6061", nil); err != nil {
+		if err := http.ListenAndServe("0.0.0.0:6061", nil); err != nil {
 			logger.Fatal("ListenAndServe Failed: ", logger.Any("err", err))
 		}
 	}()
@@ -69,6 +69,7 @@ func registerApi(r *mux.Router) {
 		controller.RegisterBondedTokens,
 		controller.RegisterAssets,
 		controller.RegisterCronTask,
+		controller.RegisterHtlc,
 	}
 
 	for _, routeRegistrar := range routeRegistrars {

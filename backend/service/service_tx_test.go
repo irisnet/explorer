@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"github.com/irisnet/explorer/backend/vo"
 	"gopkg.in/mgo.v2/bson"
+	"github.com/irisnet/explorer/backend/vo/msgvo"
 )
 
 func TestQueryTxList(t *testing.T) {
@@ -28,7 +29,7 @@ func TestQueryRecentTx(t *testing.T) {
 }
 
 func TestQueryTxByHash(t *testing.T) {
-	tx := new(TxService).Query("958E662565030AD007DB44699D13E4D53997A394A10AD3E81DAC4C5BF0242372")
+	tx := new(TxService).Query("3EB9D229189C84A0A11FC4A19154FEE5CDC0E2C10E6695E316F6888BE2677C3C")
 	t.Logf("tx: %v\n", string(utils.MarshalJsonIgnoreErr(tx)))
 }
 
@@ -79,15 +80,15 @@ func TestTxService_checkTags(t *testing.T) {
 		"proposer":            "faa1x292qss22x4rls6ygr7hhnp0et94vwwrchaklp",
 		"proposal-id":         "41",
 	}
-	submitprodata := vo.MsgSubmitProposal{
-		Params: []vo.Param{
+	submitprodata := msgvo.TxMsgSubmitProposal{
+		Params: []msgvo.Param{
 			{Subspace: "stake", Key: "UnbondingTime", Value: "12m"},
 		},
 	}
-	data := checkTags(tags, submitprodata)
+	data := checkTags(tags, submitprodata.Params)
 	t.Log(tags)
 	t.Log(data)
-	data1 := checkTags(tags1, submitprodata)
+	data1 := checkTags(tags1, submitprodata.Params)
 	t.Log(tags1)
 	t.Log(data1)
 
@@ -96,5 +97,5 @@ func TestTxService_checkTags(t *testing.T) {
 func TestTxService_QueryBaseList(t *testing.T) {
 	res := new(TxService).QueryBaseList(bson.M{"from": "faa174qyl02cupyqq77cqqtdl0frda6dl3rpjcrgnp"}, 1, 10, false)
 	bytestr, _ := json.Marshal(res)
-	t.Logf("items: %v \n", string(bytestr))
+	t.Logf(" %v \n", string(bytestr))
 }

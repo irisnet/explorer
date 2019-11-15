@@ -37,6 +37,7 @@ const (
 	UrlLookupIconsByKeySuffix                    = "https://keybase.io/_/api/1.0/user/lookup.json?fields=pictures&key_suffix=%s"
 	UrlAssetTokens                               = "%s/asset/tokens"
 	UrlAssetGateways                             = "%s/asset/gateways"
+	UrlHtlcInfo                                  = "%s/htlc/htlcs/%s"
 )
 
 type AccountVo struct {
@@ -472,6 +473,18 @@ type DelegationVo struct {
 	ValidatorAddr string `json:"validator_addr"`
 	Shares        string `json:"shares"`
 	Height        int64 `json:"height,string"`
+}
+
+type ValidatorDelegations []DelegationVo
+
+func (sort ValidatorDelegations) Len() int {
+	return len(sort)
+}
+func (sort ValidatorDelegations) Swap(i, j int) {
+	sort[i], sort[j] = sort[j], sort[i]
+}
+func (sort ValidatorDelegations) Less(i, j int) bool {
+	return sort[i].Height > sort[j].Height
 }
 
 type DistributionRewards struct {

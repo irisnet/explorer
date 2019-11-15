@@ -6,6 +6,7 @@ import (
 
 	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
+	"encoding/json"
 )
 
 type MsgSubmitProposal struct {
@@ -69,6 +70,10 @@ type MsgBeginRedelegate struct {
 	ValidatorSrcAddr string `json:"validator_src_addr"`
 	ValidatorDstAddr string `json:"validator_dst_addr"`
 	SharesAmount     string `json:"shares_amount"`
+}
+
+func (vo *MsgBeginRedelegate) BuildMsgByUnmarshalJson(data []byte) error {
+	return json.Unmarshal(data, vo)
 }
 
 type TxStatisticsVo struct {
@@ -231,6 +236,35 @@ type AssetTx struct {
 	Tags   map[string]string `json:"tags"`
 	Msgs   []MsgItem         `json:"msgs"`
 }
+type GuardianTx struct {
+	BaseTx
+	From   string            `json:"from"`
+	To     string            `json:"to"`
+	Amount utils.Coins       `json:"amount"`
+	Tags   map[string]string `json:"tags"`
+	Msgs   []MsgItem         `json:"msgs"`
+}
+
+type HtlcTx struct {
+	BaseTx
+	From         string            `json:"from"`
+	To           string            `json:"to"`
+	FromMoniker  string            `json:"from_moniker"`
+	ToMoniker    string            `json:"to_moniker"`
+	ExpireHeight int64             `json:"expire_height,string"`
+	Amount       utils.Coins       `json:"amount"`
+	Tags         map[string]string `json:"tags"`
+	Msgs         []MsgItem         `json:"msgs"`
+}
+
+type CoinswapTx struct {
+	BaseTx
+	From   string            `json:"from"`
+	To     string            `json:"to"`
+	Amount utils.Coins       `json:"amount"`
+	Tags   map[string]string `json:"tags"`
+	Msgs   []MsgItem         `json:"msgs"`
+}
 
 func (tx RecentTx) String() string {
 	return fmt.Sprintf(`
@@ -282,7 +316,6 @@ type CommonTx struct {
 	Tags                 map[string]string    `json:"tags"`
 	StakeCreateValidator StakeCreateValidator `json:"stake_create_validator"`
 	StakeEditValidator   StakeEditValidator   `json:"stake_edit_validator"`
-	Msg                  Msg                  `json:"-"`
 	Msgs                 []MsgItem            `json:"msgs"`
 	Signers              []Signer             `json:"signers"`
 }
@@ -308,11 +341,10 @@ func (tx CommonTx) String() string {
 		Tags                 :%v
 		StakeCreateValidator :%v
 		StakeEditValidator   :%v
-		Msg                  :%v
 		Msgs                 :%v
 		Signers              :%v
 		`, tx.Time, tx.Height, tx.TxHash, tx.From, tx.To, tx.Amount, tx.Type, tx.Fee, tx.Memo, tx.Status, tx.Code, tx.Log,
-		tx.GasUsed, tx.GasPrice, tx.ActualFee, tx.ProposalId, tx.Tags, tx.StakeCreateValidator, tx.StakeEditValidator, tx.Msg, tx.Msgs, tx.Signers)
+		tx.GasUsed, tx.GasPrice, tx.ActualFee, tx.ProposalId, tx.Tags, tx.StakeCreateValidator, tx.StakeEditValidator, tx.Msgs, tx.Signers)
 
 }
 

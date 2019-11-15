@@ -83,8 +83,9 @@ items:
 
 type UnbondingDelegations struct {
 	Address string `json:"address"`
+	Moniker string `json:"moniker"`
 	Amount  string `json:"amount"`
-	Block   int64 `json:"block,string"`
+	Block   int64  `json:"block,string"`
 	Until   string `json:"until"`
 }
 
@@ -99,10 +100,11 @@ func (un UnbondingDelegations) String() string {
 
 type Delegation struct {
 	Address     string  `json:"address"`
+	Moniker     string  `json:"moniker"`
 	Amount      string  `json:"amount"`
 	SelfShares  string  `json:"self_shares"`
 	TotalShares float64 `json:"total_shares"`
-	Block       int64  `json:"block,string"`
+	Block       int64   `json:"block,string"`
 }
 
 func (d Delegation) String() string {
@@ -189,8 +191,8 @@ func (d Description) String() string {
 }
 
 type CandidatesInfoVo struct {
-	PowerAll  int64 `json:"power_all"`
-	Validator `json:"validator"`
+	PowerAll int64 `json:"power_all"`
+	Validator      `json:"validator"`
 }
 
 func (c CandidatesInfoVo) String() string {

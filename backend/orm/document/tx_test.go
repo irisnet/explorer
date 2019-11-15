@@ -48,7 +48,7 @@ func TestQueryHashActualFeeType(t *testing.T) {
 }
 
 func TestQueryTxByHash(t *testing.T) {
-	tx, err := CommonTx{}.QueryTxByHash("89D8527FC5CB56B79E02EBDFFCA47A1FAB246A8CEBBB6F455B1D44D5F8A39396")
+	tx, err := CommonTx{}.QueryTxByHash("3EB9D229189C84A0A11FC4A19154FEE5CDC0E2C10E6695E316F6888BE2677C3C")
 
 	if err != nil {
 		t.Error(err)

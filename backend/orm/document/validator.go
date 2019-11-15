@@ -405,28 +405,28 @@ func (_ Validator) QueryCandidateStatus(addr string) (int, int, error) {
 	return preCommitCount, upTimeMap[validator.OperatorAddress], nil
 }
 
-func (_ Validator) QueryValidatorMonikerByAddrArr(addrs []string) (map[string]string, error) {
-	validatorArr := []Validator{}
-
-	valCondition := bson.M{
-		ValidatorFieldOperatorAddress: bson.M{"$in": addrs},
-	}
-
-	selector := bson.M{ValidatorFieldDescription: 1, ValidatorFieldOperatorAddress: 1}
-
-	if err := queryAll(CollectionNmValidator, selector, valCondition, "", 0, &validatorArr); err != nil {
-		return nil, err
-	}
-
-	res := map[string]string{}
-
-	for _, v := range validatorArr {
-		res[v.OperatorAddress] = v.Description.Moniker
-	}
-
-	return res, nil
-
-}
+//func (_ Validator) QueryValidatorMonikerByAddrArr(addrs []string) (map[string]string, error) {
+//	validatorArr := []Validator{}
+//
+//	valCondition := bson.M{
+//		ValidatorFieldOperatorAddress: bson.M{"$in": addrs},
+//	}
+//
+//	selector := bson.M{ValidatorFieldDescription: 1, ValidatorFieldOperatorAddress: 1}
+//
+//	if err := queryAll(CollectionNmValidator, selector, valCondition, "", 0, &validatorArr); err != nil {
+//		return nil, err
+//	}
+//
+//	res := map[string]string{}
+//
+//	for _, v := range validatorArr {
+//		res[v.OperatorAddress] = v.Description.Moniker
+//	}
+//
+//	return res, nil
+//
+//}
 
 func (_ Validator) QueryValidatorListByAddrList(addrs []string) ([]Validator, error) {
 	validatorArr := []Validator{}
@@ -562,4 +562,24 @@ func (_ Validator) UpdateByPk(validator Validator) error {
 
 	c := db.C(CollectionNmValidator)
 	return c.Update(validator.PkKvPair(), validator)
+}
+
+func (_ Validator) QueryValidatorDescription() map[string]Description {
+	var (
+		validators []Validator
+	)
+	var validatorDescriptionMap = make(map[string]Description)
+
+	selector := bson.M{
+		ValidatorFieldDescription:     1,
+		ValidatorFieldOperatorAddress: 1,
+	}
+	err := queryAll(CollectionNmValidator, selector, nil, "", 0, &validators)
+	if err == nil {
+		for _, v := range validators {
+			validatorDescriptionMap[v.OperatorAddress] = v.Description
+		}
+	}
+
+	return validatorDescriptionMap
 }
