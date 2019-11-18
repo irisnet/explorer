@@ -32,7 +32,7 @@ const router = new Router({
       path: '/validators', component: () => import('@/components/address/validator/ValidatorListPage.vue')
     },
     {
-      path: '/tx', component: () => import('@/components/txs/TransactionsDetail.vue')
+      path: '/tx', component: () => import('@/components/txs/TxDetail.vue')
     },
     {
       path: '/block/:height', component: () => import('@/components/block/BlockInfo.vue'),
