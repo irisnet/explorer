@@ -312,6 +312,7 @@
                         }
                         .tx_detail_common_information_item_value{
                             display: flex;
+                            color: var(--titleColor);
                             span{
                                 color: var(--titleColor);
                                 overflow-x: auto;
@@ -430,8 +431,8 @@
                 font-size: 0.18rem;
                 height: 0.7rem;
                 line-height: 0.7rem;
-                color: #515a6e;
                 margin-left: 0.2rem;
+                color: #171d44;
             }
             .tx_detail_message_information_content{
                 padding-bottom: 0.4rem;

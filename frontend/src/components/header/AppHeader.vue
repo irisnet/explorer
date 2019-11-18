@@ -43,7 +43,7 @@
                             <div class="search_input_wrap">
                                 <input type="text"
                                        class="search_input"
-                                       placeholder="Search by Address / Txhash / Block"
+                                       placeholder="Search by Address / Txhash / Block / HashLock"
                                        v-model.trim="searchInputValue"
                                        @keyup.enter="onInputChange">
                                 <span @click="getData(searchInputValue)" class="iconfont iconsousuo"></span>
@@ -121,7 +121,7 @@
                            class="search_input"
                            v-model.trim="searchInputValue"
                            @keyup.enter="onInputChange"
-                           placeholder="Search by Address / Txhash / Block">
+                           placeholder="Search by Address / Txhash / Block / HashLock">
                     <i class="search_icon iconfont iconsousuo"
                        @click="getData(searchInputValue)"></i>
                     <i class="clear_icon"
