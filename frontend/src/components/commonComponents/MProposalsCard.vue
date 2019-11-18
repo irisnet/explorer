@@ -117,6 +117,7 @@ export default {
     position: relative;
     display: flex;
     flex-direction: column;
+    background: #fff;
     .top {
       padding: 0.3rem 0.3rem 0.22rem;
       display: flex;
