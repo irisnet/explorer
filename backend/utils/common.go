@@ -14,6 +14,11 @@ import (
 	"github.com/irisnet/explorer/backend/conf"
 )
 
+const (
+	StatusFailed = "failed"
+	StatusFail   = "fail"
+)
+
 func RemoveDuplicationStrArr(list []string) []string {
 	unique_set := make(map[string]bool, len(list))
 	for _, x := range list {
@@ -149,4 +154,12 @@ func GetValaddr(address string) string {
 	} else {
 		return Convert(conf.Get().Hub.Prefix.ValAddr, address)
 	}
+}
+
+func FailtoFailed(status string) string {
+
+	if status == StatusFail {
+		return StatusFailed
+	}
+	return status
 }
