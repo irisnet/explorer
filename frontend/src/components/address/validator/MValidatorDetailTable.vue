@@ -63,7 +63,7 @@
                         <router-link
                             :to="addressRoute(row.address)"
                             class="link_style"
-                        >{{row.moniker || formatAddress(row.address)}}</router-link>
+                        >{{formatMoniker(row.moniker) || formatAddress(row.address)}}</router-link>
                     </span>
                 </div>
                 <span
