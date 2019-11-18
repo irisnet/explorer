@@ -230,6 +230,7 @@ table.m_table {
   width: 100%;
   min-width: 12.8rem;
   .hidden_thead {
+      visibility: hidden;
     line-height: 0px;
     color: transparent;
     border-color: transparent;
