@@ -150,3 +150,11 @@ func GetValaddr(address string) string {
 		return Convert(conf.Get().Hub.Prefix.ValAddr, address)
 	}
 }
+
+func FailtoFailed(status string) string {
+
+	if status == StatusFail {
+		return StatusFailed
+	}
+	return status
+}
