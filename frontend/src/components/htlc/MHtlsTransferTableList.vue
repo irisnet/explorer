@@ -20,14 +20,16 @@
            </template>
            <template slot-scope="{ row }" slot="from">
                <div class="skip_route" v-if="row.from">
-                   <router-link :to="addressRoute(row.from)" style="font-family: Consolas,Menlo ;" class="link_style common_font_style">{{row.fromMoniker || formatAddress(row.from)}}
+                   <router-link v-if="row.from !== '--'" :to="addressRoute(row.from)" style="font-family: Consolas,Menlo ;" class="link_style common_font_style">{{row.fromMoniker || formatAddress(row.from)}}
                    </router-link>
+                   <span v-if="row.from === '--'">--</span>
                </div>
            </template>
            <template slot-scope="{ row }" slot="to">
                <div class="skip_route" v-if="row.to">
-                   <router-link :to="addressRoute(row.to)" style="font-family: Consolas,Menlo ;" class="link_style common_font_style">{{row.toMoniker || formatAddress(row.to)}}
+                   <router-link v-if="row.to !== '--'" :to="addressRoute(row.to)" style="font-family: Consolas,Menlo ;" class="link_style common_font_style">{{row.toMoniker || formatAddress(row.to)}}
                    </router-link>
+                   <span v-if="row.to === '--'">--</span>
                </div>
            </template>
        </m-table>

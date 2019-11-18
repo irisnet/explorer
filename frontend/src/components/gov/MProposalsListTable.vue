@@ -193,12 +193,12 @@ export default {
           className: 'text_right'
         },
         {
-          title: 'Deposit_Endtime',
+          title: 'Deposit_End_Time',
           key: 'depositEndTime',
           className: 'text_right'
         },
         {
-          title: 'Voting_Endtime',
+          title: 'Voting_End_Time',
           key: 'votingEndTime',
           className: 'text_right'
         }
