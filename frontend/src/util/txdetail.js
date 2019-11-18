@@ -354,13 +354,14 @@ export default class formatMsgsAndTags {
                 message[Constant.TRANSACTIONMESSAGENAME.ENDTIME].unshift(Tools.format2UTC(dataTx.tags['end-time']))
 
             }else {
-                message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--');
                 message[Constant.TRANSACTIONMESSAGENAME.ENDTIME].unshift('--')
             }
             if(dataTx.msgs){
                 if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
                     dataTx.msgs.forEach(item => {
                         if(item.msg){
+                            amountObj = Tools.formatListByTagsBalance(item.msg.shares_amount,true);
+                            amountObj.amountNumber !== '--' ? message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${amountObj.amountNumber} ${amountObj.tokenName}`) : message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--');
                             message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(item.msg['validator_addr']);
                             message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.msg.delegator_addr);
                         }
@@ -377,9 +378,15 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.AMOUNT] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
-        if(dataTx.amount.length > 0){
-            amountObj = Tools.formatAmountOfTxDetail(dataTx.amount);
-            message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${amountObj.amountNumber} ${amountObj.tokenName}`)
+        if(dataTx.status === 'success'){
+            if(dataTx.tags && dataTx.tags['withdraw-reward-total']){
+                let tags = {};
+                tags.balance = dataTx.tags['withdraw-reward-total']
+                amountObj = Tools.formatListByTagsBalance(tags,true);
+                message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${amountObj.amountNumber} ${amountObj.tokenName}`)
+            }else {
+                message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--')
+            }
         }else {
             message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--')
         }
@@ -407,10 +414,17 @@ export default class formatMsgsAndTags {
             message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${amountObj.amountNumber} ${amountObj.tokenName}`)
             message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(dataTx.to);
         }else {
-            message[Constant.TRANSACTIONMESSAGENAME.FROM] = dataTx.from ? dataTx.from.split(',') : '-';
-            amountObj = Tools.formatAmountOfTxDetail(dataTx.amount) ;
-            message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(dataTx.amount.length > 0 ? `${amountObj.amountNumber} ${amountObj.tokenName}` : '--')
-            message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(dataTx.to ? dataTx.to : '-');
+            if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
+                dataTx.msgs.forEach(item => {
+                    if(item.msg){
+                        amountObj = Tools.formatAmountOfTxDetail(dataTx.amount) ;
+                        message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(dataTx.amount.length > 0 ? `${amountObj.amountNumber} ${amountObj.tokenName}` : '--');
+                        message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(item.msg.validator_addr ? item.msg.validator_addr : '-');
+                        message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.msg.delegator_addr ? item.msg.delegator_addr : '-')
+                    }
+                })
+            }
+
         }
         return message
     }
@@ -459,6 +473,7 @@ export default class formatMsgsAndTags {
                         message[Constant.TRANSACTIONMESSAGENAME.SWITCHHEIGHT] = [];
                         message[Constant.TRANSACTIONMESSAGENAME.TRESHOLD] = [];
                         if(item.msg){
+                            item.msg.doctxmsgsubmitproposal.description = 'First On-Chain Upgrade of IRISHub, First On-Chain Upgrade of BPoS Networks! Steps: https://github.com/irisnet/betanet/blob/master/upgrade/v0.15.1.md#mainnet-upgrade-process'
                             initialDepositObj = Tools.formatAmountOfTxDetail(item.msg.doctxmsgsubmitproposal.initialDeposit);
                             message[Constant.TRANSACTIONMESSAGENAME.PROPOSER].unshift(item.msg.doctxmsgsubmitproposal.proposer);
                             message[Constant.TRANSACTIONMESSAGENAME.TITLE].unshift(item.msg.doctxmsgsubmitproposal.title);
@@ -748,9 +763,9 @@ export default class formatMsgsAndTags {
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
-                        message[Constant.TRANSACTIONMESSAGENAME.DESCRIPTION].unshift(item.msg.description ? item.msg.description : '--');
-                        message[Constant.TRANSACTIONMESSAGENAME.ADDRESS].unshift(item.msg.address ? item.msg.address : '--');
-                        message[Constant.TRANSACTIONMESSAGENAME.ADDRESSBY].unshift(item.msg.added_by ? item.msg.added_by : '--');
+                        message[Constant.TRANSACTIONMESSAGENAME.DESCRIPTION].unshift(item.msg.addguardian.description ? item.msg.addguardian.description : '--');
+                        message[Constant.TRANSACTIONMESSAGENAME.ADDRESS].unshift(item.msg.addguardian.address ? item.msg.addguardian.address : '--');
+                        message[Constant.TRANSACTIONMESSAGENAME.ADDRESSBY].unshift(item.msg.addguardian.added_by ? item.msg.addguardian.added_by : '--');
                     }
                 }
             })
@@ -768,9 +783,9 @@ export default class formatMsgsAndTags {
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
-                        message[Constant.TRANSACTIONMESSAGENAME.DESCRIPTION].unshift(item.msg.description ? item.msg.description : '--');
-                        message[Constant.TRANSACTIONMESSAGENAME.ADDRESS].unshift(item.msg.address ? item.msg.address : '--');
-                        message[Constant.TRANSACTIONMESSAGENAME.ADDRESSBY].unshift(item.msg.added_by ? item.msg.added_by : '--');
+                        message[Constant.TRANSACTIONMESSAGENAME.DESCRIPTION].unshift(item.msg.addguardian.description ? item.msg.addguardian.description : '--');
+                        message[Constant.TRANSACTIONMESSAGENAME.ADDRESS].unshift(item.msg.addguardian.address ? item.msg.addguardian.address : '--');
+                        message[Constant.TRANSACTIONMESSAGENAME.ADDRESSBY].unshift(item.msg.addguardian.added_by ? item.msg.addguardian.added_by : '--');
                     }
                 }
             })
@@ -782,15 +797,15 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.DESCRIPTION] = [];
         message[Constant.TRANSACTIONMESSAGENAME.ADDRESS] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.ADDRESSBY] = [];
+        message[Constant.TRANSACTIONMESSAGENAME.DELETEDBY] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
             dataTx.msgs.forEach( item => {
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
-                        message[Constant.TRANSACTIONMESSAGENAME.DESCRIPTION].unshift(item.msg.description ? item.msg.description : '--');
-                        message[Constant.TRANSACTIONMESSAGENAME.ADDRESS].unshift(item.msg.address ? item.msg.address : '--');
-                        message[Constant.TRANSACTIONMESSAGENAME.ADDRESSBY].unshift(item.msg.added_by ? item.msg.added_by : '--');
+                        message[Constant.TRANSACTIONMESSAGENAME.DESCRIPTION].unshift(item.msg.deleteguardian.description ? item.msg.deleteguardian.description : '--');
+                        message[Constant.TRANSACTIONMESSAGENAME.ADDRESS].unshift(item.msg.deleteguardian.address ? item.msg.deleteguardian.address : '--');
+                        message[Constant.TRANSACTIONMESSAGENAME.DELETEDBY].unshift(item.msg.deleteguardian.deleted_by ? item.msg.deleteguardian.deleted_by : '--');
                     }
                 }
             })
@@ -803,15 +818,15 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.DESCRIPTION] = [];
         message[Constant.TRANSACTIONMESSAGENAME.ADDRESS] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.ADDRESSBY] = [];
+        message[Constant.TRANSACTIONMESSAGENAME.DELETEDBY] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
             dataTx.msgs.forEach( item => {
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
-                        message[Constant.TRANSACTIONMESSAGENAME.DESCRIPTION].unshift(item.msg.description ? item.msg.description : '--');
-                        message[Constant.TRANSACTIONMESSAGENAME.ADDRESS].unshift(item.msg.address ? item.msg.address : '--');
-                        message[Constant.TRANSACTIONMESSAGENAME.ADDRESSBY].unshift(item.msg.added_by ? item.msg.added_by : '--');
+                        message[Constant.TRANSACTIONMESSAGENAME.DESCRIPTION].unshift(item.msg.deleteguardian.description ? item.msg.deleteguardian.description : '--');
+                        message[Constant.TRANSACTIONMESSAGENAME.ADDRESS].unshift(item.msg.deleteguardian.address ? item.msg.deleteguardian.address : '--');
+                        message[Constant.TRANSACTIONMESSAGENAME.DELETEDBY].unshift(item.msg.deleteguardian.deleted_by ? item.msg.deleteguardian.deleted_by : '--');
                     }
                 }
             })

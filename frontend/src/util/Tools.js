@@ -795,7 +795,6 @@ export default class Tools{
 			tokenName = Constant.Denom.IRIS.toLocaleUpperCase()
 		}
 		return {amountNumber,tokenName}
-		// console.log(amountNumber,tokenName,"share information")
 
 	}
 	/**

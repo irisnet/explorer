@@ -145,7 +145,7 @@
                         <span class="information_value">{{submitAge}} <span v-show="submitAge">(</span>{{submitTime}}<span v-show="submitAge">)</span></span>
                     </div>
                     <div class="information_props_wrap">
-                        <span class="information_props">Deposit Endtime :</span>
+                        <span class="information_props">Deposit End Time :</span>
                         <span class="information_value">{{depositEndAge}}
                             <span v-show="flShowDepositHourLeft">{{depositHourLeft}} left </span>
                             <span v-show="depositEndAge || flShowDepositHourLeft">(</span>{{depositEndTime}}<span v-show="depositEndAge || flShowDepositHourLeft">)</span>
@@ -156,12 +156,12 @@
                         <span class="information_value">{{totalDeposit}} <span v-show="burnValue">({{burnValue}}% Burned)</span></span>
                     </div>
                     <div class="information_props_wrap">
-                        <span class="information_props">Voting Starttime :</span>
+                        <span class="information_props">Voting Start Time :</span>
                         <span class="information_value">{{votingStartAge}} <span v-show="votingStartAge">(</span>{{votingStartTime}}<span v-show="votingStartAge">)</span>
                         </span>
                     </div>
                     <div class="information_props_wrap">
-                        <span class="information_props">Voting Endtime :</span>
+                        <span class="information_props">Voting End Time :</span>
                         <span class="information_value">{{votingEndAge}}
                             <span v-show="flShowVotingHourLeft">{{votingHourLeft}} left </span>
                             <span v-show="votingEndAge || flShowVotingHourLeft">(</span>{{votingEndTime}}<span v-show="votingEndAge || flShowVotingHourLeft">)</span>
