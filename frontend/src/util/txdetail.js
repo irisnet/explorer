@@ -876,9 +876,9 @@ export default class formatMsgsAndTags {
                         message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(item.msg.sender);
                         message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${amountObj.amountNumber} ${amountObj.tokenName}`);
                         message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.msg.to);
-                        message[Constant.TRANSACTIONMESSAGENAME.TIMELOCK].unshift(item.msg.time_lock || item.msg.time_lock  == 0 ? item.msg.time_lock : '--');
+                        message[Constant.TRANSACTIONMESSAGENAME.TIMELOCK].unshift(item.msg.time_lock || item.msg.time_lock == 0 ? item.msg.time_lock : '--');
                         message[Constant.TRANSACTIONMESSAGENAME.TIMESTAMP].unshift(item.msg.timestamp);
-                        message[Constant.TRANSACTIONMESSAGENAME.EXPIRYHEIGHT].unshift(dataTx.expire_height);
+                        message[Constant.TRANSACTIONMESSAGENAME.EXPIRYHEIGHT].unshift(dataTx.expire_height > 0 ? dataTx.expire_height : '--');
                         message[Constant.TRANSACTIONMESSAGENAME.CROSSCHAINREVEIVER].unshift(item.msg['receiver_on_other_chain']);
                     }
                 }
