@@ -35,6 +35,9 @@ func ParseInt(text string) (i int64, b bool) {
 }
 
 func ParseIntWithDefault(text string, def int64) (i int64) {
+	if text == "" {
+		return def
+	}
 	i, err := strconv.ParseInt(text, 10, 0)
 	if err != nil {
 		logger.Error("ParseIntWithDefault error", logger.String("str", text))

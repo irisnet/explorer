@@ -133,3 +133,23 @@ func (b *BaseService) QueryDescriptionList() map[string]document.Description {
 func (_ *BaseService) ReloadValidatorsDescription() {
 	getValidatorsDescription()
 }
+
+func (_ *BaseService) BuildFTMoniker(From, To string) (Fmoniker, Tmoniker string) {
+	if valaddr := utils.GetValaddr(To); valaddr != "" {
+		if val, ok := ValidatorsDescriptionMap[valaddr]; ok {
+			Tmoniker = val.Moniker
+		}
+		if one, ok := BlackValidatorsMap[valaddr]; ok {
+			Tmoniker = one.Moniker
+		}
+	}
+	if valaddr := utils.GetValaddr(From); valaddr != "" {
+		if val, ok := ValidatorsDescriptionMap[valaddr]; ok {
+			Fmoniker = val.Moniker
+		}
+		if one, ok := BlackValidatorsMap[valaddr]; ok {
+			Fmoniker = one.Moniker
+		}
+	}
+	return
+}

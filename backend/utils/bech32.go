@@ -23,6 +23,9 @@ func GenHexAddrFromPubKey(bech32Pubkey string) string {
 }
 
 func Convert(dst, bech32str string) string {
+	if bech32str == "" {
+		return bech32str
+	}
 	_, bz, err := DecodeAndConvert(bech32str)
 	if err != nil {
 		logger.Error("decoding Bech32 address failed: must provide an valid bech32 address", logger.String("bech32str", bech32str))
