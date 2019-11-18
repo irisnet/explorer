@@ -139,16 +139,9 @@ type GovTx struct {
 	BaseTx
 	From         string            `json:"from"`
 	ProposalId   uint64            `json:"proposal_id"`
-	Description  string            `json:"description"`
 	Amount       utils.Coins       `json:"amount"`
-	Option       string            `json:"option"`
 	Title        string            `json:"title"`
 	ProposalType string            `json:"proposal_type"`
-	Tags         map[string]string `json:"tags"`
-	Software     string            `json:"software"`
-	Version      int64             `json:"version"`
-	SwitchHeight int64             `json:"switch_height"`
-	Treshold     string            `json:"treshold"`
 }
 
 type RecentTx struct {

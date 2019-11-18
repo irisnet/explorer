@@ -1005,7 +1005,6 @@ func (service *TxService) buildTxForList(tx vo.CommonTx, blackListP *map[string]
 						logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
 					} else {
 						govTx.Title = msg.Title
-						govTx.Description = msg.Description
 						govTx.ProposalType = msg.ProposalType
 						govTx.Tags = checkTags(tx.Tags, msg.Params)
 					}
@@ -1015,12 +1014,7 @@ func (service *TxService) buildTxForList(tx vo.CommonTx, blackListP *map[string]
 						logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
 					} else {
 						govTx.Title = msg.DocTxMsgSubmitProposal.Title
-						govTx.Description = msg.DocTxMsgSubmitProposal.Description
 						govTx.ProposalType = msg.DocTxMsgSubmitProposal.ProposalType
-						govTx.Software = msg.Software
-						govTx.Version = msg.Version
-						govTx.SwitchHeight = msg.SwitchHeight
-						govTx.Treshold = msg.Threshold
 						govTx.Tags = checkTags(tx.Tags, msg.DocTxMsgSubmitProposal.Params)
 					}
 				case types.TxMsgTypeSubmitTaxUsageProposal:
@@ -1029,7 +1023,6 @@ func (service *TxService) buildTxForList(tx vo.CommonTx, blackListP *map[string]
 						logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
 					} else {
 						govTx.Title = msg.DocTxMsgSubmitProposal.Title
-						govTx.Description = msg.DocTxMsgSubmitProposal.Description
 						govTx.ProposalType = msg.DocTxMsgSubmitProposal.ProposalType
 						govTx.Tags = checkTags(tx.Tags, msg.DocTxMsgSubmitProposal.Params)
 					}
@@ -1040,7 +1033,6 @@ func (service *TxService) buildTxForList(tx vo.CommonTx, blackListP *map[string]
 						logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
 					} else {
 						govTx.Title = msg.DocTxMsgSubmitProposal.Title
-						govTx.Description = msg.DocTxMsgSubmitProposal.Description
 						govTx.ProposalType = msg.DocTxMsgSubmitProposal.ProposalType
 						govTx.Tags = checkTags(tx.Tags, msg.DocTxMsgSubmitProposal.Params)
 					}
@@ -1061,24 +1053,13 @@ func (service *TxService) buildTxForList(tx vo.CommonTx, blackListP *map[string]
 			if v, ok := (*govProposalIdMapP)[govTx.ProposalId]; ok {
 				govTx.Title = v.Title
 				govTx.ProposalType = v.Type
-				govTx.Description = v.Description
 			}
 
 		} else if govTx.Type == types.TxTypeVote {
 
-			if len(tx.Msgs) > 0 {
-				msg := msgvo.TxMsgVote{}
-				if err := msg.BuildMsgByUnmarshalJson(utils.MarshalJsonIgnoreErr(tx.Msgs[0].MsgData)); err != nil {
-					logger.Error("BuildTxMsgRequestRandByUnmarshalJson", logger.String("err", err.Error()))
-				} else {
-					govTx.Option = msg.Option
-				}
-			}
-
 			if v, ok := (*govProposalIdMapP)[govTx.ProposalId]; ok {
 				govTx.Title = v.Title
 				govTx.ProposalType = v.Type
-				govTx.Description = v.Description
 			}
 
 		}
