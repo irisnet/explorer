@@ -3,11 +3,11 @@ package msgvo
 import "encoding/json"
 
 type TxMsgAddProfiler struct {
-	AddGuardian
+	AddGuardian AddGuardian `json:"addguardian"`
 }
 
 type TxMsgAddTrustee struct {
-	AddGuardian
+	AddGuardian AddGuardian `json:"addguardian"`
 }
 
 type AddGuardian struct {
@@ -17,11 +17,11 @@ type AddGuardian struct {
 }
 
 type TxMsgDeleteProfiler struct {
-	DeleteGuardian
+	DeleteGuardian DeleteGuardian `json:"deleteguardian"`
 }
 
 type TxMsgDeleteTrustee struct {
-	DeleteGuardian
+	DeleteGuardian DeleteGuardian `json:"deleteguardian"`
 }
 
 type DeleteGuardian struct {
