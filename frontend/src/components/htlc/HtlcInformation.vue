@@ -3,10 +3,10 @@
         <div class="htlc_information_content">
             <div class="htlc_information_header_content">
                 <span class="htlc_information_header_title">HTLC Information</span>
-                <img v-show="htlcInformationArr[htlcInformationArr.length -1]['State:'] === 'complete'" src="../../assets/Complete.png">
-                <img v-show="htlcInformationArr[htlcInformationArr.length -1]['State:'] === 'open'" src="../../assets/Open.png">
-                <img v-show="htlcInformationArr[htlcInformationArr.length -1]['State:'] === 'expired'" src="../../assets/Expired.png">
-                <img v-show="htlcInformationArr[htlcInformationArr.length -1]['State:'] === 'refunded'" src="../../assets/Refunded.png">
+                <img v-show="htlcInformationArr[htlcInformationArr.length -1]['State:'] === 'Completed'" src="../../assets/Complete.png">
+                <img v-show="htlcInformationArr[htlcInformationArr.length -1]['State:'] === 'Open'" src="../../assets/Open.png">
+                <img v-show="htlcInformationArr[htlcInformationArr.length -1]['State:'] === 'Expired'" src="../../assets/Expired.png">
+                <img v-show="htlcInformationArr[htlcInformationArr.length -1]['State:'] === 'Refunded'" src="../../assets/Refunded.png">
             </div>
             <div class="htlc_information_content_container">
                 <ul class="htlc_information_content_wrap">
@@ -19,10 +19,10 @@
                                  && Object.keys(item)[0] !== 'To:'
                                 ">{{Object.values(item)[0]}}
                                 <span v-if=" Object.keys(item)[0] === 'State:'">
-                                    <img v-show="htlcInformationArr[htlcInformationArr.length -1]['State:'] === 'complete'" src="../../assets/Complete.png">
-                                    <img v-show="htlcInformationArr[htlcInformationArr.length -1]['State:'] === 'open'" src="../../assets/Open.png">
-                                    <img v-show="htlcInformationArr[htlcInformationArr.length -1]['State:'] === 'expired'" src="../../assets/Expired.png">
-                                    <img v-show="htlcInformationArr[htlcInformationArr.length -1]['State:'] === 'refunded'" src="../../assets/Refunded.png">
+                                    <img v-show="htlcInformationArr[htlcInformationArr.length -1]['State:'] === 'Completed'" src="../../assets/Complete.png">
+                                    <img v-show="htlcInformationArr[htlcInformationArr.length -1]['State:'] === 'Open'" src="../../assets/Open.png">
+                                    <img v-show="htlcInformationArr[htlcInformationArr.length -1]['State:'] === 'Expired'" src="../../assets/Expired.png">
+                                    <img v-show="htlcInformationArr[htlcInformationArr.length -1]['State:'] === 'Refunded'" src="../../assets/Refunded.png">
                                 </span>
                             </div>
                             <div class="skip_route" v-if="Object.keys(item)[0] === 'From:'|| Object.keys(item)[0] === 'To:'">
@@ -129,6 +129,9 @@
                         if(Object.values(item)[1] === 'amount'){
                             item[Object.keys(item)[0]] = Tools.formatAmount2(res[item.key])
                         }else {
+                            if(Object.keys(item)[0] ===  'State:'){
+                                res[item.key] = Tools.firstWordUpperCase(res[item.key])
+                            }
                             item[Object.keys(item)[0]] = res[item.key]
                         }
                         this.monikerFrom = res.from_moniker;
