@@ -153,7 +153,7 @@
                                       txHash: item.hash,
                                       block: item.block_height,
                                       from: item.from ? item.from : '--',
-                                      amount: item.amount.length > 0 ? Tools.formatAmount2(item.amount) : '--',
+                                      amount: item.amount.length > 0 ? Tools.formatAmount2(item.amount,2) : '--',
                                       to: item.to ? item.to : '--',
                                       type: item.type,
                                       fee: Tools.formatFee(item.fee),

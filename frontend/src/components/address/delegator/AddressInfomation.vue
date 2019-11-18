@@ -242,7 +242,7 @@
 					},
 					{
 						value:'fail',
-						label:'Fail'
+						label:'Failed'
 					}
 				],
 				value: 'allTxType',

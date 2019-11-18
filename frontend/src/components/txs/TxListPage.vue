@@ -96,7 +96,7 @@
 					},
 					{
 						value:'fail',
-						label:'Fail'
+						label:'Failed'
 					}
 				],
 				startTime: '',
