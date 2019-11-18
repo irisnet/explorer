@@ -20,7 +20,7 @@
                 slot="operatorAddress">
         <span class="remove_default_style">
           <router-link :to="addressRoute(row.operatorAddress)"
-                       class="link_style operator_address_style" style="font-family: Consolas,Menlo ">{{formatAddress(row.operatorAddress)}}</router-link>
+                       class="link_style operator_address_style" style="font-family: Consolas,Menlo;color:#171d44;">{{formatAddress(row.operatorAddress)}}</router-link>
         </span>
       </template>
     </m-table>

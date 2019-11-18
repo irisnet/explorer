@@ -6,7 +6,7 @@
             </div>
         </div>
         <div class="native_asset_list_table_container" v-if="issueToken.length !== 0">
-            <div style="padding: 0.2rem 0">Issue Token Txs</div>
+            <div style="padding: 0.2rem 0;color: #171d44">Issue Token Txs</div>
             <div class="native_asset_list_table_content">
                 <div class="table_list_content">
                     <native-asset :showNoData="showNoData" :items="issueToken" name="nativeIssueToken"></native-asset>
@@ -25,7 +25,7 @@
             </div>
         </div>
         <div class="native_asset_list_table_container" v-if="editToken.length !== 0">
-            <div style="padding: 0.2rem 0">Edit Token Txs</div>
+            <div style="padding: 0.2rem 0;color: #171d44">Edit Token Txs</div>
             <div class="native_asset_list_table_content">
                 <div class="table_list_content">
                     <native-asset :showNoData="showNoData" :items="editToken" name="editToken"></native-asset>
@@ -44,7 +44,7 @@
             </div>
         </div>
         <div class="native_asset_list_table_container" v-if="mintToken.length !== 0">
-            <div style="padding: 0.2rem 0">Mint Token Txs</div>
+            <div style="padding: 0.2rem 0;color: #171d44">Mint Token Txs</div>
             <div class="native_asset_list_table_content">
                 <div class="table_list_content">
                     <native-asset :showNoData="showNoData" :items="mintToken" name="mintToken"></native-asset>
@@ -63,7 +63,7 @@
             </div>
         </div>
         <div class="native_asset_list_table_container" v-if="transferToken.length !== 0">
-            <div style="padding: 0.2rem 0">Transfer Owner Txs</div>
+            <div style="padding: 0.2rem 0;color: #171d44">Transfer Owner Txs</div>
             <div class="native_asset_list_table_content">
                 <div class="table_list_content">
                     <native-asset :showNoData="showNoData" :items="transferToken" name="transferToken"></native-asset>

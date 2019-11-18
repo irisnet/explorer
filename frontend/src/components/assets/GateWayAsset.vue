@@ -6,7 +6,7 @@
             </div>
         </div>
         <div class="gateway_asset_list_table_container" v-if="gateWayIssueTokenList.length !== 0">
-            <div style="padding: 0.2rem 0">Issue Token Txs</div>
+            <div style="padding: 0.2rem 0;color: #171d44">Issue Token Txs</div>
             <div class="gateway_asset_list_table_content">
                 <div class="table_list_content">
                     <native-asset :showNoData="showNoData" :items="gateWayIssueTokenList" name="gateWayIssueToken"></native-asset>
@@ -26,7 +26,7 @@
             </div>
         </div>
         <div class="gateway_asset_list_table_container" v-if="gateWayEditTokenList.length !== 0">
-            <div style="padding: 0.2rem 0">Edit Token Txs</div>
+            <div style="padding: 0.2rem 0;color: #171d44">Edit Token Txs</div>
             <div class="gateway_asset_list_table_content">
                 <div class="table_list_content">
                     <native-asset :showNoData="showNoData" :items="gateWayEditTokenList" name="editToken"></native-asset>
@@ -46,7 +46,7 @@
             </div>
         </div>
         <div class="gateway_asset_list_table_container" v-if="gateWayMintTokenList.length !== 0">
-            <div style="padding: 0.2rem 0">Mint Token Txs</div>
+            <div style="padding: 0.2rem 0;color: #171d44">Mint Token Txs</div>
             <div class="gateway_asset_list_table_content">
                 <div class="table_list_content">
                     <native-asset :showNoData="showNoData" :items="gateWayMintTokenList" name="mintToken"></native-asset>
@@ -66,7 +66,7 @@
             </div>
         </div>
         <div class="gateway_asset_list_table_container" v-if="gateWayTransferOwnerTokenList.length !== 0">
-            <div style="padding: 0.2rem 0">Transfer Gateway Owner Txs</div>
+            <div style="padding: 0.2rem 0;color: #171d44">Transfer Gateway Owner Txs</div>
             <div class="gateway_asset_list_table_content">
                 <div class="table_list_content">
                     <native-asset :showNoData="showNoData" :items="gateWayTransferOwnerTokenList" name="transferGatewayOwnerTxs"></native-asset>
