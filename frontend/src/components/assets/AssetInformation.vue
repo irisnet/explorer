@@ -656,6 +656,7 @@
                         display: flex;
                         border: 0.01rem solid #e7e9eb;
                         margin-top: 0.1rem;
+                        background: #fff;
                         .kflower_left_content{
                             flex: 1;
                             margin-right: 0.2rem;
