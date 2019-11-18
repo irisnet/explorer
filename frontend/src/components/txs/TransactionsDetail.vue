@@ -22,10 +22,10 @@
         <div class="information_props_wrap">
           <span class="information_props">Status :</span>
           <span class="information_value information_value_fixed">
-            <span :class="{'fail_status': info.Status === 'Fail' }">{{info.Status}}</span>
+            <span :class="{'fail_status': info.Status === 'Failed' }">{{info.Status}}</span>
             <div
               class="info_icon_div question_icon_div"
-              v-if="info.Status === 'Fail' && failInfo"
+              v-if="info.Status === 'Failed' && failInfo"
               v-table-tooltip="{show: true, container: $refs.valueInformation}"
             >
               <div class="tooltip_span">

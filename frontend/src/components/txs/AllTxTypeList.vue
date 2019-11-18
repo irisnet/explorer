@@ -112,7 +112,7 @@
                     },
                     {
                     	value:'fail',
-                        label:'Fail'
+                        label:'Failed'
                     }
                 ],
                 statusValue:'allStatus',
@@ -298,6 +298,7 @@
                     line-height: 0.7rem;
                     font-size: 0.18rem;
                     padding-left: 0.2rem;
+                    color: #515a6e;
                 }
                 .filter_content{
                     margin-left: 0.1rem;

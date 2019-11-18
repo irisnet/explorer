@@ -20,8 +20,8 @@
                     <li class="tx_detail_common_information_item">
                         <span class="tx_detail_common_information_item_name">Status :</span>
                         <div class="tx_detail_common_information_item_value" style="display: flex">
-                            <span :style="{color: statusValue === 'Fail' ? '#fa8593' : ''}">{{statusValue}}</span>
-                            <div v-if="statusValue === 'Fail'" class="log_content_container">
+                            <span :style="{color: statusValue === 'Failed' ? '#fa8593' : ''}">{{statusValue}}</span>
+                            <div v-if="statusValue === 'Failed'" class="log_content_container">
                                 <i class="iconfont iconyiwen"></i>
                                 <div class="tip_content" :class="failTipStyle ? 'overstep_style' :''" :style="{left:`${-((logContentWidth / 2) - 6) / 100}rem`}">
                                     <span class="log_content"  ref="logContent">{{log}}</span>

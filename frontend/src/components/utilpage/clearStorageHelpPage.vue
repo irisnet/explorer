@@ -217,7 +217,7 @@
     flex-direction: column;
     align-items: center;
     -webkit-box-align: center;
-    background: #fff ;
+    background: #F5F7FD;
     p{
       width: 100%;
       max-width: 12.8rem;
