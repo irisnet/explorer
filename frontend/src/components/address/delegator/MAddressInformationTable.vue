@@ -13,7 +13,9 @@
                 </div>
             </template>
             <template slot-scope="{ row }" slot="block">
-                <router-link v-if="row.block != 0" :to="`/block/${row.block}`" class="link_style">{{row.block}}</router-link>
+                <span class="skip_route">
+                    <router-link v-if="row.block != 0" :to="`/block/${row.block}`">{{row.block}}</router-link>
+                </span>
                 <span v-if="row.block == 0">{{row.block}}</span>
             </template>
             <template slot-scope="{ row }" slot="signer">

@@ -47,7 +47,7 @@ func (_ Config) GetConfig() ([]Config, error) {
 	var configs []Config
 	var query = orm.NewQuery().
 		SetCollection(CollectionNmConfig).
-		SetSort("+network_name").
+		SetSort("+env").
 		SetResult(&configs)
 	err := query.Exec()
 	return configs, err
