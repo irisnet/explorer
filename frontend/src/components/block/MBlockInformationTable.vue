@@ -7,7 +7,7 @@
                         <img :style="{visibility:row.flProposer ? 'visible' : 'hidden'}" src="../../assets/proposer_img.png"/>
                     </div>
                     <span class="skip_route">
-                        <router-link :to="addressRoute(row.moniker)">{{row.moniker? row.moniker :''}}</router-link>
+                        <router-link :to="addressRoute(row.OperatorAddress)">{{row.moniker? row.moniker :''}}</router-link>
                     </span>
                 </div>
             </template>
