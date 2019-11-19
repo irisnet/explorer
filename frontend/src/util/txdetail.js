@@ -795,7 +795,6 @@ export default class formatMsgsAndTags {
     static txTypeDeleteProfiler(dataTx,txType){
         let message = {};
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.DESCRIPTION] = [];
         message[Constant.TRANSACTIONMESSAGENAME.ADDRESS] = [];
         message[Constant.TRANSACTIONMESSAGENAME.DELETEDBY] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
@@ -803,7 +802,6 @@ export default class formatMsgsAndTags {
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
-                        message[Constant.TRANSACTIONMESSAGENAME.DESCRIPTION].unshift(item.msg.deleteguardian.description ? item.msg.deleteguardian.description : '--');
                         message[Constant.TRANSACTIONMESSAGENAME.ADDRESS].unshift(item.msg.deleteguardian.address ? item.msg.deleteguardian.address : '--');
                         message[Constant.TRANSACTIONMESSAGENAME.DELETEDBY].unshift(item.msg.deleteguardian.deleted_by ? item.msg.deleteguardian.deleted_by : '--');
                     }
@@ -816,7 +814,6 @@ export default class formatMsgsAndTags {
     static txTypeDeleteTrustee(dataTx,txType){
         let message = {};
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.DESCRIPTION] = [];
         message[Constant.TRANSACTIONMESSAGENAME.ADDRESS] = [];
         message[Constant.TRANSACTIONMESSAGENAME.DELETEDBY] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
@@ -824,7 +821,6 @@ export default class formatMsgsAndTags {
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
-                        message[Constant.TRANSACTIONMESSAGENAME.DESCRIPTION].unshift(item.msg.deleteguardian.description ? item.msg.deleteguardian.description : '--');
                         message[Constant.TRANSACTIONMESSAGENAME.ADDRESS].unshift(item.msg.deleteguardian.address ? item.msg.deleteguardian.address : '--');
                         message[Constant.TRANSACTIONMESSAGENAME.DELETEDBY].unshift(item.msg.deleteguardian.deleted_by ? item.msg.deleteguardian.deleted_by : '--');
                     }
