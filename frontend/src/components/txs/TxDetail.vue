@@ -94,7 +94,9 @@
                             && key !== 'Address :'
                             && key !== 'Added By :'
                             && key !== 'Deleted By :'
-                            && key !== 'Hash Lock :'">{{value}}</span>
+                            && key !== 'Hash Lock :'
+                            && key !== 'DestAddress :'
+                            && key !== 'Symbol :'">{{value}}</span>
                                 <span class="skip_route"
                                       v-if="key === 'From :'
                                 || key === 'To :'
@@ -116,7 +118,11 @@
                                 || key === 'Address :'
                                 || key === 'Added By :'
                                 || key === 'Deleted By :'
-                                || key === 'Hash Lock :'">
+                                || key === 'Hash Lock :'
+                                || key === 'DestAddress :'
+                                || key === 'Symbol :'">
+                                <router-link v-if="key === 'Symbol :' && value !== '-'" :to="`asset/${value}`">{{value}}</router-link>
+                                <router-link v-if="key === 'DestAddress :' && value !== '-'" :to="addressRoute(value)">{{value}}</router-link>
                                 <router-link v-if="key === 'From :' && value !== '-'" :to="addressRoute(value)">{{fromMoniker || value}}</router-link>
                                 <router-link v-if="key === 'To :' && value !== '-'" :to="addressRoute(value)">{{toMoniker || value}}</router-link>
                                 <router-link v-if="key === 'Owner :'" :to="addressRoute(value)">{{value}}</router-link>
