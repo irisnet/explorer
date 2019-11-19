@@ -26,9 +26,8 @@ const Server = {
             Object.keys(params)[0] === 'blocksRecent' ||
             Object.keys(params)[0] === 'txsRecent' ||
             Object.keys(params)[0] === 'navigation' ||
-            Object.keys(params)[0] === 'homeProposalList'
-        ){
-        
+            Object.keys(params)[0] === 'homeProposalList'){
+            Store.commit('flShowLoading',false)
         }else {
             Store.commit('flShowLoading',true)
         }
