@@ -661,14 +661,14 @@
 			},
 			handleConfigs (configs) {
 				this.netWorkArray = configs.map(item => {
-					if(item.env === constant.ENVCONFIG.MAINNET && item.env_nm === constant.CHAINID.IRISHUB){
+					if(item.network_name === constant.CHAINID.IRISHUB){
 						item.icon = 'iconfont iconiris'
-                    }else if(item.env === constant.ENVCONFIG.TESTNET && item.env_nm === constant.CHAINID.FUXI){
+                    }else if(item.network_name === constant.CHAINID.FUXI){
 						item.icon = 'iconfont iconfuxi1'
-                    }else if(item.env === constant.ENVCONFIG.TESTNET && item.env_nm === constant.CHAINID.NYANCAT){
+                    }else if(item.network_name === constant.CHAINID.NYANCAT){
 						item.icon = 'iconfont iconcaihongmao'
                     }
-					item.netWorkSelectOption = `${Tools.firstWordUpperCase(item.env)} ${item.chain_id.toLocaleUpperCase()}`
+					item.netWorkSelectOption = `${Tools.firstWordUpperCase(item.env)} ${item.chain_id.toLocaleUpperCase()}`;
 					return item
 				});
 				this.netWorkArray = this.netWorkArray.filter(item => {
@@ -692,7 +692,7 @@
                 if(currentEnv.configs){
                     currentEnv.configs.forEach(item => {
                         if(currentEnv.cur_env === item.env && currentEnv.chain_id === item.chain_id){
-                            networkName = item.env_nm;
+                            networkName = item.network_name;
                         }
                     })
                 }
