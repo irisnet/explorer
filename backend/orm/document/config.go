@@ -10,28 +10,28 @@ import (
 const (
 	CollectionNmConfig = "ex_config"
 
-	Account_Field_EnvNm      = "env_nm"
+	AccountFieldNetworkName  = "network_name"
 	Account_Field_Host       = "host"
 	Account_Field_ChainId    = "chain_id"
 	Account_Field_ShowFaucet = "show_faucet"
 )
 
 type Config struct {
-	EnvNm      string `bson:"env_nm" json:"env_nm,omitempty"`
-	Env        string `bson:"env" json:"env,omitempty"`
-	Host       string `bson:"host" json:"host,omitempty"`
-	ChainId    string `bson:"chain_id" json:"chain_id,omitempty"`
-	ShowFaucet int    `bson:"show_faucet" json:"show_faucet,omitempty"`
+	NetworkName string `bson:"network_name"`
+	Env         string `bson:"env"`
+	Host        string `bson:"host"`
+	ChainId     string `bson:"chain_id"`
+	ShowFaucet  int    `bson:"show_faucet"`
 }
 
 func (c Config) String() string {
 	return fmt.Sprintf(`
-		EnvNm      :%v
+		NetworkName      :%v
 		Env      :%v
 		Host       :%v
 		ChainId    :%v
 		ShowFaucet :%v
-		`, c.EnvNm, c.Env, c.Host, c.ChainId, c.ShowFaucet)
+		`, c.NetworkName, c.Env, c.Host, c.ChainId, c.ShowFaucet)
 }
 
 func (a Config) Name() string {
@@ -39,7 +39,7 @@ func (a Config) Name() string {
 }
 
 func (a Config) PkKvPair() map[string]interface{} {
-	return bson.M{Account_Field_EnvNm: a.EnvNm}
+	return bson.M{AccountFieldNetworkName: a.NetworkName}
 }
 
 func (_ Config) GetConfig() ([]Config, error) {

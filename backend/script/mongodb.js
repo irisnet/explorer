@@ -33,35 +33,35 @@ db.ex_asset_gateways.createIndex({"moniker": 1}, {"unique": true, "background": 
 
 // init data
 db.ex_config.insert({
-    "env_nm": "irishub",
+    "network_name": "irishub",
     "env": "mainnet",
     "host": "https://www.irisplorer.io",
     "chain_id": "irishub",
     "show_faucet": 0
 });
 db.ex_config.insert({
-    "env_nm": "fuxi",
+    "network_name": "fuxi",
     "env": "testnet",
     "host": "https://testnet.irisplorer.io",
     "chain_id": "fuxi",
     "show_faucet": 0
 });
 db.ex_config.insert({
-    "env_nm": "nyancat",
+    "network_name": "nyancat",
     "env": "testnet",
     "host": "http://nyancat.irisplorer.io",
     "chain_id": "nyancat",
     "show_faucet": 0
 });
 db.ex_config.insert({
-    "env_nm": "rainbow-dev",
+    "network_name": "rainbow-dev",
     "env": "dev",
     "host": "http://dev.irisplorer.io",
     "chain_id": "rainbow-dev",
     "show_faucet": 1
 });
 db.ex_config.insert({
-    "env_nm": "rainbow-qa",
+    "network_name": "rainbow-qa",
     "env": "qa",
     "host": "http://qa.irisplorer.io",
     "chain_id": "rainbow-qa",

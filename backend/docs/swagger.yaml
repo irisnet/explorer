@@ -688,9 +688,9 @@ definitions:
         type: string
       env:
         type: string
-      env_nm:
-        type: string
       host:
+        type: string
+      network_name:
         type: string
       show_faucet:
         type: integer

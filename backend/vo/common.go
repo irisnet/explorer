@@ -26,9 +26,9 @@ type EnvConfig struct {
 }
 
 type ConfigVo struct {
-	EnvNm      string `json:"env_nm,omitempty"`
-	Env        string `json:"env,omitempty"`
-	Host       string `json:"host,omitempty"`
-	ChainId    string `json:"chain_id,omitempty"`
-	ShowFaucet int    `json:"show_faucet,omitempty"`
+	NetworkName string `json:"network_name"`
+	Env         string `json:"env"`
+	Host        string `json:"host"`
+	ChainId     string `json:"chain_id"`
+	ShowFaucet  int    `json:"show_faucet"`
 }
