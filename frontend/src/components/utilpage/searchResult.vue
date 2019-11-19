@@ -57,7 +57,7 @@
                         <img src="../../assets/resultless.png">
                     </div>
                     <p class="result_title">There is no valid result.</p>
-                    <p class="try_info">Try to search with Address, Transaction, Block Number, Proposal ID.</p>
+                    <p class="try_info">Try to search with Address, Transaction, Block Number, Proposal ID, HashLock.</p>
                     <div class="back_home_btn" @click="backHome">
                         <span>Back Home</span>
                     </div>
