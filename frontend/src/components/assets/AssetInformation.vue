@@ -48,22 +48,30 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="asset_list_token_content" v-if="assetTransferList.length > 0">
+           <!--         <div class="asset_list_token_content" v-if="assetTransferList.length > 0">
                         <h3 class="asset_list_token_title">AssetTransferTxs 100</h3>
                         <div class="asset_list_table_content">
                             <native-asset :showNoData="showNoData" :items="assetTransferList" name="assetTransferTxs"></native-asset>
                         </div>
                         <div class="native_asset_nav_footer_content">
-                            <b-pagination  :total-rows="issueTokenTotalPageNum" v-model="issueTokenCurrentPageNum" :per-page="pageSize"></b-pagination>
+                            <m-pagination
+                                :total="issueTokenTotalPageNum"
+                                :page-size="pageSize"
+                                :page="issueTokenCurrentPageNum"
+                                :page-change="issueTokenPageChange"
+                            ></m-pagination>
                         </div>
-                    </div>
+                    </div>-->
                     <div class="asset_list_token_content" v-if="issueTokenList.length > 0">
                         <h3 class="asset_list_token_title">Issue Token Txs</h3>
                         <div class="asset_list_table_content">
                             <native-asset :showNoData="showNoData" :items="issueTokenList" :name="nativeOrGatewayToken"></native-asset>
                         </div>
                         <div class="native_asset_nav_footer_content">
-                            <b-pagination  :total-rows="issueTokenTotalPageNum" v-model="issueTokenCurrentPageNum" :per-page="pageSize"></b-pagination>
+                            <m-pagination :total="issueTokenTotalPageNum"
+                                          :page-size="pageSize"
+                                          :page="issueTokenCurrentPageNum"
+                                          :page-change="issueTokenPageChange"></m-pagination>
                         </div>
                     </div>
                     <div class="asset_list_token_content" v-if="editTokenList.length > 0">
@@ -72,7 +80,10 @@
                             <native-asset :showNoData="showNoData" :items="editTokenList" name="editToken"></native-asset>
                         </div>
                         <div class="native_asset_nav_footer_content">
-                            <b-pagination :total-rows="editTokenTotalPageNum" v-model="editTokenCurrentPageNum" :per-page="pageSize"></b-pagination>
+                            <m-pagination :total="editTokenTotalPageNum"
+                                          :page-size="pageSize"
+                                          :page="editTokenCurrentPageNum"
+                                          :page-change="editTokenPageChange"></m-pagination>
                         </div>
                     </div>
                     <div class="asset_list_token_content" v-if="mintTokenList.length > 0">
@@ -81,7 +92,10 @@
                             <native-asset :showNoData="showNoData" :items="mintTokenList" name="mintToken"></native-asset>
                         </div>
                         <div class="native_asset_nav_footer_content">
-                            <b-pagination  :total-rows="mintTokenTotalPageNum" v-model="mintTokenCurrentPageNum" :per-page="pageSize"></b-pagination>
+                            <m-pagination :total="mintTokenTotalPageNum"
+                                          :page-size="pageSize"
+                                          :page="mintTokenCurrentPageNum"
+                                          :page-change="mintTokenPageChange"></m-pagination>
                         </div>
                     </div>
                     <div class="asset_list_token_content" v-if="transferTokenList.length > 0">
@@ -90,7 +104,10 @@
                             <native-asset :showNoData="showNoData" :items="transferTokenList" name="transferToken"></native-asset>
                         </div>
                         <div class="native_asset_nav_footer_content">
-                            <b-pagination :total-rows="transferTokenTotalPageNum" v-model="transferTokenCurrentPageNum" :per-page="pageSize"></b-pagination>
+                            <m-pagination :total="transferTokenTotalPageNum"
+                                          :page-size="pageSize"
+                                          :page="transferTokenCurrentPageNum"
+                                          :page-change="transferTokenPageChange"></m-pagination>
                         </div>
                     </div>
                     <div class="asset_list_token_content" v-if="transferGatewayOwnerList.length > 0">
@@ -99,7 +116,11 @@
                             <native-asset :showNoData="showNoData" :items="transferGatewayOwnerList" name="transferGatewayOwnerTxs"></native-asset>
                         </div>
                         <div class="native_asset_nav_footer_content">
-                            <b-pagination :total-rows="transferGatewayTokenTotalPageNum" v-model="transferGatewayTokenCurrentPageNum" :per-page="pageSize"></b-pagination>
+                            <m-pagination></m-pagination>
+                            <m-pagination :total="transferGatewayTokenTotalPageNum"
+                                          :page-size="pageSize"
+                                          :page="transferGatewayTokenCurrentPageNum"
+                                          :page-change="transferGatewayTokenPageChange"></m-pagination>
                         </div>
                     </div>
                 </div>
@@ -116,9 +137,10 @@
     import Server from "../../service"
     import Tools from "../../util/Tools"
 	import NativeAsset from "./MNativeAssetTxListTable"
+    import MPagination from "../commontables/MPagination";
 	export default {
 		name: "AssetInformation",
-		components: {NativeAsset},
+		components: {MPagination, NativeAsset},
         data () {
 			return {
 				showNoData:false,
@@ -254,29 +276,31 @@
                 flShowInformation:false,
             }
         },
-		watch:{
-			issueTokenCurrentPageNum(issueTokenCurrentPageNum){
-				this.issueTokenCurrentPageNum = issueTokenCurrentPageNum;
-				this.getIssueToken()
-			},
-			editTokenCurrentPageNum(editTokenCurrentPageNum){
-				this.editTokenCurrentPageNum = editTokenCurrentPageNum;
-				this.getEditToken()
-			},
-			mintTokenCurrentPageNum(mintTokenCurrentPageNum){
-				this.mintTokenCurrentPageNum = mintTokenCurrentPageNum;
-				this.getMintToken()
-			},
-			transferTokenCurrentPageNum(transferTokenCurrentPageNum){
-				this.transferTokenCurrentPageNum = transferTokenCurrentPageNum;
-				this.getTransferToken()
-			}
-		},
         mounted(){
 
             this.getAssetInfo();
         },
         methods:{
+            issueTokenPageChange(pageNum){
+                this.issueTokenCurrentPageNum = pageNum;
+                this.getIssueToken()
+            },
+            editTokenPageChange(pageNum){
+                this.editTokenCurrentPageNum = pageNum;
+                this.getEditToken()
+            },
+            mintTokenPageChange(pageNum){
+                this.mintTokenCurrentPageNum = pageNum;
+                this.getMintToken()
+            },
+            transferTokenPageChange(pageNum){
+                this.transferTokenCurrentPageNum = pageNum;
+                this.getTransferToken()
+            },
+            transferGatewayTokenPageChange(pageNum){
+                this.transferGatewayTokenTotalPageNum = pageNum;
+                this.getTransferGatewayOwnerTxs()
+            },
 	        getAssetInfo () {
 	        	let param;
 	        	if(this.$route.params.assetType){

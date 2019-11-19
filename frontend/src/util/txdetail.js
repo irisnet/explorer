@@ -487,6 +487,11 @@ export default class formatMsgsAndTags {
                         }
                         break;
                     case Constant.SUBMITPROPOSALTYPE.SUBMITTOKENADDITIONPROPOSAL:
+                        message[Constant.TRANSACTIONMESSAGENAME.SYMBOL] = [];
+                        message[Constant.TRANSACTIONMESSAGENAME.CANONICALSYMBOL] = [];
+                        message[Constant.TRANSACTIONMESSAGENAME.NAME] = [];
+                        message[Constant.TRANSACTIONMESSAGENAME.DECIMAL] = [];
+                        message[Constant.TRANSACTIONMESSAGENAME.MINUNITALIAS] = [];
                         if(item.msg){
                             initialDepositObj = Tools.formatAmountOfTxDetail(item.msg.doctxmsgsubmitproposal.initialDeposit);
                             message[Constant.TRANSACTIONMESSAGENAME.PROPOSER].unshift(item.msg.doctxmsgsubmitproposal.proposer);
@@ -494,9 +499,18 @@ export default class formatMsgsAndTags {
                             message[Constant.TRANSACTIONMESSAGENAME.INITIALDEPOSIT].unshift(`${initialDepositObj.amountNumber} ${initialDepositObj.tokenName}`);
                             message[Constant.TRANSACTIONMESSAGENAME.DESCRIPTION].unshift(item.msg.doctxmsgsubmitproposal.description);
                             message[Constant.TRANSACTIONMESSAGENAME.PROPOSALTYPE].unshift(item.msg.doctxmsgsubmitproposal.proposalType);
+
+                            message[Constant.TRANSACTIONMESSAGENAME.SYMBOL] = [item.msg.symbol];
+                            message[Constant.TRANSACTIONMESSAGENAME.CANONICALSYMBOL] = [item.msg.canonical_symbol];
+                            message[Constant.TRANSACTIONMESSAGENAME.NAME] = [item.msg.name];
+                            message[Constant.TRANSACTIONMESSAGENAME.DECIMAL] = [item.msg.decimal];
+                            message[Constant.TRANSACTIONMESSAGENAME.MINUNITALIAS] = [item.msg.min_unit_alias];
                         }
                         break;
                     case Constant.SUBMITPROPOSALTYPE.SUBMITTXTAXUSAGEPROPOSAL:
+                        message[Constant.TRANSACTIONMESSAGENAME.USAGE] = [];
+                        message[Constant.TRANSACTIONMESSAGENAME.DESTADDRESS] = [];
+                        message[Constant.TRANSACTIONMESSAGENAME.PERCENT] = [];
                         if(item.msg){
                             initialDepositObj = Tools.formatAmountOfTxDetail(item.msg.doctxmsgsubmitproposal.initialDeposit);
                             message[Constant.TRANSACTIONMESSAGENAME.PROPOSER].unshift(item.msg.doctxmsgsubmitproposal.proposer);
@@ -504,6 +518,9 @@ export default class formatMsgsAndTags {
                             message[Constant.TRANSACTIONMESSAGENAME.INITIALDEPOSIT].unshift(`${initialDepositObj.amountNumber} ${initialDepositObj.tokenName}`);
                             message[Constant.TRANSACTIONMESSAGENAME.DESCRIPTION].unshift(item.msg.doctxmsgsubmitproposal.description);
                             message[Constant.TRANSACTIONMESSAGENAME.PROPOSALTYPE].unshift(item.msg.doctxmsgsubmitproposal.proposalType);
+                            message[Constant.TRANSACTIONMESSAGENAME.USAGE].unshift(item.msg.usage);
+                            message[Constant.TRANSACTIONMESSAGENAME.DESTADDRESS].unshift(item.msg.dest_address);
+                            message[Constant.TRANSACTIONMESSAGENAME.PERCENT].unshift(item.msg.percent);
                         }
 
                 }

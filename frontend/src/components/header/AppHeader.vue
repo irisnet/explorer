@@ -643,7 +643,7 @@
 						this.flShowHeaderNetwork = true;
 						this.chainId = `${res.chain_id.toUpperCase()} ${res.cur_env.toUpperCase()}`;
 						res.configs.forEach(item => {
-							if (res.cur_env === item.env_nm && res.chain_id === item.chain_id) {
+							if (res.cur_env === item.env && res.chain_id === item.chain_id) {
 								if (item.show_faucet && item.show_faucet === 1) {
 									this.flShowFaucet = true;
 									sessionStorage.setItem("Show_faucet", JSON.stringify(1))
@@ -661,18 +661,18 @@
 			},
 			handleConfigs (configs) {
 				this.netWorkArray = configs.map(item => {
-					if(item.env_nm === constant.ENVCONFIG.MAINNET && item.chain_id === constant.CHAINID.IRISHUB){
+					if(item.env === constant.ENVCONFIG.MAINNET && item.chain_id === constant.CHAINID.IRISHUB){
 						item.icon = 'iconfont iconiris'
-                    }else if(item.env_nm === constant.ENVCONFIG.TESTNET && item.chain_id === constant.CHAINID.FUXI){
+                    }else if(item.env === constant.ENVCONFIG.TESTNET && item.chain_id === constant.CHAINID.FUXI){
 						item.icon = 'iconfont iconfuxi1'
-                    }else if(item.env_nm === constant.ENVCONFIG.TESTNET && item.chain_id !== constant.CHAINID.FUXI){
+                    }else if(item.env === constant.ENVCONFIG.TESTNET && item.chain_id !== constant.CHAINID.FUXI){
 						item.icon = 'iconfont iconcaihongmao'
                     }
-					item.netWorkSelectOption = `${Tools.firstWordUpperCase(item.env_nm)} ${item.chain_id.toLocaleUpperCase()}`
+					item.netWorkSelectOption = `${Tools.firstWordUpperCase(item.env)} ${item.chain_id.toLocaleUpperCase()}`
 					return item
 				});
 				this.netWorkArray = this.netWorkArray.filter(item => {
-					return item.env_nm !== constant.ENVCONFIG.DEV && item.env_nm !== constant.ENVCONFIG.QA && item.env_nm !== constant.ENVCONFIG.STAGE
+					return item.env !== constant.ENVCONFIG.DEV && item.env !== constant.ENVCONFIG.QA && item.env !== constant.ENVCONFIG.STAGE
 				});
 			},
 			setEnvConfig (currentEnv) {
