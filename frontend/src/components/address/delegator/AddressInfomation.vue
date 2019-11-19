@@ -320,19 +320,21 @@
                 	try {
                         if(res){
                         	let arrayIndexOneData;
-	                        res.amount.forEach( item => {
-	                        	if(item.denom === 'iris-atto'){
-			                        arrayIndexOneData = item
-                                }
-                            });
-	                        res.amount.unshift(arrayIndexOneData);
-	                        res.amount = Array.from(new Set(res.amount));
+                        	if(res.amount){
+                                res.amount.forEach( item => {
+                                    if(item.denom === 'iris-atto'){
+                                        arrayIndexOneData = item
+                                    }
+                                });
+                                res.amount.unshift(arrayIndexOneData);
+                                res.amount = Array.from(new Set(res.amount));
+                                this.assetList = res.amount;
+                            }
 	                        this.validatorMoniker = res.moniker ? res.moniker : '--';
 	                        this.OperatorAddress = res.operator_address ? res.operator_address : '--';
 	                        this.validatorStatus = res.status;
 	                        this.withdrewToAddress = res.withdrawAddress ? res.withdrawAddress : '--';
 	                        this.isProfiler = res.isProfiler;
-	                        this.assetList = res.amount;
 	                        this.getAssetList()
                         }
 	                }catch (e) {
