@@ -1,5 +1,6 @@
 
 import Constant from "../constant/Constant"
+import numberMoveDecimal from "move-decimal-point"
 import Tools from "../util/Tools"
 export default class formatMsgsAndTags {
     static switchTxType(dataTx){
@@ -520,7 +521,7 @@ export default class formatMsgsAndTags {
                             message[Constant.TRANSACTIONMESSAGENAME.PROPOSALTYPE].unshift(item.msg.doctxmsgsubmitproposal.proposalType);
                             message[Constant.TRANSACTIONMESSAGENAME.USAGE].unshift(item.msg.usage);
                             message[Constant.TRANSACTIONMESSAGENAME.DESTADDRESS].unshift(item.msg.dest_address);
-                            message[Constant.TRANSACTIONMESSAGENAME.PERCENT].unshift(item.msg.percent);
+                            message[Constant.TRANSACTIONMESSAGENAME.PERCENT].unshift(`${numberMoveDecimal(item.msg.percent,2)} %`);
                         }
 
                 }
