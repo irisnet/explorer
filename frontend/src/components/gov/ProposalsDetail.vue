@@ -1082,7 +1082,7 @@ export default {
         width: 0.12rem;
         height:0.12rem;
         border-radius: 0.02rem;
-        background: #0580d3;
+        background: var(--bgColor);
         margin-right: 0.1rem;
     }
     .no_option_style{

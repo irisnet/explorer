@@ -246,6 +246,9 @@
 					this.showClear = false;
 				}
 			},
+            '$store.state.testSkinStyle'(){
+                this.toggleTestnetLogo(JSON.parse(sessionStorage.getItem('skinEnvInformation')))
+            }
 		},
 		data () {
 			return {
@@ -632,8 +635,10 @@
 			getConfig () {
 				Service.commonInterface({headerConfig:{}},(res) => {
 					try {
-						this.$store.commit('currentSkinStyle',`${res.cur_env}${res.chain_id}`);
-						sessionStorage.setItem('skinEnvInformation',JSON.stringify(res))
+						sessionStorage.setItem('skinEnvInformation',JSON.stringify(res));
+                        if(res.cur_env === constant.ENVCONFIG.TESTNET || res.cur_env === constant.ENVCONFIG.MAINNET){
+                            this.$store.commit('hideTestSkinStyle',false)
+                        }
 						this.flShowLogo = true;
 						this.toggleTestnetLogo(res);
 						this.setCurrentSelectOption(res.cur_env, res.chain_id, res.configs);
@@ -696,6 +701,10 @@
                         }
                     })
                 }
+                if(this.$store.state.testSkinStyle){
+                    networkName = this.$store.state.currentSkinStyle;
+                }
+                this.$store.commit('currentSkinStyle',networkName);
 				const root = document.documentElement;
 				root.style.setProperty(skinStyle.skinStyle.TITLECOLORNAME,skinStyle.skinStyle.commonFontBlackColor);
 				root.style.setProperty(skinStyle.skinStyle.CONTENTCOLORNAME,skinStyle.skinStyle.commonFontContentColor);

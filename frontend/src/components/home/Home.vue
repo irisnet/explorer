@@ -89,8 +89,14 @@
                 </div>
             </div>
         </div>
+        <div class="test_skin_content">
+            <div style="display: flex" v-if="$store.state.hideTestSkinStyle">
+                <div class="mainnet_irishub" @click="changeStyleToMainnet">Mainnet irishub</div>
+                <div class="testnet_fuxi"@click="changeStyleToFuxiTestnet">Testnet FuXi</div>
+                <div class="testnet_nyancat"@click="changeStyleToNyancatTestnet">Testnet Nyancat</div>
+            </div>
+        </div>
     </div>
-
 </template>
 
 <script>
@@ -183,17 +189,32 @@
 
             '$store.state.currentSkinStyle'(newVal){
                 if(newVal !== 'default '){
-	                this.setThemeStyle()
+                    this.setThemeStyle()
                 }
+            },
+            '$store.state.hideTestSkinStyle'(newVal){
+                this.$store.commit('hideTestSkinStyle',newVal)
             }
         },
         methods: {
-        	setThemeStyle(){
-		        if(this.$store.state.currentSkinStyle ===  `${Constant.ENVCONFIG.MAINNET}${Constant.CHAINID.IRISHUB}`){
+            changeStyleToMainnet(){
+                this.$store.commit('currentSkinStyle','irishub');
+                this.$store.commit('testSkinStyle',true);
+            },
+            changeStyleToFuxiTestnet(){
+                this.$store.commit('currentSkinStyle','fuxi');
+                this.$store.commit('testSkinStyle',true);
+            },
+            changeStyleToNyancatTestnet(){
+                this.$store.commit('currentSkinStyle','nyancat');
+                this.$store.commit('testSkinStyle',true);
+            },
+       	    setThemeStyle(){
+		        if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.IRISHUB){
 			        this.themeStyleArray = this.mainnetThemeStyle;
-		        }else if(this.$store.state.currentSkinStyle ===  `${Constant.ENVCONFIG.TESTNET}${Constant.CHAINID.FUXI}`){
+		        }else if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.FUXI){
 			        this.themeStyleArray = this.testnetFuXiThemeStyle;
-		        }else if(this.$store.state.currentSkinStyle ===  `${Constant.ENVCONFIG.TESTNET}${Constant.CHAINID.NYANCAT}`){
+		        }else if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.NYANCAT){
 			        this.themeStyleArray = this.testnetNyancatThemeStyle;
 		        }else {
 			        this.themeStyleArray = this.defaultThemeStyle;
@@ -470,6 +491,31 @@
         width: 100%;
         flex-direction: column;
         align-items: center;
+        .test_skin_content{
+            display: none;
+            margin: 0.2rem 0;
+            color: #fff;
+            cursor: pointer;
+            .mainnet_irishub{
+                padding: 0.05rem 0.2rem;
+                background: #3264FD;
+                border-radius: 0.04rem;
+                margin-right: 0.1rem;
+
+            }
+            .testnet_fuxi{
+                padding: 0.05rem 0.2rem;
+                background: #0C4282;
+                border-radius: 0.04rem;
+                margin-right: 0.1rem;
+            }
+            .testnet_nyancat{
+                padding: 0.05rem 0.2rem;
+                background: #0D9388;
+                border-radius: 0.04rem;
+            }
+        }
+
         .home_container {
             display: flex;
             flex-direction: column;
