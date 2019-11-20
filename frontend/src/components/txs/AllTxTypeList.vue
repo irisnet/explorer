@@ -7,7 +7,7 @@
                     <div class="filter_content">
                         <div class="tx_type_content">
                             <div class="tx_type_mobile_content">
-                                <i-select :model.sync="value" v-model="value" :on-change="filterTxByTxType(value) " filterable>
+                                <i-select :model.sync="value" v-model="value" :on-change="filterTxByTxType(value) " filterable clearable>
                                     <i-option v-for="(item, index) in txTypeOption"
                                               :value="item.value"
                                               :key="index"

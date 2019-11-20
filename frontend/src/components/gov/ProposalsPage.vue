@@ -738,6 +738,7 @@
         width: 12.8rem;
         flex-wrap: wrap;
         margin: 0.3rem auto 0.1rem;
+        background: #fff;
         &:nth-last-of-type(1) {
             margin-bottom: 0;
         }
@@ -756,6 +757,7 @@
             margin-top: 0rem !important;
             .propsals_echart_container {
                 width: 100%;
+                background: #fff;
             }
         }
     }
