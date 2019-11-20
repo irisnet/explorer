@@ -5,7 +5,7 @@
                 <span class="transaction_list_title">{{count}} Txs</span>
                 <div class="filter_container">
                     <div class="filter_tx_type_statue_content">
-                        <i-select :model.sync="value" v-model="value" :on-change="filterTxByTxType(value)">
+                        <i-select :model.sync="value" v-model="value" :on-change="filterTxByTxType(value)" filterable clearable>
                             <i-option v-for="item in txTypeListArray" :value="item.value">{{item.label}}</i-option>
                         </i-select>
                         <i-select :model.sync="statusValue" v-model="statusValue" :on-change="filterTxByStatus(statusValue)">
