@@ -474,7 +474,6 @@ export default class formatMsgsAndTags {
                         message[Constant.TRANSACTIONMESSAGENAME.SWITCHHEIGHT] = [];
                         message[Constant.TRANSACTIONMESSAGENAME.TRESHOLD] = [];
                         if(item.msg){
-                            item.msg.doctxmsgsubmitproposal.description = 'First On-Chain Upgrade of IRISHub, First On-Chain Upgrade of BPoS Networks! Steps: https://github.com/irisnet/betanet/blob/master/upgrade/v0.15.1.md#mainnet-upgrade-process'
                             initialDepositObj = Tools.formatAmountOfTxDetail(item.msg.doctxmsgsubmitproposal.initialDeposit);
                             message[Constant.TRANSACTIONMESSAGENAME.PROPOSER].unshift(item.msg.doctxmsgsubmitproposal.proposer);
                             message[Constant.TRANSACTIONMESSAGENAME.TITLE].unshift(item.msg.doctxmsgsubmitproposal.title);
@@ -520,8 +519,12 @@ export default class formatMsgsAndTags {
                             message[Constant.TRANSACTIONMESSAGENAME.DESCRIPTION].unshift(item.msg.doctxmsgsubmitproposal.description);
                             message[Constant.TRANSACTIONMESSAGENAME.PROPOSALTYPE].unshift(item.msg.doctxmsgsubmitproposal.proposalType);
                             message[Constant.TRANSACTIONMESSAGENAME.USAGE].unshift(item.msg.usage);
-                            message[Constant.TRANSACTIONMESSAGENAME.DESTADDRESS].unshift(item.msg.dest_address);
                             message[Constant.TRANSACTIONMESSAGENAME.PERCENT].unshift(`${numberMoveDecimal(item.msg.percent,2)} %`);
+                            if(item.msg.usage === Constant.TxType.BURN){
+                                message[Constant.TRANSACTIONMESSAGENAME.DESTADDRESS].unshift('-');
+                            }else {
+                                message[Constant.TRANSACTIONMESSAGENAME.DESTADDRESS].unshift(item.msg.dest_address);
+                            }
                         }
 
                 }

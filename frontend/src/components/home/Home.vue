@@ -77,11 +77,15 @@
                 </div>
             </div>
             <div class="home_proposal_container">
-                <div class="home_proposal_item_bar" v-for="item in votingBarArr" :key="item.proposal_id">
-                    <m-voting-card :votingBarObj="item" :showTitle="true"></m-voting-card>
+                <div class="home_proposal_container_content" v-for="item in votingBarArr" :key="item.proposal_id">
+                    <div class="home_proposal_item_bar">
+                        <m-voting-card :votingBarObj="item" :showTitle="true"></m-voting-card>
+                    </div>
                 </div>
-                <div class="home_proposal_item_bar" v-for="v in depositorBarArr" :key="v.proposal_id">
-                    <m-deposit-card :depositObj="v" :showTitle="true" :levelValue="v.levelValue"></m-deposit-card>
+                <div class="home_proposal_container_content" v-for="v in depositorBarArr" :key="v.proposal_id">
+                    <div class="home_proposal_item_bar">
+                        <m-deposit-card :depositObj="v" :showTitle="true" :levelValue="v.levelValue"></m-deposit-card>
+                    </div>
                 </div>
             </div>
         </div>
@@ -572,21 +576,43 @@
                 justify-content: space-between;
                 flex-wrap: wrap;
                 box-sizing: border-box;
+                .home_proposal_container_content{
+                    .home_proposal_item_bar {
+                        min-width: 5.98rem;
+                        flex: 1;
+                        width: auto;
+                        margin-right: 0.4rem;
+                    }
 
-                .home_proposal_item_bar {
-                    min-width: 5.98rem;
-                    flex: 1;
-                    width: auto;
-                    margin-right: 0.4rem;
+                    .home_proposal_item_bar:nth-child(even) {
+                        margin-right: 0;
+                    }
+
+                    .home_proposal_item_bar:last-child {
+                        margin-right: 0;
+                    }
                 }
 
-                .home_proposal_item_bar:nth-child(even) {
-                    margin-right: 0;
+            }
+        }
+    }
+    @media screen and (min-width: 910px) and (max-width: 1280px){
+        .home_wrap{
+            .home_container{
+                .home_proposal_container{
+                    display: flex;
+                    flex-direction: column;
+                    .home_proposal_item_bar{
+                        margin-right: 0;
+                    }
+                    .home_proposal_item_bar:nth-child(even){
+                        margin-right: 0;
+                    }
+                    .home_proposal_item_bar:last-child{
+                        margin-right: 0;
+                    }
                 }
 
-                .home_proposal_item_bar:last-child {
-                    margin-right: 0;
-                }
             }
         }
     }
@@ -620,6 +646,22 @@
                 }
             }
             .home_proposal_container{
+                display: flex;
+                flex-direction: column;
+                margin-bottom: 0.2rem;
+                .home_proposal_container_content{
+                    width: 100%;
+                    overflow-x: auto;
+                    overflow-y: hidden;
+                    .home_proposal_item_bar{
+                        margin-right: 0;
+                        margin-bottom: 0.2rem;
+                        .deposit_card_content{
+                            margin-bottom: 0;
+                        }
+                    }
+
+                }
 
             }
         }
