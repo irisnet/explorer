@@ -590,6 +590,25 @@
             }
         }
     }
+    @media screen and (min-width: 910px) and (max-width: 1280px){
+        .home_wrap{
+            .personal_computer_home_wrap{
+                .home_proposal_container{
+                    display: flex;
+                    flex-direction: column;
+                    .home_proposal_item_bar{
+                        margin-right: 0;
+                    }
+                    .home_proposal_item_bar:nth-child(even){
+                        margin-right: 0;
+                    }
+                    .home_proposal_item_bar:last-child{
+                        margin-right: 0;
+                    }
+                }
+            }
+        }
+    }
 @media screen and (max-width: 910px){
     .home_wrap{
         .home_container{
@@ -620,7 +639,14 @@
                 }
             }
             .home_proposal_container{
-
+                display: flex;
+                flex-direction: column;
+                margin-bottom: 0.2rem;
+                overflow-x: auto;
+                .home_proposal_item_bar{
+                    margin-right: 0;
+                    margin-bottom: 0.2rem;
+                }
             }
         }
     }
