@@ -474,7 +474,6 @@ export default class formatMsgsAndTags {
                         message[Constant.TRANSACTIONMESSAGENAME.SWITCHHEIGHT] = [];
                         message[Constant.TRANSACTIONMESSAGENAME.TRESHOLD] = [];
                         if(item.msg){
-                            item.msg.doctxmsgsubmitproposal.description = 'First On-Chain Upgrade of IRISHub, First On-Chain Upgrade of BPoS Networks! Steps: https://github.com/irisnet/betanet/blob/master/upgrade/v0.15.1.md#mainnet-upgrade-process'
                             initialDepositObj = Tools.formatAmountOfTxDetail(item.msg.doctxmsgsubmitproposal.initialDeposit);
                             message[Constant.TRANSACTIONMESSAGENAME.PROPOSER].unshift(item.msg.doctxmsgsubmitproposal.proposer);
                             message[Constant.TRANSACTIONMESSAGENAME.TITLE].unshift(item.msg.doctxmsgsubmitproposal.title);
