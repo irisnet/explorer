@@ -34,7 +34,7 @@
                 slot="votes">
         <div class="votes_per_content">
           <div v-if="row.finalVotes">
-            <div class="votes_per" :style="{backgroundColor: '#45B4FF', width: `${row.finalVotes.yes}%`}">
+            <div class="votes_per" :style="{ width: `${row.finalVotes.yes}%`}">
               <div class="tooltip_span">
                 <div>
                   Yes: {{formatNum(row.finalVotes.yes)}} %
@@ -104,7 +104,7 @@
                 slot="votes">
         <div class="votes_per_content">
           <div v-if="row.finalVotes">
-            <div class="votes_per" :style="{backgroundColor: '#45B4FF', width: `${row.finalVotes.yes}%`}">
+            <div class="votes_per" :style="{width: `${row.finalVotes.yes}%`}">
               <div class="tooltip_span">
                 <div>
                   Yes: {{formatNum(row.finalVotes.yes)}} %
@@ -241,6 +241,9 @@ export default {
       width: 102px;
       height: 10px;
       display: flex;
+        .votes_per:nth-of-type(1){
+            background: var(--bgColor);
+        }
       .votes_per {
         height: 100%;
         cursor: pointer;

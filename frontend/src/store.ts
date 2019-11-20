@@ -17,6 +17,8 @@ const store = new Vuex.Store({
     flShowLoading: false,
     flShowQR:false,
     setQrImg:'',
+    testSkinStyle:false,
+    hideTestSkinStyle: true,
   },
   mutations:{
     currentNoValue(state,data){
@@ -60,6 +62,12 @@ const store = new Vuex.Store({
     },
     setQrImg(state,data){
       state.setQrImg = data
+    },
+    testSkinStyle(state,data){
+      state.testSkinStyle = data
+    },
+    hideTestSkinStyle(state,data){
+      state.hideTestSkinStyle = data
     }
   }
 })

@@ -6,6 +6,8 @@
 
 <script>
 import echarts from "echarts";
+import skinStyle  from "../../skinStyle";
+import Constant from "../../constant/Constant"
 export default {
     name: "MTokenStatsEchart",
     props: {
@@ -50,7 +52,7 @@ export default {
                         ${v.data.info.totalAmount} (${v.data.info.percentValue}%)`;
                     }
                 },
-                color: [
+               /* color: [
                     "#3598DB",
                     "#FFA85C",
                     "#C0CEFF",
@@ -58,7 +60,7 @@ export default {
                     "#A69DFF",
                     "#93ED56",
                     "#FF837E"
-                ],
+                ],*/
                 legend: {
                     orient: "vertical",
                     x: "left",
@@ -151,6 +153,24 @@ export default {
                     }
                 ]
             };
+            option.color= [
+                "#FFA85C",
+                "#C0CEFF",
+                "#FFCF3A",
+                "#A69DFF",
+                "#93ED56",
+                "#FF837E"
+            ];
+            if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.IRISHUB){
+                option.color.unshift(skinStyle.skinStyle.MAINNETBGCOLOR)
+            }else if(this.$store.state.currentSkinStyle === Constant.CHAINID.FUXI){
+                option.color.unshift(skinStyle.skinStyle.TESTNETBGCOLOR)
+            }else if(this.$store.state.currentSkinStyle === Constant.CHAINID.NYANCAT){
+                option.color.unshift(skinStyle.skinStyle.NYANCATTESTNETBGCOLOR)
+            }else {
+                option.color.unshift(skinStyle.skinStyle.DEFAULTBGCOLOR)
+            }
+
             this.chart.setOption(option);
         },
         windowResizeFunc() {

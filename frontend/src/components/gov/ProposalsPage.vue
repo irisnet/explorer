@@ -120,6 +120,8 @@
 	import MProposalsEchart from '../commontables/MProposalsEchart';
 	import MProposalsListTable from './MProposalsListTable';
 	import MPagination from "../commontables/MPagination";
+	import Constant from "../../constant/Constant";
+	import skinStyle from "../../skinStyle/"
 	export default {
 		components:{
 			MProposalsCard,
@@ -271,7 +273,7 @@
 							value: votes,
 							perData: Tools.formatDecimalNumberToFixedNumber(votes / all * 100),
 							itemStyle: {
-								color: '#3598DB',
+								// color: '#3598DB',
 								borderColor: '#ECEFFF',
 								borderWidth: 0
 							},
@@ -281,11 +283,11 @@
 									value: yes,
 									perData: Tools.formatDecimalNumberToFixedNumber(yes / votes * 100),
 									itemStyle: {
-										color: '#45B4FF',
+										// color: '#45B4FF',
 										borderColor: '#ECEFFF',
 										borderWidth: 0
 									},
-									children: this.formatGrahpChildren(yesArr, {h: [205, 204], s: [100, 100], l: [79, 35]})
+									// children: this.formatGrahpChildren(yesArr, {h: [205, 204], s: [100, 100], l: [79, 35]})
 								},
 								{
 									name: 'Abstain',
@@ -367,6 +369,23 @@
 							]
 						}
 					];
+                    if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.IRISHUB){
+                        data[0].itemStyle.color = skinStyle.skinStyle.MAINNETBGCOLOR;
+                        data[0].children[0].itemStyle.color = '#4371FF';
+                        data[0].children[0].children = this.formatGrahpChildren(yesArr, {h: [175, 174], s: [100, 100], l: [40, 35]})
+                    }else if(this.$store.state.currentSkinStyle === Constant.CHAINID.FUXI){
+                        data[0].children[0].itemStyle.color = '#004EAA';
+                        data[0].itemStyle.color = skinStyle.skinStyle.TESTNETBGCOLOR;
+                        data[0].children[0].children = this.formatGrahpChildren(yesArr, {h: [213, 212], s: [100, 100], l: [40, 35]})
+                    }else if(this.$store.state.currentSkinStyle === Constant.CHAINID.NYANCAT){
+                        data[0].children[0].itemStyle.color = '#06A79A';
+                        data[0].itemStyle.color = skinStyle.skinStyle.NYANCATTESTNETBGCOLOR;
+                        data[0].children[0].children = this.formatGrahpChildren(yesArr, {h: [175, 174], s: [100, 100], l: [40, 35]})
+                    }else {
+                        data[0].children[0].itemStyle.color = '#008CEA';
+                        data[0].itemStyle.color = skinStyle.skinStyle.DEFAULTBGCOLOR;
+                        data[0].children[0].children = this.formatGrahpChildren(yesArr, {h: [196, 195], s: [100, 100], l: [40, 35]})
+                    }
 					o.data = data;
 					return o;
 				});
@@ -510,7 +529,7 @@
                         border-radius: 2px;
                         display: inline-block;
                         margin-left: 50px;
-                        background-color: #45B4FF;
+                        background-color: var(--bgColor);
                         vertical-align: middle;
                     }
                     img {
@@ -738,7 +757,6 @@
         width: 12.8rem;
         flex-wrap: wrap;
         margin: 0.3rem auto 0.1rem;
-        background: #fff;
         &:nth-last-of-type(1) {
             margin-bottom: 0;
         }
