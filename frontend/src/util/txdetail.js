@@ -520,8 +520,12 @@ export default class formatMsgsAndTags {
                             message[Constant.TRANSACTIONMESSAGENAME.DESCRIPTION].unshift(item.msg.doctxmsgsubmitproposal.description);
                             message[Constant.TRANSACTIONMESSAGENAME.PROPOSALTYPE].unshift(item.msg.doctxmsgsubmitproposal.proposalType);
                             message[Constant.TRANSACTIONMESSAGENAME.USAGE].unshift(item.msg.usage);
-                            message[Constant.TRANSACTIONMESSAGENAME.DESTADDRESS].unshift(item.msg.dest_address);
                             message[Constant.TRANSACTIONMESSAGENAME.PERCENT].unshift(`${numberMoveDecimal(item.msg.percent,2)} %`);
+                            if(item.msg.usage === Constant.TxType.BURN){
+                                message[Constant.TRANSACTIONMESSAGENAME.DESTADDRESS].unshift('-');
+                            }else {
+                                message[Constant.TRANSACTIONMESSAGENAME.DESTADDRESS].unshift(item.msg.dest_address);
+                            }
                         }
 
                 }
