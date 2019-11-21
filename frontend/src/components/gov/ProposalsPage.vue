@@ -372,7 +372,7 @@
                     if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.IRISHUB){
                         data[0].itemStyle.color = skinStyle.skinStyle.MAINNETBGCOLOR;
                         data[0].children[0].itemStyle.color = '#4371FF';
-                        data[0].children[0].children = this.formatGrahpChildren(yesArr, {h: [223, 232], s: [100, 100], l: [75, 35]})
+                        data[0].children[0].children = this.formatGrahpChildren(yesArr, {h: [223, 222], s: [100, 100], l: [75, 35]})
                     }else if(this.$store.state.currentSkinStyle === Constant.CHAINID.FUXI){
                         data[0].children[0].itemStyle.color = '#004EAA';
                         data[0].itemStyle.color = skinStyle.skinStyle.TESTNETBGCOLOR;
