@@ -132,7 +132,7 @@
                             if(Object.keys(item)[0] ===  'State:'){
                                 res[item.key] = Tools.firstWordUpperCase(res[item.key])
                             }
-                            item[Object.keys(item)[0]] = res[item.key]
+                            item[Object.keys(item)[0]] = res[item.key] || res[item.key] === 0 ? res[item.key] : '--'
                         }
                         this.monikerFrom = res.from_moniker;
                         this.monikerTo = res.to_moniker
