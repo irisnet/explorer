@@ -142,12 +142,15 @@
                                 <router-link v-if="key === 'Hash Lock :' && messageList['TxType :'][0] !== 'CreateHTLC'" :to="`/htlc/${value}`">{{value}}</router-link>
                                 <router-link v-if="key === 'Hash Lock :' && messageList['TxType :'][0] === 'CreateHTLC' && statusValue === 'Success'" :to="`/htlc/${value}`">{{value}}</router-link>
                                 <span v-if="key === 'Hash Lock :' && statusValue === 'Failed' && messageList['TxType :'][0] === 'CreateHTLC'">{{value}}</span>
-                                <span v-if="key === 'Website :'" @click="openUrl(value)" style="color: var(--bgColor);cursor: pointer;">{{value}}</span>
-                                <span v-if="key === 'Software :'" @click="openUrl(value)" style="color: var(--bgColor);cursor: pointer;">{{value}}</span>
-                                <span v-if="key === 'Identity :'" @click="getKeyBaseName(value)" style="color: var(--bgColor);cursor: pointer;">{{value}}</span>
+                                <span v-if="key === 'Website :' && value !== '--'" @click="openUrl(value)" style="color: var(--bgColor);cursor: pointer;">{{value}}</span>
+                                <span v-if="key === 'Software :'&& value !== '--'" @click="openUrl(value)" style="color: var(--bgColor);cursor: pointer;">{{value}}</span>
+                                <span v-if="key === 'Identity :'&& value !== '--'" @click="getKeyBaseName(value)" style="color: var(--bgColor);cursor: pointer;">{{value}}</span>
                                 <span v-if="key === 'From :' && value === '-'">--</span>
                                 <span v-if="key === 'To :' && value === '-'">--</span>
                                 <span v-if="key === 'DestAddress :' && value === '-'">--</span>
+                                <span v-if="key === 'Website :' && value === '--'">--</span>
+                                <span v-if="key === 'Software :' && value === '--'">--</span>
+                                <span v-if="key === 'Identity :' && value === '--'">--</span>
 
                             </span>
                                 <div class="commission_rate_container" v-if="key === 'Commission Rate :' && messageList['TxType :'][0] === 'CreateValidator' && value !== '--'">
