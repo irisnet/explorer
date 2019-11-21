@@ -134,6 +134,11 @@
 			        this.passThreshold = `${Tools.formatPercent(votingBarObj.level.gov_param.pass_threshold)}`;
 			        this.voteThreshold = `${Tools.formatPercent(votingBarObj.level.gov_param.veto_threshold)}`;
 			        this.getVotingEndTime(votingBarObj.voting_end_time);
+                    this.$store.commit('currentParticipationValue',0);
+                    this.$store.commit('currentYesValue',0);
+                    this.$store.commit('currentNoWithVetoValue',0);
+                    this.$store.commit('currentAbstainValue',0);
+                    this.$store.commit('currentNoValue',0);
 		        }
 		        if(votingBarObj && Array.isArray(votingBarObj.votes) && votingBarObj.votes.length > 0){
 		        	this.flShowTotalVoted = true;
