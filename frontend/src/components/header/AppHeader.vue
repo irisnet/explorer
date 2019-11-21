@@ -642,10 +642,10 @@
 						this.flShowLogo = true;
 						this.toggleTestnetLogo(res);
 						this.setCurrentSelectOption(res.cur_env, res.chain_id, res.configs);
-						this.setNetWorkLogo(res.cur_env, res.chain_id);
 						this.setEnvConfig(res);
 						this.handleConfigs(res.configs);
-						this.flShowHeaderNetwork = true;
+                        this.setNetWorkLogo();
+                        this.flShowHeaderNetwork = true;
 						this.chainId = `${res.chain_id.toUpperCase()} ${res.cur_env.toUpperCase()}`;
 						res.configs.forEach(item => {
 							if (res.cur_env === item.env && res.chain_id === item.chain_id) {
@@ -734,16 +734,16 @@
 					this.currentSelected = `${currentChainId.toLocaleUpperCase()} ${Tools.firstWordUpperCase(currentEnv)}`;
 				}
 			},
-			setNetWorkLogo (currentEnv, currentChainId) {
-				if (currentEnv === constant.ENVCONFIG.MAINNET && currentChainId === constant.CHAINID.IRISHUB) {
+			setNetWorkLogo () {
+				if (this.$store.state.currentSkinStyle === constant.CHAINID.IRISHUB) {
 					this.flShowGatewayMenu = false;
 					this.explorerLogo = require("../../assets/logo.png");
 					this.currentNetworkClass = 'iconfont iconiris'
-				} else if (currentEnv === constant.ENVCONFIG.TESTNET && currentChainId === constant.CHAINID.FUXI) {
+				} else if (this.$store.state.currentSkinStyle === constant.CHAINID.FUXI) {
 					this.flShowGatewayMenu = true;
 					this.explorerLogo = require("../../assets/logo.png");
 					this.currentNetworkClass = 'iconfont iconfuxi'
-				} else if (currentEnv === constant.ENVCONFIG.TESTNET && currentChainId === constant.CHAINID.NYANCAT) {
+				} else if (this.$store.state.currentSkinStyle === constant.CHAINID.NYANCAT) {
 					this.flShowGatewayMenu = true;
 					this.explorerLogo = require("../../assets/logo.png");
 					this.currentNetworkClass = 'iconfont iconcaihongmao'
