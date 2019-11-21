@@ -735,15 +735,15 @@
 				}
 			},
 			setNetWorkLogo (currentEnv, currentChainId) {
-				if (currentEnv === constant.ENVCONFIG.MAINNET && currentChainId === constant.CHAINID.IRISHUB) {
+				if (this.$store.state.currentSkinStyle === constant.CHAINID.IRISHUB) {
 					this.flShowGatewayMenu = false;
 					this.explorerLogo = require("../../assets/logo.png");
 					this.currentNetworkClass = 'iconfont iconiris'
-				} else if (currentEnv === constant.ENVCONFIG.TESTNET && currentChainId === constant.CHAINID.FUXI) {
+				} else if (this.$store.state.currentSkinStyle === constant.CHAINID.FUXI) {
 					this.flShowGatewayMenu = true;
 					this.explorerLogo = require("../../assets/logo.png");
 					this.currentNetworkClass = 'iconfont iconfuxi'
-				} else if (currentEnv === constant.ENVCONFIG.TESTNET && currentChainId === constant.CHAINID.NYANCAT) {
+				} else if (this.$store.state.currentSkinStyle === constant.CHAINID.NYANCAT) {
 					this.flShowGatewayMenu = true;
 					this.explorerLogo = require("../../assets/logo.png");
 					this.currentNetworkClass = 'iconfont iconcaihongmao'
