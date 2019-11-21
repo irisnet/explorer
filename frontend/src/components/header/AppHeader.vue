@@ -642,10 +642,10 @@
 						this.flShowLogo = true;
 						this.toggleTestnetLogo(res);
 						this.setCurrentSelectOption(res.cur_env, res.chain_id, res.configs);
-						this.setNetWorkLogo(res.cur_env, res.chain_id);
 						this.setEnvConfig(res);
 						this.handleConfigs(res.configs);
-						this.flShowHeaderNetwork = true;
+                        this.setNetWorkLogo();
+                        this.flShowHeaderNetwork = true;
 						this.chainId = `${res.chain_id.toUpperCase()} ${res.cur_env.toUpperCase()}`;
 						res.configs.forEach(item => {
 							if (res.cur_env === item.env && res.chain_id === item.chain_id) {
@@ -734,7 +734,7 @@
 					this.currentSelected = `${currentChainId.toLocaleUpperCase()} ${Tools.firstWordUpperCase(currentEnv)}`;
 				}
 			},
-			setNetWorkLogo (currentEnv, currentChainId) {
+			setNetWorkLogo () {
 				if (this.$store.state.currentSkinStyle === constant.CHAINID.IRISHUB) {
 					this.flShowGatewayMenu = false;
 					this.explorerLogo = require("../../assets/logo.png");
