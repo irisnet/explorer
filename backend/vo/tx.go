@@ -8,69 +8,11 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-type MsgSubmitProposal struct {
-	Title          string      `json:"title"`          //  Title of the proposal
-	Description    string      `json:"description"`    //  Description of the proposal
-	ProposalType   string      `json:"proposalType"`   //
-	Proposer       string      `json:"proposer"`       //  Address of the proposer
-	InitialDeposit utils.Coins `json:"initialDeposit"` //  Initial deposit paid by sender. Must be strictly positive.
-	Params         []Param     `json:"params"`
-	Software       string      `json:"software"`
-	Version        int64       `json:"version"`
-	SwitchHeight   int64       `json:"switch_height"`
-	Treshold       string      `json:"threshold"`
-}
-
-type MsgSubmitSoftwareUpgradeProposal struct {
-	MsgSubmitProposal
-	Version      uint64 `json:"version"`
-	Software     string `json:"software"`
-	SwitchHeight uint64 `json:"switch_height"`
-	Threshold    string `json:"threshold"`
-}
-
-type MsgSubmitTokenAdditionProposal struct {
-	MsgSubmitProposal
-	Symbol          string `json:"symbol"`
-	CanonicalSymbol string `json:"canonical_symbol"`
-	Name            string `json:"name"`
-	Decimal         uint8  `json:"decimal"`
-	MinUnitAlias    string `json:"min_unit_alias"`
-	InitialSupply   uint64 `json:"initial_supply"`
-}
-
-type MsgSubmitCommunityTaxUsageProposal struct {
-	MsgSubmitProposal
-	Usage       string `json:"usage"`
-	DestAddress string `json:"dest_address"`
-	Percent     string `json:"percent"`
-}
-
 type Param struct {
 	Subspace string `json:"subspace"`
 	Key      string `json:"key"`
 	Value    string `json:"value"`
 }
-
-type MsgDeposit struct {
-	ProposalID uint64      `json:"proposal_id"` // ID of the proposal
-	Depositer  string      `json:"depositer"`   // Address of the depositer
-	Amount     utils.Coins `json:"amount"`      // Coins to add to the proposal's deposit
-}
-
-type MsgVote struct {
-	ProposalID uint64 `json:"proposal_id"`
-	Voter      string `json:"voter"`
-	Option     string `json:"option"`
-}
-
-type MsgBeginRedelegate struct {
-	DelegatorAddr    string `json:"delegator_addr"`
-	ValidatorSrcAddr string `json:"validator_src_addr"`
-	ValidatorDstAddr string `json:"validator_dst_addr"`
-	SharesAmount     string `json:"shares_amount"`
-}
-
 type TxStatisticsVo struct {
 	TransCnt       int `json:"trans_cnt"`
 	StakeCnt       int `json:"stake_cnt"`
@@ -166,14 +108,15 @@ type TransTx struct {
 	BaseTx
 	From   string      `json:"from"`
 	To     string      `json:"to"`
-	Amount utils.Coins `json:"amount"`
+	//Amount utils.Coins `json:"amount"`
 }
 
 type StakeTx struct {
 	TransTx
-	Source      string `json:"source"`
-	FromMoniker string `json:"from_moniker"`
-	ToMoniker   string `json:"to_moniker"`
+	Source      string    `json:"source"`
+	FromMoniker string    `json:"from_moniker"`
+	ToMoniker   string    `json:"to_moniker"`
+	Msgs        []MsgItem `json:"msgs"`
 }
 
 func (s StakeTx) PrintHashFromToAmount() string {
@@ -187,32 +130,18 @@ Amount: %v
 
 type DeclarationTx struct {
 	BaseTx
-	Amount       utils.Coins   `json:"amount"`
 	OperatorAddr string        `json:"operator_addr"`
-	Owner        string        `json:"owner"`
 	Moniker      string        `json:"moniker"`
-	Pubkey       string        `json:"pubkey"`
-	Identity     string        `json:"identity"`
 	SelfBond     utils.Coins   `json:"self_bond"`
-	Website      string        `json:"website"`
-	Details      string        `json:"details"`
-	Commission   CommissionMsg `json:"commission"`
 }
 
 type GovTx struct {
 	BaseTx
 	From         string            `json:"from"`
 	ProposalId   uint64            `json:"proposal_id"`
-	Description  string            `json:"description"`
 	Amount       utils.Coins       `json:"amount"`
-	Option       string            `json:"option"`
 	Title        string            `json:"title"`
 	ProposalType string            `json:"proposal_type"`
-	Tags         map[string]string `json:"tags"`
-	Software     string            `json:"software"`
-	Version      int64             `json:"version"`
-	SwitchHeight int64             `json:"switch_height"`
-	Treshold     string            `json:"treshold"`
 }
 
 type RecentTx struct {
@@ -225,11 +154,35 @@ type RecentTx struct {
 type RecentTxRespond []RecentTx
 type AssetTx struct {
 	BaseTx
-	From   string            `json:"from"`
-	To     string            `json:"to"`
-	Amount utils.Coins       `json:"amount"`
-	Tags   map[string]string `json:"tags"`
-	Msgs   []MsgItem         `json:"msgs"`
+	From string `json:"from"`
+	To   string `json:"to"`
+	//Amount utils.Coins       `json:"amount"`
+	Tags map[string]string `json:"tags"`
+}
+type GuardianTx struct {
+	BaseTx
+	From string `json:"from"`
+	To   string `json:"to"`
+	//Amount utils.Coins       `json:"amount"`
+	Tags map[string]string `json:"tags"`
+}
+
+type HtlcTx struct {
+	BaseTx
+	From         string            `json:"from"`
+	To           string            `json:"to"`
+	FromMoniker  string            `json:"from_moniker"`
+	ToMoniker    string            `json:"to_moniker"`
+	ExpireHeight int64             `json:"expire_height,string"`
+	Tags         map[string]string `json:"tags"`
+}
+
+type CoinswapTx struct {
+	BaseTx
+	From string `json:"from"`
+	To   string `json:"to"`
+	//Amount utils.Coins       `json:"amount"`
+	Tags map[string]string `json:"tags"`
 }
 
 func (tx RecentTx) String() string {
@@ -262,29 +215,26 @@ type UdInfo struct {
 }
 
 type CommonTx struct {
-	Time                 time.Time            `json:"time"`
-	Height               int64                `json:"height"`
-	TxHash               string               `json:"tx_hash"`
-	From                 string               `json:"from"`
-	To                   string               `json:"to"`
-	Amount               utils.Coins          `json:"amount"`
-	Type                 string               `json:"type"`
-	Fee                  utils.Fee            `json:"fee"`
-	Memo                 string               `json:"memo"`
-	Status               string               `json:"status"`
-	Code                 uint32               `json:"code"`
-	Log                  string               `json:"log"`
-	GasUsed              int64                `json:"gas_used"`
-	GasWanted            int64                `json:"gas_wanted"`
-	GasPrice             float64              `json:"gas_price"`
-	ActualFee            utils.ActualFee      `json:"actual_fee"`
-	ProposalId           uint64               `json:"proposal_id"`
-	Tags                 map[string]string    `json:"tags"`
-	StakeCreateValidator StakeCreateValidator `json:"stake_create_validator"`
-	StakeEditValidator   StakeEditValidator   `json:"stake_edit_validator"`
-	Msg                  Msg                  `json:"-"`
-	Msgs                 []MsgItem            `json:"msgs"`
-	Signers              []Signer             `json:"signers"`
+	Time       time.Time         `json:"time"`
+	Height     int64             `json:"height"`
+	TxHash     string            `json:"tx_hash"`
+	From       string            `json:"from"`
+	To         string            `json:"to"`
+	Amount     utils.Coins       `json:"amount"`
+	Type       string            `json:"type"`
+	Fee        utils.Fee         `json:"fee"`
+	Memo       string            `json:"memo"`
+	Status     string            `json:"status"`
+	Code       uint32            `json:"code"`
+	Log        string            `json:"log"`
+	GasUsed    int64             `json:"gas_used"`
+	GasWanted  int64             `json:"gas_wanted"`
+	GasPrice   float64           `json:"gas_price"`
+	ActualFee  utils.ActualFee   `json:"actual_fee"`
+	ProposalId uint64            `json:"proposal_id"`
+	Tags       map[string]string `json:"tags"`
+	Msgs       []MsgItem         `json:"msgs"`
+	Signers    []Signer          `json:"signers"`
 }
 
 func (tx CommonTx) String() string {
@@ -306,13 +256,10 @@ func (tx CommonTx) String() string {
 		ActualFee            :%v
 		ProposalId           :%v
 		Tags                 :%v
-		StakeCreateValidator :%v
-		StakeEditValidator   :%v
-		Msg                  :%v
 		Msgs                 :%v
 		Signers              :%v
 		`, tx.Time, tx.Height, tx.TxHash, tx.From, tx.To, tx.Amount, tx.Type, tx.Fee, tx.Memo, tx.Status, tx.Code, tx.Log,
-		tx.GasUsed, tx.GasPrice, tx.ActualFee, tx.ProposalId, tx.Tags, tx.StakeCreateValidator, tx.StakeEditValidator, tx.Msg, tx.Msgs, tx.Signers)
+		tx.GasUsed, tx.GasPrice, tx.ActualFee, tx.ProposalId, tx.Tags, tx.Msgs, tx.Signers)
 
 }
 

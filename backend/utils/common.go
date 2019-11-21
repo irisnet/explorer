@@ -11,6 +11,12 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"github.com/irisnet/explorer/backend/logger"
+	"github.com/irisnet/explorer/backend/conf"
+)
+
+const (
+	StatusFailed = "failed"
+	StatusFail   = "fail"
 )
 
 func RemoveDuplicationStrArr(list []string) []string {
@@ -34,6 +40,9 @@ func ParseInt(text string) (i int64, b bool) {
 }
 
 func ParseIntWithDefault(text string, def int64) (i int64) {
+	if text == "" {
+		return def
+	}
 	i, err := strconv.ParseInt(text, 10, 0)
 	if err != nil {
 		logger.Error("ParseIntWithDefault error", logger.String("str", text))
@@ -136,4 +145,21 @@ func Md5Encryption(data []byte) string {
 	md5Ctx := md5.New()
 	md5Ctx.Write(data)
 	return hex.EncodeToString(md5Ctx.Sum(nil))
+}
+
+func GetValaddr(address string) string {
+	prefix, _, _ := DecodeAndConvert(address)
+	if prefix == conf.Get().Hub.Prefix.ValAddr {
+		return address
+	} else {
+		return Convert(conf.Get().Hub.Prefix.ValAddr, address)
+	}
+}
+
+func FailtoFailed(status string) string {
+
+	if status == StatusFail {
+		return StatusFailed
+	}
+	return status
 }

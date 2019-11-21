@@ -13,7 +13,12 @@ const store = new Vuex.Store({
     currentNoWithVetoValue:'',
     currentAbstainValue: '',
     currentNoValue: '',
-    currentSkinStyle:'default'
+    currentSkinStyle:'default',
+    flShowLoading: false,
+    flShowQR:false,
+    setQrImg:'',
+    testSkinStyle:false,
+    hideTestSkinStyle: true,
   },
   mutations:{
     currentNoValue(state,data){
@@ -48,6 +53,21 @@ const store = new Vuex.Store({
     },
     currentSkinStyle(state,data){
       state.currentSkinStyle = data
+    },
+    flShowLoading(state,data){
+      state.flShowLoading = data
+    },
+    flShowQR(state,data){
+      state.flShowQR = data
+    },
+    setQrImg(state,data){
+      state.setQrImg = data
+    },
+    testSkinStyle(state,data){
+      state.testSkinStyle = data
+    },
+    hideTestSkinStyle(state,data){
+      state.hideTestSkinStyle = data
     }
   }
 })

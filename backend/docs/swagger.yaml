@@ -675,15 +675,22 @@ definitions:
       denom:
         type: string
     type: object
+  vo.CoinVo:
+    properties:
+      amount:
+        type: string
+      denom:
+        type: string
+    type: object
   vo.ConfigVo:
     properties:
       chain_id:
         type: string
       env:
         type: string
-      env_nm:
-        type: string
       host:
+        type: string
+      network_name:
         type: string
       show_faucet:
         type: integer
@@ -706,6 +713,8 @@ definitions:
         type: string
       block:
         type: integer
+      moniker:
+        type: string
       self_shares:
         type: string
       total_shares:
@@ -779,6 +788,33 @@ definitions:
       veto_threshold:
         type: string
     type: object
+  vo.HtlcInfo:
+    properties:
+      amount:
+        items:
+          $ref: '#/definitions/vo.CoinVo'
+        type: array
+      cross_chain_receiver:
+        type: string
+      expire_height:
+        type: integer
+      from:
+        type: string
+      from_moniker:
+        type: string
+      hash_lock:
+        type: string
+      state:
+        type: string
+      time_lock:
+        type: integer
+      timestamp:
+        type: integer
+      to:
+        type: string
+      to_moniker:
+        type: string
+    type: object
   vo.LatestHeightRespond:
     properties:
       block_height_db:
@@ -792,6 +828,13 @@ definitions:
         $ref: '#/definitions/vo.GovParam'
         type: object
       name:
+        type: string
+    type: object
+  vo.MsgItem:
+    properties:
+      msg:
+        type: object
+      type:
         type: string
     type: object
   vo.PageVo:
@@ -1081,6 +1124,10 @@ definitions:
         type: string
       memo:
         type: string
+      msgs:
+        items:
+          $ref: '#/definitions/vo.MsgItem'
+        type: array
       signer:
         type: string
       source:
@@ -1156,6 +1203,8 @@ definitions:
         type: string
       block:
         type: integer
+      moniker:
+        type: string
       until:
         type: string
     type: object
@@ -2076,6 +2125,88 @@ paths:
       summary: navigation
       tags:
       - home
+  /api/htlcs/{hash_lock}:
+    get:
+      consumes:
+      - application/json
+      description: get htlc info
+      parameters:
+      - description: hash_lock
+        in: path
+        name: hash_lock
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.HtlcInfo'
+            type: object
+      summary: detail
+      tags:
+      - htlc
+  /api/htlcs/{hash_lock}/txs:
+    get:
+      consumes:
+      - application/json
+      description: get htlc txs list
+      parameters:
+      - default: 1
+        description: page num
+        in: query
+        name: page
+        required: true
+        type: integer
+      - default: 5
+        description: page size
+        in: query
+        name: size
+        required: true
+        type: integer
+      - description: hash_lock
+        in: path
+        name: hash_lock
+        required: true
+        type: string
+      - description: height
+        in: query
+        name: height
+        type: integer
+      - description: txType
+        in: query
+        name: txType
+        type: string
+      - description: address
+        in: query
+        name: address
+        type: string
+      - description: status
+        enum:
+        - success
+        - fail
+        in: query
+        name: status
+        type: string
+      - description: total
+        enum:
+        - true
+        - false
+        in: query
+        name: total
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.PageVo'
+            type: object
+      summary: list
+      tags:
+      - htlc
   /api/params:
     get:
       consumes:

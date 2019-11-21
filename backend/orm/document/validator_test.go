@@ -2,6 +2,7 @@ package document
 
 import (
 	"testing"
+	"encoding/json"
 )
 
 func TestGetAllValidator(t *testing.T) {
@@ -62,4 +63,10 @@ func TestValidator_UpdateByPk(t *testing.T) {
 	} else {
 		t.Log("success")
 	}
+}
+
+func TestValidator_QueryValidatorDescription(t *testing.T) {
+	data := Validator{}.QueryValidatorDescription()
+	datamsg, _ := json.Marshal(data)
+	t.Log(string(datamsg))
 }

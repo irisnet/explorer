@@ -77,14 +77,14 @@ func registerQuerySysDate(r *mux.Router) error {
 // @Router /api/config [get]
 func registerQueryEnvConfig(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryConfig, "GET", func(request vo.IrisReq) interface{} {
-		getconfig := func(dconfigs []document.Config) (ret []vo.ConfigVo){
-			for _,val := range dconfigs {
-				ret = append(ret,vo.ConfigVo{
-					EnvNm:      val.EnvNm,
-					Env:        val.Env,
-					Host:       val.Host,
-					ChainId:    val.ChainId,
-					ShowFaucet: val.ShowFaucet,
+		getconfig := func(dconfigs []document.Config) (ret []vo.ConfigVo) {
+			for _, val := range dconfigs {
+				ret = append(ret, vo.ConfigVo{
+					NetworkName: val.NetworkName,
+					Env:         val.Env,
+					Host:        val.Host,
+					ChainId:     val.ChainId,
+					ShowFaucet:  val.ShowFaucet,
 				})
 			}
 			return ret
