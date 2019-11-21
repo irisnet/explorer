@@ -706,7 +706,13 @@ export default {
 			        if(res){
 				        this.votingObj = res;
 				        this.getVotingEndTime(res.voting_end_time);
-			        }
+			        }else {
+                        this.$store.commit('currentParticipationValue',0);
+                        this.$store.commit('currentYesValue',0);
+                        this.$store.commit('currentNoWithVetoValue',0);
+                        this.$store.commit('currentAbstainValue',0);
+                        this.$store.commit('currentNoValue',0);
+                    }
 		        }catch (e) {
                     console.error(e)
 		        }
