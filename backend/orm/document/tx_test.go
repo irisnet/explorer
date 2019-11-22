@@ -112,3 +112,13 @@ func TestCommonTx_QueryTxTransferGatewayOwner(t *testing.T) {
 	bytedata, _ := json.Marshal(ret)
 	t.Log(string(bytedata))
 }
+
+func TestCommonTx_QueryHashTimeByProposalIdVoters(t *testing.T) {
+	txList, err := CommonTx{}.QueryHashTimeByProposalIdVoters(44, nil)
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log(len(txList))
+	bytedata, _ := json.Marshal(txList)
+	t.Log(string(bytedata))
+}

@@ -57,6 +57,13 @@ type RangeDescription struct {
 	InitialValue string
 }
 
+type Voterinfo struct {
+	Voter      string `json:"voter"`
+	ProposalId string `json:"proposal_id"`
+	Option     string `json:"option"`
+}
+
+
 func GetAuthKeyWithRangeMap() map[string]RangeDescription {
 	result := map[string]RangeDescription{}
 	result[GovModuleAuthGasPriceThreshold] = RangeDescription{Range: "0,1000000000000000000", Description: "Minimum of gas price"}
@@ -199,6 +206,19 @@ func GetAllGovModuleParam() (map[string]interface{}, error) {
 	}
 	for k, v := range assetMap {
 		result[k] = v
+	}
+	return result, nil
+}
+
+func GetProposalVoters(proposalid uint64) (result []Voterinfo, err error) {
+	url := fmt.Sprintf(UrlProposalVoters, conf.Get().Hub.LcdUrl, proposalid)
+	resBytes, err := utils.Get(url)
+	if err != nil {
+		return result, err
+	}
+
+	if err := json.Unmarshal(resBytes, &result); err != nil {
+		return result, err
 	}
 	return result, nil
 }
