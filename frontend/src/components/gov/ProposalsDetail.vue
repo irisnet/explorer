@@ -435,7 +435,7 @@ export default {
 		    this.getDepositor()
 	    },
 	    filterVoteTx(item,index){
-		    this.currentPage = 1;
+		    this.currentPageNum = 1;
 		    this.filterTab = item;
             this.resetActiveStyle();
             this.filterTabArr[index].isActive = true;
