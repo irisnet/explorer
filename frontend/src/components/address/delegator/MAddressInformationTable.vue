@@ -60,6 +60,19 @@
                     <span>{{row.reward === 0 ? "--" : row.reward}}</span>
                 </div>
             </template>
+            <template slot-scope="{ row }" slot="amount">
+                <div class="name_address">
+                    <div v-if="!row.amount.includes('Tokens') && row.amount.toString().length < 12">
+                            <span>
+                                <span>{{substrAmount(row.amount)}}</span>
+                            </span>
+                    </div>
+                    <div  v-if="row.amount.includes('Tokens')"  class="skip_route">
+                        <router-link :to="`/tx?txHash=${row.txHash}`">{{row.amount}}</router-link>
+                    </div>
+                    <span class="address" v-if="row.amount.toString().length > 12 && !row.amount.includes('Tokens')">{{row.amount}}</span>
+                </div>
+            </template>
         </m-table>
         <div class="no_data_img_content" v-if="showNoData">
             <img src="../../../assets/no_data.svg" >
@@ -185,7 +198,7 @@
 					},
 					{
 						title: "Amount",
-                        key:'amount',
+                        slot:'amount',
 						className: 'text_right'
 					},
 					{
@@ -229,7 +242,18 @@
 			        return "";
 		        }
 		        return Tools.formatString(moniker, 15, "...");
-	        }
+	        },
+            substrAmount(amount){
+	            let tokenValue;
+	            if(amount !== '--'){
+                    tokenValue = Tools.formatAccountCoinsAmount(amount);
+                }
+                if(tokenValue && tokenValue.toString().length > 12){
+                    return Tools.formatString(amount.toString(),12,'...')
+                }else {
+                    return amount
+                }
+            },
         }
 	}
 </script>
