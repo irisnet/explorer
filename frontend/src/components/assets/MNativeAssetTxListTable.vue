@@ -459,7 +459,7 @@
 	}
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" >
     .name_address {
         display: inline-block;
         position: relative;

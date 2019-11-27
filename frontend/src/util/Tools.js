@@ -743,16 +743,22 @@ export default class Tools{
 	static formatListByAmount(amount){
 		let [amountNumber,tokenName] = ['--','--'];
 		if(amount instanceof Array && amount.length > 0) {
-			if (amount[0].denom && amount[0].amount && amount[0].denom === Constant.Denom.IRISATTO) {
-				amountNumber = amount[0].amount > 0 ? Tools.formatStringToFixedNumber(String(Tools.numberMoveDecimal(amount[0].amount)), 2) : amount[0].amount;
-				tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
-			} else if (amount[0].denom && amount[0].amount && amount[0].denom !== Constant.Denom.IRISATTO) {
-				amountNumber =  amount[0].amount;
-				tokenName = amount[0].denom.toLocaleUpperCase();
-			} else {
-				amountNumber = amount[0].amount;
-				tokenName = amount[0].denom.toLocaleUpperCase();
-			}
+		    if(amount.length > 1 ){
+                amountNumber = `${amount.length} Tokens`;
+                tokenName = '--'
+            }else {
+
+                if (amount[0].denom && amount[0].amount && amount[0].denom === Constant.Denom.IRISATTO) {
+                    amountNumber = amount[0].amount > 0 ? Tools.formatStringToFixedNumber(String(Tools.numberMoveDecimal(amount[0].amount)), 2) : amount[0].amount;
+                    tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
+                } else if (amount[0].denom && amount[0].amount && amount[0].denom !== Constant.Denom.IRISATTO) {
+                    amountNumber =  amount[0].amount;
+                    tokenName = amount[0].denom.toLocaleUpperCase();
+                } else {
+                    amountNumber = amount[0].amount;
+                    tokenName = amount[0].denom.toLocaleUpperCase();
+                }
+            }
 		}else if(amount.amount && Object.keys(amount.amount).includes('amount') && Object.keys(amount.amount).includes('denom')){
 			if(amount.denom === Constant.Denom.IRISATTO){
 				amountNumber = Tools.formatStringToFixedNumber(String(Tools.numberMoveDecimal(amount.amount)),2);
@@ -809,17 +815,33 @@ export default class Tools{
      * 格式化交易详情页的amount
      * */
     static formatAmountOfTxDetail(amount){
-        let [amountNumber,tokenName] = ['--','--'];
+        let [amountNumber,tokenName,moreAmountsNumber] = ['--','--',[]];
         if(amount instanceof Array && amount.length > 0) {
-            if (amount[0].denom && amount[0].amount && amount[0].denom === Constant.Denom.IRISATTO) {
-                amountNumber = amount[0].amount > 0 ? String(Tools.numberMoveDecimal(amount[0].amount)) : amount[0].amount;
-                tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
-            } else if (amount[0].denom && amount[0].amount && amount[0].denom !== Constant.Denom.IRISATTO) {
-                amountNumber =  amount[0].amount;
-                tokenName = amount[0].denom.toLocaleUpperCase();
-            } else {
-                amountNumber = amount[0].amount;
-                tokenName = amount[0].denom.toLocaleUpperCase();
+            if(amount.length !== 1){
+                moreAmountsNumber = amount.map( (item) => {
+                    if(item.denom === Constant.Denom.IRISATTO){
+                        return {
+                            denom : Constant.Denom.IRIS.toLocaleUpperCase(),
+                            amount: String(Tools.numberMoveDecimal(item.amount))
+                        }
+                    }else {
+                        return {
+                            denom : item.denom.toLocaleUpperCase(),
+                            amount: Tools.FormatScientificNotationToNumber(item.amount)
+                        }
+                    }
+                })
+            }else {
+                if (amount[0].denom && amount[0].amount && amount[0].denom === Constant.Denom.IRISATTO) {
+                    amountNumber = amount[0].amount > 0 ? String(Tools.numberMoveDecimal(amount[0].amount)) : amount[0].amount;
+                    tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
+                } else if (amount[0].denom && amount[0].amount && amount[0].denom !== Constant.Denom.IRISATTO) {
+                    amountNumber =  amount[0].amount;
+                    tokenName = amount[0].denom.toLocaleUpperCase();
+                } else {
+                    amountNumber = amount[0].amount;
+                    tokenName = amount[0].denom.toLocaleUpperCase();
+                }
             }
         }else if(amount.amount && Object.keys(amount.amount).includes('amount') && Object.keys(amount.amount).includes('denom')){
             if(amount.denom === Constant.Denom.IRISATTO){
@@ -845,6 +867,6 @@ export default class Tools{
             }
         }
         // console.log(amountNumber,tokenName,"amount information")
-        return {amountNumber,tokenName}
+        return {amountNumber,tokenName,moreAmountsNumber}
     }
 }
