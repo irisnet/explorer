@@ -5,7 +5,8 @@
 </template>
 
 <script>
-import echarts from "echarts";
+var echarts = require('echarts/lib/echarts')
+require('echarts/lib/chart/pie')
 export default {
     name: "MTokenStatsEchart",
     props: {

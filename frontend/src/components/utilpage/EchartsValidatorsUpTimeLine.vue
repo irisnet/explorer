@@ -10,8 +10,8 @@
 </template>
 
 <script>
-import echarts from 'echarts';
-
+var echarts = require('echarts/lib/echarts')
+require('echarts/lib/chart/line')
 let line = null;
 export default {
     name: 'echarts-uptime-line',

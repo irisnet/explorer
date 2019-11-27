@@ -13,7 +13,8 @@
 </template>
 
 <script>
-  import echarts from 'echarts';
+    var echarts = require('echarts/lib/echarts')
+  require('echarts/lib/chart/line')
   import Constant from "../../constant/Constant"
   let line = null;
   export default {
