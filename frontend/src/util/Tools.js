@@ -822,8 +822,12 @@ export default class Tools{
                 amountNumber =  amount[0].amount;
                 tokenName = amount[0].denom.toLocaleUpperCase();
             } else {
-                amountNumber = amount[0].amount;
-                tokenName = amount[0].denom.toLocaleUpperCase();
+                amountNumber = Tools.formatStringToFixedNumber(Tools.FormatScientificNotationToNumber(amount[0].amount),2);
+                if(amount[0].denom === Constant.Denom.IRISATTO){
+                    tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
+                }else {
+                    tokenName = amount[0].denom ? amount[0].denom.toLocaleUpperCase() : '--';
+                }
             }
         }else if(amount.amount && Object.keys(amount.amount).includes('amount') && Object.keys(amount.amount).includes('denom')){
             if(amount.denom === Constant.Denom.IRISATTO){
