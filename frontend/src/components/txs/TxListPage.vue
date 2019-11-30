@@ -124,7 +124,7 @@
 					return;
 				}
 				this.currentPageNumCache = this.currentPageNum;
-				let path = "/txs/transfers";
+				let path = this.$route.path;
 				history.pushState(null, null, `/#${path}?page=${pageNum}`);
 				this.getTxListByFilterCondition();
 			},
