@@ -423,7 +423,7 @@ export default class formatMsgsAndTags {
                 dataTx.msgs.forEach(item => {
                     if(item.msg){
                         amountObj = Tools.formatAmountOfTxDetail(dataTx.amount) ;
-                        message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(dataTx.amount.length > 0 ? `${amountObj.amountNumber} ${amountObj.tokenName}` : '-');
+                        message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(dataTx.amount.length > 0 ? `${amountObj.amountNumber} ${amountObj.tokenName}` : '--');
                         message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(item.msg.validator_addr ? item.msg.validator_addr : '-');
                         message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.msg.delegator_addr ? item.msg.delegator_addr : '-')
                     }
