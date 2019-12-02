@@ -411,8 +411,12 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
         if(dataTx.status === 'success'){
             message[Constant.TRANSACTIONMESSAGENAME.FROM] = dataTx.from ? dataTx.from.split(',') : '-';
-            amountObj = Tools.formatAmountOfTxDetail(dataTx.amount);
-            message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${amountObj.amountNumber} ${amountObj.tokenName}`)
+            if(dataTx.amount && dataTx.amount.length > 0 ){
+                amountObj = Tools.formatAmountOfTxDetail(dataTx.amount);
+                message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${amountObj.amountNumber} ${amountObj.tokenName}`)
+            }else {
+                message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--')
+            }
             message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(dataTx.to);
         }else {
             if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
