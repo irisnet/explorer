@@ -97,62 +97,59 @@
                 txTypeOption:[
 	                {
 		                value:'allTxType',
-		                label:'All TXType',
-		                slot:'allTXType'
+		                label:'All TxType',
+		                slot:'allTxType'
 	                }
                 ],
-                status:[
-	                {
-		                value:'allStatus',
-		                label:'All Status'
-	                },
-                	{
-                		value:'success',
-                        label:'Success'
-                    },
-                    {
-                    	value:'fail',
-                        label:'Failed'
-                    }
-                ],
-                statusValue:'allStatus',
-				value: 'allTxType',
+                status:[],
+                statusValue: this.getParamsByUrlHash().txStatus ? this.getParamsByUrlHash().txStatus : 'allStatus',
+				value: this.getParamsByUrlHash().txType  ? this.getParamsByUrlHash().txType : 'allTxType',
                 firstEntry:false,
 				startTime: '',
-                endTime: '',
+                endTime:  '',
                 filterStartTime: '',
                 filterEndTime: '',
                 TxType: '',
                 txStatus: '',
             }
         },
-        created(){
+        mounted(){
             this.getTxListByFilterCondition();
 	        this.getAllTxType();
+            let statusArray = [
+                {
+                    value:'allStatus',
+                    label:'All Status'
+                },
+                {
+                    value:'success',
+                    label:'Success'
+                },
+                {
+                    value:'fail',
+                    label:'Failed'
+                }
+            ]
+            statusArray.forEach( item => {
+                this.status.push(item)
+            })
         },
         methods:{
 	        getFilterTxs(){
-		        this.currentPageNum = 1;
-		        this.resetUrl();
+                this.currentPageNum = 1;
 		        sessionStorage.setItem('txpagenum',1);
-		        this.getTxListByFilterCondition();
+                history.pushState(null, null, `/#/txs?txType=${this.TxType}&status=${this.txStatus}&startTime=${this.filterStartTime}&endTime=${this.filterEndTime}&page=1`);
+                this.getTxListByFilterCondition();
 	        },
 			filterTxByTxType(e){
-				if (e === 'allTxType') {
+				if (e === 'allTxType' || e === undefined ) {
 					this.TxType = ''
                 }else {
-					this.TxType = e
+                    this.TxType = e
                 }
             },
 	        resetUrl(){
-	        	if(this.$route.query.page){
-			        this.$router.push({
-				        path: this.$route.path,
-				        query:{
-					        page:1
-				        }
-			        });
-                }
+                history.pushState(null, null, `/#/txs?txType=&status=&startTime=&endTime=&page=1`);
 	        },
 	        getStartTime(time){
 				this.filterStartTime = this.formatStartTime(time)
@@ -171,7 +168,7 @@
 		        return Number(new Date(time).getTime()/1000)
             },
 	        filterTxByStatus(e){
-		        if(e === 'allStatus'){
+		        if(e === 'allStatus' || e === undefined ){
 			        this.txStatus = ''
 		        }else {
 			        this.txStatus = e
@@ -202,10 +199,6 @@
 		        this.statusValue = 'allStatus';
 		        this.startTime = '';
                 this.endTime = '';
-		        this.filterStartTime= '';
-		        this.filterEndTime = '';
-		        this.TxType = '';
-		        this.txStatus = '';
 		        this.currentPageNum = 1;
                 this.resetUrl();
                 this.getTxListByFilterCondition()
@@ -222,8 +215,9 @@
 			        return;
 		        }
 		        this.currentPageNumCache = this.currentPageNum;
-			        let path = "/txs";
-			        history.pushState(null, null, `/#${path}?page=${pageNum}`);
+                    let urlParams = this.getParamsByUrlHash()
+                    console.log(urlParams.txType,urlParams.txStatus,urlParams.filterStartTime,urlParams.filterEndTime,'参数')
+			        history.pushState(null, null, `/#/txs?txType=${urlParams.txType ? urlParams.txType : ''}&status=${urlParams.txStatus ? urlParams.txStatus : ''}&startTime=${urlParams.filterStartTime ? urlParams.filterStartTime : ''}&endTime=${urlParams.filterEndTime ? urlParams.filterEndTime : ''}&page=${pageNum}`);
 			        this.getTxListByFilterCondition();
 	        },
             formatFee(Fee){
@@ -231,15 +225,38 @@
 		            return `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(Fee.amount)),4)} ${Tools.formatDenom(Fee.denom).toUpperCase()}`;
 	            }
             },
+            getParamsByUrlHash(){
+                let txType,
+                    txStatus,
+                    filterStartTime ,
+                    filterEndTime ;
+                let path = window.location.hash;
+                if(path.includes("?")){
+                    let urlHash = path.split('?')[1];
+                    let params =  urlHash.split("&");
+                    params.forEach( item => {
+                        if(item.includes('txType')){
+                            txType =  item.split("=")[1]
+                        }else if (item.includes('status')){
+                            txStatus = item.split("=")[1]
+                        }else if(item.includes('startTime')){
+                            filterStartTime = item.split("=")[1]
+                        }else if(item.includes('endTime')){
+                            filterEndTime = item.split("=")[1]
+                        }
+                    })
+                }
+                return {txType,txStatus,filterStartTime,filterEndTime}
+            },
 	        getTxListByFilterCondition(){
-                let param = {};
+               let param = {},urlParams = this.getParamsByUrlHash();
                 param.getTxListByFilterCondition = {};
 		        param.getTxListByFilterCondition.pageNumber = this.currentPageNum;
 		        param.getTxListByFilterCondition.pageSize = this.pageSize;
-		        param.getTxListByFilterCondition.txType = this.TxType;
-		        param.getTxListByFilterCondition.status = this.txStatus;
-		        param.getTxListByFilterCondition.beginTime = this.filterStartTime;
-		        param.getTxListByFilterCondition.endTime = this.filterEndTime;
+		        param.getTxListByFilterCondition.txType = urlParams.txType ? urlParams.txType: '';
+		        param.getTxListByFilterCondition.status = urlParams.txStatus ? urlParams.txStatus: '';
+		        param.getTxListByFilterCondition.beginTime = urlParams.filterStartTime ? urlParams.filterStartTime: '';
+		        param.getTxListByFilterCondition.endTime = urlParams.filterEndTime ? urlParams.filterEndTime: '';
                 Service.commonInterface(param, (res) => {
                 	try {
 		                this.countNum = res.Count;
@@ -273,7 +290,7 @@
 				this.getTxListByFilterCondition();
 			},
 		},
-	}
+    }
 </script>
 
 <style scoped lang="scss">

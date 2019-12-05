@@ -378,6 +378,9 @@
 </script>
 
 <style lang="scss">
+    .address {
+        display: none;
+    }
     .show_no_data{
         .m-table-body {
             .m_table tbody{
