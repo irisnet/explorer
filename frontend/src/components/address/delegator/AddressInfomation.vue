@@ -284,6 +284,13 @@
             }
         },
         mounted(){
+            let searchCondition = {
+                txType: '',
+                status: '',
+                beginTime: '',
+                endTime: ''
+            };
+            sessionStorage.setItem('searchResultByTxTypeAndAddress',JSON.stringify(searchCondition))
 			this.headerAddress = this.$route.params.param;
             this.getAddressInformation();
             this.getAssetList();
@@ -292,13 +299,6 @@
             this.getRewardsItems();
 	        this.getTxListByFilterCondition();
             this.getAllTxType();
-            let searchCondition = {
-                txType: '',
-                status: '',
-                beginTime: '',
-                endTime: ''
-            };
-            sessionStorage.setItem('searchResultByTxTypeAndAddress',JSON.stringify(searchCondition))
             let statusArray = [
                 {
                     value:'allStatus',
