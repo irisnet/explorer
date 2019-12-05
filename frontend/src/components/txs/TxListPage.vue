@@ -85,13 +85,13 @@
 				value: this.getParamsByUrlHash().txType  ? this.getParamsByUrlHash().txType : 'allTxType',
 				txStatus: '',
 				statusValue: this.getParamsByUrlHash().txStatus ? this.getParamsByUrlHash().txStatus : 'allStatus',
-				status:[
-
-				],
-				startTime: '',
-				endTime: '',
+				status:[],
+				startTime: this.getParamsByUrlHash().urlParamShowStartTime ? this.getParamsByUrlHash().urlParamShowStartTime : '',
+				endTime: this.getParamsByUrlHash().urlParamShowEndTime ? this.getParamsByUrlHash().urlParamShowEndTime : '',
 				filterStartTime: '',
 				filterEndTime: '',
+                urlParamsShowStartTime:'',
+                urlParamsShowEndTime:'',
 				type:'',
 				TxType:''
 			}
@@ -122,6 +122,8 @@
             getParamsByUrlHash(){
                 let txType,
                     txStatus,
+                    urlParamShowStartTime,
+                    urlParamShowEndTime,
                     filterStartTime ,
                     filterEndTime ;
                 let path = window.location.hash;
@@ -134,13 +136,15 @@
                         }else if (item.includes('status')){
                             txStatus = item.split("=")[1]
                         }else if(item.includes('startTime')){
-                            filterStartTime = item.split("=")[1]
+                            urlParamShowStartTime = item.split("=")[1]
+                            filterStartTime = this.formatStartTime(item.split("=")[1])
                         }else if(item.includes('endTime')){
-                            filterEndTime = item.split("=")[1]
+                            urlParamShowEndTime = item.split("=")[1]
+                            filterEndTime = this.formatEndTime(item.split("=")[1])
                         }
                     })
                 }
-                return {txType,txStatus,filterStartTime,filterEndTime}
+                return {txType,txStatus,filterStartTime,filterEndTime,urlParamShowStartTime,urlParamShowEndTime}
             },
 			forCurrentPageNum() {
 				let currentPageNum = 1;
@@ -155,13 +159,13 @@
 				}
 				this.currentPageNumCache = this.currentPageNum;
 				let path = this.$route.path , urlParams = this.getParamsByUrlHash();
-                history.pushState(null, null, `/#${path}?txType=${urlParams.txType ? urlParams.txType : ''}&status=${urlParams.txStatus ? urlParams.txStatus : ''}&startTime=${urlParams.filterStartTime ? urlParams.filterStartTime : ''}&endTime=${urlParams.filterEndTime ? urlParams.filterEndTime : ''}&page=${pageNum}`);
+                history.pushState(null, null, `/#${path}?txType=${urlParams.txType ? urlParams.txType : ''}&status=${urlParams.txStatus ? urlParams.txStatus : ''}&startTime=${urlParams.urlParamShowStartTime ? urlParams.urlParamShowStartTime : ''}&endTime=${urlParams.urlParamShowEndTime ? urlParams.urlParamShowEndTime : ''}&page=${pageNum}`);
 				this.getTxListByFilterCondition();
 			},
 			getFilterTxs(){
 				this.currentPageNum = 1;
 				sessionStorage.setItem('txpagenum',1);
-                history.pushState(null, null, `/#${this.$route.path}?txType=${this.TxType}&status=${this.txStatus}&startTime=${this.filterStartTime}&endTime=${this.filterEndTime}&page=1`);
+                history.pushState(null, null, `/#${this.$route.path}?txType=${this.TxType}&status=${this.txStatus}&startTime=${this.urlParamsShowStartTime}&endTime=${this.urlParamsShowEndTime}&page=1`);
 				this.getTxListByFilterCondition();
             },
             resetUrl(){
@@ -188,10 +192,12 @@
 				this.filterEndTime = this.formatEndTime(time)
 			},
 			formatStartTime(time){
+                this.urlParamsShowStartTime =  time
 				// let utcTime = Tools.conversionTimeToUTCByValidatorsLine(new Date(time).toISOString());
 				return Number(new Date(time).getTime()/1000)
 			},
 			formatEndTime(time){
+                this.urlParamsShowEndTime = time
 				// let utcTime = Tools.conversionTimeToUTCByValidatorsLine(new Date(time).toISOString());
 				let oneDaySeconds = 24 * 60 *60;
 				return Number(new Date(time).getTime()/1000) + Number(oneDaySeconds)

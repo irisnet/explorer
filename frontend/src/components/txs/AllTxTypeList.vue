@@ -105,10 +105,12 @@
                 statusValue: this.getParamsByUrlHash().txStatus ? this.getParamsByUrlHash().txStatus : 'allStatus',
 				value: this.getParamsByUrlHash().txType  ? this.getParamsByUrlHash().txType : 'allTxType',
                 firstEntry:false,
-				startTime: '',
-                endTime:  '',
+				startTime: this.getParamsByUrlHash().urlParamShowStartTime ? this.getParamsByUrlHash().urlParamShowStartTime : '',
+                endTime:  this.getParamsByUrlHash().urlParamShowEndTime ? this.getParamsByUrlHash().urlParamShowEndTime : '',
                 filterStartTime: '',
                 filterEndTime: '',
+                urlParamsShowStartTime:'',
+                urlParamsShowEndTime:'',
                 TxType: '',
                 txStatus: '',
             }
@@ -138,7 +140,7 @@
 	        getFilterTxs(){
                 this.currentPageNum = 1;
 		        sessionStorage.setItem('txpagenum',1);
-                history.pushState(null, null, `/#/txs?txType=${this.TxType}&status=${this.txStatus}&startTime=${this.filterStartTime}&endTime=${this.filterEndTime}&page=1`);
+                history.pushState(null, null, `/#/txs?txType=${this.TxType}&status=${this.txStatus}&startTime=${this.urlParamsShowStartTime}&endTime=${this.urlParamsShowEndTime}&page=1`);
                 this.getTxListByFilterCondition();
 	        },
 			filterTxByTxType(e){
@@ -152,9 +154,11 @@
                 history.pushState(null, null, `/#/txs?txType=&status=&startTime=&endTime=&page=1`);
 	        },
 	        getStartTime(time){
+	            this.urlParamsShowStartTime = time;
 				this.filterStartTime = this.formatStartTime(time)
             },
 	        getEndTime(time){
+	            this.urlParamsShowEndTime = time;
 		        this.filterEndTime = this.formatEndTime(time)
             },
             formatEndTime(time){
@@ -215,9 +219,10 @@
 			        return;
 		        }
 		        this.currentPageNumCache = this.currentPageNum;
-                    let urlParams = this.getParamsByUrlHash()
-                    console.log(urlParams.txType,urlParams.txStatus,urlParams.filterStartTime,urlParams.filterEndTime,'参数')
-			        history.pushState(null, null, `/#/txs?txType=${urlParams.txType ? urlParams.txType : ''}&status=${urlParams.txStatus ? urlParams.txStatus : ''}&startTime=${urlParams.filterStartTime ? urlParams.filterStartTime : ''}&endTime=${urlParams.filterEndTime ? urlParams.filterEndTime : ''}&page=${pageNum}`);
+                    let urlParams = this.getParamsByUrlHash();
+                    this.statusValue = urlParams.txStatus ? urlParams.txStatus : 'allStatus';
+                    this.value = urlParams.txType ? urlParams.txType : 'allTxType';
+			        history.pushState(null, null, `/#/txs?txType=${urlParams.txType ? urlParams.txType : ''}&status=${urlParams.txStatus ? urlParams.txStatus : ''}&startTime=${urlParams.urlParamShowStartTime ? urlParams.urlParamShowStartTime : ''}&endTime=${urlParams.urlParamShowEndTime ? urlParams.urlParamShowEndTime : ''}&page=${pageNum}`);
 			        this.getTxListByFilterCondition();
 	        },
             formatFee(Fee){
@@ -229,6 +234,8 @@
                 let txType,
                     txStatus,
                     filterStartTime ,
+                    urlParamShowStartTime,
+                    urlParamShowEndTime,
                     filterEndTime ;
                 let path = window.location.hash;
                 if(path.includes("?")){
@@ -240,13 +247,15 @@
                         }else if (item.includes('status')){
                             txStatus = item.split("=")[1]
                         }else if(item.includes('startTime')){
-                            filterStartTime = item.split("=")[1]
+                            urlParamShowStartTime = item.split("=")[1]
+                            filterStartTime = this.formatStartTime(item.split("=")[1])
                         }else if(item.includes('endTime')){
-                            filterEndTime = item.split("=")[1]
+                            urlParamShowEndTime = item.split("=")[1]
+                            filterEndTime = this.formatEndTime(item.split("=")[1])
                         }
                     })
                 }
-                return {txType,txStatus,filterStartTime,filterEndTime}
+                return {txType,txStatus,filterStartTime,filterEndTime,urlParamShowStartTime,urlParamShowEndTime}
             },
 	        getTxListByFilterCondition(){
                let param = {},urlParams = this.getParamsByUrlHash();
