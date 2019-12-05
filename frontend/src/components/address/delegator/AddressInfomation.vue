@@ -220,7 +220,7 @@
 				txTypeOption:[
 					{
 						value:'allTxType',
-						label:'All TXType',
+						label:'All TxType',
 						slot:'allTXType'
 					}
 				],
@@ -231,21 +231,8 @@
 				filterEndTime: '',
 				TxType: '',
 				txStatus: '',
-				status:[
-					{
-						value:'allStatus',
-						label:'All Status'
-					},
-					{
-						value:'success',
-						label:'Success'
-					},
-					{
-						value:'fail',
-						label:'Failed'
-					}
-				],
-				value: 'allTxType',
+				status:[],
+				value:'allTxType',
                 assetsItems:[],
                 delegationsItems:[],
                 unBondingDelegationsItems:[],
@@ -305,9 +292,40 @@
             this.getRewardsItems();
 	        this.getTxListByFilterCondition();
             this.getAllTxType();
+            let searchCondition = {
+                txType: '',
+                status: '',
+                beginTime: '',
+                endTime: ''
+            };
+            sessionStorage.setItem('searchResultByTxTypeAndAddress',JSON.stringify(searchCondition))
+            let statusArray = [
+                {
+                    value:'allStatus',
+                    label:'All Status'
+                },
+                {
+                    value:'success',
+                    label:'Success'
+                },
+                {
+                    value:'fail',
+                    label:'Failed'
+                }
+            ]
+            statusArray.forEach(item => {
+                this.status.push(item)
+            })
         },
         methods:{
 	        getFilterTxs(){
+                let searchCondition = {
+                    txType: this.TxType,
+                    status: this.txStatus,
+                    beginTime: this.filterStartTime,
+                    endTime: this.filterEndTime
+                };
+                sessionStorage.setItem('searchResultByTxTypeAndAddress',JSON.stringify(searchCondition))
 		        this.allTxCurrentPage = 1;
 		        this.resetUrl();
 		        sessionStorage.setItem('addressTxPageNum',1);
@@ -489,14 +507,18 @@
 		        })
 	        },
 	        getTxListByFilterCondition(){
-		        let param = {};
+                let txType = sessionStorage.getItem('searchResultByTxTypeAndAddress') ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).txType : "",
+                    txStatus = sessionStorage.getItem('searchResultByTxTypeAndAddress') ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).status : "",
+                    filterStartTime = sessionStorage.getItem('searchResultByTxTypeAndAddress') ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).beginTime : "",
+                    filterEndTime = sessionStorage.getItem('searchResultByTxTypeAndAddress') ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).endTime : "",
+                    param = {};
 		        param.getTxListByAddress = {};
 		        param.getTxListByAddress.pageNumber = this.allTxCurrentPage;
 		        param.getTxListByAddress.pageSize = this.addressTxPageSize;
-		        param.getTxListByAddress.txType = this.TxType;
-		        param.getTxListByAddress.status = this.txStatus;
-		        param.getTxListByAddress.beginTime = this.filterStartTime;
-		        param.getTxListByAddress.endTime = this.filterEndTime;
+		        param.getTxListByAddress.txType = txType;
+		        param.getTxListByAddress.status = txStatus;
+		        param.getTxListByAddress.beginTime = filterStartTime;
+		        param.getTxListByAddress.endTime = filterEndTime;
 		        param.getTxListByAddress.address = this.$route.params.param;
 		        Server.commonInterface(param, (res) => {
 			        try {
@@ -577,15 +599,18 @@
 		        }
 	        },
 	        resetFilterCondition(){
+                let searchCondition = {
+                    txType: '',
+                    status: '',
+                    beginTime: '',
+                    endTime: ''
+                };
+                sessionStorage.setItem('searchResultByTxTypeAndAddress',JSON.stringify(searchCondition))
 		        this.value = 'allTxType';
 		        this.statusValue = 'allStatus';
 		        this.startTime = '';
 		        this.endTime = '';
-		        this.filterStartTime= '';
-		        this.filterEndTime = '';
-		        this.TxType = '';
-		        this.txStatus = '';
-		        this.currentPageNum = 1;
+		        this.allTxCurrentPage = 1;
 		        this.resetUrl();
 		        this.getTxListByFilterCondition()
 	        },
@@ -690,6 +715,15 @@
 	        	this.allTxCurrentPage = pageNum
 	        	this.getTxListByFilterCondition()
             }
+        },
+        beforeDestroy() {
+            let searchCondition = {
+                txType: '',
+                status: '',
+                beginTime: '',
+                endTime: ''
+            };
+            sessionStorage.setItem('searchResultByTxTypeAndAddress',JSON.stringify(searchCondition))
         }
 	}
 </script>
