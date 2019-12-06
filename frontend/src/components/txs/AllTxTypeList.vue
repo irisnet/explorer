@@ -140,6 +140,9 @@
 	        getFilterTxs(){
                 this.currentPageNum = 1;
 		        sessionStorage.setItem('txpagenum',1);
+                if(this.TxType === ''){
+                    this.value = 'allTxType'
+                }
                 history.pushState(null, null, `/#/txs?txType=${this.TxType}&status=${this.txStatus}&startTime=${this.urlParamsShowStartTime}&endTime=${this.urlParamsShowEndTime}&page=1`);
                 this.getTxListByFilterCondition();
 	        },
@@ -222,6 +225,8 @@
                     let urlParams = this.getParamsByUrlHash();
                     this.statusValue = urlParams.txStatus ? urlParams.txStatus : 'allStatus';
                     this.value = urlParams.txType ? urlParams.txType : 'allTxType';
+                    this.startTime = urlParams.urlParamShowStartTime ? urlParams.urlParamShowStartTime : '';
+                    this.endTime = urlParams.urlParamShowEndTime ? urlParams.urlParamShowEndTime : '';
 			        history.pushState(null, null, `/#/txs?txType=${urlParams.txType ? urlParams.txType : ''}&status=${urlParams.txStatus ? urlParams.txStatus : ''}&startTime=${urlParams.urlParamShowStartTime ? urlParams.urlParamShowStartTime : ''}&endTime=${urlParams.urlParamShowEndTime ? urlParams.urlParamShowEndTime : ''}&page=${pageNum}`);
 			        this.getTxListByFilterCondition();
 	        },
