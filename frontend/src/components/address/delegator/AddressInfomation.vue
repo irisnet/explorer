@@ -224,15 +224,15 @@
 						slot:'allTXType'
 					}
 				],
-				statusValue:'allStatus',
-				startTime: '',
-				endTime: '',
+				statusValue:JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')) && JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).status ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).status : 'allStatus',
+				startTime: JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')) && JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).pageShowStartTime ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).pageShowStartTime : '',
+				endTime: JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')) && JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).pageShowEndTime ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).pageShowEndTime : '',
 				filterStartTime: '',
 				filterEndTime: '',
 				TxType: '',
 				txStatus: '',
 				status:[],
-				value:'allTxType',
+				value: JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')) && JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).txType  ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).txType : 'allTxType',
                 assetsItems:[],
                 delegationsItems:[],
                 unBondingDelegationsItems:[],
@@ -267,7 +267,9 @@
                 flAllTxNextPage: false,
 				allTxCountNum:0,
 				allTxCurrentPage:1,
-            }
+                pageShowStartTime:'',
+                pageShowEndTime:''
+        }
         },
         watch:{
 			$router(){
@@ -284,13 +286,6 @@
             }
         },
         mounted(){
-            let searchCondition = {
-                txType: '',
-                status: '',
-                beginTime: '',
-                endTime: ''
-            };
-            sessionStorage.setItem('searchResultByTxTypeAndAddress',JSON.stringify(searchCondition))
 			this.headerAddress = this.$route.params.param;
             this.getAddressInformation();
             this.getAssetList();
@@ -323,9 +318,14 @@
                     txType: this.TxType,
                     status: this.txStatus,
                     beginTime: this.filterStartTime,
-                    endTime: this.filterEndTime
+                    endTime: this.filterEndTime,
+                    pageShowStartTime: this.pageShowStartTime,
+                    pageShowEndTime: this.pageShowEndTime
                 };
                 sessionStorage.setItem('searchResultByTxTypeAndAddress',JSON.stringify(searchCondition))
+                if(this.TxType === ''){
+                    this.value = 'allTxType'
+                }
 		        this.allTxCurrentPage = 1;
 		        this.resetUrl();
 		        sessionStorage.setItem('addressTxPageNum',1);
@@ -558,7 +558,7 @@
 					        })
 				        }else {
 					        this.allTxCountNum = 0;
-					        this.flAllTxNextPage = false
+					        this.flAllTxNextPage = false;
 					        this.transactionsItems = []
 
 				        }
@@ -568,14 +568,16 @@
 		        })
 	        },
 	        getStartTime(time){
+	            this.pageShowStartTime= time;
 		        this.filterStartTime = this.formatStartTime(time)
 	        },
 	        getEndTime(time){
+	            this.pageShowEndTime = time;
 		        this.filterEndTime = this.formatEndTime(time)
 	        },
 
 	        filterTxByTxType(e){
-		        if (e === 'allTxType') {
+		        if (e === 'allTxType' || e === undefined) {
 			        this.TxType = ''
 		        }else {
 			        this.TxType = e
@@ -633,7 +635,7 @@
 	        	let newArray  = [];
 	        	if(dataArray.length > this.pageSize){
 			        while(index < dataArray.length) {
-				        newArray .push(dataArray.slice(index, index += this.pageSize));
+				        newArray.push(dataArray.slice(index, index += this.pageSize));
 			        }
                 }else {
 			        newArray = dataArray
@@ -712,7 +714,11 @@
 
             },
 	        allTxPageChange(pageNum){
-	        	this.allTxCurrentPage = pageNum
+	            this.value = JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')) && JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).txType  ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).txType : 'allTxType';
+	            this.statusValue = JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')) && JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).status ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).status : 'allStatus';
+	            this.startTime = JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')) && JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).pageShowStartTime ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).pageShowStartTime : '';
+	            this.endTime = JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')) && JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).pageShowEndTime ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).pageShowEndTime : '';
+	        	this.allTxCurrentPage = pageNum;
 	        	this.getTxListByFilterCondition()
             }
         },
