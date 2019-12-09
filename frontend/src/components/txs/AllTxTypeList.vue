@@ -7,7 +7,7 @@
                     <div class="filter_content">
                         <div class="tx_type_content">
                             <div class="tx_type_mobile_content">
-                                <i-select :model.sync="value" v-model="value" :on-change="filterTxByTxType(value) " filterable clearable>
+                                <i-select ref="select" :model.sync="value" v-model="value" :on-change="filterTxByTxType(value) " filterable clearable>
                                     <i-option v-for="(item, index) in txTypeOption"
                                               :value="item.value"
                                               :key="index"
@@ -140,6 +140,8 @@
 	        getFilterTxs(){
                 this.currentPageNum = 1;
 		        sessionStorage.setItem('txpagenum',1);
+                // this.$refs.select.setQuery(this.txTypeOption.toString())
+                // this.$refs.select.query = ''
                 if(this.TxType === ''){
                     this.value = 'allTxType'
                 }
@@ -154,6 +156,14 @@
                 }
             },
 	        resetUrl(){
+	            this.startTime = '';
+	            this.endTime = '';
+	            this.value = 'allTxType';
+	            this.statusValue = 'allStatus';
+	            this.txStatus ='';
+	            this.TxType = '';
+	            this.urlParamsShowStartTime = '';
+	            this.urlParamsShowEndTime = ''
                 history.pushState(null, null, `/#/txs?txType=&status=&startTime=&endTime=&page=1`);
 	        },
 	        getStartTime(time){

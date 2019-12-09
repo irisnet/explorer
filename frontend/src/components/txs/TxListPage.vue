@@ -176,6 +176,14 @@
 				this.getTxListByFilterCondition();
             },
             resetUrl(){
+                this.value = 'allTxType';
+                this.statusValue = 'allStatus';
+                this.startTime = '';
+                this.endTime = '';
+                this.TxType = '';
+                this.currentPageNum = 1;
+                this.urlParamsShowStartTime = '';
+                this.urlParamsShowEndTime = '';
                 history.pushState(null, null, `/#${this.$route.path}?txType=&status=&startTime=&endTime=&page=1`);
             },
 			filterTxByTxType(e){
@@ -210,12 +218,6 @@
 				return Number(new Date(time).getTime()/1000) + Number(oneDaySeconds)
 			},
 			resetFilterCondition(){
-				this.value = 'allTxType';
-				this.statusValue = 'allStatus';
-				this.startTime = '';
-				this.endTime = '';
-				this.TxType = '';
-				this.currentPageNum = 1;
 				this.getType();
 				this.getTxListByFilterCondition();
 				this.resetUrl()
