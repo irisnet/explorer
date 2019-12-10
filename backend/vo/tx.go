@@ -106,8 +106,10 @@ type BaseTx struct {
 
 type TransTx struct {
 	BaseTx
-	From   string      `json:"from"`
-	To     string      `json:"to"`
+	From        string `json:"from"`
+	To          string `json:"to"`
+	FromMoniker string `json:"from_moniker"`
+	ToMoniker   string `json:"to_moniker"`
 	//Amount utils.Coins `json:"amount"`
 }
 

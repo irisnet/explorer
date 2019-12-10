@@ -88,10 +88,19 @@ func (service *TxService) QueryBaseList(query bson.M, page, pageSize int, istota
 	}
 
 	data := buildTxVOsFromDoc(txList)
-	var baseData []vo.BaseTx
+	var baseData []vo.TransTx
 	for _, tx := range data {
 		txResp := buildBaseTx(tx)
-		baseData = append(baseData, txResp)
+
+		fromMoniker, tomoniker := service.BuildFTMoniker(tx.From, tx.To)
+
+		baseData = append(baseData, vo.TransTx{
+			BaseTx:      txResp,
+			From:        tx.From,
+			To:          tx.To,
+			FromMoniker: fromMoniker,
+			ToMoniker:   tomoniker,
+		})
 	}
 
 	pageInfo.Data = baseData
