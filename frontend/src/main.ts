@@ -14,25 +14,12 @@ import filters from './filters';
 Vue.use(filters);
 /*引入自定义组件*/
 import MTable from './components/commontables/MTable.vue';
-// import iView from 'iview';
-// import select from 'iview/src/components/select'
-// import datePicker from 'iview/src/components/date-picker'
-// import locale from 'iview/src/locale/lang/en-US'
-import 'iview/dist/styles/iview.css'
-// Vue.use(iView,{locale},select,datePicker);
 Vue.component('MTable', MTable);
 
-import IviewLocale from 'iview/src/locale'
-import IviewLocal from 'iview/src/locale/lang/en-US'
-import Select from 'iview/src/components/select'
-import Option from 'iview/src/components/option'
-import DatePick from "iview/src/components/date-picker"
-
-IviewLocale.use(IviewLocal)
-Vue.component('i-select',Select)
-Vue.component('i-option',Option)
-Vue.component('Date-picker',DatePick)
-
+import ElementUI from 'element-ui'
+import locale from 'element-ui/lib/locale/lang/en'
+import 'element-ui/lib/theme-chalk/index.css'
+Vue.use(ElementUI, { locale })
 
 
 import axios from "axios"

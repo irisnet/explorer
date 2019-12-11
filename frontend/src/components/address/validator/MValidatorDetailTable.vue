@@ -485,7 +485,7 @@ export default {
 .personal_computer_transactions_detail_wrap {
     .validator_detail_table {
         .m-table-header {
-            width: 100%;
+            width: calc(100% - 0.02rem);
             table.m_table {
                 width: auto;
             }

@@ -743,22 +743,20 @@ export default class Tools{
 	static formatListByAmount(amount){
 		let [amountNumber,tokenName] = ['--','--'];
 		if(amount instanceof Array && amount.length > 0) {
-		    if(amount.length > 1 ){
-                amountNumber = `${amount.length} Tokens`;
-                tokenName = '--'
-            }else {
-
-                if (amount[0].denom && amount[0].amount && amount[0].denom === Constant.Denom.IRISATTO) {
-                    amountNumber = amount[0].amount > 0 ? Tools.formatStringToFixedNumber(String(Tools.numberMoveDecimal(amount[0].amount)), 2) : amount[0].amount;
+			if (amount[0].denom && amount[0].amount && amount[0].denom === Constant.Denom.IRISATTO ||  amount[0].amount == 0) {
+				amountNumber = amount[0].amount > 0 ? Tools.formatStringToFixedNumber(String(Tools.numberMoveDecimal(amount[0].amount)), 2) : Number( amount[0].amount).toFixed(2);
+				tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
+			} else if (amount[0].denom && amount[0].amount && amount[0].denom !== Constant.Denom.IRISATTO) {
+				amountNumber =  amount[0].amount;
+				tokenName = amount[0].denom.toLocaleUpperCase();
+			} else {
+				amountNumber = Tools.formatStringToFixedNumber(Tools.FormatScientificNotationToNumber(amount[0].amount),2);
+				if(amount[0].denom === Constant.Denom.IRISATTO){
                     tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
-                } else if (amount[0].denom && amount[0].amount && amount[0].denom !== Constant.Denom.IRISATTO) {
-                    amountNumber =  amount[0].amount;
-                    tokenName = amount[0].denom.toLocaleUpperCase();
-                } else {
-                    amountNumber = amount[0].amount;
-                    tokenName = amount[0].denom.toLocaleUpperCase();
+                }else {
+                    tokenName = amount[0].denom ? amount[0].denom.toLocaleUpperCase() : '--';
                 }
-            }
+			}
 		}else if(amount.amount && Object.keys(amount.amount).includes('amount') && Object.keys(amount.amount).includes('denom')){
 			if(amount.denom === Constant.Denom.IRISATTO){
 				amountNumber = Tools.formatStringToFixedNumber(String(Tools.numberMoveDecimal(amount.amount)),2);
@@ -817,30 +815,19 @@ export default class Tools{
     static formatAmountOfTxDetail(amount){
         let [amountNumber,tokenName,moreAmountsNumber] = ['--','--',[]];
         if(amount instanceof Array && amount.length > 0) {
-            if(amount.length !== 1){
-                moreAmountsNumber = amount.map( (item) => {
-                    if(item.denom === Constant.Denom.IRISATTO){
-                        return {
-                            denom : Constant.Denom.IRIS.toLocaleUpperCase(),
-                            amount: String(Tools.numberMoveDecimal(item.amount))
-                        }
-                    }else {
-                        return {
-                            denom : item.denom.toLocaleUpperCase(),
-                            amount: Tools.FormatScientificNotationToNumber(item.amount)
-                        }
-                    }
-                })
-            }else {
-                if (amount[0].denom && amount[0].amount && amount[0].denom === Constant.Denom.IRISATTO) {
-                    amountNumber = amount[0].amount > 0 ? String(Tools.numberMoveDecimal(amount[0].amount)) : amount[0].amount;
+            if (amount[0].denom && amount[0].amount && amount[0].denom === Constant.Denom.IRISATTO || amount[0].amount == 0) {
+                amountNumber = amount[0].amount > 0 ? String(Tools.numberMoveDecimal(amount[0].amount)) : Number(amount[0].amount).toFixed(2);
+                tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
+            } else if (amount[0].denom && amount[0].amount && amount[0].denom !== Constant.Denom.IRISATTO) {
+                amountNumber =  amount[0].amount;
+                tokenName = amount[0].denom.toLocaleUpperCase();
+            } else {
+                amountNumber = Tools.formatStringToFixedNumber(Tools.FormatScientificNotationToNumber(amount[0].amount),2);
+                if(amount[0].denom === Constant.Denom.IRISATTO){
                     tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
-                } else if (amount[0].denom && amount[0].amount && amount[0].denom !== Constant.Denom.IRISATTO) {
-                    amountNumber =  amount[0].amount;
-                    tokenName = amount[0].denom.toLocaleUpperCase();
-                } else {
-                    amountNumber = amount[0].amount;
-                    tokenName = amount[0].denom.toLocaleUpperCase();
+                }else {
+                    tokenName = amount[0].denom ? amount[0].denom.toLocaleUpperCase() : '--';
+
                 }
             }
         }else if(amount.amount && Object.keys(amount.amount).includes('amount') && Object.keys(amount.amount).includes('denom')){

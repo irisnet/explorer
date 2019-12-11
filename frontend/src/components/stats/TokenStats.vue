@@ -6,7 +6,7 @@
         >
             <div>
                 <div class="page_title">IRIS Token Stats</div>
-                <div class="table_contanier" v-show="!itemsNoData">
+                <div class="table_container" v-show="!itemsNoData">
                     <div class="information_props_wrap" v-for="v in items" :key="v.label">
                         <span class="information_props">{{v.label}}</span>
                         <span class="information_value">{{v.value || '--'}}</span>
@@ -199,9 +199,10 @@ export default {
                 color: #515a6e;
                 font-weight: bold;
             }
-            .table_contanier {
+            .table_container {
                 display: flex;
                 flex-wrap: wrap;
+                width: 100%;
                 .information_props_wrap {
                     font-size: 14px;
                     line-height: 20px;
@@ -254,19 +255,23 @@ export default {
     }
     .mobile_list_page_container {
         & > div {
+            box-sizing: border-box;
             padding: 0 0.1rem;
             .page_title {
                 padding-left: 0.1rem;
             }
         }
-        .table_contanier {
+        .table_container {
             margin-right: 0 !important;
+            width: 100%;
             .information_props_wrap {
+                width: 100% !important;
+                flex: 0 0 calc(100% - 0.22rem) !important;
                 padding: 0.1rem !important;
                 margin-bottom: 0.1rem !important;
-                flex: 0 0 100% !important;
                 .information_props {
                     width: 100% !important;
+                    box-sizing: border-box;
                 }
                 .information_value {
                     width: 100% !important;

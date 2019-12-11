@@ -145,7 +145,6 @@
     background: #fff;
     .home_module_block_title_wrap{
       @include flex;
-      padding:0.2rem 0;
       margin: 0 0.2rem;
       height:0.64rem;
       justify-content: space-between;

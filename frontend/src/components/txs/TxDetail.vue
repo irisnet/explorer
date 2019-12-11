@@ -272,7 +272,6 @@
                             this.gasPrice = Tools.convertScientificNotation2Number(
                                 Tools.formaNumberAboutGasPrice(res.gas_price)
                             );
-                            res.isProfiler = false;
                             if(res.isProfiler){
                                 this.isProfiler = res.isProfiler;
                             }
