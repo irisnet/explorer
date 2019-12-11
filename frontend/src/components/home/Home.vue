@@ -539,7 +539,7 @@
                         .img_container {
                             display: flex;
                             align-items: center;
-
+                            line-height: 0.24rem;
                             .img_content {
                                 display: flex;
                                 align-items: center;
@@ -665,6 +665,7 @@
 @media screen and (max-width: 910px){
     .home_wrap{
         .home_container{
+            box-sizing: border-box;
             padding: 0.3rem 0.1rem 0 0.1rem;
             .information_preview{
                 .current_net_status_list{

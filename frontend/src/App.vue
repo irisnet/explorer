@@ -60,8 +60,10 @@
         color: var(--moduleColor);
     }
     body {
+        text-shadow:none !important;
         font-size: 16px !important;
         font-family:"Arial" !important;
+        /*-webkit-tap-highlight-color:rgba(0,0,0,0);*/
         /*font-family:"-apple-system","BlinkMacSystemFont","Segoe UI","Helvetica","Arial","sans-serif","Apple Color Emoji","Segoe UI Emoji"!important;*/
     }
     #app{
@@ -76,6 +78,86 @@
             height: calc(100% - 0.6rem);
             margin-top: 0.6rem;
             background: #F5F7FD;
+        }
+    }
+    .el-select-dropdown{
+        .el-scrollbar{
+            .el-select-dropdown__wrap{
+                .el-select-dropdown__list{
+                    .el-select-dropdown__item{
+                        color: var(--bgColor);
+                    }
+                }
+            }
+        }
+    }
+    .el-date-picker{
+        width: 2.46rem !important;
+    }
+    .el-picker-panel{
+        .el-picker-panel__body-wrapper{
+            .el-picker-panel__body{
+                .el-date-picker__header{
+                    width: 2.16rem;
+                    margin: 0.06rem 0.12rem;
+                    .el-picker-panel__icon-btn{
+                        &:hover{
+                            color: var(--bgColor) !important;
+                        }
+                    }
+                    .el-date-picker__header-label{
+                        &:hover{
+                            color: var(--bgColor) !important;
+                        }
+                        font-size: 0.14rem !important;
+                    }
+                }
+                .el-picker-panel__content{
+                    width: 2.16rem;
+                    margin: 0 0.15rem 0.15rem 0.15rem;
+                    .el-date-table{
+                        tbody{
+                            .el-date-table__row{
+                                .prev-month{
+                                    div{
+                                        height: 0.2rem;
+                                    }
+                                }
+                                .next-month{
+                                    div{
+                                        height: 0.2rem;
+                                    }
+                                }
+                                .available {
+                                    width: 0.24rem;
+                                    height: 0.2rem;
+                                    div{
+                                        height: 0.2rem;
+                                        &:hover{
+                                            color: var(--bgColor) !important;
+                                        }
+                                    }
+                                }
+                                .today{
+                                    div{
+                                        span{
+                                            color:var(--bgColor) !important;
+                                        }
+                                    }
+                                }
+                                .current{
+                                    div{
+                                        span{
+                                            color:#fff !important;
+                                            background:var(--bgColor) !important;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
     @media screen and (max-width: 910px){

@@ -253,7 +253,7 @@
     .address_information_delegation_list_content{
         .address_detail_table {
             .m-table-header {
-                width: 100%;
+                width: calc(100% - 0.02rem);
                 border-left: 0.01rem solid #E7E9EB;
                 border-right: 0.01rem solid #E7E9EB;
                 border-bottom: 0.01rem solid #E7E9EB;
@@ -275,7 +275,7 @@
     .address_information_unbonding_delegation_list_content{
         .address_detail_table {
             .m-table-header {
-                width: 100%;
+                width: calc(100% - 0.02rem);
                 border-left: 0.01rem solid #E7E9EB;
                 border-right: 0.01rem solid #E7E9EB;
                 border-bottom: 0.01rem solid #E7E9EB;
@@ -297,7 +297,7 @@
     .address_information_list_content{
         .address_detail_table {
             .m-table-header {
-                width: 100%;
+                width: calc(100% - 0.02rem);
                 border-left: 0.01rem solid #E7E9EB;
                 border-right: 0.01rem solid #E7E9EB;
                 border-bottom: 0.01rem solid #E7E9EB;

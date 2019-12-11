@@ -83,7 +83,7 @@
         </div>
         <div v-show="issueToken.length === 0 && editToken.length === 0
         && mintToken.length === 0 && transferToken.length === 0 && flShowContent">
-            <img class="no_data_img" src="../../assets/no_data.svg">
+            <img class="no_data_img"  src="../../assets/no_data.svg">
         </div>
     </div>
 </template>

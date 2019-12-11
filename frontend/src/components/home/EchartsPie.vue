@@ -182,8 +182,7 @@
   @import '../../style/mixin';
 
   .echarts_component_wrap{
-    width:100%;
-    height:100%;
+    height:3.4rem;
     padding:0.12rem 0.2rem 0 0.2rem;
     background: #fff;
     .echarts_title_wrap{
