@@ -24,6 +24,42 @@
                     </router-link>
                 </div>
             </template>
+            <template slot-scope="{ row }" slot="from">
+                <div class="common_hover_address_parent">
+                    <span v-if="(/^[1-9]\d*$/).test(row.from)" class="skip_route common_font_style">
+                        <router-link :to="`/tx?txHash=${row.txHash}`">{{row.from}} Validators</router-link>
+                    </span>
+                    <div class="name_address" v-if="!(/^[0-9]\d*$/).test(row.from) && row.from !== '--'">
+                        <div>
+                            <span class="remove_default_style " :class="row.isFromSkipRouter ? '' : 'skip_route'">
+                                <router-link :to="addressRoute(row.from)"
+                                             :style="{cursor: row.isFromSkipRouter ? 'auto' : 'pointer'}"
+                                             style="font-family: Consolas,Menlo;">{{formatMoniker(row.fromMoniker) || formatAddress(row.from)}}
+                                </router-link>
+                            </span>
+                        </div>
+                    </div>
+                    <span class="no_skip" v-show="(/^[0]\d*$/).test(row.from) || row.from === '--'">--</span>
+                </div>
+            </template>
+            <template slot-scope="{ row }" slot="to">
+                <div class="common_hover_address_parent">
+                    <span v-if="(/^[1-9]\d*$/).test(row.to)" class="skip_route common_font_style">
+                        <router-link :to="`/tx?txHash=${row.txHash}`">{{row.to}} Validators</router-link>
+                    </span>
+                    <div class="name_address" v-if="!(/^[0-9]\d*$/).test(row.to) && row.to !== '--'">
+                        <div>
+                            <span class="remove_default_style"  :class="row.isToSkipRouter ? '' : 'skip_route'">
+                                <router-link :to="addressRoute(row.to)"
+                                             :style="{cursor: row.isToSkipRouter ? 'auto' : 'pointer'}"
+                                             style="font-family: Consolas,Menlo;">{{formatMoniker(row.toMoniker) || formatAddress(row.to)}}
+                                </router-link>
+                            </span>
+                        </div>
+                    </div>
+                    <span class="no_skip" v-show="(/^[0]\d*$/).test(row.to) || row.to === '--'">--</span>
+                </div>
+            </template>
             <template slot-scope="{ row }" slot="token">
                 <div style="display: flex;align-items: center">
                    <span v-if="row.token === 'IRIS'" style="display: flex;align-items: center">
@@ -183,11 +219,19 @@
 						title: "Block",
                         slot:'block',
 					},
+                    {
+                        title:"From",
+                        slot:'from'
+                    },
 					{
 						title: "Amount",
                         key:'amount',
 						className: 'text_right'
 					},
+                    {
+                        title: 'To',
+                        slot: 'to'
+                    },
 					{
 						title: "TxType",
                         key:'txType',
@@ -253,7 +297,7 @@
     .address_information_delegation_list_content{
         .address_detail_table {
             .m-table-header {
-                width: 100%;
+                width: calc(100% - 0.02rem);
                 border-left: 0.01rem solid #E7E9EB;
                 border-right: 0.01rem solid #E7E9EB;
                 border-bottom: 0.01rem solid #E7E9EB;
@@ -275,7 +319,7 @@
     .address_information_unbonding_delegation_list_content{
         .address_detail_table {
             .m-table-header {
-                width: 100%;
+                width: calc(100% - 0.02rem);
                 border-left: 0.01rem solid #E7E9EB;
                 border-right: 0.01rem solid #E7E9EB;
                 border-bottom: 0.01rem solid #E7E9EB;
@@ -297,7 +341,7 @@
     .address_information_list_content{
         .address_detail_table {
             .m-table-header {
-                width: 100%;
+                width: calc(100% - 0.02rem);
                 border-left: 0.01rem solid #E7E9EB;
                 border-right: 0.01rem solid #E7E9EB;
                 border-bottom: 0.01rem solid #E7E9EB;

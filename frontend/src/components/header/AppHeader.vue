@@ -846,14 +846,13 @@
                             z-index: 1;
                             .search_input_wrap {
                                 max-width: 12.8rem;
-                                width: 100%;
                                 margin: 0 auto;
                                 padding: 0.1rem 0 0.1rem 0.2rem;
                                 display: flex;
                                 align-items: center;
                                 input {
                                     width: 100%;
-                                    height: 0.35rem;
+                                    height: 0.33rem;
                                     border-radius: 0.06rem 0 0 0.06rem;
                                     box-shadow: none;
                                     background: var(--bgColor);
@@ -1135,14 +1134,10 @@
                     font-size: 0.14rem;
                     padding: 0 0.48rem 0 0.1rem;
                     height: 0.3rem;
-                    &:focus {
-                        border: 0.01rem solid var(--bgColor);
-                        outline: none;
-                    }
                 }
                 .search_icon {
                     position: absolute;
-                    top: 0.05rem;
+                    top: 0.08rem;
                     font-size: 0.15rem;
                     right: 0.15rem;
                     color: var(--bgColor);

@@ -7,35 +7,34 @@
                     <div class="filter_content">
                         <div class="tx_type_content">
                             <div class="tx_type_mobile_content">
-                                <i-select :model.sync="value" v-model="value" :on-change="filterTxByTxType(value) " filterable clearable>
-                                    <i-option v-for="(item, index) in txTypeOption"
-                                              :value="item.value"
-                                              :key="index"
-                                    >{{item.label}}</i-option>
-                                </i-select>
-                                <i-select :model.sync="statusValue" v-model="statusValue" :on-change="filterTxByStatus(statusValue)">
-                                    <i-option v-for="(item,index) in status"
-                                              :value="item.value"
-                                              :key="index"
-                                    >{{item.label}}</i-option>
-                                </i-select>
+                                <el-select v-model="value" filterable :change="filterTxByTxType(value)">
+                                    <el-option v-for="(item, index) in txTypeOption"
+                                               :key="index"
+                                               :label="item.label"
+                                               :value="item.value"></el-option>
+                                </el-select>
+
+                                <el-select v-model="statusValue" :change="filterTxByStatus(statusValue)">
+                                    <el-option v-for="(item, index) in status"
+                                               :key="index"
+                                               :label="item.label"
+                                               :value="item.value"></el-option>
+                                </el-select>
                             </div>
                             <div class="tx_type_mobile_content">
-                                <Date-picker type="date"
-                                             v-model="startTime"
-                                             :value.sync="startTime"
-                                             :clearable = false
-                                             @on-change='getStartTime'
-                                             placeholder="Select Date"
-                                ></Date-picker>
+                                <el-date-picker  type="date"
+                                                 v-model="startTime"
+                                                 @change="getStartTime(startTime)"
+                                                 value-format="yyyy-MM-dd"
+                                                 placeholder="Select Date">
+                                </el-date-picker>
                                 <span class="joint_mark">~</span>
-                                <Date-picker type="date"
-                                             v-model="endTime"
-                                             :value.sync="endTime"
-                                             :clearable = false
-                                             @on-change="getEndTime"
-                                             placeholder="Select Date"
-                                ></Date-picker>
+                                <el-date-picker  type="date"
+                                                 v-model="endTime"
+                                                 value-format="yyyy-MM-dd"
+                                                 @change="getEndTime(endTime)"
+                                                 placeholder="Select Date">
+                                </el-date-picker>
                             </div>
                             <div class="tx_type_mobile_content">
                                 <div class="search_btn" @click="getFilterTxs">Search</div>
@@ -111,7 +110,6 @@
                 filterEndTime: '',
                 urlParamsShowStartTime:'',
                 urlParamsShowEndTime:'',
-                TxType: '',
                 txStatus: '',
             }
         },
@@ -140,9 +138,6 @@
 	        getFilterTxs(){
                 this.currentPageNum = 1;
 		        sessionStorage.setItem('txpagenum',1);
-                if(this.TxType === ''){
-                    this.value = 'allTxType'
-                }
                 history.pushState(null, null, `/#/txs?txType=${this.TxType}&status=${this.txStatus}&startTime=${this.urlParamsShowStartTime}&endTime=${this.urlParamsShowEndTime}&page=1`);
                 this.getTxListByFilterCondition();
 	        },
@@ -154,6 +149,13 @@
                 }
             },
 	        resetUrl(){
+	            this.startTime = '';
+	            this.endTime = '';
+	            this.value = 'allTxType';
+	            this.statusValue = 'allStatus';
+	            this.txStatus ='';
+	            this.urlParamsShowStartTime = '';
+	            this.urlParamsShowEndTime = ''
                 history.pushState(null, null, `/#/txs?txType=&status=&startTime=&endTime=&page=1`);
 	        },
 	        getStartTime(time){
@@ -339,41 +341,63 @@
                         .tx_type_mobile_content{
                             display: flex;
                             align-items: center;
-                            .ivu-select-visible{
-                                /deep/ .ivu-select-selection{
-                                    border-color: var(--bgColor) !important;
+
+                            /deep/.el-select{
+                                width: 1.3rem;
+                                margin-right: 0.1rem;
+                                .el-input{
+                                    .el-input__inner{
+                                        padding-left: 0.07rem;
+                                        height: 0.32rem;
+                                        font-size: 0.1rem !important;
+                                        &::-webkit-input-placeholder{
+                                            font-size: 0.1rem !important;
+                                        }
+                                    }
+                                    .el-input__inner:focus{
+                                        border-color: var(--bgColor) !important;
+                                    }
+                                    .el-input__suffix{
+                                        .el-input__suffix-inner{
+                                            .el-input__icon{
+                                                line-height: 0.32rem;
+                                            }
+                                        }
+                                    }
+                                }
+                                .is-focus{
+                                    .el-input__inner{
+                                        border-color: var(--bgColor) !important;
+                                    }
                                 }
 
                             }
-                            .ivu-select{
-                                margin-right: 0.1rem;
+                            /deep/.el-date-editor{
                                 width: 1.3rem;
-                                /deep/ .ivu-select-selection:hover{
-                                    border-color: var(--bgColor) !important;
+                                .el-icon-circle-close{
+                                    display: none !important;
                                 }
-                                .ivu-select-item{
-                                    text-indent: 0.1rem;
-                                    font-size: 0.14rem;
-                                    line-height: 0.18rem;
-                                    padding: 0.07rem 0.1rem 0.07rem 0;
-                                    color: var(--bgColor);
+                                .el-input__inner{
+                                    height:0.32rem;
+                                    padding-left: 0.07rem;
+                                    padding-right: 0;
+                                    &::-webkit-input-placeholder{
+                                        font-size: 0.1rem !important;
+                                    }
+                                    &:focus{
+                                        border-color: var(--bgColor);
+                                    }
+                                }
+                                .el-input__prefix{
+                                    right: 5px;
+                                    left: 1rem;
+                                    .el-input__icon{
+                                        line-height: 0.32rem;
+                                    }
                                 }
                             }
                             .joint_mark{
                                 margin: 0 0.1rem;
-                            }
-                            .ivu-date-picker{
-                                width: 1.3rem;
-                                /deep/ .ivu-date-picker-rel{
-                                    .ivu-input-wrapper{
-                                        .ivu-input:hover{
-                                            border-color: var(--bgColor) !important;
-                                        }
-                                        .ivu-input:focus{
-                                             border-color: var(--bgColor) !important;
-                                         }
-                                    }
-                                }
                             }
                             .reset_btn{
                                 background: var(--bgColor);
@@ -396,6 +420,7 @@
                                 border-radius: 0.04rem;
                                 padding: 0.05rem 0.18rem;
                                 font-size: 0.14rem;
+                                line-height: 0.2rem;
                             }
                         }
                     }
@@ -452,16 +477,11 @@
                                 display: flex;
                                 justify-content: space-between;
                                 margin-bottom: 0.1rem;
-                                .ivu-select{
+                                .el-select{
                                     margin-right: 0;
                                     width: 1.6rem;
                                 }
-                                .ivu-select-visible{
-                                    .ivu-select-selection{
-                                        border-color: var(--bgColor);
-                                    }
-                                }
-                                .ivu-date-picker{
+                                .el-date-editor{
                                     width: 1.6rem;
                                 }
                                 .reset_btn{

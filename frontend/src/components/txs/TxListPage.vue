@@ -5,35 +5,37 @@
                 <span class="transaction_list_title">{{count}} Txs</span>
                 <div class="filter_container">
                     <div class="filter_tx_type_statue_content">
-                        <i-select :model.sync="value" v-model="value" :on-change="filterTxByTxType(value)" filterable clearable>
-                            <i-option v-for="item in txTypeListArray" :value="item.value">{{item.label}}</i-option>
-                        </i-select>
-                        <i-select :model.sync="statusValue" v-model="statusValue" :on-change="filterTxByStatus(statusValue)">
-                            <i-option v-for="(item,index) in status"
-                                      :value="item.value"
-                                      :key="index"
-                            >{{item.label}}</i-option>
-                        </i-select>
+                        <el-select v-model="value" filterable :change="filterTxByTxType(value)">
+                            <el-option v-for="(item, index) in txTypeListArray"
+                                       :key="index"
+                                       :label="item.label"
+                                       :value="item.value"></el-option>
+                        </el-select>
+
+                        <el-select v-model="statusValue" :change="filterTxByStatus(statusValue)">
+                            <el-option v-for="(item, index) in status"
+                                       :key="index"
+                                       :label="item.label"
+                                       :value="item.value"></el-option>
+                        </el-select>
                     </div>
                     <div class="select_date_content">
-                        <Date-picker type="date"
-                                     v-model="startTime"
-                                     :value.sync="startTime"
-                                     :clearable = false
-                                     @on-change='getStartTime'
-                                     placeholder="Select Date"
-                        ></Date-picker>
+                        <el-date-picker  type="date"
+                                         v-model="startTime"
+                                         @change="getStartTime(startTime)"
+                                         value-format="yyyy-MM-dd"
+                                         placeholder="Select Date">
+                        </el-date-picker>
                         <span class="joint_mark">~</span>
-                        <Date-picker type="date"
-                                     v-model="endTime"
-                                     :value.sync="endTime"
-                                     :clearable = false
-                                     @on-change="getEndTime"
-                                     placeholder="Select Date"
-                        ></Date-picker>
+                        <el-date-picker  type="date"
+                                         v-model="endTime"
+                                         value-format="yyyy-MM-dd"
+                                         @change="getEndTime(endTime)"
+                                         placeholder="Select Date">
+                        </el-date-picker>
                     </div>
                     <div class="reset_search_content">
-                        <div class="search_btn" @click="getFilterTxs">Search</div>
+                        <div class="tx_search_btn" @click="getFilterTxs">Search</div>
                         <div class="reset_btn" @click="resetFilterCondition"><i class="iconfont iconzhongzhi"></i></div>
                     </div>
                 </div>
@@ -82,7 +84,7 @@
 				pageSize: 30,
 				showNoData: false,
 				flShowLoading: false,
-				value: this.getParamsByUrlHash().txType  ? this.getParamsByUrlHash().txType : 'allTxType',
+				value: this.getParamsByUrlHash().txType ? this.getParamsByUrlHash().txType : 'allTxType',
 				txStatus: '',
 				statusValue: this.getParamsByUrlHash().txStatus ? this.getParamsByUrlHash().txStatus : 'allStatus',
 				status:[],
@@ -93,11 +95,10 @@
                 urlParamsShowStartTime:'',
                 urlParamsShowEndTime:'',
 				type:'',
-				TxType:''
 			}
 		},
 		mounted(){
-            let statusArray = [
+                let statusArray = [
                 {
                     value:'allStatus',
                     label:'All Status'
@@ -169,13 +170,17 @@
 			getFilterTxs(){
 				this.currentPageNum = 1;
 				sessionStorage.setItem('txpagenum',1);
-                if(this.TxType === ''){
-                    this.value = 'allTxType'
-                }
                 history.pushState(null, null, `/#${this.$route.path}?txType=${this.TxType}&status=${this.txStatus}&startTime=${this.urlParamsShowStartTime}&endTime=${this.urlParamsShowEndTime}&page=1`);
-				this.getTxListByFilterCondition();
+                this.getTxListByFilterCondition();
             },
             resetUrl(){
+                this.value = 'allTxType';
+                this.statusValue = 'allStatus';
+                this.startTime = '';
+                this.endTime = '';
+                this.currentPageNum = 1;
+                this.urlParamsShowStartTime = '';
+                this.urlParamsShowEndTime = '';
                 history.pushState(null, null, `/#${this.$route.path}?txType=&status=&startTime=&endTime=&page=1`);
             },
 			filterTxByTxType(e){
@@ -210,15 +215,9 @@
 				return Number(new Date(time).getTime()/1000) + Number(oneDaySeconds)
 			},
 			resetFilterCondition(){
-				this.value = 'allTxType';
-				this.statusValue = 'allStatus';
-				this.startTime = '';
-				this.endTime = '';
-				this.TxType = '';
-				this.currentPageNum = 1;
 				this.getType();
-				this.getTxListByFilterCondition();
-				this.resetUrl()
+                this.resetUrl()
+                this.getTxListByFilterCondition();
 			},
             getType(){
 	            switch (this.$route.params.txType) {
@@ -319,40 +318,61 @@
                     .filter_tx_type_statue_content{
                         display: flex;
                         align-items: center;
-                        .ivu-select-visible{
-                            /deep/ .ivu-select-selection{
-                                border-color: var(--bgColor) !important;
-                            }
-
-                        }
-                        .ivu-select{
+                        /deep/.el-select{
                             width: 1.3rem;
                             margin-right: 0.1rem;
-                            /deep/ .ivu-select-selection:hover{
-                                border-color: var(--bgColor) !important;
+                            .el-input{
+                                .el-input__inner{
+                                    padding-left: 0.07rem;
+                                    height: 0.32rem;
+                                    font-size: 0.1rem !important;
+                                    &::-webkit-input-placeholder{
+                                        font-size: 0.1rem !important;
+                                    }
+                                }
+                                .el-input__inner:focus{
+                                    border-color: var(--bgColor) !important;
+                                }
+                                .el-input__suffix{
+                                   .el-input__suffix-inner{
+                                       .el-input__icon{
+                                           line-height: 0.32rem;
+                                       }
+                                   }
+                                }
                             }
-                            .ivu-select-item{
-                                text-indent: 0.1rem;
-                                font-size: 0.14rem;
-                                line-height: 0.18rem;
-                                padding: 0.07rem 0.1rem 0.07rem 0;
-                                color: var(--bgColor);
+                            .is-focus{
+                                .el-input__inner{
+                                    border-color: var(--bgColor) !important;
+                                }
                             }
+
                         }
                     }
                     .select_date_content{
                         display: flex;
                         align-items: center;
-                        .ivu-date-picker{
+                        /deep/.el-date-editor{
                             width: 1.3rem;
-                            /deep/ .ivu-date-picker-rel{
-                                .ivu-input-wrapper{
-                                    .ivu-input:hover{
-                                        border-color: var(--bgColor) !important;
-                                    }
-                                    .ivu-input:focus{
-                                        border-color: var(--bgColor) !important;
-                                    }
+                            .el-icon-circle-close{
+                                display: none !important;
+                            }
+                            .el-input__inner{
+                                height:0.32rem;
+                                padding-left: 0.07rem;
+                                padding-right: 0;
+                                &::-webkit-input-placeholder{
+                                    font-size: 0.1rem !important;
+                                }
+                                &:focus{
+                                    border-color: var(--bgColor);
+                                }
+                            }
+                            .el-input__prefix{
+                                right: 5px;
+                                left: 1rem;
+                                .el-input__icon{
+                                    line-height: 0.32rem;
                                 }
                             }
                         }
@@ -362,12 +382,14 @@
                     }
                     .reset_search_content{
                         display: flex;
+                        align-items: center;
                         .reset_btn{
                             background: var(--bgColor);
                             color: #fff;
                             border-radius: 0.04rem;
                             margin-left: 0.1rem;
                             cursor: pointer;
+                            height: 0.3rem;
                             i{
                                 padding: 0.08rem;
                                 font-size: 0.14rem;
@@ -375,7 +397,8 @@
                                 display: inline-block;
                             }
                         }
-                        .search_btn{
+                        .tx_search_btn{
+                            height: 0.2rem;
                             cursor: pointer;
                             background: var(--bgColor);
                             margin-left: 0.1rem;
@@ -383,6 +406,7 @@
                             border-radius: 0.04rem;
                             padding: 0.05rem 0.18rem;
                             font-size: 0.14rem;
+                            line-height: 0.2rem;
                         }
                     }
                 }
@@ -439,7 +463,7 @@
                             display: flex;
                             justify-content: space-between;
                             margin-bottom: 0.1rem;
-                            .ivu-select{
+                            .el-select{
                                 margin-right: 0;
                                 width: 1.6rem;
                             }
@@ -449,7 +473,7 @@
                             display: flex;
                             justify-content: space-between;
                             margin-bottom: 0.1rem;
-                            .ivu-date-picker{
+                            .el-date-editor{
                                 width: 1.6rem;
                             }
                         }
@@ -461,7 +485,7 @@
                             .reset_btn{
                                 margin-left: 0;
                             }
-                            .search_btn{
+                            .tx_search_btn{
                                 flex: 1;
                                 margin-left: 0;
                                 margin-right: 0.1rem;
