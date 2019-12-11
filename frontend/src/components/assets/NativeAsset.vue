@@ -322,6 +322,7 @@
         }
         .native_asset_list_title_wrap{
             width: 100%;
+            box-sizing: border-box;
             position: fixed;
             z-index: 10;
             background-color: #F5F7FD;
@@ -347,6 +348,7 @@
         .native_asset_list_table_content{
             .table_list_content{
                 width: 100%;
+                box-sizing: border-box;
                 overflow-x: auto;
                 padding-top: 0rem;
                 .no_data_show{

@@ -16,10 +16,17 @@ Vue.use(filters);
 import MTable from './components/commontables/MTable.vue';
 Vue.component('MTable', MTable);
 
-import ElementUI from 'element-ui'
-import locale from 'element-ui/lib/locale/lang/en'
 import 'element-ui/lib/theme-chalk/index.css'
-Vue.use(ElementUI, { locale })
+import {Select} from 'element-ui'
+import {DatePicker} from 'element-ui'
+import {Option} from 'element-ui'
+import lang from 'element-ui/lib/locale/lang/en'
+import locale from 'element-ui/lib/locale'
+locale.use(lang);
+Vue.component('el-select',Select);
+Vue.component('el-option',Option);
+Vue.component('el-date-picker',DatePicker);
+Vue.use(locale);
 
 
 import axios from "axios"

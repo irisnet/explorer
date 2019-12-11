@@ -281,6 +281,7 @@ export default {
         position: fixed;
     }
     .page_nav_container {
+        box-sizing: border-box;
         position: fixed;
         width: 100%;
         max-width: 12.8rem;

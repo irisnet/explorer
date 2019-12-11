@@ -312,6 +312,7 @@
 <style scoped lang="scss">
     .all_type_list_title_container{
         width: 100%;
+        box-sizing: border-box;
         position: fixed;
         z-index: 3;
         background: #F5F7FD;

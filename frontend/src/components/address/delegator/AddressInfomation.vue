@@ -286,11 +286,11 @@
         },
         mounted(){
 			this.headerAddress = this.$route.params.param;
-          /*  this.getAddressInformation();
+            this.getAddressInformation();
             this.getAssetList();
             this.getDelegationList();
             this.getUnBondingDelegationList();
-            this.getRewardsItems();*/
+            this.getRewardsItems();
             this.getAllTxType();
             let statusArray = [
                 {
