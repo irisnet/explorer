@@ -255,3 +255,12 @@ func (_ Proposal) GetProposalsByStatus(status, sorts []string) ([]Proposal, erro
 
 	return proposals, err
 }
+
+// update document by primary key
+func (_ Proposal) UpdateByPk(proposal Proposal) error {
+	db := orm.GetDatabase()
+	defer db.Session.Close()
+
+	c := db.C(CollectionNmProposal)
+	return c.Update(proposal.PkKvPair(), proposal)
+}

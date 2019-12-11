@@ -10,7 +10,10 @@
 </template>
 
 <script>
-import echarts from 'echarts';
+var echarts  = require('echarts/lib/echarts')
+require('echarts/lib/chart/line');
+require('echarts/lib/component/title');
+require('echarts/lib/component/tooltip');
 import Tools from "../../util/Tools";
 
 let line = null;

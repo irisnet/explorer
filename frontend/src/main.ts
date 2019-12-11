@@ -21,6 +21,7 @@ import locale from 'element-ui/lib/locale/lang/en'
 import 'element-ui/lib/theme-chalk/index.css'
 Vue.use(ElementUI, { locale })
 
+
 import axios from "axios"
 const  codec  = require("irisnet-crypto/util/codec.js") ;
 const  crypto = require("irisnet-crypto");

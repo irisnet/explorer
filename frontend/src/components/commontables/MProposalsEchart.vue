@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import echarts from 'echarts';
+var echarts = require('echarts')
 import Tools from '../../util/Tools';
 
 export default {

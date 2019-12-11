@@ -32,12 +32,13 @@ const (
 	UrlDistributionRewardsByValidatorAcc         = "%s/distribution/%s/rewards"
 	UrlValidatorsSigningInfoByConsensuPublicKey  = "%s/slashing/validators/%s/signing-info"
 	UrlDistributionWithdrawAddressByValidatorAcc = "%s/distribution/%s/withdraw-address"
-	UrlTokenStatsSupply                          = "https://rpc.irisnet.org/token-stats/supply"
-	UrlTokenStatsCirculation                     = "https://rpc.irisnet.org/token-stats/circulation"
-	UrlLookupIconsByKeySuffix                    = "https://keybase.io/_/api/1.0/user/lookup.json?fields=pictures&key_suffix=%s"
-	UrlAssetTokens                               = "%s/asset/tokens"
-	UrlAssetGateways                             = "%s/asset/gateways"
-	UrlHtlcInfo                                  = "%s/htlc/htlcs/%s"
+	UrlTokenStatsSupply       = "https://rpc.irisnet.org/token-stats/supply"
+	UrlTokenStatsCirculation  = "https://rpc.irisnet.org/token-stats/circulation"
+	UrlLookupIconsByKeySuffix = "https://keybase.io/_/api/1.0/user/lookup.json?fields=pictures&key_suffix=%s"
+	UrlAssetTokens            = "%s/asset/tokens"
+	UrlAssetGateways          = "%s/asset/gateways"
+	UrlHtlcInfo               = "%s/htlc/htlcs/%s"
+	UrlProposalVoters         = "%s/gov/proposals/%v/votes"
 )
 
 type AccountVo struct {

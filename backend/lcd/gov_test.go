@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/irisnet/explorer/backend/lcd"
+	"encoding/json"
 )
 
 func getModuleList() []string {
@@ -101,4 +102,14 @@ func TestGetAllGovModuleParam(t *testing.T) {
 	}
 	t.Logf("total: %v \n", len(paramMap))
 	printMap(paramMap, t)
+}
+
+func TestGetProposalVoters(t *testing.T) {
+	data, err := lcd.GetProposalVoters(21)
+	if err != nil {
+		t.Errorf("query all gov porposal voter err: %v \n", err)
+	}
+	t.Log("len:", len(data))
+	bytesmsg, _ := json.Marshal(data)
+	t.Log(string(bytesmsg))
 }
