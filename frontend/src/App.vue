@@ -101,11 +101,13 @@
                     width: 2.16rem;
                     margin: 0.06rem 0.12rem;
                     .el-picker-panel__icon-btn{
+                        color: #A3A6B9;
                         &:hover{
                             color: var(--bgColor) !important;
                         }
                     }
                     .el-date-picker__header-label{
+                        color: #171D44 !important;
                         &:hover{
                             color: var(--bgColor) !important;
                         }
@@ -117,8 +119,14 @@
                     margin: 0 0.15rem 0.15rem 0.15rem;
                     .el-date-table{
                         tbody{
+                            tr{
+                                th{
+                                    color:#171D44 !important;
+                                }
+                            }
                             .el-date-table__row{
                                 .prev-month{
+                                    color: #A3A6B9 !important;
                                     div{
                                         height: 0.2rem;
                                     }
@@ -133,6 +141,7 @@
                                     height: 0.2rem;
                                     div{
                                         height: 0.2rem;
+                                        color: #171D44 !important;
                                         &:hover{
                                             color: var(--bgColor) !important;
                                         }
