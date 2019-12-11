@@ -778,6 +778,7 @@
         background: rgba(255, 255, 255, 1);
         height: 0.6rem;
         .app_header_person_computer {
+            box-sizing: border-box;
             width: 100%;
             background: var(--bgColor);
             .header_navigation_container{
@@ -792,6 +793,7 @@
                 position: relative;
                 .header_navigation_wrap{
                     width: 100%;
+                    box-sizing: border-box;
                     height:0.6rem;
                     display: flex;
                     justify-content: space-between;
@@ -804,6 +806,7 @@
                             a{
                                 display: inline-block;
                                 width: 100%;
+                                box-sizing: border-box;
                                 padding-right: 0.1rem;
                                 img {
                                     height: 100%;

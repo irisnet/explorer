@@ -521,6 +521,7 @@
             flex-direction: column;
             max-width: 12.8rem;
             width: 100%;
+            box-sizing: border-box;
             padding: 0.3rem 0.2rem 0 0.2rem;
             .information_preview {
                 display: flex;

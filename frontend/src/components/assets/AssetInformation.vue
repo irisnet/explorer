@@ -610,6 +610,7 @@
 <style lang="scss">
     .asset_info_container{
         width: 100%;
+        box-sizing: border-box;
         position: relative;
         .no_data_img{
             position: absolute;
@@ -633,6 +634,7 @@
         }
         .asset_info_list_container{
             width: 100%;
+            box-sizing: border-box;
             margin-bottom: 0.2rem;
             .asset_info_list_content{
                 max-width: 12.8rem;
@@ -768,6 +770,7 @@
                     }
                     .asset_list_token_content{
                         width: 100%;
+                        box-sizing: border-box;
                         .asset_list_token_title{
                             margin-left: 0.2rem;
                             font-size: 0.18rem;
@@ -778,6 +781,7 @@
                         .asset_list_table_content{
                             padding-top: 0;
                             width: 100%;
+                            box-sizing: border-box;
                             overflow-x: auto;
                             -webkit-overflow-scrolling: touch;
                         }
