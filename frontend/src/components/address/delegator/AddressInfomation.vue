@@ -226,8 +226,8 @@
 				statusValue:JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')) && JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).status ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).status : 'allStatus',
 				startTime: JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')) && JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).pageShowStartTime ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).pageShowStartTime : '',
 				endTime: JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')) && JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).pageShowEndTime ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).pageShowEndTime : '',
-				filterStartTime: '',
-				filterEndTime: '',
+				filterStartTime: JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')) && JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).beginTime ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).beginTime : '',
+				filterEndTime: JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')) && JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).endTime ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).endTime : '',
 				TxType: '',
 				txStatus: '',
 				status:[],
@@ -265,9 +265,9 @@
                 flRewardsDelegationNextPage:false,
                 flAllTxNextPage: false,
 				allTxCountNum:0,
-				allTxCurrentPage:1,
-                pageShowStartTime:'',
-                pageShowEndTime:''
+				allTxCurrentPage: JSON.parse(sessionStorage.getItem('addressPageNum')) ? JSON.parse(sessionStorage.getItem('addressPageNum')) : 1,
+                pageShowStartTime: JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')) && JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).pageShowStartTime ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).pageShowStartTime : '',
+                pageShowEndTime: JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')) && JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).pageShowEndTime ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).pageShowEndTime : ''
         }
         },
         watch:{
@@ -286,12 +286,11 @@
         },
         mounted(){
 			this.headerAddress = this.$route.params.param;
-            this.getAddressInformation();
+          /*  this.getAddressInformation();
             this.getAssetList();
             this.getDelegationList();
             this.getUnBondingDelegationList();
-            this.getRewardsItems();
-	        this.getTxListByFilterCondition();
+            this.getRewardsItems();*/
             this.getAllTxType();
             let statusArray = [
                 {
@@ -310,6 +309,7 @@
             statusArray.forEach(item => {
                 this.status.push(item)
             })
+            this.getTxListByFilterCondition();
         },
         methods:{
 	        getFilterTxs(){
@@ -319,7 +319,7 @@
                     beginTime: this.filterStartTime,
                     endTime: this.filterEndTime,
                     pageShowStartTime: this.pageShowStartTime,
-                    pageShowEndTime: this.pageShowEndTime
+                    pageShowEndTime: this.pageShowEndTime,
                 };
                 sessionStorage.setItem('searchResultByTxTypeAndAddress',JSON.stringify(searchCondition))
 		        this.allTxCurrentPage = 1;
@@ -572,6 +572,7 @@
 	        getStartTime(time){
 	            this.pageShowStartTime= time;
 		        this.filterStartTime = this.formatStartTime(time)
+
 	        },
 	        getEndTime(time){
 	            this.pageShowEndTime = time;
@@ -721,11 +722,11 @@
 	            this.startTime = JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')) && JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).pageShowStartTime ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).pageShowStartTime : '';
 	            this.endTime = JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')) && JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).pageShowEndTime ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).pageShowEndTime : '';
 	        	this.allTxCurrentPage = pageNum;
+	        	sessionStorage.setItem('addressPageNum',pageNum)
 	        	this.getTxListByFilterCondition()
             }
         },
         beforeDestroy() {
-
             let searchCondition = {
                 txType: '',
                 status: '',
@@ -733,6 +734,7 @@
                 endTime: ''
             };
             sessionStorage.setItem('searchResultByTxTypeAndAddress',JSON.stringify(searchCondition))
+            sessionStorage.setItem('addressPageNum',1)
         }
 	}
 </script>
