@@ -22,7 +22,7 @@
             <div class="footer_right_content">
                 <h1 class="resources_content">Resources</h1>
                 <div class="footer_link_wrap">
-                    <a href="https://www.irisnetwork.cn/testnets" target="_blank">
+                    <a href="https://www.irisnet.org/testnets" target="_blank">
                         <span class="footer_link_contact">Use Testnet</span>
                     </a>
                     <span class="footer_link_join">|</span>

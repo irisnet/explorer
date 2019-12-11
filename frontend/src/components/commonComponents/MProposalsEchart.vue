@@ -72,7 +72,8 @@
 </template>
 
 <script>
-import echarts from 'echarts';
+var echarts = require('echarts/lib/echarts')
+require('echarts/lib/chart/pie')
 import Tools from '../../util/Tools';
 
 export default {

@@ -15,7 +15,12 @@
 </template>
 
 <script>
-  import echarts from 'echarts';
+    var echarts = require('echarts/lib/echarts')
+    require('echarts/lib/component/legend')
+    require('echarts/lib/component/tooltip')
+    require('echarts/lib/component/title')
+    require('echarts/lib/chart/pie');
+    require('echarts/lib/component/legendScroll')
   import Tools from "../../util/Tools";
 
   let pie = null;

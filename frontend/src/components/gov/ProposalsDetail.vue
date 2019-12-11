@@ -703,6 +703,7 @@ export default {
 			        proposalId: this.$route.params.proposal_id
                 }},(res) => {
         		try {
+
 			        if(res){
 				        this.votingObj = res;
 				        this.getVotingEndTime(res.voting_end_time);
@@ -1083,6 +1084,7 @@ export default {
     color: var(--contentColor);
     margin-bottom: 10px;
     flex-wrap: wrap;
+    align-items: center;
     .yes_option_style{
         display: inline-block;
         width: 0.12rem;

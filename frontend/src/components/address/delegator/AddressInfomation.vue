@@ -538,7 +538,13 @@
                                         }
 							        }
 						        }else {
-							        Amount = item.amount && item.amount.length > 0 ? Tools.formatAmount2(item.amount,this.fixedNumber) : '--';
+						            if(item.amount && item.amount.length > 0){
+						                if(item.amount.length > 1){
+                                            Amount = `${item.amount.length} Tokens`
+                                        }else {
+                                            Amount = item.amount && item.amount.length > 0 ? Tools.formatAmount2(item.amount,this.fixedNumber) : '--';
+                                        }
+                                    }
 						        }
 						        return {
 							        txHash: item.hash,

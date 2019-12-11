@@ -14,25 +14,25 @@ const (
 	TxStatusSuccess      = "success"
 	TxStatusFail         = "fail"
 
-	Tx_Field_Time                 = "time"
-	Tx_Field_Height               = "height"
-	Tx_Field_Hash                 = "tx_hash"
-	Tx_Field_From                 = "from"
-	Tx_Field_To                   = "to"
-	Tx_Field_Signers              = "signers"
-	Tx_Field_Amount               = "amount"
-	Tx_Field_Type                 = "type"
-	Tx_Field_Fee                  = "fee"
-	Tx_Field_Memo                 = "memo"
-	Tx_Field_Status               = "status"
-	Tx_Field_Code                 = "code"
-	Tx_Field_Log                  = "log"
-	Tx_Field_GasUsed              = "gas_used"
-	Tx_Field_GasPrice             = "gas_price"
-	Tx_Field_ActualFee            = "actual_fee"
-	Tx_Field_ProposalId           = "proposal_id"
-	Tx_Field_Tags                 = "tags"
-	Tx_Field_Msgs                 = "msgs"
+	Tx_Field_Time       = "time"
+	Tx_Field_Height     = "height"
+	Tx_Field_Hash       = "tx_hash"
+	Tx_Field_From       = "from"
+	Tx_Field_To         = "to"
+	Tx_Field_Signers    = "signers"
+	Tx_Field_Amount     = "amount"
+	Tx_Field_Type       = "type"
+	Tx_Field_Fee        = "fee"
+	Tx_Field_Memo       = "memo"
+	Tx_Field_Status     = "status"
+	Tx_Field_Code       = "code"
+	Tx_Field_Log        = "log"
+	Tx_Field_GasUsed    = "gas_used"
+	Tx_Field_GasPrice   = "gas_price"
+	Tx_Field_ActualFee  = "actual_fee"
+	Tx_Field_ProposalId = "proposal_id"
+	Tx_Field_Tags       = "tags"
+	Tx_Field_Msgs       = "msgs"
 
 	Tx_Field_Msgs_UdInfo         = "msgs.msg.ud_info.source"
 	Tx_Field_Msgs_Moniker        = "msgs.msg.moniker"
@@ -82,26 +82,26 @@ type ActualFee struct {
 }
 
 type CommonTx struct {
-	Time                 time.Time            `bson:"time"`
-	Height               int64                `bson:"height"`
-	TxHash               string               `bson:"tx_hash"`
-	From                 string               `bson:"from"`
-	To                   string               `bson:"to"`
-	Amount               Coins                `bson:"amount"`
-	Type                 string               `bson:"type"`
-	Fee                  Fee                  `bson:"fee"`
-	Memo                 string               `bson:"memo"`
-	Status               string               `bson:"status"`
-	Code                 uint32               `bson:"code"`
-	Log                  string               `bson:"log"`
-	GasUsed              int64                `bson:"gas_used"`
-	GasWanted            int64                `bson:"gas_wanted"`
-	GasPrice             float64              `bson:"gas_price"`
-	ActualFee            ActualFee            `bson:"actual_fee"`
-	ProposalId           uint64               `bson:"proposal_id"`
-	Tags                 map[string]string    `bson:"tags"`
-	Msgs                 []MsgItem            `bson:"msgs"`
-	Signers              []Signer             `bson:"signers"`
+	Time       time.Time         `bson:"time"`
+	Height     int64             `bson:"height"`
+	TxHash     string            `bson:"tx_hash"`
+	From       string            `bson:"from"`
+	To         string            `bson:"to"`
+	Amount     Coins             `bson:"amount"`
+	Type       string            `bson:"type"`
+	Fee        Fee               `bson:"fee"`
+	Memo       string            `bson:"memo"`
+	Status     string            `bson:"status"`
+	Code       uint32            `bson:"code"`
+	Log        string            `bson:"log"`
+	GasUsed    int64             `bson:"gas_used"`
+	GasWanted  int64             `bson:"gas_wanted"`
+	GasPrice   float64           `bson:"gas_price"`
+	ActualFee  ActualFee         `bson:"actual_fee"`
+	ProposalId uint64            `bson:"proposal_id"`
+	Tags       map[string]string `bson:"tags"`
+	Msgs       []MsgItem         `bson:"msgs"`
+	Signers    []Signer          `bson:"signers"`
 }
 
 func (tx CommonTx) String() string {
@@ -175,6 +175,19 @@ func (_ CommonTx) QueryHashActualFeeType() ([]CommonTx, error) {
 	var txs []CommonTx
 
 	err := queryAll(CollectionNmCommonTx, selector, nil, desc(Tx_Field_Time), 10, &txs)
+	return txs, err
+}
+
+func (_ CommonTx) QueryHashTimeByProposalIdVoters(proposalid int64, voters []string) ([]CommonTx, error) {
+
+	var selector = bson.M{Tx_Field_Time: 1, Tx_Field_Hash: 1, Tx_Field_From: 1, Tx_Field_ProposalId: 1}
+	var query = bson.M{Tx_Field_Type: types.TxTypeVote, Tx_Field_Status: TxStatusSuccess, Tx_Field_ProposalId: proposalid}
+	if len(voters) > 0 {
+		query[Tx_Field_From] = bson.M{"$in": voters}
+	}
+	var txs []CommonTx
+
+	err := queryAll(CollectionNmCommonTx, selector, query, desc(Tx_Field_Time), 0, &txs)
 	return txs, err
 }
 

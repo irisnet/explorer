@@ -13,3 +13,7 @@ func TestStartTask(t *testing.T) {
 	TxNumGroupByDayTask{}.Start()
 	time.Sleep(1 * time.Hour)
 }
+
+func TestUpdateProposalVoters_DoTask(t *testing.T) {
+	UpdateProposalVoters{}.DoTask()
+}

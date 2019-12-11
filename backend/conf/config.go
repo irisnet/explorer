@@ -39,6 +39,7 @@ const (
 	KeyCronTimeTxNumByDay          = "CronTimeTxNumByDay"
 	KeyCronTimeValidators          = "CronTimeValidators"
 	KeyCronTimeValidatorIcons      = "CronTimeValidatorIcons"
+	KeyCronTimeProposalVoters      = "CronTimeProposalVoters"
 	KeyCronTimeValidatorStaticInfo = "CronTimeValidatorStaticInfo"
 
 	EnvironmentDevelop = "dev"
@@ -84,6 +85,7 @@ func init() {
 		CronTimeTxNumByDay:          getEnvInt(KeyCronTimeTxNumByDay, DefaultEnvironment),
 		CronTimeValidators:          getEnvInt(KeyCronTimeValidators, DefaultEnvironment),
 		CronTimeValidatorIcons:      getEnvInt(KeyCronTimeValidatorIcons, DefaultEnvironment),
+		CronTimeProposalVoters:      getEnvInt(KeyCronTimeProposalVoters, DefaultEnvironment),
 		CronTimeValidatorStaticInfo: getEnvInt(KeyCronTimeValidatorStaticInfo, DefaultEnvironment),
 	}
 	config.Server = server
@@ -135,6 +137,7 @@ func loadDefault() {
 		KeyCronTimeGovParams:           "3600",
 		KeyCronTimeTxNumByDay:          "43200",
 		KeyCronTimeValidators:          "60",
+		KeyCronTimeProposalVoters:      "60",
 		KeyCronTimeValidatorIcons:      "43200",
 		KeyCronTimeValidatorStaticInfo: "300",
 	}
@@ -172,6 +175,7 @@ type serverConf struct {
 	CronTimeValidators          int
 	CronTimeValidatorStaticInfo int
 	CronTimeValidatorIcons      int
+	CronTimeProposalVoters      int
 }
 
 type hubConf struct {

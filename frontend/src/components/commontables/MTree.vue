@@ -16,7 +16,8 @@
 </template>
 
 <script>
-import echarts from "echarts";
+var echarts = require('echarts/lib/echarts')
+require('echarts/lib/chart/treemap')
 import Constants from "../../constant/Constant";
 
 export default {
@@ -325,7 +326,7 @@ export default {
                 show: true,
                 confine: true,
                 formatter: function(v) {
-                    return `${v.name}<br/> 
+                    return `${v.name}<br/>
                     voting_power: ${v.data &&
                         v.data.info &&
                         v.data.info.votingPower}`;
