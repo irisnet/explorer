@@ -544,12 +544,18 @@
 							        txHash: item.hash,
 							        block: item.block_height,
 							        amount: Amount,
+                                    from: item.from ? item.from : '--',
+                                    fromMoniker: item.from_moniker,
+                                    to: item.to ? item.to : '--',
+                                    toMoniker: item.to_moniker,
 							        txType: item.type,
 							        fee: this.formatFee(item.fee),
 							        signer: item.signer,
 							        status: Tools.firstWordUpperCase(item.status),
 							        timestamp: Tools.format2UTC(item.timestamp),
-                                    isSkipRouter: item.signer === this.$route.params.param
+                                    isSkipRouter: item.signer === this.$route.params.param,
+                                    isFromSkipRouter: item.from ? item.from === this.$route.params.param : false,
+                                    isToSkipRouter: item.to ? item.to === this.$route.params.param : false
 						        }
 					        })
 				        }else {
