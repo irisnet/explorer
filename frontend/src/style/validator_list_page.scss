@@ -59,6 +59,7 @@
       line-height: 0.7rem;
     }
     .mobile_blocks_list_page_wrap {
+      box-sizing: border-box;
       @include flex;
       flex-direction: column;
       overflow-x: auto;
@@ -123,6 +124,7 @@
     @include flex;
     flex-direction: column;
     padding: 0 0.1rem;
+    box-sizing: border-box;
     .transaction_information_content_title {
       height: 0.4rem;
       line-height: 0.4rem;

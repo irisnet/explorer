@@ -187,8 +187,6 @@
   @import '../../style/mixin';
 
   .echarts_component_wrap_line_personal_computer, .echarts_component_wrap_line_mobile {
-    width: 100%;
-    height: 100%;
     padding:0.12rem 0.2rem 0 0.2rem;
     .echarts_title_wrap_line {
       height: 15%;
@@ -221,8 +219,8 @@
       }
     }
     #echarts_line {
-      width: 100%;
-      height: 85%;
+        padding-top: 0.3rem;
+      height: 2.8rem;
     }
   }
   .echarts_component_wrap_line_mobile{

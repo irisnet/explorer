@@ -619,6 +619,7 @@
                 overflow-x: auto;
                 -webkit-overflow-scrolling:touch;
                 width:100%;
+                box-sizing: border-box;
                 .proposals_list_page_wrap_hash_var{
                     min-width:7rem;
                     color: #515a6e;
@@ -674,6 +675,7 @@
             @include flex;
             flex-direction: column;
             padding: 0 0.1rem;
+            box-sizing: border-box;
             .transaction_information_content_title {
                 height: 0.4rem;
                 line-height: 0.4rem;
