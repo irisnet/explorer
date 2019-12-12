@@ -52,15 +52,18 @@ func (service *TokenStatsService) QueryTokenStats() (vo.TokenStatsVo, error) {
 	}()
 	group.Wait()
 
-	initsupply := lcd.GetTokenInitSupply()
+	//initsupply := lcd.GetTokenInitSupply()
 	burnedtokens := lcd.GetTokens(banktokenstats.BurnedTokens)
 	bondedtokens := lcd.GetTokens(banktokenstats.BondedTokens)
 
 	tokenStats.TotalsupplyTokens = LoadCoinVoFromLcdCoin(&supply)
 	tokenStats.CirculationTokens = LoadCoinVoFromLcdCoin(&circulation)
-	tokenStats.InitsupplyTokens = LoadCoinVoFromLcdCoin(&initsupply)
+	//tokenStats.InitsupplyTokens = LoadCoinVoFromLcdCoin(&initsupply)
 	tokenStats.DelegatedTokens = LoadCoinVoFromLcdCoin(&bondedtokens)
 	tokenStats.BurnedTokens = LoadCoinVoFromLcdCoin(&burnedtokens)
+	if balance, err := lcd.GetCommunityTax(); err == nil {
+		tokenStats.CirculationTokens = LoadCoinVoFromLcdCoin(&balance)
+	}
 
 	return tokenStats, nil
 }
