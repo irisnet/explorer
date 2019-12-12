@@ -618,14 +618,14 @@ export default {
                             this.depositEndTime = that.flShowProposalTime('depositEndTime', data.proposal.status) ? Tools.format2UTC(data.proposal.deposit_end_time) : '--';
                             this.votingStartTime = that.flShowProposalTime('votingStartTime', data.proposal.status) ? Tools.format2UTC(data.proposal.voting_start_time) : '--';
                             this.votingEndTime = that.flShowProposalTime('votingEndTime', data.proposal.status) ? Tools.format2UTC(data.proposal.voting_end_time) : '--';
-                            this.description = data.proposal.description ? data.proposal.description : " -- ";
+                            this.description = data.proposal.description ? data.proposal.description : "--";
 	                        this.percentValue = data.proposal.percent ? `${(Number(data.proposal.percent) * 100).toFixed(2)}%` :'';
-	                        this.symbolValue = data.proposal.symbol ? data.proposal.symbol : " -- ";
-	                        this.canonicalSymbolValue = data.proposal.canonical_symbol ? data.proposal.canonical_symbol : " -- ";
-	                        this.nameValue = data.proposal.name ? data.proposal.name : " -- ";
-	                        this.decimalValue = data.proposal.decimal ? data.proposal.decimal : " -- ";
-	                        this.minUnitAliasValue = data.proposal.min_unit_alias ? data.proposal.min_unit_alias : " -- ";
-	                        this.initialSupplyValue = data.proposal.initial_supply ? data.proposal.initial_supply : " -- ";
+	                        this.symbolValue = data.proposal.symbol ? data.proposal.symbol : "--";
+	                        this.canonicalSymbolValue = data.proposal.canonical_symbol ? data.proposal.canonical_symbol : "--";
+	                        this.nameValue = data.proposal.name ? data.proposal.name : "--";
+	                        this.decimalValue = data.proposal.decimal ? data.proposal.decimal : "--";
+	                        this.minUnitAliasValue = data.proposal.min_unit_alias ? data.proposal.min_unit_alias : "--";
+	                        this.initialSupplyValue = data.proposal.initial_supply ? data.proposal.initial_supply : "--";
 	                        this.destAddressValue = data.proposal.dest_address ? data.proposal.dest_address : '--';
 	                        if (data.proposal && data.proposal.total_deposit.length !== 0) {
                                 this.totalDeposit = `${Tools.formatPriceToFixed(Tools.convertScientificNotation2Number(Tools.formatNumber(data.proposal.total_deposit[0].amount)))} ${Tools.formatDenom(data.proposal.total_deposit[0].denom).toUpperCase()}`;

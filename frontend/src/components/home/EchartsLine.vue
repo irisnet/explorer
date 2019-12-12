@@ -2,7 +2,7 @@
   <div :class="echartsComponentWrapLine">
     <div class="echarts_title_wrap_line">
       <span class="echarts_title"><i class="iconfont iconTransactionHistory"></i>14 day Transaction History</span>
-      <span class="view_all_content"><router-link :to="`/txs`">View All</router-link></span>
+      <span class="view_all_content"><router-link :to="`/txs?txType=&status=&startTime=${startTime}&endTime=${endTime}&page=1`">View All</router-link></span>
     </div>
     <div id="echarts_line">
 
@@ -30,12 +30,16 @@
         if(this.$store.state.currentSkinStyle !== 'default'){
           this.setThemeStyle();
           this.setEcartsLine(this.informationLine)
+            this.startTime = this.formatDate(this.informationLine.xData[0])
+            this.endTime = this.formatDate(this.informationLine.xData[this.informationLine.xData.length - 1])
         }
       },
     },
     data() {
       return {
         skinStyle:'',
+        endTime:'',
+        startTime:'',
         lineSkinBackgroundStyle:[
 
         ],
@@ -59,6 +63,9 @@
     },
 
     methods: {
+      formatDate(time){
+          return `${String(time).substr(6,4)}-${String(time).substr(0,2)}-${String(time).substr(3,2)}`
+      },
       onWindowResize(){
         line.resize();
       },

@@ -1112,7 +1112,7 @@ export default {
   font-size: 0.14rem;
   .transactions_title_wrap {
     width: 100%;
-      box-sizing: border-box;
+    box-sizing: border-box;
     border-bottom: 1px solid #d6d9e0 !important;
     height: 0.62rem;
     background: #efeff1;

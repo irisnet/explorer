@@ -80,6 +80,11 @@
             background: #F5F7FD;
         }
     }
+    .el-scrollbar {
+        > .el-scrollbar__bar {
+            opacity: 1 !important;
+        }
+    }
     .el-select-dropdown{
         .el-scrollbar{
             .el-select-dropdown__wrap{
@@ -102,6 +107,7 @@
                     margin: 0.06rem 0.12rem;
                     .el-picker-panel__icon-btn{
                         color: #A3A6B9;
+                        padding: 0;
                         &:hover{
                             color: var(--bgColor) !important;
                         }
@@ -122,6 +128,9 @@
                             tr{
                                 th{
                                     color:#171D44 !important;
+                                }
+                                td{
+                                    opacity: 1 !important;
                                 }
                             }
                             .el-date-table__row{

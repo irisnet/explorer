@@ -25,6 +25,7 @@
                                 <el-date-picker  type="date"
                                                  v-model="startTime"
                                                  @change="getStartTime(startTime)"
+                                                 :editable="false"
                                                  value-format="yyyy-MM-dd"
                                                  placeholder="Select Date">
                                 </el-date-picker>
@@ -33,6 +34,7 @@
                                                  v-model="endTime"
                                                  value-format="yyyy-MM-dd"
                                                  @change="getEndTime(endTime)"
+                                                 :editable="false"
                                                  placeholder="Select Date">
                                 </el-date-picker>
                             </div>
@@ -108,8 +110,8 @@
                 endTime:  this.getParamsByUrlHash().urlParamShowEndTime ? this.getParamsByUrlHash().urlParamShowEndTime : '',
                 filterStartTime: '',
                 filterEndTime: '',
-                urlParamsShowStartTime:'',
-                urlParamsShowEndTime:'',
+                urlParamsShowStartTime:this.getParamsByUrlHash().urlParamShowStartTime ? this.getParamsByUrlHash().urlParamShowStartTime : '',
+                urlParamsShowEndTime:this.getParamsByUrlHash().urlParamShowEndTime ? this.getParamsByUrlHash().urlParamShowEndTime : '',
                 txStatus: '',
             }
         },
@@ -350,9 +352,10 @@
                                     .el-input__inner{
                                         padding-left: 0.07rem;
                                         height: 0.32rem;
-                                        font-size: 0.1rem !important;
+                                        font-size: 0.14rem !important;
+                                        line-height: 0.32rem;
                                         &::-webkit-input-placeholder{
-                                            font-size: 0.1rem !important;
+                                            font-size: 0.14rem !important;
                                         }
                                     }
                                     .el-input__inner:focus{
@@ -382,8 +385,9 @@
                                     height:0.32rem;
                                     padding-left: 0.07rem;
                                     padding-right: 0;
+                                    line-height: 0.32rem;
                                     &::-webkit-input-placeholder{
-                                        font-size: 0.1rem !important;
+                                        font-size: 0.14rem !important;
                                     }
                                     &:focus{
                                         border-color: var(--bgColor);
@@ -398,7 +402,7 @@
                                 }
                             }
                             .joint_mark{
-                                margin: 0 0.1rem;
+                                margin: 0 0.08rem;
                             }
                             .reset_btn{
                                 background: var(--bgColor);
