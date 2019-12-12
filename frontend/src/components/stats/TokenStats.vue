@@ -9,7 +9,17 @@
                 <div class="table_container" v-show="!itemsNoData">
                     <div class="information_props_wrap" v-for="v in items" :key="v.label">
                         <span class="information_props">{{v.label}}</span>
-                        <span class="information_value">{{v.value || '--'}}</span>
+                        <span class="information_value"
+                              :class="v.value ? 'skip_route' : ''"
+                              v-if="v.label === 'Burned'">
+                            <router-link :to="`/address/iaa108a0ts008fphurftmsvj5p2q8ltq8qedy0jxd8`">{{v.value || '--'}}</router-link>
+                            </span>
+                        <span class="information_value"
+                              :class="v.value ? 'skip_route' : ''"
+                              v-if="v.label === 'Community Tax'">
+                            <router-link :to="`/address/iaa18rtw90hxz4jsgydcusakz6q245jh59kfma3e5h`">{{v.value || '--'}}</router-link>
+                            </span>
+                        <span class="information_value" v-if="v.label !== 'Burned' && v.label !== 'Community Tax'">{{v.value || '--'}}</span>
                     </div>
                 </div>
                 <div v-show="itemsNoData" class="no_data_show"><img src="../../assets/no_data.svg" alt=""></div>
@@ -46,7 +56,7 @@ export default {
                     value: ""
                 },
                 {
-                    label: "Initial Supply",
+                    label: "Community Tax",
                     value: ""
                 },
                 {
@@ -54,7 +64,7 @@ export default {
                     value: ""
                 },
                 {
-                    label: "Bonded Tokens",
+                    label: "Bonded",
                     value: ""
                 }
             ],
@@ -84,15 +94,15 @@ export default {
                                         value: Tools.formatAmount2(data.circulation_tokens,4,)
                                     },
                                     {
-                                        label: "Initial Supply",
-                                        value: Tools.formatAmount2(data.initsupply_tokens, 4)
+                                        label: "Community Tax",
+                                        value: Tools.formatAmount2(data.community_tax, 4)
                                     },
                                     {
                                         label: "Burned",
                                         value: Tools.formatAmount2(data.burned_tokens, 4)
                                     },
                                     {
-                                        label: "Bonded Tokens",
+                                        label: "Bonded",
                                         value: Tools.formatAmount2(data.delegated_tokens,4)
                                     }
                                 ];
@@ -156,10 +166,19 @@ export default {
             if (Number(num) < 0.0001) {
                 return "<0.0001";
             } else {
-                let s = num + "";
+                let s = num + "",n;
                 let arr = s.split(".");
                 arr[1] = arr[1] || "";
-                let n = `${arr[0]}.${arr[1].padEnd(4, "0").substring(0, 4)}`;
+                if(arr[1].toString().length > 4){
+                    n =`${arr[0]}.${arr[1].substring(0, 4)}`
+                }else {
+                    let diffNum = 4 - arr[1].toString().length;
+                    for(let i = 0; i < diffNum; i++){
+                        arr[1] += '0'
+                    }
+                    n = `${arr[0]}.${arr[1]}`
+                }
+                // let n = `${arr[0]}.${arr[1].padEnd(4, "0").substring(0, 4)}`;
                 return n;
             }
         }
@@ -224,6 +243,9 @@ export default {
                         margin-top: 0.12rem;
                         word-break: break-all;
                         word-wrap: break-word;
+                        > a{
+                            font-size: 0.16rem;
+                        }
                     }
                     .skip_route {
                         a,

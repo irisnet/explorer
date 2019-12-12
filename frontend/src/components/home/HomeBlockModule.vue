@@ -194,6 +194,7 @@
             @include flex;
             justify-content: space-between;
             @include fontSize;
+              margin-top: 0.05rem;
             .blocks_module_Amount{
               color:var(--contentColor);
               display:inline-block;
