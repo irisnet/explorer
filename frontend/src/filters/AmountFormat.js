@@ -17,9 +17,18 @@ function afterPointLength(value) {
 }
 
 function subString(value, fixedValue) {
-    let arr = value.split(".");
+    let arr = value.split("."),n;
     arr[1] = arr[1] || '';
-    let n = `${arr[0]}.${arr[1].padEnd(fixedValue, "0").substring(0, fixedValue)}`;
+    if(arr[1].toString().length > fixedValue){
+        n =`${arr[0]}.${arr[1].substring(0, fixedValue)}`
+    }else {
+        let diffNum = fixedValue - arr[1].toString().length;
+        for(let i = 0; i < diffNum; i++){
+            arr[1] += '0'
+        }
+        n = `${arr[0]}.${arr[1]}`
+    }
+    // let n = `${arr[0]}.${arr[1].padEnd(fixedValue, "0").substring(0, fixedValue)}`;
     return n;
 }
 
@@ -50,7 +59,7 @@ function amountFromatFunc (value, denomArg, fixedValue, noTofixed,ratio) {
                 if (!value.denom) {
                     amount = !noTofixed ? `${Tools.formatPriceToFixed(
                         value.amount, fixedValue || afterPointLen
-                    )} ${denomArg || 'SHARES'}` : 
+                    )} ${denomArg || 'SHARES'}` :
                     `${subString(
                         value.amount, fixedValue || afterPointLen
                     )} ${denomArg || 'SHARES'}`;
@@ -60,7 +69,7 @@ function amountFromatFunc (value, denomArg, fixedValue, noTofixed,ratio) {
                         afterPointLen = afterPointLength(value.amount);
                         amount = !noTofixed ? `${Tools.formatPriceToFixed(
                             value.amount, fixedValue || afterPointLen
-                        )} ${denomArg || Tools.formatDenom(value.denom).toUpperCase() || ''}` : 
+                        )} ${denomArg || Tools.formatDenom(value.denom).toUpperCase() || ''}` :
                         `${subString(
                             value.amount, fixedValue || afterPointLen
                         )} ${denomArg || Tools.formatDenom(value.denom).toUpperCase() || ''}`;

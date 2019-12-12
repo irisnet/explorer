@@ -1129,6 +1129,7 @@ export default {
     }
 }
 .mobile_transactions_detail_wrap {
+    box-sizing: border-box;
     .validator_information_content_title {
         padding-left: 0.1rem;
     }
