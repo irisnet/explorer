@@ -198,12 +198,16 @@ export default class Tools{
 	 * 格式化数字的类型是string的数字并在小数点后面超过多少位以后加 ...
 	 */
 	static formatStringToFixedNumber(str,splitNum){
-		if(str.indexOf(".") !== -1) {
+		if(str.toString().indexOf(".") !== -1) {
 			let splitString = str.split(".")[1];
 			if(splitString.length > splitNum){
 				return str.split(".")[0] + '.' +  splitString.substr(0,splitNum)
 			}else {
-				return str.split(".")[0] + '.' + splitString.padEnd(2, "0")
+                let diffNum = 2 - splitString.length;
+                for(let i = 0; i < diffNum; i++){
+                    splitString += '0'
+                }
+				return str.split(".")[0] + '.' + splitString
 			}
 		}else {
 			return str + '.00'
@@ -398,7 +402,16 @@ export default class Tools{
         if (value) {
             let arr = value.split('.');
             arr[1] = arr[1] || '';
-            value = `${arr[0]}.${arr[1].padEnd(afterPointLength, '0').substring(0, afterPointLength)}`;
+            if(arr[1].toString().length > afterPointLength){
+                value =`${arr[0]}.${arr[1].substring(0, afterPointLength)}`
+            }else {
+                let diffNum = afterPointLength - arr[1].toString().length;
+                for(let i = 0; i < diffNum; i++){
+                    arr[1] += '0'
+                }
+                value = `${arr[0]}.${arr[1]}`
+            }
+            // value = `${arr[0]}.${arr[1].padEnd(afterPointLength, '0').substring(0, afterPointLength)}`;
         }
         return value;
     }

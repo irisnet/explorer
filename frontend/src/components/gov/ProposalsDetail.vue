@@ -91,10 +91,6 @@
                         <span class="information_props">MinUnitAlias :</span>
                         <span class="information_value">{{minUnitAliasValue}}</span>
                     </div>
-                    <div class="information_props_wrap">
-                        <span class="information_props">InitialSupply :</span>
-                        <span class="information_value">{{initialSupplyValue}}</span>
-                    </div>
                 </div>
                 <div class="information_props_wrap">
                     <span class="information_props">Description :</span>
@@ -313,7 +309,6 @@ export default {
 	        nameValue:'',
 	        decimalValue:'',
 	        minUnitAliasValue: '',
-	        initialSupplyValue: '',
 	        destAddressValue:'',
 	        percentValue: '',
             devicesWidth: window.innerWidth,
@@ -581,7 +576,6 @@ export default {
                             this.nameValue = '--';
                             this.decimalValue = '--';
                             this.minUnitAliasValue = '--';
-                            this.initialSupplyValue = '--';
                             this.destAddressValue = '--';
                             this.percentValue = '--'
                         } else {
@@ -625,7 +619,6 @@ export default {
 	                        this.nameValue = data.proposal.name ? data.proposal.name : "--";
 	                        this.decimalValue = data.proposal.decimal ? data.proposal.decimal : "--";
 	                        this.minUnitAliasValue = data.proposal.min_unit_alias ? data.proposal.min_unit_alias : "--";
-	                        this.initialSupplyValue = data.proposal.initial_supply ? data.proposal.initial_supply : "--";
 	                        this.destAddressValue = data.proposal.dest_address ? data.proposal.dest_address : '--';
 	                        if (data.proposal && data.proposal.total_deposit.length !== 0) {
                                 this.totalDeposit = `${Tools.formatPriceToFixed(Tools.convertScientificNotation2Number(Tools.formatNumber(data.proposal.total_deposit[0].amount)))} ${Tools.formatDenom(data.proposal.total_deposit[0].denom).toUpperCase()}`;
