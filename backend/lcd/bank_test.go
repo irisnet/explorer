@@ -37,3 +37,12 @@ func TestGetTokens(t *testing.T) {
 	coin := GetTokens(res)
 	t.Log(coin)
 }
+
+func TestGetCommunityTax(t *testing.T) {
+	res, err := GetCommunityTax()
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(res)
+
+}

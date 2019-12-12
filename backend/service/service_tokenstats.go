@@ -62,7 +62,7 @@ func (service *TokenStatsService) QueryTokenStats() (vo.TokenStatsVo, error) {
 	tokenStats.DelegatedTokens = LoadCoinVoFromLcdCoin(&bondedtokens)
 	tokenStats.BurnedTokens = LoadCoinVoFromLcdCoin(&burnedtokens)
 	if balance, err := lcd.GetCommunityTax(); err == nil {
-		tokenStats.CirculationTokens = LoadCoinVoFromLcdCoin(&balance)
+		tokenStats.CommunityTax = LoadCoinVoFromLcdCoin(&balance)
 	}
 
 	return tokenStats, nil
