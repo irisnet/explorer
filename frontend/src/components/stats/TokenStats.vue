@@ -17,8 +17,9 @@
                         <span class="information_value"
                               :class="v.value ? 'skip_route' : ''"
                               v-if="v.label === 'Community Tax'">
-                            <router-link :to="`/address/iaa18rtw90hxz4jsgydcusakz6q245jh59kfma3e5h`">{{v.value || '--'}}</router-link>
+                            <router-link v-if="v.value && v.value !== '--'" :to="`/address/iaa18rtw90hxz4jsgydcusakz6q245jh59kfma3e5h`">{{v.value || '--'}}</router-link>
                             </span>
+                        <span v-if="v.value && v.value === '--'">--</span>
                         <span class="information_value" v-if="v.label !== 'Burned' && v.label !== 'Community Tax'">{{v.value || '--'}}</span>
                     </div>
                 </div>
@@ -87,23 +88,23 @@ export default {
                                 let obj = [
                                     {
                                         label: "Total Supply",
-                                        value: Tools.formatAmount2(data.totalsupply_tokens,4,)
+                                        value: data.totalsupply_tokens ? Tools.formatAmount2(data.totalsupply_tokens,4,) : '--'
                                     },
                                     {
                                         label: "Circulation",
-                                        value: Tools.formatAmount2(data.circulation_tokens,4,)
+                                        value: data.circulation_tokens ? Tools.formatAmount2(data.circulation_tokens,4,) : '--'
                                     },
                                     {
                                         label: "Community Tax",
-                                        value: Tools.formatAmount2(data.community_tax, 4)
+                                        value: data.community_tax ? Tools.formatAmount2(data.community_tax, 4) : '--'
                                     },
                                     {
                                         label: "Burned",
-                                        value: Tools.formatAmount2(data.burned_tokens, 4)
+                                        value: data.burned_tokens ? Tools.formatAmount2(data.burned_tokens, 4) : '--'
                                     },
                                     {
                                         label: "Bonded",
-                                        value: Tools.formatAmount2(data.delegated_tokens,4)
+                                        value: data.delegated_tokens ? Tools.formatAmount2(data.delegated_tokens,4) : '--'
                                     }
                                 ];
                                 this.items = obj;
