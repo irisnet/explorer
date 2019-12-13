@@ -106,6 +106,7 @@ func (service *ProposalService) QueryDeposit(id int) vo.ProposalNewStyle {
 		Type:           data.Type,
 		Status:         data.Status,
 		DepositEndTime: data.DepositEndTime.UTC(),
+		SubmitTime:     data.SubmitTime,
 	}
 
 	tx, err := document.CommonTx{}.QueryProposalInitAmountTxById(id)
