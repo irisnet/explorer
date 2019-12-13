@@ -852,16 +852,16 @@ func (service *ValidatorService) UpdateValidators(vs []document.Validator) error
 	service.UpdateDescription(dstValidators)
 	for _, v := range dstValidators {
 		if v1, ok := vMap[v.OperatorAddress]; ok {
-			if isDiffValidator(v1, v) {
-				v.ID = v1.ID
-				v.Icons = v1.Icons
+			v.ID = v1.ID
+			v.Icons = v1.Icons
+			if !isEqual(v1, v) {
 				// set staticInfo, see detail: buildValidatorStaticInfo
 				v.Uptime = v1.Uptime
 				v.SelfBond = v1.SelfBond
 				v.DelegatorNum = v1.DelegatorNum
 				txs = append(txs, txn.Op{
 					C:  document.CollectionNmValidator,
-					Id: v1.ID,
+					Id: v.ID,
 					Update: bson.M{
 						"$set": v,
 					},
@@ -1027,32 +1027,6 @@ func queryDelegationInfo(operatorAddress string) (string, int) {
 	}
 	delegatorNum := len(delegations)
 	return selfBond, delegatorNum
-}
-
-func isDiffValidator(src, dst document.Validator) bool {
-	if src.OperatorAddress != dst.OperatorAddress ||
-		src.ConsensusPubkey != dst.ConsensusPubkey ||
-		src.Jailed != dst.Jailed ||
-		src.Status != dst.Status ||
-		src.Tokens != dst.Tokens ||
-		src.DelegatorShares != dst.DelegatorShares ||
-		src.BondHeight != dst.BondHeight ||
-		src.UnbondingHeight != dst.UnbondingHeight ||
-		src.UnbondingTime.Second() != dst.UnbondingTime.Second() ||
-		src.VotingPower != dst.VotingPower ||
-		src.ProposerAddr != dst.ProposerAddr ||
-		src.Description.Moniker != dst.Description.Moniker ||
-		src.Description.Identity != dst.Description.Identity ||
-		src.Description.Website != dst.Description.Website ||
-		src.Description.Details != dst.Description.Details ||
-		src.Commission.Rate != dst.Commission.Rate ||
-		src.Commission.MaxRate != dst.Commission.MaxRate ||
-		src.Commission.MaxChangeRate != dst.Commission.MaxChangeRate ||
-		src.Commission.UpdateTime.Second() != dst.Commission.UpdateTime.Second() {
-		logger.Info("validator has changed", logger.String("OperatorAddress", src.OperatorAddress))
-		return true
-	}
-	return false
 }
 
 func isEqual(srcValidator, dstValidator document.Validator) bool {
