@@ -796,6 +796,8 @@
             .address_information_delegation_tx_container{
                 margin-top: 0.3rem;
                 display: flex;
+                overflow-x: auto;
+                overflow-y: hidden;
                 .address_information_delegation_tx_content{
                     flex: 1;
                     margin-right: 0.2rem;
