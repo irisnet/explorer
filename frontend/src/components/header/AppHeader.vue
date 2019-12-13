@@ -981,6 +981,7 @@
         @include flex();
         @include pcContainer;
         flex: 0 0 1.14rem;
+        z-index: 100;
         .useFeature {
             width: 100%;
             height: 0.66rem;
