@@ -5,35 +5,39 @@
                 <span class="transaction_list_title">{{count}} Txs</span>
                 <div class="filter_container">
                     <div class="filter_tx_type_statue_content">
-                        <i-select :model.sync="value" v-model="value" :on-change="filterTxByTxType(value)" filterable clearable>
-                            <i-option v-for="item in txTypeListArray" :value="item.value">{{item.label}}</i-option>
-                        </i-select>
-                        <i-select :model.sync="statusValue" v-model="statusValue" :on-change="filterTxByStatus(statusValue)">
-                            <i-option v-for="(item,index) in status"
-                                      :value="item.value"
-                                      :key="index"
-                            >{{item.label}}</i-option>
-                        </i-select>
+                        <el-select v-model="value" filterable :change="filterTxByTxType(value)">
+                            <el-option v-for="(item, index) in txTypeListArray"
+                                       :key="index"
+                                       :label="item.label"
+                                       :value="item.value"></el-option>
+                        </el-select>
+
+                        <el-select v-model="statusValue" :change="filterTxByStatus(statusValue)">
+                            <el-option v-for="(item, index) in status"
+                                       :key="index"
+                                       :label="item.label"
+                                       :value="item.value"></el-option>
+                        </el-select>
                     </div>
                     <div class="select_date_content">
-                        <Date-picker type="date"
-                                     v-model="startTime"
-                                     :value.sync="startTime"
-                                     :clearable = false
-                                     @on-change='getStartTime'
-                                     placeholder="Select Date"
-                        ></Date-picker>
+                        <el-date-picker  type="date"
+                                         v-model="startTime"
+                                         @change="getStartTime(startTime)"
+                                         :editable="false"
+                                         value-format="yyyy-MM-dd"
+                                         placeholder="Select Date">
+                        </el-date-picker>
                         <span class="joint_mark">~</span>
-                        <Date-picker type="date"
-                                     v-model="endTime"
-                                     :value.sync="endTime"
-                                     :clearable = false
-                                     @on-change="getEndTime"
-                                     placeholder="Select Date"
-                        ></Date-picker>
+                        <el-date-picker  type="date"
+                                         v-model="endTime"
+                                         value-format="yyyy-MM-dd"
+                                         @change="getEndTime(endTime)"
+                                         :editable="false"
+                                         placeholder="Select Date">
+                        </el-date-picker>
                     </div>
                     <div class="reset_search_content">
-                        <div class="search_btn" @click="getFilterTxs">Search</div>
+                        <div class="tx_search_btn" @click="getFilterTxs">Search</div>
                         <div class="reset_btn" @click="resetFilterCondition"><i class="iconfont iconzhongzhi"></i></div>
                     </div>
                 </div>
@@ -73,7 +77,7 @@
 				txTypeListArray:[
 					{
 						value:'allTxType',
-						label:'All TXType',
+						label:'All TxType',
 						slot:'allTXType'
 					}
                 ],
@@ -82,36 +86,69 @@
 				pageSize: 30,
 				showNoData: false,
 				flShowLoading: false,
-				value: 'allTxType',
+				value: this.getParamsByUrlHash().txType ? this.getParamsByUrlHash().txType : 'allTxType',
 				txStatus: '',
-				statusValue:'allStatus',
-				status:[
-					{
-						value:'allStatus',
-						label:'All Status'
-					},
-					{
-						value:'success',
-						label:'Success'
-					},
-					{
-						value:'fail',
-						label:'Failed'
-					}
-				],
-				startTime: '',
-				endTime: '',
+				statusValue: this.getParamsByUrlHash().txStatus ? this.getParamsByUrlHash().txStatus : 'allStatus',
+				status:[],
+				startTime: this.getParamsByUrlHash().urlParamShowStartTime ? this.getParamsByUrlHash().urlParamShowStartTime : '',
+				endTime: this.getParamsByUrlHash().urlParamShowEndTime ? this.getParamsByUrlHash().urlParamShowEndTime : '',
 				filterStartTime: '',
 				filterEndTime: '',
+                urlParamsShowStartTime:this.getParamsByUrlHash().urlParamShowStartTime ? this.getParamsByUrlHash().urlParamShowStartTime : '',
+                urlParamsShowEndTime:this.getParamsByUrlHash().urlParamShowEndTime ? this.getParamsByUrlHash().urlParamShowEndTime : '',
 				type:'',
-				TxType:''
 			}
 		},
 		mounted(){
-			this.getType();
+                let statusArray = [
+                {
+                    value:'allStatus',
+                    label:'All Status'
+                },
+                {
+                    value:'success',
+                    label:'Success'
+                },
+                {
+                    value:'fail',
+                    label:'Failed'
+                }
+            ]
+            statusArray.forEach( item => {
+                this.status.push(item)
+            })
+
+            this.getType();
 			this.getTxListByFilterCondition();
 		},
 		methods: {
+            getParamsByUrlHash(){
+                let txType,
+                    txStatus,
+                    urlParamShowStartTime,
+                    urlParamShowEndTime,
+                    filterStartTime ,
+                    filterEndTime ;
+                let path = window.location.hash;
+                if(path.includes("?")){
+                    let urlHash = path.split('?')[1];
+                    let params =  urlHash.split("&");
+                    params.forEach( item => {
+                        if(item.includes('txType')){
+                            txType =  item.split("=")[1]
+                        }else if (item.includes('status')){
+                            txStatus = item.split("=")[1]
+                        }else if(item.includes('startTime')){
+                            urlParamShowStartTime = item.split("=")[1]
+                            filterStartTime = this.formatStartTime(item.split("=")[1])
+                        }else if(item.includes('endTime')){
+                            urlParamShowEndTime = item.split("=")[1]
+                            filterEndTime = this.formatEndTime(item.split("=")[1])
+                        }
+                    })
+                }
+                return {txType,txStatus,filterStartTime,filterEndTime,urlParamShowStartTime,urlParamShowEndTime}
+            },
 			forCurrentPageNum() {
 				let currentPageNum = 1;
 				let urlPageSize = this.$route.query.page && Number(this.$route.query.page);
@@ -124,27 +161,32 @@
 					return;
 				}
 				this.currentPageNumCache = this.currentPageNum;
-				let path = this.$route.path;
-				history.pushState(null, null, `/#${path}?page=${pageNum}`);
+				let path = this.$route.path , urlParams = this.getParamsByUrlHash();
+                this.statusValue = urlParams.txStatus ? urlParams.txStatus : 'allStatus';
+                this.value = urlParams.txType ? urlParams.txType : 'allTxType';
+                this.startTime = urlParams.urlParamShowStartTime ? urlParams.urlParamShowStartTime : '';
+                this.endTime = urlParams.urlParamShowEndTime ? urlParams.urlParamShowEndTime : '';
+                history.pushState(null, null, `/#${path}?txType=${urlParams.txType ? urlParams.txType : ''}&status=${urlParams.txStatus ? urlParams.txStatus : ''}&startTime=${urlParams.urlParamShowStartTime ? urlParams.urlParamShowStartTime : ''}&endTime=${urlParams.urlParamShowEndTime ? urlParams.urlParamShowEndTime : ''}&page=${pageNum}`);
 				this.getTxListByFilterCondition();
 			},
 			getFilterTxs(){
 				this.currentPageNum = 1;
-				this.resetUrl();
 				sessionStorage.setItem('txpagenum',1);
-				this.getTxListByFilterCondition();
+                history.pushState(null, null, `/#${this.$route.path}?txType=${this.TxType}&status=${this.txStatus}&startTime=${this.urlParamsShowStartTime}&endTime=${this.urlParamsShowEndTime}&page=1`);
+                this.getTxListByFilterCondition();
             },
             resetUrl(){
-				if(this.$route.query.page)
-	            this.$router.push({
-		            path: this.$route.path,
-		            query:{
-			            page:1
-		            }
-	            });
+                this.value = 'allTxType';
+                this.statusValue = 'allStatus';
+                this.startTime = '';
+                this.endTime = '';
+                this.currentPageNum = 1;
+                this.urlParamsShowStartTime = '';
+                this.urlParamsShowEndTime = '';
+                history.pushState(null, null, `/#${this.$route.path}?txType=&status=&startTime=&endTime=&page=1`);
             },
 			filterTxByTxType(e){
-				if (e === 'allTxType') {
+				if (e === 'allTxType' || e === undefined ) {
 					this.TxType = ''
 				}else {
 					this.TxType = e
@@ -164,31 +206,21 @@
 				this.filterEndTime = this.formatEndTime(time)
 			},
 			formatStartTime(time){
+                this.urlParamsShowStartTime =  time
 				// let utcTime = Tools.conversionTimeToUTCByValidatorsLine(new Date(time).toISOString());
 				return Number(new Date(time).getTime()/1000)
 			},
 			formatEndTime(time){
+                this.urlParamsShowEndTime = time
 				// let utcTime = Tools.conversionTimeToUTCByValidatorsLine(new Date(time).toISOString());
 				let oneDaySeconds = 24 * 60 *60;
 				return Number(new Date(time).getTime()/1000) + Number(oneDaySeconds)
 			},
 			resetFilterCondition(){
-				this.value = 'allTxType';
-				this.statusValue = 'allStatus';
-				this.startTime = '';
-				this.endTime = '';
-				this.filterStartTime= '';
-				this.filterEndTime = '';
-				this.TxType = '';
-				this.txStatus = '';
-				this.currentPageNum = 1;
 				this.getType();
-				this.getTxListByFilterCondition();
-				this.resetUrl()
+                this.resetUrl()
+                this.getTxListByFilterCondition();
 			},
-			linkGen(pageNum) {
-                return pageNum === 1 ? '?' : `?page=${pageNum}`
-            },
             getType(){
 	            switch (this.$route.params.txType) {
 		            case 'delegations' :
@@ -226,16 +258,15 @@
 				})
 			},
 			getTxListByFilterCondition(){
-				this.flShowLoading = true;
-				let param = {};
+                let urlParams = this.getParamsByUrlHash(), param = {};
 				param.getTxListByTypeAndTxType = {};
 				param.getTxListByTypeAndTxType.type = this.type;
 				param.getTxListByTypeAndTxType.pageNumber = this.currentPageNum;
 				param.getTxListByTypeAndTxType.pageSize = this.pageSize;
-				param.getTxListByTypeAndTxType.txType = this.TxType;
-				param.getTxListByTypeAndTxType.status = this.txStatus;
-				param.getTxListByTypeAndTxType.beginTime = this.filterStartTime;
-				param.getTxListByTypeAndTxType.endTime = this.filterEndTime;
+				param.getTxListByTypeAndTxType.txType = urlParams.txType ? urlParams.txType: '';
+				param.getTxListByTypeAndTxType.status = urlParams.txStatus ? urlParams.txStatus: '';
+				param.getTxListByTypeAndTxType.beginTime = urlParams.filterStartTime ? urlParams.filterStartTime: '';
+				param.getTxListByTypeAndTxType.endTime =  urlParams.filterEndTime ? urlParams.filterEndTime: '';
 				Service.commonInterface(param, (txList) => {
 					try {
                         this.count = txList.Count;
@@ -261,8 +292,8 @@
 					}
 				})
 			},
-		}
-	}
+		},
+    }
 </script>
 
 <style scoped lang="scss">
@@ -289,55 +320,80 @@
                     .filter_tx_type_statue_content{
                         display: flex;
                         align-items: center;
-                        .ivu-select-visible{
-                            /deep/ .ivu-select-selection{
-                                border-color: var(--bgColor) !important;
-                            }
-
-                        }
-                        .ivu-select{
+                        /deep/.el-select{
                             width: 1.3rem;
                             margin-right: 0.1rem;
-                            /deep/ .ivu-select-selection:hover{
-                                border-color: var(--bgColor) !important;
+                            .el-input{
+                                .el-input__inner{
+                                    padding-left: 0.07rem;
+                                    height: 0.32rem;
+                                    font-size: 0.14rem !important;
+                                    line-height: 0.32rem;
+                                    &::-webkit-input-placeholder{
+                                        font-size: 0.1rem !important;
+                                    }
+                                }
+                                .el-input__inner:focus{
+                                    border-color: var(--bgColor) !important;
+                                }
+                                .el-input__suffix{
+                                   .el-input__suffix-inner{
+                                       .el-input__icon{
+                                           line-height: 0.32rem;
+                                       }
+                                   }
+                                }
                             }
-                            .ivu-select-item{
-                                text-indent: 0.1rem;
-                                font-size: 0.14rem;
-                                line-height: 0.18rem;
-                                padding: 0.07rem 0.1rem 0.07rem 0;
-                                color: var(--bgColor);
+                            .is-focus{
+                                .el-input__inner{
+                                    border-color: var(--bgColor) !important;
+                                }
                             }
+
                         }
                     }
                     .select_date_content{
                         display: flex;
                         align-items: center;
-                        .ivu-date-picker{
+                        /deep/.el-date-editor{
                             width: 1.3rem;
-                            /deep/ .ivu-date-picker-rel{
-                                .ivu-input-wrapper{
-                                    .ivu-input:hover{
-                                        border-color: var(--bgColor) !important;
-                                    }
-                                    .ivu-input:focus{
-                                        border-color: var(--bgColor) !important;
-                                    }
+                            .el-icon-circle-close{
+                                display: none !important;
+                            }
+                            .el-input__inner{
+                                height:0.32rem;
+                                padding-left: 0.07rem;
+                                padding-right: 0;
+                                line-height: 0.32rem;
+                                &::-webkit-input-placeholder{
+                                    font-size: 0.14rem !important;
+                                }
+                                &:focus{
+                                    border-color: var(--bgColor);
+                                }
+                            }
+                            .el-input__prefix{
+                                right: 5px;
+                                left: 1rem;
+                                .el-input__icon{
+                                    line-height: 0.32rem;
                                 }
                             }
                         }
                         .joint_mark{
-                            margin:  0 0.1rem;
+                            margin:  0 0.08rem;
                         }
                     }
                     .reset_search_content{
                         display: flex;
+                        align-items: center;
                         .reset_btn{
                             background: var(--bgColor);
                             color: #fff;
                             border-radius: 0.04rem;
                             margin-left: 0.1rem;
                             cursor: pointer;
+                            height: 0.3rem;
                             i{
                                 padding: 0.08rem;
                                 font-size: 0.14rem;
@@ -345,7 +401,8 @@
                                 display: inline-block;
                             }
                         }
-                        .search_btn{
+                        .tx_search_btn{
+                            height: 0.2rem;
                             cursor: pointer;
                             background: var(--bgColor);
                             margin-left: 0.1rem;
@@ -353,6 +410,7 @@
                             border-radius: 0.04rem;
                             padding: 0.05rem 0.18rem;
                             font-size: 0.14rem;
+                            line-height: 0.2rem;
                         }
                     }
                 }
@@ -409,7 +467,7 @@
                             display: flex;
                             justify-content: space-between;
                             margin-bottom: 0.1rem;
-                            .ivu-select{
+                            .el-select{
                                 margin-right: 0;
                                 width: 1.6rem;
                             }
@@ -419,7 +477,7 @@
                             display: flex;
                             justify-content: space-between;
                             margin-bottom: 0.1rem;
-                            .ivu-date-picker{
+                            .el-date-editor{
                                 width: 1.6rem;
                             }
                         }
@@ -431,7 +489,7 @@
                             .reset_btn{
                                 margin-left: 0;
                             }
-                            .search_btn{
+                            .tx_search_btn{
                                 flex: 1;
                                 margin-left: 0;
                                 margin-right: 0.1rem;

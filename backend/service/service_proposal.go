@@ -10,6 +10,8 @@ import (
 	"github.com/irisnet/explorer/backend/vo"
 	"strconv"
 	"github.com/irisnet/explorer/backend/vo/msgvo"
+	"time"
+	"encoding/json"
 )
 
 type AddrAsMultiType struct {
@@ -53,7 +55,7 @@ func (service *ProposalService) QueryDepositAndVotingProposalList(needMoniker bo
 	status := []string{document.ProposalStatusDeposit, document.ProposalStatusVoting}
 	sorts := []string{document.Proposal_Field_VotingEndTime, document.Proposal_Field_DepositEndTime}
 
-	data, err := proposalDocument.GetProposalsByStatus(status, sorts)
+	data, err := proposalDocument.GetProposalsByStatus(status, sorts, true)
 	if err != nil {
 		logger.Error("query proposal collection", logger.String("err", err.Error()))
 		return nil
@@ -104,6 +106,7 @@ func (service *ProposalService) QueryDeposit(id int) vo.ProposalNewStyle {
 		Type:           data.Type,
 		Status:         data.Status,
 		DepositEndTime: data.DepositEndTime.UTC(),
+		SubmitTime:     data.SubmitTime,
 	}
 
 	tx, err := document.CommonTx{}.QueryProposalInitAmountTxById(id)
@@ -592,6 +595,67 @@ func (service *ProposalService) QueryList(page, size int, istotal bool) (resp vo
 	return resp
 }
 
+func (service *ProposalService) UpdateProposalVoters(vs []document.Proposal) {
+
+	var proposalModel document.Proposal
+	var vMap = make(map[uint64]document.Proposal)
+	for _, v := range vs {
+		vMap[v.ProposalId] = v
+	}
+
+	for _, v := range vs {
+		voters := buildVoters(v.ProposalId)
+		if v1, ok := vMap[v.ProposalId]; ok {
+			if isDiffVoter(voters, v1.Votes) {
+				v.Votes = voters
+				if err := proposalModel.UpdateByPk(v); err != nil {
+					logger.Error("update proposal voters data fail", logger.String("err", err.Error()),
+						logger.String("proposal", string(utils.MarshalJsonIgnoreErr(v))))
+					continue
+				}
+			}
+		}
+	}
+}
+
+func isDiffVoter(v1, v2 []document.PVote) bool {
+	data1, _ := json.Marshal(v1)
+	data2, _ := json.Marshal(v2)
+	return len(v1) != len(v2) || string(data1) != string(data2)
+}
+
+func buildVoters(proposalid uint64) (result []document.PVote) {
+	if voters, err := lcd.GetProposalVoters(proposalid); err == nil {
+		txs, err := document.CommonTx{}.QueryHashTimeByProposalIdVoters(int64(proposalid), nil)
+		if err != nil {
+			logger.Error("CommonTx QueryHashTimeByProposalIdVoters have error", logger.String("err", err.Error()))
+		}
+		type TmpVoterInfo struct {
+			VoteTime time.Time
+			TxHash   string
+		}
+		tmpMap := make(map[string]TmpVoterInfo, len(txs))
+		for _, val := range txs {
+			tmpMap[val.From] = TmpVoterInfo{
+				VoteTime: val.Time,
+				TxHash:   val.TxHash,
+			}
+		}
+		for _, val := range voters {
+			voteData := document.PVote{Option: val.Option, Voter: val.Voter}
+			//get time and txhash from txs
+			if tmpMap != nil {
+				if info, ok := tmpMap[val.Voter]; ok {
+					voteData.TxHash = info.TxHash
+					voteData.Time = info.VoteTime
+				}
+			}
+			result = append(result, voteData)
+		}
+	}
+	return
+}
+
 func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 
 	data, err := document.Proposal{}.QueryProposalById(id)
@@ -675,7 +739,7 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 
 		isRejectVote := false
 		if votedNum > 0 {
-			isRejectVote = bool(isParticipation && bool((noWithVeto/votedNum) > vetoThresholdFloat))
+			isRejectVote = bool(isParticipation && bool((noWithVeto / votedNum) > vetoThresholdFloat))
 		}
 		burnPercent, err := lcd.GetProposalBurnPercentByResult(data.Status, isRejectVote)
 		if err != nil {

@@ -65,10 +65,24 @@ func GetTokenStatsSupply() (Coin, error) {
 		Denom:  utils.CoinTypeIris,
 	}, nil
 }
-
-func GetTokenInitSupply() Coin {
-	return Coin{
-		Amount: conf.IniSupply,
-		Denom:  utils.CoinTypeIris,
+func GetCommunityTax() (Coin, error) {
+	url := fmt.Sprintf(UrlAccount, conf.Get().Hub.LcdUrl, CommunityTaxAddr)
+	resBytes, err := utils.Get(url)
+	if err != nil {
+		return Coin{}, err
 	}
+	acc := Account01411{}
+	if err := json.Unmarshal(resBytes, &acc); err != nil {
+		logger.Error("get account error", logger.String("err", err.Error()))
+		return Coin{}, err
+	}
+
+	return GetTokens(acc.Value.Coins), nil
 }
+
+//func GetTokenInitSupply() Coin {
+//	return Coin{
+//		Amount: conf.IniSupply,
+//		Denom:  utils.CoinTypeIris,
+//	}
+//}

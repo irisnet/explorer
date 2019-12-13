@@ -87,7 +87,6 @@ export default {
   }
 }
 .m_parameters_container {
-  width: 413px;
   height: 164px;
   border-radius: 1px;
   border: 1px solid #D7D9E0!important;

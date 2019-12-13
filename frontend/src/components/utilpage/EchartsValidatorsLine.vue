@@ -10,7 +10,10 @@
 </template>
 
 <script>
-import echarts from 'echarts';
+var echarts  = require('echarts/lib/echarts')
+require('echarts/lib/chart/line');
+require('echarts/lib/component/title');
+require('echarts/lib/component/tooltip');
 import Tools from "../../util/Tools";
 
 let line = null;
@@ -162,8 +165,6 @@ export default {
 
 .echarts_component_wrap_line_personal_computer,
 .echarts_component_wrap_line_mobile {
-    width: 100%;
-    height: 100%;
     padding: 0;
     margin: 0 !important;
     padding-top: 0.3rem;

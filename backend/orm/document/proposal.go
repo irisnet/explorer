@@ -218,7 +218,7 @@ func (_ Proposal) QueryIdTitleStatusVotedTxhashByValidatorAcc(validatorAcc strin
 	return cnt, data, err
 }
 
-func (_ Proposal) GetProposalsByStatus(status, sorts []string) ([]Proposal, error) {
+func (_ Proposal) GetProposalsByStatus(status, sorts []string, is_selecter bool) ([]Proposal, error) {
 	var (
 		proposals []Proposal
 		query     = orm.NewQuery()
@@ -235,6 +235,9 @@ func (_ Proposal) GetProposalsByStatus(status, sorts []string) ([]Proposal, erro
 		Proposal_Field_VotingEndTime:     1,
 		Proposal_Field_TotalDeposit:      1,
 		Proposal_Field_DepositEndTime:    1,
+	}
+	if !is_selecter {
+		selector = bson.M{}
 	}
 
 	condition := bson.M{
@@ -254,4 +257,13 @@ func (_ Proposal) GetProposalsByStatus(status, sorts []string) ([]Proposal, erro
 	err := query.Exec()
 
 	return proposals, err
+}
+
+// update document by primary key
+func (_ Proposal) UpdateByPk(proposal Proposal) error {
+	db := orm.GetDatabase()
+	defer db.Session.Close()
+
+	c := db.C(CollectionNmProposal)
+	return c.Update(proposal.PkKvPair(), proposal)
 }

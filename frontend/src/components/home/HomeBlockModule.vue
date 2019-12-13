@@ -145,7 +145,6 @@
     background: #fff;
     .home_module_block_title_wrap{
       @include flex;
-      padding:0.2rem 0;
       margin: 0 0.2rem;
       height:0.64rem;
       justify-content: space-between;
@@ -195,6 +194,7 @@
             @include flex;
             justify-content: space-between;
             @include fontSize;
+              margin-top: 0.05rem;
             .blocks_module_Amount{
               color:var(--contentColor);
               display:inline-block;

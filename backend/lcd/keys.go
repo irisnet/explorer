@@ -20,7 +20,7 @@ type (
 	}
 
 	Value struct {
-		Coins      []Coin    `json:"coins"`
+		Coins      []*Coin   `json:"coins"`
 		Address    string    `json:"address"`
 		PublicKey  PublicKey `json:"public_key"`
 		AccountNum string    `json:"account_number"`

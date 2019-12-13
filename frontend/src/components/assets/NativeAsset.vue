@@ -83,7 +83,7 @@
         </div>
         <div v-show="issueToken.length === 0 && editToken.length === 0
         && mintToken.length === 0 && transferToken.length === 0 && flShowContent">
-            <img class="no_data_img" src="../../assets/no_data.svg">
+            <img class="no_data_img"  src="../../assets/no_data.svg">
         </div>
     </div>
 </template>
@@ -322,6 +322,7 @@
         }
         .native_asset_list_title_wrap{
             width: 100%;
+            box-sizing: border-box;
             position: fixed;
             z-index: 10;
             background-color: #F5F7FD;
@@ -347,6 +348,7 @@
         .native_asset_list_table_content{
             .table_list_content{
                 width: 100%;
+                box-sizing: border-box;
                 overflow-x: auto;
                 padding-top: 0rem;
                 .no_data_show{

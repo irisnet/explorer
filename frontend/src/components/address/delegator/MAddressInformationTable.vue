@@ -24,6 +24,42 @@
                     </router-link>
                 </div>
             </template>
+            <template slot-scope="{ row }" slot="from">
+                <div class="common_hover_address_parent">
+                    <span v-if="(/^[1-9]\d*$/).test(row.from)" class="skip_route common_font_style">
+                        <router-link :to="`/tx?txHash=${row.txHash}`">{{row.from}} Validators</router-link>
+                    </span>
+                    <div class="name_address" v-if="!(/^[0-9]\d*$/).test(row.from) && row.from !== '--'">
+                        <div>
+                            <span class="remove_default_style " :class="row.isFromSkipRouter ? '' : 'skip_route'">
+                                <router-link :to="addressRoute(row.from)"
+                                             :style="{cursor: row.isFromSkipRouter ? 'auto' : 'pointer'}"
+                                             style="font-family: Consolas,Menlo;">{{formatMoniker(row.fromMoniker) || formatAddress(row.from)}}
+                                </router-link>
+                            </span>
+                        </div>
+                    </div>
+                    <span class="no_skip" v-show="(/^[0]\d*$/).test(row.from) || row.from === '--'">--</span>
+                </div>
+            </template>
+            <template slot-scope="{ row }" slot="to">
+                <div class="common_hover_address_parent">
+                    <span v-if="(/^[1-9]\d*$/).test(row.to)" class="skip_route common_font_style">
+                        <router-link :to="`/tx?txHash=${row.txHash}`">{{row.to}} Validators</router-link>
+                    </span>
+                    <div class="name_address" v-if="!(/^[0-9]\d*$/).test(row.to) && row.to !== '--'">
+                        <div>
+                            <span class="remove_default_style"  :class="row.isToSkipRouter ? '' : 'skip_route'">
+                                <router-link :to="addressRoute(row.to)"
+                                             :style="{cursor: row.isToSkipRouter ? 'auto' : 'pointer'}"
+                                             style="font-family: Consolas,Menlo;">{{formatMoniker(row.toMoniker) || formatAddress(row.to)}}
+                                </router-link>
+                            </span>
+                        </div>
+                    </div>
+                    <span class="no_skip" v-show="(/^[0]\d*$/).test(row.to) || row.to === '--'">--</span>
+                </div>
+            </template>
             <template slot-scope="{ row }" slot="token">
                 <div style="display: flex;align-items: center">
                    <span v-if="row.token === 'IRIS'" style="display: flex;align-items: center">
@@ -58,6 +94,19 @@
             <template slot-scope="{ row }" slot="reward">
                 <div>
                     <span>{{row.reward === 0 ? "--" : row.reward}}</span>
+                </div>
+            </template>
+            <template slot-scope="{ row }" slot="amount">
+                <div class="name_address">
+                    <div v-if="!row.amount.includes('Tokens') && row.amount.toString().length < 12">
+                            <span>
+                                <span>{{substrAmount(row.amount)}}</span>
+                            </span>
+                    </div>
+                    <div  v-if="row.amount.includes('Tokens')"  class="skip_route">
+                        <router-link :to="`/tx?txHash=${row.txHash}`">{{row.amount}}</router-link>
+                    </div>
+                    <span class="address" v-if="row.amount.toString().length > 12 && !row.amount.includes('Tokens')">{{row.amount}}</span>
                 </div>
             </template>
         </m-table>
@@ -183,11 +232,19 @@
 						title: "Block",
                         slot:'block',
 					},
+                    {
+                        title:"From",
+                        slot:'from'
+                    },
 					{
 						title: "Amount",
-                        key:'amount',
+                        slot:'amount',
 						className: 'text_right'
 					},
+                    {
+                        title: 'To',
+                        slot: 'to'
+                    },
 					{
 						title: "TxType",
                         key:'txType',
@@ -229,7 +286,18 @@
 			        return "";
 		        }
 		        return Tools.formatString(moniker, 15, "...");
-	        }
+	        },
+            substrAmount(amount){
+	            let tokenValue;
+	            if(amount !== '--'){
+                    tokenValue = Tools.formatAccountCoinsAmount(amount);
+                }
+                if(tokenValue && tokenValue.toString().length > 12){
+                    return Tools.formatString(amount.toString(),12,'...')
+                }else {
+                    return amount
+                }
+            },
         }
 	}
 </script>
@@ -253,7 +321,7 @@
     .address_information_delegation_list_content{
         .address_detail_table {
             .m-table-header {
-                width: 100%;
+                width: calc(100% - 0.02rem);
                 border-left: 0.01rem solid #E7E9EB;
                 border-right: 0.01rem solid #E7E9EB;
                 border-bottom: 0.01rem solid #E7E9EB;
@@ -275,7 +343,7 @@
     .address_information_unbonding_delegation_list_content{
         .address_detail_table {
             .m-table-header {
-                width: 100%;
+                width: calc(100% - 0.02rem);
                 border-left: 0.01rem solid #E7E9EB;
                 border-right: 0.01rem solid #E7E9EB;
                 border-bottom: 0.01rem solid #E7E9EB;
@@ -297,7 +365,7 @@
     .address_information_list_content{
         .address_detail_table {
             .m-table-header {
-                width: 100%;
+                width: calc(100% - 0.02rem);
                 border-left: 0.01rem solid #E7E9EB;
                 border-right: 0.01rem solid #E7E9EB;
                 border-bottom: 0.01rem solid #E7E9EB;

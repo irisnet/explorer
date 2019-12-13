@@ -10,8 +10,8 @@
 </template>
 
 <script>
-import echarts from 'echarts';
-
+var echarts = require('echarts/lib/echarts')
+require('echarts/lib/chart/line')
 let line = null;
 export default {
     name: 'echarts-uptime-line',
@@ -172,8 +172,6 @@ export default {
 }
 .echarts_component_wrap_line_personal_computer,
 .echarts_component_wrap_line_mobile {
-    width: 100%;
-    height: 100%;
     padding: 0;
     margin: 0 !important;
     padding-top: 0.3rem;

@@ -6,10 +6,21 @@
         >
             <div>
                 <div class="page_title">IRIS Token Stats</div>
-                <div class="table_contanier" v-show="!itemsNoData">
+                <div class="table_container" v-show="!itemsNoData">
                     <div class="information_props_wrap" v-for="v in items" :key="v.label">
                         <span class="information_props">{{v.label}}</span>
-                        <span class="information_value">{{v.value || '--'}}</span>
+                        <span class="information_value"
+                              :class="v.value ? 'skip_route' : ''"
+                              v-if="v.label === 'Burned'">
+                            <router-link :to="`/address/iaa108a0ts008fphurftmsvj5p2q8ltq8qedy0jxd8`">{{v.value || '--'}}</router-link>
+                            </span>
+                        <span class="information_value"
+                              :class="v.value ? 'skip_route' : ''"
+                              v-if="v.label === 'Community Tax'">
+                            <router-link v-if="v.value && v.value !== '--'" :to="`/address/iaa18rtw90hxz4jsgydcusakz6q245jh59kfma3e5h`">{{v.value || '--'}}</router-link>
+                            </span>
+                        <span v-if="v.value && v.value === '--'">--</span>
+                        <span class="information_value" v-if="v.label !== 'Burned' && v.label !== 'Community Tax'">{{v.value || '--'}}</span>
                     </div>
                 </div>
                 <div v-show="itemsNoData" class="no_data_show"><img src="../../assets/no_data.svg" alt=""></div>
@@ -46,7 +57,7 @@ export default {
                     value: ""
                 },
                 {
-                    label: "Initial Supply",
+                    label: "Community Tax",
                     value: ""
                 },
                 {
@@ -54,7 +65,7 @@ export default {
                     value: ""
                 },
                 {
-                    label: "Bonded Tokens",
+                    label: "Bonded",
                     value: ""
                 }
             ],
@@ -77,23 +88,23 @@ export default {
                                 let obj = [
                                     {
                                         label: "Total Supply",
-                                        value: Tools.formatAmount2(data.totalsupply_tokens,4,)
+                                        value: data.totalsupply_tokens ? Tools.formatAmount2(data.totalsupply_tokens,4,) : '--'
                                     },
                                     {
                                         label: "Circulation",
-                                        value: Tools.formatAmount2(data.circulation_tokens,4,)
+                                        value: data.circulation_tokens ? Tools.formatAmount2(data.circulation_tokens,4,) : '--'
                                     },
                                     {
-                                        label: "Initial Supply",
-                                        value: Tools.formatAmount2(data.initsupply_tokens, 4)
+                                        label: "Community Tax",
+                                        value: data.community_tax ? Tools.formatAmount2(data.community_tax, 4) : '--'
                                     },
                                     {
                                         label: "Burned",
-                                        value: Tools.formatAmount2(data.burned_tokens, 4)
+                                        value: data.burned_tokens ? Tools.formatAmount2(data.burned_tokens, 4) : '--'
                                     },
                                     {
-                                        label: "Bonded Tokens",
-                                        value: Tools.formatAmount2(data.delegated_tokens,4)
+                                        label: "Bonded",
+                                        value: data.delegated_tokens ? Tools.formatAmount2(data.delegated_tokens,4) : '--'
                                     }
                                 ];
                                 this.items = obj;
@@ -156,10 +167,19 @@ export default {
             if (Number(num) < 0.0001) {
                 return "<0.0001";
             } else {
-                let s = num + "";
+                let s = num + "",n;
                 let arr = s.split(".");
                 arr[1] = arr[1] || "";
-                let n = `${arr[0]}.${arr[1].padEnd(4, "0").substring(0, 4)}`;
+                if(arr[1].toString().length > 4){
+                    n =`${arr[0]}.${arr[1].substring(0, 4)}`
+                }else {
+                    let diffNum = 4 - arr[1].toString().length;
+                    for(let i = 0; i < diffNum; i++){
+                        arr[1] += '0'
+                    }
+                    n = `${arr[0]}.${arr[1]}`
+                }
+                // let n = `${arr[0]}.${arr[1].padEnd(4, "0").substring(0, 4)}`;
                 return n;
             }
         }
@@ -199,9 +219,10 @@ export default {
                 color: #515a6e;
                 font-weight: bold;
             }
-            .table_contanier {
+            .table_container {
                 display: flex;
                 flex-wrap: wrap;
+                width: 100%;
                 .information_props_wrap {
                     font-size: 14px;
                     line-height: 20px;
@@ -223,6 +244,9 @@ export default {
                         margin-top: 0.12rem;
                         word-break: break-all;
                         word-wrap: break-word;
+                        > a{
+                            font-size: 0.16rem;
+                        }
                     }
                     .skip_route {
                         a,
@@ -254,19 +278,23 @@ export default {
     }
     .mobile_list_page_container {
         & > div {
+            box-sizing: border-box;
             padding: 0 0.1rem;
             .page_title {
                 padding-left: 0.1rem;
             }
         }
-        .table_contanier {
+        .table_container {
             margin-right: 0 !important;
+            width: 100%;
             .information_props_wrap {
+                width: 100% !important;
+                flex: 0 0 calc(100% - 0.22rem) !important;
                 padding: 0.1rem !important;
                 margin-bottom: 0.1rem !important;
-                flex: 0 0 100% !important;
                 .information_props {
                     width: 100% !important;
+                    box-sizing: border-box;
                 }
                 .information_value {
                     width: 100% !important;

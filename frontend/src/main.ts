@@ -14,13 +14,20 @@ import filters from './filters';
 Vue.use(filters);
 /*引入自定义组件*/
 import MTable from './components/commontables/MTable.vue';
-import iView from 'iview';
-import select from 'iview/src/components/select'
-import datePicker from 'iview/src/components/date-picker'
-import locale from 'iview/src/locale/lang/en-US'
-import 'iview/dist/styles/iview.css'
-Vue.use(iView,{locale},select,datePicker);
 Vue.component('MTable', MTable);
+
+import 'element-ui/lib/theme-chalk/index.css'
+import {Select} from 'element-ui'
+import {DatePicker} from 'element-ui'
+import {Option} from 'element-ui'
+import lang from 'element-ui/lib/locale/lang/en'
+import locale from 'element-ui/lib/locale'
+locale.use(lang);
+Vue.component('el-select',Select);
+Vue.component('el-option',Option);
+Vue.component('el-date-picker',DatePicker);
+Vue.use(locale);
+
 
 import axios from "axios"
 const  codec  = require("irisnet-crypto/util/codec.js") ;

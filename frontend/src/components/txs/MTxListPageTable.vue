@@ -74,10 +74,13 @@
             </template>
             <template slot-scope="{ row }" slot="Amount">
                 <div class="name_address">
-                    <div>
+                    <div v-if="!row.Amount.toString().includes('Tokens')">
                             <span>
                                 <span>{{substrAmount(row.Amount)}}</span>
                             </span>
+                    </div>
+                    <div  v-if="row.Amount.toString().includes('Tokens')"  class="skip_route">
+                        <router-link :to="`/tx?txHash=${row.Tx_Hash}`">{{substrAmount(row.Amount)}}</router-link>
                     </div>
                     <span class="address" v-if="row.Amount.toString().length > 12">{{row.Amount}}</span>
                 </div>
@@ -378,6 +381,9 @@
 </script>
 
 <style lang="scss">
+    .address {
+        display: none;
+    }
     .show_no_data{
         .m-table-body {
             .m_table tbody{

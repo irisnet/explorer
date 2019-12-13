@@ -91,10 +91,6 @@
                         <span class="information_props">MinUnitAlias :</span>
                         <span class="information_value">{{minUnitAliasValue}}</span>
                     </div>
-                    <div class="information_props_wrap">
-                        <span class="information_props">InitialSupply :</span>
-                        <span class="information_value">{{initialSupplyValue}}</span>
-                    </div>
                 </div>
                 <div class="information_props_wrap">
                     <span class="information_props">Description :</span>
@@ -313,7 +309,6 @@ export default {
 	        nameValue:'',
 	        decimalValue:'',
 	        minUnitAliasValue: '',
-	        initialSupplyValue: '',
 	        destAddressValue:'',
 	        percentValue: '',
             devicesWidth: window.innerWidth,
@@ -489,25 +484,28 @@ export default {
 			        voterType:this.filterTab
 		        }},(data) => {
 		        try {
-			        this.setStats(data.stats)
-			        if (data.items && data.items.length > 0) {
-				        this.showNoData = false;
-				        this.itemTotal = data.total;
-				        this.items = data.items.map(item => {
-					        let votingListItemTime = (new Date(item.timestamp).getTime()) > 0 ? Tools.format2UTC(item.timestamp) : '--';
-					        return {
-						        moniker: item.moniker,
-						        Block:item.height,
-						        Voter: item.voter,
-						        Vote_Option: item.option,
-						        Tx_Hash: item.tx_hash,
-						        Time: votingListItemTime
-					        }
-				        });
-			        } else {
-				        this.items = [];
-				        this.showNoData = true;
-			        }
+		            if(data){
+                        this.setStats(data.stats)
+                        if (data.items && data.items.length > 0) {
+                            this.showNoData = false;
+                            this.itemTotal = data.total;
+                            this.items = data.items.map(item => {
+                                let votingListItemTime = (new Date(item.timestamp).getTime()) > 0 ? Tools.format2UTC(item.timestamp) : '--';
+                                return {
+                                    moniker: item.moniker,
+                                    Block:item.height,
+                                    Voter: item.voter,
+                                    Vote_Option: item.option,
+                                    Tx_Hash: item.tx_hash,
+                                    Time: votingListItemTime
+                                }
+                            });
+                        } else {
+                            this.items = [];
+                            this.showNoData = true;
+                        }
+                    }
+
 		        }catch (e) {
 			        console.error(e)
 		        }
@@ -581,7 +579,6 @@ export default {
                             this.nameValue = '--';
                             this.decimalValue = '--';
                             this.minUnitAliasValue = '--';
-                            this.initialSupplyValue = '--';
                             this.destAddressValue = '--';
                             this.percentValue = '--'
                         } else {
@@ -618,14 +615,13 @@ export default {
                             this.depositEndTime = that.flShowProposalTime('depositEndTime', data.proposal.status) ? Tools.format2UTC(data.proposal.deposit_end_time) : '--';
                             this.votingStartTime = that.flShowProposalTime('votingStartTime', data.proposal.status) ? Tools.format2UTC(data.proposal.voting_start_time) : '--';
                             this.votingEndTime = that.flShowProposalTime('votingEndTime', data.proposal.status) ? Tools.format2UTC(data.proposal.voting_end_time) : '--';
-                            this.description = data.proposal.description ? data.proposal.description : " -- ";
+                            this.description = data.proposal.description ? data.proposal.description : "--";
 	                        this.percentValue = data.proposal.percent ? `${(Number(data.proposal.percent) * 100).toFixed(2)}%` :'';
-	                        this.symbolValue = data.proposal.symbol ? data.proposal.symbol : " -- ";
-	                        this.canonicalSymbolValue = data.proposal.canonical_symbol ? data.proposal.canonical_symbol : " -- ";
-	                        this.nameValue = data.proposal.name ? data.proposal.name : " -- ";
-	                        this.decimalValue = data.proposal.decimal ? data.proposal.decimal : " -- ";
-	                        this.minUnitAliasValue = data.proposal.min_unit_alias ? data.proposal.min_unit_alias : " -- ";
-	                        this.initialSupplyValue = data.proposal.initial_supply ? data.proposal.initial_supply : " -- ";
+	                        this.symbolValue = data.proposal.symbol ? data.proposal.symbol : "--";
+	                        this.canonicalSymbolValue = data.proposal.canonical_symbol ? data.proposal.canonical_symbol : "--";
+	                        this.nameValue = data.proposal.name ? data.proposal.name : "--";
+	                        this.decimalValue = data.proposal.decimal ? data.proposal.decimal : "--";
+	                        this.minUnitAliasValue = data.proposal.min_unit_alias ? data.proposal.min_unit_alias : "--";
 	                        this.destAddressValue = data.proposal.dest_address ? data.proposal.dest_address : '--';
 	                        if (data.proposal && data.proposal.total_deposit.length !== 0) {
                                 this.totalDeposit = `${Tools.formatPriceToFixed(Tools.convertScientificNotation2Number(Tools.formatNumber(data.proposal.total_deposit[0].amount)))} ${Tools.formatDenom(data.proposal.total_deposit[0].denom).toUpperCase()}`;
@@ -703,6 +699,7 @@ export default {
 			        proposalId: this.$route.params.proposal_id
                 }},(res) => {
         		try {
+
 			        if(res){
 				        this.votingObj = res;
 				        this.getVotingEndTime(res.voting_end_time);
@@ -1083,6 +1080,7 @@ export default {
     color: var(--contentColor);
     margin-bottom: 10px;
     flex-wrap: wrap;
+    align-items: center;
     .yes_option_style{
         display: inline-block;
         width: 0.12rem;

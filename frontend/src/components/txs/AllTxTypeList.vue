@@ -7,35 +7,36 @@
                     <div class="filter_content">
                         <div class="tx_type_content">
                             <div class="tx_type_mobile_content">
-                                <i-select :model.sync="value" v-model="value" :on-change="filterTxByTxType(value) " filterable clearable>
-                                    <i-option v-for="(item, index) in txTypeOption"
-                                              :value="item.value"
-                                              :key="index"
-                                    >{{item.label}}</i-option>
-                                </i-select>
-                                <i-select :model.sync="statusValue" v-model="statusValue" :on-change="filterTxByStatus(statusValue)">
-                                    <i-option v-for="(item,index) in status"
-                                              :value="item.value"
-                                              :key="index"
-                                    >{{item.label}}</i-option>
-                                </i-select>
+                                <el-select v-model="value" filterable :change="filterTxByTxType(value)">
+                                    <el-option v-for="(item, index) in txTypeOption"
+                                               :key="index"
+                                               :label="item.label"
+                                               :value="item.value"></el-option>
+                                </el-select>
+
+                                <el-select v-model="statusValue" :change="filterTxByStatus(statusValue)">
+                                    <el-option v-for="(item, index) in status"
+                                               :key="index"
+                                               :label="item.label"
+                                               :value="item.value"></el-option>
+                                </el-select>
                             </div>
                             <div class="tx_type_mobile_content">
-                                <Date-picker type="date"
-                                             v-model="startTime"
-                                             :value.sync="startTime"
-                                             :clearable = false
-                                             @on-change='getStartTime'
-                                             placeholder="Select Date"
-                                ></Date-picker>
+                                <el-date-picker  type="date"
+                                                 v-model="startTime"
+                                                 @change="getStartTime(startTime)"
+                                                 :editable="false"
+                                                 value-format="yyyy-MM-dd"
+                                                 placeholder="Select Date">
+                                </el-date-picker>
                                 <span class="joint_mark">~</span>
-                                <Date-picker type="date"
-                                             v-model="endTime"
-                                             :value.sync="endTime"
-                                             :clearable = false
-                                             @on-change="getEndTime"
-                                             placeholder="Select Date"
-                                ></Date-picker>
+                                <el-date-picker  type="date"
+                                                 v-model="endTime"
+                                                 value-format="yyyy-MM-dd"
+                                                 @change="getEndTime(endTime)"
+                                                 :editable="false"
+                                                 placeholder="Select Date">
+                                </el-date-picker>
                             </div>
                             <div class="tx_type_mobile_content">
                                 <div class="search_btn" @click="getFilterTxs">Search</div>
@@ -97,67 +98,74 @@
                 txTypeOption:[
 	                {
 		                value:'allTxType',
-		                label:'All TXType',
-		                slot:'allTXType'
+		                label:'All TxType',
+		                slot:'allTxType'
 	                }
                 ],
-                status:[
-	                {
-		                value:'allStatus',
-		                label:'All Status'
-	                },
-                	{
-                		value:'success',
-                        label:'Success'
-                    },
-                    {
-                    	value:'fail',
-                        label:'Failed'
-                    }
-                ],
-                statusValue:'allStatus',
-				value: 'allTxType',
+                status:[],
+                statusValue: this.getParamsByUrlHash().txStatus ? this.getParamsByUrlHash().txStatus : 'allStatus',
+				value: this.getParamsByUrlHash().txType  ? this.getParamsByUrlHash().txType : 'allTxType',
                 firstEntry:false,
-				startTime: '',
-                endTime: '',
+				startTime: this.getParamsByUrlHash().urlParamShowStartTime ? this.getParamsByUrlHash().urlParamShowStartTime : '',
+                endTime:  this.getParamsByUrlHash().urlParamShowEndTime ? this.getParamsByUrlHash().urlParamShowEndTime : '',
                 filterStartTime: '',
                 filterEndTime: '',
-                TxType: '',
+                urlParamsShowStartTime:this.getParamsByUrlHash().urlParamShowStartTime ? this.getParamsByUrlHash().urlParamShowStartTime : '',
+                urlParamsShowEndTime:this.getParamsByUrlHash().urlParamShowEndTime ? this.getParamsByUrlHash().urlParamShowEndTime : '',
                 txStatus: '',
             }
         },
-        created(){
+        mounted(){
             this.getTxListByFilterCondition();
 	        this.getAllTxType();
+            let statusArray = [
+                {
+                    value:'allStatus',
+                    label:'All Status'
+                },
+                {
+                    value:'success',
+                    label:'Success'
+                },
+                {
+                    value:'fail',
+                    label:'Failed'
+                }
+            ]
+            statusArray.forEach( item => {
+                this.status.push(item)
+            })
         },
         methods:{
 	        getFilterTxs(){
-		        this.currentPageNum = 1;
-		        this.resetUrl();
+                this.currentPageNum = 1;
 		        sessionStorage.setItem('txpagenum',1);
-		        this.getTxListByFilterCondition();
+                history.pushState(null, null, `/#/txs?txType=${this.TxType}&status=${this.txStatus}&startTime=${this.urlParamsShowStartTime}&endTime=${this.urlParamsShowEndTime}&page=1`);
+                this.getTxListByFilterCondition();
 	        },
 			filterTxByTxType(e){
-				if (e === 'allTxType') {
+				if (e === 'allTxType' || e === undefined ) {
 					this.TxType = ''
                 }else {
-					this.TxType = e
+                    this.TxType = e
                 }
             },
 	        resetUrl(){
-	        	if(this.$route.query.page){
-			        this.$router.push({
-				        path: this.$route.path,
-				        query:{
-					        page:1
-				        }
-			        });
-                }
+	            this.startTime = '';
+	            this.endTime = '';
+	            this.value = 'allTxType';
+	            this.statusValue = 'allStatus';
+	            this.txStatus ='';
+	            this.urlParamsShowStartTime = '';
+	            this.urlParamsShowEndTime = ''
+                history.pushState(null, null, `/#/txs?txType=&status=&startTime=&endTime=&page=1`);
 	        },
 	        getStartTime(time){
+	            this.urlParamsShowStartTime = time;
 				this.filterStartTime = this.formatStartTime(time)
             },
 	        getEndTime(time){
+	            this.urlParamsShowEndTime = time;
 		        this.filterEndTime = this.formatEndTime(time)
             },
             formatEndTime(time){
@@ -171,7 +179,7 @@
 		        return Number(new Date(time).getTime()/1000)
             },
 	        filterTxByStatus(e){
-		        if(e === 'allStatus'){
+		        if(e === 'allStatus' || e === undefined ){
 			        this.txStatus = ''
 		        }else {
 			        this.txStatus = e
@@ -202,10 +210,6 @@
 		        this.statusValue = 'allStatus';
 		        this.startTime = '';
                 this.endTime = '';
-		        this.filterStartTime= '';
-		        this.filterEndTime = '';
-		        this.TxType = '';
-		        this.txStatus = '';
 		        this.currentPageNum = 1;
                 this.resetUrl();
                 this.getTxListByFilterCondition()
@@ -222,8 +226,12 @@
 			        return;
 		        }
 		        this.currentPageNumCache = this.currentPageNum;
-			        let path = "/txs";
-			        history.pushState(null, null, `/#${path}?page=${pageNum}`);
+                    let urlParams = this.getParamsByUrlHash();
+                    this.statusValue = urlParams.txStatus ? urlParams.txStatus : 'allStatus';
+                    this.value = urlParams.txType ? urlParams.txType : 'allTxType';
+                    this.startTime = urlParams.urlParamShowStartTime ? urlParams.urlParamShowStartTime : '';
+                    this.endTime = urlParams.urlParamShowEndTime ? urlParams.urlParamShowEndTime : '';
+			        history.pushState(null, null, `/#/txs?txType=${urlParams.txType ? urlParams.txType : ''}&status=${urlParams.txStatus ? urlParams.txStatus : ''}&startTime=${urlParams.urlParamShowStartTime ? urlParams.urlParamShowStartTime : ''}&endTime=${urlParams.urlParamShowEndTime ? urlParams.urlParamShowEndTime : ''}&page=${pageNum}`);
 			        this.getTxListByFilterCondition();
 	        },
             formatFee(Fee){
@@ -231,15 +239,42 @@
 		            return `${Tools.formatStringToFixedNumber(String(Tools.formatNumber(Fee.amount)),4)} ${Tools.formatDenom(Fee.denom).toUpperCase()}`;
 	            }
             },
+            getParamsByUrlHash(){
+                let txType,
+                    txStatus,
+                    filterStartTime ,
+                    urlParamShowStartTime,
+                    urlParamShowEndTime,
+                    filterEndTime ;
+                let path = window.location.hash;
+                if(path.includes("?")){
+                    let urlHash = path.split('?')[1];
+                    let params =  urlHash.split("&");
+                    params.forEach( item => {
+                        if(item.includes('txType')){
+                            txType =  item.split("=")[1]
+                        }else if (item.includes('status')){
+                            txStatus = item.split("=")[1]
+                        }else if(item.includes('startTime')){
+                            urlParamShowStartTime = item.split("=")[1]
+                            filterStartTime = this.formatStartTime(item.split("=")[1])
+                        }else if(item.includes('endTime')){
+                            urlParamShowEndTime = item.split("=")[1]
+                            filterEndTime = this.formatEndTime(item.split("=")[1])
+                        }
+                    })
+                }
+                return {txType,txStatus,filterStartTime,filterEndTime,urlParamShowStartTime,urlParamShowEndTime}
+            },
 	        getTxListByFilterCondition(){
-                let param = {};
+               let param = {},urlParams = this.getParamsByUrlHash();
                 param.getTxListByFilterCondition = {};
 		        param.getTxListByFilterCondition.pageNumber = this.currentPageNum;
 		        param.getTxListByFilterCondition.pageSize = this.pageSize;
-		        param.getTxListByFilterCondition.txType = this.TxType;
-		        param.getTxListByFilterCondition.status = this.txStatus;
-		        param.getTxListByFilterCondition.beginTime = this.filterStartTime;
-		        param.getTxListByFilterCondition.endTime = this.filterEndTime;
+		        param.getTxListByFilterCondition.txType = urlParams.txType ? urlParams.txType: '';
+		        param.getTxListByFilterCondition.status = urlParams.txStatus ? urlParams.txStatus: '';
+		        param.getTxListByFilterCondition.beginTime = urlParams.filterStartTime ? urlParams.filterStartTime: '';
+		        param.getTxListByFilterCondition.endTime = urlParams.filterEndTime ? urlParams.filterEndTime: '';
                 Service.commonInterface(param, (res) => {
                 	try {
 		                this.countNum = res.Count;
@@ -273,12 +308,13 @@
 				this.getTxListByFilterCondition();
 			},
 		},
-	}
+    }
 </script>
 
 <style scoped lang="scss">
     .all_type_list_title_container{
         width: 100%;
+        box-sizing: border-box;
         position: fixed;
         z-index: 3;
         background: #F5F7FD;
@@ -308,41 +344,65 @@
                         .tx_type_mobile_content{
                             display: flex;
                             align-items: center;
-                            .ivu-select-visible{
-                                /deep/ .ivu-select-selection{
-                                    border-color: var(--bgColor) !important;
+
+                            /deep/.el-select{
+                                width: 1.3rem;
+                                margin-right: 0.1rem;
+                                .el-input{
+                                    .el-input__inner{
+                                        padding-left: 0.07rem;
+                                        height: 0.32rem;
+                                        font-size: 0.14rem !important;
+                                        line-height: 0.32rem;
+                                        &::-webkit-input-placeholder{
+                                            font-size: 0.14rem !important;
+                                        }
+                                    }
+                                    .el-input__inner:focus{
+                                        border-color: var(--bgColor) !important;
+                                    }
+                                    .el-input__suffix{
+                                        .el-input__suffix-inner{
+                                            .el-input__icon{
+                                                line-height: 0.32rem;
+                                            }
+                                        }
+                                    }
+                                }
+                                .is-focus{
+                                    .el-input__inner{
+                                        border-color: var(--bgColor) !important;
+                                    }
                                 }
 
                             }
-                            .ivu-select{
-                                margin-right: 0.1rem;
+                            /deep/.el-date-editor{
                                 width: 1.3rem;
-                                /deep/ .ivu-select-selection:hover{
-                                    border-color: var(--bgColor) !important;
+                                .el-icon-circle-close{
+                                    display: none !important;
                                 }
-                                .ivu-select-item{
-                                    text-indent: 0.1rem;
-                                    font-size: 0.14rem;
-                                    line-height: 0.18rem;
-                                    padding: 0.07rem 0.1rem 0.07rem 0;
-                                    color: var(--bgColor);
+                                .el-input__inner{
+                                    height:0.32rem;
+                                    padding-left: 0.07rem;
+                                    padding-right: 0;
+                                    line-height: 0.32rem;
+                                    &::-webkit-input-placeholder{
+                                        font-size: 0.14rem !important;
+                                    }
+                                    &:focus{
+                                        border-color: var(--bgColor);
+                                    }
+                                }
+                                .el-input__prefix{
+                                    right: 5px;
+                                    left: 1rem;
+                                    .el-input__icon{
+                                        line-height: 0.32rem;
+                                    }
                                 }
                             }
                             .joint_mark{
-                                margin: 0 0.1rem;
-                            }
-                            .ivu-date-picker{
-                                width: 1.3rem;
-                                /deep/ .ivu-date-picker-rel{
-                                    .ivu-input-wrapper{
-                                        .ivu-input:hover{
-                                            border-color: var(--bgColor) !important;
-                                        }
-                                        .ivu-input:focus{
-                                             border-color: var(--bgColor) !important;
-                                         }
-                                    }
-                                }
+                                margin: 0 0.08rem;
                             }
                             .reset_btn{
                                 background: var(--bgColor);
@@ -365,6 +425,7 @@
                                 border-radius: 0.04rem;
                                 padding: 0.05rem 0.18rem;
                                 font-size: 0.14rem;
+                                line-height: 0.2rem;
                             }
                         }
                     }
@@ -421,16 +482,11 @@
                                 display: flex;
                                 justify-content: space-between;
                                 margin-bottom: 0.1rem;
-                                .ivu-select{
+                                .el-select{
                                     margin-right: 0;
                                     width: 1.6rem;
                                 }
-                                .ivu-select-visible{
-                                    .ivu-select-selection{
-                                        border-color: var(--bgColor);
-                                    }
-                                }
-                                .ivu-date-picker{
+                                .el-date-editor{
                                     width: 1.6rem;
                                 }
                                 .reset_btn{

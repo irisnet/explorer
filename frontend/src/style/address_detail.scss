@@ -246,6 +246,7 @@
     }
     .personal_computer_transactions_detail_wrap{
         width:100%!important;
+        box-sizing: border-box;
         .current_tenure_wrap{
             @include flex;
             flex-direction:row;

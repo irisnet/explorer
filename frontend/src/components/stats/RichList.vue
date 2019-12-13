@@ -238,6 +238,7 @@ export default {
 .top_list_container {
     width: 100%;
     padding: 0.7rem 0 0.4rem 0;
+    box-sizing: border-box;
     .top_list_content {
         max-width: 12.8rem;
         width: 100%;

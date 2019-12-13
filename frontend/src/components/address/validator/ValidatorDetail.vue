@@ -956,6 +956,7 @@ export default {
         font-size: 22px;
         font-weight: bold;
         color: #515a6e;
+        word-break: break-all
     }
     .status_btn {
         margin-left: 0.1rem;
@@ -1129,6 +1130,7 @@ export default {
     }
 }
 .mobile_transactions_detail_wrap {
+    box-sizing: border-box;
     .validator_information_content_title {
         padding-left: 0.1rem;
     }
@@ -1143,11 +1145,13 @@ export default {
         .information_props_wrap {
             margin-bottom: 0;
             flex-wrap: wrap;
+            margin-top: 0.05rem;
             .information_props {
                 width: 100%;
             }
             .information_value {
                 width: 100%;
+                line-height: 1.1;
             }
         }
     }

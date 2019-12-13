@@ -778,6 +778,7 @@
         background: rgba(255, 255, 255, 1);
         height: 0.6rem;
         .app_header_person_computer {
+            box-sizing: border-box;
             width: 100%;
             background: var(--bgColor);
             .header_navigation_container{
@@ -792,6 +793,7 @@
                 position: relative;
                 .header_navigation_wrap{
                     width: 100%;
+                    box-sizing: border-box;
                     height:0.6rem;
                     display: flex;
                     justify-content: space-between;
@@ -804,6 +806,7 @@
                             a{
                                 display: inline-block;
                                 width: 100%;
+                                box-sizing: border-box;
                                 padding-right: 0.1rem;
                                 img {
                                     height: 100%;
@@ -846,14 +849,13 @@
                             z-index: 1;
                             .search_input_wrap {
                                 max-width: 12.8rem;
-                                width: 100%;
                                 margin: 0 auto;
                                 padding: 0.1rem 0 0.1rem 0.2rem;
                                 display: flex;
                                 align-items: center;
                                 input {
                                     width: 100%;
-                                    height: 0.35rem;
+                                    height: 0.33rem;
                                     border-radius: 0.06rem 0 0 0.06rem;
                                     box-shadow: none;
                                     background: var(--bgColor);
@@ -979,6 +981,7 @@
         @include flex();
         @include pcContainer;
         flex: 0 0 1.14rem;
+        z-index: 100;
         .useFeature {
             width: 100%;
             height: 0.66rem;
@@ -1135,14 +1138,10 @@
                     font-size: 0.14rem;
                     padding: 0 0.48rem 0 0.1rem;
                     height: 0.3rem;
-                    &:focus {
-                        border: 0.01rem solid var(--bgColor);
-                        outline: none;
-                    }
                 }
                 .search_icon {
                     position: absolute;
-                    top: 0.05rem;
+                    top: 0.08rem;
                     font-size: 0.15rem;
                     right: 0.15rem;
                     color: var(--bgColor);

@@ -2,7 +2,7 @@
   <div :class="echartsComponentWrapLine">
     <div class="echarts_title_wrap_line">
       <span class="echarts_title"><i class="iconfont iconTransactionHistory"></i>14 day Transaction History</span>
-      <span class="view_all_content"><router-link :to="`/txs`">View All</router-link></span>
+      <span class="view_all_content"><router-link :to="`/txs?txType=&status=&startTime=${startTime}&endTime=${endTime}&page=1`">View All</router-link></span>
     </div>
     <div id="echarts_line">
 
@@ -13,7 +13,8 @@
 </template>
 
 <script>
-  import echarts from 'echarts';
+    var echarts = require('echarts/lib/echarts')
+  require('echarts/lib/chart/line')
   import Constant from "../../constant/Constant"
   let line = null;
   export default {
@@ -29,12 +30,16 @@
         if(this.$store.state.currentSkinStyle !== 'default'){
           this.setThemeStyle();
           this.setEcartsLine(this.informationLine)
+            this.startTime = this.formatDate(this.informationLine.xData[0])
+            this.endTime = this.formatDate(this.informationLine.xData[this.informationLine.xData.length - 1])
         }
       },
     },
     data() {
       return {
         skinStyle:'',
+        endTime:'',
+        startTime:'',
         lineSkinBackgroundStyle:[
 
         ],
@@ -58,6 +63,9 @@
     },
 
     methods: {
+      formatDate(time){
+          return `${String(time).substr(6,4)}-${String(time).substr(0,2)}-${String(time).substr(3,2)}`
+      },
       onWindowResize(){
         line.resize();
       },
@@ -187,8 +195,6 @@
   @import '../../style/mixin';
 
   .echarts_component_wrap_line_personal_computer, .echarts_component_wrap_line_mobile {
-    width: 100%;
-    height: 100%;
     padding:0.12rem 0.2rem 0 0.2rem;
     .echarts_title_wrap_line {
       height: 15%;
@@ -221,8 +227,8 @@
       }
     }
     #echarts_line {
-      width: 100%;
-      height: 85%;
+        padding-top: 0.3rem;
+      height: 2.8rem;
     }
   }
   .echarts_component_wrap_line_mobile{
