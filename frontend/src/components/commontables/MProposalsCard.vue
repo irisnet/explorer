@@ -197,6 +197,7 @@ export default {
         white-space: nowrap;
         flex: 1;
         .current {
+          position: absolute;
           height: 100%;
           background: var(--bgColor);
           border-radius: 0.17rem;

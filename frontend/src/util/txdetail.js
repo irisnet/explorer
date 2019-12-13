@@ -1002,8 +1002,10 @@ export default class formatMsgsAndTags {
                         message[Constant.TRANSACTIONMESSAGENAME.DEADLINE].unshift(item.msg.deadline);
                         message[Constant.TRANSACTIONMESSAGENAME.ISBUYORDER].unshift(item.msg.is_buy_order);
                         if(item.msg.output.coin.denom === Constant.Denom.IRISATTO){
-                            amountObj =  Tools.formatAmount2(item.msg.output.coin);
+                            amountObj =  Tools.formatAmountOfTxDetail(item.msg.output.coin);
                             message[Constant.TRANSACTIONMESSAGENAME.OUTPUT].unshift(amountObj);
+                        }else {
+                            message[Constant.TRANSACTIONMESSAGENAME.OUTPUT].unshift(`${item.msg.input.coin.amount} ${item.msg.input.coin.denom.toUpperCase()}`);
                         }
                     }
                 }
