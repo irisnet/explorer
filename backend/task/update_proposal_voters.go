@@ -29,7 +29,7 @@ func (task UpdateProposalVoters) Start() {
 func (task UpdateProposalVoters) DoTask() error {
 	status := []string{document.ProposalStatusVoting}
 	sorts := []string{document.Proposal_Field_VotingEndTime}
-	proposals, err := document.Proposal{}.GetProposalsByStatus(status, sorts)
+	proposals, err := document.Proposal{}.GetProposalsByStatus(status, sorts, false)
 	if err != nil {
 		return err
 	}

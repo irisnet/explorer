@@ -55,7 +55,7 @@ func (service *ProposalService) QueryDepositAndVotingProposalList(needMoniker bo
 	status := []string{document.ProposalStatusDeposit, document.ProposalStatusVoting}
 	sorts := []string{document.Proposal_Field_VotingEndTime, document.Proposal_Field_DepositEndTime}
 
-	data, err := proposalDocument.GetProposalsByStatus(status, sorts)
+	data, err := proposalDocument.GetProposalsByStatus(status, sorts, true)
 	if err != nil {
 		logger.Error("query proposal collection", logger.String("err", err.Error()))
 		return nil
@@ -739,7 +739,7 @@ func (service *ProposalService) Query(id int) (resp vo.ProposalInfoVo) {
 
 		isRejectVote := false
 		if votedNum > 0 {
-			isRejectVote = bool(isParticipation && bool((noWithVeto/votedNum) > vetoThresholdFloat))
+			isRejectVote = bool(isParticipation && bool((noWithVeto / votedNum) > vetoThresholdFloat))
 		}
 		burnPercent, err := lcd.GetProposalBurnPercentByResult(data.Status, isRejectVote)
 		if err != nil {
