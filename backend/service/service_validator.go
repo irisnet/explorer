@@ -485,7 +485,7 @@ func (service *ValidatorService) UpdateValidatorIcons() error {
 	for _, validator := range validatorsDocArr {
 		if identity := validator.Description.Identity; identity != "" {
 			urlicons, err := lcd.GetIconsByKey(identity)
-			if err != nil || len(urlicons) == 0 {
+			if err != nil {
 				if err != nil {
 					logger.Error("GetIconsByKey have error", logger.String("error", err.Error()))
 				}
