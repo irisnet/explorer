@@ -922,6 +922,7 @@ export default {
         @include flex;
         flex-direction: column;
         padding: 0 0.1rem;
+        box-sizing: border-box;
         &:nth-child(1) {
             display: flex;
             flex-direction: row;
@@ -968,6 +969,7 @@ export default {
             padding: 10px;
             width: 100%;
             background: #fff;
+            box-sizing: border-box;
             .information_props_wrap {
                 @include flex;
                 flex-direction: column;
