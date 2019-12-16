@@ -485,10 +485,8 @@ func (service *ValidatorService) UpdateValidatorIcons() error {
 	for _, validator := range validatorsDocArr {
 		if identity := validator.Description.Identity; identity != "" {
 			urlicons, err := lcd.GetIconsByKey(identity)
-			if err != nil || len(urlicons) == 0 {
-				if err != nil {
-					logger.Error("GetIconsByKey have error", logger.String("error", err.Error()))
-				}
+			if err != nil {
+				logger.Error("GetIconsByKey have error", logger.String("error", err.Error()))
 				continue
 			}
 			validator.Icons = urlicons
@@ -990,17 +988,16 @@ func computeUptime(valPub string, height int64) float32 {
 	startHeight := utils.ParseIntWithDefault(result.StartHeight, 0)
 
 	var stats_blocks_window int64
-	if _,ok := govSlashingParamMap["signed_blocks_window"]; ok {
+	if _, ok := govSlashingParamMap["signed_blocks_window"]; ok {
 		signed_blocks_window, ok := utils.ParseInt(govSlashingParamMap["signed_blocks_window"].(string))
 		if !ok {
 			stats_blocks_window = height - startHeight + 1
 		} else {
 			stats_blocks_window = Min(signed_blocks_window, height-startHeight+1)
 		}
-	}else{
+	} else {
 		stats_blocks_window = height - startHeight + 1
 	}
-
 
 	missedBlocksCounter := utils.ParseIntWithDefault(result.MissedBlocksCounter, 0)
 
