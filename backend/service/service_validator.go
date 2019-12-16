@@ -486,15 +486,19 @@ func (service *ValidatorService) UpdateValidatorIcons() error {
 		if identity := validator.Description.Identity; identity != "" {
 			urlicons, err := lcd.GetIconsByKey(identity)
 			if err != nil {
-				logger.Error("GetIconsByKey have error", logger.String("error", err.Error()))
+				logger.Error("GetIconsByKey have error", logger.String("error", err.Error()),
+					logger.String("operator_address", validator.OperatorAddress))
 				continue
 			}
-			validator.Icons = urlicons
+			//validator.Icons = urlicons
 			txs = append(txs, txn.Op{
 				C:  document.CollectionNmValidator,
 				Id: validator.ID,
 				Update: bson.M{
-					"$set": validator,
+					//"$set": validator,
+					"$set": bson.M{
+						"icons": urlicons,
+					},
 				},
 			})
 
