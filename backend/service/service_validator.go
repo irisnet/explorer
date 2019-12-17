@@ -852,7 +852,7 @@ func (service *ValidatorService) UpdateValidators(vs []document.Validator) error
 		if v1, ok := vMap[v.OperatorAddress]; ok {
 			v.ID = v1.ID
 			v.Icons = v1.Icons
-			if !isEqual(v1, v) {
+			if isDiffValidator(v1, v) {
 				// set staticInfo, see detail: buildValidatorStaticInfo
 				v.Uptime = v1.Uptime
 				v.SelfBond = v1.SelfBond
@@ -1024,6 +1024,32 @@ func queryDelegationInfo(operatorAddress string) (string, int) {
 	}
 	delegatorNum := len(delegations)
 	return selfBond, delegatorNum
+}
+
+func isDiffValidator(src, dst document.Validator) bool {
+	if src.OperatorAddress != dst.OperatorAddress ||
+		src.ConsensusPubkey != dst.ConsensusPubkey ||
+		src.Jailed != dst.Jailed ||
+		src.Status != dst.Status ||
+		src.Tokens != dst.Tokens ||
+		src.DelegatorShares != dst.DelegatorShares ||
+		src.BondHeight != dst.BondHeight ||
+		src.UnbondingHeight != dst.UnbondingHeight ||
+		src.UnbondingTime.Second() != dst.UnbondingTime.Second() ||
+		src.VotingPower != dst.VotingPower ||
+		src.ProposerAddr != dst.ProposerAddr ||
+		src.Description.Moniker != dst.Description.Moniker ||
+		src.Description.Identity != dst.Description.Identity ||
+		src.Description.Website != dst.Description.Website ||
+		src.Description.Details != dst.Description.Details ||
+		src.Commission.Rate != dst.Commission.Rate ||
+		src.Commission.MaxRate != dst.Commission.MaxRate ||
+		src.Commission.MaxChangeRate != dst.Commission.MaxChangeRate ||
+		src.Commission.UpdateTime.Second() != dst.Commission.UpdateTime.Second() {
+		logger.Info("validator has changed", logger.String("OperatorAddress", src.OperatorAddress))
+		return true
+	}
+	return false
 }
 
 func isEqual(srcValidator, dstValidator document.Validator) bool {
