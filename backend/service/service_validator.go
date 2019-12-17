@@ -1029,6 +1029,32 @@ func queryDelegationInfo(operatorAddress string) (string, int) {
 	return selfBond, delegatorNum
 }
 
+func isDiffValidator(src, dst document.Validator) bool {
+	if src.OperatorAddress != dst.OperatorAddress ||
+		src.ConsensusPubkey != dst.ConsensusPubkey ||
+		src.Jailed != dst.Jailed ||
+		src.Status != dst.Status ||
+		src.Tokens != dst.Tokens ||
+		src.DelegatorShares != dst.DelegatorShares ||
+		src.BondHeight != dst.BondHeight ||
+		src.UnbondingHeight != dst.UnbondingHeight ||
+		src.UnbondingTime.Second() != dst.UnbondingTime.Second() ||
+		src.VotingPower != dst.VotingPower ||
+		src.ProposerAddr != dst.ProposerAddr ||
+		src.Description.Moniker != dst.Description.Moniker ||
+		src.Description.Identity != dst.Description.Identity ||
+		src.Description.Website != dst.Description.Website ||
+		src.Description.Details != dst.Description.Details ||
+		src.Commission.Rate != dst.Commission.Rate ||
+		src.Commission.MaxRate != dst.Commission.MaxRate ||
+		src.Commission.MaxChangeRate != dst.Commission.MaxChangeRate ||
+		src.Commission.UpdateTime.Second() != dst.Commission.UpdateTime.Second() {
+		logger.Info("validator has changed", logger.String("OperatorAddress", src.OperatorAddress))
+		return true
+	}
+	return false
+}
+
 func isEqual(srcValidator, dstValidator document.Validator) bool {
 	srcBytes := utils.MarshalJsonIgnoreErr(srcValidator)
 	dstBytes := utils.MarshalJsonIgnoreErr(dstValidator)
