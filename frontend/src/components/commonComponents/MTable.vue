@@ -227,7 +227,7 @@ export default {
 
 <style lang="scss">
 table.m_table {
-  width: 100%;
+  width: calc(100% - 0.01rem);
   min-width: 12.8rem;
   .hidden_thead {
       visibility: hidden;

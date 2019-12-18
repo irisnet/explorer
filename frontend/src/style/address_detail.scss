@@ -116,6 +116,7 @@
         @include flex;
         flex-direction: column;
         padding: 0 0.1rem;
+        box-sizing: border-box;
         .transaction_information_content_title{
             height:0.7rem;
             line-height:0.7rem;
