@@ -238,7 +238,7 @@ export default class formatMsgsAndTags {
                         message[Constant.TRANSACTIONMESSAGENAME.WEBSITE].unshift(item.msg.valdescription.website ? item.msg.valdescription.website : '--');
                         message[Constant.TRANSACTIONMESSAGENAME.DETAILS].unshift(item.msg.valdescription.details ? item.msg.valdescription.details : '--');
                         if(dataTx.status === 'success'){
-                            message[Constant.TRANSACTIONMESSAGENAME.COMMISSIONRATE].unshift(item.msg.commission_rate ? `${ Tools.formatPercentage(item.msg.commission.rate)} %` : '--');
+                            message[Constant.TRANSACTIONMESSAGENAME.COMMISSIONRATE].unshift(item.msg.commission_rate ? `${ Tools.formatPercentage(item.msg.commission_rate)} %` : '--');
                         }else {
                             message[Constant.TRANSACTIONMESSAGENAME.COMMISSIONRATE].unshift(item.msg.commission_rate ? `${ Tools.formatPercentage(item.msg.commission_rate)} %` : '--');
                         }
