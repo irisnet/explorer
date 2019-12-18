@@ -489,12 +489,15 @@ func (service *ValidatorService) UpdateValidatorIcons() error {
 				logger.Error("GetIconsByKey have error", logger.String("error", err.Error()))
 				continue
 			}
-			validator.Icons = urlicons
+			//validator.Icons = urlicons
 			txs = append(txs, txn.Op{
 				C:  document.CollectionNmValidator,
 				Id: validator.ID,
 				Update: bson.M{
-					"$set": validator,
+					//"$set": validator,
+					"$set": bson.M{
+						"icons": urlicons,
+					},
 				},
 			})
 
@@ -1081,3 +1084,4 @@ func getTotalVotingPower() int64 {
 	}
 	return total
 }
+
