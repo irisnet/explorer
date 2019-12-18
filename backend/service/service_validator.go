@@ -1084,3 +1084,4 @@ func getTotalVotingPower() int64 {
 	}
 	return total
 }
+
