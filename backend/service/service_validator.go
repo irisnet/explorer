@@ -486,8 +486,7 @@ func (service *ValidatorService) UpdateValidatorIcons() error {
 		if identity := validator.Description.Identity; identity != "" {
 			urlicons, err := lcd.GetIconsByKey(identity)
 			if err != nil {
-				logger.Error("GetIconsByKey have error", logger.String("error", err.Error()),
-					logger.String("operator_address", validator.OperatorAddress))
+				logger.Error("GetIconsByKey have error", logger.String("error", err.Error()))
 				continue
 			}
 			//validator.Icons = urlicons
@@ -856,7 +855,7 @@ func (service *ValidatorService) UpdateValidators(vs []document.Validator) error
 		if v1, ok := vMap[v.OperatorAddress]; ok {
 			v.ID = v1.ID
 			v.Icons = v1.Icons
-			if !isEqual(v1, v) {
+			if isDiffValidator(v1, v) {
 				// set staticInfo, see detail: buildValidatorStaticInfo
 				v.Uptime = v1.Uptime
 				v.SelfBond = v1.SelfBond
