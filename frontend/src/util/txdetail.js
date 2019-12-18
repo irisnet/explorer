@@ -311,9 +311,9 @@ export default class formatMsgsAndTags {
                     if(item.type === txType){
                         if(item.msg){
                             message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--');
-                            message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(item.msg.validator_dst_addr);
+                            message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(item.msg.validator_src_addr);
                             message[Constant.TRANSACTIONMESSAGENAME.SHARES].unshift(item.msg.shares_amount ? `${Tools.numberMoveDecimal(item.msg.shares_amount)} SHARES` : '--');
-                            message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.msg.validator_src_addr)
+                            message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.msg.validator_dst_addr)
                             message[Constant.TRANSACTIONMESSAGENAME.TOSHARES].unshift('--');
                             message[Constant.TRANSACTIONMESSAGENAME.ENDTIME].unshift('--');
                         }

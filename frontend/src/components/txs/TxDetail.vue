@@ -334,6 +334,7 @@
                         .tx_detail_common_information_item_value{
                             display: flex;
                             color: var(--titleColor);
+                            overflow-x: auto;
                             span{
                                 color: var(--titleColor);
                                 overflow-x: auto;
