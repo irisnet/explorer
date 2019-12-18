@@ -205,12 +205,12 @@ export default class formatMsgsAndTags {
                         message[Constant.TRANSACTIONMESSAGENAME.SELFBONDED].unshift(`${selfBondedObj.amountNumber} ${selfBondedObj.tokenName}`);
                         message[Constant.TRANSACTIONMESSAGENAME.OWNERADDRESS].unshift(item.msg.delegator_address);
                         message[Constant.TRANSACTIONMESSAGENAME.CONSENSUSPUBKEY].unshift(item.msg.pubkey);
-                        message[Constant.TRANSACTIONMESSAGENAME.COMMISSIONRATE].unshift(`${Number(item.msg.commission.rate * 100)} %`)
+                        message[Constant.TRANSACTIONMESSAGENAME.COMMISSIONRATE].unshift(`${Tools.formatPercentage(item.msg.commission.rate )} %`)
                         message[Constant.TRANSACTIONMESSAGENAME.WEBSITE].unshift(item.msg.valdescription.website ? item.msg.valdescription.website : '--');
                         message[Constant.TRANSACTIONMESSAGENAME.DETAILS].unshift(item.msg.valdescription.details ? item.msg.valdescription.details : '--');
                         message.tooltip = {
-                            maxChangeRate:  `${Number(item.msg.commission.max_change_rate * 100)}%`,
-                            maxRate: `${Number(item.msg.commission.max_rate) * 100} %`
+                            maxChangeRate:  `${Tools.formatPercentage(item.msg.commission.max_change_rate)}%`,
+                            maxRate: `${Tools.formatPercentage(item.msg.commission.max_rate)} %`
                         }
                     }
                 }
@@ -238,9 +238,9 @@ export default class formatMsgsAndTags {
                         message[Constant.TRANSACTIONMESSAGENAME.WEBSITE].unshift(item.msg.valdescription.website ? item.msg.valdescription.website : '--');
                         message[Constant.TRANSACTIONMESSAGENAME.DETAILS].unshift(item.msg.valdescription.details ? item.msg.valdescription.details : '--');
                         if(dataTx.status === 'success'){
-                            message[Constant.TRANSACTIONMESSAGENAME.COMMISSIONRATE].unshift(item.msg.commission_rate ? `${ Number(item.msg.commission.rate * 100)} %` : '--');
+                            message[Constant.TRANSACTIONMESSAGENAME.COMMISSIONRATE].unshift(item.msg.commission_rate ? `${ Tools.formatPercentage(item.msg.commission.rate)} %` : '--');
                         }else {
-                            message[Constant.TRANSACTIONMESSAGENAME.COMMISSIONRATE].unshift(item.msg.commission_rate ? `${ Number(item.msg.commission_rate * 100)} %` : '--');
+                            message[Constant.TRANSACTIONMESSAGENAME.COMMISSIONRATE].unshift(item.msg.commission_rate ? `${ Tools.formatPercentage(item.msg.commission_rate)} %` : '--');
                         }
                     }
                 }
@@ -496,7 +496,7 @@ export default class formatMsgsAndTags {
                             message[Constant.TRANSACTIONMESSAGENAME.SOFTWARE].unshift(item.msg.software);
                             message[Constant.TRANSACTIONMESSAGENAME.VERSION].unshift(item.msg.version);
                             message[Constant.TRANSACTIONMESSAGENAME.SWITCHHEIGHT].unshift(item.msg.switch_height);
-                            message[Constant.TRANSACTIONMESSAGENAME.TRESHOLD].unshift(`${Number(item.msg.threshold * 100)} %`);
+                            message[Constant.TRANSACTIONMESSAGENAME.TRESHOLD].unshift(`${Tools.formatPercentage(item.msg.threshold)} %`);
                         }
                         break;
                     case Constant.SUBMITPROPOSALTYPE.SUBMITTOKENADDITIONPROPOSAL:

@@ -890,4 +890,7 @@ export default class Tools{
         // console.log(amountNumber,tokenName,"amount information")
         return {amountNumber,tokenName,moreAmountsNumber}
     }
+   static formatPercentage(number){
+        return new BigNumber(number).multipliedBy(100)
+    }
 }
