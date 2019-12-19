@@ -14,6 +14,7 @@ import (
 	"github.com/irisnet/explorer/backend/vo"
 	"github.com/irisnet/explorer/backend/vo/msgvo"
 	"gopkg.in/mgo.v2/bson"
+	"strconv"
 )
 
 type TxService struct {
@@ -88,22 +89,9 @@ func (service *TxService) QueryBaseList(query bson.M, page, pageSize int, istota
 	}
 
 	data := buildTxVOsFromDoc(txList)
-	var baseData []vo.TransTx
-	for _, tx := range data {
-		txResp := buildBaseTx(tx)
+	items := service.buildTxs(data, false)
 
-		fromMoniker, tomoniker := service.BuildFTMoniker(tx.From, tx.To)
-
-		baseData = append(baseData, vo.TransTx{
-			BaseTx:      txResp,
-			From:        tx.From,
-			To:          tx.To,
-			FromMoniker: fromMoniker,
-			ToMoniker:   tomoniker,
-		})
-	}
-
-	pageInfo.Data = baseData
+	pageInfo.Data = items
 	pageInfo.Count = total
 
 	logger.Debug("QueryBaseList end", service.GetTraceLog())
@@ -864,6 +852,7 @@ func buildStakeTxInfo(tx vo.CommonTx, isDetail bool, txResp interface{}) interfa
 			sourceTotal := 0
 			if isDetail {
 				var validatorAddr bytes.Buffer
+				monikersMap := make(map[string]string, len(tx.Tags))
 				for k, _ := range tx.Tags {
 					if strings.HasPrefix(k, types.TxTag_WithDrawRewardFromValidator) {
 						sourceTotal++
@@ -874,13 +863,24 @@ func buildStakeTxInfo(tx vo.CommonTx, isDetail bool, txResp interface{}) interfa
 								logger.Error("ValidatorAddr WriteString", logger.String("err", err.Error()))
 							}
 						}
-						_, err := validatorAddr.WriteString(string([]byte(k)[len(types.TxTag_WithDrawRewardFromValidator):]))
+						valaddr := string([]byte(k)[len(types.TxTag_WithDrawRewardFromValidator):])
+						_, err := validatorAddr.WriteString(valaddr)
 						if err != nil {
 							logger.Error("ValidatorAddr WriteString", logger.String("err", err.Error()))
 						}
+
+						Tmoniker := ""
+						if val, ok := ValidatorsDescriptionMap[valaddr]; ok {
+							Tmoniker = val.Moniker
+						}
+						if one, ok := BlackValidatorsMap[valaddr]; ok {
+							Tmoniker = one.Moniker
+						}
+						monikersMap[valaddr] = Tmoniker
 					}
 				}
 				stakeTx.From = validatorAddr.String()
+				stakeTx.Monikers = monikersMap
 			} else {
 				validatorAddr := ""
 
@@ -894,10 +894,9 @@ func buildStakeTxInfo(tx vo.CommonTx, isDetail bool, txResp interface{}) interfa
 				}
 				if sourceTotal == 1 {
 					stakeTx.From = validatorAddr
+				} else {
+					stakeTx.From = strconv.Itoa(sourceTotal)
 				}
-				//else {
-				//	stakeTx.From = strconv.Itoa(sourceTotal)
-				//}
 			}
 
 			stakeTx.Msgs = tx.Msgs

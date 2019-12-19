@@ -115,10 +115,11 @@ type TransTx struct {
 
 type StakeTx struct {
 	TransTx
-	Source      string    `json:"source"`
-	FromMoniker string    `json:"from_moniker"`
-	ToMoniker   string    `json:"to_moniker"`
-	Msgs        []MsgItem `json:"msgs"`
+	Source      string            `json:"source"`
+	FromMoniker string            `json:"from_moniker"`
+	ToMoniker   string            `json:"to_moniker"`
+	Msgs        []MsgItem         `json:"msgs"`
+	Monikers    map[string]string `json:"monikers"`
 }
 
 func (s StakeTx) PrintHashFromToAmount() string {
@@ -132,18 +133,18 @@ Amount: %v
 
 type DeclarationTx struct {
 	BaseTx
-	OperatorAddr string        `json:"operator_addr"`
-	Moniker      string        `json:"moniker"`
-	SelfBond     utils.Coins   `json:"self_bond"`
+	OperatorAddr string      `json:"operator_addr"`
+	Moniker      string      `json:"moniker"`
+	SelfBond     utils.Coins `json:"self_bond"`
 }
 
 type GovTx struct {
 	BaseTx
-	From         string            `json:"from"`
-	ProposalId   uint64            `json:"proposal_id"`
-	Amount       utils.Coins       `json:"amount"`
-	Title        string            `json:"title"`
-	ProposalType string            `json:"proposal_type"`
+	From         string      `json:"from"`
+	ProposalId   uint64      `json:"proposal_id"`
+	Amount       utils.Coins `json:"amount"`
+	Title        string      `json:"title"`
+	ProposalType string      `json:"proposal_type"`
 }
 
 type RecentTx struct {
