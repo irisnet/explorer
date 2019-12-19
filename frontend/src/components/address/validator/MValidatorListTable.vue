@@ -118,6 +118,10 @@ export default {
         }
       ],
       jailedValidatorFields: [
+          {
+              title: '#',
+              key: 'index',
+          },
         {
           title: 'Moniker',
           slot: 'moniker',
@@ -165,6 +169,10 @@ export default {
         }
       ],
       candidateValidatorFields: [
+          {
+              title: '#',
+              key: 'index',
+          },
         {
           title: 'Moniker',
           slot: 'moniker',
