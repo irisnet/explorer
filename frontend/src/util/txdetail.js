@@ -420,6 +420,14 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
         if(dataTx.status === 'success'){
             message[Constant.TRANSACTIONMESSAGENAME.FROM] = dataTx.from ? dataTx.from.split(',') : '-';
+            if(dataTx.monikers){
+                message[Constant.TRANSACTIONMESSAGENAME.FROM] = message[Constant.TRANSACTIONMESSAGENAME.FROM].map( item => {
+                    return {
+                        address: item,
+                        moniker: dataTx.monikers[item]
+                    }
+                })
+            }
             if(dataTx.amount && dataTx.amount.length > 0 ){
                 amountObj = Tools.formatAmountOfTxDetail(dataTx.amount);
                 message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${amountObj.amountNumber} ${amountObj.tokenName}`)
@@ -450,6 +458,14 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
         message[Constant.TRANSACTIONMESSAGENAME.FROM] = dataTx.from ? dataTx.from.split(',') : '-';
+        if(dataTx.monikers){
+            message[Constant.TRANSACTIONMESSAGENAME.FROM] = message[Constant.TRANSACTIONMESSAGENAME.FROM].map( item => {
+                return {
+                    address: item,
+                    moniker: dataTx.monikers[item]
+                }
+            })
+        }
         amountObj = Tools.formatAmountOfTxDetail(dataTx.amount);
         amountObj.amountNumber === '--' || amountObj.tokenName === '--' ? message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--') : message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${amountObj.amountNumber} ${amountObj.tokenName}`)
         message[Constant.TRANSACTIONMESSAGENAME.TO] = (dataTx.to ? dataTx.to.split(',') : '-');
