@@ -4081,6 +4081,9 @@
                 "memo": {
                     "type": "string"
                 },
+              "monikers": {
+                "type": "object"
+              },
                 "msgs": {
                     "type": "array",
                     "items": {

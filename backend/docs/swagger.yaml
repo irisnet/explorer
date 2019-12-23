@@ -1124,6 +1124,8 @@ definitions:
         type: string
       memo:
         type: string
+      monikers:
+        type: object
       msgs:
         items:
           $ref: '#/definitions/vo.MsgItem'

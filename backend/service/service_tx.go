@@ -42,7 +42,7 @@ func (service *TxService) QueryTxList(query bson.M, page, pageSize int, istotal 
 	items = parseFromAndToByAmountCoinFlow(items, false)
 
 	// get validator moniker by address
-	items = service.getValidatorMonikerByAddress(items)
+	//items = service.getValidatorMonikerByAddress(items)
 
 	return vo.PageVo{
 		Data:  items,
@@ -93,13 +93,20 @@ func (service *TxService) QueryBaseList(query bson.M, page, pageSize int, istota
 		txResp := buildBaseTx(tx)
 
 		fromMoniker, tomoniker := service.BuildFTMoniker(tx.From, tx.To)
+		monikers := make(map[string]string, 2)
+		if fromMoniker != "" && tx.From != "" {
+			monikers[tx.From] = fromMoniker
+		}
+		if tomoniker != "" && tx.To != "" {
+			monikers[tx.To] = tomoniker
+		}
 
 		baseData = append(baseData, vo.TransTx{
-			BaseTx:      txResp,
-			From:        tx.From,
-			To:          tx.To,
-			FromMoniker: fromMoniker,
-			ToMoniker:   tomoniker,
+			BaseTx:   txResp,
+			From:     tx.From,
+			To:       tx.To,
+			Monikers: monikers,
+			Msgs:     tx.Msgs,
 		})
 	}
 
@@ -148,6 +155,13 @@ func (service *TxService) QueryHtlcTx(query bson.M, page, pageSize int, istotal 
 	var baseData []vo.HtlcTx
 	for _, tx := range data {
 		monikerFrom, monikerTo := service.BuildFTMoniker(tx.From, tx.To)
+		monikers := make(map[string]string, 2)
+		if monikerFrom != "" && tx.From != "" {
+			monikers[tx.From] = monikerFrom
+		}
+		if monikerTo != "" && tx.To != "" {
+			monikers[tx.To] = monikerTo
+		}
 		expireheight := int64(-1)
 		if tx.Status == types.Success {
 			switch tx.Type {
@@ -161,9 +175,8 @@ func (service *TxService) QueryHtlcTx(query bson.M, page, pageSize int, istotal 
 			BaseTx:       buildBaseTx(tx),
 			From:         tx.From,
 			To:           tx.To,
-			ToMoniker:    monikerTo,
-			FromMoniker:  monikerFrom,
 			ExpireHeight: expireheight,
+			Monikers:     monikers,
 		})
 	}
 
@@ -214,7 +227,7 @@ func (service *TxService) QueryTxDetail(hash string) interface{} {
 	txVOs := service.buildTxForDetail(buildTxVOFromDoc(txAsDoc), true)
 
 	items := parseFromAndToByAmountCoinFlow([]interface{}{txVOs}, true)
-	items = service.getValidatorMonikerByAddress(items)
+	//items = service.getValidatorMonikerByAddress(items)
 
 	logger.Debug("getTxsByFilter end", service.GetTraceLog())
 	return items[0]
@@ -750,19 +763,19 @@ func parseFromAndToByAmountCoinFlow(items []interface{}, forTxDetail bool) []int
 	return items
 }
 
-// get validator moniker by address which in stake tx
-func (service *TxService) getValidatorMonikerByAddress(items []interface{}) []interface{} {
-
-	// set moniker value
-	for i := 0; i < len(items); i++ {
-		if stakeTx, ok := items[i].(vo.StakeTx); ok {
-			stakeTx.FromMoniker, stakeTx.ToMoniker = service.BuildFTMoniker(stakeTx.From, stakeTx.To)
-			items[i] = stakeTx
-		}
-	}
-
-	return items
-}
+//// get validator moniker by address which in stake tx
+//func (service *TxService) getValidatorMonikerByAddress(items []interface{}) []interface{} {
+//
+//	// set moniker value
+//	for i := 0; i < len(items); i++ {
+//		if stakeTx, ok := items[i].(vo.StakeTx); ok {
+//			stakeTx.FromMoniker, stakeTx.ToMoniker = service.BuildFTMoniker(stakeTx.From, stakeTx.To)
+//			items[i] = stakeTx
+//		}
+//	}
+//
+//	return items
+//}
 
 func (service *TxService) buildTxs(txs []vo.CommonTx, isDetail bool) []interface{} {
 	var txList []interface{}
@@ -863,6 +876,9 @@ func buildStakeTxInfo(tx vo.CommonTx, isDetail bool, txResp interface{}) interfa
 			stakeTx.To = tx.Tags[types.TxTag_WithDrawAddress]
 			sourceTotal := 0
 			if isDetail {
+				if stakeTx.Monikers == nil {
+					stakeTx.Monikers = make(map[string]string, len(tx.Tags))
+				}
 				var validatorAddr bytes.Buffer
 				for k, _ := range tx.Tags {
 					if strings.HasPrefix(k, types.TxTag_WithDrawRewardFromValidator) {
@@ -874,11 +890,21 @@ func buildStakeTxInfo(tx vo.CommonTx, isDetail bool, txResp interface{}) interfa
 								logger.Error("ValidatorAddr WriteString", logger.String("err", err.Error()))
 							}
 						}
-						_, err := validatorAddr.WriteString(string([]byte(k)[len(types.TxTag_WithDrawRewardFromValidator):]))
+						valaddr := string([]byte(k)[len(types.TxTag_WithDrawRewardFromValidator):])
+						_, err := validatorAddr.WriteString(valaddr)
 						if err != nil {
 							logger.Error("ValidatorAddr WriteString", logger.String("err", err.Error()))
 						}
+						Tmoniker := ""
+						if val, ok := ValidatorsDescriptionMap[valaddr]; ok {
+							Tmoniker = val.Moniker
+						}
+						if one, ok := BlackValidatorsMap[valaddr]; ok {
+							Tmoniker = one.Moniker
+						}
+						stakeTx.Monikers[valaddr] = Tmoniker
 					}
+
 				}
 				stakeTx.From = validatorAddr.String()
 			} else {
@@ -901,6 +927,7 @@ func buildStakeTxInfo(tx vo.CommonTx, isDetail bool, txResp interface{}) interfa
 			}
 
 			stakeTx.Msgs = tx.Msgs
+			stakeTx.Tags = tx.Tags
 			txResp = stakeTx
 		}
 	}
@@ -960,40 +987,55 @@ func (service *TxService) getTxAttachedFields(govProposalIdMap *map[uint64]docum
 
 func (service *TxService) buildTxForList(tx vo.CommonTx, blackListP *map[string]document.BlackList,
 	govProposalIdMapP *map[uint64]document.Proposal) interface{} {
-
+	monikersMap := make(map[string]string, len(tx.Tags))
+	Fmoniker, Tmoniker := service.BuildFTMoniker(tx.From, tx.To)
+	if tx.From != "" && Fmoniker != "" {
+		monikersMap[tx.From] = Fmoniker
+	}
+	if tx.To != "" && Tmoniker != "" {
+		monikersMap[tx.To] = Tmoniker
+	}
 	switch types.Convert(tx.Type) {
 	case types.Trans:
 		if tx.Type == types.TxTypeSetMemoRegexp {
 			return vo.AssetTx{
-				BaseTx: buildBaseTx(tx),
-				From:   tx.From,
-				To:     tx.To,
+				BaseTx:   buildBaseTx(tx),
+				From:     tx.From,
+				To:       tx.To,
+				Msgs:     tx.Msgs,
+				Monikers: monikersMap,
 			}
 		}
 		return vo.TransTx{
-			BaseTx: buildBaseTx(tx),
-			From:   tx.From,
-			To:     tx.To,
+			BaseTx:   buildBaseTx(tx),
+			From:     tx.From,
+			To:       tx.To,
+			Msgs:     tx.Msgs,
+			Monikers: monikersMap,
 		}
 	case types.Declaration:
-		moniker, _ := service.BuildFTMoniker(tx.From, tx.To)
+		//moniker, _ := service.BuildFTMoniker(tx.From, tx.To)
 		dtx := vo.DeclarationTx{
 			BaseTx:       buildBaseTx(tx),
 			OperatorAddr: tx.From,
-			Moniker:      moniker,
-			SelfBond:     tx.Amount,
+			//Moniker:      moniker,
+			SelfBond: tx.Amount,
+			Msgs:     tx.Msgs,
+			Monikers: monikersMap,
 		}
 		return dtx
 	case types.Stake:
-		fromMoniker, toMiniker := service.BuildFTMoniker(tx.From, tx.To)
+		//fromMoniker, toMiniker := service.BuildFTMoniker(tx.From, tx.To)
 		return vo.StakeTx{
 			TransTx: vo.TransTx{
 				BaseTx: buildBaseTx(tx),
 				From:   tx.From,
 				To:     tx.To,
 			},
-			ToMoniker:   toMiniker,
-			FromMoniker: fromMoniker,
+			//ToMoniker:   toMiniker,
+			//FromMoniker: fromMoniker,
+			Msgs:     tx.Msgs,
+			Monikers: monikersMap,
 		}
 
 	case types.Gov:
@@ -1002,6 +1044,8 @@ func (service *TxService) buildTxForList(tx vo.CommonTx, blackListP *map[string]
 			Amount:     tx.Amount,
 			From:       tx.From,
 			ProposalId: tx.ProposalId,
+			Msgs:       tx.Msgs,
+			Monikers:   monikersMap,
 		}
 
 		if govTx.Type == types.TxTypeSubmitProposal {
@@ -1075,40 +1119,50 @@ func (service *TxService) buildTxForList(tx vo.CommonTx, blackListP *map[string]
 		return govTx
 	case types.Asset:
 		return vo.AssetTx{
-			BaseTx: buildBaseTx(tx),
-			From:   tx.From,
-			To:     tx.To,
+			BaseTx:   buildBaseTx(tx),
+			From:     tx.From,
+			To:       tx.To,
+			Msgs:     tx.Msgs,
+			Monikers: monikersMap,
 		}
 	case types.Rand:
 		return vo.AssetTx{
+			BaseTx:   buildBaseTx(tx),
+			From:     tx.From,
+			To:       tx.To,
+			Tags:     tx.Tags,
+			Msgs:     tx.Msgs,
+			Monikers: monikersMap,
+		}
+	case types.Htlc:
+		//monikerfrom, monikerto := service.BuildFTMoniker(tx.From, tx.To)
+		return vo.HtlcTx{
 			BaseTx: buildBaseTx(tx),
 			From:   tx.From,
 			To:     tx.To,
 			Tags:   tx.Tags,
-		}
-	case types.Htlc:
-		monikerfrom, monikerto := service.BuildFTMoniker(tx.From, tx.To)
-		return vo.HtlcTx{
-			BaseTx:      buildBaseTx(tx),
-			From:        tx.From,
-			To:          tx.To,
-			Tags:        tx.Tags,
-			ToMoniker:   monikerto,
-			FromMoniker: monikerfrom,
+			//ToMoniker:   monikerto,
+			//FromMoniker: monikerfrom,
+			Msgs:     tx.Msgs,
+			Monikers: monikersMap,
 		}
 	case types.Coinswap:
 		return vo.CoinswapTx{
-			BaseTx: buildBaseTx(tx),
-			From:   tx.From,
-			To:     tx.To,
-			Tags:   tx.Tags,
+			BaseTx:   buildBaseTx(tx),
+			From:     tx.From,
+			To:       tx.To,
+			Tags:     tx.Tags,
+			Msgs:     tx.Msgs,
+			Monikers: monikersMap,
 		}
 	case types.Guardian:
 		return vo.GuardianTx{
-			BaseTx: buildBaseTx(tx),
-			From:   tx.From,
-			To:     tx.To,
-			Tags:   tx.Tags,
+			BaseTx:   buildBaseTx(tx),
+			From:     tx.From,
+			To:       tx.To,
+			Tags:     tx.Tags,
+			Msgs:     tx.Msgs,
+			Monikers: monikersMap,
 		}
 	}
 	return nil
@@ -1117,57 +1171,72 @@ func (service *TxService) buildTxForList(tx vo.CommonTx, blackListP *map[string]
 func (service *TxService) buildTxVO(tx vo.CommonTx, blackListP *map[string]document.BlackList,
 	govProposalIdMapP *map[uint64]document.Proposal) interface{} {
 
+	monikersMap := make(map[string]string, len(tx.Tags))
+	Fmoniker, Tmoniker := service.BuildFTMoniker(tx.From, tx.To)
+	if tx.From != "" && Fmoniker != "" {
+		monikersMap[tx.From] = Fmoniker
+	}
+	if tx.To != "" && Tmoniker != "" {
+		monikersMap[tx.To] = Tmoniker
+	}
 	switch types.Convert(tx.Type) {
 	case types.Trans:
 		if tx.Type == types.TxTypeSetMemoRegexp {
 			return vo.AssetTxInfo{
-				BaseTx: buildBaseTx(tx),
-				Msgs:   tx.Msgs,
+				BaseTx:   buildBaseTx(tx),
+				Msgs:     tx.Msgs,
+				Monikers: monikersMap,
 			}
 		}
 		return vo.TransTxInfo{
-			BaseTx: buildBaseTx(tx),
-			Msgs:   tx.Msgs,
+			BaseTx:   buildBaseTx(tx),
+			Msgs:     tx.Msgs,
+			Monikers: monikersMap,
 		}
 	case types.Declaration:
 		dtx := vo.DeclarationTxInfo{
 			BaseTx:   buildBaseTx(tx),
 			SelfBond: tx.Amount,
 			Msgs:     tx.Msgs,
+			Monikers: monikersMap,
 		}
 		dtx.Msgs = buildDeclarationMsgs(tx, blackListP)
 		return dtx
 	case types.Stake:
-		monikerfrom, monikerto := service.BuildFTMoniker(tx.From, tx.To)
+		//monikerfrom, monikerto := service.BuildFTMoniker(tx.From, tx.To)
 		return vo.StakeTxInfo{
 			TransTx: vo.TransTx{
 				BaseTx: buildBaseTx(tx),
 				From:   tx.From,
 				To:     tx.To,
 			},
-			FromMoniker: monikerfrom,
-			ToMoniker:   monikerto,
-			Msgs:        tx.Msgs,
+			//FromMoniker: monikerfrom,
+			//ToMoniker:   monikerto,
+			Msgs:     tx.Msgs,
+			Monikers: monikersMap,
 		}
 
 	case types.Gov:
 		govTx := vo.GovTxInfo{
-			BaseTx: buildBaseTx(tx),
-			Msgs:   tx.Msgs,
+			BaseTx:   buildBaseTx(tx),
+			Msgs:     tx.Msgs,
+			Monikers: monikersMap,
 		}
 		return govTx
 	case types.Asset:
 		return vo.AssetTxInfo{
-			BaseTx: buildBaseTx(tx),
-			Msgs:   tx.Msgs,
+			BaseTx:   buildBaseTx(tx),
+			Msgs:     tx.Msgs,
+			Monikers: monikersMap,
 		}
 	case types.Rand:
 		return vo.AssetTxInfo{
-			BaseTx: buildBaseTx(tx),
-			Msgs:   tx.Msgs,
+			BaseTx:   buildBaseTx(tx),
+			Msgs:     tx.Msgs,
+			Monikers: monikersMap,
 		}
 	case types.Htlc:
-		monikerFrom, monikerTo := service.BuildFTMoniker(tx.From, tx.To)
+		//monikerFrom, monikerTo := service.BuildFTMoniker(tx.From, tx.To)
 		expireheight := int64(-1)
 		if tx.Status == types.Success {
 			switch tx.Type {
@@ -1177,16 +1246,18 @@ func (service *TxService) buildTxVO(tx vo.CommonTx, blackListP *map[string]docum
 			}
 		}
 		return vo.HtlcTxInfo{
-			BaseTx:       buildBaseTx(tx),
-			Msgs:         tx.Msgs,
-			ToMoniker:    monikerTo,
-			FromMoniker:  monikerFrom,
+			BaseTx: buildBaseTx(tx),
+			Msgs:   tx.Msgs,
+			//ToMoniker:    monikerTo,
+			//FromMoniker:  monikerFrom,
 			ExpireHeight: expireheight,
+			Monikers:     monikersMap,
 		}
 	case types.Coinswap:
 		return vo.CoinswapTxInfo{
-			BaseTx: buildBaseTx(tx),
-			Msgs:   tx.Msgs,
+			BaseTx:   buildBaseTx(tx),
+			Msgs:     tx.Msgs,
+			Monikers: monikersMap,
 		}
 	case types.Guardian:
 		baseTx := buildBaseTx(tx)
@@ -1194,6 +1265,7 @@ func (service *TxService) buildTxVO(tx vo.CommonTx, blackListP *map[string]docum
 			BaseTx:     baseTx,
 			IsProfiler: isProfiler(baseTx.Signer),
 			Msgs:       tx.Msgs,
+			Monikers:   monikersMap,
 		}
 	}
 	return nil
