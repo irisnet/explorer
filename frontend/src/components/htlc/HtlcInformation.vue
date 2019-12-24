@@ -155,7 +155,6 @@
                                 this.HtlcTxListArray = res.Data.map( item => {
                                     let fromInformation = Tools.formatListAmount(item).fromAddressAndMoniker,
                                         toInformation = Tools.formatListAmount(item).toAddressAndMoniker;
-                                    console.log(fromInformation,toInformation,"地址信息")
                                   return{
                                       txHash: item.hash,
                                       block: item.block_height,
