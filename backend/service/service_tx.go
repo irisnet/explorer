@@ -91,6 +91,9 @@ func (service *TxService) QueryBaseList(query bson.M, page, pageSize int, istota
 	var baseData []vo.TransTx
 	for _, tx := range data {
 		txResp := buildBaseTx(tx)
+		if tx.Type == types.TxTypeWithdrawDelegatorRewardsAll || tx.Type == types.TxTypeWithdrawValidatorRewardsAll {
+			txResp.Tags = tx.Tags
+		}
 
 		fromMoniker, tomoniker := service.BuildFTMoniker(tx.From, tx.To)
 		monikers := make(map[string]string, 2)
