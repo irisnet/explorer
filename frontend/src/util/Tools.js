@@ -771,16 +771,30 @@ export default class Tools{
 					break;
 				case Constant.TxType.WITHDRAWDELEGATORREWARDSALL:
 					amount = Tools.formatListByAmount(data.amount);
-
                     let fromAddressArray = [],toAddressArray = [];
-                    if(data.tags){
-                        for(let item in data.tags){
-                            if(item.startsWith('withdraw-reward-from-validator')){
-                                fromAddressArray.push(item.split('-')[item.split('-').length - 1])
+                    if(data.status === 'success'){
+                        if(data.tags){
+                            for(let item in data.tags){
+                                if(item.startsWith('withdraw-reward-from-validator')){
+                                    fromAddressArray.push(item.split('-')[item.split('-').length - 1])
+                                }
+                                if(item === 'delegator'){
+                                    toAddressArray.push(data.tags[item])
+                                }
                             }
-                            if(item === 'delegator'){
-                                toAddressArray.push(data.tags[item])
-                            }
+                        }
+                    }else {
+                        if(data.msgs){
+                            data.msgs.forEach( item => {
+                                if(item.msg){
+                                    if(item.msg.validator_addr){
+                                        fromAddressArray.unshift(item.msg.validator_addr)
+                                    }
+                                    if(item.msg.delegator_addr){
+                                        toAddressArray.unshift(item.msg.delegator_addr)
+                                    }
+                                }
+                            })
                         }
                     }
                     fromAddressArray.forEach( item => {
@@ -849,23 +863,11 @@ export default class Tools{
                            fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(data.tags.sender,data.monikers))
                             toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(data.tags.receiver,data.monikers))
                         }
-                    }else {
-                        if(data.msgs){
-                            data.msgs.forEach( item => {
-                                if(item.msg){
-                                    toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.sender,data.monikers))
-                                }
-                            })
-                        }
                     }
                     break;
                 case Constant.TxType.REFUNDHTLC:
-                    if(data.msgs){
-                        data.msgs.forEach( item => {
-                            if(item.msg){
-                                toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.sender,data.monikers))
-                            }
-                        })
+                    if(data.tags && data.tags.sender){
+                        toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(data.tags.sender,data.monikers))
                     }
                     break;
                 case Constant.TxType.CREATEHTLC:

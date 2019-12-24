@@ -15,8 +15,8 @@
                         <span class="htlc_information_name">{{Object.keys(item)[0]}}</span>
                         <div class="img_content">
                             <div class="htlc_information_value"
-                                 v-if="Object.keys(item)[0] !== 'From:'
-                                 && Object.keys(item)[0] !== 'To:'
+                                 v-if="Object.keys(item)[0] !== 'HTLC Sender:'
+                                 && Object.keys(item)[0] !== 'HTLC Receiver:'
                                 ">{{Object.values(item)[0]}}
                                 <span v-if=" Object.keys(item)[0] === 'State:'">
                                     <img v-show="htlcInformationArr[htlcInformationArr.length -1]['State:'] === 'Completed'" src="../../assets/Complete.png">
@@ -25,9 +25,9 @@
                                     <img v-show="htlcInformationArr[htlcInformationArr.length -1]['State:'] === 'Refunded'" src="../../assets/Refunded.png">
                                 </span>
                             </div>
-                            <div class="skip_route" v-if="Object.keys(item)[0] === 'From:'|| Object.keys(item)[0] === 'To:'">
-                                <router-link v-if="Object.keys(item)[0] === 'From:'" :to="addressRoute(Object.values(item)[0])">{{ monikerFrom !== '' ? monikerFrom : Object.values(item)[0]}}</router-link>
-                                <router-link v-if="Object.keys(item)[0] === 'To:'" :to="addressRoute(Object.values(item)[0])">{{ monikerTo !== '' ? monikerTo : Object.values(item)[0]}}</router-link>
+                            <div class="skip_route" v-if="Object.keys(item)[0] === 'HTLC Sender:'|| Object.keys(item)[0] === 'HTLC Receiver:'">
+                                <router-link v-if="Object.keys(item)[0] === 'HTLC Sender:'" :to="addressRoute(Object.values(item)[0])">{{ monikerFrom !== '' ? monikerFrom : Object.values(item)[0]}}</router-link>
+                                <router-link v-if="Object.keys(item)[0] === 'HTLC Receiver:'" :to="addressRoute(Object.values(item)[0])">{{ monikerTo !== '' ? monikerTo : Object.values(item)[0]}}</router-link>
                             </div>
                             <m-clip v-if="Object.keys(item)[0] === 'Hash Lock:'" :text="Object.values(item)[0]" style="margin-left: 0.1rem"></m-clip>
                         </div>
@@ -80,7 +80,7 @@
                         key:'hash_lock',
                     },
                     {
-                        "From:" : '--',
+                        "HTLC Sender:" : '--',
                         key:'from'
                     },
                     {
@@ -88,7 +88,7 @@
                         key:'amount'
                     },
                     {
-                        "To:" : '--',
+                        "HTLC Receiver:" : '--',
                         key:'to'
                     },
                     {
