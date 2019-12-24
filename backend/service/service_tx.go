@@ -42,7 +42,7 @@ func (service *TxService) QueryTxList(query bson.M, page, pageSize int, istotal 
 	items = parseFromAndToByAmountCoinFlow(items, false)
 
 	// get validator moniker by address
-	//items = service.getValidatorMonikerByAddress(items)
+	items = service.getValidatorMonikerByAddress(items)
 
 	return vo.PageVo{
 		Data:  items,
@@ -177,6 +177,8 @@ func (service *TxService) QueryHtlcTx(query bson.M, page, pageSize int, istotal 
 			To:           tx.To,
 			ExpireHeight: expireheight,
 			Monikers:     monikers,
+			Tags:         tx.Tags,
+			Msgs:         tx.Msgs,
 		})
 	}
 
@@ -227,7 +229,7 @@ func (service *TxService) QueryTxDetail(hash string) interface{} {
 	txVOs := service.buildTxForDetail(buildTxVOFromDoc(txAsDoc), true)
 
 	items := parseFromAndToByAmountCoinFlow([]interface{}{txVOs}, true)
-	//items = service.getValidatorMonikerByAddress(items)
+	items = service.getValidatorMonikerByAddress(items)
 
 	logger.Debug("getTxsByFilter end", service.GetTraceLog())
 	return items[0]
@@ -278,7 +280,8 @@ func (service *TxService) QueryTxNumGroupByDay() vo.TxNumGroupByDayVoRespond {
 	logger.Debug("QueryTxNumGroupByDay start", service.GetTraceLog())
 
 	now := time.Now()
-	start := now.Add(-336 * time.Hour)
+	today := utils.TruncateTime(time.Now(), utils.Day)
+	start := today.Add(-336 * time.Hour)
 
 	fromDate := utils.FmtTime(utils.TruncateTime(start, utils.Day), utils.DateFmtYYYYMMDD)
 	endDate := utils.FmtTime(utils.TruncateTime(now, utils.Day), utils.DateFmtYYYYMMDD)
@@ -763,19 +766,34 @@ func parseFromAndToByAmountCoinFlow(items []interface{}, forTxDetail bool) []int
 	return items
 }
 
-//// get validator moniker by address which in stake tx
-//func (service *TxService) getValidatorMonikerByAddress(items []interface{}) []interface{} {
-//
-//	// set moniker value
-//	for i := 0; i < len(items); i++ {
-//		if stakeTx, ok := items[i].(vo.StakeTx); ok {
-//			stakeTx.FromMoniker, stakeTx.ToMoniker = service.BuildFTMoniker(stakeTx.From, stakeTx.To)
-//			items[i] = stakeTx
-//		}
-//	}
-//
-//	return items
-//}
+// get validator moniker by address which in stake tx
+func (service *TxService) getValidatorMonikerByAddress(items []interface{}) []interface{} {
+
+	// set moniker value
+	for i := 0; i < len(items); i++ {
+		if stakeTx, ok := items[i].(vo.StakeTx); ok {
+			for _, msg := range stakeTx.Msgs {
+				switch msg.Type {
+				case types.TxTypeBeginRedelegate:
+					msgData := msg.MsgData.(msgvo.TxMsgBeginRedelegate)
+					FromMoniker, ToMoniker := service.BuildFTMoniker(msgData.ValidatorSrcAddr, msgData.ValidatorDstAddr)
+					if stakeTx.Monikers == nil {
+						stakeTx.Monikers = make(map[string]string, 2)
+					}
+					if FromMoniker != "" && msgData.ValidatorSrcAddr != "" {
+						stakeTx.Monikers[msgData.ValidatorSrcAddr] = FromMoniker
+					}
+					if ToMoniker != "" && msgData.ValidatorDstAddr != "" {
+						stakeTx.Monikers[msgData.ValidatorDstAddr] = ToMoniker
+					}
+				}
+			}
+			items[i] = stakeTx
+		}
+	}
+
+	return items
+}
 
 func (service *TxService) buildTxs(txs []vo.CommonTx, isDetail bool) []interface{} {
 	var txList []interface{}
