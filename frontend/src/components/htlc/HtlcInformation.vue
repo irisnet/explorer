@@ -126,6 +126,7 @@
                     }
                 },(res) => {
                     this.htlcInformationArr.forEach( item => {
+
                         if(Object.values(item)[1] === 'amount'){
                             item[Object.keys(item)[0]] = Tools.formatAmount2(res[item.key])
                         }else {
@@ -152,19 +153,22 @@
                             this.countNum = res.Count;
                             if(res.Data){
                                 this.HtlcTxListArray = res.Data.map( item => {
+                                    let fromInformation = Tools.formatListAmount(item).fromAddressAndMoniker,
+                                        toInformation = Tools.formatListAmount(item).toAddressAndMoniker;
+                                    console.log(fromInformation,toInformation,"地址信息")
                                   return{
                                       txHash: item.hash,
                                       block: item.block_height,
-                                      from: item.from ? item.from : '--',
+                                      from: fromInformation.length > 1 ? fromInformation.length : fromInformation.length === 1 ? fromInformation[0].address : '--',
                                       amount: item.amount.length > 0 ? Tools.formatAmount2(item.amount,2) : '--',
-                                      to: item.to ? item.to : '--',
+                                      to:toInformation.length > 1 ? toInformation.length : toInformation.length === 1 ? toInformation[0].address : '--',
                                       type: item.type,
                                       fee: Tools.formatFee(item.fee),
                                       signer: item.signer,
                                       status: Tools.firstWordUpperCase(item.status),
                                       timestamp: Tools.format2UTC(item.timestamp),
-                                      fromMoniker: item.from_moniker,
-                                      toMoniker: item.to_moniker,
+                                      fromMoniker:  fromInformation.length > 1 ? fromInformation.length : fromInformation.length === 1 ? fromInformation[0].moniker :'',
+                                      toMoniker: toInformation.length > 1 ? toInformation.length : toInformation.length === 1 ? toInformation[0].moniker :'',
                                   }
                                 });
                             }

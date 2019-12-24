@@ -420,9 +420,9 @@ export default class Tools{
 			return list.map(item => {
 				let [Amount,Fee,transferAmount,transferFee,tokenId] = ['--','--','--','--','--'];
 				let commonHeaderObjList,objList,commonFooterObjList;
-				let formatListAmount,formInformation,toInformation;
+				let formatListAmount,fromInformation,toInformation;
 				formatListAmount = Tools.formatListAmount(item).amount;
-                formInformation = Tools.formatListAmount(item).fromAddressAndMoniker;
+                fromInformation = Tools.formatListAmount(item).fromAddressAndMoniker;
                 toInformation = Tools.formatListAmount(item).toAddressAndMoniker;
 				Amount = formatListAmount.amountNumber === '--' || formatListAmount.tokenName === '--' ? '--' : `${formatListAmount.amountNumber} ${formatListAmount.tokenName}`;
 				transferAmount = formatListAmount.amountNumber === '--' ? '--' : formatListAmount.amountNumber;
@@ -445,11 +445,11 @@ export default class Tools{
 				};
 				if(txType === 'transfers' ){
 					objList = {
-						'From': formInformation.length > 1 ? formInformation.length : formInformation.length === 1 ? formInformation[0].address : '--',
+						'From': fromInformation.length > 1 ? fromInformation.length : fromInformation.length === 1 ? fromInformation[0].address : '--',
 						Amount:transferAmount,
 						'transferFee': transferFee,
 						tokenId,
-                        fromMoniker: formInformation.length > 1 ? formInformation.length : formInformation.length === 1 ? formInformation[0].moniker :'',
+                        fromMoniker: fromInformation.length > 1 ? fromInformation.length : fromInformation.length === 1 ? fromInformation[0].moniker :'',
                         toMoniker: toInformation.length > 1 ? toInformation.length : toInformation.length === 1 ? toInformation[0].moniker :'',
 						'To':toInformation.length > 1 ? toInformation.length : toInformation.length === 1 ?  toInformation[0].address : '--',
 						'listName':'transfer'
@@ -472,11 +472,11 @@ export default class Tools{
 					}
 				}else if(txType === 'delegations'){
 					objList = {
-						'From': formInformation.length > 1 ? formInformation.length : formInformation.length === 1 ?  formInformation[0].address : '--',
+						'From': fromInformation.length > 1 ? fromInformation.length : fromInformation.length === 1 ?  fromInformation[0].address : '--',
 						Amount,
 						'To': toInformation.length > 1 ? toInformation.length : toInformation.length === 1 ? toInformation[0].address : '--',
 						'listName':'delegations',
-						fromMoniker: formInformation.length > 1 ? formInformation.length : formInformation.length === 1 ? formInformation[0].moniker :'',
+						fromMoniker: fromInformation.length > 1 ? fromInformation.length : fromInformation.length === 1 ? fromInformation[0].moniker :'',
 						toMoniker: toInformation.length > 1 ? toInformation.length : toInformation.length === 1 ? toInformation[0].moniker :'',
 					}
 				}else if(txType === 'governance'){
@@ -842,7 +842,41 @@ export default class Tools{
 					break;
 				case Constant.TxType.REQUESTRAND:
 					amount = Tools.formatListByAmount(data.amount);
-
+					break;
+                case Constant.TxType.CLAIMHTLC:
+                    if(data.status === 'success'){
+                        if(data.tags){
+                           fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(data.tags.sender,data.monikers))
+                            toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(data.tags.receiver,data.monikers))
+                        }
+                    }else {
+                        if(data.msgs){
+                            data.msgs.forEach( item => {
+                                if(item.msg){
+                                    toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.sender,data.monikers))
+                                }
+                            })
+                        }
+                    }
+                    break;
+                case Constant.TxType.REFUNDHTLC:
+                    if(data.msgs){
+                        data.msgs.forEach( item => {
+                            if(item.msg){
+                                toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.sender,data.monikers))
+                            }
+                        })
+                    }
+                    break;
+                case Constant.TxType.CREATEHTLC:
+                    if(data.msgs){
+                        data.msgs.forEach( item => {
+                            if(item.msg){
+                                fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.sender,data.monikers))
+                                toAddressAndMoniker.unshift(Tools.getFromAndToMoniker(item.msg.to,data.monikers))
+                            }
+                        })
+                    }
 
 			}
 		}

@@ -529,8 +529,8 @@
 						        this.flAllTxNextPage = false
                             }
 					        this.transactionsItems = res.Data.map( item => {
-					        	let Amount = '--',formInformation,toInformation;
-                                formInformation = Tools.formatListAmount(item).fromAddressAndMoniker;
+					        	let Amount = '--',fromInformation,toInformation;
+                                fromInformation = Tools.formatListAmount(item).fromAddressAndMoniker;
                                 toInformation = Tools.formatListAmount(item).toAddressAndMoniker;
 						        if(item.type === 'BeginUnbonding' || item.type === 'BeginRedelegate'){
 							        if(item.status === 'success'){
@@ -554,8 +554,8 @@
 							        txHash: item.hash,
 							        block: item.block_height,
 							        amount: Amount,
-                                    from: formInformation.length > 1 ? formInformation.length : formInformation.length === 1 ? formInformation[0].address : '--',
-                                    fromMoniker: formInformation.length > 1 ? formInformation.length : formInformation.length === 1 ? formInformation[0].moniker :'',
+                                    from: fromInformation.length > 1 ? fromInformation.length : fromInformation.length === 1 ? fromInformation[0].address : '--',
+                                    fromMoniker: fromInformation.length > 1 ? fromInformation.length : fromInformation.length === 1 ? fromInformation[0].moniker :'',
                                     to: toInformation.length > 1 ? toInformation.length : toInformation.length === 1 ? toInformation[0].address : '--',
                                     toMoniker: toInformation.length > 1 ? toInformation.length : toInformation.length === 1 ? toInformation[0].moniker :'',
 							        txType: item.type,
@@ -564,7 +564,7 @@
 							        status: Tools.firstWordUpperCase(item.status),
 							        timestamp: Tools.format2UTC(item.timestamp),
                                     isSkipRouter: item.signer === this.$route.params.param,
-                                    isFromSkipRouter: formInformation.length === 1 ? formInformation[0].address === this.$route.params.param : false,
+                                    isFromSkipRouter: fromInformation.length === 1 ? fromInformation[0].address === this.$route.params.param : false,
                                     isToSkipRouter: toInformation.length === 1 ? toInformation[0].address === this.$route.params.param : false
 						        }
 					        })
