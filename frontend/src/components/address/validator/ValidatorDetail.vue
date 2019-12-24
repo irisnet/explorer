@@ -496,7 +496,9 @@ export default {
                             this.validatorProfile["Withdraw Address"] =
                                 data.address;
                         }
-                    } catch (e) {}
+                    } catch (e) {
+                        console.error(e)
+                    }
                 }
             );
         },
@@ -516,7 +518,9 @@ export default {
                                 ] = [this.$options.filters.amountFromat(data[0],"",this.irisTokenFixedNumber),`${data[0].amount}${Tools.formatDenom(data[0].denom)}`];
                             }
                         }
-                    } catch (e) {}
+                    } catch (e) {
+                        console.error(e)
+                    }
                 }
             );
         },
@@ -657,7 +661,9 @@ export default {
                             }
                             this.getKeyBaseName(data.description.identity);
                         }
-                    } catch (e) {}
+                    } catch (e) {
+                        console.error(e)
+                    }
                 }
             );
         },
@@ -736,7 +742,9 @@ export default {
                         }
                         this.txTableList.unbondingDelegations.total =
                             data.total || 0;
-                    } catch (e) {}
+                    } catch (e) {
+                        console.error(e)
+                    }
                 }
             );
         },
@@ -768,7 +776,9 @@ export default {
 
                         this.txTableList.depositedProposals.total =
                             data.total || 0;
-                    } catch (e) {}
+                    } catch (e) {
+                        console.error(e)
+                    }
                 }
             );
         },
@@ -793,7 +803,9 @@ export default {
                             this.txTableList.votedProposals.items = [];
                         }
                         this.txTableList.votedProposals.total = data.total || 0;
-                    } catch (e) {}
+                    } catch (e) {
+                        console.error(e)
+                    }
                 }
             );
         },
@@ -820,7 +832,9 @@ export default {
                             this.txTableList.transfers.items = [];
                         }
                         this.txTableList.transfers.total = data.Count || 0;
-                    } catch (e) {}
+                    } catch (e) {
+                        console.error(e)
+                    }
                 }
             );
         },
@@ -849,7 +863,9 @@ export default {
                             }
                             this.txTableList.stakes.total = data.Count || 0;
                         }
-                    } catch (e) {}
+                    } catch (e) {
+                        console.error(e)
+                    }
                 }
             );
         },
@@ -882,7 +898,9 @@ export default {
                             this.txTableList.declarations.total =
                                 data.Count || 0;
                         }
-                    } catch (e) {}
+                    } catch (e) {
+                        console.error(e)
+                    }
                 }
             );
         },
@@ -911,7 +929,9 @@ export default {
                             }
                             this.txTableList.governance.total = data.Count || 0;
                         }
-                    } catch (e) {}
+                    } catch (e) {
+                        console.error(e)
+                    }
                 }
             );
         },
