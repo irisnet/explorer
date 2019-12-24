@@ -227,7 +227,7 @@ export default {
 
 <style lang="scss">
 table.m_table {
-  width: 100%;
+  width: calc(100% - 0.01rem);
   min-width: 12.8rem;
   .hidden_thead {
       visibility: hidden;
@@ -254,7 +254,9 @@ table.m_table {
   z-index: 2;
   width: 12.8rem;
   background-color: #ffffff;
-  .m-table-header-table-fixed {
+    overflow: hidden !important;
+
+    .m-table-header-table-fixed {
     table-layout: fixed;
   }
   table {

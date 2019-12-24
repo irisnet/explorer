@@ -254,8 +254,12 @@ table.m_table {
   z-index: 2;
   width: 12.8rem;
   background-color: #ffffff;
-  .m-table-header-table-fixed {
+    overflow: hidden !important;
+
+    .m-table-header-table-fixed {
     table-layout: fixed;
+    width: (100% - 0.01rem) !important;
+
   }
   table {
     font-size: 14px;
