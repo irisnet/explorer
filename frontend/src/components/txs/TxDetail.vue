@@ -132,7 +132,8 @@
                                 <router-link v-if="key === 'Sender :' && value !== '-'" :to="addressRoute(value)">{{value}}</router-link>
                                 <router-link v-if="key === 'Symbol :' && value !== '-'" :to="`asset/${value}`">{{value}}</router-link>
                                 <router-link v-if="key === 'DestAddress :' && value !== '-'" :to="addressRoute(value)">{{value}}</router-link>
-                                <router-link v-if="key === 'From :' && value !== '-'" :to="addressRoute(value)">{{fromMoniker || value}}</router-link>
+                                <router-link v-if="key === 'From :' && value !== '-' &&  typeof(value) === 'string'" :to="addressRoute(value)">{{fromMoniker || value}}</router-link>
+                                <router-link v-if="key === 'From :' && value !== '-' &&  typeof(value) === 'object'" :to="addressRoute(value.address)">{{value.moniker || value.address}}</router-link>
                                 <router-link v-if="key === 'To :' && value !== '-'" :to="addressRoute(value)">{{toMoniker || value}}</router-link>
                                 <router-link v-if="key === 'Owner :'" :to="addressRoute(value)">{{value}}</router-link>
                                 <router-link v-if="key === 'Operator Address :'" :to="addressRoute(value)">{{value}}</router-link>
@@ -241,7 +242,6 @@
         mounted(){
 		    this.getTxDetailInformation()
 
-
         },
         methods:{
             openUrl(url) {
@@ -269,6 +269,9 @@
                 Server.commonInterface( {txDetail: {txHash: this.$route.query.txHash} },(res) => {
                     try {
                         if(res){
+                            let formInformation,toInformation;
+                            formInformation = Tools.formatListAmount(res).fromAddressAndMoniker;
+                            toInformation = Tools.formatListAmount(res).toAddressAndMoniker;
                             this.gasPrice = Tools.convertScientificNotation2Number(
                                 Tools.formaNumberAboutGasPrice(res.gas_price)
                             );
@@ -287,8 +290,8 @@
                             this.gasUsedValue = res.gas_used;
                             this.signerValue = res.signer;
                             this.memoValue = res.memo ? res.memo : '--';
-                            this.fromMoniker = res.from_moniker;
-                            this.toMoniker = res.to_moniker;
+                            this.fromMoniker =  formInformation.length > 1 ? formInformation.length : formInformation.length === 1 ? formInformation[0].moniker :'';
+                            this.toMoniker = toInformation.length > 1 ? toInformation.length : toInformation.length === 1 ? toInformation[0].moniker :'';
                             this.messageList = formatMessage.switchTxType(res);
                             if(this.messageList.tooltip){
                                 this.flShowRateToolTip = true

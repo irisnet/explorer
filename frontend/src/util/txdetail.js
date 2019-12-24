@@ -420,6 +420,14 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
         if(dataTx.status === 'success'){
             message[Constant.TRANSACTIONMESSAGENAME.FROM] = dataTx.from ? dataTx.from.split(',') : '-';
+            if(dataTx.monikers){
+                message[Constant.TRANSACTIONMESSAGENAME.FROM] = message[Constant.TRANSACTIONMESSAGENAME.FROM].map( item => {
+                    return {
+                        address: item,
+                        moniker: dataTx.monikers[item]
+                    }
+                })
+            }
             if(dataTx.amount && dataTx.amount.length > 0 ){
                 amountObj = Tools.formatAmountOfTxDetail(dataTx.amount);
                 message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${amountObj.amountNumber} ${amountObj.tokenName}`)
@@ -450,6 +458,16 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
         message[Constant.TRANSACTIONMESSAGENAME.FROM] = dataTx.from ? dataTx.from.split(',') : '-';
+        if(dataTx.monikers){
+            if(message[Constant.TRANSACTIONMESSAGENAME.FROM] !== '-'){
+                message[Constant.TRANSACTIONMESSAGENAME.FROM] = message[Constant.TRANSACTIONMESSAGENAME.FROM].map( item => {
+                    return {
+                        address: item,
+                        moniker: dataTx.monikers[item]
+                    }
+                })
+            }
+        }
         amountObj = Tools.formatAmountOfTxDetail(dataTx.amount);
         amountObj.amountNumber === '--' || amountObj.tokenName === '--' ? message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--') : message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${amountObj.amountNumber} ${amountObj.tokenName}`)
         message[Constant.TRANSACTIONMESSAGENAME.TO] = (dataTx.to ? dataTx.to.split(',') : '-');
@@ -869,20 +887,31 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.HASHLOCK] = [];
         message[Constant.TRANSACTIONMESSAGENAME.FROM] = [];
+        message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
         message[Constant.TRANSACTIONMESSAGENAME.SECRET] = [];
-
-        if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach( item => {
-                if(item.type === txType){
-                    message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
-                    if(item.msg){
-                        message[Constant.TRANSACTIONMESSAGENAME.HASHLOCK].unshift(item.msg['hash_lock']);
-                        message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(item.msg.sender);
-                        message[Constant.TRANSACTIONMESSAGENAME.SECRET].unshift(item.msg.secret);
+        message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
+        if(dataTx.status === 'success'){
+            if(dataTx.tags){
+                message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(dataTx.tags.sender);
+                message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(dataTx.tags.receiver);
+                message[Constant.TRANSACTIONMESSAGENAME.HASHLOCK].unshift(dataTx.tags['hash-lock']);
+                message[Constant.TRANSACTIONMESSAGENAME.SECRET].unshift(dataTx.tags.secret);
+            }
+        }else {
+            if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
+                dataTx.msgs.forEach( item => {
+                    if(item.type === txType){
+                        if(item.msg){
+                            message[Constant.TRANSACTIONMESSAGENAME.HASHLOCK].unshift(item.msg['hash_lock']);
+                            message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift('-');
+                            message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.msg.sender);
+                            message[Constant.TRANSACTIONMESSAGENAME.SECRET].unshift(item.msg.secret);
+                        }
                     }
-                }
-            })
+                })
+            }
         }
+
         return message
     }
     static txTypeCreateHTLC(dataTx,txType){
@@ -909,7 +938,7 @@ export default class formatMsgsAndTags {
                         message[Constant.TRANSACTIONMESSAGENAME.TIMELOCK].unshift(item.msg.time_lock || item.msg.time_lock == 0 ? item.msg.time_lock : '--');
                         message[Constant.TRANSACTIONMESSAGENAME.TIMESTAMP].unshift(item.msg.timestamp);
                         message[Constant.TRANSACTIONMESSAGENAME.EXPIRYHEIGHT].unshift(dataTx.expire_height > 0 ? dataTx.expire_height : '--');
-                        message[Constant.TRANSACTIONMESSAGENAME.CROSSCHAINREVEIVER].unshift(item.msg['receiver_on_other_chain']);
+                        message[Constant.TRANSACTIONMESSAGENAME.CROSSCHAINREVEIVER].unshift(item.msg['receiver_on_other_chain'] ? item.msg['receiver_on_other_chain'] : '--');
                     }
                 }
             })
@@ -919,7 +948,7 @@ export default class formatMsgsAndTags {
     static txTypeRefundHTLC(dataTx,txType){
         let message = {};
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.FROM] = [];
+        message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
         message[Constant.TRANSACTIONMESSAGENAME.HASHLOCK] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
             dataTx.msgs.forEach( item => {
@@ -927,7 +956,7 @@ export default class formatMsgsAndTags {
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
                         message[Constant.TRANSACTIONMESSAGENAME.HASHLOCK].unshift(item.msg['hash_lock']);
-                        message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(item.msg.sender);
+                        message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.msg.sender);
                     }
                 }
             })

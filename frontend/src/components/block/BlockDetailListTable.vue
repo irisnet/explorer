@@ -445,6 +445,8 @@ export default {
   .proposer_img_content {
     width: 0.13rem;
     margin-right: 0.06rem;
+    display: flex;
+    align-items: center;
     img {
       width: 100%;
     }
