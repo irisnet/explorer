@@ -132,7 +132,8 @@
                                 <router-link v-if="key === 'Sender :' && value !== '-'" :to="addressRoute(value)">{{value}}</router-link>
                                 <router-link v-if="key === 'Symbol :' && value !== '-'" :to="`asset/${value}`">{{value}}</router-link>
                                 <router-link v-if="key === 'DestAddress :' && value !== '-'" :to="addressRoute(value)">{{value}}</router-link>
-                                <router-link v-if="key === 'From :' && value !== '-'" :to="addressRoute(value)">{{fromMoniker || value}}</router-link>
+                                <router-link v-if="key === 'From :' && value !== '-' &&  typeof(value) === 'string'" :to="addressRoute(value)">{{fromMoniker || value}}</router-link>
+                                <router-link v-if="key === 'From :' && value !== '-' &&  typeof(value) === 'object'" :to="addressRoute(value.address)">{{value.moniker || value.address}}</router-link>
                                 <router-link v-if="key === 'To :' && value !== '-'" :to="addressRoute(value)">{{toMoniker || value}}</router-link>
                                 <router-link v-if="key === 'Owner :'" :to="addressRoute(value)">{{value}}</router-link>
                                 <router-link v-if="key === 'Operator Address :'" :to="addressRoute(value)">{{value}}</router-link>
@@ -240,7 +241,6 @@
         },
         mounted(){
 		    this.getTxDetailInformation()
-
 
         },
         methods:{
