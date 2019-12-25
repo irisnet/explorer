@@ -55,13 +55,13 @@ const (
 var (
 	config        Config
 	defaultConfig = map[string]map[string]string{}
-	IniSupply     string
+	//IniSupply     string
 )
 
 func init() {
 	logger.Info("==================================load config start==================================")
 	loadDefault()
-	IniSupply = getEnv(KeyInitialSupply, DefaultEnvironment)
+	//IniSupply = getEnv(KeyInitialSupply, DefaultEnvironment)
 	addrs := strings.Split(getEnv(KeyDbAddr, DefaultEnvironment), ",")
 	db := dbConf{
 		Addrs:     addrs,

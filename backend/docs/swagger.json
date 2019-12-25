@@ -3430,8 +3430,14 @@
               "network_name": {
                 "type": "string"
                 },
+              "node_version": {
+                "type": "string"
+              },
                 "show_faucet": {
                     "type": "integer"
+                },
+              "tendermint_version": {
+                "type": "string"
                 }
             }
         },
@@ -4054,12 +4060,6 @@
                     "type": "object",
                     "$ref": "#/definitions/utils.ActualFee"
                 },
-                "from": {
-                    "type": "string"
-                },
-                "from_moniker": {
-                    "type": "string"
-                },
                 "gas_limit": {
                     "type": "integer"
                 },
@@ -4081,6 +4081,9 @@
                 "memo": {
                     "type": "string"
                 },
+              "monikers": {
+                "type": "object"
+              },
                 "msgs": {
                     "type": "array",
                     "items": {
@@ -4100,12 +4103,6 @@
                     "type": "object"
                 },
                 "timestamp": {
-                    "type": "string"
-                },
-                "to": {
-                    "type": "string"
-                },
-                "to_moniker": {
                     "type": "string"
                 },
                 "type": {
