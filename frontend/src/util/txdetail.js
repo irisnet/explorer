@@ -951,15 +951,28 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
         message[Constant.TRANSACTIONMESSAGENAME.HASHLOCK] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
-            dataTx.msgs.forEach( item => {
-                if(item.type === txType){
-                    message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
-                    if(item.msg){
-                        message[Constant.TRANSACTIONMESSAGENAME.HASHLOCK].unshift(item.msg['hash_lock']);
-                        message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.msg.sender);
-                    }
+            if(dataTx.status === 'success'){
+                message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
+                if(dataTx.tags){
+                    message[Constant.TRANSACTIONMESSAGENAME.HASHLOCK].unshift(dataTx.tags['hash-lock']);
+                    message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(dataTx.tags.sender);
                 }
-            })
+            }else {
+                if(dataTx.msgs){
+                    dataTx.msgs.forEach( item => {
+                        if(item.type === txType){
+                            message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
+                            if(item.msg){
+                                message[Constant.TRANSACTIONMESSAGENAME.HASHLOCK].unshift(item.msg['hash_lock']);
+                            }
+                        }
+                    })
+                }
+                if(dataTx.tags && dataTx.tags.sender){
+                    message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(dataTx.tags.sender);
+                }
+            }
+
         }
         return message
     }

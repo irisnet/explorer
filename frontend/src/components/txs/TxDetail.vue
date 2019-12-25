@@ -269,8 +269,8 @@
                 Server.commonInterface( {txDetail: {txHash: this.$route.query.txHash} },(res) => {
                     try {
                         if(res){
-                            let formInformation,toInformation;
-                            formInformation = Tools.formatListAmount(res).fromAddressAndMoniker;
+                            let fromInformation,toInformation;
+                            fromInformation = Tools.formatListAmount(res).fromAddressAndMoniker;
                             toInformation = Tools.formatListAmount(res).toAddressAndMoniker;
                             this.gasPrice = Tools.convertScientificNotation2Number(
                                 Tools.formaNumberAboutGasPrice(res.gas_price)
@@ -290,7 +290,7 @@
                             this.gasUsedValue = res.gas_used;
                             this.signerValue = res.signer;
                             this.memoValue = res.memo ? res.memo : '--';
-                            this.fromMoniker =  formInformation.length > 1 ? formInformation.length : formInformation.length === 1 ? formInformation[0].moniker :'';
+                            this.fromMoniker =  fromInformation.length > 1 ? fromInformation.length : fromInformation.length === 1 ? fromInformation[0].moniker :'';
                             this.toMoniker = toInformation.length > 1 ? toInformation.length : toInformation.length === 1 ? toInformation[0].moniker :'';
                             this.messageList = formatMessage.switchTxType(res);
                             if(this.messageList.tooltip){
