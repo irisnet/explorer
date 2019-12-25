@@ -419,7 +419,18 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
         if(dataTx.status === 'success'){
-            message[Constant.TRANSACTIONMESSAGENAME.FROM] = dataTx.from ? dataTx.from.split(',') : '-';
+            let formAddressArray = [],toAddressArray=[];
+            if(dataTx.tags){
+                for(let item in dataTx.tags){
+                    if(item.startsWith('withdraw-reward-from-validator')){
+                        formAddressArray.push(item.split('-')[item.split('-').length - 1])
+                    }
+                    if(item === 'withdraw-address'){
+                        toAddressArray.push(dataTx.tags[item])
+                    }
+                }
+            }
+            message[Constant.TRANSACTIONMESSAGENAME.FROM] = formAddressArray.length > 0 ? formAddressArray : '-';
             if(dataTx.monikers){
                 message[Constant.TRANSACTIONMESSAGENAME.FROM] = message[Constant.TRANSACTIONMESSAGENAME.FROM].map( item => {
                     return {
@@ -434,7 +445,7 @@ export default class formatMsgsAndTags {
             }else {
                 message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--')
             }
-            message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(dataTx.to);
+            message[Constant.TRANSACTIONMESSAGENAME.TO] = toAddressArray.length > 0 ? toAddressArray : '-';
         }else {
             if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
                 dataTx.msgs.forEach(item => {
@@ -457,7 +468,18 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.AMOUNT] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
-        message[Constant.TRANSACTIONMESSAGENAME.FROM] = dataTx.from ? dataTx.from.split(',') : '-';
+        let formAddressArray = [],toAddressArray=[];
+        if(dataTx.tags){
+            for(let item in dataTx.tags){
+                if(item.startsWith('withdraw-reward-from-validator')){
+                    formAddressArray.push(item.split('-')[item.split('-').length - 1])
+                }
+                if(item === 'withdraw-address'){
+                    toAddressArray.push(dataTx.tags[item])
+                }
+            }
+        }
+        message[Constant.TRANSACTIONMESSAGENAME.FROM] = formAddressArray.length > 0 ? formAddressArray : '-';
         if(dataTx.monikers){
             if(message[Constant.TRANSACTIONMESSAGENAME.FROM] !== '-'){
                 message[Constant.TRANSACTIONMESSAGENAME.FROM] = message[Constant.TRANSACTIONMESSAGENAME.FROM].map( item => {
@@ -470,7 +492,7 @@ export default class formatMsgsAndTags {
         }
         amountObj = Tools.formatAmountOfTxDetail(dataTx.amount);
         amountObj.amountNumber === '--' || amountObj.tokenName === '--' ? message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--') : message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${amountObj.amountNumber} ${amountObj.tokenName}`)
-        message[Constant.TRANSACTIONMESSAGENAME.TO] = (dataTx.to ? dataTx.to.split(',') : '-');
+        message[Constant.TRANSACTIONMESSAGENAME.TO] = toAddressArray.length > 0 ? toAddressArray : '-';
         return message
     }
     static txTypeSubmitProposal(dataTx,txType){
