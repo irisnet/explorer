@@ -1106,10 +1106,6 @@ definitions:
       fee:
         $ref: '#/definitions/utils.ActualFee'
         type: object
-      from:
-        type: string
-      from_moniker:
-        type: string
       gas_limit:
         type: integer
       gas_price:
@@ -1139,10 +1135,6 @@ definitions:
       tags:
         type: object
       timestamp:
-        type: string
-      to:
-        type: string
-      to_moniker:
         type: string
       type:
         type: string

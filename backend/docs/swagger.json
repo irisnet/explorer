@@ -4054,12 +4054,6 @@
                     "type": "object",
                     "$ref": "#/definitions/utils.ActualFee"
                 },
-                "from": {
-                    "type": "string"
-                },
-                "from_moniker": {
-                    "type": "string"
-                },
                 "gas_limit": {
                     "type": "integer"
                 },
@@ -4103,12 +4097,6 @@
                     "type": "object"
                 },
                 "timestamp": {
-                    "type": "string"
-                },
-                "to": {
-                    "type": "string"
-                },
-                "to_moniker": {
                     "type": "string"
                 },
                 "type": {
