@@ -9,6 +9,7 @@ import (
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/utils"
+	"strings"
 )
 
 var (
@@ -215,8 +216,14 @@ func init() {
 
 }
 
-func NodeInfo() (result NodeInfoVo, err error) {
-	url := fmt.Sprintf(UrlNodeInfo, conf.Get().Hub.LcdUrl)
+func NodeInfo(lcdurl string) (result NodeInfoVo, err error) {
+	//url := fmt.Sprintf(UrlNodeInfo, conf.Get().Hub.LcdUrl)
+	if lcdurl == "" {
+		err = errors.New("lcd url is empty")
+		logger.Error(err.Error())
+		return
+	}
+	url := fmt.Sprintf(UrlNodeInfo, lcdurl)
 	resBytes, err := utils.Get(url)
 	if err != nil {
 		return result, err
@@ -226,6 +233,23 @@ func NodeInfo() (result NodeInfoVo, err error) {
 		logger.Error("get account error", logger.String("err", err.Error()))
 		return result, err
 	}
+	return result, nil
+}
+
+func NodeVersion(lcdurl string) (result string, err error) {
+	//url := fmt.Sprintf(UrlNodeVersion, conf.Get().Hub.LcdUrl)
+	if lcdurl == "" {
+		err = errors.New("lcd url is empty")
+		logger.Error(err.Error())
+		return
+	}
+	url := fmt.Sprintf(UrlNodeVersion, lcdurl)
+	resBytes, err := utils.Get(url)
+	if err != nil {
+		return result, err
+	}
+
+	result = strings.Split(string(resBytes), "-")[0]
 	return result, nil
 }
 

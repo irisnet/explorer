@@ -6,7 +6,16 @@ import (
 )
 
 func TestNodeInfo(t *testing.T) {
-	if res, err := NodeInfo(); err != nil {
+	if res, err := NodeInfo(""); err != nil {
+		t.Fatal(err)
+	} else {
+		resBytes, _ := json.MarshalIndent(res, "", "\t")
+		t.Log(string(resBytes))
+	}
+}
+
+func TestNodeVersion(t *testing.T) {
+	if res, err := NodeVersion(""); err != nil {
 		t.Fatal(err)
 	} else {
 		resBytes, _ := json.MarshalIndent(res, "", "\t")

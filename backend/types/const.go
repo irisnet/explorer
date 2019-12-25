@@ -74,7 +74,7 @@ const (
 	UrlRegisterQueryTxList       = "/txs"
 	UrlRegisterQueryTxListByType = "/txs/{type}/{page}/{size}"
 	UrlRegisterQueryRecentTx     = "/txs/recent"
-	UrlRegisterQueryTxsCounter   = "/txs/statistics"
+	//UrlRegisterQueryTxsCounter   = "/txs/statistics"
 	UrlRegisterQueryTxsByAccount = "/txsByAddress/{address}/{page}/{size}"
 	UrlRegisterQueryTxsByDay     = "/txsByDay"
 	UrlRegisterQueryTx           = "/tx/{hash}"
@@ -109,7 +109,7 @@ const (
 	Recover = "recover"
 
 	TxTag_WithDrawRewardFromValidator = "withdraw-reward-from-validator-"
-	TxTag_WithDrawAddress             = "withdraw-address"
+	//TxTag_WithDrawAddress             = "withdraw-address"
 
 	IRISUint      = "iris"
 	IRISAttoUint  = "iris-atto"

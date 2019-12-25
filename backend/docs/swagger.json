@@ -3430,8 +3430,14 @@
               "network_name": {
                 "type": "string"
                 },
+              "node_version": {
+                "type": "string"
+              },
                 "show_faucet": {
                     "type": "integer"
+                },
+              "tendermint_version": {
+                "type": "string"
                 }
             }
         },

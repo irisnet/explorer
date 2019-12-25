@@ -692,8 +692,12 @@ definitions:
         type: string
       network_name:
         type: string
+      node_version:
+        type: string
       show_faucet:
         type: integer
+      tendermint_version:
+        type: string
     type: object
   vo.DelagationsRewards:
     properties:

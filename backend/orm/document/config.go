@@ -22,6 +22,7 @@ type Config struct {
 	Host        string `bson:"host"`
 	ChainId     string `bson:"chain_id"`
 	ShowFaucet  int    `bson:"show_faucet"`
+	EnvLcd      string `bson:"env_lcd"`
 }
 
 func (c Config) String() string {
@@ -31,7 +32,8 @@ func (c Config) String() string {
 		Host       :%v
 		ChainId    :%v
 		ShowFaucet :%v
-		`, c.NetworkName, c.Env, c.Host, c.ChainId, c.ShowFaucet)
+		EnvLcd :%v
+		`, c.NetworkName, c.Env, c.Host, c.ChainId, c.ShowFaucet, c.EnvLcd)
 }
 
 func (a Config) Name() string {
