@@ -32,6 +32,13 @@
                 </div>
             </div>
         </div>
+        <div class="foot_version" v-if="flShowVersion">
+            <div class="foot_version_chain_id">Chain ID: {{chainID}}</div>
+            <span class="footer_link_join">|</span>
+            <div class="foot_version_tendermint">Tendermint Version: {{tendermintVersion}}</div>
+            <span class="footer_link_join">|</span>
+            <div class="foot_version_node">Node Version:{{nodeVersion}}</div>
+        </div>
         <p class="footer_copyright_wrap">
             ©️ IRISplorer 2019 all rights reserved
         </p>
@@ -39,12 +46,35 @@
 </template>
 
 <script>
+    import Tools from "../../util/Tools"
 	export default {
 		name: "AppFoooter",
         data () {
 			return {
 				weChatQRShow:false,
 				qqQRShow: false,
+                chainID:'',
+                tendermintVersion:'',
+                nodeVersion:'',
+                flShowVersion: false,
+            }
+        },
+        mounted(){
+		    if(sessionStorage.getItem('skinEnvInformation')){
+		        this.flShowVersion = true;
+                let configs = JSON.parse(sessionStorage.getItem('skinEnvInformation')),
+                   currnetEnv = JSON.parse(sessionStorage.getItem('skinEnvInformation')).cur_env,
+                   currendChainId = JSON.parse(sessionStorage.getItem('skinEnvInformation')).chain_id;
+
+                   configs.configs.forEach( item => {
+                       if(currnetEnv === item.env && currendChainId === item.chain_id){
+                           this.chainID = Tools.firstWordUpperCase(item.chain_id);
+                           this.tendermintVersion = item.tendermint_version;
+                           this.nodeVersion = item.node_version
+                       }
+                   })
+            }else {
+                this.flShowVersion = false;
             }
         },
         methods:{
@@ -157,6 +187,24 @@
             text-align: center;
             color: rgba(255,255,255,0.5);
         }
+        .foot_version{
+            font-size: 0.14rem;
+            border-top: 0.01rem  solid rgba(255,255,255,0.2);
+            padding: 0.16rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255,255,255,0.5);
+            .foot_version_chain_id{
+                padding-right: 0.2rem;
+            }
+            .foot_version_tendermint{
+                padding:0 0.2rem;
+            }
+            .foot_version_node{
+                padding-left: 0.2rem;
+            }
+        }
     }
 @media screen  and (max-width: 910px){
     .footer_container{
@@ -193,6 +241,26 @@
                 .footer_link_wrap{
                     text-align: center;
                 }
+            }
+        }
+        .foot_version{
+            padding: 0.06rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.14rem;
+            .footer_link_join{
+                display: none;
+            }
+            .foot_version_chain_id{
+                padding: 0;
+            }
+            .foot_version_chain_id{
+                padding: 0;
+            }
+            .foot_version_node{
+                padding: 0;
             }
         }
     }
