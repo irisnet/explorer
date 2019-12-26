@@ -133,6 +133,12 @@
                             if(Object.keys(item)[0] ===  'State:'){
                                 res[item.key] = Tools.firstWordUpperCase(res[item.key])
                             }
+                            if(Object.keys(item)[0] ===  'Time Lock:'){
+                                res[item.key] = `${res[item.key]} blocks`
+                            }
+                            if(Object.keys(item)[0] ===  'Timestamp:'){
+                                res[item.key] = `${res[item.key]} secs`
+                            }
                             item[Object.keys(item)[0]] = res[item.key] || res[item.key] === 0 ? res[item.key] : '--'
                         }
                         this.monikerFrom = res.from_moniker;

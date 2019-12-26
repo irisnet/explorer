@@ -839,7 +839,7 @@
         }
         .propsals_echart_container {
             flex-direction: column;
-            height: 6rem;
+            height: 7rem;
         }
     }
     .mobile_graph_pagination_container {

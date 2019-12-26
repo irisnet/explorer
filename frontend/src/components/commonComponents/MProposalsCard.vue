@@ -21,7 +21,7 @@
         <img src="../../assets/deposit_period.png" />
         <span>DepositPeriod</span>
       </div>
-      <div v-if="flShowTime" style="margin-left: 0.38rem;display: flex;align-items: center">
+      <div v-if="flShowTime" style="margin-left: 0.3rem;display: flex;align-items: center">
         <i style="color: rgb(90, 200, 250);padding-right: 0.05rem" class="iconfont iconHoursLeft"></i> {{depositHourLeft}} Left
       </div>
     </div>
@@ -166,7 +166,7 @@ export default {
         }
       }
       & > div:nth-child(2) {
-        margin-left: 0.38rem;
+        margin-left: 0.3rem;
       }
     }
     .content {
