@@ -88,18 +88,21 @@ func (service *TxService) QueryBaseList(query bson.M, page, pageSize int, istota
 	}
 
 	data := buildTxVOsFromDoc(txList)
-	var baseData []vo.TransTx
+	var baseData []interface{}
 	for _, tx := range data {
 		txResp := buildBaseTx(tx)
 
 		monikers := make(map[string]string, 1)
 
-		baseData = append(baseData, vo.TransTx{
-			BaseTx:   txResp,
-			Monikers: monikers,
-			Msgs:     tx.Msgs,
+		baseData = append(baseData, vo.StakeTx{
+			TransTx: vo.TransTx{
+				BaseTx:   txResp,
+				Monikers: monikers,
+				Msgs:     tx.Msgs,
+			},
 		})
 	}
+	baseData = service.getValidatorMonikerByAddress(baseData)
 
 	pageInfo.Data = baseData
 	pageInfo.Count = total
@@ -844,10 +847,10 @@ func (service *TxService) buildTx(tx vo.CommonTx, blackListP *map[string]documen
 	case types.Stake:
 		return vo.StakeTx{
 			TransTx: vo.TransTx{
-				BaseTx: buildBaseTx(tx),
-				Msgs:   tx.Msgs,
+				BaseTx:   buildBaseTx(tx),
+				Msgs:     tx.Msgs,
+				Monikers: monikersMap,
 			},
-			Monikers: monikersMap,
 		}
 
 	case types.Gov:

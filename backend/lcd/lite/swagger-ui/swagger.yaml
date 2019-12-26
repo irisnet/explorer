@@ -1134,8 +1134,6 @@ definitions:
         type: array
       signer:
         type: string
-      source:
-        type: string
       status:
         type: string
       tags:
