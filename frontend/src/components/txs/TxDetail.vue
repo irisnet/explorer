@@ -67,7 +67,7 @@
                     </li>
                 </ul>
             </div>
-            <div class="tx_detail_message_content_title">Transaction Message</div>
+            <div class="tx_detail_message_content_title">Transaction Message or Result</div>
             <div class="tx_detail_message_information_content">
                 <ul class="tx_detail_message_information">
                     <li class="tx_detail_message_information_item" v-for="(item,key) in messageList">

@@ -365,14 +365,14 @@
 				            token: Tools.formatDenom(item.denom),
 				            balance: item.amount ? Tools.formatAmount2(item,this.fixedNumber): 0,
 				            delegatedValue: this.totalDelegator ? this.totalDelegator : 0,
-				            delegated: this.totalDelegator ? `${new BigNumber(Tools.formatStringToFixedNumber(this.totalDelegator.toString(),this.fixedNumber)).toFormat()} ${Constant.Denom.IRIS.toUpperCase()}`: 0,
+				            delegated: this.totalDelegator ? `${Tools.formatStringToFixedNumber(new BigNumber(this.totalDelegator.toString()).toFormat(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}`: 0,
 				            unBondingValue: this.totalUnBondingDelegator ? this.totalUnBondingDelegator : 0,
 				            unBonding: this.totalUnBondingDelegator ?`${new BigNumber(Tools.formatStringToFixedNumber(this.totalUnBondingDelegator.toString(),this.fixedNumber)).toFormat()} ${Constant.Denom.IRIS.toUpperCase()}`  : 0,
 				            reward: this.allRewardsValue ? this.allRewardsValue : 0,
-				            totalAmount:`${new BigNumber(Tools.formatStringToFixedNumber((Number(Tools.formatStringToFixedNumber(Tools.numberMoveDecimal(item.amount.toString(),-18),this.fixedNumber)) +
+				            totalAmount:`${Tools.formatStringToFixedNumber(new BigNumber((Number(Tools.formatStringToFixedNumber(Tools.numberMoveDecimal(item.amount.toString(),-18),this.fixedNumber)) +
 					            Number(Tools.formatStringToFixedNumber(this.totalDelegator.toString(),this.fixedNumber)) +
 					            Number(Tools.formatStringToFixedNumber(this.totalUnBondingDelegator.toString(),this.fixedNumber)) +
-					            Number(Tools.formatStringToFixedNumber(this.allRewardsAmountValue.toString(),this.fixedNumber))).toString(),this.fixedNumber)).toFormat()} ${Constant.Denom.IRIS.toUpperCase()}` ,
+					            Number(Tools.formatStringToFixedNumber(this.allRewardsAmountValue.toString(),this.fixedNumber))).toString()).toFormat(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}` ,
 			            }
                     }else {
 			            return {
@@ -401,13 +401,21 @@
 				            this.delegationCountNum = res.length;
 				            this.delegationPageChange(this.delegationCurrentPage);
 				            if(res.length > 1){
-					            this.totalDelegator = res.reduce( (total,item) => {
-						            return Number(item.amount.amount) + Number(total)
+                                res.forEach( item => {
+                                    if(item.amount && item.amount.amount){
+                                        if(item.amount.amount.toString().indexOf('.') !== -1){
+                                            item.amount.amount =  Number(item.amount.amount.toString().substr(0,item.amount.amount.toString().length - 2))
+                                        }
+                                    }
+                                });
+                                this.totalDelegator = res.reduce( (total,item) => {
+                                    return Number(item.amount.amount) + Number(total)
 					            },0)
                             }else {
 					            this.totalDelegator = res[0].amount.amount
                             }
-				            this.totalDelegatorValue = `${new BigNumber(Tools.formatStringToFixedNumber(this.totalDelegator.toString(),this.fixedNumber)).toFormat()} ${Constant.Denom.IRIS.toUpperCase()}`
+
+                            this.totalDelegatorValue = `${Tools.formatStringToFixedNumber(new BigNumber(this.totalDelegator.toString()).toFormat(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}`
                         }else {
 				            this.delegationsItems = []
                         }
@@ -431,13 +439,20 @@
 				            this.unBondingDelegationCountNum = res.length;
                             this.unBondingDelegationPageChange(this.unBondingDelegationCurrentPage);
 		            		if(res.length > 1){
+                                res.forEach( item => {
+                                    if(item.amount && item.amount.amount){
+                                        if(item.amount.amount.toString().indexOf('.') !== -1){
+                                            item.amount.amount =  Number(item.amount.amount.toString().substr(0,item.amount.amount.toString().length - 2))
+                                        }
+                                    }
+                                });
 					            this.totalUnBondingDelegator = res.reduce( (total,item) => {
 						            return Number(item.amount.amount) + Number(total)
 					            },0)
                             }else {
 					            this.totalUnBondingDelegator = res[0].amount.amount
                             }
-				            this.totalUnBondingDelegatorValue = `${new BigNumber(Tools.formatStringToFixedNumber(this.totalUnBondingDelegator.toString(),this.fixedNumber)).toFormat()} ${Constant.Denom.IRIS.toUpperCase()}`
+				            this.totalUnBondingDelegatorValue = `${Tools.formatStringToFixedNumber(new BigNumber(this.totalUnBondingDelegator.toString()).toFormat(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}`
                         }
 		            }catch (e) {
 			            console.error(e)
@@ -469,15 +484,20 @@
 				            }
                             this.rewardsDelegationCountNum = res.delagations_rewards.length;
 				            this.rewardsDelegationPageChange(this.rewardsDelegationCurrentPage);
-				            if(res.delagations_rewards.length > 1){
-					            this.totalDelegatorReward = Tools.numberMoveDecimal(res.delagations_rewards.reduce( (total,item) => {
-						            return Number(item.amount[0].amount) + Number(total)
-					            },0),-18);
+                            if(res.delagations_rewards.length > 1){
+                                res.delagations_rewards.forEach( item => {
+                                    if(item.amount && item.amount.length > 0){
+                                        item.amount[0].amount = Tools.formatStringToFixedNumber(Tools.numberMoveDecimal(item.amount[0].amount,-18),this.fixedNumber)
+                                    }
+                                })
+                                this.totalDelegatorReward = res.delagations_rewards.reduce( (total,item) => {
+                                    return Number(item.amount[0].amount) + Number(total)
+                                },0);
                             }else {
-					            this.totalDelegatorReward = Tools.numberMoveDecimal(res.delagations_rewards[0].amount[0].amount).toString()
+                                this.totalDelegatorReward = Tools.numberMoveDecimal(res.delagations_rewards[0].amount[0].amount).toString()
                             }
-				            this.allRewardsAmountValue = res.total_rewards ? Tools.formatStringToFixedNumber(Tools.numberMoveDecimal(res.total_rewards[0].amount,-18),this.fixedNumber) : 0;
-				            this.totalDelegatorRewardValue = `${new BigNumber(Tools.formatStringToFixedNumber(this.totalDelegatorReward.toString(),this.fixedNumber)).toFormat()} ${Constant.Denom.IRIS.toUpperCase()}`
+                            this.allRewardsAmountValue = res.total_rewards ? Tools.formatStringToFixedNumber(Tools.numberMoveDecimal(res.total_rewards[0].amount,-18),this.fixedNumber) : 0;
+				            this.totalDelegatorRewardValue = `${Tools.formatStringToFixedNumber(new BigNumber(this.totalDelegatorReward.toString()).toFormat(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}`
 			            }
 		            }catch (e) {
 			            console.error(e)
