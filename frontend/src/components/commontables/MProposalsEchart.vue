@@ -275,6 +275,7 @@ export default {
     border: 1px solid #D7D9E0;
     display: flex;
     flex-direction: column;
+      background: #fff;
     .text {
       width: 100%;
       height: 100%;
