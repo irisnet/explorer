@@ -57,27 +57,42 @@
                 tendermintVersion:'',
                 nodeVersion:'',
                 flShowVersion: false,
+                versionTimer: null,
             }
         },
+
         mounted(){
 		    if(sessionStorage.getItem('skinEnvInformation')){
-		        this.flShowVersion = true;
-                let configs = JSON.parse(sessionStorage.getItem('skinEnvInformation')),
-                   currnetEnv = JSON.parse(sessionStorage.getItem('skinEnvInformation')).cur_env,
-                   currendChainId = JSON.parse(sessionStorage.getItem('skinEnvInformation')).chain_id;
-
-                   configs.configs.forEach( item => {
-                       if(currnetEnv === item.env && currendChainId === item.chain_id){
-                           this.chainID = Tools.firstWordUpperCase(item.chain_id);
-                           this.tendermintVersion = item.tendermint_version;
-                           this.nodeVersion = item.node_version
-                       }
-                   })
+                this.getVersionInformation()
             }else {
-                this.flShowVersion = false;
+		        let that = this;
+		        this.versionTimer = setInterval(() => {
+                    that.getVersionInformation()
+                    if(sessionStorage.getItem('skinEnvInformation')){
+                        clearInterval(that.versionTimer)
+                    }
+                },500)
             }
         },
         methods:{
+		    getVersionInformation(){
+                if(sessionStorage.getItem('skinEnvInformation')){
+                    this.flShowVersion = true;
+                    let configs = JSON.parse(sessionStorage.getItem('skinEnvInformation')),
+                        currnetEnv = JSON.parse(sessionStorage.getItem('skinEnvInformation')).cur_env,
+                        currendChainId = JSON.parse(sessionStorage.getItem('skinEnvInformation')).chain_id;
+
+                    configs.configs.forEach( item => {
+                        if(currnetEnv === item.env && currendChainId === item.chain_id){
+                            this.chainID = Tools.firstWordUpperCase(item.chain_id);
+                            this.tendermintVersion = item.tendermint_version;
+                            this.nodeVersion = item.node_version
+                        }
+                    })
+                }else {
+                    this.flShowVersion = false;
+                }
+            },
 	        showWeChatQRCode() {
 	        	this.$store.commit('flShowQR',true);
 	        	this.$store.commit('setQrImg','wechat');
