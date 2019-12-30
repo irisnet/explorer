@@ -32,16 +32,15 @@
                 </div>
             </div>
         </div>
-        <div class="foot_version" v-if="flShowVersion">
-            <div class="foot_version_chain_id">Chain ID: {{chainID}}</div>
-            <span class="footer_link_join">|</span>
-            <div class="foot_version_tendermint">Tendermint Version: {{tendermintVersion}}</div>
-            <span class="footer_link_join">|</span>
-            <div class="foot_version_node">Node Version:{{nodeVersion}}</div>
+        <div class="footer_version_content">
+            <div class="footer_version_content_warp">
+                <div class="footer_copyright_wrap">
+                    ©️ IRISplorer 2019 all rights reserved
+                </div>
+                <div class="footer_chain_id_content">Chain ID {{chainID}}</div>
+                <div class="footer_version_node_tendermint_content"><p>Node Version {{nodeVersion}}</p> <span class="line">|</span>  <p>Tendermint Version {{tendermintVersion}}</p></div>
+            </div>
         </div>
-        <p class="footer_copyright_wrap">
-            ©️ IRISplorer 2019 all rights reserved
-        </p>
     </div>
 </template>
 
@@ -195,30 +194,33 @@
                 }
             }
         }
-        .footer_copyright_wrap {
-            background: #363a3d;
+
+        .footer_version_content{
             border-top: 0.01rem  solid rgba(255,255,255,0.2);
+            background: #2B2E31;
             padding: 0.15rem 0;
-            text-align: center;
-            color: rgba(255,255,255,0.5);
-        }
-        .foot_version{
-            font-size: 0.14rem;
-            border-top: 0.01rem  solid rgba(255,255,255,0.2);
-            padding: 0.16rem 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: rgba(255,255,255,0.5);
-            .foot_version_chain_id{
-                padding-right: 0.2rem;
+            .footer_version_content_warp{
+                max-width: 12.8rem;
+                margin: 0 auto;
+                display: flex;
+                color: rgba(255,255,255,0.5);
+                .footer_copyright_wrap {
+                    flex: 1;
+                }
+                .footer_chain_id_content{
+                    flex: 1;
+                    padding-left: 0.2rem;
+                }
+                .footer_version_node_tendermint_content{
+                    flex: 1;
+                    display: flex;
+                    white-space: nowrap;
+                    .line{
+                        padding: 0 0.2rem;
+                    }
+                }
             }
-            .foot_version_tendermint{
-                padding:0 0.2rem;
-            }
-            .foot_version_node{
-                padding-left: 0.2rem;
-            }
+
         }
     }
 @media screen  and (max-width: 910px){
@@ -258,24 +260,27 @@
                 }
             }
         }
-        .foot_version{
-            padding: 0.06rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.14rem;
-            .footer_link_join{
-                display: none;
-            }
-            .foot_version_chain_id{
-                padding: 0;
-            }
-            .foot_version_chain_id{
-                padding: 0;
-            }
-            .foot_version_node{
-                padding: 0;
+        .footer_version_content{
+            .footer_version_content_warp{
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                .footer_chain_id_content{
+                    margin: 0.1rem 0;
+                    padding-left: 0;
+                }
+                .footer_version_node_tendermint_content{
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    .line{
+                        display: none;
+                    }
+                    p:last-child{
+                        margin-top: 0.1rem;
+                    }
+                }
+
             }
         }
     }

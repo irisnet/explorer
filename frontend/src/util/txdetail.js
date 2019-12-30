@@ -469,14 +469,24 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(txType);
         let formAddressArray = [],toAddressArray=[];
-        if(dataTx.tags){
-            for(let item in dataTx.tags){
-                if(item.startsWith('withdraw-reward-from-validator')){
-                    formAddressArray.push(item.split('-')[item.split('-').length - 1])
+        if(dataTx.status === 'success'){
+            if(dataTx.tags){
+                for(let item in dataTx.tags){
+                    if(item.startsWith('withdraw-reward-from-validator')){
+                        formAddressArray.push(item.split('-')[item.split('-').length - 1])
+                    }
+                    if(item === 'withdraw-address'){
+                        toAddressArray.push(dataTx.tags[item])
+                    }
                 }
-                if(item === 'withdraw-address'){
-                    toAddressArray.push(dataTx.tags[item])
-                }
+            }
+        }else {
+            if(dataTx.msgs){
+                dataTx.msgs.forEach( item => {
+                    if(item.msg){
+                        formAddressArray.unshift(item.msg.validator_addr ? item.msg.validator_addr : '--')
+                    }
+                })
             }
         }
         message[Constant.TRANSACTIONMESSAGENAME.FROM] = formAddressArray.length > 0 ? formAddressArray : '-';

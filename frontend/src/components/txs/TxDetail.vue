@@ -356,7 +356,7 @@
                                 }
                                 .tip_content{
                                     position: absolute;
-                                    top:-0.33rem;
+                                    bottom:0.25rem;
                                     visibility: hidden;
                                     .log_content{
                                         white-space: nowrap;
@@ -541,7 +541,7 @@
                                 display: flex;
                                 .log_content_container{
                                     .tip_content{
-                                        width: 3rem;
+                                        width: 2.25rem;
                                         left: -0.12rem !important;
                                         .log_content{
                                             display: inline-block;
