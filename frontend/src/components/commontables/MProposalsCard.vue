@@ -297,6 +297,13 @@ export default {
     }
     .text_content {
       padding: 0 0.15rem;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        div{
+            margin-left: 0 !important;
+            padding: 0.04rem;
+        }
     }
   }
 </style>
