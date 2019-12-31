@@ -12,12 +12,12 @@
                         <span class="information_value"
                               :class="v.value ? 'skip_route' : ''"
                               v-if="v.label === 'Burned'">
-                            <router-link :to="`/address/iaa108a0ts008fphurftmsvj5p2q8ltq8qedy0jxd8`">{{v.value || '--'}}</router-link>
+                            <router-link :to="burnedCoins">{{v.value || '--'}}</router-link>
                             </span>
                         <span class="information_value"
                               :class="v.value ? 'skip_route' : ''"
                               v-if="v.label === 'Community Tax'">
-                            <router-link v-if="v.value && v.value !== '--'" :to="`/address/iaa18rtw90hxz4jsgydcusakz6q245jh59kfma3e5h`">{{v.value || '--'}}</router-link>
+                            <router-link v-if="v.value && v.value !== '--'" :to="communityTaxCoins">{{v.value || '--'}}</router-link>
                             </span>
                         <span v-if="v.value && v.value === '--'">--</span>
                         <span class="information_value" v-if="v.label !== 'Burned' && v.label !== 'Community Tax'">{{v.value || '--'}}</span>
@@ -69,6 +69,8 @@ export default {
                     value: ""
                 }
             ],
+            burnedCoins:'',
+            communityTaxCoins:'',
             pieDatas: [],
             itemsNoData: false,
             pieDatasNoData: false
@@ -193,6 +195,14 @@ export default {
                 ]);
             } catch (err) {}
         })();
+        let envInformation = JSON.parse(sessionStorage.getItem('skinEnvInformation'));
+        if( envInformation && envInformation.cur_env === 'mainnet' && envInformation.chain_id === "irishub"){
+            this.burnedCoins = `/address/iaa108a0ts008fphurftmsvj5p2q8ltq8qedy0jxd8`;
+            this.communityTaxCoins = `/address/iaa18rtw90hxz4jsgydcusakz6q245jh59kfma3e5h`
+        }else {
+            this.burnedCoins = `/address/faa108a0ts008fphurftmsvj5p2q8ltq8qeduq57d6`;
+            this.communityTaxCoins = `/address/faa18rtw90hxz4jsgydcusakz6q245jh59kfrjhp52`
+        }
     }
 };
 </script>
