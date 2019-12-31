@@ -235,7 +235,6 @@ func (service *TxService) QueryByAcc(address string, page, size int, istotal boo
 	return
 }
 
-
 func (service *TxService) QueryTxNumGroupByDay() vo.TxNumGroupByDayVoRespond {
 	logger.Debug("QueryTxNumGroupByDay start", service.GetTraceLog())
 
@@ -649,27 +648,45 @@ func (service *TxService) getValidatorMonikerByAddress(items []interface{}) []in
 						stakeTx.Monikers[msgData.ValidatorDstAddr] = ToMoniker
 					}
 				case types.TxTypeWithdrawDelegatorRewardsAll, types.TxTypeWithdrawValidatorRewardsAll:
-					if stakeTx.Monikers == nil {
-						stakeTx.Monikers = make(map[string]string, len(stakeTx.Tags))
-					}
-					var validatorAddr bytes.Buffer
-					for k, _ := range stakeTx.Tags {
-						if strings.HasPrefix(k, types.TxTag_WithDrawRewardFromValidator) {
-							valaddr := string([]byte(k)[len(types.TxTag_WithDrawRewardFromValidator):])
-							_, err := validatorAddr.WriteString(valaddr)
-							if err != nil {
-								logger.Error("ValidatorAddr WriteString", logger.String("err", err.Error()))
-							}
-							Tmoniker := ""
-							if val, ok := ValidatorsDescriptionMap[valaddr]; ok {
-								Tmoniker = val.Moniker
-							}
-							if one, ok := BlackValidatorsMap[valaddr]; ok {
-								Tmoniker = one.Moniker
-							}
-							stakeTx.Monikers[valaddr] = Tmoniker
-						}
+					if stakeTx.Status == types.Success {
 
+						if stakeTx.Monikers == nil {
+							stakeTx.Monikers = make(map[string]string, len(stakeTx.Tags))
+						}
+						var validatorAddr bytes.Buffer
+						for k, _ := range stakeTx.Tags {
+							if strings.HasPrefix(k, types.TxTag_WithDrawRewardFromValidator) {
+								valaddr := string([]byte(k)[len(types.TxTag_WithDrawRewardFromValidator):])
+								_, err := validatorAddr.WriteString(valaddr)
+								if err != nil {
+									logger.Error("ValidatorAddr WriteString", logger.String("err", err.Error()))
+								}
+								Tmoniker := ""
+								if val, ok := ValidatorsDescriptionMap[valaddr]; ok {
+									Tmoniker = val.Moniker
+								}
+								if one, ok := BlackValidatorsMap[valaddr]; ok {
+									Tmoniker = one.Moniker
+								}
+								stakeTx.Monikers[valaddr] = Tmoniker
+							}
+
+						}
+					} else {
+						if len(stakeTx.Msgs) > 0 {
+							switch stakeTx.Msgs[0].Type {
+							case types.TxTypeWithdrawValidatorRewardsAll:
+								msgData := stakeTx.Msgs[0].MsgData.(msgvo.TxMsgWithdrawValidatorRewardsAll)
+								Tmoniker := ""
+								if val, ok := ValidatorsDescriptionMap[msgData.ValidatorAddr]; ok {
+									Tmoniker = val.Moniker
+								}
+								if one, ok := BlackValidatorsMap[msgData.ValidatorAddr]; ok {
+									Tmoniker = one.Moniker
+								}
+								stakeTx.Monikers[msgData.ValidatorAddr] = Tmoniker
+							}
+						}
 					}
 				case types.TxTypeStakeDelegate:
 					msgData := msg.MsgData.(msgvo.TxMsgDelegate)
@@ -792,7 +809,6 @@ func (service *TxService) buildTxs(txs []vo.CommonTx) []interface{} {
 
 	return txList
 }
-
 
 func (service *TxService) getTxAttachedFields(govProposalIdMap *map[uint64]document.Proposal) {
 	govProposalIdArr := make([]uint64, 0, len(*govProposalIdMap))
