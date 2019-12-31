@@ -133,7 +133,7 @@
                                 <router-link v-if="key === 'Symbol :' && value !== '-'" :to="`asset/${value}`">{{value}}</router-link>
                                 <router-link v-if="key === 'DestAddress :' && value !== '-'" :to="addressRoute(value)">{{value}}</router-link>
                                 <router-link v-if="key === 'From :' && value !== '-' &&  typeof(value) === 'string'" :to="addressRoute(value)">{{fromMoniker || value}}</router-link>
-                                <router-link v-if="key === 'From :' && value !== '-' &&  typeof(value) === 'object'" :to="addressRoute(value.address)">{{value.moniker || value.address}}</router-link>
+                                <router-link v-if="key === 'From :' && value !== '-' &&  typeof(value) === 'object' && !value.isLink" :to="addressRoute(value.address)">{{value.moniker || value.address}}</router-link>
                                 <router-link v-if="key === 'To :' && value !== '-'" :to="addressRoute(value)">{{toMoniker || value}}</router-link>
                                 <router-link v-if="key === 'Owner :'" :to="addressRoute(value)">{{value}}</router-link>
                                 <router-link v-if="key === 'Operator Address :'" :to="addressRoute(value)">{{value}}</router-link>
@@ -156,6 +156,7 @@
                                 <span v-if="key === 'Software :'&& value !== '--'" @click="openUrl(value)" style="color: var(--bgColor);cursor: pointer;">{{value}}</span>
                                 <span v-if="key === 'Identity :'&& value !== '--'" @click="getKeyBaseName(value)" style="color: var(--bgColor);cursor: pointer;">{{value}}</span>
                                 <span v-if="key === 'From :' && value === '-'">--</span>
+                                <span v-if="key === 'From :' && value.isLink">{{value.moniker || value.address}}</span>
                                 <span v-if="key === 'To :' && value === '-'">--</span>
                                 <span v-if="key === 'DestAddress :' && value === '-'">--</span>
                                 <span v-if="key === 'Website :' && value === '--'">--</span>

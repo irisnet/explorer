@@ -405,7 +405,8 @@
                                 res.forEach( item => {
                                     if(item.amount && item.amount.amount){
                                         if(item.amount.amount.toString().indexOf('.') !== -1){
-                                            item.amount.amount =  Number(item.amount.amount.toString().substr(0,item.amount.amount.toString().length - 2)) * 100;
+                                            let splitNumber = item.amount.amount.toString().split('.')[1].substr(0,2);
+                                            item.amount.amount =  Number(`${item.amount.amount.toString().split('.')[0]}.${splitNumber}`) * 100
                                         }else {
                                             item.amount.amount = item.amount.amount * 100
                                         }

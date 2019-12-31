@@ -493,10 +493,19 @@ export default class formatMsgsAndTags {
         if(dataTx.monikers){
             if(message[Constant.TRANSACTIONMESSAGENAME.FROM] !== '-'){
                 message[Constant.TRANSACTIONMESSAGENAME.FROM] = message[Constant.TRANSACTIONMESSAGENAME.FROM].map( item => {
-                    return {
-                        address: item,
-                        moniker: dataTx.monikers[item]
+                    if(dataTx.monikers[item]){
+                        return {
+                            address: item,
+                            moniker: dataTx.monikers[item]
+                        }
+                    }else {
+                        return {
+                            address: item,
+                            moniker: dataTx.monikers[item],
+                            isLink: true,
+                        }
                     }
+
                 })
             }
         }
