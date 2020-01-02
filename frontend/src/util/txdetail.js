@@ -314,7 +314,7 @@ export default class formatMsgsAndTags {
                             message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(item.msg.validator_src_addr);
                             message[Constant.TRANSACTIONMESSAGENAME.SHARES].unshift(item.msg.shares_amount ? `${Tools.numberMoveDecimal(item.msg.shares_amount)} SHARES` : '--');
                             message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.msg.validator_dst_addr)
-                            message[Constant.TRANSACTIONMESSAGENAME.TOSHARES].unshift(item.msg.shares_amount ? `${Tools.numberMoveDecimal(item.msg.shares_amount)} SHARES` : '--');
+                            message[Constant.TRANSACTIONMESSAGENAME.TOSHARES].unshift('--');
                             message[Constant.TRANSACTIONMESSAGENAME.ENDTIME].unshift('--');
                         }
                     }
@@ -1021,7 +1021,9 @@ export default class formatMsgsAndTags {
                     })
                 }
                 if(dataTx.tags && dataTx.tags.sender){
-                    message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(dataTx.tags.sender);
+                    message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(dataTx.tags.sender ? dataTx.tags.sender : '-');
+                }else {
+                    message[Constant.TRANSACTIONMESSAGENAME.TO].unshift('-');
                 }
             }
 
