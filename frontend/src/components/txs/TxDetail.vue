@@ -79,8 +79,8 @@
                             && key !== 'Owner :'
                             && key !== 'Operator Address :'
                             && key !== 'Owner Address :'
-                            && key !== 'Original Address :'
-                            && key !== 'New Address :'
+                            && key !== 'Delegator Address :'
+                            && key !== 'Withdraw Address:'
                             && key !== 'Proposer :'
                             && key !== 'Depositor :'
                             && key !== 'Proposal ID :'
@@ -106,8 +106,8 @@
                                 || key === 'Owner :'
                                 || key === 'Operator Address :'
                                 || key === 'Owner Address :'
-                                || key === 'Original Address :'
-                                || key === 'New Address :'
+                                || key === 'Delegator Address :'
+                                || key === 'Withdraw Address:'
                                 || key === 'Proposer :'
                                 || key === 'Depositor :'
                                 || key === 'Proposal ID :'
@@ -138,8 +138,8 @@
                                 <router-link v-if="key === 'Owner :'" :to="addressRoute(value)">{{value}}</router-link>
                                 <router-link v-if="key === 'Operator Address :'" :to="addressRoute(value)">{{value}}</router-link>
                                 <router-link v-if="key === 'Owner Address :'" :to="addressRoute(value)">{{value}}</router-link>
-                                <router-link v-if="key === 'Original Address :'" :to="addressRoute(value)">{{value}}</router-link>
-                                <router-link v-if="key === 'New Address :'" :to="addressRoute(value)">{{value}}</router-link>
+                                <router-link v-if="key === 'Delegator Address :'" :to="addressRoute(value)">{{value}}</router-link>
+                                <router-link v-if="key === 'Withdraw Address:'" :to="addressRoute(value)">{{value}}</router-link>
                                 <router-link v-if="key === 'Proposer :'" :to="addressRoute(value)">{{value}}</router-link>
                                 <router-link v-if="key === 'Depositor :'" :to="addressRoute(value)">{{value}}</router-link>
                                 <router-link v-if="key === 'Proposal ID :'" :to="`ProposalsDetail/${value}`">{{value}}</router-link>

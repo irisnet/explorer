@@ -314,7 +314,7 @@ export default class formatMsgsAndTags {
                             message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(item.msg.validator_src_addr);
                             message[Constant.TRANSACTIONMESSAGENAME.SHARES].unshift(item.msg.shares_amount ? `${Tools.numberMoveDecimal(item.msg.shares_amount)} SHARES` : '--');
                             message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.msg.validator_dst_addr)
-                            message[Constant.TRANSACTIONMESSAGENAME.TOSHARES].unshift('--');
+                            message[Constant.TRANSACTIONMESSAGENAME.TOSHARES].unshift(item.msg.shares_amount ? `${Tools.numberMoveDecimal(item.msg.shares_amount)} SHARES` : '--');
                             message[Constant.TRANSACTIONMESSAGENAME.ENDTIME].unshift('--');
                         }
                     }
@@ -344,6 +344,7 @@ export default class formatMsgsAndTags {
     static txTypeBeginUnbonding(dataTx,txType){
         let message = {},amountObj;
         message[Constant.TRANSACTIONMESSAGENAME.TXTYPE] = [];
+        message[Constant.TRANSACTIONMESSAGENAME.SHARES] = [];
         message[Constant.TRANSACTIONMESSAGENAME.FROM] = [];
         message[Constant.TRANSACTIONMESSAGENAME.AMOUNT] = [];
         message[Constant.TRANSACTIONMESSAGENAME.TO] = [];
@@ -356,6 +357,15 @@ export default class formatMsgsAndTags {
                 message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${amountObj.amountNumber} ${amountObj.tokenName}`);
                 message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(dataTx.tags.delegator);
                 message[Constant.TRANSACTIONMESSAGENAME.ENDTIME].unshift(Tools.format2UTC(dataTx.tags['end-time']))
+            }
+            if(dataTx.msgs){
+                if(dataTx.msgs && Array.isArray(dataTx.msgs)&& dataTx.msgs !== null){
+                    dataTx.msgs.forEach( item => {
+                        if(item.msg){
+                            message[Constant.TRANSACTIONMESSAGENAME.SHARES].unshift(`${Tools.numberMoveDecimal(item.msg.shares_amount)} SHARES`)
+                        }
+                    })
+                }
             }
         }else {
             if(dataTx.tags && dataTx.tags.balance && dataTx.tags['end-time']){
@@ -372,6 +382,7 @@ export default class formatMsgsAndTags {
                         if(item.msg){
                             amountObj = Tools.formatListByTagsBalance(item.msg.shares_amount,true);
                             amountObj.amountNumber !== '--' ? message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${amountObj.amountNumber} ${amountObj.tokenName}`) : message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--');
+                            message[Constant.TRANSACTIONMESSAGENAME.SHARES].unshift(`${Tools.numberMoveDecimal(item.msg.shares_amount)} SHARES`)
                             message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(item.msg['validator_addr']);
                             message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.msg.delegator_addr);
                         }
@@ -945,7 +956,7 @@ export default class formatMsgsAndTags {
                         if(item.msg){
                             message[Constant.TRANSACTIONMESSAGENAME.HASHLOCK].unshift(item.msg['hash_lock']);
                             message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift('-');
-                            message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.msg.sender);
+                            message[Constant.TRANSACTIONMESSAGENAME.TO].unshift('-');
                             message[Constant.TRANSACTIONMESSAGENAME.SECRET].unshift(item.msg.secret);
                         }
                     }
