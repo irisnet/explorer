@@ -21,7 +21,7 @@
         <img src="../../assets/deposit_period.png" />
         <span>DepositPeriod</span>
       </div>
-      <div v-if="flShowTime" style="margin-left: 0.38rem;display: flex;align-items: center">
+      <div v-if="flShowTime" style="margin-left: 0.15rem;display: flex;align-items: center">
         <i style="color: rgb(90, 200, 250);padding-right: 0.05rem" class="iconfont iconHoursLeft"></i> {{depositHourLeft}} Left
       </div>
     </div>
@@ -111,7 +111,7 @@ export default {
 <style lang="scss" scoped>
   .propsals_card_container {
     width: 6.3rem;
-    height: 100%;
+    /*height: 100%;*/
     border-radius: 1px;
     border: 1px solid #D7D9E0;
     position: relative;
@@ -166,7 +166,7 @@ export default {
         }
       }
       & > div:nth-child(2) {
-        margin-left: 0.38rem;
+        margin-left: 0.15rem;
       }
     }
     .content {

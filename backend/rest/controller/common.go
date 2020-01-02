@@ -8,6 +8,7 @@ import (
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/vo"
 	"github.com/irisnet/explorer/backend/orm/document"
+	"github.com/irisnet/explorer/backend/lcd"
 )
 
 func RegisterTextSearch(r *mux.Router) error {
@@ -79,13 +80,20 @@ func registerQueryEnvConfig(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryConfig, "GET", func(request vo.IrisReq) interface{} {
 		getconfig := func(dconfigs []document.Config) (ret []vo.ConfigVo) {
 			for _, val := range dconfigs {
-				ret = append(ret, vo.ConfigVo{
+				item := vo.ConfigVo{
 					NetworkName: val.NetworkName,
 					Env:         val.Env,
 					Host:        val.Host,
 					ChainId:     val.ChainId,
 					ShowFaucet:  val.ShowFaucet,
-				})
+				}
+				if nodeinfo, err := lcd.NodeInfo(val.EnvLcd); err == nil {
+					item.TendermintVersion = nodeinfo.Version
+				}
+				if version, err := lcd.NodeVersion(val.EnvLcd); err == nil {
+					item.NodeVersion = version
+				}
+				ret = append(ret, item)
 			}
 			return ret
 		}

@@ -275,6 +275,7 @@ export default {
     border: 1px solid #D7D9E0;
     display: flex;
     flex-direction: column;
+      background: #fff;
     .text {
       width: 100%;
       height: 100%;
@@ -435,18 +436,24 @@ export default {
   }
   @media screen and (max-width: 910px){
     .mobile_propsals_echart_container{
+        background: #fff;
       .text{
         .content{
           .content_div{
             .content_header_content{
               display: flex;
-              align-items: center;
+                flex-direction: column;
+
+              align-items: flex-start;
               .deposit_period_content{
                 margin-top: 0!important;
               }
               .voting_period_content{
-                margin-left: 0.2rem;
+                  padding: 0.04rem 0;
                 margin-top: 0!important;
+              }
+              .voting_period_content:last-child{
+                  padding: 0;
               }
             }
             .per_div{

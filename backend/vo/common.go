@@ -26,9 +26,11 @@ type EnvConfig struct {
 }
 
 type ConfigVo struct {
-	NetworkName string `json:"network_name"`
-	Env         string `json:"env"`
-	Host        string `json:"host"`
-	ChainId     string `json:"chain_id"`
-	ShowFaucet  int    `json:"show_faucet"`
+	NetworkName       string `json:"network_name"`
+	Env               string `json:"env"`
+	Host              string `json:"host"`
+	ChainId           string `json:"chain_id"`
+	ShowFaucet        int    `json:"show_faucet"`
+	NodeVersion       string `json:"node_version"`
+	TendermintVersion string `json:"tendermint_version"`
 }

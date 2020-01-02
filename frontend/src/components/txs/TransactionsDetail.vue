@@ -191,7 +191,7 @@ export default {
         "To",
         "Operator Address",
         "Owner Address",
-        "Original Address",
+        "Delegator Address",
         "New Address",
         "Proposer",
         "Depositor",
@@ -396,7 +396,7 @@ export default {
           k: "type",
           v: ""
         },
-        "Original Address": {
+        "Delegator Address": {
           k: "from",
           v: ""
         },

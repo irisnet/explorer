@@ -692,8 +692,12 @@ definitions:
         type: string
       network_name:
         type: string
+      node_version:
+        type: string
       show_faucet:
         type: integer
+      tendermint_version:
+        type: string
     type: object
   vo.DelagationsRewards:
     properties:
@@ -1106,10 +1110,6 @@ definitions:
       fee:
         $ref: '#/definitions/utils.ActualFee'
         type: object
-      from:
-        type: string
-      from_moniker:
-        type: string
       gas_limit:
         type: integer
       gas_price:
@@ -1124,23 +1124,19 @@ definitions:
         type: string
       memo:
         type: string
+      monikers:
+        type: object
       msgs:
         items:
           $ref: '#/definitions/vo.MsgItem'
         type: array
       signer:
         type: string
-      source:
-        type: string
       status:
         type: string
       tags:
         type: object
       timestamp:
-        type: string
-      to:
-        type: string
-      to_moniker:
         type: string
       type:
         type: string

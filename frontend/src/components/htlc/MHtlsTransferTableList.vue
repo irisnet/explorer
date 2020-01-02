@@ -18,20 +18,20 @@
                    </router-link>
                </div>
            </template>
-           <template slot-scope="{ row }" slot="from">
+        <!--   <template slot-scope="{ row }" slot="from">
                <div class="skip_route" v-if="row.from">
-                   <router-link v-if="row.from !== '--'" :to="addressRoute(row.from)" style="font-family: Consolas,Menlo ;" class="link_style common_font_style">{{row.fromMoniker || formatAddress(row.from)}}
+                   <router-link v-if="row.from !== '&#45;&#45;'" :to="addressRoute(row.from)" style="font-family: Consolas,Menlo ;" class="link_style common_font_style">{{row.fromMoniker || formatAddress(row.from)}}
                    </router-link>
-                   <span v-if="row.from === '--'">--</span>
+                   <span v-if="row.from === '&#45;&#45;'">&#45;&#45;</span>
                </div>
            </template>
            <template slot-scope="{ row }" slot="to">
                <div class="skip_route" v-if="row.to">
-                   <router-link v-if="row.to !== '--'" :to="addressRoute(row.to)" style="font-family: Consolas,Menlo ;" class="link_style common_font_style">{{row.toMoniker || formatAddress(row.to)}}
+                   <router-link v-if="row.to !== '&#45;&#45;'" :to="addressRoute(row.to)" style="font-family: Consolas,Menlo ;" class="link_style common_font_style">{{row.toMoniker || formatAddress(row.to)}}
                    </router-link>
-                   <span v-if="row.to === '--'">--</span>
+                   <span v-if="row.to === '&#45;&#45;'">&#45;&#45;</span>
                </div>
-           </template>
+           </template>-->
        </m-table>
        <div class="no_data_img_content" v-if="showNoData">
            <img src="../../assets/no_data.svg" >
@@ -67,7 +67,7 @@
                         title:'Block',
                         slot:'block'
                     },
-                    {
+               /*     {
                         title:'From',
                         slot:'from',
                         tooltip: true
@@ -80,7 +80,7 @@
                         title:'To',
                         slot:'to',
                         tooltip: true
-                    },
+                    },*/
                     {
                         title:'Type',
                         key:'type'

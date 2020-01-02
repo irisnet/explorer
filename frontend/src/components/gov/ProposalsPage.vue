@@ -769,7 +769,7 @@
             margin-top: 0.2rem !important;
             width: calc(50% - 0.1rem);
             .propsals_card_container {
-                height: 2.2rem;
+                height: 2.5rem;
             }
         }
         & > div:nth-child(1) {
@@ -810,7 +810,7 @@
                 width: calc(50% - 0.1rem);
                 margin-top: 0.2rem;
                 .propsals_card_container {
-                    height: 2.2rem;
+                    height: 2.5rem;
                 }
             }
         }
@@ -834,12 +834,12 @@
                 margin: auto;
             }
             & > div.propsals_card_container {
-                height: 2.2rem;
+                height: 2.5rem;
             }
         }
         .propsals_echart_container {
             flex-direction: column;
-            height: 6rem;
+            height: 7rem;
         }
     }
     .mobile_graph_pagination_container {

@@ -29,7 +29,7 @@ func TestQueryRecentTx(t *testing.T) {
 }
 
 func TestQueryTxByHash(t *testing.T) {
-	tx := new(TxService).QueryTxDetail("8F0906183B8E436B052005420101DF86E0EAE9163D8250093307204AAEB26FF1")
+	tx := new(TxService).QueryTxDetail("5E465BAAC969FBE0EA622DE77C6CE5AFC752BC130EAA63CE5B858260A563DDB2")
 	t.Logf("tx: %v\n", string(utils.MarshalJsonIgnoreErr(tx)))
 }
 

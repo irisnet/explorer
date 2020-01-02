@@ -32,22 +32,66 @@
                 </div>
             </div>
         </div>
-        <p class="footer_copyright_wrap">
-            ©️ IRISplorer 2019 all rights reserved
-        </p>
+        <div class="footer_version_content">
+            <div class="footer_version_content_warp">
+                <div class="footer_copyright_wrap">
+                    ©️ IRISplorer 2020 all rights reserved
+                </div>
+                <div class="footer_chain_id_content">Chain ID {{chainID}}</div>
+                <div class="footer_version_node_tendermint_content"><p>Node Version {{nodeVersion}}</p> <span class="line">|</span>  <p>Tendermint Version {{tendermintVersion}}</p></div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
+    import Tools from "../../util/Tools"
 	export default {
 		name: "AppFoooter",
         data () {
 			return {
 				weChatQRShow:false,
 				qqQRShow: false,
+                chainID:'',
+                tendermintVersion:'',
+                nodeVersion:'',
+                flShowVersion: false,
+                versionTimer: null,
+            }
+        },
+
+        mounted(){
+		    if(sessionStorage.getItem('skinEnvInformation')){
+                this.getVersionInformation()
+            }else {
+		        let that = this;
+		        this.versionTimer = setInterval(() => {
+                    that.getVersionInformation()
+                    if(sessionStorage.getItem('skinEnvInformation')){
+                        clearInterval(that.versionTimer)
+                    }
+                },500)
             }
         },
         methods:{
+		    getVersionInformation(){
+                if(sessionStorage.getItem('skinEnvInformation')){
+                    this.flShowVersion = true;
+                    let configs = JSON.parse(sessionStorage.getItem('skinEnvInformation')),
+                        currnetEnv = JSON.parse(sessionStorage.getItem('skinEnvInformation')).cur_env,
+                        currendChainId = JSON.parse(sessionStorage.getItem('skinEnvInformation')).chain_id;
+
+                    configs.configs.forEach( item => {
+                        if(currnetEnv === item.env && currendChainId === item.chain_id){
+                            this.chainID = Tools.firstWordUpperCase(item.chain_id);
+                            this.tendermintVersion = item.tendermint_version;
+                            this.nodeVersion = item.node_version
+                        }
+                    })
+                }else {
+                    this.flShowVersion = false;
+                }
+            },
 	        showWeChatQRCode() {
 	        	this.$store.commit('flShowQR',true);
 	        	this.$store.commit('setQrImg','wechat');
@@ -150,12 +194,33 @@
                 }
             }
         }
-        .footer_copyright_wrap {
-            background: #363a3d;
+
+        .footer_version_content{
             border-top: 0.01rem  solid rgba(255,255,255,0.2);
+            background: #2B2E31;
             padding: 0.15rem 0;
-            text-align: center;
-            color: rgba(255,255,255,0.5);
+            .footer_version_content_warp{
+                max-width: 12.8rem;
+                margin: 0 auto;
+                display: flex;
+                color: rgba(255,255,255,0.5);
+                .footer_copyright_wrap {
+                    flex: 1;
+                }
+                .footer_chain_id_content{
+                    flex: 1;
+                    padding-left: 0.2rem;
+                }
+                .footer_version_node_tendermint_content{
+                    flex: 1;
+                    display: flex;
+                    white-space: nowrap;
+                    .line{
+                        padding: 0 0.2rem;
+                    }
+                }
+            }
+
         }
     }
 @media screen  and (max-width: 910px){
@@ -193,6 +258,29 @@
                 .footer_link_wrap{
                     text-align: center;
                 }
+            }
+        }
+        .footer_version_content{
+            .footer_version_content_warp{
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                .footer_chain_id_content{
+                    margin: 0.1rem 0;
+                    padding-left: 0;
+                }
+                .footer_version_node_tendermint_content{
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    .line{
+                        display: none;
+                    }
+                    p:last-child{
+                        margin-top: 0.1rem;
+                    }
+                }
+
             }
         }
     }

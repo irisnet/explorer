@@ -106,44 +106,40 @@ type BaseTx struct {
 
 type TransTx struct {
 	BaseTx
-	From        string `json:"from"`
-	To          string `json:"to"`
-	FromMoniker string `json:"from_moniker"`
-	ToMoniker   string `json:"to_moniker"`
-	//Amount utils.Coins `json:"amount"`
+	Msgs     []MsgItem         `json:"msgs"`
+	Monikers map[string]string `json:"monikers"`
 }
 
 type StakeTx struct {
 	TransTx
-	Source      string    `json:"source"`
-	FromMoniker string    `json:"from_moniker"`
-	ToMoniker   string    `json:"to_moniker"`
-	Msgs        []MsgItem `json:"msgs"`
+	//Source   string            `json:"source"`
+	//Monikers map[string]string `json:"monikers"`
 }
 
 func (s StakeTx) PrintHashFromToAmount() string {
 	return fmt.Sprintf(`
 Hash  : %v
-From  : %v
-To    : %v
 Amount: %v
-`, s.Hash, s.From, s.To, s.Amount)
+`, s.Hash, s.Amount)
 }
 
 type DeclarationTx struct {
 	BaseTx
-	OperatorAddr string        `json:"operator_addr"`
-	Moniker      string        `json:"moniker"`
-	SelfBond     utils.Coins   `json:"self_bond"`
+	OperatorAddr string            `json:"operator_addr"`
+	SelfBond     utils.Coins       `json:"self_bond"`
+	Msgs         []MsgItem         `json:"msgs"`
+	Monikers     map[string]string `json:"monikers"`
 }
 
 type GovTx struct {
 	BaseTx
-	From         string            `json:"from"`
+	//From         string            `json:"from"`
 	ProposalId   uint64            `json:"proposal_id"`
 	Amount       utils.Coins       `json:"amount"`
 	Title        string            `json:"title"`
 	ProposalType string            `json:"proposal_type"`
+	Msgs         []MsgItem         `json:"msgs"`
+	Monikers     map[string]string `json:"monikers"`
 }
 
 type RecentTx struct {
@@ -156,35 +152,30 @@ type RecentTx struct {
 type RecentTxRespond []RecentTx
 type AssetTx struct {
 	BaseTx
-	From string `json:"from"`
-	To   string `json:"to"`
-	//Amount utils.Coins       `json:"amount"`
-	Tags map[string]string `json:"tags"`
+	Tags     map[string]string `json:"tags"`
+	Msgs     []MsgItem         `json:"msgs"`
+	Monikers map[string]string `json:"monikers"`
 }
 type GuardianTx struct {
 	BaseTx
-	From string `json:"from"`
-	To   string `json:"to"`
-	//Amount utils.Coins       `json:"amount"`
-	Tags map[string]string `json:"tags"`
+	Tags     map[string]string `json:"tags"`
+	Msgs     []MsgItem         `json:"msgs"`
+	Monikers map[string]string `json:"monikers"`
 }
 
 type HtlcTx struct {
 	BaseTx
-	From         string            `json:"from"`
-	To           string            `json:"to"`
-	FromMoniker  string            `json:"from_moniker"`
-	ToMoniker    string            `json:"to_moniker"`
 	ExpireHeight int64             `json:"expire_height,string"`
 	Tags         map[string]string `json:"tags"`
+	Msgs         []MsgItem         `json:"msgs"`
+	Monikers     map[string]string `json:"monikers"`
 }
 
 type CoinswapTx struct {
 	BaseTx
-	From string `json:"from"`
-	To   string `json:"to"`
-	//Amount utils.Coins       `json:"amount"`
-	Tags map[string]string `json:"tags"`
+	Tags     map[string]string `json:"tags"`
+	Msgs     []MsgItem         `json:"msgs"`
+	Monikers map[string]string `json:"monikers"`
 }
 
 func (tx RecentTx) String() string {
