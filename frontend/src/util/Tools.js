@@ -825,9 +825,11 @@ export default class Tools{
                     })
 					break;
 				case Constant.TxType.SUBMITPROPOSAL:
+                    fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(data.signer,data.monikers))
 					amount = Tools.formatListByAmount(data.amount);
 					break;
 				case Constant.TxType.DEPOSIT:
+                    fromAddressAndMoniker.unshift(Tools.getFromAndToMoniker(data.signer,data.monikers))
 					amount = Tools.formatListByAmount(data.amount);
 					break;
 				case Constant.TxType.VOTE:
