@@ -73,9 +73,9 @@ func GetProposalLevelByType(proposalType string) (string, error) {
 	switch proposalType {
 	case ProposalTypeSoftwareUpgrade, ProposalTypeSystemHalt:
 		return Critical, nil
-	case ProposalTypeParameter, ProposalTypeTokenAddition:
+	case ProposalTypeParameter, ProposalTypeTokenAddition, ProposalTypeCommunityTaxUsage:
 		return Important, nil
-	case ProposalTypeTxTaxUsage, ProposalTypeCommunityTaxUsage, ProposalTypePlainText:
+	case ProposalTypeTxTaxUsage, ProposalTypePlainText:
 		return Normal, nil
 	default:
 		return "", errors.New(fmt.Sprintf("expect proposal type: %v %v %v %v %v %v %v ,but actual: %v",
@@ -102,9 +102,9 @@ func GetMinDepositByProposalType(proposalType string) (document.Coin, error) {
 	switch proposalType {
 	case ProposalTypeSoftwareUpgrade, ProposalTypeSystemHalt:
 		return CriticalMinDeposit, nil
-	case ProposalTypeParameter, ProposalTypeTokenAddition:
+	case ProposalTypeParameter, ProposalTypeTokenAddition, ProposalTypeCommunityTaxUsage:
 		return ImportantMinDeposit, nil
-	case ProposalTypeTxTaxUsage, ProposalTypeCommunityTaxUsage, ProposalTypePlainText:
+	case ProposalTypeTxTaxUsage, ProposalTypePlainText:
 		return NormalMinDeposit, nil
 
 	default:
@@ -120,9 +120,9 @@ func GetPassVetoThresholdAndParticipationMinDeposit(proposalType string) (string
 	case ProposalTypeSoftwareUpgrade, ProposalTypeSystemHalt:
 		return CriticalThreshold, CriticalVeto, CriticalParticipation, CriticalPenalty, nil
 
-	case ProposalTypeParameter, ProposalTypeTokenAddition:
+	case ProposalTypeParameter, ProposalTypeTokenAddition, ProposalTypeCommunityTaxUsage:
 		return ImportantThreshold, ImportantVeto, ImportantParticipation, ImportantPenalty, nil
-	case ProposalTypeTxTaxUsage, ProposalTypeCommunityTaxUsage, ProposalTypePlainText:
+	case ProposalTypeTxTaxUsage, ProposalTypePlainText:
 		return NormalThreshold, NormalVeto, NormalParticipation, NormalPenalty, nil
 
 	default:
