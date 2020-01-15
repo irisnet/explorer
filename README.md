@@ -1,5 +1,5 @@
 # explorer
-Blockchain explorer for the IRIS network
+Blockchain explorer for IRIS Hub
 
 
 # ENV
