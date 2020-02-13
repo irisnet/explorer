@@ -468,8 +468,7 @@
                     }},(res) => {
 		            try {
 		            	if(res && res.delagations_rewards && res.delagations_rewards.length > 0) {
-				            res.delagations_rewards.map( item => {
-
+                            res.delagations_rewards.map( item => {
 				            	if(item.amount.length === 0){
 						            item.amount.push({
 							            amount:0,
@@ -477,9 +476,10 @@
                                     })
                                 }
                             });
+                            let copyResult = JSON.parse(JSON.stringify(res));
 				            this.totalValidatorRewards = res.commission_rewards ? Tools.formatAmount2(res.commission_rewards,this.fixedNumber) : 0;
 		            		this.allRewardsValue = res.total_rewards ? Tools.formatAmount2(res.total_rewards,this.fixedNumber) : 0;
-				            this.rewardsDelegationPageNationArrayData = this.pageNation(res.delagations_rewards);
+				            this.rewardsDelegationPageNationArrayData = this.pageNation(copyResult.delagations_rewards);
 				            if(res.delagations_rewards.length > this.pageSize){
 					            this.flRewardsDelegationNextPage = true
 				            }else {
