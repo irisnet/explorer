@@ -1,5 +1,6 @@
 <template>
     <div class="home_wrap">
+        <advertising-space></advertising-space>
         <div class="home_container">
             <div class="information_preview">
                 <ul class="current_net_status_list">
@@ -111,9 +112,12 @@
     import MDepositCard from "../commontables/MDepositCard";
     import MVotingCard from "../commontables/MVotingCard";
     import axios from "axios"
+    import AdvertisingSpace from "../advertisingSpace/AdvertisingSpace";
     export default {
         name: 'app-header',
-        components: {MVotingCard, MDepositCard, MHomeVotingCrad, EchartsPie, EchartsLine, HomeBlockModule},
+        components: {
+            AdvertisingSpace,
+            MVotingCard, MDepositCard, MHomeVotingCrad, EchartsPie, EchartsLine, HomeBlockModule},
         data() {
             return {
                 currentBlockHeight: '',
@@ -522,7 +526,7 @@
             max-width: 12.8rem;
             width: 100%;
             box-sizing: border-box;
-            padding: 0.3rem 0.2rem 0 0.2rem;
+            padding: 0.2rem 0.2rem 0 0.2rem;
             .information_preview {
                 display: flex;
                 margin-bottom: 0.3rem;
@@ -667,7 +671,7 @@
     .home_wrap{
         .home_container{
             box-sizing: border-box;
-            padding: 0.3rem 0.1rem 0 0.1rem;
+            padding: 0.2rem 0.1rem 0 0.1rem;
             .information_preview{
                 .current_net_status_list{
                     flex-direction: column;
