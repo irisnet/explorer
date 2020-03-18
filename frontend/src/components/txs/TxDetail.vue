@@ -67,6 +67,7 @@
                     </li>
                 </ul>
             </div>
+            <advertising-space :page-class="'txDetail'"></advertising-space>
             <div class="tx_detail_message_content_title">Transaction Message or Result</div>
             <div class="tx_detail_message_information_content">
                 <ul class="tx_detail_message_information">
@@ -188,9 +189,10 @@
     import Tools from "../../util/Tools";
     import formatMessage from "../../util/txdetail"
     import axios from "../../util/axios"
+    import AdvertisingSpace from "../advertisingSpace/AdvertisingSpace";
 	export default {
 		name: "TxDetail",
-        components: {MClip},
+        components: {AdvertisingSpace, MClip},
         data () {
 		    return {
                 txHashValue: '',
@@ -528,6 +530,18 @@
                     }
                 }
             }
+        }
+    }
+    @media screen and (max-width: 1280px){
+        .tx_detail_container{
+           .tx_detail_common_information_content_wrap{
+               .tx_detail_common_information_wrap{
+                   margin: 0 0.2rem;
+               }
+               .tx_detail_message_information_content{
+                   margin: 0 0.2rem;
+               }
+           }
         }
     }
     @media screen and (max-width: 910px){
