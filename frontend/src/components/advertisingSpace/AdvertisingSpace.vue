@@ -1,7 +1,7 @@
 <template>
 	<div class="advertising_space_container" :class="pageClass === 'txDetail' ? 'tx_detail_class' :'' ">
 		<div class="advertising_space_content">
-			<a href="https://binance.zendesk.com/hc/en-us/articles/360041065471-Binance-Community-Coin-Vote-Round-7-STPT-vs-IRIS" target="_blank">
+			<a href="https://www.binance.com/en/vote" target="_blank">
 				<img class="advertising_space_img_content" src="../../assets/advertising_space_img/advertising_space.png" alt="">
 				<div class="advertising_vote_btn"></div>
 			</a>
