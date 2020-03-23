@@ -608,17 +608,17 @@
 					this.activeStaking  = true
 				}else if(this.$route.fullPath === '/txs/transfers'){
 					this.activeTransfers  = true
-                }else if(this.$route.fullPath === '/home' || this.$route.fullPath === '/blocks' || this.$route.fullPath === '/txs' ){
+                }else if(this.$route.fullPath === '/home' || this.$route.fullPath === '/blocks' || this.$route.fullPath.includes('/block') || this.$route.fullPath === '/txs' ){
 					this.activeBlockChain  = true
-                }else if (this.$route.fullPath === '/assets/ntvassetstxs' || this.$route.fullPath === '/assets/gtwassetstxs'){
+                }else if (this.$route.fullPath === '/assets/ntvassetstxs' || this.$route.fullPath === '/assets/gtwassetstxs' || this.$route.fullPath.includes('/asset/')){
 					this.activeAssets  = true
-                }else if(this.$route.fullPath === '/gov/parameters' || this.$route.fullPath === '/gov/proposals' || this.$route.fullPath === '/txs/governance'){
+                }else if(this.$route.fullPath === '/gov/parameters' || this.$route.fullPath === '/gov/proposals' || this.$route.fullPath === '/txs/governance' ||this.$route.fullPath.includes('/ProposalsDetail/') ){
 					this.activeGov = true
                 }else if(this.$route.fullPath === '/stats/irisrichlist' || this.$route.fullPath === '/stats/irisstats'){
 					this.activeStats= true
                 }else if(this.$route.fullPath === '/faucet'){
 					this.activeFaucet = '/faucet';
-				}else if(this.$route.fullPath === '/validators') {
+				}else if(this.$route.fullPath === '/validators' || this.$route.fullPath.includes('/validators')) {
 					if(this.hoverBlockChainTag){
 						this.activeStaking  = true
                     }else {
