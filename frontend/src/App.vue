@@ -194,6 +194,11 @@
             }
         }
     }
+    
+     .el-date-table td, .el-date-table td div{
+         height: 0.24rem!important;
+         padding: 0 !important;
+     }
     @media screen and (max-width: 910px){
         #app{
             .router-view{

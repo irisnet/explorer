@@ -377,20 +377,17 @@
 			showTwoMenu(v){
 				this.flShowSubMenu = true;
 				this.menuActiveName = v;
-				this.hideActiveStyle();
 				switch (v) {
                     case 'blockChain' :
 	                    this.offSetLeft = `1.7rem`;
 	                    this.contentWidth = '1.15rem';
 	                    this.flShowChain = true;
-	                    this.hoverBlockChainTag = false;
 	                    this.activeBlockChain  = true;
                     	break;
                     case 'staking' :
                     	this.offSetLeft = `2.575rem`;
 	                    this.flShowStaking = true;
 	                    this.contentWidth = '1.25rem';
-	                    this.hoverBlockChainTag = true;
 	                    this.activeStaking  = true;
                     	break;
                     case 'transfers' :
@@ -424,23 +421,29 @@
 				switch (v) {
 					case 'blockChain' :
 						this.flShowChain = false;
+						this.activeBlockChain  = false;
 						break;
 					case 'staking' :
 						this.flShowStaking = false;
+						this.activeStaking  = false;
 						break;
 					case 'transfers' :
 						this.flShowTransfers = false;
+						this.activeTransfers  = false;
 						break;
 					case 'assets'	:
 						this.flShowAssets = false;
+						this.activeAssets  = false;
 						break;
 					case 'gov' :
 						this.flShowGov = false;
+						this.activeGov  = false;
 						break;
 					case 'stats' :
 						this.flShowStats = false;
-
+						this.activeStats  = false;
 				}
+				this.listenRouteForChangeActiveButton()
             },
 			hideFeature () {
 				if (this.featureShow) {
@@ -610,7 +613,7 @@
 					this.activeTransfers  = true
                 }else if(this.$route.fullPath === '/home' || this.$route.fullPath === '/blocks' || this.$route.fullPath.includes('/block') || this.$route.fullPath === '/txs' ){
 					this.activeBlockChain  = true
-                }else if (this.$route.fullPath === '/assets/ntvassetstxs' || this.$route.fullPath === '/assets/gtwassetstxs' || this.$route.fullPath.includes('/asset/')){
+                }else if (this.$route.fullPath === '/assets/ntvassetstxs' || this.$route.fullPath === '/assets/gtwassetstxs' || this.$route.fullPath.includes('/assets/') || this.$route.fullPath.includes('/asset/')){
 					this.activeAssets  = true
                 }else if(this.$route.fullPath === '/gov/parameters' || this.$route.fullPath === '/gov/proposals' || this.$route.fullPath === '/txs/governance' ||this.$route.fullPath.includes('/ProposalsDetail/') ){
 					this.activeGov = true
@@ -618,12 +621,8 @@
 					this.activeStats= true
                 }else if(this.$route.fullPath === '/faucet'){
 					this.activeFaucet = '/faucet';
-				}else if(this.$route.fullPath === '/validators' || this.$route.fullPath.includes('/validators')) {
-					if(this.hoverBlockChainTag){
-						this.activeStaking  = true
-                    }else {
-						this.activeBlockChain  = true
-                    }
+				}else if(this.$route.fullPath === '/validators') {
+					this.activeStaking  = true
                 }
 			},
 			clearSearchContent () {

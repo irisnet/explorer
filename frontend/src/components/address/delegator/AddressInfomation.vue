@@ -152,9 +152,11 @@
                                     </el-select>
                                 </div>
                                 <div class="tx_type_mobile_content">
+                                    <date-tooltip></date-tooltip>
                                     <el-date-picker  type="date"
                                                      v-model="startTime"
                                                      @change="getStartTime(startTime)"
+                                                     :picker-options="PickerOptions"
                                                      :editable="false"
                                                      value-format="yyyy-MM-dd"
                                                      placeholder="Select Date">
@@ -162,6 +164,7 @@
                                     <span class="joint_mark">~</span>
                                     <el-date-picker  type="date"
                                                      v-model="endTime"
+                                                     :picker-options="PickerOptions"
                                                      value-format="yyyy-MM-dd"
                                                      @change="getEndTime(endTime)"
                                                      :editable="false"
@@ -209,9 +212,10 @@
 	import MPagination from "../../commontables/MPagination";
 	import BigNumber from "bignumber.js"
     import moveDecimal from "move-decimal-point"
+    import DateTooltip from "../../dateToolTip/DateTooltip";
 	export default {
 		name: "AddressInfomation",
-		components: {MPagination, MAddressInformationTable},
+		components: {DateTooltip, MPagination, MAddressInformationTable},
 		data(){
 			return {
 				withdrewToAddress: '',
@@ -219,6 +223,12 @@
                 validatorStatus:'',
 				OperatorAddress: '',
 				isProfiler:'',
+                pickerStartTime:sessionStorage.getItem('firstBlockTime') ? sessionStorage.getItem('firstBlockTime') : '',
+                PickerOptions: {
+                    disabledDate: (time) => {
+                        return time.getTime() < new Date(this.pickerStartTime).getTime() || time.getTime() > Date.now()
+                    }
+                },
 				txTypeOption:[
 					{
 						value:'allTxType',
@@ -329,6 +339,7 @@
 		        this.resetUrl();
 		        sessionStorage.setItem('addressTxPageNum',1);
 		        this.getTxListByFilterCondition();
+                this.$uMeng.push('Transactions_Search','click')
 	        },
 			getAddressInformation(){
                 Server.commonInterface({addressInformation:{
@@ -612,7 +623,8 @@
 
 	        filterTxByTxType(e){
 		        if (e === 'allTxType' || e === undefined) {
-			        this.TxType = ''
+			        this.TxType = '';
+                    this.$uMeng.push('Transactions_All Type','click')
 		        }else {
 			        this.TxType = e
 		        }
@@ -620,6 +632,7 @@
 	        filterTxByStatus(e){
 		        if(e === 'allStatus'){
 			        this.txStatus = ''
+                    this.$uMeng.push('Transactions_All Status','click')
 		        }else {
 			        this.txStatus = e
 		        }
@@ -649,6 +662,7 @@
 		        this.allTxCurrentPage = 1;
 		        this.resetUrl();
 		        this.getTxListByFilterCondition()
+                this.$uMeng.push('Transactions_Refresh','click')
 	        },
 	        formatEndTime(time){
 		        // let utcTime = Tools.conversionTimeToUTCByValidatorsLine(new Date(time).toISOString());

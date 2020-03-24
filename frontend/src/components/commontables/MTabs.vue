@@ -31,6 +31,19 @@ export default {
             });
             v.isActive = true;
             this.chose && this.chose(i, v);
+        },
+        uMengByTabTitle(title){
+            let tabTitle = title.title;
+            switch (tabTitle) {
+                case "Active":
+                    this.$uMeng.push('Validators_Active','click');
+                    break;
+                case "Candidate":
+                    this.$uMeng.push('Validators_Candidate','click');
+                    break;
+                case "Jailed":
+                    this.$uMeng.push('Validators_Jailed','click');
+            }
         }
     }
 };

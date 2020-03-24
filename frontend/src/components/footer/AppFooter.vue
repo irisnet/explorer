@@ -2,7 +2,7 @@
     <div class="footer_container">
         <div class="person_computer_footer">
             <div class="footer_logo_content">
-                <a class="irisnet_link_content" href="https://www.irisnet.org/" target="_blank">
+                <a @click="$uMeng.push('Footer_IRISnet','click')" class="irisnet_link_content" href="https://www.irisnet.org/" target="_blank">
                     <img class="irisnet_logo_img" src="../../assets/IRISnet-Rebrand-Capital-Black.png"/>
                 </a>
             </div>
@@ -11,10 +11,10 @@
                     Community
                 </h1>
                 <div class="community_list_content">
-                    <a target="_blank" href='https://github.com/irisnet'><i class="iconfont icongithub"></i></a>
-                    <a target="_blank" href='https://t.me/irisnetwork'><i class="iconfont icontelegram"></i></a>
-                    <a target="_blank" href='https://twitter.com/irisnetwork'><i class="iconfont icontuite"></i></a>
-                    <a target="_blank" href='https://medium.com/irisnet-blog'><i class="iconfont iconmedium"></i></a>
+                    <a @click="$uMeng.push('Footer_Github','click')"  target="_blank" href='https://github.com/irisnet'><i class="iconfont icongithub"></i></a>
+                    <a @click="$uMeng.push('Footer_Telegram','click')"  target="_blank" href='https://t.me/irisnetwork'><i class="iconfont icontelegram"></i></a>
+                    <a @click="$uMeng.push('Footer_Twitter','click')"  target="_blank" href='https://twitter.com/irisnetwork'><i class="iconfont icontuite"></i></a>
+                    <a @click="$uMeng.push('Footer_Medium','click')"  target="_blank" href='https://medium.com/irisnet-blog'><i class="iconfont iconmedium"></i></a>
                     <span class="we_chat" @click="showWeChatQRCode"><i class="iconfont iconweixin"></i></span>
                     <span class="qq" @click="showqqQRCode"><i class="iconfont iconQQ"></i></span>
                 </div>
@@ -22,13 +22,21 @@
             <div class="footer_right_content">
                 <h1 class="resources_content">Resources</h1>
                 <div class="footer_link_wrap">
-                    <a href="https://www.irisnet.org/testnets" target="_blank">
+                    <a @click="$uMeng.push('Footer_Use Testnet','click')"
+                       href="https://www.irisnet.org/testnets"
+                       target="_blank">
                         <span class="footer_link_contact">Use Testnet</span>
                     </a>
                     <span class="footer_link_join">|</span>
-                    <span class="footer_link_privacy"><router-link :to="`/privacy_policy`">Privacy Policy</router-link></span>
+                    <span class="footer_link_privacy">
+                        <router-link @click.native="$uMeng.push('Footer_Privacy Policy','click')"
+                                     :to="`/privacy_policy`">Privacy Policy</router-link>
+                    </span>
                     <span class="footer_link_join">|</span>
-                    <span class="footer-faq"><router-link :to="`/help`">FAQ</router-link></span>
+                    <span class="footer-faq">
+                        <router-link @click.native="$uMeng.push('Footer_FAQ','click')"
+                                     :to="`/help`">FAQ</router-link>
+                    </span>
                 </div>
             </div>
         </div>
@@ -93,10 +101,12 @@
                 }
             },
 	        showWeChatQRCode() {
-	        	this.$store.commit('flShowQR',true);
+                this.$uMeng.push('Footer_WeChat','click');
+                this.$store.commit('flShowQR',true);
 	        	this.$store.commit('setQrImg','wechat');
 	        },
 	        showqqQRCode(){
+                this.$uMeng.push('Footer_QQ','click');
 		        this.$store.commit('flShowQR',true);
 		        this.$store.commit('setQrImg','qq');
 	        },
