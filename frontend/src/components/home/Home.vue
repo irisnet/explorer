@@ -1,6 +1,6 @@
 <template>
     <div class="home_wrap">
-        <advertising-space></advertising-space>
+        <!--<advertising-space></advertising-space>-->
         <div class="home_container">
             <div class="information_preview">
                 <ul class="current_net_status_list">
