@@ -12,10 +12,6 @@
                                                :key="index"
                                                :label="item.label"
                                                :value="item.value">
-                                         <template>
-                                             <span>{{item.label}}</span>
-                                             <div>{{item.value}}</div>
-                                         </template>
                                     </el-option>
                                 </el-select>
 
