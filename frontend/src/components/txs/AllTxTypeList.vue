@@ -11,7 +11,8 @@
                                     <el-option v-for="(item, index) in txTypeOption"
                                                :key="index"
                                                :label="item.label"
-                                               :value="item.value"></el-option>
+                                               :value="item.value">
+                                    </el-option>
                                 </el-select>
 
                                 <el-select v-model="statusValue" :change="filterTxByStatus(statusValue)">
@@ -22,16 +23,19 @@
                                 </el-select>
                             </div>
                             <div class="tx_type_mobile_content">
+                                <date-tooltip></date-tooltip>
                                 <el-date-picker  type="date"
                                                  v-model="startTime"
                                                  @change="getStartTime(startTime)"
                                                  :editable="false"
+                                                 :picker-options="PickerOptions"
                                                  value-format="yyyy-MM-dd"
                                                  placeholder="Select Date">
                                 </el-date-picker>
                                 <span class="joint_mark">~</span>
                                 <el-date-picker  type="date"
                                                  v-model="endTime"
+                                                 :picker-options="PickerOptions"
                                                  value-format="yyyy-MM-dd"
                                                  @change="getEndTime(endTime)"
                                                  :editable="false"
@@ -85,13 +89,20 @@
     import Tools from "../../util/Tools"
     import MAllTxTypeListTable from "./MAllTxTypeListTable";
     import MPagination from "../commontables/MPagination";
+    import DateTooltip from "../dateToolTip/DateTooltip";
 	export default {
 		name: "AllTxTypeList",
-		components: {MAllTxTypeListTable,MPagination},
+		components: {DateTooltip, MAllTxTypeListTable,MPagination},
 		data() {
 			return {
 				allTxTypeList: [],
                 pageSize: 30,
+                pickerStartTime:sessionStorage.getItem('firstBlockTime') ? sessionStorage.getItem('firstBlockTime') : '',
+                PickerOptions: {
+                    disabledDate: (time) => {
+                        return time.getTime() < new Date(this.pickerStartTime).getTime() || time.getTime() > Date.now()
+                    }
+                },
 				countNum: sessionStorage.getItem("txsTotal") ? Number(sessionStorage.getItem("txsTotal")) : 0,
 				currentPageNum: this.forCurrentPageNum(),
 				currentPageNumCache: 0,
@@ -142,10 +153,12 @@
 		        sessionStorage.setItem('txpagenum',1);
                 history.pushState(null, null, `/#/txs?txType=${this.TxType}&status=${this.txStatus}&startTime=${this.urlParamsShowStartTime}&endTime=${this.urlParamsShowEndTime}&page=1`);
                 this.getTxListByFilterCondition();
-	        },
+                this.$uMeng.push('Transactions_Search','click')
+            },
 			filterTxByTxType(e){
 				if (e === 'allTxType' || e === undefined ) {
-					this.TxType = ''
+					this.TxType = '';
+                    this.$uMeng.push('Transactions_All Type','click')
                 }else {
                     this.TxType = e
                 }
@@ -181,6 +194,7 @@
 	        filterTxByStatus(e){
 		        if(e === 'allStatus' || e === undefined ){
 			        this.txStatus = ''
+                    this.$uMeng.push('Transactions_All Status','click')
 		        }else {
 			        this.txStatus = e
 		        }
@@ -213,6 +227,7 @@
 		        this.currentPageNum = 1;
                 this.resetUrl();
                 this.getTxListByFilterCondition()
+                this.$uMeng.push('Transactions_Refresh','click')
             },
 	        forCurrentPageNum() {
 		        let currentPageNum = 1;
@@ -344,7 +359,9 @@
                         .tx_type_mobile_content{
                             display: flex;
                             align-items: center;
-
+                            .tooltip_content{
+                                padding: 0 0.11rem 0 0;
+                            }
                             /deep/.el-select{
                                 width: 1.3rem;
                                 margin-right: 0.1rem;

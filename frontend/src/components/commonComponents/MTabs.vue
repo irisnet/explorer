@@ -26,6 +26,7 @@ export default {
     },
     methods: {
         choseTab(v, i) {
+            this.$uMeng.push('link','click')
             this.data.forEach(v => {
                 v.isActive = false;
             });

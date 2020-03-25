@@ -2,7 +2,7 @@
   <div :class="echartsComponentWrapLine">
     <div class="echarts_title_wrap_line">
       <span class="echarts_title"><i class="iconfont iconTransactionHistory"></i>14 day Transaction History</span>
-      <span class="view_all_content"><router-link :to="`/txs?txType=&status=&startTime=${startTime}&endTime=${endTime}&page=1`">View All</router-link></span>
+      <span class="view_all_content"><router-link @click.native="$uMeng.push('HomeOverview_14 day Transaction History','click')" :to="`/txs?txType=&status=&startTime=${startTime}&endTime=${endTime}&page=1`">View All</router-link></span>
     </div>
     <div id="echarts_line">
 

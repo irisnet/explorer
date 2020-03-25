@@ -9,7 +9,8 @@
                             <el-option v-for="(item, index) in txTypeListArray"
                                        :key="index"
                                        :label="item.label"
-                                       :value="item.value"></el-option>
+                                       :value="item.value">
+                            </el-option>
                         </el-select>
 
                         <el-select v-model="statusValue" :change="filterTxByStatus(statusValue)">
@@ -20,9 +21,11 @@
                         </el-select>
                     </div>
                     <div class="select_date_content">
+                        <date-tooltip></date-tooltip>
                         <el-date-picker  type="date"
                                          v-model="startTime"
                                          @change="getStartTime(startTime)"
+                                         :picker-options="PickerOptions"
                                          :editable="false"
                                          value-format="yyyy-MM-dd"
                                          placeholder="Select Date">
@@ -30,6 +33,7 @@
                         <span class="joint_mark">~</span>
                         <el-date-picker  type="date"
                                          v-model="endTime"
+                                         :picker-options="PickerOptions"
                                          value-format="yyyy-MM-dd"
                                          @change="getEndTime(endTime)"
                                          :editable="false"
@@ -66,13 +70,20 @@
 	import Tools from "../../util/Tools";
 	import MTxListPageTable from "./MTxListPageTable";
 	import MPagination from "../commontables/MPagination";
+    import DateTooltip from "../dateToolTip/DateTooltip";
 	export default {
 		name: "TransactionListPage",
-		components: {MPagination, MTxListPageTable},
+		components: {DateTooltip, MPagination, MTxListPageTable},
 		data() {
 			return {
 				totalPageNum: sessionStorage.getItem("txpagenum") ? JSON.parse(sessionStorage.getItem("txpagenum")) : 1,
 				currentPageNum: this.forCurrentPageNum(),
+                pickerStartTime:sessionStorage.getItem('firstBlockTime') ? sessionStorage.getItem('firstBlockTime') : '',
+                PickerOptions: {
+                    disabledDate: (time) => {
+                        return time.getTime() < new Date(this.pickerStartTime).getTime() || time.getTime() > Date.now()
+                    }
+                },
 				txList: [],
 				txTypeListArray:[
 					{
@@ -174,6 +185,7 @@
 				sessionStorage.setItem('txpagenum',1);
                 history.pushState(null, null, `/#${this.$route.path}?txType=${this.TxType}&status=${this.txStatus}&startTime=${this.urlParamsShowStartTime}&endTime=${this.urlParamsShowEndTime}&page=1`);
                 this.getTxListByFilterCondition();
+                this.$uMeng.push('Transactions_Search','click')
             },
             resetUrl(){
                 this.value = 'allTxType';
@@ -187,14 +199,17 @@
             },
 			filterTxByTxType(e){
 				if (e === 'allTxType' || e === undefined ) {
-					this.TxType = ''
+					this.TxType = '';
+                    this.$uMeng.push('Transactions_All Type','click')
 				}else {
 					this.TxType = e
 				}
 			},
 			filterTxByStatus(e){
 				if(e === 'allStatus'){
-					this.txStatus = ''
+					this.txStatus = '';
+                    this.$uMeng.push('Transactions_All Status','click')
+                    
 				}else {
 					this.txStatus = e
 				}
@@ -220,6 +235,7 @@
 				this.getType();
                 this.resetUrl()
                 this.getTxListByFilterCondition();
+                this.$uMeng.push('Transactions_Refresh','click')
 			},
             getType(){
 	            switch (this.$route.params.txType) {

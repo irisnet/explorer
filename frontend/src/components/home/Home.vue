@@ -11,7 +11,7 @@
                             </div>
                             <span class="item_name">{{lang.home.blockHeight}}</span>
                         </div>
-                        <p class="current_block proposer_content"><router-link :to="`/block/${currentBlockHeight}`">{{currentBlockHeight}}</router-link></p>
+                        <p class="current_block proposer_content"><router-link @click.native="$uMeng.push('HomeOverview_Block Height','click')" :to="`/block/${currentBlockHeight}`">{{currentBlockHeight}}</router-link></p>
                         <p class="block_time proposer_container">
                             <span class="proposer_content"><router-link :to="addressRoute(proposerAddress)">{{moniker}}</router-link></span>
                         </p>
@@ -24,7 +24,7 @@
                             <span class="item_name">{{lang.home.transactions}}</span>
                         </div>
                         <p class="current_block transaction_link">
-                            <router-link v-show="transactionValue !== '--'" :to="`/txs`">{{transactionValue}}</router-link>
+                            <router-link @click.native="$uMeng.push('HomeOverview_Transactions','click')" v-show="transactionValue !== '--'" :to="`/txs`">{{transactionValue}}</router-link>
                             <span v-show="transactionValue === '--'">--</span>
                         </p>
                         <p class="block_time">{{blockTime}}</p>

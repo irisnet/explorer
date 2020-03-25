@@ -159,6 +159,7 @@ export default {
       });
     },
     sortData () {
+      this.$uMeng.push('link','click')
       if (this.sortAsBy && !this.sorted && this.columns.find(v => this.sortAsBy === (v.key || v.slot) && v.sortable)) {
         let col = this.columns.find(v => (v.key === this.sortAsBy || v.slot === this.sortAsBy));
         let func = col && col.sortMethod;
@@ -184,6 +185,7 @@ export default {
       this.sortAsBy = (v.key || v.slot);
       this.sorted = false;
       this.sortData();
+      this.uMengBySortTitle(v)
     },
     selectionSort (arr, method) {
       let len = arr.length;
@@ -211,6 +213,34 @@ export default {
         }
       }
       return arr;
+    },
+    uMengBySortTitle(title){
+      let sortTitle = title.title;
+      switch (sortTitle) {
+        case 'Moniker':
+          this.$uMeng.push('Validators_Active_Moniker','click');
+          break;
+        case 'Commission':
+          this.$uMeng.push('Validators_Active_Commssion','click');
+          break;
+        case 'Bonded_Tokens':
+          this.$uMeng.push('Validators_Active_Bonded_Tokens','click');
+          break;
+        case 'Voting_Power':
+          this.$uMeng.push('Validators_Active_Voting_Power','click');
+          break;
+        case 'Uptime':
+          this.$uMeng.push('Validators_Active_Uptime','click');
+          break;
+        case 'Self-Bonded':
+          this.$uMeng.push('Validators_Active_Self-Bonded','click');
+          break;
+        case 'Delegators':
+          this.$uMeng.push('Validators_Active_Delegators','click');
+          break;
+        case 'Bond_Height':
+          this.$uMeng.push('Validators_Active_Bond_Height','click');
+      }
     }
   },
   mounted () {
