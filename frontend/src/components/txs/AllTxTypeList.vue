@@ -7,14 +7,19 @@
                     <div class="filter_content">
                         <div class="tx_type_content">
                             <div class="tx_type_mobile_content">
-                                <el-select v-model="value" filterable :change="filterTxByTxType(value)">
+                               <!-- <el-select v-model="value" filterable :change="filterTxByTxType(value)">
                                     <el-option v-for="(item, index) in txTypeOption"
                                                :key="index"
                                                :label="item.label"
                                                :value="item.value">
                                     </el-option>
-                                </el-select>
-
+                                </el-select>-->
+                                <el-cascader v-model="value"
+                                             :options="txTypeOption"
+                                             :props="{ expandTrigger: 'hover' }"
+                                             :show-all-levels="false"
+                                             @change="filterTxByTxType(value)"></el-cascader>
+              
                                 <el-select v-model="statusValue" :change="filterTxByStatus(statusValue)">
                                     <el-option v-for="(item, index) in status"
                                                :key="index"
@@ -23,7 +28,6 @@
                                 </el-select>
                             </div>
                             <div class="tx_type_mobile_content">
-                                <date-tooltip></date-tooltip>
                                 <el-date-picker  type="date"
                                                  v-model="startTime"
                                                  @change="getStartTime(startTime)"
@@ -41,6 +45,7 @@
                                                  :editable="false"
                                                  placeholder="Select Date">
                                 </el-date-picker>
+                                <date-tooltip></date-tooltip>
                             </div>
                             <div class="tx_type_mobile_content">
                                 <div class="search_btn" @click="getFilterTxs">Search</div>
@@ -90,6 +95,7 @@
     import MAllTxTypeListTable from "./MAllTxTypeListTable";
     import MPagination from "../commontables/MPagination";
     import DateTooltip from "../dateToolTip/DateTooltip";
+    import FormatTxType from "../../util/formatTxType"
 	export default {
 		name: "AllTxTypeList",
 		components: {DateTooltip, MAllTxTypeListTable,MPagination},
@@ -115,7 +121,8 @@
                 ],
                 status:[],
                 statusValue: this.getParamsByUrlHash().txStatus ? this.getParamsByUrlHash().txStatus : 'allStatus',
-				value: this.getParamsByUrlHash().txType  ? this.getParamsByUrlHash().txType : 'allTxType',
+				value: this.getParamsByUrlHash().cascaderTxType ? this.getParamsByUrlHash().cascaderTxType : 'allTxType',
+                TxType: this.getParamsByUrlHash().txType ? this.getParamsByUrlHash().txType : '',
                 firstEntry:false,
 				startTime: this.getParamsByUrlHash().urlParamShowStartTime ? this.getParamsByUrlHash().urlParamShowStartTime : '',
                 endTime:  this.getParamsByUrlHash().urlParamShowEndTime ? this.getParamsByUrlHash().urlParamShowEndTime : '',
@@ -128,7 +135,7 @@
         },
         mounted(){
             this.getTxListByFilterCondition();
-	        this.getAllTxType();
+            this.getAllTxType();
             let statusArray = [
                 {
                     value:'allStatus',
@@ -156,11 +163,11 @@
                 this.$uMeng.push('Transactions_Search','click')
             },
 			filterTxByTxType(e){
-				if (e === 'allTxType' || e === undefined ) {
+				if (Array.isArray(e) && e[e.length-1] === 'allTxType' || e === undefined ) {
 					this.TxType = '';
                     this.$uMeng.push('Transactions_All Type','click')
                 }else {
-                    this.TxType = e
+                    this.TxType = Tools.firstWordUpperCase(e[e.length-1])
                 }
             },
 	        resetUrl(){
@@ -205,13 +212,7 @@
                     }},(res) => {
 			    	try {
                         if(res){
-                        	let txType;
-	                        txType = res.map(item => {
-	                        	return {
-			                        value : item,
-                                    label : item
-                                }
-                            });
+                            let txType = FormatTxType.formatTxType(res);
 	                        this.txTypeOption = this.txTypeOption.concat(txType);
                         }
 				    }catch (e) {
@@ -260,7 +261,8 @@
                     filterStartTime ,
                     urlParamShowStartTime,
                     urlParamShowEndTime,
-                    filterEndTime ;
+                    filterEndTime,
+                    cascaderTxType;
                 let path = window.location.hash;
                 if(path.includes("?")){
                     let urlHash = path.split('?')[1];
@@ -279,8 +281,10 @@
                         }
                     })
                 }
-                return {txType,txStatus,filterStartTime,filterEndTime,urlParamShowStartTime,urlParamShowEndTime}
+                cascaderTxType = FormatTxType.getRefUrlTxType(txType);
+                return  {txType,cascaderTxType,txStatus,filterStartTime,filterEndTime,urlParamShowStartTime,urlParamShowEndTime}
             },
+            
 	        getTxListByFilterCondition(){
                let param = {},urlParams = this.getParamsByUrlHash();
                 param.getTxListByFilterCondition = {};
@@ -359,9 +363,6 @@
                         .tx_type_mobile_content{
                             display: flex;
                             align-items: center;
-                            .tooltip_content{
-                                padding: 0 0.11rem 0 0;
-                            }
                             /deep/.el-select{
                                 width: 1.3rem;
                                 margin-right: 0.1rem;
@@ -392,6 +393,37 @@
                                     }
                                 }
 
+                            }
+                            /deep/.el-cascader{
+                                width: 1.6rem;
+                                margin-right: 0.1rem;
+                                .el-input{
+                                    .el-input__inner{
+                                        padding-left: 0.07rem;
+                                        height: 0.32rem;
+                                        font-size: 0.14rem !important;
+                                        line-height: 0.32rem;
+                                        &::-webkit-input-placeholder{
+                                            font-size: 0.14rem !important;
+                                        }
+                                    }
+                                    .el-input__inner:focus{
+                                        border-color: var(--bgColor) !important;
+                                    }
+                                    .el-input__suffix{
+                                        .el-input__suffix-inner{
+                                            .el-input__icon{
+                                                line-height: 0.32rem;
+                                            }
+                                        }
+                                    }
+                                }
+                                .is-focus{
+                                    .el-input__inner{
+                                        border-color: var(--bgColor) !important;
+                                    }
+                                }
+        
                             }
                             /deep/.el-date-editor{
                                 width: 1.3rem;

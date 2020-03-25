@@ -137,12 +137,17 @@
                         <div class="filter_content">
                             <div class="tx_type_content">
                                 <div class="tx_type_mobile_content">
-                                    <el-select v-model="value" filterable :change="filterTxByTxType(value)">
+                                    <!--<el-select v-model="value" filterable :change="filterTxByTxType(value)">
                                         <el-option v-for="(item, index) in txTypeOption"
                                                    :key="index"
                                                    :label="item.label"
                                                    :value="item.value"></el-option>
-                                    </el-select>
+                                    </el-select>-->
+                                    <el-cascader v-model="value"
+                                                 :options="txTypeOption"
+                                                 :props="{ expandTrigger: 'hover' }"
+                                                 :show-all-levels="false"
+                                                 @change="filterTxByTxType(value)"></el-cascader>
 
                                     <el-select v-model="statusValue" :change="filterTxByStatus(statusValue)">
                                         <el-option v-for="(item, index) in status"
@@ -152,7 +157,6 @@
                                     </el-select>
                                 </div>
                                 <div class="tx_type_mobile_content">
-                                    <date-tooltip></date-tooltip>
                                     <el-date-picker  type="date"
                                                      v-model="startTime"
                                                      @change="getStartTime(startTime)"
@@ -170,6 +174,7 @@
                                                      :editable="false"
                                                      placeholder="Select Date">
                                     </el-date-picker>
+                                    <date-tooltip></date-tooltip>
                                 </div>
                                 <div class="tx_type_mobile_content">
                                     <div class="search_btn" @click="getFilterTxs">Search</div>
@@ -213,6 +218,7 @@
 	import BigNumber from "bignumber.js"
     import moveDecimal from "move-decimal-point"
     import DateTooltip from "../../dateToolTip/DateTooltip";
+    import FormatTxType from "../../../util/formatTxType"
 	export default {
 		name: "AddressInfomation",
 		components: {DateTooltip, MPagination, MAddressInformationTable},
@@ -244,7 +250,7 @@
 				TxType: '',
 				txStatus: '',
 				status:[],
-				value: JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')) && JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).txType  ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).txType : 'allTxType',
+				value: JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')) && JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).txType  ? this.getRefUrlTxType(JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).txType) : 'allTxType',
                 assetsItems:[],
                 delegationsItems:[],
                 unBondingDelegationsItems:[],
@@ -325,6 +331,9 @@
             this.getTxListByFilterCondition();
         },
         methods:{
+            getRefUrlTxType(txType){
+                return FormatTxType.getRefUrlTxType(txType);
+            },
 	        getFilterTxs(){
                 let searchCondition = {
                     txType: this.TxType,
@@ -522,14 +531,8 @@
 			        }},(res) => {
 			        try {
 				        if(res){
-					        let txType;
-					        txType = res.map(item => {
-						        return {
-							        value : item,
-							        label : item
-						        }
-					        });
-					        this.txTypeOption = this.txTypeOption.concat(txType);
+                            let txType = FormatTxType.formatTxType(res);
+                            this.txTypeOption = this.txTypeOption.concat(txType);
 				        }
 			        }catch (e) {
 				        console.error(e)
@@ -622,11 +625,11 @@
 	        },
 
 	        filterTxByTxType(e){
-		        if (e === 'allTxType' || e === undefined) {
+		        if (Array.isArray(e) && e[e.length-1] === 'allTxType' || e === undefined ) {
 			        this.TxType = '';
                     this.$uMeng.push('Transactions_All Type','click')
 		        }else {
-			        this.TxType = e
+			        this.TxType = Tools.firstWordUpperCase(e[e.length-1])
 		        }
 	        },
 	        filterTxByStatus(e){
@@ -652,7 +655,7 @@
                     txType: '',
                     status: '',
                     beginTime: '',
-                    endTime: ''
+                    endTime: '',
                 };
                 sessionStorage.setItem('searchResultByTxTypeAndAddress',JSON.stringify(searchCondition))
 		        this.value = 'allTxType';
@@ -1053,6 +1056,37 @@
                                             }
                                         }
 
+                                    }
+                                    /deep/.el-cascader{
+                                        width: 1.3rem;
+                                        margin-right: 0.1rem;
+                                        .el-input{
+                                            .el-input__inner{
+                                                padding-left: 0.07rem;
+                                                height: 0.32rem;
+                                                line-height: 0.32rem;
+                                                font-size: 0.14rem !important;
+                                                &::-webkit-input-placeholder{
+                                                    font-size: 0.14rem !important;
+                                                }
+                                            }
+                                            .el-input__inner:focus{
+                                                border-color: var(--bgColor) !important;
+                                            }
+                                            .el-input__suffix{
+                                                .el-input__suffix-inner{
+                                                    .el-input__icon{
+                                                        line-height: 0.32rem;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        .is-focus{
+                                            .el-input__inner{
+                                                border-color: var(--bgColor) !important;
+                                            }
+                                        }
+        
                                     }
                                     /deep/.el-date-editor{
                                         width: 1.3rem;
