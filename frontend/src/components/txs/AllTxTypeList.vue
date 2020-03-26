@@ -162,7 +162,6 @@
 					this.TxType = '';
                     this.$uMeng.push('Transactions_All Type','click')
                 }else {
-				    console.log(e,"????")
                     this.TxType = Tools.onlyFirstWordUpperCase(e[e.length-1])
                 }
             },
