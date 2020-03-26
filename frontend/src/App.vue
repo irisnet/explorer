@@ -32,8 +32,12 @@
 			}
 		},
         mounted () {
+            let uMengID
+		    if(sessionStorage.getItem('UMengID')){
+                uMengID = sessionStorage.getItem('UMengID');
+            }
             const script = document.createElement('script');
-            script.src = 'https://s95.cnzz.com/z_stat.php?id=1277830440&web_id=1277830440';
+            script.src = `https://s95.cnzz.com/z_stat.php?id=${uMengID}&web_id=${uMengID}`;
             script.language = 'JavaScript';
             document.body.appendChild(script)
         },
