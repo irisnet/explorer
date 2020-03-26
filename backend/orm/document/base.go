@@ -5,9 +5,33 @@ import (
 
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm"
+	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
+
+func init() {
+	ensureCollectionIndexes()
+}
+
+func ensureCollectionIndexes() {
+	if len(Docs) == 0 {
+		return
+	}
+
+	query := orm.NewQuery()
+	defer query.Release()
+
+	for _, d := range Docs {
+		c := query.GetDb().C(d.Name())
+		for _, v := range d.EnsureIndexes() {
+			if err := c.EnsureIndex(v); err != nil {
+				logger.Error("ensure index fail", logger.String("collectionName", d.Name()),
+					logger.String("index", string(utils.MarshalJsonIgnoreErr(v))))
+			}
+		}
+	}
+}
 
 func desc(field string) string {
 	return fmt.Sprintf("-%s", field)
@@ -40,9 +64,9 @@ func queryOne(collation string, selector, condition bson.M, result interface{}) 
 
 	err := query.Exec()
 	if err != nil {
-		logger.Error("queryOne", logger.Any("query", condition), logger.String("err", err.Error()))
+		return err
 	}
-	return err
+	return nil
 }
 
 func querylistByOffsetAndSize(collection string, selector, condition bson.M, sort string, offset, size int, result interface{}) error {
@@ -59,9 +83,9 @@ func querylistByOffsetAndSize(collection string, selector, condition bson.M, sor
 
 	err := query.Exec()
 	if err != nil {
-		logger.Error("QuerylistByOffsetAndSize error", logger.Any("sort", sort), logger.Any("offset", offset), logger.Any("size", size), logger.Any("query", condition), logger.String("err", err.Error()))
+		return err
 	}
-	return err
+	return nil
 }
 
 func pageQuery(collation string, selector, condition bson.M, sort string, page, size int, total bool, result interface{}) (int, error) {
@@ -77,10 +101,10 @@ func pageQuery(collation string, selector, condition bson.M, sort string, page, 
 
 	cnt, err := query.ExecPage(total)
 	if err != nil {
-		logger.Error("pageQuery", logger.Any("query", condition), logger.String("err", err.Error()))
+		return 0, err
 	}
 
-	return cnt, err
+	return cnt, nil
 }
 
 func getDb() *mgo.Database {

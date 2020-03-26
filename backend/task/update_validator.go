@@ -15,11 +15,32 @@ func (task UpdateValidator) Name() string {
 	return "update_validator"
 }
 func (task UpdateValidator) Start() {
-	utils.RunTimer(conf.Get().Server.CronTimeValidators, utils.Sec, func() {
-		if err := task.DoTask(); err != nil {
-			logger.Error(fmt.Sprintf("%s fail", task.Name()), logger.String("err", err.Error()))
+	taskName := task.Name()
+	timeInterval := conf.Get().Server.CronTimeValidators
+	utils.RunTimer(timeInterval, utils.Sec, func() {
+		if notBeExec, err := tcService.assetTaskShouldNotBeExecuted(taskName, timeInterval); err != nil {
+			logger.Error("assetTaskShouldNotBeExecuted fail", logger.String("taskName", taskName),
+				logger.String("err", err.Error()))
 		} else {
-			logger.Info(fmt.Sprintf("%s success", task.Name()))
+			if !notBeExec {
+				if err := tcService.lockTask(taskName); err != nil {
+					logger.Error("lockTask fail", logger.String("taskName", taskName),
+						logger.String("err", err.Error()))
+				} else {
+					if err := task.DoTask(); err != nil {
+						logger.Error(fmt.Sprintf("%s fail", task.Name()), logger.String("err", err.Error()))
+					} else {
+						logger.Info(fmt.Sprintf("%s success", task.Name()))
+					}
+
+					if err := tcService.unlockTask(taskName); err != nil {
+						logger.Error("unlockTask fail", logger.String("taskName", taskName),
+							logger.String("err", err.Error()))
+					}
+				}
+			} else {
+				logger.Debug(fmt.Sprintf("%s shouldn't be executed on this instance", task.Name()))
+			}
 		}
 	})
 
