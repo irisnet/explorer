@@ -259,7 +259,7 @@ export default class FormatTxType {
 			['others','swapOrder'],
 		];
 		UrlTxType.forEach( item => {
-			if(Tools.firstWordUpperCase(item[item.length -1]) === txType){
+			if(Tools.onlyFirstWordUpperCase(item[item.length -1]) === txType){
 				refUrlTxType = item
 			}
 		});
