@@ -1,10 +1,9 @@
 <template>
     <div class="proposals_list_page_wrap">
-        <!-- <div class="proposals_list_title_wrap">
-          <p :class="proposalsListPageWrap" style="margin-bottom:0;">
-            <span class="proposals_list_title">Proposals</span>
-          </p>
-        </div> -->
+        <page-title :title="pageTitle"
+                    :content="contentDoc"
+                    :number="count"
+                    :reversal="false"></page-title>
         <div class="graph_containers">
             <div class="graph_container mobile_graph_container" v-if="$store.state.isMobile && (depositPeriodDatas.length > 0 || votingPeriodDatas.length > 0)">
                 <div v-for="v in votingPeriodDatas" :key="v.proposal_id">
@@ -61,7 +60,7 @@
         <div :class="proposalsListPageWrap">
             <div class="pagination total_num header_fixed_style" :style="{'position':flTableFixed ? 'static' : 'fixed'}" :class="[$store.state.isMobile ? 'mobile_graph_pagination_container' : '']">
                 <div style="height: 70px; display: flex; align-items: center;">
-                    <span class="proposals_list_page_wrap_hash_var" :class="count ? 'count_show' : 'count_hidden' ">{{count}} Proposals</span>
+                    <!--<span class="proposals_list_page_wrap_hash_var" :class="count ? 'count_show' : 'count_hidden' ">{{count}} Proposals</span>-->
                     <div class="icon_list">
                         <div>
                             <img src="../../assets/critical.png" style="margin-left: 0;" />
@@ -122,8 +121,10 @@
 	import MPagination from "../commontables/MPagination";
 	import Constant from "../../constant/Constant";
 	import skinStyle from "../../skinStyle/"
+    import PageTitle from "../pageTitle/PageTitle";
 	export default {
 		components:{
+            PageTitle,
 			MProposalsCard,
 			MProposalsEchart,
 			MProposalsListTable,
@@ -141,6 +142,8 @@
 		},
 		data() {
 			return {
+                pageTitle:'Proposals List',
+                contentDoc:'Proposals',
 				devicesWidth: window.innerWidth,
 				proposalsListPageWrap: 'personal_computer_proposals_list_page',
 				currentPageNum: this.forCurrentPageNum(),
@@ -429,6 +432,7 @@
 			getGrahpData() {
 				Service.commonInterface({proposalListVotingAndDeposit:{}}, (data) => {
 					if (data && Array.isArray(data) && data.length > 0) {
+					    this.totalNumber = data.length;
 						this.formatGrahpData(data);
 					}else {
 						this.flTableFixed =  false;
@@ -570,7 +574,7 @@
             flex-wrap: wrap;
             width: 100%;
             max-width: 12.8rem;
-            z-index: 1;
+            z-index: 10 !important;
             background: #F5F7FD;
             & > div {
                 padding: 4px 0;
@@ -629,6 +633,7 @@
         }
         .personal_computer_proposals_list_page_wrap {
             width: 100%!important;
+            padding-top: 0.54rem;
             .transaction_information_content_title {
                 height: 0.4rem;
                 line-height: 0.4rem;

@@ -2,6 +2,8 @@
     <div class="block_detail_container">
         <div class="block_detail_content">
             <div class="block_detail_title_content">
+                <span class="block_detail_title">Block Details</span>
+                <span style="padding: 0 0.15rem;"> | </span>
                 <span class="block_height_content">
                     <i :class="active?'flag_item_left':'flag_item_left_disabled'" class="iconfont iconshangyigequkuai" @click="skipNext(-1)"></i>
                         <span class="information_value" style="flex:none;">{{heightValue}}</span>
@@ -94,8 +96,10 @@
     import MAllTxTypeListTable from "../txs/MAllTxTypeListTable";
     import MPagination from "../commontables/MPagination";
     import MBlocKInformationTable from "./MBlockInformationTable";
+    import PageTile from "../pageTitle/PageTitle";
     export default {
         components: {
+            PageTile,
 	        MBlocKInformationTable,
 	        MPagination,
 	        MAllTxTypeListTable,
@@ -202,7 +206,7 @@
         methods: {
 	        pageChangeTransferList(pageNum){
 		        this.transferListPageNum = pageNum;
-		        this.getValidatorSetList()
+		        this.getTransferList()
 	        },
 	        pageChangeValidatorSet(pageNum){
 	        	this.validatorSetPageNum = pageNum;
@@ -275,7 +279,7 @@
                 });
             },
             getTransferList(){
-            	Service.commonInterface({allTypeListQuireHeight:{
+                Service.commonInterface({allTypeListQuireHeight:{
 			            pageNumber: this.transferListPageNum,
 			            pageSize: this.pageSize,
 			            height: this.$route.params.height,
@@ -396,43 +400,50 @@
 <style scoped lang="scss">
     .block_detail_container{
         .block_detail_content{
+            box-shadow:0 0.02rem 0.04rem 0 rgba(0,0,0,0.1);
             .block_detail_title_content{
-                height: 0.7rem;
+                height: 0.5rem;
                 display: flex;
                 align-items: center;
                 max-width: 12.8rem;
                 margin: 0 auto;
                 padding-left: 0.2rem;
+                .block_detail_title{
+                    color: #787C99;
+                    font-size: 0.14rem;
+                    font-weight: bold;
+                }
                 .block_height_content{
                     .information_value{
-                        font-size: 0.22rem;
+                        font-size: 0.14rem;
                         color: var(--contentColor);
                         margin: 0 0.07rem;
+                        font-weight: bold;
                     }
                     .flag_item_left {
                         display: inline-block;
-                        font-size: 0.2rem;
+                        font-size: 0.14rem;
                         margin-right: 0.05rem;
                         cursor: pointer;
                         color:var(--bgColor) !important;
                     }
                     .flag_item_left_disabled {
                         display: inline-block;
-                        font-size: 0.2rem;
+                        font-size: 0.14rem;
                         margin-right: 0.05rem;
                         cursor: pointer;
                         color: var(--contentColor);
                     }
                     .flag_item_right {
                         display: inline-block;
-                        font-size: 0.2rem;
+                        font-size: 0.14rem;
                         margin-left: 0.05rem;
                         color:var(--bgColor);
                         cursor: pointer;
                     }
                     .flag_item_right_disabled {
                         display: inline-block;
-                        font-size: 0.2rem;
+                        font-size: 0.14rem;
                         color: var(--contentColor);
                         margin-left: 0.05rem;
                         cursor: pointer;
@@ -442,7 +453,7 @@
         }
         .block_detail_information_container{
             max-width: 12.8rem;
-            margin: 0 auto;
+            margin: 0.2rem auto 0 auto;
             border-radius: 0.01rem;
             .block_information_title_content{
                 height:0.7rem;

@@ -47,7 +47,7 @@ export default {
             this.$refs.tip.classList.add("show_tips");
             this.timer = setTimeout(() => {
                 this.$refs.tip.classList.remove("show_tips");
-            }, 600);
+            }, 500);
         },
         computedTipPosition() {
             clearTimeout(this.resizeTimer);
@@ -106,6 +106,7 @@ export default {
 .copy_container {
     position: relative;
     display: inline;
+    padding-left: 0.05rem;
     img {
         width: 0.11rem;
         height: 0.12rem;
@@ -116,7 +117,6 @@ export default {
         opacity: 0;
         position: absolute;
         padding: 0rem 0.1rem;
-        top: -0.36rem;
         left: 50%;
         transform: translateX(-50%);
         color: #fff;
@@ -134,9 +134,9 @@ export default {
             content: "";
             display: block;
             position: absolute;
-            border-top-color: #000000;
-            left: 50%;
-            margin-left: -6px;
+            border-bottom-color: #000000;
+            top: -38%;
+            margin-left: 16px;
         }
     }
     .show_tips {

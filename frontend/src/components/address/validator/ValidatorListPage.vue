@@ -1,5 +1,7 @@
 <template>
     <div class="blocks_list_page_wrap">
+        <page-title :title="pageTitle"
+                    :content="`${count} ${validatorPageTitle}`"></page-title>
         <div class="blocks_list_title_wrap" :class="blocksListPageWrap === 'personal_computer_blocks_list_page_wrap' ? 'fixed_style' :''">
             <div :class="blocksListPageWrap" style="margin-bottom:0;">
                 <div class="validators_status_tab">
@@ -10,7 +12,7 @@
             </div>
         </div>
 
-        <div :class="blocksListPageWrap" :style="{'margin-top':`${blocksListPageWrap === 'personal_computer_blocks_list_page_wrap' ? '0.7rem' : '0'}`}">
+        <div :class="blocksListPageWrap" :style="{'margin-top':`${blocksListPageWrap === 'personal_computer_blocks_list_page_wrap' ? '1.24rem' : '0'}`}">
             <div style="overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling:touch;background: #fff">
                 <!-- <validator-list-table :items="items" :minWidth="tableMinWidth" :showNoData="showNoData"></validator-list-table> -->
                 <m-validator-list-table ref="mtable"
@@ -21,8 +23,7 @@
                     <img src="../../../assets/no_data.svg" alt="">
                 </div>
             </div>
-            <div class="pagination total_num" style='margin-bottom:0.2rem;'>
-                <span class="blocks_list_page_wrap_hash_var">{{count}} Total</span>
+            <div class="pagination total_num" style='margin-bottom:0.2rem;justify-content: flex-end'>
                 <m-pagination :page-size="pageSize" :total="count"></m-pagination>
             </div>
         </div>
@@ -37,9 +38,11 @@
     import MValidatorListTable from "./MValidatorListTable";
     import MTabs from "../../commontables/MTabs";
 	import MPagination from "../../commontables/MPagination";
+    import PageTitle from "../../pageTitle/PageTitle";
 
 	export default {
 		components:{
+            PageTitle,
 			MPagination,
 			ValidatorListTable,
             MValidatorListTable,
@@ -65,6 +68,8 @@
 		},
 		data() {
 			return {
+			    pageTitle:'Validator List',
+                validatorPageTitle:'',
 				devicesWidth: window.innerWidth,
 				blocksListPageWrap: 'personal_computer_blocks_list_page',
 				blocksValue: '',
@@ -183,13 +188,17 @@
 				switch (index) {
 					case 0 :
 						validatorStatus = 'validator';
+						this.validatorPageTitle = 'Active';
 						break;
 					case 1 :
 						validatorStatus = 'candidate';
+                        this.validatorPageTitle = 'Candidate';
 						break;
 					case 2 :
 						validatorStatus = 'jailed'
+                        this.validatorPageTitle = 'Jailed';
 				}
+				
 				return validatorStatus
 			},
 			getDataList() {

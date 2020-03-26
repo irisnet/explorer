@@ -1,15 +1,17 @@
 <template>
     <div class="top_list_page">
+        <page-title :title="pageTitle"
+                    :content="contentDoc">
+            <div class="tooltip_icon">
+                <span>?</span>
+                <div class="tooltip_span">
+                    <div>The assets include the delegated tokens, unbonding tokens and remaining tokens on the address</div>
+                </div>
+            </div>
+        </page-title>
         <div class="top_list_title_container">
             <div class="top_list_title_content">
                 <div class="top_list_title_content_div">
-                    <span class="top_list_title">Top 100 Addresses by IRIS</span>
-                    <div class="tooltip_icon">
-                        <span>?</span>
-                        <div class="tooltip_span">
-                            <div>The assets include the delegated tokens, unbonding tokens and remaining tokens on the address</div>
-                        </div>
-                    </div>
                 </div>
                 <div class="top_list_time_content">
                     <span v-show="latestTime">Updated ：{{latestTime}}+UTC</span>
@@ -35,15 +37,18 @@
 import TopListTable from "./TopListTable";
 import Server from "../../service";
 import Tools from "../../util/Tools";
+import PageTitle from "../pageTitle/PageTitle";
 export default {
     name: "TopList",
-    components: {TopListTable },
+    components: {PageTitle, TopListTable },
     data() {
         return {
             topList: [],
             showNoData: false,
             latestTime: "",
-            richListTimer: null
+            richListTimer: null,
+            pageTitle: 'Block Details',
+            contentDoc:'Top 100 Addresses by IRIS'
         };
     },
     mounted() {
@@ -173,53 +178,6 @@ export default {
                     font-weight: bold;
                     line-height: 0.26rem;
                 }
-                .tooltip_icon {
-                    width: 0.16rem;
-                    height: 0.16rem;
-                    margin-left: 0.1rem;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    border: 1px solid var(--bgColor);
-                    border-radius: 50%;
-                    font-size: 0.1rem;
-                    color: var(--bgColor);
-                    position: relative;
-                    cursor: pointer;
-                    &:hover .tooltip_span {
-                        display: block;
-                    }
-                    .tooltip_span {
-                        width: 2.4rem;
-                        display: none;
-                        position: absolute;
-                        z-index: 5;
-                        top:0.07rem;
-                        left: 0.25rem;
-                        transform: translateY(-50%);
-                        color: #ffffff;
-                        background-color: #000000;
-                        border-radius: 0.04rem;
-                        word-wrap: break-word;
-                        white-space: normal;
-                        line-height: 16px;
-                        div {
-                            padding: 8px 15px;
-                        }
-                        &::after {
-                            width: 0;
-                            height: 0;
-                            border: 0.06rem solid transparent;
-                            content: "";
-                            display: block;
-                            position: absolute;
-                            border-top-color: #000000;
-                            transform: rotate(90deg);
-                            top: 45%;
-                            margin-left: -0.12rem;
-                        }
-                    }
-                }
             }
 
             .top_list_time_content {
@@ -237,7 +195,7 @@ export default {
 }
 .top_list_container {
     width: 100%;
-    padding: 0.7rem 0 0.4rem 0;
+    padding: 0.54rem 0 0.4rem 0;
     box-sizing: border-box;
     .top_list_content {
         max-width: 12.8rem;
@@ -278,46 +236,14 @@ export default {
     .top_list_page {
         .top_list_title_container{
             position: static;
+            padding-top: 0.05rem;
             .top_list_title_content{
                 & > div.top_list_title_content_div{
-                    .tooltip_icon{
-                        .tooltip_span{
-                            width: 2.4rem;
-                            display: none;
-                            position: absolute;
-                            top:-0.2rem;
-                            z-index: 100000;
-                            left: auto;
-                            margin-top: -20px;
-                            transform: translateY(-50%);
-                            color: #ffffff;
-                            background-color: #000000;
-                            border-radius: 0.04rem;
-                            word-wrap: break-word;
-                            white-space: normal;
-                            line-height: 16px;
-                            div {
-                                padding: 8px 15px;
-                            }
-                            &::after {
-                                width: 0;
-                                height: 0;
-                                border: 0.06rem solid transparent;
-                                content: "";
-                                display: block;
-                                position: absolute;
-                                border-top-color: #000000;
-                                transform: rotate(0deg);
-                                top:auto;
-                                left:53%;
-                                bottom:-0.1rem;
-                            }
-                        }
-                    }
                 }
             }
         }
     }
 }
+
 
 </style>

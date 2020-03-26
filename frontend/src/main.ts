@@ -22,6 +22,7 @@ import {Select} from 'element-ui'
 import {DatePicker} from 'element-ui'
 import {Option} from 'element-ui'
 import {Tooltip} from 'element-ui'
+import {Cascader} from 'element-ui'
 import lang from 'element-ui/lib/locale/lang/en'
 import locale from 'element-ui/lib/locale'
 locale.use(lang);
@@ -29,6 +30,7 @@ Vue.component('el-select',Select);
 Vue.component('el-option',Option);
 Vue.component('el-date-picker',DatePicker);
 Vue.component('el-tooltip',Tooltip);
+Vue.component('el-cascader',Cascader);
 Vue.use(locale);
 
 

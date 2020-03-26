@@ -3,15 +3,16 @@
         class="blocks_list_page_container"
         :class="[$store.state.isMobile ? 'mobile_blocks_list_page_container' : 'blocks_list_page_container_fixed']"
     >
+        <page-title :title="pageTitle"
+                    :content="pageContent"
+                    :number="currentHeight"
+                    :href="routerLinkHref"
+                    :flLink="true"
+                    :flShowPageLink="true"></page-title>
         <div class="block_list_container">
             <div class="block_list_content">
                 <div class="page_nav_container">
-                    <span>
-                        Current Height:
-                        <span v-if="currentHeight > 0" class="skip_route current_height">
-                            <router-link :to="`/block/${currentHeight}`">{{currentHeight}}</router-link>
-                        </span>
-                    </span>
+                    <span></span>
                     <div v-if="!$store.state.isMobile" class="pagination_container">
                         <m-pagination
                             :ascending="false"
@@ -50,16 +51,22 @@ import Constant from "../../constant/Constant";
 import Tools from "../../util/Tools";
 import MBlockListPageTable from "./MBlockListPageTable";
 import MPagination from "../commontables/MPagination";
+import PageTitle from "../pageTitle/PageTitle";
 
 export default {
     name: "blockListPage",
     components: {
+        PageTitle,
         MBlockListPageTable,
         MPagination
     },
     data() {
         return {
             pageSize: 30,
+            pageTitle:'BlockList',
+            pageContent:'Current Height:',
+            totalBlockHeight:0,
+            routerLinkHref:`/block/`,
             currentPageNum: this.forCurrentPageNum(),
             currentHeight: sessionStorage.getItem("blockListTotal")
                 ? Number(sessionStorage.getItem("blockListTotal"))
@@ -142,6 +149,7 @@ export default {
                     try {
                         if (data) {
                             let that = this;
+                            this.totalBlockHeight = data[0].height
                             clearInterval(this.timer);
                             this.items = data.map(item => {
                                 let currentServerTime =
@@ -215,8 +223,8 @@ export default {
         margin: 0 auto;
         padding-bottom: 0.2rem;
         .block_list_content {
+            padding-top: 0.54rem;
             .page_nav_container {
-                padding-left: 0.2rem;
                 display: flex;
                 justify-content: space-between;
                 height: 0.7rem;
@@ -292,6 +300,16 @@ export default {
     }
 }
 @media screen and (max-width: 910px) {
+    .blocks_list_page_container{
+        .block_list_container{
+            .block_list_content{
+                padding-top: 0.15rem;
+                .page_nav_container{
+                    display: none;
+                }
+            }
+        }
+    }
     .blocks_list_page_container_fixed {
         .page_nav_container {
             padding-left: 0.1rem !important;
@@ -301,11 +319,7 @@ export default {
             padding-top: 0;
             margin: 0 0.1rem;
         }
-        .page_nav_container{
-            .pagination_container{
-                display: none;
-            }
-        }
+        
         .pagination_footer_container{
             .common_pagination_content{
                 margin-right: 0.1rem;

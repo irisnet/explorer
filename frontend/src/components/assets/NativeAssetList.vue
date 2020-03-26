@@ -1,12 +1,6 @@
 <template>
     <div class="native_asset_list_container">
-        <div class="native_asset_list_header_content">
-            <div class="native_asset_list_header_wrap">
-                <h2 class="native_header_title_content">
-                    Native Assets
-                </h2>
-            </div>
-        </div>
+        <page-title :title="pageTitle" :flShowPageLink="false"></page-title>
         <div class="native_asset_list_content">
             <div class="native_asset_list_wrap">
                 <div>
@@ -24,11 +18,13 @@
 	import Service from "../../service"
 	import Tools from "../../util/Tools"
 	import MAssetListTable from "./MAssetListTable";
+    import PageTitle from "../pageTitle/PageTitle";
 	export default {
 		name: "NativeAssetList",
-		components: {MAssetListTable},
+		components: {PageTitle, MAssetListTable},
         data () {
 			return {
+                pageTitle:'Native Asset List',
 				showNoData:false,
 				nativeAssetList: [],
             }
@@ -103,6 +99,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            padding-top: 0.74rem;
             .native_asset_list_wrap{
                 width: 100%;
                 & > div{
@@ -114,6 +111,7 @@
     @media screen and (max-width: 910px){
         .native_asset_list_container{
             .native_asset_list_content{
+                padding-top: 0.15rem;
                 .native_asset_list_wrap{
                     & > div{
                         margin: 0 0.1rem;
