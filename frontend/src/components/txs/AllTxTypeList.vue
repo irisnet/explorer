@@ -163,7 +163,6 @@
                     this.$uMeng.push('Transactions_All Type','click')
                 }else {
                     this.TxType = Tools.onlyFirstWordUpperCase(e[e.length-1])
-                    console.log(e)
                 }
             },
 	        resetUrl(){
