@@ -23,6 +23,7 @@ type Config struct {
 	ChainId     string `bson:"chain_id"`
 	ShowFaucet  int    `bson:"show_faucet"`
 	EnvLcd      string `bson:"env_lcd"`
+	UmengId     int64  `bson:"umeng_id"`
 }
 
 func (c Config) String() string {
@@ -33,7 +34,8 @@ func (c Config) String() string {
 		ChainId    :%v
 		ShowFaucet :%v
 		EnvLcd :%v
-		`, c.NetworkName, c.Env, c.Host, c.ChainId, c.ShowFaucet, c.EnvLcd)
+		UmengId :%v
+ 		`, c.NetworkName, c.Env, c.Host, c.ChainId, c.ShowFaucet, c.EnvLcd, c.UmengId)
 }
 
 func (a Config) Name() string {
