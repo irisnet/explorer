@@ -232,9 +232,10 @@
     .ivu-select-selection-focused{
         border-color: var(--bgColor) !important;
     }
-    .el-cascader-node{
-        .is-active{
-            color: var(--bgColor)!important;
-        }
+    .is-active{
+        color: var(--bgColor)!important;
+    }
+    .in-active-path{
+        color: var(--bgColor)!important;
     }
 </style>

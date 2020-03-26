@@ -1,5 +1,7 @@
 <template>
     <div class="blocks_list_page_wrap">
+        <page-title :title="pageTitle"
+                    :flShowPageLink="false"></page-title>
         <div
             class="list_page_container"
             :class="[$store.state.isMobile ? 'mobile_list_page_container' : 'pc_list_page_container']"
@@ -43,13 +45,16 @@
 import MTokenStatsEchart from "../commontables/MTokenStatsEchart";
 import Service from "../../service";
 import Tools from "../../util/Tools";
+import PageTitle from "../pageTitle/PageTitle";
 
 export default {
     components: {
+        PageTitle,
         MTokenStatsEchart
     },
     data() {
         return {
+            pageTitle:'IRIS Stats Analyse',
             items: [
                 {
                     label: "Total Supply",
@@ -219,6 +224,7 @@ export default {
     font-size: 0.14rem;
     .list_page_container {
         width: 100%;
+        padding-top: 0.54rem;
         & > div {
             width: 100%;
             max-width: 12.8rem;
@@ -319,4 +325,11 @@ export default {
         }
     }
 }
+    @media screen and (max-width: 910px){
+       .blocks_list_page_wrap{
+           .list_page_container{
+               padding-top: 0;
+           }
+       }
+    }
 </style>

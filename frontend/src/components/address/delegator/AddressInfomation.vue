@@ -1,13 +1,12 @@
 <template>
     <div class="address_information_container">
+        <page-title :title="pageTitle"
+                    :content="headerAddress"
+                    :copyText="headerAddress"
+                    :fl-show-clip="true" :flShowMobileStyle="true">
+               <span class="address_information_address_status_profiler" v-if="isProfiler">Profiler</span>
+        </page-title>
         <div class="address_information_content">
-            <div class="address_information_header_container">
-                <div class="address_information_header_content">
-                    <span class="address_information_header">{{headerAddress}}
-                       <span class="address_information_address_status_profiler" v-if="isProfiler">Profiler</span>
-                    </span>
-                </div>
-            </div>
             <div class="address_information_assets_container">
                 <div class="address_information_assets_title">Assets</div>
                 <div class="address_information_assets_list_content">
@@ -219,11 +218,13 @@
     import moveDecimal from "move-decimal-point"
     import DateTooltip from "../../dateToolTip/DateTooltip";
     import FormatTxType from "../../../util/formatTxType"
+    import PageTitle from "../../pageTitle/PageTitle";
 	export default {
 		name: "AddressInfomation",
-		components: {DateTooltip, MPagination, MAddressInformationTable},
+		components: {PageTitle, DateTooltip, MPagination, MAddressInformationTable},
 		data(){
 			return {
+                pageTitle:'Address',
 				withdrewToAddress: '',
 				validatorMoniker: '',
                 validatorStatus:'',
@@ -818,6 +819,7 @@
                 }
             }
             .address_information_assets_container{
+                padding-top: 0.54rem;
                 .address_information_assets_title{
                     padding: 0.12rem 0 0.12rem 0.2rem;
                     font-size: 0.18rem;
@@ -1242,6 +1244,11 @@
                 }
             }
 
+        }
+        .address_information_content{
+            .address_information_assets_container{
+                padding-top: 0 !important;
+            }
         }
     }
     @media screen and (max-width: 1280px){

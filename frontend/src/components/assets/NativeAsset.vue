@@ -1,10 +1,6 @@
 <template>
     <div class="native_asset_list_page_container">
-        <div class="native_asset_list_title_wrap" :class="$store.state.isMobile ? 'mobile_asset_title' : ''">
-            <div class="native_asset_list_title_content">
-                <span class="native_asset_list_title">{{listTitleName}}</span>
-            </div>
-        </div>
+        <page-title :title="listTitleName" :flShowPageLink="false"></page-title>
         <div class="native_asset_list_table_container" v-if="issueToken.length !== 0">
             <div style="padding: 0.2rem 0;color: #171d44">Issue Token Txs</div>
             <div class="native_asset_list_table_content">
@@ -93,9 +89,10 @@
     import Service from "../../service"
     import Tools from "../../util/Tools"
     import MPagination from "../commontables/MPagination";
+    import PageTitle from "../pageTitle/PageTitle";
 	export default {
 		name: "NativeAssetPage",
-		components: {MPagination, NativeAsset},
+		components: {PageTitle, MPagination, NativeAsset},
         data(){
 			return {
 				issueToken:[],
@@ -343,7 +340,7 @@
     }
     .native_asset_list_table_container{
         max-width: 12.8rem;
-        padding-top: 0.7rem;
+        padding-top: 0.54rem;
         margin: 0 auto;
         .native_asset_list_table_content{
             .table_list_content{

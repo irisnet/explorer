@@ -1,11 +1,11 @@
 <template>
     <div class="proposals_detail_wrap">
+        <page-title :title="pageTitle"
+                    :content="title"
+                    
+                    :flShowMobileStyle="true"></page-title>
         <div :class="proposalsDetailWrap"
                 style="margin-bottom: 0.3rem; flex-direction: column; align-items: flex-start;">
-            <p class="proposals_information_content_title">
-                <span>#{{proposalsId}}</span>
-                <span class="proposal_title">{{title}}</span>
-            </p>
             <div class="level_container">
                 <div class="proposals_detail_level">
                     <i v-if="levelValue === 'Critical'" style="color:#FF5569;font-size: 0.16rem;" class="iconfont iconCritical"></i>
@@ -293,9 +293,11 @@ import MProposalsDetailTable from './MProposalsDetailTable.vue';
 import MDepositCard from "../commontables/MDepositCard";
 import MVotingCard from "../commontables/MVotingCard";
 import MPagination from "../commontables/MPagination";
+import PageTitle from "../pageTitle/PageTitle";
 
 export default {
     components: {
+        PageTitle,
 	    MPagination,
 	    MVotingCard,
 	    MDepositCard,
@@ -304,6 +306,7 @@ export default {
     },
     data () {
         return {
+            pageTitle:'Proposal Details',
 	        symbolValue:'',
 	        canonicalSymbolValue:'',
 	        nameValue:'',
@@ -605,7 +608,7 @@ export default {
                             this.switchHeight = data.proposal.switch_height;
                             this.threshold = data.proposal.threshold ? `${Number(data.proposal.threshold) * 100}%` : '';
                             this.proposalsId = data.proposal.proposal_id === 0 ? "--" : data.proposal.proposal_id;
-                            this.title = data.proposal.title;
+                            this.title = `#${data.proposal.proposal_id} ${data.proposal.title}`;
                             this.type = data.proposal.type;
                             this.status = data.proposal.status;
                             this.levelValue = data.proposal.level;
@@ -773,6 +776,7 @@ export default {
     font-size: 0.14rem;
     .personal_computer_transactions_detail_wrap {
         width: 100% !important;
+        margin-top: 0.64rem;
         .proposal_detail_content{
             display: flex;
             margin-top: 0.2rem;

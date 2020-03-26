@@ -1,8 +1,8 @@
 <template>
     <div class="transaction_list_page_container">
+        <page-title :title="pageTitle" :content="`${count} Txs`"></page-title>
         <div class="transaction_list_title_wrap">
             <div class="transaction_list_title_content">
-                <span class="transaction_list_title">{{count}} Txs</span>
                 <div class="filter_container">
                     <div class="filter_tx_type_statue_content">
                         <el-select v-model="value" filterable :change="filterTxByTxType(value)">
@@ -21,7 +21,6 @@
                         </el-select>
                     </div>
                     <div class="select_date_content">
-                        <date-tooltip></date-tooltip>
                         <el-date-picker  type="date"
                                          v-model="startTime"
                                          @change="getStartTime(startTime)"
@@ -39,6 +38,7 @@
                                          :editable="false"
                                          placeholder="Select Date">
                         </el-date-picker>
+                        <date-tooltip></date-tooltip>
                     </div>
                     <div class="reset_search_content">
                         <div class="tx_search_btn" @click="getFilterTxs">Search</div>
@@ -71,11 +71,13 @@
 	import MTxListPageTable from "./MTxListPageTable";
 	import MPagination from "../commontables/MPagination";
     import DateTooltip from "../dateToolTip/DateTooltip";
+    import PageTitle from "../pageTitle/PageTitle";
 	export default {
 		name: "TransactionListPage",
-		components: {DateTooltip, MPagination, MTxListPageTable},
+		components: {PageTitle, DateTooltip, MPagination, MTxListPageTable},
 		data() {
 			return {
+                pageTitle:'Transactions list',
 				totalPageNum: sessionStorage.getItem("txpagenum") ? JSON.parse(sessionStorage.getItem("txpagenum")) : 1,
 				currentPageNum: this.forCurrentPageNum(),
                 pickerStartTime:sessionStorage.getItem('firstBlockTime') ? sessionStorage.getItem('firstBlockTime') : '',
@@ -319,20 +321,15 @@
             position: fixed;
             z-index: 3;
             background-color: #F5F7FD;
+            padding-top: 0.54rem;
             .transaction_list_title_content{
                 height:0.7rem;
                 display: flex;
                 align-items: center;
                 max-width: 12.8rem;
                 margin: 0 auto;
-                .transaction_list_title{
-                    font-size: 0.18rem;
-                    font-weight: bold;
-                    padding-left: 0.2rem;
-                }
                 .filter_container{
                     display: flex;
-                    margin-left: 0.1rem;
                     .filter_tx_type_statue_content{
                         display: flex;
                         align-items: center;
@@ -436,7 +433,7 @@
     }
     .transaction_list_table_container{
         max-width: 12.8rem;
-        padding: 0.7rem 0 0.2rem 0;
+        padding: 1.24rem 0 0.2rem 0;
         margin: 0 auto;
         .transaction_list_table_content{
             .table_list_content{
@@ -466,6 +463,7 @@
         .transaction_list_page_container{
             .transaction_list_title_wrap{
                 position: static;
+                padding-top: 0.15rem;
                 .transaction_list_title_content{
                     display: flex;
                     flex-direction: column;

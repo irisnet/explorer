@@ -372,6 +372,11 @@ export default class Tools{
 			return char.toUpperCase();
 		});
 	}
+	static onlyFirstWordUpperCase(str){
+		return str.replace(/(\s|^)[a-z]/, function(char){
+			return char.toUpperCase();
+		});
+	}
 	static firstWordLowerCase (str){
 		return str.toLowerCase().replace(/(\s|^)[a-z]/g, function(char){
 			return char.toLocaleLowerCase();
