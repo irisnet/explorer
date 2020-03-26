@@ -634,6 +634,7 @@
 			getConfig () {
 				Service.commonInterface({headerConfig:{}},(res) => {
 					try {
+                        sessionStorage.setItem('UMengID',res.umeng_id);
 						sessionStorage.setItem('skinEnvInformation',JSON.stringify(res));
                         if(res.cur_env === constant.ENVCONFIG.TESTNET || res.cur_env === constant.ENVCONFIG.MAINNET){
                             this.$store.commit('hideTestSkinStyle',false)
@@ -667,10 +668,17 @@
 				this.netWorkArray = configs.map(item => {
 					if(item.network_name === constant.CHAINID.IRISHUB){
 						item.icon = 'iconfont iconiris'
+                        sessionStorage.setItem('UMengID',item.umeng_id)
                     }else if(item.network_name === constant.CHAINID.FUXI){
 						item.icon = 'iconfont iconfuxi1'
+                        sessionStorage.setItem('UMengID',item.umeng_id)
                     }else if(item.network_name === constant.CHAINID.NYANCAT){
 						item.icon = 'iconfont iconcaihongmao'
+                        sessionStorage.setItem('UMengID',item.umeng_id)
+                    }else if(item.network_name === constant.CHAINID.QA){
+                        sessionStorage.setItem('UMengID',item.umeng_id)
+                    }else if(item.network_name === constant.CHAINID.DEV){
+                        sessionStorage.setItem('UMengID',item.umeng_id)
                     }
 					item.netWorkSelectOption = `${Tools.firstWordUpperCase(item.env)} ${item.chain_id.toLocaleUpperCase()}`;
 					return item

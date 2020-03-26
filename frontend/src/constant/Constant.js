@@ -71,6 +71,10 @@ const CHAINID = {};
 CHAINID.IRISHUB = 'irishub';
 CHAINID.FUXI = 'fuxi';
 CHAINID.NYANCAT = 'nyancat';
+CHAINID.QA = 'rainbow-qa';
+CHAINID.DEV = 'rainbow-dev';
+
+
 
 const RADIXDENOM = {};
 
