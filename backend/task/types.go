@@ -5,12 +5,18 @@ import (
 	"time"
 
 	"github.com/irisnet/explorer/backend/logger"
+	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/utils"
 )
 
-var engine = Engine{
-	task: []TimerTask{},
-}
+var (
+	engine = Engine{
+		task: []TimerTask{},
+	}
+
+	taskControlModel document.TaskControl
+	tcService        TaskControlService
+)
 
 func init() {
 	engine.AppendTask(TxNumGroupByDayTask{})
