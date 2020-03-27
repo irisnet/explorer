@@ -409,7 +409,8 @@
                     }},(res) => {
 		            try {
 		            	if(res && res.length > 0){
-				            this.delegationPageNationArrayData = this.pageNation(res);
+				            let copyResult = JSON.parse(JSON.stringify(res));
+				            this.delegationPageNationArrayData = this.pageNation(copyResult);
 				            if(res.length > this.pageSize){
 					            this.flDelegationNextPage = true;
                             }else {
@@ -447,7 +448,8 @@
                     }},(res) => {
 		            try {
 		            	if(res && res.length > 0){
-				            this.unBondingDelegationPageNationArrayData = this.pageNation(res);
+		            		let copyResult = JSON.parse(JSON.stringify(res));
+				            this.unBondingDelegationPageNationArrayData = this.pageNation(copyResult);
 				            if(res.length > this.pageSize){
 					            this.flUnBondingDelegationNextPage = true
 				            }else {
@@ -696,8 +698,8 @@
 			        this.delegationsItems = this.delegationPageNationArrayData[pageNum].map(item => {
 				        return {
 					        address: item.address,
-					        amount: `${Tools.formatStringToFixedNumber(item.amount.amount.toString(),this.fixedNumber)} ${item.amount.denom.toUpperCase()}`,
-					        shares: (Number(item.shares)).toFixed(2),
+					        amount: `${new BigNumber(Tools.formatStringToFixedNumber(item.amount.amount.toString(),this.fixedNumber)).toFormat()} ${item.amount.denom.toUpperCase()}`,
+					        shares: new BigNumber((Number(item.shares)).toFixed(2)).toFormat(),
 					        block: item.height,
 					        moniker: item.moniker
 				        }
@@ -706,8 +708,8 @@
 			        this.delegationsItems = this.delegationPageNationArrayData.map(item => {
 				        return {
 					        address: item.address,
-					        amount: `${Tools.formatStringToFixedNumber(item.amount.amount.toString(),this.fixedNumber)} ${item.amount.denom.toUpperCase()}`,
-					        shares: (Number(item.shares)).toFixed(2),
+					        amount: `${new BigNumber(Tools.formatStringToFixedNumber(item.amount.amount.toString(),this.fixedNumber)).toFormat()} ${item.amount.denom.toUpperCase()}`,
+					        shares: new BigNumber((Number(item.shares)).toFixed(2)).toFormat(),
 					        block: item.height,
 					        moniker: item.moniker
 				        }
@@ -721,7 +723,7 @@
 			        this.unBondingDelegationsItems = this.unBondingDelegationPageNationArrayData[pageNum].map( item =>{
 				        return {
 					        address: item.address,
-					        amount: `${Tools.formatStringToFixedNumber(item.amount.amount.toString(),this.fixedNumber)} ${item.amount.denom.toUpperCase()}`,
+					        amount: `${new BigNumber(Tools.formatStringToFixedNumber(item.amount.amount.toString(),this.fixedNumber)).toFormat()} ${item.amount.denom.toUpperCase()}`,
 					        block: item.height,
 					        endTime: Tools.format2UTC(item.end_time),
 					        moniker: item.moniker
@@ -731,7 +733,7 @@
 			        this.unBondingDelegationsItems = this.unBondingDelegationPageNationArrayData.map( item =>{
 				        return {
 					        address: item.address,
-					        amount: `${Tools.formatStringToFixedNumber(item.amount.amount.toString(),this.fixedNumber)} ${item.amount.denom.toUpperCase()}`,
+					        amount: `${new BigNumber(Tools.formatStringToFixedNumber(item.amount.amount.toString(),this.fixedNumber)).toFormat()} ${item.amount.denom.toUpperCase()}`,
 					        block: item.height,
 					        endTime: Tools.format2UTC(item.end_time),
 					        moniker: item.moniker
