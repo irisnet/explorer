@@ -32,8 +32,12 @@
 			}
 		},
         mounted () {
+            let uMengID
+		    if(sessionStorage.getItem('UMengID')){
+                uMengID = sessionStorage.getItem('UMengID');
+            }
             const script = document.createElement('script');
-            script.src = 'https://s95.cnzz.com/z_stat.php?id=1277830440&web_id=1277830440';
+            script.src = `https://s95.cnzz.com/z_stat.php?id=${uMengID}&web_id=${uMengID}`;
             script.language = 'JavaScript';
             document.body.appendChild(script)
         },
@@ -81,6 +85,10 @@
         font-family:"Arial" !important;
         /*-webkit-tap-highlight-color:rgba(0,0,0,0);*/
         /*font-family:"-apple-system","BlinkMacSystemFont","Segoe UI","Helvetica","Arial","sans-serif","Apple Color Emoji","Segoe UI Emoji"!important;*/
+    }
+    //解决ios点击出现蓝色边框
+    * {
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
     }
     #app{
         width: 100%;
@@ -231,5 +239,41 @@
     }
     .ivu-select-selection-focused{
         border-color: var(--bgColor) !important;
+    }
+    .is-active{
+        color: var(--bgColor)!important;
+    }
+    .in-active-path{
+        color: var(--bgColor)!important;
+    }
+   
+    @media screen and (max-width: 910px){
+        .el-cascader__dropdown{
+            .el-cascader-panel{
+                div:nth-of-type(1){
+                    min-width: 1.2rem;
+                    div{
+                        ul{
+                            li{
+                                padding-right: 0;
+                                padding-left: 0.15rem;
+                            }
+                        }
+                    }
+                }
+                div:nth-of-type(2){
+                    min-width: 1.2rem;
+                    div{
+                        ul{
+                            li{
+                                padding-right: 0;
+                                padding-left: 0.15rem;
+                            }
+                        }
+                    }
+                }
+            
+            }
+        }
     }
 </style>

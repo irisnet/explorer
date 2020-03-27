@@ -157,8 +157,8 @@
                 </div>
 
                 <div class="mobile_menu_container" @click="flShowBlockchain('transfers')">
-                    <div class="mobile_menu_item_content">
-                        <span  @click="featureButtonClick(`/txs/transfers`)">Transfers</span>
+                    <div class="mobile_menu_item_content"   @click="featureButtonClick(`/txs/transfers`)">
+                        <span>Transfers</span>
                         <!--<i class="iconfont iconwangluoqiehuanjiantou" :class="flShowTransfersMenu ? 'up_style' : 'down_style'"> </i>-->
                     </div>
                     <!--<ul class="blockchain_list_content" v-show="flShowTransfersMenu">-->
@@ -203,9 +203,9 @@
                     </ul>
                 </div>
 
-                <div class="mobile_menu_container" v-if="flShowFaucet">
+                <div class="mobile_menu_container"  @click="featureButtonClick(`/faucet`)" v-if="flShowFaucet">
                     <div class="mobile_menu_item_content">
-                        <span @click="featureButtonClick(`/faucet`)">Faucet</span>
+                        <span>Faucet</span>
                     </div>
                 </div>
 
@@ -234,6 +234,9 @@
 		name: 'app-header',
 		watch: {
 			$route () {
+                window.pageYOffset = 0;
+                document.documentElement.scrollTop = 0 ;
+                document.body.scrollTop = 0;
 				this.searchInputValue = "";
 				this.flShowSubMenu = false;
 				this.listenRouteForChangeActiveButton();
@@ -611,11 +614,11 @@
 					this.activeStaking  = true
 				}else if(this.$route.fullPath === '/txs/transfers'){
 					this.activeTransfers  = true
-                }else if(this.$route.fullPath === '/home' || this.$route.fullPath === '/blocks' || this.$route.fullPath.includes('/block') || this.$route.fullPath === '/txs' ){
+                }else if(this.$route.fullPath === '/home' || this.$route.fullPath === '/blocks'){
 					this.activeBlockChain  = true
                 }else if (this.$route.fullPath === '/assets/ntvassetstxs' || this.$route.fullPath === '/assets/gtwassetstxs' || this.$route.fullPath.includes('/assets/') || this.$route.fullPath.includes('/asset/')){
 					this.activeAssets  = true
-                }else if(this.$route.fullPath === '/gov/parameters' || this.$route.fullPath === '/gov/proposals' || this.$route.fullPath === '/txs/governance' ||this.$route.fullPath.includes('/ProposalsDetail/') ){
+                }else if(this.$route.fullPath === '/gov/parameters' || this.$route.fullPath === '/gov/proposals' || this.$route.fullPath === '/txs/governance'){
 					this.activeGov = true
                 }else if(this.$route.fullPath === '/stats/irisrichlist' || this.$route.fullPath === '/stats/irisstats'){
 					this.activeStats= true
@@ -697,6 +700,7 @@
                     currentEnv.configs.forEach(item => {
                         if(currentEnv.cur_env === item.env && currentEnv.chain_id === item.chain_id){
                             networkName = item.network_name;
+                            sessionStorage.setItem('UMengID',item.umeng_id)
                         }
                     })
                 }

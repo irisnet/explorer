@@ -1,6 +1,10 @@
 <template>
     <div class="parameters_page_container">
         <div class="parameters_list_container">
+            <page-title :title="pageTitle"
+                        :content="contentDoc"
+                        :number="totalNumber"
+                        :reversal="false"></page-title>
             <div class="parameter_list_content">
                 <div class="parameters_list_cards_content">
                     <div style="overflow-y: hidden;" v-show="!showNoData">
@@ -42,14 +46,19 @@ import Service from "../../service";
 import Tools from "../../util/Tools";
 import MParametersCard from "../commontables/MParametersCard";
 import BigNumber from "bignumber.js";
+import PageTitle from "../pageTitle/PageTitle";
+import pageTitleConfig from "../pageTitle/pageTitleConfig";
 export default {
     name: "Parameters",
-    components: { VParameters, MParametersCard },
+    components: {PageTitle, VParameters, MParametersCard },
     data() {
         return {
             parametersList: {},
             proposalsListPageWrap: "",
-            showNoData: false
+            showNoData: false,
+            totalNumber:0,
+            pageTitle:pageTitleConfig.GovParameters,
+            contentDoc:'Total'
         };
     },
     mounted() {
@@ -62,6 +71,7 @@ export default {
             Service.commonInterface({ govParams: {} }, res => {
                 try {
                     if (Array.isArray(res)) {
+                        this.totalNumber = res.length;
                         let arr = res.map(item => {
                             item.genesis_value =
                                 item.genesis_value || item.initial_value;
@@ -346,6 +356,15 @@ export default {
 
 <style scoped lang="scss">
 @import "../../style/mixin";
+@media screen and (max-width: 910px){
+    .parameters_page_container{
+        .parameters_list_container{
+            .parameter_list_content{
+                padding-top: 0.05rem;
+            }
+        }
+    }
+}
 .parameters_page_container {
     .parameters_list_container {
         width: 100%;

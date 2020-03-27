@@ -1,12 +1,6 @@
 <template>
     <div class="gateway_asset_list_container">
-        <div class="gateway_asset_list_header_content">
-            <div class="gateway_asset_list_header_wrap">
-                <h2 class="gateway_header_title_content">
-                    Gateway Assets
-                </h2>
-            </div>
-        </div>
+        <page-title :title="pageTitle" :flShowPageLink="false"></page-title>
         <div class="gateway_asset_list_content">
             <div class="gateway_asset_list_wrap">
                 <div>
@@ -24,11 +18,13 @@
 	import Service from "../../service"
 	import Tools from "../../util/Tools"
 	import MAssetListTable from "./MAssetListTable";
+    import PageTitle from "../pageTitle/PageTitle";
 	export default {
 		name: "GatewayAssetList",
-		components: {MAssetListTable},
+		components: {PageTitle, MAssetListTable},
         data () {
 			return {
+                pageTitle:'Gateway Assets List',
 				gatewayAssetList:[],
 				showNoData:false,
             }
@@ -98,6 +94,7 @@
             }
         }
         .gateway_asset_list_content{
+            padding-top: 0.54rem;
             max-width: 12.8rem;
             margin: 0 auto 0.4rem auto;
             display: flex;
@@ -115,6 +112,7 @@
     @media screen and (max-width: 910px){
         .gateway_asset_list_container{
             .gateway_asset_list_content{
+                padding-top: 0;
                 .gateway_asset_list_wrap{
                     & > div{
                         margin: 0 0.1rem;

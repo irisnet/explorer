@@ -26,6 +26,7 @@ export default {
     },
     methods: {
         choseTab(v, i) {
+            this.uMengByTabTitle(v)
             this.data.forEach(v => {
                 v.isActive = false;
             });

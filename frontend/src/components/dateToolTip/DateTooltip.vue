@@ -14,6 +14,6 @@
 
 <style scoped>
 	.tooltip_content{
-		padding: 0 0.11rem 0 0;
+		padding: 0 0 0 0.1rem;
 	}
 </style>

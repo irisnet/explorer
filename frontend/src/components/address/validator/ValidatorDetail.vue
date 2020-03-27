@@ -1,21 +1,27 @@
 <template>
     <div class="transactions_detail_wrap">
         <div :class="[transactionsDetailWrap, 'validator_title']">
-            <div class="validator_img_container">
-                <img :src="validatorImg" alt="">
+            <div class="title_tag_content">
+                <span class="validator_title_content">Validator Details</span>
+                <span class="validator_page_link">|</span>
             </div>
-            <span class="title">{{validatorName}}</span>
-            <div class="status_btn" v-if="validatorStatus === 'Active'">Active</div>
-            <div
-                class="status_btn"
-                style="background-color: #3DA87E;"
-                v-if="validatorStatus === 'Candidate'"
-            >Candidate</div>
-            <div
-                class="status_btn"
-                style="background-color: #FA7373;"
-                v-if="validatorStatus === 'Jailed'"
-            >Jailed</div>
+            <div class="title_tag_right_content">
+                <div class="validator_img_container">
+                    <img :src="validatorImg" alt="">
+                </div>
+                <span class="title">{{validatorName}}</span>
+                <div class="status_btn" v-if="validatorStatus === 'Active'">Active</div>
+                <div
+                        class="status_btn"
+                        style="background-color: #3DA87E;"
+                        v-if="validatorStatus === 'Candidate'"
+                >Candidate</div>
+                <div
+                        class="status_btn"
+                        style="background-color: #FA7373;"
+                        v-if="validatorStatus === 'Jailed'"
+                >Jailed</div>
+            </div>
         </div>
         <div :class="transactionsDetailWrap">
             <div class="validator_detail_information_wrap">
@@ -292,10 +298,12 @@ import Constants from "../../../constant/Constant";
 import MValidatorDetailTable from "./MValidatorDetailTable";
 import MPagination from "../../commontables/MPagination";
 import axios from "../../../util/axios";
+import pageTitleConfig from "../../pageTitle/pageTitleConfig";
 export default {
 
     data() {
         return {
+            pageTitle:pageTitleConfig.StakingValidatorsValidatorDetails,
             transactionsDetailWrap: "personal_computer_transactions_detail",
             pageSize: 5,
             address: this.$route.params.param,
@@ -965,6 +973,7 @@ export default {
 </style>
 
 <style lang="scss" scoped>
+
 .validator_title {
     height: 0.3rem;
     padding-left: 0.2rem;
@@ -972,8 +981,38 @@ export default {
     align-items: center;
     margin-top: 0.2rem;
     flex-direction: row !important;
+    .title_tag_content{
+        .validator_title_content{
+            color: #787c99;
+            font-size: 0.14rem;
+            font-weight: bold;
+        }
+        .validator_page_link{
+            padding: 0 0.2rem;
+        }
+    }
+    .title_tag_right_content{
+        display: flex;
+        align-items: center;
+        .validator_img_container{
+            width: 0.2rem;
+            padding-right: 0.1rem;
+            img{
+                width: 100%;
+            }
+        }
+        .status_btn {
+            height: 0.2rem;
+            padding: 0 0.14rem;
+            font-size: 12px;
+            line-height: 0.2rem;
+            border-radius: 0.1rem;
+            color: #ffffff;
+            background-color: var(--bgColor);
+        }
+    }
     .title {
-        font-size: 22px;
+        font-size: 14px;
         font-weight: bold;
         color: #515a6e;
         word-break: break-all
@@ -990,26 +1029,8 @@ export default {
         margin-top: 0.2rem;
     }
 }
-.transactions_detail_wrap {
-    .validator_img_container{
-        width: 0.35rem;
-        padding-right: 0.1rem;
-        img{
-            width: 100%;
-        }
-    }
-    & > div:nth-last-of-type(1) {
-        margin-bottom: 0.4rem;
-    }
-}
-.status_btn {
-    height: 0.2rem;
-    padding: 0 0.14rem;
-    font-size: 12px;
-    line-height: 0.2rem;
-    border-radius: 0.1rem;
-    color: #ffffff;
-    background-color: var(--bgColor);
+.validator_table_container:last-child{
+    margin-bottom: 0.4rem;
 }
 .validator_detail_information_wrap {
     margin-top: 0.2rem;
@@ -1213,6 +1234,24 @@ export default {
                 .validator_detail_table {
                     overflow: visible !important;
                 }
+            }
+        }
+    }
+}
+@media screen and (max-width: 910px){
+    .transactions_detail_wrap{
+        .validator_title{
+            flex-direction: column !important;
+            align-items: flex-start;
+            .title_tag_content{
+                margin-bottom: 0.05rem;
+            }
+            .title_tag_right_content{
+                margin-top: 0.05rem;
+                .title{
+                    padding-left: 0;
+                }
+            
             }
         }
     }

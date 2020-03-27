@@ -1,13 +1,13 @@
 <template>
     <div class="htlc_information_container">
+        <page-title :title="pageTitle" :flShowPageLink="false"></page-title>
         <div class="htlc_information_content">
-            <div class="htlc_information_header_content">
-                <span class="htlc_information_header_title">HTLC Information</span>
+         <!--   <div class="htlc_information_header_content">
                 <img v-show="htlcInformationArr[htlcInformationArr.length -1]['State:'] === 'Completed'" src="../../assets/Complete.png">
                 <img v-show="htlcInformationArr[htlcInformationArr.length -1]['State:'] === 'Open'" src="../../assets/Open.png">
                 <img v-show="htlcInformationArr[htlcInformationArr.length -1]['State:'] === 'Expired'" src="../../assets/Expired.png">
                 <img v-show="htlcInformationArr[htlcInformationArr.length -1]['State:'] === 'Refunded'" src="../../assets/Refunded.png">
-            </div>
+            </div>-->
             <div class="htlc_information_content_container">
                 <ul class="htlc_information_content_wrap">
                     <li class="htlc_information_item"
@@ -63,9 +63,10 @@
     import Server from "../../service"
     import MClip from "../commonComponents/MClip";
     import MPagination from "../commonComponents/MPagination";
+    import PageTitle from "../pageTitle/PageTitle";
     export default {
 		name: "HtlcInformation",
-        components: {MPagination, MClip, MHtlsTransferTableList},
+        components: {PageTitle, MPagination, MClip, MHtlsTransferTableList},
         data () {
 		    return {
                 HtlcTxListArray: [],
@@ -74,6 +75,7 @@
                 countNum:0,
                 monikerFrom:'',
                 monikerTo:'',
+                pageTitle:'HTLC Details',
                 htlcInformationArr:[
                     {
                         "Hash Lock:" : '--',
@@ -194,9 +196,11 @@
 
 <style scoped lang="scss">
     .htlc_information_container{
-        max-width: 12.8rem;
-        margin: 0 auto;
+       
         .htlc_information_content{
+            max-width: 12.8rem;
+            margin: 0 auto;
+            padding-top: 0.8rem;
             .htlc_information_header_content{
                 color: #515a6e;
                 font-size: 0.18rem;
@@ -280,6 +284,7 @@
     @media screen and (max-width: 910px){
         .htlc_information_container{
             .htlc_information_content{
+                padding-top: 0.15rem;
                 .htlc_information_header_content{
                     margin-left: 0.1rem;
                 }
