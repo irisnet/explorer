@@ -2,7 +2,8 @@ all: get_vendor_deps build
 
 get_vendor_deps:
 	go mod download
-	
+	go mod vendor
+
 build:
 	go build -o build/irisplorer explorer.go
 
