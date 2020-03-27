@@ -16,9 +16,11 @@ const (
 )
 
 type TxNumStat struct {
-	Date       string    `bson:"date"`
-	Num        int64     `bson:"num"`
-	CreateTime time.Time `bson:"create_time"`
+	Date         string    `bson:"date"`
+	Num          int64     `bson:"num"`
+	TotalAccNum  int64     `bson:"total_acc_num"`
+	DelegatorNum int64     `bson:"delegator_num"`
+	CreateTime   time.Time `bson:"create_time"`
 }
 
 func (m TxNumStat) Name() string {

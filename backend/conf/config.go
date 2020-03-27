@@ -5,7 +5,10 @@ import (
 	"strconv"
 	"strings"
 
+	"fmt"
 	"github.com/irisnet/explorer/backend/logger"
+	"math/rand"
+	"time"
 )
 
 const (
@@ -72,7 +75,9 @@ func init() {
 	}
 	config.Db = db
 
+	rand.Seed(time.Now().Unix())
 	server := serverConf{
+		InstanceNo:                  fmt.Sprintf("%d-%d", time.Now().Unix(), rand.Int63n(100)),
 		ServerPort:                  getEnvInt(KeyServerPort, DefaultEnvironment),
 		FaucetUrl:                   getEnv(KeyAddrFaucet, DefaultEnvironment),
 		ApiVersion:                  getEnv(KeyApiVersion, DefaultEnvironment),
@@ -88,6 +93,7 @@ func init() {
 		CronTimeProposalVoters:      getEnvInt(KeyCronTimeProposalVoters, DefaultEnvironment),
 		CronTimeValidatorStaticInfo: getEnvInt(KeyCronTimeValidatorStaticInfo, DefaultEnvironment),
 	}
+	logger.Info(fmt.Sprintf("serverInstanceNo: %s", server.InstanceNo))
 	config.Server = server
 
 	hubcf := hubConf{
@@ -162,6 +168,7 @@ type dbConf struct {
 }
 
 type serverConf struct {
+	InstanceNo                  string
 	ServerPort                  int
 	FaucetUrl                   string
 	ApiVersion                  string

@@ -16,3 +16,23 @@ func TestGetAccountList(t *testing.T) {
 	}
 
 }
+
+func TestAccount_CountAll(t *testing.T) {
+	d := Account{}
+
+	if res, err := d.CountAll(); err != nil {
+		t.Fatal(err)
+	} else {
+		t.Log(res)
+	}
+}
+
+func TestAccount_CountDelegatorNum(t *testing.T) {
+	d := Account{}
+
+	if res, err := d.CountDelegatorNum(); err != nil {
+		t.Fatal(err)
+	} else {
+		t.Log(res)
+	}
+}

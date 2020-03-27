@@ -61,7 +61,8 @@ func TestTaskControl_LockTaskControl(t *testing.T) {
 	d := TaskControl{}
 
 	taskName := "tn1"
-	if err := d.LockTaskControl(taskName); err != nil {
+	instanceNo := "dsa"
+	if err := d.LockTaskControl(taskName, instanceNo); err != nil {
 		t.Fatal(err)
 	} else {
 		t.Log("success")
