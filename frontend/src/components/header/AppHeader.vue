@@ -614,7 +614,7 @@
 					this.activeStaking  = true
 				}else if(this.$route.fullPath === '/txs/transfers'){
 					this.activeTransfers  = true
-                }else if(this.$route.fullPath === '/home' || this.$route.fullPath === '/blocks'){
+                }else if(this.$route.fullPath === '/home' || this.$route.fullPath === '/blocks' || this.$route.fullPath.includes('/txs')){
 					this.activeBlockChain  = true
                 }else if (this.$route.fullPath === '/assets/ntvassetstxs' || this.$route.fullPath === '/assets/gtwassetstxs' || this.$route.fullPath.includes('/assets/') || this.$route.fullPath.includes('/asset/')){
 					this.activeAssets  = true

@@ -45,7 +45,27 @@
             '$route' () {
                 if (window._czc) {
                     let location = window.location;
-                    let contentUrl = location.pathname + location.hash;
+                    let locationHash;
+                    if(location.hash.includes('=') && !location.hash.split('?')){
+                        locationHash = location.hash.split('=')[0];
+                    }else if(location.hash.includes('/address/')){
+                        locationHash = '/address/'
+                    }else if(location.hash.includes('/block/')){
+                        locationHash = '/block/'
+                    }else if(location.hash.includes('/asset/')){
+                        locationHash = '/asset/'
+                    }else if(location.hash.includes('/ProposalsDetail/')){
+                        locationHash = '/ProposalsDetail/'
+                    }else if(location.hash.includes('/htlc/')){
+                        locationHash = '/htlc/'
+                    }else if(location.hash.includes('/validators/')){
+                        locationHash = '/validators/'
+                    }else if(location.hash.includes('?')){
+                        locationHash = location.hash.split('?')[0];
+                    }else {
+                        locationHash = location.hash
+                    }
+                    let contentUrl = location.pathname + locationHash;
                     let refererUrl = '/';
                     window._czc.push(['_trackPageview', contentUrl, refererUrl])
                 }
