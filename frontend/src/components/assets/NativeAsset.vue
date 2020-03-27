@@ -90,6 +90,7 @@
     import Tools from "../../util/Tools"
     import MPagination from "../commontables/MPagination";
     import PageTitle from "../pageTitle/PageTitle";
+    import pageTitleConfig from "../pageTitle/pageTitleConfig";
 	export default {
 		name: "NativeAssetPage",
 		components: {PageTitle, MPagination, NativeAsset},
@@ -114,7 +115,7 @@
                 flEditTokenShowLoading: false,
                 flMinTokenShowLoading: false,
                 flTransferTokenShowLoading: false,
-				listTitleName:'Native Asset Txs',
+				listTitleName:pageTitleConfig.AssetNativeAssetTxs,
 				issueTokenType:'IssueToken',
                 editTokenLType:'EditToken',
                 mintTokenType:'MintToken',

@@ -2,7 +2,7 @@
     <div class="block_detail_container">
         <div class="block_detail_content">
             <div class="block_detail_title_content">
-                <span class="block_detail_title">Block Details</span>
+                <span class="block_detail_title">{{pageTitle}}</span>
                 <span style="padding: 0 0.15rem;"> | </span>
                 <span class="block_height_content">
                     <i :class="active?'flag_item_left':'flag_item_left_disabled'" class="iconfont iconshangyigequkuai" @click="skipNext(-1)"></i>
@@ -96,10 +96,9 @@
     import MAllTxTypeListTable from "../txs/MAllTxTypeListTable";
     import MPagination from "../commontables/MPagination";
     import MBlocKInformationTable from "./MBlockInformationTable";
-    import PageTile from "../pageTitle/PageTitle";
+    import pageTitleContent from "../pageTitle/pageTitleConfig"
     export default {
         components: {
-            PageTile,
 	        MBlocKInformationTable,
 	        MPagination,
 	        MAllTxTypeListTable,
@@ -131,6 +130,7 @@
         },
         data() {
             return {
+                pageTitle:pageTitleContent.BlockchainBlocksBlockDetails,
 	            transferListPageNum:1,
 	            validatorSetPageNum:1,
                 transactionsDetailWrap: 'personal_computer_transactions_detail',

@@ -24,7 +24,7 @@
 		components: {PageTitle, MAssetListTable},
         data () {
 			return {
-                pageTitle:'Gateway Assets',
+                pageTitle:'Gateway Assets List',
 				gatewayAssetList:[],
 				showNoData:false,
             }

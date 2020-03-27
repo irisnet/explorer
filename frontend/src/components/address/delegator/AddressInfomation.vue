@@ -213,12 +213,13 @@
     import DateTooltip from "../../dateToolTip/DateTooltip";
     import FormatTxType from "../../../util/formatTxType"
     import PageTitle from "../../pageTitle/PageTitle";
+	import pageTitleConfig from "../../pageTitle/pageTitleConfig";
 	export default {
 		name: "AddressInfomation",
 		components: {PageTitle, DateTooltip, MPagination, MAddressInformationTable},
 		data(){
 			return {
-                pageTitle:'Address',
+                pageTitle:pageTitleConfig.StatsIRISRichListAddress,
 				withdrewToAddress: '',
 				validatorMoniker: '',
                 validatorStatus:'',
@@ -813,7 +814,6 @@
                 }
             }
             .address_information_assets_container{
-                padding-top: 0.54rem;
                 .address_information_assets_title{
                     padding: 0.12rem 0 0.12rem 0.2rem;
                     font-size: 0.18rem;

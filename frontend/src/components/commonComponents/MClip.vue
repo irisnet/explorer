@@ -1,6 +1,6 @@
 <template>
-    <div class="copy_container">
-        <img @click="handleCopy(text,$event)" src="../../assets/copy_icon.png" alt="copy" />
+    <div class="copy_container" @click="handleCopy(text,$event)">
+        <img src="../../assets/copy_icon.png" alt="copy" />
         <div class="tips" ref="tip" :class="flShowTips ? 'show_tips' :''">
             {{tipText}}
             <i></i>
@@ -109,17 +109,18 @@ export default {
     position: relative;
     display: inline;
     padding-left: 0.02rem;
+    z-index: 10;
+    cursor: pointer;
     img {
         width: 0.11rem;
         height: 0.12rem;
-        cursor: pointer;
         vertical-align: baseline;
     }
     .tips {
         opacity: 0;
         position: absolute;
         padding: 0 0.1rem;
-        margin-top: 0.1rem;
+        top:0.25rem;
         left: 50%;
         transform: translateX(-50%);
         color: #fff;
@@ -138,7 +139,7 @@ export default {
             position: absolute;
             border-bottom-color: #000000;
             top: -38%;
-            margin-left: 16px;
+            margin-left: 18px;
         }
     }
     .show_tips {

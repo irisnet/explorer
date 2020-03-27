@@ -39,6 +39,7 @@
     import MTabs from "../../commontables/MTabs";
 	import MPagination from "../../commontables/MPagination";
     import PageTitle from "../../pageTitle/PageTitle";
+    import pageTitleConfig from "../../pageTitle/pageTitleConfig";
 
 	export default {
 		components:{
@@ -68,7 +69,7 @@
 		},
 		data() {
 			return {
-			    pageTitle:'Validator List',
+			    pageTitle:pageTitleConfig.StakingValidators,
                 validatorPageTitle:'',
 				devicesWidth: window.innerWidth,
 				blocksListPageWrap: 'personal_computer_blocks_list_page',

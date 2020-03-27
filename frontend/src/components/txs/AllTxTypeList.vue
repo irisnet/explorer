@@ -90,12 +90,13 @@
     import DateTooltip from "../dateToolTip/DateTooltip";
     import FormatTxType from "../../util/formatTxType"
     import PageTitle from "../pageTitle/PageTitle";
+    import pageTitleContent from "../pageTitle/pageTitleConfig"
 	export default {
 		name: "AllTxTypeList",
 		components: {PageTitle, DateTooltip, MAllTxTypeListTable,MPagination},
 		data() {
 			return {
-			    pageTitle:'Transactions list',
+			    pageTitle:pageTitleContent.BlockchainTransactions,
 				allTxTypeList: [],
                 pageSize: 30,
                 pickerStartTime:sessionStorage.getItem('firstBlockTime') ? sessionStorage.getItem('firstBlockTime') : '',

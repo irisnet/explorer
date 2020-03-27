@@ -614,11 +614,11 @@
 					this.activeStaking  = true
 				}else if(this.$route.fullPath === '/txs/transfers'){
 					this.activeTransfers  = true
-                }else if(this.$route.fullPath === '/home' || this.$route.fullPath === '/blocks' || this.$route.fullPath.includes('/block') || this.$route.fullPath === '/txs' ){
+                }else if(this.$route.fullPath === '/home' || this.$route.fullPath === '/blocks'){
 					this.activeBlockChain  = true
                 }else if (this.$route.fullPath === '/assets/ntvassetstxs' || this.$route.fullPath === '/assets/gtwassetstxs' || this.$route.fullPath.includes('/assets/') || this.$route.fullPath.includes('/asset/')){
 					this.activeAssets  = true
-                }else if(this.$route.fullPath === '/gov/parameters' || this.$route.fullPath === '/gov/proposals' || this.$route.fullPath === '/txs/governance' ||this.$route.fullPath.includes('/ProposalsDetail/') ){
+                }else if(this.$route.fullPath === '/gov/parameters' || this.$route.fullPath === '/gov/proposals' || this.$route.fullPath === '/txs/governance'){
 					this.activeGov = true
                 }else if(this.$route.fullPath === '/stats/irisrichlist' || this.$route.fullPath === '/stats/irisstats'){
 					this.activeStats= true
@@ -637,7 +637,6 @@
 			getConfig () {
 				Service.commonInterface({headerConfig:{}},(res) => {
 					try {
-                        sessionStorage.setItem('UMengID',res.umeng_id);
 						sessionStorage.setItem('skinEnvInformation',JSON.stringify(res));
                         if(res.cur_env === constant.ENVCONFIG.TESTNET || res.cur_env === constant.ENVCONFIG.MAINNET){
                             this.$store.commit('hideTestSkinStyle',false)
@@ -671,17 +670,10 @@
 				this.netWorkArray = configs.map(item => {
 					if(item.network_name === constant.CHAINID.IRISHUB){
 						item.icon = 'iconfont iconiris'
-                        sessionStorage.setItem('UMengID',item.umeng_id)
                     }else if(item.network_name === constant.CHAINID.FUXI){
 						item.icon = 'iconfont iconfuxi1'
-                        sessionStorage.setItem('UMengID',item.umeng_id)
                     }else if(item.network_name === constant.CHAINID.NYANCAT){
 						item.icon = 'iconfont iconcaihongmao'
-                        sessionStorage.setItem('UMengID',item.umeng_id)
-                    }else if(item.network_name === constant.CHAINID.QA){
-                        sessionStorage.setItem('UMengID',item.umeng_id)
-                    }else if(item.network_name === constant.CHAINID.DEV){
-                        sessionStorage.setItem('UMengID',item.umeng_id)
                     }
 					item.netWorkSelectOption = `${Tools.firstWordUpperCase(item.env)} ${item.chain_id.toLocaleUpperCase()}`;
 					return item
@@ -708,6 +700,7 @@
                     currentEnv.configs.forEach(item => {
                         if(currentEnv.cur_env === item.env && currentEnv.chain_id === item.chain_id){
                             networkName = item.network_name;
+                            sessionStorage.setItem('UMengID',item.umeng_id)
                         }
                     })
                 }

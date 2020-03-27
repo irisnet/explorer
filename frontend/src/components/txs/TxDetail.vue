@@ -188,12 +188,13 @@
     import axios from "../../util/axios"
     import AdvertisingSpace from "../advertisingSpace/AdvertisingSpace";
     import PageTitle from "../pageTitle/PageTitle";
+    import pageTitleContent from "../pageTitle/pageTitleConfig"
 	export default {
 		name: "TxDetail",
         components: {PageTitle, AdvertisingSpace, MClip},
         data () {
 		    return {
-		        pageTitle:'Transaction Details',
+		        pageTitle:pageTitleContent.BlockchainBlocksBlockDetails,
                 txHashValue: '',
                 blockValue: '',
                 statusValue: '',

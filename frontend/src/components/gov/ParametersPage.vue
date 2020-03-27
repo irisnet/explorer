@@ -47,6 +47,7 @@ import Tools from "../../util/Tools";
 import MParametersCard from "../commontables/MParametersCard";
 import BigNumber from "bignumber.js";
 import PageTitle from "../pageTitle/PageTitle";
+import pageTitleConfig from "../pageTitle/pageTitleConfig";
 export default {
     name: "Parameters",
     components: {PageTitle, VParameters, MParametersCard },
@@ -56,7 +57,7 @@ export default {
             proposalsListPageWrap: "",
             showNoData: false,
             totalNumber:0,
-            pageTitle:"Parameters",
+            pageTitle:pageTitleConfig.GovParameters,
             contentDoc:'Total'
         };
     },

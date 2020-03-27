@@ -38,6 +38,7 @@ import TopListTable from "./TopListTable";
 import Server from "../../service";
 import Tools from "../../util/Tools";
 import PageTitle from "../pageTitle/PageTitle";
+import pageTitleConfig from "../pageTitle/pageTitleConfig";
 export default {
     name: "TopList",
     components: {PageTitle, TopListTable },
@@ -47,7 +48,7 @@ export default {
             showNoData: false,
             latestTime: "",
             richListTimer: null,
-            pageTitle: 'Block Details',
+            pageTitle: pageTitleConfig.StatsIRISRichList,
             contentDoc:'Top 100 Addresses by IRIS'
         };
     },
