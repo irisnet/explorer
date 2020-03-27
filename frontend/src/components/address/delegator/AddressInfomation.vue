@@ -136,12 +136,6 @@
                         <div class="filter_content">
                             <div class="tx_type_content">
                                 <div class="tx_type_mobile_content">
-                                    <!--<el-select v-model="value" filterable :change="filterTxByTxType(value)">
-                                        <el-option v-for="(item, index) in txTypeOption"
-                                                   :key="index"
-                                                   :label="item.label"
-                                                   :value="item.value"></el-option>
-                                    </el-select>-->
                                     <el-cascader v-model="value"
                                                  :options="txTypeOption"
                                                  :props="{ expandTrigger: 'hover' }"
@@ -1200,15 +1194,18 @@
                                         display: flex;
                                         justify-content: space-between;
                                         margin-bottom: 0.1rem;
+                                        /deep/ .el-cascader{
+                                            margin-right: 0;
+                                            width: 1.6rem !important;
+                                        }
                                         /deep/ .el-select{
                                             margin-right: 0;
                                             width: 1.6rem !important;
                                         }
-
+                                        
                                         /deep/ .el-date-editor{
                                             width: 1.6rem !important;
                                             .el-input__prefix{
-                                              left: 1.3rem;
                                             }
                                         }
                                         .reset_btn{

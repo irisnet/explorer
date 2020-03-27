@@ -1245,6 +1245,7 @@ export default {
                 margin-bottom: 0.05rem;
             }
             .title_tag_right_content{
+                margin-top: 0.05rem;
                 .title{
                     padding-left: 0;
                 }

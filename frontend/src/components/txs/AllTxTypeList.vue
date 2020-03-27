@@ -514,6 +514,8 @@
 	            padding-top: 0;
                 padding-left: 0.1rem;
                 .all_type_list_title_wrap{
+                    padding-left: 0;
+                    padding-right: 0;
                     .all_type_list_filter_content{
                         flex-direction: column;
                         align-items: flex-start;

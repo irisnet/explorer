@@ -157,8 +157,8 @@
                 </div>
 
                 <div class="mobile_menu_container" @click="flShowBlockchain('transfers')">
-                    <div class="mobile_menu_item_content">
-                        <span  @click="featureButtonClick(`/txs/transfers`)">Transfers</span>
+                    <div class="mobile_menu_item_content"   @click="featureButtonClick(`/txs/transfers`)">
+                        <span>Transfers</span>
                         <!--<i class="iconfont iconwangluoqiehuanjiantou" :class="flShowTransfersMenu ? 'up_style' : 'down_style'"> </i>-->
                     </div>
                     <!--<ul class="blockchain_list_content" v-show="flShowTransfersMenu">-->
@@ -203,9 +203,9 @@
                     </ul>
                 </div>
 
-                <div class="mobile_menu_container" v-if="flShowFaucet">
+                <div class="mobile_menu_container"  @click="featureButtonClick(`/faucet`)" v-if="flShowFaucet">
                     <div class="mobile_menu_item_content">
-                        <span @click="featureButtonClick(`/faucet`)">Faucet</span>
+                        <span>Faucet</span>
                     </div>
                 </div>
 
@@ -234,6 +234,9 @@
 		name: 'app-header',
 		watch: {
 			$route () {
+                window.pageYOffset = 0;
+                document.documentElement.scrollTop = 0 ;
+                document.body.scrollTop = 0;
 				this.searchInputValue = "";
 				this.flShowSubMenu = false;
 				this.listenRouteForChangeActiveButton();
