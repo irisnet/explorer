@@ -194,7 +194,7 @@
         components: {PageTitle, AdvertisingSpace, MClip},
         data () {
 		    return {
-		        pageTitle:pageTitleContent.BlockchainBlocksBlockDetails,
+		        pageTitle:pageTitleContent.BlockchainTransactionsTransactionDetails,
                 txHashValue: '',
                 blockValue: '',
                 statusValue: '',
