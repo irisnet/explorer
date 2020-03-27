@@ -155,26 +155,26 @@
 	        getFinalVotes(finalVotes){
 		        this.flShowTotalVoted = false;
                 let optionTotalNumber = Number(finalVotes.yes) + Number(finalVotes.no) + Number(finalVotes.abstain) + Number(finalVotes.no_with_veto);
-		        this.delegatorVoted = ((Number(optionTotalNumber) / Number(finalVotes.system_voting_power)) * 100).toFixed(2);
-		        this.yesVotingPowerWidth = ((Number(finalVotes.yes) / Number(optionTotalNumber)) * 100).toFixed(2);
+		        this.delegatorVoted = Tools.subStrings(((Number(optionTotalNumber) / Number(finalVotes.system_voting_power)) * 100).toString(),2);
+		        this.yesVotingPowerWidth = Tools.subStrings(((Number(finalVotes.yes) / Number(optionTotalNumber)) * 100).toString(),2);
 		        this.$set(this.yesVotingPowerStyleObj,'width',`${this.yesVotingPowerWidth}%`);
-		        this.abstainVotingPowerWidth = ((Number(finalVotes.abstain) / Number(optionTotalNumber)) * 100).toFixed(2);
+		        this.abstainVotingPowerWidth = Tools.subStrings(((Number(finalVotes.abstain) / Number(optionTotalNumber)) * 100).toString(),2);
 		        this.$set(this.abstainVotingPowerStyleObj,'width',`${this.abstainVotingPowerWidth}%`);
-		        this.vetoVotingPowerWidth = ((Number(finalVotes.no_with_veto) / Number(optionTotalNumber)) * 100).toFixed(2);
+		        this.vetoVotingPowerWidth = Tools.subStrings(((Number(finalVotes.no_with_veto) / Number(optionTotalNumber)) * 100).toString(),2);
 		        this.$set(this.vetoVotingPowerStyleObj,'width',`${this.vetoVotingPowerWidth}%`);
-		        this.noVotingPowerWidth = ((Number(finalVotes.no) / Number(optionTotalNumber)) * 100).toFixed(2);
-		        this.$set(this.noVotingPowerStyleObj,'width',`${this.noVotingPowerWidth}%`);
-		        if(Number(this.yesVotingPowerWidth) > Number(this.passThreshold)){
+		        this.noVotingPowerWidth = Tools.subStrings(((Number(finalVotes.no) / Number(optionTotalNumber)) * 100).toString(),2);
+                this.$set(this.noVotingPowerStyleObj,'width',`${this.noVotingPowerWidth}%`);
+		        if(Number(this.yesVotingPowerWidth) >= Number(this.passThreshold)){
 			        this.flShowPassThreshold = true;
 		        }else {
 			        this.flShowPassThreshold = false
 		        }
-		        if(Number(this.vetoVotingPowerWidth) > Number(this.voteThreshold)){
+		        if(Number(this.vetoVotingPowerWidth) >= Number(this.voteThreshold)){
 			        this.flShowVoteThreshold = true;
 		        }else {
 			        this.flShowVoteThreshold = false
 		        }
-		        this.totalVoted = ((optionTotalNumber / finalVotes.system_voting_power) * 100).toFixed(2);
+		        this.totalVoted = Tools.subStrings(((optionTotalNumber / finalVotes.system_voting_power) * 100).toString(),2);
 		        this.$store.commit('currentParticipationValue',this.totalVoted);
 		        this.$store.commit('currentYesValue',this.yesVotingPowerWidth);
 		        this.$store.commit('currentNoValue',this.noVotingPowerWidth);

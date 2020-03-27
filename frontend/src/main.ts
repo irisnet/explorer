@@ -63,7 +63,7 @@ axios.get(`/api/block/blockinfo/1`).then(data => {
     return data.data
   }
 }).then(blockinfo => {
-  let firstBlockTime = new Date(blockinfo.timestamp.split('T')[0]).getTime();
+  let firstBlockTime = new Date(blockinfo.timestamp.split('T')[0]).getTime() - 24 * 60 * 60 * 1000;
   sessionStorage.setItem('firstBlockTime',Tools.formatDateYearToDate(firstBlockTime).replace(/\//g,'-'))
 });
 
