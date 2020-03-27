@@ -656,7 +656,8 @@
                 sessionStorage.setItem('searchResultByTxTypeAndAddress',JSON.stringify(searchCondition))
 		        this.value = 'allTxType';
 		        this.statusValue = 'allStatus';
-		        this.startTime = '';
+                this.TxType = '';
+                this.startTime = '';
 		        this.endTime = '';
 		        this.allTxCurrentPage = 1;
 		        this.resetUrl();
