@@ -116,7 +116,7 @@
 	            showNoData: false,
 	            flShowLoading: false,
 	            flShowContent: false,
-	            listTitleName:'Gateway Asset Txs',
+	            listTitleName:'Gateway Asset Txs List',
 	            issueTokenType:'IssueToken',
 	            editTokenLType:'EditToken',
 	            mintTokenType:'MintToken',

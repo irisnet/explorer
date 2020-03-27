@@ -2,7 +2,7 @@
     <div class="transactions_detail_wrap">
         <div :class="[transactionsDetailWrap, 'validator_title']">
             <div class="title_tag_content">
-                <span class="validator_title_content"> Validator Detail</span>
+                <span class="validator_title_content">Validator Details</span>
                 <span class="validator_page_link">|</span>
             </div>
             <div class="title_tag_right_content">
@@ -298,10 +298,12 @@ import Constants from "../../../constant/Constant";
 import MValidatorDetailTable from "./MValidatorDetailTable";
 import MPagination from "../../commontables/MPagination";
 import axios from "../../../util/axios";
+import pageTitleConfig from "../../pageTitle/pageTitleConfig";
 export default {
 
     data() {
         return {
+            pageTitle:pageTitleConfig.StakingValidatorsValidatorDetails,
             transactionsDetailWrap: "personal_computer_transactions_detail",
             pageSize: 5,
             address: this.$route.params.param,
@@ -1245,6 +1247,7 @@ export default {
                 margin-bottom: 0.05rem;
             }
             .title_tag_right_content{
+                margin-top: 0.05rem;
                 .title{
                     padding-left: 0;
                 }

@@ -46,6 +46,7 @@ import MTokenStatsEchart from "../commontables/MTokenStatsEchart";
 import Service from "../../service";
 import Tools from "../../util/Tools";
 import PageTitle from "../pageTitle/PageTitle";
+import pageTitleConfig from "../pageTitle/pageTitleConfig";
 
 export default {
     components: {
@@ -54,7 +55,7 @@ export default {
     },
     data() {
         return {
-            pageTitle:'IRIS Stats Analyse',
+            pageTitle:pageTitleConfig.StatsIRISStats,
             items: [
                 {
                     label: "Total Supply",

@@ -52,7 +52,7 @@ import Tools from "../../util/Tools";
 import MBlockListPageTable from "./MBlockListPageTable";
 import MPagination from "../commontables/MPagination";
 import PageTitle from "../pageTitle/PageTitle";
-
+import pageTitleContent from "../pageTitle/pageTitleConfig"
 export default {
     name: "blockListPage",
     components: {
@@ -63,7 +63,7 @@ export default {
     data() {
         return {
             pageSize: 30,
-            pageTitle:'BlockList',
+            pageTitle:pageTitleContent.BlockchainBlocks,
             pageContent:'Current Height:',
             totalBlockHeight:0,
             routerLinkHref:`/block/`,

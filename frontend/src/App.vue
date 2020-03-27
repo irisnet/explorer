@@ -86,6 +86,10 @@
         /*-webkit-tap-highlight-color:rgba(0,0,0,0);*/
         /*font-family:"-apple-system","BlinkMacSystemFont","Segoe UI","Helvetica","Arial","sans-serif","Apple Color Emoji","Segoe UI Emoji"!important;*/
     }
+    //解决ios点击出现蓝色边框
+    * {
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+    }
     #app{
         width: 100%;
         height: 100%;

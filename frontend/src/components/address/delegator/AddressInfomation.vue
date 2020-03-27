@@ -136,12 +136,6 @@
                         <div class="filter_content">
                             <div class="tx_type_content">
                                 <div class="tx_type_mobile_content">
-                                    <!--<el-select v-model="value" filterable :change="filterTxByTxType(value)">
-                                        <el-option v-for="(item, index) in txTypeOption"
-                                                   :key="index"
-                                                   :label="item.label"
-                                                   :value="item.value"></el-option>
-                                    </el-select>-->
                                     <el-cascader v-model="value"
                                                  :options="txTypeOption"
                                                  :props="{ expandTrigger: 'hover' }"
@@ -219,12 +213,13 @@
     import DateTooltip from "../../dateToolTip/DateTooltip";
     import FormatTxType from "../../../util/formatTxType"
     import PageTitle from "../../pageTitle/PageTitle";
+	import pageTitleConfig from "../../pageTitle/pageTitleConfig";
 	export default {
 		name: "AddressInfomation",
 		components: {PageTitle, DateTooltip, MPagination, MAddressInformationTable},
 		data(){
 			return {
-                pageTitle:'Address',
+                pageTitle:pageTitleConfig.StatsIRISRichListAddress,
 				withdrewToAddress: '',
 				validatorMoniker: '',
                 validatorStatus:'',
@@ -819,7 +814,6 @@
                 }
             }
             .address_information_assets_container{
-                padding-top: 0.54rem;
                 .address_information_assets_title{
                     padding: 0.12rem 0 0.12rem 0.2rem;
                     font-size: 0.18rem;
@@ -1200,15 +1194,18 @@
                                         display: flex;
                                         justify-content: space-between;
                                         margin-bottom: 0.1rem;
+                                        /deep/ .el-cascader{
+                                            margin-right: 0;
+                                            width: 1.6rem !important;
+                                        }
                                         /deep/ .el-select{
                                             margin-right: 0;
                                             width: 1.6rem !important;
                                         }
-
+                                        
                                         /deep/ .el-date-editor{
                                             width: 1.6rem !important;
                                             .el-input__prefix{
-                                              left: 1.3rem;
                                             }
                                         }
                                         .reset_btn{

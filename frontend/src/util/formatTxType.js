@@ -78,10 +78,10 @@ export default class FormatTxType {
 						label:'WithdrawDelegatorReward'
 					});
 					break;
-				case "WithdrawDelegatorRewardAll":
+				case "WithdrawDelegatorRewardsAll":
 					delegationObj.children.push({
-						value:'withdrawDelegatorRewardAll',
-						label:'WithdrawDelegatorRewardAll'
+						value:'withdrawDelegatorRewardsAll',
+						label:'WithdrawDelegatorRewardsAll'
 					});
 					break;
 				case "CreateValidator":

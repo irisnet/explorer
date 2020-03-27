@@ -19,12 +19,13 @@
 	import Tools from "../../util/Tools"
 	import MAssetListTable from "./MAssetListTable";
     import PageTitle from "../pageTitle/PageTitle";
+    import pageTitleConfig from "../pageTitle/pageTitleConfig";
 	export default {
 		name: "NativeAssetList",
 		components: {PageTitle, MAssetListTable},
         data () {
 			return {
-                pageTitle:'Native Asset List',
+                pageTitle:pageTitleConfig.AssetNativeAsset,
 				showNoData:false,
 				nativeAssetList: [],
             }
