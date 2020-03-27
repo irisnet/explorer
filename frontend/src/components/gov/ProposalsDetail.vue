@@ -1222,7 +1222,7 @@ pre {
             }
             .level_container{
                 display: flex;
-                margin-bottom: 0.1rem;
+                margin: 0.1rem 0;
                 .step_content{
                     margin-left: 0.2rem;
                     span{

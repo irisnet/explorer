@@ -806,7 +806,7 @@
     .votingPeriodDatas_depositPeriodDatas {
         flex-direction: column;
         display: flex;
-        margin-top: 0.1rem;
+        margin-top: 0.54rem;
         & > div {
             flex-direction: row;
             display: flex;

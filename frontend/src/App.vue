@@ -246,4 +246,34 @@
     .in-active-path{
         color: var(--bgColor)!important;
     }
+   
+    @media screen and (max-width: 910px){
+        .el-cascader__dropdown{
+            .el-cascader-panel{
+                div:nth-of-type(1){
+                    min-width: 1.2rem;
+                    div{
+                        ul{
+                            li{
+                                padding-right: 0;
+                                padding-left: 0.15rem;
+                            }
+                        }
+                    }
+                }
+                div:nth-of-type(2){
+                    min-width: 1.2rem;
+                    div{
+                        ul{
+                            li{
+                                padding-right: 0;
+                                padding-left: 0.15rem;
+                            }
+                        }
+                    }
+                }
+            
+            }
+        }
+    }
 </style>

@@ -219,6 +219,7 @@
 	        resetFilterCondition(){
 		        this.value = 'allTxType';
 		        this.statusValue = 'allStatus';
+		        this.TxType = '';
 		        this.startTime = '';
                 this.endTime = '';
 		        this.currentPageNum = 1;
