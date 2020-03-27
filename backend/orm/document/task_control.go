@@ -12,18 +12,19 @@ const (
 	TCFieldTaskName           = "task_name"
 	TCFieldTimeInterval       = "time_interval"
 	TCFieldIsInProcess        = "is_in_process"
+	TCFieldServerInstanceNo   = "server_instance_no"
 	TCFieldLatestExecTime     = "latest_exec_time"
 	TCFieldCreateAt           = "create_at"
-	TCFieldUpdateAt           = "update_at"
 )
 
 type (
 	TaskControl struct {
-		TaskName       string `bson:"task_name"`
-		TimeInterval   int64  `bson:"time_interval"`
-		IsInProcess    bool   `bson:"is_in_process"`
-		LatestExecTime int64  `bson:"latest_exec_time"`
-		CreateAt       int64  `bson:"create_at"`
+		TaskName         string `bson:"task_name"`
+		TimeInterval     int64  `bson:"time_interval"`
+		IsInProcess      bool   `bson:"is_in_process"`
+		ServerInstanceNo string `bson:"server_instance_no"`
+		LatestExecTime   int64  `bson:"latest_exec_time"`
+		CreateAt         int64  `bson:"create_at"`
 	}
 )
 
@@ -98,7 +99,7 @@ func (d TaskControl) UpdateByPK(update TaskControl) error {
 	return nil
 }
 
-func (d TaskControl) LockTaskControl(taskName string) error {
+func (d TaskControl) LockTaskControl(taskName, instanceNo string) error {
 	q := orm.NewQuery()
 	defer q.Release()
 
@@ -110,7 +111,8 @@ func (d TaskControl) LockTaskControl(taskName string) error {
 	}
 	update := bson.M{
 		"$set": bson.M{
-			TCFieldIsInProcess: true,
+			TCFieldIsInProcess:      true,
+			TCFieldServerInstanceNo: instanceNo,
 		},
 	}
 	if err := c.Update(selector, update); err != nil {

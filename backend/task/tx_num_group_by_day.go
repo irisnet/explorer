@@ -19,33 +19,10 @@ func (task TxNumGroupByDayTask) Start() {
 	task.init()
 	taskName := task.Name()
 	timeInterval := conf.Get().Server.CronTimeTxNumByDay
-	utils.RunTimer(timeInterval, utils.Sec, func() {
-		if notBeExec, err := tcService.assetTaskShouldNotBeExecuted(taskName, timeInterval); err != nil {
-			logger.Error("assetTaskShouldNotBeExecuted fail", logger.String("taskName", taskName),
-				logger.String("err", err.Error()))
-		} else {
-			if !notBeExec {
-				if err := tcService.lockTask(taskName); err != nil {
-					logger.Error("lockTask fail", logger.String("taskName", taskName),
-						logger.String("err", err.Error()))
-				} else {
-					if err := task.DoTask(); err != nil {
-						logger.Error(fmt.Sprintf("%s fail", task.Name()), logger.String("err", err.Error()))
-					} else {
-						logger.Info(fmt.Sprintf("%s success", task.Name()))
-					}
 
-					if err := tcService.unlockTask(taskName); err != nil {
-						logger.Error("unlockTask fail", logger.String("taskName", taskName),
-							logger.String("err", err.Error()))
-					}
-				}
-			} else {
-				logger.Debug(fmt.Sprintf("%s shouldn't be executed on this instance", task.Name()))
-			}
-		}
-
-	})
+	if err := tcService.runTask(taskName, timeInterval, task.DoTask); err != nil {
+		logger.Error(err.Error())
+	}
 }
 
 func (task TxNumGroupByDayTask) DoTask() error {
@@ -57,10 +34,28 @@ func (task TxNumGroupByDayTask) DoTask() error {
 		return err
 	}
 
+	var (
+		totalAccNum  int64
+		delegatorNum int64
+	)
+	accModel := document.Account{}
+	if v, err := accModel.CountAll(); err != nil {
+		logger.Error("CountAllAccNum fail", logger.String("err", err.Error()))
+	} else {
+		totalAccNum = int64(v)
+	}
+	if v, err := accModel.CountDelegatorNum(); err != nil {
+		logger.Error("CountDelegatorNum fail", logger.String("err", err.Error()))
+	} else {
+		delegatorNum = int64(v)
+	}
+
 	txNumStat := document.TxNumStat{
-		Date:       utils.FmtTime(yesterday, utils.DateFmtYYYYMMDD),
-		Num:        int64(total),
-		CreateTime: time.Now(),
+		Date:         utils.FmtTime(yesterday, utils.DateFmtYYYYMMDD),
+		Num:          int64(total),
+		TotalAccNum:  totalAccNum,
+		DelegatorNum: delegatorNum,
+		CreateTime:   time.Now(),
 	}
 
 	if err := txNumStat.Insert(); err != nil {
