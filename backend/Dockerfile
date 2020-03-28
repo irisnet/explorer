@@ -1,4 +1,4 @@
-FROM golang:1.10.3-alpine3.7 as builder
+FROM alpine:20190925 as builder
 ENV PACKAGES go make git libc-dev bash
 ENV REPO_PATH $GOPATH/src/github.com/irisnet/explorer/server
 ENV GO111MODULE on
