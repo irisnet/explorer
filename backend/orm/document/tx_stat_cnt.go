@@ -12,6 +12,8 @@ const (
 	CollectionTxNumStat        = "ex_tx_num_stat"
 	TxNumStat_Field_Date       = "date"
 	TxNumStat_Field_Num        = "num"
+	TNSFieldTotalAccNum        = "total_acc_num"
+	TNSFieldDelegatorNum       = "delegator_num"
 	TxNumStat_Field_CreateTime = "create_time"
 )
 

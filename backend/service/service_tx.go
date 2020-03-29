@@ -235,12 +235,12 @@ func (service *TxService) QueryByAcc(address string, page, size int, istotal boo
 	return
 }
 
-func (service *TxService) QueryTxNumGroupByDay() vo.TxNumGroupByDayVoRespond {
+func (service *TxService) QueryTxNumGroupByDay(intervalDays int64) vo.TxNumGroupByDayVoRespond {
 	logger.Debug("QueryTxNumGroupByDay start", service.GetTraceLog())
 
 	now := time.Now()
 	today := utils.TruncateTime(time.Now(), utils.Day)
-	start := today.Add(-336 * time.Hour)
+	start := today.Add(time.Duration(-intervalDays*24) * time.Hour)
 
 	fromDate := utils.FmtTime(utils.TruncateTime(start, utils.Day), utils.DateFmtYYYYMMDD)
 	endDate := utils.FmtTime(utils.TruncateTime(now, utils.Day), utils.DateFmtYYYYMMDD)
@@ -254,8 +254,10 @@ func (service *TxService) QueryTxNumGroupByDay() vo.TxNumGroupByDayVoRespond {
 
 	for _, t := range txNumStatList {
 		result = append(result, vo.TxNumGroupByDayVo{
-			Date: t.Date,
-			Num:  t.Num,
+			Date:         t.Date,
+			Num:          t.Num,
+			TotalAccNum:  t.TotalAccNum,
+			DelegatorNum: t.DelegatorNum,
 		})
 	}
 
@@ -625,7 +627,6 @@ func buildTxVOsFromDoc(data []document.CommonTx) []vo.CommonTx {
 
 	return commonTxUtils
 }
-
 
 // get validator moniker by address which in stake tx
 func (service *TxService) getValidatorMonikerByAddress(items []interface{}) []interface{} {

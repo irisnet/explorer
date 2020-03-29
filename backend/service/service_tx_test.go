@@ -6,8 +6,8 @@ import (
 
 	"encoding/json"
 	"github.com/irisnet/explorer/backend/vo"
-	"gopkg.in/mgo.v2/bson"
 	"github.com/irisnet/explorer/backend/vo/msgvo"
+	"gopkg.in/mgo.v2/bson"
 )
 
 func TestQueryTxList(t *testing.T) {
@@ -59,11 +59,9 @@ func TestQueryByAcc(t *testing.T) {
 
 func TestQueryTxNumGroupByDay(t *testing.T) {
 
-	txCountByDay := new(TxService).QueryTxNumGroupByDay()
+	txCountByDay := new(TxService).QueryTxNumGroupByDay(3000)
 
-	for k, v := range txCountByDay {
-		t.Logf("idx: %v  txCountByDay: %v \n", k, v)
-	}
+	t.Log(string(utils.MarshalJsonIgnoreErr(txCountByDay)))
 }
 
 func TestTxService_checkTags(t *testing.T) {

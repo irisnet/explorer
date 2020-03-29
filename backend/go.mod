@@ -11,7 +11,7 @@ require (
 	github.com/mailru/easyjson v0.7.0 // indirect
 	github.com/pkg/errors v0.8.1
 	github.com/rakyll/statik v0.1.6
-	github.com/robfig/cron v1.2.0
+	github.com/robfig/cron/v3 v3.0.0
 	github.com/stretchr/testify v1.4.0
 	github.com/swaggo/swag v1.6.3
 	go.uber.org/atomic v1.4.0 // indirect
