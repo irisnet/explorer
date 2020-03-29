@@ -7,7 +7,7 @@ import (
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/utils"
-	"github.com/robfig/cron"
+	"github.com/robfig/cron/v3"
 )
 
 var (
@@ -59,9 +59,11 @@ func Start() {
 
 	// tasks manager by cron job
 	c := cron.New()
-	c.AddFunc("0 0 * * *", func() {
-		task := TxNumGroupByDayTask{}
-		task.Start()
-	})
 	c.Start()
+
+	txNumTask := TxNumGroupByDayTask{}
+	txNumTask.init()
+	c.AddFunc("0 0 * * *", func() {
+		txNumTask.Start()
+	})
 }

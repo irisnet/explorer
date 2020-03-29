@@ -1,7 +1,6 @@
 package task
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/irisnet/explorer/backend/conf"
@@ -16,7 +15,6 @@ func (task TxNumGroupByDayTask) Name() string {
 	return "tx_num_stat_task"
 }
 func (task TxNumGroupByDayTask) Start() {
-	task.init()
 	taskName := task.Name()
 	timeInterval := conf.Get().Server.CronTimeTxNumByDay
 
@@ -72,8 +70,6 @@ func (task TxNumGroupByDayTask) init() {
 	skip := time.Duration(-14 * 24 * time.Hour)
 	beginDate := now.Add(skip)
 	endDate := now.Add(-24 * time.Hour)
-
-	fmt.Println(now, beginDate, endDate)
 
 	cnt, err := document.TxNumStat{}.Count()
 	if err != nil {

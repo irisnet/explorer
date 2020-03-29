@@ -1,6 +1,7 @@
-all: get_vendor_deps build
+all: get_deps build
 
-get_vendor_deps:
+get_deps:
+	rm -rf ./vendor
 	go mod download
 	go mod vendor
 
