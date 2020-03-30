@@ -3438,6 +3438,9 @@
                 },
                 "tendermint_version": {
                     "type": "string"
+                },
+              "umeng_id": {
+                "type": "integer"
                 }
             }
         },

@@ -5,7 +5,7 @@
             :class="homeModuleBlockTitle"
       ><i :class="this.moduleName === 'Blocks' ? 'iconfont iconBlockHeight': 'iconfont iconshishijiaoyijilu\n'"></i>{{moduleName}}</span>
       <router-link class="view_all_btn" :to="moduleName === 'Blocks' ? `/blocks` : `/txs`">
-        <span class="view_all_Content">View All</span>
+        <span class="view_all_Content" @click="moduleName === 'Blocks' ? $uMeng.push('HomeOverview_Blocks','click') :''">View All</span>
       </router-link>
     </div>
     <div class="home_module_block_content">

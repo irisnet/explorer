@@ -86,6 +86,7 @@ func registerQueryEnvConfig(r *mux.Router) error {
 					Host:        val.Host,
 					ChainId:     val.ChainId,
 					ShowFaucet:  val.ShowFaucet,
+					UmengId:     val.UmengId,
 				}
 				if nodeinfo, err := lcd.NodeInfo(val.EnvLcd); err == nil {
 					item.TendermintVersion = nodeinfo.Version

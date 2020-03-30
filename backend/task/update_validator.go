@@ -1,7 +1,6 @@
 package task
 
 import (
-	"fmt"
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
@@ -15,11 +14,12 @@ func (task UpdateValidator) Name() string {
 	return "update_validator"
 }
 func (task UpdateValidator) Start() {
-	utils.RunTimer(conf.Get().Server.CronTimeValidators, utils.Sec, func() {
-		if err := task.DoTask(); err != nil {
-			logger.Error(fmt.Sprintf("%s fail", task.Name()), logger.String("err", err.Error()))
-		} else {
-			logger.Info(fmt.Sprintf("%s success", task.Name()))
+	taskName := task.Name()
+	timeInterval := conf.Get().Server.CronTimeValidators
+
+	utils.RunTimer(timeInterval, utils.Sec, func() {
+		if err := tcService.runTask(taskName, timeInterval, task.DoTask); err != nil {
+			logger.Error(err.Error())
 		}
 	})
 

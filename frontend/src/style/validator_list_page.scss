@@ -43,6 +43,7 @@
     @include pcContainer;
     height: 0.7rem;
     background: #F5F7FD;
+    margin-top: 0.54rem;
     p {
       height: 0.6rem;
       span {
@@ -183,6 +184,13 @@ table {
   &:last-child {
     .page-link {
       @include borderRadius(0.025rem);
+    }
+  }
+}
+@media screen and (max-width: 910px){
+  .blocks_list_page_wrap{
+    .blocks_list_title_wrap{
+      margin-top: 0;
     }
   }
 }

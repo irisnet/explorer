@@ -1,16 +1,13 @@
 <template>
     <div class="tx_detail_container">
+        <page-title :title="pageTitle"
+                    :content="txHashValue"
+                    :copyText="txHashValue"
+                    :flShowClip="true" :flShowMobileStyle="true"></page-title>
         <div class="tx_detail_common_information_content_wrap">
             <div class="tx_detail_header_title">Transaction Information</div>
             <div class="tx_detail_common_information_wrap">
                 <ul class="tx_detail_common_information_content">
-                    <li class="tx_detail_common_information_item">
-                        <span class="tx_detail_common_information_item_name">TxHash :</span>
-                        <div class="tx_detail_common_information_item_value">
-                            <span>{{txHashValue}}</span>
-                            <m-clip style="margin-left: 0.1rem" :text="txHashValue"></m-clip>
-                        </div>
-                    </li>
                     <li class="tx_detail_common_information_item">
                         <span class="tx_detail_common_information_item_name">Block :</span>
                         <div class="tx_detail_common_information_item_value skip_route">
@@ -190,11 +187,14 @@
     import formatMessage from "../../util/txdetail"
     import axios from "../../util/axios"
     import AdvertisingSpace from "../advertisingSpace/AdvertisingSpace";
+    import PageTitle from "../pageTitle/PageTitle";
+    import pageTitleContent from "../pageTitle/pageTitleConfig"
 	export default {
 		name: "TxDetail",
-        components: {AdvertisingSpace, MClip},
+        components: {PageTitle, AdvertisingSpace, MClip},
         data () {
 		    return {
+		        pageTitle:pageTitleContent.BlockchainTransactionsTransactionDetails,
                 txHashValue: '',
                 blockValue: '',
                 statusValue: '',

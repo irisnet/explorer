@@ -1,15 +1,16 @@
 <template>
     <div class="transaction_list_page_container">
+        <page-title :title="pageTitle" :content="`${count} Txs`"></page-title>
         <div class="transaction_list_title_wrap">
             <div class="transaction_list_title_content">
-                <span class="transaction_list_title">{{count}} Txs</span>
                 <div class="filter_container">
                     <div class="filter_tx_type_statue_content">
                         <el-select v-model="value" filterable :change="filterTxByTxType(value)">
                             <el-option v-for="(item, index) in txTypeListArray"
                                        :key="index"
                                        :label="item.label"
-                                       :value="item.value"></el-option>
+                                       :value="item.value">
+                            </el-option>
                         </el-select>
 
                         <el-select v-model="statusValue" :change="filterTxByStatus(statusValue)">
@@ -23,6 +24,7 @@
                         <el-date-picker  type="date"
                                          v-model="startTime"
                                          @change="getStartTime(startTime)"
+                                         :picker-options="PickerOptions"
                                          :editable="false"
                                          value-format="yyyy-MM-dd"
                                          placeholder="Select Date">
@@ -30,11 +32,13 @@
                         <span class="joint_mark">~</span>
                         <el-date-picker  type="date"
                                          v-model="endTime"
+                                         :picker-options="PickerOptions"
                                          value-format="yyyy-MM-dd"
                                          @change="getEndTime(endTime)"
                                          :editable="false"
                                          placeholder="Select Date">
                         </el-date-picker>
+                        <date-tooltip></date-tooltip>
                     </div>
                     <div class="reset_search_content">
                         <div class="tx_search_btn" @click="getFilterTxs">Search</div>
@@ -66,13 +70,23 @@
 	import Tools from "../../util/Tools";
 	import MTxListPageTable from "./MTxListPageTable";
 	import MPagination from "../commontables/MPagination";
+    import DateTooltip from "../dateToolTip/DateTooltip";
+    import PageTitle from "../pageTitle/PageTitle";
+    import pageTitleConfig from "../pageTitle/pageTitleConfig";
 	export default {
 		name: "TransactionListPage",
-		components: {MPagination, MTxListPageTable},
+		components: {PageTitle, DateTooltip, MPagination, MTxListPageTable},
 		data() {
 			return {
+                pageTitle:'',
 				totalPageNum: sessionStorage.getItem("txpagenum") ? JSON.parse(sessionStorage.getItem("txpagenum")) : 1,
 				currentPageNum: this.forCurrentPageNum(),
+                pickerStartTime:sessionStorage.getItem('firstBlockTime') ? sessionStorage.getItem('firstBlockTime') : '',
+                PickerOptions: {
+                    disabledDate: (time) => {
+                        return time.getTime() < new Date(this.pickerStartTime).getTime() || time.getTime() > Date.now()
+                    }
+                },
 				txList: [],
 				txTypeListArray:[
 					{
@@ -174,6 +188,7 @@
 				sessionStorage.setItem('txpagenum',1);
                 history.pushState(null, null, `/#${this.$route.path}?txType=${this.TxType}&status=${this.txStatus}&startTime=${this.urlParamsShowStartTime}&endTime=${this.urlParamsShowEndTime}&page=1`);
                 this.getTxListByFilterCondition();
+                this.$uMeng.push('Transactions_Search','click')
             },
             resetUrl(){
                 this.value = 'allTxType';
@@ -187,14 +202,17 @@
             },
 			filterTxByTxType(e){
 				if (e === 'allTxType' || e === undefined ) {
-					this.TxType = ''
+					this.TxType = '';
+                    this.$uMeng.push('Transactions_All Type','click')
 				}else {
 					this.TxType = e
 				}
 			},
 			filterTxByStatus(e){
 				if(e === 'allStatus'){
-					this.txStatus = ''
+					this.txStatus = '';
+                    this.$uMeng.push('Transactions_All Status','click')
+                    
 				}else {
 					this.txStatus = e
 				}
@@ -220,20 +238,25 @@
 				this.getType();
                 this.resetUrl()
                 this.getTxListByFilterCondition();
+                this.$uMeng.push('Transactions_Refresh','click')
 			},
             getType(){
 	            switch (this.$route.params.txType) {
 		            case 'delegations' :
 			            this.type = 'stake';
+			            this.pageTitle = pageTitleConfig.StakingDelegationTxs;
 			            break;
 		            case 'validations':
 			            this.type = 'declaration';
+			            this.pageTitle = pageTitleConfig.StakingValidationTxs;
 			            break;
 		            case 'transfers':
 			            this.type = 'trans';
+			            this.pageTitle = pageTitleConfig.Transfer;
 			            break;
 		            case 'governance':
 			            this.type = 'gov';
+			            this.pageTitle = pageTitleConfig.GovGovTxs;
 	            }
 	            this.getAllTxType();
             },
@@ -303,20 +326,15 @@
             position: fixed;
             z-index: 3;
             background-color: #F5F7FD;
+            padding-top: 0.54rem;
             .transaction_list_title_content{
                 height:0.7rem;
                 display: flex;
                 align-items: center;
                 max-width: 12.8rem;
                 margin: 0 auto;
-                .transaction_list_title{
-                    font-size: 0.18rem;
-                    font-weight: bold;
-                    padding-left: 0.2rem;
-                }
                 .filter_container{
                     display: flex;
-                    margin-left: 0.1rem;
                     .filter_tx_type_statue_content{
                         display: flex;
                         align-items: center;
@@ -420,7 +438,7 @@
     }
     .transaction_list_table_container{
         max-width: 12.8rem;
-        padding: 0.7rem 0 0.2rem 0;
+        padding: 1.24rem 0 0.2rem 0;
         margin: 0 auto;
         .transaction_list_table_content{
             .table_list_content{
@@ -450,6 +468,7 @@
         .transaction_list_page_container{
             .transaction_list_title_wrap{
                 position: static;
+                padding-top: 0.15rem;
                 .transaction_list_title_content{
                     display: flex;
                     flex-direction: column;

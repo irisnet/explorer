@@ -31,6 +31,46 @@
 				this.$store.commit('isMobile',true);
 			}
 		},
+        mounted () {
+            let uMengID
+		    if(sessionStorage.getItem('UMengID')){
+                uMengID = sessionStorage.getItem('UMengID');
+            }
+            const script = document.createElement('script');
+            script.src = `https://s95.cnzz.com/z_stat.php?id=${uMengID}&web_id=${uMengID}`;
+            script.language = 'JavaScript';
+            document.body.appendChild(script)
+        },
+        watch: {
+            '$route' () {
+                if (window._czc) {
+                    let location = window.location;
+                    let locationHash;
+                    if(location.hash.includes('=') && !location.hash.split('?')){
+                        locationHash = location.hash.split('=')[0];
+                    }else if(location.hash.includes('/address/') || location.hash.includes('/#/address/')){
+                        locationHash = 'address/'
+                    }else if(location.hash.includes('/block/') || location.hash.includes('/#/block/')){
+                        locationHash = 'block/'
+                    }else if(location.hash.includes('/asset/') || location.hash.includes('/#/asset/')){
+                        locationHash = 'asset/'
+                    }else if(location.hash.includes('/ProposalsDetail/') || location.hash.includes('/#/ProposalsDetail/')){
+                        locationHash = 'ProposalsDetail/'
+                    }else if(location.hash.includes('/htlc/') || location.hash.includes('/#/htlc/')){
+                        locationHash = 'htlc/'
+                    }else if(location.hash.includes('/validators/') || location.hash.includes('/#/validators/')){
+                        locationHash = 'validators/'
+                    }else if(location.hash.includes('?')){
+                        locationHash = location.hash.split('?')[0];
+                    }else {
+                        locationHash = location.hash
+                    }
+                    let contentUrl = location.pathname + locationHash;
+                    let refererUrl = '/';
+                    window._czc.push(['_trackPageview', contentUrl, refererUrl])
+                }
+            }
+        },
 		computed: {
 			onresize(){
 				if (window.innerWidth > 910) {
@@ -66,6 +106,10 @@
         /*-webkit-tap-highlight-color:rgba(0,0,0,0);*/
         /*font-family:"-apple-system","BlinkMacSystemFont","Segoe UI","Helvetica","Arial","sans-serif","Apple Color Emoji","Segoe UI Emoji"!important;*/
     }
+    //解决ios点击出现蓝色边框
+    * {
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+    }
     #app{
         width: 100%;
         height: 100%;
@@ -98,6 +142,12 @@
     }
     .el-date-picker{
         width: 2.46rem !important;
+    }
+    .el-cascader-menu__wrap{
+        height: 2.2rem !important;
+    }
+    .el-scrollbar__bar.is-horizontal>div {
+        display: none;
     }
     .el-picker-panel{
         .el-picker-panel__body-wrapper{
@@ -178,6 +228,11 @@
             }
         }
     }
+    
+     .el-date-table td, .el-date-table td div{
+         height: 0.24rem!important;
+         padding: 0 !important;
+     }
     @media screen and (max-width: 910px){
         #app{
             .router-view{
@@ -210,5 +265,41 @@
     }
     .ivu-select-selection-focused{
         border-color: var(--bgColor) !important;
+    }
+    .is-active{
+        color: var(--bgColor)!important;
+    }
+    .in-active-path{
+        color: var(--bgColor)!important;
+    }
+   
+    @media screen and (max-width: 910px){
+        .el-cascader__dropdown{
+            .el-cascader-panel{
+                div:nth-of-type(1){
+                    min-width: 1.2rem;
+                    div{
+                        ul{
+                            li{
+                                padding-right: 0;
+                                padding-left: 0.15rem;
+                            }
+                        }
+                    }
+                }
+                div:nth-of-type(2){
+                    min-width: 1.2rem;
+                    div{
+                        ul{
+                            li{
+                                padding-right: 0;
+                                padding-left: 0.15rem;
+                            }
+                        }
+                    }
+                }
+            
+            }
+        }
     }
 </style>

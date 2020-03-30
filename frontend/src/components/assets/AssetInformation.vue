@@ -1,10 +1,12 @@
 <template>
     <div class="asset_info_container">
         <div class="asset_info_list_container" v-show="flShowInformation">
+            <page-title :flShowPageLink="false">
+                <span style="color: #515a6e;font-weight: bold">{{tokenID}} {{contentDoc}}</span>
+            </page-title>
             <div class="asset_info_list_content">
                 <div class="asset_info_kflower_contennt">
                     <div class="asset_info_kflower_title">
-                        <span class="kflower_title">{{tokenID}}</span>
                         <div>
                             <span class="native_blue_style" :class="assetType === 'NATIVE' ? 'blue_style' : 'yellow_style'">{{assetType}}</span>
                             <span class="native_fungible_style">{{family}}</span>
@@ -48,20 +50,6 @@
                             </li>
                         </ul>
                     </div>
-           <!--         <div class="asset_list_token_content" v-if="assetTransferList.length > 0">
-                        <h3 class="asset_list_token_title">AssetTransferTxs 100</h3>
-                        <div class="asset_list_table_content">
-                            <native-asset :showNoData="showNoData" :items="assetTransferList" name="assetTransferTxs"></native-asset>
-                        </div>
-                        <div class="native_asset_nav_footer_content">
-                            <m-pagination
-                                :total="issueTokenTotalPageNum"
-                                :page-size="pageSize"
-                                :page="issueTokenCurrentPageNum"
-                                :page-change="issueTokenPageChange"
-                            ></m-pagination>
-                        </div>
-                    </div>-->
                     <div class="asset_list_token_content" v-if="issueTokenList.length > 0">
                         <h3 class="asset_list_token_title">Issue Token Txs</h3>
                         <div class="asset_list_table_content">
@@ -138,11 +126,13 @@
     import Tools from "../../util/Tools"
 	import NativeAsset from "./MNativeAssetTxListTable"
     import MPagination from "../commontables/MPagination";
+    import PageTitle from "../pageTitle/PageTitle";
 	export default {
 		name: "AssetInformation",
-		components: {MPagination, NativeAsset},
+		components: {PageTitle, MPagination, NativeAsset},
         data () {
 			return {
+                contentDoc:'Detalils',
 				showNoData:false,
                 headerTitle: '',
 				tokenID: '',
@@ -639,11 +629,11 @@
             .asset_info_list_content{
                 max-width: 12.8rem;
                 margin: 0 auto;
+                padding-top: 0.54rem;
                 .asset_info_kflower_contennt{
                     padding-top: 0.2rem;
                     .asset_info_kflower_title{
                         margin: 0;
-                        padding-left: 0.2rem;
                         display: flex;
                         align-items: center;
                         .kflower_title{
@@ -655,7 +645,6 @@
                                 font-size: 0.14rem;
                                 padding: 0.03rem 0.14rem;
                                 border-radius: 0.1rem;
-                                margin-left: 0.1rem;
                                 background: #E2F3FF;
 
                             }
@@ -827,11 +816,11 @@
         .asset_info_container{
             .asset_info_list_container{
                 .asset_info_list_content{
+                    padding-top: 0.15rem;
                     .asset_info_kflower_contennt{
                         box-sizing: border-box;
                         padding:  0 0.1rem;
                         .asset_info_kflower_title{
-                            padding-left: 0.1rem;
                             flex-direction: column;
                             align-items: flex-start;
                             div{

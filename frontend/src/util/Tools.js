@@ -268,7 +268,7 @@ export default class Tools{
 		var date = new Date(timestamp);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
 		var Y = date.getFullYear() + '/';
 		var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '/';
-		var D = date.getDate() + ' ';
+		var D = date.getDate() < 10 ? '0' + (date.getDate()) : date.getDate() + ' ';
 		var h = date.getHours() + ':';
 		var m = date.getMinutes() + ':';
 		var s = date.getSeconds();
@@ -369,6 +369,11 @@ export default class Tools{
 
 	static firstWordUpperCase (str){
 		return str.toLowerCase().replace(/(\s|^)[a-z]/g, function(char){
+			return char.toUpperCase();
+		});
+	}
+	static onlyFirstWordUpperCase(str){
+		return str.replace(/(\s|^)[a-z]/, function(char){
 			return char.toUpperCase();
 		});
 	}

@@ -1,13 +1,12 @@
 <template>
     <div class="address_information_container">
+        <page-title :title="pageTitle"
+                    :content="headerAddress"
+                    :copyText="headerAddress"
+                    :fl-show-clip="true" :flShowMobileStyle="true">
+               <span class="address_information_address_status_profiler" v-if="isProfiler">Profiler</span>
+        </page-title>
         <div class="address_information_content">
-            <div class="address_information_header_container">
-                <div class="address_information_header_content">
-                    <span class="address_information_header">{{headerAddress}}
-                       <span class="address_information_address_status_profiler" v-if="isProfiler">Profiler</span>
-                    </span>
-                </div>
-            </div>
             <div class="address_information_assets_container">
                 <div class="address_information_assets_title">Assets</div>
                 <div class="address_information_assets_list_content">
@@ -137,12 +136,11 @@
                         <div class="filter_content">
                             <div class="tx_type_content">
                                 <div class="tx_type_mobile_content">
-                                    <el-select v-model="value" filterable :change="filterTxByTxType(value)">
-                                        <el-option v-for="(item, index) in txTypeOption"
-                                                   :key="index"
-                                                   :label="item.label"
-                                                   :value="item.value"></el-option>
-                                    </el-select>
+                                    <el-cascader v-model="value"
+                                                 :options="txTypeOption"
+                                                 :props="{ expandTrigger: 'hover' }"
+                                                 :show-all-levels="false"
+                                                 @change="filterTxByTxType(value)"></el-cascader>
 
                                     <el-select v-model="statusValue" :change="filterTxByStatus(statusValue)">
                                         <el-option v-for="(item, index) in status"
@@ -155,6 +153,7 @@
                                     <el-date-picker  type="date"
                                                      v-model="startTime"
                                                      @change="getStartTime(startTime)"
+                                                     :picker-options="PickerOptions"
                                                      :editable="false"
                                                      value-format="yyyy-MM-dd"
                                                      placeholder="Select Date">
@@ -162,11 +161,13 @@
                                     <span class="joint_mark">~</span>
                                     <el-date-picker  type="date"
                                                      v-model="endTime"
+                                                     :picker-options="PickerOptions"
                                                      value-format="yyyy-MM-dd"
                                                      @change="getEndTime(endTime)"
                                                      :editable="false"
                                                      placeholder="Select Date">
                                     </el-date-picker>
+                                    <date-tooltip></date-tooltip>
                                 </div>
                                 <div class="tx_type_mobile_content">
                                     <div class="search_btn" @click="getFilterTxs">Search</div>
@@ -209,16 +210,27 @@
 	import MPagination from "../../commontables/MPagination";
 	import BigNumber from "bignumber.js"
     import moveDecimal from "move-decimal-point"
+    import DateTooltip from "../../dateToolTip/DateTooltip";
+    import FormatTxType from "../../../util/formatTxType"
+    import PageTitle from "../../pageTitle/PageTitle";
+	import pageTitleConfig from "../../pageTitle/pageTitleConfig";
 	export default {
 		name: "AddressInfomation",
-		components: {MPagination, MAddressInformationTable},
+		components: {PageTitle, DateTooltip, MPagination, MAddressInformationTable},
 		data(){
 			return {
+                pageTitle:pageTitleConfig.StatsIRISRichListAddress,
 				withdrewToAddress: '',
 				validatorMoniker: '',
                 validatorStatus:'',
 				OperatorAddress: '',
 				isProfiler:'',
+                pickerStartTime:sessionStorage.getItem('firstBlockTime') ? sessionStorage.getItem('firstBlockTime') : '',
+                PickerOptions: {
+                    disabledDate: (time) => {
+                        return time.getTime() < new Date(this.pickerStartTime).getTime() || time.getTime() > Date.now()
+                    }
+                },
 				txTypeOption:[
 					{
 						value:'allTxType',
@@ -234,7 +246,7 @@
 				TxType: '',
 				txStatus: '',
 				status:[],
-				value: JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')) && JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).txType  ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).txType : 'allTxType',
+				value: JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')) && JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).txType  ? this.getRefUrlTxType(JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).txType) : 'allTxType',
                 assetsItems:[],
                 delegationsItems:[],
                 unBondingDelegationsItems:[],
@@ -315,6 +327,9 @@
             this.getTxListByFilterCondition();
         },
         methods:{
+            getRefUrlTxType(txType){
+                return FormatTxType.getRefUrlTxType(txType);
+            },
 	        getFilterTxs(){
                 let searchCondition = {
                     txType: this.TxType,
@@ -329,6 +344,7 @@
 		        this.resetUrl();
 		        sessionStorage.setItem('addressTxPageNum',1);
 		        this.getTxListByFilterCondition();
+                this.$uMeng.push('Transactions_Search','click')
 	        },
 			getAddressInformation(){
                 Server.commonInterface({addressInformation:{
@@ -513,14 +529,8 @@
 			        }},(res) => {
 			        try {
 				        if(res){
-					        let txType;
-					        txType = res.map(item => {
-						        return {
-							        value : item,
-							        label : item
-						        }
-					        });
-					        this.txTypeOption = this.txTypeOption.concat(txType);
+                            let txType = FormatTxType.formatTxType(res);
+                            this.txTypeOption = this.txTypeOption.concat(txType);
 				        }
 			        }catch (e) {
 				        console.error(e)
@@ -613,15 +623,17 @@
 	        },
 
 	        filterTxByTxType(e){
-		        if (e === 'allTxType' || e === undefined) {
-			        this.TxType = ''
+		        if (Array.isArray(e) && e[e.length-1] === 'allTxType' || e === undefined ) {
+			        this.TxType = '';
+                    this.$uMeng.push('Transactions_All Type','click')
 		        }else {
-			        this.TxType = e
+			        this.TxType = Tools.firstWordUpperCase(e[e.length-1])
 		        }
 	        },
 	        filterTxByStatus(e){
 		        if(e === 'allStatus'){
 			        this.txStatus = ''
+                    this.$uMeng.push('Transactions_All Status','click')
 		        }else {
 			        this.txStatus = e
 		        }
@@ -641,16 +653,18 @@
                     txType: '',
                     status: '',
                     beginTime: '',
-                    endTime: ''
+                    endTime: '',
                 };
                 sessionStorage.setItem('searchResultByTxTypeAndAddress',JSON.stringify(searchCondition))
 		        this.value = 'allTxType';
 		        this.statusValue = 'allStatus';
-		        this.startTime = '';
+                this.TxType = '';
+                this.startTime = '';
 		        this.endTime = '';
 		        this.allTxCurrentPage = 1;
 		        this.resetUrl();
 		        this.getTxListByFilterCondition()
+                this.$uMeng.push('Transactions_Refresh','click')
 	        },
 	        formatEndTime(time){
 		        // let utcTime = Tools.conversionTimeToUTCByValidatorsLine(new Date(time).toISOString());
@@ -750,7 +764,7 @@
 
             },
 	        allTxPageChange(pageNum){
-	            this.value = JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')) && JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).txType  ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).txType : 'allTxType';
+	            this.value = JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')) && JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).txType  ?  this.getRefUrlTxType(JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).txType) : 'allTxType';
 	            this.statusValue = JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')) && JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).status ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).status : 'allStatus';
 	            this.startTime = JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')) && JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).pageShowStartTime ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).pageShowStartTime : '';
 	            this.endTime = JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')) && JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).pageShowEndTime ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).pageShowEndTime : '';
@@ -1042,6 +1056,37 @@
                                         }
 
                                     }
+                                    /deep/.el-cascader{
+                                        width: 1.3rem;
+                                        margin-right: 0.1rem;
+                                        .el-input{
+                                            .el-input__inner{
+                                                padding-left: 0.07rem;
+                                                height: 0.32rem;
+                                                line-height: 0.32rem;
+                                                font-size: 0.14rem !important;
+                                                &::-webkit-input-placeholder{
+                                                    font-size: 0.14rem !important;
+                                                }
+                                            }
+                                            .el-input__inner:focus{
+                                                border-color: var(--bgColor) !important;
+                                            }
+                                            .el-input__suffix{
+                                                .el-input__suffix-inner{
+                                                    .el-input__icon{
+                                                        line-height: 0.32rem;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        .is-focus{
+                                            .el-input__inner{
+                                                border-color: var(--bgColor) !important;
+                                            }
+                                        }
+        
+                                    }
                                     /deep/.el-date-editor{
                                         width: 1.3rem;
                                         .el-icon-circle-close{
@@ -1152,15 +1197,18 @@
                                         display: flex;
                                         justify-content: space-between;
                                         margin-bottom: 0.1rem;
+                                        /deep/ .el-cascader{
+                                            margin-right: 0;
+                                            width: 1.6rem !important;
+                                        }
                                         /deep/ .el-select{
                                             margin-right: 0;
                                             width: 1.6rem !important;
                                         }
-
+                                        
                                         /deep/ .el-date-editor{
                                             width: 1.6rem !important;
                                             .el-input__prefix{
-                                              left: 1.3rem;
                                             }
                                         }
                                         .reset_btn{
@@ -1196,6 +1244,11 @@
                 }
             }
 
+        }
+        .address_information_content{
+            .address_information_assets_container{
+                padding-top: 0 !important;
+            }
         }
     }
     @media screen and (max-width: 1280px){

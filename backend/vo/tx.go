@@ -30,8 +30,10 @@ func (s TxStatisticsVo) String() string {
 }
 
 type TxNumGroupByDayVo struct {
-	Date string `json:"date"`
-	Num  int64  `json:"num"`
+	Date         string `json:"date"`
+	Num          int64  `json:"num"`
+	TotalAccNum  int64  `json:"total_acc_num"`
+	DelegatorNum int64  `json:"delegator_num"`
 }
 
 type TxNumGroupByDayVoRespond []TxNumGroupByDayVo
