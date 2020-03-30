@@ -102,7 +102,8 @@
                 pickerStartTime:sessionStorage.getItem('firstBlockTime') ? sessionStorage.getItem('firstBlockTime') : '',
                 PickerOptions: {
                     disabledDate: (time) => {
-                        return time.getTime() < new Date(this.pickerStartTime).getTime() || time.getTime() > Date.now()
+                        
+                        return time.getTime() <= new Date(this.pickerStartTime).getTime() || time.getTime() > Date.now()
                     }
                 },
 				countNum: sessionStorage.getItem("txsTotal") ? Number(sessionStorage.getItem("txsTotal")) : 0,

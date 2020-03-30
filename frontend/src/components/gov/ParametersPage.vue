@@ -360,7 +360,7 @@ export default {
     .parameters_page_container{
         .parameters_list_container{
             .parameter_list_content{
-                padding-top: 0.05rem;
+                padding-top: 0.05rem !important;
             }
         }
     }
@@ -373,6 +373,7 @@ export default {
             max-width: 12.8rem;
             width: 100%;
             margin: 0 auto;
+            padding-top: 0.54rem;
             .parameter_list_title_content {
                 font-size: 0.18rem;
                 height: 0.7rem;
