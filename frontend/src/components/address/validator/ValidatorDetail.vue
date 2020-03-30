@@ -1,6 +1,6 @@
 <template>
     <div class="transactions_detail_wrap">
-        <div :class="[transactionsDetailWrap, 'validator_title']">
+        <div :class="[transactionsDetailWrap, 'validator_title']" class="page_title_container">
             <div class="title_tag_content">
                 <span class="validator_title_content">Validator Details</span>
                 <span class="validator_page_link">|</span>
@@ -973,7 +973,6 @@ export default {
 </style>
 
 <style lang="scss" scoped>
-
 .validator_title {
     height: 0.3rem;
     padding-left: 0.2rem;

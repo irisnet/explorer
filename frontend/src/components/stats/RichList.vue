@@ -9,22 +9,24 @@
                 </div>
             </div>
         </page-title>
-        <div class="top_list_title_container">
-            <div class="top_list_title_content">
-                <div class="top_list_title_content_div">
-                </div>
-                <div class="top_list_time_content">
-                    <span v-show="latestTime">Updated ：{{latestTime}}+UTC</span>
+        <div style="padding-top: 0.54rem;background: #F5F7FD;">
+            <div class="top_list_title_container">
+                <div class="top_list_title_content">
+                    <div class="top_list_title_content_div">
+                    </div>
+                    <div class="top_list_time_content">
+                        <span v-show="latestTime">Updated ：{{latestTime}}+UTC</span>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="top_list_container">
-            <div class="top_list_content">
-                <div class="top_list_table_wrap">
-                    <div class="top_list_table_content">
-                        <top-list-table :items="topList" :showNoData="showNoData"></top-list-table>
-                        <div v-show="showNoData" class="no_data_show">
-                            <img src="../../assets/no_data.svg" alt="">
+            <div class="top_list_container">
+                <div class="top_list_content">
+                    <div class="top_list_table_wrap">
+                        <div class="top_list_table_content">
+                            <top-list-table :items="topList" :showNoData="showNoData"></top-list-table>
+                            <div v-show="showNoData" class="no_data_show">
+                                <img src="../../assets/no_data.svg" alt="">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -161,6 +163,7 @@ export default {
         width: 100%;
         z-index: 2;
         position: fixed;
+        background: #F5F7FD;
         .top_list_title_content {
             max-width: 12.8rem;
             margin: 0 auto;
@@ -182,21 +185,20 @@ export default {
             }
 
             .top_list_time_content {
-                padding-left: 0.2rem;
-                padding-right: 0.2rem;
                 opacity: 0.6;
                 color: #000;
                 font-size: 0.14rem;
                 flex: 1;
                 display: flex;
                 justify-content: flex-end;
+                padding: 0.2rem;
             }
         }
     }
 }
 .top_list_container {
     width: 100%;
-    padding: 0.54rem 0 0.4rem 0;
+    padding: 0.58rem 0 0.4rem 0;
     box-sizing: border-box;
     .top_list_content {
         max-width: 12.8rem;
