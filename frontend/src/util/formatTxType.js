@@ -138,6 +138,12 @@ export default class FormatTxType {
 						label:'EditToken'
 					});
 					break;
+				case "MintToken":
+					othersObj.children.push({
+						value:'mintToken',
+						label:'MintToken'
+					});
+					break;
 				case "TransferTokenOwner":
 					othersObj.children.push({
 						value:'transferTokenOwner',
@@ -198,6 +204,12 @@ export default class FormatTxType {
 						label:'CreateHTLC'
 					});
 					break;
+				case "RefundHTLC":
+					othersObj.children.push({
+						value:'refundHTLC',
+						label:'RefundHTLC'
+					});
+					break;
 				case "AddLiquidity":
 					othersObj.children.push({
 						value:'addLiquidity',
@@ -215,7 +227,11 @@ export default class FormatTxType {
 						value:'swapOrder',
 						label:'SwapOrder'
 					});
-				
+				case "AddProfiler":
+					othersObj.children.push({
+						value:'addProfiler',
+						label:'AddProfiler'
+					});
 			}
 			
 		});
