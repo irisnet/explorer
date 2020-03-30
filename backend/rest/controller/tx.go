@@ -292,7 +292,7 @@ func registerQueryTxsByAccount(r *mux.Router) error {
 func registerQueryTxsByDay(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryTxsByDay, "GET", func(request vo.IrisReq) interface{} {
 		tx.SetTid(request.TraceId)
-		interval := Var(request, "interval")
+		interval := QueryParam(request, "interval")
 		intervalDays := utils.ParseIntWithDefault(interval, 14)
 		if intervalDays > 365 {
 			intervalDays = 365
