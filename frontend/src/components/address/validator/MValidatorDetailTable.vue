@@ -21,7 +21,7 @@
                 <span v-if="(/^[1-9]\d*$/).test(row.From)" class="skip_route">
                     <router-link :to="`/tx?txHash=${row.Tx_Hash}`">{{row.From}} Validators</router-link>
                 </span>
-                <div class="name_address" v-show="!(/^[0-9]\d*$/).test(row.From) && row.From && row.From !== '--'">
+                <div class="name_address" v-if="!(/^[0-9]\d*$/).test(row.From) && row.From && row.From !== '--'">
                     <span class="remove_default_style skip_route" :class="row.From === $route.params.param ? 'no_skip' : ''">
                         <router-link :to="addressRoute(row.From)" class="link_style" :style="{'font-family': row.From ? 'Consolas,Menlo': ''}">{{formatMoniker(row.fromMoniker) || formatAddress(row.From)}}</router-link>
                     </span>
