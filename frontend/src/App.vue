@@ -48,18 +48,18 @@
                     let locationHash;
                     if(location.hash.includes('=') && !location.hash.split('?')){
                         locationHash = location.hash.split('=')[0];
-                    }else if(location.hash.includes('/address/')){
-                        locationHash = '/address/'
-                    }else if(location.hash.includes('/block/')){
-                        locationHash = '/block/'
-                    }else if(location.hash.includes('/asset/')){
-                        locationHash = '/asset/'
-                    }else if(location.hash.includes('/ProposalsDetail/')){
-                        locationHash = '/ProposalsDetail/'
-                    }else if(location.hash.includes('/htlc/')){
-                        locationHash = '/htlc/'
-                    }else if(location.hash.includes('/validators/')){
-                        locationHash = '/validators/'
+                    }else if(location.hash.includes('/address/') || location.hash.includes('/#/address/')){
+                        locationHash = 'address/'
+                    }else if(location.hash.includes('/block/') || location.hash.includes('/#/block/')){
+                        locationHash = 'block/'
+                    }else if(location.hash.includes('/asset/') || location.hash.includes('/#/asset/')){
+                        locationHash = 'asset/'
+                    }else if(location.hash.includes('/ProposalsDetail/') || location.hash.includes('/#/ProposalsDetail/')){
+                        locationHash = 'ProposalsDetail/'
+                    }else if(location.hash.includes('/htlc/') || location.hash.includes('/#/htlc/')){
+                        locationHash = 'htlc/'
+                    }else if(location.hash.includes('/validators/') || location.hash.includes('/#/validators/')){
+                        locationHash = 'validators/'
                     }else if(location.hash.includes('?')){
                         locationHash = location.hash.split('?')[0];
                     }else {
@@ -142,6 +142,12 @@
     }
     .el-date-picker{
         width: 2.46rem !important;
+    }
+    .el-cascader-menu__wrap{
+        height: 2.2rem !important;
+    }
+    .el-scrollbar__bar.is-horizontal>div {
+        display: none;
     }
     .el-picker-panel{
         .el-picker-panel__body-wrapper{
