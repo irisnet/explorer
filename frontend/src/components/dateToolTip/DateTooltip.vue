@@ -1,6 +1,6 @@
 <template>
 	<div class="tooltip_content">
-		<el-tooltip content="Date selection range from first block to latest block">
+		<el-tooltip content="Date selection range from the first block to the latest block.">
 			<i class="iconfont iconyiwen"></i>
 		</el-tooltip>
 	</div>
