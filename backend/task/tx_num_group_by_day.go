@@ -6,7 +6,10 @@ import (
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
+	"github.com/irisnet/explorer/backend/service"
+	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
+	"github.com/shopspring/decimal"
 )
 
 type TxNumGroupByDayTask struct{}
@@ -32,6 +35,7 @@ func (task TxNumGroupByDayTask) DoTask() error {
 		return err
 	}
 
+	// account info statistics
 	var (
 		totalAccNum  int64
 		delegatorNum int64
@@ -48,11 +52,15 @@ func (task TxNumGroupByDayTask) DoTask() error {
 		delegatorNum = int64(v)
 	}
 
+	// token stat statistics
+	tokenStat := task.getTokenStat()
+
 	txNumStat := document.TxNumStat{
 		Date:         utils.FmtTime(yesterday, utils.DateFmtYYYYMMDD),
 		Num:          int64(total),
 		TotalAccNum:  totalAccNum,
 		DelegatorNum: delegatorNum,
+		TokenStat:    tokenStat,
 		CreateTime:   time.Now(),
 	}
 
@@ -61,6 +69,48 @@ func (task TxNumGroupByDayTask) DoTask() error {
 	}
 
 	return nil
+}
+
+func (task TxNumGroupByDayTask) getTokenStat() document.TokenStat {
+	var (
+		res              document.TokenStat
+		totalSupply      string
+		circulation      string
+		bonded           string
+		foundationBonded string
+	)
+	tokenStatService := service.TokenStatsService{}
+	if v, err := tokenStatService.QueryTokenStats(); err != nil {
+		return res
+	} else {
+		totalSupply = v.TotalsupplyTokens.Amount
+		circulation = v.CirculationTokens.Amount
+		bondedAmtIrisAtto := v.DelegatedTokens.Amount
+
+		if d, err := decimal.NewFromString(bondedAmtIrisAtto); err != nil {
+			bonded = "0"
+		} else {
+			bonded = d.Shift(-18).String()
+		}
+	}
+
+	// query foundation delegation only effect in mainnet
+	foundationDelegateAmt := float64(0)
+	if conf.Get().Hub.Prefix.AccAddr == types.MainnetAccPrefix {
+		accService := service.AccountService{}
+		delegations := accService.QueryDelegations(types.FoundationDelegatorAddr)
+		for _, v := range delegations {
+			foundationDelegateAmt += v.Amount.Amount
+		}
+	}
+	foundationBonded = utils.ParseStringFromFloat64(foundationDelegateAmt)
+
+	res.TotalSupply = totalSupply
+	res.Circulation = circulation
+	res.Bonded = bonded
+	res.FoundationBonded = foundationBonded
+
+	return res
 }
 
 // init ex_tx_num_stat document
