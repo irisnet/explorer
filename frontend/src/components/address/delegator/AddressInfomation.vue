@@ -228,7 +228,7 @@
                 pickerStartTime:sessionStorage.getItem('firstBlockTime') ? sessionStorage.getItem('firstBlockTime') : '',
                 PickerOptions: {
                     disabledDate: (time) => {
-                        return time.getTime() < new Date(this.pickerStartTime).getTime() || time.getTime() > Date.now()
+                        return time.getTime() <= new Date(this.pickerStartTime).getTime() || time.getTime() > Date.now()
                     }
                 },
 				txTypeOption:[
@@ -794,6 +794,7 @@
             max-width: 12.8rem;
             margin: 0 auto;
             padding-bottom: 0.4rem;
+            padding-top: 0.54rem;
             .address_information_header_container{
                 width: 100%;
                 .address_information_header_content{
@@ -812,6 +813,9 @@
                             color: #fff;
                             padding: 0.02rem 0.14rem;
                             border-radius: 0.22rem;
+                            line-height: 0.22rem;
+                            height: 0.22rem;
+                            display: inline-block;
                         }
                     }
                 }
@@ -1163,6 +1167,7 @@
     @media screen and (max-width: 910px){
         .address_information_container{
             .address_information_content{
+                padding-top: 0;
                 .address_information_header_container{
                     .address_information_header_content{
                         .address_information_header{

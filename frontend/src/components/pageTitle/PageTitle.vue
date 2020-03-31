@@ -284,6 +284,10 @@
 						color: #fff;
 						padding: 0.02rem 0.14rem;
 						border-radius: 0.22rem;
+						line-height: 0.22rem;
+						height: 0.22rem;
+						display: inline-block;
+						min-width: 0.4rem;
 					}
 				}
 			}
