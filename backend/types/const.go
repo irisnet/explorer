@@ -197,6 +197,9 @@ var (
 		"iaa1v6c3sa76s3grss3xu64tvn9nd556jlcw6azc85": "Genesis Profiler 1",
 		"iaa1us4dhfyq66hzeu2tu06tvvr90cy33vg3yn2uld": "Genesis Profiler 2",
 	}
+
+	FoundationDelegatorAddr = "iaa1w7ewedr57z6p7f8nknmdvukfxwkwlsvfjumdts"
+	MainnetAccPrefix        = "iaa"
 )
 
 func IsDeclarationType(typ string) bool {
@@ -309,7 +312,7 @@ func IsGuardianType(typ string) bool {
 type TxType int
 
 const (
-	_           TxType = iota
+	_ TxType = iota
 	Trans
 	Declaration
 	Stake
@@ -336,9 +339,9 @@ func Convert(typ string) TxType {
 		return Rand
 	} else if IsCoinswapType(typ) {
 		return Coinswap
-    } else if IsHTLCType(typ) {
-    	return Htlc
-    } else if IsGuardianType(typ) {
+	} else if IsHTLCType(typ) {
+		return Htlc
+	} else if IsGuardianType(typ) {
 		return Guardian
 	}
 	logger.Error("Convert UnSupportTx Type", logger.String("txtype", typ))

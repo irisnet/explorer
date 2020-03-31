@@ -14,16 +14,26 @@ const (
 	TxNumStat_Field_Num        = "num"
 	TNSFieldTotalAccNum        = "total_acc_num"
 	TNSFieldDelegatorNum       = "delegator_num"
+	TNSFieldTokenStat          = "token_stat"
 	TxNumStat_Field_CreateTime = "create_time"
 )
 
-type TxNumStat struct {
-	Date         string    `bson:"date"`
-	Num          int64     `bson:"num"`
-	TotalAccNum  int64     `bson:"total_acc_num"`
-	DelegatorNum int64     `bson:"delegator_num"`
-	CreateTime   time.Time `bson:"create_time"`
-}
+type (
+	TxNumStat struct {
+		Date         string    `bson:"date"`
+		Num          int64     `bson:"num"`
+		TotalAccNum  int64     `bson:"total_acc_num"`
+		DelegatorNum int64     `bson:"delegator_num"`
+		TokenStat    TokenStat `bson:"token_stat"`
+		CreateTime   time.Time `bson:"create_time"`
+	}
+	TokenStat struct {
+		TotalSupply      string `bson:"total_supply"`
+		Circulation      string `bson:"circulation"`
+		Bonded           string `bson:"bonded"`
+		FoundationBonded string `bson:"foundation_bonded"`
+	}
+)
 
 func (m TxNumStat) Name() string {
 	return CollectionTxNumStat
