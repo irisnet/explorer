@@ -258,6 +258,13 @@ func (service *TxService) QueryTxNumGroupByDay(intervalDays int64) vo.TxNumGroup
 			Num:          t.Num,
 			TotalAccNum:  t.TotalAccNum,
 			DelegatorNum: t.DelegatorNum,
+
+			TokenStat: vo.TokenStatStr{
+				TotalSupply:      t.TokenStat.TotalSupply,
+				Circulation:      t.TokenStat.Circulation,
+				Bonded:           t.TokenStat.Bonded,
+				FoundationBonded: t.TokenStat.FoundationBonded,
+			},
 		})
 	}
 

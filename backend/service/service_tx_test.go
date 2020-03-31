@@ -59,7 +59,7 @@ func TestQueryByAcc(t *testing.T) {
 
 func TestQueryTxNumGroupByDay(t *testing.T) {
 
-	txCountByDay := new(TxService).QueryTxNumGroupByDay(3000)
+	txCountByDay := new(TxService).QueryTxNumGroupByDay(3)
 
 	t.Log(string(utils.MarshalJsonIgnoreErr(txCountByDay)))
 }

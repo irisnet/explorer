@@ -266,6 +266,7 @@ func (_ CommonTx) GetTxlistByDuration(startTime, endTime string) ([]TxNumStat, e
 	var selector = bson.M{
 		TxNumStat_Field_Date: 1, TxNumStat_Field_Num: 1,
 		TNSFieldTotalAccNum: 1, TNSFieldDelegatorNum: 1,
+		TNSFieldTokenStat: 1,
 	}
 	var txNumStatList []TxNumStat
 

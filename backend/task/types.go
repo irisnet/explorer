@@ -63,7 +63,7 @@ func Start() {
 
 	txNumTask := TxNumGroupByDayTask{}
 	txNumTask.init()
-	c.AddFunc("0 0 * * *", func() {
+	c.AddFunc("01 0 * * *", func() {
 		txNumTask.Start()
 	})
 }

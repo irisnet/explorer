@@ -2,9 +2,11 @@ package service
 
 import (
 	"fmt"
+	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
+	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/vo"
 	"sync"
@@ -61,8 +63,10 @@ func (service *TokenStatsService) QueryTokenStats() (vo.TokenStatsVo, error) {
 	//tokenStats.InitsupplyTokens = LoadCoinVoFromLcdCoin(&initsupply)
 	tokenStats.DelegatedTokens = LoadCoinVoFromLcdCoin(&bondedtokens)
 	tokenStats.BurnedTokens = LoadCoinVoFromLcdCoin(&burnedtokens)
-	if balance, err := lcd.GetCommunityTax(); err == nil {
-		tokenStats.CommunityTax = LoadCoinVoFromLcdCoin(&balance)
+	if conf.Get().Hub.Prefix.AccAddr == types.MainnetAccPrefix {
+		if balance, err := lcd.GetCommunityTax(); err == nil {
+			tokenStats.CommunityTax = LoadCoinVoFromLcdCoin(&balance)
+		}
 	}
 
 	return tokenStats, nil
