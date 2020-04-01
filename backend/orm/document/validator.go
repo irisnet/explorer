@@ -25,6 +25,7 @@ const (
 	ValidatorFieldProposerHashAddr = "proposer_addr"
 	ValidatorFieldTokens           = "tokens"
 	ValidatorFieldDelegatorShares  = "delegator_shares"
+	ValidatorFieldIcon             = "icons"
 	ValidatorStatusValUnbonded     = 0
 	ValidatorStatusValUnbonding    = 1
 	ValidatorStatusValBonded       = 2
@@ -442,7 +443,11 @@ func (_ Validator) QueryValidatorListByAddrList(addrs []string) ([]Validator, er
 
 func (_ Validator) QueryMonikerAndValidatorAddrByHashAddr(addr string) (Validator, error) {
 
-	selector := bson.M{ValidatorFieldOperatorAddress: 1, ValidatorFieldDescription: 1}
+	selector := bson.M{
+		ValidatorFieldOperatorAddress: 1,
+		ValidatorFieldDescription:     1,
+		ValidatorFieldIcon:            1,
+	}
 	condition := bson.M{ValidatorFieldProposerHashAddr: addr}
 	var val Validator
 	err := queryOne(CollectionNmValidator, selector, condition, &val)
