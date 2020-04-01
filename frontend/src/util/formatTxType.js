@@ -15,7 +15,7 @@ export default class FormatTxType {
 			},
 			validationObj = {
 				value:'validation',
-				label:'validation',
+				label:'Validation',
 				children:[]
 			},
 			govObj = {

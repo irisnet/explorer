@@ -7,7 +7,6 @@ import (
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/service"
-	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/shopspring/decimal"
 )
@@ -92,18 +91,9 @@ func (task TxNumGroupByDayTask) getTokenStat() document.TokenStat {
 		} else {
 			bonded = d.Shift(-18).String()
 		}
-	}
 
-	// query foundation delegation only effect in mainnet
-	foundationDelegateAmt := float64(0)
-	if conf.Get().Hub.Prefix.AccAddr == types.MainnetAccPrefix {
-		accService := service.AccountService{}
-		delegations := accService.QueryDelegations(types.FoundationDelegatorAddr)
-		for _, v := range delegations {
-			foundationDelegateAmt += v.Amount.Amount
-		}
+		foundationBonded = v.FoundationBonded.Amount
 	}
-	foundationBonded = utils.ParseStringFromFloat64(foundationDelegateAmt)
 
 	res.TotalSupply = totalSupply
 	res.Circulation = circulation

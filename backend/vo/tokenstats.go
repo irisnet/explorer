@@ -6,7 +6,8 @@ type TokenStatsVo struct {
 	CirculationTokens *CoinVo `json:"circulation_tokens"`
 	TotalsupplyTokens *CoinVo `json:"totalsupply_tokens"`
 	//InitsupplyTokens  *CoinVo `json:"initsupply_tokens"`
-	CommunityTax *CoinVo `json:"community_tax"`
+	CommunityTax     *CoinVo `json:"community_tax"`
+	FoundationBonded *CoinVo `json:"foundation_bonded"`
 }
 
 type CoinVo struct {
