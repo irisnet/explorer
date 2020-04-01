@@ -39,6 +39,9 @@
                         <p class="current_block" :style="{color:diffSeconds > 120 ? '#ff001b' : ''}">{{averageBlockTime}}</p>
                         <p class="block_time">{{lang.home.latestBlocks}}</p>
                     </li>
+                   
+                </ul>
+                <ul class="current_net_status_list">
                     <li class="item_status">
                         <div class="img_container">
                             <div class="img_content">
@@ -58,6 +61,19 @@
                         </div>
                         <p class="current_block">{{bondedRatio}}</p>
                         <p class="block_time">{{bondedValue}}</p>
+                    </li>
+                    <li class="item_status">
+                        <div class="img_container">
+                            <div class="img_content">
+                                <i class="iconfont iconCirculationBondedTokens"></i>
+                            </div>
+                            <span class="item_name" style="margin-right: 0.09rem">{{lang.home.circulationBondedTokens}}</span>
+                            <el-tooltip :content="'Proportion of community bonded token in total circulation.'">
+                                <span class="iconfont icontishi"></span>
+                            </el-tooltip>
+                        </div>
+                        <p class="current_block">{{circulationBondedToken}}</p>
+                        <p class="block_time">{{circulationBondedTokenValue}}</p>
                     </li>
                 </ul>
             </div>
@@ -120,6 +136,8 @@
             MVotingCard, MDepositCard, MHomeVotingCrad, EchartsPie, EchartsLine, HomeBlockModule},
         data() {
             return {
+                circulationBondedToken:'--',
+                circulationBondedTokenValue:'--',
                 currentBlockHeight: '',
                 validatorValue: '--',
                 transactionValue: '--',
@@ -175,9 +193,7 @@
             }
             this.timer = setInterval(function () {
                 that.getBlocksList();
-                that.getTransactionHistory();
                 that.getTransactionList();
-                that.getValidatorsList();
             },10000);
             this.navigationTimer = setInterval(function() {
                 that.getNavigation();
@@ -439,6 +455,8 @@
 			                this.validatorValue = `${res.vote_val_num} / ${res.active_val_num} Validators`;
 			                this.bondedRatio = `${(res.bonded_ratio * 100).toFixed(2)} %`;
 			                this.blockTime = Tools.format2UTC(res.block_time);
+			                this.circulationBondedTokenValue = this.formatBondedTokens(res.foundation_bonded,res.circulation);
+			                this.circulationBondedToken = res.foundation_bonded ? `${(Number(res.foundation_bonded) / Number(res.circulation)).toFixed(2)} %` :'--'
 		                }
 	                }catch (e) {
                         console.error(e)
@@ -529,6 +547,7 @@
             padding: 0.2rem 0.2rem 0 0.2rem;
             .information_preview {
                 display: flex;
+                flex-direction: column;
                 margin-bottom: 0.3rem;
                 .current_net_status_list {
                     display: flex;
@@ -538,7 +557,7 @@
                         background: #fff;
                         border: 0.01rem solid rgba(215, 217, 224, 1);
                         border-radius: 0.01rem;
-                        margin-right: 3%;
+                        margin-right: 0.2rem;
                         box-sizing: border-box;
                         padding: 0.14rem;
                         .img_container {
@@ -591,6 +610,9 @@
                     .item_status:last-child {
                         margin-right: 0;
                     }
+                }
+                .current_net_status_list:last-child{
+                    margin-top: 0.2rem;
                 }
             }
             .echarts_content{
@@ -679,6 +701,9 @@
                         margin-right: 0;
                         margin-bottom: 0.1rem;
                     }
+                }
+                .current_net_status_list:last-child{
+                    margin-top: 0;
                 }
             }
             .echarts_content{
