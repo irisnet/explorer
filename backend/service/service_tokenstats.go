@@ -27,7 +27,7 @@ func (service *TokenStatsService) QueryTokenStats() (vo.TokenStatsVo, error) {
 	)
 
 	var group sync.WaitGroup
-	group.Add(3)
+	group.Add(4)
 
 	go func() {
 		defer group.Done()
