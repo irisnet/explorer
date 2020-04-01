@@ -19,10 +19,11 @@ type TokenStatsService struct {
 func (service *TokenStatsService) QueryTokenStats() (vo.TokenStatsVo, error) {
 
 	var (
-		tokenStats     vo.TokenStatsVo
-		supply         lcd.Coin
-		circulation    lcd.Coin
-		banktokenstats lcd.TokenStats
+		tokenStatsVO     vo.TokenStatsVo
+		supply           lcd.Coin
+		circulation      lcd.Coin
+		banktokenstats   lcd.TokenStats
+		foundationBonded string
 	)
 
 	var group sync.WaitGroup
@@ -52,24 +53,42 @@ func (service *TokenStatsService) QueryTokenStats() (vo.TokenStatsVo, error) {
 			logger.Error("GetTokenStatsCirculation have error", logger.String("err", err.Error()))
 		}
 	}()
+	go func() {
+		defer group.Done()
+		if conf.Get().Hub.Prefix.AccAddr == types.MainnetAccPrefix {
+			res := accountService.QueryDelegations(types.FoundationDelegatorAddr)
+			amt := float64(0)
+			for _, v := range res {
+				amt += v.Amount.Amount
+			}
+			foundationBonded = utils.ParseStringFromFloat64(amt)
+		} else {
+			foundationBonded = "0"
+		}
+	}()
 	group.Wait()
 
 	//initsupply := lcd.GetTokenInitSupply()
 	burnedtokens := lcd.GetTokens(banktokenstats.BurnedTokens)
 	bondedtokens := lcd.GetTokens(banktokenstats.BondedTokens)
 
-	tokenStats.TotalsupplyTokens = LoadCoinVoFromLcdCoin(&supply)
-	tokenStats.CirculationTokens = LoadCoinVoFromLcdCoin(&circulation)
-	//tokenStats.InitsupplyTokens = LoadCoinVoFromLcdCoin(&initsupply)
-	tokenStats.DelegatedTokens = LoadCoinVoFromLcdCoin(&bondedtokens)
-	tokenStats.BurnedTokens = LoadCoinVoFromLcdCoin(&burnedtokens)
+	tokenStatsVO.TotalsupplyTokens = LoadCoinVoFromLcdCoin(&supply)
+	tokenStatsVO.CirculationTokens = LoadCoinVoFromLcdCoin(&circulation)
+	//tokenStatsVO.InitsupplyTokens = LoadCoinVoFromLcdCoin(&initsupply)
+	tokenStatsVO.DelegatedTokens = LoadCoinVoFromLcdCoin(&bondedtokens)
+	tokenStatsVO.BurnedTokens = LoadCoinVoFromLcdCoin(&burnedtokens)
 	if conf.Get().Hub.Prefix.AccAddr == types.MainnetAccPrefix {
 		if balance, err := lcd.GetCommunityTax(); err == nil {
-			tokenStats.CommunityTax = LoadCoinVoFromLcdCoin(&balance)
+			tokenStatsVO.CommunityTax = LoadCoinVoFromLcdCoin(&balance)
 		}
 	}
 
-	return tokenStats, nil
+	tokenStatsVO.FoundationBonded = LoadCoinVoFromLcdCoin(&lcd.Coin{
+		Denom:  types.IRISUint,
+		Amount: foundationBonded,
+	})
+
+	return tokenStatsVO, nil
 }
 
 func LoadCoinVoFromLcdCoin(coin *lcd.Coin) *vo.CoinVo {
