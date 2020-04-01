@@ -6,6 +6,216 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "13802892",
+      "name": "Circulation Bonded Tokens",
+      "font_class": "CirculationBondedTokens",
+      "unicode": "e656",
+      "unicode_decimal": 58966
+    },
+    {
+      "icon_id": "13802893",
+      "name": "收起",
+      "font_class": "shouqi",
+      "unicode": "e657",
+      "unicode_decimal": 58967
+    },
+    {
+      "icon_id": "11738343",
+      "name": "HTLC Complete",
+      "font_class": "HTLCComplete",
+      "unicode": "e64b",
+      "unicode_decimal": 58955
+    },
+    {
+      "icon_id": "11738344",
+      "name": "HTLC Open",
+      "font_class": "HTLCOpen",
+      "unicode": "e64c",
+      "unicode_decimal": 58956
+    },
+    {
+      "icon_id": "11738345",
+      "name": "HTLC Expired",
+      "font_class": "HTLCExpired",
+      "unicode": "e64d",
+      "unicode_decimal": 58957
+    },
+    {
+      "icon_id": "11738346",
+      "name": "HTLC Refunded",
+      "font_class": "HTLCRefunded",
+      "unicode": "e64e",
+      "unicode_decimal": 58958
+    },
+    {
+      "icon_id": "11265588",
+      "name": "Profiler",
+      "font_class": "Profiler",
+      "unicode": "e646",
+      "unicode_decimal": 58950
+    },
+    {
+      "icon_id": "11254791",
+      "name": "其它币种无icon时使用的默认icon",
+      "font_class": "qitabizhongwuiconshishiyongdemorenicon",
+      "unicode": "e645",
+      "unicode_decimal": 58949
+    },
+    {
+      "icon_id": "11124018",
+      "name": "百分比",
+      "font_class": "baifenbi",
+      "unicode": "e644",
+      "unicode_decimal": 58948
+    },
+    {
+      "icon_id": "11017334",
+      "name": "DepositPeriod-liebiao",
+      "font_class": "DepositPeriod-liebiao",
+      "unicode": "e643",
+      "unicode_decimal": 58947
+    },
+    {
+      "icon_id": "10990158",
+      "name": "Critical",
+      "font_class": "Critical",
+      "unicode": "e640",
+      "unicode_decimal": 58944
+    },
+    {
+      "icon_id": "10990159",
+      "name": "Normal",
+      "font_class": "Normal",
+      "unicode": "e641",
+      "unicode_decimal": 58945
+    },
+    {
+      "icon_id": "10990160",
+      "name": "Important",
+      "font_class": "Important",
+      "unicode": "e642",
+      "unicode_decimal": 58946
+    },
+    {
+      "icon_id": "10979423",
+      "name": "ParameterChange",
+      "font_class": "ParameterChange",
+      "unicode": "e63d",
+      "unicode_decimal": 58941
+    },
+    {
+      "icon_id": "10820329",
+      "name": "Veto",
+      "font_class": "Veto",
+      "unicode": "e63e",
+      "unicode_decimal": 58942
+    },
+    {
+      "icon_id": "10820330",
+      "name": "Pass",
+      "font_class": "Pass",
+      "unicode": "e63f",
+      "unicode_decimal": 58943
+    },
+    {
+      "icon_id": "10818348",
+      "name": "4 Hours Left",
+      "font_class": "HoursLeft",
+      "unicode": "e63a",
+      "unicode_decimal": 58938
+    },
+    {
+      "icon_id": "10818349",
+      "name": "Initial Deposit",
+      "font_class": "InitialDeposit",
+      "unicode": "e63b",
+      "unicode_decimal": 58939
+    },
+    {
+      "icon_id": "10818350",
+      "name": "DepositPeriod",
+      "font_class": "DepositPeriod",
+      "unicode": "e63c",
+      "unicode_decimal": 58940
+    },
+    {
+      "icon_id": "10798503",
+      "name": "类型选择",
+      "font_class": "leixingxuanze",
+      "unicode": "e637",
+      "unicode_decimal": 58935
+    },
+    {
+      "icon_id": "10798504",
+      "name": "重置",
+      "font_class": "zhongzhi",
+      "unicode": "e638",
+      "unicode_decimal": 58936
+    },
+    {
+      "icon_id": "10798505",
+      "name": "日期选择",
+      "font_class": "riqixuanze",
+      "unicode": "e639",
+      "unicode_decimal": 58937
+    },
+    {
+      "icon_id": "10576332",
+      "name": "fuxi2",
+      "font_class": "fuxi1",
+      "unicode": "e636",
+      "unicode_decimal": 58934
+    },
+    {
+      "icon_id": "10544244",
+      "name": "logo",
+      "font_class": "logo",
+      "unicode": "e62e",
+      "unicode_decimal": 58926
+    },
+    {
+      "icon_id": "10532078",
+      "name": "上一个区块",
+      "font_class": "shangyigequkuai",
+      "unicode": "e634",
+      "unicode_decimal": 58932
+    },
+    {
+      "icon_id": "10532079",
+      "name": "下一个区块",
+      "font_class": "xiayigequkuai",
+      "unicode": "e635",
+      "unicode_decimal": 58933
+    },
+    {
+      "icon_id": "10521143",
+      "name": "fuxi",
+      "font_class": "fuxi",
+      "unicode": "e632",
+      "unicode_decimal": 58930
+    },
+    {
+      "icon_id": "10519799",
+      "name": "彩虹猫",
+      "font_class": "caihongmao",
+      "unicode": "e633",
+      "unicode_decimal": 58931
+    },
+    {
+      "icon_id": "10499619",
+      "name": "404",
+      "font_class": "icon-test",
+      "unicode": "e631",
+      "unicode_decimal": 58929
+    },
+    {
+      "icon_id": "10482711",
+      "name": "搜索",
+      "font_class": "sousuo",
+      "unicode": "e630",
+      "unicode_decimal": 58928
+    },
+    {
       "icon_id": "10482648",
       "name": "网络切换箭头",
       "font_class": "wangluoqiehuanjiantou",
@@ -137,202 +347,6 @@
       "font_class": "IRISnet",
       "unicode": "e62f",
       "unicode_decimal": 58927
-    },
-    {
-      "icon_id": "10482711",
-      "name": "搜索",
-      "font_class": "sousuo",
-      "unicode": "e630",
-      "unicode_decimal": 58928
-    },
-    {
-      "icon_id": "10499619",
-      "name": "404",
-      "font_class": "icon-test",
-      "unicode": "e631",
-      "unicode_decimal": 58929
-    },
-    {
-      "icon_id": "10519799",
-      "name": "彩虹猫",
-      "font_class": "caihongmao",
-      "unicode": "e633",
-      "unicode_decimal": 58931
-    },
-    {
-      "icon_id": "10521143",
-      "name": "fuxi",
-      "font_class": "fuxi",
-      "unicode": "e632",
-      "unicode_decimal": 58930
-    },
-    {
-      "icon_id": "10532078",
-      "name": "上一个区块",
-      "font_class": "shangyigequkuai",
-      "unicode": "e634",
-      "unicode_decimal": 58932
-    },
-    {
-      "icon_id": "10532079",
-      "name": "下一个区块",
-      "font_class": "xiayigequkuai",
-      "unicode": "e635",
-      "unicode_decimal": 58933
-    },
-    {
-      "icon_id": "10544244",
-      "name": "logo",
-      "font_class": "logo",
-      "unicode": "e62e",
-      "unicode_decimal": 58926
-    },
-    {
-      "icon_id": "10576332",
-      "name": "fuxi2",
-      "font_class": "fuxi1",
-      "unicode": "e636",
-      "unicode_decimal": 58934
-    },
-    {
-      "icon_id": "10798503",
-      "name": "类型选择",
-      "font_class": "leixingxuanze",
-      "unicode": "e637",
-      "unicode_decimal": 58935
-    },
-    {
-      "icon_id": "10798504",
-      "name": "重置",
-      "font_class": "zhongzhi",
-      "unicode": "e638",
-      "unicode_decimal": 58936
-    },
-    {
-      "icon_id": "10798505",
-      "name": "日期选择",
-      "font_class": "riqixuanze",
-      "unicode": "e639",
-      "unicode_decimal": 58937
-    },
-    {
-      "icon_id": "10818348",
-      "name": "4 Hours Left",
-      "font_class": "HoursLeft",
-      "unicode": "e63a",
-      "unicode_decimal": 58938
-    },
-    {
-      "icon_id": "10818349",
-      "name": "Initial Deposit",
-      "font_class": "InitialDeposit",
-      "unicode": "e63b",
-      "unicode_decimal": 58939
-    },
-    {
-      "icon_id": "10818350",
-      "name": "DepositPeriod",
-      "font_class": "DepositPeriod",
-      "unicode": "e63c",
-      "unicode_decimal": 58940
-    },
-    {
-      "icon_id": "10820329",
-      "name": "Veto",
-      "font_class": "Veto",
-      "unicode": "e63e",
-      "unicode_decimal": 58942
-    },
-    {
-      "icon_id": "10820330",
-      "name": "Pass",
-      "font_class": "Pass",
-      "unicode": "e63f",
-      "unicode_decimal": 58943
-    },
-    {
-      "icon_id": "10979423",
-      "name": "ParameterChange",
-      "font_class": "ParameterChange",
-      "unicode": "e63d",
-      "unicode_decimal": 58941
-    },
-    {
-      "icon_id": "10990158",
-      "name": "Critical",
-      "font_class": "Critical",
-      "unicode": "e640",
-      "unicode_decimal": 58944
-    },
-    {
-      "icon_id": "10990159",
-      "name": "Normal",
-      "font_class": "Normal",
-      "unicode": "e641",
-      "unicode_decimal": 58945
-    },
-    {
-      "icon_id": "10990160",
-      "name": "Important",
-      "font_class": "Important",
-      "unicode": "e642",
-      "unicode_decimal": 58946
-    },
-    {
-      "icon_id": "11017334",
-      "name": "DepositPeriod-liebiao",
-      "font_class": "DepositPeriod-liebiao",
-      "unicode": "e643",
-      "unicode_decimal": 58947
-    },
-    {
-      "icon_id": "11124018",
-      "name": "百分比",
-      "font_class": "baifenbi",
-      "unicode": "e644",
-      "unicode_decimal": 58948
-    },
-    {
-      "icon_id": "11254791",
-      "name": "其它币种无icon时使用的默认icon",
-      "font_class": "qitabizhongwuiconshishiyongdemorenicon",
-      "unicode": "e645",
-      "unicode_decimal": 58949
-    },
-    {
-      "icon_id": "11265588",
-      "name": "Profiler",
-      "font_class": "Profiler",
-      "unicode": "e646",
-      "unicode_decimal": 58950
-    },
-    {
-      "icon_id": "11738343",
-      "name": "HTLC Complete",
-      "font_class": "HTLCComplete",
-      "unicode": "e64b",
-      "unicode_decimal": 58955
-    },
-    {
-      "icon_id": "11738344",
-      "name": "HTLC Open",
-      "font_class": "HTLCOpen",
-      "unicode": "e64c",
-      "unicode_decimal": 58956
-    },
-    {
-      "icon_id": "11738345",
-      "name": "HTLC Expired",
-      "font_class": "HTLCExpired",
-      "unicode": "e64d",
-      "unicode_decimal": 58957
-    },
-    {
-      "icon_id": "11738346",
-      "name": "HTLC Refunded",
-      "font_class": "HTLCRefunded",
-      "unicode": "e64e",
-      "unicode_decimal": 58958
     }
   ]
 }
