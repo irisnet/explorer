@@ -79,7 +79,7 @@ import Service from "../../service";
 import Tools from "../../util/Tools";
 import PageTitle from "../pageTitle/PageTitle";
 import pageTitleConfig from "../pageTitle/pageTitleConfig";
-
+import bigNumber from "bignumber.js"
 export default {
     components: {
         PageTitle,
@@ -148,6 +148,10 @@ export default {
                                         value: data.community_tax ? Tools.formatAmount2(data.community_tax, 4) : '--'
                                     }
                                 ];
+                                data.circulationBonded = {
+                                    amount:new bigNumber(Tools.numberMoveDecimal(data.delegated_tokens.amount)).minus(new bigNumber(data.foundation_bonded.amount)),
+                                    denom : data.foundation_bonded.denom
+                                };
                                 let bottomObj= [
                                     {
                                         label: "Burned",
@@ -159,7 +163,7 @@ export default {
                                     },
                                     {
                                         label: "Circulation Bonded",
-                                        value:  data.foundation_bonded  ? Tools.formatAmount2(data.foundation_bonded ,4) : '--'
+                                        value:  data.foundation_bonded  ? Tools.formatAmount2(data.circulationBonded,4) : '--'
                                     }
                                 ];
                                 this.topitems = topObj;
