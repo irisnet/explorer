@@ -456,7 +456,7 @@
 			                this.bondedRatio = `${(res.bonded_ratio * 100).toFixed(2)} %`;
 			                this.blockTime = Tools.format2UTC(res.block_time);
 			                this.circulationBondedTokenValue = this.formatBondedTokens((Number(res.bonded_tokens) - Number(res.foundation_bonded)),res.circulation);
-			                this.circulationBondedToken = `${((Number(res.bonded_tokens) - Number(res.foundation_bonded)) / Number(res.circulation)).toFixed(2)} %`
+			                this.circulationBondedToken = `${((Number(res.bonded_tokens) - Number(res.foundation_bonded)) / Number(res.circulation)*100).toFixed(2)} %`
 		                }
 	                }catch (e) {
                         console.error(e)
