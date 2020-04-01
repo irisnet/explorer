@@ -159,9 +159,9 @@ export default {
                                     },
                                     {
                                         label: "Circulation Bonded",
-                                        value:  ''
+                                        value:  data.foundation_bonded  ? Tools.formatAmount2(data.foundation_bonded ,4) : '--'
                                     }
-                                ]
+                                ];
                                 this.topitems = topObj;
                                 this.bottomitems = bottomObj;
                             } else {

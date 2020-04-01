@@ -193,9 +193,7 @@
             }
             this.timer = setInterval(function () {
                 that.getBlocksList();
-                that.getTransactionHistory();
                 that.getTransactionList();
-                that.getValidatorsList();
             },10000);
             this.navigationTimer = setInterval(function() {
                 that.getNavigation();
@@ -457,6 +455,8 @@
 			                this.validatorValue = `${res.vote_val_num} / ${res.active_val_num} Validators`;
 			                this.bondedRatio = `${(res.bonded_ratio * 100).toFixed(2)} %`;
 			                this.blockTime = Tools.format2UTC(res.block_time);
+			                this.circulationBondedTokenValue = this.formatBondedTokens(res.foundation_bonded,res.circulation);
+			                this.circulationBondedToken = res.foundation_bonded ? `${(Number(res.foundation_bonded) / Number(res.circulation)).toFixed(2)} %` :'--'
 		                }
 	                }catch (e) {
                         console.error(e)
