@@ -67,7 +67,7 @@
             <transition name="fade">
                 <div class="header_submenu_container" @mouseenter="showTwoMenu(menuActiveName)" @mouseleave="hideTwoMenu(menuActiveName)">
                     <div class="header_submenu_content_wrap">
-                        <ul class="header_submenu_content"  :style="{'left':offSetLeft,width:contentWidth}">
+                        <ul class="header_submenu_content" v-show="flShowChain || flShowStaking || flShowAssets || flShowGov || flShowStats"  :style="{'left':offSetLeft,width:contentWidth}">
                             <li class="header_submenu_item" v-show="flShowChain"><router-link :to="`/home`">Overview</router-link></li>
                             <li class="header_submenu_item" v-show="flShowChain"><router-link :to="`/blocks`">Blocks</router-link></li>
                             <li class="header_submenu_item" v-show="flShowChain"><router-link :to="`/txs`">Transactions</router-link></li>

@@ -1,13 +1,11 @@
 <template>
     <div class="address_information_container">
-        <page-title :title="pageTitle"
-                    :content="headerAddress"
-                    :copyText="headerAddress"
-                    :fl-show-clip="true" :flShowMobileStyle="true">
+        <page-title :title="pageTitle" :flShowPageLink="false">
                <span class="address_information_address_status_profiler" v-if="isProfiler">Profiler</span>
         </page-title>
+        <address-information-component :address="headerAddress" :data="assetsItems"></address-information-component>
         <div class="address_information_content">
-            <div class="address_information_assets_container">
+            <!--<div class="address_information_assets_container">
                 <div class="address_information_assets_title">Assets</div>
                 <div class="address_information_assets_list_content">
                     <div>
@@ -18,7 +16,7 @@
                         </m-address-information-table>
                     </div>
                 </div>
-            </div>
+            </div>-->
             <div class="address_information_delegation_tx_container">
                 <div class="address_information_delegation_tx_content">
                     <div class="address_information_delegation_title">Delegations
@@ -214,9 +212,11 @@
     import FormatTxType from "../../../util/formatTxType"
     import PageTitle from "../../pageTitle/PageTitle";
 	import pageTitleConfig from "../../pageTitle/pageTitleConfig";
+
+    import AddressInformationComponent from "./AddressInformationComponent";
 	export default {
 		name: "AddressInfomation",
-		components: {PageTitle, DateTooltip, MPagination, MAddressInformationTable},
+		components: {AddressInformationComponent, PageTitle, DateTooltip, MPagination, MAddressInformationTable},
 		data(){
 			return {
                 pageTitle:pageTitleConfig.StatsIRISRichListAddress,
@@ -381,11 +381,13 @@
 			            return {
 				            token: Tools.formatDenom(item.denom),
 				            balance: item.amount ? Tools.formatAmount2(item,this.fixedNumber): 0,
+                            balanceNumber: item.amount,
 				            delegatedValue: this.totalDelegator ? this.totalDelegator : 0,
 				            delegated: this.totalDelegator ? `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(this.totalDelegator.toString(),-2)).toFormat(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}`: 0,
 				            unBondingValue: this.totalUnBondingDelegator ? this.totalUnBondingDelegator : 0,
 				            unBonding: this.totalUnBondingDelegator ?`${new BigNumber(Tools.formatStringToFixedNumber(moveDecimal(this.totalUnBondingDelegator.toString(),-2),this.fixedNumber)).toFormat()} ${Constant.Denom.IRIS.toUpperCase()}`  : 0,
 				            reward: this.allRewardsValue ? this.allRewardsValue : 0,
+                            rewards:this.allRewardsValue ? this.allRewardsValue : 0,
 				            totalAmount:`${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal((Number(Tools.formatStringToFixedNumber(Tools.numberMoveDecimal(item.amount.toString(),-18),this.fixedNumber))*100 +
 					            Number(Tools.formatStringToFixedNumber(this.totalDelegator.toString(),this.fixedNumber)) +
 					            Number(Tools.formatStringToFixedNumber(this.totalUnBondingDelegator.toString(),this.fixedNumber))+
@@ -516,7 +518,7 @@
                                 },0);
                             }
                             this.allRewardsAmountValue = res.total_rewards ? Tools.formatStringToFixedNumber(Tools.numberMoveDecimal(res.total_rewards[0].amount,-18),this.fixedNumber) : 0;
-				            this.totalDelegatorRewardValue = `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(this.totalDelegatorReward.toString(),-2)).toFormat(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}`
+                            this.totalDelegatorRewardValue = `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(this.totalDelegatorReward.toString(),-2)).toFormat(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}`
 			            }
 		            }catch (e) {
 			            console.error(e)
@@ -794,7 +796,6 @@
             max-width: 12.8rem;
             margin: 0 auto;
             padding-bottom: 0.4rem;
-            padding-top: 0.54rem;
             .address_information_header_container{
                 width: 100%;
                 .address_information_header_content{
