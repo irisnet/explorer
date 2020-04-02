@@ -47,6 +47,7 @@ import Tools from "../../util/Tools";
 import MParametersCard from "../commontables/MParametersCard";
 import BigNumber from "bignumber.js";
 import PageTitle from "../pageTitle/PageTitle";
+import pageTitleConfig from "../pageTitle/pageTitleConfig";
 export default {
     name: "Parameters",
     components: {PageTitle, VParameters, MParametersCard },
@@ -56,7 +57,7 @@ export default {
             proposalsListPageWrap: "",
             showNoData: false,
             totalNumber:0,
-            pageTitle:"Parameters",
+            pageTitle:pageTitleConfig.GovParameters,
             contentDoc:'Total'
         };
     },
@@ -359,7 +360,7 @@ export default {
     .parameters_page_container{
         .parameters_list_container{
             .parameter_list_content{
-                padding-top: 0.05rem;
+                padding-top: 0.05rem !important;
             }
         }
     }
@@ -372,6 +373,7 @@ export default {
             max-width: 12.8rem;
             width: 100%;
             margin: 0 auto;
+            padding-top: 0.54rem;
             .parameter_list_title_content {
                 font-size: 0.18rem;
                 height: 0.7rem;

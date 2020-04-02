@@ -188,12 +188,13 @@
     import axios from "../../util/axios"
     import AdvertisingSpace from "../advertisingSpace/AdvertisingSpace";
     import PageTitle from "../pageTitle/PageTitle";
+    import pageTitleContent from "../pageTitle/pageTitleConfig"
 	export default {
 		name: "TxDetail",
         components: {PageTitle, AdvertisingSpace, MClip},
         data () {
 		    return {
-		        pageTitle:'Transaction Details',
+		        pageTitle:pageTitleContent.BlockchainTransactionsTransactionDetails,
                 txHashValue: '',
                 blockValue: '',
                 statusValue: '',
@@ -312,6 +313,7 @@
 <style scoped lang="scss">
     .tx_detail_container{
         .tx_detail_common_information_content_wrap{
+            padding-top: 0.54rem;
             max-width: 12.8rem;
             margin: 0 auto;
             .tx_detail_header_title{
@@ -546,6 +548,7 @@
     @media screen and (max-width: 910px){
         .tx_detail_container{
             .tx_detail_common_information_content_wrap{
+                padding-top: 0;
                 .tx_detail_common_information_wrap{
                     margin: 0 0.1rem;
                     .tx_detail_common_information_content{

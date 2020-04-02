@@ -2,12 +2,12 @@ package controller
 
 import (
 	"github.com/gorilla/mux"
+	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/vo"
 	"gopkg.in/mgo.v2/bson"
 	"time"
-	"github.com/irisnet/explorer/backend/conf"
 )
 
 func RegisterTx(r *mux.Router) error {
@@ -66,7 +66,7 @@ func registerQueryTxList(r *mux.Router) error {
 		address := QueryParam(request, "address")
 		beginTime := int64(utils.ParseIntWithDefault(QueryParam(request, "beginTime"), 0))
 		endTime := int64(utils.ParseIntWithDefault(QueryParam(request, "endTime"), 0))
-		utc,_ := time.LoadLocation("UTC")
+		utc, _ := time.LoadLocation("UTC")
 		istotal := false
 		if total == "true" {
 			istotal = true
@@ -154,7 +154,7 @@ func registerQueryTxListByType(r *mux.Router) error {
 		status := QueryParam(request, "status")
 		beginTime := int64(utils.ParseIntWithDefault(QueryParam(request, "beginTime"), 0))
 		endTime := int64(utils.ParseIntWithDefault(QueryParam(request, "endTime"), 0))
-		utc,_ := time.LoadLocation("UTC")
+		utc, _ := time.LoadLocation("UTC")
 		istotal := true
 		if total == "false" {
 			istotal = false
@@ -167,7 +167,7 @@ func registerQueryTxListByType(r *mux.Router) error {
 			prefix, _, _ := utils.DecodeAndConvert(address)
 			if prefix == conf.Get().Hub.Prefix.ValAddr {
 				condition = append(condition, bson.M{"from": address})
-			}else{
+			} else {
 				condition = append(condition, bson.M{"signers.addr_bech32": address})
 			}
 			query["$or"] = condition
@@ -253,7 +253,6 @@ func registerQueryTx(r *mux.Router) error {
 	return nil
 }
 
-
 // @Summary txsByAddress
 // @Description txsByAddress
 // @Tags txs
@@ -293,7 +292,13 @@ func registerQueryTxsByAccount(r *mux.Router) error {
 func registerQueryTxsByDay(r *mux.Router) error {
 	doApi(r, types.UrlRegisterQueryTxsByDay, "GET", func(request vo.IrisReq) interface{} {
 		tx.SetTid(request.TraceId)
-		result := tx.QueryTxNumGroupByDay()
+		interval := QueryParam(request, "interval")
+		intervalDays := utils.ParseIntWithDefault(interval, 14)
+		if intervalDays > 365 {
+			intervalDays = 365
+		}
+
+		result := tx.QueryTxNumGroupByDay(intervalDays)
 		return result
 	})
 	return nil

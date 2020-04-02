@@ -90,18 +90,20 @@
     import DateTooltip from "../dateToolTip/DateTooltip";
     import FormatTxType from "../../util/formatTxType"
     import PageTitle from "../pageTitle/PageTitle";
+    import pageTitleContent from "../pageTitle/pageTitleConfig"
 	export default {
 		name: "AllTxTypeList",
 		components: {PageTitle, DateTooltip, MAllTxTypeListTable,MPagination},
 		data() {
 			return {
-			    pageTitle:'Transactions list',
+			    pageTitle:pageTitleContent.BlockchainTransactions,
 				allTxTypeList: [],
                 pageSize: 30,
                 pickerStartTime:sessionStorage.getItem('firstBlockTime') ? sessionStorage.getItem('firstBlockTime') : '',
                 PickerOptions: {
                     disabledDate: (time) => {
-                        return time.getTime() < new Date(this.pickerStartTime).getTime() || time.getTime() > Date.now()
+                        
+                        return time.getTime() <= new Date(this.pickerStartTime).getTime() || time.getTime() > Date.now()
                     }
                 },
 				countNum: sessionStorage.getItem("txsTotal") ? Number(sessionStorage.getItem("txsTotal")) : 0,
@@ -218,6 +220,7 @@
 	        resetFilterCondition(){
 		        this.value = 'allTxType';
 		        this.statusValue = 'allStatus';
+		        this.TxType = '';
 		        this.startTime = '';
                 this.endTime = '';
 		        this.currentPageNum = 1;
@@ -239,7 +242,7 @@
 		        this.currentPageNumCache = this.currentPageNum;
                     let urlParams = this.getParamsByUrlHash();
                     this.statusValue = urlParams.txStatus ? urlParams.txStatus : 'allStatus';
-                    this.value = urlParams.txType ? urlParams.txType : 'allTxType';
+                    this.value = urlParams.cascaderTxType ? urlParams.cascaderTxType : 'allTxType';
                     this.startTime = urlParams.urlParamShowStartTime ? urlParams.urlParamShowStartTime : '';
                     this.endTime = urlParams.urlParamShowEndTime ? urlParams.urlParamShowEndTime : '';
 			        history.pushState(null, null, `/#/txs?txType=${urlParams.txType ? urlParams.txType : ''}&status=${urlParams.txStatus ? urlParams.txStatus : ''}&startTime=${urlParams.urlParamShowStartTime ? urlParams.urlParamShowStartTime : ''}&endTime=${urlParams.urlParamShowEndTime ? urlParams.urlParamShowEndTime : ''}&page=${pageNum}`);
@@ -514,6 +517,8 @@
 	            padding-top: 0;
                 padding-left: 0.1rem;
                 .all_type_list_title_wrap{
+                    padding-left: 0;
+                    padding-right: 0;
                     .all_type_list_filter_content{
                         flex-direction: column;
                         align-items: flex-start;

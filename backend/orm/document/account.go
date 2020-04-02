@@ -92,3 +92,21 @@ func (a Account) PkKvPair() map[string]interface{} {
 func (a Account) Batch(txs []txn.Op) error {
 	return orm.Batch(txs)
 }
+
+func (a Account) CountAll() (int, error) {
+	query := orm.NewQuery()
+	defer query.Release()
+	return query.SetCollection(a.Name()).Count()
+}
+
+func (a Account) CountDelegatorNum() (int, error) {
+	query := orm.NewQuery()
+	defer query.Release()
+
+	condition := bson.M{
+		"delegation.amount": bson.M{
+			"$gt": 0,
+		},
+	}
+	return query.SetCollection(a.Name()).SetCondition(condition).Count()
+}

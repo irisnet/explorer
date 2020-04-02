@@ -1,12 +1,51 @@
 package task
 
 import (
+	"fmt"
+	"github.com/irisnet/explorer/backend/conf"
+	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"gopkg.in/mgo.v2"
 	"time"
 )
 
-type TaskControlService struct {
+type (
+	TaskControlService struct {
+	}
+	Callback func() error
+)
+
+func (s TaskControlService) runTask(taskName string, timeInterval int, callback Callback) error {
+	if notBeExec, err := s.assetTaskShouldNotBeExecuted(taskName, timeInterval); err != nil {
+		return fmt.Errorf("assetTaskShouldNotBeExecuted fail, taskName:%s, err:%s", taskName, err.Error())
+	} else {
+		if notBeExec {
+			logger.Warn("task shouldn't be executed", logger.String("taskName", taskName))
+			return nil
+		}
+
+		// lock task
+		if err := s.lockTask(taskName); err != nil {
+			return fmt.Errorf("lockTask fail, taskName:%s, err:%s", taskName, err.Error())
+		} else {
+			// do task
+			var doTaskErr error
+			if err := callback(); err != nil {
+				doTaskErr = fmt.Errorf("doTask fail, taskName:%s, err:%s", taskName, err.Error())
+			}
+
+			// unlock task
+			if err := s.unlockTask(taskName); err != nil {
+				return fmt.Errorf("unLockTask fail, taskName:%s, err:%s", taskName, err.Error())
+			}
+
+			if doTaskErr != nil {
+				return doTaskErr
+			} else {
+				return nil
+			}
+		}
+	}
 }
 
 // task should not be executed as follow:
@@ -43,7 +82,8 @@ func (s TaskControlService) assetTaskShouldNotBeExecuted(taskName string, timeIn
 }
 
 func (s TaskControlService) lockTask(taskName string) error {
-	return taskControlModel.LockTaskControl(taskName)
+	instanceNo := conf.Get().Server.InstanceNo
+	return taskControlModel.LockTaskControl(taskName, instanceNo)
 }
 
 func (s TaskControlService) unlockTask(taskName string) error {

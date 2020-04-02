@@ -57,7 +57,7 @@
         </div>
 
 
-        <div :class="proposalsListPageWrap">
+        <div :class="proposalsListPageWrap" :style="{'padding-top': depositPeriodDatas.length === 0 && votingPeriodDatas.length === 0 ? '0.54rem' : 0}">
             <div class="pagination total_num header_fixed_style" :style="{'position':flTableFixed ? 'static' : 'fixed'}" :class="[$store.state.isMobile ? 'mobile_graph_pagination_container' : '']">
                 <div style="height: 70px; display: flex; align-items: center;">
                     <!--<span class="proposals_list_page_wrap_hash_var" :class="count ? 'count_show' : 'count_hidden' ">{{count}} Proposals</span>-->
@@ -122,6 +122,7 @@
 	import Constant from "../../constant/Constant";
 	import skinStyle from "../../skinStyle/"
     import PageTitle from "../pageTitle/PageTitle";
+    import pageTitleConfig from "../pageTitle/pageTitleConfig";
 	export default {
 		components:{
             PageTitle,
@@ -142,7 +143,7 @@
 		},
 		data() {
 			return {
-                pageTitle:'Proposals List',
+                pageTitle:pageTitleConfig.GovProposals,
                 contentDoc:'Proposals',
 				devicesWidth: window.innerWidth,
 				proposalsListPageWrap: 'personal_computer_proposals_list_page',
@@ -763,7 +764,7 @@
         display: flex;
         width: 12.8rem;
         flex-wrap: wrap;
-        margin: 0.3rem auto 0.1rem;
+        margin: 0.74rem auto 0.1rem;
         &:nth-last-of-type(1) {
             margin-bottom: 0;
         }
@@ -805,7 +806,7 @@
     .votingPeriodDatas_depositPeriodDatas {
         flex-direction: column;
         display: flex;
-        margin-top: 0.1rem;
+        margin-top: 0.54rem;
         & > div {
             flex-direction: row;
             display: flex;

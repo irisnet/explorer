@@ -1,7 +1,7 @@
 <template>
-    <div class="copy_container">
-        <img @click="handleCopy(text,$event)" src="../../assets/copy_icon.png" alt="copy" />
-        <div class="tips" ref="tip">
+    <div class="copy_container" @click="handleCopy(text,$event)">
+        <img src="../../assets/copy_icon.png" alt="copy" />
+        <div class="tips" ref="tip" :class="flShowTips ? 'show_tips' :''">
             {{tipText}}
             <i></i>
         </div>
@@ -22,7 +22,8 @@ export default {
         return {
             timer: null,
             tipText: "Copied",
-            resizeTimer: null
+            resizeTimer: null,
+            flShowTips: false,
         };
     },
     methods: {
@@ -44,10 +45,11 @@ export default {
         },
         showTip() {
             clearTimeout(this.timer);
-            this.$refs.tip.classList.add("show_tips");
+            this.flShowTips = !this.flShowTips;
+            let that= this;
             this.timer = setTimeout(() => {
-                this.$refs.tip.classList.remove("show_tips");
-            }, 500);
+                that.flShowTips = false
+            }, 600);
         },
         computedTipPosition() {
             clearTimeout(this.resizeTimer);
@@ -106,17 +108,19 @@ export default {
 .copy_container {
     position: relative;
     display: inline;
-    padding-left: 0.05rem;
+    padding-left: 0.02rem;
+    z-index: 10;
+    cursor: pointer;
     img {
         width: 0.11rem;
         height: 0.12rem;
-        cursor: pointer;
         vertical-align: baseline;
     }
     .tips {
         opacity: 0;
         position: absolute;
-        padding: 0rem 0.1rem;
+        padding: 0 0.1rem;
+        top:0.25rem;
         left: 50%;
         transform: translateX(-50%);
         color: #fff;
@@ -126,7 +130,6 @@ export default {
         line-height: 32px;
         font-size: 0.14rem;
         white-space: nowrap;
-        transition: opacity 0.3s ease-in;
         i {
             width: 0;
             height: 0;
@@ -136,18 +139,20 @@ export default {
             position: absolute;
             border-bottom-color: #000000;
             top: -38%;
-            margin-left: 16px;
+            margin-left: 18px;
         }
     }
     .show_tips {
-        opacity: 1;
-        animation: tip_fading_out 0.3s ease-in 0.3s;
+        animation: tip_fading_out 0.6s ease;
     }
     @keyframes tip_fading_out {
         0% {
             opacity: 1;
         }
-        100% {
+        50% {
+            opacity: 1;
+        }
+        100%{
             opacity: 0;
         }
     }

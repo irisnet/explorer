@@ -72,12 +72,13 @@
 	import MPagination from "../commontables/MPagination";
     import DateTooltip from "../dateToolTip/DateTooltip";
     import PageTitle from "../pageTitle/PageTitle";
+    import pageTitleConfig from "../pageTitle/pageTitleConfig";
 	export default {
 		name: "TransactionListPage",
 		components: {PageTitle, DateTooltip, MPagination, MTxListPageTable},
 		data() {
 			return {
-                pageTitle:'Transactions list',
+                pageTitle:'',
 				totalPageNum: sessionStorage.getItem("txpagenum") ? JSON.parse(sessionStorage.getItem("txpagenum")) : 1,
 				currentPageNum: this.forCurrentPageNum(),
                 pickerStartTime:sessionStorage.getItem('firstBlockTime') ? sessionStorage.getItem('firstBlockTime') : '',
@@ -243,15 +244,19 @@
 	            switch (this.$route.params.txType) {
 		            case 'delegations' :
 			            this.type = 'stake';
+			            this.pageTitle = pageTitleConfig.StakingDelegationTxs;
 			            break;
 		            case 'validations':
 			            this.type = 'declaration';
+			            this.pageTitle = pageTitleConfig.StakingValidationTxs;
 			            break;
 		            case 'transfers':
 			            this.type = 'trans';
+			            this.pageTitle = pageTitleConfig.Transfer;
 			            break;
 		            case 'governance':
 			            this.type = 'gov';
+			            this.pageTitle = pageTitleConfig.GovGovTxs;
 	            }
 	            this.getAllTxType();
             },

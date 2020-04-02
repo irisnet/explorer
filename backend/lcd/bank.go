@@ -1,11 +1,10 @@
 package lcd
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/utils"
-	"github.com/irisnet/explorer/backend/logger"
-	"encoding/json"
 )
 
 type TokenStats struct {
@@ -21,12 +20,10 @@ func GetBankTokenStats() (TokenStats, error) {
 	url := fmt.Sprintf(UrlBankTokenStats, conf.Get().Hub.LcdUrl)
 	resBytes, err := utils.Get(url)
 	if err != nil {
-		logger.Error("GetBankTokenStats have error", logger.String("err", err.Error()))
 		return result, err
 	}
 
 	if err := json.Unmarshal(resBytes, &result); err != nil {
-		logger.Error("GetBankTokenStats Unmarshal error", logger.String("err", err.Error()))
 		return result, err
 	}
 	return result, nil
@@ -45,7 +42,6 @@ func GetTokens(data []*Coin) Coin {
 func GetTokenStatsCirculation() (Coin, error) {
 	resBytes, err := utils.Get(UrlTokenStatsCirculation)
 	if err != nil {
-		logger.Error("GetTokenStatsCirculation have error", logger.String("err", err.Error()))
 		return Coin{}, err
 	}
 	return Coin{
@@ -57,7 +53,6 @@ func GetTokenStatsCirculation() (Coin, error) {
 func GetTokenStatsSupply() (Coin, error) {
 	resBytes, err := utils.Get(UrlTokenStatsSupply)
 	if err != nil {
-		logger.Error("GetTokenStatsSupply Unmarshal error", logger.String("err", err.Error()))
 		return Coin{}, err
 	}
 	return Coin{
@@ -73,7 +68,6 @@ func GetCommunityTax() (Coin, error) {
 	}
 	acc := Account01411{}
 	if err := json.Unmarshal(resBytes, &acc); err != nil {
-		logger.Error("get account error", logger.String("err", err.Error()))
 		return Coin{}, err
 	}
 

@@ -294,6 +294,7 @@ import MDepositCard from "../commontables/MDepositCard";
 import MVotingCard from "../commontables/MVotingCard";
 import MPagination from "../commontables/MPagination";
 import PageTitle from "../pageTitle/PageTitle";
+import pageTitleConfig from "../pageTitle/pageTitleConfig";
 
 export default {
     components: {
@@ -306,7 +307,7 @@ export default {
     },
     data () {
         return {
-            pageTitle:'Proposal Details',
+            pageTitle:pageTitleConfig.GovProposalsProposalDetails,
 	        symbolValue:'',
 	        canonicalSymbolValue:'',
 	        nameValue:'',
@@ -1221,7 +1222,7 @@ pre {
             }
             .level_container{
                 display: flex;
-                margin-bottom: 0.1rem;
+                margin: 0.1rem 0;
                 .step_content{
                     margin-left: 0.2rem;
                     span{

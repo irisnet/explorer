@@ -7,7 +7,7 @@
 					<span class="page_link" v-if="flShowPageLink">|</span>
 				</div>
 				<div class="page_title_content" v-if="reversal">
-					<span class="title_content">{{content}} <m-clip :text="copyText" v-if="flShowClip"></m-clip></span>
+					<div class="title_content">{{content}} <m-clip :text="copyText" v-if="flShowClip"></m-clip></div>
 					<span class="number_content" v-if="!flLink">{{number}}</span>
 					<router-link :to="`${href}${number}`" v-else>
 						<span class="number_content">{{number}}</span>
@@ -284,6 +284,10 @@
 						color: #fff;
 						padding: 0.02rem 0.14rem;
 						border-radius: 0.22rem;
+						line-height: 0.22rem;
+						height: 0.22rem;
+						display: inline-block;
+						min-width: 0.4rem;
 					}
 				}
 			}

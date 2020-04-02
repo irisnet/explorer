@@ -136,12 +136,6 @@
                         <div class="filter_content">
                             <div class="tx_type_content">
                                 <div class="tx_type_mobile_content">
-                                    <!--<el-select v-model="value" filterable :change="filterTxByTxType(value)">
-                                        <el-option v-for="(item, index) in txTypeOption"
-                                                   :key="index"
-                                                   :label="item.label"
-                                                   :value="item.value"></el-option>
-                                    </el-select>-->
                                     <el-cascader v-model="value"
                                                  :options="txTypeOption"
                                                  :props="{ expandTrigger: 'hover' }"
@@ -219,12 +213,13 @@
     import DateTooltip from "../../dateToolTip/DateTooltip";
     import FormatTxType from "../../../util/formatTxType"
     import PageTitle from "../../pageTitle/PageTitle";
+	import pageTitleConfig from "../../pageTitle/pageTitleConfig";
 	export default {
 		name: "AddressInfomation",
 		components: {PageTitle, DateTooltip, MPagination, MAddressInformationTable},
 		data(){
 			return {
-                pageTitle:'Address',
+                pageTitle:pageTitleConfig.StatsIRISRichListAddress,
 				withdrewToAddress: '',
 				validatorMoniker: '',
                 validatorStatus:'',
@@ -233,7 +228,7 @@
                 pickerStartTime:sessionStorage.getItem('firstBlockTime') ? sessionStorage.getItem('firstBlockTime') : '',
                 PickerOptions: {
                     disabledDate: (time) => {
-                        return time.getTime() < new Date(this.pickerStartTime).getTime() || time.getTime() > Date.now()
+                        return time.getTime() <= new Date(this.pickerStartTime).getTime() || time.getTime() > Date.now()
                     }
                 },
 				txTypeOption:[
@@ -414,7 +409,8 @@
                     }},(res) => {
 		            try {
 		            	if(res && res.length > 0){
-				            this.delegationPageNationArrayData = this.pageNation(res);
+				            let copyResult = JSON.parse(JSON.stringify(res));
+				            this.delegationPageNationArrayData = this.pageNation(copyResult);
 				            if(res.length > this.pageSize){
 					            this.flDelegationNextPage = true;
                             }else {
@@ -452,7 +448,8 @@
                     }},(res) => {
 		            try {
 		            	if(res && res.length > 0){
-				            this.unBondingDelegationPageNationArrayData = this.pageNation(res);
+		            		let copyResult = JSON.parse(JSON.stringify(res));
+				            this.unBondingDelegationPageNationArrayData = this.pageNation(copyResult);
 				            if(res.length > this.pageSize){
 					            this.flUnBondingDelegationNextPage = true
 				            }else {
@@ -661,7 +658,8 @@
                 sessionStorage.setItem('searchResultByTxTypeAndAddress',JSON.stringify(searchCondition))
 		        this.value = 'allTxType';
 		        this.statusValue = 'allStatus';
-		        this.startTime = '';
+                this.TxType = '';
+                this.startTime = '';
 		        this.endTime = '';
 		        this.allTxCurrentPage = 1;
 		        this.resetUrl();
@@ -700,8 +698,8 @@
 			        this.delegationsItems = this.delegationPageNationArrayData[pageNum].map(item => {
 				        return {
 					        address: item.address,
-					        amount: `${Tools.formatStringToFixedNumber(item.amount.amount.toString(),this.fixedNumber)} ${item.amount.denom.toUpperCase()}`,
-					        shares: (Number(item.shares)).toFixed(2),
+					        amount: `${new BigNumber(Tools.formatStringToFixedNumber(item.amount.amount.toString(),this.fixedNumber)).toFormat()} ${item.amount.denom.toUpperCase()}`,
+					        shares: new BigNumber((Number(item.shares)).toFixed(2)).toFormat(),
 					        block: item.height,
 					        moniker: item.moniker
 				        }
@@ -710,8 +708,8 @@
 			        this.delegationsItems = this.delegationPageNationArrayData.map(item => {
 				        return {
 					        address: item.address,
-					        amount: `${Tools.formatStringToFixedNumber(item.amount.amount.toString(),this.fixedNumber)} ${item.amount.denom.toUpperCase()}`,
-					        shares: (Number(item.shares)).toFixed(2),
+					        amount: `${new BigNumber(Tools.formatStringToFixedNumber(item.amount.amount.toString(),this.fixedNumber)).toFormat()} ${item.amount.denom.toUpperCase()}`,
+					        shares: new BigNumber((Number(item.shares)).toFixed(2)).toFormat(),
 					        block: item.height,
 					        moniker: item.moniker
 				        }
@@ -725,7 +723,7 @@
 			        this.unBondingDelegationsItems = this.unBondingDelegationPageNationArrayData[pageNum].map( item =>{
 				        return {
 					        address: item.address,
-					        amount: `${Tools.formatStringToFixedNumber(item.amount.amount.toString(),this.fixedNumber)} ${item.amount.denom.toUpperCase()}`,
+					        amount: `${new BigNumber(Tools.formatStringToFixedNumber(item.amount.amount.toString(),this.fixedNumber)).toFormat()} ${item.amount.denom.toUpperCase()}`,
 					        block: item.height,
 					        endTime: Tools.format2UTC(item.end_time),
 					        moniker: item.moniker
@@ -735,7 +733,7 @@
 			        this.unBondingDelegationsItems = this.unBondingDelegationPageNationArrayData.map( item =>{
 				        return {
 					        address: item.address,
-					        amount: `${Tools.formatStringToFixedNumber(item.amount.amount.toString(),this.fixedNumber)} ${item.amount.denom.toUpperCase()}`,
+					        amount: `${new BigNumber(Tools.formatStringToFixedNumber(item.amount.amount.toString(),this.fixedNumber)).toFormat()} ${item.amount.denom.toUpperCase()}`,
 					        block: item.height,
 					        endTime: Tools.format2UTC(item.end_time),
 					        moniker: item.moniker
@@ -766,7 +764,7 @@
 
             },
 	        allTxPageChange(pageNum){
-	            this.value = JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')) && JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).txType  ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).txType : 'allTxType';
+	            this.value = JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')) && JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).txType  ?  this.getRefUrlTxType(JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).txType) : 'allTxType';
 	            this.statusValue = JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')) && JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).status ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).status : 'allStatus';
 	            this.startTime = JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')) && JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).pageShowStartTime ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).pageShowStartTime : '';
 	            this.endTime = JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')) && JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).pageShowEndTime ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).pageShowEndTime : '';
@@ -796,6 +794,7 @@
             max-width: 12.8rem;
             margin: 0 auto;
             padding-bottom: 0.4rem;
+            padding-top: 0.54rem;
             .address_information_header_container{
                 width: 100%;
                 .address_information_header_content{
@@ -814,12 +813,14 @@
                             color: #fff;
                             padding: 0.02rem 0.14rem;
                             border-radius: 0.22rem;
+                            line-height: 0.22rem;
+                            height: 0.22rem;
+                            display: inline-block;
                         }
                     }
                 }
             }
             .address_information_assets_container{
-                padding-top: 0.54rem;
                 .address_information_assets_title{
                     padding: 0.12rem 0 0.12rem 0.2rem;
                     font-size: 0.18rem;
@@ -1166,6 +1167,7 @@
     @media screen and (max-width: 910px){
         .address_information_container{
             .address_information_content{
+                padding-top: 0;
                 .address_information_header_container{
                     .address_information_header_content{
                         .address_information_header{
@@ -1200,15 +1202,18 @@
                                         display: flex;
                                         justify-content: space-between;
                                         margin-bottom: 0.1rem;
+                                        /deep/ .el-cascader{
+                                            margin-right: 0;
+                                            width: 1.6rem !important;
+                                        }
                                         /deep/ .el-select{
                                             margin-right: 0;
                                             width: 1.6rem !important;
                                         }
-
+                                        
                                         /deep/ .el-date-editor{
                                             width: 1.6rem !important;
                                             .el-input__prefix{
-                                              left: 1.3rem;
                                             }
                                         }
                                         .reset_btn{

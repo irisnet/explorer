@@ -16,7 +16,7 @@ Vue.use(filters);
 /*引入自定义组件*/
 import MTable from './components/commontables/MTable.vue';
 Vue.component('MTable', MTable);
-
+import Tools from './util/Tools';
 import 'element-ui/lib/theme-chalk/index.css'
 import {Select} from 'element-ui'
 import {DatePicker} from 'element-ui'
@@ -63,13 +63,11 @@ axios.get(`/api/block/blockinfo/1`).then(data => {
     return data.data
   }
 }).then(blockinfo => {
-  let firstBlockTime = new Date(blockinfo.timestamp.split('T')[0]).getTime();
-
-  sessionStorage.setItem('firstBlockTime',Tools.formatDateYearToDate(firstBlockTime).replace(/\//g,'-'))
+  let firstBlockTime = new Date(blockinfo.timestamp.split('T')[0]).getTime() - 24 * 60 * 60 * 1000;
+  sessionStorage.setItem('firstBlockTime',Tools.formatDateYearToDate(firstBlockTime))
 });
 
 sessionStorage.setItem("Show_faucet",JSON.stringify(0));
-import Tools from './util/Tools';
 const routerPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push(location) {
   return routerPush.call(this, location).catch(error=> error)

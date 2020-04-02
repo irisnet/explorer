@@ -1,13 +1,14 @@
 package task
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
+	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/utils"
+	"github.com/shopspring/decimal"
 )
 
 type TxNumGroupByDayTask struct{}
@@ -16,36 +17,12 @@ func (task TxNumGroupByDayTask) Name() string {
 	return "tx_num_stat_task"
 }
 func (task TxNumGroupByDayTask) Start() {
-	task.init()
 	taskName := task.Name()
 	timeInterval := conf.Get().Server.CronTimeTxNumByDay
-	utils.RunTimer(timeInterval, utils.Sec, func() {
-		if notBeExec, err := tcService.assetTaskShouldNotBeExecuted(taskName, timeInterval); err != nil {
-			logger.Error("assetTaskShouldNotBeExecuted fail", logger.String("taskName", taskName),
-				logger.String("err", err.Error()))
-		} else {
-			if !notBeExec {
-				if err := tcService.lockTask(taskName); err != nil {
-					logger.Error("lockTask fail", logger.String("taskName", taskName),
-						logger.String("err", err.Error()))
-				} else {
-					if err := task.DoTask(); err != nil {
-						logger.Error(fmt.Sprintf("%s fail", task.Name()), logger.String("err", err.Error()))
-					} else {
-						logger.Info(fmt.Sprintf("%s success", task.Name()))
-					}
 
-					if err := tcService.unlockTask(taskName); err != nil {
-						logger.Error("unlockTask fail", logger.String("taskName", taskName),
-							logger.String("err", err.Error()))
-					}
-				}
-			} else {
-				logger.Debug(fmt.Sprintf("%s shouldn't be executed on this instance", task.Name()))
-			}
-		}
-
-	})
+	if err := tcService.runTask(taskName, timeInterval, task.DoTask); err != nil {
+		logger.Error(err.Error())
+	}
 }
 
 func (task TxNumGroupByDayTask) DoTask() error {
@@ -57,10 +34,33 @@ func (task TxNumGroupByDayTask) DoTask() error {
 		return err
 	}
 
+	// account info statistics
+	var (
+		totalAccNum  int64
+		delegatorNum int64
+	)
+	accModel := document.Account{}
+	if v, err := accModel.CountAll(); err != nil {
+		logger.Error("CountAllAccNum fail", logger.String("err", err.Error()))
+	} else {
+		totalAccNum = int64(v)
+	}
+	if v, err := accModel.CountDelegatorNum(); err != nil {
+		logger.Error("CountDelegatorNum fail", logger.String("err", err.Error()))
+	} else {
+		delegatorNum = int64(v)
+	}
+
+	// token stat statistics
+	tokenStat := task.getTokenStat()
+
 	txNumStat := document.TxNumStat{
-		Date:       utils.FmtTime(yesterday, utils.DateFmtYYYYMMDD),
-		Num:        int64(total),
-		CreateTime: time.Now(),
+		Date:         utils.FmtTime(yesterday, utils.DateFmtYYYYMMDD),
+		Num:          int64(total),
+		TotalAccNum:  totalAccNum,
+		DelegatorNum: delegatorNum,
+		TokenStat:    tokenStat,
+		CreateTime:   time.Now(),
 	}
 
 	if err := txNumStat.Insert(); err != nil {
@@ -70,6 +70,39 @@ func (task TxNumGroupByDayTask) DoTask() error {
 	return nil
 }
 
+func (task TxNumGroupByDayTask) getTokenStat() document.TokenStat {
+	var (
+		res              document.TokenStat
+		totalSupply      string
+		circulation      string
+		bonded           string
+		foundationBonded string
+	)
+	tokenStatService := service.TokenStatsService{}
+	if v, err := tokenStatService.QueryTokenStats(); err != nil {
+		return res
+	} else {
+		totalSupply = v.TotalsupplyTokens.Amount
+		circulation = v.CirculationTokens.Amount
+		bondedAmtIrisAtto := v.DelegatedTokens.Amount
+
+		if d, err := decimal.NewFromString(bondedAmtIrisAtto); err != nil {
+			bonded = "0"
+		} else {
+			bonded = d.Shift(-18).String()
+		}
+
+		foundationBonded = v.FoundationBonded.Amount
+	}
+
+	res.TotalSupply = totalSupply
+	res.Circulation = circulation
+	res.Bonded = bonded
+	res.FoundationBonded = foundationBonded
+
+	return res
+}
+
 // init ex_tx_num_stat document
 func (task TxNumGroupByDayTask) init() {
 
@@ -77,8 +110,6 @@ func (task TxNumGroupByDayTask) init() {
 	skip := time.Duration(-14 * 24 * time.Hour)
 	beginDate := now.Add(skip)
 	endDate := now.Add(-24 * time.Hour)
-
-	fmt.Println(now, beginDate, endDate)
 
 	cnt, err := document.TxNumStat{}.Count()
 	if err != nil {

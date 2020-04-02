@@ -261,15 +261,19 @@ func (_ CommonTx) CountByType(query bson.M) (Counter, error) {
 func (_ CommonTx) GetTxlistByDuration(startTime, endTime string) ([]TxNumStat, error) {
 
 	query := bson.M{}
-	query["date"] = bson.M{"$gte": startTime, "$lt": endTime}
+	query[TxNumStat_Field_Date] = bson.M{"$gte": startTime, "$lt": endTime}
 
-	var selector = bson.M{"date": 1, "num": 1}
+	var selector = bson.M{
+		TxNumStat_Field_Date: 1, TxNumStat_Field_Num: 1,
+		TNSFieldTotalAccNum: 1, TNSFieldDelegatorNum: 1,
+		TNSFieldTokenStat: 1,
+	}
 	var txNumStatList []TxNumStat
 
 	q := orm.NewQuery()
 	q.SetCollection(CollectionTxNumStat)
 	q.SetCondition(query)
-	q.SetSelector(selector).SetSort("date")
+	q.SetSelector(selector).SetSort(TxNumStat_Field_Date)
 	q.SetResult(&txNumStatList)
 
 	defer q.Release()

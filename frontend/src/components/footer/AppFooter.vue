@@ -43,7 +43,7 @@
         <div class="footer_version_content">
             <div class="footer_version_content_warp">
                 <div class="footer_copyright_wrap">
-                    ©️ IRISplorer 2020 all rights reserved
+                    ©️ IRISplorer 2019-2020 all rights reserved
                 </div>
                 <div class="footer_chain_id_content">Chain ID {{chainID}}</div>
                 <div class="footer_version_node_tendermint_content"><p>Node Version {{nodeVersion}}</p> <span class="line">|</span>  <p>Tendermint Version {{tendermintVersion}}</p></div>

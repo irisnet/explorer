@@ -15,7 +15,7 @@ export default class FormatTxType {
 			},
 			validationObj = {
 				value:'validation',
-				label:'validation',
+				label:'Validation',
 				children:[]
 			},
 			govObj = {
@@ -78,10 +78,10 @@ export default class FormatTxType {
 						label:'WithdrawDelegatorReward'
 					});
 					break;
-				case "WithdrawDelegatorRewardAll":
+				case "WithdrawDelegatorRewardsAll":
 					delegationObj.children.push({
-						value:'withdrawDelegatorRewardAll',
-						label:'WithdrawDelegatorRewardAll'
+						value:'withdrawDelegatorRewardsAll',
+						label:'WithdrawDelegatorRewardsAll'
 					});
 					break;
 				case "CreateValidator":
@@ -136,6 +136,12 @@ export default class FormatTxType {
 					othersObj.children.push({
 						value:'editToken',
 						label:'EditToken'
+					});
+					break;
+				case "MintToken":
+					othersObj.children.push({
+						value:'mintToken',
+						label:'MintToken'
 					});
 					break;
 				case "TransferTokenOwner":
@@ -198,6 +204,12 @@ export default class FormatTxType {
 						label:'CreateHTLC'
 					});
 					break;
+				case "RefundHTLC":
+					othersObj.children.push({
+						value:'refundHTLC',
+						label:'RefundHTLC'
+					});
+					break;
 				case "AddLiquidity":
 					othersObj.children.push({
 						value:'addLiquidity',
@@ -215,7 +227,11 @@ export default class FormatTxType {
 						value:'swapOrder',
 						label:'SwapOrder'
 					});
-				
+				case "AddProfiler":
+					othersObj.children.push({
+						value:'addProfiler',
+						label:'AddProfiler'
+					});
 			}
 			
 		});
@@ -259,7 +275,7 @@ export default class FormatTxType {
 			['others','swapOrder'],
 		];
 		UrlTxType.forEach( item => {
-			if(Tools.firstWordUpperCase(item[item.length -1]) === txType){
+			if(Tools.onlyFirstWordUpperCase(item[item.length -1]) === txType){
 				refUrlTxType = item
 			}
 		});
