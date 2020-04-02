@@ -698,6 +698,8 @@ definitions:
         type: integer
       tendermint_version:
         type: string
+      umeng_id:
+        type: integer
     type: object
   vo.DelagationsRewards:
     properties:

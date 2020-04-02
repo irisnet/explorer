@@ -1,7 +1,6 @@
 package task
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/irisnet/explorer/backend/conf"
@@ -16,14 +15,12 @@ func (task TxNumGroupByDayTask) Name() string {
 	return "tx_num_stat_task"
 }
 func (task TxNumGroupByDayTask) Start() {
-	task.init()
-	utils.RunTimer(conf.Get().Server.CronTimeTxNumByDay, utils.Sec, func() {
-		if err := task.DoTask(); err != nil {
-			logger.Error(fmt.Sprintf("%s fail", task.Name()), logger.String("err", err.Error()))
-		} else {
-			logger.Info(fmt.Sprintf("%s success", task.Name()))
-		}
-	})
+	taskName := task.Name()
+	timeInterval := conf.Get().Server.CronTimeTxNumByDay
+
+	if err := tcService.runTask(taskName, timeInterval, task.DoTask); err != nil {
+		logger.Error(err.Error())
+	}
 }
 
 func (task TxNumGroupByDayTask) DoTask() error {
@@ -35,10 +32,28 @@ func (task TxNumGroupByDayTask) DoTask() error {
 		return err
 	}
 
+	var (
+		totalAccNum  int64
+		delegatorNum int64
+	)
+	accModel := document.Account{}
+	if v, err := accModel.CountAll(); err != nil {
+		logger.Error("CountAllAccNum fail", logger.String("err", err.Error()))
+	} else {
+		totalAccNum = int64(v)
+	}
+	if v, err := accModel.CountDelegatorNum(); err != nil {
+		logger.Error("CountDelegatorNum fail", logger.String("err", err.Error()))
+	} else {
+		delegatorNum = int64(v)
+	}
+
 	txNumStat := document.TxNumStat{
-		Date:       utils.FmtTime(yesterday, utils.DateFmtYYYYMMDD),
-		Num:        int64(total),
-		CreateTime: time.Now(),
+		Date:         utils.FmtTime(yesterday, utils.DateFmtYYYYMMDD),
+		Num:          int64(total),
+		TotalAccNum:  totalAccNum,
+		DelegatorNum: delegatorNum,
+		CreateTime:   time.Now(),
 	}
 
 	if err := txNumStat.Insert(); err != nil {
@@ -55,8 +70,6 @@ func (task TxNumGroupByDayTask) init() {
 	skip := time.Duration(-14 * 24 * time.Hour)
 	beginDate := now.Add(skip)
 	endDate := now.Add(-24 * time.Hour)
-
-	fmt.Println(now, beginDate, endDate)
 
 	cnt, err := document.TxNumStat{}.Count()
 	if err != nil {

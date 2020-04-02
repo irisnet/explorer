@@ -1,12 +1,11 @@
 package task
 
 import (
-	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/conf"
-	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/logger"
-	"fmt"
 	"github.com/irisnet/explorer/backend/orm/document"
+	"github.com/irisnet/explorer/backend/service"
+	"github.com/irisnet/explorer/backend/utils"
 )
 
 type UpdateProposalVoters struct{}
@@ -16,14 +15,14 @@ func (task UpdateProposalVoters) Name() string {
 }
 
 func (task UpdateProposalVoters) Start() {
-	utils.RunTimer(conf.Get().Server.CronTimeProposalVoters, utils.Sec, func() {
-		if err := task.DoTask(); err != nil {
-			logger.Error(fmt.Sprintf("%s fail", task.Name()), logger.String("err", err.Error()))
-		} else {
-			logger.Info(fmt.Sprintf("%s success", task.Name()))
+	taskName := task.Name()
+	timeInterval := conf.Get().Server.CronTimeProposalVoters
+
+	utils.RunTimer(timeInterval, utils.Sec, func() {
+		if err := tcService.runTask(taskName, timeInterval, task.DoTask); err != nil {
+			logger.Error(err.Error())
 		}
 	})
-
 }
 
 func (task UpdateProposalVoters) DoTask() error {

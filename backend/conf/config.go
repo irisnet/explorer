@@ -5,7 +5,10 @@ import (
 	"strconv"
 	"strings"
 
+	"fmt"
 	"github.com/irisnet/explorer/backend/logger"
+	"math/rand"
+	"time"
 )
 
 const (
@@ -72,7 +75,9 @@ func init() {
 	}
 	config.Db = db
 
+	rand.Seed(time.Now().Unix())
 	server := serverConf{
+		InstanceNo:                  fmt.Sprintf("%d-%d", time.Now().Unix(), rand.Int63n(100)),
 		ServerPort:                  getEnvInt(KeyServerPort, DefaultEnvironment),
 		FaucetUrl:                   getEnv(KeyAddrFaucet, DefaultEnvironment),
 		ApiVersion:                  getEnv(KeyApiVersion, DefaultEnvironment),
@@ -88,6 +93,7 @@ func init() {
 		CronTimeProposalVoters:      getEnvInt(KeyCronTimeProposalVoters, DefaultEnvironment),
 		CronTimeValidatorStaticInfo: getEnvInt(KeyCronTimeValidatorStaticInfo, DefaultEnvironment),
 	}
+	logger.Info(fmt.Sprintf("serverInstanceNo: %s", server.InstanceNo))
 	config.Server = server
 
 	hubcf := hubConf{
@@ -116,8 +122,8 @@ func loadDefault() {
 		KeyDbPwd:          "irispassword",
 		KeyDbPoolLimit:    "4096",
 		KeyServerPort:     "8080",
-		KeyAddrHubLcd:     "http://irisnet-lcd.dev.rainbow.one",
-		KeyAddrHubNode:    "http://192.168.150.33:26657",
+		KeyAddrHubLcd:     "http://irisnet-lcd.dev.bianjie.ai",
+		KeyAddrHubNode:    "http://irisnet-rpc.dev.rainbow.one",
 		KeyAddrFaucet:     "http://192.168.150.7:30200",
 		KeyChainId:        "rainbow-dev",
 		KeyApiVersion:     "v0.6.5",
@@ -162,6 +168,7 @@ type dbConf struct {
 }
 
 type serverConf struct {
+	InstanceNo                  string
 	ServerPort                  int
 	FaucetUrl                   string
 	ApiVersion                  string

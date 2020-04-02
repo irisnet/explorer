@@ -5,15 +5,21 @@ import (
 	"time"
 
 	"github.com/irisnet/explorer/backend/logger"
+	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/utils"
+	"github.com/robfig/cron/v3"
 )
 
-var engine = Engine{
-	task: []TimerTask{},
-}
+var (
+	engine = Engine{
+		task: []TimerTask{},
+	}
+
+	taskControlModel document.TaskControl
+	tcService        TaskControlService
+)
 
 func init() {
-	engine.AppendTask(TxNumGroupByDayTask{})
 	engine.AppendTask(UpdateValidator{})
 	engine.AppendTask(UpdateGovParams{})
 	engine.AppendTask(UpdateValidatorIcons{})
@@ -50,4 +56,14 @@ func (e *Engine) AppendTask(task TimerTask) {
 
 func Start() {
 	engine.Start()
+
+	// tasks manager by cron job
+	c := cron.New()
+	c.Start()
+
+	txNumTask := TxNumGroupByDayTask{}
+	txNumTask.init()
+	c.AddFunc("0 0 * * *", func() {
+		txNumTask.Start()
+	})
 }
