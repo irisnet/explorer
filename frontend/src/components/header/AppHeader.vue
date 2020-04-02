@@ -100,6 +100,7 @@
                     </div>
                 </div>
             </transition>
+            <span v-show="flShowUnfoldBtn" v-if="$store.state.showHeaderUnfoldBtn" @click="showSearchBar" class="header_unfold iconfont iconzhankai"></span>
         </header>
         <div class="app_header_mobile"
              v-show="devicesShow === 0"
@@ -240,6 +241,9 @@
 				this.searchInputValue = "";
 				this.flShowSubMenu = false;
 				this.listenRouteForChangeActiveButton();
+				if(this.$route.fullPath.includes('/home')){
+				    this.flShowUnfoldBtn = true
+                }
 				this.showHeader = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
 			},
 			searchInputValue (searchInputValue) {
@@ -255,6 +259,7 @@
 		},
 		data () {
 			return {
+                flShowUnfoldBtn:false,
 				devicesWidth: window.innerWidth,
 				devicesShow: 1,
 				searchValue: '',
@@ -324,6 +329,7 @@
 			}
 		},
 		mounted () {
+		    this.flShowUnfoldBtn = true;
 			if (window.innerWidth > 910) {
 				this.devicesShow = 1;
 				this.appHeaderVar = 'person_computer_header_var';
@@ -376,6 +382,10 @@
 						this.activeFaucet = true;
 						break;
 				}
+            },
+            showSearchBar(){
+			  this.$store.commit('flShowSearchBar',true)
+              this.$store.commit('showHeaderUnfoldBtn',false)
             },
 			showTwoMenu(v){
 				this.flShowSubMenu = true;
@@ -784,6 +794,15 @@
             box-sizing: border-box;
             width: 100%;
             background: var(--bgColor);
+            position: relative;
+            .header_unfold{
+                position: absolute;
+                right: 0.2rem;
+                top: 0.13rem;
+                font-size: 0.32rem;
+                color: rgba(255,255,255,0.5);
+                cursor: pointer;
+            }
             .header_navigation_container{
                 max-width: 12.8rem;
                 margin: 0 auto;
@@ -923,6 +942,9 @@
                                     padding-bottom: 0.05rem;
                                 }
                             }
+                        }
+                        .iconzhankai{
+                            font-size: 0.32rem;
                         }
                     }
                 }
@@ -1282,7 +1304,18 @@
             }
         }
     }
-    @media screen and (max-width: 1200px) {
+    @media screen and (max-width: 1350px){
+        .header_navigation_container{
+            .header_navigation_wrap{
+                .header_right_content{
+                    .network_container{
+                        margin-right: 0.4rem;
+                    }
+                }
+            }
+        }
+    }
+    @media screen and (max-width: 1280px) {
         .person_computer_header_var {
             .app_header_person_computer {
                 .header_top_container {

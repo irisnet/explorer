@@ -1,8 +1,11 @@
 <template>
     <div class="home_wrap">
         <!--<advertising-space></advertising-space>-->
+
+        <search-bar></search-bar>
+        <statistical-bar></statistical-bar>
         <div class="home_container">
-            <div class="information_preview">
+            <!--<div class="information_preview">
                 <ul class="current_net_status_list">
                     <li class="item_status">
                         <div class="img_container">
@@ -24,8 +27,10 @@
                             <span class="item_name">{{lang.home.transactions}}</span>
                         </div>
                         <p class="current_block transaction_link">
-                            <router-link @click.native="$uMeng.push('HomeOverview_Transactions','click')" v-show="transactionValue !== '--'" :to="`/txs`">{{transactionValue}}</router-link>
-                            <span v-show="transactionValue === '--'">--</span>
+
+
+                            <router-link @click.native="$uMeng.push('HomeOverview_Transactions','click')" v-show="transactionValue !== '&#45;&#45;'" :to="`/txs`">{{transactionValue}}</router-link>
+                            <span v-show="transactionValue === '&#45;&#45;'">&#45;&#45;</span>
                         </p>
                         <p class="block_time">{{blockTime}}</p>
                     </li>
@@ -76,7 +81,7 @@
                         <p class="block_time">{{circulationBondedTokenValue}}</p>
                     </li>
                 </ul>
-            </div>
+            </div>-->
             <div class="echarts_content">
                 <div class="home_module_item home_module_item_pie">
                     <echarts-pie :information="information"></echarts-pie>
@@ -128,12 +133,14 @@
     import MDepositCard from "../commontables/MDepositCard";
     import MVotingCard from "../commontables/MVotingCard";
     import axios from "axios"
-    import AdvertisingSpace from "../advertisingSpace/AdvertisingSpace";
+
+    import SearchBar from "./SearchBar";
+    import StatisticalBar from "./StatisticalBar";
     export default {
         name: 'app-header',
         components: {
-            AdvertisingSpace,
-            MVotingCard, MDepositCard, MHomeVotingCrad, EchartsPie, EchartsLine, HomeBlockModule},
+            StatisticalBar,
+            SearchBar, MVotingCard, MDepositCard, MHomeVotingCrad, EchartsPie, EchartsLine, HomeBlockModule},
         data() {
             return {
                 circulationBondedToken:'--',
@@ -545,7 +552,7 @@
             width: 100%;
             box-sizing: border-box;
             padding: 0.2rem 0.2rem 0 0.2rem;
-            .information_preview {
+            /*.information_preview {
                 display: flex;
                 flex-direction: column;
                 margin-bottom: 0.3rem;
@@ -611,10 +618,7 @@
                         margin-right: 0;
                     }
                 }
-                .current_net_status_list:last-child{
-                    margin-top: 0.2rem;
-                }
-            }
+            }*/
             .echarts_content{
                 width: 100%;
                 display: flex;

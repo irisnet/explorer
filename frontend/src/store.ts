@@ -19,6 +19,8 @@ const store = new Vuex.Store({
     setQrImg:'',
     testSkinStyle:false,
     hideTestSkinStyle: true,
+    showHeaderUnfoldBtn:false,
+    flShowSearchBar:false
   },
   mutations:{
     currentNoValue(state,data){
@@ -68,6 +70,12 @@ const store = new Vuex.Store({
     },
     hideTestSkinStyle(state,data){
       state.hideTestSkinStyle = data
+    },
+    showHeaderUnfoldBtn(state,data){
+      state.showHeaderUnfoldBtn = data
+    },
+    flShowSearchBar(state,data){
+      state.flShowSearchBar = data
     }
   }
 })
