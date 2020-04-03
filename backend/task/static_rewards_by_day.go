@@ -179,7 +179,7 @@ func (task StaticRewardsByDayTask) getAccountFromDb() ([]string, error) {
 	length := size
 	var accAddress []string
 	for {
-		accounts, err := task.account.GetRewardsAccount(offset, size)
+		accounts, err := task.account.GetDelegatores(offset, size)
 		if err != nil {
 			logger.Error(err.Error())
 			return accAddress, err

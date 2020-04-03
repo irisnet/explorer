@@ -72,6 +72,7 @@ func (task ValidatorStaticByDayTask) loadValidatorTokens(validator document.Vali
 	item := document.ExValidatorStatic{
 		Id:              bson.NewObjectId(),
 		OperatorAddress: validator.OperatorAddress,
+		Status:          validator.GetValidatorStatus(),
 		Date:            today,
 		SelfBond:        validator.SelfBond,
 		DelegatorShares: validator.DelegatorShares,

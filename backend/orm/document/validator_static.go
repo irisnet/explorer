@@ -18,6 +18,7 @@ const (
 type ExValidatorStatic struct {
 	Id              bson.ObjectId `bson:"_id"`
 	OperatorAddress string        `bson:"operator_address"`
+	Status          string        `bson:"status"`
 	Date            time.Time     `bson:"date"`
 	Tokens          string        `bson:"tokens"`
 	DelegatorShares string        `bson:"delegator_shares"`

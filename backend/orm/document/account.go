@@ -68,7 +68,7 @@ func (a Account) GetAccountList() ([]Account, error) {
 	return result, err
 }
 
-func (a Account) GetRewardsAccount(offset, size int) ([]Account, error) {
+func (a Account) GetDelegatores(offset, size int) ([]Account, error) {
 	var result []Account
 
 	query := orm.NewQuery()
