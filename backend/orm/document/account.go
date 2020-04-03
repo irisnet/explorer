@@ -81,6 +81,27 @@ func (a Account) GetAllAccount() ([]Account, error) {
 	return result, err
 }
 
+func (a Account) GetDelegatores(offset, size int) ([]Account, error) {
+	var result []Account
+
+	query := orm.NewQuery()
+	defer query.Release()
+
+	condition := bson.M{
+		"delegation.amount": bson.M{
+			"$gt": 0,
+		},
+	}
+
+	query.SetCollection(CollectionNmAccount).SetCondition(condition).
+		SetSort(desc("total.amount"), AccountFieldTotalUpdateAt, AccountFieldAccountNumber).
+		SetOffset(offset).
+		SetSize(size).
+		SetResult(&result)
+	err := query.Exec()
+	return result, err
+}
+
 func (a Account) Name() string {
 	return CollectionNmAccount
 }

@@ -17,6 +17,7 @@ var (
 
 	taskControlModel document.TaskControl
 	tcService        TaskControlService
+	cstZone          = time.FixedZone("CST", 8*3600)
 )
 
 func init() {
@@ -65,5 +66,7 @@ func Start() {
 	txNumTask.init()
 	c.AddFunc("01 0 * * *", func() {
 		txNumTask.Start()
+		new(StaticRewardsTask).Start()
+		new(StaticValidatorTask).Start()
 	})
 }
