@@ -65,5 +65,7 @@ func Start() {
 	txNumTask.init()
 	c.AddFunc("01 0 * * *", func() {
 		txNumTask.Start()
+		new(StaticRewardsTask).Start()
+		new(StaticValidatorTask).Start()
 	})
 }
