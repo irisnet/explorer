@@ -12,6 +12,7 @@
                                                  :options="txTypeOption"
                                                  :props="{ expandTrigger: 'hover' }"
                                                  :show-all-levels="false"
+                                                 :filterable="true"
                                                  @change="filterTxByTxType(value)"></el-cascader>
                             
                                     <el-select v-model="statusValue" :change="filterTxByStatus(statusValue)">

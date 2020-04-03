@@ -1,29 +1,31 @@
 <template>
     <div class="transactions_detail_wrap">
-        <div :class="[transactionsDetailWrap, 'validator_title']" class="page_title_container">
-            <div class="title_tag_content">
-                <span class="validator_title_content">Validator Details</span>
-                <span class="validator_page_link">|</span>
-            </div>
-            <div class="title_tag_right_content">
-                <div class="validator_img_container">
-                    <img :src="validatorImg" alt="">
-                </div>
-                <span class="title">{{validatorName}}</span>
-                <div class="status_btn" v-if="validatorStatus === 'Active'">Active</div>
-                <div
-                        class="status_btn"
-                        style="background-color: #3DA87E;"
-                        v-if="validatorStatus === 'Candidate'"
-                >Candidate</div>
-                <div
-                        class="status_btn"
-                        style="background-color: #FA7373;"
-                        v-if="validatorStatus === 'Jailed'"
-                >Jailed</div>
-            </div>
-        </div>
-        <div :class="transactionsDetailWrap">
+        <!--<div :class="[transactionsDetailWrap, 'validator_title']" class="page_title_container">-->
+            <!--<div class="title_tag_content">-->
+                <!--<span class="validator_title_content">Validator Details</span>-->
+                <!--<span class="validator_page_link">|</span>-->
+            <!--</div>-->
+            <!--<div class="title_tag_right_content">-->
+                <!--<div class="validator_img_container">-->
+                    <!--<img :src="validatorImg" alt="">-->
+                <!--</div>-->
+                <!--<span class="title">{{validatorName}}</span>-->
+                <!--<div class="status_btn" v-if="validatorStatus === 'Active'">Active</div>-->
+                <!--<div-->
+                        <!--class="status_btn"-->
+                        <!--style="background-color: #3DA87E;"-->
+                        <!--v-if="validatorStatus === 'Candidate'"-->
+                <!--&gt;Candidate</div>-->
+                <!--<div-->
+                        <!--class="status_btn"-->
+                        <!--style="background-color: #FA7373;"-->
+                        <!--v-if="validatorStatus === 'Jailed'"-->
+                <!--&gt;Jailed</div>-->
+            <!--</div>-->
+        <!--</div>-->
+        <page-title :title="'Validator Details'" :flShowPageLink="false"></page-title>
+        <validation-information :validationInformation="validationInformation" :validatorStatus="validatorStatus"></validation-information>
+        <!--<div :class="transactionsDetailWrap">
             <div class="validator_detail_information_wrap">
                 <div>
                     <div
@@ -40,7 +42,7 @@
                             <span class="information_value" v-else>{{v[1]}}</span>
                         </template>
                         <template v-else>
-                            <span class="information_value">--</span>
+                            <span class="information_value">&#45;&#45;</span>
                         </template>
                     </div>
                 </div>
@@ -60,12 +62,12 @@
                             <span class="information_value" v-else>{{v[1]}}</span>
                         </template>
                         <template v-else>
-                            <span class="information_value">--</span>
+                            <span class="information_value">&#45;&#45;</span>
                         </template>
                     </div>
                 </div>
             </div>
-        </div>
+        </div>-->
         <div :class="transactionsDetailWrap" class="address_profile">
             <p class="validator_information_content_title">Validator Profile</p>
             <div class="validator_detail_information_wrap">
@@ -299,10 +301,13 @@ import MValidatorDetailTable from "./MValidatorDetailTable";
 import MPagination from "../../commontables/MPagination";
 import axios from "../../../util/axios";
 import pageTitleConfig from "../../pageTitle/pageTitleConfig";
+import ValidationInformation from "./ValidationInformation";
+import PageTitle from "../../pageTitle/PageTitle";
 export default {
 
     data() {
         return {
+            validationInformation:{},
             pageTitle:pageTitleConfig.StakingValidatorsValidatorDetails,
             transactionsDetailWrap: "personal_computer_transactions_detail",
             pageSize: 5,
@@ -421,6 +426,8 @@ export default {
         };
     },
     components: {
+        PageTitle,
+        ValidationInformation,
         EchartsValidatorsUptimeLine,
         EchartsValidatorsLine,
         EchartsLine,
@@ -447,7 +454,7 @@ export default {
             );
         }
         this.getValidatorsInfo();
-        this.getValidatorWithdrawAddr();
+        // this.getValidatorWithdrawAddr();
         this.getValidatorRewards();
         this.getDelegations();
         this.getUnbondingDelegations();
@@ -491,7 +498,7 @@ export default {
                 this[key](page);
             };
         },
-        getValidatorWithdrawAddr() {
+        /*getValidatorWithdrawAddr() {
             Service.commonInterface(
                 {
                     validatorWithdrawAddr: {
@@ -509,7 +516,7 @@ export default {
                     }
                 }
             );
-        },
+        },*/
         getValidatorRewards() {
             Service.commonInterface(
                 {
@@ -542,6 +549,7 @@ export default {
                 data => {
                     try {
                         if (data) {
+                            this.validationInformation = data;
                         	if(data.icons){
                         		this.validatorImg = data.icons
                             }else {

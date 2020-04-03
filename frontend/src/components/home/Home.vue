@@ -510,6 +510,7 @@
         destroyed () {
             clearInterval(this.timer);
             clearInterval(this.navigationTimer);
+            this.$store.commit('showHeaderUnfoldBtn',false)
             }
     }
 </script>

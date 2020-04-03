@@ -204,6 +204,9 @@
 					flex-direction: column;
 					align-items: center;
 					.statistical_validator_top_content{
+						display: flex;
+						flex-direction: column;
+						align-items: center;
 						.statistical_validator_header{
 							margin-bottom: 0.2rem;
 							margin-top: 0.15rem;
@@ -226,6 +229,9 @@
 						}
 					}
 					.statistical_validator_bottom_content{
+						display: flex;
+						flex-direction: column;
+						align-items: center;
 						.statistical_img_content{
 							width: 1.2rem;
 							height: 1.2rem;

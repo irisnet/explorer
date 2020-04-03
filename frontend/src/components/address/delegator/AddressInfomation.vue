@@ -1,7 +1,7 @@
 <template>
     <div class="address_information_container">
         <page-title :title="pageTitle" :flShowPageLink="false">
-               <span class="address_information_address_status_profiler" v-if="isProfiler">Profiler</span>
+               <!--<span class="address_information_address_status_profiler" v-if="isProfiler">Profiler</span>-->
         </page-title>
         <address-information-component :address="headerAddress" :data="assetsItems"></address-information-component>
         <div class="address_information_content">
@@ -138,6 +138,7 @@
                                                  :options="txTypeOption"
                                                  :props="{ expandTrigger: 'hover' }"
                                                  :show-all-levels="false"
+                                                 :filterable="true"
                                                  @change="filterTxByTxType(value)"></el-cascader>
 
                                     <el-select v-model="statusValue" :change="filterTxByStatus(statusValue)">

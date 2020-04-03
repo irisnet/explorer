@@ -243,6 +243,8 @@
 				this.listenRouteForChangeActiveButton();
 				if(this.$route.fullPath.includes('/home')){
 				    this.flShowUnfoldBtn = true
+                }else {
+                    this.flShowUnfoldBtn = false
                 }
 				this.showHeader = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
 			},
