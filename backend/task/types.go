@@ -17,6 +17,7 @@ var (
 
 	taskControlModel document.TaskControl
 	tcService        TaskControlService
+	cstZone          = time.FixedZone("CST", 8*3600)
 )
 
 func init() {
