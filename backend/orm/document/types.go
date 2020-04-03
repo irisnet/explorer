@@ -18,5 +18,6 @@ var (
 	Docs = []Doc{
 		TaskControlModel,
 		new(ExStaticRewards),
+		new(ExValidatorStatic),
 	}
 )
