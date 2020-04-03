@@ -1,21 +1,21 @@
 package document
 
 import (
-	"gopkg.in/mgo.v2/bson"
-	"time"
-	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/txn"
 	"github.com/irisnet/explorer/backend/orm"
+	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
+	"gopkg.in/mgo.v2/txn"
+	"time"
 )
 
 const (
-	CollectionNameExValidatorStatic = "ex_validator_static"
+	CollectionNameExValidatorStatic = "ex_static_validator"
 
 	ValidatorStaticFieldOperatorAddress = "operator_address"
 	ValidatorStaticFieldDate            = "date"
 )
 
-type ExValidatorStatic struct {
+type ExStaticValidator struct {
 	Id              bson.ObjectId `bson:"_id"`
 	OperatorAddress string        `bson:"operator_address"`
 	Status          string        `bson:"status"`
@@ -27,15 +27,15 @@ type ExValidatorStatic struct {
 	Commission      Commission    `bson:"commission"`
 }
 
-func (d ExValidatorStatic) Name() string {
+func (d ExStaticValidator) Name() string {
 	return CollectionNameExValidatorStatic
 }
 
-func (d ExValidatorStatic) PkKvPair() map[string]interface{} {
+func (d ExStaticValidator) PkKvPair() map[string]interface{} {
 	return bson.M{ValidatorStaticFieldOperatorAddress: d.OperatorAddress, ValidatorStaticFieldDate: d.Date}
 }
 
-func (d ExValidatorStatic) EnsureIndexes() []mgo.Index {
+func (d ExStaticValidator) EnsureIndexes() []mgo.Index {
 	indexes := []mgo.Index{
 		{
 			Key:        []string{ValidatorStaticFieldOperatorAddress, ValidatorStaticFieldDate},
@@ -47,6 +47,6 @@ func (d ExValidatorStatic) EnsureIndexes() []mgo.Index {
 	return indexes
 }
 
-func (_ ExValidatorStatic) Batch(txs []txn.Op) error {
+func (_ ExStaticValidator) Batch(txs []txn.Op) error {
 	return orm.Batch(txs)
 }

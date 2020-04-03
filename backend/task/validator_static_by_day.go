@@ -2,12 +2,12 @@ package task
 
 import (
 	"github.com/irisnet/explorer/backend/conf"
-	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/logger"
-	"gopkg.in/mgo.v2/txn"
+	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/utils"
-	"time"
 	"gopkg.in/mgo.v2/bson"
+	"gopkg.in/mgo.v2/txn"
+	"time"
 )
 
 type ValidatorStaticByDayTask struct {
@@ -32,7 +32,7 @@ func (task ValidatorStaticByDayTask) DoTask() error {
 		logger.Error(err.Error())
 		return err
 	}
-	return document.ExValidatorStatic{}.Batch(ops)
+	return document.ExStaticValidator{}.Batch(ops)
 }
 
 func (task ValidatorStaticByDayTask) getAllValidatorTokens() ([]txn.Op, error) {
@@ -67,9 +67,9 @@ func (task ValidatorStaticByDayTask) saveExValidatorStaticOps(validators []docum
 	return ops, nil
 }
 
-func (task ValidatorStaticByDayTask) loadValidatorTokens(validator document.Validator, today time.Time) (document.ExValidatorStatic, error) {
+func (task ValidatorStaticByDayTask) loadValidatorTokens(validator document.Validator, today time.Time) (document.ExStaticValidator, error) {
 
-	item := document.ExValidatorStatic{
+	item := document.ExStaticValidator{
 		Id:              bson.NewObjectId(),
 		OperatorAddress: validator.OperatorAddress,
 		Status:          validator.GetValidatorStatus(),
