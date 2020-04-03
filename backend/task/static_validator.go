@@ -2,22 +2,22 @@ package task
 
 import (
 	"github.com/irisnet/explorer/backend/conf"
-	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/logger"
-	"gopkg.in/mgo.v2/txn"
+	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/utils"
-	"time"
 	"gopkg.in/mgo.v2/bson"
+	"gopkg.in/mgo.v2/txn"
+	"time"
 )
 
-type ValidatorStaticByDayTask struct {
+type StaticValidatorTask struct {
 	validator document.Validator
 }
 
-func (task ValidatorStaticByDayTask) Name() string {
-	return "validator_static_task"
+func (task StaticValidatorTask) Name() string {
+	return "static_validator"
 }
-func (task ValidatorStaticByDayTask) Start() {
+func (task StaticValidatorTask) Start() {
 	taskName := task.Name()
 	timeInterval := conf.Get().Server.CronTimeTxNumByDay
 
@@ -26,16 +26,16 @@ func (task ValidatorStaticByDayTask) Start() {
 	}
 }
 
-func (task ValidatorStaticByDayTask) DoTask() error {
+func (task StaticValidatorTask) DoTask() error {
 	ops, err := task.getAllValidatorTokens()
 	if err != nil {
 		logger.Error(err.Error())
 		return err
 	}
-	return document.ExValidatorStatic{}.Batch(ops)
+	return document.ExStaticValidator{}.Batch(ops)
 }
 
-func (task ValidatorStaticByDayTask) getAllValidatorTokens() ([]txn.Op, error) {
+func (task StaticValidatorTask) getAllValidatorTokens() ([]txn.Op, error) {
 
 	validators, err := task.getValidatorFromDb()
 	if err != nil {
@@ -45,15 +45,17 @@ func (task ValidatorStaticByDayTask) getAllValidatorTokens() ([]txn.Op, error) {
 	return task.saveExValidatorStaticOps(validators)
 }
 
-func (task ValidatorStaticByDayTask) getValidatorFromDb() ([]document.Validator, error) {
+func (task StaticValidatorTask) getValidatorFromDb() ([]document.Validator, error) {
 	return task.validator.GetAllValidator()
 }
 
-func (task ValidatorStaticByDayTask) saveExValidatorStaticOps(validators []document.Validator) ([]txn.Op, error) {
-	today := utils.TruncateTime(time.Now(), utils.Day)
+func (task StaticValidatorTask) saveExValidatorStaticOps(validators []document.Validator) ([]txn.Op, error) {
+	today := utils.TruncateTime(time.Now().In(cstZone), utils.Day)
 	ops := make([]txn.Op, 0, len(validators))
+	now := time.Now().Unix()
 	for _, addr := range validators {
 		item, err := task.loadValidatorTokens(addr, today)
+		item.CreateAt = now
 		if err != nil {
 			continue
 		}
@@ -67,9 +69,9 @@ func (task ValidatorStaticByDayTask) saveExValidatorStaticOps(validators []docum
 	return ops, nil
 }
 
-func (task ValidatorStaticByDayTask) loadValidatorTokens(validator document.Validator, today time.Time) (document.ExValidatorStatic, error) {
+func (task StaticValidatorTask) loadValidatorTokens(validator document.Validator, today time.Time) (document.ExStaticValidator, error) {
 
-	item := document.ExValidatorStatic{
+	item := document.ExStaticValidator{
 		Id:              bson.NewObjectId(),
 		OperatorAddress: validator.OperatorAddress,
 		Status:          validator.GetValidatorStatus(),
