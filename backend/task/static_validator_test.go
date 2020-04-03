@@ -1,17 +1,17 @@
 package task
 
 import (
-	"testing"
 	"github.com/irisnet/explorer/backend/utils"
+	"testing"
 	"time"
 )
 
 func TestValidatorStaticByDayTask_Start(t *testing.T) {
-	new(ValidatorStaticByDayTask).Start()
+	new(StaticValidatorTask).Start()
 }
 
 func TestValidatorStaticByDayTask_getValidatorFromDb(t *testing.T) {
-	res, err := new(ValidatorStaticByDayTask).getValidatorFromDb()
+	res, err := new(StaticValidatorTask).getValidatorFromDb()
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -19,11 +19,12 @@ func TestValidatorStaticByDayTask_getValidatorFromDb(t *testing.T) {
 }
 
 func TestValidatorStaticByDayTask_loadValidatorTokens(t *testing.T) {
-	validators, err := new(ValidatorStaticByDayTask).getValidatorFromDb()
+	validators, err := new(StaticValidatorTask).getValidatorFromDb()
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	res1, err := new(ValidatorStaticByDayTask).loadValidatorTokens(validators[0], utils.TruncateTime(time.Now(), utils.Day))
+	res1, err := new(StaticValidatorTask).loadValidatorTokens(validators[0],
+		utils.TruncateTime(time.Now().In(cstZone), utils.Day))
 	if err != nil {
 		t.Fatal(err.Error())
 	}

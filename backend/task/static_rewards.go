@@ -4,24 +4,24 @@ import (
 	"time"
 
 	"github.com/irisnet/explorer/backend/conf"
+	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/utils"
-	"github.com/irisnet/explorer/backend/lcd"
-	"gopkg.in/mgo.v2/txn"
 	"gopkg.in/mgo.v2/bson"
-	"math/big"
+	"gopkg.in/mgo.v2/txn"
 	"math"
+	"math/big"
 )
 
-type StaticRewardsByDayTask struct {
+type StaticRewardsTask struct {
 	account document.Account
 }
 
-func (task StaticRewardsByDayTask) Name() string {
-	return "static_rewards_task"
+func (task StaticRewardsTask) Name() string {
+	return "static_rewards"
 }
-func (task StaticRewardsByDayTask) Start() {
+func (task StaticRewardsTask) Start() {
 	taskName := task.Name()
 	timeInterval := conf.Get().Server.CronTimeTxNumByDay
 
@@ -30,7 +30,7 @@ func (task StaticRewardsByDayTask) Start() {
 	}
 }
 
-func (task StaticRewardsByDayTask) DoTask() error {
+func (task StaticRewardsTask) DoTask() error {
 	ops, err := task.getAllAccountRewards()
 	if err != nil {
 		logger.Error(err.Error())
@@ -39,7 +39,7 @@ func (task StaticRewardsByDayTask) DoTask() error {
 	return document.ExStaticRewards{}.Batch(ops)
 }
 
-func (task StaticRewardsByDayTask) getRewardsFromLcd(address string) (utils.CoinsAsStr, []lcd.RewardsFromDelegations, utils.CoinsAsStr, error) {
+func (task StaticRewardsTask) getRewardsFromLcd(address string) (utils.CoinsAsStr, []lcd.RewardsFromDelegations, utils.CoinsAsStr, error) {
 	commissionrewards, delegationrewards, totalrewards, err := lcd.GetDistributionRewardsByValidatorAcc(address)
 	if err != nil {
 		logger.Error("GetDistributionRewardsByValidatorAcc have error", logger.String("err", err.Error()))
@@ -48,7 +48,7 @@ func (task StaticRewardsByDayTask) getRewardsFromLcd(address string) (utils.Coin
 	return commissionrewards, delegationrewards, totalrewards, nil
 }
 
-func (task StaticRewardsByDayTask) getAllAccountRewards() ([]txn.Op, error) {
+func (task StaticRewardsTask) getAllAccountRewards() ([]txn.Op, error) {
 
 	accAddrs, err := task.getAccountFromDb()
 	if err != nil {
@@ -58,8 +58,8 @@ func (task StaticRewardsByDayTask) getAllAccountRewards() ([]txn.Op, error) {
 	return task.saveExStaticRewardsOps(accAddrs)
 }
 
-func (task StaticRewardsByDayTask) saveExStaticRewardsOps(accAddrs []string) ([]txn.Op, error) {
-	today := utils.TruncateTime(time.Now(), utils.Day)
+func (task StaticRewardsTask) saveExStaticRewardsOps(accAddrs []string) ([]txn.Op, error) {
+	today := utils.TruncateTime(time.Now().In(cstZone), utils.Day)
 	ops := make([]txn.Op, 0, len(accAddrs))
 	for _, addr := range accAddrs {
 		item, err := task.loadModelRewards(addr, today)
@@ -76,7 +76,7 @@ func (task StaticRewardsByDayTask) saveExStaticRewardsOps(accAddrs []string) ([]
 	return ops, nil
 }
 
-func (task StaticRewardsByDayTask) loadModelRewards(addr string, today time.Time) (document.ExStaticRewards, error) {
+func (task StaticRewardsTask) loadModelRewards(addr string, today time.Time) (document.ExStaticRewards, error) {
 	commisstionRds, _, totalRds, err := task.getRewardsFromLcd(addr)
 	if err != nil {
 		logger.Warn(err.Error())
@@ -84,11 +84,11 @@ func (task StaticRewardsByDayTask) loadModelRewards(addr string, today time.Time
 	}
 
 	item := document.ExStaticRewards{
-		Id:                bson.NewObjectId(),
-		Address:           addr,
-		Date:              today,
-		Total:             task.loadRewards(totalRds),
-		Commission:        task.loadRewards(commisstionRds),
+		Id:         bson.NewObjectId(),
+		Address:    addr,
+		Date:       today.In(cstZone),
+		Total:      task.loadRewards(totalRds),
+		Commission: task.loadRewards(commisstionRds),
 		//DelegationsDetail: task.loadDelegationsRewardsDetail(delegationsRds),
 	}
 	if len(item.Total) > 0 {
@@ -101,7 +101,7 @@ func (task StaticRewardsByDayTask) loadModelRewards(addr string, today time.Time
 	return item, nil
 }
 
-func (task StaticRewardsByDayTask) loadRewards(rewards utils.CoinsAsStr) []document.Rewards {
+func (task StaticRewardsTask) loadRewards(rewards utils.CoinsAsStr) []document.Rewards {
 
 	var ret []document.Rewards
 	for _, val := range rewards {
@@ -154,7 +154,7 @@ func funcSubStr(amount1, amount2 string) *big.Rat {
 	return value
 }
 
-func (task StaticRewardsByDayTask) loadDelegationsRewards(total, commission document.Rewards) []document.Rewards {
+func (task StaticRewardsTask) loadDelegationsRewards(total, commission document.Rewards) []document.Rewards {
 	subValue := funcSubStr(total.IrisAtto, commission.IrisAtto)
 	if subValue == nil {
 		return nil
@@ -173,7 +173,7 @@ func (task StaticRewardsByDayTask) loadDelegationsRewards(total, commission docu
 	return ret
 }
 
-func (task StaticRewardsByDayTask) getAccountFromDb() ([]string, error) {
+func (task StaticRewardsTask) getAccountFromDb() ([]string, error) {
 	size := 100
 	offset := 0
 	length := size

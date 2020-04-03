@@ -10,14 +10,14 @@ import (
 	"time"
 )
 
-type ValidatorStaticByDayTask struct {
+type StaticValidatorTask struct {
 	validator document.Validator
 }
 
-func (task ValidatorStaticByDayTask) Name() string {
-	return "validator_static_task"
+func (task StaticValidatorTask) Name() string {
+	return "static_validator"
 }
-func (task ValidatorStaticByDayTask) Start() {
+func (task StaticValidatorTask) Start() {
 	taskName := task.Name()
 	timeInterval := conf.Get().Server.CronTimeTxNumByDay
 
@@ -26,7 +26,7 @@ func (task ValidatorStaticByDayTask) Start() {
 	}
 }
 
-func (task ValidatorStaticByDayTask) DoTask() error {
+func (task StaticValidatorTask) DoTask() error {
 	ops, err := task.getAllValidatorTokens()
 	if err != nil {
 		logger.Error(err.Error())
@@ -35,7 +35,7 @@ func (task ValidatorStaticByDayTask) DoTask() error {
 	return document.ExStaticValidator{}.Batch(ops)
 }
 
-func (task ValidatorStaticByDayTask) getAllValidatorTokens() ([]txn.Op, error) {
+func (task StaticValidatorTask) getAllValidatorTokens() ([]txn.Op, error) {
 
 	validators, err := task.getValidatorFromDb()
 	if err != nil {
@@ -45,12 +45,12 @@ func (task ValidatorStaticByDayTask) getAllValidatorTokens() ([]txn.Op, error) {
 	return task.saveExValidatorStaticOps(validators)
 }
 
-func (task ValidatorStaticByDayTask) getValidatorFromDb() ([]document.Validator, error) {
+func (task StaticValidatorTask) getValidatorFromDb() ([]document.Validator, error) {
 	return task.validator.GetAllValidator()
 }
 
-func (task ValidatorStaticByDayTask) saveExValidatorStaticOps(validators []document.Validator) ([]txn.Op, error) {
-	today := utils.TruncateTime(time.Now(), utils.Day)
+func (task StaticValidatorTask) saveExValidatorStaticOps(validators []document.Validator) ([]txn.Op, error) {
+	today := utils.TruncateTime(time.Now().In(cstZone), utils.Day)
 	ops := make([]txn.Op, 0, len(validators))
 	for _, addr := range validators {
 		item, err := task.loadValidatorTokens(addr, today)
@@ -67,7 +67,7 @@ func (task ValidatorStaticByDayTask) saveExValidatorStaticOps(validators []docum
 	return ops, nil
 }
 
-func (task ValidatorStaticByDayTask) loadValidatorTokens(validator document.Validator, today time.Time) (document.ExStaticValidator, error) {
+func (task StaticValidatorTask) loadValidatorTokens(validator document.Validator, today time.Time) (document.ExStaticValidator, error) {
 
 	item := document.ExStaticValidator{
 		Id:              bson.NewObjectId(),
