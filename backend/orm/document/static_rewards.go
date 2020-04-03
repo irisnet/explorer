@@ -20,7 +20,7 @@ type ExStaticRewards struct {
 	Address           string               `bson:"address"`
 	Date              time.Time            `bson:"date"`
 	Total             []Rewards            `bson:"total"`
-	DelegationsDetail []DelegationsRewards `bson:"delegations_detail"`
+	//DelegationsDetail []DelegationsRewards `bson:"delegations_detail"`
 	Delegations       []Rewards            `bson:"delegations"`
 	Commission        []Rewards            `bson:"commission"`
 }

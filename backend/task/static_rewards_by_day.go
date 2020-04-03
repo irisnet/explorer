@@ -77,7 +77,7 @@ func (task StaticRewardsByDayTask) saveExStaticRewardsOps(accAddrs []string) ([]
 }
 
 func (task StaticRewardsByDayTask) loadModelRewards(addr string, today time.Time) (document.ExStaticRewards, error) {
-	commisstionRds, delegationsRds, totalRds, err := task.getRewardsFromLcd(addr)
+	commisstionRds, _, totalRds, err := task.getRewardsFromLcd(addr)
 	if err != nil {
 		logger.Warn(err.Error())
 		return document.ExStaticRewards{}, err
@@ -89,7 +89,7 @@ func (task StaticRewardsByDayTask) loadModelRewards(addr string, today time.Time
 		Date:              today,
 		Total:             task.loadRewards(totalRds),
 		Commission:        task.loadRewards(commisstionRds),
-		DelegationsDetail: task.loadDelegationsRewardsDetail(delegationsRds),
+		//DelegationsDetail: task.loadDelegationsRewardsDetail(delegationsRds),
 	}
 	if len(item.Total) > 0 {
 		if len(item.Commission) == 0 {
@@ -119,29 +119,29 @@ func (task StaticRewardsByDayTask) loadRewards(rewards utils.CoinsAsStr) []docum
 	return ret
 }
 
-func (task StaticRewardsByDayTask) loadDelegationsRewardsDetail(delegations []lcd.RewardsFromDelegations) []document.DelegationsRewards {
-	ret := make([]document.DelegationsRewards, 0, len(delegations))
-
-	for _, val := range delegations {
-		item := document.DelegationsRewards{
-			Validator: val.Validator,
-		}
-		if len(val.Reward) == 0 {
-			continue
-		}
-		retWards := make([]document.Rewards, 0, len(val.Reward))
-		for _, im := range val.Reward {
-			ite := document.Rewards{IrisAtto: im.Amount}
-			amount, _ := new(big.Rat).SetString(im.Amount)
-			value, _ := amount.Quo(amount, new(big.Rat).SetFloat64(math.Pow10(18))).Float64()
-			ite.Iris = value
-			retWards = append(retWards, ite)
-		}
-		item.Reward = retWards
-		ret = append(ret, item)
-	}
-	return ret
-}
+//func (task StaticRewardsByDayTask) loadDelegationsRewardsDetail(delegations []lcd.RewardsFromDelegations) []document.DelegationsRewards {
+//	ret := make([]document.DelegationsRewards, 0, len(delegations))
+//
+//	for _, val := range delegations {
+//		item := document.DelegationsRewards{
+//			Validator: val.Validator,
+//		}
+//		if len(val.Reward) == 0 {
+//			continue
+//		}
+//		retWards := make([]document.Rewards, 0, len(val.Reward))
+//		for _, im := range val.Reward {
+//			ite := document.Rewards{IrisAtto: im.Amount}
+//			amount, _ := new(big.Rat).SetString(im.Amount)
+//			value, _ := amount.Quo(amount, new(big.Rat).SetFloat64(math.Pow10(18))).Float64()
+//			ite.Iris = value
+//			retWards = append(retWards, ite)
+//		}
+//		item.Reward = retWards
+//		ret = append(ret, item)
+//	}
+//	return ret
+//}
 
 func funcSubStr(amount1, amount2 string) *big.Rat {
 	Amount1, ok1 := new(big.Rat).SetString(amount1)
