@@ -61,8 +61,10 @@ func (task StaticRewardsTask) getAllAccountRewards() ([]txn.Op, error) {
 func (task StaticRewardsTask) saveExStaticRewardsOps(accAddrs []string) ([]txn.Op, error) {
 	today := utils.TruncateTime(time.Now().In(cstZone), utils.Day)
 	ops := make([]txn.Op, 0, len(accAddrs))
+	now := time.Now().Unix()
 	for _, addr := range accAddrs {
 		item, err := task.loadModelRewards(addr, today)
+		item.CreateAt = now
 		if err != nil {
 			continue
 		}
