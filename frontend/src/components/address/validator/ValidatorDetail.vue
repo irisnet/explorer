@@ -24,7 +24,8 @@
             <!--</div>-->
         <!--</div>-->
         <page-title :title="'Validator Details'" :flShowPageLink="false"></page-title>
-        <validation-information :validationInformation="validationInformation" :validatorStatus="validatorStatus"></validation-information>
+        <validator-information :validationInformation="validationInformation" :validatorStatus="validatorStatus"></validator-information>
+        <validator-commission-information :validationCommissionInfo="validationInformation"></validator-commission-information>
         <!--<div :class="transactionsDetailWrap">
             <div class="validator_detail_information_wrap">
                 <div>
@@ -301,8 +302,9 @@ import MValidatorDetailTable from "./MValidatorDetailTable";
 import MPagination from "../../commontables/MPagination";
 import axios from "../../../util/axios";
 import pageTitleConfig from "../../pageTitle/pageTitleConfig";
-import ValidationInformation from "./ValidationInformation";
+import ValidatorInformation from "./ValidatorInformation";
 import PageTitle from "../../pageTitle/PageTitle";
+import ValidatorCommissionInformation from "./ValidatorCommissionInformation";
 export default {
 
     data() {
@@ -426,8 +428,9 @@ export default {
         };
     },
     components: {
+        ValidatorCommissionInformation,
         PageTitle,
-        ValidationInformation,
+        ValidatorInformation,
         EchartsValidatorsUptimeLine,
         EchartsValidatorsLine,
         EchartsLine,
@@ -708,6 +711,7 @@ export default {
                 data => {
                     try {
                         if (Array.isArray(data.items)) {
+                            console.log(this.$options.filters.amountFromat,"???666666666")
                             for (let it of data.items) {
                             	if(String(Tools.FormatScientificNotationToNumber(it.amount)).length > 18){
 			                       it.amount =`${String(Tools.FormatScientificNotationToNumber(it.amount)).split('.')[0]}.${String(Tools.FormatScientificNotationToNumber(it.amount)).split('.')[1].substring(0,18)}`
