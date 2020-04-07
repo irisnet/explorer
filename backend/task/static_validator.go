@@ -81,6 +81,11 @@ func (task StaticValidatorTask) loadValidatorTokens(validator document.Validator
 		Tokens:          validator.Tokens,
 		Commission:      validator.Commission,
 	}
-	item.Delegations = funcSubStr(item.Tokens, item.SelfBond).FloatString(18)
+	subValue := funcSubStr(item.Tokens, item.SelfBond)
+	if subValue != nil {
+		item.Delegations = subValue.FloatString(18)
+	} else {
+		item.Delegations = item.Tokens
+	}
 	return item, nil
 }
