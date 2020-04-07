@@ -38,6 +38,11 @@ type ValidatorCommissionInfo struct {
 	BondedTokens    string `json:"bonded_tokens"`
 }
 
+type CommissionInfoResp struct {
+	CommissionData []ValidatorCommissionInfo `json:"commission_data"`
+	Total          int                       `json:"total"`
+}
+
 type WithdrawAddr struct {
 	Address string `json:"address"`
 }

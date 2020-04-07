@@ -69,7 +69,7 @@ const (
 	UrlRegisterQueryDepositorTxsByValidatorAddr      = "/stake/validators/{validatorAddr}/depositor_txs"
 	UrlRegisterQueryWithdrawAddrByValidatorAddr      = "/stake/validators/{validatorAddr}/withdraw-addr"
 	UrlRegisterQueryCommissionRewardsByValidatorAddr = "/stake/validators/{validatorAddr}/commission-rewards"
-	UrlRegisterQueryCommissionInfoByValidatorAddr    = "/stake/validators/{validatorAddr}/commission_info"
+	UrlRegisterQueryCommissionInfo                   = "/stake/commission_info"
 
 	//Tx
 	UrlRegisterQueryTxList       = "/txs"

@@ -1275,6 +1275,30 @@
                 }
             }
         },
+      "/api/stake/commission_info": {
+        "get": {
+          "description": "get commission_info",
+          "consumes": [
+            "application/json"
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "tags": [
+            "stake"
+          ],
+          "summary": "commission_info",
+          "responses": {
+            "200": {
+              "description": "success",
+              "schema": {
+                "type": "object",
+                "$ref": "#/definitions/vo.CommissionInfoResp"
+              }
+            }
+          }
+        }
+      },
         "/api/stake/validators": {
             "get": {
                 "description": "get validators",
@@ -1437,39 +1461,6 @@
                 }
             }
         },
-      "/api/stake/validators/{validatorAddr}/commission_info": {
-        "get": {
-          "description": "get commission_info",
-          "consumes": [
-            "application/json"
-          ],
-          "produces": [
-            "application/json"
-          ],
-          "tags": [
-            "stake"
-          ],
-          "summary": "commission_info",
-          "parameters": [
-            {
-              "type": "string",
-              "description": "validatorAddr",
-              "name": "validatorAddr",
-              "in": "path",
-              "required": true
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "success",
-              "schema": {
-                "type": "object",
-                "$ref": "#/definitions/vo.ValidatorCommissionInfo"
-              }
-            }
-          }
-        }
-      },
         "/api/stake/validators/{validatorAddr}/delegations": {
             "get": {
                 "description": "get delegations",
@@ -3448,6 +3439,20 @@
                 }
             }
         },
+      "vo.CommissionInfoResp": {
+        "type": "object",
+        "properties": {
+          "commission_data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/vo.ValidatorCommissionInfo"
+            }
+          },
+          "total": {
+            "type": "integer"
+          }
+        }
+      },
         "vo.ConfigVo": {
             "type": "object",
             "properties": {

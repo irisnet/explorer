@@ -684,6 +684,15 @@ definitions:
       denom:
         type: string
     type: object
+  vo.CommissionInfoResp:
+    properties:
+      commission_data:
+        items:
+          $ref: '#/definitions/vo.ValidatorCommissionInfo'
+        type: array
+      total:
+        type: integer
+    type: object
   vo.ConfigVo:
     properties:
       chain_id:
@@ -2339,6 +2348,22 @@ paths:
       summary: validator candidatesTop
       tags:
       - stake
+  /api/stake/commission_info:
+    get:
+      consumes:
+      - application/json
+      description: get commission_info
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.CommissionInfoResp'
+            type: object
+      summary: commission_info
+      tags:
+      - stake
   /api/stake/validators:
     get:
       consumes:
@@ -2431,28 +2456,6 @@ paths:
             $ref: '#/definitions/utils.CoinsAsStr'
             type: object
       summary: commission-rewards
-      tags:
-      - stake
-  /api/stake/validators/{validatorAddr}/commission_info:
-    get:
-      consumes:
-      - application/json
-      description: get commission_info
-      parameters:
-      - description: validatorAddr
-        in: path
-        name: validatorAddr
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: success
-          schema:
-            $ref: '#/definitions/vo.ValidatorCommissionInfo'
-            type: object
-      summary: commission_info
       tags:
       - stake
   /api/stake/validators/{validatorAddr}/delegations:

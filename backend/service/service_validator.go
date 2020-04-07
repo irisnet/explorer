@@ -475,24 +475,41 @@ func (service *ValidatorService) GetDistributionRewardsByValidatorAddr(valAddr s
 	return rewardsCoins
 }
 
-func (service *ValidatorService) GetCommisstionInfoByValidatorAddr(validatorAddr string) vo.ValidatorCommissionInfo {
+func (service *ValidatorService) GetCommisstionInfo() vo.CommissionInfoResp {
 
-	var res vo.ValidatorCommissionInfo
+	var res vo.CommissionInfoResp
+	var validators []document.Validator
 
-	validatorAsDoc, err := document.Validator{}.QueryValidatorDetailByOperatorAddr(validatorAddr)
-	if err != nil {
-		logger.Error("QueryValidatorDetailByOperatorAddr", logger.String("validator", validatorAddr), logger.String("err", err.Error()))
-		return res
+	validatorType := types.RoleValidator
+	page := 1
+	size := 100
+	for page > 0 {
+		_, validatorList, err := document.Validator{}.GetValidatorListByPage(validatorType, page, size, true, false)
+		if err != nil {
+			logger.Error("GetValidatorListByPage in GetCommisstionInfo", logger.String("err", err.Error()))
+			continue
+		}
+		validators = append(validators, validatorList...)
+		if len(validatorList) < size {
+			break
+		}
+		page++
 	}
-	res.OperatorAddress = validatorAsDoc.OperatorAddress
-	res.Moniker = validatorAsDoc.Description.Moniker
-	blackList := service.QueryBlackList()
-	if blackone, ok := blackList[validatorAddr]; ok {
-		res.Moniker = blackone.Moniker
-	}
 
-	res.BondedTokens = ComputeBondStake(validatorAsDoc.Tokens, validatorAsDoc.DelegatorShares, validatorAsDoc.SelfBond)
-	res.CommissionRate = validatorAsDoc.Commission.Rate
+	for _, validatorAsDoc := range validators {
+		item := vo.ValidatorCommissionInfo{}
+		item.OperatorAddress = validatorAsDoc.OperatorAddress
+		item.Moniker = validatorAsDoc.Description.Moniker
+		blackList := service.QueryBlackList()
+		if blackone, ok := blackList[validatorAsDoc.OperatorAddress]; ok {
+			item.Moniker = blackone.Moniker
+		}
+
+		item.BondedTokens = ComputeBondStake(validatorAsDoc.Tokens, validatorAsDoc.DelegatorShares, validatorAsDoc.SelfBond)
+		item.CommissionRate = validatorAsDoc.Commission.Rate
+		res.CommissionData = append(res.CommissionData, item)
+	}
+	res.Total = len(res.CommissionData)
 
 	return res
 }
