@@ -12,6 +12,7 @@ require (
 	github.com/pkg/errors v0.8.1
 	github.com/rakyll/statik v0.1.6
 	github.com/robfig/cron/v3 v3.0.0
+	github.com/shopspring/decimal v0.0.0-20180709203117-cd690d0c9e24
 	github.com/stretchr/testify v1.4.0
 	github.com/swaggo/swag v1.6.3
 	go.uber.org/atomic v1.4.0 // indirect
