@@ -30,3 +30,11 @@ func TestValidatorStaticByDayTask_loadValidatorTokens(t *testing.T) {
 	}
 	t.Log(string(utils.MarshalJsonIgnoreErr(res1)))
 }
+
+func TestStaticValidatorTask_getAllValidatorTokens(t *testing.T) {
+	txsop, err := new(StaticValidatorTask).getAllValidatorTokens()
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(txsop)
+}
