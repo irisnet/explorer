@@ -627,7 +627,7 @@
 			        this.TxType = '';
                     this.$uMeng.push('Transactions_All Type','click')
 		        }else {
-			        this.TxType = Tools.firstWordUpperCase(e[e.length-1])
+			        this.TxType = Tools.onlyFirstWordUpperCase(e[e.length-1])
 		        }
 	        },
 	        filterTxByStatus(e){
