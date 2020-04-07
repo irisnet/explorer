@@ -505,7 +505,7 @@ func (service *ValidatorService) GetCommisstionInfo() vo.CommissionInfoResp {
 			item.Moniker = blackone.Moniker
 		}
 
-		item.BondedTokens = ComputeBondStake(validatorAsDoc.Tokens, validatorAsDoc.DelegatorShares, validatorAsDoc.SelfBond)
+		item.BondedTokens = validatorAsDoc.Tokens
 		item.CommissionRate = validatorAsDoc.Commission.Rate
 		res.CommissionData = append(res.CommissionData, item)
 	}
