@@ -60,8 +60,7 @@ func Start() {
 	engine.Start()
 
 	// tasks manager by cron job
-	loc, _ := time.LoadLocation("Asia/Shanghai")
-	c := cron.New(cron.WithLocation(loc))
+	c := cron.New(cron.WithLocation(cstZone))
 	c.Start()
 
 	txNumTask := TxNumGroupByDayTask{}
