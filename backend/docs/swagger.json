@@ -1275,6 +1275,30 @@
                 }
             }
         },
+      "/api/stake/commission_info": {
+        "get": {
+          "description": "get commission_info",
+          "consumes": [
+            "application/json"
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "tags": [
+            "stake"
+          ],
+          "summary": "commission_info",
+          "responses": {
+            "200": {
+              "description": "success",
+              "schema": {
+                "type": "object",
+                "$ref": "#/definitions/vo.CommissionInfoResp"
+              }
+            }
+          }
+        }
+      },
         "/api/stake/validators": {
             "get": {
                 "description": "get validators",
@@ -3415,6 +3439,20 @@
                 }
             }
         },
+      "vo.CommissionInfoResp": {
+        "type": "object",
+        "properties": {
+          "commission_data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/vo.ValidatorCommissionInfo"
+            }
+          },
+          "total": {
+            "type": "integer"
+          }
+        }
+      },
         "vo.ConfigVo": {
             "type": "object",
             "properties": {
@@ -4110,6 +4148,23 @@
                 }
             }
         },
+      "vo.TokenStatStr": {
+        "type": "object",
+        "properties": {
+          "bonded": {
+            "type": "string"
+          },
+          "circulation": {
+            "type": "string"
+          },
+          "foundation_bonded": {
+            "type": "string"
+          },
+          "total_supply": {
+            "type": "string"
+          }
+        }
+      },
         "vo.Tx": {
             "type": "object",
             "properties": {
@@ -4153,8 +4208,18 @@
                 "date": {
                     "type": "string"
                 },
+              "delegator_num": {
+                "type": "integer"
+              },
                 "num": {
                     "type": "integer"
+                },
+              "token_stat": {
+                "type": "object",
+                "$ref": "#/definitions/vo.TokenStatStr"
+              },
+              "total_acc_num": {
+                "type": "integer"
                 }
             }
         },
@@ -4166,8 +4231,18 @@
                     "date": {
                         "type": "string"
                     },
+                  "delegator_num": {
+                    "type": "integer"
+                  },
                     "num": {
                         "type": "integer"
+                    },
+                  "token_stat": {
+                    "type": "object",
+                    "$ref": "#/definitions/vo.TokenStatStr"
+                  },
+                  "total_acc_num": {
+                    "type": "integer"
                     }
                 }
             }
@@ -4306,6 +4381,23 @@
                 }
             }
         },
+      "vo.ValidatorCommissionInfo": {
+        "type": "object",
+        "properties": {
+          "bonded_tokens": {
+            "type": "string"
+          },
+          "commission_rate": {
+            "type": "string"
+          },
+          "moniker": {
+            "type": "string"
+          },
+          "operator_address": {
+            "type": "string"
+          }
+        }
+      },
         "vo.ValidatorDepositTx": {
             "type": "object",
             "properties": {

@@ -23,6 +23,7 @@ func RegisterStake(r *mux.Router) error {
 		registerQueryDepositorTxsByValidatorAddr,
 		registerQueryWithdrawAddrByValidatorAddr,
 		registerQueryRewardsByValidatorAddr,
+		registerQueryCommissionInfo,
 	}
 
 	for _, fn := range funs {
@@ -74,6 +75,23 @@ func registerQueryRewardsByValidatorAddr(r *mux.Router) error {
 		stake.SetTid(request.TraceId)
 		validatorAddr := Var(request, "validatorAddr")
 		return stake.GetDistributionRewardsByValidatorAddr(validatorAddr)
+	})
+	return nil
+
+}
+
+// @Summary commission_info
+// @Description get commission_info
+// @Tags stake
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} vo.CommissionInfoResp	"success"
+// @Router /api/stake/commission_info [get]
+func registerQueryCommissionInfo(r *mux.Router) error {
+
+	doApi(r, types.UrlRegisterQueryCommissionInfo, "GET", func(request vo.IrisReq) interface{} {
+		stake.SetTid(request.TraceId)
+		return stake.GetCommisstionInfo()
 	})
 	return nil
 

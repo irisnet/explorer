@@ -60,13 +60,16 @@ func Start() {
 	engine.Start()
 
 	// tasks manager by cron job
-	c := cron.New()
+	loc, _ := time.LoadLocation("Asia/Shanghai")
+	c := cron.New(cron.WithLocation(loc))
 	c.Start()
 
 	txNumTask := TxNumGroupByDayTask{}
 	txNumTask.init()
 	c.AddFunc("01 0 * * *", func() {
 		txNumTask.Start()
+	})
+	c.AddFunc("23 59 0 * * *", func() {
 		new(StaticRewardsTask).Start()
 		new(StaticValidatorTask).Start()
 	})

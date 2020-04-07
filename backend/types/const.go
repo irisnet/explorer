@@ -69,6 +69,7 @@ const (
 	UrlRegisterQueryDepositorTxsByValidatorAddr      = "/stake/validators/{validatorAddr}/depositor_txs"
 	UrlRegisterQueryWithdrawAddrByValidatorAddr      = "/stake/validators/{validatorAddr}/withdraw-addr"
 	UrlRegisterQueryCommissionRewardsByValidatorAddr = "/stake/validators/{validatorAddr}/commission-rewards"
+	UrlRegisterQueryCommissionInfo                   = "/stake/commission_info"
 
 	//Tx
 	UrlRegisterQueryTxList       = "/txs"
@@ -312,7 +313,7 @@ func IsGuardianType(typ string) bool {
 type TxType int
 
 const (
-	_ TxType = iota
+	_           TxType = iota
 	Trans
 	Declaration
 	Stake
