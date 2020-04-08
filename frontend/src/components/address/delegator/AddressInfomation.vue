@@ -562,7 +562,7 @@
 								        if(item.tags.balance){
 									        let tokenValue = Tools.formatAccountCoinsAmount(item.tags.balance);
 									        let tokenStr = String(Tools.numberMoveDecimal(tokenValue[0],18));
-									        item.amount[0].formatAmount =  Tools.formatStringToFixedNumber(tokenStr,2);
+									        item.amount[0].formatAmount =  new BigNumber(Tools.formatStringToFixedNumber(tokenStr,2)).toFormat();
 									        Amount = item.amount.map(listItem => `${listItem.formatAmount} IRIS`).join(',');
                                         }
 							        }

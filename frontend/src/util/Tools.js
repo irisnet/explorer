@@ -429,8 +429,8 @@ export default class Tools{
 				formatListAmount = Tools.formatListAmount(item).amount;
                 fromInformation = Tools.formatListAmount(item).fromAddressAndMoniker;
                 toInformation = Tools.formatListAmount(item).toAddressAndMoniker;
-				Amount = formatListAmount.amountNumber === '--' || formatListAmount.tokenName === '--' ? '--' : `${formatListAmount.amountNumber} ${formatListAmount.tokenName}`;
-				transferAmount = formatListAmount.amountNumber === '--' ? '--' : formatListAmount.amountNumber;
+				Amount = formatListAmount.amountNumber === '--' || formatListAmount.tokenName === '--' ? '--' : `${new BigNumber(formatListAmount.amountNumber).toFormat()} ${formatListAmount.tokenName}`;
+				transferAmount = formatListAmount.amountNumber === '--' ? '--' : new BigNumber(formatListAmount.amountNumber).toFormat();
 				tokenId = formatListAmount.tokenName === '--' ? '--' : formatListAmount.tokenName;
 				if(item.fee.amount && item.fee.denom){
 					let feeAmount = item.fee.amount;
