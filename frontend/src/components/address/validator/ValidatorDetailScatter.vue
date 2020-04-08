@@ -44,6 +44,7 @@
 				testnetFuXiThemeStyle:["#0C4282","#FF5C01"],
 				testnetNyancatThemeStyle:["#0D9388","#FF5C01"],
 				defaultThemeStyle:["#0580D3","#FF5C01"],
+				defaultJailedThemeStyle:["#0580D3","#101149"],
 				mainnetJailedThemeStyle:['#3264FD',"#101149"],
 				testnetFuXiJailedThemeStyle:['#0C4282',"#101149"],
 				testnetNyancatJailedThemeStyle:['#0D9388',"#101149"],
@@ -180,7 +181,12 @@
 					}
 					
 				}else {
-					this.chartOptionColor = this.defaultThemeStyle;
+					if(this.validatorStatus === 'Jailed' || this.validatorStatus === 'Candidate'){
+						this.chartOptionColor = this.defaultJailedThemeStyle;
+					}else {
+						this.chartOptionColor = this.defaultThemeStyle;
+					}
+					
 				}
 				echartsOption.color = this.chartOptionColor
 				echartsData.setOption(echartsOption)
