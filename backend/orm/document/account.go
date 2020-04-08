@@ -31,6 +31,7 @@ type Account struct {
 	UnbondingDelegation             utils.Coin `bson:"unbonding_delegation"`
 	UnbondingDelegationUpdateHeight int64      `bson:"unbonding_delegation_update_height"`
 	UnbondingDelegationUpdateAt     int64      `bson:"unbonding_delegation_update_at"`
+	Rewards                         utils.Coin `bson:"rewards"`
 }
 
 func (a Account) String() string {
@@ -118,6 +119,13 @@ func (a Account) CountAll() (int, error) {
 	query := orm.NewQuery()
 	defer query.Release()
 	return query.SetCollection(a.Name()).Count()
+}
+
+func (a Account) Update(account Account) error {
+	query := orm.NewQuery()
+	defer query.Release()
+	c := query.GetDb().C(a.Name())
+	return c.Update(account.PkKvPair(), account)
 }
 
 func (a Account) CountDelegatorNum() (int, error) {

@@ -32,6 +32,7 @@ Blockchain explorer for the IRIS Hub
     CronTimeAssetTokens: time interval of update asset tokens
     CronTimeGovParams: time interval of update gov params
     CronTimeTxNumByDay: time interval of update tx num by day
+    CronTimeAccountRewards: time interval of update account rewards
     CronTimeValidators: time interval of update validators
     CronTimeValidatorIcons: time interval of update validator icons
     
