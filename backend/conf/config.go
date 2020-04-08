@@ -145,7 +145,7 @@ func loadDefault() {
 		KeyCronTimeGovParams:           "3600",
 		KeyCronTimeTxNumByDay:          "43200",
 		KeyCronTimeValidators:          "60",
-		KeyCronTimeAccountRewards:      "60",
+		KeyCronTimeAccountRewards:      "600",
 		KeyCronTimeProposalVoters:      "60",
 		KeyCronTimeValidatorIcons:      "43200",
 		KeyCronTimeValidatorStaticInfo: "300",

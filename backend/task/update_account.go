@@ -30,10 +30,23 @@ func (task UpdateAccount) Start() {
 }
 
 func (task UpdateAccount) DoTask() error {
-	accounts, err := task.account.GetAccountList()
+	size := 100
+	offset := 0
+	length := size
+	var accounts []document.Account
+	for {
+		accs, err := task.account.GetDelegatores(offset, size)
+		if err != nil {
+			logger.Error(err.Error())
+			return err
+		}
 
-	if err != nil {
-		return err
+		accounts = append(accounts, accs...)
+		length = len(accs)
+		if length < size {
+			break
+		}
+		offset += length
 	}
 
 	for i, val := range accounts {
