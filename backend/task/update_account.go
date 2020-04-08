@@ -19,7 +19,7 @@ func (task UpdateAccount) Name() string {
 }
 func (task UpdateAccount) Start() {
 	taskName := task.Name()
-	timeInterval := conf.Get().Server.CronTimeValidators
+	timeInterval := conf.Get().Server.CronTimeAccountRewards
 
 	utils.RunTimer(timeInterval, utils.Sec, func() {
 		if err := tcService.runTask(taskName, timeInterval, task.DoTask); err != nil {
