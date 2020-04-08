@@ -13,7 +13,7 @@
 				</div>
 				<ul class="search_bar_link_content">
 					<li class="search_bar_link_item" v-for="(item,index) in searchBarLinkArray" :key="index">
-						<a :href="item.href" target="_blank">{{item.label}}</a>
+						<a :href="item.href" @click.native="UmengPush(item.label)"  target="_blank">{{item.label}}</a>
 					</li>
 				</ul>
 				<div class="search_bar_pack_up_content">
@@ -66,16 +66,34 @@
 			}
 		},
 		methods:{
+			UmengPush(data){
+				switch (data) {
+					case 'IRISnetDocs':
+						this.$uMeng.push('Overview_IRISnetDocs','click');
+						break;
+					case 'RainbowWallet':
+						this.$uMeng.push('Overview_RainbowWallet','click');
+						break;
+					case 'Whitepaper':
+						this.$uMeng.push('Overview_Whitepaper','click');
+						break;
+					case 'Github':
+						this.$uMeng.push('Overview_Github','click');
+				}
+			},
 			onInputChange () {
+				this.$uMeng.push('Overview_Search','click');
 				this.getData();
 			},
 			hideSearchBar(){
 				this.flShowSearchBar = true;
 				setTimeout( () => {
-					this.$store.commit('flShowSearchBar',false)
-					this.$store.commit('showHeaderUnfoldBtn',true)
+					this.$store.commit('flShowSearchBar',false);
+					this.$store.commit('showHeaderUnfoldBtn',true);
 					this.flShowIpt = true
-				},300)
+				},300);
+				this.$uMeng.push('Overview_Collapse','click');
+				
 			},
 			getData () {
 				if (Tools.removeAllSpace(this.searchInputValue) === '') {

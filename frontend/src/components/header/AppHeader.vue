@@ -386,8 +386,9 @@
 				}
             },
             showSearchBar(){
-			  this.$store.commit('flShowSearchBar',true)
-              this.$store.commit('showHeaderUnfoldBtn',false)
+			    this.$store.commit('flShowSearchBar',true);
+                this.$store.commit('showHeaderUnfoldBtn',false);
+                this.$uMeng.push('Overview_Expand','click');
             },
 			showTwoMenu(v){
 				this.flShowSubMenu = true;
