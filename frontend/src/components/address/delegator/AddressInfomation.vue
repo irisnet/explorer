@@ -1,24 +1,8 @@
 <template>
     <div class="address_information_container">
-        <page-title :title="pageTitle"
-                    :content="headerAddress"
-                    :copyText="headerAddress"
-                    :fl-show-clip="true" :flShowMobileStyle="true">
-               <span class="address_information_address_status_profiler" v-if="isProfiler">Profiler</span>
-        </page-title>
+        <page-title :title="pageTitle" :flShowPageLink="false"></page-title>
+        <address-information-component :address="headerAddress" :data="assetsItems" :isProfiler="isProfiler"></address-information-component>
         <div class="address_information_content">
-            <div class="address_information_assets_container">
-                <div class="address_information_assets_title">Assets</div>
-                <div class="address_information_assets_list_content">
-                    <div>
-                        <m-address-information-table
-                                :items="assetsItems"
-                                :showNoData="assetsItems.length === 0"
-                                listName="assets">
-                        </m-address-information-table>
-                    </div>
-                </div>
-            </div>
             <div class="address_information_delegation_tx_container">
                 <div class="address_information_delegation_tx_content">
                     <div class="address_information_delegation_title">Delegations
@@ -29,6 +13,7 @@
                             <m-address-information-table
                                     :items="delegationsItems"
                                     :showNoData="delegationsItems.length === 0"
+                                    :showNoDataDoc = "'No Delegations'"
                                     listName="delegations"
                                     :width="630">
                             </m-address-information-table>
@@ -55,6 +40,7 @@
                                     :items="unBondingDelegationsItems"
                                     listName="unBondingDelegations"
                                     :showNoData="unBondingDelegationsItems.length === 0"
+                                    :showNoDataDoc="'No Unbonding Delegations'"
                                     :width="630">
                             </m-address-information-table>
                         </div>
@@ -86,6 +72,7 @@
                             <m-address-information-table
                                     :items="rewardsItems"
                                     :showNoData="rewardsItems.length === 0"
+                                    :showNoDataDoc="'No Delegator Rewards'"
                                     listName="rewards"
                                     :width="630">
                             </m-address-information-table>
@@ -140,6 +127,7 @@
                                                  :options="txTypeOption"
                                                  :props="{ expandTrigger: 'hover' }"
                                                  :show-all-levels="false"
+                                                 :filterable="true"
                                                  @change="filterTxByTxType(value)"></el-cascader>
 
                                     <el-select v-model="statusValue" :change="filterTxByStatus(statusValue)">
@@ -182,8 +170,8 @@
                         <m-address-information-table
                                 :items="transactionsItems"
                                 :showNoData="transactionsItems.length === 0"
+                                :showNoDataDoc="'No Transactions'"
                                 listName="transactions">
-
                         </m-address-information-table>
                     </div>
                 </div>
@@ -214,9 +202,11 @@
     import FormatTxType from "../../../util/formatTxType"
     import PageTitle from "../../pageTitle/PageTitle";
 	import pageTitleConfig from "../../pageTitle/pageTitleConfig";
+
+    import AddressInformationComponent from "./AddressInformationComponent";
 	export default {
 		name: "AddressInfomation",
-		components: {PageTitle, DateTooltip, MPagination, MAddressInformationTable},
+		components: {AddressInformationComponent, PageTitle, DateTooltip, MPagination, MAddressInformationTable},
 		data(){
 			return {
                 pageTitle:pageTitleConfig.StatsIRISRichListAddress,
@@ -224,7 +214,7 @@
 				validatorMoniker: '',
                 validatorStatus:'',
 				OperatorAddress: '',
-				isProfiler:'',
+				isProfiler:false,
                 pickerStartTime:sessionStorage.getItem('firstBlockTime') ? sessionStorage.getItem('firstBlockTime') : '',
                 PickerOptions: {
                     disabledDate: (time) => {
@@ -381,11 +371,13 @@
 			            return {
 				            token: Tools.formatDenom(item.denom),
 				            balance: item.amount ? Tools.formatAmount2(item,this.fixedNumber): 0,
+                            balanceNumber: item.amount,
 				            delegatedValue: this.totalDelegator ? this.totalDelegator : 0,
 				            delegated: this.totalDelegator ? `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(this.totalDelegator.toString(),-2)).toFormat(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}`: 0,
 				            unBondingValue: this.totalUnBondingDelegator ? this.totalUnBondingDelegator : 0,
 				            unBonding: this.totalUnBondingDelegator ?`${new BigNumber(Tools.formatStringToFixedNumber(moveDecimal(this.totalUnBondingDelegator.toString(),-2),this.fixedNumber)).toFormat()} ${Constant.Denom.IRIS.toUpperCase()}`  : 0,
 				            reward: this.allRewardsValue ? this.allRewardsValue : 0,
+                            rewards:this.allRewardsValue ? this.allRewardsValue : 0,
 				            totalAmount:`${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal((Number(Tools.formatStringToFixedNumber(Tools.numberMoveDecimal(item.amount.toString(),-18),this.fixedNumber))*100 +
 					            Number(Tools.formatStringToFixedNumber(this.totalDelegator.toString(),this.fixedNumber)) +
 					            Number(Tools.formatStringToFixedNumber(this.totalUnBondingDelegator.toString(),this.fixedNumber))+
@@ -516,7 +508,7 @@
                                 },0);
                             }
                             this.allRewardsAmountValue = res.total_rewards ? Tools.formatStringToFixedNumber(Tools.numberMoveDecimal(res.total_rewards[0].amount,-18),this.fixedNumber) : 0;
-				            this.totalDelegatorRewardValue = `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(this.totalDelegatorReward.toString(),-2)).toFormat(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}`
+                            this.totalDelegatorRewardValue = `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(this.totalDelegatorReward.toString(),-2)).toFormat(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}`
 			            }
 		            }catch (e) {
 			            console.error(e)
@@ -543,7 +535,7 @@
                     filterStartTime = sessionStorage.getItem('searchResultByTxTypeAndAddress') ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).beginTime : "",
                     filterEndTime = sessionStorage.getItem('searchResultByTxTypeAndAddress') ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).endTime : "",
                     param = {};
-		        param.getTxListByAddress = {};
+                param.getTxListByAddress = {};
 		        param.getTxListByAddress.pageNumber = this.allTxCurrentPage;
 		        param.getTxListByAddress.pageSize = this.addressTxPageSize;
 		        param.getTxListByAddress.txType = txType;
@@ -627,7 +619,7 @@
 			        this.TxType = '';
                     this.$uMeng.push('Transactions_All Type','click')
 		        }else {
-			        this.TxType = Tools.firstWordUpperCase(e[e.length-1])
+			        this.TxType = Tools.onlyFirstWordUpperCase(e[e.length-1])
 		        }
 	        },
 	        filterTxByStatus(e){
@@ -794,7 +786,6 @@
             max-width: 12.8rem;
             margin: 0 auto;
             padding-bottom: 0.4rem;
-            padding-top: 0.54rem;
             .address_information_header_container{
                 width: 100%;
                 .address_information_header_content{
@@ -1179,7 +1170,8 @@
                     .address_information_transaction_header_content{
                         flex-direction: column;
                         align-items: flex-start;
-                        margin-left: 0.1rem;
+                        box-sizing: border-box;
+                        padding: 0 0.1rem;
                         .address_information_transaction_title{
                             padding-left: 0;
                             margin-bottom: 0.1rem;

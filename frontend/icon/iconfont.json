@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "13851059",
+      "name": "展开",
+      "font_class": "zhankai",
+      "unicode": "e658",
+      "unicode_decimal": 58968
+    },
+    {
       "icon_id": "13802892",
       "name": "Circulation Bonded Tokens",
       "font_class": "CirculationBondedTokens",

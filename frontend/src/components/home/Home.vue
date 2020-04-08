@@ -1,82 +1,8 @@
 <template>
     <div class="home_wrap">
-        <!--<advertising-space></advertising-space>-->
+        <search-bar></search-bar>
+        <statistical-bar></statistical-bar>
         <div class="home_container">
-            <div class="information_preview">
-                <ul class="current_net_status_list">
-                    <li class="item_status">
-                        <div class="img_container">
-                            <div class="img_content">
-                                <i class="iconfont iconBlockHeight"></i>
-                            </div>
-                            <span class="item_name">{{lang.home.blockHeight}}</span>
-                        </div>
-                        <p class="current_block proposer_content"><router-link @click.native="$uMeng.push('HomeOverview_Block Height','click')" :to="`/block/${currentBlockHeight}`">{{currentBlockHeight}}</router-link></p>
-                        <p class="block_time proposer_container">
-                            <span class="proposer_content"><router-link :to="addressRoute(proposerAddress)">{{moniker}}</router-link></span>
-                        </p>
-                    </li>
-                    <li class="item_status">
-                        <div class="img_container">
-                            <div class="img_content">
-                                <i class="iconfont iconTransactions"></i>
-                            </div>
-                            <span class="item_name">{{lang.home.transactions}}</span>
-                        </div>
-                        <p class="current_block transaction_link">
-                            <router-link @click.native="$uMeng.push('HomeOverview_Transactions','click')" v-show="transactionValue !== '--'" :to="`/txs`">{{transactionValue}}</router-link>
-                            <span v-show="transactionValue === '--'">--</span>
-                        </p>
-                        <p class="block_time">{{blockTime}}</p>
-                    </li>
-                    <li class="item_status">
-                        <div class="img_container">
-                            <div class="img_content">
-                                <i class="iconfont iconAvgBlockTime"></i>
-                            </div>
-                            <span class="item_name">{{lang.home.ageTime}}</span>
-                        </div>
-                        <p class="current_block" :style="{color:diffSeconds > 120 ? '#ff001b' : ''}">{{averageBlockTime}}</p>
-                        <p class="block_time">{{lang.home.latestBlocks}}</p>
-                    </li>
-                   
-                </ul>
-                <ul class="current_net_status_list">
-                    <li class="item_status">
-                        <div class="img_container">
-                            <div class="img_content">
-                                <i class="iconfont iconVotingPower"></i>
-                            </div>
-                            <span  class="item_name">{{lang.home.votingPower }}</span>
-                        </div>
-                        <p class="current_block">{{votingPowerValue}}</p>
-                        <p class="block_time">{{validatorValue}}</p>
-                    </li>
-                    <li class="item_status">
-                        <div class="img_container">
-                            <div class="img_content">
-                                <i class="iconfont iconBondedTokens"></i>
-                            </div>
-                            <span class="item_name">{{lang.home.bondedTokens}}</span>
-                        </div>
-                        <p class="current_block">{{bondedRatio}}</p>
-                        <p class="block_time">{{bondedValue}}</p>
-                    </li>
-                    <li class="item_status">
-                        <div class="img_container">
-                            <div class="img_content">
-                                <i class="iconfont iconCirculationBondedTokens"></i>
-                            </div>
-                            <span class="item_name" style="margin-right: 0.09rem">{{lang.home.circulationBondedTokens}}</span>
-                            <el-tooltip :content="'Proportion of community bonded token in total circulation.'">
-                                <span class="iconfont icontishi"></span>
-                            </el-tooltip>
-                        </div>
-                        <p class="current_block">{{circulationBondedToken}}</p>
-                        <p class="block_time">{{circulationBondedTokenValue}}</p>
-                    </li>
-                </ul>
-            </div>
             <div class="echarts_content">
                 <div class="home_module_item home_module_item_pie">
                     <echarts-pie :information="information"></echarts-pie>
@@ -128,12 +54,14 @@
     import MDepositCard from "../commontables/MDepositCard";
     import MVotingCard from "../commontables/MVotingCard";
     import axios from "axios"
-    import AdvertisingSpace from "../advertisingSpace/AdvertisingSpace";
+
+    import SearchBar from "./SearchBar";
+    import StatisticalBar from "./StatisticalBar";
     export default {
         name: 'app-header',
         components: {
-            AdvertisingSpace,
-            MVotingCard, MDepositCard, MHomeVotingCrad, EchartsPie, EchartsLine, HomeBlockModule},
+            StatisticalBar,
+            SearchBar, MVotingCard, MDepositCard, MHomeVotingCrad, EchartsPie, EchartsLine, HomeBlockModule},
         data() {
             return {
                 circulationBondedToken:'--',
@@ -157,7 +85,6 @@
                 blocksTimer:null,
                 latestBlockTimer:null,
                 transfersTimer:null,
-                navigationTimer:null,
                 diffSeconds: 0,
                 timer: null,
                 lang:lang,
@@ -180,14 +107,12 @@
 	        this.getBlocksList();
             this.getTransactionHistory();
             this.getTransactionList();
-            this.getNavigation();
             this.getPorposakList();
         },
         mounted () {
             document.getElementById('router_wrap').addEventListener('click', this.hideFeature);
             let that =this;
             clearInterval(this.timer);
-            clearInterval(this.navigationTimer);
             if(this.$store.state.currentSkinStyle !=='default'){
 	            this.setThemeStyle()
             }
@@ -195,9 +120,6 @@
                 that.getBlocksList();
                 that.getTransactionList();
             },10000);
-            this.navigationTimer = setInterval(function() {
-                that.getNavigation();
-            },5000);
         },
         beforeDestroy () {
             clearInterval(this.timer)
@@ -439,70 +361,10 @@
 	                }
                 })
             },
-            getNavigation(){
-                Service.commonInterface({navigation:{}},(res) => {
-                	try {
-		                if(res){
-			                let reservedStringLength = 12;
-			                this.moniker = Tools.formatString(res.moniker,reservedStringLength,'...');
-			                this.proposerAddress = res.operator_addr;
-			                this.diffSeconds = Number(res.avg_block_time);
-			                this.currentBlockHeight = res.block_height;
-			                this.transactionValue = this.formatTransactions(res.total_txs);
-			                this.averageBlockTime = `${Number(res.avg_block_time).toFixed(2)} s`;
-			                this.votingPowerValue = `${Number(res.voting_ratio * 100).toFixed(2)} %`;
-			                this.bondedValue = this.formatBondedTokens(res.bonded_tokens,res.total_supply);
-			                this.validatorValue = `${res.vote_val_num} / ${res.active_val_num} Validators`;
-			                this.bondedRatio = `${(res.bonded_ratio * 100).toFixed(2)} %`;
-			                this.blockTime = Tools.format2UTC(res.block_time);
-			                this.circulationBondedTokenValue = this.formatBondedTokens((Number(res.bonded_tokens) - Number(res.foundation_bonded)),res.circulation);
-			                this.circulationBondedToken = `${((Number(res.bonded_tokens) - Number(res.foundation_bonded)) / Number(res.circulation)*100).toFixed(2)} %`
-		                }
-	                }catch (e) {
-                        console.error(e)
-	                }
-                });
-            },
-            formatTransactions(totalTxs){
-                let num, thousand = 1000,million = 1000000,billion = 1000000000;
-                if(totalTxs > billion){
-                    num = `${(totalTxs/billion).toFixed(2)} B`;
-                }else if(totalTxs > million){
-                    num = `${(totalTxs/million).toFixed(2)} M`;
-                }else if(totalTxs > thousand){
-                    num = `${(totalTxs/thousand).toFixed(2)} K`;
-                }else {
-                    num = totalTxs
-                }
-                return num
-            },
-            formatBondedTokens(bondedTokens,totalTokens){
-                let tokens,allTokens,thousand = 1000,million = 1000000,billion = 1000000000;
-                if(bondedTokens >= billion){
-	                tokens = `${(Number(bondedTokens) / billion).toFixed(2)}B`
-                }else if(bondedTokens >= million){
-	                tokens = `${(Number(bondedTokens) / million).toFixed(2)}M`
-                }else if(bondedTokens >= thousand){
-	                tokens = `${(Number(bondedTokens) / thousand).toFixed(2)}k`
-                }else {
-	                tokens = `${Number(bondedTokens).toFixed(2)}`
-                }
-
-	            if(totalTokens >= billion){
-		            allTokens = `${(Number(totalTokens) / billion).toFixed(2)}B`
-	            }else if(totalTokens >= million){
-		            allTokens = `${(Number(totalTokens) / million).toFixed(2)}M`
-	            }else if(totalTokens >= thousand){
-		            allTokens = `${(Number(totalTokens) / thousand).toFixed(2)}k`
-	            }else {
-		            allTokens = `${Number(totalTokens).toFixed(2)}`
-	            }
-                return `${tokens} / ${allTokens}`
-            },
         },
         destroyed () {
             clearInterval(this.timer);
-            clearInterval(this.navigationTimer);
+            this.$store.commit('showHeaderUnfoldBtn',false)
             }
     }
 </script>
@@ -545,7 +407,7 @@
             width: 100%;
             box-sizing: border-box;
             padding: 0.2rem 0.2rem 0 0.2rem;
-            .information_preview {
+            /*.information_preview {
                 display: flex;
                 flex-direction: column;
                 margin-bottom: 0.3rem;
@@ -611,10 +473,7 @@
                         margin-right: 0;
                     }
                 }
-                .current_net_status_list:last-child{
-                    margin-top: 0.2rem;
-                }
-            }
+            }*/
             .echarts_content{
                 width: 100%;
                 display: flex;

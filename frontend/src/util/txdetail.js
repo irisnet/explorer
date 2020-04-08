@@ -1036,7 +1036,7 @@ export default class formatMsgsAndTags {
         message[Constant.TRANSACTIONMESSAGENAME.MAXTOKEN] = [];
         message[Constant.TRANSACTIONMESSAGENAME.EXACTIRISAMT] = [];
         message[Constant.TRANSACTIONMESSAGENAME.MINLIQUIDITY] = [];
-        message[Constant.TRANSACTIONMESSAGENAME.DEADLIN] = [];
+        message[Constant.TRANSACTIONMESSAGENAME.DEADLINE] = [];
         message[Constant.TRANSACTIONMESSAGENAME.SENDER] = [];
         if(dataTx.msgs && Array.isArray(dataTx.msgs) && dataTx.msgs !== null){
             dataTx.msgs.forEach( item => {
