@@ -46,7 +46,6 @@
 					tooltip: {
 						trigger: 'item',
 						formatter: function (data) {
-							console.log(data)
 							return `${data.name}: ${data.value} IRIS (${data.percent}%)`
 						}
 					},
