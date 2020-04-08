@@ -16,7 +16,6 @@
 		name: "AddressInformationPie",
 		data (){
 			return {
-				testdata:"",
 				addressInformationCharts:null,
 				themeStyleArray:'',
 				mainnetThemeStyle:["#3264FD","#FFA300","#67E523","#8E66FF"],
@@ -27,15 +26,18 @@
 		},
 		watch:{
 			echartData(){
-				this.testdata = this.echartData;
 				this.initCharts();
 			}
 		},
-		props:['echartData'],
+		props:{
+			echartData:{
+				type: Array
+			}
+		},
 		mounted () {
 			setTimeout(() => {
 				this.initCharts();
-			},200)
+			},400)
 		},
 		methods:{
 			initCharts(){
@@ -44,6 +46,7 @@
 					tooltip: {
 						trigger: 'item',
 						formatter: function (data) {
+							console.log(data)
 							return `${data.name}: ${data.value} IRIS (${data.percent}%)`
 						}
 					},

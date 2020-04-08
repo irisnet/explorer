@@ -4,7 +4,7 @@
 			<div class="validation_information_content">
 				<div class="validation_information_header_content">
 					<div class="validation_information_header_img">
-						<img v-if="validatorIconHref" :src="validatorIconHref" alt="">
+						<img v-if="validatorIconHref" :src="validatorIconHref" alt="" @error="imgLoadError()">
 						<span v-else>{{validatorIconSrc}}</span>
 					</div>
 					<p class="validation_information_moniker">{{moniker}}</p>
@@ -44,8 +44,8 @@
 								<p>
 									<span class="validation_information_item_value">
 										<el-tooltip v-if="item.isCopyIcon" :content="`${item.value}`">
-											<span v-if="item.flAddressLink">{{formatAddress(item.value)}}</span>
-											<router-link v-if="!item.flAddressLink" :to="addressRoute(item.value)" :style="{color: item.isValidatorAddress ? '' :'var(--bgColor) !important'}">{{formatAddress(item.value)}}</router-link>
+											<span v-if="item.flAddressLink" style="font-family: Consolas,Menlo;">{{formatAddress(item.value)}}</span>
+											<router-link style="font-family: Consolas,Menlo;" v-if="!item.flAddressLink" :to="addressRoute(item.value)" :style="{color: item.isValidatorAddress ? '' :'var(--bgColor) !important'}">{{formatAddress(item.value)}}</router-link>
 										</el-tooltip>
 										<span v-if="!item.isCopyIcon">
 											{{item.value}}
@@ -148,12 +148,28 @@
 						flAddressLink:false,
 					},
 					{
+						label:'Unbonding Height:',
+						dataName:'unbond_height',
+						value:'',
+						isToolTip:false,
+						isCopyIcon:false,
+						flAddressLink:false,
+					},
+					{
 						label:'Consensus Pubkey:',
 						dataName:'consensus_addr',
 						value:'',
 						isToolTip:false,
 						isCopyIcon:true,
 						flAddressLink:true,
+					},
+					{
+						label:'Jailed Until:',
+						dataName:'jailed_until',
+						value:'',
+						isToolTip:false,
+						isCopyIcon:false,
+						flAddressLink:false,
 					}
 				]
 			}
@@ -169,14 +185,20 @@
 			this.getValidatorWithdrawAddr()
 		},
 		methods:{
+			imgLoadError(){
+				this.validatorIconHref = ""
+			},
 			showVotingPower(validatorStatus,labelName){
 				if(validatorStatus === 'Candidate' || validatorStatus === 'Jailed'){
-					if(labelName === 'Voting Power:'){
+					if(labelName === 'Voting Power:' || labelName === 'Bond Height:'){
 						return false
 					}else {
 						return true
 					}
 				}else {
+					if(labelName === 'Jailed Until:' || labelName === 'Unbonding Height:'){
+						return false
+					}
 					return true
 				}
 				
@@ -205,6 +227,8 @@
 								: "";
 						}else if(item.dataName === 'missed_blocks_count'){
 							item.value = `${information.missed_blocks_count} in ${information.stats_blocks_window} blocks`;
+						}else if(item.dataName === 'jailed_until'){
+							item.value = new Date(information[item.dataName]).getTime() ? Tools.format2UTC(information[item.dataName]) : "--";
 						}else {
 							item.value = information[item.dataName];
 						}
@@ -296,8 +320,14 @@
 					border-radius: 0.6rem;
 					background: #E0E8FF;
 					overflow: hidden;
+					display: flex;
+					align-items: center;
+					justify-content: center;
 					img{
 						width: 100%;
+					}
+					span{
+						font-size: 0.52rem;
 					}
 				}
 				.validation_information_moniker{

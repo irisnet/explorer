@@ -7,16 +7,18 @@
 						<img src="../../../assets/iris_token_logo.png" alt="">
 						<ul class="address_information_content">
 							<li class="address_information_item">
-								<span>Address:</span>
-								<p>{{address}}<m-clip :text="address" style="margin-left: 0.09rem"></m-clip></p>
+								<span class="address_information_label">Address:</span>
+								<p>
+									<span>{{address}}<m-clip :text="address" style="margin-left: 0.09rem"></m-clip><span class="profiler_content" v-if="isProfiler">Profiler</span></span>
+								</p>
 							</li>
 							<li class="address_information_item">
-								<span>Token:</span>
-								<span>IRIS</span>
+								<span class="address_information_label">Token:</span>
+								<span class="address_information_value">IRIS</span>
 							</li>
 							<li class="address_information_item">
-								<span>Total Amount:</span>
-								<span>{{totalAmount}}</span>
+								<span class="address_information_label">Total Amount:</span>
+								<span class="address_information_value">{{totalAmount}}</span>
 							</li>
 						</ul>
 						<!--<div class="address_information_asset_logo">-->
@@ -34,7 +36,7 @@
 						</li>
 					</ul>
 					<div class="address_information_asset_pie_content">
-						<address-information-pie v-model="assetConstitute" :echartData="assetConstitute"></address-information-pie>
+						<address-information-pie :echartData="assetConstitute"></address-information-pie>
 					</div>
 				</div>
 				<div class="address_information_asset_list_container" v-if="otherTokenList.length !== 0">
@@ -70,7 +72,10 @@
 			},
 			data:{
 				type: Array
-			}
+			},
+			isProfiler:{
+				type:Boolean,
+			},
 		},
 		data(){
 			return {
@@ -123,11 +128,11 @@
 						this.assetConstitute.forEach( res => {
 							 if(res.label === "UnBonding"){
 								res.value = item['unBonding'] || "--";
-								res.numberValue = item['unBonding'] ? Number(item['unBonding'].replace(/[^\d.]/g,"")) : 0;
+								res.numberValue = item['unBonding'] ? item['unBonding'].replace(/[^\d.]/g,"") : 0;
 							}else {
 								res.value = item[Tools.firstWordLowerCase(res.label)] || "--";
 								res.numberValue = item[Tools.firstWordLowerCase(res.label)] ?
-									Number(item[Tools.firstWordLowerCase(res.label)].replace(/[^\d.]/g,"")) : 0;
+									item[Tools.firstWordLowerCase(res.label)].replace(/[^\d.]/g,"") : 0;
 							}
 						})
 					}
@@ -135,7 +140,6 @@
 				this.otherTokenList = assetInformation.filter((item) => {
 					return item.token !== 'IRIS'
 				})
-				
 			}
 		}
 	}
@@ -166,28 +170,40 @@
 				grid-template-columns: repeat(3,50% 30% 20%);
 				.address_information_asset_total_content{
 					display: grid;
-					grid-template-columns: repeat(2,0.5rem auto);
+					grid-template-columns: repeat(1,0.5rem auto);
 					img{
 						width: 0.3rem;
 					}
 					.address_information_content{
 						.address_information_item{
 							display: grid;
-							grid-template-columns: repeat(2,1.1rem auto);
+							grid-template-columns: repeat(1,1.1rem auto);
 							margin-top: 0.14rem;
-							span:nth-of-type(1){
+							.address_information_label{
+								width: 1.1rem;
 								color: var(--contentColor);
 								font-size: 0.14rem;
 								line-height: 0.16rem;
-								
 							}
 							p{
 								display: flex;
 								color: var(--titleColor);
 								font-size: 0.14rem;
-								line-height: 0.16rem;
+								line-height: 0.2rem;
+								padding-right: 0.01rem;
+									.profiler_content{
+										padding: 0 0.12rem;
+										border-radius: 0.08rem;
+										margin-left: 0.08rem;
+										background: var(--bgColor);
+										color: #fff;
+										font-size: 0.14rem;
+										font-weight: lighter;
+										word-break: normal;
+									}
 							}
-							span:nth-of-type(2){
+							.address_information_value{
+								flex: 1;
 								display: flex;
 								color: var(--titleColor);
 								font-size: 0.14rem;
@@ -301,10 +317,9 @@
 	}
 }
 	@media screen and (max-width: 1030px){
+		
 		.address_information_component_container{
-			padding-top: 0;
-		}
-		.address_information_component_container{
+			padding-top: 0.54rem;
 			.address_information_component_wrap{
 				margin-top: 0.2rem;
 				.address_information_component_content{
@@ -320,7 +335,6 @@
 								.address_information_item{
 									grid-template-columns: repeat(1,1.1rem auto);
 									p{
-										margin-right: 0.23rem;
 										word-wrap: break-word;
 										word-break: break-all;
 									}
@@ -341,6 +355,11 @@
 					}
 				}
 			}
+		}
+	}
+	@media screen and (max-width: 910px){
+		.address_information_component_container{
+			padding-top: 0;
 		}
 	}
 </style>

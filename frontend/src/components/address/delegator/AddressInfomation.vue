@@ -1,22 +1,8 @@
 <template>
     <div class="address_information_container">
-        <page-title :title="pageTitle" :flShowPageLink="false">
-               <!--<span class="address_information_address_status_profiler" v-if="isProfiler">Profiler</span>-->
-        </page-title>
-        <address-information-component :address="headerAddress" :data="assetsItems"></address-information-component>
+        <page-title :title="pageTitle" :flShowPageLink="false"></page-title>
+        <address-information-component :address="headerAddress" :data="assetsItems" :isProfiler="isProfiler"></address-information-component>
         <div class="address_information_content">
-            <!--<div class="address_information_assets_container">
-                <div class="address_information_assets_title">Assets</div>
-                <div class="address_information_assets_list_content">
-                    <div>
-                        <m-address-information-table
-                                :items="assetsItems"
-                                :showNoData="assetsItems.length === 0"
-                                listName="assets">
-                        </m-address-information-table>
-                    </div>
-                </div>
-            </div>-->
             <div class="address_information_delegation_tx_container">
                 <div class="address_information_delegation_tx_content">
                     <div class="address_information_delegation_title">Delegations
@@ -27,6 +13,7 @@
                             <m-address-information-table
                                     :items="delegationsItems"
                                     :showNoData="delegationsItems.length === 0"
+                                    :showNoDataDoc = "'No Delegations'"
                                     listName="delegations"
                                     :width="630">
                             </m-address-information-table>
@@ -53,6 +40,7 @@
                                     :items="unBondingDelegationsItems"
                                     listName="unBondingDelegations"
                                     :showNoData="unBondingDelegationsItems.length === 0"
+                                    :showNoDataDoc="'No Unbonding Delegations'"
                                     :width="630">
                             </m-address-information-table>
                         </div>
@@ -84,6 +72,7 @@
                             <m-address-information-table
                                     :items="rewardsItems"
                                     :showNoData="rewardsItems.length === 0"
+                                    :showNoDataDoc="'No Delegator Rewards'"
                                     listName="rewards"
                                     :width="630">
                             </m-address-information-table>
@@ -181,8 +170,8 @@
                         <m-address-information-table
                                 :items="transactionsItems"
                                 :showNoData="transactionsItems.length === 0"
+                                :showNoDataDoc="'No Transactions'"
                                 listName="transactions">
-
                         </m-address-information-table>
                     </div>
                 </div>
@@ -225,7 +214,7 @@
 				validatorMoniker: '',
                 validatorStatus:'',
 				OperatorAddress: '',
-				isProfiler:'',
+				isProfiler:false,
                 pickerStartTime:sessionStorage.getItem('firstBlockTime') ? sessionStorage.getItem('firstBlockTime') : '',
                 PickerOptions: {
                     disabledDate: (time) => {
@@ -546,7 +535,7 @@
                     filterStartTime = sessionStorage.getItem('searchResultByTxTypeAndAddress') ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).beginTime : "",
                     filterEndTime = sessionStorage.getItem('searchResultByTxTypeAndAddress') ? JSON.parse(sessionStorage.getItem('searchResultByTxTypeAndAddress')).endTime : "",
                     param = {};
-		        param.getTxListByAddress = {};
+                param.getTxListByAddress = {};
 		        param.getTxListByAddress.pageNumber = this.allTxCurrentPage;
 		        param.getTxListByAddress.pageSize = this.addressTxPageSize;
 		        param.getTxListByAddress.txType = txType;
@@ -630,7 +619,7 @@
 			        this.TxType = '';
                     this.$uMeng.push('Transactions_All Type','click')
 		        }else {
-			        this.TxType = Tools.firstWordUpperCase(e[e.length-1])
+			        this.TxType = Tools.onlyFirstWordUpperCase(e[e.length-1])
 		        }
 	        },
 	        filterTxByStatus(e){
@@ -1181,7 +1170,8 @@
                     .address_information_transaction_header_content{
                         flex-direction: column;
                         align-items: flex-start;
-                        margin-left: 0.1rem;
+                        box-sizing: border-box;
+                        padding: 0 0.1rem;
                         .address_information_transaction_title{
                             padding-left: 0;
                             margin-bottom: 0.1rem;

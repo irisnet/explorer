@@ -1,133 +1,8 @@
 <template>
     <div class="transactions_detail_wrap">
-        <!--<div :class="[transactionsDetailWrap, 'validator_title']" class="page_title_container">-->
-            <!--<div class="title_tag_content">-->
-                <!--<span class="validator_title_content">Validator Details</span>-->
-                <!--<span class="validator_page_link">|</span>-->
-            <!--</div>-->
-            <!--<div class="title_tag_right_content">-->
-                <!--<div class="validator_img_container">-->
-                    <!--<img :src="validatorImg" alt="">-->
-                <!--</div>-->
-                <!--<span class="title">{{validatorName}}</span>-->
-                <!--<div class="status_btn" v-if="validatorStatus === 'Active'">Active</div>-->
-                <!--<div-->
-                        <!--class="status_btn"-->
-                        <!--style="background-color: #3DA87E;"-->
-                        <!--v-if="validatorStatus === 'Candidate'"-->
-                <!--&gt;Candidate</div>-->
-                <!--<div-->
-                        <!--class="status_btn"-->
-                        <!--style="background-color: #FA7373;"-->
-                        <!--v-if="validatorStatus === 'Jailed'"-->
-                <!--&gt;Jailed</div>-->
-            <!--</div>-->
-        <!--</div>-->
         <page-title :title="'Validator Details'" :flShowPageLink="false"></page-title>
         <validator-information :validationInformation="validationInformation" :validatorStatus="validatorStatus"></validator-information>
         <validator-commission-information :validationCommissionInfo="validationInformation"></validator-commission-information>
-        <!--<div :class="transactionsDetailWrap">
-            <div class="validator_detail_information_wrap">
-                <div>
-                    <div
-                        class="information_props_wrap"
-                        v-for="v in Object.entries(validatorInfo).filter((v, i) => i%2 === 0)"
-                        :key="v[0]"
-                        v-if="flShowVotPower(v[1])">
-                        <span class="information_props">{{v[0]}}:</span>
-                        <template v-if="v[1]">
-                            <span class="information_value" v-if="!v[1] instanceof Array">{{v[1]}}</span>
-                            <span class="information_value" v-if="v[1] instanceof Array">{{v[1][0]}}
-                             <i v-show="v[1][1]" class="tip_content">{{v[1][1]}}</i>
-                            </span>
-                            <span class="information_value" v-else>{{v[1]}}</span>
-                        </template>
-                        <template v-else>
-                            <span class="information_value">&#45;&#45;</span>
-                        </template>
-                    </div>
-                </div>
-                <div>
-                    <div
-                        class="information_props_wrap"
-                        v-for="v in Object.entries(validatorInfo).filter((v, i) => i%2 === 1)"
-                        :key="v[0]"
-                        v-if="flShowVotPower(v[1])"
-                    >
-                        <span class="information_props">{{v[0]}}:</span>
-                        <template v-if="v[1]">
-                            <span class="information_value" v-if="!v[1] instanceof Array">{{v[1]}}</span>
-                            <span class="information_value" v-if="v[1] instanceof Array">{{v[1][0]}}
-                             <i v-show="v[1][1]" class="tip_content">{{v[1][1]}}</i>
-                            </span>
-                            <span class="information_value" v-else>{{v[1]}}</span>
-                        </template>
-                        <template v-else>
-                            <span class="information_value">&#45;&#45;</span>
-                        </template>
-                    </div>
-                </div>
-            </div>
-        </div>-->
-        <div :class="transactionsDetailWrap" class="address_profile">
-            <p class="validator_information_content_title">Validator Profile</p>
-            <div class="validator_detail_information_wrap">
-                <div>
-                    <div
-                        class="information_props_wrap"
-                        v-for="v in Object.entries(validatorProfile).filter((v, i) => i%2 === 0)"
-                        :key="v[0]"
-                    >
-                        <span class="information_props">{{v[0]}}:</span>
-                        <template v-if="v[1] && validatorProfileLinks.indexOf(v[0]) > -1">
-                            <span class="information_value skip_route">
-                                <router-link
-                                    v-if="v[0] !== 'Website' && v[0] !== 'Identity'"
-                                    :to="addressRoute(v[1])"
-                                >{{v[1]}}</router-link>
-                                <span @click="openUrl(v[1])" v-if="v[0] === 'Website'">{{v[1]}}</span>
-                                <a
-                                    :href="keyBaseName"
-                                    target="_blank"
-                                    v-if="v[0] === 'Identity'"
-                                >{{v[1]}}</a>
-                            </span>
-                        </template>
-                        <template v-else>
-                            <span v-if="!v[1]" class="information_value">--</span>
-                            <span v-if="v[1]" class="information_value">{{v[1]}}</span>
-                        </template>
-                    </div>
-                </div>
-                <div>
-                    <div
-                        class="information_props_wrap"
-                        v-for="v in Object.entries(validatorProfile).filter((v, i) => i%2 === 1)"
-                        :key="v[0]"
-                    >
-                        <span class="information_props">{{v[0]}}:</span>
-                        <template v-if="v[1] && validatorProfileLinks.indexOf(v[0]) > -1">
-                            <span class="information_value skip_route">
-                                <router-link
-                                    v-if="v[0] !== 'Website' && v[0] !== 'Identity'"
-                                    :to="addressRoute(v[1])"
-                                >{{v[1]}}</router-link>
-                                <span @click="openUrl(v[1])" v-if="v[0] === 'Website'">{{v[1]}}</span>
-                                <a
-                                    :href="keyBaseName"
-                                    target="_blank"
-                                    v-if="v[0] === 'Identity'"
-                                >{{v[1]}}</a>
-                            </span>
-                        </template>
-                        <template v-else>
-                            <span v-if="!v[1]" class="information_value">--</span>
-                            <span v-if="v[1]" class="information_value">{{v[1]}}</span>
-                        </template>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div :class="transactionsDetailWrap">
             <div
                 :class="[!$store.state.isMobile && txTableList.delegations.total && txTableList.unbondingDelegations.total ? 'delegations_two_container': '']"
@@ -457,13 +332,10 @@ export default {
             );
         }
         this.getValidatorsInfo();
-        // this.getValidatorWithdrawAddr();
-        this.getValidatorRewards();
         this.getDelegations();
         this.getUnbondingDelegations();
         this.getDepositedProposals();
         this.getVotedProposals();
-
         this.getStakes();
         this.getDeclarations();
         this.getGovernance();
@@ -500,47 +372,6 @@ export default {
             return page => {
                 this[key](page);
             };
-        },
-        /*getValidatorWithdrawAddr() {
-            Service.commonInterface(
-                {
-                    validatorWithdrawAddr: {
-                        validatorAddr: this.$route.params.param
-                    }
-                },
-                data => {
-                    try {
-                        if (data) {
-                            this.validatorProfile["Withdraw Address"] =
-                                data.address;
-                        }
-                    } catch (e) {
-                        console.error(e)
-                    }
-                }
-            );
-        },*/
-        getValidatorRewards() {
-            Service.commonInterface(
-                {
-                    validatorCommissionRewards: {
-                        validatorAddr: this.$route.params.param
-                    }
-                },
-                data => {
-                    try {
-                        if (data) {
-                            if (Array.isArray(data) && data[0]) {
-                                this.validatorInfo[
-                                    "Commission Rewards"
-                                ] = [this.$options.filters.amountFromat(data[0],"",this.irisTokenFixedNumber),`${data[0].amount}${Tools.formatDenom(data[0].denom)}`];
-                            }
-                        }
-                    } catch (e) {
-                        console.error(e)
-                    }
-                }
-            );
         },
         getValidatorsInfo() {
             Service.commonInterface(
@@ -678,26 +509,12 @@ export default {
                                     data.description.moniker ||
                                     this.$route.params.param;
                             }
-                            this.getKeyBaseName(data.description.identity);
                         }
                     } catch (e) {
                         console.error(e)
                     }
                 }
             );
-        },
-        getKeyBaseName(identity) {
-            let url = `https://keybase.io/_/api/1.0/user/lookup.json?fields=basics&key_suffix=${identity}`;
-            if (identity) {
-                axios.http(url).then(res => {
-                    if (res.them && res.them.length > 0 && res.them[0].basics && res.them[0].basics.username) {
-                        this.keyBaseName = `https://keybase.io/${res.them[0].basics.username}`;
-                    } else {
-                        let i = this.validatorProfileLinks.indexOf("Identity");
-                        this.validatorProfileLinks.splice(i, 1);
-                    }
-                });
-            }
         },
         getDelegations(page) {
             Service.commonInterface(
@@ -711,7 +528,6 @@ export default {
                 data => {
                     try {
                         if (Array.isArray(data.items)) {
-                            console.log(this.$options.filters.amountFromat,"???666666666")
                             for (let it of data.items) {
                             	if(String(Tools.FormatScientificNotationToNumber(it.amount)).length > 18){
 			                       it.amount =`${String(Tools.FormatScientificNotationToNumber(it.amount)).split('.')[0]}.${String(Tools.FormatScientificNotationToNumber(it.amount)).split('.')[1].substring(0,18)}`

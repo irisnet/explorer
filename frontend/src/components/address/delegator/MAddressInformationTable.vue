@@ -98,7 +98,7 @@
             </template>
             <template slot-scope="{ row }" slot="amount">
                 <div class="name_address">
-                    <div v-if="!row.amount.includes('Tokens') && row.amount.toString().length < 12">
+                    <div v-if="!row.amount.includes('Tokens') && row.amount.toString().length <= 12">
                             <span>
                                 <span>{{substrAmount(row.amount)}}</span>
                             </span>
@@ -111,7 +111,7 @@
             </template>
         </m-table>
         <div class="no_data_img_content" v-if="showNoData">
-            <img src="../../../assets/no_data.svg" >
+            <span>~ {{showNoDataDoc}} ~</span>
         </div>
     </div>
 </template>
@@ -129,6 +129,9 @@
 				type: String,
 				default: ""
 			},
+            showNoDataDoc:{
+			  type:String,
+            },
 			width: {
 				type: Number,
 				default: 1280
@@ -313,6 +316,7 @@
             font-size: 0.14rem;
             height: 1.8rem;
             align-items: center;
+            color: var(--contentColor);
             img{
                 width: 1.2rem;
             }

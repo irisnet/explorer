@@ -74,7 +74,6 @@ export default {
             }, 500);
         },
         handleClipboard(text, event, success, error) {
-            console.log(text,"拷貝")
             const clipboard = new Clipboard(event.target, {
                 text: () => text
             });

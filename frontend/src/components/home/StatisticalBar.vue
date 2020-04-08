@@ -14,10 +14,12 @@
 					</div>
 					<div  class="statistical_validator_bottom_content">
 						<div class="statistical_img_content">
-							<div class="statistical_validator_header_img_content">
-								<img v-if="validatorHeaderImgHref" :src="validatorHeaderImgHref" alt="">
-								<span v-else>{{validatorHeaderImgSrc}}</span>
-							</div>
+							<router-link :to="addressRoute(proposerAddress)">
+								<div class="statistical_validator_header_img_content">
+										<img v-if="validatorHeaderImgHref" :src="validatorHeaderImgHref" alt="" @error="imgLoadError()">
+										<span v-else>{{validatorHeaderImgSrc}}</span>
+								</div>
+							</router-link>
 						</div>
 						<p class="statistical_moniker_content skip_route">
 							<router-link :to="addressRoute(proposerAddress)">{{moniker}}</router-link>
@@ -89,14 +91,14 @@
 						flShowTip:false,
 						isLink: false,
 					},
-					{
-						iconClass:'iconfont iconCirculationBondedTokens',
-						label:'Circulation Bonded Tokens',
-						footerLabel:'--',
-						value:'--',
-						flShowTip:true,
-						isLink: false,
-					}
+					// {
+					// 	iconClass:'iconfont iconCirculationBondedTokens',
+					// 	label:'Circulation Bonded Tokens',
+					// 	footerLabel:'--',
+					// 	value:'--',
+					// 	flShowTip:true,
+					// 	isLink: false,
+					// }
 				],
 				moniker:'--',
 				proposerAddress:'--',
@@ -109,19 +111,19 @@
 		},
 		mounted(){
 			this.getNavigation();
-			clearInterval(this.timer)
+			clearInterval(this.timer);
 			setInterval(() =>{
 				this.getNavigation()
 			},5000)
 		},
 		methods:{
+			imgLoadError(){
+				this.validatorHeaderImgHref = ""
+			},
 			getNavigation(){
 				Service.commonInterface({navigation:{}},(res) => {
 					try {
 						if(res){
-							// res.moniker = '#NGC_StakeX';
-							// res.validator_icon =  'https://s3.amazonaws.com/keybase_processed_uploads/b2445a76e545f7c8cc45835e8a7ab905_360_360.jpg'
-							// this.validatorHeaderImgHref= 'https://s3.amazonaws.com/keybase_processed_uploads/9ed56ba94a8870b060342f160cf06005_360_360.jpg'
 							//先通过正则剔除符号空格及表情，只保留数字字母汉字
 							let regex =  /[^\w\u4e00-\u9fa50-9a-zA-Z]/g;
 							let replaceMoniker = res.moniker.replace(regex,'');
@@ -139,8 +141,8 @@
 							this.navigationArray[2].value = `${Number(res.avg_block_time).toFixed(2)} s`;
 							this.navigationArray[3].value = `${(res.bonded_ratio * 100).toFixed(2)} %`;
 							this.navigationArray[3].footerLabel = this.formatBondedTokens(res.bonded_tokens,res.total_supply);
-							this.navigationArray[4].value = `${((Number(res.bonded_tokens) - Number(res.foundation_bonded)) / Number(res.circulation)*100).toFixed(2)} %`
-							this.navigationArray[4].footerLabel = this.formatBondedTokens((Number(res.bonded_tokens) - Number(res.foundation_bonded)),res.circulation);
+							// this.navigationArray[4].value = `${((Number(res.bonded_tokens) - Number(res.foundation_bonded)) / Number(res.circulation)*100).toFixed(2)} %`
+							// this.navigationArray[4].footerLabel = this.formatBondedTokens((Number(res.bonded_tokens) - Number(res.foundation_bonded)),res.circulation);
 						}
 					}catch (e) {
 						console.error(e)
@@ -183,6 +185,9 @@
 				}
 				return `${tokens} / ${allTokens}`
 			},
+		},
+		destroyed () {
+			clearInterval(this.timer);
 		}
 	}
 </script>
@@ -198,7 +203,7 @@
 				padding: 0.2rem;
 				background: #fff;
 				display: grid;
-				grid-template-columns: 25% 75%;
+				grid-template-columns: 30% 70%;
 				.statistical_validator_content{
 					display: flex;
 					flex-direction: column;
@@ -259,7 +264,7 @@
 				.statistical_right_content{
 					.statistical_list_content{
 						display: grid;
-						grid-template-columns: repeat(3,1fr);
+						grid-template-columns: repeat(2,1fr);
 						grid-template-rows: repeat(2,auto);
 						grid-row-gap: 0.2rem;
 						grid-column-gap: 0.2rem;
