@@ -46,7 +46,7 @@
 					tooltip: {
 						trigger: 'item',
 						formatter: function (data) {
-							return `${data.name}: ${data.value} IRIS (${data.percent}%)`
+							return `${data.name}: ${data.value} IRIS (${data.data.formatPercent}%)`
 						}
 					},
 					legend: {
@@ -91,6 +91,7 @@
 					return {
 						value: item.numberValue,
 						name: item.label,
+						formatPercent: Number(item.percent),
 						itemStyle:{
 							color: this.themeStyleArray[index]
 						}
@@ -99,8 +100,7 @@
 				echartsOption.series[0].data = seriesData;
 				
 				this.addressInformationCharts.setOption(echartsOption)
-			},
-			
+			}
 		}
 	}
 </script>

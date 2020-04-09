@@ -50,7 +50,7 @@
 						href:'https://github.com/irisnet/irisnet/blob/master/WHITEPAPER.md'
 					},
 					{
-						label:'Github',
+						label:'GitHub',
 						href:'https://github.com/irisnet'
 					}
 				],
@@ -61,7 +61,7 @@
 		},
 		watch:{
 			'$store.state.flShowSearchBar'(){
-				this.flShowSearchBar = !this.$store.state.flShowSearchBar
+				this.flShowSearchBar = !this.$store.state.flShowSearchBar;
 				this.flShowIpt = !this.$store.state.flShowSearchBar
 			}
 		},

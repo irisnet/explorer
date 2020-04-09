@@ -162,16 +162,9 @@
 					}else if(item.label === 'Total Shares:'){
 						item.value = `${this.$options.filters.amountFromat(dataInfomation.delegator_shares, "", this.irisTokenFixedNumber)}`
 					}else if(item.label === 'Commission Rate:'){
-						item.value = dataInfomation.commission_update !==
-						"0001-01-01 00:00:00 +0000 UTC"
-							? `${this.formatPerNumber(
-								Number(dataInfomation.commission_rate) * 100
-							)} % (${Tools.format2UTC(
-								dataInfomation.commission_update
-							).substr(0,10)} Updated)`
-							: `${this.formatPerNumber(
-								Number(dataInfomation.commission_rate) * 100
-							)} %`
+						item.value = dataInfomation.commission_update !== "0001-01-01 00:00:00 +0000 UTC"
+							? dataInfomation.status === 'active' ? `${this.formatPerNumber(Number(dataInfomation.commission_rate) * 100)} % (${Tools.format2UTC(dataInfomation.commission_update).substr(0,10)} Updated)` : `${this.formatPerNumber(Number(dataInfomation.commission_rate) * 100)} %`
+							: `${this.formatPerNumber(Number(dataInfomation.commission_rate) * 100)} %`
 					}else {
 						item.value = dataInfomation[item.dataName]
 					}

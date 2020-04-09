@@ -129,8 +129,8 @@
 							let replaceMoniker = res.moniker.replace(regex,'');
 							let reservedStringLength = 12;
 							this.moniker = Tools.formatString(res.moniker,reservedStringLength,'...');
-							this.validatorHeaderImgHref = res.validator_icon;
-							this.validatorHeaderImgSrc = Tools.firstWordUpperCase(replaceMoniker.match(/^[0-9a-zA-Z\u4E00-\u9FA5]/g)[0])
+							this.validatorHeaderImgHref = res.validator_icon ? res.validator_icon : replaceMoniker ? '' : require('../../assets/default_validator_icon.svg');
+							this.validatorHeaderImgSrc = replaceMoniker ? Tools.firstWordUpperCase(replaceMoniker.match(/^[0-9a-zA-Z\u4E00-\u9FA5]/g)[0]) : '';
 							this.proposerAddress = res.operator_addr;
 							this.diffSeconds = Number(res.avg_block_time);
 							this.currentBlockHeight = res.block_height;
@@ -329,11 +329,18 @@
 							.statistical_img_content{
 								width: 0.3rem;
 								height: 0.3rem;
+								border-radius: 0.15rem;
 								display: flex;
+								align-items: center;
+								justify-content: center;
 								margin-bottom: 0.07rem;
-								.statistical_validator_header_img_content{
-									span{
-										font-size: 0.1rem ;
+								a{
+									width: 100%;
+									height: 100%;
+									.statistical_validator_header_img_content{
+										span{
+											font-size: 0.1rem;
+										}
 									}
 								}
 							}
