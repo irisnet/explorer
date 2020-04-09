@@ -13,7 +13,7 @@
 				</div>
 				<ul class="search_bar_link_content">
 					<li class="search_bar_link_item" v-for="(item,index) in searchBarLinkArray" :key="index">
-						<a :href="item.href" @click.native="UmengPush(item.label)"  target="_blank">{{item.label}}</a>
+						<a :href="item.href" @click="UmengPush(item.label)"  target="_blank">{{item.label}}</a>
 					</li>
 				</ul>
 				<div class="search_bar_pack_up_content">
