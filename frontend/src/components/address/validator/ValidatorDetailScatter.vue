@@ -20,6 +20,7 @@
 	import Service from "../../../service"
 	import Tools from "../../../util/Tools"
 	import Constant from "../../../constant/Constant"
+	import bigNumber from "bignumber.js"
 	var echarts = require('echarts/lib/echarts');
 	require('echarts/lib/component/legend');
 	require('echarts/lib/component/tooltip');
@@ -108,7 +109,7 @@
 							return `<div>
 										<p>${value[2]}</p>
 										<p>Commission Rate:${value[0]}%</p>
-										<p>Bonded Tokens:<br/>${value[1]} IRIS</p>
+										<p>Bonded Tokens:<br/>${new bigNumber(value[1]).toFormat()} IRIS</p>
 										</div>`
 						}
 					},
@@ -230,7 +231,6 @@
 		min-height: 2.2rem;
 		width: 100%;
 		.validator_detail_scatter_content_wrap{
-			overflow-x: auto;
 			width: 100%;
 			#validator_detail_scatter_content{
 				height: 2.2rem;

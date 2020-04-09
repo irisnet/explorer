@@ -47,7 +47,7 @@ import Service from "../../service";
 import Tools from "../../util/Tools";
 import PageTitle from "../pageTitle/PageTitle";
 import pageTitleConfig from "../pageTitle/pageTitleConfig";
-
+import bigNumber from "bignumber.js"
 export default {
     components: {
         PageTitle,
@@ -151,6 +151,7 @@ export default {
                                         4,
                                         true
                                     );
+                                    v[1].totalAmount = `${new bigNumber(v[1].totalAmount.split(' ')[0]).toFormat()} ${v[1].totalAmount.split(' ')[1]}`
                                     v[1].percentValue = this.formatDecimalNumberToFixedNumber(
                                         Number(v[1].percent) * 100
                                     );
@@ -174,26 +175,26 @@ export default {
                 );
             });
         },
-        formatDecimalNumberToFixedNumber(num) {
-            if (Number(num) < 0.0001) {
-                return "<0.0001";
-            } else {
-                let s = num + "",n;
-                let arr = s.split(".");
-                arr[1] = arr[1] || "";
-                if(arr[1].toString().length > 4){
-                    n =`${arr[0]}.${arr[1].substring(0, 4)}`
-                }else {
-                    let diffNum = 4 - arr[1].toString().length;
-                    for(let i = 0; i < diffNum; i++){
-                        arr[1] += '0'
-                    }
-                    n = `${arr[0]}.${arr[1]}`
-                }
-                // let n = `${arr[0]}.${arr[1].padEnd(4, "0").substring(0, 4)}`;
-                return n;
-            }
-        }
+	    formatDecimalNumberToFixedNumber(num) {
+		    if (Number(num) < 0.0001) {
+			    return "<0.0001";
+		    } else {
+			    let s = num + "",n;
+			    let arr = s.split(".");
+			    arr[1] = arr[1] || "";
+			    if(arr[1].toString().length > 4){
+				    n =`${arr[0]}.${arr[1].substring(0, 4)}`
+			    }else {
+				    let diffNum = 4 - arr[1].toString().length;
+				    for(let i = 0; i < diffNum; i++){
+					    arr[1] += '0'
+				    }
+				    n = `${arr[0]}.${arr[1]}`
+			    }
+			    // let n = `${arr[0]}.${arr[1].padEnd(4, "0").substring(0, 4)}`;
+			    return n;
+		    }
+	    }
     },
     mounted() {
         (async () => {
@@ -236,8 +237,7 @@ export default {
                 line-height: 0.7rem;
                 padding-left: 0.2rem;
                 font-size: 0.18rem;
-                color: #515a6e;
-                font-weight: bold;
+                color: var(--titleColor);
             }
             .table_container {
                 display: flex;

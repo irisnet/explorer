@@ -513,6 +513,7 @@
                     display: flex;
                     align-items: center;
                     padding-left: 0.2rem;
+                    color: var(--titleColor);
                 }
                 .block_result_table_content{
                     overflow-x: auto;
@@ -543,6 +544,7 @@
                     display: flex;
                     align-items: center;
                     padding-left: 0.2rem;
+                    color:var(--titleColor)
                 }
                 .block_validator_set_content{
                     background: #fff;

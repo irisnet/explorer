@@ -64,6 +64,7 @@
     import MClip from "../commonComponents/MClip";
     import MPagination from "../commonComponents/MPagination";
     import PageTitle from "../pageTitle/PageTitle";
+    import bigNumber from 'bignumber.js'
     export default {
 		name: "HtlcInformation",
         components: {PageTitle, MPagination, MClip, MHtlsTransferTableList},

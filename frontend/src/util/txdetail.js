@@ -2,7 +2,11 @@
 import Constant from "../constant/Constant"
 import numberMoveDecimal from "move-decimal-point"
 import Tools from "../util/Tools"
+import bigNumber from 'bignumber.js'
 export default class formatMsgsAndTags {
+    static formatAmount(amount){
+        return new bigNumber(amount).toFormat()
+    }
     static switchTxType(dataTx){
         let message;
         switch (dataTx.type) {
@@ -132,10 +136,10 @@ export default class formatMsgsAndTags {
                             if(amountObj && amountObj.moreAmountsNumber && amountObj.moreAmountsNumber.length > 0){
                                 //handle more tokens
                                 amountObj.moreAmountsNumber.forEach( (item) => {
-                                    message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${item.amount} ${item.denom}`)
+                                    message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(item.amount)} ${item.denom}`)
                                 })
                             }else {
-                                message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${amountObj.amountNumber} ${amountObj.tokenName}`)
+                                message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}`)
                             }
                         });
                     }
@@ -156,7 +160,7 @@ export default class formatMsgsAndTags {
                     if(item.msg){
                         message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(item.msg.owner);
                         amountObj = Tools.formatAmountOfTxDetail(item.msg.coins);
-                        message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${amountObj.amountNumber} ${amountObj.tokenName}`);
+                        message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}`);
                     }
                 }
             })
@@ -202,7 +206,7 @@ export default class formatMsgsAndTags {
                         message[Constant.TRANSACTIONMESSAGENAME.OPERATORADDRESS].unshift(item.msg.validator_address);
                         message[Constant.TRANSACTIONMESSAGENAME.MONIKER].unshift(item.msg.valdescription.moniker ? item.msg.valdescription.moniker : '--');
                         message[Constant.TRANSACTIONMESSAGENAME.IDENTITY].unshift(item.msg.valdescription.identity ? item.msg.valdescription.identity : '--');
-                        message[Constant.TRANSACTIONMESSAGENAME.SELFBONDED].unshift(`${selfBondedObj.amountNumber} ${selfBondedObj.tokenName}`);
+                        message[Constant.TRANSACTIONMESSAGENAME.SELFBONDED].unshift(`${formatMsgsAndTags.formatAmount(selfBondedObj.amountNumber)} ${selfBondedObj.tokenName}`);
                         message[Constant.TRANSACTIONMESSAGENAME.OWNERADDRESS].unshift(item.msg.delegator_address);
                         message[Constant.TRANSACTIONMESSAGENAME.CONSENSUSPUBKEY].unshift(item.msg.pubkey);
                         message[Constant.TRANSACTIONMESSAGENAME.COMMISSIONRATE].unshift(`${Tools.formatPercentage(item.msg.commission.rate )} %`)
@@ -278,7 +282,7 @@ export default class formatMsgsAndTags {
                         message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(item.msg.delegator_addr);
                         message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.msg.validator_addr);
                         amountObj = Tools.formatAmountOfTxDetail(item.msg.delegation);
-                        message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${amountObj.amountNumber} ${amountObj.tokenName}`)
+                        message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}`)
                     }
                 }
             })
@@ -298,7 +302,7 @@ export default class formatMsgsAndTags {
         if(dataTx.status === 'success'){
             if(dataTx.tags){
                 amountObj = Tools.formatListByTagsBalance(dataTx.tags);
-                message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${amountObj.amountNumber} ${amountObj.tokenName}`);
+                message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}`);
                 message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(dataTx.tags['source-validator']);
                 message[Constant.TRANSACTIONMESSAGENAME.SHARES].unshift(`${Tools.numberMoveDecimal(dataTx.tags['shares-src'])} SHARES`);
                 message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(dataTx.tags['destination-validator'])
@@ -354,7 +358,7 @@ export default class formatMsgsAndTags {
             if(dataTx.tags){
                 amountObj = Tools.formatListByTagsBalance(dataTx.tags,true);
                 message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(dataTx.tags['source-validator']);
-                message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${amountObj.amountNumber} ${amountObj.tokenName}`);
+                message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}`);
                 message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(dataTx.tags.delegator);
                 message[Constant.TRANSACTIONMESSAGENAME.ENDTIME].unshift(Tools.format2UTC(dataTx.tags['end-time']))
             }
@@ -370,7 +374,7 @@ export default class formatMsgsAndTags {
         }else {
             if(dataTx.tags && dataTx.tags.balance && dataTx.tags['end-time']){
                 amountObj = Tools.formatListByTagsBalance(dataTx.tags);
-                message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${amountObj.amountNumber} ${amountObj.tokenName}`);
+                message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}`);
                 message[Constant.TRANSACTIONMESSAGENAME.ENDTIME].unshift(Tools.format2UTC(dataTx.tags['end-time']))
 
             }else {
@@ -381,7 +385,7 @@ export default class formatMsgsAndTags {
                     dataTx.msgs.forEach(item => {
                         if(item.msg){
                             amountObj = Tools.formatListByTagsBalance(item.msg.shares_amount,true);
-                            amountObj.amountNumber !== '--' ? message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${amountObj.amountNumber} ${amountObj.tokenName}`) : message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--');
+                            amountObj.amountNumber !== '--' ? message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}`) : message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--');
                             message[Constant.TRANSACTIONMESSAGENAME.SHARES].unshift(`${Tools.numberMoveDecimal(item.msg.shares_amount)} SHARES`)
                             message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(item.msg['validator_addr']);
                             message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.msg.delegator_addr);
@@ -404,7 +408,7 @@ export default class formatMsgsAndTags {
                 let tags = {};
                 tags.balance = dataTx.tags['withdraw-reward-total']
                 amountObj = Tools.formatListByTagsBalance(tags,true);
-                message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${amountObj.amountNumber} ${amountObj.tokenName}`)
+                message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}`)
             }else {
                 message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--')
             }
@@ -452,7 +456,7 @@ export default class formatMsgsAndTags {
             }
             if(dataTx.amount && dataTx.amount.length > 0 ){
                 amountObj = Tools.formatAmountOfTxDetail(dataTx.amount);
-                message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${amountObj.amountNumber} ${amountObj.tokenName}`)
+                message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}`)
             }else {
                 message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--')
             }
@@ -462,7 +466,7 @@ export default class formatMsgsAndTags {
                 dataTx.msgs.forEach(item => {
                     if(item.msg){
                         amountObj = Tools.formatAmountOfTxDetail(dataTx.amount) ;
-                        message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(dataTx.amount.length > 0 ? `${amountObj.amountNumber} ${amountObj.tokenName}` : '--');
+                        message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(dataTx.amount.length > 0 ? `${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}` : '--');
                         message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(item.msg.validator_addr ? item.msg.validator_addr : '-');
                         message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.msg.delegator_addr ? item.msg.delegator_addr : '-')
                     }
@@ -521,7 +525,7 @@ export default class formatMsgsAndTags {
             }
         }
         amountObj = Tools.formatAmountOfTxDetail(dataTx.amount);
-        amountObj.amountNumber === '--' || amountObj.tokenName === '--' ? message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--') : message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${amountObj.amountNumber} ${amountObj.tokenName}`)
+        amountObj.amountNumber === '--' || amountObj.tokenName === '--' ? message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift('--') : message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}`)
         message[Constant.TRANSACTIONMESSAGENAME.TO] = toAddressArray.length > 0 ? toAddressArray : '-';
         return message
     }
@@ -542,7 +546,7 @@ export default class formatMsgsAndTags {
                             initialDepositObj = Tools.formatAmountOfTxDetail(item.msg.initialDeposit);
                             message[Constant.TRANSACTIONMESSAGENAME.PROPOSER].unshift(item.msg.proposer);
                             message[Constant.TRANSACTIONMESSAGENAME.TITLE].unshift(item.msg.title);
-                            message[Constant.TRANSACTIONMESSAGENAME.INITIALDEPOSIT].unshift(`${initialDepositObj.amountNumber} ${initialDepositObj.tokenName}`);
+                            message[Constant.TRANSACTIONMESSAGENAME.INITIALDEPOSIT].unshift(`${formatMsgsAndTags.formatAmount(initialDepositObj.amountNumber)} ${initialDepositObj.tokenName}`);
                             message[Constant.TRANSACTIONMESSAGENAME.DESCRIPTION].unshift(item.msg.description);
                             message[Constant.TRANSACTIONMESSAGENAME.PROPOSALTYPE].unshift(item.msg.proposalType);
                             if(item.msg.params && item.msg.params.length > 0){
@@ -560,7 +564,7 @@ export default class formatMsgsAndTags {
                             initialDepositObj = Tools.formatAmountOfTxDetail(item.msg.doctxmsgsubmitproposal.initialDeposit);
                             message[Constant.TRANSACTIONMESSAGENAME.PROPOSER].unshift(item.msg.doctxmsgsubmitproposal.proposer);
                             message[Constant.TRANSACTIONMESSAGENAME.TITLE].unshift(item.msg.doctxmsgsubmitproposal.title);
-                            message[Constant.TRANSACTIONMESSAGENAME.INITIALDEPOSIT].unshift(`${initialDepositObj.amountNumber} ${initialDepositObj.tokenName}`);
+                            message[Constant.TRANSACTIONMESSAGENAME.INITIALDEPOSIT].unshift(`${formatMsgsAndTags.formatAmount(initialDepositObj.amountNumber)} ${initialDepositObj.tokenName}`);
                             message[Constant.TRANSACTIONMESSAGENAME.DESCRIPTION].unshift(item.msg.doctxmsgsubmitproposal.description);
                             message[Constant.TRANSACTIONMESSAGENAME.PROPOSALTYPE].unshift(item.msg.doctxmsgsubmitproposal.proposalType);
                             message[Constant.TRANSACTIONMESSAGENAME.SOFTWARE].unshift(item.msg.software);
@@ -579,7 +583,7 @@ export default class formatMsgsAndTags {
                             initialDepositObj = Tools.formatAmountOfTxDetail(item.msg.doctxmsgsubmitproposal.initialDeposit);
                             message[Constant.TRANSACTIONMESSAGENAME.PROPOSER].unshift(item.msg.doctxmsgsubmitproposal.proposer);
                             message[Constant.TRANSACTIONMESSAGENAME.TITLE].unshift(item.msg.doctxmsgsubmitproposal.title);
-                            message[Constant.TRANSACTIONMESSAGENAME.INITIALDEPOSIT].unshift(`${initialDepositObj.amountNumber} ${initialDepositObj.tokenName}`);
+                            message[Constant.TRANSACTIONMESSAGENAME.INITIALDEPOSIT].unshift(`${formatMsgsAndTags.formatAmount(initialDepositObj.amountNumber)} ${initialDepositObj.tokenName}`);
                             message[Constant.TRANSACTIONMESSAGENAME.DESCRIPTION].unshift(item.msg.doctxmsgsubmitproposal.description);
                             message[Constant.TRANSACTIONMESSAGENAME.PROPOSALTYPE].unshift(item.msg.doctxmsgsubmitproposal.proposalType);
 
@@ -598,7 +602,7 @@ export default class formatMsgsAndTags {
                             initialDepositObj = Tools.formatAmountOfTxDetail(item.msg.doctxmsgsubmitproposal.initialDeposit);
                             message[Constant.TRANSACTIONMESSAGENAME.PROPOSER].unshift(item.msg.doctxmsgsubmitproposal.proposer);
                             message[Constant.TRANSACTIONMESSAGENAME.TITLE].unshift(item.msg.doctxmsgsubmitproposal.title);
-                            message[Constant.TRANSACTIONMESSAGENAME.INITIALDEPOSIT].unshift(`${initialDepositObj.amountNumber} ${initialDepositObj.tokenName}`);
+                            message[Constant.TRANSACTIONMESSAGENAME.INITIALDEPOSIT].unshift(`${formatMsgsAndTags.formatAmount(initialDepositObj.amountNumber)} ${initialDepositObj.tokenName}`);
                             message[Constant.TRANSACTIONMESSAGENAME.DESCRIPTION].unshift(item.msg.doctxmsgsubmitproposal.description);
                             message[Constant.TRANSACTIONMESSAGENAME.PROPOSALTYPE].unshift(item.msg.doctxmsgsubmitproposal.proposalType);
                             message[Constant.TRANSACTIONMESSAGENAME.USAGE].unshift(item.msg.usage);
@@ -629,7 +633,7 @@ export default class formatMsgsAndTags {
                         depositAmoutObj = Tools.formatAmountOfTxDetail(item.msg.amount)
                         message[Constant.TRANSACTIONMESSAGENAME.DEPOSITOR].unshift(item.msg.depositor)
                         message[Constant.TRANSACTIONMESSAGENAME.PROPOSALID].unshift(item.msg.proposal_id)
-                        message[Constant.TRANSACTIONMESSAGENAME.DEPOSIT].unshift(`${depositAmoutObj.amountNumber} ${depositAmoutObj.tokenName}`)
+                        message[Constant.TRANSACTIONMESSAGENAME.DEPOSIT].unshift(`${formatMsgsAndTags.formatAmount(depositAmoutObj.amountNumber)} ${depositAmoutObj.tokenName}`)
                     }
                 }
             })
@@ -684,8 +688,8 @@ export default class formatMsgsAndTags {
                         message[Constant.TRANSACTIONMESSAGENAME.NAME].unshift(item.msg.name ? item.msg.name : '--');
                         message[Constant.TRANSACTIONMESSAGENAME.DECIMAL].unshift(item.msg.decimal  || item.msg.decimal === 0 ? item.msg.decimal : '--');
                         message[Constant.TRANSACTIONMESSAGENAME.SYMBOLMINALIAS].unshift(item.msg.min_unit_alias? item.msg.min_unit_alias : '--');
-                        message[Constant.TRANSACTIONMESSAGENAME.INITIALSUPPLY].unshift(item.msg.initial_supply || item.msg.initial_supply === 0 ? item.msg.initial_supply : '--');
-                        message[Constant.TRANSACTIONMESSAGENAME.MAXSUPPLY].unshift(item.msg.max_supply || item.msg.max_supply === 0 ? item.msg.max_supply : '--');
+                        message[Constant.TRANSACTIONMESSAGENAME.INITIALSUPPLY].unshift(item.msg.initial_supply || item.msg.initial_supply === 0 ? formatMsgsAndTags.formatAmount(item.msg.initial_supply) : '--');
+                        message[Constant.TRANSACTIONMESSAGENAME.MAXSUPPLY].unshift(item.msg.max_supply || item.msg.max_supply === 0 ? formatMsgsAndTags.formatAmount(item.msg.max_supply) : '--');
                         message[Constant.TRANSACTIONMESSAGENAME.MINTABLE].unshift(item.msg.mintable);
                         message[Constant.TRANSACTIONMESSAGENAME.OWNER].unshift(item.msg.owner ? item.msg.owner : '--');
                     }
@@ -713,7 +717,7 @@ export default class formatMsgsAndTags {
                         message[Constant.TRANSACTIONMESSAGENAME.CANONICALSYMBOL].unshift(item.msg.canonical_symbol ? item.msg.canonical_symbol : '--');
                         message[Constant.TRANSACTIONMESSAGENAME.NAME].unshift(item.msg.name ? item.msg.name : '--');
                         message[Constant.TRANSACTIONMESSAGENAME.SYMBOLMINALIAS].unshift(item.msg.min_unit_alias? item.msg.min_unit_alias : '--');
-                        message[Constant.TRANSACTIONMESSAGENAME.MAXSUPPLY].unshift(item.msg.max_supply || item.msg.max_supply === 0 ? item.msg.max_supply : '--');
+                        message[Constant.TRANSACTIONMESSAGENAME.MAXSUPPLY].unshift(item.msg.max_supply || item.msg.max_supply === 0 ? formatMsgsAndTags.formatAmount(item.msg.max_supply) : '--');
                         message[Constant.TRANSACTIONMESSAGENAME.MINTABLE].unshift(item.msg.mintable);
                         message[Constant.TRANSACTIONMESSAGENAME.OWNER].unshift(item.msg.owner ? item.msg.owner : '--');
                     }
@@ -736,7 +740,7 @@ export default class formatMsgsAndTags {
                     if(item.msg){
                         message[Constant.TRANSACTIONMESSAGENAME.TOKENID].unshift(item.msg.token_id );
                         message[Constant.TRANSACTIONMESSAGENAME.OWNER].unshift(item.msg.owner ? item.msg.owner : '--');
-                        message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(item.msg.amount);
+                        message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(formatMsgsAndTags.formatAmount(item.msg.amount));
                         message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.msg.to);
                     }
                 }
@@ -985,7 +989,7 @@ export default class formatMsgsAndTags {
                         amountObj = Tools.formatAmountOfTxDetail(item.msg.amount);
                         message[Constant.TRANSACTIONMESSAGENAME.HASHLOCK].unshift(item.msg.hash_lock);
                         message[Constant.TRANSACTIONMESSAGENAME.FROM].unshift(item.msg.sender);
-                        message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${amountObj.amountNumber} ${amountObj.tokenName}`);
+                        message[Constant.TRANSACTIONMESSAGENAME.AMOUNT].unshift(`${formatMsgsAndTags.formatAmount(amountObj.amountNumber)} ${amountObj.tokenName}`);
                         message[Constant.TRANSACTIONMESSAGENAME.TO].unshift(item.msg.to);
                         message[Constant.TRANSACTIONMESSAGENAME.TIMELOCK].unshift(item.msg.time_lock || item.msg.time_lock == 0 ? item.msg.time_lock : '--');
                         message[Constant.TRANSACTIONMESSAGENAME.TIMESTAMP].unshift(item.msg.timestamp);
@@ -1043,10 +1047,10 @@ export default class formatMsgsAndTags {
                 if(item.type === txType){
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
-                        message[Constant.TRANSACTIONMESSAGENAME.MAXTOKEN].unshift(`${item.msg.max_token.amount} ${item.msg.max_token.denom.toUpperCase()}`);
+                        message[Constant.TRANSACTIONMESSAGENAME.MAXTOKEN].unshift(`${formatMsgsAndTags.formatAmount(item.msg.max_token.amount)} ${item.msg.max_token.denom.toUpperCase()}`);
                         message[Constant.TRANSACTIONMESSAGENAME.EXACTIRISAMT].unshift(item.msg.exact_iris_amt);
                         message[Constant.TRANSACTIONMESSAGENAME.MINLIQUIDITY].unshift(item.msg.min_liquidity);
-                        message[Constant.TRANSACTIONMESSAGENAME.DEADLIN].unshift(item.msg.deadline);
+                        message[Constant.TRANSACTIONMESSAGENAME.DEADLINE].unshift(item.msg.deadline);
                         message[Constant.TRANSACTIONMESSAGENAME.SENDER].unshift(item.msg.sender);
                     }
                 }
@@ -1068,7 +1072,7 @@ export default class formatMsgsAndTags {
                     message[Constant.TRANSACTIONMESSAGENAME.TXTYPE].unshift(item.type);
                     if(item.msg){
                         message[Constant.TRANSACTIONMESSAGENAME.MINTOKEN].unshift(item.msg.min_token);
-                        message[Constant.TRANSACTIONMESSAGENAME.WITHDRAWLIQUIDITY].unshift(`${item.msg.withdraw_liquidity.amount} ${item.msg.withdraw_liquidity.denom.toUpperCase()}`);
+                        message[Constant.TRANSACTIONMESSAGENAME.WITHDRAWLIQUIDITY].unshift(`${formatMsgsAndTags.formatAmount(item.msg.withdraw_liquidity.amount)} ${item.msg.withdraw_liquidity.denom.toUpperCase()}`);
                         message[Constant.TRANSACTIONMESSAGENAME.MINIRISAMT].unshift(item.msg.min_iris_amt);
                         message[Constant.TRANSACTIONMESSAGENAME.DEADLINE].unshift(item.msg.deadline);
                         message[Constant.TRANSACTIONMESSAGENAME.SENDER].unshift(item.msg.sender);

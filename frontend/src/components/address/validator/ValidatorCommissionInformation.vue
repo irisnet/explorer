@@ -162,16 +162,9 @@
 					}else if(item.label === 'Total Shares:'){
 						item.value = `${this.$options.filters.amountFromat(dataInfomation.delegator_shares, "", this.irisTokenFixedNumber)}`
 					}else if(item.label === 'Commission Rate:'){
-						item.value = dataInfomation.commission_update !==
-						"0001-01-01 00:00:00 +0000 UTC"
-							? `${this.formatPerNumber(
-								Number(dataInfomation.commission_rate) * 100
-							)} % (${Tools.format2UTC(
-								dataInfomation.commission_update
-							).substr(0,10)} Updated)`
-							: `${this.formatPerNumber(
-								Number(dataInfomation.commission_rate) * 100
-							)} %`
+						item.value = dataInfomation.commission_update !== "0001-01-01 00:00:00 +0000 UTC"
+							? dataInfomation.status === 'active' ? `${this.formatPerNumber(Number(dataInfomation.commission_rate) * 100)} % (${Tools.format2UTC(dataInfomation.commission_update).substr(0,10)} Updated)` : `${this.formatPerNumber(Number(dataInfomation.commission_rate) * 100)} %`
+							: `${this.formatPerNumber(Number(dataInfomation.commission_rate) * 100)} %`
 					}else {
 						item.value = dataInfomation[item.dataName]
 					}
@@ -314,6 +307,7 @@
 		.validator_commission_information_container{
 			.validator_commission_information_wrap{
 				margin: 0 0.2rem;
+				
 				.validator_commission_information_content{
 					width: 100%;
 					grid-template-columns: repeat(1,auto);
@@ -340,6 +334,7 @@
 		.validator_commission_information_container{
 			.validator_commission_information_wrap{
 				margin: 0 0.1rem;
+				overflow-x: auto;
 				.validator_commission_information_content{
 					width: 100%;
 					.validator_commission_information_scatter_content{

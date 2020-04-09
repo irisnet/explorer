@@ -208,8 +208,8 @@
 				//匹配第一个字符用于头像展示
 				let regex =  /[^\w\u4e00-\u9fa50-9a-zA-Z]/g;
 				let replaceMoniker = information.description.moniker.replace(regex,'');
-				this.validatorIconSrc = Tools.firstWordUpperCase(replaceMoniker.match(/^[0-9a-zA-Z\u4E00-\u9FA5]/g)[0]);
-				this.validatorIconHref = information.icons;
+				this.validatorIconSrc = replaceMoniker ? Tools.firstWordUpperCase(replaceMoniker.match(/^[0-9a-zA-Z\u4E00-\u9FA5]/g)[0]) : '';
+				this.validatorIconHref = information.icons ? information.icons : replaceMoniker ? '' : require('../../../assets/default_validator_icon.svg');
 				this.moniker = information.description.moniker;
 				this.website = information.description.website ? information.description.website : '';
 				if(information.description.identity){

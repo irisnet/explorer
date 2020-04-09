@@ -63,6 +63,7 @@
 	import MClip from "../../commontables/MClip";
 	import Tools from "../../../util/Tools"
 	import AddressInformationPie from "./AddressInformationPie";
+	import moveDecimal from 'move-decimal-point'
 	export default {
 		name: "AddressInformationComponent",
 		components: {AddressInformationPie, MClip},
@@ -129,10 +130,12 @@
 							 if(res.label === "UnBonding"){
 								res.value = item['unBonding'] || "--";
 								res.numberValue = item['unBonding'] ? item['unBonding'].replace(/[^\d.]/g,"") : 0;
+								res.percent = this.formatDecimalNumberToFixedNumber(res.numberValue,item.totalAmount.replace(/[^\d.]/g,""))
 							}else {
 								res.value = item[Tools.firstWordLowerCase(res.label)] || "--";
 								res.numberValue = item[Tools.firstWordLowerCase(res.label)] ?
 									item[Tools.firstWordLowerCase(res.label)].replace(/[^\d.]/g,"") : 0;
+								res.percent = this.formatDecimalNumberToFixedNumber(item.totalAmount.replace(/[^\d.]/g,""),res.numberValue)
 							}
 						})
 					}
@@ -140,6 +143,17 @@
 				this.otherTokenList = assetInformation.filter((item) => {
 					return item.token !== 'IRIS'
 				})
+			},
+			formatDecimalNumberToFixedNumber(total,data) {
+				let percentNumber = (Number(data) / Number(total)).toString();
+				let num;
+				if(percentNumber !== 'Infinity'){
+					num = Tools.subStrings(moveDecimal(Tools.FormatScientificNotationToNumber(percentNumber),2),2) ;
+				}else {
+					//数字太小赋值为0.00
+					num = '0.00'
+				}
+				return num;
 			}
 		}
 	}
@@ -171,8 +185,9 @@
 				.address_information_asset_total_content{
 					display: grid;
 					grid-template-columns: repeat(1,0.5rem auto);
+					margin-right: 0.15rem;
 					img{
-						width: 0.3rem;
+						width: 0.4rem;
 					}
 					.address_information_content{
 						.address_information_item{
