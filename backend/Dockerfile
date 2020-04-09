@@ -8,4 +8,5 @@ RUN apk add --no-cache $PACKAGES && make all
 
 FROM alpine:3.7
 ENV REPO_PATH /go/src/github.com/irisnet/explorer/server
+ENV TZ           Asia/Shanghai
 COPY --from=builder $REPO_PATH/build/ /usr/local/bin/
