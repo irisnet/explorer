@@ -231,7 +231,6 @@
 		min-height: 2.2rem;
 		width: 100%;
 		.validator_detail_scatter_content_wrap{
-			overflow-x: auto;
 			width: 100%;
 			#validator_detail_scatter_content{
 				height: 2.2rem;

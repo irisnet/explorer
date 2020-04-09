@@ -307,6 +307,7 @@
 		.validator_commission_information_container{
 			.validator_commission_information_wrap{
 				margin: 0 0.2rem;
+				
 				.validator_commission_information_content{
 					width: 100%;
 					grid-template-columns: repeat(1,auto);
@@ -333,6 +334,7 @@
 		.validator_commission_information_container{
 			.validator_commission_information_wrap{
 				margin: 0 0.1rem;
+				overflow-x: auto;
 				.validator_commission_information_content{
 					width: 100%;
 					.validator_commission_information_scatter_content{
