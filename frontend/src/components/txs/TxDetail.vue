@@ -319,9 +319,8 @@
             .tx_detail_header_title{
                 height: 0.7rem;
                 line-height: 0.7rem;
-                color:#515a6e;
+                color:var(--titleColor);
                 margin-left: 0.2rem;
-                font-weight: bold;
                 font-size: 0.18rem;
             }
             .tx_detail_common_information_wrap{
@@ -460,7 +459,7 @@
                 height: 0.7rem;
                 line-height: 0.7rem;
                 margin-left: 0.2rem;
-                color: #171d44;
+                color:var(--titleColor);
             }
             .tx_detail_message_information_content{
                 padding-bottom: 0.4rem;
