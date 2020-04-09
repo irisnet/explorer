@@ -175,6 +175,26 @@ export default {
                 );
             });
         },
+	    formatDecimalNumberToFixedNumber(num) {
+		    if (Number(num) < 0.0001) {
+			    return "<0.0001";
+		    } else {
+			    let s = num + "",n;
+			    let arr = s.split(".");
+			    arr[1] = arr[1] || "";
+			    if(arr[1].toString().length > 4){
+				    n =`${arr[0]}.${arr[1].substring(0, 4)}`
+			    }else {
+				    let diffNum = 4 - arr[1].toString().length;
+				    for(let i = 0; i < diffNum; i++){
+					    arr[1] += '0'
+				    }
+				    n = `${arr[0]}.${arr[1]}`
+			    }
+			    // let n = `${arr[0]}.${arr[1].padEnd(4, "0").substring(0, 4)}`;
+			    return n;
+		    }
+	    }
     },
     mounted() {
         (async () => {
