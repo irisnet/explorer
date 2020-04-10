@@ -154,6 +154,9 @@
 						result = result && result.Data ? result.Data : null;
 						if(result){
 							this.items = result.map((item) => {
+                                let regex =  /[^\w\u4e00-\u9fa50-9a-zA-Z]/g;
+                                let replaceMoniker = item.description.moniker.replace(regex,'');
+                                let validatorIconSrc = replaceMoniker ? Tools.firstWordUpperCase(replaceMoniker.match(/^[0-9a-zA-Z\u4E00-\u9FA5]/g)[0]) : '';
 								return {
 									validatorStatus: status,
 									moniker: Tools.formatString(item.description.moniker,15,'...'),
@@ -168,7 +171,8 @@
 									unbondingHeight: item.unbonding_height && Number(item.unbonding_height) > 0 ? Number(item.unbonding_height) : '--',
 									unbondingTime: (new Date(item.unbonding_time).getTime()) > 0 ? Tools.format2UTC(item.unbonding_time) : '--',
                                     identity: item.description.identity,
-                                    url: item.icons || require('../../../assets/header_img.png')
+                                    url: item.icons ? item.icons : replaceMoniker ? '' : require('../../../assets/default_validator_icon.svg'),
+                                    validatorIconSrc: validatorIconSrc
 								}
 							});
 							this.showNoData = false;

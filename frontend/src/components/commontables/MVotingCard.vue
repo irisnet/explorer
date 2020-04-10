@@ -156,13 +156,13 @@
 		        this.flShowTotalVoted = false;
                 let optionTotalNumber = Number(finalVotes.yes) + Number(finalVotes.no) + Number(finalVotes.abstain) + Number(finalVotes.no_with_veto);
 		        this.delegatorVoted = Tools.subStrings(((Number(optionTotalNumber) / Number(finalVotes.system_voting_power)) * 100).toString(),2);
-		        this.yesVotingPowerWidth = Tools.subStrings(((Number(finalVotes.yes) / Number(optionTotalNumber)) * 100).toString(),2);
+		        this.yesVotingPowerWidth = optionTotalNumber !== 0 ? Tools.subStrings(((Number(finalVotes.yes) / Number(optionTotalNumber)) * 100).toString(),2) : 0;
 		        this.$set(this.yesVotingPowerStyleObj,'width',`${this.yesVotingPowerWidth}%`);
-		        this.abstainVotingPowerWidth = Tools.subStrings(((Number(finalVotes.abstain) / Number(optionTotalNumber)) * 100).toString(),2);
+		        this.abstainVotingPowerWidth = optionTotalNumber !== 0 ? Tools.subStrings(((Number(finalVotes.abstain) / Number(optionTotalNumber)) * 100).toString(),2) : 0;
 		        this.$set(this.abstainVotingPowerStyleObj,'width',`${this.abstainVotingPowerWidth}%`);
-		        this.vetoVotingPowerWidth = Tools.subStrings(((Number(finalVotes.no_with_veto) / Number(optionTotalNumber)) * 100).toString(),2);
+		        this.vetoVotingPowerWidth = optionTotalNumber !== 0 ? Tools.subStrings(((Number(finalVotes.no_with_veto) / Number(optionTotalNumber)) * 100).toString(),2) : 0;
 		        this.$set(this.vetoVotingPowerStyleObj,'width',`${this.vetoVotingPowerWidth}%`);
-		        this.noVotingPowerWidth = Tools.subStrings(((Number(finalVotes.no) / Number(optionTotalNumber)) * 100).toString(),2);
+		        this.noVotingPowerWidth = optionTotalNumber !== 0 ? Tools.subStrings(((Number(finalVotes.no) / Number(optionTotalNumber)) * 100).toString(),2) : 0;
                 this.$set(this.noVotingPowerStyleObj,'width',`${this.noVotingPowerWidth}%`);
 		        if(Number(this.yesVotingPowerWidth) >= Number(this.passThreshold)){
 			        this.flShowPassThreshold = true;

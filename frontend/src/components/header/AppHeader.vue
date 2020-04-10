@@ -100,7 +100,7 @@
                     </div>
                 </div>
             </transition>
-            <span v-show="flShowUnfoldBtn" v-if="$store.state.showHeaderUnfoldBtn" @click="showSearchBar" class="header_unfold iconfont iconzhankai"></span>
+            <span v-if="$store.state.showHeaderUnfoldBtn === 'show'" @click="showSearchBar" class="header_unfold iconfont iconzhankai"></span>
         </header>
         <div class="app_header_mobile"
              v-show="devicesShow === 0"
@@ -242,9 +242,12 @@
 				this.flShowSubMenu = false;
 				this.listenRouteForChangeActiveButton();
 				if(this.$route.fullPath.includes('/home')){
-				    this.flShowUnfoldBtn = true
-                }else {
-                    this.flShowUnfoldBtn = false
+				    if(sessionStorage.getItem('flShowSearchBar')){
+                        this.$store.commit('flShowSearchBar',sessionStorage.getItem('flShowSearchBar'))
+                    }
+				    if(sessionStorage.getItem('flShowHeaderUnfoldBtn')){
+                        this.$store.commit('showHeaderUnfoldBtn',sessionStorage.getItem('flShowHeaderUnfoldBtn'))
+                    }
                 }
 				this.showHeader = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
 			},
@@ -261,7 +264,6 @@
 		},
 		data () {
 			return {
-                flShowUnfoldBtn:false,
 				devicesWidth: window.innerWidth,
 				devicesShow: 1,
 				searchValue: '',
@@ -331,7 +333,6 @@
 			}
 		},
 		mounted () {
-		    this.flShowUnfoldBtn = true;
 			if (window.innerWidth > 910) {
 				this.devicesShow = 1;
 				this.appHeaderVar = 'person_computer_header_var';
@@ -386,8 +387,14 @@
 				}
             },
             showSearchBar(){
-			    this.$store.commit('flShowSearchBar',true);
-                this.$store.commit('showHeaderUnfoldBtn',false);
+			    this.$store.commit('flShowSearchBar','show');
+			    this.$store.commit('flShowSearchIpt','show');
+			    
+                this.$store.commit('showHeaderUnfoldBtn','hide');
+                sessionStorage.setItem('flShowHeaderUnfoldBtn','hide');
+                
+                sessionStorage.setItem('flShowSearchBar','show');
+                sessionStorage.setItem('flShowSearchIpt','show');
                 this.$uMeng.push('Overview_Expand','click');
             },
 			showTwoMenu(v){

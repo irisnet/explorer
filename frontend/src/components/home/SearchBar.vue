@@ -1,9 +1,9 @@
 <template>
 	<div class="search_bar_container">
-		<div class="search_bar_wrap" :class="flShowSearchBar  ? 'hide_search_bar' : 'show_search_bar'" >
+		<div class="search_bar_wrap" :class="$store.state.flShowSearchBar === 'show'  ? 'show_search_bar' : 'hide_search_bar'" >
 			<div class="search_bar_content">
 				<p class="search_bar_title">Welcome to IRISplorer</p>
-				<div class="search_bar_ipt_content" v-if="!flShowIpt" :class="flShowSearchBar ? 'hide_ipt' : 'show_ipt'">
+				<div class="search_bar_ipt_content" :class="$store.state.flShowSearchIpt === 'show'  ? 'show_ipt' : 'hide_ipt'" v-if="$store.state.flShowSearchIpt === 'show'">
 					<input class="search_bar_ipt"
 					       type="text"
 					       placeholder="Search by Address / Txhash / Block / HashLock"
@@ -55,14 +55,6 @@
 					}
 				],
 				searchInputValue:'',
-				flShowSearchBar:false,
-				flShowIpt:false,
-			}
-		},
-		watch:{
-			'$store.state.flShowSearchBar'(){
-				this.flShowSearchBar = !this.$store.state.flShowSearchBar;
-				this.flShowIpt = !this.$store.state.flShowSearchBar
 			}
 		},
 		methods:{
@@ -86,11 +78,17 @@
 				this.getData();
 			},
 			hideSearchBar(){
-				this.flShowSearchBar = true;
+				this.$store.commit('flShowSearchBar','hide');
+				
 				setTimeout( () => {
-					this.$store.commit('flShowSearchBar',false);
-					this.$store.commit('showHeaderUnfoldBtn',true);
-					this.flShowIpt = true
+					this.$store.commit('showHeaderUnfoldBtn','show');
+					sessionStorage.setItem('flShowHeaderUnfoldBtn','show');
+					
+					sessionStorage.setItem('flShowSearchBar', 'hide');
+					
+					this.$store.commit('flShowSearchIpt','hide');
+					sessionStorage.setItem('flShowSearchIpt', 'hide');
+					
 				},300);
 				this.$uMeng.push('Overview_Collapse','click');
 				

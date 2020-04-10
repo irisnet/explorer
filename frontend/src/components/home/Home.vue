@@ -364,8 +364,9 @@
         },
         destroyed () {
             clearInterval(this.timer);
-            this.$store.commit('showHeaderUnfoldBtn',false)
-            }
+            this.$store.commit('showHeaderUnfoldBtn','hide');
+            sessionStorage.getItem('flShowHeaderUnfoldBtn','hide');
+        }
     }
 </script>
 <style lang="scss">

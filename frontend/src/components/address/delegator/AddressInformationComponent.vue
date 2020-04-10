@@ -18,7 +18,7 @@
 							</li>
 							<li class="address_information_item">
 								<span class="address_information_label">Total Amount:</span>
-								<span class="address_information_value">{{totalAmount}}</span>
+								<span class="address_information_value">{{totalAmount || 0}}</span>
 							</li>
 						</ul>
 						<!--<div class="address_information_asset_logo">-->
@@ -28,14 +28,14 @@
 						<!--<p class="address_information_title">Total Amount</p>-->
 						<!--<p class="address_information_total_amount_content">{{totalAmount}}</p>-->
 					</div>
-					<ul class="address_information_asset_constitute_content">
+					<ul class="address_information_asset_constitute_content" v-show="flShowAssetInfo(assetConstitute)">
 						<li class="address_information_asset_constitute_item" v-for="(item,index) in assetConstitute" :key="index">
-							<span :style="{background:item.color}"></span>
-							<span>{{item.label}}</span>
-							<span>{{item.value}}</span>
+							<span :style="{background:item.color}" ></span>
+							<span >{{item.label}}</span>
+							<span >{{item.value}}</span>
 						</li>
 					</ul>
-					<div class="address_information_asset_pie_content">
+					<div class="address_information_asset_pie_content"  v-show="flShowAssetInfo(assetConstitute)">
 						<address-information-pie :echartData="assetConstitute"></address-information-pie>
 					</div>
 				</div>
@@ -122,6 +122,12 @@
 			this.assetInformation = this.data;
 		},
 		methods:{
+			flShowAssetInfo(data){
+				let res = data.every( (item) => {
+					 return item.value !== ''
+				 });
+				return res
+			},
 			formatAssetInformation(assetInformation){
 				assetInformation.forEach( item => {
 					if(item && item.token === 'IRIS'){
