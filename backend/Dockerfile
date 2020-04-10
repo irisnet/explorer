@@ -6,6 +6,7 @@ WORKDIR $REPO_PATH
 COPY . $REPO_PATH/
 RUN apk add --no-cache $PACKAGES && apk add -U tzdata && make all
 COPY /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+RUN apk del tzdata
 
 FROM alpine:3.7
 ENV REPO_PATH /go/src/github.com/irisnet/explorer/server
