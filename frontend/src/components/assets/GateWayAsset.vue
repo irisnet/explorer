@@ -94,6 +94,7 @@
 	import Tools from "../../util/Tools"
 	import MPagination from "../commontables/MPagination";
     import PageTitle from "../pageTitle/PageTitle";
+    import bigNumber from 'bignumber.js'
 	export default {
 		name: "GateWayAsset",
 		components: {PageTitle, MPagination, NativeAsset},
@@ -231,7 +232,7 @@
 							        Token: item.token_id,
 							        Owner: item.owner,
 							        MintTo: item.mint_to,
-							        Amount: item.amount,
+							        Amount: Tools.formatStringToFixedNumber(new bigNumber(item.amount).toFormat(),2),
 							        Block: item.height,
 							        TxHash: item.tx_hash,
 							        TxFee: this.formatFee(item.tx_fee),

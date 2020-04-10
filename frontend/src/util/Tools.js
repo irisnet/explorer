@@ -195,7 +195,7 @@ export default class Tools{
 		return new BigNumber(value).toFormat(fixedValue)
 	}
 	/**
-	 * 格式化数字的类型是string的数字并在小数点后面超过多少位以后加 ...
+	 * 格式化数字的类型是string的数字并在小数点后面补零
 	 */
 	static formatStringToFixedNumber(str,splitNum){
 		if(str.toString().indexOf(".") !== -1) {
@@ -429,8 +429,8 @@ export default class Tools{
 				formatListAmount = Tools.formatListAmount(item).amount;
                 fromInformation = Tools.formatListAmount(item).fromAddressAndMoniker;
                 toInformation = Tools.formatListAmount(item).toAddressAndMoniker;
-				Amount = formatListAmount.amountNumber === '--' || formatListAmount.tokenName === '--' ? '--' : `${new BigNumber(formatListAmount.amountNumber).toFormat()} ${formatListAmount.tokenName}`;
-				transferAmount = formatListAmount.amountNumber === '--' ? '--' : new BigNumber(formatListAmount.amountNumber).toFormat();
+				Amount = formatListAmount.amountNumber === '--' || formatListAmount.tokenName === '--' ? '--' : `${Tools.formatStringToFixedNumber(new BigNumber(formatListAmount.amountNumber).toFormat(),2)} ${formatListAmount.tokenName}`;
+				transferAmount = formatListAmount.amountNumber === '--' ? '--' : Tools.formatStringToFixedNumber(new BigNumber(formatListAmount.amountNumber).toFormat(),2);
 				tokenId = formatListAmount.tokenName === '--' ? '--' : formatListAmount.tokenName;
 				if(item.fee.amount && item.fee.denom){
 					let feeAmount = item.fee.amount;
@@ -908,7 +908,7 @@ export default class Tools{
                 tokenName = '--'
             }else {
                 if (amount[0].denom && amount[0].amount && amount[0].denom === Constant.Denom.IRISATTO || amount[0].amount == 0) {
-                    amountNumber = amount[0].amount > 0 ? Tools.formatStringToFixedNumber(String(Tools.numberMoveDecimal(amount[0].amount)), 2) : Number(amount[0].amount).toFixed(2);
+	                amountNumber = amount[0].amount > 0 ? Tools.formatStringToFixedNumber(String(Tools.numberMoveDecimal(amount[0].amount)), 2) : Number(amount[0].amount).toFixed(2);
                     tokenName = Constant.Denom.IRIS.toLocaleUpperCase();
                 } else if (amount[0].denom && amount[0].amount && amount[0].denom !== Constant.Denom.IRISATTO) {
                     amountNumber = amount[0].amount;

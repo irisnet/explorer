@@ -45,8 +45,11 @@
 				let echartsOption = {
 					tooltip: {
 						trigger: 'item',
+						position:{
+							left: 10,
+						},
 						formatter: function (data) {
-							return `${data.name}: ${data.value} IRIS (${data.data.formatPercent}%)`
+							return `<span style="max-width: 1.2rem;word-break: break-all;">${data.name}: <br/>${data.value} IRIS (${data.data.formatPercent}%)</span>`
 						}
 					},
 					legend: {
@@ -88,6 +91,7 @@
 					this.themeStyleArray = this.defaultThemeStyle;
 				}
 				let seriesData = this.echartData.map( (item,index )=> {
+					item.numberValue = 2000000000.12
 					return {
 						value: item.numberValue,
 						name: item.label,
