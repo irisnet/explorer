@@ -23,6 +23,6 @@ RUN apk add --no-cache make git tzdata && go get github.com/golang/dep/cmd/dep &
 FROM alpine:3.7
 WORKDIR /app/backend
 COPY --from=builder /app/dist/ /app/frontend/dist
-COPY --from=builder /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+COPY --from=go-builder /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 COPY --from=go-builder /root/go/src/github.com/irisnet/explorer/backend/build/ /app/backend/
 CMD ./irisplorer
