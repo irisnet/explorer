@@ -17,11 +17,12 @@ RUN mkdir -p GOPATH REPO_PATH
 COPY ./backend/ $REPO_PATH
 WORKDIR $REPO_PATH
 
-RUN apk add --no-cache make git && go get github.com/golang/dep/cmd/dep && dep ensure && make build
+RUN apk add --no-cache make git tzdata && go get github.com/golang/dep/cmd/dep && dep ensure && make build
 
 
 FROM alpine:3.7
 WORKDIR /app/backend
 COPY --from=builder /app/dist/ /app/frontend/dist
+COPY --from=builder /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 COPY --from=go-builder /root/go/src/github.com/irisnet/explorer/backend/build/ /app/backend/
 CMD ./irisplorer
