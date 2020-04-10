@@ -91,7 +91,6 @@
 					this.themeStyleArray = this.defaultThemeStyle;
 				}
 				let seriesData = this.echartData.map( (item,index )=> {
-					item.numberValue = 2000000000.12
 					return {
 						value: item.numberValue,
 						name: item.label,
