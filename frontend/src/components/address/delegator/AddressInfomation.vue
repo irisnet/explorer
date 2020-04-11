@@ -128,6 +128,7 @@
                                                  :props="{ expandTrigger: 'hover' }"
                                                  :show-all-levels="false"
                                                  :filterable="true"
+                                                 :filter-method="filter"
                                                  @change="filterTxByTxType(value)"></el-cascader>
 
                                     <el-select v-model="statusValue" :change="filterTxByStatus(statusValue)">
@@ -317,6 +318,13 @@
             this.getTxListByFilterCondition();
         },
         methods:{
+            filter(v,iptValue){
+                if(Tools.firstWordLowerCase(v.text).includes(Tools.firstWordLowerCase(iptValue))){
+                    return true
+                }else {
+                    return false
+                }
+            },
             getRefUrlTxType(txType){
                 return FormatTxType.getRefUrlTxType(txType);
             },
@@ -1082,7 +1090,7 @@
                                                 border-color: var(--bgColor) !important;
                                             }
                                         }
-        
+
                                     }
                                     /deep/.el-date-editor{
                                         width: 1.3rem;
@@ -1204,7 +1212,7 @@
                                             margin-right: 0;
                                             width: 1.6rem !important;
                                         }
-                                        
+
                                         /deep/ .el-date-editor{
                                             width: 1.6rem !important;
                                             .el-input__prefix{
