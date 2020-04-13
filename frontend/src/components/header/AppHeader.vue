@@ -248,6 +248,8 @@
 				    if(sessionStorage.getItem('flShowHeaderUnfoldBtn')){
                         this.$store.commit('showHeaderUnfoldBtn',sessionStorage.getItem('flShowHeaderUnfoldBtn'))
                     }
+                }else {
+                    this.$store.commit('showHeaderUnfoldBtn','hide')
                 }
 				this.showHeader = !(this.$route.query.flShow && this.$route.query.flShow === 'false' && !Tools.currentDeviceIsPersonComputer());
 			},

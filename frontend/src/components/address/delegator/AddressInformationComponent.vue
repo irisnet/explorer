@@ -4,7 +4,7 @@
 			<div class="address_information_component_content">
 				<div class="address_information_asset_content">
 					<div class="address_information_asset_total_content">
-						<img src="../../../assets/iris_token_logo.png" alt="">
+						<img src="../../../assets/iris_token_logo.svg" alt="">
 						<ul class="address_information_content">
 							<li class="address_information_item">
 								<span class="address_information_label">Address:</span>
