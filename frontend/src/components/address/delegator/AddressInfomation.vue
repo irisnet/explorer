@@ -655,7 +655,8 @@
                     beginTime: '',
                     endTime: '',
                 };
-		        this.value = 'allTxType';
+                sessionStorage.setItem('searchResultByTxTypeAndAddress',JSON.stringify(searchCondition))
+                this.value = 'allTxType';
 		        this.statusValue = 'allStatus';
                 this.filterStartTime = '';
                 this.filterEndTime = '';
@@ -667,7 +668,6 @@
 		        this.allTxCurrentPage = 1;
 		        this.resetUrl();
 		        this.getTxListByFilterCondition()
-                sessionStorage.setItem('searchResultByTxTypeAndAddress',JSON.stringify(searchCondition))
                 this.$uMeng.push('Transactions_Refresh','click')
 	        },
 	        formatEndTime(time){
