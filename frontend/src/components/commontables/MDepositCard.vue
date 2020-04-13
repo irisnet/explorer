@@ -61,6 +61,7 @@
 
 <script>
     import Tools from "../../util/Tools"
+    import bigNumber from 'bignumber.js'
 	export default {
 		name: "MDepositCard",
         props:{
@@ -171,7 +172,7 @@
 	            if(depositObj.level.gov_param.min_deposit.amount === 0){
 		            this.minDepositToken = '0 IRIS'
 	            }else {
-		            this.minDepositToken = `${Tools.numberMoveDecimal(depositObj.level.gov_param.min_deposit.amount)}`;
+		            this.minDepositToken = `${new bigNumber(Tools.numberMoveDecimal(depositObj.level.gov_param.min_deposit.amount)).toFormat()}`;
 		            this.minDepositTokenDenom = `${Tools.formatDenom(depositObj.level.gov_param.min_deposit.denom)}`
 
 	            }
