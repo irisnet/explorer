@@ -255,6 +255,8 @@
                     this.TxType = urlParams.txType ? urlParams.txType : '';
                     this.startTime = urlParams.urlParamShowStartTime ? urlParams.urlParamShowStartTime : '';
                     this.endTime = urlParams.urlParamShowEndTime ? urlParams.urlParamShowEndTime : '';
+                    this.urlParamsShowStartTime = urlParams.urlParamShowStartTime ? urlParams.urlParamShowStartTime : '';
+                    this.urlParamsShowEndTime = urlParams.urlParamShowEndTime ? urlParams.urlParamShowEndTime : '';
 			        history.pushState(null, null, `/#/txs?txType=${urlParams.txType ? urlParams.txType : ''}&status=${urlParams.txStatus ? urlParams.txStatus : ''}&startTime=${urlParams.urlParamShowStartTime ? urlParams.urlParamShowStartTime : ''}&endTime=${urlParams.urlParamShowEndTime ? urlParams.urlParamShowEndTime : ''}&page=${pageNum}`);
 			        this.getTxListByFilterCondition();
 	        },
