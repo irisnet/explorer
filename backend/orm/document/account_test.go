@@ -36,3 +36,13 @@ func TestAccount_CountDelegatorNum(t *testing.T) {
 		t.Log(res)
 	}
 }
+
+func TestAccount_Update(t *testing.T) {
+	accList, err := Account{}.GetAccountList()
+	if err != nil {
+		t.Error(err)
+	}
+	if err := new(Account).Update(accList[0]); err != nil {
+		t.Fatal(err)
+	}
+}

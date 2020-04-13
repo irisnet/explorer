@@ -1171,6 +1171,7 @@ pre {
 .proposals_table_title_div {
     font-size: 18px;
     margin: 30px 20px 10px;
+    color: var(--titleColor);
 }
 .mobile_proposals_table_container {
     margin-top: 0.2rem;

@@ -59,7 +59,7 @@ func GetDelegationsByDelAddr(delAddr string) (delegations []DelegationVo) {
 	}
 
 	if err := json.Unmarshal(resAsBytes, &delegations); err != nil {
-		logger.Error("Unmarshal Delegations error", logger.String("err", err.Error()), logger.String("URL", url))
+		logger.Error("Unmarshal DelegationsByDelAddr error", logger.String("err", err.Error()), logger.String("URL", url))
 	}
 	return
 }
@@ -74,7 +74,7 @@ func GetDelegationsByValidatorAddr(valAddr string) (delegations []DelegationVo) 
 	}
 
 	if err := json.Unmarshal(resAsBytes, &delegations); err != nil {
-		logger.Error("Unmarshal Delegations error", logger.String("err", err.Error()), logger.String("URL", url))
+		logger.Error("Unmarshal DelegationsByValidatorAddr error", logger.String("err", err.Error()), logger.String("URL", url))
 	}
 	return
 }
@@ -90,7 +90,7 @@ func GetWithdrawAddressByValidatorAcc(validatorAcc string) (string, error) {
 
 	var withdrawAddr string
 	if err := json.Unmarshal(resAsBytes, &withdrawAddr); err != nil {
-		logger.Error("Unmarshal Delegations error", logger.String("err", err.Error()), logger.String("URL", url))
+		logger.Error("Unmarshal WithdrawAddress error", logger.String("err", err.Error()), logger.String("URL", url))
 	}
 
 	return withdrawAddr, nil
@@ -144,7 +144,7 @@ func GetRedelegationsByValidatorAddr(valAddr string) (redelegations []ReDelegati
 	}
 
 	if err := json.Unmarshal(resAsBytes, &redelegations); err != nil {
-		logger.Error("Unmarshal Delegations error", logger.String("err", err.Error()), logger.String("URL", url))
+		logger.Error("Unmarshal Redelegations error", logger.String("err", err.Error()), logger.String("URL", url))
 	}
 	return
 }
@@ -159,7 +159,7 @@ func GetUnbondingDelegationsByValidatorAddr(valAddr string) (unbondingDelegation
 	}
 
 	if err := json.Unmarshal(resAsBytes, &unbondingDelegations); err != nil {
-		logger.Error("Unmarshal Delegations error", logger.String("err", err.Error()), logger.String("URL", url))
+		logger.Error("Unmarshal UnbondingDelegationsByValidatorAddr error", logger.String("err", err.Error()), logger.String("URL", url))
 	}
 	return
 }
@@ -174,7 +174,7 @@ func GetUnbondingDelegationsByDelegatorAddr(delAddr string) (unbondingDelegation
 	}
 
 	if err := json.Unmarshal(resAsBytes, &unbondingDelegations); err != nil {
-		logger.Error("Unmarshal Delegations error", logger.String("err", err.Error()), logger.String("URL", url))
+		logger.Error("Unmarshal UnbondingDelegationsByDelegatorAddr error", logger.String("err", err.Error()), logger.String("URL", url))
 	}
 	return
 }

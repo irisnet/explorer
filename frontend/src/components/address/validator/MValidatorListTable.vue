@@ -11,6 +11,7 @@
           <img v-if="row.url"
                style="width: 0.3rem;height: 0.3rem;border-radius: 0.3rem;overflow: hidden;"
                :src="row.url ? row.url : ''" />
+          <span style="background:#E0E8FF;width: 0.3rem;height: 0.3rem;border-radius: 0.3rem;overflow: hidden;display: flex;align-items: center;justify-content: center" v-else>{{row.validatorIconSrc}}</span>
           <router-link style="margin-left: 0.2rem;"
                        :to="addressRoute(row.operatorAddress)"
                        class="link_style">{{row.moniker}}</router-link>

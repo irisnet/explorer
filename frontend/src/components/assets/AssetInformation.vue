@@ -127,6 +127,7 @@
 	import NativeAsset from "./MNativeAssetTxListTable"
     import MPagination from "../commontables/MPagination";
     import PageTitle from "../pageTitle/PageTitle";
+    import bigNumber from "bignumber.js"
 	export default {
 		name: "AssetInformation",
 		components: {PageTitle, MPagination, NativeAsset},
@@ -490,7 +491,7 @@
 									Token: item.token_id,
 									Owner: item.owner,
 									MintTo: item.mint_to,
-									Amount: this.formatNumber(item.amount),
+									Amount: Tools.formatStringToFixedNumber(new bigNumber(this.formatNumber(item.amount)).toFormat(),2),
 									Block: item.height,
 									TxHash: item.tx_hash,
 									TxFee: this.formatFee(item.tx_fee),

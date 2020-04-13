@@ -32,6 +32,7 @@ const urlApi = {
   validatorsInfo: '/api/stake/validators/{address}',
   validatorWithdrawAddr: '/api/stake/validators/{validatorAddr}/withdraw-addr',
   validatorCommissionRewards: '/api/stake/validators/{validatorAddr}/commission-rewards',
+  validatorScatterList:'/api/stake/commission_info',
   //header
   headerTx: '/api/tx/{searchValue}',
   headerSearchAccount: '/api/account/{searchValue}',

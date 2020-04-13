@@ -475,6 +475,45 @@ func (service *ValidatorService) GetDistributionRewardsByValidatorAddr(valAddr s
 	return rewardsCoins
 }
 
+func (service *ValidatorService) GetCommisstionInfo() vo.CommissionInfoResp {
+
+	var res vo.CommissionInfoResp
+	var validators []document.Validator
+
+	validatorType := types.RoleValidator
+	page := 1
+	size := 100
+	for page > 0 {
+		_, validatorList, err := document.Validator{}.GetValidatorListByPage(validatorType, page, size, true, false)
+		if err != nil {
+			logger.Error("GetValidatorListByPage in GetCommisstionInfo", logger.String("err", err.Error()))
+			continue
+		}
+		validators = append(validators, validatorList...)
+		if len(validatorList) < size {
+			break
+		}
+		page++
+	}
+
+	for _, validatorAsDoc := range validators {
+		item := vo.ValidatorCommissionInfo{}
+		item.OperatorAddress = validatorAsDoc.OperatorAddress
+		item.Moniker = validatorAsDoc.Description.Moniker
+		blackList := service.QueryBlackList()
+		if blackone, ok := blackList[validatorAsDoc.OperatorAddress]; ok {
+			item.Moniker = blackone.Moniker
+		}
+
+		item.BondedTokens = validatorAsDoc.Tokens
+		item.CommissionRate = validatorAsDoc.Commission.Rate
+		res.CommissionData = append(res.CommissionData, item)
+	}
+	res.Total = len(res.CommissionData)
+
+	return res
+}
+
 func (service *ValidatorService) UpdateValidatorIcons() error {
 
 	validatorsDocArr, err := document.Validator{}.GetAllValidator()
@@ -1084,4 +1123,3 @@ func getTotalVotingPower() int64 {
 	}
 	return total
 }
-

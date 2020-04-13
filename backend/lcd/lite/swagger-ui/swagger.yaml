@@ -684,6 +684,15 @@ definitions:
       denom:
         type: string
     type: object
+  vo.CommissionInfoResp:
+    properties:
+      commission_data:
+        items:
+          $ref: '#/definitions/vo.ValidatorCommissionInfo'
+        type: array
+      total:
+        type: integer
+    type: object
   vo.ConfigVo:
     properties:
       chain_id:
@@ -1145,6 +1154,17 @@ definitions:
       type:
         type: string
     type: object
+  vo.TokenStatStr:
+    properties:
+      bonded:
+        type: string
+      circulation:
+        type: string
+      foundation_bonded:
+        type: string
+      total_supply:
+        type: string
+    type: object
   vo.Tx:
     properties:
       Signer:
@@ -1174,7 +1194,14 @@ definitions:
     properties:
       date:
         type: string
+      delegator_num:
+        type: integer
       num:
+        type: integer
+      token_stat:
+        $ref: '#/definitions/vo.TokenStatStr'
+        type: object
+      total_acc_num:
         type: integer
     type: object
   vo.TxNumGroupByDayVoRespond:
@@ -1182,7 +1209,14 @@ definitions:
       properties:
         date:
           type: string
+        delegator_num:
+          type: integer
         num:
+          type: integer
+        token_stat:
+          $ref: '#/definitions/vo.TokenStatStr'
+          type: object
+        total_acc_num:
           type: integer
       type: object
     type: array
@@ -1274,6 +1308,17 @@ definitions:
       voting_power:
         description: Voting power if pubKey is a considered a validator
         type: integer
+    type: object
+  vo.ValidatorCommissionInfo:
+    properties:
+      bonded_tokens:
+        type: string
+      commission_rate:
+        type: string
+      moniker:
+        type: string
+      operator_address:
+        type: string
     type: object
   vo.ValidatorDepositTx:
     properties:
@@ -2301,6 +2346,22 @@ paths:
             $ref: '#/definitions/vo.ValDetailVo'
             type: object
       summary: validator candidatesTop
+      tags:
+      - stake
+  /api/stake/commission_info:
+    get:
+      consumes:
+      - application/json
+      description: get commission_info
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.CommissionInfoResp'
+            type: object
+      summary: commission_info
       tags:
       - stake
   /api/stake/validators:

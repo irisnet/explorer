@@ -12,8 +12,10 @@
                                                  :options="txTypeOption"
                                                  :props="{ expandTrigger: 'hover' }"
                                                  :show-all-levels="false"
+                                                 :filterable="true"
+                                                 :filter-method="filter"
                                                  @change="filterTxByTxType(value)"></el-cascader>
-                            
+
                                     <el-select v-model="statusValue" :change="filterTxByStatus(statusValue)">
                                         <el-option v-for="(item, index) in status"
                                                    :key="index"
@@ -60,13 +62,13 @@
             </div>
             <div class="all_type_list_table_container">
                 <div class="all_type_list_table_wrap">
-            
+
                     <m-all-tx-type-list-table :items="allTxTypeList"></m-all-tx-type-list-table>
                     <div class="no_data_img_content" v-if="allTxTypeList.length === 0">
                         <img src="../../assets/no_data.svg" >
                     </div>
                 </div>
-        
+
                 <div class="pagination_content">
                     <keep-alive>
                         <m-pagination
@@ -102,7 +104,7 @@
                 pickerStartTime:sessionStorage.getItem('firstBlockTime') ? sessionStorage.getItem('firstBlockTime') : '',
                 PickerOptions: {
                     disabledDate: (time) => {
-                        
+
                         return time.getTime() <= new Date(this.pickerStartTime).getTime() || time.getTime() > Date.now()
                     }
                 },
@@ -152,6 +154,13 @@
             })
         },
         methods:{
+            filter(v,iptValue){
+                if(Tools.firstWordLowerCase(v.text).includes(Tools.firstWordLowerCase(iptValue))){
+                    return true
+                }else {
+                    return false
+                }
+            },
 	        getFilterTxs(){
                 this.currentPageNum = 1;
 		        sessionStorage.setItem('txpagenum',1);
@@ -243,8 +252,11 @@
                     let urlParams = this.getParamsByUrlHash();
                     this.statusValue = urlParams.txStatus ? urlParams.txStatus : 'allStatus';
                     this.value = urlParams.cascaderTxType ? urlParams.cascaderTxType : 'allTxType';
+                    this.TxType = urlParams.txType ? urlParams.txType : '';
                     this.startTime = urlParams.urlParamShowStartTime ? urlParams.urlParamShowStartTime : '';
                     this.endTime = urlParams.urlParamShowEndTime ? urlParams.urlParamShowEndTime : '';
+                    this.urlParamsShowStartTime = urlParams.urlParamShowStartTime ? urlParams.urlParamShowStartTime : '';
+                    this.urlParamsShowEndTime = urlParams.urlParamShowEndTime ? urlParams.urlParamShowEndTime : '';
 			        history.pushState(null, null, `/#/txs?txType=${urlParams.txType ? urlParams.txType : ''}&status=${urlParams.txStatus ? urlParams.txStatus : ''}&startTime=${urlParams.urlParamShowStartTime ? urlParams.urlParamShowStartTime : ''}&endTime=${urlParams.urlParamShowEndTime ? urlParams.urlParamShowEndTime : ''}&page=${pageNum}`);
 			        this.getTxListByFilterCondition();
 	        },
@@ -282,7 +294,7 @@
                 cascaderTxType = FormatTxType.getRefUrlTxType(txType);
                 return  {txType,cascaderTxType,txStatus,filterStartTime,filterEndTime,urlParamShowStartTime,urlParamShowEndTime}
             },
-            
+
 	        getTxListByFilterCondition(){
                let param = {},urlParams = this.getParamsByUrlHash();
                 param.getTxListByFilterCondition = {};
@@ -392,7 +404,7 @@
                                             border-color: var(--bgColor) !important;
                                         }
                                     }
-                                
+
                                 }
                                 /deep/.el-cascader{
                                     width: 1.6rem;
@@ -423,7 +435,7 @@
                                             border-color: var(--bgColor) !important;
                                         }
                                     }
-                                
+
                                 }
                                 /deep/.el-date-editor{
                                     width: 1.3rem;
@@ -509,7 +521,7 @@
             padding-left: 0.15rem;
         }
     }
-   
+
     @media screen and (max-width: 910px){
         .page_container{
             .all_type_list_title_container{

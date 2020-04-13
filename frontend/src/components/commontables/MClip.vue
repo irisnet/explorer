@@ -1,6 +1,6 @@
 <template>
     <div class="copy_container">
-        <img @click="handleCopy(text,$event)" src="../../assets/copy_icon.png" alt="copy" />
+        <img  @click="handleCopy(text,$event)" src="../../assets/copy_icon.png" alt="copy" />
         <div class="tips" ref="tip">
             {{tipText}}
             <i></i>
@@ -113,7 +113,7 @@ export default {
         vertical-align: baseline;
     }
     .tips {
-        opacity: 0;
+        display: none;
         position: absolute;
         padding: 0rem 0.15rem;
         top: -0.36rem;
@@ -140,7 +140,7 @@ export default {
         }
     }
     .show_tips {
-        opacity: 1;
+        display: block;
         animation: tip_fading_out 0.3s ease-in 0.3s;
     }
     @keyframes tip_fading_out {

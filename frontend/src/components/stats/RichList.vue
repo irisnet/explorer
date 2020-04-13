@@ -5,11 +5,11 @@
             <div class="tooltip_icon">
                 <span>?</span>
                 <div class="tooltip_span">
-                    <div>The assets include the delegated tokens, unbonding tokens and remaining tokens on the address</div>
+                    <div>The assets include the balance tokens，delegated tokens, unbonding tokens and remaining tokens on the address.</div>
                 </div>
             </div>
         </page-title>
-        <div style="padding-top: 0.54rem;background: #F5F7FD;">
+        <div CLASS="rich_list_container_content" style="padding-top: 0.54rem;background: #F5F7FD;">
             <div class="top_list_title_container">
                 <div class="top_list_title_content">
                     <div class="top_list_title_content_div">
@@ -159,6 +159,7 @@ export default {
 @import "../../style/mixin";
 .top_list_page {
     width: 100%;
+    
     .top_list_title_container {
         width: 100%;
         z-index: 2;
@@ -237,6 +238,9 @@ export default {
         }
     }
     .top_list_page {
+        .rich_list_container_content{
+            padding-top: 0 !important;
+        }
         .top_list_title_container{
             position: static;
             padding-top: 0.05rem;

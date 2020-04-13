@@ -9,55 +9,23 @@
             <div>
                 <div class="page_title">IRIS Token Stats</div>
                 <div class="table_container" v-show="!itemsNoData">
-                    <div class="table_content">
-                        <div class="information_props_wrap" v-for="v in topitems" :key="v.label">
-                            <p>
-                                <span class="information_props" style="margin-right: 0.09rem;">{{v.label}}</span>
-                                <el-tooltip v-if="v.label === 'Circulation Bonded'" :content="'Community bonded tokens included in total circulation.'">
-                                    <span class="iconfont icontishi" style="cursor: pointer"></span>
-                                </el-tooltip>
-                            </p>
-                            <span class="information_value"
-                                  :class="v.value ? 'skip_route' : ''"
-                                  v-if="v.label === 'Burned'">
+                    <div class="information_props_wrap" v-for="v in items" :key="v.label">
+                        <span class="information_props">{{v.label}}</span>
+                        <span class="information_value"
+                              :class="v.value ? 'skip_route' : ''"
+                              v-if="v.label === 'Burned'">
                             <router-link @click.native="$uMeng.push('IRIS Stats_Burned','click')"
                                          :to="burnedCoins">{{v.value || '--'}}</router-link>
                             </span>
-                            <span class="information_value"
-                                  :class="v.value ? 'skip_route' : ''"
-                                  v-if="v.label === 'Community Tax'">
+                        <span class="information_value"
+                              :class="v.value ? 'skip_route' : ''"
+                              v-if="v.label === 'Community Tax'">
                             <router-link @click.native="$uMeng.push('IRIS Stats_Community Tax','click')"
                                          v-if="v.value && v.value !== '--'"
                                          :to="communityTaxCoins">{{v.value || '--'}}</router-link>
                             </span>
-                            <span v-if="v.value && v.value === '--'">--</span>
-                            <span class="information_value" v-if="v.label !== 'Burned' && v.label !== 'Community Tax'">{{v.value || '--'}}</span>
-                        </div>
-                    </div>
-                    <div class="table_content">
-                        <div class="information_props_wrap" v-for="v in bottomitems" :key="v.label">
-                            <p>
-                                <span class="information_props" style="margin-right: 0.09rem;">{{v.label}}</span>
-                                <el-tooltip v-if="v.label === 'Circulation Bonded'" :content="'Community bonded tokens included in total circulation.'">
-                                    <span class="iconfont icontishi" style="cursor: pointer"></span>
-                                </el-tooltip>
-                            </p>
-                            <span class="information_value"
-                                  :class="v.value ? 'skip_route' : ''"
-                                  v-if="v.label === 'Burned'">
-                            <router-link @click.native="$uMeng.push('IRIS Stats_Burned','click')"
-                                         :to="burnedCoins">{{v.value || '--'}}</router-link>
-                            </span>
-                            <span class="information_value"
-                                  :class="v.value ? 'skip_route' : ''"
-                                  v-if="v.label === 'Community Tax'">
-                            <router-link @click.native="$uMeng.push('IRIS Stats_Community Tax','click')"
-                                         v-if="v.value && v.value !== '--'"
-                                         :to="communityTaxCoins">{{v.value || '--'}}</router-link>
-                            </span>
-                            <span v-if="v.value && v.value === '--'">--</span>
-                            <span class="information_value" v-if="v.label !== 'Burned' && v.label !== 'Community Tax'">{{v.value || '--'}}</span>
-                        </div>
+                        <span v-if="v.value && v.value === '--'">--</span>
+                        <span class="information_value" v-if="v.label !== 'Burned' && v.label !== 'Community Tax'">{{v.value || '--'}}</span>
                     </div>
                 </div>
                 <div v-show="itemsNoData" class="no_data_show"><img src="../../assets/no_data.svg" alt=""></div>
@@ -88,7 +56,7 @@ export default {
     data() {
         return {
             pageTitle:pageTitleConfig.StatsIRISStats,
-            topitems: [
+            items: [
                 {
                     label: "Total Supply",
                     value: ""
@@ -100,19 +68,13 @@ export default {
                 {
                     label: "Community Tax",
                     value: ""
-                }
-            ],
-            bottomitems: [
+                },
                 {
                     label: "Burned",
                     value: ""
                 },
                 {
                     label: "Bonded",
-                    value: ""
-                },
-                {
-                    label: "Circulation Bonded",
                     value: ""
                 }
             ],
@@ -134,7 +96,7 @@ export default {
                         try {
                             let data = result.data;
                             if (data) {
-                                let topObj = [
+                                let obj = [
                                     {
                                         label: "Total Supply",
                                         value: data.totalsupply_tokens ? Tools.formatAmount2(data.totalsupply_tokens,4,) : '--'
@@ -146,13 +108,7 @@ export default {
                                     {
                                         label: "Community Tax",
                                         value: data.community_tax ? Tools.formatAmount2(data.community_tax, 4) : '--'
-                                    }
-                                ];
-                                data.circulationBonded = {
-                                    amount:new bigNumber(Tools.numberMoveDecimal(data.delegated_tokens.amount)).minus(new bigNumber(data.foundation_bonded.amount)),
-                                    denom : data.foundation_bonded.denom
-                                };
-                                let bottomObj= [
+                                    },
                                     {
                                         label: "Burned",
                                         value: data.burned_tokens ? Tools.formatAmount2(data.burned_tokens, 4) : '--'
@@ -160,14 +116,9 @@ export default {
                                     {
                                         label: "Bonded",
                                         value: data.delegated_tokens ? Tools.formatAmount2(data.delegated_tokens,4) : '--'
-                                    },
-                                    {
-                                        label: "Circulation Bonded",
-                                        value:  data.foundation_bonded  ? Tools.formatAmount2(data.circulationBonded,4) : '--'
                                     }
                                 ];
-                                this.topitems = topObj;
-                                this.bottomitems = bottomObj;
+                                this.items = obj;
                             } else {
                                 this.itemsNoData = true;
                             }
@@ -200,6 +151,7 @@ export default {
                                         4,
                                         true
                                     );
+                                    v[1].totalAmount = `${new bigNumber(v[1].totalAmount.split(' ')[0]).toFormat()} ${v[1].totalAmount.split(' ')[1]}`
                                     v[1].percentValue = this.formatDecimalNumberToFixedNumber(
                                         Number(v[1].percent) * 100
                                     );
@@ -223,26 +175,26 @@ export default {
                 );
             });
         },
-        formatDecimalNumberToFixedNumber(num) {
-            if (Number(num) < 0.0001) {
-                return "<0.0001";
-            } else {
-                let s = num + "",n;
-                let arr = s.split(".");
-                arr[1] = arr[1] || "";
-                if(arr[1].toString().length > 4){
-                    n =`${arr[0]}.${arr[1].substring(0, 4)}`
-                }else {
-                    let diffNum = 4 - arr[1].toString().length;
-                    for(let i = 0; i < diffNum; i++){
-                        arr[1] += '0'
-                    }
-                    n = `${arr[0]}.${arr[1]}`
-                }
-                // let n = `${arr[0]}.${arr[1].padEnd(4, "0").substring(0, 4)}`;
-                return n;
-            }
-        }
+	    formatDecimalNumberToFixedNumber(num) {
+		    if (Number(num) < 0.0001) {
+			    return "<0.0001";
+		    } else {
+			    let s = num + "",n;
+			    let arr = s.split(".");
+			    arr[1] = arr[1] || "";
+			    if(arr[1].toString().length > 4){
+				    n =`${arr[0]}.${arr[1].substring(0, 4)}`
+			    }else {
+				    let diffNum = 4 - arr[1].toString().length;
+				    for(let i = 0; i < diffNum; i++){
+					    arr[1] += '0'
+				    }
+				    n = `${arr[0]}.${arr[1]}`
+			    }
+			    // let n = `${arr[0]}.${arr[1].padEnd(4, "0").substring(0, 4)}`;
+			    return n;
+		    }
+	    }
     },
     mounted() {
         (async () => {
@@ -285,55 +237,47 @@ export default {
                 line-height: 0.7rem;
                 padding-left: 0.2rem;
                 font-size: 0.18rem;
-                color: #515a6e;
-                font-weight: bold;
+                color: var(--titleColor);
             }
             .table_container {
                 display: flex;
-                flex-direction: column;
+                flex-wrap: wrap;
                 width: 100%;
-                .table_content{
+                .information_props_wrap {
+                    font-size: 14px;
+                    line-height: 20px;
+                    margin-right: 0.2rem;
+                    flex: 1 1 0px;
                     display: flex;
-                    flex-wrap: wrap;
-                    .information_props_wrap {
-                        font-size: 14px;
-                        line-height: 20px;
-                        margin-right: 0.2rem;
-                        flex: 1 1 0px;
-                        display: flex;
-                        flex-direction: column;
-                        border: 1px solid rgba(215, 217, 224, 1);
-                        border-radius: 1px;
-                        padding: 0.2rem;
-                        background: #fff;
-                        .information_props {
-                            color: var(--contentColor);
-                            font-size: 0.14rem;
-                        }
-                        .information_value {
-                            color: var(--titleColor);
+                    flex-direction: column;
+                    border: 1px solid rgba(215, 217, 224, 1);
+                    border-radius: 1px;
+                    padding: 0.2rem;
+                    background: #fff;
+                    .information_props {
+                        color: var(--contentColor);
+                        font-size: 0.14rem;
+                    }
+                    .information_value {
+                        color: var(--titleColor);
+                        font-size: 0.16rem;
+                        margin-top: 0.12rem;
+                        word-break: break-all;
+                        word-wrap: break-word;
+                        > a{
                             font-size: 0.16rem;
-                            margin-top: 0.12rem;
-                            word-break: break-all;
-                            word-wrap: break-word;
-                            > a{
-                                font-size: 0.16rem;
-                            }
-                        }
-                        .skip_route {
-                            a,
-                            span {
-                                cursor: pointer;
-                                color: var(--bgColor) !important;
-                            }
-                        }
-                        &:nth-last-of-type(1) {
-                            margin-right: 0;
                         }
                     }
-                }
-                .table_content:last-child{
-                    margin-top: 0.2rem;
+                    .skip_route {
+                        a,
+                        span {
+                            cursor: pointer;
+                            color: var(--bgColor) !important;
+                        }
+                    }
+                    &:nth-last-of-type(1) {
+                        margin-right: 0;
+                    }
                 }
             }
             .echarts_container {
@@ -363,26 +307,21 @@ export default {
         .table_container {
             margin-right: 0 !important;
             width: 100%;
-            .table_content{
-                .information_props_wrap {
+            .information_props_wrap {
+                width: 100% !important;
+                flex: 0 0 calc(100% - 0.22rem) !important;
+                padding: 0.1rem !important;
+                margin-bottom: 0.1rem !important;
+                .information_props {
                     width: 100% !important;
-                    flex: 0 0 calc(100% - 0.22rem) !important;
-                    padding: 0.1rem !important;
-                    margin-bottom: 0.1rem !important;
-                    .information_props {
-                        width: 100% !important;
-                        box-sizing: border-box;
-                    }
-                    .information_value {
-                        width: 100% !important;
-                    }
-                    &:nth-last-of-type(1) {
-                        margin-bottom: 0 !important;
-                    }
+                    box-sizing: border-box;
                 }
-            }
-            .table_content:last-child{
-                margin-top: 0.1rem !important;
+                .information_value {
+                    width: 100% !important;
+                }
+                &:nth-last-of-type(1) {
+                    margin-bottom: 0 !important;
+                }
             }
         }
     }

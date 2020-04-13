@@ -19,6 +19,9 @@ const store = new Vuex.Store({
     setQrImg:'',
     testSkinStyle:false,
     hideTestSkinStyle: true,
+    showHeaderUnfoldBtn:sessionStorage.getItem('flShowHeaderUnfoldBtn') ? sessionStorage.getItem('flShowHeaderUnfoldBtn') : 'hide',
+    flShowSearchBar: sessionStorage.getItem('flShowSearchBar') ? sessionStorage.getItem('flShowSearchBar') : 'show',
+    flShowSearchIpt: sessionStorage.getItem('flShowSearchIpt') ? sessionStorage.getItem('flShowSearchIpt') : 'show',
   },
   mutations:{
     currentNoValue(state,data){
@@ -68,6 +71,15 @@ const store = new Vuex.Store({
     },
     hideTestSkinStyle(state,data){
       state.hideTestSkinStyle = data
+    },
+    showHeaderUnfoldBtn(state,data){
+      state.showHeaderUnfoldBtn = data
+    },
+    flShowSearchBar(state,data){
+      state.flShowSearchBar = data
+    },
+    flShowSearchIpt(state,data){
+      state.flShowSearchIpt = data
     }
   }
 })

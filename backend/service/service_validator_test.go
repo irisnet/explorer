@@ -113,3 +113,8 @@ func TestValidatorService_GetValidatorDetail(t *testing.T) {
 	res := validatorService.GetValidatorDetail("fva10jv6pkdtjc39pwpjxnurqend0p09gphlyhzmel")
 	t.Log(string(utils.MarshalJsonIgnoreErr(res)))
 }
+
+func TestValidatorService_GetCommisstionInfoByValidatorAddr(t *testing.T) {
+	res := validatorService.GetCommisstionInfo()
+	t.Log(string(utils.MarshalJsonIgnoreErr(res)))
+}

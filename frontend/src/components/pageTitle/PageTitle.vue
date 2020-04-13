@@ -375,10 +375,23 @@
 									border-right-color: #000000;
 									transform: rotate(90deg);
 									right: 5%;
-									top: -18%;
+									top: -14%;
 									margin-left: -0.12rem;
 								}
 							}
+						}
+					}
+				}
+			}
+		}
+	}
+	@media screen and (max-width: 375px){
+		.page_title_container{
+			.page_title_container_content_wrap{
+				.page_title_content_wrap{
+					.mobile_page_title_content_wrap{
+						.page_link{
+							padding: 0 0.12rem;
 						}
 					}
 				}

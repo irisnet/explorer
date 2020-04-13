@@ -31,6 +31,18 @@ type ValidatorForDetail struct {
 	StatsBlocksWindow       string      `json:"stats_blocks_window"`
 }
 
+type ValidatorCommissionInfo struct {
+	OperatorAddress string `json:"operator_address"`
+	Moniker         string `json:"moniker"`
+	CommissionRate  string `json:"commission_rate"`
+	BondedTokens    string `json:"bonded_tokens"`
+}
+
+type CommissionInfoResp struct {
+	CommissionData []ValidatorCommissionInfo `json:"commission_data"`
+	Total          int                       `json:"total"`
+}
+
 type WithdrawAddr struct {
 	Address string `json:"address"`
 }

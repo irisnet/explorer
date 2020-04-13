@@ -228,7 +228,7 @@
             }
         }
     }
-    
+
      .el-date-table td, .el-date-table td div{
          height: 0.24rem!important;
          padding: 0 !important;
@@ -272,7 +272,9 @@
     .in-active-path{
         color: var(--bgColor)!important;
     }
-   
+    .el-cascader__suggestion-item.is-checked{
+        color:var(--bgColor) !important;
+    }
     @media screen and (max-width: 910px){
         .el-cascader__dropdown{
             .el-cascader-panel{
@@ -298,7 +300,7 @@
                         }
                     }
                 }
-            
+
             }
         }
     }
