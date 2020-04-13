@@ -5,6 +5,7 @@
 
 <script>
 	import Constant from "../../../constant/Constant"
+	import bigNumber from "bignumber.js"
 	var echarts = require('echarts/lib/echarts')
 	require('echarts/lib/component/legend')
 	require('echarts/lib/component/tooltip')
@@ -49,7 +50,7 @@
 							left: 10,
 						},
 						formatter: function (data) {
-							return `<span style="max-width: 1.2rem;word-break: break-all;">${data.name}: <br/>${data.value} IRIS (${data.data.formatPercent}%)</span>`
+							return `<span style="max-width: 1.2rem;word-break: break-all;">${data.name}: <br/>${new bigNumber(data.value).toFormat()} IRIS (${data.data.formatPercent}%)</span>`
 						}
 					},
 					legend: {
