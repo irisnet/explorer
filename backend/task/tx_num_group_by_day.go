@@ -26,7 +26,7 @@ func (task TxNumGroupByDayTask) Start() {
 }
 
 func (task TxNumGroupByDayTask) DoTask() error {
-	today := utils.TruncateTime(time.Now(), utils.Day)
+	today := utils.TruncateTime(time.Now().In(cstZone), utils.Day)
 	yesterday := today.Add(-24 * time.Hour)
 
 	total, err := document.CommonTx{}.GetTxCountByDuration(yesterday, today)
