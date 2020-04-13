@@ -273,6 +273,13 @@
 									label : item
 								}
 							});
+                            this.txTypeListArray = [
+                                {
+                                    value:'allTxType',
+                                    label:'All TxType',
+                                    slot:'allTXType'
+                                }
+                            ];
 							this.txTypeListArray = this.txTypeListArray.concat(typeArray)
 						}
 					}catch (e) {
