@@ -75,7 +75,9 @@
 			}).catch(e => {
 				console.error(e)
 			});
-		
+			setTimeout(() => {
+				this.getValidatorCommissionInfo()
+			},300)
 		},
 		methods:{
 			initCharts(){
