@@ -14,27 +14,27 @@
                         <ul class="header_menu_content">
                             <li class="header_menu_item"
                                 :class="activeBlockChain ? 'nav_item_active' : ''"
-                                @mouseenter="showTwoMenu('blockChain')" @mouseleave="hideTwoMenu('blockChain')">Blockchain</li>
+                                @mouseenter="showTwoMenu('blockChain')" @mouseleave="hideTwoMenu('blockChain')">Blockchain <div class="active_block"></div></li>
                             <li class="header_menu_item"
                                 :class="activeStaking ? 'nav_item_active' : ''"
-                                @mouseenter="showTwoMenu('staking')" @mouseleave="hideTwoMenu('staking')">Staking</li>
+                                @mouseenter="showTwoMenu('staking')" @mouseleave="hideTwoMenu('staking')">Staking <div class="active_block"></div></li>
                             <li class="header_menu_item"
                                 :class="activeTransfers ? 'nav_item_active' : ''"
                                 @mouseenter="showTwoMenu('transfers')" @mouseleave="hideTwoMenu('transfers')">
-                                <router-link :to="`/txs/transfers`">Transfer</router-link></li>
+                                <router-link :to="`/txs/transfers`">Transfer</router-link> <div class="active_block"></div></li>
                             <li class="header_menu_item"
                                 :class="activeAssets ? 'nav_item_active' : ''"
-                                @mouseenter="showTwoMenu('assets')" @mouseleave="hideTwoMenu('assets')">Asset</li>
+                                @mouseenter="showTwoMenu('assets')" @mouseleave="hideTwoMenu('assets')">Asset <div class="active_block"></div></li>
                             <li class="header_menu_item"
                                 :class="activeGov ? 'nav_item_active' : ''"
-                                @mouseenter="showTwoMenu('gov')" @mouseleave="hideTwoMenu('gov')">Gov</li>
+                                @mouseenter="showTwoMenu('gov')" @mouseleave="hideTwoMenu('gov')">Gov <div class="active_block"></div></li>
                             <li class="header_menu_item"
                                 :class="activeStats ? 'nav_item_active' : ''"
-                                @mouseenter="showTwoMenu('stats')" @mouseleave="hideTwoMenu('stats')">Stats</li>
+                                @mouseenter="showTwoMenu('stats')" @mouseleave="hideTwoMenu('stats')">Stats <div class="active_block"></div></li>
                             <li v-show="flShowFaucet" class="header_menu_item"
                                 :class="activeFaucet ? 'nav_item_active' : ''"
                                 @mouseenter="showTwoMenu('faucet')" @mouseleave="hideTwoMenu('faucet')"
-                            ><router-link :to="`/faucet`">Faucet</router-link></li>
+                            ><router-link :to="`/faucet`">Faucet</router-link> <div class="active_block"></div></li>
                         </ul>
                     </div>
 
@@ -404,40 +404,34 @@
 				this.menuActiveName = v;
 				switch (v) {
                     case 'blockChain' :
-	                    this.offSetLeft = `1.7rem`;
+	                    this.offSetLeft = `1.8rem`;
 	                    this.contentWidth = '1.15rem';
 	                    this.flShowChain = true;
-	                    this.activeBlockChain  = true;
                     	break;
                     case 'staking' :
-                    	this.offSetLeft = `2.575rem`;
+                    	this.offSetLeft = `2.675rem`;
 	                    this.flShowStaking = true;
 	                    this.contentWidth = '1.25rem';
-	                    this.activeStaking  = true;
                     	break;
                     case 'transfers' :
-	                    this.offSetLeft = `3.245rem`;
+	                    this.offSetLeft = `3.345rem`;
 	                    this.contentWidth = '1.47rem';
 	                    this.flShowTransfers = true;
-	                    this.activeTransfers  = true;
                     	break;
                     case 'assets'	:
-	                    this.offSetLeft = `3.96rem`;
+	                    this.offSetLeft = `4.06rem`;
 	                    this.contentWidth = '1.55rem';
 	                    this.flShowAssets = true;
-	                    this.activeAssets = true;
                     	break;
                     case 'gov' :
-	                    this.offSetLeft = `4.51rem`;
+	                    this.offSetLeft = `4.61rem`;
 	                    this.contentWidth = '1.03rem';
 	                    this.flShowGov = true;
-	                    this.activeGov = true;
                     	break;
                     case 'stats' :
-	                    this.offSetLeft = `4.965rem`;
+	                    this.offSetLeft = `5.065rem`;
 	                    this.contentWidth = '1.15rem';
 	                    this.flShowStats = true;
-	                    this.activeStats  = true
 				}
             },
 			hideTwoMenu(v){
@@ -446,27 +440,21 @@
 				switch (v) {
 					case 'blockChain' :
 						this.flShowChain = false;
-						this.activeBlockChain  = false;
 						break;
 					case 'staking' :
 						this.flShowStaking = false;
-						this.activeStaking  = false;
 						break;
 					case 'transfers' :
 						this.flShowTransfers = false;
-						this.activeTransfers  = false;
 						break;
 					case 'assets'	:
 						this.flShowAssets = false;
-						this.activeAssets  = false;
 						break;
 					case 'gov' :
 						this.flShowGov = false;
-						this.activeGov  = false;
 						break;
 					case 'stats' :
 						this.flShowStats = false;
-						this.activeStats  = false;
 				}
 				this.listenRouteForChangeActiveButton()
             },
@@ -855,21 +843,35 @@
                             max-width: 12.8rem;
                             .header_menu_item{
                                 padding: 0 0.1rem;
-                                color: #fff;
+                                color: rgba(255,255,255,0.75);
                                 height: 0.6rem;
                                 line-height: 0.6rem;
                                 font-size: 0.14rem;
                                 cursor: pointer;
                                 a{
-                                    color: #fff !important;
+                                    color: rgba(255,255,255,0.75) !important;
+                                    &:hover{
+                                        color: rgba(255,255,255,1)!important;
+                                    }
                                 }
                                 &:hover{
-                                    background: var(--activeColor);
+                                    color: rgba(255,255,255,1);
                                 }
                             }
                             .nav_item_active {
-                                color: #ffffff;
-                                background: var(--activeColor);
+                                color: rgba(255,255,255,1);
+                                font-weight: bold;
+                                a{
+                                    color: rgba(255,255,255,1) !important;
+                                    font-weight: bold;
+                                }
+                                .active_block{
+                                    padding: 0 0.1rem;
+                                    height:0.02rem;
+                                    background: #fff;
+                                    position: relative;
+                                    top: -0.06rem
+                                }
                             }
                         }
                     }

@@ -4,8 +4,9 @@
 			<div class="validation_information_content">
 				<div class="validation_information_header_content">
 					<div class="validation_information_header_img">
-						<img v-if="validatorIconHref" :src="validatorIconHref" alt="" @error="imgLoadError()">
-						<span v-else>{{validatorIconSrc}}</span>
+						<span>{{validatorIconSrc}}</span>
+						<img v-show="validatorIconHref" :src="validatorIconHref" alt="" @error="imgLoadError()">
+						
 					</div>
 					<p class="validation_information_moniker">{{moniker}}</p>
 					<p class="validation_information_website" v-if="website">
@@ -303,6 +304,7 @@
 	.validation_information_wrap{
 		max-width: 12.8rem;
 		margin: 0 auto;
+		border:0.01rem solid #E7E9EB;
 		.validation_information_content{
 			width: 100%;
 			background: #fff;
@@ -323,7 +325,9 @@
 					display: flex;
 					align-items: center;
 					justify-content: center;
+					position: relative;
 					img{
+						position: absolute;
 						width: 100%;
 					}
 					span{
