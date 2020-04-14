@@ -236,6 +236,7 @@
 			max-width: 12.8rem;
 			margin: 0 auto;
 			background: #fff;
+			border: 0.01rem solid #E7E9EB;
 			.validator_commission_information_content{
 				display: grid;
 				grid-template-columns: repeat(1,50% 50%);

@@ -227,6 +227,7 @@ export default class FormatTxType {
 						value:'swapOrder',
 						label:'SwapOrder'
 					});
+					break;
 				case "AddProfiler":
 					othersObj.children.push({
 						value:'addProfiler',

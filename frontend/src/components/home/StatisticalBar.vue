@@ -16,8 +16,8 @@
 						<div class="statistical_img_content">
 							<router-link :to="addressRoute(proposerAddress)">
 								<div class="statistical_validator_header_img_content">
-										<img v-if="validatorHeaderImgHref" :src="validatorHeaderImgHref" alt="" @error="imgLoadError()">
-										<span v-else>{{validatorHeaderImgSrc}}</span>
+									<span >{{validatorHeaderImgSrc}}</span>
+									<img v-show="validatorHeaderImgHref" :src="validatorHeaderImgHref"  @error="imgLoadError()">
 								</div>
 							</router-link>
 						</div>
@@ -106,7 +106,7 @@
 				currentBlockHeight:'--',
 				validatorHeaderImgSrc:'',
 				validatorHeaderImgHref:'',
-				timer:null
+				timer:null,
 			}
 		},
 		mounted(){
@@ -124,6 +124,7 @@
 				Service.commonInterface({navigation:{}},(res) => {
 					try {
 						if(res){
+							this.validatorHeaderImgHref = ''
 							//先通过正则剔除符号空格及表情，只保留数字字母汉字
 							let regex =  /[^\w\u4e00-\u9fa50-9a-zA-Z]/g;
 							let replaceMoniker = res.moniker.replace(regex,'');
@@ -204,6 +205,7 @@
 				background: #fff;
 				display: grid;
 				grid-template-columns: 30% 70%;
+				border:0.01rem solid #d6d9e0;
 				.statistical_validator_content{
 					display: flex;
 					flex-direction: column;
@@ -250,9 +252,10 @@
 								border-radius: 0.6rem;
 								background: #E0E8FF;
 								overflow: hidden;
+								position: relative;
 								img{
+									position: absolute;
 									width: 100%;
-									height:100%;
 								}
 								span{
 									font-size: 0.52rem;
@@ -305,9 +308,17 @@
 			}
 		}
 	}
+	@media screen and (max-width: 1280px){
+		.statistical_bar_container{
+			.statistical_bar_wrap{
+				margin: 0.2rem 0.2rem 0 0.2rem;
+			}
+		}
+	}
 	@media screen and (max-width: 1000px){
 		.statistical_bar_container{
 			.statistical_bar_wrap{
+				margin: 0.2rem 0.1rem 0 0.1rem;
 				.statistical_bar_content{
 					margin: 0 0.1rem;
 					padding: 0.1rem;
@@ -353,6 +364,13 @@
 						}
 					}
 				}
+			}
+		}
+	}
+	@media screen and (max-width: 910px){
+		.statistical_bar_container{
+			.statistical_bar_wrap{
+				margin: 0.2rem 0 0 0;
 			}
 		}
 	}
