@@ -1,10 +1,10 @@
 package document
 
 import (
+	"encoding/json"
 	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2"
 	"testing"
-	"encoding/json"
 )
 
 func TestTaskControl_QueryOneByTaskName(t *testing.T) {
@@ -63,7 +63,7 @@ func TestTaskControl_LockTaskControl(t *testing.T) {
 
 	taskName := "tn1"
 	instanceNo := "dsa"
-	if err := d.LockTaskControl(taskName, instanceNo); err != nil {
+	if err := d.LockTaskControl(taskName, instanceNo, 1); err != nil {
 		t.Fatal(err)
 	} else {
 		t.Log("success")
@@ -88,4 +88,14 @@ func TestTaskControl_List(t *testing.T) {
 
 	bytesdata, _ := json.Marshal(res)
 	t.Log(string(bytesdata))
+}
+
+func TestTaskControl_UnlockAllTasks(t *testing.T) {
+	d := TaskControl{}
+
+	if err := d.UnlockAllTasks(); err != nil {
+		t.Fatal(err)
+	} else {
+		t.Log("success")
+	}
 }
