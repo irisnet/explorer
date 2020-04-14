@@ -172,6 +172,7 @@
 		max-width: 12.8rem;
 		margin: 0 auto;
 		.address_information_component_content{
+			border: 0.01rem solid #E7E9EB;
 			.address_information_component_title{
 				color:var(--titleColor);
 				font-size: 0.18rem;
@@ -342,7 +343,7 @@
 		.address_information_component_container{
 			padding-top: 0.54rem;
 			.address_information_component_wrap{
-				margin-top: 0.2rem;
+				margin: 0.2rem 0.1rem 0 0.1rem;
 				.address_information_component_content{
 					.address_information_asset_content{
 						width: 100%;
