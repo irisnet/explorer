@@ -30,6 +30,7 @@ func init() {
 	engine.AppendTask(ValidatorStaticInfo{})
 	engine.AppendTask(UpdateProposalVoters{})
 	engine.AppendTask(UpdateAccount{})
+	engine.AppendTask(TaskControlMonitor{})
 }
 
 type TimerTask interface {
@@ -68,6 +69,7 @@ func Start() {
 	txNumTask.init()
 	c.AddFunc("01 0 * * *", func() {
 		txNumTask.Start()
+		new(UpdateValidatorIcons).Start()
 	})
 	c.AddFunc("59 23 * * *", func() {
 		new(StaticRewardsTask).Start()

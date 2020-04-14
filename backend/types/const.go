@@ -117,7 +117,8 @@ const (
 	AssetMinDenom = "-min"
 	Unknown       = "unknown"
 
-	Success = "success"
+	Success            = "success"
+	TaskConTrolMonitor = "task_control_monitor"
 )
 
 var (
