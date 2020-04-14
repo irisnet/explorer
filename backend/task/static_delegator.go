@@ -180,7 +180,7 @@ func (task StaticDelegatorTask) getAccountFromDb() ([]document.Account, error) {
 	size := 100
 	offset := 0
 	length := size
-	var accounts []document.Account
+	var ret []document.Account
 	for {
 		accounts, err := task.account.GetDelegatores(offset, size)
 		if err != nil {
@@ -188,9 +188,7 @@ func (task StaticDelegatorTask) getAccountFromDb() ([]document.Account, error) {
 			return accounts, err
 		}
 
-		for _, val := range accounts {
-			accounts = append(accounts, val)
-		}
+		ret = append(ret, accounts...)
 		length = len(accounts)
 		if length < size {
 			break
@@ -198,5 +196,5 @@ func (task StaticDelegatorTask) getAccountFromDb() ([]document.Account, error) {
 		offset += length
 	}
 
-	return accounts, nil
+	return ret, nil
 }
