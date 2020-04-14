@@ -124,6 +124,7 @@
 				Service.commonInterface({navigation:{}},(res) => {
 					try {
 						if(res){
+							this.validatorHeaderImgHref = ''
 							//先通过正则剔除符号空格及表情，只保留数字字母汉字
 							let regex =  /[^\w\u4e00-\u9fa50-9a-zA-Z]/g;
 							let replaceMoniker = res.moniker.replace(regex,'');
