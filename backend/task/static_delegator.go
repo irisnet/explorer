@@ -14,14 +14,14 @@ import (
 	"math/big"
 )
 
-type StaticRewardsTask struct {
+type StaticDelegatorTask struct {
 	account document.Account
 }
 
-func (task StaticRewardsTask) Name() string {
-	return "static_rewards"
+func (task StaticDelegatorTask) Name() string {
+	return "static_delegator"
 }
-func (task StaticRewardsTask) Start() {
+func (task StaticDelegatorTask) Start() {
 	taskName := task.Name()
 	timeInterval := conf.Get().Server.CronTimeTxNumByDay
 
@@ -30,16 +30,16 @@ func (task StaticRewardsTask) Start() {
 	}
 }
 
-func (task StaticRewardsTask) DoTask() error {
+func (task StaticDelegatorTask) DoTask() error {
 	ops, err := task.getAllAccountRewards()
 	if err != nil {
 		logger.Error(err.Error())
 		return err
 	}
-	return document.ExStaticRewards{}.Batch(ops)
+	return document.ExStaticDelegator{}.Batch(ops)
 }
 
-func (task StaticRewardsTask) getRewardsFromLcd(address string) (utils.CoinsAsStr, []lcd.RewardsFromDelegations, utils.CoinsAsStr, error) {
+func (task StaticDelegatorTask) getRewardsFromLcd(address string) (utils.CoinsAsStr, []lcd.RewardsFromDelegations, utils.CoinsAsStr, error) {
 	commissionrewards, delegationrewards, totalrewards, err := lcd.GetDistributionRewardsByValidatorAcc(address)
 	if err != nil {
 		logger.Error("GetDistributionRewardsByValidatorAcc have error", logger.String("err", err.Error()))
@@ -48,28 +48,28 @@ func (task StaticRewardsTask) getRewardsFromLcd(address string) (utils.CoinsAsSt
 	return commissionrewards, delegationrewards, totalrewards, nil
 }
 
-func (task StaticRewardsTask) getAllAccountRewards() ([]txn.Op, error) {
+func (task StaticDelegatorTask) getAllAccountRewards() ([]txn.Op, error) {
 
-	accAddrs, err := task.getAccountFromDb()
+	accounts, err := task.getAccountFromDb()
 	if err != nil {
 		return nil, err
 	}
 
-	return task.saveExStaticRewardsOps(accAddrs)
+	return task.saveExStaticRewardsOps(accounts)
 }
 
-func (task StaticRewardsTask) saveExStaticRewardsOps(accAddrs []string) ([]txn.Op, error) {
+func (task StaticDelegatorTask) saveExStaticRewardsOps(accs []document.Account) ([]txn.Op, error) {
 	today := utils.TruncateTime(time.Now().In(cstZone), utils.Day)
-	ops := make([]txn.Op, 0, len(accAddrs))
+	ops := make([]txn.Op, 0, len(accs))
 	now := time.Now().Unix()
-	for _, addr := range accAddrs {
-		item, err := task.loadModelRewards(addr, today)
+	for _, acc := range accs {
+		item, err := task.loadModelRewards(acc, today)
 		item.CreateAt = now
 		if err != nil {
 			continue
 		}
 		op := txn.Op{
-			C:      document.CollectionNameExStaticRewards,
+			C:      document.CollectionNameExStaticDelegator,
 			Id:     bson.NewObjectId(),
 			Insert: item,
 		}
@@ -78,32 +78,33 @@ func (task StaticRewardsTask) saveExStaticRewardsOps(accAddrs []string) ([]txn.O
 	return ops, nil
 }
 
-func (task StaticRewardsTask) loadModelRewards(addr string, today time.Time) (document.ExStaticRewards, error) {
-	commisstionRds, _, totalRds, err := task.getRewardsFromLcd(addr)
+func (task StaticDelegatorTask) loadModelRewards(account document.Account, today time.Time) (document.ExStaticDelegator, error) {
+	commisstionRds, _, totalRds, err := task.getRewardsFromLcd(account.Address)
 	if err != nil {
 		logger.Warn(err.Error())
-		return document.ExStaticRewards{}, err
+		return document.ExStaticDelegator{}, err
 	}
 
-	item := document.ExStaticRewards{
+	item := document.ExStaticDelegator{
 		Id:         bson.NewObjectId(),
-		Address:    addr,
+		Address:    account.Address,
 		Date:       today.In(cstZone),
 		Total:      task.loadRewards(totalRds),
 		Commission: task.loadRewards(commisstionRds),
+		Delegation: account.Delegation,
 		//DelegationsDetail: task.loadDelegationsRewardsDetail(delegationsRds),
 	}
 	if len(item.Total) > 0 {
 		if len(item.Commission) == 0 {
-			item.Delegations = item.Total
+			item.DelegationsRewards = item.Total
 		} else {
-			item.Delegations = task.loadDelegationsRewards(item.Total[0], item.Commission[0])
+			item.DelegationsRewards = task.loadDelegationsRewards(item.Total[0], item.Commission[0])
 		}
 	}
 	return item, nil
 }
 
-func (task StaticRewardsTask) loadRewards(rewards utils.CoinsAsStr) []document.Rewards {
+func (task StaticDelegatorTask) loadRewards(rewards utils.CoinsAsStr) []document.Rewards {
 
 	var ret []document.Rewards
 	for _, val := range rewards {
@@ -156,7 +157,7 @@ func funcSubStr(amount1, amount2 string) *big.Rat {
 	return value
 }
 
-func (task StaticRewardsTask) loadDelegationsRewards(total, commission document.Rewards) []document.Rewards {
+func (task StaticDelegatorTask) loadDelegationsRewards(total, commission document.Rewards) []document.Rewards {
 	subValue := funcSubStr(total.IrisAtto, commission.IrisAtto)
 	if subValue == nil {
 		return nil
@@ -175,20 +176,20 @@ func (task StaticRewardsTask) loadDelegationsRewards(total, commission document.
 	return ret
 }
 
-func (task StaticRewardsTask) getAccountFromDb() ([]string, error) {
+func (task StaticDelegatorTask) getAccountFromDb() ([]document.Account, error) {
 	size := 100
 	offset := 0
 	length := size
-	var accAddress []string
+	var accounts []document.Account
 	for {
 		accounts, err := task.account.GetDelegatores(offset, size)
 		if err != nil {
 			logger.Error(err.Error())
-			return accAddress, err
+			return accounts, err
 		}
 
 		for _, val := range accounts {
-			accAddress = append(accAddress, val.Address)
+			accounts = append(accounts, val)
 		}
 		length = len(accounts)
 		if length < size {
@@ -197,5 +198,5 @@ func (task StaticRewardsTask) getAccountFromDb() ([]string, error) {
 		offset += length
 	}
 
-	return accAddress, nil
+	return accounts, nil
 }

@@ -74,7 +74,7 @@ func Start() {
 		new(UpdateValidatorIcons).Start()
 	})
 	c.AddFunc("59 23 * * *", func() {
-		new(StaticRewardsTask).Start()
+		new(StaticDelegatorTask).Start()
 		new(StaticValidatorTask).Start()
 	})
 }
