@@ -1,6 +1,6 @@
 <template>
-	<div class="search_bar_container">
-		<div class="search_bar_wrap" :class="$store.state.flShowSearchBar === 'show'  ? 'show_search_bar' : 'hide_search_bar'" >
+	<div class="search_bar_container" :class="$store.state.flShowSearchBar === 'show'  ? 'show_search_bar' : 'hide_search_bar'" >
+		<div class="search_bar_wrap" >
 			<div class="search_bar_content">
 				<p class="search_bar_title">Welcome to IRISplorer</p>
 				<div class="search_bar_ipt_content" :class="$store.state.flShowSearchIpt === 'show'  ? 'show_ipt' : 'hide_ipt'" v-if="$store.state.flShowSearchIpt === 'show'">
@@ -79,10 +79,11 @@
 			},
 			hideSearchBar(){
 				this.$store.commit('flShowSearchBar','hide');
-				
+				this.$store.commit('showHeaderUnfoldBtn','show');
+				sessionStorage.setItem('flShowHeaderUnfoldBtn','show');
 				setTimeout( () => {
-					this.$store.commit('showHeaderUnfoldBtn','show');
-					sessionStorage.setItem('flShowHeaderUnfoldBtn','show');
+					// this.$store.commit('showHeaderUnfoldBtn','show');
+					// sessionStorage.setItem('flShowHeaderUnfoldBtn','show');
 					
 					sessionStorage.setItem('flShowSearchBar', 'hide');
 					
@@ -217,12 +218,14 @@
 
 <style scoped lang="scss">
 	.hide_search_bar{
-		animation: hideSearchBar 0.3s ease-in;
-		animation-fill-mode: forwards;
+		display: none !important;
+		/*animation: hideSearchBar 0.3s ease-in;*/
+		/*animation-fill-mode: forwards;*/
 	}
 	.show_search_bar{
-		animation: showSearchBar 0.3s ease-in;
-		animation-fill-mode: forwards;
+		display: block;
+		/*animation: showSearchBar 0.3s ease-in;*/
+		/*animation-fill-mode: forwards;*/
 	}
 	@keyframes hideSearchBar {
 		from{
@@ -276,12 +279,14 @@
 					text-align: center;
 				}
 				.hide_ipt{
-					animation: hideIpt ease-in 0.3s;
-					animation-fill-mode: forwards;
+					display: none;
+					/*animation: hideIpt ease-in 0.3s;*/
+					/*animation-fill-mode: forwards;*/
 				}
 				.show_ipt{
-					animation: showIpt ease-in 0.3s;
-					animation-fill-mode: forwards;
+					display: block;
+					/*animation: showIpt ease-in 0.3s;*/
+					/*animation-fill-mode: forwards;*/
 				}
 				.search_bar_ipt_content{
 					max-width: 8rem;
@@ -321,7 +326,7 @@
 					grid-template-columns: repeat(auto-fill, 25%);
 					.search_bar_link_item{
 						a{
-							color: rgba(255,255,255,0.4) !important;
+							color: rgba(255,255,255,0.75) !important;
 							&:hover{
 								color: rgba(255,255,255,1)!important;
 								border-bottom: 0.01rem solid rgba(255,255,255,1);
