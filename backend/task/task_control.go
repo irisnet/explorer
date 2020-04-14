@@ -5,10 +5,10 @@ import (
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
+	"github.com/irisnet/explorer/backend/types"
+	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2"
 	"time"
-	"github.com/irisnet/explorer/backend/utils"
-	"github.com/irisnet/explorer/backend/types"
 )
 
 type (
@@ -27,14 +27,6 @@ func (s TaskControlService) runTask(taskName string, timeInterval int, callback 
 		if notBeExec {
 			logger.Warn("task shouldn't be executed", logger.String("taskName", taskName))
 			return nil
-		}
-		dbtask, err := taskControlModel.QueryOneByTaskName(taskName)
-		if err == nil {
-			if dbtask.TimeInterval == int64(timeInterval) {
-				timeInterval = 0
-			}
-		} else {
-			logger.Error(err.Error())
 		}
 
 		// lock task
@@ -130,10 +122,8 @@ func (s TaskControlMonitor) DoTask() error {
 		total := len(res)
 		if total < limit {
 			runValue = false
-			logger.Debug("finish scan  Task Crontrol list")
 		} else {
 			skip = skip + total
-			logger.Debug("continue scan  Task Crontrol list", logger.Int("skip", skip))
 		}
 	}
 	return nil
@@ -157,14 +147,22 @@ func (s TaskControlMonitor) CheckAndUpdate(one document.TaskControl) error {
 		return nil
 	}
 
-	if currentTimeInterval > 3*one.TimeInterval && one.IsInProcess && one.TaskName != types.TaskConTrolMonitor {
+	if currentTimeInterval >= 2*one.TimeInterval && one.IsInProcess && one.TaskName != types.TaskConTrolMonitor {
 		one.IsInProcess = false
 		if err := s.controlModel.UpdateByPK(one); err != nil {
-			logger.Error("Update have error",
-				logger.String("serviceName", one.TaskName),
-				logger.String("err", err.Error()))
 			return err
 		}
 	}
+	return nil
+}
+
+// unlock all tasks which task is unlocked
+func (s TaskControlMonitor) unlockAllTasks() error {
+	if err := taskControlModel.UnlockAllTasks(); err != nil {
+		if err != mgo.ErrNotFound {
+			return err
+		}
+	}
+
 	return nil
 }

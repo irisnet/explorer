@@ -26,11 +26,13 @@ func init() {
 	engine.AppendTask(UpdateGovParams{})
 	engine.AppendTask(UpdateValidatorIcons{})
 	engine.AppendTask(UpdateAssetTokens{})
-	engine.AppendTask(UpdateAssetGateways{})
 	engine.AppendTask(ValidatorStaticInfo{})
 	engine.AppendTask(UpdateProposalVoters{})
 	engine.AppendTask(UpdateAccount{})
-	engine.AppendTask(TaskControlMonitor{})
+
+	taskControlMonitor := TaskControlMonitor{}
+	taskControlMonitor.unlockAllTasks()
+	engine.AppendTask(taskControlMonitor)
 }
 
 type TimerTask interface {
