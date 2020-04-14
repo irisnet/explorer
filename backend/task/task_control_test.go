@@ -25,3 +25,11 @@ func TestTaskControlService_runTask(t *testing.T) {
 		t.Log("success")
 	}
 }
+
+func TestTaskControlService_Start(t *testing.T) {
+	new(TaskControlMonitor).Start()
+}
+
+func TestUpdateAccount_DoTask(t *testing.T) {
+	new(TaskControlMonitor).DoTask()
+}
