@@ -132,11 +132,12 @@
 				assetInformation.forEach( item => {
 					if(item && item.token === 'IRIS'){
 						this.totalAmount = item.totalAmount;
+						console.log(this.totalAmount,"数据展示")
 						this.assetConstitute.forEach( res => {
 							 if(res.label === "UnBonding"){
 								res.value = item['unBonding'] || "--";
 								res.numberValue = item['unBonding'] ? item['unBonding'].replace(/[^\d.]/g,"") : 0;
-								res.percent = this.formatDecimalNumberToFixedNumber(res.numberValue,item.totalAmount.replace(/[^\d.]/g,""))
+								res.percent = this.formatDecimalNumberToFixedNumber(item.totalAmount.replace(/[^\d.]/g,""),res.numberValue)
 							}else {
 								res.value = item[Tools.firstWordLowerCase(res.label)] || "--";
 								res.numberValue = item[Tools.firstWordLowerCase(res.label)] ?
@@ -151,6 +152,7 @@
 				})
 			},
 			formatDecimalNumberToFixedNumber(total,data) {
+				console.log(total,data,"?????")
 				let percentNumber = (Number(data) / Number(total)).toString();
 				let num;
 				if(percentNumber !== 'Infinity'){
@@ -159,6 +161,7 @@
 					//数字太小赋值为0.00
 					num = '0.00'
 				}
+				console.log(num,"数据展示")
 				return num;
 			}
 		}
