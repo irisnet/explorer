@@ -26,8 +26,11 @@
 			}
 		},
 		watch:{
-			echartData(){
-				this.initCharts();
+			echartData:{
+				handler(newValue,oldValue){
+					this.initCharts()
+				},
+				deep: true
 			}
 		},
 		props:{
@@ -36,9 +39,9 @@
 			}
 		},
 		mounted () {
-			setTimeout(() => {
-				this.initCharts();
-			},400)
+			// setTimeout(() => {
+			// 	this.initCharts();
+			// },400)
 		},
 		methods:{
 			initCharts(){
