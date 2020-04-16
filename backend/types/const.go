@@ -105,9 +105,13 @@ const (
 
 	Format = "2006/01/02T15:04:05Z07:00"
 
-	Change  = "powerChange"
-	Slash   = "slash"
-	Recover = "recover"
+	TimeLayout             = "2006-01-02T15:04:05"
+	DelegatorRewardTag     = "DelegatorReward"
+	ValidatorRewardTag     = "ValidatorReward"
+	ValidatorCommissionTag = "ValidatorCommission"
+	Change                 = "powerChange"
+	Slash                  = "slash"
+	Recover                = "recover"
 
 	TxTag_WithDrawRewardFromValidator = "withdraw-reward-from-validator-"
 	//TxTag_WithDrawAddress             = "withdraw-address"

@@ -57,6 +57,57 @@ func (d ExStaticDelegator) EnsureIndexes() []mgo.Index {
 	return indexes
 }
 
-func (_ ExStaticDelegator) Batch(txs []txn.Op) error {
+func (d ExStaticDelegator) Batch(txs []txn.Op) error {
 	return orm.Batch(txs)
+}
+
+func (d ExStaticDelegator) Terminaldate() (time.Time, error) {
+	var res ExStaticDelegator
+	var query = orm.NewQuery()
+	defer query.Release()
+	query.SetCollection(d.Name()).
+		SetSort("-date").
+		SetResult(&res)
+
+	err := query.Exec()
+	if err != nil {
+		return time.Time{}, err
+	}
+
+	return res.Date, nil
+}
+
+func (d ExStaticDelegator) GetDataByDate(date time.Time) ([]ExStaticDelegator, error) {
+	var res []ExStaticDelegator
+	cond := bson.M{
+		ExStaticDelegatorDateTag: date,
+	}
+
+	limit := 100
+	for {
+		var ret []ExStaticDelegator
+		if err := queryAll(d.Name(), nil, cond, "-date", 100, &res); err != nil {
+			return res, err
+		}
+		length := len(ret)
+		res = append(res, ret...)
+		if length < limit {
+			break
+		}
+	}
+
+	return res, nil
+}
+
+func (d ExStaticDelegator) GetDataOneDay(date time.Time, address string) (ExStaticDelegator, error) {
+	var res ExStaticDelegator
+	cond := bson.M{
+		ExStaticDelegatorDateTag:    date,
+		ExStaticDelegatorAddressTag: address,
+	}
+	if err := queryOne(d.Name(), nil, cond, &res); err != nil {
+		return res, err
+	}
+
+	return res, nil
 }

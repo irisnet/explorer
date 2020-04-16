@@ -13,20 +13,22 @@ const (
 
 	ValidatorStaticFieldOperatorAddress = "operator_address"
 	ValidatorStaticFieldDate            = "date"
+	ValidatorCommissionRateTag          = "commission.rate"
 )
 
 type ExStaticValidator struct {
-	Id              bson.ObjectId `bson:"_id"`
-	OperatorAddress string        `bson:"operator_address"`
-	Status          string        `bson:"status"`
-	Date            time.Time     `bson:"date"`
-	Tokens          string        `bson:"tokens"`
-	DelegatorShares string        `bson:"delegator_shares"`
-	Delegations     string        `bson:"delegations"` //tokens - self_bond
-	SelfBond        string        `bson:"self_bond"`
-	Commission      Commission    `bson:"commission"`
-	DelegatorNum    int           `bson:"delegator_num"`
-	CreateAt        int64         `bson:"create_at"`
+	Id                    bson.ObjectId `bson:"_id"`
+	OperatorAddress       string        `bson:"operator_address"`
+	Status                string        `bson:"status"`
+	Date                  time.Time     `bson:"date"`
+	Tokens                string        `bson:"tokens"`
+	DelegatorShares       string        `bson:"delegator_shares"`
+	Delegations           string        `bson:"delegations"` //tokens - self_bond
+	SelfBond              string        `bson:"self_bond"`
+	FoundationDelegations string        `bson:"foundation_delegations"`
+	Commission            Commission    `bson:"commission"`
+	DelegatorNum          int           `bson:"delegator_num"`
+	CreateAt              int64         `bson:"create_at"`
 }
 
 func (d ExStaticValidator) Name() string {
