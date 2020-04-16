@@ -15,7 +15,7 @@ func TestNodeInfo(t *testing.T) {
 }
 
 func TestNodeVersion(t *testing.T) {
-	if res, err := NodeVersion(""); err != nil {
+	if res, err := NodeVersion("http://v2.irisnet-lcd.rainbow.one"); err != nil {
 		t.Fatal(err)
 	} else {
 		resBytes, _ := json.MarshalIndent(res, "", "\t")
