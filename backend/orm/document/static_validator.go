@@ -51,6 +51,76 @@ func (d ExStaticValidator) EnsureIndexes() []mgo.Index {
 	return indexes
 }
 
-func (_ ExStaticValidator) Batch(txs []txn.Op) error {
+func (d ExStaticValidator) Batch(txs []txn.Op) error {
 	return orm.Batch(txs)
+}
+
+func (d ExStaticValidator) Terminaldate() (time.Time, error) {
+	var res ExStaticValidator
+	var query = orm.NewQuery()
+	defer query.Release()
+	query.SetCollection(d.Name()).
+		SetSort("-date").
+		SetResult(&res)
+
+	err := query.Exec()
+	if err != nil {
+		return time.Time{}, err
+	}
+
+	return res.Date, nil
+}
+
+func (d ExStaticValidator) GetDataByDate(date time.Time) ([]ExStaticValidator, error) {
+	var res []ExStaticValidator
+	cond := bson.M{
+		ValidatorStaticFieldDate: date,
+	}
+
+	limit := 100
+	for {
+		var ret []ExStaticValidator
+		if err := queryAll(d.Name(), nil, cond, "-date", 100, &res); err != nil {
+			return res, err
+		}
+		length := len(ret)
+		res = append(res, ret...)
+		if length < limit {
+			break
+		}
+	}
+
+	return res, nil
+}
+
+func (d ExStaticValidator) GetDataOneDay(date time.Time, operatoraddr string) (ExStaticValidator, error) {
+	var res ExStaticValidator
+	cond := bson.M{
+		ValidatorStaticFieldDate:            date,
+		ValidatorStaticFieldOperatorAddress: operatoraddr,
+	}
+	if err := queryOne(d.Name(), nil, cond, &res); err != nil {
+		return res, err
+	}
+
+	return res, nil
+}
+
+func (d ExStaticValidator) GetCommissionRate(selector, cond bson.M, sorts string) (ExStaticValidator, error) {
+	var query = orm.NewQuery()
+	defer query.Release()
+	var result ExStaticValidator
+
+	query.SetCollection(d.Name()).
+		SetCondition(cond).
+		SetSelector(selector).
+		SetSize(1).
+		SetSort(sorts).
+		SetResult(&result)
+
+	err := query.Exec()
+	if err != nil {
+		return result, err
+	}
+	return result, nil
 }

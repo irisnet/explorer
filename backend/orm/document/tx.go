@@ -296,6 +296,39 @@ func (_ CommonTx) GetTxCountByDuration(startTime, endTime time.Time) (int, error
 	return txStore.Find(query).Count()
 }
 
+func (_ CommonTx) GetTxsByDurationAddress(startTime, endTime time.Time, address string) ([]CommonTx, error) {
+
+	db := orm.GetDatabase()
+	defer db.Session.Close()
+
+	txStore := db.C(CollectionNmCommonTx)
+	var res []CommonTx
+
+	query := bson.M{}
+	query = FilterUnknownTxs(query)
+	query[Tx_Field_Time] = bson.M{"$gte": startTime, "$lt": endTime}
+	query[Tx_Field_Status] = types.Success
+	if address != "" {
+		query["signers.addr_bech32"] = address
+
+	}
+
+	if err := txStore.Find(query).All(&res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+func (_ CommonTx) GetTxsByType(txtype string, status string) ([]CommonTx, error) {
+	condition := bson.M{Tx_Field_Type: txtype, Tx_Field_Status: status}
+	var txs []CommonTx
+	err := queryAll(CollectionNmCommonTx, nil, condition, desc(Tx_Field_Time), 0, &txs)
+	if err != nil {
+		return nil, err
+	}
+	return txs, nil
+}
+
 func (_ CommonTx) QueryProposalTxFromById(idArr []uint64) (map[uint64]string, error) {
 
 	selector := bson.M{Tx_Field_From: 1, Tx_Field_ProposalId: 1}

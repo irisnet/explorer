@@ -19,6 +19,8 @@ var (
 	tcService        TaskControlService
 
 	cstZone = time.FixedZone("CST", 8*3600)
+	// adapt multiple asset
+	rewardsDenom = []string{"iris-atto"}
 )
 
 func init() {
@@ -76,5 +78,14 @@ func Start() {
 	c.AddFunc("59 23 * * *", func() {
 		new(StaticDelegatorTask).Start()
 		new(StaticValidatorTask).Start()
+	})
+
+	c.AddFunc("0 0 01 * *", func() { //每月1号0点0分
+		delegatortask := new(StaticDelegatorByMonthTask)
+		validatortask := new(StaticValidatorByMonthTask)
+		delegatortask.Start()
+		validatortask.SetAddressCoinMapData(delegatortask.AddressCoin, delegatortask.AddrPeriodCommission,
+			delegatortask.AddrBeginCommission, delegatortask.AddrTerminalCommission)
+		validatortask.Start()
 	})
 }

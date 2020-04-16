@@ -14,21 +14,23 @@ const (
 	UrlValidators                                = "%s/stake/validators?page=%d&size=%d"
 	UrlDelegationByVal                           = "%s/stake/validators/%s/delegations"
 	UrlDelegationsByDelegator                    = "%s/stake/delegators/%s/delegations"
-	UrlUnbondingDelegationByDelegator = "%s/stake/delegators/%s/unbonding-delegations"
-	UrlDelegationsByValidator         = "%s/stake/validators/%s/delegations"
-	UrlUnbondingDelegationByValidator = "%s/stake/validators/%s/unbonding-delegations"
-	UrlRedelegationsByValidator       = "%s/stake/validators/%s/redelegations"
-	UrlSignInfo                       = "%s/slashing/validators/%s/signing-info"
-	UrlNodeInfo                       = "%s/node-info"
-	UrlNodeVersion                    = "%s/version"
-	UrlGenesis                        = "%s/genesis"
-	UrlWithdrawAddress                = "%s/distribution/%s/withdraw-address"
-	UrlBlockLatest                    = "%s/blocks/latest"
-	UrlBlock                          = "%s/blocks/%d"
-	UrlValidatorSet                   = "%s/validatorsets/%d"
-	UrlValidatorSetLatest             = "%s/validatorsets/latest"
-	UrlStakePool                      = "%s/stake/pool"
-	UrlBlocksResult                   = "%s/block-results/%d"
+	UrlDelegationsFromValidatorByDelegator       = "%s/stake/delegators/%s/delegations/%s"
+	UrlUnbondingDelegationByDelegator            = "%s/stake/delegators/%s/unbonding-delegations"
+	UrlDelegationsByValidator                    = "%s/stake/validators/%s/delegations"
+	UrlUnbondingDelegationByValidator            = "%s/stake/validators/%s/unbonding-delegations"
+	UrlRedelegationsByValidator                  = "%s/stake/validators/%s/redelegations"
+	UrlSignInfo                                  = "%s/slashing/validators/%s/signing-info"
+	UrlNodeInfo                                  = "%s/node-info"
+	UrlNodeVersion                               = "%s/version"
+	UrlGenesis                                   = "%s/genesis"
+	UrlWithdrawAddress                           = "%s/distribution/%s/withdraw-address"
+	UrlBlockLatest                               = "%s/blocks/latest"
+	UrlBlock                                     = "%s/blocks/%d"
+	UrlValidatorSet                              = "%s/validatorsets/%d"
+	UrlValidatorSetLatest                        = "%s/validatorsets/latest"
+	UrlStakePool                                 = "%s/stake/pool"
+	UrlBlocksResult                              = "%s/block-results/%d"
+	UrlTxsTxHash                                 = "%s/txs/%s"
 	UrlGovParam                                  = "%s/params?module=%s"
 	UrlDistributionRewardsByValidatorAcc         = "%s/distribution/%s/rewards"
 	UrlValidatorsSigningInfoByConsensuPublicKey  = "%s/slashing/validators/%s/signing-info"
@@ -594,6 +596,11 @@ type BlockResultVo struct {
 			} `json:"tags"`
 		} `json:"begin_block"`
 	} `json:"results"`
+}
+
+type BlockCoinFlowVo struct {
+	Height   string   `json:"height"`
+	CoinFlow []string `json:"coin_flow"`
 }
 
 type AssetTokens struct {
