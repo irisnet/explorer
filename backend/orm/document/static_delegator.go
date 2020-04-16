@@ -7,6 +7,8 @@ import (
 	"gopkg.in/mgo.v2/txn"
 	"time"
 	"github.com/irisnet/explorer/backend/utils"
+	"github.com/irisnet/explorer/backend/types"
+	"fmt"
 )
 
 const (
@@ -61,12 +63,25 @@ func (d ExStaticDelegator) Batch(txs []txn.Op) error {
 	return orm.Batch(txs)
 }
 
-func (d ExStaticDelegator) Terminaldate() (time.Time, error) {
-	var res ExStaticDelegator
+func Getdate(collectionName string, year, month int, sort string, location *time.Location) (time.Time, error) {
+	var res struct {
+		Date time.Time `bson:"date"`
+	}
 	var query = orm.NewQuery()
 	defer query.Release()
-	query.SetCollection(d.Name()).
-		SetSort("-date").
+	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-01T00:00:00", year, month), location)
+	endtime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-01T00:00:00", year, month+1), location)
+	cond := bson.M{
+		"date": bson.M{
+			"$gte": starttime,
+			"$lt":  endtime,
+		},
+	}
+	query.SetCollection(collectionName).
+		SetSelector(bson.M{"date": 1}).
+		SetCondition(cond).
+		SetSort(sort).
+		SetSize(1).
 		SetResult(&res)
 
 	err := query.Exec()

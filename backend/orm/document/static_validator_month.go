@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	CollectionNameExStaticValidatorMonth = "ex_static_delegator_month"
+	CollectionNameExStaticValidatorMonth = "ex_static_validator_month"
 
 	ExStaticValidatorMonthAddressTag = "address"
 	ExStaticValidatorMonthDateTag    = "date"
@@ -59,6 +59,6 @@ func (d ExStaticValidatorMonth) EnsureIndexes() []mgo.Index {
 	return indexes
 }
 
-func (_ ExStaticValidatorMonth) Batch(txs []txn.Op) error {
+func (d ExStaticValidatorMonth) Batch(txs []txn.Op) error {
 	return orm.Batch(txs)
 }

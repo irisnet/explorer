@@ -48,6 +48,6 @@ func (d ExStaticDelegatorMonth) EnsureIndexes() []mgo.Index {
 	return indexes
 }
 
-func (_ ExStaticDelegatorMonth) Batch(txs []txn.Op) error {
+func (d ExStaticDelegatorMonth) Batch(txs []txn.Op) error {
 	return orm.Batch(txs)
 }

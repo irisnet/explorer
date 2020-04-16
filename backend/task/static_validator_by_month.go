@@ -43,8 +43,13 @@ func (task *StaticValidatorByMonthTask) SetAddressCoinMapData(rewards, pcommissi
 }
 
 func (task *StaticValidatorByMonthTask) DoTask() error {
-
-	terminaldate, err := task.staticModel.Terminaldate()
+	datetime := time.Now().In(cstZone)
+	year, month := datetime.Year(), datetime.Month()-1
+	if datetime.Month() == time.January {
+		year = datetime.Year() - 1
+		month = time.December
+	}
+	terminaldate, err := document.Getdate(task.staticModel.Name(), year, int(month), "-"+document.ValidatorStaticFieldDate, cstZone)
 	if err != nil {
 		return err
 	}
@@ -77,8 +82,8 @@ func (task *StaticValidatorByMonthTask) DoTask() error {
 func (task *StaticValidatorByMonthTask) getStaticValidator(terminalval document.ExStaticValidator, addrHeightMap map[string]int64) document.ExStaticValidatorMonth {
 	address := utils.Convert(conf.Get().Hub.Prefix.AccAddr, terminalval.OperatorAddress)
 
-	datestr := fmt.Sprintf("%d-%02d-01T00:00:00", terminalval.Date.Year(), terminalval.Date.Month())
-	date, _ := time.ParseInLocation(types.TimeLayout, datestr, cstZone)
+	date, _ := document.Getdate(task.staticModel.Name(), terminalval.Date.Year(), int(terminalval.Date.Month()), document.ValidatorStaticFieldDate, cstZone)
+
 	validatestatic, err := task.staticModel.GetDataOneDay(date, terminalval.OperatorAddress)
 	if err != nil {
 		logger.Error("get Validator static failed",

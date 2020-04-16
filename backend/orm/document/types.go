@@ -19,5 +19,7 @@ var (
 		TaskControlModel,
 		new(ExStaticDelegator),
 		new(ExStaticValidator),
+		new(ExStaticDelegatorMonth),
+		new(ExStaticValidatorMonth),
 	}
 )

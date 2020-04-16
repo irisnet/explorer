@@ -20,13 +20,13 @@ func TestExStaticDelegator_GetDataByDate(t *testing.T) {
 	t.Log(string(bytesdate))
 }
 
-func TestExStaticDelegator_Terminaldate(t *testing.T) {
-	time, err := new(ExStaticDelegator).Terminaldate()
-	if err != nil {
-		t.Fatal(err.Error())
-	}
-	t.Log(time.String())
-}
+//func TestExStaticDelegator_Terminaldate(t *testing.T) {
+//	time, err := new(ExStaticDelegator).Terminaldate()
+//	if err != nil {
+//		t.Fatal(err.Error())
+//	}
+//	t.Log(time.String())
+//}
 
 func TestExStaticDelegator_GetDataOneDay(t *testing.T) {
 	date, _ := time.ParseInLocation(types.TimeLayout, "2020-04-03T00:00:00", time.FixedZone("CST", 8*3600))

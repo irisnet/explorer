@@ -55,21 +55,6 @@ func (d ExStaticValidator) Batch(txs []txn.Op) error {
 	return orm.Batch(txs)
 }
 
-func (d ExStaticValidator) Terminaldate() (time.Time, error) {
-	var res ExStaticValidator
-	var query = orm.NewQuery()
-	defer query.Release()
-	query.SetCollection(d.Name()).
-		SetSort("-date").
-		SetResult(&res)
-
-	err := query.Exec()
-	if err != nil {
-		return time.Time{}, err
-	}
-
-	return res.Date, nil
-}
 
 func (d ExStaticValidator) GetDataByDate(date time.Time) ([]ExStaticValidator, error) {
 	var res []ExStaticValidator

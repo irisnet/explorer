@@ -9,6 +9,12 @@ func TestStaticDelegatorByMonthTask_Start(t *testing.T) {
 	new(StaticDelegatorByMonthTask).Start()
 }
 
+func TestStaticDelegatorByMonthTask_DoTask(t *testing.T) {
+	if err := new(StaticDelegatorByMonthTask).DoTask(); err != nil {
+		t.Fatal(err.Error())
+	}
+}
+
 func TestStaticDelegatorByMonthTask_getDelegationData(t *testing.T) {
 	res, err := new(StaticDelegatorByMonthTask).getDelegationData("2020-04-03T00:00:00")
 	if err != nil {

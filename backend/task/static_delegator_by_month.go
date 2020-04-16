@@ -38,7 +38,13 @@ func (task *StaticDelegatorByMonthTask) Start() {
 }
 
 func (task *StaticDelegatorByMonthTask) DoTask() error {
-	terminaldate, err := task.staticModel.Terminaldate()
+	datetime := time.Now().In(cstZone)
+	year, month := datetime.Year(), datetime.Month()-1
+	if datetime.Month() == time.January {
+		year = datetime.Year() - 1
+		month = time.December
+	}
+	terminaldate, err := document.Getdate(task.staticModel.Name(), year, int(month), "-"+document.ExStaticDelegatorDateTag, cstZone)
 	if err != nil {
 		return err
 	}
@@ -83,8 +89,7 @@ func parseCoinAmountAndUnitFromStr(s string) (document.Coin) {
 
 func (task *StaticDelegatorByMonthTask) getStaticDelegator(terminalval document.ExStaticDelegator, txs []document.CommonTx) document.ExStaticDelegatorMonth {
 	periodRewards := task.getPeriodRewards(terminalval)
-	datestr := fmt.Sprintf("%d-%02d-01T00:00:00", terminalval.Date.Year(), terminalval.Date.Month())
-	date, _ := time.ParseInLocation(types.TimeLayout, datestr, cstZone)
+	date, _ := document.Getdate(task.staticModel.Name(), terminalval.Date.Year(), int(terminalval.Date.Month()), document.ExStaticDelegatorDateTag, cstZone)
 	delagation, err := task.staticModel.GetDataOneDay(date, terminalval.Address)
 	if err != nil {
 		logger.Error("get DelegationData failed",

@@ -3,6 +3,7 @@ package task
 import (
 	"testing"
 	"encoding/json"
+	"time"
 )
 
 var (
@@ -10,11 +11,8 @@ var (
 )
 
 func TestStaticValidatorByMonthTask_getStaticValidator(t *testing.T) {
-	terminaldate, err := task.staticModel.Terminaldate()
-	if err != nil {
-		t.Fatal(err.Error())
-	}
-	terminalData, err := task.staticModel.GetDataByDate(terminaldate)
+
+	terminalData, err := task.staticModel.GetDataByDate(time.Now().In(cstZone))
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -35,4 +33,14 @@ func TestStaticValidatorByMonthTask_getCreateValidatorTx(t *testing.T) {
 		t.Fatal(err.Error())
 	}
 	t.Log(mapData)
+}
+
+func TestStaticValidatorByMonthTask_Start(t *testing.T) {
+	task.Start()
+}
+
+func TestStaticValidatorByMonthTask_DoTask(t *testing.T) {
+	if err := task.DoTask(); err != nil {
+		t.Fatal(err.Error())
+	}
 }
