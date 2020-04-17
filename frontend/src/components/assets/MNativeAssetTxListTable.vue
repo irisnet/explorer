@@ -33,7 +33,7 @@
                 <div class="name_address">
                     <div>
                             <span>
-                                <span>{{substrAmount(row.Amount)}}</span>
+                                <span>{{row.Amount}}</span>
                             </span>
                     </div>
                     <span class="address" v-if="row.Amount.toString().length > 12">{{row.Amount}}</span>
@@ -41,7 +41,7 @@
             </template>
             <template slot-scope="{ row }" slot="InitialSupply" v-if="row.InitialSupply">
                 <div class="name_address">
-                    <span>{{substrAmount(row.InitialSupply)}}</span>
+                    <span>{{row.InitialSupply}}</span>
                     <span class="address" v-if="row.InitialSupply.toString().length > 12">{{row.InitialSupply}}</span>
                 </div>
             </template>
@@ -61,14 +61,18 @@
                 <span v-if="!row.flShowLink">{{row.Token}}</span>
             </template>
         </m-table>
+        <!--TODO 展示 对应了四个列表 怎么展示？？？-->
+        <no-data :fl-show-no-data="true" :no-data-doc="'sssshhhhhhhhshhhhhhhshshsshsh'"></no-data>
     </div>
 </template>
 
 <script>
     import Tools from "../../util/Tools"
+    import NoData from "../noDataComponent/NoData";
 	export default {
 		name: "MNativeAssetTxListTable",
-		props:{
+        components: {NoData},
+        props:{
 			items: {
 				type: Array,
 				default: []

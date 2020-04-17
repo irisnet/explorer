@@ -136,14 +136,17 @@
         </div>
       </template>
     </m-table>
+    <no-data :fl-show-no-data="true" :no-data-doc="'sdkjahskjhasjkhkjahksjdh'"></no-data>
   </div>
 </template>
 
 <script>
 import Tools from '../../util/Tools';
+import NoData from "../noDataComponent/NoData";
 
 export default {
   name: 'MProposalsListTable',
+  components: {NoData},
   props: {
     items: {
       type: Array,

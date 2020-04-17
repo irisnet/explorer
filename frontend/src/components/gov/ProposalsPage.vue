@@ -99,9 +99,10 @@
             </div>
             <div class="mobile_style" style="overflow-x: auto;-webkit-overflow-scrolling:touch;" :style="{'padding-top':flTableFixed ? '' : '0.7rem'}">
                 <m-proposals-list-table :items="items" :showFixedHeader="flTableFixed"></m-proposals-list-table>
-                <div v-show="showNoData" class="no_data_show">
+                <!--TODO 删除-->
+               <!-- <div v-show="showNoData" class="no_data_show">
                     <img src="../../assets/no_data.svg" alt="">
-                </div>
+                </div>-->
             </div>
             <div class="pagination" style='margin:0.2rem 0 0.4rem;'>
                 <m-pagination :page-size="pageSize" :total="count" :page="currentPageNum"
@@ -449,7 +450,9 @@
                         this.count = proposalList.Count;
 						if(proposalList.Data){
 							this.showNoData = false;
-							this.items = proposalList.Data.map(item =>{
+							//TODO TEST
+                            this.items = []
+							/*this.items = proposalList.Data.map(item =>{
 								let proposalId = item.proposal_id === 0 ? "--" : item.proposal_id;
 								let type = item.type;
 								let status  = item.status;
@@ -494,7 +497,7 @@
 									finalVotes: final_votes,
 									level: item.level && item.level.name
 								}
-							});
+							});*/
 						}else {
 							this.items = [];
 							this.showNoData = true;
