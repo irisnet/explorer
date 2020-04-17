@@ -98,7 +98,7 @@
             </template>
             <template slot-scope="{ row }" slot="amount">
                 <div class="name_address">
-                    <div v-if="!row.amount.includes('Tokens') && row.amount.toString().length <= 12">
+                    <div v-if="!row.amount.includes('Tokens')">
                             <span>
                                 <span>{{row.amount}}</span>
                             </span>
