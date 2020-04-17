@@ -70,9 +70,10 @@
 <!--                    <blocks-list-table :items="validatorSetList"
                                        :showNoData="flValidatorNoData" :min-width="tableMinWidth"></blocks-list-table>-->
                     <m-bloc-k-information-table :items="validatorSetList" :showNoData="flValidatorNoData" :min-width="tableMinWidth"></m-bloc-k-information-table>
-                    <div v-show="flValidatorNoData" class="no_data_show">
+                    <!-- TODO 删除-->
+                    <!--<div v-show="flValidatorNoData" class="no_data_show">
                         <img src="../../assets/no_data.svg" alt="">
-                    </div>
+                    </div>-->
                 </div>
                 <div class="pagination" style='margin-top:0.2rem;margin-bottom: 0.2rem;' v-if="flShowValidatorListSetPagination">
                 <!--    <b-pagination size="md" :total-rows="validatorSetListCount" v-model="validatorSetListCurrentPage" :per-page="pageSize">
@@ -332,7 +333,9 @@
                     }else {
                         this.flShowValidatorListSetPagination = false
                     }
-                    this.validatorSetList = validatorList.items.map( validator => {
+                    // TODO TEST
+                    this.validatorSetList = [];
+                    /*this.validatorSetList = validatorList.items.map( validator => {
                         return{
                             'moniker' : Tools.formatString(validator.moniker,15,'...'),
                             'OperatorAddress' : validator.operator_address,
@@ -341,7 +344,7 @@
                             'VotingPower' : validator.voting_power,
                             'flProposer' : validator.is_proposer
                         }
-                    })
+                    })*/
                 }else {
                     this.flValidatorNoData = true;
                     this.validatorSetList = [

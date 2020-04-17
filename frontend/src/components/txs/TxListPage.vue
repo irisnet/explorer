@@ -51,9 +51,10 @@
             <div class="transaction_list_table_content">
                 <div class="table_list_content">
                     <m-tx-list-page-table :items="txList"></m-tx-list-page-table>
-                    <div v-if="txList.length === 0" class="no_data_show">
+                    <!--TODO  删除-->
+                   <!-- <div v-if="txList.length === 0" class="no_data_show">
                         <img src="../../assets/no_data.svg" alt="">
-                    </div>
+                    </div>-->
                 </div>
                 <div class="pagination_nav_footer_content">
                     <keep-alive>
@@ -305,7 +306,10 @@
 							this.totalPageNum =  Math.ceil((txList.Count/this.pageSize) === 0 ? 1 : (txList.Count/this.pageSize));
 							sessionStorage.setItem('txpagenum',JSON.stringify(this.totalPageNum));
 							if(txList.Data){
+							    //TODO TEST
+							    
 								this.txList = Tools.formatTxList(txList.Data,this.$route.params.txType)
+                                // this.txList = []
 							}else{
 								this.txList = [];
 								this.showNoData = true;

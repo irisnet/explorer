@@ -5,10 +5,12 @@
             <div style="padding: 0.2rem 0;color: #171d44">Issue Token Txs</div>
             <div class="native_asset_list_table_content">
                 <div class="table_list_content">
+                    <!--页面展示信息如何展示-->
                     <native-asset :showNoData="showNoData" :items="issueToken" name="nativeIssueToken"></native-asset>
-                    <div v-show="showNoData" class="no_data_show">
+                    <!--TODO 删除-->
+                   <!-- <div v-show="showNoData" class="no_data_show">
                         <img src="../../assets/no_data.svg" alt="">
-                    </div>
+                    </div>-->
                 </div>
                 <div class="native_asset_nav_footer_content">
                     <m-pagination
@@ -25,9 +27,10 @@
             <div class="native_asset_list_table_content">
                 <div class="table_list_content">
                     <native-asset :showNoData="showNoData" :items="editToken" name="editToken"></native-asset>
-                    <div v-show="showNoData" class="no_data_show">
+                    <!--TODO 删除-->
+                   <!-- <div v-show="showNoData" class="no_data_show">
                         <img src="../../assets/no_data.svg" alt="">
-                    </div>
+                    </div>-->
                 </div>
                 <div class="native_asset_nav_footer_content">
                     <m-pagination
@@ -44,9 +47,10 @@
             <div class="native_asset_list_table_content">
                 <div class="table_list_content">
                     <native-asset :showNoData="showNoData" :items="mintToken" name="mintToken"></native-asset>
-                    <div v-show="showNoData" class="no_data_show">
+                    <!--TODO 删除-->
+                  <!--  <div v-show="showNoData" class="no_data_show">
                         <img src="../../assets/no_data.svg" alt="">
-                    </div>
+                    </div>-->
                 </div>
                 <div class="native_asset_nav_footer_content">
                     <m-pagination
@@ -63,9 +67,10 @@
             <div class="native_asset_list_table_content">
                 <div class="table_list_content">
                     <native-asset :showNoData="showNoData" :items="transferToken" name="transferToken"></native-asset>
-                    <div v-show="showNoData" class="no_data_show">
+                    <!-- TODO 删除-->
+                    <!--<div v-show="showNoData" class="no_data_show">
                         <img src="../../assets/no_data.svg" alt="">
-                    </div>
+                    </div>-->
                 </div>
                 <div class="native_asset_nav_footer_content">
                     <m-pagination
@@ -77,10 +82,12 @@
                 </div>
             </div>
         </div>
-        <div v-show="issueToken.length === 0 && editToken.length === 0
+        <!--TODO 删除 页面全无数据的展示-->
+        
+       <!-- <div v-show="issueToken.length === 0 && editToken.length === 0
         && mintToken.length === 0 && transferToken.length === 0 && flShowContent">
             <img class="no_data_img"  src="../../assets/no_data.svg">
-        </div>
+        </div>-->
     </div>
 </template>
 

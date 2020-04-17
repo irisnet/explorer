@@ -24,9 +24,10 @@
                     <div class="top_list_table_wrap">
                         <div class="top_list_table_content">
                             <top-list-table :items="topList" :showNoData="showNoData"></top-list-table>
-                            <div v-show="showNoData" class="no_data_show">
+                            <!--TODO 删除-->
+                            <!--<div v-show="showNoData" class="no_data_show">
                                 <img src="../../assets/no_data.svg" alt="">
-                            </div>
+                            </div>-->
                         </div>
                     </div>
                 </div>
@@ -68,7 +69,9 @@ export default {
                 try {
                     if (res) {
                         this.latestTime = this.getUpDatedTime(res);
-                        this.topList = res.map(item => {
+                        //TODO TEST
+                        this.topList = []
+                       /* this.topList = res.map(item => {
                             return {
                                 rank: item.rank,
                                 Address: item.address,
@@ -81,7 +84,7 @@ export default {
                                 )}`,
                                 Percentage: this.formatPercentage(item.percent)
                             };
-                        });
+                        });*/
                     } else {
                         this.showNoData = true;
                         this.topList = [

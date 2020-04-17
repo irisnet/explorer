@@ -85,13 +85,17 @@
                 </div>
             </template>
         </m-table>
+        <!--TODO 新增无数据展示 对应三个页面 展示内容有所不同-->
+        <no-data :fl-show-no-data="true" :no-data-doc="'sadasdsadasss'"></no-data>
     </div>
 </template>
 
 <script>
     import Tools from "../../util/Tools"
+    import NoData from "../noDataComponent/NoData";
 	export default {
 		name: "MTxListPageTable",
+        components: {NoData},
         props:{
 	        items: {
 		        type: Array,

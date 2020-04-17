@@ -1,5 +1,6 @@
 <template>
     <div class="transactions_detail_wrap">
+        <validator-graph></validator-graph>
         <page-title :title="'Validator Details'" :flShowPageLink="false"></page-title>
         <validator-information :validationInformation="validationInformation" :validatorStatus="validatorStatus"></validator-information>
         <validator-commission-information :validationCommissionInfo="validationInformation"></validator-commission-information>
@@ -180,6 +181,7 @@ import pageTitleConfig from "../../pageTitle/pageTitleConfig";
 import ValidatorInformation from "./ValidatorInformation";
 import PageTitle from "../../pageTitle/PageTitle";
 import ValidatorCommissionInformation from "./ValidatorCommissionInformation";
+import ValidatorGraph from "./ValidatorGraph";
 export default {
 
     data() {
@@ -303,6 +305,7 @@ export default {
         };
     },
     components: {
+        ValidatorGraph,
         ValidatorCommissionInformation,
         PageTitle,
         ValidatorInformation,
