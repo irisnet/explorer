@@ -100,13 +100,12 @@
                 <div class="name_address">
                     <div v-if="!row.amount.includes('Tokens') && row.amount.toString().length <= 12">
                             <span>
-                                <span>{{substrAmount(row.amount)}}</span>
+                                <span>{{row.amount}}</span>
                             </span>
                     </div>
                     <div  v-if="row.amount.includes('Tokens')"  class="skip_route">
                         <router-link :to="`/tx?txHash=${row.txHash}`">{{row.amount}}</router-link>
                     </div>
-                    <span v-if="row.amount.toString().length > 12 && !row.amount.includes('Tokens')">{{row.amount}}</span>
                 </div>
             </template>
         </m-table>
