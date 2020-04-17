@@ -33,7 +33,7 @@
                 <div class="name_address">
                     <div>
                             <span>
-                                <span>{{substrAmount(row.Amount)}}</span>
+                                <span>{{row.Amount}}</span>
                             </span>
                     </div>
                     <span class="address" v-if="row.Amount.toString().length > 12">{{row.Amount}}</span>
@@ -41,7 +41,7 @@
             </template>
             <template slot-scope="{ row }" slot="InitialSupply" v-if="row.InitialSupply">
                 <div class="name_address">
-                    <span>{{substrAmount(row.InitialSupply)}}</span>
+                    <span>{{row.InitialSupply}}</span>
                     <span class="address" v-if="row.InitialSupply.toString().length > 12">{{row.InitialSupply}}</span>
                 </div>
             </template>
