@@ -8,8 +8,6 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/txn"
 	"time"
-	"github.com/irisnet/explorer/backend/lcd"
-	"github.com/irisnet/explorer/backend/types"
 )
 
 type StaticValidatorTask struct {
@@ -73,7 +71,6 @@ func (task StaticValidatorTask) saveExValidatorStaticOps(validators []document.V
 
 func (task StaticValidatorTask) loadValidatorTokens(validator document.Validator, today time.Time) (document.ExStaticValidator, error) {
 
-	delegation := lcd.GetDelegationsFromValAddrByDelAddr(types.FoundationDelegatorAddr, validator.OperatorAddress)
 	item := document.ExStaticValidator{
 		Id:                    bson.NewObjectId(),
 		OperatorAddress:       validator.OperatorAddress,
@@ -84,7 +81,6 @@ func (task StaticValidatorTask) loadValidatorTokens(validator document.Validator
 		Tokens:                validator.Tokens,
 		Commission:            validator.Commission,
 		DelegatorNum:          validator.DelegatorNum,
-		FoundationDelegations: delegation.Shares,
 	}
 	subValue := funcSubStr(item.Tokens, item.SelfBond)
 	if subValue != nil {

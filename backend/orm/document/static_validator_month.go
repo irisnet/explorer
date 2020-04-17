@@ -62,3 +62,16 @@ func (d ExStaticValidatorMonth) EnsureIndexes() []mgo.Index {
 func (d ExStaticValidatorMonth) Batch(txs []txn.Op) error {
 	return orm.Batch(txs)
 }
+
+func (d ExStaticValidatorMonth) GetValidatorStaticByMonth(datestr, operatoraddr string) (ExStaticValidatorMonth, error) {
+	var res ExStaticValidatorMonth
+	cond := bson.M{
+		ValidatorStaticFieldDate:            datestr,
+		ValidatorStaticFieldOperatorAddress: operatoraddr,
+	}
+	if err := queryOne(d.Name(), nil, cond, &res); err != nil {
+		return res, err
+	}
+
+	return res, nil
+}

@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/service"
+	"github.com/irisnet/explorer/backend/lcd"
 )
 
 type StaticValidatorByMonthTask struct {
@@ -91,19 +92,22 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(terminalval document.
 			logger.String("err", err.Error()))
 	}
 
+	delegation := lcd.GetDelegationsFromValAddrByDelAddr(types.FoundationDelegatorAddr, terminalval.OperatorAddress)
+
 	item := document.ExStaticValidatorMonth{
-		Address:             address,
-		OperatorAddress:     terminalval.OperatorAddress,
-		Date:                fmt.Sprintf("%d.%02d", terminalval.Date.Year(), terminalval.Date.Month()),
-		TerminalDelegation:  terminalval.Delegations,
-		TerminalDelegatorN:  terminalval.DelegatorNum,
-		TerminalSelfBond:    terminalval.SelfBond,
-		IncrementDelegation: task.getIncrementDelegation(terminalval, validatestatic),
-		IncrementDelegatorN: terminalval.DelegatorNum - validatestatic.DelegatorNum,
-		IncrementSelfBond:   task.getIncrementSelfBond(terminalval, validatestatic),
-		FoundationDelegateT: terminalval.FoundationDelegations,
-		CommissionRateMax:   task.getCommissionRate(terminalval, validatestatic, "-"+document.ValidatorCommissionRateTag),
-		CommissionRateMin:   task.getCommissionRate(terminalval, validatestatic, document.ValidatorCommissionRateTag),
+		Address:                 address,
+		OperatorAddress:         terminalval.OperatorAddress,
+		Date:                    fmt.Sprintf("%d.%02d", terminalval.Date.Year(), terminalval.Date.Month()),
+		TerminalDelegation:      terminalval.Delegations,
+		TerminalDelegatorN:      terminalval.DelegatorNum,
+		TerminalSelfBond:        terminalval.SelfBond,
+		IncrementDelegation:     task.getIncrementDelegation(terminalval, validatestatic),
+		IncrementDelegatorN:     terminalval.DelegatorNum - validatestatic.DelegatorNum,
+		IncrementSelfBond:       task.getIncrementSelfBond(terminalval, validatestatic),
+		FoundationDelegateT:     delegation.Shares,
+		FoundationDelegateIncre: task.getFoundationDelegateIncre(terminalval, delegation.Shares),
+		CommissionRateMax:       task.getCommissionRate(terminalval, validatestatic, "-"+document.ValidatorCommissionRateTag),
+		CommissionRateMin:       task.getCommissionRate(terminalval, validatestatic, document.ValidatorCommissionRateTag),
 	}
 	if height, ok := addrHeightMap[address]; ok {
 		item.CreateValidatorHeight = height
@@ -137,8 +141,19 @@ func (task *StaticValidatorByMonthTask) getIncrementSelfBond(terminal, begin doc
 	return ""
 }
 
-func (task *StaticValidatorByMonthTask) getFoundationDelegateIncre(terminal, begin document.ExStaticValidator) string {
-	subValue := funcSubStr(terminal.FoundationDelegations, begin.FoundationDelegations)
+func (task *StaticValidatorByMonthTask) getFoundationDelegateIncre(terminal document.ExStaticValidator, shares string) string {
+
+	year, month := terminal.Date.Year(), terminal.Date.Month()-1
+	if terminal.Date.Month() == time.January {
+		year = terminal.Date.Year() - 1
+		month = time.December
+	}
+	data, err := task.mStaticModel.GetValidatorStaticByMonth(fmt.Sprintf("%v.%v", year, month-1), terminal.OperatorAddress)
+	if err != nil {
+		logger.Error(err.Error())
+	}
+
+	subValue := funcSubStr(shares, data.FoundationDelegateT)
 	if subValue != nil {
 		return subValue.FloatString(18)
 	}

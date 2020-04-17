@@ -25,7 +25,6 @@ type ExStaticValidator struct {
 	DelegatorShares       string        `bson:"delegator_shares"`
 	Delegations           string        `bson:"delegations"` //tokens - self_bond
 	SelfBond              string        `bson:"self_bond"`
-	FoundationDelegations string        `bson:"foundation_delegations"`
 	Commission            Commission    `bson:"commission"`
 	DelegatorNum          int           `bson:"delegator_num"`
 	CreateAt              int64         `bson:"create_at"`
