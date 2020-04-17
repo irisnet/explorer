@@ -80,6 +80,7 @@ func (task StaticValidatorTask) loadValidatorTokens(validator document.Validator
 		DelegatorShares: validator.DelegatorShares,
 		Tokens:          validator.Tokens,
 		Commission:      validator.Commission,
+		DelegatorNum:    validator.DelegatorNum,
 	}
 	subValue := funcSubStr(item.Tokens, item.SelfBond)
 	if subValue != nil {

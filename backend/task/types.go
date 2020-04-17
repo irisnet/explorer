@@ -26,10 +26,13 @@ func init() {
 	engine.AppendTask(UpdateGovParams{})
 	engine.AppendTask(UpdateValidatorIcons{})
 	engine.AppendTask(UpdateAssetTokens{})
-	engine.AppendTask(UpdateAssetGateways{})
 	engine.AppendTask(ValidatorStaticInfo{})
 	engine.AppendTask(UpdateProposalVoters{})
 	engine.AppendTask(UpdateAccount{})
+
+	taskControlMonitor := TaskControlMonitor{}
+	taskControlMonitor.unlockAllTasks()
+	engine.AppendTask(taskControlMonitor)
 }
 
 type TimerTask interface {
@@ -68,6 +71,7 @@ func Start() {
 	txNumTask.init()
 	c.AddFunc("01 0 * * *", func() {
 		txNumTask.Start()
+		new(UpdateValidatorIcons).Start()
 	})
 	c.AddFunc("59 23 * * *", func() {
 		new(StaticRewardsTask).Start()

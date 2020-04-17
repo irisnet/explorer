@@ -50,6 +50,18 @@ func (d TaskControl) EnsureIndexes() []mgo.Index {
 	return indexes
 }
 
+func (d TaskControl) List(offset, size int) ([]TaskControl, error) {
+	var res []TaskControl
+	q := orm.NewQuery()
+	defer q.Release()
+
+	if err := querylistByOffsetAndSize(d.Name(), nil, nil, "latest_exec_time", offset, size, &res); err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
 func (d TaskControl) findOne(selector, condition bson.M) (TaskControl, error) {
 	var res TaskControl
 	q := orm.NewQuery()
@@ -99,7 +111,7 @@ func (d TaskControl) UpdateByPK(update TaskControl) error {
 	return nil
 }
 
-func (d TaskControl) LockTaskControl(taskName, instanceNo string) error {
+func (d TaskControl) LockTaskControl(taskName, instanceNo string, timeInterval int) error {
 	q := orm.NewQuery()
 	defer q.Release()
 
@@ -109,11 +121,15 @@ func (d TaskControl) LockTaskControl(taskName, instanceNo string) error {
 		TCFieldTaskName:    taskName,
 		TCFieldIsInProcess: false,
 	}
+	cond := bson.M{
+		TCFieldIsInProcess:      true,
+		TCFieldServerInstanceNo: instanceNo,
+	}
+	if timeInterval > 0 {
+		cond[TCFieldTimeInterval] = timeInterval
+	}
 	update := bson.M{
-		"$set": bson.M{
-			TCFieldIsInProcess:      true,
-			TCFieldServerInstanceNo: instanceNo,
-		},
+		"$set": cond,
 	}
 	if err := c.Update(selector, update); err != nil {
 		return err
@@ -136,6 +152,28 @@ func (d TaskControl) UnlockTaskControl(taskName string) error {
 		"$set": bson.M{
 			TCFieldIsInProcess:    false,
 			TCFieldLatestExecTime: time.Now().Unix(),
+		},
+	}
+
+	if err := c.Update(selector, update); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (d TaskControl) UnlockAllTasks() error {
+	q := orm.NewQuery()
+	defer q.Release()
+
+	c := q.GetDb().C(d.Name())
+
+	selector := bson.M{
+		TCFieldIsInProcess: true,
+	}
+	update := bson.M{
+		"$set": bson.M{
+			TCFieldIsInProcess: false,
 		},
 	}
 

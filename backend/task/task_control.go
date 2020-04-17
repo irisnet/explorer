@@ -5,11 +5,16 @@ import (
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
+	"github.com/irisnet/explorer/backend/types"
+	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2"
 	"time"
 )
 
 type (
+	TaskControlMonitor struct {
+		controlModel document.TaskControl
+	}
 	TaskControlService struct {
 	}
 	Callback func() error
@@ -25,7 +30,7 @@ func (s TaskControlService) runTask(taskName string, timeInterval int, callback 
 		}
 
 		// lock task
-		if err := s.lockTask(taskName); err != nil {
+		if err := s.lockTask(taskName, timeInterval); err != nil {
 			return fmt.Errorf("lockTask fail, taskName:%s, err:%s", taskName, err.Error())
 		} else {
 			// do task
@@ -81,11 +86,83 @@ func (s TaskControlService) assetTaskShouldNotBeExecuted(taskName string, timeIn
 	return false, nil
 }
 
-func (s TaskControlService) lockTask(taskName string) error {
+func (s TaskControlService) lockTask(taskName string, timeInterval int) error {
 	instanceNo := conf.Get().Server.InstanceNo
-	return taskControlModel.LockTaskControl(taskName, instanceNo)
+	return taskControlModel.LockTaskControl(taskName, instanceNo, timeInterval)
 }
 
 func (s TaskControlService) unlockTask(taskName string) error {
 	return taskControlModel.UnlockTaskControl(taskName)
+}
+
+func (s TaskControlMonitor) Name() string {
+	return types.TaskConTrolMonitor
+}
+func (s TaskControlMonitor) Start() {
+	timeInterval := conf.Get().Server.CronTimeControlTask
+	taskName := s.Name()
+
+	utils.RunTimer(timeInterval, utils.Sec, func() {
+		if err := tcService.runTask(taskName, timeInterval, s.DoTask); err != nil {
+			logger.Error(err.Error())
+		}
+	})
+}
+
+func (s TaskControlMonitor) DoTask() error {
+	runValue := true
+	skip := 0
+	limit := 20
+	for runValue {
+		res, err := s.controlModel.List(skip, limit)
+		if err != nil {
+			logger.Error(" list have error", logger.String("err", err.Error()))
+		}
+		s.checkAndChangeWorkOn(res)
+		total := len(res)
+		if total < limit {
+			runValue = false
+		} else {
+			skip = skip + total
+		}
+	}
+	return nil
+}
+
+func (s TaskControlMonitor) checkAndChangeWorkOn(list []document.TaskControl) {
+
+	for _, one := range list {
+		if err := s.CheckAndUpdate(one); err != nil {
+			logger.Error("CheckAndUpdate have error",
+				logger.String("serviceName", one.TaskName),
+				logger.String("err", err.Error()))
+		}
+	}
+	return
+}
+
+func (s TaskControlMonitor) CheckAndUpdate(one document.TaskControl) error {
+	currentTimeInterval := time.Now().Unix() - one.LatestExecTime
+	if one.TimeInterval > currentTimeInterval {
+		return nil
+	}
+
+	if currentTimeInterval >= 2*one.TimeInterval && one.IsInProcess && one.TaskName != types.TaskConTrolMonitor {
+		one.IsInProcess = false
+		if err := s.controlModel.UpdateByPK(one); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// unlock all tasks which task is unlocked
+func (s TaskControlMonitor) unlockAllTasks() error {
+	if err := taskControlModel.UnlockAllTasks(); err != nil {
+		if err != mgo.ErrNotFound {
+			return err
+		}
+	}
+
+	return nil
 }
