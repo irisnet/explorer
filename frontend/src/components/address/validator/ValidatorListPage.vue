@@ -19,9 +19,10 @@
                                         :items="items"
                                         :minWidth="tableMinWidth"
                                         :showNoData="showNoData"></m-validator-list-table>
-                <div v-show="showNoData" class="no_data_show" style="background: #fff;">
+                <!--TODO 删除-->
+                <!--<div v-show="showNoData" class="no_data_show" style="background: #fff;">
                     <img src="../../../assets/no_data.svg" alt="">
-                </div>
+                </div>-->
             </div>
             <div class="pagination total_num" style='margin-bottom:0.2rem;justify-content: flex-end'>
                 <m-pagination :page-size="pageSize" :total="count"></m-pagination>
@@ -153,6 +154,8 @@
 						this.count = result && result.Count ? result.Count : 0;
 						result = result && result.Data ? result.Data : null;
 						if(result){
+						    //TODO TEST
+                            // this.items = []
 							this.items = result.map((item) => {
                                 let regex =  /[^\w\u4e00-\u9fa50-9a-zA-Z]/g;
                                 let replaceMoniker = item.description.moniker.replace(regex,'');

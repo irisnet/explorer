@@ -61,14 +61,18 @@
                 <span v-if="!row.flShowLink">{{row.Token}}</span>
             </template>
         </m-table>
+        <!--TODO 展示 对应了四个列表 怎么展示？？？-->
+        <no-data :fl-show-no-data="true" :no-data-doc="'sssshhhhhhhhshhhhhhhshshsshsh'"></no-data>
     </div>
 </template>
 
 <script>
     import Tools from "../../util/Tools"
+    import NoData from "../noDataComponent/NoData";
 	export default {
 		name: "MNativeAssetTxListTable",
-		props:{
+        components: {NoData},
+        props:{
 			items: {
 				type: Array,
 				default: []

@@ -199,6 +199,7 @@ export default class Tools{
 	 */
 	static formatStringToFixedNumber(str,splitNum){
 		if(str.toString().indexOf(".") !== -1) {
+			
 			let splitString = str.split(".")[1];
 			if(splitString.length > splitNum){
 				return str.split(".")[0] + '.' +  splitString.substr(0,splitNum)
@@ -207,6 +208,7 @@ export default class Tools{
                 for(let i = 0; i < diffNum; i++){
                     splitString += '0'
                 }
+                
 				return str.split(".")[0] + '.' + splitString
 			}
 		}else {
@@ -431,6 +433,7 @@ export default class Tools{
                 toInformation = Tools.formatListAmount(item).toAddressAndMoniker;
 				Amount = formatListAmount.amountNumber === '--' || formatListAmount.tokenName === '--' ? '--' : `${Tools.formatStringToFixedNumber(new BigNumber(formatListAmount.amountNumber).toFormat(),2)} ${formatListAmount.tokenName}`;
 				transferAmount = formatListAmount.amountNumber === '--' ? '--' : Tools.formatStringToFixedNumber(new BigNumber(formatListAmount.amountNumber).toFormat(),2);
+				console.log(transferAmount,"??????")
 				tokenId = formatListAmount.tokenName === '--' ? '--' : formatListAmount.tokenName;
 				if(item.fee.amount && item.fee.denom){
 					let feeAmount = item.fee.amount;

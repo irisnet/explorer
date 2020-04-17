@@ -89,7 +89,7 @@
 				identity:'',
 				details:'',
 				validationStatus:'',
-				keyBaseName:'',
+				keyBaseName:true,
 				validationAssetInfoArr:[
 					{
 						label:'Operator Address:',
@@ -254,6 +254,9 @@
 						}else {
 							this.keyBaseName = ''
 						}
+					}).catch(e => {
+						console.error(e);
+						this.keyBaseName = ''
 					});
 				}
 			},

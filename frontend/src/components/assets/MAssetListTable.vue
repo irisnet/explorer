@@ -14,12 +14,15 @@
                 <!--<router-link v-if="row.Gateway" :to="`/asset/${row.Gateway}/${row.Symbol}`" class="link_style">{{row.Symbol}}</router-link>-->
             </template>
         </m-table>
+        <no-data :fl-show-no-data="true" :no-data-doc="'sshjkshkjshskjhskjhskjhs'"></no-data>
     </div>
 </template>
 
 <script>
-	export default {
+	import NoData from "../noDataComponent/NoData";
+    export default {
 		name: "MAssetListTable",
+        components: {NoData},
         props:{
 	        items:{
 		        type: Array,

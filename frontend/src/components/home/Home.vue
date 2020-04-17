@@ -138,7 +138,45 @@
                 this.$store.commit('hideTestSkinStyle',newVal)
             }
         },
+         beforeMount(){
+           
+           this.test()
+           
+        },
         methods: {
+            //todo study async
+    
+            async test(){
+                let data = await this.doSomeThing();
+                console.log(data,"数字展示")
+                // const a = 2172141653n;
+                // const b = 15346349309n;
+                // const test = a * b
+               // console.log(test,"?????????????")
+               
+            },
+    
+    
+            async doSomeThing(){
+               return new Promise((resolve => {
+                    setTimeout(() => {
+                        resolve( '数据展示')
+                    },2000)
+                }))
+            },
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
             changeStyleToMainnet(){
                 this.$store.commit('currentSkinStyle','irishub');
                 this.$store.commit('testSkinStyle',true);

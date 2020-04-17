@@ -64,9 +64,10 @@
                 <div class="all_type_list_table_wrap">
 
                     <m-all-tx-type-list-table :items="allTxTypeList"></m-all-tx-type-list-table>
-                    <div class="no_data_img_content" v-if="allTxTypeList.length === 0">
+                    <!--TODO 删除-->
+                    <!--<div class="no_data_img_content" v-if="allTxTypeList.length === 0">
                         <img src="../../assets/no_data.svg" >
-                    </div>
+                    </div>-->
                 </div>
 
                 <div class="pagination_content">
@@ -309,7 +310,9 @@
 		                this.countNum = res.Count;
 		                if(res && res.Data) {
 			                sessionStorage.setItem('txsTotal',res.Count);
-			                this.allTxTypeList = res.Data.map( item => {
+			                //TODO TEST
+                            this.allTxTypeList = []
+			               /* this.allTxTypeList = res.Data.map( item => {
 				                return {
 					                txHash:item.hash,
 					                block: item.block_height,
@@ -319,7 +322,7 @@
 					                status: Tools.firstWordUpperCase(item.status),
 					                timestamp: Tools.format2UTC(item.timestamp)
 				                }
-			                })
+			                })*/
                         }else {
 			                this.allTxTypeList = []
 

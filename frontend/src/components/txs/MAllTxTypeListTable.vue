@@ -40,14 +40,18 @@
                 </div>
             </template>
         </m-table>
+        <!-- TODO  新增无数据展示-->
+        <no-data :fl-show-no-data="true" :no-data-doc="'block detail transaction list'"></no-data>
     </div>
 </template>
 
 <script>
     import Tools from '../../util/Tools'
+    import NoData from "../noDataComponent/NoData";
 	export default {
 		name: "MAllTxTypeListTable",
-		props: {
+        components: {NoData},
+        props: {
 			items: {
 				type: Array,
 				default: function() {return[]}

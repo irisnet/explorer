@@ -26,9 +26,10 @@
                 </div>
                 <div class="block_list_table_container">
                     <m-block-list-page-table :items="items"></m-block-list-page-table>
-                    <div v-show="showNoData" class="no_data_show">
+                    <!-- TODO 删除ll-->
+                 <!--   <div v-show="showNoData" class="no_data_show">
                         <img src="../../assets/no_data.svg">
-                    </div>
+                    </div>-->
                 </div>
                 <div class="pagination_footer_container">
                     <m-pagination
@@ -151,7 +152,9 @@ export default {
                             let that = this;
                             this.totalBlockHeight = data[0].height
                             clearInterval(this.timer);
-                            this.items = data.map(item => {
+                            //TODO TEST
+                            this.items = []
+                            /*this.items = data.map(item => {
                                 let currentServerTime =
                                     new Date().getTime() +
                                     that.diffMilliseconds;
@@ -181,7 +184,7 @@ export default {
                                         Constant.PREFIX
                                     )
                                 };
-                            });
+                            });*/
                             let heightArr = this.items.map(v => v.height);
                             this.range = [
                                 Math.max.apply(null, heightArr),

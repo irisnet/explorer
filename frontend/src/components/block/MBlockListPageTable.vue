@@ -17,12 +17,16 @@
         <span v-show="row.Age">{{row.Age}}</span>
       </template>
     </m-table>
+    <!--TODO  新增无数据展示插件-->
+    <no-data :fl-show-no-data="true" :no-data-doc="'snalkjsaljdaljalksj'"></no-data>
   </div>
 </template>
 
 <script>
+import NoData from "../noDataComponent/NoData";
 export default {
   name: 'MBlockListPageTable',
+  components: {NoData},
   props: {
     items: {
       type: Array,
