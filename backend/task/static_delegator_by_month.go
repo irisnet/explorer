@@ -122,7 +122,7 @@ func (task *StaticDelegatorByMonthTask) getStaticDelegator(terminalval document.
 		Address:                terminalval.Address,
 		Date:                   fmt.Sprintf("%d.%02d", terminalval.Date.Year(), terminalval.Date.Month()),
 		TerminalDelegation:     document.Coin{Denom: terminalval.Delegation.Denom, Amount: terminalval.Delegation.Amount},
-		PeriodDelegationTimes:  task.getPeriodDelegationTimes(txs),
+		PeriodDelegationTimes:  task.getPeriodDelegationTimes(terminalval.Address, txs),
 		PeriodWithdrawRewards:  periodRewards,
 		IncrementDelegation:    task.getIncrementDelegation(terminalval, delagation),
 		PeriodIncrementRewards: incrementRewardsPart,
@@ -158,11 +158,18 @@ func (task *StaticDelegatorByMonthTask) getPeriodRewards(terminal document.ExSta
 	if data, ok := task.AddressCoin[terminal.Address]; ok {
 		rewards.Iris += data.Amount / math.Pow10(18)
 	}
+	rewards.IrisAtto = fmt.Sprint(rewards.Iris * math.Pow10(18))
 	return rewards
 }
 
-func (task *StaticDelegatorByMonthTask) getPeriodDelegationTimes(txs []document.CommonTx) (total int) {
+func (task *StaticDelegatorByMonthTask) getPeriodDelegationTimes(address string, txs []document.CommonTx) (total int) {
 	for _, val := range txs {
+		if len(val.Signers) == 0 {
+			continue
+		}
+		if address != val.Signers[0].AddrBech32 {
+			continue
+		}
 		if val.Type == types.TxTypeStakeDelegate ||
 			val.Type == types.TxTypeBeginRedelegate ||
 			val.Type == types.TxTypeStakeBeginUnbonding {
@@ -174,20 +181,16 @@ func (task *StaticDelegatorByMonthTask) getPeriodDelegationTimes(txs []document.
 
 func (task *StaticDelegatorByMonthTask) getIncrementRewards(terminal, delagation document.ExStaticDelegator, periodRewards document.Rewards) (document.Rewards) {
 	var rewards document.Rewards
-	var irisatto float64
 	if len(terminal.DelegationsRewards) > 0 {
 		rewards.Iris = terminal.DelegationsRewards[0].Iris
-		irisatto = rewards.Iris * math.Pow10(18)
 	}
 
 	if len(delagation.DelegationsRewards) > 0 {
 		rewards.Iris -= delagation.DelegationsRewards[0].Iris
-		irisatto -= rewards.Iris * math.Pow10(18)
 	}
 
-	irisatto += periodRewards.Iris * math.Pow10(18)
 	rewards.Iris += periodRewards.Iris
-	rewards.IrisAtto = fmt.Sprint(irisatto)
+	rewards.IrisAtto = fmt.Sprint(rewards.Iris * math.Pow10(18))
 	return rewards
 }
 
