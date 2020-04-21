@@ -327,7 +327,6 @@
 						maxDataArray.push(this.data.nodes[i])
 					}
 					this.data.nodes = maxDataArray;
-					console.log(this.data.nodes,"展示数据")
 					this.data.nodes.forEach((item,index) => {
 						item.isDelete = false;
 						item.color = this.color[index]
