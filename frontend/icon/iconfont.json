@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "14183675",
+      "name": "GOZ",
+      "font_class": "GOZ",
+      "unicode": "e65b",
+      "unicode_decimal": 58971
+    },
+    {
+      "icon_id": "13982898",
+      "name": "缺省默认头像",
+      "font_class": "queshengmorentouxiang",
+      "unicode": "e659",
+      "unicode_decimal": 58969
+    },
+    {
       "icon_id": "13851059",
       "name": "展开",
       "font_class": "zhankai",
