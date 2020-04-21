@@ -9,9 +9,9 @@
 					<div class="graph_list_container">
 						<div class="graph_list_item_all" @click="selectAll()">
 							<div class="legend_all_block">
-								<img v-show="!flAllCheckout" src="../../assets/select_all.svg" alt="">
-								<img v-show="flAllCheckout" src="../../assets/unselect_all.svg" alt=""></div>
-							<span class="legend_name" :class=" flAllCheckout ? '' : 'hide_style'">All</span>
+								<img v-show="flAllCheckout" src="../../assets/select_all.svg" alt="">
+								<img v-show="!flAllCheckout" src="../../assets/unselect_all.svg" alt=""></div>
+							<span class="legend_name" :class=" flAllCheckout ? 'hide_style' : ''">All</span>
 						</div>
 						<ul class="graph_list_content">
 							
