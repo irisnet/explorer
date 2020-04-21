@@ -433,7 +433,6 @@ export default class Tools{
                 toInformation = Tools.formatListAmount(item).toAddressAndMoniker;
 				Amount = formatListAmount.amountNumber === '--' || formatListAmount.tokenName === '--' ? '--' : `${Tools.formatStringToFixedNumber(new BigNumber(formatListAmount.amountNumber).toFormat(),2)} ${formatListAmount.tokenName}`;
 				transferAmount = formatListAmount.amountNumber === '--' ? '--' : Tools.formatStringToFixedNumber(new BigNumber(formatListAmount.amountNumber).toFormat(),2);
-				console.log(transferAmount,"??????")
 				tokenId = formatListAmount.tokenName === '--' ? '--' : formatListAmount.tokenName;
 				if(item.fee.amount && item.fee.denom){
 					let feeAmount = item.fee.amount;

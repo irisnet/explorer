@@ -48,25 +48,6 @@ axios.interceptors.request.use(function (config) {
 }, function (error) {
   return Promise.reject(error);
 });
-let currentServerTime = new Date().getTime();
-axios.get(`/api/sysdate`).then(data => {
-  if(data.status === 200){
-    return data.data
-  }
-}).then(sysdate => {
-    Vue.prototype.diffMilliseconds = sysdate.data*1000 - currentServerTime;
-
-
-});
-axios.get(`/api/block/blockinfo/1`).then(data => {
-  if(data.status === 200){
-    return data.data
-  }
-}).then(blockinfo => {
-  let firstBlockTime = new Date(blockinfo.timestamp.split('T')[0]).getTime() - 24 * 60 * 60 * 1000;
-  sessionStorage.setItem('firstBlockTime',Tools.formatDateYearToDate(firstBlockTime))
-});
-
 sessionStorage.setItem("Show_faucet",JSON.stringify(0));
 const routerPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push(location) {
