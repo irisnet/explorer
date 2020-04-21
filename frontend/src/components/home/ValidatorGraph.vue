@@ -1,7 +1,7 @@
 <template>
 	<div class="validator_graph_container">
 		<div class="graph_content_wrap">
-			<div class="graph_content_title"><div>Global Network State*</div> <span class="beat_content">Bate</span> </div>
+			<div class="graph_content_title"><div>GoZ Global Network State*</div> <span class="beat_content">Bate</span> </div>
 			<div class="graph_charts_container" :class="flShowNetwork ? '' : 'show_error_content'">
 				<div class="tooltip" v-if="flShowNetwork"><p><span></span><span>Connection Opened</span></p> <p><span></span><span>Connection not Opened</span></p></div>
 				<div class="graph_content_container" v-if="flShowNetwork">
@@ -54,6 +54,173 @@
 				data:null,
 				colorDataArray:[],
 				copyData:'',
+				testData:{
+					"nodes": [
+						{
+							"chain-id": "morpheus-ibc-3000",
+							"connections": 2
+						},
+						{
+							"chain-id": "pylonchain",
+							"connections": 5
+						},
+						{
+							"chain-id": "irishub",
+							"connections": 10
+						},
+						{
+							"chain-id": "achain",
+							"connections": 1
+						},
+						{
+							"chain-id": "ping-ibc",
+							"connections": 2
+						},
+						{
+							"chain-id": "kappa",
+							"connections": 3
+						},
+						{
+							"chain-id": "crusty",
+							"connections": 2
+						},
+						{
+							"chain-id": "vitwitchain",
+							"connections": 2
+						},
+						{
+							"chain-id": "umbrellachain",
+							"connections": 7
+						},
+						{
+							"chain-id": "ptpchain",
+							"connections": 2
+						},
+						{
+							"chain-id": "ibc-band-testnet1",
+							"connections": 3
+						},
+						{
+							"chain-id": "kava-ibc",
+							"connections": 2
+						},
+						{
+							"chain-id": "melea-11",
+							"connections": 1
+						},
+						{
+							"chain-id": "dokia",
+							"connections": 0
+						}
+					],
+					"paths": [
+						{
+							"src": "morpheus-ibc-3000",
+							"dst": "pylonchain",
+							"state": "I"
+						},
+						{
+							"src": "irishub",
+							"dst": "achain",
+							"state": "OPEN"
+						},
+						{
+							"src": "irishub",
+							"dst": "morpheus-ibc-3000",
+							"state": "OPEN"
+						},
+						{
+							"src": "irishub",
+							"dst": "pylonchain",
+							"state": "OPEN"
+						},
+						{
+							"src": "irishub",
+							"dst": "ping-ibc",
+							"state": "OPEN"
+						},
+						{
+							"src": "irishub",
+							"dst": "kappa",
+							"state": "OPEN"
+						},
+						{
+							"src": "irishub",
+							"dst": "crusty",
+							"state": "OPEN"
+						},
+						{
+							"src": "irishub",
+							"dst": "vitwitchain",
+							"state": "OPEN"
+						},
+						{
+							"src": "irishub",
+							"dst": "umbrellachain",
+							"state": "OPEN"
+						},
+						{
+							"src": "irishub",
+							"dst": "ptpchain",
+							"state": "OPEN"
+						},
+						{
+							"src": "irishub",
+							"dst": "kava-ibc",
+							"state": "OPEN"
+						},
+						{
+							"src": "ping-ibc",
+							"dst": "pylonchain",
+							"state": "OPEN"
+						},
+						{
+							"src": "kappa",
+							"dst": "crusty",
+							"state": "OPEN"
+						},
+						{
+							"src": "vitwitchain",
+							"dst": "umbrellachain",
+							"state": "OPEN"
+						},
+						{
+							"src": "ptpchain",
+							"dst": "ibc-band-testnet1",
+							"state": "OPEN"
+						},
+						{
+							"src": "ibc-band-testnet1",
+							"dst": "pylonchain",
+							"state": "OPEN"
+						},
+						{
+							"src": "umbrellachain",
+							"dst": "pylonchain",
+							"state": "OPEN"
+						},
+						{
+							"src": "kava-ibc",
+							"dst": "umbrellachain",
+							"state": "OPEN"
+						},
+						{
+							"src": "melea-11",
+							"dst": "umbrellachain",
+							"state": "OPEN"
+						},
+						{
+							"src": "ibc-band-testnet1",
+							"dst": "umbrellachain",
+							"state": "OPEN"
+						},
+						{
+							"src": "umbrellachain",
+							"dst": "kappa",
+							"state": "OPEN"
+						}
+					]
+				},
 				colorUseCopyData: '',
 				timer: null,
 				color:[
@@ -145,7 +312,8 @@
 					}
 				}).then( res => {
 					this.data = res;
-					
+					// TODO 演示专用数据
+					this.data = this.testData
 					this.data.nodes.sort((a,b) => {
 						return b.connections - a.connections
 					});
@@ -159,7 +327,7 @@
 						maxDataArray.push(this.data.nodes[i])
 					}
 					this.data.nodes = maxDataArray;
-					
+					console.log(this.data.nodes,"展示数据")
 					this.data.nodes.forEach((item,index) => {
 						item.isDelete = false;
 						item.color = this.color[index]
@@ -225,10 +393,9 @@
 				//最大像素点与最小像素点的差值
 				let symbolSizeRule = 106;
 				for(let i in this.copyData.nodes){
-					console.log(this.copyData.nodes[i].connections * symbolSizeRule / this.data.nodes.length ,"aaaaaaa")
 					nodeArray.push({
 						name: this.copyData.nodes[i]['chain-id'],
-						symbolSize: this.copyData.nodes[i].connections * symbolSizeRule / this.data.nodes.length ,
+						symbolSize: this.copyData.nodes[i].connections === 0 ? 8 : this.copyData.nodes[i].connections * symbolSizeRule / this.data.nodes.length ,
 						label: {
 							show: true,
 							position:'right'
@@ -287,9 +454,9 @@
 							links: nodeLinksArray,
 							nodeScaleRatio: 0.6,
 							force:{
-								repulsion: 300,
-								gravity: 0.1,
-								edgeLength: [10,200],
+								repulsion: 1500,
+								gravity: 0.3,
+								edgeLength: [10,100],
 								layoutAnimation: true
 							},
 							categories: categories,
@@ -343,6 +510,7 @@
 			.graph_charts_container{
 				background: #2D325A;
 				margin-bottom: 0.6rem;
+				min-height: 6.46rem;
 				.tooltip{
 					padding-top: 0.3rem;
 					display: flex;

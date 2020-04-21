@@ -4,7 +4,9 @@
         <qr-component></qr-component>
         <!--<app-header></app-header>-->
         <goz-header></goz-header>
-        <router-view id="router_wrap" class="router-view" :key="key"/>
+        <div style="flex: 1;background: #202342;">
+            <router-view id="router_wrap" class="router-view" :key="key"/>
+        </div>
         <app-footer></app-footer>
     </div>
 </template>
