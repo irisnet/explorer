@@ -131,90 +131,90 @@ func GetPassVetoThresholdAndParticipationMinDeposit(proposalType string) (string
 	}
 }
 
-func init() {
-
-	govParamMap, err := GetGovModuleParamMap(GovModule)
-	if err != nil {
-		logger.Error(err.Error())
-		return
-	}
-
-	if v, ok := govParamMap[CriticalVetoKey].(string); ok {
-		CriticalVeto = v
-	}
-
-	if v, ok := govParamMap[ImportantVetoKey].(string); ok {
-		ImportantVeto = v
-	}
-
-	if v, ok := govParamMap[NormalVetoKey].(string); ok {
-		NormalVeto = v
-	}
-
-	if v, ok := govParamMap[CriticalThresholdKey].(string); ok {
-		CriticalThreshold = v
-	}
-
-	if v, ok := govParamMap[CriticalMinDepositKey].([]interface{}); ok {
-		if len(v) > 0 {
-			first := v[0].(map[string]interface{})
-
-			coinAsUtils := utils.ParseCoin(fmt.Sprintf("%v%v", first["amount"], first["denom"]))
-			CriticalMinDeposit.Amount = coinAsUtils.Amount
-			CriticalMinDeposit.Denom = coinAsUtils.Denom
-		}
-	}
-	if v, ok := govParamMap[CriticalParticipationKey].(string); ok {
-		CriticalParticipation = v
-	}
-
-	if v, ok := govParamMap[ImportantThresholdKey].(string); ok {
-		ImportantThreshold = v
-	}
-
-	if v, ok := govParamMap[ImportantMinDepositKey].([]interface{}); ok {
-		if len(v) > 0 {
-			first := v[0].(map[string]interface{})
-			coinAsUtils := utils.ParseCoin(fmt.Sprintf("%v%v", first["amount"], first["denom"]))
-			ImportantMinDeposit.Amount = coinAsUtils.Amount
-			ImportantMinDeposit.Denom = coinAsUtils.Denom
-		}
-	}
-
-	if v, ok := govParamMap[ImportantParticipationKey].(string); ok {
-		ImportantParticipation = v
-	}
-
-	if v, ok := govParamMap[NormalThresholdKey].(string); ok {
-		NormalThreshold = v
-	}
-
-	if v, ok := govParamMap[NormalMinDepositKey].([]interface{}); ok {
-		if len(v) > 0 {
-			first := v[0].(map[string]interface{})
-			coinAsUtils := utils.ParseCoin(fmt.Sprintf("%v%v", first["amount"], first["denom"]))
-			NormalMinDeposit.Amount = coinAsUtils.Amount
-			NormalMinDeposit.Denom = coinAsUtils.Denom
-		}
-	}
-
-	if v, ok := govParamMap[NormalParticipationKey].(string); ok {
-		NormalParticipation = v
-	}
-
-	if v, ok := govParamMap[CriticalPenaltyKey].(string); ok {
-		CriticalPenalty = v
-	}
-
-	if v, ok := govParamMap[ImportantPenaltyKey].(string); ok {
-		ImportantPenalty = v
-	}
-
-	if v, ok := govParamMap[NormalPenaltyKey].(string); ok {
-		NormalPenalty = v
-	}
-
-}
+//func init() {
+//
+//	govParamMap, err := GetGovModuleParamMap(GovModule)
+//	if err != nil {
+//		logger.Error(err.Error())
+//		return
+//	}
+//
+//	if v, ok := govParamMap[CriticalVetoKey].(string); ok {
+//		CriticalVeto = v
+//	}
+//
+//	if v, ok := govParamMap[ImportantVetoKey].(string); ok {
+//		ImportantVeto = v
+//	}
+//
+//	if v, ok := govParamMap[NormalVetoKey].(string); ok {
+//		NormalVeto = v
+//	}
+//
+//	if v, ok := govParamMap[CriticalThresholdKey].(string); ok {
+//		CriticalThreshold = v
+//	}
+//
+//	if v, ok := govParamMap[CriticalMinDepositKey].([]interface{}); ok {
+//		if len(v) > 0 {
+//			first := v[0].(map[string]interface{})
+//
+//			coinAsUtils := utils.ParseCoin(fmt.Sprintf("%v%v", first["amount"], first["denom"]))
+//			CriticalMinDeposit.Amount = coinAsUtils.Amount
+//			CriticalMinDeposit.Denom = coinAsUtils.Denom
+//		}
+//	}
+//	if v, ok := govParamMap[CriticalParticipationKey].(string); ok {
+//		CriticalParticipation = v
+//	}
+//
+//	if v, ok := govParamMap[ImportantThresholdKey].(string); ok {
+//		ImportantThreshold = v
+//	}
+//
+//	if v, ok := govParamMap[ImportantMinDepositKey].([]interface{}); ok {
+//		if len(v) > 0 {
+//			first := v[0].(map[string]interface{})
+//			coinAsUtils := utils.ParseCoin(fmt.Sprintf("%v%v", first["amount"], first["denom"]))
+//			ImportantMinDeposit.Amount = coinAsUtils.Amount
+//			ImportantMinDeposit.Denom = coinAsUtils.Denom
+//		}
+//	}
+//
+//	if v, ok := govParamMap[ImportantParticipationKey].(string); ok {
+//		ImportantParticipation = v
+//	}
+//
+//	if v, ok := govParamMap[NormalThresholdKey].(string); ok {
+//		NormalThreshold = v
+//	}
+//
+//	if v, ok := govParamMap[NormalMinDepositKey].([]interface{}); ok {
+//		if len(v) > 0 {
+//			first := v[0].(map[string]interface{})
+//			coinAsUtils := utils.ParseCoin(fmt.Sprintf("%v%v", first["amount"], first["denom"]))
+//			NormalMinDeposit.Amount = coinAsUtils.Amount
+//			NormalMinDeposit.Denom = coinAsUtils.Denom
+//		}
+//	}
+//
+//	if v, ok := govParamMap[NormalParticipationKey].(string); ok {
+//		NormalParticipation = v
+//	}
+//
+//	if v, ok := govParamMap[CriticalPenaltyKey].(string); ok {
+//		CriticalPenalty = v
+//	}
+//
+//	if v, ok := govParamMap[ImportantPenaltyKey].(string); ok {
+//		ImportantPenalty = v
+//	}
+//
+//	if v, ok := govParamMap[NormalPenaltyKey].(string); ok {
+//		NormalPenalty = v
+//	}
+//
+//}
 
 func NodeInfo(lcdurl string) (result NodeInfoVo, err error) {
 	//url := fmt.Sprintf(UrlNodeInfo, conf.Get().Hub.LcdUrl)

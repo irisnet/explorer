@@ -31,7 +31,7 @@ type ConfigVo struct {
 	Host              string `json:"host"`
 	ChainId           string `json:"chain_id"`
 	ShowFaucet        int    `json:"show_faucet"`
-	NodeVersion       string `json:"node_version"`
-	TendermintVersion string `json:"tendermint_version"`
+	//NodeVersion       string `json:"node_version"`
+	//TendermintVersion string `json:"tendermint_version"`
 	UmengId           int64  `json:"umeng_id"`
 }

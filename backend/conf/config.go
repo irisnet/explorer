@@ -126,9 +126,9 @@ func loadDefault() {
 		KeyDbPwd:          "irispassword",
 		KeyDbPoolLimit:    "4096",
 		KeyServerPort:     "8080",
-		KeyAddrHubLcd:     "http://irisnet-lcd.dev.bianjie.ai",
-		KeyAddrHubNode:    "http://irisnet-rpc.dev.rainbow.one",
-		KeyAddrFaucet:     "http://192.168.150.7:30200",
+		KeyAddrHubLcd:     "",
+		KeyAddrHubNode:    "",
+		KeyAddrFaucet:     "",
 		KeyChainId:        "rainbow-dev",
 		KeyApiVersion:     "v0.6.5",
 		KeyMaxDrawCnt:     "10",
@@ -219,9 +219,9 @@ func getEnv(key string, environment string) string {
 		}
 		value = defaultConfig[environment][key]
 	}
-	if value == "" {
-		logger.Panic("config must be not empty", logger.String("key", key))
-	}
+	//if value == "" {
+	//	logger.Panic("config must be not empty", logger.String("key", key))
+	//}
 	if key == KeyDbUser || key == KeyDbPwd {
 		logger.Info("config", logger.Bool(key+" is empty", value == ""))
 	} else {
