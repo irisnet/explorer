@@ -149,8 +149,13 @@
 					this.data.nodes.sort((a,b) => {
 						return b.connections - a.connections
 					});
-					let maxDataArray = [];
-					for (let i = 0 ; i < 30; i ++){
+					let maxDataArray = [],maxDataLength;
+					if(this.data.nodes.length > 30){
+						maxDataLength = 30
+					}else {
+						maxDataLength = this.data.nodes.length
+					}
+					for (let i = 0 ; i < maxDataLength; i ++){
 						maxDataArray.push(this.data.nodes[i])
 					}
 					this.data.nodes = maxDataArray;
