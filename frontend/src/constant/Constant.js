@@ -73,6 +73,7 @@ CHAINID.FUXI = 'fuxi';
 CHAINID.NYANCAT = 'nyancat';
 CHAINID.QA = 'rainbow-qa';
 CHAINID.DEV = 'rainbow-dev';
+CHAINID.GOZTESTNET = 'goz-testnet';
 
 
 
