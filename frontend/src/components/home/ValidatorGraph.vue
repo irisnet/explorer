@@ -3,7 +3,7 @@
 		<div class="graph_content_wrap">
 			<div class="graph_content_title"><div>GoZ Global Network State*</div> <span class="beat_content">Bate</span> </div>
 			<div class="graph_charts_container" :class="flShowNetwork ? '' : 'show_error_content'">
-				<div class="tooltip" v-if="flShowNetwork"><p><span></span><span>Connection Opened</span></p> <p><span></span><span>Connection not Opened</span></p></div>
+				<div class="tooltip" v-if="flShowNetwork"><p><span></span><span>Connection Opened</span></p> <p><span></span><span>Connection Unopened</span></p></div>
 				<div class="graph_content_container" v-if="flShowNetwork">
 					<div id="validator_graph_content"></div>
 					<div class="graph_list_container">
@@ -11,7 +11,7 @@
 							<div class="legend_all_block">
 								<img v-show="flAllCheckout" src="../../assets/select_all.svg" alt="">
 								<img v-show="!flAllCheckout" src="../../assets/unselect_all.svg" alt=""></div>
-							<span class="legend_name" :class=" flAllCheckout ? 'hide_style' : ''">All</span>
+							<span class="legend_name" :class=" flAllCheckout ? 'hide_style' : ''">All Zones</span>
 						</div>
 						<ul class="graph_list_content">
 							
