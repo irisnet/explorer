@@ -78,6 +78,9 @@
 			getConfig () {
 				Service.commonInterface({headerConfig:{}},(res) => {
 					try {
+						// TODO 测试展示
+						res.cur_env = 'testnet';
+						res.chain_id = 'goz';
 						this.handleConfigs(res.configs);
 						this.setNetWorkLogo(res);
 					}catch (e) {
