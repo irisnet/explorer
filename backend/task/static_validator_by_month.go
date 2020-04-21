@@ -45,12 +45,13 @@ func (task *StaticValidatorByMonthTask) SetAddressCoinMapData(rewards, pcommissi
 
 func (task *StaticValidatorByMonthTask) DoTask() error {
 	datetime := time.Now().In(cstZone)
-	year, month := datetime.Year(), datetime.Month()-1
-	if datetime.Month() == time.January {
-		year = datetime.Year() - 1
-		month = time.December
-	}
-	terminaldate, err := document.Getdate(task.staticModel.Name(), year, int(month), "-"+document.ValidatorStaticFieldDate, cstZone)
+	//year, month := datetime.Year(), datetime.Month()-1
+	//if datetime.Month() == time.January {
+	//	year = datetime.Year() - 1
+	//	month = time.December
+	//}
+	year, month := getTerminalYearMonth(datetime)
+	terminaldate, err := document.Getdate(task.staticModel.Name(), year, int(month), datetime, "-"+document.ValidatorStaticFieldDate, cstZone)
 	if err != nil {
 		return err
 	}
@@ -83,7 +84,14 @@ func (task *StaticValidatorByMonthTask) DoTask() error {
 func (task *StaticValidatorByMonthTask) getStaticValidator(terminalval document.ExStaticValidator, addrHeightMap map[string]int64) document.ExStaticValidatorMonth {
 	address := utils.Convert(conf.Get().Hub.Prefix.AccAddr, terminalval.OperatorAddress)
 
-	date, _ := document.Getdate(task.staticModel.Name(), terminalval.Date.Year(), int(terminalval.Date.Month()), document.ValidatorStaticFieldDate, cstZone)
+	year, month := getTerminalYearMonth(terminalval.Date)
+	date, err := document.Getdate(task.staticModel.Name(), year, month, terminalval.Date, document.ValidatorStaticFieldDate, cstZone)
+	if err != nil {
+		logger.Error("Getdate have error",
+			logger.String("time", terminalval.Date.String()),
+			logger.String("err", err.Error()))
+
+	}
 
 	validatestatic, err := task.staticModel.GetDataOneDay(date, terminalval.OperatorAddress)
 	if err != nil {
@@ -123,6 +131,17 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(terminalval document.
 	}
 
 	return item
+}
+
+func getTerminalYearMonth(datetime time.Time) (year, month int) {
+	year = datetime.Year()
+	month = int(datetime.Month() - 1)
+	if datetime.Month() == time.January {
+		year = datetime.Year() - 1
+		month = int(time.December)
+	}
+	//fmt.Println(year,month)
+	return year, month
 }
 
 func (task *StaticValidatorByMonthTask) getIncrementDelegation(terminal, begin document.ExStaticValidator) string {

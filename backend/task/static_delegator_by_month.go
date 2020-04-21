@@ -39,12 +39,13 @@ func (task *StaticDelegatorByMonthTask) Start() {
 
 func (task *StaticDelegatorByMonthTask) DoTask() error {
 	datetime := time.Now().In(cstZone)
-	year, month := datetime.Year(), datetime.Month()-1
-	if datetime.Month() == time.January {
-		year = datetime.Year() - 1
-		month = time.December
-	}
-	terminaldate, err := document.Getdate(task.staticModel.Name(), year, int(month), "-"+document.ExStaticDelegatorDateTag, cstZone)
+	//year, month := datetime.Year(), datetime.Month()-1
+	//if datetime.Month() == time.January {
+	//	year = datetime.Year() - 1
+	//	month = time.December
+	//}
+	year, month := getTerminalYearMonth(datetime)
+	terminaldate, err := document.Getdate(task.staticModel.Name(), year, int(month), datetime, "-"+document.ExStaticDelegatorDateTag, cstZone)
 	if err != nil {
 		return err
 	}
@@ -64,7 +65,11 @@ func (task *StaticDelegatorByMonthTask) DoTask() error {
 	}
 
 	for _, val := range terminalData {
-		one := task.getStaticDelegator(val, txs)
+		one, err := task.getStaticDelegator(val, txs)
+		if err != nil {
+			logger.Error(err.Error())
+			continue
+		}
 		res = append(res, one)
 	}
 
@@ -87,9 +92,16 @@ func parseCoinAmountAndUnitFromStr(s string) (document.Coin) {
 	return document.Coin{}
 }
 
-func (task *StaticDelegatorByMonthTask) getStaticDelegator(terminalval document.ExStaticDelegator, txs []document.CommonTx) document.ExStaticDelegatorMonth {
-	periodRewards := task.getPeriodRewards(terminalval)
-	date, _ := document.Getdate(task.staticModel.Name(), terminalval.Date.Year(), int(terminalval.Date.Month()), document.ExStaticDelegatorDateTag, cstZone)
+func (task *StaticDelegatorByMonthTask) getStaticDelegator(terminalval document.ExStaticDelegator, txs []document.CommonTx) (document.ExStaticDelegatorMonth, error) {
+	periodRewards := task.getPeriodRewards(terminalval.Address)
+	year, month := getTerminalYearMonth(terminalval.Date)
+	date, err := document.Getdate(task.staticModel.Name(), year, month, terminalval.Date, document.ExStaticDelegatorDateTag, cstZone)
+	if err != nil {
+		logger.Error("Getdate have error",
+			logger.String("time", terminalval.Date.String()),
+			logger.String("err", err.Error()))
+
+	}
 	delagation, err := task.staticModel.GetDataOneDay(date, terminalval.Address)
 	if err != nil {
 		logger.Error("get DelegationData failed",
@@ -116,7 +128,7 @@ func (task *StaticDelegatorByMonthTask) getStaticDelegator(terminalval document.
 		}
 	}
 
-	incrementRewardsPart := task.getIncrementRewards(terminalval, delagation, periodRewards)
+	incrementRewards := task.getIncrementRewards(terminalval, delagation, periodRewards)
 
 	item := document.ExStaticDelegatorMonth{
 		Address:                terminalval.Address,
@@ -124,14 +136,14 @@ func (task *StaticDelegatorByMonthTask) getStaticDelegator(terminalval document.
 		TerminalDelegation:     document.Coin{Denom: terminalval.Delegation.Denom, Amount: terminalval.Delegation.Amount},
 		PeriodDelegationTimes:  task.getPeriodDelegationTimes(terminalval.Address, txs),
 		PeriodWithdrawRewards:  periodRewards,
-		IncrementDelegation:    task.getIncrementDelegation(terminalval, delagation),
-		PeriodIncrementRewards: incrementRewardsPart,
+		IncrementDelegation:    task.getIncrementDelegation(terminalval.Delegation, delagation.Delegation),
+		PeriodIncrementRewards: incrementRewards,
 	}
 	if len(terminalval.DelegationsRewards) > 0 {
 		item.TerminalRewards = terminalval.DelegationsRewards[0]
 	}
 
-	return item
+	return item, nil
 }
 func (task *StaticDelegatorByMonthTask) getPeriodTxByAddress(year, month int, address string) ([]document.CommonTx, error) {
 	//fmt.Println(year,month)
@@ -153,9 +165,9 @@ func (task *StaticDelegatorByMonthTask) getPeriodTxByAddress(year, month int, ad
 	return txs, nil
 }
 
-func (task *StaticDelegatorByMonthTask) getPeriodRewards(terminal document.ExStaticDelegator) document.Rewards {
+func (task *StaticDelegatorByMonthTask) getPeriodRewards(address string) document.Rewards {
 	var rewards document.Rewards
-	if data, ok := task.AddressCoin[terminal.Address]; ok {
+	if data, ok := task.AddressCoin[address]; ok {
 		rewards.Iris += data.Amount / math.Pow10(18)
 	}
 	rewards.IrisAtto = fmt.Sprint(rewards.Iris * math.Pow10(18))
@@ -208,14 +220,30 @@ func (task *StaticDelegatorByMonthTask) getCoinflowByHash(txhash string) {
 			if len(values) != 6 {
 				continue
 			}
+			coinflowAmount := parseCoinAmountAndUnitFromStr(values[2])
 			if strings.HasPrefix(values[3], types.DelegatorRewardTag) {
-				task.AddressCoin[values[1]] = parseCoinAmountAndUnitFromStr(values[2])
+				if data, ok := task.AddressCoin[values[1]]; ok {
+					data.Amount += coinflowAmount.Amount
+					task.AddressCoin[values[1]] = data
+				} else {
+					task.AddressCoin[values[1]] = coinflowAmount
+				}
 			} else if strings.HasPrefix(values[3], types.ValidatorRewardTag) {
 				address := utils.Convert(conf.Get().Hub.Prefix.AccAddr, values[0])
-				task.AddressCoin[address] = parseCoinAmountAndUnitFromStr(values[2])
+				if data, ok := task.AddressCoin[address]; ok {
+					data.Amount += coinflowAmount.Amount
+					task.AddressCoin[address] = data
+				} else {
+					task.AddressCoin[address] = coinflowAmount
+				}
 			} else if strings.HasPrefix(values[3], types.ValidatorCommissionTag) {
 				address := utils.Convert(conf.Get().Hub.Prefix.AccAddr, values[0])
-				task.AddrPeriodCommission[address] = parseCoinAmountAndUnitFromStr(values[2])
+				if data, ok := task.AddrPeriodCommission[address]; ok {
+					data.Amount += coinflowAmount.Amount
+					task.AddrPeriodCommission[address] = data
+				} else {
+					task.AddrPeriodCommission[address] = coinflowAmount
+				}
 			}
 		}
 
@@ -223,10 +251,10 @@ func (task *StaticDelegatorByMonthTask) getCoinflowByHash(txhash string) {
 	return
 }
 
-func (task *StaticDelegatorByMonthTask) getIncrementDelegation(terminal, delagation document.ExStaticDelegator) document.Coin {
-	amount := terminal.Delegation.Amount - delagation.Delegation.Amount
+func (task *StaticDelegatorByMonthTask) getIncrementDelegation(terminal, delagation utils.Coin) document.Coin {
+	amount := terminal.Amount - delagation.Amount
 	return document.Coin{
-		Denom:  terminal.Delegation.Denom,
+		Denom:  terminal.Denom,
 		Amount: amount,
 	}
 

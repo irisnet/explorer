@@ -63,14 +63,14 @@ func (d ExStaticDelegator) Batch(txs []txn.Op) error {
 	return orm.Batch(txs)
 }
 
-func Getdate(collectionName string, year, month int, sort string, location *time.Location) (time.Time, error) {
+func Getdate(collectionName string, start_year, start_month int, endtime time.Time, sort string, location *time.Location) (time.Time, error) {
 	var res struct {
 		Date time.Time `bson:"date"`
 	}
 	var query = orm.NewQuery()
 	defer query.Release()
-	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-01T00:00:00", year, month), location)
-	endtime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-01T00:00:00", year, month+1), location)
+	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-01T00:00:00", start_year, start_month), location)
+	//endtime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-01T00:00:00", end_year, end_month), location)
 	cond := bson.M{
 		"date": bson.M{
 			"$gte": starttime,
