@@ -56,20 +56,20 @@ func (s *ApiServer) Start() error {
 
 func registerApi(r *mux.Router) {
 	routeRegistrars := []func(*mux.Router) error{
-		controller.RegisterBlock,
-		controller.RegisterTx,
-		controller.RegisterAccount,
-		controller.RegisterStake,
-		controller.RegisterQueryVersion,
-		controller.RegisterProposal,
-		controller.RegisterNodes,
+		//controller.RegisterBlock,
+		//controller.RegisterTx,
+		//controller.RegisterAccount,
+		//controller.RegisterStake,
+		//controller.RegisterQueryVersion,
+		//controller.RegisterProposal,
+		//controller.RegisterNodes,
 		controller.RegisterTextSearch,
-		controller.RegisterHome,
-		controller.RegisterTokenStats,
-		controller.RegisterBondedTokens,
-		controller.RegisterAssets,
-		controller.RegisterCronTask,
-		controller.RegisterHtlc,
+		//controller.RegisterHome,
+		//controller.RegisterTokenStats,
+		//controller.RegisterBondedTokens,
+		//controller.RegisterAssets,
+		//controller.RegisterCronTask,
+		//controller.RegisterHtlc,
 	}
 
 	for _, routeRegistrar := range routeRegistrars {

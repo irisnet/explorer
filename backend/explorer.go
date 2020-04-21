@@ -2,12 +2,11 @@ package main
 
 import (
 	"github.com/irisnet/explorer/backend/rest"
-	"github.com/irisnet/explorer/backend/task"
 	"log"
 )
 
 func main() {
-	task.Start()
+	//task.Start()
 	server := rest.NewApiServer()
 
 	if err := server.Start(); err != nil {
