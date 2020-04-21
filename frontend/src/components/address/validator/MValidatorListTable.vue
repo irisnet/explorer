@@ -25,14 +25,17 @@
         </span>
       </template>
     </m-table>
+    <no-data :fl-show-no-data="true" :no-data-doc="'no Validators'"></no-data>
   </div>
 </template>
 
 <script>
 import Tools from '../../../util/Tools';
+import NoData from "../../noDataComponent/NoData";
 
 export default {
   name: 'MValidatorListTable',
+  components: {NoData},
   props: {
     items: {
       type: Array,

@@ -1,6 +1,7 @@
 <template>
     <div class="home_wrap">
-        <search-bar></search-bar>
+        <validator-graph></validator-graph>
+       <!-- <search-bar></search-bar>
         <statistical-bar></statistical-bar>
         <div class="home_container">
             <div class="echarts_content">
@@ -38,7 +39,7 @@
                 <div class="testnet_fuxi"@click="changeStyleToFuxiTestnet">Testnet FuXi</div>
                 <div class="testnet_nyancat"@click="changeStyleToNyancatTestnet">Testnet Nyancat</div>
             </div>
-        </div>
+        </div>-->
     </div>
 </template>
 
@@ -57,9 +58,11 @@
 
     import SearchBar from "./SearchBar";
     import StatisticalBar from "./StatisticalBar";
+    import ValidatorGraph from "./ValidatorGraph";
     export default {
         name: 'app-header',
         components: {
+            ValidatorGraph,
             StatisticalBar,
             SearchBar, MVotingCard, MDepositCard, MHomeVotingCrad, EchartsPie, EchartsLine, HomeBlockModule},
         data() {
@@ -102,271 +105,6 @@
                 sessionStorageCurrentEnv:sessionStorage.getItem('skinCurrentEnv')
             }
         },
-
-        beforeMount () {
-	        this.getBlocksList();
-            this.getTransactionHistory();
-            this.getTransactionList();
-            this.getPorposakList();
-        },
-        mounted () {
-            document.getElementById('router_wrap').addEventListener('click', this.hideFeature);
-            let that =this;
-            clearInterval(this.timer);
-            if(this.$store.state.currentSkinStyle !=='default'){
-	            this.setThemeStyle()
-            }
-            this.timer = setInterval(function () {
-                that.getBlocksList();
-                that.getTransactionList();
-            },10000);
-        },
-        beforeDestroy () {
-            clearInterval(this.timer)
-        },
-        watch: {
-            '$store.state.isMobile'(newVal, oldVal) {
-                this.onresize(newVal);
-            },
-
-            '$store.state.currentSkinStyle'(newVal){
-                if(newVal !== 'default '){
-                    this.setThemeStyle()
-                }
-            },
-            '$store.state.hideTestSkinStyle'(newVal){
-                this.$store.commit('hideTestSkinStyle',newVal)
-            }
-        },
-        methods: {
-            changeStyleToMainnet(){
-                this.$store.commit('currentSkinStyle','irishub');
-                this.$store.commit('testSkinStyle',true);
-            },
-            changeStyleToFuxiTestnet(){
-                this.$store.commit('currentSkinStyle','fuxi');
-                this.$store.commit('testSkinStyle',true);
-            },
-            changeStyleToNyancatTestnet(){
-                this.$store.commit('currentSkinStyle','nyancat');
-                this.$store.commit('testSkinStyle',true);
-            },
-       	    setThemeStyle(){
-		        if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.IRISHUB){
-			        this.themeStyleArray = this.mainnetThemeStyle;
-		        }else if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.FUXI){
-			        this.themeStyleArray = this.testnetFuXiThemeStyle;
-		        }else if(this.$store.state.currentSkinStyle ===  Constant.CHAINID.NYANCAT){
-			        this.themeStyleArray = this.testnetNyancatThemeStyle;
-		        }else {
-			        this.themeStyleArray = this.defaultThemeStyle;
-		        }
-                this.getValidatorsList();
-	        },
-	        getPorposakList(){
-	        	Service.commonInterface({homeProposalList:{
-                    }},(res) => {
-	        		try {
-				        if(Array.isArray(res)){
-					        res.forEach(item => {
-						        if(item.status === "DepositPeriod"){
-							        item.levelValue = item.level.name;
-							        this.depositorBarArr.push(item);
-							        this.depositorBarArr = this.depositorBarArr.sort((a,b) => {
-                                        return b.proposal_id - a.proposal_id
-                                    })
-						        }
-					        })
-					        res.forEach(item => {
-						        if(item.status === "VotingPeriod"){
-							        this.votingBarArr.push(item)
-							        this.votingBarArr = this.votingBarArr.sort((a,b) => {
-								        return b.proposal_id - a.proposal_id
-							        })
-						        }
-					        })
-				        }
-			        }catch (e) {
-                        console.error(e)
-			        }
-                })
-            },
-            getValidatorsList () {
-                Service.commonInterface({candidatesTop:{}},(data) => {
-                	try {
-		                if(data){
-			                let [seriesData, legendData] = [[], []];
-			                if (data.validators instanceof Array) {
-				                let totalCount = 0;
-				                data.validators.forEach(item=>totalCount += item.voting_power);
-				                let others = data.power_all - totalCount;
-				                let monikerReserveLength = 10;
-				                let addressReserveLength = 6;
-				                let powerAll = data.power_all;
-				                for (let i = 0; i < data.validators.length; i++) {
-					                seriesData.push({
-						                value: data.validators[i].voting_power,
-						                name: data.validators[i].description && data.validators[i].description.moniker ? `${Tools.formatString(data.validators[i].description.moniker,monikerReserveLength,"...")} (${Tools.formatString(data.validators[i].address,addressReserveLength,"...")})` : (data.validators[i].address ? data.validators[i].address : ''),
-						                itemStyle: {color: this.themeStyleArray[i]},
-						                emphasis : {itemStyle:{color: this.themeStyleArray[i]}},
-						                upTime:`${data.validators[i].up_time}%`,
-						                address:data.validators[i].address,
-						                powerAll,
-					                });
-					                legendData.push(data.validators[i].description && data.validators[i].description.moniker ? `${Tools.formatString(data.validators[i].description.moniker,monikerReserveLength,"...")} (${Tools.formatString(data.validators[i].address,addressReserveLength,"...")})` : (data.validators[i].address ? data.validators[i].address : ''))
-				                }
-				                if(others > 0 ){
-					                seriesData.push({
-						                value: others,
-						                name:'others',
-						                powerAll,
-						                itemStyle:{color:this.themeStyleArray[10]},
-					                });
-				                }
-
-			                }
-			                this.information = {legendData, seriesData}
-		                }
-	                }catch (e) {
-                        console.error(e)
-	                }
-
-                });
-            },
-            getTransactionHistory () {
-                Service.commonInterface({txsByDay:{}},(data) => {
-                	try {
-		                if(data){
-			                let maxValue = 0;
-			                if(data){
-				                data.forEach(item=>{
-					                if(item.num > maxValue){
-						                maxValue = item.num;
-					                }
-				                });
-				                let xData = data.map(item=>`${String(item.date).substr(5,2)}/${String(item.date).substr(8,2)}/${String(item.date).substr(0,4)}`);
-				                let seriesData = data.map(item=>item.num);
-				                this.informationLine = {maxValue,xData,seriesData};
-			                }
-		                }
-	                }catch (e) {
-                        console.error(e)
-	                }
-
-                })
-            },
-            showBlockFadeinAnimation (blockList) {
-                let storedLastBlockHeight = localStorage.getItem('lastBlockHeight') ? localStorage.getItem('lastBlockHeight') : '';
-                if(storedLastBlockHeight){
-                    for(let index = 0; index < blockList.length; index++){
-                        if(blockList[index].height > storedLastBlockHeight){
-                            blockList.forEach(item => {
-                                item.flShowTranslationalAnimation = true
-                            });
-                            blockList[index].showAnimation = "show";
-                        }
-                    }
-                }
-            },
-            getBlocksList() {
-                Service.commonInterface({blocksRecent:{}},(blockList)=>{
-                	try {
-		                if(blockList){
-			                this.showBlockFadeinAnimation(blockList);
-			                let that = this;
-			                setTimeout(function () {
-				                that.blocksInformation.map(item => {
-					                return item.flShowTranslationalAnimation = false
-				                })
-			                },1000);
-			                let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-			                localStorage.setItem("lastBlockHeight",blockList[0].height);
-
-			                this.blocksInformation = blockList.map(item => {
-				                return {
-					                flShowTranslationalAnimation :  item.flShowTranslationalAnimation ? item.flShowTranslationalAnimation : "",
-					                showAnimation: item.showAnimation ? item.showAnimation : "",
-					                Height: item.height,
-					                Txn: item.num_txs,
-					                Time: Tools.format2UTC(item.time),
-					                time:item.time,
-					                age: Tools.formatAge(currentServerTime,item.time,Constant.SUFFIX,Constant.PREFIX)
-				                };
-			                });
-			                this.blocksTimer = setInterval(function () {
-				                let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-				                that.lastBlockAge = Tools.formatAge(currentServerTime,blockList[0].time);
-				                that.blocksInformation = that.blocksInformation.map(item => {
-					                item.age = Tools.formatAge(currentServerTime,item.time,Constant.SUFFIX,Constant.PREFIX);
-					                return item
-				                })
-			                },1000);
-		                }
-	                }catch (e) {
-                        console.log(e)
-	                }
-                })
-            },
-            getTransactionList() {
-                Service.commonInterface({txsRecent:{}},(transactionList) => {
-                	try {
-		                if(transactionList){
-			                let that = this;
-			                for (let txIndex = 0; txIndex < transactionList.length; txIndex++){
-				                if(new Date(transactionList[txIndex].time).getTime() > localStorage.getItem("lastTxTime")){
-					                transactionList[txIndex].showAnimation = "show";
-					                transactionList.forEach(item => {
-						                item.flShowTranslationalAnimation = true
-					                })
-				                }
-			                }
-			                setTimeout(function () {
-				                that.transactionInformation.map(item => {
-					                return item.flShowTranslationalAnimation = false
-				                })
-			                },1000);
-			                let lastTxTime = new Date(transactionList[0].time).getTime();
-			                localStorage.setItem('lastTxTime',lastTxTime);
-			                let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-			                that.transactionInformation = transactionList.map(item => {
-				                let [Fee] = ['--'];
-				                if(item.actual_fee.amount && item.actual_fee.denom){
-					                Fee =  `${Tools.formatFeeToFixedNumber(item.actual_fee.amount)} ${Tools.formatDenom(item.actual_fee.denom).toUpperCase()}`;
-				                }
-				                let currentServerTime = new Date().getTime() + that.diffMilliseconds;
-				                return {
-					                flShowTranslationalAnimation :  item.flShowTranslationalAnimation ? item.flShowTranslationalAnimation : "",
-					                showAnimation: item.showAnimation ? item.showAnimation : '',
-					                TxHash: item.tx_hash,
-					                From: item.from,
-					                To: item.to,
-					                Type: item.type === 'coin'?'transfer':item.type,
-					                Fee,
-					                Time: item.time,
-					                age: Tools.formatAge(currentServerTime,item.time,Constant.SUFFIX,Constant.PREFIX)
-				                };
-			                });
-			                clearInterval(this.transfersTimer);
-			                this.transfersTimer = setInterval(function () {
-				                that.transactionInformation.map(item => {
-					                currentServerTime = new Date().getTime() + that.diffMilliseconds;
-					                lastTxTime = new Date(transactionList[0].time).getTime();
-					                item.age = Tools.formatAge(currentServerTime,item.Time,Constant.SUFFIX,Constant.PREFIX);
-					                return item
-				                })
-			                },1000)
-		                }
-	                }catch (e) {
-                        console.error(e)
-	                }
-                })
-            },
-        },
-        destroyed () {
-            clearInterval(this.timer);
-            this.$store.commit('showHeaderUnfoldBtn','hide');
-            sessionStorage.getItem('flShowHeaderUnfoldBtn','hide');
-        }
     }
 </script>
 <style lang="scss">

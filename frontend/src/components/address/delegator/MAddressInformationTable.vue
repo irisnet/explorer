@@ -1,5 +1,5 @@
 <template>
-    <div class="address_detail_table" style="background:#fff;min-height: 2.34rem;">
+    <div class="address_detail_table" style="background:#fff;min-height: 1.34rem;">
         <m-table :columns="fields" :data="items" :width="width">
             <template slot-scope="{ row }"
                       slot="address">
@@ -98,15 +98,14 @@
             </template>
             <template slot-scope="{ row }" slot="amount">
                 <div class="name_address">
-                    <div v-if="!row.amount.includes('Tokens') && row.amount.toString().length <= 12">
+                    <div v-if="!row.amount.includes('Tokens')">
                             <span>
-                                <span>{{substrAmount(row.amount)}}</span>
+                                <span>{{row.amount}}</span>
                             </span>
                     </div>
                     <div  v-if="row.amount.includes('Tokens')"  class="skip_route">
                         <router-link :to="`/tx?txHash=${row.txHash}`">{{row.amount}}</router-link>
                     </div>
-                    <span v-if="row.amount.toString().length > 12 && !row.amount.includes('Tokens')">{{row.amount}}</span>
                 </div>
             </template>
         </m-table>
@@ -314,7 +313,7 @@
             display: flex;
             justify-content: center;
             font-size: 0.14rem;
-            height: 1.8rem;
+            height: 0.8rem;
             align-items: center;
             color: var(--contentColor);
             img{

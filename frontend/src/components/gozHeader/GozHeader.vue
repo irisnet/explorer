@@ -1,0 +1,336 @@
+<template>
+	<div class="goz_container">
+		<div class="goz_content_wrap">
+			<div class="goz_content_left_content">
+				<div class="goz_content_logo_content">
+					<router-link :to="`/`"><img src="../../assets/logo.png" alt=""></router-link>
+					<span class="iconfont" :class="currentNetworkClass"></span>
+				</div>
+				<div class="goz_content_network_state">
+					<span>Network State</span>
+				</div>
+				<div class="menu_content" @click="flShowMobileMenu">
+					<img src="../../assets/menu.png" alt="">
+				</div>
+			</div>
+			<div class="goz_content_right_content">
+				<div class="goz_content_link_content">
+					<a href="https://goz.cosmosnetwork.dev/2020/04/14/a-whole-new-world-testnets-in-the-ibc-era/" target="">GoZ Website</a>
+				</div>
+				<div class="goz_network_links_content">
+					<div class="network_container" @mouseenter="showNetWorkLogo()" @mouseleave="hideNetWorkLogo()">
+                            <span style="color: #fff">
+                                <i style="font-size: 0.24rem;padding-right: 0.02rem;" :class="currentNetworkClass"></i>
+                                <i style="font-size: 0.08rem" class="iconfont iconwangluoqiehuanjiantou"></i>
+                            </span>
+						<ul class="network_list_container" v-show="flShowNetworkLogo" @mouseenter="showNetWorkLogo()" @mouseleave="hideNetWorkLogo()">
+							<li class="network_list_item"
+							    v-for="item in netWorkArray"
+							    @click="windowOpenUrl(item.host)"><i :class="item.icon"></i>{{item.netWorkSelectOption}}</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<ul class="goz_mobile_content" v-show="isShowMobileMenu">
+				<li class="goz_mobile_link_item">
+					<router-link :to="`/`">Network State</router-link>
+				</li>
+				<li class="network_list_item"
+				    v-for="item in netWorkArray"
+				    @click="windowOpenUrl(item.host)">{{item.netWorkSelectOption}}<i :class="item.icon"></i></li>
+			</ul>
+		</div>
+	</div>
+</template>
+
+<script>
+	import Tools from '../../util/Tools';
+	import Service from "../../service";
+	import constant from '../../constant/Constant';
+	import lang from "../../lang";
+	import skinStyle from '../../skinStyle'
+	export default {
+		name: "GozHeader",
+		data () {
+			return {
+				netWorkArray: [],
+				flShowNetworkLogo: false,
+				currentNetworkClass:'',
+				isShowMobileMenu: false,
+			}
+		},
+		mounted(){
+			this.getConfig();
+		},
+		methods:{
+			flShowMobileMenu(){
+				this.isShowMobileMenu = !this.isShowMobileMenu
+			},
+			showNetWorkLogo(){
+				this.flShowNetworkLogo = true;
+			},
+			hideNetWorkLogo(){
+				this.flShowNetworkLogo = false;
+			},
+			windowOpenUrl (url) {
+				window.open(url)
+			},
+			getConfig () {
+				Service.commonInterface({headerConfig:{}},(res) => {
+					try {
+						this.handleConfigs(res.configs);
+						this.setNetWorkLogo(res);
+					}catch (e) {
+						console.error(e);
+					}
+				});
+			},
+			handleConfigs (configs) {
+				this.netWorkArray = configs.map(item => {
+					if(item.network_name === constant.CHAINID.IRISHUB){
+						item.icon = 'iconfont iconiris'
+					}else if(item.network_name === constant.CHAINID.FUXI){
+						item.icon = 'iconfont iconfuxi1'
+					}else if(item.network_name === constant.CHAINID.NYANCAT){
+						item.icon = 'iconfont iconcaihongmao'
+					}else if(item.network_name === constant.CHAINID.GOZTESTNET){
+						item.icon = 'iconfont iconGOZ'
+					}
+					item.netWorkSelectOption = `${Tools.firstWordUpperCase(item.env)} ${item.chain_id.toLocaleUpperCase()}`;
+					return item
+				});
+				this.netWorkArray = this.netWorkArray.filter(item => {
+					return item.env !== constant.ENVCONFIG.DEV && item.env !== constant.ENVCONFIG.QA && item.env !== constant.ENVCONFIG.STAGE
+				});
+			},
+			setNetWorkLogo (currentEnv) {
+				let networkName = '';
+				if(currentEnv.configs){
+					currentEnv.configs.forEach(item => {
+						if(currentEnv.cur_env === item.env && currentEnv.chain_id === item.chain_id){
+							networkName = item.network_name;
+						}
+					})
+				}
+				if (networkName === constant.CHAINID.IRISHUB) {
+					this.currentNetworkClass = 'iconfont iconiris'
+				} else if (networkName === constant.CHAINID.FUXI) {
+					this.currentNetworkClass = 'iconfont iconfuxi'
+				} else if (networkName === constant.CHAINID.NYANCAT) {
+					this.currentNetworkClass = 'iconfont iconcaihongmao'
+				} else if (networkName === constant.CHAINID.GOZTESTNET) {
+					this.currentNetworkClass = 'iconfont iconGOZ'
+				} else {
+					this.currentNetworkClass = 'iconfont iconiris';
+				}
+			},
+		}
+	}
+</script>
+
+<style scoped lang="scss">
+	.goz_container{
+		width: 100%;
+		background: rgba(16, 19, 55, 1);
+		.goz_content_wrap{
+			max-width: 12.8rem;
+			margin: 0 auto;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			.goz_content_left_content{
+				display: flex;
+				color: #fff;
+				align-items: center;
+				.menu_content{
+					display: none;
+				}
+				.goz_content_logo_content{
+					width: 1.5rem;
+					padding: 0.1rem 0;
+					display: flex;
+					align-items: center;
+					.iconfont{
+						display: none;
+					}
+					a{
+						display: inline-block;
+						width: 100%;
+						box-sizing: border-box;
+						padding:0 0.1rem;
+						img {
+							height: 100%;
+							width: 100%;
+							max-width: 1.5rem;
+						}
+					}
+				}
+				.goz_content_network_state{
+					margin-left: 0.4rem;
+					span{
+						font-size: 0.14rem;
+						line-height: 0.16rem;
+						box-sizing: border-box;
+						padding-bottom: 0.15rem;
+						border-bottom: 0.02rem solid #fff;
+					}
+				}
+			}
+			.goz_content_right_content{
+				display: flex;
+				align-items: center;
+				.goz_content_link_content{
+					color:#fff;
+					a{
+						color:rgba(255,255,255,0.75) !important;
+						font-size: 0.14rem;
+						line-height: 0.16rem;
+						border-right: 0.01rem solid rgba(255,255,255,0.75);
+						padding: 0 0.2rem;
+					}
+					a:last-child{
+						border-right: none;
+					}
+				}
+				.goz_network_links_content{
+					margin-right: 0.14rem;
+					.network_container{
+						position: relative;
+						height:0.6rem;
+						line-height: 0.6rem;
+						padding-left: 0.2rem;
+						.network_list_container{
+							background: #fff;
+							box-shadow: 0 0.02rem 0.1rem 0 rgba(3,16,114,0.15);
+							width: auto;
+							position: absolute;
+							right: 0;
+							top: 0.6rem;
+							z-index: 2;
+							text-align: right;
+							.network_list_item{
+								height: 0.4rem;
+								line-height: 0.4rem;
+								white-space: nowrap;
+								padding: 0 0.2rem;
+								cursor: pointer;
+								font-size: 0.14rem;
+								display: flex;
+								&:hover{
+									background: #F6F7FF;
+								}
+								i{
+									font-size: 0.18rem;
+									color: var(--titleColor);
+									padding-right: 0.2rem;
+								}
+							}
+							.network_list_item:last-child{
+								padding-bottom: 0.05rem;
+							}
+						}
+					}
+					.iconzhankai{
+						font-size: 0.32rem;
+					}
+				}
+			}
+			.goz_mobile_content{
+				display: none;
+			}
+		}
+	}
+	@media (max-width: 768px) {
+		.goz_container{
+			.goz_content_wrap{
+				flex-direction: column;
+				width: 100%;
+				position: relative;
+				.goz_content_left_content{
+					width: 100%;
+					justify-content: space-between;
+					.menu_content{
+						display: block;
+						width: 0.25rem;
+						height: 0.25rem;
+						top: 0.26rem;
+						margin-right: 0.1rem;
+						img{
+							width: 100%;
+						}
+					}
+					.goz_content_logo_content{
+						.iconfont{
+							display: block;
+							font-size: 0.22rem;
+						}
+					}
+					.goz_content_network_state{
+						margin-right: 0.1rem;
+						display: none;
+					}
+				}
+				.goz_content_right_content{
+					width: 100%;
+					justify-content: center;
+					display: none;
+					.goz_content_link_content{
+						width: 100%;
+						text-align: center;
+						padding: 0.12rem 0;
+						margin: 0 0.2rem;
+						border-top: 0.01rem solid rgba(255,255,255,0.19);
+						font-size: 0.12rem;
+					}
+					.goz_network_links_content{
+						display: none;
+					}
+				}
+				.goz_mobile_content{
+					display: block;
+					width: 100%;
+					box-sizing: border-box;
+					position: absolute;
+					top: 0.57rem;
+					background:#2D325A;
+					z-index: 10;
+					.goz_mobile_link_item{
+						background: rgba(255,255,255,0.1);
+						padding: 0.05rem 0.15rem;
+						font-size: 0.14rem;
+						a{
+							color: #fff !important;
+						}
+					}
+					.network_list_item{
+						background: rgba(255,255,255,0.1);
+						padding: 0.05rem 0.15rem;
+						color: #fff ;
+						font-size: 0.14rem;
+						text-align: right;
+						display: flex;
+						justify-content: space-between;
+					}
+				}
+			}
+		}
+	}
+	@media (max-width: 450px) {
+		.goz_container{
+			.goz_content_wrap{
+				.goz_content_right_content{
+					.goz_content_link_content{
+						margin: 0 0.1rem;
+						display: flex;
+						justify-content: space-between;
+						a{
+							font-size: 0.12rem;
+							border-right: none;
+							padding: 0;
+						}
+					}
+				}
+			}
+		}
+	}
+</style>

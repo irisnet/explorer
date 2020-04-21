@@ -7,9 +7,10 @@
                     <m-asset-list-table :showNoData="showNoData" :items="nativeAssetList" name="nativeAssetList"></m-asset-list-table>
                 </div>
             </div>
-            <div v-show="nativeAssetList.length === 0">
+            <!-- TODO 删除-->
+            <!--<div v-show="nativeAssetList.length === 0">
                 <img class="no_data_img" src="../../assets/no_data.svg">
-            </div>
+            </div>-->
         </div>
     </div>
 </template>
@@ -38,7 +39,9 @@
 				Service.commonInterface({nativeAssetList:{}}, (res)=> {
 					try {
 						if(res){
-							this.nativeAssetList = res.data.map( item => {
+						    //TODO TEST
+                            this.nativeAssetList = []
+							/*this.nativeAssetList = res.data.map( item => {
 								return {
 									Symbol: item.symbol,
 									Owner: item.owner,
@@ -49,7 +52,7 @@
 									TokenID: item.token_id,
 									flShowLink: true,
                                 }
-                            })
+                            })*/
                         }else {
                         }
 					}catch (e) {

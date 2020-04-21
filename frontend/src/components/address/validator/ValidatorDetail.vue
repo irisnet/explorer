@@ -180,6 +180,7 @@ import pageTitleConfig from "../../pageTitle/pageTitleConfig";
 import ValidatorInformation from "./ValidatorInformation";
 import PageTitle from "../../pageTitle/PageTitle";
 import ValidatorCommissionInformation from "./ValidatorCommissionInformation";
+import ValidatorGraph from "../../home/ValidatorGraph";
 export default {
 
     data() {
@@ -303,6 +304,7 @@ export default {
         };
     },
     components: {
+        ValidatorGraph,
         ValidatorCommissionInformation,
         PageTitle,
         ValidatorInformation,

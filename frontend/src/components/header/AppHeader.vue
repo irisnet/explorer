@@ -1,6 +1,6 @@
 <!--头部页面-->
 <template>
-    <div :class="appHeaderVar"
+    <!--<div :class="appHeaderVar"
          v-show="showHeader"
          id="header">
         <header class="app_header_person_computer"
@@ -12,42 +12,50 @@
                             <router-link :to="`/home`"><img src="../../assets/logo.png"></router-link>
                         </div>
                         <ul class="header_menu_content">
+                            &lt;!&ndash;<li class="header_menu_item"&ndash;&gt;
+                                &lt;!&ndash;:class="activeBlockChain ? 'nav_item_active' : ''"&ndash;&gt;
+                                &lt;!&ndash;@mouseenter="showTwoMenu('blockChain')" @mouseleave="hideTwoMenu('blockChain')">Blockchain <div class="active_block"></div></li>&ndash;&gt;
+                            &lt;!&ndash;<li class="header_menu_item"&ndash;&gt;
+                                &lt;!&ndash;:class="activeStaking ? 'nav_item_active' : ''"&ndash;&gt;
+                                &lt;!&ndash;@mouseenter="showTwoMenu('staking')" @mouseleave="hideTwoMenu('staking')">Staking <div class="active_block"></div></li>&ndash;&gt;
                             <li class="header_menu_item"
-                                :class="activeBlockChain ? 'nav_item_active' : ''"
-                                @mouseenter="showTwoMenu('blockChain')" @mouseleave="hideTwoMenu('blockChain')">Blockchain <div class="active_block"></div></li>
+                                :class="activeTransfers ? 'nav_item_active' : ''">
+                                <router-link :to="``">Network State</router-link> <div class="active_block"></div></li>
                             <li class="header_menu_item"
-                                :class="activeStaking ? 'nav_item_active' : ''"
-                                @mouseenter="showTwoMenu('staking')" @mouseleave="hideTwoMenu('staking')">Staking <div class="active_block"></div></li>
+                                :class="activeTransfers ? 'nav_item_active' : ''">
+                                <a href="" target="">Goz GitHub</a> <div class="active_block"></div></li>
                             <li class="header_menu_item"
-                                :class="activeTransfers ? 'nav_item_active' : ''"
-                                @mouseenter="showTwoMenu('transfers')" @mouseleave="hideTwoMenu('transfers')">
-                                <router-link :to="`/txs/transfers`">Transfer</router-link> <div class="active_block"></div></li>
+                                :class="activeTransfers ? 'nav_item_active' : ''">
+                                <a href="" target="">Goz Website</a> <div class="active_block"></div></li>
                             <li class="header_menu_item"
-                                :class="activeAssets ? 'nav_item_active' : ''"
-                                @mouseenter="showTwoMenu('assets')" @mouseleave="hideTwoMenu('assets')">Asset <div class="active_block"></div></li>
-                            <li class="header_menu_item"
-                                :class="activeGov ? 'nav_item_active' : ''"
-                                @mouseenter="showTwoMenu('gov')" @mouseleave="hideTwoMenu('gov')">Gov <div class="active_block"></div></li>
-                            <li class="header_menu_item"
-                                :class="activeStats ? 'nav_item_active' : ''"
-                                @mouseenter="showTwoMenu('stats')" @mouseleave="hideTwoMenu('stats')">Stats <div class="active_block"></div></li>
-                            <li v-show="flShowFaucet" class="header_menu_item"
-                                :class="activeFaucet ? 'nav_item_active' : ''"
-                                @mouseenter="showTwoMenu('faucet')" @mouseleave="hideTwoMenu('faucet')"
-                            ><router-link :to="`/faucet`">Faucet</router-link> <div class="active_block"></div></li>
+                                :class="activeTransfers ? 'nav_item_active' : ''">
+                                <a href="" target="">RainbowWallet-GoZ</a> <div class="active_block"></div></li>
+                            &lt;!&ndash;<li class="header_menu_item"&ndash;&gt;
+                                &lt;!&ndash;:class="activeAssets ? 'nav_item_active' : ''"&ndash;&gt;
+                                &lt;!&ndash;@mouseenter="showTwoMenu('assets')" @mouseleave="hideTwoMenu('assets')">Asset <div class="active_block"></div></li>&ndash;&gt;
+                            &lt;!&ndash;<li class="header_menu_item"&ndash;&gt;
+                                &lt;!&ndash;:class="activeGov ? 'nav_item_active' : ''"&ndash;&gt;
+                                &lt;!&ndash;@mouseenter="showTwoMenu('gov')" @mouseleave="hideTwoMenu('gov')">Gov <div class="active_block"></div></li>&ndash;&gt;
+                            &lt;!&ndash;<li class="header_menu_item"&ndash;&gt;
+                                &lt;!&ndash;:class="activeStats ? 'nav_item_active' : ''"&ndash;&gt;
+                                &lt;!&ndash;@mouseenter="showTwoMenu('stats')" @mouseleave="hideTwoMenu('stats')">Stats <div class="active_block"></div></li>&ndash;&gt;
+                            &lt;!&ndash;<li v-show="flShowFaucet" class="header_menu_item"&ndash;&gt;
+                                &lt;!&ndash;:class="activeFaucet ? 'nav_item_active' : ''"&ndash;&gt;
+                                &lt;!&ndash;@mouseenter="showTwoMenu('faucet')" @mouseleave="hideTwoMenu('faucet')"&ndash;&gt;
+                            &lt;!&ndash;&gt;<router-link :to="`/faucet`">Faucet</router-link> <div class="active_block"></div></li>&ndash;&gt;
                         </ul>
                     </div>
 
                     <div class="header_right_content">
                         <div class="search_input_container">
-                            <div class="search_input_wrap">
+                            &lt;!&ndash;<div class="search_input_wrap">
                                 <input type="text"
                                        class="search_input"
                                        placeholder="Search by Address / Txhash / Block / HashLock"
                                        v-model.trim="searchInputValue"
                                        @keyup.enter="onInputChange">
                                 <span @click="getData(searchInputValue)" class="iconfont iconsousuo"></span>
-                            </div>
+                            </div>&ndash;&gt;
                         </div>
                         <div class="network_container" @mouseenter="showNetWorkLogo()" @mouseleave="hideNetWorkLogo()">
                             <span style="color: #fff">
@@ -71,31 +79,31 @@
                             <li class="header_submenu_item" v-show="flShowChain"><router-link :to="`/home`">Overview</router-link></li>
                             <li class="header_submenu_item" v-show="flShowChain"><router-link :to="`/blocks`">Blocks</router-link></li>
                             <li class="header_submenu_item" v-show="flShowChain"><router-link :to="`/txs`">Transactions</router-link></li>
-                            <!--<li class="header_submenu_item no_border_style" v-if="flShowChain"><router-link :to="`/validators`">Validators</router-link></li>-->
-                            <!--               <li class="header_submenu_item" v-if="flShowChain">Assets</li>
-                                           <li class="header_submenu_item" v-if="flShowChain">Gateways</li>-->
+                            &lt;!&ndash;<li class="header_submenu_item no_border_style" v-if="flShowChain"><router-link :to="`/validators`">Validators</router-link></li>&ndash;&gt;
+                            &lt;!&ndash;               <li class="header_submenu_item" v-if="flShowChain">Assets</li>
+                                           <li class="header_submenu_item" v-if="flShowChain">Gateways</li>&ndash;&gt;
                             <li class="header_submenu_item" v-show="flShowStaking"><router-link :to="`/validators`">Validators</router-link></li>
                             <li class="header_submenu_item" v-if="flShowStaking"><router-link :to="`/txs/delegations`">Delegation Txs</router-link></li>
                             <li class="header_submenu_item" v-show="flShowStaking"><router-link :to="`/txs/validations`">Validation Txs</router-link></li>
-                            <!--  <li class="header_submenu_item" v-if="flShowStaking">Validator Txs</li>-->
-                            <!--<li class="header_submenu_item" v-if="flShowStaking"> <router-link :to="`/txs/stakes`">Delegation Txs</router-link></li>
-                            <li class="header_submenu_item" v-if="flShowStaking">Reward Txs</li>-->
-                            <!--<li class="header_submenu_item no_border_style" v-show="flShowTransfers"> <router-link :to="`/txs/transfers`">IRIS Transfers Txs</router-link></li>-->
-                            <!--<li class="header_submenu_item" v-if="flShowTransfers">Asset Transfers Txs</li>-->
-                            <!--<li class="header_submenu_item" v-if="flShowTransfers">Inter-chain Txs</li>-->
-                            <!--<li class="header_submenu_item" v-if="flShowTransfers">IRIS Burn Txs</li>-->
+                            &lt;!&ndash;  <li class="header_submenu_item" v-if="flShowStaking">Validator Txs</li>&ndash;&gt;
+                            &lt;!&ndash;<li class="header_submenu_item" v-if="flShowStaking"> <router-link :to="`/txs/stakes`">Delegation Txs</router-link></li>
+                            <li class="header_submenu_item" v-if="flShowStaking">Reward Txs</li>&ndash;&gt;
+                            &lt;!&ndash;<li class="header_submenu_item no_border_style" v-show="flShowTransfers"> <router-link :to="`/txs/transfers`">IRIS Transfers Txs</router-link></li>&ndash;&gt;
+                            &lt;!&ndash;<li class="header_submenu_item" v-if="flShowTransfers">Asset Transfers Txs</li>&ndash;&gt;
+                            &lt;!&ndash;<li class="header_submenu_item" v-if="flShowTransfers">Inter-chain Txs</li>&ndash;&gt;
+                            &lt;!&ndash;<li class="header_submenu_item" v-if="flShowTransfers">IRIS Burn Txs</li>&ndash;&gt;
                             <li class="header_submenu_item" v-show="flShowAssets"><router-link :to="`/assets/ntvassets`">Native Asset </router-link></li>
                             <li class="header_submenu_item" v-show="flShowAssets"><router-link :to="`/assets/ntvassetstxs`">Native Asset Txs</router-link></li>
                             <li class="header_submenu_item" v-show="flShowAssets && flShowGatewayMenu"><router-link :to="`/assets/gtwassets`">Gateway Asset</router-link></li>
                             <li class="header_submenu_item no_border_style" v-show="flShowAssets && flShowGatewayMenu"><router-link :to="`/assets/gtwassetstxs`">Gateway Asset Txs</router-link></li>
-                            <!--<li class="header_submenu_item" v-if="flShowAssets">Assets Transfers</li>-->
+                            &lt;!&ndash;<li class="header_submenu_item" v-if="flShowAssets">Assets Transfers</li>&ndash;&gt;
                             <li class="header_submenu_item" v-show="flShowGov"><router-link :to="`/gov/parameters`">Parameters</router-link></li>
                             <li class="header_submenu_item" v-show="flShowGov"><router-link :to="`/gov/proposals`">Proposals</router-link></li>
                             <li class="header_submenu_item no_border_style" v-show="flShowGov"><router-link :to="`/txs/governance`">Gov Txs</router-link></li>
-                            <!--<li class="header_submenu_item" v-if="flShowGov">Vote Tx</li>-->
+                            &lt;!&ndash;<li class="header_submenu_item" v-if="flShowGov">Vote Tx</li>&ndash;&gt;
                             <li class="header_submenu_item" v-show="flShowStats"><router-link :to="`/stats/irisrichlist`">IRIS Rich List</router-link></li>
                             <li class="header_submenu_item no_border_style" v-show="flShowStats"><router-link :to="`/stats/irisstats`">IRIS Stats</router-link></li>
-                            <!--<li class="header_submenu_item" v-if="flShowStats">Public Address</li>-->
+                            &lt;!&ndash;<li class="header_submenu_item" v-if="flShowStats">Public Address</li>&ndash;&gt;
                         </ul>
                     </div>
                 </div>
@@ -160,11 +168,11 @@
                 <div class="mobile_menu_container" @click="flShowBlockchain('transfers')">
                     <div class="mobile_menu_item_content"   @click="featureButtonClick(`/txs/transfers`)">
                         <span>Transfers</span>
-                        <!--<i class="iconfont iconwangluoqiehuanjiantou" :class="flShowTransfersMenu ? 'up_style' : 'down_style'"> </i>-->
+                        &lt;!&ndash;<i class="iconfont iconwangluoqiehuanjiantou" :class="flShowTransfersMenu ? 'up_style' : 'down_style'"> </i>&ndash;&gt;
                     </div>
-                    <!--<ul class="blockchain_list_content" v-show="flShowTransfersMenu">-->
-                        <!--<li class="blockchain_list_item" @click="featureButtonClick(`/txs/transfers`)">IRIS Transfers Txs</li>-->
-                    <!--</ul>-->
+                    &lt;!&ndash;<ul class="blockchain_list_content" v-show="flShowTransfersMenu">&ndash;&gt;
+                        &lt;!&ndash;<li class="blockchain_list_item" @click="featureButtonClick(`/txs/transfers`)">IRIS Transfers Txs</li>&ndash;&gt;
+                    &lt;!&ndash;</ul>&ndash;&gt;
                 </div>
 
                 <div class="mobile_menu_container" @click="flShowBlockchain('assets')">
@@ -220,6 +228,38 @@
                             <a :href="item.host">{{item.netWorkSelectOption}}</a> <i :class="item.icon"></i>
                         </li>
                     </ul>
+                </div>
+            </div>
+        </div>
+    </div>-->
+    <div class="goz_container">
+        <div class="goz_content_wrap">
+            <div class="goz_content_left_content">
+                <div class="goz_content_logo_content">
+                    <router-link :to="`/home`"><img src="../../assets/logo.png" alt=""></router-link>
+                </div>
+                <div class="goz_content_network_state">
+                    <span>Network State</span>
+                </div>
+            </div>
+            <div class="goz_content_right_content">
+                <div class="goz_content_link_content">
+                    <span>GoZ GitHub</span>
+                    <span>GoZ Website</span>
+                    <span>RainbowWallet-GoZ</span>
+                </div>
+                <div class="goz_network_links_content">
+                    <div class="network_container" @mouseenter="showNetWorkLogo()" @mouseleave="hideNetWorkLogo()">
+                            <span style="color: #fff">
+                                <i style="font-size: 0.24rem;padding-right: 0.02rem;" :class="currentNetworkClass"></i>
+                                <i style="font-size: 0.08rem" class="iconfont iconwangluoqiehuanjiantou"></i>
+                            </span>
+                        <ul class="network_list_container" v-show="flShowNetworkLogo" @mouseenter="showNetWorkLogo()" @mouseleave="hideNetWorkLogo()">
+                            <li class="network_list_item"
+                                v-for="item in netWorkArray"
+                                @click="windowOpenUrl(item.host)"><i :class="item.icon"></i>{{item.netWorkSelectOption}}</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -785,7 +825,107 @@
     @import "../../style/mixin";
     :root{
     }
-    .person_computer_header_var {
+    .goz_container{
+        width: 100%;
+        background: #2D325A;
+        .goz_content_wrap{
+            max-width: 12.8rem;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            .goz_content_left_content{
+                display: flex;
+                color: #fff;
+                align-items: center;
+                .goz_content_logo_content{
+                    width: 1.5rem;
+                    padding: 0.1rem 0;
+                    a{
+                        display: inline-block;
+                        width: 100%;
+                        box-sizing: border-box;
+                        padding-right: 0.1rem;
+                        img {
+                            height: 100%;
+                            width: 100%;
+                            max-width: 1.5rem;
+                        }
+                    }
+                }
+                .goz_content_network_state{
+                    margin-left: 0.4rem;
+                    span{
+                        font-size: 0.14rem;
+                        line-height: 0.16rem;
+                        box-sizing: border-box;
+                        padding-bottom: 0.15rem;
+                        border-bottom: 0.02rem solid #fff;
+                    }
+                }
+            }
+            .goz_content_right_content{
+                display: flex;
+                align-items: center;
+                .goz_content_link_content{
+                    color:#fff;
+                    span{
+                       color:rgba(255,255,255,0.75);
+                        font-size: 0.14rem;
+                        line-height: 0.16rem;
+                        border-right: 0.01rem solid rgba(255,255,255,0.75);
+                        padding: 0 0.2rem;
+                    }
+                    span:last-child{
+                        border-right: none;
+                    }
+                }
+                .goz_network_links_content{
+                    margin-right: 0.14rem;
+                    .network_container{
+                        position: relative;
+                        height:0.6rem;
+                        line-height: 0.6rem;
+                        padding-left: 0.2rem;
+                        .network_list_container{
+                            background: #fff;
+                            box-shadow: 0 0.02rem 0.1rem 0 rgba(3,16,114,0.15);
+                            width: auto;
+                            position: absolute;
+                            right: 0;
+                            top: 0.6rem;
+                            z-index: 2;
+                            text-align: right;
+                            .network_list_item{
+                                height: 0.4rem;
+                                line-height: 0.4rem;
+                                white-space: nowrap;
+                                padding: 0 0.2rem;
+                                cursor: pointer;
+                                font-size: 0.14rem;
+                                display: flex;
+                                &:hover{
+                                    background: #F6F7FF;
+                                }
+                                i{
+                                    font-size: 0.18rem;
+                                    color: var(--titleColor);
+                                    padding-right: 0.2rem;
+                                }
+                            }
+                            .network_list_item:last-child{
+                                padding-bottom: 0.05rem;
+                            }
+                        }
+                    }
+                    .iconzhankai{
+                        font-size: 0.32rem;
+                    }
+                }
+            }
+        }
+    }
+/*    .person_computer_header_var {
         position: fixed;
         z-index: 11;
         background: rgba(255, 255, 255, 1);
@@ -793,7 +933,7 @@
         .app_header_person_computer {
             box-sizing: border-box;
             width: 100%;
-            background: var(--bgColor);
+            background: #2D325A;
             position: relative;
             .header_unfold{
                 position: absolute;
@@ -806,7 +946,7 @@
             .header_navigation_container{
                 max-width: 12.8rem;
                 margin: 0 auto;
-                background: var(--bgColor);
+                background: #2D325A;
                 box-sizing: border-box;
                 padding: 0 0.2rem;
                 display: flex;
@@ -1011,10 +1151,10 @@
             }
         }
     }
- /*   .mobile_header_var {
+ !*   .mobile_header_var {
         position: relative;
         z-index: 2;
-    }*/
+    }*!
     .person_computer_header_var,
     .mobile_header_var {
         @include flex();
@@ -1027,7 +1167,7 @@
             @include flex;
             flex-direction: column;
             align-items: center;
-            background: var(--bgColor);
+            background: #2D325A;
             .navButton {
                 width: 100% !important;
                 padding: 0 0.2rem;
@@ -1394,5 +1534,5 @@
     }
     .fade-enter, .fade-leave-to{
         opacity: 0;
-    }
+    }*/
 </style>

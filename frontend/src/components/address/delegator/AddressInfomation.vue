@@ -561,7 +561,9 @@
                             }else {
 						        this.flAllTxNextPage = false
                             }
-					        this.transactionsItems = res.Data.map( item => {
+					        //TODO TEST
+                            this.transactionsItems = []
+					        /*this.transactionsItems = res.Data.map( item => {
 					        	let Amount = '--',fromInformation,toInformation;
                                 fromInformation = Tools.formatListAmount(item).fromAddressAndMoniker;
                                 toInformation = Tools.formatListAmount(item).toAddressAndMoniker;
@@ -600,7 +602,7 @@
                                     isFromSkipRouter: fromInformation.length === 1 ? fromInformation[0].address === this.$route.params.param : false,
                                     isToSkipRouter: toInformation.length === 1 ? toInformation[0].address === this.$route.params.param : false
 						        }
-					        })
+					        })*/
 				        }else {
 					        this.allTxCountNum = 0;
 					        this.flAllTxNextPage = false;

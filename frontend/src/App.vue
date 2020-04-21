@@ -2,10 +2,9 @@
     <div id="app">
         <loading-component :show-loading="$store.state.flShowLoading"></loading-component>
         <qr-component></qr-component>
-        <app-header></app-header>
-        <div style="flex: 1;background: #F5F7FD;">
-            <router-view id="router_wrap" class="router-view" :key="key"/>
-        </div>
+        <!--<app-header></app-header>-->
+        <goz-header></goz-header>
+        <router-view id="router_wrap" class="router-view" :key="key"/>
         <app-footer></app-footer>
     </div>
 </template>
@@ -15,9 +14,10 @@
 	import LoadingComponent from "./components/loadingComponent/LoadingComponent";
 	import AppFooter from "./components/footer/AppFooter";
 	import qrComponent from "./components/qrComponent/qrComponent";
+    import GozHeader from "./components/gozHeader/GozHeader";
 	export default {
 		name: "App",
-		components: {qrComponent, AppFooter, LoadingComponent, AppHeader},
+		components: {GozHeader, qrComponent, AppFooter, LoadingComponent, AppHeader},
 		data () {
             return {
 
@@ -119,9 +119,7 @@
         .router-view{
             flex: 1;
             width: 100%;
-            height: calc(100% - 0.6rem);
-            margin-top: 0.6rem;
-            background: #F5F7FD;
+            background: #202342;
         }
     }
     .el-scrollbar {

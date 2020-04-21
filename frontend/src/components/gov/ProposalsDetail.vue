@@ -238,10 +238,11 @@
             <div class="proposals_detail_table_wrap">
                 <m-proposals-detail-table :items="items"
                                           fields="votersFields"></m-proposals-detail-table>
-                <div v-show="showNoData"
+                <!--TODO 删除 -->
+                <!--<div v-show="showNoData"
                      class="no_data_show">
                     <img src="../../assets/no_data.svg" alt="">
-                </div>
+                </div>-->
             </div>
             <div class="table_pagination">
                 <!--<b-pagination v-model="currentPage"
@@ -493,7 +494,9 @@ export default {
                         if (data.items && data.items.length > 0) {
                             this.showNoData = false;
                             this.itemTotal = data.total;
-                            this.items = data.items.map(item => {
+                            //TODO TEST
+                            this.items = []
+                            /*this.items = data.items.map(item => {
                                 let votingListItemTime = (new Date(item.timestamp).getTime()) > 0 ? Tools.format2UTC(item.timestamp) : '--';
                                 return {
                                     moniker: item.moniker,
@@ -503,7 +506,7 @@ export default {
                                     Tx_Hash: item.tx_hash,
                                     Time: votingListItemTime
                                 }
-                            });
+                            });*/
                         } else {
                             this.items = [];
                             this.showNoData = true;
@@ -527,7 +530,9 @@ export default {
                 try {
                     if (data.items && data.items.length > 0) {
                         this.depositorItemsTotal = data.total;
-                        this.depositorItems = data.items.map(item => {
+                        //TODO TEST
+                        this.depositorItems = []
+                        /*this.depositorItems = data.items.map(item => {
                             let votingListItemTime = (new Date(item.timestamp).getTime()) > 0 ? Tools.format2UTC(item.timestamp) : '--';
                             let amount = item.amount && item.amount[0] ? `${this.$options.filters.amountFromat(item.amount[0])}` : '';
                             if (amount) {
@@ -543,7 +548,7 @@ export default {
                                 Tx_Hash: item.hash,
                                 Time: votingListItemTime
                             }
-                        });
+                        });*/
                     } else {
                         this.depositorItems = [];
                         this.depositorShowNoData = true;
