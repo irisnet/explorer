@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "tag": "node package.js -p"
   },
   "dependencies": {
     "axios": "^0.18.1",

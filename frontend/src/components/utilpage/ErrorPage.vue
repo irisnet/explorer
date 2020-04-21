@@ -46,7 +46,7 @@
         }
         .error_page_hint{
             margin-top: 0.2rem;
-            color: var(--contentColor);
+            color: #fff;
         }
 
         .error_content_btn{
