@@ -9,9 +9,9 @@
 					<div class="graph_list_container">
 						<div class="graph_list_item_all" @click="selectAll()">
 							<div class="legend_all_block">
-								<img v-show="!flAllCheckout" src="../../assets/select_all.svg" alt="">
-								<img v-show="flAllCheckout" src="../../assets/unselect_all.svg" alt=""></div>
-							<span class="legend_name" :class=" flAllCheckout ? '' : 'hide_style'">All</span>
+								<img v-show="flAllCheckout" src="../../assets/select_all.svg" alt="">
+								<img v-show="!flAllCheckout" src="../../assets/unselect_all.svg" alt=""></div>
+							<span class="legend_name" :class=" flAllCheckout ? 'hide_style' : ''">All</span>
 						</div>
 						<ul class="graph_list_content">
 							
@@ -83,6 +83,11 @@
 					'#AECFEB',
 					'#FF7CAD',
 					'#44C8ED',
+					'#B2A9FF',
+					'#FDB6B2',
+					'#FBDC94',
+					'#D3FCFC',
+					'#FDAB74',
 				],
 			}
 		},
@@ -140,9 +145,16 @@
 					}
 				}).then( res => {
 					this.data = res;
+					
 					this.data.nodes.sort((a,b) => {
 						return b.connections - a.connections
 					});
+					let maxDataArray = [];
+					for (let i = 0 ; i < 30; i ++){
+						maxDataArray.push(this.data.nodes[i])
+					}
+					this.data.nodes = maxDataArray;
+					
 					this.data.nodes.forEach((item,index) => {
 						item.isDelete = false;
 						item.color = this.color[index]
@@ -205,25 +217,13 @@
 			initChartsGraph(){
 				let graphEcharts = echarts.init(document.getElementById('validator_graph_content'));
 				let nodeLinksArray = [],nodeArray = [];
-				let symbolSizeRule = ''
-				this.copyData.nodes.forEach(item => {
-					if(15 < item.connections  && item.connections <= 20 ){
-						symbolSizeRule = 1
-					}else if(10 < item.connections && item.connections <= 15){
-						symbolSizeRule = 2
-					}else if(5 < item.connections && item.connections <= 10){
-						symbolSizeRule = 3
-					}else if(0 < item.connections && item.connections <= 5){
-						symbolSizeRule = 10
-					}else {
-						symbolSizeRule = 1
-					}
-				});
-				
+				//最大像素点与最小像素点的差值
+				let symbolSizeRule = 106;
 				for(let i in this.copyData.nodes){
+					console.log(this.copyData.nodes[i].connections * symbolSizeRule / this.data.nodes.length ,"aaaaaaa")
 					nodeArray.push({
 						name: this.copyData.nodes[i]['chain-id'],
-						symbolSize: this.copyData.nodes[i].connections * symbolSizeRule,
+						symbolSize: this.copyData.nodes[i].connections * symbolSizeRule / this.data.nodes.length ,
 						label: {
 							show: true,
 							position:'right'
@@ -409,7 +409,7 @@
 						}
 						.graph_list_content{
 							flex: 1;
-							height: 0.14rem;
+							min-height: 0.14rem;
 							display: flex;
 							flex-wrap: wrap;
 							margin-left: 0.2rem;
