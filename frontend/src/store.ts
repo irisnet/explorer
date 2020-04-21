@@ -25,27 +25,6 @@ const store = new Vuex.Store({
     flShowSearchIpt: sessionStorage.getItem('flShowSearchIpt') ? sessionStorage.getItem('flShowSearchIpt') : 'show',
   },
   mutations:{
-   /* ...mapState({
-      currentNoValue:"currentNoValue",
-      currentAbstainValue:"currentAbstainValue",
-      currentNoWithVetoValue:"currentNoWithVetoValue",
-      currentParticipationValue:"currentParticipationValue",
-      currentYesValue:"currentYesValue",
-      flShowSelectOption:"flShowSelectOption",
-      currentEnv:"currentEnv",
-      isMobile:"isMobile",
-      validatorTabIndex:"validatorTabIndex",
-      flShowIpt:"flShowIpt",
-      currentSkinStyle:"currentSkinStyle",
-      flShowLoading:"flShowLoading",
-      flShowQR:"flShowQR",
-      setQrImg:"setQrImg",
-      testSkinStyle:"testSkinStyle",
-      hideTestSkinStyle:"hideTestSkinStyle",
-      showHeaderUnfoldBtn:"showHeaderUnfoldBtn",
-      flShowSearchBar:"flShowSearchBar",
-      flShowSearchIpt:"flShowSearchIpt",
-    }),*/
     currentNoValue(state,data){
       state.currentNoValue = data
     },
