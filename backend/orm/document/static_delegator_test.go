@@ -29,8 +29,8 @@ func TestExStaticDelegator_GetDataByDate(t *testing.T) {
 //}
 
 func TestExStaticDelegator_GetDataOneDay(t *testing.T) {
-	date, _ := time.ParseInLocation(types.TimeLayout, "2020-04-03T00:00:00", time.FixedZone("CST", 8*3600))
-	res, err := new(ExStaticDelegator).GetDataOneDay(date, "faa1eqvkfthtrr93g4p9qspp54w6dtjtrn279vcmpn")
+	date, _ := time.ParseInLocation(types.TimeLayout, "2020-04-05T00:00:00", time.FixedZone("CST", 8*3600))
+	res, err := new(ExStaticDelegator).GetDataOneDay(date, "faa12t4gfg502wra9lhtjjvqudq82rrzu2sk5j2l09")
 	if err != nil {
 		t.Fatal(err.Error())
 	}

@@ -4,6 +4,8 @@ import (
 	"testing"
 	"encoding/json"
 	"time"
+	"github.com/irisnet/explorer/backend/types"
+	"fmt"
 )
 
 var (
@@ -12,7 +14,8 @@ var (
 
 func TestStaticValidatorByMonthTask_getStaticValidator(t *testing.T) {
 
-	terminalData, err := task.staticModel.GetDataByDate(time.Now().In(cstZone))
+	endtime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 22), cstZone)
+	terminalData, err := task.staticModel.GetDataOneDay(endtime, "faa186qhtc62cf6ejlt3erw6zk28mgw8ne7gkx3t55")
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -21,7 +24,10 @@ func TestStaticValidatorByMonthTask_getStaticValidator(t *testing.T) {
 		t.Fatal(err.Error())
 	}
 
-	res := new(StaticValidatorByMonthTask).getStaticValidator(terminalData[0], mapData)
+	res, err := new(StaticValidatorByMonthTask).getStaticValidator(terminalData, mapData)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
 
 	bytedatas, _ := json.Marshal(res)
 	t.Log(string(bytedatas))

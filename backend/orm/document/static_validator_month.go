@@ -75,3 +75,19 @@ func (d ExStaticValidatorMonth) GetValidatorStaticByMonth(datestr, operatoraddr 
 
 	return res, nil
 }
+
+func (d ExStaticValidatorMonth) GetLatest() (ExStaticValidatorMonth, error) {
+	var res ExStaticValidatorMonth
+	var query = orm.NewQuery()
+	defer query.Release()
+	query.SetCollection(d.Name()).
+		SetSort("-date").
+		SetSize(1).
+		SetResult(&res)
+
+	err := query.Exec()
+	if err != nil {
+		return res, err
+	}
+	return res, nil
+}

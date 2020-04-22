@@ -48,6 +48,22 @@ func (d ExStaticDelegatorMonth) EnsureIndexes() []mgo.Index {
 	return indexes
 }
 
+func (d ExStaticDelegatorMonth) GetLatest() (ExStaticDelegatorMonth, error) {
+	var res ExStaticDelegatorMonth
+	var query = orm.NewQuery()
+	defer query.Release()
+	query.SetCollection(d.Name()).
+		SetSort("-date").
+		SetSize(1).
+		SetResult(&res)
+
+	err := query.Exec()
+	if err != nil {
+		return res, err
+	}
+	return res, nil
+}
+
 func (d ExStaticDelegatorMonth) Batch(txs []txn.Op) error {
 	return orm.Batch(txs)
 }

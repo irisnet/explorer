@@ -84,8 +84,7 @@ func Start() {
 		delegatortask := new(StaticDelegatorByMonthTask)
 		validatortask := new(StaticValidatorByMonthTask)
 		delegatortask.Start()
-		validatortask.SetAddressCoinMapData(delegatortask.AddressCoin, delegatortask.AddrPeriodCommission,
-			delegatortask.AddrBeginCommission, delegatortask.AddrTerminalCommission)
+		validatortask.SetAddressCoinMapData(delegatortask.AddressCoin, delegatortask.AddrPeriodCommission, delegatortask.AddrTerminalCommission)
 		validatortask.Start()
 	})
 }

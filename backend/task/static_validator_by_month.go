@@ -21,7 +21,7 @@ type StaticValidatorByMonthTask struct {
 	AddressCoin               map[string]document.Coin
 	AddressPeriodCommission   map[string]document.Coin
 	AddressTerminalCommission map[string]document.Coin
-	AddressBeginCommission    map[string]document.Coin
+	//AddressBeginCommission    map[string]document.Coin
 }
 
 func (task *StaticValidatorByMonthTask) Name() string {
@@ -36,21 +36,16 @@ func (task *StaticValidatorByMonthTask) Start() {
 	}
 }
 
-func (task *StaticValidatorByMonthTask) SetAddressCoinMapData(rewards, pcommission, bcommission, tcommission map[string]document.Coin) {
+func (task *StaticValidatorByMonthTask) SetAddressCoinMapData(rewards, pcommission, tcommission map[string]document.Coin) {
 	task.AddressCoin = rewards
 	task.AddressPeriodCommission = pcommission
-	task.AddressBeginCommission = bcommission
+	//task.AddressBeginCommission = bcommission
 	task.AddressTerminalCommission = tcommission
 }
 
 func (task *StaticValidatorByMonthTask) DoTask() error {
 	datetime := time.Now().In(cstZone)
-	//year, month := datetime.Year(), datetime.Month()-1
-	//if datetime.Month() == time.January {
-	//	year = datetime.Year() - 1
-	//	month = time.December
-	//}
-	year, month := getTerminalYearMonth(datetime)
+	year, month := getStartYearMonth(datetime)
 	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-01T00:00:00", year, month), cstZone)
 	terminaldate, err := document.Getdate(task.staticModel.Name(), starttime, datetime, "-"+document.ValidatorStaticFieldDate)
 	if err != nil {
@@ -72,7 +67,11 @@ func (task *StaticValidatorByMonthTask) DoTask() error {
 	}
 
 	for _, val := range terminalData {
-		one := task.getStaticValidator(val, addressHeightMap)
+		one, errf := task.getStaticValidator(val, addressHeightMap)
+		if errf != nil {
+			logger.Error(errf.Error())
+			continue
+		}
 		res = append(res, one)
 	}
 
@@ -82,17 +81,17 @@ func (task *StaticValidatorByMonthTask) DoTask() error {
 	return task.mStaticModel.Batch(task.saveOps(res))
 }
 
-func (task *StaticValidatorByMonthTask) getStaticValidator(terminalval document.ExStaticValidator, addrHeightMap map[string]int64) document.ExStaticValidatorMonth {
+func (task *StaticValidatorByMonthTask) getStaticValidator(terminalval document.ExStaticValidator, addrHeightMap map[string]int64) (document.ExStaticValidatorMonth, error) {
 	address := utils.Convert(conf.Get().Hub.Prefix.AccAddr, terminalval.OperatorAddress)
 
-	year, month := getTerminalYearMonth(terminalval.Date)
+	year, month := getStartYearMonth(terminalval.Date)
 	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-01T00:00:00", year, month), cstZone)
 	date, err := document.Getdate(task.staticModel.Name(), starttime, terminalval.Date, document.ValidatorStaticFieldDate)
 	if err != nil {
 		logger.Error("Getdate have error",
 			logger.String("time", terminalval.Date.String()),
 			logger.String("err", err.Error()))
-
+		return document.ExStaticValidatorMonth{}, err
 	}
 
 	validatestatic, err := task.staticModel.GetDataOneDay(date, terminalval.OperatorAddress)
@@ -100,6 +99,7 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(terminalval document.
 		logger.Error("get Validator static failed",
 			logger.String("func", "Get DataOneDay"),
 			logger.String("err", err.Error()))
+		return document.ExStaticValidatorMonth{}, err
 	}
 
 	delegation := lcd.GetDelegationsFromValAddrByDelAddr(types.FoundationDelegatorAddr, terminalval.OperatorAddress)
@@ -132,10 +132,10 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(terminalval document.
 		item.Moniker = desp.Moniker
 	}
 
-	return item
+	return item, nil
 }
 
-func getTerminalYearMonth(datetime time.Time) (year, month int) {
+func getStartYearMonth(datetime time.Time) (year, month int) {
 	year = datetime.Year()
 	month = int(datetime.Month() - 1)
 	if datetime.Month() == time.January {
@@ -182,10 +182,16 @@ func (task *StaticValidatorByMonthTask) getFoundationDelegateIncre(terminal docu
 }
 
 func (task *StaticValidatorByMonthTask) getIncrementCommission(address string, terminalCommission document.Coin) (IncreCommission document.Coin) {
-	bcommission, ok1 := task.AddressBeginCommission[address]
-	pcommission, ok2 := task.AddressPeriodCommission[address]
-	if ok1 && ok2 {
-		IncreCommission.Amount = terminalCommission.Amount - bcommission.Amount + pcommission.Amount
+	pcommission, ok := task.AddressPeriodCommission[address]
+	if ok {
+		latestone, err := task.mStaticModel.GetLatest()
+		if err == nil {
+			//Rcx = Rcn - Rcn-1 + Rcw
+			IncreCommission.Amount = terminalCommission.Amount - latestone.TerminalCommission.Amount + pcommission.Amount
+		} else {
+			logger.Error("get latest one failed", logger.String("func", "get IncrementCommission"),
+				logger.String("err", err.Error()))
+		}
 		IncreCommission.Denom = terminalCommission.Denom
 	}
 	return
