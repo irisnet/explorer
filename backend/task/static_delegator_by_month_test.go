@@ -30,7 +30,15 @@ func TestStaticDelegatorByMonthTask_getDelegationData(t *testing.T) {
 }
 func TestStaticDelegatorByMonthTask_getPeriodTxByAddress(t *testing.T) {
 	task := new(StaticDelegatorByMonthTask)
-	txs, err := task.getPeriodTxByAddress(2020, 4, "faa1h07392vv66sxk76ppcquz7ysvp5lsdvfdywl0f")
+	starttime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 9), cstZone)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	endtime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 15), cstZone)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	txs, err := task.getPeriodTxByAddress(starttime, endtime, "faa1eqvkfthtrr93g4p9qspp54w6dtjtrn279vcmpn")
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -60,12 +68,13 @@ func TestStaticDelegatorByMonthTask_getCoinflowByHash(t *testing.T) {
 
 func TestStaticDelegatorByMonthTask_getStaticDelegator(t *testing.T) {
 	s := new(StaticDelegatorByMonthTask)
-	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-01T00:00:00", 2020, 4), cstZone)
-	terminaldate := document.ExStaticDelegator{
-		Date:    starttime,
+	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 9), cstZone)
+	endtime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 13), cstZone)
+	terminaldata := document.ExStaticDelegator{
+		Date:    endtime,
 		Address: "faa1k2f9qpnh0r3j4r83z34hen4xtx5yd42crazf50",
 		DelegationsRewards: []document.Rewards{
-			{Iris: float64(196.768788821705), IrisAtto: "196768788821704553533"},
+			{Iris: float64(404.745631836595), IrisAtto: ""},
 		},
 		Delegation: utils.Coin{
 			Amount: float64(1500000000000000000000),
@@ -73,16 +82,16 @@ func TestStaticDelegatorByMonthTask_getStaticDelegator(t *testing.T) {
 		},
 		Commission: []document.Rewards{},
 		Total: []document.Rewards{
-			{Iris: float64(196.768788821705), IrisAtto: "196768788821704553533"},
+			{Iris: float64(404.745631836595), IrisAtto: ""},
 		},
 	}
-	txs, err := s.getPeriodTxByAddress(2020, 4, "faa1k2f9qpnh0r3j4r83z34hen4xtx5yd42crazf50") //all address txs
+	txs, err := s.getPeriodTxByAddress(starttime, endtime, "faa1k2f9qpnh0r3j4r83z34hen4xtx5yd42crazf50") //all address txs
 	if err != nil {
 		t.Fatal(err.Error())
 	}
 	delegate_times := s.getPeriodDelegationTimes("faa1k2f9qpnh0r3j4r83z34hen4xtx5yd42crazf50", txs)
 	t.Log(delegate_times)
-	res, err := s.getStaticDelegator(terminaldate, txs)
+	res, err := s.getStaticDelegator(starttime, terminaldata, txs)
 
 	bytedata, _ := json.Marshal(res)
 	t.Log(string(bytedata))
