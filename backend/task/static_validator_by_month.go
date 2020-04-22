@@ -51,7 +51,8 @@ func (task *StaticValidatorByMonthTask) DoTask() error {
 	//	month = time.December
 	//}
 	year, month := getTerminalYearMonth(datetime)
-	terminaldate, err := document.Getdate(task.staticModel.Name(), year, int(month), datetime, "-"+document.ValidatorStaticFieldDate, cstZone)
+	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-01T00:00:00", year, month), cstZone)
+	terminaldate, err := document.Getdate(task.staticModel.Name(), starttime, datetime, "-"+document.ValidatorStaticFieldDate)
 	if err != nil {
 		return err
 	}
@@ -85,7 +86,8 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(terminalval document.
 	address := utils.Convert(conf.Get().Hub.Prefix.AccAddr, terminalval.OperatorAddress)
 
 	year, month := getTerminalYearMonth(terminalval.Date)
-	date, err := document.Getdate(task.staticModel.Name(), year, month, terminalval.Date, document.ValidatorStaticFieldDate, cstZone)
+	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-01T00:00:00", year, month), cstZone)
+	date, err := document.Getdate(task.staticModel.Name(), starttime, terminalval.Date, document.ValidatorStaticFieldDate)
 	if err != nil {
 		logger.Error("Getdate have error",
 			logger.String("time", terminalval.Date.String()),

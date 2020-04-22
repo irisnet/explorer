@@ -44,8 +44,10 @@ func (task *StaticDelegatorByMonthTask) DoTask() error {
 	//	year = datetime.Year() - 1
 	//	month = time.December
 	//}
+
 	year, month := getTerminalYearMonth(datetime)
-	terminaldate, err := document.Getdate(task.staticModel.Name(), year, int(month), datetime, "-"+document.ExStaticDelegatorDateTag, cstZone)
+	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-01T00:00:00", year, month), cstZone)
+	terminaldate, err := document.Getdate(task.staticModel.Name(), starttime, datetime, "-"+document.ExStaticDelegatorDateTag)
 	if err != nil {
 		return err
 	}
@@ -57,15 +59,37 @@ func (task *StaticDelegatorByMonthTask) DoTask() error {
 			logger.String("err", err.Error()))
 		return err
 	}
+
 	res := make([]document.ExStaticDelegatorMonth, 0, len(terminalData))
 
-	txs, err := task.getPeriodTxByAddress(terminaldate.Year(), int(terminaldate.Month()), "") //all address txs
+	txstarttime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-01T00:00:00", terminaldate.Year(), terminaldate.Month()), cstZone)
+	if err != nil {
+		logger.Error("txstarttime have error", logger.String("err", err.Error()))
+		return err
+	}
+	txendtime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-01T00:00:00", terminaldate.Year(), terminaldate.Month()+1), cstZone)
+	if err != nil {
+		logger.Error("txendtime have error", logger.String("err", err.Error()))
+		return err
+	}
+	txs, err := task.getPeriodTxByAddress(txstarttime, txendtime, "") //all address txs
 	if err != nil {
 		return err
 	}
 
 	for _, val := range terminalData {
-		one, err := task.getStaticDelegator(val, txs)
+
+		year, month := getTerminalYearMonth(val.Date)
+		starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-01T00:00:00", year, month), cstZone)
+		startdate, err := document.Getdate(task.staticModel.Name(), starttime, val.Date, document.ExStaticDelegatorDateTag)
+		if err != nil {
+			logger.Error("Getdate have error",
+				logger.String("time", val.Date.String()),
+				logger.String("err", err.Error()))
+			continue
+		}
+
+		one, err := task.getStaticDelegator(startdate, val, txs)
 		if err != nil {
 			logger.Error(err.Error())
 			continue
@@ -92,17 +116,9 @@ func parseCoinAmountAndUnitFromStr(s string) (document.Coin) {
 	return document.Coin{}
 }
 
-func (task *StaticDelegatorByMonthTask) getStaticDelegator(terminalval document.ExStaticDelegator, txs []document.CommonTx) (document.ExStaticDelegatorMonth, error) {
+func (task *StaticDelegatorByMonthTask) getStaticDelegator(startdate time.Time, terminalval document.ExStaticDelegator, txs []document.CommonTx) (document.ExStaticDelegatorMonth, error) {
 	periodRewards := task.getPeriodRewards(terminalval.Address)
-	year, month := getTerminalYearMonth(terminalval.Date)
-	date, err := document.Getdate(task.staticModel.Name(), year, month, terminalval.Date, document.ExStaticDelegatorDateTag, cstZone)
-	if err != nil {
-		logger.Error("Getdate have error",
-			logger.String("time", terminalval.Date.String()),
-			logger.String("err", err.Error()))
-
-	}
-	delagation, err := task.staticModel.GetDataOneDay(date, terminalval.Address)
+	delagation, err := task.staticModel.GetDataOneDay(startdate, terminalval.Address)
 	if err != nil {
 		logger.Error("get DelegationData failed",
 			logger.String("func", "get StaticDelegator"),
@@ -145,12 +161,7 @@ func (task *StaticDelegatorByMonthTask) getStaticDelegator(terminalval document.
 
 	return item, nil
 }
-func (task *StaticDelegatorByMonthTask) getPeriodTxByAddress(year, month int, address string) ([]document.CommonTx, error) {
-	//fmt.Println(year,month)
-	//fmt.Println(fmt.Sprintf("%d-%02d-01T00:00:00", year, month))
-	//fmt.Println(fmt.Sprintf("%d-%02d-01T00:00:00", year, month+1))
-	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-01T00:00:00", year, month), cstZone)
-	endtime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-01T00:00:00", year, month+1), cstZone)
+func (task *StaticDelegatorByMonthTask) getPeriodTxByAddress(starttime, endtime time.Time, address string) ([]document.CommonTx, error) {
 	txs, err := task.txModel.GetTxsByDurationAddress(starttime, endtime, address)
 	if err != nil {
 		return nil, err
