@@ -420,6 +420,12 @@
 								color: '#70C6C7',
 								curveness: 0.3,
 							},
+							emphasis: {
+								lineStyle: {
+									width: 1,
+									type: 'solid',
+								}
+							}
 						})
 					}else {
 						nodeLinksArray.push({
@@ -430,7 +436,12 @@
 								type: 'dashed',
 								curveness: 0.3,
 							},
-							
+							emphasis: {
+								lineStyle: {
+									width: 1,
+									type: 'dashed',
+								}
+							}
 						})
 					}
 					
