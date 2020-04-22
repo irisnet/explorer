@@ -66,7 +66,7 @@
 						},
 						{
 							"chain-id": "irishub",
-							"connections": 10
+							"connections": 8
 						},
 						{
 							"chain-id": "achain",
@@ -90,7 +90,7 @@
 						},
 						{
 							"chain-id": "umbrellachain",
-							"connections": 7
+							"connections": 6
 						},
 						{
 							"chain-id": "ptpchain",
@@ -98,7 +98,7 @@
 						},
 						{
 							"chain-id": "ibc-band-testnet1",
-							"connections": 3
+							"connections": 2
 						},
 						{
 							"chain-id": "kava-ibc",
@@ -121,11 +121,6 @@
 						},
 						{
 							"src": "irishub",
-							"dst": "achain",
-							"state": "OPEN"
-						},
-						{
-							"src": "irishub",
 							"dst": "morpheus-ibc-3000",
 							"state": "OPEN"
 						},
@@ -145,7 +140,7 @@
 							"state": "OPEN"
 						},
 						{
-							"src": "irishub",
+							"src": "achain",
 							"dst": "crusty",
 							"state": "OPEN"
 						},
@@ -206,11 +201,6 @@
 						},
 						{
 							"src": "melea-11",
-							"dst": "umbrellachain",
-							"state": "OPEN"
-						},
-						{
-							"src": "ibc-band-testnet1",
 							"dst": "umbrellachain",
 							"state": "OPEN"
 						},
@@ -313,11 +303,13 @@
 				}).then( res => {
 					this.data = res;
 					// TODO 演示专用数据
-					this.data = this.testData
+					this.data = this.testData;
+					//数据先排序
 					this.data.nodes.sort((a,b) => {
 						return b.connections - a.connections
 					});
 					let maxDataArray = [],maxDataLength;
+					//目前需求超过30个节点就不显示
 					if(this.data.nodes.length > 30){
 						maxDataLength = 30
 					}else {
@@ -326,7 +318,9 @@
 					for (let i = 0 ; i < maxDataLength; i ++){
 						maxDataArray.push(this.data.nodes[i])
 					}
+					
 					this.data.nodes = maxDataArray;
+					
 					this.data.nodes.forEach((item,index) => {
 						item.isDelete = false;
 						item.color = this.color[index]
@@ -389,7 +383,7 @@
 			initChartsGraph(){
 				let graphEcharts = echarts.init(document.getElementById('validator_graph_content'));
 				let nodeLinksArray = [],nodeArray = [];
-				//最大像素点与最小像素点的差值
+				//最大像素点与最小像素点的差值106  最小的symbolSize 为 8 * 节点递增的比例
 				let symbolSizeRule = 106;
 				for(let i in this.copyData.nodes){
 					nodeArray.push({
@@ -431,11 +425,13 @@
 						nodeLinksArray.push({
 							source: item.src,
 							target: item.dst,
+							//连接线的样式设置
 							lineStyle:{
 								color: 'rgba(112, 198, 199, 1)',
 								type: 'dashed',
 								curveness: 0.3,
 							},
+							//鼠标滑到连接线上的样式配置
 							emphasis: {
 								lineStyle: {
 									width: 1,
@@ -462,16 +458,17 @@
 							layout: 'force',
 							data: nodeArray,
 							links: nodeLinksArray,
-							nodeScaleRatio: 0.6,
+							nodeScaleRatio: 0.6, //鼠标每次缩放的整体缩放比例
 							force:{
-								repulsion: 1500,
-								gravity: 0.3,
-								edgeLength: [10,100],
+								repulsion: [10,1500], //斥力因子
+								gravity: 0.3, //是否向中心靠拢 值越大越接近于中心
+								edgeLength: [10,300], //链接线的长度范围
 								layoutAnimation: true
 							},
-							categories: categories,
-							roam: true,
-							draggable: true,
+							// zoom:0.9, //设置整体视图缩放的比例
+							categories: categories, //类目数据
+							roam: true, //平移和缩放  move 和 scale true 包含所有
+							draggable: true, //是否拖拽
 							hoverAnimation : true,
 							focusNodeAdjacency: true,
 							itemStyle: {
@@ -498,7 +495,6 @@
 	.validator_graph_container{
 		width: 100%;
 		height: 100%;
-		background: #202342;
 		.graph_content_wrap{
 			max-width: 12.8rem;
 			margin: 0 auto;
