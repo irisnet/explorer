@@ -6,6 +6,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/txn"
 	"time"
+	"github.com/irisnet/explorer/backend/utils"
 )
 
 const (
@@ -16,14 +17,14 @@ const (
 )
 
 type ExStaticRewards struct {
-	Id      bson.ObjectId `bson:"_id"`
-	Address string        `bson:"address"`
-	Date    time.Time     `bson:"date"`
-	Total   []Rewards     `bson:"total"`
-	//DelegationsDetail []DelegationsRewards `bson:"delegations_detail"`
-	Delegations []Rewards `bson:"delegations"`
-	Commission  []Rewards `bson:"commission"`
-	CreateAt    int64     `bson:"create_at"`
+	Id                 bson.ObjectId `bson:"_id"`
+	Address            string        `bson:"address"`
+	Date               time.Time     `bson:"date"`
+	Total              []Rewards     `bson:"total"`
+	Delegation         utils.Coin    `bson:"delegation"`
+	DelegationsRewards []Rewards     `bson:"delegations_rewards"`
+	Commission         []Rewards     `bson:"commission"`
+	CreateAt           int64         `bson:"create_at"`
 }
 
 type Rewards struct {
