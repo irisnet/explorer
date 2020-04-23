@@ -17,17 +17,17 @@ const (
 )
 
 type ExStaticValidator struct {
-	Id                    bson.ObjectId `bson:"_id"`
-	OperatorAddress       string        `bson:"operator_address"`
-	Status                string        `bson:"status"`
-	Date                  time.Time     `bson:"date"`
-	Tokens                string        `bson:"tokens"`
-	DelegatorShares       string        `bson:"delegator_shares"`
-	Delegations           string        `bson:"delegations"` //tokens - self_bond
-	SelfBond              string        `bson:"self_bond"`
-	Commission            Commission    `bson:"commission"`
-	DelegatorNum          int           `bson:"delegator_num"`
-	CreateAt              int64         `bson:"create_at"`
+	Id              bson.ObjectId `bson:"_id"`
+	OperatorAddress string        `bson:"operator_address"`
+	Status          string        `bson:"status"`
+	Date            time.Time     `bson:"date"`
+	Tokens          string        `bson:"tokens"`
+	DelegatorShares string        `bson:"delegator_shares"`
+	Delegations     string        `bson:"delegations"` //tokens - self_bond
+	SelfBond        string        `bson:"self_bond"`
+	Commission      Commission    `bson:"commission"`
+	DelegatorNum    int           `bson:"delegator_num"`
+	CreateAt        int64         `bson:"create_at"`
 }
 
 func (d ExStaticValidator) Name() string {
@@ -53,7 +53,6 @@ func (d ExStaticValidator) EnsureIndexes() []mgo.Index {
 func (d ExStaticValidator) Batch(txs []txn.Op) error {
 	return orm.Batch(txs)
 }
-
 
 func (d ExStaticValidator) GetDataByDate(date time.Time) ([]ExStaticValidator, error) {
 	var res []ExStaticValidator
@@ -83,7 +82,7 @@ func (d ExStaticValidator) GetDataOneDay(date time.Time, operatoraddr string) (E
 		ValidatorStaticFieldDate:            date,
 		ValidatorStaticFieldOperatorAddress: operatoraddr,
 	}
-	if err := queryOne(d.Name(), nil, cond, &res); err != nil {
+	if err := queryOne(d.Name(), nil, cond, &res); err != nil && err != mgo.ErrNotFound {
 		return res, err
 	}
 

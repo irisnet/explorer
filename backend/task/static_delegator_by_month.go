@@ -120,6 +120,10 @@ func (task *StaticDelegatorByMonthTask) getStaticDelegator(startdate time.Time, 
 			logger.String("err", err.Error()))
 		return document.ExStaticDelegatorMonth{}, err
 	}
+	if delagation.Address == "" {
+		delagation.Address = terminalval.Address
+		delagation.Date = startdate
+	}
 
 	//if task.AddrBeginCommission == nil {
 	//	task.AddrBeginCommission = make(map[string]document.Coin)
@@ -140,12 +144,15 @@ func (task *StaticDelegatorByMonthTask) getStaticDelegator(startdate time.Time, 
 		}
 	}
 
-	delagationlastmonth, err := task.mStaticModel.GetLatest()
+	delagationlastmonth, err := task.mStaticModel.GetLatest(terminalval.Address)
 	if err != nil {
 		logger.Error("get GetLatest failed",
 			logger.String("func", "get StaticDelegatorMonth"),
 			logger.String("err", err.Error()))
 		return document.ExStaticDelegatorMonth{}, err
+	}
+	if delagationlastmonth.Address == "" {
+		delagationlastmonth.Address = terminalval.Address
 	}
 
 	incrementRewards := task.getIncrementRewards(terminalval, delagationlastmonth, periodRewards)

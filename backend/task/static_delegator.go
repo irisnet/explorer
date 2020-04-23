@@ -162,18 +162,12 @@ func (task StaticDelegatorTask) loadDelegationsRewards(total, commission documen
 	if subValue == nil {
 		return nil
 	}
-
-	var ret []document.Rewards
-	subValueFloat64, ok := subValue.Float64()
-	if ok {
-		one := document.Rewards{
-			Iris:     subValueFloat64,
-			IrisAtto: subValue.String(),
-		}
-		ret = []document.Rewards{one}
+	one := document.Rewards{
+		Iris:     total.Iris - commission.Iris,
+		IrisAtto: subValue.String(),
 	}
 
-	return ret
+	return []document.Rewards{one}
 }
 
 func (task StaticDelegatorTask) getAccountFromDb() ([]document.Account, error) {

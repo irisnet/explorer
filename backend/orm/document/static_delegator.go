@@ -117,7 +117,7 @@ func (d ExStaticDelegator) GetDataOneDay(date time.Time, address string) (ExStat
 		ExStaticDelegatorDateTag:    date,
 		ExStaticDelegatorAddressTag: address,
 	}
-	if err := queryOne(d.Name(), nil, cond, &res); err != nil {
+	if err := queryOne(d.Name(), nil, cond, &res); err != nil && err != mgo.ErrNotFound {
 		return res, err
 	}
 

@@ -101,6 +101,19 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(terminalval document.
 			logger.String("err", err.Error()))
 		return document.ExStaticValidatorMonth{}, err
 	}
+	if validatestatic.OperatorAddress == "" {
+		validatestatic.OperatorAddress = terminalval.OperatorAddress
+		validatestatic.Date = date
+	}
+
+	latestone, err := task.mStaticModel.GetLatest(terminalval.OperatorAddress)
+	if err != nil {
+		logger.Error("get latest one failed", logger.String("func", "get IncrementCommission"),
+			logger.String("err", err.Error()))
+	}
+	if latestone.OperatorAddress == "" {
+		latestone.OperatorAddress = terminalval.OperatorAddress
+	}
 
 	delegation := lcd.GetDelegationsFromValAddrByDelAddr(types.FoundationDelegatorAddr, terminalval.OperatorAddress)
 
@@ -111,11 +124,11 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(terminalval document.
 		TerminalDelegation:      terminalval.Delegations,
 		TerminalDelegatorN:      terminalval.DelegatorNum,
 		TerminalSelfBond:        terminalval.SelfBond,
-		IncrementDelegation:     task.getIncrementDelegation(terminalval, validatestatic),
-		IncrementDelegatorN:     terminalval.DelegatorNum - validatestatic.DelegatorNum,
-		IncrementSelfBond:       task.getIncrementSelfBond(terminalval, validatestatic),
+		IncrementDelegation:     task.getIncrementDelegation(terminalval, latestone),
+		IncrementDelegatorN:     terminalval.DelegatorNum - latestone.TerminalDelegatorN,
+		IncrementSelfBond:       task.getIncrementSelfBond(terminalval, latestone),
 		FoundationDelegateT:     delegation.Shares,
-		FoundationDelegateIncre: task.getFoundationDelegateIncre(terminalval, delegation.Shares),
+		FoundationDelegateIncre: task.getFoundationDelegateIncre(terminalval, latestone.FoundationDelegateT),
 		CommissionRateMax:       task.getCommissionRate(terminalval, validatestatic, "-"+document.ValidatorCommissionRateTag),
 		CommissionRateMin:       task.getCommissionRate(terminalval, validatestatic, document.ValidatorCommissionRateTag),
 	}
@@ -125,7 +138,7 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(terminalval document.
 
 	if tcommission, ok := task.AddressTerminalCommission[address]; ok {
 		item.TerminalCommission = tcommission
-		item.IncrementCommission = task.getIncrementCommission(address, item.TerminalCommission)
+		item.IncrementCommission = task.getIncrementCommission(address, item.TerminalCommission, latestone.TerminalCommission)
 	}
 
 	if desp, ok := service.ValidatorsDescriptionMap[terminalval.OperatorAddress]; ok {
@@ -146,16 +159,16 @@ func getStartYearMonth(datetime time.Time) (year, month int) {
 	return year, month
 }
 
-func (task *StaticValidatorByMonthTask) getIncrementDelegation(terminal, begin document.ExStaticValidator) string {
-	subValue := funcSubStr(terminal.Delegations, begin.Delegations)
+func (task *StaticValidatorByMonthTask) getIncrementDelegation(terminal document.ExStaticValidator, latestone document.ExStaticValidatorMonth) string {
+	subValue := funcSubStr(terminal.Delegations, latestone.TerminalDelegation)
 	if subValue != nil {
 		return subValue.FloatString(18)
 	}
 	return ""
 }
 
-func (task *StaticValidatorByMonthTask) getIncrementSelfBond(terminal, begin document.ExStaticValidator) string {
-	subValue := funcSubStr(terminal.SelfBond, begin.SelfBond)
+func (task *StaticValidatorByMonthTask) getIncrementSelfBond(terminal document.ExStaticValidator, latestone document.ExStaticValidatorMonth) string {
+	subValue := funcSubStr(terminal.SelfBond, latestone.TerminalSelfBond)
 	if subValue != nil {
 		return subValue.FloatString(18)
 	}
@@ -181,17 +194,13 @@ func (task *StaticValidatorByMonthTask) getFoundationDelegateIncre(terminal docu
 	return ""
 }
 
-func (task *StaticValidatorByMonthTask) getIncrementCommission(address string, terminalCommission document.Coin) (IncreCommission document.Coin) {
+func (task *StaticValidatorByMonthTask) getIncrementCommission(address string, terminalCommission,
+latestoneCommission document.Coin) (IncreCommission document.Coin) {
 	pcommission, ok := task.AddressPeriodCommission[address]
 	if ok {
-		latestone, err := task.mStaticModel.GetLatest()
-		if err == nil {
-			//Rcx = Rcn - Rcn-1 + Rcw
-			IncreCommission.Amount = terminalCommission.Amount - latestone.TerminalCommission.Amount + pcommission.Amount
-		} else {
-			logger.Error("get latest one failed", logger.String("func", "get IncrementCommission"),
-				logger.String("err", err.Error()))
-		}
+		//Rcx = Rcn - Rcn-1 + Rcw
+		IncreCommission.Amount = terminalCommission.Amount - latestoneCommission.Amount + pcommission.Amount
+
 		IncreCommission.Denom = terminalCommission.Denom
 	}
 	return

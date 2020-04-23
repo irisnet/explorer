@@ -76,17 +76,22 @@ func (d ExStaticValidatorMonth) GetValidatorStaticByMonth(datestr, operatoraddr 
 	return res, nil
 }
 
-func (d ExStaticValidatorMonth) GetLatest() (ExStaticValidatorMonth, error) {
+func (d ExStaticValidatorMonth) GetLatest(address string) (ExStaticValidatorMonth, error) {
 	var res ExStaticValidatorMonth
+	cond := bson.M{}
+	if address != "" {
+		cond[ValidatorStaticFieldOperatorAddress] = address
+	}
 	var query = orm.NewQuery()
 	defer query.Release()
 	query.SetCollection(d.Name()).
+		SetCondition(cond).
 		SetSort("-date").
 		SetSize(1).
 		SetResult(&res)
 
 	err := query.Exec()
-	if err != nil {
+	if err != nil && err != mgo.ErrNotFound {
 		return res, err
 	}
 	return res, nil

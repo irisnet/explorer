@@ -30,15 +30,15 @@ func TestStaticDelegatorByMonthTask_getDelegationData(t *testing.T) {
 }
 func TestStaticDelegatorByMonthTask_getPeriodTxByAddress(t *testing.T) {
 	task := new(StaticDelegatorByMonthTask)
-	starttime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 9), cstZone)
+	starttime, err := time.Parse(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 4))
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	endtime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 15), cstZone)
+	endtime, err := time.Parse(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 5))
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	txs, err := task.getPeriodTxByAddress(starttime, endtime, "faa1eqvkfthtrr93g4p9qspp54w6dtjtrn279vcmpn")
+	txs, err := task.getPeriodTxByAddress(starttime, endtime, "iaa1xf5jaw09klqg9hzxfks3ycjvqgnpyjcm0yrkut")
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -68,28 +68,30 @@ func TestStaticDelegatorByMonthTask_getCoinflowByHash(t *testing.T) {
 
 func TestStaticDelegatorByMonthTask_getStaticDelegator(t *testing.T) {
 	s := new(StaticDelegatorByMonthTask)
-	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 9), cstZone)
-	endtime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 13), cstZone)
+	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 7), cstZone)
+	endtime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 8), cstZone)
 	terminaldata := document.ExStaticDelegator{
 		Date:    endtime,
-		Address: "faa1k2f9qpnh0r3j4r83z34hen4xtx5yd42crazf50",
+		Address: "iaa1xf5jaw09klqg9hzxfks3ycjvqgnpyjcm0yrkut",
 		DelegationsRewards: []document.Rewards{
-			{Iris: float64(404.745631836595), IrisAtto: ""},
+			{Iris: float64(0.0176214910865403520), IrisAtto: ""},
 		},
 		Delegation: utils.Coin{
 			Amount: float64(1500000000000000000000),
 			Denom:  "iris-atto",
 		},
-		Commission: []document.Rewards{},
+		Commission: []document.Rewards{
+			{Iris: float64(0.188503181406925)},
+		},
 		Total: []document.Rewards{
-			{Iris: float64(404.745631836595), IrisAtto: ""},
+			{Iris: float64(0.206124672493465), IrisAtto: ""},
 		},
 	}
-	txs, err := s.getPeriodTxByAddress(starttime, endtime, "faa1k2f9qpnh0r3j4r83z34hen4xtx5yd42crazf50") //all address txs
+	txs, err := s.getPeriodTxByAddress(starttime, endtime, "iaa1xf5jaw09klqg9hzxfks3ycjvqgnpyjcm0yrkut") //all address txs
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	delegate_times := s.getPeriodDelegationTimes("faa1k2f9qpnh0r3j4r83z34hen4xtx5yd42crazf50", txs)
+	delegate_times := s.getPeriodDelegationTimes("iaa1xf5jaw09klqg9hzxfks3ycjvqgnpyjcm0yrkut", txs)
 	t.Log(delegate_times)
 	res, err := s.getStaticDelegator(starttime, terminaldata, txs)
 
