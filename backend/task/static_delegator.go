@@ -162,8 +162,9 @@ func (task StaticDelegatorTask) loadDelegationsRewards(total, commission documen
 	if subValue == nil {
 		return nil
 	}
+	subValueFloat64, _ := subValue.Float64()
 	one := document.Rewards{
-		Iris:     total.Iris - commission.Iris,
+		Iris:     subValueFloat64 / math.Pow10(18),
 		IrisAtto: subValue.String(),
 	}
 
