@@ -159,7 +159,8 @@ func (task *StaticDelegatorByMonthTask) getStaticDelegator(startdate time.Time, 
 
 	item := document.ExStaticDelegatorMonth{
 		Address:                terminalval.Address,
-		Date:                   fmt.Sprintf("%d.%02d", terminalval.Date.Year(), terminalval.Date.Month()),
+		Date:                   fmt.Sprintf("%d.%02d", startdate.Year(), startdate.Month()),
+		CaculateDate:           fmt.Sprintf("%d.%02d.%02d", terminalval.Date.Year(), terminalval.Date.Month(), terminalval.Date.Day()),
 		TerminalDelegation:     document.Coin{Denom: terminalval.Delegation.Denom, Amount: terminalval.Delegation.Amount},
 		PeriodDelegationTimes:  task.getPeriodDelegationTimes(terminalval.Address, txs),
 		PeriodWithdrawRewards:  periodRewards,

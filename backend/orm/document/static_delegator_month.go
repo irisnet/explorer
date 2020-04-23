@@ -18,6 +18,7 @@ type ExStaticDelegatorMonth struct {
 	Id                     bson.ObjectId `bson:"_id"`
 	Address                string        `bson:"address"`
 	Date                   string        `bson:"date"`
+	CaculateDate           string        `bson:"caculate_date"`
 	TerminalRewards        Rewards       `bson:"terminal_rewards"`
 	PeriodWithdrawRewards  Rewards       `bson:"period_withdraw_rewards"`
 	PeriodIncrementRewards Rewards       `bson:"period_increment_rewards"`

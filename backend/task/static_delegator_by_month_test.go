@@ -74,17 +74,17 @@ func TestStaticDelegatorByMonthTask_getStaticDelegator(t *testing.T) {
 		Date:    endtime,
 		Address: "iaa1xf5jaw09klqg9hzxfks3ycjvqgnpyjcm0yrkut",
 		DelegationsRewards: []document.Rewards{
-			{Iris: float64(0.0176214910865403520), IrisAtto: ""},
+			{Iris: float64(0.014716424936353884), IrisAtto: ""},
 		},
 		Delegation: utils.Coin{
 			Amount: float64(1500000000000000000000),
 			Denom:  "iris-atto",
 		},
 		Commission: []document.Rewards{
-			{Iris: float64(0.188503181406925)},
+			{Iris: float64(0.167533025538185)},
 		},
 		Total: []document.Rewards{
-			{Iris: float64(0.206124672493465), IrisAtto: ""},
+			{Iris: float64(0.182331089770524), IrisAtto: ""},
 		},
 	}
 	txs, err := s.getPeriodTxByAddress(starttime, endtime, "iaa1xf5jaw09klqg9hzxfks3ycjvqgnpyjcm0yrkut") //all address txs

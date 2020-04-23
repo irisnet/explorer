@@ -67,7 +67,16 @@ func (task *StaticValidatorByMonthTask) DoTask() error {
 	}
 
 	for _, val := range terminalData {
-		one, errf := task.getStaticValidator(val, addressHeightMap)
+		year, month := getStartYearMonth(val.Date)
+		starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-01T00:00:00", year, month), cstZone)
+		date, err := document.Getdate(task.staticModel.Name(), starttime, val.Date, document.ValidatorStaticFieldDate)
+		if err != nil {
+			logger.Error("Getdate have error",
+				logger.String("time", val.Date.String()),
+				logger.String("err", err.Error()))
+			continue
+		}
+		one, errf := task.getStaticValidator(date, val, addressHeightMap)
 		if errf != nil {
 			logger.Error(errf.Error())
 			continue
@@ -81,18 +90,8 @@ func (task *StaticValidatorByMonthTask) DoTask() error {
 	return task.mStaticModel.Batch(task.saveOps(res))
 }
 
-func (task *StaticValidatorByMonthTask) getStaticValidator(terminalval document.ExStaticValidator, addrHeightMap map[string]int64) (document.ExStaticValidatorMonth, error) {
+func (task *StaticValidatorByMonthTask) getStaticValidator(date time.Time, terminalval document.ExStaticValidator, addrHeightMap map[string]int64) (document.ExStaticValidatorMonth, error) {
 	address := utils.Convert(conf.Get().Hub.Prefix.AccAddr, terminalval.OperatorAddress)
-
-	year, month := getStartYearMonth(terminalval.Date)
-	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-01T00:00:00", year, month), cstZone)
-	date, err := document.Getdate(task.staticModel.Name(), starttime, terminalval.Date, document.ValidatorStaticFieldDate)
-	if err != nil {
-		logger.Error("Getdate have error",
-			logger.String("time", terminalval.Date.String()),
-			logger.String("err", err.Error()))
-		return document.ExStaticValidatorMonth{}, err
-	}
 
 	validatestatic, err := task.staticModel.GetDataOneDay(date, terminalval.OperatorAddress)
 	if err != nil {
@@ -120,15 +119,17 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(terminalval document.
 	item := document.ExStaticValidatorMonth{
 		Address:                 address,
 		OperatorAddress:         terminalval.OperatorAddress,
-		Date:                    fmt.Sprintf("%d.%02d", terminalval.Date.Year(), terminalval.Date.Month()),
+		Date:                    fmt.Sprintf("%d.%02d", date.Year(), date.Month()),
+		CaculateDate:            fmt.Sprintf("%d.%02d.%02d", terminalval.Date.Year(), terminalval.Date.Month(), terminalval.Date.Day()),
 		TerminalDelegation:      terminalval.Delegations,
 		TerminalDelegatorN:      terminalval.DelegatorNum,
 		TerminalSelfBond:        terminalval.SelfBond,
+		Tokens:                  terminalval.Tokens,
 		IncrementDelegation:     task.getIncrementDelegation(terminalval, latestone),
 		IncrementDelegatorN:     terminalval.DelegatorNum - latestone.TerminalDelegatorN,
 		IncrementSelfBond:       task.getIncrementSelfBond(terminalval, latestone),
 		FoundationDelegateT:     delegation.Shares,
-		FoundationDelegateIncre: task.getFoundationDelegateIncre(terminalval, latestone.FoundationDelegateT),
+		FoundationDelegateIncre: task.getFoundationDelegateIncre(delegation.Shares, latestone.FoundationDelegateT),
 		CommissionRateMax:       task.getCommissionRate(terminalval, validatestatic, "-"+document.ValidatorCommissionRateTag),
 		CommissionRateMin:       task.getCommissionRate(terminalval, validatestatic, document.ValidatorCommissionRateTag),
 	}
@@ -136,9 +137,14 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(terminalval document.
 		item.CreateValidatorHeight = height
 	}
 
+	pcommission, ok := task.AddressPeriodCommission[address]
+	if ok {
+		item.PeriodCommission = pcommission
+	}
+
 	if tcommission, ok := task.AddressTerminalCommission[address]; ok {
 		item.TerminalCommission = tcommission
-		item.IncrementCommission = task.getIncrementCommission(address, item.TerminalCommission, latestone.TerminalCommission)
+		item.IncrementCommission = task.getIncrementCommission(pcommission, item.TerminalCommission, latestone.TerminalCommission)
 	}
 
 	if desp, ok := service.ValidatorsDescriptionMap[terminalval.OperatorAddress]; ok {
@@ -164,7 +170,7 @@ func (task *StaticValidatorByMonthTask) getIncrementDelegation(terminal document
 	if subValue != nil {
 		return subValue.FloatString(18)
 	}
-	return ""
+	return terminal.Delegations
 }
 
 func (task *StaticValidatorByMonthTask) getIncrementSelfBond(terminal document.ExStaticValidator, latestone document.ExStaticValidatorMonth) string {
@@ -172,37 +178,25 @@ func (task *StaticValidatorByMonthTask) getIncrementSelfBond(terminal document.E
 	if subValue != nil {
 		return subValue.FloatString(18)
 	}
-	return ""
+	return terminal.SelfBond
 }
 
-func (task *StaticValidatorByMonthTask) getFoundationDelegateIncre(terminal document.ExStaticValidator, shares string) string {
+func (task *StaticValidatorByMonthTask) getFoundationDelegateIncre(foundationDelegateT, foundationDelegateLatest string) string {
 
-	year, month := terminal.Date.Year(), terminal.Date.Month()-1
-	if terminal.Date.Month() == time.January {
-		year = terminal.Date.Year() - 1
-		month = time.December
-	}
-	data, err := task.mStaticModel.GetValidatorStaticByMonth(fmt.Sprintf("%v.%v", year, month-1), terminal.OperatorAddress)
-	if err != nil {
-		logger.Error(err.Error())
-	}
-
-	subValue := funcSubStr(shares, data.FoundationDelegateT)
+	subValue := funcSubStr(foundationDelegateT, foundationDelegateLatest)
 	if subValue != nil {
 		return subValue.FloatString(18)
 	}
-	return ""
+	return foundationDelegateT
 }
 
-func (task *StaticValidatorByMonthTask) getIncrementCommission(address string, terminalCommission,
+func (task *StaticValidatorByMonthTask) getIncrementCommission(pcommission, terminalCommission,
 latestoneCommission document.Coin) (IncreCommission document.Coin) {
-	pcommission, ok := task.AddressPeriodCommission[address]
-	if ok {
-		//Rcx = Rcn - Rcn-1 + Rcw
-		IncreCommission.Amount = terminalCommission.Amount - latestoneCommission.Amount + pcommission.Amount
+	//Rcx = Rcn - Rcn-1 + Rcw
+	IncreCommission.Amount = terminalCommission.Amount - latestoneCommission.Amount + pcommission.Amount
 
-		IncreCommission.Denom = terminalCommission.Denom
-	}
+	IncreCommission.Denom = terminalCommission.Denom
+
 	return
 }
 

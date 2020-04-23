@@ -49,10 +49,10 @@ func TestStaticRewardsByDayTask_loadRewards(t *testing.T) {
 }
 func TestStaticRewardsByDayTask_loadDelegationsRewards(t *testing.T) {
 	var total, commission document.Rewards
-	total.IrisAtto = "182331089770523633"
-	total.Iris = 0.182331089770524
-	commission.IrisAtto = "167594411501829051"
-	commission.Iris = 0.167594411501829
+	total.IrisAtto = "182249450474538571"
+	total.Iris = 0.182249450474539
+	commission.IrisAtto = "167533025538184688"
+	commission.Iris = 0.167533025538185
 	res := new(StaticDelegatorTask).loadDelegationsRewards(total, commission)
 
 	t.Log(res)
