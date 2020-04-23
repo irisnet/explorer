@@ -167,6 +167,12 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(startdate time.Time, 
 	if desp, ok := service.ValidatorsDescriptionMap[terminalval.OperatorAddress]; ok {
 		item.Moniker = desp.Moniker
 	}
+	if item.IncrementCommission.Denom == types.IRISAttoUint {
+		item.IncrementCommission = document.Coin{
+			Denom:  types.IRISUint,
+			Amount: item.IncrementCommission.Amount / math.Pow10(18),
+		}
+	}
 
 	return item, nil
 }
@@ -210,17 +216,11 @@ func (task *StaticValidatorByMonthTask) getFoundationDelegateIncre(foundationDel
 func (task *StaticValidatorByMonthTask) getIncrementCommission(pcommission, terminalCommission,
 latestoneCommission document.Coin) (IncreCommission document.Coin) {
 	//Rcx = Rcn - Rcn-1 + Rcw
-	switch latestoneCommission.Denom {
-	case types.IRISAttoUint:
-		latestoneCommission.Amount = latestoneCommission.Amount / math.Pow10(18)
+	if latestoneCommission.Denom == types.IRISUint {
+		latestoneCommission.Amount = latestoneCommission.Amount * math.Pow10(18)
 	}
 	IncreCommission.Amount = terminalCommission.Amount - latestoneCommission.Amount + pcommission.Amount
 	IncreCommission.Denom = terminalCommission.Denom
-
-	if terminalCommission.Denom == types.IRISAttoUint {
-		IncreCommission.Amount = IncreCommission.Amount / math.Pow10(18)
-		IncreCommission.Denom = types.IRISUint
-	}
 
 	return
 }

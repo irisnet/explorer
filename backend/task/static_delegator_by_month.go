@@ -163,7 +163,16 @@ func (task *StaticDelegatorByMonthTask) getStaticDelegator(startdate time.Time, 
 		delagationlastmonth.Address = terminalval.Address
 	}
 
-	incrementRewards := task.getIncrementRewards(terminalval, delagationlastmonth, periodRewards)
+	delegationrewards := float64(0)
+	if len(terminalval.Total) > 0 {
+		if len(terminalval.Commission) > 0 {
+			delegationrewards = terminalval.Total[0].Iris - terminalval.Commission[0].Iris
+		} else {
+			delegationrewards = terminalval.Total[0].Iris
+		}
+	}
+	terminalRewards := document.Rewards{Iris: delegationrewards, IrisAtto: fmt.Sprint(delegationrewards * math.Pow10(18))}
+	incrementRewards := task.getIncrementRewards(terminalRewards, delagationlastmonth, periodRewards)
 
 	item := document.ExStaticDelegatorMonth{
 		Address:                terminalval.Address,
@@ -174,9 +183,7 @@ func (task *StaticDelegatorByMonthTask) getStaticDelegator(startdate time.Time, 
 		PeriodWithdrawRewards:  periodRewards,
 		IncrementDelegation:    task.getIncrementDelegation(terminalval.Delegation, delagation.Delegation),
 		PeriodIncrementRewards: incrementRewards,
-	}
-	if len(terminalval.DelegationsRewards) > 0 {
-		item.TerminalRewards = terminalval.DelegationsRewards[0]
+		TerminalRewards:        terminalRewards,
 	}
 
 	return item, nil
@@ -222,13 +229,11 @@ func (task *StaticDelegatorByMonthTask) getPeriodDelegationTimes(address string,
 	return
 }
 
-func (task *StaticDelegatorByMonthTask) getIncrementRewards(terminal document.ExStaticDelegator,
+func (task *StaticDelegatorByMonthTask) getIncrementRewards(delegaterewards document.Rewards,
 	delagationlastmonth document.ExStaticDelegatorMonth,
 	periodRewards document.Rewards) (document.Rewards) {
 	var rewards document.Rewards
-	if len(terminal.DelegationsRewards) > 0 {
-		rewards.Iris = terminal.DelegationsRewards[0].Iris
-	}
+	rewards.Iris = delegaterewards.Iris
 
 	//Rdx = Rdn - Rdn-1  + Rdw
 	rewards.Iris -= delagationlastmonth.TerminalRewards.Iris
