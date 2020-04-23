@@ -163,17 +163,12 @@ func (task StaticRewardsTask) loadDelegationsRewards(total, commission document.
 		return nil
 	}
 
-	var ret []document.Rewards
-	subValueFloat64, ok := subValue.Float64()
-	if ok {
-		one := document.Rewards{
-			Iris:     subValueFloat64,
-			IrisAtto: subValue.String(),
-		}
-		ret = []document.Rewards{one}
+	subValueFloat64, _ := subValue.Float64()
+	one := document.Rewards{
+		Iris:     subValueFloat64 / math.Pow10(18),
+		IrisAtto: subValue.FloatString(0),
 	}
-
-	return ret
+	return []document.Rewards{one}
 }
 
 func (task StaticRewardsTask) getAccountFromDb() ([]document.Account, error) {
