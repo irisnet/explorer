@@ -110,11 +110,7 @@ func TestStaticDelegatorByMonthTask_getIncrementDelegation(t *testing.T) {
 	t.Log(data.Amount)
 }
 
-//func TestStart(t *testing.T) {
-//	delegatortask := new(StaticDelegatorByMonthTask)
-//	validatortask := new(StaticValidatorByMonthTask)
-//	delegatortask.Start()
-//	fmt.Println(delegatortask.AddressCoin)
-//	validatortask.SetAddressCoinMapData(delegatortask.AddressCoin)
-//	validatortask.Start()
-//}
+func TestDoTask(t *testing.T) {
+	delegatortask := new(StaticDelegatorByMonthTask)
+	delegatortask.DoTask()
+}

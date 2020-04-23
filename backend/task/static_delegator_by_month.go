@@ -38,13 +38,25 @@ func (task *StaticDelegatorByMonthTask) Start() {
 }
 
 func (task *StaticDelegatorByMonthTask) DoTask() error {
+
+	res, err := task.caculateWork()
+	if err != nil {
+		return err
+	}
+	if len(res) == 0 {
+		return nil
+	}
+	return task.mStaticModel.Batch(task.saveOps(res))
+}
+
+func (task *StaticDelegatorByMonthTask) caculateWork() ([]document.ExStaticDelegatorMonth, error) {
 	datetime := time.Now().In(cstZone)
 
 	year, month := getStartYearMonth(datetime)
 	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-01T00:00:00", year, month), cstZone)
 	terminaldate, err := document.Getdate(task.staticModel.Name(), starttime, datetime, "-"+document.ExStaticDelegatorDateTag)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	terminalData, err := task.staticModel.GetDataByDate(terminaldate)
@@ -52,7 +64,7 @@ func (task *StaticDelegatorByMonthTask) DoTask() error {
 		logger.Error("Get GetData ByDate fail",
 			logger.String("date", terminaldate.String()),
 			logger.String("err", err.Error()))
-		return err
+		return nil, err
 	}
 
 	res := make([]document.ExStaticDelegatorMonth, 0, len(terminalData))
@@ -60,16 +72,16 @@ func (task *StaticDelegatorByMonthTask) DoTask() error {
 	txstarttime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-01T00:00:00", terminaldate.Year(), terminaldate.Month()), cstZone)
 	if err != nil {
 		logger.Error("txstarttime have error", logger.String("err", err.Error()))
-		return err
+		return nil, err
 	}
 	txendtime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-01T00:00:00", terminaldate.Year(), terminaldate.Month()+1), cstZone)
 	if err != nil {
 		logger.Error("txendtime have error", logger.String("err", err.Error()))
-		return err
+		return nil, err
 	}
 	txs, err := task.getPeriodTxByAddress(txstarttime, txendtime, "") //all address txs
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	for _, val := range terminalData {
@@ -91,11 +103,7 @@ func (task *StaticDelegatorByMonthTask) DoTask() error {
 		}
 		res = append(res, one)
 	}
-
-	if len(res) == 0 {
-		return nil
-	}
-	return task.mStaticModel.Batch(task.saveOps(res))
+	return res, nil
 }
 
 func parseCoinAmountAndUnitFromStr(s string) (document.Coin) {
