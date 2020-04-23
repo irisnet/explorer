@@ -120,16 +120,16 @@ func init() {
 
 func loadDefault() {
 	defaultConfig[EnvironmentDevelop] = map[string]string{
-		KeyDbAddr:         "10.2.10.122:27018",
+		KeyDbAddr:         "192.168.150.31:27017",
 		KeyDATABASE:       "sync-iris",
 		KeyDbUser:         "iris",
 		KeyDbPwd:          "irispassword",
 		KeyDbPoolLimit:    "4096",
 		KeyServerPort:     "8080",
-		KeyAddrHubLcd:     "http://v2.irisnet-lcd.rainbow.one",
-		KeyAddrHubNode:    "http://35.220.142.249:26657",
+		KeyAddrHubLcd:     "http://irisnet-lcd.dev.bianjie.ai",
+		KeyAddrHubNode:    "http://irisnet-rpc.dev.rainbow.one",
 		KeyAddrFaucet:     "http://192.168.150.7:30200",
-		KeyChainId:        "rainbow-stage",
+		KeyChainId:        "rainbow-dev",
 		KeyApiVersion:     "v0.6.5",
 		KeyMaxDrawCnt:     "10",
 		KeyPrefixAccAddr:  "faa",
