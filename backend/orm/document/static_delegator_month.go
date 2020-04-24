@@ -5,6 +5,7 @@ import (
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/txn"
 	"github.com/irisnet/explorer/backend/orm"
+	"time"
 )
 
 const (
@@ -72,4 +73,11 @@ func (d ExStaticDelegatorMonth) GetLatest(address string) (ExStaticDelegatorMont
 
 func (d ExStaticDelegatorMonth) Batch(txs []txn.Op) error {
 	return orm.Batch(txs)
+}
+
+func (d ExStaticDelegatorMonth) Save(delegatormonth ExStaticDelegatorMonth) error {
+	delegatormonth.Id = bson.NewObjectId()
+	delegatormonth.CreateAt = time.Now().Unix()
+	delegatormonth.UpdateAt = time.Now().Unix()
+	return orm.Save(d.Name(), delegatormonth)
 }

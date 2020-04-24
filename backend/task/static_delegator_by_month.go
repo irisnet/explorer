@@ -3,8 +3,6 @@ package task
 import (
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/logger"
-	"gopkg.in/mgo.v2/txn"
-	"gopkg.in/mgo.v2/bson"
 	"time"
 	"github.com/irisnet/explorer/backend/types"
 	"fmt"
@@ -13,8 +11,10 @@ import (
 	"strings"
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/conf"
+	"sync"
 )
 
+//caculatetime format [ 2020-04-03T00:00:00 ]
 type StaticDelegatorByMonthTask struct {
 	mStaticModel           document.ExStaticDelegatorMonth
 	staticModel            document.ExStaticDelegator
@@ -23,6 +23,11 @@ type StaticDelegatorByMonthTask struct {
 	AddrPeriodCommission   map[string]document.Coin
 	AddrTerminalCommission map[string]document.Coin
 	//AddrBeginCommission    map[string]document.Coin
+
+	startTime time.Time
+	endTime   time.Time
+	address   string
+	isSetTime bool
 }
 
 func (task *StaticDelegatorByMonthTask) Name() string {
@@ -37,6 +42,16 @@ func (task *StaticDelegatorByMonthTask) Start() {
 	}
 }
 
+func (task *StaticDelegatorByMonthTask) SetCaculateScope(start, end time.Time) {
+	task.isSetTime = true
+	task.startTime = start.In(cstZone)
+	task.endTime = end.In(cstZone)
+}
+
+func (task *StaticDelegatorByMonthTask) SetCaculateAddress(address string) {
+	task.address = address
+}
+
 func (task *StaticDelegatorByMonthTask) DoTask() error {
 
 	res, err := task.caculateWork()
@@ -46,7 +61,16 @@ func (task *StaticDelegatorByMonthTask) DoTask() error {
 	if len(res) == 0 {
 		return nil
 	}
-	return task.mStaticModel.Batch(task.saveOps(res))
+	for _, one := range res {
+		if err := task.mStaticModel.Save(one); err != nil {
+			logger.Error("save static delegator month data error",
+				logger.String("address", one.Address),
+				logger.String("date", one.Date),
+				logger.String("err", err.Error()))
+		}
+	}
+
+	return nil
 }
 
 func (task *StaticDelegatorByMonthTask) caculateWork() ([]document.ExStaticDelegatorMonth, error) {
@@ -54,54 +78,50 @@ func (task *StaticDelegatorByMonthTask) caculateWork() ([]document.ExStaticDeleg
 
 	year, month := getStartYearMonth(datetime)
 	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-01T00:00:00", year, month), cstZone)
-	terminaldate, err := document.Getdate(task.staticModel.Name(), starttime, datetime, "-"+document.ExStaticDelegatorDateTag)
+	if task.isSetTime {
+		datetime = task.endTime
+		starttime = task.startTime
+	}
+	//find last date
+	endtime, err := document.Getdate(task.staticModel.Name(), starttime, datetime, "-"+document.ExStaticDelegatorDateTag)
 	if err != nil {
 		return nil, err
 	}
 
-	terminalData, err := task.staticModel.GetDataByDate(terminaldate)
-	if err != nil {
-		logger.Error("Get GetData ByDate fail",
-			logger.String("date", terminaldate.String()),
-			logger.String("err", err.Error()))
-		return nil, err
+	var terminalData []document.ExStaticDelegator
+	if task.address != "" {
+		data, err := task.staticModel.GetDataOneDay(endtime, task.address)
+		if err != nil {
+			return nil, err
+		}
+		terminalData = append(terminalData, data)
+	} else {
+		terminalData, err = task.staticModel.GetDataByDate(endtime)
+		if err != nil {
+			logger.Error("Get GetData ByDate fail",
+				logger.String("date", datetime.String()),
+				logger.String("err", err.Error()))
+			return nil, err
+		}
 	}
 
 	res := make([]document.ExStaticDelegatorMonth, 0, len(terminalData))
 
-	txstarttime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-01T00:00:00", terminaldate.Year(), terminaldate.Month()), cstZone)
-	if err != nil {
-		logger.Error("txstarttime have error", logger.String("err", err.Error()))
-		return nil, err
-	}
-	txendtime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-01T00:00:00", terminaldate.Year(), terminaldate.Month()+1), cstZone)
-	if err != nil {
-		logger.Error("txendtime have error", logger.String("err", err.Error()))
-		return nil, err
-	}
-	txs, err := task.getPeriodTxByAddress(txstarttime, txendtime, "") //all address txs
+	txs, err := task.getPeriodTxByAddress(starttime, datetime, task.address) //default is all address txs
 	if err != nil {
 		return nil, err
 	}
+	logger.Debug(fmt.Sprintf("total delegator:%v", len(terminalData)))
 
-	for _, val := range terminalData {
-
-		year, month := getStartYearMonth(val.Date)
-		starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-01T00:00:00", year, month), cstZone)
-		startdate, err := document.Getdate(task.staticModel.Name(), starttime, val.Date, document.ExStaticDelegatorDateTag)
-		if err != nil {
-			logger.Error("Getdate have error",
-				logger.String("time", val.Date.String()),
-				logger.String("err", err.Error()))
-			continue
-		}
-
-		one, err := task.getStaticDelegator(startdate, val, txs)
+	for i, val := range terminalData {
+		one, err := task.getStaticDelegator(starttime, val, txs)
 		if err != nil {
 			logger.Error(err.Error())
 			continue
 		}
+		one.CaculateDate = fmt.Sprintf("%d.%02d.%02d", datetime.Year(), datetime.Month(), datetime.Day())
 		res = append(res, one)
+		logger.Debug(fmt.Sprintf("caculate delegator index:%v", i))
 	}
 	return res, nil
 }
@@ -119,9 +139,9 @@ func parseCoinAmountAndUnitFromStr(s string) (document.Coin) {
 	return document.Coin{}
 }
 
-func (task *StaticDelegatorByMonthTask) getStaticDelegator(startdate time.Time, terminalval document.ExStaticDelegator, txs []document.CommonTx) (document.ExStaticDelegatorMonth, error) {
+func (task *StaticDelegatorByMonthTask) getStaticDelegator(starttime time.Time, terminalval document.ExStaticDelegator, txs []document.CommonTx) (document.ExStaticDelegatorMonth, error) {
 	periodRewards := task.getPeriodRewards(terminalval.Address)
-	delagation, err := task.staticModel.GetDataOneDay(startdate, terminalval.Address)
+	delagation, err := task.staticModel.GetDataOneDay(starttime, terminalval.Address)
 	if err != nil {
 		logger.Error("get DelegationData failed",
 			logger.String("func", "get StaticDelegator"),
@@ -130,7 +150,7 @@ func (task *StaticDelegatorByMonthTask) getStaticDelegator(startdate time.Time, 
 	}
 	if delagation.Address == "" {
 		delagation.Address = terminalval.Address
-		delagation.Date = startdate
+		delagation.Date = starttime
 	}
 
 	//if task.AddrBeginCommission == nil {
@@ -176,8 +196,7 @@ func (task *StaticDelegatorByMonthTask) getStaticDelegator(startdate time.Time, 
 
 	item := document.ExStaticDelegatorMonth{
 		Address:                terminalval.Address,
-		Date:                   fmt.Sprintf("%d.%02d", startdate.Year(), startdate.Month()),
-		CaculateDate:           fmt.Sprintf("%d.%02d.%02d", terminalval.Date.Year(), terminalval.Date.Month(), terminalval.Date.Day()),
+		Date:                   fmt.Sprintf("%d.%02d.%02d", starttime.Year(), starttime.Month(), starttime.Day()),
 		TerminalDelegation:     document.Coin{Denom: terminalval.Delegation.Denom, Amount: terminalval.Delegation.Amount},
 		PeriodDelegationTimes:  task.getPeriodDelegationTimes(terminalval.Address, txs),
 		PeriodWithdrawRewards:  periodRewards,
@@ -193,13 +212,24 @@ func (task *StaticDelegatorByMonthTask) getPeriodTxByAddress(starttime, endtime 
 	if err != nil {
 		return nil, err
 	}
+	var coinflow []string
+	group := sync.WaitGroup{}
 	for _, tx := range txs {
 		switch tx.Type {
 		case types.TxTypeWithdrawDelegatorReward, types.TxTypeWithdrawDelegatorRewardsAll, types.TxTypeWithdrawValidatorRewardsAll,
 			types.TxTypeBeginRedelegate, types.TxTypeStakeBeginUnbonding, types.TxTypeStakeDelegate:
-			task.getCoinflowByHash(tx.TxHash)
+			group.Add(1)
+			go func(txHash string) {
+				result := lcd.BlockCoinFlow(txHash)
+				coinflow = append(coinflow, result.CoinFlow...)
+				//fmt.Println(txHash)
+				group.Done()
+			}(tx.TxHash)
 		}
 	}
+	group.Wait()
+	task.getCoinflow(coinflow)
+
 	return txs, nil
 }
 
@@ -243,16 +273,16 @@ func (task *StaticDelegatorByMonthTask) getIncrementRewards(delegaterewards docu
 	return rewards
 }
 
-func (task *StaticDelegatorByMonthTask) getCoinflowByHash(txhash string) {
-	result := lcd.BlockCoinFlow(txhash)
-	if length := len(result.CoinFlow); length > 0 {
+func (task *StaticDelegatorByMonthTask) getCoinflow(coinFlow []string) {
+
+	if length := len(coinFlow); length > 0 {
 		if task.AddressCoin == nil {
 			task.AddressCoin = make(map[string]document.Coin, length)
 		}
 		if task.AddrPeriodCommission == nil {
 			task.AddrPeriodCommission = make(map[string]document.Coin, length)
 		}
-		for _, val := range result.CoinFlow {
+		for _, val := range coinFlow {
 			values := strings.Split(val, "::")
 			if len(values) != 6 {
 				continue
@@ -297,34 +327,33 @@ func (task *StaticDelegatorByMonthTask) getIncrementDelegation(terminal, delagat
 
 }
 
-//caculatetime format [ 2020-04-03T00:00:00 ]
-func (task *StaticDelegatorByMonthTask) getDelegationData(caculatetime string) ([]document.ExStaticDelegator, error) {
-	date, err := time.ParseInLocation(types.TimeLayout, caculatetime, cstZone)
-	if err != nil {
-		return nil, err
-	}
-	data, err := task.staticModel.GetDataByDate(date)
-	if err != nil {
-		logger.Error("Get GetData ByDate fail",
-			logger.String("date", date.String()),
-			logger.String("err", err.Error()))
-		return nil, err
-	}
-	return data, nil
-}
+//func (task *StaticDelegatorByMonthTask) getDelegationData(caculatetime string) ([]document.ExStaticDelegator, error) {
+//	date, err := time.ParseInLocation(types.TimeLayout, caculatetime, cstZone)
+//	if err != nil {
+//		return nil, err
+//	}
+//	data, err := task.staticModel.GetDataByDate(date)
+//	if err != nil {
+//		logger.Error("Get GetData ByDate fail",
+//			logger.String("date", date.String()),
+//			logger.String("err", err.Error()))
+//		return nil, err
+//	}
+//	return data, nil
+//}
 
-func (task *StaticDelegatorByMonthTask) saveOps(datas []document.ExStaticDelegatorMonth) ([]txn.Op) {
-	var ops = make([]txn.Op, 0, len(datas))
-	for _, val := range datas {
-		val.Id = bson.NewObjectId()
-		val.CreateAt = time.Now().Unix()
-		val.UpdateAt = time.Now().Unix()
-		op := txn.Op{
-			C:      task.mStaticModel.Name(),
-			Id:     bson.NewObjectId(),
-			Insert: val,
-		}
-		ops = append(ops, op)
-	}
-	return ops
-}
+//func (task *StaticDelegatorByMonthTask) saveOps(datas []document.ExStaticDelegatorMonth) ([]txn.Op) {
+//	var ops = make([]txn.Op, 0, len(datas))
+//	for _, val := range datas {
+//		val.Id = bson.NewObjectId()
+//		val.CreateAt = time.Now().Unix()
+//		val.UpdateAt = time.Now().Unix()
+//		op := txn.Op{
+//			C:      task.mStaticModel.Name(),
+//			Id:     bson.NewObjectId(),
+//			Insert: val,
+//		}
+//		ops = append(ops, op)
+//	}
+//	return ops
+//}

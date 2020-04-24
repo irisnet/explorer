@@ -5,6 +5,7 @@ import (
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/txn"
 	"github.com/irisnet/explorer/backend/orm"
+	"time"
 )
 
 const (
@@ -62,6 +63,12 @@ func (d ExStaticValidatorMonth) EnsureIndexes() []mgo.Index {
 
 func (d ExStaticValidatorMonth) Batch(txs []txn.Op) error {
 	return orm.Batch(txs)
+}
+func (d ExStaticValidatorMonth) Save(validatormonth ExStaticValidatorMonth) error {
+	validatormonth.Id = bson.NewObjectId()
+	validatormonth.CreateAt = time.Now().Unix()
+	validatormonth.UpdateAt = time.Now().Unix()
+	return orm.Save(d.Name(), validatormonth)
 }
 
 func (d ExStaticValidatorMonth) GetValidatorStaticByMonth(datestr, operatoraddr string) (ExStaticValidatorMonth, error) {

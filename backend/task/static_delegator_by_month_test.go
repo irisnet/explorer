@@ -20,25 +20,25 @@ func TestStaticDelegatorByMonthTask_DoTask(t *testing.T) {
 	}
 }
 
-func TestStaticDelegatorByMonthTask_getDelegationData(t *testing.T) {
-	res, err := new(StaticDelegatorByMonthTask).getDelegationData("2020-04-03T00:00:00")
-	if err != nil {
-		t.Fatal(err)
-	}
-	bytedata, _ := json.Marshal(res)
-	t.Log(string(bytedata))
-}
+//func TestStaticDelegatorByMonthTask_getDelegationData(t *testing.T) {
+//	res, err := new(StaticDelegatorByMonthTask).getDelegationData("2020-04-03T00:00:00")
+//	if err != nil {
+//		t.Fatal(err)
+//	}
+//	bytedata, _ := json.Marshal(res)
+//	t.Log(string(bytedata))
+//}
 func TestStaticDelegatorByMonthTask_getPeriodTxByAddress(t *testing.T) {
 	task := new(StaticDelegatorByMonthTask)
-	starttime, err := time.Parse(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 4))
+	starttime, err := time.Parse(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 6))
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	endtime, err := time.Parse(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 5))
+	endtime, err := time.Parse(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 7))
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	txs, err := task.getPeriodTxByAddress(starttime, endtime, "iaa1xf5jaw09klqg9hzxfks3ycjvqgnpyjcm0yrkut")
+	txs, err := task.getPeriodTxByAddress(starttime, endtime, "iaa1tn9y9lqxkmdt2d54yc9czsk9uapy89m3m5vatq")
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -51,20 +51,20 @@ func TestStaticDelegatorByMonthTask_getPeriodTxByAddress(t *testing.T) {
 }
 
 func Test_parseCoinAmountAndUnitFromStr(t *testing.T) {
-	coin := parseCoinAmountAndUnitFromStr("154914833557376583102iris-atto")
+	coin := parseCoinAmountAndUnitFromStr("39007580267975728iris-atto")
 	//t.Log(coin.Amount)
 	//t.Log(coin.Denom)
-	//coin1 := parseCoinAmountAndUnitFromStr("219559815884266200iris-atto")
-	//coin2 := parseCoinAmountAndUnitFromStr("383449763866744iris-atto")
-	t.Log(coin.Amount)
+	coin1 := parseCoinAmountAndUnitFromStr("587702808887031233613iris-atto")
+	coin2 := parseCoinAmountAndUnitFromStr("302757713438089471198iris-atto")
+	t.Log(coin.Amount + coin1.Amount + coin2.Amount)
 	t.Log(coin.Denom)
 }
 
-func TestStaticDelegatorByMonthTask_getCoinflowByHash(t *testing.T) {
-	s := new(StaticDelegatorByMonthTask)
-	s.getCoinflowByHash("F40A07D5EDBDF2CF01F8EC746B7BBF7400BFA16B5DEBF57BFF2A15A82E5DBA29")
-	t.Log(s.AddressCoin)
-}
+//func TestStaticDelegatorByMonthTask_getCoinflowByHash(t *testing.T) {
+//	s := new(StaticDelegatorByMonthTask)
+//	s.getCoinflowByHash("F40A07D5EDBDF2CF01F8EC746B7BBF7400BFA16B5DEBF57BFF2A15A82E5DBA29",nil)
+//	t.Log(s.AddressCoin)
+//}
 
 func TestStaticDelegatorByMonthTask_getStaticDelegator(t *testing.T) {
 	s := new(StaticDelegatorByMonthTask)
@@ -111,6 +111,10 @@ func TestStaticDelegatorByMonthTask_getIncrementDelegation(t *testing.T) {
 }
 
 func TestDoTask(t *testing.T) {
+	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 8), cstZone)
+	endtime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 9), cstZone)
 	delegatortask := new(StaticDelegatorByMonthTask)
+	delegatortask.SetCaculateAddress("iaa1xf5jaw09klqg9hzxfks3ycjvqgnpyjcm0yrkut")
+	delegatortask.SetCaculateScope(starttime, endtime)
 	delegatortask.DoTask()
 }

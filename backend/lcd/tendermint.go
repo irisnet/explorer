@@ -421,12 +421,12 @@ func BlockCoinFlow(txhash string) (result BlockCoinFlowVo) {
 	url := fmt.Sprintf(UrlTxsTxHash, conf.Get().Hub.LcdUrl, txhash)
 	resBytes, err := utils.Get(url)
 	if err != nil {
-		logger.Error("BlockResult error", logger.String("err", err.Error()))
+		logger.Error("BlockCoinFlow error", logger.String("err", err.Error()))
 		return result
 	}
 
 	if err := json.Unmarshal(resBytes, &result); err != nil {
-		logger.Error("BlockResult error", logger.String("err", err.Error()))
+		logger.Error("BlockCoinFlow  Unmarshal error", logger.String("err", err.Error()))
 		return result
 	}
 	return result

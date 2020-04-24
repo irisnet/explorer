@@ -58,6 +58,21 @@ func NewQuery() *Query {
 	return q
 }
 
+func Save(collectionname string, doc interface{}) error {
+	db := GetDatabase()
+	defer db.Session.Close()
+	c := db.C(collectionname)
+	return c.Insert(doc)
+}
+
+func Update(collectionname string, selecter, update interface{}) error {
+	db := GetDatabase()
+	defer db.Session.Close()
+
+	c := db.C(collectionname)
+	return c.Update(selecter, update)
+}
+
 func (query *Query) GetDb() *mgo.Database {
 	return query.db
 }
