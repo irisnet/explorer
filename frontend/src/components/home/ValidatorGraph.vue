@@ -1,9 +1,10 @@
 <template>
 	<div class="validator_graph_container">
 		<div class="graph_content_wrap">
-			<div class="graph_content_title"><div>GoZ Global Network State*</div> <span class="beat_content">Bate</span> </div>
+			<div class="graph_content_title"><div>GoZ Global Network State*</div> <span class="beat_content">Beta</span> </div>
+			<div class="tooltip" v-if="flShowNetwork"><p><span></span><span>Connection Opened</span></p> <p><span></span><span>Connection Unopened</span></p></div>
 			<div class="graph_charts_container" :class="flShowNetwork ? '' : 'show_error_content'">
-				<div class="tooltip" v-if="flShowNetwork"><p><span></span><span>Connection Opened</span></p> <p><span></span><span>Connection Unopened</span></p></div>
+				<p class="graph_charts_title">*This demo is using simulated data. Please stay tuned for the grand GoZ Opening at May 1st</p>
 				<div class="graph_content_container" v-if="flShowNetwork">
 					<div id="validator_graph_content"></div>
 					<div class="graph_list_container">
@@ -471,12 +472,6 @@
 							draggable: true, //是否拖拽
 							hoverAnimation : true,
 							focusNodeAdjacency: true,
-							itemStyle: {
-								borderColor: '#fff',
-								borderWidth: 1,
-								shadowBlur: 10,
-								shadowColor: 'rgba(0, 0, 0, 0.3)'
-							},
 							emphasis: {
 								lineStyle: {
 									width: 1,
@@ -504,6 +499,9 @@
 				color:rgba(255,255,255,1);
 				display: flex;
 				align-items: center;
+				div:nth-of-type(1){
+					margin-left: 0.2rem;
+				}
 				.beat_content{
 					margin-left: 0.18rem;
 					background: rgba(55, 124, 248, 1);
@@ -513,45 +511,51 @@
 					padding: 0.02rem 0.1rem;
 				}
 			}
+			.tooltip{
+				display: flex;
+				align-items: center;
+				margin-bottom: 0.1rem;
+				p:nth-of-type(1){
+					display: flex;
+					align-items: center;
+					span:nth-of-type(1){
+						margin-left: 0.2rem;
+						display: inline-block;
+						width: 0.2rem;
+						height: 0.02rem;
+						border-top: 0.02rem solid #70C6C7;
+					}
+					span:nth-of-type(2){
+						margin-left: 0.1rem;
+						font-size: 0.14rem;
+						color: rgba(115, 122, 174, 1);
+					}
+				}
+				p:nth-of-type(2){
+					display: flex;
+					align-items: center;
+					span:nth-of-type(1){
+						width: 0.2rem;
+						margin-left: 0.41rem;
+						display: inline-block;
+						border-top: 0.02rem dashed #70C6C7;
+					}
+					span:nth-of-type(2){
+						margin-left: 0.1rem;
+						font-size: 0.14rem;
+						color: rgba(115, 122, 174, 1);
+					}
+				}
+			}
 			.graph_charts_container{
 				background: #2D325A;
 				margin-bottom: 0.6rem;
 				min-height: 6.46rem;
-				.tooltip{
-					padding-top: 0.3rem;
-					display: flex;
-					align-items: center;
-					p:nth-of-type(1){
-						display: flex;
-						align-items: center;
-						span:nth-of-type(1){
-							margin-left: 0.41rem;
-							display: inline-block;
-							width: 0.2rem;
-							height: 0.02rem;
-							border-top: 0.02rem solid #70C6C7;
-						}
-						span:nth-of-type(2){
-							margin-left: 0.1rem;
-							font-size: 0.14rem;
-							color: rgba(115, 122, 174, 1);
-						}
-					}
-					p:nth-of-type(2){
-						display: flex;
-						align-items: center;
-						span:nth-of-type(1){
-							width: 0.2rem;
-							margin-left: 0.41rem;
-							display: inline-block;
-							border-top: 0.02rem dashed #70C6C7;
-						}
-						span:nth-of-type(2){
-							margin-left: 0.1rem;
-							font-size: 0.14rem;
-							color: rgba(115, 122, 174, 1);
-						}
-					}
+				.graph_charts_title{
+					padding: 0.2rem 0 0 0.2rem;
+					font-size: 0.12rem;
+					line-height: 0.14rem;
+					color: rgba(115, 122, 174, 1);
 				}
 				.graph_content_container{
 					display: flex;
@@ -572,6 +576,7 @@
 								border-radius: 0.07rem;
 							}
 							.legend_block{
+								box-sizing: border-box;
 								width: 0.14rem;
 								height: 0.14rem;
 								border-radius: 0.07rem;
@@ -581,7 +586,7 @@
 							}
 							.legend_name{
 								height: 0.14rem;
-								color: rgba(24, 27, 58, 1);
+								color: rgba(134, 143, 211, 0.5);
 								margin-left: 0.1rem;
 							}
 							
@@ -605,13 +610,14 @@
 									border-radius: 0.07rem;
 								}
 								.legend_block{
+									box-sizing: border-box;
 									width: 0.14rem;
 									height: 0.14rem;
 									border-radius: 0.07rem;
 								}
 								.hide_style{
 									background: transparent !important;
-									border: 0.01rem solid rgba(24, 27, 58, 1);
+									border: 0.01rem solid rgba(134, 143, 211, 0.5);
 								}
 								.legend_name{
 									height: 0.16rem;
@@ -620,7 +626,7 @@
 									margin-left: 0.1rem;
 								}
 								.hide_style_color{
-									color: rgba(24, 27, 58, 1) !important;
+									color: rgba(134, 143, 211, 0.5) !important;
 								}
 							}
 						}
@@ -659,26 +665,29 @@
 			.graph_content_wrap{
 				box-sizing: border-box;
 				padding: 0 0.1rem;
+				.tooltip{
+					padding-top: 0.05rem;
+					display: flex;
+					flex-direction: column;
+					align-items: flex-start;
+					justify-content: center;
+					p:nth-of-type(1){
+						span:nth-of-type(1){
+							margin-left: 0;
+						}
+					}
+					p:nth-of-type(2){
+						span:nth-of-type(1){
+							margin-left: 0;
+						}
+					}
+				}
 				.graph_content_title{
 					height: auto;
 					padding: 0.15rem 0;
 					align-items: flex-start;
-					.tooltip{
-						padding-top: 0.05rem;
-						display: flex;
-						flex-direction: column;
-						align-items: flex-start;
-						justify-content: center;
-						p:nth-of-type(1){
-							span:nth-of-type(1){
-								margin-left: 0;
-							}
-						}
-						p:nth-of-type(2){
-							span:nth-of-type(1){
-								margin-left: 0;
-							}
-						}
+					div:nth-of-type(1){
+						margin-left: 0.1rem;
 					}
 				}
 				.graph_charts_container{
