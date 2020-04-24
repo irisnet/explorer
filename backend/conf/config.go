@@ -47,6 +47,9 @@ const (
 	KeyCronTimeProposalVoters      = "CronTimeProposalVoters"
 	KeyCronTimeValidatorStaticInfo = "CronTimeValidatorStaticInfo"
 
+	KeyCronTimeFormatStaticDay   = "CronTimeFormatStaticDay"
+	KeyCronTimeFormatStaticMonth = "CronTimeFormatStaticMonth"
+
 	EnvironmentDevelop = "dev"
 	EnvironmentLocal   = "local"
 	EnvironmentQa      = "qa"
@@ -96,6 +99,8 @@ func init() {
 		CronTimeValidatorIcons:      getEnvInt(KeyCronTimeValidatorIcons, DefaultEnvironment),
 		CronTimeProposalVoters:      getEnvInt(KeyCronTimeProposalVoters, DefaultEnvironment),
 		CronTimeValidatorStaticInfo: getEnvInt(KeyCronTimeValidatorStaticInfo, DefaultEnvironment),
+		CronTimeFormatStaticDay:     getEnv(KeyCronTimeFormatStaticDay, DefaultEnvironment),
+		CronTimeFormatStaticMonth:   getEnv(KeyCronTimeFormatStaticMonth, DefaultEnvironment),
 	}
 	logger.Info(fmt.Sprintf("serverInstanceNo: %s", server.InstanceNo))
 	config.Server = server
@@ -120,16 +125,16 @@ func init() {
 
 func loadDefault() {
 	defaultConfig[EnvironmentDevelop] = map[string]string{
-		KeyDbAddr:         "10.2.10.122:27018",
+		KeyDbAddr:         "192.168.150.31:27017",
 		KeyDATABASE:       "sync-iris",
 		KeyDbUser:         "iris",
 		KeyDbPwd:          "irispassword",
 		KeyDbPoolLimit:    "4096",
 		KeyServerPort:     "8080",
-		KeyAddrHubLcd:     "http://v2.irisnet-lcd.rainbow.one",
-		KeyAddrHubNode:    "http://35.220.142.249:26657",
+		KeyAddrHubLcd:     "http://irisnet-lcd.dev.bianjie.ai",
+		KeyAddrHubNode:    "http://irisnet-rpc.dev.bianjie.ai:26657",
 		KeyAddrFaucet:     "http://192.168.150.7:30200",
-		KeyChainId:        "rainbow-stage",
+		KeyChainId:        "rainbow-dev",
 		KeyApiVersion:     "v0.6.5",
 		KeyMaxDrawCnt:     "10",
 		KeyPrefixAccAddr:  "faa",
@@ -152,6 +157,9 @@ func loadDefault() {
 		KeyCronTimeProposalVoters:      "60",
 		KeyCronTimeValidatorIcons:      "43200",
 		KeyCronTimeValidatorStaticInfo: "300",
+
+		KeyCronTimeFormatStaticDay:   "59 23 * * *", //m,h,d,m,w
+		KeyCronTimeFormatStaticMonth: "0 0 01 * *",
 	}
 }
 
@@ -191,6 +199,8 @@ type serverConf struct {
 	CronTimeValidatorStaticInfo int
 	CronTimeValidatorIcons      int
 	CronTimeProposalVoters      int
+	CronTimeFormatStaticDay     string
+	CronTimeFormatStaticMonth   string
 }
 
 type hubConf struct {

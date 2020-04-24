@@ -8,6 +8,7 @@ import (
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/robfig/cron/v3"
+	"github.com/irisnet/explorer/backend/conf"
 )
 
 var (
@@ -75,12 +76,12 @@ func Start() {
 		txNumTask.Start()
 		new(UpdateValidatorIcons).Start()
 	})
-	c.AddFunc("59 23 * * *", func() {
+	c.AddFunc(conf.Get().Server.CronTimeFormatStaticDay, func() {
 		new(StaticDelegatorTask).Start()
 		new(StaticValidatorTask).Start()
 	})
 
-	c.AddFunc("0 0 01 * *", func() { //每月1号0点0分
+	c.AddFunc(conf.Get().Server.CronTimeFormatStaticMonth, func() { //每月1号0点0分
 		delegatortask := new(StaticDelegatorByMonthTask)
 		validatortask := new(StaticValidatorByMonthTask)
 		delegatortask.Start()
