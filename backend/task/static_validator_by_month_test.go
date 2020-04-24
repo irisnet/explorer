@@ -6,6 +6,7 @@ import (
 	"time"
 	"github.com/irisnet/explorer/backend/types"
 	"fmt"
+	"github.com/irisnet/explorer/backend/orm/document"
 )
 
 var (
@@ -63,8 +64,9 @@ func TestStaticValidatorByMonthTask_getStaticValidator(t *testing.T) {
 	if err != nil {
 		t.Fatal(err.Error())
 	}
+	foundtionDelegation := task.getFoundtionDelegation([]document.ExStaticValidator{terminalData})
 
-	res, err := task.getStaticValidator(starttime, terminalData, mapData)
+	res, err := task.getStaticValidator(starttime, terminalData, mapData, foundtionDelegation)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -92,15 +94,15 @@ func TestStaticValidatorByMonthTask_DoTask(t *testing.T) {
 }
 
 func TestStaticValidatorTask_DoTask(t *testing.T) {
-	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 18), cstZone)
-	endtime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 19), cstZone)
+	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 17), cstZone)
+	endtime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 18), cstZone)
 	delegatortask := new(StaticDelegatorByMonthTask)
 	validatortask := new(StaticValidatorByMonthTask)
 	delegatortask.SetCaculateScope(starttime, endtime)
-	delegatortask.SetCaculateAddress("iaa1xf5jaw09klqg9hzxfks3ycjvqgnpyjcm0yrkut")
+	//delegatortask.SetCaculateAddress("iaa1xf5jaw09klqg9hzxfks3ycjvqgnpyjcm0yrkut")
 	delegatortask.DoTask()
 	fmt.Println("caculateWork have done,then validatortask work")
-	validatortask.SetCaculateAddress("iaa1xf5jaw09klqg9hzxfks3ycjvqgnpyjcm0yrkut")
+	//validatortask.SetCaculateAddress("iaa1xf5jaw09klqg9hzxfks3ycjvqgnpyjcm0yrkut")
 	validatortask.SetCaculateScope(starttime, endtime)
 	validatortask.SetAddressCoinMapData(delegatortask.AddressCoin, delegatortask.AddrTerminalCommission, delegatortask.AddrPeriodCommission)
 	validatortask.DoTask()

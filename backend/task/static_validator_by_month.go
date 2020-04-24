@@ -13,6 +13,7 @@ import (
 	"github.com/irisnet/explorer/backend/lcd"
 	"math"
 	"strings"
+	"sync"
 )
 
 type StaticValidatorByMonthTask struct {
@@ -101,8 +102,10 @@ func (task *StaticValidatorByMonthTask) DoTask() error {
 		return err
 	}
 
+	foundtionDelegation := task.getFoundtionDelegation(terminalData)
+
 	for i, val := range terminalData {
-		one, errf := task.getStaticValidator(starttime, val, addressHeightMap)
+		one, errf := task.getStaticValidator(starttime, val, addressHeightMap, foundtionDelegation)
 		if errf != nil {
 			logger.Error(errf.Error())
 			continue
@@ -120,7 +123,28 @@ func (task *StaticValidatorByMonthTask) DoTask() error {
 	return nil
 }
 
-func (task *StaticValidatorByMonthTask) getStaticValidator(startdate time.Time, terminalval document.ExStaticValidator, addrHeightMap map[string]int64) (document.ExStaticValidatorMonth, error) {
+func (task *StaticValidatorByMonthTask) getFoundtionDelegation(datas []document.ExStaticValidator) (map[string]lcd.DelegationVo) {
+	group := sync.WaitGroup{}
+	var result []lcd.DelegationVo
+	for _, val := range datas {
+		group.Add(1)
+		go func(operatorAddress string) {
+			delegation := lcd.GetDelegationsFromValAddrByDelAddr(types.FoundationDelegatorAddr, operatorAddress)
+			result = append(result, delegation)
+			//fmt.Println(operatorAddress)
+			group.Done()
+		}(val.OperatorAddress)
+	}
+	tmpMapData := make(map[string]lcd.DelegationVo, len(result))
+	for _, val := range result {
+		tmpMapData[val.ValidatorAddr] = val
+	}
+	group.Wait()
+	return tmpMapData
+}
+
+func (task *StaticValidatorByMonthTask) getStaticValidator(startdate time.Time, terminalval document.ExStaticValidator,
+	addrHeightMap map[string]int64, addrDelegationMap map[string]lcd.DelegationVo) (document.ExStaticValidatorMonth, error) {
 	address := utils.Convert(conf.Get().Hub.Prefix.AccAddr, terminalval.OperatorAddress)
 
 	latestone, err := task.mStaticModel.GetLatest(terminalval.OperatorAddress)
@@ -131,8 +155,10 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(startdate time.Time, 
 	if latestone.OperatorAddress == "" {
 		latestone.OperatorAddress = terminalval.OperatorAddress
 	}
-
-	delegation := lcd.GetDelegationsFromValAddrByDelAddr(types.FoundationDelegatorAddr, terminalval.OperatorAddress)
+	delegation, ok := addrDelegationMap[terminalval.OperatorAddress]
+	if !ok {
+		delegation.Shares = latestone.FoundationDelegateT
+	}
 
 	item := document.ExStaticValidatorMonth{
 		Address:         address,
