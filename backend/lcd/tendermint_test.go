@@ -87,3 +87,9 @@ func TestBlockResult(t *testing.T) {
 	resBytes, _ := json.MarshalIndent(res, "", "\t")
 	t.Log(string(resBytes))
 }
+
+func TestBlockCoinFlow(t *testing.T) {
+	res := BlockCoinFlow("DD5011DA37A00DB4EBB1F60A3F7DA8422F1553BA6E7C5C4FC9EDC38D22C5BB70")
+	resBytes, _ := json.MarshalIndent(res, "", "\t")
+	t.Log(string(resBytes))
+}

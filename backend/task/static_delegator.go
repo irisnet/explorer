@@ -14,14 +14,14 @@ import (
 	"math/big"
 )
 
-type StaticRewardsTask struct {
+type StaticDelegatorTask struct {
 	account document.Account
 }
 
-func (task StaticRewardsTask) Name() string {
-	return "static_rewards"
+func (task StaticDelegatorTask) Name() string {
+	return "static_delegator"
 }
-func (task StaticRewardsTask) Start() {
+func (task StaticDelegatorTask) Start() {
 	taskName := task.Name()
 	timeInterval := conf.Get().Server.CronTimeTxNumByDay
 
@@ -30,16 +30,16 @@ func (task StaticRewardsTask) Start() {
 	}
 }
 
-func (task StaticRewardsTask) DoTask() error {
+func (task StaticDelegatorTask) DoTask() error {
 	ops, err := task.getAllAccountRewards()
 	if err != nil {
 		logger.Error(err.Error())
 		return err
 	}
-	return document.ExStaticRewards{}.Batch(ops)
+	return document.ExStaticDelegator{}.Batch(ops)
 }
 
-func (task StaticRewardsTask) getRewardsFromLcd(address string) (utils.CoinsAsStr, []lcd.RewardsFromDelegations, utils.CoinsAsStr, error) {
+func (task StaticDelegatorTask) getRewardsFromLcd(address string) (utils.CoinsAsStr, []lcd.RewardsFromDelegations, utils.CoinsAsStr, error) {
 	commissionrewards, delegationrewards, totalrewards, err := lcd.GetDistributionRewardsByValidatorAcc(address)
 	if err != nil {
 		logger.Error("GetDistributionRewardsByValidatorAcc have error", logger.String("err", err.Error()))
@@ -48,28 +48,28 @@ func (task StaticRewardsTask) getRewardsFromLcd(address string) (utils.CoinsAsSt
 	return commissionrewards, delegationrewards, totalrewards, nil
 }
 
-func (task StaticRewardsTask) getAllAccountRewards() ([]txn.Op, error) {
+func (task StaticDelegatorTask) getAllAccountRewards() ([]txn.Op, error) {
 
-	accs, err := task.getAccountFromDb()
+	accounts, err := task.getAccountFromDb()
 	if err != nil {
 		return nil, err
 	}
 
-	return task.saveExStaticRewardsOps(accs)
+	return task.saveExStaticRewardsOps(accounts)
 }
 
-func (task StaticRewardsTask) saveExStaticRewardsOps(accs []document.Account) ([]txn.Op, error) {
+func (task StaticDelegatorTask) saveExStaticRewardsOps(accs []document.Account) ([]txn.Op, error) {
 	today := utils.TruncateTime(time.Now().In(cstZone), utils.Day)
 	ops := make([]txn.Op, 0, len(accs))
 	now := time.Now().Unix()
-	for _, addr := range accs {
-		item, err := task.loadModelRewards(addr, today)
+	for _, acc := range accs {
+		item, err := task.loadModelRewards(acc, today)
 		item.CreateAt = now
 		if err != nil {
 			continue
 		}
 		op := txn.Op{
-			C:      document.CollectionNameExStaticRewards,
+			C:      document.CollectionNameExStaticDelegator,
 			Id:     bson.NewObjectId(),
 			Insert: item,
 		}
@@ -78,14 +78,14 @@ func (task StaticRewardsTask) saveExStaticRewardsOps(accs []document.Account) ([
 	return ops, nil
 }
 
-func (task StaticRewardsTask) loadModelRewards(account document.Account, today time.Time) (document.ExStaticRewards, error) {
+func (task StaticDelegatorTask) loadModelRewards(account document.Account, today time.Time) (document.ExStaticDelegator, error) {
 	commisstionRds, _, totalRds, err := task.getRewardsFromLcd(account.Address)
 	if err != nil {
 		logger.Warn(err.Error())
-		return document.ExStaticRewards{}, err
+		return document.ExStaticDelegator{}, err
 	}
 
-	item := document.ExStaticRewards{
+	item := document.ExStaticDelegator{
 		Id:         bson.NewObjectId(),
 		Address:    account.Address,
 		Date:       today.In(cstZone),
@@ -104,7 +104,7 @@ func (task StaticRewardsTask) loadModelRewards(account document.Account, today t
 	return item, nil
 }
 
-func (task StaticRewardsTask) loadRewards(rewards utils.CoinsAsStr) []document.Rewards {
+func (task StaticDelegatorTask) loadRewards(rewards utils.CoinsAsStr) []document.Rewards {
 
 	var ret []document.Rewards
 	for _, val := range rewards {
@@ -157,13 +157,11 @@ func funcSubStr(amount1, amount2 string) *big.Rat {
 	return value
 }
 
-func (task StaticRewardsTask) loadDelegationsRewards(total, commission document.Rewards) []document.Rewards {
+func (task StaticDelegatorTask) loadDelegationsRewards(total, commission document.Rewards) []document.Rewards {
 	subValue := funcSubStr(total.IrisAtto, commission.IrisAtto)
 	if subValue == nil {
 		return nil
 	}
-
-
 	subValueFloat64, _ := subValue.Float64()
 	one := document.Rewards{
 		Iris:     subValueFloat64 / math.Pow10(18),
@@ -173,7 +171,7 @@ func (task StaticRewardsTask) loadDelegationsRewards(total, commission document.
 	return []document.Rewards{one}
 }
 
-func (task StaticRewardsTask) getAccountFromDb() ([]document.Account, error) {
+func (task StaticDelegatorTask) getAccountFromDb() ([]document.Account, error) {
 	size := 100
 	offset := 0
 	length := size

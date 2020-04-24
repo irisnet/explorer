@@ -13,6 +13,7 @@ const (
 
 	ValidatorStaticFieldOperatorAddress = "operator_address"
 	ValidatorStaticFieldDate            = "date"
+	ValidatorCommissionRateTag          = "commission.rate"
 )
 
 type ExStaticValidator struct {
@@ -49,6 +50,62 @@ func (d ExStaticValidator) EnsureIndexes() []mgo.Index {
 	return indexes
 }
 
-func (_ ExStaticValidator) Batch(txs []txn.Op) error {
+func (d ExStaticValidator) Batch(txs []txn.Op) error {
 	return orm.Batch(txs)
+}
+
+func (d ExStaticValidator) GetDataByDate(date time.Time) ([]ExStaticValidator, error) {
+	var res []ExStaticValidator
+	cond := bson.M{
+		ValidatorStaticFieldDate: date,
+	}
+
+	limit := 100
+	offset := 0
+	for {
+		var ret []ExStaticValidator
+		if err := querylistByOffsetAndSize(d.Name(), nil, cond, "-tokens", offset, limit, &ret); err != nil {
+			return res, err
+		}
+		length := len(ret)
+		res = append(res, ret...)
+		if length < limit {
+			break
+		}
+		offset += limit
+	}
+
+	return res, nil
+}
+
+func (d ExStaticValidator) GetDataOneDay(date time.Time, operatoraddr string) (ExStaticValidator, error) {
+	var res ExStaticValidator
+	cond := bson.M{
+		ValidatorStaticFieldDate:            date,
+		ValidatorStaticFieldOperatorAddress: operatoraddr,
+	}
+	if err := queryOne(d.Name(), nil, cond, &res); err != nil && err != mgo.ErrNotFound {
+		return res, err
+	}
+
+	return res, nil
+}
+
+func (d ExStaticValidator) GetCommissionRate(selector, cond bson.M, sorts string) (ExStaticValidator, error) {
+	var query = orm.NewQuery()
+	defer query.Release()
+	var result ExStaticValidator
+
+	query.SetCollection(d.Name()).
+		SetCondition(cond).
+		SetSelector(selector).
+		SetSize(1).
+		SetSort(sorts).
+		SetResult(&result)
+
+	err := query.Exec()
+	if err != nil {
+		return result, err
+	}
+	return result, nil
 }

@@ -111,3 +111,8 @@ func TestGetUnbondingDelegationsByDelegatorAddr(t *testing.T) {
 		t.Logf("k: %v  v: %v \n", k, v)
 	}
 }
+
+func TestGetDelegationsFromValAddrByDelAddr(t *testing.T) {
+	delegation := GetDelegationsFromValAddrByDelAddr("iaa1w7ewedr57z6p7f8nknmdvukfxwkwlsvfjumdts", "iva1qq93sapmdcx36uz64vvw5gzuevtxsc7lcfxsat")
+	t.Log(delegation.Tokens)
+}

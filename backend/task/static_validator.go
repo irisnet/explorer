@@ -72,15 +72,15 @@ func (task StaticValidatorTask) saveExValidatorStaticOps(validators []document.V
 func (task StaticValidatorTask) loadValidatorTokens(validator document.Validator, today time.Time) (document.ExStaticValidator, error) {
 
 	item := document.ExStaticValidator{
-		Id:              bson.NewObjectId(),
-		OperatorAddress: validator.OperatorAddress,
-		Status:          validator.GetValidatorStatus(),
-		Date:            today,
-		SelfBond:        validator.SelfBond,
-		DelegatorShares: validator.DelegatorShares,
-		Tokens:          validator.Tokens,
-		Commission:      validator.Commission,
-		DelegatorNum:    validator.DelegatorNum,
+		Id:                    bson.NewObjectId(),
+		OperatorAddress:       validator.OperatorAddress,
+		Status:                validator.GetValidatorStatus(),
+		Date:                  today,
+		SelfBond:              validator.SelfBond,
+		DelegatorShares:       validator.DelegatorShares,
+		Tokens:                validator.Tokens,
+		Commission:            validator.Commission,
+		DelegatorNum:          validator.DelegatorNum,
 	}
 	subValue := funcSubStr(item.Tokens, item.SelfBond)
 	if subValue != nil {

@@ -47,6 +47,9 @@ const (
 	KeyCronTimeProposalVoters      = "CronTimeProposalVoters"
 	KeyCronTimeValidatorStaticInfo = "CronTimeValidatorStaticInfo"
 
+	KeyCronTimeFormatStaticDay   = "CronTimeFormatStaticDay"
+	KeyCronTimeFormatStaticMonth = "CronTimeFormatStaticMonth"
+
 	EnvironmentDevelop = "dev"
 	EnvironmentLocal   = "local"
 	EnvironmentQa      = "qa"
@@ -96,6 +99,8 @@ func init() {
 		CronTimeValidatorIcons:      getEnvInt(KeyCronTimeValidatorIcons, DefaultEnvironment),
 		CronTimeProposalVoters:      getEnvInt(KeyCronTimeProposalVoters, DefaultEnvironment),
 		CronTimeValidatorStaticInfo: getEnvInt(KeyCronTimeValidatorStaticInfo, DefaultEnvironment),
+		CronTimeFormatStaticDay:     getEnv(KeyCronTimeFormatStaticDay, DefaultEnvironment),
+		CronTimeFormatStaticMonth:   getEnv(KeyCronTimeFormatStaticMonth, DefaultEnvironment),
 	}
 	logger.Info(fmt.Sprintf("serverInstanceNo: %s", server.InstanceNo))
 	config.Server = server
@@ -152,6 +157,9 @@ func loadDefault() {
 		KeyCronTimeProposalVoters:      "60",
 		KeyCronTimeValidatorIcons:      "43200",
 		KeyCronTimeValidatorStaticInfo: "300",
+
+		KeyCronTimeFormatStaticDay:   "59 23 * * *", //m,h,d,m,w
+		KeyCronTimeFormatStaticMonth: "0 0 01 * *",
 	}
 }
 
@@ -191,6 +199,8 @@ type serverConf struct {
 	CronTimeValidatorStaticInfo int
 	CronTimeValidatorIcons      int
 	CronTimeProposalVoters      int
+	CronTimeFormatStaticDay     string
+	CronTimeFormatStaticMonth   string
 }
 
 type hubConf struct {
