@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	CollectionNameExStaticDelegator = "ex_static_delegator"
+	CollectionNameExStaticDelegator = "ex_static_rewards"
 
 	ExStaticDelegatorAddressTag = "address"
 	ExStaticDelegatorDateTag    = "date"
@@ -99,7 +99,7 @@ func (d ExStaticDelegator) GetDataByDate(date time.Time) ([]ExStaticDelegator, e
 	offset := 0
 	for {
 		var ret []ExStaticDelegator
-		if err := querylistByOffsetAndSize(d.Name(), nil, cond, "-date", offset, limit, &res); err != nil {
+		if err := querylistByOffsetAndSize(d.Name(), nil, cond, "-date", offset, limit, &ret); err != nil {
 			return res, err
 		}
 		length := len(ret)
@@ -107,6 +107,7 @@ func (d ExStaticDelegator) GetDataByDate(date time.Time) ([]ExStaticDelegator, e
 		if length < limit {
 			break
 		}
+		offset += limit
 	}
 
 	return res, nil

@@ -64,7 +64,7 @@ func (d ExStaticValidator) GetDataByDate(date time.Time) ([]ExStaticValidator, e
 	offset := 0
 	for {
 		var ret []ExStaticValidator
-		if err := querylistByOffsetAndSize(d.Name(), nil, cond, "-tokens", offset, limit, &res); err != nil {
+		if err := querylistByOffsetAndSize(d.Name(), nil, cond, "-tokens", offset, limit, &ret); err != nil {
 			return res, err
 		}
 		length := len(ret)
@@ -72,6 +72,7 @@ func (d ExStaticValidator) GetDataByDate(date time.Time) ([]ExStaticValidator, e
 		if length < limit {
 			break
 		}
+		offset += limit
 	}
 
 	return res, nil
