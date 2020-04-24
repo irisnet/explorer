@@ -182,7 +182,6 @@ func (task StaticDelegatorTask) getAccountFromDb() ([]document.Account, error) {
 			logger.Error(err.Error())
 			return accounts, err
 		}
-
 		ret = append(ret, accounts...)
 		length = len(accounts)
 		if length < size {
