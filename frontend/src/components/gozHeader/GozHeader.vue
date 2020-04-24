@@ -3,7 +3,7 @@
 		<div class="goz_content_wrap">
 			<div class="goz_content_left_content">
 				<div class="goz_content_logo_content">
-					<router-link :to="`/`"><img src="../../assets/logo.png" alt=""></router-link>
+					<a href="https://www.irisplorer.io/#/home" target="_blank"><img src="../../assets/logo.png" alt=""></a>
 					<span class="iconfont" :class="currentNetworkClass"></span>
 				</div>
 				<div class="goz_content_network_state">
