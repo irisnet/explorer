@@ -64,7 +64,7 @@ func GetDelegationsByDelAddr(delAddr string) (delegations []DelegationVo) {
 	return
 }
 
-func GetDelegationsFromValAddrByDelAddr(delAddr, valAddr string) (delegations DelegationVo) {
+func GetDelegationsFromValAddrByDelAddr(delAddr, valAddr string) (delegation DelegationFromVal) {
 	url := fmt.Sprintf(UrlDelegationsFromValidatorByDelegator, conf.Get().Hub.LcdUrl, delAddr, valAddr)
 	resAsBytes, err := utils.Get(url)
 	if err != nil {
@@ -72,7 +72,7 @@ func GetDelegationsFromValAddrByDelAddr(delAddr, valAddr string) (delegations De
 		return
 	}
 
-	if err := json.Unmarshal(resAsBytes, &delegations); err != nil {
+	if err := json.Unmarshal(resAsBytes, &delegation); err != nil {
 		logger.Error("Unmarshal DelegationsByDelAddr error", logger.String("err", err.Error()), logger.String("URL", url))
 	}
 	return

@@ -102,8 +102,17 @@ func TestStaticValidatorTask_DoTask(t *testing.T) {
 	//delegatortask.SetCaculateAddress("iaa1xf5jaw09klqg9hzxfks3ycjvqgnpyjcm0yrkut")
 	delegatortask.DoTask()
 	fmt.Println("caculateWork have done,then validatortask work")
-	//validatortask.SetCaculateAddress("iaa1xf5jaw09klqg9hzxfks3ycjvqgnpyjcm0yrkut")
+	//validatortask.SetCaculateAddress("iva1qq93sapmdcx36uz64vvw5gzuevtxsc7lcfxsat")
 	validatortask.SetCaculateScope(starttime, endtime)
 	validatortask.SetAddressCoinMapData(delegatortask.AddressCoin, delegatortask.AddrTerminalCommission, delegatortask.AddrPeriodCommission)
 	validatortask.DoTask()
+}
+
+func TestStaticValidatorByMonthTask_getCommissionRate(t *testing.T) {
+	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 16), cstZone)
+	endtime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 17), cstZone)
+	ratemax := task.getCommissionRate(starttime, endtime, "-date")
+	fmt.Println(ratemax)
+	ratemin := task.getCommissionRate(starttime, endtime, "date")
+	fmt.Println(ratemin)
 }

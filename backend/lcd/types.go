@@ -8,19 +8,19 @@ import (
 )
 
 const (
-	UrlAccount                                   = "%s/bank/accounts/%s"
-	UrlBankTokenStats                            = "%s/bank/token-stats"
-	UrlValidator                                 = "%s/stake/validators/%s"
-	UrlValidators                                = "%s/stake/validators?page=%d&size=%d"
-	UrlDelegationByVal                           = "%s/stake/validators/%s/delegations"
-	UrlDelegationsByDelegator                    = "%s/stake/delegators/%s/delegations"
-	UrlDelegationsFromValidatorByDelegator       = "%s/stake/delegators/%s/delegations/%s"
-	UrlUnbondingDelegationByDelegator            = "%s/stake/delegators/%s/unbonding-delegations"
-	UrlDelegationsByValidator                    = "%s/stake/validators/%s/delegations"
-	UrlUnbondingDelegationByValidator            = "%s/stake/validators/%s/unbonding-delegations"
-	UrlRedelegationsByValidator                  = "%s/stake/validators/%s/redelegations"
-	UrlSignInfo                                  = "%s/slashing/validators/%s/signing-info"
-	UrlNodeInfo                                  = "%s/node-info"
+	UrlAccount                             = "%s/bank/accounts/%s"
+	UrlBankTokenStats                      = "%s/bank/token-stats"
+	UrlValidator                           = "%s/stake/validators/%s"
+	UrlValidators                          = "%s/stake/validators?page=%d&size=%d"
+	UrlDelegationByVal                     = "%s/stake/validators/%s/delegations"
+	UrlDelegationsByDelegator              = "%s/stake/delegators/%s/delegations"
+	UrlDelegationsFromValidatorByDelegator = "%s/stake/delegators/%s/validators/%s"
+	UrlUnbondingDelegationByDelegator      = "%s/stake/delegators/%s/unbonding-delegations"
+	UrlDelegationsByValidator              = "%s/stake/validators/%s/delegations"
+	UrlUnbondingDelegationByValidator      = "%s/stake/validators/%s/unbonding-delegations"
+	UrlRedelegationsByValidator            = "%s/stake/validators/%s/redelegations"
+	UrlSignInfo                            = "%s/slashing/validators/%s/signing-info"
+	UrlNodeInfo                            = "%s/node-info"
 	UrlNodeVersion                               = "%s/node-version"
 	UrlGenesis                                   = "%s/genesis"
 	UrlWithdrawAddress                           = "%s/distribution/%s/withdraw-address"
@@ -479,6 +479,13 @@ type DelegationVo struct {
 	ValidatorAddr string `json:"validator_addr"`
 	Shares        string `json:"shares"`
 	Height        int64  `json:"height,string"`
+}
+
+type DelegationFromVal struct {
+	Tokens          string `json:"tokens"`
+	DelegatorShares string `json:"delegator_shares"`
+	OperatorAddress string `json:"operator_address"`
+	BondHeight      int64  `json:"bond_height,string"`
 }
 
 type ValidatorDelegations []DelegationVo
