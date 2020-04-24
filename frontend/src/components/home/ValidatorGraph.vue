@@ -4,7 +4,7 @@
 			<div class="graph_content_title"><div>GoZ Global Network State*</div> <span class="beat_content">Beta</span> </div>
 			<div class="tooltip" v-if="flShowNetwork"><p><span></span><span>Connection Opened</span></p> <p><span></span><span>Connection Unopened</span></p></div>
 			<div class="graph_charts_container" :class="flShowNetwork ? '' : 'show_error_content'">
-				<p class="graph_charts_title">*This demo is using simulated data. Please stay tuned for the grand GoZ Opening at May 1st</p>
+				<p class="graph_charts_title" v-if="flShowNetwork">*This demo is using simulated data. Please stay tuned for the grand GoZ Opening at May 1st</p>
 				<div class="graph_content_container" v-if="flShowNetwork">
 					<div id="validator_graph_content"></div>
 					<div class="graph_list_container">
