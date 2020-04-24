@@ -132,7 +132,7 @@ func loadDefault() {
 		KeyDbPoolLimit:    "4096",
 		KeyServerPort:     "8080",
 		KeyAddrHubLcd:     "http://irisnet-lcd.dev.bianjie.ai",
-		KeyAddrHubNode:    "http://irisnet-rpc.dev.bianjie.ai:26657",
+		KeyAddrHubNode:    "http://irisnet-rpc.dev.rainbow.one",
 		KeyAddrFaucet:     "http://192.168.150.7:30200",
 		KeyChainId:        "rainbow-dev",
 		KeyApiVersion:     "v0.6.5",
