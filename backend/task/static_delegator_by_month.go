@@ -12,6 +12,7 @@ import (
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/conf"
 	"sync"
+	"strconv"
 )
 
 //caculatetime format [ 2020-04-03T00:00:00 ]
@@ -82,6 +83,27 @@ func (task *StaticDelegatorByMonthTask) caculateWork() ([]document.ExStaticDeleg
 		datetime = task.endTime
 		starttime = task.startTime
 	}
+	if conf.Get().Server.CaculateDebug {
+		arr := strings.Split(conf.Get().Server.CronTimeFormatStaticMonth, " ")
+		interval, err := strconv.ParseInt(arr[0], 10, 64)
+		if err != nil {
+			logger.Error(err.Error())
+		}
+		fmt.Println(interval)
+		hour, minute := datetime.Hour(), datetime.Minute()
+		if int64(minute) < interval {
+			if hour < 1 {
+				//no work
+				return nil, fmt.Errorf("time hour is smaller than 1")
+			} else {
+				hour --
+				minute = minute - int(interval) + 60
+			}
+		} else {
+			minute = minute - int(interval)
+		}
+		starttime, _ = time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT%02d:%02d:00", datetime.Year(), datetime.Month(), datetime.Day(), hour, minute), cstZone)
+	}
 	//find last date
 	endtime, err := document.Getdate(task.staticModel.Name(), starttime, datetime, "-"+document.ExStaticDelegatorDateTag)
 	if err != nil {
@@ -120,6 +142,12 @@ func (task *StaticDelegatorByMonthTask) caculateWork() ([]document.ExStaticDeleg
 			continue
 		}
 		one.CaculateDate = fmt.Sprintf("%d.%02d.%02d", datetime.Year(), datetime.Month(), datetime.Day())
+		if conf.Get().Server.CaculateDebug {
+			one.Date = fmt.Sprintf("%d.%02d.%02d %02d:%02d:%02d", starttime.Year(),
+				starttime.Month(), starttime.Day(), starttime.Hour(), starttime.Minute(), starttime.Second())
+			one.CaculateDate = fmt.Sprintf("%d.%02d.%02d %02d:%02d:%02d", datetime.Year(),
+				datetime.Month(), datetime.Day(), datetime.Hour(), datetime.Minute(), datetime.Second())
+		}
 		res = append(res, one)
 		logger.Debug(fmt.Sprintf("caculate delegator index:%v", i))
 	}

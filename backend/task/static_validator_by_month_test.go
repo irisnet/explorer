@@ -93,17 +93,17 @@ func TestStaticValidatorByMonthTask_DoTask(t *testing.T) {
 	}
 }
 
-func TestStaticValidatorTask_DoTask(t *testing.T) {
-	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 24), cstZone)
-	endtime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 25), cstZone)
+func TestMonthDoTask(t *testing.T) {
+	//starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 24), cstZone)
+	//endtime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 25), cstZone)
 	delegatortask := new(StaticDelegatorByMonthTask)
 	validatortask := new(StaticValidatorByMonthTask)
-	delegatortask.SetCaculateScope(starttime, endtime)
+	//delegatortask.SetCaculateScope(starttime, endtime)
 	//delegatortask.SetCaculateAddress("iaa1xf5jaw09klqg9hzxfks3ycjvqgnpyjcm0yrkut")
 	delegatortask.DoTask()
 	fmt.Println("caculateWork have done,then validatortask work")
 	//validatortask.SetCaculateAddress("iva1qq93sapmdcx36uz64vvw5gzuevtxsc7lcfxsat")
-	validatortask.SetCaculateScope(starttime, endtime)
+	//validatortask.SetCaculateScope(starttime, endtime)
 	validatortask.SetAddressCoinMapData(delegatortask.AddressCoin, delegatortask.AddrTerminalCommission, delegatortask.AddrPeriodCommission)
 	validatortask.DoTask()
 }

@@ -53,6 +53,9 @@ func (task StaticValidatorTask) saveExValidatorStaticOps(validators []document.V
 	today := utils.TruncateTime(time.Now().In(cstZone), utils.Day)
 	ops := make([]txn.Op, 0, len(validators))
 	now := time.Now().Unix()
+	if conf.Get().Server.CaculateDebug {
+		today = time.Now().In(cstZone)
+	}
 	for _, addr := range validators {
 		item, err := task.loadValidatorTokens(addr, today)
 		item.CreateAt = now
