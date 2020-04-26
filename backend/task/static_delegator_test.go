@@ -70,7 +70,7 @@ func TestStaticRewardsByDayTask_getAccountFromDb(t *testing.T) {
 	//t.Log(string(utils.MarshalJsonIgnoreErr(res1)))
 }
 
-func TestStaticRewardsByDayTask_funcSubStr(t *testing.T) {
+func TestStaticRewardsByDayTask_DoTask(t *testing.T) {
 	new(StaticDelegatorTask).DoTask()
 }
 

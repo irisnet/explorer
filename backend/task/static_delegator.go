@@ -62,6 +62,9 @@ func (task StaticDelegatorTask) saveExStaticRewardsOps(accs []document.Account) 
 	today := utils.TruncateTime(time.Now().In(cstZone), utils.Day)
 	ops := make([]txn.Op, 0, len(accs))
 	now := time.Now().Unix()
+	if conf.Get().Server.CaculateDebug {
+		today = time.Now().In(cstZone)
+	}
 	for _, acc := range accs {
 		item, err := task.loadModelRewards(acc, today)
 		item.CreateAt = now

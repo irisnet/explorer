@@ -38,3 +38,7 @@ func TestStaticValidatorTask_getAllValidatorTokens(t *testing.T) {
 	}
 	t.Log(txsop)
 }
+
+func TestStaticValidatorTask_DoTask(t *testing.T) {
+	new(StaticValidatorTask).DoTask()
+}

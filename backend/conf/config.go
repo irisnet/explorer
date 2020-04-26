@@ -49,6 +49,7 @@ const (
 
 	KeyCronTimeFormatStaticDay   = "CronTimeFormatStaticDay"
 	KeyCronTimeFormatStaticMonth = "CronTimeFormatStaticMonth"
+	KeyCaculateDebug             = "CaculateDebug"
 
 	EnvironmentDevelop = "dev"
 	EnvironmentLocal   = "local"
@@ -101,6 +102,11 @@ func init() {
 		CronTimeValidatorStaticInfo: getEnvInt(KeyCronTimeValidatorStaticInfo, DefaultEnvironment),
 		CronTimeFormatStaticDay:     getEnv(KeyCronTimeFormatStaticDay, DefaultEnvironment),
 		CronTimeFormatStaticMonth:   getEnv(KeyCronTimeFormatStaticMonth, DefaultEnvironment),
+	}
+	if "true" == strings.ToLower(getEnv(KeyCaculateDebug, DefaultEnvironment)) {
+		server.CaculateDebug = true
+	} else {
+		server.CaculateDebug = false
 	}
 	logger.Info(fmt.Sprintf("serverInstanceNo: %s", server.InstanceNo))
 	config.Server = server
@@ -160,6 +166,7 @@ func loadDefault() {
 
 		KeyCronTimeFormatStaticDay:   "59 23 * * *", //m,h,d,m,w
 		KeyCronTimeFormatStaticMonth: "0 0 01 * *",
+		KeyCaculateDebug:             "false",
 	}
 }
 
@@ -201,6 +208,7 @@ type serverConf struct {
 	CronTimeProposalVoters      int
 	CronTimeFormatStaticDay     string
 	CronTimeFormatStaticMonth   string
+	CaculateDebug               bool
 }
 
 type hubConf struct {
