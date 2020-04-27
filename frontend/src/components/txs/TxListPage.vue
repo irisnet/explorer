@@ -189,7 +189,6 @@
 				sessionStorage.setItem('txpagenum',1);
                 history.pushState(null, null, `/#${this.$route.path}?txType=${this.TxType}&status=${this.txStatus}&startTime=${this.urlParamsShowStartTime}&endTime=${this.urlParamsShowEndTime}&page=1`);
                 this.getTxListByFilterCondition();
-                this.$uMeng.push('Transactions_Search','click')
             },
             resetUrl(){
                 this.value = 'allTxType';
@@ -204,7 +203,6 @@
 			filterTxByTxType(e){
 				if (e === 'allTxType' || e === undefined ) {
 					this.TxType = '';
-                    this.$uMeng.push('Transactions_All Type','click')
 				}else {
 					this.TxType = e
 				}
@@ -212,8 +210,7 @@
 			filterTxByStatus(e){
 				if(e === 'allStatus'){
 					this.txStatus = '';
-                    this.$uMeng.push('Transactions_All Status','click')
-                    
+     
 				}else {
 					this.txStatus = e
 				}
@@ -239,7 +236,6 @@
 				this.getType();
                 this.resetUrl()
                 this.getTxListByFilterCondition();
-                this.$uMeng.push('Transactions_Refresh','click')
 			},
             getType(){
 	            switch (this.$route.params.txType) {

@@ -61,20 +61,15 @@
 			UmengPush(data){
 				switch (data) {
 					case 'IRISnetDocs':
-						this.$uMeng.push('Overview_IRISnetDocs','click');
 						break;
 					case 'RainbowWallet':
-						this.$uMeng.push('Overview_RainbowWallet','click');
 						break;
 					case 'Whitepaper':
-						this.$uMeng.push('Overview_Whitepaper','click');
 						break;
 					case 'Github':
-						this.$uMeng.push('Overview_Github','click');
 				}
 			},
 			onInputChange () {
-				this.$uMeng.push('Overview_Search','click');
 				this.getData();
 			},
 			hideSearchBar(){
@@ -91,7 +86,6 @@
 					sessionStorage.setItem('flShowSearchIpt', 'hide');
 					
 				},300);
-				this.$uMeng.push('Overview_Collapse','click');
 				
 			},
 			getData () {

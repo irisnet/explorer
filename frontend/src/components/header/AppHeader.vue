@@ -437,7 +437,6 @@
                 
                 sessionStorage.setItem('flShowSearchBar','show');
                 sessionStorage.setItem('flShowSearchIpt','show');
-                this.$uMeng.push('Overview_Expand','click');
             },
 			showTwoMenu(v){
 				this.flShowSubMenu = true;

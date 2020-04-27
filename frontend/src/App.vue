@@ -22,7 +22,7 @@
 		components: {GozHeader, qrComponent, AppFooter, LoadingComponent, AppHeader},
 		data () {
             return {
-
+                timer:null,
             }
         },
 		beforeMount(){
@@ -34,14 +34,17 @@
 			}
 		},
         mounted () {
-            let uMengID
-		    if(sessionStorage.getItem('UMengID')){
-                uMengID = sessionStorage.getItem('UMengID');
-            }
-            const script = document.createElement('script');
-            script.src = `https://s95.cnzz.com/z_stat.php?id=${uMengID}&web_id=${uMengID}`;
-            script.language = 'JavaScript';
-            document.body.appendChild(script)
+            let uMengID;
+		    this.timer = setInterval(() =>{
+                if(sessionStorage.getItem('UMengID')){
+                    uMengID = sessionStorage.getItem('UMengID');
+                    const script = document.createElement('script');
+                    script.src = `https://s95.cnzz.com/z_stat.php?id=${uMengID}&web_id=${uMengID}`;
+                    script.language = 'JavaScript';
+                    document.body.appendChild(script)
+                    clearInterval(this.timer)
+                }
+            },500)
         },
         watch: {
             '$route' () {

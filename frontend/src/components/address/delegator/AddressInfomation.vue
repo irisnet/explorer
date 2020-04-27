@@ -342,7 +342,6 @@
 		        this.resetUrl();
 		        sessionStorage.setItem('addressTxPageNum',1);
 		        this.getTxListByFilterCondition();
-                this.$uMeng.push('Transactions_Search','click')
 	        },
 			getAddressInformation(){
                 Server.commonInterface({addressInformation:{
@@ -627,7 +626,6 @@
 	        filterTxByTxType(e){
 		        if (Array.isArray(e) && e[e.length-1] === 'allTxType' || e === undefined ) {
 			        this.TxType = '';
-                    this.$uMeng.push('Transactions_All Type','click')
 		        }else {
 			        this.TxType = Tools.onlyFirstWordUpperCase(e[e.length-1]);
 		        }
@@ -635,7 +633,6 @@
 	        filterTxByStatus(e){
 		        if(e === 'allStatus'){
 			        this.txStatus = ''
-                    this.$uMeng.push('Transactions_All Status','click')
 		        }else {
 			        this.txStatus = e
 		        }
@@ -670,7 +667,6 @@
 		        this.allTxCurrentPage = 1;
 		        this.resetUrl();
 		        this.getTxListByFilterCondition()
-                this.$uMeng.push('Transactions_Refresh','click')
 	        },
 	        formatEndTime(time){
 		        // let utcTime = Tools.conversionTimeToUTCByValidatorsLine(new Date(time).toISOString());

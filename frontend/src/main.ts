@@ -19,6 +19,7 @@ Vue.component('MTable', MTable);
 import Tools from './util/Tools';
 import 'element-ui/lib/theme-chalk/index.css'
 import {Select} from 'element-ui'
+import {Switch} from 'element-ui'
 import {DatePicker} from 'element-ui'
 import {Option} from 'element-ui'
 import {Tooltip} from 'element-ui'
@@ -27,6 +28,7 @@ import lang from 'element-ui/lib/locale/lang/en'
 import locale from 'element-ui/lib/locale'
 locale.use(lang);
 Vue.component('el-select',Select);
+Vue.component('el-switch',Switch);
 Vue.component('el-option',Option);
 Vue.component('el-date-picker',DatePicker);
 Vue.component('el-tooltip',Tooltip);

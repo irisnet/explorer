@@ -27,6 +27,7 @@ export default {
     },
     methods: {
         handleCopy(text, event) {
+            this.$uMeng.push('Delegate_address','click')
             this.handleClipboard(
                 text,
                 event,

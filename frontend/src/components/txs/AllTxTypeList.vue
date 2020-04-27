@@ -167,12 +167,10 @@
 		        sessionStorage.setItem('txpagenum',1);
                 history.pushState(null, null, `/#/txs?txType=${this.TxType}&status=${this.txStatus}&startTime=${this.urlParamsShowStartTime}&endTime=${this.urlParamsShowEndTime}&page=1`);
                 this.getTxListByFilterCondition();
-                this.$uMeng.push('Transactions_Search','click')
             },
 			filterTxByTxType(e){
 				if (Array.isArray(e) && e[e.length-1] === 'allTxType' || e === undefined ) {
 					this.TxType = '';
-                    this.$uMeng.push('Transactions_All Type','click')
                 }else {
                     this.TxType = Tools.onlyFirstWordUpperCase(e[e.length-1])
                 }
@@ -208,7 +206,6 @@
 	        filterTxByStatus(e){
 		        if(e === 'allStatus' || e === undefined ){
 			        this.txStatus = ''
-                    this.$uMeng.push('Transactions_All Status','click')
 		        }else {
 			        this.txStatus = e
 		        }
@@ -236,7 +233,6 @@
 		        this.currentPageNum = 1;
                 this.resetUrl();
                 this.getTxListByFilterCondition()
-                this.$uMeng.push('Transactions_Refresh','click')
             },
 	        forCurrentPageNum() {
 		        let currentPageNum = 1;

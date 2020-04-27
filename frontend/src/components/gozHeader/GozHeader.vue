@@ -3,7 +3,7 @@
 		<div class="goz_content_wrap">
 			<div class="goz_content_left_content">
 				<div class="goz_content_logo_content">
-					<a href="https://www.irisplorer.io/#/home" target="_blank"><img src="../../assets/logo.png" alt=""></a>
+					<a @click="$uMeng.push('GoZ_IRISplorer','click')" href="https://www.irisplorer.io/#/home" target="_blank"><img src="../../assets/logo.png" alt=""></a>
 					<span class="iconfont" :class="currentNetworkClass"></span>
 				</div>
 				<div class="goz_content_network_state">
@@ -112,6 +112,7 @@
 					currentEnv.configs.forEach(item => {
 						if(currentEnv.cur_env === item.env && currentEnv.chain_id === item.chain_id){
 							networkName = item.network_name;
+							sessionStorage.setItem('UMengID',item.umeng_id)
 						}
 					})
 				}

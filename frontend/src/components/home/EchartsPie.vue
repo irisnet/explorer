@@ -2,7 +2,7 @@
   <div class="echarts_component_wrap" :style="`min-width:${minWidth}rem;`">
     <div class="echarts_title_wrap">
       <span class="validators_title"><i class="iconfont iconVotingPower"></i>Validators Top10</span>
-      <router-link class="validators_top" :to="`/validators`" @click.native="$uMeng.push('HomeOverview_Validators Top10','click')">
+      <router-link class="validators_top" :to="`/validators`">
         <span>View All</span>
       </router-link>
     </div>

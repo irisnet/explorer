@@ -1,13 +1,22 @@
 <template>
-	<div class="validator_graph_container">
+	<div class="validator_graph_container" :class="switchValue ? 'start_sky_img' : 'default_bg_img'">
 		<div class="graph_content_wrap">
 			<div class="graph_content_title"><div>GoZ Global Network State*</div> <span class="beat_content">Beta</span> </div>
-			<div class="tooltip" v-if="flShowNetwork"><p><span></span><span>Connection Opened</span></p> <p><span></span><span>Connection Unopened</span></p></div>
+			<div class="tooltip" v-if="flShowNetwork">
+				<div class="graph_tooltip"><p><span></span><span>Connection Opened</span></p> <p><span></span><span>Connection Unopened</span></p></div>
+				<div class="background_toggle_content">
+					<span style="color: rgba(115, 122, 174, 1);font-size: 0.14rem;margin-right:0.1rem;line-height: 0.16rem">Starry-sky Mode</span> <el-switch v-model="switchValue"
+					           active-color="rgba(55, 124, 248, 1)"
+					           inactive-color="rgba(16, 19, 55, 1)" @change="switchBgColor(switchValue)"></el-switch>
+				</div>
+			</div>
 			<div class="graph_charts_container" :class="flShowNetwork ? '' : 'show_error_content'">
-				<p class="graph_charts_title" v-if="flShowNetwork">*This demo is using simulated data. Please stay tuned for the grand GoZ Opening at May 1st</p>
-				<div class="graph_content_container" v-if="flShowNetwork">
-					<div id="validator_graph_content"></div>
-					<div class="graph_list_container">
+				<div class="graph_content_container" v-if="flShowNetwork" >
+					<div class="graph_container_content_wrap"  :style="{background: switchValue ? 'transparent' : '#2d325a'}">
+						<p class="graph_charts_title" v-if="flShowNetwork">*This demo is using simulated data. Please stay tuned for the grand GoZ Opening at May 1st</p>
+						<div id="validator_graph_content"></div>
+					</div>
+					<div class="graph_list_container"  :style="{background: switchValue ? 'transparent' : '#2d325a'}">
 						<div class="graph_list_item_all" @click="selectAll()">
 							<div class="legend_all_block">
 								<img v-show="flAllCheckout" src="../../assets/select_all.svg" alt="">
@@ -29,8 +38,9 @@
 					<p>Sorry, failed to obtain information Check if you are using vpn</p>
 					<span @click="refreshPage()">Please refresh <i class="iconfont iconshuaxin" ></i></span>
 				</div>
-				
 			</div>
+			<app-download></app-download>
+			<validator-bianjie-information></validator-bianjie-information>
 		</div>
 	</div>
 </template>
@@ -38,6 +48,8 @@
 <script>
 	import axios from 'axios';
 	import apiUrlConfig from "../../../config/config"
+	import ValidatorBianjieInformation from "./ValidatorBianjieInformation";
+	import AppDownload from "@/components/home/AppDownload";
 	var echarts = require('echarts/lib/echarts');
 	require('echarts/lib/component/legend');
 	require('echarts/lib/component/tooltip');
@@ -47,6 +59,7 @@
 	require('echarts/lib/component/legendScroll');
 	export default {
 		name: "ValidatorGraph",
+		components: {AppDownload, ValidatorBianjieInformation},
 		data(){
 			return {
 				graphContent:'',
@@ -55,6 +68,7 @@
 				data:null,
 				colorDataArray:[],
 				copyData:'',
+				switchValue: sessionStorage.getItem('starSky') ? sessionStorage.getItem('starSky') === 'show' ? true : false : true,
 				testData:{
 					"nodes": [
 						{
@@ -67,7 +81,7 @@
 						},
 						{
 							"chain-id": "irishub",
-							"connections": 8
+							"connections": 10
 						},
 						{
 							"chain-id": "achain",
@@ -91,7 +105,7 @@
 						},
 						{
 							"chain-id": "umbrellachain",
-							"connections": 6
+							"connections": 7
 						},
 						{
 							"chain-id": "ptpchain",
@@ -99,7 +113,7 @@
 						},
 						{
 							"chain-id": "ibc-band-testnet1",
-							"connections": 2
+							"connections": 3
 						},
 						{
 							"chain-id": "kava-ibc",
@@ -290,19 +304,29 @@
 			this.getData();
 			this.timer = setInterval(() => {
 				this.getData();
-			},300000)
+			},300000);
 		},
 		methods:{
+			switchBgColor(switchValue){
+				//TODO true 为星空背景
+				if(switchValue){
+					sessionStorage.setItem('starSky','show')
+					this.$uMeng.push('TurnOn_starry-skymode','click')
+				}else {
+					this.$uMeng.push('TurnOff_starry-skymode','click')
+					sessionStorage.setItem('starSky','hide')
+				}
+			},
 			getData(){
-				let Url = apiUrlConfig.app.url;
-				axios.get(`${Url}`).then(data => {
-					if(data.status === 200){
-						return data.data
-					}else {
-						return 'network is error'
-					}
-				}).then( res => {
-					this.data = res;
+				// let Url = apiUrlConfig.app.url;
+				// axios.get(`${Url}`).then(data => {
+				// 	if(data.status === 200){
+				// 		return data.data
+				// 	}else {
+				// 		return 'network is error'
+				// 	}
+				// }).then( res => {
+				// 	this.data = res;
 					// TODO 演示专用数据
 					this.data = this.testData;
 					//数据先排序
@@ -330,12 +354,14 @@
 					this.colorUseCopyData = JSON.parse(JSON.stringify(this.data));
 					this.initLegend();
 					this.initChartsGraph();
-				}).catch(e => {
-					console.log(e);
-					if(e){
-						this.flShowNetwork = false
-					}
-				})
+			/*		//TODO  测试
+				this.flShowNetwork = false*/
+				// }).catch(e => {
+				// 	console.log(e);
+				// 	if(e){
+				// 		this.flShowNetwork = false
+				// 	}
+				// })
 			},
 			refreshPage(){
 				window.location.reload();
@@ -451,12 +477,15 @@
 						}
 					},
 					animationDuration: 1500,
-					animationEasingUpdate: 'quinticInOut',
+					animationThreshold: 1000,
+					animationEasingUpdate: 'quadraticInOut',
 					series : [
 						{
 							name: '',
 							type: 'graph',
 							layout: 'force',
+							animation: true,
+							// edgeSymbol: ['arrow','arrow'], //指示线的箭头
 							data: nodeArray,
 							links: nodeLinksArray,
 							nodeScaleRatio: 0.6, //鼠标每次缩放的整体缩放比例
@@ -464,7 +493,7 @@
 								repulsion: [10,1500], //斥力因子
 								gravity: 0.3, //是否向中心靠拢 值越大越接近于中心
 								edgeLength: [10,300], //链接线的长度范围
-								layoutAnimation: true
+								layoutAnimation: true,
 							},
 							// zoom:0.9, //设置整体视图缩放的比例
 							categories: categories, //类目数据
@@ -480,16 +509,26 @@
 						}
 					]
 				};
-				graphEcharts.setOption(graphOption)
+				graphEcharts.setOption(graphOption);
 			},
 		}
 	}
 </script>
 
 <style scoped lang="scss">
+	.default_bg_img{
+		background: rgba(32, 35, 66, 1);
+	}
+	.start_sky_img{
+		background-image: url("../../assets/start_bg.jpg");
+		background-repeat: no-repeat;
+		background-position: center;
+		background-size: cover;
+	}
 	.validator_graph_container{
 		width: 100%;
 		height: 100%;
+		//线上数据
 		.graph_content_wrap{
 			max-width: 12.8rem;
 			margin: 0 auto;
@@ -499,9 +538,7 @@
 				color:rgba(255,255,255,1);
 				display: flex;
 				align-items: center;
-				div:nth-of-type(1){
-					margin-left: 0.2rem;
-				}
+				padding-left: 0.2rem;
 				.beat_content{
 					margin-left: 0.18rem;
 					background: rgba(55, 124, 248, 1);
@@ -513,43 +550,47 @@
 			}
 			.tooltip{
 				display: flex;
-				align-items: center;
+				justify-content: space-between;
 				margin-bottom: 0.1rem;
-				p:nth-of-type(1){
+				.graph_tooltip{
 					display: flex;
-					align-items: center;
-					span:nth-of-type(1){
-						margin-left: 0.2rem;
-						display: inline-block;
-						width: 0.2rem;
-						height: 0.02rem;
-						border-top: 0.02rem solid #70C6C7;
+					p:nth-of-type(1){
+						display: flex;
+						align-items: center;
+						span:nth-of-type(1){
+							margin-left: 0.2rem;
+							display: inline-block;
+							width: 0.2rem;
+							height: 0.02rem;
+							border-top: 0.02rem solid #70C6C7;
+						}
+						span:nth-of-type(2){
+							margin-left: 0.1rem;
+							font-size: 0.14rem;
+							color: rgba(115, 122, 174, 1);
+						}
 					}
-					span:nth-of-type(2){
-						margin-left: 0.1rem;
-						font-size: 0.14rem;
-						color: rgba(115, 122, 174, 1);
+					p:nth-of-type(2){
+						display: flex;
+						align-items: center;
+						span:nth-of-type(1){
+							width: 0.2rem;
+							margin-left: 0.41rem;
+							display: inline-block;
+							border-top: 0.02rem dashed #70C6C7;
+						}
+						span:nth-of-type(2){
+							margin-left: 0.1rem;
+							font-size: 0.14rem;
+							color: rgba(115, 122, 174, 1);
+						}
 					}
 				}
-				p:nth-of-type(2){
-					display: flex;
-					align-items: center;
-					span:nth-of-type(1){
-						width: 0.2rem;
-						margin-left: 0.41rem;
-						display: inline-block;
-						border-top: 0.02rem dashed #70C6C7;
-					}
-					span:nth-of-type(2){
-						margin-left: 0.1rem;
-						font-size: 0.14rem;
-						color: rgba(115, 122, 174, 1);
-					}
+				.background_toggle_content{
+					margin-right: 0.4rem;
 				}
 			}
 			.graph_charts_container{
-				background: #2D325A;
-				margin-bottom: 0.6rem;
 				min-height: 6.46rem;
 				.graph_charts_title{
 					padding: 0.2rem 0 0 0.2rem;
@@ -559,13 +600,25 @@
 				}
 				.graph_content_container{
 					display: flex;
-					#validator_graph_content{
-						max-width: 8rem;
-						width: 100%;
-						height: 6rem;
-						background: #2D325A;
+					.graph_container_content_wrap{
+						flex: 1;
+						background: #2d325a;
+						border-radius: 0.04rem;
+						#validator_graph_content{
+							max-width: 8rem;
+							width: 100%;
+							height: 6rem;
+							background: transparent;
+							//线上
+							/*background: #2D325A;*/
+						}
 					}
 					.graph_list_container{
+						background: #2d325a;
+						max-width: 4.7rem;
+						margin-left: 0.02rem;
+						padding-top: 0.2rem;
+						border-radius: 0.04rem;
 						.graph_list_item_all{
 							display: flex;
 							justify-content: flex-start;
@@ -574,17 +627,24 @@
 								width: 0.14rem;
 								height: 0.14rem;
 								border-radius: 0.07rem;
+								cursor: pointer;
+								img{
+									width: 100%;
+									height:100%;
+								}
 							}
 							.legend_block{
 								box-sizing: border-box;
 								width: 0.14rem;
 								height: 0.14rem;
 								border-radius: 0.07rem;
+								cursor: pointer;
 							}
 							.hide_style{
 								color: rgba(134, 143, 211, 1) !important;
 							}
 							.legend_name{
+								cursor: pointer;
 								height: 0.14rem;
 								color: rgba(134, 143, 211, 0.5);
 								margin-left: 0.1rem;
@@ -597,6 +657,7 @@
 							display: flex;
 							flex-wrap: wrap;
 							margin-left: 0.2rem;
+							padding-bottom: 0.4rem;
 							.graph_list_item{
 								width: 1.5rem;
 								align-items: center;
@@ -608,15 +669,17 @@
 									width: 0.14rem;
 									height: 0.14rem;
 									border-radius: 0.07rem;
+									cursor: pointer;
 								}
 								.legend_block{
+									box-sizing: border-box;
 									width: 0.14rem;
 									height: 0.14rem;
 									border-radius: 0.07rem;
 								}
 								.hide_style{
 									background: transparent !important;
-									border: 0.01rem solid rgba(24, 27, 58, 1);
+									border: 0.01rem solid rgba(134, 143, 211, 0.5);
 								}
 								.legend_name{
 									height: 0.16rem;
@@ -625,7 +688,7 @@
 									margin-left: 0.1rem;
 								}
 								.hide_style_color{
-									color: rgba(24, 27, 58, 1) !important;
+									color: rgba(134, 143, 211, 0.5) !important;
 								}
 							}
 						}
@@ -668,12 +731,60 @@
 					height: auto;
 					padding: 0.15rem 0;
 					align-items: flex-start;
-					.tooltip{
-						padding-top: 0.05rem;
+				}
+				.tooltip{
+					justify-content: space-between;
+					.graph_tooltip{
+						flex: 1;
 						display: flex;
-						flex-direction: column;
 						align-items: flex-start;
-						justify-content: center;
+					}
+					.background_toggle_content{
+						text-align: right;
+					}
+				}
+				.graph_charts_container{
+					.graph_content_container{
+						flex-direction: column;
+						.graph_container_content_wrap{
+							border-radius: 0;
+						}
+						.graph_list_container{
+							max-width: none ;
+							margin-bottom: 0.2rem;
+							border-radius: 0;
+							margin-left: 0;
+							.graph_list_item_all{
+								margin-left: 0.2rem;
+								justify-content: flex-start;
+							}
+							.graph_list_content{
+								height: auto;
+								.graph_list_item{
+									margin-left: 0;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	@keyframes rotate {
+		from {
+			transform: rotate(0deg);
+		}
+		to{
+			transform: rotate(360deg);
+		}
+	}
+	@media (max-width: 610px) {
+		.validator_graph_container{
+			.graph_content_wrap{
+				.tooltip{
+					flex-direction: column;
+					.graph_tooltip{
+						flex-direction: column;
 						p:nth-of-type(1){
 							span:nth-of-type(1){
 								margin-left: 0;
@@ -685,26 +796,14 @@
 							}
 						}
 					}
+					.background_toggle_content{
+						margin-right: 0.1rem;
+					}
 				}
 				.graph_charts_container{
-					.tooltip{
-						flex-direction: column;
-						align-items: flex-start;
-					}
 					.graph_content_container{
-						flex-direction: column;
 						.graph_list_container{
-							margin-bottom: 0.6rem;
-							.graph_list_item_all{
-								margin-left: 0.2rem;
-								justify-content: flex-start;
-							}
-							.graph_list_content{
-								height: auto;
-								.graph_list_item{
-									margin-left: 0;
-								}
-							}
+							margin-bottom: 0.2rem;
 						}
 					}
 				}
