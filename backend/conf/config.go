@@ -47,13 +47,11 @@ const (
 	KeyCronTimeProposalVoters      = "CronTimeProposalVoters"
 	KeyCronTimeValidatorStaticInfo = "CronTimeValidatorStaticInfo"
 
-	KeyCronTimeFormatStaticDay      = "CronTimeFormatStaticDay"
-	KeyCronTimeFormatStaticMonth    = "CronTimeFormatStaticMonth"
-	KeyCronTimeStaticDelegator      = "CronTimeStaticDelegator"
-	KeyCronTimeStaticValidator      = "CronTimeStaticValidator"
-	KeyCronTimeStaticDelegatorMonth = "CronTimeStaticDelegatorMonth"
-	KeyCronTimeStaticValidatorMonth = "CronTimeStaticValidatorMonth"
-	KeyCaculateDebug                = "CaculateDebug"
+	KeyCronTimeFormatStaticDay   = "CronTimeFormatStaticDay"
+	KeyCronTimeFormatStaticMonth = "CronTimeFormatStaticMonth"
+	KeyCronTimeStaticDataDay     = "CronTimeStaticDataDay"
+	KeyCronTimeStaticDataMonth   = "CronTimeStaticDataMonth"
+	KeyCaculateDebug             = "CaculateDebug"
 
 	EnvironmentDevelop = "dev"
 	EnvironmentLocal   = "local"
@@ -106,10 +104,10 @@ func init() {
 		CronTimeValidatorStaticInfo:  getEnvInt(KeyCronTimeValidatorStaticInfo, DefaultEnvironment),
 		CronTimeFormatStaticDay:      getEnv(KeyCronTimeFormatStaticDay, DefaultEnvironment),
 		CronTimeFormatStaticMonth:    getEnv(KeyCronTimeFormatStaticMonth, DefaultEnvironment),
-		CronTimeStaticDelegator:      getEnvInt(KeyCronTimeStaticDelegator, DefaultEnvironment),
-		CronTimeStaticValidator:      getEnvInt(KeyCronTimeStaticValidator, DefaultEnvironment),
-		CronTimeStaticDelegatorMonth: getEnvInt(KeyCronTimeStaticDelegatorMonth, DefaultEnvironment),
-		CronTimeStaticValidatorMonth: getEnvInt(KeyCronTimeStaticValidatorMonth, DefaultEnvironment),
+		CronTimeStaticDelegator:      getEnvInt(KeyCronTimeStaticDataDay, DefaultEnvironment),
+		CronTimeStaticValidator:      getEnvInt(KeyCronTimeStaticDataDay, DefaultEnvironment),
+		CronTimeStaticDelegatorMonth: getEnvInt(KeyCronTimeStaticDataMonth, DefaultEnvironment),
+		CronTimeStaticValidatorMonth: getEnvInt(KeyCronTimeStaticDataMonth, DefaultEnvironment),
 	}
 	if "true" == strings.ToLower(getEnv(KeyCaculateDebug, DefaultEnvironment)) {
 		server.CaculateDebug = true
@@ -161,20 +159,18 @@ func loadDefault() {
 		KeyCurEnv:         "dev",
 		KeyInitialSupply:  InitialSupply,
 
-		KeyCronTimeAssetGateways:        "60",
-		KeyCronTimeAssetTokens:          "60",
-		KeyCronTimeGovParams:            "3600",
-		KeyCronTimeTxNumByDay:           "86400",
-		KeyCronTimeControlTask:          "30",
-		KeyCronTimeValidators:           "60",
-		KeyCronTimeAccountRewards:       "600",
-		KeyCronTimeProposalVoters:       "60",
-		KeyCronTimeValidatorIcons:       "43200",
-		KeyCronTimeValidatorStaticInfo:  "300",
-		KeyCronTimeStaticDelegator:      "86400",
-		KeyCronTimeStaticValidator:      "86400",
-		KeyCronTimeStaticDelegatorMonth: "2592000",
-		KeyCronTimeStaticValidatorMonth: "2592000",
+		KeyCronTimeAssetGateways:       "60",
+		KeyCronTimeAssetTokens:         "60",
+		KeyCronTimeGovParams:           "3600",
+		KeyCronTimeTxNumByDay:          "86400",
+		KeyCronTimeControlTask:         "30",
+		KeyCronTimeValidators:          "60",
+		KeyCronTimeAccountRewards:      "600",
+		KeyCronTimeProposalVoters:      "60",
+		KeyCronTimeValidatorIcons:      "43200",
+		KeyCronTimeValidatorStaticInfo: "300",
+		KeyCronTimeStaticDataDay:       "86400",
+		KeyCronTimeStaticDataMonth:     "2592000",
 
 		KeyCronTimeFormatStaticDay:   "59 23 * * *", //m,h,d,m,w
 		KeyCronTimeFormatStaticMonth: "0 0 01 * *",
