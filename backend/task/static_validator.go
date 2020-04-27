@@ -19,7 +19,7 @@ func (task StaticValidatorTask) Name() string {
 }
 func (task StaticValidatorTask) Start() {
 	taskName := task.Name()
-	timeInterval := conf.Get().Server.CronTimeTxNumByDay
+	timeInterval := conf.Get().Server.CronTimeStaticValidator
 
 	if err := tcService.runTask(taskName, timeInterval, task.DoTask); err != nil {
 		logger.Error(err.Error())

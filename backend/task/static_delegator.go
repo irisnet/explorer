@@ -23,7 +23,7 @@ func (task StaticDelegatorTask) Name() string {
 }
 func (task StaticDelegatorTask) Start() {
 	taskName := task.Name()
-	timeInterval := conf.Get().Server.CronTimeTxNumByDay
+	timeInterval := conf.Get().Server.CronTimeStaticDelegator
 
 	if err := tcService.runTask(taskName, timeInterval, task.DoTask); err != nil {
 		logger.Error(err.Error())

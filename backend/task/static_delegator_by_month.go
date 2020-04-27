@@ -36,7 +36,7 @@ func (task *StaticDelegatorByMonthTask) Name() string {
 }
 func (task *StaticDelegatorByMonthTask) Start() {
 	taskName := task.Name()
-	timeInterval := 3600 * 24 * 30
+	timeInterval := conf.Get().Server.CronTimeStaticDelegatorMonth
 
 	if err := tcService.runTask(taskName, timeInterval, task.DoTask); err != nil {
 		logger.Error(err.Error())
@@ -85,11 +85,15 @@ func (task *StaticDelegatorByMonthTask) caculateWork() ([]document.ExStaticDeleg
 	}
 	if conf.Get().Server.CaculateDebug {
 		arr := strings.Split(conf.Get().Server.CronTimeFormatStaticMonth, " ")
-		interval, err := strconv.ParseInt(arr[0], 10, 64)
+		minutedata := strings.Split(arr[0], "/")
+		intervalstr := minutedata[1]
+		if len(minutedata) == 1 {
+			intervalstr = minutedata[0]
+		}
+		interval, err := strconv.ParseInt(intervalstr, 10, 64)
 		if err != nil {
 			logger.Error(err.Error())
 		}
-		fmt.Println(interval)
 		hour, minute := datetime.Hour(), datetime.Minute()
 		if int64(minute) < interval {
 			if hour < 1 {
