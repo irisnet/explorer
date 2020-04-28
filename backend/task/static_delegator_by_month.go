@@ -232,7 +232,7 @@ func (task *StaticDelegatorByMonthTask) getStaticDelegator(starttime time.Time, 
 		TerminalDelegation:     document.Coin{Denom: terminalval.Delegation.Denom, Amount: terminalval.Delegation.Amount},
 		PeriodDelegationTimes:  task.getPeriodDelegationTimes(terminalval.Address, txs),
 		PeriodWithdrawRewards:  periodRewards,
-		IncrementDelegation:    task.getIncrementDelegation(terminalval.Delegation, delagation.Delegation),
+		IncrementDelegation:    task.getIncrementDelegation(terminalval.Delegation, delagationlastmonth.TerminalDelegation),
 		PeriodIncrementRewards: incrementRewards,
 		TerminalRewards:        terminalRewards,
 	}
@@ -350,8 +350,8 @@ func (task *StaticDelegatorByMonthTask) getCoinflow(coinFlow []string) {
 	return
 }
 
-func (task *StaticDelegatorByMonthTask) getIncrementDelegation(terminal, delagation utils.Coin) document.Coin {
-	amount := terminal.Amount - delagation.Amount
+func (task *StaticDelegatorByMonthTask) getIncrementDelegation(terminal utils.Coin, delagationlastmonth document.Coin) document.Coin {
+	amount := terminal.Amount - delagationlastmonth.Amount
 	return document.Coin{
 		Denom:  terminal.Denom,
 		Amount: amount,

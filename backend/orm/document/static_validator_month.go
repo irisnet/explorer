@@ -13,6 +13,7 @@ const (
 
 	ExStaticValidatorMonthAddressTag = "address"
 	ExStaticValidatorMonthDateTag    = "date"
+	ExStaticValidatorOperatorAddrTag = "operator_address"
 )
 
 type ExStaticValidatorMonth struct {
@@ -27,7 +28,7 @@ type ExStaticValidatorMonth struct {
 	IncrementCommission     Coin          `bson:"increment_commission"`
 	TerminalDelegation      string        `bson:"terminal_delegation"`
 	IncrementDelegation     string        `bson:"increment_delegation"`
-	Rank                    int           `bson:"rank"` //权重排名用
+	Tokens                  string        `bson:"tokens"` //权重排名用
 	TerminalDelegatorN      int           `bson:"terminal_delegator_n"`
 	IncrementDelegatorN     int           `bson:"increment_delegator_n"`
 	TerminalSelfBond        string        `bson:"terminal_self_bond"`

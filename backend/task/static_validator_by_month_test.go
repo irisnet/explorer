@@ -109,10 +109,10 @@ func TestMonthDoTask(t *testing.T) {
 }
 
 func TestStaticValidatorByMonthTask_getCommissionRate(t *testing.T) {
-	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 16), cstZone)
-	endtime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 17), cstZone)
-	ratemax := task.getCommissionRate(starttime, endtime, "-date")
+	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT18:40:00", 2020, 4, 27), cstZone)
+	endtime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT18:49:00", 2020, 4, 27), cstZone)
+	ratemax := task.getCommissionRate(starttime, endtime, "fva186qhtc62cf6ejlt3erw6zk28mgw8ne7grhmyfn", "-date")
 	fmt.Println(ratemax)
-	ratemin := task.getCommissionRate(starttime, endtime, "date")
+	ratemin := task.getCommissionRate(starttime, endtime, "fva186qhtc62cf6ejlt3erw6zk28mgw8ne7grhmyfn", "date")
 	fmt.Println(ratemin)
 }

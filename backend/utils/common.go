@@ -163,3 +163,25 @@ func FailtoFailed(status string) string {
 	}
 	return status
 }
+
+func CovertShareTokens(tokens, shares, selfBond string) string {
+	if selfBond == "" {
+		return "0"
+	}
+	rate, err := QuoByStr(tokens, shares)
+	if err != nil {
+		logger.Error("validator.Tokens / validator.DelegatorShares", logger.String("err", err.Error()))
+		return ""
+	}
+
+	selfBondAsRat, ok := new(big.Rat).SetString(selfBond)
+	if !ok {
+		logger.Error("convert validator selfBond type (string -> big.Rat) err",
+			logger.String("self bond str", selfBond))
+		return ""
+
+	}
+	selfBondTokensAsRat := new(big.Rat).Mul(selfBondAsRat, rate)
+
+	return selfBondTokensAsRat.FloatString(18)
+}
