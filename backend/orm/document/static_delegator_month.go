@@ -81,3 +81,12 @@ func (d ExStaticDelegatorMonth) Save(delegatormonth ExStaticDelegatorMonth) erro
 	delegatormonth.UpdateAt = time.Now().Unix()
 	return orm.Save(d.Name(), delegatormonth)
 }
+
+func (d ExStaticDelegatorMonth) List(cond bson.M, pageNum, pageSize int, istotal bool) ([]ExStaticDelegatorMonth, int, error) {
+	var res []ExStaticDelegatorMonth
+	total, err := pageQuery(d.Name(), nil, cond, desc(ExStaticDelegatorDateTag), pageNum, pageSize, istotal, &res)
+	if err != nil && err != mgo.ErrNotFound {
+		return res, 0, err
+	}
+	return res, total, nil
+}

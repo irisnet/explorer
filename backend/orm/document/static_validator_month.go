@@ -104,3 +104,13 @@ func (d ExStaticValidatorMonth) GetLatest(address string) (ExStaticValidatorMont
 	}
 	return res, nil
 }
+
+func (d ExStaticValidatorMonth) List(cond bson.M, pageNum, pageSize int, istotal bool) ([]ExStaticValidatorMonth, int, error) {
+	var res []ExStaticValidatorMonth
+
+	total, err := pageQuery(d.Name(), nil, cond, desc(ExStaticDelegatorDateTag), pageNum, pageSize, istotal, &res)
+	if err != nil && err != mgo.ErrNotFound {
+		return res, 0, err
+	}
+	return res, total, nil
+}
