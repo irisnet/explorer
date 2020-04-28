@@ -177,7 +177,7 @@ func loadDefault() {
 		KeyCronTimeFormatStaticDay:   "59 23 * * *", //m,h,d,m,w
 		KeyCronTimeFormatStaticMonth: "0 0 01 * *",
 		KeyCaculateDebug:             "false",
-		KeyFoundationDelegatorAddr:   "faa176dd0tgn38grpc8hpxfmwl6sl8jfmknesgawx7",
+		KeyFoundationDelegatorAddr:   "iaa1w7ewedr57z6p7f8nknmdvukfxwkwlsvfjumdts",
 	}
 }
 
