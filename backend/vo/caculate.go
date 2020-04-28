@@ -31,7 +31,7 @@ type ExStaticValidatorMonthVo struct {
 	IncrementCommission     float64 `json:"increment_commission"`
 	TerminalDelegation      float64 `json:"terminal_delegation"`
 	IncrementDelegation     float64 `json:"increment_delegation"`
-	Rank                    int     `json:"rank"` //权重排名用
+	Tokens                  float64 `json:"tokens"` //权重排名用
 	TerminalDelegatorN      int     `json:"terminal_delegator_n"`
 	IncrementDelegatorN     int     `json:"increment_delegator_n"`
 	TerminalSelfBond        float64 `json:"terminal_self_bond"`

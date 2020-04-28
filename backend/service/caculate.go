@@ -71,7 +71,7 @@ func loadFromValModel(model document.ExStaticValidatorMonth) vo.ExStaticValidato
 		IncrementCommission:     coverAmount(model.IncrementCommission),
 		TerminalDelegation:      coverFloat64(model.TerminalDelegation),
 		IncrementDelegation:     coverFloat64(model.IncrementDelegation),
-		Rank:                    model.Rank,
+		Tokens:                  coverFloat64(model.Tokens),
 		TerminalDelegatorN:      model.TerminalDelegatorN,
 		IncrementDelegatorN:     model.IncrementDelegatorN,
 		TerminalSelfBond:        coverFloat64(model.TerminalSelfBond),

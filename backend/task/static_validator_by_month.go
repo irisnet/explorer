@@ -131,13 +131,12 @@ func (task *StaticValidatorByMonthTask) DoTask() error {
 
 	foundtionDelegation := task.getFoundtionDelegation(terminalData)
 
-	for i, val := range terminalData {
+	for _, val := range terminalData {
 		one, errf := task.getStaticValidator(starttime, val, addressHeightMap, foundtionDelegation)
 		if errf != nil {
 			logger.Error(errf.Error())
 			continue
 		}
-		one.Rank = i + 1
 		one.CaculateDate = fmt.Sprintf("%d.%02d.%02d", datetime.Year(), datetime.Month(), datetime.Day())
 		one.CommissionRateMin = task.getCommissionRate(starttime, datetime, document.ValidatorCommissionRateTag)
 		one.CommissionRateMax = task.getCommissionRate(starttime, datetime, "-"+document.ValidatorCommissionRateTag)
