@@ -244,7 +244,7 @@ func (task *StaticDelegatorByMonthTask) getPeriodTxByAddress(starttime, endtime 
 	if err != nil {
 		return nil, err
 	}
-	var coinflow []string
+	var coinflow []lcd.BlockCoinFlowVo
 	group := sync.WaitGroup{}
 	for _, tx := range txs {
 		switch tx.Type {
@@ -253,7 +253,7 @@ func (task *StaticDelegatorByMonthTask) getPeriodTxByAddress(starttime, endtime 
 			group.Add(1)
 			go func(txHash string) {
 				result := lcd.BlockCoinFlow(txHash)
-				coinflow = append(coinflow, result.CoinFlow...)
+				coinflow = append(coinflow, result)
 				//fmt.Println(txHash)
 				group.Done()
 			}(tx.TxHash)
@@ -305,48 +305,59 @@ func (task *StaticDelegatorByMonthTask) getIncrementRewards(delegaterewards docu
 	return rewards
 }
 
-func (task *StaticDelegatorByMonthTask) getCoinflow(coinFlow []string) {
+func (task *StaticDelegatorByMonthTask) getCoinflow(blockcoinFlow []lcd.BlockCoinFlowVo) {
 
-	if length := len(coinFlow); length > 0 {
-		if task.AddressCoin == nil {
-			task.AddressCoin = make(map[string]document.Coin, length)
+	for _, item := range blockcoinFlow {
+		coinFlow := item.CoinFlow
+		var delegator string
+		if len(item.Tx.Value.Msg) > 0 {
+			delegator = item.Tx.Value.Msg[0].Value.DelegatorAddr
+			//fmt.Println(delegator)
 		}
-		if task.AddrPeriodCommission == nil {
-			task.AddrPeriodCommission = make(map[string]document.Coin, length)
-		}
-		for _, val := range coinFlow {
-			values := strings.Split(val, "::")
-			if len(values) != 6 {
-				continue
+		if length := len(coinFlow); length > 0 {
+			if task.AddressCoin == nil {
+				task.AddressCoin = make(map[string]document.Coin, length)
 			}
-			coinflowAmount := parseCoinAmountAndUnitFromStr(values[2])
-			if strings.HasPrefix(values[3], types.DelegatorRewardTag) {
-				if data, ok := task.AddressCoin[values[1]]; ok {
-					data.Amount += coinflowAmount.Amount
-					task.AddressCoin[values[1]] = data
-				} else {
-					task.AddressCoin[values[1]] = coinflowAmount
+			if task.AddrPeriodCommission == nil {
+				task.AddrPeriodCommission = make(map[string]document.Coin, length)
+			}
+			for _, val := range coinFlow {
+				values := strings.Split(val, "::")
+				if len(values) != 6 {
+					continue
 				}
-			} else if strings.HasPrefix(values[3], types.ValidatorRewardTag) {
-				address := utils.Convert(conf.Get().Hub.Prefix.AccAddr, values[0])
-				if data, ok := task.AddressCoin[address]; ok {
-					data.Amount += coinflowAmount.Amount
-					task.AddressCoin[address] = data
-				} else {
-					task.AddressCoin[address] = coinflowAmount
+				if delegator == "" {
+					delegator = values[1]
 				}
-			} else if strings.HasPrefix(values[3], types.ValidatorCommissionTag) {
-				address := utils.Convert(conf.Get().Hub.Prefix.AccAddr, values[0])
-				if data, ok := task.AddrPeriodCommission[address]; ok {
-					data.Amount += coinflowAmount.Amount
-					task.AddrPeriodCommission[address] = data
-				} else {
-					task.AddrPeriodCommission[address] = coinflowAmount
+				coinflowAmount := parseCoinAmountAndUnitFromStr(values[2])
+				if strings.HasPrefix(values[3], types.DelegatorRewardTag) {
+					if data, ok := task.AddressCoin[delegator]; ok {
+						data.Amount += coinflowAmount.Amount
+						task.AddressCoin[delegator] = data
+					} else {
+						task.AddressCoin[delegator] = coinflowAmount
+					}
+				} else if strings.HasPrefix(values[3], types.ValidatorRewardTag) {
+					address := utils.Convert(conf.Get().Hub.Prefix.AccAddr, values[0])
+					if data, ok := task.AddressCoin[address]; ok {
+						data.Amount += coinflowAmount.Amount
+						task.AddressCoin[address] = data
+					} else {
+						task.AddressCoin[address] = coinflowAmount
+					}
+				} else if strings.HasPrefix(values[3], types.ValidatorCommissionTag) {
+					address := utils.Convert(conf.Get().Hub.Prefix.AccAddr, values[0])
+					if data, ok := task.AddrPeriodCommission[address]; ok {
+						data.Amount += coinflowAmount.Amount
+						task.AddrPeriodCommission[address] = data
+					} else {
+						task.AddrPeriodCommission[address] = coinflowAmount
+					}
 				}
 			}
 		}
-
 	}
+
 	return
 }
 

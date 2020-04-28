@@ -21,14 +21,14 @@ const (
 	UrlRedelegationsByValidator            = "%s/stake/validators/%s/redelegations"
 	UrlSignInfo                            = "%s/slashing/validators/%s/signing-info"
 	UrlNodeInfo                            = "%s/node-info"
-	UrlNodeVersion                               = "%s/node-version"
-	UrlGenesis                                   = "%s/genesis"
-	UrlWithdrawAddress                           = "%s/distribution/%s/withdraw-address"
-	UrlBlockLatest                               = "%s/blocks/latest"
-	UrlBlock                                     = "%s/blocks/%d"
-	UrlValidatorSet                              = "%s/validatorsets/%d"
-	UrlValidatorSetLatest                        = "%s/validatorsets/latest"
-	UrlStakePool                                 = "%s/stake/pool"
+	UrlNodeVersion                         = "%s/node-version"
+	UrlGenesis                             = "%s/genesis"
+	UrlWithdrawAddress                     = "%s/distribution/%s/withdraw-address"
+	UrlBlockLatest                         = "%s/blocks/latest"
+	UrlBlock                               = "%s/blocks/%d"
+	UrlValidatorSet                        = "%s/validatorsets/%d"
+	UrlValidatorSetLatest                  = "%s/validatorsets/latest"
+	UrlStakePool                           = "%s/stake/pool"
 	UrlBlocksResult                              = "%s/block-results/%d"
 	UrlTxsTxHash                                 = "%s/txs/%s"
 	UrlGovParam                                  = "%s/params?module=%s"
@@ -608,6 +608,18 @@ type BlockResultVo struct {
 type BlockCoinFlowVo struct {
 	Height   string   `json:"height"`
 	CoinFlow []string `json:"coin_flow"`
+	Tx       Tx       `json:"tx"`
+}
+
+type Tx struct {
+	Value struct {
+		Msg []struct {
+			Type string `json:"type"`
+			Value struct {
+				DelegatorAddr string `json:"delegator_addr"`
+			} `json:"value"`
+		} `json:"msg"`
+	} `json:"value"`
 }
 
 type AssetTokens struct {
