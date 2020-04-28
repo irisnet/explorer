@@ -165,7 +165,7 @@ func (task *StaticValidatorByMonthTask) getFoundtionDelegation(datas []document.
 	for _, val := range datas {
 		group.Add(1)
 		go func(operatorAddress string) {
-			delegation := lcd.GetDelegationsFromValAddrByDelAddr(types.FoundationDelegatorAddr, operatorAddress)
+			delegation := lcd.GetDelegationsFromValAddrByDelAddr(conf.Get().Server.FoundationDelegatorAddr, operatorAddress)
 			result = append(result, delegation)
 			//fmt.Println(operatorAddress)
 			group.Done()

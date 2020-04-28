@@ -52,6 +52,7 @@ const (
 	KeyCronTimeStaticDataDay     = "CronTimeStaticDataDay"
 	KeyCronTimeStaticDataMonth   = "CronTimeStaticDataMonth"
 	KeyCaculateDebug             = "CaculateDebug"
+	KeyFoundationDelegatorAddr   = "FoundationDelegatorAddr"
 
 	EnvironmentDevelop = "dev"
 	EnvironmentLocal   = "local"
@@ -108,6 +109,7 @@ func init() {
 		CronTimeStaticValidator:      getEnvInt(KeyCronTimeStaticDataDay, DefaultEnvironment),
 		CronTimeStaticDelegatorMonth: getEnvInt(KeyCronTimeStaticDataMonth, DefaultEnvironment),
 		CronTimeStaticValidatorMonth: getEnvInt(KeyCronTimeStaticDataMonth, DefaultEnvironment),
+		FoundationDelegatorAddr:      getEnv(KeyFoundationDelegatorAddr, DefaultEnvironment),
 	}
 	if "true" == strings.ToLower(getEnv(KeyCaculateDebug, DefaultEnvironment)) {
 		server.CaculateDebug = true
@@ -175,6 +177,7 @@ func loadDefault() {
 		KeyCronTimeFormatStaticDay:   "59 23 * * *", //m,h,d,m,w
 		KeyCronTimeFormatStaticMonth: "0 0 01 * *",
 		KeyCaculateDebug:             "false",
+		KeyFoundationDelegatorAddr:   "iaa1w7ewedr57z6p7f8nknmdvukfxwkwlsvfjumdts",
 	}
 }
 
@@ -221,6 +224,7 @@ type serverConf struct {
 	CronTimeFormatStaticDay      string
 	CronTimeFormatStaticMonth    string
 	CaculateDebug                bool
+	FoundationDelegatorAddr      string
 }
 
 type hubConf struct {

@@ -27,7 +27,7 @@ var (
 )
 
 const (
-	_ Module = iota
+	_         Module = iota
 	Account
 	Block
 	Common
