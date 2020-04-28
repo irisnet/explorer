@@ -138,8 +138,8 @@ func (task *StaticValidatorByMonthTask) DoTask() error {
 			continue
 		}
 		one.CaculateDate = fmt.Sprintf("%d.%02d.%02d", datetime.Year(), datetime.Month(), datetime.Day())
-		one.CommissionRateMin = task.getCommissionRate(starttime, datetime, document.ValidatorCommissionRateTag)
-		one.CommissionRateMax = task.getCommissionRate(starttime, datetime, "-"+document.ValidatorCommissionRateTag)
+		one.CommissionRateMin = task.getCommissionRate(starttime, datetime, val.OperatorAddress, document.ValidatorCommissionRateTag)
+		one.CommissionRateMax = task.getCommissionRate(starttime, datetime, val.OperatorAddress, "-"+document.ValidatorCommissionRateTag)
 		if conf.Get().Server.CaculateDebug {
 			one.Date = fmt.Sprintf("%d.%02d.%02d %02d:%02d:%02d", starttime.Year(),
 				starttime.Month(), starttime.Day(), starttime.Hour(), starttime.Minute(), starttime.Second())
@@ -199,18 +199,23 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(startdate time.Time, 
 		delegation = latestone.FoundationDelegateT
 	}
 
+	terminalvalDelegations := utils.CovertShareTokens(terminalval.Tokens, terminalval.DelegatorShares, terminalval.Delegations)
+	selfbond := utils.CovertShareTokens(terminalval.Tokens, terminalval.DelegatorShares, terminalval.SelfBond)
+	foundDelegation := utils.CovertShareTokens(terminalval.Tokens, terminalval.DelegatorShares, delegation)
+
 	item := document.ExStaticValidatorMonth{
 		Address:                 address,
+		Tokens:                  terminalval.Tokens,
 		OperatorAddress:         terminalval.OperatorAddress,
 		Date:                    fmt.Sprintf("%d.%02d.%02d", startdate.Year(), startdate.Month(), startdate.Day()),
-		TerminalDelegation:      terminalval.Delegations,
+		TerminalDelegation:      terminalvalDelegations,
 		TerminalDelegatorN:      terminalval.DelegatorNum,
-		TerminalSelfBond:        terminalval.SelfBond,
-		IncrementDelegation:     task.getIncrementDelegation(terminalval.Delegations, latestone.TerminalDelegation),
+		TerminalSelfBond:        selfbond,
+		IncrementDelegation:     task.getIncrementDelegation(terminalvalDelegations, latestone.TerminalDelegation),
 		IncrementDelegatorN:     terminalval.DelegatorNum - latestone.TerminalDelegatorN,
-		IncrementSelfBond:       task.getIncrementSelfBond(terminalval.SelfBond, latestone.TerminalSelfBond),
-		FoundationDelegateT:     delegation,
-		FoundationDelegateIncre: task.getFoundationDelegateIncre(delegation, latestone.FoundationDelegateT),
+		IncrementSelfBond:       task.getIncrementSelfBond(selfbond, latestone.TerminalSelfBond),
+		FoundationDelegateT:     foundDelegation,
+		FoundationDelegateIncre: task.getFoundationDelegateIncre(foundDelegation, latestone.FoundationDelegateT),
 	}
 	if height, ok := addrHeightMap[address]; ok {
 		item.CreateValidatorHeight = height
@@ -308,12 +313,13 @@ latestoneCommission document.Coin) (IncreCommission document.Coin) {
 	return
 }
 
-func (task *StaticValidatorByMonthTask) getCommissionRate(starttime, endtime time.Time, sorts string) (string) {
+func (task *StaticValidatorByMonthTask) getCommissionRate(starttime, endtime time.Time, address, sorts string) (string) {
 	cond := bson.M{
 		document.ExStaticValidatorMonthDateTag: bson.M{
 			"$gte": starttime,
 			"$lt":  endtime,
 		},
+		document.ExStaticValidatorOperatorAddrTag: address,
 	}
 	selector := bson.M{
 		document.ValidatorCommissionRateTag: 1,
