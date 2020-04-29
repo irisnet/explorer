@@ -124,6 +124,18 @@ func QuoByStr(xStr, yStr string) (*big.Rat, error) {
 	return new(big.Rat).Quo(xAsRat, yAsRat), nil
 }
 
+//x + y  and returns *big.Rat.
+func FuncAddStr(xStr, yStr string) *big.Rat {
+	xRat, ok1 := new(big.Rat).SetString(xStr)
+	yRat, ok2 := new(big.Rat).SetString(yStr)
+	if !ok1 || !ok2 {
+		logger.Error("big.Rat SetString failed in FuncAddStr")
+		return nil
+	}
+	value := new(big.Rat).Add(xRat, yRat)
+	return value
+}
+
 func NewRatFromFloat64(f float64) *big.Rat {
 	return new(big.Rat).SetFloat64(f)
 }
@@ -162,4 +174,26 @@ func FailtoFailed(status string) string {
 		return StatusFailed
 	}
 	return status
+}
+
+func CovertShareTokens(tokens, shares, selfBond string) string {
+	if selfBond == "" {
+		return "0"
+	}
+	rate, err := QuoByStr(tokens, shares)
+	if err != nil {
+		logger.Error("validator.Tokens / validator.DelegatorShares", logger.String("err", err.Error()))
+		return ""
+	}
+
+	selfBondAsRat, ok := new(big.Rat).SetString(selfBond)
+	if !ok {
+		logger.Error("convert validator selfBond type (string -> big.Rat) err",
+			logger.String("self bond str", selfBond))
+		return ""
+
+	}
+	selfBondTokensAsRat := new(big.Rat).Mul(selfBondAsRat, rate)
+
+	return selfBondTokensAsRat.FloatString(18)
 }

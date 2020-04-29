@@ -11,13 +11,14 @@ FROM golang:1.10.3-alpine3.7 as go-builder
 ENV GOPATH       /root/go
 ENV REPO_PATH    $GOPATH/src/github.com/irisnet/explorer/backend
 ENV PATH         $GOPATH/bin:$PATH
+ENV GO111MODULE on
 
-RUN mkdir -p GOPATH REPO_PATH
+RUN mkdir -p $GOPATH $REPO_PATH
 
 COPY ./backend/ $REPO_PATH
 WORKDIR $REPO_PATH
 
-RUN apk add --no-cache make git && go get github.com/golang/dep/cmd/dep && dep ensure && make build
+RUN apk add --no-cache make git  && make build
 
 
 FROM alpine:3.7

@@ -47,6 +47,13 @@ const (
 	KeyCronTimeProposalVoters      = "CronTimeProposalVoters"
 	KeyCronTimeValidatorStaticInfo = "CronTimeValidatorStaticInfo"
 
+	KeyCronTimeFormatStaticDay   = "CronTimeFormatStaticDay"
+	KeyCronTimeFormatStaticMonth = "CronTimeFormatStaticMonth"
+	KeyCronTimeStaticDataDay     = "CronTimeStaticDataDay"
+	KeyCronTimeStaticDataMonth   = "CronTimeStaticDataMonth"
+	KeyCaculateDebug             = "CaculateDebug"
+	KeyFoundationDelegatorAddr   = "FoundationDelegatorAddr"
+
 	EnvironmentDevelop = "dev"
 	EnvironmentLocal   = "local"
 	EnvironmentQa      = "qa"
@@ -79,23 +86,35 @@ func init() {
 
 	rand.Seed(time.Now().Unix())
 	server := serverConf{
-		InstanceNo:                  fmt.Sprintf("%d-%d", time.Now().Unix(), rand.Int63n(100)),
-		ServerPort:                  getEnvInt(KeyServerPort, DefaultEnvironment),
-		FaucetUrl:                   getEnv(KeyAddrFaucet, DefaultEnvironment),
-		ApiVersion:                  getEnv(KeyApiVersion, DefaultEnvironment),
-		MaxDrawCnt:                  getEnvInt(KeyMaxDrawCnt, DefaultEnvironment),
-		ShowFaucet:                  getEnv(KeyShowFaucet, DefaultEnvironment),
-		CurEnv:                      getEnv(KeyCurEnv, DefaultEnvironment),
-		CronTimeAssetGateways:       getEnvInt(KeyCronTimeAssetGateways, DefaultEnvironment),
-		CronTimeAssetTokens:         getEnvInt(KeyCronTimeAssetTokens, DefaultEnvironment),
-		CronTimeGovParams:           getEnvInt(KeyCronTimeGovParams, DefaultEnvironment),
-		CronTimeTxNumByDay:          getEnvInt(KeyCronTimeTxNumByDay, DefaultEnvironment),
-		CronTimeControlTask:         getEnvInt(KeyCronTimeControlTask, DefaultEnvironment),
-		CronTimeAccountRewards:      getEnvInt(KeyCronTimeAccountRewards, DefaultEnvironment),
-		CronTimeValidators:          getEnvInt(KeyCronTimeValidators, DefaultEnvironment),
-		CronTimeValidatorIcons:      getEnvInt(KeyCronTimeValidatorIcons, DefaultEnvironment),
-		CronTimeProposalVoters:      getEnvInt(KeyCronTimeProposalVoters, DefaultEnvironment),
-		CronTimeValidatorStaticInfo: getEnvInt(KeyCronTimeValidatorStaticInfo, DefaultEnvironment),
+		InstanceNo:                   fmt.Sprintf("%d-%d", time.Now().Unix(), rand.Int63n(100)),
+		ServerPort:                   getEnvInt(KeyServerPort, DefaultEnvironment),
+		FaucetUrl:                    getEnv(KeyAddrFaucet, DefaultEnvironment),
+		ApiVersion:                   getEnv(KeyApiVersion, DefaultEnvironment),
+		MaxDrawCnt:                   getEnvInt(KeyMaxDrawCnt, DefaultEnvironment),
+		ShowFaucet:                   getEnv(KeyShowFaucet, DefaultEnvironment),
+		CurEnv:                       getEnv(KeyCurEnv, DefaultEnvironment),
+		CronTimeAssetGateways:        getEnvInt(KeyCronTimeAssetGateways, DefaultEnvironment),
+		CronTimeAssetTokens:          getEnvInt(KeyCronTimeAssetTokens, DefaultEnvironment),
+		CronTimeGovParams:            getEnvInt(KeyCronTimeGovParams, DefaultEnvironment),
+		CronTimeTxNumByDay:           getEnvInt(KeyCronTimeTxNumByDay, DefaultEnvironment),
+		CronTimeControlTask:          getEnvInt(KeyCronTimeControlTask, DefaultEnvironment),
+		CronTimeAccountRewards:       getEnvInt(KeyCronTimeAccountRewards, DefaultEnvironment),
+		CronTimeValidators:           getEnvInt(KeyCronTimeValidators, DefaultEnvironment),
+		CronTimeValidatorIcons:       getEnvInt(KeyCronTimeValidatorIcons, DefaultEnvironment),
+		CronTimeProposalVoters:       getEnvInt(KeyCronTimeProposalVoters, DefaultEnvironment),
+		CronTimeValidatorStaticInfo:  getEnvInt(KeyCronTimeValidatorStaticInfo, DefaultEnvironment),
+		CronTimeFormatStaticDay:      getEnv(KeyCronTimeFormatStaticDay, DefaultEnvironment),
+		CronTimeFormatStaticMonth:    getEnv(KeyCronTimeFormatStaticMonth, DefaultEnvironment),
+		CronTimeStaticDelegator:      getEnvInt(KeyCronTimeStaticDataDay, DefaultEnvironment),
+		CronTimeStaticValidator:      getEnvInt(KeyCronTimeStaticDataDay, DefaultEnvironment),
+		CronTimeStaticDelegatorMonth: getEnvInt(KeyCronTimeStaticDataMonth, DefaultEnvironment),
+		CronTimeStaticValidatorMonth: getEnvInt(KeyCronTimeStaticDataMonth, DefaultEnvironment),
+		FoundationDelegatorAddr:      getEnv(KeyFoundationDelegatorAddr, DefaultEnvironment),
+	}
+	if "true" == strings.ToLower(getEnv(KeyCaculateDebug, DefaultEnvironment)) {
+		server.CaculateDebug = true
+	} else {
+		server.CaculateDebug = false
 	}
 	logger.Info(fmt.Sprintf("serverInstanceNo: %s", server.InstanceNo))
 	config.Server = server
@@ -120,7 +139,7 @@ func init() {
 
 func loadDefault() {
 	defaultConfig[EnvironmentDevelop] = map[string]string{
-		KeyDbAddr:         "192.168.150.31:27017",
+		KeyDbAddr:         "localhost:27018",
 		KeyDATABASE:       "sync-iris",
 		KeyDbUser:         "iris",
 		KeyDbPwd:          "irispassword",
@@ -152,6 +171,13 @@ func loadDefault() {
 		KeyCronTimeProposalVoters:      "60",
 		KeyCronTimeValidatorIcons:      "43200",
 		KeyCronTimeValidatorStaticInfo: "300",
+		KeyCronTimeStaticDataDay:       "86400",
+		KeyCronTimeStaticDataMonth:     "2592000",
+
+		KeyCronTimeFormatStaticDay:   "59 23 * * *", //m,h,d,m,w
+		KeyCronTimeFormatStaticMonth: "0 0 01 * *",
+		KeyCaculateDebug:             "false",
+		KeyFoundationDelegatorAddr:   "iaa1w7ewedr57z6p7f8nknmdvukfxwkwlsvfjumdts",
 	}
 }
 
@@ -174,23 +200,31 @@ type dbConf struct {
 }
 
 type serverConf struct {
-	InstanceNo                  string
-	ServerPort                  int
-	FaucetUrl                   string
-	ApiVersion                  string
-	MaxDrawCnt                  int
-	ShowFaucet                  string
-	CurEnv                      string
-	CronTimeAssetGateways       int
-	CronTimeAssetTokens         int
-	CronTimeGovParams           int
-	CronTimeTxNumByDay          int
-	CronTimeControlTask         int
-	CronTimeValidators          int
-	CronTimeAccountRewards      int
-	CronTimeValidatorStaticInfo int
-	CronTimeValidatorIcons      int
-	CronTimeProposalVoters      int
+	InstanceNo                   string
+	ServerPort                   int
+	FaucetUrl                    string
+	ApiVersion                   string
+	MaxDrawCnt                   int
+	ShowFaucet                   string
+	CurEnv                       string
+	CronTimeAssetGateways        int
+	CronTimeAssetTokens          int
+	CronTimeGovParams            int
+	CronTimeTxNumByDay           int
+	CronTimeControlTask          int
+	CronTimeValidators           int
+	CronTimeAccountRewards       int
+	CronTimeValidatorStaticInfo  int
+	CronTimeValidatorIcons       int
+	CronTimeProposalVoters       int
+	CronTimeStaticValidator      int
+	CronTimeStaticDelegator      int
+	CronTimeStaticValidatorMonth int
+	CronTimeStaticDelegatorMonth int
+	CronTimeFormatStaticDay      string
+	CronTimeFormatStaticMonth    string
+	CaculateDebug                bool
+	FoundationDelegatorAddr      string
 }
 
 type hubConf struct {
