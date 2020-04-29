@@ -500,7 +500,7 @@
 			sortByConnection(flSwitchValue){
 				this.flShowLetterSortIcon = false;
 				this.flShowConnectionSortIcon = true;
-				let copyData = JSON.parse(JSON.stringify(this.sortCopyData))
+				let copyData = JSON.parse(JSON.stringify(this.colorDataArray))
 				this.flConnectionActiveStyle = true;
 				this.flLetterActiveStyle = false;
 				this.sortByConnectionSwitchIcon = !this.sortByConnectionSwitchIcon
@@ -517,7 +517,7 @@
 			sortByLetter(sortRule){
 				this.flShowLetterSortIcon = true;
 				this.flShowConnectionSortIcon = false;
-				let copyData = JSON.parse(JSON.stringify(this.sortCopyData))
+				let copyData = JSON.parse(JSON.stringify(this.colorDataArray))
 				this.flConnectionActiveStyle = false;
 				this.flLetterActiveStyle = true;
 				this.sortByLetterSwitchIcon = !this.sortByLetterSwitchIcon;
@@ -669,7 +669,6 @@
 							show: false,
 							position:'right',
 							formatter:function (data) {
-								console.log(data,"数据展示")
 								return 'Zone：${data.name}Connection: ${connectionValue}'
 							}
 						},
@@ -762,7 +761,9 @@
 								lineStyle: {
 									width: 1,
 								},
-								
+								label: {
+									show:false,
+								}
 							}
 						}
 					]
@@ -1150,6 +1151,7 @@
 						}
 						.graph_list_container{
 							max-width: none ;
+							height: 2rem !important;
 							margin-bottom: 0.2rem;
 							border-radius: 0;
 							margin-left: 0;

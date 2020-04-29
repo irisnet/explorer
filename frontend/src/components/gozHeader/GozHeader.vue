@@ -55,8 +55,13 @@
 				</li>
 				<li class="network_list_content network_up_style"
 				    v-show="flShowNetwork"
-				    v-for="item in netWorkArray"
-				    @click="windowOpenUrl(item.host)">{{item.netWorkSelectOption}}<i :class="item.icon"></i></li>
+				    >
+					<div class="network_list_container_content_wrap">
+						<div class="network_list_content_wrap" v-for="item in netWorkArray" @click="windowOpenUrl(item.host)">
+							{{item.netWorkSelectOption}}<i :class="item.icon"></i>
+						</div>
+					</div>
+				</li>
 			</ul>
 		</div>
 	</div>
@@ -366,19 +371,22 @@
 						justify-content: space-between;
 					}
 					.network_list_content{
-						background: rgba(255,255,255,0.1);
-						padding: 0.05rem 0.15rem;
-						color: #fff ;
-						font-size: 0.14rem;
-						text-align: right;
-						display: flex;
-						justify-content: space-between;
-					}
-					.network_up_style:first-child{
-						margin-top: 2rem;
-					}
-					.network_up_style{
-						background-color: rgba(0,0,0,0.05) !important;
+						.network_list_container_content_wrap{
+							padding-top: 0.1rem;
+							background: rgba(0,0,0,0.05);
+							.network_list_content_wrap{
+								padding: 0.05rem 0.15rem;
+								color: #fff ;
+								font-size: 0.14rem;
+								text-align: right;
+								display: flex;
+								justify-content: space-between;
+							}
+							.network_up_style{
+								background-color: rgba(0,0,0,0.05) !important;
+							}
+						}
+						
 					}
 				}
 			}
