@@ -63,3 +63,12 @@ func TestMd5Encryption(t *testing.T) {
 	data := []byte("nil")
 	t.Log(Md5Encryption(data))
 }
+
+func TestFuncAddStr(t *testing.T) {
+	data := FuncAddStr("11.1111111", "7.777777")
+	t.Log(data.FloatString(18))
+	data = FuncAddStr("11.1111111", "")
+	if data == nil {
+		t.Log("OK")
+	}
+}

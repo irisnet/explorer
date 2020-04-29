@@ -172,7 +172,13 @@ func (task *StaticValidatorByMonthTask) getFoundtionDelegation(datas []document.
 	group.Wait()
 	tmpMapData := make(map[string]string, len(result))
 	for _, val := range result {
-		tmpMapData[val.OperatorAddress] = val.Tokens
+		if data, ok := tmpMapData[val.OperatorAddress]; ok {
+			if ret := utils.FuncAddStr(data, val.Tokens); ret != nil {
+				tmpMapData[val.OperatorAddress] = ret.FloatString(18)
+			}
+		} else {
+			tmpMapData[val.OperatorAddress] = val.Tokens
+		}
 	}
 
 	return tmpMapData
