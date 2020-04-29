@@ -8,6 +8,7 @@ import (
 	"time"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
+	"github.com/irisnet/explorer/backend/lcd"
 )
 
 func TestStaticDelegatorByMonthTask_Start(t *testing.T) {
@@ -30,15 +31,15 @@ func TestStaticDelegatorByMonthTask_DoTask(t *testing.T) {
 //}
 func TestStaticDelegatorByMonthTask_getPeriodTxByAddress(t *testing.T) {
 	task := new(StaticDelegatorByMonthTask)
-	starttime, err := time.Parse(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT17:15:00", 2020, 4, 28))
+	starttime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT10:06:00", 2020, 4, 29), cstZone)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	endtime, err := time.Parse(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT17:35:00", 2020, 4, 28))
+	endtime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT10:08:00", 2020, 4, 29), cstZone)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	txs, err := task.getPeriodTxByAddress(starttime, endtime, "faa1clxzr9f7sg2fqnr2zl2eswc5s82md85hsjl8vz")
+	txs, err := task.getPeriodTxByAddress(starttime, endtime, "faa1eqvkfthtrr93g4p9qspp54w6dtjtrn279vcmpn")
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -51,20 +52,32 @@ func TestStaticDelegatorByMonthTask_getPeriodTxByAddress(t *testing.T) {
 }
 
 func Test_parseCoinAmountAndUnitFromStr(t *testing.T) {
-	coin := parseCoinAmountAndUnitFromStr("39007580267975728iris-atto")
+	coin := parseCoinAmountAndUnitFromStr("4.962968566351661iris-atto")
 	//t.Log(coin.Amount)
 	//t.Log(coin.Denom)
-	coin1 := parseCoinAmountAndUnitFromStr("587702808887031233613iris-atto")
-	coin2 := parseCoinAmountAndUnitFromStr("302757713438089471198iris-atto")
+	coin1 := parseCoinAmountAndUnitFromStr("6.042877382409304iris-atto")
+	coin2 := parseCoinAmountAndUnitFromStr("182.7501980494728iris-atto")
+	//coin3 := parseCoinAmountAndUnitFromStr("5741584103447714iris-atto")
+	//coin4 := parseCoinAmountAndUnitFromStr("18333217815328413661iris-atto")
 	t.Log(coin.Amount + coin1.Amount + coin2.Amount)
 	t.Log(coin.Denom)
 }
 
-//func TestStaticDelegatorByMonthTask_getCoinflowByHash(t *testing.T) {
-//	s := new(StaticDelegatorByMonthTask)
-//	s.getCoinflowByHash("F40A07D5EDBDF2CF01F8EC746B7BBF7400BFA16B5DEBF57BFF2A15A82E5DBA29",nil)
-//	t.Log(s.AddressCoin)
-//}
+func TestStaticDelegatorByMonthTask_getCoinflowByHash(t *testing.T) {
+	s := new(StaticDelegatorByMonthTask)
+	addr := "faa1eqvkfthtrr93g4p9qspp54w6dtjtrn279vcmpn"
+	result := lcd.BlockCoinFlow("71D0D8A85EB74BD0FCFBF8F26D17784866ADF20F9BAA9A98A0E7190333FBF3EF")
+	s.getCoinflow([]lcd.BlockCoinFlowVo{result})
+	t.Log("71D0D8A85EB74BD0FCFBF8F26D17784866ADF20F9BAA9A98A0E7190333FBF3EF:", s.AddressCoin[addr])
+	s.AddressCoin = nil
+	result = lcd.BlockCoinFlow("6F99D1BD66A257E1C2F20E463BE53B651F7965EC0BF1D3A604D7B53CC9237646")
+	s.getCoinflow([]lcd.BlockCoinFlowVo{result})
+	t.Log("6F99D1BD66A257E1C2F20E463BE53B651F7965EC0BF1D3A604D7B53CC9237646:", s.AddressCoin[addr])
+	s.AddressCoin = nil
+	result = lcd.BlockCoinFlow("5415573E77894F38C25A8138A90FC00EE8DA8B28A28EF67CE65BF42492DCC310")
+	s.getCoinflow([]lcd.BlockCoinFlowVo{result})
+	t.Log("5415573E77894F38C25A8138A90FC00EE8DA8B28A28EF67CE65BF42492DCC310:", s.AddressCoin[addr])
+}
 
 func TestStaticDelegatorByMonthTask_getStaticDelegator(t *testing.T) {
 	s := new(StaticDelegatorByMonthTask)
