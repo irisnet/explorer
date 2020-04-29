@@ -30,15 +30,15 @@ func TestStaticDelegatorByMonthTask_DoTask(t *testing.T) {
 //}
 func TestStaticDelegatorByMonthTask_getPeriodTxByAddress(t *testing.T) {
 	task := new(StaticDelegatorByMonthTask)
-	starttime, err := time.Parse(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 6))
+	starttime, err := time.Parse(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT17:15:00", 2020, 4, 28))
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	endtime, err := time.Parse(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 7))
+	endtime, err := time.Parse(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT17:35:00", 2020, 4, 28))
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	txs, err := task.getPeriodTxByAddress(starttime, endtime, "iaa1tn9y9lqxkmdt2d54yc9czsk9uapy89m3m5vatq")
+	txs, err := task.getPeriodTxByAddress(starttime, endtime, "faa1clxzr9f7sg2fqnr2zl2eswc5s82md85hsjl8vz")
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -102,11 +102,10 @@ func TestStaticDelegatorByMonthTask_getStaticDelegator(t *testing.T) {
 
 func TestStaticDelegatorByMonthTask_getIncrementDelegation(t *testing.T) {
 	s := new(StaticDelegatorByMonthTask)
-	value := []utils.Coin{
-		{Amount: float64(112.3), Denom: "iris-atto"},
-		{Amount: float64(100), Denom: "iris-atto"},
-	}
-	data := s.getIncrementDelegation(value[0], value[1])
+	value := utils.Coin{Amount: float64(112.3), Denom: "iris-atto"}
+	value1 := document.Coin{Amount: float64(100), Denom: "iris-atto"}
+
+	data := s.getIncrementDelegation(value, value1)
 	t.Log(data.Amount)
 }
 

@@ -86,7 +86,6 @@ func (task *StaticValidatorByMonthTask) DoTask() error {
 		if err != nil {
 			logger.Error(err.Error())
 		}
-		fmt.Println(interval)
 		hour, minute := datetime.Hour(), datetime.Minute()
 		if int64(minute) < interval {
 			if hour < 1 {
