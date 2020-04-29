@@ -957,8 +957,9 @@
 					.graph_list_container::-webkit-scrollbar-corner{
 						background: #179a16;
 					}*/
-					
-					
+					.graph_list_container{
+						scrollbar-width: none;
+					}
 					.graph_list_container{
 						margin-left: 0.02rem;
 						padding-top: 0.2rem;
