@@ -13,7 +13,6 @@ import (
 	"github.com/irisnet/explorer/backend/lcd"
 	"math"
 	"strings"
-	"sync"
 	"strconv"
 )
 
@@ -158,26 +157,27 @@ func (task *StaticValidatorByMonthTask) DoTask() error {
 }
 
 func (task *StaticValidatorByMonthTask) getFoundtionDelegation(datas []document.ExStaticValidator) (map[string]string) {
-	group := sync.WaitGroup{}
-	var result []lcd.DelegationFromVal
-	for _, val := range datas {
-		group.Add(1)
-		go func(operatorAddress string) {
-			delegation := lcd.GetDelegationsFromValAddrByDelAddr(conf.Get().Server.FoundationDelegatorAddr, operatorAddress)
-			result = append(result, delegation)
-			//fmt.Println(operatorAddress)
-			group.Done()
-		}(val.OperatorAddress)
-	}
-	group.Wait()
-	tmpMapData := make(map[string]string, len(result))
-	for _, val := range result {
-		if data, ok := tmpMapData[val.OperatorAddress]; ok {
-			if ret := utils.FuncAddStr(data, val.Tokens); ret != nil {
-				tmpMapData[val.OperatorAddress] = ret.FloatString(18)
+	//group := sync.WaitGroup{}
+	//var result []lcd.DelegationFromVal
+	//for _, val := range datas {
+	//	group.Add(1)
+	//	go func(operatorAddress string) {
+	//
+	//		result = append(result, delegation)
+	//		//fmt.Println(operatorAddress)
+	//		group.Done()
+	//	}(val.OperatorAddress)
+	//}
+	//group.Wait()
+	delegations := lcd.GetDelegationsByDelAddr(conf.Get().Server.FoundationDelegatorAddr)
+	tmpMapData := make(map[string]string, len(delegations))
+	for _, val := range delegations {
+		if data, ok := tmpMapData[val.ValidatorAddr]; ok {
+			if ret := utils.FuncAddStr(data, val.Shares); ret != nil {
+				tmpMapData[val.ValidatorAddr] = ret.FloatString(18)
 			}
 		} else {
-			tmpMapData[val.OperatorAddress] = val.Tokens
+			tmpMapData[val.ValidatorAddr] = val.Shares
 		}
 	}
 
