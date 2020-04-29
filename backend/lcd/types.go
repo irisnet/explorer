@@ -14,7 +14,7 @@ const (
 	UrlValidators                          = "%s/stake/validators?page=%d&size=%d"
 	UrlDelegationByVal                     = "%s/stake/validators/%s/delegations"
 	UrlDelegationsByDelegator              = "%s/stake/delegators/%s/delegations"
-	UrlDelegationsFromValidatorByDelegator = "%s/stake/delegators/%s/validators/%s"
+	//UrlDelegationsFromValidatorByDelegator = "%s/stake/delegators/%s/validators/%s"
 	UrlUnbondingDelegationByDelegator      = "%s/stake/delegators/%s/unbonding-delegations"
 	UrlDelegationsByValidator              = "%s/stake/validators/%s/delegations"
 	UrlUnbondingDelegationByValidator      = "%s/stake/validators/%s/unbonding-delegations"
