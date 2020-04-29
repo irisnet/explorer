@@ -152,6 +152,11 @@
     .el-scrollbar__bar.is-horizontal>div {
         display: none;
     }
+   @media (max-width: 768px) {
+       .el-tooltip__popper{
+            width: 80% !important;
+       }
+   }
     .el-picker-panel{
         .el-picker-panel__body-wrapper{
             .el-picker-panel__body{

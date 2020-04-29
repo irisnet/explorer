@@ -13,7 +13,7 @@
 				</div>
 				<div class="app_download_mainnet_content">
 					<h4 class="app_download_mainnet_title">Mainnet Version</h4>
-					<p class="app_download_mainnet_doc">If you want to experience more comprehensive mainnet functions</p>
+					<p class="app_download_mainnet_doc">If you want to experience delegate/Transfer functions from mainnet version in Cosmos and IRIS Hub</p>
 					<div class="app_download_img_content">
 						<a @click="$uMeng.push('RainbowMainnet_Android','click')" href="https://play.google.com/store/apps/details?id=rainbow.wallet"  target="_blank"  v-if="isShowAndroid || !isMobile">
 							<div class="app_download_android_content">
