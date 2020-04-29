@@ -14,13 +14,12 @@
                         <span class="information_value"
                               :class="v.value ? 'skip_route' : ''"
                               v-if="v.label === 'Burned'">
-                            <router-link @click.native="$uMeng.push('IRIS Stats_Burned','click')"
-                                         :to="burnedCoins">{{v.value || '--'}}</router-link>
+                            <router-link :to="burnedCoins">{{v.value || '--'}}</router-link>
                             </span>
                         <span class="information_value"
                               :class="v.value ? 'skip_route' : ''"
                               v-if="v.label === 'Community Tax'">
-                            <router-link @click.native="$uMeng.push('IRIS Stats_Community Tax','click')"
+                            <router-link
                                          v-if="v.value && v.value !== '--'"
                                          :to="communityTaxCoins">{{v.value || '--'}}</router-link>
                             </span>

@@ -1,6 +1,11 @@
 <template>
     <div class="home_wrap">
         <validator-graph></validator-graph>
+        <!-- TODO 测试样式数据-->
+<!--        <sankey></sankey>-->
+        <!--<test-chart></test-chart>-->
+        
+        
        <!-- <search-bar></search-bar>
         <statistical-bar></statistical-bar>
         <div class="home_container">
@@ -59,9 +64,13 @@
     import SearchBar from "./SearchBar";
     import StatisticalBar from "./StatisticalBar";
     import ValidatorGraph from "./ValidatorGraph";
+    import Sankey from "./Sankey";
+    import TestChart from "./TestChart";
     export default {
         name: 'app-header',
         components: {
+            TestChart,
+            Sankey,
             ValidatorGraph,
             StatisticalBar,
             SearchBar, MVotingCard, MDepositCard, MHomeVotingCrad, EchartsPie, EchartsLine, HomeBlockModule},

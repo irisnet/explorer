@@ -3,7 +3,7 @@
 		<div class="goz_content_wrap">
 			<div class="goz_content_left_content">
 				<div class="goz_content_logo_content">
-					<a href="https://www.irisplorer.io/#/home" target="_blank"><img src="../../assets/logo.png" alt=""></a>
+					<a @click="$uMeng.push('GoZ_IRISplorer','click')" href="https://www.irisplorer.io/#/home" target="_blank"><img src="../../assets/logo.png" alt=""></a>
 					<span class="iconfont" :class="currentNetworkClass"></span>
 				</div>
 				<div class="goz_content_network_state">
@@ -15,7 +15,13 @@
 			</div>
 			<div class="goz_content_right_content">
 				<div class="goz_content_link_content">
-					<a href="https://goz.cosmosnetwork.dev/2020/04/14/a-whole-new-world-testnets-in-the-ibc-era/" target="">GoZ Website</a>
+					<a href="https://goz.p2p.org/" target="_blank">Visualization from P2P Team</a>
+				</div>
+				<div class="goz_content_link_content">
+					<a href="https://goz.cosmos.network/3d" target="_blank">Visualization from Cosmos Team</a>
+				</div>
+				<div class="goz_content_link_content">
+					<a href="https://goz.cosmosnetwork.dev/2020/04/14/a-whole-new-world-testnets-in-the-ibc-era/" target="_blank">GoZ Website</a>
 				</div>
 				<div class="goz_network_links_content">
 					<div class="network_container" @mouseenter="showNetWorkLogo()" @mouseleave="hideNetWorkLogo()">
@@ -34,6 +40,15 @@
 			<ul class="goz_mobile_content" v-show="isShowMobileMenu">
 				<li class="goz_mobile_link_item">
 					<router-link :to="`/`">Network State</router-link>
+				</li>
+				<li class="goz_mobile_link_item">
+					<a href="https://goz.cosmosnetwork.dev/2020/04/14/a-whole-new-world-testnets-in-the-ibc-era/" target="_blank">GoZ Website</a>
+				</li>
+				<li class="goz_mobile_link_item">
+					<a href="https://goz.p2p.org/" target="_blank">Visualization from P2P Team</a>
+				</li>
+				<li class="goz_mobile_link_item">
+					<a href="https://goz.cosmos.network/3d" target="_blank">Visualization from Cosmos Team</a>
 				</li>
 				<li class="network_list_item"
 				    v-for="item in netWorkArray"
@@ -112,6 +127,7 @@
 					currentEnv.configs.forEach(item => {
 						if(currentEnv.cur_env === item.env && currentEnv.chain_id === item.chain_id){
 							networkName = item.network_name;
+							sessionStorage.setItem('UMengID',item.umeng_id)
 						}
 					})
 				}
@@ -136,7 +152,8 @@
 		width: 100%;
 		background: rgba(16, 19, 55, 1);
 		.goz_content_wrap{
-			max-width: 12.8rem;
+			box-sizing: border-box;
+			padding: 0 0.4rem;
 			margin: 0 auto;
 			display: flex;
 			justify-content: space-between;
@@ -184,6 +201,7 @@
 				align-items: center;
 				.goz_content_link_content{
 					color:#fff;
+					border-right: 0.01rem solid rgba(255,255,255,0.74);
 					a{
 						color:rgba(255,255,255,0.75) !important;
 						font-size: 0.14rem;
@@ -193,6 +211,12 @@
 					}
 					a:last-child{
 						border-right: none;
+					}
+				}
+				.goz_content_link_content:nth-of-type(3){
+					border-right: none !important;
+					a{
+						border-right: none!important;
 					}
 				}
 				.goz_network_links_content{
@@ -243,12 +267,88 @@
 			}
 		}
 	}
+	@media (max-width: 1020px) {
+		.goz_container{
+			.goz_content_wrap{
+				flex-direction: column;
+				width: 100%;
+				position: relative;
+				.goz_content_left_content{
+					width: 100%;
+					justify-content: space-between;
+					.menu_content{
+						display: block;
+						width: 0.25rem;
+						height: 0.25rem;
+						top: 0.26rem;
+						margin-right: 0.1rem;
+						img{
+							width: 100%;
+						}
+					}
+					.goz_content_logo_content{
+						.iconfont{
+							display: block;
+							font-size: 0.22rem;
+						}
+					}
+					.goz_content_network_state{
+						margin-right: 0.1rem;
+						display: none;
+					}
+				}
+				.goz_content_right_content{
+					width: 100%;
+					justify-content: center;
+					display: none;
+					.goz_content_link_content{
+						width: 100%;
+						text-align: center;
+						padding: 0.12rem 0;
+						margin: 0 0.2rem;
+						border-top: 0.01rem solid rgba(255,255,255,0.19);
+						font-size: 0.12rem;
+					}
+					.goz_network_links_content{
+						display: none;
+					}
+				}
+				.goz_mobile_content{
+					display: block;
+					width: 100%;
+					box-sizing: border-box;
+					position: absolute;
+					top: 0.57rem;
+					background:#2D325A;
+					z-index: 10;
+					.goz_mobile_link_item{
+						background: rgba(255,255,255,0.1);
+						padding: 0.05rem 0.15rem;
+						font-size: 0.14rem;
+						a{
+							color: #fff !important;
+						}
+					}
+					.network_list_item{
+						background: rgba(255,255,255,0.1);
+						padding: 0.05rem 0.15rem;
+						color: #fff ;
+						font-size: 0.14rem;
+						text-align: right;
+						display: flex;
+						justify-content: space-between;
+					}
+				}
+			}
+		}
+	}
 	@media (max-width: 768px) {
 		.goz_container{
 			.goz_content_wrap{
 				flex-direction: column;
 				width: 100%;
 				position: relative;
+				padding: 0;
 				.goz_content_left_content{
 					width: 100%;
 					justify-content: space-between;

@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "14409079",
+      "name": "复位",
+      "font_class": "fuwei",
+      "unicode": "e666",
+      "unicode_decimal": 58982
+    },
+    {
+      "icon_id": "10124727",
+      "name": "排序-下",
+      "font_class": "paixu-xia",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
+      "icon_id": "10124732",
+      "name": "排序-上",
+      "font_class": "paixu-shang",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
       "icon_id": "14209633",
       "name": "刷新",
       "font_class": "shuaxin",

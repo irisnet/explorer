@@ -437,7 +437,6 @@
                 
                 sessionStorage.setItem('flShowSearchBar','show');
                 sessionStorage.setItem('flShowSearchIpt','show');
-                this.$uMeng.push('Overview_Expand','click');
             },
 			showTwoMenu(v){
 				this.flShowSubMenu = true;
@@ -821,7 +820,7 @@
 		}
 	}
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
     @import "../../style/mixin";
     :root{
     }
@@ -829,7 +828,6 @@
         width: 100%;
         background: #2D325A;
         .goz_content_wrap{
-            max-width: 12.8rem;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
