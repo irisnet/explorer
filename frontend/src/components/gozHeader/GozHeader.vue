@@ -39,9 +39,6 @@
 			</div>
 			<ul class="goz_mobile_content" v-show="isShowMobileMenu">
 				<li class="goz_mobile_link_item">
-					<router-link :to="`/`">Network State</router-link>
-				</li>
-				<li class="goz_mobile_link_item">
 					<a href="https://goz.cosmosnetwork.dev/2020/04/14/a-whole-new-world-testnets-in-the-ibc-era/" target="_blank">GoZ Website</a>
 				</li>
 				<li class="goz_mobile_link_item">
@@ -50,7 +47,14 @@
 				<li class="goz_mobile_link_item">
 					<a href="https://goz.cosmos.network/3d" target="_blank">Visualization from Cosmos Team</a>
 				</li>
-				<li class="network_list_item"
+				<li class="goz_mobile_net_work_content" @click="showNetworkToggle">
+					<div class="goz_mobile_net_work_wrap">
+						<span class="net_work_name">Network</span>
+						<span class="iconfont iconwangluoqiehuanjiantou" :class="flShowNetwork ? 'defalut_rotate_style' : 'rotate_style'"></span>
+					</div>
+				</li>
+				<li class="network_list_content network_up_style"
+				    v-show="flShowNetwork"
 				    v-for="item in netWorkArray"
 				    @click="windowOpenUrl(item.host)">{{item.netWorkSelectOption}}<i :class="item.icon"></i></li>
 			</ul>
@@ -72,12 +76,16 @@
 				flShowNetworkLogo: false,
 				currentNetworkClass:'',
 				isShowMobileMenu: false,
+				flShowNetwork:false
 			}
 		},
 		mounted(){
 			this.getConfig();
 		},
 		methods:{
+			showNetworkToggle(){
+				this.flShowNetwork = !this.flShowNetwork
+			},
 			flShowMobileMenu(){
 				this.isShowMobileMenu = !this.isShowMobileMenu
 			},
@@ -329,6 +337,25 @@
 							color: #fff !important;
 						}
 					}
+					.goz_mobile_net_work_content{
+						box-sizing: border-box;
+						padding: 0.05rem 0.15rem;
+						background: rgba(255,255,255,0.1);
+						.goz_mobile_net_work_wrap{
+							display: flex;
+							justify-content: space-between;
+							span{
+								font-size: 0.14rem;
+								color: #fff;
+							}
+							.defalut_rotate_style{
+								transform: rotate(-180deg);
+							}
+							.rotate_style{
+								transform: rotate(0deg);
+							}
+						}
+					}
 					.network_list_item{
 						background: rgba(255,255,255,0.1);
 						padding: 0.05rem 0.15rem;
@@ -337,6 +364,21 @@
 						text-align: right;
 						display: flex;
 						justify-content: space-between;
+					}
+					.network_list_content{
+						background: rgba(255,255,255,0.1);
+						padding: 0.05rem 0.15rem;
+						color: #fff ;
+						font-size: 0.14rem;
+						text-align: right;
+						display: flex;
+						justify-content: space-between;
+					}
+					.network_up_style:first-child{
+						margin-top: 2rem;
+					}
+					.network_up_style{
+						background-color: rgba(0,0,0,0.05) !important;
 					}
 				}
 			}
@@ -352,6 +394,8 @@
 				.goz_content_left_content{
 					width: 100%;
 					justify-content: space-between;
+					box-sizing: border-box;
+					padding: 0 0.2rem;
 					.menu_content{
 						display: block;
 						width: 0.25rem;

@@ -25,6 +25,7 @@
 					</div>
 					<div class="graph_list_container"
 					     ref="graph_list_content"
+					     id="graph_list_container"
 					     :style="{background: switchValue ? '' : '#2d325a'}"
 					     :class="[flShowDefaultPickUp ? 'hide_pick_up_style' : '', showDefaultAnimation ? 'show_pick_up_style' : '' ]"
 					     v-show="colorDataArray.length > 0">
@@ -46,10 +47,11 @@
 								<p class="legend_name" :class="item.isActive ? '' : 'hide_style_color'">{{item.name}}</p>
 							</li>
 						</ul>
-						<div class="pick_up_content">
-							<div class="pick_up_img_content" @click="flPickUp()">
-								<img v-show="!flShowDefaultPickUp" :src=" switchValue ? starLeftImg : defaultLeftImg " alt="">
-							</div>
+						
+					</div>
+					<div class="pick_up_content" v-if="colorDataArray.length > 0">
+						<div class="pick_up_img_content" @click="flPickUp()">
+							<img v-show="!flShowDefaultPickUp" :src=" switchValue ? starLeftImg : defaultLeftImg " alt="">
 						</div>
 					</div>
 					<div class="pick_up_show_content">
@@ -64,6 +66,9 @@
 					<span @click="refreshPage()">Please refresh <i class="iconfont iconshuaxin" ></i></span>
 				</div>
 			</div>
+			<div class="hover_up_content" v-if="flShowRevertIcon" v-show="flShowHoverUp">
+				<img style="width: 0.24rem" src="../../assets/hover_up.gif" alt="">
+			</div>
 			<app-download></app-download>
 			<validator-bianjie-information></validator-bianjie-information>
 		</div>
@@ -72,9 +77,11 @@
 
 <script>
 	import axios from 'axios';
+	import PerfectScrollbar from 'perfect-scrollbar'
 	import apiUrlConfig from "../../../config/config"
 	import ValidatorBianjieInformation from "./ValidatorBianjieInformation";
 	import AppDownload from "@/components/home/AppDownload";
+	import Store from "@/store";
 	var echarts = require('echarts/lib/echarts');
 	require('echarts/lib/component/legend');
 	require('echarts/lib/component/tooltip');
@@ -111,164 +118,8 @@
 				copyData:'',
 				flShowTestTooltip:true,
 				dataTimer: null,
+				flShowHoverUp: true,
 				switchValue: sessionStorage.getItem('starSky') ? sessionStorage.getItem('starSky') === 'show' ? true : false : true,
-				testData:{
-					"nodes": [
-						{
-							"chain-id": "morpheus-ibc-3000",
-							"connections": 2
-						},
-						{
-							"chain-id": "pylonchain",
-							"connections": 5
-						},
-						{
-							"chain-id": "irishub",
-							"connections": 10
-						},
-						{
-							"chain-id": "achain",
-							"connections": 1
-						},
-						{
-							"chain-id": "ping-ibc",
-							"connections": 2
-						},
-						{
-							"chain-id": "kappa",
-							"connections": 3
-						},
-						{
-							"chain-id": "crusty",
-							"connections": 2
-						},
-						{
-							"chain-id": "vitwitchain",
-							"connections": 2
-						},
-						{
-							"chain-id": "umbrellachain",
-							"connections": 7
-						},
-						{
-							"chain-id": "ptpchain",
-							"connections": 2
-						},
-						{
-							"chain-id": "ibc-band-testnet1",
-							"connections": 3
-						},
-						{
-							"chain-id": "kava-ibc",
-							"connections": 2
-						},
-						{
-							"chain-id": "melea-11",
-							"connections": 1
-						},
-						{
-							"chain-id": "dokia",
-							"connections": 0
-						},
-					],
-					"paths": [
-						{
-							"src": "morpheus-ibc-3000",
-							"dst": "pylonchain",
-							"state": "I"
-						},
-						{
-							"src": "irishub",
-							"dst": "morpheus-ibc-3000",
-							"state": "OPEN"
-						},
-						{
-							"src": "irishub",
-							"dst": "pylonchain",
-							"state": "OPEN"
-						},
-						{
-							"src": "irishub",
-							"dst": "ping-ibc",
-							"state": "OPEN"
-						},
-						{
-							"src": "irishub",
-							"dst": "kappa",
-							"state": "OPEN"
-						},
-						{
-							"src": "achain",
-							"dst": "crusty",
-							"state": "OPEN"
-						},
-						{
-							"src": "irishub",
-							"dst": "vitwitchain",
-							"state": "OPEN"
-						},
-						{
-							"src": "irishub",
-							"dst": "umbrellachain",
-							"state": "OPEN"
-						},
-						{
-							"src": "irishub",
-							"dst": "ptpchain",
-							"state": "OPEN"
-						},
-						{
-							"src": "irishub",
-							"dst": "kava-ibc",
-							"state": "OPEN"
-						},
-						{
-							"src": "ping-ibc",
-							"dst": "pylonchain",
-							"state": "OPEN"
-						},
-						{
-							"src": "kappa",
-							"dst": "crusty",
-							"state": "OPEN"
-						},
-						{
-							"src": "vitwitchain",
-							"dst": "umbrellachain",
-							"state": "OPEN"
-						},
-						{
-							"src": "ptpchain",
-							"dst": "ibc-band-testnet1",
-							"state": "OPEN"
-						},
-						{
-							"src": "ibc-band-testnet1",
-							"dst": "pylonchain",
-							"state": "OPEN"
-						},
-						{
-							"src": "umbrellachain",
-							"dst": "pylonchain",
-							"state": "OPEN"
-						},
-						{
-							"src": "kava-ibc",
-							"dst": "umbrellachain",
-							"state": "OPEN"
-						},
-						{
-							"src": "melea-11",
-							"dst": "umbrellachain",
-							"state": "OPEN"
-						},
-						{
-							"src": "umbrellachain",
-							"dst": "kappa",
-							"state": "OPEN"
-						}
-					]
-				},
 				colorUseCopyData: '',
 				timer: null,
 				dataIndex: 2,
@@ -615,17 +466,34 @@
 			}
 		},
 		mounted(){
-			this.$refs.chart_content.style.height = (window.innerHeight - 124)+"px"
-			this.$refs.graph_list_content.style.height = (window.innerHeight - 148)+"px"
+/*
+			let container = new PerfectScrollbar('#graph_list_container',{
+				wheelSpeed: 2,
+				wheelPropagation: true,
+				minScrollbarLength: 20
+			});
+			container.update()*/
+			this.$refs.chart_content.style.height = (window.innerHeight - 164)+"px"
+			this.$refs.graph_list_content.style.height = (window.innerHeight - 188)+"px"
 			window.addEventListener('resize',this.onresize)
 			clearTimeout(this.timer);
 			this.getData();
 			this.timer = setInterval(() => {
 				this.getData();
 			},300000);
-		
+			window.addEventListener("scroll", this.handleScroll,true)
 		},
 		methods:{
+			handleScroll(e){
+				let scrollTop = document.documentElement.scrollTop || document.body.scrollTop
+				console.log(scrollTop )
+				if(scrollTop > 5){
+					this.flShowHoverUp = false
+				}else {
+					this.flShowHoverUp = true
+				}
+				
+			},
 			revertGraph(){
 				this.initChartsGraph();
 			},
@@ -658,18 +526,22 @@
 					if(sortRule){
 						if(value1 > value2){
 							return -1
+						}else {
+							return  1
 						}
 					}else {
 						if(value1 < value2){
 							return -1
+						}else {
+							return  1
 						}
 					}
 				
 				})
 			},
 			onresize(){
-				this.$refs.chart_content.style.height = (window.innerHeight - 124)+"px"
-				this.$refs.graph_list_content.style.height = (window.innerHeight - 148)+"px"
+				this.$refs.chart_content.style.height = (window.innerHeight - 164)+"px"
+				this.$refs.graph_list_content.style.height = (window.innerHeight - 188)+"px"
 				this.graphEcharts.resize()
 			},
 			flPickUp(){
@@ -697,6 +569,7 @@
 				}
 			},*/
 			getData(){
+				this.$store.commit('flShowLoading',true)
 				let Url = apiUrlConfig.app.url;
 				axios.get(`${Url}`).then(data => {
 					if(data.status === 200){
@@ -705,22 +578,29 @@
 						return 'network is error'
 					}
 				}).then( res => {
-					this.data = res;
-					this.flShowTestTooltip = res.production
-					//数据先排序
-					this.data.nodes.sort((a,b) => {
-						return b.connections - a.connections
-					});
-					this.data.nodes.forEach((item,index) => {
-						item.isDelete = false;
-						item.color = this.color[index]
-					});
-					this.copyData = JSON.parse(JSON.stringify(this.data));
-					this.colorUseCopyData = JSON.parse(JSON.stringify(this.data));
-					this.initLegend();
-					this.initChartsGraph();
+					this.$store.commit('flShowLoading',true)
+					if(res && JSON.stringify(res) !== '{}'){
+						this.data = res;
+						this.flShowTestTooltip = res.production
+						//数据先排序
+						this.data.nodes.sort((a,b) => {
+							return b.connections - a.connections
+						});
+						this.data.nodes.forEach((item,index) => {
+							item.isDelete = false;
+							item.color = this.color[index]
+						});
+						this.copyData = JSON.parse(JSON.stringify(this.data));
+						this.colorUseCopyData = JSON.parse(JSON.stringify(this.data));
+						this.initLegend();
+						this.initChartsGraph();
+					}else {
+						this.flShowNetwork = false
+						this.$store.commit('flShowLoading',false)
+					}
 				}).catch(e => {
 					console.log(e);
+					this.$store.commit('flShowLoading',false)
 					if(e){
 						this.flShowNetwork = false
 					}
@@ -781,12 +661,17 @@
 				//数据结果展示
 				let minSymbolSizeRule = Math.floor(8 / (Number(symbolSizeRule) / this.data.nodes.length))
 				for(let i in this.copyData.nodes){
+					let connectionValue = this.copyData.nodes[i].connections;
 					nodeArray.push({
 						name: this.copyData.nodes[i]['chain-id'],
 						symbolSize: this.copyData.nodes[i].connections === 0 ? 9 : this.copyData.nodes[i].connections < minSymbolSizeRule ? minSymbolSizeRule * symbolSizeRule / this.data.nodes.length : this.copyData.nodes[i].connections * symbolSizeRule / this.data.nodes.length ,
 						label: {
 							show: false,
-							position:'right'
+							position:'right',
+							formatter:function (data) {
+								console.log(data,"数据展示")
+								return 'Zone：${data.name}Connection: ${connectionValue}'
+							}
 						},
 						itemStyle: {
 							color: this.copyData.nodes[i].color,
@@ -816,8 +701,8 @@
 						})
 					}else {
 						nodeLinksArray.push({
-							source: item.src,
-							target: item.dst,
+							source: item['src-chain-id'],
+							target: item['src-chain-id'],
 							//连接线的样式设置
 							lineStyle:{
 								color: 'rgba(112, 198, 199, 1)',
@@ -899,7 +784,7 @@
 					zoomRule = 0.5;
 					zoomSpeedRule = 0.07
 				}
-				
+				this.$store.commit('flShowLoading',false)
 				// 渲染完成收缩图形让其在区域内全部展示
 				
 				this.dataTimer = setInterval(() => {
@@ -1007,7 +892,6 @@
 			}
 			.graph_charts_container{
 				height: 100%;
-				
 				.graph_charts_title{
 					padding: 0.2rem 0 0.2rem 0.2rem;
 					font-size: 0.12rem;
@@ -1019,10 +903,14 @@
 					display: flex;
 					position: relative;
 					.iconfuwei{
+						position: absolute;
+						left: 0;
+						top:0;
 						cursor: pointer;
 						color: #377CF8;
-						font-size: 0.18rem;
+						font-size: 0.24rem;
 						padding-left: 0.2rem;
+						z-index: 9;
 					}
 					.graph_container_content_wrap{
 						flex: 1;
@@ -1053,6 +941,7 @@
 							color: #868FD3;
 						}
 					}
+					
 					.graph_list_container::-webkit-scrollbar{
 						width:0.05rem;
 						height:0.05rem;
@@ -1076,7 +965,7 @@
 						overflow-x: hidden;
 						overflow-y: auto;
 						position: absolute;
-						right: 0.4rem;
+						right: 0;
 						top: 0;
 						background:rgba(45,50,90,0.2);
 						backdrop-filter: blur(2px);
@@ -1161,25 +1050,26 @@
 								}
 							}
 						}
-						.pick_up_content{
-							position: absolute;
-							right: 2.08rem;
-							top:50%;
-							z-index: 10;
-							.pick_up_img_content{
-								width: 0.14rem;
-								height: 0.6rem;
-								cursor: pointer;
-								img{
-									width: 100%;
-								}
+						
+					}
+					.pick_up_content{
+						position: absolute;
+						right: 2.08rem;
+						top:50%;
+						z-index: 10;
+						.pick_up_img_content{
+							width: 0.14rem;
+							height: 0.6rem;
+							cursor: pointer;
+							img{
+								width: 100%;
 							}
 						}
 					}
 					.pick_up_show_content{
 						position: absolute;
 						top: 50%;
-						right: 0.4rem;
+						right: 0;
 						.pick_up_show_img_content{
 							width: 0.14rem;
 							height: 0.6rem;
@@ -1198,6 +1088,11 @@
 						animation-fill-mode: forwards;
 					}
 				}
+			}
+			.hover_up_content{
+				display: flex;
+				justify-content: center;
+				margin-top: 0.05rem;
 			}
 			.show_error_content{
 				min-height: 6rem;
@@ -1229,7 +1124,7 @@
 		.validator_graph_container{
 			.graph_content_wrap{
 				box-sizing: border-box;
-				padding: 0 0.1rem;
+				padding: 0 0.3rem;
 				.graph_content_title{
 					height: auto;
 					padding: 0.15rem 0;
@@ -1249,6 +1144,7 @@
 				.graph_charts_container{
 					.graph_content_container{
 						flex-direction: column;
+						
 						.graph_container_content_wrap{
 							border-radius: 0;
 						}
@@ -1269,9 +1165,9 @@
 									margin-left: 0;
 								}
 							}
-							.pick_up_content{
-								display: none;
-							}
+						}
+						.pick_up_content{
+							display: none;
 						}
 					}
 				}
@@ -1351,11 +1247,14 @@
 						padding-top: 0;
 					}
 					.graph_content_container{
+						.iconfuwei{
+							padding-left: 0;
+						}
 						.sort_content{
 							padding-left: 0.2rem;
 						}
 						.graph_list_container{
-							max-height: 3rem;
+							height: 2rem !important;
 							margin-bottom: 0.2rem;
 						}
 					}
