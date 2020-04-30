@@ -43,8 +43,12 @@
 							<li class="graph_list_item" v-for="(item,index) in colorDataArray" @click="changeChart(item,index)">
 								<div class="legend_block"
 								     :style="{background: item.color}"
-								     :class="item.isActive ? '' : 'hide_style'"></div>
-								<p class="legend_name" :class="item.isActive ? '' : 'hide_style_color'">{{item.name}}</p>
+								     :class="item.isActive ? '' : 'hide_style'">
+								</div>
+								<div class="legend_name_content">
+									<p class="legend_name" :class="item.isActive ? '' : 'hide_style_color'"> Zone:{{item.name}} </p>
+									<p class="legend_name" :class="item.isActive ? '' : 'hide_style_color'" v-show="item.connection !== 0">Conn:{{item.connection}}</p>
+								</div>
 							</li>
 						</ul>
 						
@@ -57,7 +61,6 @@
 					<div class="pick_up_show_content">
 						<div class="pick_up_show_img_content" @click="flShowPickUp()">
 							<img v-show="flShowDefaultRightPickUp" :src=" switchValue ? starRightImg : defaultRightImg" alt="">
-						
 						</div>
 					</div>
 				</div>
@@ -66,8 +69,8 @@
 					<span @click="refreshPage()">Please refresh <i class="iconfont iconshuaxin" ></i></span>
 				</div>
 			</div>
-			<div class="hover_up_content" v-if="flShowRevertIcon" v-show="flShowHoverUp">
-				<img style="width: 0.24rem" src="../../assets/hover_up.gif" alt="">
+			<div class="hover_up_content" v-if="flShowRevertIcon" v-show="flShowHoverUp" @click="scrollBottom()">
+				<img style="width: 0.16rem" src="../../assets/hover_up.gif" alt="">
 			</div>
 			<app-download></app-download>
 			<validator-bianjie-information></validator-bianjie-information>
@@ -486,13 +489,17 @@
 		methods:{
 			handleScroll(e){
 				let scrollTop = document.documentElement.scrollTop || document.body.scrollTop
-				console.log(scrollTop )
 				if(scrollTop > 5){
 					this.flShowHoverUp = false
 				}else {
 					this.flShowHoverUp = true
 				}
 				
+			},
+			scrollBottom(){
+				window.pageYOffset = 10000000;
+				document.documentElement.scrollTop = 10000000 ;
+				document.body.scrollTop = 10000000;
 			},
 			revertGraph(){
 				this.initChartsGraph();
@@ -653,6 +660,7 @@
 				this.initChartsGraph();
 			},
 			initChartsGraph(){
+				console.log(this.copyData.nodes,"節點數據")
 				this.flShowRevertIcon = false
 				this.graphEcharts = echarts.init(document.getElementById('validator_graph_content'));
 				let nodeLinksArray = [],nodeArray = [];
@@ -740,8 +748,8 @@
 							nodeScaleRatio: 0.6, //鼠标每次缩放的整体缩放比例
 							force:{
 								repulsion: [2000,5000], //斥力因子
-								gravity: 0.8, //是否向中心靠拢 值越大越接近于中心
-								edgeLength: [50,100], //链接线的长度范围
+								gravity: 0.3, //是否向中心靠拢 值越大越接近于中心
+								edgeLength: [80,90], //链接线的长度范围
 								layoutAnimation: true,
 							},
 							// zoom:0.1, //设置整体视图缩放的比例
@@ -771,16 +779,19 @@
 				this.graphEcharts.setOption(graphOption)
 				clearInterval(this.dataTimer)
 				// 根据节点数使用不同的缩放规则
-				let zoomRule = 1,zoomSpeedRule = 0.05;
+				let zoomRule = 1,zoomSpeedRule = 0.05,setTime = 950;
 				if(nodeArray.length > 150){
 					zoomRule = 0.1;
 					zoomSpeedRule = 0.2;
+					setTime = 1450
 				} else if(nodeArray.length > 100 && nodeArray.length < 150){
 					zoomRule = 0.1;
 					zoomSpeedRule = 0.2;
+					setTime = 1250
 				}else if(nodeArray.length > 50 && nodeArray.length < 100){
-					zoomRule = 0.5;
+					zoomRule = 0.3;
 					zoomSpeedRule = 0.07
+					setTime = 1250
 				}else if(nodeArray.length < 50){
 					zoomRule = 0.5;
 					zoomSpeedRule = 0.07
@@ -807,7 +818,7 @@
 					graphOption.series[0].force.gravity = 0.001
 					this.graphEcharts .setOption(graphOption);
 					this.flShowRevertIcon = true
-				},950)
+				},setTime)
 			},
 		}
 	}
@@ -1005,7 +1016,16 @@
 								width: 0.9rem;
 								white-space:nowrap;
 							}
-							
+							.legend_name_content{
+								.legend_name{
+									cursor: pointer;
+									height: 0.14rem;
+									color: rgba(134, 143, 211, 0.5);
+									margin-left: 0.1rem;
+									width: 0.9rem;
+									white-space:nowrap;
+								}
+							}
 						}
 						.graph_list_content{
 							flex: 1;
@@ -1032,23 +1052,26 @@
 										width: 0.14rem;
 									}
 								}
-								.legend_block{
-									box-sizing: border-box;
-									width: 0.14rem;
-									height: 0.14rem;
-									border-radius: 0.07rem;
+								.legend_name_content{
+									max-width: 1.2rem;
+									.legend_name{
+										line-height: 0.16rem;
+										color: rgba(134, 143, 211, 1);
+										margin-left: 0.1rem;
+									}
+									.hide_style_color{
+										color: rgba(134, 143, 211, 0.5) !important;
+									}
 								}
 								.hide_style{
 									background: transparent !important;
 									border: 0.01rem solid rgba(134, 143, 211, 0.5);
 								}
-								.legend_name{
-									line-height: 0.16rem;
-									color: rgba(134, 143, 211, 1);
-									margin-left: 0.1rem;
-								}
-								.hide_style_color{
-									color: rgba(134, 143, 211, 0.5) !important;
+								.legend_block{
+									box-sizing: border-box;
+									width: 0.14rem;
+									height: 0.14rem;
+									border-radius: 0.07rem;
 								}
 							}
 						}
@@ -1092,6 +1115,7 @@
 				}
 			}
 			.hover_up_content{
+				cursor: pointer;
 				display: flex;
 				justify-content: center;
 				margin-top: 0.05rem;
