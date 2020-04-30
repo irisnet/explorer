@@ -2,6 +2,7 @@
     <div class="home_wrap">
         <search-bar></search-bar>
         <statistical-bar></statistical-bar>
+        <advertising-space></advertising-space>
         <div class="home_container">
             <div class="echarts_content">
                 <div class="home_module_item home_module_item_pie">
@@ -57,9 +58,11 @@
 
     import SearchBar from "./SearchBar";
     import StatisticalBar from "./StatisticalBar";
+    import AdvertisingSpace from "@/components/advertisingSpace/AdvertisingSpace";
     export default {
         name: 'app-header',
         components: {
+            AdvertisingSpace,
             StatisticalBar,
             SearchBar, MVotingCard, MDepositCard, MHomeVotingCrad, EchartsPie, EchartsLine, HomeBlockModule},
         data() {
