@@ -9,6 +9,7 @@ import (
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/robfig/cron/v3"
 	"github.com/irisnet/explorer/backend/conf"
+	"github.com/irisnet/explorer/backend/types"
 )
 
 var (
@@ -84,6 +85,20 @@ func Start() {
 	c.AddFunc(conf.Get().Server.CronTimeFormatStaticMonth, func() { //每月1号0点0分
 		delegatortask := new(StaticDelegatorByMonthTask)
 		validatortask := new(StaticValidatorByMonthTask)
+		startTime := conf.Get().Server.CaculateStartDate
+		endTime := conf.Get().Server.CaculateEndDate
+		if startTime != "" && endTime != "" {
+			starttime, err := time.ParseInLocation(types.TimeLayout, startTime, cstZone)
+			if err != nil {
+				panic(fmt.Sprintf("time format [%v] is error:%v", startTime, err.Error()))
+			}
+			endtime, err := time.ParseInLocation(types.TimeLayout, endTime, cstZone)
+			if err != nil {
+				panic(fmt.Sprintf("time format [%v] is error:%v", endTime, err.Error()))
+			}
+			delegatortask.SetCaculateScope(starttime, endtime)
+			validatortask.SetCaculateScope(starttime, endtime)
+		}
 		delegatortask.Start()
 		validatortask.SetAddressCoinMapData(delegatortask.AddressCoin, delegatortask.AddrPeriodCommission, delegatortask.AddrTerminalCommission)
 		validatortask.Start()
