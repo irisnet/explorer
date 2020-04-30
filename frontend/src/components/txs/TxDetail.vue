@@ -64,7 +64,7 @@
                     </li>
                 </ul>
             </div>
-            <!--<advertising-space :page-class="'txDetail'"></advertising-space>-->
+            <advertising-space :page-class="'txDetail'"></advertising-space>
             <div class="tx_detail_message_content_title">Transaction Message or Result</div>
             <div class="tx_detail_message_information_content">
                 <ul class="tx_detail_message_information">
