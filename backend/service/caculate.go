@@ -37,7 +37,7 @@ func loadFromDelModel(model document.ExStaticDelegatorMonth) vo.ExStaticDelegato
 	ret := vo.ExStaticDelegatorMonthVo{
 		Address:                model.Address,
 		Date:                   model.Date,
-		CaculateDate:           model.Date,
+		CaculateDate:           model.CaculateDate,
 		TerminalRewards:        model.TerminalRewards.Iris,
 		PeriodIncrementRewards: model.PeriodIncrementRewards.Iris,
 		PeriodWithdrawRewards:  model.PeriodWithdrawRewards.Iris,
