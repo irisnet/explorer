@@ -46,8 +46,8 @@
 								     :class="item.isActive ? '' : 'hide_style'">
 								</div>
 								<div class="legend_name_content">
-									<p class="legend_name" :class="item.isActive ? '' : 'hide_style_color'"> Zone:{{item.name}} </p>
-									<p class="legend_name" :class="item.isActive ? '' : 'hide_style_color'" v-show="item.connection !== 0">Conn:{{item.connection}}</p>
+									<p class="legend_name" :class="item.isActive ? '' : 'hide_style_color'"> {{item.name}} </p>
+									<p class="legend_name" :class="item.isActive ? '' : 'hide_style_color'" v-show="item.connection !== 0"><span style="display: flex;white-space: nowrap">{{item.connection}} Connections</span></p>
 								</div>
 							</li>
 						</ul>
@@ -68,9 +68,9 @@
 					<p>Sorry, failed to obtain information Check if you are using vpn</p>
 					<span @click="refreshPage()">Please refresh <i class="iconfont iconshuaxin" ></i></span>
 				</div>
-			</div>
-			<div class="hover_up_content" v-if="flShowRevertIcon" v-show="flShowHoverUp" @click="scrollBottom()">
-				<img style="width: 0.16rem" src="../../assets/hover_up.gif" alt="">
+				<div class="hover_up_content" v-if="flShowRevertIcon" v-show="flShowHoverUp" @click="scrollBottom()">
+					<img style="width: 0.16rem" src="../../assets/hover_up.gif" alt="">
+				</div>
 			</div>
 			<app-download></app-download>
 			<validator-bianjie-information></validator-bianjie-information>
@@ -657,28 +657,23 @@
 				this.copyData.nodes = this.colorUseCopyData.nodes.filter( item => {
 					return item.isDelete === false
 				});
-				this.initChartsGraph();
 			},
 			initChartsGraph(){
-				console.log(this.copyData.nodes,"節點數據")
 				this.flShowRevertIcon = false
 				this.graphEcharts = echarts.init(document.getElementById('validator_graph_content'));
 				let nodeLinksArray = [],nodeArray = [];
-				//最大像素点与最小像素点的差值106  最小的symbolSize 为 8 * 节点递增的比例
-				let symbolSizeRule = 66;
+				//最大像素点与最小像素点的差值66  最小的symbolSize 为 8 * 节点递增的比例
+				let symbolSizeRule = 30;
 				//数据结果展示
-				let minSymbolSizeRule = Math.floor(8 / (Number(symbolSizeRule) / this.data.nodes.length))
+				let minSymbolSizeRule = Math.floor(20 / (Number(symbolSizeRule) / this.data.nodes.length))
 				for(let i in this.copyData.nodes){
 					let connectionValue = this.copyData.nodes[i].connections;
 					nodeArray.push({
 						name: this.copyData.nodes[i]['chain-id'],
-						symbolSize: this.copyData.nodes[i].connections === 0 ? 9 : this.copyData.nodes[i].connections < minSymbolSizeRule ? minSymbolSizeRule * symbolSizeRule / this.data.nodes.length : this.copyData.nodes[i].connections * symbolSizeRule / this.data.nodes.length ,
+						symbolSize: this.copyData.nodes[i].connections === 0 ? 20 : this.copyData.nodes[i].connections < minSymbolSizeRule ? minSymbolSizeRule * symbolSizeRule / this.data.nodes.length : this.copyData.nodes[i].connections * symbolSizeRule / this.data.nodes.length ,
 						label: {
 							show: false,
 							position:'right',
-							formatter:function (data) {
-								return 'Zone：${data.name}Connection: ${connectionValue}'
-							}
 						},
 						itemStyle: {
 							color: this.copyData.nodes[i].color,
@@ -691,6 +686,7 @@
 						name: item['chain-id']
 					})
 				})
+				
 				this.copyData.paths.forEach( (item,index) => {
 					if(item.state === 'OPEN'){
 						nodeLinksArray.push({
@@ -747,9 +743,9 @@
 							// links: nodeLinksArray,
 							nodeScaleRatio: 0.6, //鼠标每次缩放的整体缩放比例
 							force:{
-								repulsion: [2000,5000], //斥力因子
-								gravity: 0.3, //是否向中心靠拢 值越大越接近于中心
-								edgeLength: [80,90], //链接线的长度范围
+								repulsion: [800,1000], //斥力因子
+								gravity: 0.8, //是否向中心靠拢 值越大越接近于中心
+								edgeLength: [100,200], //链接线的长度范围
 								layoutAnimation: true,
 							},
 							// zoom:0.1, //设置整体视图缩放的比例
@@ -789,8 +785,8 @@
 					zoomSpeedRule = 0.2;
 					setTime = 1250
 				}else if(nodeArray.length > 50 && nodeArray.length < 100){
-					zoomRule = 0.3;
-					zoomSpeedRule = 0.07
+					zoomRule = 0.7;
+					zoomSpeedRule = 0.04
 					setTime = 1250
 				}else if(nodeArray.length < 50){
 					zoomRule = 0.5;
@@ -811,14 +807,14 @@
 					this.graphEcharts.setOption(graphOption)
 				},20)
 				
-				
+				//最后一次渲染
 				setTimeout(() => {
 					graphOption.series[0].zoom = zoomRule;
 					graphOption.series[0].links = nodeLinksArray;
-					graphOption.series[0].force.gravity = 0.001
+					graphOption.series[0].force.gravity = 0.3
 					this.graphEcharts .setOption(graphOption);
 					this.flShowRevertIcon = true
-				},setTime)
+				},950)
 			},
 		}
 	}
@@ -1115,6 +1111,9 @@
 				}
 			}
 			.hover_up_content{
+				position: absolute;
+				bottom: 0;
+				left: 50%;
 				cursor: pointer;
 				display: flex;
 				justify-content: center;
