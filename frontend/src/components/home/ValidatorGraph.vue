@@ -503,7 +503,7 @@
 				document.body.scrollTop = 10000000;
 			},
 			revertGraph(){
-				this.initChartsGraph();
+				window.location.reload();
 			},
 			sortByConnection(flSwitchValue){
 				this.flShowLetterSortIcon = false;
@@ -949,6 +949,7 @@
 							margin-right: 0.2rem;
 							font-size: 0.14rem;
 							color: #868FD3;
+							white-space: nowrap;
 						}
 					}
 					
@@ -991,9 +992,9 @@
 								height: 0.14rem;
 								border-radius: 0.07rem;
 								cursor: pointer;
+								background: transparent;
 								img{
-									width: 100%;
-									height:100%;
+									width: 0.14rem;
 								}
 							}
 							.legend_block{
@@ -1183,6 +1184,7 @@
 							margin-left: 0;
 							position: static;
 							.graph_list_item_all{
+								width: 1.2rem;
 								margin-left: 0.2rem;
 								justify-content: flex-start;
 							}
