@@ -7,7 +7,7 @@
 					<span class="iconfont" :class="currentNetworkClass"></span>
 				</div>
 				<div class="goz_content_network_state">
-					<span>GoZ Network State Visualization</span>
+					<span>GoZ Network State Visualizer</span>
 				</div>
 				<div class="menu_content" @click="flShowMobileMenu">
 					<img src="../../assets/menu.png" alt="">
@@ -15,10 +15,10 @@
 			</div>
 			<div class="goz_content_right_content">
 				<div class="goz_content_link_content">
-					<a href="https://goz.p2p.org/" target="_blank">Visualization from P2P Team</a>
+					<a href="https://goz.p2p.org/" target="_blank">Visualizer from P2P Team</a>
 				</div>
 				<div class="goz_content_link_content">
-					<a href="https://goz.cosmos.network/3d" target="_blank">Visualization from Cosmos Team</a>
+					<a href="https://goz.cosmos.network/3d" target="_blank">Visualizer from Cosmos Team</a>
 				</div>
 				<div class="goz_content_link_content">
 					<a href="https://goz.cosmosnetwork.dev/2020/04/14/a-whole-new-world-testnets-in-the-ibc-era/" target="_blank">GoZ Website</a>
@@ -42,10 +42,10 @@
 					<a href="https://goz.cosmosnetwork.dev/2020/04/14/a-whole-new-world-testnets-in-the-ibc-era/" target="_blank">GoZ Website</a>
 				</li>
 				<li class="goz_mobile_link_item">
-					<a href="https://goz.p2p.org/" target="_blank">Visualization from P2P Team</a>
+					<a href="https://goz.p2p.org/" target="_blank">Visualizer from P2P Team</a>
 				</li>
 				<li class="goz_mobile_link_item">
-					<a href="https://goz.cosmos.network/3d" target="_blank">Visualization from Cosmos Team</a>
+					<a href="https://goz.cosmos.network/3d" target="_blank">Visualizer from Cosmos Team</a>
 				</li>
 				<li class="goz_mobile_net_work_content" @click="showNetworkToggle">
 					<div class="goz_mobile_net_work_wrap">
@@ -280,7 +280,7 @@
 			}
 		}
 	}
-	@media (max-width: 1140px) {
+	@media (max-width: 1190px) {
 		.goz_container{
 			.goz_content_wrap{
 				flex-direction: column;
