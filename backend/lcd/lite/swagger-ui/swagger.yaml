@@ -768,6 +768,15 @@ definitions:
       cur_env:
         type: string
     type: object
+  vo.ExStaticMonthDataRespond:
+    properties:
+      data:
+        type: object
+      total:
+        type: integer
+      type:
+        type: string
+    type: object
   vo.FinalVotes:
     properties:
       abstain:
@@ -1887,6 +1896,58 @@ paths:
       summary: list
       tags:
       - bondedtokens
+  /api/caculate/monthdata:
+    get:
+      consumes:
+      - application/json
+      description: get caculate validators or delegators monthdata
+      parameters:
+      - description: role type
+        enum:
+        - delegator
+        - validator
+        in: query
+        name: type
+        required: true
+        type: string
+      - default: 1
+        description: page num
+        in: query
+        name: page
+        required: true
+        type: integer
+      - default: 5
+        description: page size
+        in: query
+        name: size
+        required: true
+        type: integer
+      - description: beginTime (eg 2006.01.02T15:04:05)
+        in: query
+        name: beginTime
+        type: string
+      - description: endTime (eg 2006.01.02T15:04:05)
+        in: query
+        name: endTime
+        type: string
+      - description: total
+        enum:
+        - true
+        - false
+        in: query
+        name: total
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/vo.ExStaticMonthDataRespond'
+            type: object
+      summary: list
+      tags:
+      - caculate
   /api/config:
     get:
       consumes:

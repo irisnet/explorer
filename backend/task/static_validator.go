@@ -19,7 +19,7 @@ func (task StaticValidatorTask) Name() string {
 }
 func (task StaticValidatorTask) Start() {
 	taskName := task.Name()
-	timeInterval := conf.Get().Server.CronTimeTxNumByDay
+	timeInterval := conf.Get().Server.CronTimeStaticValidator
 
 	if err := tcService.runTask(taskName, timeInterval, task.DoTask); err != nil {
 		logger.Error(err.Error())
@@ -53,6 +53,9 @@ func (task StaticValidatorTask) saveExValidatorStaticOps(validators []document.V
 	today := utils.TruncateTime(time.Now().In(cstZone), utils.Day)
 	ops := make([]txn.Op, 0, len(validators))
 	now := time.Now().Unix()
+	if conf.Get().Server.CaculateDebug {
+		today = time.Now().In(cstZone)
+	}
 	for _, addr := range validators {
 		item, err := task.loadValidatorTokens(addr, today)
 		item.CreateAt = now
@@ -72,15 +75,15 @@ func (task StaticValidatorTask) saveExValidatorStaticOps(validators []document.V
 func (task StaticValidatorTask) loadValidatorTokens(validator document.Validator, today time.Time) (document.ExStaticValidator, error) {
 
 	item := document.ExStaticValidator{
-		Id:              bson.NewObjectId(),
-		OperatorAddress: validator.OperatorAddress,
-		Status:          validator.GetValidatorStatus(),
-		Date:            today,
-		SelfBond:        validator.SelfBond,
-		DelegatorShares: validator.DelegatorShares,
-		Tokens:          validator.Tokens,
-		Commission:      validator.Commission,
-		DelegatorNum:    validator.DelegatorNum,
+		Id:                    bson.NewObjectId(),
+		OperatorAddress:       validator.OperatorAddress,
+		Status:                validator.GetValidatorStatus(),
+		Date:                  today,
+		SelfBond:              validator.SelfBond,
+		DelegatorShares:       validator.DelegatorShares,
+		Tokens:                validator.Tokens,
+		Commission:            validator.Commission,
+		DelegatorNum:          validator.DelegatorNum,
 	}
 	subValue := funcSubStr(item.Tokens, item.SelfBond)
 	if subValue != nil {

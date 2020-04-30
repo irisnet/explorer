@@ -593,6 +593,81 @@
                 }
             }
         },
+        "/api/caculate/monthdata": {
+            "get": {
+                "description": "get caculate validators or delegators monthdata",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "caculate"
+                ],
+                "summary": "list",
+                "parameters": [
+                    {
+                        "enum": [
+                            "delegator",
+                            "validator"
+                        ],
+                        "type": "string",
+                        "description": "role type",
+                        "name": "type",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "page num",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 5,
+                        "description": "page size",
+                        "name": "size",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "beginTime (eg 2006.01.02T15:04:05)",
+                        "name": "beginTime",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "endTime (eg 2006.01.02T15:04:05)",
+                        "name": "endTime",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            true,
+                            false
+                        ],
+                        "type": "boolean",
+                        "description": "total",
+                        "name": "total",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/vo.ExStaticMonthDataRespond"
+                        }
+                    }
+                }
+            }
+        },
         "/api/config": {
             "get": {
                 "description": "get config",
@@ -1275,30 +1350,30 @@
                 }
             }
         },
-      "/api/stake/commission_info": {
-        "get": {
-          "description": "get commission_info",
-          "consumes": [
-            "application/json"
-          ],
-          "produces": [
-            "application/json"
-          ],
-          "tags": [
-            "stake"
-          ],
-          "summary": "commission_info",
-          "responses": {
-            "200": {
-              "description": "success",
-              "schema": {
-                "type": "object",
-                "$ref": "#/definitions/vo.CommissionInfoResp"
-              }
+        "/api/stake/commission_info": {
+            "get": {
+                "description": "get commission_info",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "stake"
+                ],
+                "summary": "commission_info",
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/vo.CommissionInfoResp"
+                        }
+                    }
+                }
             }
-          }
-        }
-      },
+        },
         "/api/stake/validators": {
             "get": {
                 "description": "get validators",
@@ -3439,20 +3514,20 @@
                 }
             }
         },
-      "vo.CommissionInfoResp": {
-        "type": "object",
-        "properties": {
-          "commission_data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/vo.ValidatorCommissionInfo"
+        "vo.CommissionInfoResp": {
+            "type": "object",
+            "properties": {
+                "commission_data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/vo.ValidatorCommissionInfo"
+                    }
+                },
+                "total": {
+                    "type": "integer"
+                }
             }
-          },
-          "total": {
-            "type": "integer"
-          }
-        }
-      },
+        },
         "vo.ConfigVo": {
             "type": "object",
             "properties": {
@@ -3477,8 +3552,8 @@
                 "tendermint_version": {
                     "type": "string"
                 },
-              "umeng_id": {
-                "type": "integer"
+                "umeng_id": {
+                    "type": "integer"
                 }
             }
         },
@@ -3564,6 +3639,20 @@
                     }
                 },
                 "cur_env": {
+                    "type": "string"
+                }
+            }
+        },
+        "vo.ExStaticMonthDataRespond": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object"
+                },
+                "total": {
+                    "type": "integer"
+                },
+                "type": {
                     "type": "string"
                 }
             }
@@ -4148,23 +4237,23 @@
                 }
             }
         },
-      "vo.TokenStatStr": {
-        "type": "object",
-        "properties": {
-          "bonded": {
-            "type": "string"
-          },
-          "circulation": {
-            "type": "string"
-          },
-          "foundation_bonded": {
-            "type": "string"
-          },
-          "total_supply": {
-            "type": "string"
-          }
-        }
-      },
+        "vo.TokenStatStr": {
+            "type": "object",
+            "properties": {
+                "bonded": {
+                    "type": "string"
+                },
+                "circulation": {
+                    "type": "string"
+                },
+                "foundation_bonded": {
+                    "type": "string"
+                },
+                "total_supply": {
+                    "type": "string"
+                }
+            }
+        },
         "vo.Tx": {
             "type": "object",
             "properties": {
@@ -4208,18 +4297,18 @@
                 "date": {
                     "type": "string"
                 },
-              "delegator_num": {
-                "type": "integer"
-              },
+                "delegator_num": {
+                    "type": "integer"
+                },
                 "num": {
                     "type": "integer"
                 },
-              "token_stat": {
-                "type": "object",
-                "$ref": "#/definitions/vo.TokenStatStr"
-              },
-              "total_acc_num": {
-                "type": "integer"
+                "token_stat": {
+                    "type": "object",
+                    "$ref": "#/definitions/vo.TokenStatStr"
+                },
+                "total_acc_num": {
+                    "type": "integer"
                 }
             }
         },
@@ -4231,18 +4320,18 @@
                     "date": {
                         "type": "string"
                     },
-                  "delegator_num": {
-                    "type": "integer"
-                  },
+                    "delegator_num": {
+                        "type": "integer"
+                    },
                     "num": {
                         "type": "integer"
                     },
-                  "token_stat": {
-                    "type": "object",
-                    "$ref": "#/definitions/vo.TokenStatStr"
-                  },
-                  "total_acc_num": {
-                    "type": "integer"
+                    "token_stat": {
+                        "type": "object",
+                        "$ref": "#/definitions/vo.TokenStatStr"
+                    },
+                    "total_acc_num": {
+                        "type": "integer"
                     }
                 }
             }
@@ -4381,23 +4470,23 @@
                 }
             }
         },
-      "vo.ValidatorCommissionInfo": {
-        "type": "object",
-        "properties": {
-          "bonded_tokens": {
-            "type": "string"
-          },
-          "commission_rate": {
-            "type": "string"
-          },
-          "moniker": {
-            "type": "string"
-          },
-          "operator_address": {
-            "type": "string"
-          }
-        }
-      },
+        "vo.ValidatorCommissionInfo": {
+            "type": "object",
+            "properties": {
+                "bonded_tokens": {
+                    "type": "string"
+                },
+                "commission_rate": {
+                    "type": "string"
+                },
+                "moniker": {
+                    "type": "string"
+                },
+                "operator_address": {
+                    "type": "string"
+                }
+            }
+        },
         "vo.ValidatorDepositTx": {
             "type": "object",
             "properties": {
