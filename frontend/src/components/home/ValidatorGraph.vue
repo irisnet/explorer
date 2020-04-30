@@ -484,7 +484,7 @@
 			this.getData();
 			this.timer = setInterval(() => {
 				this.getData();
-			},60000);
+			},300000);
 			window.addEventListener("scroll", this.handleScroll,true)
 		},
 		methods:{
