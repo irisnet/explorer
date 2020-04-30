@@ -484,7 +484,7 @@
 			this.getData();
 			this.timer = setInterval(() => {
 				this.getData();
-			},60000);
+			},300000);
 			window.addEventListener("scroll", this.handleScroll,true)
 		},
 		methods:{
@@ -707,7 +707,7 @@
 					}else {
 						nodeLinksArray.push({
 							source: item['src-chain-id'],
-							target: item['src-chain-id'],
+							target: item['dst-chain-id'],
 							//连接线的样式设置
 							lineStyle:{
 								color: 'rgba(112, 198, 199, 1)',
