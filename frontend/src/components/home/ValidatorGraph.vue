@@ -69,7 +69,7 @@
 					<span @click="refreshPage()">Please refresh <i class="iconfont iconshuaxin" ></i></span>
 				</div>
 				<div class="hover_up_content" v-if="flShowRevertIcon" v-show="flShowHoverUp" @click="scrollBottom()">
-					<img style="width: 0.16rem" src="../../assets/hover_up.gif" alt="">
+					<img style="width: 0.16rem;height:0.22rem;" src="../../assets/hover_up.gif" alt="">
 				</div>
 			</div>
 			<app-download></app-download>
@@ -665,12 +665,12 @@
 				//最大像素点与最小像素点的差值66  最小的symbolSize 为 8 * 节点递增的比例
 				let symbolSizeRule = 30;
 				//数据结果展示
-				let minSymbolSizeRule = Math.floor(20 / (Number(symbolSizeRule) / this.data.nodes.length))
+				let minSymbolSizeRule = Math.floor(8 / (Number(symbolSizeRule) / this.data.nodes.length))
 				for(let i in this.copyData.nodes){
 					let connectionValue = this.copyData.nodes[i].connections;
 					nodeArray.push({
 						name: this.copyData.nodes[i]['chain-id'],
-						symbolSize: this.copyData.nodes[i].connections === 0 ? 20 : this.copyData.nodes[i].connections < minSymbolSizeRule ? minSymbolSizeRule * symbolSizeRule / this.data.nodes.length : this.copyData.nodes[i].connections * symbolSizeRule / this.data.nodes.length ,
+						symbolSize: this.copyData.nodes[i].connections === 0 ? 8 : this.copyData.nodes[i].connections < minSymbolSizeRule ? minSymbolSizeRule * symbolSizeRule / this.data.nodes.length : this.copyData.nodes[i].connections * symbolSizeRule / this.data.nodes.length,
 						label: {
 							show: false,
 							position:'right',
@@ -691,9 +691,10 @@
 					if(item.state === 'OPEN'){
 						nodeLinksArray.push({
 							source: item['src-chain-id'],
-							target: item['dst-chain-id'],
+							// target: item['dst-chain-id'],
+							target: 'pylonchain',
 							lineStyle:{
-								color: '#70C6C7',
+								color: 'rgba(112, 198, 199, 1)',
 							},
 							emphasis: {
 								lineStyle: {
