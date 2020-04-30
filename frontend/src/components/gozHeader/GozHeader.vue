@@ -7,7 +7,7 @@
 					<span class="iconfont" :class="currentNetworkClass"></span>
 				</div>
 				<div class="goz_content_network_state">
-					<span>Network State</span>
+					<span>GoZ Network State Visualization</span>
 				</div>
 				<div class="menu_content" @click="flShowMobileMenu">
 					<img src="../../assets/menu.png" alt="">
@@ -280,7 +280,7 @@
 			}
 		}
 	}
-	@media (max-width: 1020px) {
+	@media (max-width: 1140px) {
 		.goz_container{
 			.goz_content_wrap{
 				flex-direction: column;
