@@ -599,7 +599,6 @@
 							item.isDelete = false;
 							item.color = this.color[index]
 						});
-						//TODO  CESHI
 						this.copyData = JSON.parse(JSON.stringify(this.data));
 						this.colorUseCopyData = JSON.parse(JSON.stringify(this.data));
 						this.initLegend();
@@ -673,7 +672,7 @@
 					let connectionValue = this.copyData.nodes[i].connections;
 					nodeArray.push({
 						name: this.copyData.nodes[i]['chain-id'],
-						symbolSize: this.copyData.nodes[i].connections === 0 ? 20 :  this.copyData.nodes[i].connections * (symbolSizeRule / this.maxLinks) + 20,
+						symbolSize: this.copyData.nodes[i].connections === 0 ? 10 :  this.copyData.nodes[i].connections * (symbolSizeRule / this.maxLinks) + 20,
 						label: {
 							show: false,
 							position:'right',
