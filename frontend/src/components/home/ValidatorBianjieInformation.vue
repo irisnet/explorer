@@ -40,7 +40,7 @@
 		components: {MClip},
 		data() {
 			return {
-				url:'https://stage.irisnet.org',
+				url:'https://www.irisnet.org/',
 				bondedToken:'/bondedTokens',
 				signedBlocksWindow:	'/signedBlocksWindow',
 				missedBlockCounter:'/missedBlockCounter',
