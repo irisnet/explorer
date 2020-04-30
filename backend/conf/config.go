@@ -52,6 +52,8 @@ const (
 	KeyCronTimeStaticDataDay     = "CronTimeStaticDataDay"
 	KeyCronTimeStaticDataMonth   = "CronTimeStaticDataMonth"
 	KeyCaculateDebug             = "CaculateDebug"
+	KeyCaculateStartDate         = "CaculateStartDate" //yyyy-mm-ddThh:mm:ss
+	KeyCaculateEndDate           = "CaculateEndDate"   //yyyy-mm-ddThh:mm:ss
 	KeyFoundationDelegatorAddr   = "FoundationDelegatorAddr"
 
 	EnvironmentDevelop = "dev"
@@ -110,6 +112,8 @@ func init() {
 		CronTimeStaticDelegatorMonth: getEnvInt(KeyCronTimeStaticDataMonth, DefaultEnvironment),
 		CronTimeStaticValidatorMonth: getEnvInt(KeyCronTimeStaticDataMonth, DefaultEnvironment),
 		FoundationDelegatorAddr:      getEnv(KeyFoundationDelegatorAddr, DefaultEnvironment),
+		CaculateStartDate:            getEnv(KeyCaculateStartDate, DefaultEnvironment),
+		CaculateEndDate:              getEnv(KeyCaculateEndDate, DefaultEnvironment),
 	}
 	if "true" == strings.ToLower(getEnv(KeyCaculateDebug, DefaultEnvironment)) {
 		server.CaculateDebug = true
@@ -139,21 +143,21 @@ func init() {
 
 func loadDefault() {
 	defaultConfig[EnvironmentDevelop] = map[string]string{
-		KeyDbAddr:         "localhost:27018",
-		KeyDATABASE:       "sync-iris",
-		KeyDbUser:         "iris",
-		KeyDbPwd:          "irispassword",
-		KeyDbPoolLimit:    "4096",
-		KeyServerPort:     "8080",
-		KeyAddrHubLcd:     "http://irisnet-lcd.dev.bianjie.ai",
-		KeyAddrHubNode:    "http://irisnet-rpc.dev.rainbow.one",
-		KeyAddrFaucet:     "http://192.168.150.7:30200",
-		KeyChainId:        "rainbow-dev",
-		KeyApiVersion:     "v0.6.5",
-		KeyMaxDrawCnt:     "10",
-		KeyPrefixAccAddr:  "faa",
-		KeyPrefixAccPub:   "fap",
-		KeyPrefixValAddr:  "fva",
+		KeyDbAddr:        "192.168.150.31:27017",
+		KeyDATABASE:      "sync-iris",
+		KeyDbUser:        "iris",
+		KeyDbPwd:         "irispassword",
+		KeyDbPoolLimit:   "4096",
+		KeyServerPort:    "8080",
+		KeyAddrHubLcd:    "http://irisnet-lcd.dev.bianjie.ai",
+		KeyAddrHubNode:   "http://irisnet-rpc.dev.rainbow.one",
+		KeyAddrFaucet:    "http://192.168.150.7:30200",
+		KeyChainId:       "rainbow-dev",
+		KeyApiVersion:    "v0.6.5",
+		KeyMaxDrawCnt:    "10",
+		KeyPrefixAccAddr: "faa",
+		KeyPrefixAccPub:  "fap",
+		KeyPrefixValAddr: "fva",
 		KeyPrefixValPub:   "fvp",
 		KeyPrefixConsAddr: "fca",
 		KeyPrefixConsPub:  "fcp",
@@ -177,6 +181,8 @@ func loadDefault() {
 		KeyCronTimeFormatStaticDay:   "59 23 * * *", //m,h,d,m,w
 		KeyCronTimeFormatStaticMonth: "0 0 01 * *",
 		KeyCaculateDebug:             "false",
+		KeyCaculateStartDate:         "",
+		KeyCaculateEndDate:           "",
 		KeyFoundationDelegatorAddr:   "iaa1w7ewedr57z6p7f8nknmdvukfxwkwlsvfjumdts",
 	}
 }
@@ -224,6 +230,8 @@ type serverConf struct {
 	CronTimeFormatStaticDay      string
 	CronTimeFormatStaticMonth    string
 	CaculateDebug                bool
+	CaculateStartDate            string
+	CaculateEndDate              string
 	FoundationDelegatorAddr      string
 }
 
@@ -253,7 +261,7 @@ func getEnv(key string, environment string) string {
 		}
 		value = defaultConfig[environment][key]
 	}
-	if value == "" {
+	if value == "" && (key != KeyCaculateStartDate && key != KeyCaculateEndDate) {
 		logger.Panic("config must be not empty", logger.String("key", key))
 	}
 	if key == KeyDbUser || key == KeyDbPwd {
