@@ -21,7 +21,7 @@
 					<a href="https://goz.cosmos.network/3d" target="_blank">Visualizer from Cosmos Team</a>
 				</div>
 				<div class="goz_content_link_content">
-					<a href="https://goz.cosmosnetwork.dev/2020/04/14/a-whole-new-world-testnets-in-the-ibc-era/" target="_blank">GoZ Network State Visualizer</a>
+					<a href="https://goz.cosmosnetwork.dev/2020/04/14/a-whole-new-world-testnets-in-the-ibc-era/" target="_blank">GoZ Website</a>
 				</div>
 				<div class="goz_network_links_content">
 					<div class="network_container" @mouseenter="showNetWorkLogo()" @mouseleave="hideNetWorkLogo()">
@@ -280,7 +280,7 @@
 			}
 		}
 	}
-	@media (max-width: 1140px) {
+	@media (max-width: 1190px) {
 		.goz_container{
 			.goz_content_wrap{
 				flex-direction: column;
