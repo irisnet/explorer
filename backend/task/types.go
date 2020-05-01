@@ -11,6 +11,7 @@ import (
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/types"
 	"sync"
+	"encoding/json"
 )
 
 var (
@@ -107,7 +108,12 @@ func Start() {
 			waitDelegatortaskDone.Done()
 		}()
 		waitDelegatortaskDone.Wait()
-
+		bytedata, _ := json.Marshal(delegatortask.AddressCoin)
+		bytedata1, _ := json.Marshal(delegatortask.AddrPeriodCommission)
+		bytedata2, _ := json.Marshal(delegatortask.AddrTerminalCommission)
+		logger.Warn(fmt.Sprintf("AddressCoin:%v", string(bytedata)))
+		logger.Warn(fmt.Sprintf("AddrPeriodCommission:%v", string(bytedata1)))
+		logger.Warn(fmt.Sprintf("AddrTerminalCommission:%v", string(bytedata2)))
 		validatortask.SetAddressCoinMapData(delegatortask.AddressCoin, delegatortask.AddrPeriodCommission, delegatortask.AddrTerminalCommission)
 		validatortask.Start()
 	})
