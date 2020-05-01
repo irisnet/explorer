@@ -10,6 +10,7 @@ import (
 	"github.com/robfig/cron/v3"
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/types"
+	"sync"
 )
 
 var (
@@ -99,7 +100,14 @@ func Start() {
 			delegatortask.SetCaculateScope(starttime, endtime)
 			validatortask.SetCaculateScope(starttime, endtime)
 		}
-		delegatortask.Start()
+		waitDelegatortaskDone := sync.WaitGroup{}
+		waitDelegatortaskDone.Add(1)
+		go func() {
+			delegatortask.Start()
+			waitDelegatortaskDone.Done()
+		}()
+		waitDelegatortaskDone.Wait()
+
 		validatortask.SetAddressCoinMapData(delegatortask.AddressCoin, delegatortask.AddrPeriodCommission, delegatortask.AddrTerminalCommission)
 		validatortask.Start()
 	})

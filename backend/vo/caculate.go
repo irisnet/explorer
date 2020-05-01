@@ -7,40 +7,41 @@ type ExStaticMonthDataRespond struct {
 }
 
 type ExStaticDelegatorMonthVo struct {
-	Address                string  `json:"address"`
-	Date                   string  `json:"date"`
-	CaculateDate           string  `json:"caculate_date"`
-	TerminalRewards        float64 `json:"terminal_rewards"`
-	PeriodWithdrawRewards  float64 `json:"period_withdraw_rewards"`
-	PeriodIncrementRewards float64 `json:"period_increment_rewards"`
-	TerminalDelegation     float64 `json:"terminal_delegation"`
-	IncrementDelegation    float64 `json:"increment_delegation"`
-	PeriodDelegationTimes  int     `json:"period_delegation_times"`
+	Date                   string  `json:"统计月份"`
+	Address                string  `json:"委托地址"`
+	TerminalRewards        float64 `json:"期末待领取奖励"`
+	PeriodWithdrawRewards  float64 `json:"期间领取到账"`
+	PeriodIncrementRewards float64 `json:"期间奖励净增量"`
+	TerminalDelegation     float64 `json:"期末在托量"`
+	IncrementDelegation    float64 `json:"期间委托净增量"`
+	PeriodDelegationTimes  int     `json:"期间委托交易次数"`
+	CaculateDate           string  `json:"统计更新日期"`
 	//CreateAt               int64   `json:"create_at"`
 	//UpdateAt               int64   `json:"update_at"`
 }
 
 type ExStaticValidatorMonthVo struct {
-	Address                 string  `json:"address"`
-	OperatorAddress         string  `json:"operator_address"`
-	CreateValidatorHeight   int64   `json:"create_validator_height"`
-	Date                    string  `json:"date"`
-	CaculateDate            string  `json:"caculate_date"`
-	TerminalCommission      float64 `json:"terminal_commission"`
-	PeriodCommission        float64 `json:"period_commission"`
-	IncrementCommission     float64 `json:"increment_commission"`
-	TerminalDelegation      float64 `json:"terminal_delegation"`
-	IncrementDelegation     float64 `json:"increment_delegation"`
-	Tokens                  float64 `json:"tokens"` //权重排名用
-	TerminalDelegatorN      int     `json:"terminal_delegator_n"`
-	IncrementDelegatorN     int     `json:"increment_delegator_n"`
-	TerminalSelfBond        float64 `json:"terminal_self_bond"`
-	IncrementSelfBond       float64 `json:"increment_self_bond"`
-	CommissionRateMax       float64 `json:"commission_rate_max"`
-	CommissionRateMin       float64 `json:"commission_rate_min"`
-	FoundationDelegateT     float64 `json:"foundation_delegate_t"`
-	FoundationDelegateIncre float64 `json:"foundation_delegate_incre"`
-	Moniker                 string  `json:"moniker"`
+	Date                    string  `json:"统计月份"`
+	Address                 string  `json:"自委托地址"`
+	CreateValidatorHeight   int64   `json:"初始创建块高"`
+	OperatorAddress         string  `json:"验证节点运营地址"`
+	Status                  string  `json:"状态"`
+	TerminalCommission      float64 `json:"期末待领取佣金"`
+	PeriodCommission        float64 `json:"期间领取到账"`
+	IncrementCommission     float64 `json:"期间佣金净增量"`
+	TerminalDelegation      float64 `json:"期末受托数量"`
+	IncrementDelegation     float64 `json:"期间受托净增量"`
+	Tokens                  float64 `json:"期末权重"` //权重排名用
+	TerminalDelegatorN      int     `json:"期末受托地址数"`
+	IncrementDelegatorN     int     `json:"期间受托地址净增量"`
+	TerminalSelfBond        float64 `json:"期末自托数量"`
+	IncrementSelfBond       float64 `json:"期间自托净增量"`
+	CommissionRateMax       float64 `json:"期间最高佣金率"`
+	CommissionRateMin       float64 `json:"期间最低佣金率"`
+	FoundationDelegateT     float64 `json:"期末受基金会委托量"`
+	FoundationDelegateIncre float64 `json:"期间受基金会委托净增量"`
+	Moniker                 string  `json:"别名"`
+	CaculateDate            string  `json:"统计更新日期"`
 	//CreateAt                int64   `json:"create_at"`
 	//UpdateAt                int64   `json:"update_at"`
 }
