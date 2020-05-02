@@ -17,7 +17,7 @@ func (s CaculateService) GetDelegatorCaculateMonth(cond bson.M, page, size int, 
 	datas, total, err := delegatorMonthModel.List(cond, page, size, istotal)
 	res := make([]vo.ExStaticDelegatorMonthVo, 0, len(datas))
 	for _, val := range datas {
-		item := loadFromDelModel(val)
+		item := LoadFromDelModel(val)
 		res = append(res, item)
 	}
 	return res, total, err
@@ -27,13 +27,13 @@ func (s CaculateService) GetValidatorCaculateMonth(cond bson.M, page, size int, 
 	datas, total, err := validatorMonthModel.List(cond, page, size, istotal)
 	res := make([]vo.ExStaticValidatorMonthVo, 0, len(datas))
 	for _, val := range datas {
-		item := loadFromValModel(val)
+		item := LoadFromValModel(val)
 		res = append(res, item)
 	}
 	return res, total, err
 }
 
-func loadFromDelModel(model document.ExStaticDelegatorMonth) vo.ExStaticDelegatorMonthVo {
+func LoadFromDelModel(model document.ExStaticDelegatorMonth) vo.ExStaticDelegatorMonthVo {
 	ret := vo.ExStaticDelegatorMonthVo{
 		Address:                model.Address,
 		Date:                   model.Date,
@@ -54,7 +54,7 @@ func coverAmount(coin document.Coin) float64 {
 	}
 	return coin.Amount
 }
-func loadFromValModel(model document.ExStaticValidatorMonth) vo.ExStaticValidatorMonthVo {
+func LoadFromValModel(model document.ExStaticValidatorMonth) vo.ExStaticValidatorMonthVo {
 	coverFloat64 := func(data string) float64 {
 		ret, _ := strconv.ParseFloat(data, 64)
 		return ret

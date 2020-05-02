@@ -175,8 +175,8 @@ func loadDefault() {
 		KeyCronTimeProposalVoters:      "60",
 		KeyCronTimeValidatorIcons:      "43200",
 		KeyCronTimeValidatorStaticInfo: "300",
-		KeyCronTimeStaticDataDay:       "86400",
-		KeyCronTimeStaticDataMonth:     "2592000",
+		KeyCronTimeStaticDataDay:       "86400",   //24*3600
+		KeyCronTimeStaticDataMonth:     "2419200", //28*24*3600
 
 		KeyCronTimeFormatStaticDay:   "59 23 * * *", //m,h,d,m,w
 		KeyCronTimeFormatStaticMonth: "0 0 01 * *",
