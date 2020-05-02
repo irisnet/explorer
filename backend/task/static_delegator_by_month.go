@@ -249,17 +249,20 @@ func (task *StaticDelegatorByMonthTask) getPeriodTxByAddress(starttime, endtime 
 	}
 	var coinflow []lcd.BlockCoinFlowVo
 	group := sync.WaitGroup{}
+	chanLimit := make(chan bool, 50)
 	for _, tx := range txs {
 		switch tx.Type {
 		case types.TxTypeWithdrawDelegatorReward, types.TxTypeWithdrawDelegatorRewardsAll, types.TxTypeWithdrawValidatorRewardsAll,
 			types.TxTypeBeginRedelegate, types.TxTypeStakeBeginUnbonding, types.TxTypeStakeDelegate:
+			chanLimit <- true
 			group.Add(1)
-			go func(txHash string) {
+			go func(txHash string, limit chan bool) {
 				result := lcd.BlockCoinFlow(txHash)
 				coinflow = append(coinflow, result)
 				//fmt.Println(txHash)
+				<-limit
 				group.Done()
-			}(tx.TxHash)
+			}(tx.TxHash, chanLimit)
 		}
 	}
 	group.Wait()
