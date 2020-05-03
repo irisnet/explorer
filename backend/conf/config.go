@@ -51,7 +51,7 @@ const (
 	KeyCronTimeFormatStaticMonth = "CronTimeFormatStaticMonth"
 	KeyCronTimeStaticDataDay     = "CronTimeStaticDataDay"
 	KeyCronTimeStaticDataMonth   = "CronTimeStaticDataMonth"
-	KeyNetreqLimitMax            = "ChanLimitMax"
+	KeyNetreqLimitMax            = "NetreqLimitMax"
 	KeyCaculateDebug             = "CaculateDebug"
 	KeyCaculateStartDate         = "CaculateStartDate" //yyyy-mm-ddThh:mm:ss
 	KeyCaculateEndDate           = "CaculateEndDate"   //yyyy-mm-ddThh:mm:ss
@@ -145,24 +145,24 @@ func init() {
 
 func loadDefault() {
 	defaultConfig[EnvironmentDevelop] = map[string]string{
-		KeyDbAddr:        "192.168.150.31:27017",
-		KeyDATABASE:      "sync-iris",
-		KeyDbUser:        "iris",
-		KeyDbPwd:         "irispassword",
-		KeyDbPoolLimit:   "4096",
-		KeyServerPort:    "8080",
-		KeyAddrHubLcd:    "http://irisnet-lcd.dev.bianjie.ai",
-		KeyAddrHubNode:   "http://irisnet-rpc.dev.rainbow.one",
-		KeyAddrFaucet:    "http://192.168.150.7:30200",
-		KeyChainId:       "rainbow-dev",
-		KeyApiVersion:    "v0.6.5",
-		KeyMaxDrawCnt:    "10",
-		KeyPrefixAccAddr: "faa",
-		KeyPrefixAccPub:  "fap",
-		KeyPrefixValAddr: "fva",
-		KeyPrefixValPub:   "fvp",
-		KeyPrefixConsAddr: "fca",
-		KeyPrefixConsPub:  "fcp",
+		KeyDbAddr:         "35.194.201.136:27017",
+		KeyDATABASE:       "sync-iris",
+		KeyDbUser:         "irisreader",
+		KeyDbPwd:          "4MOoKh3Y",
+		KeyDbPoolLimit:    "4096",
+		KeyServerPort:     "8080",
+		KeyAddrHubLcd:     "http://v2.irisnet-lcd.rainbow.one",
+		KeyAddrHubNode:    "http://35.220.142.249:26657",
+		KeyAddrFaucet:     "http://192.168.150.7:30200",
+		KeyChainId:        "rainbow",
+		KeyApiVersion:     "v0.6.5",
+		KeyMaxDrawCnt:     "10",
+		KeyPrefixAccAddr:  "iaa",
+		KeyPrefixAccPub:   "iap",
+		KeyPrefixValAddr:  "iva",
+		KeyPrefixValPub:   "ivp",
+		KeyPrefixConsAddr: "ica",
+		KeyPrefixConsPub:  "icp",
 		KeyShowFaucet:     "1",
 		KeyCurEnv:         "dev",
 		KeyInitialSupply:  InitialSupply,
