@@ -51,6 +51,7 @@ const (
 	KeyCronTimeFormatStaticMonth = "CronTimeFormatStaticMonth"
 	KeyCronTimeStaticDataDay     = "CronTimeStaticDataDay"
 	KeyCronTimeStaticDataMonth   = "CronTimeStaticDataMonth"
+	KeyNetreqLimitMax            = "ChanLimitMax"
 	KeyCaculateDebug             = "CaculateDebug"
 	KeyCaculateStartDate         = "CaculateStartDate" //yyyy-mm-ddThh:mm:ss
 	KeyCaculateEndDate           = "CaculateEndDate"   //yyyy-mm-ddThh:mm:ss
@@ -114,6 +115,7 @@ func init() {
 		FoundationDelegatorAddr:      getEnv(KeyFoundationDelegatorAddr, DefaultEnvironment),
 		CaculateStartDate:            getEnv(KeyCaculateStartDate, DefaultEnvironment),
 		CaculateEndDate:              getEnv(KeyCaculateEndDate, DefaultEnvironment),
+		NetreqLimitMax:               getEnvInt(KeyNetreqLimitMax, DefaultEnvironment),
 	}
 	if "true" == strings.ToLower(getEnv(KeyCaculateDebug, DefaultEnvironment)) {
 		server.CaculateDebug = true
@@ -183,6 +185,7 @@ func loadDefault() {
 		KeyCaculateDebug:             "false",
 		KeyCaculateStartDate:         "",
 		KeyCaculateEndDate:           "",
+		KeyNetreqLimitMax:            "20",
 		KeyFoundationDelegatorAddr:   "iaa1w7ewedr57z6p7f8nknmdvukfxwkwlsvfjumdts",
 	}
 }
@@ -232,6 +235,7 @@ type serverConf struct {
 	CaculateDebug                bool
 	CaculateStartDate            string
 	CaculateEndDate              string
+	NetreqLimitMax               int
 	FoundationDelegatorAddr      string
 }
 

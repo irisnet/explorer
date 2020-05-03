@@ -234,7 +234,7 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(startdate time.Time, 
 		Tokens:                  terminalval.Tokens,
 		OperatorAddress:         terminalval.OperatorAddress,
 		Status:                  terminalval.Status,
-		Date:                    fmt.Sprintf("%d.%02d", startdate.Year(), startdate.Month()),
+		Date:                    fmt.Sprintf("%d.%02d.%02d", startdate.Year(), startdate.Month(), startdate.Day()),
 		TerminalDelegation:      terminalvalDelegations,
 		TerminalDelegatorN:      terminalval.DelegatorNum,
 		TerminalSelfBond:        selfbond,
@@ -259,6 +259,7 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(startdate time.Time, 
 			item.PeriodCommission = pcommission
 		}
 	} else {
+		logger.Warn("AddressPeriodCommission have no exist.", logger.String("address", address))
 		pcommission.Denom = types.IRISAttoUint
 		item.PeriodCommission.Denom = types.IRISUint
 	}
@@ -274,6 +275,7 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(startdate time.Time, 
 			item.TerminalCommission = tcommission
 		}
 	} else {
+		logger.Warn("AddressTerminalCommission have no exist.", logger.String("address", address))
 		tcommission.Denom = types.IRISAttoUint
 		item.TerminalCommission.Denom = types.IRISUint
 	}
