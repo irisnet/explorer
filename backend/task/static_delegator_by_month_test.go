@@ -9,9 +9,9 @@ import (
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/lcd"
-	"github.com/irisnet/explorer/backend/service"
 	"gopkg.in/mgo.v2/bson"
 	"github.com/irisnet/explorer/backend/vo"
+	"github.com/irisnet/explorer/backend/service"
 	"math"
 )
 
@@ -63,7 +63,7 @@ func TestStaticDelegatorByMonthTask_Caculate(t *testing.T) {
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	endtime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT23:59:59", 2020, 4, 10), cstZone)
+	endtime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 10), cstZone)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
