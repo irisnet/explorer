@@ -4,14 +4,13 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
+	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/robfig/cron/v3"
-	"github.com/irisnet/explorer/backend/conf"
-	"github.com/irisnet/explorer/backend/types"
 	"sync"
-	"encoding/json"
 )
 
 var (
@@ -92,11 +91,11 @@ func Start() {
 		if startTime != "" && endTime != "" {
 			starttime, err := time.ParseInLocation(types.TimeLayout, startTime, cstZone)
 			if err != nil {
-				panic(fmt.Sprintf("time format [%v] is error:%v", startTime, err.Error()))
+				logger.Fatal(fmt.Sprintf("time format [%v] is error:%v", startTime, err.Error()))
 			}
 			endtime, err := time.ParseInLocation(types.TimeLayout, endTime, cstZone)
 			if err != nil {
-				panic(fmt.Sprintf("time format [%v] is error:%v", endTime, err.Error()))
+				logger.Fatal(fmt.Sprintf("time format [%v] is error:%v", endTime, err.Error()))
 			}
 			delegatortask.SetCaculateScope(starttime, endtime)
 			validatortask.SetCaculateScope(starttime, endtime)
@@ -108,13 +107,19 @@ func Start() {
 			waitDelegatortaskDone.Done()
 		}()
 		waitDelegatortaskDone.Wait()
-		bytedata, _ := json.Marshal(delegatortask.AddressCoin)
-		bytedata1, _ := json.Marshal(delegatortask.AddrPeriodCommission)
-		bytedata2, _ := json.Marshal(delegatortask.AddrTerminalCommission)
-		logger.Warn(fmt.Sprintf("AddressCoin:%v", string(bytedata)))
-		logger.Warn(fmt.Sprintf("AddrPeriodCommission:%v", string(bytedata1)))
-		logger.Warn(fmt.Sprintf("AddrTerminalCommission:%v", string(bytedata2)))
-		validatortask.SetAddressCoinMapData(delegatortask.AddressCoin, delegatortask.AddrPeriodCommission, delegatortask.AddrTerminalCommission)
+		if len(delegatortask.AddressCoin) == 0 ||
+			len(delegatortask.AddrPeriodCommission) == 0 ||
+			len(delegatortask.AddrTerminalCommission) == 0 {
+			toJson := func(obj interface{}) string {
+				return string(utils.MarshalJsonIgnoreErr(str))
+			}
+			logger.Warn("delegator rewards or commission rewards is nil",
+				logger.String("rewards", toJson(delegatortask.AddressCoin)),
+				logger.String("periodCommission", toJson(delegatortask.AddrPeriodCommission)),
+				logger.String("terminalCommission", toJson(delegatortask.AddrTerminalCommission)))
+		}
+		validatortask.SetAddressCoinMapData(delegatortask.AddressCoin, delegatortask.AddrPeriodCommission,
+			delegatortask.AddrTerminalCommission)
 		validatortask.Start()
 	})
 }

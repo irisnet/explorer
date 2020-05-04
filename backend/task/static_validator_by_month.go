@@ -1,19 +1,19 @@
 package task
 
 import (
-	"github.com/irisnet/explorer/backend/logger"
-	"github.com/irisnet/explorer/backend/utils"
-	"github.com/irisnet/explorer/backend/orm/document"
-	"gopkg.in/mgo.v2/bson"
-	"time"
-	"github.com/irisnet/explorer/backend/types"
 	"fmt"
 	"github.com/irisnet/explorer/backend/conf"
-	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/lcd"
+	"github.com/irisnet/explorer/backend/logger"
+	"github.com/irisnet/explorer/backend/orm/document"
+	"github.com/irisnet/explorer/backend/service"
+	"github.com/irisnet/explorer/backend/types"
+	"github.com/irisnet/explorer/backend/utils"
+	"gopkg.in/mgo.v2/bson"
 	"math"
-	"strings"
 	"strconv"
+	"strings"
+	"time"
 )
 
 type StaticValidatorByMonthTask struct {
@@ -36,7 +36,7 @@ func (task *StaticValidatorByMonthTask) Name() string {
 }
 func (task *StaticValidatorByMonthTask) Start() {
 	taskName := task.Name()
-	timeInterval := conf.Get().Server.CronTimeStaticValidator
+	timeInterval := conf.Get().Server.CronTimeStaticValidatorMonth
 
 	if err := tcService.runTask(taskName, timeInterval, task.DoTask); err != nil {
 		logger.Error(err.Error())
@@ -111,7 +111,7 @@ func (task *StaticValidatorByMonthTask) caculateWork() ([]document.ExStaticValid
 				//no work
 				return nil, fmt.Errorf("time hour is smaller than 1")
 			} else {
-				hour --
+				hour--
 				minute = minute - int(interval) + 60
 			}
 		} else {
@@ -177,7 +177,7 @@ func (task *StaticValidatorByMonthTask) caculateWork() ([]document.ExStaticValid
 	return res, nil
 }
 
-func (task *StaticValidatorByMonthTask) getFoundtionDelegation(datas []document.ExStaticValidator) (map[string]string) {
+func (task *StaticValidatorByMonthTask) getFoundtionDelegation(datas []document.ExStaticValidator) map[string]string {
 	//group := sync.WaitGroup{}
 	//var result []lcd.DelegationFromVal
 	//for _, val := range datas {
@@ -259,7 +259,6 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(startdate time.Time, 
 			item.PeriodCommission = pcommission
 		}
 	} else {
-		logger.Warn("AddressPeriodCommission have no exist.", logger.String("address", address))
 		pcommission.Denom = types.IRISAttoUint
 		item.PeriodCommission.Denom = types.IRISUint
 	}
@@ -275,7 +274,6 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(startdate time.Time, 
 			item.TerminalCommission = tcommission
 		}
 	} else {
-		logger.Warn("AddressTerminalCommission have no exist.", logger.String("address", address))
 		tcommission.Denom = types.IRISAttoUint
 		item.TerminalCommission.Denom = types.IRISUint
 	}
@@ -331,7 +329,7 @@ func (task *StaticValidatorByMonthTask) getFoundationDelegateIncre(foundationDel
 }
 
 func (task *StaticValidatorByMonthTask) getIncrementCommission(pcommission, terminalCommission,
-latestoneCommission document.Coin) (IncreCommission document.Coin) {
+	latestoneCommission document.Coin) (IncreCommission document.Coin) {
 	//Rcx = Rcn - Rcn-1 + Rcw
 	if latestoneCommission.Denom == types.IRISUint {
 		latestoneCommission.Amount = latestoneCommission.Amount * math.Pow10(18)
@@ -342,7 +340,7 @@ latestoneCommission document.Coin) (IncreCommission document.Coin) {
 	return
 }
 
-func (task *StaticValidatorByMonthTask) getCommissionRate(starttime, endtime time.Time, address, sorts string) (string) {
+func (task *StaticValidatorByMonthTask) getCommissionRate(starttime, endtime time.Time, address, sorts string) string {
 	cond := bson.M{
 		document.ExStaticValidatorMonthDateTag: bson.M{
 			"$gte": starttime,
