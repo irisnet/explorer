@@ -231,7 +231,7 @@ func (task *StaticDelegatorByMonthTask) getStaticDelegator(starttime time.Time, 
 
 	item := document.ExStaticDelegatorMonth{
 		Address:                terminalval.Address,
-		Date:                   fmt.Sprintf("%d.%02d", starttime.Year(), starttime.Month()),
+		Date:                   fmt.Sprintf("%d.%02d.%02d", starttime.Year(), starttime.Month(), starttime.Day()),
 		TerminalDelegation:     document.Coin{Denom: terminalval.Delegation.Denom, Amount: terminalval.Delegation.Amount},
 		PeriodDelegationTimes:  task.getPeriodDelegationTimes(terminalval.Address, txs),
 		PeriodWithdrawRewards:  periodRewards,
@@ -249,20 +249,29 @@ func (task *StaticDelegatorByMonthTask) getPeriodTxByAddress(starttime, endtime 
 	}
 	var coinflow []lcd.BlockCoinFlowVo
 	group := sync.WaitGroup{}
+	chanLimit := make(chan bool, conf.Get().Server.NetreqLimitMax)
 	for _, tx := range txs {
 		switch tx.Type {
 		case types.TxTypeWithdrawDelegatorReward, types.TxTypeWithdrawDelegatorRewardsAll, types.TxTypeWithdrawValidatorRewardsAll,
 			types.TxTypeBeginRedelegate, types.TxTypeStakeBeginUnbonding, types.TxTypeStakeDelegate:
+			chanLimit <- true
 			group.Add(1)
-			go func(txHash string) {
+			go func(txHash string, limit chan bool) {
 				result := lcd.BlockCoinFlow(txHash)
-				coinflow = append(coinflow, result)
+				if len(result.CoinFlow) > 0 {
+					coinflow = append(coinflow, result)
+				}
 				//fmt.Println(txHash)
+				<-limit
 				group.Done()
-			}(tx.TxHash)
+			}(tx.TxHash, chanLimit)
 		}
 	}
 	group.Wait()
+	if len(coinflow) == 0 {
+		logger.Warn("coinflow  from lcd is empty")
+		return nil, fmt.Errorf("coinflow  from lcd is empty")
+	}
 	task.getCoinflow(coinflow)
 
 	return txs, nil
@@ -358,6 +367,9 @@ func (task *StaticDelegatorByMonthTask) getCoinflow(blockcoinFlow []lcd.BlockCoi
 					}
 				}
 			}
+		} else {
+			logger.Warn("coinflow in getCoinflow is empty",
+				logger.String("address", delegator))
 		}
 	}
 

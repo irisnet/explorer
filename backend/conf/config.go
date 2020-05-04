@@ -51,6 +51,7 @@ const (
 	KeyCronTimeFormatStaticMonth = "CronTimeFormatStaticMonth"
 	KeyCronTimeStaticDataDay     = "CronTimeStaticDataDay"
 	KeyCronTimeStaticDataMonth   = "CronTimeStaticDataMonth"
+	KeyNetreqLimitMax            = "NetreqLimitMax"
 	KeyCaculateDebug             = "CaculateDebug"
 	KeyCaculateStartDate         = "CaculateStartDate" //yyyy-mm-ddThh:mm:ss
 	KeyCaculateEndDate           = "CaculateEndDate"   //yyyy-mm-ddThh:mm:ss
@@ -114,6 +115,7 @@ func init() {
 		FoundationDelegatorAddr:      getEnv(KeyFoundationDelegatorAddr, DefaultEnvironment),
 		CaculateStartDate:            getEnv(KeyCaculateStartDate, DefaultEnvironment),
 		CaculateEndDate:              getEnv(KeyCaculateEndDate, DefaultEnvironment),
+		NetreqLimitMax:               getEnvInt(KeyNetreqLimitMax, DefaultEnvironment),
 	}
 	if "true" == strings.ToLower(getEnv(KeyCaculateDebug, DefaultEnvironment)) {
 		server.CaculateDebug = true
@@ -143,21 +145,21 @@ func init() {
 
 func loadDefault() {
 	defaultConfig[EnvironmentDevelop] = map[string]string{
-		KeyDbAddr:        "192.168.150.31:27017",
-		KeyDATABASE:      "sync-iris",
-		KeyDbUser:        "iris",
-		KeyDbPwd:         "irispassword",
-		KeyDbPoolLimit:   "4096",
-		KeyServerPort:    "8080",
-		KeyAddrHubLcd:    "http://irisnet-lcd.dev.bianjie.ai",
-		KeyAddrHubNode:   "http://irisnet-rpc.dev.rainbow.one",
-		KeyAddrFaucet:    "http://192.168.150.7:30200",
-		KeyChainId:       "rainbow-dev",
-		KeyApiVersion:    "v0.6.5",
-		KeyMaxDrawCnt:    "10",
-		KeyPrefixAccAddr: "faa",
-		KeyPrefixAccPub:  "fap",
-		KeyPrefixValAddr: "fva",
+		KeyDbAddr:         "192.168.150.31:27017",
+		KeyDATABASE:       "sync-iris",
+		KeyDbUser:         "iris",
+		KeyDbPwd:          "irispassword",
+		KeyDbPoolLimit:    "4096",
+		KeyServerPort:     "8080",
+		KeyAddrHubLcd:     "http://irisnet-lcd.dev.bianjie.ai",
+		KeyAddrHubNode:    "http://irisnet-rpc.dev.rainbow.one",
+		KeyAddrFaucet:     "http://192.168.150.7:30200",
+		KeyChainId:        "rainbow-dev",
+		KeyApiVersion:     "v0.6.5",
+		KeyMaxDrawCnt:     "10",
+		KeyPrefixAccAddr:  "faa",
+		KeyPrefixAccPub:   "fap",
+		KeyPrefixValAddr:  "fva",
 		KeyPrefixValPub:   "fvp",
 		KeyPrefixConsAddr: "fca",
 		KeyPrefixConsPub:  "fcp",
@@ -175,14 +177,15 @@ func loadDefault() {
 		KeyCronTimeProposalVoters:      "60",
 		KeyCronTimeValidatorIcons:      "43200",
 		KeyCronTimeValidatorStaticInfo: "300",
-		KeyCronTimeStaticDataDay:       "86400",
-		KeyCronTimeStaticDataMonth:     "2592000",
+		KeyCronTimeStaticDataDay:       "86400",   //24*3600
+		KeyCronTimeStaticDataMonth:     "2419200", //28*24*3600
 
 		KeyCronTimeFormatStaticDay:   "59 23 * * *", //m,h,d,m,w
 		KeyCronTimeFormatStaticMonth: "0 0 01 * *",
 		KeyCaculateDebug:             "false",
 		KeyCaculateStartDate:         "",
 		KeyCaculateEndDate:           "",
+		KeyNetreqLimitMax:            "20",
 		KeyFoundationDelegatorAddr:   "iaa1w7ewedr57z6p7f8nknmdvukfxwkwlsvfjumdts",
 	}
 }
@@ -232,6 +235,7 @@ type serverConf struct {
 	CaculateDebug                bool
 	CaculateStartDate            string
 	CaculateEndDate              string
+	NetreqLimitMax               int
 	FoundationDelegatorAddr      string
 }
 

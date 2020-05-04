@@ -150,14 +150,18 @@ func (task StaticDelegatorTask) loadRewards(rewards utils.CoinsAsStr) []document
 //}
 
 func funcSubStr(amount1, amount2 string) *big.Rat {
-	Amount1, ok1 := new(big.Rat).SetString(amount1)
-	Amount2, ok2 := new(big.Rat).SetString(amount2)
-	if !ok1 || !ok2 {
-		logger.Error("big.Rat SetString failed in funcSubStr")
-		return nil
+	if amount1 != "" && amount2 != "" {
+		Amount1, ok1 := new(big.Rat).SetString(amount1)
+		Amount2, ok2 := new(big.Rat).SetString(amount2)
+		if !ok1 || !ok2 {
+			logger.Error("big.Rat SetString failed in funcSubStr")
+			return nil
+		}
+		value := new(big.Rat).Sub(Amount1, Amount2)
+		return value
 	}
-	value := new(big.Rat).Sub(Amount1, Amount2)
-	return value
+
+	return nil
 }
 
 func (task StaticDelegatorTask) loadDelegationsRewards(total, commission document.Rewards) []document.Rewards {

@@ -1,19 +1,19 @@
 package task
 
 import (
-	"github.com/irisnet/explorer/backend/logger"
-	"github.com/irisnet/explorer/backend/utils"
-	"github.com/irisnet/explorer/backend/orm/document"
-	"gopkg.in/mgo.v2/bson"
-	"time"
-	"github.com/irisnet/explorer/backend/types"
 	"fmt"
 	"github.com/irisnet/explorer/backend/conf"
-	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/lcd"
+	"github.com/irisnet/explorer/backend/logger"
+	"github.com/irisnet/explorer/backend/orm/document"
+	"github.com/irisnet/explorer/backend/service"
+	"github.com/irisnet/explorer/backend/types"
+	"github.com/irisnet/explorer/backend/utils"
+	"gopkg.in/mgo.v2/bson"
 	"math"
-	"strings"
 	"strconv"
+	"strings"
+	"time"
 )
 
 type StaticValidatorByMonthTask struct {
@@ -36,7 +36,7 @@ func (task *StaticValidatorByMonthTask) Name() string {
 }
 func (task *StaticValidatorByMonthTask) Start() {
 	taskName := task.Name()
-	timeInterval := conf.Get().Server.CronTimeStaticValidator
+	timeInterval := conf.Get().Server.CronTimeStaticValidatorMonth
 
 	if err := tcService.runTask(taskName, timeInterval, task.DoTask); err != nil {
 		logger.Error(err.Error())
@@ -66,6 +66,26 @@ func (task *StaticValidatorByMonthTask) SetAddressCoinMapData(rewards, pcommissi
 }
 
 func (task *StaticValidatorByMonthTask) DoTask() error {
+	res, err := task.caculateWork()
+	if err != nil {
+		return err
+	}
+	if len(res) == 0 {
+		return nil
+	}
+	for _, one := range res {
+		if err := task.mStaticModel.Save(one); err != nil {
+			logger.Error("save static validator month data error",
+				logger.String("address", one.Address),
+				logger.String("date", one.Date),
+				logger.String("err", err.Error()))
+		}
+	}
+
+	return nil
+}
+
+func (task *StaticValidatorByMonthTask) caculateWork() ([]document.ExStaticValidatorMonth, error) {
 	datetime := time.Now().In(cstZone)
 	year, month := getStartYearMonth(datetime)
 	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-01T00:00:00", year, month), cstZone)
@@ -89,9 +109,9 @@ func (task *StaticValidatorByMonthTask) DoTask() error {
 		if int64(minute) < interval {
 			if hour < 1 {
 				//no work
-				return fmt.Errorf("time hour is smaller than 1")
+				return nil, fmt.Errorf("time hour is smaller than 1")
 			} else {
-				hour --
+				hour--
 				minute = minute - int(interval) + 60
 			}
 		} else {
@@ -102,14 +122,14 @@ func (task *StaticValidatorByMonthTask) DoTask() error {
 	//find last date
 	endtime, err := document.Getdate(task.staticModel.Name(), starttime, datetime, "-"+document.ExStaticDelegatorDateTag)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	var terminalData []document.ExStaticValidator
 	if task.operatorAddress != "" {
 		data, err := task.staticModel.GetDataOneDay(endtime, task.operatorAddress)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		terminalData = append(terminalData, data)
 	} else {
@@ -118,16 +138,17 @@ func (task *StaticValidatorByMonthTask) DoTask() error {
 			logger.Error("Get GetData ByDate fail",
 				logger.String("date", endtime.String()),
 				logger.String("err", err.Error()))
-			return err
+			return nil, err
 		}
 	}
 
 	addressHeightMap, err := task.getCreateValidatorTx()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	foundtionDelegation := task.getFoundtionDelegation(terminalData)
+	res := make([]document.ExStaticValidatorMonth, 0, len(terminalData))
 
 	for _, val := range terminalData {
 		one, errf := task.getStaticValidator(starttime, val, addressHeightMap, foundtionDelegation)
@@ -145,18 +166,18 @@ func (task *StaticValidatorByMonthTask) DoTask() error {
 				datetime.Month(), datetime.Day(), datetime.Hour(), datetime.Minute(), datetime.Second())
 
 		}
-
-		if err := task.mStaticModel.Save(one); err != nil {
-			logger.Error("save static validator month data error",
-				logger.String("address", one.Address),
-				logger.String("date", one.Date),
-				logger.String("err", err.Error()))
-		}
+		res = append(res, one)
+		//if err := task.mStaticModel.Save(one); err != nil {
+		//	logger.Error("save static validator month data error",
+		//		logger.String("address", one.Address),
+		//		logger.String("date", one.Date),
+		//		logger.String("err", err.Error()))
+		//}
 	}
-	return nil
+	return res, nil
 }
 
-func (task *StaticValidatorByMonthTask) getFoundtionDelegation(datas []document.ExStaticValidator) (map[string]string) {
+func (task *StaticValidatorByMonthTask) getFoundtionDelegation(datas []document.ExStaticValidator) map[string]string {
 	//group := sync.WaitGroup{}
 	//var result []lcd.DelegationFromVal
 	//for _, val := range datas {
@@ -212,7 +233,8 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(startdate time.Time, 
 		Address:                 address,
 		Tokens:                  terminalval.Tokens,
 		OperatorAddress:         terminalval.OperatorAddress,
-		Date:                    fmt.Sprintf("%d.%02d", startdate.Year(), startdate.Month()),
+		Status:                  terminalval.Status,
+		Date:                    fmt.Sprintf("%d.%02d.%02d", startdate.Year(), startdate.Month(), startdate.Day()),
 		TerminalDelegation:      terminalvalDelegations,
 		TerminalDelegatorN:      terminalval.DelegatorNum,
 		TerminalSelfBond:        selfbond,
@@ -307,7 +329,7 @@ func (task *StaticValidatorByMonthTask) getFoundationDelegateIncre(foundationDel
 }
 
 func (task *StaticValidatorByMonthTask) getIncrementCommission(pcommission, terminalCommission,
-latestoneCommission document.Coin) (IncreCommission document.Coin) {
+	latestoneCommission document.Coin) (IncreCommission document.Coin) {
 	//Rcx = Rcn - Rcn-1 + Rcw
 	if latestoneCommission.Denom == types.IRISUint {
 		latestoneCommission.Amount = latestoneCommission.Amount * math.Pow10(18)
@@ -318,7 +340,7 @@ latestoneCommission document.Coin) (IncreCommission document.Coin) {
 	return
 }
 
-func (task *StaticValidatorByMonthTask) getCommissionRate(starttime, endtime time.Time, address, sorts string) (string) {
+func (task *StaticValidatorByMonthTask) getCommissionRate(starttime, endtime time.Time, address, sorts string) string {
 	cond := bson.M{
 		document.ExStaticValidatorMonthDateTag: bson.M{
 			"$gte": starttime,
