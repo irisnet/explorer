@@ -9,6 +9,10 @@ import (
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/lcd"
+	"gopkg.in/mgo.v2/bson"
+	"github.com/irisnet/explorer/backend/vo"
+	"github.com/irisnet/explorer/backend/service"
+	"math"
 )
 
 func TestStaticDelegatorByMonthTask_Start(t *testing.T) {
@@ -31,15 +35,15 @@ func TestStaticDelegatorByMonthTask_DoTask(t *testing.T) {
 //}
 func TestStaticDelegatorByMonthTask_getPeriodTxByAddress(t *testing.T) {
 	task := new(StaticDelegatorByMonthTask)
-	starttime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT10:06:00", 2020, 4, 29), cstZone)
+	starttime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 1), cstZone)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	endtime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT10:08:00", 2020, 4, 29), cstZone)
+	endtime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT23:59:59", 2020, 4, 10), cstZone)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	txs, err := task.getPeriodTxByAddress(starttime, endtime, "faa1eqvkfthtrr93g4p9qspp54w6dtjtrn279vcmpn")
+	txs, err := task.getPeriodTxByAddress(starttime, endtime, "")
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -47,8 +51,92 @@ func TestStaticDelegatorByMonthTask_getPeriodTxByAddress(t *testing.T) {
 	fmt.Println(task.AddressCoin)
 	fmt.Println(task.AddrPeriodCommission)
 
-	bytedata, _ := json.Marshal(txs)
+	//bytedata, _ := json.Marshal(txs)
+	//t.Log(string(bytedata))
+}
+
+func TestStaticDelegatorByMonthTask_Caculate(t *testing.T) {
+	task := new(StaticDelegatorByMonthTask)
+	serv := new(service.CaculateService)
+
+	starttime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 1), cstZone)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	endtime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 10), cstZone)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	txs, err := task.getPeriodTxByAddress(starttime, endtime, "")
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+
+	fmt.Println("txs num:", len(txs))
+	fmt.Println("Rewards:", task.AddressCoin)
+	fmt.Println("PeriodCommission:", task.AddrPeriodCommission)
+	dbstarttime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 10), cstZone)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	dbendtime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 1), cstZone)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+
+	cond := bson.M{}
+	cond["date"] = bson.M{
+		"$gte": dbstarttime,
+		"$lt":  dbendtime,
+	}
+	var delegatorMonthData []vo.ExStaticDelegatorMonthVo
+	var vaidatorMonthData []vo.ExStaticValidatorMonthVo
+	page := 1
+	limit := 100
+	for {
+		res, _, err := serv.GetDelegatorCaculateMonth(cond, page, limit, false)
+		if err != nil {
+			t.Log(err.Error())
+			break
+		}
+		delegatorMonthData = append(delegatorMonthData, res...)
+		if len(res) < limit {
+			break
+		}
+		page++
+	}
+
+	for i, val := range delegatorMonthData {
+		if data, ok := task.AddressCoin[val.Address]; ok {
+			delegatorMonthData[i].PeriodWithdrawRewards += data.Amount / math.Pow10(18)
+		}
+	}
+	bytedata, _ := json.Marshal(delegatorMonthData)
 	t.Log(string(bytedata))
+
+	page = 1
+	for {
+		res, _, err := serv.GetValidatorCaculateMonth(cond, page, limit, false)
+		if err != nil {
+			t.Log(err.Error())
+			break
+		}
+		vaidatorMonthData = append(vaidatorMonthData, res...)
+		if len(res) < limit {
+			break
+		}
+		page++
+	}
+
+	for i, val := range vaidatorMonthData {
+		if data, ok := task.AddrPeriodCommission[val.Address]; ok {
+			vaidatorMonthData[i].PeriodCommission += data.Amount / math.Pow10(18)
+		}
+	}
+	valbytedata, _ := json.Marshal(vaidatorMonthData)
+	t.Log(string(valbytedata))
+
+	//num, _ := task.getPeriodDelegationTimes(addr, txs)
 }
 
 func Test_parseCoinAmountAndUnitFromStr(t *testing.T) {
