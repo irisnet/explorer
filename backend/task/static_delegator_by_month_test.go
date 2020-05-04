@@ -9,9 +9,9 @@ import (
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/lcd"
+	"github.com/irisnet/explorer/backend/service"
 	"gopkg.in/mgo.v2/bson"
 	"github.com/irisnet/explorer/backend/vo"
-	"github.com/irisnet/explorer/backend/service"
 	"math"
 )
 
@@ -75,14 +75,9 @@ func TestStaticDelegatorByMonthTask_Caculate(t *testing.T) {
 	fmt.Println("txs num:", len(txs))
 	fmt.Println("Rewards:", task.AddressCoin)
 	fmt.Println("PeriodCommission:", task.AddrPeriodCommission)
-	dbstarttime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 10), cstZone)
-	if err != nil {
-		t.Fatal(err.Error())
-	}
-	dbendtime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 1), cstZone)
-	if err != nil {
-		t.Fatal(err.Error())
-	}
+
+	dbstarttime := fmt.Sprintf("%d.%02d.%02d", 2020, 4, 10)
+	dbendtime := fmt.Sprintf("%d.%02d.%02d", 2020, 5, 1)
 
 	cond := bson.M{}
 	cond["date"] = bson.M{
