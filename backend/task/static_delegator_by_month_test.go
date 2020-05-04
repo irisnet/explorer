@@ -75,11 +75,19 @@ func TestStaticDelegatorByMonthTask_Caculate(t *testing.T) {
 	fmt.Println("txs num:", len(txs))
 	fmt.Println("Rewards:", task.AddressCoin)
 	fmt.Println("PeriodCommission:", task.AddrPeriodCommission)
+	dbstarttime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 10), cstZone)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	dbendtime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 1), cstZone)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
 
 	cond := bson.M{}
 	cond["date"] = bson.M{
-		"$gte": starttime,
-		"$lt":  endtime,
+		"$gte": dbstarttime,
+		"$lt":  dbendtime,
 	}
 	var delegatorMonthData []vo.ExStaticDelegatorMonthVo
 	var vaidatorMonthData []vo.ExStaticValidatorMonthVo
