@@ -111,7 +111,7 @@ func Start() {
 			len(delegatortask.AddrPeriodCommission) == 0 ||
 			len(delegatortask.AddrTerminalCommission) == 0 {
 			toJson := func(obj interface{}) string {
-				return string(utils.MarshalJsonIgnoreErr(str))
+				return string(utils.MarshalJsonIgnoreErr(obj))
 			}
 			logger.Warn("delegator rewards or commission rewards is nil",
 				logger.String("rewards", toJson(delegatortask.AddressCoin)),
