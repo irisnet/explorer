@@ -1,10 +1,11 @@
 package task
 
 import (
+	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/utils"
+	"math"
 	"testing"
 	"time"
-	"github.com/irisnet/explorer/backend/orm/document"
 )
 
 func TestStaticRewardsByDayTask_Start(t *testing.T) {
@@ -80,4 +81,14 @@ func TestStaticRewardsTask_Common(t *testing.T) {
 	t.Log(today.Unix())
 	t.Log(today.In(cstZone).String())
 	t.Log(today.In(cstZone).Unix())
+}
+
+func TestStaticDelegatorTask_funcSubStr(t *testing.T) {
+	amt1 := "5846551511526896055"
+	amt2 := "5846551500047593555"
+
+	v := funcSubStr(amt1, amt2)
+	f, _ := v.Float64()
+	t.Log(f / math.Pow10(18))
+	t.Log(v.FloatString(2))
 }
