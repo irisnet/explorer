@@ -99,7 +99,7 @@ func LoadModelFromCommonTx(src document.CommonTx) (dst vo.AssetsVo) {
 	dst.Height = src.Height
 	dst.TxHash = src.TxHash
 	dst.TxStatus = utils.FailtoFailed(src.Status)
-	dst.Timestamp = src.Time
+	dst.Timestamp = src.Time.UTC()
 
 	dst.TxFee = convertModelActualFee(src.ActualFee)
 
