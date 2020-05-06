@@ -129,7 +129,7 @@ func (service *BlockService) QueryBlockInfo(height int64) vo.BlockInfo {
 
 	result.BlockHash = currentBlock.BlockMeta.BlockID.Hash
 	result.BlockHeight = currentBlock.Block.Header.Height
-	result.Timestamp = currentBlock.BlockMeta.Header.Time
+	result.Timestamp = currentBlock.BlockMeta.Header.Time.UTC()
 	result.Transactions = currentBlock.BlockMeta.Header.NumTxs
 
 	return result
