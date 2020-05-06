@@ -1031,7 +1031,7 @@ func (s *ProposalService) buildTx(txs []document.CommonTx) []vo.Tx {
 			From:      v.From,
 			Amount:    coinsAsUtils,
 			Type:      v.Type,
-			Timestamp: v.Time,
+			Timestamp: v.Time.UTC(),
 		}
 		valaddr := utils.Convert(conf.Get().Hub.Prefix.ValAddr, v.From)
 		validator, err := lcd.Validator(valaddr)
@@ -1063,7 +1063,7 @@ func (s *ProposalService) buildVoteTxs(txs []document.CommonTx, msgs map[string]
 		voteTx := vo.VoteTx{
 			Voter:     tx.From,
 			TxHash:    tx.TxHash,
-			Timestamp: tx.Time,
+			Timestamp: tx.Time.UTC(),
 			Height:    tx.Height,
 		}
 		if option, ok := msgs[tx.TxHash]; ok {
