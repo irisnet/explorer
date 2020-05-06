@@ -129,7 +129,7 @@ func (service *BlockService) QueryBlockInfo(height int64) vo.BlockInfo {
 
 	result.BlockHash = currentBlock.BlockMeta.BlockID.Hash
 	result.BlockHeight = currentBlock.Block.Header.Height
-	result.Timestamp = currentBlock.BlockMeta.Header.Time
+	result.Timestamp = currentBlock.BlockMeta.Header.Time.UTC()
 	result.Transactions = currentBlock.BlockMeta.Header.NumTxs
 
 	return result
@@ -233,7 +233,7 @@ func (service *BlockService) QueryList(page, size int) vo.BlockForListRespond {
 			ValidatorNumForHeight:   len(block.Validators),
 			PrecommitVotingPower:    precommitVotingPower,
 			VotingPowerForHeight:    votingPower,
-			Timestamp:               block.Time,
+			Timestamp:               block.Time.UTC(),
 		}
 
 		blocksAsModel = append(blocksAsModel, tmp)
@@ -296,9 +296,9 @@ func (service *BlockService) QueryLatestHeight() (result vo.LatestHeightRespond)
 		panic(types.CodeNotFound)
 	}
 
-	blockdb,err := document.Block{}.QueryLatestBlockFromDB()
+	blockdb, err := document.Block{}.QueryLatestBlockFromDB()
 	if err != nil {
-		logger.Error("QueryLatestBlockFromDB have error",logger.String("err",err.Error()))
+		logger.Error("QueryLatestBlockFromDB have error", logger.String("err", err.Error()))
 	}
 
 	result.BlockHeightLcd = height

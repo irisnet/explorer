@@ -1025,7 +1025,7 @@ func buildBaseTx(tx vo.CommonTx) vo.BaseTx {
 		GasPrice:    tx.GasPrice,
 		Memo:        tx.Memo,
 		Log:         fetchLogMessage(tx.Log),
-		Timestamp:   tx.Time,
+		Timestamp:   tx.Time.UTC(),
 		Tags:        tx.Tags,
 	}
 	if len(tx.Signers) > 0 {
