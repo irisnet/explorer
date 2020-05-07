@@ -165,9 +165,9 @@ func (service *ProposalService) QueryVoting(id int) vo.ProposalNewStyle {
 		Title:          data.Title,
 		Type:           data.Type,
 		Status:         data.Status,
-		SubmitTime:     data.SubmitTime,
+		SubmitTime:     data.SubmitTime.UTC(),
 		DepositEndTime: data.DepositEndTime.UTC(),
-		VotingEndTime:  data.VotingEndTime,
+		VotingEndTime:  data.VotingEndTime.UTC(),
 	}
 
 	if data.Status == document.ProposalStatusVoting {
@@ -203,7 +203,7 @@ func (service *ProposalService) QueryVoting(id int) vo.ProposalNewStyle {
 			tmpVote := vo.VoteWithVoterInfo{
 				Voter:          v.Address,
 				Option:         v.Option,
-				Time:           v.Time,
+				Time:           v.Time.UTC(),
 				DelVotingPower: v.DelVotingPower,
 				ValVotingPower: v.ValVotingPower,
 			}
@@ -362,7 +362,7 @@ func getDelegationsByVoter(curValidators map[string]*vo.ValidatorGovInfo, curDel
 	curDelegators[vote.Voter] = &vo.DelegatorGovInfo{
 		Option:      vote.Option,
 		Address:     vote.Voter,
-		Time:        vote.Time,
+		Time:        vote.Time.UTC(),
 		IsValidator: false,
 	}
 	curDelegator := curDelegators[vote.Voter]
@@ -579,9 +579,9 @@ func (service *ProposalService) QueryList(page, size int, istotal bool) (resp vo
 			Title:            propo.Title,
 			Type:             propo.Type,
 			Status:           propo.Status,
-			SubmitTime:       propo.SubmitTime,
-			DepositEndTime:   propo.DepositEndTime,
-			VotingEndTime:    propo.VotingEndTime,
+			SubmitTime:       propo.SubmitTime.UTC(),
+			DepositEndTime:   propo.DepositEndTime.UTC(),
+			VotingEndTime:    propo.VotingEndTime.UTC(),
 			Votes:            tmpVoteArr,
 			TotalVotingPower: totalVotingPower,
 			FinalVotes:       finalVotes,
