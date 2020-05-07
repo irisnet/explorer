@@ -779,20 +779,21 @@
 				// 根据节点数使用不同的缩放规则
 				let zoomRule = 1,zoomSpeedRule = 0.05,setTime = 950;
 				if(nodeArray.length > 150){
-					zoomRule = 0.1;
+					zoomRule = 0.3;
 					zoomSpeedRule = 0.2;
 					setTime = 1450
 				} else if(nodeArray.length > 100 && nodeArray.length < 150){
-					zoomRule = 0.1;
+					zoomRule = 0.6;
 					zoomSpeedRule = 0.2;
 					setTime = 1250
 				}else if(nodeArray.length > 50 && nodeArray.length < 100){
 					zoomRule = 0.7;
 					zoomSpeedRule = 0.04
-					setTime = 1250
+					setTime = 950
 				}else if(nodeArray.length < 50){
 					zoomRule = 0.5;
 					zoomSpeedRule = 0.07
+					setTime = 950
 				}
 				this.$store.commit('flShowLoading',false)
 				// 渲染完成收缩图形让其在区域内全部展示
@@ -816,7 +817,7 @@
 					graphOption.series[0].force.gravity = 0.3
 					this.graphEcharts .setOption(graphOption);
 					this.flShowRevertIcon = true
-				},950)
+				},setTime)
 			},
 		}
 	}
