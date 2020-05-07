@@ -257,7 +257,7 @@ func (service *BlockService) QueryRecent() vo.BlockInfoVoRespond {
 	}
 	for _, block := range blockList {
 		result = append(result, vo.BlockInfoVo{
-			Time:   block.Time,
+			Time:   block.Time.UTC(),
 			Height: block.Height,
 			NumTxs: block.NumTxs,
 		})
@@ -268,7 +268,7 @@ func (service *BlockService) QueryRecent() vo.BlockInfoVoRespond {
 func buildBlock(block document.Block) (result vo.BlockInfoVo) {
 	result.Height = block.Height
 	result.Hash = block.Hash
-	result.Time = block.Time
+	result.Time = block.Time.UTC()
 	result.NumTxs = block.NumTxs
 	var validators []vo.ValInfo
 	for _, v := range block.Validators {
