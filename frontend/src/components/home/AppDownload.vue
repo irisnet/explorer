@@ -72,7 +72,7 @@
 <style scoped lang="scss">
 	.app_download_container{
 		width: 100%;
-		margin-top: 0.4rem;
+		padding-top: 0.4rem;
 		.app_download_wrap{
 			width: 100%;
 			.app_download_title{

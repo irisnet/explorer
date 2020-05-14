@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 Vue.use(Router);
 import Home from "./components/home/Home.vue"
+import DownlodaGozWallet from "./components/home/GozWalletDownload.vue"
 const router = new Router({
   routes: [
     // {
@@ -12,7 +13,10 @@ const router = new Router({
       path: '/',
       component: Home,
     },
-
+    {
+      path: '/download-rainbowgoz',
+      component: DownlodaGozWallet,
+    },
     {
       path: "*",
       redirect: '/',
