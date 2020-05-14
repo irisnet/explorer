@@ -98,7 +98,6 @@
 		},
 		computed:{
 			changeRouter(){
-				console.log(this.$route,"路由信息")
 				if(this.$route.path === '/'){
 					return  true
 				}else {
