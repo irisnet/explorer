@@ -6,8 +6,11 @@
 					<a @click="$uMeng.push('GoZ_IRISplorer','click')" href="https://www.irisplorer.io/#/home" target="_blank"><img src="../../assets/logo.png" alt=""></a>
 					<span class="iconfont" :class="currentNetworkClass"></span>
 				</div>
-				<div class="goz_content_network_state">
-					<span>GoZ Network State Visualizer</span>
+				<div class="goz_content_network_state" :class="changeRouter ? 'active_border_bottom' :'unActive_border_bottom'">
+					<span><router-link :to="`/`">GoZ Network State Visualizer</router-link></span>
+				</div>
+				<div class="goz_content_network_state" :class="changeRouter ? 'unActive_border_bottom' :'active_border_bottom' ">
+					<span><router-link :to="`/download-rainbowgoz`">IBC-GoZ  Wallet</router-link></span>
 				</div>
 				<div class="menu_content" @click="flShowMobileMenu">
 					<img src="../../assets/menu.png" alt="">
@@ -38,6 +41,12 @@
 				</div>
 			</div>
 			<ul class="goz_mobile_content" v-show="isShowMobileMenu">
+				<li class="goz_mobile_link_item">
+					<router-link :to="`/`">GoZ Network State Visualizer</router-link>
+				</li>
+				<li class="goz_mobile_link_item">
+					<router-link :to="`/download-rainbowgoz`">IBC-GoZ  Wallet</router-link>
+				</li>
 				<li class="goz_mobile_link_item">
 					<a href="https://goz.cosmosnetwork.dev/2020/04/14/a-whole-new-world-testnets-in-the-ibc-era/" target="_blank">GoZ Website</a>
 				</li>
@@ -86,6 +95,15 @@
 		},
 		mounted(){
 			this.getConfig();
+		},
+		computed:{
+			changeRouter(){
+				if(this.$route.path === '/'){
+					return  true
+				}else {
+					return  false
+				}
+			}
 		},
 		methods:{
 			showNetworkToggle(){
@@ -201,11 +219,27 @@
 				.goz_content_network_state{
 					margin-left: 0.4rem;
 					span{
-						font-size: 0.14rem;
-						line-height: 0.16rem;
-						box-sizing: border-box;
-						padding-bottom: 0.15rem;
-						border-bottom: 0.02rem solid #fff;
+						a{
+							color: #fff !important;
+							font-size: 0.14rem;
+							line-height: 0.16rem;
+							box-sizing: border-box;
+							padding-bottom: 0.15rem;
+						}
+					}
+				}
+				.active_border_bottom{
+					span{
+						a{
+							border-bottom: 0.02rem solid #fff;
+						}
+					}
+				}
+				.unActive_border_bottom{
+					span{
+						a{
+							border-bottom: 0.02rem solid transparent;
+						}
 					}
 				}
 			}
@@ -280,7 +314,7 @@
 			}
 		}
 	}
-	@media (max-width: 1190px) {
+	@media (max-width: 1230px) {
 		.goz_container{
 			.goz_content_wrap{
 				flex-direction: column;
@@ -290,6 +324,7 @@
 					width: 100%;
 					justify-content: space-between;
 					.menu_content{
+						cursor: pointer;
 						display: block;
 						width: 0.25rem;
 						height: 0.25rem;
@@ -336,7 +371,7 @@
 					z-index: 10;
 					.goz_mobile_link_item{
 						background: rgba(255,255,255,0.1);
-						padding: 0.05rem 0.15rem;
+						padding: 0.05rem 0.2rem;
 						font-size: 0.14rem;
 						a{
 							color: #fff !important;
@@ -344,7 +379,7 @@
 					}
 					.goz_mobile_net_work_content{
 						box-sizing: border-box;
-						padding: 0.05rem 0.15rem;
+						padding: 0.05rem 0.2rem;
 						background: rgba(255,255,255,0.1);
 						.goz_mobile_net_work_wrap{
 							display: flex;
@@ -451,7 +486,7 @@
 					z-index: 10;
 					.goz_mobile_link_item{
 						background: rgba(255,255,255,0.1);
-						padding: 0.05rem 0.15rem;
+						padding: 0.05rem 0.2rem;
 						font-size: 0.14rem;
 						a{
 							color: #fff !important;
