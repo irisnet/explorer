@@ -7,7 +7,24 @@
 					<h4 class="app_download_goz_title">IBC-GoZ Version</h4>
 					<p class="app_download_goz_doc">Come experience the future IBC cross-chain wallet</p>
 					<div class="app_download_link_content">
-						<p class="app_download_goz_link_title">COMING SOON.</p>
+<!--						<p class="app_download_goz_link_title">COMING SOON.</p>-->
+						<a @click="$uMeng.push('RainbowIBC-GoZ','下载','安卓','统计从GoZ浏览器下载的安卓')" href="https://d.rainbow.one/stage/rainbow-latest.apk"  target="_blank"  v-if="isShowAndroid || !isMobile">
+							<div class="app_download_android_content">
+								<img src="../../assets/android_apk.png" alt="">
+							</div>
+						</a>
+						<a @click="$uMeng.push('RainbowIBC-GoZ','下载','iOS','统计从GoZ浏览器下载的iOS')" href="https://testflight.apple.com/join/4K1dJKxe" target="_blank"  v-if="isShowIphone || !isMobile">
+							<div class="app_download_ios_content">
+								<img src="../../assets/ios_testflight.png" alt="">
+							</div>
+						</a>
+						<div class="app_download_qr_content" v-if="!isMobile">
+							<img src="../../assets/scan_icon.png" alt="">
+							<div class="qr_content">
+								<img src="../../assets/goz_rainbow_qr.png" alt="">
+								<span class="tooltip_content">Scan to download</span>
+							</div>
+						</div>
 <!--						<p class="app_download_goz_link_content">Expected to be online on May 1</p>-->
 					</div>
 				</div>
@@ -118,6 +135,95 @@
 							line-height: 0.18rem;
 							color: rgba(55, 124, 248, 1);
 						}
+						
+						display: flex;
+						margin-top: 0.2rem;
+						a{
+							.app_download_android_content{
+								margin-right: 0.2rem;
+								background: #fff;
+								width: 1.6rem;
+								height: 0.35rem;
+								box-sizing: border-box;
+								padding: 0.07rem 0;
+								display: flex;
+								align-content: center;
+								justify-content: center;
+								border-radius: 0.04rem;
+								img{
+									width: 0.91rem;
+									height:0.21rem;
+								}
+							}
+						}
+						a{
+							.app_download_ios_content{
+								background: #fff;
+								width: 1.6rem;
+								height: 0.35rem;
+								box-sizing: border-box;
+								padding: 0.07rem 0;
+								display: flex;
+								align-content: center;
+								justify-content: center;
+								border-radius: 0.04rem;
+								img{
+									width: 0.82rem;
+									height:0.21rem;
+								}
+							}
+						}
+						.app_download_qr_content{
+							cursor: pointer;
+							width: 0.35rem;
+							height: 0.35rem;
+							background: #fff;
+							margin-left: 0.2rem;
+							border-radius: 0.04rem;
+							box-sizing: border-box;
+							padding: 0.05rem;
+							position: relative;
+							z-index: 5;
+							img{
+								width: 100%;
+								height: 100%;
+							}
+							&:hover{
+								.qr_content{
+									display: block;
+								}
+							}
+							.qr_content{
+								display: none;
+								background: #fff;
+								margin-top: 0.1rem;
+								position: absolute;
+								width: 1.4rem;
+								height: 1.55rem;
+								border-radius: 0.04rem;
+								margin-left: 50%;
+								transform: translateX(-50%);
+								text-align: center;
+								img{
+									margin-top: 0.1rem;
+									width: 1.2rem;
+									height:1.2rem;
+								}
+								.tooltip_content{
+									font-size: 0.14rem;
+								}
+							}
+							.qr_content::before {
+								width: 0;
+								content: '';
+								display: block;
+								border: 6px solid transparent;
+								border-bottom-color: #ffffff;
+								margin-top: -12px;
+								margin-left: 48%;
+								transform: translateX(-50%);
+							}
+						}
 					}
 				}
 				.app_download_mainnet_content{
@@ -207,9 +313,9 @@
 								transform: translateX(-50%);
 								text-align: center;
 								img{
-									margin-top: 0.02rem;
-									width: 1.3rem;
-									height:1.3rem;
+									margin-top: 0.1rem;
+									width: 1.2rem;
+									height:1.2rem;
 								}
 								.tooltip_content{
 									font-size: 0.14rem;
