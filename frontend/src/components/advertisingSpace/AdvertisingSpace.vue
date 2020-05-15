@@ -40,7 +40,7 @@
 					 {
 						 id:1,
 						 href:'https://ibc-goz.irisplorer.io/#/download-rainbowgoz',
-						 src:require("../../assets/advertising_space_img/advertising_space.png"),
+						 src:require("../../assets/advertising_space_img/goz_wallet_1280.jpg"),
 						 className:'goz_wallet_class'
 					 }
 				 ]
