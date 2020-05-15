@@ -8,7 +8,7 @@
 					<p class="app_download_goz_doc">Come experience the future IBC cross-chain wallet</p>
 					<div class="app_download_link_content">
 <!--						<p class="app_download_goz_link_title">COMING SOON.</p>-->
-						<a @click="$uMeng.push('RainbowIBC-GoZ','下载','安卓','统计从GoZ浏览器下载的安卓')" href="https://d.rainbow.one/stage/rainbow-latest.apk"  target="_blank"  v-if="isShowAndroid || !isMobile">
+						<a @click="$uMeng.push('RainbowIBC-GoZ','下载','安卓','统计从GoZ浏览器下载的安卓')" href="https://rb-app-stage.oss-cn-shanghai.aliyuncs.com/rainbow-latest.apk"  target="_blank"  v-if="isShowAndroid || !isMobile">
 							<div class="app_download_android_content">
 								<img src="../../assets/android_apk.png" alt="">
 							</div>
