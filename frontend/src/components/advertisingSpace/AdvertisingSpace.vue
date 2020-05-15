@@ -1,10 +1,13 @@
 <template>
 	<div class="advertising_space_container" :class="pageClass === 'txDetail' ? 'tx_detail_class' :'' ">
-		<div class="advertising_space_content">
-			<a href="https://ibc-goz.irisplorer.io/#/" target="_blank" @click="$uMeng.push('HomeOverview_Banner','click')">
-				<img class="advertising_space_img_content" src="../../assets/advertising_space_img/irisnet-goz-1280.jpg" alt="">
-				<div class="advertising_vote_btn"></div>
-			</a>
+		<div class="swiper_container">
+			<swiper ref="mySwiper" :options="swiperOption"  class="my-swipe" v-if="true">
+				<swiper-slide v-for="item in swiperList" :key="item.id" class="swipe_slider">
+					<a :href="item.href" target="_blank" class="swipe_slider_link">
+						<img :src="item.src" :class="item.className">
+					</a>
+				</swiper-slide>
+			</swiper>
 		</div>
 	</div>
 </template>
@@ -16,57 +19,119 @@
 				pageClass: {
 					type: String
 				},
-			}
+			},
+		data() {
+			 return {
+				 swiperOption:{
+					 loop:true,
+					 autoplay: {
+						 delay: 3000,
+					 },
+					 speed: 300,
+					 // direction : 'vertical',
+				 },
+				 swiperList:[
+					 {
+					 	 id:0,
+						 href:'https://ibc-goz.irisplorer.io/#/',
+						 src:require("../../assets/advertising_space_img/irisnet-goz-1280.jpg"),
+						 className:'goz_explorer_class'
+					 },
+					 {
+						 id:1,
+						 href:'https://ibc-goz.irisplorer.io/#/download-rainbowgoz',
+						 src:require("../../assets/advertising_space_img/advertising_space.png"),
+						 className:'goz_wallet_class'
+					 }
+				 ]
+			 }
+		},
+		computed: {
+			mySwiper() {
+				return this.$refs.mySwiper.swiper
+			},
+			
+		},
 	}
 </script>
 
 <style scoped lang="scss">
 	.advertising_space_container{
 		padding-top: 0.2rem;
-		.advertising_space_content{
+		.swiper_container{
 			max-width: 12.4rem;
 			margin: 0 auto;
-			.advertising_space_img_content{
-				width: 100%;
-				height: 1rem;
-				display: inline-block;
-				content: url("../../assets/advertising_space_img/irisnet-goz-1280.jpg");
+			.my-swipe{
+				.swipe_slider{
+					.swipe_slider_link{
+						.goz_explorer_class{
+							width: 100%;
+							content:url("../../assets/advertising_space_img/irisnet-goz-1280.jpg")
+						}
+						.goz_wallet_class{
+							width: 100%;
+							content:url("../../assets/advertising_space_img/goz_wallet_1280.jpg")
+						}
+					}
+				}
 			}
 		}
 	}
 	.tx_detail_class{
-		.advertising_space_content{
+		.swiper_container{
 			max-width: 12.8rem;
-			padding-top: 0.1rem;
 		}
 	}
 	@media screen and (max-width: 1280px){
 		.advertising_space_container{
-			.advertising_space_content{
-				padding: 0 0.2rem;
-				.advertising_space_img_content{
-					height: auto;
+			width: 100%;
+			.swiper_container{
+				width: 100% !important;
+				max-width: none;
+				.my-swipe{
+					margin: 0 0.2rem;
+					.swipe_slider{
+					
+					}
 				}
 			}
 		}
 	}
 	@media screen and (max-width: 910px){
 		.advertising_space_container{
-			.advertising_space_content{
-				padding: 0 0.1rem;
-				height: auto;
-				.advertising_space_img_content{
-					content: url("../../assets/advertising_space_img/irisnet-goz-768.jpg");
+			.swiper_container{
+				.my-swipe{
+					margin: 0 0.1rem;
+					.swipe_slider{
+						.swipe_slider_link{
+							.goz_explorer_class{
+								content:url("../../assets/advertising_space_img/irisnet-goz-768.jpg")
+							}
+							.goz_wallet_class{
+								content:url("../../assets/advertising_space_img/goz_wallet_768.jpg")
+							}
+						}
+					}
 				}
 			}
 		}
 	}
 	@media screen and (max-width: 705px){
 		.advertising_space_container{
-			.advertising_space_content{
-				padding: 0 0.1rem;
-				.advertising_space_img_content{
-					content: url("../../assets/advertising_space_img/irisnet-goz-375.jpg");
+			.swiper_container{
+				.my-swipe{
+					.swipe_slider{
+						.swipe_slider_link{
+							.goz_explorer_class{
+								width: 100%;
+								content:url("../../assets/advertising_space_img/irisnet-goz-375.jpg")
+							}
+							.goz_wallet_class{
+								width: 100%;
+								content:url("../../assets/advertising_space_img/goz_wallet_375.jpg")
+							}
+						}
+					}
 				}
 			}
 		}
