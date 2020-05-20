@@ -384,7 +384,23 @@
 			.app_download_wrap{
 				.app_download_content_wrap{
 					.app_download_goz_content{
-					
+						padding-right: 0.2rem;
+						.app_download_link_content{
+							flex-direction: column;
+							a{
+								.app_download_android_content{
+									width: auto;
+									margin-right: 0;
+								}
+								.app_download_ios_content{
+									width: auto;
+									margin-top: 0.1rem;
+								}
+							}
+							.app_download_qr_content{
+								display: none;
+							}
+						}
 					}
 					.app_download_mainnet_content{
 						.app_download_img_content{
