@@ -24,7 +24,6 @@
 						<div id="validator_graph_content" ref="chart_content"></div>
 					</div>
 					<div class="graph_list_container"
-					     ref="graph_list_content"
 					     id="graph_list_container"
 					     :style="{background: switchValue ? '' : '#2d325a'}"
 					     :class="[flShowDefaultPickUp ? 'hide_pick_up_style' : '', showDefaultAnimation ? 'show_pick_up_style' : '' ]"
@@ -33,25 +32,26 @@
 							<span :class="flConnectionActiveStyle ? 'active_style' : ''" @click="sortByConnection(sortByConnectionSwitchIcon)">Conn <i class="iconfont" v-show="flShowConnectionSortIcon" :class="sortByConnectionSwitchIcon ? 'iconpaixu-xia' : 'iconpaixu-shang'"></i></span>
 							<span :class="flLetterActiveStyle ? 'active_style' : ''" @click="sortByLetter(sortByLetterSwitchIcon)">A-Z <i class="iconfont" v-show="flShowLetterSortIcon" :class="sortByLetterSwitchIcon ? 'iconpaixu-xia' : 'iconpaixu-shang'"></i></span>
 						</div>
-						<div class="graph_list_item_all" @click="selectAll()">
-							<div class="legend_all_block">
-								<img v-show="flAllCheckout" src="../../assets/select_all.svg" alt="">
-								<img v-show="!flAllCheckout" src="../../assets/unselect_all.svg" alt=""></div>
-							<span class="legend_name" :class=" flAllCheckout ? 'hide_style' : ''">All Zones</span>
+						<div class="sort_scroll_content" ref="graph_list_content">
+							<div class="graph_list_item_all" @click="selectAll()">
+								<div class="legend_all_block">
+									<img v-show="flAllCheckout" src="../../assets/select_all.svg" alt="">
+									<img v-show="!flAllCheckout" src="../../assets/unselect_all.svg" alt=""></div>
+								<span class="legend_name" :class=" flAllCheckout ? 'hide_style' : ''">All Zones</span>
+							</div>
+							<ul class="graph_list_content">
+								<li class="graph_list_item" v-for="(item,index) in colorDataArray" @click="changeChart(item,index)">
+									<div class="legend_block"
+									     :style="{background: item.color}"
+									     :class="item.isActive ? '' : 'hide_style'">
+									</div>
+									<div class="legend_name_content">
+										<p class="legend_name" :class="item.isActive ? '' : 'hide_style_color'"> {{item.name}} </p>
+										<p class="legend_name" :class="item.isActive ? '' : 'hide_style_color'" v-show="item.connection !== 0"><span style="display: flex;white-space: nowrap">{{item.connection}} Connections</span></p>
+									</div>
+								</li>
+							</ul>
 						</div>
-						<ul class="graph_list_content">
-							<li class="graph_list_item" v-for="(item,index) in colorDataArray" @click="changeChart(item,index)">
-								<div class="legend_block"
-								     :style="{background: item.color}"
-								     :class="item.isActive ? '' : 'hide_style'">
-								</div>
-								<div class="legend_name_content">
-									<p class="legend_name" :class="item.isActive ? '' : 'hide_style_color'"> {{item.name}} </p>
-									<p class="legend_name" :class="item.isActive ? '' : 'hide_style_color'" v-show="item.connection !== 0"><span style="display: flex;white-space: nowrap">{{item.connection}} Connections</span></p>
-								</div>
-							</li>
-						</ul>
-						
 					</div>
 					<div class="pick_up_content" v-if="colorDataArray.length > 0">
 						<div class="pick_up_img_content" @click="flPickUp()">
@@ -937,7 +937,7 @@
 					}
 					.sort_content{
 						box-sizing: border-box;
-						padding-left: 0.4rem;
+						padding-left: 0.38rem;
 						margin-bottom: 0.22rem;
 						.active_style{
 							color: #377CF8;
@@ -954,18 +954,18 @@
 						}
 					}
 					
-					.graph_list_container::-webkit-scrollbar{
+					.sort_scroll_content::-webkit-scrollbar{
 						width:0.05rem;
 						height:0.05rem;
 					}
-					.graph_list_container::-webkit-scrollbar-thumb{
+					.sort_scroll_content::-webkit-scrollbar-thumb{
 						background: rgba(63, 67, 105, 1);
 						border-radius: 0.05rem;
 					}
-					/*.graph_list_container::-webkit-scrollbar-thumb:hover{
+					/*.sort_scroll_content::-webkit-scrollbar-thumb:hover{
 						background: #333;
 					}
-					.graph_list_container::-webkit-scrollbar-corner{
+					.sort_scroll_content::-webkit-scrollbar-corner{
 						background: #179a16;
 					}*/
 					.graph_list_container{
@@ -975,48 +975,42 @@
 						margin-left: 0.02rem;
 						padding-top: 0.2rem;
 						border-radius: 0.04rem;
-						overflow-x: hidden;
-						overflow-y: auto;
 						position: absolute;
+						overflow: hidden;
 						right: 0;
 						top: 0;
 						background:rgba(45,50,90,0.2);
 						backdrop-filter: blur(2px);
-						.graph_list_item_all{
-							/*position: fixed;*/
-							display: flex;
-							justify-content: flex-start;
-							margin:  0 0.6rem 0.2rem 0.4rem;
-							background: transparent;
-							.legend_all_block{
-								width: 0.14rem;
-								height: 0.14rem;
-								border-radius: 0.07rem;
-								cursor: pointer;
+						.sort_scroll_content{
+							overflow-x: hidden;
+							overflow-y: auto;
+							margin-top: 0.02rem;
+							.graph_list_item_all{
+								/*position: fixed;*/
+								display: flex;
+								justify-content: flex-start;
+								margin:  0 0.6rem 0.2rem 0.38rem;
 								background: transparent;
-								img{
+								.legend_all_block{
 									width: 0.14rem;
+									height: 0.14rem;
+									border-radius: 0.07rem;
+									cursor: pointer;
+									background: transparent;
+									img{
+										width: 0.14rem;
+									}
 								}
-							}
-							.legend_block{
-								box-sizing: border-box;
-								width: 0.14rem;
-								height: 0.14rem;
-								border-radius: 0.07rem;
-								cursor: pointer;
-							}
-							.hide_style{
-								color: rgba(134, 143, 211, 1) !important;
-							}
-							.legend_name{
-								cursor: pointer;
-								height: 0.14rem;
-								color: rgba(134, 143, 211, 0.5);
-								margin-left: 0.1rem;
-								width: 0.9rem;
-								white-space:nowrap;
-							}
-							.legend_name_content{
+								.legend_block{
+									box-sizing: border-box;
+									width: 0.14rem;
+									height: 0.14rem;
+									border-radius: 0.07rem;
+									cursor: pointer;
+								}
+								.hide_style{
+									color: rgba(134, 143, 211, 1) !important;
+								}
 								.legend_name{
 									cursor: pointer;
 									height: 0.14rem;
@@ -1025,61 +1019,70 @@
 									width: 0.9rem;
 									white-space:nowrap;
 								}
-							}
-						}
-						.graph_list_content{
-							flex: 1;
-							max-width: 2rem;
-							/*margin-top: 0.34rem;*/
-							min-height: 0.14rem;
-							display: flex;
-							flex-wrap: wrap;
-							margin-left: 0.2rem;
-							padding-bottom: 0.4rem;
-							.graph_list_item{
-								width: 1.5rem;
-								align-items: center;
-								margin-left: 0.2rem;
-								display: flex;
-								padding: 0.05rem 0 0.1rem 0;
-								cursor: pointer;
-								.legend_all_block{
-									width: 0.14rem;
-									height: 0.14rem;
-									border-radius: 0.07rem;
-									cursor: pointer;
-									img{
-										width: 0.14rem;
-									}
-								}
 								.legend_name_content{
-									max-width: 1.2rem;
 									.legend_name{
-										line-height: 0.16rem;
-										color: rgba(134, 143, 211, 1);
+										cursor: pointer;
+										height: 0.14rem;
+										color: rgba(134, 143, 211, 0.5);
 										margin-left: 0.1rem;
-									}
-									.hide_style_color{
-										color: rgba(134, 143, 211, 0.5) !important;
+										width: 0.9rem;
+										white-space:nowrap;
 									}
 								}
-								.hide_style{
-									background: transparent !important;
-									border: 0.01rem solid rgba(134, 143, 211, 0.5);
-								}
-								.legend_block{
-									box-sizing: border-box;
-									width: 0.14rem;
-									height: 0.14rem;
-									border-radius: 0.07rem;
+							}
+							.graph_list_content{
+								flex: 1;
+								max-width: 2rem;
+								/*margin-top: 0.34rem;*/
+								min-height: 0.14rem;
+								display: flex;
+								flex-wrap: wrap;
+								margin-left: 0.18rem;
+								padding-bottom: 0.4rem;
+								.graph_list_item{
+									width: 1.5rem;
+									align-items: center;
+									margin-left: 0.2rem;
+									display: flex;
+									padding: 0.05rem 0 0.1rem 0;
+									cursor: pointer;
+									.legend_all_block{
+										width: 0.14rem;
+										height: 0.14rem;
+										border-radius: 0.07rem;
+										cursor: pointer;
+										img{
+											width: 0.14rem;
+										}
+									}
+									.legend_name_content{
+										max-width: 1.2rem;
+										.legend_name{
+											line-height: 0.16rem;
+											color: rgba(134, 143, 211, 1);
+											margin-left: 0.1rem;
+										}
+										.hide_style_color{
+											color: rgba(134, 143, 211, 0.5) !important;
+										}
+									}
+									.hide_style{
+										background: transparent !important;
+										border: 0.01rem solid rgba(134, 143, 211, 0.5);
+									}
+									.legend_block{
+										box-sizing: border-box;
+										width: 0.14rem;
+										height: 0.14rem;
+										border-radius: 0.07rem;
+									}
 								}
 							}
 						}
-						
 					}
 					.pick_up_content{
 						position: absolute;
-						right: 2.08rem;
+						right: 2.1rem;
 						top:50%;
 						z-index: 10;
 						.pick_up_img_content{
@@ -1173,7 +1176,9 @@
 				.graph_charts_container{
 					.graph_content_container{
 						flex-direction: column;
-						
+						.sort_content{
+							padding-left: 0.2rem;
+						}
 						.graph_container_content_wrap{
 							border-radius: 0;
 						}
@@ -1184,18 +1189,21 @@
 							border-radius: 0;
 							margin-left: 0;
 							position: static;
-							.graph_list_item_all{
-								width: 1.2rem;
-								margin-left: 0.2rem;
-								justify-content: flex-start;
-							}
-							.graph_list_content{
-								height: auto;
-								max-width: none;
-								.graph_list_item{
-									margin-left: 0;
+							.sort_scroll_content{
+								.graph_list_item_all{
+									width: 1.2rem;
+									margin-left: 0.2rem;
+									justify-content: flex-start;
+								}
+								.graph_list_content{
+									height: auto;
+									max-width: none;
+									.graph_list_item{
+										margin-left: 0;
+									}
 								}
 							}
+							
 						}
 						.pick_up_content{
 							display: none;
