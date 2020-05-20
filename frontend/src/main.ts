@@ -32,7 +32,14 @@ Vue.component('el-date-picker',DatePicker);
 Vue.component('el-tooltip',Tooltip);
 Vue.component('el-cascader',Cascader);
 Vue.use(locale);
-
+/*引入轮播*/
+import VueAwesomeSwiper  from 'vue-awesome-swiper'
+import 'swiper/css/swiper.css'
+Vue.use(VueAwesomeSwiper);
+import Swipe  from 'vue-awesome-swiper';
+import SwipeItem  from 'vue-awesome-swiper';
+Vue.component('swipe', Swipe);
+Vue.component('swipe-item', SwipeItem);
 
 import axios from "axios"
 const  codec  = require("irisnet-crypto/util/codec.js") ;
