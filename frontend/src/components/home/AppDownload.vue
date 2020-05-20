@@ -337,6 +337,19 @@
 			}
 		}
 	}
+	@media (max-width: 1408px) {
+		.app_download_container{
+			.app_download_wrap{
+				.app_download_content_wrap{
+					.app_download_goz_content{
+						.app_download_goz_doc{
+							height: 0.32rem;
+						}
+					}
+				}
+			}
+		}
+	}
 	@media (max-width: 1040px) {
 		.app_download_container{
 			.app_download_wrap{
@@ -345,6 +358,9 @@
 					grid-template-columns: repeat(1,auto);
 					.app_download_goz_content{
 						margin-right: 0;
+						.app_download_goz_doc{
+							height: 0.16rem;
+						}
 					}
 					.app_download_mainnet_content{
 						margin-left: 0;
