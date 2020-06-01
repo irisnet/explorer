@@ -8,7 +8,6 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/irisnet/explorer/backend/logger"
-	"github.com/irisnet/explorer/backend/rest/filter"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/vo"
@@ -140,15 +139,15 @@ func doApi(r *mux.Router, url, method string, action Action) {
 			Request: request,
 		}
 		defer doException(req, writer)
-		_, err := filter.DoFilters(&req, nil, filter.Pre)
-		if !err.Success() {
-			panic(err)
-		}
+		//_, err := filter.DoFilters(&req, nil, filter.Pre)
+		//if !err.Success() {
+		//	panic(err)
+		//}
 		result := doAction(req, action)
-		_, err = filter.DoFilters(&req, result, filter.Post)
-		if !err.Success() {
-			panic(err)
-		}
+		//_, err = filter.DoFilters(&req, result, filter.Post)
+		//if !err.Success() {
+		//	panic(err)
+		//}
 		doResponse(writer, result)
 	}
 	r.HandleFunc(url, wrapperAction).Methods(method)
