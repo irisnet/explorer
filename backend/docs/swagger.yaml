@@ -1920,13 +1920,9 @@ paths:
         name: size
         required: true
         type: integer
-      - description: beginTime (eg 2006.01.02T15:04:05)
+      - description: caculateTime (eg 2006.01.02)
         in: query
-        name: beginTime
-        type: string
-      - description: endTime (eg 2006.01.02T15:04:05)
-        in: query
-        name: endTime
+        name: caculateTime
         type: string
       - description: total
         enum:
