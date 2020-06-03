@@ -24,6 +24,11 @@ var (
 	cstZone = time.FixedZone("CST", 8*3600)
 	// adapt multiple asset
 	rewardsDenom = []string{"iris-atto"}
+
+	CronJob = map[string]bool{
+		"static_delegator": true,
+		"static_validator": true,
+	}
 )
 
 func init() {

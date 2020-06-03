@@ -45,6 +45,7 @@ func LoadFromDelModel(model document.ExStaticDelegatorMonth) vo.ExStaticDelegato
 		IncrementDelegation:    coverAmount(model.IncrementDelegation),
 		PeriodDelegationTimes:  model.PeriodDelegationTimes,
 	}
+	ret.Rewards = ret.TerminalRewards + ret.PeriodWithdrawRewards - ret.PeriodIncrementRewards
 	return ret
 }
 
@@ -61,18 +62,18 @@ func LoadFromValModel(model document.ExStaticValidatorMonth) vo.ExStaticValidato
 	}
 
 	ret := vo.ExStaticValidatorMonthVo{
-		Address:               model.Address,
-		OperatorAddress:       model.OperatorAddress,
-		Status:                model.Status,
-		CreateValidatorHeight: model.CreateValidatorHeight,
-		Date:                  model.Date,
-		CaculateDate:          model.CaculateDate,
-		TerminalCommission:    coverAmount(model.TerminalCommission),
-		PeriodCommission:      coverAmount(model.PeriodCommission),
-		IncrementCommission:   coverAmount(model.IncrementCommission),
-		TerminalDelegation:    coverFloat64(model.TerminalDelegation),
-		IncrementDelegation:   coverFloat64(model.IncrementDelegation),
-		Tokens:                coverFloat64(model.Tokens),
+		Address:                 model.Address,
+		OperatorAddress:         model.OperatorAddress,
+		Status:                  model.Status,
+		CreateValidatorHeight:   model.CreateValidatorHeight,
+		Date:                    model.Date,
+		CaculateDate:            model.CaculateDate,
+		TerminalCommission:      coverAmount(model.TerminalCommission),
+		PeriodCommission:        coverAmount(model.PeriodCommission),
+		IncrementCommission:     coverAmount(model.IncrementCommission),
+		TerminalDelegation:      coverFloat64(model.TerminalDelegation),
+		IncrementDelegation:     coverFloat64(model.IncrementDelegation),
+		Tokens:                  coverFloat64(model.Tokens),
 		TerminalDelegatorN:      model.TerminalDelegatorN,
 		IncrementDelegatorN:     model.IncrementDelegatorN,
 		TerminalSelfBond:        coverFloat64(model.TerminalSelfBond),
