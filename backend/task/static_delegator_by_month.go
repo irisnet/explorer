@@ -211,6 +211,13 @@ func (task *StaticDelegatorByMonthTask) getStaticDelegator(starttime time.Time, 
 			logger.String("err", err.Error()))
 		//return document.ExStaticDelegatorMonth{}, err
 	}
+	// check delagationlastmonth caculate date if last caculate period
+	datetime := time.Now().In(cstZone)
+	currentCaculateDate := fmt.Sprintf("%d.%02d.%02d", datetime.Year(), datetime.Month(), datetime.Day())
+	if !checkIsPeriod(delagationlastmonth.CaculateDate, currentCaculateDate) {
+		delagationlastmonth = document.ExStaticDelegatorMonth{}
+	}
+
 	if delagationlastmonth.Address == "" {
 		delagationlastmonth.Address = terminalval.Address
 		delagationlastmonth.TerminalDelegation = document.Coin{
@@ -383,6 +390,26 @@ func (task *StaticDelegatorByMonthTask) getIncrementDelegation(terminal utils.Co
 		Amount: amount,
 	}
 
+}
+
+//check caculate period is ok
+func checkIsPeriod(lastcaculateDate, caculateTime string) bool {
+	caculateTime = strings.ReplaceAll(caculateTime, ".", "-")
+	lastcaculateDate = strings.ReplaceAll(lastcaculateDate, ".", "-")
+	timedate, err := time.ParseInLocation(types.TimeLayout, caculateTime+"T00:00:00", cstZone)
+	if err != nil {
+		logger.Error("ParseInLocation error in checkIsPeriod", logger.String("error", err.Error()))
+		return false
+	}
+	timelastcur, err := time.ParseInLocation(types.TimeLayout, lastcaculateDate+"T00:00:00", cstZone)
+	if err != nil {
+		logger.Error("ParseInLocation error in checkIsPeriod", logger.String("error", err.Error()))
+		return false
+	}
+	durtime := timedate.Sub(timelastcur)
+	//fmt.Println(timelastcur)
+	//fmt.Println(durtime.Hours() / 24)
+	return durtime.Hours()/24 >= 28 && durtime.Hours()/24 <= 31
 }
 
 //func (task *StaticDelegatorByMonthTask) getDelegationData(caculatetime string) ([]document.ExStaticDelegator, error) {

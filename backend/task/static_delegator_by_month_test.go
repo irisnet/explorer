@@ -37,11 +37,11 @@ func TestStaticDelegatorByMonthTask_DoTask(t *testing.T) {
 //}
 func TestStaticDelegatorByMonthTask_getPeriodTxByAddress(t *testing.T) {
 	task := new(StaticDelegatorByMonthTask)
-	starttime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 1), cstZone)
+	starttime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 1), cstZone)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	endtime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT23:59:59", 2020, 4, 10), cstZone)
+	endtime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT23:59:59", 2020, 6, 1), cstZone)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -50,8 +50,8 @@ func TestStaticDelegatorByMonthTask_getPeriodTxByAddress(t *testing.T) {
 		t.Fatal(err.Error())
 	}
 	fmt.Println(len(txs))
-	fmt.Println(task.AddressCoin)
-	fmt.Println(task.AddrPeriodCommission)
+	fmt.Println("DelegatorOrValidator Rewards:", task.AddressCoin)
+	fmt.Println("Commission Rewards:", task.AddrPeriodCommission)
 
 	//bytedata, _ := json.Marshal(txs)
 	//t.Log(string(bytedata))
@@ -385,25 +385,25 @@ func TestCalculateDelegatorRewards(t *testing.T) {
 
 		var tBeforeStartHaveDelegateTx bool
 		var tPeriodHaveDelegateTx bool
-		startDate, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 1), cstZone)
-		endDate, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 1), cstZone)
+		//startDate, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 1), cstZone)
+		//endDate, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 1), cstZone)
 
-		txModel := document.CommonTx{}
-		if res, err := txModel.GetTxsByDurationAddress2(time.Time{}, startDate, addr); err != nil {
-			t.Fatal(err)
-		} else {
-			if len(res) > 0 {
-				tBeforeStartHaveDelegateTx = true
-			}
-		}
-
-		if res, err := txModel.GetTxsByDurationAddress2(startDate, endDate, addr); err != nil {
-			t.Fatal(err)
-		} else {
-			if len(res) > 0 {
-				tPeriodHaveDelegateTx = true
-			}
-		}
+		//txModel := document.CommonTx{}
+		//if res, err := txModel.GetTxsByDurationAddress2(time.Time{}, startDate, addr); err != nil {
+		//	t.Fatal(err)
+		//} else {
+		//	if len(res) > 0 {
+		//		tBeforeStartHaveDelegateTx = true
+		//	}
+		//}
+		//
+		//if res, err := txModel.GetTxsByDurationAddress2(startDate, endDate, addr); err != nil {
+		//	t.Fatal(err)
+		//} else {
+		//	if len(res) > 0 {
+		//		tPeriodHaveDelegateTx = true
+		//	}
+		//}
 
 		if !tBeforeStartHaveDelegateTx && tPeriodHaveDelegateTx {
 			delegatorMonthData[i].IsNewDelegator = true
@@ -414,4 +414,23 @@ func TestCalculateDelegatorRewards(t *testing.T) {
 		return string(utils.MarshalJsonIgnoreErr(v))
 	}
 	t.Log(toJson(delegatorMonthData))
+}
+
+func TestStaticDelegatorByMonthTask_checkNotLastPeriod(t *testing.T) {
+	lastcaculateDate := "2020.05.01"
+
+	caculateTime := "2020.06.01"
+	if checkIsPeriod(lastcaculateDate, caculateTime) {
+		t.Log("PASS OK")
+	} else {
+		t.Fail()
+	}
+
+	caculateTime = "2020.06.01"
+	lastcaculateDate = "2020.04.10"
+	if !checkIsPeriod(lastcaculateDate, caculateTime) {
+		t.Log("PASS OK")
+	} else {
+		t.Fail()
+	}
 }

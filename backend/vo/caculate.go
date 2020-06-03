@@ -9,6 +9,7 @@ type ExStaticMonthDataRespond struct {
 type ExStaticDelegatorMonthVo struct {
 	Date                   string  `json:"统计月份"`
 	Address                string  `json:"委托地址"`
+	Rewards                float64 `json:"期初待领取奖励"`
 	TerminalRewards        float64 `json:"期末待领取奖励"`
 	PeriodWithdrawRewards  float64 `json:"期间领取到账"`
 	PeriodIncrementRewards float64 `json:"期间奖励净增量"`
