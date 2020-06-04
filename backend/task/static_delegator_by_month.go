@@ -220,7 +220,7 @@ func (task *StaticDelegatorByMonthTask) getStaticDelegator(starttime time.Time, 
 	caculateperiod := 0
 	if task.isSetTime {
 		currentCaculateDate = conf.Get().Server.CaculateDate
-		caculateperiod = conf.Get().Server.CaculatePeriod
+		caculateperiod = conf.Get().Server.CaculatePeriodDay
 	}
 	if !checkIsPeriod(delagationlastmonth.CaculateDate, currentCaculateDate, caculateperiod) {
 		delagationlastmonth = document.ExStaticDelegatorMonth{}

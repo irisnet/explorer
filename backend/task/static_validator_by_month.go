@@ -223,7 +223,7 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(startdate time.Time, 
 	caculateperiod := 0
 	if task.isSetTime {
 		currentCaculateDate = conf.Get().Server.CaculateDate
-		caculateperiod = conf.Get().Server.CaculatePeriod
+		caculateperiod = conf.Get().Server.CaculatePeriodDay
 	}
 	if !checkIsPeriod(latestone.CaculateDate, currentCaculateDate, caculateperiod) {
 		latestone = document.ExStaticValidatorMonth{}
