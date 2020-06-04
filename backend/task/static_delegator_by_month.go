@@ -421,7 +421,7 @@ func checkIsPeriod(lastcaculateDate, caculateTime string, period int) bool {
 	//fmt.Println(timelastcur)
 	//fmt.Println(durtime.Hours() / 24)
 	if period > 0 {
-		return durtime.Hours()/24 == float64(period)
+		return int(durtime.Hours()/24) == period
 	}
 
 	return durtime.Hours()/24 >= 28 && durtime.Hours()/24 <= 31
