@@ -114,8 +114,8 @@ func TestStaticValidatorByMonthTask_DoTask(t *testing.T) {
 }
 
 func TestMonthDoTask(t *testing.T) {
-	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 1), cstZone)
-	endtime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 1), cstZone)
+	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 1), cstZone)
+	endtime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 31), cstZone)
 	delegatortask := new(StaticDelegatorByMonthTask)
 	validatortask := new(StaticValidatorByMonthTask)
 	delegatortask.SetCaculateScope(starttime, endtime)

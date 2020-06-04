@@ -166,6 +166,9 @@ func (task *StaticValidatorByMonthTask) caculateWork() ([]document.ExStaticValid
 				datetime.Month(), datetime.Day(), datetime.Hour(), datetime.Minute(), datetime.Second())
 
 		}
+		if task.isSetTime {
+			one.CaculateDate = strings.ReplaceAll(conf.Get().Server.CaculateDate, "-", ".")
+		}
 		res = append(res, one)
 		//if err := task.mStaticModel.Save(one); err != nil {
 		//	logger.Error("save static validator month data error",
@@ -217,7 +220,12 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(startdate time.Time, 
 	// check latestone caculate date if last caculate period
 	datetime := time.Now().In(cstZone)
 	currentCaculateDate := fmt.Sprintf("%d.%02d.%02d", datetime.Year(), datetime.Month(), datetime.Day())
-	if !checkIsPeriod(latestone.CaculateDate, currentCaculateDate) {
+	caculateperiod := 0
+	if task.isSetTime {
+		currentCaculateDate = conf.Get().Server.CaculateDate
+		caculateperiod = conf.Get().Server.CaculatePeriod
+	}
+	if !checkIsPeriod(latestone.CaculateDate, currentCaculateDate, caculateperiod) {
 		latestone = document.ExStaticValidatorMonth{}
 	}
 	if latestone.OperatorAddress == "" {

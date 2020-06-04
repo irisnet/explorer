@@ -146,6 +146,9 @@ func (task *StaticDelegatorByMonthTask) caculateWork() ([]document.ExStaticDeleg
 			continue
 		}
 		one.CaculateDate = fmt.Sprintf("%d.%02d.%02d", datetime.Year(), datetime.Month(), datetime.Day())
+		if task.isSetTime {
+			one.CaculateDate = strings.ReplaceAll(conf.Get().Server.CaculateDate, "-", ".")
+		}
 		if conf.Get().Server.CaculateDebug {
 			one.Date = fmt.Sprintf("%d.%02d.%02d %02d:%02d:%02d", starttime.Year(),
 				starttime.Month(), starttime.Day(), starttime.Hour(), starttime.Minute(), starttime.Second())
@@ -214,7 +217,12 @@ func (task *StaticDelegatorByMonthTask) getStaticDelegator(starttime time.Time, 
 	// check delagationlastmonth caculate date if last caculate period
 	datetime := time.Now().In(cstZone)
 	currentCaculateDate := fmt.Sprintf("%d.%02d.%02d", datetime.Year(), datetime.Month(), datetime.Day())
-	if !checkIsPeriod(delagationlastmonth.CaculateDate, currentCaculateDate) {
+	caculateperiod := 0
+	if task.isSetTime {
+		currentCaculateDate = conf.Get().Server.CaculateDate
+		caculateperiod = conf.Get().Server.CaculatePeriod
+	}
+	if !checkIsPeriod(delagationlastmonth.CaculateDate, currentCaculateDate, caculateperiod) {
 		delagationlastmonth = document.ExStaticDelegatorMonth{}
 	}
 
@@ -393,22 +401,29 @@ func (task *StaticDelegatorByMonthTask) getIncrementDelegation(terminal utils.Co
 }
 
 //check caculate period is ok
-func checkIsPeriod(lastcaculateDate, caculateTime string) bool {
+func checkIsPeriod(lastcaculateDate, caculateTime string, period int) bool {
+	if lastcaculateDate == "" {
+		return false
+	}
 	caculateTime = strings.ReplaceAll(caculateTime, ".", "-")
 	lastcaculateDate = strings.ReplaceAll(lastcaculateDate, ".", "-")
 	timedate, err := time.ParseInLocation(types.TimeLayout, caculateTime+"T00:00:00", cstZone)
 	if err != nil {
-		logger.Error("ParseInLocation error in checkIsPeriod", logger.String("error", err.Error()))
+		logger.Error("ParseInLocation caculateTime error in checkIsPeriod", logger.String("error", err.Error()))
 		return false
 	}
 	timelastcur, err := time.ParseInLocation(types.TimeLayout, lastcaculateDate+"T00:00:00", cstZone)
 	if err != nil {
-		logger.Error("ParseInLocation error in checkIsPeriod", logger.String("error", err.Error()))
+		logger.Error("ParseInLocation lastcaculateDate error in checkIsPeriod", logger.String("error", err.Error()))
 		return false
 	}
 	durtime := timedate.Sub(timelastcur)
 	//fmt.Println(timelastcur)
 	//fmt.Println(durtime.Hours() / 24)
+	if period > 0 {
+		return durtime.Hours()/24 == float64(period)
+	}
+
 	return durtime.Hours()/24 >= 28 && durtime.Hours()/24 <= 31
 }
 
