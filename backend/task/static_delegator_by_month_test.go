@@ -41,11 +41,11 @@ func TestStaticDelegatorByMonthTask_getPeriodTxByAddress(t *testing.T) {
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	endtime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT23:59:59", 2020, 6, 1), cstZone)
+	endtime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 31), cstZone)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	txs, err := task.getPeriodTxByAddress(starttime, endtime, "")
+	txs, err := task.getPeriodTxByAddress(starttime, endtime, "iaa1gm8hq56wkkau66uwydud42kqn4jkznja2mcee0")
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -198,8 +198,8 @@ func TestStaticDelegatorByMonthTask_getCoinflowByHash(t *testing.T) {
 
 func TestStaticDelegatorByMonthTask_getStaticDelegator(t *testing.T) {
 	s := new(StaticDelegatorByMonthTask)
-	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 7), cstZone)
-	endtime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 8), cstZone)
+	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 1), cstZone)
+	endtime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 31), cstZone)
 	terminaldata := document.ExStaticDelegator{
 		Date:    endtime,
 		Address: "iaa1xf5jaw09klqg9hzxfks3ycjvqgnpyjcm0yrkut",
@@ -240,12 +240,23 @@ func TestStaticDelegatorByMonthTask_getIncrementDelegation(t *testing.T) {
 }
 
 func TestDoTask(t *testing.T) {
-	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 4), cstZone)
-	endtime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 5), cstZone)
+	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 1), cstZone)
+	endtime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 31), cstZone)
 	delegatortask := new(StaticDelegatorByMonthTask)
-	//delegatortask.SetCaculateAddress("iaa1xf5jaw09klqg9hzxfks3ycjvqgnpyjcm0yrkut")
+	//delegatortask.SetCaculateAddress("iaa1kgddca7qj96z0qcxr2c45z73cfl0c75pwl95ym")
 	delegatortask.SetCaculateScope(starttime, endtime)
-	delegatortask.DoTask()
+	datas, err := delegatortask.caculateWork()
+	if err != nil {
+		t.Fail()
+	}
+	var vomodel []vo.ExStaticDelegatorMonthVo
+
+	for _, val := range datas {
+		ite := service.LoadFromDelModel(val)
+		vomodel = append(vomodel, ite)
+	}
+	bytedata, _ := json.Marshal(vomodel)
+	t.Log(string(bytedata))
 }
 
 func TestCalculateDelegatorRewards(t *testing.T) {
@@ -420,17 +431,40 @@ func TestStaticDelegatorByMonthTask_checkNotLastPeriod(t *testing.T) {
 	lastcaculateDate := "2020.05.01"
 
 	caculateTime := "2020.06.01"
-	if checkIsPeriod(lastcaculateDate, caculateTime) {
+	if checkIsPeriod(lastcaculateDate, caculateTime, 31) {
 		t.Log("PASS OK")
 	} else {
 		t.Fail()
 	}
 
 	caculateTime = "2020.06.01"
-	lastcaculateDate = "2020.04.10"
-	if !checkIsPeriod(lastcaculateDate, caculateTime) {
+	lastcaculateDate = "2020.05.10"
+	if checkIsPeriod(lastcaculateDate, caculateTime, 22) {
 		t.Log("PASS OK")
 	} else {
 		t.Fail()
 	}
+	caculateTime = "2020.06.01"
+	lastcaculateDate = "2020.04.10"
+	if checkIsPeriod(lastcaculateDate, caculateTime, 50) {
+		t.Log("PASS OK")
+	} else {
+		t.Fail()
+	}
+}
+
+func TestStaticDelegatorByMonthTask_getIncrementRewards(t *testing.T) {
+	delegatorRewards := document.Rewards{
+		Iris: 1315.5616364376328,
+	}
+	delegationlastmaonth := document.ExStaticDelegatorMonth{
+		TerminalRewards: document.Rewards{
+			Iris: 1709.84676707812,
+		},
+	}
+	periodRewards := document.Rewards{
+		Iris: 2295.505507779266,
+	}
+	res := new(StaticDelegatorByMonthTask).getIncrementRewards(delegatorRewards, delegationlastmaonth, periodRewards)
+	t.Log(res.Iris)
 }

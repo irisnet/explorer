@@ -55,6 +55,8 @@ const (
 	KeyCaculateDebug             = "CaculateDebug"
 	KeyCaculateStartDate         = "CaculateStartDate" //yyyy-mm-ddThh:mm:ss
 	KeyCaculateEndDate           = "CaculateEndDate"   //yyyy-mm-ddThh:mm:ss
+	KeyCaculateDate              = "CaculateDate"      //yyyy-mm-dd
+	KeyCaculatePeriodDay         = "CaculatePeriodDay" //hh
 	KeyFoundationDelegatorAddr   = "FoundationDelegatorAddr"
 
 	EnvironmentDevelop = "dev"
@@ -115,6 +117,8 @@ func init() {
 		FoundationDelegatorAddr:      getEnv(KeyFoundationDelegatorAddr, DefaultEnvironment),
 		CaculateStartDate:            getEnv(KeyCaculateStartDate, DefaultEnvironment),
 		CaculateEndDate:              getEnv(KeyCaculateEndDate, DefaultEnvironment),
+		CaculateDate:                 getEnv(KeyCaculateDate, DefaultEnvironment),
+		CaculatePeriodDay:            getEnvInt(KeyCaculatePeriodDay, DefaultEnvironment),
 		NetreqLimitMax:               getEnvInt(KeyNetreqLimitMax, DefaultEnvironment),
 	}
 	if "true" == strings.ToLower(getEnv(KeyCaculateDebug, DefaultEnvironment)) {
@@ -185,6 +189,8 @@ func loadDefault() {
 		KeyCaculateDebug:             "false",
 		KeyCaculateStartDate:         "",
 		KeyCaculateEndDate:           "",
+		KeyCaculateDate:              "2020-06-01",
+		KeyCaculatePeriodDay:         "31",
 		KeyNetreqLimitMax:            "20",
 		KeyFoundationDelegatorAddr:   "iaa1w7ewedr57z6p7f8nknmdvukfxwkwlsvfjumdts",
 	}
@@ -235,6 +241,8 @@ type serverConf struct {
 	CaculateDebug                bool
 	CaculateStartDate            string
 	CaculateEndDate              string
+	CaculateDate                 string
+	CaculatePeriodDay            int
 	NetreqLimitMax               int
 	FoundationDelegatorAddr      string
 }
