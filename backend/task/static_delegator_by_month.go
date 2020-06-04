@@ -417,14 +417,14 @@ func checkIsPeriod(lastcaculateDate, caculateTime string, period int) bool {
 		logger.Error("ParseInLocation lastcaculateDate error in checkIsPeriod", logger.String("error", err.Error()))
 		return false
 	}
-	durtime := timedate.Sub(timelastcur)
+	durtime := timedate.Sub(timelastcur).Milliseconds() / (3600 * 1000)
 	//fmt.Println(timelastcur)
-	//fmt.Println(durtime.Hours() / 24)
+	//fmt.Println(durtime / 24)
 	if period > 0 {
-		return int(durtime.Hours()/24) == period
+		return durtime/24 == int64(period)
 	}
 
-	return durtime.Hours()/24 >= 28 && durtime.Hours()/24 <= 31
+	return durtime/24 >= 28 && durtime/24 <= 31
 }
 
 //func (task *StaticDelegatorByMonthTask) getDelegationData(caculatetime string) ([]document.ExStaticDelegator, error) {
