@@ -18,6 +18,9 @@
 			</div>
 			<div class="goz_content_right_content">
 				<div class="goz_content_link_content">
+					<a href="https://map-of-zones-web.herokuapp.com/?period=24" target="_blank">Map of zones</a>
+				</div>
+				<div class="goz_content_link_content">
 					<a href="https://goz.p2p.org/" target="_blank">Visualizer from P2P Team</a>
 				</div>
 				<div class="goz_content_link_content">
@@ -49,6 +52,9 @@
 				</li>
 				<li class="goz_mobile_link_item">
 					<a href="https://goz.cosmosnetwork.dev/2020/04/14/a-whole-new-world-testnets-in-the-ibc-era/" target="_blank">GoZ Website</a>
+				</li>
+				<li class="goz_mobile_link_item">
+					<a href="https://map-of-zones-web.herokuapp.com/?period=24" target="_blank">Map of zones</a>
 				</li>
 				<li class="goz_mobile_link_item">
 					<a href="https://goz.p2p.org/" target="_blank">Visualizer from P2P Team</a>
@@ -314,7 +320,7 @@
 			}
 		}
 	}
-	@media (max-width: 1230px) {
+	@media (max-width: 1330px) {
 		.goz_container{
 			.goz_content_wrap{
 				flex-direction: column;
