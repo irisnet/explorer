@@ -114,13 +114,16 @@ func (task *StaticDelegatorByMonthTask) caculateWork() ([]document.ExStaticDeleg
 		return nil, err
 	}
 
-	var terminalData []document.ExStaticDelegator
+	var terminalData = make(map[string]document.ExStaticDelegator)
+	var delegators = make(map[string]string)
 	if task.address != "" {
 		data, err := task.staticModel.GetDataOneDay(endtime, task.address)
 		if err != nil {
 			return nil, err
 		}
-		terminalData = append(terminalData, data)
+		//terminalData = append(terminalData, data)
+		terminalData[data.Address] = data
+		delegators[data.Address] = data.Address
 	} else {
 		terminalData, err = task.staticModel.GetDataByDate(endtime)
 		if err != nil {
@@ -137,9 +140,23 @@ func (task *StaticDelegatorByMonthTask) caculateWork() ([]document.ExStaticDeleg
 	if err != nil {
 		return nil, err
 	}
-	logger.Debug(fmt.Sprintf("total delegator:%v", len(terminalData)))
 
-	for _, val := range terminalData {
+	delegators, err = task.getDelegatorsInPeriod(starttime, datetime)
+	if err != nil {
+		return nil, err
+	}
+	logger.Debug(fmt.Sprintf("total delegator:%v", len(delegators)))
+
+	for addr := range delegators {
+		val, ok := terminalData[addr]
+		if !ok {
+			val = document.ExStaticDelegator{
+				Address:            addr,
+				Total:              []document.Rewards{{Iris: 0, IrisAtto: "0"}},
+				DelegationsRewards: []document.Rewards{{Iris: 0, IrisAtto: "0"}},
+				Delegation:         utils.Coin{Denom: "iris-atto", Amount: 0},
+			}
+		}
 		one, err := task.getStaticDelegator(starttime, val, txs)
 		if err != nil {
 			logger.Error(err.Error())
@@ -425,6 +442,14 @@ func checkIsPeriod(lastcaculateDate, caculateTime string, period int) bool {
 	}
 
 	return durtime/24 >= 28 && durtime/24 <= 31
+}
+
+func (task *StaticDelegatorByMonthTask) getDelegatorsInPeriod(timelastcur, timedate time.Time) (map[string]string, error) {
+	delegetors, err := task.staticModel.GetAddressByPeriod(timelastcur, timedate)
+	if err != nil {
+		return nil, err
+	}
+	return delegetors, nil
 }
 
 //func (task *StaticDelegatorByMonthTask) getDelegationData(caculatetime string) ([]document.ExStaticDelegator, error) {
