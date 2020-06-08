@@ -80,7 +80,7 @@ func TestStaticValidatorByMonthTask_getStaticValidator(t *testing.T) {
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	foundtionDelegation := task.getFoundtionDelegation(terminalData)
+	foundtionDelegation := task.getFoundtionDelegation()
 
 	for _, val := range terminalData {
 
@@ -167,4 +167,16 @@ func TestStaticValidatorByMonthTask_SetCaculateScope(t *testing.T) {
 	task.SetCaculateScope(starttime, endtime)
 	fmt.Println(task.startTime)
 	fmt.Println(task.endTime)
+}
+
+func TestStaticValidatorByMonthTask_getValidatorsInPeriod(t *testing.T) {
+	task := new(StaticValidatorByMonthTask)
+	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 1), cstZone)
+	endtime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 31), cstZone)
+	data, err := task.getValidatorsInPeriod(starttime, endtime)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	fmt.Println(len(data))
+	fmt.Println(data)
 }
