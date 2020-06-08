@@ -109,10 +109,11 @@ func (task *StaticDelegatorByMonthTask) caculateWork() ([]document.ExStaticDeleg
 		starttime, _ = time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT%02d:%02d:00", datetime.Year(), datetime.Month(), datetime.Day(), hour, minute), cstZone)
 	}
 	//find last date
-	endtime, err := document.Getdate(task.staticModel.Name(), starttime, datetime, "-"+document.ExStaticDelegatorDateTag)
+	endtime, createat, err := document.Getdate(task.staticModel.Name(), starttime, datetime, "-"+document.ExStaticDelegatorDateTag)
 	if err != nil {
 		return nil, err
 	}
+	createtime := time.Unix(createat, 0)
 
 	var terminalData = make(map[string]document.ExStaticDelegator)
 	var delegators = make(map[string]string)
@@ -136,12 +137,13 @@ func (task *StaticDelegatorByMonthTask) caculateWork() ([]document.ExStaticDeleg
 
 	res := make([]document.ExStaticDelegatorMonth, 0, len(terminalData))
 
-	txs, err := task.getPeriodTxByAddress(starttime, datetime, task.address) //default is all address txs
+	//fmt.Println(starttime, createtime)
+	txs, err := task.getPeriodTxByAddress(starttime, createtime, task.address) //default is all address txs
 	if err != nil {
 		return nil, err
 	}
 
-	delegators, err = task.getDelegatorsInPeriod(starttime, datetime)
+	delegators, err = task.getDelegatorsInPeriod(starttime, createtime)
 	if err != nil {
 		return nil, err
 	}

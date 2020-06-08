@@ -120,10 +120,11 @@ func (task *StaticValidatorByMonthTask) caculateWork() ([]document.ExStaticValid
 		starttime, _ = time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT%02d:%02d:00", datetime.Year(), datetime.Month(), datetime.Day(), hour, minute), cstZone)
 	}
 	//find last date
-	endtime, err := document.Getdate(task.staticModel.Name(), starttime, datetime, "-"+document.ExStaticDelegatorDateTag)
+	endtime, createat, err := document.Getdate(task.staticModel.Name(), starttime, datetime, "-"+document.ExStaticDelegatorDateTag)
 	if err != nil {
 		return nil, err
 	}
+	createtime := time.Unix(createat, 0)
 
 	var terminalData = make(map[string]document.ExStaticValidator)
 	var validators = make(map[string]string)
@@ -153,7 +154,7 @@ func (task *StaticValidatorByMonthTask) caculateWork() ([]document.ExStaticValid
 	foundtionDelegation := task.getFoundtionDelegation()
 	res := make([]document.ExStaticValidatorMonth, 0, len(terminalData))
 
-	validators, err = task.getValidatorsInPeriod(starttime, datetime)
+	validators, err = task.getValidatorsInPeriod(starttime, createtime)
 	if err != nil {
 		return nil, err
 	}
