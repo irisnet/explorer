@@ -245,7 +245,7 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(startdate time.Time, 
 	if latestone.OperatorAddress == "" {
 		latestone.OperatorAddress = terminalval.OperatorAddress
 		latestone.TerminalCommission = document.Coin{
-			Denom: "iris",
+			Denom: types.IRISUint,
 		}
 	}
 	delegation, ok := addrDelegationMap[terminalval.OperatorAddress]

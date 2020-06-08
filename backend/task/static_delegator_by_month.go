@@ -154,7 +154,7 @@ func (task *StaticDelegatorByMonthTask) caculateWork() ([]document.ExStaticDeleg
 				Address:            addr,
 				Total:              []document.Rewards{{Iris: 0, IrisAtto: "0"}},
 				DelegationsRewards: []document.Rewards{{Iris: 0, IrisAtto: "0"}},
-				Delegation:         utils.Coin{Denom: "iris-atto", Amount: 0},
+				Delegation:         utils.Coin{Denom: types.IRISAttoUint, Amount: 0},
 			}
 		}
 		one, err := task.getStaticDelegator(starttime, val, txs)
