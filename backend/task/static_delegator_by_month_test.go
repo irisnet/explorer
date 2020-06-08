@@ -57,6 +57,27 @@ func TestStaticDelegatorByMonthTask_getPeriodTxByAddress(t *testing.T) {
 	//t.Log(string(bytedata))
 }
 
+func TestStaticDelegatorByMonthTask_getDelegatorsInPeriod(t *testing.T) {
+	task := new(StaticDelegatorByMonthTask)
+	starttime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 1), cstZone)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	datetime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 31), cstZone)
+	endtime, crtime, err := document.Getdate(task.staticModel.Name(), starttime, datetime, "-"+document.ExStaticDelegatorDateTag)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	fmt.Println(endtime)
+	fmt.Println(crtime)
+	fmt.Println(time.Unix(crtime, 0))
+	data, err := task.getDelegatorsInPeriod(starttime, time.Unix(crtime, 0))
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	fmt.Println(len(data))
+	//fmt.Println(data)
+}
 func TestStaticDelegatorByMonthTask_Caculate(t *testing.T) {
 	task := new(StaticDelegatorByMonthTask)
 	serv := new(service.CaculateService)

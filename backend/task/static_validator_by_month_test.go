@@ -64,13 +64,14 @@ func init() {
 
 func TestStaticValidatorByMonthTask_getStaticValidator(t *testing.T) {
 	task.SetAddressCoinMapData(dtask.AddressCoin, dtask.AddrPeriodCommission, dtask.AddrTerminalCommission)
-	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 1), cstZone)
-	datetime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 30), cstZone)
-	endtime, err := document.Getdate(task.staticModel.Name(), starttime, datetime, "-"+document.ExStaticDelegatorDateTag)
+	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 1), cstZone)
+	datetime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 31), cstZone)
+	endtime, createat, err := document.Getdate(task.staticModel.Name(), starttime, datetime, "-"+document.ExStaticDelegatorDateTag)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-
+	fmt.Println(time.Unix(createat, 0))
+	fmt.Println(endtime)
 	terminalData, err := task.staticModel.GetDataByDate(endtime)
 	if err != nil {
 		t.Fatal(err.Error())
@@ -80,7 +81,7 @@ func TestStaticValidatorByMonthTask_getStaticValidator(t *testing.T) {
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	foundtionDelegation := task.getFoundtionDelegation(terminalData)
+	foundtionDelegation := task.getFoundtionDelegation()
 
 	for _, val := range terminalData {
 
@@ -167,4 +168,16 @@ func TestStaticValidatorByMonthTask_SetCaculateScope(t *testing.T) {
 	task.SetCaculateScope(starttime, endtime)
 	fmt.Println(task.startTime)
 	fmt.Println(task.endTime)
+}
+
+func TestStaticValidatorByMonthTask_getValidatorsInPeriod(t *testing.T) {
+	task := new(StaticValidatorByMonthTask)
+	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 1), cstZone)
+	endtime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 31), cstZone)
+	data, err := task.getValidatorsInPeriod(starttime, endtime)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	fmt.Println(len(data))
+	fmt.Println(data)
 }
