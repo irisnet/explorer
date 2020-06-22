@@ -3,7 +3,7 @@
 		<div class="graph_content_wrap">
 			<div class="graph_content_title">
 				<div>GoZ Global Network View
-					<span class="beat_content" v-if="!flShowTestTooltip">Beta <el-tooltip class="tooltip_content" :content="'*This demo is using GoZ-testnet data. Please stay tuned for the grand GoZ Opening at May 1st'"><i style="font-size: 0.12rem" class="iconfont iconyiwen"></i></el-tooltip></span>
+					<span class="beat_content" v-if="!flShowTestTooltip">Beta <el-tooltip class="tooltip_content" :content="'The data displayed here are from GoZ Phase 3.'"><i style="font-size: 0.12rem" class="iconfont iconyiwen"></i></el-tooltip></span>
 				</div>
 				<div class="tooltip" v-if="flShowNetwork">
 				<div class="graph_tooltip"><p><span></span><span>Connection Opened</span></p> <p><span></span><span>Connection Unopened</span></p></div>
@@ -80,7 +80,6 @@
 
 <script>
 	import axios from 'axios';
-	import PerfectScrollbar from 'perfect-scrollbar'
 	import apiUrlConfig from "../../../config/config"
 	import ValidatorBianjieInformation from "./ValidatorBianjieInformation";
 	import AppDownload from "@/components/home/AppDownload";
