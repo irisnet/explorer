@@ -4,29 +4,7 @@
 			<h2 class="app_download_title">Rainbow Wallet</h2>
 			<div class="app_download_content_wrap">
 				<div class="app_download_goz_content">
-					<h4 class="app_download_goz_title">IBC-GoZ Version</h4>
-					<p class="app_download_goz_doc">Come experience the future IBC cross-chain wallet</p>
-					<div class="app_download_link_content">
-<!--						<p class="app_download_goz_link_title">COMING SOON.</p>-->
-						<a @click="$uMeng.push('RainbowIBC-GoZ','下载','安卓','统计从GoZ浏览器下载的安卓')" href="https://rb-app-stage.oss-cn-shanghai.aliyuncs.com/rainbow-latest.apk"  target="_blank"  v-if="isShowAndroid || !isMobile">
-							<div class="app_download_android_content">
-								<img src="../../assets/android_apk.png" alt="">
-							</div>
-						</a>
-						<a @click="$uMeng.push('RainbowIBC-GoZ','下载','iOS','统计从GoZ浏览器下载的iOS')" href="https://testflight.apple.com/join/4K1dJKxe" target="_blank"  v-if="isShowIphone || !isMobile">
-							<div class="app_download_ios_content">
-								<img src="../../assets/ios_testflight.png" alt="">
-							</div>
-						</a>
-						<div class="app_download_qr_content" v-if="!isMobile">
-							<img src="../../assets/scan_icon.png" alt="">
-							<div class="qr_content">
-								<img src="../../assets/goz_rainbow_qr.png" alt="">
-								<span class="tooltip_content">Scan to download</span>
-							</div>
-						</div>
-<!--						<p class="app_download_goz_link_content">Expected to be online on May 1</p>-->
-					</div>
+					<p class="tip_content">This Beta version has been discontinued.<a href="https://medium.com/@irisnet/get-in-line-experience-crosschain-transfers-and-atomic-coinswaps-with-rainbow-goz-61cfc57365f9" target="_blank" rel="noopener noreferrer">Check out the article for more details.</a></p>
 				</div>
 				<div class="app_download_mainnet_content">
 					<h4 class="app_download_mainnet_title">Mainnet Version</h4>
@@ -110,6 +88,15 @@
 					padding: 0.2rem 0 0.29rem 0.2rem;
 					border-radius: 0.04rem;
 					background: rgba(45, 50, 90, 0.64);
+					.tip_content{
+						color: #fff;
+						font-size: 0.16rem;
+						line-height: 0.18rem;
+						font-weight: 300;
+						a{
+							color: #377CF8 !important;
+						}
+					}
 					.app_download_goz_title{
 						color: #fff;
 						font-size: 0.16rem;
