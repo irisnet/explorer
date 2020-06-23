@@ -9,9 +9,6 @@
 				<div class="goz_content_network_state" :class="changeRouter ? 'active_border_bottom' :'unActive_border_bottom'">
 					<span><router-link :to="`/`">GoZ Network State Visualizer</router-link></span>
 				</div>
-				<div class="goz_content_network_state" :class="changeRouter ? 'unActive_border_bottom' :'active_border_bottom' ">
-					<span><router-link :to="`/download-rainbowgoz`">IBC-GoZ  Wallet</router-link></span>
-				</div>
 				<div class="menu_content" @click="flShowMobileMenu">
 					<img src="../../assets/menu.png" alt="">
 				</div>
