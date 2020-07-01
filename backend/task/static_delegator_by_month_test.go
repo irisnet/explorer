@@ -37,15 +37,15 @@ func TestStaticDelegatorByMonthTask_DoTask(t *testing.T) {
 //}
 func TestStaticDelegatorByMonthTask_getPeriodTxByAddress(t *testing.T) {
 	task := new(StaticDelegatorByMonthTask)
-	starttime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 1), cstZone)
+	starttime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 6, 1), cstZone)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	endtime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 31), cstZone)
+	endtime, err := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT23:59:00", 2020, 6, 30), cstZone)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	txs, err := task.getPeriodTxByAddress(starttime, endtime, "iaa1gm8hq56wkkau66uwydud42kqn4jkznja2mcee0")
+	txs, err := task.getPeriodTxByAddress(starttime, endtime, "iaa1tn9y9lqxkmdt2d54yc9czsk9uapy89m3m5vatq")
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -261,8 +261,8 @@ func TestStaticDelegatorByMonthTask_getIncrementDelegation(t *testing.T) {
 }
 
 func TestDoTask(t *testing.T) {
-	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 1), cstZone)
-	endtime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 31), cstZone)
+	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 6, 1), cstZone)
+	endtime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 7, 1), cstZone)
 	delegatortask := new(StaticDelegatorByMonthTask)
 	//delegatortask.SetCaculateAddress("iaa1kgddca7qj96z0qcxr2c45z73cfl0c75pwl95ym")
 	delegatortask.SetCaculateScope(starttime, endtime)

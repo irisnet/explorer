@@ -345,14 +345,14 @@ func (task *StaticDelegatorByMonthTask) getPeriodDelegationTimes(address string,
 	return
 }
 
-func (task *StaticDelegatorByMonthTask) getIncrementRewards(delegaterewards document.Rewards,
-	delagationfirstday document.Rewards,
+func (task *StaticDelegatorByMonthTask) getIncrementRewards(terminalrewards document.Rewards,
+	beginrewards document.Rewards,
 	periodRewards document.Rewards) (document.Rewards) {
 	var rewards document.Rewards
-	rewards.Iris = delegaterewards.Iris
+	rewards.Iris = terminalrewards.Iris
 
 	//Rdx = Rdn - Rdn-1  + Rdw
-	rewards.Iris -= delagationfirstday.Iris
+	rewards.Iris -= beginrewards.Iris
 
 	rewards.Iris += periodRewards.Iris
 	rewards.IrisAtto = fmt.Sprint(rewards.Iris * math.Pow10(18))
@@ -418,8 +418,8 @@ func (task *StaticDelegatorByMonthTask) getCoinflow(blockcoinFlow []lcd.BlockCoi
 	return
 }
 
-func (task *StaticDelegatorByMonthTask) getIncrementDelegation(terminal utils.Coin, startday utils.Coin) document.Coin {
-	amount := terminal.Amount - startday.Amount
+func (task *StaticDelegatorByMonthTask) getIncrementDelegation(terminal utils.Coin, start utils.Coin) document.Coin {
+	amount := terminal.Amount - start.Amount
 	return document.Coin{
 		Denom:  terminal.Denom,
 		Amount: amount,
