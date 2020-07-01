@@ -6,10 +6,8 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
-	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
-	"github.com/irisnet/explorer/backend/service"
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/vo"
@@ -119,26 +117,26 @@ func registerNavigationBar(r *mux.Router) error {
 		funGroup = append(funGroup, getTokenStatCirculation)
 		group.Add(1)
 
-		var getTokenStatFoundationBonded = func() {
-			defer func() {
-				group.Done()
-				if r := recover(); r != nil {
-					logger.Error("getTokenStatFoundationBonded error", logger.Any("err", r))
-				}
-			}()
+		//var getTokenStatFoundationBonded = func() {
+		//defer func() {
+		//	group.Done()
+		//	if r := recover(); r != nil {
+		//		logger.Error("getTokenStatFoundationBonded error", logger.Any("err", r))
+		//	}
+		//}()
 
-			accService := service.AccountService{}
-			if conf.Get().Hub.Prefix.AccAddr == types.MainnetAccPrefix {
-				res := accService.QueryDelegations(types.FoundationDelegatorAddr)
-				foundationBondAmt := float64(0)
-				for _, v := range res {
-					foundationBondAmt += v.Amount.Amount
-				}
-				result.FoundationBonded = utils.ParseStringFromFloat64(foundationBondAmt)
-			}
-		}
-		funGroup = append(funGroup, getTokenStatFoundationBonded)
-		group.Add(1)
+		//accService := service.AccountService{}
+		//if conf.Get().Hub.Prefix.AccAddr == types.MainnetAccPrefix {
+		//res := accService.QueryDelegations(types.FoundationDelegatorAddr)
+		//foundationBondAmt := float64(0)
+		//for _, v := range res {
+		//	foundationBondAmt += v.Amount.Amount
+		//}
+		//result.FoundationBonded = utils.ParseStringFromFloat64(foundationBondAmt)
+		//}
+		//}
+		//funGroup = append(funGroup, getTokenStatFoundationBonded)
+		//group.Add(1)
 
 		var calculateAvgBlockTime = func() {
 			defer func() {

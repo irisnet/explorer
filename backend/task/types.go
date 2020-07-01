@@ -26,8 +26,10 @@ var (
 	rewardsDenom = []string{"iris-atto"}
 
 	CronJob = map[string]bool{
-		"static_delegator": true,
-		"static_validator": true,
+		"static_delegator":       true,
+		"static_validator":       true,
+		"static_delegator_month": true,
+		"static_validator_month": true,
 	}
 )
 
