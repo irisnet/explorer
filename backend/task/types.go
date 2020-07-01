@@ -116,6 +116,7 @@ func Start() {
 		waitDelegatortaskDone.Wait()
 		if len(delegatortask.AddressCoin) == 0 ||
 			len(delegatortask.AddrPeriodCommission) == 0 ||
+			len(delegatortask.AddrBeginCommission) == 0 ||
 			len(delegatortask.AddrTerminalCommission) == 0 {
 			toJson := func(obj interface{}) string {
 				return string(utils.MarshalJsonIgnoreErr(obj))
@@ -123,10 +124,11 @@ func Start() {
 			logger.Warn("delegator rewards or commission rewards is nil",
 				logger.String("rewards", toJson(delegatortask.AddressCoin)),
 				logger.String("periodCommission", toJson(delegatortask.AddrPeriodCommission)),
+				logger.String("beginCommission", toJson(delegatortask.AddrBeginCommission)),
 				logger.String("terminalCommission", toJson(delegatortask.AddrTerminalCommission)))
 		}
 		validatortask.SetAddressCoinMapData(delegatortask.AddressCoin, delegatortask.AddrPeriodCommission,
-			delegatortask.AddrTerminalCommission)
+			delegatortask.AddrBeginCommission, delegatortask.AddrTerminalCommission)
 		validatortask.Start()
 	})
 }
