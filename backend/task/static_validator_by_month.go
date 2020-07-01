@@ -180,9 +180,9 @@ func (task *StaticValidatorByMonthTask) caculateWork() ([]document.ExStaticValid
 				datetime.Month(), datetime.Day(), datetime.Hour(), datetime.Minute(), datetime.Second())
 
 		}
-		//if task.isSetTime {
-		//	one.CaculateDate = strings.ReplaceAll(conf.Get().Server.CaculateDate, "-", ".")
-		//}
+		if task.isSetTime {
+			one.CaculateDate = strings.ReplaceAll(conf.Get().Server.CaculateDate, "-", ".")
+		}
 		res = append(res, one)
 
 	}

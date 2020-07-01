@@ -165,9 +165,9 @@ func (task *StaticDelegatorByMonthTask) caculateWork() ([]document.ExStaticDeleg
 			continue
 		}
 		one.CaculateDate = fmt.Sprintf("%d.%02d.%02d", datetime.Year(), datetime.Month(), datetime.Day())
-		//if task.isSetTime {
-		//	one.CaculateDate = strings.ReplaceAll(conf.Get().Server.CaculateDate, "-", ".")
-		//}
+		if task.isSetTime {
+			one.CaculateDate = strings.ReplaceAll(conf.Get().Server.CaculateDate, "-", ".")
+		}
 		if conf.Get().Server.CaculateDebug {
 			one.Date = fmt.Sprintf("%d.%02d.%02d %02d:%02d:%02d", starttime.Year(),
 				starttime.Month(), starttime.Day(), starttime.Hour(), starttime.Minute(), starttime.Second())
