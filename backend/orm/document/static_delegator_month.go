@@ -50,26 +50,6 @@ func (d ExStaticDelegatorMonth) EnsureIndexes() []mgo.Index {
 	return indexes
 }
 
-func (d ExStaticDelegatorMonth) GetLatest(address string) (ExStaticDelegatorMonth, error) {
-	var res ExStaticDelegatorMonth
-	cond := bson.M{}
-	if address != "" {
-		cond[ExStaticDelegatorMonthAddressTag] = address
-	}
-	var query = orm.NewQuery()
-	defer query.Release()
-	query.SetCollection(d.Name()).
-		SetCondition(cond).
-		SetSort("-date").
-		SetSize(1).
-		SetResult(&res)
-
-	err := query.Exec()
-	if err != nil && err != mgo.ErrNotFound {
-		return res, err
-	}
-	return res, nil
-}
 
 func (d ExStaticDelegatorMonth) Batch(txs []txn.Op) error {
 	return orm.Batch(txs)

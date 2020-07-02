@@ -63,7 +63,7 @@ func init() {
 }
 
 func TestStaticValidatorByMonthTask_getStaticValidator(t *testing.T) {
-	task.SetAddressCoinMapData(dtask.AddressCoin, dtask.AddrPeriodCommission, dtask.AddrTerminalCommission)
+	task.SetAddressCoinMapData(dtask.AddressCoin, dtask.AddrPeriodCommission, dtask.AddrBeginCommission, dtask.AddrTerminalCommission)
 	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 1), cstZone)
 	datetime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 31), cstZone)
 	endtime, createat, err := document.Getdate(task.staticModel.Name(), starttime, datetime, "-"+document.ExStaticDelegatorDateTag)
@@ -115,8 +115,8 @@ func TestStaticValidatorByMonthTask_DoTask(t *testing.T) {
 }
 
 func TestMonthDoTask(t *testing.T) {
-	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 1), cstZone)
-	endtime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 31), cstZone)
+	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 6, 1), cstZone)
+	endtime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 7, 1), cstZone)
 	delegatortask := new(StaticDelegatorByMonthTask)
 	validatortask := new(StaticValidatorByMonthTask)
 	delegatortask.SetCaculateScope(starttime, endtime)
@@ -136,7 +136,7 @@ func TestMonthDoTask(t *testing.T) {
 	fmt.Println("caculateWork have done,then validatortask work")
 	//validatortask.SetCaculateAddress("iva1qq93sapmdcx36uz64vvw5gzuevtxsc7lcfxsat")
 	validatortask.SetCaculateScope(starttime, endtime)
-	validatortask.SetAddressCoinMapData(delegatortask.AddressCoin, delegatortask.AddrPeriodCommission, delegatortask.AddrTerminalCommission)
+	validatortask.SetAddressCoinMapData(delegatortask.AddressCoin, delegatortask.AddrPeriodCommission, delegatortask.AddrBeginCommission, delegatortask.AddrTerminalCommission)
 	valdata, err := validatortask.caculateWork()
 	if err != nil {
 		t.Fatal(err.Error())
