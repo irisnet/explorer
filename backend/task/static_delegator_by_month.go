@@ -295,7 +295,7 @@ func (task *StaticDelegatorByMonthTask) getPeriodTxByAddress(starttime, endtime 
 	for _, tx := range txs {
 		switch tx.Type {
 		case types.TxTypeWithdrawDelegatorReward, types.TxTypeWithdrawDelegatorRewardsAll, types.TxTypeWithdrawValidatorRewardsAll,
-			types.TxTypeBeginRedelegate, types.TxTypeStakeBeginUnbonding, types.TxTypeStakeDelegate:
+			types.TxTypeBeginRedelegate, types.TxTypeStakeBeginUnbonding, types.TxTypeStakeDelegate, types.TxTypeStakeEditValidator:
 			chanLimit <- true
 			group.Add(1)
 			go func(txHash string, limit chan bool) {
