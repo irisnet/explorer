@@ -16,6 +16,7 @@ type ExStaticDelegatorMonthVo struct {
 	TerminalDelegation     float64 `json:"期末在托量"`
 	IncrementDelegation    float64 `json:"期间委托净增量"`
 	PeriodDelegationTimes  int     `json:"期间委托交易次数"`
+	AnnualizedRate         string  `json:"年化"`
 	CaculateDate           string  `json:"统计更新日期"`
 	//CreateAt               int64   `json:"create_at"`
 	//UpdateAt               int64   `json:"update_at"`

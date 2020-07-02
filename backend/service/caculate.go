@@ -7,6 +7,7 @@ import (
 	"github.com/irisnet/explorer/backend/types"
 	"math"
 	"strconv"
+	"math/big"
 )
 
 type CaculateService struct {
@@ -46,6 +47,16 @@ func LoadFromDelModel(model document.ExStaticDelegatorMonth) vo.ExStaticDelegato
 		PeriodDelegationTimes:  model.PeriodDelegationTimes,
 	}
 	ret.Rewards = ret.TerminalRewards + ret.PeriodWithdrawRewards - ret.PeriodIncrementRewards
+	if true {
+		rewards := new(big.Rat).Mul(new(big.Rat).SetFloat64(ret.PeriodIncrementRewards), new(big.Rat).SetInt64(365))
+		delegations := new(big.Rat).Mul(new(big.Rat).SetFloat64(ret.TerminalDelegation), new(big.Rat).SetInt64(30))
+		if delegations.Cmp(new(big.Rat).SetInt64(0)) == 1 {
+			data := new(big.Rat).Quo(rewards, delegations)
+			ret.AnnualizedRate = new(big.Rat).Mul(data, new(big.Rat).SetInt64(100)).FloatString(2)
+		} else {
+			ret.AnnualizedRate = "0"
+		}
+	}
 	return ret
 }
 
