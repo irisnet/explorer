@@ -94,6 +94,7 @@ func (task *StaticValidatorByMonthTask) caculateWork() ([]document.ExStaticValid
 		starttime = task.startTime
 		datetime = task.endTime
 	}
+	starttime = starttime.Add(time.Duration(-24) * time.Hour)
 	if conf.Get().Server.CaculateDebug {
 		arr := strings.Split(conf.Get().Server.CronTimeFormatStaticMonth, " ")
 		minutedata := strings.Split(arr[0], "/")

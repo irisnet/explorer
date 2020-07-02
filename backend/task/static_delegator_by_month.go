@@ -83,6 +83,8 @@ func (task *StaticDelegatorByMonthTask) caculateWork() ([]document.ExStaticDeleg
 		datetime = task.endTime
 		starttime = task.startTime
 	}
+	starttimegetTx := starttime
+	starttime = starttime.Add(time.Duration(-24) * time.Hour)
 	if conf.Get().Server.CaculateDebug {
 		arr := strings.Split(conf.Get().Server.CronTimeFormatStaticMonth, " ")
 		minutedata := strings.Split(arr[0], "/")
@@ -137,7 +139,7 @@ func (task *StaticDelegatorByMonthTask) caculateWork() ([]document.ExStaticDeleg
 	res := make([]document.ExStaticDelegatorMonth, 0, len(terminalData))
 
 	//fmt.Println(starttime, createtime)
-	txs, err := task.getPeriodTxByAddress(starttime, createtime, task.address) //default is all address txs
+	txs, err := task.getPeriodTxByAddress(starttimegetTx, createtime, task.address) //default is all address txs
 	if err != nil {
 		return nil, err
 	}
@@ -232,8 +234,6 @@ func (task *StaticDelegatorByMonthTask) getStaticDelegator(starttime time.Time, 
 			Denom:  types.IRISAttoUint,
 		}
 	}
-
-
 
 	delegationrewards := float64(0)
 	if len(terminalval.Total) > 0 {
