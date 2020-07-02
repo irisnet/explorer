@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 	"github.com/irisnet/explorer/backend/types"
+	"encoding/json"
 )
 
 func TestExStaticValidator_GetCommissionRate(t *testing.T) {
@@ -35,4 +36,16 @@ func TestExStaticValidator_GetCommissionRate(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Log(data.Commission.Rate)
+}
+
+func TestExStaticValidator_GetDataOneDay(t *testing.T) {
+	address := "iva16tvg03gnrud9hzec7nsf9k8da74fqa9sk8xfqv"
+	datestr := fmt.Sprintf("%d-%02d-01T00:00:00", 2020, 6)
+	date, _ := time.ParseInLocation(types.TimeLayout, datestr, time.FixedZone("CST", 8*3600))
+	data, err := new(ExStaticValidator).GetDataOneDay(date, address)
+	if err != nil {
+		t.Fatal(err)
+	}
+	bytestr, _ := json.Marshal(data)
+	t.Log(string(bytestr))
 }
