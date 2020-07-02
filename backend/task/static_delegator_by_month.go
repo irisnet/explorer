@@ -122,7 +122,6 @@ func (task *StaticDelegatorByMonthTask) caculateWork() ([]document.ExStaticDeleg
 		if err != nil {
 			return nil, err
 		}
-		//terminalData = append(terminalData, data)
 		terminalData[data.Address] = data
 		delegators[data.Address] = data.Address
 	} else {
@@ -234,31 +233,7 @@ func (task *StaticDelegatorByMonthTask) getStaticDelegator(starttime time.Time, 
 		}
 	}
 
-	//delagationlastmonth, err := task.mStaticModel.GetLatest(terminalval.Address)
-	//if err != nil {
-	//	logger.Error("get GetLatest failed",
-	//		logger.String("func", "get StaticDelegatorMonth"),
-	//		logger.String("err", err.Error()))
-	//	//return document.ExStaticDelegatorMonth{}, err
-	//}
-	// check delagationlastmonth caculate date if last caculate period
-	//datetime := time.Now().In(cstZone)
-	//currentCaculateDate := fmt.Sprintf("%d.%02d.%02d", datetime.Year(), datetime.Month(), datetime.Day())
-	//caculateperiod := 0
-	//if task.isSetTime {
-	//	currentCaculateDate = conf.Get().Server.CaculateDate
-	//	caculateperiod = conf.Get().Server.CaculatePeriodDay
-	//}
-	//if !checkIsPeriod(startdelagation.Date.Format(types.TimeLayout), currentCaculateDate, caculateperiod) {
-	//	delagationlastmonth = document.ExStaticDelegatorMonth{}
-	//}
 
-	//if delagationlastmonth.Address == "" {
-	//	delagationlastmonth.Address = terminalval.Address
-	//	delagationlastmonth.TerminalDelegation = document.Coin{
-	//		Denom: types.IRISAttoUint,
-	//	}
-	//}
 
 	delegationrewards := float64(0)
 	if len(terminalval.Total) > 0 {
@@ -427,33 +402,6 @@ func (task *StaticDelegatorByMonthTask) getIncrementDelegation(terminal utils.Co
 
 }
 
-////check caculate period is ok
-//func checkIsPeriod(lastcaculateDate, caculateTime string, period int) bool {
-//	if lastcaculateDate == "" {
-//		return false
-//	}
-//	caculateTime = strings.ReplaceAll(caculateTime, ".", "-")
-//	lastcaculateDate = strings.ReplaceAll(lastcaculateDate, ".", "-")
-//	timedate, err := time.ParseInLocation(types.TimeLayout, caculateTime+"T00:00:00", cstZone)
-//	if err != nil {
-//		logger.Error("ParseInLocation caculateTime error in checkIsPeriod", logger.String("error", err.Error()))
-//		return false
-//	}
-//	timelastcur, err := time.ParseInLocation(types.TimeLayout, lastcaculateDate+"T00:00:00", cstZone)
-//	if err != nil {
-//		logger.Error("ParseInLocation lastcaculateDate error in checkIsPeriod", logger.String("error", err.Error()))
-//		return false
-//	}
-//	durtime := timedate.Sub(timelastcur).Milliseconds() / (3600 * 1000)
-//	//fmt.Println(timelastcur)
-//	//fmt.Println(durtime / 24)
-//	if period > 0 {
-//		return durtime/24 == int64(period)
-//	}
-//
-//	return durtime/24 >= 28 && durtime/24 <= 31
-//}
-
 func (task *StaticDelegatorByMonthTask) getDelegatorsInPeriod(timelastcur, timedate time.Time) (map[string]string, error) {
 	delegetors, err := task.staticModel.GetAddressByPeriod(timelastcur, timedate)
 	if err != nil {
@@ -461,34 +409,3 @@ func (task *StaticDelegatorByMonthTask) getDelegatorsInPeriod(timelastcur, timed
 	}
 	return delegetors, nil
 }
-
-//func (task *StaticDelegatorByMonthTask) getDelegationData(caculatetime string) ([]document.ExStaticDelegator, error) {
-//	date, err := time.ParseInLocation(types.TimeLayout, caculatetime, cstZone)
-//	if err != nil {
-//		return nil, err
-//	}
-//	data, err := task.staticModel.GetDataByDate(date)
-//	if err != nil {
-//		logger.Error("Get GetData ByDate fail",
-//			logger.String("date", date.String()),
-//			logger.String("err", err.Error()))
-//		return nil, err
-//	}
-//	return data, nil
-//}
-
-//func (task *StaticDelegatorByMonthTask) saveOps(datas []document.ExStaticDelegatorMonth) ([]txn.Op) {
-//	var ops = make([]txn.Op, 0, len(datas))
-//	for _, val := range datas {
-//		val.Id = bson.NewObjectId()
-//		val.CreateAt = time.Now().Unix()
-//		val.UpdateAt = time.Now().Unix()
-//		op := txn.Op{
-//			C:      task.mStaticModel.Name(),
-//			Id:     bson.NewObjectId(),
-//			Insert: val,
-//		}
-//		ops = append(ops, op)
-//	}
-//	return ops
-//}

@@ -222,23 +222,7 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(starttime time.Time, 
 		logger.Error("get latest one failed", logger.String("func", "get IncrementCommission"),
 			logger.String("err", err.Error()))
 	}
-	//// check latestone caculate date if last caculate period
-	//datetime := time.Now().In(cstZone)
-	//currentCaculateDate := fmt.Sprintf("%d.%02d.%02d", datetime.Year(), datetime.Month(), datetime.Day())
-	//caculateperiod := 0
-	//if task.isSetTime {
-	//	currentCaculateDate = conf.Get().Server.CaculateDate
-	//	caculateperiod = conf.Get().Server.CaculatePeriodDay
-	//}
-	//if !checkIsPeriod(latestone.CaculateDate, currentCaculateDate, caculateperiod) {
-	//	latestone = document.ExStaticValidatorMonth{}
-	//}
-	//if latestone.OperatorAddress == "" {
-	//	latestone.OperatorAddress = terminalval.OperatorAddress
-	//	latestone.TerminalCommission = document.Coin{
-	//		Denom: types.IRISUint,
-	//	}
-	//}
+
 	delegation, ok := addrDelegationMap[terminalval.OperatorAddress]
 	if !ok {
 		delegation = latestone.FoundationDelegateT
@@ -361,9 +345,7 @@ func (task *StaticValidatorByMonthTask) getFoundationDelegateIncre(foundationDel
 func (task *StaticValidatorByMonthTask) getIncrementCommission(pcommission, terminalCommission,
 beginCommission document.Coin) (IncreCommission document.Coin) {
 	//Rcx = Rcn - Rcn-1 + Rcw
-	//if latestoneCommission.Denom == types.IRISUint {
-	//	latestoneCommission.Amount = latestoneCommission.Amount * math.Pow10(18)
-	//}
+
 	IncreCommission.Amount = terminalCommission.Amount - beginCommission.Amount + pcommission.Amount
 	IncreCommission.Denom = terminalCommission.Denom
 
