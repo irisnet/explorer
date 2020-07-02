@@ -100,22 +100,22 @@ func registerNavigationBar(r *mux.Router) error {
 		funGroup = append(funGroup, queryBondedInfo)
 		group.Add(1)
 
-		var getTokenStatCirculation = func() {
-			defer func() {
-				group.Done()
-				if r := recover(); r != nil {
-					logger.Error("getTokenStatCirculation error", logger.Any("err", r))
-				}
-			}()
-			if v, err := lcd.GetTokenStatsCirculation(); err != nil {
-				logger.Error("GetTokenStatsCirculation fail", logger.String("err", err.Error()))
-				result.Circulation = "0"
-			} else {
-				result.Circulation = v.Amount
-			}
-		}
-		funGroup = append(funGroup, getTokenStatCirculation)
-		group.Add(1)
+		//var getTokenStatCirculation = func() {
+		//	defer func() {
+		//		group.Done()
+		//		if r := recover(); r != nil {
+		//			logger.Error("getTokenStatCirculation error", logger.Any("err", r))
+		//		}
+		//	}()
+		//	if v, err := lcd.GetTokenStatsCirculation(); err != nil {
+		//		logger.Error("GetTokenStatsCirculation fail", logger.String("err", err.Error()))
+		//		result.Circulation = "0"
+		//	} else {
+		//		result.Circulation = v.Amount
+		//	}
+		//}
+		//funGroup = append(funGroup, getTokenStatCirculation)
+		//group.Add(1)
 
 		//var getTokenStatFoundationBonded = func() {
 		//defer func() {
