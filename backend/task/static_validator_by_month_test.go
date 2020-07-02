@@ -1,14 +1,14 @@
 package task
 
 import (
-	"testing"
 	"encoding/json"
-	"time"
-	"github.com/irisnet/explorer/backend/types"
 	"fmt"
 	"github.com/irisnet/explorer/backend/orm/document"
-	"github.com/irisnet/explorer/backend/vo"
 	"github.com/irisnet/explorer/backend/service"
+	"github.com/irisnet/explorer/backend/types"
+	"github.com/irisnet/explorer/backend/vo"
+	"testing"
+	"time"
 )
 
 var (
@@ -121,7 +121,7 @@ func TestMonthDoTask(t *testing.T) {
 	validatortask := new(StaticValidatorByMonthTask)
 	delegatortask.SetCaculateScope(starttime, endtime)
 	//delegatortask.SetCaculateAddress("iaa1xf5jaw09klqg9hzxfks3ycjvqgnpyjcm0yrkut")
-	data, err := delegatortask.caculateWork()
+	data, err := delegatortask.calculateWork()
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -133,7 +133,7 @@ func TestMonthDoTask(t *testing.T) {
 	}
 	bytedata, _ := json.Marshal(vomodel)
 	fmt.Println(string(bytedata))
-	fmt.Println("caculateWork have done,then validatortask work")
+	fmt.Println("calculateWork have done,then validatortask work")
 	//validatortask.SetCaculateAddress("iva1qq93sapmdcx36uz64vvw5gzuevtxsc7lcfxsat")
 	validatortask.SetCaculateScope(starttime, endtime)
 	validatortask.SetAddressCoinMapData(delegatortask.AddressCoin, delegatortask.AddrPeriodCommission, delegatortask.AddrBeginCommission, delegatortask.AddrTerminalCommission)
