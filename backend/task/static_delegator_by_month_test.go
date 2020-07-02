@@ -266,7 +266,7 @@ func TestDoTask(t *testing.T) {
 	delegatortask := new(StaticDelegatorByMonthTask)
 	//delegatortask.SetCaculateAddress("iaa1kgddca7qj96z0qcxr2c45z73cfl0c75pwl95ym")
 	delegatortask.SetCaculateScope(starttime, endtime)
-	datas, err := delegatortask.caculateWork()
+	datas, err := delegatortask.calculateWork()
 	if err != nil {
 		t.Fail()
 	}
