@@ -50,7 +50,7 @@ func init() {
 type TimerTask interface {
 	Start()
 	Name() string
-	DoTask() error
+	DoTask(fn func(string) chan bool) error
 }
 
 type Engine struct {

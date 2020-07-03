@@ -25,7 +25,8 @@ func (task ValidatorStaticInfo) Start() {
 	})
 }
 
-func (task ValidatorStaticInfo) DoTask() error {
+func (task ValidatorStaticInfo) DoTask(fn func(string) chan bool) error {
+	defer HeartQuit(fn(task.Name()))
 	validatorService := service.ValidatorService{}
 	return validatorService.UpdateValidatorStaticInfo()
 }

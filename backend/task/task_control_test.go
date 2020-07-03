@@ -31,5 +31,5 @@ func TestTaskControlService_Start(t *testing.T) {
 }
 
 func TestUpdateAccount_DoTask(t *testing.T) {
-	new(TaskControlMonitor).DoTask()
+	new(TaskControlMonitor).DoTask(HeartBeat)
 }

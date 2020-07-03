@@ -23,7 +23,8 @@ func (task UpdateValidatorIcons) Start() {
 	//})
 }
 
-func (task UpdateValidatorIcons) DoTask() error {
+func (task UpdateValidatorIcons) DoTask(fn func(string) chan bool) error {
+	defer HeartQuit(fn(task.Name()))
 	err := new(service.ValidatorService).UpdateValidatorIcons()
 	if err != nil {
 		return err

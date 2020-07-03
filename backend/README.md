@@ -35,6 +35,7 @@ Blockchain explorer for the IRIS Hub
     CronTimeAccountRewards: time interval of update account rewards
     CronTimeValidators: time interval of update validators
     CronTimeValidatorIcons: time interval of update validator icons
+    CronTimeHeartBeat: time interval of heart beat in cron task
     
     
     //irishub v0.11.0 add

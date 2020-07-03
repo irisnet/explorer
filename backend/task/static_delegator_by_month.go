@@ -53,7 +53,8 @@ func (task *StaticDelegatorByMonthTask) SetCaculateAddress(address string) {
 	task.address = address
 }
 
-func (task *StaticDelegatorByMonthTask) DoTask() error {
+func (task *StaticDelegatorByMonthTask) DoTask(fn func(string) chan bool) error {
+	defer HeartQuit(fn(task.Name()))
 
 	res, err := task.calculateWork()
 	if err != nil {

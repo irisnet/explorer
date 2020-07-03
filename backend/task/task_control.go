@@ -17,7 +17,7 @@ type (
 	}
 	TaskControlService struct {
 	}
-	Callback func() error
+	Callback func(func(string) chan bool) error
 )
 
 func (s TaskControlService) runTask(taskName string, timeInterval int, callback Callback) error {
@@ -39,7 +39,7 @@ func (s TaskControlService) runTask(taskName string, timeInterval int, callback 
 		} else {
 			// do task
 			var doTaskErr error
-			if err := callback(); err != nil {
+			if err := callback(HeartBeat); err != nil {
 				doTaskErr = fmt.Errorf("doTask fail, taskName:%s, err:%s", taskName, err.Error())
 			}
 
@@ -113,7 +113,8 @@ func (s TaskControlMonitor) Start() {
 	})
 }
 
-func (s TaskControlMonitor) DoTask() error {
+func (s TaskControlMonitor) DoTask(fn func(string) chan bool) error {
+	defer HeartQuit(fn(s.Name()))
 	runValue := true
 	skip := 0
 	limit := 20

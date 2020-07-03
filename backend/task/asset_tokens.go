@@ -25,7 +25,8 @@ func (task UpdateAssetTokens) Start() {
 	})
 }
 
-func (task UpdateAssetTokens) DoTask() error {
+func (task UpdateAssetTokens) DoTask(fn func(string) chan bool) error {
+	defer HeartQuit(fn(task.Name()))
 	assetTokens, err := document.AssetToken{}.GetAllAssets()
 	if err != nil {
 		return err
