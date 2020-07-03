@@ -1,18 +1,18 @@
 package task
 
 import (
-	"github.com/irisnet/explorer/backend/orm/document"
-	"github.com/irisnet/explorer/backend/logger"
-	"time"
-	"github.com/irisnet/explorer/backend/types"
 	"fmt"
+	"github.com/irisnet/explorer/backend/conf"
+	"github.com/irisnet/explorer/backend/lcd"
+	"github.com/irisnet/explorer/backend/logger"
+	"github.com/irisnet/explorer/backend/orm/document"
+	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"math"
-	"strings"
-	"github.com/irisnet/explorer/backend/lcd"
-	"github.com/irisnet/explorer/backend/conf"
-	"sync"
 	"strconv"
+	"strings"
+	"sync"
+	"time"
 )
 
 //caculatetime format [ 2020-04-03T00:00:00 ]
@@ -23,7 +23,7 @@ type StaticDelegatorByMonthTask struct {
 	AddressCoin            map[string]document.Coin
 	AddrPeriodCommission   map[string]document.Coin
 	AddrTerminalCommission map[string]document.Coin
-	//AddrBeginCommission    map[string]document.Coin
+	AddrBeginCommission    map[string]document.Coin
 
 	startTime time.Time
 	endTime   time.Time
@@ -55,7 +55,7 @@ func (task *StaticDelegatorByMonthTask) SetCaculateAddress(address string) {
 
 func (task *StaticDelegatorByMonthTask) DoTask() error {
 
-	res, err := task.caculateWork()
+	res, err := task.calculateWork()
 	if err != nil {
 		return err
 	}
@@ -74,15 +74,17 @@ func (task *StaticDelegatorByMonthTask) DoTask() error {
 	return nil
 }
 
-func (task *StaticDelegatorByMonthTask) caculateWork() ([]document.ExStaticDelegatorMonth, error) {
+func (task *StaticDelegatorByMonthTask) calculateWork() ([]document.ExStaticDelegatorMonth, error) {
 	datetime := time.Now().In(cstZone)
 
 	year, month := getStartYearMonth(datetime)
-	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-01T00:00:00", year, month), cstZone)
+	startTimeGetRewards, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-01T00:00:00", year, month), cstZone)
 	if task.isSetTime {
 		datetime = task.endTime
-		starttime = task.startTime
+		startTimeGetRewards = task.startTime
 	}
+	beginTimeGetTx := startTimeGetRewards
+	startTimeGetRewards = startTimeGetRewards.Add(time.Duration(-24) * time.Hour)
 	if conf.Get().Server.CaculateDebug {
 		arr := strings.Split(conf.Get().Server.CronTimeFormatStaticMonth, " ")
 		minutedata := strings.Split(arr[0], "/")
@@ -100,29 +102,32 @@ func (task *StaticDelegatorByMonthTask) caculateWork() ([]document.ExStaticDeleg
 				//no work
 				return nil, fmt.Errorf("time hour is smaller than 1")
 			} else {
-				hour --
+				hour--
 				minute = minute - int(interval) + 60
 			}
 		} else {
 			minute = minute - int(interval)
 		}
-		starttime, _ = time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT%02d:%02d:00", datetime.Year(), datetime.Month(), datetime.Day(), hour, minute), cstZone)
+		startTimeGetRewards, _ = time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT%02d:%02d:00", datetime.Year(), datetime.Month(), datetime.Day(), hour, minute), cstZone)
 	}
 	//find last date
-	endtime, err := document.Getdate(task.staticModel.Name(), starttime, datetime, "-"+document.ExStaticDelegatorDateTag)
+	endTimeGetRewards, createAt, err := document.Getdate(task.staticModel.Name(), startTimeGetRewards, datetime, "-"+document.ExStaticDelegatorDateTag)
 	if err != nil {
 		return nil, err
 	}
+	endTimeGetTx := time.Unix(createAt, 0)
 
-	var terminalData []document.ExStaticDelegator
+	var terminalData = make(map[string]document.ExStaticDelegator)
+	var delegators = make(map[string]string)
 	if task.address != "" {
-		data, err := task.staticModel.GetDataOneDay(endtime, task.address)
+		data, err := task.staticModel.GetDataOneDay(endTimeGetRewards, task.address)
 		if err != nil {
 			return nil, err
 		}
-		terminalData = append(terminalData, data)
+		terminalData[data.Address] = data
+		delegators[data.Address] = data.Address
 	} else {
-		terminalData, err = task.staticModel.GetDataByDate(endtime)
+		terminalData, err = task.staticModel.GetDataByDate(endTimeGetRewards)
 		if err != nil {
 			logger.Error("Get GetData ByDate fail",
 				logger.String("date", datetime.String()),
@@ -133,22 +138,39 @@ func (task *StaticDelegatorByMonthTask) caculateWork() ([]document.ExStaticDeleg
 
 	res := make([]document.ExStaticDelegatorMonth, 0, len(terminalData))
 
-	txs, err := task.getPeriodTxByAddress(starttime, datetime, task.address) //default is all address txs
+	//fmt.Println(startTimeGetRewards, endTimeGetTx)
+	txs, err := task.getPeriodTxByAddress(beginTimeGetTx, endTimeGetTx, task.address) //default is all address txs
 	if err != nil {
 		return nil, err
 	}
-	logger.Debug(fmt.Sprintf("total delegator:%v", len(terminalData)))
 
-	for _, val := range terminalData {
-		one, err := task.getStaticDelegator(starttime, val, txs)
+	delegators, err = task.getDelegatorsInPeriod(startTimeGetRewards, endTimeGetRewards)
+	if err != nil {
+		return nil, err
+	}
+
+	for addr := range delegators {
+		val, ok := terminalData[addr]
+		if !ok {
+			val = document.ExStaticDelegator{
+				Address:            addr,
+				Total:              []document.Rewards{{Iris: 0, IrisAtto: "0"}},
+				DelegationsRewards: []document.Rewards{{Iris: 0, IrisAtto: "0"}},
+				Delegation:         utils.Coin{Denom: types.IRISAttoUint, Amount: 0},
+			}
+		}
+		one, err := task.getStaticDelegator(startTimeGetRewards, val, txs)
 		if err != nil {
 			logger.Error(err.Error())
 			continue
 		}
 		one.CaculateDate = fmt.Sprintf("%d.%02d.%02d", datetime.Year(), datetime.Month(), datetime.Day())
+		if task.isSetTime {
+			one.CaculateDate = strings.ReplaceAll(conf.Get().Server.CaculateDate, "-", ".")
+		}
 		if conf.Get().Server.CaculateDebug {
-			one.Date = fmt.Sprintf("%d.%02d.%02d %02d:%02d:%02d", starttime.Year(),
-				starttime.Month(), starttime.Day(), starttime.Hour(), starttime.Minute(), starttime.Second())
+			one.Date = fmt.Sprintf("%d.%02d.%02d %02d:%02d:%02d", startTimeGetRewards.Year(),
+				startTimeGetRewards.Month(), startTimeGetRewards.Day(), startTimeGetRewards.Hour(), startTimeGetRewards.Minute(), startTimeGetRewards.Second())
 			one.CaculateDate = fmt.Sprintf("%d.%02d.%02d %02d:%02d:%02d", datetime.Year(),
 				datetime.Month(), datetime.Day(), datetime.Hour(), datetime.Minute(), datetime.Second())
 		}
@@ -158,7 +180,7 @@ func (task *StaticDelegatorByMonthTask) caculateWork() ([]document.ExStaticDeleg
 	return res, nil
 }
 
-func parseCoinAmountAndUnitFromStr(s string) (document.Coin) {
+func parseCoinAmountAndUnitFromStr(s string) document.Coin {
 	for _, denom := range rewardsDenom {
 		if strings.HasSuffix(s, denom) {
 			coin := utils.ParseCoin(s)
@@ -171,50 +193,44 @@ func parseCoinAmountAndUnitFromStr(s string) (document.Coin) {
 	return document.Coin{}
 }
 
-func (task *StaticDelegatorByMonthTask) getStaticDelegator(starttime time.Time, terminalval document.ExStaticDelegator, txs []document.CommonTx) (document.ExStaticDelegatorMonth, error) {
+func (task *StaticDelegatorByMonthTask) getStaticDelegator(startTime time.Time, terminalval document.ExStaticDelegator, txs []document.CommonTx) (document.ExStaticDelegatorMonth, error) {
 	periodRewards := task.getPeriodRewards(terminalval.Address)
-	//delagation, err := task.staticModel.GetDataOneDay(starttime, terminalval.Address)
-	//if err != nil {
-	//	logger.Error("get DelegationData failed",
-	//		logger.String("func", "get StaticDelegator"),
-	//		logger.String("err", err.Error()))
-	//	//return document.ExStaticDelegatorMonth{}, err
-	//}
-	//if delagation.Address == "" {
-	//	delagation.Address = terminalval.Address
-	//	delagation.Date = starttime
-	//}
+	startdelagation, err := task.staticModel.GetDataOneDay(startTime, terminalval.Address)
+	if err != nil {
+		logger.Error("get GetDataOneDay failed",
+			logger.String("func", "get StaticDelegator"),
+			logger.String("startTime", startTime.Format(types.TimeLayout)),
+			logger.String("err", err.Error()))
+	}
+	if startdelagation.Address == "" {
+		startdelagation.Address = terminalval.Address
+		startdelagation.Date = startTime
+		startdelagation.Delegation = utils.Coin{
+			Denom: types.IRISAttoUint,
+		}
+	}
 
-	//if task.AddrBeginCommission == nil {
-	//	task.AddrBeginCommission = make(map[string]document.Coin)
-	//}
+	if task.AddrBeginCommission == nil {
+		task.AddrBeginCommission = make(map[string]document.Coin)
+	}
 	if task.AddrTerminalCommission == nil {
 		task.AddrTerminalCommission = make(map[string]document.Coin)
 	}
-	//if len(delagation.Commission) > 0 {
-	//	task.AddrBeginCommission[delagation.Address] = document.Coin{
-	//		Amount: delagation.Commission[0].Iris * math.Pow10(18),
-	//		Denom:  types.IRISAttoUint,
-	//	}
-	//}
+	if len(startdelagation.Commission) > 0 {
+		task.AddrBeginCommission[startdelagation.Address] = document.Coin{
+			Amount: startdelagation.Commission[0].Iris * math.Pow10(18),
+			Denom:  types.IRISAttoUint,
+		}
+	}
+	if len(startdelagation.DelegationsRewards) == 0 {
+		startdelagation.DelegationsRewards = []document.Rewards{
+			{Iris: 0, IrisAtto: "0"},
+		}
+	}
 	if len(terminalval.Commission) > 0 {
 		task.AddrTerminalCommission[terminalval.Address] = document.Coin{
 			Amount: terminalval.Commission[0].Iris * math.Pow10(18),
 			Denom:  types.IRISAttoUint,
-		}
-	}
-
-	delagationlastmonth, err := task.mStaticModel.GetLatest(terminalval.Address)
-	if err != nil {
-		logger.Error("get GetLatest failed",
-			logger.String("func", "get StaticDelegatorMonth"),
-			logger.String("err", err.Error()))
-		//return document.ExStaticDelegatorMonth{}, err
-	}
-	if delagationlastmonth.Address == "" {
-		delagationlastmonth.Address = terminalval.Address
-		delagationlastmonth.TerminalDelegation = document.Coin{
-			Denom: types.IRISAttoUint,
 		}
 	}
 
@@ -227,15 +243,15 @@ func (task *StaticDelegatorByMonthTask) getStaticDelegator(starttime time.Time, 
 		}
 	}
 	terminalRewards := document.Rewards{Iris: delegationrewards, IrisAtto: fmt.Sprint(delegationrewards * math.Pow10(18))}
-	incrementRewards := task.getIncrementRewards(terminalRewards, delagationlastmonth, periodRewards)
+	incrementRewards := task.getIncrementRewards(terminalRewards, startdelagation.DelegationsRewards[0], periodRewards)
 
 	item := document.ExStaticDelegatorMonth{
 		Address:                terminalval.Address,
-		Date:                   fmt.Sprintf("%d.%02d.%02d", starttime.Year(), starttime.Month(), starttime.Day()),
+		Date:                   fmt.Sprintf("%d.%02d.%02d", startTime.Year(), startTime.Month(), startTime.Day()),
 		TerminalDelegation:     document.Coin{Denom: terminalval.Delegation.Denom, Amount: terminalval.Delegation.Amount},
 		PeriodDelegationTimes:  task.getPeriodDelegationTimes(terminalval.Address, txs),
 		PeriodWithdrawRewards:  periodRewards,
-		IncrementDelegation:    task.getIncrementDelegation(terminalval.Delegation, delagationlastmonth.TerminalDelegation),
+		IncrementDelegation:    task.getIncrementDelegation(terminalval.Delegation, startdelagation.Delegation),
 		PeriodIncrementRewards: incrementRewards,
 		TerminalRewards:        terminalRewards,
 	}
@@ -253,7 +269,7 @@ func (task *StaticDelegatorByMonthTask) getPeriodTxByAddress(starttime, endtime 
 	for _, tx := range txs {
 		switch tx.Type {
 		case types.TxTypeWithdrawDelegatorReward, types.TxTypeWithdrawDelegatorRewardsAll, types.TxTypeWithdrawValidatorRewardsAll,
-			types.TxTypeBeginRedelegate, types.TxTypeStakeBeginUnbonding, types.TxTypeStakeDelegate:
+			types.TxTypeBeginRedelegate, types.TxTypeStakeBeginUnbonding, types.TxTypeStakeDelegate, types.TxTypeStakeEditValidator:
 			chanLimit <- true
 			group.Add(1)
 			go func(txHash string, limit chan bool) {
@@ -303,14 +319,14 @@ func (task *StaticDelegatorByMonthTask) getPeriodDelegationTimes(address string,
 	return
 }
 
-func (task *StaticDelegatorByMonthTask) getIncrementRewards(delegaterewards document.Rewards,
-	delagationlastmonth document.ExStaticDelegatorMonth,
-	periodRewards document.Rewards) (document.Rewards) {
+func (task *StaticDelegatorByMonthTask) getIncrementRewards(terminalrewards document.Rewards,
+	beginrewards document.Rewards,
+	periodRewards document.Rewards) document.Rewards {
 	var rewards document.Rewards
-	rewards.Iris = delegaterewards.Iris
+	rewards.Iris = terminalrewards.Iris
 
 	//Rdx = Rdn - Rdn-1  + Rdw
-	rewards.Iris -= delagationlastmonth.TerminalRewards.Iris
+	rewards.Iris -= beginrewards.Iris
 
 	rewards.Iris += periodRewards.Iris
 	rewards.IrisAtto = fmt.Sprint(rewards.Iris * math.Pow10(18))
@@ -376,8 +392,8 @@ func (task *StaticDelegatorByMonthTask) getCoinflow(blockcoinFlow []lcd.BlockCoi
 	return
 }
 
-func (task *StaticDelegatorByMonthTask) getIncrementDelegation(terminal utils.Coin, delagationlastmonth document.Coin) document.Coin {
-	amount := terminal.Amount - delagationlastmonth.Amount
+func (task *StaticDelegatorByMonthTask) getIncrementDelegation(terminal utils.Coin, start utils.Coin) document.Coin {
+	amount := terminal.Amount - start.Amount
 	return document.Coin{
 		Denom:  terminal.Denom,
 		Amount: amount,
@@ -385,33 +401,10 @@ func (task *StaticDelegatorByMonthTask) getIncrementDelegation(terminal utils.Co
 
 }
 
-//func (task *StaticDelegatorByMonthTask) getDelegationData(caculatetime string) ([]document.ExStaticDelegator, error) {
-//	date, err := time.ParseInLocation(types.TimeLayout, caculatetime, cstZone)
-//	if err != nil {
-//		return nil, err
-//	}
-//	data, err := task.staticModel.GetDataByDate(date)
-//	if err != nil {
-//		logger.Error("Get GetData ByDate fail",
-//			logger.String("date", date.String()),
-//			logger.String("err", err.Error()))
-//		return nil, err
-//	}
-//	return data, nil
-//}
-
-//func (task *StaticDelegatorByMonthTask) saveOps(datas []document.ExStaticDelegatorMonth) ([]txn.Op) {
-//	var ops = make([]txn.Op, 0, len(datas))
-//	for _, val := range datas {
-//		val.Id = bson.NewObjectId()
-//		val.CreateAt = time.Now().Unix()
-//		val.UpdateAt = time.Now().Unix()
-//		op := txn.Op{
-//			C:      task.mStaticModel.Name(),
-//			Id:     bson.NewObjectId(),
-//			Insert: val,
-//		}
-//		ops = append(ops, op)
-//	}
-//	return ops
-//}
+func (task *StaticDelegatorByMonthTask) getDelegatorsInPeriod(timelastcur, timedate time.Time) (map[string]string, error) {
+	delegetors, err := task.staticModel.GetAddressByPeriod(timelastcur, timedate)
+	if err != nil {
+		return nil, err
+	}
+	return delegetors, nil
+}

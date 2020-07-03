@@ -7,7 +7,6 @@ import (
 	"strings"
 	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
-	"time"
 	"fmt"
 )
 
@@ -32,8 +31,7 @@ func RegisterCaculate(r *mux.Router) error {
 // @Param   type   query   string  true    "role type" Enums(delegator,validator)
 // @Param   page    query   int true    "page num" Default(1)
 // @Param   size   query   int true    "page size" Default(5)
-// @Param   beginTime   query  string false    "beginTime (eg 2006.01.02T15:04:05)"
-// @Param   endTime   query   string false    "endTime (eg 2006.01.02T15:04:05)"
+// @Param   caculateTime   query  string false    "caculateTime (eg 2006.01.02)"
 // @Param   total   query   bool false    "total" Enums(true,false)
 // @Success 200 {object} vo.ExStaticMonthDataRespond	"success"
 // @Router /api/caculate/monthdata [get]
@@ -50,28 +48,33 @@ func registerCaculateMonthData(r *mux.Router) error {
 		}
 		fmt.Println(page, size)
 
-		beginTime := QueryParam(request, "beginTime")
-		endTime := QueryParam(request, "endTime")
-		cst := time.FixedZone("CST", 8*3600)
+		caculateTime := QueryParam(request, "caculateTime")
+		//beginTime := QueryParam(request, "beginTime")
+		//endTime := QueryParam(request, "endTime")
+		//cst := time.FixedZone("CST", 8*3600)
 
-		starttime, _ := time.ParseInLocation(types.TimeLayout, beginTime, cst)
-		endtime, _ := time.ParseInLocation(types.TimeLayout, endTime, cst)
+		//starttime, _ := time.ParseInLocation(types.TimeLayout, beginTime, cst)
+		//endtime, _ := time.ParseInLocation(types.TimeLayout, endTime, cst)
 
-		cond := bson.M{}
-		if !starttime.IsZero() && !endtime.IsZero() {
-			cond["date"] = bson.M{
-				"$gte": starttime,
-				"$lt":  endTime,
-			}
-		} else if !starttime.IsZero() {
-			cond["date"] = bson.M{
-				"$gte": starttime,
-			}
-		} else if !endtime.IsZero() {
-			cond["date"] = bson.M{
-				"$lt": endtime,
-			}
+		cond := bson.M{
 		}
+		if caculateTime != "" {
+			cond["date"] = caculateTime
+		}
+		//if !starttime.IsZero() && !endtime.IsZero() {
+		//	cond["date"] = bson.M{
+		//		"$gte": starttime,
+		//		"$lt":  endTime,
+		//	}
+		//} else if !starttime.IsZero() {
+		//	cond["date"] = bson.M{
+		//		"$gte": starttime,
+		//	}
+		//} else if !endtime.IsZero() {
+		//	cond["date"] = bson.M{
+		//		"$lt": endtime,
+		//	}
+		//}
 
 		resp := vo.ExStaticMonthDataRespond{
 			Type: vtype,

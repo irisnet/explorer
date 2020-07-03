@@ -21,7 +21,11 @@ type (
 )
 
 func (s TaskControlService) runTask(taskName string, timeInterval int, callback Callback) error {
-	if notBeExec, err := s.assetTaskShouldNotBeExecuted(taskName, timeInterval); err != nil {
+	cronjob := false
+	if _, ok := CronJob[taskName]; ok {
+		cronjob = true
+	}
+	if notBeExec, err := s.assetTaskShouldNotBeExecuted(taskName, timeInterval, cronjob); err != nil {
 		return fmt.Errorf("assetTaskShouldNotBeExecuted fail, taskName:%s, err:%s", taskName, err.Error())
 	} else {
 		if notBeExec {
@@ -57,7 +61,7 @@ func (s TaskControlService) runTask(taskName string, timeInterval int, callback 
 // - query record failed in task control table
 // - task is executing by other server instance
 // - now sub task latest update time less than task time interval
-func (s TaskControlService) assetTaskShouldNotBeExecuted(taskName string, timeInterval int) (bool, error) {
+func (s TaskControlService) assetTaskShouldNotBeExecuted(taskName string, timeInterval int, isCronjob bool) (bool, error) {
 	if v, err := taskControlModel.QueryOneByTaskName(taskName); err != nil {
 		if err == mgo.ErrNotFound {
 			// record not exist, need insert it
@@ -78,7 +82,7 @@ func (s TaskControlService) assetTaskShouldNotBeExecuted(taskName string, timeIn
 		}
 
 		now := time.Now().Unix()
-		if now-v.LatestExecTime < int64(timeInterval) {
+		if now-v.LatestExecTime < int64(timeInterval) && !isCronjob {
 			return true, nil
 		}
 	}
