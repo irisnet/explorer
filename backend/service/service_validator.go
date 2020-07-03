@@ -36,7 +36,7 @@ func (service *ValidatorService) GetValidators(typ, origin string, page, size in
 			panic(types.CodeNotFound)
 		}
 
-		var totalVotingPower = getTotalVotingPower(validatorList)
+		var totalVotingPower = getTotalVotingPower()
 		for i, v := range validatorList {
 			if desc, ok := blackList[v.OperatorAddress]; ok {
 				validatorList[i].Description.Moniker = desc.Moniker
@@ -1114,16 +1114,12 @@ func isEqual(srcValidator, dstValidator document.Validator) bool {
 //	return power.QuoInt(tokenPrecision).RoundInt64()
 //}
 
-func getTotalVotingPower(validators []document.Validator) int64 {
+func getTotalVotingPower() int64 {
 	var total = int64(0)
-	//var set = lcd.LatestValidatorSet()
-	//for _, v := range set.Validators {
-	//	votingPower := utils.ParseIntWithDefault(v.VotingPower, 0)
-	//	total += votingPower
-	//}
-
-	for _, val := range validators {
-		total += val.VotingPower
+	var set = lcd.LatestValidatorSet()
+	for _, v := range set.Validators {
+		votingPower := utils.ParseIntWithDefault(v.VotingPower, 0)
+		total += votingPower
 	}
 	return total
 }
