@@ -83,8 +83,6 @@ func registerApi(r *mux.Router) {
 func registerFilters() {
 	filter.Register(filter.LogPreFilter{})
 	filter.Register(filter.LogPostFilter{})
-	filter.Register(filter.FaucetLimitPreFilter{})
-	filter.Register(filter.FaucetLimitPostFilter{})
 }
 
 func NewAPIMux() *mux.Router {
