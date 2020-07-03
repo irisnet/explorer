@@ -636,14 +636,8 @@
                     },
                     {
                         "type": "string",
-                        "description": "beginTime (eg 2006.01.02T15:04:05)",
-                        "name": "beginTime",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "endTime (eg 2006.01.02T15:04:05)",
-                        "name": "endTime",
+                      "description": "caculateTime (eg 2006.01.02)",
+                      "name": "caculateTime",
                         "in": "query"
                     },
                     {

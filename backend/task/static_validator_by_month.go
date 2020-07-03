@@ -23,7 +23,7 @@ type StaticValidatorByMonthTask struct {
 	AddressCoin               map[string]document.Coin
 	AddressPeriodCommission   map[string]document.Coin
 	AddressTerminalCommission map[string]document.Coin
-	//AddressBeginCommission    map[string]document.Coin
+	AddressBeginCommission    map[string]document.Coin
 
 	startTime       time.Time
 	endTime         time.Time
@@ -58,10 +58,10 @@ func (task *StaticValidatorByMonthTask) SetCaculateAddress(address string) {
 	}
 }
 
-func (task *StaticValidatorByMonthTask) SetAddressCoinMapData(rewards, pcommission, tcommission map[string]document.Coin) {
+func (task *StaticValidatorByMonthTask) SetAddressCoinMapData(rewards, pcommission, bcommission, tcommission map[string]document.Coin) {
 	task.AddressCoin = rewards
 	task.AddressPeriodCommission = pcommission
-	//task.AddressBeginCommission = bcommission
+	task.AddressBeginCommission = bcommission
 	task.AddressTerminalCommission = tcommission
 }
 
@@ -94,6 +94,7 @@ func (task *StaticValidatorByMonthTask) caculateWork() ([]document.ExStaticValid
 		starttime = task.startTime
 		datetime = task.endTime
 	}
+	starttime = starttime.Add(time.Duration(-24) * time.Hour)
 	if conf.Get().Server.CaculateDebug {
 		arr := strings.Split(conf.Get().Server.CronTimeFormatStaticMonth, " ")
 		minutedata := strings.Split(arr[0], "/")
@@ -120,18 +121,21 @@ func (task *StaticValidatorByMonthTask) caculateWork() ([]document.ExStaticValid
 		starttime, _ = time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT%02d:%02d:00", datetime.Year(), datetime.Month(), datetime.Day(), hour, minute), cstZone)
 	}
 	//find last date
-	endtime, err := document.Getdate(task.staticModel.Name(), starttime, datetime, "-"+document.ExStaticDelegatorDateTag)
+	endtime, createat, err := document.Getdate(task.staticModel.Name(), starttime, datetime, "-"+document.ExStaticDelegatorDateTag)
 	if err != nil {
 		return nil, err
 	}
+	createtime := time.Unix(createat, 0)
 
-	var terminalData []document.ExStaticValidator
+	var terminalData = make(map[string]document.ExStaticValidator)
+	var validators = make(map[string]string)
 	if task.operatorAddress != "" {
 		data, err := task.staticModel.GetDataOneDay(endtime, task.operatorAddress)
 		if err != nil {
 			return nil, err
 		}
-		terminalData = append(terminalData, data)
+		terminalData[data.OperatorAddress] = data
+		validators[data.OperatorAddress] = data.OperatorAddress
 	} else {
 		terminalData, err = task.staticModel.GetDataByDate(endtime)
 		if err != nil {
@@ -147,18 +151,29 @@ func (task *StaticValidatorByMonthTask) caculateWork() ([]document.ExStaticValid
 		return nil, err
 	}
 
-	foundtionDelegation := task.getFoundtionDelegation(terminalData)
+	foundtionDelegation := task.getFoundtionDelegation()
 	res := make([]document.ExStaticValidatorMonth, 0, len(terminalData))
 
-	for _, val := range terminalData {
+	validators, err = task.getValidatorsInPeriod(starttime, createtime)
+	if err != nil {
+		return nil, err
+	}
+
+	for operatoraddr := range validators {
+		val, ok := terminalData[operatoraddr]
+		if !ok {
+			val = document.ExStaticValidator{
+				OperatorAddress: operatoraddr,
+			}
+		}
 		one, errf := task.getStaticValidator(starttime, val, addressHeightMap, foundtionDelegation)
 		if errf != nil {
 			logger.Error(errf.Error())
 			continue
 		}
 		one.CaculateDate = fmt.Sprintf("%d.%02d.%02d", datetime.Year(), datetime.Month(), datetime.Day())
-		one.CommissionRateMin = task.getCommissionRate(starttime, datetime, val.OperatorAddress, document.ValidatorCommissionRateTag)
-		one.CommissionRateMax = task.getCommissionRate(starttime, datetime, val.OperatorAddress, "-"+document.ValidatorCommissionRateTag)
+		one.CommissionRateMin = task.getCommissionRate(starttime, datetime, operatoraddr, document.ValidatorCommissionRateTag)
+		one.CommissionRateMax = task.getCommissionRate(starttime, datetime, operatoraddr, "-"+document.ValidatorCommissionRateTag)
 		if conf.Get().Server.CaculateDebug {
 			one.Date = fmt.Sprintf("%d.%02d.%02d %02d:%02d:%02d", starttime.Year(),
 				starttime.Month(), starttime.Day(), starttime.Hour(), starttime.Minute(), starttime.Second())
@@ -166,30 +181,17 @@ func (task *StaticValidatorByMonthTask) caculateWork() ([]document.ExStaticValid
 				datetime.Month(), datetime.Day(), datetime.Hour(), datetime.Minute(), datetime.Second())
 
 		}
+		if task.isSetTime {
+			one.CaculateDate = strings.ReplaceAll(conf.Get().Server.CaculateDate, "-", ".")
+		}
 		res = append(res, one)
-		//if err := task.mStaticModel.Save(one); err != nil {
-		//	logger.Error("save static validator month data error",
-		//		logger.String("address", one.Address),
-		//		logger.String("date", one.Date),
-		//		logger.String("err", err.Error()))
-		//}
+
 	}
 	return res, nil
 }
 
-func (task *StaticValidatorByMonthTask) getFoundtionDelegation(datas []document.ExStaticValidator) map[string]string {
-	//group := sync.WaitGroup{}
-	//var result []lcd.DelegationFromVal
-	//for _, val := range datas {
-	//	group.Add(1)
-	//	go func(operatorAddress string) {
-	//
-	//		result = append(result, delegation)
-	//		//fmt.Println(operatorAddress)
-	//		group.Done()
-	//	}(val.OperatorAddress)
-	//}
-	//group.Wait()
+func (task *StaticValidatorByMonthTask) getFoundtionDelegation() map[string]string {
+
 	delegations := lcd.GetDelegationsByDelAddr(conf.Get().Server.FoundationDelegatorAddr)
 	tmpMapData := make(map[string]string, len(delegations))
 	for _, val := range delegations {
@@ -205,21 +207,23 @@ func (task *StaticValidatorByMonthTask) getFoundtionDelegation(datas []document.
 	return tmpMapData
 }
 
-func (task *StaticValidatorByMonthTask) getStaticValidator(startdate time.Time, terminalval document.ExStaticValidator,
+func (task *StaticValidatorByMonthTask) getStaticValidator(starttime time.Time, terminalval document.ExStaticValidator,
 	addrHeightMap map[string]int64, addrDelegationMap map[string]string) (document.ExStaticValidatorMonth, error) {
 	address := utils.Convert(conf.Get().Hub.Prefix.AccAddr, terminalval.OperatorAddress)
+
+	startdayData, err := task.staticModel.GetDataOneDay(starttime, terminalval.OperatorAddress)
+	if err != nil {
+		logger.Error("get start day failed", logger.String("func", "get IncrementCommission"),
+			logger.String("startday", starttime.Format(types.TimeLayout)),
+			logger.String("err", err.Error()))
+	}
 
 	latestone, err := task.mStaticModel.GetLatest(terminalval.OperatorAddress)
 	if err != nil {
 		logger.Error("get latest one failed", logger.String("func", "get IncrementCommission"),
 			logger.String("err", err.Error()))
 	}
-	if latestone.OperatorAddress == "" {
-		latestone.OperatorAddress = terminalval.OperatorAddress
-		latestone.TerminalCommission = document.Coin{
-			Denom: "iris",
-		}
-	}
+
 	delegation, ok := addrDelegationMap[terminalval.OperatorAddress]
 	if !ok {
 		delegation = latestone.FoundationDelegateT
@@ -234,13 +238,13 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(startdate time.Time, 
 		Tokens:                  terminalval.Tokens,
 		OperatorAddress:         terminalval.OperatorAddress,
 		Status:                  terminalval.Status,
-		Date:                    fmt.Sprintf("%d.%02d.%02d", startdate.Year(), startdate.Month(), startdate.Day()),
+		Date:                    fmt.Sprintf("%d.%02d.%02d", starttime.Year(), starttime.Month(), starttime.Day()),
 		TerminalDelegation:      terminalvalDelegations,
 		TerminalDelegatorN:      terminalval.DelegatorNum,
 		TerminalSelfBond:        selfbond,
-		IncrementDelegation:     task.getIncrementDelegation(terminalvalDelegations, latestone.TerminalDelegation),
-		IncrementDelegatorN:     terminalval.DelegatorNum - latestone.TerminalDelegatorN,
-		IncrementSelfBond:       task.getIncrementSelfBond(selfbond, latestone.TerminalSelfBond),
+		IncrementDelegation:     task.getIncrementDelegation(terminalvalDelegations, startdayData.Delegations),
+		IncrementDelegatorN:     terminalval.DelegatorNum - startdayData.DelegatorNum,
+		IncrementSelfBond:       task.getIncrementSelfBond(selfbond, startdayData.SelfBond),
 		FoundationDelegateT:     foundDelegation,
 		FoundationDelegateIncre: task.getFoundationDelegateIncre(foundDelegation, latestone.FoundationDelegateT),
 	}
@@ -259,7 +263,9 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(startdate time.Time, 
 			item.PeriodCommission = pcommission
 		}
 	} else {
-		pcommission.Denom = types.IRISAttoUint
+		pcommission = document.Coin{
+			Denom: types.IRISAttoUint,
+		}
 		item.PeriodCommission.Denom = types.IRISUint
 	}
 
@@ -274,10 +280,19 @@ func (task *StaticValidatorByMonthTask) getStaticValidator(startdate time.Time, 
 			item.TerminalCommission = tcommission
 		}
 	} else {
-		tcommission.Denom = types.IRISAttoUint
+		tcommission = document.Coin{
+			Denom: types.IRISAttoUint,
+		}
 		item.TerminalCommission.Denom = types.IRISUint
 	}
-	item.IncrementCommission = task.getIncrementCommission(pcommission, tcommission, latestone.TerminalCommission)
+	bcommission, ok := task.AddressBeginCommission[address]
+	if !ok {
+		bcommission = document.Coin{
+			Denom: types.IRISAttoUint,
+		}
+	}
+
+	item.IncrementCommission = task.getIncrementCommission(pcommission, tcommission, bcommission)
 
 	if desp, ok := service.ValidatorsDescriptionMap[terminalval.OperatorAddress]; ok {
 		item.Moniker = desp.Moniker
@@ -329,12 +344,10 @@ func (task *StaticValidatorByMonthTask) getFoundationDelegateIncre(foundationDel
 }
 
 func (task *StaticValidatorByMonthTask) getIncrementCommission(pcommission, terminalCommission,
-	latestoneCommission document.Coin) (IncreCommission document.Coin) {
+beginCommission document.Coin) (IncreCommission document.Coin) {
 	//Rcx = Rcn - Rcn-1 + Rcw
-	if latestoneCommission.Denom == types.IRISUint {
-		latestoneCommission.Amount = latestoneCommission.Amount * math.Pow10(18)
-	}
-	IncreCommission.Amount = terminalCommission.Amount - latestoneCommission.Amount + pcommission.Amount
+
+	IncreCommission.Amount = terminalCommission.Amount - beginCommission.Amount + pcommission.Amount
 	IncreCommission.Denom = terminalCommission.Denom
 
 	return
@@ -371,6 +384,14 @@ func (task *StaticValidatorByMonthTask) getCreateValidatorTx() (map[string]int64
 	}
 
 	return addressHeightMap, nil
+}
+
+func (task *StaticValidatorByMonthTask) getValidatorsInPeriod(timelastcur, timedate time.Time) (map[string]string, error) {
+	validators, err := task.staticModel.GetOperatorAddressByPeriod(timelastcur, timedate)
+	if err != nil {
+		return nil, err
+	}
+	return validators, nil
 }
 
 //func (task *StaticValidatorByMonthTask) saveOps(datas []document.ExStaticValidatorMonth) ([]txn.Op) {

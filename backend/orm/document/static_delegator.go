@@ -61,9 +61,10 @@ func (d ExStaticDelegator) Batch(txs []txn.Op) error {
 	return orm.Batch(txs)
 }
 
-func Getdate(collectionName string, starttime, endtime time.Time, sort string) (time.Time, error) {
+func Getdate(collectionName string, starttime, endtime time.Time, sort string) (time.Time, int64, error) {
 	var res struct {
-		Date time.Time `bson:"date"`
+		Date     time.Time `bson:"date"`
+		CreateAt int64     `bson:"create_at"`
 	}
 	var query = orm.NewQuery()
 	defer query.Release()
@@ -75,7 +76,7 @@ func Getdate(collectionName string, starttime, endtime time.Time, sort string) (
 		},
 	}
 	query.SetCollection(collectionName).
-		SetSelector(bson.M{"date": 1}).
+		SetSelector(bson.M{"date": 1, "create_at": 1}).
 		SetCondition(cond).
 		SetSort(sort).
 		SetSize(1).
@@ -83,13 +84,13 @@ func Getdate(collectionName string, starttime, endtime time.Time, sort string) (
 
 	err := query.Exec()
 	if err != nil {
-		return time.Time{}, err
+		return time.Time{}, 0, err
 	}
 
-	return res.Date, nil
+	return res.Date, res.CreateAt, nil
 }
 
-func (d ExStaticDelegator) GetDataByDate(date time.Time) ([]ExStaticDelegator, error) {
+func (d ExStaticDelegator) GetDataByDate(date time.Time) (map[string]ExStaticDelegator, error) {
 	var res []ExStaticDelegator
 	cond := bson.M{
 		ExStaticDelegatorDateTag: date,
@@ -100,7 +101,7 @@ func (d ExStaticDelegator) GetDataByDate(date time.Time) ([]ExStaticDelegator, e
 	for {
 		var ret []ExStaticDelegator
 		if err := querylistByOffsetAndSize(d.Name(), nil, cond, "-date", offset, limit, &ret); err != nil {
-			return res, err
+			return nil, err
 		}
 		length := len(ret)
 		res = append(res, ret...)
@@ -110,7 +111,53 @@ func (d ExStaticDelegator) GetDataByDate(date time.Time) ([]ExStaticDelegator, e
 		offset += limit
 	}
 
-	return res, nil
+	dataMap := make(map[string]ExStaticDelegator, len(res))
+
+	for _, one := range res {
+		dataMap[one.Address] = one
+	}
+
+	return dataMap, nil
+}
+
+func (d ExStaticDelegator) GetAddressByPeriod(lastcaculatetime, caculatetime time.Time) (map[string]string, error) {
+	type Result struct {
+		Address string `bson:"address"`
+	}
+	var (
+		res   []Result
+		addrs = make(map[string]string, 1024)
+	)
+	cond := bson.M{
+		ExStaticDelegatorDateTag: bson.M{
+			"$gte": lastcaculatetime,
+			"$lt":  caculatetime,
+		},
+	}
+	filter := bson.M{
+		ExStaticDelegatorAddressTag: 1,
+	}
+
+	limit := 100
+	offset := 0
+	for {
+		var ret []Result
+		if err := querylistByOffsetAndSize(d.Name(), filter, cond, "-date", offset, limit, &ret); err != nil {
+			return nil, err
+		}
+		length := len(ret)
+		res = append(res, ret...)
+		if length < limit {
+			break
+		}
+		offset += limit
+	}
+
+	for _, one := range res {
+		addrs[one.Address] = one.Address
+	}
+
+	return addrs, nil
 }
 
 func (d ExStaticDelegator) GetDataOneDay(date time.Time, address string) (ExStaticDelegator, error) {

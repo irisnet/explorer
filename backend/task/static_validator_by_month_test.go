@@ -1,14 +1,14 @@
 package task
 
 import (
-	"testing"
 	"encoding/json"
-	"time"
-	"github.com/irisnet/explorer/backend/types"
 	"fmt"
 	"github.com/irisnet/explorer/backend/orm/document"
-	"github.com/irisnet/explorer/backend/vo"
 	"github.com/irisnet/explorer/backend/service"
+	"github.com/irisnet/explorer/backend/types"
+	"github.com/irisnet/explorer/backend/vo"
+	"testing"
+	"time"
 )
 
 var (
@@ -63,14 +63,15 @@ func init() {
 }
 
 func TestStaticValidatorByMonthTask_getStaticValidator(t *testing.T) {
-	task.SetAddressCoinMapData(dtask.AddressCoin, dtask.AddrPeriodCommission, dtask.AddrTerminalCommission)
-	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 1), cstZone)
-	datetime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 30), cstZone)
-	endtime, err := document.Getdate(task.staticModel.Name(), starttime, datetime, "-"+document.ExStaticDelegatorDateTag)
+	task.SetAddressCoinMapData(dtask.AddressCoin, dtask.AddrPeriodCommission, dtask.AddrBeginCommission, dtask.AddrTerminalCommission)
+	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 1), cstZone)
+	datetime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 31), cstZone)
+	endtime, createat, err := document.Getdate(task.staticModel.Name(), starttime, datetime, "-"+document.ExStaticDelegatorDateTag)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-
+	fmt.Println(time.Unix(createat, 0))
+	fmt.Println(endtime)
 	terminalData, err := task.staticModel.GetDataByDate(endtime)
 	if err != nil {
 		t.Fatal(err.Error())
@@ -80,7 +81,7 @@ func TestStaticValidatorByMonthTask_getStaticValidator(t *testing.T) {
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	foundtionDelegation := task.getFoundtionDelegation(terminalData)
+	foundtionDelegation := task.getFoundtionDelegation()
 
 	for _, val := range terminalData {
 
@@ -114,13 +115,13 @@ func TestStaticValidatorByMonthTask_DoTask(t *testing.T) {
 }
 
 func TestMonthDoTask(t *testing.T) {
-	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 4, 1), cstZone)
-	endtime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 1), cstZone)
+	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 6, 1), cstZone)
+	endtime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 7, 1), cstZone)
 	delegatortask := new(StaticDelegatorByMonthTask)
 	validatortask := new(StaticValidatorByMonthTask)
 	delegatortask.SetCaculateScope(starttime, endtime)
 	//delegatortask.SetCaculateAddress("iaa1xf5jaw09klqg9hzxfks3ycjvqgnpyjcm0yrkut")
-	data, err := delegatortask.caculateWork()
+	data, err := delegatortask.calculateWork()
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -132,10 +133,10 @@ func TestMonthDoTask(t *testing.T) {
 	}
 	bytedata, _ := json.Marshal(vomodel)
 	fmt.Println(string(bytedata))
-	fmt.Println("caculateWork have done,then validatortask work")
+	fmt.Println("calculateWork have done,then validatortask work")
 	//validatortask.SetCaculateAddress("iva1qq93sapmdcx36uz64vvw5gzuevtxsc7lcfxsat")
 	validatortask.SetCaculateScope(starttime, endtime)
-	validatortask.SetAddressCoinMapData(delegatortask.AddressCoin, delegatortask.AddrPeriodCommission, delegatortask.AddrTerminalCommission)
+	validatortask.SetAddressCoinMapData(delegatortask.AddressCoin, delegatortask.AddrPeriodCommission, delegatortask.AddrBeginCommission, delegatortask.AddrTerminalCommission)
 	valdata, err := validatortask.caculateWork()
 	if err != nil {
 		t.Fatal(err.Error())
@@ -167,4 +168,16 @@ func TestStaticValidatorByMonthTask_SetCaculateScope(t *testing.T) {
 	task.SetCaculateScope(starttime, endtime)
 	fmt.Println(task.startTime)
 	fmt.Println(task.endTime)
+}
+
+func TestStaticValidatorByMonthTask_getValidatorsInPeriod(t *testing.T) {
+	task := new(StaticValidatorByMonthTask)
+	starttime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 1), cstZone)
+	endtime, _ := time.ParseInLocation(types.TimeLayout, fmt.Sprintf("%d-%02d-%02dT00:00:00", 2020, 5, 31), cstZone)
+	data, err := task.getValidatorsInPeriod(starttime, endtime)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	fmt.Println(len(data))
+	fmt.Println(data)
 }

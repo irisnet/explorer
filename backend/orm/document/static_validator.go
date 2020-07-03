@@ -54,7 +54,7 @@ func (d ExStaticValidator) Batch(txs []txn.Op) error {
 	return orm.Batch(txs)
 }
 
-func (d ExStaticValidator) GetDataByDate(date time.Time) ([]ExStaticValidator, error) {
+func (d ExStaticValidator) GetDataByDate(date time.Time) (map[string]ExStaticValidator, error) {
 	var res []ExStaticValidator
 	cond := bson.M{
 		ValidatorStaticFieldDate: date,
@@ -65,7 +65,7 @@ func (d ExStaticValidator) GetDataByDate(date time.Time) ([]ExStaticValidator, e
 	for {
 		var ret []ExStaticValidator
 		if err := querylistByOffsetAndSize(d.Name(), nil, cond, "-tokens", offset, limit, &ret); err != nil {
-			return res, err
+			return nil, err
 		}
 		length := len(ret)
 		res = append(res, ret...)
@@ -75,7 +75,13 @@ func (d ExStaticValidator) GetDataByDate(date time.Time) ([]ExStaticValidator, e
 		offset += limit
 	}
 
-	return res, nil
+	dataMap := make(map[string]ExStaticValidator, len(res))
+
+	for _, one := range res {
+		dataMap[one.OperatorAddress] = one
+	}
+
+	return dataMap, nil
 }
 
 func (d ExStaticValidator) GetDataOneDay(date time.Time, operatoraddr string) (ExStaticValidator, error) {
@@ -108,4 +114,44 @@ func (d ExStaticValidator) GetCommissionRate(selector, cond bson.M, sorts string
 		return result, err
 	}
 	return result, nil
+}
+
+func (d ExStaticValidator) GetOperatorAddressByPeriod(lastcaculatetime, caculatetime time.Time) (map[string]string, error) {
+	type Result struct {
+		OperatorAddress string `bson:"operator_address"`
+	}
+	var (
+		res   []Result
+		addrs = make(map[string]string, 1024)
+	)
+	cond := bson.M{
+		ValidatorStaticFieldDate: bson.M{
+			"$gte": lastcaculatetime,
+			"$lt":  caculatetime,
+		},
+	}
+	filter := bson.M{
+		ValidatorStaticFieldOperatorAddress: 1,
+	}
+
+	limit := 100
+	offset := 0
+	for {
+		var ret []Result
+		if err := querylistByOffsetAndSize(d.Name(), filter, cond, "-date", offset, limit, &ret); err != nil {
+			return nil, err
+		}
+		length := len(ret)
+		res = append(res, ret...)
+		if length < limit {
+			break
+		}
+		offset += limit
+	}
+
+	for _, one := range res {
+		addrs[one.OperatorAddress] = one.OperatorAddress
+	}
+
+	return addrs, nil
 }
