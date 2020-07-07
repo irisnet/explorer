@@ -82,8 +82,7 @@ func (s TaskControlService) assetTaskShouldNotBeExecuted(taskName string, timeIn
 		}
 
 		now := time.Now().Unix()
-		timeHeartBeat := conf.Get().Server.CronTimeHeartBeat
-		if now-v.LatestExecTime < int64(3*timeHeartBeat) && !isCronjob {
+		if now-v.LatestExecTime < int64(timeInterval) && !isCronjob {
 			return true, nil
 		}
 	}
@@ -150,11 +149,12 @@ func (s TaskControlMonitor) checkAndChangeWorkOn(list []document.TaskControl) {
 
 func (s TaskControlMonitor) CheckAndUpdate(one document.TaskControl) error {
 	currentTimeInterval := time.Now().Unix() - one.LatestExecTime
-	if one.TimeInterval > currentTimeInterval {
+	timeHeartBeat := int64(conf.Get().Server.CronTimeHeartBeat)
+
+	if timeHeartBeat > currentTimeInterval {
 		return nil
 	}
-
-	if currentTimeInterval >= 2*one.TimeInterval && one.IsInProcess && one.TaskName != types.TaskConTrolMonitor {
+	if currentTimeInterval >= 3*timeHeartBeat && one.IsInProcess && one.TaskName != types.TaskConTrolMonitor {
 		one.IsInProcess = false
 		if err := s.controlModel.UpdateByPK(one); err != nil {
 			return err
