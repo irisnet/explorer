@@ -26,7 +26,8 @@ func (task UpdateAssetGateways) Start() {
 }
 
 func (task UpdateAssetGateways) DoTask(fn func(string) chan bool) error {
-	defer HeartQuit(fn(task.Name()))
+	stop := fn(task.Name())
+	defer HeartQuit(stop)
 	assetGateways, err := document.AssetGateways{}.GetAllAssetGateways()
 	if err != nil {
 		return err

@@ -26,7 +26,8 @@ func (task UpdateValidator) Start() {
 }
 
 func (task UpdateValidator) DoTask(fn func(string) chan bool) error {
-	defer HeartQuit(fn(task.Name()))
+	stop := fn(task.Name())
+	defer HeartQuit(stop)
 	validators, err := document.Validator{}.GetAllValidator()
 
 	if err != nil {

@@ -26,7 +26,8 @@ func (task TxNumGroupByDayTask) Start() {
 }
 
 func (task TxNumGroupByDayTask) DoTask(fn func(string) chan bool) error {
-	defer HeartQuit(fn(task.Name()))
+	stop := fn(task.Name())
+	defer HeartQuit(stop)
 	today := utils.TruncateTime(time.Now().In(cstZone), utils.Day)
 	yesterday := today.Add(-24 * time.Hour)
 

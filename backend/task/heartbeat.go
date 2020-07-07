@@ -59,7 +59,7 @@ func heartBeat(taskName string, stop chan bool) {
 		select {
 		case <-ticker.C:
 			doTask()
-			logger.Info("HeartBeat is ok", logger.String("taskName", taskName))
+			//logger.Info("HeartBeat is ok", logger.String("taskName", taskName))
 		case <-stop:
 			close(stop)
 			logger.Info("HeartBeat Quit...", logger.String("taskName", taskName))

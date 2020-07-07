@@ -31,7 +31,8 @@ func (task StaticDelegatorTask) Start() {
 }
 
 func (task StaticDelegatorTask) DoTask(fn func(string) chan bool) error {
-	defer HeartQuit(fn(task.Name()))
+	stop := fn(task.Name())
+	defer HeartQuit(stop)
 	ops, err := task.getAllAccountRewards()
 	if err != nil {
 		logger.Error(err.Error())

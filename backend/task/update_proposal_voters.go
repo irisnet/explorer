@@ -26,7 +26,8 @@ func (task UpdateProposalVoters) Start() {
 }
 
 func (task UpdateProposalVoters) DoTask(fn func(string) chan bool) error {
-	defer HeartQuit(fn(task.Name()))
+	stop := fn(task.Name())
+	defer HeartQuit(stop)
 	status := []string{document.ProposalStatusVoting}
 	sorts := []string{document.Proposal_Field_VotingEndTime}
 	proposals, err := document.Proposal{}.GetProposalsByStatus(status, sorts, false)

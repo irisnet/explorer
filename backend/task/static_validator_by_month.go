@@ -66,7 +66,8 @@ func (task *StaticValidatorByMonthTask) SetAddressCoinMapData(rewards, pcommissi
 }
 
 func (task *StaticValidatorByMonthTask) DoTask(fn func(string) chan bool) error {
-	defer HeartQuit(fn(task.Name()))
+	stop := fn(task.Name())
+	defer HeartQuit(stop)
 	res, err := task.caculateWork()
 	if err != nil {
 		return err

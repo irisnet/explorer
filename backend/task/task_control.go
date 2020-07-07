@@ -82,7 +82,8 @@ func (s TaskControlService) assetTaskShouldNotBeExecuted(taskName string, timeIn
 		}
 
 		now := time.Now().Unix()
-		if now-v.LatestExecTime < int64(timeInterval) && !isCronjob {
+		timeHeartBeat := conf.Get().Server.CronTimeHeartBeat
+		if now-v.LatestExecTime < int64(3*timeHeartBeat) && !isCronjob {
 			return true, nil
 		}
 	}
@@ -114,7 +115,8 @@ func (s TaskControlMonitor) Start() {
 }
 
 func (s TaskControlMonitor) DoTask(fn func(string) chan bool) error {
-	defer HeartQuit(fn(s.Name()))
+	stop := fn(s.Name())
+	defer HeartQuit(stop)
 	runValue := true
 	skip := 0
 	limit := 20
