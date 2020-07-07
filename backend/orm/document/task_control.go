@@ -82,6 +82,22 @@ func (d TaskControl) QueryOneByTaskName(taskName string) (TaskControl, error) {
 	return d.findOne(selector, condition)
 }
 
+func (d TaskControl) UpdateByTaskName(taskName string) (error) {
+	selector := bson.M{
+		TCFieldTaskName: taskName,
+	}
+	condition := bson.M{
+		TCFieldLatestExecTime: time.Now().Unix(),
+	}
+	update := bson.M{
+		"$set": condition,
+	}
+	q := orm.NewQuery()
+	defer q.Release()
+	c := q.GetDb().C(d.Name())
+	return c.Update(selector, update)
+}
+
 func (d TaskControl) Save(record TaskControl) error {
 	q := orm.NewQuery()
 	defer q.Release()

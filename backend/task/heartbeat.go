@@ -34,19 +34,11 @@ func heartBeat(taskName string, stop chan bool) {
 	defer ticker.Stop()
 
 	doTask := func() {
-		doc, err := taskcontrol.QueryOneByTaskName(taskName)
+		err := taskcontrol.UpdateByTaskName(taskName)
 		if err != nil {
-			logger.Error("QueryOneByTaskName have error",
+			logger.Error("UpdateByTaskName have error",
 				logger.String("taskName", taskName),
 				logger.String("tableName", taskcontrol.Name()),
-				logger.String("err", err.Error()))
-			return
-		}
-		doc.LatestExecTime = time.Now().Unix()
-		if err := taskcontrol.UpdateByPK(doc); err != nil {
-			logger.Error("update segment have error",
-				logger.String("taskName", taskName),
-				logger.String("tableName", doc.Name()),
 				logger.String("err", err.Error()))
 			return
 		}
