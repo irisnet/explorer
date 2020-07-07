@@ -26,7 +26,9 @@ func (task StaticValidatorTask) Start() {
 	}
 }
 
-func (task StaticValidatorTask) DoTask() error {
+func (task StaticValidatorTask) DoTask(fn func(string) chan bool) error {
+	stop := fn(task.Name())
+	defer HeartQuit(stop)
 	ops, err := task.getAllValidatorTokens()
 	if err != nil {
 		logger.Error(err.Error())

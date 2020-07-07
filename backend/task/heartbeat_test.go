@@ -15,5 +15,15 @@ func TestStartTask(t *testing.T) {
 }
 
 func TestUpdateProposalVoters_DoTask(t *testing.T) {
-	UpdateProposalVoters{}.DoTask()
+	UpdateProposalVoters{}.DoTask(HeartBeat)
 }
+
+func TestHeartBeat(t *testing.T) {
+
+	stop := make(chan bool)
+	go HeartBeat("update_gov_params")
+	time.Sleep(11 * time.Second)
+	stop <- true
+}
+
+

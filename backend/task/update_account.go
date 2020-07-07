@@ -30,7 +30,9 @@ func (task UpdateAccount) Start() {
 
 }
 
-func (task UpdateAccount) DoTask() error {
+func (task UpdateAccount) DoTask(fn func(string) chan bool) error {
+	stop := fn(task.Name())
+	defer HeartQuit(stop)
 	accounts, err := task.account.GetAllAccount()
 	if err != nil {
 		logger.Error(err.Error())

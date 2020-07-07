@@ -37,7 +37,7 @@ func RegisterCronTask(r *mux.Router) error {
 func registerCronTaskAssetGateways(r *mux.Router) error {
 	doApi(r, types.UrlRegisterDoCronTaskAssetGateways, "PUT", func(request vo.IrisReq) interface{} {
 		cronTask := task.UpdateAssetGateways{}
-		if err := cronTask.DoTask(); err != nil {
+		if err := cronTask.DoTask(task.HeartBeat); err != nil {
 			return err
 		} else {
 			return types.CodeSuccess
@@ -57,7 +57,7 @@ func registerCronTaskAssetGateways(r *mux.Router) error {
 func registerCronTaskAssetTokens(r *mux.Router) error {
 	doApi(r, types.UrlRegisterDoCronTaskAssetTokens, "PUT", func(request vo.IrisReq) interface{} {
 		cronTask := task.UpdateAssetTokens{}
-		if err := cronTask.DoTask(); err != nil {
+		if err := cronTask.DoTask(task.HeartBeat); err != nil {
 			return err
 		} else {
 			return types.CodeSuccess
@@ -77,7 +77,7 @@ func registerCronTaskAssetTokens(r *mux.Router) error {
 func registerCronTaskGovParams(r *mux.Router) error {
 	doApi(r, types.UrlRegisterDoCronTaskGovParams, "PUT", func(request vo.IrisReq) interface{} {
 		cronTask := task.UpdateGovParams{}
-		if err := cronTask.DoTask(); err != nil {
+		if err := cronTask.DoTask(task.HeartBeat); err != nil {
 			return err
 		} else {
 			return types.CodeSuccess
@@ -97,7 +97,7 @@ func registerCronTaskGovParams(r *mux.Router) error {
 func registerCronTaskTxNumByDay(r *mux.Router) error {
 	doApi(r, types.UrlRegisterDoCronTaskTxNumByDay, "PUT", func(request vo.IrisReq) interface{} {
 		cronTask := task.TxNumGroupByDayTask{}
-		if err := cronTask.DoTask(); err != nil {
+		if err := cronTask.DoTask(task.HeartBeat); err != nil {
 			return err
 		} else {
 			return types.CodeSuccess
@@ -117,7 +117,7 @@ func registerCronTaskTxNumByDay(r *mux.Router) error {
 func registerCronTaskValidators(r *mux.Router) error {
 	doApi(r, types.UrlRegisterDoCronTaskValidators, "PUT", func(request vo.IrisReq) interface{} {
 		cronTask := task.UpdateValidator{}
-		if err := cronTask.DoTask(); err != nil {
+		if err := cronTask.DoTask(task.HeartBeat); err != nil {
 			return err
 		} else {
 			return types.CodeSuccess
@@ -137,7 +137,7 @@ func registerCronTaskValidators(r *mux.Router) error {
 func registerCronTaskValidatorIcons(r *mux.Router) error {
 	doApi(r, types.UrlRegisterDoCronTaskValidatorIcons, "PUT", func(request vo.IrisReq) interface{} {
 		cronTask := task.UpdateValidatorIcons{}
-		if err := cronTask.DoTask(); err != nil {
+		if err := cronTask.DoTask(task.HeartBeat); err != nil {
 			return err
 		} else {
 			return types.CodeSuccess

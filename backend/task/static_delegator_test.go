@@ -72,7 +72,7 @@ func TestStaticRewardsByDayTask_getAccountFromDb(t *testing.T) {
 }
 
 func TestStaticRewardsByDayTask_DoTask(t *testing.T) {
-	new(StaticDelegatorTask).DoTask()
+	new(StaticDelegatorTask).DoTask(HeartBeat)
 }
 
 func TestStaticRewardsTask_Common(t *testing.T) {
