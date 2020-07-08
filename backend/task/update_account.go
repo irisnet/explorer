@@ -8,7 +8,6 @@ import (
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/types"
 	"math/big"
-	"time"
 	"math"
 	"strings"
 )
@@ -90,12 +89,6 @@ func updateAccountInfo(account *document.Account) (*document.Account, error) {
 	if err != nil {
 		logger.Warn("update UnbondingDelegation Info have error", logger.String("err", err.Error()))
 	}
-	starttime := time.Unix(account.TotalUpdateAt, 0).In(cstZone)
-	if res, err := updateHeightTimeStamp(starttime, time.Now().In(cstZone), account); err == nil {
-		account = res
-	} else {
-		logger.Warn("update HeightTimeStamp  have error", logger.String("err", err.Error()))
-	}
 
 	account.Delegation = utils.Coin{
 		Denom:  balance.Denom,
@@ -153,33 +146,6 @@ func getBalance(account *document.Account) (utils.Coin, *document.Account, error
 	return balance, account, nil
 }
 
-func updateHeightTimeStamp(starttime, endtime time.Time, account *document.Account) (*document.Account, error) {
-	var txModel document.CommonTx
-	txs, err := txModel.GetTxsByDurationAddress(starttime, endtime, "")
-	if err != nil {
-		return nil, err
-	}
-	var height, timestamp int64
-	for _, val := range txs {
-
-		switch val.Type {
-		case types.TxTypeStakeDelegate, types.TxTypeStakeBeginUnbonding, types.TxTypeBeginRedelegate,
-			types.TxTypeStakeCreateValidator:
-			if val.Height > height && val.From == account.Address {
-				height = val.Height
-				timestamp = val.Time.Unix()
-			}
-		}
-
-	}
-	if height > account.TotalUpdateHeight && timestamp > account.TotalUpdateAt {
-		account.CoinIrisUpdateHeight = height
-		account.CoinIrisUpdateAt = timestamp
-		account.TotalUpdateHeight = height
-		account.TotalUpdateAt = timestamp
-	}
-	return account, nil
-}
 
 func getDelegationInfo(address string) (float64, error) {
 	delegations := lcd.GetDelegationsByDelAddr(address)
