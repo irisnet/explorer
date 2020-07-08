@@ -2,12 +2,13 @@ package task
 
 import (
 	"github.com/irisnet/explorer/backend/conf"
-	"github.com/irisnet/explorer/backend/utils"
+	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/orm/document"
-	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/types"
+	"github.com/irisnet/explorer/backend/utils"
 	"strconv"
+	"strings"
 )
 
 type UpdateAccount struct {
@@ -39,6 +40,9 @@ func (task UpdateAccount) DoTask(fn func(string) chan bool) error {
 	}
 
 	for i, val := range accounts {
+		if !strings.HasPrefix(val.Address, conf.Get().Hub.Prefix.AccAddr) {
+			continue
+		}
 		_, _, rewards, err := lcd.GetDistributionRewardsByValidatorAcc(val.Address)
 		if err == nil && len(rewards) > 0 {
 			newrewards := loadRewards(rewards)
