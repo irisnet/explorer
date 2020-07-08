@@ -116,7 +116,7 @@ func GetWithdrawAddressByValidatorAcc(validatorAcc string) (string, error) {
 func GetDistributionRewardsByValidatorAcc(validatorAcc string) (utils.CoinsAsStr, []RewardsFromDelegations, utils.CoinsAsStr, error) {
 
 	if !strings.HasPrefix(validatorAcc, conf.Get().Hub.Prefix.AccAddr) {
-		return nil, nil, nil, fmt.Errorf("address prefix is not %v", conf.Get().Hub.Prefix.AccAddr)
+		return nil, nil, nil, fmt.Errorf("address prefix is should %v", conf.Get().Hub.Prefix.AccAddr)
 	}
 	url := fmt.Sprintf(UrlDistributionRewardsByValidatorAcc, conf.Get().Hub.LcdUrl, validatorAcc)
 	resAsBytes, err := utils.Get(url)
