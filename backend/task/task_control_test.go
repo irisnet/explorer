@@ -30,6 +30,6 @@ func TestTaskControlService_Start(t *testing.T) {
 	new(TaskControlMonitor).Start()
 }
 
-func TestUpdateAccount_DoTask(t *testing.T) {
+func TestTaskControlService_DoTask(t *testing.T) {
 	new(TaskControlMonitor).DoTask(HeartBeat)
 }

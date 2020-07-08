@@ -51,6 +51,9 @@ func QueryWithdrawAddr(address string) (result string) {
 }
 
 func GetDelegationsByDelAddr(delAddr string) (delegations []DelegationVo) {
+	if !strings.HasPrefix(delAddr, conf.Get().Hub.Prefix.AccAddr) {
+		return
+	}
 	url := fmt.Sprintf(UrlDelegationsByDelegator, conf.Get().Hub.LcdUrl, delAddr)
 	resAsBytes, err := utils.Get(url)
 	if err != nil {
@@ -112,6 +115,9 @@ func GetWithdrawAddressByValidatorAcc(validatorAcc string) (string, error) {
 
 func GetDistributionRewardsByValidatorAcc(validatorAcc string) (utils.CoinsAsStr, []RewardsFromDelegations, utils.CoinsAsStr, error) {
 
+	if !strings.HasPrefix(validatorAcc, conf.Get().Hub.Prefix.AccAddr) {
+		return nil, nil, nil, fmt.Errorf("address prefix is not %v", conf.Get().Hub.Prefix.AccAddr)
+	}
 	url := fmt.Sprintf(UrlDistributionRewardsByValidatorAcc, conf.Get().Hub.LcdUrl, validatorAcc)
 	resAsBytes, err := utils.Get(url)
 	if err != nil {
@@ -179,7 +185,9 @@ func GetUnbondingDelegationsByValidatorAddr(valAddr string) (unbondingDelegation
 }
 
 func GetUnbondingDelegationsByDelegatorAddr(delAddr string) (unbondingDelegations []UnbondingDelegations) {
-
+	if !strings.HasPrefix(delAddr, conf.Get().Hub.Prefix.AccAddr) {
+		return
+	}
 	url := fmt.Sprintf(UrlUnbondingDelegationByDelegator, conf.Get().Hub.LcdUrl, delAddr)
 	resAsBytes, err := utils.Get(url)
 	if err != nil {
