@@ -78,7 +78,7 @@ func AccountInfo(address string) (Account01411, error) {
 	}
 
 	if err := json.Unmarshal(resBytes, &acc); err != nil {
-		logger.Error("get account error", logger.String("err", err.Error()))
+		//logger.Error("get account error", logger.String("err", err.Error()))
 		return acc, err
 	}
 	return acc, nil
@@ -101,7 +101,7 @@ func GetIconsByKey(key string) (string, error) {
 	}
 	var picdata vo.LookupIcons
 	if err := json.Unmarshal(resBytes, &picdata); err != nil {
-		logger.Error("get icons error", logger.String("err", err.Error()))
+		//logger.Error("get icons error", logger.String("err", err.Error()))
 		return "", err
 	}
 

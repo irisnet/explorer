@@ -7,10 +7,10 @@ import (
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/lcd"
 	"github.com/irisnet/explorer/backend/types"
-	"strconv"
 	"math/big"
 	"time"
 	"math"
+	"strings"
 )
 
 type UpdateAccount struct {
@@ -42,6 +42,9 @@ func (task UpdateAccount) DoTask(fn func(string) chan bool) error {
 	}
 
 	for i := range accounts {
+		if !strings.HasPrefix(accounts[i].Address, conf.Get().Hub.Prefix.AccAddr) {
+			continue
+		}
 		if err := updateAccount(&accounts[i]); err != nil {
 			logger.Warn("get AccountInfo failed", logger.String("err", err.Error()))
 		}
@@ -79,11 +82,11 @@ func updateAccountInfo(account *document.Account) (*document.Account, error) {
 		account = res
 	}
 
-	delegate, err := getDelegationInfo(account.Address)
+	delegation, err := getDelegationInfo(account.Address)
 	if err != nil {
 		logger.Warn("update Delegation Info have error", logger.String("err", err.Error()))
 	}
-	unbondingdelegator, err := getUnbondingDelegationInfo(account.Address)
+	unbondingDelegation, err := getUnbondingDelegationInfo(account.Address)
 	if err != nil {
 		logger.Warn("update UnbondingDelegation Info have error", logger.String("err", err.Error()))
 	}
@@ -96,11 +99,11 @@ func updateAccountInfo(account *document.Account) (*document.Account, error) {
 
 	account.Delegation = utils.Coin{
 		Denom:  balance.Denom,
-		Amount: delegate,
+		Amount: delegation,
 	}
 	account.UnbondingDelegation = utils.Coin{
 		Denom:  balance.Denom,
-		Amount: unbondingdelegator,
+		Amount: unbondingDelegation,
 	}
 
 	account.CoinIris = utils.Coin{
@@ -110,7 +113,7 @@ func updateAccountInfo(account *document.Account) (*document.Account, error) {
 
 	account.Total = utils.Coin{
 		Denom:  balance.Denom,
-		Amount: balance.Amount + delegate + unbondingdelegator,
+		Amount: balance.Amount + delegation + unbondingDelegation,
 	}
 	return account, nil
 }
@@ -119,7 +122,7 @@ func loadRewards(coins utils.CoinsAsStr) utils.Coin {
 	var retcoin utils.Coin
 	for _, val := range coins {
 		if val.Denom == types.IRISAttoUint {
-			rewardsAmt, _ := strconv.ParseFloat(val.Amount, 64)
+			rewardsAmt, _ := utils.ParseStringToFloat(val.Amount)
 			return utils.Coin{Denom: val.Denom, Amount: rewardsAmt}
 		}
 	}
@@ -137,14 +140,14 @@ func getBalance(account *document.Account) (utils.Coin, *document.Account, error
 	for _, val := range ret.Value.Coins {
 		if val.Denom == types.IRISAttoUint {
 			balance.Denom = val.Denom
-			amount, _ := strconv.ParseFloat(val.Amount, 64)
+			amount, _ := utils.ParseStringToFloat(val.Amount)
 			if amount > 0 {
 				balance.Amount = amount
 			}
 			break
 		}
 	}
-	if number, _ := strconv.ParseUint(ret.Value.AccountNum, 10, 64); number > 0 {
+	if number, ok := utils.ParseUint(ret.Value.AccountNum); ok {
 		account.AccountNumber = number
 	}
 	return balance, account, nil
@@ -198,7 +201,7 @@ func getDelegationInfo(address string) (float64, error) {
 		}
 	}
 	token = new(big.Rat).Mul(token, new(big.Rat).SetFloat64(math.Pow10(18)))
-	return strconv.ParseFloat(token.FloatString(18), 64)
+	return utils.ParseStringToFloat(token.FloatString(18))
 }
 
 func getUnbondingDelegationInfo(address string) (float64, error) {
@@ -212,5 +215,5 @@ func getUnbondingDelegationInfo(address string) (float64, error) {
 		}
 	}
 
-	return strconv.ParseFloat(token.FloatString(18), 64)
+	return utils.ParseStringToFloat(token.FloatString(18))
 }
