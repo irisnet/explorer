@@ -29,20 +29,24 @@ func init() {
 func Get(url string) (bz []byte, err error) {
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
-		logger.Error("req error", logger.Any("err", err), logger.String("url", url))
+		logger.Error("NewRequest error", logger.Any("err", err), logger.String("url", url))
 		return
 	}
 
 	resp, err := client.Do(req)
 
 	if err != nil {
-		logger.Error("req error", logger.Any("err", err.Error()), logger.String("url", url))
+		logger.Error("Do error", logger.Any("err", err.Error()), logger.String("url", url))
 		return
 	}
 	if resp.StatusCode != http.StatusOK {
+		if resp.StatusCode == http.StatusNoContent {
+			resp.Body.Close()
+			return
+		}
 		if bz2, err := ioutil.ReadAll(resp.Body); err == nil {
 			resp.Body.Close()
-			logger.Error("req error", logger.Any("err", string(bz2)), logger.String("url", url))
+			logger.Error("ReadAll error", logger.Any("err", string(bz2)), logger.String("url", url))
 		}
 		return
 	}

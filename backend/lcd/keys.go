@@ -76,6 +76,9 @@ func AccountInfo(address string) (Account01411, error) {
 	if err != nil {
 		return acc, err
 	}
+	if resBytes == nil {
+		return acc, nil
+	}
 
 	if err := json.Unmarshal(resBytes, &acc); err != nil {
 		//logger.Error("get account error", logger.String("err", err.Error()))
