@@ -26,38 +26,35 @@ func init() {
 	}
 }
 
-func Get(url string) (bz []byte, err error) {
+func Get(url string) ([]byte, error) {
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
-		logger.Error("NewRequest error", logger.Any("err", err), logger.String("url", url))
-		return
+		//logger.Error("NewRequest error", logger.Any("err", err), logger.String("url", url))
+		return nil, err
 	}
 
 	resp, err := client.Do(req)
 
 	if err != nil {
-		logger.Error("Do error", logger.Any("err", err.Error()), logger.String("url", url))
-		return
+		//logger.Error("Do error", logger.Any("err", err.Error()), logger.String("url", url))
+		return nil, err
 	}
 	if resp.StatusCode != http.StatusOK {
-		if resp.StatusCode == http.StatusNoContent {
+		_, err := ioutil.ReadAll(resp.Body)
+		if err == nil {
 			resp.Body.Close()
-			return
+			//logger.Error("ReadAll error", logger.Any("err", string(bz2)), logger.String("url", url))
 		}
-		if bz2, err := ioutil.ReadAll(resp.Body); err == nil {
-			resp.Body.Close()
-			logger.Error("ReadAll error", logger.Any("err", string(bz2)), logger.String("url", url))
-		}
-		return
 	}
 
-	bz, err = ioutil.ReadAll(resp.Body)
+	bz, err := ioutil.ReadAll(resp.Body)
 
 	defer resp.Body.Close()
 	if err != nil {
-		logger.Error("ioutil.ReadAll err", logger.Any("io", err), logger.String("url", url))
+		//logger.Error("ioutil.ReadAll err", logger.Any("io", err), logger.String("url", url))
+		return nil, err
 	}
-	return
+	return bz, nil
 }
 
 func Forward(req *http.Request, url string) (bz []byte, err error) {

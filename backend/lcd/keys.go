@@ -76,7 +76,7 @@ func AccountInfo(address string) (Account01411, error) {
 	if err != nil {
 		return acc, err
 	}
-	if resBytes == nil {
+	if len(resBytes) == 0 {
 		return acc, nil
 	}
 

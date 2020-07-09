@@ -3,7 +3,6 @@ package task
 import (
 	"testing"
 	"github.com/irisnet/explorer/backend/orm/document"
-	"time"
 	"encoding/json"
 )
 
@@ -46,12 +45,7 @@ func TestUpdateAccount_getBalance(t *testing.T) {
 	t.Log(v)
 }
 
-func TestUpdateAccount_updateHeightTimeStamp(t *testing.T) {
-	acc, _ := updateHeightTimeStamp(time.Unix(account.TotalUpdateAt, 0), time.Now(), &account)
 
-	bytedata, _ := json.Marshal(acc)
-	t.Log(string(bytedata))
-}
 
 func TestUpdateAccount_getDelegationInfo(t *testing.T) {
 	ret, _ := getDelegationInfo(account.Address)
