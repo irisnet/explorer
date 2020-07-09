@@ -6,7 +6,7 @@ import (
 )
 
 func TestAccount(t *testing.T) {
-	address := "faa192vef4442d07lqde59mx35dvmfv9v72wrsu84a"
+	address := "faa1dmnnl50sagq2f6x88mz62rcn2mv5pfe53madlz"
 
 	if res, err := Account(address); err != nil {
 		t.Fatal(err)

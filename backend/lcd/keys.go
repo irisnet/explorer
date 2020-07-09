@@ -11,6 +11,7 @@ import (
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/vo"
+	"strings"
 )
 
 type (
@@ -56,13 +57,8 @@ func buildAccountVo(acc Account01411) AccountVo {
 }
 
 func Account(address string) (result AccountVo, err error) {
-	url := fmt.Sprintf(UrlAccount, conf.Get().Hub.LcdUrl, address)
-	resBytes, err := utils.Get(url)
+	acc, err := AccountInfo(address)
 	if err != nil {
-		return result, err
-	}
-	acc := Account01411{}
-	if err := json.Unmarshal(resBytes, &acc); err != nil {
 		logger.Error("get account error", logger.String("err", err.Error()))
 		return result, err
 	}
@@ -70,6 +66,26 @@ func Account(address string) (result AccountVo, err error) {
 	return result, nil
 }
 
+func AccountInfo(address string) (Account01411, error) {
+	acc := Account01411{}
+	if !strings.HasPrefix(address, conf.Get().Hub.Prefix.AccAddr) {
+		return acc, fmt.Errorf("address prefix is should %v", conf.Get().Hub.Prefix.AccAddr)
+	}
+	url := fmt.Sprintf(UrlAccount, conf.Get().Hub.LcdUrl, address)
+	resBytes, err := utils.Get(url)
+	if err != nil {
+		return acc, err
+	}
+	if len(resBytes) == 0 {
+		return acc, nil
+	}
+
+	if err := json.Unmarshal(resBytes, &acc); err != nil {
+		//logger.Error("get account error", logger.String("err", err.Error()))
+		return acc, err
+	}
+	return acc, nil
+}
 func Faucet(req *http.Request) (bz []byte, err error) {
 	uri := fmt.Sprintf(types.UrlFaucetAccountService, conf.Get().Server.FaucetUrl)
 	return utils.Forward(req, uri)
@@ -88,7 +104,7 @@ func GetIconsByKey(key string) (string, error) {
 	}
 	var picdata vo.LookupIcons
 	if err := json.Unmarshal(resBytes, &picdata); err != nil {
-		logger.Error("get icons error", logger.String("err", err.Error()))
+		//logger.Error("get icons error", logger.String("err", err.Error()))
 		return "", err
 	}
 
