@@ -137,7 +137,7 @@ func (service *AccountService) QueryRichList() (vo.AccountsInfoRespond) {
 				acc.Total,
 			},
 			Percent:  rate,
-			//UpdateAt: acc.TotalUpdateAt,
+			UpdateAt: acc.UpdateAt,
 		})
 	}
 	return accList
