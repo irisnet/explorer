@@ -42,9 +42,9 @@ func init() {
 	engine.AppendTask(UpdateProposalVoters{})
 	engine.AppendTask(UpdateAccount{})
 
-	taskControlMonitor := TaskControlMonitor{}
-	taskControlMonitor.unlockAllTasks()
-	engine.AppendTask(taskControlMonitor)
+	//taskControlMonitor := TaskControlMonitor{}
+	//taskControlMonitor.unlockAllTasks()
+	//engine.AppendTask(taskControlMonitor)
 }
 
 type TimerTask interface {
@@ -74,6 +74,9 @@ func (e *Engine) AppendTask(task TimerTask) {
 
 func Start() {
 	engine.Start()
+	taskControlMonitor := TaskControlMonitor{}
+	taskControlMonitor.unlockAllTasks()
+	taskControlMonitor.Start()
 
 	// tasks manager by cron job
 	c := cron.New(cron.WithLocation(cstZone))
