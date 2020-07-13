@@ -160,20 +160,12 @@ func TestInitAccountFromGenesisFile(t *testing.T) {
 			Insert: document.Account{
 				Address:           acc.Address,
 				Total:             totalAmt,
-				TotalUpdateHeight: exportHeight,
-				TotalUpdateAt:     genesis.GenesisTime.Unix(),
 
 				CoinIris:             coin,
-				CoinIrisUpdateHeight: exportHeight,
-				CoinIrisUpdateAt:     genesis.GenesisTime.Unix(),
 
 				Delegation:             utils.Coin{Denom: delegateAmt.Denom, Amount: delegateAmt.Amount},
-				DelegationUpdateHeight: delegateHeight,
-				DelegationUpdateAt:     genesis.GenesisTime.Unix(),
 
 				UnbondingDelegation:             utils.Coin{Denom: unbondingAmt.Denom, Amount: unbondingAmt.Amount},
-				UnbondingDelegationUpdateHeight: undHeight,
-				UnbondingDelegationUpdateAt:     genesis.GenesisTime.Unix(),
 
 				AccountNumber: accountNumber,
 			},

@@ -59,11 +59,15 @@ func updateAccount(account *document.Account) error {
 		logger.Warn("get AccountInfo failed", logger.String("err", err.Error()))
 	}
 	_, _, rewards, err := lcd.GetDistributionRewardsByValidatorAcc(account.Address)
-	if err == nil && len(rewards) > 0 {
-		newrewards := loadRewards(rewards)
-		subvalue := newrewards.Amount - account.Rewards.Amount
-		account.Total.Amount += subvalue
-		account.Rewards = newrewards
+	if err == nil {
+		if len(rewards) > 0 {
+			newrewards := loadRewards(rewards)
+			subvalue := newrewards.Amount - account.Rewards.Amount
+			account.Total.Amount += subvalue
+			account.Rewards = newrewards
+		} else {
+			account.Rewards = utils.Coin{Denom: account.Rewards.Denom}
+		}
 	}
 	if err := account.Update(*account); err != nil {
 		logger.Warn("Account Update Rewards failed", logger.String("err", err.Error()))
@@ -145,7 +149,6 @@ func getBalance(account *document.Account) (utils.Coin, *document.Account, error
 	}
 	return balance, account, nil
 }
-
 
 func getDelegationInfo(address string) (float64, error) {
 	delegations := lcd.GetDelegationsByDelAddr(address)

@@ -14,7 +14,7 @@ const (
 	CollectionNmAccount       = "account"
 	AccountFieldAddress       = "address"
 	AccountFieldAccountNumber = "account_number"
-	AccountFieldTotalUpdateAt = "total_update_at"
+	AccountFieldUpdateAt      = "update_at"
 )
 
 type Account struct {
@@ -50,7 +50,7 @@ func (a Account) GetAccountList() ([]Account, error) {
 	defer query.Release()
 
 	query.SetCollection(CollectionNmAccount).
-		SetSort(desc("total.amount"), AccountFieldTotalUpdateAt, AccountFieldAccountNumber).
+		SetSort(desc("total.amount"), AccountFieldUpdateAt, AccountFieldAccountNumber).
 		SetSize(100).
 		SetResult(&result)
 	err := query.Exec()
@@ -70,7 +70,7 @@ func (a Account) GetDelegatores(offset, size int) ([]Account, error) {
 	}
 
 	query.SetCollection(CollectionNmAccount).SetCondition(condition).
-		SetSort(desc("total.amount"), AccountFieldTotalUpdateAt, AccountFieldAccountNumber).
+		SetSort(desc("total.amount"), AccountFieldUpdateAt, AccountFieldAccountNumber).
 		SetOffset(offset).
 		SetSize(size).
 		SetResult(&result)
@@ -85,7 +85,7 @@ func (a Account) GetAllAccount() ([]Account, error) {
 	defer query.Release()
 
 	query.SetCollection(CollectionNmAccount).
-		SetSort(desc("total.amount"), AccountFieldTotalUpdateAt, AccountFieldAccountNumber).
+		SetSort(desc("total.amount"), AccountFieldUpdateAt, AccountFieldAccountNumber).
 		SetResult(&result)
 	err := query.Exec()
 	return result, err

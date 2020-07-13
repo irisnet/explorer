@@ -2,12 +2,12 @@
 Blockchain explorer for the IRIS Hub
 ##### 1 Prerequisites
 
-* go1.9.2+
+* go1.13.0+
 
 ##### 2 install
 
 ```bash
-    go get github.com/irisnet/explorer
+    go get github.com/irisnet/explorer/backend
     make all
 ```
 
@@ -27,15 +27,25 @@ Blockchain explorer for the IRIS Hub
     CHAIN_ID         : irishub chain-id
     API_VERSION      : explorer api version
     MAX_DRAW_CNT     : Maximum number of collections
+    SHOW_FAUCET      : switch of show faucet
+    INITIAL_SUPPLY   : initial supplay of IRIS Token
     CUR_ENV          : current environment(dev/qa/testnet/mainnet)
     CronTimeAssetGateways: time interval of update asset gateways
     CronTimeAssetTokens: time interval of update asset tokens
     CronTimeGovParams: time interval of update gov params
     CronTimeTxNumByDay: time interval of update tx num by day
+    CronTimeControlTask: time interval of monitor task execute
     CronTimeAccountRewards: time interval of update account rewards
     CronTimeValidators: time interval of update validators
     CronTimeValidatorIcons: time interval of update validator icons
+    CronTimeProposalVoters: time interval of update voter info of proposal
+    CronTimeValidatorStaticInfo: time interval of cronjob to update validator static info include uptime, selfBond, delegatorNum
+    CronTimeFormatStaticDay: define time format of cronjob execute by every day
+    CronTimeFormatStaticMonth: define time format of cronjob execute by eveny month
+    CronTimeStaticDataDay: time interval of cronjob to snapshot delegator and validator rewards info
+    CronTimeStaticDataMonth: time interval of cronjob to caculate delegator and validator rewards info
     CronTimeHeartBeat: time interval of heart beat in cron task
+    NetreqLimitMax: max network request to lcd node
     
     
     //irishub v0.11.0 add
