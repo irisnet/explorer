@@ -189,7 +189,8 @@ func (d TaskControl) UnlockAllTasks() error {
 	}
 	update := bson.M{
 		"$set": bson.M{
-			TCFieldIsInProcess: false,
+			TCFieldIsInProcess:    false,
+			TCFieldLatestExecTime: time.Now().Unix(),
 		},
 	}
 
