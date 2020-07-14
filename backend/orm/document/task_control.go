@@ -178,25 +178,25 @@ func (d TaskControl) UnlockTaskControl(taskName string) error {
 	return nil
 }
 
-func (d TaskControl) UnlockAllTasks() error {
-	q := orm.NewQuery()
-	defer q.Release()
-
-	c := q.GetDb().C(d.Name())
-
-	selector := bson.M{
-		TCFieldIsInProcess: true,
-	}
-	update := bson.M{
-		"$set": bson.M{
-			TCFieldIsInProcess:    false,
-			TCFieldLatestExecTime: time.Now().Unix(),
-		},
-	}
-
-	if err := c.Update(selector, update); err != nil {
-		return err
-	}
-
-	return nil
-}
+//func (d TaskControl) UnlockAllTasks() error {
+//	q := orm.NewQuery()
+//	defer q.Release()
+//
+//	c := q.GetDb().C(d.Name())
+//
+//	selector := bson.M{
+//		TCFieldIsInProcess: true,
+//	}
+//	update := bson.M{
+//		"$set": bson.M{
+//			TCFieldIsInProcess:    false,
+//			TCFieldLatestExecTime: time.Now().Unix(),
+//		},
+//	}
+//
+//	if err := c.Update(selector, update); err != nil {
+//		return err
+//	}
+//
+//	return nil
+//}
