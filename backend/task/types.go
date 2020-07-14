@@ -77,7 +77,7 @@ func (e *Engine) AppendTask(task TimerTask) {
 func Start() {
 	engine.Start()
 	taskControlMonitor := TaskControlMonitor{}
-	taskControlMonitor.unlockAllTasks()
+	//taskControlMonitor.unlockAllTasks()
 	taskControlMonitor.Start()
 
 	// tasks manager by cron job

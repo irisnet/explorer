@@ -164,13 +164,13 @@ func (s TaskControlMonitor) CheckAndUpdate(one document.TaskControl) error {
 	return nil
 }
 
-// unlock all tasks which task is unlocked
-func (s TaskControlMonitor) unlockAllTasks() error {
-	if err := taskControlModel.UnlockAllTasks(); err != nil {
-		if err != mgo.ErrNotFound {
-			return err
-		}
-	}
-
-	return nil
-}
+//// unlock all tasks which task is unlocked
+//func (s TaskControlMonitor) unlockAllTasks() error {
+//	if err := taskControlModel.UnlockAllTasks(); err != nil {
+//		if err != mgo.ErrNotFound {
+//			return err
+//		}
+//	}
+//
+//	return nil
+//}
