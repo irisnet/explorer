@@ -251,7 +251,7 @@
                 totalDelegator:0,
 				totalDelegatorValue:0,
 				totalValidatorRewards:0,
-                allRewardsValue:0,
+                allRewardsValue: 0,
                 allRewardsAmountValue:0,
                 assetList: [],
 				fixedNumber: 2,
@@ -292,11 +292,11 @@
         },
         mounted(){
 			this.headerAddress = this.$route.params.param;
+            this.getRewardsItems();
             this.getAddressInformation();
             this.getAssetList();
             this.getDelegationList();
             this.getUnBondingDelegationList();
-            this.getRewardsItems();
             this.getAllTxType();
             let statusArray = [
                 {
@@ -374,7 +374,7 @@
                 })
             },
             getAssetList(){
-	            this.assetsItems = this.assetList.map( item => {
+                this.assetsItems = this.assetList.map( item => {
 	            	if(item.denom === 'iris-atto'){
 			            return {
 				            token: Tools.formatDenom(item.denom),
@@ -517,6 +517,7 @@
                             }
                             this.allRewardsAmountValue = res.total_rewards ? Tools.formatStringToFixedNumber(Tools.numberMoveDecimal(res.total_rewards[0].amount,-18),this.fixedNumber) : 0;
                             this.totalDelegatorRewardValue = `${Tools.formatStringToFixedNumber(new BigNumber(moveDecimal(this.totalDelegatorReward.toString(),-2)).toFormat(),this.fixedNumber)} ${Constant.Denom.IRIS.toUpperCase()}`
+                            this.getAssetList()
 			            }
 		            }catch (e) {
 			            console.error(e)
