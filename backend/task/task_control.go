@@ -156,6 +156,7 @@ func (s TaskControlMonitor) CheckAndUpdate(one document.TaskControl) error {
 	}
 	if currentTimeInterval >= 3*timeHeartBeat && one.IsInProcess && one.TaskName != types.TaskConTrolMonitor {
 		one.IsInProcess = false
+		one.LatestExecTime = time.Now().Unix()
 		if err := s.controlModel.UpdateByPK(one); err != nil {
 			return err
 		}

@@ -30,6 +30,8 @@ var (
 		"static_validator":       true,
 		"static_delegator_month": true,
 		"static_validator_month": true,
+		"tx_num_stat_task":       true,
+		"update_validator_icons": true,
 	}
 )
 
