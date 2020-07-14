@@ -33,3 +33,7 @@ func TestTaskControlService_Start(t *testing.T) {
 func TestTaskControlService_DoTask(t *testing.T) {
 	new(TaskControlMonitor).DoTask(HeartBeat)
 }
+
+func TestTaskControlMonitor_unlockAllTasks(t *testing.T) {
+	new(TaskControlMonitor).unlockAllTasks()
+}
