@@ -22,7 +22,7 @@ func TestStaticDelegatorByMonthTask_Start(t *testing.T) {
 }
 
 func TestStaticDelegatorByMonthTask_DoTask(t *testing.T) {
-	if err := new(StaticDelegatorByMonthTask).DoTask(); err != nil {
+	if err := new(StaticDelegatorByMonthTask).DoTask(HeartBeat); err != nil {
 		t.Fatal(err.Error())
 	}
 }

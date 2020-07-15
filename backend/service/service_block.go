@@ -9,6 +9,7 @@ import (
 	"github.com/irisnet/explorer/backend/types"
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/vo"
+	"gopkg.in/mgo.v2"
 )
 
 type BlockService struct {
@@ -79,9 +80,10 @@ func (service *BlockService) QueryBlockInfo(height int64) vo.BlockInfo {
 	proposerHexAddr := currentBlock.BlockMeta.Header.ProposerAddress
 	validatorDoc, err := document.Validator{}.GetValidatorByProposerAddr(proposerHexAddr)
 
-	if err != nil {
+	result.PropopserMoniker = proposerHexAddr
+	if err != nil && err != mgo.ErrNotFound {
 		logger.Error("query validator collection  err", logger.String("error", err.Error()), service.GetTraceLog())
-		result.PropopserMoniker = proposerHexAddr
+
 	} else {
 		result.PropoperAddr = validatorDoc.OperatorAddress
 		result.PropopserMoniker = validatorDoc.Description.Moniker

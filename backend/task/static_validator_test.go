@@ -40,5 +40,5 @@ func TestStaticValidatorTask_getAllValidatorTokens(t *testing.T) {
 }
 
 func TestStaticValidatorTask_DoTask(t *testing.T) {
-	new(StaticValidatorTask).DoTask()
+	new(StaticValidatorTask).DoTask(HeartBeat)
 }

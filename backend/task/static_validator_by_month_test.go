@@ -109,7 +109,7 @@ func TestStaticValidatorByMonthTask_Start(t *testing.T) {
 }
 
 func TestStaticValidatorByMonthTask_DoTask(t *testing.T) {
-	if err := task.DoTask(); err != nil {
+	if err := task.DoTask(HeartBeat); err != nil {
 		t.Fatal(err.Error())
 	}
 }

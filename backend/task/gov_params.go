@@ -24,7 +24,9 @@ func (task UpdateGovParams) Start() {
 	})
 }
 
-func (task UpdateGovParams) DoTask() error {
+func (task UpdateGovParams) DoTask(fn func(string) chan bool) error {
+	stop := fn(task.Name())
+	defer HeartQuit(stop)
 	curModuleKv, err := lcd.GetAllGovModuleParam()
 	if err != nil {
 		return err

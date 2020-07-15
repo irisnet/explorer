@@ -17,7 +17,7 @@ type (
 	}
 	TaskControlService struct {
 	}
-	Callback func() error
+	Callback func(func(string) chan bool) error
 )
 
 func (s TaskControlService) runTask(taskName string, timeInterval int, callback Callback) error {
@@ -39,7 +39,7 @@ func (s TaskControlService) runTask(taskName string, timeInterval int, callback 
 		} else {
 			// do task
 			var doTaskErr error
-			if err := callback(); err != nil {
+			if err := callback(HeartBeat); err != nil {
 				doTaskErr = fmt.Errorf("doTask fail, taskName:%s, err:%s", taskName, err.Error())
 			}
 
@@ -113,7 +113,9 @@ func (s TaskControlMonitor) Start() {
 	})
 }
 
-func (s TaskControlMonitor) DoTask() error {
+func (s TaskControlMonitor) DoTask(fn func(string) chan bool) error {
+	stop := fn(s.Name())
+	defer HeartQuit(stop)
 	runValue := true
 	skip := 0
 	limit := 20
@@ -147,12 +149,14 @@ func (s TaskControlMonitor) checkAndChangeWorkOn(list []document.TaskControl) {
 
 func (s TaskControlMonitor) CheckAndUpdate(one document.TaskControl) error {
 	currentTimeInterval := time.Now().Unix() - one.LatestExecTime
-	if one.TimeInterval > currentTimeInterval {
+	timeHeartBeat := int64(conf.Get().Server.CronTimeHeartBeat)
+
+	if timeHeartBeat > currentTimeInterval {
 		return nil
 	}
-
-	if currentTimeInterval >= 2*one.TimeInterval && one.IsInProcess && one.TaskName != types.TaskConTrolMonitor {
+	if currentTimeInterval >= 3*timeHeartBeat && one.IsInProcess && one.TaskName != types.TaskConTrolMonitor {
 		one.IsInProcess = false
+		one.LatestExecTime = time.Now().Unix()
 		if err := s.controlModel.UpdateByPK(one); err != nil {
 			return err
 		}
@@ -160,13 +164,13 @@ func (s TaskControlMonitor) CheckAndUpdate(one document.TaskControl) error {
 	return nil
 }
 
-// unlock all tasks which task is unlocked
-func (s TaskControlMonitor) unlockAllTasks() error {
-	if err := taskControlModel.UnlockAllTasks(); err != nil {
-		if err != mgo.ErrNotFound {
-			return err
-		}
-	}
-
-	return nil
-}
+//// unlock all tasks which task is unlocked
+//func (s TaskControlMonitor) unlockAllTasks() error {
+//	if err := taskControlModel.UnlockAllTasks(); err != nil {
+//		if err != mgo.ErrNotFound {
+//			return err
+//		}
+//	}
+//
+//	return nil
+//}

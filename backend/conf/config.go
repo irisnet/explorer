@@ -41,6 +41,7 @@ const (
 	KeyCronTimeGovParams           = "CronTimeGovParams"
 	KeyCronTimeTxNumByDay          = "CronTimeTxNumByDay"
 	KeyCronTimeControlTask         = "CronTimeControlTask"
+	KeyCronTimeHeartBeat           = "CronTimeHeartBeat"
 	KeyCronTimeValidators          = "CronTimeValidators"
 	KeyCronTimeAccountRewards      = "CronTimeAccountRewards"
 	KeyCronTimeValidatorIcons      = "CronTimeValidatorIcons"
@@ -96,18 +97,19 @@ func init() {
 		ApiVersion:                   getEnv(KeyApiVersion, DefaultEnvironment),
 		MaxDrawCnt:                   getEnvInt(KeyMaxDrawCnt, DefaultEnvironment),
 		ShowFaucet:                   getEnv(KeyShowFaucet, DefaultEnvironment),
-		CurEnv:                       getEnv(KeyCurEnv, DefaultEnvironment),
-		CronTimeAssetGateways:        getEnvInt(KeyCronTimeAssetGateways, DefaultEnvironment),
-		CronTimeAssetTokens:          getEnvInt(KeyCronTimeAssetTokens, DefaultEnvironment),
-		CronTimeGovParams:            getEnvInt(KeyCronTimeGovParams, DefaultEnvironment),
-		CronTimeTxNumByDay:           getEnvInt(KeyCronTimeTxNumByDay, DefaultEnvironment),
-		CronTimeControlTask:          getEnvInt(KeyCronTimeControlTask, DefaultEnvironment),
-		CronTimeAccountRewards:       getEnvInt(KeyCronTimeAccountRewards, DefaultEnvironment),
-		CronTimeValidators:           getEnvInt(KeyCronTimeValidators, DefaultEnvironment),
-		CronTimeValidatorIcons:       getEnvInt(KeyCronTimeValidatorIcons, DefaultEnvironment),
-		CronTimeProposalVoters:       getEnvInt(KeyCronTimeProposalVoters, DefaultEnvironment),
-		CronTimeValidatorStaticInfo:  getEnvInt(KeyCronTimeValidatorStaticInfo, DefaultEnvironment),
-		CronTimeFormatStaticDay:      getEnv(KeyCronTimeFormatStaticDay, DefaultEnvironment),
+		CurEnv:                      getEnv(KeyCurEnv, DefaultEnvironment),
+		CronTimeAssetGateways:       getEnvInt(KeyCronTimeAssetGateways, DefaultEnvironment),
+		CronTimeAssetTokens:         getEnvInt(KeyCronTimeAssetTokens, DefaultEnvironment),
+		CronTimeGovParams:           getEnvInt(KeyCronTimeGovParams, DefaultEnvironment),
+		CronTimeTxNumByDay:          getEnvInt(KeyCronTimeTxNumByDay, DefaultEnvironment),
+		CronTimeControlTask:         getEnvInt(KeyCronTimeControlTask, DefaultEnvironment),
+		CronTimeHeartBeat:           getEnvInt(KeyCronTimeHeartBeat, DefaultEnvironment),
+		CronTimeAccountRewards:      getEnvInt(KeyCronTimeAccountRewards, DefaultEnvironment),
+		CronTimeValidators:          getEnvInt(KeyCronTimeValidators, DefaultEnvironment),
+		CronTimeValidatorIcons:      getEnvInt(KeyCronTimeValidatorIcons, DefaultEnvironment),
+		CronTimeProposalVoters:      getEnvInt(KeyCronTimeProposalVoters, DefaultEnvironment),
+		CronTimeValidatorStaticInfo: getEnvInt(KeyCronTimeValidatorStaticInfo, DefaultEnvironment),
+		CronTimeFormatStaticDay:     getEnv(KeyCronTimeFormatStaticDay, DefaultEnvironment),
 		CronTimeFormatStaticMonth:    getEnv(KeyCronTimeFormatStaticMonth, DefaultEnvironment),
 		CronTimeStaticDelegator:      getEnvInt(KeyCronTimeStaticDataDay, DefaultEnvironment),
 		CronTimeStaticValidator:      getEnvInt(KeyCronTimeStaticDataDay, DefaultEnvironment),
@@ -173,7 +175,8 @@ func loadDefault() {
 		KeyCronTimeAssetTokens:         "60",
 		KeyCronTimeGovParams:           "3600",
 		KeyCronTimeTxNumByDay:          "86400",
-		KeyCronTimeControlTask:         "30",
+		KeyCronTimeControlTask:         "60",
+		KeyCronTimeHeartBeat:           "10",
 		KeyCronTimeValidators:          "60",
 		KeyCronTimeAccountRewards:      "600",
 		KeyCronTimeProposalVoters:      "60",
@@ -224,6 +227,7 @@ type serverConf struct {
 	CronTimeGovParams            int
 	CronTimeTxNumByDay           int
 	CronTimeControlTask          int
+	CronTimeHeartBeat            int
 	CronTimeValidators           int
 	CronTimeAccountRewards       int
 	CronTimeValidatorStaticInfo  int

@@ -30,6 +30,8 @@ var (
 		"static_validator":       true,
 		"static_delegator_month": true,
 		"static_validator_month": true,
+		"tx_num_stat_task":       true,
+		"update_validator_icons": true,
 	}
 )
 
@@ -42,15 +44,15 @@ func init() {
 	engine.AppendTask(UpdateProposalVoters{})
 	engine.AppendTask(UpdateAccount{})
 
-	taskControlMonitor := TaskControlMonitor{}
-	taskControlMonitor.unlockAllTasks()
-	engine.AppendTask(taskControlMonitor)
+	//taskControlMonitor := TaskControlMonitor{}
+	//taskControlMonitor.unlockAllTasks()
+	//engine.AppendTask(taskControlMonitor)
 }
 
 type TimerTask interface {
 	Start()
 	Name() string
-	DoTask() error
+	DoTask(fn func(string) chan bool) error
 }
 
 type Engine struct {
@@ -74,6 +76,9 @@ func (e *Engine) AppendTask(task TimerTask) {
 
 func Start() {
 	engine.Start()
+	taskControlMonitor := TaskControlMonitor{}
+	taskControlMonitor.controlModel.UnlockTaskControl(taskControlMonitor.Name())
+	taskControlMonitor.Start()
 
 	// tasks manager by cron job
 	c := cron.New(cron.WithLocation(cstZone))

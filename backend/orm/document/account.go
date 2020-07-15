@@ -7,31 +7,26 @@ import (
 	"github.com/irisnet/explorer/backend/utils"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2/txn"
+	"time"
 )
 
 const (
 	CollectionNmAccount       = "account"
 	AccountFieldAddress       = "address"
 	AccountFieldAccountNumber = "account_number"
-	AccountFieldTotalUpdateAt = "total_update_at"
+	AccountFieldUpdateAt      = "update_at"
 )
 
 type Account struct {
-	Address                         string     `bson:"address"`
-	AccountNumber                   uint64     `bson:"account_number"`
-	Total                           utils.Coin `bson:"total"`
-	TotalUpdateHeight               int64      `bson:"total_update_height"`
-	TotalUpdateAt                   int64      `bson:"total_update_at"`
-	CoinIris                        utils.Coin `bson:"coin_iris"`
-	CoinIrisUpdateHeight            int64      `bson:"coin_iris_update_height"`
-	CoinIrisUpdateAt                int64      `bson:"coin_iris_update_at"`
-	Delegation                      utils.Coin `bson:"delegation"`
-	DelegationUpdateHeight          int64      `bson:"delegation_update_height"`
-	DelegationUpdateAt              int64      `bson:"delegation_update_at"`
-	UnbondingDelegation             utils.Coin `bson:"unbonding_delegation"`
-	UnbondingDelegationUpdateHeight int64      `bson:"unbonding_delegation_update_height"`
-	UnbondingDelegationUpdateAt     int64      `bson:"unbonding_delegation_update_at"`
-	Rewards                         utils.Coin `bson:"rewards"`
+	Address             string     `bson:"address"`
+	AccountNumber       uint64     `bson:"account_number"`
+	Total               utils.Coin `bson:"total"`
+	CoinIris            utils.Coin `bson:"coin_iris"`
+	Delegation          utils.Coin `bson:"delegation"`
+	UnbondingDelegation utils.Coin `bson:"unbonding_delegation"`
+	Rewards             utils.Coin `bson:"rewards"`
+	UpdateAt            int64      `bson:"update_at"`
+	CreateAt            int64      `bson:"create_at"`
 }
 
 func (a Account) String() string {
@@ -40,19 +35,12 @@ func (a Account) String() string {
 Address                         :%v
 AccountNumber                   :%v
 Total                           :%v
-TotalUpdateHeight               :%v
-TotalUpdateAt                   :%v
 CoinIris                        :%v
-CoinIrisUpdateHeight            :%v
-CoinIrisUpdateAt                :%v
 Delegation                      :%v
-DelegationUpdateHeight          :%v
-DelegationUpdateAt              :%v
 UnbondingDelegation             :%v
-UnbondingDelegationUpdateHeight :%v
-UnbondingDelegationUpdateAt     :%v
-`, a.Address, a.AccountNumber, a.Total, a.TotalUpdateHeight, a.TotalUpdateAt, a.CoinIris, a.CoinIrisUpdateHeight, a.CoinIrisUpdateAt, a.Delegation, a.DelegationUpdateAt, a.DelegationUpdateAt,
-		a.UnbondingDelegation, a.UnbondingDelegationUpdateHeight, a.UnbondingDelegationUpdateAt)
+UpdateAt                        :%v
+CreateAt                        :%v
+`, a.Address, a.AccountNumber, a.Total, a.CoinIris, a.Delegation, a.UnbondingDelegation, a.UpdateAt, a.CreateAt)
 }
 
 func (a Account) GetAccountList() ([]Account, error) {
@@ -62,7 +50,7 @@ func (a Account) GetAccountList() ([]Account, error) {
 	defer query.Release()
 
 	query.SetCollection(CollectionNmAccount).
-		SetSort(desc("total.amount"), AccountFieldTotalUpdateAt, AccountFieldAccountNumber).
+		SetSort(desc("total.amount"), AccountFieldUpdateAt, AccountFieldAccountNumber).
 		SetSize(100).
 		SetResult(&result)
 	err := query.Exec()
@@ -82,7 +70,7 @@ func (a Account) GetDelegatores(offset, size int) ([]Account, error) {
 	}
 
 	query.SetCollection(CollectionNmAccount).SetCondition(condition).
-		SetSort(desc("total.amount"), AccountFieldTotalUpdateAt, AccountFieldAccountNumber).
+		SetSort(desc("total.amount"), AccountFieldUpdateAt, AccountFieldAccountNumber).
 		SetOffset(offset).
 		SetSize(size).
 		SetResult(&result)
@@ -97,7 +85,7 @@ func (a Account) GetAllAccount() ([]Account, error) {
 	defer query.Release()
 
 	query.SetCollection(CollectionNmAccount).
-		SetSort(desc("total.amount"), AccountFieldTotalUpdateAt, AccountFieldAccountNumber).
+		SetSort(desc("total.amount"), AccountFieldUpdateAt, AccountFieldAccountNumber).
 		SetResult(&result)
 	err := query.Exec()
 	return result, err
@@ -125,6 +113,7 @@ func (a Account) Update(account Account) error {
 	query := orm.NewQuery()
 	defer query.Release()
 	c := query.GetDb().C(a.Name())
+	account.UpdateAt = time.Now().Unix()
 	return c.Update(account.PkKvPair(), account)
 }
 
