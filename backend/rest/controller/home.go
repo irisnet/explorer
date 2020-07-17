@@ -36,6 +36,9 @@ func RegisterHome(r *mux.Router) error {
 func registerNavigationBar(r *mux.Router) error {
 	doApi(r, types.UrlRegisterNavigationBar, "GET", func(request vo.IrisReq) interface{} {
 		var block = lcd.BlockLatest()
+		if block.BlockMeta.Header.Height == "" {
+			return nil
+		}
 		var height, ok = utils.ParseInt(block.BlockMeta.Header.Height)
 		if !ok {
 			panic(types.CodeNotFound)
