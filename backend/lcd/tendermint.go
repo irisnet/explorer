@@ -359,12 +359,10 @@ func BlockLatest() (result BlockVo) {
 	url := fmt.Sprintf(UrlBlockLatest, conf.Get().Hub.LcdUrl)
 	resBytes, err := utils.Get(url)
 	if err != nil {
-		logger.Error("BlockLatest error", logger.String("err", err.Error()))
 		return result
 	}
 
 	if err := json.Unmarshal(resBytes, &result); err != nil {
-		logger.Error("BlockLatest error", logger.String("err", err.Error()))
 		return result
 	}
 	return result
