@@ -53,7 +53,7 @@ func (task UpdateAccount) DoTask(fn func(string) chan bool) error {
 }
 
 func updateAccount(account *document.Account) error {
-	if res, err := updateAccountInfo(account); err == nil {
+	if res, err := getAccountInfo(account); err == nil {
 		account = res
 	} else {
 		logger.Warn("get AccountInfo failed", logger.String("err", err.Error()))
@@ -66,7 +66,7 @@ func updateAccount(account *document.Account) error {
 	return nil
 }
 
-func updateAccountInfo(account *document.Account) (*document.Account, error) {
+func getAccountInfo(account *document.Account) (*document.Account, error) {
 	balance, res, err := getBalance(account)
 	if err != nil {
 		logger.Error("lcd getBalance Info have error", logger.String("err", err.Error()))
@@ -82,6 +82,19 @@ func updateAccountInfo(account *document.Account) (*document.Account, error) {
 	unbondingDelegation, err := getUnbondingDelegationInfo(account.Address)
 	if err != nil {
 		logger.Warn("update UnbondingDelegation Info have error", logger.String("err", err.Error()))
+	}
+	//rewards
+	_, _, rewards, err := lcd.GetDistributionRewardsByValidatorAcc(account.Address)
+	if err != nil {
+		logger.Warn("update GetDistributionRewards Info have error", logger.String("err", err.Error()))
+	}
+
+	if len(rewards) > 0 {
+		newrewards := loadRewards(rewards)
+		account.Rewards = newrewards
+		//account.Total.Amount += account.Rewards.Amount
+	} else {
+		account.Rewards = utils.Coin{Denom: account.Rewards.Denom}
 	}
 
 	account.Delegation = utils.Coin{
@@ -100,19 +113,9 @@ func updateAccountInfo(account *document.Account) (*document.Account, error) {
 
 	account.Total = utils.Coin{
 		Denom:  balance.Denom,
-		Amount: balance.Amount + delegation + unbondingDelegation,
+		Amount: balance.Amount + delegation + unbondingDelegation + account.Rewards.Amount,
 	}
-	//rewards
-	_, _, rewards, err := lcd.GetDistributionRewardsByValidatorAcc(account.Address)
-	if err == nil {
-		if len(rewards) > 0 {
-			newrewards := loadRewards(rewards)
-			account.Rewards = newrewards
-			account.Total.Amount += account.Rewards.Amount
-		} else {
-			account.Rewards = utils.Coin{Denom: account.Rewards.Denom}
-		}
-	}
+
 	return account, nil
 }
 

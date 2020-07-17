@@ -27,7 +27,7 @@ func TestUpdateAccount_DoTask(t *testing.T) {
 }
 
 func TestUpdateAccount_updateAccountInfo(t *testing.T) {
-	account, _ := updateAccountInfo(&account)
+	account, _ := getAccountInfo(&account)
 	bytedata, _ := json.Marshal(account)
 	t.Log(string(bytedata))
 }
