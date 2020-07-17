@@ -58,16 +58,7 @@ func updateAccount(account *document.Account) error {
 	} else {
 		logger.Warn("get AccountInfo failed", logger.String("err", err.Error()))
 	}
-	_, _, rewards, err := lcd.GetDistributionRewardsByValidatorAcc(account.Address)
-	if err == nil {
-		if len(rewards) > 0 {
-			newrewards := loadRewards(rewards)
-			account.Rewards = newrewards
-			account.Total.Amount += account.Rewards.Amount
-		} else {
-			account.Rewards = utils.Coin{Denom: account.Rewards.Denom}
-		}
-	}
+
 	if err := account.Update(*account); err != nil {
 		logger.Warn("Account Update Rewards failed", logger.String("err", err.Error()))
 		return err
@@ -110,6 +101,17 @@ func updateAccountInfo(account *document.Account) (*document.Account, error) {
 	account.Total = utils.Coin{
 		Denom:  balance.Denom,
 		Amount: balance.Amount + delegation + unbondingDelegation,
+	}
+	//rewards
+	_, _, rewards, err := lcd.GetDistributionRewardsByValidatorAcc(account.Address)
+	if err == nil {
+		if len(rewards) > 0 {
+			newrewards := loadRewards(rewards)
+			account.Rewards = newrewards
+			account.Total.Amount += account.Rewards.Amount
+		} else {
+			account.Rewards = utils.Coin{Denom: account.Rewards.Denom}
+		}
 	}
 	return account, nil
 }
