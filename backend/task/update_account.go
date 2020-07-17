@@ -62,9 +62,8 @@ func updateAccount(account *document.Account) error {
 	if err == nil {
 		if len(rewards) > 0 {
 			newrewards := loadRewards(rewards)
-			subvalue := newrewards.Amount - account.Rewards.Amount
-			account.Total.Amount += subvalue
 			account.Rewards = newrewards
+			account.Total.Amount += account.Rewards.Amount
 		} else {
 			account.Rewards = utils.Coin{Denom: account.Rewards.Denom}
 		}
