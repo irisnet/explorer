@@ -9,16 +9,12 @@ type AssetsRespond struct {
 }
 
 type AssetsVo struct {
-	//TokenId         string    `json:"token_id"`
 	Type            string    `json:"type"`
 	Owner           string    `json:"owner"`
-	//Gateway         string    `json:"gateway"`
 	Symbol          string    `json:"symbol"`
 	InitialSupply   int64     `json:"initial_supply,string"`
 	MaxSupply       int64     `json:"max_supply,string"`
 	Mintable        bool      `json:"mintable,string"`
-	//Decimal         int32     `json:"decimal,string"`
-	//CanonicalSymbol string    `json:"canonical_symbol"`
 	SymbolMin       string    `json:"symbol_min"`
 	Name            string    `json:"name"`
 	MintTo          string    `json:"mint_to"`
@@ -54,21 +50,14 @@ type ActualFee struct {
 //}
 
 type AssetTokens struct {
-	//TokenId         string         `json:"token_id"`
 	Owner           string         `json:"owner"`
-	//Gateway         string         `json:"gateway"`
-	//Family          string         `json:"family"`
 	TotalSupply     string         `json:"total_supply"`
 	InitialSupply   string         `json:"initial_supply"`
 	MaxSupply       string         `json:"max_supply"`
 	Mintable        bool           `json:"mintable,string"`
-	//Decimal         int            `json:"decimal,string"`
 	Symbol          string         `json:"symbol"`
-	//CanonicalSymbol string         `json:"canonical_symbol"`
 	Name            string         `json:"name"`
 	MinUnitAlias    string         `json:"min_unit_alias"`
-	//Source          string         `json:"source"`
-	//AssetGateway    *AssetGateways `json:"asset_gateway"`
 }
 
 type AssetTokensRespond []AssetTokens

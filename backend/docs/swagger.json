@@ -188,7 +188,7 @@
                 }
             }
         },
-      "/api/asset/tokens/{symbol}": {
+        "/api/asset/tokens/{symbol}": {
             "get": {
                 "description": "get assets token detail",
                 "consumes": [
@@ -204,8 +204,8 @@
                 "parameters": [
                     {
                         "type": "string",
-                      "description": "symbol",
-                      "name": "symbol",
+                        "description": "symbol",
+                        "name": "symbol",
                         "in": "path"
                     }
                 ],
@@ -530,8 +530,8 @@
                     },
                     {
                         "type": "string",
-                      "description": "caculateTime (eg 2006.01.02)",
-                      "name": "caculateTime",
+                        "description": "caculateTime (eg 2006.01.02)",
+                        "name": "caculateTime",
                         "in": "query"
                     },
                     {
@@ -2878,19 +2878,15 @@
                     "type": "boolean"
                 },
                 "name": {
-                  "description": "CanonicalSymbol string         `json:\"canonical_symbol\"`",
                     "type": "string"
                 },
                 "owner": {
-                  "description": "TokenId         string         `json:\"token_id\"`",
                     "type": "string"
                 },
                 "symbol": {
-                  "description": "Decimal         int            `json:\"decimal,string\"`",
                     "type": "string"
                 },
                 "total_supply": {
-                  "description": "Gateway         string         `json:\"gateway\"`\nFamily          string         `json:\"family\"`",
                     "type": "string"
                 }
             }
@@ -2913,19 +2909,15 @@
                         "type": "boolean"
                     },
                     "name": {
-                      "description": "CanonicalSymbol string         `json:\"canonical_symbol\"`",
                         "type": "string"
                     },
                     "owner": {
-                      "description": "TokenId         string         `json:\"token_id\"`",
                         "type": "string"
                     },
                     "symbol": {
-                      "description": "Decimal         int            `json:\"decimal,string\"`",
                         "type": "string"
                     },
                     "total_supply": {
-                      "description": "Gateway         string         `json:\"gateway\"`\nFamily          string         `json:\"family\"`",
                         "type": "string"
                     }
                 }
@@ -2982,11 +2974,9 @@
                     "type": "string"
                 },
                 "symbol": {
-                  "description": "Gateway         string    `json:\"gateway\"`",
                     "type": "string"
                 },
                 "symbol_min": {
-                  "description": "Decimal         int32     `json:\"decimal,string\"`\nCanonicalSymbol string    `json:\"canonical_symbol\"`",
                     "type": "string"
                 },
                 "timestamp": {
@@ -3003,7 +2993,6 @@
                     "type": "string"
                 },
                 "type": {
-                  "description": "TokenId         string    `json:\"token_id\"`",
                     "type": "string"
                 }
             }
@@ -3463,17 +3452,17 @@
                 }
             }
         },
-      "vo.Event": {
-        "type": "object",
-        "properties": {
-          "attributes": {
-            "type": "object"
-          },
-          "type": {
-            "type": "string"
-          }
-        }
-      },
+        "vo.Event": {
+            "type": "object",
+            "properties": {
+                "attributes": {
+                    "type": "object"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
         "vo.ExStaticMonthDataRespond": {
             "type": "object",
             "properties": {
@@ -4017,12 +4006,12 @@
                 "block_height": {
                     "type": "integer"
                 },
-              "events": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/vo.Event"
-                }
-              },
+                "events": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/vo.Event"
+                    }
+                },
                 "fee": {
                     "type": "object",
                     "$ref": "#/definitions/utils.ActualFee"

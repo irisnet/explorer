@@ -337,18 +337,12 @@ definitions:
       mintable:
         type: boolean
       name:
-        description: CanonicalSymbol string         `json:"canonical_symbol"`
         type: string
       owner:
-        description: TokenId         string         `json:"token_id"`
         type: string
       symbol:
-        description: Decimal         int            `json:"decimal,string"`
         type: string
       total_supply:
-        description: |-
-          Gateway         string         `json:"gateway"`
-          Family          string         `json:"family"`
         type: string
     type: object
   vo.AssetTokensRespond:
@@ -363,18 +357,12 @@ definitions:
         mintable:
           type: boolean
         name:
-          description: CanonicalSymbol string         `json:"canonical_symbol"`
           type: string
         owner:
-          description: TokenId         string         `json:"token_id"`
           type: string
         symbol:
-          description: Decimal         int            `json:"decimal,string"`
           type: string
         total_supply:
-          description: |-
-            Gateway         string         `json:"gateway"`
-            Family          string         `json:"family"`
           type: string
       type: object
     type: array
@@ -412,12 +400,8 @@ definitions:
       src_owner:
         type: string
       symbol:
-        description: Gateway         string    `json:"gateway"`
         type: string
       symbol_min:
-        description: |-
-          Decimal         int32     `json:"decimal,string"`
-          CanonicalSymbol string    `json:"canonical_symbol"`
         type: string
       timestamp:
         type: string
@@ -429,7 +413,6 @@ definitions:
       tx_status:
         type: string
       type:
-        description: TokenId         string    `json:"token_id"`
         type: string
     type: object
   vo.BlockForList:
@@ -3075,6 +3058,3 @@ paths:
       summary: version
       tags:
       - version
-
-
-
