@@ -71,7 +71,7 @@ func TestConvertConsensusPublicKey(t *testing.T) {
 
 func TestGetValidators(t *testing.T) {
 
-	validatorList := new(ValidatorService).GetValidators("jailed", "browser", 0, 100, true)
+	validatorList := new(ValidatorService).GetValidators("", "browser", 0, 100, true)
 
 	//res := validatorList.([]lcd.ValidatorVo)
 	resBytes, _ := json.Marshal(validatorList)

@@ -6,7 +6,7 @@ import (
 )
 
 func TestNodeInfo(t *testing.T) {
-	if res, err := NodeInfo(""); err != nil {
+	if res, err := NodeInfo(); err != nil {
 		t.Fatal(err)
 	} else {
 		resBytes, _ := json.MarshalIndent(res, "", "\t")
@@ -15,7 +15,7 @@ func TestNodeInfo(t *testing.T) {
 }
 
 func TestNodeVersion(t *testing.T) {
-	if res, err := NodeVersion("http://v2.irisnet-lcd.rainbow.one"); err != nil {
+	if res, err := NodeVersion(); err != nil {
 		t.Fatal(err)
 	} else {
 		resBytes, _ := json.MarshalIndent(res, "", "\t")
@@ -90,6 +90,12 @@ func TestBlockResult(t *testing.T) {
 
 func TestBlockCoinFlow(t *testing.T) {
 	res := BlockCoinFlow("DD5011DA37A00DB4EBB1F60A3F7DA8422F1553BA6E7C5C4FC9EDC38D22C5BB70")
+	resBytes, _ := json.MarshalIndent(res, "", "\t")
+	t.Log(string(resBytes))
+}
+
+func TestGetGenesisAppState(t *testing.T) {
+	res, _ := GetGenesisAppState()
 	resBytes, _ := json.MarshalIndent(res, "", "\t")
 	t.Log(string(resBytes))
 }

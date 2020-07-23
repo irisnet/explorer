@@ -10,6 +10,7 @@ import (
 	"github.com/irisnet/explorer/backend/utils"
 	"github.com/irisnet/explorer/backend/vo"
 	"gopkg.in/mgo.v2"
+	"fmt"
 )
 
 type BlockService struct {
@@ -27,7 +28,7 @@ func (service *BlockService) GetValidatorSet(height int64, page, size int) vo.Va
 	}
 
 	b := lcd.Block(height)
-	if b.Block.Header.Height == "" {
+	if b.Block.Header.Height == 0 {
 		panic(types.CodeNotFound)
 	}
 
@@ -73,7 +74,7 @@ func (service *BlockService) QueryBlockInfo(height int64) vo.BlockInfo {
 	var result vo.BlockInfo
 
 	currentBlock := lcd.Block(height)
-	if currentBlock.Block.Header.Height == "" {
+	if currentBlock.Block.Header.Height == 0 {
 		panic(types.CodeNotFound)
 	}
 
@@ -89,7 +90,7 @@ func (service *BlockService) QueryBlockInfo(height int64) vo.BlockInfo {
 		result.PropopserMoniker = validatorDoc.Description.Moniker
 	}
 
-	result.LatestHeight = lcd.BlockLatest().BlockMeta.Header.Height
+	result.LatestHeight = fmt.Sprint(lcd.BlockLatest().BlockMeta.Header.Height)
 	currentBlockRes := lcd.BlockResult(height)
 	lcdValidators := lcd.ValidatorSet(height)
 
@@ -103,7 +104,7 @@ func (service *BlockService) QueryBlockInfo(height int64) vo.BlockInfo {
 		}
 		totalVotingPower += powerAsInt
 
-		if nextBlock.Block.Header.Height != "" {
+		if nextBlock.Block.Header.Height != 0 {
 			for _, precommitValidator := range nextBlock.Block.LastCommit.Precommits {
 				if strconv.Itoa(k) == precommitValidator.ValidatorIndex {
 					precommitVotingPower += powerAsInt
@@ -130,7 +131,7 @@ func (service *BlockService) QueryBlockInfo(height int64) vo.BlockInfo {
 	}
 
 	result.BlockHash = currentBlock.BlockMeta.BlockID.Hash
-	result.BlockHeight = currentBlock.Block.Header.Height
+	result.BlockHeight = fmt.Sprint(currentBlock.Block.Header.Height)
 	result.Timestamp = currentBlock.BlockMeta.Header.Time.UTC()
 	result.Transactions = currentBlock.BlockMeta.Header.NumTxs
 
@@ -267,36 +268,10 @@ func (service *BlockService) QueryRecent() vo.BlockInfoVoRespond {
 	return result
 }
 
-func buildBlock(block document.Block) (result vo.BlockInfoVo) {
-	result.Height = block.Height
-	result.Hash = block.Hash
-	result.Time = block.Time.UTC()
-	result.NumTxs = block.NumTxs
-	var validators []vo.ValInfo
-	for _, v := range block.Validators {
-		validators = append(validators, vo.ValInfo{
-			Address:     v.Address,
-			VotingPower: v.VotingPower,
-		})
-	}
-	result.Validators = validators
-
-	var lastCommit []string
-	for _, v := range block.Block.LastCommit.Precommits {
-		lastCommit = append(lastCommit, v.ValidatorAddress)
-	}
-	result.LastCommit = lastCommit
-	result.TotalTxs = block.Meta.Header.TotalTxs
-	result.LastBlockHash = block.Block.LastCommit.BlockID.Hash
-	return result
-}
 
 func (service *BlockService) QueryLatestHeight() (result vo.LatestHeightRespond) {
 	var block = lcd.BlockLatest()
-	var height, ok = utils.ParseInt(block.BlockMeta.Header.Height)
-	if !ok {
-		panic(types.CodeNotFound)
-	}
+	var height = block.BlockMeta.Header.Height
 
 	blockdb, err := document.Block{}.QueryLatestBlockFromDB()
 	if err != nil {

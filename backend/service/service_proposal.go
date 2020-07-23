@@ -604,7 +604,7 @@ func (service *ProposalService) UpdateProposalVoters(vs []document.Proposal) {
 
 	for _, v := range vs {
 		voters := buildVoters(v.ProposalId)
-		if v1, ok := vMap[v.ProposalId]; ok {
+		if v1, ok := vMap[v.ProposalId]; ok && len(voters) > 0 {
 			if isDiffVoter(voters, v1.Votes) {
 				v.Votes = voters
 				if err := proposalModel.UpdateByPk(v); err != nil {

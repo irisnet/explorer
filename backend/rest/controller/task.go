@@ -10,7 +10,7 @@ import (
 
 func RegisterCronTask(r *mux.Router) error {
 	fns := []func(*mux.Router) error{
-		registerCronTaskAssetGateways,
+		//registerCronTaskAssetGateways,
 		registerCronTaskAssetTokens,
 		registerCronTaskGovParams,
 		registerCronTaskTxNumByDay,
@@ -27,25 +27,25 @@ func RegisterCronTask(r *mux.Router) error {
 	return nil
 }
 
-// @Summary update asset_gateways
-// @Description update asset gateways
-// @Tags task
-// @Accept  json
-// @Produce  json
-// @Success 200 {object} types.BizCode  "success"
-// @Router /api/task/asset_gateways [put]
-func registerCronTaskAssetGateways(r *mux.Router) error {
-	doApi(r, types.UrlRegisterDoCronTaskAssetGateways, "PUT", func(request vo.IrisReq) interface{} {
-		cronTask := task.UpdateAssetGateways{}
-		if err := cronTask.DoTask(task.HeartBeat); err != nil {
-			return err
-		} else {
-			return types.CodeSuccess
-		}
-	})
-
-	return nil
-}
+//// @Summary update asset_gateways
+//// @Description update asset gateways
+//// @Tags task
+//// @Accept  json
+//// @Produce  json
+//// @Success 200 {object} types.BizCode  "success"
+//// @Router /api/task/asset_gateways [put]
+//func registerCronTaskAssetGateways(r *mux.Router) error {
+//	doApi(r, types.UrlRegisterDoCronTaskAssetGateways, "PUT", func(request vo.IrisReq) interface{} {
+//		cronTask := task.UpdateAssetGateways{}
+//		if err := cronTask.DoTask(task.HeartBeat); err != nil {
+//			return err
+//		} else {
+//			return types.CodeSuccess
+//		}
+//	})
+//
+//	return nil
+//}
 
 // @Summary update asset_tokens
 // @Description update asset tokens

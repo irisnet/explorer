@@ -88,10 +88,10 @@ func registerQueryEnvConfig(r *mux.Router) error {
 					ShowFaucet:  val.ShowFaucet,
 					UmengId:     val.UmengId,
 				}
-				if nodeinfo, err := lcd.NodeInfo(val.EnvLcd); err == nil {
+				if nodeinfo, err := lcd.NodeInfo(); err == nil {
 					item.TendermintVersion = nodeinfo.Version
 				}
-				if version, err := lcd.NodeVersion(val.EnvLcd); err == nil {
+				if version, err := lcd.NodeVersion(); err == nil {
 					item.NodeVersion = version
 				}
 				ret = append(ret, item)

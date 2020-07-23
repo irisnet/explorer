@@ -17,6 +17,8 @@ import (
 const (
 	StatusFailed = "failed"
 	StatusFail   = "fail"
+
+	TimeLayout = "2006-01-02 15:04:05.706447 +0000 UTC"
 )
 
 func RemoveDuplicationStrArr(list []string) []string {

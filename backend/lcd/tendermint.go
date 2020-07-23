@@ -10,6 +10,7 @@ import (
 	"github.com/irisnet/explorer/backend/orm/document"
 	"github.com/irisnet/explorer/backend/utils"
 	"strings"
+	"time"
 )
 
 var (
@@ -216,74 +217,47 @@ func init() {
 
 }
 
-func NodeInfo(lcdurl string) (result NodeInfoVo, err error) {
-	//url := fmt.Sprintf(UrlNodeInfo, conf.Get().Hub.LcdUrl)
-	if lcdurl == "" {
-		err = errors.New("lcd url is empty")
-		logger.Error(err.Error())
-		return
-	}
-	url := fmt.Sprintf(UrlNodeInfo, lcdurl)
-	resBytes, err := utils.Get(url)
+func NodeInfo() (result NodeInfoVo, err error) {
+
+	nodeinfo, err := client.Tendermint().QueryNodeInfo()
 	if err != nil {
 		return result, err
 	}
-
-	if err := json.Unmarshal(resBytes, &result); err != nil {
-		logger.Error("get account error", logger.String("err", err.Error()))
-		return result, err
+	data, _ := json.Marshal(nodeinfo)
+	fmt.Println(string(data))
+	result = NodeInfoVo{
+		Version: nodeinfo.Version,
+		Network: nodeinfo.Network,
+		Moniker: nodeinfo.Moniker,
 	}
 	return result, nil
 }
 
-func NodeVersion(lcdurl string) (result string, err error) {
-	//url := fmt.Sprintf(UrlNodeVersion, conf.Get().Hub.LcdUrl)
-	if lcdurl == "" {
-		err = errors.New("lcd url is empty")
-		logger.Error(err.Error())
-		return
-	}
-	url := fmt.Sprintf(UrlNodeVersion, lcdurl)
-	resBytes, err := utils.Get(url)
+func NodeVersion() (result string, err error) {
+
+	nodeversion, err := client.Tendermint().QueryNodeVersion()
 	if err != nil {
 		return result, err
 	}
 
-	result = strings.Split(string(resBytes), "-")[0]
+	result = strings.Split(nodeversion, "-")[0]
 	return result, nil
 }
-
-//func Genesis() (result GenesisVo, err error) {
-//	url := fmt.Sprintf(UrlGenesis, conf.Get().Hub.NodeUrl)
-//	resBytes, err := utils.Get(url)
-//	if err != nil {
-//		return result, err
-//	}
-//
-//	if err := json.Unmarshal(resBytes, &result); err != nil {
-//		logger.Error("get account error", logger.String("err", err.Error()))
-//		return result, err
-//	}
-//	return result, nil
-//}
 
 func GetGenesisAppState() (map[string]interface{}, error) {
 
-	url := fmt.Sprintf(UrlGenesis, conf.Get().Hub.NodeUrl)
-	resBytes, err := utils.Get(url)
-
+	genesisdoc, err := client.Tendermint().QueryGenesis()
 	if err != nil {
 		return nil, err
 	}
+	resBytes, _ := json.Marshal(genesisdoc)
+
 	var m map[string]interface{}
-	err = json.Unmarshal([]byte(resBytes), &m)
-	if err != nil {
+	if err := json.Unmarshal(resBytes, &m); err != nil {
 		return nil, err
 	}
 
-	resultMap := m["result"].(map[string]interface{})
-	genesisMap := resultMap["genesis"].(map[string]interface{})
-	appStateMap := genesisMap["app_state"].(map[string]interface{})
+	appStateMap := m["app_state"].(map[string]interface{})
 
 	return appStateMap, nil
 }
@@ -341,27 +315,68 @@ func GetGenesisGovModuleParamMap() (map[string]interface{}, error) {
 }
 
 func Block(height int64) (result BlockVo) {
-	url := fmt.Sprintf(UrlBlock, conf.Get().Hub.LcdUrl, height)
-	resBytes, err := utils.Get(url)
+
+	block, err := client.Tendermint().QueryBlock(height)
 	if err != nil {
 		return result
 	}
 
-	if err := json.Unmarshal(resBytes, &result); err != nil {
-		return result
+	timeData, _ := time.Parse(utils.TimeLayout, block.Header.Time.String())
+	result = BlockVo{
+		BlockMeta: BlockMeta{
+			BlockID: BlockID{
+				Hash: block.Header.LastBlockID.Hash.String(),
+			},
+			Header: BlockHeader{
+				Height:          block.Header.Height,
+				ProposerAddress: block.Header.ProposerAddress.String(),
+				Time:            timeData,
+				NumTxs:          fmt.Sprint(len(block.Data.Txs)),
+			},
+		},
+		Block: BlockI{
+			Header: Header{
+				Height: block.LastCommit.Height,
+			},
+			LastCommit: LastCommit{
+				Precommits: Precommits{
+				},
+			},
+		},
 	}
 	return result
 }
 
 func BlockLatest() (result BlockVo) {
-	url := fmt.Sprintf(UrlBlockLatest, conf.Get().Hub.LcdUrl)
-	resBytes, err := utils.Get(url)
+
+	block, err := client.Tendermint().QueryBlockLatest()
 	if err != nil {
 		return result
 	}
 
-	if err := json.Unmarshal(resBytes, &result); err != nil {
-		return result
+	timeData, _ := time.Parse(utils.TimeLayout, block.Header.Time.String())
+	result = BlockVo{
+		BlockMeta: BlockMeta{
+			BlockID: BlockID{
+				Hash: block.Header.LastBlockID.Hash.String(),
+			},
+			Header: BlockHeader{
+				Height:          block.Header.Height,
+				ProposerAddress: block.Header.ProposerAddress.String(),
+				Time:            timeData,
+				NumTxs:          fmt.Sprint(len(block.Data.Txs)),
+			},
+		},
+		Block: BlockI{
+			Header: Header{
+				Height: block.LastCommit.Height,
+			},
+			LastCommit: LastCommit{
+				Precommits: Precommits{
+
+				},
+			},
+		},
 	}
 	return result
 }

@@ -13,9 +13,9 @@ func TestGetAssetTokens(t *testing.T) {
 	t.Log(string(bytesData))
 }
 
-func TestGetAssetGateways(t *testing.T) {
-	res := lcd.GetAssetGateways()
-
-	bytesData, _ := json.Marshal(res)
-	t.Log(string(bytesData))
-}
+//func TestGetAssetGateways(t *testing.T) {
+//	res := lcd.GetAssetGateways()
+//
+//	bytesData, _ := json.Marshal(res)
+//	t.Log(string(bytesData))
+//}

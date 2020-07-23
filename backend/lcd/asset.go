@@ -1,39 +1,42 @@
 package lcd
 
 import (
-	"encoding/json"
-	"fmt"
-	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
-	"github.com/irisnet/explorer/backend/utils"
+	"fmt"
 )
 
 func GetAssetTokens() (result []AssetTokens) {
-	url := fmt.Sprintf(UrlAssetTokens, conf.Get().Hub.LcdUrl)
-	resBytes, err := utils.Get(url)
+	//url := fmt.Sprintf(UrlAssetTokens, conf.Get().Hub.LcdUrl)
+	//resBytes, err := utils.Get(url)
+	//if err != nil {
+	//	logger.Error("get AssetTokens error", logger.String("err", err.Error()))
+	//	return result
+	//}
+	//
+	//if err := json.Unmarshal(resBytes, &result); err != nil {
+	//	logger.Error("Unmarshal AssetTokens error", logger.String("err", err.Error()))
+	//	return result
+	//}
+	tokens, err := client.Asset().QueryTokens("")
 	if err != nil {
-		logger.Error("get AssetTokens error", logger.String("err", err.Error()))
-		return result
+		logger.Error("Query AssetTokens error", logger.String("err", err.Error()))
+		return
 	}
-
-	if err := json.Unmarshal(resBytes, &result); err != nil {
-		logger.Error("Unmarshal AssetTokens error", logger.String("err", err.Error()))
-		return result
-	}
-	return result
+	fmt.Println(tokens)
+	return
 }
 
-func GetAssetGateways() (result []AssetGateways) {
-	url := fmt.Sprintf(UrlAssetGateways, conf.Get().Hub.LcdUrl)
-	resBytes, err := utils.Get(url)
-	if err != nil {
-		logger.Error("get GetAssetGateways error", logger.String("err", err.Error()))
-		return result
-	}
-
-	if err := json.Unmarshal(resBytes, &result); err != nil {
-		logger.Error("Unmarshal GetAssetGateways error", logger.String("err", err.Error()))
-		return result
-	}
-	return result
-}
+//func GetAssetGateways() (result []AssetGateways) {
+//	url := fmt.Sprintf(UrlAssetGateways, conf.Get().Hub.LcdUrl)
+//	resBytes, err := utils.Get(url)
+//	if err != nil {
+//		logger.Error("get GetAssetGateways error", logger.String("err", err.Error()))
+//		return result
+//	}
+//
+//	if err := json.Unmarshal(resBytes, &result); err != nil {
+//		logger.Error("Unmarshal GetAssetGateways error", logger.String("err", err.Error()))
+//		return result
+//	}
+//	return result
+//}

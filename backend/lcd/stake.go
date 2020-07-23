@@ -8,7 +8,35 @@ import (
 	"github.com/irisnet/explorer/backend/conf"
 	"github.com/irisnet/explorer/backend/logger"
 	"github.com/irisnet/explorer/backend/utils"
+	sdk "github.com/weichang-bianjie/irishub-sdk-go"
+	"github.com/weichang-bianjie/irishub-sdk-go/types"
+	ctypes "github.com/irisnet/explorer/backend/types"
+	"time"
+	"path/filepath"
 )
+
+var (
+	client sdk.Client
+)
+
+func init() {
+	path := filepath.Join("/User/user/go/", "test")
+	client = sdk.NewClient(types.ClientConfig{
+		NodeURI: conf.Get().Hub.NodeUrl,
+		Network: types.Testnet,
+		ChainID: conf.Get().Hub.ChainId,
+		Mode:    types.Commit,
+		Timeout: time.Duration(10 * time.Second),
+		Fee: []types.DecCoin{
+			{Denom: "iris", Amount: types.NewDecimal(1)},
+		},
+		Gas:       2000000,
+		KeyDAO:    types.NewMemoryDB(), //default keybase
+		StoreType: types.PrivKey,
+		Level:     "info",
+		DBRootDir: path,
+	})
+}
 
 func Validator(address string) (result ValidatorVo, err error) {
 	url := fmt.Sprintf(UrlValidator, conf.Get().Hub.LcdUrl, address)
@@ -25,18 +53,53 @@ func Validator(address string) (result ValidatorVo, err error) {
 }
 
 func Validators(page, size int) (result []ValidatorVo) {
-	url := fmt.Sprintf(UrlValidators, conf.Get().Hub.LcdUrl, page, size)
-	resBytes, err := utils.Get(url)
+
+	validators, err := client.Staking().QueryValidators(page, size)
 	if err != nil {
-		logger.Error("get Validators error", logger.String("err", err.Error()))
+		logger.Error("RPC Query Validators failed", logger.String("err", err.Error()))
 		return result
 	}
 
-	if err := json.Unmarshal(resBytes, &result); err != nil {
-		logger.Error("Unmarshal Validators error", logger.String("err", err.Error()))
-		return result
+	for _, val := range validators {
+		uptime, _ := time.Parse(utils.TimeLayout, val.Commission.UpdateTime)
+		unbondtime, _ := time.Parse(utils.TimeLayout, val.UnbondingTime)
+		result = append(result, ValidatorVo{
+			OperatorAddress: val.OperatorAddress,
+			ConsensusPubkey: val.ConsensusPubkey,
+			Jailed:          val.Jailed,
+			Status:          BondStatusToInt(val.Status),
+			Tokens:          val.Tokens,
+			DelegatorShares: val.DelegatorShares,
+			Description: Description{
+				Moniker:  val.Description.Moniker,
+				Identity: val.Description.Identity,
+				Details:  val.Description.Details,
+				Website:  val.Description.Website,
+			},
+			UnbondingHeight: fmt.Sprint(val.UnbondingHeight),
+			UnbondingTime:   unbondtime,
+			Commission: Commission{
+				Rate:          val.Commission.Rate,
+				MaxRate:       val.Commission.MaxRate,
+				MaxChangeRate: val.Commission.MaxChangeRate,
+				UpdateTime:    uptime,
+			},
+		})
 	}
 	return result
+}
+
+func BondStatusToInt(b string) int {
+	switch b {
+	case ctypes.TypeValStatusUnbonded:
+		return 0
+	case ctypes.TypeValStatusUnbonding:
+		return 1
+	case ctypes.TypeValStatusBonded:
+		return 2
+	default:
+		panic("improper use of BondStatusToString")
+	}
 }
 
 func QueryWithdrawAddr(address string) (result string) {

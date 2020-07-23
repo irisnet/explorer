@@ -12,11 +12,20 @@ import (
 const (
 	//module
 	GovModuleAuth     = "auth"
-	GovModuleStake    = "stake"
+	GovModuleStake    = "staking"
 	GovModuleMint     = "mint"
-	GovModuleDistr    = "distr"
+	GovModuleDistr    = "distribution"
 	GovModuleSlashing = "slashing"
-	GovModuleAsset    = "asset"
+	GovModuleAsset    = "token"
+	GovModuleIBC      = "ibc"
+	GovModuleHtlc     = "htlc"
+	GovModuleService  = "service"
+	GovModuleRand     = "rand"
+	GovModuleOrcale   = "oracle"
+	GovModuleCoinSwap = "coinswap"
+	GovModuleCoinGov  = "gov"
+	GovModuleCoinNft  = "nft"
+	GovModuleCrisis   = "crisis"
 	//auth key
 	GovModuleAuthGasPriceThreshold string = "gas_price_threshold"
 	GovModuleAuthTxSize            string = "tx_size"
@@ -62,7 +71,6 @@ type Voterinfo struct {
 	ProposalId string `json:"proposal_id"`
 	Option     string `json:"option"`
 }
-
 
 func GetAuthKeyWithRangeMap() map[string]RangeDescription {
 	result := map[string]RangeDescription{}
@@ -116,23 +124,23 @@ func GetAssetKeyWithRangeMap() map[string]RangeDescription {
 	result[GovModuleAssetGatewayAssetFeeRatio] = RangeDescription{InitialValue: "0.1", Range: "0,1", Description: "Rate of issuing gateway tokens (relative to the issue fee of native tokens)"}
 	return result
 }
-func GetGovModuleParam(module string) ([]byte, error) {
-	url := fmt.Sprintf(UrlGovParam, conf.Get().Hub.LcdUrl, module)
-	return utils.Get(url)
-}
+
+//func GetGovModuleParam(module string) ([]byte, error) {
+//	url := fmt.Sprintf(UrlGovParam, conf.Get().Hub.LcdUrl, module)
+//	return utils.Get(url)
+//}
 
 func GetGovModuleParamMap(module string) (map[string]interface{}, error) {
-	resAsByte, err := GetGovModuleParam(module)
+	appstate, err := GetGenesisAppState()
 	if err != nil {
 		return nil, err
 	}
-	var m map[string]interface{}
-	err = json.Unmarshal([]byte(resAsByte), &m)
-	if err != nil {
-		return nil, err
+	data, ok := appstate[module]
+	if !ok {
+		return nil, fmt.Errorf("not find module:%v", module)
 	}
 
-	return m["value"].(map[string]interface{}), nil
+	return data.(map[string]interface{}), nil
 }
 
 func GetGovAuthParam() (map[string]interface{}, error) {

@@ -6,7 +6,6 @@ import (
 
 	"encoding/json"
 	"github.com/irisnet/explorer/backend/vo"
-	"github.com/irisnet/explorer/backend/vo/msgvo"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -65,30 +64,30 @@ func TestQueryTxNumGroupByDay(t *testing.T) {
 }
 
 func TestTxService_checkTags(t *testing.T) {
-	tags := map[string]string{
-		"voting-period-start": "41",
-		"action":              "submit_proposal",
-		"proposer":            "faa1x292qss22x4rls6ygr7hhnp0et94vwwrchaklp",
-		"proposal-id":         "41",
-		"param":               "[{\"subspace\":\"stake\",\"key\":\"UnbondingTime\",\"value\":\"123m\"}]",
-	}
-	tags1 := map[string]string{
-		"voting-period-start": "41",
-		"action":              "submit_proposal",
-		"proposer":            "faa1x292qss22x4rls6ygr7hhnp0et94vwwrchaklp",
-		"proposal-id":         "41",
-	}
-	submitprodata := msgvo.TxMsgSubmitProposal{
-		Params: []msgvo.Param{
-			{Subspace: "stake", Key: "UnbondingTime", Value: "12m"},
-		},
-	}
-	data := checkTags(tags, submitprodata.Params)
-	t.Log(tags)
-	t.Log(data)
-	data1 := checkTags(tags1, submitprodata.Params)
-	t.Log(tags1)
-	t.Log(data1)
+	//tags := map[string]string{
+	//	"voting-period-start": "41",
+	//	"action":              "submit_proposal",
+	//	"proposer":            "faa1x292qss22x4rls6ygr7hhnp0et94vwwrchaklp",
+	//	"proposal-id":         "41",
+	//	"param":               "[{\"subspace\":\"stake\",\"key\":\"UnbondingTime\",\"value\":\"123m\"}]",
+	//}
+	//tags1 := map[string]string{
+	//	"voting-period-start": "41",
+	//	"action":              "submit_proposal",
+	//	"proposer":            "faa1x292qss22x4rls6ygr7hhnp0et94vwwrchaklp",
+	//	"proposal-id":         "41",
+	//}
+	//submitprodata := msgvo.TxMsgSubmitProposal{
+	//	//Params: []msgvo.Param{
+	//	//	{Subspace: "stake", Key: "UnbondingTime", Value: "12m"},
+	//	//},
+	//}
+	//data := checkTags(tags, submitprodata.Params)
+	//t.Log(tags)
+	//t.Log(data)
+	//data1 := checkTags(tags1, submitprodata.Params)
+	//t.Log(tags1)
+	//t.Log(data1)
 
 }
 

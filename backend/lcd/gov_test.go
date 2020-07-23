@@ -14,14 +14,14 @@ func getModuleList() []string {
 
 func TestGetGovParamByModule(t *testing.T) {
 
-	for k, v := range getModuleList() {
-		t.Logf("k %d   ------- module name %s \n", k, v)
-		resAsByte, err := lcd.GetGovModuleParam(v)
-		if err != nil {
-			t.Errorf("query module [%s] err, err: %v\n", v, err)
-		}
-		t.Logf("%v\n\n", string(resAsByte))
-	}
+	//for k, v := range getModuleList() {
+	//	t.Logf("k %d   ------- module name %s \n", k, v)
+	//	resAsByte, err := lcd.GetGovModuleParam(v)
+	//	if err != nil {
+	//		t.Errorf("query module [%s] err, err: %v\n", v, err)
+	//	}
+	//	t.Logf("%v\n\n", string(resAsByte))
+	//}
 }
 
 func TestGetGovParamMapByModule(t *testing.T) {
